@@ -18,7 +18,7 @@ $espacio = $wpdb->get_row($wpdb->prepare(
 ));
 
 if (!$espacio) {
-    echo '<div class="espacios-empty"><span class="dashicons dashicons-warning"></span><h3>' . __('Espacio no encontrado', 'flavor-chat-ia') . '</h3></div>';
+    echo '<div class="espacios-empty"><span class="dashicons dashicons-warning"></span><h3>' . __('Espacio no encontrado', 'flavor-platform') . '</h3></div>';
     return;
 }
 
@@ -58,20 +58,20 @@ $dias_disponibles_str = $espacio->dias_disponibles ?? 'L,M,X,J,V,S,D';
 $dias_disponibles_arr = explode(',', $dias_disponibles_str);
 
 $dias_semana_map = [
-    'L' => __('Lunes', 'flavor-chat-ia'),
-    'M' => __('Martes', 'flavor-chat-ia'),
-    'X' => __('Miércoles', 'flavor-chat-ia'),
-    'J' => __('Jueves', 'flavor-chat-ia'),
-    'V' => __('Viernes', 'flavor-chat-ia'),
-    'S' => __('Sábado', 'flavor-chat-ia'),
-    'D' => __('Domingo', 'flavor-chat-ia'),
+    'L' => __('Lunes', 'flavor-platform'),
+    'M' => __('Martes', 'flavor-platform'),
+    'X' => __('Miércoles', 'flavor-platform'),
+    'J' => __('Jueves', 'flavor-platform'),
+    'V' => __('Viernes', 'flavor-platform'),
+    'S' => __('Sábado', 'flavor-platform'),
+    'D' => __('Domingo', 'flavor-platform'),
 ];
 ?>
 
 <div class="espacio-detalle-wrapper">
     <a href="<?php echo remove_query_arg('espacio_id'); ?>" class="btn btn-outline btn-sm" style="margin-bottom: 1rem;">
         <span class="dashicons dashicons-arrow-left-alt2"></span>
-        <?php _e('Volver a espacios', 'flavor-chat-ia'); ?>
+        <?php _e('Volver a espacios', 'flavor-platform'); ?>
     </a>
 
     <div class="espacio-detalle">
@@ -82,7 +82,7 @@ $dias_semana_map = [
                 <?php else: ?>
                     <div class="placeholder">
                         <span class="dashicons dashicons-building"></span>
-                        <span><?php _e('Sin imagen', 'flavor-chat-ia'); ?></span>
+                        <span><?php _e('Sin imagen', 'flavor-platform'); ?></span>
                     </div>
                 <?php endif; ?>
             </div>
@@ -113,35 +113,35 @@ $dias_semana_map = [
                     <?php endfor; ?>
                     <span style="margin-left: 0.5rem; color: #6b7280;">
                         <?php echo number_format((float) $espacio->valoracion_media, 1); ?>
-                        (<?php echo (int) $espacio->numero_valoraciones; ?> <?php _e('valoraciones', 'flavor-chat-ia'); ?>)
+                        (<?php echo (int) $espacio->numero_valoraciones; ?> <?php _e('valoraciones', 'flavor-platform'); ?>)
                     </span>
                 </div>
             <?php endif; ?>
 
             <div class="espacio-detalle-meta">
                 <div class="espacio-detalle-meta-item">
-                    <label><?php _e('Tipo', 'flavor-chat-ia'); ?></label>
+                    <label><?php _e('Tipo', 'flavor-platform'); ?></label>
                     <span><?php echo esc_html(ucfirst($espacio->tipo)); ?></span>
                 </div>
                 <div class="espacio-detalle-meta-item">
-                    <label><?php _e('Capacidad', 'flavor-chat-ia'); ?></label>
-                    <span><?php printf(__('Hasta %d personas', 'flavor-chat-ia'), $espacio->capacidad_personas); ?></span>
+                    <label><?php _e('Capacidad', 'flavor-platform'); ?></label>
+                    <span><?php printf(__('Hasta %d personas', 'flavor-platform'), $espacio->capacidad_personas); ?></span>
                 </div>
                 <div class="espacio-detalle-meta-item">
-                    <label><?php _e('Precio', 'flavor-chat-ia'); ?></label>
+                    <label><?php _e('Precio', 'flavor-platform'); ?></label>
                     <span style="color: <?php echo $espacio->precio_hora > 0 ? '#6366f1' : '#10b981'; ?>; font-weight: 600;">
                         <?php
                         if ($espacio->precio_hora > 0) {
                             echo number_format($espacio->precio_hora, 2) . '€/hora';
                         } else {
-                            _e('Gratuito', 'flavor-chat-ia');
+                            _e('Gratuito', 'flavor-platform');
                         }
                         ?>
                     </span>
                 </div>
                 <div class="espacio-detalle-meta-item">
-                    <label><?php _e('Reserva mínima', 'flavor-chat-ia'); ?></label>
-                    <span><?php printf(__('%d hora(s)', 'flavor-chat-ia'), $espacio->tiempo_minimo ?? 1); ?></span>
+                    <label><?php _e('Reserva mínima', 'flavor-platform'); ?></label>
+                    <span><?php printf(__('%d hora(s)', 'flavor-platform'), $espacio->tiempo_minimo ?? 1); ?></span>
                 </div>
             </div>
 
@@ -155,8 +155,8 @@ $dias_semana_map = [
                 <div class="fianza-info">
                     <span class="dashicons dashicons-money-alt"></span>
                     <div class="fianza-info-texto">
-                        <strong><?php printf(__('Fianza requerida: %s€', 'flavor-chat-ia'), number_format((float) $espacio->importe_fianza, 2)); ?></strong>
-                        <span><?php _e('Se devolverá al entregar el espacio en buenas condiciones', 'flavor-chat-ia'); ?></span>
+                        <strong><?php printf(__('Fianza requerida: %s€', 'flavor-platform'), number_format((float) $espacio->importe_fianza, 2)); ?></strong>
+                        <span><?php _e('Se devolverá al entregar el espacio en buenas condiciones', 'flavor-platform'); ?></span>
                     </div>
                 </div>
             <?php endif; ?>
@@ -165,21 +165,21 @@ $dias_semana_map = [
                 <?php if (is_user_logged_in()): ?>
                     <?php if ($tiene_reserva): ?>
                         <button class="btn btn-outline" disabled>
-                            <?php _e('Ya tienes una reserva', 'flavor-chat-ia'); ?>
+                            <?php _e('Ya tienes una reserva', 'flavor-platform'); ?>
                         </button>
                     <?php else: ?>
                         <button class="btn btn-primary btn-reservar-espacio" data-espacio-id="<?php echo $espacio->id; ?>">
                             <span class="dashicons dashicons-calendar-alt"></span>
-                            <?php _e('Reservar espacio', 'flavor-chat-ia'); ?>
+                            <?php _e('Reservar espacio', 'flavor-platform'); ?>
                         </button>
                     <?php endif; ?>
                     <button class="btn btn-outline btn-reportar-incidencia" data-espacio-id="<?php echo $espacio->id; ?>">
                         <span class="dashicons dashicons-flag"></span>
-                        <?php _e('Reportar incidencia', 'flavor-chat-ia'); ?>
+                        <?php _e('Reportar incidencia', 'flavor-platform'); ?>
                     </button>
                 <?php else: ?>
                     <a href="<?php echo wp_login_url(flavor_current_request_url()); ?>" class="btn btn-primary">
-                        <?php _e('Inicia sesión para reservar', 'flavor-chat-ia'); ?>
+                        <?php _e('Inicia sesión para reservar', 'flavor-platform'); ?>
                     </a>
                 <?php endif; ?>
             </div>
@@ -189,7 +189,7 @@ $dias_semana_map = [
     <!-- Equipamiento -->
     <?php if ($equipamiento): ?>
         <div class="espacio-equipamiento">
-            <h3><?php _e('Equipamiento disponible', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Equipamiento disponible', 'flavor-platform'); ?></h3>
             <div class="equipamiento-lista">
                 <?php foreach ($equipamiento as $equipo): ?>
                     <div class="equipamiento-item">
@@ -207,7 +207,7 @@ $dias_semana_map = [
     <!-- Horarios -->
     <?php if (!empty($dias_disponibles_arr)): ?>
         <div class="espacio-equipamiento">
-            <h3><?php _e('Horarios de disponibilidad', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Horarios de disponibilidad', 'flavor-platform'); ?></h3>
             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.75rem;">
                 <?php foreach ($dias_disponibles_arr as $dia_codigo): ?>
                     <?php $dia_codigo = trim($dia_codigo); ?>
@@ -227,7 +227,7 @@ $dias_semana_map = [
     <!-- Calendario de disponibilidad -->
     <div class="calendario-wrapper" data-espacio-id="<?php echo $espacio->id; ?>">
         <div class="calendario-header">
-            <h3><?php _e('Disponibilidad', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Disponibilidad', 'flavor-platform'); ?></h3>
             <div class="calendario-nav">
                 <button class="calendario-prev">
                     <span class="dashicons dashicons-arrow-left-alt2"></span>
@@ -245,8 +245,8 @@ $dias_semana_map = [
         </div>
 
         <div style="margin-top: 1rem;">
-            <h4 style="margin-bottom: 0.75rem;"><?php _e('Horarios disponibles', 'flavor-chat-ia'); ?></h4>
-            <p style="color: #6b7280; font-size: 0.875rem;"><?php _e('Selecciona una fecha en el calendario para ver los horarios disponibles.', 'flavor-chat-ia'); ?></p>
+            <h4 style="margin-bottom: 0.75rem;"><?php _e('Horarios disponibles', 'flavor-platform'); ?></h4>
+            <p style="color: #6b7280; font-size: 0.875rem;"><?php _e('Selecciona una fecha en el calendario para ver los horarios disponibles.', 'flavor-platform'); ?></p>
             <div class="horarios-disponibles"></div>
         </div>
     </div>
@@ -273,7 +273,7 @@ $dias_semana_map = [
         if ($ha_usado && !$ya_valoro):
         ?>
             <div class="espacio-equipamiento">
-                <h3><?php _e('Valora este espacio', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Valora este espacio', 'flavor-platform'); ?></h3>
                 <form class="form-valoracion" data-espacio-id="<?php echo $espacio->id; ?>" style="max-width: 500px;">
                     <div class="valoracion-estrellas" data-valoracion="0" style="margin-bottom: 1rem;">
                         <?php for ($i = 1; $i <= 5; $i++): ?>
@@ -281,9 +281,9 @@ $dias_semana_map = [
                         <?php endfor; ?>
                     </div>
                     <div class="form-grupo">
-                        <textarea name="comentario" rows="3" placeholder="<?php esc_attr_e('Escribe un comentario (opcional)', 'flavor-chat-ia'); ?>"></textarea>
+                        <textarea name="comentario" rows="3" placeholder="<?php esc_attr_e('Escribe un comentario (opcional)', 'flavor-platform'); ?>"></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-sm"><?php _e('Enviar valoración', 'flavor-chat-ia'); ?></button>
+                    <button type="submit" class="btn btn-primary btn-sm"><?php _e('Enviar valoración', 'flavor-platform'); ?></button>
                 </form>
             </div>
         <?php endif; ?>
@@ -292,7 +292,7 @@ $dias_semana_map = [
     <!-- Normas de uso -->
     <?php if ($espacio->normas_uso): ?>
         <div class="espacio-equipamiento">
-            <h3><?php _e('Normas de uso', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Normas de uso', 'flavor-platform'); ?></h3>
             <div style="background: #fffbeb; border: 1px solid #fbbf24; border-radius: 8px; padding: 1rem;">
                 <?php echo wp_kses_post(wpautop($espacio->normas_uso)); ?>
             </div>

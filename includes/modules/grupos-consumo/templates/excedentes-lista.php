@@ -22,17 +22,17 @@ $nonce = wp_create_nonce('gc_conciencia_nonce');
     <div class="gc-excedentes__header">
         <h3 class="gc-excedentes__titulo">
             <span class="dashicons dashicons-carrot"></span>
-            <?php esc_html_e('Excedentes Solidarios', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Excedentes Solidarios', 'flavor-platform'); ?>
         </h3>
         <p class="gc-excedentes__descripcion">
-            <?php esc_html_e('Productos sobrantes a precio reducido o gratuito. Evitamos el desperdicio y creamos comunidad.', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Productos sobrantes a precio reducido o gratuito. Evitamos el desperdicio y creamos comunidad.', 'flavor-platform'); ?>
         </p>
     </div>
 
     <?php if (empty($excedentes)): ?>
         <div class="gc-excedentes__vacio">
             <span class="dashicons dashicons-yes-alt"></span>
-            <p><?php esc_html_e('No hay excedentes disponibles en este momento. Todos los productos han encontrado hogar.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('No hay excedentes disponibles en este momento. Todos los productos han encontrado hogar.', 'flavor-platform'); ?></p>
         </div>
     <?php else: ?>
         <div class="gc-excedentes__lista">
@@ -56,7 +56,7 @@ $nonce = wp_create_nonce('gc_conciencia_nonce');
 
                         <?php if (!$tiene_precio): ?>
                             <span class="gc-excedente-card__badge gc-excedente-card__badge--gratis">
-                                <?php esc_html_e('Gratis', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Gratis', 'flavor-platform'); ?>
                             </span>
                         <?php endif; ?>
                     </div>
@@ -70,7 +70,7 @@ $nonce = wp_create_nonce('gc_conciencia_nonce');
                             <span class="gc-excedente-card__cantidad">
                                 <strong><?php echo esc_html(number_format($cantidad_disponible, 1)); ?></strong>
                                 <?php echo esc_html($excedente['unidad_producto'] ?? 'ud.'); ?>
-                                <?php esc_html_e('disponibles', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('disponibles', 'flavor-platform'); ?>
                             </span>
 
                             <?php if ($tiene_precio): ?>
@@ -93,7 +93,7 @@ $nonce = wp_create_nonce('gc_conciencia_nonce');
 
                                 <div class="gc-excedente-card__input-group">
                                     <label for="cantidad-<?php echo esc_attr($excedente['id']); ?>" class="screen-reader-text">
-                                        <?php esc_html_e('Cantidad', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Cantidad', 'flavor-platform'); ?>
                                     </label>
                                     <input
                                         type="number"
@@ -113,13 +113,13 @@ $nonce = wp_create_nonce('gc_conciencia_nonce');
 
                                 <button type="submit" class="gc-excedente-card__btn gc-btn gc-btn--primary">
                                     <span class="dashicons dashicons-yes"></span>
-                                    <?php esc_html_e('Reclamar', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Reclamar', 'flavor-platform'); ?>
                                 </button>
                             </form>
                         <?php else: ?>
                             <p class="gc-excedente-card__login">
                                 <a href="<?php echo esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', ''))); ?>">
-                                    <?php esc_html_e('Inicia sesión para reclamar', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Inicia sesión para reclamar', 'flavor-platform'); ?>
                                 </a>
                             </p>
                         <?php endif; ?>
@@ -389,7 +389,7 @@ $nonce = wp_create_nonce('gc_conciencia_nonce');
             const cantidad = form.querySelector('[name="cantidad"]').value;
 
             btn.disabled = true;
-            btn.innerHTML = '<span class="dashicons dashicons-update"></span> <?php echo esc_js(__('Procesando...', 'flavor-chat-ia')); ?>';
+            btn.innerHTML = '<span class="dashicons dashicons-update"></span> <?php echo esc_js(__('Procesando...', 'flavor-platform')); ?>';
 
             fetch('<?php echo esc_url(admin_url('admin-ajax.php')); ?>', {
                 method: 'POST',
@@ -407,18 +407,18 @@ $nonce = wp_create_nonce('gc_conciencia_nonce');
                     form.innerHTML = '<p style="color: var(--gc-success); margin: 0;"><span class="dashicons dashicons-yes"></span> ' + data.data.message + '</p>';
                 } else {
                     if (window.gcToast) {
-                        window.gcToast(data.data.message || '<?php echo esc_js(__('Error al procesar', 'flavor-chat-ia')); ?>', 'error');
+                        window.gcToast(data.data.message || '<?php echo esc_js(__('Error al procesar', 'flavor-platform')); ?>', 'error');
                     }
                     btn.disabled = false;
-                    btn.innerHTML = '<span class="dashicons dashicons-yes"></span> <?php echo esc_js(__('Reclamar', 'flavor-chat-ia')); ?>';
+                    btn.innerHTML = '<span class="dashicons dashicons-yes"></span> <?php echo esc_js(__('Reclamar', 'flavor-platform')); ?>';
                 }
             })
             .catch(() => {
                 if (window.gcToast) {
-                    window.gcToast('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>', 'error');
+                    window.gcToast('<?php echo esc_js(__('Error de conexión', 'flavor-platform')); ?>', 'error');
                 }
                 btn.disabled = false;
-                btn.innerHTML = '<span class="dashicons dashicons-yes"></span> <?php echo esc_js(__('Reclamar', 'flavor-chat-ia')); ?>';
+                btn.innerHTML = '<span class="dashicons dashicons-yes"></span> <?php echo esc_js(__('Reclamar', 'flavor-platform')); ?>';
             });
         });
     });

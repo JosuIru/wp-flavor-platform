@@ -72,7 +72,7 @@ class Flavor_Newsletter_Template {
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background-color:#f0f0f3;border-radius:0 0 8px 8px;">
 <tr><td align="center" style="padding:20px 30px;font-size:12px;color:#888888;">
 <p style="margin:0 0 8px 0;">&copy; ' . esc_html($anio_actual) . ' ' . esc_html($nombre_sitio) . '</p>
-<p style="margin:0;"><a href="' . esc_url($enlace_baja) . '" style="color:#888888;text-decoration:underline;">' . esc_html__("Cancelar suscripcion", "flavor-chat-ia") . '</a></p>
+<p style="margin:0;"><a href="' . esc_url($enlace_baja) . '" style="color:#888888;text-decoration:underline;">' . esc_html__("Cancelar suscripcion", FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p>
 </td></tr></table>
 </td></tr></table>
 </body></html>';
@@ -86,7 +86,7 @@ class Flavor_Newsletter_Template {
 
     public function generar_preview($contenido_html) {
         $valores_ejemplo = [
-            'nombre'          => __('Juan Perez', 'flavor-chat-ia'),
+            'nombre'          => __('Juan Perez', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'email'           => 'juan@ejemplo.com',
             'sitio_nombre'    => get_bloginfo('name'),
             'sitio_url'       => home_url(),
@@ -111,13 +111,13 @@ class Flavor_Newsletter_Template {
     }
 
     public function obtener_plantilla_por_defecto() {
-        $plantilla = '<h2>' . esc_html__('Hola {{nombre}}', 'flavor-chat-ia') . '</h2>' . "
+        $plantilla = '<h2>' . esc_html__('Hola {{nombre}}', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2>' . "
 "
-            . '<p>' . esc_html__('Gracias por ser parte de nuestra comunidad.', 'flavor-chat-ia') . '</p>' . "
+            . '<p>' . esc_html__('Gracias por ser parte de nuestra comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>' . "
 "
-            . '<p>' . esc_html__('Escribe aqui el contenido de tu newsletter...', 'flavor-chat-ia') . '</p>' . "
+            . '<p>' . esc_html__('Escribe aqui el contenido de tu newsletter...', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>' . "
 "
-            . '<p style="text-align:center;margin-top:30px;"><a href="{{sitio_url}}" style="display:inline-block;padding:12px 30px;background-color:#0073aa;color:#ffffff;text-decoration:none;border-radius:5px;font-weight:bold;">' . esc_html__('Visitar sitio web', 'flavor-chat-ia') . '</a></p>';
+            . '<p style="text-align:center;margin-top:30px;"><a href="{{sitio_url}}" style="display:inline-block;padding:12px 30px;background-color:#0073aa;color:#ffffff;text-decoration:none;border-radius:5px;font-weight:bold;">' . esc_html__('Visitar sitio web', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p>';
         return $plantilla;
     }
 }

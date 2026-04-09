@@ -15,9 +15,9 @@ if (!defined('ABSPATH')) {
 if (!is_user_logged_in()) {
     echo '<div class="tramites-login-required">';
     echo '<span class="dashicons dashicons-lock"></span>';
-    echo '<h3>' . esc_html__('Inicia sesion para realizar un tramite', 'flavor-chat-ia') . '</h3>';
-    echo '<p>' . esc_html__('Necesitas una cuenta para poder iniciar y dar seguimiento a tus tramites.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="btn btn-primary">' . esc_html__('Iniciar sesion', 'flavor-chat-ia') . '</a>';
+    echo '<h3>' . esc_html__('Inicia sesion para realizar un tramite', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
+    echo '<p>' . esc_html__('Necesitas una cuenta para poder iniciar y dar seguimiento a tus tramites.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
+    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="btn btn-primary">' . esc_html__('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
     echo '</div>';
     return;
 }
@@ -28,7 +28,7 @@ $tabla_campos_formulario = $wpdb->prefix . 'flavor_campos_formulario';
 
 // Verificar si existe la tabla
 if (!Flavor_Chat_Helpers::tabla_existe($tabla_tipos_tramite)) {
-    echo '<div class="tramites-empty"><p>' . esc_html__('El modulo de tramites no esta configurado.', 'flavor-chat-ia') . '</p></div>';
+    echo '<div class="tramites-empty"><p>' . esc_html__('El modulo de tramites no esta configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
 
@@ -42,8 +42,8 @@ if (!$tipo_tramite_id) {
     );
     ?>
     <div class="tramites-seleccionar-tipo">
-        <h2><?php esc_html_e('Selecciona el tipo de tramite', 'flavor-chat-ia'); ?></h2>
-        <p class="tramites-intro"><?php esc_html_e('Elige el tramite que deseas iniciar para continuar con el proceso.', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Selecciona el tipo de tramite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p class="tramites-intro"><?php esc_html_e('Elige el tramite que deseas iniciar para continuar con el proceso.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
         <?php if ($tipos_disponibles): ?>
         <div class="tipos-tramite-grid">
@@ -59,12 +59,12 @@ if (!$tipo_tramite_id) {
                         <?php endif; ?>
                         <div class="tipo-meta">
                             <?php if ($tipo->permite_online): ?>
-                                <span class="badge badge-success"><?php esc_html_e('Online', 'flavor-chat-ia'); ?></span>
+                                <span class="badge badge-success"><?php esc_html_e('Online', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <?php endif; ?>
                             <?php if ($tipo->precio > 0): ?>
                                 <span class="tipo-precio"><?php echo esc_html(number_format($tipo->precio, 2)); ?> &euro;</span>
                             <?php else: ?>
-                                <span class="tipo-precio tipo-gratuito"><?php esc_html_e('Gratuito', 'flavor-chat-ia'); ?></span>
+                                <span class="tipo-precio tipo-gratuito"><?php esc_html_e('Gratuito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -73,7 +73,7 @@ if (!$tipo_tramite_id) {
         </div>
         <?php else: ?>
         <div class="tramites-empty">
-            <p><?php esc_html_e('No hay tipos de tramite disponibles.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('No hay tipos de tramite disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
         <?php endif; ?>
     </div>
@@ -90,9 +90,9 @@ $tipo_tramite = $wpdb->get_row($wpdb->prepare(
 if (!$tipo_tramite) {
     echo '<div class="tramites-error">';
     echo '<span class="dashicons dashicons-warning"></span>';
-    echo '<h3>' . esc_html__('Tramite no encontrado', 'flavor-chat-ia') . '</h3>';
-    echo '<p>' . esc_html__('El tipo de tramite seleccionado no existe o no esta disponible.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(Flavor_Chat_Helpers::get_action_url('tramites', '')) . '" class="btn btn-primary">' . esc_html__('Ver catalogo', 'flavor-chat-ia') . '</a>';
+    echo '<h3>' . esc_html__('Tramite no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
+    echo '<p>' . esc_html__('El tipo de tramite seleccionado no existe o no esta disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
+    echo '<a href="' . esc_url(Flavor_Chat_Helpers::get_action_url('tramites', '')) . '" class="btn btn-primary">' . esc_html__('Ver catalogo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
     echo '</div>';
     return;
 }
@@ -114,7 +114,7 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
 <div class="tramites-iniciar-wrapper">
     <!-- Breadcrumb -->
     <nav class="tramites-breadcrumb">
-        <a href="<?php echo esc_url($tramites_base_url); ?>"><?php esc_html_e('Tramites', 'flavor-chat-ia'); ?></a>
+        <a href="<?php echo esc_url($tramites_base_url); ?>"><?php esc_html_e('Tramites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
         <span class="separator">&rsaquo;</span>
         <span><?php echo esc_html($tipo_tramite->nombre); ?></span>
     </nav>
@@ -135,12 +135,12 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
             <?php if ($tipo_tramite->plazo_resolucion_dias): ?>
                 <div class="info-item">
                     <span class="dashicons dashicons-clock"></span>
-                    <span><?php echo sprintf(esc_html__('Plazo: %d dias', 'flavor-chat-ia'), $tipo_tramite->plazo_resolucion_dias); ?></span>
+                    <span><?php echo sprintf(esc_html__('Plazo: %d dias', FLAVOR_PLATFORM_TEXT_DOMAIN), $tipo_tramite->plazo_resolucion_dias); ?></span>
                 </div>
             <?php endif; ?>
             <div class="info-item">
                 <span class="dashicons dashicons-money-alt"></span>
-                <span><?php echo $tipo_tramite->precio > 0 ? esc_html(number_format($tipo_tramite->precio, 2)) . ' &euro;' : esc_html__('Gratuito', 'flavor-chat-ia'); ?></span>
+                <span><?php echo $tipo_tramite->precio > 0 ? esc_html(number_format($tipo_tramite->precio, 2)) . ' &euro;' : esc_html__('Gratuito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
@@ -149,15 +149,15 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
     <div class="tramites-pasos-indicador">
         <div class="paso-item activo" data-paso="1">
             <span class="paso-numero">1</span>
-            <span class="paso-texto"><?php esc_html_e('Datos personales', 'flavor-chat-ia'); ?></span>
+            <span class="paso-texto"><?php esc_html_e('Datos personales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="paso-item" data-paso="2">
             <span class="paso-numero">2</span>
-            <span class="paso-texto"><?php esc_html_e('Documentacion', 'flavor-chat-ia'); ?></span>
+            <span class="paso-texto"><?php esc_html_e('Documentacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="paso-item" data-paso="3">
             <span class="paso-numero">3</span>
-            <span class="paso-texto"><?php esc_html_e('Confirmacion', 'flavor-chat-ia'); ?></span>
+            <span class="paso-texto"><?php esc_html_e('Confirmacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
     </div>
 
@@ -169,16 +169,16 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
 
         <!-- Paso 1: Datos personales -->
         <div class="form-paso" data-paso="1">
-            <h3><?php esc_html_e('Datos del solicitante', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Datos del solicitante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="nombre_completo"><?php esc_html_e('Nombre completo', 'flavor-chat-ia'); ?> *</label>
+                    <label for="nombre_completo"><?php esc_html_e('Nombre completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <input type="text" id="nombre_completo" name="nombre_completo" required
                            value="<?php echo esc_attr($usuario_actual->display_name); ?>">
                 </div>
                 <div class="form-group">
-                    <label for="dni"><?php esc_html_e('DNI/NIE', 'flavor-chat-ia'); ?> *</label>
+                    <label for="dni"><?php esc_html_e('DNI/NIE', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <input type="text" id="dni" name="dni" required
                            pattern="[0-9]{8}[A-Za-z]|[XYZ][0-9]{7}[A-Za-z]"
                            placeholder="12345678A">
@@ -187,31 +187,31 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="email"><?php esc_html_e('Email', 'flavor-chat-ia'); ?> *</label>
+                    <label for="email"><?php esc_html_e('Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <input type="email" id="email" name="email" required
                            value="<?php echo esc_attr($usuario_actual->user_email); ?>">
                 </div>
                 <div class="form-group">
-                    <label for="telefono"><?php esc_html_e('Telefono', 'flavor-chat-ia'); ?> *</label>
+                    <label for="telefono"><?php esc_html_e('Telefono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <input type="tel" id="telefono" name="telefono" required
                            placeholder="600 000 000">
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="direccion"><?php esc_html_e('Direccion', 'flavor-chat-ia'); ?> *</label>
+                <label for="direccion"><?php esc_html_e('Direccion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                 <input type="text" id="direccion" name="direccion" required
-                       placeholder="<?php esc_attr_e('Calle, numero, piso...', 'flavor-chat-ia'); ?>">
+                       placeholder="<?php esc_attr_e('Calle, numero, piso...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             </div>
 
             <div class="form-group">
-                <label for="motivo"><?php esc_html_e('Motivo de la solicitud', 'flavor-chat-ia'); ?></label>
+                <label for="motivo"><?php esc_html_e('Motivo de la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <textarea id="motivo" name="motivo" rows="4"
-                          placeholder="<?php esc_attr_e('Explica brevemente el motivo de tu solicitud...', 'flavor-chat-ia'); ?>"></textarea>
+                          placeholder="<?php esc_attr_e('Explica brevemente el motivo de tu solicitud...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
             </div>
 
             <?php if ($campos_formulario): ?>
-                <h4><?php esc_html_e('Informacion adicional', 'flavor-chat-ia'); ?></h4>
+                <h4><?php esc_html_e('Informacion adicional', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                 <?php foreach ($campos_formulario as $campo): ?>
                     <div class="form-group">
                         <label for="campo_<?php echo esc_attr($campo->id); ?>">
@@ -239,7 +239,7 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
                                 <select id="<?php echo esc_attr($campo_id); ?>"
                                         name="<?php echo esc_attr($campo_name); ?>"
                                         <?php echo $campo_required; ?>>
-                                    <option value=""><?php esc_html_e('Selecciona...', 'flavor-chat-ia'); ?></option>
+                                    <option value=""><?php esc_html_e('Selecciona...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                     <?php foreach ($opciones as $opcion): ?>
                                         <option value="<?php echo esc_attr($opcion); ?>"><?php echo esc_html($opcion); ?></option>
                                     <?php endforeach; ?>
@@ -289,10 +289,10 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
 
             <div class="form-actions">
                 <a href="<?php echo esc_url($tramites_base_url . 'catalogo/'); ?>" class="btn btn-outline">
-                    <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <button type="button" class="btn btn-primary btn-siguiente" data-siguiente="2">
-                    <?php esc_html_e('Siguiente', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="dashicons dashicons-arrow-right-alt"></span>
                 </button>
             </div>
@@ -300,63 +300,63 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
 
         <!-- Paso 2: Documentacion -->
         <div class="form-paso" data-paso="2" style="display: none;">
-            <h3><?php esc_html_e('Documentacion requerida', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Documentacion requerida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <div class="documentos-info">
                 <span class="dashicons dashicons-info-outline"></span>
-                <p><?php esc_html_e('Adjunta los documentos necesarios para procesar tu solicitud. Formatos permitidos: PDF, JPG, PNG, DOC.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('Adjunta los documentos necesarios para procesar tu solicitud. Formatos permitidos: PDF, JPG, PNG, DOC.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <div class="documentos-upload-grid">
                 <div class="documento-upload-item">
-                    <label for="documento_dni"><?php esc_html_e('DNI/NIE (ambas caras)', 'flavor-chat-ia'); ?> *</label>
+                    <label for="documento_dni"><?php esc_html_e('DNI/NIE (ambas caras)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <div class="upload-zona">
                         <input type="file" id="documento_dni" name="documento_dni" required
                                accept=".pdf,.jpg,.jpeg,.png">
                         <label for="documento_dni" class="upload-label">
                             <span class="dashicons dashicons-upload"></span>
-                            <span><?php esc_html_e('Seleccionar archivo', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Seleccionar archivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <span class="archivo-seleccionado"></span>
                     </div>
                 </div>
 
                 <div class="documento-upload-item">
-                    <label for="documento_justificante"><?php esc_html_e('Justificante de domicilio', 'flavor-chat-ia'); ?></label>
+                    <label for="documento_justificante"><?php esc_html_e('Justificante de domicilio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <div class="upload-zona">
                         <input type="file" id="documento_justificante" name="documento_justificante"
                                accept=".pdf,.jpg,.jpeg,.png">
                         <label for="documento_justificante" class="upload-label">
                             <span class="dashicons dashicons-upload"></span>
-                            <span><?php esc_html_e('Seleccionar archivo', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Seleccionar archivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <span class="archivo-seleccionado"></span>
                     </div>
-                    <small class="form-help"><?php esc_html_e('Factura de servicios, contrato de alquiler, etc.', 'flavor-chat-ia'); ?></small>
+                    <small class="form-help"><?php esc_html_e('Factura de servicios, contrato de alquiler, etc.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                 </div>
 
                 <div class="documento-upload-item">
-                    <label for="documento_adicional"><?php esc_html_e('Documentacion adicional', 'flavor-chat-ia'); ?></label>
+                    <label for="documento_adicional"><?php esc_html_e('Documentacion adicional', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <div class="upload-zona">
                         <input type="file" id="documento_adicional" name="documento_adicional[]" multiple
                                accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
                         <label for="documento_adicional" class="upload-label">
                             <span class="dashicons dashicons-upload"></span>
-                            <span><?php esc_html_e('Seleccionar archivos', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Seleccionar archivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <span class="archivo-seleccionado"></span>
                     </div>
-                    <small class="form-help"><?php esc_html_e('Puedes adjuntar varios archivos.', 'flavor-chat-ia'); ?></small>
+                    <small class="form-help"><?php esc_html_e('Puedes adjuntar varios archivos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                 </div>
             </div>
 
             <div class="form-actions">
                 <button type="button" class="btn btn-outline btn-anterior" data-anterior="1">
                     <span class="dashicons dashicons-arrow-left-alt"></span>
-                    <?php esc_html_e('Anterior', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" class="btn btn-primary btn-siguiente" data-siguiente="3">
-                    <?php esc_html_e('Siguiente', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="dashicons dashicons-arrow-right-alt"></span>
                 </button>
             </div>
@@ -364,24 +364,24 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
 
         <!-- Paso 3: Confirmacion -->
         <div class="form-paso" data-paso="3" style="display: none;">
-            <h3><?php esc_html_e('Confirmar solicitud', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Confirmar solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <div class="resumen-solicitud">
                 <div class="resumen-seccion">
-                    <h4><?php esc_html_e('Tramite', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php esc_html_e('Tramite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <p><strong><?php echo esc_html($tipo_tramite->nombre); ?></strong></p>
                     <?php if ($tipo_tramite->precio > 0): ?>
-                        <p><?php esc_html_e('Precio:', 'flavor-chat-ia'); ?> <?php echo esc_html(number_format($tipo_tramite->precio, 2)); ?> &euro;</p>
+                        <p><?php esc_html_e('Precio:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html(number_format($tipo_tramite->precio, 2)); ?> &euro;</p>
                     <?php endif; ?>
                 </div>
 
                 <div class="resumen-seccion">
-                    <h4><?php esc_html_e('Datos del solicitante', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php esc_html_e('Datos del solicitante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <div id="resumen-datos-personales"></div>
                 </div>
 
                 <div class="resumen-seccion">
-                    <h4><?php esc_html_e('Documentos adjuntos', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php esc_html_e('Documentos adjuntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <div id="resumen-documentos"></div>
                 </div>
             </div>
@@ -389,25 +389,25 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
             <div class="form-group checkbox-group">
                 <label class="checkbox-label">
                     <input type="checkbox" name="acepto_condiciones" required>
-                    <?php esc_html_e('He leido y acepto las condiciones del tramite y la politica de privacidad.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('He leido y acepto las condiciones del tramite y la politica de privacidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </label>
             </div>
 
             <div class="form-group checkbox-group">
                 <label class="checkbox-label">
                     <input type="checkbox" name="declaro_veracidad" required>
-                    <?php esc_html_e('Declaro que los datos y documentos aportados son veraces.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Declaro que los datos y documentos aportados son veraces.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </label>
             </div>
 
             <div class="form-actions">
                 <button type="button" class="btn btn-outline btn-anterior" data-anterior="2">
                     <span class="dashicons dashicons-arrow-left-alt"></span>
-                    <?php esc_html_e('Anterior', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="submit" class="btn btn-primary btn-lg">
                     <span class="dashicons dashicons-yes"></span>
-                    <?php esc_html_e('Enviar solicitud', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Enviar solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </div>

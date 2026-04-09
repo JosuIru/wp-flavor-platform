@@ -42,17 +42,17 @@ if ($tabla_existe) {
             <div class="grid grid-cols-2 gap-4 mb-8 max-w-2xl mx-auto">
                 <div class="flavor-card text-center">
                     <div class="text-3xl font-bold mb-1" style="color: var(--flavor-primary);"><?php echo esc_html($tiempo_respuesta); ?></div>
-                    <div class="text-sm" style="color: var(--flavor-text-muted);"><?php echo esc_html__('Tiempo Respuesta', 'flavor-chat-ia'); ?></div>
+                    <div class="text-sm" style="color: var(--flavor-text-muted);"><?php echo esc_html__('Tiempo Respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="flavor-card text-center">
                     <div class="text-3xl font-bold mb-1" style="color: var(--flavor-primary);"><?php echo esc_html($porcentaje_resueltas); ?>%</div>
-                    <div class="text-sm" style="color: var(--flavor-text-muted);"><?php echo esc_html__('Resueltas', 'flavor-chat-ia'); ?></div>
+                    <div class="text-sm" style="color: var(--flavor-text-muted);"><?php echo esc_html__('Resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="#nueva-incidencia" class="flavor-button flavor-button-primary px-8"><?php echo esc_html__('Reportar Incidencia', 'flavor-chat-ia'); ?></a>
-                <a href="#mis-incidencias" class="flavor-button px-8"><?php echo esc_html__('Mis Reportes', 'flavor-chat-ia'); ?></a>
+                <a href="#nueva-incidencia" class="flavor-button flavor-button-primary px-8"><?php echo esc_html__('Reportar Incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
+                <a href="#mis-incidencias" class="flavor-button px-8"><?php echo esc_html__('Mis Reportes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
             </div>
         </div>
     </div>

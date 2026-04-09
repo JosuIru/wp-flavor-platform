@@ -349,7 +349,7 @@ class Flavor_Comunidades_Controller extends Flavor_Frontend_Controller_Base {
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => __('Te has unido a la comunidad', 'flavor-chat-ia'),
+            'message' => __('Te has unido a la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 200);
     }
 
@@ -362,7 +362,7 @@ class Flavor_Comunidades_Controller extends Flavor_Frontend_Controller_Base {
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => __('Has salido de la comunidad', 'flavor-chat-ia'),
+            'message' => __('Has salido de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 200);
     }
 
@@ -379,7 +379,7 @@ class Flavor_Comunidades_Controller extends Flavor_Frontend_Controller_Base {
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => __('Comunidad creada correctamente', 'flavor-chat-ia'),
+            'message' => __('Comunidad creada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'comunidad_id' => 999,
         ], 200);
     }
@@ -393,7 +393,7 @@ class Flavor_Comunidades_Controller extends Flavor_Frontend_Controller_Base {
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => __('Publicación creada', 'flavor-chat-ia'),
+            'message' => __('Publicación creada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 200);
     }
 
@@ -412,7 +412,7 @@ class Flavor_Comunidades_Controller extends Flavor_Frontend_Controller_Base {
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => __('Evento creado', 'flavor-chat-ia'),
+            'message' => __('Evento creado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 200);
     }
 }

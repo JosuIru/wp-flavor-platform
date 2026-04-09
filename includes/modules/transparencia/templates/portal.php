@@ -54,45 +54,45 @@ if (Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
 // Categorias disponibles
 $categorias = [
     'presupuestos' => [
-        'nombre' => __('Presupuestos', 'flavor-chat-ia'),
+        'nombre' => __('Presupuestos', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-chart-pie',
         'color' => '#3b82f6',
-        'descripcion' => __('Presupuestos anuales, ejecucion y modificaciones', 'flavor-chat-ia'),
+        'descripcion' => __('Presupuestos anuales, ejecucion y modificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'url' => $base_portal_url . 'presupuestos/'
     ],
     'gastos' => [
-        'nombre' => __('Gastos', 'flavor-chat-ia'),
+        'nombre' => __('Gastos', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-money-alt',
         'color' => '#10b981',
-        'descripcion' => __('Detalle de gastos y facturas', 'flavor-chat-ia'),
+        'descripcion' => __('Detalle de gastos y facturas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'url' => $base_portal_url . 'gastos/'
     ],
     'contratos' => [
-        'nombre' => __('Contratos', 'flavor-chat-ia'),
+        'nombre' => __('Contratos', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-media-document',
         'color' => '#8b5cf6',
-        'descripcion' => __('Contratos publicos y licitaciones', 'flavor-chat-ia'),
+        'descripcion' => __('Contratos publicos y licitaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'url' => $base_portal_url . 'contratos/'
     ],
     'actas' => [
-        'nombre' => __('Actas', 'flavor-chat-ia'),
+        'nombre' => __('Actas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-text-page',
         'color' => '#6366f1',
-        'descripcion' => __('Actas de reuniones y sesiones', 'flavor-chat-ia'),
+        'descripcion' => __('Actas de reuniones y sesiones', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'url' => $base_portal_url . 'actas/'
     ],
     'indicadores' => [
-        'nombre' => __('Indicadores', 'flavor-chat-ia'),
+        'nombre' => __('Indicadores', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-chart-bar',
         'color' => '#14b8a6',
-        'descripcion' => __('Indicadores de gestion y rendimiento', 'flavor-chat-ia'),
+        'descripcion' => __('Indicadores de gestion y rendimiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'url' => $base_portal_url . 'indicadores/'
     ],
     'normativa' => [
-        'nombre' => __('Normativa', 'flavor-chat-ia'),
+        'nombre' => __('Normativa', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-clipboard',
         'color' => '#f59e0b',
-        'descripcion' => __('Reglamentos y ordenanzas', 'flavor-chat-ia'),
+        'descripcion' => __('Reglamentos y ordenanzas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'url' => $base_portal_url . 'normativa/'
     ],
 ];
@@ -115,10 +115,10 @@ if (Flavor_Chat_Helpers::tabla_existe($tabla_documentos)) {
     <header class="transparencia-portal__header">
         <div class="transparencia-portal__titulo">
             <span class="dashicons dashicons-visibility"></span>
-            <h1><?php esc_html_e('Portal de Transparencia', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Portal de Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
         </div>
         <p class="transparencia-portal__descripcion">
-            <?php esc_html_e('Accede a toda la informacion publica sobre gestion, presupuestos, contratos y actividad institucional.', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Accede a toda la informacion publica sobre gestion, presupuestos, contratos y actividad institucional.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </header>
 
@@ -128,35 +128,35 @@ if (Flavor_Chat_Helpers::tabla_existe($tabla_documentos)) {
             <span class="transparencia-kpi__icono dashicons dashicons-media-document"></span>
             <div class="transparencia-kpi__contenido">
                 <span class="transparencia-kpi__valor"><?php echo esc_html($total_documentos); ?></span>
-                <span class="transparencia-kpi__etiqueta"><?php esc_html_e('Documentos publicos', 'flavor-chat-ia'); ?></span>
+                <span class="transparencia-kpi__etiqueta"><?php esc_html_e('Documentos publicos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
         <div class="transparencia-kpi">
             <span class="transparencia-kpi__icono dashicons dashicons-chart-pie"></span>
             <div class="transparencia-kpi__contenido">
                 <span class="transparencia-kpi__valor"><?php echo esc_html($total_presupuestos); ?></span>
-                <span class="transparencia-kpi__etiqueta"><?php esc_html_e('Ejercicios presupuestarios', 'flavor-chat-ia'); ?></span>
+                <span class="transparencia-kpi__etiqueta"><?php esc_html_e('Ejercicios presupuestarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
         <div class="transparencia-kpi">
             <span class="transparencia-kpi__icono dashicons dashicons-text-page"></span>
             <div class="transparencia-kpi__contenido">
                 <span class="transparencia-kpi__valor"><?php echo esc_html($total_actas); ?></span>
-                <span class="transparencia-kpi__etiqueta"><?php esc_html_e('Actas publicadas', 'flavor-chat-ia'); ?></span>
+                <span class="transparencia-kpi__etiqueta"><?php esc_html_e('Actas publicadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
         <div class="transparencia-kpi">
             <span class="transparencia-kpi__icono dashicons dashicons-yes-alt"></span>
             <div class="transparencia-kpi__contenido">
                 <span class="transparencia-kpi__valor"><?php echo esc_html($tasa_respuesta ?? 0); ?>%</span>
-                <span class="transparencia-kpi__etiqueta"><?php esc_html_e('Tasa de respuesta', 'flavor-chat-ia'); ?></span>
+                <span class="transparencia-kpi__etiqueta"><?php esc_html_e('Tasa de respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
 
     <!-- Grid de categorias -->
     <section class="transparencia-portal__categorias">
-        <h2><?php esc_html_e('Secciones', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Secciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <div class="transparencia-categorias-grid">
             <?php foreach ($categorias as $categoria_clave => $categoria_datos) : ?>
             <a href="<?php echo esc_url($categoria_datos['url']); ?>" class="transparencia-categoria-card" style="--categoria-color: <?php echo esc_attr($categoria_datos['color']); ?>">
@@ -174,9 +174,9 @@ if (Flavor_Chat_Helpers::tabla_existe($tabla_documentos)) {
     <?php if (!empty($documentos_recientes)) : ?>
     <section class="transparencia-portal__recientes">
         <div class="transparencia-seccion-header">
-            <h2><?php esc_html_e('Documentos recientes', 'flavor-chat-ia'); ?></h2>
+            <h2><?php esc_html_e('Documentos recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <a href="<?php echo esc_url($base_portal_url . 'documentos/'); ?>" class="transparencia-ver-todos">
-                <?php esc_html_e('Ver todos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <span class="dashicons dashicons-arrow-right-alt2"></span>
             </a>
         </div>
@@ -193,7 +193,7 @@ if (Flavor_Chat_Helpers::tabla_existe($tabla_documentos)) {
                     </span>
                 </div>
                 <?php if ($documento->archivo_url) : ?>
-                <a href="<?php echo esc_url($documento->archivo_url); ?>" class="transparencia-btn-descargar" target="_blank" title="<?php esc_attr_e('Descargar', 'flavor-chat-ia'); ?>">
+                <a href="<?php echo esc_url($documento->archivo_url); ?>" class="transparencia-btn-descargar" target="_blank" title="<?php esc_attr_e('Descargar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-download"></span>
                 </a>
                 <?php endif; ?>
@@ -208,11 +208,11 @@ if (Flavor_Chat_Helpers::tabla_existe($tabla_documentos)) {
         <div class="transparencia-solicitar-cta">
             <span class="dashicons dashicons-email-alt"></span>
             <div class="transparencia-solicitar-cta__contenido">
-                <h3><?php esc_html_e('Derecho de acceso a la informacion', 'flavor-chat-ia'); ?></h3>
-                <p><?php esc_html_e('Puedes solicitar informacion publica que no este disponible en este portal.', 'flavor-chat-ia'); ?></p>
+                <h3><?php esc_html_e('Derecho de acceso a la informacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php esc_html_e('Puedes solicitar informacion publica que no este disponible en este portal.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <a href="<?php echo esc_url($base_portal_url . 'solicitar/'); ?>" class="transparencia-btn transparencia-btn--primary">
-                <?php esc_html_e('Solicitar informacion', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Solicitar informacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </section>

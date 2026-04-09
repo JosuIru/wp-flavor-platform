@@ -50,17 +50,17 @@ $tipos_disponibles = array_unique(array_column($eventos_lista, 'tipo'));
     <div class="flavor-container">
         <div class="text-center mb-12">
             <h2 class="text-3xl lg:text-4xl font-bold mb-4" style="color: var(--flavor-text, #111827);">
-                <?php echo esc_html__('Proximos Eventos', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Proximos Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <p class="text-lg" style="color: var(--flavor-text-muted, #6B7280);">
-                <?php echo esc_html__('Encuentra tu proximo evento y reserva tu plaza', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Encuentra tu proximo evento y reserva tu plaza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
 
         <!-- Filter Pills -->
         <div class="flex flex-wrap justify-center gap-2 mb-10">
             <button class="filter-pill active px-4 py-2 rounded-full text-sm font-medium transition-all" data-filter="all" style="background: var(--flavor-primary, #3B82F6); color: white;">
-                <?php echo esc_html__('Todos', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <?php foreach ($tipos_disponibles as $tipo_item) : ?>
                 <button class="filter-pill px-4 py-2 rounded-full text-sm font-medium transition-all border" data-filter="<?php echo esc_attr($tipo_item); ?>" style="border-color: <?php echo esc_attr($colores_tipo[$tipo_item] ?? '#6B7280'); ?>; color: <?php echo esc_attr($colores_tipo[$tipo_item] ?? '#6B7280'); ?>; background: transparent;">
@@ -108,7 +108,7 @@ $tipos_disponibles = array_unique(array_column($eventos_lista, 'tipo'));
                             </div>
                         <?php else : ?>
                             <div class="absolute bottom-4 right-4 px-3 py-1 rounded-full text-sm font-bold bg-green-500 text-white shadow-lg">
-                                <?php echo esc_html__('Gratuito', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Gratuito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -147,7 +147,7 @@ $tipos_disponibles = array_unique(array_column($eventos_lista, 'tipo'));
                         <!-- CTA -->
                         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_item_url('eventos', $evento['id'], 'inscribirse')); ?>" class="flavor-button flavor-button-primary w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90" style="background: <?php echo esc_attr($color_tipo); ?>;">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
-                            <?php echo esc_html__('Inscribirse', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Inscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </div>

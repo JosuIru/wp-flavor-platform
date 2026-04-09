@@ -29,8 +29,8 @@ if (!$tabla_recetas_existe) {
         <div class="dm-alert dm-alert--info">
             <span class="dashicons dashicons-info"></span>
             <div>
-                <strong><?php esc_html_e('Módulo en preparación', 'flavor-chat-ia'); ?></strong>
-                <p><?php esc_html_e('Las tablas del módulo Recetas aún no han sido creadas. Activa el módulo completamente para generar la estructura necesaria.', 'flavor-chat-ia'); ?></p>
+                <strong><?php esc_html_e('Módulo en preparación', 'flavor-platform'); ?></strong>
+                <p><?php esc_html_e('Las tablas del módulo Recetas aún no han sido creadas. Activa el módulo completamente para generar la estructura necesaria.', 'flavor-platform'); ?></p>
             </div>
         </div>
     </div>
@@ -124,7 +124,7 @@ $recetas_recientes = $wpdb->get_results(
         <span class="dashicons dashicons-carrot dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($recetas_publicadas); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Recetas Publicadas', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Recetas Publicadas', 'flavor-platform'); ?></div>
         </div>
     </div>
 
@@ -132,7 +132,7 @@ $recetas_recientes = $wpdb->get_results(
         <span class="dashicons dashicons-admin-users dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($autores_unicos); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Cocineros', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Cocineros', 'flavor-platform'); ?></div>
         </div>
     </div>
 
@@ -140,7 +140,7 @@ $recetas_recientes = $wpdb->get_results(
         <span class="dashicons dashicons-star-filled dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($promedio_general, 1)); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Valoración Media', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Valoración Media', 'flavor-platform'); ?></div>
         </div>
     </div>
 
@@ -148,7 +148,7 @@ $recetas_recientes = $wpdb->get_results(
         <span class="dashicons dashicons-heart dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($total_favoritos)); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Favoritos', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Favoritos', 'flavor-platform'); ?></div>
         </div>
     </div>
 </div>
@@ -158,23 +158,23 @@ $recetas_recientes = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-chart-bar"></span>
-                <?php esc_html_e('Recetas Esta Semana', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Recetas Esta Semana', 'flavor-platform'); ?>
             </h3>
-            <span class="dm-card__subtitle"><?php printf(esc_html__('%s este mes', 'flavor-chat-ia'), number_format_i18n($recetas_mes)); ?></span>
+            <span class="dm-card__subtitle"><?php printf(esc_html__('%s este mes', 'flavor-platform'), number_format_i18n($recetas_mes)); ?></span>
         </div>
         <div class="dm-card__body">
             <?php if (empty($actividad_semanal)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-chart-line"></span>
-                    <p><?php esc_html_e('No hay recetas esta semana.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay recetas esta semana.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <?php
                 $max_recetas = max(array_column($actividad_semanal, 'total'));
                 $dias_semana = [
-                    __('Dom', 'flavor-chat-ia'), __('Lun', 'flavor-chat-ia'), __('Mar', 'flavor-chat-ia'),
-                    __('Mié', 'flavor-chat-ia'), __('Jue', 'flavor-chat-ia'), __('Vie', 'flavor-chat-ia'),
-                    __('Sáb', 'flavor-chat-ia')
+                    __('Dom', 'flavor-platform'), __('Lun', 'flavor-platform'), __('Mar', 'flavor-platform'),
+                    __('Mié', 'flavor-platform'), __('Jue', 'flavor-platform'), __('Vie', 'flavor-platform'),
+                    __('Sáb', 'flavor-platform')
                 ];
                 ?>
                 <div class="dm-chart-bars">
@@ -199,14 +199,14 @@ $recetas_recientes = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-category"></span>
-                <?php esc_html_e('Por Categoría', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Por Categoría', 'flavor-platform'); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <?php if (empty($por_categoria)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-list-view"></span>
-                    <p><?php esc_html_e('No hay recetas registradas.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay recetas registradas.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <div class="dm-data-list">
@@ -227,14 +227,14 @@ $recetas_recientes = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-star-filled"></span>
-                <?php esc_html_e('Recetas Mejor Valoradas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Recetas Mejor Valoradas', 'flavor-platform'); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <?php if (empty($recetas_top)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-carrot"></span>
-                    <p><?php esc_html_e('No hay valoraciones todavía.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay valoraciones todavía.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <ul class="dm-ranking">
@@ -264,14 +264,14 @@ $recetas_recientes = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-awards"></span>
-                <?php esc_html_e('Cocineros Más Activos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Cocineros Más Activos', 'flavor-platform'); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <?php if (empty($cocineros_top)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-admin-users"></span>
-                    <p><?php esc_html_e('No hay cocineros todavía.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay cocineros todavía.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <ul class="dm-ranking">
@@ -279,13 +279,13 @@ $recetas_recientes = $wpdb->get_results(
                         <li class="dm-ranking__item">
                             <span class="dm-ranking__position"><?php echo ($index + 1); ?></span>
                             <div class="dm-ranking__avatar" style="background: #f97316;">
-                                <?php echo mb_substr($cocinero->display_name ?: __('C', 'flavor-chat-ia'), 0, 1); ?>
+                                <?php echo mb_substr($cocinero->display_name ?: __('C', 'flavor-platform'), 0, 1); ?>
                             </div>
                             <div class="dm-ranking__content">
-                                <strong class="dm-ranking__name"><?php echo esc_html($cocinero->display_name ?: __('Cocinero', 'flavor-chat-ia')); ?></strong>
+                                <strong class="dm-ranking__name"><?php echo esc_html($cocinero->display_name ?: __('Cocinero', 'flavor-platform')); ?></strong>
                             </div>
                             <span class="dm-badge dm-badge--success">
-                                <?php echo esc_html($cocinero->total_recetas); ?> <?php esc_html_e('recetas', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html($cocinero->total_recetas); ?> <?php esc_html_e('recetas', 'flavor-platform'); ?>
                             </span>
                         </li>
                     <?php endforeach; ?>
@@ -299,14 +299,14 @@ $recetas_recientes = $wpdb->get_results(
     <div class="dm-card__header">
         <h3 class="dm-card__title">
             <span class="dashicons dashicons-clock"></span>
-            <?php esc_html_e('Recetas Recientes', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Recetas Recientes', 'flavor-platform'); ?>
         </h3>
     </div>
     <div class="dm-card__body">
         <?php if (empty($recetas_recientes)): ?>
             <div class="dm-empty">
                 <span class="dashicons dashicons-carrot"></span>
-                <p><?php esc_html_e('No hay recetas registradas.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No hay recetas registradas.', 'flavor-platform'); ?></p>
             </div>
         <?php else: ?>
             <ul class="dm-list">
@@ -337,18 +337,18 @@ $recetas_recientes = $wpdb->get_results(
     <div class="dm-stat-card dm-stat-card--secondary">
         <span class="dashicons dashicons-clipboard dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($total_recetas)); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Total Recetas', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Total Recetas', 'flavor-platform'); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--info">
         <span class="dashicons dashicons-star-empty dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($total_valoraciones)); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Valoraciones', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Valoraciones', 'flavor-platform'); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--primary">
         <span class="dashicons dashicons-admin-comments dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($total_comentarios)); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Comentarios', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Comentarios', 'flavor-platform'); ?></div>
     </div>
 </div>

@@ -127,7 +127,7 @@ class Flavor_Chat_Stream {
      * Ejecuta streaming con un engine que soporta send_message_stream
      */
     private static function ejecutar_streaming($engine, $sesion, $mensaje) {
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $system_prompt = $settings['assistant_role'] ?? '';
 
         // Obtener historial de mensajes de la sesión

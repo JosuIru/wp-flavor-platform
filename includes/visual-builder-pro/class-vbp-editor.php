@@ -217,8 +217,8 @@ class Flavor_VBP_Editor {
             // Si es post nuevo, primero crear el post
             if ( 'post-new.php' === $pagenow ) {
                 $titulo_nuevo = 'page' === $tipo_post
-                    ? __( 'Nueva Página', 'flavor-chat-ia' )
-                    : __( 'Nueva Landing Page', 'flavor-chat-ia' );
+                    ? __( 'Nueva Página', FLAVOR_PLATFORM_TEXT_DOMAIN )
+                    : __( 'Nueva Landing Page', FLAVOR_PLATFORM_TEXT_DOMAIN );
 
                 $post_id_nuevo = wp_insert_post(
                     array(
@@ -254,8 +254,8 @@ class Flavor_VBP_Editor {
         // Página oculta del editor (se accede con post_id)
         add_submenu_page(
             null,
-            __( 'Visual Builder Pro', 'flavor-chat-ia' ),
-            __( 'Visual Builder Pro', 'flavor-chat-ia' ),
+            __( 'Visual Builder Pro', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            __( 'Visual Builder Pro', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'edit_posts',
             'vbp-editor',
             array( $this, 'renderizar_pagina_editor' )
@@ -264,8 +264,8 @@ class Flavor_VBP_Editor {
         // Submenú visible en Flavor Platform
         add_submenu_page(
             'flavor-dashboard',
-            __( 'Visual Builder Pro', 'flavor-chat-ia' ),
-            __( '🎨 Visual Builder Pro', 'flavor-chat-ia' ),
+            __( 'Visual Builder Pro', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            __( '🎨 Visual Builder Pro', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'edit_posts',
             'vbp-landing-list',
             array( $this, 'renderizar_pagina_listado' )
@@ -279,12 +279,12 @@ class Flavor_VBP_Editor {
         $url_nueva = admin_url( 'post-new.php?post_type=flavor_landing' );
         ?>
         <div class="wrap">
-            <h1 class="wp-heading-inline"><?php esc_html_e( 'Visual Builder Pro', 'flavor-chat-ia' ); ?></h1>
-            <a href="<?php echo esc_url( $url_nueva ); ?>" class="page-title-action"><?php esc_html_e( 'Crear Nueva Landing', 'flavor-chat-ia' ); ?></a>
+            <h1 class="wp-heading-inline"><?php esc_html_e( 'Visual Builder Pro', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h1>
+            <a href="<?php echo esc_url( $url_nueva ); ?>" class="page-title-action"><?php esc_html_e( 'Crear Nueva Landing', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></a>
             <hr class="wp-header-end">
 
             <div class="vbp-landing-list-wrapper" style="margin-top: 20px;">
-                <h2><?php esc_html_e( 'Landing Pages', 'flavor-chat-ia' ); ?></h2>
+                <h2><?php esc_html_e( 'Landing Pages', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h2>
                 <?php
                 $landings = get_posts(
                     array(
@@ -297,14 +297,14 @@ class Flavor_VBP_Editor {
                 );
 
                 if ( empty( $landings ) ) {
-                    echo '<p>' . esc_html__( 'No hay landing pages creadas todavía.', 'flavor-chat-ia' ) . '</p>';
+                    echo '<p>' . esc_html__( 'No hay landing pages creadas todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN ) . '</p>';
                 } else {
                     echo '<table class="wp-list-table widefat fixed striped">';
                     echo '<thead><tr>';
-                    echo '<th>' . esc_html__( 'Título', 'flavor-chat-ia' ) . '</th>';
-                    echo '<th>' . esc_html__( 'Estado', 'flavor-chat-ia' ) . '</th>';
-                    echo '<th>' . esc_html__( 'Fecha', 'flavor-chat-ia' ) . '</th>';
-                    echo '<th>' . esc_html__( 'Acciones', 'flavor-chat-ia' ) . '</th>';
+                    echo '<th>' . esc_html__( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ) . '</th>';
+                    echo '<th>' . esc_html__( 'Estado', FLAVOR_PLATFORM_TEXT_DOMAIN ) . '</th>';
+                    echo '<th>' . esc_html__( 'Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN ) . '</th>';
+                    echo '<th>' . esc_html__( 'Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN ) . '</th>';
                     echo '</tr></thead><tbody>';
 
                     foreach ( $landings as $landing ) {
@@ -319,13 +319,13 @@ class Flavor_VBP_Editor {
                         $estado     = get_post_status_object( $landing->post_status );
 
                         echo '<tr>';
-                        echo '<td><strong><a href="' . esc_url( $url_editar ) . '">' . esc_html( $landing->post_title ?: __( '(Sin título)', 'flavor-chat-ia' ) ) . '</a></strong></td>';
+                        echo '<td><strong><a href="' . esc_url( $url_editar ) . '">' . esc_html( $landing->post_title ?: __( '(Sin título)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) . '</a></strong></td>';
                         echo '<td>' . esc_html( $estado->label ) . '</td>';
                         echo '<td>' . esc_html( get_the_modified_date( '', $landing ) ) . '</td>';
                         echo '<td>';
-                        echo '<a href="' . esc_url( $url_editar ) . '" class="button button-primary button-small">' . esc_html__( 'Editar', 'flavor-chat-ia' ) . '</a> ';
+                        echo '<a href="' . esc_url( $url_editar ) . '" class="button button-primary button-small">' . esc_html__( 'Editar', FLAVOR_PLATFORM_TEXT_DOMAIN ) . '</a> ';
                         if ( 'publish' === $landing->post_status ) {
-                            echo '<a href="' . esc_url( $url_ver ) . '" class="button button-small" target="_blank">' . esc_html__( 'Ver', 'flavor-chat-ia' ) . '</a>';
+                            echo '<a href="' . esc_url( $url_ver ) . '" class="button button-small" target="_blank">' . esc_html__( 'Ver', FLAVOR_PLATFORM_TEXT_DOMAIN ) . '</a>';
                         }
                         echo '</td>';
                         echo '</tr>';
@@ -335,9 +335,9 @@ class Flavor_VBP_Editor {
                 }
                 ?>
 
-                <h2 style="margin-top: 30px;"><?php esc_html_e( 'Páginas con Visual Builder', 'flavor-chat-ia' ); ?></h2>
-                <p class="description"><?php esc_html_e( 'También puedes editar páginas normales con el Visual Builder. Usa el link "Editor Visual" en la lista de páginas.', 'flavor-chat-ia' ); ?></p>
-                <p><a href="<?php echo esc_url( admin_url( 'edit.php?post_type=page' ) ); ?>" class="button"><?php esc_html_e( 'Ver Páginas', 'flavor-chat-ia' ); ?></a></p>
+                <h2 style="margin-top: 30px;"><?php esc_html_e( 'Páginas con Visual Builder', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h2>
+                <p class="description"><?php esc_html_e( 'También puedes editar páginas normales con el Visual Builder. Usa el link "Editor Visual" en la lista de páginas.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
+                <p><a href="<?php echo esc_url( admin_url( 'edit.php?post_type=page' ) ); ?>" class="button"><?php esc_html_e( 'Ver Páginas', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></a></p>
             </div>
         </div>
         <?php
@@ -680,7 +680,7 @@ class Flavor_VBP_Editor {
             'ajaxUrl'        => admin_url( 'admin-ajax.php' ),
             'restUrl'        => rest_url( 'flavor-vbp/v1/' ),
             'assetsUrl'      => FLAVOR_CHAT_IA_URL . 'assets/vbp/',
-            'settingsUrl'    => admin_url( 'admin.php?page=flavor-settings' ),
+            'settingsUrl'    => admin_url( 'admin.php?page=flavor-platform-settings' ),
             'siteUrl'        => home_url(),
             'nonce'          => wp_create_nonce( 'vbp_editor_nonce' ),
             'restNonce'      => wp_create_nonce( 'wp_rest' ),
@@ -706,20 +706,20 @@ class Flavor_VBP_Editor {
             'blocks'         => $bloques_categorias,
             'templates'      => $templates_libreria,
             'strings'        => array(
-                'saved'                  => __( 'Guardado', 'flavor-chat-ia' ),
-                'saving'                 => __( 'Guardando...', 'flavor-chat-ia' ),
-                'error'                  => __( 'Error al guardar', 'flavor-chat-ia' ),
-                'unsavedChanges'         => __( 'Tienes cambios sin guardar. ¿Seguro que quieres salir?', 'flavor-chat-ia' ),
-                'deleteConfirm'          => __( '¿Eliminar este elemento?', 'flavor-chat-ia' ),
-                'duplicated'             => __( 'Elemento duplicado', 'flavor-chat-ia' ),
-                'noSelection'            => __( 'Nada seleccionado', 'flavor-chat-ia' ),
-                'confirmApplyTemplate'   => __( '¿Aplicar este template? Se reemplazará el contenido actual.', 'flavor-chat-ia' ),
-                'confirmDeleteTemplate'  => __( '¿Eliminar este template? Esta acción no se puede deshacer.', 'flavor-chat-ia' ),
-                'confirmImport'          => __( '¿Importar este diseño? Se reemplazará el contenido actual.', 'flavor-chat-ia' ),
-                'templateSaved'          => __( 'Template guardado correctamente', 'flavor-chat-ia' ),
-                'templateApplied'        => __( 'Template aplicado correctamente', 'flavor-chat-ia' ),
-                'exportSuccess'          => __( 'Exportación completada', 'flavor-chat-ia' ),
-                'importSuccess'          => __( 'Importación completada', 'flavor-chat-ia' ),
+                'saved'                  => __( 'Guardado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'saving'                 => __( 'Guardando...', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'error'                  => __( 'Error al guardar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'unsavedChanges'         => __( 'Tienes cambios sin guardar. ¿Seguro que quieres salir?', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'deleteConfirm'          => __( '¿Eliminar este elemento?', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'duplicated'             => __( 'Elemento duplicado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'noSelection'            => __( 'Nada seleccionado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'confirmApplyTemplate'   => __( '¿Aplicar este template? Se reemplazará el contenido actual.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'confirmDeleteTemplate'  => __( '¿Eliminar este template? Esta acción no se puede deshacer.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'confirmImport'          => __( '¿Importar este diseño? Se reemplazará el contenido actual.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'templateSaved'          => __( 'Template guardado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'templateApplied'        => __( 'Template aplicado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'exportSuccess'          => __( 'Exportación completada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'importSuccess'          => __( 'Importación completada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'breakpoints'    => array(
                 'mobile'  => 480,
@@ -737,14 +737,14 @@ class Flavor_VBP_Editor {
                     'options'     => rest_url( 'flavor-vbp/v1/ai/options' ),
                 ),
                 'strings'    => array(
-                    'generating'   => __( 'Generando...', 'flavor-chat-ia' ),
-                    'improving'    => __( 'Mejorando...', 'flavor-chat-ia' ),
-                    'generated'    => __( 'Contenido generado', 'flavor-chat-ia' ),
-                    'error'        => __( 'Error al generar', 'flavor-chat-ia' ),
-                    'apply'        => __( 'Aplicar', 'flavor-chat-ia' ),
-                    'regenerate'   => __( 'Regenerar', 'flavor-chat-ia' ),
-                    'generateNew'  => __( 'Generar nuevo', 'flavor-chat-ia' ),
-                    'improveText'  => __( 'Mejorar', 'flavor-chat-ia' ),
+                    'generating'   => __( 'Generando...', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'improving'    => __( 'Mejorando...', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'generated'    => __( 'Contenido generado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'error'        => __( 'Error al generar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'apply'        => __( 'Aplicar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'regenerate'   => __( 'Regenerar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'generateNew'  => __( 'Generar nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'improveText'  => __( 'Mejorar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
             ),
             // Configuración de exportación de código (consolidado v3.4.0)
@@ -770,11 +770,11 @@ class Flavor_VBP_Editor {
                     ),
                 ),
                 'strings'   => array(
-                    'exporting'       => __( 'Exportando código...', 'flavor-chat-ia' ),
-                    'exportSuccess'   => __( 'Código exportado', 'flavor-chat-ia' ),
-                    'downloadReady'   => __( 'Descarga lista', 'flavor-chat-ia' ),
-                    'selectFramework' => __( 'Selecciona framework', 'flavor-chat-ia' ),
-                    'selectStyle'     => __( 'Estilo CSS', 'flavor-chat-ia' ),
+                    'exporting'       => __( 'Exportando código...', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'exportSuccess'   => __( 'Código exportado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'downloadReady'   => __( 'Descarga lista', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'selectFramework' => __( 'Selecciona framework', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'selectStyle'     => __( 'Estilo CSS', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
             ),
             // Configuración de importación Figma (consolidado v3.4.0)
@@ -787,11 +787,11 @@ class Flavor_VBP_Editor {
                     'status'  => rest_url( 'flavor-vbp/v1/figma-status' ),
                 ),
                 'strings'   => array(
-                    'importing'     => __( 'Importando desde Figma...', 'flavor-chat-ia' ),
-                    'importSuccess' => __( 'Diseño importado', 'flavor-chat-ia' ),
-                    'pasteUrl'      => __( 'Pega URL de Figma', 'flavor-chat-ia' ),
-                    'notConfigured' => __( 'Configura tu token de Figma en Ajustes > Chat IA', 'flavor-chat-ia' ),
-                    'configure'     => __( 'Configurar Figma', 'flavor-chat-ia' ),
+                    'importing'     => __( 'Importando desde Figma...', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'importSuccess' => __( 'Diseño importado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'pasteUrl'      => __( 'Pega URL de Figma', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'notConfigured' => __( 'Configura tu token de Figma en Ajustes > Chat IA', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'configure'     => __( 'Configurar Figma', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
             ),
             // Configuración de historial de versiones (consolidado)
@@ -808,16 +808,16 @@ class Flavor_VBP_Editor {
                     'label'   => rest_url( 'flavor-vbp/v1/versions/{post_id}/{version_id}/label' ),
                 ),
                 'strings'   => array(
-                    'loading'      => __( 'Cargando versiones...', 'flavor-chat-ia' ),
-                    'noVersions'   => __( 'Sin versiones guardadas', 'flavor-chat-ia' ),
-                    'restoring'    => __( 'Restaurando...', 'flavor-chat-ia' ),
-                    'restored'     => __( 'Versión restaurada', 'flavor-chat-ia' ),
-                    'comparing'    => __( 'Comparando versiones...', 'flavor-chat-ia' ),
-                    'confirmRestore' => __( '¿Restaurar esta versión? Se guardará la versión actual antes.', 'flavor-chat-ia' ),
-                    'labelUpdated' => __( 'Etiqueta actualizada', 'flavor-chat-ia' ),
-                    'versionSaved' => __( 'Versión guardada', 'flavor-chat-ia' ),
-                    'saveVersion'  => __( 'Guardar versión', 'flavor-chat-ia' ),
-                    'viewHistory'  => __( 'Ver historial', 'flavor-chat-ia' ),
+                    'loading'      => __( 'Cargando versiones...', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'noVersions'   => __( 'Sin versiones guardadas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'restoring'    => __( 'Restaurando...', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'restored'     => __( 'Versión restaurada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'comparing'    => __( 'Comparando versiones...', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'confirmRestore' => __( '¿Restaurar esta versión? Se guardará la versión actual antes.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'labelUpdated' => __( 'Etiqueta actualizada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'versionSaved' => __( 'Versión guardada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'saveVersion'  => __( 'Guardar versión', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'viewHistory'  => __( 'Ver historial', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
             ),
             'collaboration'  => array(
@@ -1053,17 +1053,17 @@ class Flavor_VBP_Editor {
 
         // Verificar que el post existe y es del tipo correcto
         if ( ! $post_id ) {
-            wp_die( esc_html__( 'ID de post no válido.', 'flavor-chat-ia' ) );
+            wp_die( esc_html__( 'ID de post no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN ) );
         }
 
         $post = get_post( $post_id );
         if ( ! $post || ! in_array( $post->post_type, self::POST_TYPES_SOPORTADOS, true ) ) {
-            wp_die( esc_html__( 'Este tipo de contenido no está soportado por Visual Builder Pro.', 'flavor-chat-ia' ) );
+            wp_die( esc_html__( 'Este tipo de contenido no está soportado por Visual Builder Pro.', FLAVOR_PLATFORM_TEXT_DOMAIN ) );
         }
 
         // Verificar permisos
         if ( ! current_user_can( 'edit_post', $post_id ) ) {
-            wp_die( esc_html__( 'No tienes permiso para editar este contenido.', 'flavor-chat-ia' ) );
+            wp_die( esc_html__( 'No tienes permiso para editar este contenido.', FLAVOR_PLATFORM_TEXT_DOMAIN ) );
         }
 
         $this->post_id_actual = $post_id;
@@ -1078,7 +1078,7 @@ class Flavor_VBP_Editor {
         if ( file_exists( $ruta_template ) ) {
             include $ruta_template;
         } else {
-            wp_die( esc_html__( 'Template del editor no encontrado.', 'flavor-chat-ia' ) );
+            wp_die( esc_html__( 'Template del editor no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN ) );
         }
     }
 
@@ -1105,7 +1105,7 @@ class Flavor_VBP_Editor {
             $acciones['vbp_edit'] = sprintf(
                 '<a href="%s" class="vbp-edit-link">%s</a>',
                 esc_url( $url_editor ),
-                esc_html__( 'Editor Visual', 'flavor-chat-ia' )
+                esc_html__( 'Editor Visual', FLAVOR_PLATFORM_TEXT_DOMAIN )
             );
         }
         return $acciones;
@@ -1334,7 +1334,7 @@ class Flavor_VBP_Editor {
         }
 
         if ( ! $post_id || ! current_user_can( 'edit_post', $post_id ) ) {
-            wp_send_json_error( array( 'message' => __( 'Sin permiso', 'flavor-chat-ia' ) ) );
+            wp_send_json_error( array( 'message' => __( 'Sin permiso', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) );
         }
 
         // Actualizar título si se proporcionó
@@ -1353,12 +1353,12 @@ class Flavor_VBP_Editor {
         if ( $guardado ) {
             wp_send_json_success(
                 array(
-                    'message'   => __( 'Guardado correctamente', 'flavor-chat-ia' ),
+                    'message'   => __( 'Guardado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'updatedAt' => current_time( 'mysql' ),
                 )
             );
         } else {
-            wp_send_json_error( array( 'message' => __( 'Error al guardar', 'flavor-chat-ia' ) ) );
+            wp_send_json_error( array( 'message' => __( 'Error al guardar', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) );
         }
     }
 
@@ -1371,7 +1371,7 @@ class Flavor_VBP_Editor {
         $post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
 
         if ( ! $post_id || ! current_user_can( 'edit_post', $post_id ) ) {
-            wp_send_json_error( array( 'message' => __( 'Sin permiso', 'flavor-chat-ia' ) ) );
+            wp_send_json_error( array( 'message' => __( 'Sin permiso', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) );
         }
 
         $post     = get_post( $post_id );
@@ -1425,12 +1425,12 @@ class Flavor_VBP_Editor {
         }
 
         if ( ! $post_id || ! current_user_can( 'edit_post', $post_id ) ) {
-            wp_send_json_error( array( 'message' => __( 'Sin permiso', 'flavor-chat-ia' ) ) );
+            wp_send_json_error( array( 'message' => __( 'Sin permiso', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) );
         }
 
         $guardado = $this->guardar_datos_documento( $post_id, $datos );
         if ( ! $guardado ) {
-            wp_send_json_error( array( 'message' => __( 'Error al guardar autosave', 'flavor-chat-ia' ) ) );
+            wp_send_json_error( array( 'message' => __( 'Error al guardar autosave', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) );
         }
 
         // Mantener snapshot temporal para posible recuperación/diagnóstico
@@ -1439,7 +1439,7 @@ class Flavor_VBP_Editor {
 
         wp_send_json_success(
             array(
-                'message'   => __( 'Autosave completado', 'flavor-chat-ia' ),
+                'message'   => __( 'Autosave completado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'timestamp' => current_time( 'mysql' ),
             )
         );
@@ -1463,7 +1463,7 @@ class Flavor_VBP_Editor {
         }
 
         if ( empty( $elemento ) ) {
-            wp_send_json_error( array( 'message' => __( 'Elemento no válido', 'flavor-chat-ia' ) ) );
+            wp_send_json_error( array( 'message' => __( 'Elemento no válido', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) );
         }
 
         // Definir contexto de editor para mostrar preview cards en lugar de shortcodes reales
@@ -1484,7 +1484,7 @@ class Flavor_VBP_Editor {
             );
         }
 
-        wp_send_json_error( array( 'message' => __( 'Renderer no disponible', 'flavor-chat-ia' ) ) );
+        wp_send_json_error( array( 'message' => __( 'Renderer no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) );
     }
 
     /**
@@ -1535,20 +1535,20 @@ class Flavor_VBP_Editor {
         $post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
 
         if ( ! $post_id ) {
-            wp_send_json_error( array( 'message' => __( 'ID de post requerido', 'flavor-chat-ia' ) ) );
+            wp_send_json_error( array( 'message' => __( 'ID de post requerido', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) );
         }
 
         // Verificar permiso correcto según el tipo de post
         $post = get_post( $post_id );
         if ( ! $post ) {
-            wp_send_json_error( array( 'message' => __( 'Post no encontrado', 'flavor-chat-ia' ) ) );
+            wp_send_json_error( array( 'message' => __( 'Post no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) );
         }
 
         $post_type_obj = get_post_type_object( $post->post_type );
         $capability = $post_type_obj ? $post_type_obj->cap->publish_posts : 'publish_posts';
 
         if ( ! current_user_can( $capability ) ) {
-            wp_send_json_error( array( 'message' => __( 'Sin permiso para publicar', 'flavor-chat-ia' ) ) );
+            wp_send_json_error( array( 'message' => __( 'Sin permiso para publicar', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) );
         }
 
         $resultado = wp_update_post(
@@ -1561,13 +1561,13 @@ class Flavor_VBP_Editor {
         if ( $resultado && ! is_wp_error( $resultado ) ) {
             wp_send_json_success(
                 array(
-                    'message' => __( 'Publicado correctamente', 'flavor-chat-ia' ),
+                    'message' => __( 'Publicado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'url'     => get_permalink( $post_id ),
                 )
             );
         }
 
-        wp_send_json_error( array( 'message' => __( 'Error al publicar', 'flavor-chat-ia' ) ) );
+        wp_send_json_error( array( 'message' => __( 'Error al publicar', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) );
     }
 
     /**
@@ -1576,7 +1576,7 @@ class Flavor_VBP_Editor {
     public function ajax_exportar_template() {
         check_ajax_referer( 'vbp_editor_nonce', 'nonce' );
 
-        $nombre = isset( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : __( 'Mi Template', 'flavor-chat-ia' );
+        $nombre = isset( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : __( 'Mi Template', FLAVOR_PLATFORM_TEXT_DOMAIN );
 
         // Decodificar JSON de forma segura
         $elements = array();
@@ -1588,7 +1588,7 @@ class Flavor_VBP_Editor {
         }
 
         if ( empty( $elements ) ) {
-            wp_send_json_error( array( 'message' => __( 'No hay elementos para exportar', 'flavor-chat-ia' ) ) );
+            wp_send_json_error( array( 'message' => __( 'No hay elementos para exportar', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) );
         }
 
         // Crear template como opción
@@ -1607,7 +1607,7 @@ class Flavor_VBP_Editor {
 
         wp_send_json_success(
             array(
-                'message'  => __( 'Template guardado', 'flavor-chat-ia' ),
+                'message'  => __( 'Template guardado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'template' => $nuevo_template,
             )
         );
@@ -1622,7 +1622,7 @@ class Flavor_VBP_Editor {
         $template_id = isset( $_POST['template_id'] ) ? sanitize_text_field( wp_unslash( $_POST['template_id'] ) ) : '';
 
         if ( empty( $template_id ) ) {
-            wp_send_json_error( array( 'message' => __( 'ID de template inválido', 'flavor-chat-ia' ) ) );
+            wp_send_json_error( array( 'message' => __( 'ID de template inválido', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) );
         }
 
         $templates = get_option( 'vbp_user_templates', array() );
@@ -1638,7 +1638,7 @@ class Flavor_VBP_Editor {
             }
         }
 
-        wp_send_json_error( array( 'message' => __( 'Template no encontrado', 'flavor-chat-ia' ) ) );
+        wp_send_json_error( array( 'message' => __( 'Template no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) );
     }
 
     /**

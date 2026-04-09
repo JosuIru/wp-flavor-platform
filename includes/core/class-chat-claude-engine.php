@@ -75,7 +75,7 @@ class Flavor_Chat_Claude_Engine {
         // Resetear contador de recursión
         $this->recursion_depth = 0;
 
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
 
         // Usar Engine Manager si está disponible
         $engine_manager = $this->get_engine_manager();
@@ -86,7 +86,7 @@ class Flavor_Chat_Claude_Engine {
             if (!$active_engine) {
                 return [
                     'success' => false,
-                    'error' => __('No hay motor de IA configurado', 'flavor-chat-ia'),
+                    'error' => __('No hay motor de IA configurado', 'flavor-platform'),
                     'error_code' => 'no_engine',
                 ];
             }
@@ -104,7 +104,7 @@ class Flavor_Chat_Claude_Engine {
             if (empty($api_key)) {
                 return [
                     'success' => false,
-                    'error' => __('API key no configurada', 'flavor-chat-ia'),
+                    'error' => __('API key no configurada', 'flavor-platform'),
                     'error_code' => 'no_api_key',
                 ];
             }
@@ -198,7 +198,7 @@ class Flavor_Chat_Claude_Engine {
 
         return [
             'success' => false,
-            'error' => __('Formato de respuesta desconocido', 'flavor-chat-ia'),
+            'error' => __('Formato de respuesta desconocido', 'flavor-platform'),
             'error_code' => 'unknown_format',
         ];
     }
@@ -226,10 +226,10 @@ class Flavor_Chat_Claude_Engine {
      * @return string
      */
     private function build_system_prompt($session) {
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $language = $session->get_language();
 
-        $assistant_name = $settings['assistant_name'] ?? __('Asistente Virtual', 'flavor-chat-ia');
+        $assistant_name = $settings['assistant_name'] ?? __('Asistente Virtual', 'flavor-platform');
         $assistant_role = $settings['assistant_role'] ?? '';
         $tone = $settings['tone'] ?? 'friendly';
 
@@ -559,7 +559,7 @@ PROMPT,
             flavor_chat_ia_log('Error API: ' . $response->get_error_message(), 'error');
             return [
                 'success' => false,
-                'error' => __('Error de conexión con la API', 'flavor-chat-ia'),
+                'error' => __('Error de conexión con la API', 'flavor-platform'),
                 'error_code' => 'connection_error',
             ];
         }
@@ -683,7 +683,7 @@ PROMPT,
 
         return [
             'success' => false,
-            'error' => __('Sistema de módulos no disponible', 'flavor-chat-ia'),
+            'error' => __('Sistema de módulos no disponible', 'flavor-platform'),
         ];
     }
 
@@ -703,7 +703,7 @@ PROMPT,
         if ($this->recursion_depth > self::MAX_RECURSION_DEPTH) {
             return [
                 'success' => false,
-                'error' => __('Demasiadas llamadas a herramientas', 'flavor-chat-ia'),
+                'error' => __('Demasiadas llamadas a herramientas', 'flavor-platform'),
                 'error_code' => 'max_recursion',
             ];
         }
@@ -713,7 +713,7 @@ PROMPT,
         if (!$engine_manager) {
             return [
                 'success' => false,
-                'error' => __('Engine Manager no disponible', 'flavor-chat-ia'),
+                'error' => __('Engine Manager no disponible', 'flavor-platform'),
                 'error_code' => 'no_engine_manager',
             ];
         }
@@ -788,12 +788,12 @@ PROMPT,
         if ($this->recursion_depth > self::MAX_RECURSION_DEPTH) {
             return [
                 'success' => false,
-                'error' => __('Demasiadas llamadas a herramientas', 'flavor-chat-ia'),
+                'error' => __('Demasiadas llamadas a herramientas', 'flavor-platform'),
                 'error_code' => 'max_recursion',
             ];
         }
 
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $api_key = $settings['claude_api_key'] ?? $settings['api_key'] ?? '';
 
         // Construir mensajes incluyendo la respuesta del asistente y los resultados

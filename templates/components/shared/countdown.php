@@ -26,7 +26,7 @@ if (!defined('ABSPATH')) {
 
 $target_date = $target_date ?? '';
 $title = $title ?? '';
-$expired_text = $expired_text ?? __('¡Tiempo agotado!', 'flavor-chat-ia');
+$expired_text = $expired_text ?? __('¡Tiempo agotado!', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $expired_url = $expired_url ?? '';
 $show_days = $show_days ?? true;
 $show_hours = $show_hours ?? true;
@@ -67,10 +67,10 @@ $color_class = $color_classes[$color] ?? $color_classes['blue'];
 
 // Labels
 $labels = [
-    'days'    => __('Días', 'flavor-chat-ia'),
-    'hours'   => __('Horas', 'flavor-chat-ia'),
-    'minutes' => __('Min', 'flavor-chat-ia'),
-    'seconds' => __('Seg', 'flavor-chat-ia'),
+    'days'    => __('Días', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'hours'   => __('Horas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'minutes' => __('Min', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'seconds' => __('Seg', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 

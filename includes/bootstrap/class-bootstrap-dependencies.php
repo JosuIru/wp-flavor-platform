@@ -169,7 +169,7 @@ final class Flavor_Bootstrap_Dependencies {
         }
 
         // En frontend cargar los engines necesarios según configuración
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
 
         $engine_map = [
             'claude'   => 'class-engine-claude.php',
@@ -505,7 +505,7 @@ final class Flavor_Bootstrap_Dependencies {
         // En frontend solo cargar lo mínimo adicional
         if (!is_admin()) {
             // Animaciones solo si están habilitadas
-            $settings = get_option('flavor_chat_ia_settings', []);
+            $settings = flavor_get_main_settings();
             if (!empty($settings['enable_animations'])) {
                 require_once FLAVOR_CHAT_IA_PATH . 'includes/animations/class-animation-manager.php';
             }

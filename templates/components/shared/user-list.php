@@ -26,13 +26,13 @@ if (!defined('ABSPATH')) {
 }
 
 $users = $users ?? [];
-$title = $title ?? __('Usuarios', 'flavor-chat-ia');
+$title = $title ?? __('Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $columns = $columns ?? ['avatar', 'name', 'email', 'role', 'status', 'actions'];
 $actions = $actions ?? [];
 $color = $color ?? 'blue';
 $selectable = $selectable ?? false;
 $searchable = $searchable ?? true;
-$empty_text = $empty_text ?? __('No hay usuarios', 'flavor-chat-ia');
+$empty_text = $empty_text ?? __('No hay usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $on_action = $on_action ?? '';
 $on_select = $on_select ?? '';
 $roles = $roles ?? [];
@@ -56,11 +56,11 @@ $status_colors = [
 
 // Labels de estado
 $status_labels = [
-    'active'   => __('Activo', 'flavor-chat-ia'),
-    'inactive' => __('Inactivo', 'flavor-chat-ia'),
-    'pending'  => __('Pendiente', 'flavor-chat-ia'),
-    'blocked'  => __('Bloqueado', 'flavor-chat-ia'),
-    'verified' => __('Verificado', 'flavor-chat-ia'),
+    'active'   => __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'inactive' => __('Inactivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'pending'  => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'blocked'  => __('Bloqueado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'verified' => __('Verificado', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $list_id = 'user-list-' . wp_rand(1000, 9999);
@@ -84,7 +84,7 @@ $list_id = 'user-list-' . wp_rand(1000, 9999);
                     <div class="relative">
                         <input type="search"
                                class="user-search w-48 pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-<?php echo esc_attr($color); ?>-500/20 focus:border-<?php echo esc_attr($color); ?>-500"
-                               placeholder="<?php esc_attr_e('Buscar usuario...', 'flavor-chat-ia'); ?>"
+                               placeholder="<?php esc_attr_e('Buscar usuario...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                                oninput="flavorUserList.search('<?php echo esc_js($list_id); ?>', this.value)">
                         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">🔍</span>
                     </div>
@@ -93,7 +93,7 @@ $list_id = 'user-list-' . wp_rand(1000, 9999);
                 <?php if (!empty($roles)): ?>
                     <select class="role-filter px-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-<?php echo esc_attr($color); ?>-500/20"
                             onchange="flavorUserList.filterRole('<?php echo esc_js($list_id); ?>', this.value)">
-                        <option value=""><?php esc_html_e('Todos los roles', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todos los roles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($roles as $role): ?>
                             <option value="<?php echo esc_attr($role['id'] ?? ''); ?>">
                                 <?php echo esc_html($role['label'] ?? ''); ?>
@@ -105,7 +105,7 @@ $list_id = 'user-list-' . wp_rand(1000, 9999);
                 <?php if (!empty($statuses)): ?>
                     <select class="status-filter px-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-<?php echo esc_attr($color); ?>-500/20"
                             onchange="flavorUserList.filterStatus('<?php echo esc_js($list_id); ?>', this.value)">
-                        <option value=""><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($statuses as $status): ?>
                             <option value="<?php echo esc_attr($status['id'] ?? ''); ?>">
                                 <?php echo esc_html($status['label'] ?? ''); ?>
@@ -174,7 +174,7 @@ $list_id = 'user-list-' . wp_rand(1000, 9999);
                             <?php endif; ?>
 
                             <?php if ($user_verified): ?>
-                                <span class="text-blue-500 text-sm" title="<?php esc_attr_e('Verificado', 'flavor-chat-ia'); ?>">✓</span>
+                                <span class="text-blue-500 text-sm" title="<?php esc_attr_e('Verificado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">✓</span>
                             <?php endif; ?>
 
                             <?php if (in_array('role', $columns) && $user_role): ?>
@@ -232,18 +232,18 @@ $list_id = 'user-list-' . wp_rand(1000, 9999);
         <div class="selection-footer hidden p-4 border-t border-gray-100 bg-gray-50">
             <div class="flex items-center justify-between">
                 <span class="selection-count text-sm text-gray-600">
-                    <?php esc_html_e('0 usuarios seleccionados', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('0 usuarios seleccionados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
                 <div class="flex items-center gap-2">
                     <button type="button"
                             onclick="flavorUserList.clearSelection('<?php echo esc_js($list_id); ?>')"
                             class="px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-200 rounded-lg transition-colors">
-                        <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button"
                             onclick="flavorUserList.getSelected('<?php echo esc_js($list_id); ?>')"
                             class="px-3 py-1.5 text-sm font-medium text-white <?php echo esc_attr($color_classes['bg_solid']); ?> rounded-lg hover:opacity-90 transition-colors">
-                        <?php esc_html_e('Aplicar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Aplicar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </div>

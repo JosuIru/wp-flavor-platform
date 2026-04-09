@@ -12,16 +12,16 @@ $puntos = $participacion->puntos_totales;
 
 // Determinar título del nivel
 $titulos_nivel = [
-    1 => __('Vecino', 'flavor-chat-ia'),
-    2 => __('Observador', 'flavor-chat-ia'),
-    3 => __('Reportero', 'flavor-chat-ia'),
-    4 => __('Colaborador', 'flavor-chat-ia'),
-    5 => __('Vigilante', 'flavor-chat-ia'),
-    6 => __('Guardián', 'flavor-chat-ia'),
-    7 => __('Protector', 'flavor-chat-ia'),
-    8 => __('Defensor', 'flavor-chat-ia'),
-    9 => __('Héroe Urbano', 'flavor-chat-ia'),
-    10 => __('Leyenda del Barrio', 'flavor-chat-ia'),
+    1 => __('Vecino', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    2 => __('Observador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    3 => __('Reportero', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    4 => __('Colaborador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    5 => __('Vigilante', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    6 => __('Guardián', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    7 => __('Protector', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    8 => __('Defensor', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    9 => __('Héroe Urbano', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    10 => __('Leyenda del Barrio', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 $titulo_nivel = $titulos_nivel[$nivel] ?? $titulos_nivel[1];
 
@@ -45,11 +45,11 @@ $progreso = $siguiente_nivel ? min(100, ($puntos / $siguiente_nivel) * 100) : 10
     <!-- Progreso de nivel -->
     <div class="inc-mi-part__progreso">
         <div class="inc-mi-part__progreso-header">
-            <span><?php printf(esc_html__('%d puntos', 'flavor-chat-ia'), $puntos); ?></span>
+            <span><?php printf(esc_html__('%d puntos', FLAVOR_PLATFORM_TEXT_DOMAIN), $puntos); ?></span>
             <?php if ($siguiente_nivel): ?>
-                <span><?php printf(esc_html__('Siguiente nivel: %d pts', 'flavor-chat-ia'), $siguiente_nivel); ?></span>
+                <span><?php printf(esc_html__('Siguiente nivel: %d pts', FLAVOR_PLATFORM_TEXT_DOMAIN), $siguiente_nivel); ?></span>
             <?php else: ?>
-                <span><?php esc_html_e('¡Nivel máximo!', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('¡Nivel máximo!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             <?php endif; ?>
         </div>
         <div class="inc-mi-part__progreso-bar">
@@ -65,7 +65,7 @@ $progreso = $siguiente_nivel ? min(100, ($puntos / $siguiente_nivel) * 100) : 10
             </span>
             <div class="inc-mi-part__stat-info">
                 <span class="inc-mi-part__stat-valor"><?php echo esc_html($participacion->incidencias_reportadas); ?></span>
-                <span class="inc-mi-part__stat-label"><?php esc_html_e('Reportadas', 'flavor-chat-ia'); ?></span>
+                <span class="inc-mi-part__stat-label"><?php esc_html_e('Reportadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
         <div class="inc-mi-part__stat">
@@ -74,7 +74,7 @@ $progreso = $siguiente_nivel ? min(100, ($puntos / $siguiente_nivel) * 100) : 10
             </span>
             <div class="inc-mi-part__stat-info">
                 <span class="inc-mi-part__stat-valor"><?php echo esc_html($participacion->incidencias_resueltas); ?></span>
-                <span class="inc-mi-part__stat-label"><?php esc_html_e('Resueltas', 'flavor-chat-ia'); ?></span>
+                <span class="inc-mi-part__stat-label"><?php esc_html_e('Resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
         <div class="inc-mi-part__stat">
@@ -83,7 +83,7 @@ $progreso = $siguiente_nivel ? min(100, ($puntos / $siguiente_nivel) * 100) : 10
             </span>
             <div class="inc-mi-part__stat-info">
                 <span class="inc-mi-part__stat-valor"><?php echo esc_html($participacion->voluntariados_completados); ?></span>
-                <span class="inc-mi-part__stat-label"><?php esc_html_e('Voluntariados', 'flavor-chat-ia'); ?></span>
+                <span class="inc-mi-part__stat-label"><?php esc_html_e('Voluntariados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
         <div class="inc-mi-part__stat">
@@ -92,7 +92,7 @@ $progreso = $siguiente_nivel ? min(100, ($puntos / $siguiente_nivel) * 100) : 10
             </span>
             <div class="inc-mi-part__stat-info">
                 <span class="inc-mi-part__stat-valor"><?php echo esc_html(number_format($participacion->horas_voluntariado, 1)); ?>h</span>
-                <span class="inc-mi-part__stat-label"><?php esc_html_e('Horas', 'flavor-chat-ia'); ?></span>
+                <span class="inc-mi-part__stat-label"><?php esc_html_e('Horas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
@@ -101,29 +101,29 @@ $progreso = $siguiente_nivel ? min(100, ($puntos / $siguiente_nivel) * 100) : 10
     <div class="inc-mi-part__actividad">
         <div class="inc-mi-part__actividad-item">
             <span class="dashicons dashicons-thumbs-up"></span>
-            <span><?php printf(esc_html__('%d votos dados', 'flavor-chat-ia'), $participacion->votos_dados); ?></span>
+            <span><?php printf(esc_html__('%d votos dados', FLAVOR_PLATFORM_TEXT_DOMAIN), $participacion->votos_dados); ?></span>
         </div>
         <div class="inc-mi-part__actividad-item">
             <span class="dashicons dashicons-admin-comments"></span>
-            <span><?php printf(esc_html__('%d comentarios útiles', 'flavor-chat-ia'), $participacion->comentarios_utiles); ?></span>
+            <span><?php printf(esc_html__('%d comentarios útiles', FLAVOR_PLATFORM_TEXT_DOMAIN), $participacion->comentarios_utiles); ?></span>
         </div>
     </div>
 
     <!-- Logros -->
     <div class="inc-mi-part__logros">
-        <h4><?php esc_html_e('Logros desbloqueados', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('Logros desbloqueados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <div class="inc-mi-part__logros-grid">
             <?php
             $logros_definidos = [
-                'primer_reporte' => ['icono' => 'dashicons-flag', 'nombre' => __('Primer reporte', 'flavor-chat-ia')],
-                'reportero_activo' => ['icono' => 'dashicons-edit', 'nombre' => __('10 reportes', 'flavor-chat-ia')],
-                'reportero_experto' => ['icono' => 'dashicons-awards', 'nombre' => __('50 reportes', 'flavor-chat-ia')],
-                'solucionador' => ['icono' => 'dashicons-yes-alt', 'nombre' => __('5 resueltas', 'flavor-chat-ia')],
-                'voluntario' => ['icono' => 'dashicons-heart', 'nombre' => __('Primer voluntariado', 'flavor-chat-ia')],
-                'voluntario_experto' => ['icono' => 'dashicons-superhero', 'nombre' => __('10 voluntariados', 'flavor-chat-ia')],
-                'comentarista' => ['icono' => 'dashicons-format-chat', 'nombre' => __('20 comentarios', 'flavor-chat-ia')],
-                'nivel_5' => ['icono' => 'dashicons-star-half', 'nombre' => __('Nivel 5', 'flavor-chat-ia')],
-                'nivel_10' => ['icono' => 'dashicons-star-filled', 'nombre' => __('Nivel 10', 'flavor-chat-ia')],
+                'primer_reporte' => ['icono' => 'dashicons-flag', 'nombre' => __('Primer reporte', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'reportero_activo' => ['icono' => 'dashicons-edit', 'nombre' => __('10 reportes', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'reportero_experto' => ['icono' => 'dashicons-awards', 'nombre' => __('50 reportes', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'solucionador' => ['icono' => 'dashicons-yes-alt', 'nombre' => __('5 resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'voluntario' => ['icono' => 'dashicons-heart', 'nombre' => __('Primer voluntariado', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'voluntario_experto' => ['icono' => 'dashicons-superhero', 'nombre' => __('10 voluntariados', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'comentarista' => ['icono' => 'dashicons-format-chat', 'nombre' => __('20 comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'nivel_5' => ['icono' => 'dashicons-star-half', 'nombre' => __('Nivel 5', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'nivel_10' => ['icono' => 'dashicons-star-filled', 'nombre' => __('Nivel 10', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ];
 
             foreach ($logros_definidos as $key => $logro_def):
@@ -139,31 +139,31 @@ $progreso = $siguiente_nivel ? min(100, ($puntos / $siguiente_nivel) * 100) : 10
 
     <!-- Puntuación desglosada -->
     <div class="inc-mi-part__desglose">
-        <h4><?php esc_html_e('Cómo has ganado puntos', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('Cómo has ganado puntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <ul>
             <li>
-                <span><?php esc_html_e('Incidencias reportadas', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Incidencias reportadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="inc-mi-part__puntos-detalle">
                     <?php echo esc_html($participacion->incidencias_reportadas); ?> × 10 =
                     <strong><?php echo esc_html($participacion->incidencias_reportadas * 10); ?></strong>
                 </span>
             </li>
             <li>
-                <span><?php esc_html_e('Incidencias resueltas', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Incidencias resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="inc-mi-part__puntos-detalle">
                     <?php echo esc_html($participacion->incidencias_resueltas); ?> × 5 =
                     <strong><?php echo esc_html($participacion->incidencias_resueltas * 5); ?></strong>
                 </span>
             </li>
             <li>
-                <span><?php esc_html_e('Comentarios', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="inc-mi-part__puntos-detalle">
                     <?php echo esc_html($participacion->comentarios_utiles); ?> × 2 =
                     <strong><?php echo esc_html($participacion->comentarios_utiles * 2); ?></strong>
                 </span>
             </li>
             <li>
-                <span><?php esc_html_e('Horas voluntariado', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Horas voluntariado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="inc-mi-part__puntos-detalle">
                     <?php echo esc_html(number_format($participacion->horas_voluntariado, 1)); ?> × 15 =
                     <strong><?php echo esc_html(intval($participacion->horas_voluntariado * 15)); ?></strong>

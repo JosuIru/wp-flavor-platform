@@ -82,15 +82,15 @@ $dias_semana = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
     <nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">
         <a href="<?php echo admin_url('admin.php?page=reservas-dashboard'); ?>" style="color: #2271b1; text-decoration: none;">
             <span class="dashicons dashicons-calendar-alt" style="font-size: 14px; vertical-align: middle;"></span>
-            <?php _e('Reservas', 'flavor-chat-ia'); ?>
+            <?php _e('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <span style="color: #646970; margin: 0 5px;">›</span>
-        <span style="color: #1d2327;"><?php _e('Calendario', 'flavor-chat-ia'); ?></span>
+        <span style="color: #1d2327;"><?php _e('Calendario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
     </nav>
 
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-calendar"></span>
-        <?php _e('Calendario de Reservas', 'flavor-chat-ia'); ?>
+        <?php _e('Calendario de Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <hr class="wp-header-end">
@@ -99,7 +99,7 @@ $dias_semana = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
     <div style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0; background: #fff; padding: 15px; border: 1px solid #c3c4c7;">
         <a href="<?php echo admin_url("admin.php?page=reservas-calendario&mes={$mes_anterior}&anio={$anio_anterior}&recurso={$recurso_filtro}"); ?>" class="button">
             <span class="dashicons dashicons-arrow-left-alt2" style="margin-top: 3px;"></span>
-            <?php _e('Anterior', 'flavor-chat-ia'); ?>
+            <?php _e('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
 
         <div style="text-align: center;">
@@ -109,7 +109,7 @@ $dias_semana = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
                 <input type="hidden" name="mes" value="<?php echo esc_attr($mes_actual); ?>">
                 <input type="hidden" name="anio" value="<?php echo esc_attr($anio_actual); ?>">
                 <select name="recurso" onchange="this.form.submit()">
-                    <option value=""><?php _e('Todos los recursos', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todos los recursos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($recursos as $rec): ?>
                     <option value="<?php echo esc_attr($rec->id); ?>" <?php selected($recurso_filtro, $rec->id); ?>><?php echo esc_html($rec->nombre); ?></option>
                     <?php endforeach; ?>
@@ -118,7 +118,7 @@ $dias_semana = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
         </div>
 
         <a href="<?php echo admin_url("admin.php?page=reservas-calendario&mes={$mes_siguiente}&anio={$anio_siguiente}&recurso={$recurso_filtro}"); ?>" class="button">
-            <?php _e('Siguiente', 'flavor-chat-ia'); ?>
+            <?php _e('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <span class="dashicons dashicons-arrow-right-alt2" style="margin-top: 3px;"></span>
         </a>
     </div>
@@ -173,7 +173,7 @@ $dias_semana = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
     </div>
 
     <div style="margin-top: 20px; display: flex; gap: 20px;">
-        <a href="<?php echo admin_url('admin.php?page=reservas-listado'); ?>" class="button button-primary"><?php _e('Ver listado completo', 'flavor-chat-ia'); ?></a>
-        <a href="<?php echo admin_url('admin.php?page=reservas-nueva'); ?>" class="button"><?php _e('Nueva reserva', 'flavor-chat-ia'); ?></a>
+        <a href="<?php echo admin_url('admin.php?page=reservas-listado'); ?>" class="button button-primary"><?php _e('Ver listado completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
+        <a href="<?php echo admin_url('admin.php?page=reservas-nueva'); ?>" class="button"><?php _e('Nueva reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
     </div>
 </div>

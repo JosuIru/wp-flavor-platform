@@ -39,12 +39,12 @@ class Flavor_Newsletter_Admin {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce'   => wp_create_nonce('flavor_newsletter_nonce'),
             'i18n'    => [
-                'confirmar_envio'    => __('Seguro que deseas enviar esta campana?', 'flavor-chat-ia'),
-                'confirmar_eliminar' => __('Seguro que deseas eliminar esta campana?', 'flavor-chat-ia'),
-                'guardando'          => __('Guardando...', 'flavor-chat-ia'),
-                'guardado'           => __('Campana guardada', 'flavor-chat-ia'),
-                'enviando'           => __('Iniciando envio...', 'flavor-chat-ia'),
-                'error_general'      => __('Ha ocurrido un error.', 'flavor-chat-ia'),
+                'confirmar_envio'    => __('Seguro que deseas enviar esta campana?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmar_eliminar' => __('Seguro que deseas eliminar esta campana?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'guardando'          => __('Guardando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'guardado'           => __('Campana guardada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'enviando'           => __('Iniciando envio...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error_general'      => __('Ha ocurrido un error.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -61,26 +61,26 @@ class Flavor_Newsletter_Admin {
         $lista_campanas = $gestor_newsletter->listar_campanas($estado_filtro, $por_pagina, $offset_resultados);
 
         echo '<div class="wrap">';
-        echo '<h1 class="wp-heading-inline">' . esc_html__('Newsletter - Campanas', 'flavor-chat-ia') . '</h1>';
-        echo ' <a href="' . esc_url(admin_url('admin.php?page=flavor-newsletter-editor')) . '" class="page-title-action">' . esc_html__('Crear campana', 'flavor-chat-ia') . '</a>';
+        echo '<h1 class="wp-heading-inline">' . esc_html__('Newsletter - Campanas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+        echo ' <a href="' . esc_url(admin_url('admin.php?page=flavor-newsletter-editor')) . '" class="page-title-action">' . esc_html__('Crear campana', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
         echo '<hr class="wp-header-end">';
 
         if (empty($lista_campanas)) {
-            echo '<div class="notice notice-info"><p>' . esc_html__('No hay campanas todavia. Crea la primera.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-info"><p>' . esc_html__('No hay campanas todavia. Crea la primera.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             echo '</div>';
             return;
         }
 
         echo '<table class="wp-list-table widefat fixed striped">';
         echo '<thead><tr>';
-        echo '<th>' . esc_html__('ID', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Asunto', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Enviados', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Abiertos', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Clicks', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Fecha', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Acciones', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('ID', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Asunto', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Enviados', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Abiertos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Clicks', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
         echo '</tr></thead><tbody>';
 
         foreach ($lista_campanas as $campana_item) {
@@ -88,15 +88,15 @@ class Flavor_Newsletter_Admin {
             $url_stats = admin_url('admin.php?page=flavor-newsletter&view=stats&id=' . intval($campana_item->id));
             echo '<tr>';
             echo '<td>' . intval($campana_item->id) . '</td>';
-            echo '<td><a href="' . esc_url($url_editar) . '">' . esc_html($campana_item->asunto ?: __('(Sin asunto)', 'flavor-chat-ia')) . '</a></td>';
+            echo '<td><a href="' . esc_url($url_editar) . '">' . esc_html($campana_item->asunto ?: __('(Sin asunto)', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '</a></td>';
             echo '<td><span class="flavor-badge flavor-badge--' . esc_attr($campana_item->estado) . '">' . esc_html($campana_item->estado) . '</span></td>';
             echo '<td>' . intval($campana_item->total_enviados) . '/' . intval($campana_item->total_destinatarios) . '</td>';
             echo '<td>' . intval($campana_item->total_abiertos) . '</td>';
             echo '<td>' . intval($campana_item->total_clicks) . '</td>';
             echo '<td>' . esc_html($campana_item->created_at) . '</td>';
             echo '<td>';
-            echo '<a href="' . esc_url($url_editar) . '" class="button button-small">' . esc_html__('Editar', 'flavor-chat-ia') . '</a> ';
-            echo '<a href="' . esc_url($url_stats) . '" class="button button-small">' . esc_html__('Estadisticas', 'flavor-chat-ia') . '</a>';
+            echo '<a href="' . esc_url($url_editar) . '" class="button button-small">' . esc_html__('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a> ';
+            echo '<a href="' . esc_url($url_stats) . '" class="button button-small">' . esc_html__('Estadisticas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
             echo '</td>';
             echo '</tr>';
         }
@@ -123,26 +123,26 @@ class Flavor_Newsletter_Admin {
     public function renderizar_vista_estadisticas() {
         $identificador_campana = intval($_GET['id'] ?? 0);
         if ($identificador_campana <= 0) {
-            echo '<div class="wrap"><div class="notice notice-error"><p>' . esc_html__('ID de campana no valido.', 'flavor-chat-ia') . '</p></div></div>';
+            echo '<div class="wrap"><div class="notice notice-error"><p>' . esc_html__('ID de campana no valido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div></div>';
             return;
         }
         $gestor_newsletter = Flavor_Newsletter_Manager::get_instance();
         $estadisticas = $gestor_newsletter->obtener_estadisticas_campana($identificador_campana);
         if (!$estadisticas) {
-            echo '<div class="wrap"><div class="notice notice-error"><p>' . esc_html__('Campana no encontrada.', 'flavor-chat-ia') . '</p></div></div>';
+            echo '<div class="wrap"><div class="notice notice-error"><p>' . esc_html__('Campana no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div></div>';
             return;
         }
         $campana_datos = $estadisticas['campana'];
 
         echo '<div class="wrap">';
-        echo '<h1>' . sprintf(esc_html__('Estadisticas: %s', 'flavor-chat-ia'), esc_html($campana_datos->asunto)) . '</h1>';
-        echo '<a href="' . esc_url(admin_url('admin.php?page=flavor-newsletter')) . '" class="button">&laquo; ' . esc_html__('Volver al listado', 'flavor-chat-ia') . '</a>';
+        echo '<h1>' . sprintf(esc_html__('Estadisticas: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($campana_datos->asunto)) . '</h1>';
+        echo '<a href="' . esc_url(admin_url('admin.php?page=flavor-newsletter')) . '" class="button">&laquo; ' . esc_html__('Volver al listado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
 
         echo '<div class="flavor-stats-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:20px 0;">';
-        $this->renderizar_tarjeta_stat(__('Enviados', 'flavor-chat-ia'), intval($campana_datos->total_enviados) . '/' . intval($campana_datos->total_destinatarios));
-        $this->renderizar_tarjeta_stat(__('Aperturas unicas', 'flavor-chat-ia'), $estadisticas['aperturas_unicas'] . ' (' . $estadisticas['tasa_apertura'] . '%)');
-        $this->renderizar_tarjeta_stat(__('Clicks unicos', 'flavor-chat-ia'), $estadisticas['clicks_unicos'] . ' (' . $estadisticas['tasa_clicks'] . '%)');
-        $this->renderizar_tarjeta_stat(__('Estado', 'flavor-chat-ia'), esc_html($campana_datos->estado));
+        $this->renderizar_tarjeta_stat(__('Enviados', FLAVOR_PLATFORM_TEXT_DOMAIN), intval($campana_datos->total_enviados) . '/' . intval($campana_datos->total_destinatarios));
+        $this->renderizar_tarjeta_stat(__('Aperturas unicas', FLAVOR_PLATFORM_TEXT_DOMAIN), $estadisticas['aperturas_unicas'] . ' (' . $estadisticas['tasa_apertura'] . '%)');
+        $this->renderizar_tarjeta_stat(__('Clicks unicos', FLAVOR_PLATFORM_TEXT_DOMAIN), $estadisticas['clicks_unicos'] . ' (' . $estadisticas['tasa_clicks'] . '%)');
+        $this->renderizar_tarjeta_stat(__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($campana_datos->estado));
         echo '</div>';
         echo '</div>';
     }

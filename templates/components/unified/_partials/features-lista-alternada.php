@@ -90,7 +90,7 @@ $items_sanitizados        = ! empty( $items ) && is_array( $items ) ? $items : a
                             >
                                 <?php
                                 /* translators: %d is the feature number */
-                                printf( esc_html__( '%02d', 'flavor-chat-ia' ), $indice + 1 );
+                                printf( esc_html__( '%02d', FLAVOR_PLATFORM_TEXT_DOMAIN ), $indice + 1 );
                                 ?>
                             </span>
 

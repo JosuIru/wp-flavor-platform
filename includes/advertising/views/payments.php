@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 
 // Verificar permisos
 if (!current_user_can('manage_options')) {
-    wp_die(__('No tienes permisos suficientes para acceder a esta página.', 'flavor-chat-ia'));
+    wp_die(__('No tienes permisos suficientes para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
 }
 
 global $wpdb;
@@ -40,7 +40,7 @@ if (isset($_POST['flavor_request_payment']) && check_admin_referer('flavor_reque
         ['%s', '%s', '%d', '%s', '%f', '%s', '%s', '%d']
     );
 
-    echo '<div class="notice notice-success"><p>' . esc_html__('Solicitud de pago enviada correctamente. Te notificaremos cuando sea procesada.', 'flavor-chat-ia') . '</p></div>';
+    echo '<div class="notice notice-success"><p>' . esc_html__('Solicitud de pago enviada correctamente. Te notificaremos cuando sea procesada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
 }
 
 // Procesar configuración de método de pago
@@ -57,7 +57,7 @@ if (isset($_POST['flavor_payment_method']) && check_admin_referer('flavor_paymen
     update_option('flavor_advertising_stripe_account', $stripe_account_id);
     update_option('flavor_advertising_crypto_wallet', $crypto_wallet);
 
-    echo '<div class="notice notice-success"><p>' . esc_html__('Método de pago actualizado correctamente.', 'flavor-chat-ia') . '</p></div>';
+    echo '<div class="notice notice-success"><p>' . esc_html__('Método de pago actualizado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
 }
 
 // Obtener filtros
@@ -130,27 +130,27 @@ $crypto_wallet_guardado = get_option('flavor_advertising_crypto_wallet', '');
 ?>
 
 <div class="wrap">
-    <h1><?php echo esc_html__('Pagos y Distribución de Beneficios', 'flavor-chat-ia'); ?></h1>
+    <h1><?php echo esc_html__('Pagos y Distribución de Beneficios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
 
     <!-- Balance y estadísticas -->
     <div class="flavor-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 20px 0;">
 
         <div class="card" style="padding: 20px; text-align: center;">
             <h3 style="margin: 0 0 10px 0; color: #666; font-size: 14px; text-transform: uppercase;">
-                <?php esc_html_e('Balance Pendiente', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Balance Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <p style="margin: 0; font-size: 36px; font-weight: bold; color: #2271b1;">
                 €<?php echo esc_html(number_format($balance_actual, 2, ',', '.')); ?>
             </p>
             <?php if ($balance_actual >= $umbral_minimo_pago) : ?>
                 <p class="description" style="margin: 10px 0 0 0; color: #00a32a;">
-                    <?php esc_html_e('✓ Disponible para solicitar pago', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('✓ Disponible para solicitar pago', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             <?php else : ?>
                 <p class="description" style="margin: 10px 0 0 0; color: #d63638;">
                     <?php
                     /* translators: %s: monto mínimo requerido */
-                    printf(esc_html__('Mínimo requerido: €%s', 'flavor-chat-ia'), esc_html(number_format($umbral_minimo_pago, 2, ',', '.')));
+                    printf(esc_html__('Mínimo requerido: €%s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html(number_format($umbral_minimo_pago, 2, ',', '.')));
                     ?>
                 </p>
             <?php endif; ?>
@@ -158,37 +158,37 @@ $crypto_wallet_guardado = get_option('flavor_advertising_crypto_wallet', '');
 
         <div class="card" style="padding: 20px; text-align: center;">
             <h3 style="margin: 0 0 10px 0; color: #666; font-size: 14px; text-transform: uppercase;">
-                <?php esc_html_e('Total Pagado', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Total Pagado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <p style="margin: 0; font-size: 36px; font-weight: bold; color: #00a32a;">
                 €<?php echo esc_html(number_format($total_pagado, 2, ',', '.')); ?>
             </p>
             <p class="description" style="margin: 10px 0 0 0;">
-                <?php esc_html_e('Histórico', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Histórico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
 
         <div class="card" style="padding: 20px; text-align: center;">
             <h3 style="margin: 0 0 10px 0; color: #666; font-size: 14px; text-transform: uppercase;">
-                <?php esc_html_e('Pagos Cancelados', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Pagos Cancelados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <p style="margin: 0; font-size: 36px; font-weight: bold; color: #d63638;">
                 €<?php echo esc_html(number_format($total_cancelado, 2, ',', '.')); ?>
             </p>
             <p class="description" style="margin: 10px 0 0 0;">
-                <?php esc_html_e('Histórico', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Histórico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
 
         <div class="card" style="padding: 20px; text-align: center;">
             <h3 style="margin: 0 0 10px 0; color: #666; font-size: 14px; text-transform: uppercase;">
-                <?php esc_html_e('Método de Pago', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Método de Pago', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <p style="margin: 0; font-size: 24px; font-weight: bold; color: #2271b1;">
                 <?php echo esc_html(strtoupper($metodo_pago_actual)); ?>
             </p>
             <p class="description" style="margin: 10px 0 0 0;">
-                <a href="#payment-method-settings"><?php esc_html_e('Cambiar método', 'flavor-chat-ia'); ?></a>
+                <a href="#payment-method-settings"><?php esc_html_e('Cambiar método', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
             </p>
         </div>
 
@@ -197,31 +197,31 @@ $crypto_wallet_guardado = get_option('flavor_advertising_crypto_wallet', '');
     <!-- Solicitar pago -->
     <?php if ($balance_actual >= $umbral_minimo_pago) : ?>
         <div class="card" style="margin: 20px 0; padding: 20px; background: #f0f6fc; border-left: 4px solid #2271b1;">
-            <h2><?php esc_html_e('Solicitar Pago', 'flavor-chat-ia'); ?></h2>
+            <h2><?php esc_html_e('Solicitar Pago', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <form method="post" action="">
                 <?php wp_nonce_field('flavor_request_payment_action', 'flavor_request_payment_nonce'); ?>
 
                 <table class="form-table">
                     <tr>
-                        <th scope="row"><?php esc_html_e('Monto a Solicitar', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php esc_html_e('Monto a Solicitar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <input type="number" name="monto_solicitud" step="0.01" min="<?php echo esc_attr($umbral_minimo_pago); ?>" max="<?php echo esc_attr($balance_actual); ?>" value="<?php echo esc_attr($balance_actual); ?>" required style="width: 200px;">
                             <p class="description">
                                 <?php
                                 /* translators: %s: balance disponible */
-                                printf(esc_html__('Balance disponible: €%s', 'flavor-chat-ia'), esc_html(number_format($balance_actual, 2, ',', '.')));
+                                printf(esc_html__('Balance disponible: €%s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html(number_format($balance_actual, 2, ',', '.')));
                                 ?>
                             </p>
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><?php esc_html_e('Método de Pago', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php esc_html_e('Método de Pago', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <select name="metodo_pago_solicitud" required>
                                 <option value="paypal" <?php selected($metodo_pago_actual, 'paypal'); ?>>PayPal</option>
-                                <option value="bank_transfer" <?php selected($metodo_pago_actual, 'bank_transfer'); ?>><?php esc_html_e('Transferencia Bancaria', 'flavor-chat-ia'); ?></option>
+                                <option value="bank_transfer" <?php selected($metodo_pago_actual, 'bank_transfer'); ?>><?php esc_html_e('Transferencia Bancaria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                 <option value="stripe" <?php selected($metodo_pago_actual, 'stripe'); ?>>Stripe</option>
-                                <option value="crypto" <?php selected($metodo_pago_actual, 'crypto'); ?>><?php esc_html_e('Criptomoneda', 'flavor-chat-ia'); ?></option>
+                                <option value="crypto" <?php selected($metodo_pago_actual, 'crypto'); ?>><?php esc_html_e('Criptomoneda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             </select>
                         </td>
                     </tr>
@@ -229,7 +229,7 @@ $crypto_wallet_guardado = get_option('flavor_advertising_crypto_wallet', '');
 
                 <p class="submit">
                     <button type="submit" name="flavor_request_payment" class="button button-primary button-large">
-                        <?php esc_html_e('Solicitar Pago Ahora', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Solicitar Pago Ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </p>
             </form>
@@ -238,43 +238,43 @@ $crypto_wallet_guardado = get_option('flavor_advertising_crypto_wallet', '');
 
     <!-- Filtros de historial -->
     <div class="card" style="margin: 20px 0; padding: 20px;">
-        <h2><?php esc_html_e('Historial de Pagos', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Historial de Pagos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
         <form method="get" action="" style="margin-bottom: 20px;">
             <input type="hidden" name="page" value="flavor-advertising-payments">
 
-            <label for="estado"><?php esc_html_e('Estado:', 'flavor-chat-ia'); ?></label>
+            <label for="estado"><?php esc_html_e('Estado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <select name="estado" id="estado">
-                <option value=""><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
-                <option value="pending" <?php selected($filtro_estado, 'pending'); ?>><?php esc_html_e('Pendiente', 'flavor-chat-ia'); ?></option>
-                <option value="paid" <?php selected($filtro_estado, 'paid'); ?>><?php esc_html_e('Pagado', 'flavor-chat-ia'); ?></option>
-                <option value="cancelled" <?php selected($filtro_estado, 'cancelled'); ?>><?php esc_html_e('Cancelado', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="pending" <?php selected($filtro_estado, 'pending'); ?>><?php esc_html_e('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="paid" <?php selected($filtro_estado, 'paid'); ?>><?php esc_html_e('Pagado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="cancelled" <?php selected($filtro_estado, 'cancelled'); ?>><?php esc_html_e('Cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             </select>
 
-            <label for="fecha_inicio" style="margin-left: 15px;"><?php esc_html_e('Desde:', 'flavor-chat-ia'); ?></label>
+            <label for="fecha_inicio" style="margin-left: 15px;"><?php esc_html_e('Desde:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <input type="date" name="fecha_inicio" id="fecha_inicio" value="<?php echo esc_attr($filtro_fecha_inicio); ?>">
 
-            <label for="fecha_fin" style="margin-left: 15px;"><?php esc_html_e('Hasta:', 'flavor-chat-ia'); ?></label>
+            <label for="fecha_fin" style="margin-left: 15px;"><?php esc_html_e('Hasta:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <input type="date" name="fecha_fin" id="fecha_fin" value="<?php echo esc_attr($filtro_fecha_fin); ?>">
 
             <button type="submit" class="button" style="margin-left: 15px;">
-                <?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-advertising-payments')); ?>" class="button">
-                <?php esc_html_e('Limpiar Filtros', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Limpiar Filtros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </form>
 
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Concepto', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Anuncio', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Sitio', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Monto', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Método', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Concepto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Sitio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Monto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Método', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -294,9 +294,9 @@ $crypto_wallet_guardado = get_option('flavor_advertising_crypto_wallet', '');
                                     'cancelled' => '#999'
                                 ];
                                 $estado_texto = [
-                                    'pending' => __('Pendiente', 'flavor-chat-ia'),
-                                    'paid' => __('Pagado', 'flavor-chat-ia'),
-                                    'cancelled' => __('Cancelado', 'flavor-chat-ia')
+                                    'pending' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    'paid' => __('Pagado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    'cancelled' => __('Cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN)
                                 ];
                                 ?>
                                 <span style="color: <?php echo esc_attr($estado_color[$pago->estado] ?? '#000'); ?>; font-weight: bold;">
@@ -309,7 +309,7 @@ $crypto_wallet_guardado = get_option('flavor_advertising_crypto_wallet', '');
                 <?php else : ?>
                     <tr>
                         <td colspan="7" style="text-align: center; padding: 20px;">
-                            <?php esc_html_e('No hay pagos registrados.', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('No hay pagos registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </td>
                     </tr>
                 <?php endif; ?>
@@ -319,15 +319,15 @@ $crypto_wallet_guardado = get_option('flavor_advertising_crypto_wallet', '');
 
     <!-- Estadísticas por anunciante -->
     <div class="card" style="margin: 20px 0; padding: 20px;">
-        <h2><?php esc_html_e('Estadísticas por Anunciante', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Estadísticas por Anunciante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Sitio / Anunciante', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Total Pagos', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Total Pagado', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Pendiente', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Sitio / Anunciante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Total Pagos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Total Pagado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -343,7 +343,7 @@ $crypto_wallet_guardado = get_option('flavor_advertising_crypto_wallet', '');
                 <?php else : ?>
                     <tr>
                         <td colspan="4" style="text-align: center; padding: 20px;">
-                            <?php esc_html_e('No hay estadísticas disponibles.', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('No hay estadísticas disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </td>
                     </tr>
                 <?php endif; ?>
@@ -354,15 +354,15 @@ $crypto_wallet_guardado = get_option('flavor_advertising_crypto_wallet', '');
     <!-- Próximos pagos programados -->
     <?php if (!empty($proximos_pagos)) : ?>
         <div class="card" style="margin: 20px 0; padding: 20px;">
-            <h2><?php esc_html_e('Próximos Pagos Programados', 'flavor-chat-ia'); ?></h2>
+            <h2><?php esc_html_e('Próximos Pagos Programados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('Fecha Solicitud', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Concepto', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Monto', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Método', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Fecha Solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Concepto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Monto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Método', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -381,56 +381,56 @@ $crypto_wallet_guardado = get_option('flavor_advertising_crypto_wallet', '');
 
     <!-- Configuración de método de pago -->
     <div class="card" style="margin: 20px 0; padding: 20px;" id="payment-method-settings">
-        <h2><?php esc_html_e('Configuración de Método de Pago', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Configuración de Método de Pago', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
         <form method="post" action="">
             <?php wp_nonce_field('flavor_payment_method_action', 'flavor_payment_method_nonce'); ?>
 
             <table class="form-table">
                 <tr>
-                    <th scope="row"><?php esc_html_e('Método Preferido', 'flavor-chat-ia'); ?></th>
+                    <th scope="row"><?php esc_html_e('Método Preferido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <select name="metodo_pago" id="flavor-payment-method-select" required>
                             <option value="paypal" <?php selected($metodo_pago_actual, 'paypal'); ?>>PayPal</option>
-                            <option value="bank_transfer" <?php selected($metodo_pago_actual, 'bank_transfer'); ?>><?php esc_html_e('Transferencia Bancaria', 'flavor-chat-ia'); ?></option>
+                            <option value="bank_transfer" <?php selected($metodo_pago_actual, 'bank_transfer'); ?>><?php esc_html_e('Transferencia Bancaria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <option value="stripe" <?php selected($metodo_pago_actual, 'stripe'); ?>>Stripe</option>
-                            <option value="crypto" <?php selected($metodo_pago_actual, 'crypto'); ?>><?php esc_html_e('Criptomoneda', 'flavor-chat-ia'); ?></option>
+                            <option value="crypto" <?php selected($metodo_pago_actual, 'crypto'); ?>><?php esc_html_e('Criptomoneda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </td>
                 </tr>
                 <tr id="paypal-fields" style="display: none;">
-                    <th scope="row"><?php esc_html_e('Email de PayPal', 'flavor-chat-ia'); ?></th>
+                    <th scope="row"><?php esc_html_e('Email de PayPal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <input type="email" name="email_paypal" class="regular-text" value="<?php echo esc_attr($email_paypal_guardado); ?>">
-                        <p class="description"><?php esc_html_e('Email asociado a tu cuenta de PayPal.', 'flavor-chat-ia'); ?></p>
+                        <p class="description"><?php esc_html_e('Email asociado a tu cuenta de PayPal.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </td>
                 </tr>
                 <tr id="bank-fields" style="display: none;">
-                    <th scope="row"><?php esc_html_e('Cuenta Bancaria (IBAN)', 'flavor-chat-ia'); ?></th>
+                    <th scope="row"><?php esc_html_e('Cuenta Bancaria (IBAN)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <input type="text" name="cuenta_bancaria" class="regular-text" value="<?php echo esc_attr($cuenta_bancaria_guardada); ?>" placeholder="ES00 0000 0000 0000 0000 0000">
-                        <p class="description"><?php esc_html_e('IBAN de tu cuenta bancaria para transferencias.', 'flavor-chat-ia'); ?></p>
+                        <p class="description"><?php esc_html_e('IBAN de tu cuenta bancaria para transferencias.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </td>
                 </tr>
                 <tr id="stripe-fields" style="display: none;">
-                    <th scope="row"><?php esc_html_e('Stripe Account ID', 'flavor-chat-ia'); ?></th>
+                    <th scope="row"><?php esc_html_e('Stripe Account ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <input type="text" name="stripe_account_id" class="regular-text" value="<?php echo esc_attr($stripe_account_guardado); ?>">
-                        <p class="description"><?php esc_html_e('ID de tu cuenta de Stripe Connect.', 'flavor-chat-ia'); ?></p>
+                        <p class="description"><?php esc_html_e('ID de tu cuenta de Stripe Connect.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </td>
                 </tr>
                 <tr id="crypto-fields" style="display: none;">
-                    <th scope="row"><?php esc_html_e('Dirección de Wallet', 'flavor-chat-ia'); ?></th>
+                    <th scope="row"><?php esc_html_e('Dirección de Wallet', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <input type="text" name="crypto_wallet" class="regular-text" value="<?php echo esc_attr($crypto_wallet_guardado); ?>">
-                        <p class="description"><?php esc_html_e('Dirección de tu wallet de criptomonedas (BTC, ETH, etc.).', 'flavor-chat-ia'); ?></p>
+                        <p class="description"><?php esc_html_e('Dirección de tu wallet de criptomonedas (BTC, ETH, etc.).', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </td>
                 </tr>
             </table>
 
             <p class="submit">
                 <button type="submit" name="flavor_payment_method" class="button button-primary">
-                    <?php esc_html_e('Guardar Método de Pago', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Guardar Método de Pago', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </p>
         </form>

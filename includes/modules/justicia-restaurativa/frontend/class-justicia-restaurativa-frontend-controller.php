@@ -84,10 +84,10 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
                 'ajaxUrl' => admin_url('admin-ajax.php'),
                 'nonce' => wp_create_nonce('flavor_justicia_nonce'),
                 'strings' => [
-                    'procesando' => __('Procesando...', 'flavor-chat-ia'),
-                    'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                    'solicitudEnviada' => __('Solicitud enviada correctamente', 'flavor-chat-ia'),
-                    'confirmarAcuerdo' => __('¿Confirmas que aceptas los términos del acuerdo?', 'flavor-chat-ia'),
+                    'procesando' => __('Procesando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'solicitudEnviada' => __('Solicitud enviada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'confirmarAcuerdo' => __('¿Confirmas que aceptas los términos del acuerdo?', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ]);
         }
@@ -110,7 +110,7 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
 
     public function register_dashboard_tabs($tabs) {
         $tabs['justicia-restaurativa'] = [
-            'titulo' => __('Mediación', 'flavor-chat-ia'),
+            'titulo' => __('Mediación', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'dashicons-universal-access',
             'callback' => [$this, 'render_dashboard_tab'],
             'prioridad' => 50,
@@ -131,17 +131,17 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
         <div class="flavor-justicia-inicio">
             <div class="flavor-justicia-hero">
                 <div class="flavor-justicia-hero-content">
-                    <h1><?php _e('Justicia Restaurativa', 'flavor-chat-ia'); ?></h1>
+                    <h1><?php _e('Justicia Restaurativa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
                     <p class="flavor-lead">
-                        <?php _e('Un espacio seguro para resolver conflictos mediante el diálogo, la mediación y la reparación del daño. Construyamos juntos una comunidad más armoniosa.', 'flavor-chat-ia'); ?>
+                        <?php _e('Un espacio seguro para resolver conflictos mediante el diálogo, la mediación y la reparación del daño. Construyamos juntos una comunidad más armoniosa.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                     <?php if (is_user_logged_in()): ?>
                     <a href="<?php echo esc_url($this->get_solicitar_url()); ?>" class="flavor-btn flavor-btn-primary flavor-btn-lg">
-                        <?php _e('Solicitar mediación', 'flavor-chat-ia'); ?>
+                        <?php _e('Solicitar mediación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <?php else: ?>
                     <a href="<?php echo wp_login_url(flavor_current_request_url()); ?>" class="flavor-btn flavor-btn-primary flavor-btn-lg">
-                        <?php _e('Inicia sesión para solicitar', 'flavor-chat-ia'); ?>
+                        <?php _e('Inicia sesión para solicitar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <?php endif; ?>
                 </div>
@@ -153,61 +153,61 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
             </div>
 
             <div class="flavor-justicia-principios">
-                <h2><?php _e('Principios de la Justicia Restaurativa', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Principios de la Justicia Restaurativa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <div class="flavor-principios-grid">
                     <div class="flavor-principio-card">
                         <div class="flavor-principio-icono">
                             <span class="dashicons dashicons-megaphone"></span>
                         </div>
-                        <h3><?php _e('Diálogo', 'flavor-chat-ia'); ?></h3>
-                        <p><?php _e('Escuchar y ser escuchado en un espacio de respeto mutuo.', 'flavor-chat-ia'); ?></p>
+                        <h3><?php _e('Diálogo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                        <p><?php _e('Escuchar y ser escuchado en un espacio de respeto mutuo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                     <div class="flavor-principio-card">
                         <div class="flavor-principio-icono">
                             <span class="dashicons dashicons-heart"></span>
                         </div>
-                        <h3><?php _e('Reparación', 'flavor-chat-ia'); ?></h3>
-                        <p><?php _e('Restaurar las relaciones y reparar el daño causado.', 'flavor-chat-ia'); ?></p>
+                        <h3><?php _e('Reparación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                        <p><?php _e('Restaurar las relaciones y reparar el daño causado.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                     <div class="flavor-principio-card">
                         <div class="flavor-principio-icono">
                             <span class="dashicons dashicons-groups"></span>
                         </div>
-                        <h3><?php _e('Comunidad', 'flavor-chat-ia'); ?></h3>
-                        <p><?php _e('La comunidad participa en la resolución y sanación.', 'flavor-chat-ia'); ?></p>
+                        <h3><?php _e('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                        <p><?php _e('La comunidad participa en la resolución y sanación.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                     <div class="flavor-principio-card">
                         <div class="flavor-principio-icono">
                             <span class="dashicons dashicons-shield"></span>
                         </div>
-                        <h3><?php _e('Confidencialidad', 'flavor-chat-ia'); ?></h3>
-                        <p><?php _e('Todo el proceso es confidencial y seguro.', 'flavor-chat-ia'); ?></p>
+                        <h3><?php _e('Confidencialidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                        <p><?php _e('Todo el proceso es confidencial y seguro.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 </div>
             </div>
 
             <div class="flavor-justicia-proceso">
-                <h2><?php _e('¿Cómo funciona?', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('¿Cómo funciona?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <div class="flavor-proceso-pasos">
                     <div class="flavor-paso">
                         <div class="flavor-paso-numero">1</div>
-                        <h4><?php _e('Solicitud', 'flavor-chat-ia'); ?></h4>
-                        <p><?php _e('Presenta tu solicitud describiendo la situación.', 'flavor-chat-ia'); ?></p>
+                        <h4><?php _e('Solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                        <p><?php _e('Presenta tu solicitud describiendo la situación.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                     <div class="flavor-paso">
                         <div class="flavor-paso-numero">2</div>
-                        <h4><?php _e('Contacto', 'flavor-chat-ia'); ?></h4>
-                        <p><?php _e('Un mediador te contactará para una entrevista inicial.', 'flavor-chat-ia'); ?></p>
+                        <h4><?php _e('Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                        <p><?php _e('Un mediador te contactará para una entrevista inicial.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                     <div class="flavor-paso">
                         <div class="flavor-paso-numero">3</div>
-                        <h4><?php _e('Mediación', 'flavor-chat-ia'); ?></h4>
-                        <p><?php _e('Sesiones de diálogo facilitado entre las partes.', 'flavor-chat-ia'); ?></p>
+                        <h4><?php _e('Mediación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                        <p><?php _e('Sesiones de diálogo facilitado entre las partes.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                     <div class="flavor-paso">
                         <div class="flavor-paso-numero">4</div>
-                        <h4><?php _e('Acuerdo', 'flavor-chat-ia'); ?></h4>
-                        <p><?php _e('Alcanzar un acuerdo de reparación satisfactorio.', 'flavor-chat-ia'); ?></p>
+                        <h4><?php _e('Acuerdo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                        <p><?php _e('Alcanzar un acuerdo de reparación satisfactorio.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 </div>
             </div>
@@ -215,15 +215,15 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
             <div class="flavor-justicia-stats">
                 <div class="flavor-stat-item">
                     <span class="flavor-stat-valor"><?php echo intval($stats['casos_resueltos']); ?></span>
-                    <span class="flavor-stat-label"><?php _e('Casos resueltos', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-stat-label"><?php _e('Casos resueltos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="flavor-stat-item">
                     <span class="flavor-stat-valor"><?php echo intval($stats['porcentaje_exito']); ?>%</span>
-                    <span class="flavor-stat-label"><?php _e('Tasa de éxito', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-stat-label"><?php _e('Tasa de éxito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="flavor-stat-item">
                     <span class="flavor-stat-valor"><?php echo intval($stats['mediadores']); ?></span>
-                    <span class="flavor-stat-label"><?php _e('Mediadores activos', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-stat-label"><?php _e('Mediadores activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
         </div>
@@ -233,7 +233,7 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
 
     public function shortcode_solicitar($atts) {
         if (!is_user_logged_in()) {
-            return '<div class="flavor-login-required">' . __('Inicia sesión para solicitar mediación.', 'flavor-chat-ia') . '</div>';
+            return '<div class="flavor-login-required">' . __('Inicia sesión para solicitar mediación.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         $tipos = $this->obtener_tipos_conflicto();
@@ -242,9 +242,9 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
         ?>
         <div class="flavor-solicitar-mediacion">
             <div class="flavor-solicitar-header">
-                <h2><?php _e('Solicitar Mediación', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Solicitar Mediación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <p class="flavor-intro">
-                    <?php _e('Describe la situación que deseas resolver. Toda la información es confidencial y será tratada con respeto.', 'flavor-chat-ia'); ?>
+                    <?php _e('Describe la situación que deseas resolver. Toda la información es confidencial y será tratada con respeto.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
@@ -252,9 +252,9 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
                 <?php wp_nonce_field('flavor_justicia_nonce', 'mediacion_nonce'); ?>
 
                 <div class="flavor-form-group">
-                    <label for="tipo_conflicto"><?php _e('Tipo de situación', 'flavor-chat-ia'); ?> *</label>
+                    <label for="tipo_conflicto"><?php _e('Tipo de situación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <select id="tipo_conflicto" name="tipo_conflicto" required>
-                        <option value=""><?php _e('Selecciona el tipo de situación', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Selecciona el tipo de situación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($tipos as $tipo): ?>
                         <option value="<?php echo esc_attr($tipo['slug']); ?>"><?php echo esc_html($tipo['nombre']); ?></option>
                         <?php endforeach; ?>
@@ -262,44 +262,44 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="titulo"><?php _e('Título o resumen breve', 'flavor-chat-ia'); ?> *</label>
+                    <label for="titulo"><?php _e('Título o resumen breve', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <input type="text" id="titulo" name="titulo" required
-                           placeholder="<?php esc_attr_e('Describe brevemente la situación', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php esc_attr_e('Describe brevemente la situación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="descripcion"><?php _e('Descripción de la situación', 'flavor-chat-ia'); ?> *</label>
+                    <label for="descripcion"><?php _e('Descripción de la situación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <textarea id="descripcion" name="descripcion" rows="6" required
-                              placeholder="<?php esc_attr_e('Explica con detalle lo sucedido, las personas involucradas y cómo te ha afectado...', 'flavor-chat-ia'); ?>"></textarea>
-                    <p class="flavor-form-help"><?php _e('Esta información es confidencial y solo será vista por el mediador asignado.', 'flavor-chat-ia'); ?></p>
+                              placeholder="<?php esc_attr_e('Explica con detalle lo sucedido, las personas involucradas y cómo te ha afectado...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
+                    <p class="flavor-form-help"><?php _e('Esta información es confidencial y solo será vista por el mediador asignado.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="otras_partes"><?php _e('Otras personas involucradas', 'flavor-chat-ia'); ?></label>
+                    <label for="otras_partes"><?php _e('Otras personas involucradas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <textarea id="otras_partes" name="otras_partes" rows="2"
-                              placeholder="<?php esc_attr_e('Indica nombres o datos de contacto de las otras partes, si los conoces', 'flavor-chat-ia'); ?>"></textarea>
+                              placeholder="<?php esc_attr_e('Indica nombres o datos de contacto de las otras partes, si los conoces', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="expectativas"><?php _e('¿Qué esperas lograr?', 'flavor-chat-ia'); ?></label>
+                    <label for="expectativas"><?php _e('¿Qué esperas lograr?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <textarea id="expectativas" name="expectativas" rows="3"
-                              placeholder="<?php esc_attr_e('¿Qué resultado te gustaría conseguir de este proceso?', 'flavor-chat-ia'); ?>"></textarea>
+                              placeholder="<?php esc_attr_e('¿Qué resultado te gustaría conseguir de este proceso?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label><?php _e('Urgencia', 'flavor-chat-ia'); ?></label>
+                    <label><?php _e('Urgencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <div class="flavor-radio-group">
                         <label>
                             <input type="radio" name="urgencia" value="baja" checked>
-                            <span><?php _e('Baja - Puedo esperar', 'flavor-chat-ia'); ?></span>
+                            <span><?php _e('Baja - Puedo esperar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label>
                             <input type="radio" name="urgencia" value="media">
-                            <span><?php _e('Media - Prefiero pronto', 'flavor-chat-ia'); ?></span>
+                            <span><?php _e('Media - Prefiero pronto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label>
                             <input type="radio" name="urgencia" value="alta">
-                            <span><?php _e('Alta - Es urgente', 'flavor-chat-ia'); ?></span>
+                            <span><?php _e('Alta - Es urgente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                     </div>
                 </div>
@@ -307,13 +307,13 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
                 <div class="flavor-form-group flavor-checkbox-group">
                     <label>
                         <input type="checkbox" name="acepto_condiciones" required>
-                        <?php _e('Acepto participar de buena fe en el proceso de mediación y respetar la confidencialidad.', 'flavor-chat-ia'); ?>
+                        <?php _e('Acepto participar de buena fe en el proceso de mediación y respetar la confidencialidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </div>
 
                 <div class="flavor-form-actions">
                     <button type="submit" class="flavor-btn flavor-btn-primary flavor-btn-lg">
-                        <?php _e('Enviar solicitud', 'flavor-chat-ia'); ?>
+                        <?php _e('Enviar solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </form>
@@ -324,7 +324,7 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
 
     public function shortcode_mis_casos($atts) {
         if (!is_user_logged_in()) {
-            return '<div class="flavor-login-required">' . __('Inicia sesión para ver tus casos.', 'flavor-chat-ia') . '</div>';
+            return '<div class="flavor-login-required">' . __('Inicia sesión para ver tus casos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         $user_id = get_current_user_id();
@@ -334,19 +334,19 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
         ?>
         <div class="flavor-mis-casos">
             <div class="flavor-casos-header">
-                <h2><?php _e('Mis Casos de Mediación', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Mis Casos de Mediación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <a href="<?php echo esc_url($this->get_solicitar_url()); ?>" class="flavor-btn flavor-btn-primary">
-                    <?php _e('Nueva solicitud', 'flavor-chat-ia'); ?>
+                    <?php _e('Nueva solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
             <?php if (empty($casos)): ?>
             <div class="flavor-empty-state">
                 <span class="dashicons dashicons-universal-access"></span>
-                <h3><?php _e('Sin casos activos', 'flavor-chat-ia'); ?></h3>
-                <p><?php _e('No tienes casos de mediación en curso.', 'flavor-chat-ia'); ?></p>
+                <h3><?php _e('Sin casos activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php _e('No tienes casos de mediación en curso.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <a href="<?php echo esc_url($this->get_solicitar_url()); ?>" class="flavor-btn flavor-btn-primary">
-                    <?php _e('Solicitar mediación', 'flavor-chat-ia'); ?>
+                    <?php _e('Solicitar mediación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php else: ?>
@@ -375,7 +375,7 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
                     <div class="flavor-caso-acciones">
                         <a href="<?php echo esc_url($this->get_caso_url($caso['id'])); ?>"
                            class="flavor-btn flavor-btn-outline">
-                            <?php _e('Ver detalles', 'flavor-chat-ia'); ?>
+                            <?php _e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </div>
@@ -389,21 +389,21 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
 
     public function shortcode_caso($atts) {
         if (!is_user_logged_in()) {
-            return '<div class="flavor-login-required">' . __('Inicia sesión para ver este caso.', 'flavor-chat-ia') . '</div>';
+            return '<div class="flavor-login-required">' . __('Inicia sesión para ver este caso.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         $atts = shortcode_atts(['id' => 0], $atts);
         $caso_id = intval($atts['id']) ?: intval($_GET['caso_id'] ?? 0);
 
         if (!$caso_id) {
-            return '<div class="flavor-error">' . __('Caso no especificado.', 'flavor-chat-ia') . '</div>';
+            return '<div class="flavor-error">' . __('Caso no especificado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         $user_id = get_current_user_id();
         $caso = $this->obtener_caso($caso_id, $user_id);
 
         if (!$caso) {
-            return '<div class="flavor-error">' . __('Caso no encontrado o sin acceso.', 'flavor-chat-ia') . '</div>';
+            return '<div class="flavor-error">' . __('Caso no encontrado o sin acceso.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         $mensajes = $this->obtener_mensajes_caso($caso_id);
@@ -414,7 +414,7 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
         <div class="flavor-caso-detalle">
             <div class="flavor-caso-header">
                 <nav class="flavor-breadcrumb">
-                    <a href="<?php echo esc_url($this->get_mis_casos_url()); ?>"><?php _e('Mis casos', 'flavor-chat-ia'); ?></a>
+                    <a href="<?php echo esc_url($this->get_mis_casos_url()); ?>"><?php _e('Mis casos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                     <span class="separator">›</span>
                     <span><?php echo esc_html($caso['titulo']); ?></span>
                 </nav>
@@ -425,10 +425,10 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
                 </div>
 
                 <div class="flavor-caso-meta-detalle">
-                    <span><?php _e('Tipo:', 'flavor-chat-ia'); ?> <?php echo esc_html($caso['tipo_nombre']); ?></span>
-                    <span><?php _e('Fecha:', 'flavor-chat-ia'); ?> <?php echo esc_html(date_i18n('d/m/Y', strtotime($caso['fecha_solicitud']))); ?></span>
+                    <span><?php _e('Tipo:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html($caso['tipo_nombre']); ?></span>
+                    <span><?php _e('Fecha:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html(date_i18n('d/m/Y', strtotime($caso['fecha_solicitud']))); ?></span>
                     <?php if (!empty($caso['mediador_nombre'])): ?>
-                    <span><?php _e('Mediador:', 'flavor-chat-ia'); ?> <?php echo esc_html($caso['mediador_nombre']); ?></span>
+                    <span><?php _e('Mediador:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html($caso['mediador_nombre']); ?></span>
                     <?php endif; ?>
                 </div>
             </div>
@@ -436,7 +436,7 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
             <div class="flavor-caso-contenido">
                 <div class="flavor-caso-main">
                     <section class="flavor-panel">
-                        <h3><?php _e('Descripción', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="flavor-caso-descripcion">
                             <?php echo wp_kses_post(nl2br($caso['descripcion'])); ?>
                         </div>
@@ -444,7 +444,7 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
 
                     <?php if (!empty($sesiones)): ?>
                     <section class="flavor-panel">
-                        <h3><?php _e('Sesiones programadas', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Sesiones programadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="flavor-sesiones-lista">
                             <?php foreach ($sesiones as $sesion): ?>
                             <div class="flavor-sesion-item">
@@ -464,10 +464,10 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
                     <?php endif; ?>
 
                     <section class="flavor-panel">
-                        <h3><?php _e('Comunicaciones', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Comunicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="flavor-mensajes-caso">
                             <?php if (empty($mensajes)): ?>
-                            <p class="flavor-no-mensajes"><?php _e('No hay mensajes en este caso.', 'flavor-chat-ia'); ?></p>
+                            <p class="flavor-no-mensajes"><?php _e('No hay mensajes en este caso.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             <?php else: ?>
                                 <?php foreach ($mensajes as $msg): ?>
                                 <div class="flavor-mensaje-item <?php echo $msg['es_mediador'] ? 'mediador' : 'usuario'; ?>">
@@ -494,10 +494,10 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
                             <input type="hidden" name="caso_id" value="<?php echo esc_attr($caso_id); ?>">
                             <div class="flavor-form-group">
                                 <textarea name="mensaje" rows="3" required
-                                          placeholder="<?php esc_attr_e('Escribe un mensaje al mediador...', 'flavor-chat-ia'); ?>"></textarea>
+                                          placeholder="<?php esc_attr_e('Escribe un mensaje al mediador...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                             </div>
                             <button type="submit" class="flavor-btn flavor-btn-primary">
-                                <?php _e('Enviar mensaje', 'flavor-chat-ia'); ?>
+                                <?php _e('Enviar mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </form>
                         <?php endif; ?>
@@ -507,14 +507,14 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
                 <div class="flavor-caso-sidebar">
                     <?php if (!empty($caso['acuerdo']) && $caso['estado'] === 'pendiente_acuerdo'): ?>
                     <div class="flavor-panel flavor-panel-acuerdo">
-                        <h3><?php _e('Propuesta de Acuerdo', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Propuesta de Acuerdo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="flavor-acuerdo-contenido">
                             <?php echo wp_kses_post($caso['acuerdo']); ?>
                         </div>
                         <div class="flavor-acuerdo-acciones">
                             <button type="button" class="flavor-btn flavor-btn-success flavor-aceptar-acuerdo"
                                     data-caso-id="<?php echo esc_attr($caso_id); ?>">
-                                <?php _e('Acepto el acuerdo', 'flavor-chat-ia'); ?>
+                                <?php _e('Acepto el acuerdo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </div>
                     </div>
@@ -522,23 +522,23 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
 
                     <?php if (!empty($caso['mediador_id'])): ?>
                     <div class="flavor-panel">
-                        <h3><?php _e('Tu Mediador', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Tu Mediador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="flavor-mediador-card-mini">
                             <img src="<?php echo esc_url(get_avatar_url($caso['mediador_id'], ['size' => 60])); ?>" alt="">
                             <div>
                                 <h4><?php echo esc_html($caso['mediador_nombre']); ?></h4>
-                                <p><?php _e('Mediador certificado', 'flavor-chat-ia'); ?></p>
+                                <p><?php _e('Mediador certificado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </div>
                         </div>
                     </div>
                     <?php endif; ?>
 
                     <div class="flavor-panel">
-                        <h3><?php _e('Historial', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Historial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="flavor-historial-mini">
                             <div class="flavor-historial-item">
                                 <span class="flavor-historial-fecha"><?php echo esc_html(date_i18n('d/m/Y', strtotime($caso['fecha_solicitud']))); ?></span>
-                                <span><?php _e('Solicitud enviada', 'flavor-chat-ia'); ?></span>
+                                <span><?php _e('Solicitud enviada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                         </div>
                     </div>
@@ -556,8 +556,8 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
         ?>
         <div class="flavor-mediadores">
             <div class="flavor-mediadores-header">
-                <h2><?php _e('Nuestro Equipo de Mediadores', 'flavor-chat-ia'); ?></h2>
-                <p><?php _e('Profesionales formados en resolución de conflictos y justicia restaurativa.', 'flavor-chat-ia'); ?></p>
+                <h2><?php _e('Nuestro Equipo de Mediadores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <p><?php _e('Profesionales formados en resolución de conflictos y justicia restaurativa.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <div class="flavor-mediadores-grid">
@@ -569,8 +569,8 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
                     <h3><?php echo esc_html($mediador['nombre']); ?></h3>
                     <p class="flavor-mediador-especialidad"><?php echo esc_html($mediador['especialidad']); ?></p>
                     <div class="flavor-mediador-stats">
-                        <span><?php printf(__('%d casos', 'flavor-chat-ia'), $mediador['casos']); ?></span>
-                        <span><?php printf(__('%d%% éxito', 'flavor-chat-ia'), $mediador['exito']); ?></span>
+                        <span><?php printf(__('%d casos', FLAVOR_PLATFORM_TEXT_DOMAIN), $mediador['casos']); ?></span>
+                        <span><?php printf(__('%d%% éxito', FLAVOR_PLATFORM_TEXT_DOMAIN), $mediador['exito']); ?></span>
                     </div>
                 </div>
                 <?php endforeach; ?>
@@ -587,8 +587,8 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
         ?>
         <div class="flavor-justicia-recursos">
             <div class="flavor-recursos-header">
-                <h2><?php _e('Recursos y Formación', 'flavor-chat-ia'); ?></h2>
-                <p><?php _e('Material para entender mejor la justicia restaurativa y la resolución de conflictos.', 'flavor-chat-ia'); ?></p>
+                <h2><?php _e('Recursos y Formación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <p><?php _e('Material para entender mejor la justicia restaurativa y la resolución de conflictos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <div class="flavor-recursos-grid">
@@ -611,23 +611,23 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-justicia-estadisticas">
-            <h2><?php _e('Impacto en la Comunidad', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Impacto en la Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <div class="flavor-stats-grid">
                 <div class="flavor-stat-card">
                     <span class="flavor-stat-valor"><?php echo intval($stats['casos_resueltos']); ?></span>
-                    <span class="flavor-stat-label"><?php _e('Conflictos resueltos', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-stat-label"><?php _e('Conflictos resueltos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="flavor-stat-valor"><?php echo intval($stats['porcentaje_exito']); ?>%</span>
-                    <span class="flavor-stat-label"><?php _e('Tasa de acuerdo', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-stat-label"><?php _e('Tasa de acuerdo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="flavor-stat-valor"><?php echo intval($stats['personas_beneficiadas']); ?></span>
-                    <span class="flavor-stat-label"><?php _e('Personas beneficiadas', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-stat-label"><?php _e('Personas beneficiadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="flavor-stat-valor"><?php echo intval($stats['horas_mediacion']); ?></span>
-                    <span class="flavor-stat-label"><?php _e('Horas de mediación', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-stat-label"><?php _e('Horas de mediación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
         </div>
@@ -649,24 +649,24 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
             <div class="flavor-kpi-grid">
                 <div class="flavor-kpi-card">
                     <div class="flavor-kpi-valor"><?php echo intval($stats['activos']); ?></div>
-                    <div class="flavor-kpi-label"><?php _e('Casos activos', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-kpi-label"><?php _e('Casos activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="flavor-kpi-card">
                     <div class="flavor-kpi-valor"><?php echo intval($stats['resueltos']); ?></div>
-                    <div class="flavor-kpi-label"><?php _e('Resueltos', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-kpi-label"><?php _e('Resueltos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
 
             <div class="flavor-panel">
                 <div class="flavor-panel-header">
-                    <h3><?php _e('Mis Casos', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Mis Casos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <a href="<?php echo esc_url($this->get_solicitar_url()); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
-                        <?php _e('Nueva solicitud', 'flavor-chat-ia'); ?>
+                        <?php _e('Nueva solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
 
                 <?php if (empty($casos)): ?>
-                <p class="flavor-text-muted"><?php _e('No tienes casos de mediación.', 'flavor-chat-ia'); ?></p>
+                <p class="flavor-text-muted"><?php _e('No tienes casos de mediación.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php else: ?>
                 <div class="flavor-casos-mini">
                     <?php foreach ($casos as $caso): ?>
@@ -677,7 +677,7 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
                         </div>
                         <a href="<?php echo esc_url($this->get_caso_url($caso['id'])); ?>"
                            class="flavor-btn flavor-btn-sm flavor-btn-outline">
-                            <?php _e('Ver', 'flavor-chat-ia'); ?>
+                            <?php _e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                     <?php endforeach; ?>
@@ -696,7 +696,7 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
         check_ajax_referer('flavor_justicia_nonce', 'mediacion_nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $titulo = sanitize_text_field($_POST['titulo'] ?? '');
@@ -704,14 +704,14 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
         $descripcion = sanitize_textarea_field($_POST['descripcion'] ?? '');
 
         if (empty($titulo) || empty($tipo) || empty($descripcion)) {
-            wp_send_json_error(['message' => __('Completa los campos obligatorios.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Completa los campos obligatorios.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_justicia_casos';
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
-            wp_send_json_error(['message' => __('Sistema no disponible.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sistema no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $user_id = get_current_user_id();
@@ -730,17 +730,17 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
 
         if ($result) {
             wp_send_json_success([
-                'message' => __('Solicitud enviada correctamente. Un mediador se pondrá en contacto contigo.', 'flavor-chat-ia'),
+                'message' => __('Solicitud enviada correctamente. Un mediador se pondrá en contacto contigo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'redirect' => $this->get_mis_casos_url(),
             ]);
         } else {
-            wp_send_json_error(['message' => __('Error al procesar.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al procesar.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
     public function ajax_responder_solicitud() {
         check_ajax_referer('flavor_justicia_nonce', 'nonce');
-        wp_send_json_success(['message' => __('Respuesta enviada.', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Respuesta enviada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     public function ajax_aceptar_acuerdo() {
@@ -750,34 +750,34 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
         $user_id = get_current_user_id();
 
         if (!$caso_id) {
-            wp_send_json_error(['message' => __('Caso no especificado.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Caso no especificado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar acceso y actualizar estado
-        wp_send_json_success(['message' => __('Acuerdo aceptado. ¡Enhorabuena por llegar a un entendimiento!', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Acuerdo aceptado. ¡Enhorabuena por llegar a un entendimiento!', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     public function ajax_enviar_mensaje() {
         check_ajax_referer('flavor_justicia_nonce', 'mensaje_nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $caso_id = intval($_POST['caso_id'] ?? 0);
         $mensaje = sanitize_textarea_field($_POST['mensaje'] ?? '');
 
         if (!$caso_id || empty($mensaje)) {
-            wp_send_json_error(['message' => __('Mensaje vacío.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Mensaje vacío.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Guardar mensaje
-        wp_send_json_success(['message' => __('Mensaje enviado.', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Mensaje enviado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     public function ajax_proponer_fecha() {
         check_ajax_referer('flavor_justicia_nonce', 'nonce');
-        wp_send_json_success(['message' => __('Fecha propuesta.', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Fecha propuesta.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     // =========================================================================

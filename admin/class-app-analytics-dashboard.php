@@ -75,9 +75,9 @@ class Flavor_App_Analytics_Dashboard {
      */
     public function add_menu_page() {
         add_submenu_page(
-            'flavor-chat-ia',
-            __('Analytics Apps', 'flavor-chat-ia'),
-            __('Analytics Apps', 'flavor-chat-ia'),
+            FLAVOR_PLATFORM_TEXT_DOMAIN,
+            __('Analytics Apps', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Analytics Apps', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             self::MENU_SLUG,
             array($this, 'render_dashboard')
@@ -122,13 +122,13 @@ class Flavor_App_Analytics_Dashboard {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_app_analytics'),
             'i18n' => array(
-                'loading' => __('Cargando...', 'flavor-chat-ia'),
-                'error' => __('Error al cargar datos', 'flavor-chat-ia'),
-                'noData' => __('Sin datos disponibles', 'flavor-chat-ia'),
-                'users' => __('Usuarios', 'flavor-chat-ia'),
-                'sessions' => __('Sesiones', 'flavor-chat-ia'),
-                'events' => __('Eventos', 'flavor-chat-ia'),
-                'crashes' => __('Crashes', 'flavor-chat-ia'),
+                'loading' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al cargar datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'noData' => __('Sin datos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'users' => __('Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sessions' => __('Sesiones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'events' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'crashes' => __('Crashes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             )
         ));
     }
@@ -142,43 +142,43 @@ class Flavor_App_Analytics_Dashboard {
         <div class="wrap flavor-app-analytics-wrap">
             <h1>
                 <span class="dashicons dashicons-chart-area"></span>
-                <?php _e('Analytics de Apps Móviles', 'flavor-chat-ia'); ?>
+                <?php _e('Analytics de Apps Móviles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h1>
 
             <!-- Filtros de período -->
             <div class="analytics-filters">
                 <div class="filter-group">
-                    <label><?php _e('Período:', 'flavor-chat-ia'); ?></label>
+                    <label><?php _e('Período:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="analytics-period">
-                        <option value="7d"><?php _e('Últimos 7 días', 'flavor-chat-ia'); ?></option>
-                        <option value="30d" selected><?php _e('Últimos 30 días', 'flavor-chat-ia'); ?></option>
-                        <option value="90d"><?php _e('Últimos 90 días', 'flavor-chat-ia'); ?></option>
-                        <option value="365d"><?php _e('Último año', 'flavor-chat-ia'); ?></option>
+                        <option value="7d"><?php _e('Últimos 7 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="30d" selected><?php _e('Últimos 30 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="90d"><?php _e('Últimos 90 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="365d"><?php _e('Último año', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label><?php _e('App:', 'flavor-chat-ia'); ?></label>
+                    <label><?php _e('App:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="analytics-app">
-                        <option value="all"><?php _e('Todas', 'flavor-chat-ia'); ?></option>
-                        <option value="client"><?php _e('App Cliente', 'flavor-chat-ia'); ?></option>
-                        <option value="admin"><?php _e('App Admin', 'flavor-chat-ia'); ?></option>
+                        <option value="all"><?php _e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="client"><?php _e('App Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="admin"><?php _e('App Admin', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label><?php _e('Plataforma:', 'flavor-chat-ia'); ?></label>
+                    <label><?php _e('Plataforma:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="analytics-platform">
-                        <option value="all"><?php _e('Todas', 'flavor-chat-ia'); ?></option>
-                        <option value="android"><?php _e('Android', 'flavor-chat-ia'); ?></option>
-                        <option value="ios"><?php _e('iOS', 'flavor-chat-ia'); ?></option>
+                        <option value="all"><?php _e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="android"><?php _e('Android', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="ios"><?php _e('iOS', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
                 <button type="button" id="refresh-analytics" class="button button-primary">
                     <span class="dashicons dashicons-update"></span>
-                    <?php _e('Actualizar', 'flavor-chat-ia'); ?>
+                    <?php _e('Actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" id="export-analytics" class="button">
                     <span class="dashicons dashicons-download"></span>
-                    <?php _e('Exportar', 'flavor-chat-ia'); ?>
+                    <?php _e('Exportar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
 
@@ -189,7 +189,7 @@ class Flavor_App_Analytics_Dashboard {
                         <span class="dashicons dashicons-groups"></span>
                     </div>
                     <div class="card-content">
-                        <h3><?php _e('Usuarios Totales', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Usuarios Totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="card-value" id="total-users">-</div>
                         <div class="card-trend" id="total-users-trend"></div>
                     </div>
@@ -200,7 +200,7 @@ class Flavor_App_Analytics_Dashboard {
                         <span class="dashicons dashicons-admin-users"></span>
                     </div>
                     <div class="card-content">
-                        <h3><?php _e('Usuarios Activos', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Usuarios Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="card-value" id="active-users">-</div>
                         <div class="card-trend" id="active-users-trend"></div>
                     </div>
@@ -211,7 +211,7 @@ class Flavor_App_Analytics_Dashboard {
                         <span class="dashicons dashicons-smartphone"></span>
                     </div>
                     <div class="card-content">
-                        <h3><?php _e('Sesiones', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Sesiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="card-value" id="total-sessions">-</div>
                         <div class="card-trend" id="sessions-trend"></div>
                     </div>
@@ -222,7 +222,7 @@ class Flavor_App_Analytics_Dashboard {
                         <span class="dashicons dashicons-clock"></span>
                     </div>
                     <div class="card-content">
-                        <h3><?php _e('Duración Media', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Duración Media', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="card-value" id="avg-duration">-</div>
                         <div class="card-trend" id="duration-trend"></div>
                     </div>
@@ -233,7 +233,7 @@ class Flavor_App_Analytics_Dashboard {
                         <span class="dashicons dashicons-megaphone"></span>
                     </div>
                     <div class="card-content">
-                        <h3><?php _e('Eventos', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="card-value" id="total-events">-</div>
                         <div class="card-trend" id="events-trend"></div>
                     </div>
@@ -244,7 +244,7 @@ class Flavor_App_Analytics_Dashboard {
                         <span class="dashicons dashicons-warning"></span>
                     </div>
                     <div class="card-content">
-                        <h3><?php _e('Crashes', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Crashes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="card-value" id="total-crashes">-</div>
                         <div class="card-trend" id="crashes-trend"></div>
                     </div>
@@ -254,29 +254,29 @@ class Flavor_App_Analytics_Dashboard {
             <!-- Gráficos principales -->
             <div class="analytics-charts-row">
                 <div class="chart-container large">
-                    <h3><?php _e('Usuarios y Sesiones', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Usuarios y Sesiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <canvas id="users-sessions-chart"></canvas>
                 </div>
             </div>
 
             <div class="analytics-charts-row two-cols">
                 <div class="chart-container">
-                    <h3><?php _e('Módulos Más Utilizados', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Módulos Más Utilizados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <canvas id="modules-chart"></canvas>
                 </div>
                 <div class="chart-container">
-                    <h3><?php _e('Distribución por Plataforma', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Distribución por Plataforma', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <canvas id="platform-chart"></canvas>
                 </div>
             </div>
 
             <div class="analytics-charts-row two-cols">
                 <div class="chart-container">
-                    <h3><?php _e('Eventos por Tipo', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Eventos por Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <canvas id="events-chart"></canvas>
                 </div>
                 <div class="chart-container">
-                    <h3><?php _e('Versiones de App', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Versiones de App', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <canvas id="versions-chart"></canvas>
                 </div>
             </div>
@@ -284,35 +284,35 @@ class Flavor_App_Analytics_Dashboard {
             <!-- Tablas de detalle -->
             <div class="analytics-tables-row">
                 <div class="table-container">
-                    <h3><?php _e('Top Pantallas Visitadas', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Top Pantallas Visitadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <table class="wp-list-table widefat fixed striped" id="top-screens-table">
                         <thead>
                             <tr>
-                                <th><?php _e('Pantalla', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Visitas', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Usuarios', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Tiempo Medio', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Pantalla', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Visitas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Tiempo Medio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr><td colspan="4" class="loading"><?php _e('Cargando...', 'flavor-chat-ia'); ?></td></tr>
+                            <tr><td colspan="4" class="loading"><?php _e('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td></tr>
                         </tbody>
                     </table>
                 </div>
 
                 <div class="table-container">
-                    <h3><?php _e('Crashes Recientes', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Crashes Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <table class="wp-list-table widefat fixed striped" id="recent-crashes-table">
                         <thead>
                             <tr>
-                                <th><?php _e('Error', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Versión', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Dispositivo', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Error', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Versión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Dispositivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr><td colspan="4" class="loading"><?php _e('Cargando...', 'flavor-chat-ia'); ?></td></tr>
+                            <tr><td colspan="4" class="loading"><?php _e('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -321,26 +321,26 @@ class Flavor_App_Analytics_Dashboard {
             <!-- Dispositivos y ubicaciones -->
             <div class="analytics-tables-row">
                 <div class="table-container">
-                    <h3><?php _e('Top Dispositivos', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Top Dispositivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <table class="wp-list-table widefat fixed striped" id="top-devices-table">
                         <thead>
                             <tr>
-                                <th><?php _e('Modelo', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Versión OS', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Usuarios', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('%', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Modelo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Versión OS', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('%', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr><td colspan="4" class="loading"><?php _e('Cargando...', 'flavor-chat-ia'); ?></td></tr>
+                            <tr><td colspan="4" class="loading"><?php _e('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td></tr>
                         </tbody>
                     </table>
                 </div>
 
                 <div class="table-container">
-                    <h3><?php _e('Retención de Usuarios', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Retención de Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <div id="retention-heatmap" class="retention-grid">
-                        <div class="loading"><?php _e('Cargando...', 'flavor-chat-ia'); ?></div>
+                        <div class="loading"><?php _e('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     </div>
                 </div>
             </div>
@@ -349,16 +349,16 @@ class Flavor_App_Analytics_Dashboard {
             <div class="analytics-realtime-section">
                 <h3>
                     <span class="realtime-indicator"></span>
-                    <?php _e('Actividad en Tiempo Real', 'flavor-chat-ia'); ?>
+                    <?php _e('Actividad en Tiempo Real', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <div class="realtime-metrics">
                     <div class="realtime-metric">
                         <span class="metric-value" id="realtime-users">0</span>
-                        <span class="metric-label"><?php _e('Usuarios ahora', 'flavor-chat-ia'); ?></span>
+                        <span class="metric-label"><?php _e('Usuarios ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="realtime-metric">
                         <span class="metric-value" id="realtime-events">0</span>
-                        <span class="metric-label"><?php _e('Eventos/min', 'flavor-chat-ia'); ?></span>
+                        <span class="metric-label"><?php _e('Eventos/min', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="realtime-activity" id="realtime-feed">
                         <!-- Feed de actividad en tiempo real -->

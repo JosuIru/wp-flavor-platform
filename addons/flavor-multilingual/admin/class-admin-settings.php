@@ -61,7 +61,7 @@ class Flavor_Multilingual_Admin_Settings {
      */
     public function add_menu() {
         add_submenu_page(
-            'flavor-chat-ia',
+            FLAVOR_PLATFORM_TEXT_DOMAIN,
             __('Multiidioma', 'flavor-multilingual'),
             __('Multiidioma', 'flavor-multilingual'),
             'manage_options',

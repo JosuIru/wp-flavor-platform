@@ -28,8 +28,8 @@ if (!$tabla_encuestas_existe) {
         <div class="dm-alert dm-alert--info">
             <span class="dashicons dashicons-info"></span>
             <div>
-                <strong><?php esc_html_e('Módulo en preparación', 'flavor-chat-ia'); ?></strong>
-                <p><?php esc_html_e('Las tablas del módulo Encuestas aún no han sido creadas. Activa el módulo completamente para generar la estructura necesaria.', 'flavor-chat-ia'); ?></p>
+                <strong><?php esc_html_e('Módulo en preparación', 'flavor-platform'); ?></strong>
+                <p><?php esc_html_e('Las tablas del módulo Encuestas aún no han sido creadas. Activa el módulo completamente para generar la estructura necesaria.', 'flavor-platform'); ?></p>
             </div>
         </div>
     </div>
@@ -105,7 +105,7 @@ $por_tipo = $wpdb->get_results(
         <span class="dashicons dashicons-forms dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($total_encuestas); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Total Encuestas', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Total Encuestas', 'flavor-platform'); ?></div>
         </div>
     </div>
 
@@ -113,7 +113,7 @@ $por_tipo = $wpdb->get_results(
         <span class="dashicons dashicons-yes-alt dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($encuestas_activas); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Encuestas Activas', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Encuestas Activas', 'flavor-platform'); ?></div>
         </div>
     </div>
 
@@ -121,7 +121,7 @@ $por_tipo = $wpdb->get_results(
         <span class="dashicons dashicons-feedback dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($total_respuestas)); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Total Respuestas', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Total Respuestas', 'flavor-platform'); ?></div>
         </div>
     </div>
 
@@ -129,7 +129,7 @@ $por_tipo = $wpdb->get_results(
         <span class="dashicons dashicons-clock dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($respuestas_hoy); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Respuestas Hoy', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Respuestas Hoy', 'flavor-platform'); ?></div>
         </div>
     </div>
 </div>
@@ -139,27 +139,27 @@ $por_tipo = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-chart-bar"></span>
-                <?php esc_html_e('Actividad Semanal', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Actividad Semanal', 'flavor-platform'); ?>
             </h3>
-            <span class="dm-card__subtitle"><?php printf(esc_html__('%s respuestas', 'flavor-chat-ia'), number_format_i18n($respuestas_semana)); ?></span>
+            <span class="dm-card__subtitle"><?php printf(esc_html__('%s respuestas', 'flavor-platform'), number_format_i18n($respuestas_semana)); ?></span>
         </div>
         <div class="dm-card__body">
             <?php if (empty($actividad_diaria)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-chart-line"></span>
-                    <p><?php esc_html_e('No hay actividad en los últimos 7 días.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay actividad en los últimos 7 días.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <?php
                 $max_respuestas = max(array_column($actividad_diaria, 'total'));
                 $dias_semana = [
-                    __('Dom', 'flavor-chat-ia'),
-                    __('Lun', 'flavor-chat-ia'),
-                    __('Mar', 'flavor-chat-ia'),
-                    __('Mié', 'flavor-chat-ia'),
-                    __('Jue', 'flavor-chat-ia'),
-                    __('Vie', 'flavor-chat-ia'),
-                    __('Sáb', 'flavor-chat-ia')
+                    __('Dom', 'flavor-platform'),
+                    __('Lun', 'flavor-platform'),
+                    __('Mar', 'flavor-platform'),
+                    __('Mié', 'flavor-platform'),
+                    __('Jue', 'flavor-platform'),
+                    __('Vie', 'flavor-platform'),
+                    __('Sáb', 'flavor-platform')
                 ];
                 ?>
                 <div class="dm-chart-bars">
@@ -184,25 +184,25 @@ $por_tipo = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-chart-pie"></span>
-                <?php esc_html_e('Estadísticas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Estadísticas', 'flavor-platform'); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <div class="dm-data-list">
                 <div class="dm-data-list__item">
-                    <span class="dm-data-list__label"><?php esc_html_e('Encuestas en borrador', 'flavor-chat-ia'); ?></span>
+                    <span class="dm-data-list__label"><?php esc_html_e('Encuestas en borrador', 'flavor-platform'); ?></span>
                     <span class="dm-data-list__value"><?php echo esc_html($encuestas_borrador); ?></span>
                 </div>
                 <div class="dm-data-list__item">
-                    <span class="dm-data-list__label"><?php esc_html_e('Encuestas cerradas', 'flavor-chat-ia'); ?></span>
+                    <span class="dm-data-list__label"><?php esc_html_e('Encuestas cerradas', 'flavor-platform'); ?></span>
                     <span class="dm-data-list__value"><?php echo esc_html($encuestas_cerradas); ?></span>
                 </div>
                 <div class="dm-data-list__item">
-                    <span class="dm-data-list__label"><?php esc_html_e('Respuestas completas', 'flavor-chat-ia'); ?></span>
+                    <span class="dm-data-list__label"><?php esc_html_e('Respuestas completas', 'flavor-platform'); ?></span>
                     <span class="dm-data-list__value"><?php echo esc_html(number_format_i18n($respuestas_completas)); ?></span>
                 </div>
                 <div class="dm-data-list__item dm-data-list__item--highlight">
-                    <span class="dm-data-list__label"><?php esc_html_e('Tasa de completado', 'flavor-chat-ia'); ?></span>
+                    <span class="dm-data-list__label"><?php esc_html_e('Tasa de completado', 'flavor-platform'); ?></span>
                     <span class="dm-data-list__value"><?php echo esc_html($tasa_completado); ?>%</span>
                 </div>
             </div>
@@ -215,14 +215,14 @@ $por_tipo = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-star-filled"></span>
-                <?php esc_html_e('Encuestas Más Respondidas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Encuestas Más Respondidas', 'flavor-platform'); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <?php if (empty($encuestas_populares)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-forms"></span>
-                    <p><?php esc_html_e('No hay respuestas todavía.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay respuestas todavía.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <ul class="dm-ranking">
@@ -235,7 +235,7 @@ $por_tipo = $wpdb->get_results(
                                 <span class="dm-ranking__meta">
                                     <?php echo esc_html(ucfirst($encuesta->tipo)); ?>
                                     &bull;
-                                    <?php echo esc_html($tasa_enc); ?>% <?php esc_html_e('completado', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html($tasa_enc); ?>% <?php esc_html_e('completado', 'flavor-platform'); ?>
                                 </span>
                             </div>
                             <span class="dm-badge dm-badge--<?php echo $encuesta->estado === 'activa' ? 'success' : 'secondary'; ?>">
@@ -252,14 +252,14 @@ $por_tipo = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-clock"></span>
-                <?php esc_html_e('Encuestas Recientes', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Encuestas Recientes', 'flavor-platform'); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <?php if (empty($encuestas_recientes)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-forms"></span>
-                    <p><?php esc_html_e('No hay encuestas creadas todavía.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay encuestas creadas todavía.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <ul class="dm-list">
@@ -268,7 +268,7 @@ $por_tipo = $wpdb->get_results(
                             <div class="dm-list__content">
                                 <strong class="dm-list__title"><?php echo esc_html($encuesta->titulo); ?></strong>
                                 <span class="dm-list__meta">
-                                    <?php echo esc_html($encuesta->num_respuestas); ?> <?php esc_html_e('respuestas', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html($encuesta->num_respuestas); ?> <?php esc_html_e('respuestas', 'flavor-platform'); ?>
                                     &bull;
                                     <?php echo esc_html(human_time_diff(strtotime($encuesta->fecha_creacion), current_time('timestamp'))); ?>
                                 </span>

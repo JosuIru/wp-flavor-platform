@@ -21,19 +21,19 @@ $asambleas = is_array($asambleas ?? null) ? $asambleas : [];
 
 <div class="flavor-col-asambleas" data-colectivo="<?php echo esc_attr($colectivo_id); ?>">
     <div class="flavor-col-asambleas-header">
-        <h2><?php esc_html_e('Asambleas', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Asambleas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
         <div class="flavor-col-filtros-inline">
             <select id="filtro-estado-asamblea" class="flavor-col-select-sm">
-                <option value=""><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></option>
-                <option value="convocada"><?php esc_html_e('Convocadas', 'flavor-chat-ia'); ?></option>
-                <option value="finalizada"><?php esc_html_e('Finalizadas', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="convocada"><?php esc_html_e('Convocadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="finalizada"><?php esc_html_e('Finalizadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             </select>
 
             <?php if ($puede_convocar): ?>
                 <button type="button" class="flavor-col-btn flavor-col-btn-primary flavor-col-btn-sm" id="col-convocar-asamblea">
                     <span class="dashicons dashicons-plus"></span>
-                    <?php esc_html_e('Convocar asamblea', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Convocar asamblea', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             <?php endif; ?>
         </div>
@@ -42,8 +42,8 @@ $asambleas = is_array($asambleas ?? null) ? $asambleas : [];
     <?php if (empty($asambleas)): ?>
         <div class="flavor-col-vacio">
             <span class="dashicons dashicons-calendar-alt"></span>
-            <h3><?php esc_html_e('No hay asambleas', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('No hay asambleas programadas para este colectivo.', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('No hay asambleas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php esc_html_e('No hay asambleas programadas para este colectivo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php else: ?>
         <div class="flavor-col-asambleas-timeline">
@@ -59,7 +59,7 @@ $asambleas = is_array($asambleas ?? null) ? $asambleas : [];
 
             <?php if (!empty($asambleas_futuras)): ?>
                 <div class="flavor-col-asambleas-seccion">
-                    <h3 class="flavor-col-seccion-titulo"><?php esc_html_e('Próximas asambleas', 'flavor-chat-ia'); ?></h3>
+                    <h3 class="flavor-col-seccion-titulo"><?php esc_html_e('Próximas asambleas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
                     <?php foreach ($asambleas_futuras as $asamblea): ?>
                         <article class="flavor-col-asamblea-card flavor-col-asamblea-proxima">
@@ -89,7 +89,7 @@ $asambleas = is_array($asambleas ?? null) ? $asambleas : [];
                                     <span class="flavor-col-info-item">
                                         <span class="dashicons dashicons-admin-users"></span>
                                         <?php printf(
-                                            esc_html__('%d confirmados', 'flavor-chat-ia'),
+                                            esc_html__('%d confirmados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                             $asamblea['num_asistentes']
                                         ); ?>
                                     </span>
@@ -97,7 +97,7 @@ $asambleas = is_array($asambleas ?? null) ? $asambleas : [];
 
                                 <?php if (!empty($asamblea['orden_del_dia'])): ?>
                                     <details class="flavor-col-orden-dia">
-                                        <summary><?php esc_html_e('Ver orden del día', 'flavor-chat-ia'); ?></summary>
+                                        <summary><?php esc_html_e('Ver orden del día', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></summary>
                                         <div class="flavor-col-orden-contenido">
                                             <?php echo nl2br(esc_html($asamblea['orden_del_dia'])); ?>
                                         </div>
@@ -110,7 +110,7 @@ $asambleas = is_array($asambleas ?? null) ? $asambleas : [];
                                     <button type="button" class="flavor-col-btn flavor-col-btn-primary flavor-col-btn-confirmar-asistencia"
                                             data-asamblea="<?php echo esc_attr($asamblea['id']); ?>">
                                         <span class="dashicons dashicons-yes"></span>
-                                        <?php esc_html_e('Confirmar asistencia', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Confirmar asistencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 <?php endif; ?>
                             </div>
@@ -121,7 +121,7 @@ $asambleas = is_array($asambleas ?? null) ? $asambleas : [];
 
             <?php if (!empty($asambleas_pasadas)): ?>
                 <div class="flavor-col-asambleas-seccion">
-                    <h3 class="flavor-col-seccion-titulo"><?php esc_html_e('Asambleas anteriores', 'flavor-chat-ia'); ?></h3>
+                    <h3 class="flavor-col-seccion-titulo"><?php esc_html_e('Asambleas anteriores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
                     <?php foreach ($asambleas_pasadas as $asamblea): ?>
                         <article class="flavor-col-asamblea-card flavor-col-asamblea-pasada">
@@ -135,7 +135,7 @@ $asambleas = is_array($asambleas ?? null) ? $asambleas : [];
                                     <span class="flavor-col-tipo-sm"><?php echo esc_html($asamblea['tipo_label']); ?></span>
                                     <span class="flavor-col-asistentes-sm">
                                         <?php printf(
-                                            esc_html__('%d asistentes', 'flavor-chat-ia'),
+                                            esc_html__('%d asistentes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                             $asamblea['num_asistentes']
                                         ); ?>
                                     </span>
@@ -149,7 +149,7 @@ $asambleas = is_array($asambleas ?? null) ? $asambleas : [];
                                 <div class="flavor-col-asamblea-acciones">
                                     <button type="button" class="flavor-col-btn flavor-col-btn-sm flavor-col-btn-outline">
                                         <span class="dashicons dashicons-media-document"></span>
-                                        <?php esc_html_e('Ver acta', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Ver acta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 </div>
                             <?php endif; ?>

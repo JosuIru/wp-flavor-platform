@@ -122,11 +122,11 @@ class Flavor_Reciclaje_Frontend_Controller {
             'nonce' => wp_create_nonce('flavor_reciclaje_nonce'),
             'categorias' => $this->categorias,
             'strings' => [
-                'procesando' => __('Procesando...', 'flavor-chat-ia'),
-                'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'registrado' => __('Reciclaje registrado correctamente', 'flavor-chat-ia'),
-                'canjeExitoso' => __('Canje realizado correctamente', 'flavor-chat-ia'),
-                'reporteEnviado' => __('Reporte enviado correctamente', 'flavor-chat-ia'),
+                'procesando' => __('Procesando...', 'flavor-platform'),
+                'error' => __('Ha ocurrido un error', 'flavor-platform'),
+                'registrado' => __('Reciclaje registrado correctamente', 'flavor-platform'),
+                'canjeExitoso' => __('Canje realizado correctamente', 'flavor-platform'),
+                'reporteEnviado' => __('Reporte enviado correctamente', 'flavor-platform'),
             ],
         ]);
     }
@@ -148,7 +148,7 @@ class Flavor_Reciclaje_Frontend_Controller {
      */
     public function registrar_dashboard_tabs($tabs) {
         $tabs['reciclaje'] = [
-            'titulo' => __('Reciclaje', 'flavor-chat-ia'),
+            'titulo' => __('Reciclaje', 'flavor-platform'),
             'icono' => 'dashicons-image-rotate',
             'prioridad' => 65,
             'callback' => [$this, 'render_dashboard_tab'],
@@ -215,28 +215,28 @@ class Flavor_Reciclaje_Frontend_Controller {
                     <span class="flavor-kpi-icono dashicons dashicons-image-rotate"></span>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo number_format($total_kg, 1); ?> kg</span>
-                        <span class="flavor-kpi-etiqueta"><?php _e('Total reciclado', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-etiqueta"><?php _e('Total reciclado', 'flavor-platform'); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icono dashicons dashicons-star-filled"></span>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo number_format($puntos_disponibles); ?></span>
-                        <span class="flavor-kpi-etiqueta"><?php _e('Puntos disponibles', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-etiqueta"><?php _e('Puntos disponibles', 'flavor-platform'); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icono dashicons dashicons-cloud"></span>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo number_format($co2_ahorrado, 1); ?> kg</span>
-                        <span class="flavor-kpi-etiqueta"><?php _e('CO₂ ahorrado', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-etiqueta"><?php _e('CO₂ ahorrado', 'flavor-platform'); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icono dashicons dashicons-palmtree"></span>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo number_format($arboles_salvados, 1); ?></span>
-                        <span class="flavor-kpi-etiqueta"><?php _e('Árboles salvados', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-etiqueta"><?php _e('Árboles salvados', 'flavor-platform'); ?></span>
                     </div>
                 </div>
             </div>
@@ -245,15 +245,15 @@ class Flavor_Reciclaje_Frontend_Controller {
             <div class="flavor-acciones-rapidas">
                 <button type="button" class="flavor-accion-card" id="btn-registrar-reciclaje">
                     <span class="dashicons dashicons-plus-alt"></span>
-                    <span><?php _e('Registrar reciclaje', 'flavor-chat-ia'); ?></span>
+                    <span><?php _e('Registrar reciclaje', 'flavor-platform'); ?></span>
                 </button>
                 <a href="#mapa-puntos" class="flavor-accion-card">
                     <span class="dashicons dashicons-location-alt"></span>
-                    <span><?php _e('Puntos cercanos', 'flavor-chat-ia'); ?></span>
+                    <span><?php _e('Puntos cercanos', 'flavor-platform'); ?></span>
                 </a>
                 <a href="#canjear" class="flavor-accion-card">
                     <span class="dashicons dashicons-awards"></span>
-                    <span><?php _e('Canjear puntos', 'flavor-chat-ia'); ?></span>
+                    <span><?php _e('Canjear puntos', 'flavor-platform'); ?></span>
                 </a>
             </div>
 
@@ -261,7 +261,7 @@ class Flavor_Reciclaje_Frontend_Controller {
             <div class="flavor-panel">
                 <h3 class="flavor-panel-titulo">
                     <span class="dashicons dashicons-chart-pie"></span>
-                    <?php _e('Mi reciclaje', 'flavor-chat-ia'); ?>
+                    <?php _e('Mi reciclaje', 'flavor-platform'); ?>
                 </h3>
                 <div class="flavor-categorias-grid">
                     <?php foreach ($this->categorias as $cat_id => $cat): ?>
@@ -283,7 +283,7 @@ class Flavor_Reciclaje_Frontend_Controller {
             <div class="flavor-panel">
                 <h3 class="flavor-panel-titulo">
                     <span class="dashicons dashicons-backup"></span>
-                    <?php _e('Registros recientes', 'flavor-chat-ia'); ?>
+                    <?php _e('Registros recientes', 'flavor-platform'); ?>
                 </h3>
                 <?php if (!empty($registros_recientes)): ?>
                 <div class="flavor-registros-lista">
@@ -304,7 +304,7 @@ class Flavor_Reciclaje_Frontend_Controller {
                     <?php endforeach; ?>
                 </div>
                 <?php else: ?>
-                <p class="flavor-vacio"><?php _e('Aún no has registrado reciclaje', 'flavor-chat-ia'); ?></p>
+                <p class="flavor-vacio"><?php _e('Aún no has registrado reciclaje', 'flavor-platform'); ?></p>
                 <?php endif; ?>
             </div>
 
@@ -312,10 +312,10 @@ class Flavor_Reciclaje_Frontend_Controller {
             <div id="modal-registrar-reciclaje" class="flavor-modal" style="display:none;">
                 <div class="flavor-modal-contenido">
                     <button type="button" class="flavor-modal-cerrar">&times;</button>
-                    <h3><?php _e('Registrar reciclaje', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Registrar reciclaje', 'flavor-platform'); ?></h3>
                     <form id="form-registrar-reciclaje">
                         <div class="flavor-form-grupo">
-                            <label><?php _e('Categoría', 'flavor-chat-ia'); ?></label>
+                            <label><?php _e('Categoría', 'flavor-platform'); ?></label>
                             <div class="flavor-categorias-selector">
                                 <?php foreach ($this->categorias as $cat_id => $cat): ?>
                                 <label class="flavor-categoria-opcion" style="--cat-color: <?php echo esc_attr($cat['color']); ?>">
@@ -327,26 +327,26 @@ class Flavor_Reciclaje_Frontend_Controller {
                             </div>
                         </div>
                         <div class="flavor-form-grupo">
-                            <label><?php _e('Cantidad (kg)', 'flavor-chat-ia'); ?></label>
+                            <label><?php _e('Cantidad (kg)', 'flavor-platform'); ?></label>
                             <input type="number" name="cantidad_kg" step="0.1" min="0.1" max="500" required placeholder="0.0">
                         </div>
                         <div class="flavor-form-grupo">
-                            <label><?php _e('Punto de reciclaje (opcional)', 'flavor-chat-ia'); ?></label>
+                            <label><?php _e('Punto de reciclaje (opcional)', 'flavor-platform'); ?></label>
                             <select name="punto_id" id="select-punto-reciclaje">
-                                <option value=""><?php _e('Seleccionar...', 'flavor-chat-ia'); ?></option>
+                                <option value=""><?php _e('Seleccionar...', 'flavor-platform'); ?></option>
                             </select>
                         </div>
                         <div class="flavor-form-grupo">
-                            <label><?php _e('Notas (opcional)', 'flavor-chat-ia'); ?></label>
-                            <textarea name="notas" rows="2" placeholder="<?php esc_attr_e('Información adicional...', 'flavor-chat-ia'); ?>"></textarea>
+                            <label><?php _e('Notas (opcional)', 'flavor-platform'); ?></label>
+                            <textarea name="notas" rows="2" placeholder="<?php esc_attr_e('Información adicional...', 'flavor-platform'); ?>"></textarea>
                         </div>
                         <div class="flavor-form-acciones">
                             <button type="button" class="flavor-btn flavor-btn-outline flavor-modal-cerrar-btn">
-                                <?php _e('Cancelar', 'flavor-chat-ia'); ?>
+                                <?php _e('Cancelar', 'flavor-platform'); ?>
                             </button>
                             <button type="submit" class="flavor-btn flavor-btn-primary">
                                 <span class="dashicons dashicons-yes"></span>
-                                <?php _e('Registrar', 'flavor-chat-ia'); ?>
+                                <?php _e('Registrar', 'flavor-platform'); ?>
                             </button>
                         </div>
                     </form>
@@ -366,7 +366,7 @@ class Flavor_Reciclaje_Frontend_Controller {
         $tabla_puntos = $wpdb->prefix . 'flavor_reciclaje_puntos';
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_puntos)) {
-            return '<p class="flavor-aviso">' . __('Mapa no disponible', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-aviso">' . __('Mapa no disponible', 'flavor-platform') . '</p>';
         }
 
         $puntos = $wpdb->get_results(
@@ -510,22 +510,22 @@ class Flavor_Reciclaje_Frontend_Controller {
                 <div class="flavor-stat-card">
                     <span class="flavor-stat-icono dashicons dashicons-image-rotate"></span>
                     <div class="flavor-stat-valor"><?php echo number_format($stats->total_kg, 0); ?> kg</div>
-                    <div class="flavor-stat-etiqueta"><?php _e('Total reciclado', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-stat-etiqueta"><?php _e('Total reciclado', 'flavor-platform'); ?></div>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="flavor-stat-icono dashicons dashicons-cloud"></span>
                     <div class="flavor-stat-valor"><?php echo number_format($co2_ahorrado, 0); ?> kg</div>
-                    <div class="flavor-stat-etiqueta"><?php _e('CO₂ ahorrado', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-stat-etiqueta"><?php _e('CO₂ ahorrado', 'flavor-platform'); ?></div>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="flavor-stat-icono dashicons dashicons-groups"></span>
                     <div class="flavor-stat-valor"><?php echo number_format($stats->usuarios); ?></div>
-                    <div class="flavor-stat-etiqueta"><?php _e('Participantes', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-stat-etiqueta"><?php _e('Participantes', 'flavor-platform'); ?></div>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="flavor-stat-icono dashicons dashicons-location-alt"></span>
                     <div class="flavor-stat-valor"><?php echo intval($stats->puntos_reciclaje); ?></div>
-                    <div class="flavor-stat-etiqueta"><?php _e('Puntos de reciclaje', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-stat-etiqueta"><?php _e('Puntos de reciclaje', 'flavor-platform'); ?></div>
                 </div>
             </div>
         </div>
@@ -542,7 +542,7 @@ class Flavor_Reciclaje_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-guia-reciclaje">
-            <h2><?php _e('Guía de reciclaje', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Guía de reciclaje', 'flavor-platform'); ?></h2>
             <div class="flavor-guia-grid">
                 <?php foreach ($this->categorias as $cat_id => $cat): ?>
                 <div class="flavor-guia-card" style="--cat-color: <?php echo esc_attr($cat['color']); ?>">
@@ -570,7 +570,7 @@ class Flavor_Reciclaje_Frontend_Controller {
         check_ajax_referer('flavor_reciclaje_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -584,11 +584,11 @@ class Flavor_Reciclaje_Frontend_Controller {
         $tabla_puntos_usuario = $wpdb->prefix . 'flavor_reciclaje_puntos_usuario';
 
         if (!isset($this->categorias[$categoria])) {
-            wp_send_json_error(['message' => __('Categoría no válida', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Categoría no válida', 'flavor-platform')]);
         }
 
         if ($cantidad_kg <= 0 || $cantidad_kg > 500) {
-            wp_send_json_error(['message' => __('Cantidad no válida', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Cantidad no válida', 'flavor-platform')]);
         }
 
         // Calcular puntos (10 puntos por kg por defecto)
@@ -607,7 +607,7 @@ class Flavor_Reciclaje_Frontend_Controller {
         ]);
 
         if ($resultado === false) {
-            wp_send_json_error(['message' => __('Error al registrar', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al registrar', 'flavor-platform')]);
         }
 
         // Actualizar puntos del usuario
@@ -638,7 +638,7 @@ class Flavor_Reciclaje_Frontend_Controller {
 
         wp_send_json_success([
             'message' => sprintf(
-                __('Registrado: %s kg de %s. Has ganado %d puntos.', 'flavor-chat-ia'),
+                __('Registrado: %s kg de %s. Has ganado %d puntos.', 'flavor-platform'),
                 number_format($cantidad_kg, 2),
                 $this->categorias[$categoria]['nombre'],
                 $puntos_ganados
@@ -654,7 +654,7 @@ class Flavor_Reciclaje_Frontend_Controller {
         check_ajax_referer('flavor_reciclaje_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -671,7 +671,7 @@ class Flavor_Reciclaje_Frontend_Controller {
         ));
 
         if (!$premio) {
-            wp_send_json_error(['message' => __('Premio no disponible', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Premio no disponible', 'flavor-platform')]);
         }
 
         $puntos_usuario = $wpdb->get_var($wpdb->prepare(
@@ -680,7 +680,7 @@ class Flavor_Reciclaje_Frontend_Controller {
         )) ?? 0;
 
         if ($puntos_usuario < $premio->puntos_requeridos) {
-            wp_send_json_error(['message' => __('No tienes suficientes puntos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes suficientes puntos', 'flavor-platform')]);
         }
 
         // Realizar canje
@@ -699,7 +699,7 @@ class Flavor_Reciclaje_Frontend_Controller {
         ));
 
         wp_send_json_success([
-            'message' => sprintf(__('Has canjeado: %s', 'flavor-chat-ia'), $premio->nombre),
+            'message' => sprintf(__('Has canjeado: %s', 'flavor-platform'), $premio->nombre),
         ]);
     }
 
@@ -710,7 +710,7 @@ class Flavor_Reciclaje_Frontend_Controller {
         check_ajax_referer('flavor_reciclaje_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -732,7 +732,7 @@ class Flavor_Reciclaje_Frontend_Controller {
         }
 
         wp_send_json_success([
-            'message' => __('Reporte enviado. Gracias por colaborar.', 'flavor-chat-ia'),
+            'message' => __('Reporte enviado. Gracias por colaborar.', 'flavor-platform'),
         ]);
     }
 
@@ -789,7 +789,7 @@ class Flavor_Reciclaje_Frontend_Controller {
      */
     public function shortcode_canjear($atts) {
         if (!is_user_logged_in()) {
-            return '<div class="flavor-aviso">' . __('Inicia sesión para canjear tus puntos.', 'flavor-chat-ia') . '</div>';
+            return '<div class="flavor-aviso">' . __('Inicia sesión para canjear tus puntos.', 'flavor-platform') . '</div>';
         }
 
         $this->cargar_assets();
@@ -820,17 +820,17 @@ class Flavor_Reciclaje_Frontend_Controller {
         ?>
         <div class="flavor-reciclaje-canjear">
             <div class="flavor-puntos-header">
-                <h3><?php _e('Canjear Puntos', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Canjear Puntos', 'flavor-platform'); ?></h3>
                 <div class="flavor-puntos-usuario">
                     <span class="flavor-puntos-icono">🌿</span>
                     <span class="flavor-puntos-valor"><?php echo number_format($puntos_usuario); ?></span>
-                    <span class="flavor-puntos-label"><?php _e('puntos disponibles', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-puntos-label"><?php _e('puntos disponibles', 'flavor-platform'); ?></span>
                 </div>
             </div>
 
             <?php if (empty($recompensas)): ?>
                 <div class="flavor-vacio">
-                    <p><?php _e('No hay recompensas disponibles en este momento.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No hay recompensas disponibles en este momento.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <div class="flavor-recompensas-grid">
@@ -848,10 +848,10 @@ class Flavor_Reciclaje_Frontend_Controller {
                                 <p><?php echo esc_html($recompensa->descripcion); ?></p>
                                 <div class="flavor-recompensa-puntos">
                                     <span class="flavor-puntos-necesarios"><?php echo number_format($recompensa->puntos_necesarios); ?></span>
-                                    <span class="flavor-puntos-texto"><?php _e('puntos', 'flavor-chat-ia'); ?></span>
+                                    <span class="flavor-puntos-texto"><?php _e('puntos', 'flavor-platform'); ?></span>
                                 </div>
                                 <p class="flavor-recompensa-stock">
-                                    <?php printf(__('%d disponibles', 'flavor-chat-ia'), $recompensa->stock); ?>
+                                    <?php printf(__('%d disponibles', 'flavor-platform'), $recompensa->stock); ?>
                                 </p>
                             </div>
 
@@ -860,11 +860,11 @@ class Flavor_Reciclaje_Frontend_Controller {
                                     <button type="button" class="flavor-btn flavor-btn-primary flavor-canjear-recompensa"
                                             data-recompensa-id="<?php echo esc_attr($recompensa->id); ?>"
                                             data-puntos="<?php echo esc_attr($recompensa->puntos_necesarios); ?>">
-                                        <?php _e('Canjear', 'flavor-chat-ia'); ?>
+                                        <?php _e('Canjear', 'flavor-platform'); ?>
                                     </button>
                                 <?php else: ?>
                                     <span class="flavor-btn flavor-btn-disabled">
-                                        <?php printf(__('Faltan %d puntos', 'flavor-chat-ia'),
+                                        <?php printf(__('Faltan %d puntos', 'flavor-platform'),
                                             $recompensa->puntos_necesarios - $puntos_usuario); ?>
                                     </span>
                                 <?php endif; ?>
@@ -875,11 +875,11 @@ class Flavor_Reciclaje_Frontend_Controller {
             <?php endif; ?>
 
             <div class="flavor-canjear-info">
-                <h4><?php _e('¿Cómo conseguir más puntos?', 'flavor-chat-ia'); ?></h4>
+                <h4><?php _e('¿Cómo conseguir más puntos?', 'flavor-platform'); ?></h4>
                 <ul>
-                    <li><?php _e('Registra tus aportes de reciclaje', 'flavor-chat-ia'); ?></li>
-                    <li><?php _e('Participa en campañas de limpieza', 'flavor-chat-ia'); ?></li>
-                    <li><?php _e('Completa retos ecológicos', 'flavor-chat-ia'); ?></li>
+                    <li><?php _e('Registra tus aportes de reciclaje', 'flavor-platform'); ?></li>
+                    <li><?php _e('Participa en campañas de limpieza', 'flavor-platform'); ?></li>
+                    <li><?php _e('Completa retos ecológicos', 'flavor-platform'); ?></li>
                 </ul>
             </div>
         </div>
@@ -896,14 +896,14 @@ class Flavor_Reciclaje_Frontend_Controller {
      */
     private function obtener_descripcion_categoria($categoria) {
         $descripciones = [
-            'papel' => __('Periódicos, revistas, cartón, papel de oficina', 'flavor-chat-ia'),
-            'plastico' => __('Botellas, envases, bolsas plásticas', 'flavor-chat-ia'),
-            'vidrio' => __('Botellas, frascos, tarros de cristal', 'flavor-chat-ia'),
-            'organico' => __('Restos de comida, cáscaras, hojas', 'flavor-chat-ia'),
-            'electronico' => __('Móviles, ordenadores, electrodomésticos', 'flavor-chat-ia'),
-            'ropa' => __('Ropa, zapatos, textiles en buen estado', 'flavor-chat-ia'),
-            'aceite' => __('Aceite de cocina usado', 'flavor-chat-ia'),
-            'pilas' => __('Pilas, baterías, acumuladores', 'flavor-chat-ia'),
+            'papel' => __('Periódicos, revistas, cartón, papel de oficina', 'flavor-platform'),
+            'plastico' => __('Botellas, envases, bolsas plásticas', 'flavor-platform'),
+            'vidrio' => __('Botellas, frascos, tarros de cristal', 'flavor-platform'),
+            'organico' => __('Restos de comida, cáscaras, hojas', 'flavor-platform'),
+            'electronico' => __('Móviles, ordenadores, electrodomésticos', 'flavor-platform'),
+            'ropa' => __('Ropa, zapatos, textiles en buen estado', 'flavor-platform'),
+            'aceite' => __('Aceite de cocina usado', 'flavor-platform'),
+            'pilas' => __('Pilas, baterías, acumuladores', 'flavor-platform'),
         ];
         return $descripciones[$categoria] ?? '';
     }

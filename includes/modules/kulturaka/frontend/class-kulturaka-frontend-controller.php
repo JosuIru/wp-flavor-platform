@@ -79,8 +79,8 @@ class Flavor_Kulturaka_Frontend_Controller {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('kulturaka_nonce'),
             'i18n' => [
-                'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
+                'error' => __('Ha ocurrido un error', 'flavor-platform'),
+                'cargando' => __('Cargando...', 'flavor-platform'),
             ],
         ]);
     }
@@ -114,7 +114,7 @@ class Flavor_Kulturaka_Frontend_Controller {
 
         ob_start();
         echo '<div class="flavor-kulturaka-listado">';
-        echo '<p>' . __('Módulo Kulturaka - Listado', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Módulo Kulturaka - Listado', 'flavor-platform') . '</p>';
         echo '</div>';
         return ob_get_clean();
     }
@@ -124,7 +124,7 @@ class Flavor_Kulturaka_Frontend_Controller {
      */
     public function registrar_tabs($tabs) {
         $tabs['kulturaka'] = [
-            'titulo' => __('Kulturaka', 'flavor-chat-ia'),
+            'titulo' => __('Kulturaka', 'flavor-platform'),
             'icono' => 'dashicons-admin-generic',
             'callback' => [$this, 'render_tab_principal'],
             'orden' => 50,
@@ -140,8 +140,8 @@ class Flavor_Kulturaka_Frontend_Controller {
     public function render_tab_principal() {
         $this->encolar_assets();
         echo '<div class="flavor-kulturaka-tab">';
-        echo '<h3>' . esc_html__('Kulturaka', 'flavor-chat-ia') . '</h3>';
-        echo '<p>' . esc_html__('Contenido del tab de Kulturaka.', 'flavor-chat-ia') . '</p>';
+        echo '<h3>' . esc_html__('Kulturaka', 'flavor-platform') . '</h3>';
+        echo '<p>' . esc_html__('Contenido del tab de Kulturaka.', 'flavor-platform') . '</p>';
         echo '</div>';
     }
 }

@@ -6,19 +6,19 @@
 if (!defined('ABSPATH')) exit;
 ?>
 <div class="wrap flavor-estadisticas-ayuda">
-    <h1><?php _e('Estadísticas e Impacto Social', 'flavor-chat-ia'); ?></h1>
+    <h1><?php _e('Estadísticas e Impacto Social', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
     <hr class="wp-header-end">
     <div class="flavor-kpi-grid">
-        <div class="flavor-kpi-card"><div class="flavor-kpi-icon"><span class="dashicons dashicons-chart-line"></span></div><div class="flavor-kpi-content"><h3><?php _e('Total Ayudas', 'flavor-chat-ia'); ?></h3><div class="flavor-kpi-value" id="total-ayudas">0</div></div></div>
-        <div class="flavor-kpi-card"><div class="flavor-kpi-icon"><span class="dashicons dashicons-clock"></span></div><div class="flavor-kpi-content"><h3><?php _e('Horas Voluntariado', 'flavor-chat-ia'); ?></h3><div class="flavor-kpi-value" id="total-horas">0</div></div></div>
-        <div class="flavor-kpi-card"><div class="flavor-kpi-icon"><span class="dashicons dashicons-groups"></span></div><div class="flavor-kpi-content"><h3><?php _e('Personas Ayudadas', 'flavor-chat-ia'); ?></h3><div class="flavor-kpi-value" id="personas-ayudadas">0</div></div></div>
-        <div class="flavor-kpi-card"><div class="flavor-kpi-icon"><span class="dashicons dashicons-heart"></span></div><div class="flavor-kpi-content"><h3><?php _e('Valoración Media', 'flavor-chat-ia'); ?></h3><div class="flavor-kpi-value" id="valoracion-media">0.0</div></div></div>
+        <div class="flavor-kpi-card"><div class="flavor-kpi-icon"><span class="dashicons dashicons-chart-line"></span></div><div class="flavor-kpi-content"><h3><?php _e('Total Ayudas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3><div class="flavor-kpi-value" id="total-ayudas">0</div></div></div>
+        <div class="flavor-kpi-card"><div class="flavor-kpi-icon"><span class="dashicons dashicons-clock"></span></div><div class="flavor-kpi-content"><h3><?php _e('Horas Voluntariado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3><div class="flavor-kpi-value" id="total-horas">0</div></div></div>
+        <div class="flavor-kpi-card"><div class="flavor-kpi-icon"><span class="dashicons dashicons-groups"></span></div><div class="flavor-kpi-content"><h3><?php _e('Personas Ayudadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3><div class="flavor-kpi-value" id="personas-ayudadas">0</div></div></div>
+        <div class="flavor-kpi-card"><div class="flavor-kpi-icon"><span class="dashicons dashicons-heart"></span></div><div class="flavor-kpi-content"><h3><?php _e('Valoración Media', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3><div class="flavor-kpi-value" id="valoracion-media">0.0</div></div></div>
     </div>
     <div class="flavor-grid-two-columns">
-        <div class="flavor-card"><div class="flavor-card-header"><h2><?php _e('Evolución Mensual', 'flavor-chat-ia'); ?></h2></div><div class="flavor-card-body"><canvas id="grafico-evolucion" width="400" height="300"></canvas></div></div>
-        <div class="flavor-card"><div class="flavor-card-header"><h2><?php _e('Ayudas por Categoría', 'flavor-chat-ia'); ?></h2></div><div class="flavor-card-body"><canvas id="grafico-categorias-stats" width="400" height="300"></canvas></div></div>
-        <div class="flavor-card"><div class="flavor-card-header"><h2><?php _e('Top Voluntarios', 'flavor-chat-ia'); ?></h2></div><div class="flavor-card-body" id="top-voluntarios"></div></div>
-        <div class="flavor-card"><div class="flavor-card-header"><h2><?php _e('Tiempo Respuesta', 'flavor-chat-ia'); ?></h2></div><div class="flavor-card-body"><canvas id="grafico-tiempos" width="400" height="300"></canvas></div></div>
+        <div class="flavor-card"><div class="flavor-card-header"><h2><?php _e('Evolución Mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2></div><div class="flavor-card-body"><canvas id="grafico-evolucion" width="400" height="300"></canvas></div></div>
+        <div class="flavor-card"><div class="flavor-card-header"><h2><?php _e('Ayudas por Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2></div><div class="flavor-card-body"><canvas id="grafico-categorias-stats" width="400" height="300"></canvas></div></div>
+        <div class="flavor-card"><div class="flavor-card-header"><h2><?php _e('Top Voluntarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2></div><div class="flavor-card-body" id="top-voluntarios"></div></div>
+        <div class="flavor-card"><div class="flavor-card-header"><h2><?php _e('Tiempo Respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2></div><div class="flavor-card-body"><canvas id="grafico-tiempos" width="400" height="300"></canvas></div></div>
     </div>
 </div>
 <style>
@@ -47,7 +47,7 @@ jQuery(document).ready(function($) {
         // Gráfico de evolución
         new Chart(document.getElementById('grafico-evolucion').getContext('2d'), {
             type: 'line',
-            data: { labels: data.evolucion.labels, datasets: [{ label: '<?php _e('Ayudas completadas', 'flavor-chat-ia'); ?>', data: data.evolucion.values, borderColor: '#2271b1', backgroundColor: 'rgba(34, 113, 177, 0.1)', tension: 0.4, fill: true }] },
+            data: { labels: data.evolucion.labels, datasets: [{ label: '<?php _e('Ayudas completadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', data: data.evolucion.values, borderColor: '#2271b1', backgroundColor: 'rgba(34, 113, 177, 0.1)', tension: 0.4, fill: true }] },
             options: { responsive: true, maintainAspectRatio: false }
         });
         // Gráfico de categorías
@@ -68,7 +68,7 @@ jQuery(document).ready(function($) {
         // Gráfico de tiempos
         new Chart(document.getElementById('grafico-tiempos').getContext('2d'), {
             type: 'bar',
-            data: { labels: ['<?php _e('Respuesta', 'flavor-chat-ia'); ?>', '<?php _e('Asignación', 'flavor-chat-ia'); ?>', '<?php _e('Resolución', 'flavor-chat-ia'); ?>'], datasets: [{ label: '<?php _e('Horas promedio', 'flavor-chat-ia'); ?>', data: data.tiempos, backgroundColor: '#10b981' }] },
+            data: { labels: ['<?php _e('Respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', '<?php _e('Asignación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', '<?php _e('Resolución', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>'], datasets: [{ label: '<?php _e('Horas promedio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', data: data.tiempos, backgroundColor: '#10b981' }] },
             options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
         });
     }

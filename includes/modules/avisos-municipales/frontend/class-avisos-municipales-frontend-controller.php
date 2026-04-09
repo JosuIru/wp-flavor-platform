@@ -157,12 +157,12 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
             'usuarioId' => get_current_user_id(),
             'prioridades' => $this->prioridades,
             'strings' => [
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
-                'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'confirmado' => __('Lectura confirmada', 'flavor-chat-ia'),
-                'suscrito' => __('Suscripción activada', 'flavor-chat-ia'),
-                'desuscrito' => __('Suscripción cancelada', 'flavor-chat-ia'),
-                'sin_avisos' => __('No hay avisos para mostrar', 'flavor-chat-ia'),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmado' => __('Lectura confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'suscrito' => __('Suscripción activada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'desuscrito' => __('Suscripción cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sin_avisos' => __('No hay avisos para mostrar', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -179,7 +179,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
         $no_leidos = $this->contar_avisos_no_leidos(get_current_user_id());
 
         $tabs['avisos'] = [
-            'titulo' => __('Avisos', 'flavor-chat-ia'),
+            'titulo' => __('Avisos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'dashicons-megaphone',
             'callback' => [$this, 'render_dashboard_tab'],
             'orden' => 10,
@@ -210,7 +210,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
                     </div>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-valor"><?php echo intval($estadisticas['urgentes']); ?></span>
-                        <span class="flavor-kpi-label"><?php _e('Avisos Urgentes', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Avisos Urgentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -220,7 +220,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
                     </div>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-valor"><?php echo intval($estadisticas['no_leidos']); ?></span>
-                        <span class="flavor-kpi-label"><?php _e('Sin Leer', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Sin Leer', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -230,7 +230,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
                     </div>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-valor"><?php echo intval($estadisticas['confirmados']); ?></span>
-                        <span class="flavor-kpi-label"><?php _e('Confirmados', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Confirmados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -240,7 +240,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
                     </div>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-valor"><?php echo count($suscripciones); ?></span>
-                        <span class="flavor-kpi-label"><?php _e('Suscripciones', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Suscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -251,7 +251,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
                     <div class="flavor-panel-header">
                         <h3>
                             <span class="dashicons dashicons-warning"></span>
-                            <?php _e('Avisos Urgentes', 'flavor-chat-ia'); ?>
+                            <?php _e('Avisos Urgentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
                     </div>
                     <div class="flavor-panel-body">
@@ -267,9 +267,9 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
             <!-- Avisos Recientes -->
             <div class="flavor-panel">
                 <div class="flavor-panel-header">
-                    <h3><?php _e('Avisos Recientes', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Avisos Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <a href="<?php echo esc_url(add_query_arg('seccion', 'todos')); ?>" class="flavor-link">
-                        <?php _e('Ver todos', 'flavor-chat-ia'); ?>
+                        <?php _e('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
                 <div class="flavor-panel-body">
@@ -282,7 +282,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
                     <?php else: ?>
                         <div class="flavor-empty-state">
                             <span class="dashicons dashicons-megaphone"></span>
-                            <p><?php _e('No hay avisos recientes.', 'flavor-chat-ia'); ?></p>
+                            <p><?php _e('No hay avisos recientes.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -291,9 +291,9 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
             <!-- Mis Suscripciones -->
             <div class="flavor-panel">
                 <div class="flavor-panel-header">
-                    <h3><?php _e('Mis Suscripciones', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Mis Suscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <a href="<?php echo esc_url(add_query_arg('seccion', 'suscripciones')); ?>" class="flavor-link">
-                        <?php _e('Gestionar', 'flavor-chat-ia'); ?>
+                        <?php _e('Gestionar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
                 <div class="flavor-panel-body">
@@ -302,15 +302,15 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
                             <?php foreach ($suscripciones as $suscripcion): ?>
                                 <span class="flavor-tag">
                                     <span class="dashicons dashicons-<?php echo $suscripcion->canal === 'email' ? 'email' : ($suscripcion->canal === 'push' ? 'bell' : 'smartphone'); ?>"></span>
-                                    <?php echo esc_html($suscripcion->nombre_categoria ?: $suscripcion->nombre_zona ?: __('General', 'flavor-chat-ia')); ?>
+                                    <?php echo esc_html($suscripcion->nombre_categoria ?: $suscripcion->nombre_zona ?: __('General', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                                 </span>
                             <?php endforeach; ?>
                         </div>
                     <?php else: ?>
                         <p class="flavor-text-muted">
-                            <?php _e('No tienes suscripciones activas.', 'flavor-chat-ia'); ?>
+                            <?php _e('No tienes suscripciones activas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             <a href="<?php echo esc_url(add_query_arg('seccion', 'suscripciones')); ?>">
-                                <?php _e('Suscríbete ahora', 'flavor-chat-ia'); ?>
+                                <?php _e('Suscríbete ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </p>
                     <?php endif; ?>
@@ -348,7 +348,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
             <div class="flavor-aviso-actions">
                 <a href="<?php echo esc_url(add_query_arg(['seccion' => 'detalle', 'aviso_id' => $aviso->id])); ?>"
                    class="flavor-btn flavor-btn-sm flavor-btn-primary">
-                    <?php _e('Ver', 'flavor-chat-ia'); ?>
+                    <?php _e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -368,7 +368,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
             <div class="flavor-aviso-info">
                 <span class="flavor-aviso-titulo">
                     <?php if (!$leido): ?>
-                        <span class="flavor-badge-nuevo"><?php _e('Nuevo', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-badge-nuevo"><?php _e('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <?php endif; ?>
                     <?php echo esc_html($aviso->titulo); ?>
                 </span>
@@ -423,7 +423,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
             <!-- Filtros -->
             <div class="flavor-filtros-bar">
                 <select id="filtro-categoria" class="flavor-select">
-                    <option value=""><?php _e('Todas las categorías', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todas las categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($this->obtener_categorias() as $cat): ?>
                         <option value="<?php echo esc_attr($cat->slug); ?>"
                                 <?php selected($atts['categoria'], $cat->slug); ?>>
@@ -433,7 +433,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
                 </select>
 
                 <select id="filtro-prioridad" class="flavor-select">
-                    <option value=""><?php _e('Todas las prioridades', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todas las prioridades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($this->prioridades as $key => $prio): ?>
                         <option value="<?php echo esc_attr($key); ?>"
                                 <?php selected($atts['prioridad'], $key); ?>>
@@ -468,7 +468,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
             <?php else: ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-megaphone"></span>
-                    <p><?php _e('No hay avisos para mostrar.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No hay avisos para mostrar.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
         </div>
@@ -498,7 +498,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
                     <?php endif; ?>
                     <?php if (!$leido): ?>
                         <span class="flavor-badge flavor-badge-nuevo">
-                            <?php _e('Nuevo', 'flavor-chat-ia'); ?>
+                            <?php _e('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
                     <?php endif; ?>
                 </div>
@@ -529,7 +529,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
 
                 <a href="<?php echo esc_url(add_query_arg(['seccion' => 'detalle', 'aviso_id' => $aviso->id])); ?>"
                    class="flavor-btn flavor-btn-primary">
-                    <?php _e('Leer más', 'flavor-chat-ia'); ?>
+                    <?php _e('Leer más', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -560,7 +560,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
         <div class="flavor-avisos-urgentes">
             <div class="flavor-urgentes-header">
                 <span class="dashicons dashicons-warning"></span>
-                <?php _e('Avisos Urgentes', 'flavor-chat-ia'); ?>
+                <?php _e('Avisos Urgentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
             <div class="flavor-urgentes-list">
                 <?php foreach ($avisos as $aviso): ?>
@@ -591,7 +591,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
 
         if (!$aviso_id) {
             return '<div class="flavor-notice flavor-notice-warning">' .
-                   __('Aviso no encontrado.', 'flavor-chat-ia') .
+                   __('Aviso no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN) .
                    '</div>';
         }
 
@@ -601,7 +601,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
 
         if (!$aviso || $aviso->estado !== 'publicado') {
             return '<div class="flavor-notice flavor-notice-warning">' .
-                   __('Este aviso no está disponible.', 'flavor-chat-ia') .
+                   __('Este aviso no está disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) .
                    '</div>';
         }
 
@@ -637,7 +637,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
                     </span>
                     <span class="flavor-aviso-vistas">
                         <span class="dashicons dashicons-visibility"></span>
-                        <?php printf(__('%d visualizaciones', 'flavor-chat-ia'), $aviso->total_visualizaciones); ?>
+                        <?php printf(__('%d visualizaciones', FLAVOR_PLATFORM_TEXT_DOMAIN), $aviso->total_visualizaciones); ?>
                     </span>
                 </div>
             </div>
@@ -651,15 +651,15 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
                     <?php if ($confirmado): ?>
                         <div class="flavor-confirmacion-estado confirmado">
                             <span class="dashicons dashicons-yes-alt"></span>
-                            <?php _e('Has confirmado la lectura de este aviso', 'flavor-chat-ia'); ?>
+                            <?php _e('Has confirmado la lectura de este aviso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     <?php else: ?>
                         <div class="flavor-confirmacion-box">
-                            <p><?php _e('Este aviso requiere confirmación de lectura.', 'flavor-chat-ia'); ?></p>
+                            <p><?php _e('Este aviso requiere confirmación de lectura.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             <button class="flavor-btn flavor-btn-primary flavor-btn-confirmar"
                                     data-aviso-id="<?php echo esc_attr($aviso->id); ?>">
                                 <span class="dashicons dashicons-yes"></span>
-                                <?php _e('Confirmar Lectura', 'flavor-chat-ia'); ?>
+                                <?php _e('Confirmar Lectura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </div>
                     <?php endif; ?>
@@ -669,23 +669,23 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
             <div class="flavor-aviso-detalle-footer">
                 <a href="javascript:history.back()" class="flavor-btn flavor-btn-outline">
                     <span class="dashicons dashicons-arrow-left-alt2"></span>
-                    <?php _e('Volver', 'flavor-chat-ia'); ?>
+                    <?php _e('Volver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
 
                 <div class="flavor-share-buttons">
                     <button class="flavor-btn flavor-btn-sm flavor-btn-share"
                             data-share="twitter"
-                            title="<?php _e('Compartir en Twitter', 'flavor-chat-ia'); ?>">
+                            title="<?php _e('Compartir en Twitter', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-twitter"></span>
                     </button>
                     <button class="flavor-btn flavor-btn-sm flavor-btn-share"
                             data-share="facebook"
-                            title="<?php _e('Compartir en Facebook', 'flavor-chat-ia'); ?>">
+                            title="<?php _e('Compartir en Facebook', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-facebook"></span>
                     </button>
                     <button class="flavor-btn flavor-btn-sm flavor-btn-share"
                             data-share="whatsapp"
-                            title="<?php _e('Compartir en WhatsApp', 'flavor-chat-ia'); ?>">
+                            title="<?php _e('Compartir en WhatsApp', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-whatsapp"></span>
                     </button>
                 </div>
@@ -701,7 +701,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
     public function shortcode_suscripciones($atts) {
         if (!is_user_logged_in()) {
             return '<div class="flavor-notice flavor-notice-warning">' .
-                   __('Debes iniciar sesión para gestionar tus suscripciones.', 'flavor-chat-ia') .
+                   __('Debes iniciar sesión para gestionar tus suscripciones.', FLAVOR_PLATFORM_TEXT_DOMAIN) .
                    '</div>';
         }
 
@@ -714,9 +714,9 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-avisos-suscripciones">
-            <h3><?php _e('Gestiona tus Suscripciones', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Gestiona tus Suscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <p class="flavor-text-muted">
-                <?php _e('Recibe notificaciones de los avisos que te interesan.', 'flavor-chat-ia'); ?>
+                <?php _e('Recibe notificaciones de los avisos que te interesan.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
 
             <form id="form-suscripciones" class="flavor-form">
@@ -724,7 +724,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
 
                 <!-- Por categoría -->
                 <div class="flavor-form-section">
-                    <h4><?php _e('Por Categoría', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php _e('Por Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <div class="flavor-checkbox-grid">
                         <?php foreach ($categorias as $cat): ?>
                             <?php
@@ -747,7 +747,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
                 <!-- Por zona -->
                 <?php if (!empty($zonas)): ?>
                     <div class="flavor-form-section">
-                        <h4><?php _e('Por Zona', 'flavor-chat-ia'); ?></h4>
+                        <h4><?php _e('Por Zona', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                         <div class="flavor-checkbox-grid">
                             <?php foreach ($zonas as $zona): ?>
                                 <?php $suscrito = $this->tiene_suscripcion($suscripciones, 'zona', $zona->id); ?>
@@ -767,20 +767,20 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
 
                 <!-- Canal de notificación -->
                 <div class="flavor-form-section">
-                    <h4><?php _e('Canal de Notificación', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php _e('Canal de Notificación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <div class="flavor-radio-group">
                         <label class="flavor-radio-card">
                             <input type="radio" name="canal" value="email" checked>
                             <span class="flavor-radio-content">
                                 <span class="dashicons dashicons-email"></span>
-                                <span><?php _e('Email', 'flavor-chat-ia'); ?></span>
+                                <span><?php _e('Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </span>
                         </label>
                         <label class="flavor-radio-card">
                             <input type="radio" name="canal" value="push">
                             <span class="flavor-radio-content">
                                 <span class="dashicons dashicons-bell"></span>
-                                <span><?php _e('Push', 'flavor-chat-ia'); ?></span>
+                                <span><?php _e('Push', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </span>
                         </label>
                     </div>
@@ -788,7 +788,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
 
                 <button type="submit" class="flavor-btn flavor-btn-primary flavor-btn-lg">
                     <span class="dashicons dashicons-saved"></span>
-                    <?php _e('Guardar Preferencias', 'flavor-chat-ia'); ?>
+                    <?php _e('Guardar Preferencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </form>
         </div>
@@ -828,7 +828,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
                     <?php endforeach; ?>
                 </div>
             </div>
-            <button class="flavor-banner-close" aria-label="<?php _e('Cerrar', 'flavor-chat-ia'); ?>">
+            <button class="flavor-banner-close" aria-label="<?php _e('Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <span class="dashicons dashicons-no-alt"></span>
             </button>
         </div>
@@ -865,7 +865,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
     public function shortcode_dashboard($atts) {
         if (!is_user_logged_in()) {
             return '<div class="flavor-notice flavor-notice-warning">' .
-                   __('Debes iniciar sesión para acceder al dashboard.', 'flavor-chat-ia') .
+                   __('Debes iniciar sesión para acceder al dashboard.', FLAVOR_PLATFORM_TEXT_DOMAIN) .
                    '</div>';
         }
 
@@ -886,7 +886,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
             <form class="flavor-search-form" method="get">
                 <div class="flavor-search-input-group">
                     <input type="text" name="buscar" class="flavor-input"
-                           placeholder="<?php _e('Buscar avisos...', 'flavor-chat-ia'); ?>"
+                           placeholder="<?php _e('Buscar avisos...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                            value="<?php echo esc_attr($_GET['buscar'] ?? ''); ?>">
                     <button type="submit" class="flavor-btn flavor-btn-primary">
                         <span class="dashicons dashicons-search"></span>
@@ -910,17 +910,17 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $aviso_id = intval($_POST['aviso_id'] ?? 0);
         if (!$aviso_id) {
-            wp_send_json_error(['message' => __('Aviso no válido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Aviso no válido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $this->marcar_como_leido($aviso_id, $usuario_id);
 
-        wp_send_json_success(['message' => __('Marcado como leído', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Marcado como leído', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -931,12 +931,12 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $aviso_id = intval($_POST['aviso_id'] ?? 0);
         if (!$aviso_id) {
-            wp_send_json_error(['message' => __('Aviso no válido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Aviso no válido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -948,7 +948,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
         ));
 
         if ($existe) {
-            wp_send_json_error(['message' => __('Ya has confirmado este aviso', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Ya has confirmado este aviso', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Insertar confirmación
@@ -964,7 +964,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
             $aviso_id
         ));
 
-        wp_send_json_success(['message' => __('Lectura confirmada', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Lectura confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -975,7 +975,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1008,7 +1008,7 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
             ], ['%d', '%d', '%s', '%d', '%s']);
         }
 
-        wp_send_json_success(['message' => __('Preferencias guardadas', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Preferencias guardadas', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**

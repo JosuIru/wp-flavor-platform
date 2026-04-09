@@ -13,8 +13,8 @@
 
 if (!defined('ABSPATH')) exit;
 
-$titulo = $titulo ?? __('Nuestras Series', 'flavor-chat-ia');
-$subtitulo = $subtitulo ?? __('Explora todas las series de podcast disponibles', 'flavor-chat-ia');
+$titulo = $titulo ?? __('Nuestras Series', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$subtitulo = $subtitulo ?? __('Explora todas las series de podcast disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $columnas = $columnas ?? 3;
 $mostrar_filtros = $mostrar_filtros ?? true;
 
@@ -102,7 +102,7 @@ if ($columnas >= 4) $grid_class .= ' xl:grid-cols-4';
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
                 </svg>
-                <?php echo esc_html__('Series de Podcast', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Series de Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
             <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4"><?php echo esc_html($titulo); ?></h2>
             <p class="text-xl text-gray-600"><?php echo esc_html($subtitulo); ?></p>
@@ -112,7 +112,7 @@ if ($columnas >= 4) $grid_class .= ' xl:grid-cols-4';
         <!-- Filtros de categoría -->
         <div class="flex flex-wrap justify-center gap-3 mb-10">
             <button class="filter-btn active px-5 py-2 rounded-full text-sm font-medium bg-purple-600 text-white transition-all hover:bg-purple-700" data-filter="all">
-                <?php echo esc_html__('Todas', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <?php foreach ($categorias as $cat): ?>
                 <button class="filter-btn px-5 py-2 rounded-full text-sm font-medium bg-white text-gray-700 border border-gray-200 transition-all hover:border-purple-300 hover:text-purple-600" data-filter="<?php echo esc_attr(sanitize_title($cat)); ?>">
@@ -142,7 +142,7 @@ if ($columnas >= 4) $grid_class .= ' xl:grid-cols-4';
                                 <svg class="w-3 h-3 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                                 </svg>
-                                <?php echo esc_html__('Destacada', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Destacada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         <?php endif; ?>
 
@@ -189,7 +189,7 @@ if ($columnas >= 4) $grid_class .= ' xl:grid-cols-4';
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                                 </svg>
-                                <?php printf(esc_html__('%d temporadas', 'flavor-chat-ia'), $serie['temporadas']); ?>
+                                <?php printf(esc_html__('%d temporadas', FLAVOR_PLATFORM_TEXT_DOMAIN), $serie['temporadas']); ?>
                             </span>
                             <span class="flex items-center gap-1">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -205,9 +205,9 @@ if ($columnas >= 4) $grid_class .= ' xl:grid-cols-4';
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M8 5v14l11-7z"/>
                                 </svg>
-                                <?php echo esc_html__('Escuchar', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Escuchar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
-                            <button class="p-3 rounded-xl border-2 border-gray-200 text-gray-600 hover:border-purple-300 hover:text-purple-600 transition-all" title="<?php echo esc_attr__('Suscribirse', 'flavor-chat-ia'); ?>">
+                            <button class="p-3 rounded-xl border-2 border-gray-200 text-gray-600 hover:border-purple-300 hover:text-purple-600 transition-all" title="<?php echo esc_attr__('Suscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
                                 </svg>
@@ -221,7 +221,7 @@ if ($columnas >= 4) $grid_class .= ' xl:grid-cols-4';
         <!-- Ver más -->
         <div class="text-center mt-12">
             <a href="#" class="inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-purple-600 bg-purple-50 hover:bg-purple-100 transition-all border-2 border-purple-200 hover:border-purple-300">
-                <?php echo esc_html__('Ver todas las series', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Ver todas las series', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                 </svg>

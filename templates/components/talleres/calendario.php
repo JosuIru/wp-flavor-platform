@@ -94,7 +94,7 @@ $proximos_eventos = [
                 <div class="lg:col-span-2 bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
                     <!-- Header del Calendario -->
                     <div class="flex items-center justify-between mb-8">
-                        <button class="p-2 rounded-lg hover:bg-gray-100 transition-colors" title="<?php echo esc_attr__('Mes anterior', 'flavor-chat-ia'); ?>">
+                        <button class="p-2 rounded-lg hover:bg-gray-100 transition-colors" title="<?php echo esc_attr__('Mes anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                             </svg>
@@ -102,7 +102,7 @@ $proximos_eventos = [
                         <h3 class="text-2xl font-bold text-gray-900">
                             <?php echo esc_html($nombre_mes); ?>
                         </h3>
-                        <button class="p-2 rounded-lg hover:bg-gray-100 transition-colors" title="<?php echo esc_attr__('Mes siguiente', 'flavor-chat-ia'); ?>">
+                        <button class="p-2 rounded-lg hover:bg-gray-100 transition-colors" title="<?php echo esc_attr__('Mes siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                             </svg>
@@ -159,32 +159,32 @@ $proximos_eventos = [
                     <?php if ($mostrar_leyenda): ?>
                         <div class="mt-8 pt-8 border-t border-gray-200">
                             <h4 class="font-bold text-gray-900 mb-4">
-                                <?php echo esc_html__('Leyenda de Categorías', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Leyenda de Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </h4>
                             <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                                 <div class="flex items-center gap-2">
                                     <div class="w-4 h-4 rounded-full" style="background-color: #10b981;"></div>
-                                    <span class="text-sm text-gray-700"><?php echo esc_html__('Ecología', 'flavor-chat-ia'); ?></span>
+                                    <span class="text-sm text-gray-700"><?php echo esc_html__('Ecología', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <div class="w-4 h-4 rounded-full" style="background-color: #f97316;"></div>
-                                    <span class="text-sm text-gray-700"><?php echo esc_html__('Cocina', 'flavor-chat-ia'); ?></span>
+                                    <span class="text-sm text-gray-700"><?php echo esc_html__('Cocina', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <div class="w-4 h-4 rounded-full" style="background-color: #3b82f6;"></div>
-                                    <span class="text-sm text-gray-700"><?php echo esc_html__('Tecnología', 'flavor-chat-ia'); ?></span>
+                                    <span class="text-sm text-gray-700"><?php echo esc_html__('Tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <div class="w-4 h-4 rounded-full" style="background-color: #a855f7;"></div>
-                                    <span class="text-sm text-gray-700"><?php echo esc_html__('Fotografía', 'flavor-chat-ia'); ?></span>
+                                    <span class="text-sm text-gray-700"><?php echo esc_html__('Fotografía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <div class="w-4 h-4 rounded-full" style="background-color: #6366f1;"></div>
-                                    <span class="text-sm text-gray-700"><?php echo esc_html__('Bienestar', 'flavor-chat-ia'); ?></span>
+                                    <span class="text-sm text-gray-700"><?php echo esc_html__('Bienestar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <div class="w-4 h-4 rounded-full" style="background-color: #ec4899;"></div>
-                                    <span class="text-sm text-gray-700"><?php echo esc_html__('Manualidades', 'flavor-chat-ia'); ?></span>
+                                    <span class="text-sm text-gray-700"><?php echo esc_html__('Manualidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                             </div>
                         </div>
@@ -199,7 +199,7 @@ $proximos_eventos = [
                             <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
-                            <?php echo esc_html__('Próximos Eventos', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Próximos Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
 
                         <div class="space-y-4">
@@ -228,7 +228,7 @@ $proximos_eventos = [
                         </div>
 
                         <button class="w-full mt-6 py-2 px-4 rounded-lg border border-blue-300 text-blue-600 font-semibold hover:bg-blue-50 transition-colors">
-                            <?php echo esc_html__('Ver todos los eventos', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Ver todos los eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
 
@@ -238,20 +238,20 @@ $proximos_eventos = [
                             <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                             </svg>
-                            <?php echo esc_html__('Estadísticas', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
 
                         <div class="space-y-4">
                             <div class="flex items-center justify-between pb-3 border-b border-gray-100">
-                                <span class="text-gray-600"><?php echo esc_html__('Talleres este mes', 'flavor-chat-ia'); ?></span>
+                                <span class="text-gray-600"><?php echo esc_html__('Talleres este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="font-bold text-lg text-purple-600">12</span>
                             </div>
                             <div class="flex items-center justify-between pb-3 border-b border-gray-100">
-                                <span class="text-gray-600"><?php echo esc_html__('Inscripciones totales', 'flavor-chat-ia'); ?></span>
+                                <span class="text-gray-600"><?php echo esc_html__('Inscripciones totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="font-bold text-lg text-blue-600">87</span>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span class="text-gray-600"><?php echo esc_html__('Ocupación promedio', 'flavor-chat-ia'); ?></span>
+                                <span class="text-gray-600"><?php echo esc_html__('Ocupación promedio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="font-bold text-lg text-green-600">78%</span>
                             </div>
                         </div>
@@ -260,28 +260,28 @@ $proximos_eventos = [
                     <!-- Filtros Rápidos -->
                     <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl shadow-lg border border-gray-100 p-6">
                         <h3 class="text-lg font-bold text-gray-900 mb-4">
-                            <?php echo esc_html__('Filtrar por Categoría', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Filtrar por Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
                         <div class="space-y-2">
                             <label class="flex items-center gap-3 cursor-pointer hover:bg-white p-2 rounded-lg transition-colors">
                                 <input type="checkbox" checked class="w-4 h-4 rounded text-blue-600 cursor-pointer">
-                                <span class="text-gray-700 font-medium"><?php echo esc_html__('Todas', 'flavor-chat-ia'); ?></span>
+                                <span class="text-gray-700 font-medium"><?php echo esc_html__('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </label>
                             <label class="flex items-center gap-3 cursor-pointer hover:bg-white p-2 rounded-lg transition-colors">
                                 <input type="checkbox" class="w-4 h-4 rounded text-green-600 cursor-pointer">
-                                <span class="text-gray-700 font-medium"><?php echo esc_html__('Ecología', 'flavor-chat-ia'); ?></span>
+                                <span class="text-gray-700 font-medium"><?php echo esc_html__('Ecología', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </label>
                             <label class="flex items-center gap-3 cursor-pointer hover:bg-white p-2 rounded-lg transition-colors">
                                 <input type="checkbox" class="w-4 h-4 rounded text-orange-600 cursor-pointer">
-                                <span class="text-gray-700 font-medium"><?php echo esc_html__('Cocina', 'flavor-chat-ia'); ?></span>
+                                <span class="text-gray-700 font-medium"><?php echo esc_html__('Cocina', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </label>
                             <label class="flex items-center gap-3 cursor-pointer hover:bg-white p-2 rounded-lg transition-colors">
                                 <input type="checkbox" class="w-4 h-4 rounded text-blue-600 cursor-pointer">
-                                <span class="text-gray-700 font-medium"><?php echo esc_html__('Tecnología', 'flavor-chat-ia'); ?></span>
+                                <span class="text-gray-700 font-medium"><?php echo esc_html__('Tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </label>
                             <label class="flex items-center gap-3 cursor-pointer hover:bg-white p-2 rounded-lg transition-colors">
                                 <input type="checkbox" class="w-4 h-4 rounded text-indigo-600 cursor-pointer">
-                                <span class="text-gray-700 font-medium"><?php echo esc_html__('Bienestar', 'flavor-chat-ia'); ?></span>
+                                <span class="text-gray-700 font-medium"><?php echo esc_html__('Bienestar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </label>
                         </div>
                     </div>

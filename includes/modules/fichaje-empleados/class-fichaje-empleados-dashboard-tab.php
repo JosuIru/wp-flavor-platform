@@ -27,7 +27,7 @@ class Flavor_Fichaje_Empleados_Dashboard_Tab {
 
     public function registrar_tabs($tabs) {
         $tabs['fichaje'] = [
-            'label' => __('Fichaje', 'flavor-chat-ia'),
+            'label' => __('Fichaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-clock',
             'callback' => [$this, 'render_tab'],
             'priority' => 70,

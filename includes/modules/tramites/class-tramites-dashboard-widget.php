@@ -27,8 +27,8 @@ class Flavor_Tramites_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
     public function __construct() {
         global $wpdb;
         $this->prefix_tabla = $wpdb->prefix . 'flavor_tramites_';
-        $this->title = __('Trámites', 'flavor-chat-ia');
-        $this->description = __('Gestión de trámites y solicitudes', 'flavor-chat-ia');
+        $this->title = __('Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Gestión de trámites y solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         parent::__construct([
             'id' => $this->widget_id,
@@ -82,7 +82,7 @@ class Flavor_Tramites_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             [
                 'icon' => 'dashicons-clipboard',
                 'valor' => $tramites_disponibles,
-                'label' => __('Trámites', 'flavor-chat-ia'),
+                'label' => __('Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'primary',
                 'url' => $es_admin ? admin_url('admin.php?page=tramites-dashboard') : Flavor_Chat_Helpers::get_action_url('tramites', ''),
             ],
@@ -93,7 +93,7 @@ class Flavor_Tramites_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 $stats[] = [
                     'icon' => 'dashicons-clock',
                     'valor' => $solicitudes_pendientes,
-                    'label' => __('En proceso', 'flavor-chat-ia'),
+                    'label' => __('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'warning',
                     'url' => $es_admin ? admin_url('admin.php?page=tramites-pendientes') : Flavor_Chat_Helpers::get_action_url('tramites', 'mis-tramites'),
                 ];
@@ -103,7 +103,7 @@ class Flavor_Tramites_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 $stats[] = [
                     'icon' => 'dashicons-list-view',
                     'valor' => $mis_solicitudes,
-                    'label' => __('Mis trámites', 'flavor-chat-ia'),
+                    'label' => __('Mis trámites', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'info',
                     'url' => $es_admin ? admin_url('admin.php?page=tramites-historial') : Flavor_Chat_Helpers::get_action_url('tramites', 'mis-tramites'),
                 ];
@@ -115,10 +115,10 @@ class Flavor_Tramites_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats,
             'items' => $items,
-            'empty_state' => __('No hay trámites disponibles', 'flavor-chat-ia'),
+            'empty_state' => __('No hay trámites disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => __('Iniciar trámite', 'flavor-chat-ia'),
+                    'label' => __('Iniciar trámite', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => $es_admin ? admin_url('admin.php?page=tramites-dashboard') : Flavor_Chat_Helpers::get_action_url('tramites', ''),
                     'icon' => 'dashicons-plus-alt2',
                 ],
@@ -148,7 +148,7 @@ class Flavor_Tramites_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         foreach ($tramites as $tramite) {
             $meta = $tramite->categoria ?: '';
             if (!empty($tramite->tiempo_estimado)) {
-                $meta = sprintf(__('%s días', 'flavor-chat-ia'), $tramite->tiempo_estimado);
+                $meta = sprintf(__('%s días', FLAVOR_PLATFORM_TEXT_DOMAIN), $tramite->tiempo_estimado);
             }
 
             $items[] = [

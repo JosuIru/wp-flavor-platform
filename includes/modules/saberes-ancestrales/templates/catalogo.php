@@ -22,12 +22,12 @@ $saberes = get_posts([
 
 <div class="sa-container">
     <header class="sa-header">
-        <h2><?php esc_html_e('Saberes Ancestrales', 'flavor-chat-ia'); ?></h2>
-        <p><?php esc_html_e('Conocimientos transmitidos de generación en generación', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Saberes Ancestrales', 'flavor-platform'); ?></h2>
+        <p><?php esc_html_e('Conocimientos transmitidos de generación en generación', 'flavor-platform'); ?></p>
     </header>
 
     <div class="sa-cita">
-        <p class="sa-cita__texto"><?php esc_html_e('Un pueblo que olvida su pasado está condenado a repetirlo.', 'flavor-chat-ia'); ?></p>
+        <p class="sa-cita__texto"><?php esc_html_e('Un pueblo que olvida su pasado está condenado a repetirlo.', 'flavor-platform'); ?></p>
         <span class="sa-cita__autor">— Proverbio tradicional</span>
     </div>
 
@@ -35,7 +35,7 @@ $saberes = get_posts([
     <div class="sa-categorias-grid">
         <button class="sa-categoria-btn activo" data-categoria="todos">
             <div class="sa-categoria-btn__icono">📚</div>
-            <div class="sa-categoria-btn__nombre"><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></div>
+            <div class="sa-categoria-btn__nombre"><?php esc_html_e('Todos', 'flavor-platform'); ?></div>
         </button>
         <?php foreach ($categorias as $cat_id => $cat_data) : ?>
         <button class="sa-categoria-btn" data-categoria="<?php echo esc_attr($cat_id); ?>">
@@ -85,7 +85,7 @@ $saberes = get_posts([
             <?php if (is_user_logged_in()) : ?>
             <div style="padding: 0 1.25rem 1.25rem;">
                 <button class="sa-btn sa-btn--primary sa-btn--small sa-btn-solicitar" data-saber="<?php echo esc_attr($saber->ID); ?>" style="width: 100%;">
-                    <?php esc_html_e('Quiero aprender', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Quiero aprender', 'flavor-platform'); ?>
                 </button>
             </div>
             <?php endif; ?>
@@ -95,10 +95,10 @@ $saberes = get_posts([
     <?php else : ?>
     <div class="sa-empty-state">
         <span class="dashicons dashicons-book"></span>
-        <p><?php esc_html_e('Aún no hay saberes documentados.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('Aún no hay saberes documentados.', 'flavor-platform'); ?></p>
         <?php if (is_user_logged_in()) : ?>
         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('saberes_ancestrales', 'compartir')); ?>" class="sa-btn sa-btn--primary">
-            <?php esc_html_e('Compartir un saber', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Compartir un saber', 'flavor-platform'); ?>
         </a>
         <?php endif; ?>
     </div>

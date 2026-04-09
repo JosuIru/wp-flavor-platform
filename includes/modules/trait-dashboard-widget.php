@@ -189,7 +189,7 @@ trait Flavor_Dashboard_Widget_Trait {
             'items'       => [],
             'actions'     => [],
             'empty_state' => sprintf(
-                __('No hay datos de %s', 'flavor-chat-ia'),
+                __('No hay datos de %s', 'flavor-platform'),
                 $this->get_name()
             ),
             'footer'      => $this->get_dashboard_widget_footer(),
@@ -295,7 +295,7 @@ trait Flavor_Dashboard_Widget_Trait {
             $ruta_frontend = substr($admin_slug, strlen('_frontend_:'));
             return [
                 [
-                    'label' => __('Ver más', 'flavor-chat-ia'),
+                    'label' => __('Ver más', 'flavor-platform'),
                     'url'   => home_url($ruta_frontend),
                     'icon'  => 'dashicons-external',
                 ],
@@ -304,7 +304,7 @@ trait Flavor_Dashboard_Widget_Trait {
 
         return [
             [
-                'label' => __('Administrar', 'flavor-chat-ia'),
+                'label' => __('Administrar', 'flavor-platform'),
                 'url'   => admin_url('admin.php?page=' . $admin_slug),
                 'icon'  => 'dashicons-admin-generic',
             ],

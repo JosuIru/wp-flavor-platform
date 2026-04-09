@@ -856,14 +856,14 @@
 			var self = this;
 
 			// Verificar si ya existe el modal
-			var $modal = $('#flavor-chat-ia-modal');
+			var $modal = $('#flavor-platform-modal');
 			if ($modal.length > 0) {
 				$modal.addClass('active');
 				return;
 			}
 
 			// Crear modal de chat
-			$modal = $('<div id="flavor-chat-ia-modal" class="flavor-chat-modal">' +
+			$modal = $('<div id="flavor-platform-modal" class="flavor-chat-modal">' +
                 '<div class="flavor-chat-modal-overlay"></div>' +
                 '<div class="flavor-chat-modal-container">' +
                     '<div class="flavor-chat-modal-header">' +

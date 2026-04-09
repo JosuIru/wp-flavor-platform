@@ -53,12 +53,12 @@ $moneda_iconos = [
                 <img src="<?php echo esc_url($proyecto->creador_avatar); ?>" alt="">
                 <span>
                     <?php printf(
-                        esc_html__('Por %s', 'flavor-chat-ia'),
+                        esc_html__('Por %s', 'flavor-platform'),
                         '<strong>' . esc_html($proyecto->creador_nombre) . '</strong>'
                     ); ?>
                 </span>
                 <?php if ($proyecto->verificado): ?>
-                    <span class="flavor-cf-verificado" title="<?php esc_attr_e('Proyecto verificado', 'flavor-chat-ia'); ?>">✓</span>
+                    <span class="flavor-cf-verificado" title="<?php esc_attr_e('Proyecto verificado', 'flavor-platform'); ?>">✓</span>
                 <?php endif; ?>
             </div>
 
@@ -84,7 +84,7 @@ $moneda_iconos = [
 
             <!-- Descripción -->
             <section class="flavor-cf-seccion">
-                <h2><?php esc_html_e('Sobre el proyecto', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Sobre el proyecto', 'flavor-platform'); ?></h2>
                 <div class="flavor-cf-descripcion">
                     <?php echo wp_kses_post(wpautop($proyecto->contenido ?: $proyecto->descripcion)); ?>
                 </div>
@@ -93,7 +93,7 @@ $moneda_iconos = [
             <!-- Galería -->
             <?php if (!empty($proyecto->galeria)): ?>
             <section class="flavor-cf-seccion">
-                <h2><?php esc_html_e('Galería', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Galería', 'flavor-platform'); ?></h2>
                 <div class="flavor-cf-galeria">
                     <?php foreach ($proyecto->galeria as $imagen): ?>
                         <a href="<?php echo esc_url($imagen); ?>" class="flavor-cf-galeria__item">
@@ -107,7 +107,7 @@ $moneda_iconos = [
             <!-- Desglose del presupuesto -->
             <?php if (!empty($proyecto->desglose_presupuesto)): ?>
             <section class="flavor-cf-seccion">
-                <h2><?php esc_html_e('Desglose del presupuesto', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Desglose del presupuesto', 'flavor-platform'); ?></h2>
                 <div class="flavor-cf-presupuesto">
                     <?php foreach ($proyecto->desglose_presupuesto as $linea): ?>
                         <div class="flavor-cf-presupuesto__linea">
@@ -116,7 +116,7 @@ $moneda_iconos = [
                         </div>
                     <?php endforeach; ?>
                     <div class="flavor-cf-presupuesto__total">
-                        <span><?php esc_html_e('Total', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Total', 'flavor-platform'); ?></span>
                         <span><?php echo number_format_i18n($proyecto->objetivo_eur, 2); ?>€</span>
                     </div>
                 </div>
@@ -125,32 +125,32 @@ $moneda_iconos = [
 
             <!-- Distribución de fondos (estilo Kulturaka) -->
             <section class="flavor-cf-seccion">
-                <h2><?php esc_html_e('Distribución de los fondos', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Distribución de los fondos', 'flavor-platform'); ?></h2>
                 <div class="flavor-cf-distribucion">
                     <div class="flavor-cf-distribucion__item">
                         <span class="flavor-cf-distribucion__barra" style="width: <?php echo $proyecto->porcentaje_creador; ?>%; background: #10b981;"></span>
                         <span class="flavor-cf-distribucion__label">
-                            <?php echo $proyecto->porcentaje_creador; ?>% <?php esc_html_e('Creador', 'flavor-chat-ia'); ?>
+                            <?php echo $proyecto->porcentaje_creador; ?>% <?php esc_html_e('Creador', 'flavor-platform'); ?>
                         </span>
                     </div>
                     <?php if ($proyecto->porcentaje_espacio > 0): ?>
                     <div class="flavor-cf-distribucion__item">
                         <span class="flavor-cf-distribucion__barra" style="width: <?php echo $proyecto->porcentaje_espacio; ?>%; background: #3b82f6;"></span>
                         <span class="flavor-cf-distribucion__label">
-                            <?php echo $proyecto->porcentaje_espacio; ?>% <?php esc_html_e('Espacio', 'flavor-chat-ia'); ?>
+                            <?php echo $proyecto->porcentaje_espacio; ?>% <?php esc_html_e('Espacio', 'flavor-platform'); ?>
                         </span>
                     </div>
                     <?php endif; ?>
                     <div class="flavor-cf-distribucion__item">
                         <span class="flavor-cf-distribucion__barra" style="width: <?php echo $proyecto->porcentaje_comunidad; ?>%; background: #f59e0b;"></span>
                         <span class="flavor-cf-distribucion__label">
-                            <?php echo $proyecto->porcentaje_comunidad; ?>% <?php esc_html_e('Fondo comunitario', 'flavor-chat-ia'); ?>
+                            <?php echo $proyecto->porcentaje_comunidad; ?>% <?php esc_html_e('Fondo comunitario', 'flavor-platform'); ?>
                         </span>
                     </div>
                     <div class="flavor-cf-distribucion__item">
                         <span class="flavor-cf-distribucion__barra" style="width: <?php echo $proyecto->porcentaje_plataforma + $proyecto->porcentaje_emergencia; ?>%; background: #6b7280;"></span>
                         <span class="flavor-cf-distribucion__label">
-                            <?php echo $proyecto->porcentaje_plataforma + $proyecto->porcentaje_emergencia; ?>% <?php esc_html_e('Infraestructura + Fondo emergencia', 'flavor-chat-ia'); ?>
+                            <?php echo $proyecto->porcentaje_plataforma + $proyecto->porcentaje_emergencia; ?>% <?php esc_html_e('Infraestructura + Fondo emergencia', 'flavor-platform'); ?>
                         </span>
                     </div>
                 </div>
@@ -174,7 +174,7 @@ $moneda_iconos = [
                     <div class="flavor-cf-recaudado__principal">
                         <span class="flavor-cf-recaudado__cantidad"><?php echo number_format_i18n($proyecto->recaudado_eur, 0); ?>€</span>
                         <span class="flavor-cf-recaudado__objetivo">
-                            <?php printf(esc_html__('de %s€', 'flavor-chat-ia'), number_format_i18n($proyecto->objetivo_eur, 0)); ?>
+                            <?php printf(esc_html__('de %s€', 'flavor-platform'), number_format_i18n($proyecto->objetivo_eur, 0)); ?>
                         </span>
                     </div>
                     <?php if ($proyecto->recaudado_semilla > 0): ?>
@@ -187,12 +187,12 @@ $moneda_iconos = [
                 <div class="flavor-cf-stats">
                     <div class="flavor-cf-stat">
                         <span class="flavor-cf-stat__valor"><?php echo number_format_i18n($proyecto->aportantes_count); ?></span>
-                        <span class="flavor-cf-stat__label"><?php esc_html_e('mecenas', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-cf-stat__label"><?php esc_html_e('mecenas', 'flavor-platform'); ?></span>
                     </div>
                     <?php if ($proyecto->dias_restantes !== null): ?>
                     <div class="flavor-cf-stat">
                         <span class="flavor-cf-stat__valor"><?php echo number_format_i18n($proyecto->dias_restantes); ?></span>
-                        <span class="flavor-cf-stat__label"><?php esc_html_e('días restantes', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-cf-stat__label"><?php esc_html_e('días restantes', 'flavor-platform'); ?></span>
                     </div>
                     <?php endif; ?>
                 </div>
@@ -200,19 +200,19 @@ $moneda_iconos = [
                 <?php if ($proyecto->estado === 'activo' && !$proyecto->finalizado): ?>
                     <a href="#aportar" class="flavor-cf-btn flavor-cf-btn--primary flavor-cf-btn--block flavor-cf-btn--lg">
                         <span class="dashicons dashicons-heart"></span>
-                        <?php esc_html_e('Apoyar este proyecto', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Apoyar este proyecto', 'flavor-platform'); ?>
                     </a>
                 <?php elseif ($proyecto->estado === 'exitoso'): ?>
                     <div class="flavor-cf-mensaje flavor-cf-mensaje--exito">
                         <span class="dashicons dashicons-yes-alt"></span>
-                        <?php esc_html_e('¡Proyecto financiado con éxito!', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('¡Proyecto financiado con éxito!', 'flavor-platform'); ?>
                     </div>
                 <?php endif; ?>
             </div>
 
             <!-- Monedas aceptadas -->
             <div class="flavor-cf-card">
-                <h3><?php esc_html_e('Formas de aportar', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Formas de aportar', 'flavor-platform'); ?></h3>
                 <div class="flavor-cf-monedas">
                     <?php if ($proyecto->acepta_eur): ?>
                         <span class="flavor-cf-moneda flavor-cf-moneda--eur">€ Euros</span>
@@ -229,17 +229,17 @@ $moneda_iconos = [
             <!-- Recompensas/Tiers -->
             <?php if (!empty($proyecto->tiers)): ?>
             <div class="flavor-cf-card flavor-cf-card--tiers" id="aportar">
-                <h3><?php esc_html_e('Elige tu recompensa', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Elige tu recompensa', 'flavor-platform'); ?></h3>
 
                 <?php if ($proyecto->permite_aportacion_libre): ?>
                 <div class="flavor-cf-tier flavor-cf-tier--libre">
                     <div class="flavor-cf-tier__header">
-                        <span class="flavor-cf-tier__nombre"><?php esc_html_e('Aportación libre', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-cf-tier__nombre"><?php esc_html_e('Aportación libre', 'flavor-platform'); ?></span>
                     </div>
-                    <p class="flavor-cf-tier__descripcion"><?php esc_html_e('Aporta la cantidad que desees sin recompensa específica.', 'flavor-chat-ia'); ?></p>
+                    <p class="flavor-cf-tier__descripcion"><?php esc_html_e('Aporta la cantidad que desees sin recompensa específica.', 'flavor-platform'); ?></p>
                     <form class="flavor-cf-form-libre">
                         <input type="number" name="importe" min="<?php echo esc_attr($proyecto->minimo_aportacion); ?>" placeholder="<?php echo esc_attr($proyecto->minimo_aportacion); ?>€" class="flavor-cf-input">
-                        <button type="submit" class="flavor-cf-btn flavor-cf-btn--secondary"><?php esc_html_e('Aportar', 'flavor-chat-ia'); ?></button>
+                        <button type="submit" class="flavor-cf-btn flavor-cf-btn--secondary"><?php esc_html_e('Aportar', 'flavor-platform'); ?></button>
                     </form>
                 </div>
                 <?php endif; ?>
@@ -247,7 +247,7 @@ $moneda_iconos = [
                 <?php foreach ($proyecto->tiers as $tier): ?>
                 <div class="flavor-cf-tier <?php echo !$tier->disponible ? 'flavor-cf-tier--agotado' : ''; ?> <?php echo $tier->destacado ? 'flavor-cf-tier--destacado' : ''; ?>">
                     <?php if ($tier->destacado): ?>
-                        <span class="flavor-cf-tier__badge-destacado"><?php esc_html_e('Popular', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-cf-tier__badge-destacado"><?php esc_html_e('Popular', 'flavor-platform'); ?></span>
                     <?php endif; ?>
 
                     <div class="flavor-cf-tier__header">
@@ -282,21 +282,21 @@ $moneda_iconos = [
                             <span class="flavor-cf-tier__stock">
                                 <?php
                                 if ($tier->disponible) {
-                                    printf(esc_html__('%d de %d disponibles', 'flavor-chat-ia'), $tier->restantes, $tier->cantidad_limitada);
+                                    printf(esc_html__('%d de %d disponibles', 'flavor-platform'), $tier->restantes, $tier->cantidad_limitada);
                                 } else {
-                                    esc_html_e('Agotado', 'flavor-chat-ia');
+                                    esc_html_e('Agotado', 'flavor-platform');
                                 }
                                 ?>
                             </span>
                         <?php endif; ?>
                         <span class="flavor-cf-tier__mecenas">
-                            <?php printf(esc_html__('%d mecenas', 'flavor-chat-ia'), $tier->cantidad_vendida); ?>
+                            <?php printf(esc_html__('%d mecenas', 'flavor-platform'), $tier->cantidad_vendida); ?>
                         </span>
                     </div>
 
                     <?php if ($tier->disponible && $proyecto->estado === 'activo'): ?>
                         <button class="flavor-cf-btn flavor-cf-btn--primary flavor-cf-btn--block flavor-cf-seleccionar-tier" data-tier-id="<?php echo esc_attr($tier->id); ?>">
-                            <?php esc_html_e('Seleccionar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Seleccionar', 'flavor-platform'); ?>
                         </button>
                     <?php endif; ?>
                 </div>
@@ -306,7 +306,7 @@ $moneda_iconos = [
 
             <!-- Compartir -->
             <div class="flavor-cf-card">
-                <h3><?php esc_html_e('Comparte este proyecto', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Comparte este proyecto', 'flavor-platform'); ?></h3>
                 <div class="flavor-cf-compartir">
                     <a href="https://twitter.com/intent/tweet?url=<?php echo urlencode(get_permalink()); ?>&text=<?php echo urlencode($proyecto->titulo); ?>" target="_blank" class="flavor-cf-compartir__btn flavor-cf-compartir__btn--twitter">
                         <span class="dashicons dashicons-twitter"></span>

@@ -12,8 +12,8 @@ const OFFLINE_URL = '/offline.html';
 const PRECACHE_URLS = [
     '/',
     '/offline.html',
-    '/wp-content/plugins/flavor-chat-ia/includes/modules/grupos-consumo/assets/gc-frontend.css',
-    '/wp-content/plugins/flavor-chat-ia/includes/modules/grupos-consumo/assets/gc-frontend.js',
+    '/wp-content/plugins/flavor-platform/includes/modules/grupos-consumo/assets/gc-frontend.css',
+    '/wp-content/plugins/flavor-platform/includes/modules/grupos-consumo/assets/gc-frontend.js',
 ];
 
 // URLs de API que se deben cachear
@@ -204,14 +204,14 @@ self.addEventListener('push', (event) => {
         data = {
             title: 'Grupos de Consumo',
             body: event.data.text(),
-            icon: '/wp-content/plugins/flavor-chat-ia/includes/modules/grupos-consumo/assets/icon-192x192.png',
+            icon: '/wp-content/plugins/flavor-platform/includes/modules/grupos-consumo/assets/icon-192x192.png',
         };
     }
 
     const options = {
         body: data.body || data.message,
-        icon: data.icon || '/wp-content/plugins/flavor-chat-ia/includes/modules/grupos-consumo/assets/icon-192x192.png',
-        badge: '/wp-content/plugins/flavor-chat-ia/includes/modules/grupos-consumo/assets/icon-72x72.png',
+        icon: data.icon || '/wp-content/plugins/flavor-platform/includes/modules/grupos-consumo/assets/icon-192x192.png',
+        badge: '/wp-content/plugins/flavor-platform/includes/modules/grupos-consumo/assets/icon-72x72.png',
         vibrate: [100, 50, 100],
         data: {
             url: data.url || '/',

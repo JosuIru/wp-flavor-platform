@@ -128,13 +128,13 @@ class Flavor_Eventos_Frontend_Controller {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('eventos_nonce'),
             'i18n' => [
-                'inscrito' => __('Te has inscrito correctamente', 'flavor-chat-ia'),
-                'cancelado' => __('Inscripción cancelada', 'flavor-chat-ia'),
-                'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'confirmacion' => __('¿Estás seguro?', 'flavor-chat-ia'),
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
-                'sin_plazas' => __('No hay plazas disponibles', 'flavor-chat-ia'),
-                'lista_espera' => __('Te has añadido a la lista de espera', 'flavor-chat-ia'),
+                'inscrito' => __('Te has inscrito correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cancelado' => __('Inscripción cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmacion' => __('¿Estás seguro?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sin_plazas' => __('No hay plazas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'lista_espera' => __('Te has añadido a la lista de espera', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -182,7 +182,7 @@ class Flavor_Eventos_Frontend_Controller {
         return '<div class="flavor-empty-state flavor-empty-state-login">' .
             '<p>' . esc_html($mensaje) . '</p>' .
             '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="flavor-btn flavor-btn-primary">' .
-            esc_html__('Iniciar sesión', 'flavor-chat-ia') .
+            esc_html__('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN) .
             '</a></div>';
     }
 
@@ -244,7 +244,7 @@ class Flavor_Eventos_Frontend_Controller {
      */
     public function shortcode_mis_inscripciones($atts) {
         if (!is_user_logged_in()) {
-            return $this->render_login_required(__('Inicia sesión para ver tus inscripciones.', 'flavor-chat-ia'));
+            return $this->render_login_required(__('Inicia sesión para ver tus inscripciones.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $this->encolar_assets();
@@ -273,9 +273,9 @@ class Flavor_Eventos_Frontend_Controller {
 
         if (!$evento_id) {
             return '<div class="flavor-empty-state">' .
-                '<p>' . esc_html__('Evento no especificado.', 'flavor-chat-ia') . '</p>' .
+                '<p>' . esc_html__('Evento no especificado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>' .
                 '<a href="' . esc_url(home_url('/mi-portal/eventos/')) . '" class="flavor-btn flavor-btn-primary">' .
-                esc_html__('Volver a eventos', 'flavor-chat-ia') .
+                esc_html__('Volver a eventos', FLAVOR_PLATFORM_TEXT_DOMAIN) .
                 '</a></div>';
         }
 
@@ -323,7 +323,7 @@ class Flavor_Eventos_Frontend_Controller {
         $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
-            echo '<p class="flavor-error">' . __('El módulo de eventos no está configurado.', 'flavor-chat-ia') . '</p>';
+            echo '<p class="flavor-error">' . __('El módulo de eventos no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -433,7 +433,7 @@ class Flavor_Eventos_Frontend_Controller {
             ?>
             <div class="flavor-eventos-mis-inscripciones">
                 <?php if (empty($inscripciones)) : ?>
-                    <p class="no-resultados"><?php _e('No tienes inscripciones a eventos.', 'flavor-chat-ia'); ?></p>
+                    <p class="no-resultados"><?php _e('No tienes inscripciones a eventos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php else : ?>
                     <div class="inscripciones-lista">
                         <?php foreach ($inscripciones as $inscripcion) : ?>
@@ -470,7 +470,7 @@ class Flavor_Eventos_Frontend_Controller {
         ));
 
         if (!$evento) {
-            echo '<p class="flavor-error">' . __('Evento no encontrado.', 'flavor-chat-ia') . '</p>';
+            echo '<p class="flavor-error">' . __('Evento no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -529,7 +529,7 @@ class Flavor_Eventos_Frontend_Controller {
      */
     public function registrar_tabs($tabs) {
         $tabs['eventos-inscripciones'] = [
-            'titulo' => __('Mis Eventos', 'flavor-chat-ia'),
+            'titulo' => __('Mis Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'dashicons-calendar-alt',
             'callback' => [$this, 'render_tab_inscripciones'],
             'orden' => 25,
@@ -570,7 +570,7 @@ class Flavor_Eventos_Frontend_Controller {
 
         // Validar datos requeridos
         if (!$evento_id) {
-            wp_send_json_error(__('Evento no valido', 'flavor-chat-ia'));
+            wp_send_json_error(__('Evento no valido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Si el usuario esta logueado, obtener sus datos
@@ -586,7 +586,7 @@ class Flavor_Eventos_Frontend_Controller {
 
         // Validar nombre y email obligatorios
         if (empty($nombre_inscrito) || empty($email_inscrito)) {
-            wp_send_json_error(__('Nombre y email son obligatorios', 'flavor-chat-ia'));
+            wp_send_json_error(__('Nombre y email son obligatorios', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -609,7 +609,7 @@ class Flavor_Eventos_Frontend_Controller {
         }
 
         if ($inscripcion_existente) {
-            wp_send_json_error(__('Ya estas inscrito en este evento', 'flavor-chat-ia'));
+            wp_send_json_error(__('Ya estas inscrito en este evento', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Verificar que el evento existe y esta publicado
@@ -619,7 +619,7 @@ class Flavor_Eventos_Frontend_Controller {
         ));
 
         if (!$evento) {
-            wp_send_json_error(__('Evento no encontrado o no disponible', 'flavor-chat-ia'));
+            wp_send_json_error(__('Evento no encontrado o no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Verificar plazas disponibles
@@ -645,7 +645,7 @@ class Flavor_Eventos_Frontend_Controller {
                     $estado_inscripcion = 'lista_espera';
                     $es_lista_espera = true;
                 } else {
-                    wp_send_json_error(__('No hay plazas disponibles', 'flavor-chat-ia'));
+                    wp_send_json_error(__('No hay plazas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 }
             }
         }
@@ -673,8 +673,8 @@ class Flavor_Eventos_Frontend_Controller {
             ));
 
             $mensaje_exito = $es_lista_espera
-                ? __('Te has anadido a la lista de espera', 'flavor-chat-ia')
-                : __('Te has inscrito correctamente', 'flavor-chat-ia');
+                ? __('Te has anadido a la lista de espera', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                : __('Te has inscrito correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
             wp_send_json_success([
                 'mensaje' => $mensaje_exito,
@@ -682,7 +682,7 @@ class Flavor_Eventos_Frontend_Controller {
                 'inscripcion_id' => $wpdb->insert_id,
             ]);
         } else {
-            wp_send_json_error(__('Error al procesar la inscripcion', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al procesar la inscripcion', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -693,14 +693,14 @@ class Flavor_Eventos_Frontend_Controller {
         check_ajax_referer('eventos_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesion', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $inscripcion_id = isset($_POST['inscripcion_id']) ? absint($_POST['inscripcion_id']) : 0;
         $usuario_id = get_current_user_id();
 
         if (!$inscripcion_id) {
-            wp_send_json_error(__('Inscripcion no valida', 'flavor-chat-ia'));
+            wp_send_json_error(__('Inscripcion no valida', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -715,7 +715,7 @@ class Flavor_Eventos_Frontend_Controller {
         ));
 
         if (!$inscripcion_actual) {
-            wp_send_json_error(__('Inscripcion no encontrada o ya cancelada', 'flavor-chat-ia'));
+            wp_send_json_error(__('Inscripcion no encontrada o ya cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $resultado_actualizacion = $wpdb->update(
@@ -732,9 +732,9 @@ class Flavor_Eventos_Frontend_Controller {
                 $inscripcion_actual->evento_id
             ));
 
-            wp_send_json_success(['mensaje' => __('Inscripcion cancelada correctamente', 'flavor-chat-ia')]);
+            wp_send_json_success(['mensaje' => __('Inscripcion cancelada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
-            wp_send_json_error(__('Error al cancelar', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -791,7 +791,7 @@ class Flavor_Eventos_Frontend_Controller {
                 $this->render_evento_card($evento);
             }
         } else {
-            echo '<p class="no-resultados">' . __('No se encontraron eventos', 'flavor-chat-ia') . '</p>';
+            echo '<p class="no-resultados">' . __('No se encontraron eventos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
         $html = ob_get_clean();
 
@@ -808,7 +808,7 @@ class Flavor_Eventos_Frontend_Controller {
         $red_social = isset($_POST['red']) ? sanitize_text_field($_POST['red']) : '';
 
         if (!$evento_id) {
-            wp_send_json_error(__('Evento no válido', 'flavor-chat-ia'));
+            wp_send_json_error(__('Evento no válido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -820,7 +820,7 @@ class Flavor_Eventos_Frontend_Controller {
         ));
 
         if (!$evento) {
-            wp_send_json_error(__('Evento no encontrado', 'flavor-chat-ia'));
+            wp_send_json_error(__('Evento no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $url = add_query_arg('evento_id', $evento_id, home_url('/mi-portal/eventos/detalle/'));
@@ -836,7 +836,7 @@ class Flavor_Eventos_Frontend_Controller {
         if (isset($share_urls[$red_social])) {
             wp_send_json_success(['url' => $share_urls[$red_social]]);
         } else {
-            wp_send_json_error(__('Red social no soportada', 'flavor-chat-ia'));
+            wp_send_json_error(__('Red social no soportada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -866,7 +866,7 @@ class Flavor_Eventos_Frontend_Controller {
                 <p class="evento-descripcion"><?php echo esc_html(wp_trim_words($evento->descripcion, 15)); ?></p>
                 <div class="evento-acciones">
                     <a href="<?php echo esc_url(add_query_arg('evento_id', $evento->id, home_url('/mi-portal/eventos/detalle/'))); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php _e('Ver Evento', 'flavor-chat-ia'); ?>
+                        <?php _e('Ver Evento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </div>
@@ -927,7 +927,7 @@ class Flavor_Eventos_Frontend_Controller {
         <div class="flavor-eventos-acciones estilo-<?php echo esc_attr($atts['estilo']); ?>">
             <?php if (!empty($proximos_eventos)): ?>
             <div class="eventos-proximos-resumen">
-                <h4><?php esc_html_e('Próximos eventos', 'flavor-chat-ia'); ?></h4>
+                <h4><?php esc_html_e('Próximos eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                 <div class="eventos-lista-mini">
                     <?php foreach ($proximos_eventos as $evento): ?>
                         <div class="evento-mini-card">
@@ -940,20 +940,20 @@ class Flavor_Eventos_Frontend_Controller {
                                 <span class="ubicacion"><?php echo esc_html($evento->ubicacion); ?></span>
                             </div>
                             <a href="<?php echo esc_url(add_query_arg('evento_id', $evento->id, home_url('/mi-portal/eventos/detalle/'))); ?>" class="flavor-btn flavor-btn-small">
-                                <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </div>
                     <?php endforeach; ?>
                 </div>
                 <a href="<?php echo esc_url(home_url('/mi-portal/eventos/')); ?>" class="ver-todos-link">
-                    <?php esc_html_e('Ver todos los eventos', 'flavor-chat-ia'); ?> &rarr;
+                    <?php esc_html_e('Ver todos los eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> &rarr;
                 </a>
             </div>
             <?php endif; ?>
 
             <?php if (is_user_logged_in() && !empty($mis_inscripciones)): ?>
             <div class="mis-inscripciones-resumen">
-                <h4><?php esc_html_e('Mis inscripciones', 'flavor-chat-ia'); ?></h4>
+                <h4><?php esc_html_e('Mis inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                 <div class="inscripciones-lista-mini">
                     <?php foreach ($mis_inscripciones as $inscripcion): ?>
                         <div class="inscripcion-mini-card">
@@ -962,7 +962,7 @@ class Flavor_Eventos_Frontend_Controller {
                                 <span class="fecha"><?php echo esc_html(date_i18n('d M Y - H:i', strtotime($inscripcion->fecha_inicio))); ?></span>
                             </div>
                             <span class="estado-badge estado-<?php echo esc_attr($inscripcion->estado); ?>">
-                                <?php echo esc_html($inscripcion->estado === 'confirmada' ? __('Confirmada', 'flavor-chat-ia') : __('Pendiente', 'flavor-chat-ia')); ?>
+                                <?php echo esc_html($inscripcion->estado === 'confirmada' ? __('Confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                             </span>
                         </div>
                     <?php endforeach; ?>
@@ -970,19 +970,19 @@ class Flavor_Eventos_Frontend_Controller {
             </div>
             <?php elseif (is_user_logged_in()): ?>
             <div class="sin-inscripciones">
-                <p><?php esc_html_e('No tienes inscripciones a próximos eventos.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No tienes inscripciones a próximos eventos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <?php endif; ?>
 
             <div class="eventos-acciones-botones">
                 <a href="<?php echo esc_url(home_url('/mi-portal/eventos/')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-calendar-alt"></span>
-                    <?php esc_html_e('Explorar Eventos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Explorar Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <?php if (is_user_logged_in()): ?>
                 <a href="<?php echo esc_url(home_url('/mi-portal/eventos/mis-inscripciones/')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-list-view"></span>
-                    <?php esc_html_e('Mis Inscripciones', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Mis Inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <?php endif; ?>
             </div>
@@ -1014,7 +1014,7 @@ class Flavor_Eventos_Frontend_Controller {
         }
 
         if (!$evento_id) {
-            return '<div class="flavor-error">' . esc_html__('Evento no especificado.', 'flavor-chat-ia') . '</div>';
+            return '<div class="flavor-error">' . esc_html__('Evento no especificado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         global $wpdb;
@@ -1022,7 +1022,7 @@ class Flavor_Eventos_Frontend_Controller {
         $tabla_inscripciones = $wpdb->prefix . 'flavor_eventos_inscripciones';
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
-            return '<div class="flavor-error">' . esc_html__('El modulo de eventos no esta configurado.', 'flavor-chat-ia') . '</div>';
+            return '<div class="flavor-error">' . esc_html__('El modulo de eventos no esta configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         // Obtener datos del evento
@@ -1032,13 +1032,13 @@ class Flavor_Eventos_Frontend_Controller {
         ));
 
         if (!$evento) {
-            return '<div class="flavor-error">' . esc_html__('Evento no encontrado o no disponible.', 'flavor-chat-ia') . '</div>';
+            return '<div class="flavor-error">' . esc_html__('Evento no encontrado o no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         // Verificar si el evento ya paso
         $fecha_evento = strtotime($evento->fecha_inicio);
         if ($fecha_evento < time()) {
-            return '<div class="flavor-warning">' . esc_html__('Este evento ya ha finalizado.', 'flavor-chat-ia') . '</div>';
+            return '<div class="flavor-warning">' . esc_html__('Este evento ya ha finalizado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         // Calcular plazas disponibles
@@ -1101,7 +1101,7 @@ class Flavor_Eventos_Frontend_Controller {
                         <?php else : ?>
                             <span class="precio gratuito">
                                 <span class="dashicons dashicons-yes-alt"></span>
-                                <?php esc_html_e('Gratuito', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Gratuito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         <?php endif; ?>
                     </div>
@@ -1114,12 +1114,12 @@ class Flavor_Eventos_Frontend_Controller {
                                 <?php
                                 if ($plazas_disponibles > 0) {
                                     printf(
-                                        esc_html__('%d plazas disponibles de %d', 'flavor-chat-ia'),
+                                        esc_html__('%d plazas disponibles de %d', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                         $plazas_disponibles,
                                         $aforo_maximo
                                     );
                                 } else {
-                                    esc_html_e('Evento completo', 'flavor-chat-ia');
+                                    esc_html_e('Evento completo', FLAVOR_PLATFORM_TEXT_DOMAIN);
                                 }
                                 ?>
                             </span>
@@ -1133,11 +1133,11 @@ class Flavor_Eventos_Frontend_Controller {
                 <div class="flavor-notice flavor-notice-success">
                     <span class="dashicons dashicons-yes-alt"></span>
                     <div class="notice-content">
-                        <strong><?php esc_html_e('Ya estas inscrito en este evento', 'flavor-chat-ia'); ?></strong>
+                        <strong><?php esc_html_e('Ya estas inscrito en este evento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                         <p>
                             <?php
                             printf(
-                                esc_html__('Estado: %s | Plazas reservadas: %d', 'flavor-chat-ia'),
+                                esc_html__('Estado: %s | Plazas reservadas: %d', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 ucfirst($inscripcion_existente->estado),
                                 $inscripcion_existente->num_plazas
                             );
@@ -1145,7 +1145,7 @@ class Flavor_Eventos_Frontend_Controller {
                         </p>
                         <button type="button" class="flavor-btn flavor-btn-danger flavor-btn-small btn-cancelar-inscripcion" data-inscripcion-id="<?php echo esc_attr($inscripcion_existente->id); ?>">
                             <span class="dashicons dashicons-dismiss"></span>
-                            <?php esc_html_e('Cancelar inscripcion', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Cancelar inscripcion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </div>
@@ -1154,8 +1154,8 @@ class Flavor_Eventos_Frontend_Controller {
                 <div class="flavor-notice flavor-notice-warning">
                     <span class="dashicons dashicons-warning"></span>
                     <div class="notice-content">
-                        <strong><?php esc_html_e('Evento completo', 'flavor-chat-ia'); ?></strong>
-                        <p><?php esc_html_e('No hay plazas disponibles. Puedes inscribirte en la lista de espera.', 'flavor-chat-ia'); ?></p>
+                        <strong><?php esc_html_e('Evento completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                        <p><?php esc_html_e('No hay plazas disponibles. Puedes inscribirte en la lista de espera.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 </div>
                 <?php $this->render_formulario_inscripcion($evento, $nombre_usuario, $email_usuario, true); ?>
@@ -1374,7 +1374,7 @@ class Flavor_Eventos_Frontend_Controller {
                 var $botonEnviar = $formulario.find('.btn-inscribirse');
                 var textoOriginal = $botonEnviar.html();
 
-                $botonEnviar.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> <?php esc_html_e('Procesando...', 'flavor-chat-ia'); ?>');
+                $botonEnviar.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> <?php esc_html_e('Procesando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
 
                 $.ajax({
                     url: flavorEventos.ajaxUrl,
@@ -1409,7 +1409,7 @@ class Flavor_Eventos_Frontend_Controller {
 
             // Manejar cancelacion de inscripcion
             $('.btn-cancelar-inscripcion').on('click', function() {
-                if (!confirm('<?php esc_html_e('Estas seguro de que quieres cancelar tu inscripcion?', 'flavor-chat-ia'); ?>')) {
+                if (!confirm('<?php esc_html_e('Estas seguro de que quieres cancelar tu inscripcion?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>')) {
                     return;
                 }
 
@@ -1431,12 +1431,12 @@ class Flavor_Eventos_Frontend_Controller {
                             location.reload();
                         } else {
                             alert(respuesta.data || flavorEventos.i18n.error);
-                            $boton.prop('disabled', false).html('<?php esc_html_e('Cancelar inscripcion', 'flavor-chat-ia'); ?>');
+                            $boton.prop('disabled', false).html('<?php esc_html_e('Cancelar inscripcion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                         }
                     },
                     error: function() {
                         alert(flavorEventos.i18n.error);
-                        $boton.prop('disabled', false).html('<?php esc_html_e('Cancelar inscripcion', 'flavor-chat-ia'); ?>');
+                        $boton.prop('disabled', false).html('<?php esc_html_e('Cancelar inscripcion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                     }
                 });
             });
@@ -1462,9 +1462,9 @@ class Flavor_Eventos_Frontend_Controller {
             <h4>
                 <?php
                 if ($es_lista_espera) {
-                    esc_html_e('Inscribirse en lista de espera', 'flavor-chat-ia');
+                    esc_html_e('Inscribirse en lista de espera', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 } else {
-                    esc_html_e('Formulario de inscripcion', 'flavor-chat-ia');
+                    esc_html_e('Formulario de inscripcion', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 }
                 ?>
             </h4>
@@ -1472,7 +1472,7 @@ class Flavor_Eventos_Frontend_Controller {
             <div class="campos-fila">
                 <div class="campo-formulario">
                     <label for="insc-nombre">
-                        <?php esc_html_e('Nombre completo', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Nombre completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <span class="requerido">*</span>
                     </label>
                     <input type="text" id="insc-nombre" name="nombre" value="<?php echo esc_attr($nombre_usuario); ?>" required>
@@ -1480,7 +1480,7 @@ class Flavor_Eventos_Frontend_Controller {
 
                 <div class="campo-formulario">
                     <label for="insc-email">
-                        <?php esc_html_e('Email', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <span class="requerido">*</span>
                     </label>
                     <input type="email" id="insc-email" name="email" value="<?php echo esc_attr($email_usuario); ?>" required>
@@ -1490,38 +1490,38 @@ class Flavor_Eventos_Frontend_Controller {
             <div class="campos-fila">
                 <div class="campo-formulario">
                     <label for="insc-telefono">
-                        <?php esc_html_e('Telefono', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Telefono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
-                    <input type="tel" id="insc-telefono" name="telefono" placeholder="<?php esc_attr_e('Opcional', 'flavor-chat-ia'); ?>">
+                    <input type="tel" id="insc-telefono" name="telefono" placeholder="<?php esc_attr_e('Opcional', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
 
                 <div class="campo-formulario">
                     <label for="insc-plazas">
-                        <?php esc_html_e('Numero de plazas', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Numero de plazas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <select id="insc-plazas" name="num_plazas">
                         <?php for ($contador_plazas = 1; $contador_plazas <= 5; $contador_plazas++) : ?>
                             <option value="<?php echo esc_attr($contador_plazas); ?>"><?php echo esc_html($contador_plazas); ?></option>
                         <?php endfor; ?>
                     </select>
-                    <span class="ayuda"><?php esc_html_e('Maximo 5 plazas por inscripcion', 'flavor-chat-ia'); ?></span>
+                    <span class="ayuda"><?php esc_html_e('Maximo 5 plazas por inscripcion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
             <div class="campo-formulario">
                 <label for="insc-notas">
-                    <?php esc_html_e('Notas adicionales', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Notas adicionales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </label>
-                <textarea id="insc-notas" name="notas" placeholder="<?php esc_attr_e('Alergias, necesidades especiales, comentarios...', 'flavor-chat-ia'); ?>"></textarea>
+                <textarea id="insc-notas" name="notas" placeholder="<?php esc_attr_e('Alergias, necesidades especiales, comentarios...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
             </div>
 
             <button type="submit" class="flavor-btn flavor-btn-primary btn-inscribirse <?php echo $es_lista_espera ? 'lista-espera' : ''; ?>">
                 <span class="dashicons dashicons-yes"></span>
                 <?php
                 if ($es_lista_espera) {
-                    esc_html_e('Unirme a la lista de espera', 'flavor-chat-ia');
+                    esc_html_e('Unirme a la lista de espera', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 } else {
-                    esc_html_e('Confirmar inscripcion', 'flavor-chat-ia');
+                    esc_html_e('Confirmar inscripcion', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 }
                 ?>
             </button>
@@ -1530,7 +1530,7 @@ class Flavor_Eventos_Frontend_Controller {
                 <p class="ayuda" style="text-align: center; margin-top: 12px;">
                     <?php
                     printf(
-                        esc_html__('Ya tienes cuenta? %sInicia sesion%s para inscribirte mas rapido.', 'flavor-chat-ia'),
+                        esc_html__('Ya tienes cuenta? %sInicia sesion%s para inscribirte mas rapido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '">',
                         '</a>'
                     );
@@ -1566,7 +1566,7 @@ class Flavor_Eventos_Frontend_Controller {
         $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
-            return '<div class="flavor-error">' . esc_html__('El modulo de eventos no esta configurado.', 'flavor-chat-ia') . '</div>';
+            return '<div class="flavor-error">' . esc_html__('El modulo de eventos no esta configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         // Construir consulta
@@ -1636,13 +1636,13 @@ class Flavor_Eventos_Frontend_Controller {
                 <!-- El mapa se renderizara aqui -->
                 <div class="mapa-placeholder">
                     <span class="dashicons dashicons-location-alt"></span>
-                    <p><?php esc_html_e('Cargando mapa...', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Cargando mapa...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             </div>
 
             <?php if ($atributos_mapa['mostrar_lista'] === 'true' && !empty($eventos_con_ubicacion)) : ?>
             <div class="eventos-lista-lateral">
-                <h4><?php esc_html_e('Eventos en el mapa', 'flavor-chat-ia'); ?> <span class="contador">(<?php echo count($eventos_con_ubicacion); ?>)</span></h4>
+                <h4><?php esc_html_e('Eventos en el mapa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="contador">(<?php echo count($eventos_con_ubicacion); ?>)</span></h4>
                 <div class="eventos-scroll-lista">
                     <?php foreach ($eventos_con_ubicacion as $evento) : ?>
                         <div class="evento-mapa-item" data-lat="<?php echo esc_attr($evento->coordenadas_lat); ?>" data-lng="<?php echo esc_attr($evento->coordenadas_lng); ?>" data-id="<?php echo esc_attr($evento->id); ?>">
@@ -1663,7 +1663,7 @@ class Flavor_Eventos_Frontend_Controller {
             <?php if (empty($eventos_con_ubicacion)) : ?>
             <div class="sin-eventos-mapa">
                 <span class="dashicons dashicons-calendar"></span>
-                <p><?php esc_html_e('No hay eventos con ubicacion disponibles.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No hay eventos con ubicacion disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <?php endif; ?>
         </div>
@@ -1812,7 +1812,7 @@ class Flavor_Eventos_Frontend_Controller {
             }
             // Mostrar mensaje si no hay libreria de mapas
             else {
-                mapaContenedor.innerHTML = '<div class="mapa-no-disponible" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;background:#f1f5f9;color:#64748b;"><span class="dashicons dashicons-location-alt" style="font-size:48px;margin-bottom:12px;"></span><p><?php esc_html_e('Mapa no disponible. Configura Leaflet o Google Maps.', 'flavor-chat-ia'); ?></p></div>';
+                mapaContenedor.innerHTML = '<div class="mapa-no-disponible" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;background:#f1f5f9;color:#64748b;"><span class="dashicons dashicons-location-alt" style="font-size:48px;margin-bottom:12px;"></span><p><?php esc_html_e('Mapa no disponible. Configura Leaflet o Google Maps.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p></div>';
             }
 
             function inicializarMapaLeaflet() {

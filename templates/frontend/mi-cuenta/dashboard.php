@@ -39,7 +39,7 @@ if (!defined('ABSPATH')) {
         </div>
 
         <!-- Navegacion por tabs -->
-        <nav class="flavor-dashboard-nav" role="navigation" aria-label="<?php esc_attr_e('Menu de Mi Cuenta', 'flavor-chat-ia'); ?>">
+        <nav class="flavor-dashboard-nav" role="navigation" aria-label="<?php esc_attr_e('Menu de Mi Cuenta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <ul class="flavor-dashboard-nav-list">
                 <?php foreach ($tabs as $slug_tab => $configuracion_tab) : ?>
                     <?php
@@ -78,7 +78,7 @@ if (!defined('ABSPATH')) {
                             <?php echo $dashboard_instance->obtener_icono_svg('logout'); ?>
                         </span>
                         <span class="flavor-dashboard-nav-label">
-                            <?php esc_html_e('Cerrar sesion', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Cerrar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
                     </a>
                 </li>

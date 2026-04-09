@@ -60,8 +60,8 @@ if ($tabla_existe) {
 $total_paginas = ceil($total_items / $por_pagina);
 
 // Categorías y estados
-$categorias = ['sala' => __('Sala', 'flavor-chat-ia'), 'equipo' => __('Equipo', 'flavor-chat-ia'), 'vehiculo' => __('Vehículo', 'flavor-chat-ia'), 'otro' => __('Otro', 'flavor-chat-ia')];
-$estados = ['disponible' => __('Disponible', 'flavor-chat-ia'), 'mantenimiento' => __('Mantenimiento', 'flavor-chat-ia'), 'no_disponible' => __('No disponible', 'flavor-chat-ia')];
+$categorias = ['sala' => __('Sala', FLAVOR_PLATFORM_TEXT_DOMAIN), 'equipo' => __('Equipo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'vehiculo' => __('Vehículo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'otro' => __('Otro', FLAVOR_PLATFORM_TEXT_DOMAIN)];
+$estados = ['disponible' => __('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN), 'mantenimiento' => __('Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN), 'no_disponible' => __('No disponible', FLAVOR_PLATFORM_TEXT_DOMAIN)];
 $colores_estado = ['disponible' => '#00a32a', 'mantenimiento' => '#dba617', 'no_disponible' => '#d63638'];
 ?>
 
@@ -69,20 +69,20 @@ $colores_estado = ['disponible' => '#00a32a', 'mantenimiento' => '#dba617', 'no_
     <nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">
         <a href="<?php echo admin_url('admin.php?page=reservas-dashboard'); ?>" style="color: #2271b1; text-decoration: none;">
             <span class="dashicons dashicons-calendar-alt" style="font-size: 14px; vertical-align: middle;"></span>
-            <?php _e('Reservas', 'flavor-chat-ia'); ?>
+            <?php _e('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <span style="color: #646970; margin: 0 5px;">›</span>
-        <span style="color: #1d2327;"><?php _e('Recursos', 'flavor-chat-ia'); ?></span>
+        <span style="color: #1d2327;"><?php _e('Recursos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
     </nav>
 
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-admin-home"></span>
-        <?php _e('Gestión de Recursos', 'flavor-chat-ia'); ?>
+        <?php _e('Gestión de Recursos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <a href="<?php echo admin_url('admin.php?page=reservas-nuevo-recurso'); ?>" class="page-title-action">
         <span class="dashicons dashicons-plus-alt" style="vertical-align: middle;"></span>
-        <?php _e('Añadir Recurso', 'flavor-chat-ia'); ?>
+        <?php _e('Añadir Recurso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </a>
 
     <hr class="wp-header-end">
@@ -93,22 +93,22 @@ $colores_estado = ['disponible' => '#00a32a', 'mantenimiento' => '#dba617', 'no_
             <input type="hidden" name="page" value="reservas-recursos">
             <div class="alignleft actions" style="display: flex; gap: 8px;">
                 <select name="categoria">
-                    <option value=""><?php _e('Todas las categorías', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todas las categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($categorias as $slug => $label): ?>
                     <option value="<?php echo esc_attr($slug); ?>" <?php selected($categoria_filtro, $slug); ?>><?php echo esc_html($label); ?></option>
                     <?php endforeach; ?>
                 </select>
                 <select name="estado">
-                    <option value=""><?php _e('Todos los estados', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($estados as $slug => $label): ?>
                     <option value="<?php echo esc_attr($slug); ?>" <?php selected($estado_filtro, $slug); ?>><?php echo esc_html($label); ?></option>
                     <?php endforeach; ?>
                 </select>
-                <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="button"><?php _e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
             </div>
         </form>
         <div class="tablenav-pages">
-            <span class="displaying-num"><?php printf(_n('%s recurso', '%s recursos', $total_items, 'flavor-chat-ia'), number_format($total_items)); ?></span>
+            <span class="displaying-num"><?php printf(_n('%s recurso', '%s recursos', $total_items, FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($total_items)); ?></span>
         </div>
     </div>
 
@@ -116,19 +116,19 @@ $colores_estado = ['disponible' => '#00a32a', 'mantenimiento' => '#dba617', 'no_
     <table class="wp-list-table widefat fixed striped">
         <thead>
             <tr>
-                <th style="width: 50px;"><?php _e('ID', 'flavor-chat-ia'); ?></th>
-                <th><?php _e('Nombre', 'flavor-chat-ia'); ?></th>
-                <th style="width: 120px;"><?php _e('Categoría', 'flavor-chat-ia'); ?></th>
-                <th style="width: 100px;"><?php _e('Capacidad', 'flavor-chat-ia'); ?></th>
-                <th style="width: 120px;"><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                <th style="width: 100px;"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                <th style="width: 50px;"><?php _e('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th><?php _e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="width: 120px;"><?php _e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="width: 100px;"><?php _e('Capacidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="width: 120px;"><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="width: 100px;"><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
             </tr>
         </thead>
         <tbody>
             <?php if (empty($recursos)): ?>
             <tr><td colspan="6" style="text-align: center; padding: 40px;">
                 <span class="dashicons dashicons-admin-home" style="font-size: 48px; color: #c3c4c7;"></span>
-                <p style="color: #646970;"><?php _e('No se encontraron recursos.', 'flavor-chat-ia'); ?></p>
+                <p style="color: #646970;"><?php _e('No se encontraron recursos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </td></tr>
             <?php else: ?>
                 <?php foreach ($recursos as $rec): ?>

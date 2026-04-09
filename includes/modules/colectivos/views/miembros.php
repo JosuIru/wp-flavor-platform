@@ -29,9 +29,9 @@ $offset = ($pagina_actual - 1) * $por_pagina;
 
 // Roles
 $roles = [
-    'admin'     => __('Administrador', 'flavor-chat-ia'),
-    'moderador' => __('Moderador', 'flavor-chat-ia'),
-    'miembro'   => __('Miembro', 'flavor-chat-ia'),
+    'admin'     => __('Administrador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'moderador' => __('Moderador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'miembro'   => __('Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $colores_rol = [
@@ -97,15 +97,15 @@ $total_paginas = ceil($total_items / $por_pagina);
     <nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">
         <a href="<?php echo admin_url('admin.php?page=flavor-colectivos-dashboard'); ?>" style="color: #2271b1; text-decoration: none;">
             <span class="dashicons dashicons-groups" style="font-size: 14px; vertical-align: middle;"></span>
-            <?php _e('Colectivos', 'flavor-chat-ia'); ?>
+            <?php _e('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <span style="color: #646970; margin: 0 5px;">›</span>
-        <span style="color: #1d2327;"><?php _e('Miembros', 'flavor-chat-ia'); ?></span>
+        <span style="color: #1d2327;"><?php _e('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
     </nav>
 
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-businessperson"></span>
-        <?php _e('Miembros de Colectivos', 'flavor-chat-ia'); ?>
+        <?php _e('Miembros de Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <hr class="wp-header-end">
@@ -117,7 +117,7 @@ $total_paginas = ceil($total_items / $por_pagina);
 
             <div class="alignleft actions" style="display: flex; gap: 8px; flex-wrap: wrap;">
                 <select name="colectivo">
-                    <option value=""><?php _e('Todos los colectivos', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todos los colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($colectivos as $col): ?>
                     <option value="<?php echo esc_attr($col->id); ?>" <?php selected($colectivo_filtro, $col->id); ?>>
                         <?php echo esc_html($col->nombre); ?>
@@ -126,7 +126,7 @@ $total_paginas = ceil($total_items / $por_pagina);
                 </select>
 
                 <select name="rol">
-                    <option value=""><?php _e('Todos los roles', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todos los roles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($roles as $slug => $label): ?>
                     <option value="<?php echo esc_attr($slug); ?>" <?php selected($rol_filtro, $slug); ?>>
                         <?php echo esc_html($label); ?>
@@ -134,19 +134,19 @@ $total_paginas = ceil($total_items / $por_pagina);
                     <?php endforeach; ?>
                 </select>
 
-                <input type="search" name="s" value="<?php echo esc_attr($buscar); ?>" placeholder="<?php esc_attr_e('Buscar...', 'flavor-chat-ia'); ?>">
+                <input type="search" name="s" value="<?php echo esc_attr($buscar); ?>" placeholder="<?php esc_attr_e('Buscar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
 
-                <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="button"><?php _e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
 
                 <?php if ($colectivo_filtro || $rol_filtro || $buscar): ?>
-                <a href="<?php echo admin_url('admin.php?page=colectivos-miembros'); ?>" class="button"><?php _e('Limpiar', 'flavor-chat-ia'); ?></a>
+                <a href="<?php echo admin_url('admin.php?page=colectivos-miembros'); ?>" class="button"><?php _e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 <?php endif; ?>
             </div>
         </form>
 
         <div class="tablenav-pages">
             <span class="displaying-num">
-                <?php printf(_n('%s miembro', '%s miembros', $total_items, 'flavor-chat-ia'), number_format($total_items)); ?>
+                <?php printf(_n('%s miembro', '%s miembros', $total_items, FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($total_items)); ?>
             </span>
         </div>
     </div>
@@ -155,12 +155,12 @@ $total_paginas = ceil($total_items / $por_pagina);
     <table class="wp-list-table widefat fixed striped">
         <thead>
             <tr>
-                <th scope="col" style="width: 50px;"><?php _e('ID', 'flavor-chat-ia'); ?></th>
-                <th scope="col"><?php _e('Usuario', 'flavor-chat-ia'); ?></th>
-                <th scope="col"><?php _e('Colectivo', 'flavor-chat-ia'); ?></th>
-                <th scope="col" style="width: 120px;"><?php _e('Rol', 'flavor-chat-ia'); ?></th>
-                <th scope="col" style="width: 140px;"><?php _e('Fecha unión', 'flavor-chat-ia'); ?></th>
-                <th scope="col" style="width: 100px;"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                <th scope="col" style="width: 50px;"><?php _e('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col"><?php _e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col"><?php _e('Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col" style="width: 120px;"><?php _e('Rol', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col" style="width: 140px;"><?php _e('Fecha unión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col" style="width: 100px;"><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -168,7 +168,7 @@ $total_paginas = ceil($total_items / $por_pagina);
             <tr>
                 <td colspan="6" style="text-align: center; padding: 40px;">
                     <span class="dashicons dashicons-groups" style="font-size: 48px; color: #c3c4c7;"></span>
-                    <p style="color: #646970;"><?php _e('No se encontraron miembros.', 'flavor-chat-ia'); ?></p>
+                    <p style="color: #646970;"><?php _e('No se encontraron miembros.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
             <?php else: ?>
@@ -179,14 +179,14 @@ $total_paginas = ceil($total_items / $por_pagina);
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <?php echo get_avatar($m->user_id, 36); ?>
                             <div>
-                                <strong><?php echo esc_html($m->display_name ?: __('Usuario eliminado', 'flavor-chat-ia')); ?></strong>
+                                <strong><?php echo esc_html($m->display_name ?: __('Usuario eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong>
                                 <br><small style="color: #646970;"><?php echo esc_html($m->user_email); ?></small>
                             </div>
                         </div>
                     </td>
                     <td>
                         <a href="<?php echo admin_url('admin.php?page=colectivos-editar&id=' . $m->colectivo_id); ?>">
-                            <?php echo esc_html($m->colectivo_nombre ?: __('Colectivo eliminado', 'flavor-chat-ia')); ?>
+                            <?php echo esc_html($m->colectivo_nombre ?: __('Colectivo eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                         </a>
                     </td>
                     <td>
@@ -198,7 +198,7 @@ $total_paginas = ceil($total_items / $por_pagina);
                         <?php echo esc_html(date_i18n(get_option('date_format'), strtotime($m->created_at))); ?>
                     </td>
                     <td>
-                        <a href="<?php echo admin_url('user-edit.php?user_id=' . $m->user_id); ?>" class="button button-small" title="<?php esc_attr_e('Ver usuario', 'flavor-chat-ia'); ?>">
+                        <a href="<?php echo admin_url('user-edit.php?user_id=' . $m->user_id); ?>" class="button button-small" title="<?php esc_attr_e('Ver usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-admin-users" style="margin-top: 3px;"></span>
                         </a>
                     </td>

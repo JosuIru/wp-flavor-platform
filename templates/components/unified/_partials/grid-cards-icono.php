@@ -75,7 +75,7 @@ $items_visibles = $limite_items > 0 ? array_slice( $items, 0, $limite_items ) : 
 
                 <?php if ( ! empty( $item_url ) ) : ?>
                     <div class="mt-4 flex items-center text-sm font-medium" style="color: <?php echo $color_primario_escapado; ?>;">
-                        <span><?php esc_html_e( 'Ver más', 'flavor-chat-ia' ); ?></span>
+                        <span><?php esc_html_e( 'Ver más', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
                         <svg class="ml-1 h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                         </svg>

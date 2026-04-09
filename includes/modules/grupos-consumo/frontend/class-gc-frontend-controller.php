@@ -143,16 +143,16 @@ class Flavor_GC_Frontend_Controller {
             'loginUrl' => wp_login_url(home_url('/mi-portal/grupos-consumo/productos/')),
             'carritoUrl' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'mi-pedido'),
             'i18n' => [
-                'agregado' => __('Producto agregado al pedido', 'flavor-chat-ia'),
-                'eliminado' => __('Producto eliminado del pedido', 'flavor-chat-ia'),
-                'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'confirmarEliminar' => __('Eliminar este producto del pedido?', 'flavor-chat-ia'),
-                'confirmarVaciar' => __('Seguro que deseas vaciar el pedido?', 'flavor-chat-ia'),
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
-                'sinProductos' => __('No hay productos disponibles', 'flavor-chat-ia'),
-                'pedidoCreado' => __('Pedido confirmado correctamente', 'flavor-chat-ia'),
-                'pedidoVacio' => __('Tu pedido esta vacio', 'flavor-chat-ia'),
-                'stockInsuficiente' => __('Stock insuficiente', 'flavor-chat-ia'),
+                'agregado' => __('Producto agregado al pedido', 'flavor-platform'),
+                'eliminado' => __('Producto eliminado del pedido', 'flavor-platform'),
+                'error' => __('Ha ocurrido un error', 'flavor-platform'),
+                'confirmarEliminar' => __('Eliminar este producto del pedido?', 'flavor-platform'),
+                'confirmarVaciar' => __('Seguro que deseas vaciar el pedido?', 'flavor-platform'),
+                'cargando' => __('Cargando...', 'flavor-platform'),
+                'sinProductos' => __('No hay productos disponibles', 'flavor-platform'),
+                'pedidoCreado' => __('Pedido confirmado correctamente', 'flavor-platform'),
+                'pedidoVacio' => __('Tu pedido esta vacio', 'flavor-platform'),
+                'stockInsuficiente' => __('Stock insuficiente', 'flavor-platform'),
             ],
         ];
 
@@ -425,12 +425,12 @@ class Flavor_GC_Frontend_Controller {
             <?php if ($atts['mostrar_filtros'] === 'si'): ?>
                 <div class="gc-catalogo-filtros">
                     <div class="gc-filtro-buscar">
-                        <input type="text" id="gc-buscar-producto" placeholder="<?php _e('Buscar producto...', 'flavor-chat-ia'); ?>">
+                        <input type="text" id="gc-buscar-producto" placeholder="<?php _e('Buscar producto...', 'flavor-platform'); ?>">
                         <span class="gc-filtro-icon dashicons dashicons-search"></span>
                     </div>
                     <div class="gc-filtro-productor">
                         <select id="gc-filtrar-productor">
-                            <option value=""><?php _e('Todos los productores', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php _e('Todos los productores', 'flavor-platform'); ?></option>
                             <?php foreach ($productores as $productor): ?>
                                 <option value="<?php echo $productor->ID; ?>">
                                     <?php echo esc_html($productor->post_title); ?>
@@ -440,10 +440,10 @@ class Flavor_GC_Frontend_Controller {
                     </div>
                     <div class="gc-filtro-orden">
                         <select id="gc-ordenar-productos">
-                            <option value="<?php echo esc_attr__('nombre', 'flavor-chat-ia'); ?>"><?php _e('Nombre A-Z', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('nombre-desc', 'flavor-chat-ia'); ?>"><?php _e('Nombre Z-A', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('precio', 'flavor-chat-ia'); ?>"><?php _e('Precio menor', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('precio-desc', 'flavor-chat-ia'); ?>"><?php _e('Precio mayor', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('nombre', 'flavor-platform'); ?>"><?php _e('Nombre A-Z', 'flavor-platform'); ?></option>
+                            <option value="<?php echo esc_attr__('nombre-desc', 'flavor-platform'); ?>"><?php _e('Nombre Z-A', 'flavor-platform'); ?></option>
+                            <option value="<?php echo esc_attr__('precio', 'flavor-platform'); ?>"><?php _e('Precio menor', 'flavor-platform'); ?></option>
+                            <option value="<?php echo esc_attr__('precio-desc', 'flavor-platform'); ?>"><?php _e('Precio mayor', 'flavor-platform'); ?></option>
                         </select>
                     </div>
                 </div>
@@ -451,7 +451,7 @@ class Flavor_GC_Frontend_Controller {
 
             <div class="gc-productos-grid" id="gc-productos-lista">
                 <?php if (empty($productos)): ?>
-                    <p class="gc-sin-productos"><?php _e('No hay productos disponibles en este momento.', 'flavor-chat-ia'); ?></p>
+                    <p class="gc-sin-productos"><?php _e('No hay productos disponibles en este momento.', 'flavor-platform'); ?></p>
                 <?php else: ?>
                     <?php foreach ($productos as $producto): ?>
                         <?php $this->render_producto_card($producto, $lista_compra); ?>
@@ -488,7 +488,7 @@ class Flavor_GC_Frontend_Controller {
                     </div>
                 <?php endif; ?>
                 <?php if ($en_lista): ?>
-                    <span class="gc-badge-en-lista"><?php _e('En lista', 'flavor-chat-ia'); ?></span>
+                    <span class="gc-badge-en-lista"><?php _e('En lista', 'flavor-platform'); ?></span>
                 <?php endif; ?>
             </div>
 
@@ -515,11 +515,11 @@ class Flavor_GC_Frontend_Controller {
                     </div>
                     <button type="button" class="gc-btn-agregar-lista <?php echo $en_lista ? 'en-lista' : ''; ?>">
                         <span class="dashicons <?php echo $en_lista ? 'dashicons-yes' : 'dashicons-cart'; ?>"></span>
-                        <span class="gc-btn-texto"><?php echo $en_lista ? __('En lista', 'flavor-chat-ia') : __('Agregar', 'flavor-chat-ia'); ?></span>
+                        <span class="gc-btn-texto"><?php echo $en_lista ? __('En lista', 'flavor-platform') : __('Agregar', 'flavor-platform'); ?></span>
                     </button>
                 <?php else: ?>
                     <a href="<?php echo esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/productos/'))); ?>" class="gc-btn-login">
-                        <?php _e('Iniciar sesión para agregar', 'flavor-chat-ia'); ?>
+                        <?php _e('Iniciar sesión para agregar', 'flavor-platform'); ?>
                     </a>
                 <?php endif; ?>
             </div>
@@ -540,7 +540,7 @@ class Flavor_GC_Frontend_Controller {
         $this->encolar_assets(true);
 
         if (!is_user_logged_in()) {
-            return '<p class="gc-login-requerido">' . __('Inicia sesión para ver tu lista de compra.', 'flavor-chat-ia') . '</p>';
+            return '<p class="gc-login-requerido">' . __('Inicia sesión para ver tu lista de compra.', 'flavor-platform') . '</p>';
         }
 
         $atributos = shortcode_atts([
@@ -665,14 +665,14 @@ class Flavor_GC_Frontend_Controller {
             <div class="gc-carrito-header">
                 <h3>
                     <span class="dashicons dashicons-cart"></span>
-                    <?php _e('Mi Lista de Compra', 'flavor-chat-ia'); ?>
+                    <?php _e('Mi Lista de Compra', 'flavor-platform'); ?>
                     <span class="gc-carrito-count"><?php echo count($items); ?></span>
                 </h3>
             </div>
 
             <div class="gc-carrito-items">
                 <?php if (empty($items)): ?>
-                    <p class="gc-carrito-vacio"><?php _e('Tu lista está vacía', 'flavor-chat-ia'); ?></p>
+                    <p class="gc-carrito-vacio"><?php _e('Tu lista está vacía', 'flavor-platform'); ?></p>
                 <?php else: ?>
                     <?php foreach ($items as $item):
                         $precio = get_post_meta($item->producto_id, '_gc_precio', true);
@@ -692,7 +692,7 @@ class Flavor_GC_Frontend_Controller {
                             <div class="gc-item-subtotal">
                                 <?php echo number_format($subtotal, 2, ',', '.'); ?>€
                             </div>
-                            <button type="button" class="gc-btn-item-eliminar" title="<?php _e('Eliminar', 'flavor-chat-ia'); ?>">
+                            <button type="button" class="gc-btn-item-eliminar" title="<?php _e('Eliminar', 'flavor-platform'); ?>">
                                 <span class="dashicons dashicons-trash"></span>
                             </button>
                         </div>
@@ -703,11 +703,11 @@ class Flavor_GC_Frontend_Controller {
             <?php if (!empty($items)): ?>
                 <div class="gc-carrito-footer">
                     <div class="gc-carrito-total">
-                        <span><?php _e('Total:', 'flavor-chat-ia'); ?></span>
+                        <span><?php _e('Total:', 'flavor-platform'); ?></span>
                         <strong id="gc-total-carrito"><?php echo number_format($total, 2, ',', '.'); ?>€</strong>
                     </div>
                     <button type="button" class="gc-btn-convertir-pedido" id="gc-convertir-pedido">
-                        <?php _e('Convertir en Pedido', 'flavor-chat-ia'); ?>
+                        <?php _e('Convertir en Pedido', 'flavor-platform'); ?>
                     </button>
                 </div>
             <?php endif; ?>
@@ -764,17 +764,17 @@ class Flavor_GC_Frontend_Controller {
         ?>
         <div class="gc-calendario">
             <div class="gc-calendario-header">
-                <h3><?php _e('Calendario de Ciclos', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Calendario de Ciclos', 'flavor-platform'); ?></h3>
                 <div class="gc-calendario-leyenda">
-                    <span class="gc-leyenda-item gc-leyenda-abierto"><?php _e('Abierto', 'flavor-chat-ia'); ?></span>
-                    <span class="gc-leyenda-item gc-leyenda-cerrado"><?php _e('Cerrado', 'flavor-chat-ia'); ?></span>
-                    <span class="gc-leyenda-item gc-leyenda-entrega"><?php _e('Entrega', 'flavor-chat-ia'); ?></span>
+                    <span class="gc-leyenda-item gc-leyenda-abierto"><?php _e('Abierto', 'flavor-platform'); ?></span>
+                    <span class="gc-leyenda-item gc-leyenda-cerrado"><?php _e('Cerrado', 'flavor-platform'); ?></span>
+                    <span class="gc-leyenda-item gc-leyenda-entrega"><?php _e('Entrega', 'flavor-platform'); ?></span>
                 </div>
             </div>
 
             <div class="gc-calendario-timeline">
                 <?php if (empty($ciclos)): ?>
-                    <p class="gc-sin-ciclos"><?php _e('No hay ciclos programados próximamente.', 'flavor-chat-ia'); ?></p>
+                    <p class="gc-sin-ciclos"><?php _e('No hay ciclos programados próximamente.', 'flavor-platform'); ?></p>
                 <?php else: ?>
                     <?php foreach ($ciclos as $ciclo):
                         $es_pasado = strtotime($ciclo->fecha_entrega) < current_time('timestamp');
@@ -783,12 +783,12 @@ class Flavor_GC_Frontend_Controller {
                         <div class="gc-ciclo-timeline <?php echo $es_pasado ? 'pasado' : ''; ?> <?php echo $es_abierto ? 'abierto' : ''; ?>">
                             <div class="gc-ciclo-fechas">
                                 <div class="gc-fecha-cierre">
-                                    <span class="gc-fecha-label"><?php _e('Cierre', 'flavor-chat-ia'); ?></span>
+                                    <span class="gc-fecha-label"><?php _e('Cierre', 'flavor-platform'); ?></span>
                                     <span class="gc-fecha-valor"><?php echo date_i18n('j M', strtotime($ciclo->fecha_cierre)); ?></span>
                                 </div>
                                 <div class="gc-ciclo-linea"></div>
                                 <div class="gc-fecha-entrega">
-                                    <span class="gc-fecha-label"><?php _e('Entrega', 'flavor-chat-ia'); ?></span>
+                                    <span class="gc-fecha-label"><?php _e('Entrega', 'flavor-platform'); ?></span>
                                     <span class="gc-fecha-valor"><?php echo date_i18n('j M', strtotime($ciclo->fecha_entrega)); ?></span>
                                 </div>
                             </div>
@@ -799,7 +799,7 @@ class Flavor_GC_Frontend_Controller {
                                 </span>
                                 <?php if ($es_abierto): ?>
                                     <a href="<?php echo esc_url(add_query_arg('ciclo', intval($ciclo->ID), home_url('/mi-portal/grupos-consumo/ciclo/'))); ?>" class="gc-btn-ver-ciclo">
-                                        <?php _e('Ver productos', 'flavor-chat-ia'); ?>
+                                        <?php _e('Ver productos', 'flavor-platform'); ?>
                                     </a>
                                 <?php endif; ?>
                             </div>
@@ -818,7 +818,7 @@ class Flavor_GC_Frontend_Controller {
         $this->encolar_assets();
 
         if (!is_user_logged_in()) {
-            return '<p class="gc-login-requerido">' . __('Inicia sesión para ver tu historial.', 'flavor-chat-ia') . '</p>';
+            return '<p class="gc-login-requerido">' . __('Inicia sesión para ver tu historial.', 'flavor-platform') . '</p>';
         }
 
         $atts = shortcode_atts([
@@ -848,10 +848,10 @@ class Flavor_GC_Frontend_Controller {
         ));
         ?>
         <div class="gc-historial">
-            <h3><?php _e('Historial de Pedidos', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Historial de Pedidos', 'flavor-platform'); ?></h3>
 
             <?php if (empty($pedidos)): ?>
-                <p class="gc-sin-pedidos"><?php _e('No tienes pedidos anteriores.', 'flavor-chat-ia'); ?></p>
+                <p class="gc-sin-pedidos"><?php _e('No tienes pedidos anteriores.', 'flavor-platform'); ?></p>
             <?php else: ?>
                 <div class="gc-pedidos-lista">
                     <?php foreach ($pedidos as $pedido):
@@ -867,7 +867,7 @@ class Flavor_GC_Frontend_Controller {
                             </div>
                             <div class="gc-pedido-body">
                                 <p class="gc-pedido-ciclo">
-                                    <strong><?php _e('Ciclo:', 'flavor-chat-ia'); ?></strong>
+                                    <strong><?php _e('Ciclo:', 'flavor-platform'); ?></strong>
                                     <?php echo esc_html($pedido->ciclo_nombre ?: 'N/A'); ?>
                                 </p>
                                 <?php if (!empty($detalles)): ?>
@@ -876,7 +876,7 @@ class Flavor_GC_Frontend_Controller {
                                             <li><?php echo esc_html($item['nombre']); ?> x<?php echo esc_html($item['cantidad']); ?></li>
                                         <?php endforeach; ?>
                                         <?php if (count($detalles) > 3): ?>
-                                            <li class="gc-mas-items">+<?php echo count($detalles) - 3; ?> <?php _e('más', 'flavor-chat-ia'); ?></li>
+                                            <li class="gc-mas-items">+<?php echo count($detalles) - 3; ?> <?php _e('más', 'flavor-platform'); ?></li>
                                         <?php endif; ?>
                                     </ul>
                                 <?php endif; ?>
@@ -884,7 +884,7 @@ class Flavor_GC_Frontend_Controller {
                             <div class="gc-pedido-footer">
                                 <span class="gc-pedido-total"><?php echo number_format($pedido->total, 2, ',', '.'); ?>€</span>
                                 <button type="button" class="gc-btn-ver-detalle" data-pedido="<?php echo $pedido->id; ?>">
-                                    <?php _e('Ver detalle', 'flavor-chat-ia'); ?>
+                                    <?php _e('Ver detalle', 'flavor-platform'); ?>
                                 </button>
                             </div>
                         </div>
@@ -917,8 +917,8 @@ class Flavor_GC_Frontend_Controller {
         );
         ?>
         <div class="gc-cestas-suscripcion">
-            <h3><?php _e('Cestas Disponibles', 'flavor-chat-ia'); ?></h3>
-            <p class="gc-cestas-intro"><?php _e('Suscríbete a una cesta y recibe productos frescos de forma regular.', 'flavor-chat-ia'); ?></p>
+            <h3><?php _e('Cestas Disponibles', 'flavor-platform'); ?></h3>
+            <p class="gc-cestas-intro"><?php _e('Suscríbete a una cesta y recibe productos frescos de forma regular.', 'flavor-platform'); ?></p>
 
             <div class="gc-cestas-grid">
                 <?php foreach ($cestas as $cesta):
@@ -938,23 +938,23 @@ class Flavor_GC_Frontend_Controller {
                             <h4><?php echo esc_html($cesta->nombre); ?></h4>
                             <p class="gc-cesta-descripcion"><?php echo esc_html($cesta->descripcion); ?></p>
                             <p class="gc-cesta-precio">
-                                <span class="gc-precio-desde"><?php _e('Desde', 'flavor-chat-ia'); ?></span>
+                                <span class="gc-precio-desde"><?php _e('Desde', 'flavor-platform'); ?></span>
                                 <span class="gc-precio-valor"><?php echo number_format($cesta->precio_base, 2, ',', '.'); ?>€</span>
                             </p>
                             <?php if (!empty($productos)): ?>
                                 <p class="gc-cesta-productos">
-                                    <?php echo count($productos); ?> <?php _e('productos incluidos', 'flavor-chat-ia'); ?>
+                                    <?php echo count($productos); ?> <?php _e('productos incluidos', 'flavor-platform'); ?>
                                 </p>
                             <?php endif; ?>
                         </div>
                         <div class="gc-cesta-acciones">
                             <?php if (is_user_logged_in()): ?>
                                 <button type="button" class="gc-btn-suscribirse" data-cesta="<?php echo esc_attr($cesta->id); ?>">
-                                    <?php _e('Suscribirse', 'flavor-chat-ia'); ?>
+                                    <?php _e('Suscribirse', 'flavor-platform'); ?>
                                 </button>
                             <?php else: ?>
                                 <a href="<?php echo esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/suscripciones/'))); ?>" class="gc-btn-login">
-                                    <?php _e('Inicia sesión', 'flavor-chat-ia'); ?>
+                                    <?php _e('Inicia sesión', 'flavor-platform'); ?>
                                 </a>
                             <?php endif; ?>
                         </div>
@@ -972,7 +972,7 @@ class Flavor_GC_Frontend_Controller {
         $this->encolar_assets();
 
         if (!is_user_logged_in()) {
-            return '<p class="gc-login-requerido">' . __('Inicia sesión para ver tu suscripción.', 'flavor-chat-ia') . '</p>';
+            return '<p class="gc-login-requerido">' . __('Inicia sesión para ver tu suscripción.', 'flavor-platform') . '</p>';
         }
 
         ob_start();
@@ -992,7 +992,7 @@ class Flavor_GC_Frontend_Controller {
         ));
 
         if (!$consumidor) {
-            echo '<p class="gc-no-consumidor">' . __('No tienes una cuenta de consumidor activa.', 'flavor-chat-ia') . '</p>';
+            echo '<p class="gc-no-consumidor">' . __('No tienes una cuenta de consumidor activa.', 'flavor-platform') . '</p>';
             return;
         }
 
@@ -1008,9 +1008,9 @@ class Flavor_GC_Frontend_Controller {
 
         if (!$suscripcion): ?>
             <div class="gc-sin-suscripcion">
-                <p><?php _e('No tienes una suscripción activa.', 'flavor-chat-ia'); ?></p>
+                <p><?php _e('No tienes una suscripción activa.', 'flavor-platform'); ?></p>
                 <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/suscripciones/')); ?>" class="gc-btn-ver-cestas">
-                    <?php _e('Ver cestas disponibles', 'flavor-chat-ia'); ?>
+                    <?php _e('Ver cestas disponibles', 'flavor-platform'); ?>
                 </a>
             </div>
         <?php else: ?>
@@ -1024,9 +1024,9 @@ class Flavor_GC_Frontend_Controller {
                 <div class="gc-suscripcion-info">
                     <p class="gc-suscripcion-descripcion"><?php echo esc_html($suscripcion->cesta_descripcion); ?></p>
                     <div class="gc-suscripcion-detalles">
-                        <p><strong><?php _e('Frecuencia:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html(ucfirst($suscripcion->frecuencia)); ?></p>
-                        <p><strong><?php _e('Importe:', 'flavor-chat-ia'); ?></strong> <?php echo number_format($suscripcion->importe, 2, ',', '.'); ?>€</p>
-                        <p><strong><?php _e('Próximo cargo:', 'flavor-chat-ia'); ?></strong>
+                        <p><strong><?php _e('Frecuencia:', 'flavor-platform'); ?></strong> <?php echo esc_html(ucfirst($suscripcion->frecuencia)); ?></p>
+                        <p><strong><?php _e('Importe:', 'flavor-platform'); ?></strong> <?php echo number_format($suscripcion->importe, 2, ',', '.'); ?>€</p>
+                        <p><strong><?php _e('Próximo cargo:', 'flavor-platform'); ?></strong>
                             <?php echo $suscripcion->fecha_proximo_cargo
                                 ? date_i18n('j M Y', strtotime($suscripcion->fecha_proximo_cargo))
                                 : 'N/A'; ?>
@@ -1036,15 +1036,15 @@ class Flavor_GC_Frontend_Controller {
                 <div class="gc-suscripcion-acciones">
                     <?php if ($suscripcion->estado === 'activa'): ?>
                         <button type="button" class="gc-btn-pausar-suscripcion" data-suscripcion="<?php echo $suscripcion->id; ?>">
-                            <?php _e('Pausar', 'flavor-chat-ia'); ?>
+                            <?php _e('Pausar', 'flavor-platform'); ?>
                         </button>
                     <?php elseif ($suscripcion->estado === 'pausada'): ?>
                         <button type="button" class="gc-btn-reanudar-suscripcion" data-suscripcion="<?php echo $suscripcion->id; ?>">
-                            <?php _e('Reanudar', 'flavor-chat-ia'); ?>
+                            <?php _e('Reanudar', 'flavor-platform'); ?>
                         </button>
                     <?php endif; ?>
                     <button type="button" class="gc-btn-cancelar-suscripcion" data-suscripcion="<?php echo $suscripcion->id; ?>">
-                        <?php _e('Cancelar', 'flavor-chat-ia'); ?>
+                        <?php _e('Cancelar', 'flavor-platform'); ?>
                     </button>
                 </div>
             </div>
@@ -1058,14 +1058,14 @@ class Flavor_GC_Frontend_Controller {
         check_ajax_referer('gc_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
         }
 
         $producto_id = absint($_POST['producto_id']);
         $cantidad = absint($_POST['cantidad'] ?? 1);
 
         if (!$producto_id) {
-            wp_send_json_error(['message' => __('Producto no válido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Producto no válido', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -1094,10 +1094,10 @@ class Flavor_GC_Frontend_Controller {
         }
 
         if ($resultado === false) {
-            wp_send_json_error(['message' => __('Error al agregar el producto', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al agregar el producto', 'flavor-platform')]);
         }
 
-        wp_send_json_success(['message' => __('Producto agregado a la lista', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Producto agregado a la lista', 'flavor-platform')]);
     }
 
     /**
@@ -1139,7 +1139,7 @@ class Flavor_GC_Frontend_Controller {
         check_ajax_referer('gc_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
         }
 
         $producto_id = absint($_POST['producto_id']);
@@ -1153,7 +1153,7 @@ class Flavor_GC_Frontend_Controller {
             ]
         );
 
-        wp_send_json_success(['message' => __('Producto eliminado de la lista', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Producto eliminado de la lista', 'flavor-platform')]);
     }
 
     /**
@@ -1163,7 +1163,7 @@ class Flavor_GC_Frontend_Controller {
         check_ajax_referer('gc_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
         }
 
         $item_id = absint($_POST['item_id']);
@@ -1190,7 +1190,7 @@ class Flavor_GC_Frontend_Controller {
         check_ajax_referer('gc_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -1206,7 +1206,7 @@ class Flavor_GC_Frontend_Controller {
         ));
 
         if (empty($items)) {
-            wp_send_json_error(['message' => __('Tu lista está vacía', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Tu lista está vacía', 'flavor-platform')]);
         }
 
         // Buscar ciclo activo
@@ -1219,7 +1219,7 @@ class Flavor_GC_Frontend_Controller {
         ]);
 
         if (empty($ciclo)) {
-            wp_send_json_error(['message' => __('No hay ciclos abiertos para hacer pedidos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No hay ciclos abiertos para hacer pedidos', 'flavor-platform')]);
         }
 
         $ciclo_id = $ciclo[0]->ID;
@@ -1261,7 +1261,7 @@ class Flavor_GC_Frontend_Controller {
         do_action('gc_pedido_creado', $pedido_id, $usuario_id);
 
         wp_send_json_success([
-            'message' => __('Pedido creado correctamente', 'flavor-chat-ia'),
+            'message' => __('Pedido creado correctamente', 'flavor-platform'),
             'pedido_id' => $pedido_id,
         ]);
     }

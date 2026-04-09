@@ -9,35 +9,35 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$nombre = $nombre ?? __('Salón de Belleza', 'flavor-chat-ia');
-$eslogan = $eslogan ?? __('Tu imagen, nuestra pasión', 'flavor-chat-ia');
+$nombre = $nombre ?? __('Salón de Belleza', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$eslogan = $eslogan ?? __('Tu imagen, nuestra pasión', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $telefono = $telefono ?? '900 000 000';
 $color_primario = $color_primario ?? '#be185d';
 
 $servicios = $servicios ?? [
-    ['nombre' => __('Corte de Cabello', 'flavor-chat-ia'), 'precio' => __('Desde 15€', 'flavor-chat-ia'), 'icono' => 'art'],
-    ['nombre' => __('Coloración', 'flavor-chat-ia'), 'precio' => __('Desde 35€', 'flavor-chat-ia'), 'icono' => 'color-picker'],
-    ['nombre' => __('Peinados', 'flavor-chat-ia'), 'precio' => __('Desde 25€', 'flavor-chat-ia'), 'icono' => 'heart'],
-    ['nombre' => __('Tratamientos', 'flavor-chat-ia'), 'precio' => __('Desde 20€', 'flavor-chat-ia'), 'icono' => 'star-filled'],
-    ['nombre' => __('Manicura', 'flavor-chat-ia'), 'precio' => __('Desde 12€', 'flavor-chat-ia'), 'icono' => 'admin-customizer'],
-    ['nombre' => __('Maquillaje', 'flavor-chat-ia'), 'precio' => __('Desde 30€', 'flavor-chat-ia'), 'icono' => 'visibility'],
+    ['nombre' => __('Corte de Cabello', FLAVOR_PLATFORM_TEXT_DOMAIN), 'precio' => __('Desde 15€', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'art'],
+    ['nombre' => __('Coloración', FLAVOR_PLATFORM_TEXT_DOMAIN), 'precio' => __('Desde 35€', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'color-picker'],
+    ['nombre' => __('Peinados', FLAVOR_PLATFORM_TEXT_DOMAIN), 'precio' => __('Desde 25€', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'heart'],
+    ['nombre' => __('Tratamientos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'precio' => __('Desde 20€', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'star-filled'],
+    ['nombre' => __('Manicura', FLAVOR_PLATFORM_TEXT_DOMAIN), 'precio' => __('Desde 12€', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'admin-customizer'],
+    ['nombre' => __('Maquillaje', FLAVOR_PLATFORM_TEXT_DOMAIN), 'precio' => __('Desde 30€', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'visibility'],
 ];
 
 $equipo = $equipo ?? [
-    ['nombre' => 'María García', 'cargo' => __('Directora & Estilista', 'flavor-chat-ia'), 'imagen' => ''],
-    ['nombre' => 'Laura Martínez', 'cargo' => __('Colorista', 'flavor-chat-ia'), 'imagen' => ''],
-    ['nombre' => 'Ana López', 'cargo' => __('Estilista', 'flavor-chat-ia'), 'imagen' => ''],
+    ['nombre' => 'María García', 'cargo' => __('Directora & Estilista', FLAVOR_PLATFORM_TEXT_DOMAIN), 'imagen' => ''],
+    ['nombre' => 'Laura Martínez', 'cargo' => __('Colorista', FLAVOR_PLATFORM_TEXT_DOMAIN), 'imagen' => ''],
+    ['nombre' => 'Ana López', 'cargo' => __('Estilista', FLAVOR_PLATFORM_TEXT_DOMAIN), 'imagen' => ''],
 ];
 ?>
 
 <!-- Hero -->
 <section class="flavor-peluqueria-hero" style="--color-primario: <?php echo esc_attr($color_primario); ?>;">
     <div class="flavor-hero-content">
-        <span class="flavor-hero-badge"><?php esc_html_e('Belleza & Estilo', 'flavor-chat-ia'); ?></span>
+        <span class="flavor-hero-badge"><?php esc_html_e('Belleza & Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         <h1><?php echo esc_html($nombre); ?></h1>
         <p><?php echo esc_html($eslogan); ?></p>
         <div class="flavor-hero-actions">
-            <a href="#cita" class="flavor-btn-primary"><?php esc_html_e('Reservar Cita', 'flavor-chat-ia'); ?></a>
+            <a href="#cita" class="flavor-btn-primary"><?php esc_html_e('Reservar Cita', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
             <a href="tel:<?php echo esc_attr(preg_replace('/\s+/', '', $telefono)); ?>" class="flavor-btn-secondary">
                 <span class="dashicons dashicons-phone"></span>
                 <?php echo esc_html($telefono); ?>
@@ -49,8 +49,8 @@ $equipo = $equipo ?? [
 <!-- Servicios -->
 <section class="flavor-peluqueria-servicios" id="servicios">
     <div class="flavor-container">
-        <h2 class="flavor-section-title"><?php esc_html_e('Nuestros Servicios', 'flavor-chat-ia'); ?></h2>
-        <p class="flavor-section-subtitle"><?php esc_html_e('Tratamientos personalizados para realzar tu belleza natural', 'flavor-chat-ia'); ?></p>
+        <h2 class="flavor-section-title"><?php esc_html_e('Nuestros Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p class="flavor-section-subtitle"><?php esc_html_e('Tratamientos personalizados para realzar tu belleza natural', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
         <div class="flavor-servicios-grid">
             <?php foreach ($servicios as $servicio): ?>
@@ -69,8 +69,8 @@ $equipo = $equipo ?? [
 <!-- Equipo -->
 <section class="flavor-peluqueria-equipo">
     <div class="flavor-container">
-        <h2 class="flavor-section-title"><?php esc_html_e('Nuestro Equipo', 'flavor-chat-ia'); ?></h2>
-        <p class="flavor-section-subtitle"><?php esc_html_e('Profesionales apasionados por la belleza', 'flavor-chat-ia'); ?></p>
+        <h2 class="flavor-section-title"><?php esc_html_e('Nuestro Equipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p class="flavor-section-subtitle"><?php esc_html_e('Profesionales apasionados por la belleza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
         <div class="flavor-equipo-grid">
             <?php foreach ($equipo as $miembro): ?>
@@ -97,11 +97,11 @@ $equipo = $equipo ?? [
     <div class="flavor-container">
         <div class="flavor-cta-wrapper">
             <div class="flavor-cta-text">
-                <h2><?php esc_html_e('¿Lista para un cambio?', 'flavor-chat-ia'); ?></h2>
-                <p><?php esc_html_e('Reserva tu cita y déjate mimar por nuestros expertos', 'flavor-chat-ia'); ?></p>
+                <h2><?php esc_html_e('¿Lista para un cambio?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <p><?php esc_html_e('Reserva tu cita y déjate mimar por nuestros expertos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <div class="flavor-cta-actions">
-                <a href="#cita" class="flavor-btn-white"><?php esc_html_e('Reservar Ahora', 'flavor-chat-ia'); ?></a>
+                <a href="#cita" class="flavor-btn-white"><?php esc_html_e('Reservar Ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
             </div>
         </div>
     </div>
@@ -110,7 +110,7 @@ $equipo = $equipo ?? [
 <!-- Galería -->
 <section class="flavor-peluqueria-galeria">
     <div class="flavor-container">
-        <h2 class="flavor-section-title"><?php esc_html_e('Nuestros Trabajos', 'flavor-chat-ia'); ?></h2>
+        <h2 class="flavor-section-title"><?php esc_html_e('Nuestros Trabajos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <div class="flavor-galeria-grid">
             <?php for ($i = 0; $i < 6; $i++): ?>
                 <div class="flavor-galeria-item">

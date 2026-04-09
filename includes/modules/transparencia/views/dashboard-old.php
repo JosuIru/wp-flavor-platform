@@ -128,21 +128,21 @@ $estado_badge_classes = [
     <div class="dm-header">
         <h1 class="dm-header__title">
             <span class="dashicons dashicons-visibility"></span>
-            <?php esc_html_e('Dashboard de Transparencia', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Dashboard de Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h1>
     </div>
 
     <?php if (!$tablas_disponibles): ?>
         <div class="dm-alert dm-alert--info">
             <span class="dashicons dashicons-info"></span>
-            <p><?php esc_html_e('Faltan tablas del módulo Transparencia o aún no hay datos/solicitudes registradas.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('Faltan tablas del módulo Transparencia o aún no hay datos/solicitudes registradas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php endif; ?>
 
     <?php if ($is_dashboard_viewer): ?>
         <div class="dm-alert dm-alert--info">
             <span class="dashicons dashicons-info"></span>
-            <p><?php esc_html_e('Vista resumida para gestor de grupos. La gestión de datos y solicitudes sigue reservada a administración.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('Vista resumida para gestor de grupos. La gestión de datos y solicitudes sigue reservada a administración.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php endif; ?>
 
@@ -151,11 +151,11 @@ $estado_badge_classes = [
             <span class="dashicons dashicons-warning"></span>
             <div>
                 <?php printf(
-                    esc_html__('Hay %d solicitudes pendientes de tramitar. Se recomienda revisarlas pronto.', 'flavor-chat-ia'),
+                    esc_html__('Hay %d solicitudes pendientes de tramitar. Se recomienda revisarlas pronto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $solicitudes_pendientes
                 ); ?>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=transparencia-solicitudes')); ?>" class="dm-btn dm-btn--sm dm-btn--warning" style="margin-left: 10px;">
-                    <?php esc_html_e('Ver solicitudes', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -165,28 +165,28 @@ $estado_badge_classes = [
     <div class="dm-action-grid" style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));">
         <a href="<?php echo esc_url(admin_url('admin.php?page=transparencia-datos')); ?>" class="dm-action-card">
             <span class="dashicons dashicons-media-spreadsheet dm-text-primary"></span>
-            <span><?php esc_html_e('Datos Públicos', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Datos Públicos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=transparencia-solicitudes')); ?>" class="dm-action-card">
             <span class="dashicons dashicons-clipboard dm-text-warning"></span>
-            <span><?php esc_html_e('Solicitudes', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=transparencia-publicar')); ?>" class="dm-action-card">
             <span class="dashicons dashicons-upload dm-text-success"></span>
-            <span><?php esc_html_e('Publicar', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('transparencia', '')); ?>" class="dm-action-card">
             <span class="dashicons dashicons-external dm-text-purple"></span>
-            <span><?php esc_html_e('Ver Portal', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Ver Portal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=transparencia-informes')); ?>" class="dm-action-card">
             <span class="dashicons dashicons-chart-bar dm-text-error"></span>
-            <span><?php esc_html_e('Informes', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Informes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <?php if (!$is_dashboard_viewer): ?>
         <a href="<?php echo esc_url(admin_url('admin.php?page=transparencia-configuracion')); ?>" class="dm-action-card">
             <span class="dashicons dashicons-admin-settings dm-text-muted"></span>
-            <span><?php esc_html_e('Configuración', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <?php endif; ?>
     </div>
@@ -195,42 +195,42 @@ $estado_badge_classes = [
     <div class="dm-stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
         <div class="dm-stat-card dm-stat-card--primary">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($total_datos_publicados); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Datos Publicados', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Datos Publicados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <span class="dashicons dashicons-media-spreadsheet dm-stat-card__icon"></span>
         </div>
 
         <div class="dm-stat-card dm-stat-card--warning">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($solicitudes_pendientes); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Solicitudes Pendientes', 'flavor-chat-ia'); ?></div>
-            <div class="dm-stat-card__meta"><?php printf(esc_html__('de %s totales', 'flavor-chat-ia'), number_format_i18n($total_solicitudes)); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Solicitudes Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+            <div class="dm-stat-card__meta"><?php printf(esc_html__('de %s totales', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($total_solicitudes)); ?></div>
             <span class="dashicons dashicons-clock dm-stat-card__icon"></span>
         </div>
 
         <div class="dm-stat-card dm-stat-card--success">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($solicitudes_resueltas_mes); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Resueltas (Mes)', 'flavor-chat-ia'); ?></div>
-            <div class="dm-stat-card__meta dm-text-success"><?php printf(esc_html__('Tasa: %s%%', 'flavor-chat-ia'), $tasa_resolucion); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Resueltas (Mes)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+            <div class="dm-stat-card__meta dm-text-success"><?php printf(esc_html__('Tasa: %s%%', FLAVOR_PLATFORM_TEXT_DOMAIN), $tasa_resolucion); ?></div>
             <span class="dashicons dashicons-yes-alt dm-stat-card__icon"></span>
         </div>
 
         <div class="dm-stat-card dm-stat-card--purple">
             <div class="dm-stat-card__value"><?php echo number_format_i18n(round($tiempo_promedio_resolucion, 1)); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Tiempo Promedio', 'flavor-chat-ia'); ?></div>
-            <div class="dm-stat-card__meta"><?php esc_html_e('días de resolución', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Tiempo Promedio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+            <div class="dm-stat-card__meta"><?php esc_html_e('días de resolución', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <span class="dashicons dashicons-calendar-alt dm-stat-card__icon"></span>
         </div>
 
         <div class="dm-stat-card dm-stat-card--error">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($descargas_documentos); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Descargas', 'flavor-chat-ia'); ?></div>
-            <div class="dm-stat-card__meta"><?php esc_html_e('documentos', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Descargas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+            <div class="dm-stat-card__meta"><?php esc_html_e('documentos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <span class="dashicons dashicons-download dm-stat-card__icon"></span>
         </div>
 
         <div class="dm-stat-card dm-stat-card--info">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($total_solicitudes); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Total Solicitudes', 'flavor-chat-ia'); ?></div>
-            <div class="dm-stat-card__meta"><?php esc_html_e('históricas', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Total Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+            <div class="dm-stat-card__meta"><?php esc_html_e('históricas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <span class="dashicons dashicons-clipboard dm-stat-card__icon"></span>
         </div>
     </div>
@@ -242,7 +242,7 @@ $estado_badge_classes = [
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-chart-line"></span>
-                    <?php esc_html_e('Publicaciones Últimos 7 Días', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Publicaciones Últimos 7 Días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <div class="dm-card__chart">
@@ -255,7 +255,7 @@ $estado_badge_classes = [
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-chart-pie"></span>
-                    <?php esc_html_e('Solicitudes por Estado', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Solicitudes por Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <div class="dm-card__chart">
@@ -271,15 +271,15 @@ $estado_badge_classes = [
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-clipboard"></span>
-                    <?php esc_html_e('Solicitudes Recientes', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Solicitudes Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <table class="dm-table">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('Solicitud', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Solicitante', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Solicitante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -291,7 +291,7 @@ $estado_badge_classes = [
                                     <strong>#<?php echo esc_html($solicitud->id); ?></strong>
                                     <div class="dm-table__subtitle"><?php echo esc_html(wp_trim_words($solicitud->titulo ?? '', 6)); ?></div>
                                 </td>
-                                <td class="dm-table__muted"><?php echo esc_html($solicitud->solicitante_nombre ?? __('Anónimo', 'flavor-chat-ia')); ?></td>
+                                <td class="dm-table__muted"><?php echo esc_html($solicitud->solicitante_nombre ?? __('Anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></td>
                                 <td>
                                     <span class="dm-badge <?php echo esc_attr($badge_class); ?>">
                                         <?php echo esc_html(ucfirst(str_replace('_', ' ', $solicitud->estado))); ?>
@@ -304,7 +304,7 @@ $estado_badge_classes = [
                             <td colspan="3">
                                 <div class="dm-empty">
                                     <span class="dashicons dashicons-clipboard"></span>
-                                    <p><?php esc_html_e('No hay solicitudes recientes', 'flavor-chat-ia'); ?></p>
+                                    <p><?php esc_html_e('No hay solicitudes recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                 </div>
                             </td>
                         </tr>
@@ -318,15 +318,15 @@ $estado_badge_classes = [
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-media-spreadsheet"></span>
-                    <?php esc_html_e('Últimas Publicaciones', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Últimas Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <table class="dm-table">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('Documento', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Descargas', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Documento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Descargas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -353,7 +353,7 @@ $estado_badge_classes = [
                             <td colspan="3">
                                 <div class="dm-empty">
                                     <span class="dashicons dashicons-media-spreadsheet"></span>
-                                    <p><?php esc_html_e('No hay datos publicados', 'flavor-chat-ia'); ?></p>
+                                    <p><?php esc_html_e('No hay datos publicados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                 </div>
                             </td>
                         </tr>
@@ -388,7 +388,7 @@ jQuery(document).ready(function($) {
             data: {
                 labels: <?php echo wp_json_encode($tendencia_labels); ?>,
                 datasets: [{
-                    label: '<?php esc_attr_e('Publicaciones', 'flavor-chat-ia'); ?>',
+                    label: '<?php esc_attr_e('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                     data: <?php echo wp_json_encode($tendencia_data); ?>,
                     borderColor: primaryColor,
                     backgroundColor: 'rgba(59, 130, 246, 0.1)',

@@ -126,7 +126,7 @@ class Flavor_Newsletter_Manager {
         $identificador_campana = intval($datos_campana['id'] ?? 0);
 
         if (empty($asunto_campana)) {
-            return new WP_Error('asunto_vacio', __('El asunto es obligatorio.', 'flavor-chat-ia'));
+            return new WP_Error('asunto_vacio', __('El asunto es obligatorio.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $datos_a_guardar = ['asunto' => $asunto_campana, 'contenido_html' => $contenido_html, 'updated_at' => current_time('mysql')];
@@ -139,7 +139,7 @@ class Flavor_Newsletter_Manager {
         $datos_a_guardar['estado'] = 'borrador';
         $datos_a_guardar['created_at'] = current_time('mysql');
         $wpdb->insert($this->tabla_campanas, $datos_a_guardar, ['%s', '%s', '%s', '%s', '%s']);
-        return $wpdb->insert_id ?: new WP_Error('insert_error', __('Error al crear campana.', 'flavor-chat-ia'));
+        return $wpdb->insert_id ?: new WP_Error('insert_error', __('Error al crear campana.', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     public function obtener_campana($identificador_campana) {
@@ -174,15 +174,15 @@ class Flavor_Newsletter_Manager {
         global $wpdb;
         $campana_seleccionada = $this->obtener_campana($identificador_campana);
         if (!$campana_seleccionada) {
-            return new WP_Error('campana_no_encontrada', __('Campana no encontrada.', 'flavor-chat-ia'));
+            return new WP_Error('campana_no_encontrada', __('Campana no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
         if (in_array($campana_seleccionada->estado, ['enviando', 'enviada'], true)) {
-            return new WP_Error('campana_ya_enviada', __('Esta campana ya se esta enviando o fue enviada.', 'flavor-chat-ia'));
+            return new WP_Error('campana_ya_enviada', __('Esta campana ya se esta enviando o fue enviada.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $lista_suscriptores = $this->obtener_suscriptores_activos();
         if (empty($lista_suscriptores)) {
-            return new WP_Error('sin_suscriptores', __('No hay suscriptores activos.', 'flavor-chat-ia'));
+            return new WP_Error('sin_suscriptores', __('No hay suscriptores activos.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         foreach ($lista_suscriptores as $suscriptor_actual) {
@@ -304,7 +304,7 @@ class Flavor_Newsletter_Manager {
     public function procesar_baja_suscripcion() {
         $direccion_email = $this->decodificar_email_seguro($_GET['e'] ?? $_POST['e'] ?? '');
         if (empty($direccion_email) || !is_email($direccion_email)) {
-            wp_die(__('Enlace de baja no valido.', 'flavor-chat-ia'));
+            wp_die(__('Enlace de baja no valido.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -320,9 +320,9 @@ class Flavor_Newsletter_Manager {
         }
 
         wp_die(
-            '<h2>' . esc_html__('Te has dado de baja correctamente', 'flavor-chat-ia') . '</h2>' .
-            '<p>' . esc_html__('Ya no recibiras mas emails de nuestra newsletter.', 'flavor-chat-ia') . '</p>',
-            esc_html__('Baja de newsletter', 'flavor-chat-ia'),
+            '<h2>' . esc_html__('Te has dado de baja correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2>' .
+            '<p>' . esc_html__('Ya no recibiras mas emails de nuestra newsletter.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>',
+            esc_html__('Baja de newsletter', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ['response' => 200]
         );
     }
@@ -359,30 +359,30 @@ class Flavor_Newsletter_Manager {
 
     public function ajax_guardar_campana() {
         check_ajax_referer('flavor_newsletter_nonce', 'nonce');
-        if (!current_user_can('manage_options')) { wp_send_json_error(['message' => __('Permisos insuficientes.', 'flavor-chat-ia')]); }
+        if (!current_user_can('manage_options')) { wp_send_json_error(['message' => __('Permisos insuficientes.', FLAVOR_PLATFORM_TEXT_DOMAIN)]); }
         $resultado = $this->guardar_campana(['id' => intval($_POST['id'] ?? 0), 'asunto' => $_POST['asunto'] ?? '', 'contenido_html' => $_POST['contenido_html'] ?? '']);
-        is_wp_error($resultado) ? wp_send_json_error(['message' => $resultado->get_error_message()]) : wp_send_json_success(['message' => __('Campana guardada.', 'flavor-chat-ia'), 'id' => $resultado]);
+        is_wp_error($resultado) ? wp_send_json_error(['message' => $resultado->get_error_message()]) : wp_send_json_success(['message' => __('Campana guardada.', FLAVOR_PLATFORM_TEXT_DOMAIN), 'id' => $resultado]);
     }
 
     public function ajax_enviar_campana() {
         check_ajax_referer('flavor_newsletter_nonce', 'nonce');
-        if (!current_user_can('manage_options')) { wp_send_json_error(['message' => __('Permisos insuficientes.', 'flavor-chat-ia')]); }
+        if (!current_user_can('manage_options')) { wp_send_json_error(['message' => __('Permisos insuficientes.', FLAVOR_PLATFORM_TEXT_DOMAIN)]); }
         $resultado = $this->iniciar_envio_campana(intval($_POST['campana_id'] ?? 0));
-        is_wp_error($resultado) ? wp_send_json_error(['message' => $resultado->get_error_message()]) : wp_send_json_success(['message' => __('Envio de campana iniciado.', 'flavor-chat-ia')]);
+        is_wp_error($resultado) ? wp_send_json_error(['message' => $resultado->get_error_message()]) : wp_send_json_success(['message' => __('Envio de campana iniciado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     public function ajax_eliminar_campana() {
         check_ajax_referer('flavor_newsletter_nonce', 'nonce');
-        if (!current_user_can('manage_options')) { wp_send_json_error(['message' => __('Permisos insuficientes.', 'flavor-chat-ia')]); }
+        if (!current_user_can('manage_options')) { wp_send_json_error(['message' => __('Permisos insuficientes.', FLAVOR_PLATFORM_TEXT_DOMAIN)]); }
         $this->eliminar_campana(intval($_POST['campana_id'] ?? 0));
-        wp_send_json_success(['message' => __('Campana eliminada.', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Campana eliminada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     public function ajax_obtener_estadisticas() {
         check_ajax_referer('flavor_newsletter_nonce', 'nonce');
-        if (!current_user_can('manage_options')) { wp_send_json_error(['message' => __('Permisos insuficientes.', 'flavor-chat-ia')]); }
+        if (!current_user_can('manage_options')) { wp_send_json_error(['message' => __('Permisos insuficientes.', FLAVOR_PLATFORM_TEXT_DOMAIN)]); }
         $estadisticas = $this->obtener_estadisticas_campana(intval($_GET['campana_id'] ?? $_POST['campana_id'] ?? 0));
-        $estadisticas ? wp_send_json_success($estadisticas) : wp_send_json_error(['message' => __('Campana no encontrada.', 'flavor-chat-ia')]);
+        $estadisticas ? wp_send_json_success($estadisticas) : wp_send_json_error(['message' => __('Campana no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     private function obtener_ip_real() {

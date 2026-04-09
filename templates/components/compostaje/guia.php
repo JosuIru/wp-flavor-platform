@@ -9,8 +9,8 @@
 if (!defined('ABSPATH')) exit;
 
 // Valores por defecto
-$titulo = $args['titulo'] ?? __('Guía Completa de Compostaje', 'flavor-chat-ia');
-$subtitulo = $args['subtitulo'] ?? __('Aprende cómo compostar correctamente', 'flavor-chat-ia');
+$titulo = $args['titulo'] ?? __('Guía Completa de Compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$subtitulo = $args['subtitulo'] ?? __('Aprende cómo compostar correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $mostrar_seccion_beneficios = $args['mostrar_seccion_beneficios'] ?? true;
 $mostrar_seccion_errores = $args['mostrar_seccion_errores'] ?? true;
 ?>
@@ -31,43 +31,43 @@ $mostrar_seccion_errores = $args['mostrar_seccion_errores'] ?? true;
         <!-- Qué se puede compostar -->
         <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-8 mb-12">
             <h3 class="text-2xl font-bold text-gray-900 mb-8">
-                ✅ <?php echo esc_html__('¿Qué Puedo Compostar?', 'flavor-chat-ia'); ?>
+                ✅ <?php echo esc_html__('¿Qué Puedo Compostar?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <!-- Sí se puede -->
                 <div>
                     <h4 class="text-lg font-bold text-green-700 mb-4">
-                        ✓ <?php echo esc_html__('SÍ SE PUEDE', 'flavor-chat-ia'); ?>
+                        ✓ <?php echo esc_html__('SÍ SE PUEDE', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h4>
                     <div class="space-y-3">
                         <?php
                         $si_pueden = [
                             [
-                                'titulo' => __('Residuos Verdes', 'flavor-chat-ia'),
+                                'titulo' => __('Residuos Verdes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'items' => [
-                                    __('Hojas secas y verdes', 'flavor-chat-ia'),
-                                    __('Ramas pequeñas', 'flavor-chat-ia'),
-                                    __('Césped cortado', 'flavor-chat-ia'),
-                                    __('Flores marchitas', 'flavor-chat-ia'),
+                                    __('Hojas secas y verdes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    __('Ramas pequeñas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    __('Césped cortado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    __('Flores marchitas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 ],
                             ],
                             [
-                                'titulo' => __('Restos de Comida', 'flavor-chat-ia'),
+                                'titulo' => __('Restos de Comida', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'items' => [
-                                    __('Cáscaras de fruta y verdura', 'flavor-chat-ia'),
-                                    __('Restos de café y té', 'flavor-chat-ia'),
-                                    __('Cáscaras de huevo (trituradas)', 'flavor-chat-ia'),
-                                    __('Pan y cereales', 'flavor-chat-ia'),
+                                    __('Cáscaras de fruta y verdura', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    __('Restos de café y té', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    __('Cáscaras de huevo (trituradas)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    __('Pan y cereales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 ],
                             ],
                             [
-                                'titulo' => __('Papel y Cartón', 'flavor-chat-ia'),
+                                'titulo' => __('Papel y Cartón', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'items' => [
-                                    __('Papel de periódico', 'flavor-chat-ia'),
-                                    __('Cartón sin tinta', 'flavor-chat-ia'),
-                                    __('Servilletas usadas', 'flavor-chat-ia'),
-                                    __('Papel de cocina', 'flavor-chat-ia'),
+                                    __('Papel de periódico', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    __('Cartón sin tinta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    __('Servilletas usadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    __('Papel de cocina', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 ],
                             ],
                         ];
@@ -94,36 +94,36 @@ $mostrar_seccion_errores = $args['mostrar_seccion_errores'] ?? true;
                 <!-- No se puede -->
                 <div>
                     <h4 class="text-lg font-bold text-red-700 mb-4">
-                        ✗ <?php echo esc_html__('NO SE PUEDE', 'flavor-chat-ia'); ?>
+                        ✗ <?php echo esc_html__('NO SE PUEDE', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h4>
                     <div class="space-y-3">
                         <?php
                         $no_pueden = [
                             [
-                                'titulo' => __('Productos de Origen Animal', 'flavor-chat-ia'),
+                                'titulo' => __('Productos de Origen Animal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'items' => [
-                                    __('Carne y pescado', 'flavor-chat-ia'),
-                                    __('Productos lácteos', 'flavor-chat-ia'),
-                                    __('Huesos', 'flavor-chat-ia'),
-                                    __('Grasas y aceites', 'flavor-chat-ia'),
+                                    __('Carne y pescado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    __('Productos lácteos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    __('Huesos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    __('Grasas y aceites', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 ],
                             ],
                             [
-                                'titulo' => __('Materiales Nocivos', 'flavor-chat-ia'),
+                                'titulo' => __('Materiales Nocivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'items' => [
-                                    __('Vidrio y plástico', 'flavor-chat-ia'),
-                                    __('Metales', 'flavor-chat-ia'),
-                                    __('Materiales tratados químicamente', 'flavor-chat-ia'),
-                                    __('Colillas de cigarrillos', 'flavor-chat-ia'),
+                                    __('Vidrio y plástico', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    __('Metales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    __('Materiales tratados químicamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    __('Colillas de cigarrillos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 ],
                             ],
                             [
-                                'titulo' => __('Otros Materiales', 'flavor-chat-ia'),
+                                'titulo' => __('Otros Materiales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'items' => [
-                                    __('Plantas enfermas o con plagas', 'flavor-chat-ia'),
-                                    __('Maleza con semillas', 'flavor-chat-ia'),
-                                    __('Madera tratada', 'flavor-chat-ia'),
-                                    __('Papel brillante o coloreado', 'flavor-chat-ia'),
+                                    __('Plantas enfermas o con plagas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    __('Maleza con semillas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    __('Madera tratada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    __('Papel brillante o coloreado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 ],
                             ],
                         ];
@@ -152,7 +152,7 @@ $mostrar_seccion_errores = $args['mostrar_seccion_errores'] ?? true;
         <!-- Pasos para compostar -->
         <div class="mb-12">
             <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">
-                📋 <?php echo esc_html__('Pasos para Compostar Correctamente', 'flavor-chat-ia'); ?>
+                📋 <?php echo esc_html__('Pasos para Compostar Correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -160,29 +160,29 @@ $mostrar_seccion_errores = $args['mostrar_seccion_errores'] ?? true;
                 $pasos_compostaje = [
                     [
                         'numero' => 1,
-                        'titulo' => __('Recoge tus residuos', 'flavor-chat-ia'),
-                        'descripcion' => __('Reúne todos los restos de comida y residuos verdes en un contenedor.', 'flavor-chat-ia'),
+                        'titulo' => __('Recoge tus residuos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('Reúne todos los restos de comida y residuos verdes en un contenedor.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'icono' => '🗑️',
                         'color' => '#3b82f6',
                     ],
                     [
                         'numero' => 2,
-                        'titulo' => __('Tritura los restos', 'flavor-chat-ia'),
-                        'descripcion' => __('Corta o tritura los residuos en trozos pequeños para acelerar el compostaje.', 'flavor-chat-ia'),
+                        'titulo' => __('Tritura los restos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('Corta o tritura los residuos en trozos pequeños para acelerar el compostaje.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'icono' => '✂️',
                         'color' => '#f59e0b',
                     ],
                     [
                         'numero' => 3,
-                        'titulo' => __('Mezcla capas', 'flavor-chat-ia'),
-                        'descripcion' => __('Alterna capas de "verdes" (húmedos) y "marrones" (secos) en proporción 1:2.', 'flavor-chat-ia'),
+                        'titulo' => __('Mezcla capas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('Alterna capas de "verdes" (húmedos) y "marrones" (secos) en proporción 1:2.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'icono' => '🔀',
                         'color' => '#10b981',
                     ],
                     [
                         'numero' => 4,
-                        'titulo' => __('Mantén la humedad', 'flavor-chat-ia'),
-                        'descripcion' => __('El compost debe estar como una esponja exprimida. Riega si es necesario.', 'flavor-chat-ia'),
+                        'titulo' => __('Mantén la humedad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('El compost debe estar como una esponja exprimida. Riega si es necesario.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'icono' => '💧',
                         'color' => '#06b6d4',
                     ],
@@ -213,35 +213,35 @@ $mostrar_seccion_errores = $args['mostrar_seccion_errores'] ?? true;
         <?php if ($mostrar_seccion_beneficios): ?>
         <div class="bg-blue-50 rounded-2xl p-8 mb-12">
             <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">
-                🌍 <?php echo esc_html__('Beneficios del Compostaje', 'flavor-chat-ia'); ?>
+                🌍 <?php echo esc_html__('Beneficios del Compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="bg-white rounded-lg p-6">
                     <div class="text-4xl mb-4">♻️</div>
                     <h4 class="font-bold text-gray-900 mb-2">
-                        <?php echo esc_html__('Reduce Residuos', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Reduce Residuos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h4>
                     <p class="text-gray-600 text-sm">
-                        <?php echo esc_html__('El compostaje reduce hasta el 30% de los residuos que generamos.', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('El compostaje reduce hasta el 30% de los residuos que generamos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
                 <div class="bg-white rounded-lg p-6">
                     <div class="text-4xl mb-4">🌱</div>
                     <h4 class="font-bold text-gray-900 mb-2">
-                        <?php echo esc_html__('Enriquece el Suelo', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Enriquece el Suelo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h4>
                     <p class="text-gray-600 text-sm">
-                        <?php echo esc_html__('Obtienes abono natural para plantas y jardines.', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Obtienes abono natural para plantas y jardines.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
                 <div class="bg-white rounded-lg p-6">
                     <div class="text-4xl mb-4">🌎</div>
                     <h4 class="font-bold text-gray-900 mb-2">
-                        <?php echo esc_html__('Cuida el Planeta', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Cuida el Planeta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h4>
                     <p class="text-gray-600 text-sm">
-                        <?php echo esc_html__('Reducimos emisiones de metano y protegemos el medio ambiente.', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Reducimos emisiones de metano y protegemos el medio ambiente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
             </div>
@@ -252,27 +252,27 @@ $mostrar_seccion_errores = $args['mostrar_seccion_errores'] ?? true;
         <?php if ($mostrar_seccion_errores): ?>
         <div class="mb-12">
             <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">
-                ⚠️ <?php echo esc_html__('Errores Comunes a Evitar', 'flavor-chat-ia'); ?>
+                ⚠️ <?php echo esc_html__('Errores Comunes a Evitar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <?php
                 $errores = [
                     [
-                        'error' => __('Compactar demasiado', 'flavor-chat-ia'),
-                        'consejos' => __('El compost necesita aire. Mezcla frecuentemente en lugar de compactar.', 'flavor-chat-ia'),
+                        'error' => __('Compactar demasiado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'consejos' => __('El compost necesita aire. Mezcla frecuentemente en lugar de compactar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     [
-                        'error' => __('Demasiada humedad', 'flavor-chat-ia'),
-                        'consejos' => __('Esto causa malos olores. Añade más materiales secos ("marrones").', 'flavor-chat-ia'),
+                        'error' => __('Demasiada humedad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'consejos' => __('Esto causa malos olores. Añade más materiales secos ("marrones").', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     [
-                        'error' => __('Demasiada sequedad', 'flavor-chat-ia'),
-                        'consejos' => __('El proceso se ralentiza. Riega o añade residuos verdes.', 'flavor-chat-ia'),
+                        'error' => __('Demasiada sequedad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'consejos' => __('El proceso se ralentiza. Riega o añade residuos verdes.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     [
-                        'error' => __('Malas proporciones', 'flavor-chat-ia'),
-                        'consejos' => __('Mantén una relación 1:2 de verdes a marrones para óptimos resultados.', 'flavor-chat-ia'),
+                        'error' => __('Malas proporciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'consejos' => __('Mantén una relación 1:2 de verdes a marrones para óptimos resultados.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                 ];
 
@@ -294,13 +294,13 @@ $mostrar_seccion_errores = $args['mostrar_seccion_errores'] ?? true;
         <!-- CTA -->
         <div class="bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl p-12 text-center text-white">
             <h3 class="text-3xl font-bold mb-4">
-                🌿 <?php echo esc_html__('¿Listo para Compostar?', 'flavor-chat-ia'); ?>
+                🌿 <?php echo esc_html__('¿Listo para Compostar?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <p class="text-lg mb-6 opacity-90">
-                <?php echo esc_html__('Encuentra el punto de compostaje más cercano y comienza hoy mismo.', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Encuentra el punto de compostaje más cercano y comienza hoy mismo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
             <a href="#mapa-compostaje" class="inline-block bg-white text-green-600 px-8 py-3 rounded-lg font-bold hover:bg-gray-100 transition-colors">
-                🗺️ <?php echo esc_html__('Ir al Mapa de Puntos', 'flavor-chat-ia'); ?>
+                🗺️ <?php echo esc_html__('Ir al Mapa de Puntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>

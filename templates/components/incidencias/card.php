@@ -41,24 +41,24 @@ $votos = $incidencia['votos'] ?? 0;
 // Configuración de estados
 $estado_config = [
     // Estados en español
-    'pendiente'  => ['bg' => 'bg-red-100', 'text' => 'text-red-700', 'icon' => '🔴', 'label' => __('Pendiente', 'flavor-chat-ia')],
-    'en_proceso' => ['bg' => 'bg-yellow-100', 'text' => 'text-yellow-700', 'icon' => '🟡', 'label' => __('En proceso', 'flavor-chat-ia')],
-    'resuelta'   => ['bg' => 'bg-green-100', 'text' => 'text-green-700', 'icon' => '🟢', 'label' => __('Resuelta', 'flavor-chat-ia')],
-    'resuelto'   => ['bg' => 'bg-green-100', 'text' => 'text-green-700', 'icon' => '🟢', 'label' => __('Resuelta', 'flavor-chat-ia')],
-    'cerrada'    => ['bg' => 'bg-gray-100', 'text' => 'text-gray-700', 'icon' => '⚪', 'label' => __('Cerrada', 'flavor-chat-ia')],
+    'pendiente'  => ['bg' => 'bg-red-100', 'text' => 'text-red-700', 'icon' => '🔴', 'label' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    'en_proceso' => ['bg' => 'bg-yellow-100', 'text' => 'text-yellow-700', 'icon' => '🟡', 'label' => __('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    'resuelta'   => ['bg' => 'bg-green-100', 'text' => 'text-green-700', 'icon' => '🟢', 'label' => __('Resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    'resuelto'   => ['bg' => 'bg-green-100', 'text' => 'text-green-700', 'icon' => '🟢', 'label' => __('Resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    'cerrada'    => ['bg' => 'bg-gray-100', 'text' => 'text-gray-700', 'icon' => '⚪', 'label' => __('Cerrada', FLAVOR_PLATFORM_TEXT_DOMAIN)],
     // Estados en inglés (compatibilidad)
-    'pending'     => ['bg' => 'bg-red-100', 'text' => 'text-red-700', 'icon' => '🔴', 'label' => __('Pendiente', 'flavor-chat-ia')],
-    'in_progress' => ['bg' => 'bg-yellow-100', 'text' => 'text-yellow-700', 'icon' => '🟡', 'label' => __('En proceso', 'flavor-chat-ia')],
-    'resolved'    => ['bg' => 'bg-green-100', 'text' => 'text-green-700', 'icon' => '🟢', 'label' => __('Resuelta', 'flavor-chat-ia')],
-    'closed'      => ['bg' => 'bg-gray-100', 'text' => 'text-gray-700', 'icon' => '⚪', 'label' => __('Cerrada', 'flavor-chat-ia')],
+    'pending'     => ['bg' => 'bg-red-100', 'text' => 'text-red-700', 'icon' => '🔴', 'label' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    'in_progress' => ['bg' => 'bg-yellow-100', 'text' => 'text-yellow-700', 'icon' => '🟡', 'label' => __('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    'resolved'    => ['bg' => 'bg-green-100', 'text' => 'text-green-700', 'icon' => '🟢', 'label' => __('Resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    'closed'      => ['bg' => 'bg-gray-100', 'text' => 'text-gray-700', 'icon' => '⚪', 'label' => __('Cerrada', FLAVOR_PLATFORM_TEXT_DOMAIN)],
 ];
 $estado_style = $estado_config[$estado] ?? $estado_config['pendiente'];
 
 // Configuración de prioridades
 $prioridad_config = [
-    'alta'  => ['bg' => 'bg-red-500', 'label' => '🔥 ' . __('Alta', 'flavor-chat-ia')],
-    'media' => ['bg' => 'bg-yellow-500', 'label' => '⚡ ' . __('Media', 'flavor-chat-ia')],
-    'baja'  => ['bg' => 'bg-blue-500', 'label' => '💧 ' . __('Baja', 'flavor-chat-ia')],
+    'alta'  => ['bg' => 'bg-red-500', 'label' => '🔥 ' . __('Alta', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    'media' => ['bg' => 'bg-yellow-500', 'label' => '⚡ ' . __('Media', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    'baja'  => ['bg' => 'bg-blue-500', 'label' => '💧 ' . __('Baja', FLAVOR_PLATFORM_TEXT_DOMAIN)],
 ];
 $prioridad_style = $prioridad_config[$prioridad] ?? null;
 ?>
@@ -128,7 +128,7 @@ $prioridad_style = $prioridad_config[$prioridad] ?? null;
 
                 <?php if ($votos): ?>
                 <span class="flex items-center gap-1 text-red-600 font-medium">
-                    👍 <?php echo esc_html($votos); ?> <?php echo esc_html(_n('apoyo', 'apoyos', $votos, 'flavor-chat-ia')); ?>
+                    👍 <?php echo esc_html($votos); ?> <?php echo esc_html(_n('apoyo', 'apoyos', $votos, FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                 </span>
                 <?php endif; ?>
             </div>
@@ -139,16 +139,16 @@ $prioridad_style = $prioridad_config[$prioridad] ?? null;
             <button type="button"
                     class="p-2 text-gray-400 hover:text-red-500 transition-colors"
                     onclick="flavorIncidencias && flavorIncidencias.apoyar(<?php echo esc_attr($id); ?>)"
-                    title="<?php echo esc_attr__('Apoyar incidencia', 'flavor-chat-ia'); ?>"
-                    aria-label="<?php echo esc_attr__('Apoyar incidencia', 'flavor-chat-ia'); ?>">
+                    title="<?php echo esc_attr__('Apoyar incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
+                    aria-label="<?php echo esc_attr__('Apoyar incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/>
                 </svg>
             </button>
             <a href="<?php echo esc_url($url); ?>"
                class="p-2 text-gray-400 hover:text-red-500 transition-colors"
-               title="<?php echo esc_attr__('Ver detalles', 'flavor-chat-ia'); ?>"
-               aria-label="<?php echo esc_attr__('Ver detalles de la incidencia', 'flavor-chat-ia'); ?>">
+               title="<?php echo esc_attr__('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
+               aria-label="<?php echo esc_attr__('Ver detalles de la incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                 </svg>

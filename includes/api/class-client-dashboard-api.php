@@ -97,7 +97,7 @@ class Flavor_Client_Dashboard_API {
             'permission_callback' => [$this, 'check_user_authenticated'],
             'args'                => [
                 'include_widgets' => [
-                    'description' => __('Incluir datos de widgets', 'flavor-chat-ia'),
+                    'description' => __('Incluir datos de widgets', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'boolean',
                     'default'     => true,
                 ],
@@ -112,7 +112,7 @@ class Flavor_Client_Dashboard_API {
             'permission_callback' => [$this, 'check_user_authenticated'],
             'args'                => [
                 'period' => [
-                    'description' => __('Periodo de estadisticas: week, month, year, all', 'flavor-chat-ia'),
+                    'description' => __('Periodo de estadisticas: week, month, year, all', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'string',
                     'default'     => 'month',
                     'enum'        => ['week', 'month', 'year', 'all'],
@@ -136,25 +136,25 @@ class Flavor_Client_Dashboard_API {
             'permission_callback' => [$this, 'check_user_authenticated'],
             'args'                => [
                 'page' => [
-                    'description' => __('Numero de pagina', 'flavor-chat-ia'),
+                    'description' => __('Numero de pagina', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'integer',
                     'default'     => 1,
                     'minimum'     => 1,
                 ],
                 'per_page' => [
-                    'description' => __('Elementos por pagina', 'flavor-chat-ia'),
+                    'description' => __('Elementos por pagina', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'integer',
                     'default'     => 20,
                     'minimum'     => 1,
                     'maximum'     => 100,
                 ],
                 'type' => [
-                    'description' => __('Filtrar por tipo de actividad', 'flavor-chat-ia'),
+                    'description' => __('Filtrar por tipo de actividad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'string',
                     'default'     => '',
                 ],
                 'module' => [
-                    'description' => __('Filtrar por modulo', 'flavor-chat-ia'),
+                    'description' => __('Filtrar por modulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'string',
                     'default'     => '',
                 ],
@@ -169,25 +169,25 @@ class Flavor_Client_Dashboard_API {
             'permission_callback' => [$this, 'check_user_authenticated'],
             'args'                => [
                 'page' => [
-                    'description' => __('Numero de pagina', 'flavor-chat-ia'),
+                    'description' => __('Numero de pagina', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'integer',
                     'default'     => 1,
                     'minimum'     => 1,
                 ],
                 'per_page' => [
-                    'description' => __('Elementos por pagina', 'flavor-chat-ia'),
+                    'description' => __('Elementos por pagina', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'integer',
                     'default'     => 20,
                     'minimum'     => 1,
                     'maximum'     => 100,
                 ],
                 'unread_only' => [
-                    'description' => __('Solo notificaciones sin leer', 'flavor-chat-ia'),
+                    'description' => __('Solo notificaciones sin leer', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'boolean',
                     'default'     => false,
                 ],
                 'type' => [
-                    'description' => __('Filtrar por tipo de notificacion', 'flavor-chat-ia'),
+                    'description' => __('Filtrar por tipo de notificacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'string',
                     'default'     => '',
                 ],
@@ -202,13 +202,13 @@ class Flavor_Client_Dashboard_API {
             'permission_callback' => [$this, 'check_user_authenticated'],
             'args'                => [
                 'notification_ids' => [
-                    'description' => __('IDs de notificaciones a marcar como leidas', 'flavor-chat-ia'),
+                    'description' => __('IDs de notificaciones a marcar como leidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'array',
                     'items'       => ['type' => 'integer'],
                     'default'     => [],
                 ],
                 'mark_all' => [
-                    'description' => __('Marcar todas las notificaciones como leidas', 'flavor-chat-ia'),
+                    'description' => __('Marcar todas las notificaciones como leidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'boolean',
                     'default'     => false,
                 ],
@@ -223,7 +223,7 @@ class Flavor_Client_Dashboard_API {
             'permission_callback' => [$this, 'check_user_authenticated'],
             'args'                => [
                 'widget_ids' => [
-                    'description' => __('IDs especificos de widgets a obtener', 'flavor-chat-ia'),
+                    'description' => __('IDs especificos de widgets a obtener', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'array',
                     'items'       => ['type' => 'string'],
                     'default'     => [],
@@ -247,26 +247,26 @@ class Flavor_Client_Dashboard_API {
             'permission_callback' => [$this, 'check_user_authenticated'],
             'args'                => [
                 'visible_widgets' => [
-                    'description' => __('Lista de widgets visibles', 'flavor-chat-ia'),
+                    'description' => __('Lista de widgets visibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'array',
                     'items'       => ['type' => 'string'],
                 ],
                 'widget_order' => [
-                    'description' => __('Orden de los widgets', 'flavor-chat-ia'),
+                    'description' => __('Orden de los widgets', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'array',
                     'items'       => ['type' => 'string'],
                 ],
                 'theme' => [
-                    'description' => __('Tema del dashboard: light, dark, auto', 'flavor-chat-ia'),
+                    'description' => __('Tema del dashboard: light, dark, auto', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'string',
                     'enum'        => ['light', 'dark', 'auto'],
                 ],
                 'notifications_enabled' => [
-                    'description' => __('Notificaciones habilitadas', 'flavor-chat-ia'),
+                    'description' => __('Notificaciones habilitadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'boolean',
                 ],
                 'compact_mode' => [
-                    'description' => __('Modo compacto', 'flavor-chat-ia'),
+                    'description' => __('Modo compacto', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'boolean',
                 ],
             ],
@@ -280,7 +280,7 @@ class Flavor_Client_Dashboard_API {
             'permission_callback' => [$this, 'check_user_authenticated'],
             'args'                => [
                 'period' => [
-                    'description' => __('Periodo de estadisticas: week, month, year, all', 'flavor-chat-ia'),
+                    'description' => __('Periodo de estadisticas: week, month, year, all', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'string',
                     'default'     => 'month',
                     'enum'        => ['week', 'month', 'year', 'all'],
@@ -296,12 +296,12 @@ class Flavor_Client_Dashboard_API {
             'permission_callback' => [$this, 'check_user_authenticated'],
             'args'                => [
                 'type' => [
-                    'description' => __('Filtrar por tipo de recurso compartido', 'flavor-chat-ia'),
+                    'description' => __('Filtrar por tipo de recurso compartido', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'string',
                     'default'     => 'all',
                 ],
                 'limit' => [
-                    'description' => __('Numero maximo de recursos a devolver', 'flavor-chat-ia'),
+                    'description' => __('Numero maximo de recursos a devolver', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'integer',
                     'default'     => 30,
                     'minimum'     => 1,
@@ -318,13 +318,13 @@ class Flavor_Client_Dashboard_API {
             'permission_callback' => [$this, 'check_user_authenticated'],
             'args'                => [
                 'period' => [
-                    'description' => __('Periodo de actividad: week, month, year', 'flavor-chat-ia'),
+                    'description' => __('Periodo de actividad: week, month, year', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'string',
                     'default'     => 'month',
                     'enum'        => ['week', 'month', 'year'],
                 ],
                 'module' => [
-                    'description' => __('Filtrar por modulo especifico', 'flavor-chat-ia'),
+                    'description' => __('Filtrar por modulo especifico', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'string',
                     'default'     => '',
                 ],
@@ -354,7 +354,7 @@ class Flavor_Client_Dashboard_API {
         if (!$id_usuario_actual) {
             return new WP_Error(
                 'rest_not_logged_in',
-                __('Debes iniciar sesion para acceder a este recurso.', 'flavor-chat-ia'),
+                __('Debes iniciar sesion para acceder a este recurso.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 401]
             );
         }
@@ -374,7 +374,7 @@ class Flavor_Client_Dashboard_API {
         if (!$id_usuario_actual) {
             return new WP_Error(
                 'rest_not_logged_in',
-                __('Debes iniciar sesion para acceder a este recurso.', 'flavor-chat-ia'),
+                __('Debes iniciar sesion para acceder a este recurso.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 401]
             );
         }
@@ -382,7 +382,7 @@ class Flavor_Client_Dashboard_API {
         if (!current_user_can('manage_options')) {
             return new WP_Error(
                 'rest_forbidden',
-                __('No tienes permisos para acceder a este recurso.', 'flavor-chat-ia'),
+                __('No tienes permisos para acceder a este recurso.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 403]
             );
         }
@@ -556,7 +556,7 @@ class Flavor_Client_Dashboard_API {
                 ));
                 $statistics[] = [
                     'id' => 'eventos_proximos',
-                    'title' => __('Eventos Próximos', 'flavor-chat-ia'),
+                    'title' => __('Eventos Próximos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'value' => (string) intval($eventos_proximos),
                     'numeric_value' => floatval($eventos_proximos),
                     'icon_name' => 'event',
@@ -575,7 +575,7 @@ class Flavor_Client_Dashboard_API {
                 ));
                 $statistics[] = [
                     'id' => 'gc_pedidos',
-                    'title' => __('Mis Pedidos GC', 'flavor-chat-ia'),
+                    'title' => __('Mis Pedidos GC', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'value' => (string) intval($pedidos_gc),
                     'numeric_value' => floatval($pedidos_gc),
                     'icon_name' => 'shopping_basket',
@@ -594,7 +594,7 @@ class Flavor_Client_Dashboard_API {
                 ));
                 $statistics[] = [
                     'id' => 'bt_horas',
-                    'title' => __('Mis Horas', 'flavor-chat-ia'),
+                    'title' => __('Mis Horas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'value' => number_format(floatval($saldo_horas), 1) . 'h',
                     'numeric_value' => floatval($saldo_horas),
                     'icon_name' => 'schedule',
@@ -610,7 +610,7 @@ class Flavor_Client_Dashboard_API {
                 );
                 $statistics[] = [
                     'id' => 'bt_servicios',
-                    'title' => __('Servicios Disponibles', 'flavor-chat-ia'),
+                    'title' => __('Servicios Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'value' => (string) intval($servicios),
                     'numeric_value' => floatval($servicios),
                     'icon_name' => 'volunteer_activism',
@@ -629,7 +629,7 @@ class Flavor_Client_Dashboard_API {
                 ));
                 $statistics[] = [
                     'id' => 'marketplace_mis_anuncios',
-                    'title' => __('Mis Anuncios', 'flavor-chat-ia'),
+                    'title' => __('Mis Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'value' => (string) intval($mis_anuncios),
                     'numeric_value' => floatval($mis_anuncios),
                     'icon_name' => 'storefront',
@@ -648,8 +648,8 @@ class Flavor_Client_Dashboard_API {
                 ));
                 $statistics[] = [
                     'id' => 'socios_estado',
-                    'title' => __('Membresía', 'flavor-chat-ia'),
-                    'value' => $es_socio === 'activo' ? __('Activa', 'flavor-chat-ia') : __('Inactiva', 'flavor-chat-ia'),
+                    'title' => __('Membresía', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'value' => $es_socio === 'activo' ? __('Activa', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Inactiva', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'numeric_value' => $es_socio === 'activo' ? 1.0 : 0.0,
                     'icon_name' => 'card_membership',
                     'color_hex' => $es_socio === 'activo' ? '#4CAF50' : '#9E9E9E',
@@ -667,7 +667,7 @@ class Flavor_Client_Dashboard_API {
                 ));
                 $statistics[] = [
                     'id' => 'incidencias_abiertas',
-                    'title' => __('Incidencias Abiertas', 'flavor-chat-ia'),
+                    'title' => __('Incidencias Abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'value' => (string) intval($mis_incidencias),
                     'numeric_value' => floatval($mis_incidencias),
                     'icon_name' => 'report_problem',
@@ -686,7 +686,7 @@ class Flavor_Client_Dashboard_API {
                 ));
                 $statistics[] = [
                     'id' => 'tramites_pendientes',
-                    'title' => __('Trámites Pendientes', 'flavor-chat-ia'),
+                    'title' => __('Trámites Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'value' => (string) intval($mis_tramites),
                     'numeric_value' => floatval($mis_tramites),
                     'icon_name' => 'description',
@@ -705,7 +705,7 @@ class Flavor_Client_Dashboard_API {
                 ));
                 $statistics[] = [
                     'id' => 'red_social_posts',
-                    'title' => __('Mis Publicaciones', 'flavor-chat-ia'),
+                    'title' => __('Mis Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'value' => (string) intval($mis_posts),
                     'numeric_value' => floatval($mis_posts),
                     'icon_name' => 'dynamic_feed',
@@ -724,7 +724,7 @@ class Flavor_Client_Dashboard_API {
                 ));
                 $statistics[] = [
                     'id' => 'comunidades_miembro',
-                    'title' => __('Mis Comunidades', 'flavor-chat-ia'),
+                    'title' => __('Mis Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'value' => (string) intval($mis_comunidades),
                     'numeric_value' => floatval($mis_comunidades),
                     'icon_name' => 'groups',
@@ -744,7 +744,7 @@ class Flavor_Client_Dashboard_API {
                 ));
                 $statistics[] = [
                     'id' => 'carpooling_viajes',
-                    'title' => __('Mis Viajes', 'flavor-chat-ia'),
+                    'title' => __('Mis Viajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'value' => (string) intval($mis_viajes),
                     'numeric_value' => floatval($mis_viajes),
                     'icon_name' => 'directions_car',
@@ -764,7 +764,7 @@ class Flavor_Client_Dashboard_API {
                 ));
                 $statistics[] = [
                     'id' => 'reservas_proximas',
-                    'title' => __('Próximas Reservas', 'flavor-chat-ia'),
+                    'title' => __('Próximas Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'value' => (string) intval($mis_reservas),
                     'numeric_value' => floatval($mis_reservas),
                     'icon_name' => 'event_available',
@@ -900,7 +900,7 @@ class Flavor_Client_Dashboard_API {
         if (!class_exists('Flavor_Notification_Manager')) {
             return new WP_Error(
                 'notifications_unavailable',
-                __('El sistema de notificaciones no esta disponible.', 'flavor-chat-ia'),
+                __('El sistema de notificaciones no esta disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 503]
             );
         }
@@ -927,7 +927,7 @@ class Flavor_Client_Dashboard_API {
 
         return rest_ensure_response([
             'success'      => true,
-            'marked_count' => $cantidad_marcadas === -1 ? __('todas', 'flavor-chat-ia') : $cantidad_marcadas,
+            'marked_count' => $cantidad_marcadas === -1 ? __('todas', FLAVOR_PLATFORM_TEXT_DOMAIN) : $cantidad_marcadas,
             'unread_count' => $cantidad_sin_leer,
         ]);
     }
@@ -1052,7 +1052,7 @@ class Flavor_Client_Dashboard_API {
             Flavor_Activity_Log::registrar(
                 'sistema',
                 'preferences_updated',
-                __('Preferencias del dashboard actualizadas', 'flavor-chat-ia'),
+                __('Preferencias del dashboard actualizadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 [
                     'usuario_id' => $id_usuario_actual,
                     'datos_extra' => $preferencias_nuevas,
@@ -1063,7 +1063,7 @@ class Flavor_Client_Dashboard_API {
         return rest_ensure_response([
             'success'     => true,
             'preferences' => $preferencias_actualizadas,
-            'message'     => __('Preferencias guardadas correctamente.', 'flavor-chat-ia'),
+            'message'     => __('Preferencias guardadas correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -1507,12 +1507,12 @@ class Flavor_Client_Dashboard_API {
                     'type' => 'eventos',
                     'raw_type' => 'evento',
                     'source' => 'network_events',
-                    'origin' => $evento['nodo_origen_nombre'] ?: __('Red', 'flavor-chat-ia'),
+                    'origin' => $evento['nodo_origen_nombre'] ?: __('Red', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'date' => $evento['fecha_inicio'],
                     'url' => home_url('/eventos/' . (int) $evento['id']),
                     'icon' => 'event',
                     'accent' => '#7C3AED',
-                    'summary' => __('Evento compartido desde la red', 'flavor-chat-ia'),
+                    'summary' => __('Evento compartido desde la red', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
         }
@@ -1541,7 +1541,7 @@ class Flavor_Client_Dashboard_API {
                     'type' => $tipo_mapeado,
                     'raw_type' => $contenido['tipo'],
                     'source' => 'shared_content',
-                    'origin' => $contenido['nodo_origen_nombre'] ?: __('Red', 'flavor-chat-ia'),
+                    'origin' => $contenido['nodo_origen_nombre'] ?: __('Red', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'date' => $contenido['created_at'],
                     'url' => home_url('/recursos/' . (int) $contenido['id']),
                     'icon' => $icono,
@@ -1586,7 +1586,7 @@ class Flavor_Client_Dashboard_API {
 
         $tipos = [[
             'id' => 'all',
-            'label' => __('Todos', 'flavor-chat-ia'),
+            'label' => __('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'count' => count($recursos),
         ]];
 
@@ -1611,18 +1611,18 @@ class Flavor_Client_Dashboard_API {
         $tipo = sanitize_key((string) $tipo);
 
         if (in_array($tipo, ['oferta', 'promocion', 'descuento'], true)) {
-            return ['ofertas', 'local_offer', '#F59E0B', __('Oferta o promocion compartida en la red', 'flavor-chat-ia')];
+            return ['ofertas', 'local_offer', '#F59E0B', __('Oferta o promocion compartida en la red', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if (in_array($tipo, ['servicio', 'profesional'], true)) {
-            return ['servicios', 'handyman', '#0EA5E9', __('Servicio compartido por otra comunidad', 'flavor-chat-ia')];
+            return ['servicios', 'handyman', '#0EA5E9', __('Servicio compartido por otra comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if (in_array($tipo, ['recurso', 'documento', 'material'], true)) {
-            return ['recursos', 'inventory_2', '#10B981', __('Recurso compartido disponible en la red', 'flavor-chat-ia')];
+            return ['recursos', 'inventory_2', '#10B981', __('Recurso compartido disponible en la red', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
-        return ['general', 'hub', '#6366F1', __('Contenido compartido desde la red', 'flavor-chat-ia')];
+        return ['general', 'hub', '#6366F1', __('Contenido compartido desde la red', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     /**
@@ -1633,12 +1633,12 @@ class Flavor_Client_Dashboard_API {
      */
     private function get_shared_resource_type_label($tipo) {
         $labels = [
-            'all' => __('Todos', 'flavor-chat-ia'),
-            'eventos' => __('Eventos', 'flavor-chat-ia'),
-            'ofertas' => __('Ofertas', 'flavor-chat-ia'),
-            'servicios' => __('Servicios', 'flavor-chat-ia'),
-            'recursos' => __('Recursos', 'flavor-chat-ia'),
-            'general' => __('General', 'flavor-chat-ia'),
+            'all' => __('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'eventos' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'ofertas' => __('Ofertas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'servicios' => __('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'recursos' => __('Recursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'general' => __('General', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         return $labels[$tipo] ?? ucwords(str_replace(['-', '_'], ' ', $tipo));
@@ -1791,15 +1791,15 @@ class Flavor_Client_Dashboard_API {
      */
     private function get_activity_type_label($tipo) {
         $etiquetas = [
-            'info'        => __('Informacion', 'flavor-chat-ia'),
-            'exito'       => __('Exito', 'flavor-chat-ia'),
-            'advertencia' => __('Advertencia', 'flavor-chat-ia'),
-            'error'       => __('Error', 'flavor-chat-ia'),
-            'crear'       => __('Creacion', 'flavor-chat-ia'),
-            'editar'      => __('Edicion', 'flavor-chat-ia'),
-            'eliminar'    => __('Eliminacion', 'flavor-chat-ia'),
-            'login'       => __('Inicio de sesion', 'flavor-chat-ia'),
-            'registro'    => __('Registro', 'flavor-chat-ia'),
+            'info'        => __('Informacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'exito'       => __('Exito', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'advertencia' => __('Advertencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'error'       => __('Error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'crear'       => __('Creacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'editar'      => __('Edicion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'eliminar'    => __('Eliminacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'login'       => __('Inicio de sesion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'registro'    => __('Registro', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         return $etiquetas[$tipo] ?? ucfirst($tipo);
@@ -1964,7 +1964,7 @@ class Flavor_Client_Dashboard_API {
             'email'        => $usuario->user_email,
             'avatar_url'   => $avatar_url,
             'registered'   => $usuario->user_registered,
-            'member_since' => sprintf(__('Miembro desde hace %s', 'flavor-chat-ia'), $tiempo_miembro),
+            'member_since' => sprintf(__('Miembro desde hace %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $tiempo_miembro),
             'roles'        => $usuario->roles,
         ];
     }
@@ -2281,7 +2281,7 @@ class Flavor_Client_Dashboard_API {
                 'description' => $registro->descripcion,
                 'module'      => $registro->modulo_id,
                 'date'        => $registro->fecha,
-                'date_human'  => human_time_diff(strtotime($registro->fecha), current_time('timestamp')) . ' ' . __('ago', 'flavor-chat-ia'),
+                'date_human'  => human_time_diff(strtotime($registro->fecha), current_time('timestamp')) . ' ' . __('ago', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'data'        => maybe_unserialize($registro->datos_extra),
             ];
         }
@@ -2352,10 +2352,10 @@ class Flavor_Client_Dashboard_API {
      */
     private function get_available_activity_types() {
         return [
-            'info'        => __('Informacion', 'flavor-chat-ia'),
-            'exito'       => __('Exito', 'flavor-chat-ia'),
-            'advertencia' => __('Advertencia', 'flavor-chat-ia'),
-            'error'       => __('Error', 'flavor-chat-ia'),
+            'info'        => __('Informacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'exito'       => __('Exito', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'advertencia' => __('Advertencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'error'       => __('Error', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -2400,7 +2400,7 @@ class Flavor_Client_Dashboard_API {
                 'is_read'    => (bool) $notificacion->is_read,
                 'priority'   => $notificacion->priority,
                 'created_at' => $notificacion->created_at,
-                'date_human' => human_time_diff(strtotime($notificacion->created_at), current_time('timestamp')) . ' ' . __('ago', 'flavor-chat-ia'),
+                'date_human' => human_time_diff(strtotime($notificacion->created_at), current_time('timestamp')) . ' ' . __('ago', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'data'       => maybe_unserialize($notificacion->data),
             ];
         }
@@ -2476,8 +2476,8 @@ class Flavor_Client_Dashboard_API {
         $widgets[] = [
             'id'          => 'quick_stats',
             'type'        => 'stats',
-            'title'       => __('Resumen Rapido', 'flavor-chat-ia'),
-            'description' => __('Tus estadisticas principales de un vistazo', 'flavor-chat-ia'),
+            'title'       => __('Resumen Rapido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Tus estadisticas principales de un vistazo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-chart-bar',
             'data'        => $this->calculate_user_stats($id_usuario, 'month'),
             'size'        => 'medium',
@@ -2487,8 +2487,8 @@ class Flavor_Client_Dashboard_API {
         $widgets[] = [
             'id'          => 'recent_activity',
             'type'        => 'activity',
-            'title'       => __('Actividad Reciente', 'flavor-chat-ia'),
-            'description' => __('Tus ultimas acciones en la plataforma', 'flavor-chat-ia'),
+            'title'       => __('Actividad Reciente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Tus ultimas acciones en la plataforma', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-clock',
             'data'        => [
                 'items' => $this->get_user_activity($id_usuario, ['limit' => 5]),
@@ -2501,8 +2501,8 @@ class Flavor_Client_Dashboard_API {
         $widgets[] = [
             'id'          => 'notifications',
             'type'        => 'notifications',
-            'title'       => __('Notificaciones', 'flavor-chat-ia'),
-            'description' => __('Tus notificaciones pendientes', 'flavor-chat-ia'),
+            'title'       => __('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Tus notificaciones pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-bell',
             'data'        => [
                 'unread_count' => $cantidad_sin_leer,
@@ -2517,8 +2517,8 @@ class Flavor_Client_Dashboard_API {
         $widgets[] = [
             'id'          => 'progress',
             'type'        => 'progress',
-            'title'       => __('Tu Progreso', 'flavor-chat-ia'),
-            'description' => __('Nivel, puntos y logros', 'flavor-chat-ia'),
+            'title'       => __('Tu Progreso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Nivel, puntos y logros', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-awards',
             'data'        => $datos_gamificacion,
             'size'        => 'small',
@@ -2898,7 +2898,7 @@ class Flavor_Client_Dashboard_API {
         if (!class_exists('Flavor_Network_Manager')) {
             return rest_ensure_response([
                 'success' => false,
-                'message' => __('El gestor de red no esta disponible.', 'flavor-chat-ia'),
+                'message' => __('El gestor de red no esta disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
 
@@ -2915,7 +2915,7 @@ class Flavor_Client_Dashboard_API {
         if ($resultado === null) {
             return rest_ensure_response([
                 'success' => true,
-                'message' => __('Red sincronizada correctamente.', 'flavor-chat-ia'),
+                'message' => __('Red sincronizada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'timestamp' => current_time('mysql'),
             ]);
         }
@@ -2923,8 +2923,8 @@ class Flavor_Client_Dashboard_API {
         return rest_ensure_response([
             'success' => $resultado ? true : false,
             'message' => $resultado
-                ? __('Red sincronizada correctamente.', 'flavor-chat-ia')
-                : __('Error al sincronizar la red.', 'flavor-chat-ia'),
+                ? __('Red sincronizada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                : __('Error al sincronizar la red.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'timestamp' => current_time('mysql'),
         ]);
     }

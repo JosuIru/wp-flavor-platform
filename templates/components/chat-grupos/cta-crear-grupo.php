@@ -35,14 +35,14 @@ $beneficios_crear = $beneficios_crear ?? [
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    <?php echo esc_html__('Crea tu propia comunidad', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Crea tu propia comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
             </div>
             <h2 class="text-3xl lg:text-4xl font-bold text-gray-800 mb-4">
                 <?php echo esc_html($titulo_cta); ?>
             </h2>
             <p class="text-lg text-gray-600 mb-10 max-w-2xl mx-auto">
-                <?php echo esc_html__('Crea tu propio grupo en segundos y empieza a construir la comunidad que siempre quisiste.', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Crea tu propio grupo en segundos y empieza a construir la comunidad que siempre quisiste.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
 
             <!-- Beneficios -->
@@ -65,7 +65,7 @@ $beneficios_crear = $beneficios_crear ?? [
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                 </svg>
-                <?php echo esc_html__('Crear mi Grupo', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Crear mi Grupo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>

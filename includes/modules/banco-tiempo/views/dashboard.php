@@ -112,10 +112,10 @@ $estado_badge_classes = [
 ];
 
 $estado_labels = [
-    'completado' => __('Completado', 'flavor-chat-ia'),
-    'aceptado' => __('Aceptado', 'flavor-chat-ia'),
-    'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-    'cancelado' => __('Cancelado', 'flavor-chat-ia'),
+    'completado' => __('Completado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'aceptado' => __('Aceptado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cancelado' => __('Cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 
@@ -129,14 +129,14 @@ $estado_labels = [
     <?php if (!$tablas_disponibles): ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <p><?php esc_html_e('Faltan tablas del módulo Banco de Tiempo o aún no hay intercambios registrados.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('Faltan tablas del módulo Banco de Tiempo o aún no hay intercambios registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php endif; ?>
 
     <div class="dm-header">
         <div class="dm-header__title">
             <span class="dashicons dashicons-clock"></span>
-            <h1><?php esc_html_e('Dashboard - Banco de Tiempo', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Dashboard - Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
         </div>
     </div>
 
@@ -144,31 +144,31 @@ $estado_labels = [
     <div class="dm-quick-links">
         <a href="<?php echo esc_url(admin_url('admin.php?page=bt-servicios')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-admin-tools"></span>
-            <span><?php esc_html_e('Servicios', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=bt-intercambios')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-randomize"></span>
-            <span><?php esc_html_e('Intercambios', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=bt-usuarios')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-groups"></span>
-            <span><?php esc_html_e('Usuarios', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <span class="dm-quick-links__item dm-quick-links__item--disabled">
             <span class="dashicons dashicons-category"></span>
-            <span><?php esc_html_e('Categorías', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </span>
         <span class="dm-quick-links__item dm-quick-links__item--disabled">
             <span class="dashicons dashicons-star-filled"></span>
-            <span><?php esc_html_e('Valoraciones', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Valoraciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </span>
         <a href="<?php echo esc_url(admin_url('admin.php?page=banco-tiempo-config')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-admin-settings"></span>
-            <span><?php esc_html_e('Configuración', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(home_url('/mi-portal/banco-tiempo/')); ?>" class="dm-quick-links__item" target="_blank">
             <span class="dashicons dashicons-external"></span>
-            <span><?php esc_html_e('Portal público', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Portal público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
     </div>
 
@@ -180,7 +180,7 @@ $estado_labels = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_servicios_activos); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Servicios Activos', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Servicios Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -190,7 +190,7 @@ $estado_labels = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_intercambios_completados); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Intercambios Completados', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Intercambios Completados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -200,7 +200,7 @@ $estado_labels = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_intercambios_pendientes); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Intercambios Pendientes', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Intercambios Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -210,7 +210,7 @@ $estado_labels = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_horas_intercambiadas, 1); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Horas Totales Intercambiadas', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Horas Totales Intercambiadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
     </div>
@@ -221,7 +221,7 @@ $estado_labels = [
             <div class="dm-card__header">
                 <h2>
                     <span class="dashicons dashicons-chart-pie"></span>
-                    <?php esc_html_e('Servicios por Categoría', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Servicios por Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
             </div>
             <div class="dm-card__chart">
@@ -233,7 +233,7 @@ $estado_labels = [
             <div class="dm-card__header">
                 <h2>
                     <span class="dashicons dashicons-chart-line"></span>
-                    <?php esc_html_e('Actividad Últimos 6 Meses', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Actividad Últimos 6 Meses', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
             </div>
             <div class="dm-card__chart">
@@ -248,7 +248,7 @@ $estado_labels = [
             <div class="dm-card__header">
                 <h2>
                     <span class="dashicons dashicons-star-filled"></span>
-                    <?php esc_html_e('Top Usuarios - Horas Ganadas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Top Usuarios - Horas Ganadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
             </div>
             <?php if (!empty($top_usuarios_ganados)) : ?>
@@ -256,8 +256,8 @@ $estado_labels = [
                     <thead>
                         <tr>
                             <th style="width: 50px;">#</th>
-                            <th><?php esc_html_e('Usuario', 'flavor-chat-ia'); ?></th>
-                            <th style="text-align: right;"><?php esc_html_e('Horas', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="text-align: right;"><?php esc_html_e('Horas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -284,7 +284,7 @@ $estado_labels = [
             <?php else : ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-star-empty"></span>
-                    <p><?php esc_html_e('No hay datos disponibles', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay datos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
         </div>
@@ -293,7 +293,7 @@ $estado_labels = [
             <div class="dm-card__header">
                 <h2>
                     <span class="dashicons dashicons-money-alt"></span>
-                    <?php esc_html_e('Top Usuarios - Horas Gastadas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Top Usuarios - Horas Gastadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
             </div>
             <?php if (!empty($top_usuarios_gastados)) : ?>
@@ -301,8 +301,8 @@ $estado_labels = [
                     <thead>
                         <tr>
                             <th style="width: 50px;">#</th>
-                            <th><?php esc_html_e('Usuario', 'flavor-chat-ia'); ?></th>
-                            <th style="text-align: right;"><?php esc_html_e('Horas', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="text-align: right;"><?php esc_html_e('Horas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -329,7 +329,7 @@ $estado_labels = [
             <?php else : ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-money-alt"></span>
-                    <p><?php esc_html_e('No hay datos disponibles', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay datos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
         </div>
@@ -340,11 +340,11 @@ $estado_labels = [
         <div class="dm-card__header">
             <h2>
                 <span class="dashicons dashicons-update"></span>
-                <?php esc_html_e('Intercambios Recientes', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Intercambios Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <?php if (!empty($intercambios_recientes)) : ?>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=bt-intercambios')); ?>" class="dm-btn dm-btn--secondary dm-btn--sm">
-                    <?php esc_html_e('Ver todos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             <?php endif; ?>
         </div>
@@ -352,13 +352,13 @@ $estado_labels = [
             <table class="dm-table">
                 <thead>
                     <tr>
-                        <th style="width: 50px;"><?php esc_html_e('ID', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Servicio', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Solicitante', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Proveedor', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 80px;"><?php esc_html_e('Horas', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 100px;"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 120px;"><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 50px;"><?php esc_html_e('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Solicitante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Proveedor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width: 80px;"><?php esc_html_e('Horas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width: 100px;"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width: 120px;"><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -370,9 +370,9 @@ $estado_labels = [
                     ?>
                     <tr>
                         <td><strong>#<?php echo absint($intercambio->id); ?></strong></td>
-                        <td><?php echo esc_html($intercambio->servicio_titulo ?: __('N/A', 'flavor-chat-ia')); ?></td>
-                        <td><?php echo $solicitante ? esc_html($solicitante->display_name) : __('Desconocido', 'flavor-chat-ia'); ?></td>
-                        <td><?php echo $receptor ? esc_html($receptor->display_name) : __('Desconocido', 'flavor-chat-ia'); ?></td>
+                        <td><?php echo esc_html($intercambio->servicio_titulo ?: __('N/A', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></td>
+                        <td><?php echo $solicitante ? esc_html($solicitante->display_name) : __('Desconocido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
+                        <td><?php echo $receptor ? esc_html($receptor->display_name) : __('Desconocido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                         <td><strong><?php echo number_format_i18n($intercambio->horas, 1); ?> h</strong></td>
                         <td>
                             <span class="dm-badge <?php echo esc_attr($badge_class); ?>">
@@ -387,7 +387,7 @@ $estado_labels = [
         <?php else : ?>
             <div class="dm-empty">
                 <span class="dashicons dashicons-randomize"></span>
-                <p><?php esc_html_e('No hay intercambios registrados', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No hay intercambios registrados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         <?php endif; ?>
     </div>
@@ -440,14 +440,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 ?>,
                 datasets: [{
-                    label: '<?php esc_attr_e('Intercambios', 'flavor-chat-ia'); ?>',
+                    label: '<?php esc_attr_e('Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                     data: <?php echo json_encode(array_column($actividad_mensual, 'total_intercambios')); ?>,
                     borderColor: 'var(--dm-primary, #3b82f6)',
                     backgroundColor: 'rgba(59, 130, 246, 0.1)',
                     tension: 0.4,
                     fill: true
                 }, {
-                    label: '<?php esc_attr_e('Horas', 'flavor-chat-ia'); ?>',
+                    label: '<?php esc_attr_e('Horas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                     data: <?php echo json_encode(array_column($actividad_mensual, 'total_horas')); ?>,
                     borderColor: 'var(--dm-success, #22c55e)',
                     backgroundColor: 'rgba(34, 197, 94, 0.1)',

@@ -18,19 +18,19 @@ $pagina = isset($_GET['pg']) ? max(1, intval($_GET['pg'])) : 1;
 
 // Tipos de contenido buscables
 $tipos_contenido = [
-    'todos'       => ['label' => __('Todo', 'flavor-chat-ia'), 'icon' => 'dashicons-search'],
-    'comunidades' => ['label' => __('Comunidades', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
-    'publicaciones' => ['label' => __('Publicaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-post'],
-    'eventos'     => ['label' => __('Eventos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
-    'recetas'     => ['label' => __('Recetas', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot'],
-    'biblioteca'  => ['label' => __('Biblioteca', 'flavor-chat-ia'), 'icon' => 'dashicons-book'],
-    'multimedia'  => ['label' => __('Multimedia', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery'],
+    'todos'       => ['label' => __('Todo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-search'],
+    'comunidades' => ['label' => __('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-groups'],
+    'publicaciones' => ['label' => __('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-post'],
+    'eventos'     => ['label' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-calendar-alt'],
+    'recetas'     => ['label' => __('Recetas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-carrot'],
+    'biblioteca'  => ['label' => __('Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-book'],
+    'multimedia'  => ['label' => __('Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-format-gallery'],
 ];
 
 $origenes = [
-    'todos' => __('Todos los orígenes', 'flavor-chat-ia'),
-    'local' => __('Solo local', 'flavor-chat-ia'),
-    'federado' => __('Solo red federada', 'flavor-chat-ia'),
+    'todos' => __('Todos los orígenes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'local' => __('Solo local', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'federado' => __('Solo red federada', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 
@@ -40,7 +40,7 @@ $origenes = [
     <header class="flavor-busqueda-header">
         <h2 class="flavor-busqueda-titulo">
             <span class="dashicons dashicons-search"></span>
-            <?php esc_html_e('Búsqueda en la Red', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Búsqueda en la Red', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
     </header>
 
@@ -52,18 +52,18 @@ $origenes = [
                    name="q"
                    id="termino-busqueda"
                    class="flavor-busqueda-input"
-                   placeholder="<?php esc_attr_e('Buscar comunidades, eventos, recursos...', 'flavor-chat-ia'); ?>"
+                   placeholder="<?php esc_attr_e('Buscar comunidades, eventos, recursos...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                    value="<?php echo esc_attr($termino_busqueda); ?>"
                    autocomplete="off">
             <button type="submit" class="flavor-busqueda-submit">
-                <?php esc_html_e('Buscar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
 
         <!-- Filtros -->
         <div class="flavor-busqueda-filtros">
             <div class="flavor-filtro-grupo">
-                <label><?php esc_html_e('Tipo:', 'flavor-chat-ia'); ?></label>
+                <label><?php esc_html_e('Tipo:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <div class="flavor-filtro-chips">
                     <?php foreach ($tipos_contenido as $tipo => $config): ?>
                     <label class="flavor-chip <?php echo $filtro_tipo === $tipo ? 'activo' : ''; ?>">
@@ -76,7 +76,7 @@ $origenes = [
             </div>
 
             <div class="flavor-filtro-grupo">
-                <label><?php esc_html_e('Origen:', 'flavor-chat-ia'); ?></label>
+                <label><?php esc_html_e('Origen:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="origen" class="flavor-select-origen">
                     <?php foreach ($origenes as $valor => $label): ?>
                     <option value="<?php echo esc_attr($valor); ?>" <?php selected($filtro_origen, $valor); ?>>
@@ -93,11 +93,11 @@ $origenes = [
         <?php if (empty($termino_busqueda)): ?>
             <div class="flavor-busqueda-inicial">
                 <span class="dashicons dashicons-networking"></span>
-                <h3><?php esc_html_e('Busca en toda la red', 'flavor-chat-ia'); ?></h3>
-                <p><?php esc_html_e('Encuentra comunidades, eventos, recetas y más recursos tanto locales como de la red federada.', 'flavor-chat-ia'); ?></p>
+                <h3><?php esc_html_e('Busca en toda la red', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php esc_html_e('Encuentra comunidades, eventos, recetas y más recursos tanto locales como de la red federada.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                 <div class="flavor-busqueda-sugerencias">
-                    <h4><?php esc_html_e('Búsquedas populares:', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php esc_html_e('Búsquedas populares:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <div class="flavor-sugerencias-tags">
                         <a href="?q=huerto" class="flavor-tag">huerto</a>
                         <a href="?q=recetas" class="flavor-tag">recetas</a>
@@ -110,7 +110,7 @@ $origenes = [
         <?php else: ?>
             <div class="flavor-resultados-cargando" id="cargando-resultados">
                 <span class="flavor-spinner"></span>
-                <?php esc_html_e('Buscando...', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Buscando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
             <div class="flavor-resultados-contenido" id="contenido-resultados" style="display:none;"></div>
         <?php endif; ?>
@@ -637,8 +637,8 @@ $origenes = [
                     } else {
                         contenidoResultados.innerHTML = '<div class="flavor-sin-resultados">' +
                             '<span class="dashicons dashicons-warning"></span>' +
-                            '<h3><?php echo esc_js(__('Error en la búsqueda', 'flavor-chat-ia')); ?></h3>' +
-                            '<p>' + (data.data?.message || '<?php echo esc_js(__('Inténtalo de nuevo', 'flavor-chat-ia')); ?>') + '</p>' +
+                            '<h3><?php echo esc_js(__('Error en la búsqueda', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></h3>' +
+                            '<p>' + (data.data?.message || '<?php echo esc_js(__('Inténtalo de nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>') + '</p>' +
                             '</div>';
                     }
                 }
@@ -656,19 +656,19 @@ $origenes = [
             if (resultados.length === 0) {
                 contenidoResultados.innerHTML = '<div class="flavor-sin-resultados">' +
                     '<span class="dashicons dashicons-search"></span>' +
-                    '<h3><?php echo esc_js(__('No se encontraron resultados', 'flavor-chat-ia')); ?></h3>' +
-                    '<p><?php echo esc_js(__('Prueba con otros términos o filtros', 'flavor-chat-ia')); ?></p>' +
+                    '<h3><?php echo esc_js(__('No se encontraron resultados', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></h3>' +
+                    '<p><?php echo esc_js(__('Prueba con otros términos o filtros', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></p>' +
                     '</div>';
                 return;
             }
 
             var html = '<div class="flavor-resultados-resumen">' +
-                '<span class="flavor-resultados-count"><?php echo esc_js(__('Se encontraron', 'flavor-chat-ia')); ?> <strong>' + total + '</strong> <?php echo esc_js(__('resultados', 'flavor-chat-ia')); ?></span>' +
+                '<span class="flavor-resultados-count"><?php echo esc_js(__('Se encontraron', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?> <strong>' + total + '</strong> <?php echo esc_js(__('resultados', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>' +
                 '</div>';
 
             resultados.forEach(function(item) {
                 var origenClase = item.origen === 'federado' ? 'federado' : '';
-                var origenLabel = item.origen === 'federado' ? '<?php echo esc_js(__('Red federada', 'flavor-chat-ia')); ?>' : '<?php echo esc_js(__('Local', 'flavor-chat-ia')); ?>';
+                var origenLabel = item.origen === 'federado' ? '<?php echo esc_js(__('Red federada', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>' : '<?php echo esc_js(__('Local', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
 
                 html += '<article class="flavor-resultado-card">' +
                     '<div class="flavor-resultado-imagen">';

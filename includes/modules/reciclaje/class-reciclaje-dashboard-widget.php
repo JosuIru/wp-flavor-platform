@@ -27,8 +27,8 @@ class Flavor_Reciclaje_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
     public function __construct() {
         global $wpdb;
         $this->prefix_tabla = $wpdb->prefix . 'flavor_reciclaje_';
-        $this->title = __('Reciclaje', 'flavor-chat-ia');
-        $this->description = __('Puntos de reciclaje y recogidas', 'flavor-chat-ia');
+        $this->title = __('Reciclaje', 'flavor-platform');
+        $this->description = __('Puntos de reciclaje y recogidas', 'flavor-platform');
 
         parent::__construct([
             'id' => $this->widget_id,
@@ -78,7 +78,7 @@ class Flavor_Reciclaje_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             [
                 'icon' => 'dashicons-location-alt',
                 'valor' => $total_puntos,
-                'label' => __('Puntos limpios', 'flavor-chat-ia'),
+                'label' => __('Puntos limpios', 'flavor-platform'),
                 'color' => $total_puntos > 0 ? 'success' : 'gray',
                 'url' => $es_admin ? admin_url('admin.php?page=reciclaje') : Flavor_Chat_Helpers::get_action_url('reciclaje', 'puntos'),
             ],
@@ -89,7 +89,7 @@ class Flavor_Reciclaje_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $stats[] = [
                 'icon' => 'dashicons-calendar-alt',
                 'valor' => $fecha_formateada,
-                'label' => $proxima_recogida->tipo ?: __('Próx. recogida', 'flavor-chat-ia'),
+                'label' => $proxima_recogida->tipo ?: __('Próx. recogida', 'flavor-platform'),
                 'color' => 'warning',
                 'url' => $es_admin ? admin_url('admin.php?page=reciclaje&tab=recogidas') : Flavor_Chat_Helpers::get_action_url('reciclaje', 'calendario'),
             ];
@@ -100,10 +100,10 @@ class Flavor_Reciclaje_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats,
             'items' => $items,
-            'empty_state' => __('No hay puntos de reciclaje registrados', 'flavor-chat-ia'),
+            'empty_state' => __('No hay puntos de reciclaje registrados', 'flavor-platform'),
             'footer' => [
                 [
-                    'label' => __('Ver mapa', 'flavor-chat-ia'),
+                    'label' => __('Ver mapa', 'flavor-platform'),
                     'url' => $es_admin ? admin_url('admin.php?page=reciclaje') : Flavor_Chat_Helpers::get_action_url('reciclaje', ''),
                     'icon' => 'dashicons-location',
                 ],

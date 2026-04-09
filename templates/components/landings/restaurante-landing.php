@@ -9,24 +9,24 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$nombre = $nombre ?? __('Nuestro Restaurante', 'flavor-chat-ia');
-$eslogan = $eslogan ?? __('Cocina tradicional con un toque moderno', 'flavor-chat-ia');
+$nombre = $nombre ?? __('Nuestro Restaurante', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$eslogan = $eslogan ?? __('Cocina tradicional con un toque moderno', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $telefono = $telefono ?? '900 000 000';
-$direccion = $direccion ?? __('Calle Principal, 123', 'flavor-chat-ia');
+$direccion = $direccion ?? __('Calle Principal, 123', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $color_primario = $color_primario ?? '#b91c1c';
-$horario = $horario ?? __('Lun-Dom: 13:00-16:00 / 20:00-23:30', 'flavor-chat-ia');
+$horario = $horario ?? __('Lun-Dom: 13:00-16:00 / 20:00-23:30', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
 $platos_destacados = $platos_destacados ?? [
-    ['nombre' => __('Paella Valenciana', 'flavor-chat-ia'), 'descripcion' => __('Arroz con mariscos frescos del día', 'flavor-chat-ia'), 'precio' => '18€', 'imagen' => ''],
-    ['nombre' => __('Chuletón a la Brasa', 'flavor-chat-ia'), 'descripcion' => __('500g de ternera gallega madurada', 'flavor-chat-ia'), 'precio' => '24€', 'imagen' => ''],
-    ['nombre' => __('Pulpo a la Gallega', 'flavor-chat-ia'), 'descripcion' => __('Con pimentón de la Vera y aceite de oliva', 'flavor-chat-ia'), 'precio' => '16€', 'imagen' => ''],
+    ['nombre' => __('Paella Valenciana', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Arroz con mariscos frescos del día', FLAVOR_PLATFORM_TEXT_DOMAIN), 'precio' => '18€', 'imagen' => ''],
+    ['nombre' => __('Chuletón a la Brasa', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('500g de ternera gallega madurada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'precio' => '24€', 'imagen' => ''],
+    ['nombre' => __('Pulpo a la Gallega', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Con pimentón de la Vera y aceite de oliva', FLAVOR_PLATFORM_TEXT_DOMAIN), 'precio' => '16€', 'imagen' => ''],
 ];
 
 $caracteristicas = $caracteristicas ?? [
-    ['icono' => 'carrot', 'titulo' => __('Productos Frescos', 'flavor-chat-ia'), 'descripcion' => __('Ingredientes de mercado diario', 'flavor-chat-ia')],
-    ['icono' => 'groups', 'titulo' => __('Eventos Privados', 'flavor-chat-ia'), 'descripcion' => __('Salones para celebraciones', 'flavor-chat-ia')],
-    ['icono' => 'car', 'titulo' => __('Parking Gratuito', 'flavor-chat-ia'), 'descripcion' => __('Aparcamiento para clientes', 'flavor-chat-ia')],
-    ['icono' => 'superhero', 'titulo' => __('Menú Infantil', 'flavor-chat-ia'), 'descripcion' => __('Opciones para los pequeños', 'flavor-chat-ia')],
+    ['icono' => 'carrot', 'titulo' => __('Productos Frescos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Ingredientes de mercado diario', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['icono' => 'groups', 'titulo' => __('Eventos Privados', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Salones para celebraciones', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['icono' => 'car', 'titulo' => __('Parking Gratuito', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Aparcamiento para clientes', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['icono' => 'superhero', 'titulo' => __('Menú Infantil', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Opciones para los pequeños', FLAVOR_PLATFORM_TEXT_DOMAIN)],
 ];
 ?>
 
@@ -37,8 +37,8 @@ $caracteristicas = $caracteristicas ?? [
             <h1 class="flavor-hero-title"><?php echo esc_html($nombre); ?></h1>
             <p class="flavor-hero-subtitle"><?php echo esc_html($eslogan); ?></p>
             <div class="flavor-hero-buttons">
-                <a href="#reservar" class="flavor-btn-primary"><?php esc_html_e('Reservar Mesa', 'flavor-chat-ia'); ?></a>
-                <a href="#carta" class="flavor-btn-secondary"><?php esc_html_e('Ver Carta', 'flavor-chat-ia'); ?></a>
+                <a href="#reservar" class="flavor-btn-primary"><?php esc_html_e('Reservar Mesa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
+                <a href="#carta" class="flavor-btn-secondary"><?php esc_html_e('Ver Carta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
             </div>
             <div class="flavor-hero-info">
                 <span><span class="dashicons dashicons-clock"></span> <?php echo esc_html($horario); ?></span>
@@ -51,8 +51,8 @@ $caracteristicas = $caracteristicas ?? [
 <!-- Platos Destacados -->
 <section class="flavor-restaurante-platos" id="carta">
     <div class="flavor-container">
-        <h2 class="flavor-section-title"><?php esc_html_e('Platos Destacados', 'flavor-chat-ia'); ?></h2>
-        <p class="flavor-section-subtitle"><?php esc_html_e('Descubre nuestras especialidades de la casa', 'flavor-chat-ia'); ?></p>
+        <h2 class="flavor-section-title"><?php esc_html_e('Platos Destacados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p class="flavor-section-subtitle"><?php esc_html_e('Descubre nuestras especialidades de la casa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
         <div class="flavor-platos-grid">
             <?php foreach ($platos_destacados as $plato): ?>
@@ -77,7 +77,7 @@ $caracteristicas = $caracteristicas ?? [
 
         <div class="flavor-ver-carta">
             <a href="#carta-completa" class="flavor-btn-outline" data-scroll>
-                <?php esc_html_e('Ver Carta Completa', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver Carta Completa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <span class="dashicons dashicons-arrow-right-alt2"></span>
             </a>
         </div>
@@ -105,15 +105,15 @@ $caracteristicas = $caracteristicas ?? [
 <section class="flavor-restaurante-cta" id="reservar" style="background: <?php echo esc_attr($color_primario); ?>;">
     <div class="flavor-container">
         <div class="flavor-cta-content">
-            <h2><?php esc_html_e('¿Listo para una experiencia gastronómica?', 'flavor-chat-ia'); ?></h2>
-            <p><?php esc_html_e('Reserva tu mesa y disfruta de nuestra cocina', 'flavor-chat-ia'); ?></p>
+            <h2><?php esc_html_e('¿Listo para una experiencia gastronómica?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+            <p><?php esc_html_e('Reserva tu mesa y disfruta de nuestra cocina', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <div class="flavor-cta-buttons">
                 <a href="tel:<?php echo esc_attr(preg_replace('/\s+/', '', $telefono)); ?>" class="flavor-btn-white">
                     <span class="dashicons dashicons-phone"></span>
                     <?php echo esc_html($telefono); ?>
                 </a>
                 <a href="#formulario-reserva" class="flavor-btn-white-outline">
-                    <?php esc_html_e('Reservar Online', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Reservar Online', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -125,7 +125,7 @@ $caracteristicas = $caracteristicas ?? [
     <div class="flavor-container">
         <div class="flavor-ubicacion-wrapper">
             <div class="flavor-ubicacion-info">
-                <h2><?php esc_html_e('Encuéntranos', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Encuéntranos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <div class="flavor-ubicacion-detalle">
                     <span class="dashicons dashicons-location"></span>
                     <p><?php echo esc_html($direccion); ?></p>
@@ -142,7 +142,7 @@ $caracteristicas = $caracteristicas ?? [
             <div class="flavor-ubicacion-mapa">
                 <div class="flavor-mapa-placeholder">
                     <span class="dashicons dashicons-location-alt"></span>
-                    <p><?php esc_html_e('Mapa interactivo', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Mapa interactivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             </div>
         </div>

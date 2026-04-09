@@ -28,7 +28,7 @@ class Flavor_Tramites_Frontend_Controller {
         return '<div class="flavor-empty-state">' .
             '<p>' . esc_html($mensaje) . '</p>' .
             '<a href="' . esc_url(wp_login_url($this->get_current_request_url())) . '" class="flavor-btn flavor-btn-primary">' .
-            esc_html__('Iniciar sesión', 'flavor-chat-ia') .
+            esc_html__('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN) .
             '</a></div>';
     }
 
@@ -113,12 +113,12 @@ class Flavor_Tramites_Frontend_Controller {
                 'ajaxUrl' => admin_url('admin-ajax.php'),
                 'nonce' => wp_create_nonce('flavor_tramites_nonce'),
                 'strings' => [
-                    'procesando' => __('Procesando...', 'flavor-chat-ia'),
-                    'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                    'confirmarCancelar' => __('¿Seguro que deseas cancelar este trámite?', 'flavor-chat-ia'),
-                    'documentoSubido' => __('Documento subido correctamente', 'flavor-chat-ia'),
-                    'citaReservada' => __('Cita reservada correctamente', 'flavor-chat-ia'),
-                    'seleccionaHora' => __('Selecciona una hora disponible', 'flavor-chat-ia'),
+                    'procesando' => __('Procesando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'confirmarCancelar' => __('¿Seguro que deseas cancelar este trámite?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'documentoSubido' => __('Documento subido correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'citaReservada' => __('Cita reservada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'seleccionaHora' => __('Selecciona una hora disponible', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ]);
         }
@@ -140,14 +140,14 @@ class Flavor_Tramites_Frontend_Controller {
 
     public function register_dashboard_tabs($tabs) {
         $tabs['tramites'] = [
-            'titulo' => __('Mis Trámites', 'flavor-chat-ia'),
+            'titulo' => __('Mis Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'dashicons-clipboard',
             'callback' => [$this, 'render_dashboard_tab'],
             'prioridad' => 30,
         ];
 
         $tabs['tramites-citas'] = [
-            'titulo' => __('Mis Citas', 'flavor-chat-ia'),
+            'titulo' => __('Mis Citas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'dashicons-calendar-alt',
             'callback' => [$this, 'render_dashboard_citas_tab'],
             'prioridad' => 31,
@@ -174,9 +174,9 @@ class Flavor_Tramites_Frontend_Controller {
         ?>
         <div class="flavor-tramites-catalogo">
             <div class="flavor-tramites-header">
-                <h2><?php _e('Catálogo de Trámites', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Catálogo de Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <p class="flavor-tramites-intro">
-                    <?php _e('Encuentra el trámite que necesitas realizar y sigue los pasos para completarlo.', 'flavor-chat-ia'); ?>
+                    <?php _e('Encuentra el trámite que necesitas realizar y sigue los pasos para completarlo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
@@ -184,12 +184,12 @@ class Flavor_Tramites_Frontend_Controller {
             <div class="flavor-tramites-filtros">
                 <form class="flavor-filtros-form" method="get">
                     <div class="flavor-filtro-grupo">
-                        <input type="text" name="buscar" placeholder="<?php esc_attr_e('Buscar trámite...', 'flavor-chat-ia'); ?>"
+                        <input type="text" name="buscar" placeholder="<?php esc_attr_e('Buscar trámite...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                                value="<?php echo esc_attr($_GET['buscar'] ?? ''); ?>">
                     </div>
                     <div class="flavor-filtro-grupo">
                         <select name="categoria">
-                            <option value=""><?php _e('Todas las categorías', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php _e('Todas las categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php foreach ($categorias as $cat): ?>
                             <option value="<?php echo esc_attr($cat['slug']); ?>"
                                     <?php selected($_GET['categoria'] ?? '', $cat['slug']); ?>>
@@ -200,7 +200,7 @@ class Flavor_Tramites_Frontend_Controller {
                     </div>
                     <button type="submit" class="flavor-btn flavor-btn-primary">
                         <span class="dashicons dashicons-search"></span>
-                        <?php _e('Buscar', 'flavor-chat-ia'); ?>
+                        <?php _e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </form>
             </div>
@@ -224,9 +224,9 @@ class Flavor_Tramites_Frontend_Controller {
                 <?php if (empty($tramites)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-clipboard"></span>
-                    <p><?php _e('No se encontraron trámites con los criterios seleccionados.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No se encontraron trámites con los criterios seleccionados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url($this->get_catalogo_url()); ?>" class="flavor-btn flavor-btn-outline">
-                        <?php _e('Ver todo el catálogo', 'flavor-chat-ia'); ?>
+                        <?php _e('Ver todo el catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
                 <?php else: ?>
@@ -263,7 +263,7 @@ class Flavor_Tramites_Frontend_Controller {
                         </div>
                         <a href="<?php echo esc_url($this->get_tramite_url($tramite['id'])); ?>"
                            class="flavor-btn flavor-btn-outline flavor-btn-block">
-                            <?php _e('Ver detalles', 'flavor-chat-ia'); ?>
+                            <?php _e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                     <?php endforeach; ?>
@@ -282,13 +282,13 @@ class Flavor_Tramites_Frontend_Controller {
         $tramite_id = intval($atts['id']) ?: intval($_GET['tramite_id'] ?? 0);
 
         if (!$tramite_id) {
-            return $this->render_empty_state(__('Trámite no especificado.', 'flavor-chat-ia'), __('Ver catálogo', 'flavor-chat-ia'), $this->get_catalogo_url());
+            return $this->render_empty_state(__('Trámite no especificado.', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Ver catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN), $this->get_catalogo_url());
         }
 
         $tramite = $this->obtener_tramite($tramite_id);
 
         if (!$tramite) {
-            return $this->render_empty_state(__('Trámite no encontrado.', 'flavor-chat-ia'), __('Ver catálogo', 'flavor-chat-ia'), $this->get_catalogo_url());
+            return $this->render_empty_state(__('Trámite no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Ver catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN), $this->get_catalogo_url());
         }
 
         $tramite = wp_parse_args((array) $tramite, [
@@ -310,7 +310,7 @@ class Flavor_Tramites_Frontend_Controller {
             <div class="flavor-tramite-hero">
                 <div class="flavor-tramite-hero-content">
                     <nav class="flavor-breadcrumb">
-                        <a href="<?php echo esc_url($this->get_catalogo_url()); ?>"><?php _e('Trámites', 'flavor-chat-ia'); ?></a>
+                        <a href="<?php echo esc_url($this->get_catalogo_url()); ?>"><?php _e('Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                         <span class="separator">›</span>
                         <span><?php echo esc_html($tramite['categoria_nombre'] ?? ''); ?></span>
                     </nav>
@@ -334,28 +334,28 @@ class Flavor_Tramites_Frontend_Controller {
                 <div class="flavor-tramite-hero-aside">
                     <div class="flavor-tramite-resumen-card">
                         <div class="flavor-resumen-item">
-                            <span class="flavor-resumen-label"><?php _e('Tiempo estimado', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-resumen-label"><?php _e('Tiempo estimado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span class="flavor-resumen-valor"><?php echo esc_html($tramite['tiempo_estimado']); ?></span>
                         </div>
                         <div class="flavor-resumen-item">
-                            <span class="flavor-resumen-label"><?php _e('Precio', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-resumen-label"><?php _e('Precio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span class="flavor-resumen-valor">
                                 <?php echo $tramite['precio'] > 0 ? esc_html(number_format($tramite['precio'], 2)) . ' €' : 'Gratuito'; ?>
                             </span>
                         </div>
                         <div class="flavor-resumen-item">
-                            <span class="flavor-resumen-label"><?php _e('Documentos', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-resumen-label"><?php _e('Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span class="flavor-resumen-valor"><?php echo count($documentos_requeridos); ?> requeridos</span>
                         </div>
                         <?php if (is_user_logged_in()): ?>
                         <a href="<?php echo esc_url($this->get_solicitar_url($tramite_id)); ?>"
                            class="flavor-btn flavor-btn-primary flavor-btn-block flavor-btn-lg">
-                            <?php _e('Iniciar trámite', 'flavor-chat-ia'); ?>
+                            <?php _e('Iniciar trámite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                         <?php else: ?>
                         <a href="<?php echo wp_login_url(flavor_current_request_url()); ?>"
                            class="flavor-btn flavor-btn-primary flavor-btn-block flavor-btn-lg">
-                            <?php _e('Inicia sesión para tramitar', 'flavor-chat-ia'); ?>
+                            <?php _e('Inicia sesión para tramitar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                         <?php endif; ?>
                     </div>
@@ -366,7 +366,7 @@ class Flavor_Tramites_Frontend_Controller {
                 <div class="flavor-tramite-main">
                     <?php if (!empty($pasos)): ?>
                     <section class="flavor-tramite-section">
-                        <h2><?php _e('Pasos del trámite', 'flavor-chat-ia'); ?></h2>
+                        <h2><?php _e('Pasos del trámite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                         <div class="flavor-pasos-lista">
                             <?php foreach ($pasos as $index => $paso): ?>
                             <div class="flavor-paso-item">
@@ -383,7 +383,7 @@ class Flavor_Tramites_Frontend_Controller {
 
                     <?php if (!empty($documentos_requeridos)): ?>
                     <section class="flavor-tramite-section">
-                        <h2><?php _e('Documentación necesaria', 'flavor-chat-ia'); ?></h2>
+                        <h2><?php _e('Documentación necesaria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                         <div class="flavor-documentos-lista">
                             <?php foreach ($documentos_requeridos as $doc): ?>
                             <div class="flavor-documento-item">
@@ -409,7 +409,7 @@ class Flavor_Tramites_Frontend_Controller {
 
                     <?php if (!empty($tramite['normativa'])): ?>
                     <section class="flavor-tramite-section">
-                        <h2><?php _e('Normativa aplicable', 'flavor-chat-ia'); ?></h2>
+                        <h2><?php _e('Normativa aplicable', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                         <div class="flavor-normativa">
                             <?php echo wp_kses_post($tramite['normativa']); ?>
                         </div>
@@ -419,8 +419,8 @@ class Flavor_Tramites_Frontend_Controller {
 
                 <div class="flavor-tramite-sidebar">
                     <div class="flavor-sidebar-card">
-                        <h3><?php _e('¿Necesitas ayuda?', 'flavor-chat-ia'); ?></h3>
-                        <p><?php _e('Si tienes dudas sobre este trámite, contacta con nosotros.', 'flavor-chat-ia'); ?></p>
+                        <h3><?php _e('¿Necesitas ayuda?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                        <p><?php _e('Si tienes dudas sobre este trámite, contacta con nosotros.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <div class="flavor-contacto-opciones">
                             <?php if (!empty($tramite['telefono'])): ?>
                             <a href="tel:<?php echo esc_attr($tramite['telefono']); ?>" class="flavor-contacto-item">
@@ -439,11 +439,11 @@ class Flavor_Tramites_Frontend_Controller {
 
                     <?php if ($tramite['cita_previa']): ?>
                     <div class="flavor-sidebar-card">
-                        <h3><?php _e('Cita previa', 'flavor-chat-ia'); ?></h3>
-                        <p><?php _e('Este trámite requiere cita previa para atención presencial.', 'flavor-chat-ia'); ?></p>
+                        <h3><?php _e('Cita previa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                        <p><?php _e('Este trámite requiere cita previa para atención presencial.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <a href="<?php echo esc_url($this->get_citas_url($tramite_id)); ?>"
                            class="flavor-btn flavor-btn-outline flavor-btn-block">
-                            <?php _e('Solicitar cita', 'flavor-chat-ia'); ?>
+                            <?php _e('Solicitar cita', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                     <?php endif; ?>
@@ -456,7 +456,7 @@ class Flavor_Tramites_Frontend_Controller {
 
     public function shortcode_solicitar($atts) {
         if (!is_user_logged_in()) {
-            return $this->render_login_required(__('Debes iniciar sesión para realizar un trámite.', 'flavor-chat-ia'));
+            return $this->render_login_required(__('Debes iniciar sesión para realizar un trámite.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $atts = shortcode_atts([
@@ -466,13 +466,13 @@ class Flavor_Tramites_Frontend_Controller {
         $tramite_id = intval($atts['id']) ?: intval($_GET['tramite_id'] ?? 0);
 
         if (!$tramite_id) {
-            return $this->render_empty_state(__('Trámite no especificado.', 'flavor-chat-ia'), __('Ver catálogo', 'flavor-chat-ia'), $this->get_catalogo_url());
+            return $this->render_empty_state(__('Trámite no especificado.', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Ver catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN), $this->get_catalogo_url());
         }
 
         $tramite = $this->obtener_tramite($tramite_id);
 
         if (!$tramite) {
-            return $this->render_empty_state(__('Trámite no encontrado.', 'flavor-chat-ia'), __('Ver catálogo', 'flavor-chat-ia'), $this->get_catalogo_url());
+            return $this->render_empty_state(__('Trámite no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Ver catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN), $this->get_catalogo_url());
         }
 
         $documentos_requeridos = $this->obtener_documentos_requeridos($tramite_id);
@@ -483,27 +483,27 @@ class Flavor_Tramites_Frontend_Controller {
         <div class="flavor-solicitar-tramite">
             <div class="flavor-solicitar-header">
                 <nav class="flavor-breadcrumb">
-                    <a href="<?php echo esc_url($this->get_catalogo_url()); ?>"><?php _e('Trámites', 'flavor-chat-ia'); ?></a>
+                    <a href="<?php echo esc_url($this->get_catalogo_url()); ?>"><?php _e('Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                     <span class="separator">›</span>
                     <a href="<?php echo esc_url($this->get_tramite_url($tramite_id)); ?>"><?php echo esc_html($tramite['nombre']); ?></a>
                     <span class="separator">›</span>
-                    <span><?php _e('Solicitar', 'flavor-chat-ia'); ?></span>
+                    <span><?php _e('Solicitar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </nav>
-                <h1><?php printf(__('Solicitar: %s', 'flavor-chat-ia'), esc_html($tramite['nombre'])); ?></h1>
+                <h1><?php printf(__('Solicitar: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($tramite['nombre'])); ?></h1>
             </div>
 
             <div class="flavor-solicitar-pasos">
                 <div class="flavor-paso-indicador activo" data-paso="1">
                     <span class="flavor-paso-num">1</span>
-                    <span class="flavor-paso-texto"><?php _e('Datos', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-paso-texto"><?php _e('Datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="flavor-paso-indicador" data-paso="2">
                     <span class="flavor-paso-num">2</span>
-                    <span class="flavor-paso-texto"><?php _e('Documentos', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-paso-texto"><?php _e('Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="flavor-paso-indicador" data-paso="3">
                     <span class="flavor-paso-num">3</span>
-                    <span class="flavor-paso-texto"><?php _e('Confirmar', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-paso-texto"><?php _e('Confirmar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
@@ -513,16 +513,16 @@ class Flavor_Tramites_Frontend_Controller {
 
                 <!-- Paso 1: Datos del solicitante -->
                 <div class="flavor-form-paso" data-paso="1">
-                    <h2><?php _e('Datos del solicitante', 'flavor-chat-ia'); ?></h2>
+                    <h2><?php _e('Datos del solicitante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
                     <div class="flavor-form-row">
                         <div class="flavor-form-group">
-                            <label for="nombre_completo"><?php _e('Nombre completo', 'flavor-chat-ia'); ?> *</label>
+                            <label for="nombre_completo"><?php _e('Nombre completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                             <input type="text" id="nombre_completo" name="nombre_completo" required
                                    value="<?php echo esc_attr(wp_get_current_user()->display_name); ?>">
                         </div>
                         <div class="flavor-form-group">
-                            <label for="dni"><?php _e('DNI/NIE', 'flavor-chat-ia'); ?> *</label>
+                            <label for="dni"><?php _e('DNI/NIE', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                             <input type="text" id="dni" name="dni" required
                                    pattern="[0-9]{8}[A-Za-z]|[XYZ][0-9]{7}[A-Za-z]">
                         </div>
@@ -530,30 +530,30 @@ class Flavor_Tramites_Frontend_Controller {
 
                     <div class="flavor-form-row">
                         <div class="flavor-form-group">
-                            <label for="email"><?php _e('Email', 'flavor-chat-ia'); ?> *</label>
+                            <label for="email"><?php _e('Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                             <input type="email" id="email" name="email" required
                                    value="<?php echo esc_attr(wp_get_current_user()->user_email); ?>">
                         </div>
                         <div class="flavor-form-group">
-                            <label for="telefono"><?php _e('Teléfono', 'flavor-chat-ia'); ?> *</label>
+                            <label for="telefono"><?php _e('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                             <input type="tel" id="telefono" name="telefono" required>
                         </div>
                     </div>
 
                     <div class="flavor-form-group">
-                        <label for="direccion"><?php _e('Dirección', 'flavor-chat-ia'); ?> *</label>
+                        <label for="direccion"><?php _e('Dirección', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                         <input type="text" id="direccion" name="direccion" required>
                     </div>
 
                     <div class="flavor-form-group">
-                        <label for="motivo"><?php _e('Motivo de la solicitud', 'flavor-chat-ia'); ?></label>
+                        <label for="motivo"><?php _e('Motivo de la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <textarea id="motivo" name="motivo" rows="4"
-                                  placeholder="<?php esc_attr_e('Explica brevemente el motivo de tu solicitud...', 'flavor-chat-ia'); ?>"></textarea>
+                                  placeholder="<?php esc_attr_e('Explica brevemente el motivo de tu solicitud...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                     </div>
 
                     <div class="flavor-form-actions">
                         <button type="button" class="flavor-btn flavor-btn-primary flavor-btn-siguiente" data-siguiente="2">
-                            <?php _e('Siguiente', 'flavor-chat-ia'); ?>
+                            <?php _e('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             <span class="dashicons dashicons-arrow-right-alt"></span>
                         </button>
                     </div>
@@ -561,7 +561,7 @@ class Flavor_Tramites_Frontend_Controller {
 
                 <!-- Paso 2: Documentos -->
                 <div class="flavor-form-paso" data-paso="2" style="display: none;">
-                    <h2><?php _e('Documentación', 'flavor-chat-ia'); ?></h2>
+                    <h2><?php _e('Documentación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
                     <?php if (!empty($documentos_requeridos)): ?>
                     <div class="flavor-documentos-upload">
@@ -583,7 +583,7 @@ class Flavor_Tramites_Frontend_Controller {
                                        accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
                                 <label for="doc_<?php echo esc_attr($doc['id']); ?>" class="flavor-upload-label">
                                     <span class="dashicons dashicons-upload"></span>
-                                    <span><?php _e('Seleccionar archivo', 'flavor-chat-ia'); ?></span>
+                                    <span><?php _e('Seleccionar archivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </label>
                                 <span class="flavor-archivo-seleccionado"></span>
                             </div>
@@ -593,17 +593,17 @@ class Flavor_Tramites_Frontend_Controller {
                     <?php else: ?>
                     <div class="flavor-info-box">
                         <span class="dashicons dashicons-info"></span>
-                        <p><?php _e('Este trámite no requiere documentación adicional.', 'flavor-chat-ia'); ?></p>
+                        <p><?php _e('Este trámite no requiere documentación adicional.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                     <?php endif; ?>
 
                     <div class="flavor-form-actions">
                         <button type="button" class="flavor-btn flavor-btn-outline flavor-btn-anterior" data-anterior="1">
                             <span class="dashicons dashicons-arrow-left-alt"></span>
-                            <?php _e('Anterior', 'flavor-chat-ia'); ?>
+                            <?php _e('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <button type="button" class="flavor-btn flavor-btn-primary flavor-btn-siguiente" data-siguiente="3">
-                            <?php _e('Siguiente', 'flavor-chat-ia'); ?>
+                            <?php _e('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             <span class="dashicons dashicons-arrow-right-alt"></span>
                         </button>
                     </div>
@@ -611,24 +611,24 @@ class Flavor_Tramites_Frontend_Controller {
 
                 <!-- Paso 3: Confirmar -->
                 <div class="flavor-form-paso" data-paso="3" style="display: none;">
-                    <h2><?php _e('Confirmar solicitud', 'flavor-chat-ia'); ?></h2>
+                    <h2><?php _e('Confirmar solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
                     <div class="flavor-resumen-solicitud">
                         <div class="flavor-resumen-seccion">
-                            <h3><?php _e('Trámite', 'flavor-chat-ia'); ?></h3>
+                            <h3><?php _e('Trámite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                             <p><strong><?php echo esc_html($tramite['nombre']); ?></strong></p>
                             <?php if ($tramite['precio'] > 0): ?>
-                            <p><?php _e('Precio:', 'flavor-chat-ia'); ?> <?php echo esc_html(number_format($tramite['precio'], 2)); ?> €</p>
+                            <p><?php _e('Precio:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html(number_format($tramite['precio'], 2)); ?> €</p>
                             <?php endif; ?>
                         </div>
 
                         <div class="flavor-resumen-seccion">
-                            <h3><?php _e('Datos del solicitante', 'flavor-chat-ia'); ?></h3>
+                            <h3><?php _e('Datos del solicitante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                             <div id="resumen-datos"></div>
                         </div>
 
                         <div class="flavor-resumen-seccion">
-                            <h3><?php _e('Documentos adjuntos', 'flavor-chat-ia'); ?></h3>
+                            <h3><?php _e('Documentos adjuntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                             <div id="resumen-documentos"></div>
                         </div>
                     </div>
@@ -636,25 +636,25 @@ class Flavor_Tramites_Frontend_Controller {
                     <div class="flavor-form-group flavor-checkbox-group">
                         <label>
                             <input type="checkbox" name="acepto_condiciones" required>
-                            <?php _e('He leído y acepto las condiciones del trámite y la política de privacidad.', 'flavor-chat-ia'); ?>
+                            <?php _e('He leído y acepto las condiciones del trámite y la política de privacidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                     </div>
 
                     <div class="flavor-form-group flavor-checkbox-group">
                         <label>
                             <input type="checkbox" name="declaro_veracidad" required>
-                            <?php _e('Declaro que los datos y documentos aportados son veraces.', 'flavor-chat-ia'); ?>
+                            <?php _e('Declaro que los datos y documentos aportados son veraces.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                     </div>
 
                     <div class="flavor-form-actions">
                         <button type="button" class="flavor-btn flavor-btn-outline flavor-btn-anterior" data-anterior="2">
                             <span class="dashicons dashicons-arrow-left-alt"></span>
-                            <?php _e('Anterior', 'flavor-chat-ia'); ?>
+                            <?php _e('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <button type="submit" class="flavor-btn flavor-btn-primary flavor-btn-lg">
                             <span class="dashicons dashicons-yes"></span>
-                            <?php _e('Enviar solicitud', 'flavor-chat-ia'); ?>
+                            <?php _e('Enviar solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </div>
@@ -666,7 +666,7 @@ class Flavor_Tramites_Frontend_Controller {
 
     public function shortcode_mis_solicitudes($atts) {
         if (!is_user_logged_in()) {
-            return $this->render_login_required(__('Debes iniciar sesión para ver tus solicitudes.', 'flavor-chat-ia'));
+            return $this->render_login_required(__('Debes iniciar sesión para ver tus solicitudes.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $user_id = get_current_user_id();
@@ -676,20 +676,20 @@ class Flavor_Tramites_Frontend_Controller {
         ?>
         <div class="flavor-mis-solicitudes">
             <div class="flavor-solicitudes-header">
-                <h2><?php _e('Mis Solicitudes de Trámites', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Mis Solicitudes de Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <a href="<?php echo esc_url($this->get_catalogo_url()); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus"></span>
-                    <?php _e('Nuevo trámite', 'flavor-chat-ia'); ?>
+                    <?php _e('Nuevo trámite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
             <?php if (empty($solicitudes)): ?>
             <div class="flavor-empty-state">
                 <span class="dashicons dashicons-clipboard"></span>
-                <h3><?php _e('No tienes solicitudes', 'flavor-chat-ia'); ?></h3>
-                <p><?php _e('Aún no has realizado ninguna solicitud de trámite.', 'flavor-chat-ia'); ?></p>
+                <h3><?php _e('No tienes solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php _e('Aún no has realizado ninguna solicitud de trámite.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <a href="<?php echo esc_url($this->get_catalogo_url()); ?>" class="flavor-btn flavor-btn-primary">
-                    <?php _e('Ver catálogo de trámites', 'flavor-chat-ia'); ?>
+                    <?php _e('Ver catálogo de trámites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php else: ?>
@@ -697,11 +697,11 @@ class Flavor_Tramites_Frontend_Controller {
                 <table class="flavor-table">
                     <thead>
                         <tr>
-                            <th><?php _e('Nº Expediente', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Trámite', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Nº Expediente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Trámite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -718,7 +718,7 @@ class Flavor_Tramites_Frontend_Controller {
                             <td>
                                 <a href="<?php echo esc_url($this->get_seguimiento_url($sol['id'])); ?>"
                                    class="flavor-btn flavor-btn-sm flavor-btn-outline">
-                                    <?php _e('Ver', 'flavor-chat-ia'); ?>
+                                    <?php _e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </td>
                         </tr>
@@ -734,21 +734,21 @@ class Flavor_Tramites_Frontend_Controller {
 
     public function shortcode_seguimiento($atts) {
         if (!is_user_logged_in()) {
-            return $this->render_login_required(__('Debes iniciar sesión para seguir un trámite.', 'flavor-chat-ia'));
+            return $this->render_login_required(__('Debes iniciar sesión para seguir un trámite.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $atts = shortcode_atts(['id' => 0], $atts);
         $solicitud_id = intval($atts['id']) ?: intval($_GET['solicitud_id'] ?? 0);
 
         if (!$solicitud_id) {
-            return $this->render_empty_state(__('Solicitud no especificada.', 'flavor-chat-ia'), __('Ver mis trámites', 'flavor-chat-ia'), $this->get_mis_solicitudes_url());
+            return $this->render_empty_state(__('Solicitud no especificada.', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Ver mis trámites', FLAVOR_PLATFORM_TEXT_DOMAIN), $this->get_mis_solicitudes_url());
         }
 
         $user_id = get_current_user_id();
         $solicitud = $this->obtener_solicitud($solicitud_id, $user_id);
 
         if (!$solicitud) {
-            return $this->render_empty_state(__('Solicitud no encontrada.', 'flavor-chat-ia'), __('Ver mis trámites', 'flavor-chat-ia'), $this->get_mis_solicitudes_url());
+            return $this->render_empty_state(__('Solicitud no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Ver mis trámites', FLAVOR_PLATFORM_TEXT_DOMAIN), $this->get_mis_solicitudes_url());
         }
 
         $historial = $this->obtener_historial_solicitud($solicitud_id);
@@ -760,7 +760,7 @@ class Flavor_Tramites_Frontend_Controller {
         <div class="flavor-seguimiento-tramite">
             <div class="flavor-seguimiento-header">
                 <nav class="flavor-breadcrumb">
-                    <a href="<?php echo esc_url($this->get_mis_solicitudes_url()); ?>"><?php _e('Mis solicitudes', 'flavor-chat-ia'); ?></a>
+                    <a href="<?php echo esc_url($this->get_mis_solicitudes_url()); ?>"><?php _e('Mis solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                     <span class="separator">›</span>
                     <span><?php echo esc_html($solicitud['numero_expediente']); ?></span>
                 </nav>
@@ -769,7 +769,7 @@ class Flavor_Tramites_Frontend_Controller {
                     <?php echo $this->render_estado_badge($solicitud['estado']); ?>
                 </div>
                 <p class="flavor-expediente-numero">
-                    <?php _e('Expediente:', 'flavor-chat-ia'); ?>
+                    <?php _e('Expediente:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <strong><?php echo esc_html($solicitud['numero_expediente']); ?></strong>
                 </p>
             </div>
@@ -778,7 +778,7 @@ class Flavor_Tramites_Frontend_Controller {
                 <div class="flavor-seguimiento-main">
                     <!-- Timeline del trámite -->
                     <section class="flavor-panel">
-                        <h3><?php _e('Historial del trámite', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Historial del trámite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="flavor-timeline">
                             <?php foreach ($historial as $evento): ?>
                             <div class="flavor-timeline-item <?php echo $evento['actual'] ? 'activo' : ''; ?>">
@@ -801,10 +801,10 @@ class Flavor_Tramites_Frontend_Controller {
 
                     <!-- Mensajes -->
                     <section class="flavor-panel">
-                        <h3><?php _e('Comunicaciones', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Comunicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="flavor-mensajes-lista">
                             <?php if (empty($mensajes)): ?>
-                            <p class="flavor-no-mensajes"><?php _e('No hay mensajes en este expediente.', 'flavor-chat-ia'); ?></p>
+                            <p class="flavor-no-mensajes"><?php _e('No hay mensajes en este expediente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             <?php else: ?>
                                 <?php foreach ($mensajes as $msg): ?>
                                 <div class="flavor-mensaje-item <?php echo $msg['es_admin'] ? 'admin' : 'usuario'; ?>">
@@ -826,10 +826,10 @@ class Flavor_Tramites_Frontend_Controller {
                             <input type="hidden" name="solicitud_id" value="<?php echo esc_attr($solicitud_id); ?>">
                             <div class="flavor-form-group">
                                 <textarea name="mensaje" rows="3" required
-                                          placeholder="<?php esc_attr_e('Escribe tu mensaje...', 'flavor-chat-ia'); ?>"></textarea>
+                                          placeholder="<?php esc_attr_e('Escribe tu mensaje...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                             </div>
                             <button type="submit" class="flavor-btn flavor-btn-primary">
-                                <?php _e('Enviar mensaje', 'flavor-chat-ia'); ?>
+                                <?php _e('Enviar mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </form>
                         <?php endif; ?>
@@ -839,7 +839,7 @@ class Flavor_Tramites_Frontend_Controller {
                 <div class="flavor-seguimiento-sidebar">
                     <!-- Documentos -->
                     <div class="flavor-panel">
-                        <h3><?php _e('Documentos', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <?php if (!empty($documentos)): ?>
                         <div class="flavor-documentos-lista-mini">
                             <?php foreach ($documentos as $doc): ?>
@@ -850,18 +850,18 @@ class Flavor_Tramites_Frontend_Controller {
                             <?php endforeach; ?>
                         </div>
                         <?php else: ?>
-                        <p><?php _e('No hay documentos adjuntos.', 'flavor-chat-ia'); ?></p>
+                        <p><?php _e('No hay documentos adjuntos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <?php endif; ?>
 
                         <?php if ($solicitud['estado'] === 'requiere_documentacion'): ?>
                         <div class="flavor-subir-documento">
-                            <h4><?php _e('Subir documento', 'flavor-chat-ia'); ?></h4>
+                            <h4><?php _e('Subir documento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                             <form id="flavor-form-subir-doc" enctype="multipart/form-data">
                                 <?php wp_nonce_field('flavor_tramites_nonce', 'doc_nonce'); ?>
                                 <input type="hidden" name="solicitud_id" value="<?php echo esc_attr($solicitud_id); ?>">
                                 <input type="file" name="documento" required accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
                                 <button type="submit" class="flavor-btn flavor-btn-sm flavor-btn-primary">
-                                    <?php _e('Subir', 'flavor-chat-ia'); ?>
+                                    <?php _e('Subir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             </form>
                         </div>
@@ -871,10 +871,10 @@ class Flavor_Tramites_Frontend_Controller {
                     <!-- Acciones -->
                     <?php if ($solicitud['estado'] !== 'finalizado' && $solicitud['estado'] !== 'cancelado'): ?>
                     <div class="flavor-panel">
-                        <h3><?php _e('Acciones', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <button type="button" class="flavor-btn flavor-btn-danger flavor-btn-block flavor-cancelar-tramite"
                                 data-solicitud-id="<?php echo esc_attr($solicitud_id); ?>">
-                            <?php _e('Cancelar trámite', 'flavor-chat-ia'); ?>
+                            <?php _e('Cancelar trámite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                     <?php endif; ?>
@@ -887,7 +887,7 @@ class Flavor_Tramites_Frontend_Controller {
 
     public function shortcode_citas($atts) {
         if (!is_user_logged_in()) {
-            return $this->render_login_required(__('Debes iniciar sesión para gestionar tus citas.', 'flavor-chat-ia'));
+            return $this->render_login_required(__('Debes iniciar sesión para gestionar tus citas.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $atts = shortcode_atts([
@@ -902,48 +902,48 @@ class Flavor_Tramites_Frontend_Controller {
         ?>
         <div class="flavor-tramites-citas">
             <div class="flavor-citas-header">
-                <h2><?php _e('Gestión de Citas', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Gestión de Citas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
 
             <?php if ($tramite_id): ?>
             <div class="flavor-solicitar-cita">
-                <h3><?php _e('Solicitar nueva cita', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Solicitar nueva cita', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <form id="flavor-form-cita" class="flavor-form">
                     <?php wp_nonce_field('flavor_tramites_nonce', 'cita_nonce'); ?>
                     <input type="hidden" name="tramite_id" value="<?php echo esc_attr($tramite_id); ?>">
 
                     <div class="flavor-form-row">
                         <div class="flavor-form-group">
-                            <label for="fecha_cita"><?php _e('Fecha', 'flavor-chat-ia'); ?> *</label>
+                            <label for="fecha_cita"><?php _e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                             <input type="date" id="fecha_cita" name="fecha_cita" required
                                    min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>">
                         </div>
                         <div class="flavor-form-group">
-                            <label for="hora_cita"><?php _e('Hora', 'flavor-chat-ia'); ?> *</label>
+                            <label for="hora_cita"><?php _e('Hora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                             <select id="hora_cita" name="hora_cita" required>
-                                <option value=""><?php _e('Selecciona fecha primero', 'flavor-chat-ia'); ?></option>
+                                <option value=""><?php _e('Selecciona fecha primero', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             </select>
                         </div>
                     </div>
 
                     <div class="flavor-form-group">
-                        <label for="motivo_cita"><?php _e('Motivo', 'flavor-chat-ia'); ?></label>
+                        <label for="motivo_cita"><?php _e('Motivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <textarea id="motivo_cita" name="motivo_cita" rows="3"></textarea>
                     </div>
 
                     <button type="submit" class="flavor-btn flavor-btn-primary">
-                        <?php _e('Reservar cita', 'flavor-chat-ia'); ?>
+                        <?php _e('Reservar cita', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </form>
             </div>
             <?php endif; ?>
 
             <div class="flavor-mis-citas">
-                <h3><?php _e('Mis citas', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Mis citas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <?php if (empty($citas)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-calendar-alt"></span>
-                    <p><?php _e('No tienes citas programadas.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No tienes citas programadas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <?php else: ?>
                 <div class="flavor-citas-lista">
@@ -991,13 +991,13 @@ class Flavor_Tramites_Frontend_Controller {
         ?>
         <div class="flavor-documentos-publicos">
             <div class="flavor-documentos-header">
-                <h2><?php _e('Documentos y Formularios', 'flavor-chat-ia'); ?></h2>
-                <p><?php _e('Descarga los formularios y documentos necesarios para tus trámites.', 'flavor-chat-ia'); ?></p>
+                <h2><?php _e('Documentos y Formularios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <p><?php _e('Descarga los formularios y documentos necesarios para tus trámites.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <div class="flavor-documentos-filtros">
                 <select id="filtro-categoria-docs">
-                    <option value=""><?php _e('Todas las categorías', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todas las categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($categorias as $cat): ?>
                     <option value="<?php echo esc_attr($cat['slug']); ?>"><?php echo esc_html($cat['nombre']); ?></option>
                     <?php endforeach; ?>
@@ -1033,11 +1033,11 @@ class Flavor_Tramites_Frontend_Controller {
         <div class="flavor-buscar-tramites">
             <form class="flavor-buscar-form" action="" method="get">
                 <div class="flavor-buscar-input-grupo">
-                    <input type="text" name="q" placeholder="<?php esc_attr_e('¿Qué trámite necesitas realizar?', 'flavor-chat-ia'); ?>"
+                    <input type="text" name="q" placeholder="<?php esc_attr_e('¿Qué trámite necesitas realizar?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                            value="<?php echo esc_attr($_GET['q'] ?? ''); ?>">
                     <button type="submit" class="flavor-btn flavor-btn-primary">
                         <span class="dashicons dashicons-search"></span>
-                        <?php _e('Buscar', 'flavor-chat-ia'); ?>
+                        <?php _e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </form>
@@ -1049,9 +1049,9 @@ class Flavor_Tramites_Frontend_Controller {
                 if (empty($resultados)):
                 ?>
                 <div class="flavor-no-resultados">
-                    <p><?php _e('No se encontraron trámites con ese criterio de búsqueda.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No se encontraron trámites con ese criterio de búsqueda.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url($this->get_catalogo_url()); ?>" class="flavor-btn flavor-btn-outline">
-                        <?php _e('Ver catálogo completo', 'flavor-chat-ia'); ?>
+                        <?php _e('Ver catálogo completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
                 <?php else: ?>
@@ -1086,42 +1086,42 @@ class Flavor_Tramites_Frontend_Controller {
             <div class="flavor-kpi-grid">
                 <div class="flavor-kpi-card">
                     <div class="flavor-kpi-valor"><?php echo intval($stats['total']); ?></div>
-                    <div class="flavor-kpi-label"><?php _e('Trámites totales', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-kpi-label"><?php _e('Trámites totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="flavor-kpi-card">
                     <div class="flavor-kpi-valor"><?php echo intval($stats['en_proceso']); ?></div>
-                    <div class="flavor-kpi-label"><?php _e('En proceso', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-kpi-label"><?php _e('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="flavor-kpi-card">
                     <div class="flavor-kpi-valor"><?php echo intval($stats['finalizados']); ?></div>
-                    <div class="flavor-kpi-label"><?php _e('Finalizados', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-kpi-label"><?php _e('Finalizados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="flavor-kpi-card">
                     <div class="flavor-kpi-valor"><?php echo intval($stats['pendiente_doc']); ?></div>
-                    <div class="flavor-kpi-label"><?php _e('Requieren documentación', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-kpi-label"><?php _e('Requieren documentación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
 
             <div class="flavor-panel">
                 <div class="flavor-panel-header">
-                    <h3><?php _e('Mis últimos trámites', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Mis últimos trámites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <a href="<?php echo esc_url($this->get_catalogo_url()); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
-                        <?php _e('Nuevo trámite', 'flavor-chat-ia'); ?>
+                        <?php _e('Nuevo trámite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
 
                 <?php if (empty($solicitudes)): ?>
                 <div class="flavor-empty-state">
-                    <p><?php _e('No has realizado ningún trámite aún.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No has realizado ningún trámite aún.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <?php else: ?>
                 <table class="flavor-table">
                     <thead>
                         <tr>
-                            <th><?php _e('Expediente', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Trámite', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Expediente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Trámite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             <th></th>
                         </tr>
                     </thead>
@@ -1135,7 +1135,7 @@ class Flavor_Tramites_Frontend_Controller {
                             <td>
                                 <a href="<?php echo esc_url($this->get_seguimiento_url($sol['id'])); ?>"
                                    class="flavor-btn flavor-btn-sm flavor-btn-outline">
-                                    <?php _e('Ver', 'flavor-chat-ia'); ?>
+                                    <?php _e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </td>
                         </tr>
@@ -1156,13 +1156,13 @@ class Flavor_Tramites_Frontend_Controller {
         <div class="flavor-dashboard-citas">
             <div class="flavor-panel">
                 <div class="flavor-panel-header">
-                    <h3><?php _e('Mis citas programadas', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Mis citas programadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
 
                 <?php if (empty($citas)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-calendar-alt"></span>
-                    <p><?php _e('No tienes citas programadas.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No tienes citas programadas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <?php else: ?>
                 <div class="flavor-citas-lista">
@@ -1197,14 +1197,14 @@ class Flavor_Tramites_Frontend_Controller {
         check_ajax_referer('flavor_tramites_nonce', 'tramite_nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $tramite_id = intval($_POST['tramite_id'] ?? 0);
         $user_id = get_current_user_id();
 
         if (!$tramite_id) {
-            wp_send_json_error(['message' => __('Trámite no especificado.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Trámite no especificado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $datos = [
@@ -1218,14 +1218,14 @@ class Flavor_Tramites_Frontend_Controller {
 
         // Validaciones
         if (empty($datos['nombre_completo']) || empty($datos['dni']) || empty($datos['email'])) {
-            wp_send_json_error(['message' => __('Completa todos los campos obligatorios.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Completa todos los campos obligatorios.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_tramites_solicitudes';
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
-            wp_send_json_error(['message' => __('Sistema no disponible temporalmente.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sistema no disponible temporalmente.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Generar número de expediente
@@ -1250,12 +1250,12 @@ class Flavor_Tramites_Frontend_Controller {
             $this->registrar_historial($solicitud_id, 'solicitud_iniciada', 'Solicitud registrada correctamente');
 
             wp_send_json_success([
-                'message' => __('Solicitud registrada correctamente.', 'flavor-chat-ia'),
+                'message' => __('Solicitud registrada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'numero_expediente' => $numero_expediente,
                 'redirect' => $this->get_seguimiento_url($solicitud_id),
             ]);
         } else {
-            wp_send_json_error(['message' => __('Error al registrar la solicitud.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al registrar la solicitud.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -1263,7 +1263,7 @@ class Flavor_Tramites_Frontend_Controller {
         check_ajax_referer('flavor_tramites_nonce', 'doc_nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $solicitud_id = intval($_POST['solicitud_id'] ?? 0);
@@ -1272,11 +1272,11 @@ class Flavor_Tramites_Frontend_Controller {
         // Verificar que la solicitud pertenece al usuario
         $solicitud = $this->obtener_solicitud($solicitud_id, $user_id);
         if (!$solicitud) {
-            wp_send_json_error(['message' => __('Solicitud no encontrada.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Solicitud no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (empty($_FILES['documento'])) {
-            wp_send_json_error(['message' => __('No se ha seleccionado ningún archivo.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No se ha seleccionado ningún archivo.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         require_once(ABSPATH . 'wp-admin/includes/file.php');
@@ -1302,14 +1302,14 @@ class Flavor_Tramites_Frontend_Controller {
 
         $this->registrar_historial($solicitud_id, 'documento_subido', 'Documento adjuntado: ' . $_FILES['documento']['name']);
 
-        wp_send_json_success(['message' => __('Documento subido correctamente.', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Documento subido correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     public function ajax_solicitar_cita() {
         check_ajax_referer('flavor_tramites_nonce', 'cita_nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $tramite_id = intval($_POST['tramite_id'] ?? 0);
@@ -1319,19 +1319,19 @@ class Flavor_Tramites_Frontend_Controller {
         $user_id = get_current_user_id();
 
         if (!$tramite_id || !$fecha || !$hora) {
-            wp_send_json_error(['message' => __('Completa todos los campos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Completa todos los campos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar disponibilidad
         if (!$this->verificar_disponibilidad_cita($fecha, $hora)) {
-            wp_send_json_error(['message' => __('La hora seleccionada ya no está disponible.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('La hora seleccionada ya no está disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_tramites_citas';
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
-            wp_send_json_error(['message' => __('Sistema no disponible.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sistema no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $result = $wpdb->insert($tabla, [
@@ -1345,9 +1345,9 @@ class Flavor_Tramites_Frontend_Controller {
         ]);
 
         if ($result) {
-            wp_send_json_success(['message' => __('Cita reservada correctamente.', 'flavor-chat-ia')]);
+            wp_send_json_success(['message' => __('Cita reservada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
-            wp_send_json_error(['message' => __('Error al reservar la cita.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al reservar la cita.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -1355,7 +1355,7 @@ class Flavor_Tramites_Frontend_Controller {
         check_ajax_referer('flavor_tramites_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $solicitud_id = intval($_POST['solicitud_id'] ?? 0);
@@ -1363,11 +1363,11 @@ class Flavor_Tramites_Frontend_Controller {
 
         $solicitud = $this->obtener_solicitud($solicitud_id, $user_id);
         if (!$solicitud) {
-            wp_send_json_error(['message' => __('Solicitud no encontrada.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Solicitud no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (in_array($solicitud['estado'], ['finalizado', 'cancelado'])) {
-            wp_send_json_error(['message' => __('Este trámite no se puede cancelar.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Este trámite no se puede cancelar.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1381,14 +1381,14 @@ class Flavor_Tramites_Frontend_Controller {
 
         $this->registrar_historial($solicitud_id, 'cancelado', 'Trámite cancelado por el usuario');
 
-        wp_send_json_success(['message' => __('Trámite cancelado.', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Trámite cancelado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     public function ajax_consultar_estado() {
         $numero_expediente = sanitize_text_field($_POST['numero_expediente'] ?? '');
 
         if (empty($numero_expediente)) {
-            wp_send_json_error(['message' => __('Número de expediente requerido.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Número de expediente requerido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1403,7 +1403,7 @@ class Flavor_Tramites_Frontend_Controller {
         ), ARRAY_A);
 
         if (!$solicitud) {
-            wp_send_json_error(['message' => __('Expediente no encontrado.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Expediente no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         wp_send_json_success([
@@ -1419,7 +1419,7 @@ class Flavor_Tramites_Frontend_Controller {
         check_ajax_referer('flavor_tramites_nonce', 'mensaje_nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $solicitud_id = intval($_POST['solicitud_id'] ?? 0);
@@ -1427,19 +1427,19 @@ class Flavor_Tramites_Frontend_Controller {
         $user_id = get_current_user_id();
 
         if (!$solicitud_id || empty($mensaje)) {
-            wp_send_json_error(['message' => __('Mensaje requerido.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Mensaje requerido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $solicitud = $this->obtener_solicitud($solicitud_id, $user_id);
         if (!$solicitud) {
-            wp_send_json_error(['message' => __('Solicitud no encontrada.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Solicitud no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_tramites_mensajes';
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
-            wp_send_json_error(['message' => __('Sistema no disponible.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sistema no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $result = $wpdb->insert($tabla, [
@@ -1451,9 +1451,9 @@ class Flavor_Tramites_Frontend_Controller {
         ]);
 
         if ($result) {
-            wp_send_json_success(['message' => __('Mensaje enviado.', 'flavor-chat-ia')]);
+            wp_send_json_success(['message' => __('Mensaje enviado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
-            wp_send_json_error(['message' => __('Error al enviar el mensaje.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al enviar el mensaje.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -1462,7 +1462,7 @@ class Flavor_Tramites_Frontend_Controller {
         $tramite_id = intval($_POST['tramite_id'] ?? 0);
 
         if (!$fecha) {
-            wp_send_json_error(['message' => __('Fecha requerida.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Fecha requerida.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $horarios = $this->obtener_horarios_disponibles($fecha, $tramite_id);

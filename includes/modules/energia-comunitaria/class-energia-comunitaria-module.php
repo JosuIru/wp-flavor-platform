@@ -101,13 +101,13 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
                 'type' => 'table',
                 'table' => $wpdb->prefix . 'flavor_energia_comunidades',
                 'context' => 'normal',
-                'label' => __('Comunidad energetica', 'flavor-chat-ia'),
+                'label' => __('Comunidad energetica', 'flavor-platform'),
             ],
             [
                 'type' => 'table',
                 'table' => $wpdb->prefix . 'flavor_energia_instalaciones',
                 'context' => 'side',
-                'label' => __('Instalacion energetica', 'flavor-chat-ia'),
+                'label' => __('Instalacion energetica', 'flavor-platform'),
             ],
         ];
     }
@@ -135,24 +135,24 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
     {
         return [
             'id' => 'energia_comunitaria',
-            'label' => __('Energía Comunitaria', 'flavor-chat-ia'),
+            'label' => __('Energía Comunitaria', 'flavor-platform'),
             'icon' => 'dashicons-lightbulb',
             'capability' => 'manage_options',
             'categoria' => 'sostenibilidad',
             'paginas' => [
                 [
                     'slug' => 'flavor-energia-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_dashboard'],
                 ],
                 [
                     'slug' => 'flavor-energia-instalaciones',
-                    'titulo' => __('Instalaciones', 'flavor-chat-ia'),
+                    'titulo' => __('Instalaciones', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_instalaciones'],
                 ],
                 [
                     'slug' => 'flavor-energia-comunidad',
-                    'titulo' => __('Detalle Comunidad', 'flavor-chat-ia'),
+                    'titulo' => __('Detalle Comunidad', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_comunidad_detalle'],
                 ],
             ],
@@ -163,8 +163,8 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
     {
         return [
             'module' => 'energia-comunitaria',
-            'title' => __('Energia Comunitaria', 'flavor-chat-ia'),
-            'subtitle' => __('Produccion, consumo, reparto y soberania energetica local', 'flavor-chat-ia'),
+            'title' => __('Energia Comunitaria', 'flavor-platform'),
+            'subtitle' => __('Produccion, consumo, reparto y soberania energetica local', 'flavor-platform'),
             'icon' => '⚡',
             'color' => 'amber',
             'database' => [
@@ -182,25 +182,25 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
             ],
             'stats' => [
                 [
-                    'label' => __('Comunidades energeticas', 'flavor-chat-ia'),
+                    'label' => __('Comunidades energeticas', 'flavor-platform'),
                     'icon' => 'dashicons-groups',
                     'color' => '#f59e0b',
                     'count_where' => "estado = 'activa'",
                 ],
                 [
-                    'label' => __('Instalaciones activas', 'flavor-chat-ia'),
+                    'label' => __('Instalaciones activas', 'flavor-platform'),
                     'icon' => 'dashicons-admin-tools',
                     'color' => '#10b981',
                     'query' => "SELECT COUNT(*) FROM {$GLOBALS['wpdb']->prefix}flavor_energia_instalaciones WHERE estado = 'activa'",
                 ],
                 [
-                    'label' => __('Lecturas este mes', 'flavor-chat-ia'),
+                    'label' => __('Lecturas este mes', 'flavor-platform'),
                     'icon' => 'dashicons-chart-area',
                     'color' => '#0ea5e9',
                     'query' => "SELECT COUNT(*) FROM {$GLOBALS['wpdb']->prefix}flavor_energia_lecturas WHERE DATE_FORMAT(fecha_lectura, '%Y-%m') = DATE_FORMAT(CURDATE(), '%Y-%m')",
                 ],
                 [
-                    'label' => __('Incidencias abiertas', 'flavor-chat-ia'),
+                    'label' => __('Incidencias abiertas', 'flavor-platform'),
                     'icon' => 'dashicons-warning',
                     'color' => '#ef4444',
                     'query' => "SELECT COUNT(*) FROM {$GLOBALS['wpdb']->prefix}flavor_energia_incidencias WHERE estado IN ('abierta', 'en_progreso')",
@@ -208,82 +208,82 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
             ],
             'tabs' => [
                 'panel' => [
-                    'label' => __('Panel', 'flavor-chat-ia'),
+                    'label' => __('Panel', 'flavor-platform'),
                     'icon' => 'dashicons-chart-pie',
                     'content' => '[flavor_energia_dashboard]',
                 ],
                 'instalaciones' => [
-                    'label' => __('Instalaciones', 'flavor-chat-ia'),
+                    'label' => __('Instalaciones', 'flavor-platform'),
                     'icon' => 'dashicons-admin-tools',
                     'content' => '[flavor_energia_instalaciones]',
                 ],
                 'reparto' => [
-                    'label' => __('Reparto', 'flavor-chat-ia'),
+                    'label' => __('Reparto', 'flavor-platform'),
                     'icon' => 'dashicons-randomize',
                     'content' => '[flavor_energia_balance]',
                     'requires_login' => true,
                 ],
                 'cierres' => [
-                    'label' => __('Cierres', 'flavor-chat-ia'),
+                    'label' => __('Cierres', 'flavor-platform'),
                     'icon' => 'dashicons-archive',
                     'content' => '[flavor_energia_cierres]',
                     'requires_login' => true,
                 ],
                 'liquidaciones' => [
-                    'label' => __('Liquidaciones', 'flavor-chat-ia'),
+                    'label' => __('Liquidaciones', 'flavor-platform'),
                     'icon' => 'dashicons-media-spreadsheet',
                     'content' => '[flavor_energia_liquidaciones]',
                     'requires_login' => true,
                 ],
                 'participantes' => [
-                    'label' => __('Participantes', 'flavor-chat-ia'),
+                    'label' => __('Participantes', 'flavor-platform'),
                     'icon' => 'dashicons-admin-users',
                     'content' => '[flavor_energia_participantes]',
                     'requires_login' => true,
                 ],
                 'mantenimiento' => [
-                    'label' => __('Mantenimiento', 'flavor-chat-ia'),
+                    'label' => __('Mantenimiento', 'flavor-platform'),
                     'icon' => 'dashicons-hammer',
                     'content' => '[flavor_energia_mantenimiento]',
                     'requires_login' => true,
                 ],
                 'nueva-comunidad' => [
-                    'label' => __('Nueva comunidad energetica', 'flavor-chat-ia'),
+                    'label' => __('Nueva comunidad energetica', 'flavor-platform'),
                     'icon' => 'dashicons-groups',
                     'content' => '[flavor_energia_form_comunidad]',
                     'requires_login' => true,
                 ],
                 'nueva-instalacion' => [
-                    'label' => __('Nueva instalacion', 'flavor-chat-ia'),
+                    'label' => __('Nueva instalacion', 'flavor-platform'),
                     'icon' => 'dashicons-plus-alt',
                     'content' => '[flavor_energia_form_instalacion]',
                     'requires_login' => true,
                 ],
                 'registrar-lectura' => [
-                    'label' => __('Registrar lectura', 'flavor-chat-ia'),
+                    'label' => __('Registrar lectura', 'flavor-platform'),
                     'icon' => 'dashicons-chart-line',
                     'content' => '[flavor_energia_form_lectura]',
                     'requires_login' => true,
                 ],
                 'nuevo-participante' => [
-                    'label' => __('Nuevo participante', 'flavor-chat-ia'),
+                    'label' => __('Nuevo participante', 'flavor-platform'),
                     'icon' => 'dashicons-plus-alt2',
                     'content' => '[flavor_energia_form_participante]',
                     'requires_login' => true,
                 ],
                 'cerrar-reparto' => [
-                    'label' => __('Cerrar reparto', 'flavor-chat-ia'),
+                    'label' => __('Cerrar reparto', 'flavor-platform'),
                     'icon' => 'dashicons-saved',
                     'content' => '[flavor_energia_form_cierre]',
                     'requires_login' => true,
                 ],
                 'proyectos' => [
-                    'label' => __('Proyectos', 'flavor-chat-ia'),
+                    'label' => __('Proyectos', 'flavor-platform'),
                     'icon' => 'dashicons-portfolio',
                     'content' => '[flavor_energia_proyectos]',
                 ],
                 'comunidad' => [
-                    'label' => __('Comunidad', 'flavor-chat-ia'),
+                    'label' => __('Comunidad', 'flavor-platform'),
                     'icon' => 'dashicons-groups',
                     'content' => '[comunidades_listado categoria="medioambiente" limite="6"]',
                 ],
@@ -298,8 +298,8 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
                 'show_stats' => true,
                 'show_actions' => true,
                 'actions' => [
-                    'registrar_lectura' => ['label' => __('Registrar lectura', 'flavor-chat-ia'), 'icon' => '📈', 'color' => 'amber'],
-                    'reportar_incidencia' => ['label' => __('Reportar incidencia', 'flavor-chat-ia'), 'icon' => '🛠️', 'color' => 'red'],
+                    'registrar_lectura' => ['label' => __('Registrar lectura', 'flavor-platform'), 'icon' => '📈', 'color' => 'amber'],
+                    'reportar_incidencia' => ['label' => __('Reportar incidencia', 'flavor-platform'), 'icon' => '🛠️', 'color' => 'red'],
                 ],
             ],
         ];
@@ -535,7 +535,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         if (file_exists($view_file)) {
             include $view_file;
         } else {
-            echo '<p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Vista no disponible.', 'flavor-platform') . '</p>';
         }
         return ob_get_clean();
     }
@@ -554,7 +554,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
     //     if (file_exists($view_file)) {
     //         include $view_file;
     //     } else {
-    //         echo '<p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p>';
+    //         echo '<p>' . esc_html__('Vista no disponible.', 'flavor-platform') . '</p>';
     //     }
     //     return ob_get_clean();
     // }
@@ -574,7 +574,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
     //     if (file_exists($view_file)) {
     //         include $view_file;
     //     } else {
-    //         echo '<p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p>';
+    //         echo '<p>' . esc_html__('Vista no disponible.', 'flavor-platform') . '</p>';
     //     }
     //     return ob_get_clean();
     // }
@@ -589,7 +589,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
     //     if (file_exists($view_file)) {
     //         include $view_file;
     //     } else {
-    //         echo '<p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p>';
+    //         echo '<p>' . esc_html__('Vista no disponible.', 'flavor-platform') . '</p>';
     //     }
     //     return ob_get_clean();
     // }
@@ -604,7 +604,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         if (file_exists($view_file)) {
             include $view_file;
         } else {
-            echo '<p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Vista no disponible.', 'flavor-platform') . '</p>';
         }
         return ob_get_clean();
     }
@@ -617,7 +617,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
     public function shortcode_mis_comunidades($atts = [])
     {
         if (!is_user_logged_in()) {
-            return '<p>' . esc_html__('Debes iniciar sesión para ver tus comunidades.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Debes iniciar sesión para ver tus comunidades.', 'flavor-platform') . '</p>';
         }
 
         global $wpdb;
@@ -658,7 +658,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
                                 </p>
                             <?php endif; ?>
                             <div style="display: flex; gap: 8px; font-size: 12px; color: #666;">
-                                <span><?php esc_html_e('Coeficiente:', 'flavor-chat-ia'); ?>
+                                <span><?php esc_html_e('Coeficiente:', 'flavor-platform'); ?>
                                     <strong><?php echo number_format($com->coeficiente_reparto, 2); ?></strong></span>
                             </div>
                         </div>
@@ -666,7 +666,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
                 </div>
             <?php else: ?>
                 <p style="text-align: center; color: #666; padding: 40px;">
-                    <?php esc_html_e('No perteneces a ninguna comunidad energética.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('No perteneces a ninguna comunidad energética.', 'flavor-platform'); ?>
                 </p>
             <?php endif; ?>
         </div>
@@ -714,7 +714,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
             style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #fff; padding: 24px; border-radius: 12px; text-align: center;">
             <div style="font-size: 36px; font-weight: bold;"><?php echo number_format($total_generado, 1); ?> kWh</div>
             <div style="font-size: 14px; opacity: 0.9; margin-top: 4px;">
-                <?php echo $atts['periodo'] === 'año' ? esc_html__('Producción anual', 'flavor-chat-ia') : esc_html__('Producción del mes', 'flavor-chat-ia'); ?>
+                <?php echo $atts['periodo'] === 'año' ? esc_html__('Producción anual', 'flavor-platform') : esc_html__('Producción del mes', 'flavor-platform'); ?>
             </div>
         </div>
     <?php
@@ -761,7 +761,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
             style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #fff; padding: 24px; border-radius: 12px; text-align: center;">
             <div style="font-size: 36px; font-weight: bold;"><?php echo number_format($total_consumido, 1); ?> kWh</div>
             <div style="font-size: 14px; opacity: 0.9; margin-top: 4px;">
-                <?php echo $atts['periodo'] === 'año' ? esc_html__('Consumo anual', 'flavor-chat-ia') : esc_html__('Consumo del mes', 'flavor-chat-ia'); ?>
+                <?php echo $atts['periodo'] === 'año' ? esc_html__('Consumo anual', 'flavor-platform') : esc_html__('Consumo del mes', 'flavor-platform'); ?>
             </div>
         </div>
     <?php
@@ -810,7 +810,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
                                 </p>
                             <?php endif; ?>
                             <div style="display: flex; gap: 12px; font-size: 13px; color: #666;">
-                                <span><?php esc_html_e('Potencia:', 'flavor-chat-ia'); ?>
+                                <span><?php esc_html_e('Potencia:', 'flavor-platform'); ?>
                                     <strong><?php echo number_format($proy->potencia_kw, 1); ?> kW</strong></span>
                             </div>
                         </div>
@@ -819,9 +819,9 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
             <?php else: ?>
                 <div style="text-align: center; padding: 40px; background: #f9fafb; border-radius: 12px;">
                     <span style="font-size: 48px;">📋</span>
-                    <h3><?php esc_html_e('Sin proyectos pendientes', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Sin proyectos pendientes', 'flavor-platform'); ?></h3>
                     <p style="color: #666;">
-                        <?php esc_html_e('No hay instalaciones en fase de planificación o construcción.', 'flavor-chat-ia'); ?></p>
+                        <?php esc_html_e('No hay instalaciones en fase de planificación o construcción.', 'flavor-platform'); ?></p>
                 </div>
             <?php endif; ?>
         </div>
@@ -1029,11 +1029,11 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         $prioridad = sanitize_text_field((string) $request->get_param('prioridad'));
 
         if ($instalacion_id <= 0 || $titulo === '') {
-            return new WP_Error('energia_invalid_request', __('Faltan datos obligatorios.', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('energia_invalid_request', __('Faltan datos obligatorios.', 'flavor-platform'), ['status' => 400]);
         }
 
         if (!$this->user_can_manage_instalacion($instalacion_id) && !$this->can_submit_reports()) {
-            return new WP_Error('energia_forbidden', __('No tienes permisos para reportar sobre esta instalacion.', 'flavor-chat-ia'), ['status' => 403]);
+            return new WP_Error('energia_forbidden', __('No tienes permisos para reportar sobre esta instalacion.', 'flavor-platform'), ['status' => 403]);
         }
 
         $wpdb->insert(
@@ -1052,7 +1052,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
 
         return rest_ensure_response([
             'success' => true,
-            'message' => __('Incidencia registrada correctamente.', 'flavor-chat-ia'),
+            'message' => __('Incidencia registrada correctamente.', 'flavor-platform'),
         ]);
     }
 
@@ -1121,7 +1121,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         $estado = sanitize_text_field((string) $request->get_param('estado'));
 
         if ($liquidacion_id <= 0 || $estado === '') {
-            return new WP_Error('energia_invalid_request', __('Faltan datos obligatorios.', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('energia_invalid_request', __('Faltan datos obligatorios.', 'flavor-platform'), ['status' => 400]);
         }
 
         $resultado = $this->actualizar_estado_liquidacion($liquidacion_id, $estado);
@@ -1139,11 +1139,11 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         $liquidacion = $this->get_liquidacion($liquidacion_id);
 
         if (!$liquidacion) {
-            return new WP_Error('energia_liquidacion_not_found', __('La liquidacion indicada no existe.', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('energia_liquidacion_not_found', __('La liquidacion indicada no existe.', 'flavor-platform'), ['status' => 404]);
         }
 
         if (!$this->user_can_manage_energia_comunidad((int) $liquidacion->energia_comunidad_id)) {
-            return new WP_Error('energia_forbidden', __('No puedes exportar esta liquidacion.', 'flavor-chat-ia'), ['status' => 403]);
+            return new WP_Error('energia_forbidden', __('No puedes exportar esta liquidacion.', 'flavor-platform'), ['status' => 403]);
         }
 
         return rest_ensure_response([
@@ -1586,7 +1586,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         $liquidaciones = $this->get_liquidaciones_comunidad($energia_comunidad_id);
 
         if (empty($liquidaciones)) {
-            return new WP_Error('energia_empty_export', __('No hay liquidaciones para exportar.', 'flavor-chat-ia'));
+            return new WP_Error('energia_empty_export', __('No hay liquidaciones para exportar.', 'flavor-platform'));
         }
 
         $comunidad = $this->get_energia_comunidad($energia_comunidad_id);
@@ -1600,7 +1600,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         $output = fopen('php://output', 'w');
 
         if (!$output) {
-            return new WP_Error('energia_export_failed', __('No se pudo abrir la salida de exportación.', 'flavor-chat-ia'));
+            return new WP_Error('energia_export_failed', __('No se pudo abrir la salida de exportación.', 'flavor-platform'));
         }
 
         fputcsv($output, ['Periodo', 'Referencia', 'Participante', 'kWh liquidados', 'Precio kWh', 'Ahorro EUR', 'Estado', 'Fecha notificacion', 'Fecha aceptacion'], ';');
@@ -1629,7 +1629,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         $liquidacion = $this->get_liquidacion($liquidacion_id);
 
         if (!$liquidacion) {
-            return new WP_Error('energia_liquidacion_not_found', __('La liquidacion indicada no existe.', 'flavor-chat-ia'));
+            return new WP_Error('energia_liquidacion_not_found', __('La liquidacion indicada no existe.', 'flavor-platform'));
         }
 
         $filename = $this->build_liquidacion_export_filename($liquidacion);
@@ -1649,15 +1649,15 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         $liquidacion = $this->get_liquidacion($liquidacion_id);
 
         if (!$liquidacion) {
-            return new WP_Error('energia_liquidacion_not_found', __('La liquidacion indicada no existe.', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('energia_liquidacion_not_found', __('La liquidacion indicada no existe.', 'flavor-platform'), ['status' => 404]);
         }
 
         if (!$this->user_can_manage_energia_comunidad((int) $liquidacion->energia_comunidad_id)) {
-            return new WP_Error('energia_forbidden', __('No puedes gestionar esta liquidacion.', 'flavor-chat-ia'), ['status' => 403]);
+            return new WP_Error('energia_forbidden', __('No puedes gestionar esta liquidacion.', 'flavor-platform'), ['status' => 403]);
         }
 
         if (!in_array($estado, $this->get_allowed_liquidacion_statuses(), true)) {
-            return new WP_Error('energia_invalid_status', __('Estado de liquidacion no valido.', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('energia_invalid_status', __('Estado de liquidacion no valido.', 'flavor-platform'), ['status' => 400]);
         }
 
         $tabla = $wpdb->prefix . 'flavor_energia_liquidaciones';
@@ -1691,12 +1691,12 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         );
 
         if ($actualizado === false) {
-            return new WP_Error('energia_liquidacion_update_failed', __('No se pudo actualizar la liquidacion.', 'flavor-chat-ia'), ['status' => 500]);
+            return new WP_Error('energia_liquidacion_update_failed', __('No se pudo actualizar la liquidacion.', 'flavor-platform'), ['status' => 500]);
         }
 
         return [
             'success' => true,
-            'message' => __('Estado de liquidacion actualizado correctamente.', 'flavor-chat-ia'),
+            'message' => __('Estado de liquidacion actualizado correctamente.', 'flavor-platform'),
             'liquidacion_id' => $liquidacion_id,
             'estado' => $estado,
         ];
@@ -1707,11 +1707,11 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         global $wpdb;
 
         if (!$this->user_can_manage_energia_comunidad($energia_comunidad_id)) {
-            return new WP_Error('energia_forbidden', __('No puedes cerrar repartos en esta comunidad energética.', 'flavor-chat-ia'));
+            return new WP_Error('energia_forbidden', __('No puedes cerrar repartos en esta comunidad energética.', 'flavor-platform'));
         }
 
         if (!preg_match('/^\d{4}-\d{2}$/', $periodo)) {
-            return new WP_Error('energia_invalid_period', __('El periodo debe tener formato YYYY-MM.', 'flavor-chat-ia'));
+            return new WP_Error('energia_invalid_period', __('El periodo debe tener formato YYYY-MM.', 'flavor-platform'));
         }
 
         $tabla_cierres = $wpdb->prefix . 'flavor_energia_repartos_cierre';
@@ -1723,7 +1723,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
             !Flavor_Chat_Helpers::tabla_existe($tabla_detalle) ||
             !Flavor_Chat_Helpers::tabla_existe($tabla_liquidaciones)
         ) {
-            return new WP_Error('energia_missing_tables', __('No existen las tablas de cierres energéticos.', 'flavor-chat-ia'));
+            return new WP_Error('energia_missing_tables', __('No existen las tablas de cierres energéticos.', 'flavor-platform'));
         }
 
         $existente = $wpdb->get_var($wpdb->prepare(
@@ -1733,7 +1733,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         ));
 
         if ($existente) {
-            return new WP_Error('energia_duplicate_period', __('Ya existe un cierre para ese periodo.', 'flavor-chat-ia'));
+            return new WP_Error('energia_duplicate_period', __('Ya existe un cierre para ese periodo.', 'flavor-platform'));
         }
 
         $balance = $this->get_balance_comunidad_detallado($energia_comunidad_id);
@@ -1759,7 +1759,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         );
 
         if (!$insertado) {
-            return new WP_Error('energia_insert_failed', __('No se pudo registrar el cierre mensual.', 'flavor-chat-ia'));
+            return new WP_Error('energia_insert_failed', __('No se pudo registrar el cierre mensual.', 'flavor-platform'));
         }
 
         $cierre_id = (int) $wpdb->insert_id;
@@ -1840,8 +1840,8 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         // Dashboard principal
         add_submenu_page(
             null,
-            __('Energía Comunitaria', 'flavor-chat-ia'),
-            __('Energía Comunitaria', 'flavor-chat-ia'),
+            __('Energía Comunitaria', 'flavor-platform'),
+            __('Energía Comunitaria', 'flavor-platform'),
             $capability,
             'flavor-energia-dashboard',
             [$this, 'render_admin_dashboard']
@@ -1850,8 +1850,8 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         // Listado de instalaciones
         add_submenu_page(
             null,
-            __('Instalaciones Energéticas', 'flavor-chat-ia'),
-            __('Instalaciones', 'flavor-chat-ia'),
+            __('Instalaciones Energéticas', 'flavor-platform'),
+            __('Instalaciones', 'flavor-platform'),
             $capability,
             'flavor-energia-instalaciones',
             [$this, 'render_admin_instalaciones']
@@ -1860,8 +1860,8 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         // Detalle de comunidad energética
         add_submenu_page(
             null,
-            __('Detalle Comunidad Energética', 'flavor-chat-ia'),
-            __('Comunidad', 'flavor-chat-ia'),
+            __('Detalle Comunidad Energética', 'flavor-platform'),
+            __('Comunidad', 'flavor-platform'),
             $capability,
             'flavor-energia-comunidad',
             [$this, 'render_admin_comunidad_detalle']
@@ -1878,25 +1878,25 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         $data = $this->get_dashboard_data();
     ?>
         <div class="wrap flavor-energia-admin-dashboard">
-            <h1><?php esc_html_e('Energía Comunitaria', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Energía Comunitaria', 'flavor-platform'); ?></h1>
             <div class="flavor-stats-grid"
                 style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:20px 0;">
                 <div class="card" style="margin:0;padding:16px;">
                     <h2 style="margin:0 0 6px;"><?php echo esc_html(number_format_i18n($data['comunidades_activas'])); ?></h2>
-                    <p style="margin:0;"><?php esc_html_e('Comunidades activas', 'flavor-chat-ia'); ?></p>
+                    <p style="margin:0;"><?php esc_html_e('Comunidades activas', 'flavor-platform'); ?></p>
                 </div>
                 <div class="card" style="margin:0;padding:16px;">
                     <h2 style="margin:0 0 6px;"><?php echo esc_html(number_format_i18n($data['instalaciones_activas'])); ?></h2>
-                    <p style="margin:0;"><?php esc_html_e('Instalaciones activas', 'flavor-chat-ia'); ?></p>
+                    <p style="margin:0;"><?php esc_html_e('Instalaciones activas', 'flavor-platform'); ?></p>
                 </div>
                 <div class="card" style="margin:0;padding:16px;">
                     <h2 style="margin:0 0 6px;"><?php echo esc_html(number_format_i18n($data['kwh_generados_mes'], 1)); ?></h2>
-                    <p style="margin:0;"><?php esc_html_e('kWh generados este mes', 'flavor-chat-ia'); ?></p>
+                    <p style="margin:0;"><?php esc_html_e('kWh generados este mes', 'flavor-platform'); ?></p>
                 </div>
                 <div class="card" style="margin:0;padding:16px;">
                     <h2 style="margin:0 0 6px;"><?php echo esc_html(number_format_i18n($data['ahorro_estimado_mes'], 2)); ?> €
                     </h2>
-                    <p style="margin:0;"><?php esc_html_e('Ahorro estimado mensual', 'flavor-chat-ia'); ?></p>
+                    <p style="margin:0;"><?php esc_html_e('Ahorro estimado mensual', 'flavor-platform'); ?></p>
                 </div>
             </div>
 
@@ -1917,7 +1917,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
     {
     ?>
         <div class="wrap flavor-energia-admin-instalaciones">
-            <h1><?php esc_html_e('Instalaciones Energéticas', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Instalaciones Energéticas', 'flavor-platform'); ?></h1>
             <div class="card" style="max-width:none;padding:20px;">
                 <?php echo $this->shortcode_instalaciones(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                 ?>
@@ -1939,7 +1939,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
 
         if (!$comunidad_id) {
             echo '<div class="wrap"><div class="notice notice-error"><p>' .
-                 esc_html__('ID de comunidad no especificado.', 'flavor-chat-ia') .
+                 esc_html__('ID de comunidad no especificado.', 'flavor-platform') .
                  '</p></div></div>';
             return;
         }
@@ -1952,7 +1952,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
 
         if (!$comunidad) {
             echo '<div class="wrap"><div class="notice notice-error"><p>' .
-                 esc_html__('Comunidad energética no encontrada.', 'flavor-chat-ia') .
+                 esc_html__('Comunidad energética no encontrada.', 'flavor-platform') .
                  '</p></div></div>';
             return;
         }
@@ -1991,7 +1991,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         <div class="wrap flavor-energia-admin-comunidad-detalle">
             <h1>
                 <a href="<?php echo esc_url($url_dashboard); ?>" class="page-title-action" style="margin-right: 10px;">
-                    &larr; <?php esc_html_e('Volver', 'flavor-chat-ia'); ?>
+                    &larr; <?php esc_html_e('Volver', 'flavor-platform'); ?>
                 </a>
                 <?php echo esc_html($comunidad->nombre); ?>
                 <span class="flavor-badge flavor-badge--<?php echo esc_attr($comunidad->estado); ?>" style="margin-left: 10px; font-size: 12px; padding: 4px 8px; border-radius: 4px; background: <?php echo $comunidad->estado === 'activa' ? '#10b981' : '#94a3b8'; ?>; color: white;">
@@ -2009,49 +2009,49 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
                 <div class="card" style="margin:0;padding:16px;text-align:center;">
                     <span class="dashicons dashicons-admin-tools" style="font-size:32px;color:#f59e0b;"></span>
                     <h2 style="margin:10px 0 4px;"><?php echo esc_html(number_format_i18n($instalaciones)); ?></h2>
-                    <p style="margin:0;color:#64748b;"><?php esc_html_e('Instalaciones', 'flavor-chat-ia'); ?></p>
+                    <p style="margin:0;color:#64748b;"><?php esc_html_e('Instalaciones', 'flavor-platform'); ?></p>
                 </div>
                 <div class="card" style="margin:0;padding:16px;text-align:center;">
                     <span class="dashicons dashicons-groups" style="font-size:32px;color:#0ea5e9;"></span>
                     <h2 style="margin:10px 0 4px;"><?php echo esc_html(number_format_i18n($participantes)); ?></h2>
-                    <p style="margin:0;color:#64748b;"><?php esc_html_e('Participantes', 'flavor-chat-ia'); ?></p>
+                    <p style="margin:0;color:#64748b;"><?php esc_html_e('Participantes', 'flavor-platform'); ?></p>
                 </div>
                 <div class="card" style="margin:0;padding:16px;text-align:center;">
                     <span class="dashicons dashicons-performance" style="font-size:32px;color:#10b981;"></span>
                     <h2 style="margin:10px 0 4px;"><?php echo esc_html(number_format_i18n($potencia_total, 1)); ?> kW</h2>
-                    <p style="margin:0;color:#64748b;"><?php esc_html_e('Potencia Total', 'flavor-chat-ia'); ?></p>
+                    <p style="margin:0;color:#64748b;"><?php esc_html_e('Potencia Total', 'flavor-platform'); ?></p>
                 </div>
                 <div class="card" style="margin:0;padding:16px;text-align:center;">
                     <span class="dashicons dashicons-chart-area" style="font-size:32px;color:#8b5cf6;"></span>
                     <h2 style="margin:10px 0 4px;"><?php echo esc_html(number_format_i18n($kwh_mes, 1)); ?> kWh</h2>
-                    <p style="margin:0;color:#64748b;"><?php esc_html_e('Generado este mes', 'flavor-chat-ia'); ?></p>
+                    <p style="margin:0;color:#64748b;"><?php esc_html_e('Generado este mes', 'flavor-platform'); ?></p>
                 </div>
             </div>
 
             <div class="card" style="max-width:none;padding:20px;margin-top:20px;">
-                <h2><?php esc_html_e('Información de la Comunidad', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Información de la Comunidad', 'flavor-platform'); ?></h2>
                 <table class="form-table">
                     <tr>
-                        <th><?php esc_html_e('Modelo de reparto', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Modelo de reparto', 'flavor-platform'); ?></th>
                         <td><?php echo esc_html(ucfirst(str_replace('_', ' ', $comunidad->modelo_reparto ?? 'proporcional'))); ?></td>
                     </tr>
                     <tr>
-                        <th><?php esc_html_e('Tipo instalación principal', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Tipo instalación principal', 'flavor-platform'); ?></th>
                         <td><?php echo esc_html(ucfirst($comunidad->tipo_instalacion_principal ?? '-')); ?></td>
                     </tr>
                     <tr>
-                        <th><?php esc_html_e('Batería (kWh)', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Batería (kWh)', 'flavor-platform'); ?></th>
                         <td><?php echo esc_html(number_format_i18n($comunidad->bateria_kwh ?? 0, 1)); ?></td>
                     </tr>
                     <tr>
-                        <th><?php esc_html_e('Fecha de creación', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Fecha de creación', 'flavor-platform'); ?></th>
                         <td><?php echo esc_html(date_i18n(get_option('date_format'), strtotime($comunidad->created_at))); ?></td>
                     </tr>
                 </table>
             </div>
 
             <div class="card" style="max-width:none;padding:20px;margin-top:20px;">
-                <h2><?php esc_html_e('Instalaciones de esta comunidad', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Instalaciones de esta comunidad', 'flavor-platform'); ?></h2>
                 <?php
                 $instalaciones_list = $wpdb->get_results($wpdb->prepare(
                     "SELECT * FROM {$tabla_instalaciones} WHERE energia_comunidad_id = %d ORDER BY created_at DESC",
@@ -2062,10 +2062,10 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Potencia', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Nombre', 'flavor-platform'); ?></th>
+                            <th><?php esc_html_e('Tipo', 'flavor-platform'); ?></th>
+                            <th><?php esc_html_e('Potencia', 'flavor-platform'); ?></th>
+                            <th><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -2084,12 +2084,12 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
                     </tbody>
                 </table>
                 <?php else: ?>
-                <p class="description"><?php esc_html_e('No hay instalaciones registradas en esta comunidad.', 'flavor-chat-ia'); ?></p>
+                <p class="description"><?php esc_html_e('No hay instalaciones registradas en esta comunidad.', 'flavor-platform'); ?></p>
                 <?php endif; ?>
             </div>
 
             <div class="card" style="max-width:none;padding:20px;margin-top:20px;">
-                <h2><?php esc_html_e('Participantes', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Participantes', 'flavor-platform'); ?></h2>
                 <?php
                 $participantes_list = $wpdb->get_results($wpdb->prepare(
                     "SELECT p.*, u.display_name, u.user_email
@@ -2104,17 +2104,17 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('Usuario', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Rol', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Cuota (%)', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Usuario', 'flavor-platform'); ?></th>
+                            <th><?php esc_html_e('Rol', 'flavor-platform'); ?></th>
+                            <th><?php esc_html_e('Cuota (%)', 'flavor-platform'); ?></th>
+                            <th><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($participantes_list as $part): ?>
                         <tr>
                             <td>
-                                <?php echo esc_html($part->display_name ?: __('Usuario', 'flavor-chat-ia') . ' #' . $part->user_id); ?>
+                                <?php echo esc_html($part->display_name ?: __('Usuario', 'flavor-platform') . ' #' . $part->user_id); ?>
                                 <br><small style="color:#64748b;"><?php echo esc_html($part->user_email ?? ''); ?></small>
                             </td>
                             <td><?php echo esc_html(ucfirst($part->rol ?? 'miembro')); ?></td>
@@ -2129,7 +2129,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
                     </tbody>
                 </table>
                 <?php else: ?>
-                <p class="description"><?php esc_html_e('No hay participantes registrados en esta comunidad.', 'flavor-chat-ia'); ?></p>
+                <p class="description"><?php esc_html_e('No hay participantes registrados en esta comunidad.', 'flavor-platform'); ?></p>
                 <?php endif; ?>
             </div>
         </div>
@@ -2157,9 +2157,9 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         ob_start();
     ?>
         <div class="flavor-energia-listado">
-            <h3><?php esc_html_e('Instalaciones', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Instalaciones', 'flavor-platform'); ?></h3>
             <?php if (empty($instalaciones)) : ?>
-                <p><?php esc_html_e('Todavia no hay instalaciones registradas.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('Todavia no hay instalaciones registradas.', 'flavor-platform'); ?></p>
             <?php else : ?>
                 <ul>
                     <?php foreach ($instalaciones as $instalacion) : ?>
@@ -2190,13 +2190,13 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         ob_start();
     ?>
         <div class="flavor-energia-balance">
-            <h3><?php esc_html_e('Balance y reparto', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('Base para reparto proporcional, por aportacion o por necesidades esenciales.', 'flavor-chat-ia'); ?>
+            <h3><?php esc_html_e('Balance y reparto', 'flavor-platform'); ?></h3>
+            <p><?php esc_html_e('Base para reparto proporcional, por aportacion o por necesidades esenciales.', 'flavor-platform'); ?>
             </p>
             <?php if (!empty($comunidades)) : ?>
                 <form method="get" class="flavor-form" style="margin:0 0 16px;">
                     <input type="hidden" name="energia_comunidad_id" value="">
-                    <label for="energia-balance-comunidad"><?php esc_html_e('Comunidad energética', 'flavor-chat-ia'); ?></label>
+                    <label for="energia-balance-comunidad"><?php esc_html_e('Comunidad energética', 'flavor-platform'); ?></label>
                     <select id="energia-balance-comunidad" onchange="window.location.search='?energia_comunidad_id='+this.value;">
                         <?php foreach ($comunidades as $comunidad) : ?>
                             <option value="<?php echo esc_attr($comunidad->id); ?>"
@@ -2208,11 +2208,11 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
                 </form>
             <?php endif; ?>
             <p>
-                <strong><?php esc_html_e('Generacion neta del mes:', 'flavor-chat-ia'); ?></strong>
+                <strong><?php esc_html_e('Generacion neta del mes:', 'flavor-platform'); ?></strong>
                 <?php echo esc_html(number_format_i18n($excedente, 1)); ?> kWh
             </p>
             <p>
-                <strong><?php esc_html_e('Ahorro estimado:', 'flavor-chat-ia'); ?></strong>
+                <strong><?php esc_html_e('Ahorro estimado:', 'flavor-platform'); ?></strong>
                 <?php echo esc_html(number_format_i18n($data['ahorro_estimado_eur'], 2)); ?> €
             </p>
             <?php if (!empty($data['participantes'])) : ?>
@@ -2220,11 +2220,11 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
                     <table class="flavor-table">
                         <thead>
                             <tr>
-                                <th><?php esc_html_e('Participante', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Coeficiente', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('% reparto', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('kWh asignados', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Ahorro', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Participante', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Coeficiente', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('% reparto', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('kWh asignados', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Ahorro', 'flavor-platform'); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -2265,9 +2265,9 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         ob_start();
     ?>
         <div class="flavor-energia-mantenimiento">
-            <h3><?php esc_html_e('Mantenimiento e incidencias', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Mantenimiento e incidencias', 'flavor-platform'); ?></h3>
             <?php if (empty($incidencias)) : ?>
-                <p><?php esc_html_e('No hay incidencias abiertas.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No hay incidencias abiertas.', 'flavor-platform'); ?></p>
             <?php else : ?>
                 <ul>
                     <?php foreach ($incidencias as $incidencia) : ?>
@@ -2287,7 +2287,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
 
     // public function shortcode_proyectos()
     // {
-    //     return '<div class="flavor-energia-proyectos"><h3>' . esc_html__('Proyectos energeticos', 'flavor-chat-ia') . '</h3><p>' . esc_html__('Espacio previsto para ampliaciones, compras colectivas, subvenciones y votaciones comunitarias.', 'flavor-chat-ia') . '</p></div>';
+    //     return '<div class="flavor-energia-proyectos"><h3>' . esc_html__('Proyectos energeticos', 'flavor-platform') . '</h3><p>' . esc_html__('Espacio previsto para ampliaciones, compras colectivas, subvenciones y votaciones comunitarias.', 'flavor-platform') . '</p></div>';
     // }
 
     public function shortcode_participantes()
@@ -2299,9 +2299,9 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         ob_start();
     ?>
         <div class="flavor-energia-participantes">
-            <h3><?php esc_html_e('Participantes y coeficientes', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Participantes y coeficientes', 'flavor-platform'); ?></h3>
             <?php if (empty($participantes)) : ?>
-                <p><?php esc_html_e('Todavía no hay participantes registrados en esta comunidad energética.', 'flavor-chat-ia'); ?>
+                <p><?php esc_html_e('Todavía no hay participantes registrados en esta comunidad energética.', 'flavor-platform'); ?>
                 </p>
             <?php else : ?>
                 <ul class="flavor-energia-participantes-list">
@@ -2333,19 +2333,19 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         ob_start();
     ?>
         <div class="flavor-energia-cierres">
-            <h3><?php esc_html_e('Histórico de cierres mensuales', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Histórico de cierres mensuales', 'flavor-platform'); ?></h3>
             <?php if (empty($cierres)) : ?>
-                <p><?php esc_html_e('Todavía no hay cierres mensuales guardados.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('Todavía no hay cierres mensuales guardados.', 'flavor-platform'); ?></p>
             <?php else : ?>
                 <div class="flavor-table-responsive">
                     <table class="flavor-table">
                         <thead>
                             <tr>
-                                <th><?php esc_html_e('Periodo', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Generados', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Consumidos', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Excedente', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Ahorro', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Periodo', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Generados', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Consumidos', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Excedente', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Ahorro', 'flavor-platform'); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -2364,16 +2364,16 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
                     </table>
                 </div>
                 <?php if (!empty($detalle)) : ?>
-                    <h4><?php esc_html_e('Detalle del cierre', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php esc_html_e('Detalle del cierre', 'flavor-platform'); ?></h4>
                     <div class="flavor-table-responsive">
                         <table class="flavor-table">
                             <thead>
                                 <tr>
-                                    <th><?php esc_html_e('Participante', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Coeficiente', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('% reparto', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('kWh', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Ahorro', 'flavor-chat-ia'); ?></th>
+                                    <th><?php esc_html_e('Participante', 'flavor-platform'); ?></th>
+                                    <th><?php esc_html_e('Coeficiente', 'flavor-platform'); ?></th>
+                                    <th><?php esc_html_e('% reparto', 'flavor-platform'); ?></th>
+                                    <th><?php esc_html_e('kWh', 'flavor-platform'); ?></th>
+                                    <th><?php esc_html_e('Ahorro', 'flavor-platform'); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -2391,17 +2391,17 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
                     </div>
                 <?php endif; ?>
                 <?php if (!empty($liquidaciones)) : ?>
-                    <h4><?php esc_html_e('Liquidaciones generadas', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php esc_html_e('Liquidaciones generadas', 'flavor-platform'); ?></h4>
                     <div class="flavor-table-responsive">
                         <table class="flavor-table">
                             <thead>
                                 <tr>
-                                    <th><?php esc_html_e('Referencia', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Participante', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('kWh liquidados', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Precio', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Importe ahorro', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                                    <th><?php esc_html_e('Referencia', 'flavor-platform'); ?></th>
+                                    <th><?php esc_html_e('Participante', 'flavor-platform'); ?></th>
+                                    <th><?php esc_html_e('kWh liquidados', 'flavor-platform'); ?></th>
+                                    <th><?php esc_html_e('Precio', 'flavor-platform'); ?></th>
+                                    <th><?php esc_html_e('Importe ahorro', 'flavor-platform'); ?></th>
+                                    <th><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -2452,16 +2452,16 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         ob_start();
     ?>
         <div class="flavor-energia-liquidaciones">
-            <h3><?php esc_html_e('Liquidaciones por participante', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Liquidaciones por participante', 'flavor-platform'); ?></h3>
             <?php if ($export_url) : ?>
                 <p><a class="flavor-btn flavor-btn-secondary"
-                        href="<?php echo esc_url($export_url); ?>"><?php esc_html_e('Exportar CSV', 'flavor-chat-ia'); ?></a></p>
+                        href="<?php echo esc_url($export_url); ?>"><?php esc_html_e('Exportar CSV', 'flavor-platform'); ?></a></p>
             <?php endif; ?>
             <?php if (!empty($comunidades)) : ?>
                 <form method="get" class="flavor-form flavor-energia-filters" style="margin:0 0 16px;">
                     <div class="flavor-form-group">
                         <label
-                            for="energia-liquidaciones-comunidad"><?php esc_html_e('Comunidad energética', 'flavor-chat-ia'); ?></label>
+                            for="energia-liquidaciones-comunidad"><?php esc_html_e('Comunidad energética', 'flavor-platform'); ?></label>
                         <select id="energia-liquidaciones-comunidad" name="energia_comunidad_id">
                             <?php foreach ($comunidades as $comunidad) : ?>
                                 <option value="<?php echo esc_attr($comunidad->id); ?>"
@@ -2472,14 +2472,14 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
                         </select>
                     </div>
                     <div class="flavor-form-group">
-                        <label for="energia-liquidaciones-periodo"><?php esc_html_e('Periodo', 'flavor-chat-ia'); ?></label>
+                        <label for="energia-liquidaciones-periodo"><?php esc_html_e('Periodo', 'flavor-platform'); ?></label>
                         <input id="energia-liquidaciones-periodo" type="month" name="periodo"
                             value="<?php echo esc_attr($filters['periodo']); ?>">
                     </div>
                     <div class="flavor-form-group">
-                        <label for="energia-liquidaciones-estado"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></label>
+                        <label for="energia-liquidaciones-estado"><?php esc_html_e('Estado', 'flavor-platform'); ?></label>
                         <select id="energia-liquidaciones-estado" name="estado">
-                            <option value=""><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php esc_html_e('Todos', 'flavor-platform'); ?></option>
                             <?php foreach ($estados as $estado) : ?>
                                 <option value="<?php echo esc_attr($estado); ?>" <?php selected($filters['estado'], $estado); ?>>
                                     <?php echo esc_html($estado); ?>
@@ -2488,45 +2488,45 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
                         </select>
                     </div>
                     <div class="flavor-form-group">
-                        <label for="energia-liquidaciones-fecha-desde"><?php esc_html_e('Desde', 'flavor-chat-ia'); ?></label>
+                        <label for="energia-liquidaciones-fecha-desde"><?php esc_html_e('Desde', 'flavor-platform'); ?></label>
                         <input id="energia-liquidaciones-fecha-desde" type="date" name="fecha_desde"
                             value="<?php echo esc_attr($filters['fecha_desde']); ?>">
                     </div>
                     <div class="flavor-form-group">
-                        <label for="energia-liquidaciones-fecha-hasta"><?php esc_html_e('Hasta', 'flavor-chat-ia'); ?></label>
+                        <label for="energia-liquidaciones-fecha-hasta"><?php esc_html_e('Hasta', 'flavor-platform'); ?></label>
                         <input id="energia-liquidaciones-fecha-hasta" type="date" name="fecha_hasta"
                             value="<?php echo esc_attr($filters['fecha_hasta']); ?>">
                     </div>
                     <div class="flavor-energia-filters-actions">
                         <button type="submit"
-                            class="flavor-btn flavor-btn-primary"><?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?></button>
+                            class="flavor-btn flavor-btn-primary"><?php esc_html_e('Filtrar', 'flavor-platform'); ?></button>
                         <a class="flavor-btn flavor-btn-secondary"
-                            href="<?php echo esc_url(remove_query_arg(['periodo', 'estado', 'fecha_desde', 'fecha_hasta'])); ?>"><?php esc_html_e('Limpiar', 'flavor-chat-ia'); ?></a>
+                            href="<?php echo esc_url(remove_query_arg(['periodo', 'estado', 'fecha_desde', 'fecha_hasta'])); ?>"><?php esc_html_e('Limpiar', 'flavor-platform'); ?></a>
                     </div>
                 </form>
             <?php endif; ?>
             <?php if (empty($liquidaciones)) : ?>
-                <p><?php esc_html_e('Todavía no hay liquidaciones generadas para esta comunidad energética.', 'flavor-chat-ia'); ?>
+                <p><?php esc_html_e('Todavía no hay liquidaciones generadas para esta comunidad energética.', 'flavor-platform'); ?>
                 </p>
             <?php else : ?>
                 <div class="flavor-table-responsive">
                     <table class="flavor-table">
                         <thead>
                             <tr>
-                                <th><?php esc_html_e('Periodo', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Referencia', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Participante', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('kWh', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Precio', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Ahorro', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Notificada', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Aceptada', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Periodo', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Referencia', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Participante', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('kWh', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Precio', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Ahorro', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Notificada', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Aceptada', 'flavor-platform'); ?></th>
                                 <?php if ($can_manage) : ?>
-                                    <th><?php esc_html_e('Exportar', 'flavor-chat-ia'); ?></th>
+                                    <th><?php esc_html_e('Exportar', 'flavor-platform'); ?></th>
                                 <?php endif; ?>
                                 <?php if ($can_manage) : ?>
-                                    <th><?php esc_html_e('Accion', 'flavor-chat-ia'); ?></th>
+                                    <th><?php esc_html_e('Accion', 'flavor-platform'); ?></th>
                                 <?php endif; ?>
                             </tr>
                         </thead>
@@ -2550,7 +2550,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
                                     <?php if ($can_manage) : ?>
                                         <?php $export_item_url = wp_nonce_url(admin_url('admin-post.php?action=energia_comunitaria_exportar_liquidacion&liquidacion_id=' . (int) $liquidacion['id']), 'energia_comunitaria_exportar_liquidacion_' . (int) $liquidacion['id']); ?>
                                         <td><a class="flavor-btn flavor-btn-secondary"
-                                                href="<?php echo esc_url($export_item_url); ?>"><?php esc_html_e('CSV', 'flavor-chat-ia'); ?></a>
+                                                href="<?php echo esc_url($export_item_url); ?>"><?php esc_html_e('CSV', 'flavor-platform'); ?></a>
                                         </td>
                                     <?php endif; ?>
                                     <?php if ($can_manage) : ?>
@@ -2570,7 +2570,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
                                                     <?php endforeach; ?>
                                                 </select>
                                                 <button type="submit"
-                                                    class="flavor-btn flavor-btn-secondary"><?php esc_html_e('Actualizar', 'flavor-chat-ia'); ?></button>
+                                                    class="flavor-btn flavor-btn-secondary"><?php esc_html_e('Actualizar', 'flavor-platform'); ?></button>
                                             </form>
                                         </td>
                                     <?php endif; ?>
@@ -2589,11 +2589,11 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
     public function shortcode_form_comunidad()
     {
         if (!is_user_logged_in()) {
-            return '<p>' . esc_html__('Debes iniciar sesion para crear comunidades energeticas.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Debes iniciar sesion para crear comunidades energeticas.', 'flavor-platform') . '</p>';
         }
 
         if (!$this->can_manage_module()) {
-            return '<p>' . esc_html__('No tienes permisos para crear comunidades energeticas.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('No tienes permisos para crear comunidades energeticas.', 'flavor-platform') . '</p>';
         }
 
         $comunidades = $this->get_comunidades_wp_options();
@@ -2601,26 +2601,26 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         ob_start();
     ?>
         <div class="flavor-energia-form-wrapper">
-            <h3><?php esc_html_e('Crear comunidad energetica', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Crear comunidad energetica', 'flavor-platform'); ?></h3>
             <form method="post" class="flavor-form" action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>">
                 <?php wp_nonce_field('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field'); ?>
                 <input type="hidden" name="action" value="energia_comunitaria_crear_comunidad">
 
                 <div class="flavor-form-group">
-                    <label for="energia-comunidad-nombre"><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?></label>
+                    <label for="energia-comunidad-nombre"><?php esc_html_e('Nombre', 'flavor-platform'); ?></label>
                     <input id="energia-comunidad-nombre" type="text" name="nombre" required>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="energia-comunidad-descripcion"><?php esc_html_e('Descripcion', 'flavor-chat-ia'); ?></label>
+                    <label for="energia-comunidad-descripcion"><?php esc_html_e('Descripcion', 'flavor-platform'); ?></label>
                     <textarea id="energia-comunidad-descripcion" name="descripcion" rows="4"></textarea>
                 </div>
 
                 <div class="flavor-form-group">
                     <label
-                        for="energia-comunidad-vinculada"><?php esc_html_e('Comunidad social vinculada', 'flavor-chat-ia'); ?></label>
+                        for="energia-comunidad-vinculada"><?php esc_html_e('Comunidad social vinculada', 'flavor-platform'); ?></label>
                     <select id="energia-comunidad-vinculada" name="comunidad_id">
-                        <option value=""><?php esc_html_e('Sin vincular por ahora', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Sin vincular por ahora', 'flavor-platform'); ?></option>
                         <?php foreach ($comunidades as $comunidad) : ?>
                             <option value="<?php echo esc_attr($comunidad->id); ?>"><?php echo esc_html($comunidad->nombre); ?>
                             </option>
@@ -2629,38 +2629,38 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="energia-comunidad-tipo"><?php esc_html_e('Tecnologia principal', 'flavor-chat-ia'); ?></label>
+                    <label for="energia-comunidad-tipo"><?php esc_html_e('Tecnologia principal', 'flavor-platform'); ?></label>
                     <select id="energia-comunidad-tipo" name="tipo_instalacion_principal">
-                        <option value="solar"><?php esc_html_e('Solar', 'flavor-chat-ia'); ?></option>
-                        <option value="eolica"><?php esc_html_e('Mini eolica', 'flavor-chat-ia'); ?></option>
-                        <option value="mixta"><?php esc_html_e('Mixta', 'flavor-chat-ia'); ?></option>
-                        <option value="bateria"><?php esc_html_e('Bateria compartida', 'flavor-chat-ia'); ?></option>
+                        <option value="solar"><?php esc_html_e('Solar', 'flavor-platform'); ?></option>
+                        <option value="eolica"><?php esc_html_e('Mini eolica', 'flavor-platform'); ?></option>
+                        <option value="mixta"><?php esc_html_e('Mixta', 'flavor-platform'); ?></option>
+                        <option value="bateria"><?php esc_html_e('Bateria compartida', 'flavor-platform'); ?></option>
                     </select>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="energia-comunidad-reparto"><?php esc_html_e('Modelo de reparto', 'flavor-chat-ia'); ?></label>
+                    <label for="energia-comunidad-reparto"><?php esc_html_e('Modelo de reparto', 'flavor-platform'); ?></label>
                     <select id="energia-comunidad-reparto" name="modelo_reparto">
-                        <option value="proporcional"><?php esc_html_e('Proporcional', 'flavor-chat-ia'); ?></option>
-                        <option value="necesidades"><?php esc_html_e('Por necesidades', 'flavor-chat-ia'); ?></option>
-                        <option value="mixto"><?php esc_html_e('Mixto', 'flavor-chat-ia'); ?></option>
+                        <option value="proporcional"><?php esc_html_e('Proporcional', 'flavor-platform'); ?></option>
+                        <option value="necesidades"><?php esc_html_e('Por necesidades', 'flavor-platform'); ?></option>
+                        <option value="mixto"><?php esc_html_e('Mixto', 'flavor-platform'); ?></option>
                     </select>
                 </div>
 
                 <div class="flavor-form-group">
                     <label
-                        for="energia-comunidad-potencia"><?php esc_html_e('Potencia prevista kW', 'flavor-chat-ia'); ?></label>
+                        for="energia-comunidad-potencia"><?php esc_html_e('Potencia prevista kW', 'flavor-platform'); ?></label>
                     <input id="energia-comunidad-potencia" type="number" name="potencia_kw" min="0" step="0.01">
                 </div>
 
                 <div class="flavor-form-group">
                     <label
-                        for="energia-comunidad-bateria"><?php esc_html_e('Bateria prevista kWh', 'flavor-chat-ia'); ?></label>
+                        for="energia-comunidad-bateria"><?php esc_html_e('Bateria prevista kWh', 'flavor-platform'); ?></label>
                     <input id="energia-comunidad-bateria" type="number" name="bateria_kwh" min="0" step="0.01">
                 </div>
 
                 <button type="submit"
-                    class="flavor-btn flavor-btn-primary"><?php esc_html_e('Crear comunidad energetica', 'flavor-chat-ia'); ?></button>
+                    class="flavor-btn flavor-btn-primary"><?php esc_html_e('Crear comunidad energetica', 'flavor-platform'); ?></button>
             </form>
         </div>
     <?php
@@ -2671,11 +2671,11 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
     public function shortcode_form_instalacion()
     {
         if (!is_user_logged_in()) {
-            return '<p>' . esc_html__('Debes iniciar sesion para registrar instalaciones.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Debes iniciar sesion para registrar instalaciones.', 'flavor-platform') . '</p>';
         }
 
         if (!$this->can_manage_module()) {
-            return '<p>' . esc_html__('No tienes permisos para registrar instalaciones.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('No tienes permisos para registrar instalaciones.', 'flavor-platform') . '</p>';
         }
 
         $comunidades = $this->get_comunidades_wp_options();
@@ -2684,15 +2684,15 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         ob_start();
     ?>
         <div class="flavor-energia-form-wrapper">
-            <h3><?php esc_html_e('Registrar instalacion energetica', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Registrar instalacion energetica', 'flavor-platform'); ?></h3>
             <form method="post" class="flavor-form" action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>">
                 <?php wp_nonce_field('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field'); ?>
                 <input type="hidden" name="action" value="energia_comunitaria_crear_instalacion">
 
                 <div class="flavor-form-group">
-                    <label for="energia-comunidad-id"><?php esc_html_e('Comunidad energetica', 'flavor-chat-ia'); ?></label>
+                    <label for="energia-comunidad-id"><?php esc_html_e('Comunidad energetica', 'flavor-platform'); ?></label>
                     <select id="energia-comunidad-id" name="energia_comunidad_id" required>
-                        <option value=""><?php esc_html_e('Selecciona una comunidad energetica', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Selecciona una comunidad energetica', 'flavor-platform'); ?></option>
                         <?php foreach ($comunidades_energeticas as $item) : ?>
                             <option value="<?php echo esc_attr($item['id']); ?>">
                                 <?php echo esc_html($item['nombre'] . (!empty($item['comunidad_nombre']) ? ' - ' . $item['comunidad_nombre'] : '')); ?>
@@ -2702,43 +2702,43 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="instalacion-nombre"><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?></label>
+                    <label for="instalacion-nombre"><?php esc_html_e('Nombre', 'flavor-platform'); ?></label>
                     <input id="instalacion-nombre" type="text" name="nombre" required>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="instalacion-tipo"><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></label>
+                    <label for="instalacion-tipo"><?php esc_html_e('Tipo', 'flavor-platform'); ?></label>
                     <select id="instalacion-tipo" name="tipo">
-                        <option value="solar"><?php esc_html_e('Solar', 'flavor-chat-ia'); ?></option>
-                        <option value="bateria"><?php esc_html_e('Bateria', 'flavor-chat-ia'); ?></option>
-                        <option value="microred"><?php esc_html_e('Microred', 'flavor-chat-ia'); ?></option>
-                        <option value="eolica"><?php esc_html_e('Mini eolica', 'flavor-chat-ia'); ?></option>
+                        <option value="solar"><?php esc_html_e('Solar', 'flavor-platform'); ?></option>
+                        <option value="bateria"><?php esc_html_e('Bateria', 'flavor-platform'); ?></option>
+                        <option value="microred"><?php esc_html_e('Microred', 'flavor-platform'); ?></option>
+                        <option value="eolica"><?php esc_html_e('Mini eolica', 'flavor-platform'); ?></option>
                     </select>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="instalacion-potencia"><?php esc_html_e('Potencia kW', 'flavor-chat-ia'); ?></label>
+                    <label for="instalacion-potencia"><?php esc_html_e('Potencia kW', 'flavor-platform'); ?></label>
                     <input id="instalacion-potencia" type="number" name="potencia_kw" min="0" step="0.01">
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="instalacion-bateria"><?php esc_html_e('Bateria kWh', 'flavor-chat-ia'); ?></label>
+                    <label for="instalacion-bateria"><?php esc_html_e('Bateria kWh', 'flavor-platform'); ?></label>
                     <input id="instalacion-bateria" type="number" name="bateria_kwh" min="0" step="0.01">
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="instalacion-ubicacion"><?php esc_html_e('Ubicacion', 'flavor-chat-ia'); ?></label>
+                    <label for="instalacion-ubicacion"><?php esc_html_e('Ubicacion', 'flavor-platform'); ?></label>
                     <input id="instalacion-ubicacion" type="text" name="ubicacion">
                 </div>
 
                 <?php if (!empty($comunidades)) : ?>
                     <p class="flavor-form-help">
-                        <?php esc_html_e('Las comunidades sociales existentes pueden vincularse al crear o editar la comunidad energetica principal.', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Las comunidades sociales existentes pueden vincularse al crear o editar la comunidad energetica principal.', 'flavor-platform'); ?>
                     </p>
                 <?php endif; ?>
 
                 <button type="submit"
-                    class="flavor-btn flavor-btn-primary"><?php esc_html_e('Guardar instalacion', 'flavor-chat-ia'); ?></button>
+                    class="flavor-btn flavor-btn-primary"><?php esc_html_e('Guardar instalacion', 'flavor-platform'); ?></button>
             </form>
         </div>
     <?php
@@ -2749,11 +2749,11 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
     public function shortcode_form_participante()
     {
         if (!is_user_logged_in()) {
-            return '<p>' . esc_html__('Debes iniciar sesion para registrar participantes.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Debes iniciar sesion para registrar participantes.', 'flavor-platform') . '</p>';
         }
 
         if (!$this->can_manage_module()) {
-            return '<p>' . esc_html__('No tienes permisos para registrar participantes.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('No tienes permisos para registrar participantes.', 'flavor-platform') . '</p>';
         }
 
         $comunidades = $this->get_comunidades_energeticas_options();
@@ -2761,16 +2761,16 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         ob_start();
     ?>
         <div class="flavor-energia-form-wrapper">
-            <h3><?php esc_html_e('Registrar participante', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Registrar participante', 'flavor-platform'); ?></h3>
             <form method="post" class="flavor-form" action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>">
                 <?php wp_nonce_field('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field'); ?>
                 <input type="hidden" name="action" value="energia_comunitaria_crear_participante">
 
                 <div class="flavor-form-group">
                     <label
-                        for="participante-comunidad-id"><?php esc_html_e('Comunidad energética', 'flavor-chat-ia'); ?></label>
+                        for="participante-comunidad-id"><?php esc_html_e('Comunidad energética', 'flavor-platform'); ?></label>
                     <select id="participante-comunidad-id" name="energia_comunidad_id" required>
-                        <option value=""><?php esc_html_e('Selecciona una comunidad', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Selecciona una comunidad', 'flavor-platform'); ?></option>
                         <?php foreach ($comunidades as $comunidad) : ?>
                             <option value="<?php echo esc_attr($comunidad->id); ?>"><?php echo esc_html($comunidad->nombre); ?>
                             </option>
@@ -2779,34 +2779,34 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="participante-nombre"><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?></label>
+                    <label for="participante-nombre"><?php esc_html_e('Nombre', 'flavor-platform'); ?></label>
                     <input id="participante-nombre" type="text" name="nombre" required>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="participante-rol"><?php esc_html_e('Rol', 'flavor-chat-ia'); ?></label>
+                    <label for="participante-rol"><?php esc_html_e('Rol', 'flavor-platform'); ?></label>
                     <select id="participante-rol" name="rol">
-                        <option value="hogar"><?php esc_html_e('Hogar', 'flavor-chat-ia'); ?></option>
-                        <option value="comercio"><?php esc_html_e('Comercio', 'flavor-chat-ia'); ?></option>
-                        <option value="espacio_comun"><?php esc_html_e('Espacio común', 'flavor-chat-ia'); ?></option>
-                        <option value="equipamiento"><?php esc_html_e('Equipamiento', 'flavor-chat-ia'); ?></option>
+                        <option value="hogar"><?php esc_html_e('Hogar', 'flavor-platform'); ?></option>
+                        <option value="comercio"><?php esc_html_e('Comercio', 'flavor-platform'); ?></option>
+                        <option value="espacio_comun"><?php esc_html_e('Espacio común', 'flavor-platform'); ?></option>
+                        <option value="equipamiento"><?php esc_html_e('Equipamiento', 'flavor-platform'); ?></option>
                     </select>
                 </div>
 
                 <div class="flavor-form-group">
                     <label
-                        for="participante-coeficiente"><?php esc_html_e('Coeficiente de reparto', 'flavor-chat-ia'); ?></label>
+                        for="participante-coeficiente"><?php esc_html_e('Coeficiente de reparto', 'flavor-platform'); ?></label>
                     <input id="participante-coeficiente" type="number" name="coeficiente_reparto" min="0.01" step="0.01"
                         value="1">
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="participante-consumo"><?php esc_html_e('Consumo base kWh', 'flavor-chat-ia'); ?></label>
+                    <label for="participante-consumo"><?php esc_html_e('Consumo base kWh', 'flavor-platform'); ?></label>
                     <input id="participante-consumo" type="number" name="consumo_base_kwh" min="0" step="0.01" value="0">
                 </div>
 
                 <button type="submit"
-                    class="flavor-btn flavor-btn-primary"><?php esc_html_e('Guardar participante', 'flavor-chat-ia'); ?></button>
+                    class="flavor-btn flavor-btn-primary"><?php esc_html_e('Guardar participante', 'flavor-platform'); ?></button>
             </form>
         </div>
     <?php
@@ -2817,11 +2817,11 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
     public function shortcode_form_cierre()
     {
         if (!is_user_logged_in()) {
-            return '<p>' . esc_html__('Debes iniciar sesion para cerrar repartos.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Debes iniciar sesion para cerrar repartos.', 'flavor-platform') . '</p>';
         }
 
         if (!$this->can_manage_module()) {
-            return '<p>' . esc_html__('No tienes permisos para cerrar repartos.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('No tienes permisos para cerrar repartos.', 'flavor-platform') . '</p>';
         }
 
         $comunidades = $this->get_comunidades_energeticas_options();
@@ -2830,15 +2830,15 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         ob_start();
     ?>
         <div class="flavor-energia-form-wrapper">
-            <h3><?php esc_html_e('Cerrar reparto mensual', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Cerrar reparto mensual', 'flavor-platform'); ?></h3>
             <form method="post" class="flavor-form" action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>">
                 <?php wp_nonce_field('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field'); ?>
                 <input type="hidden" name="action" value="energia_comunitaria_cerrar_reparto">
 
                 <div class="flavor-form-group">
-                    <label for="cierre-comunidad-id"><?php esc_html_e('Comunidad energética', 'flavor-chat-ia'); ?></label>
+                    <label for="cierre-comunidad-id"><?php esc_html_e('Comunidad energética', 'flavor-platform'); ?></label>
                     <select id="cierre-comunidad-id" name="energia_comunidad_id" required>
-                        <option value=""><?php esc_html_e('Selecciona una comunidad', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Selecciona una comunidad', 'flavor-platform'); ?></option>
                         <?php foreach ($comunidades as $comunidad) : ?>
                             <option value="<?php echo esc_attr($comunidad->id); ?>"><?php echo esc_html($comunidad->nombre); ?>
                             </option>
@@ -2847,13 +2847,13 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="cierre-periodo"><?php esc_html_e('Periodo', 'flavor-chat-ia'); ?></label>
+                    <label for="cierre-periodo"><?php esc_html_e('Periodo', 'flavor-platform'); ?></label>
                     <input id="cierre-periodo" type="month" name="periodo" value="<?php echo esc_attr($periodo_actual); ?>"
                         required>
                 </div>
 
                 <button type="submit"
-                    class="flavor-btn flavor-btn-primary"><?php esc_html_e('Cerrar y guardar reparto', 'flavor-chat-ia'); ?></button>
+                    class="flavor-btn flavor-btn-primary"><?php esc_html_e('Cerrar y guardar reparto', 'flavor-platform'); ?></button>
             </form>
         </div>
     <?php
@@ -2864,11 +2864,11 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
     public function shortcode_form_lectura()
     {
         if (!is_user_logged_in()) {
-            return '<p>' . esc_html__('Debes iniciar sesion para registrar lecturas.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Debes iniciar sesion para registrar lecturas.', 'flavor-platform') . '</p>';
         }
 
         if (!$this->can_submit_readings()) {
-            return '<p>' . esc_html__('No tienes permisos para registrar lecturas.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('No tienes permisos para registrar lecturas.', 'flavor-platform') . '</p>';
         }
 
         global $wpdb;
@@ -2880,15 +2880,15 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         ob_start();
     ?>
         <div class="flavor-energia-form-wrapper">
-            <h3><?php esc_html_e('Registrar lectura energetica', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Registrar lectura energetica', 'flavor-platform'); ?></h3>
             <form method="post" class="flavor-form" action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>">
                 <?php wp_nonce_field('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field'); ?>
                 <input type="hidden" name="action" value="energia_comunitaria_registrar_lectura">
 
                 <div class="flavor-form-group">
-                    <label for="lectura-instalacion-id"><?php esc_html_e('Instalacion', 'flavor-chat-ia'); ?></label>
+                    <label for="lectura-instalacion-id"><?php esc_html_e('Instalacion', 'flavor-platform'); ?></label>
                     <select id="lectura-instalacion-id" name="instalacion_id" required>
-                        <option value=""><?php esc_html_e('Selecciona una instalacion', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Selecciona una instalacion', 'flavor-platform'); ?></option>
                         <?php foreach ($instalaciones as $instalacion) : ?>
                             <option value="<?php echo esc_attr($instalacion->id); ?>"><?php echo esc_html($instalacion->nombre); ?>
                             </option>
@@ -2897,22 +2897,22 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="lectura-generada"><?php esc_html_e('Energia generada kWh', 'flavor-chat-ia'); ?></label>
+                    <label for="lectura-generada"><?php esc_html_e('Energia generada kWh', 'flavor-platform'); ?></label>
                     <input id="lectura-generada" type="number" name="energia_generada_kwh" min="0" step="0.01" required>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="lectura-consumida"><?php esc_html_e('Energia consumida kWh', 'flavor-chat-ia'); ?></label>
+                    <label for="lectura-consumida"><?php esc_html_e('Energia consumida kWh', 'flavor-platform'); ?></label>
                     <input id="lectura-consumida" type="number" name="energia_consumida_kwh" min="0" step="0.01" required>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="lectura-bateria"><?php esc_html_e('Bateria %', 'flavor-chat-ia'); ?></label>
+                    <label for="lectura-bateria"><?php esc_html_e('Bateria %', 'flavor-platform'); ?></label>
                     <input id="lectura-bateria" type="number" name="bateria_porcentaje" min="0" max="100" step="0.01">
                 </div>
 
                 <button type="submit"
-                    class="flavor-btn flavor-btn-primary"><?php esc_html_e('Guardar lectura', 'flavor-chat-ia'); ?></button>
+                    class="flavor-btn flavor-btn-primary"><?php esc_html_e('Guardar lectura', 'flavor-platform'); ?></button>
             </form>
         </div>
     <?php
@@ -2923,11 +2923,11 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
     public function shortcode_form_incidencia()
     {
         if (!is_user_logged_in()) {
-            return '<p>' . esc_html__('Debes iniciar sesion para reportar incidencias.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Debes iniciar sesion para reportar incidencias.', 'flavor-platform') . '</p>';
         }
 
         if (!$this->can_submit_reports()) {
-            return '<p>' . esc_html__('No tienes permisos para reportar incidencias.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('No tienes permisos para reportar incidencias.', 'flavor-platform') . '</p>';
         }
 
         global $wpdb;
@@ -2939,15 +2939,15 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         ob_start();
     ?>
         <div class="flavor-energia-form-wrapper">
-            <h3><?php esc_html_e('Reportar incidencia tecnica', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Reportar incidencia tecnica', 'flavor-platform'); ?></h3>
             <form method="post" class="flavor-form" action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>">
                 <?php wp_nonce_field('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field'); ?>
                 <input type="hidden" name="action" value="energia_comunitaria_reportar_incidencia">
 
                 <div class="flavor-form-group">
-                    <label for="incidencia-instalacion-id"><?php esc_html_e('Instalacion', 'flavor-chat-ia'); ?></label>
+                    <label for="incidencia-instalacion-id"><?php esc_html_e('Instalacion', 'flavor-platform'); ?></label>
                     <select id="incidencia-instalacion-id" name="instalacion_id" required>
-                        <option value=""><?php esc_html_e('Selecciona una instalacion', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Selecciona una instalacion', 'flavor-platform'); ?></option>
                         <?php foreach ($instalaciones as $instalacion) : ?>
                             <option value="<?php echo esc_attr($instalacion->id); ?>"><?php echo esc_html($instalacion->nombre); ?>
                             </option>
@@ -2956,26 +2956,26 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="incidencia-titulo"><?php esc_html_e('Titulo', 'flavor-chat-ia'); ?></label>
+                    <label for="incidencia-titulo"><?php esc_html_e('Titulo', 'flavor-platform'); ?></label>
                     <input id="incidencia-titulo" type="text" name="titulo" required>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="incidencia-descripcion"><?php esc_html_e('Descripcion', 'flavor-chat-ia'); ?></label>
+                    <label for="incidencia-descripcion"><?php esc_html_e('Descripcion', 'flavor-platform'); ?></label>
                     <textarea id="incidencia-descripcion" name="descripcion" rows="4"></textarea>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="incidencia-prioridad"><?php esc_html_e('Prioridad', 'flavor-chat-ia'); ?></label>
+                    <label for="incidencia-prioridad"><?php esc_html_e('Prioridad', 'flavor-platform'); ?></label>
                     <select id="incidencia-prioridad" name="prioridad">
-                        <option value="baja"><?php esc_html_e('Baja', 'flavor-chat-ia'); ?></option>
-                        <option value="media"><?php esc_html_e('Media', 'flavor-chat-ia'); ?></option>
-                        <option value="alta"><?php esc_html_e('Alta', 'flavor-chat-ia'); ?></option>
+                        <option value="baja"><?php esc_html_e('Baja', 'flavor-platform'); ?></option>
+                        <option value="media"><?php esc_html_e('Media', 'flavor-platform'); ?></option>
+                        <option value="alta"><?php esc_html_e('Alta', 'flavor-platform'); ?></option>
                     </select>
                 </div>
 
                 <button type="submit"
-                    class="flavor-btn flavor-btn-primary"><?php esc_html_e('Enviar incidencia', 'flavor-chat-ia'); ?></button>
+                    class="flavor-btn flavor-btn-primary"><?php esc_html_e('Enviar incidencia', 'flavor-platform'); ?></button>
             </form>
         </div>
 <?php
@@ -2988,7 +2988,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         check_ajax_referer('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field');
 
         if (!is_user_logged_in() || !$this->can_manage_module()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesion.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesion.', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -2996,7 +2996,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         $energia_comunidad_id = absint($_POST['energia_comunidad_id'] ?? 0);
 
         if ($energia_comunidad_id <= 0 || !$this->user_can_manage_energia_comunidad($energia_comunidad_id)) {
-            wp_send_json_error(['message' => __('No puedes crear instalaciones en esa comunidad energetica.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No puedes crear instalaciones en esa comunidad energetica.', 'flavor-platform')]);
         }
 
         $wpdb->insert(
@@ -3016,7 +3016,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         );
 
         wp_send_json_success([
-            'message' => __('Instalacion creada correctamente.', 'flavor-chat-ia'),
+            'message' => __('Instalacion creada correctamente.', 'flavor-platform'),
             'id' => $wpdb->insert_id,
         ]);
     }
@@ -3026,7 +3026,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         check_ajax_referer('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field');
 
         if (!is_user_logged_in() || !$this->can_manage_module()) {
-            wp_send_json_error(['message' => __('No tienes permisos para crear comunidades energeticas.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes permisos para crear comunidades energeticas.', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -3051,7 +3051,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         );
 
         wp_send_json_success([
-            'message' => __('Comunidad energetica creada correctamente.', 'flavor-chat-ia'),
+            'message' => __('Comunidad energetica creada correctamente.', 'flavor-platform'),
             'id' => $wpdb->insert_id,
         ]);
     }
@@ -3061,7 +3061,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         check_ajax_referer('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field');
 
         if (!is_user_logged_in() || !$this->can_submit_readings()) {
-            wp_send_json_error(['message' => __('No tienes permisos para registrar lecturas.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes permisos para registrar lecturas.', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -3071,7 +3071,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         $consumida = floatval($_POST['energia_consumida_kwh'] ?? 0);
 
         if ($instalacion_id <= 0 || !$this->user_can_manage_instalacion($instalacion_id)) {
-            wp_send_json_error(['message' => __('No puedes registrar lecturas en esa instalacion.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No puedes registrar lecturas en esa instalacion.', 'flavor-platform')]);
         }
 
         $wpdb->insert(
@@ -3091,7 +3091,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         );
 
         wp_send_json_success([
-            'message' => __('Lectura registrada correctamente.', 'flavor-chat-ia'),
+            'message' => __('Lectura registrada correctamente.', 'flavor-platform'),
             'id' => $wpdb->insert_id,
         ]);
     }
@@ -3101,7 +3101,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         check_ajax_referer('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field');
 
         if (!is_user_logged_in() || !$this->can_manage_module()) {
-            wp_send_json_error(['message' => __('No tienes permisos para registrar participantes.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes permisos para registrar participantes.', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -3109,7 +3109,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         $energia_comunidad_id = absint($_POST['energia_comunidad_id'] ?? 0);
 
         if ($energia_comunidad_id <= 0 || !$this->user_can_manage_energia_comunidad($energia_comunidad_id)) {
-            wp_send_json_error(['message' => __('No puedes registrar participantes en esa comunidad energética.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No puedes registrar participantes en esa comunidad energética.', 'flavor-platform')]);
         }
 
         $wpdb->insert(
@@ -3128,7 +3128,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         );
 
         wp_send_json_success([
-            'message' => __('Participante registrado correctamente.', 'flavor-chat-ia'),
+            'message' => __('Participante registrado correctamente.', 'flavor-platform'),
             'id' => $wpdb->insert_id,
         ]);
     }
@@ -3138,7 +3138,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         check_ajax_referer('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field');
 
         if (!is_user_logged_in() || !$this->can_manage_module()) {
-            wp_send_json_error(['message' => __('No tienes permisos para cerrar repartos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes permisos para cerrar repartos.', 'flavor-platform')]);
         }
 
         $resultado = $this->cerrar_reparto_mensual(
@@ -3151,7 +3151,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         }
 
         wp_send_json_success([
-            'message' => __('Cierre mensual registrado correctamente.', 'flavor-chat-ia'),
+            'message' => __('Cierre mensual registrado correctamente.', 'flavor-platform'),
             'cierre_id' => $resultado['cierre_id'],
             'periodo' => $resultado['periodo'],
         ]);
@@ -3162,7 +3162,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         check_ajax_referer('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field');
 
         if (!is_user_logged_in() || !$this->can_submit_reports()) {
-            wp_send_json_error(['message' => __('No tienes permisos para reportar incidencias.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes permisos para reportar incidencias.', 'flavor-platform')]);
         }
 
         $request = new WP_REST_Request('POST');
@@ -3185,7 +3185,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         check_ajax_referer('energia_comunitaria_nonce', 'energia_comunitaria_nonce_field');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('No tienes permisos para gestionar liquidaciones.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes permisos para gestionar liquidaciones.', 'flavor-platform')]);
         }
 
         $resultado = $this->actualizar_estado_liquidacion(
@@ -3203,7 +3203,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
     public function handle_exportar_liquidaciones_csv()
     {
         if (!is_user_logged_in()) {
-            wp_die(__('Debes iniciar sesion para exportar liquidaciones.', 'flavor-chat-ia'));
+            wp_die(__('Debes iniciar sesion para exportar liquidaciones.', 'flavor-platform'));
         }
 
         $energia_comunidad_id = absint($_GET['energia_comunidad_id'] ?? 0);
@@ -3211,7 +3211,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         check_admin_referer('energia_comunitaria_exportar_liquidaciones_' . $energia_comunidad_id);
 
         if ($energia_comunidad_id <= 0 || !$this->user_can_manage_energia_comunidad($energia_comunidad_id)) {
-            wp_die(__('No tienes permisos para exportar estas liquidaciones.', 'flavor-chat-ia'));
+            wp_die(__('No tienes permisos para exportar estas liquidaciones.', 'flavor-platform'));
         }
 
         $resultado = $this->stream_liquidaciones_csv($energia_comunidad_id);
@@ -3226,7 +3226,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
     public function handle_exportar_liquidacion_csv()
     {
         if (!is_user_logged_in()) {
-            wp_die(__('Debes iniciar sesion para exportar la liquidacion.', 'flavor-chat-ia'));
+            wp_die(__('Debes iniciar sesion para exportar la liquidacion.', 'flavor-platform'));
         }
 
         $liquidacion_id = absint($_GET['liquidacion_id'] ?? 0);
@@ -3235,7 +3235,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
 
         $liquidacion = $this->get_liquidacion($liquidacion_id);
         if (!$liquidacion || !$this->user_can_manage_energia_comunidad((int) $liquidacion->energia_comunidad_id)) {
-            wp_die(__('No tienes permisos para exportar esta liquidacion.', 'flavor-chat-ia'));
+            wp_die(__('No tienes permisos para exportar esta liquidacion.', 'flavor-platform'));
         }
 
         $resultado = $this->stream_liquidacion_csv($liquidacion_id);
@@ -3299,7 +3299,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
 
         return [
             'success' => false,
-            'error' => __('Accion no encontrada.', 'flavor-chat-ia'),
+            'error' => __('Accion no encontrada.', 'flavor-platform'),
         ];
     }
 
@@ -3333,7 +3333,7 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
         if (!is_user_logged_in()) {
             return [
                 'success' => false,
-                'error' => __('Debes iniciar sesion para reportar incidencias.', 'flavor-chat-ia'),
+                'error' => __('Debes iniciar sesion para reportar incidencias.', 'flavor-platform'),
             ];
         }
 
@@ -3390,12 +3390,12 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
     {
         $comunidad = $this->resolve_contextual_energia_comunidad($params);
         if (!$comunidad) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona una comunidad energética para ver su foro.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona una comunidad energética para ver su foro.', 'flavor-platform') . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-foro">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;">'
-            . '<h2>' . esc_html__('Foro de la comunidad energética', 'flavor-chat-ia') . '</h2>'
+            . '<h2>' . esc_html__('Foro de la comunidad energética', 'flavor-platform') . '</h2>'
             . '<p>' . esc_html($comunidad['titulo']) . '</p>'
             . '</div>'
             . do_shortcode('[flavor_foros_integrado entidad="energia_comunidad" entidad_id="' . absint($comunidad['id']) . '"]')
@@ -3406,18 +3406,18 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
     {
         $comunidad = $this->resolve_contextual_energia_comunidad($params);
         if (!$comunidad) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona una comunidad energética para ver su chat.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona una comunidad energética para ver su chat.', 'flavor-platform') . '</p>';
         }
 
         if (!is_user_logged_in()) {
-            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de esta comunidad energética.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de esta comunidad energética.', 'flavor-platform') . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-chat">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Chat de la comunidad energética', 'flavor-chat-ia') . '</h2><p>' . esc_html($comunidad['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Chat de la comunidad energética', 'flavor-platform') . '</h2><p>' . esc_html($comunidad['titulo']) . '</p></div>'
             . '<a href="' . esc_url(home_url('/mi-portal/chat-grupos/mensajes/?energia_comunidad_id=' . absint($comunidad['id']))) . '" class="button button-secondary">'
-            . esc_html__('Abrir chat completo', 'flavor-chat-ia')
+            . esc_html__('Abrir chat completo', 'flavor-platform')
             . '</a></div>'
             . do_shortcode('[flavor_chat_grupo_integrado entidad="energia_comunidad" entidad_id="' . absint($comunidad['id']) . '"]')
             . '</div>';
@@ -3427,14 +3427,14 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
     {
         $comunidad = $this->resolve_contextual_energia_comunidad($params);
         if (!$comunidad) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona una comunidad energética para ver sus archivos.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona una comunidad energética para ver sus archivos.', 'flavor-platform') . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-multimedia">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Archivos de la comunidad energética', 'flavor-chat-ia') . '</h2><p>' . esc_html($comunidad['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Archivos de la comunidad energética', 'flavor-platform') . '</h2><p>' . esc_html($comunidad['titulo']) . '</p></div>'
             . '<a href="' . esc_url(home_url('/mi-portal/multimedia/subir/?energia_comunidad_id=' . absint($comunidad['id']))) . '" class="button button-primary">'
-            . esc_html__('Subir archivo', 'flavor-chat-ia')
+            . esc_html__('Subir archivo', 'flavor-platform')
             . '</a></div>'
             . do_shortcode('[flavor_multimedia_galeria entidad="energia_comunidad" entidad_id="' . absint($comunidad['id']) . '"]')
             . '</div>';
@@ -3444,18 +3444,18 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
     {
         $comunidad = $this->resolve_contextual_energia_comunidad($params);
         if (!$comunidad) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona una comunidad energética para ver su actividad social.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona una comunidad energética para ver su actividad social.', 'flavor-platform') . '</p>';
         }
 
         if (!is_user_logged_in()) {
-            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de esta comunidad energética.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de esta comunidad energética.', 'flavor-platform') . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-red-social">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Actividad social de la comunidad energética', 'flavor-chat-ia') . '</h2><p>' . esc_html($comunidad['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Actividad social de la comunidad energética', 'flavor-platform') . '</h2><p>' . esc_html($comunidad['titulo']) . '</p></div>'
             . '<a href="' . esc_url(home_url('/mi-portal/red-social/crear/?energia_comunidad_id=' . absint($comunidad['id']))) . '" class="button button-primary">'
-            . esc_html__('Publicar', 'flavor-chat-ia')
+            . esc_html__('Publicar', 'flavor-platform')
             . '</a></div>'
             . do_shortcode('[flavor_social_feed entidad="energia_comunidad" entidad_id="' . absint($comunidad['id']) . '"]')
             . '</div>';
@@ -3558,10 +3558,10 @@ KNOWLEDGE;
     {
         return [
             [
-                'title' => __('Energia Comunitaria', 'flavor-chat-ia'),
+                'title' => __('Energia Comunitaria', 'flavor-platform'),
                 'slug' => 'energia-comunitaria',
-                'content' => '<h1>' . __('Energia Comunitaria', 'flavor-chat-ia') . '</h1>
-<p>' . __('Gestiona comunidades energeticas, instalaciones, lecturas y mantenimiento para avanzar hacia la autosuficiencia local.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Energia Comunitaria', 'flavor-platform') . '</h1>
+<p>' . __('Gestiona comunidades energeticas, instalaciones, lecturas y mantenimiento para avanzar hacia la autosuficiencia local.', 'flavor-platform') . '</p>
 
 [flavor_energia_dashboard]
 
@@ -3569,37 +3569,37 @@ KNOWLEDGE;
                 'parent' => 0,
             ],
             [
-                'title' => __('Comunidades Energéticas', 'flavor-chat-ia'),
+                'title' => __('Comunidades Energéticas', 'flavor-platform'),
                 'slug' => 'comunidades',
-                'content' => '<h1>' . __('Comunidades Energéticas', 'flavor-chat-ia') . '</h1>
-<p>' . __('Consulta las comunidades energéticas registradas y su estado general.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Comunidades Energéticas', 'flavor-platform') . '</h1>
+<p>' . __('Consulta las comunidades energéticas registradas y su estado general.', 'flavor-platform') . '</p>
 
 [flavor module="energia-comunitaria" view="listado"]',
                 'parent' => 'energia-comunitaria',
             ],
             [
-                'title' => __('Nueva Comunidad Energética', 'flavor-chat-ia'),
+                'title' => __('Nueva Comunidad Energética', 'flavor-platform'),
                 'slug' => 'nueva-comunidad',
-                'content' => '<h1>' . __('Nueva Comunidad Energética', 'flavor-chat-ia') . '</h1>
-<p>' . __('Crea una comunidad energética y vincúlala con una comunidad social existente si lo necesitas.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Nueva Comunidad Energética', 'flavor-platform') . '</h1>
+<p>' . __('Crea una comunidad energética y vincúlala con una comunidad social existente si lo necesitas.', 'flavor-platform') . '</p>
 
 [flavor_energia_form_comunidad]',
                 'parent' => 'energia-comunitaria',
             ],
             [
-                'title' => __('Instalaciones', 'flavor-chat-ia'),
+                'title' => __('Instalaciones', 'flavor-platform'),
                 'slug' => 'instalaciones',
-                'content' => '<h1>' . __('Instalaciones Energéticas', 'flavor-chat-ia') . '</h1>
-<p>' . __('Consulta instalaciones solares, baterías, microredes y otros activos energéticos de la comunidad.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Instalaciones Energéticas', 'flavor-platform') . '</h1>
+<p>' . __('Consulta instalaciones solares, baterías, microredes y otros activos energéticos de la comunidad.', 'flavor-platform') . '</p>
 
 [flavor_energia_instalaciones]',
                 'parent' => 'energia-comunitaria',
             ],
             [
-                'title' => __('Participantes', 'flavor-chat-ia'),
+                'title' => __('Participantes', 'flavor-platform'),
                 'slug' => 'participantes',
-                'content' => '<h1>' . __('Participantes', 'flavor-chat-ia') . '</h1>
-<p>' . __('Gestiona coeficientes de reparto y consumos base de los hogares o espacios participantes.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Participantes', 'flavor-platform') . '</h1>
+<p>' . __('Gestiona coeficientes de reparto y consumos base de los hogares o espacios participantes.', 'flavor-platform') . '</p>
 
 [flavor_energia_participantes]
 
@@ -3607,28 +3607,28 @@ KNOWLEDGE;
                 'parent' => 'energia-comunitaria',
             ],
             [
-                'title' => __('Nueva Instalación', 'flavor-chat-ia'),
+                'title' => __('Nueva Instalación', 'flavor-platform'),
                 'slug' => 'nueva-instalacion',
-                'content' => '<h1>' . __('Registrar Instalación', 'flavor-chat-ia') . '</h1>
-<p>' . __('Añade una nueva instalación energética a una comunidad ya creada.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Registrar Instalación', 'flavor-platform') . '</h1>
+<p>' . __('Añade una nueva instalación energética a una comunidad ya creada.', 'flavor-platform') . '</p>
 
 [flavor_energia_form_instalacion]',
                 'parent' => 'energia-comunitaria',
             ],
             [
-                'title' => __('Registrar Lectura', 'flavor-chat-ia'),
+                'title' => __('Registrar Lectura', 'flavor-platform'),
                 'slug' => 'registrar-lectura',
-                'content' => '<h1>' . __('Registrar Lectura Energética', 'flavor-chat-ia') . '</h1>
-<p>' . __('Registra producción, consumo y estado de batería de una instalación.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Registrar Lectura Energética', 'flavor-platform') . '</h1>
+<p>' . __('Registra producción, consumo y estado de batería de una instalación.', 'flavor-platform') . '</p>
 
 [flavor_energia_form_lectura]',
                 'parent' => 'energia-comunitaria',
             ],
             [
-                'title' => __('Mantenimiento', 'flavor-chat-ia'),
+                'title' => __('Mantenimiento', 'flavor-platform'),
                 'slug' => 'mantenimiento',
-                'content' => '<h1>' . __('Mantenimiento e Incidencias', 'flavor-chat-ia') . '</h1>
-<p>' . __('Consulta incidencias abiertas y registra nuevas acciones de mantenimiento.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Mantenimiento e Incidencias', 'flavor-platform') . '</h1>
+<p>' . __('Consulta incidencias abiertas y registra nuevas acciones de mantenimiento.', 'flavor-platform') . '</p>
 
 [flavor_energia_mantenimiento]
 
@@ -3636,19 +3636,19 @@ KNOWLEDGE;
                 'parent' => 'energia-comunitaria',
             ],
             [
-                'title' => __('Balance Energético', 'flavor-chat-ia'),
+                'title' => __('Balance Energético', 'flavor-platform'),
                 'slug' => 'balance',
-                'content' => '<h1>' . __('Balance y Reparto Energético', 'flavor-chat-ia') . '</h1>
-<p>' . __('Consulta la generación neta y la base de reparto comunitario de energía.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Balance y Reparto Energético', 'flavor-platform') . '</h1>
+<p>' . __('Consulta la generación neta y la base de reparto comunitario de energía.', 'flavor-platform') . '</p>
 
 [flavor_energia_balance]',
                 'parent' => 'energia-comunitaria',
             ],
             [
-                'title' => __('Cierres Mensuales', 'flavor-chat-ia'),
+                'title' => __('Cierres Mensuales', 'flavor-platform'),
                 'slug' => 'cierres',
-                'content' => '<h1>' . __('Cierres Mensuales', 'flavor-chat-ia') . '</h1>
-<p>' . __('Consulta el histórico auditable de repartos cerrados y registra nuevos cierres mensuales.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Cierres Mensuales', 'flavor-platform') . '</h1>
+<p>' . __('Consulta el histórico auditable de repartos cerrados y registra nuevos cierres mensuales.', 'flavor-platform') . '</p>
 
 [flavor_energia_cierres]
 
@@ -3656,28 +3656,28 @@ KNOWLEDGE;
                 'parent' => 'energia-comunitaria',
             ],
             [
-                'title' => __('Liquidaciones', 'flavor-chat-ia'),
+                'title' => __('Liquidaciones', 'flavor-platform'),
                 'slug' => 'liquidaciones',
-                'content' => '<h1>' . __('Liquidaciones Energéticas', 'flavor-chat-ia') . '</h1>
-<p>' . __('Consulta el resumen económico por participante generado a partir de cada cierre mensual.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Liquidaciones Energéticas', 'flavor-platform') . '</h1>
+<p>' . __('Consulta el resumen económico por participante generado a partir de cada cierre mensual.', 'flavor-platform') . '</p>
 
 [flavor_energia_liquidaciones]',
                 'parent' => 'energia-comunitaria',
             ],
             [
-                'title' => __('Proyectos Energéticos', 'flavor-chat-ia'),
+                'title' => __('Proyectos Energéticos', 'flavor-platform'),
                 'slug' => 'proyectos',
-                'content' => '<h1>' . __('Proyectos Energéticos', 'flavor-chat-ia') . '</h1>
-<p>' . __('Visualiza ampliaciones, compras colectivas y futuras inversiones energéticas de la comunidad.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Proyectos Energéticos', 'flavor-platform') . '</h1>
+<p>' . __('Visualiza ampliaciones, compras colectivas y futuras inversiones energéticas de la comunidad.', 'flavor-platform') . '</p>
 
 [flavor_energia_proyectos]',
                 'parent' => 'energia-comunitaria',
             ],
             [
-                'title' => __('Comunidad', 'flavor-chat-ia'),
+                'title' => __('Comunidad', 'flavor-platform'),
                 'slug' => 'comunidad',
-                'content' => '<h1>' . __('Comunidad y Gobernanza', 'flavor-chat-ia') . '</h1>
-<p>' . __('Accede a la comunidad social vinculada para anuncios, coordinación y toma de decisiones.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Comunidad y Gobernanza', 'flavor-platform') . '</h1>
+<p>' . __('Accede a la comunidad social vinculada para anuncios, coordinación y toma de decisiones.', 'flavor-platform') . '</p>
 
 [comunidades_listado categoria="medioambiente" limite="6"]',
                 'parent' => 'energia-comunitaria',

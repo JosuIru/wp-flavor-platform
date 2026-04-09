@@ -10,8 +10,8 @@ $usuario_id = get_current_user_id();
 
 if (!$usuario_id) {
     echo '<div class="flavor-login-required bg-yellow-50 border border-yellow-200 rounded-xl p-6 text-center">';
-    echo '<p class="text-yellow-800">' . esc_html__('Debes iniciar sesión para ver tus anuncios.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="inline-block mt-4 bg-yellow-500 text-white px-6 py-2 rounded-lg hover:bg-yellow-600">' . esc_html__('Iniciar Sesión', 'flavor-chat-ia') . '</a>';
+    echo '<p class="text-yellow-800">' . esc_html__('Debes iniciar sesión para ver tus anuncios.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
+    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="inline-block mt-4 bg-yellow-500 text-white px-6 py-2 rounded-lg hover:bg-yellow-600">' . esc_html__('Iniciar Sesión', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
     echo '</div>';
     return;
 }
@@ -74,16 +74,16 @@ $total_anuncios = $query->found_posts;
     <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-2xl p-6 mb-6 shadow-lg">
         <div class="flex items-center justify-between flex-wrap gap-4">
             <div>
-                <h2 class="text-2xl font-bold mb-1"><?php echo esc_html__('📋 Mis Anuncios', 'flavor-chat-ia'); ?></h2>
-                <p class="text-indigo-100"><?php echo esc_html__('Gestiona tus productos publicados', 'flavor-chat-ia'); ?></p>
+                <h2 class="text-2xl font-bold mb-1"><?php echo esc_html__('📋 Mis Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <p class="text-indigo-100"><?php echo esc_html__('Gestiona tus productos publicados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <div class="flex items-center gap-3">
                 <span class="bg-white/20 backdrop-blur px-4 py-2 rounded-full text-sm">
-                    <?php echo esc_html($total_anuncios); ?> <?php echo esc_html__('anuncios', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html($total_anuncios); ?> <?php echo esc_html__('anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', 'publicar')); ?>"
                    class="bg-white text-indigo-600 px-5 py-2 rounded-xl font-semibold hover:bg-indigo-50 transition-all shadow-md">
-                    <?php echo esc_html__('+ Nuevo Anuncio', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('+ Nuevo Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -93,11 +93,11 @@ $total_anuncios = $query->found_posts;
     <!-- Estado vacío -->
     <div class="text-center py-12 bg-gray-50 rounded-2xl">
         <div class="text-6xl mb-4">📦</div>
-        <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No tienes anuncios publicados', 'flavor-chat-ia'); ?></h3>
-        <p class="text-gray-500 mb-6"><?php echo esc_html__('¡Publica tu primer producto y empieza a vender!', 'flavor-chat-ia'); ?></p>
+        <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No tienes anuncios publicados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+        <p class="text-gray-500 mb-6"><?php echo esc_html__('¡Publica tu primer producto y empieza a vender!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', 'publicar')); ?>"
            class="inline-block bg-indigo-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-indigo-600 transition-colors">
-            <?php echo esc_html__('Publicar Anuncio', 'flavor-chat-ia'); ?>
+            <?php echo esc_html__('Publicar Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
     <?php else: ?>
@@ -135,13 +135,13 @@ $total_anuncios = $query->found_posts;
                             <!-- Estado -->
                             <?php
                             $estado_class = 'bg-gray-100 text-gray-600';
-                            $estado_label = __('Borrador', 'flavor-chat-ia');
+                            $estado_label = __('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN);
                             if ($anuncio['estado'] === 'publish') {
                                 $estado_class = 'bg-green-100 text-green-700';
-                                $estado_label = __('Publicado', 'flavor-chat-ia');
+                                $estado_label = __('Publicado', FLAVOR_PLATFORM_TEXT_DOMAIN);
                             } elseif ($anuncio['estado'] === 'pending') {
                                 $estado_class = 'bg-yellow-100 text-yellow-700';
-                                $estado_label = __('Pendiente', 'flavor-chat-ia');
+                                $estado_label = __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN);
                             }
                             ?>
                             <span class="px-2 py-1 rounded-full <?php echo esc_attr($estado_class); ?>">
@@ -154,23 +154,23 @@ $total_anuncios = $query->found_posts;
                             </a>
                             <?php endif; ?>
                             <span>📅 <?php echo esc_html($anuncio['fecha']); ?></span>
-                            <span>👁 <?php echo esc_html($anuncio['vistas']); ?> <?php echo esc_html__('vistas', 'flavor-chat-ia'); ?></span>
+                            <span>👁 <?php echo esc_html($anuncio['vistas']); ?> <?php echo esc_html__('vistas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
 
                         <!-- Acciones -->
                         <div class="flex items-center gap-2">
                             <a href="<?php echo esc_url($anuncio['url']); ?>"
                                class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors">
-                                <?php echo esc_html__('Ver', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                             <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_item_url('marketplace', $anuncio['id'], 'editar')); ?>"
                                class="px-3 py-1 text-sm bg-indigo-100 text-indigo-600 rounded-lg hover:bg-indigo-200 transition-colors">
-                                <?php echo esc_html__('Editar', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                             <button type="button"
                                     class="px-3 py-1 text-sm bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
-                                    onclick="if(confirm('<?php echo esc_js(__('¿Eliminar este anuncio?', 'flavor-chat-ia')); ?>')) { flavorMarketplace.eliminarAnuncio(<?php echo esc_js($anuncio['id']); ?>); }">
-                                <?php echo esc_html__('Eliminar', 'flavor-chat-ia'); ?>
+                                    onclick="if(confirm('<?php echo esc_js(__('¿Eliminar este anuncio?', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>')) { flavorMarketplace.eliminarAnuncio(<?php echo esc_js($anuncio['id']); ?>); }">
+                                <?php echo esc_html__('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </div>
                     </div>

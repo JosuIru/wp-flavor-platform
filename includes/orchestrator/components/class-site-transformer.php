@@ -32,7 +32,7 @@ class Flavor_Site_Transformer extends Flavor_Template_Component_Base {
      */
     public function __construct() {
         $this->componente_id = 'site_transformer';
-        $this->componente_nombre = __('Transformador de Sitio', 'flavor-chat-ia');
+        $this->componente_nombre = __('Transformador de Sitio', FLAVOR_PLATFORM_TEXT_DOMAIN);
     }
 
     /**
@@ -77,12 +77,12 @@ class Flavor_Site_Transformer extends Flavor_Template_Component_Base {
             'menu_previo' => get_nav_menu_locations(),
         ]);
 
-        $mensaje = __('Sitio transformado correctamente.', 'flavor-chat-ia');
+        $mensaje = __('Sitio transformado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         if ($resultados['home_configurado']) {
-            $mensaje .= ' ' . __('Página de inicio configurada.', 'flavor-chat-ia');
+            $mensaje .= ' ' . __('Página de inicio configurada.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         if ($resultados['menu_creado']) {
-            $mensaje .= ' ' . __('Menú creado.', 'flavor-chat-ia');
+            $mensaje .= ' ' . __('Menú creado.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         return $this->respuesta_exito($mensaje, $resultados);
@@ -117,7 +117,7 @@ class Flavor_Site_Transformer extends Flavor_Template_Component_Base {
         $this->eliminar_meta_instalacion($plantilla_id);
 
         return $this->respuesta_exito(
-            __('Configuración del sitio revertida.', 'flavor-chat-ia'),
+            __('Configuración del sitio revertida.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             []
         );
     }
@@ -173,9 +173,9 @@ class Flavor_Site_Transformer extends Flavor_Template_Component_Base {
                 'menu_creado' => $menu_existe,
             ],
             'mensaje' => sprintf(
-                __('Home: %s, Menú: %s', 'flavor-chat-ia'),
-                $home_correcto ? __('OK', 'flavor-chat-ia') : __('No', 'flavor-chat-ia'),
-                $menu_existe ? __('OK', 'flavor-chat-ia') : __('No', 'flavor-chat-ia')
+                __('Home: %s, Menú: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                $home_correcto ? __('OK', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('No', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                $menu_existe ? __('OK', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('No', FLAVOR_PLATFORM_TEXT_DOMAIN)
             ),
         ];
     }
@@ -202,7 +202,7 @@ class Flavor_Site_Transformer extends Flavor_Template_Component_Base {
         if (!$pagina_home) {
             return [
                 'success' => false,
-                'error' => __('No hay página de inicio definida en la plantilla.', 'flavor-chat-ia'),
+                'error' => __('No hay página de inicio definida en la plantilla.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -271,7 +271,7 @@ class Flavor_Site_Transformer extends Flavor_Template_Component_Base {
         if (empty($menu_definido) || empty($menu_definido['items'])) {
             return [
                 'success' => false,
-                'error' => __('No hay menú definido en la plantilla.', 'flavor-chat-ia'),
+                'error' => __('No hay menú definido en la plantilla.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 

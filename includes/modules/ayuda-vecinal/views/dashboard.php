@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 
 // Verificar permisos
 if (!current_user_can('manage_options') && !current_user_can('flavor_ver_dashboard')) {
-    wp_die(__('No tienes permisos suficientes para acceder a esta página.', 'flavor-chat-ia'));
+    wp_die(__('No tienes permisos suficientes para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
 }
 
 global $wpdb;
@@ -122,14 +122,14 @@ $categorias_values = array_map(function($c) { return (int) $c->total; }, $catego
         <div class="dm-header__title">
             <span class="dashicons dashicons-heart" style="font-size: 28px; color: #ef4444;"></span>
             <div>
-                <h1><?php esc_html_e('Dashboard de Ayuda Vecinal', 'flavor-chat-ia'); ?></h1>
-                <p><?php esc_html_e('Conectando vecinos que necesitan ayuda con quienes pueden ofrecerla', 'flavor-chat-ia'); ?></p>
+                <h1><?php esc_html_e('Dashboard de Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
+                <p><?php esc_html_e('Conectando vecinos que necesitan ayuda con quienes pueden ofrecerla', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
         <div class="dm-header__actions">
             <a href="<?php echo esc_url(admin_url('admin.php?page=ayuda-nueva-solicitud')); ?>" class="dm-btn dm-btn--primary">
                 <span class="dashicons dashicons-plus-alt2"></span>
-                <?php esc_html_e('Nueva Solicitud', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Nueva Solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>
@@ -137,33 +137,33 @@ $categorias_values = array_map(function($c) { return (int) $c->total; }, $catego
     <?php if (!$tablas_disponibles) : ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <?php esc_html_e('Faltan tablas del módulo Ayuda Vecinal o aún no hay actividad registrada.', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Faltan tablas del módulo Ayuda Vecinal o aún no hay actividad registrada.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </div>
     <?php endif; ?>
 
     <!-- Quick Links -->
     <div class="dm-quick-links">
-        <h3 class="dm-quick-links__title"><?php esc_html_e('Acceso Rápido', 'flavor-chat-ia'); ?></h3>
+        <h3 class="dm-quick-links__title"><?php esc_html_e('Acceso Rápido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         <div class="dm-quick-links__grid">
             <a href="<?php echo esc_url(admin_url('admin.php?page=ayuda-solicitudes')); ?>" class="dm-quick-links__item dm-quick-links__item--error">
                 <span class="dashicons dashicons-heart"></span>
-                <?php esc_html_e('Solicitudes', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=ayuda-voluntarios')); ?>" class="dm-quick-links__item dm-quick-links__item--success">
                 <span class="dashicons dashicons-groups"></span>
-                <?php esc_html_e('Voluntarios', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Voluntarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=ayuda-matches')); ?>" class="dm-quick-links__item dm-quick-links__item--primary">
                 <span class="dashicons dashicons-randomize"></span>
-                <?php esc_html_e('Matches', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Matches', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=ayuda-estadisticas')); ?>" class="dm-quick-links__item dm-quick-links__item--info">
                 <span class="dashicons dashicons-chart-bar"></span>
-                <?php esc_html_e('Estadísticas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="<?php echo esc_url(home_url('/mi-portal/ayuda-vecinal/')); ?>" class="dm-quick-links__item" target="_blank">
                 <span class="dashicons dashicons-external"></span>
-                <?php esc_html_e('Portal público', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Portal público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>
@@ -176,8 +176,8 @@ $categorias_values = array_map(function($c) { return (int) $c->total; }, $catego
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($solicitudes_activas)); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Solicitudes Activas', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php esc_html_e('pendientes de asignación', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Solicitudes Activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('pendientes de asignación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -187,8 +187,8 @@ $categorias_values = array_map(function($c) { return (int) $c->total; }, $catego
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($voluntarios_activos)); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Voluntarios Activos', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php esc_html_e('disponibles este mes', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Voluntarios Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('disponibles este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -198,8 +198,8 @@ $categorias_values = array_map(function($c) { return (int) $c->total; }, $catego
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($ayudas_completadas)); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Ayudas Completadas', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php esc_html_e('este mes', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Ayudas Completadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -209,8 +209,8 @@ $categorias_values = array_map(function($c) { return (int) $c->total; }, $catego
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($horas_voluntariado)); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Horas de Voluntariado', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php esc_html_e('impacto social', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Horas de Voluntariado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('impacto social', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
     </div>
@@ -219,7 +219,7 @@ $categorias_values = array_map(function($c) { return (int) $c->total; }, $catego
     <div class="dm-grid dm-grid--2">
         <div class="dm-card dm-card--chart">
             <div class="dm-card__header">
-                <h3><?php esc_html_e('Solicitudes por Categoría', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Solicitudes por Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             </div>
             <div class="dm-card__chart">
                 <canvas id="grafico-categorias"></canvas>
@@ -228,7 +228,7 @@ $categorias_values = array_map(function($c) { return (int) $c->total; }, $catego
 
         <div class="dm-card dm-card--chart">
             <div class="dm-card__header">
-                <h3><?php esc_html_e('Tendencia Semanal', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Tendencia Semanal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             </div>
             <div class="dm-card__chart">
                 <canvas id="grafico-tendencia"></canvas>
@@ -243,10 +243,10 @@ $categorias_values = array_map(function($c) { return (int) $c->total; }, $catego
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-warning" style="color: #ef4444;"></span>
-                    <?php esc_html_e('Solicitudes Urgentes', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Solicitudes Urgentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=ayuda-solicitudes&urgente=1')); ?>" class="dm-btn dm-btn--ghost dm-btn--sm">
-                    <?php esc_html_e('Ver todas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php if (!empty($solicitudes_urgentes)) : ?>
@@ -266,7 +266,7 @@ $categorias_values = array_map(function($c) { return (int) $c->total; }, $catego
             <?php else : ?>
             <div class="dm-empty">
                 <span class="dashicons dashicons-yes-alt" style="color: var(--dm-success);"></span>
-                <p><?php esc_html_e('No hay solicitudes urgentes', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No hay solicitudes urgentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <?php endif; ?>
         </div>
@@ -276,21 +276,21 @@ $categorias_values = array_map(function($c) { return (int) $c->total; }, $catego
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-star-filled" style="color: #f59e0b;"></span>
-                    <?php esc_html_e('Voluntarios Destacados', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Voluntarios Destacados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <?php if (!empty($voluntarios_destacados)) : ?>
             <ol class="dm-ranking">
                 <?php foreach ($voluntarios_destacados as $voluntario) :
                     $usuario = get_userdata($voluntario->usuario_id);
-                    $nombre = $usuario ? $usuario->display_name : __('Usuario', 'flavor-chat-ia');
+                    $nombre = $usuario ? $usuario->display_name : __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN);
                     $ayudas = $voluntario->ayudas_completadas;
                     $valoracion = $voluntario->valoracion_promedio ?? 0;
                 ?>
                 <li>
                     <span><?php echo esc_html($nombre); ?></span>
                     <div>
-                        <strong><?php echo esc_html($ayudas); ?> <?php esc_html_e('ayudas', 'flavor-chat-ia'); ?></strong>
+                        <strong><?php echo esc_html($ayudas); ?> <?php esc_html_e('ayudas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                         <span class="dm-rating dm-text-warning"><?php echo esc_html(number_format_i18n($valoracion, 1)); ?> ★</span>
                     </div>
                 </li>
@@ -299,7 +299,7 @@ $categorias_values = array_map(function($c) { return (int) $c->total; }, $catego
             <?php else : ?>
             <div class="dm-empty">
                 <span class="dashicons dashicons-groups"></span>
-                <p><?php esc_html_e('No hay voluntarios registrados.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No hay voluntarios registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <?php endif; ?>
         </div>
@@ -309,7 +309,7 @@ $categorias_values = array_map(function($c) { return (int) $c->total; }, $catego
     <?php if (!empty($actividad_reciente)) : ?>
     <div class="dm-card">
         <div class="dm-card__header">
-            <h3><?php esc_html_e('Actividad Reciente', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Actividad Reciente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         </div>
         <div class="dm-timeline">
             <?php foreach ($actividad_reciente as $actividad) :
@@ -381,7 +381,7 @@ jQuery(document).ready(function($) {
             data: {
                 labels: tendenciaLabels,
                 datasets: [{
-                    label: '<?php echo esc_js(__('Solicitudes', 'flavor-chat-ia')); ?>',
+                    label: '<?php echo esc_js(__('Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
                     data: tendenciaValues,
                     borderColor: primaryColor,
                     backgroundColor: primaryColor + '1a',

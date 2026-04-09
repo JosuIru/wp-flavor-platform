@@ -31,7 +31,7 @@ $estado_actual_config = $estados_fichaje_config[$estado_fichaje] ?? $estados_fic
             <!-- Saludo y estado -->
             <div class="mb-6">
                 <h2 class="text-2xl lg:text-3xl font-bold text-gray-800 mb-3">
-                    <?php echo esc_html__('Hola,', 'flavor-chat-ia'); ?> <?php echo esc_html($nombre_empleado); ?>
+                    <?php echo esc_html__('Hola,', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html($nombre_empleado); ?>
                 </h2>
                 <!-- Indicador de estado -->
                 <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full <?php echo esc_attr($estado_actual_config['color_fondo']); ?>">
@@ -49,7 +49,7 @@ $estado_actual_config = $estados_fichaje_config[$estado_fichaje] ?? $estados_fic
                         <div id="flavor-reloj-fichaje" class="text-4xl font-bold text-gray-800" style="font-variant-numeric: tabular-nums;">
                             --:--
                         </div>
-                        <div class="text-sm text-gray-400 mt-1"><?php echo esc_html__('Hora actual', 'flavor-chat-ia'); ?></div>
+                        <div class="text-sm text-gray-400 mt-1"><?php echo esc_html__('Hora actual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     </div>
                 </div>
             </div>
@@ -60,7 +60,7 @@ $estado_actual_config = $estados_fichaje_config[$estado_fichaje] ?? $estados_fic
                     <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
                     </svg>
-                    <span class="text-sm text-gray-600"><?php echo esc_html__('Entrada:', 'flavor-chat-ia'); ?> <strong><?php echo esc_html($hora_entrada_actual); ?></strong></span>
+                    <span class="text-sm text-gray-600"><?php echo esc_html__('Entrada:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <strong><?php echo esc_html($hora_entrada_actual); ?></strong></span>
                 </div>
             <?php endif; ?>
 
@@ -71,7 +71,7 @@ $estado_actual_config = $estados_fichaje_config[$estado_fichaje] ?? $estados_fic
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    <?php echo esc_html__('Fichar Entrada', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Fichar Entrada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
@@ -82,14 +82,14 @@ $estado_actual_config = $estados_fichaje_config[$estado_fichaje] ?? $estados_fic
                     <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                     </svg>
-                    <?php echo esc_html__('Fichar Salida', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Fichar Salida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="<?php echo esc_url($url_pausar_fichaje); ?>"
                    class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-gray-700 font-semibold border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all shadow-sm">
                     <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    <?php echo esc_html__('Pausar', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Pausar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>

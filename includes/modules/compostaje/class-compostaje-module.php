@@ -89,7 +89,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Compostaje no estan creadas. Se crearan automaticamente al activar.', 'flavor-chat-ia');
+            return __('Las tablas de Compostaje no estan creadas. Se crearan automaticamente al activar.', 'flavor-platform');
         }
         
     return '';
@@ -211,7 +211,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         if (!$compostera) {
             return '<div class="flavor-widget flavor-widget--empty">
                 <span class="dashicons dashicons-location-alt"></span>
-                <p>' . esc_html__('No hay composteras disponibles', 'flavor-chat-ia') . '</p>
+                <p>' . esc_html__('No hay composteras disponibles', 'flavor-platform') . '</p>
             </div>';
         }
 
@@ -259,11 +259,11 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
             <div class="flavor-compostaje-balance__stats">
                 <div class="flavor-stat">
                     <span class="flavor-stat__valor"><?php echo number_format_i18n($totales->total_kg, 1); ?></span>
-                    <span class="flavor-stat__label"><?php esc_html_e('kg compostados', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-stat__label"><?php esc_html_e('kg compostados', 'flavor-platform'); ?></span>
                 </div>
                 <div class="flavor-stat">
                     <span class="flavor-stat__valor"><?php echo number_format_i18n($totales->total_aportaciones); ?></span>
-                    <span class="flavor-stat__label"><?php esc_html_e('aportaciones', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-stat__label"><?php esc_html_e('aportaciones', 'flavor-platform'); ?></span>
                 </div>
             </div>
         </div>
@@ -300,11 +300,11 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
                 'restNonce' => wp_create_nonce('wp_rest'),
                 'usuario_id' => get_current_user_id(),
                 'strings' => [
-                    'cargando' => __('Cargando...', 'flavor-chat-ia'),
-                    'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                    'exito' => __('Operacion realizada con exito', 'flavor-chat-ia'),
-                    'confirmar_turno' => __('¿Confirmas que quieres apuntarte a este turno?', 'flavor-chat-ia'),
-                    'confirmar_cancelar' => __('¿Seguro que quieres cancelar tu turno?', 'flavor-chat-ia'),
+                    'cargando' => __('Cargando...', 'flavor-platform'),
+                    'error' => __('Ha ocurrido un error', 'flavor-platform'),
+                    'exito' => __('Operacion realizada con exito', 'flavor-platform'),
+                    'confirmar_turno' => __('¿Confirmas que quieres apuntarte a este turno?', 'flavor-platform'),
+                    'confirmar_cancelar' => __('¿Seguro que quieres cancelar tu turno?', 'flavor-platform'),
                 ],
             ]);
         }
@@ -890,25 +890,25 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion para registrar aportaciones', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesion para registrar aportaciones', 'flavor-platform')];
         }
 
         $configuracion = $this->get_settings();
         $cantidad_maxima = $configuracion['max_kg_por_deposito'] ?? 10;
 
         if ($cantidad_kg <= 0 || $cantidad_kg > $cantidad_maxima) {
-            return ['success' => false, 'error' => sprintf(__('La cantidad debe estar entre 0.1 y %d kg', 'flavor-chat-ia'), $cantidad_maxima)];
+            return ['success' => false, 'error' => sprintf(__('La cantidad debe estar entre 0.1 y %d kg', 'flavor-platform'), $cantidad_maxima)];
         }
 
         $tabla_puntos = $wpdb->prefix . 'flavor_puntos_compostaje';
         $punto = $wpdb->get_row($wpdb->prepare("SELECT * FROM $tabla_puntos WHERE id = %d AND estado = 'activo'", $punto_id));
 
         if (!$punto) {
-            return ['success' => false, 'error' => __('Punto de compostaje no encontrado o inactivo', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Punto de compostaje no encontrado o inactivo', 'flavor-platform')];
         }
 
         if (!in_array($punto->fase_actual, ['recepcion', 'activo'])) {
-            return ['success' => false, 'error' => __('Este punto no acepta aportaciones en su fase actual', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Este punto no acepta aportaciones en su fase actual', 'flavor-platform')];
         }
 
         $tabla_materiales = $wpdb->prefix . 'flavor_materiales_compostables';
@@ -918,7 +918,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$material) {
-            return ['success' => false, 'error' => __('Tipo de material no valido', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Tipo de material no valido', 'flavor-platform')];
         }
 
         $puntos_base = $material->puntos_por_kg * $cantidad_kg;
@@ -945,7 +945,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         ]);
 
         if (!$insertado) {
-            return ['success' => false, 'error' => __('Error al registrar la aportacion', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Error al registrar la aportacion', 'flavor-platform')];
         }
 
         $aportacion_id = $wpdb->insert_id;
@@ -956,7 +956,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => true,
-            'mensaje' => __('Aportacion registrada correctamente', 'flavor-chat-ia'),
+            'mensaje' => __('Aportacion registrada correctamente', 'flavor-platform'),
             'aportacion_id' => $aportacion_id,
             'puntos_obtenidos' => $puntos_totales,
             'bonus_nivel' => $bonus_nivel * $cantidad_kg,
@@ -1074,7 +1074,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesion', 'flavor-platform')];
         }
 
         $tabla_turnos = $wpdb->prefix . 'flavor_turnos_compostaje';
@@ -1083,15 +1083,15 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         $turno = $wpdb->get_row($wpdb->prepare("SELECT * FROM $tabla_turnos WHERE id = %d", $turno_id));
 
         if (!$turno) {
-            return ['success' => false, 'error' => __('Turno no encontrado', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Turno no encontrado', 'flavor-platform')];
         }
 
         if ($turno->estado !== 'abierto') {
-            return ['success' => false, 'error' => __('Este turno no esta disponible', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Este turno no esta disponible', 'flavor-platform')];
         }
 
         if ($turno->plazas_ocupadas >= $turno->plazas_disponibles) {
-            return ['success' => false, 'error' => __('No hay plazas disponibles', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No hay plazas disponibles', 'flavor-platform')];
         }
 
         $ya_inscrito = $wpdb->get_var($wpdb->prepare(
@@ -1100,7 +1100,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         ));
 
         if ($ya_inscrito) {
-            return ['success' => false, 'error' => __('Ya estas inscrito en este turno', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Ya estas inscrito en este turno', 'flavor-platform')];
         }
 
         $insertado = $wpdb->insert($tabla_inscripciones, [
@@ -1111,7 +1111,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         ]);
 
         if (!$insertado) {
-            return ['success' => false, 'error' => __('Error al realizar la inscripcion', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Error al realizar la inscripcion', 'flavor-platform')];
         }
 
         $wpdb->update($tabla_turnos,
@@ -1125,7 +1125,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => true,
-            'mensaje' => __('Inscripcion realizada correctamente', 'flavor-chat-ia'),
+            'mensaje' => __('Inscripcion realizada correctamente', 'flavor-platform'),
             'turno' => $turno,
         ];
     }
@@ -1215,7 +1215,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
             $ranking_formateado[] = [
                 'posicion' => $posicion,
                 'usuario_id' => $entrada->usuario_id,
-                'nombre' => $usuario ? $usuario->display_name : __('Usuario anonimo', 'flavor-chat-ia'),
+                'nombre' => $usuario ? $usuario->display_name : __('Usuario anonimo', 'flavor-platform'),
                 'avatar' => get_avatar_url($entrada->usuario_id, ['size' => 50]),
                 'total_kg' => floatval($entrada->total_kg),
                 'total_puntos' => intval($entrada->total_puntos),
@@ -1438,7 +1438,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         $punto_id = intval($_GET['punto_id'] ?? $_POST['punto_id'] ?? 0);
 
         if (!$punto_id) {
-            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -1447,7 +1447,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         $punto = $wpdb->get_row($wpdb->prepare("SELECT * FROM $tabla_puntos WHERE id = %d", $punto_id));
 
         if (!$punto) {
-            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', 'flavor-platform')]);
         }
 
         wp_send_json([
@@ -1465,7 +1465,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', 'flavor-platform')]);
         }
 
         $estadisticas = $this->obtener_estadisticas_usuario($usuario_id);
@@ -1480,7 +1480,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -1527,7 +1527,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         $turno_id = intval($_POST['turno_id'] ?? 0);
 
         if (!$usuario_id || !$turno_id) {
-            wp_send_json(['success' => false, 'error' => __('No estas inscrito en este turno', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('No estas inscrito en este turno', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -1540,7 +1540,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$inscripcion) {
-            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', 'flavor-platform')]);
         }
 
         $wpdb->update($tabla_inscripciones, ['estado' => 'cancelado'], ['id' => $inscripcion->id]);
@@ -1549,7 +1549,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
             $turno_id
         ));
 
-        wp_send_json(['success' => true, 'mensaje' => __('turno_id', 'flavor-chat-ia')]);
+        wp_send_json(['success' => true, 'mensaje' => __('turno_id', 'flavor-platform')]);
     }
 
     /**
@@ -1559,7 +1559,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('compostaje_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json(['success' => false, 'error' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Sin permisos', 'flavor-platform')]);
         }
 
         $turno_id = intval($_POST['turno_id'] ?? 0);
@@ -1572,7 +1572,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         $turno = $wpdb->get_row($wpdb->prepare("SELECT * FROM $tabla_turnos WHERE id = %d", $turno_id));
 
         if (!$turno) {
-            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('ID de punto requerido', 'flavor-platform')]);
         }
 
         foreach ($asistentes as $usuario_id) {
@@ -1590,7 +1590,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
 
         $wpdb->update($tabla_turnos, ['estado' => 'completado'], ['id' => $turno_id]);
 
-        wp_send_json(['success' => true, 'mensaje' => __('dias_aviso_turno', 'flavor-chat-ia')]);
+        wp_send_json(['success' => true, 'mensaje' => __('dias_aviso_turno', 'flavor-platform')]);
     }
 
     /**
@@ -1624,9 +1624,9 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
             foreach ($inscritos as $inscrito) {
                 $usuario = get_userdata($inscrito->usuario_id);
                 if ($usuario && $usuario->user_email) {
-                    $asunto = sprintf(__('Recordatorio: Turno de compostaje en %s', 'flavor-chat-ia'), $turno->nombre_punto);
+                    $asunto = sprintf(__('Recordatorio: Turno de compostaje en %s', 'flavor-platform'), $turno->nombre_punto);
                     $mensaje = sprintf(
-                        __("Hola %s,\n\nTe recordamos que tienes un turno de %s programado para el %s de %s a %s en %s.\n\nGracias por tu participacion!", 'flavor-chat-ia'),
+                        __("Hola %s,\n\nTe recordamos que tienes un turno de %s programado para el %s de %s a %s en %s.\n\nGracias por tu participacion!", 'flavor-platform'),
                         $usuario->display_name,
                         $turno->tipo_tarea,
                         date_i18n('l j F', strtotime($turno->fecha_turno)),
@@ -1658,15 +1658,15 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
             <?php if ($atributos['mostrar_filtros'] === 'true'): ?>
             <div class="flavor-compostaje-filtros">
                 <select id="filtro-tipo-punto" class="flavor-select">
-                    <option value=""><?php _e('Todos los tipos', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('comunitario', 'flavor-chat-ia'); ?>"><?php _e('Comunitario', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('vecinal', 'flavor-chat-ia'); ?>"><?php _e('Vecinal', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('escolar', 'flavor-chat-ia'); ?>"><?php _e('Escolar', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('municipal', 'flavor-chat-ia'); ?>"><?php _e('Municipal', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todos los tipos', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('comunitario', 'flavor-platform'); ?>"><?php _e('Comunitario', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('vecinal', 'flavor-platform'); ?>"><?php _e('Vecinal', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('escolar', 'flavor-platform'); ?>"><?php _e('Escolar', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('municipal', 'flavor-platform'); ?>"><?php _e('Municipal', 'flavor-platform'); ?></option>
                 </select>
                 <button type="button" id="btn-mi-ubicacion" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-location"></span>
-                    <?php _e('Mi ubicacion', 'flavor-chat-ia'); ?>
+                    <?php _e('Mi ubicacion', 'flavor-platform'); ?>
                 </button>
             </div>
             <?php endif; ?>
@@ -1685,8 +1685,8 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
     public function shortcode_registrar_aportacion($atts) {
         if (!is_user_logged_in()) {
             return '<div class="flavor-aviso flavor-aviso-info">' .
-                   __('Debes iniciar sesion para registrar aportaciones.', 'flavor-chat-ia') .
-                   ' <a href="' . wp_login_url(flavor_current_request_url()) . '">' . __('Iniciar sesion', 'flavor-chat-ia') . '</a></div>';
+                   __('Debes iniciar sesion para registrar aportaciones.', 'flavor-platform') .
+                   ' <a href="' . wp_login_url(flavor_current_request_url()) . '">' . __('Iniciar sesion', 'flavor-platform') . '</a></div>';
         }
 
         $atributos = shortcode_atts([
@@ -1700,23 +1700,23 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         ob_start();
         ?>
         <div class="flavor-compostaje-form-container">
-            <h3><?php _e('Registrar Aportacion', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Registrar Aportacion', 'flavor-platform'); ?></h3>
 
             <form id="form-aportacion-compost" class="flavor-form">
                 <?php wp_nonce_field('compostaje_nonce', 'compostaje_nonce_field'); ?>
 
                 <div class="flavor-form-group">
-                    <label for="punto-compostaje"><?php _e('Punto de compostaje', 'flavor-chat-ia'); ?></label>
+                    <label for="punto-compostaje"><?php _e('Punto de compostaje', 'flavor-platform'); ?></label>
                     <select id="punto-compostaje" name="punto_id" required class="flavor-select">
-                        <option value=""><?php _e('Selecciona un punto...', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Selecciona un punto...', 'flavor-platform'); ?></option>
                     </select>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="tipo-material"><?php _e('Tipo de material', 'flavor-chat-ia'); ?></label>
+                    <label for="tipo-material"><?php _e('Tipo de material', 'flavor-platform'); ?></label>
                     <select id="tipo-material" name="tipo_material" required class="flavor-select">
-                        <option value=""><?php _e('Selecciona el tipo...', 'flavor-chat-ia'); ?></option>
-                        <optgroup label="<?php _e('Materiales verdes (ricos en nitrogeno)', 'flavor-chat-ia'); ?>">
+                        <option value=""><?php _e('Selecciona el tipo...', 'flavor-platform'); ?></option>
+                        <optgroup label="<?php _e('Materiales verdes (ricos en nitrogeno)', 'flavor-platform'); ?>">
                             <?php foreach ($materiales as $material): ?>
                                 <?php if ($material->categoria === 'verde'): ?>
                                 <option value="<?php echo esc_attr($material->codigo); ?>" data-puntos="<?php echo esc_attr($material->puntos_por_kg); ?>">
@@ -1725,7 +1725,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
                                 <?php endif; ?>
                             <?php endforeach; ?>
                         </optgroup>
-                        <optgroup label="<?php _e('Materiales marrones (ricos en carbono)', 'flavor-chat-ia'); ?>">
+                        <optgroup label="<?php _e('Materiales marrones (ricos en carbono)', 'flavor-platform'); ?>">
                             <?php foreach ($materiales as $material): ?>
                                 <?php if ($material->categoria === 'marron'): ?>
                                 <option value="<?php echo esc_attr($material->codigo); ?>" data-puntos="<?php echo esc_attr($material->puntos_por_kg); ?>">
@@ -1734,7 +1734,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
                                 <?php endif; ?>
                             <?php endforeach; ?>
                         </optgroup>
-                        <optgroup label="<?php _e('Materiales especiales', 'flavor-chat-ia'); ?>">
+                        <optgroup label="<?php _e('Materiales especiales', 'flavor-platform'); ?>">
                             <?php foreach ($materiales as $material): ?>
                                 <?php if ($material->categoria === 'especial'): ?>
                                 <option value="<?php echo esc_attr($material->codigo); ?>" data-puntos="<?php echo esc_attr($material->puntos_por_kg); ?>">
@@ -1747,29 +1747,29 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="cantidad-kg"><?php _e('Cantidad (kg)', 'flavor-chat-ia'); ?></label>
+                    <label for="cantidad-kg"><?php _e('Cantidad (kg)', 'flavor-platform'); ?></label>
                     <input type="number" id="cantidad-kg" name="cantidad_kg" min="0.1" max="10" step="0.1" required class="flavor-input">
-                    <small class="flavor-form-help"><?php _e('Maximo 10 kg por aportacion', 'flavor-chat-ia'); ?></small>
+                    <small class="flavor-form-help"><?php _e('Maximo 10 kg por aportacion', 'flavor-platform'); ?></small>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="notas-aportacion"><?php _e('Notas (opcional)', 'flavor-chat-ia'); ?></label>
+                    <label for="notas-aportacion"><?php _e('Notas (opcional)', 'flavor-platform'); ?></label>
                     <textarea id="notas-aportacion" name="notas" rows="2" class="flavor-textarea"></textarea>
                 </div>
 
                 <div id="preview-puntos" class="flavor-compostaje-preview" style="display:none;">
                     <div class="preview-item">
-                        <span class="preview-label"><?php _e('Puntos estimados:', 'flavor-chat-ia'); ?></span>
+                        <span class="preview-label"><?php _e('Puntos estimados:', 'flavor-platform'); ?></span>
                         <span id="puntos-estimados" class="preview-value">0</span>
                     </div>
                     <div class="preview-item">
-                        <span class="preview-label"><?php _e('CO2 evitado:', 'flavor-chat-ia'); ?></span>
-                        <span id="co2-estimado" class="preview-value"><?php echo esc_html__('0 kg', 'flavor-chat-ia'); ?></span>
+                        <span class="preview-label"><?php _e('CO2 evitado:', 'flavor-platform'); ?></span>
+                        <span id="co2-estimado" class="preview-value"><?php echo esc_html__('0 kg', 'flavor-platform'); ?></span>
                     </div>
                 </div>
 
                 <button type="submit" class="flavor-btn flavor-btn-primary flavor-btn-block">
-                    <?php _e('Registrar Aportacion', 'flavor-chat-ia'); ?>
+                    <?php _e('Registrar Aportacion', 'flavor-platform'); ?>
                 </button>
             </form>
 
@@ -1785,7 +1785,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
     public function shortcode_mis_aportaciones($atts) {
         if (!is_user_logged_in()) {
             return '<div class="flavor-aviso flavor-aviso-info">' .
-                   __('Debes iniciar sesion para ver tus aportaciones.', 'flavor-chat-ia') . '</div>';
+                   __('Debes iniciar sesion para ver tus aportaciones.', 'flavor-platform') . '</div>';
         }
 
         $usuario_id = get_current_user_id();
@@ -1798,14 +1798,14 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
                 <div class="nivel-icono nivel-<?php echo esc_attr($estadisticas['nivel']['icono']); ?>"></div>
                 <div class="nivel-info">
                     <h3><?php echo esc_html($estadisticas['nivel']['nombre']); ?></h3>
-                    <span class="nivel-numero"><?php printf(__('Nivel %d', 'flavor-chat-ia'), $estadisticas['nivel']['numero']); ?></span>
+                    <span class="nivel-numero"><?php printf(__('Nivel %d', 'flavor-platform'), $estadisticas['nivel']['numero']); ?></span>
                 </div>
                 <?php if ($estadisticas['proximo_nivel']): ?>
                 <div class="nivel-progreso">
                     <div class="progreso-barra">
                         <div class="progreso-llenado" style="width: <?php echo esc_attr($estadisticas['proximo_nivel']['progreso_porcentaje']); ?>%"></div>
                     </div>
-                    <small><?php printf(__('%.1f kg para nivel %s', 'flavor-chat-ia'), $estadisticas['proximo_nivel']['kg_necesarios'], $estadisticas['proximo_nivel']['nombre']); ?></small>
+                    <small><?php printf(__('%.1f kg para nivel %s', 'flavor-platform'), $estadisticas['proximo_nivel']['kg_necesarios'], $estadisticas['proximo_nivel']['nombre']); ?></small>
                 </div>
                 <?php endif; ?>
             </div>
@@ -1813,26 +1813,26 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
             <div class="flavor-compostaje-stats-grid">
                 <div class="stat-card">
                     <span class="stat-valor"><?php echo number_format($estadisticas['total_kg'], 1); ?></span>
-                    <span class="stat-label"><?php _e('kg aportados', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php _e('kg aportados', 'flavor-platform'); ?></span>
                 </div>
                 <div class="stat-card">
                     <span class="stat-valor"><?php echo number_format($estadisticas['total_puntos']); ?></span>
-                    <span class="stat-label"><?php _e('puntos ganados', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php _e('puntos ganados', 'flavor-platform'); ?></span>
                 </div>
                 <div class="stat-card">
                     <span class="stat-valor"><?php echo number_format($estadisticas['total_co2_evitado'], 1); ?></span>
-                    <span class="stat-label"><?php _e('kg CO2 evitado', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php _e('kg CO2 evitado', 'flavor-platform'); ?></span>
                 </div>
                 <div class="stat-card">
                     <span class="stat-valor"><?php echo $estadisticas['total_aportaciones']; ?></span>
-                    <span class="stat-label"><?php _e('aportaciones', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php _e('aportaciones', 'flavor-platform'); ?></span>
                 </div>
             </div>
 
             <div class="flavor-compostaje-historial">
-                <h4><?php _e('Historial de aportaciones', 'flavor-chat-ia'); ?></h4>
+                <h4><?php _e('Historial de aportaciones', 'flavor-platform'); ?></h4>
                 <div id="lista-aportaciones" class="flavor-lista-aportaciones">
-                    <div class="flavor-cargando"><?php _e('Cargando...', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-cargando"><?php _e('Cargando...', 'flavor-platform'); ?></div>
                 </div>
                 <div id="paginacion-aportaciones" class="flavor-paginacion"></div>
             </div>
@@ -1855,35 +1855,35 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
             <div class="guia-seccion guia-si">
                 <h3 class="guia-titulo guia-titulo-si">
                     <span class="guia-icono">&#10004;</span>
-                    <?php _e('Si se puede compostar', 'flavor-chat-ia'); ?>
+                    <?php _e('Si se puede compostar', 'flavor-platform'); ?>
                 </h3>
                 <div class="guia-items">
                     <div class="guia-categoria">
-                        <h4><?php _e('Materiales verdes (nitrogeno)', 'flavor-chat-ia'); ?></h4>
+                        <h4><?php _e('Materiales verdes (nitrogeno)', 'flavor-platform'); ?></h4>
                         <ul>
-                            <li><?php _e('Restos de frutas y verduras', 'flavor-chat-ia'); ?></li>
-                            <li><?php _e('Posos de cafe y filtros de papel', 'flavor-chat-ia'); ?></li>
-                            <li><?php _e('Bolsas de te (sin grapas)', 'flavor-chat-ia'); ?></li>
-                            <li><?php _e('Cesped recien cortado', 'flavor-chat-ia'); ?></li>
-                            <li><?php _e('Restos de plantas verdes', 'flavor-chat-ia'); ?></li>
+                            <li><?php _e('Restos de frutas y verduras', 'flavor-platform'); ?></li>
+                            <li><?php _e('Posos de cafe y filtros de papel', 'flavor-platform'); ?></li>
+                            <li><?php _e('Bolsas de te (sin grapas)', 'flavor-platform'); ?></li>
+                            <li><?php _e('Cesped recien cortado', 'flavor-platform'); ?></li>
+                            <li><?php _e('Restos de plantas verdes', 'flavor-platform'); ?></li>
                         </ul>
                     </div>
                     <div class="guia-categoria">
-                        <h4><?php _e('Materiales marrones (carbono)', 'flavor-chat-ia'); ?></h4>
+                        <h4><?php _e('Materiales marrones (carbono)', 'flavor-platform'); ?></h4>
                         <ul>
-                            <li><?php _e('Hojas secas', 'flavor-chat-ia'); ?></li>
-                            <li><?php _e('Papel y carton sin tintas', 'flavor-chat-ia'); ?></li>
-                            <li><?php _e('Ramas pequenas trituradas', 'flavor-chat-ia'); ?></li>
-                            <li><?php _e('Serrin de madera no tratada', 'flavor-chat-ia'); ?></li>
-                            <li><?php _e('Paja', 'flavor-chat-ia'); ?></li>
+                            <li><?php _e('Hojas secas', 'flavor-platform'); ?></li>
+                            <li><?php _e('Papel y carton sin tintas', 'flavor-platform'); ?></li>
+                            <li><?php _e('Ramas pequenas trituradas', 'flavor-platform'); ?></li>
+                            <li><?php _e('Serrin de madera no tratada', 'flavor-platform'); ?></li>
+                            <li><?php _e('Paja', 'flavor-platform'); ?></li>
                         </ul>
                     </div>
                     <div class="guia-categoria">
-                        <h4><?php _e('Otros', 'flavor-chat-ia'); ?></h4>
+                        <h4><?php _e('Otros', 'flavor-platform'); ?></h4>
                         <ul>
-                            <li><?php _e('Cascaras de huevo trituradas', 'flavor-chat-ia'); ?></li>
-                            <li><?php _e('Pelo y plumas', 'flavor-chat-ia'); ?></li>
-                            <li><?php _e('Ceniza de madera (poca cantidad)', 'flavor-chat-ia'); ?></li>
+                            <li><?php _e('Cascaras de huevo trituradas', 'flavor-platform'); ?></li>
+                            <li><?php _e('Pelo y plumas', 'flavor-platform'); ?></li>
+                            <li><?php _e('Ceniza de madera (poca cantidad)', 'flavor-platform'); ?></li>
                         </ul>
                     </div>
                 </div>
@@ -1892,40 +1892,40 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
             <div class="guia-seccion guia-no">
                 <h3 class="guia-titulo guia-titulo-no">
                     <span class="guia-icono">&#10008;</span>
-                    <?php _e('No se puede compostar', 'flavor-chat-ia'); ?>
+                    <?php _e('No se puede compostar', 'flavor-platform'); ?>
                 </h3>
                 <div class="guia-items">
                     <ul>
-                        <li><?php _e('Carne, pescado y huesos', 'flavor-chat-ia'); ?></li>
-                        <li><?php _e('Lacteos y grasas', 'flavor-chat-ia'); ?></li>
-                        <li><?php _e('Plantas enfermas o con plagas', 'flavor-chat-ia'); ?></li>
-                        <li><?php _e('Excrementos de mascotas', 'flavor-chat-ia'); ?></li>
-                        <li><?php _e('Ceniza de carbon o briquetas', 'flavor-chat-ia'); ?></li>
-                        <li><?php _e('Madera tratada o pintada', 'flavor-chat-ia'); ?></li>
-                        <li><?php _e('Plasticos y sinteticos', 'flavor-chat-ia'); ?></li>
-                        <li><?php _e('Citricos en grandes cantidades', 'flavor-chat-ia'); ?></li>
+                        <li><?php _e('Carne, pescado y huesos', 'flavor-platform'); ?></li>
+                        <li><?php _e('Lacteos y grasas', 'flavor-platform'); ?></li>
+                        <li><?php _e('Plantas enfermas o con plagas', 'flavor-platform'); ?></li>
+                        <li><?php _e('Excrementos de mascotas', 'flavor-platform'); ?></li>
+                        <li><?php _e('Ceniza de carbon o briquetas', 'flavor-platform'); ?></li>
+                        <li><?php _e('Madera tratada o pintada', 'flavor-platform'); ?></li>
+                        <li><?php _e('Plasticos y sinteticos', 'flavor-platform'); ?></li>
+                        <li><?php _e('Citricos en grandes cantidades', 'flavor-platform'); ?></li>
                     </ul>
                 </div>
             </div>
 
             <div class="guia-seccion guia-consejos">
-                <h3 class="guia-titulo"><?php _e('Consejos para un buen compost', 'flavor-chat-ia'); ?></h3>
+                <h3 class="guia-titulo"><?php _e('Consejos para un buen compost', 'flavor-platform'); ?></h3>
                 <div class="guia-consejos-grid">
                     <div class="consejo-card">
                         <span class="consejo-numero">1</span>
-                        <p><?php _e('Equilibra verdes y marrones (proporcion 1:2)', 'flavor-chat-ia'); ?></p>
+                        <p><?php _e('Equilibra verdes y marrones (proporcion 1:2)', 'flavor-platform'); ?></p>
                     </div>
                     <div class="consejo-card">
                         <span class="consejo-numero">2</span>
-                        <p><?php _e('Corta los materiales en trozos pequenos', 'flavor-chat-ia'); ?></p>
+                        <p><?php _e('Corta los materiales en trozos pequenos', 'flavor-platform'); ?></p>
                     </div>
                     <div class="consejo-card">
                         <span class="consejo-numero">3</span>
-                        <p><?php _e('Mantener humedad como esponja escurrida', 'flavor-chat-ia'); ?></p>
+                        <p><?php _e('Mantener humedad como esponja escurrida', 'flavor-platform'); ?></p>
                     </div>
                     <div class="consejo-card">
                         <span class="consejo-numero">4</span>
-                        <p><?php _e('Voltear regularmente para airear', 'flavor-chat-ia'); ?></p>
+                        <p><?php _e('Voltear regularmente para airear', 'flavor-platform'); ?></p>
                     </div>
                 </div>
             </div>
@@ -1950,13 +1950,13 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         <div class="flavor-compostaje-ranking">
             <div class="ranking-filtros">
                 <button type="button" class="ranking-filtro <?php echo $atributos['periodo'] === 'total' ? 'activo' : ''; ?>" data-periodo="total">
-                    <?php _e('Total', 'flavor-chat-ia'); ?>
+                    <?php _e('Total', 'flavor-platform'); ?>
                 </button>
                 <button type="button" class="ranking-filtro <?php echo $atributos['periodo'] === 'mes' ? 'activo' : ''; ?>" data-periodo="mes">
-                    <?php _e('Este mes', 'flavor-chat-ia'); ?>
+                    <?php _e('Este mes', 'flavor-platform'); ?>
                 </button>
                 <button type="button" class="ranking-filtro <?php echo $atributos['periodo'] === 'semana' ? 'activo' : ''; ?>" data-periodo="semana">
-                    <?php _e('Esta semana', 'flavor-chat-ia'); ?>
+                    <?php _e('Esta semana', 'flavor-platform'); ?>
                 </button>
             </div>
 
@@ -1976,7 +1976,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
                 </div>
                 <?php endforeach; ?>
                 <?php if (empty($ranking)): ?>
-                <div class="ranking-vacio"><?php _e('Aun no hay datos de ranking', 'flavor-chat-ia'); ?></div>
+                <div class="ranking-vacio"><?php _e('Aun no hay datos de ranking', 'flavor-platform'); ?></div>
                 <?php endif; ?>
             </div>
         </div>
@@ -1994,53 +1994,53 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         ?>
         <div class="flavor-compostaje-estadisticas-globales">
             <div class="stats-hero">
-                <h2><?php _e('Impacto de nuestra comunidad', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Impacto de nuestra comunidad', 'flavor-platform'); ?></h2>
             </div>
 
             <div class="stats-grid">
                 <div class="stat-card stat-card-destacado">
                     <div class="stat-icono icono-kg"></div>
                     <span class="stat-valor contador" data-valor="<?php echo $estadisticas['total_kg']; ?>">0</span>
-                    <span class="stat-label"><?php _e('kg de organicos compostados', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php _e('kg de organicos compostados', 'flavor-platform'); ?></span>
                 </div>
 
                 <div class="stat-card stat-card-destacado">
                     <div class="stat-icono icono-co2"></div>
                     <span class="stat-valor contador" data-valor="<?php echo $estadisticas['total_co2_evitado']; ?>">0</span>
-                    <span class="stat-label"><?php _e('kg de CO2 evitados', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php _e('kg de CO2 evitados', 'flavor-platform'); ?></span>
                 </div>
 
                 <div class="stat-card">
                     <span class="stat-valor"><?php echo number_format($estadisticas['usuarios_activos']); ?></span>
-                    <span class="stat-label"><?php _e('composteros activos', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php _e('composteros activos', 'flavor-platform'); ?></span>
                 </div>
 
                 <div class="stat-card">
                     <span class="stat-valor"><?php echo number_format($estadisticas['puntos_activos']); ?></span>
-                    <span class="stat-label"><?php _e('puntos de compostaje', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php _e('puntos de compostaje', 'flavor-platform'); ?></span>
                 </div>
 
                 <div class="stat-card">
                     <span class="stat-valor"><?php echo number_format($estadisticas['total_aportaciones']); ?></span>
-                    <span class="stat-label"><?php _e('aportaciones realizadas', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php _e('aportaciones realizadas', 'flavor-platform'); ?></span>
                 </div>
 
                 <div class="stat-card">
                     <span class="stat-valor"><?php echo number_format($estadisticas['turnos_completados']); ?></span>
-                    <span class="stat-label"><?php _e('turnos de mantenimiento', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php _e('turnos de mantenimiento', 'flavor-platform'); ?></span>
                 </div>
             </div>
 
             <div class="stats-mes">
-                <h4><?php _e('Este mes', 'flavor-chat-ia'); ?></h4>
+                <h4><?php _e('Este mes', 'flavor-platform'); ?></h4>
                 <div class="stats-mes-grid">
                     <div class="stat-mes-item">
                         <span class="stat-mes-valor"><?php echo number_format($estadisticas['estadisticas_mes']['kg'], 1); ?></span>
-                        <span class="stat-mes-label"><?php _e('kg aportados', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-mes-label"><?php _e('kg aportados', 'flavor-platform'); ?></span>
                     </div>
                     <div class="stat-mes-item">
                         <span class="stat-mes-valor"><?php echo number_format($estadisticas['estadisticas_mes']['aportaciones']); ?></span>
-                        <span class="stat-mes-label"><?php _e('aportaciones', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-mes-label"><?php _e('aportaciones', 'flavor-platform'); ?></span>
                     </div>
                 </div>
             </div>
@@ -2063,20 +2063,20 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         <div class="flavor-compostaje-turnos" data-punto="<?php echo intval($atributos['punto_id']); ?>" data-dias="<?php echo intval($atributos['dias']); ?>">
             <div class="turnos-filtros">
                 <select id="filtro-punto-turno" class="flavor-select">
-                    <option value=""><?php _e('Todos los puntos', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todos los puntos', 'flavor-platform'); ?></option>
                 </select>
                 <select id="filtro-tipo-turno" class="flavor-select">
-                    <option value=""><?php _e('Todos los tipos', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('volteo', 'flavor-chat-ia'); ?>"><?php _e('Volteo', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('riego', 'flavor-chat-ia'); ?>"><?php _e('Riego', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('medicion', 'flavor-chat-ia'); ?>"><?php _e('Medicion', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('tamizado', 'flavor-chat-ia'); ?>"><?php _e('Tamizado', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('limpieza', 'flavor-chat-ia'); ?>"><?php _e('Limpieza', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todos los tipos', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('volteo', 'flavor-platform'); ?>"><?php _e('Volteo', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('riego', 'flavor-platform'); ?>"><?php _e('Riego', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('medicion', 'flavor-platform'); ?>"><?php _e('Medicion', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('tamizado', 'flavor-platform'); ?>"><?php _e('Tamizado', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('limpieza', 'flavor-platform'); ?>"><?php _e('Limpieza', 'flavor-platform'); ?></option>
                 </select>
             </div>
 
             <div id="calendario-turnos" class="turnos-calendario">
-                <div class="flavor-cargando"><?php _e('Cargando turnos...', 'flavor-chat-ia'); ?></div>
+                <div class="flavor-cargando"><?php _e('Cargando turnos...', 'flavor-platform'); ?></div>
             </div>
 
             <div id="lista-turnos" class="turnos-lista"></div>
@@ -2168,7 +2168,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error' => __('La vista solicitada no esta disponible en Compostaje.', 'flavor-chat-ia'),
+            'error' => __('La vista solicitada no esta disponible en Compostaje.', 'flavor-platform'),
         ];
     }
 
@@ -2267,7 +2267,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
     private function action_mis_estadisticas_compostaje($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Usuario no autenticado', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Usuario no autenticado', 'flavor-platform')];
         }
 
         $estadisticas = $this->obtener_estadisticas_usuario($usuario_id);
@@ -2358,40 +2358,40 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
     public function get_web_components() {
         return [
             'hero_compostaje' => [
-                'label' => __('Hero Compostaje', 'flavor-chat-ia'),
+                'label' => __('Hero Compostaje', 'flavor-platform'),
                 'category' => 'hero',
                 'icon' => 'dashicons-carrot',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Compostaje Comunitario', 'flavor-chat-ia')],
-                    'subtitulo' => ['type' => 'textarea', 'default' => __('Convierte residuos organicos en abono natural', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Compostaje Comunitario', 'flavor-platform')],
+                    'subtitulo' => ['type' => 'textarea', 'default' => __('Convierte residuos organicos en abono natural', 'flavor-platform')],
                     'imagen_fondo' => ['type' => 'image', 'default' => ''],
                     'mostrar_impacto' => ['type' => 'toggle', 'default' => true],
                 ],
                 'template' => 'compostaje/hero',
             ],
             'mapa_composteras' => [
-                'label' => __('Mapa de Puntos', 'flavor-chat-ia'),
+                'label' => __('Mapa de Puntos', 'flavor-platform'),
                 'category' => 'content',
                 'icon' => 'dashicons-location',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Encuentra tu Punto de Compostaje', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Encuentra tu Punto de Compostaje', 'flavor-platform')],
                     'altura_mapa' => ['type' => 'number', 'default' => 500],
                     'mostrar_filtros' => ['type' => 'toggle', 'default' => true],
                 ],
                 'template' => 'compostaje/mapa',
             ],
             'formulario_aportacion' => [
-                'label' => __('Formulario Aportacion', 'flavor-chat-ia'),
+                'label' => __('Formulario Aportacion', 'flavor-platform'),
                 'category' => 'forms',
                 'icon' => 'dashicons-plus-alt',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Registra tu Aportacion', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Registra tu Aportacion', 'flavor-platform')],
                     'punto_fijo' => ['type' => 'number', 'default' => 0],
                 ],
                 'template' => 'compostaje/formulario',
             ],
             'estadisticas_usuario' => [
-                'label' => __('Mis Estadisticas', 'flavor-chat-ia'),
+                'label' => __('Mis Estadisticas', 'flavor-platform'),
                 'category' => 'content',
                 'icon' => 'dashicons-chart-bar',
                 'fields' => [
@@ -2401,42 +2401,42 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
                 'template' => 'compostaje/estadisticas-usuario',
             ],
             'ranking_compostaje' => [
-                'label' => __('Ranking Composteros', 'flavor-chat-ia'),
+                'label' => __('Ranking Composteros', 'flavor-platform'),
                 'category' => 'content',
                 'icon' => 'dashicons-awards',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Top Composteros', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Top Composteros', 'flavor-platform')],
                     'limite' => ['type' => 'number', 'default' => 10],
                     'periodo' => ['type' => 'select', 'options' => ['total', 'mes', 'semana'], 'default' => 'total'],
                 ],
                 'template' => 'compostaje/ranking',
             ],
             'guia_compostaje' => [
-                'label' => __('Guia de Compostaje', 'flavor-chat-ia'),
+                'label' => __('Guia de Compostaje', 'flavor-platform'),
                 'category' => 'content',
                 'icon' => 'dashicons-book',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Que Compostar', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Que Compostar', 'flavor-platform')],
                     'estilo' => ['type' => 'select', 'options' => ['lista', 'tarjetas'], 'default' => 'tarjetas'],
                 ],
                 'template' => 'compostaje/guia',
             ],
             'calendario_turnos' => [
-                'label' => __('Calendario de Turnos', 'flavor-chat-ia'),
+                'label' => __('Calendario de Turnos', 'flavor-platform'),
                 'category' => 'content',
                 'icon' => 'dashicons-calendar-alt',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Turnos de Mantenimiento', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Turnos de Mantenimiento', 'flavor-platform')],
                     'dias_adelante' => ['type' => 'number', 'default' => 30],
                 ],
                 'template' => 'compostaje/turnos',
             ],
             'impacto_global' => [
-                'label' => __('Impacto Global', 'flavor-chat-ia'),
+                'label' => __('Impacto Global', 'flavor-platform'),
                 'category' => 'hero',
                 'icon' => 'dashicons-chart-area',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Nuestro Impacto', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Nuestro Impacto', 'flavor-platform')],
                     'mostrar_equivalencias' => ['type' => 'toggle', 'default' => true],
                 ],
                 'template' => 'compostaje/impacto',
@@ -2590,24 +2590,24 @@ KNOWLEDGE;
     protected function get_admin_config() {
         return [
             'id' => 'compostaje',
-            'label' => __('Compostaje', 'flavor-chat-ia'),
+            'label' => __('Compostaje', 'flavor-platform'),
             'icon' => 'dashicons-carrot',
             'capability' => 'manage_options',
             'categoria' => 'sostenibilidad',
             'paginas' => [
                 [
                     'slug' => 'flavor-compostaje-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', 'flavor-platform'),
                     'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'flavor-compostaje-composteras',
-                    'titulo' => __('Composteras', 'flavor-chat-ia'),
+                    'titulo' => __('Composteras', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_composteras'],
                 ],
                 [
                     'slug' => 'flavor-compostaje-participantes',
-                    'titulo' => __('Participantes', 'flavor-chat-ia'),
+                    'titulo' => __('Participantes', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_participantes'],
                 ],
             ],
@@ -2618,7 +2618,7 @@ KNOWLEDGE;
      * Renderiza el dashboard de administracion de compostaje
      */
     public function render_admin_dashboard() {
-        $this->render_page_header(__('Dashboard de Compostaje', 'flavor-chat-ia'));
+        $this->render_page_header(__('Dashboard de Compostaje', 'flavor-platform'));
 
         $estadisticas_generales = $this->obtener_estadisticas_generales();
         include dirname(__FILE__) . '/views/dashboard.php';
@@ -2642,13 +2642,13 @@ KNOWLEDGE;
     public function render_admin_composteras() {
         $acciones = [
             [
-                'label' => __('Nueva Compostera', 'flavor-chat-ia'),
+                'label' => __('Nueva Compostera', 'flavor-platform'),
                 'url' => admin_url('admin.php?page=flavor-compostaje-composteras&action=nueva'),
                 'class' => 'button-primary',
             ],
         ];
 
-        $this->render_page_header(__('Gestion de Composteras', 'flavor-chat-ia'), $acciones);
+        $this->render_page_header(__('Gestion de Composteras', 'flavor-platform'), $acciones);
 
         $composteras = $this->obtener_composteras();
 
@@ -2659,7 +2659,7 @@ KNOWLEDGE;
      * Renderiza la pagina de gestion de participantes
      */
     public function render_admin_participantes() {
-        $this->render_page_header(__('Participantes del Compostaje', 'flavor-chat-ia'));
+        $this->render_page_header(__('Participantes del Compostaje', 'flavor-platform'));
 
         $participantes = $this->obtener_ranking_participantes();
 
@@ -2718,7 +2718,7 @@ KNOWLEDGE;
         $estadisticas['puntos_compostaje'] = [
             'icon' => 'dashicons-carrot',
             'valor' => $total_puntos,
-            'label' => __('Puntos activos', 'flavor-chat-ia'),
+            'label' => __('Puntos activos', 'flavor-platform'),
             'color' => 'green',
         ];
 
@@ -2736,7 +2736,7 @@ KNOWLEDGE;
             $estadisticas['mis_aportaciones'] = [
                 'icon' => 'dashicons-update',
                 'valor' => $mis_aportaciones,
-                'label' => __('Aportes este mes', 'flavor-chat-ia'),
+                'label' => __('Aportes este mes', 'flavor-platform'),
                 'color' => $mis_aportaciones > 0 ? 'green' : 'gray',
             ];
 
@@ -2751,7 +2751,7 @@ KNOWLEDGE;
                 $estadisticas['kg_aportados'] = [
                     'icon' => 'dashicons-chart-line',
                     'valor' => number_format($kg_totales, 1) . ' kg',
-                    'label' => __('Total aportado', 'flavor-chat-ia'),
+                    'label' => __('Total aportado', 'flavor-platform'),
                     'color' => 'blue',
                 ];
             }
@@ -2768,28 +2768,28 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Compostaje Comunitario', 'flavor-chat-ia'),
+                'title' => __('Compostaje Comunitario', 'flavor-platform'),
                 'slug' => 'compostaje',
-                'content' => '<h1>' . __('Compostaje Comunitario', 'flavor-chat-ia') . '</h1>
-<p>' . __('Transforma tus residuos orgánicos en abono de calidad. Únete al programa de compostaje comunitario y contribuye a un barrio más sostenible.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Compostaje Comunitario', 'flavor-platform') . '</h1>
+<p>' . __('Transforma tus residuos orgánicos en abono de calidad. Únete al programa de compostaje comunitario y contribuye a un barrio más sostenible.', 'flavor-platform') . '</p>
 
 [flavor_module_listing module="compostaje" action="listar" columnas="3" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Registrar Aporte', 'flavor-chat-ia'),
+                'title' => __('Registrar Aporte', 'flavor-platform'),
                 'slug' => 'compostaje/registrar',
-                'content' => '<h1>' . __('Registrar Aporte de Compost', 'flavor-chat-ia') . '</h1>
-<p>' . __('Registra tu aporte de residuos orgánicos a la compostera comunitaria. Cada aporte suma puntos para tu ranking.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Registrar Aporte de Compost', 'flavor-platform') . '</h1>
+<p>' . __('Registra tu aporte de residuos orgánicos a la compostera comunitaria. Cada aporte suma puntos para tu ranking.', 'flavor-platform') . '</p>
 
 [flavor_module_listing module="compostaje" action="registrar"]',
                 'parent' => 'compostaje',
             ],
             [
-                'title' => __('Mis Aportes', 'flavor-chat-ia'),
+                'title' => __('Mis Aportes', 'flavor-platform'),
                 'slug' => 'compostaje/mis-aportes',
-                'content' => '<h1>' . __('Mis Aportes de Compostaje', 'flavor-chat-ia') . '</h1>
-<p>' . __('Consulta tu historial de aportes, tus estadísticas y tu posición en el ranking de compostadores.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Mis Aportes de Compostaje', 'flavor-platform') . '</h1>
+<p>' . __('Consulta tu historial de aportes, tus estadísticas y tu posición en el ranking de compostadores.', 'flavor-platform') . '</p>
 
 [flavor_module_listing module="compostaje" action="mis_aportes" columnas="2" limite="20"]',
                 'parent' => 'compostaje',
@@ -2805,8 +2805,8 @@ KNOWLEDGE;
     public static function get_renderer_config(): array {
         return [
             'module'   => 'compostaje',
-            'title'    => __('Compostaje Comunitario', 'flavor-chat-ia'),
-            'subtitle' => __('Convierte residuos orgánicos en abono natural', 'flavor-chat-ia'),
+            'title'    => __('Compostaje Comunitario', 'flavor-platform'),
+            'subtitle' => __('Convierte residuos orgánicos en abono natural', 'flavor-platform'),
             'icon'     => '🥕',
             'color'    => 'success', // Usa variable CSS --flavor-success del tema
 
@@ -2816,28 +2816,28 @@ KNOWLEDGE;
             ],
 
             'fields' => [
-                'nombre'        => ['label' => __('Nombre', 'flavor-chat-ia'), 'type' => 'text', 'required' => true],
-                'ubicacion'     => ['label' => __('Ubicación', 'flavor-chat-ia'), 'type' => 'text', 'required' => true],
-                'tipo'          => ['label' => __('Tipo', 'flavor-chat-ia'), 'type' => 'select', 'options' => ['comunitario' => 'Comunitario', 'vecinal' => 'Vecinal', 'escolar' => 'Escolar']],
-                'capacidad'     => ['label' => __('Capacidad (kg)', 'flavor-chat-ia'), 'type' => 'number'],
-                'nivel_llenado' => ['label' => __('Nivel de llenado', 'flavor-chat-ia'), 'type' => 'range'],
-                'fase'          => ['label' => __('Fase', 'flavor-chat-ia'), 'type' => 'select'],
-                'estado'        => ['label' => __('Estado', 'flavor-chat-ia'), 'type' => 'select'],
+                'nombre'        => ['label' => __('Nombre', 'flavor-platform'), 'type' => 'text', 'required' => true],
+                'ubicacion'     => ['label' => __('Ubicación', 'flavor-platform'), 'type' => 'text', 'required' => true],
+                'tipo'          => ['label' => __('Tipo', 'flavor-platform'), 'type' => 'select', 'options' => ['comunitario' => 'Comunitario', 'vecinal' => 'Vecinal', 'escolar' => 'Escolar']],
+                'capacidad'     => ['label' => __('Capacidad (kg)', 'flavor-platform'), 'type' => 'number'],
+                'nivel_llenado' => ['label' => __('Nivel de llenado', 'flavor-platform'), 'type' => 'range'],
+                'fase'          => ['label' => __('Fase', 'flavor-platform'), 'type' => 'select'],
+                'estado'        => ['label' => __('Estado', 'flavor-platform'), 'type' => 'select'],
             ],
 
             'estados' => [
-                'activo'       => ['label' => __('Activo', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
-                'recepcion'    => ['label' => __('Recepción', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '📥'],
-                'maduracion'   => ['label' => __('Maduración', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏳'],
-                'listo'        => ['label' => __('Listo', 'flavor-chat-ia'), 'color' => 'emerald', 'icon' => '🌱'],
-                'mantenimiento'=> ['label' => __('Mantenimiento', 'flavor-chat-ia'), 'color' => 'orange', 'icon' => '🔧'],
+                'activo'       => ['label' => __('Activo', 'flavor-platform'), 'color' => 'green', 'icon' => '✅'],
+                'recepcion'    => ['label' => __('Recepción', 'flavor-platform'), 'color' => 'blue', 'icon' => '📥'],
+                'maduracion'   => ['label' => __('Maduración', 'flavor-platform'), 'color' => 'yellow', 'icon' => '⏳'],
+                'listo'        => ['label' => __('Listo', 'flavor-platform'), 'color' => 'emerald', 'icon' => '🌱'],
+                'mantenimiento'=> ['label' => __('Mantenimiento', 'flavor-platform'), 'color' => 'orange', 'icon' => '🔧'],
             ],
 
             'stats' => [
-                'total_puntos'   => ['label' => __('Puntos activos', 'flavor-chat-ia'), 'icon' => '📍', 'color' => 'amber'],
-                'kg_compostados' => ['label' => __('Kg compostados', 'flavor-chat-ia'), 'icon' => '🥕', 'color' => 'green'],
-                'co2_evitado'    => ['label' => __('CO₂ evitado', 'flavor-chat-ia'), 'icon' => '🌱', 'color' => 'teal'],
-                'participantes'  => ['label' => __('Participantes', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'blue'],
+                'total_puntos'   => ['label' => __('Puntos activos', 'flavor-platform'), 'icon' => '📍', 'color' => 'amber'],
+                'kg_compostados' => ['label' => __('Kg compostados', 'flavor-platform'), 'icon' => '🥕', 'color' => 'green'],
+                'co2_evitado'    => ['label' => __('CO₂ evitado', 'flavor-platform'), 'icon' => '🌱', 'color' => 'teal'],
+                'participantes'  => ['label' => __('Participantes', 'flavor-platform'), 'icon' => '👥', 'color' => 'blue'],
             ],
 
             'card' => [
@@ -2849,27 +2849,27 @@ KNOWLEDGE;
 
             'tabs' => [
                 'puntos' => [
-                    'label'   => __('Composteras', 'flavor-chat-ia'),
+                    'label'   => __('Composteras', 'flavor-platform'),
                     'icon'    => 'dashicons-carrot',
                     'content' => '[flavor_compostaje_puntos]',
                 ],
                 'registrar' => [
-                    'label'   => __('Registrar aporte', 'flavor-chat-ia'),
+                    'label'   => __('Registrar aporte', 'flavor-platform'),
                     'icon'    => 'dashicons-plus-alt',
                     'content' => '[flavor_compostaje_registrar]',
                 ],
                 'mis-aportes' => [
-                    'label'   => __('Mis aportes', 'flavor-chat-ia'),
+                    'label'   => __('Mis aportes', 'flavor-platform'),
                     'icon'    => 'dashicons-chart-bar',
                     'content' => '[flavor_compostaje_mis_aportaciones]',
                 ],
                 'turnos' => [
-                    'label'   => __('Turnos', 'flavor-chat-ia'),
+                    'label'   => __('Turnos', 'flavor-platform'),
                     'icon'    => 'dashicons-calendar-alt',
                     'content' => '[flavor_compostaje_turnos]',
                 ],
                 'ranking' => [
-                    'label'   => __('Ranking', 'flavor-chat-ia'),
+                    'label'   => __('Ranking', 'flavor-platform'),
                     'icon'    => 'dashicons-awards',
                     'content' => '[flavor_compostaje_ranking]',
                 ],
@@ -2886,8 +2886,8 @@ KNOWLEDGE;
                 'show_stats'   => true,
                 'show_actions' => true,
                 'actions'      => [
-                    'registrar_aporte' => ['label' => __('Registrar aporte', 'flavor-chat-ia'), 'icon' => '➕', 'color' => 'amber'],
-                    'ver_turnos'       => ['label' => __('Ver turnos', 'flavor-chat-ia'), 'icon' => '📅', 'color' => 'blue'],
+                    'registrar_aporte' => ['label' => __('Registrar aporte', 'flavor-platform'), 'icon' => '➕', 'color' => 'amber'],
+                    'ver_turnos'       => ['label' => __('Ver turnos', 'flavor-platform'), 'icon' => '📅', 'color' => 'blue'],
                 ],
             ],
         ];
@@ -2925,8 +2925,8 @@ KNOWLEDGE;
         // Subpágina: Composteras
         add_submenu_page(
             null,
-            __('Composteras', 'flavor-chat-ia'),
-            __('Composteras', 'flavor-chat-ia'),
+            __('Composteras', 'flavor-platform'),
+            __('Composteras', 'flavor-platform'),
             'manage_options',
             'flavor-compostaje-composteras',
             [$this, 'render_pagina_composteras']
@@ -2935,8 +2935,8 @@ KNOWLEDGE;
         // Subpágina: Mantenimiento
         add_submenu_page(
             null,
-            __('Mantenimiento de Compostaje', 'flavor-chat-ia'),
-            __('Mantenimiento', 'flavor-chat-ia'),
+            __('Mantenimiento de Compostaje', 'flavor-platform'),
+            __('Mantenimiento', 'flavor-platform'),
             'manage_options',
             'flavor-compostaje-mantenimiento',
             [$this, 'render_pagina_mantenimiento']
@@ -2945,8 +2945,8 @@ KNOWLEDGE;
         // Subpágina: Participantes
         add_submenu_page(
             null,
-            __('Participantes de Compostaje', 'flavor-chat-ia'),
-            __('Participantes', 'flavor-chat-ia'),
+            __('Participantes de Compostaje', 'flavor-platform'),
+            __('Participantes', 'flavor-platform'),
             'manage_options',
             'flavor-compostaje-participantes',
             [$this, 'render_pagina_participantes']
@@ -2961,8 +2961,8 @@ KNOWLEDGE;
         if (file_exists($ruta_vista)) {
             include $ruta_vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Composteras', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Composteras', 'flavor-platform') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-platform') . '</p></div>';
         }
     }
 
@@ -2974,8 +2974,8 @@ KNOWLEDGE;
         if (file_exists($ruta_vista)) {
             include $ruta_vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Mantenimiento de Compostaje', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Mantenimiento de Compostaje', 'flavor-platform') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-platform') . '</p></div>';
         }
     }
 
@@ -2987,8 +2987,8 @@ KNOWLEDGE;
         if (file_exists($ruta_vista)) {
             include $ruta_vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Participantes de Compostaje', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Participantes de Compostaje', 'flavor-platform') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-platform') . '</p></div>';
         }
     }
 }

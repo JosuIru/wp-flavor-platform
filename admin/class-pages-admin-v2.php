@@ -45,15 +45,15 @@ class Flavor_Pages_Admin_V2 {
         ?>
         <div class="wrap flavor-pages-admin">
             <h1>
-                <?php _e('Gestión de Páginas', 'flavor-chat-ia'); ?>
+                <?php _e('Gestión de Páginas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <span class="flavor-badge flavor-badge--new">V2</span>
             </h1>
 
             <!-- Tabs -->
             <nav class="nav-tab-wrapper">
-                <a href="#tab-create" class="nav-tab nav-tab-active"><?php _e('Crear/Actualizar', 'flavor-chat-ia'); ?></a>
-                <a href="#tab-migrate" class="nav-tab"><?php _e('Migrar a V2', 'flavor-chat-ia'); ?></a>
-                <a href="#tab-status" class="nav-tab"><?php _e('Estado Actual', 'flavor-chat-ia'); ?></a>
+                <a href="#tab-create" class="nav-tab nav-tab-active"><?php _e('Crear/Actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
+                <a href="#tab-migrate" class="nav-tab"><?php _e('Migrar a V2', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
+                <a href="#tab-status" class="nav-tab"><?php _e('Estado Actual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
             </nav>
 
             <!-- Tab 1: Crear/Actualizar -->
@@ -167,10 +167,10 @@ class Flavor_Pages_Admin_V2 {
     private function render_create_tab($pages_v2) {
         ?>
         <div class="card">
-            <h2><?php _e('Page Creator V2 - Con Componentes Modernos', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Page Creator V2 - Con Componentes Modernos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <div class="flavor-feature-list">
-                <h3>✨ <?php _e('Nuevas Características', 'flavor-chat-ia'); ?></h3>
+                <h3>✨ <?php _e('Nuevas Características', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <ul>
                     <li>✅ <strong>Headers estandarizados</strong> con <code>[flavor_page_header]</code></li>
                     <li>✅ <strong>Breadcrumbs automáticos</strong> en todas las páginas</li>
@@ -185,12 +185,12 @@ class Flavor_Pages_Admin_V2 {
             // Mensajes de éxito
             if (isset($_GET['created_v2'])) {
                 echo '<div class="notice notice-success"><p>';
-                printf(__('✅ Se crearon %d páginas con el nuevo formato V2', 'flavor-chat-ia'), intval($_GET['created_v2']));
+                printf(__('✅ Se crearon %d páginas con el nuevo formato V2', FLAVOR_PLATFORM_TEXT_DOMAIN), intval($_GET['created_v2']));
                 echo '</p></div>';
             }
             if (isset($_GET['updated_v2'])) {
                 echo '<div class="notice notice-info"><p>';
-                printf(__('🔄 Se actualizaron %d páginas existentes al formato V2', 'flavor-chat-ia'), intval($_GET['updated_v2']));
+                printf(__('🔄 Se actualizaron %d páginas existentes al formato V2', FLAVOR_PLATFORM_TEXT_DOMAIN), intval($_GET['updated_v2']));
                 echo '</p></div>';
             }
             ?>
@@ -198,11 +198,11 @@ class Flavor_Pages_Admin_V2 {
             <div class="flavor-stats-grid">
                 <div class="flavor-stat-box flavor-stat-box--success">
                     <div class="flavor-stat-box__value"><?php echo count($pages_v2['with_v2']); ?></div>
-                    <div class="flavor-stat-box__label"><?php _e('Páginas V2', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-stat-box__label"><?php _e('Páginas V2', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="flavor-stat-box flavor-stat-box--warning">
                     <div class="flavor-stat-box__value"><?php echo count($pages_v2['without_v2']); ?></div>
-                    <div class="flavor-stat-box__label"><?php _e('Páginas Antiguas', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-stat-box__label"><?php _e('Páginas Antiguas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
 
@@ -212,12 +212,12 @@ class Flavor_Pages_Admin_V2 {
 
                 <p>
                     <button type="submit" class="button button-primary button-hero">
-                        🚀 <?php _e('Crear/Actualizar Todas las Páginas con V2', 'flavor-chat-ia'); ?>
+                        🚀 <?php _e('Crear/Actualizar Todas las Páginas con V2', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </p>
 
                 <p class="description">
-                    <?php _e('Crea páginas nuevas o actualiza las existentes al formato V2 con todos los componentes modernos.', 'flavor-chat-ia'); ?>
+                    <?php _e('Crea páginas nuevas o actualiza las existentes al formato V2 con todos los componentes modernos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </form>
         </div>
@@ -230,16 +230,16 @@ class Flavor_Pages_Admin_V2 {
     private function render_migrate_tab($pages_old) {
         ?>
         <div class="card">
-            <h2><?php _e('Migrador Inteligente', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Migrador Inteligente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <p class="description">
-                <?php _e('Convierte páginas antiguas con HTML (<h1>, <p>) al nuevo formato con shortcodes modernos.', 'flavor-chat-ia'); ?>
+                <?php _e('Convierte páginas antiguas con HTML (<h1>, <p>) al nuevo formato con shortcodes modernos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
 
             <?php
             if (isset($_GET['migrated'])) {
                 echo '<div class="notice notice-success"><p>';
-                printf(__('✅ Se migraron %d páginas al nuevo formato', 'flavor-chat-ia'), intval($_GET['migrated']));
+                printf(__('✅ Se migraron %d páginas al nuevo formato', FLAVOR_PLATFORM_TEXT_DOMAIN), intval($_GET['migrated']));
                 echo '</p></div>';
 
                 if (isset($_GET['migrated_list'])) {
@@ -253,13 +253,13 @@ class Flavor_Pages_Admin_V2 {
 
             if (isset($_GET['skipped'])) {
                 echo '<div class="notice notice-info"><p>';
-                printf(__('ℹ️ Se omitieron %d páginas (ya estaban migradas)', 'flavor-chat-ia'), intval($_GET['skipped']));
+                printf(__('ℹ️ Se omitieron %d páginas (ya estaban migradas)', FLAVOR_PLATFORM_TEXT_DOMAIN), intval($_GET['skipped']));
                 echo '</p></div>';
             }
             ?>
 
             <div class="flavor-feature-list">
-                <h3>🔄 <?php _e('El Migrador Hace:', 'flavor-chat-ia'); ?></h3>
+                <h3>🔄 <?php _e('El Migrador Hace:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <ul>
                     <li>✅ Extrae títulos y subtítulos del HTML antiguo</li>
                     <li>✅ Detecta el módulo desde los shortcodes</li>
@@ -273,34 +273,34 @@ class Flavor_Pages_Admin_V2 {
             <div class="flavor-stats-grid">
                 <div class="flavor-stat-box flavor-stat-box--warning">
                     <div class="flavor-stat-box__value"><?php echo count($pages_old); ?></div>
-                    <div class="flavor-stat-box__label"><?php _e('Páginas a Migrar', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-stat-box__label"><?php _e('Páginas a Migrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
 
             <?php if (count($pages_old) > 0): ?>
-                <h3><?php _e('Páginas que se migrarán:', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Páginas que se migrarán:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <ul>
                     <?php foreach (array_slice($pages_old, 0, 10) as $page): ?>
                         <li><strong><?php echo esc_html($page->post_title); ?></strong> - <code><?php echo esc_html($page->post_name); ?></code></li>
                     <?php endforeach; ?>
                     <?php if (count($pages_old) > 10): ?>
-                        <li><em><?php printf(__('... y %d más', 'flavor-chat-ia'), count($pages_old) - 10); ?></em></li>
+                        <li><em><?php printf(__('... y %d más', FLAVOR_PLATFORM_TEXT_DOMAIN), count($pages_old) - 10); ?></em></li>
                     <?php endif; ?>
                 </ul>
 
-                <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" onsubmit="return confirm('<?php esc_attr_e('¿Migrar todas las páginas al nuevo formato? Se modificará el contenido de las páginas.', 'flavor-chat-ia'); ?>');">
+                <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" onsubmit="return confirm('<?php esc_attr_e('¿Migrar todas las páginas al nuevo formato? Se modificará el contenido de las páginas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');">
                     <input type="hidden" name="action" value="flavor_migrate_pages">
                     <?php wp_nonce_field('flavor_migrate_pages_nonce'); ?>
 
                     <p>
                         <button type="submit" class="button button-primary button-hero">
-                            🔄 <?php printf(__('Migrar %d Páginas al Formato V2', 'flavor-chat-ia'), count($pages_old)); ?>
+                            🔄 <?php printf(__('Migrar %d Páginas al Formato V2', FLAVOR_PLATFORM_TEXT_DOMAIN), count($pages_old)); ?>
                         </button>
                     </p>
                 </form>
             <?php else: ?>
                 <div class="notice notice-success inline">
-                    <p><?php _e('✅ Todas las páginas ya están en el formato V2', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('✅ Todas las páginas ya están en el formato V2', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
         </div>
@@ -313,17 +313,17 @@ class Flavor_Pages_Admin_V2 {
     private function render_status_tab($pages_old, $pages_v2) {
         ?>
         <div class="card">
-            <h2><?php _e('Estado de Páginas', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Estado de Páginas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
-            <h3><?php _e('Páginas con Formato V2', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Páginas con Formato V2', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <?php if (count($pages_v2['with_v2']) > 0): ?>
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
-                            <th><?php _e('Título', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Módulo', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Componentes', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Componentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -343,15 +343,15 @@ class Flavor_Pages_Admin_V2 {
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <a href="<?php echo esc_url(get_permalink($page->ID)); ?>" target="_blank"><?php _e('Ver', 'flavor-chat-ia'); ?></a> |
-                                    <a href="<?php echo esc_url(get_edit_post_link($page->ID)); ?>"><?php _e('Editar', 'flavor-chat-ia'); ?></a>
+                                    <a href="<?php echo esc_url(get_permalink($page->ID)); ?>" target="_blank"><?php _e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a> |
+                                    <a href="<?php echo esc_url(get_edit_post_link($page->ID)); ?>"><?php _e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
             <?php else: ?>
-                <p><?php _e('No hay páginas con formato V2 todavía.', 'flavor-chat-ia'); ?></p>
+                <p><?php _e('No hay páginas con formato V2 todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php endif; ?>
         </div>
         <?php
@@ -432,7 +432,7 @@ class Flavor_Pages_Admin_V2 {
         check_admin_referer('flavor_create_pages_v2_nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_die(__('No tienes permisos', 'flavor-chat-ia'));
+            wp_die(__('No tienes permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $result = Flavor_Page_Creator_V2::create_or_update_pages();
@@ -452,7 +452,7 @@ class Flavor_Pages_Admin_V2 {
         check_admin_referer('flavor_migrate_pages_nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_die(__('No tienes permisos', 'flavor-chat-ia'));
+            wp_die(__('No tienes permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $result = Flavor_Page_Migrator::migrate_all_pages();

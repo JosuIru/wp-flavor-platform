@@ -21,9 +21,9 @@ $categorias = $settings['categorias'] ?? [];
 <div class="cursos-catalogo">
     <div class="cursos-filtros">
         <div class="filtro-grupo">
-            <label><?php _e('Categoría', 'flavor-chat-ia'); ?></label>
+            <label><?php _e('Categoría', 'flavor-platform'); ?></label>
             <select name="filtro_categoria">
-                <option value=""><?php _e('Todas las categorías', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php _e('Todas las categorías', 'flavor-platform'); ?></option>
                 <?php foreach ($categorias as $slug => $nombre): ?>
                     <option value="<?php echo esc_attr($slug); ?>" <?php selected($atts['categoria'], $slug); ?>>
                         <?php echo esc_html($nombre); ?>
@@ -33,35 +33,35 @@ $categorias = $settings['categorias'] ?? [];
         </div>
 
         <div class="filtro-grupo">
-            <label><?php _e('Nivel', 'flavor-chat-ia'); ?></label>
+            <label><?php _e('Nivel', 'flavor-platform'); ?></label>
             <select name="filtro_nivel">
-                <option value=""><?php _e('Todos los niveles', 'flavor-chat-ia'); ?></option>
-                <option value="principiante" <?php selected($atts['nivel'], 'principiante'); ?>><?php _e('Principiante', 'flavor-chat-ia'); ?></option>
-                <option value="intermedio" <?php selected($atts['nivel'], 'intermedio'); ?>><?php _e('Intermedio', 'flavor-chat-ia'); ?></option>
-                <option value="avanzado" <?php selected($atts['nivel'], 'avanzado'); ?>><?php _e('Avanzado', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php _e('Todos los niveles', 'flavor-platform'); ?></option>
+                <option value="principiante" <?php selected($atts['nivel'], 'principiante'); ?>><?php _e('Principiante', 'flavor-platform'); ?></option>
+                <option value="intermedio" <?php selected($atts['nivel'], 'intermedio'); ?>><?php _e('Intermedio', 'flavor-platform'); ?></option>
+                <option value="avanzado" <?php selected($atts['nivel'], 'avanzado'); ?>><?php _e('Avanzado', 'flavor-platform'); ?></option>
             </select>
         </div>
 
         <div class="filtro-grupo">
-            <label><?php _e('Modalidad', 'flavor-chat-ia'); ?></label>
+            <label><?php _e('Modalidad', 'flavor-platform'); ?></label>
             <select name="filtro_modalidad">
-                <option value=""><?php _e('Todas las modalidades', 'flavor-chat-ia'); ?></option>
-                <option value="online" <?php selected($atts['modalidad'], 'online'); ?>><?php _e('Online', 'flavor-chat-ia'); ?></option>
-                <option value="presencial" <?php selected($atts['modalidad'], 'presencial'); ?>><?php _e('Presencial', 'flavor-chat-ia'); ?></option>
-                <option value="mixto" <?php selected($atts['modalidad'], 'mixto'); ?>><?php _e('Mixto', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php _e('Todas las modalidades', 'flavor-platform'); ?></option>
+                <option value="online" <?php selected($atts['modalidad'], 'online'); ?>><?php _e('Online', 'flavor-platform'); ?></option>
+                <option value="presencial" <?php selected($atts['modalidad'], 'presencial'); ?>><?php _e('Presencial', 'flavor-platform'); ?></option>
+                <option value="mixto" <?php selected($atts['modalidad'], 'mixto'); ?>><?php _e('Mixto', 'flavor-platform'); ?></option>
             </select>
         </div>
 
         <div class="filtro-grupo">
-            <label><?php _e('Buscar', 'flavor-chat-ia'); ?></label>
-            <input type="text" name="filtro_busqueda" placeholder="<?php esc_attr_e('Buscar cursos...', 'flavor-chat-ia'); ?>">
+            <label><?php _e('Buscar', 'flavor-platform'); ?></label>
+            <input type="text" name="filtro_busqueda" placeholder="<?php esc_attr_e('Buscar cursos...', 'flavor-platform'); ?>">
         </div>
     </div>
 
     <?php if (empty($cursos)): ?>
         <div class="cursos-vacio">
             <span class="dashicons dashicons-welcome-learn-more"></span>
-            <p><?php _e('No hay cursos disponibles con los filtros seleccionados.', 'flavor-chat-ia'); ?></p>
+            <p><?php _e('No hay cursos disponibles con los filtros seleccionados.', 'flavor-platform'); ?></p>
         </div>
     <?php else: ?>
         <div class="cursos-grid" style="--columnas: <?php echo intval($atts['columnas']); ?>">
@@ -75,17 +75,17 @@ $categorias = $settings['categorias'] ?? [];
                         <?php endif; ?>
 
                         <?php if ($curso['es_gratuito']): ?>
-                            <span class="curso-badge gratuito"><?php _e('Gratis', 'flavor-chat-ia'); ?></span>
+                            <span class="curso-badge gratuito"><?php _e('Gratis', 'flavor-platform'); ?></span>
                         <?php endif; ?>
 
                         <?php if ($curso['destacado']): ?>
-                            <span class="curso-badge destacado"><?php _e('Destacado', 'flavor-chat-ia'); ?></span>
+                            <span class="curso-badge destacado"><?php _e('Destacado', 'flavor-platform'); ?></span>
                         <?php endif; ?>
                     </div>
 
                     <div class="curso-card-contenido">
                         <div class="curso-card-categoria">
-                            <?php echo esc_html($categorias[$curso['categoria']] ?? $curso['categoria'] ?? __('General', 'flavor-chat-ia')); ?>
+                            <?php echo esc_html($categorias[$curso['categoria']] ?? $curso['categoria'] ?? __('General', 'flavor-platform')); ?>
                         </div>
 
                         <h3 class="curso-card-titulo">
@@ -95,17 +95,17 @@ $categorias = $settings['categorias'] ?? [];
                         </h3>
 
                         <div class="curso-card-instructor">
-                            <span><?php printf(__('Por %s', 'flavor-chat-ia'), esc_html($curso['instructor'])); ?></span>
+                            <span><?php printf(__('Por %s', 'flavor-platform'), esc_html($curso['instructor'])); ?></span>
                         </div>
 
                         <div class="curso-card-meta">
                             <span>
                                 <span class="dashicons dashicons-clock"></span>
-                                <?php printf(__('%dh', 'flavor-chat-ia'), $curso['duracion_horas']); ?>
+                                <?php printf(__('%dh', 'flavor-platform'), $curso['duracion_horas']); ?>
                             </span>
                             <span>
                                 <span class="dashicons dashicons-admin-users"></span>
-                                <?php printf(__('%d alumnos', 'flavor-chat-ia'), $curso['alumnos']); ?>
+                                <?php printf(__('%d alumnos', 'flavor-platform'), $curso['alumnos']); ?>
                             </span>
                             <span>
                                 <span class="dashicons dashicons-chart-bar"></span>
@@ -116,7 +116,7 @@ $categorias = $settings['categorias'] ?? [];
 
                     <div class="curso-card-footer">
                         <span class="curso-card-precio <?php echo $curso['es_gratuito'] ? 'gratuito' : ''; ?>">
-                            <?php echo $curso['es_gratuito'] ? __('Gratis', 'flavor-chat-ia') : number_format($curso['precio'], 2) . ' €'; ?>
+                            <?php echo $curso['es_gratuito'] ? __('Gratis', 'flavor-platform') : number_format($curso['precio'], 2) . ' €'; ?>
                         </span>
                         <div class="curso-card-valoracion">
                             <span class="dashicons dashicons-star-filled"></span>

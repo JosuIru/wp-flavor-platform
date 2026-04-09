@@ -31,8 +31,8 @@ class Flavor_GC_Gateway_Pickup extends Flavor_GC_Payment_Gateway {
      * Constructor
      */
     public function __construct() {
-        $this->name = __('Pago en recogida', 'flavor-chat-ia');
-        $this->description = __('Paga cuando recojas tu pedido.', 'flavor-chat-ia');
+        $this->name = __('Pago en recogida', 'flavor-platform');
+        $this->description = __('Paga cuando recojas tu pedido.', 'flavor-platform');
         $this->icon = 'dashicons-store';
 
         parent::__construct();
@@ -84,7 +84,7 @@ class Flavor_GC_Gateway_Pickup extends Flavor_GC_Payment_Gateway {
         if (!$transaction_id) {
             return [
                 'success' => false,
-                'error' => __('Error al registrar el pedido.', 'flavor-chat-ia'),
+                'error' => __('Error al registrar el pedido.', 'flavor-platform'),
             ];
         }
 
@@ -114,7 +114,7 @@ class Flavor_GC_Gateway_Pickup extends Flavor_GC_Payment_Gateway {
 
         return [
             'success' => true,
-            'message' => __('Pedido confirmado. Recuerda llevar el pago exacto cuando vayas a recogerlo.', 'flavor-chat-ia'),
+            'message' => __('Pedido confirmado. Recuerda llevar el pago exacto cuando vayas a recogerlo.', 'flavor-platform'),
             'transaction_id' => $transaction_id,
             'redirect_url' => Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mis-pedidos'),
         ];
@@ -129,7 +129,7 @@ class Flavor_GC_Gateway_Pickup extends Flavor_GC_Payment_Gateway {
         $instrucciones = $this->get_setting('instrucciones', '');
 
         if (empty($instrucciones)) {
-            $instrucciones = __('El pago se realizará al momento de recoger tu pedido. Por favor, lleva el importe exacto.', 'flavor-chat-ia');
+            $instrucciones = __('El pago se realizará al momento de recoger tu pedido. Por favor, lleva el importe exacto.', 'flavor-platform');
         }
         ?>
         <div class="gc-gateway-pickup-info">
@@ -143,22 +143,22 @@ class Flavor_GC_Gateway_Pickup extends Flavor_GC_Payment_Gateway {
             if ($punto_recogida) :
             ?>
             <div class="gc-pickup-location">
-                <strong><?php esc_html_e('Punto de recogida:', 'flavor-chat-ia'); ?></strong>
+                <strong><?php esc_html_e('Punto de recogida:', 'flavor-platform'); ?></strong>
                 <p><?php echo esc_html($punto_recogida); ?></p>
             </div>
             <?php endif; ?>
 
             <div class="gc-pickup-accepted-methods">
-                <strong><?php esc_html_e('Formas de pago aceptadas:', 'flavor-chat-ia'); ?></strong>
+                <strong><?php esc_html_e('Formas de pago aceptadas:', 'flavor-platform'); ?></strong>
                 <ul>
                     <?php if ($this->get_setting('acepta_efectivo', true)) : ?>
-                    <li><span class="dashicons dashicons-money-alt"></span> <?php esc_html_e('Efectivo', 'flavor-chat-ia'); ?></li>
+                    <li><span class="dashicons dashicons-money-alt"></span> <?php esc_html_e('Efectivo', 'flavor-platform'); ?></li>
                     <?php endif; ?>
                     <?php if ($this->get_setting('acepta_bizum', false)) : ?>
-                    <li><span class="dashicons dashicons-smartphone"></span> <?php esc_html_e('Bizum', 'flavor-chat-ia'); ?></li>
+                    <li><span class="dashicons dashicons-smartphone"></span> <?php esc_html_e('Bizum', 'flavor-platform'); ?></li>
                     <?php endif; ?>
                     <?php if ($this->get_setting('acepta_transferencia', false)) : ?>
-                    <li><span class="dashicons dashicons-bank"></span> <?php esc_html_e('Transferencia bancaria', 'flavor-chat-ia'); ?></li>
+                    <li><span class="dashicons dashicons-bank"></span> <?php esc_html_e('Transferencia bancaria', 'flavor-platform'); ?></li>
                     <?php endif; ?>
                 </ul>
             </div>
@@ -176,38 +176,38 @@ class Flavor_GC_Gateway_Pickup extends Flavor_GC_Payment_Gateway {
             [
                 'id' => 'enabled',
                 'type' => 'checkbox',
-                'label' => __('Habilitar pago en recogida', 'flavor-chat-ia'),
+                'label' => __('Habilitar pago en recogida', 'flavor-platform'),
                 'default' => true,
             ],
             [
                 'id' => 'instrucciones',
                 'type' => 'textarea',
-                'label' => __('Instrucciones', 'flavor-chat-ia'),
-                'description' => __('Mensaje que verán los usuarios al seleccionar este método de pago.', 'flavor-chat-ia'),
-                'default' => __('El pago se realizará al momento de recoger tu pedido. Por favor, lleva el importe exacto.', 'flavor-chat-ia'),
+                'label' => __('Instrucciones', 'flavor-platform'),
+                'description' => __('Mensaje que verán los usuarios al seleccionar este método de pago.', 'flavor-platform'),
+                'default' => __('El pago se realizará al momento de recoger tu pedido. Por favor, lleva el importe exacto.', 'flavor-platform'),
             ],
             [
                 'id' => 'punto_recogida',
                 'type' => 'text',
-                'label' => __('Punto de recogida', 'flavor-chat-ia'),
-                'description' => __('Dirección o descripción del punto de recogida.', 'flavor-chat-ia'),
+                'label' => __('Punto de recogida', 'flavor-platform'),
+                'description' => __('Dirección o descripción del punto de recogida.', 'flavor-platform'),
             ],
             [
                 'id' => 'acepta_efectivo',
                 'type' => 'checkbox',
-                'label' => __('Aceptar efectivo', 'flavor-chat-ia'),
+                'label' => __('Aceptar efectivo', 'flavor-platform'),
                 'default' => true,
             ],
             [
                 'id' => 'acepta_bizum',
                 'type' => 'checkbox',
-                'label' => __('Aceptar Bizum', 'flavor-chat-ia'),
+                'label' => __('Aceptar Bizum', 'flavor-platform'),
                 'default' => false,
             ],
             [
                 'id' => 'acepta_transferencia',
                 'type' => 'checkbox',
-                'label' => __('Aceptar transferencia bancaria', 'flavor-chat-ia'),
+                'label' => __('Aceptar transferencia bancaria', 'flavor-platform'),
                 'default' => false,
             ],
         ];

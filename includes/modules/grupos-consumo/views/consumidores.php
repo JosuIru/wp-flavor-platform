@@ -55,17 +55,17 @@ $todos_los_grupos = get_posts([
 
 <div class="wrap gc-admin-consumidores">
     <h1 class="wp-heading-inline">
-        <?php _e('Gestión de Consumidores', 'flavor-chat-ia'); ?>
+        <?php _e('Gestión de Consumidores', 'flavor-platform'); ?>
     </h1>
     <button type="button" class="page-title-action gc-modal-trigger" data-modal="modal-nuevo-consumidor">
-        <?php _e('Añadir Consumidor', 'flavor-chat-ia'); ?>
+        <?php _e('Añadir Consumidor', 'flavor-platform'); ?>
     </button>
     <hr class="wp-header-end">
 
     <!-- Selector de Grupo -->
     <?php if (count($todos_los_grupos) > 1): ?>
         <div class="gc-grupo-selector">
-            <label for="gc-grupo-select"><?php _e('Grupo:', 'flavor-chat-ia'); ?></label>
+            <label for="gc-grupo-select"><?php _e('Grupo:', 'flavor-platform'); ?></label>
             <select id="gc-grupo-select" onchange="window.location.href='<?php echo admin_url('admin.php?page=gc-consumidores&grupo_id='); ?>'+this.value">
                 <?php foreach ($todos_los_grupos as $grupo): ?>
                     <option value="<?php echo $grupo->ID; ?>" <?php selected($grupo_id, $grupo->ID); ?>>
@@ -79,13 +79,13 @@ $todos_los_grupos = get_posts([
     <?php if (!$grupo_id): ?>
         <div class="gc-empty-state" style="text-align: center; padding: 60px 20px; background: #fff; border-radius: 8px; margin-top: 20px;">
             <span class="dashicons dashicons-store" style="font-size: 64px; color: #c3c4c7; display: block; margin-bottom: 20px;"></span>
-            <h2 style="margin: 0 0 10px; color: #1d2327;"><?php _e('No hay grupos de consumo', 'flavor-chat-ia'); ?></h2>
+            <h2 style="margin: 0 0 10px; color: #1d2327;"><?php _e('No hay grupos de consumo', 'flavor-platform'); ?></h2>
             <p style="color: #646970; margin-bottom: 20px; max-width: 400px; margin-left: auto; margin-right: auto;">
-                <?php _e('Para gestionar consumidores, primero necesitas crear un grupo de consumo donde añadirlos.', 'flavor-chat-ia'); ?>
+                <?php _e('Para gestionar consumidores, primero necesitas crear un grupo de consumo donde añadirlos.', 'flavor-platform'); ?>
             </p>
             <a href="<?php echo admin_url('post-new.php?post_type=gc_grupo'); ?>" class="button button-primary button-hero">
                 <span class="dashicons dashicons-plus-alt2" style="margin-top: 5px;"></span>
-                <?php _e('Crear primer grupo', 'flavor-chat-ia'); ?>
+                <?php _e('Crear primer grupo', 'flavor-platform'); ?>
             </a>
         </div>
     <?php else: ?>
@@ -94,56 +94,56 @@ $todos_los_grupos = get_posts([
     <div class="gc-stats-grid">
         <div class="gc-stat-card">
             <span class="gc-stat-numero"><?php echo esc_html($estadisticas['total'] ?? 0); ?></span>
-            <span class="gc-stat-label"><?php _e('Total Miembros', 'flavor-chat-ia'); ?></span>
+            <span class="gc-stat-label"><?php _e('Total Miembros', 'flavor-platform'); ?></span>
         </div>
         <div class="gc-stat-card gc-stat-activo">
             <span class="gc-stat-numero"><?php echo esc_html($estadisticas['por_estado']['activo'] ?? 0); ?></span>
-            <span class="gc-stat-label"><?php _e('Activos', 'flavor-chat-ia'); ?></span>
+            <span class="gc-stat-label"><?php _e('Activos', 'flavor-platform'); ?></span>
         </div>
         <div class="gc-stat-card gc-stat-pendiente">
             <span class="gc-stat-numero"><?php echo esc_html($estadisticas['por_estado']['pendiente'] ?? 0); ?></span>
-            <span class="gc-stat-label"><?php _e('Pendientes', 'flavor-chat-ia'); ?></span>
+            <span class="gc-stat-label"><?php _e('Pendientes', 'flavor-platform'); ?></span>
         </div>
         <div class="gc-stat-card">
             <span class="gc-stat-numero">+<?php echo esc_html($estadisticas['altas_mes'] ?? 0); ?></span>
-            <span class="gc-stat-label"><?php _e('Altas este mes', 'flavor-chat-ia'); ?></span>
+            <span class="gc-stat-label"><?php _e('Altas este mes', 'flavor-platform'); ?></span>
         </div>
     </div>
 
     <!-- Filtros -->
     <div class="gc-filtros-wrapper">
         <form method="get" class="gc-filtros-form">
-            <input type="hidden" name="page" value="<?php echo esc_attr__('gc-consumidores', 'flavor-chat-ia'); ?>">
+            <input type="hidden" name="page" value="<?php echo esc_attr__('gc-consumidores', 'flavor-platform'); ?>">
             <input type="hidden" name="grupo_id" value="<?php echo esc_attr($grupo_id); ?>">
 
             <div class="gc-filtro">
-                <label for="filtro-estado"><?php _e('Estado:', 'flavor-chat-ia'); ?></label>
+                <label for="filtro-estado"><?php _e('Estado:', 'flavor-platform'); ?></label>
                 <select id="filtro-estado" name="estado">
-                    <option value=""><?php _e('Todos', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('pendiente', 'flavor-chat-ia'); ?>" <?php selected($filtros['estado'], 'pendiente'); ?>><?php _e('Pendiente', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('activo', 'flavor-chat-ia'); ?>" <?php selected($filtros['estado'], 'activo'); ?>><?php _e('Activo', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('suspendido', 'flavor-chat-ia'); ?>" <?php selected($filtros['estado'], 'suspendido'); ?>><?php _e('Suspendido', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('baja', 'flavor-chat-ia'); ?>" <?php selected($filtros['estado'], 'baja'); ?>><?php _e('Baja', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todos', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('pendiente', 'flavor-platform'); ?>" <?php selected($filtros['estado'], 'pendiente'); ?>><?php _e('Pendiente', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('activo', 'flavor-platform'); ?>" <?php selected($filtros['estado'], 'activo'); ?>><?php _e('Activo', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('suspendido', 'flavor-platform'); ?>" <?php selected($filtros['estado'], 'suspendido'); ?>><?php _e('Suspendido', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('baja', 'flavor-platform'); ?>" <?php selected($filtros['estado'], 'baja'); ?>><?php _e('Baja', 'flavor-platform'); ?></option>
                 </select>
             </div>
 
             <div class="gc-filtro">
-                <label for="filtro-rol"><?php _e('Rol:', 'flavor-chat-ia'); ?></label>
+                <label for="filtro-rol"><?php _e('Rol:', 'flavor-platform'); ?></label>
                 <select id="filtro-rol" name="rol">
-                    <option value=""><?php _e('Todos', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('consumidor', 'flavor-chat-ia'); ?>" <?php selected($filtros['rol'], 'consumidor'); ?>><?php _e('Consumidor', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('coordinador', 'flavor-chat-ia'); ?>" <?php selected($filtros['rol'], 'coordinador'); ?>><?php _e('Coordinador', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('productor', 'flavor-chat-ia'); ?>" <?php selected($filtros['rol'], 'productor'); ?>><?php _e('Productor', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todos', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('consumidor', 'flavor-platform'); ?>" <?php selected($filtros['rol'], 'consumidor'); ?>><?php _e('Consumidor', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('coordinador', 'flavor-platform'); ?>" <?php selected($filtros['rol'], 'coordinador'); ?>><?php _e('Coordinador', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('productor', 'flavor-platform'); ?>" <?php selected($filtros['rol'], 'productor'); ?>><?php _e('Productor', 'flavor-platform'); ?></option>
                 </select>
             </div>
 
             <div class="gc-filtro gc-filtro-busqueda">
-                <label for="filtro-busqueda" class="screen-reader-text"><?php _e('Buscar', 'flavor-chat-ia'); ?></label>
-                <input type="search" id="filtro-busqueda" name="s" value="<?php echo esc_attr($filtros['busqueda']); ?>" placeholder="<?php _e('Buscar...', 'flavor-chat-ia'); ?>">
+                <label for="filtro-busqueda" class="screen-reader-text"><?php _e('Buscar', 'flavor-platform'); ?></label>
+                <input type="search" id="filtro-busqueda" name="s" value="<?php echo esc_attr($filtros['busqueda']); ?>" placeholder="<?php _e('Buscar...', 'flavor-platform'); ?>">
             </div>
 
-            <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
-            <a href="<?php echo admin_url('admin.php?page=gc-consumidores&grupo_id=' . $grupo_id); ?>" class="button"><?php _e('Limpiar', 'flavor-chat-ia'); ?></a>
+            <button type="submit" class="button"><?php _e('Filtrar', 'flavor-platform'); ?></button>
+            <a href="<?php echo admin_url('admin.php?page=gc-consumidores&grupo_id=' . $grupo_id); ?>" class="button"><?php _e('Limpiar', 'flavor-platform'); ?></a>
         </form>
     </div>
 
@@ -151,13 +151,13 @@ $todos_los_grupos = get_posts([
     <table class="wp-list-table widefat fixed striped gc-tabla-consumidores">
         <thead>
             <tr>
-                <th scope="col" class="column-nombre"><?php _e('Nombre', 'flavor-chat-ia'); ?></th>
-                <th scope="col" class="column-email"><?php _e('Email', 'flavor-chat-ia'); ?></th>
-                <th scope="col" class="column-rol"><?php _e('Rol', 'flavor-chat-ia'); ?></th>
-                <th scope="col" class="column-estado"><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                <th scope="col" class="column-saldo"><?php _e('Saldo', 'flavor-chat-ia'); ?></th>
-                <th scope="col" class="column-fecha"><?php _e('Alta', 'flavor-chat-ia'); ?></th>
-                <th scope="col" class="column-acciones"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                <th scope="col" class="column-nombre"><?php _e('Nombre', 'flavor-platform'); ?></th>
+                <th scope="col" class="column-email"><?php _e('Email', 'flavor-platform'); ?></th>
+                <th scope="col" class="column-rol"><?php _e('Rol', 'flavor-platform'); ?></th>
+                <th scope="col" class="column-estado"><?php _e('Estado', 'flavor-platform'); ?></th>
+                <th scope="col" class="column-saldo"><?php _e('Saldo', 'flavor-platform'); ?></th>
+                <th scope="col" class="column-fecha"><?php _e('Alta', 'flavor-platform'); ?></th>
+                <th scope="col" class="column-acciones"><?php _e('Acciones', 'flavor-platform'); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -165,12 +165,12 @@ $todos_los_grupos = get_posts([
                 <tr>
                     <td colspan="7" style="text-align: center; padding: 40px;">
                         <span class="dashicons dashicons-groups" style="font-size: 48px; color: #c3c4c7; display: block; margin-bottom: 15px;"></span>
-                        <p style="color: #646970; margin-bottom: 15px;"><?php _e('No hay consumidores registrados en este grupo.', 'flavor-chat-ia'); ?></p>
+                        <p style="color: #646970; margin-bottom: 15px;"><?php _e('No hay consumidores registrados en este grupo.', 'flavor-platform'); ?></p>
                         <button type="button" class="button button-primary gc-modal-trigger" data-modal="modal-nuevo-consumidor">
-                            <span class="dashicons dashicons-plus-alt2" style="margin-top: 3px;"></span> <?php _e('Añadir primer consumidor', 'flavor-chat-ia'); ?>
+                            <span class="dashicons dashicons-plus-alt2" style="margin-top: 3px;"></span> <?php _e('Añadir primer consumidor', 'flavor-platform'); ?>
                         </button>
                         <button type="button" class="button gc-importar-usuarios-wp" style="margin-left: 10px;">
-                            <span class="dashicons dashicons-download" style="margin-top: 3px;"></span> <?php _e('Importar usuarios de WordPress', 'flavor-chat-ia'); ?>
+                            <span class="dashicons dashicons-download" style="margin-top: 3px;"></span> <?php _e('Importar usuarios de WordPress', 'flavor-platform'); ?>
                         </button>
                     </td>
                 </tr>
@@ -184,7 +184,7 @@ $todos_los_grupos = get_posts([
                                 </a>
                             </strong>
                             <?php if ($consumidor->preferencias_alimentarias || $consumidor->alergias): ?>
-                                <span class="gc-tiene-notas dashicons dashicons-info" title="<?php _e('Tiene preferencias/alergias', 'flavor-chat-ia'); ?>"></span>
+                                <span class="gc-tiene-notas dashicons dashicons-info" title="<?php _e('Tiene preferencias/alergias', 'flavor-platform'); ?>"></span>
                             <?php endif; ?>
                         </td>
                         <td class="column-email">
@@ -200,15 +200,15 @@ $todos_los_grupos = get_posts([
                             <div class="gc-roles-badges" data-consumidor-id="<?php echo esc_attr($consumidor->id); ?>">
                                 <label class="gc-rol-badge <?php echo in_array('consumidor', $roles_actuales) ? 'activo' : ''; ?>">
                                     <input type="checkbox" value="consumidor" <?php checked(in_array('consumidor', $roles_actuales)); ?>>
-                                    <span><?php _e('Consumidor', 'flavor-chat-ia'); ?></span>
+                                    <span><?php _e('Consumidor', 'flavor-platform'); ?></span>
                                 </label>
                                 <label class="gc-rol-badge gc-rol-coordinador <?php echo in_array('coordinador', $roles_actuales) ? 'activo' : ''; ?>">
                                     <input type="checkbox" value="coordinador" <?php checked(in_array('coordinador', $roles_actuales)); ?>>
-                                    <span><?php _e('Coordinador', 'flavor-chat-ia'); ?></span>
+                                    <span><?php _e('Coordinador', 'flavor-platform'); ?></span>
                                 </label>
                                 <label class="gc-rol-badge gc-rol-productor <?php echo in_array('productor', $roles_actuales) ? 'activo' : ''; ?>">
                                     <input type="checkbox" value="productor" <?php checked(in_array('productor', $roles_actuales)); ?>>
-                                    <span><?php _e('Productor', 'flavor-chat-ia'); ?></span>
+                                    <span><?php _e('Productor', 'flavor-platform'); ?></span>
                                 </label>
                             </div>
                         </td>
@@ -239,52 +239,52 @@ $todos_los_grupos = get_posts([
                                 <div class="gc-acciones-menu">
                                     <!-- Acciones de comunicación -->
                                     <a href="mailto:<?php echo esc_attr($consumidor->user_email); ?>" class="gc-accion-comunicacion">
-                                        <span class="dashicons dashicons-email"></span> <?php _e('Enviar Email', 'flavor-chat-ia'); ?>
+                                        <span class="dashicons dashicons-email"></span> <?php _e('Enviar Email', 'flavor-platform'); ?>
                                     </a>
                                     <?php if ($telefono_limpio): ?>
                                         <a href="https://wa.me/<?php echo esc_attr(ltrim($telefono_limpio, '+')); ?>" target="_blank" class="gc-accion-comunicacion gc-accion-whatsapp">
-                                            <span class="dashicons dashicons-whatsapp"></span> <?php _e('WhatsApp', 'flavor-chat-ia'); ?>
+                                            <span class="dashicons dashicons-whatsapp"></span> <?php _e('WhatsApp', 'flavor-platform'); ?>
                                         </a>
                                         <a href="tel:<?php echo esc_attr($telefono_limpio); ?>" class="gc-accion-comunicacion">
-                                            <span class="dashicons dashicons-phone"></span> <?php _e('Llamar', 'flavor-chat-ia'); ?>
+                                            <span class="dashicons dashicons-phone"></span> <?php _e('Llamar', 'flavor-platform'); ?>
                                         </a>
                                     <?php else: ?>
-                                        <span class="gc-accion-disabled" title="<?php _e('Sin teléfono registrado', 'flavor-chat-ia'); ?>">
-                                            <span class="dashicons dashicons-whatsapp"></span> <?php _e('WhatsApp', 'flavor-chat-ia'); ?>
+                                        <span class="gc-accion-disabled" title="<?php _e('Sin teléfono registrado', 'flavor-platform'); ?>">
+                                            <span class="dashicons dashicons-whatsapp"></span> <?php _e('WhatsApp', 'flavor-platform'); ?>
                                         </span>
-                                        <span class="gc-accion-disabled" title="<?php _e('Sin teléfono registrado', 'flavor-chat-ia'); ?>">
-                                            <span class="dashicons dashicons-phone"></span> <?php _e('Llamar', 'flavor-chat-ia'); ?>
+                                        <span class="gc-accion-disabled" title="<?php _e('Sin teléfono registrado', 'flavor-platform'); ?>">
+                                            <span class="dashicons dashicons-phone"></span> <?php _e('Llamar', 'flavor-platform'); ?>
                                         </span>
                                     <?php endif; ?>
                                     <hr>
                                     <!-- Acciones de estado -->
                                     <?php if ($consumidor->estado === 'pendiente'): ?>
                                         <button type="button" class="gc-accion-estado" data-estado="activo">
-                                            <span class="dashicons dashicons-yes"></span> <?php _e('Aprobar', 'flavor-chat-ia'); ?>
+                                            <span class="dashicons dashicons-yes"></span> <?php _e('Aprobar', 'flavor-platform'); ?>
                                         </button>
                                     <?php endif; ?>
                                     <?php if ($consumidor->estado === 'activo'): ?>
                                         <button type="button" class="gc-accion-estado" data-estado="suspendido">
-                                            <span class="dashicons dashicons-warning"></span> <?php _e('Suspender', 'flavor-chat-ia'); ?>
+                                            <span class="dashicons dashicons-warning"></span> <?php _e('Suspender', 'flavor-platform'); ?>
                                         </button>
                                     <?php endif; ?>
                                     <?php if ($consumidor->estado === 'suspendido'): ?>
                                         <button type="button" class="gc-accion-estado" data-estado="activo">
-                                            <span class="dashicons dashicons-yes"></span> <?php _e('Reactivar', 'flavor-chat-ia'); ?>
+                                            <span class="dashicons dashicons-yes"></span> <?php _e('Reactivar', 'flavor-platform'); ?>
                                         </button>
                                     <?php endif; ?>
                                     <?php if ($consumidor->estado !== 'baja'): ?>
                                         <button type="button" class="gc-accion-estado gc-accion-peligro" data-estado="baja">
-                                            <span class="dashicons dashicons-dismiss"></span> <?php _e('Dar de Baja', 'flavor-chat-ia'); ?>
+                                            <span class="dashicons dashicons-dismiss"></span> <?php _e('Dar de Baja', 'flavor-platform'); ?>
                                         </button>
                                     <?php endif; ?>
                                     <hr>
                                     <!-- Ver detalles y pedidos -->
                                     <button type="button" class="gc-ver-detalles" data-consumidor-id="<?php echo esc_attr($consumidor->id); ?>">
-                                        <span class="dashicons dashicons-visibility"></span> <?php _e('Ver Detalles', 'flavor-chat-ia'); ?>
+                                        <span class="dashicons dashicons-visibility"></span> <?php _e('Ver Detalles', 'flavor-platform'); ?>
                                     </button>
                                     <a href="<?php echo esc_url(admin_url('admin.php?page=gc-pedidos&usuario_id=' . $consumidor->usuario_id)); ?>">
-                                        <span class="dashicons dashicons-cart"></span> <?php _e('Ver Pedidos', 'flavor-chat-ia'); ?>
+                                        <span class="dashicons dashicons-cart"></span> <?php _e('Ver Pedidos', 'flavor-platform'); ?>
                                     </a>
                                     <?php
                                     // Boton de crear factura si el modulo de facturas esta activo
@@ -294,7 +294,7 @@ $todos_los_grupos = get_posts([
                                     ?>
                                     <hr>
                                     <a href="<?php echo esc_url($url_factura); ?>" class="gc-accion-factura">
-                                        <span class="dashicons dashicons-media-text"></span> <?php _e('Crear Factura', 'flavor-chat-ia'); ?>
+                                        <span class="dashicons dashicons-media-text"></span> <?php _e('Crear Factura', 'flavor-platform'); ?>
                                     </a>
                                     <?php endif; ?>
                                 </div>
@@ -311,7 +311,7 @@ $todos_los_grupos = get_posts([
         <div class="tablenav bottom">
             <div class="tablenav-pages">
                 <span class="displaying-num">
-                    <?php printf(_n('%s elemento', '%s elementos', $total_consumidores, 'flavor-chat-ia'), number_format_i18n($total_consumidores)); ?>
+                    <?php printf(_n('%s elemento', '%s elementos', $total_consumidores, 'flavor-platform'), number_format_i18n($total_consumidores)); ?>
                 </span>
                 <span class="pagination-links">
                     <?php
@@ -337,8 +337,8 @@ $todos_los_grupos = get_posts([
 <div id="modal-nuevo-consumidor" class="gc-modal" style="display:none;">
     <div class="gc-modal-content">
         <div class="gc-modal-header">
-            <h2><?php _e('Añadir Consumidor', 'flavor-chat-ia'); ?></h2>
-            <button type="button" class="gc-modal-close"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></button>
+            <h2><?php _e('Añadir Consumidor', 'flavor-platform'); ?></h2>
+            <button type="button" class="gc-modal-close"><?php echo esc_html__('&times;', 'flavor-platform'); ?></button>
         </div>
         <div class="gc-modal-body">
             <form id="form-nuevo-consumidor">
@@ -346,36 +346,36 @@ $todos_los_grupos = get_posts([
                 <?php wp_nonce_field('gc_admin_nonce', 'gc_admin_nonce'); ?>
 
                 <div class="gc-form-field">
-                    <label for="nuevo-usuario"><?php _e('Usuario', 'flavor-chat-ia'); ?> *</label>
+                    <label for="nuevo-usuario"><?php _e('Usuario', 'flavor-platform'); ?> *</label>
                     <select id="nuevo-usuario" name="usuario_id" required class="gc-select-usuario">
-                        <option value=""><?php _e('Buscar usuario...', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Buscar usuario...', 'flavor-platform'); ?></option>
                     </select>
-                    <p class="description"><?php _e('Busca un usuario existente de WordPress.', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php _e('Busca un usuario existente de WordPress.', 'flavor-platform'); ?></p>
                 </div>
 
                 <div class="gc-form-field">
-                    <label for="nuevo-rol"><?php _e('Rol', 'flavor-chat-ia'); ?></label>
+                    <label for="nuevo-rol"><?php _e('Rol', 'flavor-platform'); ?></label>
                     <select id="nuevo-rol" name="rol">
-                        <option value="<?php echo esc_attr__('consumidor', 'flavor-chat-ia'); ?>"><?php _e('Consumidor', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('coordinador', 'flavor-chat-ia'); ?>"><?php _e('Coordinador', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('productor', 'flavor-chat-ia'); ?>"><?php _e('Productor', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('consumidor', 'flavor-platform'); ?>"><?php _e('Consumidor', 'flavor-platform'); ?></option>
+                        <option value="<?php echo esc_attr__('coordinador', 'flavor-platform'); ?>"><?php _e('Coordinador', 'flavor-platform'); ?></option>
+                        <option value="<?php echo esc_attr__('productor', 'flavor-platform'); ?>"><?php _e('Productor', 'flavor-platform'); ?></option>
                     </select>
                 </div>
 
                 <div class="gc-form-field">
-                    <label for="nuevo-preferencias"><?php _e('Preferencias Alimentarias', 'flavor-chat-ia'); ?></label>
-                    <textarea id="nuevo-preferencias" name="preferencias" rows="3" placeholder="<?php _e('Ej: Vegetariano, sin gluten...', 'flavor-chat-ia'); ?>"></textarea>
+                    <label for="nuevo-preferencias"><?php _e('Preferencias Alimentarias', 'flavor-platform'); ?></label>
+                    <textarea id="nuevo-preferencias" name="preferencias" rows="3" placeholder="<?php _e('Ej: Vegetariano, sin gluten...', 'flavor-platform'); ?>"></textarea>
                 </div>
 
                 <div class="gc-form-field">
-                    <label for="nuevo-alergias"><?php _e('Alergias', 'flavor-chat-ia'); ?></label>
-                    <textarea id="nuevo-alergias" name="alergias" rows="2" placeholder="<?php _e('Ej: Frutos secos, mariscos...', 'flavor-chat-ia'); ?>"></textarea>
+                    <label for="nuevo-alergias"><?php _e('Alergias', 'flavor-platform'); ?></label>
+                    <textarea id="nuevo-alergias" name="alergias" rows="2" placeholder="<?php _e('Ej: Frutos secos, mariscos...', 'flavor-platform'); ?>"></textarea>
                 </div>
             </form>
         </div>
         <div class="gc-modal-footer">
-            <button type="button" class="button gc-modal-cancel"><?php _e('Cancelar', 'flavor-chat-ia'); ?></button>
-            <button type="button" class="button button-primary gc-guardar-consumidor"><?php _e('Añadir', 'flavor-chat-ia'); ?></button>
+            <button type="button" class="button gc-modal-cancel"><?php _e('Cancelar', 'flavor-platform'); ?></button>
+            <button type="button" class="button button-primary gc-guardar-consumidor"><?php _e('Añadir', 'flavor-platform'); ?></button>
         </div>
     </div>
 </div>
@@ -384,8 +384,8 @@ $todos_los_grupos = get_posts([
 <div id="modal-detalles-consumidor" class="gc-modal" style="display:none;">
     <div class="gc-modal-content">
         <div class="gc-modal-header">
-            <h2><?php _e('Detalles del Consumidor', 'flavor-chat-ia'); ?></h2>
-            <button type="button" class="gc-modal-close"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></button>
+            <h2><?php _e('Detalles del Consumidor', 'flavor-platform'); ?></h2>
+            <button type="button" class="gc-modal-close"><?php echo esc_html__('&times;', 'flavor-platform'); ?></button>
         </div>
         <div class="gc-modal-body">
             <div id="gc-detalles-contenido">
@@ -399,24 +399,24 @@ $todos_los_grupos = get_posts([
 <div id="modal-importar-usuarios" class="gc-modal" style="display:none;">
     <div class="gc-modal-content" style="max-width: 600px;">
         <div class="gc-modal-header">
-            <h2><?php _e('Importar Usuarios de WordPress', 'flavor-chat-ia'); ?></h2>
-            <button type="button" class="gc-modal-close"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></button>
+            <h2><?php _e('Importar Usuarios de WordPress', 'flavor-platform'); ?></h2>
+            <button type="button" class="gc-modal-close"><?php echo esc_html__('&times;', 'flavor-platform'); ?></button>
         </div>
         <div class="gc-modal-body">
             <p style="margin-bottom: 15px; color: #646970;">
-                <?php _e('Selecciona los usuarios de WordPress que quieres añadir como consumidores del grupo.', 'flavor-chat-ia'); ?>
+                <?php _e('Selecciona los usuarios de WordPress que quieres añadir como consumidores del grupo.', 'flavor-platform'); ?>
             </p>
             <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 15px; padding: 10px; background: #f0f0f1; border-radius: 4px;">
                 <input type="checkbox" id="gc-seleccionar-todos">
-                <strong><?php _e('Seleccionar todos', 'flavor-chat-ia'); ?></strong>
+                <strong><?php _e('Seleccionar todos', 'flavor-platform'); ?></strong>
             </label>
             <div id="gc-lista-usuarios-wp" style="max-height: 350px; overflow-y: auto; border: 1px solid #ddd; border-radius: 4px;">
                 <!-- Se carga vía AJAX -->
             </div>
         </div>
         <div class="gc-modal-footer">
-            <button type="button" class="button gc-modal-cancel"><?php _e('Cancelar', 'flavor-chat-ia'); ?></button>
-            <button type="button" class="button button-primary gc-confirmar-importacion"><?php _e('Importar seleccionados', 'flavor-chat-ia'); ?></button>
+            <button type="button" class="button gc-modal-cancel"><?php _e('Cancelar', 'flavor-platform'); ?></button>
+            <button type="button" class="button button-primary gc-confirmar-importacion"><?php _e('Importar seleccionados', 'flavor-platform'); ?></button>
         </div>
     </div>
 </div>
@@ -431,7 +431,7 @@ jQuery(document).ready(function($) {
 
     function gcConfirmar(mensaje, onConfirm) {
         $('.gc-inline-notice').remove();
-        var $confirm = $('<div class="gc-inline-notice gc-inline-notice-error"><p>' + mensaje + '</p><div class="gc-inline-confirm-actions"><button type="button" class="button button-primary gc-confirmar"><?php echo esc_js(__('Confirmar', 'flavor-chat-ia')); ?></button><button type="button" class="button gc-cancelar"><?php echo esc_js(__('Cancelar', 'flavor-chat-ia')); ?></button></div></div>').insertAfter('.wrap h1.wp-heading-inline').hide().fadeIn(150);
+        var $confirm = $('<div class="gc-inline-notice gc-inline-notice-error"><p>' + mensaje + '</p><div class="gc-inline-confirm-actions"><button type="button" class="button button-primary gc-confirmar"><?php echo esc_js(__('Confirmar', 'flavor-platform')); ?></button><button type="button" class="button gc-cancelar"><?php echo esc_js(__('Cancelar', 'flavor-platform')); ?></button></div></div>').insertAfter('.wrap h1.wp-heading-inline').hide().fadeIn(150);
         $confirm.on('click', '.gc-confirmar', function() {
             $confirm.remove();
             onConfirm();
@@ -476,7 +476,7 @@ jQuery(document).ready(function($) {
         };
 
         if (nuevoEstado === 'baja') {
-            gcConfirmar('<?php echo esc_js(__('¿Dar de baja a este consumidor?', 'flavor-chat-ia')); ?>', ejecutarCambioEstado);
+            gcConfirmar('<?php echo esc_js(__('¿Dar de baja a este consumidor?', 'flavor-platform')); ?>', ejecutarCambioEstado);
             return;
         }
 
@@ -561,7 +561,7 @@ jQuery(document).ready(function($) {
         var $modal = $('#modal-detalles-consumidor');
         var $contenido = $('#gc-detalles-contenido');
 
-        $contenido.html('<p style="text-align:center;padding:30px;"><span class="spinner is-active" style="float:none;"></span> <?php _e('Cargando...', 'flavor-chat-ia'); ?></p>');
+        $contenido.html('<p style="text-align:center;padding:30px;"><span class="spinner is-active" style="float:none;"></span> <?php _e('Cargando...', 'flavor-platform'); ?></p>');
         $modal.fadeIn(200);
 
         $.post(ajaxurl, {
@@ -585,23 +585,23 @@ jQuery(document).ready(function($) {
                 html += '</div>';
 
                 html += '<table class="gc-detalles-tabla" style="width:100%;margin-top:20px;">';
-                html += '<tr><th style="text-align:left;padding:8px 0;border-bottom:1px solid #eee;"><?php _e('Estado', 'flavor-chat-ia'); ?></th>';
+                html += '<tr><th style="text-align:left;padding:8px 0;border-bottom:1px solid #eee;"><?php _e('Estado', 'flavor-platform'); ?></th>';
                 html += '<td style="padding:8px 0;border-bottom:1px solid #eee;"><span class="gc-estado-badge gc-estado-' + c.estado + '">' + c.estado_label + '</span></td></tr>';
-                html += '<tr><th style="text-align:left;padding:8px 0;border-bottom:1px solid #eee;"><?php _e('Rol', 'flavor-chat-ia'); ?></th>';
+                html += '<tr><th style="text-align:left;padding:8px 0;border-bottom:1px solid #eee;"><?php _e('Rol', 'flavor-platform'); ?></th>';
                 html += '<td style="padding:8px 0;border-bottom:1px solid #eee;">' + c.rol_label + '</td></tr>';
-                html += '<tr><th style="text-align:left;padding:8px 0;border-bottom:1px solid #eee;"><?php _e('Fecha de alta', 'flavor-chat-ia'); ?></th>';
+                html += '<tr><th style="text-align:left;padding:8px 0;border-bottom:1px solid #eee;"><?php _e('Fecha de alta', 'flavor-platform'); ?></th>';
                 html += '<td style="padding:8px 0;border-bottom:1px solid #eee;">' + c.fecha_alta + '</td></tr>';
-                html += '<tr><th style="text-align:left;padding:8px 0;border-bottom:1px solid #eee;"><?php _e('Saldo pendiente', 'flavor-chat-ia'); ?></th>';
+                html += '<tr><th style="text-align:left;padding:8px 0;border-bottom:1px solid #eee;"><?php _e('Saldo pendiente', 'flavor-platform'); ?></th>';
                 html += '<td style="padding:8px 0;border-bottom:1px solid #eee;' + (c.saldo > 0 ? 'color:#d63638;font-weight:600;' : '') + '">' + c.saldo + ' €</td></tr>';
                 if (c.preferencias) {
-                    html += '<tr><th style="text-align:left;padding:8px 0;border-bottom:1px solid #eee;"><?php _e('Preferencias', 'flavor-chat-ia'); ?></th>';
+                    html += '<tr><th style="text-align:left;padding:8px 0;border-bottom:1px solid #eee;"><?php _e('Preferencias', 'flavor-platform'); ?></th>';
                     html += '<td style="padding:8px 0;border-bottom:1px solid #eee;">' + c.preferencias + '</td></tr>';
                 }
                 if (c.alergias) {
-                    html += '<tr><th style="text-align:left;padding:8px 0;border-bottom:1px solid #eee;"><?php _e('Alergias', 'flavor-chat-ia'); ?></th>';
+                    html += '<tr><th style="text-align:left;padding:8px 0;border-bottom:1px solid #eee;"><?php _e('Alergias', 'flavor-platform'); ?></th>';
                     html += '<td style="padding:8px 0;border-bottom:1px solid #eee;color:#d63638;">' + c.alergias + '</td></tr>';
                 }
-                html += '<tr><th style="text-align:left;padding:8px 0;"><?php _e('Total pedidos', 'flavor-chat-ia'); ?></th>';
+                html += '<tr><th style="text-align:left;padding:8px 0;"><?php _e('Total pedidos', 'flavor-platform'); ?></th>';
                 html += '<td style="padding:8px 0;">' + c.total_pedidos + '</td></tr>';
                 html += '</table>';
 
@@ -617,7 +617,7 @@ jQuery(document).ready(function($) {
         var $modal = $('#modal-importar-usuarios');
         var $lista = $('#gc-lista-usuarios-wp');
 
-        $lista.html('<p style="text-align:center;padding:20px;"><?php _e('Cargando usuarios...', 'flavor-chat-ia'); ?></p>');
+        $lista.html('<p style="text-align:center;padding:20px;"><?php _e('Cargando usuarios...', 'flavor-platform'); ?></p>');
         $modal.fadeIn(200);
 
         // Cargar usuarios de WordPress
@@ -639,7 +639,7 @@ jQuery(document).ready(function($) {
                 html += '</div>';
                 $lista.html(html);
             } else if (response.success && response.data.usuarios.length === 0) {
-                $lista.html('<p style="text-align:center;padding:20px;color:#646970;"><?php _e('Todos los usuarios ya son miembros del grupo.', 'flavor-chat-ia'); ?></p>');
+                $lista.html('<p style="text-align:center;padding:20px;color:#646970;"><?php _e('Todos los usuarios ya son miembros del grupo.', 'flavor-platform'); ?></p>');
             } else {
                 $lista.html('<p style="text-align:center;padding:20px;color:#d63638;">' + (response.data.error || 'Error') + '</p>');
             }
@@ -660,11 +660,11 @@ jQuery(document).ready(function($) {
         });
 
         if (usuarios.length === 0) {
-            gcAviso('<?php echo esc_js(__('Selecciona al menos un usuario', 'flavor-chat-ia')); ?>', 'error');
+            gcAviso('<?php echo esc_js(__('Selecciona al menos un usuario', 'flavor-platform')); ?>', 'error');
             return;
         }
 
-        $(this).prop('disabled', true).text('<?php _e('Importando...', 'flavor-chat-ia'); ?>');
+        $(this).prop('disabled', true).text('<?php _e('Importando...', 'flavor-platform'); ?>');
 
         $.post(ajaxurl, {
             action: 'gc_importar_usuarios_wp',
@@ -677,7 +677,7 @@ jQuery(document).ready(function($) {
                 location.reload();
             } else {
                 gcAviso(response.data.error || 'Error', 'error');
-                $('.gc-confirmar-importacion').prop('disabled', false).text('<?php _e('Importar seleccionados', 'flavor-chat-ia'); ?>');
+                $('.gc-confirmar-importacion').prop('disabled', false).text('<?php _e('Importar seleccionados', 'flavor-platform'); ?>');
             }
         });
     });

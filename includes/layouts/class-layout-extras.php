@@ -65,8 +65,8 @@ class Flavor_Layout_Extras {
 
         // 7. Split Menu - Logo centrado con nav dividida
         $registry->register_menu('split', [
-            'name' => __('Split Menu', 'flavor-chat-ia'),
-            'description' => __('Logo centrado con navegación dividida a ambos lados', 'flavor-chat-ia'),
+            'name' => __('Split Menu', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Logo centrado con navegación dividida a ambos lados', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-editor-justify',
             'preview_image' => 'menu-split.svg',
             'recommended_for' => ['restaurante', 'coworking', 'comunidad'],
@@ -82,8 +82,8 @@ class Flavor_Layout_Extras {
 
         // 8. Transparent Hero - Se vuelve sólido al scroll
         $registry->register_menu('transparent-hero', [
-            'name' => __('Transparent Hero', 'flavor-chat-ia'),
-            'description' => __('Transparente sobre hero, sólido al hacer scroll', 'flavor-chat-ia'),
+            'name' => __('Transparent Hero', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Transparente sobre hero, sólido al hacer scroll', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-visibility',
             'preview_image' => 'menu-transparent.svg',
             'recommended_for' => ['restaurante', 'coworking', 'tienda'],
@@ -101,8 +101,8 @@ class Flavor_Layout_Extras {
 
         // 9. Tab Navigation - Pestañas horizontales
         $registry->register_menu('tabs', [
-            'name' => __('Tab Navigation', 'flavor-chat-ia'),
-            'description' => __('Navegación por pestañas estilo aplicación', 'flavor-chat-ia'),
+            'name' => __('Tab Navigation', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Navegación por pestañas estilo aplicación', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-category',
             'preview_image' => 'menu-tabs.svg',
             'recommended_for' => ['marketplace', 'comunidad', 'ayuntamiento'],
@@ -117,8 +117,8 @@ class Flavor_Layout_Extras {
 
         // 10. Double Header - Dos barras de navegación
         $registry->register_menu('double-header', [
-            'name' => __('Double Header', 'flavor-chat-ia'),
-            'description' => __('Barra superior con info + barra principal con navegación', 'flavor-chat-ia'),
+            'name' => __('Double Header', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Barra superior con info + barra principal con navegación', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-editor-insertmore',
             'preview_image' => 'menu-double.svg',
             'recommended_for' => ['tienda', 'marketplace', 'ayuntamiento'],
@@ -133,15 +133,15 @@ class Flavor_Layout_Extras {
 
         // 11. Search Focused - Barra de búsqueda prominente
         $registry->register_menu('search-focused', [
-            'name' => __('Search Focused', 'flavor-chat-ia'),
-            'description' => __('Menú con barra de búsqueda central prominente', 'flavor-chat-ia'),
+            'name' => __('Search Focused', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Menú con barra de búsqueda central prominente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-search',
             'preview_image' => 'menu-search.svg',
             'recommended_for' => ['marketplace', 'tienda', 'biblioteca'],
             'supports' => ['logo', 'search_bar', 'categories_dropdown', 'cart', 'user_menu'],
             'mobile_behavior' => 'hamburger',
             'settings' => [
-                'search_placeholder' => __('Buscar productos, servicios...', 'flavor-chat-ia'),
+                'search_placeholder' => __('Buscar productos, servicios...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'show_categories' => true,
                 'sticky' => true,
             ],
@@ -151,8 +151,8 @@ class Flavor_Layout_Extras {
 
         // 6. Wave Footer - Con forma decorativa de ola
         $registry->register_footer('wave', [
-            'name' => __('Wave Footer', 'flavor-chat-ia'),
-            'description' => __('Footer con decoración de ola SVG en la parte superior', 'flavor-chat-ia'),
+            'name' => __('Wave Footer', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Footer con decoración de ola SVG en la parte superior', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-chart-area',
             'preview_image' => 'footer-wave.svg',
             'recommended_for' => ['comunidad', 'grupo-consumo', 'barrio'],
@@ -167,8 +167,8 @@ class Flavor_Layout_Extras {
 
         // 7. Minimal Dark - Minimalista oscuro
         $registry->register_footer('minimal-dark', [
-            'name' => __('Minimal Dark', 'flavor-chat-ia'),
-            'description' => __('Footer minimalista con fondo oscuro elegante', 'flavor-chat-ia'),
+            'name' => __('Minimal Dark', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Footer minimalista con fondo oscuro elegante', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-editor-contract',
             'preview_image' => 'footer-minimal-dark.svg',
             'recommended_for' => ['coworking', 'restaurante', 'tienda'],
@@ -181,8 +181,8 @@ class Flavor_Layout_Extras {
 
         // 8. Big Footer - Footer extenso con mucha info
         $registry->register_footer('big', [
-            'name' => __('Big Footer', 'flavor-chat-ia'),
-            'description' => __('Footer grande con múltiples secciones de información', 'flavor-chat-ia'),
+            'name' => __('Big Footer', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Footer grande con múltiples secciones de información', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-editor-expand',
             'preview_image' => 'footer-big.svg',
             'recommended_for' => ['ayuntamiento', 'marketplace', 'tienda'],
@@ -197,16 +197,16 @@ class Flavor_Layout_Extras {
 
         // 9. CTA Footer - Con llamada a la acción prominente
         $registry->register_footer('cta', [
-            'name' => __('CTA Footer', 'flavor-chat-ia'),
-            'description' => __('Footer con sección de llamada a la acción destacada', 'flavor-chat-ia'),
+            'name' => __('CTA Footer', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Footer con sección de llamada a la acción destacada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-megaphone',
             'preview_image' => 'footer-cta.svg',
             'recommended_for' => ['tienda', 'comunidad', 'coworking'],
             'supports' => ['cta_section', 'logo', 'columns', 'social_icons', 'copyright'],
             'settings' => [
-                'cta_title' => __('¿Listo para empezar?', 'flavor-chat-ia'),
-                'cta_description' => __('Únete a nuestra comunidad hoy mismo', 'flavor-chat-ia'),
-                'cta_button_text' => __('Comenzar ahora', 'flavor-chat-ia'),
+                'cta_title' => __('¿Listo para empezar?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cta_description' => __('Únete a nuestra comunidad hoy mismo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cta_button_text' => __('Comenzar ahora', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'cta_button_url' => '#',
                 'cta_bg' => 'gradient',
             ],
@@ -214,8 +214,8 @@ class Flavor_Layout_Extras {
 
         // 10. Social Footer - Centrado en redes sociales
         $registry->register_footer('social', [
-            'name' => __('Social Footer', 'flavor-chat-ia'),
-            'description' => __('Footer minimalista centrado en redes sociales', 'flavor-chat-ia'),
+            'name' => __('Social Footer', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Footer minimalista centrado en redes sociales', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-share',
             'preview_image' => 'footer-social.svg',
             'recommended_for' => ['comunidad', 'barrio', 'grupo-consumo'],
@@ -332,7 +332,7 @@ class Flavor_Layout_Extras {
 
         $message = $settings['announcement_message'] ?? '';
         $link = $settings['announcement_link'] ?? '';
-        $link_text = $settings['announcement_link_text'] ?? __('Saber más', 'flavor-chat-ia');
+        $link_text = $settings['announcement_link_text'] ?? __('Saber más', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $bg_color = $settings['announcement_bg'] ?? 'var(--flavor-primary)';
         $dismissible = $settings['announcement_dismissible'] ?? true;
 
@@ -350,7 +350,7 @@ class Flavor_Layout_Extras {
                     <?php endif; ?>
                 </div>
                 <?php if ($dismissible): ?>
-                <button class="flavor-announcement-bar__close" aria-label="<?php esc_attr_e('Cerrar', 'flavor-chat-ia'); ?>">
+                <button class="flavor-announcement-bar__close" aria-label="<?php esc_attr_e('Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-no-alt"></span>
                 </button>
                 <?php endif; ?>
@@ -364,7 +364,7 @@ class Flavor_Layout_Extras {
      */
     public function ajax_dismiss_announcement() {
         if (!check_ajax_referer('flavor_extras_nonce', 'nonce', false)) {
-            wp_send_json_error(['message' => __('Solicitud inválida.', 'flavor-chat-ia')], 403);
+            wp_send_json_error(['message' => __('Solicitud inválida.', FLAVOR_PLATFORM_TEXT_DOMAIN)], 403);
         }
         setcookie('flavor_announcement_dismissed', '1', time() + DAY_IN_SECONDS * 7, '/');
         wp_send_json_success();
@@ -385,12 +385,12 @@ class Flavor_Layout_Extras {
 
         $separator = $settings['breadcrumbs_separator'] ?? '›';
         ?>
-        <nav class="flavor-breadcrumbs" aria-label="<?php esc_attr_e('Breadcrumb', 'flavor-chat-ia'); ?>">
+        <nav class="flavor-breadcrumbs" aria-label="<?php esc_attr_e('Breadcrumb', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <div class="flavor-container">
                 <ol class="flavor-breadcrumbs__list" itemscope itemtype="https://schema.org/BreadcrumbList">
                     <li class="flavor-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
                         <a href="<?php echo esc_url(home_url('/')); ?>" itemprop="item">
-                            <span itemprop="name"><?php esc_html_e('Inicio', 'flavor-chat-ia'); ?></span>
+                            <span itemprop="name"><?php esc_html_e('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </a>
                         <meta itemprop="position" content="1" />
                     </li>
@@ -427,7 +427,7 @@ class Flavor_Layout_Extras {
                     } elseif (is_search()) {
                         echo '<li class="flavor-breadcrumbs__separator">' . esc_html($separator) . '</li>';
                         echo '<li class="flavor-breadcrumbs__item flavor-breadcrumbs__item--current">';
-                        echo '<span>' . sprintf(__('Resultados: %s', 'flavor-chat-ia'), get_search_query()) . '</span>';
+                        echo '<span>' . sprintf(__('Resultados: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), get_search_query()) . '</span>';
                         echo '</li>';
                     }
                     ?>
@@ -467,7 +467,7 @@ class Flavor_Layout_Extras {
 
         $position = $settings['back_to_top_position'] ?? 'right';
         ?>
-        <button class="flavor-back-to-top flavor-back-to-top--<?php echo esc_attr($position); ?>" aria-label="<?php esc_attr_e('Volver arriba', 'flavor-chat-ia'); ?>" style="display: none;">
+        <button class="flavor-back-to-top flavor-back-to-top--<?php echo esc_attr($position); ?>" aria-label="<?php esc_attr_e('Volver arriba', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" style="display: none;">
             <span class="dashicons dashicons-arrow-up-alt2"></span>
         </button>
         <?php
@@ -524,25 +524,25 @@ class Flavor_Layout_Extras {
         if (empty($settings['cookie_banner_enabled'])) return;
         if (isset($_COOKIE['flavor_cookies_accepted'])) return;
 
-        $message = $settings['cookie_banner_message'] ?? __('Utilizamos cookies para mejorar tu experiencia. Al continuar navegando, aceptas nuestra política de cookies.', 'flavor-chat-ia');
+        $message = $settings['cookie_banner_message'] ?? __('Utilizamos cookies para mejorar tu experiencia. Al continuar navegando, aceptas nuestra política de cookies.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $privacy_url = get_privacy_policy_url() ?: $settings['cookie_privacy_url'] ?? '#';
         $position = $settings['cookie_banner_position'] ?? 'bottom';
         ?>
-        <div class="flavor-cookie-banner flavor-cookie-banner--<?php echo esc_attr($position); ?>" role="dialog" aria-label="<?php esc_attr_e('Aviso de cookies', 'flavor-chat-ia'); ?>">
+        <div class="flavor-cookie-banner flavor-cookie-banner--<?php echo esc_attr($position); ?>" role="dialog" aria-label="<?php esc_attr_e('Aviso de cookies', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <div class="flavor-container">
                 <div class="flavor-cookie-banner__content">
                     <p class="flavor-cookie-banner__message">
                         <?php echo wp_kses_post($message); ?>
                         <a href="<?php echo esc_url($privacy_url); ?>" class="flavor-cookie-banner__link">
-                            <?php esc_html_e('Más información', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Más información', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </p>
                     <div class="flavor-cookie-banner__actions">
                         <button class="flavor-button flavor-button--secondary flavor-cookie-banner__decline">
-                            <?php esc_html_e('Rechazar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Rechazar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <button class="flavor-button flavor-button--primary flavor-cookie-banner__accept">
-                            <?php esc_html_e('Aceptar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Aceptar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </div>
@@ -556,7 +556,7 @@ class Flavor_Layout_Extras {
      */
     public function ajax_accept_cookies() {
         if (!check_ajax_referer('flavor_extras_nonce', 'nonce', false)) {
-            wp_send_json_error(['message' => __('Solicitud inválida.', 'flavor-chat-ia')], 403);
+            wp_send_json_error(['message' => __('Solicitud inválida.', FLAVOR_PLATFORM_TEXT_DOMAIN)], 403);
         }
         $accept = isset($_POST['accept']) ? (bool) $_POST['accept'] : true;
         $value = $accept ? 'all' : 'essential';

@@ -13,10 +13,10 @@ if (!defined('ABSPATH')) {
 
 <div class="wrap flavor-reservas-management">
     <h1 class="wp-heading-inline">
-        <?php _e('Gestión de Reservas', 'flavor-chat-ia'); ?>
+        <?php _e('Gestión de Reservas', 'flavor-platform'); ?>
     </h1>
     <button type="button" class="page-title-action" id="btn-nueva-reserva">
-        <?php _e('Nueva Reserva', 'flavor-chat-ia'); ?>
+        <?php _e('Nueva Reserva', 'flavor-platform'); ?>
     </button>
     <hr class="wp-header-end">
 
@@ -24,11 +24,11 @@ if (!defined('ABSPATH')) {
     <div class="flavor-view-switcher">
         <button class="flavor-view-btn active" data-view="calendario">
             <span class="dashicons dashicons-calendar-alt"></span>
-            <?php _e('Calendario', 'flavor-chat-ia'); ?>
+            <?php _e('Calendario', 'flavor-platform'); ?>
         </button>
         <button class="flavor-view-btn" data-view="lista">
             <span class="dashicons dashicons-list-view"></span>
-            <?php _e('Lista', 'flavor-chat-ia'); ?>
+            <?php _e('Lista', 'flavor-platform'); ?>
         </button>
     </div>
 
@@ -46,9 +46,9 @@ if (!defined('ABSPATH')) {
             </div>
             <div class="flavor-calendar-filters">
                 <select id="filtro-espacio-calendario" class="flavor-select">
-                    <option value=""><?php _e('Todos los espacios', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todos los espacios', 'flavor-platform'); ?></option>
                 </select>
-                <button id="btn-hoy" class="button"><?php _e('Hoy', 'flavor-chat-ia'); ?></button>
+                <button id="btn-hoy" class="button"><?php _e('Hoy', 'flavor-platform'); ?></button>
             </div>
         </div>
         <div id="calendario-reservas"></div>
@@ -59,33 +59,33 @@ if (!defined('ABSPATH')) {
         <!-- Filtros -->
         <div class="flavor-filters-bar">
             <div class="flavor-filter-group">
-                <label><?php _e('Buscar:', 'flavor-chat-ia'); ?></label>
-                <input type="text" id="search-reservas" class="flavor-search-input" placeholder="<?php _e('Usuario, espacio...', 'flavor-chat-ia'); ?>">
+                <label><?php _e('Buscar:', 'flavor-platform'); ?></label>
+                <input type="text" id="search-reservas" class="flavor-search-input" placeholder="<?php _e('Usuario, espacio...', 'flavor-platform'); ?>">
             </div>
             <div class="flavor-filter-group">
-                <label><?php _e('Espacio:', 'flavor-chat-ia'); ?></label>
+                <label><?php _e('Espacio:', 'flavor-platform'); ?></label>
                 <select id="filtro-espacio" class="flavor-select">
-                    <option value=""><?php _e('Todos', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todos', 'flavor-platform'); ?></option>
                 </select>
             </div>
             <div class="flavor-filter-group">
-                <label><?php _e('Estado:', 'flavor-chat-ia'); ?></label>
+                <label><?php _e('Estado:', 'flavor-platform'); ?></label>
                 <select id="filtro-estado-reserva" class="flavor-select">
-                    <option value=""><?php _e('Todos', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('pendiente', 'flavor-chat-ia'); ?>"><?php _e('Pendiente', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('confirmada', 'flavor-chat-ia'); ?>"><?php _e('Confirmada', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('completada', 'flavor-chat-ia'); ?>"><?php _e('Completada', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('cancelada', 'flavor-chat-ia'); ?>"><?php _e('Cancelada', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todos', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('pendiente', 'flavor-platform'); ?>"><?php _e('Pendiente', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('confirmada', 'flavor-platform'); ?>"><?php _e('Confirmada', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('completada', 'flavor-platform'); ?>"><?php _e('Completada', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('cancelada', 'flavor-platform'); ?>"><?php _e('Cancelada', 'flavor-platform'); ?></option>
                 </select>
             </div>
             <div class="flavor-filter-group">
-                <label><?php _e('Período:', 'flavor-chat-ia'); ?></label>
+                <label><?php _e('Período:', 'flavor-platform'); ?></label>
                 <select id="filtro-periodo" class="flavor-select">
-                    <option value="<?php echo esc_attr__('proximas', 'flavor-chat-ia'); ?>"><?php _e('Próximas', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('hoy', 'flavor-chat-ia'); ?>"><?php _e('Hoy', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('semana', 'flavor-chat-ia'); ?>"><?php _e('Esta semana', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('mes', 'flavor-chat-ia'); ?>"><?php _e('Este mes', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('todas', 'flavor-chat-ia'); ?>"><?php _e('Todas', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('proximas', 'flavor-platform'); ?>"><?php _e('Próximas', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('hoy', 'flavor-platform'); ?>"><?php _e('Hoy', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('semana', 'flavor-platform'); ?>"><?php _e('Esta semana', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('mes', 'flavor-platform'); ?>"><?php _e('Este mes', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('todas', 'flavor-platform'); ?>"><?php _e('Todas', 'flavor-platform'); ?></option>
                 </select>
             </div>
         </div>
@@ -95,19 +95,19 @@ if (!defined('ABSPATH')) {
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th><?php _e('ID', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Espacio', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Usuario', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Horario', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Duración', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('ID', 'flavor-platform'); ?></th>
+                        <th><?php _e('Espacio', 'flavor-platform'); ?></th>
+                        <th><?php _e('Usuario', 'flavor-platform'); ?></th>
+                        <th><?php _e('Fecha', 'flavor-platform'); ?></th>
+                        <th><?php _e('Horario', 'flavor-platform'); ?></th>
+                        <th><?php _e('Duración', 'flavor-platform'); ?></th>
+                        <th><?php _e('Estado', 'flavor-platform'); ?></th>
+                        <th><?php _e('Acciones', 'flavor-platform'); ?></th>
                     </tr>
                 </thead>
                 <tbody id="reservas-list">
                     <tr>
-                        <td colspan="8" class="flavor-loading"><?php _e('Cargando reservas...', 'flavor-chat-ia'); ?></td>
+                        <td colspan="8" class="flavor-loading"><?php _e('Cargando reservas...', 'flavor-platform'); ?></td>
                     </tr>
                 </tbody>
             </table>
@@ -120,7 +120,7 @@ if (!defined('ABSPATH')) {
     <div class="flavor-modal-overlay"></div>
     <div class="flavor-modal-content">
         <div class="flavor-modal-header">
-            <h2 id="modal-reserva-title"><?php _e('Nueva Reserva', 'flavor-chat-ia'); ?></h2>
+            <h2 id="modal-reserva-title"><?php _e('Nueva Reserva', 'flavor-platform'); ?></h2>
             <button type="button" class="flavor-modal-close">
                 <span class="dashicons dashicons-no"></span>
             </button>
@@ -130,67 +130,67 @@ if (!defined('ABSPATH')) {
                 <input type="hidden" id="reserva-id" name="id">
 
                 <div class="flavor-form-group">
-                    <label for="reserva-espacio"><?php _e('Espacio', 'flavor-chat-ia'); ?> *</label>
+                    <label for="reserva-espacio"><?php _e('Espacio', 'flavor-platform'); ?> *</label>
                     <select id="reserva-espacio" name="espacio_id" required class="widefat">
-                        <option value=""><?php _e('Seleccionar espacio...', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Seleccionar espacio...', 'flavor-platform'); ?></option>
                     </select>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="reserva-usuario"><?php _e('Usuario', 'flavor-chat-ia'); ?> *</label>
+                    <label for="reserva-usuario"><?php _e('Usuario', 'flavor-platform'); ?> *</label>
                     <select id="reserva-usuario" name="usuario_id" required class="widefat">
-                        <option value=""><?php _e('Seleccionar usuario...', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Seleccionar usuario...', 'flavor-platform'); ?></option>
                     </select>
                 </div>
 
                 <div class="flavor-form-row">
                     <div class="flavor-form-group">
-                        <label for="reserva-fecha"><?php _e('Fecha', 'flavor-chat-ia'); ?> *</label>
+                        <label for="reserva-fecha"><?php _e('Fecha', 'flavor-platform'); ?> *</label>
                         <input type="date" id="reserva-fecha" name="fecha" required class="widefat">
                     </div>
                 </div>
 
                 <div class="flavor-form-row">
                     <div class="flavor-form-group">
-                        <label for="reserva-hora-inicio"><?php _e('Hora inicio', 'flavor-chat-ia'); ?> *</label>
+                        <label for="reserva-hora-inicio"><?php _e('Hora inicio', 'flavor-platform'); ?> *</label>
                         <input type="time" id="reserva-hora-inicio" name="hora_inicio" required class="widefat">
                     </div>
 
                     <div class="flavor-form-group">
-                        <label for="reserva-hora-fin"><?php _e('Hora fin', 'flavor-chat-ia'); ?> *</label>
+                        <label for="reserva-hora-fin"><?php _e('Hora fin', 'flavor-platform'); ?> *</label>
                         <input type="time" id="reserva-hora-fin" name="hora_fin" required class="widefat">
                     </div>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="reserva-proposito"><?php _e('Propósito', 'flavor-chat-ia'); ?></label>
-                    <textarea id="reserva-proposito" name="proposito" rows="3" class="widefat" placeholder="<?php _e('Describe el propósito de la reserva...', 'flavor-chat-ia'); ?>"></textarea>
+                    <label for="reserva-proposito"><?php _e('Propósito', 'flavor-platform'); ?></label>
+                    <textarea id="reserva-proposito" name="proposito" rows="3" class="widefat" placeholder="<?php _e('Describe el propósito de la reserva...', 'flavor-platform'); ?>"></textarea>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="reserva-asistentes"><?php _e('Número de asistentes', 'flavor-chat-ia'); ?></label>
+                    <label for="reserva-asistentes"><?php _e('Número de asistentes', 'flavor-platform'); ?></label>
                     <input type="number" id="reserva-asistentes" name="num_asistentes" min="1" class="widefat">
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="reserva-estado"><?php _e('Estado', 'flavor-chat-ia'); ?></label>
+                    <label for="reserva-estado"><?php _e('Estado', 'flavor-platform'); ?></label>
                     <select id="reserva-estado" name="estado" class="widefat">
-                        <option value="<?php echo esc_attr__('pendiente', 'flavor-chat-ia'); ?>"><?php _e('Pendiente', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('confirmada', 'flavor-chat-ia'); ?>"><?php _e('Confirmada', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('completada', 'flavor-chat-ia'); ?>"><?php _e('Completada', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('cancelada', 'flavor-chat-ia'); ?>"><?php _e('Cancelada', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('pendiente', 'flavor-platform'); ?>"><?php _e('Pendiente', 'flavor-platform'); ?></option>
+                        <option value="<?php echo esc_attr__('confirmada', 'flavor-platform'); ?>"><?php _e('Confirmada', 'flavor-platform'); ?></option>
+                        <option value="<?php echo esc_attr__('completada', 'flavor-platform'); ?>"><?php _e('Completada', 'flavor-platform'); ?></option>
+                        <option value="<?php echo esc_attr__('cancelada', 'flavor-platform'); ?>"><?php _e('Cancelada', 'flavor-platform'); ?></option>
                     </select>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="reserva-notas"><?php _e('Notas internas', 'flavor-chat-ia'); ?></label>
+                    <label for="reserva-notas"><?php _e('Notas internas', 'flavor-platform'); ?></label>
                     <textarea id="reserva-notas" name="notas_admin" rows="3" class="widefat"></textarea>
                 </div>
             </form>
         </div>
         <div class="flavor-modal-footer">
-            <button type="button" class="button" id="btn-cancelar-reserva"><?php _e('Cancelar', 'flavor-chat-ia'); ?></button>
-            <button type="button" class="button button-primary" id="btn-guardar-reserva"><?php _e('Guardar Reserva', 'flavor-chat-ia'); ?></button>
+            <button type="button" class="button" id="btn-cancelar-reserva"><?php _e('Cancelar', 'flavor-platform'); ?></button>
+            <button type="button" class="button button-primary" id="btn-guardar-reserva"><?php _e('Guardar Reserva', 'flavor-platform'); ?></button>
         </div>
     </div>
 </div>
@@ -200,7 +200,7 @@ if (!defined('ABSPATH')) {
     <div class="flavor-modal-overlay"></div>
     <div class="flavor-modal-content">
         <div class="flavor-modal-header">
-            <h2><?php _e('Detalles de la Reserva', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Detalles de la Reserva', 'flavor-platform'); ?></h2>
             <button type="button" class="flavor-modal-close">
                 <span class="dashicons dashicons-no"></span>
             </button>
@@ -209,8 +209,8 @@ if (!defined('ABSPATH')) {
             <!-- Se llena dinámicamente -->
         </div>
         <div class="flavor-modal-footer">
-            <button type="button" class="button" id="btn-cerrar-detalle"><?php _e('Cerrar', 'flavor-chat-ia'); ?></button>
-            <button type="button" class="button" id="btn-editar-desde-detalle"><?php _e('Editar', 'flavor-chat-ia'); ?></button>
+            <button type="button" class="button" id="btn-cerrar-detalle"><?php _e('Cerrar', 'flavor-platform'); ?></button>
+            <button type="button" class="button" id="btn-editar-desde-detalle"><?php _e('Editar', 'flavor-platform'); ?></button>
         </div>
     </div>
 </div>
@@ -526,7 +526,7 @@ jQuery(document).ready(function($) {
     $('#btn-nueva-reserva').on('click', function() {
         $('#form-reserva')[0].reset();
         $('#reserva-id').val('');
-        $('#modal-reserva-title').text('<?php _e('Nueva Reserva', 'flavor-chat-ia'); ?>');
+        $('#modal-reserva-title').text('<?php _e('Nueva Reserva', 'flavor-platform'); ?>');
         $('#modal-reserva').fadeIn();
     });
 
@@ -563,7 +563,7 @@ jQuery(document).ready(function($) {
                     $('#modal-reserva').fadeOut();
                     renderizarCalendario();
                     cargarReservasLista();
-                    alert('<?php _e('Reserva guardada correctamente', 'flavor-chat-ia'); ?>');
+                    alert('<?php _e('Reserva guardada correctamente', 'flavor-platform'); ?>');
                 }
             }
         });
@@ -585,9 +585,9 @@ jQuery(document).ready(function($) {
             data: { action: 'espacios_comunes_listar_espacios' },
             success: function(response) {
                 if (response.success) {
-                    let options = '<option value=""><?php _e('Seleccionar...', 'flavor-chat-ia'); ?></option>';
+                    let options = '<option value=""><?php _e('Seleccionar...', 'flavor-platform'); ?></option>';
                     response.data.forEach(espacio => {
-                        options += `<option value="<?php echo esc_attr__('${espacio.id}', 'flavor-chat-ia'); ?>">${espacio.nombre}</option>`;
+                        options += `<option value="<?php echo esc_attr__('${espacio.id}', 'flavor-platform'); ?>">${espacio.nombre}</option>`;
                     });
                     $('#reserva-espacio, #filtro-espacio, #filtro-espacio-calendario').html(options);
                 }
@@ -602,9 +602,9 @@ jQuery(document).ready(function($) {
             data: { action: 'espacios_comunes_listar_usuarios' },
             success: function(response) {
                 if (response.success) {
-                    let options = '<option value=""><?php _e('Seleccionar...', 'flavor-chat-ia'); ?></option>';
+                    let options = '<option value=""><?php _e('Seleccionar...', 'flavor-platform'); ?></option>';
                     response.data.forEach(usuario => {
-                        options += `<option value="<?php echo esc_attr__('${usuario.id}', 'flavor-chat-ia'); ?>">${usuario.nombre}</option>`;
+                        options += `<option value="<?php echo esc_attr__('${usuario.id}', 'flavor-platform'); ?>">${usuario.nombre}</option>`;
                     });
                     $('#reserva-usuario').html(options);
                 }
@@ -667,7 +667,7 @@ jQuery(document).ready(function($) {
 
             if (reservas[dateStr]) {
                 reservas[dateStr].forEach(reserva => {
-                    html += `<div class="flavor-calendar-reserva ${reserva.estado}" data-id="${reserva.id}" title="<?php echo esc_attr__('${reserva.espacio} - ${reserva.hora_inicio}', 'flavor-chat-ia'); ?>">
+                    html += `<div class="flavor-calendar-reserva ${reserva.estado}" data-id="${reserva.id}" title="<?php echo esc_attr__('${reserva.espacio} - ${reserva.hora_inicio}', 'flavor-platform'); ?>">
                         ${reserva.hora_inicio} ${reserva.espacio_corto}
                     </div>`;
                 });
@@ -700,7 +700,7 @@ jQuery(document).ready(function($) {
 
     function renderizarReservasLista(reservas) {
         if (reservas.length === 0) {
-            $('#reservas-list').html('<tr><td colspan="8" style="text-align: center;"><?php _e('No se encontraron reservas', 'flavor-chat-ia'); ?></td></tr>');
+            $('#reservas-list').html('<tr><td colspan="8" style="text-align: center;"><?php _e('No se encontraron reservas', 'flavor-platform'); ?></td></tr>');
             return;
         }
 
@@ -755,36 +755,36 @@ jQuery(document).ready(function($) {
         const html = `
             <div class="flavor-detalle-grid">
                 <div class="flavor-detalle-item">
-                    <div class="flavor-detalle-label"><?php _e('Espacio', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-detalle-label"><?php _e('Espacio', 'flavor-platform'); ?></div>
                     <div class="flavor-detalle-value">${reserva.espacio_nombre}</div>
                 </div>
                 <div class="flavor-detalle-item">
-                    <div class="flavor-detalle-label"><?php _e('Usuario', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-detalle-label"><?php _e('Usuario', 'flavor-platform'); ?></div>
                     <div class="flavor-detalle-value">${reserva.usuario_nombre}</div>
                 </div>
                 <div class="flavor-detalle-item">
-                    <div class="flavor-detalle-label"><?php _e('Fecha', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-detalle-label"><?php _e('Fecha', 'flavor-platform'); ?></div>
                     <div class="flavor-detalle-value">${reserva.fecha_formato}</div>
                 </div>
                 <div class="flavor-detalle-item">
-                    <div class="flavor-detalle-label"><?php _e('Horario', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-detalle-label"><?php _e('Horario', 'flavor-platform'); ?></div>
                     <div class="flavor-detalle-value">${reserva.hora_inicio} - ${reserva.hora_fin}</div>
                 </div>
                 <div class="flavor-detalle-item">
-                    <div class="flavor-detalle-label"><?php _e('Estado', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-detalle-label"><?php _e('Estado', 'flavor-platform'); ?></div>
                     <div class="flavor-detalle-value"><span class="flavor-estado-badge ${reserva.estado}">${reserva.estado}</span></div>
                 </div>
                 <div class="flavor-detalle-item">
-                    <div class="flavor-detalle-label"><?php _e('Asistentes', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-detalle-label"><?php _e('Asistentes', 'flavor-platform'); ?></div>
                     <div class="flavor-detalle-value">${reserva.num_asistentes || '-'}</div>
                 </div>
                 <div class="flavor-detalle-item" style="grid-column: span 2;">
-                    <div class="flavor-detalle-label"><?php _e('Propósito', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-detalle-label"><?php _e('Propósito', 'flavor-platform'); ?></div>
                     <div class="flavor-detalle-value">${reserva.proposito || '-'}</div>
                 </div>
                 ${reserva.notas_admin ? `
                 <div class="flavor-detalle-item" style="grid-column: span 2;">
-                    <div class="flavor-detalle-label"><?php _e('Notas internas', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-detalle-label"><?php _e('Notas internas', 'flavor-platform'); ?></div>
                     <div class="flavor-detalle-value">${reserva.notas_admin}</div>
                 </div>
                 ` : ''}
@@ -808,7 +808,7 @@ jQuery(document).ready(function($) {
             success: function(response) {
                 if (response.success) {
                     cargarDatosFormularioReserva(response.data);
-                    $('#modal-reserva-title').text('<?php _e('Editar Reserva', 'flavor-chat-ia'); ?>');
+                    $('#modal-reserva-title').text('<?php _e('Editar Reserva', 'flavor-platform'); ?>');
                     $('#modal-reserva').fadeIn();
                 }
             }
@@ -830,7 +830,7 @@ jQuery(document).ready(function($) {
 
     // Eliminar reserva
     $(document).on('click', '.btn-eliminar-reserva', function() {
-        if (!confirm('<?php _e('¿Estás seguro de eliminar esta reserva?', 'flavor-chat-ia'); ?>')) return;
+        if (!confirm('<?php _e('¿Estás seguro de eliminar esta reserva?', 'flavor-platform'); ?>')) return;
 
         const reservaId = $(this).data('id');
         $.ajax({
@@ -844,7 +844,7 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     renderizarCalendario();
                     cargarReservasLista();
-                    alert('<?php _e('Reserva eliminada', 'flavor-chat-ia'); ?>');
+                    alert('<?php _e('Reserva eliminada', 'flavor-platform'); ?>');
                 }
             }
         });

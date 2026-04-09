@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                    class="vbp-command-input"
                    x-model="query"
                    @keydown="handleKeydown($event)"
-                   placeholder="<?php esc_attr_e( 'Buscar comandos, bloques, acciones...', 'flavor-chat-ia' ); ?>"
+                   placeholder="<?php esc_attr_e( 'Buscar comandos, bloques, acciones...', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
                    autofocus>
             <div class="vbp-command-shortcut">
                 <kbd>Esc</kbd>
@@ -45,7 +45,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                         <circle cx="11" cy="11" r="8"/>
                         <path d="M21 21l-4.35-4.35"/>
                     </svg>
-                    <p><?php esc_html_e( 'No se encontraron resultados', 'flavor-chat-ia' ); ?></p>
+                    <p><?php esc_html_e( 'No se encontraron resultados', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
                 </div>
             </template>
 
@@ -67,9 +67,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
         <!-- Footer con ayuda -->
         <div class="vbp-command-footer">
-            <span><kbd>↑</kbd><kbd>↓</kbd> <?php esc_html_e( 'navegar', 'flavor-chat-ia' ); ?></span>
-            <span><kbd>↵</kbd> <?php esc_html_e( 'seleccionar', 'flavor-chat-ia' ); ?></span>
-            <span><kbd>Esc</kbd> <?php esc_html_e( 'cerrar', 'flavor-chat-ia' ); ?></span>
+            <span><kbd>↑</kbd><kbd>↓</kbd> <?php esc_html_e( 'navegar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
+            <span><kbd>↵</kbd> <?php esc_html_e( 'seleccionar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
+            <span><kbd>Esc</kbd> <?php esc_html_e( 'cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
         </div>
     </div>
 </div>

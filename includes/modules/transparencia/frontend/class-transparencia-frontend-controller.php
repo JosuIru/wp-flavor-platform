@@ -189,10 +189,10 @@ class Flavor_Transparencia_Frontend_Controller {
             'estados' => $this->estados_solicitud,
             'categorias' => $this->categorias,
             'strings' => [
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
-                'error' => __('Error al procesar la solicitud', 'flavor-chat-ia'),
-                'sin_resultados' => __('No se encontraron documentos', 'flavor-chat-ia'),
-                'solicitud_enviada' => __('Solicitud enviada correctamente', 'flavor-chat-ia'),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al procesar la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sin_resultados' => __('No se encontraron documentos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'solicitud_enviada' => __('Solicitud enviada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'usuarioId' => get_current_user_id()
         ]);

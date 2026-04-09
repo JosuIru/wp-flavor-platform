@@ -22,21 +22,21 @@ $periodo = isset($_GET['periodo']) ? sanitize_text_field($_GET['periodo']) : '30
         <div class="flavor-metricas-titulo-wrapper">
             <h2 class="flavor-metricas-titulo">
                 <span class="dashicons dashicons-chart-area"></span>
-                <?php esc_html_e('Métricas de Colaboración', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Métricas de Colaboración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <span class="flavor-metricas-subtitle">
-                <?php esc_html_e('Estadísticas de actividad entre comunidades', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Estadísticas de actividad entre comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
         </div>
 
         <!-- Selector de período -->
         <div class="flavor-periodo-selector">
-            <label><?php esc_html_e('Período:', 'flavor-chat-ia'); ?></label>
+            <label><?php esc_html_e('Período:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <select id="selector-periodo">
-                <option value="7" <?php selected($periodo, '7'); ?>><?php esc_html_e('Últimos 7 días', 'flavor-chat-ia'); ?></option>
-                <option value="30" <?php selected($periodo, '30'); ?>><?php esc_html_e('Últimos 30 días', 'flavor-chat-ia'); ?></option>
-                <option value="90" <?php selected($periodo, '90'); ?>><?php esc_html_e('Últimos 3 meses', 'flavor-chat-ia'); ?></option>
-                <option value="365" <?php selected($periodo, '365'); ?>><?php esc_html_e('Último año', 'flavor-chat-ia'); ?></option>
+                <option value="7" <?php selected($periodo, '7'); ?>><?php esc_html_e('Últimos 7 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="30" <?php selected($periodo, '30'); ?>><?php esc_html_e('Últimos 30 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="90" <?php selected($periodo, '90'); ?>><?php esc_html_e('Últimos 3 meses', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="365" <?php selected($periodo, '365'); ?>><?php esc_html_e('Último año', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             </select>
         </div>
     </header>
@@ -49,7 +49,7 @@ $periodo = isset($_GET['periodo']) ? sanitize_text_field($_GET['periodo']) : '30
             </div>
             <div class="flavor-metrica-info">
                 <span class="flavor-metrica-valor" id="total-comunidades">-</span>
-                <span class="flavor-metrica-label"><?php esc_html_e('Comunidades activas', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-metrica-label"><?php esc_html_e('Comunidades activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -59,7 +59,7 @@ $periodo = isset($_GET['periodo']) ? sanitize_text_field($_GET['periodo']) : '30
             </div>
             <div class="flavor-metrica-info">
                 <span class="flavor-metrica-valor" id="total-colaboraciones">-</span>
-                <span class="flavor-metrica-label"><?php esc_html_e('Colaboraciones', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-metrica-label"><?php esc_html_e('Colaboraciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -69,7 +69,7 @@ $periodo = isset($_GET['periodo']) ? sanitize_text_field($_GET['periodo']) : '30
             </div>
             <div class="flavor-metrica-info">
                 <span class="flavor-metrica-valor" id="total-publicaciones">-</span>
-                <span class="flavor-metrica-label"><?php esc_html_e('Publicaciones', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-metrica-label"><?php esc_html_e('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -79,7 +79,7 @@ $periodo = isset($_GET['periodo']) ? sanitize_text_field($_GET['periodo']) : '30
             </div>
             <div class="flavor-metrica-info">
                 <span class="flavor-metrica-valor" id="total-federado">-</span>
-                <span class="flavor-metrica-label"><?php esc_html_e('Contenido federado', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-metrica-label"><?php esc_html_e('Contenido federado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
@@ -91,7 +91,7 @@ $periodo = isset($_GET['periodo']) ? sanitize_text_field($_GET['periodo']) : '30
         <div class="flavor-metricas-panel">
             <h3 class="flavor-panel-titulo">
                 <span class="dashicons dashicons-star-filled"></span>
-                <?php esc_html_e('Comunidades más activas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Comunidades más activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <div class="flavor-panel-contenido" id="top-comunidades">
                 <div class="flavor-cargando-mini">
@@ -104,7 +104,7 @@ $periodo = isset($_GET['periodo']) ? sanitize_text_field($_GET['periodo']) : '30
         <div class="flavor-metricas-panel">
             <h3 class="flavor-panel-titulo">
                 <span class="dashicons dashicons-chart-pie"></span>
-                <?php esc_html_e('Tipos de colaboración', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Tipos de colaboración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <div class="flavor-panel-contenido" id="tipos-colaboracion">
                 <div class="flavor-cargando-mini">
@@ -117,7 +117,7 @@ $periodo = isset($_GET['periodo']) ? sanitize_text_field($_GET['periodo']) : '30
         <div class="flavor-metricas-panel flavor-panel-wide">
             <h3 class="flavor-panel-titulo">
                 <span class="dashicons dashicons-clock"></span>
-                <?php esc_html_e('Actividad de colaboración reciente', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Actividad de colaboración reciente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <div class="flavor-panel-contenido" id="actividad-reciente">
                 <div class="flavor-cargando-mini">
@@ -130,7 +130,7 @@ $periodo = isset($_GET['periodo']) ? sanitize_text_field($_GET['periodo']) : '30
         <div class="flavor-metricas-panel">
             <h3 class="flavor-panel-titulo">
                 <span class="dashicons dashicons-portfolio"></span>
-                <?php esc_html_e('Recursos más compartidos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Recursos más compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <div class="flavor-panel-contenido" id="recursos-compartidos">
                 <div class="flavor-cargando-mini">
@@ -143,7 +143,7 @@ $periodo = isset($_GET['periodo']) ? sanitize_text_field($_GET['periodo']) : '30
         <div class="flavor-metricas-panel">
             <h3 class="flavor-panel-titulo">
                 <span class="dashicons dashicons-admin-links"></span>
-                <?php esc_html_e('Conexiones más fuertes', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Conexiones más fuertes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <div class="flavor-panel-contenido" id="conexiones-comunidades">
                 <div class="flavor-cargando-mini">
@@ -158,7 +158,7 @@ $periodo = isset($_GET['periodo']) ? sanitize_text_field($_GET['periodo']) : '30
     <div class="flavor-metricas-federado">
         <h3 class="flavor-seccion-titulo">
             <span class="dashicons dashicons-networking"></span>
-            <?php esc_html_e('Red Federada', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Red Federada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h3>
 
         <div class="flavor-federado-grid" id="metricas-federado">
@@ -690,7 +690,7 @@ $periodo = isset($_GET['periodo']) ? sanitize_text_field($_GET['periodo']) : '30
             var contenedor = document.getElementById('top-comunidades');
 
             if (!comunidades.length) {
-                contenedor.innerHTML = '<div class="flavor-sin-datos"><span class="dashicons dashicons-groups"></span><p><?php echo esc_js(__('No hay datos disponibles', 'flavor-chat-ia')); ?></p></div>';
+                contenedor.innerHTML = '<div class="flavor-sin-datos"><span class="dashicons dashicons-groups"></span><p><?php echo esc_js(__('No hay datos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></p></div>';
                 return;
             }
 
@@ -700,7 +700,7 @@ $periodo = isset($_GET['periodo']) ? sanitize_text_field($_GET['periodo']) : '30
                     '<span class="flavor-ranking-pos">' + (i + 1) + '</span>' +
                     '<div class="flavor-ranking-info">' +
                         '<div class="flavor-ranking-nombre">' + escapeHtml(com.nombre) + '</div>' +
-                        '<div class="flavor-ranking-meta">' + com.miembros + ' <?php echo esc_js(__('miembros', 'flavor-chat-ia')); ?></div>' +
+                        '<div class="flavor-ranking-meta">' + com.miembros + ' <?php echo esc_js(__('miembros', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></div>' +
                     '</div>' +
                     '<span class="flavor-ranking-valor">' + com.actividad + '</span>' +
                 '</li>';
@@ -714,7 +714,7 @@ $periodo = isset($_GET['periodo']) ? sanitize_text_field($_GET['periodo']) : '30
             var contenedor = document.getElementById('tipos-colaboracion');
 
             if (!tipos.length) {
-                contenedor.innerHTML = '<div class="flavor-sin-datos"><span class="dashicons dashicons-chart-pie"></span><p><?php echo esc_js(__('No hay datos disponibles', 'flavor-chat-ia')); ?></p></div>';
+                contenedor.innerHTML = '<div class="flavor-sin-datos"><span class="dashicons dashicons-chart-pie"></span><p><?php echo esc_js(__('No hay datos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></p></div>';
                 return;
             }
 
@@ -742,7 +742,7 @@ $periodo = isset($_GET['periodo']) ? sanitize_text_field($_GET['periodo']) : '30
             var contenedor = document.getElementById('actividad-reciente');
 
             if (!actividades.length) {
-                contenedor.innerHTML = '<div class="flavor-sin-datos"><span class="dashicons dashicons-clock"></span><p><?php echo esc_js(__('No hay actividad reciente', 'flavor-chat-ia')); ?></p></div>';
+                contenedor.innerHTML = '<div class="flavor-sin-datos"><span class="dashicons dashicons-clock"></span><p><?php echo esc_js(__('No hay actividad reciente', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></p></div>';
                 return;
             }
 
@@ -762,7 +762,7 @@ $periodo = isset($_GET['periodo']) ? sanitize_text_field($_GET['periodo']) : '30
             var contenedor = document.getElementById('recursos-compartidos');
 
             if (!recursos.length) {
-                contenedor.innerHTML = '<div class="flavor-sin-datos"><span class="dashicons dashicons-portfolio"></span><p><?php echo esc_js(__('No hay recursos compartidos', 'flavor-chat-ia')); ?></p></div>';
+                contenedor.innerHTML = '<div class="flavor-sin-datos"><span class="dashicons dashicons-portfolio"></span><p><?php echo esc_js(__('No hay recursos compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></p></div>';
                 return;
             }
 
@@ -786,7 +786,7 @@ $periodo = isset($_GET['periodo']) ? sanitize_text_field($_GET['periodo']) : '30
             var contenedor = document.getElementById('conexiones-comunidades');
 
             if (!conexiones.length) {
-                contenedor.innerHTML = '<div class="flavor-sin-datos"><span class="dashicons dashicons-admin-links"></span><p><?php echo esc_js(__('No hay conexiones', 'flavor-chat-ia')); ?></p></div>';
+                contenedor.innerHTML = '<div class="flavor-sin-datos"><span class="dashicons dashicons-admin-links"></span><p><?php echo esc_js(__('No hay conexiones', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></p></div>';
                 return;
             }
 
@@ -810,19 +810,19 @@ $periodo = isset($_GET['periodo']) ? sanitize_text_field($_GET['periodo']) : '30
 
             var html = '<div class="flavor-federado-stat">' +
                 '<div class="flavor-federado-stat-valor">' + (federado.nodos_conectados || 0) + '</div>' +
-                '<div class="flavor-federado-stat-label"><?php echo esc_js(__('Nodos conectados', 'flavor-chat-ia')); ?></div>' +
+                '<div class="flavor-federado-stat-label"><?php echo esc_js(__('Nodos conectados', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></div>' +
             '</div>' +
             '<div class="flavor-federado-stat">' +
                 '<div class="flavor-federado-stat-valor">' + (federado.contenido_recibido || 0) + '</div>' +
-                '<div class="flavor-federado-stat-label"><?php echo esc_js(__('Contenido recibido', 'flavor-chat-ia')); ?></div>' +
+                '<div class="flavor-federado-stat-label"><?php echo esc_js(__('Contenido recibido', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></div>' +
             '</div>' +
             '<div class="flavor-federado-stat">' +
                 '<div class="flavor-federado-stat-valor">' + (federado.contenido_compartido || 0) + '</div>' +
-                '<div class="flavor-federado-stat-label"><?php echo esc_js(__('Contenido compartido', 'flavor-chat-ia')); ?></div>' +
+                '<div class="flavor-federado-stat-label"><?php echo esc_js(__('Contenido compartido', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></div>' +
             '</div>' +
             '<div class="flavor-federado-stat">' +
                 '<div class="flavor-federado-stat-valor">' + (federado.puntuacion_nodo || 0) + '</div>' +
-                '<div class="flavor-federado-stat-label"><?php echo esc_js(__('Puntuación del nodo', 'flavor-chat-ia')); ?></div>' +
+                '<div class="flavor-federado-stat-label"><?php echo esc_js(__('Puntuación del nodo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></div>' +
             '</div>';
 
             contenedor.innerHTML = html;

@@ -176,7 +176,7 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
         if (!isset($componentes_web[$identificador_componente])) {
             return new WP_REST_Response([
                 'success' => false,
-                'error' => __('Componente no encontrado', 'flavor-chat-ia'),
+                'error' => __('Componente no encontrado', 'flavor-platform'),
             ], 404);
         }
 
@@ -213,13 +213,13 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
         }
 
         $nombres_categorias = [
-            'hero' => __('Heroes', 'flavor-chat-ia'),
-            'content' => __('Contenido', 'flavor-chat-ia'),
-            'listings' => __('Listados', 'flavor-chat-ia'),
-            'features' => __('Características', 'flavor-chat-ia'),
-            'cta' => __('CTA', 'flavor-chat-ia'),
-            'navigation' => __('Navegación', 'flavor-chat-ia'),
-            'otros' => __('Otros', 'flavor-chat-ia'),
+            'hero' => __('Heroes', 'flavor-platform'),
+            'content' => __('Contenido', 'flavor-platform'),
+            'listings' => __('Listados', 'flavor-platform'),
+            'features' => __('Características', 'flavor-platform'),
+            'cta' => __('CTA', 'flavor-platform'),
+            'navigation' => __('Navegación', 'flavor-platform'),
+            'otros' => __('Otros', 'flavor-platform'),
         ];
 
         $categorias_resultado = [];
@@ -272,24 +272,24 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'themacle',
-            'label' => __('Themacle', 'flavor-chat-ia'),
+            'label' => __('Themacle', 'flavor-platform'),
             'icon' => 'dashicons-admin-customizer',
             'capability' => 'manage_options',
             'categoria' => 'recursos',
             'paginas' => [
                 [
                     'slug' => 'themacle-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_dashboard'],
                 ],
                 [
                     'slug' => 'themacle-temas',
-                    'titulo' => __('Temas', 'flavor-chat-ia'),
+                    'titulo' => __('Temas', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_temas'],
                 ],
                 [
                     'slug' => 'themacle-config',
-                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'titulo' => __('Configuración', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_config'],
                 ],
             ],
@@ -319,14 +319,14 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
             [
                 'icon' => 'dashicons-layout',
                 'valor' => $total_componentes,
-                'label' => __('Componentes disponibles', 'flavor-chat-ia'),
+                'label' => __('Componentes disponibles', 'flavor-platform'),
                 'color' => 'blue',
                 'enlace' => admin_url('admin.php?page=themacle-dashboard'),
             ],
             [
                 'icon' => 'dashicons-category',
                 'valor' => count($categorias_componentes),
-                'label' => __('Categorías', 'flavor-chat-ia'),
+                'label' => __('Categorías', 'flavor-platform'),
                 'color' => 'purple',
                 'enlace' => admin_url('admin.php?page=themacle-dashboard'),
             ],
@@ -343,25 +343,25 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
             include $dashboard_view_path;
         } else {
             echo '<div class="wrap flavor-modulo-page">';
-            $this->render_page_header(__('Dashboard de Themacle', 'flavor-chat-ia'));
-            echo '<p>' . __('Panel de control del módulo de themacle.', 'flavor-chat-ia') . '</p>';
+            $this->render_page_header(__('Dashboard de Themacle', 'flavor-platform'));
+            echo '<p>' . __('Panel de control del módulo de themacle.', 'flavor-platform') . '</p>';
             echo '</div>';
         }
     }
     public function render_admin_temas() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Gestión de Temas', 'flavor-chat-ia'));
+        $this->render_page_header(__('Gestión de Temas', 'flavor-platform'));
 
-        echo '<p>' . __('Los componentes Themacle se adaptan automáticamente al tema visual activo del sitio mediante CSS custom properties.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Los componentes Themacle se adaptan automáticamente al tema visual activo del sitio mediante CSS custom properties.', 'flavor-platform') . '</p>';
 
         echo '<div class="card">';
-        echo '<h3>' . __('Tema Activo', 'flavor-chat-ia') . '</h3>';
-        echo '<p>' . __('El tema visual actual define los colores, tipografías y espaciados que utilizan todos los componentes.', 'flavor-chat-ia') . '</p>';
+        echo '<h3>' . __('Tema Activo', 'flavor-platform') . '</h3>';
+        echo '<p>' . __('El tema visual actual define los colores, tipografías y espaciados que utilizan todos los componentes.', 'flavor-platform') . '</p>';
         echo '</div>';
 
         echo '<div class="card">';
-        echo '<h3>' . __('Personalización', 'flavor-chat-ia') . '</h3>';
-        echo '<p>' . __('Puedes personalizar las variables CSS para adaptar los componentes a tu marca.', 'flavor-chat-ia') . '</p>';
+        echo '<h3>' . __('Personalización', 'flavor-platform') . '</h3>';
+        echo '<p>' . __('Puedes personalizar las variables CSS para adaptar los componentes a tu marca.', 'flavor-platform') . '</p>';
         echo '</div>';
 
         echo '</div>';
@@ -372,20 +372,20 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_config() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Configuración de Themacle', 'flavor-chat-ia'));
+        $this->render_page_header(__('Configuración de Themacle', 'flavor-platform'));
 
         echo '<form method="post" action="">';
         echo '<table class="form-table">';
 
-        echo '<tr><th scope="row"><label for="componentes_activos">' . __('Componentes Activos', 'flavor-chat-ia') . '</label></th>';
-        echo '<td><p class="description">' . __('Todos los componentes están activos por defecto. Puedes desactivar componentes específicos si no los necesitas.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<tr><th scope="row"><label for="componentes_activos">' . __('Componentes Activos', 'flavor-platform') . '</label></th>';
+        echo '<td><p class="description">' . __('Todos los componentes están activos por defecto. Puedes desactivar componentes específicos si no los necesitas.', 'flavor-platform') . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="cache_templates">' . __('Cache de Templates', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="cache_templates">' . __('Cache de Templates', 'flavor-platform') . '</label></th>';
         echo '<td><input type="checkbox" name="cache_templates" id="cache_templates" checked />';
-        echo '<p class="description">' . __('Cachear los templates de componentes para mejorar el rendimiento.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . __('Cachear los templates de componentes para mejorar el rendimiento.', 'flavor-platform') . '</p></td></tr>';
 
         echo '</table>';
-        echo '<p class="submit"><input type="submit" name="guardar_config" class="button-primary" value="' . __('Guardar Configuración', 'flavor-chat-ia') . '" /></p>';
+        echo '<p class="submit"><input type="submit" name="guardar_config" class="button-primary" value="' . __('Guardar Configuración', 'flavor-platform') . '" /></p>';
         echo '</form>';
         echo '</div>';
     }
@@ -443,7 +443,7 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
 
         if (empty($componentes)) {
             return '<div class="flavor-alert flavor-alert-info">' .
-                __('No hay componentes Themacle disponibles todavía.', 'flavor-chat-ia') .
+                __('No hay componentes Themacle disponibles todavía.', 'flavor-platform') .
                 '</div>';
         }
 
@@ -472,8 +472,8 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_formulario() {
         return '<div class="flavor-panel flavor-panel-info">' .
-            '<h3>' . esc_html__('Insertar componente Themacle', 'flavor-chat-ia') . '</h3>' .
-            '<p>' . esc_html__('Themacle actúa como librería de componentes reutilizables. Selecciona un componente desde la API o el panel de administración y úsalo en tus páginas o layouts.', 'flavor-chat-ia') . '</p>' .
+            '<h3>' . esc_html__('Insertar componente Themacle', 'flavor-platform') . '</h3>' .
+            '<p>' . esc_html__('Themacle actúa como librería de componentes reutilizables. Selecciona un componente desde la API o el panel de administración y úsalo en tus páginas o layouts.', 'flavor-platform') . '</p>' .
             '<p><code>/wp-json/flavor/v1/themacle/componentes</code></p>' .
             '</div>';
     }
@@ -570,49 +570,49 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
         return [
             // ─── HEROES ───────────────────────────────────────
             'hero_fullscreen' => [
-                'label' => __('Hero Fullscreen', 'flavor-chat-ia'),
-                'description' => __('Sección hero a pantalla completa con imagen/video de fondo', 'flavor-chat-ia'),
+                'label' => __('Hero Fullscreen', 'flavor-platform'),
+                'description' => __('Sección hero a pantalla completa con imagen/video de fondo', 'flavor-platform'),
                 'category' => 'hero',
                 'icon' => 'dashicons-cover-image',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Bienvenido a nuestra web', 'flavor-chat-ia'),
+                        'label' => __('Título', 'flavor-platform'),
+                        'default' => __('Bienvenido a nuestra web', 'flavor-platform'),
                     ],
                     'subtitulo' => [
                         'type' => 'textarea',
-                        'label' => __('Subtítulo', 'flavor-chat-ia'),
+                        'label' => __('Subtítulo', 'flavor-platform'),
                         'default' => '',
                     ],
                     'imagen_fondo' => [
                         'type' => 'image',
-                        'label' => __('Imagen de fondo', 'flavor-chat-ia'),
+                        'label' => __('Imagen de fondo', 'flavor-platform'),
                         'default' => '',
                     ],
                     'video_fondo' => [
                         'type' => 'url',
-                        'label' => __('URL del vídeo de fondo', 'flavor-chat-ia'),
+                        'label' => __('URL del vídeo de fondo', 'flavor-platform'),
                         'default' => '',
                     ],
                     'texto_cta' => [
                         'type' => 'text',
-                        'label' => __('Texto del botón CTA', 'flavor-chat-ia'),
-                        'default' => __('Saber más', 'flavor-chat-ia'),
+                        'label' => __('Texto del botón CTA', 'flavor-platform'),
+                        'default' => __('Saber más', 'flavor-platform'),
                     ],
                     'url_cta' => [
                         'type' => 'url',
-                        'label' => __('URL del botón CTA', 'flavor-chat-ia'),
+                        'label' => __('URL del botón CTA', 'flavor-platform'),
                         'default' => '#',
                     ],
                     'overlay_color' => [
                         'type' => 'color',
-                        'label' => __('Color del overlay', 'flavor-chat-ia'),
+                        'label' => __('Color del overlay', 'flavor-platform'),
                         'default' => '#000000',
                     ],
                     'overlay_opacidad' => [
                         'type' => 'number',
-                        'label' => __('Opacidad del overlay (0-100)', 'flavor-chat-ia'),
+                        'label' => __('Opacidad del overlay (0-100)', 'flavor-platform'),
                         'default' => 50,
                     ],
                 ],
@@ -621,44 +621,44 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
             ],
 
             'hero_split' => [
-                'label' => __('Hero Split', 'flavor-chat-ia'),
-                'description' => __('Hero con diseño 50/50: imagen y texto lado a lado', 'flavor-chat-ia'),
+                'label' => __('Hero Split', 'flavor-platform'),
+                'description' => __('Hero con diseño 50/50: imagen y texto lado a lado', 'flavor-platform'),
                 'category' => 'hero',
                 'icon' => 'dashicons-columns',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Tu título aquí', 'flavor-chat-ia'),
+                        'label' => __('Título', 'flavor-platform'),
+                        'default' => __('Tu título aquí', 'flavor-platform'),
                     ],
                     'subtitulo' => [
                         'type' => 'textarea',
-                        'label' => __('Subtítulo', 'flavor-chat-ia'),
+                        'label' => __('Subtítulo', 'flavor-platform'),
                         'default' => '',
                     ],
                     'texto_cta' => [
                         'type' => 'text',
-                        'label' => __('Texto del botón', 'flavor-chat-ia'),
-                        'default' => __('Empezar', 'flavor-chat-ia'),
+                        'label' => __('Texto del botón', 'flavor-platform'),
+                        'default' => __('Empezar', 'flavor-platform'),
                     ],
                     'url_cta' => [
                         'type' => 'url',
-                        'label' => __('URL del botón', 'flavor-chat-ia'),
+                        'label' => __('URL del botón', 'flavor-platform'),
                         'default' => '#',
                     ],
                     'imagen' => [
                         'type' => 'image',
-                        'label' => __('Imagen', 'flavor-chat-ia'),
+                        'label' => __('Imagen', 'flavor-platform'),
                         'default' => '',
                     ],
                     'invertir' => [
                         'type' => 'toggle',
-                        'label' => __('Invertir orden (imagen a la izquierda)', 'flavor-chat-ia'),
+                        'label' => __('Invertir orden (imagen a la izquierda)', 'flavor-platform'),
                         'default' => false,
                     ],
                     'color_fondo' => [
                         'type' => 'color',
-                        'label' => __('Color de fondo', 'flavor-chat-ia'),
+                        'label' => __('Color de fondo', 'flavor-platform'),
                         'default' => '#ffffff',
                     ],
                 ],
@@ -667,32 +667,32 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
             ],
 
             'hero_slider' => [
-                'label' => __('Hero Slider', 'flavor-chat-ia'),
-                'description' => __('Carrusel de slides con navegación por bullets', 'flavor-chat-ia'),
+                'label' => __('Hero Slider', 'flavor-platform'),
+                'description' => __('Carrusel de slides con navegación por bullets', 'flavor-platform'),
                 'category' => 'hero',
                 'icon' => 'dashicons-slides',
                 'fields' => [
                     'slides' => [
                         'type' => 'repeater',
-                        'label' => __('Slides', 'flavor-chat-ia'),
+                        'label' => __('Slides', 'flavor-platform'),
                         'fields' => [
-                            'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'default' => ''],
-                            'subtitulo' => ['type' => 'textarea', 'label' => __('Subtítulo', 'flavor-chat-ia'), 'default' => ''],
-                            'imagen' => ['type' => 'image', 'label' => __('Imagen de fondo', 'flavor-chat-ia'), 'default' => ''],
-                            'url_cta' => ['type' => 'url', 'label' => __('URL del botón', 'flavor-chat-ia'), 'default' => '#'],
-                            'texto_cta' => ['type' => 'text', 'label' => __('Texto del botón', 'flavor-chat-ia'), 'default' => ''],
+                            'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-platform'), 'default' => ''],
+                            'subtitulo' => ['type' => 'textarea', 'label' => __('Subtítulo', 'flavor-platform'), 'default' => ''],
+                            'imagen' => ['type' => 'image', 'label' => __('Imagen de fondo', 'flavor-platform'), 'default' => ''],
+                            'url_cta' => ['type' => 'url', 'label' => __('URL del botón', 'flavor-platform'), 'default' => '#'],
+                            'texto_cta' => ['type' => 'text', 'label' => __('Texto del botón', 'flavor-platform'), 'default' => ''],
                         ],
                         'default' => [],
                         'max_items' => 10,
                     ],
                     'autoplay' => [
                         'type' => 'toggle',
-                        'label' => __('Autoplay', 'flavor-chat-ia'),
+                        'label' => __('Autoplay', 'flavor-platform'),
                         'default' => true,
                     ],
                     'intervalo' => [
                         'type' => 'number',
-                        'label' => __('Intervalo en milisegundos', 'flavor-chat-ia'),
+                        'label' => __('Intervalo en milisegundos', 'flavor-platform'),
                         'default' => 5000,
                     ],
                 ],
@@ -702,34 +702,34 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
 
             // ─── CONTENIDO ────────────────────────────────────
             'text_media' => [
-                'label' => __('Texto + Media', 'flavor-chat-ia'),
-                'description' => __('Bloque de texto con imagen lado a lado', 'flavor-chat-ia'),
+                'label' => __('Texto + Media', 'flavor-platform'),
+                'description' => __('Bloque de texto con imagen lado a lado', 'flavor-platform'),
                 'category' => 'content',
                 'icon' => 'dashicons-align-left',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
+                        'label' => __('Título', 'flavor-platform'),
                         'default' => '',
                     ],
                     'contenido' => [
                         'type' => 'textarea',
-                        'label' => __('Contenido', 'flavor-chat-ia'),
+                        'label' => __('Contenido', 'flavor-platform'),
                         'default' => '',
                     ],
                     'imagen' => [
                         'type' => 'image',
-                        'label' => __('Imagen', 'flavor-chat-ia'),
+                        'label' => __('Imagen', 'flavor-platform'),
                         'default' => '',
                     ],
                     'invertir' => [
                         'type' => 'toggle',
-                        'label' => __('Invertir orden', 'flavor-chat-ia'),
+                        'label' => __('Invertir orden', 'flavor-platform'),
                         'default' => false,
                     ],
                     'estilo' => [
                         'type' => 'select',
-                        'label' => __('Estilo', 'flavor-chat-ia'),
+                        'label' => __('Estilo', 'flavor-platform'),
                         'options' => ['simple', 'overlay'],
                         'default' => 'simple',
                     ],
@@ -739,28 +739,28 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
             ],
 
             'gallery' => [
-                'label' => __('Galería', 'flavor-chat-ia'),
-                'description' => __('Galería de imágenes en formato grid', 'flavor-chat-ia'),
+                'label' => __('Galería', 'flavor-platform'),
+                'description' => __('Galería de imágenes en formato grid', 'flavor-platform'),
                 'category' => 'content',
                 'icon' => 'dashicons-format-gallery',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
+                        'label' => __('Título', 'flavor-platform'),
                         'default' => '',
                     ],
                     'columnas' => [
                         'type' => 'select',
-                        'label' => __('Columnas', 'flavor-chat-ia'),
+                        'label' => __('Columnas', 'flavor-platform'),
                         'options' => [2, 3, 4],
                         'default' => 3,
                     ],
                     'imagenes' => [
                         'type' => 'repeater',
-                        'label' => __('Imágenes', 'flavor-chat-ia'),
+                        'label' => __('Imágenes', 'flavor-platform'),
                         'fields' => [
-                            'imagen' => ['type' => 'image', 'label' => __('Imagen', 'flavor-chat-ia'), 'default' => ''],
-                            'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'default' => ''],
+                            'imagen' => ['type' => 'image', 'label' => __('Imagen', 'flavor-platform'), 'default' => ''],
+                            'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-platform'), 'default' => ''],
                         ],
                         'default' => [],
                         'max_items' => 24,
@@ -771,22 +771,22 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
             ],
 
             'accordion' => [
-                'label' => __('Acordeón / FAQ', 'flavor-chat-ia'),
-                'description' => __('Lista desplegable de preguntas y respuestas', 'flavor-chat-ia'),
+                'label' => __('Acordeón / FAQ', 'flavor-platform'),
+                'description' => __('Lista desplegable de preguntas y respuestas', 'flavor-platform'),
                 'category' => 'content',
                 'icon' => 'dashicons-list-view',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Preguntas Frecuentes', 'flavor-chat-ia'),
+                        'label' => __('Título', 'flavor-platform'),
+                        'default' => __('Preguntas Frecuentes', 'flavor-platform'),
                     ],
                     'items' => [
                         'type' => 'repeater',
-                        'label' => __('Preguntas', 'flavor-chat-ia'),
+                        'label' => __('Preguntas', 'flavor-platform'),
                         'fields' => [
-                            'pregunta' => ['type' => 'text', 'label' => __('Pregunta', 'flavor-chat-ia'), 'default' => ''],
-                            'respuesta' => ['type' => 'textarea', 'label' => __('Respuesta', 'flavor-chat-ia'), 'default' => ''],
+                            'pregunta' => ['type' => 'text', 'label' => __('Pregunta', 'flavor-platform'), 'default' => ''],
+                            'respuesta' => ['type' => 'textarea', 'label' => __('Respuesta', 'flavor-platform'), 'default' => ''],
                         ],
                         'default' => [],
                         'max_items' => 20,
@@ -797,39 +797,39 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
             ],
 
             'map_section' => [
-                'label' => __('Mapa + Contacto', 'flavor-chat-ia'),
-                'description' => __('Sección con mapa embebido e información de contacto', 'flavor-chat-ia'),
+                'label' => __('Mapa + Contacto', 'flavor-platform'),
+                'description' => __('Sección con mapa embebido e información de contacto', 'flavor-platform'),
                 'category' => 'content',
                 'icon' => 'dashicons-location-alt',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Dónde Encontrarnos', 'flavor-chat-ia'),
+                        'label' => __('Título', 'flavor-platform'),
+                        'default' => __('Dónde Encontrarnos', 'flavor-platform'),
                     ],
                     'direccion' => [
                         'type' => 'text',
-                        'label' => __('Dirección', 'flavor-chat-ia'),
+                        'label' => __('Dirección', 'flavor-platform'),
                         'default' => '',
                     ],
                     'telefono' => [
                         'type' => 'text',
-                        'label' => __('Teléfono', 'flavor-chat-ia'),
+                        'label' => __('Teléfono', 'flavor-platform'),
                         'default' => '',
                     ],
                     'email' => [
                         'type' => 'email',
-                        'label' => __('Email', 'flavor-chat-ia'),
+                        'label' => __('Email', 'flavor-platform'),
                         'default' => '',
                     ],
                     'horario' => [
                         'type' => 'textarea',
-                        'label' => __('Horario', 'flavor-chat-ia'),
+                        'label' => __('Horario', 'flavor-platform'),
                         'default' => '',
                     ],
                     'mostrar_formulario' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar formulario de contacto', 'flavor-chat-ia'),
+                        'label' => __('Mostrar formulario de contacto', 'flavor-platform'),
                         'default' => false,
                     ],
                 ],
@@ -838,29 +838,29 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
             ],
 
             'post_content' => [
-                'label' => __('Contenido de Post', 'flavor-chat-ia'),
-                'description' => __('Contenido de artículo o entrada individual', 'flavor-chat-ia'),
+                'label' => __('Contenido de Post', 'flavor-platform'),
+                'description' => __('Contenido de artículo o entrada individual', 'flavor-platform'),
                 'category' => 'content',
                 'icon' => 'dashicons-media-text',
                 'fields' => [
                     'mostrar_imagen_destacada' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar imagen destacada', 'flavor-chat-ia'),
+                        'label' => __('Mostrar imagen destacada', 'flavor-platform'),
                         'default' => true,
                     ],
                     'mostrar_fecha' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar fecha', 'flavor-chat-ia'),
+                        'label' => __('Mostrar fecha', 'flavor-platform'),
                         'default' => true,
                     ],
                     'mostrar_autor' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar autor', 'flavor-chat-ia'),
+                        'label' => __('Mostrar autor', 'flavor-platform'),
                         'default' => true,
                     ],
                     'mostrar_compartir' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar botones de compartir', 'flavor-chat-ia'),
+                        'label' => __('Mostrar botones de compartir', 'flavor-platform'),
                         'default' => true,
                     ],
                 ],
@@ -870,43 +870,43 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
 
             // ─── LISTADOS ─────────────────────────────────────
             'card_grid' => [
-                'label' => __('Grid de Tarjetas', 'flavor-chat-ia'),
-                'description' => __('Grid configurable de tarjetas con imagen, título y descripción', 'flavor-chat-ia'),
+                'label' => __('Grid de Tarjetas', 'flavor-platform'),
+                'description' => __('Grid configurable de tarjetas con imagen, título y descripción', 'flavor-platform'),
                 'category' => 'listings',
                 'icon' => 'dashicons-grid-view',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título de sección', 'flavor-chat-ia'),
+                        'label' => __('Título de sección', 'flavor-platform'),
                         'default' => '',
                     ],
                     'columnas' => [
                         'type' => 'select',
-                        'label' => __('Columnas', 'flavor-chat-ia'),
+                        'label' => __('Columnas', 'flavor-platform'),
                         'options' => [2, 3, 4],
                         'default' => 3,
                     ],
                     'estilo_card' => [
                         'type' => 'select',
-                        'label' => __('Estilo de tarjeta', 'flavor-chat-ia'),
+                        'label' => __('Estilo de tarjeta', 'flavor-platform'),
                         'options' => ['shadow', 'border', 'flat'],
                         'default' => 'shadow',
                     ],
                     'fuente_datos' => [
                         'type' => 'data_source',
-                        'label' => __('Fuente de datos', 'flavor-chat-ia'),
+                        'label' => __('Fuente de datos', 'flavor-platform'),
                         'post_types' => [],
                         'items_field' => 'items',
                         'default' => 'manual',
                     ],
                     'items' => [
                         'type' => 'repeater',
-                        'label' => __('Tarjetas', 'flavor-chat-ia'),
+                        'label' => __('Tarjetas', 'flavor-platform'),
                         'fields' => [
-                            'imagen' => ['type' => 'image', 'label' => __('Imagen', 'flavor-chat-ia'), 'default' => ''],
-                            'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'default' => ''],
-                            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia'), 'default' => ''],
-                            'url' => ['type' => 'url', 'label' => __('URL', 'flavor-chat-ia'), 'default' => '#'],
+                            'imagen' => ['type' => 'image', 'label' => __('Imagen', 'flavor-platform'), 'default' => ''],
+                            'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-platform'), 'default' => ''],
+                            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-platform'), 'default' => ''],
+                            'url' => ['type' => 'url', 'label' => __('URL', 'flavor-platform'), 'default' => '#'],
                         ],
                         'default' => [],
                         'max_items' => 12,
@@ -917,25 +917,25 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
             ],
 
             'related_items' => [
-                'label' => __('Items Relacionados', 'flavor-chat-ia'),
-                'description' => __('Grid de elementos relacionados con datos dinámicos', 'flavor-chat-ia'),
+                'label' => __('Items Relacionados', 'flavor-platform'),
+                'description' => __('Grid de elementos relacionados con datos dinámicos', 'flavor-platform'),
                 'category' => 'listings',
                 'icon' => 'dashicons-networking',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Relacionados', 'flavor-chat-ia'),
+                        'label' => __('Título', 'flavor-platform'),
+                        'default' => __('Relacionados', 'flavor-platform'),
                     ],
                     'columnas' => [
                         'type' => 'select',
-                        'label' => __('Columnas', 'flavor-chat-ia'),
+                        'label' => __('Columnas', 'flavor-platform'),
                         'options' => [2, 3, 4],
                         'default' => 3,
                     ],
                     'fuente_datos' => [
                         'type' => 'data_source',
-                        'label' => __('Fuente de datos', 'flavor-chat-ia'),
+                        'label' => __('Fuente de datos', 'flavor-platform'),
                         'post_types' => [],
                         'items_field' => '',
                         'default' => 'manual',
@@ -947,34 +947,34 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
 
             // ─── CARACTERÍSTICAS ──────────────────────────────
             'feature_grid' => [
-                'label' => __('Grid de Características', 'flavor-chat-ia'),
-                'description' => __('Grid de iconos o imágenes con título y descripción', 'flavor-chat-ia'),
+                'label' => __('Grid de Características', 'flavor-platform'),
+                'description' => __('Grid de iconos o imágenes con título y descripción', 'flavor-platform'),
                 'category' => 'features',
                 'icon' => 'dashicons-star-filled',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
+                        'label' => __('Título', 'flavor-platform'),
                         'default' => '',
                     ],
                     'subtitulo' => [
                         'type' => 'textarea',
-                        'label' => __('Subtítulo', 'flavor-chat-ia'),
+                        'label' => __('Subtítulo', 'flavor-platform'),
                         'default' => '',
                     ],
                     'columnas' => [
                         'type' => 'select',
-                        'label' => __('Columnas', 'flavor-chat-ia'),
+                        'label' => __('Columnas', 'flavor-platform'),
                         'options' => [2, 3, 4],
                         'default' => 3,
                     ],
                     'items' => [
                         'type' => 'repeater',
-                        'label' => __('Características', 'flavor-chat-ia'),
+                        'label' => __('Características', 'flavor-platform'),
                         'fields' => [
-                            'icono' => ['type' => 'text', 'label' => __('Icono (dashicons)', 'flavor-chat-ia'), 'default' => 'dashicons-star-filled'],
-                            'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'default' => ''],
-                            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia'), 'default' => ''],
+                            'icono' => ['type' => 'text', 'label' => __('Icono (dashicons)', 'flavor-platform'), 'default' => 'dashicons-star-filled'],
+                            'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-platform'), 'default' => ''],
+                            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-platform'), 'default' => ''],
                         ],
                         'default' => [],
                         'max_items' => 12,
@@ -985,31 +985,31 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
             ],
 
             'highlights' => [
-                'label' => __('Destacados', 'flavor-chat-ia'),
-                'description' => __('Sección de elementos destacados con iconos o imágenes', 'flavor-chat-ia'),
+                'label' => __('Destacados', 'flavor-platform'),
+                'description' => __('Sección de elementos destacados con iconos o imágenes', 'flavor-platform'),
                 'category' => 'features',
                 'icon' => 'dashicons-awards',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
+                        'label' => __('Título', 'flavor-platform'),
                         'default' => '',
                     ],
                     'items' => [
                         'type' => 'repeater',
-                        'label' => __('Destacados', 'flavor-chat-ia'),
+                        'label' => __('Destacados', 'flavor-platform'),
                         'fields' => [
-                            'imagen' => ['type' => 'image', 'label' => __('Imagen/Icono', 'flavor-chat-ia'), 'default' => ''],
-                            'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'default' => ''],
-                            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia'), 'default' => ''],
-                            'url' => ['type' => 'url', 'label' => __('URL', 'flavor-chat-ia'), 'default' => ''],
+                            'imagen' => ['type' => 'image', 'label' => __('Imagen/Icono', 'flavor-platform'), 'default' => ''],
+                            'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-platform'), 'default' => ''],
+                            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-platform'), 'default' => ''],
+                            'url' => ['type' => 'url', 'label' => __('URL', 'flavor-platform'), 'default' => ''],
                         ],
                         'default' => [],
                         'max_items' => 8,
                     ],
                     'estilo' => [
                         'type' => 'select',
-                        'label' => __('Estilo', 'flavor-chat-ia'),
+                        'label' => __('Estilo', 'flavor-platform'),
                         'options' => ['cards', 'icons', 'minimal'],
                         'default' => 'cards',
                     ],
@@ -1020,39 +1020,39 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
 
             // ─── CTA ──────────────────────────────────────────
             'cta_banner' => [
-                'label' => __('Banner CTA', 'flavor-chat-ia'),
-                'description' => __('Llamada a la acción con fondo de color o imagen', 'flavor-chat-ia'),
+                'label' => __('Banner CTA', 'flavor-platform'),
+                'description' => __('Llamada a la acción con fondo de color o imagen', 'flavor-platform'),
                 'category' => 'cta',
                 'icon' => 'dashicons-megaphone',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
+                        'label' => __('Título', 'flavor-platform'),
                         'default' => '',
                     ],
                     'subtitulo' => [
                         'type' => 'textarea',
-                        'label' => __('Subtítulo', 'flavor-chat-ia'),
+                        'label' => __('Subtítulo', 'flavor-platform'),
                         'default' => '',
                     ],
                     'texto_cta' => [
                         'type' => 'text',
-                        'label' => __('Texto del botón', 'flavor-chat-ia'),
-                        'default' => __('Contactar', 'flavor-chat-ia'),
+                        'label' => __('Texto del botón', 'flavor-platform'),
+                        'default' => __('Contactar', 'flavor-platform'),
                     ],
                     'url_cta' => [
                         'type' => 'url',
-                        'label' => __('URL del botón', 'flavor-chat-ia'),
+                        'label' => __('URL del botón', 'flavor-platform'),
                         'default' => '#',
                     ],
                     'imagen_fondo' => [
                         'type' => 'image',
-                        'label' => __('Imagen de fondo', 'flavor-chat-ia'),
+                        'label' => __('Imagen de fondo', 'flavor-platform'),
                         'default' => '',
                     ],
                     'color_fondo' => [
                         'type' => 'color',
-                        'label' => __('Color de fondo', 'flavor-chat-ia'),
+                        'label' => __('Color de fondo', 'flavor-platform'),
                         'default' => '',
                     ],
                 ],
@@ -1061,34 +1061,34 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
             ],
 
             'newsletter' => [
-                'label' => __('Newsletter', 'flavor-chat-ia'),
-                'description' => __('Formulario de suscripción por email', 'flavor-chat-ia'),
+                'label' => __('Newsletter', 'flavor-platform'),
+                'description' => __('Formulario de suscripción por email', 'flavor-platform'),
                 'category' => 'cta',
                 'icon' => 'dashicons-email-alt',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Suscríbete', 'flavor-chat-ia'),
+                        'label' => __('Título', 'flavor-platform'),
+                        'default' => __('Suscríbete', 'flavor-platform'),
                     ],
                     'subtitulo' => [
                         'type' => 'textarea',
-                        'label' => __('Subtítulo', 'flavor-chat-ia'),
+                        'label' => __('Subtítulo', 'flavor-platform'),
                         'default' => '',
                     ],
                     'texto_placeholder' => [
                         'type' => 'text',
-                        'label' => __('Placeholder del campo', 'flavor-chat-ia'),
-                        'default' => __('Tu email', 'flavor-chat-ia'),
+                        'label' => __('Placeholder del campo', 'flavor-platform'),
+                        'default' => __('Tu email', 'flavor-platform'),
                     ],
                     'texto_boton' => [
                         'type' => 'text',
-                        'label' => __('Texto del botón', 'flavor-chat-ia'),
-                        'default' => __('Suscribirme', 'flavor-chat-ia'),
+                        'label' => __('Texto del botón', 'flavor-platform'),
+                        'default' => __('Suscribirme', 'flavor-platform'),
                     ],
                     'color_fondo' => [
                         'type' => 'color',
-                        'label' => __('Color de fondo', 'flavor-chat-ia'),
+                        'label' => __('Color de fondo', 'flavor-platform'),
                         'default' => '',
                     ],
                 ],
@@ -1098,19 +1098,19 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
 
             // ─── NAVEGACIÓN ───────────────────────────────────
             'filters_bar' => [
-                'label' => __('Barra de Filtros', 'flavor-chat-ia'),
-                'description' => __('Barra de filtros por taxonomía con diferentes estilos', 'flavor-chat-ia'),
+                'label' => __('Barra de Filtros', 'flavor-platform'),
+                'description' => __('Barra de filtros por taxonomía con diferentes estilos', 'flavor-platform'),
                 'category' => 'navigation',
                 'icon' => 'dashicons-filter',
                 'fields' => [
                     'taxonomia' => [
                         'type' => 'text',
-                        'label' => __('Taxonomía (slug)', 'flavor-chat-ia'),
+                        'label' => __('Taxonomía (slug)', 'flavor-platform'),
                         'default' => 'category',
                     ],
                     'estilo' => [
                         'type' => 'select',
-                        'label' => __('Estilo', 'flavor-chat-ia'),
+                        'label' => __('Estilo', 'flavor-platform'),
                         'options' => ['underline', 'pills', 'dropdown'],
                         'default' => 'pills',
                     ],
@@ -1120,14 +1120,14 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
             ],
 
             'pagination' => [
-                'label' => __('Paginación', 'flavor-chat-ia'),
-                'description' => __('Navegación numérica entre páginas', 'flavor-chat-ia'),
+                'label' => __('Paginación', 'flavor-platform'),
+                'description' => __('Navegación numérica entre páginas', 'flavor-platform'),
                 'category' => 'navigation',
                 'icon' => 'dashicons-controls-forward',
                 'fields' => [
                     'estilo' => [
                         'type' => 'select',
-                        'label' => __('Estilo', 'flavor-chat-ia'),
+                        'label' => __('Estilo', 'flavor-platform'),
                         'options' => ['numbers', 'simple', 'load-more'],
                         'default' => 'numbers',
                     ],
@@ -1144,37 +1144,37 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Themacle', 'flavor-chat-ia'),
+                'title' => __('Themacle', 'flavor-platform'),
                 'slug' => 'themacle',
-                'content' => '<h1>' . __('Themacle', 'flavor-chat-ia') . '</h1>
-<p>' . __('Gestión de contenido temático', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Themacle', 'flavor-platform') . '</h1>
+<p>' . __('Gestión de contenido temático', 'flavor-platform') . '</p>
 
 [flavor_module_listing module="themacle" action="dashboard" columnas="3" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Temas', 'flavor-chat-ia'),
+                'title' => __('Temas', 'flavor-platform'),
                 'slug' => 'temas-themacle',
-                'content' => '<h1>' . __('Temas', 'flavor-chat-ia') . '</h1>
-<p>' . __('Explora los temas disponibles', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Temas', 'flavor-platform') . '</h1>
+<p>' . __('Explora los temas disponibles', 'flavor-platform') . '</p>
 
 [flavor_module_listing module="themacle" action="temas"]',
                 'parent' => 'themacle',
             ],
             [
-                'title' => __('Crear Tema', 'flavor-chat-ia'),
+                'title' => __('Crear Tema', 'flavor-platform'),
                 'slug' => 'crear-tema',
-                'content' => '<h1>' . __('Crear Tema', 'flavor-chat-ia') . '</h1>
-<p>' . __('Crea un nuevo tema', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Crear Tema', 'flavor-platform') . '</h1>
+<p>' . __('Crea un nuevo tema', 'flavor-platform') . '</p>
 
 [flavor_module_form module="themacle" action="crear_tema"]',
                 'parent' => 'themacle',
             ],
             [
-                'title' => __('Mis Temas', 'flavor-chat-ia'),
+                'title' => __('Mis Temas', 'flavor-platform'),
                 'slug' => 'mis-temas-themacle',
-                'content' => '<h1>' . __('Mis Temas', 'flavor-chat-ia') . '</h1>
-<p>' . __('Gestiona tus temas creados', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Mis Temas', 'flavor-platform') . '</h1>
+<p>' . __('Gestiona tus temas creados', 'flavor-platform') . '</p>
 
 [flavor_module_dashboard module="themacle" action="mis_temas"]',
                 'parent' => 'themacle',
@@ -1190,8 +1190,8 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
     public static function get_renderer_config(): array {
         return [
             'module'   => 'themacle',
-            'title'    => __('Themacle', 'flavor-chat-ia'),
-            'subtitle' => __('Gestión de contenido temático', 'flavor-chat-ia'),
+            'title'    => __('Themacle', 'flavor-platform'),
+            'subtitle' => __('Gestión de contenido temático', 'flavor-platform'),
             'icon'     => '🎨',
             'color'    => 'primary', // Usa variable CSS --flavor-primary del tema
 
@@ -1201,39 +1201,39 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
             ],
 
             'fields' => [
-                'titulo'      => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'required' => true],
-                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
-                'categoria'   => ['type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia')],
-                'imagen'      => ['type' => 'file', 'label' => __('Imagen', 'flavor-chat-ia')],
-                'contenido'   => ['type' => 'editor', 'label' => __('Contenido', 'flavor-chat-ia')],
-                'etiquetas'   => ['type' => 'tags', 'label' => __('Etiquetas', 'flavor-chat-ia')],
+                'titulo'      => ['type' => 'text', 'label' => __('Título', 'flavor-platform'), 'required' => true],
+                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-platform')],
+                'categoria'   => ['type' => 'select', 'label' => __('Categoría', 'flavor-platform')],
+                'imagen'      => ['type' => 'file', 'label' => __('Imagen', 'flavor-platform')],
+                'contenido'   => ['type' => 'editor', 'label' => __('Contenido', 'flavor-platform')],
+                'etiquetas'   => ['type' => 'tags', 'label' => __('Etiquetas', 'flavor-platform')],
             ],
 
             'estados' => [
-                'borrador'   => ['label' => __('Borrador', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '📝'],
-                'publicado'  => ['label' => __('Publicado', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
-                'destacado'  => ['label' => __('Destacado', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⭐'],
-                'archivado'  => ['label' => __('Archivado', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '📁'],
+                'borrador'   => ['label' => __('Borrador', 'flavor-platform'), 'color' => 'gray', 'icon' => '📝'],
+                'publicado'  => ['label' => __('Publicado', 'flavor-platform'), 'color' => 'green', 'icon' => '✅'],
+                'destacado'  => ['label' => __('Destacado', 'flavor-platform'), 'color' => 'yellow', 'icon' => '⭐'],
+                'archivado'  => ['label' => __('Archivado', 'flavor-platform'), 'color' => 'gray', 'icon' => '📁'],
             ],
 
             'stats' => [
                 [
                     'key'   => 'total_temas',
-                    'label' => __('Temas', 'flavor-chat-ia'),
+                    'label' => __('Temas', 'flavor-platform'),
                     'icon'  => '🎨',
                     'color' => 'purple',
                     'query' => "SELECT COUNT(*) FROM {prefix}flavor_themacle WHERE estado = 'publicado'",
                 ],
                 [
                     'key'   => 'mis_temas',
-                    'label' => __('Mis temas', 'flavor-chat-ia'),
+                    'label' => __('Mis temas', 'flavor-platform'),
                     'icon'  => '👤',
                     'color' => 'blue',
                     'query' => "SELECT COUNT(*) FROM {prefix}flavor_themacle WHERE user_id = {user_id}",
                 ],
                 [
                     'key'   => 'vistas',
-                    'label' => __('Vistas', 'flavor-chat-ia'),
+                    'label' => __('Vistas', 'flavor-platform'),
                     'icon'  => '👁️',
                     'color' => 'green',
                     'query' => "SELECT SUM(vistas) FROM {prefix}flavor_themacle WHERE user_id = {user_id}",
@@ -1251,17 +1251,17 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
 
             'tabs' => [
                 'listado' => [
-                    'label'   => __('Temas', 'flavor-chat-ia'),
+                    'label'   => __('Temas', 'flavor-platform'),
                     'icon'    => '🎨',
                     'content' => 'template:themacle/_listado.php',
                 ],
                 'mis-temas' => [
-                    'label'   => __('Mis temas', 'flavor-chat-ia'),
+                    'label'   => __('Mis temas', 'flavor-platform'),
                     'icon'    => '👤',
                     'content' => 'shortcode:themacle_mis_temas',
                 ],
                 'crear' => [
-                    'label'   => __('Crear', 'flavor-chat-ia'),
+                    'label'   => __('Crear', 'flavor-platform'),
                     'icon'    => '➕',
                     'content' => 'shortcode:themacle_formulario',
                 ],
@@ -1277,12 +1277,12 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
 
             'dashboard' => [
                 'widgets' => [
-                    'temas_recientes'  => ['type' => 'list', 'title' => __('Temas recientes', 'flavor-chat-ia')],
-                    'mis_temas'        => ['type' => 'list', 'title' => __('Mis temas', 'flavor-chat-ia')],
+                    'temas_recientes'  => ['type' => 'list', 'title' => __('Temas recientes', 'flavor-platform')],
+                    'mis_temas'        => ['type' => 'list', 'title' => __('Mis temas', 'flavor-platform')],
                 ],
                 'actions' => [
                     'nuevo_tema' => [
-                        'label' => __('Crear tema', 'flavor-chat-ia'),
+                        'label' => __('Crear tema', 'flavor-platform'),
                         'icon'  => '➕',
                         'modal' => 'themacle-nuevo',
                     ],

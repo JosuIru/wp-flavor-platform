@@ -24,7 +24,7 @@ class Flavor_App_Config_Admin {
     /**
      * Slug de la página de configuración
      */
-    private $page_slug = 'flavor-apps-config';
+    private $page_slug = 'flavor-platform-apps';
 
     /**
      * Obtiene la instancia singleton
@@ -70,9 +70,9 @@ class Flavor_App_Config_Admin {
      */
     public function add_menu_page() {
         add_submenu_page(
-            'flavor-chat-ia', // Parent slug (menú principal de Flavor Chat IA)
-            __('Configuración de Apps', 'flavor-chat-ia'),
-            __('Apps Móviles', 'flavor-chat-ia'),
+            FLAVOR_PLATFORM_TEXT_DOMAIN, // Parent slug (menú principal de Flavor Chat IA)
+            __('Configuración de Apps', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Apps Móviles', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             $this->page_slug,
             [$this, 'render_page']
@@ -101,7 +101,7 @@ class Flavor_App_Config_Admin {
         // Sección: Información General
         add_settings_section(
             'general_section',
-            __('Información General de la App', 'flavor-chat-ia'),
+            __('Información General de la App', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_general_section'],
             $this->page_slug
         );
@@ -109,7 +109,7 @@ class Flavor_App_Config_Admin {
         // Sección: Branding
         add_settings_section(
             'branding_section',
-            __('Branding y Apariencia', 'flavor-chat-ia'),
+            __('Branding y Apariencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_branding_section'],
             $this->page_slug
         );
@@ -117,7 +117,7 @@ class Flavor_App_Config_Admin {
         // Sección: Seguridad
         add_settings_section(
             'security_section',
-            __('Seguridad y Tokens', 'flavor-chat-ia'),
+            __('Seguridad y Tokens', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_security_section'],
             $this->page_slug
         );
@@ -125,7 +125,7 @@ class Flavor_App_Config_Admin {
         // Sección: Módulos
         add_settings_section(
             'modules_section',
-            __('Módulos Disponibles', 'flavor-chat-ia'),
+            __('Módulos Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_modules_section'],
             $this->page_slug
         );
@@ -133,7 +133,7 @@ class Flavor_App_Config_Admin {
         // Campos: Información General
         add_settings_field(
             'app_name',
-            __('Nombre de la App', 'flavor-chat-ia'),
+            __('Nombre de la App', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_app_name_field'],
             $this->page_slug,
             'general_section'
@@ -141,7 +141,7 @@ class Flavor_App_Config_Admin {
 
         add_settings_field(
             'app_description',
-            __('Descripción', 'flavor-chat-ia'),
+            __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_app_description_field'],
             $this->page_slug,
             'general_section'
@@ -150,7 +150,7 @@ class Flavor_App_Config_Admin {
         // Campos: Branding
         add_settings_field(
             'app_logo',
-            __('Logo de la App', 'flavor-chat-ia'),
+            __('Logo de la App', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_app_logo_field'],
             $this->page_slug,
             'branding_section'
@@ -158,7 +158,7 @@ class Flavor_App_Config_Admin {
 
         add_settings_field(
             'primary_color',
-            __('Color Primario', 'flavor-chat-ia'),
+            __('Color Primario', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_primary_color_field'],
             $this->page_slug,
             'branding_section'
@@ -166,7 +166,7 @@ class Flavor_App_Config_Admin {
 
         add_settings_field(
             'secondary_color',
-            __('Color Secundario', 'flavor-chat-ia'),
+            __('Color Secundario', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_secondary_color_field'],
             $this->page_slug,
             'branding_section'
@@ -174,7 +174,7 @@ class Flavor_App_Config_Admin {
 
         add_settings_field(
             'accent_color',
-            __('Color de Acento', 'flavor-chat-ia'),
+            __('Color de Acento', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_accent_color_field'],
             $this->page_slug,
             'branding_section'
@@ -224,7 +224,7 @@ class Flavor_App_Config_Admin {
         $sufijo_asset = '';
 
         wp_enqueue_script(
-            'flavor-apps-config',
+            'flavor-platform-apps',
             FLAVOR_CHAT_IA_URL . "includes/app-integration/assets/apps-config{$sufijo_asset}.js",
             ['jquery', 'wp-color-picker'],
             FLAVOR_CHAT_IA_VERSION,
@@ -243,21 +243,21 @@ class Flavor_App_Config_Admin {
             'config' => $config,
             'logoUrl' => $logo_url,
             'strings' => [
-                'confirmRevoke' => __('¿Estás seguro de que quieres revocar este token?', 'flavor-chat-ia'),
-                'tokenGenerated' => __('Token generado con éxito', 'flavor-chat-ia'),
-                'tokenRevoked' => __('Token revocado', 'flavor-chat-ia'),
-                'error' => __('Error al procesar la solicitud', 'flavor-chat-ia'),
-                'maxTabs' => __('Máximo 5 tabs activos permitidos', 'flavor-chat-ia'),
-                'presetApplied' => __('Preset aplicado correctamente', 'flavor-chat-ia'),
-                'moduleActivated' => __('Módulo activado', 'flavor-chat-ia'),
-                'moduleDeactivated' => __('Módulo desactivado', 'flavor-chat-ia'),
-                'moduleActivateError' => __('No se pudo actualizar el módulo', 'flavor-chat-ia'),
-                'copied' => __('¡Copiado!', 'flavor-chat-ia'),
+                'confirmRevoke' => __('¿Estás seguro de que quieres revocar este token?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'tokenGenerated' => __('Token generado con éxito', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'tokenRevoked' => __('Token revocado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al procesar la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'maxTabs' => __('Máximo 5 tabs activos permitidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'presetApplied' => __('Preset aplicado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'moduleActivated' => __('Módulo activado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'moduleDeactivated' => __('Módulo desactivado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'moduleActivateError' => __('No se pudo actualizar el módulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'copied' => __('¡Copiado!', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
 
         wp_enqueue_style(
-            'flavor-apps-config',
+            'flavor-platform-apps',
             FLAVOR_CHAT_IA_URL . "includes/app-integration/assets/apps-config{$sufijo_asset}.css",
             [],
             FLAVOR_CHAT_IA_VERSION
@@ -291,21 +291,21 @@ class Flavor_App_Config_Admin {
             <?php
             // Tabs principales (siempre visibles)
             $main_tabs = [
-                'general' => __('General', 'flavor-chat-ia'),
-                'navigation' => __('Navegación', 'flavor-chat-ia'),
-                'branding' => __('Branding', 'flavor-chat-ia'),
-                'modules' => __('Módulos', 'flavor-chat-ia'),
-                'push' => __('Push', 'flavor-chat-ia'),
+                'general' => __('General', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'navigation' => __('Navegación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'branding' => __('Branding', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'modules' => __('Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'push' => __('Push', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
             // Tabs avanzadas (en dropdown)
             $advanced_tabs = [
-                'security' => __('Seguridad', 'flavor-chat-ia'),
-                'stats' => __('Estadísticas', 'flavor-chat-ia'),
-                'deeplinks' => __('Deep Links', 'flavor-chat-ia'),
-                'languages' => __('Idiomas', 'flavor-chat-ia'),
-                'directory' => __('Directorio P2P', 'flavor-chat-ia'),
-                'diagnostics' => __('Diagnóstico', 'flavor-chat-ia'),
-                'tools' => __('Herramientas', 'flavor-chat-ia'),
+                'security' => __('Seguridad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'stats' => __('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'deeplinks' => __('Deep Links', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'languages' => __('Idiomas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'directory' => __('Directorio P2P', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'diagnostics' => __('Diagnóstico', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'tools' => __('Herramientas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
             $allowed_tabs = array_merge(array_keys($main_tabs), array_keys($advanced_tabs));
             if (!in_array($active_tab, $allowed_tabs, true)) {
@@ -327,7 +327,7 @@ class Flavor_App_Config_Admin {
                         <?php if ($is_advanced_tab): ?>
                             <?php echo esc_html($advanced_tabs[$active_tab]); ?>
                         <?php else: ?>
-                            <?php _e('Más', 'flavor-chat-ia'); ?>
+                            <?php _e('Más', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <?php endif; ?>
                         <span class="dashicons dashicons-arrow-down-alt2"></span>
                     </span>
@@ -402,13 +402,13 @@ class Flavor_App_Config_Admin {
 
                 <!-- Columna preview (phone mockup persistente) -->
                 <div class="flavor-app-config-preview-column">
-                    <h3><?php _e('Vista Previa', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Vista Previa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <div class="flavor-phone-mockup">
                         <div class="flavor-phone-notch"></div>
                         <div class="flavor-phone-screen">
                             <!-- App Bar -->
                         <div id="mockup-app-bar" style="background-color: <?php echo esc_attr($primary_color); ?>;">
-                                <button type="button" class="mockup-hamburger" aria-label="<?php esc_attr_e('Abrir menú', 'flavor-chat-ia'); ?>">
+                                <button type="button" class="mockup-hamburger" aria-label="<?php esc_attr_e('Abrir menú', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span></span>
                                     <span></span>
                                     <span></span>
@@ -476,7 +476,7 @@ class Flavor_App_Config_Admin {
                                         <span class="material-icons">person</span>
                                     </div>
                                     <div class="mockup-drawer-user">
-                                        <span class="mockup-drawer-name"><?php echo esc_html__('Usuario Demo', 'flavor-chat-ia'); ?></span>
+                                        <span class="mockup-drawer-name"><?php echo esc_html__('Usuario Demo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         <span class="mockup-drawer-app"><?php echo esc_html($app_name); ?></span>
                                     </div>
                                 </div>
@@ -501,11 +501,11 @@ class Flavor_App_Config_Admin {
                                         ?>
                                         <div class="mockup-drawer-item">
                                             <span class="material-icons">home</span>
-                                            <span><?php esc_html_e('Inicio', 'flavor-chat-ia'); ?></span>
+                                            <span><?php esc_html_e('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         </div>
                                         <div class="mockup-drawer-item">
                                             <span class="material-icons">extension</span>
-                                            <span><?php esc_html_e('Módulos', 'flavor-chat-ia'); ?></span>
+                                            <span><?php esc_html_e('Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         </div>
                                         <?php
                                     }
@@ -534,7 +534,7 @@ class Flavor_App_Config_Admin {
         if ($mensaje === 'demo_data_populated') {
             printf(
                 '<div class="notice notice-success is-dismissible"><p>%s</p></div>',
-                esc_html(sprintf(__('Datos demo cargados en %d módulo(s).', 'flavor-chat-ia'), $count))
+                esc_html(sprintf(__('Datos demo cargados en %d módulo(s).', FLAVOR_PLATFORM_TEXT_DOMAIN), $count))
             );
             return;
         }
@@ -542,14 +542,14 @@ class Flavor_App_Config_Admin {
         if ($mensaje === 'demo_data_cleared') {
             printf(
                 '<div class="notice notice-success is-dismissible"><p>%s</p></div>',
-                esc_html(sprintf(__('Datos demo eliminados en %d módulo(s).', 'flavor-chat-ia'), $count))
+                esc_html(sprintf(__('Datos demo eliminados en %d módulo(s).', FLAVOR_PLATFORM_TEXT_DOMAIN), $count))
             );
             return;
         }
 
         if ($mensaje === 'demo_data_error' || $mensaje === 'demo_data_clear_error') {
             echo '<div class="notice notice-error is-dismissible"><p>' .
-                esc_html__('No se pudo completar la operación de datos demo.', 'flavor-chat-ia') .
+                esc_html__('No se pudo completar la operación de datos demo.', FLAVOR_PLATFORM_TEXT_DOMAIN) .
                 '</p></div>';
         }
     }
@@ -558,7 +558,7 @@ class Flavor_App_Config_Admin {
      * Renderiza la pestaña de General
      */
     public function render_general_section() {
-        echo '<p>' . __('Configura la información básica de tu aplicación móvil.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Configura la información básica de tu aplicación móvil.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
     }
 
     /**
@@ -573,7 +573,7 @@ class Flavor_App_Config_Admin {
                value="<?php echo esc_attr($value); ?>"
                class="regular-text">
         <p class="description">
-            <?php _e('Nombre que aparecerá en la app móvil', 'flavor-chat-ia'); ?>
+            <?php _e('Nombre que aparecerá en la app móvil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
         <?php
     }
@@ -589,7 +589,7 @@ class Flavor_App_Config_Admin {
                   rows="3"
                   class="large-text"><?php echo esc_textarea($value); ?></textarea>
         <p class="description">
-            <?php _e('Descripción corta de tu comunidad o proyecto', 'flavor-chat-ia'); ?>
+            <?php _e('Descripción corta de tu comunidad o proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
         <?php
     }
@@ -598,7 +598,7 @@ class Flavor_App_Config_Admin {
      * Renderiza sección de branding
      */
     public function render_branding_section() {
-        echo '<p>' . __('Personaliza los colores y el logo de tu app.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Personaliza los colores y el logo de tu app.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
     }
 
     /**
@@ -686,7 +686,7 @@ class Flavor_App_Config_Admin {
         <div class="flavor-qr-section">
             <div class="flavor-qr-section-header">
                 <span class="dashicons dashicons-smartphone"></span>
-                <h3><?php _e('Conectar Apps Móviles', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Conectar Apps Móviles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             </div>
 
             <div class="flavor-qr-cards">
@@ -694,25 +694,25 @@ class Flavor_App_Config_Admin {
                 <div class="flavor-qr-card flavor-qr-card--admin">
                     <h4 class="flavor-qr-card-title">
                         <span class="dashicons dashicons-admin-users"></span>
-                        <?php _e('App Administrador', 'flavor-chat-ia'); ?>
+                        <?php _e('App Administrador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h4>
                     <p class="flavor-qr-card-description">
-                        <?php _e('Acceso completo al panel de gestión', 'flavor-chat-ia'); ?>
+                        <?php _e('Acceso completo al panel de gestión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                     <div class="flavor-qr-code-wrapper">
                         <img src="<?php echo esc_url($admin_qr_url); ?>"
                              alt="QR Admin"
                              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"/>
                         <div class="flavor-qr-code-error">
-                            <?php _e('Error al cargar QR', 'flavor-chat-ia'); ?>
+                            <?php _e('Error al cargar QR', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     </div>
                     <p class="flavor-qr-card-warning">
-                        <?php _e('⚠️ No compartir - Contiene token de acceso', 'flavor-chat-ia'); ?>
+                        <?php _e('⚠️ No compartir - Contiene token de acceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                     <div class="flavor-qr-card-download">
                         <a href="<?php echo esc_url($admin_apk_url); ?>" class="button button-secondary">
-                            <?php _e('Descargar APK Admin', 'flavor-chat-ia'); ?>
+                            <?php _e('Descargar APK Admin', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </div>
@@ -721,25 +721,25 @@ class Flavor_App_Config_Admin {
                 <div class="flavor-qr-card flavor-qr-card--client">
                     <h4 class="flavor-qr-card-title">
                         <span class="dashicons dashicons-groups"></span>
-                        <?php _e('App Cliente', 'flavor-chat-ia'); ?>
+                        <?php _e('App Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h4>
                     <p class="flavor-qr-card-description">
-                        <?php _e('Para usuarios y clientes de la comunidad', 'flavor-chat-ia'); ?>
+                        <?php _e('Para usuarios y clientes de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                     <div class="flavor-qr-code-wrapper">
                         <img src="<?php echo esc_url($client_qr_url); ?>"
                              alt="QR Cliente"
                              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"/>
                         <div class="flavor-qr-code-error">
-                            <?php _e('Error al cargar QR', 'flavor-chat-ia'); ?>
+                            <?php _e('Error al cargar QR', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     </div>
                     <p class="flavor-qr-card-warning">
-                        <?php _e('✓ Seguro para compartir públicamente', 'flavor-chat-ia'); ?>
+                        <?php _e('✓ Seguro para compartir públicamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                     <div class="flavor-qr-card-download">
                         <a href="<?php echo esc_url($client_apk_url); ?>" class="button button-secondary">
-                            <?php _e('Descargar APK Cliente', 'flavor-chat-ia'); ?>
+                            <?php _e('Descargar APK Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </div>
@@ -750,20 +750,20 @@ class Flavor_App_Config_Admin {
             <div class="flavor-qr-connection-data">
                 <div class="flavor-qr-data-card flavor-qr-data-card--admin">
                     <div class="flavor-qr-data-header">
-                        <h4><?php _e('Datos de conexión (Admin)', 'flavor-chat-ia'); ?></h4>
+                        <h4><?php _e('Datos de conexión (Admin)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                         <button type="button" class="flavor-copy-btn" data-copy-target="admin-qr-json">
                             <span class="dashicons dashicons-clipboard"></span>
-                            <span class="flavor-copy-text"><?php _e('Copiar', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-copy-text"><?php _e('Copiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </button>
                     </div>
                     <textarea id="admin-qr-json" readonly onclick="this.select();"><?php echo esc_textarea($admin_qr_json); ?></textarea>
                 </div>
                 <div class="flavor-qr-data-card flavor-qr-data-card--client">
                     <div class="flavor-qr-data-header">
-                        <h4><?php _e('Datos de conexión (Cliente)', 'flavor-chat-ia'); ?></h4>
+                        <h4><?php _e('Datos de conexión (Cliente)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                         <button type="button" class="flavor-copy-btn" data-copy-target="client-qr-json">
                             <span class="dashicons dashicons-clipboard"></span>
-                            <span class="flavor-copy-text"><?php _e('Copiar', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-copy-text"><?php _e('Copiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </button>
                     </div>
                     <textarea id="client-qr-json" readonly onclick="this.select();"><?php echo esc_textarea($client_qr_json); ?></textarea>
@@ -775,13 +775,13 @@ class Flavor_App_Config_Admin {
             <div class="flavor-qr-instructions">
                 <h4>
                     <span class="dashicons dashicons-info-outline"></span>
-                    <?php _e('¿Cómo conectar la app?', 'flavor-chat-ia'); ?>
+                    <?php _e('¿Cómo conectar la app?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h4>
                 <ol>
-                    <li><?php _e('Descarga la app Flavor desde la tienda de aplicaciones', 'flavor-chat-ia'); ?></li>
-                    <li><?php _e('Abre la app y toca "Escanear QR" o "Configurar servidor"', 'flavor-chat-ia'); ?></li>
-                    <li><?php _e('Escanea el código QR correspondiente (Admin o Cliente)', 'flavor-chat-ia'); ?></li>
-                    <li><?php _e('La app se configurará automáticamente con tu logo, colores y módulos', 'flavor-chat-ia'); ?></li>
+                    <li><?php _e('Descarga la app Flavor desde la tienda de aplicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                    <li><?php _e('Abre la app y toca "Escanear QR" o "Configurar servidor"', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                    <li><?php _e('Escanea el código QR correspondiente (Admin o Cliente)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                    <li><?php _e('La app se configurará automáticamente con tu logo, colores y módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
                 </ol>
             </div>
         </div>
@@ -801,8 +801,8 @@ class Flavor_App_Config_Admin {
         <div class="flavor-branding-tab" x-data="flavorBrandingEditor()">
             <!-- Presets de Color -->
             <div class="branding-section">
-                <h3><?php _e('Presets de Colores', 'flavor-chat-ia'); ?></h3>
-                <p class="description"><?php _e('Selecciona un preset para aplicar rápidamente una paleta de colores.', 'flavor-chat-ia'); ?></p>
+                <h3><?php _e('Presets de Colores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p class="description"><?php _e('Selecciona un preset para aplicar rápidamente una paleta de colores.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                 <div class="color-presets-grid">
                     <button type="button" class="preset-card" @click="applyPreset('nature')" :class="{ 'active': currentPreset === 'nature' }">
@@ -811,7 +811,7 @@ class Flavor_App_Config_Admin {
                             <span style="background: #8BC34A;"></span>
                             <span style="background: #CDDC39;"></span>
                         </div>
-                        <span class="preset-name"><?php _e('Naturaleza', 'flavor-chat-ia'); ?></span>
+                        <span class="preset-name"><?php _e('Naturaleza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </button>
                     <button type="button" class="preset-card" @click="applyPreset('ocean')" :class="{ 'active': currentPreset === 'ocean' }">
                         <div class="preset-colors">
@@ -819,7 +819,7 @@ class Flavor_App_Config_Admin {
                             <span style="background: #03A9F4;"></span>
                             <span style="background: #00BCD4;"></span>
                         </div>
-                        <span class="preset-name"><?php _e('Océano', 'flavor-chat-ia'); ?></span>
+                        <span class="preset-name"><?php _e('Océano', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </button>
                     <button type="button" class="preset-card" @click="applyPreset('sunset')" :class="{ 'active': currentPreset === 'sunset' }">
                         <div class="preset-colors">
@@ -827,7 +827,7 @@ class Flavor_App_Config_Admin {
                             <span style="background: #FF9800;"></span>
                             <span style="background: #FFC107;"></span>
                         </div>
-                        <span class="preset-name"><?php _e('Atardecer', 'flavor-chat-ia'); ?></span>
+                        <span class="preset-name"><?php _e('Atardecer', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </button>
                     <button type="button" class="preset-card" @click="applyPreset('purple')" :class="{ 'active': currentPreset === 'purple' }">
                         <div class="preset-colors">
@@ -835,7 +835,7 @@ class Flavor_App_Config_Admin {
                             <span style="background: #E91E63;"></span>
                             <span style="background: #F48FB1;"></span>
                         </div>
-                        <span class="preset-name"><?php _e('Púrpura', 'flavor-chat-ia'); ?></span>
+                        <span class="preset-name"><?php _e('Púrpura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </button>
                     <button type="button" class="preset-card" @click="applyPreset('corporate')" :class="{ 'active': currentPreset === 'corporate' }">
                         <div class="preset-colors">
@@ -843,7 +843,7 @@ class Flavor_App_Config_Admin {
                             <span style="background: #455A64;"></span>
                             <span style="background: #78909C;"></span>
                         </div>
-                        <span class="preset-name"><?php _e('Corporativo', 'flavor-chat-ia'); ?></span>
+                        <span class="preset-name"><?php _e('Corporativo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </button>
                     <button type="button" class="preset-card" @click="applyPreset('elegant')" :class="{ 'active': currentPreset === 'elegant' }">
                         <div class="preset-colors">
@@ -851,39 +851,39 @@ class Flavor_App_Config_Admin {
                             <span style="background: #D4AF37;"></span>
                             <span style="background: #FFFFFF;"></span>
                         </div>
-                        <span class="preset-name"><?php _e('Elegante', 'flavor-chat-ia'); ?></span>
+                        <span class="preset-name"><?php _e('Elegante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </button>
                 </div>
             </div>
 
             <!-- Colores Personalizados -->
             <div class="branding-section">
-                <h3><?php _e('Colores Personalizados', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Colores Personalizados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <?php $this->render_settings_sections(['branding_section']); ?>
             </div>
 
             <!-- Modo Oscuro -->
             <div class="branding-section">
-                <h3><?php _e('Modo de Tema', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Modo de Tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <table class="form-table">
                     <tr>
-                        <th scope="row"><?php _e('Modo del tema', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php _e('Modo del tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <select name="flavor_apps_config[theme_mode]" id="theme_mode" x-model="themeMode" @change="updatePreview()">
-                                <option value="light" <?php selected($theme_mode, 'light'); ?>><?php _e('Claro', 'flavor-chat-ia'); ?></option>
-                                <option value="dark" <?php selected($theme_mode, 'dark'); ?>><?php _e('Oscuro', 'flavor-chat-ia'); ?></option>
-                                <option value="system" <?php selected($theme_mode, 'system'); ?>><?php _e('Sistema (automático)', 'flavor-chat-ia'); ?></option>
+                                <option value="light" <?php selected($theme_mode, 'light'); ?>><?php _e('Claro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="dark" <?php selected($theme_mode, 'dark'); ?>><?php _e('Oscuro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="system" <?php selected($theme_mode, 'system'); ?>><?php _e('Sistema (automático)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             </select>
-                            <p class="description"><?php _e('Sistema usa la preferencia del dispositivo del usuario.', 'flavor-chat-ia'); ?></p>
+                            <p class="description"><?php _e('Sistema usa la preferencia del dispositivo del usuario.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </td>
                     </tr>
                 </table>
 
                 <div class="dark-mode-colors" x-show="themeMode === 'dark' || themeMode === 'system'">
-                    <h4><?php _e('Colores del Tema Oscuro', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php _e('Colores del Tema Oscuro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <table class="form-table">
                         <tr>
-                            <th scope="row"><?php _e('Color Primario (oscuro)', 'flavor-chat-ia'); ?></th>
+                            <th scope="row"><?php _e('Color Primario (oscuro)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             <td>
                                 <input type="text" name="flavor_apps_config[dark_primary_color]"
                                        value="<?php echo esc_attr($dark_primary); ?>"
@@ -891,7 +891,7 @@ class Flavor_App_Config_Admin {
                             </td>
                         </tr>
                         <tr>
-                            <th scope="row"><?php _e('Color Secundario (oscuro)', 'flavor-chat-ia'); ?></th>
+                            <th scope="row"><?php _e('Color Secundario (oscuro)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             <td>
                                 <input type="text" name="flavor_apps_config[dark_secondary_color]"
                                        value="<?php echo esc_attr($dark_secondary); ?>"
@@ -899,7 +899,7 @@ class Flavor_App_Config_Admin {
                             </td>
                         </tr>
                         <tr>
-                            <th scope="row"><?php _e('Fondo (oscuro)', 'flavor-chat-ia'); ?></th>
+                            <th scope="row"><?php _e('Fondo (oscuro)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             <td>
                                 <input type="text" name="flavor_apps_config[dark_background_color]"
                                        value="<?php echo esc_attr($dark_background); ?>"
@@ -912,19 +912,19 @@ class Flavor_App_Config_Admin {
 
             <!-- Exportar/Importar Tema -->
             <div class="branding-section">
-                <h3><?php _e('Exportar/Importar Tema', 'flavor-chat-ia'); ?></h3>
-                <p class="description"><?php _e('Guarda tu configuración de colores para usarla en otros sitios.', 'flavor-chat-ia'); ?></p>
+                <h3><?php _e('Exportar/Importar Tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p class="description"><?php _e('Guarda tu configuración de colores para usarla en otros sitios.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                 <div class="theme-actions">
                     <button type="button" class="button" @click="exportTheme()">
                         <span class="dashicons dashicons-download"></span>
-                        <?php _e('Exportar Tema', 'flavor-chat-ia'); ?>
+                        <?php _e('Exportar Tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
 
                     <input type="file" x-ref="themeFileInput" accept=".json" @change="importTheme($event)" style="display: none;">
                     <button type="button" class="button" @click="$refs.themeFileInput.click()">
                         <span class="dashicons dashicons-upload"></span>
-                        <?php _e('Importar Tema', 'flavor-chat-ia'); ?>
+                        <?php _e('Importar Tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </div>
@@ -1047,9 +1047,9 @@ class Flavor_App_Config_Admin {
                                 if (select) select.value = theme.theme_mode;
                             }
                             this.updatePreview();
-                            alert('<?php _e('Tema importado correctamente', 'flavor-chat-ia'); ?>');
+                            alert('<?php _e('Tema importado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                         } catch (err) {
-                            alert('<?php _e('Error al importar el tema', 'flavor-chat-ia'); ?>');
+                            alert('<?php _e('Error al importar el tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                         }
                     };
                     reader.readAsText(file);
@@ -1131,56 +1131,56 @@ class Flavor_App_Config_Admin {
         // Presets
         $menu_items_payload = $this->get_menu_items_payload($menu_source);
         ?>
-        <h2><?php _e('Navegación de la App', 'flavor-chat-ia'); ?></h2>
-        <p><?php _e('Configura la navegación de tu app móvil. Puedes tener hasta 5 tabs en el footer (barra inferior) y elementos ilimitados en el menú hamburguesa.', 'flavor-chat-ia'); ?></p>
+        <h2><?php _e('Navegación de la App', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p><?php _e('Configura la navegación de tu app móvil. Puedes tener hasta 5 tabs en el footer (barra inferior) y elementos ilimitados en el menú hamburguesa.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
         <table class="form-table">
             <tr>
-                <th scope="row"><label for="navigation_style"><?php _e('Tipo de navegación', 'flavor-chat-ia'); ?></label></th>
+                <th scope="row"><label for="navigation_style"><?php _e('Tipo de navegación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <select name="flavor_apps_config[navigation_style]" id="navigation_style">
                         <option value="auto" <?php selected($navigation_style, 'auto'); ?>>
-                            <?php _e('Automático (según layout)', 'flavor-chat-ia'); ?>
+                            <?php _e('Automático (según layout)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </option>
                         <option value="bottom" <?php selected($navigation_style, 'bottom'); ?>>
-                            <?php _e('Barra inferior (bottom tabs)', 'flavor-chat-ia'); ?>
+                            <?php _e('Barra inferior (bottom tabs)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </option>
                         <option value="hamburger" <?php selected($navigation_style, 'hamburger'); ?>>
-                            <?php _e('Menú hamburguesa', 'flavor-chat-ia'); ?>
+                            <?php _e('Menú hamburguesa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </option>
                         <option value="hybrid" <?php selected($navigation_style, 'hybrid'); ?>>
-                            <?php _e('Híbrido (tabs + hamburguesa)', 'flavor-chat-ia'); ?>
+                            <?php _e('Híbrido (tabs + hamburguesa)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </option>
                     </select>
                     <p class="description">
-                        <?php _e('Forzar navegación en la app: automático usa el layout actual.', 'flavor-chat-ia'); ?>
+                        <?php _e('Forzar navegación en la app: automático usa el layout actual.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </td>
             </tr>
             <tr>
-                <th scope="row"><?php _e('AppBar en modo híbrido', 'flavor-chat-ia'); ?></th>
+                <th scope="row"><?php _e('AppBar en modo híbrido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox" name="flavor_apps_config[hybrid_show_appbar]" value="1" <?php checked($hybrid_show_appbar); ?>>
-                        <?php _e('Mostrar AppBar (barra superior) cuando la navegación es híbrida', 'flavor-chat-ia'); ?>
+                        <?php _e('Mostrar AppBar (barra superior) cuando la navegación es híbrida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
             <tr>
-                <th scope="row"><label for="map_provider"><?php _e('Proveedor de mapas', 'flavor-chat-ia'); ?></label></th>
+                <th scope="row"><label for="map_provider"><?php _e('Proveedor de mapas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <select name="flavor_apps_config[map_provider]" id="map_provider">
                         <option value="osm" <?php selected($map_provider, 'osm'); ?>>
-                            <?php _e('OpenStreetMap (sin clave)', 'flavor-chat-ia'); ?>
+                            <?php _e('OpenStreetMap (sin clave)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </option>
                         <option value="google" <?php selected($map_provider, 'google'); ?>>
-                            <?php _e('Google Maps (requiere clave)', 'flavor-chat-ia'); ?>
+                            <?php _e('Google Maps (requiere clave)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </option>
                     </select>
                 </td>
             </tr>
             <tr>
-                <th scope="row"><label for="google_maps_api_key"><?php _e('Google Maps API Key', 'flavor-chat-ia'); ?></label></th>
+                <th scope="row"><label for="google_maps_api_key"><?php _e('Google Maps API Key', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <input type="text"
                            id="google_maps_api_key"
@@ -1188,15 +1188,15 @@ class Flavor_App_Config_Admin {
                            value="<?php echo esc_attr($google_maps_api_key); ?>"
                            class="regular-text">
                     <p class="description">
-                        <?php _e('Se usa solo si el proveedor es Google Maps.', 'flavor-chat-ia'); ?>
+                        <?php _e('Se usa solo si el proveedor es Google Maps.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </td>
             </tr>
             <tr>
-                <th scope="row"><label for="web_sections_menu"><?php _e('Menú de secciones web', 'flavor-chat-ia'); ?></label></th>
+                <th scope="row"><label for="web_sections_menu"><?php _e('Menú de secciones web', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <select name="flavor_apps_config[web_sections_menu]" id="web_sections_menu">
-                        <option value=""><?php _e('Automático (principal si existe)', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Automático (principal si existe)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php
                         $locations = get_nav_menu_locations();
                         $menus = wp_get_nav_menus();
@@ -1205,7 +1205,7 @@ class Flavor_App_Config_Admin {
                             ?>
                             <option value="<?php echo esc_attr($value); ?>" <?php selected($menu_source, $value); ?>>
                                 <?php
-                                echo esc_html(sprintf(__('Ubicación: %s', 'flavor-chat-ia'), $location_slug));
+                                echo esc_html(sprintf(__('Ubicación: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $location_slug));
                                 ?>
                             </option>
                         <?php endforeach; ?>
@@ -1213,13 +1213,13 @@ class Flavor_App_Config_Admin {
                             <?php foreach ($menus as $menu_obj): ?>
                                 <?php $value = 'menu:' . $menu_obj->term_id; ?>
                                 <option value="<?php echo esc_attr($value); ?>" <?php selected($menu_source, $value); ?>>
-                                    <?php echo esc_html(sprintf(__('Menú: %s', 'flavor-chat-ia'), $menu_obj->name)); ?>
+                                    <?php echo esc_html(sprintf(__('Menú: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $menu_obj->name)); ?>
                                 </option>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </select>
                     <p class="description">
-                        <?php _e('Guarda para recargar la lista de secciones.', 'flavor-chat-ia'); ?>
+                        <?php _e('Guarda para recargar la lista de secciones.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </td>
             </tr>
@@ -1245,48 +1245,48 @@ class Flavor_App_Config_Admin {
         }
         ?>
         <div class="flavor-presets-bar">
-            <h4><?php _e('Presets rápidos', 'flavor-chat-ia'); ?></h4>
+            <h4><?php _e('Presets rápidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
             <button type="button" class="flavor-preset-btn flavor-preset-recommended" data-preset="recomendado"
-                    title="<?php esc_attr_e('Configura automáticamente los tabs según los módulos activos en tu sitio', 'flavor-chat-ia'); ?>">
-                <span class="dashicons dashicons-yes-alt"></span> <?php _e('Recomendado', 'flavor-chat-ia'); ?>
+                    title="<?php esc_attr_e('Configura automáticamente los tabs según los módulos activos en tu sitio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                <span class="dashicons dashicons-yes-alt"></span> <?php _e('Recomendado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <?php if ($unconfigured_modules > 0): ?>
                     <span class="flavor-preset-badge"><?php echo esc_html($unconfigured_modules); ?></span>
                 <?php endif; ?>
             </button>
             <button type="button" class="flavor-preset-btn" data-preset="restaurante"
-                    title="<?php esc_attr_e('Chat IA, reservas, tickets y WooCommerce', 'flavor-chat-ia'); ?>">
-                <span class="dashicons dashicons-food"></span> <?php _e('Restaurante', 'flavor-chat-ia'); ?>
+                    title="<?php esc_attr_e('Chat IA, reservas, tickets y WooCommerce', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                <span class="dashicons dashicons-food"></span> <?php _e('Restaurante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <button type="button" class="flavor-preset-btn" data-preset="peluqueria"
-                    title="<?php esc_attr_e('Citas, chat y gestión de clientes', 'flavor-chat-ia'); ?>">
-                <span class="dashicons dashicons-art"></span> <?php _e('Peluquería', 'flavor-chat-ia'); ?>
+                    title="<?php esc_attr_e('Citas, chat y gestión de clientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                <span class="dashicons dashicons-art"></span> <?php _e('Peluquería', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <button type="button" class="flavor-preset-btn" data-preset="comunidad"
-                    title="<?php esc_attr_e('Grupos de consumo, banco de tiempo, eventos y marketplace', 'flavor-chat-ia'); ?>">
-                <span class="dashicons dashicons-groups"></span> <?php _e('Comunidad', 'flavor-chat-ia'); ?>
+                    title="<?php esc_attr_e('Grupos de consumo, banco de tiempo, eventos y marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                <span class="dashicons dashicons-groups"></span> <?php _e('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <button type="button" class="flavor-preset-btn" data-preset="tienda"
-                    title="<?php esc_attr_e('WooCommerce, carrito, pedidos y marketplace', 'flavor-chat-ia'); ?>">
-                <span class="dashicons dashicons-cart"></span> <?php _e('Tienda', 'flavor-chat-ia'); ?>
+                    title="<?php esc_attr_e('WooCommerce, carrito, pedidos y marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                <span class="dashicons dashicons-cart"></span> <?php _e('Tienda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <button type="button" class="flavor-preset-btn" data-preset="empresarial"
-                    title="<?php esc_attr_e('Gestión empresarial, clientes, facturas y fichaje', 'flavor-chat-ia'); ?>">
-                <span class="dashicons dashicons-briefcase"></span> <?php _e('Empresarial', 'flavor-chat-ia'); ?>
+                    title="<?php esc_attr_e('Gestión empresarial, clientes, facturas y fichaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                <span class="dashicons dashicons-briefcase"></span> <?php _e('Empresarial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
 
         <div class="flavor-tabs-editor">
-            <h3><?php _e('Tabs de Navegación Inferior (Footer)', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Tabs de Navegación Inferior (Footer)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <p class="description" style="margin-bottom: 15px;">
                 <span class="dashicons dashicons-info" style="color: #2271b1;"></span>
-                <?php _e('<strong>Máximo 5 tabs activas</strong> - Estas pestañas aparecen en la barra inferior de la app para acceso rápido. Para más opciones, usa el menú hamburguesa (ver sección abajo).', 'flavor-chat-ia'); ?>
+                <?php _e('<strong>Máximo 5 tabs activas</strong> - Estas pestañas aparecen en la barra inferior de la app para acceso rápido. Para más opciones, usa el menú hamburguesa (ver sección abajo).', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
             <p>
                 <button type="button" class="button" id="flavor-add-web-tab">
-                    <?php _e('Añadir sección web', 'flavor-chat-ia'); ?>
+                    <?php _e('Añadir sección web', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <select id="flavor-web-section-select" style="min-width: 220px;">
-                    <option value=""><?php _e('Añadir desde menú web…', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Añadir desde menú web…', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php if (!empty($menu_items_payload)): ?>
                         <?php foreach ($menu_items_payload as $menu_item): ?>
                             <?php
@@ -1301,16 +1301,16 @@ class Flavor_App_Config_Admin {
                     <?php endif; ?>
                 </select>
                 <button type="button" class="button" id="flavor-add-web-tab-from-menu">
-                    <?php _e('Añadir sección del menú', 'flavor-chat-ia'); ?>
+                    <?php _e('Añadir sección del menú', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" class="button" id="flavor-add-all-web-tabs">
-                    <?php _e('Añadir todas las secciones', 'flavor-chat-ia'); ?>
+                    <?php _e('Añadir todas las secciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" class="button" id="flavor-sync-web-tab-labels">
-                    <?php _e('Sincronizar etiquetas', 'flavor-chat-ia'); ?>
+                    <?php _e('Sincronizar etiquetas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" class="button" id="flavor-refresh-web-sections">
-                    <?php _e('Actualizar lista', 'flavor-chat-ia'); ?>
+                    <?php _e('Actualizar lista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </p>
             <ul class="flavor-tabs-list" id="flavor-tabs-sortable">
@@ -1341,20 +1341,20 @@ class Flavor_App_Config_Admin {
                            name="flavor_apps_config[tabs][<?php echo $tab_index; ?>][label]"
                            value="<?php echo esc_attr($tab['label'] ?? ''); ?>"
                            class="flavor-tab-label-input"
-                           placeholder="<?php esc_attr_e('Etiqueta', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php esc_attr_e('Etiqueta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
 
                     <select name="flavor_apps_config[tabs][<?php echo $tab_index; ?>][content_type]" class="flavor-tab-content-type">
                         <option value="native_screen" <?php selected($content_type, 'native_screen'); ?>>
-                            <?php _e('Pantalla nativa', 'flavor-chat-ia'); ?>
+                            <?php _e('Pantalla nativa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </option>
                         <option value="page" <?php selected($content_type, 'page'); ?>>
-                            <?php _e('Página', 'flavor-chat-ia'); ?>
+                            <?php _e('Página', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </option>
                         <option value="cpt" <?php selected($content_type, 'cpt'); ?>>
-                            <?php _e('Contenido (CPT)', 'flavor-chat-ia'); ?>
+                            <?php _e('Contenido (CPT)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </option>
                         <option value="module" <?php selected($content_type, 'module'); ?>>
-                            <?php _e('Módulo', 'flavor-chat-ia'); ?>
+                            <?php _e('Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </option>
                     </select>
 
@@ -1362,20 +1362,20 @@ class Flavor_App_Config_Admin {
                     <select name="flavor_apps_config[tabs][<?php echo $tab_index; ?>][content_ref]"
                             class="flavor-tab-content-ref flavor-content-native-screen"
                             <?php echo $content_type !== 'native_screen' ? 'style="display:none;"' : ''; ?>>
-                        <option value="info" <?php selected($content_ref, 'info'); ?>><?php _e('Info', 'flavor-chat-ia'); ?></option>
-                        <option value="chat" <?php selected($content_ref, 'chat'); ?>><?php _e('Chat', 'flavor-chat-ia'); ?></option>
-                        <option value="reservations" <?php selected($content_ref, 'reservations'); ?>><?php _e('Reservas', 'flavor-chat-ia'); ?></option>
-                        <option value="my_tickets" <?php selected($content_ref, 'my_tickets'); ?>><?php _e('Mis Tickets', 'flavor-chat-ia'); ?></option>
-                        <option value="profile" <?php selected($content_ref, 'profile'); ?>><?php _e('Perfil', 'flavor-chat-ia'); ?></option>
-                        <option value="notifications" <?php selected($content_ref, 'notifications'); ?>><?php _e('Notificaciones', 'flavor-chat-ia'); ?></option>
-                        <option value="settings" <?php selected($content_ref, 'settings'); ?>><?php _e('Configuración', 'flavor-chat-ia'); ?></option>
+                        <option value="info" <?php selected($content_ref, 'info'); ?>><?php _e('Info', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="chat" <?php selected($content_ref, 'chat'); ?>><?php _e('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="reservations" <?php selected($content_ref, 'reservations'); ?>><?php _e('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="my_tickets" <?php selected($content_ref, 'my_tickets'); ?>><?php _e('Mis Tickets', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="profile" <?php selected($content_ref, 'profile'); ?>><?php _e('Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="notifications" <?php selected($content_ref, 'notifications'); ?>><?php _e('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="settings" <?php selected($content_ref, 'settings'); ?>><?php _e('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
 
                     <!-- Selector de página -->
                     <select name="flavor_apps_config[tabs][<?php echo $tab_index; ?>][content_ref_page]"
                             class="flavor-tab-content-ref flavor-content-page"
                             <?php echo $content_type !== 'page' ? 'style="display:none;"' : ''; ?>>
-                        <option value=""><?php _e('Seleccionar página...', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Seleccionar página...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php
                         $pages = get_pages(['post_status' => 'publish', 'sort_column' => 'post_title']);
                         foreach ($pages as $p):
@@ -1390,7 +1390,7 @@ class Flavor_App_Config_Admin {
                     <select name="flavor_apps_config[tabs][<?php echo $tab_index; ?>][content_ref_cpt]"
                             class="flavor-tab-content-ref flavor-content-cpt"
                             <?php echo $content_type !== 'cpt' ? 'style="display:none;"' : ''; ?>>
-                        <option value=""><?php _e('Seleccionar tipo...', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Seleccionar tipo...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php
                         $cpts = get_post_types(['public' => true, '_builtin' => false], 'objects');
                         foreach ($cpts as $cpt):
@@ -1405,7 +1405,7 @@ class Flavor_App_Config_Admin {
                     <select name="flavor_apps_config[tabs][<?php echo $tab_index; ?>][content_ref_module]"
                             class="flavor-tab-content-ref flavor-content-module"
                             <?php echo $content_type !== 'module' ? 'style="display:none;"' : ''; ?>>
-                        <option value=""><?php _e('Seleccionar módulo...', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Seleccionar módulo...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php
                         // Obtener módulos ACTIVOS desde el Module Loader
                         $active_module_ids = [];
@@ -1429,7 +1429,7 @@ class Flavor_App_Config_Admin {
 
                     <?php if (!$is_core): ?>
                         <button type="button" class="button-link-delete flavor-tab-remove">
-                            <?php _e('Eliminar', 'flavor-chat-ia'); ?>
+                            <?php _e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     <?php endif; ?>
 
@@ -1442,13 +1442,13 @@ class Flavor_App_Config_Admin {
 
             <p class="description" style="margin-top: 15px;">
                 <span class="dashicons dashicons-info" style="color: #2271b1;"></span>
-                <?php _e('Todo el contenido se renderiza de forma <strong>nativa</strong> en la app usando la API REST. No se usan WebViews.', 'flavor-chat-ia'); ?>
+                <?php _e('Todo el contenido se renderiza de forma <strong>nativa</strong> en la app usando la API REST. No se usan WebViews.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
 
         <table class="form-table">
             <tr>
-                <th scope="row"><label for="default_tab"><?php _e('Pestaña por defecto', 'flavor-chat-ia'); ?></label></th>
+                <th scope="row"><label for="default_tab"><?php _e('Pestaña por defecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <select name="flavor_apps_config[default_tab]" id="default_tab">
                         <?php foreach ($tabs as $tab): ?>
@@ -1463,10 +1463,10 @@ class Flavor_App_Config_Admin {
 
         <hr>
 
-        <h3><?php _e('Menú Hamburguesa (Drawer) - Ilimitado', 'flavor-chat-ia'); ?></h3>
+        <h3><?php _e('Menú Hamburguesa (Drawer) - Ilimitado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         <p class="description">
             <span class="dashicons dashicons-menu" style="color: #2271b1;"></span>
-            <?php _e('Estas secciones aparecen en el menú lateral (hamburguesa ☰) de la app. <strong>Puedes añadir tantas como quieras</strong>, sin límite de cantidad. Todo el contenido se renderiza de forma nativa.', 'flavor-chat-ia'); ?>
+            <?php _e('Estas secciones aparecen en el menú lateral (hamburguesa ☰) de la app. <strong>Puedes añadir tantas como quieras</strong>, sin límite de cantidad. Todo el contenido se renderiza de forma nativa.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
 
         <?php
@@ -1541,11 +1541,11 @@ class Flavor_App_Config_Admin {
         <p>
             <button type="button" class="button" id="flavor-add-drawer-item">
                 <span class="dashicons dashicons-plus-alt2" style="margin-top: 3px;"></span>
-                <?php _e('Añadir sección manual', 'flavor-chat-ia'); ?>
+                <?php _e('Añadir sección manual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <?php if (!empty($menu_items_payload)): ?>
                 <select id="flavor-drawer-section-select" style="min-width: 220px;">
-                    <option value=""><?php _e('Añadir desde menú web…', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Añadir desde menú web…', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($menu_items_payload as $menu_item):
                         $url = $menu_item['url'] ?? '';
                         $title = $menu_item['title'] ?? $url;
@@ -1557,10 +1557,10 @@ class Flavor_App_Config_Admin {
                     <?php endforeach; ?>
                 </select>
                 <button type="button" class="button" id="flavor-add-drawer-from-menu">
-                    <?php _e('Añadir del menú', 'flavor-chat-ia'); ?>
+                    <?php _e('Añadir del menú', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" class="button" id="flavor-add-all-drawer-items">
-                    <?php _e('Añadir todas', 'flavor-chat-ia'); ?>
+                    <?php _e('Añadir todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             <?php endif; ?>
         </p>
@@ -1618,16 +1618,16 @@ class Flavor_App_Config_Admin {
                             <!-- Selector de tipo de contenido -->
                             <select name="flavor_apps_config[drawer_items][<?php echo $index; ?>][content_type]" class="flavor-drawer-content-type">
                                 <option value="native_screen" <?php selected($drawer_content_type, 'native_screen'); ?>>
-                                    <?php _e('Pantalla nativa', 'flavor-chat-ia'); ?>
+                                    <?php _e('Pantalla nativa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </option>
                                 <option value="page" <?php selected($drawer_content_type, 'page'); ?>>
-                                    <?php _e('Página', 'flavor-chat-ia'); ?>
+                                    <?php _e('Página', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </option>
                                 <option value="cpt" <?php selected($drawer_content_type, 'cpt'); ?>>
-                                    <?php _e('Contenido (CPT)', 'flavor-chat-ia'); ?>
+                                    <?php _e('Contenido (CPT)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </option>
                                 <option value="module" <?php selected($drawer_content_type, 'module'); ?>>
-                                    <?php _e('Módulo', 'flavor-chat-ia'); ?>
+                                    <?php _e('Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </option>
                             </select>
 
@@ -1635,20 +1635,20 @@ class Flavor_App_Config_Admin {
                             <select name="flavor_apps_config[drawer_items][<?php echo $index; ?>][content_ref]"
                                     class="flavor-drawer-content-ref flavor-drawer-native-screen"
                                     <?php echo $drawer_content_type !== 'native_screen' ? 'style="display:none;"' : ''; ?>>
-                                <option value="info" <?php selected($drawer_content_ref, 'info'); ?>><?php _e('Info', 'flavor-chat-ia'); ?></option>
-                                <option value="chat" <?php selected($drawer_content_ref, 'chat'); ?>><?php _e('Chat', 'flavor-chat-ia'); ?></option>
-                                <option value="reservations" <?php selected($drawer_content_ref, 'reservations'); ?>><?php _e('Reservas', 'flavor-chat-ia'); ?></option>
-                                <option value="my_tickets" <?php selected($drawer_content_ref, 'my_tickets'); ?>><?php _e('Mis Tickets', 'flavor-chat-ia'); ?></option>
-                                <option value="profile" <?php selected($drawer_content_ref, 'profile'); ?>><?php _e('Perfil', 'flavor-chat-ia'); ?></option>
-                                <option value="notifications" <?php selected($drawer_content_ref, 'notifications'); ?>><?php _e('Notificaciones', 'flavor-chat-ia'); ?></option>
-                                <option value="settings" <?php selected($drawer_content_ref, 'settings'); ?>><?php _e('Configuración', 'flavor-chat-ia'); ?></option>
+                                <option value="info" <?php selected($drawer_content_ref, 'info'); ?>><?php _e('Info', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="chat" <?php selected($drawer_content_ref, 'chat'); ?>><?php _e('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="reservations" <?php selected($drawer_content_ref, 'reservations'); ?>><?php _e('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="my_tickets" <?php selected($drawer_content_ref, 'my_tickets'); ?>><?php _e('Mis Tickets', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="profile" <?php selected($drawer_content_ref, 'profile'); ?>><?php _e('Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="notifications" <?php selected($drawer_content_ref, 'notifications'); ?>><?php _e('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="settings" <?php selected($drawer_content_ref, 'settings'); ?>><?php _e('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             </select>
 
                             <!-- Selector de página -->
                             <select name="flavor_apps_config[drawer_items][<?php echo $index; ?>][content_ref_page]"
                                     class="flavor-drawer-content-ref flavor-drawer-page"
                                     <?php echo $drawer_content_type !== 'page' ? 'style="display:none;"' : ''; ?>>
-                                <option value=""><?php _e('Seleccionar página...', 'flavor-chat-ia'); ?></option>
+                                <option value=""><?php _e('Seleccionar página...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                 <?php foreach ($all_pages as $p): ?>
                                     <option value="<?php echo esc_attr($p->post_name); ?>" <?php selected($drawer_content_ref, $p->post_name); ?>>
                                         <?php echo esc_html($p->post_title); ?>
@@ -1660,7 +1660,7 @@ class Flavor_App_Config_Admin {
                             <select name="flavor_apps_config[drawer_items][<?php echo $index; ?>][content_ref_cpt]"
                                     class="flavor-drawer-content-ref flavor-drawer-cpt"
                                     <?php echo $drawer_content_type !== 'cpt' ? 'style="display:none;"' : ''; ?>>
-                                <option value=""><?php _e('Seleccionar tipo...', 'flavor-chat-ia'); ?></option>
+                                <option value=""><?php _e('Seleccionar tipo...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                 <?php foreach ($all_cpts as $cpt): ?>
                                     <option value="<?php echo esc_attr($cpt->name); ?>" <?php selected($drawer_content_ref, $cpt->name); ?>>
                                         <?php echo esc_html($cpt->labels->name); ?>
@@ -1672,7 +1672,7 @@ class Flavor_App_Config_Admin {
                             <select name="flavor_apps_config[drawer_items][<?php echo $index; ?>][content_ref_module]"
                                     class="flavor-drawer-content-ref flavor-drawer-module"
                                     <?php echo $drawer_content_type !== 'module' ? 'style="display:none;"' : ''; ?>>
-                                <option value=""><?php _e('Seleccionar módulo...', 'flavor-chat-ia'); ?></option>
+                                <option value=""><?php _e('Seleccionar módulo...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                 <?php foreach ($active_module_ids_drawer as $mod_id):
                                     $mod_data = $registered_modules_drawer[$mod_id] ?? [];
                                     $mod_label = $mod_data['name'] ?? ucwords(str_replace(['_', '-'], ' ', $mod_id));
@@ -1683,7 +1683,7 @@ class Flavor_App_Config_Admin {
                                 <?php endforeach; ?>
                             </select>
 
-                            <button type="button" class="button-link-delete flavor-drawer-remove" title="<?php esc_attr_e('Eliminar', 'flavor-chat-ia'); ?>">
+                            <button type="button" class="button-link-delete flavor-drawer-remove" title="<?php esc_attr_e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <span class="dashicons dashicons-trash"></span>
                             </button>
 
@@ -1702,33 +1702,33 @@ class Flavor_App_Config_Admin {
                 </ul>
                 <p class="description" style="margin-top: 10px;">
                     <span class="dashicons dashicons-info"></span>
-                    <?php _e('No hay secciones en el menú hamburguesa. Usa los botones de arriba para añadir secciones.', 'flavor-chat-ia'); ?>
+                    <?php _e('No hay secciones en el menú hamburguesa. Usa los botones de arriba para añadir secciones.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
         <?php endif; ?>
 
         <p class="description" style="margin-top: 10px;">
             <span class="dashicons dashicons-info" style="color: #2271b1;"></span>
-            <?php _e('Todo el contenido del menú hamburguesa se renderiza de forma <strong>nativa</strong> en la app.', 'flavor-chat-ia'); ?>
+            <?php _e('Todo el contenido del menú hamburguesa se renderiza de forma <strong>nativa</strong> en la app.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
 
         <hr>
 
-        <h3><?php _e('Secciones de la pantalla Info', 'flavor-chat-ia'); ?></h3>
-        <p><?php _e('Activa, ordena y personaliza las secciones que se muestran en la pestaña Info. Puedes editar los títulos y agregar secciones personalizadas.', 'flavor-chat-ia'); ?></p>
+        <h3><?php _e('Secciones de la pantalla Info', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+        <p><?php _e('Activa, ordena y personaliza las secciones que se muestran en la pestaña Info. Puedes editar los títulos y agregar secciones personalizadas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
         <?php
         $default_info_sections = [
-            'header' => ['label' => __('Cabecera', 'flavor-chat-ia'), 'icon' => 'image', 'enabled' => true, 'order' => 0, 'type' => 'predefined'],
-            'about' => ['label' => __('Sobre nosotros', 'flavor-chat-ia'), 'icon' => 'info', 'enabled' => true, 'order' => 1, 'type' => 'predefined'],
-            'hours' => ['label' => __('Horarios', 'flavor-chat-ia'), 'icon' => 'access_time', 'enabled' => true, 'order' => 2, 'type' => 'predefined'],
-            'contact' => ['label' => __('Contacto', 'flavor-chat-ia'), 'icon' => 'phone', 'enabled' => true, 'order' => 3, 'type' => 'predefined'],
-            'location' => ['label' => __('Ubicación', 'flavor-chat-ia'), 'icon' => 'location_on', 'enabled' => true, 'order' => 4, 'type' => 'predefined'],
-            'social' => ['label' => __('Redes sociales', 'flavor-chat-ia'), 'icon' => 'share', 'enabled' => true, 'order' => 5, 'type' => 'predefined'],
-            'gallery' => ['label' => __('Galería', 'flavor-chat-ia'), 'icon' => 'photo_library', 'enabled' => false, 'order' => 6, 'type' => 'predefined'],
-            'services' => ['label' => __('Servicios', 'flavor-chat-ia'), 'icon' => 'work', 'enabled' => false, 'order' => 7, 'type' => 'predefined'],
-            'team' => ['label' => __('Equipo', 'flavor-chat-ia'), 'icon' => 'people', 'enabled' => false, 'order' => 8, 'type' => 'predefined'],
-            'faq' => ['label' => __('Preguntas Frecuentes', 'flavor-chat-ia'), 'icon' => 'help', 'enabled' => false, 'order' => 9, 'type' => 'predefined'],
+            'header' => ['label' => __('Cabecera', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'image', 'enabled' => true, 'order' => 0, 'type' => 'predefined'],
+            'about' => ['label' => __('Sobre nosotros', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'info', 'enabled' => true, 'order' => 1, 'type' => 'predefined'],
+            'hours' => ['label' => __('Horarios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'access_time', 'enabled' => true, 'order' => 2, 'type' => 'predefined'],
+            'contact' => ['label' => __('Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'phone', 'enabled' => true, 'order' => 3, 'type' => 'predefined'],
+            'location' => ['label' => __('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'location_on', 'enabled' => true, 'order' => 4, 'type' => 'predefined'],
+            'social' => ['label' => __('Redes sociales', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'share', 'enabled' => true, 'order' => 5, 'type' => 'predefined'],
+            'gallery' => ['label' => __('Galería', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'photo_library', 'enabled' => false, 'order' => 6, 'type' => 'predefined'],
+            'services' => ['label' => __('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'work', 'enabled' => false, 'order' => 7, 'type' => 'predefined'],
+            'team' => ['label' => __('Equipo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'people', 'enabled' => false, 'order' => 8, 'type' => 'predefined'],
+            'faq' => ['label' => __('Preguntas Frecuentes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'help', 'enabled' => false, 'order' => 9, 'type' => 'predefined'],
         ];
         $info_sections = isset($config['info_sections']) ? $config['info_sections'] : $default_info_sections;
 
@@ -1754,7 +1754,7 @@ class Flavor_App_Config_Admin {
             <p>
                 <button type="button" class="button" id="flavor-add-info-section">
                     <span class="dashicons dashicons-plus-alt2"></span>
-                    <?php _e('Añadir sección personalizada', 'flavor-chat-ia'); ?>
+                    <?php _e('Añadir sección personalizada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </p>
             <ul class="flavor-info-sections-list" id="flavor-info-sections-sortable">
@@ -1787,11 +1787,11 @@ class Flavor_App_Config_Admin {
                            name="flavor_apps_config[info_sections][<?php echo esc_attr($section_id); ?>][label]"
                            value="<?php echo esc_attr($section_label); ?>"
                            class="flavor-section-label-input"
-                           placeholder="<?php esc_attr_e('Título de la sección', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php esc_attr_e('Título de la sección', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
 
                     <?php if ($is_custom): ?>
                         <button type="button" class="button-link-delete flavor-section-remove">
-                            <?php _e('Eliminar', 'flavor-chat-ia'); ?>
+                            <?php _e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     <?php endif; ?>
 
@@ -1807,7 +1807,7 @@ class Flavor_App_Config_Admin {
 
             <p class="description" style="margin-top: 15px;">
                 <span class="dashicons dashicons-info" style="color: #2271b1;"></span>
-                <?php _e('Arrastra las secciones para cambiar el orden. Las secciones personalizadas pueden ser eliminadas.', 'flavor-chat-ia'); ?>
+                <?php _e('Arrastra las secciones para cambiar el orden. Las secciones personalizadas pueden ser eliminadas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
 
@@ -1817,11 +1817,11 @@ class Flavor_App_Config_Admin {
         <div class="flavor-icon-modal-overlay" id="flavor-icon-modal">
             <div class="flavor-icon-modal">
                 <div class="flavor-icon-modal-header">
-                    <h3><?php _e('Seleccionar icono', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Seleccionar icono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <button type="button" class="flavor-icon-modal-close">&times;</button>
                 </div>
                 <div class="flavor-icon-search">
-                    <input type="text" id="flavor-icon-search-input" placeholder="<?php esc_attr_e('Buscar icono...', 'flavor-chat-ia'); ?>">
+                    <input type="text" id="flavor-icon-search-input" placeholder="<?php esc_attr_e('Buscar icono...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
                 <div class="flavor-icon-grid" id="flavor-icon-grid">
                     <?php
@@ -1959,7 +1959,7 @@ class Flavor_App_Config_Admin {
                     }
                 });
 
-                showPresetMessage('<?php echo esc_js(__('Preset "Recomendado" aplicado con', 'flavor-chat-ia')); ?> ' + (2 + added) + ' tabs activas. <?php echo esc_js(__('Guarda los cambios para aplicar.', 'flavor-chat-ia')); ?>');
+                showPresetMessage('<?php echo esc_js(__('Preset "Recomendado" aplicado con', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?> ' + (2 + added) + ' tabs activas. <?php echo esc_js(__('Guarda los cambios para aplicar.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
             }
 
             function applyStaticPreset(preset) {
@@ -1980,7 +1980,7 @@ class Flavor_App_Config_Admin {
                     }
                 });
 
-                showPresetMessage('<?php echo esc_js(__('Preset aplicado con', 'flavor-chat-ia')); ?> ' + activated + ' tabs. <?php echo esc_js(__('Guarda los cambios para aplicar.', 'flavor-chat-ia')); ?>');
+                showPresetMessage('<?php echo esc_js(__('Preset aplicado con', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?> ' + activated + ' tabs. <?php echo esc_js(__('Guarda los cambios para aplicar.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
             }
 
             function showPresetMessage(msg) {
@@ -2023,19 +2023,19 @@ class Flavor_App_Config_Admin {
                          alt="Logo"
                          style="max-width: 200px; height: auto;">
                 <?php else: ?>
-                    <p><?php _e('No hay logo seleccionado', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No hay logo seleccionado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php endif; ?>
             </div>
 
             <button type="button" class="button button-secondary" id="upload_logo_button">
-                <?php _e('Seleccionar Logo', 'flavor-chat-ia'); ?>
+                <?php _e('Seleccionar Logo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <button type="button" class="button" id="remove_logo_button" <?php echo !$logo_url ? 'style="display:none;"' : ''; ?>>
-                <?php _e('Eliminar Logo', 'flavor-chat-ia'); ?>
+                <?php _e('Eliminar Logo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
 
             <p class="description">
-                <?php _e('Recomendado: PNG transparente, 512x512px', 'flavor-chat-ia'); ?>
+                <?php _e('Recomendado: PNG transparente, 512x512px', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
         <?php
@@ -2053,7 +2053,7 @@ class Flavor_App_Config_Admin {
                value="<?php echo esc_attr($value); ?>"
                class="color-picker">
         <p class="description">
-            <?php _e('Color principal de la app (botones, barras, etc.)', 'flavor-chat-ia'); ?>
+            <?php _e('Color principal de la app (botones, barras, etc.)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
         <?php
     }
@@ -2070,7 +2070,7 @@ class Flavor_App_Config_Admin {
                value="<?php echo esc_attr($value); ?>"
                class="color-picker">
         <p class="description">
-            <?php _e('Color secundario para complementar el primario', 'flavor-chat-ia'); ?>
+            <?php _e('Color secundario para complementar el primario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
         <?php
     }
@@ -2087,7 +2087,7 @@ class Flavor_App_Config_Admin {
                value="<?php echo esc_attr($value); ?>"
                class="color-picker">
         <p class="description">
-            <?php _e('Color para resaltar elementos (notificaciones, alertas)', 'flavor-chat-ia'); ?>
+            <?php _e('Color para resaltar elementos (notificaciones, alertas)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
         <?php
     }
@@ -2096,7 +2096,7 @@ class Flavor_App_Config_Admin {
      * Renderiza sección de seguridad
      */
     public function render_security_section() {
-        echo '<p>' . __('Gestiona los tokens de API para las aplicaciones móviles.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Gestiona los tokens de API para las aplicaciones móviles.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
     }
 
     /**
@@ -2104,59 +2104,59 @@ class Flavor_App_Config_Admin {
      */
     private function render_security_tab() {
         ?>
-        <h2><?php _e('Tokens de API para Apps', 'flavor-chat-ia'); ?></h2>
-        <p><?php _e('Genera tokens de API para autenticar las aplicaciones móviles. Cada token puede tener un nombre identificativo.', 'flavor-chat-ia'); ?></p>
+        <h2><?php _e('Tokens de API para Apps', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p><?php _e('Genera tokens de API para autenticar las aplicaciones móviles. Cada token puede tener un nombre identificativo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
         <div class="flavor-tokens-section">
-            <h3><?php _e('Generar Nuevo Token', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Generar Nuevo Token', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <table class="form-table">
                 <tr>
-                    <th><?php _e('Nombre del Token', 'flavor-chat-ia'); ?></th>
+                    <th><?php _e('Nombre del Token', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <input type="text" id="new_token_name" class="regular-text"
-                               placeholder="<?php _e('Ej: App Android Producción', 'flavor-chat-ia'); ?>">
+                               placeholder="<?php _e('Ej: App Android Producción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <button type="button" class="button button-primary" id="generate_token_button">
-                            <?php _e('Generar Token', 'flavor-chat-ia'); ?>
+                            <?php _e('Generar Token', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </td>
                 </tr>
             </table>
 
             <div id="new_token_display" style="display: none;" class="notice notice-success">
-                <p><strong><?php _e('Token generado:', 'flavor-chat-ia'); ?></strong></p>
+                <p><strong><?php _e('Token generado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></p>
                 <code id="new_token_value" style="font-size: 12px; padding: 10px; display: block; background: #f0f0f0;"></code>
                 <p class="description">
-                    <?php _e('⚠️ Guarda este token en un lugar seguro. No podrás verlo de nuevo.', 'flavor-chat-ia'); ?>
+                    <?php _e('⚠️ Guarda este token en un lugar seguro. No podrás verlo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
-            <h3><?php _e('Tokens Activos', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Tokens Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <?php $this->render_active_tokens(); ?>
         </div>
 
         <hr>
 
-        <h2><?php _e('Endpoints de la API', 'flavor-chat-ia'); ?></h2>
-        <p><?php _e('Las apps deben usar estos endpoints para comunicarse con el servidor:', 'flavor-chat-ia'); ?></p>
+        <h2><?php _e('Endpoints de la API', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p><?php _e('Las apps deben usar estos endpoints para comunicarse con el servidor:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
         <table class="widefat">
             <thead>
                 <tr>
-                    <th><?php _e('Endpoint', 'flavor-chat-ia'); ?></th>
-                    <th><?php _e('URL Completa', 'flavor-chat-ia'); ?></th>
+                    <th><?php _e('Endpoint', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php _e('URL Completa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td><strong><?php _e('Descubrimiento', 'flavor-chat-ia'); ?></strong></td>
+                    <td><strong><?php _e('Descubrimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></td>
                     <td><code><?php echo esc_url(rest_url('app-discovery/v1/info')); ?></code></td>
                 </tr>
                 <tr>
-                    <td><strong><?php _e('Módulos', 'flavor-chat-ia'); ?></strong></td>
+                    <td><strong><?php _e('Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></td>
                     <td><code><?php echo esc_url(rest_url('app-discovery/v1/modules')); ?></code></td>
                 </tr>
                 <tr>
-                    <td><strong><?php _e('Tema', 'flavor-chat-ia'); ?></strong></td>
+                    <td><strong><?php _e('Tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></td>
                     <td><code><?php echo esc_url(rest_url('app-discovery/v1/theme')); ?></code></td>
                 </tr>
             </tbody>
@@ -2171,7 +2171,7 @@ class Flavor_App_Config_Admin {
         $tokens = get_option('flavor_apps_tokens', []);
 
         if (empty($tokens)) {
-            echo '<p>' . __('No hay tokens activos.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('No hay tokens activos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -2179,10 +2179,10 @@ class Flavor_App_Config_Admin {
         <table class="widefat striped">
             <thead>
                 <tr>
-                    <th><?php _e('Nombre', 'flavor-chat-ia'); ?></th>
-                    <th><?php _e('Fecha de Creación', 'flavor-chat-ia'); ?></th>
-                    <th><?php _e('Último Uso', 'flavor-chat-ia'); ?></th>
-                    <th><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th><?php _e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php _e('Fecha de Creación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php _e('Último Uso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -2195,7 +2195,7 @@ class Flavor_App_Config_Admin {
                         if (isset($token_data['last_used']) && $token_data['last_used']) {
                             echo esc_html(date_i18n(get_option('date_format') . ' ' . get_option('time_format'), $token_data['last_used']));
                         } else {
-                            _e('Nunca', 'flavor-chat-ia');
+                            _e('Nunca', FLAVOR_PLATFORM_TEXT_DOMAIN);
                         }
                         ?>
                     </td>
@@ -2203,7 +2203,7 @@ class Flavor_App_Config_Admin {
                         <button type="button"
                                 class="button button-small revoke-token"
                                 data-token-id="<?php echo esc_attr($token_id); ?>">
-                            <?php _e('Revocar', 'flavor-chat-ia'); ?>
+                            <?php _e('Revocar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </td>
                 </tr>
@@ -2225,13 +2225,13 @@ class Flavor_App_Config_Admin {
         $peer_text = is_array($peer_urls) ? implode("\n", $peer_urls) : (string) $peer_urls;
 
         ?>
-        <h2><?php _e('Directorio Público de Negocios', 'flavor-chat-ia'); ?></h2>
-        <p><?php _e('Permite que los usuarios de las apps descubran y se conecten a tu negocio/comunidad.', 'flavor-chat-ia'); ?></p>
+        <h2><?php _e('Directorio Público de Negocios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p><?php _e('Permite que los usuarios de las apps descubran y se conecten a tu negocio/comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
         <table class="form-table">
             <tr>
                 <th scope="row">
-                    <label><?php _e('Aparecer en el Directorio', 'flavor-chat-ia'); ?></label>
+                    <label><?php _e('Aparecer en el Directorio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 </th>
                 <td>
                     <label>
@@ -2239,17 +2239,17 @@ class Flavor_App_Config_Admin {
                                name="flavor_apps_config[public_in_directory]"
                                value="1"
                                <?php checked($is_public, true); ?>>
-                        <?php _e('Sí, hacer mi negocio visible en el directorio público', 'flavor-chat-ia'); ?>
+                        <?php _e('Sí, hacer mi negocio visible en el directorio público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <p class="description">
-                        <?php _e('Si activas esta opción, los usuarios podrán encontrar y conectarse a tu negocio desde la app.', 'flavor-chat-ia'); ?>
+                        <?php _e('Si activas esta opción, los usuarios podrán encontrar y conectarse a tu negocio desde la app.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </td>
             </tr>
 
             <tr>
                 <th scope="row">
-                    <label for="business_address"><?php _e('Dirección', 'flavor-chat-ia'); ?></label>
+                    <label for="business_address"><?php _e('Dirección', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 </th>
                 <td>
                     <input
@@ -2258,17 +2258,17 @@ class Flavor_App_Config_Admin {
                         id="business_address"
                         class="regular-text"
                         value="<?php echo esc_attr($config['business_address'] ?? ''); ?>"
-                        placeholder="<?php echo esc_attr__('Calle y número', 'flavor-chat-ia'); ?>"
+                        placeholder="<?php echo esc_attr__('Calle y número', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                     >
                     <p class="description">
-                        <?php _e('Se usa para calcular automáticamente las coordenadas (lat/lng).', 'flavor-chat-ia'); ?>
+                        <?php _e('Se usa para calcular automáticamente las coordenadas (lat/lng).', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </td>
             </tr>
 
             <tr>
                 <th scope="row">
-                    <label for="business_city"><?php _e('Ciudad', 'flavor-chat-ia'); ?></label>
+                    <label for="business_city"><?php _e('Ciudad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 </th>
                 <td>
                     <input
@@ -2283,7 +2283,7 @@ class Flavor_App_Config_Admin {
 
             <tr>
                 <th scope="row">
-                    <label for="business_country"><?php _e('País', 'flavor-chat-ia'); ?></label>
+                    <label for="business_country"><?php _e('País', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 </th>
                 <td>
                     <input
@@ -2298,7 +2298,7 @@ class Flavor_App_Config_Admin {
 
             <tr>
                 <th scope="row">
-                    <label for="business_postal_code"><?php _e('Código Postal', 'flavor-chat-ia'); ?></label>
+                    <label for="business_postal_code"><?php _e('Código Postal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 </th>
                 <td>
                     <input
@@ -2313,7 +2313,7 @@ class Flavor_App_Config_Admin {
 
             <tr>
                 <th scope="row">
-                    <label for="business_lat"><?php _e('Latitud / Longitud', 'flavor-chat-ia'); ?></label>
+                    <label for="business_lat"><?php _e('Latitud / Longitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 </th>
                 <td>
                     <input
@@ -2323,7 +2323,7 @@ class Flavor_App_Config_Admin {
                         id="business_lat"
                         style="width:150px;"
                         value="<?php echo esc_attr($config['business_lat'] ?? ''); ?>"
-                        placeholder="<?php echo esc_attr__('Latitud', 'flavor-chat-ia'); ?>"
+                        placeholder="<?php echo esc_attr__('Latitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                     >
                     <input
                         type="number"
@@ -2332,30 +2332,30 @@ class Flavor_App_Config_Admin {
                         id="business_lng"
                         style="width:150px;margin-left:6px;"
                         value="<?php echo esc_attr($config['business_lng'] ?? ''); ?>"
-                        placeholder="<?php echo esc_attr__('Longitud', 'flavor-chat-ia'); ?>"
+                        placeholder="<?php echo esc_attr__('Longitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                     >
                     <p class="description">
-                        <?php _e('Si se dejan vacías, se intentarán calcular automáticamente al guardar.', 'flavor-chat-ia'); ?>
+                        <?php _e('Si se dejan vacías, se intentarán calcular automáticamente al guardar.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </td>
             </tr>
 
             <tr>
                 <th scope="row">
-                    <label for="business_category"><?php _e('Categoría', 'flavor-chat-ia'); ?></label>
+                    <label for="business_category"><?php _e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 </th>
                 <td>
                     <select name="flavor_apps_config[business_category]" id="business_category" class="regular-text">
-                        <option value=""><?php _e('Selecciona una categoría', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Selecciona una categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php
                         $categories = [
-                            'cooperativa' => __('Cooperativa', 'flavor-chat-ia'),
-                            'asociacion' => __('Asociación', 'flavor-chat-ia'),
-                            'comunidad' => __('Comunidad', 'flavor-chat-ia'),
-                            'grupo_consumo' => __('Grupo de Consumo', 'flavor-chat-ia'),
-                            'economia_social' => __('Economía Social', 'flavor-chat-ia'),
-                            'comercio_local' => __('Comercio Local', 'flavor-chat-ia'),
-                            'other' => __('Otra', 'flavor-chat-ia'),
+                            'cooperativa' => __('Cooperativa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'asociacion' => __('Asociación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'comunidad' => __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'grupo_consumo' => __('Grupo de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'economia_social' => __('Economía Social', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'comercio_local' => __('Comercio Local', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'other' => __('Otra', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ];
                         $current_category = isset($config['business_category']) ? $config['business_category'] : '';
                         foreach ($categories as $value => $label):
@@ -2366,14 +2366,14 @@ class Flavor_App_Config_Admin {
                         <?php endforeach; ?>
                     </select>
                     <p class="description">
-                        <?php _e('Tipo de negocio o comunidad.', 'flavor-chat-ia'); ?>
+                        <?php _e('Tipo de negocio o comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </td>
             </tr>
 
             <tr>
                 <th scope="row">
-                    <label for="flavor_directory_peer_urls"><?php _e('Seeds / Nodos conocidos', 'flavor-chat-ia'); ?></label>
+                    <label for="flavor_directory_peer_urls"><?php _e('Seeds / Nodos conocidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 </th>
                 <td>
                     <textarea
@@ -2384,7 +2384,7 @@ class Flavor_App_Config_Admin {
                         placeholder="https://nodo1.tudominio.com&#10;https://nodo2.tudominio.com"
                     ><?php echo esc_textarea($peer_text); ?></textarea>
                     <p class="description">
-                        <?php _e('Lista de nodos/semillas (uno por línea o separados por coma). Se usa para sincronizar el directorio de forma descentralizada.', 'flavor-chat-ia'); ?>
+                        <?php _e('Lista de nodos/semillas (uno por línea o separados por coma). Se usa para sincronizar el directorio de forma descentralizada.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </td>
             </tr>
@@ -2394,68 +2394,68 @@ class Flavor_App_Config_Admin {
 
         <hr>
 
-        <h3><?php _e('Estado del Registro', 'flavor-chat-ia'); ?></h3>
+        <h3><?php _e('Estado del Registro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
         <?php if ($is_public): ?>
             <div class="notice notice-success inline">
                 <p>
-                    <strong><?php _e('Tu negocio está configurado como público', 'flavor-chat-ia'); ?></strong>
+                    <strong><?php _e('Tu negocio está configurado como público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                 </p>
             </div>
 
             <?php if ($is_registered): ?>
-                <p><?php _e('✓ Registrado en el directorio', 'flavor-chat-ia'); ?></p>
+                <p><?php _e('✓ Registrado en el directorio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php if ($last_sync): ?>
                     <p>
                         <?php
                         printf(
-                            __('Última sincronización: %s', 'flavor-chat-ia'),
+                            __('Última sincronización: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             date_i18n(get_option('date_format') . ' ' . get_option('time_format'), $last_sync)
                         );
                         ?>
                     </p>
                 <?php endif; ?>
             <?php else: ?>
-                <p><?php _e('○ Pendiente de registrar en el directorio', 'flavor-chat-ia'); ?></p>
+                <p><?php _e('○ Pendiente de registrar en el directorio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <button type="button" class="button button-primary" id="register_in_directory">
-                    <?php _e('Registrar Ahora', 'flavor-chat-ia'); ?>
+                    <?php _e('Registrar Ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             <?php endif; ?>
 
             <hr>
 
-            <h4><?php _e('Información que se compartirá:', 'flavor-chat-ia'); ?></h4>
+            <h4><?php _e('Información que se compartirá:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
             <ul>
-                <li><?php _e('Nombre de tu negocio/comunidad', 'flavor-chat-ia'); ?></li>
-                <li><?php _e('Descripción', 'flavor-chat-ia'); ?></li>
-                <li><?php _e('Logo', 'flavor-chat-ia'); ?></li>
-                <li><?php _e('URL del sitio', 'flavor-chat-ia'); ?></li>
-                <li><?php _e('Dirección y coordenadas (lat/lng)', 'flavor-chat-ia'); ?></li>
-                <li><?php _e('Módulos disponibles', 'flavor-chat-ia'); ?></li>
+                <li><?php _e('Nombre de tu negocio/comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                <li><?php _e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                <li><?php _e('Logo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                <li><?php _e('URL del sitio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                <li><?php _e('Dirección y coordenadas (lat/lng)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                <li><?php _e('Módulos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
             </ul>
             <p class="description">
-                <?php _e('Ningún dato privado o sensible se comparte. Solo información pública necesaria para que los usuarios encuentren tu negocio.', 'flavor-chat-ia'); ?>
+                <?php _e('Ningún dato privado o sensible se comparte. Solo información pública necesaria para que los usuarios encuentren tu negocio.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
 
         <?php else: ?>
             <div class="notice notice-warning inline">
                 <p>
-                    <strong><?php _e('Tu negocio NO está visible en el directorio', 'flavor-chat-ia'); ?></strong>
+                    <strong><?php _e('Tu negocio NO está visible en el directorio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                 </p>
-                <p><?php _e('Activa la opción "Aparecer en el Directorio" arriba para que los usuarios puedan encontrarte.', 'flavor-chat-ia'); ?></p>
+                <p><?php _e('Activa la opción "Aparecer en el Directorio" arriba para que los usuarios puedan encontrarte.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         <?php endif; ?>
 
         <hr>
 
-        <h3><?php _e('¿Cómo funciona el Directorio?', 'flavor-chat-ia'); ?></h3>
+        <h3><?php _e('¿Cómo funciona el Directorio?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         <ol>
-            <li><?php _e('Activas "Aparecer en el Directorio" y guardas los cambios', 'flavor-chat-ia'); ?></li>
-            <li><?php _e('Añades seeds/nodos conocidos para que la red se sincronice', 'flavor-chat-ia'); ?></li>
-            <li><?php _e('Los nodos comparten sus listados y se actualizan entre sí', 'flavor-chat-ia'); ?></li>
-            <li><?php _e('Los usuarios de las apps pueden buscar negocios por proximidad o categoría', 'flavor-chat-ia'); ?></li>
-            <li><?php _e('Cuando encuentren tu negocio, podrán conectarse con un solo tap', 'flavor-chat-ia'); ?></li>
-            <li><?php _e('La app se configurará automáticamente con tus colores, logo y módulos', 'flavor-chat-ia'); ?></li>
+            <li><?php _e('Activas "Aparecer en el Directorio" y guardas los cambios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+            <li><?php _e('Añades seeds/nodos conocidos para que la red se sincronice', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+            <li><?php _e('Los nodos comparten sus listados y se actualizan entre sí', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+            <li><?php _e('Los usuarios de las apps pueden buscar negocios por proximidad o categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+            <li><?php _e('Cuando encuentren tu negocio, podrán conectarse con un solo tap', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+            <li><?php _e('La app se configurará automáticamente con tus colores, logo y módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
         </ol>
 
         <?php
@@ -2465,7 +2465,7 @@ class Flavor_App_Config_Admin {
      * Renderiza sección de módulos
      */
     public function render_modules_section() {
-        echo '<p>' . __('Estado de los módulos disponibles para las apps.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Estado de los módulos disponibles para las apps.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
     }
 
     /**
@@ -2475,13 +2475,13 @@ class Flavor_App_Config_Admin {
      */
     private function get_module_category_labels() {
         return [
-            'comercio' => __('Comercio y economía', 'flavor-chat-ia'),
-            'comunidad' => __('Comunidad y participación', 'flavor-chat-ia'),
-            'servicios' => __('Servicios y gestión', 'flavor-chat-ia'),
-            'sostenibilidad' => __('Sostenibilidad y territorio', 'flavor-chat-ia'),
-            'comunicacion' => __('Comunicación y contenidos', 'flavor-chat-ia'),
-            'empresa' => __('Empresa y organización', 'flavor-chat-ia'),
-            'otros' => __('Otros', 'flavor-chat-ia'),
+            'comercio' => __('Comercio y economía', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'comunidad' => __('Comunidad y participación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'servicios' => __('Servicios y gestión', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'sostenibilidad' => __('Sostenibilidad y territorio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'comunicacion' => __('Comunicación y contenidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'empresa' => __('Empresa y organización', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'otros' => __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -2574,13 +2574,13 @@ class Flavor_App_Config_Admin {
         ?>
         <div class="flavor-modules-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <div>
-                <h2 style="margin: 0;"><?php _e('Módulos Disponibles para la App Móvil', 'flavor-chat-ia'); ?></h2>
-                <p style="margin: 5px 0 0 0;"><?php _e('Activa o desactiva los módulos que estarán visibles en la app móvil.', 'flavor-chat-ia'); ?></p>
+                <h2 style="margin: 0;"><?php _e('Módulos Disponibles para la App Móvil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <p style="margin: 5px 0 0 0;"><?php _e('Activa o desactiva los módulos que estarán visibles en la app móvil.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <div>
                 <button type="button" class="button button-primary" id="sync-modules-from-web" style="display: flex; align-items: center; gap: 5px;">
                     <span class="material-icons" style="font-size: 18px;">sync</span>
-                    <?php _e('Sincronizar con Web', 'flavor-chat-ia'); ?>
+                    <?php _e('Sincronizar con Web', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </div>
@@ -2588,7 +2588,7 @@ class Flavor_App_Config_Admin {
         <div class="notice notice-info" style="margin-bottom: 20px;">
             <p>
                 <span class="material-icons" style="font-size: 16px; vertical-align: middle;">info</span>
-                <?php _e('Los módulos ahora se sincronizan automáticamente con el App Composer web. Usa el botón "Sincronizar con Web" para forzar la sincronización de todos los módulos activos.', 'flavor-chat-ia'); ?>
+                <?php _e('Los módulos ahora se sincronizan automáticamente con el App Composer web. Usa el botón "Sincronizar con Web" para forzar la sincronización de todos los módulos activos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
 
@@ -2599,274 +2599,274 @@ class Flavor_App_Config_Admin {
 
             $known_modules = [
                 'woocommerce' => [
-                    'name' => __('WooCommerce', 'flavor-chat-ia'),
-                    'description' => __('Integración con tienda WooCommerce', 'flavor-chat-ia'),
+                    'name' => __('WooCommerce', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Integración con tienda WooCommerce', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_WooCommerce_API',
                     'icon' => 'local_offer',
                     'color' => '#9C27B0',
                 ],
                 'grupos_consumo' => [
-                    'name' => __('Grupos de Consumo', 'flavor-chat-ia'),
-                    'description' => __('Pedidos colectivos y gestión de grupos', 'flavor-chat-ia'),
+                    'name' => __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Pedidos colectivos y gestión de grupos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Grupos_Consumo_API',
                     'icon' => 'shopping_cart',
                     'color' => '#4CAF50',
                 ],
                 'marketplace' => [
-                    'name' => __('Marketplace', 'flavor-chat-ia'),
-                    'description' => __('Anuncios de regalo, venta e intercambio', 'flavor-chat-ia'),
+                    'name' => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Anuncios de regalo, venta e intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Marketplace_API',
                     'icon' => 'store',
                     'color' => '#FF9800',
                 ],
                 'banco_tiempo' => [
-                    'name' => __('Banco de Tiempo', 'flavor-chat-ia'),
-                    'description' => __('Intercambio de servicios y tiempo', 'flavor-chat-ia'),
+                    'name' => __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Intercambio de servicios y tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Banco_Tiempo_API',
                     'icon' => 'access_time',
                     'color' => '#2196F3',
                 ],
                 'facturas' => [
-                    'name' => __('Facturas', 'flavor-chat-ia'),
-                    'description' => __('Gestión de facturas para administradores', 'flavor-chat-ia'),
+                    'name' => __('Facturas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Gestión de facturas para administradores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Chat_Facturas_Module',
                     'icon' => 'receipt',
                     'color' => '#607D8B',
                 ],
                 'fichaje_empleados' => [
-                    'name' => __('Fichaje de Empleados', 'flavor-chat-ia'),
-                    'description' => __('Control de horarios y asistencia', 'flavor-chat-ia'),
+                    'name' => __('Fichaje de Empleados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Control de horarios y asistencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Chat_Fichaje_Empleados_Module',
                     'icon' => 'work',
                     'color' => '#795548',
                 ],
                 'eventos' => [
-                    'name' => __('Eventos', 'flavor-chat-ia'),
-                    'description' => __('Gestión de eventos comunitarios', 'flavor-chat-ia'),
+                    'name' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Gestión de eventos comunitarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Chat_Eventos_Module',
                     'icon' => 'event',
                     'color' => '#E91E63',
                 ],
                 'socios' => [
-                    'name' => __('Gestión de Miembros', 'flavor-chat-ia'),
-                    'description' => __('Control de miembros y cuotas', 'flavor-chat-ia'),
+                    'name' => __('Gestión de Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Control de miembros y cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Chat_Socios_Module',
                     'icon' => 'people',
                     'color' => '#3F51B5',
                 ],
                 'advertising' => [
-                    'name' => __('Publicidad Ética', 'flavor-chat-ia'),
-                    'description' => __('Sistema de anuncios éticos', 'flavor-chat-ia'),
+                    'name' => __('Publicidad Ética', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Sistema de anuncios éticos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Advertising_Module',
                     'icon' => 'campaign',
                     'color' => '#FF5722',
                 ],
                 'foros' => [
-                    'name' => __('Foros', 'flavor-chat-ia'),
-                    'description' => __('Debates y conversaciones por temas', 'flavor-chat-ia'),
+                    'name' => __('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Debates y conversaciones por temas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Foros_Module',
                     'icon' => 'forum',
                     'color' => '#8E24AA',
                 ],
                 'red_social' => [
-                    'name' => __('Red Social', 'flavor-chat-ia'),
-                    'description' => __('Red social comunitaria', 'flavor-chat-ia'),
+                    'name' => __('Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Red social comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Red_Social_Module',
                     'icon' => 'public',
                     'color' => '#009688',
                 ],
                 'chat_grupos' => [
-                    'name' => __('Chat de Grupos', 'flavor-chat-ia'),
-                    'description' => __('Canales y grupos temáticos', 'flavor-chat-ia'),
+                    'name' => __('Chat de Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Canales y grupos temáticos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Chat_Grupos_Module',
                     'icon' => 'chat',
                     'color' => '#03A9F4',
                 ],
                 'chat_interno' => [
-                    'name' => __('Chat Interno', 'flavor-chat-ia'),
-                    'description' => __('Mensajería privada', 'flavor-chat-ia'),
+                    'name' => __('Chat Interno', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Mensajería privada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Chat_Interno_Module',
                     'icon' => 'chat_bubble',
                     'color' => '#0288D1',
                 ],
                 'comunidades' => [
-                    'name' => __('Comunidades', 'flavor-chat-ia'),
-                    'description' => __('Gestión de comunidades', 'flavor-chat-ia'),
+                    'name' => __('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Gestión de comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Comunidades_Module',
                     'icon' => 'groups',
                     'color' => '#4CAF50',
                 ],
                 'colectivos' => [
-                    'name' => __('Colectivos', 'flavor-chat-ia'),
-                    'description' => __('Asociaciones y cooperativas', 'flavor-chat-ia'),
+                    'name' => __('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Asociaciones y cooperativas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Colectivos_Module',
                     'icon' => 'handshake',
                     'color' => '#6D4C41',
                 ],
                 'participacion' => [
-                    'name' => __('Participación', 'flavor-chat-ia'),
-                    'description' => __('Votaciones y propuestas', 'flavor-chat-ia'),
+                    'name' => __('Participación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Votaciones y propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Participacion_Module',
                     'icon' => 'how_to_vote',
                     'color' => '#7CB342',
                 ],
                 'presupuestos_participativos' => [
-                    'name' => __('Presupuestos Participativos', 'flavor-chat-ia'),
-                    'description' => __('Decide inversiones comunitarias', 'flavor-chat-ia'),
+                    'name' => __('Presupuestos Participativos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Decide inversiones comunitarias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Presupuestos_Participativos_Module',
                     'icon' => 'account_balance',
                     'color' => '#5D4037',
                 ],
                 'transparencia' => [
-                    'name' => __('Transparencia', 'flavor-chat-ia'),
-                    'description' => __('Portal de transparencia', 'flavor-chat-ia'),
+                    'name' => __('Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Portal de transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Transparencia_Module',
                     'icon' => 'visibility',
                     'color' => '#607D8B',
                 ],
                 'avisos_municipales' => [
-                    'name' => __('Avisos Municipales', 'flavor-chat-ia'),
-                    'description' => __('Comunicados oficiales', 'flavor-chat-ia'),
+                    'name' => __('Avisos Municipales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Comunicados oficiales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Avisos_Municipales_API',
                     'icon' => 'warning',
                     'color' => '#F57C00',
                 ],
                 'tramites' => [
-                    'name' => __('Trámites', 'flavor-chat-ia'),
-                    'description' => __('Gestión de trámites online', 'flavor-chat-ia'),
+                    'name' => __('Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Gestión de trámites online', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Tramites_Module',
                     'icon' => 'assignment',
                     'color' => '#455A64',
                 ],
                 'huertos_urbanos' => [
-                    'name' => __('Huertos Urbanos', 'flavor-chat-ia'),
-                    'description' => __('Parcelas y cultivos comunitarios', 'flavor-chat-ia'),
+                    'name' => __('Huertos Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Parcelas y cultivos comunitarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Huertos_Urbanos_API',
                     'icon' => 'eco',
                     'color' => '#2E7D32',
                 ],
                 'bicicletas_compartidas' => [
-                    'name' => __('Bicicletas Compartidas', 'flavor-chat-ia'),
-                    'description' => __('Sistema de bicicletas comunitarias', 'flavor-chat-ia'),
+                    'name' => __('Bicicletas Compartidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Sistema de bicicletas comunitarias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Bicicletas_Compartidas_API',
                     'icon' => 'pedal_bike',
                     'color' => '#388E3C',
                 ],
                 'compostaje' => [
-                    'name' => __('Compostaje', 'flavor-chat-ia'),
-                    'description' => __('Compostaje comunitario', 'flavor-chat-ia'),
+                    'name' => __('Compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Compostaje comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Compostaje_Module',
                     'icon' => 'recycling',
                     'color' => '#7CB342',
                 ],
                 'energia_comunitaria' => [
-                    'name' => __('Energia Comunitaria', 'flavor-chat-ia'),
-                    'description' => __('Comunidades energéticas, instalaciones, reparto y liquidaciones', 'flavor-chat-ia'),
+                    'name' => __('Energia Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Comunidades energéticas, instalaciones, reparto y liquidaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Chat_Energia_Comunitaria_Module',
                     'icon' => 'bolt',
                     'color' => '#F59E0B',
                 ],
                 'reciclaje' => [
-                    'name' => __('Reciclaje', 'flavor-chat-ia'),
-                    'description' => __('Gestión de reciclaje', 'flavor-chat-ia'),
+                    'name' => __('Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Gestión de reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Reciclaje_API',
                     'icon' => 'recycling',
                     'color' => '#009688',
                 ],
                 'carpooling' => [
-                    'name' => __('Carpooling', 'flavor-chat-ia'),
-                    'description' => __('Viajes compartidos', 'flavor-chat-ia'),
+                    'name' => __('Carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Viajes compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Carpooling_Module',
                     'icon' => 'directions_car',
                     'color' => '#3F51B5',
                 ],
                 'cursos' => [
-                    'name' => __('Cursos', 'flavor-chat-ia'),
-                    'description' => __('Plataforma de cursos', 'flavor-chat-ia'),
+                    'name' => __('Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Plataforma de cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Cursos_Module',
                     'icon' => 'menu_book',
                     'color' => '#5C6BC0',
                 ],
                 'podcast' => [
-                    'name' => __('Podcast', 'flavor-chat-ia'),
-                    'description' => __('Podcast comunitario', 'flavor-chat-ia'),
+                    'name' => __('Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Podcast comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Podcast_Module',
                     'icon' => 'mic',
                     'color' => '#6A1B9A',
                 ],
                 'radio' => [
-                    'name' => __('Radio', 'flavor-chat-ia'),
-                    'description' => __('Radio comunitaria', 'flavor-chat-ia'),
+                    'name' => __('Radio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Radio comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Radio_Module',
                     'icon' => 'radio',
                     'color' => '#8E24AA',
                 ],
                 'multimedia' => [
-                    'name' => __('Multimedia', 'flavor-chat-ia'),
-                    'description' => __('Galería y contenidos multimedia', 'flavor-chat-ia'),
+                    'name' => __('Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Galería y contenidos multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Multimedia_Module',
                     'icon' => 'perm_media',
                     'color' => '#5D4037',
                 ],
                 'biblioteca' => [
-                    'name' => __('Biblioteca', 'flavor-chat-ia'),
-                    'description' => __('Biblioteca comunitaria', 'flavor-chat-ia'),
+                    'name' => __('Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Biblioteca comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Biblioteca_Module',
                     'icon' => 'local_library',
                     'color' => '#455A64',
                 ],
                 'talleres' => [
-                    'name' => __('Talleres', 'flavor-chat-ia'),
-                    'description' => __('Talleres y workshops', 'flavor-chat-ia'),
+                    'name' => __('Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Talleres y workshops', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Talleres_Module',
                     'icon' => 'build',
                     'color' => '#6D4C41',
                 ],
                 'incidencias' => [
-                    'name' => __('Incidencias', 'flavor-chat-ia'),
-                    'description' => __('Incidencias urbanas', 'flavor-chat-ia'),
+                    'name' => __('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Incidencias urbanas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Incidencias_Module',
                     'icon' => 'report_problem',
                     'color' => '#E64A19',
                 ],
                 'espacios_comunes' => [
-                    'name' => __('Espacios Comunes', 'flavor-chat-ia'),
-                    'description' => __('Reservas de espacios', 'flavor-chat-ia'),
+                    'name' => __('Espacios Comunes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Reservas de espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Espacios_Comunes_Module',
                     'icon' => 'meeting_room',
                     'color' => '#546E7A',
                 ],
                 'parkings' => [
-                    'name' => __('Parkings', 'flavor-chat-ia'),
-                    'description' => __('Parkings comunitarios', 'flavor-chat-ia'),
+                    'name' => __('Parkings', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Parkings comunitarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Parkings_API',
                     'icon' => 'local_parking',
                     'color' => '#455A64',
                 ],
                 'ayuda_vecinal' => [
-                    'name' => __('Ayuda Vecinal', 'flavor-chat-ia'),
-                    'description' => __('Red de ayuda mutua', 'flavor-chat-ia'),
+                    'name' => __('Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Red de ayuda mutua', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Ayuda_Vecinal_API',
                     'icon' => 'volunteer_activism',
                     'color' => '#8BC34A',
                 ],
                 'empresarial' => [
-                    'name' => __('Empresarial', 'flavor-chat-ia'),
-                    'description' => __('Componentes profesionales', 'flavor-chat-ia'),
+                    'name' => __('Empresarial', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Componentes profesionales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Empresarial_Module',
                     'icon' => 'business',
                     'color' => '#37474F',
                 ],
                 'clientes' => [
-                    'name' => __('Clientes', 'flavor-chat-ia'),
-                    'description' => __('CRM básico', 'flavor-chat-ia'),
+                    'name' => __('Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('CRM básico', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Clientes_Module',
                     'icon' => 'person',
                     'color' => '#3F51B5',
                 ],
                 'bares' => [
-                    'name' => __('Bares y Hostelería', 'flavor-chat-ia'),
-                    'description' => __('Directorio de bares', 'flavor-chat-ia'),
+                    'name' => __('Bares y Hostelería', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Directorio de bares', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => 'Flavor_Bares_Module',
                     'icon' => 'restaurant',
                     'color' => '#FF7043',
@@ -2895,7 +2895,7 @@ class Flavor_App_Config_Admin {
                     'name' => !empty($module_data['name']) ? $module_data['name'] : $label,
                     'description' => !empty($module_data['description'])
                         ? $module_data['description']
-                        : __('Módulo disponible para la app', 'flavor-chat-ia'),
+                        : __('Módulo disponible para la app', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'api_class' => '',
                     'icon' => 'extension',
                     'color' => '#607D8B',
@@ -2908,7 +2908,7 @@ class Flavor_App_Config_Admin {
                     $module_data['name'] = ucwords(str_replace(['_', '-'], ' ', $module_id));
                 }
                 if (!isset($module_data['description']) || $module_data['description'] === '') {
-                    $module_data['description'] = __('Módulo disponible para la app', 'flavor-chat-ia');
+                    $module_data['description'] = __('Módulo disponible para la app', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 }
                 $is_installed = isset($registered_modules[$module_id]);
                 $is_active = in_array($module_id, $active_modules, true);
@@ -2969,18 +2969,18 @@ class Flavor_App_Config_Admin {
 
         <div class="flavor-modules-ux-header">
             <div class="flavor-modules-ux-kpis">
-                <span class="flavor-modules-kpi"><?php echo esc_html(sprintf(__('Total: %d', 'flavor-chat-ia'), $total_modules)); ?></span>
-                <span class="flavor-modules-kpi"><?php echo esc_html(sprintf(__('Visibles en app: %d', 'flavor-chat-ia'), $total_enabled)); ?></span>
+                <span class="flavor-modules-kpi"><?php echo esc_html(sprintf(__('Total: %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_modules)); ?></span>
+                <span class="flavor-modules-kpi"><?php echo esc_html(sprintf(__('Visibles en app: %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_enabled)); ?></span>
             </div>
             <div class="flavor-modules-ux-search">
-                <label for="flavor-module-search" class="screen-reader-text"><?php _e('Buscar módulo', 'flavor-chat-ia'); ?></label>
-                <input type="search" id="flavor-module-search" placeholder="<?php esc_attr_e('Buscar módulo por nombre o descripción…', 'flavor-chat-ia'); ?>">
+                <label for="flavor-module-search" class="screen-reader-text"><?php _e('Buscar módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                <input type="search" id="flavor-module-search" placeholder="<?php esc_attr_e('Buscar módulo por nombre o descripción…', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             </div>
         </div>
 
         <div class="flavor-modules-category-filters">
             <button type="button" class="button button-secondary is-active" data-module-category-filter="all">
-                <?php _e('Todas', 'flavor-chat-ia'); ?>
+                <?php _e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <?php foreach ($category_order as $category_key): ?>
                 <?php if (empty($grouped_modules[$category_key])) { continue; } ?>
@@ -3000,7 +3000,7 @@ class Flavor_App_Config_Admin {
             <section class="flavor-module-category-block" data-module-category-block="<?php echo esc_attr($category_key); ?>">
                 <header class="flavor-module-category-header">
                     <h3><?php echo esc_html($category_labels[$category_key]); ?></h3>
-                    <span class="flavor-module-category-count"><?php echo esc_html(sprintf(_n('%d módulo', '%d módulos', count($grouped_modules[$category_key]), 'flavor-chat-ia'), count($grouped_modules[$category_key]))); ?></span>
+                    <span class="flavor-module-category-count"><?php echo esc_html(sprintf(_n('%d módulo', '%d módulos', count($grouped_modules[$category_key]), FLAVOR_PLATFORM_TEXT_DOMAIN), count($grouped_modules[$category_key]))); ?></span>
                 </header>
 
                 <div class="flavor-modules-grid flavor-modules-grid--categorized">
@@ -3029,7 +3029,7 @@ class Flavor_App_Config_Admin {
                                 <p><?php echo esc_html($module_data['description']); ?></p>
                                 <?php if (!empty($module_data['related'])): ?>
                                     <p class="flavor-module-related-hint">
-                                        <?php _e('Complementarios:', 'flavor-chat-ia'); ?>
+                                        <?php _e('Complementarios:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         <?php
                                         $related_labels = [];
                                         foreach ($module_data['related'] as $related_id) {
@@ -3043,11 +3043,11 @@ class Flavor_App_Config_Admin {
                                 <?php endif; ?>
                                 <div class="flavor-module-api-status <?php echo $module_data['api_available'] ? 'available' : 'unavailable'; ?>">
                                     <?php if ($module_data['api_available'] && $module_data['is_active']): ?>
-                                        <span class="dashicons dashicons-yes-alt"></span> <?php _e('API disponible', 'flavor-chat-ia'); ?>
+                                        <span class="dashicons dashicons-yes-alt"></span> <?php _e('API disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     <?php elseif ($module_data['api_available'] && !$module_data['is_active']): ?>
-                                        <span class="dashicons dashicons-warning"></span> <?php _e('Disponible (no activo)', 'flavor-chat-ia'); ?>
+                                        <span class="dashicons dashicons-warning"></span> <?php _e('Disponible (no activo)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     <?php else: ?>
-                                        <span class="dashicons dashicons-marker"></span> <?php _e('No instalado', 'flavor-chat-ia'); ?>
+                                        <span class="dashicons dashicons-marker"></span> <?php _e('No instalado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     <?php endif; ?>
                                 </div>
                                 <div class="flavor-module-actions">
@@ -3056,16 +3056,16 @@ class Flavor_App_Config_Admin {
                                                 class="button button-secondary flavor-module-activate-btn"
                                                 data-module-id="<?php echo esc_attr($module_data['id']); ?>"
                                                 data-active="<?php echo $module_data['is_active'] ? '1' : '0'; ?>">
-                                            <?php echo $module_data['is_active'] ? esc_html__('Desactivar módulo', 'flavor-chat-ia') : esc_html__('Activar módulo', 'flavor-chat-ia'); ?>
+                                            <?php echo $module_data['is_active'] ? esc_html__('Desactivar módulo', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Activar módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </button>
                                     <?php else: ?>
-                                        <span class="description"><?php _e('Este módulo no está instalado en el plugin.', 'flavor-chat-ia'); ?></span>
+                                        <span class="description"><?php _e('Este módulo no está instalado en el plugin.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     <?php endif; ?>
                                     <button type="button"
                                             class="button flavor-module-docs-btn"
                                             data-module-id="<?php echo esc_attr($module_data['id']); ?>"
                                             data-module-name="<?php echo esc_attr($module_data['name']); ?>"
-                                            title="<?php esc_attr_e('Ver documentación', 'flavor-chat-ia'); ?>">
+                                            title="<?php esc_attr_e('Ver documentación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                         <span class="dashicons dashicons-info-outline"></span>
                                     </button>
                                 </div>
@@ -3081,51 +3081,51 @@ class Flavor_App_Config_Admin {
             <div class="flavor-docs-modal-backdrop"></div>
             <div class="flavor-docs-modal-content">
                 <div class="flavor-docs-modal-header">
-                    <h3 id="flavor-docs-modal-title"><?php _e('Documentación del Módulo', 'flavor-chat-ia'); ?></h3>
-                    <button type="button" class="flavor-docs-modal-close" aria-label="<?php esc_attr_e('Cerrar', 'flavor-chat-ia'); ?>">
+                    <h3 id="flavor-docs-modal-title"><?php _e('Documentación del Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <button type="button" class="flavor-docs-modal-close" aria-label="<?php esc_attr_e('Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-no-alt"></span>
                     </button>
                 </div>
                 <div class="flavor-docs-modal-body">
                     <div id="flavor-docs-loading" class="flavor-docs-loading">
                         <span class="dashicons dashicons-update flavor-docs-spinner"></span>
-                        <span><?php _e('Cargando documentación...', 'flavor-chat-ia'); ?></span>
+                        <span><?php _e('Cargando documentación...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div id="flavor-docs-content" class="flavor-docs-content" style="display: none;">
                         <!-- Descripción -->
                         <div class="flavor-docs-section">
-                            <h4><span class="dashicons dashicons-info"></span> <?php _e('Descripción', 'flavor-chat-ia'); ?></h4>
+                            <h4><span class="dashicons dashicons-info"></span> <?php _e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                             <p id="flavor-docs-description"></p>
                         </div>
                         <!-- Características -->
                         <div class="flavor-docs-section" id="flavor-docs-features-section" style="display: none;">
-                            <h4><span class="dashicons dashicons-yes"></span> <?php _e('Características', 'flavor-chat-ia'); ?></h4>
+                            <h4><span class="dashicons dashicons-yes"></span> <?php _e('Características', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                             <ul id="flavor-docs-features"></ul>
                         </div>
                         <!-- Casos de uso -->
                         <div class="flavor-docs-section" id="flavor-docs-usecases-section" style="display: none;">
-                            <h4><span class="dashicons dashicons-lightbulb"></span> <?php _e('Casos de Uso', 'flavor-chat-ia'); ?></h4>
+                            <h4><span class="dashicons dashicons-lightbulb"></span> <?php _e('Casos de Uso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                             <ul id="flavor-docs-usecases"></ul>
                         </div>
                         <!-- Módulos relacionados -->
                         <div class="flavor-docs-section" id="flavor-docs-related-section" style="display: none;">
-                            <h4><span class="dashicons dashicons-admin-plugins"></span> <?php _e('Módulos Relacionados', 'flavor-chat-ia'); ?></h4>
+                            <h4><span class="dashicons dashicons-admin-plugins"></span> <?php _e('Módulos Relacionados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                             <div id="flavor-docs-related"></div>
                         </div>
                         <!-- Requisitos -->
                         <div class="flavor-docs-section" id="flavor-docs-requirements-section" style="display: none;">
-                            <h4><span class="dashicons dashicons-warning"></span> <?php _e('Requisitos', 'flavor-chat-ia'); ?></h4>
+                            <h4><span class="dashicons dashicons-warning"></span> <?php _e('Requisitos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                             <ul id="flavor-docs-requirements"></ul>
                         </div>
                         <!-- Tablas de BD -->
                         <div class="flavor-docs-section" id="flavor-docs-tables-section" style="display: none;">
-                            <h4><span class="dashicons dashicons-database"></span> <?php _e('Tablas de Base de Datos', 'flavor-chat-ia'); ?></h4>
+                            <h4><span class="dashicons dashicons-database"></span> <?php _e('Tablas de Base de Datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                             <ul id="flavor-docs-tables"></ul>
                         </div>
                     </div>
                     <div id="flavor-docs-error" class="flavor-docs-error" style="display: none;">
                         <span class="dashicons dashicons-warning"></span>
-                        <span id="flavor-docs-error-message"><?php _e('No se pudo cargar la documentación', 'flavor-chat-ia'); ?></span>
+                        <span id="flavor-docs-error-message"><?php _e('No se pudo cargar la documentación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -3193,7 +3193,7 @@ class Flavor_App_Config_Admin {
                     var relatedName = $relatedCard.data('module-name') || relatedId;
                     items.push(
                         '<button type="button" class="button button-secondary flavor-module-quick-activate" data-module-id="' + relatedId + '">' +
-                            '<?php echo esc_js(__('Activar', 'flavor-chat-ia')); ?> ' + $('<div>').text(relatedName).html() +
+                            '<?php echo esc_js(__('Activar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?> ' + $('<div>').text(relatedName).html() +
                         '</button>'
                     );
                 });
@@ -3221,7 +3221,7 @@ class Flavor_App_Config_Admin {
                     return;
                 }
 
-                var title = '<?php echo esc_js(__('Módulos complementarios recomendados tras activar', 'flavor-chat-ia')); ?>';
+                var title = '<?php echo esc_js(__('Módulos complementarios recomendados tras activar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
                 var safeName = $('<div>').text(moduleName || moduleId).html();
 
                 $recommendationsPanel.html(
@@ -3236,7 +3236,7 @@ class Flavor_App_Config_Admin {
                 var moduleId = $(this).data('module-id');
                 var moduleName = $(this).data('module-name');
 
-                $('#flavor-docs-modal-title').text(moduleName + ' - <?php _e('Documentación', 'flavor-chat-ia'); ?>');
+                $('#flavor-docs-modal-title').text(moduleName + ' - <?php _e('Documentación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                 $modal.show();
                 $loading.show();
                 $content.hide();
@@ -3254,7 +3254,7 @@ class Flavor_App_Config_Admin {
 
                         // Verificar si la API devolvió success: false
                         if (response.success === false) {
-                            $('#flavor-docs-error-message').text(response.error || '<?php _e('Documentación no disponible para este módulo', 'flavor-chat-ia'); ?>');
+                            $('#flavor-docs-error-message').text(response.error || '<?php _e('Documentación no disponible para este módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                             $error.show();
                             return;
                         }
@@ -3318,13 +3318,13 @@ class Flavor_App_Config_Admin {
 
                             $content.show();
                         } else {
-                            $('#flavor-docs-error-message').text('<?php _e('Documentación no disponible para este módulo', 'flavor-chat-ia'); ?>');
+                            $('#flavor-docs-error-message').text('<?php _e('Documentación no disponible para este módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                             $error.show();
                         }
                     },
                     error: function(xhr) {
                         $loading.hide();
-                        var msg = '<?php echo esc_js(__('Error al cargar la documentación', 'flavor-chat-ia')); ?>';
+                        var msg = '<?php echo esc_js(__('Error al cargar la documentación', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
                         if (xhr && xhr.responseJSON) {
                             if (xhr.responseJSON.error) {
                                 msg = xhr.responseJSON.error;
@@ -3333,7 +3333,7 @@ class Flavor_App_Config_Admin {
                             }
                         }
                         if (xhr && xhr.status === 404) {
-                            msg = '<?php echo esc_js(__('Documentación no disponible para este módulo', 'flavor-chat-ia')); ?>';
+                            msg = '<?php echo esc_js(__('Documentación no disponible para este módulo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
                         }
                         $('#flavor-docs-error-message').text(msg);
                         $error.show();
@@ -3371,7 +3371,7 @@ class Flavor_App_Config_Admin {
                 var isActive = $btn.data('active') === 1 || $btn.data('active') === '1';
                 var newState = !isActive;
 
-                $btn.prop('disabled', true).text('<?php echo esc_js(__('Procesando...', 'flavor-chat-ia')); ?>');
+                $btn.prop('disabled', true).text('<?php echo esc_js(__('Procesando...', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
 
                 $.ajax({
                     url: ajaxurl,
@@ -3385,16 +3385,16 @@ class Flavor_App_Config_Admin {
                     success: function(response) {
                         if (response.success) {
                             $btn.data('active', newState ? '1' : '0');
-                            $btn.text(newState ? '<?php echo esc_js(__('Desactivar módulo', 'flavor-chat-ia')); ?>' : '<?php echo esc_js(__('Activar módulo', 'flavor-chat-ia')); ?>');
+                            $btn.text(newState ? '<?php echo esc_js(__('Desactivar módulo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>' : '<?php echo esc_js(__('Activar módulo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
 
                             // Actualizar estado visual del API
                             var $card = $btn.closest('.flavor-module-card');
                             var $status = $card.find('.flavor-module-api-status');
                             if (newState) {
                                 $status.removeClass('unavailable').addClass('available');
-                                $status.html('<span class="dashicons dashicons-yes-alt"></span> <?php echo esc_js(__('API disponible', 'flavor-chat-ia')); ?>');
+                                $status.html('<span class="dashicons dashicons-yes-alt"></span> <?php echo esc_js(__('API disponible', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                             } else {
-                                $status.html('<span class="dashicons dashicons-warning"></span> <?php echo esc_js(__('Disponible (no activo)', 'flavor-chat-ia')); ?>');
+                                $status.html('<span class="dashicons dashicons-warning"></span> <?php echo esc_js(__('Disponible (no activo)', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                             }
 
                             // Sincronizar el toggle switch
@@ -3408,11 +3408,11 @@ class Flavor_App_Config_Admin {
                                 $recommendationsPanel.hide().empty();
                             }
                         } else {
-                            alert(response.data?.message || '<?php echo esc_js(__('Error al cambiar estado del módulo', 'flavor-chat-ia')); ?>');
+                            alert(response.data?.message || '<?php echo esc_js(__('Error al cambiar estado del módulo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                         }
                     },
                     error: function() {
-                        alert('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>');
+                        alert('<?php echo esc_js(__('Error de conexión', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                     },
                     complete: function() {
                         $btn.prop('disabled', false);
@@ -3453,7 +3453,7 @@ class Flavor_App_Config_Admin {
                 var $btn = $(this);
                 var originalHtml = $btn.html();
 
-                $btn.prop('disabled', true).html('<span class="material-icons" style="font-size: 18px; animation: spin 1s linear infinite;">sync</span> <?php echo esc_js(__('Sincronizando...', 'flavor-chat-ia')); ?>');
+                $btn.prop('disabled', true).html('<span class="material-icons" style="font-size: 18px; animation: spin 1s linear infinite;">sync</span> <?php echo esc_js(__('Sincronizando...', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
 
                 $.ajax({
                     url: ajaxurl,
@@ -3470,11 +3470,11 @@ class Flavor_App_Config_Admin {
                                 location.reload();
                             }
                         } else {
-                            alert(response.data?.message || '<?php echo esc_js(__('Error al sincronizar', 'flavor-chat-ia')); ?>');
+                            alert(response.data?.message || '<?php echo esc_js(__('Error al sincronizar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                         }
                     },
                     error: function() {
-                        alert('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>');
+                        alert('<?php echo esc_js(__('Error de conexión', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                     },
                     complete: function() {
                         $btn.prop('disabled', false).html(originalHtml);
@@ -3500,17 +3500,17 @@ class Flavor_App_Config_Admin {
      */
     public function ajax_generate_token() {
         if (!check_ajax_referer('flavor_apps_config', 'nonce', false)) {
-            wp_send_json_error(['message' => __('Nonce inválido o expirado. Recarga la página e inténtalo de nuevo.', 'flavor-chat-ia')], 403);
+            wp_send_json_error(['message' => __('Nonce inválido o expirado. Recarga la página e inténtalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN)], 403);
         }
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')], 403);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)], 403);
         }
 
         $name = isset($_POST['name']) ? sanitize_text_field($_POST['name']) : '';
 
         if (empty($name)) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Generar token único
@@ -3540,17 +3540,17 @@ class Flavor_App_Config_Admin {
      */
     public function ajax_revoke_token() {
         if (!check_ajax_referer('flavor_apps_config', 'nonce', false)) {
-            wp_send_json_error(['message' => __('Nonce inválido o expirado. Recarga la página e inténtalo de nuevo.', 'flavor-chat-ia')], 403);
+            wp_send_json_error(['message' => __('Nonce inválido o expirado. Recarga la página e inténtalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN)], 403);
         }
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')], 403);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)], 403);
         }
 
         $token_id = isset($_POST['token_id']) ? sanitize_text_field($_POST['token_id']) : '';
 
         if (empty($token_id)) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $tokens = get_option('flavor_apps_tokens', []);
@@ -3562,7 +3562,7 @@ class Flavor_App_Config_Admin {
             update_option('flavor_apps_tokens', $tokens);
             wp_send_json_success();
         } else {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -3571,11 +3571,11 @@ class Flavor_App_Config_Admin {
      */
     public function ajax_get_menu_items() {
         if (!check_ajax_referer('flavor_apps_config', 'nonce', false)) {
-            wp_send_json_error(['message' => __('Nonce inválido o expirado. Recarga la página e inténtalo de nuevo.', 'flavor-chat-ia')], 403);
+            wp_send_json_error(['message' => __('Nonce inválido o expirado. Recarga la página e inténtalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN)], 403);
         }
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')], 403);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)], 403);
         }
 
         $menu_source = isset($_POST['menu_source']) ? sanitize_text_field($_POST['menu_source']) : '';
@@ -3589,18 +3589,18 @@ class Flavor_App_Config_Admin {
      */
     public function ajax_toggle_module_activation() {
         if (!check_ajax_referer('flavor_apps_config', 'nonce', false)) {
-            wp_send_json_error(['message' => __('Nonce inválido o expirado. Recarga la página e inténtalo de nuevo.', 'flavor-chat-ia')], 403);
+            wp_send_json_error(['message' => __('Nonce inválido o expirado. Recarga la página e inténtalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN)], 403);
         }
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')], 403);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)], 403);
         }
 
         $module_id = isset($_POST['module_id']) ? sanitize_key($_POST['module_id']) : '';
         $activate = isset($_POST['activate']) ? (bool) intval($_POST['activate']) : false;
 
         if (!$module_id) {
-            wp_send_json_error(['message' => __('Módulo inválido', 'flavor-chat-ia')], 400);
+            wp_send_json_error(['message' => __('Módulo inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)], 400);
         }
 
         $registered_modules = [];
@@ -3610,7 +3610,7 @@ class Flavor_App_Config_Admin {
         }
 
         if (!isset($registered_modules[$module_id])) {
-            wp_send_json_error(['message' => __('Módulo no instalado', 'flavor-chat-ia')], 404);
+            wp_send_json_error(['message' => __('Módulo no instalado', FLAVOR_PLATFORM_TEXT_DOMAIN)], 404);
         }
 
         $settings = get_option('flavor_chat_ia_settings', []);
@@ -4198,7 +4198,7 @@ class Flavor_App_Config_Admin {
 
         update_option('flavor_app_push_settings', $settings);
 
-        add_settings_error('flavor_push', 'push_saved', __('Configuración de Push guardada', 'flavor-chat-ia'), 'success');
+        add_settings_error('flavor_push', 'push_saved', __('Configuración de Push guardada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'success');
     }
 
     /**
@@ -4241,14 +4241,14 @@ class Flavor_App_Config_Admin {
         check_ajax_referer('flavor_dev_tools', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $config_json = stripslashes($_POST['config'] ?? '');
         $config_data = json_decode($config_json, true);
 
         if (!is_array($config_data)) {
-            wp_send_json_error(['message' => __('JSON inválido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('JSON inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Importar cada opción
@@ -4268,7 +4268,7 @@ class Flavor_App_Config_Admin {
             update_option('flavor_directory_peer_urls', $config_data['flavor_directory_peer_urls']);
         }
 
-        wp_send_json_success(['message' => __('Configuración importada correctamente', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Configuración importada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -4278,7 +4278,7 @@ class Flavor_App_Config_Admin {
         check_ajax_referer('flavor_dev_tools', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -4297,7 +4297,7 @@ class Flavor_App_Config_Admin {
             wp_cache_flush();
         }
 
-        wp_send_json_success(['message' => __('Caché limpiado correctamente', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Caché limpiado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -4307,7 +4307,7 @@ class Flavor_App_Config_Admin {
         check_ajax_referer('flavor_dev_tools', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Generar nuevos secretos
@@ -4321,7 +4321,7 @@ class Flavor_App_Config_Admin {
         delete_option('flavor_apps_tokens');
 
         wp_send_json_success([
-            'message' => __('Secretos regenerados. Todos los tokens han sido invalidados.', 'flavor-chat-ia'),
+            'message' => __('Secretos regenerados. Todos los tokens han sido invalidados.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -4332,7 +4332,7 @@ class Flavor_App_Config_Admin {
         check_ajax_referer('flavor_dev_tools', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -4392,7 +4392,7 @@ class Flavor_App_Config_Admin {
         dbDelta($sql_stats);
 
         wp_send_json_success([
-            'message' => sprintf(__('Tablas creadas/actualizadas: %s', 'flavor-chat-ia'), implode(', ', $tables_created)),
+            'message' => sprintf(__('Tablas creadas/actualizadas: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), implode(', ', $tables_created)),
         ]);
     }
 
@@ -4403,7 +4403,7 @@ class Flavor_App_Config_Admin {
         check_ajax_referer('flavor_dev_tools', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Eliminar todas las opciones de la app
@@ -4424,7 +4424,7 @@ class Flavor_App_Config_Admin {
              OR option_name LIKE '_transient_timeout_flavor_app_%'"
         );
 
-        wp_send_json_success(['message' => __('Configuración restablecida a valores por defecto', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Configuración restablecida a valores por defecto', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -4434,7 +4434,7 @@ class Flavor_App_Config_Admin {
         check_ajax_referer('flavor_push_test', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $title = sanitize_text_field($_POST['title'] ?? '');
@@ -4442,14 +4442,14 @@ class Flavor_App_Config_Admin {
         $topic = sanitize_text_field($_POST['topic'] ?? '');
 
         if (empty($title) || empty($body) || empty($topic)) {
-            wp_send_json_error(['message' => __('Todos los campos son requeridos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Todos los campos son requeridos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $push_settings = get_option('flavor_app_push_settings', []);
         $server_key = $push_settings['fcm_server_key'] ?? '';
 
         if (empty($server_key)) {
-            wp_send_json_error(['message' => __('FCM Server Key no configurado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('FCM Server Key no configurado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Enviar a FCM
@@ -4481,10 +4481,10 @@ class Flavor_App_Config_Admin {
         $response_body = json_decode(wp_remote_retrieve_body($response), true);
 
         if (isset($response_body['message_id'])) {
-            wp_send_json_success(['message' => __('Notificación enviada correctamente', 'flavor-chat-ia')]);
+            wp_send_json_success(['message' => __('Notificación enviada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
             wp_send_json_error([
-                'message' => $response_body['error'] ?? __('Error desconocido al enviar', 'flavor-chat-ia'),
+                'message' => $response_body['error'] ?? __('Error desconocido al enviar', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
     }
@@ -4515,7 +4515,7 @@ class Flavor_App_Config_Admin {
         }
 
         if (empty($logs)) {
-            $logs = __('No se encontraron logs relevantes. Asegúrate de que WP_DEBUG_LOG esté habilitado.', 'flavor-chat-ia');
+            $logs = __('No se encontraron logs relevantes. Asegúrate de que WP_DEBUG_LOG esté habilitado.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         wp_send_json_success($logs);
@@ -4544,196 +4544,196 @@ class Flavor_App_Config_Admin {
                 'id' => 'eventos',
                 'label' => 'Eventos',
                 'icon' => 'event',
-                'description' => __('Calendario de eventos y actividades', 'flavor-chat-ia'),
+                'description' => __('Calendario de eventos y actividades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 10,
             ],
             'grupos-consumo' => [
                 'id' => 'grupos_consumo',
                 'label' => 'Grupos Consumo',
                 'icon' => 'groups',
-                'description' => __('Gestión de grupos de consumo responsable', 'flavor-chat-ia'),
+                'description' => __('Gestión de grupos de consumo responsable', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 15,
             ],
             'grupos_consumo' => [
                 'id' => 'grupos_consumo',
                 'label' => 'Grupos Consumo',
                 'icon' => 'groups',
-                'description' => __('Gestión de grupos de consumo responsable', 'flavor-chat-ia'),
+                'description' => __('Gestión de grupos de consumo responsable', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 15,
             ],
             'banco-tiempo' => [
                 'id' => 'banco_tiempo',
                 'label' => 'Banco de Tiempo',
                 'icon' => 'handyman',
-                'description' => __('Intercambio de servicios y habilidades', 'flavor-chat-ia'),
+                'description' => __('Intercambio de servicios y habilidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 20,
             ],
             'banco_tiempo' => [
                 'id' => 'banco_tiempo',
                 'label' => 'Banco de Tiempo',
                 'icon' => 'handyman',
-                'description' => __('Intercambio de servicios y habilidades', 'flavor-chat-ia'),
+                'description' => __('Intercambio de servicios y habilidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 20,
             ],
             'marketplace' => [
                 'id' => 'marketplace',
                 'label' => 'Marketplace',
                 'icon' => 'store',
-                'description' => __('Mercado de productos locales', 'flavor-chat-ia'),
+                'description' => __('Mercado de productos locales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 12,
             ],
             'socios' => [
                 'id' => 'socios',
                 'label' => 'Miembros',
                 'icon' => 'badge',
-                'description' => __('Gestión de membresías y miembros', 'flavor-chat-ia'),
+                'description' => __('Gestión de membresías y miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 25,
             ],
             'facturas' => [
                 'id' => 'facturas',
                 'label' => 'Facturas',
                 'icon' => 'receipt',
-                'description' => __('Facturación y pagos', 'flavor-chat-ia'),
+                'description' => __('Facturación y pagos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 30,
             ],
             'carpooling' => [
                 'id' => 'carpooling',
                 'label' => 'Carpooling',
                 'icon' => 'directions_car',
-                'description' => __('Compartir viajes en coche', 'flavor-chat-ia'),
+                'description' => __('Compartir viajes en coche', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 22,
             ],
             'comunidades' => [
                 'id' => 'comunidades',
                 'label' => 'Comunidades',
                 'icon' => 'groups',
-                'description' => __('Gestión de comunidades locales', 'flavor-chat-ia'),
+                'description' => __('Gestión de comunidades locales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 8,
             ],
             'tramites' => [
                 'id' => 'tramites',
                 'label' => 'Trámites',
                 'icon' => 'description',
-                'description' => __('Trámites y gestiones administrativas', 'flavor-chat-ia'),
+                'description' => __('Trámites y gestiones administrativas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 18,
             ],
             'incidencias' => [
                 'id' => 'incidencias',
                 'label' => 'Incidencias',
                 'icon' => 'report_problem',
-                'description' => __('Reportar y gestionar incidencias', 'flavor-chat-ia'),
+                'description' => __('Reportar y gestionar incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 16,
             ],
             'avisos-municipales' => [
                 'id' => 'avisos_municipales',
                 'label' => 'Avisos',
                 'icon' => 'campaign',
-                'description' => __('Avisos y comunicados oficiales', 'flavor-chat-ia'),
+                'description' => __('Avisos y comunicados oficiales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 5,
             ],
             'avisos_municipales' => [
                 'id' => 'avisos_municipales',
                 'label' => 'Avisos',
                 'icon' => 'campaign',
-                'description' => __('Avisos y comunicados oficiales', 'flavor-chat-ia'),
+                'description' => __('Avisos y comunicados oficiales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 5,
             ],
             'cursos' => [
                 'id' => 'cursos',
                 'label' => 'Cursos',
                 'icon' => 'school',
-                'description' => __('Formación y cursos disponibles', 'flavor-chat-ia'),
+                'description' => __('Formación y cursos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 24,
             ],
             'biblioteca' => [
                 'id' => 'biblioteca',
                 'label' => 'Biblioteca',
                 'icon' => 'local_library',
-                'description' => __('Recursos y documentación', 'flavor-chat-ia'),
+                'description' => __('Recursos y documentación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 28,
             ],
             'chat-grupos' => [
                 'id' => 'chat_grupos',
                 'label' => 'Chat Grupos',
                 'icon' => 'forum',
-                'description' => __('Conversaciones grupales', 'flavor-chat-ia'),
+                'description' => __('Conversaciones grupales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 6,
             ],
             'chat_grupos' => [
                 'id' => 'chat_grupos',
                 'label' => 'Chat Grupos',
                 'icon' => 'forum',
-                'description' => __('Conversaciones grupales', 'flavor-chat-ia'),
+                'description' => __('Conversaciones grupales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 6,
             ],
             'chat-interno' => [
                 'id' => 'chat_interno',
                 'label' => 'Mensajes',
                 'icon' => 'chat',
-                'description' => __('Mensajería directa entre usuarios', 'flavor-chat-ia'),
+                'description' => __('Mensajería directa entre usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 7,
             ],
             'chat_interno' => [
                 'id' => 'chat_interno',
                 'label' => 'Mensajes',
                 'icon' => 'chat',
-                'description' => __('Mensajería directa entre usuarios', 'flavor-chat-ia'),
+                'description' => __('Mensajería directa entre usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 7,
             ],
             'presupuestos-participativos' => [
                 'id' => 'presupuestos_participativos',
                 'label' => 'Presupuestos',
                 'icon' => 'how_to_vote',
-                'description' => __('Votación de presupuestos participativos', 'flavor-chat-ia'),
+                'description' => __('Votación de presupuestos participativos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 14,
             ],
             'crowdfunding' => [
                 'id' => 'crowdfunding',
                 'label' => 'Crowdfunding',
                 'icon' => 'volunteer_activism',
-                'description' => __('Financiación colectiva de proyectos', 'flavor-chat-ia'),
+                'description' => __('Financiación colectiva de proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 26,
             ],
             'economia-don' => [
                 'id' => 'economia_don',
                 'label' => 'Economía del Don',
                 'icon' => 'favorite',
-                'description' => __('Intercambio basado en la generosidad', 'flavor-chat-ia'),
+                'description' => __('Intercambio basado en la generosidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 27,
             ],
             'economia_don' => [
                 'id' => 'economia_don',
                 'label' => 'Economía del Don',
                 'icon' => 'favorite',
-                'description' => __('Intercambio basado en la generosidad', 'flavor-chat-ia'),
+                'description' => __('Intercambio basado en la generosidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 27,
             ],
             'red-social' => [
                 'id' => 'red_social',
                 'label' => 'Red Social',
                 'icon' => 'people',
-                'description' => __('Publicaciones y perfiles de usuarios', 'flavor-chat-ia'),
+                'description' => __('Publicaciones y perfiles de usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 9,
             ],
             'red_social' => [
                 'id' => 'red_social',
                 'label' => 'Red Social',
                 'icon' => 'people',
-                'description' => __('Publicaciones y perfiles de usuarios', 'flavor-chat-ia'),
+                'description' => __('Publicaciones y perfiles de usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 9,
             ],
             'trabajo-digno' => [
                 'id' => 'trabajo_digno',
                 'label' => 'Trabajo Digno',
                 'icon' => 'work',
-                'description' => __('Ofertas de empleo ético y local', 'flavor-chat-ia'),
+                'description' => __('Ofertas de empleo ético y local', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 23,
             ],
             'trabajo_digno' => [
                 'id' => 'trabajo_digno',
                 'label' => 'Trabajo Digno',
                 'icon' => 'work',
-                'description' => __('Ofertas de empleo ético y local', 'flavor-chat-ia'),
+                'description' => __('Ofertas de empleo ético y local', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'priority' => 23,
             ],
         ];
@@ -4744,7 +4744,7 @@ class Flavor_App_Config_Admin {
                 'id' => 'info',
                 'label' => 'Info',
                 'icon' => 'info',
-                'description' => __('Información general del sitio', 'flavor-chat-ia'),
+                'description' => __('Información general del sitio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'enabled' => true,
                 'priority' => 1,
             ],
@@ -4752,7 +4752,7 @@ class Flavor_App_Config_Admin {
                 'id' => 'chat',
                 'label' => 'Chat',
                 'icon' => 'chat_bubble',
-                'description' => __('Chat con asistente de IA', 'flavor-chat-ia'),
+                'description' => __('Chat con asistente de IA', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'enabled' => true,
                 'priority' => 2,
             ],
@@ -4783,7 +4783,7 @@ class Flavor_App_Config_Admin {
                 'id' => 'reservations',
                 'label' => 'Reservar',
                 'icon' => 'calendar_today',
-                'description' => __('Sistema de reservas y citas', 'flavor-chat-ia'),
+                'description' => __('Sistema de reservas y citas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'enabled' => true,
                 'priority' => 3,
             ];
@@ -4791,7 +4791,7 @@ class Flavor_App_Config_Admin {
                 'id' => 'my_tickets',
                 'label' => 'Mis Tickets',
                 'icon' => 'confirmation_number',
-                'description' => __('Tus reservas y tickets', 'flavor-chat-ia'),
+                'description' => __('Tus reservas y tickets', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'enabled' => true,
                 'priority' => 4,
             ];
@@ -4843,7 +4843,7 @@ class Flavor_App_Config_Admin {
         check_ajax_referer('flavor_apps_config', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -4883,7 +4883,7 @@ class Flavor_App_Config_Admin {
 
         wp_send_json_success([
             'message' => sprintf(
-                __('Sincronización completada: %d módulos activados, %d ya estaban activos.', 'flavor-chat-ia'),
+                __('Sincronización completada: %d módulos activados, %d ya estaban activos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 count($sincronizados),
                 count($ya_activos)
             ),
@@ -4900,16 +4900,16 @@ class Flavor_App_Config_Admin {
         ?>
         <div class="flavor-stats-tab" x-data="flavorAppStats()">
             <div class="stats-header">
-                <h2><?php _e('Estadísticas de Uso', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Estadísticas de Uso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <div class="stats-period-selector">
                     <select x-model="period" @change="loadStats()">
-                        <option value="7"><?php _e('Últimos 7 días', 'flavor-chat-ia'); ?></option>
-                        <option value="30"><?php _e('Últimos 30 días', 'flavor-chat-ia'); ?></option>
-                        <option value="90"><?php _e('Últimos 90 días', 'flavor-chat-ia'); ?></option>
+                        <option value="7"><?php _e('Últimos 7 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="30"><?php _e('Últimos 30 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="90"><?php _e('Últimos 90 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                     <button type="button" class="button" @click="loadStats()" :disabled="loading">
-                        <span x-show="!loading"><?php _e('Actualizar', 'flavor-chat-ia'); ?></span>
-                        <span x-show="loading"><?php _e('Cargando...', 'flavor-chat-ia'); ?></span>
+                        <span x-show="!loading"><?php _e('Actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                        <span x-show="loading"><?php _e('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </button>
                 </div>
             </div>
@@ -4920,42 +4920,42 @@ class Flavor_App_Config_Admin {
                     <div class="stat-icon dashicons dashicons-smartphone"></div>
                     <div class="stat-content">
                         <span class="stat-value" x-text="summary.total_connections || 0"></span>
-                        <span class="stat-label"><?php _e('Conexiones Totales', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('Conexiones Totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon dashicons dashicons-admin-users"></div>
                     <div class="stat-content">
                         <span class="stat-value" x-text="summary.unique_devices || 0"></span>
-                        <span class="stat-label"><?php _e('Dispositivos Únicos', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('Dispositivos Únicos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon dashicons dashicons-grid-view"></div>
                     <div class="stat-content">
                         <span class="stat-value" x-text="summary.module_accesses || 0"></span>
-                        <span class="stat-label"><?php _e('Accesos a Módulos', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('Accesos a Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon dashicons dashicons-chart-line"></div>
                     <div class="stat-content">
                         <span class="stat-value" x-text="summary.active_tokens || 0"></span>
-                        <span class="stat-label"><?php _e('Tokens Activos', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('Tokens Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
 
             <!-- Gráfico de Timeline -->
             <div class="stats-chart-container">
-                <h3><?php _e('Actividad Diaria', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Actividad Diaria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <canvas id="statsTimelineChart" height="300"></canvas>
             </div>
 
             <!-- Módulos más usados -->
             <div class="stats-modules-grid">
                 <div class="stats-module-ranking">
-                    <h3><?php _e('Módulos Más Usados', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Módulos Más Usados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <ul class="module-list">
                         <template x-for="module in topModules" :key="module.module_id">
                             <li class="module-item">
@@ -4970,21 +4970,21 @@ class Flavor_App_Config_Admin {
                 </div>
 
                 <div class="stats-devices">
-                    <h3><?php _e('Dispositivos', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Dispositivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <canvas id="statsDevicesChart" height="200"></canvas>
                 </div>
             </div>
 
             <!-- Actividad de Tokens -->
             <div class="stats-tokens">
-                <h3><?php _e('Tokens Push Registrados', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Tokens Push Registrados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
-                            <th><?php _e('Token (parcial)', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Plataforma', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Usuario', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Última actividad', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Token (parcial)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Plataforma', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Última actividad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -4997,7 +4997,7 @@ class Flavor_App_Config_Admin {
                             </tr>
                         </template>
                         <tr x-show="recentTokens.length === 0">
-                            <td colspan="4"><?php _e('No hay tokens registrados', 'flavor-chat-ia'); ?></td>
+                            <td colspan="4"><?php _e('No hay tokens registrados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                         </tr>
                     </tbody>
                 </table>
@@ -5054,13 +5054,13 @@ class Flavor_App_Config_Admin {
                         data: {
                             labels: timeline.map(d => d.date),
                             datasets: [{
-                                label: '<?php _e('Conexiones', 'flavor-chat-ia'); ?>',
+                                label: '<?php _e('Conexiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                                 data: timeline.map(d => d.connections),
                                 borderColor: '#2271b1',
                                 tension: 0.3,
                                 fill: false
                             }, {
-                                label: '<?php _e('Módulos', 'flavor-chat-ia'); ?>',
+                                label: '<?php _e('Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                                 data: timeline.map(d => d.module_accesses),
                                 borderColor: '#00a32a',
                                 tension: 0.3,
@@ -5107,50 +5107,50 @@ class Flavor_App_Config_Admin {
         ]);
         ?>
         <div class="flavor-push-tab">
-            <h2><?php _e('Configuración de Notificaciones Push', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Configuración de Notificaciones Push', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <form method="post" action="" id="push-settings-form">
                 <?php wp_nonce_field('flavor_save_push_settings', 'push_nonce'); ?>
 
                 <table class="form-table">
                     <tr>
-                        <th scope="row"><?php _e('Habilitar Push', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php _e('Habilitar Push', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <label>
                                 <input type="checkbox" name="push_enabled" value="1" <?php checked($push_settings['enabled']); ?>>
-                                <?php _e('Activar notificaciones push', 'flavor-chat-ia'); ?>
+                                <?php _e('Activar notificaciones push', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><?php _e('FCM Server Key', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php _e('FCM Server Key', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <input type="password" name="fcm_server_key" class="regular-text"
                                    value="<?php echo esc_attr($push_settings['fcm_server_key']); ?>"
                                    placeholder="AAAA...">
-                            <p class="description"><?php _e('Clave del servidor de Firebase Cloud Messaging', 'flavor-chat-ia'); ?></p>
+                            <p class="description"><?php _e('Clave del servidor de Firebase Cloud Messaging', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><?php _e('FCM Sender ID', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php _e('FCM Sender ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <input type="text" name="fcm_sender_id" class="regular-text"
                                    value="<?php echo esc_attr($push_settings['fcm_sender_id']); ?>"
                                    placeholder="123456789012">
-                            <p class="description"><?php _e('ID del remitente de Firebase', 'flavor-chat-ia'); ?></p>
+                            <p class="description"><?php _e('ID del remitente de Firebase', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </td>
                     </tr>
                 </table>
 
-                <h3><?php _e('Topics por Módulo', 'flavor-chat-ia'); ?></h3>
-                <p class="description"><?php _e('Configura topics de FCM para cada módulo. Los usuarios suscritos recibirán notificaciones.', 'flavor-chat-ia'); ?></p>
+                <h3><?php _e('Topics por Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p class="description"><?php _e('Configura topics de FCM para cada módulo. Los usuarios suscritos recibirán notificaciones.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                 <table class="wp-list-table widefat fixed striped" style="max-width: 800px;">
                     <thead>
                         <tr>
-                            <th><?php _e('Módulo', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Topic FCM', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Activo', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Topic FCM', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -5177,29 +5177,29 @@ class Flavor_App_Config_Admin {
 
                 <p class="submit">
                     <button type="submit" name="save_push_settings" class="button button-primary">
-                        <?php _e('Guardar Configuración', 'flavor-chat-ia'); ?>
+                        <?php _e('Guardar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </p>
             </form>
 
             <hr>
 
-            <h3><?php _e('Enviar Notificación de Prueba', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Enviar Notificación de Prueba', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <div class="push-test-form" x-data="pushTestForm()">
                 <table class="form-table">
                     <tr>
-                        <th><?php _e('Título', 'flavor-chat-ia'); ?></th>
-                        <td><input type="text" x-model="title" class="regular-text" placeholder="<?php _e('Título de la notificación', 'flavor-chat-ia'); ?>"></td>
+                        <th><?php _e('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <td><input type="text" x-model="title" class="regular-text" placeholder="<?php _e('Título de la notificación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></td>
                     </tr>
                     <tr>
-                        <th><?php _e('Mensaje', 'flavor-chat-ia'); ?></th>
-                        <td><textarea x-model="body" rows="3" class="large-text" placeholder="<?php _e('Cuerpo del mensaje', 'flavor-chat-ia'); ?>"></textarea></td>
+                        <th><?php _e('Mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <td><textarea x-model="body" rows="3" class="large-text" placeholder="<?php _e('Cuerpo del mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea></td>
                     </tr>
                     <tr>
-                        <th><?php _e('Topic', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Topic', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <select x-model="topic">
-                                <option value=""><?php _e('Seleccionar topic...', 'flavor-chat-ia'); ?></option>
+                                <option value=""><?php _e('Seleccionar topic...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                 <?php foreach ($modules as $module) : ?>
                                 <option value="<?php echo esc_attr($module); ?>"><?php echo ucfirst(str_replace('_', ' ', $module)); ?></option>
                                 <?php endforeach; ?>
@@ -5209,8 +5209,8 @@ class Flavor_App_Config_Admin {
                 </table>
                 <p>
                     <button type="button" class="button button-secondary" @click="sendTest()" :disabled="sending">
-                        <span x-show="!sending"><?php _e('Enviar Notificación de Prueba', 'flavor-chat-ia'); ?></span>
-                        <span x-show="sending"><?php _e('Enviando...', 'flavor-chat-ia'); ?></span>
+                        <span x-show="!sending"><?php _e('Enviar Notificación de Prueba', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                        <span x-show="sending"><?php _e('Enviando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </button>
                 </p>
                 <div x-show="result" :class="'notice notice-' + (success ? 'success' : 'error')" style="padding: 10px;">
@@ -5231,7 +5231,7 @@ class Flavor_App_Config_Admin {
 
                 async sendTest() {
                     if (!this.title || !this.body || !this.topic) {
-                        this.result = '<?php _e('Completa todos los campos', 'flavor-chat-ia'); ?>';
+                        this.result = '<?php _e('Completa todos los campos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>';
                         this.success = false;
                         return;
                     }
@@ -5253,10 +5253,10 @@ class Flavor_App_Config_Admin {
                         });
                         const data = await response.json();
                         this.success = data.success;
-                        this.result = data.data?.message || (data.success ? '<?php _e('Enviado correctamente', 'flavor-chat-ia'); ?>' : '<?php _e('Error al enviar', 'flavor-chat-ia'); ?>');
+                        this.result = data.data?.message || (data.success ? '<?php _e('Enviado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>' : '<?php _e('Error al enviar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                     } catch (e) {
                         this.success = false;
-                        this.result = '<?php _e('Error de conexión', 'flavor-chat-ia'); ?>';
+                        this.result = '<?php _e('Error de conexión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>';
                     }
 
                     this.sending = false;
@@ -5273,11 +5273,11 @@ class Flavor_App_Config_Admin {
     private function render_diagnostics_tab() {
         ?>
         <div class="flavor-diagnostics-tab" x-data="flavorDiagnostics()">
-            <h2><?php _e('Diagnóstico de API', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Diagnóstico de API', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <!-- Info del Sistema -->
             <div class="diag-section">
-                <h3><?php _e('Información del Sistema', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Información del Sistema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <table class="widefat" style="max-width: 600px;">
                     <tr><td><strong>WordPress</strong></td><td><?php echo get_bloginfo('version'); ?></td></tr>
                     <tr><td><strong>PHP</strong></td><td><?php echo phpversion(); ?></td></tr>
@@ -5289,7 +5289,7 @@ class Flavor_App_Config_Admin {
 
             <!-- Tester de Endpoints -->
             <div class="diag-section">
-                <h3><?php _e('Probar Endpoints', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Probar Endpoints', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div class="endpoint-tester">
                     <div class="endpoint-input">
                         <select x-model="method" style="width: 100px;">
@@ -5299,13 +5299,13 @@ class Flavor_App_Config_Admin {
                         <input type="text" x-model="endpoint" class="regular-text"
                                placeholder="/flavor-app/v1/config" style="flex: 1;">
                         <button type="button" class="button button-primary" @click="testEndpoint()" :disabled="testing">
-                            <span x-show="!testing"><?php _e('Probar', 'flavor-chat-ia'); ?></span>
-                            <span x-show="testing"><?php _e('Probando...', 'flavor-chat-ia'); ?></span>
+                            <span x-show="!testing"><?php _e('Probar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                            <span x-show="testing"><?php _e('Probando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </button>
                     </div>
 
                     <div class="endpoint-presets">
-                        <strong><?php _e('Endpoints comunes:', 'flavor-chat-ia'); ?></strong>
+                        <strong><?php _e('Endpoints comunes:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                         <button type="button" class="button button-small" @click="setEndpoint('/flavor-app/v1/config')">Config</button>
                         <button type="button" class="button button-small" @click="setEndpoint('/flavor-app/v1/screens')">Screens</button>
                         <button type="button" class="button button-small" @click="setEndpoint('/flavor-app/v1/modules')">Modules</button>
@@ -5326,18 +5326,18 @@ class Flavor_App_Config_Admin {
 
             <!-- Verificación de Endpoints -->
             <div class="diag-section">
-                <h3><?php _e('Estado de Endpoints', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Estado de Endpoints', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <button type="button" class="button" @click="checkAllEndpoints()" :disabled="checkingAll">
-                    <span x-show="!checkingAll"><?php _e('Verificar Todos', 'flavor-chat-ia'); ?></span>
-                    <span x-show="checkingAll"><?php _e('Verificando...', 'flavor-chat-ia'); ?></span>
+                    <span x-show="!checkingAll"><?php _e('Verificar Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                    <span x-show="checkingAll"><?php _e('Verificando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </button>
 
                 <table class="wp-list-table widefat fixed striped" style="margin-top: 15px;">
                     <thead>
                         <tr>
-                            <th><?php _e('Endpoint', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 100px;"><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 100px;"><?php _e('Tiempo', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Endpoint', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 100px;"><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 100px;"><?php _e('Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -5358,10 +5358,10 @@ class Flavor_App_Config_Admin {
 
             <!-- Logs -->
             <div class="diag-section">
-                <h3><?php _e('Logs Recientes', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Logs Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div class="logs-container">
-                    <button type="button" class="button" @click="loadLogs()"><?php _e('Cargar Logs', 'flavor-chat-ia'); ?></button>
-                    <button type="button" class="button" @click="clearLogs()"><?php _e('Limpiar', 'flavor-chat-ia'); ?></button>
+                    <button type="button" class="button" @click="loadLogs()"><?php _e('Cargar Logs', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                    <button type="button" class="button" @click="clearLogs()"><?php _e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                     <pre x-text="logs" style="max-height: 300px; overflow: auto; background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 4px; margin-top: 10px;"></pre>
                 </div>
             </div>
@@ -5475,83 +5475,83 @@ class Flavor_App_Config_Admin {
         $demo_tools_by_addon = (bool) apply_filters('flavor_demo_tools_rendered_by_addon', false, $modulos_activos);
         ?>
         <div class="flavor-tools-tab" x-data="flavorDevTools()">
-            <h2><?php _e('Herramientas de Desarrollo', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Herramientas de Desarrollo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <div class="tools-grid">
                 <!-- Exportar Configuración -->
                 <div class="tool-card">
-                    <h3><span class="dashicons dashicons-download"></span> <?php _e('Exportar Configuración', 'flavor-chat-ia'); ?></h3>
-                    <p><?php _e('Descarga toda la configuración de la app en formato JSON.', 'flavor-chat-ia'); ?></p>
+                    <h3><span class="dashicons dashicons-download"></span> <?php _e('Exportar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php _e('Descarga toda la configuración de la app en formato JSON.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <button type="button" class="button button-primary" @click="exportConfig()">
-                        <?php _e('Exportar JSON', 'flavor-chat-ia'); ?>
+                        <?php _e('Exportar JSON', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
 
                 <!-- Importar Configuración -->
                 <div class="tool-card">
-                    <h3><span class="dashicons dashicons-upload"></span> <?php _e('Importar Configuración', 'flavor-chat-ia'); ?></h3>
-                    <p><?php _e('Restaura la configuración desde un archivo JSON.', 'flavor-chat-ia'); ?></p>
+                    <h3><span class="dashicons dashicons-upload"></span> <?php _e('Importar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php _e('Restaura la configuración desde un archivo JSON.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <input type="file" accept=".json" @change="handleImportFile($event)" id="import-file" style="display: none;">
                     <button type="button" class="button" @click="$refs.importFile.click()">
-                        <?php _e('Seleccionar Archivo', 'flavor-chat-ia'); ?>
+                        <?php _e('Seleccionar Archivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <input type="file" x-ref="importFile" accept=".json" @change="handleImportFile($event)" style="display: none;">
                     <span x-text="importFileName" style="margin-left: 10px;"></span>
                     <button type="button" class="button button-primary" x-show="importData" @click="importConfig()" :disabled="importing">
-                        <span x-show="!importing"><?php _e('Importar', 'flavor-chat-ia'); ?></span>
-                        <span x-show="importing"><?php _e('Importando...', 'flavor-chat-ia'); ?></span>
+                        <span x-show="!importing"><?php _e('Importar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                        <span x-show="importing"><?php _e('Importando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </button>
                 </div>
 
                 <!-- Limpiar Caché -->
                 <div class="tool-card">
-                    <h3><span class="dashicons dashicons-trash"></span> <?php _e('Limpiar Caché', 'flavor-chat-ia'); ?></h3>
-                    <p><?php _e('Elimina transients y caché relacionados con la app.', 'flavor-chat-ia'); ?></p>
+                    <h3><span class="dashicons dashicons-trash"></span> <?php _e('Limpiar Caché', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php _e('Elimina transients y caché relacionados con la app.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <button type="button" class="button button-secondary" @click="clearCache()" :disabled="clearingCache">
-                        <span x-show="!clearingCache"><?php _e('Limpiar Caché', 'flavor-chat-ia'); ?></span>
-                        <span x-show="clearingCache"><?php _e('Limpiando...', 'flavor-chat-ia'); ?></span>
+                        <span x-show="!clearingCache"><?php _e('Limpiar Caché', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                        <span x-show="clearingCache"><?php _e('Limpiando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </button>
                 </div>
 
                 <!-- Regenerar Secretos -->
                 <div class="tool-card">
-                    <h3><span class="dashicons dashicons-admin-network"></span> <?php _e('Regenerar Secretos', 'flavor-chat-ia'); ?></h3>
-                    <p><?php _e('Genera nuevos JWT secrets y API keys. ¡Esto invalidará tokens existentes!', 'flavor-chat-ia'); ?></p>
+                    <h3><span class="dashicons dashicons-admin-network"></span> <?php _e('Regenerar Secretos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php _e('Genera nuevos JWT secrets y API keys. ¡Esto invalidará tokens existentes!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <button type="button" class="button button-secondary" @click="regenerateSecrets()" :disabled="regenerating"
                             style="background: #d63638; border-color: #d63638; color: #fff;">
-                        <span x-show="!regenerating"><?php _e('Regenerar Secretos', 'flavor-chat-ia'); ?></span>
-                        <span x-show="regenerating"><?php _e('Regenerando...', 'flavor-chat-ia'); ?></span>
+                        <span x-show="!regenerating"><?php _e('Regenerar Secretos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                        <span x-show="regenerating"><?php _e('Regenerando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </button>
                 </div>
 
                 <!-- Crear Tablas -->
                 <div class="tool-card">
-                    <h3><span class="dashicons dashicons-database"></span> <?php _e('Crear/Actualizar Tablas', 'flavor-chat-ia'); ?></h3>
-                    <p><?php _e('Crea o actualiza las tablas de la base de datos del plugin.', 'flavor-chat-ia'); ?></p>
+                    <h3><span class="dashicons dashicons-database"></span> <?php _e('Crear/Actualizar Tablas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php _e('Crea o actualiza las tablas de la base de datos del plugin.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <button type="button" class="button" @click="createTables()" :disabled="creatingTables">
-                        <span x-show="!creatingTables"><?php _e('Ejecutar', 'flavor-chat-ia'); ?></span>
-                        <span x-show="creatingTables"><?php _e('Ejecutando...', 'flavor-chat-ia'); ?></span>
+                        <span x-show="!creatingTables"><?php _e('Ejecutar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                        <span x-show="creatingTables"><?php _e('Ejecutando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </button>
                 </div>
 
                 <!-- Reset Config -->
                 <div class="tool-card">
-                    <h3><span class="dashicons dashicons-backup"></span> <?php _e('Restablecer Configuración', 'flavor-chat-ia'); ?></h3>
-                    <p><?php _e('Restablece toda la configuración a los valores por defecto.', 'flavor-chat-ia'); ?></p>
+                    <h3><span class="dashicons dashicons-backup"></span> <?php _e('Restablecer Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php _e('Restablece toda la configuración a los valores por defecto.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <button type="button" class="button" @click="resetConfig()" :disabled="resetting"
                             style="background: #d63638; border-color: #d63638; color: #fff;">
-                        <span x-show="!resetting"><?php _e('Restablecer Todo', 'flavor-chat-ia'); ?></span>
-                        <span x-show="resetting"><?php _e('Restableciendo...', 'flavor-chat-ia'); ?></span>
+                        <span x-show="!resetting"><?php _e('Restablecer Todo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                        <span x-show="resetting"><?php _e('Restableciendo...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </button>
                 </div>
 
                 <!-- Datos demo -->
                 <?php if (!$demo_tools_by_addon) : ?>
                 <div class="tool-card">
-                    <h3><span class="dashicons dashicons-database-import"></span> <?php _e('Datos Demo', 'flavor-chat-ia'); ?></h3>
-                    <p><?php _e('Carga o elimina datos de demostración para los módulos del plugin.', 'flavor-chat-ia'); ?></p>
+                    <h3><span class="dashicons dashicons-database-import"></span> <?php _e('Datos Demo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php _e('Carga o elimina datos de demostración para los módulos del plugin.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <p style="margin-top: -8px; color:#646970;">
-                        <?php echo esc_html(sprintf(__('Módulos activos detectados: %d', 'flavor-chat-ia'), count($modulos_activos))); ?>
+                        <?php echo esc_html(sprintf(__('Módulos activos detectados: %d', FLAVOR_PLATFORM_TEXT_DOMAIN), count($modulos_activos))); ?>
                     </p>
 
                     <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:8px;">
@@ -5559,13 +5559,13 @@ class Flavor_App_Config_Admin {
                         <?php wp_nonce_field('flavor_demo_data_action'); ?>
                         <input type="hidden" name="action" value="flavor_populate_demo_data">
                         <input type="hidden" name="modulo_id" value="all">
-                        <input type="hidden" name="redirect_page" value="flavor-apps-config">
+                        <input type="hidden" name="redirect_page" value="flavor-platform-apps">
                         <input type="hidden" name="redirect_tab" value="tools">
                         <?php foreach ($modulos_activos as $modulo_activo): ?>
                             <input type="hidden" name="modulos_activos[]" value="<?php echo esc_attr($modulo_activo); ?>">
                         <?php endforeach; ?>
                         <button type="submit" class="button button-primary">
-                            <?php _e('Poblar activos', 'flavor-chat-ia'); ?>
+                            <?php _e('Poblar activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </form>
 
@@ -5573,37 +5573,37 @@ class Flavor_App_Config_Admin {
                         <?php wp_nonce_field('flavor_demo_data_action'); ?>
                         <input type="hidden" name="action" value="flavor_populate_demo_data">
                         <input type="hidden" name="modulo_id" value="all">
-                        <input type="hidden" name="redirect_page" value="flavor-apps-config">
+                        <input type="hidden" name="redirect_page" value="flavor-platform-apps">
                         <input type="hidden" name="redirect_tab" value="tools">
                         <button type="submit" class="button">
-                            <?php _e('Poblar todos', 'flavor-chat-ia'); ?>
+                            <?php _e('Poblar todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </form>
                     </div>
 
                     <div style="display:flex; flex-wrap:wrap; gap:10px;">
-                    <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" onsubmit="return confirm('<?php echo esc_js(__('¿Seguro que quieres eliminar los datos demo de módulos activos?', 'flavor-chat-ia')); ?>');">
+                    <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" onsubmit="return confirm('<?php echo esc_js(__('¿Seguro que quieres eliminar los datos demo de módulos activos?', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');">
                         <?php wp_nonce_field('flavor_demo_data_action'); ?>
                         <input type="hidden" name="action" value="flavor_clear_demo_data">
                         <input type="hidden" name="modulo_id" value="all">
-                        <input type="hidden" name="redirect_page" value="flavor-apps-config">
+                        <input type="hidden" name="redirect_page" value="flavor-platform-apps">
                         <input type="hidden" name="redirect_tab" value="tools">
                         <?php foreach ($modulos_activos as $modulo_activo): ?>
                             <input type="hidden" name="modulos_activos[]" value="<?php echo esc_attr($modulo_activo); ?>">
                         <?php endforeach; ?>
                         <button type="submit" class="button button-secondary">
-                            <?php _e('Limpiar activos', 'flavor-chat-ia'); ?>
+                            <?php _e('Limpiar activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </form>
 
-                    <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" onsubmit="return confirm('<?php echo esc_js(__('¿Seguro que quieres eliminar todos los datos demo?', 'flavor-chat-ia')); ?>');">
+                    <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" onsubmit="return confirm('<?php echo esc_js(__('¿Seguro que quieres eliminar todos los datos demo?', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');">
                         <?php wp_nonce_field('flavor_demo_data_action'); ?>
                         <input type="hidden" name="action" value="flavor_clear_demo_data">
                         <input type="hidden" name="modulo_id" value="all">
-                        <input type="hidden" name="redirect_page" value="flavor-apps-config">
+                        <input type="hidden" name="redirect_page" value="flavor-platform-apps">
                         <input type="hidden" name="redirect_tab" value="tools">
                         <button type="submit" class="button">
-                            <?php _e('Limpiar todos', 'flavor-chat-ia'); ?>
+                            <?php _e('Limpiar todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </form>
                     </div>
@@ -5620,17 +5620,17 @@ class Flavor_App_Config_Admin {
 
             <!-- Quick Info -->
             <div class="quick-info" style="margin-top: 30px;">
-                <h3><?php _e('Información Rápida', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Información Rápida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <table class="widefat" style="max-width: 600px;">
                     <tr>
-                        <td><strong><?php _e('Módulos Activos', 'flavor-chat-ia'); ?></strong></td>
+                        <td><strong><?php _e('Módulos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></td>
                         <td><?php
                             $active_modules = get_option('flavor_app_active_modules', []);
                             echo count($active_modules);
                         ?></td>
                     </tr>
                     <tr>
-                        <td><strong><?php _e('Tokens Push Registrados', 'flavor-chat-ia'); ?></strong></td>
+                        <td><strong><?php _e('Tokens Push Registrados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></td>
                         <td><?php
                             global $wpdb;
                             $count = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}flavor_push_tokens");
@@ -5638,7 +5638,7 @@ class Flavor_App_Config_Admin {
                         ?></td>
                     </tr>
                     <tr>
-                        <td><strong><?php _e('Última Sincronización', 'flavor-chat-ia'); ?></strong></td>
+                        <td><strong><?php _e('Última Sincronización', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></td>
                         <td><?php
                             $last_sync = get_option('flavor_app_last_sync');
                             echo $last_sync ? human_time_diff(strtotime($last_sync)) . ' ago' : '-';
@@ -5705,7 +5705,7 @@ class Flavor_App_Config_Admin {
                         try {
                             this.importData = JSON.parse(e.target.result);
                         } catch (err) {
-                            this.showResult('<?php _e('Archivo JSON inválido', 'flavor-chat-ia'); ?>', false);
+                            this.showResult('<?php _e('Archivo JSON inválido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', false);
                             this.importData = null;
                         }
                     };
@@ -5714,11 +5714,11 @@ class Flavor_App_Config_Admin {
 
                 async importConfig() {
                     if (!this.importData) return;
-                    if (!confirm('<?php _e('¿Estás seguro? Esto sobrescribirá la configuración actual.', 'flavor-chat-ia'); ?>')) return;
+                    if (!confirm('<?php _e('¿Estás seguro? Esto sobrescribirá la configuración actual.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>')) return;
 
                     this.importing = true;
                     const result = await this.ajaxAction('flavor_import_app_config', { config: JSON.stringify(this.importData) });
-                    this.showResult(result.data?.message || (result.success ? '<?php _e('Importado correctamente', 'flavor-chat-ia'); ?>' : '<?php _e('Error al importar', 'flavor-chat-ia'); ?>'), result.success);
+                    this.showResult(result.data?.message || (result.success ? '<?php _e('Importado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>' : '<?php _e('Error al importar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>'), result.success);
                     this.importing = false;
                     this.importData = null;
                     this.importFileName = '';
@@ -5727,33 +5727,33 @@ class Flavor_App_Config_Admin {
                 async clearCache() {
                     this.clearingCache = true;
                     const result = await this.ajaxAction('flavor_clear_app_cache');
-                    this.showResult(result.data?.message || '<?php _e('Caché limpiado', 'flavor-chat-ia'); ?>', result.success);
+                    this.showResult(result.data?.message || '<?php _e('Caché limpiado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', result.success);
                     this.clearingCache = false;
                 },
 
                 async regenerateSecrets() {
-                    if (!confirm('<?php _e('¿Estás seguro? Esto invalidará todos los tokens de sesión activos.', 'flavor-chat-ia'); ?>')) return;
+                    if (!confirm('<?php _e('¿Estás seguro? Esto invalidará todos los tokens de sesión activos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>')) return;
 
                     this.regenerating = true;
                     const result = await this.ajaxAction('flavor_regenerate_secrets');
-                    this.showResult(result.data?.message || '<?php _e('Secretos regenerados', 'flavor-chat-ia'); ?>', result.success);
+                    this.showResult(result.data?.message || '<?php _e('Secretos regenerados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', result.success);
                     this.regenerating = false;
                 },
 
                 async createTables() {
                     this.creatingTables = true;
                     const result = await this.ajaxAction('flavor_create_app_tables');
-                    this.showResult(result.data?.message || '<?php _e('Tablas actualizadas', 'flavor-chat-ia'); ?>', result.success);
+                    this.showResult(result.data?.message || '<?php _e('Tablas actualizadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', result.success);
                     this.creatingTables = false;
                 },
 
                 async resetConfig() {
-                    if (!confirm('<?php _e('¿Estás seguro? Esto eliminará TODA la configuración de la app.', 'flavor-chat-ia'); ?>')) return;
-                    if (!confirm('<?php _e('Esta acción NO se puede deshacer. ¿Continuar?', 'flavor-chat-ia'); ?>')) return;
+                    if (!confirm('<?php _e('¿Estás seguro? Esto eliminará TODA la configuración de la app.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>')) return;
+                    if (!confirm('<?php _e('Esta acción NO se puede deshacer. ¿Continuar?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>')) return;
 
                     this.resetting = true;
                     const result = await this.ajaxAction('flavor_reset_app_config');
-                    this.showResult(result.data?.message || '<?php _e('Configuración restablecida', 'flavor-chat-ia'); ?>', result.success);
+                    this.showResult(result.data?.message || '<?php _e('Configuración restablecida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', result.success);
                     this.resetting = false;
 
                     if (result.success) {
@@ -5784,29 +5784,29 @@ class Flavor_App_Config_Admin {
         $app_scheme = isset($config['app_scheme']) ? $config['app_scheme'] : 'flavorapp';
         ?>
         <div class="flavor-deeplinks-tab" x-data="flavorDeepLinks()">
-            <h2><?php _e('Configuración de Deep Links', 'flavor-chat-ia'); ?></h2>
-            <p class="description"><?php _e('Los deep links permiten abrir contenido específico de la app desde enlaces web.', 'flavor-chat-ia'); ?></p>
+            <h2><?php _e('Configuración de Deep Links', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+            <p class="description"><?php _e('Los deep links permiten abrir contenido específico de la app desde enlaces web.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
             <!-- Configuración General -->
             <div class="deeplinks-section">
-                <h3><?php _e('Configuración General', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Configuración General', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <table class="form-table">
                     <tr>
-                        <th scope="row"><?php _e('Dominio de Deep Links', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php _e('Dominio de Deep Links', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <input type="text" name="flavor_apps_config[deep_link_domain]"
                                    value="<?php echo esc_attr($deep_link_domain); ?>"
                                    class="regular-text" placeholder="link.tuapp.com">
-                            <p class="description"><?php _e('Dominio personalizado para deep links (opcional). Por defecto se usa tu dominio actual.', 'flavor-chat-ia'); ?></p>
+                            <p class="description"><?php _e('Dominio personalizado para deep links (opcional). Por defecto se usa tu dominio actual.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><?php _e('Esquema de la App', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php _e('Esquema de la App', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <input type="text" name="flavor_apps_config[app_scheme]"
                                    value="<?php echo esc_attr($app_scheme); ?>"
                                    class="regular-text" placeholder="flavorapp">
-                            <p class="description"><?php _e('Esquema URI para abrir la app (ej: flavorapp://). Debe coincidir con la configuración en Flutter.', 'flavor-chat-ia'); ?></p>
+                            <p class="description"><?php _e('Esquema URI para abrir la app (ej: flavorapp://). Debe coincidir con la configuración en Flutter.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </td>
                     </tr>
                 </table>
@@ -5814,46 +5814,46 @@ class Flavor_App_Config_Admin {
 
             <!-- Patrones de Deep Links -->
             <div class="deeplinks-section">
-                <h3><?php _e('Patrones de Enlaces', 'flavor-chat-ia'); ?></h3>
-                <p class="description"><?php _e('Estos son los patrones soportados automáticamente por la app:', 'flavor-chat-ia'); ?></p>
+                <h3><?php _e('Patrones de Enlaces', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p class="description"><?php _e('Estos son los patrones soportados automáticamente por la app:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                 <table class="widefat" style="max-width: 800px;">
                     <thead>
                         <tr>
-                            <th><?php _e('Patrón', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Pantalla', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Ejemplo', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Patrón', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Pantalla', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Ejemplo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td><code>/module/{id}</code></td>
-                            <td><?php _e('Módulo específico', 'flavor-chat-ia'); ?></td>
+                            <td><?php _e('Módulo específico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                             <td><code><?php echo esc_html($app_scheme); ?>://module/noticias</code></td>
                         </tr>
                         <tr>
                             <td><code>/post/{id}</code></td>
-                            <td><?php _e('Detalle de post', 'flavor-chat-ia'); ?></td>
+                            <td><?php _e('Detalle de post', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                             <td><code><?php echo esc_html($app_scheme); ?>://post/123</code></td>
                         </tr>
                         <tr>
                             <td><code>/event/{id}</code></td>
-                            <td><?php _e('Detalle de evento', 'flavor-chat-ia'); ?></td>
+                            <td><?php _e('Detalle de evento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                             <td><code><?php echo esc_html($app_scheme); ?>://event/456</code></td>
                         </tr>
                         <tr>
                             <td><code>/product/{id}</code></td>
-                            <td><?php _e('Producto WooCommerce', 'flavor-chat-ia'); ?></td>
+                            <td><?php _e('Producto WooCommerce', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                             <td><code><?php echo esc_html($app_scheme); ?>://product/789</code></td>
                         </tr>
                         <tr>
                             <td><code>/chat</code></td>
-                            <td><?php _e('Pantalla de chat', 'flavor-chat-ia'); ?></td>
+                            <td><?php _e('Pantalla de chat', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                             <td><code><?php echo esc_html($app_scheme); ?>://chat</code></td>
                         </tr>
                         <tr>
                             <td><code>/profile</code></td>
-                            <td><?php _e('Perfil de usuario', 'flavor-chat-ia'); ?></td>
+                            <td><?php _e('Perfil de usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                             <td><code><?php echo esc_html($app_scheme); ?>://profile</code></td>
                         </tr>
                     </tbody>
@@ -5862,21 +5862,21 @@ class Flavor_App_Config_Admin {
 
             <!-- Multi-empresa (para apps white-label) -->
             <div class="deeplinks-section">
-                <h3><?php _e('Configuraciones de Empresa', 'flavor-chat-ia'); ?></h3>
-                <p class="description"><?php _e('Configura diferentes empresas para apps white-label. Cada empresa puede tener su propia configuración.', 'flavor-chat-ia'); ?></p>
+                <h3><?php _e('Configuraciones de Empresa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p class="description"><?php _e('Configura diferentes empresas para apps white-label. Cada empresa puede tener su propia configuración.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                 <div class="company-list">
                     <?php if (empty($companies)) : ?>
-                        <p><?php _e('No hay empresas configuradas. Crea la tabla desde Herramientas > Crear Tablas.', 'flavor-chat-ia'); ?></p>
+                        <p><?php _e('No hay empresas configuradas. Crea la tabla desde Herramientas > Crear Tablas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php else : ?>
                         <table class="wp-list-table widefat fixed striped">
                             <thead>
                                 <tr>
-                                    <th><?php _e('Slug', 'flavor-chat-ia'); ?></th>
-                                    <th><?php _e('Nombre', 'flavor-chat-ia'); ?></th>
-                                    <th><?php _e('API Base', 'flavor-chat-ia'); ?></th>
-                                    <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                                    <th><?php _e('Deep Link', 'flavor-chat-ia'); ?></th>
+                                    <th><?php _e('Slug', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php _e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php _e('API Base', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php _e('Deep Link', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -5903,32 +5903,32 @@ class Flavor_App_Config_Admin {
                 </div>
 
                 <p style="margin-top: 15px;">
-                    <a href="<?php echo admin_url('admin.php?page=flavor-deep-links'); ?>" class="button">
-                        <?php _e('Gestionar Empresas', 'flavor-chat-ia'); ?>
+                    <a href="<?php echo admin_url('admin.php?page=flavor-platform-deep-links'); ?>" class="button">
+                        <?php _e('Gestionar Empresas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </p>
             </div>
 
             <!-- Generador de Deep Links -->
             <div class="deeplinks-section">
-                <h3><?php _e('Generador de Deep Links', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Generador de Deep Links', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
                 <div class="deeplink-generator">
                     <table class="form-table">
                         <tr>
-                            <th><?php _e('Tipo', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             <td>
                                 <select x-model="linkType">
-                                    <option value="module"><?php _e('Módulo', 'flavor-chat-ia'); ?></option>
-                                    <option value="post"><?php _e('Post', 'flavor-chat-ia'); ?></option>
-                                    <option value="event"><?php _e('Evento', 'flavor-chat-ia'); ?></option>
-                                    <option value="product"><?php _e('Producto', 'flavor-chat-ia'); ?></option>
-                                    <option value="custom"><?php _e('Personalizado', 'flavor-chat-ia'); ?></option>
+                                    <option value="module"><?php _e('Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                    <option value="post"><?php _e('Post', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                    <option value="event"><?php _e('Evento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                    <option value="product"><?php _e('Producto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                    <option value="custom"><?php _e('Personalizado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                 </select>
                             </td>
                         </tr>
                         <tr>
-                            <th><?php _e('ID/Path', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('ID/Path', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             <td>
                                 <input type="text" x-model="linkId" class="regular-text" placeholder="123 o noticias">
                             </td>
@@ -5936,10 +5936,10 @@ class Flavor_App_Config_Admin {
                     </table>
 
                     <div class="generated-link" x-show="generatedLink">
-                        <strong><?php _e('Deep Link generado:', 'flavor-chat-ia'); ?></strong>
+                        <strong><?php _e('Deep Link generado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                         <code x-text="generatedLink"></code>
                         <button type="button" class="button button-small" @click="copyLink()">
-                            <?php _e('Copiar', 'flavor-chat-ia'); ?>
+                            <?php _e('Copiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </div>
@@ -5969,7 +5969,7 @@ class Flavor_App_Config_Admin {
 
                 copyLink() {
                     navigator.clipboard.writeText(this.generatedLink);
-                    alert('<?php _e('Enlace copiado', 'flavor-chat-ia'); ?>');
+                    alert('<?php _e('Enlace copiado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                 }
             }));
         });
@@ -6000,14 +6000,14 @@ class Flavor_App_Config_Admin {
         ];
         ?>
         <div class="flavor-languages-tab">
-            <h2><?php _e('Configuración de Idiomas', 'flavor-chat-ia'); ?></h2>
-            <p class="description"><?php _e('Configura los idiomas disponibles en la app móvil.', 'flavor-chat-ia'); ?></p>
+            <h2><?php _e('Configuración de Idiomas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+            <p class="description"><?php _e('Configura los idiomas disponibles en la app móvil.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
             <div class="languages-section">
-                <h3><?php _e('Idioma Principal', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Idioma Principal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <table class="form-table">
                     <tr>
-                        <th scope="row"><?php _e('Idioma por defecto', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php _e('Idioma por defecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <select name="flavor_apps_config[default_language]">
                                 <?php foreach ($available_languages as $code => $name) : ?>
@@ -6016,15 +6016,15 @@ class Flavor_App_Config_Admin {
                                     </option>
                                 <?php endforeach; ?>
                             </select>
-                            <p class="description"><?php _e('Idioma que se usará si no se detecta otro.', 'flavor-chat-ia'); ?></p>
+                            <p class="description"><?php _e('Idioma que se usará si no se detecta otro.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><?php _e('Detección automática', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php _e('Detección automática', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <label>
                                 <input type="checkbox" name="flavor_apps_config[language_auto_detect]" value="1" <?php checked($auto_detect); ?>>
-                                <?php _e('Detectar idioma del dispositivo automáticamente', 'flavor-chat-ia'); ?>
+                                <?php _e('Detectar idioma del dispositivo automáticamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
                         </td>
                     </tr>
@@ -6032,8 +6032,8 @@ class Flavor_App_Config_Admin {
             </div>
 
             <div class="languages-section">
-                <h3><?php _e('Idiomas Soportados', 'flavor-chat-ia'); ?></h3>
-                <p class="description"><?php _e('Selecciona los idiomas disponibles en la app. Los usuarios podrán cambiar entre estos idiomas.', 'flavor-chat-ia'); ?></p>
+                <h3><?php _e('Idiomas Soportados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p class="description"><?php _e('Selecciona los idiomas disponibles en la app. Los usuarios podrán cambiar entre estos idiomas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                 <div class="languages-grid">
                     <?php foreach ($available_languages as $code => $name) : ?>
@@ -6050,8 +6050,8 @@ class Flavor_App_Config_Admin {
             </div>
 
             <div class="languages-section">
-                <h3><?php _e('Traducciones de la App', 'flavor-chat-ia'); ?></h3>
-                <p class="description"><?php _e('El contenido del sitio se traduce automáticamente si tienes WPML o Polylang. Las cadenas de la app Flutter usan archivos ARB.', 'flavor-chat-ia'); ?></p>
+                <h3><?php _e('Traducciones de la App', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p class="description"><?php _e('El contenido del sitio se traduce automáticamente si tienes WPML o Polylang. Las cadenas de la app Flutter usan archivos ARB.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                 <div class="translation-status">
                     <table class="widefat" style="max-width: 600px;">
@@ -6060,10 +6060,10 @@ class Flavor_App_Config_Admin {
                             <td>
                                 <?php if (class_exists('SitePress')) : ?>
                                     <span class="dashicons dashicons-yes-alt" style="color: green;"></span>
-                                    <?php _e('Instalado y activo', 'flavor-chat-ia'); ?>
+                                    <?php _e('Instalado y activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 <?php else : ?>
                                     <span class="dashicons dashicons-minus" style="color: gray;"></span>
-                                    <?php _e('No instalado', 'flavor-chat-ia'); ?>
+                                    <?php _e('No instalado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 <?php endif; ?>
                             </td>
                         </tr>
@@ -6072,15 +6072,15 @@ class Flavor_App_Config_Admin {
                             <td>
                                 <?php if (function_exists('pll_languages_list')) : ?>
                                     <span class="dashicons dashicons-yes-alt" style="color: green;"></span>
-                                    <?php _e('Instalado y activo', 'flavor-chat-ia'); ?>
+                                    <?php _e('Instalado y activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 <?php else : ?>
                                     <span class="dashicons dashicons-minus" style="color: gray;"></span>
-                                    <?php _e('No instalado', 'flavor-chat-ia'); ?>
+                                    <?php _e('No instalado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 <?php endif; ?>
                             </td>
                         </tr>
                         <tr>
-                            <td><strong><?php _e('Archivos ARB (Flutter)', 'flavor-chat-ia'); ?></strong></td>
+                            <td><strong><?php _e('Archivos ARB (Flutter)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></td>
                             <td>
                                 <code>mobile-apps/lib/l10n/</code>
                             </td>
@@ -6090,13 +6090,13 @@ class Flavor_App_Config_Admin {
             </div>
 
             <div class="languages-section">
-                <h3><?php _e('Formato de Fechas y Números', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Formato de Fechas y Números', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <table class="form-table">
                     <tr>
-                        <th scope="row"><?php _e('Formato de fecha', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php _e('Formato de fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <select name="flavor_apps_config[date_format]">
-                                <option value="auto" <?php selected($config['date_format'] ?? 'auto', 'auto'); ?>><?php _e('Automático (según idioma)', 'flavor-chat-ia'); ?></option>
+                                <option value="auto" <?php selected($config['date_format'] ?? 'auto', 'auto'); ?>><?php _e('Automático (según idioma)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                 <option value="dd/MM/yyyy" <?php selected($config['date_format'] ?? '', 'dd/MM/yyyy'); ?>>DD/MM/YYYY (31/12/2025)</option>
                                 <option value="MM/dd/yyyy" <?php selected($config['date_format'] ?? '', 'MM/dd/yyyy'); ?>>MM/DD/YYYY (12/31/2025)</option>
                                 <option value="yyyy-MM-dd" <?php selected($config['date_format'] ?? '', 'yyyy-MM-dd'); ?>>YYYY-MM-DD (2025-12-31)</option>
@@ -6104,10 +6104,10 @@ class Flavor_App_Config_Admin {
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><?php _e('Formato de hora', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php _e('Formato de hora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <select name="flavor_apps_config[time_format]">
-                                <option value="auto" <?php selected($config['time_format'] ?? 'auto', 'auto'); ?>><?php _e('Automático (según idioma)', 'flavor-chat-ia'); ?></option>
+                                <option value="auto" <?php selected($config['time_format'] ?? 'auto', 'auto'); ?>><?php _e('Automático (según idioma)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                 <option value="HH:mm" <?php selected($config['time_format'] ?? '', 'HH:mm'); ?>>24h (14:30)</option>
                                 <option value="hh:mm a" <?php selected($config['time_format'] ?? '', 'hh:mm a'); ?>>12h (2:30 PM)</option>
                             </select>

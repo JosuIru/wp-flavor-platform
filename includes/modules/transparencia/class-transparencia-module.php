@@ -65,7 +65,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Transparencia no estan creadas. Se crearan automaticamente al activar.', 'flavor-chat-ia');
+            return __('Las tablas de Transparencia no estan creadas. Se crearan automaticamente al activar.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         
     return '';
@@ -109,41 +109,41 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
     protected function get_admin_config() {
         return [
             'id'         => 'transparencia',
-            'label'      => __('Transparencia', 'flavor-chat-ia'),
+            'label'      => __('Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'       => 'dashicons-visibility',
             'capability' => 'manage_options',
             'categoria'  => 'economia',
             'paginas'    => [
                 [
                     'slug'     => 'transparencia-dashboard',
-                    'titulo'   => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo'   => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_dashboard'],
                     'badge'    => [$this, 'contar_solicitudes_pendientes'],
                 ],
                 [
                     'slug'     => 'transparencia-datos',
-                    'titulo'   => __('Datos Públicos', 'flavor-chat-ia'),
+                    'titulo'   => __('Datos Públicos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_datos'],
                 ],
                 [
                     'slug'     => 'transparencia-solicitudes',
-                    'titulo'   => __('Solicitudes', 'flavor-chat-ia'),
+                    'titulo'   => __('Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_solicitudes'],
                     'badge'    => [$this, 'contar_solicitudes_pendientes'],
                 ],
                 [
                     'slug'     => 'transparencia-publicar',
-                    'titulo'   => __('Publicar', 'flavor-chat-ia'),
+                    'titulo'   => __('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_publicar'],
                 ],
                 [
                     'slug'     => 'transparencia-informes',
-                    'titulo'   => __('Informes', 'flavor-chat-ia'),
+                    'titulo'   => __('Informes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_informes'],
                 ],
                 [
                     'slug'     => 'transparencia-configuracion',
-                    'titulo'   => __('Configuración', 'flavor-chat-ia'),
+                    'titulo'   => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_configuracion'],
                 ],
             ],
@@ -246,12 +246,12 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
 
         if (!is_user_logged_in()) {
             return '<div class="flavor-alert flavor-alert-warning">' .
-                __('Debes iniciar sesión para ver tus solicitudes.', 'flavor-chat-ia') .
+                __('Debes iniciar sesión para ver tus solicitudes.', FLAVOR_PLATFORM_TEXT_DOMAIN) .
                 '</div>';
         }
 
         return '<div class="flavor-alert flavor-alert-info">' .
-            __('El panel de seguimiento de solicitudes no está disponible en este momento.', 'flavor-chat-ia') .
+            __('El panel de seguimiento de solicitudes no está disponible en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN) .
             '</div>';
     }
 
@@ -326,10 +326,10 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('transparencia_nonce'),
             'strings' => [
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
-                'error' => __('Error al procesar la solicitud', 'flavor-chat-ia'),
-                'sinResultados' => __('No se encontraron resultados', 'flavor-chat-ia'),
-                'confirmarDescarga' => __('Descargar documento?', 'flavor-chat-ia'),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al procesar la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sinResultados' => __('No se encontraron resultados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmarDescarga' => __('Descargar documento?', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -708,7 +708,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         $documento = $this->obtener_documento_por_id($documento_id);
 
         if (!$documento) {
-            return new WP_Error('not_found', __('Documento no encontrado', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Documento no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         // Incrementar visitas
@@ -815,7 +815,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         $solicitud = $this->obtener_solicitud_por_id($solicitud_id);
 
         if (!$solicitud) {
-            return new WP_Error('not_found', __('Solicitud no encontrada', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Solicitud no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         return new WP_REST_Response($solicitud, 200);
@@ -1302,17 +1302,17 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
 
         // Validaciones
         if (empty($datos['titulo']) || empty($datos['descripcion'])) {
-            return ['success' => false, 'error' => __('El titulo y la descripcion son obligatorios.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('El titulo y la descripcion son obligatorios.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if (empty($datos['email']) || !is_email($datos['email'])) {
-            return ['success' => false, 'error' => __('Debes indicar un correo electrónico válido.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes indicar un correo electrónico válido.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $usuario_actual_id = get_current_user_id();
 
         if (!$usuario_actual_id && !$configuracion['permite_solicitudes_anonimas']) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión para solicitar información.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión para solicitar información.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Generar numero de expediente
@@ -1353,7 +1353,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         ]);
 
         if ($resultado_insercion === false) {
-            return ['success' => false, 'error' => __('No se pudo registrar la solicitud de información.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No se pudo registrar la solicitud de información.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $solicitud_id = $wpdb->insert_id;
@@ -1364,7 +1364,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => true,
-            'mensaje' => __('Solicitud registrada correctamente.', 'flavor-chat-ia'),
+            'mensaje' => __('Solicitud registrada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'solicitud_id' => $solicitud_id,
             'numero_expediente' => $numero_expediente,
             'fecha_limite' => date_i18n('d/m/Y', strtotime($fecha_limite)),
@@ -1478,9 +1478,9 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         }
 
         $email_destino = $configuracion['email_notificaciones'];
-        $asunto = sprintf(__('[Transparencia] Nueva solicitud de informacion: %s', 'flavor-chat-ia'), $numero_expediente);
+        $asunto = sprintf(__('[Transparencia] Nueva solicitud de informacion: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $numero_expediente);
         $mensaje = sprintf(
-            __("Se ha recibido una nueva solicitud de acceso a informacion publica.\n\nNumero de expediente: %s\n\nAcceda al panel de administracion para gestionarla.", 'flavor-chat-ia'),
+            __("Se ha recibido una nueva solicitud de acceso a informacion publica.\n\nNumero de expediente: %s\n\nAcceda al panel de administracion para gestionarla.", FLAVOR_PLATFORM_TEXT_DOMAIN),
             $numero_expediente
         );
 
@@ -1491,12 +1491,12 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
      * Enviar confirmacion al solicitante
      */
     private function enviar_confirmacion_solicitante($email, $numero_expediente) {
-        $asunto = sprintf(__('Confirmacion de solicitud de informacion: %s', 'flavor-chat-ia'), $numero_expediente);
+        $asunto = sprintf(__('Confirmacion de solicitud de informacion: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $numero_expediente);
         $configuracion = $this->get_settings();
         $dias_plazo = $configuracion['dias_plazo_respuesta'];
 
         $mensaje = sprintf(
-            __("Su solicitud de acceso a informacion publica ha sido registrada correctamente.\n\nNumero de expediente: %s\n\nPlazo maximo de respuesta: %d dias habiles.\n\nGuarde este numero de expediente para futuras consultas.", 'flavor-chat-ia'),
+            __("Su solicitud de acceso a informacion publica ha sido registrada correctamente.\n\nNumero de expediente: %s\n\nPlazo maximo de respuesta: %d dias habiles.\n\nGuarde este numero de expediente para futuras consultas.", FLAVOR_PLATFORM_TEXT_DOMAIN),
             $numero_expediente,
             $dias_plazo
         );
@@ -1550,9 +1550,9 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         $configuracion = $this->get_settings();
         $email_destino = $configuracion['email_notificaciones'];
 
-        $asunto = sprintf(__('[URGENTE] Plazo proximo a vencer: %s', 'flavor-chat-ia'), $solicitud->numero_expediente);
+        $asunto = sprintf(__('[URGENTE] Plazo proximo a vencer: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $solicitud->numero_expediente);
         $mensaje = sprintf(
-            __("La solicitud %s tiene el plazo de respuesta proximo a vencer.\n\nFecha limite: %s\n\nPor favor, resuelva la solicitud a la mayor brevedad.", 'flavor-chat-ia'),
+            __("La solicitud %s tiene el plazo de respuesta proximo a vencer.\n\nFecha limite: %s\n\nPor favor, resuelva la solicitud a la mayor brevedad.", FLAVOR_PLATFORM_TEXT_DOMAIN),
             $solicitud->numero_expediente,
             date_i18n('d/m/Y', strtotime($solicitud->fecha_limite))
         );
@@ -1590,13 +1590,13 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         $documento_id = (int) ($_POST['documento_id'] ?? 0);
 
         if (!$documento_id) {
-            wp_send_json_error(['mensaje' => __('ID de documento invalido', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('ID de documento invalido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $documento = $this->obtener_documento_por_id($documento_id);
 
         if (!$documento) {
-            wp_send_json_error(['mensaje' => __('Documento no encontrado', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Documento no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $this->incrementar_visitas($documento_id);
@@ -1609,7 +1609,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
      */
     public function transparencia_descargar_documento() {
         if (!isset($_GET['nonce']) || !wp_verify_nonce($_GET['nonce'], 'transparencia_nonce')) {
-            wp_die(__('Acceso no autorizado', 'flavor-chat-ia'));
+            wp_die(__('Acceso no autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -1622,7 +1622,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$documento || empty($documento->archivo_url)) {
-            wp_die(__(__('Documento no encontrado', 'flavor-chat-ia'), 'flavor-chat-ia'));
+            wp_die(__(__('Documento no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Incrementar descargas
@@ -1747,63 +1747,63 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         ?>
         <div class="transparencia-portal">
             <div class="transparencia-header">
-                <h1><?php _e('Portal de Transparencia', 'flavor-chat-ia'); ?></h1>
-                <p><?php _e('Acceso a la informacion publica y rendicion de cuentas', 'flavor-chat-ia'); ?></p>
+                <h1><?php _e('Portal de Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
+                <p><?php _e('Acceso a la informacion publica y rendicion de cuentas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <?php if ($atributos['mostrar_categorias'] === 'true'): ?>
             <nav class="transparencia-nav">
                 <a href="#" class="transparencia-nav-item active" data-categoria="">
                     <span class="dashicons dashicons-category"></span>
-                    <?php _e('Todos', 'flavor-chat-ia'); ?>
+                    <?php _e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="#" class="transparencia-nav-item" data-categoria="presupuestos">
                     <span class="dashicons dashicons-chart-pie"></span>
-                    <?php _e('Presupuestos', 'flavor-chat-ia'); ?>
+                    <?php _e('Presupuestos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="#" class="transparencia-nav-item" data-categoria="contratos">
                     <span class="dashicons dashicons-media-text"></span>
-                    <?php _e('Contratos', 'flavor-chat-ia'); ?>
+                    <?php _e('Contratos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="#" class="transparencia-nav-item" data-categoria="subvenciones">
                     <span class="dashicons dashicons-money-alt"></span>
-                    <?php _e('Subvenciones', 'flavor-chat-ia'); ?>
+                    <?php _e('Subvenciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="#" class="transparencia-nav-item" data-categoria="actas">
                     <span class="dashicons dashicons-clipboard"></span>
-                    <?php _e('Actas', 'flavor-chat-ia'); ?>
+                    <?php _e('Actas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="#" class="transparencia-nav-item" data-categoria="normativa">
                     <span class="dashicons dashicons-book"></span>
-                    <?php _e('Normativa', 'flavor-chat-ia'); ?>
+                    <?php _e('Normativa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </nav>
             <?php endif; ?>
 
             <?php if ($atributos['mostrar_buscador'] === 'true'): ?>
             <div class="transparencia-buscador">
-                <h2 class="transparencia-buscador-titulo"><?php _e('Buscar documentos', 'flavor-chat-ia'); ?></h2>
+                <h2 class="transparencia-buscador-titulo"><?php _e('Buscar documentos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <form class="transparencia-buscador-form">
                     <div class="transparencia-campo">
-                        <label for="transparencia-termino"><?php _e('Buscar', 'flavor-chat-ia'); ?></label>
+                        <label for="transparencia-termino"><?php _e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="text" id="transparencia-termino" name="termino" class="transparencia-buscar-input"
-                               placeholder="<?php _e('Escriba su busqueda...', 'flavor-chat-ia'); ?>">
+                               placeholder="<?php _e('Escriba su busqueda...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     </div>
                     <div class="transparencia-campo">
-                        <label for="transparencia-categoria"><?php _e('Categoria', 'flavor-chat-ia'); ?></label>
+                        <label for="transparencia-categoria"><?php _e('Categoria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select id="transparencia-categoria" name="categoria">
-                            <option value=""><?php _e('Todas', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('presupuestos', 'flavor-chat-ia'); ?>"><?php _e('Presupuestos', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('contratos', 'flavor-chat-ia'); ?>"><?php _e('Contratos', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('subvenciones', 'flavor-chat-ia'); ?>"><?php _e('Subvenciones', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('actas', 'flavor-chat-ia'); ?>"><?php _e('Actas', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('normativa', 'flavor-chat-ia'); ?>"><?php _e('Normativa', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php _e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="<?php echo esc_attr__('presupuestos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Presupuestos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="<?php echo esc_attr__('contratos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Contratos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="<?php echo esc_attr__('subvenciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Subvenciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="<?php echo esc_attr__('actas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Actas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="<?php echo esc_attr__('normativa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Normativa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
                     <div class="transparencia-campo">
-                        <label for="transparencia-periodo"><?php _e('Periodo', 'flavor-chat-ia'); ?></label>
+                        <label for="transparencia-periodo"><?php _e('Periodo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select id="transparencia-periodo" name="periodo">
-                            <option value=""><?php _e('Todos', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php _e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php for ($anio = date('Y'); $anio >= date('Y') - 5; $anio--): ?>
                             <option value="<?php echo $anio; ?>"><?php echo $anio; ?></option>
                             <?php endfor; ?>
@@ -1811,7 +1811,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
                     </div>
                     <button type="submit" class="transparencia-btn transparencia-btn-primary">
                         <span class="dashicons dashicons-search"></span>
-                        <?php _e('Buscar', 'flavor-chat-ia'); ?>
+                        <?php _e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </form>
             </div>
@@ -1840,31 +1840,31 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         ?>
         <div class="transparencia-presupuesto">
             <div class="transparencia-presupuesto-header">
-                <h2 class="transparencia-presupuesto-titulo"><?php _e('Presupuesto', 'flavor-chat-ia'); ?></h2>
+                <h2 class="transparencia-presupuesto-titulo"><?php _e('Presupuesto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <span class="transparencia-presupuesto-periodo"><?php echo esc_html($atributos['ejercicio']); ?></span>
             </div>
 
             <div class="transparencia-presupuesto-resumen">
                 <div class="transparencia-presupuesto-item">
-                    <div class="transparencia-presupuesto-item-label"><?php _e('Presupuesto Total', 'flavor-chat-ia'); ?></div>
+                    <div class="transparencia-presupuesto-item-label"><?php _e('Presupuesto Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     <div class="transparencia-presupuesto-item-valor total">
                         <?php echo number_format($resumen['gastos']['definitivo'], 2, ',', '.'); ?> &euro;
                     </div>
                 </div>
                 <div class="transparencia-presupuesto-item">
-                    <div class="transparencia-presupuesto-item-label"><?php _e('Ingresos Previstos', 'flavor-chat-ia'); ?></div>
+                    <div class="transparencia-presupuesto-item-label"><?php _e('Ingresos Previstos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     <div class="transparencia-presupuesto-item-valor ingresos">
                         <?php echo number_format($resumen['ingresos']['definitivo'], 2, ',', '.'); ?> &euro;
                     </div>
                 </div>
                 <div class="transparencia-presupuesto-item">
-                    <div class="transparencia-presupuesto-item-label"><?php _e('Gastos Previstos', 'flavor-chat-ia'); ?></div>
+                    <div class="transparencia-presupuesto-item-label"><?php _e('Gastos Previstos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     <div class="transparencia-presupuesto-item-valor gastos">
                         <?php echo number_format($resumen['gastos']['definitivo'], 2, ',', '.'); ?> &euro;
                     </div>
                 </div>
                 <div class="transparencia-presupuesto-item">
-                    <div class="transparencia-presupuesto-item-label"><?php _e('Saldo', 'flavor-chat-ia'); ?></div>
+                    <div class="transparencia-presupuesto-item-label"><?php _e('Saldo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     <div class="transparencia-presupuesto-item-valor">
                         <?php echo number_format($resumen['saldo'], 2, ',', '.'); ?> &euro;
                     </div>
@@ -1923,12 +1923,12 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         ?>
         <div class="transparencia-gastos">
             <div class="transparencia-gastos-header">
-                <h3 class="transparencia-gastos-titulo"><?php _e('Ultimos Gastos', 'flavor-chat-ia'); ?></h3>
+                <h3 class="transparencia-gastos-titulo"><?php _e('Ultimos Gastos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             </div>
             <div class="transparencia-gastos-lista">
                 <?php if (empty($gastos)): ?>
                     <div class="transparencia-vacio">
-                        <?php _e('No hay gastos para mostrar', 'flavor-chat-ia'); ?>
+                        <?php _e('No hay gastos para mostrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </div>
                 <?php else: ?>
                     <?php foreach ($gastos as $gasto): ?>
@@ -1955,7 +1955,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
     public function shortcode_buscador_docs($atributos) {
         $atributos = shortcode_atts([
             'categoria' => '',
-            'placeholder' => __('Buscar documentos publicos...', 'flavor-chat-ia'),
+            'placeholder' => __('Buscar documentos publicos...', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], $atributos);
 
         ob_start();
@@ -1971,7 +1971,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
                 </div>
                 <button type="submit" class="transparencia-btn transparencia-btn-primary">
                     <span class="dashicons dashicons-search"></span>
-                    <?php _e('Buscar', 'flavor-chat-ia'); ?>
+                    <?php _e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </form>
             <div class="transparencia-documentos-grid" style="margin-top: 1.5rem;"></div>
@@ -2016,7 +2016,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
             if (!wp_verify_nonce($nonce, 'flavor_transparencia_form_solicitud')) {
                 $estado_envio = [
                     'success' => false,
-                    'error' => __('La sesión del formulario ha caducado. Recarga la página e inténtalo de nuevo.', 'flavor-chat-ia'),
+                    'error' => __('La sesión del formulario ha caducado. Recarga la página e inténtalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             } else {
                 $datos_post = [
@@ -2037,17 +2037,17 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         ?>
         <div class="transparencia-solicitud">
             <div class="transparencia-solicitud-header">
-                <h2 class="transparencia-solicitud-titulo"><?php _e('Solicitud de Acceso a Informacion Publica', 'flavor-chat-ia'); ?></h2>
+                <h2 class="transparencia-solicitud-titulo"><?php _e('Solicitud de Acceso a Informacion Publica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <p class="transparencia-solicitud-descripcion">
-                    <?php _e('Complete el formulario para solicitar informacion publica. Recibira respuesta en un plazo maximo de', 'flavor-chat-ia'); ?>
-                    <?php echo $configuracion['dias_plazo_respuesta']; ?> <?php _e('dias habiles.', 'flavor-chat-ia'); ?>
+                    <?php _e('Complete el formulario para solicitar informacion publica. Recibira respuesta en un plazo maximo de', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
+                    <?php echo $configuracion['dias_plazo_respuesta']; ?> <?php _e('dias habiles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
             <?php if ($atributos['mostrar_info'] === 'true'): ?>
             <div class="transparencia-solicitud-info">
-                <strong><?php _e('Derecho de acceso:', 'flavor-chat-ia'); ?></strong>
-                <?php _e('Toda persona tiene derecho a acceder a la informacion publica, sin necesidad de motivar su solicitud.', 'flavor-chat-ia'); ?>
+                <strong><?php _e('Derecho de acceso:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                <?php _e('Toda persona tiene derecho a acceder a la informacion publica, sin necesidad de motivar su solicitud.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
             <?php endif; ?>
 
@@ -2059,7 +2059,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
                     <span>
                         <?php
                         printf(
-                            esc_html__('Solicitud enviada correctamente. Expediente: %s', 'flavor-chat-ia'),
+                            esc_html__('Solicitud enviada correctamente. Expediente: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             esc_html((string) ($estado_envio['numero_expediente'] ?? '-'))
                         );
                         ?>
@@ -2068,7 +2068,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
                 <?php else : ?>
                 <div class="transparencia-mensaje transparencia-mensaje-error">
                     <span class="dashicons dashicons-warning"></span>
-                    <span><?php echo esc_html((string) ($estado_envio['error'] ?? __('No se pudo enviar la solicitud.', 'flavor-chat-ia'))); ?></span>
+                    <span><?php echo esc_html((string) ($estado_envio['error'] ?? __('No se pudo enviar la solicitud.', FLAVOR_PLATFORM_TEXT_DOMAIN))); ?></span>
                 </div>
                 <?php endif; ?>
             </div>
@@ -2079,15 +2079,15 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
                 <input type="hidden" name="flavor_transparencia_form_nonce" value="<?php echo esc_attr(wp_create_nonce('flavor_transparencia_form_solicitud')); ?>">
                 <?php if (!$usuario_logueado): ?>
                 <div class="transparencia-campo">
-                    <label for="solicitud-nombre"><?php _e('Nombre completo', 'flavor-chat-ia'); ?></label>
+                    <label for="solicitud-nombre"><?php _e('Nombre completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="text" id="solicitud-nombre" name="nombre" value="<?php echo esc_attr($valores_formulario['nombre']); ?>" required>
                 </div>
                 <div class="transparencia-campo">
-                    <label for="solicitud-email"><?php _e('Correo electronico', 'flavor-chat-ia'); ?> *</label>
+                    <label for="solicitud-email"><?php _e('Correo electronico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <input type="email" id="solicitud-email" name="email" value="<?php echo esc_attr($valores_formulario['email']); ?>" required>
                 </div>
                 <div class="transparencia-campo">
-                    <label for="solicitud-telefono"><?php _e('Telefono', 'flavor-chat-ia'); ?></label>
+                    <label for="solicitud-telefono"><?php _e('Telefono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="tel" id="solicitud-telefono" name="telefono" value="<?php echo esc_attr($valores_formulario['telefono']); ?>">
                 </div>
                 <?php else: ?>
@@ -2096,38 +2096,38 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
                 <?php endif; ?>
 
                 <div class="transparencia-campo">
-                    <label for="solicitud-titulo"><?php _e('Titulo de la solicitud', 'flavor-chat-ia'); ?> *</label>
+                    <label for="solicitud-titulo"><?php _e('Titulo de la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <input type="text" id="solicitud-titulo" name="titulo" required
                            value="<?php echo esc_attr($valores_formulario['titulo']); ?>"
-                           placeholder="<?php _e('Describa brevemente la informacion que solicita', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php _e('Describa brevemente la informacion que solicita', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
 
                 <div class="transparencia-campo">
-                    <label for="solicitud-categoria"><?php _e('Categoria', 'flavor-chat-ia'); ?></label>
+                    <label for="solicitud-categoria"><?php _e('Categoria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="solicitud-categoria" name="categoria">
-                        <option value=""><?php _e('Seleccione una categoria', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('presupuestos', 'flavor-chat-ia'); ?>" <?php selected($valores_formulario['categoria'], 'presupuestos'); ?>><?php _e('Presupuestos y cuentas', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('contratos', 'flavor-chat-ia'); ?>" <?php selected($valores_formulario['categoria'], 'contratos'); ?>><?php _e('Contratos y licitaciones', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('subvenciones', 'flavor-chat-ia'); ?>" <?php selected($valores_formulario['categoria'], 'subvenciones'); ?>><?php _e('Subvenciones y ayudas', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('personal', 'flavor-chat-ia'); ?>" <?php selected($valores_formulario['categoria'], 'personal'); ?>><?php _e('Personal y retribuciones', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('normativa', 'flavor-chat-ia'); ?>" <?php selected($valores_formulario['categoria'], 'normativa'); ?>><?php _e('Normativa y acuerdos', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('otros', 'flavor-chat-ia'); ?>" <?php selected($valores_formulario['categoria'], 'otros'); ?>><?php _e('Otros', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Seleccione una categoria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('presupuestos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($valores_formulario['categoria'], 'presupuestos'); ?>><?php _e('Presupuestos y cuentas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('contratos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($valores_formulario['categoria'], 'contratos'); ?>><?php _e('Contratos y licitaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('subvenciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($valores_formulario['categoria'], 'subvenciones'); ?>><?php _e('Subvenciones y ayudas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('personal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($valores_formulario['categoria'], 'personal'); ?>><?php _e('Personal y retribuciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('normativa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($valores_formulario['categoria'], 'normativa'); ?>><?php _e('Normativa y acuerdos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('otros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($valores_formulario['categoria'], 'otros'); ?>><?php _e('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div class="transparencia-campo">
-                    <label for="solicitud-descripcion"><?php _e('Descripcion detallada', 'flavor-chat-ia'); ?> *</label>
+                    <label for="solicitud-descripcion"><?php _e('Descripcion detallada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <textarea id="solicitud-descripcion" name="descripcion" required
-                              placeholder="<?php _e('Describa con detalle la informacion que necesita, incluyendo periodos, entidades o cualquier dato que ayude a localizar la informacion.', 'flavor-chat-ia'); ?>"><?php echo esc_textarea($valores_formulario['descripcion']); ?></textarea>
+                              placeholder="<?php _e('Describa con detalle la informacion que necesita, incluyendo periodos, entidades o cualquier dato que ayude a localizar la informacion.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_textarea($valores_formulario['descripcion']); ?></textarea>
                 </div>
 
                 <div class="transparencia-solicitud-acciones">
                     <button type="reset" class="transparencia-btn transparencia-btn-secondary">
-                        <?php _e('Limpiar', 'flavor-chat-ia'); ?>
+                        <?php _e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="submit" class="transparencia-btn transparencia-btn-success">
                         <span class="dashicons dashicons-yes"></span>
-                        <?php _e('Enviar solicitud', 'flavor-chat-ia'); ?>
+                        <?php _e('Enviar solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </form>
@@ -2157,11 +2157,11 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         ?>
         <div class="transparencia-actas">
             <div class="transparencia-actas-header">
-                <h3 class="transparencia-actas-titulo"><?php _e('Actas y Sesiones', 'flavor-chat-ia'); ?></h3>
+                <h3 class="transparencia-actas-titulo"><?php _e('Actas y Sesiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             </div>
             <?php if (empty($actas)): ?>
                 <div class="transparencia-vacio">
-                    <?php _e('No hay actas publicadas', 'flavor-chat-ia'); ?>
+                    <?php _e('No hay actas publicadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </div>
             <?php else: ?>
                 <?php foreach ($actas as $acta): ?>
@@ -2218,7 +2218,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
             return ob_get_clean();
         }
 
-        return '<div class="transparencia-vacio">' . esc_html__('No hay vista de contratos disponible.', 'flavor-chat-ia') . '</div>';
+        return '<div class="transparencia-vacio">' . esc_html__('No hay vista de contratos disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
     }
 
     /**
@@ -2284,19 +2284,19 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         ?>
         <div class="transparencia-presupuesto">
             <div class="transparencia-presupuesto-header">
-                <h2 class="transparencia-presupuesto-titulo"><?php _e('Indicadores de Transparencia', 'flavor-chat-ia'); ?></h2>
+                <h2 class="transparencia-presupuesto-titulo"><?php _e('Indicadores de Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
 
             <div class="transparencia-presupuesto-resumen">
                 <?php if ($atributos['mostrar_documentos'] === 'true'): ?>
                 <div class="transparencia-presupuesto-item">
-                    <div class="transparencia-presupuesto-item-label"><?php _e('Documentos Publicados', 'flavor-chat-ia'); ?></div>
+                    <div class="transparencia-presupuesto-item-label"><?php _e('Documentos Publicados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     <div class="transparencia-presupuesto-item-valor">
                         <?php echo number_format($estadisticas['documentos']['total']); ?>
                     </div>
                 </div>
                 <div class="transparencia-presupuesto-item">
-                    <div class="transparencia-presupuesto-item-label"><?php _e('Visitas Totales', 'flavor-chat-ia'); ?></div>
+                    <div class="transparencia-presupuesto-item-label"><?php _e('Visitas Totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     <div class="transparencia-presupuesto-item-valor">
                         <?php echo number_format($estadisticas['documentos']['visitas']); ?>
                     </div>
@@ -2305,15 +2305,15 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
 
                 <?php if ($atributos['mostrar_solicitudes'] === 'true'): ?>
                 <div class="transparencia-presupuesto-item">
-                    <div class="transparencia-presupuesto-item-label"><?php _e('Solicitudes Recibidas', 'flavor-chat-ia'); ?></div>
+                    <div class="transparencia-presupuesto-item-label"><?php _e('Solicitudes Recibidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     <div class="transparencia-presupuesto-item-valor">
                         <?php echo number_format($estadisticas['solicitudes']['total']); ?>
                     </div>
                 </div>
                 <div class="transparencia-presupuesto-item">
-                    <div class="transparencia-presupuesto-item-label"><?php _e('Tiempo Medio Respuesta', 'flavor-chat-ia'); ?></div>
+                    <div class="transparencia-presupuesto-item-label"><?php _e('Tiempo Medio Respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     <div class="transparencia-presupuesto-item-valor">
-                        <?php echo $estadisticas['solicitudes']['promedio_dias_tramitacion']; ?> <?php _e('dias', 'flavor-chat-ia'); ?>
+                        <?php echo $estadisticas['solicitudes']['promedio_dias_tramitacion']; ?> <?php _e('dias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </div>
                 </div>
                 <?php endif; ?>
@@ -2337,7 +2337,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
 
         wp_add_dashboard_widget(
             'transparencia_solicitudes_widget',
-            __('Solicitudes de Transparencia', 'flavor-chat-ia'),
+            __('Solicitudes de Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_dashboard_widget']
         );
     }
@@ -2359,9 +2359,9 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
              AND fecha_limite <= DATE_ADD(NOW(), INTERVAL 5 DAY)"
         );
 
-        echo '<p><strong>' . __('Solicitudes pendientes:', 'flavor-chat-ia') . '</strong> ' . $solicitudes_pendientes . '</p>';
+        echo '<p><strong>' . __('Solicitudes pendientes:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ' . $solicitudes_pendientes . '</p>';
         if ($solicitudes_proximas_vencer > 0) {
-            echo '<p style="color: #d63638;"><strong>' . __('Proximas a vencer:', 'flavor-chat-ia') . '</strong> ' . $solicitudes_proximas_vencer . '</p>';
+            echo '<p style="color: #d63638;"><strong>' . __('Proximas a vencer:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ' . $solicitudes_proximas_vencer . '</p>';
         }
     }
 
@@ -2371,7 +2371,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
     public function add_cron_schedules($schedules) {
         $schedules['twice_daily'] = [
             'interval' => 43200,
-            'display' => __('Dos veces al dia', 'flavor-chat-ia'),
+            'display' => __('Dos veces al dia', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
         return $schedules;
     }
@@ -2441,7 +2441,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error' => __('La vista solicitada no está disponible en Transparencia.', 'flavor-chat-ia'),
+            'error' => __('La vista solicitada no está disponible en Transparencia.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -2481,12 +2481,12 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
     private function action_foro_documento($parametros) {
         $documento = $this->resolve_contextual_documento($parametros);
         if (!$documento) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un documento para ver su foro.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un documento para ver su foro.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-foro">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;">'
-            . '<h2>' . esc_html__('Foro del documento', 'flavor-chat-ia') . '</h2>'
+            . '<h2>' . esc_html__('Foro del documento', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2>'
             . '<p>' . esc_html($documento['titulo']) . '</p>'
             . '</div>'
             . do_shortcode('[flavor_foros_integrado entidad="documento_transparencia" entidad_id="' . absint($documento['id']) . '"]')
@@ -2496,18 +2496,18 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
     private function action_chat_documento($parametros) {
         $documento = $this->resolve_contextual_documento($parametros);
         if (!$documento) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un documento para ver su chat.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un documento para ver su chat.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         if (!is_user_logged_in()) {
-            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este documento.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este documento.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-chat">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Chat del documento', 'flavor-chat-ia') . '</h2><p>' . esc_html($documento['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Chat del documento', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($documento['titulo']) . '</p></div>'
             . '<a href="' . esc_url(home_url('/mi-portal/chat-grupos/mensajes/?documento_id=' . absint($documento['id']))) . '" class="button button-secondary">'
-            . esc_html__('Abrir chat completo', 'flavor-chat-ia')
+            . esc_html__('Abrir chat completo', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>'
             . do_shortcode('[flavor_chat_grupo_integrado entidad="documento_transparencia" entidad_id="' . absint($documento['id']) . '"]')
             . '</div>';
@@ -2516,14 +2516,14 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
     private function action_multimedia_documento($parametros) {
         $documento = $this->resolve_contextual_documento($parametros);
         if (!$documento) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un documento para ver sus archivos.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un documento para ver sus archivos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-multimedia">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Archivos del documento', 'flavor-chat-ia') . '</h2><p>' . esc_html($documento['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Archivos del documento', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($documento['titulo']) . '</p></div>'
             . '<a href="' . esc_url(home_url('/mi-portal/multimedia/subir/?documento_id=' . absint($documento['id']))) . '" class="button button-primary">'
-            . esc_html__('Subir archivo', 'flavor-chat-ia')
+            . esc_html__('Subir archivo', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>'
             . do_shortcode('[flavor_multimedia_galeria entidad="documento_transparencia" entidad_id="' . absint($documento['id']) . '"]')
             . '</div>';
@@ -2532,18 +2532,18 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
     private function action_red_social_documento($parametros) {
         $documento = $this->resolve_contextual_documento($parametros);
         if (!$documento) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un documento para ver su actividad social.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un documento para ver su actividad social.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         if (!is_user_logged_in()) {
-            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este documento.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este documento.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-red-social">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Actividad social del documento', 'flavor-chat-ia') . '</h2><p>' . esc_html($documento['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Actividad social del documento', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($documento['titulo']) . '</p></div>'
             . '<a href="' . esc_url(home_url('/mi-portal/red-social/crear/?documento_id=' . absint($documento['id']))) . '" class="button button-primary">'
-            . esc_html__('Publicar', 'flavor-chat-ia')
+            . esc_html__('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>'
             . do_shortcode('[flavor_social_feed entidad="documento_transparencia" entidad_id="' . absint($documento['id']) . '"]')
             . '</div>';
@@ -2603,23 +2603,23 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
     public function get_web_components() {
         return [
             'hero_transparencia' => [
-                'label' => __('Hero Transparencia', 'flavor-chat-ia'),
+                'label' => __('Hero Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-visibility',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Portal de Transparencia', 'flavor-chat-ia')],
-                    'subtitulo' => ['type' => 'textarea', 'default' => __('Acceso a la informacion publica', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Portal de Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'subtitulo' => ['type' => 'textarea', 'default' => __('Acceso a la informacion publica', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'imagen_fondo' => ['type' => 'image', 'default' => ''],
                     'mostrar_buscador' => ['type' => 'toggle', 'default' => true],
                 ],
                 'template' => 'transparencia/hero',
             ],
             'datos_publicos_grid' => [
-                'label' => __('Grid de Datos Publicos', 'flavor-chat-ia'),
+                'label' => __('Grid de Datos Publicos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-media-spreadsheet',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Datos Publicos', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Datos Publicos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'columnas' => ['type' => 'select', 'options' => [2, 3, 4], 'default' => 3],
                     'limite' => ['type' => 'number', 'default' => 9],
                     'categoria' => ['type' => 'text', 'default' => ''],
@@ -2627,17 +2627,17 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
                 'template' => 'transparencia/grid',
             ],
             'indicadores_widget' => [
-                'label' => __('Widget de Indicadores', 'flavor-chat-ia'),
+                'label' => __('Widget de Indicadores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'widgets',
                 'icon' => 'dashicons-chart-bar',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Indicadores', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Indicadores', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'mostrar_graficos' => ['type' => 'toggle', 'default' => true],
                 ],
                 'template' => 'transparencia/indicadores',
             ],
             'presupuesto_widget' => [
-                'label' => __('Widget de Presupuesto', 'flavor-chat-ia'),
+                'label' => __('Widget de Presupuesto', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'widgets',
                 'icon' => 'dashicons-chart-pie',
                 'fields' => [
@@ -2647,11 +2647,11 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
                 'template' => 'transparencia/presupuesto',
             ],
             'solicitud_form' => [
-                'label' => __('Formulario de Solicitud', 'flavor-chat-ia'),
+                'label' => __('Formulario de Solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'forms',
                 'icon' => 'dashicons-feedback',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Solicitar Informacion', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Solicitar Informacion', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'mostrar_info' => ['type' => 'toggle', 'default' => true],
                 ],
                 'template' => 'transparencia/solicitud',
@@ -2803,9 +2803,9 @@ KNOWLEDGE;
         $solicitudes_pendientes = $this->contar_solicitudes_pendientes();
         ?>
         <div class="wrap flavor-admin-page">
-            <?php $this->render_page_header(__('Dashboard de Transparencia', 'flavor-chat-ia'), [
+            <?php $this->render_page_header(__('Dashboard de Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN), [
                 [
-                    'label' => __('Nuevo Documento', 'flavor-chat-ia'),
+                    'label' => __('Nuevo Documento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url'   => $this->admin_page_url('transparencia-documentos') . '&action=nuevo',
                     'class' => 'button-primary',
                 ],
@@ -2813,11 +2813,11 @@ KNOWLEDGE;
 
             <?php if (method_exists($this, 'render_admin_module_hub')) : ?>
                 <?php $this->render_admin_module_hub([
-                    'description' => __('Acceso visible a documentos, configuración y al bloque principal de métricas y actividad.', 'flavor-chat-ia'),
+                    'description' => __('Acceso visible a documentos, configuración y al bloque principal de métricas y actividad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'stats_anchor' => '#transparencia-stats',
                     'extra_items' => [
                         [
-                            'label' => __('Portal', 'flavor-chat-ia'),
+                            'label' => __('Portal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             'url' => home_url('/mi-portal/transparencia/'),
                             'icon' => 'dashicons-external',
                         ],
@@ -2830,7 +2830,7 @@ KNOWLEDGE;
                     <span class="dashicons dashicons-media-document"></span>
                     <div class="stat-content">
                         <span class="stat-number"><?php echo number_format($estadisticas['documentos']['total'] ?? 0); ?></span>
-                        <span class="stat-label"><?php _e('Documentos Publicados', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('Documentos Publicados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -2838,7 +2838,7 @@ KNOWLEDGE;
                     <span class="dashicons dashicons-format-status"></span>
                     <div class="stat-content">
                         <span class="stat-number"><?php echo number_format($solicitudes_pendientes); ?></span>
-                        <span class="stat-label"><?php _e('Solicitudes Pendientes', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('Solicitudes Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -2846,7 +2846,7 @@ KNOWLEDGE;
                     <span class="dashicons dashicons-visibility"></span>
                     <div class="stat-content">
                         <span class="stat-number"><?php echo number_format($estadisticas['documentos']['visitas'] ?? 0); ?></span>
-                        <span class="stat-label"><?php _e('Visitas Totales', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('Visitas Totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -2854,13 +2854,13 @@ KNOWLEDGE;
                     <span class="dashicons dashicons-clock"></span>
                     <div class="stat-content">
                         <span class="stat-number"><?php echo $estadisticas['solicitudes']['promedio_dias_tramitacion'] ?? 0; ?></span>
-                        <span class="stat-label"><?php _e('Dias Promedio Respuesta', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('Dias Promedio Respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
 
             <div class="flavor-admin-section">
-                <h2><?php _e('Actividad Reciente', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Actividad Reciente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <?php $this->render_dashboard_widget(); ?>
             </div>
         </div>
@@ -2886,9 +2886,9 @@ KNOWLEDGE;
         $accion = isset($_GET['action']) ? sanitize_text_field($_GET['action']) : 'listado';
         ?>
         <div class="wrap flavor-admin-page">
-            <?php $this->render_page_header(__('Documentos de Transparencia', 'flavor-chat-ia'), [
+            <?php $this->render_page_header(__('Documentos de Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN), [
                 [
-                    'label' => __('Nuevo Documento', 'flavor-chat-ia'),
+                    'label' => __('Nuevo Documento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url'   => $this->admin_page_url('transparencia-documentos') . '&action=nuevo',
                     'class' => 'button-primary',
                 ],
@@ -2896,11 +2896,11 @@ KNOWLEDGE;
 
             <?php
             $tabs_navegacion = [
-                ['slug' => 'listado', 'label' => __('Todos', 'flavor-chat-ia')],
-                ['slug' => 'presupuestos', 'label' => __('Presupuestos', 'flavor-chat-ia')],
-                ['slug' => 'contratos', 'label' => __('Contratos', 'flavor-chat-ia')],
-                ['slug' => 'actas', 'label' => __('Actas', 'flavor-chat-ia')],
-                ['slug' => 'normativa', 'label' => __('Normativa', 'flavor-chat-ia')],
+                ['slug' => 'listado', 'label' => __('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                ['slug' => 'presupuestos', 'label' => __('Presupuestos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                ['slug' => 'contratos', 'label' => __('Contratos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                ['slug' => 'actas', 'label' => __('Actas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                ['slug' => 'normativa', 'label' => __('Normativa', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ];
             $tab_actual = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'listado';
             $this->render_page_tabs($tabs_navegacion, $tab_actual);
@@ -2918,17 +2918,17 @@ KNOWLEDGE;
                 <?php if (empty($documentos['documentos'])): ?>
                     <div class="flavor-empty-state">
                         <span class="dashicons dashicons-media-document"></span>
-                        <p><?php _e('No hay documentos en esta categoria.', 'flavor-chat-ia'); ?></p>
+                        <p><?php _e('No hay documentos en esta categoria.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 <?php else: ?>
                     <table class="wp-list-table widefat fixed striped">
                         <thead>
                             <tr>
-                                <th><?php _e('Titulo', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Categoria', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Visitas', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Titulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Categoria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Visitas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -2939,8 +2939,8 @@ KNOWLEDGE;
                                 <td><?php echo esc_html($documento['fecha_publicacion']); ?></td>
                                 <td><?php echo number_format($documento['visitas']); ?></td>
                                 <td>
-                                    <a href="<?php echo esc_url(admin_url('admin.php?page=transparencia&action=editar&id=' . $documento['id'])); ?>" class="button button-small"><?php _e('Editar', 'flavor-chat-ia'); ?></a>
-                                    <a href="<?php echo esc_url($documento['url']); ?>" target="_blank" class="button button-small"><?php _e('Ver', 'flavor-chat-ia'); ?></a>
+                                    <a href="<?php echo esc_url(admin_url('admin.php?page=transparencia&action=editar&id=' . $documento['id'])); ?>" class="button button-small"><?php _e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
+                                    <a href="<?php echo esc_url($documento['url']); ?>" target="_blank" class="button button-small"><?php _e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
@@ -2959,33 +2959,33 @@ KNOWLEDGE;
         $configuracion_actual = $this->get_settings();
         ?>
         <div class="wrap flavor-admin-page">
-            <?php $this->render_page_header(__('Configuracion de Transparencia', 'flavor-chat-ia')); ?>
+            <?php $this->render_page_header(__('Configuracion de Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
 
             <form method="post" action="">
                 <?php wp_nonce_field('transparencia_config', 'transparencia_nonce'); ?>
 
                 <table class="form-table">
                     <tr>
-                        <th scope="row"><?php _e('Plazo respuesta (dias)', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php _e('Plazo respuesta (dias)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <input type="number" name="dias_plazo_respuesta"
                                    value="<?php echo esc_attr($configuracion_actual['dias_plazo_respuesta']); ?>"
                                    min="1" max="90" class="small-text">
-                            <p class="description"><?php _e('Dias habiles para responder solicitudes de informacion.', 'flavor-chat-ia'); ?></p>
+                            <p class="description"><?php _e('Dias habiles para responder solicitudes de informacion.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><?php _e('Solicitudes anonimas', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php _e('Solicitudes anonimas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <label>
                                 <input type="checkbox" name="permite_solicitudes_anonimas" value="1"
                                        <?php checked($configuracion_actual['permite_solicitudes_anonimas']); ?>>
-                                <?php _e('Permitir solicitudes sin identificacion', 'flavor-chat-ia'); ?>
+                                <?php _e('Permitir solicitudes sin identificacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><?php _e('Email notificaciones', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php _e('Email notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <input type="email" name="email_notificaciones"
                                    value="<?php echo esc_attr($configuracion_actual['email_notificaciones']); ?>"
@@ -2993,17 +2993,17 @@ KNOWLEDGE;
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><?php _e('Mostrar graficos', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php _e('Mostrar graficos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <label>
                                 <input type="checkbox" name="mostrar_graficos" value="1"
                                        <?php checked($configuracion_actual['mostrar_graficos']); ?>>
-                                <?php _e('Habilitar visualizacion grafica de datos', 'flavor-chat-ia'); ?>
+                                <?php _e('Habilitar visualizacion grafica de datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><?php _e('Documentos por pagina', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php _e('Documentos por pagina', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <input type="number" name="limite_documentos_por_pagina"
                                    value="<?php echo esc_attr($configuracion_actual['limite_documentos_por_pagina']); ?>"
@@ -3013,7 +3013,7 @@ KNOWLEDGE;
                 </table>
 
                 <p class="submit">
-                    <button type="submit" class="button button-primary"><?php _e('Guardar Configuracion', 'flavor-chat-ia'); ?></button>
+                    <button type="submit" class="button button-primary"><?php _e('Guardar Configuracion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                 </p>
             </form>
         </div>
@@ -3123,7 +3123,7 @@ KNOWLEDGE;
         $estadisticas['documentos'] = [
             'icon' => 'dashicons-media-document',
             'valor' => $total_documentos,
-            'label' => __('Documentos públicos', 'flavor-chat-ia'),
+            'label' => __('Documentos públicos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'blue',
         ];
 
@@ -3138,7 +3138,7 @@ KNOWLEDGE;
             $estadisticas['docs_recientes'] = [
                 'icon' => 'dashicons-calendar',
                 'valor' => $docs_recientes,
-                'label' => __('Nuevos este mes', 'flavor-chat-ia'),
+                'label' => __('Nuevos este mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'green',
             ];
         }
@@ -3154,28 +3154,28 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Portal de Transparencia', 'flavor-chat-ia'),
+                'title' => __('Portal de Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'transparencia',
-                'content' => '<h1>' . __('Portal de Transparencia', 'flavor-chat-ia') . '</h1>
-<p>' . __('Accede a la información pública de nuestra organización. Consulta presupuestos, contratos, actas y toda la documentación disponible para los ciudadanos.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Portal de Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Accede a la información pública de nuestra organización. Consulta presupuestos, contratos, actas y toda la documentación disponible para los ciudadanos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="transparencia" action="listar" columnas="3" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Solicitar Información', 'flavor-chat-ia'),
+                'title' => __('Solicitar Información', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'solicitar',
-                'content' => '<h1>' . __('Solicitar Información', 'flavor-chat-ia') . '</h1>
-<p>' . __('Ejerce tu derecho de acceso a la información pública. Realiza una solicitud formal y recibe respuesta en el plazo establecido por la ley.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Solicitar Información', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Ejerce tu derecho de acceso a la información pública. Realiza una solicitud formal y recibe respuesta en el plazo establecido por la ley.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="transparencia" action="crear"]',
                 'parent' => 'transparencia',
             ],
             [
-                'title' => __('Mis Solicitudes', 'flavor-chat-ia'),
+                'title' => __('Mis Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mis-solicitudes',
-                'content' => '<h1>' . __('Mis Solicitudes', 'flavor-chat-ia') . '</h1>
-<p>' . __('Consulta el estado de tus solicitudes de acceso a información pública y descarga las respuestas recibidas.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Mis Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Consulta el estado de tus solicitudes de acceso a información pública y descarga las respuestas recibidas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="transparencia" action="mis_items"]',
                 'parent' => 'transparencia',
@@ -3191,8 +3191,8 @@ KNOWLEDGE;
     public static function get_renderer_config(): array {
         return [
             'module'   => 'transparencia',
-            'title'    => __('Portal de Transparencia', 'flavor-chat-ia'),
-            'subtitle' => __('Acceso a información pública y rendición de cuentas', 'flavor-chat-ia'),
+            'title'    => __('Portal de Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Acceso a información pública y rendición de cuentas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '🔍',
             'color'    => 'secondary', // Usa variable CSS --flavor-secondary del tema
 
@@ -3202,26 +3202,26 @@ KNOWLEDGE;
             ],
 
             'fields' => [
-                'titulo'      => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'required' => true],
-                'categoria'   => ['type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'options' => ['presupuestos', 'contratos', 'subvenciones', 'personal', 'actas', 'normativa']],
-                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
-                'documento'   => ['type' => 'file', 'label' => __('Documento', 'flavor-chat-ia')],
-                'año'         => ['type' => 'number', 'label' => __('Año', 'flavor-chat-ia')],
-                'fecha_publicacion' => ['type' => 'date', 'label' => __('Fecha publicación', 'flavor-chat-ia')],
+                'titulo'      => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'categoria'   => ['type' => 'select', 'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['presupuestos', 'contratos', 'subvenciones', 'personal', 'actas', 'normativa']],
+                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'documento'   => ['type' => 'file', 'label' => __('Documento', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'año'         => ['type' => 'number', 'label' => __('Año', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'fecha_publicacion' => ['type' => 'date', 'label' => __('Fecha publicación', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ],
 
             'estados' => [
-                'publicado'  => ['label' => __('Publicado', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
-                'borrador'   => ['label' => __('Borrador', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '📝'],
-                'pendiente'  => ['label' => __('Pendiente revisión', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏳'],
-                'archivado'  => ['label' => __('Archivado', 'flavor-chat-ia'), 'color' => 'slate', 'icon' => '🗄️'],
+                'publicado'  => ['label' => __('Publicado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '✅'],
+                'borrador'   => ['label' => __('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'gray', 'icon' => '📝'],
+                'pendiente'  => ['label' => __('Pendiente revisión', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '⏳'],
+                'archivado'  => ['label' => __('Archivado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'slate', 'icon' => '🗄️'],
             ],
 
             'stats' => [
-                'documentos_publicados' => ['label' => __('Documentos', 'flavor-chat-ia'), 'icon' => '📄', 'color' => 'cyan'],
-                'solicitudes_atendidas' => ['label' => __('Solicitudes', 'flavor-chat-ia'), 'icon' => '📋', 'color' => 'blue'],
-                'descargas_total'       => ['label' => __('Descargas', 'flavor-chat-ia'), 'icon' => '📥', 'color' => 'green'],
-                'tiempo_respuesta'      => ['label' => __('Tiempo medio respuesta', 'flavor-chat-ia'), 'icon' => '⏱️', 'color' => 'purple'],
+                'documentos_publicados' => ['label' => __('Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📄', 'color' => 'cyan'],
+                'solicitudes_atendidas' => ['label' => __('Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📋', 'color' => 'blue'],
+                'descargas_total'       => ['label' => __('Descargas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📥', 'color' => 'green'],
+                'tiempo_respuesta'      => ['label' => __('Tiempo medio respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '⏱️', 'color' => 'purple'],
             ],
 
             'card' => [
@@ -3234,49 +3234,49 @@ KNOWLEDGE;
 
             'tabs' => [
                 'documentos' => [
-                    'label'   => __('Documentos', 'flavor-chat-ia'),
+                    'label'   => __('Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-media-document',
                     'content' => 'shortcode:transparencia_buscador_docs',
                     'public'  => true,
                 ],
                 'presupuestos' => [
-                    'label'   => __('Presupuestos', 'flavor-chat-ia'),
+                    'label'   => __('Presupuestos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-chart-pie',
                     'content' => 'shortcode:transparencia_presupuestos',
                     'public'  => true,
                 ],
                 'gastos' => [
-                    'label'   => __('Gastos', 'flavor-chat-ia'),
+                    'label'   => __('Gastos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-money-alt',
                     'content' => 'template:ultimos-gastos.php',
                     'public'  => true,
                 ],
                 'contratos' => [
-                    'label'   => __('Contratos', 'flavor-chat-ia'),
+                    'label'   => __('Contratos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-media-document',
                     'content' => 'shortcode:transparencia_contratos',
                     'public'  => true,
                 ],
                 'actas' => [
-                    'label'   => __('Actas', 'flavor-chat-ia'),
+                    'label'   => __('Actas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-text-page',
                     'content' => 'template:actas.php',
                     'public'  => true,
                 ],
                 'indicadores' => [
-                    'label'   => __('Indicadores', 'flavor-chat-ia'),
+                    'label'   => __('Indicadores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-chart-bar',
                     'content' => 'template:indicadores.php',
                     'public'  => true,
                 ],
                 'solicitar' => [
-                    'label'      => __('Solicitar información', 'flavor-chat-ia'),
+                    'label'      => __('Solicitar información', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-plus-alt',
                     'content'    => 'shortcode:transparencia_solicitar',
                     'requires_login' => true,
                 ],
                 'mis-solicitudes' => [
-                    'label'      => __('Mis solicitudes', 'flavor-chat-ia'),
+                    'label'      => __('Mis solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-admin-users',
                     'content'    => 'callback:render_tab_mis_solicitudes',
                     'requires_login' => true,
@@ -3294,8 +3294,8 @@ KNOWLEDGE;
             'dashboard' => [
                 'widgets' => ['stats', 'documentos_recientes', 'graficos_presupuesto', 'solicitudes'],
                 'actions' => [
-                    'solicitar' => ['label' => __('Solicitar información', 'flavor-chat-ia'), 'icon' => '📝', 'color' => 'cyan'],
-                    'buscar'    => ['label' => __('Buscar documento', 'flavor-chat-ia'), 'icon' => '🔍', 'color' => 'blue'],
+                    'solicitar' => ['label' => __('Solicitar información', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📝', 'color' => 'cyan'],
+                    'buscar'    => ['label' => __('Buscar documento', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🔍', 'color' => 'blue'],
                 ],
             ],
 
@@ -3341,8 +3341,8 @@ KNOWLEDGE;
         if (!class_exists('Flavor_Module_Dashboards_Registrar')) {
             add_submenu_page(
                 null,
-                __('Transparencia - Configuración', 'flavor-chat-ia'),
-                __('Configuración', 'flavor-chat-ia'),
+                __('Transparencia - Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $capability,
                 'transparencia-configuracion',
                 [$this, 'render_pagina_configuracion']
@@ -3351,8 +3351,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Transparencia - Datos', 'flavor-chat-ia'),
-            __('Datos', 'flavor-chat-ia'),
+            __('Transparencia - Datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'transparencia-datos',
             [$this, 'render_pagina_datos']
@@ -3360,8 +3360,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Transparencia - Informes', 'flavor-chat-ia'),
-            __('Informes', 'flavor-chat-ia'),
+            __('Transparencia - Informes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Informes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'transparencia-informes',
             [$this, 'render_pagina_informes']
@@ -3369,8 +3369,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Transparencia - Publicar', 'flavor-chat-ia'),
-            __('Publicar', 'flavor-chat-ia'),
+            __('Transparencia - Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'transparencia-publicar',
             [$this, 'render_pagina_publicar']
@@ -3378,8 +3378,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Transparencia - Solicitudes', 'flavor-chat-ia'),
-            __('Solicitudes', 'flavor-chat-ia'),
+            __('Transparencia - Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'transparencia-solicitudes',
             [$this, 'render_pagina_solicitudes']
@@ -3394,8 +3394,8 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Configuración de Transparencia', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Configuración del portal de transparencia.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Configuración de Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Configuración del portal de transparencia.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -3407,8 +3407,8 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Datos Públicos', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Gestión de documentos y datos publicados en el portal de transparencia.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Datos Públicos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Gestión de documentos y datos publicados en el portal de transparencia.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -3420,8 +3420,8 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Informes de Transparencia', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Generación y gestión de informes de transparencia.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Informes de Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Generación y gestión de informes de transparencia.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -3433,8 +3433,8 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Publicar Documentos', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Publicación de documentos en el portal de transparencia.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Publicar Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Publicación de documentos en el portal de transparencia.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -3446,8 +3446,8 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Solicitudes de Información', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Gestión de solicitudes de acceso a información pública.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Solicitudes de Información', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Gestión de solicitudes de acceso a información pública.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 }

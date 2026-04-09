@@ -35,20 +35,20 @@ $campanias_participando = $wpdb->get_results($wpdb->prepare(
 ?>
 
 <section class="flavor-mis-campanias">
-    <h2><?php esc_html_e('Mis campanias', 'flavor-chat-ia'); ?></h2>
+    <h2><?php esc_html_e('Mis campanias', 'flavor-platform'); ?></h2>
 
-    <h3><?php esc_html_e('Como creador/a', 'flavor-chat-ia'); ?></h3>
+    <h3><?php esc_html_e('Como creador/a', 'flavor-platform'); ?></h3>
     <?php if (empty($mis_campanias)): ?>
-        <p><?php esc_html_e('No has creado campanias todavia.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('No has creado campanias todavia.', 'flavor-platform'); ?></p>
     <?php else: ?>
         <table class="widefat striped">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Campania', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Firmas', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Participantes', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Campania', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Firmas', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Participantes', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Fecha', 'flavor-platform'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -69,17 +69,17 @@ $campanias_participando = $wpdb->get_results($wpdb->prepare(
         </table>
     <?php endif; ?>
 
-    <h3 style="margin-top:1.5rem;"><?php esc_html_e('Donde participas', 'flavor-chat-ia'); ?></h3>
+    <h3 style="margin-top:1.5rem;"><?php esc_html_e('Donde participas', 'flavor-platform'); ?></h3>
     <?php if (empty($campanias_participando)): ?>
-        <p><?php esc_html_e('No participas en ninguna campania por ahora.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('No participas en ninguna campania por ahora.', 'flavor-platform'); ?></p>
     <?php else: ?>
         <table class="widefat striped">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Campania', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Rol', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Participantes', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Campania', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Rol', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Participantes', 'flavor-platform'); ?></th>
                 </tr>
             </thead>
             <tbody>

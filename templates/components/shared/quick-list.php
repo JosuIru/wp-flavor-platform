@@ -23,7 +23,7 @@ if (!defined('ABSPATH')) {
 $items = $items ?? [];
 $title = $title ?? '';
 $color = $color ?? 'blue';
-$empty_text = $empty_text ?? __('No hay elementos', 'flavor-chat-ia');
+$empty_text = $empty_text ?? __('No hay elementos', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $actions = $actions ?? [];
 $numbered = $numbered ?? false;
 $bordered = $bordered ?? true;

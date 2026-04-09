@@ -532,13 +532,13 @@ class Flavor_Module_Config {
         check_ajax_referer('flavor_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-platform')]);
         }
 
         $module_id = sanitize_text_field($_POST['module_id'] ?? '');
 
         if (!isset($this->config_schema[$module_id])) {
-            wp_send_json_error(['message' => __('Módulo no encontrado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Módulo no encontrado', 'flavor-platform')]);
         }
 
         wp_send_json_success([
@@ -555,23 +555,23 @@ class Flavor_Module_Config {
         check_ajax_referer('flavor_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-platform')]);
         }
 
         $module_id = sanitize_text_field($_POST['module_id'] ?? '');
         $config = $_POST['config'] ?? [];
 
         if (!isset($this->config_schema[$module_id])) {
-            wp_send_json_error(['message' => __('Módulo no encontrado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Módulo no encontrado', 'flavor-platform')]);
         }
 
         $result = $this->save($module_id, $config);
 
         if ($result) {
             do_action('flavor_module_config_saved', $module_id, $config);
-            wp_send_json_success(['message' => __('Configuración guardada', 'flavor-chat-ia')]);
+            wp_send_json_success(['message' => __('Configuración guardada', 'flavor-platform')]);
         } else {
-            wp_send_json_error(['message' => __('Error al guardar', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al guardar', 'flavor-platform')]);
         }
     }
 
@@ -582,19 +582,19 @@ class Flavor_Module_Config {
         check_ajax_referer('flavor_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-platform')]);
         }
 
         $module_id = sanitize_text_field($_POST['module_id'] ?? '');
 
         if (!isset($this->config_schema[$module_id])) {
-            wp_send_json_error(['message' => __('Módulo no encontrado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Módulo no encontrado', 'flavor-platform')]);
         }
 
         $this->reset($module_id);
 
         wp_send_json_success([
-            'message' => __('Configuración restablecida', 'flavor-chat-ia'),
+            'message' => __('Configuración restablecida', 'flavor-platform'),
             'config' => $this->module_defaults[$module_id],
         ]);
     }
@@ -661,7 +661,7 @@ class Flavor_Module_Config {
         return rest_ensure_response([
             'module_id' => $module_id,
             'config' => $this->get($module_id),
-            'message' => __('Configuración guardada', 'flavor-chat-ia'),
+            'message' => __('Configuración guardada', 'flavor-platform'),
         ]);
     }
 

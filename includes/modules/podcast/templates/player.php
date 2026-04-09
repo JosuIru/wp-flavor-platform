@@ -54,7 +54,7 @@ if (!empty($episodio->duracion_segundos)) {
     <?php if ($estilo === 'minimal'): ?>
     <!-- Player Minimal -->
     <div class="flavor-player-minimal-contenedor">
-        <button type="button" class="flavor-player-btn-play-minimal" aria-label="<?php esc_attr_e('Reproducir', 'flavor-chat-ia'); ?>">
+        <button type="button" class="flavor-player-btn-play-minimal" aria-label="<?php esc_attr_e('Reproducir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <span class="dashicons dashicons-controls-play flavor-icono-play"></span>
             <span class="dashicons dashicons-controls-pause flavor-icono-pause" style="display:none;"></span>
         </button>
@@ -81,7 +81,7 @@ if (!empty($episodio->duracion_segundos)) {
         <?php if ($mostrar_portada && $imagen_portada): ?>
         <div class="flavor-player-compacto-cover">
             <img src="<?php echo esc_url($imagen_portada); ?>" alt="">
-            <button type="button" class="flavor-player-btn-play-overlay" aria-label="<?php esc_attr_e('Reproducir', 'flavor-chat-ia'); ?>">
+            <button type="button" class="flavor-player-btn-play-overlay" aria-label="<?php esc_attr_e('Reproducir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <span class="dashicons dashicons-controls-play flavor-icono-play"></span>
                 <span class="dashicons dashicons-controls-pause flavor-icono-pause" style="display:none;"></span>
             </button>
@@ -100,7 +100,7 @@ if (!empty($episodio->duracion_segundos)) {
 
             <div class="flavor-player-compacto-controles">
                 <?php if (!$mostrar_portada || !$imagen_portada): ?>
-                <button type="button" class="flavor-player-btn-play-compacto" aria-label="<?php esc_attr_e('Reproducir', 'flavor-chat-ia'); ?>">
+                <button type="button" class="flavor-player-btn-play-compacto" aria-label="<?php esc_attr_e('Reproducir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-controls-play flavor-icono-play"></span>
                     <span class="dashicons dashicons-controls-pause flavor-icono-pause" style="display:none;"></span>
                 </button>
@@ -115,7 +115,7 @@ if (!empty($episodio->duracion_segundos)) {
                     <span class="flavor-tiempo-total"><?php echo esc_html($duracion_formateada ?: '0:00'); ?></span>
                 </div>
 
-                <button type="button" class="flavor-player-btn-volumen" aria-label="<?php esc_attr_e('Volumen', 'flavor-chat-ia'); ?>">
+                <button type="button" class="flavor-player-btn-volumen" aria-label="<?php esc_attr_e('Volumen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-controls-volumeon"></span>
                 </button>
             </div>
@@ -140,7 +140,7 @@ if (!empty($episodio->duracion_segundos)) {
                 <h4 class="flavor-player-titulo"><?php echo esc_html($episodio->titulo); ?></h4>
                 <?php if (!empty($episodio->numero_episodio)): ?>
                 <span class="flavor-player-episodio-num">
-                    <?php echo sprintf(esc_html__('Episodio %d', 'flavor-chat-ia'), intval($episodio->numero_episodio)); ?>
+                    <?php echo sprintf(esc_html__('Episodio %d', FLAVOR_PLATFORM_TEXT_DOMAIN), intval($episodio->numero_episodio)); ?>
                 </span>
                 <?php endif; ?>
             </div>
@@ -148,17 +148,17 @@ if (!empty($episodio->duracion_segundos)) {
 
             <div class="flavor-player-normal-controles">
                 <div class="flavor-player-btns-principales">
-                    <button type="button" class="flavor-player-btn-salto" data-salto="-15" aria-label="<?php esc_attr_e('Retroceder 15 segundos', 'flavor-chat-ia'); ?>">
+                    <button type="button" class="flavor-player-btn-salto" data-salto="-15" aria-label="<?php esc_attr_e('Retroceder 15 segundos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-controls-skipback"></span>
                         <span class="flavor-salto-label">15</span>
                     </button>
 
-                    <button type="button" class="flavor-player-btn-play-principal" aria-label="<?php esc_attr_e('Reproducir', 'flavor-chat-ia'); ?>">
+                    <button type="button" class="flavor-player-btn-play-principal" aria-label="<?php esc_attr_e('Reproducir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-controls-play flavor-icono-play"></span>
                         <span class="dashicons dashicons-controls-pause flavor-icono-pause" style="display:none;"></span>
                     </button>
 
-                    <button type="button" class="flavor-player-btn-salto" data-salto="30" aria-label="<?php esc_attr_e('Avanzar 30 segundos', 'flavor-chat-ia'); ?>">
+                    <button type="button" class="flavor-player-btn-salto" data-salto="30" aria-label="<?php esc_attr_e('Avanzar 30 segundos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-controls-skipforward"></span>
                         <span class="flavor-salto-label">30</span>
                     </button>
@@ -182,10 +182,10 @@ if (!empty($episodio->duracion_segundos)) {
                     </div>
 
                     <div class="flavor-player-volumen-wrapper">
-                        <button type="button" class="flavor-player-btn-mute" aria-label="<?php esc_attr_e('Silenciar', 'flavor-chat-ia'); ?>">
+                        <button type="button" class="flavor-player-btn-mute" aria-label="<?php esc_attr_e('Silenciar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-controls-volumeon"></span>
                         </button>
-                        <input type="range" class="flavor-player-volumen" min="0" max="100" value="80" aria-label="<?php esc_attr_e('Volumen', 'flavor-chat-ia'); ?>">
+                        <input type="range" class="flavor-player-volumen" min="0" max="100" value="80" aria-label="<?php esc_attr_e('Volumen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     </div>
                 </div>
             </div>

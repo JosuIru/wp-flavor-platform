@@ -1,7 +1,7 @@
 {
-  "name": "flavor-chat-ia",
+  "name": "flavor-platform",
   "version": "3.5.0",
-  "description": "Plataforma integral para WordPress: Red de Comunidades, Asistente IA, Page Builder y más",
+  "description": "Flavor Platform para WordPress: comunidades, IA, page builder y automatización",
   "private": true,
   "scripts": {
     "build": "node scripts/build.js",

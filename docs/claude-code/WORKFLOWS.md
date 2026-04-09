@@ -1,6 +1,6 @@
 # Claude Code - Workflows para Crear Sitios
 
-Guía paso a paso para crear sitios completos con Flavor Chat IA desde Claude Code.
+Guía paso a paso para crear sitios completos con Flavor Platform desde Claude Code.
 
 ---
 

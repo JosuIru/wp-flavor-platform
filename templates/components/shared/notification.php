@@ -133,7 +133,7 @@ $position_class = $position_classes[$position] ?? '';
             <button type="button"
                     onclick="flavorNotification.dismiss('<?php echo esc_js($notification_id); ?>')"
                     class="flex-shrink-0 p-1 rounded-lg <?php echo esc_attr($config['text']); ?> opacity-60 hover:opacity-100 hover:bg-white/50 transition-all"
-                    aria-label="<?php esc_attr_e('Cerrar', 'flavor-chat-ia'); ?>">
+                    aria-label="<?php esc_attr_e('Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <span>✕</span>
             </button>
         <?php endif; ?>

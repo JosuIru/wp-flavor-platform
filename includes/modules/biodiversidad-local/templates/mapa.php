@@ -44,7 +44,7 @@ $avistamientos_raw = $wpdb->get_results("
 $avistamientos_js = [];
 foreach ($avistamientos_raw as $av) {
     $especie = get_post($av->especie_id);
-    $especie_nombre = $especie ? $especie->post_title : __('Desconocida', 'flavor-chat-ia');
+    $especie_nombre = $especie ? $especie->post_title : __('Desconocida', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
     $terms = $especie ? wp_get_post_terms($especie->ID, 'bl_categoria') : [];
     $categoria = !empty($terms) ? $terms[0]->slug : 'flora';
@@ -77,15 +77,15 @@ if (!empty($avistamientos_js)) {
 
 <div class="bl-container">
     <header class="bl-header">
-        <h2><?php esc_html_e('Mapa de Avistamientos', 'flavor-chat-ia'); ?></h2>
-        <p><?php esc_html_e('Explora los avistamientos registrados por la comunidad', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Mapa de Avistamientos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p><?php esc_html_e('Explora los avistamientos registrados por la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </header>
 
     <!-- Estadísticas -->
     <div class="bl-stats-bar">
         <div class="bl-stat-item">
             <div class="bl-stat-item__valor"><?php echo esc_html(count($avistamientos_js)); ?></div>
-            <div class="bl-stat-item__label"><?php esc_html_e('Avistamientos', 'flavor-chat-ia'); ?></div>
+            <div class="bl-stat-item__label"><?php esc_html_e('Avistamientos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
         <?php foreach ($categorias as $cat_id => $cat_data) :
             $count = count(array_filter($avistamientos_js, fn($a) => $a['categoria'] === $cat_id));
@@ -121,7 +121,7 @@ if (!empty($avistamientos_js)) {
     </div>
 
     <!-- Últimos avistamientos -->
-    <h3 style="margin: 2rem 0 1rem;"><?php esc_html_e('Últimos Avistamientos', 'flavor-chat-ia'); ?></h3>
+    <h3 style="margin: 2rem 0 1rem;"><?php esc_html_e('Últimos Avistamientos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
     <?php if (!empty($avistamientos_js)) : ?>
     <div class="bl-avistamientos-lista">
@@ -137,7 +137,7 @@ if (!empty($avistamientos_js)) {
                 <div class="bl-avistamiento-item__especie"><?php echo esc_html($av['especie']); ?></div>
                 <div class="bl-avistamiento-item__meta">
                     <span><span class="dashicons dashicons-calendar-alt"></span> <?php echo esc_html($av['fecha']); ?></span>
-                    <span><span class="dashicons dashicons-groups"></span> <?php echo esc_html($av['cantidad']); ?> <?php esc_html_e('ejemplar(es)', 'flavor-chat-ia'); ?></span>
+                    <span><span class="dashicons dashicons-groups"></span> <?php echo esc_html($av['cantidad']); ?> <?php esc_html_e('ejemplar(es)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
         </article>
@@ -146,10 +146,10 @@ if (!empty($avistamientos_js)) {
     <?php else : ?>
     <div class="bl-empty-state">
         <span class="dashicons dashicons-location-alt"></span>
-        <p><?php esc_html_e('Aún no hay avistamientos registrados.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('Aún no hay avistamientos registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         <?php if (is_user_logged_in()) : ?>
         <a href="<?php echo esc_url(home_url('/biodiversidad/registrar/')); ?>" class="bl-btn bl-btn--primary">
-            <?php esc_html_e('Registrar el primero', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Registrar el primero', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <?php endif; ?>
     </div>

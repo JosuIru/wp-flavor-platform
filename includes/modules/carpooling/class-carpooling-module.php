@@ -80,7 +80,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Carpooling no estan creadas. Se crearan automaticamente al activar.', 'flavor-chat-ia');
+            return __('Las tablas de Carpooling no estan creadas. Se crearan automaticamente al activar.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         
     return '';
@@ -363,15 +363,15 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
             'restUrl' => rest_url('carpooling/v1/'),
             'restNonce' => wp_create_nonce('wp_rest'),
             'strings' => [
-                'confirmar_reserva' => __('Confirmar reserva?', 'flavor-chat-ia'),
-                'cancelar_reserva' => __('Cancelar reserva?', 'flavor-chat-ia'),
-                'error_generico' => __('Ha ocurrido un error. Intentalo de nuevo.', 'flavor-chat-ia'),
-                'reserva_exitosa' => __('Reserva realizada con exito!', 'flavor-chat-ia'),
-                'viaje_publicado' => __('Viaje publicado correctamente!', 'flavor-chat-ia'),
-                'selecciona_origen' => __('Selecciona punto de origen', 'flavor-chat-ia'),
-                'selecciona_destino' => __('Selecciona punto de destino', 'flavor-chat-ia'),
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
-                'sin_resultados' => __('No se encontraron viajes', 'flavor-chat-ia'),
+                'confirmar_reserva' => __('Confirmar reserva?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cancelar_reserva' => __('Cancelar reserva?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error_generico' => __('Ha ocurrido un error. Intentalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'reserva_exitosa' => __('Reserva realizada con exito!', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'viaje_publicado' => __('Viaje publicado correctamente!', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'selecciona_origen' => __('Selecciona punto de origen', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'selecciona_destino' => __('Selecciona punto de destino', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sin_resultados' => __('No se encontraron viajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'settings' => [
                 'radio_busqueda_km' => $this->settings['radio_busqueda_km'],
@@ -564,14 +564,14 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
 
         $conductor_id = get_current_user_id();
         if (!$conductor_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion para publicar un viaje.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesion para publicar un viaje.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Validar datos requeridos
         $campos_requeridos = ['origen', 'origen_lat', 'origen_lng', 'destino', 'destino_lat', 'destino_lng', 'fecha_hora', 'plazas'];
         foreach ($campos_requeridos as $campo) {
             if (empty($params[$campo])) {
-                return ['success' => false, 'error' => sprintf(__('El campo %s es obligatorio.', 'flavor-chat-ia'), $campo)];
+                return ['success' => false, 'error' => sprintf(__('El campo %s es obligatorio.', FLAVOR_PLATFORM_TEXT_DOMAIN), $campo)];
             }
         }
 
@@ -627,7 +627,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         $resultado = $wpdb->insert($this->tabla_viajes, $datos_viaje);
 
         if ($resultado === false) {
-            return ['success' => false, 'error' => __('Error al publicar el viaje.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Error al publicar el viaje.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $viaje_id = $wpdb->insert_id;
@@ -640,7 +640,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => true,
-            'message' => __('Viaje publicado correctamente.', 'flavor-chat-ia'),
+            'message' => __('Viaje publicado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'viaje_id' => $viaje_id,
             'viaje' => $this->obtener_viaje($viaje_id),
         ];
@@ -772,31 +772,31 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
 
         $pasajero_id = get_current_user_id();
         if (!$pasajero_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion para reservar.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesion para reservar.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $viaje_id = absint($params['viaje_id'] ?? 0);
         if (!$viaje_id) {
-            return ['success' => false, 'error' => __('ID de viaje invalido.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('ID de viaje invalido.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $viaje = $this->obtener_viaje($viaje_id);
         if (!$viaje) {
-            return ['success' => false, 'error' => __('Viaje no encontrado.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Viaje no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Validaciones
         if ($viaje->conductor_id == $pasajero_id) {
-            return ['success' => false, 'error' => __('No puedes reservar en tu propio viaje.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No puedes reservar en tu propio viaje.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if ($viaje->estado !== 'publicado') {
-            return ['success' => false, 'error' => __('Este viaje ya no esta disponible.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Este viaje ya no esta disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $plazas_solicitadas = absint($params['plazas'] ?? 1);
         if ($plazas_solicitadas > $viaje->plazas_disponibles) {
-            return ['success' => false, 'error' => __('No hay suficientes plazas disponibles.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No hay suficientes plazas disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Verificar si ya tiene reserva en este viaje
@@ -806,7 +806,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         ));
 
         if ($reserva_existente) {
-            return ['success' => false, 'error' => __('Ya tienes una reserva en este viaje.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Ya tienes una reserva en este viaje.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $coste_total = $viaje->precio_por_plaza * $plazas_solicitadas;
@@ -830,7 +830,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         $resultado = $wpdb->insert($this->tabla_reservas, $datos_reserva);
 
         if ($resultado === false) {
-            return ['success' => false, 'error' => __('Error al crear la reserva.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Error al crear la reserva.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $reserva_id = $wpdb->insert_id;
@@ -840,7 +840,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => true,
-            'message' => __('Reserva solicitada. El conductor debe confirmarla.', 'flavor-chat-ia'),
+            'message' => __('Reserva solicitada. El conductor debe confirmarla.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'reserva_id' => $reserva_id,
             'coste_total' => $coste_total,
         ];
@@ -857,7 +857,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         $accion = sanitize_text_field($params['accion'] ?? '');
 
         if (!in_array($accion, ['confirmar', 'rechazar'])) {
-            return ['success' => false, 'error' => __('Accion no valida.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Accion no valida.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $reserva = $wpdb->get_row($wpdb->prepare(
@@ -869,16 +869,16 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$reserva || $reserva->conductor_id != $conductor_id) {
-            return ['success' => false, 'error' => __('No tienes permiso para gestionar esta reserva.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No tienes permiso para gestionar esta reserva.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if ($reserva->estado !== 'solicitada') {
-            return ['success' => false, 'error' => __('Esta reserva ya fue procesada.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Esta reserva ya fue procesada.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if ($accion === 'confirmar') {
             if ($reserva->plazas_reservadas > $reserva->plazas_disponibles) {
-                return ['success' => false, 'error' => __('No hay suficientes plazas disponibles.', 'flavor-chat-ia')];
+                return ['success' => false, 'error' => __('No hay suficientes plazas disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
             }
 
             $wpdb->update(
@@ -904,7 +904,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
             }
 
             $this->enviar_notificacion_reserva_confirmada($reserva_id);
-            $mensaje = __('Reserva confirmada.', 'flavor-chat-ia');
+            $mensaje = __('Reserva confirmada.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         } else {
             $wpdb->update(
                 $this->tabla_reservas,
@@ -916,7 +916,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
             );
 
             $this->enviar_notificacion_reserva_rechazada($reserva_id);
-            $mensaje = __('Reserva rechazada.', 'flavor-chat-ia');
+            $mensaje = __('Reserva rechazada.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         return ['success' => true, 'message' => $mensaje];
@@ -940,18 +940,18 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$reserva) {
-            return ['success' => false, 'error' => __('Reserva no encontrada.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Reserva no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $es_pasajero = $reserva->pasajero_id == $usuario_id;
         $es_conductor = $reserva->conductor_id == $usuario_id;
 
         if (!$es_pasajero && !$es_conductor) {
-            return ['success' => false, 'error' => __('No tienes permiso para cancelar esta reserva.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No tienes permiso para cancelar esta reserva.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if (!in_array($reserva->estado, ['solicitada', 'confirmada'])) {
-            return ['success' => false, 'error' => __('Esta reserva no puede ser cancelada.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Esta reserva no puede ser cancelada.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Verificar tiempo minimo de cancelacion
@@ -960,7 +960,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
             return [
                 'success' => false,
                 'error' => sprintf(
-                    __('No puedes cancelar con menos de %d horas de antelacion.', 'flavor-chat-ia'),
+                    __('No puedes cancelar con menos de %d horas de antelacion.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $this->settings['tiempo_minimo_cancelacion_horas']
                 ),
             ];
@@ -992,7 +992,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
             $this->enviar_notificacion_cancelacion_pasajero($reserva_id);
         }
 
-        return ['success' => true, 'message' => __('Reserva cancelada correctamente.', 'flavor-chat-ia')];
+        return ['success' => true, 'message' => __('Reserva cancelada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     /**
@@ -1006,7 +1006,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         $puntuacion = absint($params['puntuacion'] ?? 0);
 
         if ($puntuacion < 1 || $puntuacion > 5) {
-            return ['success' => false, 'error' => __('La puntuacion debe estar entre 1 y 5.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('La puntuacion debe estar entre 1 y 5.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $reserva = $wpdb->get_row($wpdb->prepare(
@@ -1018,14 +1018,14 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$reserva) {
-            return ['success' => false, 'error' => __('Solo puedes valorar viajes completados.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Solo puedes valorar viajes completados.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $es_pasajero = $reserva->pasajero_id == $valorador_id;
         $es_conductor = $reserva->conductor_id == $valorador_id;
 
         if (!$es_pasajero && !$es_conductor) {
-            return ['success' => false, 'error' => __('No participaste en este viaje.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No participaste en este viaje.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Verificar si ya valoro
@@ -1035,7 +1035,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         ));
 
         if ($valoracion_existente) {
-            return ['success' => false, 'error' => __('Ya has valorado este viaje.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Ya has valorado este viaje.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $tipo = $es_pasajero ? 'conductor' : 'pasajero';
@@ -1071,13 +1071,13 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         $resultado = $wpdb->insert($this->tabla_valoraciones, $datos_valoracion);
 
         if ($resultado === false) {
-            return ['success' => false, 'error' => __('Error al guardar la valoracion.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Error al guardar la valoracion.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Marcar reserva como valorada
         $wpdb->update($this->tabla_reservas, ['valoracion_realizada' => 1], ['id' => $reserva_id]);
 
-        return ['success' => true, 'message' => __('Valoracion guardada correctamente.', 'flavor-chat-ia')];
+        return ['success' => true, 'message' => __('Valoracion guardada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     /**
@@ -1090,7 +1090,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         $tipo = sanitize_text_field($params['tipo'] ?? '');
 
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Usuario no especificado.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Usuario no especificado.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $where_tipo = '';
@@ -1146,7 +1146,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
 
         $conductor_id = get_current_user_id();
         if (!$conductor_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $estado = sanitize_text_field($params['estado'] ?? '');
@@ -1197,7 +1197,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
 
         $pasajero_id = get_current_user_id();
         if (!$pasajero_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $estado = sanitize_text_field($params['estado'] ?? '');
@@ -1235,7 +1235,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $vehiculo_id = absint($params['vehiculo_id'] ?? 0);
@@ -1267,15 +1267,15 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
             ));
 
             if ($propietario != $usuario_id) {
-                return ['success' => false, 'error' => __('No tienes permiso para editar este vehiculo.', 'flavor-chat-ia')];
+                return ['success' => false, 'error' => __('No tienes permiso para editar este vehiculo.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
             }
 
             $wpdb->update($this->tabla_vehiculos, $datos_vehiculo, ['id' => $vehiculo_id]);
-            $mensaje = __('Vehiculo actualizado correctamente.', 'flavor-chat-ia');
+            $mensaje = __('Vehiculo actualizado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         } else {
             $wpdb->insert($this->tabla_vehiculos, $datos_vehiculo);
             $vehiculo_id = $wpdb->insert_id;
-            $mensaje = __('Vehiculo agregado correctamente.', 'flavor-chat-ia');
+            $mensaje = __('Vehiculo agregado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         // Si es predeterminado, quitar de otros
@@ -1301,19 +1301,19 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
 
         $conductor_id = get_current_user_id();
         if (!$conductor_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $campos_requeridos = ['origen', 'origen_lat', 'origen_lng', 'destino', 'destino_lat', 'destino_lng', 'hora', 'dias', 'plazas', 'precio'];
         foreach ($campos_requeridos as $campo) {
             if (empty($params[$campo])) {
-                return ['success' => false, 'error' => sprintf(__('El campo %s es obligatorio.', 'flavor-chat-ia'), $campo)];
+                return ['success' => false, 'error' => sprintf(__('El campo %s es obligatorio.', FLAVOR_PLATFORM_TEXT_DOMAIN), $campo)];
             }
         }
 
         $dias_semana = is_array($params['dias']) ? $params['dias'] : json_decode($params['dias'], true);
         if (empty($dias_semana)) {
-            return ['success' => false, 'error' => __('Debes seleccionar al menos un dia.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes seleccionar al menos un dia.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $datos_ruta = [
@@ -1342,7 +1342,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         $resultado = $wpdb->insert($this->tabla_rutas_recurrentes, $datos_ruta);
 
         if ($resultado === false) {
-            return ['success' => false, 'error' => __('Error al crear la ruta recurrente.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Error al crear la ruta recurrente.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $ruta_id = $wpdb->insert_id;
@@ -1352,7 +1352,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => true,
-            'message' => __('Ruta recurrente creada. Se han generado viajes para los proximos dias.', 'flavor-chat-ia'),
+            'message' => __('Ruta recurrente creada. Se han generado viajes para los proximos dias.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'ruta_id' => $ruta_id,
         ];
     }
@@ -1364,7 +1364,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         if (!current_user_can('manage_options')) {
-            return ['success' => false, 'error' => __('Sin permisos.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Sin permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $periodo = sanitize_text_field($params['periodo'] ?? '30');
@@ -1498,11 +1498,11 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$viaje) {
-            wp_send_json(['success' => false, 'error' => __('Viaje no encontrado.', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Viaje no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (!in_array($viaje->estado, ['publicado', 'completo'])) {
-            wp_send_json(['success' => false, 'error' => __('Este viaje no puede cancelarse.', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Este viaje no puede cancelarse.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Cancelar viaje
@@ -1523,7 +1523,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
                 $this->tabla_reservas,
                 [
                     'estado' => 'cancelada',
-                    'motivo_cancelacion' => __('Viaje cancelado por el conductor.', 'flavor-chat-ia'),
+                    'motivo_cancelacion' => __('Viaje cancelado por el conductor.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'cancelado_por' => 'conductor',
                     'fecha_cancelacion' => current_time('mysql'),
                 ],
@@ -1532,7 +1532,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
             $this->enviar_notificacion_cancelacion_pasajero($reserva->id);
         }
 
-        wp_send_json(['success' => true, 'message' => __('Viaje cancelado. Se ha notificado a los pasajeros.', 'flavor-chat-ia')]);
+        wp_send_json(['success' => true, 'message' => __('Viaje cancelado. Se ha notificado a los pasajeros.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -1577,7 +1577,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json(['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Debes iniciar sesion.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $vehiculos = $wpdb->get_results($wpdb->prepare(
@@ -1624,7 +1624,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         ]);
 
         if (is_wp_error($respuesta)) {
-            wp_send_json(['success' => false, 'error' => __('Error de conexion', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Error de conexion', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $lugares_raw = json_decode(wp_remote_retrieve_body($respuesta), true);
@@ -1655,7 +1655,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         $viaje = $this->obtener_viaje($viaje_id);
 
         if (!$viaje) {
-            wp_send_json(['success' => false, 'error' => __('Viaje no encontrado.', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Viaje no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Incrementar visualizaciones
@@ -1742,7 +1742,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         $viaje = $this->obtener_viaje($viaje_id);
 
         if (!$viaje) {
-            return new WP_REST_Response(['success' => false, 'error' => __('Viaje no encontrado', 'flavor-chat-ia')], 404);
+            return new WP_REST_Response(['success' => false, 'error' => __('Viaje no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)], 404);
         }
 
         $respuesta = [
@@ -1854,8 +1854,8 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
     public function shortcode_publicar_viaje($atts) {
         if (!is_user_logged_in()) {
             return '<div class="carpooling-login-required">' .
-                   __('Debes iniciar sesion para publicar un viaje.', 'flavor-chat-ia') .
-                   ' <a href="' . wp_login_url(flavor_current_request_url()) . '">' . __('Iniciar sesion', 'flavor-chat-ia') . '</a></div>';
+                   __('Debes iniciar sesion para publicar un viaje.', FLAVOR_PLATFORM_TEXT_DOMAIN) .
+                   ' <a href="' . wp_login_url(flavor_current_request_url()) . '">' . __('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></div>';
         }
 
         wp_enqueue_style('carpooling-styles');
@@ -1877,8 +1877,8 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
     public function shortcode_mis_viajes($atts) {
         if (!is_user_logged_in()) {
             return '<div class="carpooling-login-required">' .
-                   __('Debes iniciar sesion para ver tus viajes.', 'flavor-chat-ia') .
-                   ' <a href="' . wp_login_url(flavor_current_request_url()) . '">' . __('Iniciar sesion', 'flavor-chat-ia') . '</a></div>';
+                   __('Debes iniciar sesion para ver tus viajes.', FLAVOR_PLATFORM_TEXT_DOMAIN) .
+                   ' <a href="' . wp_login_url(flavor_current_request_url()) . '">' . __('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></div>';
         }
 
         wp_enqueue_style('carpooling-styles');
@@ -1895,8 +1895,8 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
     public function shortcode_mis_reservas($atts) {
         if (!is_user_logged_in()) {
             return '<div class="carpooling-login-required">' .
-                   __('Debes iniciar sesion para ver tus reservas.', 'flavor-chat-ia') .
-                   ' <a href="' . wp_login_url(flavor_current_request_url()) . '">' . __('Iniciar sesion', 'flavor-chat-ia') . '</a></div>';
+                   __('Debes iniciar sesion para ver tus reservas.', FLAVOR_PLATFORM_TEXT_DOMAIN) .
+                   ' <a href="' . wp_login_url(flavor_current_request_url()) . '">' . __('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></div>';
         }
 
         wp_enqueue_style('carpooling-styles');
@@ -1935,7 +1935,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
             'id' => intval($viaje->id),
             'conductor' => [
                 'id' => intval($viaje->conductor_id),
-                'nombre' => $conductor ? $conductor->display_name : __('Usuario', 'flavor-chat-ia'),
+                'nombre' => $conductor ? $conductor->display_name : __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'avatar' => get_avatar_url($viaje->conductor_id, ['size' => 80]),
                 'valoracion' => $valoraciones_conductor['promedio'],
                 'total_viajes' => $valoraciones_conductor['total'],
@@ -2172,12 +2172,12 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
             return;
         }
 
-        $asunto = sprintf(__('[Carpooling] Nueva solicitud de reserva para tu viaje', 'flavor-chat-ia'));
+        $asunto = sprintf(__('[Carpooling] Nueva solicitud de reserva para tu viaje', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         $mensaje = sprintf(
-            __("Hola %s,\n\n%s ha solicitado reservar %d plaza(s) en tu viaje:\n\nRuta: %s -> %s\nFecha: %s\n\nAccede a tu panel para confirmar o rechazar la reserva.\n\nSaludos,\nEl equipo de Carpooling", 'flavor-chat-ia'),
+            __("Hola %s,\n\n%s ha solicitado reservar %d plaza(s) en tu viaje:\n\nRuta: %s -> %s\nFecha: %s\n\nAccede a tu panel para confirmar o rechazar la reserva.\n\nSaludos,\nEl equipo de Carpooling", FLAVOR_PLATFORM_TEXT_DOMAIN),
             $conductor->display_name,
-            $pasajero ? $pasajero->display_name : __('Un usuario', 'flavor-chat-ia'),
+            $pasajero ? $pasajero->display_name : __('Un usuario', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $reserva->plazas_reservadas,
             $reserva->origen,
             $reserva->destino,
@@ -2216,10 +2216,10 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
             return;
         }
 
-        $asunto = sprintf(__('[Carpooling] Tu reserva ha sido confirmada!', 'flavor-chat-ia'));
+        $asunto = sprintf(__('[Carpooling] Tu reserva ha sido confirmada!', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         $mensaje = sprintf(
-            __("Hola %s,\n\nTu reserva ha sido confirmada!\n\nRuta: %s -> %s\nFecha: %s\nConductor: %s\nPlazas: %d\nCoste total: %.2f EUR\n\nNo olvides estar puntual en el punto de recogida.\n\nBuen viaje!", 'flavor-chat-ia'),
+            __("Hola %s,\n\nTu reserva ha sido confirmada!\n\nRuta: %s -> %s\nFecha: %s\nConductor: %s\nPlazas: %d\nCoste total: %.2f EUR\n\nNo olvides estar puntual en el punto de recogida.\n\nBuen viaje!", FLAVOR_PLATFORM_TEXT_DOMAIN),
             $pasajero->display_name,
             $reserva->origen,
             $reserva->destino,
@@ -2260,15 +2260,15 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
             return;
         }
 
-        $asunto = sprintf(__('[Carpooling] Tu solicitud de reserva no ha sido aceptada', 'flavor-chat-ia'));
+        $asunto = sprintf(__('[Carpooling] Tu solicitud de reserva no ha sido aceptada', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         $mensaje = sprintf(
-            __("Hola %s,\n\nLamentamos informarte que tu solicitud de reserva no ha sido aceptada.\n\nRuta: %s -> %s\nFecha: %s\n\nMotivo: %s\n\nTe animamos a buscar otros viajes disponibles.\n\nSaludos,\nEl equipo de Carpooling", 'flavor-chat-ia'),
+            __("Hola %s,\n\nLamentamos informarte que tu solicitud de reserva no ha sido aceptada.\n\nRuta: %s -> %s\nFecha: %s\n\nMotivo: %s\n\nTe animamos a buscar otros viajes disponibles.\n\nSaludos,\nEl equipo de Carpooling", FLAVOR_PLATFORM_TEXT_DOMAIN),
             $pasajero->display_name,
             $reserva->origen,
             $reserva->destino,
             date_i18n('l j F Y, H:i', strtotime($reserva->fecha_hora)),
-            $reserva->motivo_rechazo ?: __('No especificado', 'flavor-chat-ia')
+            $reserva->motivo_rechazo ?: __('No especificado', FLAVOR_PLATFORM_TEXT_DOMAIN)
         );
 
         wp_mail($pasajero->user_email, $asunto, $mensaje);
@@ -2303,17 +2303,17 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
             return;
         }
 
-        $asunto = sprintf(__('[Carpooling] Un pasajero ha cancelado su reserva', 'flavor-chat-ia'));
+        $asunto = sprintf(__('[Carpooling] Un pasajero ha cancelado su reserva', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         $mensaje = sprintf(
-            __("Hola %s,\n\n%s ha cancelado su reserva en tu viaje:\n\nRuta: %s -> %s\nFecha: %s\nPlazas liberadas: %d\n\nMotivo: %s\n\nLas plazas han vuelto a estar disponibles.\n\nSaludos,\nEl equipo de Carpooling", 'flavor-chat-ia'),
+            __("Hola %s,\n\n%s ha cancelado su reserva en tu viaje:\n\nRuta: %s -> %s\nFecha: %s\nPlazas liberadas: %d\n\nMotivo: %s\n\nLas plazas han vuelto a estar disponibles.\n\nSaludos,\nEl equipo de Carpooling", FLAVOR_PLATFORM_TEXT_DOMAIN),
             $conductor->display_name,
-            $pasajero ? $pasajero->display_name : __('Un pasajero', 'flavor-chat-ia'),
+            $pasajero ? $pasajero->display_name : __('Un pasajero', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $reserva->origen,
             $reserva->destino,
             date_i18n('l j F Y, H:i', strtotime($reserva->fecha_hora)),
             $reserva->plazas_reservadas,
-            $reserva->motivo_cancelacion ?: __('No especificado', 'flavor-chat-ia')
+            $reserva->motivo_cancelacion ?: __('No especificado', FLAVOR_PLATFORM_TEXT_DOMAIN)
         );
 
         wp_mail($conductor->user_email, $asunto, $mensaje);
@@ -2347,15 +2347,15 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
             return;
         }
 
-        $asunto = sprintf(__('[Carpooling] Tu viaje ha sido cancelado', 'flavor-chat-ia'));
+        $asunto = sprintf(__('[Carpooling] Tu viaje ha sido cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         $mensaje = sprintf(
-            __("Hola %s,\n\nLamentamos informarte que el viaje en el que tenias reserva ha sido cancelado por el conductor.\n\nRuta: %s -> %s\nFecha: %s\n\nMotivo: %s\n\nTe animamos a buscar otros viajes disponibles.\n\nSaludos,\nEl equipo de Carpooling", 'flavor-chat-ia'),
+            __("Hola %s,\n\nLamentamos informarte que el viaje en el que tenias reserva ha sido cancelado por el conductor.\n\nRuta: %s -> %s\nFecha: %s\n\nMotivo: %s\n\nTe animamos a buscar otros viajes disponibles.\n\nSaludos,\nEl equipo de Carpooling", FLAVOR_PLATFORM_TEXT_DOMAIN),
             $pasajero->display_name,
             $reserva->origen,
             $reserva->destino,
             date_i18n('l j F Y, H:i', strtotime($reserva->fecha_hora)),
-            $reserva->motivo_cancelacion ?: __('No especificado', 'flavor-chat-ia')
+            $reserva->motivo_cancelacion ?: __('No especificado', FLAVOR_PLATFORM_TEXT_DOMAIN)
         );
 
         wp_mail($pasajero->user_email, $asunto, $mensaje);
@@ -2440,138 +2440,138 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
     public function get_web_components() {
         return [
             'hero' => [
-                'label' => __('Hero Carpooling', 'flavor-chat-ia'),
-                'description' => __('Seccion hero principal con buscador de viajes', 'flavor-chat-ia'),
+                'label' => __('Hero Carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Seccion hero principal con buscador de viajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-car',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Titulo', 'flavor-chat-ia'),
-                        'default' => __('Comparte tu viaje, ahorra dinero', 'flavor-chat-ia'),
+                        'label' => __('Titulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Comparte tu viaje, ahorra dinero', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'subtitulo' => [
                         'type' => 'textarea',
-                        'label' => __('Subtitulo', 'flavor-chat-ia'),
-                        'default' => __('Viaja de forma economica y sostenible con tus vecinos', 'flavor-chat-ia'),
+                        'label' => __('Subtitulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Viaja de forma economica y sostenible con tus vecinos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'imagen_fondo' => [
                         'type' => 'image',
-                        'label' => __('Imagen de fondo', 'flavor-chat-ia'),
+                        'label' => __('Imagen de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                     'mostrar_buscador' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar buscador', 'flavor-chat-ia'),
+                        'label' => __('Mostrar buscador', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                 ],
                 'template' => 'carpooling/hero',
             ],
             'viajes_grid' => [
-                'label' => __('Grid de Viajes', 'flavor-chat-ia'),
-                'description' => __('Listado de viajes disponibles en formato tarjetas', 'flavor-chat-ia'),
+                'label' => __('Grid de Viajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Listado de viajes disponibles en formato tarjetas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-grid-view',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Titulo de seccion', 'flavor-chat-ia'),
-                        'default' => __('Viajes Disponibles', 'flavor-chat-ia'),
+                        'label' => __('Titulo de seccion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Viajes Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'columnas' => [
                         'type' => 'select',
-                        'label' => __('Columnas', 'flavor-chat-ia'),
+                        'label' => __('Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => [2, 3, 4],
                         'default' => 3,
                     ],
                     'filtro_categoria' => [
                         'type' => 'select',
-                        'label' => __('Filtrar por', 'flavor-chat-ia'),
+                        'label' => __('Filtrar por', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['todos', 'proximos', 'populares'],
                         'default' => 'proximos',
                     ],
                     'mostrar_avatares' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar avatares conductores', 'flavor-chat-ia'),
+                        'label' => __('Mostrar avatares conductores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                 ],
                 'template' => 'carpooling/viajes-grid',
             ],
             'como_funciona' => [
-                'label' => __('Como Funciona', 'flavor-chat-ia'),
-                'description' => __('Pasos explicativos del proceso', 'flavor-chat-ia'),
+                'label' => __('Como Funciona', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Pasos explicativos del proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'features',
                 'icon' => 'dashicons-info',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Titulo', 'flavor-chat-ia'),
-                        'default' => __('Como funciona?', 'flavor-chat-ia'),
+                        'label' => __('Titulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Como funciona?', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'paso1_titulo' => [
                         'type' => 'text',
-                        'label' => __('Paso 1 - Titulo', 'flavor-chat-ia'),
-                        'default' => __('Busca tu viaje', 'flavor-chat-ia'),
+                        'label' => __('Paso 1 - Titulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Busca tu viaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'paso1_texto' => [
                         'type' => 'textarea',
-                        'label' => __('Paso 1 - Texto', 'flavor-chat-ia'),
-                        'default' => __('Introduce origen, destino y fecha', 'flavor-chat-ia'),
+                        'label' => __('Paso 1 - Texto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Introduce origen, destino y fecha', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'paso2_titulo' => [
                         'type' => 'text',
-                        'label' => __('Paso 2 - Titulo', 'flavor-chat-ia'),
-                        'default' => __('Reserva tu plaza', 'flavor-chat-ia'),
+                        'label' => __('Paso 2 - Titulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Reserva tu plaza', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'paso2_texto' => [
                         'type' => 'textarea',
-                        'label' => __('Paso 2 - Texto', 'flavor-chat-ia'),
-                        'default' => __('Selecciona el viaje que mejor se ajuste', 'flavor-chat-ia'),
+                        'label' => __('Paso 2 - Texto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Selecciona el viaje que mejor se ajuste', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'paso3_titulo' => [
                         'type' => 'text',
-                        'label' => __('Paso 3 - Titulo', 'flavor-chat-ia'),
-                        'default' => __('Viaja!', 'flavor-chat-ia'),
+                        'label' => __('Paso 3 - Titulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Viaja!', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'paso3_texto' => [
                         'type' => 'textarea',
-                        'label' => __('Paso 3 - Texto', 'flavor-chat-ia'),
-                        'default' => __('Comparte tu viaje y ahorra', 'flavor-chat-ia'),
+                        'label' => __('Paso 3 - Texto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Comparte tu viaje y ahorra', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                 ],
                 'template' => 'carpooling/como-funciona',
             ],
             'cta_conductor' => [
-                'label' => __('CTA Conductor', 'flavor-chat-ia'),
-                'description' => __('Llamada a la accion para publicar viajes', 'flavor-chat-ia'),
+                'label' => __('CTA Conductor', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Llamada a la accion para publicar viajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'cta',
                 'icon' => 'dashicons-megaphone',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Titulo', 'flavor-chat-ia'),
-                        'default' => __('Tienes coche? Comparte tus viajes', 'flavor-chat-ia'),
+                        'label' => __('Titulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Tienes coche? Comparte tus viajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'texto' => [
                         'type' => 'textarea',
-                        'label' => __('Texto', 'flavor-chat-ia'),
-                        'default' => __('Recupera parte del coste de tus desplazamientos habituales', 'flavor-chat-ia'),
+                        'label' => __('Texto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Recupera parte del coste de tus desplazamientos habituales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'boton_texto' => [
                         'type' => 'text',
-                        'label' => __('Texto del boton', 'flavor-chat-ia'),
-                        'default' => __('Publicar Viaje', 'flavor-chat-ia'),
+                        'label' => __('Texto del boton', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Publicar Viaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'boton_url' => [
                         'type' => 'url',
-                        'label' => __('URL del boton', 'flavor-chat-ia'),
+                        'label' => __('URL del boton', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '#',
                     ],
                     'color_fondo' => [
                         'type' => 'color',
-                        'label' => __('Color de fondo', 'flavor-chat-ia'),
+                        'label' => __('Color de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '#3b82f6',
                     ],
                 ],
@@ -2660,25 +2660,25 @@ KNOWLEDGE;
     protected function get_admin_config() {
         return [
             'id' => 'carpooling',
-            'label' => __('Carpooling', 'flavor-chat-ia'),
+            'label' => __('Carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-car',
             'capability' => 'manage_options',
             'categoria' => 'sostenibilidad',
             'paginas' => [
                 [
                     'slug' => 'carpooling-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'carpooling-viajes',
-                    'titulo' => __('Viajes', 'flavor-chat-ia'),
+                    'titulo' => __('Viajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_viajes'],
                     'badge' => [$this, 'contar_viajes_activos'],
                 ],
                 [
                     'slug' => 'carpooling-config',
-                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'titulo' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_config'],
                 ],
             ],
@@ -2724,55 +2724,55 @@ KNOWLEDGE;
         echo '<nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">';
         echo '<a href="' . esc_url(admin_url('admin.php?page=carpooling-dashboard')) . '" style="color: #2271b1; text-decoration: none;">';
         echo '<span class="dashicons dashicons-car" style="font-size: 14px; vertical-align: middle;"></span> ';
-        echo esc_html__('Carpooling', 'flavor-chat-ia');
+        echo esc_html__('Carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN);
         echo '</a>';
         echo '<span style="color: #646970; margin: 0 5px;">›</span>';
-        echo '<span style="color: #1d2327;">' . esc_html__('Configuración', 'flavor-chat-ia') . '</span>';
+        echo '<span style="color: #1d2327;">' . esc_html__('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span>';
         echo '</nav>';
 
-        echo '<h1>' . esc_html__('Configuración de Carpooling', 'flavor-chat-ia') . '</h1>';
+        echo '<h1>' . esc_html__('Configuración de Carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
 
         echo '<form method="post" action="">';
         wp_nonce_field('guardar_config_carpooling', 'carpooling_config_nonce');
         echo '<table class="form-table">';
 
-        echo '<tr><th scope="row"><label for="max_pasajeros_por_viaje">' . esc_html__('Máximo pasajeros por viaje', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="max_pasajeros_por_viaje">' . esc_html__('Máximo pasajeros por viaje', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="number" name="max_pasajeros_por_viaje" id="max_pasajeros_por_viaje" value="' . esc_attr($configuracion_actual['max_pasajeros_por_viaje']) . '" min="1" max="8" class="small-text" />';
-        echo '<p class="description">' . esc_html__('Número máximo de pasajeros permitidos por viaje.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . esc_html__('Número máximo de pasajeros permitidos por viaje.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="precio_por_km">' . esc_html__('Precio por kilómetro', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="precio_por_km">' . esc_html__('Precio por kilómetro', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="number" name="precio_por_km" id="precio_por_km" value="' . esc_attr($configuracion_actual['precio_por_km']) . '" min="0" step="0.01" class="small-text" /> EUR';
-        echo '<p class="description">' . esc_html__('Precio sugerido por kilómetro recorrido.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . esc_html__('Precio sugerido por kilómetro recorrido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="radio_busqueda_km">' . esc_html__('Radio de búsqueda', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="radio_busqueda_km">' . esc_html__('Radio de búsqueda', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="number" name="radio_busqueda_km" id="radio_busqueda_km" value="' . esc_attr($configuracion_actual['radio_busqueda_km']) . '" min="1" class="small-text" /> km';
-        echo '<p class="description">' . esc_html__('Radio por defecto para buscar viajes cercanos.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . esc_html__('Radio por defecto para buscar viajes cercanos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="dias_anticipacion_maxima">' . esc_html__('Días de anticipación máxima', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="dias_anticipacion_maxima">' . esc_html__('Días de anticipación máxima', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="number" name="dias_anticipacion_maxima" id="dias_anticipacion_maxima" value="' . esc_attr($configuracion_actual['dias_anticipacion_maxima']) . '" min="1" max="90" class="small-text" />';
-        echo '<p class="description">' . esc_html__('Días máximos para publicar un viaje con antelación.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . esc_html__('Días máximos para publicar un viaje con antelación.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="tiempo_minimo_cancelacion_horas">' . esc_html__('Tiempo mínimo de cancelación', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="tiempo_minimo_cancelacion_horas">' . esc_html__('Tiempo mínimo de cancelación', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="number" name="tiempo_minimo_cancelacion_horas" id="tiempo_minimo_cancelacion_horas" value="' . esc_attr($configuracion_actual['tiempo_minimo_cancelacion_horas']) . '" min="0" class="small-text" /> horas';
-        echo '<p class="description">' . esc_html__('Horas mínimas antes del viaje para permitir cancelaciones.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . esc_html__('Horas mínimas antes del viaje para permitir cancelaciones.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="requiere_verificacion_conductor">' . esc_html__('Verificación de conductores', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="requiere_verificacion_conductor">' . esc_html__('Verificación de conductores', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="checkbox" name="requiere_verificacion_conductor" id="requiere_verificacion_conductor" ' . checked($configuracion_actual['requiere_verificacion_conductor'], true, false) . ' />';
-        echo '<p class="description">' . esc_html__('Requerir verificación de identidad para conductores.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . esc_html__('Requerir verificación de identidad para conductores.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="permite_valoraciones">' . esc_html__('Sistema de valoraciones', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="permite_valoraciones">' . esc_html__('Sistema de valoraciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="checkbox" name="permite_valoraciones" id="permite_valoraciones" ' . checked($configuracion_actual['permite_valoraciones'], true, false) . ' />';
-        echo '<p class="description">' . esc_html__('Permitir valoraciones entre usuarios después de viajes.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . esc_html__('Permitir valoraciones entre usuarios después de viajes.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="permite_mascotas">' . esc_html__('Permitir mascotas', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="permite_mascotas">' . esc_html__('Permitir mascotas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="checkbox" name="permite_mascotas" id="permite_mascotas" ' . checked($configuracion_actual['permite_mascotas'], true, false) . ' />';
-        echo '<p class="description">' . esc_html__('Permitir opción de viajes con mascotas.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . esc_html__('Permitir opción de viajes con mascotas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="notificaciones_email">' . esc_html__('Notificaciones por email', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="notificaciones_email">' . esc_html__('Notificaciones por email', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="checkbox" name="notificaciones_email" id="notificaciones_email" ' . checked($configuracion_actual['notificaciones_email'], true, false) . ' /></td></tr>';
 
         echo '</table>';
-        echo '<p class="submit"><input type="submit" name="guardar_config" class="button-primary" value="' . esc_attr__('Guardar Configuración', 'flavor-chat-ia') . '" /></p>';
+        echo '<p class="submit"><input type="submit" name="guardar_config" class="button-primary" value="' . esc_attr__('Guardar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN) . '" /></p>';
         echo '</form>';
         echo '</div>';
     }
@@ -2875,35 +2875,35 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Carpooling', 'flavor-chat-ia'),
+                'title' => __('Carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'carpooling',
-                'content' => '<h1>' . __('Carpooling Comunitario', 'flavor-chat-ia') . '</h1>
-<p>' . __('Comparte coche y reduce tu huella de carbono', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Carpooling Comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Comparte coche y reduce tu huella de carbono', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="carpooling" action="listar_viajes" columnas="2" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Publicar Viaje', 'flavor-chat-ia'),
+                'title' => __('Publicar Viaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'publicar',
-                'content' => '<h1>' . __('Publicar Viaje', 'flavor-chat-ia') . '</h1>
-<p>' . __('Ofrece plazas en tu coche', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Publicar Viaje', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Ofrece plazas en tu coche', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_form module="carpooling" action="publicar_viaje"]',
                 'parent' => 'carpooling',
             ],
             [
-                'title' => __('Buscar Viaje', 'flavor-chat-ia'),
+                'title' => __('Buscar Viaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'buscar',
-                'content' => '<h1>' . __('Buscar Viaje', 'flavor-chat-ia') . '</h1>
+                'content' => '<h1>' . __('Buscar Viaje', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
 
 [flavor_module_form module="carpooling" action="buscar_viaje"]',
                 'parent' => 'carpooling',
             ],
             [
-                'title' => __('Mis Viajes', 'flavor-chat-ia'),
+                'title' => __('Mis Viajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mis-viajes',
-                'content' => '<h1>' . __('Mis Viajes', 'flavor-chat-ia') . '</h1>
+                'content' => '<h1>' . __('Mis Viajes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
 
 [flavor_module_dashboard module="carpooling"]',
                 'parent' => 'carpooling',
@@ -2919,8 +2919,8 @@ KNOWLEDGE;
     public static function get_renderer_config(): array {
         return [
             'module'   => 'carpooling',
-            'title'    => __('Carpooling Comunitario', 'flavor-chat-ia'),
-            'subtitle' => __('Comparte coche y reduce tu huella de carbono', 'flavor-chat-ia'),
+            'title'    => __('Carpooling Comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Comparte coche y reduce tu huella de carbono', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '🚗',
             'color'    => 'success', // Usa variable CSS --flavor-success del tema
 
@@ -2930,29 +2930,29 @@ KNOWLEDGE;
             ],
 
             'fields' => [
-                'origen'        => ['type' => 'text', 'label' => __('Origen', 'flavor-chat-ia'), 'required' => true],
-                'destino'       => ['type' => 'text', 'label' => __('Destino', 'flavor-chat-ia'), 'required' => true],
-                'fecha'         => ['type' => 'date', 'label' => __('Fecha', 'flavor-chat-ia'), 'required' => true],
-                'hora'          => ['type' => 'time', 'label' => __('Hora', 'flavor-chat-ia'), 'required' => true],
-                'plazas'        => ['type' => 'number', 'label' => __('Plazas disponibles', 'flavor-chat-ia'), 'min' => 1, 'max' => 8],
-                'precio'        => ['type' => 'number', 'label' => __('Precio por plaza', 'flavor-chat-ia'), 'step' => '0.5'],
-                'descripcion'   => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
-                'recurrente'    => ['type' => 'checkbox', 'label' => __('Viaje recurrente', 'flavor-chat-ia')],
+                'origen'        => ['type' => 'text', 'label' => __('Origen', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'destino'       => ['type' => 'text', 'label' => __('Destino', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'fecha'         => ['type' => 'date', 'label' => __('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'hora'          => ['type' => 'time', 'label' => __('Hora', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'plazas'        => ['type' => 'number', 'label' => __('Plazas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN), 'min' => 1, 'max' => 8],
+                'precio'        => ['type' => 'number', 'label' => __('Precio por plaza', FLAVOR_PLATFORM_TEXT_DOMAIN), 'step' => '0.5'],
+                'descripcion'   => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'recurrente'    => ['type' => 'checkbox', 'label' => __('Viaje recurrente', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ],
 
             'estados' => [
-                'publicado'  => ['label' => __('Publicado', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
-                'completo'   => ['label' => __('Completo', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '🔵'],
-                'en_curso'   => ['label' => __('En curso', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '🚗'],
-                'completado' => ['label' => __('Completado', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '✔️'],
-                'cancelado'  => ['label' => __('Cancelado', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '❌'],
+                'publicado'  => ['label' => __('Publicado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '✅'],
+                'completo'   => ['label' => __('Completo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'blue', 'icon' => '🔵'],
+                'en_curso'   => ['label' => __('En curso', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '🚗'],
+                'completado' => ['label' => __('Completado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'gray', 'icon' => '✔️'],
+                'cancelado'  => ['label' => __('Cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'red', 'icon' => '❌'],
             ],
 
             'stats' => [
-                'viajes_activos'    => ['label' => __('Viajes activos', 'flavor-chat-ia'), 'icon' => '🚗', 'color' => 'green'],
-                'plazas_disponibles' => ['label' => __('Plazas libres', 'flavor-chat-ia'), 'icon' => '💺', 'color' => 'blue'],
-                'km_compartidos'    => ['label' => __('km compartidos', 'flavor-chat-ia'), 'icon' => '🛤️', 'color' => 'purple'],
-                'co2_ahorrado'      => ['label' => __('kg CO₂ ahorrados', 'flavor-chat-ia'), 'icon' => '🌱', 'color' => 'emerald'],
+                'viajes_activos'    => ['label' => __('Viajes activos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🚗', 'color' => 'green'],
+                'plazas_disponibles' => ['label' => __('Plazas libres', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '💺', 'color' => 'blue'],
+                'km_compartidos'    => ['label' => __('km compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🛤️', 'color' => 'purple'],
+                'co2_ahorrado'      => ['label' => __('kg CO₂ ahorrados', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🌱', 'color' => 'emerald'],
             ],
 
             'card' => [
@@ -2966,31 +2966,31 @@ KNOWLEDGE;
 
             'tabs' => [
                 'viajes' => [
-                    'label'   => __('Viajes', 'flavor-chat-ia'),
+                    'label'   => __('Viajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-car',
                     'content' => 'template:_archive.php',
                     'public'  => true,
                 ],
                 'buscar' => [
-                    'label'   => __('Buscar viaje', 'flavor-chat-ia'),
+                    'label'   => __('Buscar viaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-search',
                     'content' => 'shortcode:carpooling_buscar',
                     'public'  => true,
                 ],
                 'publicar' => [
-                    'label'      => __('Publicar viaje', 'flavor-chat-ia'),
+                    'label'      => __('Publicar viaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-plus-alt',
                     'content'    => 'shortcode:carpooling_publicar',
                     'requires_login' => true,
                 ],
                 'mis-viajes' => [
-                    'label'      => __('Mis viajes', 'flavor-chat-ia'),
+                    'label'      => __('Mis viajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-admin-users',
                     'content'    => 'shortcode:carpooling_mis_viajes',
                     'requires_login' => true,
                 ],
                 'reservas' => [
-                    'label'      => __('Mis reservas', 'flavor-chat-ia'),
+                    'label'      => __('Mis reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-calendar-alt',
                     'content'    => 'shortcode:carpooling_mis_reservas',
                     'requires_login' => true,
@@ -3008,8 +3008,8 @@ KNOWLEDGE;
             'dashboard' => [
                 'widgets' => ['stats', 'mis_viajes', 'mis_reservas', 'impacto_ambiental'],
                 'actions' => [
-                    'publicar' => ['label' => __('Publicar viaje', 'flavor-chat-ia'), 'icon' => '➕', 'color' => 'green'],
-                    'buscar'   => ['label' => __('Buscar viaje', 'flavor-chat-ia'), 'icon' => '🔍', 'color' => 'blue'],
+                    'publicar' => ['label' => __('Publicar viaje', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '➕', 'color' => 'green'],
+                    'buscar'   => ['label' => __('Buscar viaje', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🔍', 'color' => 'blue'],
                 ],
             ],
 
@@ -3052,8 +3052,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Configuración de Carpooling', 'flavor-chat-ia'),
-            __('Configuración de Carpooling', 'flavor-chat-ia'),
+            __('Configuración de Carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Configuración de Carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'carpooling-config',
             [$this, 'render_pagina_carpooling_config']
@@ -3061,8 +3061,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Viajes de Carpooling', 'flavor-chat-ia'),
-            __('Viajes de Carpooling', 'flavor-chat-ia'),
+            __('Viajes de Carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Viajes de Carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'carpooling-viajes',
             [$this, 'render_pagina_carpooling_viajes']
@@ -3070,8 +3070,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Conductores', 'flavor-chat-ia'),
-            __('Conductores', 'flavor-chat-ia'),
+            __('Conductores', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Conductores', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-carpooling-conductores',
             [$this, 'render_pagina_conductores']
@@ -3079,8 +3079,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Reservas de Carpooling', 'flavor-chat-ia'),
-            __('Reservas de Carpooling', 'flavor-chat-ia'),
+            __('Reservas de Carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Reservas de Carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-carpooling-reservas',
             [$this, 'render_pagina_reservas']
@@ -3088,8 +3088,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Viajes', 'flavor-chat-ia'),
-            __('Viajes', 'flavor-chat-ia'),
+            __('Viajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Viajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-carpooling-viajes',
             [$this, 'render_pagina_viajes']
@@ -3104,7 +3104,7 @@ KNOWLEDGE;
         if (file_exists($ruta_vista)) {
             include $ruta_vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Configuración de Carpooling', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Configuración de Carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1><p>' . esc_html__('Vista no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -3116,7 +3116,7 @@ KNOWLEDGE;
         if (file_exists($ruta_vista)) {
             include $ruta_vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Viajes de Carpooling', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Viajes de Carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1><p>' . esc_html__('Vista no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -3128,7 +3128,7 @@ KNOWLEDGE;
         if (file_exists($ruta_vista)) {
             include $ruta_vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Conductores', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Conductores', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1><p>' . esc_html__('Vista no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -3140,7 +3140,7 @@ KNOWLEDGE;
         if (file_exists($ruta_vista)) {
             include $ruta_vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Reservas de Carpooling', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Reservas de Carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1><p>' . esc_html__('Vista no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -3152,7 +3152,7 @@ KNOWLEDGE;
         if (file_exists($ruta_vista)) {
             include $ruta_vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Viajes', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Viajes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1><p>' . esc_html__('Vista no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 }

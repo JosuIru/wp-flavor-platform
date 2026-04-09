@@ -163,10 +163,10 @@ $estado_badges = [
 ];
 
 $estado_labels = [
-    'publish' => __('Publicado', 'flavor-chat-ia'),
-    'pending' => __('Pendiente', 'flavor-chat-ia'),
-    'draft' => __('Borrador', 'flavor-chat-ia'),
-    'private' => __('Privado', 'flavor-chat-ia'),
+    'publish' => __('Publicado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'pending' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'draft' => __('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'private' => __('Privado', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 
@@ -182,15 +182,15 @@ $estado_labels = [
         <div class="dm-header__content">
             <h1 class="dm-header__title">
                 <span class="dashicons dashicons-store"></span>
-                <?php esc_html_e('Dashboard Marketplace', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Dashboard Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h1>
             <p class="dm-header__description">
-                <?php esc_html_e('Panel operativo para seguir el estado del catálogo, la moderación y la actividad reciente del marketplace.', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Panel operativo para seguir el estado del catálogo, la moderación y la actividad reciente del marketplace.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
         <div class="dm-header__actions">
             <a href="<?php echo esc_url(admin_url('post-new.php?post_type=marketplace_item')); ?>" class="dm-btn dm-btn--primary">
-                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nuevo anuncio', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nuevo anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>
@@ -198,31 +198,31 @@ $estado_labels = [
     <!-- Accesos Rápidos -->
     <div class="dm-card">
         <h2 class="dm-card__title">
-            <span class="dashicons dashicons-admin-links"></span> <?php esc_html_e('Accesos Rápidos', 'flavor-chat-ia'); ?>
+            <span class="dashicons dashicons-admin-links"></span> <?php esc_html_e('Accesos Rápidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
         <div class="dm-action-grid">
             <a href="<?php echo esc_url(admin_url('admin.php?page=marketplace-anuncios')); ?>" class="dm-action-card">
                 <span class="dashicons dashicons-megaphone dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Anuncios', 'flavor-chat-ia'); ?></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=marketplace-moderacion')); ?>" class="dm-action-card dm-action-card--warning">
                 <span class="dashicons dashicons-shield dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Moderación', 'flavor-chat-ia'); ?></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <?php if ($anuncios_pendientes + $total_reportes_pendientes > 0): ?>
                     <span class="dm-badge dm-badge--error"><?php echo $anuncios_pendientes + $total_reportes_pendientes; ?></span>
                 <?php endif; ?>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=marketplace-categorias')); ?>" class="dm-action-card dm-action-card--success">
                 <span class="dashicons dashicons-category dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Categorías', 'flavor-chat-ia'); ?></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
             <a href="<?php echo esc_url(admin_url('edit-tags.php?taxonomy=marketplace_tipo&post_type=marketplace_item')); ?>" class="dm-action-card dm-action-card--purple">
                 <span class="dashicons dashicons-tag dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Tipos', 'flavor-chat-ia'); ?></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Tipos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
             <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', '')); ?>" class="dm-action-card">
                 <span class="dashicons dashicons-external dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Portal público', 'flavor-chat-ia'); ?></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Portal público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
         </div>
     </div>
@@ -235,8 +235,8 @@ $estado_labels = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($anuncios_publicados); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Publicados', 'flavor-chat-ia'); ?></div>
-                <small class="dm-text-muted"><?php esc_html_e('anuncios visibles', 'flavor-chat-ia'); ?></small>
+                <div class="dm-stat-card__label"><?php esc_html_e('Publicados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <small class="dm-text-muted"><?php esc_html_e('anuncios visibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
             </div>
         </div>
 
@@ -246,8 +246,8 @@ $estado_labels = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($anuncios_pendientes); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('En revisión', 'flavor-chat-ia'); ?></div>
-                <small class="dm-text-muted"><?php esc_html_e('esperando moderación', 'flavor-chat-ia'); ?></small>
+                <div class="dm-stat-card__label"><?php esc_html_e('En revisión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <small class="dm-text-muted"><?php esc_html_e('esperando moderación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
             </div>
         </div>
 
@@ -257,8 +257,8 @@ $estado_labels = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($publicados_hoy); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Publicados hoy', 'flavor-chat-ia'); ?></div>
-                <small class="dm-text-muted"><?php esc_html_e('nuevas altas del día', 'flavor-chat-ia'); ?></small>
+                <div class="dm-stat-card__label"><?php esc_html_e('Publicados hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <small class="dm-text-muted"><?php esc_html_e('nuevas altas del día', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
             </div>
         </div>
 
@@ -268,8 +268,8 @@ $estado_labels = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($categorias_activas); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Categorías activas', 'flavor-chat-ia'); ?></div>
-                <small class="dm-text-muted"><?php esc_html_e('con contenido publicado', 'flavor-chat-ia'); ?></small>
+                <div class="dm-stat-card__label"><?php esc_html_e('Categorías activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <small class="dm-text-muted"><?php esc_html_e('con contenido publicado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
             </div>
         </div>
     </div>
@@ -279,19 +279,19 @@ $estado_labels = [
     <div class="dm-alert dm-alert--warning">
         <span class="dashicons dashicons-warning"></span>
         <div>
-            <strong><?php esc_html_e('Cola operativa', 'flavor-chat-ia'); ?></strong>
+            <strong><?php esc_html_e('Cola operativa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
             <ul style="margin: 8px 0 0; padding-left: 20px;">
                 <?php if ($anuncios_pendientes > 0): ?>
-                    <li><?php printf(esc_html__('%s pendientes de moderación', 'flavor-chat-ia'), number_format_i18n($anuncios_pendientes)); ?></li>
+                    <li><?php printf(esc_html__('%s pendientes de moderación', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($anuncios_pendientes)); ?></li>
                 <?php endif; ?>
                 <?php if ($total_reportes_pendientes > 0): ?>
-                    <li><?php printf(esc_html__('%s reportes de abuso', 'flavor-chat-ia'), number_format_i18n($total_reportes_pendientes)); ?></li>
+                    <li><?php printf(esc_html__('%s reportes de abuso', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($total_reportes_pendientes)); ?></li>
                 <?php endif; ?>
                 <?php if ($pendientes_antiguos > 0): ?>
-                    <li><?php printf(esc_html__('%s pendientes con más de 3 días', 'flavor-chat-ia'), number_format_i18n($pendientes_antiguos)); ?></li>
+                    <li><?php printf(esc_html__('%s pendientes con más de 3 días', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($pendientes_antiguos)); ?></li>
                 <?php endif; ?>
                 <?php if ($borradores_antiguos > 0): ?>
-                    <li><?php printf(esc_html__('%s borradores antiguos', 'flavor-chat-ia'), number_format_i18n($borradores_antiguos)); ?></li>
+                    <li><?php printf(esc_html__('%s borradores antiguos', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($borradores_antiguos)); ?></li>
                 <?php endif; ?>
             </ul>
         </div>
@@ -303,7 +303,7 @@ $estado_labels = [
         <!-- Por estado -->
         <div class="dm-card">
             <h3 class="dm-card__title">
-                <span class="dashicons dashicons-tag"></span> <?php esc_html_e('Por estado', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-tag"></span> <?php esc_html_e('Por estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <div class="dm-badge-list">
                 <?php foreach ([
@@ -325,7 +325,7 @@ $estado_labels = [
         <!-- Tipos de transacción -->
         <div class="dm-card">
             <h3 class="dm-card__title">
-                <span class="dashicons dashicons-randomize"></span> <?php esc_html_e('Tipos', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-randomize"></span> <?php esc_html_e('Tipos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <?php if (!empty($tipos_stats)): ?>
                 <ol class="dm-ranking">
@@ -337,14 +337,14 @@ $estado_labels = [
                     <?php endforeach; ?>
                 </ol>
             <?php else: ?>
-                <p class="dm-text-muted"><?php esc_html_e('Sin tipos registrados.', 'flavor-chat-ia'); ?></p>
+                <p class="dm-text-muted"><?php esc_html_e('Sin tipos registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php endif; ?>
         </div>
 
         <!-- Tendencia -->
         <div class="dm-card">
             <h3 class="dm-card__title">
-                <span class="dashicons dashicons-chart-bar"></span> <?php esc_html_e('Ritmo mensual', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-chart-bar"></span> <?php esc_html_e('Ritmo mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <?php if (!empty($anuncios_mensuales)): ?>
                 <div class="dm-trend">
@@ -360,7 +360,7 @@ $estado_labels = [
                     <?php endforeach; ?>
                 </div>
             <?php else: ?>
-                <p class="dm-text-muted"><?php esc_html_e('Sin datos suficientes.', 'flavor-chat-ia'); ?></p>
+                <p class="dm-text-muted"><?php esc_html_e('Sin datos suficientes.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php endif; ?>
         </div>
     </div>
@@ -370,15 +370,15 @@ $estado_labels = [
         <!-- Pendientes prioritarios -->
         <div class="dm-card">
             <h3 class="dm-card__title">
-                <span class="dashicons dashicons-clock"></span> <?php esc_html_e('Pendientes prioritarios', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-clock"></span> <?php esc_html_e('Pendientes prioritarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <?php if (!empty($anuncios_pendientes_lista)): ?>
                 <table class="dm-table">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('Anuncio', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Espera', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Acción', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Espera', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Acción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -393,12 +393,12 @@ $estado_labels = [
                                 </td>
                                 <td>
                                     <span class="dm-badge <?php echo $clase_dias; ?>">
-                                        <?php printf(esc_html__('%d días', 'flavor-chat-ia'), $dias); ?>
+                                        <?php printf(esc_html__('%d días', FLAVOR_PLATFORM_TEXT_DOMAIN), $dias); ?>
                                     </span>
                                 </td>
                                 <td>
                                     <a href="<?php echo esc_url(get_edit_post_link($anuncio->ID)); ?>" class="dm-btn dm-btn--secondary dm-btn--sm">
-                                        <?php esc_html_e('Revisar', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Revisar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 </td>
                             </tr>
@@ -408,12 +408,12 @@ $estado_labels = [
             <?php else: ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-yes-alt dm-empty__icon"></span>
-                    <p><?php esc_html_e('No hay anuncios pendientes de revisión.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay anuncios pendientes de revisión.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
             <div class="dm-card__footer">
                 <a href="<?php echo esc_url(admin_url('admin.php?page=marketplace-moderacion')); ?>" class="dm-btn dm-btn--secondary dm-btn--sm">
-                    <?php esc_html_e('Abrir moderación', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Abrir moderación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -421,15 +421,15 @@ $estado_labels = [
         <!-- Actividad reciente -->
         <div class="dm-card">
             <h3 class="dm-card__title">
-                <span class="dashicons dashicons-update"></span> <?php esc_html_e('Actividad reciente', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-update"></span> <?php esc_html_e('Actividad reciente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <?php if (!empty($anuncios_recientes)): ?>
                 <table class="dm-table">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('Anuncio', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -454,12 +454,12 @@ $estado_labels = [
             <?php else: ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-store dm-empty__icon"></span>
-                    <p><?php esc_html_e('Sin actividad reciente.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Sin actividad reciente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
             <div class="dm-card__footer">
                 <a href="<?php echo esc_url(admin_url('edit.php?post_type=marketplace_item')); ?>" class="dm-btn dm-btn--secondary dm-btn--sm">
-                    <?php esc_html_e('Ver listado completo', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver listado completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -470,7 +470,7 @@ $estado_labels = [
         <!-- Top vendedores -->
         <div class="dm-card">
             <h3 class="dm-card__title">
-                <span class="dashicons dashicons-businessman"></span> <?php esc_html_e('Top vendedores', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-businessman"></span> <?php esc_html_e('Top vendedores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <?php if (!empty($usuarios_activos)): ?>
                 <ol class="dm-ranking">
@@ -485,14 +485,14 @@ $estado_labels = [
                     <?php endforeach; ?>
                 </ol>
             <?php else: ?>
-                <p class="dm-text-muted"><?php esc_html_e('Sin vendedores activos.', 'flavor-chat-ia'); ?></p>
+                <p class="dm-text-muted"><?php esc_html_e('Sin vendedores activos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php endif; ?>
         </div>
 
         <!-- Top categorías -->
         <div class="dm-card">
             <h3 class="dm-card__title">
-                <span class="dashicons dashicons-category"></span> <?php esc_html_e('Top categorías', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-category"></span> <?php esc_html_e('Top categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <?php if (!empty($categorias_stats)): ?>
                 <ol class="dm-ranking">
@@ -508,7 +508,7 @@ $estado_labels = [
                     <?php endforeach; ?>
                 </ol>
             <?php else: ?>
-                <p class="dm-text-muted"><?php esc_html_e('Sin categorías.', 'flavor-chat-ia'); ?></p>
+                <p class="dm-text-muted"><?php esc_html_e('Sin categorías.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php endif; ?>
         </div>
     </div>
@@ -516,24 +516,24 @@ $estado_labels = [
     <!-- Resumen -->
     <div class="dm-card">
         <h3 class="dm-card__title">
-            <span class="dashicons dashicons-lightbulb"></span> <?php esc_html_e('Foco recomendado', 'flavor-chat-ia'); ?>
+            <span class="dashicons dashicons-lightbulb"></span> <?php esc_html_e('Foco recomendado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h3>
         <div class="dm-focus-list">
             <div class="dm-focus-item">
                 <span class="dm-focus-item__value"><?php echo number_format_i18n($total_anuncios); ?></span>
-                <span class="dm-focus-item__label"><?php esc_html_e('anuncios en total', 'flavor-chat-ia'); ?></span>
+                <span class="dm-focus-item__label"><?php esc_html_e('anuncios en total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="dm-focus-item">
                 <span class="dm-focus-item__value"><?php echo number_format_i18n($anuncios_pendientes + $total_reportes_pendientes); ?></span>
-                <span class="dm-focus-item__label"><?php esc_html_e('tareas de moderación', 'flavor-chat-ia'); ?></span>
+                <span class="dm-focus-item__label"><?php esc_html_e('tareas de moderación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="dm-focus-item">
                 <span class="dm-focus-item__value"><?php echo number_format_i18n($borradores_antiguos); ?></span>
-                <span class="dm-focus-item__label"><?php esc_html_e('borradores para limpiar', 'flavor-chat-ia'); ?></span>
+                <span class="dm-focus-item__label"><?php esc_html_e('borradores para limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="dm-focus-item">
                 <span class="dm-focus-item__value"><?php echo number_format_i18n(count($categorias_stats)); ?></span>
-                <span class="dm-focus-item__label"><?php esc_html_e('categorías configuradas', 'flavor-chat-ia'); ?></span>
+                <span class="dm-focus-item__label"><?php esc_html_e('categorías configuradas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>

@@ -112,10 +112,10 @@ $filtro_activo = $filtro ?? 'todas';
                         <div class="mb-4">
                             <div class="flex justify-between text-sm mb-1">
                                 <span class="font-semibold text-amber-600">
-                                    <?php echo esc_html($propuesta['votos']); ?> <?php echo esc_html__('votos', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html($propuesta['votos']); ?> <?php echo esc_html__('votos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                                 <span class="text-gray-400">
-                                    <?php echo esc_html__('Meta:', 'flavor-chat-ia'); ?> <?php echo esc_html($propuesta['meta_votos']); ?>
+                                    <?php echo esc_html__('Meta:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html($propuesta['meta_votos']); ?>
                                 </span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2">

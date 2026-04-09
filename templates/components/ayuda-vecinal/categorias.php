@@ -17,8 +17,8 @@
 if (!defined('ABSPATH')) exit;
 
 // Extraer variables con valores por defecto
-$titulo_seccion = isset($args['titulo']) ? $args['titulo'] : __('Ayuda Vecinal', 'flavor-chat-ia');
-$subtitulo_seccion = isset($args['subtitulo']) ? $args['subtitulo'] : __('Conectamos vecinos que necesitan ayuda con quienes pueden ofrecerla. Juntos somos más fuertes.', 'flavor-chat-ia');
+$titulo_seccion = isset($args['titulo']) ? $args['titulo'] : __('Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$subtitulo_seccion = isset($args['subtitulo']) ? $args['subtitulo'] : __('Conectamos vecinos que necesitan ayuda con quienes pueden ofrecerla. Juntos somos más fuertes.', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $numero_columnas = isset($args['columnas']) ? intval($args['columnas']) : 3;
 $mostrar_contador_voluntarios = isset($args['mostrar_contador']) ? (bool) $args['mostrar_contador'] : true;
 $estilo_visual = isset($args['estilo']) ? sanitize_key($args['estilo']) : 'cards';
@@ -28,8 +28,8 @@ $clase_css_adicional = isset($args['clase_adicional']) ? sanitize_html_class($ar
 $categorias_ayuda = isset($args['categorias']) && !empty($args['categorias']) ? $args['categorias'] : array(
     array(
         'id' => 'compras',
-        'nombre' => __('Compras y Recados', 'flavor-chat-ia'),
-        'descripcion' => __('Ayuda con la compra de alimentos, medicinas y productos esenciales', 'flavor-chat-ia'),
+        'nombre' => __('Compras y Recados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Ayuda con la compra de alimentos, medicinas y productos esenciales', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-cart',
         'color' => '#10b981',
         'voluntarios' => 45,
@@ -38,8 +38,8 @@ $categorias_ayuda = isset($args['categorias']) && !empty($args['categorias']) ? 
     ),
     array(
         'id' => 'acompanamiento',
-        'nombre' => __('Acompañamiento', 'flavor-chat-ia'),
-        'descripcion' => __('Visitas, conversación telefónica o paseos para personas que viven solas', 'flavor-chat-ia'),
+        'nombre' => __('Acompañamiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Visitas, conversación telefónica o paseos para personas que viven solas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-groups',
         'color' => '#8b5cf6',
         'voluntarios' => 32,
@@ -48,8 +48,8 @@ $categorias_ayuda = isset($args['categorias']) && !empty($args['categorias']) ? 
     ),
     array(
         'id' => 'transporte',
-        'nombre' => __('Transporte', 'flavor-chat-ia'),
-        'descripcion' => __('Acompañamiento a citas médicas, gestiones o traslados necesarios', 'flavor-chat-ia'),
+        'nombre' => __('Transporte', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Acompañamiento a citas médicas, gestiones o traslados necesarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-car',
         'color' => '#3b82f6',
         'voluntarios' => 28,
@@ -58,8 +58,8 @@ $categorias_ayuda = isset($args['categorias']) && !empty($args['categorias']) ? 
     ),
     array(
         'id' => 'tareas-hogar',
-        'nombre' => __('Tareas del Hogar', 'flavor-chat-ia'),
-        'descripcion' => __('Pequeñas reparaciones, limpieza o ayuda con tareas domésticas', 'flavor-chat-ia'),
+        'nombre' => __('Tareas del Hogar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Pequeñas reparaciones, limpieza o ayuda con tareas domésticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-admin-home',
         'color' => '#f59e0b',
         'voluntarios' => 21,
@@ -68,8 +68,8 @@ $categorias_ayuda = isset($args['categorias']) && !empty($args['categorias']) ? 
     ),
     array(
         'id' => 'cuidado-mascotas',
-        'nombre' => __('Cuidado de Mascotas', 'flavor-chat-ia'),
-        'descripcion' => __('Paseo de perros, alimentación temporal o cuidado de animales', 'flavor-chat-ia'),
+        'nombre' => __('Cuidado de Mascotas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Paseo de perros, alimentación temporal o cuidado de animales', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-pets',
         'color' => '#ec4899',
         'voluntarios' => 38,
@@ -78,8 +78,8 @@ $categorias_ayuda = isset($args['categorias']) && !empty($args['categorias']) ? 
     ),
     array(
         'id' => 'tecnologia',
-        'nombre' => __('Ayuda Tecnológica', 'flavor-chat-ia'),
-        'descripcion' => __('Apoyo con dispositivos, trámites online o videollamadas', 'flavor-chat-ia'),
+        'nombre' => __('Ayuda Tecnológica', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Apoyo con dispositivos, trámites online o videollamadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-laptop',
         'color' => '#06b6d4',
         'voluntarios' => 19,
@@ -88,8 +88,8 @@ $categorias_ayuda = isset($args['categorias']) && !empty($args['categorias']) ? 
     ),
     array(
         'id' => 'cuidado-ninos',
-        'nombre' => __('Cuidado de Niños', 'flavor-chat-ia'),
-        'descripcion' => __('Apoyo puntual con el cuidado de menores en situaciones de emergencia', 'flavor-chat-ia'),
+        'nombre' => __('Cuidado de Niños', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Apoyo puntual con el cuidado de menores en situaciones de emergencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-buddicons-buddypress-logo',
         'color' => '#f97316',
         'voluntarios' => 15,
@@ -98,8 +98,8 @@ $categorias_ayuda = isset($args['categorias']) && !empty($args['categorias']) ? 
     ),
     array(
         'id' => 'tutoria',
-        'nombre' => __('Tutoría y Formación', 'flavor-chat-ia'),
-        'descripcion' => __('Clases de apoyo escolar, idiomas o habilidades básicas', 'flavor-chat-ia'),
+        'nombre' => __('Tutoría y Formación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Clases de apoyo escolar, idiomas o habilidades básicas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-welcome-learn-more',
         'color' => '#6366f1',
         'voluntarios' => 27,
@@ -108,8 +108,8 @@ $categorias_ayuda = isset($args['categorias']) && !empty($args['categorias']) ? 
     ),
     array(
         'id' => 'otros',
-        'nombre' => __('Otras Ayudas', 'flavor-chat-ia'),
-        'descripcion' => __('Cualquier otra necesidad que puedas tener, estamos para ayudar', 'flavor-chat-ia'),
+        'nombre' => __('Otras Ayudas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Cualquier otra necesidad que puedas tener, estamos para ayudar', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-heart',
         'color' => '#ef4444',
         'voluntarios' => 52,
@@ -140,7 +140,7 @@ $id_componente = 'flavor-ayuda-vecinal-' . wp_rand(1000, 9999);
         <div class="flavor-ayuda-header-contenido">
             <span class="flavor-ayuda-etiqueta">
                 <span class="dashicons dashicons-heart"></span>
-                <?php esc_html_e('Comunidad Solidaria', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Comunidad Solidaria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
             <h2 class="flavor-ayuda-titulo"><?php echo esc_html($titulo_seccion); ?></h2>
             <p class="flavor-ayuda-subtitulo"><?php echo esc_html($subtitulo_seccion); ?></p>
@@ -151,12 +151,12 @@ $id_componente = 'flavor-ayuda-vecinal-' . wp_rand(1000, 9999);
         <div class="flavor-ayuda-estadisticas">
             <div class="flavor-estadistica-item">
                 <span class="flavor-estadistica-numero"><?php echo esc_html(number_format_i18n($total_voluntarios)); ?></span>
-                <span class="flavor-estadistica-etiqueta"><?php esc_html_e('Voluntarios activos', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-estadistica-etiqueta"><?php esc_html_e('Voluntarios activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="flavor-estadistica-separador"></div>
             <div class="flavor-estadistica-item">
                 <span class="flavor-estadistica-numero"><?php echo esc_html(number_format_i18n($total_solicitudes_activas)); ?></span>
-                <span class="flavor-estadistica-etiqueta"><?php esc_html_e('Solicitudes activas', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-estadistica-etiqueta"><?php esc_html_e('Solicitudes activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
         <?php endif; ?>
@@ -190,12 +190,12 @@ $id_componente = 'flavor-ayuda-vecinal-' . wp_rand(1000, 9999);
                     <?php if ($mostrar_contador_voluntarios) : ?>
                     <!-- Contadores -->
                     <div class="flavor-categoria-ayuda-stats">
-                        <span class="flavor-stat-voluntarios" title="<?php esc_attr_e('Voluntarios disponibles', 'flavor-chat-ia'); ?>">
+                        <span class="flavor-stat-voluntarios" title="<?php esc_attr_e('Voluntarios disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-admin-users"></span>
                             <?php echo esc_html($cantidad_voluntarios); ?>
                         </span>
                         <?php if ($cantidad_solicitudes > 0) : ?>
-                        <span class="flavor-stat-solicitudes" title="<?php esc_attr_e('Solicitudes activas', 'flavor-chat-ia'); ?>">
+                        <span class="flavor-stat-solicitudes" title="<?php esc_attr_e('Solicitudes activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-megaphone"></span>
                             <?php echo esc_html($cantidad_solicitudes); ?>
                         </span>
@@ -221,19 +221,19 @@ $id_componente = 'flavor-ayuda-vecinal-' . wp_rand(1000, 9999);
     <div class="flavor-ayuda-cta">
         <div class="flavor-cta-contenido">
             <div class="flavor-cta-texto">
-                <h3 class="flavor-cta-titulo"><?php esc_html_e('¿Quieres ayudar?', 'flavor-chat-ia'); ?></h3>
+                <h3 class="flavor-cta-titulo"><?php esc_html_e('¿Quieres ayudar?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <p class="flavor-cta-descripcion">
-                    <?php esc_html_e('Únete como voluntario y ayuda a tus vecinos cuando más lo necesiten.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Únete como voluntario y ayuda a tus vecinos cuando más lo necesiten.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
             <div class="flavor-cta-botones">
                 <a href="#ser-voluntario" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-heart"></span>
-                    <?php esc_html_e('Ser Voluntario', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ser Voluntario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="#pedir-ayuda" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-sos"></span>
-                    <?php esc_html_e('Necesito Ayuda', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Necesito Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>

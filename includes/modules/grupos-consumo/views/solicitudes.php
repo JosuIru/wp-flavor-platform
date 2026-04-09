@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 
 // Verificar permisos
 if (!current_user_can('manage_options') && !current_user_can('gc_gestionar_consumidores')) {
-    wp_die(__('No tienes permisos para acceder a esta pagina.', 'flavor-chat-ia'));
+    wp_die(__('No tienes permisos para acceder a esta pagina.', 'flavor-platform'));
 }
 
 $membership_manager = Flavor_GC_Membership::get_instance();
@@ -59,9 +59,9 @@ $todos_los_grupos = get_posts([
 
 // Etiquetas de estado
 $etiquetas_estado = [
-    'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-    'aprobada' => __('Aprobada', 'flavor-chat-ia'),
-    'rechazada' => __('Rechazada', 'flavor-chat-ia'),
+    'pendiente' => __('Pendiente', 'flavor-platform'),
+    'aprobada' => __('Aprobada', 'flavor-platform'),
+    'rechazada' => __('Rechazada', 'flavor-platform'),
 ];
 
 // Clases CSS por estado
@@ -74,7 +74,7 @@ $clases_estado = [
 
 <div class="wrap gc-admin-solicitudes">
     <h1 class="wp-heading-inline">
-        <?php _e('Solicitudes de Union', 'flavor-chat-ia'); ?>
+        <?php _e('Solicitudes de Union', 'flavor-platform'); ?>
         <?php if ($total_pendientes > 0): ?>
             <span class="gc-badge-pendientes"><?php echo esc_html($total_pendientes); ?></span>
         <?php endif; ?>
@@ -84,7 +84,7 @@ $clases_estado = [
     <!-- Selector de Grupo -->
     <?php if (count($todos_los_grupos) > 1): ?>
         <div class="gc-grupo-selector">
-            <label for="gc-grupo-select"><?php _e('Grupo:', 'flavor-chat-ia'); ?></label>
+            <label for="gc-grupo-select"><?php _e('Grupo:', 'flavor-platform'); ?></label>
             <select id="gc-grupo-select" onchange="window.location.href='<?php echo admin_url('admin.php?page=gc-solicitudes&grupo_id='); ?>'+this.value">
                 <?php foreach ($todos_los_grupos as $grupo): ?>
                     <option value="<?php echo $grupo->ID; ?>" <?php selected($grupo_id, $grupo->ID); ?>>
@@ -97,7 +97,7 @@ $clases_estado = [
 
     <?php if (!$grupo_id): ?>
         <div class="notice notice-warning">
-            <p><?php _e('No hay ningun grupo de consumo creado. Crea uno primero.', 'flavor-chat-ia'); ?></p>
+            <p><?php _e('No hay ningun grupo de consumo creado. Crea uno primero.', 'flavor-platform'); ?></p>
         </div>
     <?php else: ?>
 
@@ -105,16 +105,16 @@ $clases_estado = [
     <div class="gc-stats-mini">
         <a href="<?php echo esc_url(add_query_arg('estado', 'pendiente')); ?>" class="gc-stat-mini <?php echo $filtro_estado === 'pendiente' ? 'activo' : ''; ?>">
             <span class="gc-stat-numero"><?php echo esc_html($total_pendientes); ?></span>
-            <span class="gc-stat-label"><?php _e('Pendientes', 'flavor-chat-ia'); ?></span>
+            <span class="gc-stat-label"><?php _e('Pendientes', 'flavor-platform'); ?></span>
         </a>
         <a href="<?php echo esc_url(add_query_arg('estado', 'aprobada')); ?>" class="gc-stat-mini <?php echo $filtro_estado === 'aprobada' ? 'activo' : ''; ?>">
-            <span class="gc-stat-label"><?php _e('Aprobadas', 'flavor-chat-ia'); ?></span>
+            <span class="gc-stat-label"><?php _e('Aprobadas', 'flavor-platform'); ?></span>
         </a>
         <a href="<?php echo esc_url(add_query_arg('estado', 'rechazada')); ?>" class="gc-stat-mini <?php echo $filtro_estado === 'rechazada' ? 'activo' : ''; ?>">
-            <span class="gc-stat-label"><?php _e('Rechazadas', 'flavor-chat-ia'); ?></span>
+            <span class="gc-stat-label"><?php _e('Rechazadas', 'flavor-platform'); ?></span>
         </a>
         <a href="<?php echo esc_url(remove_query_arg('estado')); ?>" class="gc-stat-mini <?php echo empty($filtro_estado) || $filtro_estado === '' ? 'activo' : ''; ?>">
-            <span class="gc-stat-label"><?php _e('Todas', 'flavor-chat-ia'); ?></span>
+            <span class="gc-stat-label"><?php _e('Todas', 'flavor-platform'); ?></span>
         </a>
     </div>
 
@@ -122,12 +122,12 @@ $clases_estado = [
     <table class="wp-list-table widefat fixed striped gc-tabla-solicitudes">
         <thead>
             <tr>
-                <th scope="col" class="column-usuario"><?php _e('Solicitante', 'flavor-chat-ia'); ?></th>
-                <th scope="col" class="column-motivacion"><?php _e('Motivacion', 'flavor-chat-ia'); ?></th>
-                <th scope="col" class="column-preferencias"><?php _e('Preferencias', 'flavor-chat-ia'); ?></th>
-                <th scope="col" class="column-fecha"><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
-                <th scope="col" class="column-estado"><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                <th scope="col" class="column-acciones"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                <th scope="col" class="column-usuario"><?php _e('Solicitante', 'flavor-platform'); ?></th>
+                <th scope="col" class="column-motivacion"><?php _e('Motivacion', 'flavor-platform'); ?></th>
+                <th scope="col" class="column-preferencias"><?php _e('Preferencias', 'flavor-platform'); ?></th>
+                <th scope="col" class="column-fecha"><?php _e('Fecha', 'flavor-platform'); ?></th>
+                <th scope="col" class="column-estado"><?php _e('Estado', 'flavor-platform'); ?></th>
+                <th scope="col" class="column-acciones"><?php _e('Acciones', 'flavor-platform'); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -136,9 +136,9 @@ $clases_estado = [
                     <td colspan="6">
                         <?php
                         if ($filtro_estado === 'pendiente') {
-                            _e('No hay solicitudes pendientes. Todas las solicitudes han sido procesadas.', 'flavor-chat-ia');
+                            _e('No hay solicitudes pendientes. Todas las solicitudes han sido procesadas.', 'flavor-platform');
                         } else {
-                            _e('No se encontraron solicitudes.', 'flavor-chat-ia');
+                            _e('No se encontraron solicitudes.', 'flavor-platform');
                         }
                         ?>
                     </td>
@@ -174,7 +174,7 @@ $clases_estado = [
                                 <?php echo esc_html(wp_trim_words($solicitud->motivacion, 15, '...')); ?>
                             </div>
                             <?php if ($solicitud->alergias): ?>
-                                <span class="gc-tag gc-tag-alergias" title="<?php esc_attr_e('Tiene alergias', 'flavor-chat-ia'); ?>">
+                                <span class="gc-tag gc-tag-alergias" title="<?php esc_attr_e('Tiene alergias', 'flavor-platform'); ?>">
                                     <span class="dashicons dashicons-warning"></span>
                                 </span>
                             <?php endif; ?>
@@ -204,7 +204,7 @@ $clases_estado = [
                             </span>
                             <?php if ($solicitud->estado === 'rechazada' && $solicitud->resuelto_por_nombre): ?>
                                 <small class="gc-resuelto-por">
-                                    <?php printf(__('por %s', 'flavor-chat-ia'), esc_html($solicitud->resuelto_por_nombre)); ?>
+                                    <?php printf(__('por %s', 'flavor-platform'), esc_html($solicitud->resuelto_por_nombre)); ?>
                                 </small>
                             <?php endif; ?>
                         </td>
@@ -213,17 +213,17 @@ $clases_estado = [
                                 <div class="gc-acciones-botones">
                                     <button type="button" class="button button-primary gc-btn-aprobar" data-solicitud-id="<?php echo esc_attr($solicitud->id); ?>">
                                         <span class="dashicons dashicons-yes"></span>
-                                        <?php _e('Aprobar', 'flavor-chat-ia'); ?>
+                                        <?php _e('Aprobar', 'flavor-platform'); ?>
                                     </button>
                                     <button type="button" class="button gc-btn-rechazar" data-solicitud-id="<?php echo esc_attr($solicitud->id); ?>">
                                         <span class="dashicons dashicons-no"></span>
-                                        <?php _e('Rechazar', 'flavor-chat-ia'); ?>
+                                        <?php _e('Rechazar', 'flavor-platform'); ?>
                                     </button>
                                 </div>
                             <?php else: ?>
                                 <button type="button" class="button gc-btn-ver-detalles" data-solicitud-id="<?php echo esc_attr($solicitud->id); ?>">
                                     <span class="dashicons dashicons-visibility"></span>
-                                    <?php _e('Ver', 'flavor-chat-ia'); ?>
+                                    <?php _e('Ver', 'flavor-platform'); ?>
                                 </button>
                             <?php endif; ?>
                         </td>
@@ -238,7 +238,7 @@ $clases_estado = [
         <div class="tablenav bottom">
             <div class="tablenav-pages">
                 <span class="displaying-num">
-                    <?php printf(_n('%s solicitud', '%s solicitudes', $total_solicitudes, 'flavor-chat-ia'), number_format_i18n($total_solicitudes)); ?>
+                    <?php printf(_n('%s solicitud', '%s solicitudes', $total_solicitudes, 'flavor-platform'), number_format_i18n($total_solicitudes)); ?>
                 </span>
                 <span class="pagination-links">
                     <?php
@@ -264,8 +264,8 @@ $clases_estado = [
 <div id="modal-detalles-solicitud" class="gc-modal" style="display:none;">
     <div class="gc-modal-content gc-modal-lg">
         <div class="gc-modal-header">
-            <h2><?php _e('Detalles de la Solicitud', 'flavor-chat-ia'); ?></h2>
-            <button type="button" class="gc-modal-close"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></button>
+            <h2><?php _e('Detalles de la Solicitud', 'flavor-platform'); ?></h2>
+            <button type="button" class="gc-modal-close"><?php echo esc_html__('&times;', 'flavor-platform'); ?></button>
         </div>
         <div class="gc-modal-body">
             <div id="gc-detalles-contenido" class="gc-detalles-grid">
@@ -275,11 +275,11 @@ $clases_estado = [
         <div class="gc-modal-footer gc-modal-footer-acciones" id="gc-modal-acciones" style="display: none;">
             <button type="button" class="button button-primary gc-btn-aprobar-modal">
                 <span class="dashicons dashicons-yes"></span>
-                <?php _e('Aprobar Solicitud', 'flavor-chat-ia'); ?>
+                <?php _e('Aprobar Solicitud', 'flavor-platform'); ?>
             </button>
             <button type="button" class="button gc-btn-rechazar-modal">
                 <span class="dashicons dashicons-no"></span>
-                <?php _e('Rechazar Solicitud', 'flavor-chat-ia'); ?>
+                <?php _e('Rechazar Solicitud', 'flavor-platform'); ?>
             </button>
         </div>
     </div>
@@ -289,29 +289,29 @@ $clases_estado = [
 <div id="modal-rechazar" class="gc-modal" style="display:none;">
     <div class="gc-modal-content">
         <div class="gc-modal-header">
-            <h2><?php _e('Rechazar Solicitud', 'flavor-chat-ia'); ?></h2>
-            <button type="button" class="gc-modal-close"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></button>
+            <h2><?php _e('Rechazar Solicitud', 'flavor-platform'); ?></h2>
+            <button type="button" class="gc-modal-close"><?php echo esc_html__('&times;', 'flavor-platform'); ?></button>
         </div>
         <div class="gc-modal-body">
             <form id="form-rechazar-solicitud">
                 <input type="hidden" id="rechazar-solicitud-id" name="solicitud_id" value="">
 
                 <div class="gc-form-field">
-                    <label for="motivo-rechazo"><?php _e('Motivo del rechazo', 'flavor-chat-ia'); ?></label>
-                    <p class="description"><?php _e('Este mensaje se enviara al solicitante por email.', 'flavor-chat-ia'); ?></p>
+                    <label for="motivo-rechazo"><?php _e('Motivo del rechazo', 'flavor-platform'); ?></label>
+                    <p class="description"><?php _e('Este mensaje se enviara al solicitante por email.', 'flavor-platform'); ?></p>
                     <textarea
                         id="motivo-rechazo"
                         name="motivo"
                         rows="4"
-                        placeholder="<?php esc_attr_e('Explica brevemente el motivo del rechazo (opcional pero recomendado)...', 'flavor-chat-ia'); ?>"
+                        placeholder="<?php esc_attr_e('Explica brevemente el motivo del rechazo (opcional pero recomendado)...', 'flavor-platform'); ?>"
                     ></textarea>
                 </div>
             </form>
         </div>
         <div class="gc-modal-footer">
-            <button type="button" class="button gc-modal-cancel"><?php _e('Cancelar', 'flavor-chat-ia'); ?></button>
+            <button type="button" class="button gc-modal-cancel"><?php _e('Cancelar', 'flavor-platform'); ?></button>
             <button type="button" class="button button-primary gc-confirmar-rechazo">
-                <?php _e('Confirmar Rechazo', 'flavor-chat-ia'); ?>
+                <?php _e('Confirmar Rechazo', 'flavor-platform'); ?>
             </button>
         </div>
     </div>
@@ -329,7 +329,7 @@ jQuery(document).ready(function($) {
 
     function gcConfirmar(mensaje, onConfirm) {
         $('.gc-inline-confirm').remove();
-        var $confirm = $('<div class="gc-inline-confirm"><p></p><div class="gc-inline-confirm-actions"><button type="button" class="button button-primary gc-inline-confirm-ok"><?php echo esc_js(__('Confirmar', 'flavor-chat-ia')); ?></button><button type="button" class="button gc-inline-confirm-cancel"><?php echo esc_js(__('Cancelar', 'flavor-chat-ia')); ?></button></div></div>').insertBefore('.wrap h1').hide();
+        var $confirm = $('<div class="gc-inline-confirm"><p></p><div class="gc-inline-confirm-actions"><button type="button" class="button button-primary gc-inline-confirm-ok"><?php echo esc_js(__('Confirmar', 'flavor-platform')); ?></button><button type="button" class="button gc-inline-confirm-cancel"><?php echo esc_js(__('Cancelar', 'flavor-platform')); ?></button></div></div>').insertBefore('.wrap h1').hide();
         $confirm.find('p').text(mensaje);
         $confirm.fadeIn(150);
 
@@ -347,17 +347,17 @@ jQuery(document).ready(function($) {
 
     // Aprobar solicitud
     function aprobarSolicitud(solicitudId) {
-        gcConfirmar('<?php echo esc_js(__('Aprobar esta solicitud? El usuario sera notificado por email.', 'flavor-chat-ia')); ?>', function() {
+        gcConfirmar('<?php echo esc_js(__('Aprobar esta solicitud? El usuario sera notificado por email.', 'flavor-platform')); ?>', function() {
             $.post(ajaxurl, {
                 action: 'gc_aprobar_solicitud',
                 solicitud_id: solicitudId,
                 nonce: gcNonce
             }, function(response) {
                 if (response.success) {
-                    gcAviso(response.data.mensaje || '<?php _e('Solicitud aprobada correctamente.', 'flavor-chat-ia'); ?>', 'success');
+                    gcAviso(response.data.mensaje || '<?php _e('Solicitud aprobada correctamente.', 'flavor-platform'); ?>', 'success');
                     location.reload();
                 } else {
-                    gcAviso(response.data.error || '<?php _e('Error al aprobar la solicitud.', 'flavor-chat-ia'); ?>', 'error');
+                    gcAviso(response.data.error || '<?php _e('Error al aprobar la solicitud.', 'flavor-platform'); ?>', 'error');
                 }
             });
         });
@@ -392,10 +392,10 @@ jQuery(document).ready(function($) {
             nonce: gcNonce
         }, function(response) {
             if (response.success) {
-                gcAviso(response.data.mensaje || '<?php _e('Solicitud rechazada correctamente.', 'flavor-chat-ia'); ?>', 'success');
+                gcAviso(response.data.mensaje || '<?php _e('Solicitud rechazada correctamente.', 'flavor-platform'); ?>', 'success');
                 location.reload();
             } else {
-                gcAviso(response.data.error || '<?php _e('Error al rechazar la solicitud.', 'flavor-chat-ia'); ?>', 'error');
+                gcAviso(response.data.error || '<?php _e('Error al rechazar la solicitud.', 'flavor-platform'); ?>', 'error');
             }
         });
     });
@@ -407,7 +407,7 @@ jQuery(document).ready(function($) {
         var solicitudId = $row.data('solicitud-id') || $(this).data('solicitud-id');
         solicitudActual = solicitudId;
 
-        $('#gc-detalles-contenido').html('<p class="gc-cargando"><span class="spinner is-active"></span> <?php _e('Cargando...', 'flavor-chat-ia'); ?></p>');
+        $('#gc-detalles-contenido').html('<p class="gc-cargando"><span class="spinner is-active"></span> <?php _e('Cargando...', 'flavor-platform'); ?></p>');
         $('#gc-modal-acciones').hide();
         $('#modal-detalles-solicitud').fadeIn(200);
 
@@ -419,20 +419,20 @@ jQuery(document).ready(function($) {
             if (response.success) {
                 var s = response.data.solicitud;
                 var html = '<div class="gc-detalle-seccion">' +
-                    '<h4><?php _e('Informacion del Solicitante', 'flavor-chat-ia'); ?></h4>' +
-                    '<p><strong><?php _e('Nombre:', 'flavor-chat-ia'); ?></strong> ' + s.usuario_nombre + '</p>' +
-                    '<p><strong><?php _e('Email:', 'flavor-chat-ia'); ?></strong> <a href="mailto:' + s.usuario_email + '">' + s.usuario_email + '</a></p>' +
-                    '<p><strong><?php _e('Fecha solicitud:', 'flavor-chat-ia'); ?></strong> ' + s.fecha_solicitud + '</p>' +
+                    '<h4><?php _e('Informacion del Solicitante', 'flavor-platform'); ?></h4>' +
+                    '<p><strong><?php _e('Nombre:', 'flavor-platform'); ?></strong> ' + s.usuario_nombre + '</p>' +
+                    '<p><strong><?php _e('Email:', 'flavor-platform'); ?></strong> <a href="mailto:' + s.usuario_email + '">' + s.usuario_email + '</a></p>' +
+                    '<p><strong><?php _e('Fecha solicitud:', 'flavor-platform'); ?></strong> ' + s.fecha_solicitud + '</p>' +
                 '</div>';
 
                 html += '<div class="gc-detalle-seccion">' +
-                    '<h4><?php _e('Motivacion', 'flavor-chat-ia'); ?></h4>' +
-                    '<p>' + (s.motivacion || '<em><?php _e('No especificada', 'flavor-chat-ia'); ?></em>') + '</p>' +
+                    '<h4><?php _e('Motivacion', 'flavor-platform'); ?></h4>' +
+                    '<p>' + (s.motivacion || '<em><?php _e('No especificada', 'flavor-platform'); ?></em>') + '</p>' +
                 '</div>';
 
                 if (s.preferencias && s.preferencias.length > 0) {
                     html += '<div class="gc-detalle-seccion">' +
-                        '<h4><?php _e('Preferencias Alimentarias', 'flavor-chat-ia'); ?></h4>' +
+                        '<h4><?php _e('Preferencias Alimentarias', 'flavor-platform'); ?></h4>' +
                         '<div class="gc-preferencias-tags">';
                     s.preferencias.forEach(function(pref) {
                         html += '<span class="gc-tag">' + pref + '</span>';
@@ -442,30 +442,30 @@ jQuery(document).ready(function($) {
 
                 if (s.alergias) {
                     html += '<div class="gc-detalle-seccion gc-seccion-alergias">' +
-                        '<h4><span class="dashicons dashicons-warning"></span> <?php _e('Alergias', 'flavor-chat-ia'); ?></h4>' +
+                        '<h4><span class="dashicons dashicons-warning"></span> <?php _e('Alergias', 'flavor-platform'); ?></h4>' +
                         '<p>' + s.alergias + '</p>' +
                     '</div>';
                 }
 
                 if (s.como_nos_conocio) {
                     html += '<div class="gc-detalle-seccion">' +
-                        '<h4><?php _e('Como nos conocio', 'flavor-chat-ia'); ?></h4>' +
+                        '<h4><?php _e('Como nos conocio', 'flavor-platform'); ?></h4>' +
                         '<p>' + s.como_nos_conocio + '</p>' +
                     '</div>';
                 }
 
                 if (s.estado !== 'pendiente') {
                     html += '<div class="gc-detalle-seccion gc-seccion-resolucion">' +
-                        '<h4><?php _e('Resolucion', 'flavor-chat-ia'); ?></h4>' +
-                        '<p><strong><?php _e('Estado:', 'flavor-chat-ia'); ?></strong> ' + s.estado + '</p>';
+                        '<h4><?php _e('Resolucion', 'flavor-platform'); ?></h4>' +
+                        '<p><strong><?php _e('Estado:', 'flavor-platform'); ?></strong> ' + s.estado + '</p>';
                     if (s.resuelto_por_nombre) {
-                        html += '<p><strong><?php _e('Resuelta por:', 'flavor-chat-ia'); ?></strong> ' + s.resuelto_por_nombre + '</p>';
+                        html += '<p><strong><?php _e('Resuelta por:', 'flavor-platform'); ?></strong> ' + s.resuelto_por_nombre + '</p>';
                     }
                     if (s.fecha_resolucion) {
-                        html += '<p><strong><?php _e('Fecha:', 'flavor-chat-ia'); ?></strong> ' + s.fecha_resolucion + '</p>';
+                        html += '<p><strong><?php _e('Fecha:', 'flavor-platform'); ?></strong> ' + s.fecha_resolucion + '</p>';
                     }
                     if (s.motivo_rechazo) {
-                        html += '<p><strong><?php _e('Motivo rechazo:', 'flavor-chat-ia'); ?></strong> ' + s.motivo_rechazo + '</p>';
+                        html += '<p><strong><?php _e('Motivo rechazo:', 'flavor-platform'); ?></strong> ' + s.motivo_rechazo + '</p>';
                     }
                     html += '</div>';
                 }
@@ -477,7 +477,7 @@ jQuery(document).ready(function($) {
                     $('#gc-modal-acciones').show();
                 }
             } else {
-                $('#gc-detalles-contenido').html('<p class="gc-error">' + (response.data.error || '<?php _e('Error al cargar los detalles.', 'flavor-chat-ia'); ?>') + '</p>');
+                $('#gc-detalles-contenido').html('<p class="gc-error">' + (response.data.error || '<?php _e('Error al cargar los detalles.', 'flavor-platform'); ?>') + '</p>');
             }
         });
     });

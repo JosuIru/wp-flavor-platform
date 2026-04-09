@@ -106,7 +106,7 @@ $unique_id = 'fgg-' . wp_unique_id();
                         <span class="fgg-item__price">
                             <?php
                             if (is_numeric($item_precio)) {
-                                echo $item_precio > 0 ? esc_html(number_format($item_precio, 2)) . ' €' : esc_html__('Gratis', 'flavor-chat-ia');
+                                echo $item_precio > 0 ? esc_html(number_format($item_precio, 2)) . ' €' : esc_html__('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN);
                             } else {
                                 echo esc_html($item_precio);
                             }
@@ -117,7 +117,7 @@ $unique_id = 'fgg-' . wp_unique_id();
 
                 <?php if ($item_url !== '#') : ?>
                 <a href="<?php echo esc_url($item_url); ?>" class="fgg-item__link">
-                    <?php esc_html_e('Ver más', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver más', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="dashicons dashicons-arrow-right-alt2"></span>
                 </a>
                 <?php endif; ?>
@@ -128,7 +128,7 @@ $unique_id = 'fgg-' . wp_unique_id();
     <?php else : ?>
     <div class="fgg-empty">
         <span class="dashicons dashicons-info-outline"></span>
-        <p><?php esc_html_e('No hay elementos para mostrar.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('No hay elementos para mostrar.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php endif; ?>
 

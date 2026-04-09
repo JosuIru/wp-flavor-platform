@@ -68,8 +68,8 @@ class Flavor_API_Docs {
     public function agregar_menu() {
         add_submenu_page(
             'flavor-platform',
-            __('API Documentation', 'flavor-chat-ia'),
-            __('API Docs', 'flavor-chat-ia'),
+            __('API Documentation', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('API Docs', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             $this->slug_pagina,
             [$this, 'renderizar_pagina']
@@ -159,11 +159,11 @@ class Flavor_API_Docs {
             'restNonce' => wp_create_nonce('wp_rest'),
             'openApiUrl' => rest_url('flavor/v1/docs/openapi'),
             'i18n' => [
-                'probar' => __('Probar', 'flavor-chat-ia'),
-                'copiar' => __('Copiar', 'flavor-chat-ia'),
-                'copiado' => __('Copiado!', 'flavor-chat-ia'),
-                'error' => __('Error', 'flavor-chat-ia'),
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
+                'probar' => __('Probar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'copiar' => __('Copiar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'copiado' => __('Copiado!', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -608,7 +608,7 @@ class Flavor_API_Docs {
      */
     public function renderizar_pagina() {
         if (!current_user_can('manage_options')) {
-            wp_die(__('No tienes permisos para acceder a esta pagina.', 'flavor-chat-ia'));
+            wp_die(__('No tienes permisos para acceder a esta pagina.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $endpoints = $this->escanear_endpoints();
@@ -616,38 +616,38 @@ class Flavor_API_Docs {
         ?>
         <div class="wrap flavor-api-docs-wrapper">
             <div class="flavor-api-header">
-                <h1><?php _e('Flavor Platform API', 'flavor-chat-ia'); ?></h1>
-                <p><?php _e('Documentacion interactiva de la API REST', 'flavor-chat-ia'); ?></p>
+                <h1><?php _e('Flavor Platform API', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
+                <p><?php _e('Documentacion interactiva de la API REST', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                 <div class="flavor-api-stats">
                     <div class="flavor-api-stat">
                         <div class="flavor-api-stat-number"><?php echo esc_html($estadisticas['total_endpoints']); ?></div>
-                        <div class="flavor-api-stat-label"><?php _e('Endpoints', 'flavor-chat-ia'); ?></div>
+                        <div class="flavor-api-stat-label"><?php _e('Endpoints', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     </div>
                     <div class="flavor-api-stat">
                         <div class="flavor-api-stat-number"><?php echo esc_html($estadisticas['total_namespaces']); ?></div>
-                        <div class="flavor-api-stat-label"><?php _e('Namespaces', 'flavor-chat-ia'); ?></div>
+                        <div class="flavor-api-stat-label"><?php _e('Namespaces', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     </div>
                     <div class="flavor-api-stat">
                         <div class="flavor-api-stat-number"><?php echo esc_html($estadisticas['endpoints_publicos']); ?></div>
-                        <div class="flavor-api-stat-label"><?php _e('Publicos', 'flavor-chat-ia'); ?></div>
+                        <div class="flavor-api-stat-label"><?php _e('Publicos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     </div>
                     <div class="flavor-api-stat">
                         <div class="flavor-api-stat-number"><?php echo esc_html($estadisticas['endpoints_autenticados']); ?></div>
-                        <div class="flavor-api-stat-label"><?php _e('Autenticados', 'flavor-chat-ia'); ?></div>
+                        <div class="flavor-api-stat-label"><?php _e('Autenticados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     </div>
                 </div>
             </div>
 
             <div class="flavor-api-tabs">
                 <button class="flavor-api-tab active" data-tab="swagger">
-                    <?php _e('Swagger UI', 'flavor-chat-ia'); ?>
+                    <?php _e('Swagger UI', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button class="flavor-api-tab" data-tab="endpoints">
-                    <?php _e('Lista de Endpoints', 'flavor-chat-ia'); ?>
+                    <?php _e('Lista de Endpoints', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button class="flavor-api-tab" data-tab="examples">
-                    <?php _e('Ejemplos', 'flavor-chat-ia'); ?>
+                    <?php _e('Ejemplos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
 
@@ -674,16 +674,16 @@ class Flavor_API_Docs {
                                             <?php echo esc_html($ruta['route']); ?>
                                         </span>
                                         <span class="flavor-endpoint-auth <?php echo $ruta['requires_auth'] ? 'required' : 'public'; ?>">
-                                            <?php echo $ruta['requires_auth'] ? __('Requiere auth', 'flavor-chat-ia') : __('Publico', 'flavor-chat-ia'); ?>
+                                            <?php echo $ruta['requires_auth'] ? __('Requiere auth', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Publico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </span>
                                         <div class="flavor-endpoint-actions">
                                             <?php if (strtoupper($ruta['method']) === 'GET'): ?>
                                                 <button class="flavor-endpoint-btn try">
-                                                    <?php _e('Probar', 'flavor-chat-ia'); ?>
+                                                    <?php _e('Probar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                                 </button>
                                             <?php endif; ?>
                                             <button class="flavor-endpoint-btn copy">
-                                                <?php _e('Copiar', 'flavor-chat-ia'); ?>
+                                                <?php _e('Copiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </button>
                                         </div>
                                     </div>
@@ -696,7 +696,7 @@ class Flavor_API_Docs {
                 <!-- Tab: Ejemplos -->
                 <div id="tab-examples" class="flavor-tab-content" style="display:none;">
                     <div class="flavor-endpoints-list">
-                        <h3><?php _e('Autenticacion con JWT', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Autenticacion con JWT', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <pre class="flavor-code-example"><span class="comment"># Obtener token</span>
 curl -X POST "<?php echo esc_url(home_url('/wp-json/jwt-auth/v1/token')); ?>" \
   -H "Content-Type: application/json" \
@@ -709,10 +709,10 @@ curl -X POST "<?php echo esc_url(home_url('/wp-json/jwt-auth/v1/token')); ?>" \
 curl "<?php echo esc_url(home_url('/wp-json/flavor-chat-ia/v1/mis-pedidos')); ?>" \
   -H "Authorization: Bearer <span class="keyword">TU_TOKEN_JWT</span>"</pre>
 
-                        <h3><?php _e('Listar Pedidos Abiertos', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Listar Pedidos Abiertos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <pre class="flavor-code-example">curl "<?php echo esc_url(home_url('/wp-json/flavor-chat-ia/v1/pedidos?estado=abierto&per_page=20')); ?>"</pre>
 
-                        <h3><?php _e('Unirse a un Pedido', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Unirse a un Pedido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <pre class="flavor-code-example">curl -X POST "<?php echo esc_url(home_url('/wp-json/flavor-chat-ia/v1/pedidos/123/unirse')); ?>" \
   -H "Authorization: Bearer <span class="keyword">TU_TOKEN</span>" \
   -H "Content-Type: application/json" \
@@ -720,13 +720,13 @@ curl "<?php echo esc_url(home_url('/wp-json/flavor-chat-ia/v1/mis-pedidos')); ?>
     <span class="string">"cantidad"</span>: 2.5
   }'</pre>
 
-                        <h3><?php _e('Buscar Productores Cercanos', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Buscar Productores Cercanos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <pre class="flavor-code-example">curl "<?php echo esc_url(home_url('/wp-json/flavor-chat-ia/v1/gc/productores-cercanos')); ?>?lat=40.4168&lng=-3.7038&limite=10"</pre>
 
-                        <h3><?php _e('Directorio de la Red', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Directorio de la Red', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <pre class="flavor-code-example">curl "<?php echo esc_url(home_url('/wp-json/flavor-network/v1/directory')); ?>?tipo=cooperativa&verificado=true"</pre>
 
-                        <h3><?php _e('JavaScript/Fetch', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('JavaScript/Fetch', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <pre class="flavor-code-example"><span class="keyword">const</span> response = <span class="keyword">await</span> fetch(<span class="string">'<?php echo esc_url(home_url('/wp-json/flavor-chat-ia/v1/gc/productos')); ?>'</span>, {
     headers: {
         <span class="string">'X-WP-Nonce'</span>: wpApiSettings.nonce
@@ -736,7 +736,7 @@ curl "<?php echo esc_url(home_url('/wp-json/flavor-chat-ia/v1/mis-pedidos')); ?>
 <span class="keyword">const</span> data = <span class="keyword">await</span> response.json();
 console.log(data);</pre>
 
-                        <h3><?php _e('PHP/WordPress', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('PHP/WordPress', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <pre class="flavor-code-example"><span class="keyword">$response</span> = wp_remote_get(
     rest_url(<span class="string">'flavor-chat-ia/v1/pedidos'</span>),
     [
@@ -755,7 +755,7 @@ console.log(data);</pre>
             <div id="response-modal" class="flavor-modal">
                 <div class="flavor-modal-content">
                     <div class="flavor-modal-header">
-                        <h3 class="flavor-modal-title"><?php _e('Respuesta', 'flavor-chat-ia'); ?></h3>
+                        <h3 class="flavor-modal-title"><?php _e('Respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <button class="flavor-modal-close">&times;</button>
                     </div>
                     <span class="flavor-response-status"></span>
@@ -783,7 +783,7 @@ console.log(data);</pre>
 
         $namespaces_flavor = [
             'flavor',
-            'flavor-chat-ia',
+            FLAVOR_PLATFORM_TEXT_DOMAIN,
             'flavor-network',
         ];
 
@@ -898,19 +898,19 @@ console.log(data);</pre>
         check_ajax_referer('flavor_api_test', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $endpoint = sanitize_text_field($_POST['endpoint'] ?? '');
         $metodo = strtoupper(sanitize_text_field($_POST['method'] ?? 'GET'));
 
         if (empty($endpoint)) {
-            wp_send_json_error(['message' => __('Endpoint requerido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Endpoint requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Solo permitir GET para pruebas simples
         if ($metodo !== 'GET') {
-            wp_send_json_error(['message' => __('Solo se permiten pruebas GET', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Solo se permiten pruebas GET', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $url_completa = rest_url(ltrim($endpoint, '/'));

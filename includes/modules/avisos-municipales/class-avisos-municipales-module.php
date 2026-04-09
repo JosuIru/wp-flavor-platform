@@ -59,7 +59,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Avisos Municipales no estan creadas. Activa el modulo para crearlas automaticamente.', 'flavor-chat-ia');
+            return __('Las tablas de Avisos Municipales no estan creadas. Activa el modulo para crearlas automaticamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         
     return '';
@@ -221,22 +221,22 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
             'vapid_public_key'             => '',
             'vapid_private_key'            => '',
             'prioridades' => [
-                'urgente' => ['label' => __('Urgente', 'flavor-chat-ia'), 'color' => '#dc2626', 'icon' => 'warning'],
-                'alta'    => ['label' => __('Alta', 'flavor-chat-ia'), 'color' => '#f97316', 'icon' => 'flag'],
-                'media'   => ['label' => __('Media', 'flavor-chat-ia'), 'color' => '#eab308', 'icon' => 'info'],
-                'baja'    => ['label' => __('Baja', 'flavor-chat-ia'), 'color' => '#22c55e', 'icon' => 'check'],
+                'urgente' => ['label' => __('Urgente', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#dc2626', 'icon' => 'warning'],
+                'alta'    => ['label' => __('Alta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#f97316', 'icon' => 'flag'],
+                'media'   => ['label' => __('Media', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#eab308', 'icon' => 'info'],
+                'baja'    => ['label' => __('Baja', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#22c55e', 'icon' => 'check'],
             ],
             'categorias_default' => [
-                'corte_agua'      => __('Corte de agua', 'flavor-chat-ia'),
-                'corte_luz'       => __('Corte de luz', 'flavor-chat-ia'),
-                'obras'           => __('Obras publicas', 'flavor-chat-ia'),
-                'eventos'         => __('Eventos', 'flavor-chat-ia'),
-                'trafico'         => __('Trafico y movilidad', 'flavor-chat-ia'),
-                'medio_ambiente'  => __('Medio ambiente', 'flavor-chat-ia'),
-                'seguridad'       => __('Seguridad ciudadana', 'flavor-chat-ia'),
-                'cultura'         => __('Cultura y deportes', 'flavor-chat-ia'),
-                'convocatorias'   => __('Convocatorias', 'flavor-chat-ia'),
-                'otros'           => __('Otros', 'flavor-chat-ia'),
+                'corte_agua'      => __('Corte de agua', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'corte_luz'       => __('Corte de luz', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'obras'           => __('Obras publicas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'eventos'         => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'trafico'         => __('Trafico y movilidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'medio_ambiente'  => __('Medio ambiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'seguridad'       => __('Seguridad ciudadana', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cultura'         => __('Cultura y deportes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'convocatorias'   => __('Convocatorias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'otros'           => __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
     }
@@ -477,11 +477,11 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
             'nonce'    => wp_create_nonce('flavor_avisos_nonce'),
             'vapidKey' => '',
             'i18n'     => [
-                'cargando'        => __('Cargando...', 'flavor-chat-ia'),
-                'error'           => __('Error al cargar', 'flavor-chat-ia'),
-                'sin_resultados'  => __('No hay avisos', 'flavor-chat-ia'),
-                'confirmar'       => __('Confirmar lectura', 'flavor-chat-ia'),
-                'confirmado'      => __('Lectura confirmada', 'flavor-chat-ia'),
+                'cargando'        => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error'           => __('Error al cargar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sin_resultados'  => __('No hay avisos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmar'       => __('Confirmar lectura', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmado'      => __('Lectura confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -640,43 +640,43 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         <div class="avisos-municipales-container" data-columnas="<?php echo esc_attr($atts['columnas']); ?>">
             <div class="avisos-municipales-header">
                 <div>
-                    <h2 class="avisos-municipales-title"><?php _e('Avisos Municipales', 'flavor-chat-ia'); ?></h2>
-                    <p class="avisos-municipales-subtitle"><?php _e('Informacion oficial del ayuntamiento', 'flavor-chat-ia'); ?></p>
+                    <h2 class="avisos-municipales-title"><?php _e('Avisos Municipales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                    <p class="avisos-municipales-subtitle"><?php _e('Informacion oficial del ayuntamiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             </div>
 
             <?php if ($atts['mostrar_filtros'] === 'true'): ?>
             <div class="avisos-filtros">
                 <div class="avisos-filtro-grupo">
-                    <label class="avisos-filtro-label"><?php _e('Categoria', 'flavor-chat-ia'); ?></label>
+                    <label class="avisos-filtro-label"><?php _e('Categoria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="avisos-filtro-categoria" class="avisos-filtro-select">
-                        <option value=""><?php _e('Todas', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($categorias as $categoria): ?>
                         <option value="<?php echo esc_attr($categoria->id); ?>"><?php echo esc_html($categoria->nombre); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="avisos-filtro-grupo">
-                    <label class="avisos-filtro-label"><?php _e('Prioridad', 'flavor-chat-ia'); ?></label>
+                    <label class="avisos-filtro-label"><?php _e('Prioridad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="avisos-filtro-prioridad" class="avisos-filtro-select">
-                        <option value=""><?php _e('Todas', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('urgente', 'flavor-chat-ia'); ?>"><?php _e('Urgente', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('alta', 'flavor-chat-ia'); ?>"><?php _e('Alta', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('media', 'flavor-chat-ia'); ?>"><?php _e('Media', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('baja', 'flavor-chat-ia'); ?>"><?php _e('Baja', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('urgente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Urgente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('alta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Alta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('media', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Media', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('baja', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Baja', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
                 <div class="avisos-filtro-grupo">
-                    <label class="avisos-filtro-label"><?php _e('Zona', 'flavor-chat-ia'); ?></label>
+                    <label class="avisos-filtro-label"><?php _e('Zona', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="avisos-filtro-zona" class="avisos-filtro-select">
-                        <option value=""><?php _e('Todas', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($zonas as $zona): ?>
                         <option value="<?php echo esc_attr($zona->id); ?>"><?php echo esc_html($zona->nombre); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
                 <button type="button" class="avisos-btn avisos-btn-primary avisos-btn-filtrar">
-                    <?php _e('Filtrar', 'flavor-chat-ia'); ?>
+                    <?php _e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
             <?php endif; ?>
@@ -685,7 +685,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
                 <?php if (empty($avisos)): ?>
                 <div class="avisos-empty">
                     <div class="avisos-empty-icon">📢</div>
-                    <p><?php _e('No hay avisos activos en este momento', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No hay avisos activos en este momento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <?php else: ?>
                     <?php foreach ($avisos as $aviso): ?>
@@ -695,7 +695,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
             </div>
 
             <button type="button" class="avisos-btn avisos-btn-secondary avisos-btn-cargar-mas" style="display:none;">
-                <?php _e('Cargar mas avisos', 'flavor-chat-ia'); ?>
+                <?php _e('Cargar mas avisos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
         <?php
@@ -722,7 +722,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
             <div class="avisos-lista">
                 <?php if (empty($avisos)): ?>
                 <div class="avisos-empty">
-                    <p><?php _e('No hay avisos para esta zona', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No hay avisos para esta zona', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <?php else: ?>
                     <?php foreach ($avisos as $aviso): ?>
@@ -740,8 +740,8 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_suscribirse($atts) {
         $atts = shortcode_atts([
-            'titulo'      => __('Suscribete a los avisos', 'flavor-chat-ia'),
-            'descripcion' => __('Recibe notificaciones de los avisos que te interesan', 'flavor-chat-ia'),
+            'titulo'      => __('Suscribete a los avisos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'descripcion' => __('Recibe notificaciones de los avisos que te interesan', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], $atts);
 
         $categorias = $this->obtener_categorias();
@@ -757,16 +757,16 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
             <form class="avisos-suscripcion-form">
                 <div class="avisos-suscripcion-row">
                     <input type="text" name="nombre" class="avisos-suscripcion-input"
-                           placeholder="<?php _e('Tu nombre', 'flavor-chat-ia'); ?>"
+                           placeholder="<?php _e('Tu nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                            value="<?php echo esc_attr($usuario_actual->display_name ?? ''); ?>">
                     <input type="email" name="email" class="avisos-suscripcion-input" required
-                           placeholder="<?php _e('Tu email', 'flavor-chat-ia'); ?>"
+                           placeholder="<?php _e('Tu email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                            value="<?php echo esc_attr($usuario_actual->user_email ?? ''); ?>">
                 </div>
 
                 <div>
                     <label class="avisos-filtro-label" style="color:#fff;margin-bottom:8px;display:block;">
-                        <?php _e('Categorias de interes', 'flavor-chat-ia'); ?>
+                        <?php _e('Categorias de interes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <div class="avisos-suscripcion-categorias">
                         <?php foreach ($categorias as $categoria): ?>
@@ -780,7 +780,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
 
                 <div>
                     <label class="avisos-filtro-label" style="color:#fff;margin-bottom:8px;display:block;">
-                        <?php _e('Zonas de interes', 'flavor-chat-ia'); ?>
+                        <?php _e('Zonas de interes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <div class="avisos-suscripcion-categorias">
                         <?php foreach ($zonas as $zona): ?>
@@ -795,12 +795,12 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
                 <div>
                     <label class="avisos-suscripcion-categoria">
                         <input type="checkbox" name="push" value="1">
-                        <?php _e('Recibir notificaciones push en el navegador', 'flavor-chat-ia'); ?>
+                        <?php _e('Recibir notificaciones push en el navegador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </div>
 
                 <button type="submit" class="avisos-suscripcion-submit">
-                    <?php _e('Suscribirme', 'flavor-chat-ia'); ?>
+                    <?php _e('Suscribirme', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </form>
         </div>
@@ -836,7 +836,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         ob_start();
         ?>
         <div class="avisos-municipales-container avisos-historial">
-            <h3 class="avisos-historial-titulo"><?php _e('Historial de Avisos', 'flavor-chat-ia'); ?></h3>
+            <h3 class="avisos-historial-titulo"><?php _e('Historial de Avisos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <div class="avisos-historial-timeline">
                 <?php foreach ($avisos_por_fecha as $fecha => $avisos_del_dia): ?>
@@ -872,13 +872,13 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         $aviso_id = intval($atts['id']) ?: (isset($_GET['aviso']) ? intval($_GET['aviso']) : 0);
 
         if (!$aviso_id) {
-            return '<p>' . __('Aviso no especificado', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('Aviso no especificado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $aviso = $this->obtener_aviso($aviso_id);
 
         if (!$aviso) {
-            return '<p>' . __('Aviso no encontrado', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('Aviso no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $this->registrar_visualizacion($aviso_id);
@@ -910,12 +910,12 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
                     <div class="aviso-detalle-meta">
                         <span><?php echo date_i18n('j F Y, H:i', strtotime($aviso->fecha_inicio)); ?></span>
                         <?php if ($aviso->fecha_fin): ?>
-                        <span><?php _e('Hasta:', 'flavor-chat-ia'); ?> <?php echo date_i18n('j F Y, H:i', strtotime($aviso->fecha_fin)); ?></span>
+                        <span><?php _e('Hasta:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo date_i18n('j F Y, H:i', strtotime($aviso->fecha_fin)); ?></span>
                         <?php endif; ?>
                         <?php if ($aviso->departamento): ?>
                         <span><?php echo esc_html($aviso->departamento); ?></span>
                         <?php endif; ?>
-                        <span><?php echo number_format($aviso->visualizaciones); ?> <?php _e('visualizaciones', 'flavor-chat-ia'); ?></span>
+                        <span><?php echo number_format($aviso->visualizaciones); ?> <?php _e('visualizaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -926,7 +926,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
 
                     <?php if ($aviso->ubicacion_especifica): ?>
                     <div style="margin-top:20px;padding:15px;background:#f3f4f6;border-radius:8px;">
-                        <strong><?php _e('Ubicacion:', 'flavor-chat-ia'); ?></strong>
+                        <strong><?php _e('Ubicacion:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                         <?php echo esc_html($aviso->ubicacion_especifica); ?>
                     </div>
                     <?php endif; ?>
@@ -934,14 +934,14 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
                     <?php if ($aviso->enlace_externo): ?>
                     <div style="margin-top:20px;">
                         <a href="<?php echo esc_url($aviso->enlace_externo); ?>" target="_blank" class="avisos-btn avisos-btn-primary">
-                            <?php _e('Mas informacion', 'flavor-chat-ia'); ?>
+                            <?php _e('Mas informacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                     <?php endif; ?>
 
                     <?php if ($aviso->contacto_email || $aviso->contacto_telefono): ?>
                     <div style="margin-top:20px;padding:15px;background:#f3f4f6;border-radius:8px;">
-                        <strong><?php _e('Contacto:', 'flavor-chat-ia'); ?></strong><br>
+                        <strong><?php _e('Contacto:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong><br>
                         <?php if ($aviso->contacto_email): ?>
                         <a href="mailto:<?php echo esc_attr($aviso->contacto_email); ?>"><?php echo esc_html($aviso->contacto_email); ?></a><br>
                         <?php endif; ?>
@@ -956,7 +956,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
                     if (!empty($adjuntos)):
                     ?>
                     <div class="aviso-detalle-adjuntos">
-                        <h4 class="aviso-detalle-adjuntos-titulo"><?php _e('Documentos adjuntos', 'flavor-chat-ia'); ?></h4>
+                        <h4 class="aviso-detalle-adjuntos-titulo"><?php _e('Documentos adjuntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                         <div class="aviso-adjunto-lista">
                             <?php foreach ($adjuntos as $adjunto): ?>
                             <a href="<?php echo esc_url($adjunto['url']); ?>" class="aviso-adjunto-item" target="_blank">
@@ -974,14 +974,14 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="20" height="20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                             </svg>
-                            <?php _e('Has confirmado la lectura de este aviso', 'flavor-chat-ia'); ?>
+                            <?php _e('Has confirmado la lectura de este aviso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                         <?php else: ?>
                         <p class="aviso-confirmacion-texto">
-                            <?php _e('Este aviso requiere confirmacion de lectura', 'flavor-chat-ia'); ?>
+                            <?php _e('Este aviso requiere confirmacion de lectura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                         <button type="button" class="avisos-btn avisos-btn-primary avisos-btn-confirmar" data-aviso-id="<?php echo esc_attr($aviso_id); ?>">
-                            <?php _e('Confirmar lectura', 'flavor-chat-ia'); ?>
+                            <?php _e('Confirmar lectura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <?php endif; ?>
                     </div>
@@ -1042,7 +1042,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
                 </div>
                 <div class="aviso-badges">
                     <?php if (!$leido): ?>
-                    <span class="aviso-badge aviso-badge-nuevo"><?php _e('Nuevo', 'flavor-chat-ia'); ?></span>
+                    <span class="aviso-badge aviso-badge-nuevo"><?php _e('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <?php endif; ?>
                     <span class="aviso-badge aviso-badge-<?php echo esc_attr($aviso->prioridad); ?>">
                         <?php echo esc_html(ucfirst($aviso->prioridad)); ?>
@@ -1067,7 +1067,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
                     <?php endif; ?>
                 </div>
                 <a href="?aviso=<?php echo esc_attr($aviso->id); ?>" class="avisos-btn avisos-btn-secondary">
-                    <?php _e('Ver mas', 'flavor-chat-ia'); ?>
+                    <?php _e('Ver mas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </article>
@@ -1432,7 +1432,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         $email = sanitize_email($datos['email']);
 
         if (!is_email($email)) {
-            return ['success' => false, 'message' => __('Email no valido', 'flavor-chat-ia')];
+            return ['success' => false, 'message' => __('Email no valido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $existe = $wpdb->get_var($wpdb->prepare(
@@ -1465,7 +1465,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success'        => true,
-            'message'        => __('Suscripcion procesada correctamente', 'flavor-chat-ia'),
+            'message'        => __('Suscripcion procesada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'suscripcion_id' => $suscripcion_id,
             'solicitar_push' => (bool) $datos_suscripcion['notificar_push'],
         ];
@@ -1480,9 +1480,9 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
             'token'  => $token,
         ], home_url());
 
-        $asunto = __('Confirma tu suscripcion a Avisos Municipales', 'flavor-chat-ia');
+        $asunto = __('Confirma tu suscripcion a Avisos Municipales', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $mensaje = sprintf(
-            __("Hola,\n\nPara confirmar tu suscripcion a los avisos municipales, haz clic en el siguiente enlace:\n\n%s\n\nSi no solicitaste esta suscripcion, ignora este mensaje.", 'flavor-chat-ia'),
+            __("Hola,\n\nPara confirmar tu suscripcion a los avisos municipales, haz clic en el siguiente enlace:\n\n%s\n\nSi no solicitaste esta suscripcion, ignora este mensaje.", FLAVOR_PLATFORM_TEXT_DOMAIN),
             $enlace_confirmacion
         );
 
@@ -1693,7 +1693,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         $aviso = $this->obtener_aviso($aviso_id);
 
         if (!$aviso) {
-            wp_send_json_error(['message' => __('Aviso no encontrado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Aviso no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $this->registrar_visualizacion($aviso_id);
@@ -1709,7 +1709,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $aviso_id = intval($_POST['aviso_id'] ?? 0);
@@ -1726,21 +1726,21 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $aviso_id = intval($_POST['aviso_id'] ?? 0);
 
         if ($this->usuario_confirmo_aviso($aviso_id, $usuario_id)) {
-            wp_send_json_error(['message' => __('Ya has confirmado este aviso', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Ya has confirmado este aviso', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $resultado = $this->confirmar_lectura_aviso($aviso_id, $usuario_id);
 
         if ($resultado) {
-            wp_send_json_success(['message' => __('Lectura confirmada', 'flavor-chat-ia')]);
+            wp_send_json_success(['message' => __('Lectura confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
-            wp_send_json_error(['message' => __('Error al confirmar', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al confirmar', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -1768,7 +1768,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         $subscription = json_decode(stripslashes($_POST['subscription']), true);
 
         if (!$subscription || !isset($subscription['endpoint'])) {
-            wp_send_json_error(['message' => __('Datos de suscripcion invalidos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos de suscripcion invalidos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1810,15 +1810,15 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_avisos_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $aviso_id = $this->crear_aviso($_POST);
 
         if ($aviso_id) {
-            wp_send_json_success(['aviso_id' => $aviso_id, 'message' => __('Aviso creado', 'flavor-chat-ia')]);
+            wp_send_json_success(['aviso_id' => $aviso_id, 'message' => __('Aviso creado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
-            wp_send_json_error(['message' => __('Error al crear aviso', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al crear aviso', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -1829,16 +1829,16 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_avisos_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $aviso_id = intval($_POST['aviso_id'] ?? 0);
         $resultado = $this->actualizar_aviso($aviso_id, $_POST);
 
         if ($resultado !== false) {
-            wp_send_json_success(['message' => __('Aviso actualizado', 'flavor-chat-ia')]);
+            wp_send_json_success(['message' => __('Aviso actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
-            wp_send_json_error(['message' => __('Error al actualizar', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -1849,16 +1849,16 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_avisos_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $aviso_id = intval($_POST['aviso_id'] ?? 0);
         $resultado = $this->eliminar_aviso($aviso_id);
 
         if ($resultado) {
-            wp_send_json_success(['message' => __('Aviso eliminado', 'flavor-chat-ia')]);
+            wp_send_json_success(['message' => __('Aviso eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
-            wp_send_json_error(['message' => __('Error al eliminar', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -1869,7 +1869,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_avisos_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         wp_send_json_success($this->obtener_estadisticas());
@@ -1882,19 +1882,19 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_avisos_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $aviso_id = intval($_POST['aviso_id'] ?? 0);
         $aviso = $this->obtener_aviso($aviso_id);
 
         if (!$aviso) {
-            wp_send_json_error(['message' => __('Aviso no encontrado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Aviso no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $this->programar_notificaciones($aviso_id);
 
-        wp_send_json_success(['message' => __('Notificaciones enviadas', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Notificaciones enviadas', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     // =========================================================================
@@ -1927,7 +1927,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         $aviso = $this->obtener_aviso($request->get_param('id'));
 
         if (!$aviso) {
-            return new WP_Error('not_found', __('Aviso no encontrado', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Aviso no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         $this->registrar_visualizacion($aviso->id);
@@ -1942,10 +1942,10 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         $aviso_id = $this->crear_aviso($request->get_params());
 
         if ($aviso_id) {
-            return rest_ensure_response(['id' => $aviso_id, 'message' => __('Aviso creado', 'flavor-chat-ia')]);
+            return rest_ensure_response(['id' => $aviso_id, 'message' => __('Aviso creado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
-        return new WP_Error('create_failed', __('Error al crear aviso', 'flavor-chat-ia'), ['status' => 500]);
+        return new WP_Error('create_failed', __('Error al crear aviso', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 500]);
     }
 
     /**
@@ -1955,10 +1955,10 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         $resultado = $this->actualizar_aviso($request->get_param('id'), $request->get_params());
 
         if ($resultado !== false) {
-            return rest_ensure_response(['message' => __('Aviso actualizado', 'flavor-chat-ia')]);
+            return rest_ensure_response(['message' => __('Aviso actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
-        return new WP_Error('update_failed', __('Error al actualizar', 'flavor-chat-ia'), ['status' => 500]);
+        return new WP_Error('update_failed', __('Error al actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 500]);
     }
 
     /**
@@ -1968,10 +1968,10 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         $resultado = $this->eliminar_aviso($request->get_param('id'));
 
         if ($resultado) {
-            return rest_ensure_response(['message' => __('Aviso eliminado', 'flavor-chat-ia')]);
+            return rest_ensure_response(['message' => __('Aviso eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
-        return new WP_Error('delete_failed', __('Error al eliminar', 'flavor-chat-ia'), ['status' => 500]);
+        return new WP_Error('delete_failed', __('Error al eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 500]);
     }
 
     /**
@@ -2011,10 +2011,10 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         $resultado = $this->confirmar_lectura_aviso($aviso_id, $usuario_id);
 
         if ($resultado) {
-            return rest_ensure_response(['message' => __('Lectura confirmada', 'flavor-chat-ia')]);
+            return rest_ensure_response(['message' => __('Lectura confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
-        return new WP_Error('confirm_failed', __('Error al confirmar', 'flavor-chat-ia'), ['status' => 500]);
+        return new WP_Error('confirm_failed', __('Error al confirmar', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 500]);
     }
 
     /**
@@ -2117,13 +2117,13 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         $aviso_id = intval($params['aviso_id'] ?? 0);
 
         if (!$aviso_id) {
-            return ['success' => false, 'error' => __('Se requiere el ID del aviso', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Se requiere el ID del aviso', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $aviso = $this->obtener_aviso($aviso_id);
 
         if (!$aviso) {
-            return ['success' => false, 'error' => __('Aviso no encontrado', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Aviso no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $this->registrar_visualizacion($aviso_id);
@@ -2138,7 +2138,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         $usuario_id = get_current_user_id();
 
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión para ver avisos no leídos', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión para ver avisos no leídos', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -2199,12 +2199,12 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
     private function action_foro_aviso($params) {
         $aviso = $this->resolve_contextual_aviso($params);
         if (!$aviso) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un aviso para ver su foro.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un aviso para ver su foro.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-foro">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;">'
-            . '<h2>' . esc_html__('Foro del aviso', 'flavor-chat-ia') . '</h2>'
+            . '<h2>' . esc_html__('Foro del aviso', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2>'
             . '<p>' . esc_html($aviso['titulo']) . '</p>'
             . '</div>'
             . do_shortcode('[flavor_foros_integrado entidad="aviso_municipal" entidad_id="' . absint($aviso['id']) . '"]')
@@ -2214,18 +2214,18 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
     private function action_chat_aviso($params) {
         $aviso = $this->resolve_contextual_aviso($params);
         if (!$aviso) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un aviso para ver su chat.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un aviso para ver su chat.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         if (!is_user_logged_in()) {
-            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este aviso.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este aviso.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-chat">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Chat del aviso', 'flavor-chat-ia') . '</h2><p>' . esc_html($aviso['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Chat del aviso', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($aviso['titulo']) . '</p></div>'
             . '<a href="' . esc_url(Flavor_Chat_Helpers::get_action_url('chat_grupos', 'mensajes') . '?aviso_id=' . absint($aviso['id'])) . '" class="button button-secondary">'
-            . esc_html__('Abrir chat completo', 'flavor-chat-ia')
+            . esc_html__('Abrir chat completo', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>'
             . do_shortcode('[flavor_chat_grupo_integrado entidad="aviso_municipal" entidad_id="' . absint($aviso['id']) . '"]')
             . '</div>';
@@ -2234,14 +2234,14 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
     private function action_multimedia_aviso($params) {
         $aviso = $this->resolve_contextual_aviso($params);
         if (!$aviso) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un aviso para ver sus archivos.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un aviso para ver sus archivos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-multimedia">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Archivos del aviso', 'flavor-chat-ia') . '</h2><p>' . esc_html($aviso['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Archivos del aviso', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($aviso['titulo']) . '</p></div>'
             . '<a href="' . esc_url(Flavor_Chat_Helpers::get_action_url('multimedia', 'subir') . '?aviso_id=' . absint($aviso['id'])) . '" class="button button-primary">'
-            . esc_html__('Subir archivo', 'flavor-chat-ia')
+            . esc_html__('Subir archivo', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>'
             . do_shortcode('[flavor_multimedia_galeria entidad="aviso_municipal" entidad_id="' . absint($aviso['id']) . '"]')
             . '</div>';
@@ -2250,18 +2250,18 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
     private function action_red_social_aviso($params) {
         $aviso = $this->resolve_contextual_aviso($params);
         if (!$aviso) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un aviso para ver su actividad social.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un aviso para ver su actividad social.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         if (!is_user_logged_in()) {
-            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este aviso.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este aviso.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-red-social">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Actividad social del aviso', 'flavor-chat-ia') . '</h2><p>' . esc_html($aviso['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Actividad social del aviso', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($aviso['titulo']) . '</p></div>'
             . '<a href="' . esc_url(Flavor_Chat_Helpers::get_action_url('red_social', 'crear') . '?aviso_id=' . absint($aviso['id'])) . '" class="button button-primary">'
-            . esc_html__('Publicar', 'flavor-chat-ia')
+            . esc_html__('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>'
             . do_shortcode('[flavor_social_feed entidad="aviso_municipal" entidad_id="' . absint($aviso['id']) . '"]')
             . '</div>';
@@ -2361,37 +2361,37 @@ KNOWLEDGE;
     public function get_web_components() {
         return [
             'hero' => [
-                'label'       => __('Hero Avisos Municipales', 'flavor-chat-ia'),
-                'description' => __('Seccion hero con avisos destacados', 'flavor-chat-ia'),
+                'label'       => __('Hero Avisos Municipales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Seccion hero con avisos destacados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category'    => 'hero',
                 'icon'        => 'dashicons-megaphone',
                 'fields'      => [
-                    'titulo'          => ['type' => 'text', 'label' => __('Titulo', 'flavor-chat-ia'), 'default' => __('Avisos Municipales', 'flavor-chat-ia')],
-                    'subtitulo'       => ['type' => 'textarea', 'label' => __('Subtitulo', 'flavor-chat-ia'), 'default' => __('Mantente informado de las novedades de tu municipio', 'flavor-chat-ia')],
-                    'mostrar_urgentes'=> ['type' => 'toggle', 'label' => __('Destacar avisos urgentes', 'flavor-chat-ia'), 'default' => true],
+                    'titulo'          => ['type' => 'text', 'label' => __('Titulo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => __('Avisos Municipales', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'subtitulo'       => ['type' => 'textarea', 'label' => __('Subtitulo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => __('Mantente informado de las novedades de tu municipio', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'mostrar_urgentes'=> ['type' => 'toggle', 'label' => __('Destacar avisos urgentes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => true],
                 ],
                 'template'    => 'avisos-municipales/hero',
             ],
             'avisos_lista' => [
-                'label'       => __('Lista de Avisos', 'flavor-chat-ia'),
-                'description' => __('Listado cronologico de avisos', 'flavor-chat-ia'),
+                'label'       => __('Lista de Avisos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Listado cronologico de avisos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category'    => 'listings',
                 'icon'        => 'dashicons-list-view',
                 'fields'      => [
-                    'titulo'       => ['type' => 'text', 'label' => __('Titulo', 'flavor-chat-ia'), 'default' => __('Ultimos Avisos', 'flavor-chat-ia')],
-                    'mostrar_fecha'=> ['type' => 'toggle', 'label' => __('Mostrar fecha', 'flavor-chat-ia'), 'default' => true],
-                    'limite'       => ['type' => 'number', 'label' => __('Numero maximo', 'flavor-chat-ia'), 'default' => 10],
+                    'titulo'       => ['type' => 'text', 'label' => __('Titulo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => __('Ultimos Avisos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'mostrar_fecha'=> ['type' => 'toggle', 'label' => __('Mostrar fecha', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => true],
+                    'limite'       => ['type' => 'number', 'label' => __('Numero maximo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => 10],
                 ],
                 'template'    => 'avisos-municipales/avisos-lista',
             ],
             'suscripcion' => [
-                'label'       => __('Suscripcion a Avisos', 'flavor-chat-ia'),
-                'description' => __('Formulario para recibir notificaciones', 'flavor-chat-ia'),
+                'label'       => __('Suscripcion a Avisos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Formulario para recibir notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category'    => 'forms',
                 'icon'        => 'dashicons-email',
                 'fields'      => [
-                    'titulo'     => ['type' => 'text', 'label' => __('Titulo', 'flavor-chat-ia'), 'default' => __('Recibe Avisos en tu Email', 'flavor-chat-ia')],
-                    'descripcion'=> ['type' => 'textarea', 'label' => __('Descripcion', 'flavor-chat-ia'), 'default' => __('Suscribete y no te pierdas ninguna novedad', 'flavor-chat-ia')],
+                    'titulo'     => ['type' => 'text', 'label' => __('Titulo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => __('Recibe Avisos en tu Email', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'descripcion'=> ['type' => 'textarea', 'label' => __('Descripcion', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => __('Suscribete y no te pierdas ninguna novedad', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'template'    => 'avisos-municipales/suscripcion',
             ],
@@ -2410,7 +2410,7 @@ KNOWLEDGE;
     protected function get_admin_config() {
         return [
             'id' => 'avisos_municipales',
-            'label' => __('Avisos', 'flavor-chat-ia'),
+            'label' => __('Avisos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-megaphone',
             'capability' => 'manage_options',
             'categoria' => 'comunicacion',
@@ -2418,28 +2418,28 @@ KNOWLEDGE;
             'paginas' => [
                 [
                     'slug' => 'avisos-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_dashboard'],
                 ],
                 [
                     'slug' => 'avisos-activos',
-                    'titulo' => __('Avisos Activos', 'flavor-chat-ia'),
+                    'titulo' => __('Avisos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_activos'],
                     'badge' => [$this, 'contar_avisos_publicados'],
                 ],
                 [
                     'slug' => 'avisos-nuevo',
-                    'titulo' => __('Nuevo Aviso', 'flavor-chat-ia'),
+                    'titulo' => __('Nuevo Aviso', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_nuevo'],
                 ],
                 [
                     'slug' => 'avisos-archivo',
-                    'titulo' => __('Archivo', 'flavor-chat-ia'),
+                    'titulo' => __('Archivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_archivo'],
                 ],
                 [
                     'slug' => 'avisos-config',
-                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'titulo' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_config'],
                 ],
             ],
@@ -2488,7 +2488,7 @@ KNOWLEDGE;
         $estadisticas[] = [
             'icon' => 'dashicons-megaphone',
             'valor' => $avisos_activos,
-            'label' => __('Avisos activos', 'flavor-chat-ia'),
+            'label' => __('Avisos activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => $avisos_activos > 0 ? 'blue' : 'gray',
             'enlace' => admin_url('admin.php?page=avisos-activos'),
         ];
@@ -2506,15 +2506,15 @@ KNOWLEDGE;
             include $dashboard_view_path;
         } else {
             echo '<div class="wrap flavor-modulo-page">';
-            $this->render_page_header(__('Dashboard de Avisos Municipales', 'flavor-chat-ia'));
-            echo '<p>' . __('Panel de control del módulo de avisos municipales.', 'flavor-chat-ia') . '</p>';
+            $this->render_page_header(__('Dashboard de Avisos Municipales', FLAVOR_PLATFORM_TEXT_DOMAIN));
+            echo '<p>' . __('Panel de control del módulo de avisos municipales.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
         }
     }
     public function render_admin_activos() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Avisos Activos', 'flavor-chat-ia'), [
-            ['label' => __('Nuevo Aviso', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=avisos-nuevo'), 'class' => 'button-primary'],
+        $this->render_page_header(__('Avisos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+            ['label' => __('Nuevo Aviso', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=avisos-nuevo'), 'class' => 'button-primary'],
         ]);
 
         global $wpdb;
@@ -2527,7 +2527,7 @@ KNOWLEDGE;
 
         if (!empty($avisos)) {
             echo '<table class="wp-list-table widefat fixed striped">';
-            echo '<thead><tr><th>' . __('Título', 'flavor-chat-ia') . '</th><th>' . __('Prioridad', 'flavor-chat-ia') . '</th><th>' . __('Categoría', 'flavor-chat-ia') . '</th><th>' . __('Fecha', 'flavor-chat-ia') . '</th><th>' . __('Acciones', 'flavor-chat-ia') . '</th></tr></thead>';
+            echo '<thead><tr><th>' . __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . __('Prioridad', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . __('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . __('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th></tr></thead>';
             echo '<tbody>';
             foreach ($avisos as $aviso) {
                 $clase_prioridad = 'priority-' . esc_attr($aviso['prioridad'] ?? 'media');
@@ -2536,21 +2536,21 @@ KNOWLEDGE;
                 echo '<td><span class="' . esc_attr($clase_prioridad) . '">' . esc_html(ucfirst($aviso['prioridad'] ?? 'media')) . '</span></td>';
                 echo '<td>' . esc_html($aviso['categoria'] ?? '-') . '</td>';
                 echo '<td>' . esc_html(date_i18n('d/m/Y H:i', strtotime($aviso['created_at']))) . '</td>';
-                echo '<td><a href="#" class="button button-small am-ver-aviso" data-id="' . esc_attr($aviso['id']) . '">' . __('Ver', 'flavor-chat-ia') . '</a> <a href="' . esc_url(admin_url('admin.php?page=avisos-nuevo&editar=' . $aviso['id'])) . '" class="button button-small">' . __('Editar', 'flavor-chat-ia') . '</a></td>';
+                echo '<td><a href="#" class="button button-small am-ver-aviso" data-id="' . esc_attr($aviso['id']) . '">' . __('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a> <a href="' . esc_url(admin_url('admin.php?page=avisos-nuevo&editar=' . $aviso['id'])) . '" class="button button-small">' . __('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></td>';
                 echo '</tr>';
             }
             echo '</tbody></table>';
         } else {
-            echo '<p>' . __('No hay avisos activos en este momento.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('No hay avisos activos en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         // Modal ver aviso
         echo '<div id="modal-ver-aviso" style="display:none;">
             <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:100000;">
                 <div class="modal-content" style="position:relative;max-width:700px;margin:50px auto;background:#fff;padding:20px;border-radius:4px;">
-                    <h2>' . __('Detalle del Aviso', 'flavor-chat-ia') . '</h2>
+                    <h2>' . __('Detalle del Aviso', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2>
                     <div id="contenido-aviso"></div>
-                    <p><button type="button" class="button" id="cerrar-modal-aviso">' . __('Cerrar', 'flavor-chat-ia') . '</button></p>
+                    <p><button type="button" class="button" id="cerrar-modal-aviso">' . __('Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</button></p>
                 </div>
             </div>
         </div>';
@@ -2623,11 +2623,11 @@ KNOWLEDGE;
         $fecha_exp = $aviso && $aviso->fecha_expiracion ? date('Y-m-d\TH:i', strtotime($aviso->fecha_expiracion)) : '';
 
         // Título de la página
-        $titulo_pagina = $es_edicion ? __('Editar Aviso', 'flavor-chat-ia') : ($es_republicar ? __('Republicar Aviso', 'flavor-chat-ia') : __('Nuevo Aviso', 'flavor-chat-ia'));
+        $titulo_pagina = $es_edicion ? __('Editar Aviso', FLAVOR_PLATFORM_TEXT_DOMAIN) : ($es_republicar ? __('Republicar Aviso', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Nuevo Aviso', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         echo '<div class="wrap flavor-modulo-page">';
         $this->render_page_header($titulo_pagina, [
-            ['label' => __('Volver', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=avisos-activos'), 'class' => 'button'],
+            ['label' => __('Volver', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=avisos-activos'), 'class' => 'button'],
         ]);
 
         // Procesar formulario
@@ -2645,17 +2645,17 @@ KNOWLEDGE;
         echo '<table class="form-table">';
 
         // Título
-        echo '<tr><th scope="row"><label for="titulo">' . __('Título', 'flavor-chat-ia') . ' <span class="required">*</span></label></th>';
+        echo '<tr><th scope="row"><label for="titulo">' . __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN) . ' <span class="required">*</span></label></th>';
         echo '<td><input type="text" name="titulo" id="titulo" class="regular-text" value="' . esc_attr($titulo) . '" required /></td></tr>';
 
         // Contenido
-        echo '<tr><th scope="row"><label for="contenido">' . __('Contenido', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="contenido">' . __('Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><textarea name="contenido" id="contenido" rows="8" class="large-text">' . esc_textarea($contenido) . '</textarea></td></tr>';
 
         // Prioridad
-        echo '<tr><th scope="row"><label for="prioridad">' . __('Prioridad', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="prioridad">' . __('Prioridad', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><select name="prioridad" id="prioridad">';
-        $prioridades = ['baja' => __('Baja', 'flavor-chat-ia'), 'media' => __('Media', 'flavor-chat-ia'), 'alta' => __('Alta', 'flavor-chat-ia'), 'urgente' => __('Urgente', 'flavor-chat-ia')];
+        $prioridades = ['baja' => __('Baja', FLAVOR_PLATFORM_TEXT_DOMAIN), 'media' => __('Media', FLAVOR_PLATFORM_TEXT_DOMAIN), 'alta' => __('Alta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'urgente' => __('Urgente', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         foreach ($prioridades as $valor => $etiqueta) {
             $selected = ($prioridad === $valor) ? ' selected' : '';
             echo '<option value="' . esc_attr($valor) . '"' . $selected . '>' . esc_html($etiqueta) . '</option>';
@@ -2669,9 +2669,9 @@ KNOWLEDGE;
             $categorias_lista = $wpdb->get_results("SELECT id, nombre FROM $tabla_categorias ORDER BY orden ASC");
         }
         if (!empty($categorias_lista)) {
-            echo '<tr><th scope="row"><label for="categoria">' . __('Categoría', 'flavor-chat-ia') . '</label></th>';
+            echo '<tr><th scope="row"><label for="categoria">' . __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
             echo '<td><select name="categoria" id="categoria">';
-            echo '<option value="">' . __('-- Seleccionar --', 'flavor-chat-ia') . '</option>';
+            echo '<option value="">' . __('-- Seleccionar --', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
             foreach ($categorias_lista as $cat) {
                 $selected = ($categoria === $cat->nombre) ? ' selected' : '';
                 echo '<option value="' . esc_attr($cat->nombre) . '"' . $selected . '>' . esc_html($cat->nombre) . '</option>';
@@ -2680,17 +2680,17 @@ KNOWLEDGE;
         }
 
         // Fecha de expiración
-        echo '<tr><th scope="row"><label for="fecha_expiracion">' . __('Fecha de expiración', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="fecha_expiracion">' . __('Fecha de expiración', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="datetime-local" name="fecha_expiracion" id="fecha_expiracion" value="' . esc_attr($fecha_exp) . '" />';
-        echo '<p class="description">' . __('Dejar vacío para aviso sin fecha de expiración.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . __('Dejar vacío para aviso sin fecha de expiración.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
         echo '</table>';
 
         echo '<p class="submit">';
-        $boton_publicar = $es_edicion ? __('Actualizar Aviso', 'flavor-chat-ia') : __('Publicar Aviso', 'flavor-chat-ia');
+        $boton_publicar = $es_edicion ? __('Actualizar Aviso', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Publicar Aviso', FLAVOR_PLATFORM_TEXT_DOMAIN);
         echo '<input type="submit" name="publicar_aviso" class="button-primary" value="' . esc_attr($boton_publicar) . '" />';
         if (!$es_edicion) {
-            echo ' <input type="submit" name="guardar_borrador" class="button" value="' . __('Guardar Borrador', 'flavor-chat-ia') . '" />';
+            echo ' <input type="submit" name="guardar_borrador" class="button" value="' . __('Guardar Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN) . '" />';
         }
         echo '</p>';
         echo '</form>';
@@ -2704,7 +2704,7 @@ KNOWLEDGE;
      */
     private function procesar_formulario_aviso($aviso_id = 0) {
         if (!wp_verify_nonce($_POST['flavor_aviso_nonce'] ?? '', 'flavor_crear_aviso')) {
-            echo '<div class="notice notice-error"><p>' . __('Error de seguridad. Recarga la página.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-error"><p>' . __('Error de seguridad. Recarga la página.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             return;
         }
 
@@ -2723,7 +2723,7 @@ KNOWLEDGE;
         ];
 
         if (empty($datos['titulo'])) {
-            echo '<div class="notice notice-error"><p>' . __('El título es obligatorio.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-error"><p>' . __('El título es obligatorio.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             return;
         }
 
@@ -2731,9 +2731,9 @@ KNOWLEDGE;
             // Actualizar
             $resultado = $wpdb->update($tabla_avisos, $datos, ['id' => $aviso_id]);
             if ($resultado !== false) {
-                echo '<div class="notice notice-success"><p>' . __('Aviso actualizado correctamente.', 'flavor-chat-ia') . '</p></div>';
+                echo '<div class="notice notice-success"><p>' . __('Aviso actualizado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             } else {
-                echo '<div class="notice notice-error"><p>' . __('Error al actualizar el aviso.', 'flavor-chat-ia') . '</p></div>';
+                echo '<div class="notice notice-error"><p>' . __('Error al actualizar el aviso.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             }
         } else {
             // Insertar
@@ -2743,9 +2743,9 @@ KNOWLEDGE;
             $resultado = $wpdb->insert($tabla_avisos, $datos);
             if ($resultado) {
                 $nuevo_id = $wpdb->insert_id;
-                echo '<div class="notice notice-success"><p>' . sprintf(__('Aviso creado correctamente. <a href="%s">Ver avisos activos</a>', 'flavor-chat-ia'), admin_url('admin.php?page=avisos-activos')) . '</p></div>';
+                echo '<div class="notice notice-success"><p>' . sprintf(__('Aviso creado correctamente. <a href="%s">Ver avisos activos</a>', FLAVOR_PLATFORM_TEXT_DOMAIN), admin_url('admin.php?page=avisos-activos')) . '</p></div>';
             } else {
-                echo '<div class="notice notice-error"><p>' . __('Error al crear el aviso.', 'flavor-chat-ia') . '</p></div>';
+                echo '<div class="notice notice-error"><p>' . __('Error al crear el aviso.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             }
         }
     }
@@ -2848,7 +2848,7 @@ KNOWLEDGE;
      */
     public function render_admin_config() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Configuración de Avisos', 'flavor-chat-ia'));
+        $this->render_page_header(__('Configuración de Avisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         $configuracion_actual = $this->get_default_settings();
 
@@ -2856,26 +2856,26 @@ KNOWLEDGE;
         wp_nonce_field('flavor_config_avisos', 'flavor_config_nonce');
         echo '<table class="form-table">';
 
-        echo '<tr><th scope="row"><label for="enviar_push_notifications">' . __('Notificaciones Push', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="enviar_push_notifications">' . __('Notificaciones Push', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="checkbox" name="enviar_push_notifications" id="enviar_push_notifications" ' . checked($configuracion_actual['enviar_push_notifications'], true, false) . ' />';
-        echo '<p class="description">' . __('Enviar notificaciones push a los suscriptores.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . __('Enviar notificaciones push a los suscriptores.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="enviar_email_notifications">' . __('Notificaciones Email', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="enviar_email_notifications">' . __('Notificaciones Email', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="checkbox" name="enviar_email_notifications" id="enviar_email_notifications" ' . checked($configuracion_actual['enviar_email_notifications'], true, false) . ' /></td></tr>';
 
-        echo '<tr><th scope="row"><label for="dias_expiracion_default">' . __('Días de expiración por defecto', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="dias_expiracion_default">' . __('Días de expiración por defecto', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="number" name="dias_expiracion_default" id="dias_expiracion_default" value="' . esc_attr($configuracion_actual['dias_expiracion_default']) . '" min="0" class="small-text" />';
-        echo '<p class="description">' . __('0 = sin expiración automática.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . __('0 = sin expiración automática.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="avisos_por_pagina">' . __('Avisos por página', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="avisos_por_pagina">' . __('Avisos por página', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="number" name="avisos_por_pagina" id="avisos_por_pagina" value="' . esc_attr($configuracion_actual['avisos_por_pagina']) . '" min="1" max="100" class="small-text" /></td></tr>';
 
-        echo '<tr><th scope="row"><label for="requiere_confirmacion_lectura">' . __('Requiere confirmación de lectura', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="requiere_confirmacion_lectura">' . __('Requiere confirmación de lectura', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="checkbox" name="requiere_confirmacion_lectura" id="requiere_confirmacion_lectura" ' . checked($configuracion_actual['requiere_confirmacion_lectura'], true, false) . ' />';
-        echo '<p class="description">' . __('Los usuarios deben confirmar que han leído el aviso.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . __('Los usuarios deben confirmar que han leído el aviso.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
         echo '</table>';
-        echo '<p class="submit"><input type="submit" name="guardar_config" class="button-primary" value="' . __('Guardar Configuración', 'flavor-chat-ia') . '" /></p>';
+        echo '<p class="submit"><input type="submit" name="guardar_config" class="button-primary" value="' . __('Guardar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN) . '" /></p>';
         echo '</form>';
         echo '</div>';
     }
@@ -2916,19 +2916,19 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Avisos Municipales', 'flavor-chat-ia'),
+                'title' => __('Avisos Municipales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'avisos-municipales',
-                'content' => '<h1>' . __('Avisos Municipales', 'flavor-chat-ia') . '</h1>
-<p>' . __('Mantente informado de los avisos y comunicados oficiales del ayuntamiento y tu comunidad.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Avisos Municipales', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Mantente informado de los avisos y comunicados oficiales del ayuntamiento y tu comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="avisos_municipales" action="listar" columnas="2" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Mis Avisos', 'flavor-chat-ia'),
+                'title' => __('Mis Avisos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'avisos-municipales/mis-avisos',
-                'content' => '<h1>' . __('Mis Avisos', 'flavor-chat-ia') . '</h1>
-<p>' . __('Revisa los avisos que te afectan directamente y confirma su lectura.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Mis Avisos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Revisa los avisos que te afectan directamente y confirma su lectura.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="avisos_municipales" action="mis_avisos" columnas="1" limite="20"]',
                 'parent' => 'avisos-municipales',
@@ -2944,8 +2944,8 @@ KNOWLEDGE;
     public static function get_renderer_config(): array {
         return [
             'module'   => 'avisos_municipales',
-            'title'    => __('Avisos Municipales', 'flavor-chat-ia'),
-            'subtitle' => __('Comunicados oficiales del ayuntamiento', 'flavor-chat-ia'),
+            'title'    => __('Avisos Municipales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Comunicados oficiales del ayuntamiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '📢',
             'color'    => 'warning', // Usa variable CSS --flavor-warning del tema
 
@@ -2955,27 +2955,27 @@ KNOWLEDGE;
             ],
 
             'fields' => [
-                'titulo'      => ['label' => __('Título', 'flavor-chat-ia'), 'type' => 'text', 'required' => true],
-                'contenido'   => ['label' => __('Contenido', 'flavor-chat-ia'), 'type' => 'wysiwyg', 'required' => true],
-                'prioridad'   => ['label' => __('Prioridad', 'flavor-chat-ia'), 'type' => 'select', 'options' => ['baja' => 'Baja', 'media' => 'Media', 'alta' => 'Alta', 'urgente' => 'Urgente']],
-                'categoria'   => ['label' => __('Categoría', 'flavor-chat-ia'), 'type' => 'select'],
-                'zona'        => ['label' => __('Zona', 'flavor-chat-ia'), 'type' => 'select'],
-                'fecha_inicio'=> ['label' => __('Fecha inicio', 'flavor-chat-ia'), 'type' => 'datetime'],
-                'fecha_fin'   => ['label' => __('Fecha fin', 'flavor-chat-ia'), 'type' => 'datetime'],
+                'titulo'      => ['label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'text', 'required' => true],
+                'contenido'   => ['label' => __('Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'wysiwyg', 'required' => true],
+                'prioridad'   => ['label' => __('Prioridad', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'select', 'options' => ['baja' => 'Baja', 'media' => 'Media', 'alta' => 'Alta', 'urgente' => 'Urgente']],
+                'categoria'   => ['label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'select'],
+                'zona'        => ['label' => __('Zona', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'select'],
+                'fecha_inicio'=> ['label' => __('Fecha inicio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'datetime'],
+                'fecha_fin'   => ['label' => __('Fecha fin', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'datetime'],
             ],
 
             'estados' => [
-                'publicado' => ['label' => __('Publicado', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
-                'borrador'  => ['label' => __('Borrador', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '📝'],
-                'expirado'  => ['label' => __('Expirado', 'flavor-chat-ia'), 'color' => 'orange', 'icon' => '⏰'],
-                'archivado' => ['label' => __('Archivado', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '📦'],
+                'publicado' => ['label' => __('Publicado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '✅'],
+                'borrador'  => ['label' => __('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'gray', 'icon' => '📝'],
+                'expirado'  => ['label' => __('Expirado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'orange', 'icon' => '⏰'],
+                'archivado' => ['label' => __('Archivado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '📦'],
             ],
 
             'stats' => [
-                'avisos_activos' => ['label' => __('Avisos activos', 'flavor-chat-ia'), 'icon' => '📢', 'color' => 'orange'],
-                'urgentes'       => ['label' => __('Urgentes', 'flavor-chat-ia'), 'icon' => '🚨', 'color' => 'red'],
-                'no_leidos'      => ['label' => __('Sin leer', 'flavor-chat-ia'), 'icon' => '📬', 'color' => 'blue'],
-                'suscriptores'   => ['label' => __('Suscriptores', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'green'],
+                'avisos_activos' => ['label' => __('Avisos activos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📢', 'color' => 'orange'],
+                'urgentes'       => ['label' => __('Urgentes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🚨', 'color' => 'red'],
+                'no_leidos'      => ['label' => __('Sin leer', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📬', 'color' => 'blue'],
+                'suscriptores'   => ['label' => __('Suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👥', 'color' => 'green'],
             ],
 
             'card' => [
@@ -2987,22 +2987,22 @@ KNOWLEDGE;
 
             'tabs' => [
                 'todos' => [
-                    'label'   => __('Todos', 'flavor-chat-ia'),
+                    'label'   => __('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-megaphone',
                     'content' => 'template:_archive.php',
                 ],
                 'urgentes' => [
-                    'label'   => __('Urgentes', 'flavor-chat-ia'),
+                    'label'   => __('Urgentes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-warning',
                     'content' => 'template:urgentes.php',
                 ],
                 'no-leidos' => [
-                    'label'   => __('Sin leer', 'flavor-chat-ia'),
+                    'label'   => __('Sin leer', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-email',
                     'content' => 'template:no-leidos.php',
                 ],
                 'suscripcion' => [
-                    'label'   => __('Suscripción', 'flavor-chat-ia'),
+                    'label'   => __('Suscripción', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-bell',
                     'content' => 'template:suscripcion.php',
                 ],
@@ -3019,8 +3019,8 @@ KNOWLEDGE;
                 'show_stats'   => true,
                 'show_actions' => true,
                 'actions'      => [
-                    'suscribirse' => ['label' => __('Suscribirse', 'flavor-chat-ia'), 'icon' => '🔔', 'color' => 'orange'],
-                    'ver_todos'   => ['label' => __('Ver todos', 'flavor-chat-ia'), 'icon' => '📢', 'color' => 'blue'],
+                    'suscribirse' => ['label' => __('Suscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🔔', 'color' => 'orange'],
+                    'ver_todos'   => ['label' => __('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📢', 'color' => 'blue'],
                 ],
             ],
         ];

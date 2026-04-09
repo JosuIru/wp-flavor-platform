@@ -259,7 +259,7 @@ class Flavor_Eventos_Conciencia_Features {
         ));
 
         if (!$info || $info->plazas_solidarias_usadas >= $info->plazas_solidarias) {
-            return ['success' => false, 'error' => __('No hay plazas solidarias disponibles.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No hay plazas solidarias disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Verificar que no haya solicitado ya
@@ -269,7 +269,7 @@ class Flavor_Eventos_Conciencia_Features {
         ));
 
         if ($existe) {
-            return ['success' => false, 'error' => __('Ya has solicitado una plaza solidaria para este evento.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Ya has solicitado una plaza solidaria para este evento.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $wpdb->insert($tabla_solidarias, [
@@ -282,7 +282,7 @@ class Flavor_Eventos_Conciencia_Features {
 
         return [
             'success' => true,
-            'message' => __('Solicitud enviada. Te notificaremos cuando sea revisada.', 'flavor-chat-ia'),
+            'message' => __('Solicitud enviada. Te notificaremos cuando sea revisada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -296,7 +296,7 @@ class Flavor_Eventos_Conciencia_Features {
         ));
 
         if (!$solicitud || $solicitud->estado !== 'pendiente') {
-            return ['success' => false, 'error' => __('Solicitud no válida.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Solicitud no válida.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $wpdb->update($tabla_solidarias, [
@@ -314,8 +314,8 @@ class Flavor_Eventos_Conciencia_Features {
         if (class_exists('Flavor_Notification_Center')) {
             Flavor_Notification_Center::get_instance()->send(
                 $solicitud->usuario_id,
-                __('Plaza solidaria aprobada', 'flavor-chat-ia'),
-                __('Tu solicitud de plaza solidaria ha sido aprobada.', 'flavor-chat-ia'),
+                __('Plaza solidaria aprobada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Tu solicitud de plaza solidaria ha sido aprobada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['type' => 'success', 'module_id' => 'eventos']
             );
         }
@@ -445,7 +445,7 @@ class Flavor_Eventos_Conciencia_Features {
         ));
 
         if ($existe) {
-            return ['success' => false, 'error' => __('Ya estás apuntado como voluntario.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Ya estás apuntado como voluntario.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Verificar disponibilidad del rol
@@ -455,7 +455,7 @@ class Flavor_Eventos_Conciencia_Features {
         ));
 
         if ($necesidad && $necesidad->cantidad_cubierta >= $necesidad->cantidad_necesaria) {
-            return ['success' => false, 'error' => __('No hay más plazas para este rol.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No hay más plazas para este rol.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $wpdb->insert($tabla_voluntarios, [
@@ -476,7 +476,7 @@ class Flavor_Eventos_Conciencia_Features {
 
         return [
             'success' => true,
-            'message' => __('¡Te has apuntado como voluntario! Te contactaremos con los detalles.', 'flavor-chat-ia'),
+            'message' => __('¡Te has apuntado como voluntario! Te contactaremos con los detalles.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -550,8 +550,8 @@ class Flavor_Eventos_Conciencia_Features {
         if (class_exists('Flavor_Notification_Center')) {
             Flavor_Notification_Center::get_instance()->send(
                 $co_organizador_id,
-                __('Propuesta de colaboración', 'flavor-chat-ia'),
-                __('Te han invitado a co-organizar un evento.', 'flavor-chat-ia'),
+                __('Propuesta de colaboración', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Te han invitado a co-organizar un evento.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['type' => 'info', 'module_id' => 'eventos']
             );
         }
@@ -786,7 +786,7 @@ class Flavor_Eventos_Conciencia_Features {
         $atts = shortcode_atts(['evento_id' => 0], $atts);
 
         if (!$atts['evento_id']) {
-            return '<p>' . __('Especifica un evento.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('Especifica un evento.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $huella = $this->obtener_huella_evento($atts['evento_id']);
@@ -846,7 +846,7 @@ class Flavor_Eventos_Conciencia_Features {
 
     public function shortcode_mi_participacion($atts) {
         if (!is_user_logged_in()) {
-            return '<p>' . __('Inicia sesión para ver tu participación.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('Inicia sesión para ver tu participación.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $participacion = $this->obtener_participacion_usuario(get_current_user_id());

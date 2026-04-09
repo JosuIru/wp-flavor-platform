@@ -26,7 +26,7 @@ if (!defined('ABSPATH')) {
 $value = floatval($value ?? 0);
 $max = floatval($max ?? 100);
 $unit = $unit ?? '';
-$label = $label ?? __('Impacto', 'flavor-chat-ia');
+$label = $label ?? __('Impacto', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $description = $description ?? '';
 $type = $type ?? 'positive';
 $icon = $icon ?? '🌱';
@@ -204,7 +204,7 @@ $meter_id = 'flavor-impact-' . wp_rand(1000, 9999);
         <!-- Milestones -->
         <?php if (!empty($milestones)): ?>
             <div class="mt-4 pt-4 border-t border-gray-100">
-                <p class="text-xs text-gray-500 mb-2"><?php esc_html_e('Logros:', 'flavor-chat-ia'); ?></p>
+                <p class="text-xs text-gray-500 mb-2"><?php esc_html_e('Logros:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <div class="flex flex-wrap gap-2">
                     <?php foreach ($milestones as $milestone): ?>
                         <?php $achieved = $value >= ($milestone['value'] ?? 0); ?>

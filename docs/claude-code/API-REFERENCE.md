@@ -1,4 +1,4 @@
-# Flavor Chat IA - Referencia de APIs REST
+# Flavor Platform - Referencia de APIs REST
 
 ## Namespaces Disponibles
 
@@ -7,7 +7,7 @@
 | `flavor-vbp/v1` | Visual Builder Pro - Documentos y bloques |
 | `flavor-site-builder/v1` | Site Builder - Creación de sitios completos |
 | `flavor-modules/v1` | Gestión de módulos |
-| `flavor-chat/v1` | Chat IA |
+| `flavor-chat/v1` | Asistente IA |
 
 ---
 

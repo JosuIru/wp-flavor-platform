@@ -37,7 +37,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>
                     </div>
-                    <h3 class="text-3xl font-bold" style="color: #16a34a;"><?php echo esc_html__('Qué SÍ Compostar', 'flavor-chat-ia'); ?></h3>
+                    <h3 class="text-3xl font-bold" style="color: #16a34a;"><?php echo esc_html__('Qué SÍ Compostar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -50,25 +50,25 @@
                                 </svg>
                             </div>
                             <div>
-                                <h4 class="font-bold text-lg mb-2" style="color: #2D5016;"><?php echo esc_html__('Frutas y Verduras', 'flavor-chat-ia'); ?></h4>
+                                <h4 class="font-bold text-lg mb-2" style="color: #2D5016;"><?php echo esc_html__('Frutas y Verduras', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                                 <ul class="space-y-1 text-sm" style="color: #57534e;">
                                     <li class="flex items-start gap-2">
                                         <svg class="w-4 h-4 mt-0.5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                         </svg>
-                                        <span><?php echo esc_html__('Restos de frutas y verduras crudas', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Restos de frutas y verduras crudas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                     <li class="flex items-start gap-2">
                                         <svg class="w-4 h-4 mt-0.5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                         </svg>
-                                        <span><?php echo esc_html__('Pieles, cáscaras y semillas', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Pieles, cáscaras y semillas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                     <li class="flex items-start gap-2">
                                         <svg class="w-4 h-4 mt-0.5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                         </svg>
-                                        <span><?php echo esc_html__('Restos de ensaladas sin aliñar', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Restos de ensaladas sin aliñar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                 </ul>
                             </div>
@@ -84,25 +84,25 @@
                                 </svg>
                             </div>
                             <div>
-                                <h4 class="font-bold text-lg mb-2" style="color: #2D5016;"><?php echo esc_html__('Café e Infusiones', 'flavor-chat-ia'); ?></h4>
+                                <h4 class="font-bold text-lg mb-2" style="color: #2D5016;"><?php echo esc_html__('Café e Infusiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                                 <ul class="space-y-1 text-sm" style="color: #57534e;">
                                     <li class="flex items-start gap-2">
                                         <svg class="w-4 h-4 mt-0.5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                         </svg>
-                                        <span><?php echo esc_html__('Posos de café y filtros', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Posos de café y filtros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                     <li class="flex items-start gap-2">
                                         <svg class="w-4 h-4 mt-0.5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                         </svg>
-                                        <span><?php echo esc_html__('Bolsitas de té e infusiones', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Bolsitas de té e infusiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                     <li class="flex items-start gap-2">
                                         <svg class="w-4 h-4 mt-0.5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                         </svg>
-                                        <span><?php echo esc_html__('Restos de hierbas aromáticas', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Restos de hierbas aromáticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                 </ul>
                             </div>
@@ -118,25 +118,25 @@
                                 </svg>
                             </div>
                             <div>
-                                <h4 class="font-bold text-lg mb-2" style="color: #2D5016;"><?php echo esc_html__('Cáscaras de Huevo', 'flavor-chat-ia'); ?></h4>
+                                <h4 class="font-bold text-lg mb-2" style="color: #2D5016;"><?php echo esc_html__('Cáscaras de Huevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                                 <ul class="space-y-1 text-sm" style="color: #57534e;">
                                     <li class="flex items-start gap-2">
                                         <svg class="w-4 h-4 mt-0.5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                         </svg>
-                                        <span><?php echo esc_html__('Cáscaras trituradas (mejor)', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Cáscaras trituradas (mejor)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                     <li class="flex items-start gap-2">
                                         <svg class="w-4 h-4 mt-0.5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                         </svg>
-                                        <span><?php echo esc_html__('Aportan calcio al compost', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Aportan calcio al compost', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                     <li class="flex items-start gap-2">
                                         <svg class="w-4 h-4 mt-0.5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                         </svg>
-                                        <span><?php echo esc_html__('Ayudan a regular el pH', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Ayudan a regular el pH', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                 </ul>
                             </div>
@@ -152,25 +152,25 @@
                                 </svg>
                             </div>
                             <div>
-                                <h4 class="font-bold text-lg mb-2" style="color: #2D5016;"><?php echo esc_html__('Papel y Cartón', 'flavor-chat-ia'); ?></h4>
+                                <h4 class="font-bold text-lg mb-2" style="color: #2D5016;"><?php echo esc_html__('Papel y Cartón', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                                 <ul class="space-y-1 text-sm" style="color: #57534e;">
                                     <li class="flex items-start gap-2">
                                         <svg class="w-4 h-4 mt-0.5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                         </svg>
-                                        <span><?php echo esc_html__('Servilletas y papel de cocina usados', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Servilletas y papel de cocina usados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                     <li class="flex items-start gap-2">
                                         <svg class="w-4 h-4 mt-0.5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                         </svg>
-                                        <span><?php echo esc_html__('Cartón troceado (sin tinta)', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Cartón troceado (sin tinta)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                     <li class="flex items-start gap-2">
                                         <svg class="w-4 h-4 mt-0.5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                         </svg>
-                                        <span><?php echo esc_html__('Cajas de huevos de cartón', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Cajas de huevos de cartón', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                 </ul>
                             </div>
@@ -187,7 +187,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </div>
-                    <h3 class="text-3xl font-bold" style="color: #dc2626;"><?php echo esc_html__('Qué NO Compostar', 'flavor-chat-ia'); ?></h3>
+                    <h3 class="text-3xl font-bold" style="color: #dc2626;"><?php echo esc_html__('Qué NO Compostar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -200,25 +200,25 @@
                                 </svg>
                             </div>
                             <div>
-                                <h4 class="font-bold text-lg mb-2" style="color: #991b1b;"><?php echo esc_html__('Proteínas Animales', 'flavor-chat-ia'); ?></h4>
+                                <h4 class="font-bold text-lg mb-2" style="color: #991b1b;"><?php echo esc_html__('Proteínas Animales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                                 <ul class="space-y-1 text-sm" style="color: #57534e;">
                                     <li class="flex items-start gap-2">
                                         <svg class="w-4 h-4 mt-0.5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                         </svg>
-                                        <span><?php echo esc_html__('Carnes, pescados y mariscos', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Carnes, pescados y mariscos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                     <li class="flex items-start gap-2">
                                         <svg class="w-4 h-4 mt-0.5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                         </svg>
-                                        <span><?php echo esc_html__('Huesos y espinas', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Huesos y espinas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                     <li class="flex items-start gap-2">
                                         <svg class="w-4 h-4 mt-0.5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                         </svg>
-                                        <span><?php echo esc_html__('Atraen plagas y malos olores', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Atraen plagas y malos olores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                 </ul>
                             </div>
@@ -234,25 +234,25 @@
                                 </svg>
                             </div>
                             <div>
-                                <h4 class="font-bold text-lg mb-2" style="color: #78350f;"><?php echo esc_html__('Aceites y Grasas', 'flavor-chat-ia'); ?></h4>
+                                <h4 class="font-bold text-lg mb-2" style="color: #78350f;"><?php echo esc_html__('Aceites y Grasas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                                 <ul class="space-y-1 text-sm" style="color: #57534e;">
                                     <li class="flex items-start gap-2">
                                         <svg class="w-4 h-4 mt-0.5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                         </svg>
-                                        <span><?php echo esc_html__('Aceites vegetales o de origen animal', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Aceites vegetales o de origen animal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                     <li class="flex items-start gap-2">
                                         <svg class="w-4 h-4 mt-0.5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                         </svg>
-                                        <span><?php echo esc_html__('Alimentos muy grasos o fritos', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Alimentos muy grasos o fritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                     <li class="flex items-start gap-2">
                                         <svg class="w-4 h-4 mt-0.5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                         </svg>
-                                        <span><?php echo esc_html__('Impiden la aireación del compost', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Impiden la aireación del compost', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                 </ul>
                             </div>
@@ -268,25 +268,25 @@
                                 </svg>
                             </div>
                             <div>
-                                <h4 class="font-bold text-lg mb-2" style="color: #164e63;"><?php echo esc_html__('Productos Lácteos', 'flavor-chat-ia'); ?></h4>
+                                <h4 class="font-bold text-lg mb-2" style="color: #164e63;"><?php echo esc_html__('Productos Lácteos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                                 <ul class="space-y-1 text-sm" style="color: #57534e;">
                                     <li class="flex items-start gap-2">
                                         <svg class="w-4 h-4 mt-0.5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                         </svg>
-                                        <span><?php echo esc_html__('Leche, yogur, queso', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Leche, yogur, queso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                     <li class="flex items-start gap-2">
                                         <svg class="w-4 h-4 mt-0.5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                         </svg>
-                                        <span><?php echo esc_html__('Mantequilla y nata', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Mantequilla y nata', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                     <li class="flex items-start gap-2">
                                         <svg class="w-4 h-4 mt-0.5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                         </svg>
-                                        <span><?php echo esc_html__('Generan malos olores', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Generan malos olores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                 </ul>
                             </div>
@@ -302,25 +302,25 @@
                                 </svg>
                             </div>
                             <div>
-                                <h4 class="font-bold text-lg mb-2" style="color: #334155;"><?php echo esc_html__('Otros No Compostables', 'flavor-chat-ia'); ?></h4>
+                                <h4 class="font-bold text-lg mb-2" style="color: #334155;"><?php echo esc_html__('Otros No Compostables', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                                 <ul class="space-y-1 text-sm" style="color: #57534e;">
                                     <li class="flex items-start gap-2">
                                         <svg class="w-4 h-4 mt-0.5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                         </svg>
-                                        <span><?php echo esc_html__('Plásticos, metales, vidrio', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Plásticos, metales, vidrio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                     <li class="flex items-start gap-2">
                                         <svg class="w-4 h-4 mt-0.5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                         </svg>
-                                        <span><?php echo esc_html__('Excrementos de mascotas', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Excrementos de mascotas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                     <li class="flex items-start gap-2">
                                         <svg class="w-4 h-4 mt-0.5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                         </svg>
-                                        <span><?php echo esc_html__('Cenizas de carbón o madera tratada', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Cenizas de carbón o madera tratada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                 </ul>
                             </div>
@@ -335,7 +335,7 @@
                     <svg class="w-10 h-10 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                     </svg>
-                    <h3 class="text-2xl font-bold" style="color: #2D5016;"><?php echo esc_html__('Consejos para un Buen Compostaje', 'flavor-chat-ia'); ?></h3>
+                    <h3 class="text-2xl font-bold" style="color: #2D5016;"><?php echo esc_html__('Consejos para un Buen Compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="flex items-start gap-3">
@@ -343,8 +343,8 @@
                             <span class="text-white font-bold">1</span>
                         </div>
                         <div>
-                            <h5 class="font-semibold mb-1" style="color: #2D5016;"><?php echo esc_html__('Trocea los residuos', 'flavor-chat-ia'); ?></h5>
-                            <p class="text-sm" style="color: #57534e;"><?php echo esc_html__('Los trozos pequeños se descomponen más rápido', 'flavor-chat-ia'); ?></p>
+                            <h5 class="font-semibold mb-1" style="color: #2D5016;"><?php echo esc_html__('Trocea los residuos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h5>
+                            <p class="text-sm" style="color: #57534e;"><?php echo esc_html__('Los trozos pequeños se descomponen más rápido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
@@ -352,8 +352,8 @@
                             <span class="text-white font-bold">2</span>
                         </div>
                         <div>
-                            <h5 class="font-semibold mb-1" style="color: #2D5016;"><?php echo esc_html__('Equilibra húmedo y seco', 'flavor-chat-ia'); ?></h5>
-                            <p class="text-sm" style="color: #57534e;"><?php echo esc_html__('Alterna capas de restos húmedos con secos', 'flavor-chat-ia'); ?></p>
+                            <h5 class="font-semibold mb-1" style="color: #2D5016;"><?php echo esc_html__('Equilibra húmedo y seco', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h5>
+                            <p class="text-sm" style="color: #57534e;"><?php echo esc_html__('Alterna capas de restos húmedos con secos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
@@ -361,8 +361,8 @@
                             <span class="text-white font-bold">3</span>
                         </div>
                         <div>
-                            <h5 class="font-semibold mb-1" style="color: #2D5016;"><?php echo esc_html__('Airea regularmente', 'flavor-chat-ia'); ?></h5>
-                            <p class="text-sm" style="color: #57534e;"><?php echo esc_html__('Remueve el compost para oxigenarlo', 'flavor-chat-ia'); ?></p>
+                            <h5 class="font-semibold mb-1" style="color: #2D5016;"><?php echo esc_html__('Airea regularmente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h5>
+                            <p class="text-sm" style="color: #57534e;"><?php echo esc_html__('Remueve el compost para oxigenarlo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
@@ -370,8 +370,8 @@
                             <span class="text-white font-bold">4</span>
                         </div>
                         <div>
-                            <h5 class="font-semibold mb-1" style="color: #2D5016;"><?php echo esc_html__('Controla la humedad', 'flavor-chat-ia'); ?></h5>
-                            <p class="text-sm" style="color: #57534e;"><?php echo esc_html__('Debe estar húmedo pero no encharcado', 'flavor-chat-ia'); ?></p>
+                            <h5 class="font-semibold mb-1" style="color: #2D5016;"><?php echo esc_html__('Controla la humedad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h5>
+                            <p class="text-sm" style="color: #57534e;"><?php echo esc_html__('Debe estar húmedo pero no encharcado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                     </div>
                 </div>
@@ -384,10 +384,10 @@
                     <svg class="w-16 h-16 mx-auto mb-4 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    <h4 class="text-xl font-bold mb-2" style="color: #2D5016;"><?php echo esc_html__('Descarga la Guía Completa', 'flavor-chat-ia'); ?></h4>
-                    <p class="mb-6" style="color: #57534e;"><?php echo esc_html__('Guía en PDF con toda la información sobre compostaje', 'flavor-chat-ia'); ?></p>
+                    <h4 class="text-xl font-bold mb-2" style="color: #2D5016;"><?php echo esc_html__('Descarga la Guía Completa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                    <p class="mb-6" style="color: #57534e;"><?php echo esc_html__('Guía en PDF con toda la información sobre compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <button class="px-8 py-3 rounded-lg font-semibold text-white transition-all duration-300 transform hover:scale-105" style="background: #6B4423;">
-                        <?php echo esc_html__('Descargar Guía PDF', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Descargar Guía PDF', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </div>

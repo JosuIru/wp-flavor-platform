@@ -59,7 +59,7 @@ $sz = $size_config[$size] ?? $size_config['md'];
                 </div>
                 <?php if ($show_names): ?>
                     <span class="<?php echo esc_attr($sz['text']); ?> text-gray-600 truncate max-w-full">
-                        <?php esc_html_e('Tu historia', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Tu historia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                 <?php endif; ?>
             </a>

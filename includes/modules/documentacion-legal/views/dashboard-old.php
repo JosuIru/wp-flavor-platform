@@ -94,18 +94,18 @@ $estado_variantes = [
     <div class="dm-header">
         <h1 class="dm-header__title">
             <span class="dashicons dashicons-media-document"></span>
-            <?php esc_html_e('Dashboard - Documentación Legal', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Dashboard - Documentación Legal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h1>
         <p class="dm-header__description">
-            <?php esc_html_e('Gestiona leyes, sentencias, modelos y guías legales para la comunidad', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Gestiona leyes, sentencias, modelos y guías legales para la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </div>
 
     <?php if (!$tablas_disponibles): ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <strong><?php esc_html_e('Sin datos disponibles:', 'flavor-chat-ia'); ?></strong>
-        <?php esc_html_e('Faltan tablas del módulo Documentación Legal o aún no hay documentos publicados.', 'flavor-chat-ia'); ?>
+        <strong><?php esc_html_e('Sin datos disponibles:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+        <?php esc_html_e('Faltan tablas del módulo Documentación Legal o aún no hay documentos publicados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </div>
     <?php endif; ?>
 
@@ -113,27 +113,27 @@ $estado_variantes = [
     <div class="dm-quick-links">
         <a href="<?php echo esc_url(admin_url('admin.php?page=documentos-listado')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-list-view"></span>
-            <?php esc_html_e('Listado', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Listado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=documentos-nuevo')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-plus-alt"></span>
-            <?php esc_html_e('Nuevo', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=documentos-categorias')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-category"></span>
-            <?php esc_html_e('Categorías', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=documentos-modelos')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-media-text"></span>
-            <?php esc_html_e('Modelos', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Modelos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=documentos-estadisticas')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-chart-bar"></span>
-            <?php esc_html_e('Estadísticas', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('documentacion_legal', '')); ?>" class="dm-quick-links__item" target="_blank">
             <span class="dashicons dashicons-external"></span>
-            <?php esc_html_e('Portal público', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Portal público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 
@@ -142,31 +142,31 @@ $estado_variantes = [
         <div class="dm-stat-card dm-stat-card--primary">
             <div class="dm-stat-card__icon"><span class="dashicons dashicons-media-document"></span></div>
             <div class="dm-stat-card__value"><?php echo number_format_i18n($total_docs); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Documentos Publicados', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Documentos Publicados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
 
         <div class="dm-stat-card dm-stat-card--warning">
             <div class="dm-stat-card__icon"><span class="dashicons dashicons-edit"></span></div>
             <div class="dm-stat-card__value"><?php echo number_format_i18n($total_borradores + $total_revision); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
 
         <div class="dm-stat-card dm-stat-card--success">
             <div class="dm-stat-card__icon"><span class="dashicons dashicons-download"></span></div>
             <div class="dm-stat-card__value"><?php echo number_format_i18n($total_descargas); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Descargas Totales', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Descargas Totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
 
         <div class="dm-stat-card dm-stat-card--purple">
             <div class="dm-stat-card__icon"><span class="dashicons dashicons-visibility"></span></div>
             <div class="dm-stat-card__value"><?php echo number_format_i18n($total_visitas); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Visitas', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Visitas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
 
         <div class="dm-stat-card dm-stat-card--pink">
             <div class="dm-stat-card__icon"><span class="dashicons dashicons-heart"></span></div>
             <div class="dm-stat-card__value"><?php echo number_format_i18n($total_favoritos); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Favoritos', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -174,10 +174,10 @@ $estado_variantes = [
     <?php if ($pendientes_verificar > 0): ?>
     <div class="dm-alert dm-alert--warning">
         <span class="dashicons dashicons-info"></span>
-        <strong><?php echo number_format_i18n($pendientes_verificar); ?> <?php esc_html_e('documentos sin verificar', 'flavor-chat-ia'); ?></strong> -
-        <?php esc_html_e('Revisa y marca como verificados los documentos publicados.', 'flavor-chat-ia'); ?>
+        <strong><?php echo number_format_i18n($pendientes_verificar); ?> <?php esc_html_e('documentos sin verificar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> -
+        <?php esc_html_e('Revisa y marca como verificados los documentos publicados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         <a href="<?php echo esc_url(admin_url('admin.php?page=documentos-listado&verificado=0')); ?>" class="dm-btn dm-btn--sm dm-btn--warning" style="margin-left: 10px;">
-            <?php esc_html_e('Ver pendientes', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Ver pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
     <?php endif; ?>
@@ -186,7 +186,7 @@ $estado_variantes = [
     <div class="dm-grid dm-grid--2">
         <div class="dm-card dm-card--chart">
             <div class="dm-card__header">
-                <h3><span class="dashicons dashicons-chart-pie"></span> <?php esc_html_e('Documentos por Tipo', 'flavor-chat-ia'); ?></h3>
+                <h3><span class="dashicons dashicons-chart-pie"></span> <?php esc_html_e('Documentos por Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             </div>
             <div class="dm-card__chart">
                 <canvas id="grafico-tipos"></canvas>
@@ -195,7 +195,7 @@ $estado_variantes = [
 
         <div class="dm-card dm-card--chart">
             <div class="dm-card__header">
-                <h3><span class="dashicons dashicons-chart-bar"></span> <?php esc_html_e('Documentos por Ámbito', 'flavor-chat-ia'); ?></h3>
+                <h3><span class="dashicons dashicons-chart-bar"></span> <?php esc_html_e('Documentos por Ámbito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             </div>
             <div class="dm-card__chart">
                 <canvas id="grafico-ambito"></canvas>
@@ -206,16 +206,16 @@ $estado_variantes = [
     <!-- Documentos Más Descargados -->
     <div class="dm-card">
         <div class="dm-card__header">
-            <h3><span class="dashicons dashicons-download"></span> <?php esc_html_e('Documentos Más Descargados', 'flavor-chat-ia'); ?></h3>
+            <h3><span class="dashicons dashicons-download"></span> <?php esc_html_e('Documentos Más Descargados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         </div>
         <?php if (!empty($docs_populares)): ?>
         <table class="dm-table">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Título', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Descargas', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Visitas', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Descargas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Visitas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -232,7 +232,7 @@ $estado_variantes = [
         <?php else: ?>
         <div class="dm-empty">
             <span class="dashicons dashicons-media-document"></span>
-            <p><?php esc_html_e('No hay documentos registrados', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('No hay documentos registrados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
         <?php endif; ?>
     </div>
@@ -240,17 +240,17 @@ $estado_variantes = [
     <!-- Documentos Recientes -->
     <div class="dm-card">
         <div class="dm-card__header">
-            <h3><span class="dashicons dashicons-update"></span> <?php esc_html_e('Documentos Recientes', 'flavor-chat-ia'); ?></h3>
+            <h3><span class="dashicons dashicons-update"></span> <?php esc_html_e('Documentos Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         </div>
         <?php if (!empty($docs_recientes)): ?>
         <table class="dm-table">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Título', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Verificado', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Verificado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>

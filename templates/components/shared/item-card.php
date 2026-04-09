@@ -166,6 +166,6 @@ $estado_styles = $estado_config[$estado] ?? ['bg' => $color_classes['bg'], 'text
     <!-- Enlace flotante para accesibilidad -->
     <a href="<?php echo esc_url($url); ?>"
        class="absolute inset-0 z-10"
-       aria-label="<?php echo esc_attr(sprintf(__('Ver %s', 'flavor-chat-ia'), $titulo)); ?>">
+       aria-label="<?php echo esc_attr(sprintf(__('Ver %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $titulo)); ?>">
     </a>
 </article>

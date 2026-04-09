@@ -82,8 +82,8 @@ class Flavor_Eventos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
     public function __construct() {
         global $wpdb;
         $this->prefix_tabla = $wpdb->prefix . 'flavor_';
-        $this->title = __('Eventos', 'flavor-chat-ia');
-        $this->description = __('Próximos eventos y actividades', 'flavor-chat-ia');
+        $this->title = __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Próximos eventos y actividades', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         parent::__construct([
             'id' => $this->widget_id,
@@ -182,7 +182,7 @@ class Flavor_Eventos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         $stats[] = [
             'icon' => 'dashicons-calendar',
             'valor' => $total_proximos,
-            'label' => __('Próximos eventos', 'flavor-chat-ia'),
+            'label' => __('Próximos eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'primary',
             'url' => $es_admin ? admin_url('admin.php?page=eventos-dashboard') : Flavor_Chat_Helpers::get_action_url('eventos', ''),
         ];
@@ -192,7 +192,7 @@ class Flavor_Eventos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $stats[] = [
                 'icon' => 'dashicons-yes-alt',
                 'valor' => $mis_inscripciones,
-                'label' => __('Mis inscripciones', 'flavor-chat-ia'),
+                'label' => __('Mis inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $mis_inscripciones > 0 ? 'success' : 'gray',
                 'url' => $es_admin ? admin_url('admin.php?page=eventos-asistentes') : Flavor_Chat_Helpers::get_action_url('eventos', 'mis-inscripciones'),
             ];
@@ -221,10 +221,10 @@ class Flavor_Eventos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'mis_inscripciones' => $mis_inscripciones,
                 'evento_proximo_fecha' => $evento_proximo->fecha_inicio ?? '',
             ],
-            'empty_state' => __('No hay eventos próximos programados', 'flavor-chat-ia'),
+            'empty_state' => __('No hay eventos próximos programados', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => $es_admin ? __('Gestionar eventos', 'flavor-chat-ia') : __('Ver calendario', 'flavor-chat-ia'),
+                    'label' => $es_admin ? __('Gestionar eventos', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Ver calendario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => $es_admin ? admin_url('admin.php?page=eventos-dashboard') : Flavor_Chat_Helpers::get_action_url('eventos', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
@@ -265,7 +265,7 @@ class Flavor_Eventos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $plazas = '';
             if ($evento->aforo_maximo > 0) {
                 $disponibles = $evento->aforo_maximo - ($evento->aforo_actual ?? 0);
-                $plazas = sprintf(__('%d plazas', 'flavor-chat-ia'), $disponibles);
+                $plazas = sprintf(__('%d plazas', FLAVOR_PLATFORM_TEXT_DOMAIN), $disponibles);
             }
 
             $items[] = [
@@ -317,18 +317,18 @@ class Flavor_Eventos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
 
         if ($evento_proximo_fecha !== '' && Flavor_Dashboard_Severity::from_date($evento_proximo_fecha, 'followup') === 'attention') {
             $severity = Flavor_Dashboard_Severity::get_payload('attention');
-            $severity['reason'] = __('Hay un evento próximo muy cercano en el tiempo y conviene atender la agenda del nodo.', 'flavor-chat-ia');
+            $severity['reason'] = __('Hay un evento próximo muy cercano en el tiempo y conviene atender la agenda del nodo.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             return $severity;
         }
 
         if ($total_proximos > 0 || $mis_inscripciones > 0) {
             $severity = Flavor_Dashboard_Severity::get_payload('followup');
-            $severity['reason'] = __('Hay eventos próximos o inscripciones activas que conviene seguir.', 'flavor-chat-ia');
+            $severity['reason'] = __('Hay eventos próximos o inscripciones activas que conviene seguir.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             return $severity;
         }
 
         $severity = Flavor_Dashboard_Severity::get_payload('stable');
-        $severity['reason'] = __('No hay actividad de agenda urgente en este momento.', 'flavor-chat-ia');
+        $severity['reason'] = __('No hay actividad de agenda urgente en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         return $severity;
     }
 

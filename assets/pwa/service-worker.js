@@ -447,14 +447,14 @@ self.addEventListener('push', (event) => {
         notificationData = {
             title: 'Flavor Platform',
             body: event.data.text(),
-            icon: '/wp-content/plugins/flavor-chat-ia/assets/pwa/icons/icon-192.png'
+            icon: '/wp-content/plugins/flavor-platform/assets/pwa/icons/icon-192.png'
         };
     }
 
     const options = {
         body: notificationData.body || '',
-        icon: notificationData.icon || '/wp-content/plugins/flavor-chat-ia/assets/pwa/icons/icon-192.png',
-        badge: notificationData.badge || '/wp-content/plugins/flavor-chat-ia/assets/pwa/icons/badge-72.png',
+        icon: notificationData.icon || '/wp-content/plugins/flavor-platform/assets/pwa/icons/icon-192.png',
+        badge: notificationData.badge || '/wp-content/plugins/flavor-platform/assets/pwa/icons/badge-72.png',
         vibrate: notificationData.vibrate || [100, 50, 100],
         data: notificationData.data || {},
         actions: notificationData.actions || [],

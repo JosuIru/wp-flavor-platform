@@ -23,14 +23,14 @@ if (!defined('ABSPATH')) {
 // Valores por defecto
 $series = $series ?? [];
 $categorias = $categorias ?? [
-    'noticias' => __('Noticias', 'flavor-chat-ia'),
-    'entrevistas' => __('Entrevistas', 'flavor-chat-ia'),
-    'historias' => __('Historias', 'flavor-chat-ia'),
-    'debates' => __('Debates', 'flavor-chat-ia'),
-    'cultura' => __('Cultura', 'flavor-chat-ia'),
-    'educacion' => __('Educacion', 'flavor-chat-ia'),
-    'entretenimiento' => __('Entretenimiento', 'flavor-chat-ia'),
-    'tecnologia' => __('Tecnologia', 'flavor-chat-ia'),
+    'noticias' => __('Noticias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'entrevistas' => __('Entrevistas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'historias' => __('Historias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'debates' => __('Debates', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cultura' => __('Cultura', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'educacion' => __('Educacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'entretenimiento' => __('Entretenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'tecnologia' => __('Tecnologia', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 $categoria_actual = $categoria_actual ?? '';
 $orden_actual = $orden_actual ?? 'recientes';
@@ -47,10 +47,10 @@ $estadisticas = $estadisticas ?? [];
         <div class="flavor-catalogo-hero-contenido">
             <h1 class="flavor-catalogo-titulo">
                 <span class="dashicons dashicons-microphone"></span>
-                <?php esc_html_e('Podcasts', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Podcasts', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h1>
             <p class="flavor-catalogo-descripcion">
-                <?php esc_html_e('Descubre y escucha los mejores podcasts de nuestra comunidad.', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Descubre y escucha los mejores podcasts de nuestra comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
 
             <?php if (!empty($estadisticas)): ?>
@@ -58,19 +58,19 @@ $estadisticas = $estadisticas ?? [];
                 <?php if (isset($estadisticas['total_series'])): ?>
                 <div class="flavor-catalogo-stat">
                     <span class="flavor-stat-valor"><?php echo intval($estadisticas['total_series']); ?></span>
-                    <span class="flavor-stat-label"><?php esc_html_e('Series', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-stat-label"><?php esc_html_e('Series', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <?php endif; ?>
                 <?php if (isset($estadisticas['total_episodios'])): ?>
                 <div class="flavor-catalogo-stat">
                     <span class="flavor-stat-valor"><?php echo intval($estadisticas['total_episodios']); ?></span>
-                    <span class="flavor-stat-label"><?php esc_html_e('Episodios', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-stat-label"><?php esc_html_e('Episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <?php endif; ?>
                 <?php if (isset($estadisticas['total_creadores'])): ?>
                 <div class="flavor-catalogo-stat">
                     <span class="flavor-stat-valor"><?php echo intval($estadisticas['total_creadores']); ?></span>
-                    <span class="flavor-stat-label"><?php esc_html_e('Creadores', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-stat-label"><?php esc_html_e('Creadores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <?php endif; ?>
             </div>
@@ -88,7 +88,7 @@ $estadisticas = $estadisticas ?? [];
                        name="buscar"
                        id="buscar-podcast"
                        value="<?php echo esc_attr($busqueda); ?>"
-                       placeholder="<?php esc_attr_e('Buscar podcasts...', 'flavor-chat-ia'); ?>"
+                       placeholder="<?php esc_attr_e('Buscar podcasts...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                        class="flavor-input-busqueda">
                 <?php if (!empty($busqueda)): ?>
                 <a href="<?php echo esc_url(remove_query_arg('buscar')); ?>" class="flavor-limpiar-busqueda">
@@ -100,7 +100,7 @@ $estadisticas = $estadisticas ?? [];
             <!-- Categoria -->
             <div class="flavor-filtro-categoria">
                 <select name="categoria" id="filtro-categoria-podcast" class="flavor-select">
-                    <option value=""><?php esc_html_e('Todas las categorias', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todas las categorias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($categorias as $clave_categoria => $nombre_categoria): ?>
                     <option value="<?php echo esc_attr($clave_categoria); ?>"
                             <?php selected($categoria_actual, $clave_categoria); ?>>
@@ -114,20 +114,20 @@ $estadisticas = $estadisticas ?? [];
             <div class="flavor-filtro-orden">
                 <select name="orden" id="filtro-orden-podcast" class="flavor-select">
                     <option value="recientes" <?php selected($orden_actual, 'recientes'); ?>>
-                        <?php esc_html_e('Mas recientes', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Mas recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </option>
                     <option value="populares" <?php selected($orden_actual, 'populares'); ?>>
-                        <?php esc_html_e('Mas populares', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Mas populares', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </option>
                     <option value="alfabetico" <?php selected($orden_actual, 'alfabetico'); ?>>
-                        <?php esc_html_e('Alfabetico', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Alfabetico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </option>
                 </select>
             </div>
 
             <button type="submit" class="flavor-btn flavor-btn-primary flavor-btn-filtrar">
                 <span class="dashicons dashicons-filter"></span>
-                <?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </form>
     </section>
@@ -136,7 +136,7 @@ $estadisticas = $estadisticas ?? [];
     <nav class="flavor-categorias-chips">
         <a href="<?php echo esc_url(remove_query_arg('categoria')); ?>"
            class="flavor-chip <?php echo empty($categoria_actual) ? 'flavor-chip-activo' : ''; ?>">
-            <?php esc_html_e('Todos', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <?php foreach (array_slice($categorias, 0, 6) as $clave_chip => $nombre_chip): ?>
         <a href="<?php echo esc_url(add_query_arg('categoria', $clave_chip)); ?>"
@@ -183,7 +183,7 @@ $estadisticas = $estadisticas ?? [];
                         <?php endif; ?>
                         <?php if (isset($serie->total_episodios)): ?>
                         <span class="flavor-serie-episodios">
-                            <?php echo sprintf(esc_html__('%d ep.', 'flavor-chat-ia'), intval($serie->total_episodios)); ?>
+                            <?php echo sprintf(esc_html__('%d ep.', FLAVOR_PLATFORM_TEXT_DOMAIN), intval($serie->total_episodios)); ?>
                         </span>
                         <?php endif; ?>
                     </div>
@@ -208,12 +208,12 @@ $estadisticas = $estadisticas ?? [];
 
     <!-- Paginacion -->
     <?php if ($total_paginas > 1): ?>
-    <nav class="flavor-paginacion" aria-label="<?php esc_attr_e('Paginacion de podcasts', 'flavor-chat-ia'); ?>">
+    <nav class="flavor-paginacion" aria-label="<?php esc_attr_e('Paginacion de podcasts', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
         <?php if ($pagina_actual > 1): ?>
         <a href="<?php echo esc_url(add_query_arg('pag', $pagina_actual - 1)); ?>"
            class="flavor-btn flavor-btn-outline flavor-btn-pag">
             <span class="dashicons dashicons-arrow-left-alt2"></span>
-            <?php esc_html_e('Anterior', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <?php endif; ?>
 
@@ -251,7 +251,7 @@ $estadisticas = $estadisticas ?? [];
         <?php if ($pagina_actual < $total_paginas): ?>
         <a href="<?php echo esc_url(add_query_arg('pag', $pagina_actual + 1)); ?>"
            class="flavor-btn flavor-btn-outline flavor-btn-pag">
-            <?php esc_html_e('Siguiente', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <span class="dashicons dashicons-arrow-right-alt2"></span>
         </a>
         <?php endif; ?>
@@ -262,16 +262,16 @@ $estadisticas = $estadisticas ?? [];
     <!-- Estado vacio -->
     <div class="flavor-catalogo-vacio">
         <span class="dashicons dashicons-microphone"></span>
-        <h3><?php esc_html_e('No se encontraron podcasts', 'flavor-chat-ia'); ?></h3>
+        <h3><?php esc_html_e('No se encontraron podcasts', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         <?php if (!empty($busqueda) || !empty($categoria_actual)): ?>
-        <p><?php esc_html_e('Prueba a modificar los filtros de busqueda.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('Prueba a modificar los filtros de busqueda.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         <a href="<?php echo esc_url(remove_query_arg(['buscar', 'categoria', 'orden'])); ?>"
            class="flavor-btn flavor-btn-outline">
             <span class="dashicons dashicons-dismiss"></span>
-            <?php esc_html_e('Limpiar filtros', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Limpiar filtros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <?php else: ?>
-        <p><?php esc_html_e('Aun no hay podcasts publicados. Vuelve pronto.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('Aun no hay podcasts publicados. Vuelve pronto.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         <?php endif; ?>
     </div>
     <?php endif; ?>
@@ -280,12 +280,12 @@ $estadisticas = $estadisticas ?? [];
     <?php if (is_user_logged_in()): ?>
     <section class="flavor-catalogo-cta">
         <div class="flavor-cta-contenido">
-            <h2><?php esc_html_e('Crea tu propio podcast', 'flavor-chat-ia'); ?></h2>
-            <p><?php esc_html_e('Comparte tu voz con la comunidad. Crear una serie es facil y gratuito.', 'flavor-chat-ia'); ?></p>
+            <h2><?php esc_html_e('Crea tu propio podcast', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+            <p><?php esc_html_e('Comparte tu voz con la comunidad. Crear una serie es facil y gratuito.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('podcast', 'crear-serie')); ?>"
                class="flavor-btn flavor-btn-primary flavor-btn-lg">
                 <span class="dashicons dashicons-plus-alt"></span>
-                <?php esc_html_e('Crear nueva serie', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Crear nueva serie', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </section>

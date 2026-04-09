@@ -179,7 +179,7 @@ class Flavor_VBP_Code_Exporter {
         if ( ! class_exists( 'Flavor_VBP_Editor' ) ) {
             return new WP_Error(
                 'editor_not_available',
-                __( 'Editor no disponible', 'flavor-chat-ia' ),
+                __( 'Editor no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 500 )
             );
         }
@@ -190,7 +190,7 @@ class Flavor_VBP_Code_Exporter {
         if ( empty( $document ) || empty( $document['elements'] ) ) {
             return new WP_Error(
                 'empty_document',
-                __( 'El documento está vacío', 'flavor-chat-ia' ),
+                __( 'El documento está vacío', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 400 )
             );
         }
@@ -260,13 +260,13 @@ class Flavor_VBP_Code_Exporter {
                     'react' => array(
                         'id'          => 'react',
                         'name'        => 'React',
-                        'description' => __( 'Componentes funcionales con hooks', 'flavor-chat-ia' ),
+                        'description' => __( 'Componentes funcionales con hooks', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'extension'   => 'jsx',
                     ),
                     'vue'   => array(
                         'id'          => 'vue',
                         'name'        => 'Vue 3',
-                        'description' => __( 'Single File Components con Composition API', 'flavor-chat-ia' ),
+                        'description' => __( 'Single File Components con Composition API', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'extension'   => 'vue',
                     ),
                 ),
@@ -274,17 +274,17 @@ class Flavor_VBP_Code_Exporter {
                     'css'               => array(
                         'id'          => 'css',
                         'name'        => 'CSS Modules',
-                        'description' => __( 'CSS scoped por componente', 'flavor-chat-ia' ),
+                        'description' => __( 'CSS scoped por componente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                     'tailwind'          => array(
                         'id'          => 'tailwind',
                         'name'        => 'Tailwind CSS',
-                        'description' => __( 'Clases utility-first', 'flavor-chat-ia' ),
+                        'description' => __( 'Clases utility-first', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                     'styled-components' => array(
                         'id'          => 'styled-components',
                         'name'        => 'Styled Components',
-                        'description' => __( 'CSS-in-JS (solo React)', 'flavor-chat-ia' ),
+                        'description' => __( 'CSS-in-JS (solo React)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'react_only'  => true,
                     ),
                 ),

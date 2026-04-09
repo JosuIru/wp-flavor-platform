@@ -61,11 +61,11 @@ $method_icons = [
 ];
 
 $method_labels = [
-    'card'     => __('Tarjeta de crédito/débito', 'flavor-chat-ia'),
-    'paypal'   => __('PayPal', 'flavor-chat-ia'),
-    'bizum'    => __('Bizum', 'flavor-chat-ia'),
-    'transfer' => __('Transferencia bancaria', 'flavor-chat-ia'),
-    'cash'     => __('Efectivo (recoger)', 'flavor-chat-ia'),
+    'card'     => __('Tarjeta de crédito/débito', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'paypal'   => __('PayPal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'bizum'    => __('Bizum', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'transfer' => __('Transferencia bancaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cash'     => __('Efectivo (recoger)', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 
@@ -75,7 +75,7 @@ $method_labels = [
         <!-- Resumen del pedido -->
         <?php if ($show_summary): ?>
             <div class="md:col-span-2 bg-gray-50 p-6">
-                <h3 class="font-semibold text-gray-900 mb-4"><?php esc_html_e('Resumen del pedido', 'flavor-chat-ia'); ?></h3>
+                <h3 class="font-semibold text-gray-900 mb-4"><?php esc_html_e('Resumen del pedido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
                 <?php if (!empty($items)): ?>
                     <div class="space-y-3 mb-4">
@@ -99,7 +99,7 @@ $method_labels = [
                 <?php endif; ?>
 
                 <div class="flex justify-between items-center">
-                    <span class="text-lg font-semibold text-gray-900"><?php esc_html_e('Total', 'flavor-chat-ia'); ?></span>
+                    <span class="text-lg font-semibold text-gray-900"><?php esc_html_e('Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="text-2xl font-bold <?php echo esc_attr($color_classes['text']); ?>"><?php echo number_format($amount, 2, ',', '.'); ?> <?php echo esc_html($symbol); ?></span>
                 </div>
 
@@ -108,14 +108,14 @@ $method_labels = [
                     <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
                     </svg>
-                    <?php esc_html_e('Pago 100% seguro y encriptado', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Pago 100% seguro y encriptado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </div>
             </div>
         <?php endif; ?>
 
         <!-- Formulario de pago -->
         <div class="<?php echo $show_summary ? 'md:col-span-3' : 'md:col-span-5'; ?> p-6">
-            <h3 class="font-semibold text-gray-900 mb-4"><?php esc_html_e('Método de pago', 'flavor-chat-ia'); ?></h3>
+            <h3 class="font-semibold text-gray-900 mb-4"><?php esc_html_e('Método de pago', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <form id="<?php echo esc_attr($form_id); ?>-form" class="space-y-4">
                 <input type="hidden" name="item_type" value="<?php echo esc_attr($item_type); ?>">
@@ -147,7 +147,7 @@ $method_labels = [
                 <?php if (in_array('card', $methods) && $stripe_enabled): ?>
                     <div id="<?php echo esc_attr($form_id); ?>-card-fields" class="payment-fields space-y-4" data-method="card">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1"><?php esc_html_e('Número de tarjeta', 'flavor-chat-ia'); ?></label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1"><?php esc_html_e('Número de tarjeta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <div id="<?php echo esc_attr($form_id); ?>-card-element" class="p-3 border border-gray-300 rounded-lg"></div>
                         </div>
                         <div id="<?php echo esc_attr($form_id); ?>-card-errors" class="text-sm text-red-600 hidden"></div>
@@ -158,13 +158,13 @@ $method_labels = [
                 <?php if (in_array('transfer', $methods)): ?>
                     <div id="<?php echo esc_attr($form_id); ?>-transfer-fields" class="payment-fields hidden" data-method="transfer">
                         <div class="bg-blue-50 rounded-xl p-4">
-                            <p class="font-medium text-gray-900 mb-2"><?php esc_html_e('Datos para transferencia:', 'flavor-chat-ia'); ?></p>
+                            <p class="font-medium text-gray-900 mb-2"><?php esc_html_e('Datos para transferencia:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             <div class="space-y-1 text-sm text-gray-700">
-                                <p><strong><?php esc_html_e('IBAN:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html(get_option('flavor_bank_iban', 'ES00 0000 0000 0000 0000 0000')); ?></p>
-                                <p><strong><?php esc_html_e('Beneficiario:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html(get_option('flavor_bank_name', get_bloginfo('name'))); ?></p>
-                                <p><strong><?php esc_html_e('Concepto:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($item_type . '-' . $item_id); ?></p>
+                                <p><strong><?php esc_html_e('IBAN:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html(get_option('flavor_bank_iban', 'ES00 0000 0000 0000 0000 0000')); ?></p>
+                                <p><strong><?php esc_html_e('Beneficiario:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html(get_option('flavor_bank_name', get_bloginfo('name'))); ?></p>
+                                <p><strong><?php esc_html_e('Concepto:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html($item_type . '-' . $item_id); ?></p>
                             </div>
-                            <p class="mt-3 text-xs text-gray-500"><?php esc_html_e('El pedido se confirmará al recibir la transferencia (1-3 días hábiles)', 'flavor-chat-ia'); ?></p>
+                            <p class="mt-3 text-xs text-gray-500"><?php esc_html_e('El pedido se confirmará al recibir la transferencia (1-3 días hábiles)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                     </div>
                 <?php endif; ?>
@@ -173,8 +173,8 @@ $method_labels = [
                 <?php if (in_array('cash', $methods)): ?>
                     <div id="<?php echo esc_attr($form_id); ?>-cash-fields" class="payment-fields hidden" data-method="cash">
                         <div class="bg-yellow-50 rounded-xl p-4">
-                            <p class="font-medium text-gray-900 mb-2"><?php esc_html_e('Pago en efectivo', 'flavor-chat-ia'); ?></p>
-                            <p class="text-sm text-gray-700"><?php esc_html_e('Paga al recoger tu pedido. Te enviaremos los detalles de recogida por email.', 'flavor-chat-ia'); ?></p>
+                            <p class="font-medium text-gray-900 mb-2"><?php esc_html_e('Pago en efectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                            <p class="text-sm text-gray-700"><?php esc_html_e('Paga al recoger tu pedido. Te enviaremos los detalles de recogida por email.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                     </div>
                 <?php endif; ?>
@@ -185,7 +185,7 @@ $method_labels = [
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                     </svg>
-                    <span><?php printf(esc_html__('Pagar %s %s', 'flavor-chat-ia'), number_format($amount, 2, ',', '.'), $symbol); ?></span>
+                    <span><?php printf(esc_html__('Pagar %s %s', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($amount, 2, ',', '.'), $symbol); ?></span>
                 </button>
 
                 <!-- Mensaje de estado -->
@@ -278,7 +278,7 @@ $method_labels = [
 
             if (method === 'card') {
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = '<svg class="w-5 h-5 animate-spin" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> <?php esc_html_e('Procesando...', 'flavor-chat-ia'); ?>';
+                submitBtn.innerHTML = '<svg class="w-5 h-5 animate-spin" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> <?php esc_html_e('Procesando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>';
 
                 // Crear PaymentIntent en el servidor
                 const response = await fetch(flavorAjax.url, {
@@ -299,7 +299,7 @@ $method_labels = [
                 if (error) {
                     showStatus(error, 'error');
                     submitBtn.disabled = false;
-                    submitBtn.innerHTML = '<?php printf(esc_html__('Pagar %s %s', 'flavor-chat-ia'), number_format($amount, 2, ',', '.'), $symbol); ?>';
+                    submitBtn.innerHTML = '<?php printf(esc_html__('Pagar %s %s', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($amount, 2, ',', '.'), $symbol); ?>';
                     return;
                 }
 
@@ -311,9 +311,9 @@ $method_labels = [
                 if (stripeError) {
                     showStatus(stripeError.message, 'error');
                     submitBtn.disabled = false;
-                    submitBtn.innerHTML = '<?php printf(esc_html__('Pagar %s %s', 'flavor-chat-ia'), number_format($amount, 2, ',', '.'), $symbol); ?>';
+                    submitBtn.innerHTML = '<?php printf(esc_html__('Pagar %s %s', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($amount, 2, ',', '.'), $symbol); ?>';
                 } else if (paymentIntent.status === 'succeeded') {
-                    showStatus('<?php esc_html_e('¡Pago completado con éxito!', 'flavor-chat-ia'); ?>', 'success');
+                    showStatus('<?php esc_html_e('¡Pago completado con éxito!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', 'success');
                     setTimeout(() => {
                         window.location.href = '<?php echo esc_js($return_url); ?>?payment=success&id=' + paymentIntent.id;
                     }, 1500);
@@ -350,11 +350,11 @@ $method_labels = [
             if (data.data.redirect) {
                 window.location.href = data.data.redirect;
             } else {
-                showStatus(data.data.message || '<?php esc_html_e('Pedido registrado correctamente', 'flavor-chat-ia'); ?>', 'success');
+                showStatus(data.data.message || '<?php esc_html_e('Pedido registrado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', 'success');
                 setTimeout(() => window.location.href = '<?php echo esc_js($return_url); ?>', 2000);
             }
         } else {
-            showStatus(data.data || '<?php esc_html_e('Error al procesar el pago', 'flavor-chat-ia'); ?>', 'error');
+            showStatus(data.data || '<?php esc_html_e('Error al procesar el pago', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', 'error');
             submitBtn.disabled = false;
         }
     }

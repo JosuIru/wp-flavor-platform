@@ -110,10 +110,10 @@ $total_paginas = ceil($total_items / $por_pagina);
 
 // Estados
 $estados = [
-    'pendiente'  => __('Pendiente', 'flavor-chat-ia'),
-    'publicado'  => __('Publicado', 'flavor-chat-ia'),
-    'rechazado'  => __('Rechazado', 'flavor-chat-ia'),
-    'eliminado'  => __('Eliminado', 'flavor-chat-ia'),
+    'pendiente'  => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'publicado'  => __('Publicado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'rechazado'  => __('Rechazado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'eliminado'  => __('Eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $colores_estado = [
@@ -125,11 +125,11 @@ $colores_estado = [
 
 // Motivos de reporte
 $motivos_reporte = [
-    'spam'          => __('Spam', 'flavor-chat-ia'),
-    'acoso'         => __('Acoso', 'flavor-chat-ia'),
-    'contenido_inadecuado' => __('Contenido inadecuado', 'flavor-chat-ia'),
-    'desinformacion' => __('Desinformación', 'flavor-chat-ia'),
-    'otro'          => __('Otro', 'flavor-chat-ia'),
+    'spam'          => __('Spam', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'acoso'         => __('Acoso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'contenido_inadecuado' => __('Contenido inadecuado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'desinformacion' => __('Desinformación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'otro'          => __('Otro', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 
@@ -138,15 +138,15 @@ $motivos_reporte = [
     <nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">
         <a href="<?php echo admin_url('admin.php?page=flavor-red-social-dashboard'); ?>" style="color: #2271b1; text-decoration: none;">
             <span class="dashicons dashicons-share" style="font-size: 14px; vertical-align: middle;"></span>
-            <?php _e('Red Social', 'flavor-chat-ia'); ?>
+            <?php _e('Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <span style="color: #646970; margin: 0 5px;">›</span>
-        <span style="color: #1d2327;"><?php _e('Moderación', 'flavor-chat-ia'); ?></span>
+        <span style="color: #1d2327;"><?php _e('Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
     </nav>
 
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-shield"></span>
-        <?php _e('Moderación de Contenido', 'flavor-chat-ia'); ?>
+        <?php _e('Moderación de Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <hr class="wp-header-end">
@@ -155,21 +155,21 @@ $motivos_reporte = [
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 20px 0;">
         <div style="background: #fff; padding: 15px 20px; border-left: 4px solid #dba617; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="font-size: 28px; font-weight: bold; color: #1d2327;"><?php echo number_format($stats['pendientes_revision']); ?></div>
-            <div style="color: #646970; font-size: 13px;"><?php _e('Pendientes de revisión', 'flavor-chat-ia'); ?></div>
+            <div style="color: #646970; font-size: 13px;"><?php _e('Pendientes de revisión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
         <?php if ($tabla_reportes_existe): ?>
         <div style="background: #fff; padding: 15px 20px; border-left: 4px solid #d63638; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="font-size: 28px; font-weight: bold; color: #1d2327;"><?php echo number_format($stats['reportes_pendientes']); ?></div>
-            <div style="color: #646970; font-size: 13px;"><?php _e('Reportes pendientes', 'flavor-chat-ia'); ?></div>
+            <div style="color: #646970; font-size: 13px;"><?php _e('Reportes pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
         <?php endif; ?>
         <div style="background: #fff; padding: 15px 20px; border-left: 4px solid #00a32a; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="font-size: 28px; font-weight: bold; color: #1d2327;"><?php echo number_format($stats['moderados_hoy']); ?></div>
-            <div style="color: #646970; font-size: 13px;"><?php _e('Moderados hoy', 'flavor-chat-ia'); ?></div>
+            <div style="color: #646970; font-size: 13px;"><?php _e('Moderados hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
         <div style="background: #fff; padding: 15px 20px; border-left: 4px solid #787c82; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="font-size: 28px; font-weight: bold; color: #1d2327;"><?php echo number_format($stats['posts_eliminados']); ?></div>
-            <div style="color: #646970; font-size: 13px;"><?php _e('Eliminados', 'flavor-chat-ia'); ?></div>
+            <div style="color: #646970; font-size: 13px;"><?php _e('Eliminados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -178,7 +178,7 @@ $motivos_reporte = [
         <a href="<?php echo admin_url('admin.php?page=flavor-red-social-moderacion&estado=pendiente'); ?>"
            class="button <?php echo ($tipo_filtro !== 'reportes' && $estado_filtro === 'pendiente') ? 'button-primary' : ''; ?>">
             <span class="dashicons dashicons-clock" style="margin-top: 3px;"></span>
-            <?php _e('Pendientes', 'flavor-chat-ia'); ?>
+            <?php _e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <?php if ($stats['pendientes_revision'] > 0): ?>
             <span style="background: #d63638; color: #fff; padding: 0 6px; border-radius: 10px; font-size: 11px; margin-left: 5px;">
                 <?php echo number_format($stats['pendientes_revision']); ?>
@@ -189,7 +189,7 @@ $motivos_reporte = [
         <a href="<?php echo admin_url('admin.php?page=flavor-red-social-moderacion&tipo=reportes'); ?>"
            class="button <?php echo $tipo_filtro === 'reportes' ? 'button-primary' : ''; ?>">
             <span class="dashicons dashicons-flag" style="margin-top: 3px;"></span>
-            <?php _e('Reportes', 'flavor-chat-ia'); ?>
+            <?php _e('Reportes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <?php if ($stats['reportes_pendientes'] > 0): ?>
             <span style="background: #d63638; color: #fff; padding: 0 6px; border-radius: 10px; font-size: 11px; margin-left: 5px;">
                 <?php echo number_format($stats['reportes_pendientes']); ?>
@@ -200,12 +200,12 @@ $motivos_reporte = [
         <a href="<?php echo admin_url('admin.php?page=flavor-red-social-moderacion&estado=rechazado'); ?>"
            class="button <?php echo $estado_filtro === 'rechazado' ? 'button-primary' : ''; ?>">
             <span class="dashicons dashicons-no" style="margin-top: 3px;"></span>
-            <?php _e('Rechazados', 'flavor-chat-ia'); ?>
+            <?php _e('Rechazados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <a href="<?php echo admin_url('admin.php?page=flavor-red-social-moderacion&estado=eliminado'); ?>"
            class="button <?php echo $estado_filtro === 'eliminado' ? 'button-primary' : ''; ?>">
             <span class="dashicons dashicons-trash" style="margin-top: 3px;"></span>
-            <?php _e('Eliminados', 'flavor-chat-ia'); ?>
+            <?php _e('Eliminados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 
@@ -213,7 +213,7 @@ $motivos_reporte = [
     <div class="tablenav top">
         <div class="tablenav-pages">
             <span class="displaying-num">
-                <?php printf(_n('%s elemento', '%s elementos', $total_items, 'flavor-chat-ia'), number_format($total_items)); ?>
+                <?php printf(_n('%s elemento', '%s elementos', $total_items, FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($total_items)); ?>
             </span>
         </div>
     </div>
@@ -221,7 +221,7 @@ $motivos_reporte = [
     <?php if (empty($items_moderacion)): ?>
     <div style="background: #fff; padding: 40px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
         <span class="dashicons dashicons-yes-alt" style="font-size: 48px; color: #00a32a;"></span>
-        <p style="color: #646970; font-size: 14px;"><?php _e('No hay contenido pendiente de moderación.', 'flavor-chat-ia'); ?></p>
+        <p style="color: #646970; font-size: 14px;"><?php _e('No hay contenido pendiente de moderación.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php else: ?>
     <div style="display: flex; flex-direction: column; gap: 15px;">
@@ -233,7 +233,7 @@ $motivos_reporte = [
                     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
                         <?php echo get_avatar($item->usuario_id, 36); ?>
                         <div>
-                            <strong><?php echo esc_html($item->display_name ?: __('Usuario eliminado', 'flavor-chat-ia')); ?></strong>
+                            <strong><?php echo esc_html($item->display_name ?: __('Usuario eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong>
                             <br>
                             <small style="color: #646970;">
                                 <?php echo esc_html(date_i18n(get_option('date_format') . ' ' . get_option('time_format'), strtotime($item->fecha_creacion))); ?>
@@ -258,10 +258,10 @@ $motivos_reporte = [
                     <div style="background: #fcf0f1; border: 1px solid #d63638; padding: 10px 12px; border-radius: 4px; margin-bottom: 10px;">
                         <strong style="color: #d63638;">
                             <span class="dashicons dashicons-flag" style="font-size: 16px;"></span>
-                            <?php printf(_n('%s reporte', '%s reportes', $item->total_reportes, 'flavor-chat-ia'), number_format($item->total_reportes)); ?>
+                            <?php printf(_n('%s reporte', '%s reportes', $item->total_reportes, FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($item->total_reportes)); ?>
                         </strong>
                         <?php if (!empty($item->motivos)): ?>
-                        <br><small style="color: #646970;"><?php _e('Motivos:', 'flavor-chat-ia'); ?> <?php echo esc_html($item->motivos); ?></small>
+                        <br><small style="color: #646970;"><?php _e('Motivos:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html($item->motivos); ?></small>
                         <?php endif; ?>
                     </div>
                     <?php endif; ?>
@@ -273,12 +273,12 @@ $motivos_reporte = [
                     <button type="button" class="button button-primary" style="width: 100%;"
                             onclick="flavorModerar(<?php echo esc_attr($item->id); ?>, 'aprobar')">
                         <span class="dashicons dashicons-yes" style="margin-top: 3px;"></span>
-                        <?php _e('Aprobar', 'flavor-chat-ia'); ?>
+                        <?php _e('Aprobar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button" class="button" style="width: 100%; color: #d63638; border-color: #d63638;"
                             onclick="flavorModerar(<?php echo esc_attr($item->id); ?>, 'rechazar')">
                         <span class="dashicons dashicons-no" style="margin-top: 3px;"></span>
-                        <?php _e('Rechazar', 'flavor-chat-ia'); ?>
+                        <?php _e('Rechazar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <?php endif; ?>
 
@@ -286,20 +286,20 @@ $motivos_reporte = [
                     <button type="button" class="button" style="width: 100%;"
                             onclick="flavorModerar(<?php echo esc_attr($item->id); ?>, 'eliminar')">
                         <span class="dashicons dashicons-trash" style="margin-top: 3px;"></span>
-                        <?php _e('Eliminar', 'flavor-chat-ia'); ?>
+                        <?php _e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <?php else: ?>
                     <button type="button" class="button" style="width: 100%;"
                             onclick="flavorModerar(<?php echo esc_attr($item->id); ?>, 'restaurar')">
                         <span class="dashicons dashicons-undo" style="margin-top: 3px;"></span>
-                        <?php _e('Restaurar', 'flavor-chat-ia'); ?>
+                        <?php _e('Restaurar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <?php endif; ?>
 
                     <a href="<?php echo admin_url('user-edit.php?user_id=' . $item->usuario_id); ?>"
                        class="button" style="width: 100%; text-align: center;">
                         <span class="dashicons dashicons-admin-users" style="margin-top: 3px;"></span>
-                        <?php _e('Ver usuario', 'flavor-chat-ia'); ?>
+                        <?php _e('Ver usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </div>
@@ -330,32 +330,32 @@ $motivos_reporte = [
     <div class="postbox" style="margin-top: 30px;">
         <h2 class="hndle" style="padding: 12px; margin: 0; border-bottom: 1px solid #c3c4c7;">
             <span class="dashicons dashicons-info"></span>
-            <?php _e('Guía de Moderación', 'flavor-chat-ia'); ?>
+            <?php _e('Guía de Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
         <div class="inside">
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
                 <div>
                     <h4 style="margin: 0 0 10px; color: #00a32a;">
                         <span class="dashicons dashicons-yes-alt"></span>
-                        <?php _e('Contenido permitido', 'flavor-chat-ia'); ?>
+                        <?php _e('Contenido permitido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h4>
                     <ul style="margin: 0; padding-left: 20px; color: #646970;">
-                        <li><?php _e('Publicaciones respetuosas', 'flavor-chat-ia'); ?></li>
-                        <li><?php _e('Contenido original', 'flavor-chat-ia'); ?></li>
-                        <li><?php _e('Debates constructivos', 'flavor-chat-ia'); ?></li>
-                        <li><?php _e('Información verificable', 'flavor-chat-ia'); ?></li>
+                        <li><?php _e('Publicaciones respetuosas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                        <li><?php _e('Contenido original', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                        <li><?php _e('Debates constructivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                        <li><?php _e('Información verificable', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
                     </ul>
                 </div>
                 <div>
                     <h4 style="margin: 0 0 10px; color: #d63638;">
                         <span class="dashicons dashicons-dismiss"></span>
-                        <?php _e('Contenido prohibido', 'flavor-chat-ia'); ?>
+                        <?php _e('Contenido prohibido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h4>
                     <ul style="margin: 0; padding-left: 20px; color: #646970;">
-                        <li><?php _e('Spam y publicidad no autorizada', 'flavor-chat-ia'); ?></li>
-                        <li><?php _e('Contenido ofensivo o de odio', 'flavor-chat-ia'); ?></li>
-                        <li><?php _e('Acoso a otros usuarios', 'flavor-chat-ia'); ?></li>
-                        <li><?php _e('Desinformación', 'flavor-chat-ia'); ?></li>
+                        <li><?php _e('Spam y publicidad no autorizada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                        <li><?php _e('Contenido ofensivo o de odio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                        <li><?php _e('Acoso a otros usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                        <li><?php _e('Desinformación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
                     </ul>
                 </div>
             </div>
@@ -365,7 +365,7 @@ $motivos_reporte = [
 
 <script>
 function flavorModerar(postId, accion) {
-    if (!confirm('<?php echo esc_js(__('¿Confirmar esta acción de moderación?', 'flavor-chat-ia')); ?>')) {
+    if (!confirm('<?php echo esc_js(__('¿Confirmar esta acción de moderación?', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>')) {
         return;
     }
 
@@ -376,6 +376,6 @@ function flavorModerar(postId, accion) {
     // En producción, usar AJAX y actualizar la UI sin recargar
     // window.location.reload();
 
-    alert('<?php echo esc_js(__('Acción de moderación registrada. Implementar endpoint AJAX para guardar.', 'flavor-chat-ia')); ?>');
+    alert('<?php echo esc_js(__('Acción de moderación registrada. Implementar endpoint AJAX para guardar.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
 }
 </script>

@@ -131,20 +131,20 @@ $categorias_carta_ejemplo = [
 
 // Iconos y etiquetas de alergenos
 $mapa_alergenos = [
-    'gluten'        => ['icono' => '🌾', 'label' => __('Gluten', 'flavor-chat-ia')],
-    'lacteos'       => ['icono' => '🥛', 'label' => __('Lacteos', 'flavor-chat-ia')],
-    'huevo'         => ['icono' => '🥚', 'label' => __('Huevo', 'flavor-chat-ia')],
-    'pescado'       => ['icono' => '🐟', 'label' => __('Pescado', 'flavor-chat-ia')],
-    'moluscos'      => ['icono' => '🦑', 'label' => __('Moluscos', 'flavor-chat-ia')],
-    'crustaceos'    => ['icono' => '🦐', 'label' => __('Crustaceos', 'flavor-chat-ia')],
-    'frutos_secos'  => ['icono' => '🥜', 'label' => __('Frutos secos', 'flavor-chat-ia')],
-    'soja'          => ['icono' => '🫘', 'label' => __('Soja', 'flavor-chat-ia')],
-    'sulfitos'      => ['icono' => '🍷', 'label' => __('Sulfitos', 'flavor-chat-ia')],
-    'apio'          => ['icono' => '🌿', 'label' => __('Apio', 'flavor-chat-ia')],
-    'mostaza'       => ['icono' => '🟡', 'label' => __('Mostaza', 'flavor-chat-ia')],
-    'sesamo'        => ['icono' => '🟤', 'label' => __('Sesamo', 'flavor-chat-ia')],
-    'cacahuetes'    => ['icono' => '🥜', 'label' => __('Cacahuetes', 'flavor-chat-ia')],
-    'altramuces'    => ['icono' => '🌱', 'label' => __('Altramuces', 'flavor-chat-ia')],
+    'gluten'        => ['icono' => '🌾', 'label' => __('Gluten', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    'lacteos'       => ['icono' => '🥛', 'label' => __('Lacteos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    'huevo'         => ['icono' => '🥚', 'label' => __('Huevo', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    'pescado'       => ['icono' => '🐟', 'label' => __('Pescado', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    'moluscos'      => ['icono' => '🦑', 'label' => __('Moluscos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    'crustaceos'    => ['icono' => '🦐', 'label' => __('Crustaceos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    'frutos_secos'  => ['icono' => '🥜', 'label' => __('Frutos secos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    'soja'          => ['icono' => '🫘', 'label' => __('Soja', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    'sulfitos'      => ['icono' => '🍷', 'label' => __('Sulfitos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    'apio'          => ['icono' => '🌿', 'label' => __('Apio', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    'mostaza'       => ['icono' => '🟡', 'label' => __('Mostaza', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    'sesamo'        => ['icono' => '🟤', 'label' => __('Sesamo', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    'cacahuetes'    => ['icono' => '🥜', 'label' => __('Cacahuetes', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    'altramuces'    => ['icono' => '🌱', 'label' => __('Altramuces', FLAVOR_PLATFORM_TEXT_DOMAIN)],
 ];
 ?>
 
@@ -161,10 +161,10 @@ $mapa_alergenos = [
                     </svg>
                 </div>
                 <h2 class="text-4xl md:text-5xl font-black mb-4" style="color: var(--flavor-text, #111827);">
-                    <?php echo esc_html($titulo_seccion ?? __('Nuestra Carta', 'flavor-chat-ia')); ?>
+                    <?php echo esc_html($titulo_seccion ?? __('Nuestra Carta', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                 </h2>
                 <p class="text-lg max-w-2xl mx-auto" style="color: var(--flavor-text-muted, #6b7280);">
-                    <?php _e('Seleccion de platos elaborados con productos frescos y de temporada', 'flavor-chat-ia'); ?>
+                    <?php _e('Seleccion de platos elaborados con productos frescos y de temporada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
@@ -193,7 +193,7 @@ $mapa_alergenos = [
                     </h3>
                     <div class="flex-1 h-px" style="background: #e5e7eb;"></div>
                     <span class="text-sm font-medium px-3 py-1 rounded-full" style="background: #f3f4f6; color: var(--flavor-text-muted, #6b7280);">
-                        <?php echo count($items_categoria); ?> <?php _e('platos', 'flavor-chat-ia'); ?>
+                        <?php echo count($items_categoria); ?> <?php _e('platos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                 </div>
 
@@ -211,7 +211,7 @@ $mapa_alergenos = [
                                 </h4>
                                 <?php if ($item_plato['es_destacado']): ?>
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold text-white" style="background: var(--flavor-primary);">
-                                        <?php _e('Destacado', 'flavor-chat-ia'); ?>
+                                        <?php _e('Destacado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </span>
                                 <?php endif; ?>
                             </div>
@@ -255,7 +255,7 @@ $mapa_alergenos = [
                     <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    <?php _e('Informacion sobre alergenos', 'flavor-chat-ia'); ?>
+                    <?php _e('Informacion sobre alergenos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h4>
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                     <?php foreach ($mapa_alergenos as $clave_alergeno => $datos_alergeno): ?>
@@ -266,7 +266,7 @@ $mapa_alergenos = [
                     <?php endforeach; ?>
                 </div>
                 <p class="mt-4 text-xs" style="color: #92400e;">
-                    <?php _e('Si tienes alguna alergia o intolerancia alimentaria, por favor consulta al personal del establecimiento antes de realizar tu pedido.', 'flavor-chat-ia'); ?>
+                    <?php _e('Si tienes alguna alergia o intolerancia alimentaria, por favor consulta al personal del establecimiento antes de realizar tu pedido.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
             <?php endif; ?>

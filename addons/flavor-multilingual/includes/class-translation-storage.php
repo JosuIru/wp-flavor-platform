@@ -130,7 +130,7 @@ class Flavor_Translation_Storage {
     /**
      * Guarda traducción de string
      */
-    public function save_string_translation($original, $lang, $translation, $domain = 'flavor-chat-ia') {
+    public function save_string_translation($original, $lang, $translation, $domain = FLAVOR_PLATFORM_TEXT_DOMAIN) {
         global $wpdb;
 
         $string_key = md5($original);
@@ -165,7 +165,7 @@ class Flavor_Translation_Storage {
     /**
      * Obtiene traducción de string
      */
-    public function get_string_translation($original, $lang, $domain = 'flavor-chat-ia') {
+    public function get_string_translation($original, $lang, $domain = FLAVOR_PLATFORM_TEXT_DOMAIN) {
         global $wpdb;
 
         $string_key = md5($original);

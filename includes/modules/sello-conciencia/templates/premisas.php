@@ -17,10 +17,10 @@ $premisas = Flavor_Chat_Sello_Conciencia_Module::PREMISAS;
 <div class="fsc-premisas">
     <header class="fsc-premisas__header">
         <h2 class="fsc-premisas__title">
-            <?php esc_html_e('Las 5 Premisas de una Economía Consciente', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Las 5 Premisas de una Economía Consciente', 'flavor-platform'); ?>
         </h2>
         <p class="fsc-premisas__intro">
-            <?php esc_html_e('Estas premisas constituyen el marco ético y filosófico sobre el cual se evalúa cada módulo de la aplicación.', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Estas premisas constituyen el marco ético y filosófico sobre el cual se evalúa cada módulo de la aplicación.', 'flavor-platform'); ?>
         </p>
     </header>
 
@@ -39,12 +39,12 @@ $premisas = Flavor_Chat_Sello_Conciencia_Module::PREMISAS;
             </p>
 
             <div class="fsc-premisa__principio">
-                <strong><?php esc_html_e('Principio:', 'flavor-chat-ia'); ?></strong>
+                <strong><?php esc_html_e('Principio:', 'flavor-platform'); ?></strong>
                 <p><?php echo esc_html($premisa['principio']); ?></p>
             </div>
 
             <div class="fsc-premisa__consecuencia">
-                <strong><?php esc_html_e('En la práctica:', 'flavor-chat-ia'); ?></strong>
+                <strong><?php esc_html_e('En la práctica:', 'flavor-platform'); ?></strong>
                 <p><?php echo esc_html($premisa['consecuencia']); ?></p>
             </div>
         </article>

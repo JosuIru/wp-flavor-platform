@@ -174,22 +174,22 @@ trait Flavor_WhatsApp_Features {
 
         switch ($status) {
             case self::DELIVERY_PENDING:
-                return '<span class="delivery-status pending" title="' . esc_attr__('Enviando...', 'flavor-chat-ia') . '">
+                return '<span class="delivery-status pending" title="' . esc_attr__('Enviando...', 'flavor-platform') . '">
                     <svg viewBox="0 0 16 15" width="16" height="15"><path fill="currentColor" d="M8 15l-8-8 1.41-1.41L8 12.17l12.59-12.59L22 1z"/></svg>
                 </span>';
 
             case self::DELIVERY_SENT:
-                return '<span class="delivery-status sent" title="' . esc_attr__('Enviado', 'flavor-chat-ia') . '">
+                return '<span class="delivery-status sent" title="' . esc_attr__('Enviado', 'flavor-platform') . '">
                     <svg viewBox="0 0 16 15" width="16" height="15"><path fill="currentColor" d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-1.56-1.56a.365.365 0 0 0-.516 0l-.445.445a.365.365 0 0 0 0 .516l2.21 2.21a.402.402 0 0 0 .57 0l6.36-7.693a.366.366 0 0 0-.065-.512z"/></svg>
                 </span>';
 
             case self::DELIVERY_DELIVERED:
-                return '<span class="delivery-status delivered" title="' . esc_attr__('Entregado', 'flavor-chat-ia') . '">
+                return '<span class="delivery-status delivered" title="' . esc_attr__('Entregado', 'flavor-platform') . '">
                     <svg viewBox="0 0 16 15" width="16" height="15"><path fill="currentColor" d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-1.56-1.56a.365.365 0 0 0-.516 0l-.445.445a.365.365 0 0 0 0 .516l2.21 2.21a.402.402 0 0 0 .57 0l6.36-7.693a.366.366 0 0 0-.065-.512z"/><path fill="currentColor" d="M5.516 3.316l-.478-.372a.365.365 0 0 0-.51.063L1.666 9.879a.32.32 0 0 1-.484.033l-1.56-1.56a.365.365 0 0 0-.516 0l-.445.445a.365.365 0 0 0 0 .516l2.21 2.21a.402.402 0 0 0 .57 0l6.36-7.693a.366.366 0 0 0-.065-.512z" transform="translate(4.5)"/></svg>
                 </span>';
 
             case self::DELIVERY_READ:
-                return '<span class="delivery-status read" title="' . esc_attr__('Leído', 'flavor-chat-ia') . '">
+                return '<span class="delivery-status read" title="' . esc_attr__('Leído', 'flavor-platform') . '">
                     <svg viewBox="0 0 16 15" width="16" height="15"><path fill="#53bdeb" d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-1.56-1.56a.365.365 0 0 0-.516 0l-.445.445a.365.365 0 0 0 0 .516l2.21 2.21a.402.402 0 0 0 .57 0l6.36-7.693a.366.366 0 0 0-.065-.512z"/><path fill="#53bdeb" d="M5.516 3.316l-.478-.372a.365.365 0 0 0-.51.063L1.666 9.879a.32.32 0 0 1-.484.033l-1.56-1.56a.365.365 0 0 0-.516 0l-.445.445a.365.365 0 0 0 0 .516l2.21 2.21a.402.402 0 0 0 .57 0l6.36-7.693a.366.366 0 0 0-.065-.512z" transform="translate(4.5)"/></svg>
                 </span>';
 
@@ -433,8 +433,8 @@ trait Flavor_WhatsApp_Features {
              WHERE es_temporal = 1
                AND fecha_expiracion < NOW()
                AND eliminado = 0",
-            __('Este mensaje ha expirado', 'flavor-chat-ia'),
-            '<em class="mensaje-expirado">' . __('Este mensaje ha expirado', 'flavor-chat-ia') . '</em>'
+            __('Este mensaje ha expirado', 'flavor-platform'),
+            '<em class="mensaje-expirado">' . __('Este mensaje ha expirado', 'flavor-platform') . '</em>'
         ));
     }
 
@@ -558,7 +558,7 @@ trait Flavor_WhatsApp_Features {
         // Indicador de mensaje temporal
         if (!empty($mensaje->es_temporal)) {
             $mensaje->es_temporal_html = '<span class="mensaje-temporal-badge" title="' .
-                esc_attr__('Mensaje temporal', 'flavor-chat-ia') . '">⏱</span>';
+                esc_attr__('Mensaje temporal', 'flavor-platform') . '">⏱</span>';
         }
 
         return $mensaje;

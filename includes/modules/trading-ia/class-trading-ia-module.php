@@ -59,7 +59,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas del Trading IA no estan creadas. Se crearan automaticamente al activar el plugin.', 'flavor-chat-ia');
+            return __('Las tablas del Trading IA no estan creadas. Se crearan automaticamente al activar el plugin.', 'flavor-platform');
         }
         
     return '';
@@ -290,7 +290,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         $shown = true;
 
         echo '<div class="notice notice-warning"><p>';
-        echo esc_html__('Trading IA está deshabilitado por defecto por ser un módulo experimental. Actívalo en ajustes avanzados si quieres usarlo.', 'flavor-chat-ia');
+        echo esc_html__('Trading IA está deshabilitado por defecto por ser un módulo experimental. Actívalo en ajustes avanzados si quieres usarlo.', 'flavor-platform');
         echo '</p></div>';
     }
 
@@ -309,18 +309,18 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
             'paginas'    => array(
                 array(
                     'slug'     => 'trading-ia-dashboard',
-                    'titulo'   => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo'   => __('Dashboard', 'flavor-platform'),
                     'callback' => array($this, 'render_admin_dashboard'),
                 ),
                 array(
                     'slug'     => 'trading-ia-operaciones',
-                    'titulo'   => __('Operaciones', 'flavor-chat-ia'),
+                    'titulo'   => __('Operaciones', 'flavor-platform'),
                     'callback' => array($this, 'render_admin_operaciones'),
                     'badge'    => array($this, 'contar_posiciones_abiertas'),
                 ),
                 array(
                     'slug'     => 'trading-ia-configuracion',
-                    'titulo'   => __('Configuracion', 'flavor-chat-ia'),
+                    'titulo'   => __('Configuracion', 'flavor-platform'),
                     'callback' => array($this, 'render_admin_configuracion'),
                 ),
             ),
@@ -352,9 +352,9 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
      * Renderiza el dashboard de administracion
      */
     public function render_admin_dashboard() {
-        $this->render_page_header(__('Trading IA - Dashboard', 'flavor-chat-ia'));
+        $this->render_page_header(__('Trading IA - Dashboard', 'flavor-platform'));
         echo '<div class="wrap trading-ia-admin-dashboard">';
-        echo '<p>' . esc_html__('Panel de control del bot de trading simulado.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . esc_html__('Panel de control del bot de trading simulado.', 'flavor-platform') . '</p>';
         // Aqui se puede agregar el contenido del dashboard
         echo '</div>';
     }
@@ -364,17 +364,17 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_operaciones() {
         $this->render_page_header(
-            __('Trading IA - Operaciones', 'flavor-chat-ia'),
+            __('Trading IA - Operaciones', 'flavor-platform'),
             array(
                 array(
-                    'label' => __('Nueva operacion', 'flavor-chat-ia'),
+                    'label' => __('Nueva operacion', 'flavor-platform'),
                     'url'   => '#nueva-operacion',
                     'class' => 'button-primary',
                 ),
             )
         );
         echo '<div class="wrap trading-ia-admin-operaciones">';
-        echo '<p>' . esc_html__('Historial y gestion de operaciones de trading.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . esc_html__('Historial y gestion de operaciones de trading.', 'flavor-platform') . '</p>';
         // Aqui se puede agregar el listado de operaciones
         echo '</div>';
     }
@@ -383,9 +383,9 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
      * Renderiza la pagina de configuracion
      */
     public function render_admin_configuracion() {
-        $this->render_page_header(__('Trading IA - Configuracion', 'flavor-chat-ia'));
+        $this->render_page_header(__('Trading IA - Configuracion', 'flavor-platform'));
         echo '<div class="wrap trading-ia-admin-configuracion">';
-        echo '<p>' . esc_html__('Configuracion del bot de trading y parametros de riesgo.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . esc_html__('Configuracion del bot de trading y parametros de riesgo.', 'flavor-platform') . '</p>';
         // Aqui se puede agregar el formulario de configuracion
         echo '</div>';
     }
@@ -396,13 +396,13 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
     public function render_dashboard_widget() {
         $posiciones_abiertas = $this->contar_posiciones_abiertas();
         $bot_activo = $this->get_setting('bot_activo', false);
-        $estado_bot = $bot_activo ? __('Activo', 'flavor-chat-ia') : __('Inactivo', 'flavor-chat-ia');
+        $estado_bot = $bot_activo ? __('Activo', 'flavor-platform') : __('Inactivo', 'flavor-platform');
         ?>
         <div class="trading-ia-widget">
-            <p><strong><?php esc_html_e('Estado del bot:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($estado_bot); ?></p>
-            <p><strong><?php esc_html_e('Posiciones abiertas:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($posiciones_abiertas); ?></p>
+            <p><strong><?php esc_html_e('Estado del bot:', 'flavor-platform'); ?></strong> <?php echo esc_html($estado_bot); ?></p>
+            <p><strong><?php esc_html_e('Posiciones abiertas:', 'flavor-platform'); ?></strong> <?php echo esc_html($posiciones_abiertas); ?></p>
             <a href="<?php echo esc_url($this->admin_page_url('trading-ia-dashboard')); ?>" class="button">
-                <?php esc_html_e('Ver dashboard', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver dashboard', 'flavor-platform'); ?>
             </a>
         </div>
         <?php
@@ -501,7 +501,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         $schedules[self::CRON_SCHEDULE] = array(
             'interval' => $intervalo_segundos,
             'display'  => sprintf(
-                __('Trading IA - Cada %d segundos', 'flavor-chat-ia'),
+                __('Trading IA - Cada %d segundos', 'flavor-platform'),
                 $intervalo_segundos
             ),
         );
@@ -684,7 +684,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
 
         return array(
             'success' => false,
-            'error'   => sprintf(__('Accion no implementada: %s', 'flavor-chat-ia'), $nombre_accion),
+            'error'   => sprintf(__('Accion no implementada: %s', 'flavor-platform'), $nombre_accion),
         );
     }
 
@@ -800,7 +800,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         if (empty($token_solicitado)) {
             return array(
                 'success' => false,
-                'error'   => __('Debes especificar un token (ej: SOL, BONK)', 'flavor-chat-ia'),
+                'error'   => __('Debes especificar un token (ej: SOL, BONK)', 'flavor-platform'),
             );
         }
 
@@ -810,7 +810,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         if (!$datos_token || empty($datos_token['precio_usd'])) {
             return array(
                 'success' => false,
-                'error'   => sprintf(__('No se pudo obtener el precio de %s', 'flavor-chat-ia'), $token_solicitado),
+                'error'   => sprintf(__('No se pudo obtener el precio de %s', 'flavor-platform'), $token_solicitado),
             );
         }
 
@@ -841,14 +841,14 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         if (empty($token_compra)) {
             return array(
                 'success' => false,
-                'error'   => __('Debes especificar el token a comprar', 'flavor-chat-ia'),
+                'error'   => __('Debes especificar el token a comprar', 'flavor-platform'),
             );
         }
 
         if ($cantidad_usd <= 0) {
             return array(
                 'success' => false,
-                'error'   => __('La cantidad en USD debe ser mayor a 0', 'flavor-chat-ia'),
+                'error'   => __('La cantidad en USD debe ser mayor a 0', 'flavor-platform'),
             );
         }
 
@@ -858,7 +858,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         if (!$datos_token || empty($datos_token['precio_usd'])) {
             return array(
                 'success' => false,
-                'error'   => sprintf(__('No se pudo obtener el precio de %s', 'flavor-chat-ia'), $token_compra),
+                'error'   => sprintf(__('No se pudo obtener el precio de %s', 'flavor-platform'), $token_compra),
             );
         }
 
@@ -891,7 +891,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         if (empty($token_venta)) {
             return array(
                 'success' => false,
-                'error'   => __('Debes especificar el token a vender', 'flavor-chat-ia'),
+                'error'   => __('Debes especificar el token a vender', 'flavor-platform'),
             );
         }
 
@@ -922,7 +922,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         if ($this->get_setting('bot_activo', false)) {
             return array(
                 'success' => true,
-                'mensaje' => __('El bot ya esta activo.', 'flavor-chat-ia'),
+                'mensaje' => __('El bot ya esta activo.', 'flavor-platform'),
             );
         }
 
@@ -934,7 +934,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         return array(
             'success' => true,
             'mensaje' => sprintf(
-                __('Bot de trading iniciado. Ciclo de analisis cada %d segundos. IMPORTANTE: Para intervalos menores a 60 segundos, configura un cron real del servidor.', 'flavor-chat-ia'),
+                __('Bot de trading iniciado. Ciclo de analisis cada %d segundos. IMPORTANTE: Para intervalos menores a 60 segundos, configura un cron real del servidor.', 'flavor-platform'),
                 $intervalo_configurado
             ),
         );
@@ -952,7 +952,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
 
         return array(
             'success' => true,
-            'mensaje' => __('Bot de trading detenido.', 'flavor-chat-ia'),
+            'mensaje' => __('Bot de trading detenido.', 'flavor-platform'),
         );
     }
 
@@ -1020,7 +1020,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         if (empty($nombre_regla)) {
             return array(
                 'success' => false,
-                'error'   => __('Debes especificar un nombre para la regla', 'flavor-chat-ia'),
+                'error'   => __('Debes especificar un nombre para la regla', 'flavor-platform'),
             );
         }
 
@@ -1029,7 +1029,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
             return array(
                 'success' => false,
                 'error'   => sprintf(
-                    __('Operador invalido. Usa: %s', 'flavor-chat-ia'),
+                    __('Operador invalido. Usa: %s', 'flavor-platform'),
                     implode(', ', $operadores_validos)
                 ),
             );
@@ -1040,7 +1040,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
             return array(
                 'success' => false,
                 'error'   => sprintf(
-                    __('Tipo de accion invalido. Usa: %s', 'flavor-chat-ia'),
+                    __('Tipo de accion invalido. Usa: %s', 'flavor-platform'),
                     implode(', ', $acciones_validas)
                 ),
             );
@@ -1078,7 +1078,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         if (empty($regla_id)) {
             return array(
                 'success' => false,
-                'error'   => __('Debes especificar el ID de la regla a eliminar', 'flavor-chat-ia'),
+                'error'   => __('Debes especificar el ID de la regla a eliminar', 'flavor-platform'),
             );
         }
 
@@ -1088,8 +1088,8 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         return array(
             'success' => $eliminada,
             'mensaje' => $eliminada
-                ? __('Regla eliminada correctamente', 'flavor-chat-ia')
-                : __('No se pudo eliminar la regla', 'flavor-chat-ia'),
+                ? __('Regla eliminada correctamente', 'flavor-platform')
+                : __('No se pudo eliminar la regla', 'flavor-platform'),
         );
     }
 
@@ -1153,7 +1153,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
             'success' => true,
             'cambios' => $cambios_realizados,
             'mensaje' => sprintf(
-                __('%d parametros actualizados', 'flavor-chat-ia'),
+                __('%d parametros actualizados', 'flavor-platform'),
                 count($cambios_realizados)
             ),
         );
@@ -1175,7 +1175,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         return array(
             'success' => true,
             'mensaje' => sprintf(
-                __('Paper trading reiniciado con balance de $%.2f', 'flavor-chat-ia'),
+                __('Paper trading reiniciado con balance de $%.2f', 'flavor-platform'),
                 $balance_inicial
             ),
         );
@@ -1707,7 +1707,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('trading_ia_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json(array('success' => false, 'error' => __('Sin permisos', 'flavor-chat-ia')));
+            wp_send_json(array('success' => false, 'error' => __('Sin permisos', 'flavor-platform')));
         }
 
         $resultado = $this->action_iniciar_bot(array());
@@ -1721,7 +1721,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('trading_ia_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json(array('success' => false, 'error' => __('Sin permisos', 'flavor-chat-ia')));
+            wp_send_json(array('success' => false, 'error' => __('Sin permisos', 'flavor-platform')));
         }
 
         $resultado = $this->action_detener_bot(array());
@@ -1783,7 +1783,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('trading_ia_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json(array('success' => false, 'error' => __('Sin permisos', 'flavor-chat-ia')));
+            wp_send_json(array('success' => false, 'error' => __('Sin permisos', 'flavor-platform')));
         }
 
         $parametros = isset($_POST['parametros']) ? $_POST['parametros'] : array();
@@ -1798,7 +1798,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('trading_ia_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json(array('success' => false, 'error' => __('Sin permisos', 'flavor-chat-ia')));
+            wp_send_json(array('success' => false, 'error' => __('Sin permisos', 'flavor-platform')));
         }
 
         $resultado = $this->action_reset_paper_trading(array());
@@ -1823,13 +1823,13 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         $token_nuevo = isset($_POST['token']) ? strtoupper(sanitize_text_field($_POST['token'])) : '';
 
         if (empty($token_nuevo)) {
-            wp_send_json(array('success' => false, 'error' => __('Token invalido', 'flavor-chat-ia')));
+            wp_send_json(array('success' => false, 'error' => __('Token invalido', 'flavor-platform')));
         }
 
         $tokens_actuales = $this->get_setting('tokens_monitoreados', array());
 
         if (in_array($token_nuevo, $tokens_actuales, true)) {
-            wp_send_json(array('success' => false, 'error' => __('El token ya esta en la lista', 'flavor-chat-ia')));
+            wp_send_json(array('success' => false, 'error' => __('El token ya esta en la lista', 'flavor-platform')));
         }
 
         $tokens_actuales[] = $token_nuevo;
@@ -1837,7 +1837,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
 
         wp_send_json(array(
             'success' => true,
-            'mensaje' => sprintf(__('Token %s agregado al monitoreo', 'flavor-chat-ia'), $token_nuevo),
+            'mensaje' => sprintf(__('Token %s agregado al monitoreo', 'flavor-platform'), $token_nuevo),
             'tokens'  => $tokens_actuales,
         ));
     }
@@ -1851,7 +1851,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         $token_eliminar = isset($_POST['token']) ? strtoupper(sanitize_text_field($_POST['token'])) : '';
 
         if (empty($token_eliminar)) {
-            wp_send_json(array('success' => false, 'error' => __('Token invalido', 'flavor-chat-ia')));
+            wp_send_json(array('success' => false, 'error' => __('Token invalido', 'flavor-platform')));
         }
 
         $tokens_actuales = $this->get_setting('tokens_monitoreados', array());
@@ -1864,7 +1864,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
 
         wp_send_json(array(
             'success' => true,
-            'mensaje' => sprintf(__('Token %s eliminado del monitoreo', 'flavor-chat-ia'), $token_eliminar),
+            'mensaje' => sprintf(__('Token %s eliminado del monitoreo', 'flavor-platform'), $token_eliminar),
             'tokens'  => $tokens_filtrados,
         ));
     }
@@ -1886,7 +1886,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         ), ARRAY_A);
 
         if (empty($trades)) {
-            wp_send_json(array('success' => false, 'error' => __('No hay trades para exportar', 'flavor-chat-ia')));
+            wp_send_json(array('success' => false, 'error' => __('No hay trades para exportar', 'flavor-platform')));
         }
 
         $csv_data = "ID,Tipo,Token,Cantidad,Precio,Total USD,Comision,Ganancia/Perdida,Fecha\n";
@@ -1942,8 +1942,8 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
 
         if (!is_user_logged_in()) {
             return '<div class="trading-ia-login-required">' .
-                   '<p>' . __('Debes iniciar sesion para ver el dashboard de trading.', 'flavor-chat-ia') . '</p>' .
-                   '<a href="' . wp_login_url(flavor_current_request_url()) . '" class="button">' . __('Iniciar sesion', 'flavor-chat-ia') . '</a>' .
+                   '<p>' . __('Debes iniciar sesion para ver el dashboard de trading.', 'flavor-platform') . '</p>' .
+                   '<a href="' . wp_login_url(flavor_current_request_url()) . '" class="button">' . __('Iniciar sesion', 'flavor-platform') . '</a>' .
                    '</div>';
         }
 
@@ -1956,53 +1956,53 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         ?>
         <div class="trading-ia-dashboard" data-mostrar-graficos="<?php echo esc_attr($atts['mostrar_graficos']); ?>">
             <div class="trading-ia-header">
-                <h2><?php _e('Trading IA - Paper Trading', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Trading IA - Paper Trading', 'flavor-platform'); ?></h2>
                 <div class="trading-ia-bot-status <?php echo $estado['estado']['bot_activo'] ? 'activo' : 'inactivo'; ?>">
                     <span class="status-indicator"></span>
                     <span class="status-text">
-                        <?php echo $estado['estado']['bot_activo'] ? __('Bot Activo', 'flavor-chat-ia') : __('Bot Inactivo', 'flavor-chat-ia'); ?>
+                        <?php echo $estado['estado']['bot_activo'] ? __('Bot Activo', 'flavor-platform') : __('Bot Inactivo', 'flavor-platform'); ?>
                     </span>
                 </div>
             </div>
 
             <div class="trading-ia-grid">
                 <div class="trading-ia-card balance-card">
-                    <h3><?php _e('Balance', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Balance', 'flavor-platform'); ?></h3>
                     <div class="balance-total">
                         $<?php echo number_format($portfolio['portfolio']['balance_total_usd'] ?? 0, 2); ?>
                     </div>
                     <div class="balance-details">
                         <span class="disponible">
-                            <?php _e('Disponible:', 'flavor-chat-ia'); ?>
+                            <?php _e('Disponible:', 'flavor-platform'); ?>
                             $<?php echo number_format($portfolio['portfolio']['balance_disponible'] ?? 0, 2); ?>
                         </span>
                         <span class="pnl <?php echo ($portfolio['portfolio']['pnl_total'] ?? 0) >= 0 ? 'positivo' : 'negativo'; ?>">
-                            <?php _e('P&L:', 'flavor-chat-ia'); ?>
+                            <?php _e('P&L:', 'flavor-platform'); ?>
                             <?php echo ($portfolio['portfolio']['pnl_total'] ?? 0) >= 0 ? '+' : ''; ?>$<?php echo number_format($portfolio['portfolio']['pnl_total'] ?? 0, 2); ?>
                         </span>
                     </div>
                 </div>
 
                 <div class="trading-ia-card stats-card">
-                    <h3><?php _e('Estadisticas', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Estadisticas', 'flavor-platform'); ?></h3>
                     <div class="stats-grid">
                         <div class="stat">
-                            <span class="label"><?php _e('Posiciones', 'flavor-chat-ia'); ?></span>
+                            <span class="label"><?php _e('Posiciones', 'flavor-platform'); ?></span>
                             <span class="value"><?php echo count($portfolio['portfolio']['posiciones'] ?? array()); ?></span>
                         </div>
                         <div class="stat">
-                            <span class="label"><?php _e('Agresividad', 'flavor-chat-ia'); ?></span>
+                            <span class="label"><?php _e('Agresividad', 'flavor-platform'); ?></span>
                             <span class="value"><?php echo $estado['estado']['agresividad']; ?>/10</span>
                         </div>
                         <div class="stat">
-                            <span class="label"><?php _e('Confianza min.', 'flavor-chat-ia'); ?></span>
+                            <span class="label"><?php _e('Confianza min.', 'flavor-platform'); ?></span>
                             <span class="value"><?php echo $estado['estado']['confianza_minima']; ?>%</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="trading-ia-card posiciones-card">
-                    <h3><?php _e('Posiciones Abiertas', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Posiciones Abiertas', 'flavor-platform'); ?></h3>
                     <div class="posiciones-lista">
                         <?php if (!empty($portfolio['portfolio']['posiciones'])): ?>
                             <?php foreach ($portfolio['portfolio']['posiciones'] as $posicion): ?>
@@ -2016,16 +2016,16 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
                                 </div>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <p class="sin-posiciones"><?php _e('Sin posiciones abiertas', 'flavor-chat-ia'); ?></p>
+                            <p class="sin-posiciones"><?php _e('Sin posiciones abiertas', 'flavor-platform'); ?></p>
                         <?php endif; ?>
                     </div>
                 </div>
 
                 <div class="trading-ia-card trading-form-card">
-                    <h3><?php _e('Operar', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Operar', 'flavor-platform'); ?></h3>
                     <form class="trading-form" id="trading-ia-form">
                         <div class="form-row">
-                            <label for="trading-token"><?php _e('Token', 'flavor-chat-ia'); ?></label>
+                            <label for="trading-token"><?php _e('Token', 'flavor-platform'); ?></label>
                             <select id="trading-token" name="token">
                                 <?php foreach ($estado['estado']['tokens_monitoreados'] as $token): ?>
                                     <option value="<?php echo esc_attr($token); ?>"><?php echo esc_html($token); ?></option>
@@ -2033,12 +2033,12 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
                             </select>
                         </div>
                         <div class="form-row">
-                            <label for="trading-cantidad"><?php _e('Cantidad USD', 'flavor-chat-ia'); ?></label>
+                            <label for="trading-cantidad"><?php _e('Cantidad USD', 'flavor-platform'); ?></label>
                             <input type="number" id="trading-cantidad" name="cantidad_usd" step="0.01" min="1" placeholder="100.00">
                         </div>
                         <div class="form-actions">
-                            <button type="button" class="btn-comprar" data-action="comprar"><?php _e('Comprar', 'flavor-chat-ia'); ?></button>
-                            <button type="button" class="btn-vender" data-action="vender"><?php _e('Vender Todo', 'flavor-chat-ia'); ?></button>
+                            <button type="button" class="btn-comprar" data-action="comprar"><?php _e('Comprar', 'flavor-platform'); ?></button>
+                            <button type="button" class="btn-vender" data-action="vender"><?php _e('Vender Todo', 'flavor-platform'); ?></button>
                         </div>
                     </form>
                 </div>
@@ -2056,7 +2056,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_portfolio($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="trading-ia-login-required">' . __('Inicia sesion para ver tu portfolio.', 'flavor-chat-ia') . '</p>';
+            return '<p class="trading-ia-login-required">' . __('Inicia sesion para ver tu portfolio.', 'flavor-platform') . '</p>';
         }
 
         $this->enqueue_frontend_assets();
@@ -2065,14 +2065,14 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         ob_start();
         ?>
         <div class="trading-ia-portfolio">
-            <h3><?php _e('Mi Portfolio', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Mi Portfolio', 'flavor-platform'); ?></h3>
             <div class="portfolio-resumen">
                 <div class="balance-total">
-                    <span class="label"><?php _e('Balance Total', 'flavor-chat-ia'); ?></span>
+                    <span class="label"><?php _e('Balance Total', 'flavor-platform'); ?></span>
                     <span class="valor">$<?php echo number_format($portfolio['portfolio']['balance_total_usd'] ?? 0, 2); ?></span>
                 </div>
                 <div class="pnl-total">
-                    <span class="label"><?php _e('Ganancia/Perdida', 'flavor-chat-ia'); ?></span>
+                    <span class="label"><?php _e('Ganancia/Perdida', 'flavor-platform'); ?></span>
                     <span class="valor <?php echo ($portfolio['portfolio']['pnl_total'] ?? 0) >= 0 ? 'positivo' : 'negativo'; ?>">
                         <?php echo ($portfolio['portfolio']['pnl_total'] ?? 0) >= 0 ? '+' : ''; ?>$<?php echo number_format($portfolio['portfolio']['pnl_total'] ?? 0, 2); ?>
                     </span>
@@ -2081,12 +2081,12 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
             <table class="portfolio-tabla">
                 <thead>
                     <tr>
-                        <th><?php _e('Token', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Cantidad', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Precio Entrada', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Precio Actual', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Valor', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('P&L', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Token', 'flavor-platform'); ?></th>
+                        <th><?php _e('Cantidad', 'flavor-platform'); ?></th>
+                        <th><?php _e('Precio Entrada', 'flavor-platform'); ?></th>
+                        <th><?php _e('Precio Actual', 'flavor-platform'); ?></th>
+                        <th><?php _e('Valor', 'flavor-platform'); ?></th>
+                        <th><?php _e('P&L', 'flavor-platform'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -2105,7 +2105,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="6" class="sin-datos"><?php _e('No tienes posiciones abiertas', 'flavor-chat-ia'); ?></td>
+                            <td colspan="6" class="sin-datos"><?php _e('No tienes posiciones abiertas', 'flavor-platform'); ?></td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
@@ -2132,7 +2132,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         ob_start();
         ?>
         <div class="trading-ia-mercado">
-            <h3><?php _e('Precios de Mercado', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Precios de Mercado', 'flavor-platform'); ?></h3>
             <div class="mercado-grid">
                 <?php if (!empty($mercado['mercado'])): ?>
                     <?php foreach ($mercado['mercado'] as $token => $datos): ?>
@@ -2147,12 +2147,12 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
                                 $<?php $precio = $datos['precio_usd'] ?? 0; echo number_format($precio, $precio < 1 ? 8 : 2); ?>
                             </div>
                             <div class="token-volumen">
-                                <?php _e('Vol:', 'flavor-chat-ia'); ?> $<?php echo $this->formatear_numero_grande($datos['volumen_24h'] ?? 0); ?>
+                                <?php _e('Vol:', 'flavor-platform'); ?> $<?php echo $this->formatear_numero_grande($datos['volumen_24h'] ?? 0); ?>
                             </div>
                         </div>
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <p><?php _e('No se pudieron cargar los datos del mercado', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No se pudieron cargar los datos del mercado', 'flavor-platform'); ?></p>
                 <?php endif; ?>
             </div>
         </div>
@@ -2172,7 +2172,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         ), $atts);
 
         if (!is_user_logged_in()) {
-            return '<p class="trading-ia-login-required">' . __('Inicia sesion para ver tu historial.', 'flavor-chat-ia') . '</p>';
+            return '<p class="trading-ia-login-required">' . __('Inicia sesion para ver tu historial.', 'flavor-platform') . '</p>';
         }
 
         $this->enqueue_frontend_assets();
@@ -2181,16 +2181,16 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         ob_start();
         ?>
         <div class="trading-ia-historial">
-            <h3><?php _e('Historial de Operaciones', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Historial de Operaciones', 'flavor-platform'); ?></h3>
             <table class="historial-tabla">
                 <thead>
                     <tr>
-                        <th><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Tipo', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Token', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Cantidad', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Precio', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Total', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Fecha', 'flavor-platform'); ?></th>
+                        <th><?php _e('Tipo', 'flavor-platform'); ?></th>
+                        <th><?php _e('Token', 'flavor-platform'); ?></th>
+                        <th><?php _e('Cantidad', 'flavor-platform'); ?></th>
+                        <th><?php _e('Precio', 'flavor-platform'); ?></th>
+                        <th><?php _e('Total', 'flavor-platform'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -2199,7 +2199,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
                             <tr class="trade-<?php echo esc_attr($trade['tipo']); ?>">
                                 <td><?php echo esc_html(date('d/m/Y H:i', strtotime($trade['timestamp']))); ?></td>
                                 <td class="tipo-<?php echo esc_attr($trade['tipo']); ?>">
-                                    <?php echo $trade['tipo'] === 'compra' ? __('Compra', 'flavor-chat-ia') : __('Venta', 'flavor-chat-ia'); ?>
+                                    <?php echo $trade['tipo'] === 'compra' ? __('Compra', 'flavor-platform') : __('Venta', 'flavor-platform'); ?>
                                 </td>
                                 <td><?php echo esc_html($trade['token']); ?></td>
                                 <td><?php echo number_format($trade['cantidad'], 6); ?></td>
@@ -2209,7 +2209,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="6" class="sin-datos"><?php _e('No hay operaciones registradas', 'flavor-chat-ia'); ?></td>
+                            <td colspan="6" class="sin-datos"><?php _e('No hay operaciones registradas', 'flavor-platform'); ?></td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
@@ -2227,7 +2227,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_panel_control($atts) {
         if (!current_user_can('manage_options')) {
-            return '<p class="trading-ia-no-permisos">' . __('No tienes permisos para acceder al panel de control.', 'flavor-chat-ia') . '</p>';
+            return '<p class="trading-ia-no-permisos">' . __('No tienes permisos para acceder al panel de control.', 'flavor-platform') . '</p>';
         }
 
         $this->enqueue_frontend_assets();
@@ -2236,64 +2236,64 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         ob_start();
         ?>
         <div class="trading-ia-panel-control">
-            <h3><?php _e('Panel de Control - Trading IA', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Panel de Control - Trading IA', 'flavor-platform'); ?></h3>
 
             <div class="panel-seccion bot-control">
-                <h4><?php _e('Control del Bot', 'flavor-chat-ia'); ?></h4>
+                <h4><?php _e('Control del Bot', 'flavor-platform'); ?></h4>
                 <div class="bot-status">
                     <span class="status-indicator <?php echo $estado['estado']['bot_activo'] ? 'activo' : 'inactivo'; ?>"></span>
-                    <span><?php echo $estado['estado']['bot_activo'] ? __('Bot Activo', 'flavor-chat-ia') : __('Bot Inactivo', 'flavor-chat-ia'); ?></span>
+                    <span><?php echo $estado['estado']['bot_activo'] ? __('Bot Activo', 'flavor-platform') : __('Bot Inactivo', 'flavor-platform'); ?></span>
                 </div>
                 <div class="bot-actions">
                     <button class="btn-iniciar-bot" <?php echo $estado['estado']['bot_activo'] ? 'disabled' : ''; ?>>
-                        <?php _e('Iniciar Bot', 'flavor-chat-ia'); ?>
+                        <?php _e('Iniciar Bot', 'flavor-platform'); ?>
                     </button>
                     <button class="btn-detener-bot" <?php echo !$estado['estado']['bot_activo'] ? 'disabled' : ''; ?>>
-                        <?php _e('Detener Bot', 'flavor-chat-ia'); ?>
+                        <?php _e('Detener Bot', 'flavor-platform'); ?>
                     </button>
-                    <button class="btn-reset" onclick="return confirm('<?php _e('Estas seguro? Se borrara todo el historial.', 'flavor-chat-ia'); ?>')">
-                        <?php _e('Reset Simulacion', 'flavor-chat-ia'); ?>
+                    <button class="btn-reset" onclick="return confirm('<?php _e('Estas seguro? Se borrara todo el historial.', 'flavor-platform'); ?>')">
+                        <?php _e('Reset Simulacion', 'flavor-platform'); ?>
                     </button>
                 </div>
             </div>
 
             <div class="panel-seccion parametros">
-                <h4><?php _e('Parametros de Trading', 'flavor-chat-ia'); ?></h4>
+                <h4><?php _e('Parametros de Trading', 'flavor-platform'); ?></h4>
                 <form class="parametros-form" id="trading-ia-parametros-form">
                     <div class="form-row">
-                        <label><?php _e('Agresividad (1-10)', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Agresividad (1-10)', 'flavor-platform'); ?></label>
                         <input type="range" name="agresividad" min="1" max="10" value="<?php echo esc_attr($estado['estado']['agresividad']); ?>">
                         <span class="valor-actual"><?php echo $estado['estado']['agresividad']; ?></span>
                     </div>
                     <div class="form-row">
-                        <label><?php _e('Intervalo analisis (seg)', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Intervalo analisis (seg)', 'flavor-platform'); ?></label>
                         <input type="number" name="intervalo_analisis" min="30" max="300" value="<?php echo esc_attr($estado['estado']['intervalo_analisis']); ?>">
                     </div>
                     <div class="form-row">
-                        <label><?php _e('Confianza minima (%)', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Confianza minima (%)', 'flavor-platform'); ?></label>
                         <input type="number" name="confianza_minima_trade" min="30" max="90" value="<?php echo esc_attr($estado['estado']['confianza_minima']); ?>">
                     </div>
                     <div class="form-row">
-                        <label><?php _e('Auto-ajuste', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Auto-ajuste', 'flavor-platform'); ?></label>
                         <input type="checkbox" name="auto_ajuste_enabled" <?php checked($estado['estado']['auto_ajuste']['habilitado'] ?? false); ?>>
                     </div>
-                    <button type="submit" class="btn-guardar-parametros"><?php _e('Guardar Parametros', 'flavor-chat-ia'); ?></button>
+                    <button type="submit" class="btn-guardar-parametros"><?php _e('Guardar Parametros', 'flavor-platform'); ?></button>
                 </form>
             </div>
 
             <div class="panel-seccion tokens">
-                <h4><?php _e('Tokens Monitoreados', 'flavor-chat-ia'); ?></h4>
+                <h4><?php _e('Tokens Monitoreados', 'flavor-platform'); ?></h4>
                 <div class="tokens-lista">
                     <?php foreach ($estado['estado']['tokens_monitoreados'] as $token): ?>
                         <span class="token-badge">
                             <?php echo esc_html($token); ?>
-                            <button class="btn-eliminar-token" data-token="<?php echo esc_attr($token); ?>"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></button>
+                            <button class="btn-eliminar-token" data-token="<?php echo esc_attr($token); ?>"><?php echo esc_html__('&times;', 'flavor-platform'); ?></button>
                         </span>
                     <?php endforeach; ?>
                 </div>
                 <div class="agregar-token">
-                    <input type="text" id="nuevo-token" placeholder="<?php _e('Ej: PYTH', 'flavor-chat-ia'); ?>">
-                    <button class="btn-agregar-token"><?php _e('Agregar', 'flavor-chat-ia'); ?></button>
+                    <input type="text" id="nuevo-token" placeholder="<?php _e('Ej: PYTH', 'flavor-platform'); ?>">
+                    <button class="btn-agregar-token"><?php _e('Agregar', 'flavor-platform'); ?></button>
                 </div>
             </div>
         </div>
@@ -2350,10 +2350,10 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
             'rest_url' => rest_url('flavor/v1/trading-ia'),
             'nonce'    => wp_create_nonce('trading_ia_nonce'),
             'i18n'     => array(
-                'confirmar_compra'  => __('Confirmar compra?', 'flavor-chat-ia'),
-                'confirmar_venta'   => __('Confirmar venta?', 'flavor-chat-ia'),
-                'operacion_exitosa' => __('Operacion realizada con exito', 'flavor-chat-ia'),
-                'error_operacion'   => __('Error en la operacion', 'flavor-chat-ia'),
+                'confirmar_compra'  => __('Confirmar compra?', 'flavor-platform'),
+                'confirmar_venta'   => __('Confirmar venta?', 'flavor-platform'),
+                'operacion_exitosa' => __('Operacion realizada con exito', 'flavor-platform'),
+                'error_operacion'   => __('Error en la operacion', 'flavor-platform'),
             ),
         ));
 
@@ -2392,7 +2392,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
 
         if ($resumen_diario && $resumen_diario->total_trades > 0) {
             $mensaje_reporte = sprintf(
-                __("Reporte Trading IA - %s\n\nTrades: %d (Compras: %d, Ventas: %d)\nVolumen: $%s\nP&L: $%s", 'flavor-chat-ia'),
+                __("Reporte Trading IA - %s\n\nTrades: %d (Compras: %d, Ventas: %d)\nVolumen: $%s\nP&L: $%s", 'flavor-platform'),
                 $fecha_ayer,
                 $resumen_diario->total_trades,
                 $resumen_diario->compras,
@@ -2404,7 +2404,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
             // Enviar notificacion si hay trades
             do_action('flavor_notificacion_enviar', array(
                 'tipo'      => 'trading_reporte_diario',
-                'titulo'    => __('Reporte Diario Trading IA', 'flavor-chat-ia'),
+                'titulo'    => __('Reporte Diario Trading IA', 'flavor-platform'),
                 'mensaje'   => $mensaje_reporte,
                 'usuario_id' => $this->obtener_usuario_trading(),
                 'prioridad' => 'normal',
@@ -2473,10 +2473,10 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
      * @param float  $precio_actual Precio actual del token
      */
     private function disparar_alerta_precio($alerta, $precio_actual) {
-        $tipo_texto = $alerta->tipo === 'above' ? __('supero', 'flavor-chat-ia') : __('bajo de', 'flavor-chat-ia');
+        $tipo_texto = $alerta->tipo === 'above' ? __('supero', 'flavor-platform') : __('bajo de', 'flavor-platform');
 
         $mensaje_alerta = sprintf(
-            __('Alerta de precio: %s %s $%s (objetivo: $%s)', 'flavor-chat-ia'),
+            __('Alerta de precio: %s %s $%s (objetivo: $%s)', 'flavor-platform'),
             $alerta->token,
             $tipo_texto,
             number_format($precio_actual, 6),
@@ -2485,7 +2485,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
 
         do_action('flavor_notificacion_enviar', array(
             'tipo'       => 'trading_alerta_precio',
-            'titulo'     => sprintf(__('Alerta: %s', 'flavor-chat-ia'), $alerta->token),
+            'titulo'     => sprintf(__('Alerta: %s', 'flavor-platform'), $alerta->token),
             'mensaje'    => $mensaje_alerta,
             'usuario_id' => $alerta->usuario_id,
             'prioridad'  => 'alta',
@@ -2517,7 +2517,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
             'puntos'     => 5,
             'razon'      => 'trading_compra',
             'descripcion' => sprintf(
-                __('Compra de %s por $%s', 'flavor-chat-ia'),
+                __('Compra de %s por $%s', 'flavor-platform'),
                 $resultado['resultado']['token'] ?? '',
                 number_format($resultado['resultado']['total_usd'] ?? 0, 2)
             ),
@@ -2555,7 +2555,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
             'puntos'      => $puntos_base,
             'razon'       => 'trading_venta',
             'descripcion' => sprintf(
-                __('Venta de %s - P&L: $%s', 'flavor-chat-ia'),
+                __('Venta de %s - P&L: $%s', 'flavor-platform'),
                 $resultado['resultado']['token'] ?? '',
                 number_format($pnl, 2)
             ),
@@ -2593,8 +2593,8 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
             do_action('flavor_gamificacion_desbloquear_logro', array(
                 'usuario_id' => $usuario_id,
                 'logro_id'   => 'trading_primer_trade',
-                'nombre'     => __('Primer Paso', 'flavor-chat-ia'),
-                'descripcion' => __('Realizaste tu primer trade', 'flavor-chat-ia'),
+                'nombre'     => __('Primer Paso', 'flavor-platform'),
+                'descripcion' => __('Realizaste tu primer trade', 'flavor-platform'),
             ));
         }
 
@@ -2603,8 +2603,8 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
             do_action('flavor_gamificacion_desbloquear_logro', array(
                 'usuario_id' => $usuario_id,
                 'logro_id'   => 'trading_10_trades',
-                'nombre'     => __('Trader Activo', 'flavor-chat-ia'),
-                'descripcion' => __('Realizaste 10 trades', 'flavor-chat-ia'),
+                'nombre'     => __('Trader Activo', 'flavor-platform'),
+                'descripcion' => __('Realizaste 10 trades', 'flavor-platform'),
             ));
         }
 
@@ -2613,8 +2613,8 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
             do_action('flavor_gamificacion_desbloquear_logro', array(
                 'usuario_id' => $usuario_id,
                 'logro_id'   => 'trading_primera_ganancia',
-                'nombre'     => __('En Verde', 'flavor-chat-ia'),
-                'descripcion' => __('Cerraste tu primer trade con ganancias', 'flavor-chat-ia'),
+                'nombre'     => __('En Verde', 'flavor-platform'),
+                'descripcion' => __('Cerraste tu primer trade con ganancias', 'flavor-platform'),
             ));
         }
 
@@ -2623,8 +2623,8 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
             do_action('flavor_gamificacion_desbloquear_logro', array(
                 'usuario_id' => $usuario_id,
                 'logro_id'   => 'trading_100_profit',
-                'nombre'     => __('Centenario', 'flavor-chat-ia'),
-                'descripcion' => __('Acumulaste $100 en ganancias', 'flavor-chat-ia'),
+                'nombre'     => __('Centenario', 'flavor-platform'),
+                'descripcion' => __('Acumulaste $100 en ganancias', 'flavor-platform'),
             ));
         }
     }
@@ -2647,18 +2647,18 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
 
         $datos_trade = $resultado['resultado'] ?? array();
         $titulo = $tipo === 'compra'
-            ? sprintf(__('Compra ejecutada: %s', 'flavor-chat-ia'), $datos_trade['token'] ?? '')
-            : sprintf(__('Venta ejecutada: %s', 'flavor-chat-ia'), $datos_trade['token'] ?? '');
+            ? sprintf(__('Compra ejecutada: %s', 'flavor-platform'), $datos_trade['token'] ?? '')
+            : sprintf(__('Venta ejecutada: %s', 'flavor-platform'), $datos_trade['token'] ?? '');
 
         $mensaje = $tipo === 'compra'
             ? sprintf(
-                __('Compraste %s %s por $%s', 'flavor-chat-ia'),
+                __('Compraste %s %s por $%s', 'flavor-platform'),
                 number_format($datos_trade['cantidad'] ?? 0, 6),
                 $datos_trade['token'] ?? '',
                 number_format($datos_trade['total_usd'] ?? 0, 2)
             )
             : sprintf(
-                __('Vendiste %s %s por $%s (P&L: $%s)', 'flavor-chat-ia'),
+                __('Vendiste %s %s por $%s (P&L: $%s)', 'flavor-platform'),
                 number_format($datos_trade['cantidad'] ?? 0, 6),
                 $datos_trade['token'] ?? '',
                 number_format($datos_trade['total_usd'] ?? 0, 2),
@@ -2771,7 +2771,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         $usuario_id = get_current_user_id();
 
         if (!$usuario_id) {
-            return array('success' => false, 'error' => __('Usuario no autenticado', 'flavor-chat-ia'));
+            return array('success' => false, 'error' => __('Usuario no autenticado', 'flavor-platform'));
         }
 
         $token = strtoupper(sanitize_text_field($token));
@@ -2779,7 +2779,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         $precio = floatval($precio);
 
         if (empty($token) || $precio <= 0) {
-            return array('success' => false, 'error' => __('Datos invalidos', 'flavor-chat-ia'));
+            return array('success' => false, 'error' => __('Datos invalidos', 'flavor-platform'));
         }
 
         global $wpdb;
@@ -2795,15 +2795,15 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         ));
 
         if ($resultado === false) {
-            return array('success' => false, 'error' => __('Error al crear la alerta', 'flavor-chat-ia'));
+            return array('success' => false, 'error' => __('Error al crear la alerta', 'flavor-platform'));
         }
 
         return array(
             'success'  => true,
             'mensaje'  => sprintf(
-                __('Alerta creada: %s %s $%s', 'flavor-chat-ia'),
+                __('Alerta creada: %s %s $%s', 'flavor-platform'),
                 $token,
-                $tipo === 'above' ? __('supere', 'flavor-chat-ia') : __('baje de', 'flavor-chat-ia'),
+                $tipo === 'above' ? __('supere', 'flavor-platform') : __('baje de', 'flavor-platform'),
                 number_format($precio, 6)
             ),
             'alerta_id' => $wpdb->insert_id,
@@ -3209,13 +3209,13 @@ KNOWLEDGE;
     public function get_web_components() {
         return array(
             'hero' => array(
-                'label'       => __('Hero Trading IA', 'flavor-chat-ia'),
-                'description' => __('Seccion hero de Trading IA con estadisticas de senales, precision y mercados', 'flavor-chat-ia'),
+                'label'       => __('Hero Trading IA', 'flavor-platform'),
+                'description' => __('Seccion hero de Trading IA con estadisticas de senales, precision y mercados', 'flavor-platform'),
                 'category'    => 'hero',
                 'icon'        => 'dashicons-chart-area',
                 'fields'      => array(
-                    'titulo_hero'           => array('type' => 'text', 'default' => __('Trading con IA', 'flavor-chat-ia')),
-                    'subtitulo_hero'        => array('type' => 'textarea', 'default' => __('Analisis predictivo y senales de trading impulsados por inteligencia artificial', 'flavor-chat-ia')),
+                    'titulo_hero'           => array('type' => 'text', 'default' => __('Trading con IA', 'flavor-platform')),
+                    'subtitulo_hero'        => array('type' => 'textarea', 'default' => __('Analisis predictivo y senales de trading impulsados por inteligencia artificial', 'flavor-platform')),
                     'senales_generadas'     => array('type' => 'text', 'default' => '12.450'),
                     'precision_porcentaje'  => array('type' => 'text', 'default' => '87.3'),
                     'mercados_analizados'   => array('type' => 'number', 'default' => 24),
@@ -3224,23 +3224,23 @@ KNOWLEDGE;
                 'template'    => 'trading-ia/hero',
             ),
             'features' => array(
-                'label'       => __('Features Trading IA', 'flavor-chat-ia'),
-                'description' => __('Grid de herramientas de trading inteligente: analisis tecnico, senales, backtesting, gestion de riesgo', 'flavor-chat-ia'),
+                'label'       => __('Features Trading IA', 'flavor-platform'),
+                'description' => __('Grid de herramientas de trading inteligente: analisis tecnico, senales, backtesting, gestion de riesgo', 'flavor-platform'),
                 'category'    => 'features',
                 'icon'        => 'dashicons-grid-view',
                 'fields'      => array(
-                    'titulo_features'          => array('type' => 'text', 'default' => __('Herramientas de Trading Inteligente', 'flavor-chat-ia')),
+                    'titulo_features'          => array('type' => 'text', 'default' => __('Herramientas de Trading Inteligente', 'flavor-platform')),
                     'funcionalidades_trading'  => array('type' => 'repeater', 'default' => array()),
                 ),
                 'template'    => 'trading-ia/features',
             ),
             'stats' => array(
-                'label'       => __('Panel de Rendimiento Trading IA', 'flavor-chat-ia'),
-                'description' => __('Dashboard de estadisticas con KPIs y grafico de rendimiento mensual', 'flavor-chat-ia'),
+                'label'       => __('Panel de Rendimiento Trading IA', 'flavor-platform'),
+                'description' => __('Dashboard de estadisticas con KPIs y grafico de rendimiento mensual', 'flavor-platform'),
                 'category'    => 'stats',
                 'icon'        => 'dashicons-chart-bar',
                 'fields'      => array(
-                    'titulo_stats'            => array('type' => 'text', 'default' => __('Panel de Rendimiento', 'flavor-chat-ia')),
+                    'titulo_stats'            => array('type' => 'text', 'default' => __('Panel de Rendimiento', 'flavor-platform')),
                     'rendimiento_mensual'     => array('type' => 'text', 'default' => '+12.4%'),
                     'operaciones_activas'     => array('type' => 'number', 'default' => 8),
                     'win_rate'                => array('type' => 'text', 'default' => '73.2%'),
@@ -3265,12 +3265,12 @@ KNOWLEDGE;
     public function get_form_config($nombre_accion) {
         $configuraciones_formulario = array(
             'ejecutar_compra_manual' => array(
-                'title'       => __('Compra Manual de Token', 'flavor-chat-ia'),
-                'description' => __('Ejecuta una compra simulada (paper trading) de un token con USD', 'flavor-chat-ia'),
+                'title'       => __('Compra Manual de Token', 'flavor-platform'),
+                'description' => __('Ejecuta una compra simulada (paper trading) de un token con USD', 'flavor-platform'),
                 'fields'      => array(
                     'token' => array(
                         'type'     => 'select',
-                        'label'    => __('Token a comprar', 'flavor-chat-ia'),
+                        'label'    => __('Token a comprar', 'flavor-platform'),
                         'required' => true,
                         'options'  => array(
                             'SOL'  => 'SOL (Solana)',
@@ -3282,24 +3282,24 @@ KNOWLEDGE;
                     ),
                     'cantidad_usd' => array(
                         'type'        => 'number',
-                        'label'       => __('Cantidad en USD', 'flavor-chat-ia'),
+                        'label'       => __('Cantidad en USD', 'flavor-platform'),
                         'required'    => true,
                         'min'         => 1,
                         'step'        => '0.01',
-                        'placeholder' => __('Cantidad en dolares a invertir', 'flavor-chat-ia'),
-                        'description' => __('Monto en USD que deseas invertir en este token', 'flavor-chat-ia'),
+                        'placeholder' => __('Cantidad en dolares a invertir', 'flavor-platform'),
+                        'description' => __('Monto en USD que deseas invertir en este token', 'flavor-platform'),
                     ),
                 ),
-                'submit_text'     => __('Ejecutar Compra', 'flavor-chat-ia'),
-                'success_message' => __('Compra simulada ejecutada correctamente.', 'flavor-chat-ia'),
+                'submit_text'     => __('Ejecutar Compra', 'flavor-platform'),
+                'success_message' => __('Compra simulada ejecutada correctamente.', 'flavor-platform'),
             ),
             'ejecutar_venta_manual' => array(
-                'title'       => __('Venta Manual de Token', 'flavor-chat-ia'),
-                'description' => __('Ejecuta una venta simulada (paper trading) de un token', 'flavor-chat-ia'),
+                'title'       => __('Venta Manual de Token', 'flavor-platform'),
+                'description' => __('Ejecuta una venta simulada (paper trading) de un token', 'flavor-platform'),
                 'fields'      => array(
                     'token' => array(
                         'type'     => 'select',
-                        'label'    => __('Token a vender', 'flavor-chat-ia'),
+                        'label'    => __('Token a vender', 'flavor-platform'),
                         'required' => true,
                         'options'  => array(
                             'SOL'  => 'SOL (Solana)',
@@ -3311,32 +3311,32 @@ KNOWLEDGE;
                     ),
                     'cantidad' => array(
                         'type'        => 'number',
-                        'label'       => __('Cantidad de tokens', 'flavor-chat-ia'),
+                        'label'       => __('Cantidad de tokens', 'flavor-platform'),
                         'min'         => 0,
                         'step'        => '0.000001',
-                        'placeholder' => __('Cantidad de tokens a vender', 'flavor-chat-ia'),
-                        'description' => __('Deja vacio para vender toda la posicion', 'flavor-chat-ia'),
+                        'placeholder' => __('Cantidad de tokens a vender', 'flavor-platform'),
+                        'description' => __('Deja vacio para vender toda la posicion', 'flavor-platform'),
                     ),
                 ),
-                'submit_text'     => __('Ejecutar Venta', 'flavor-chat-ia'),
-                'success_message' => __('Venta simulada ejecutada correctamente.', 'flavor-chat-ia'),
+                'submit_text'     => __('Ejecutar Venta', 'flavor-platform'),
+                'success_message' => __('Venta simulada ejecutada correctamente.', 'flavor-platform'),
             ),
             'crear_regla' => array(
-                'title'       => __('Crear Regla de Trading', 'flavor-chat-ia'),
-                'description' => __('Define una regla personalizada que se evalua automaticamente sobre indicadores tecnicos', 'flavor-chat-ia'),
+                'title'       => __('Crear Regla de Trading', 'flavor-platform'),
+                'description' => __('Define una regla personalizada que se evalua automaticamente sobre indicadores tecnicos', 'flavor-platform'),
                 'fields'      => array(
                     'nombre' => array(
                         'type'        => 'text',
-                        'label'       => __('Nombre de la regla', 'flavor-chat-ia'),
+                        'label'       => __('Nombre de la regla', 'flavor-platform'),
                         'required'    => true,
-                        'placeholder' => __('Ej: Alerta RSI sobrecompra SOL', 'flavor-chat-ia'),
+                        'placeholder' => __('Ej: Alerta RSI sobrecompra SOL', 'flavor-platform'),
                     ),
                     'token' => array(
                         'type'     => 'select',
-                        'label'    => __('Token', 'flavor-chat-ia'),
+                        'label'    => __('Token', 'flavor-platform'),
                         'required' => true,
                         'options'  => array(
-                            '*'    => __('Todos los tokens', 'flavor-chat-ia'),
+                            '*'    => __('Todos los tokens', 'flavor-platform'),
                             'SOL'  => 'SOL',
                             'BONK' => 'BONK',
                             'JUP'  => 'JUP',
@@ -3346,7 +3346,7 @@ KNOWLEDGE;
                     ),
                     'indicador' => array(
                         'type'     => 'select',
-                        'label'    => __('Indicador', 'flavor-chat-ia'),
+                        'label'    => __('Indicador', 'flavor-platform'),
                         'required' => true,
                         'options'  => array(
                             'rsi'   => 'RSI',
@@ -3357,35 +3357,35 @@ KNOWLEDGE;
                     ),
                     'operador' => array(
                         'type'     => 'select',
-                        'label'    => __('Operador', 'flavor-chat-ia'),
+                        'label'    => __('Operador', 'flavor-platform'),
                         'required' => true,
                         'options'  => array(
-                            'mayor'  => __('Mayor que (>)', 'flavor-chat-ia'),
-                            'menor'  => __('Menor que (<)', 'flavor-chat-ia'),
-                            'igual'  => __('Igual a (==)', 'flavor-chat-ia'),
-                            'cruce'  => __('Cruce de medias', 'flavor-chat-ia'),
+                            'mayor'  => __('Mayor que (>)', 'flavor-platform'),
+                            'menor'  => __('Menor que (<)', 'flavor-platform'),
+                            'igual'  => __('Igual a (==)', 'flavor-platform'),
+                            'cruce'  => __('Cruce de medias', 'flavor-platform'),
                         ),
                     ),
                     'valor' => array(
                         'type'        => 'number',
-                        'label'       => __('Valor de referencia', 'flavor-chat-ia'),
+                        'label'       => __('Valor de referencia', 'flavor-platform'),
                         'required'    => true,
                         'step'        => '0.01',
-                        'placeholder' => __('Ej: 70 para RSI sobrecompra', 'flavor-chat-ia'),
-                        'description' => __('Valor numerico con el que se compara el indicador', 'flavor-chat-ia'),
+                        'placeholder' => __('Ej: 70 para RSI sobrecompra', 'flavor-platform'),
+                        'description' => __('Valor numerico con el que se compara el indicador', 'flavor-platform'),
                     ),
                     'accion_tipo' => array(
                         'type'     => 'select',
-                        'label'    => __('Accion a ejecutar', 'flavor-chat-ia'),
+                        'label'    => __('Accion a ejecutar', 'flavor-platform'),
                         'required' => true,
                         'options'  => array(
-                            'comprar' => __('Comprar', 'flavor-chat-ia'),
-                            'vender'  => __('Vender', 'flavor-chat-ia'),
+                            'comprar' => __('Comprar', 'flavor-platform'),
+                            'vender'  => __('Vender', 'flavor-platform'),
                         ),
                     ),
                 ),
-                'submit_text'     => __('Crear Regla', 'flavor-chat-ia'),
-                'success_message' => __('Regla de trading creada correctamente. Se evaluara en cada ciclo de analisis.', 'flavor-chat-ia'),
+                'submit_text'     => __('Crear Regla', 'flavor-platform'),
+                'success_message' => __('Regla de trading creada correctamente. Se evaluara en cada ciclo de analisis.', 'flavor-platform'),
             ),
         );
 
@@ -3557,7 +3557,7 @@ KNOWLEDGE;
                 $estadisticas['balance'] = [
                     'icon' => 'dashicons-chart-area',
                     'valor' => number_format((float) $portfolio->balance_usd, 2),
-                    'label' => __('Balance USD', 'flavor-chat-ia'),
+                    'label' => __('Balance USD', 'flavor-platform'),
                     'color' => 'green',
                 ];
 
@@ -3565,7 +3565,7 @@ KNOWLEDGE;
                     $estadisticas['trades'] = [
                         'icon' => 'dashicons-chart-line',
                         'valor' => (int) $portfolio->contador_trades,
-                        'label' => __('Trades', 'flavor-chat-ia'),
+                        'label' => __('Trades', 'flavor-platform'),
                         'color' => 'blue',
                     ];
                 }
@@ -3581,37 +3581,37 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Trading IA', 'flavor-chat-ia'),
+                'title' => __('Trading IA', 'flavor-platform'),
                 'slug' => 'trading-ia',
-                'content' => '<h1>' . __('Trading IA', 'flavor-chat-ia') . '</h1>
-<p>' . __('Análisis de mercados con inteligencia artificial', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Trading IA', 'flavor-platform') . '</h1>
+<p>' . __('Análisis de mercados con inteligencia artificial', 'flavor-platform') . '</p>
 
 [flavor_module_listing module="trading_ia" action="dashboard" columnas="3" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Señales', 'flavor-chat-ia'),
+                'title' => __('Señales', 'flavor-platform'),
                 'slug' => 'senales-trading',
-                'content' => '<h1>' . __('Señales de Trading', 'flavor-chat-ia') . '</h1>
-<p>' . __('Consulta las señales generadas por IA', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Señales de Trading', 'flavor-platform') . '</h1>
+<p>' . __('Consulta las señales generadas por IA', 'flavor-platform') . '</p>
 
 [flavor_module_listing module="trading_ia" action="senales"]',
                 'parent' => 'trading-ia',
             ],
             [
-                'title' => __('Estrategias', 'flavor-chat-ia'),
+                'title' => __('Estrategias', 'flavor-platform'),
                 'slug' => 'estrategias-trading',
-                'content' => '<h1>' . __('Estrategias de Trading', 'flavor-chat-ia') . '</h1>
-<p>' . __('Configura tus estrategias automatizadas', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Estrategias de Trading', 'flavor-platform') . '</h1>
+<p>' . __('Configura tus estrategias automatizadas', 'flavor-platform') . '</p>
 
 [flavor_module_dashboard module="trading_ia" action="estrategias"]',
                 'parent' => 'trading-ia',
             ],
             [
-                'title' => __('Historial', 'flavor-chat-ia'),
+                'title' => __('Historial', 'flavor-platform'),
                 'slug' => 'historial-trading',
-                'content' => '<h1>' . __('Historial de Operaciones', 'flavor-chat-ia') . '</h1>
-<p>' . __('Revisa tu historial de operaciones', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Historial de Operaciones', 'flavor-platform') . '</h1>
+<p>' . __('Revisa tu historial de operaciones', 'flavor-platform') . '</p>
 
 [flavor_module_listing module="trading_ia" action="historial"]',
                 'parent' => 'trading-ia',

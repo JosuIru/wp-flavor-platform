@@ -111,13 +111,13 @@ if ($ciclo_id && isset($_GET['marcar_visto']) && wp_verify_nonce($_GET['_wpnonce
 ?>
 
 <div class="wrap gc-admin-consolidado">
-    <h1><?php _e('Consolidado de Pedidos', 'flavor-chat-ia'); ?></h1>
+    <h1><?php _e('Consolidado de Pedidos', 'flavor-platform'); ?></h1>
 
     <!-- Selector de Ciclo -->
     <div class="gc-ciclo-selector">
         <form method="get">
-            <input type="hidden" name="page" value="<?php echo esc_attr__('gc-consolidado', 'flavor-chat-ia'); ?>">
-            <label for="ciclo"><?php _e('Seleccionar Ciclo:', 'flavor-chat-ia'); ?></label>
+            <input type="hidden" name="page" value="<?php echo esc_attr__('gc-consolidado', 'flavor-platform'); ?>">
+            <label for="ciclo"><?php _e('Seleccionar Ciclo:', 'flavor-platform'); ?></label>
             <select name="ciclo" id="ciclo" onchange="this.form.submit()">
                 <?php foreach ($ciclos as $ciclo): ?>
                     <option value="<?php echo $ciclo->ID; ?>" <?php selected($ciclo_id, $ciclo->ID); ?>>
@@ -139,21 +139,21 @@ if ($ciclo_id && isset($_GET['marcar_visto']) && wp_verify_nonce($_GET['_wpnonce
                 <h3><?php echo esc_html($ciclo_info->post_title); ?></h3>
                 <div class="gc-info-grid">
                     <div class="gc-info-item">
-                        <span class="gc-info-label"><?php _e('Estado:', 'flavor-chat-ia'); ?></span>
+                        <span class="gc-info-label"><?php _e('Estado:', 'flavor-platform'); ?></span>
                         <span class="gc-estado gc-estado-<?php echo esc_attr($estado_ciclo); ?>">
                             <?php echo esc_html(ucfirst($estado_ciclo)); ?>
                         </span>
                     </div>
                     <div class="gc-info-item">
-                        <span class="gc-info-label"><?php _e('Cierre:', 'flavor-chat-ia'); ?></span>
+                        <span class="gc-info-label"><?php _e('Cierre:', 'flavor-platform'); ?></span>
                         <span><?php echo $fecha_cierre ? date_i18n('d M Y H:i', strtotime($fecha_cierre)) : 'N/A'; ?></span>
                     </div>
                     <div class="gc-info-item">
-                        <span class="gc-info-label"><?php _e('Entrega:', 'flavor-chat-ia'); ?></span>
+                        <span class="gc-info-label"><?php _e('Entrega:', 'flavor-platform'); ?></span>
                         <span><?php echo $fecha_entrega ? date_i18n('d M Y', strtotime($fecha_entrega)) : 'N/A'; ?></span>
                     </div>
                     <div class="gc-info-item gc-info-total">
-                        <span class="gc-info-label"><?php _e('Total General:', 'flavor-chat-ia'); ?></span>
+                        <span class="gc-info-label"><?php _e('Total General:', 'flavor-platform'); ?></span>
                         <span class="gc-total-amount"><?php echo number_format($total_general, 2, ',', '.'); ?>€</span>
                     </div>
                 </div>
@@ -164,20 +164,20 @@ if ($ciclo_id && isset($_GET['marcar_visto']) && wp_verify_nonce($_GET['_wpnonce
                 <a href="<?php echo wp_nonce_url(admin_url('admin-post.php?action=gc_exportar_consolidado&ciclo_id=' . $ciclo_id . '&formato=excel'), 'gc_exportar_consolidado'); ?>"
                    class="button button-primary">
                     <span class="dashicons dashicons-download"></span>
-                    <?php _e('Exportar Excel', 'flavor-chat-ia'); ?>
+                    <?php _e('Exportar Excel', 'flavor-platform'); ?>
                 </a>
                 <a href="<?php echo wp_nonce_url(admin_url('admin-post.php?action=gc_exportar_consolidado&ciclo_id=' . $ciclo_id . '&formato=pdf'), 'gc_exportar_consolidado'); ?>"
                    class="button">
                     <span class="dashicons dashicons-pdf"></span>
-                    <?php _e('Exportar PDF', 'flavor-chat-ia'); ?>
+                    <?php _e('Exportar PDF', 'flavor-platform'); ?>
                 </a>
                 <button type="button" class="button gc-btn-enviar-productores" data-ciclo="<?php echo $ciclo_id; ?>">
                     <span class="dashicons dashicons-email"></span>
-                    <?php _e('Enviar a Productores', 'flavor-chat-ia'); ?>
+                    <?php _e('Enviar a Productores', 'flavor-platform'); ?>
                 </button>
                 <button type="button" class="button gc-btn-imprimir">
                     <span class="dashicons dashicons-printer"></span>
-                    <?php _e('Imprimir', 'flavor-chat-ia'); ?>
+                    <?php _e('Imprimir', 'flavor-platform'); ?>
                 </button>
             </div>
         </div>
@@ -188,35 +188,35 @@ if ($ciclo_id && isset($_GET['marcar_visto']) && wp_verify_nonce($_GET['_wpnonce
                 <div class="gc-kpi-icon"><span class="dashicons dashicons-cart"></span></div>
                 <div class="gc-kpi-content">
                     <span class="gc-kpi-value"><?php echo number_format($kpi_total_pedidos); ?></span>
-                    <span class="gc-kpi-label"><?php _e('Pedidos', 'flavor-chat-ia'); ?></span>
+                    <span class="gc-kpi-label"><?php _e('Pedidos', 'flavor-platform'); ?></span>
                 </div>
             </div>
             <div class="gc-kpi-card">
                 <div class="gc-kpi-icon"><span class="dashicons dashicons-groups"></span></div>
                 <div class="gc-kpi-content">
                     <span class="gc-kpi-value"><?php echo number_format($kpi_total_consumidores); ?></span>
-                    <span class="gc-kpi-label"><?php _e('Consumidores', 'flavor-chat-ia'); ?></span>
+                    <span class="gc-kpi-label"><?php _e('Consumidores', 'flavor-platform'); ?></span>
                 </div>
             </div>
             <div class="gc-kpi-card">
                 <div class="gc-kpi-icon"><span class="dashicons dashicons-products"></span></div>
                 <div class="gc-kpi-content">
                     <span class="gc-kpi-value"><?php echo number_format($kpi_total_productos); ?></span>
-                    <span class="gc-kpi-label"><?php _e('Productos', 'flavor-chat-ia'); ?></span>
+                    <span class="gc-kpi-label"><?php _e('Productos', 'flavor-platform'); ?></span>
                 </div>
             </div>
             <div class="gc-kpi-card">
                 <div class="gc-kpi-icon"><span class="dashicons dashicons-store"></span></div>
                 <div class="gc-kpi-content">
                     <span class="gc-kpi-value"><?php echo number_format($kpi_total_productores); ?></span>
-                    <span class="gc-kpi-label"><?php _e('Productores', 'flavor-chat-ia'); ?></span>
+                    <span class="gc-kpi-label"><?php _e('Productores', 'flavor-platform'); ?></span>
                 </div>
             </div>
             <div class="gc-kpi-card gc-kpi-highlight">
                 <div class="gc-kpi-icon"><span class="dashicons dashicons-chart-line"></span></div>
                 <div class="gc-kpi-content">
                     <span class="gc-kpi-value"><?php echo number_format($kpi_ticket_medio, 2, ',', '.'); ?>€</span>
-                    <span class="gc-kpi-label"><?php _e('Ticket medio', 'flavor-chat-ia'); ?></span>
+                    <span class="gc-kpi-label"><?php _e('Ticket medio', 'flavor-platform'); ?></span>
                 </div>
             </div>
         </div>
@@ -224,7 +224,7 @@ if ($ciclo_id && isset($_GET['marcar_visto']) && wp_verify_nonce($_GET['_wpnonce
         <!-- Resumen por Productor (gráfico) -->
         <?php if (!empty($totales_por_productor)): ?>
             <div class="gc-resumen-chart">
-                <h2><?php _e('Distribución por Productor', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Distribución por Productor', 'flavor-platform'); ?></h2>
                 <div class="gc-chart-container">
                     <canvas id="gc-chart-productores" height="200"></canvas>
                 </div>
@@ -234,13 +234,13 @@ if ($ciclo_id && isset($_GET['marcar_visto']) && wp_verify_nonce($_GET['_wpnonce
         <!-- Consolidado por Productor -->
         <?php if (!empty($consolidado)): ?>
             <div class="gc-tabla-card">
-                <h2><?php _e('KPIs por productor', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('KPIs por productor', 'flavor-platform'); ?></h2>
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
-                            <th><?php _e('Productor', 'flavor-chat-ia'); ?></th>
-                            <th class="text-right"><?php _e('Total', 'flavor-chat-ia'); ?></th>
-                            <th class="text-right"><?php _e('% del ciclo', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Productor', 'flavor-platform'); ?></th>
+                            <th class="text-right"><?php _e('Total', 'flavor-platform'); ?></th>
+                            <th class="text-right"><?php _e('% del ciclo', 'flavor-platform'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -286,11 +286,11 @@ if ($ciclo_id && isset($_GET['marcar_visto']) && wp_verify_nonce($_GET['_wpnonce
                             <table class="wp-list-table widefat fixed striped">
                                 <thead>
                                     <tr>
-                                        <th class="column-producto"><?php _e('Producto', 'flavor-chat-ia'); ?></th>
-                                        <th class="column-cantidad"><?php _e('Cantidad', 'flavor-chat-ia'); ?></th>
-                                        <th class="column-unidad"><?php _e('Unidad', 'flavor-chat-ia'); ?></th>
-                                        <th class="column-precio"><?php _e('Precio Unit.', 'flavor-chat-ia'); ?></th>
-                                        <th class="column-total"><?php _e('Total', 'flavor-chat-ia'); ?></th>
+                                        <th class="column-producto"><?php _e('Producto', 'flavor-platform'); ?></th>
+                                        <th class="column-cantidad"><?php _e('Cantidad', 'flavor-platform'); ?></th>
+                                        <th class="column-unidad"><?php _e('Unidad', 'flavor-platform'); ?></th>
+                                        <th class="column-precio"><?php _e('Precio Unit.', 'flavor-platform'); ?></th>
+                                        <th class="column-total"><?php _e('Total', 'flavor-platform'); ?></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -322,7 +322,7 @@ if ($ciclo_id && isset($_GET['marcar_visto']) && wp_verify_nonce($_GET['_wpnonce
                                 <tfoot>
                                     <tr class="gc-subtotal-row">
                                         <td colspan="4" class="text-right">
-                                            <strong><?php _e('Subtotal:', 'flavor-chat-ia'); ?></strong>
+                                            <strong><?php _e('Subtotal:', 'flavor-platform'); ?></strong>
                                         </td>
                                         <td>
                                             <strong><?php echo number_format($productor_data['total'], 2, ',', '.'); ?>€</strong>
@@ -337,7 +337,7 @@ if ($ciclo_id && isset($_GET['marcar_visto']) && wp_verify_nonce($_GET['_wpnonce
                 <!-- Total General -->
                 <div class="gc-total-general-card">
                     <div class="gc-total-general">
-                        <span class="gc-total-label"><?php _e('TOTAL GENERAL:', 'flavor-chat-ia'); ?></span>
+                        <span class="gc-total-label"><?php _e('TOTAL GENERAL:', 'flavor-platform'); ?></span>
                         <span class="gc-total-value"><?php echo number_format($total_general, 2, ',', '.'); ?>€</span>
                     </div>
                 </div>
@@ -345,15 +345,15 @@ if ($ciclo_id && isset($_GET['marcar_visto']) && wp_verify_nonce($_GET['_wpnonce
         <?php else: ?>
             <div class="gc-no-data">
                 <span class="dashicons dashicons-info"></span>
-                <p><?php _e('No hay datos de consolidado para este ciclo.', 'flavor-chat-ia'); ?></p>
-                <p class="description"><?php _e('El consolidado se genera automáticamente cuando se cierran los pedidos del ciclo.', 'flavor-chat-ia'); ?></p>
+                <p><?php _e('No hay datos de consolidado para este ciclo.', 'flavor-platform'); ?></p>
+                <p class="description"><?php _e('El consolidado se genera automáticamente cuando se cierran los pedidos del ciclo.', 'flavor-platform'); ?></p>
             </div>
         <?php endif; ?>
 
     <?php else: ?>
         <div class="gc-no-data">
             <span class="dashicons dashicons-info"></span>
-            <p><?php _e('No hay ciclos disponibles.', 'flavor-chat-ia'); ?></p>
+            <p><?php _e('No hay ciclos disponibles.', 'flavor-platform'); ?></p>
         </div>
     <?php endif; ?>
 </div>
@@ -619,7 +619,7 @@ jQuery(document).ready(function($) {
 
     function gcConsolidadoConfirmar(mensaje, onConfirm) {
         $('.gc-inline-confirm').remove();
-        var $confirm = $('<div class="gc-inline-confirm"><p></p><div class="gc-inline-confirm-actions"><button type="button" class="button button-primary gc-inline-confirm-ok"><?php echo esc_js(__('Confirmar', 'flavor-chat-ia')); ?></button><button type="button" class="button gc-inline-confirm-cancel"><?php echo esc_js(__('Cancelar', 'flavor-chat-ia')); ?></button></div></div>');
+        var $confirm = $('<div class="gc-inline-confirm"><p></p><div class="gc-inline-confirm-actions"><button type="button" class="button button-primary gc-inline-confirm-ok"><?php echo esc_js(__('Confirmar', 'flavor-platform')); ?></button><button type="button" class="button gc-inline-confirm-cancel"><?php echo esc_js(__('Cancelar', 'flavor-platform')); ?></button></div></div>');
         $confirm.find('p').text(mensaje);
         $confirm.insertAfter('.wrap h1.wp-heading-inline').hide().fadeIn(150);
 
@@ -654,16 +654,16 @@ jQuery(document).ready(function($) {
     // Enviar a productores
     $('.gc-btn-enviar-productores').on('click', function() {
         var cicloId = $(this).data('ciclo');
-        gcConsolidadoConfirmar('<?php echo esc_js(__('¿Enviar el consolidado a todos los productores?', 'flavor-chat-ia')); ?>', function() {
+        gcConsolidadoConfirmar('<?php echo esc_js(__('¿Enviar el consolidado a todos los productores?', 'flavor-platform')); ?>', function() {
             $.post(ajaxurl, {
                 action: 'gc_enviar_consolidado_productores',
                 ciclo_id: cicloId,
                 nonce: '<?php echo wp_create_nonce('gc_admin_nonce'); ?>'
             }, function(response) {
                 if (response.success) {
-                    gcConsolidadoAviso('<?php echo esc_js(__('Consolidado enviado correctamente', 'flavor-chat-ia')); ?>', 'success');
+                    gcConsolidadoAviso('<?php echo esc_js(__('Consolidado enviado correctamente', 'flavor-platform')); ?>', 'success');
                 } else {
-                    gcConsolidadoAviso(response.data.message || '<?php echo esc_js(__('Error al enviar', 'flavor-chat-ia')); ?>', 'error');
+                    gcConsolidadoAviso(response.data.message || '<?php echo esc_js(__('Error al enviar', 'flavor-platform')); ?>', 'error');
                 }
             });
         });

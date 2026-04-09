@@ -83,9 +83,9 @@ $co2_evitado = $total_kg_organicos_mes * 0.5;
 $compost_producido = $total_kg_organicos_mes * 0.3;
 
 $estados_labels = [
-    'llena' => __('Compostera llena', 'flavor-chat-ia'),
-    'mantenimiento' => __('En mantenimiento', 'flavor-chat-ia'),
-    'problema' => __('Problema reportado', 'flavor-chat-ia'),
+    'llena' => __('Compostera llena', 'flavor-platform'),
+    'mantenimiento' => __('En mantenimiento', 'flavor-platform'),
+    'problema' => __('Problema reportado', 'flavor-platform'),
 ];
 
 $estado_badge_classes = [
@@ -105,8 +105,8 @@ $estado_badge_classes = [
     <?php if (!$tabla_composteras_existe): ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <strong><?php esc_html_e('Sin datos disponibles:', 'flavor-chat-ia'); ?></strong>
-        <?php esc_html_e('Faltan tablas del módulo Compostaje o aún no hay composteras registradas.', 'flavor-chat-ia'); ?>
+        <strong><?php esc_html_e('Sin datos disponibles:', 'flavor-platform'); ?></strong>
+        <?php esc_html_e('Faltan tablas del módulo Compostaje o aún no hay composteras registradas.', 'flavor-platform'); ?>
     </div>
     <?php endif; ?>
 
@@ -115,13 +115,13 @@ $estado_badge_classes = [
         <div class="dm-header__title">
             <span class="dashicons dashicons-carrot"></span>
             <div>
-                <h1><?php esc_html_e('Dashboard de Compostaje', 'flavor-chat-ia'); ?></h1>
-                <p><?php esc_html_e('Gestiona el compostaje comunitario', 'flavor-chat-ia'); ?></p>
+                <h1><?php esc_html_e('Dashboard de Compostaje', 'flavor-platform'); ?></h1>
+                <p><?php esc_html_e('Gestiona el compostaje comunitario', 'flavor-platform'); ?></p>
             </div>
         </div>
         <div class="dm-header__actions">
             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-compostaje-nueva')); ?>" class="dm-btn dm-btn--primary">
-                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nueva Compostera', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nueva Compostera', 'flavor-platform'); ?>
             </a>
         </div>
     </div>
@@ -130,24 +130,24 @@ $estado_badge_classes = [
     <div class="dm-quick-links">
         <h2 class="dm-quick-links__title">
             <span class="dashicons dashicons-admin-links"></span>
-            <?php esc_html_e('Accesos Rápidos', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Accesos Rápidos', 'flavor-platform'); ?>
         </h2>
         <div class="dm-quick-links__grid">
             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-compostaje-composteras')); ?>" class="dm-quick-links__item dm-quick-links__item--success">
                 <span class="dashicons dashicons-carrot"></span>
-                <span><?php esc_html_e('Composteras', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Composteras', 'flavor-platform'); ?></span>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-compostaje-participantes')); ?>" class="dm-quick-links__item">
                 <span class="dashicons dashicons-groups"></span>
-                <span><?php esc_html_e('Participantes', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Participantes', 'flavor-platform'); ?></span>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-compostaje-mantenimiento')); ?>" class="dm-quick-links__item dm-quick-links__item--warning">
                 <span class="dashicons dashicons-admin-tools"></span>
-                <span><?php esc_html_e('Mantenimiento', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Mantenimiento', 'flavor-platform'); ?></span>
             </a>
             <a href="<?php echo esc_url(home_url('/mi-portal/compostaje/')); ?>" class="dm-quick-links__item dm-quick-links__item--purple">
                 <span class="dashicons dashicons-external"></span>
-                <span><?php esc_html_e('Portal', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Portal', 'flavor-platform'); ?></span>
             </a>
         </div>
     </div>
@@ -158,7 +158,7 @@ $estado_badge_classes = [
             <span class="dashicons dashicons-carrot dm-stat-card__icon"></span>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_composteras); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Composteras Activas', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Composteras Activas', 'flavor-platform'); ?></div>
             </div>
         </div>
 
@@ -166,8 +166,8 @@ $estado_badge_classes = [
             <span class="dashicons dashicons-chart-line dm-stat-card__icon"></span>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_kg_organicos_mes, 1); ?> kg</div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Orgánicos Compostados', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Orgánicos Compostados', 'flavor-platform'); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('Este mes', 'flavor-platform'); ?></div>
             </div>
         </div>
 
@@ -175,8 +175,8 @@ $estado_badge_classes = [
             <span class="dashicons dashicons-clipboard dm-stat-card__icon"></span>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_depositos_mes); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Depósitos', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Depósitos', 'flavor-platform'); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('Este mes', 'flavor-platform'); ?></div>
             </div>
         </div>
 
@@ -184,7 +184,7 @@ $estado_badge_classes = [
             <span class="dashicons dashicons-yes dm-stat-card__icon"></span>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($compost_listo); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Compost Listo', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Compost Listo', 'flavor-platform'); ?></div>
             </div>
         </div>
     </div>
@@ -194,9 +194,9 @@ $estado_badge_classes = [
         <div class="dm-card__header">
             <h3>
                 <span class="dashicons dashicons-chart-area"></span>
-                <?php esc_html_e('Evolución del Compostaje', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Evolución del Compostaje', 'flavor-platform'); ?>
             </h3>
-            <span class="dm-card__meta"><?php esc_html_e('Últimos 6 meses', 'flavor-chat-ia'); ?></span>
+            <span class="dm-card__meta"><?php esc_html_e('Últimos 6 meses', 'flavor-platform'); ?></span>
         </div>
         <div class="dm-card__chart">
             <canvas id="grafica-evolucion-compostaje"></canvas>
@@ -210,9 +210,9 @@ $estado_badge_classes = [
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-carrot"></span>
-                    <?php esc_html_e('Composteras Más Activas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Composteras Más Activas', 'flavor-platform'); ?>
                 </h3>
-                <span class="dm-card__meta"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></span>
+                <span class="dm-card__meta"><?php esc_html_e('Este mes', 'flavor-platform'); ?></span>
             </div>
             <?php if (!empty($stats_composteras)): ?>
             <div class="dm-item-list">
@@ -221,7 +221,7 @@ $estado_badge_classes = [
                     <div class="dm-item-list__content">
                         <strong><?php echo esc_html($compostera->nombre); ?></strong>
                         <span class="dm-item-list__muted">
-                            <?php printf(__('%s kg - %s depósitos', 'flavor-chat-ia'), number_format_i18n($compostera->total_kg_depositado, 1), number_format_i18n($compostera->total_depositos)); ?>
+                            <?php printf(__('%s kg - %s depósitos', 'flavor-platform'), number_format_i18n($compostera->total_kg_depositado, 1), number_format_i18n($compostera->total_depositos)); ?>
                         </span>
                     </div>
                     <div class="dm-item-list__meta">
@@ -236,7 +236,7 @@ $estado_badge_classes = [
             <?php else: ?>
             <div class="dm-empty">
                 <span class="dashicons dashicons-carrot"></span>
-                <p><?php esc_html_e('No hay datos disponibles', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No hay datos disponibles', 'flavor-platform'); ?></p>
             </div>
             <?php endif; ?>
         </div>
@@ -246,9 +246,9 @@ $estado_badge_classes = [
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-awards"></span>
-                    <?php esc_html_e('Usuarios Más Activos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Usuarios Más Activos', 'flavor-platform'); ?>
                 </h3>
-                <span class="dm-card__meta"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></span>
+                <span class="dm-card__meta"><?php esc_html_e('Este mes', 'flavor-platform'); ?></span>
             </div>
             <?php if (!empty($usuarios_activos_compostaje)): ?>
             <div class="dm-ranking">
@@ -257,7 +257,7 @@ $estado_badge_classes = [
                     <div class="dm-ranking__number"><?php echo $index + 1; ?></div>
                     <div class="dm-ranking__content">
                         <span class="dm-ranking__label"><?php echo esc_html($usuario->display_name); ?></span>
-                        <span class="dm-ranking__value"><?php printf(__('%s kg - %s dep.', 'flavor-chat-ia'), number_format_i18n($usuario->total_kg, 1), $usuario->total_depositos); ?></span>
+                        <span class="dm-ranking__value"><?php printf(__('%s kg - %s dep.', 'flavor-platform'), number_format_i18n($usuario->total_kg, 1), $usuario->total_depositos); ?></span>
                     </div>
                 </div>
                 <?php endforeach; ?>
@@ -265,7 +265,7 @@ $estado_badge_classes = [
             <?php else: ?>
             <div class="dm-empty">
                 <span class="dashicons dashicons-groups"></span>
-                <p><?php esc_html_e('No hay usuarios activos este mes', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No hay usuarios activos este mes', 'flavor-platform'); ?></p>
             </div>
             <?php endif; ?>
         </div>
@@ -275,7 +275,7 @@ $estado_badge_classes = [
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-admin-tools"></span>
-                    <?php esc_html_e('Mantenimiento Pendiente', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Mantenimiento Pendiente', 'flavor-platform'); ?>
                 </h3>
             </div>
             <?php if (!empty($mantenimiento_pendiente)): ?>
@@ -291,7 +291,7 @@ $estado_badge_classes = [
                             <?php echo date_i18n('j M', strtotime($tarea->fecha_programada)); ?>
                         </span>
                         <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-compostaje-mantenimiento&id=' . $tarea->id)); ?>" class="dm-btn dm-btn--sm dm-btn--ghost">
-                            <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Ver', 'flavor-platform'); ?>
                         </a>
                     </div>
                 </div>
@@ -300,7 +300,7 @@ $estado_badge_classes = [
             <?php else: ?>
             <div class="dm-alert dm-alert--success">
                 <span class="dashicons dashicons-yes-alt"></span>
-                <?php esc_html_e('No hay tareas de mantenimiento pendientes.', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('No hay tareas de mantenimiento pendientes.', 'flavor-platform'); ?>
             </div>
             <?php endif; ?>
         </div>
@@ -310,7 +310,7 @@ $estado_badge_classes = [
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-warning"></span>
-                    <?php esc_html_e('Requieren Atención', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Requieren Atención', 'flavor-platform'); ?>
                 </h3>
             </div>
             <?php if (!empty($composteras_atencion)): ?>
@@ -324,7 +324,7 @@ $estado_badge_classes = [
                         </span>
                     </div>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-compostaje-composteras&action=edit&id=' . $compostera->id)); ?>" class="dm-btn dm-btn--sm dm-btn--ghost">
-                        <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver', 'flavor-platform'); ?>
                     </a>
                 </div>
                 <?php endforeach; ?>
@@ -332,7 +332,7 @@ $estado_badge_classes = [
             <?php else: ?>
             <div class="dm-alert dm-alert--success">
                 <span class="dashicons dashicons-yes-alt"></span>
-                <?php esc_html_e('Todas las composteras están operativas.', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Todas las composteras están operativas.', 'flavor-platform'); ?>
             </div>
             <?php endif; ?>
         </div>
@@ -343,30 +343,30 @@ $estado_badge_classes = [
         <div class="dm-card__header">
             <h3>
                 <span class="dashicons dashicons-palmtree"></span>
-                <?php esc_html_e('Impacto Ambiental', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Impacto Ambiental', 'flavor-platform'); ?>
             </h3>
-            <span class="dm-card__meta"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></span>
+            <span class="dm-card__meta"><?php esc_html_e('Este mes', 'flavor-platform'); ?></span>
         </div>
         <div class="dm-eco-stats">
             <div class="dm-eco-stat">
                 <span class="dashicons dashicons-cloud"></span>
                 <div class="dm-eco-stat__content">
                     <strong><?php echo number_format_i18n($co2_evitado, 1); ?> kg</strong>
-                    <span><?php esc_html_e('CO₂ evitado', 'flavor-chat-ia'); ?></span>
+                    <span><?php esc_html_e('CO₂ evitado', 'flavor-platform'); ?></span>
                 </div>
             </div>
             <div class="dm-eco-stat">
                 <span class="dashicons dashicons-carrot"></span>
                 <div class="dm-eco-stat__content">
                     <strong><?php echo number_format_i18n($compost_producido, 1); ?> kg</strong>
-                    <span><?php esc_html_e('Compost producido', 'flavor-chat-ia'); ?></span>
+                    <span><?php esc_html_e('Compost producido', 'flavor-platform'); ?></span>
                 </div>
             </div>
             <div class="dm-eco-stat">
                 <span class="dashicons dashicons-trash"></span>
                 <div class="dm-eco-stat__content">
                     <strong><?php echo number_format_i18n($total_kg_organicos_mes, 1); ?> kg</strong>
-                    <span><?php esc_html_e('Residuos evitados', 'flavor-chat-ia'); ?></span>
+                    <span><?php esc_html_e('Residuos evitados', 'flavor-platform'); ?></span>
                 </div>
             </div>
         </div>
@@ -393,7 +393,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     return date.toLocaleDateString('es-ES', { month: 'short', year: 'numeric' });
                 }),
                 datasets: [{
-                    label: '<?php echo esc_js(__('Kg compostados', 'flavor-chat-ia')); ?>',
+                    label: '<?php echo esc_js(__('Kg compostados', 'flavor-platform')); ?>',
                     data: datosEvolucion.map(function(d) { return parseFloat(d.total_kg); }),
                     borderColor: successColor,
                     backgroundColor: successColor + '1A',

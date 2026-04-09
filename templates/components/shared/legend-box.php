@@ -22,7 +22,7 @@ if (!defined('ABSPATH')) {
 }
 
 $items = $items ?? [];
-$title = $title ?? __('Leyenda', 'flavor-chat-ia');
+$title = $title ?? __('Leyenda', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $layout = $layout ?? 'vertical';
 $position = $position ?? 'static';
 $collapsible = $collapsible ?? false;
@@ -144,7 +144,7 @@ $legend_id = 'flavor-legend-' . wp_rand(1000, 9999);
     <!-- Estado vacío -->
     <?php if (empty($items)): ?>
         <p class="<?php echo esc_attr($sz['text']); ?> text-gray-400 text-center py-2">
-            <?php esc_html_e('Sin elementos', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Sin elementos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     <?php endif; ?>
 </div>

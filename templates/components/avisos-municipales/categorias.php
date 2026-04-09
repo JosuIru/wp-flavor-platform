@@ -112,12 +112,12 @@ $categorias_avisos = $categorias_avisos ?? [
                     <!-- Contador -->
                     <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold"
                           style="background: <?php echo esc_attr($categoria_item['color_desde']); ?>15; color: <?php echo esc_attr($categoria_item['color_desde']); ?>;">
-                        <?php echo esc_html($categoria_item['cantidad']); ?> <?php echo esc_html__('avisos', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html($categoria_item['cantidad']); ?> <?php echo esc_html__('avisos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
 
                     <!-- Flecha -->
                     <div class="mt-4 flex items-center justify-center gap-1 text-sm font-medium text-gray-400 group-hover:text-red-600 transition-colors">
-                        <?php echo esc_html__('Ver avisos', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Ver avisos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                         </svg>

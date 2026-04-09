@@ -13,16 +13,16 @@ if (!defined('ABSPATH')) {
 
 // Verificar permisos
 if (!current_user_can('manage_woocommerce')) {
-    wp_die(__('No tienes permisos suficientes para acceder a esta página.', 'flavor-chat-ia'));
+    wp_die(__('No tienes permisos suficientes para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
 }
 
 // Verificar que WooCommerce está activo
 if (!class_exists('WooCommerce')) {
     ?>
     <div class="wrap">
-        <h1><?php esc_html_e('Dashboard de WooCommerce', 'flavor-chat-ia'); ?></h1>
+        <h1><?php esc_html_e('Dashboard de WooCommerce', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
         <div class="notice notice-error">
-            <p><?php esc_html_e('WooCommerce no está instalado o activado.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('WooCommerce no está instalado o activado.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     </div>
     <?php
@@ -170,7 +170,7 @@ $currency_symbol = get_woocommerce_currency_symbol();
 <div class="wrap flavor-admin-page flavor-woocommerce-dashboard">
     <h1>
         <span class="dashicons dashicons-cart"></span>
-        <?php esc_html_e('Dashboard de WooCommerce', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Dashboard de WooCommerce', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <!-- Estadísticas principales -->
@@ -181,8 +181,8 @@ $currency_symbol = get_woocommerce_currency_symbol();
             </div>
             <div class="stat-content">
                 <span class="stat-value"><?php echo wc_price($ventas_hoy); ?></span>
-                <span class="stat-label"><?php esc_html_e('Ventas hoy', 'flavor-chat-ia'); ?></span>
-                <span class="stat-secondary"><?php printf(esc_html__('%d pedidos', 'flavor-chat-ia'), $total_pedidos_hoy); ?></span>
+                <span class="stat-label"><?php esc_html_e('Ventas hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                <span class="stat-secondary"><?php printf(esc_html__('%d pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_pedidos_hoy); ?></span>
             </div>
         </div>
 
@@ -192,8 +192,8 @@ $currency_symbol = get_woocommerce_currency_symbol();
             </div>
             <div class="stat-content">
                 <span class="stat-value"><?php echo wc_price($ventas_semana); ?></span>
-                <span class="stat-label"><?php esc_html_e('Esta semana', 'flavor-chat-ia'); ?></span>
-                <span class="stat-secondary"><?php printf(esc_html__('%d pedidos', 'flavor-chat-ia'), $total_pedidos_semana); ?></span>
+                <span class="stat-label"><?php esc_html_e('Esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                <span class="stat-secondary"><?php printf(esc_html__('%d pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_pedidos_semana); ?></span>
             </div>
         </div>
 
@@ -203,8 +203,8 @@ $currency_symbol = get_woocommerce_currency_symbol();
             </div>
             <div class="stat-content">
                 <span class="stat-value"><?php echo wc_price($ventas_mes); ?></span>
-                <span class="stat-label"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></span>
-                <span class="stat-secondary"><?php printf(esc_html__('%d pedidos', 'flavor-chat-ia'), $total_pedidos_mes); ?></span>
+                <span class="stat-label"><?php esc_html_e('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                <span class="stat-secondary"><?php printf(esc_html__('%d pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_pedidos_mes); ?></span>
             </div>
         </div>
 
@@ -214,12 +214,12 @@ $currency_symbol = get_woocommerce_currency_symbol();
             </div>
             <div class="stat-content">
                 <span class="stat-value"><?php echo esc_html($total_productos); ?></span>
-                <span class="stat-label"><?php esc_html_e('Productos', 'flavor-chat-ia'); ?></span>
+                <span class="stat-label"><?php esc_html_e('Productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="stat-secondary">
                     <?php if ($productos_sin_stock > 0): ?>
-                        <span class="text-danger"><?php printf(esc_html__('%d sin stock', 'flavor-chat-ia'), $productos_sin_stock); ?></span>
+                        <span class="text-danger"><?php printf(esc_html__('%d sin stock', FLAVOR_PLATFORM_TEXT_DOMAIN), $productos_sin_stock); ?></span>
                     <?php else: ?>
-                        <?php esc_html_e('Todos en stock', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Todos en stock', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <?php endif; ?>
                 </span>
             </div>
@@ -228,19 +228,19 @@ $currency_symbol = get_woocommerce_currency_symbol();
 
     <!-- Estado de pedidos -->
     <div class="flavor-section">
-        <h2><?php esc_html_e('Estado de Pedidos', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Estado de Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <div class="flavor-order-status-grid">
             <a href="<?php echo esc_url(admin_url('edit.php?post_type=shop_order&post_status=wc-pending')); ?>" class="order-status-card status-pending">
                 <span class="status-count"><?php echo esc_html($total_pendientes); ?></span>
-                <span class="status-label"><?php esc_html_e('Pendientes de pago', 'flavor-chat-ia'); ?></span>
+                <span class="status-label"><?php esc_html_e('Pendientes de pago', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
             <a href="<?php echo esc_url(admin_url('edit.php?post_type=shop_order&post_status=wc-processing')); ?>" class="order-status-card status-processing">
                 <span class="status-count"><?php echo esc_html($total_procesando); ?></span>
-                <span class="status-label"><?php esc_html_e('Procesando', 'flavor-chat-ia'); ?></span>
+                <span class="status-label"><?php esc_html_e('Procesando', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
             <a href="<?php echo esc_url(admin_url('edit.php?post_type=shop_order&post_status=wc-on-hold')); ?>" class="order-status-card status-on-hold">
                 <span class="status-count"><?php echo esc_html($total_en_espera); ?></span>
-                <span class="status-label"><?php esc_html_e('En espera', 'flavor-chat-ia'); ?></span>
+                <span class="status-label"><?php esc_html_e('En espera', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
         </div>
     </div>
@@ -250,9 +250,9 @@ $currency_symbol = get_woocommerce_currency_symbol();
         <div class="flavor-column">
             <div class="flavor-card">
                 <div class="card-header">
-                    <h3><?php esc_html_e('Pedidos Recientes', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Pedidos Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <a href="<?php echo esc_url(admin_url('edit.php?post_type=shop_order')); ?>" class="button button-small">
-                        <?php esc_html_e('Ver todos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
                 <div class="card-content">
@@ -260,10 +260,10 @@ $currency_symbol = get_woocommerce_currency_symbol();
                         <table class="wp-list-table widefat striped">
                             <thead>
                                 <tr>
-                                    <th><?php esc_html_e('Pedido', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Cliente', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Total', 'flavor-chat-ia'); ?></th>
+                                    <th><?php esc_html_e('Pedido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php esc_html_e('Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php esc_html_e('Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -292,7 +292,7 @@ $currency_symbol = get_woocommerce_currency_symbol();
                             </tbody>
                         </table>
                     <?php else: ?>
-                        <p class="no-data"><?php esc_html_e('No hay pedidos recientes.', 'flavor-chat-ia'); ?></p>
+                        <p class="no-data"><?php esc_html_e('No hay pedidos recientes.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php endif; ?>
                 </div>
             </div>
@@ -302,9 +302,9 @@ $currency_symbol = get_woocommerce_currency_symbol();
         <div class="flavor-column">
             <div class="flavor-card">
                 <div class="card-header">
-                    <h3><?php esc_html_e('Productos Más Vendidos', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Productos Más Vendidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <a href="<?php echo esc_url(admin_url('edit.php?post_type=product')); ?>" class="button button-small">
-                        <?php esc_html_e('Ver todos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
                 <div class="card-content">
@@ -312,9 +312,9 @@ $currency_symbol = get_woocommerce_currency_symbol();
                         <table class="wp-list-table widefat striped">
                             <thead>
                                 <tr>
-                                    <th><?php esc_html_e('Producto', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Precio', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Ventas', 'flavor-chat-ia'); ?></th>
+                                    <th><?php esc_html_e('Producto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php esc_html_e('Precio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php esc_html_e('Ventas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -336,7 +336,7 @@ $currency_symbol = get_woocommerce_currency_symbol();
                             </tbody>
                         </table>
                     <?php else: ?>
-                        <p class="no-data"><?php esc_html_e('No hay datos de ventas disponibles.', 'flavor-chat-ia'); ?></p>
+                        <p class="no-data"><?php esc_html_e('No hay datos de ventas disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php endif; ?>
                 </div>
             </div>
@@ -345,7 +345,7 @@ $currency_symbol = get_woocommerce_currency_symbol();
             <?php if ($productos_sin_stock > 0 || $productos_stock_bajo > 0): ?>
                 <div class="flavor-card flavor-card-warning">
                     <div class="card-header">
-                        <h3><?php esc_html_e('Alertas de Stock', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php esc_html_e('Alertas de Stock', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     </div>
                     <div class="card-content">
                         <ul class="stock-alerts">
@@ -353,7 +353,7 @@ $currency_symbol = get_woocommerce_currency_symbol();
                                 <li class="alert-danger">
                                     <span class="dashicons dashicons-warning"></span>
                                     <?php printf(
-                                        esc_html__('%d productos sin stock', 'flavor-chat-ia'),
+                                        esc_html__('%d productos sin stock', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                         $productos_sin_stock
                                     ); ?>
                                 </li>
@@ -362,7 +362,7 @@ $currency_symbol = get_woocommerce_currency_symbol();
                                 <li class="alert-warning">
                                     <span class="dashicons dashicons-info"></span>
                                     <?php printf(
-                                        esc_html__('%d productos con stock bajo', 'flavor-chat-ia'),
+                                        esc_html__('%d productos con stock bajo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                         $productos_stock_bajo
                                     ); ?>
                                 </li>

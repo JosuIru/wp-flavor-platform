@@ -51,7 +51,7 @@ $tarjetas_estadisticas = $tarjetas_estadisticas ?? [
                     <?php echo esc_html($titulo_estadisticas); ?>
                 </h2>
                 <p class="text-gray-500 text-lg max-w-2xl mx-auto">
-                    <?php echo esc_html__('Visualiza el estado de tu facturacion de un vistazo', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Visualiza el estado de tu facturacion de un vistazo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
@@ -81,7 +81,7 @@ $tarjetas_estadisticas = $tarjetas_estadisticas ?? [
             <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 max-w-2xl mx-auto">
                 <div class="flex items-center justify-between mb-3">
                     <h3 class="text-sm font-semibold text-gray-800">
-                        <?php echo esc_html__('Progreso de cobro mensual', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Progreso de cobro mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <span class="text-sm font-bold" style="color: #10B981;">
                         <?php echo esc_html($tasa_cobro); ?>%
@@ -92,8 +92,8 @@ $tarjetas_estadisticas = $tarjetas_estadisticas ?? [
                          style="width: <?php echo esc_attr($tasa_cobro); ?>%; background: linear-gradient(90deg, #14B8A6, #10B981);"></div>
                 </div>
                 <div class="flex items-center justify-between mt-3 text-xs text-gray-400">
-                    <span><?php echo esc_html__('Cobrado', 'flavor-chat-ia'); ?>: <?php echo esc_html($total_facturado); ?>&euro;</span>
-                    <span><?php echo esc_html__('Pendiente', 'flavor-chat-ia'); ?>: <?php echo esc_html($pendiente_cobro); ?>&euro;</span>
+                    <span><?php echo esc_html__('Cobrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>: <?php echo esc_html($total_facturado); ?>&euro;</span>
+                    <span><?php echo esc_html__('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>: <?php echo esc_html($pendiente_cobro); ?>&euro;</span>
                 </div>
             </div>
         </div>

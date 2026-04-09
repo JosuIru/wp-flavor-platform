@@ -29,7 +29,7 @@ class Flavor_Module_Activator extends Flavor_Template_Component_Base {
      */
     public function __construct() {
         $this->componente_id = 'modulos';
-        $this->componente_nombre = __('Activador de Modulos', 'flavor-chat-ia');
+        $this->componente_nombre = __('Activador de Modulos', FLAVOR_PLATFORM_TEXT_DOMAIN);
     }
 
     /**
@@ -55,13 +55,13 @@ class Flavor_Module_Activator extends Flavor_Template_Component_Base {
 
         if (empty($modulos_a_activar)) {
             return $this->respuesta_exito(
-                __('No hay modulos para activar.', 'flavor-chat-ia'),
+                __('No hay modulos para activar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['modulos_activados' => []]
             );
         }
 
         // Obtener configuracion actual del plugin
-        $configuracion_plugin = get_option('flavor_chat_ia_settings', []);
+        $configuracion_plugin = flavor_get_main_settings();
         $modulos_activos_actuales = $configuracion_plugin['active_modules'] ?? [];
 
         // Crear snapshot del estado actual
@@ -85,7 +85,7 @@ class Flavor_Module_Activator extends Flavor_Template_Component_Base {
             if (!$this->modulo_existe($modulo_id_normalizado)) {
                 $this->registrar_advertencia(
                     'modulo_no_existe',
-                    sprintf(__('El modulo "%s" no existe en el sistema.', 'flavor-chat-ia'), $modulo_id)
+                    sprintf(__('El modulo "%s" no existe en el sistema.', FLAVOR_PLATFORM_TEXT_DOMAIN), $modulo_id)
                 );
                 $modulos_fallidos[] = $modulo_id_normalizado;
                 continue;
@@ -97,7 +97,7 @@ class Flavor_Module_Activator extends Flavor_Template_Component_Base {
 
         // Guardar configuracion actualizada
         $configuracion_plugin['active_modules'] = array_unique($modulos_activos_actuales);
-        update_option('flavor_chat_ia_settings', $configuracion_plugin);
+        flavor_update_main_settings($configuracion_plugin);
 
         // Cargar e inicializar los modulos recien activados
         $this->inicializar_modulos($modulos_activados);
@@ -110,13 +110,13 @@ class Flavor_Module_Activator extends Flavor_Template_Component_Base {
         $this->registrar_plantilla_activa($plantilla_id, array_merge($modulos_activados, $modulos_ya_activos));
 
         $mensaje = sprintf(
-            __('Se activaron %d modulos correctamente.', 'flavor-chat-ia'),
+            __('Se activaron %d modulos correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             count($modulos_activados)
         );
 
         if (!empty($modulos_ya_activos)) {
             $mensaje .= ' ' . sprintf(
-                __('%d modulos ya estaban activos.', 'flavor-chat-ia'),
+                __('%d modulos ya estaban activos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 count($modulos_ya_activos)
             );
         }
@@ -145,12 +145,12 @@ class Flavor_Module_Activator extends Flavor_Template_Component_Base {
 
         if (empty($modulos_instalados)) {
             return $this->respuesta_exito(
-                __('No hay modulos instalados por esta plantilla para desactivar.', 'flavor-chat-ia'),
+                __('No hay modulos instalados por esta plantilla para desactivar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['modulos_desactivados' => []]
             );
         }
 
-        $configuracion_plugin = get_option('flavor_chat_ia_settings', []);
+        $configuracion_plugin = flavor_get_main_settings();
         $modulos_activos = $configuracion_plugin['active_modules'] ?? [];
 
         $modulos_desactivados = [];
@@ -163,7 +163,7 @@ class Flavor_Module_Activator extends Flavor_Template_Component_Base {
                 $this->registrar_advertencia(
                     'modulo_en_uso',
                     sprintf(
-                        __('El modulo "%s" esta siendo usado por otra plantilla y no se desactivara.', 'flavor-chat-ia'),
+                        __('El modulo "%s" esta siendo usado por otra plantilla y no se desactivara.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $modulo_id
                     )
                 );
@@ -180,14 +180,14 @@ class Flavor_Module_Activator extends Flavor_Template_Component_Base {
 
         // Reindexar array y guardar
         $configuracion_plugin['active_modules'] = array_values($modulos_activos);
-        update_option('flavor_chat_ia_settings', $configuracion_plugin);
+        flavor_update_main_settings($configuracion_plugin);
 
         // Limpiar metadatos
         $this->eliminar_meta_instalacion($plantilla_id);
         $this->desregistrar_plantilla_activa($plantilla_id);
 
         return $this->respuesta_exito(
-            sprintf(__('Se desactivaron %d modulos.', 'flavor-chat-ia'), count($modulos_desactivados)),
+            sprintf(__('Se desactivaron %d modulos.', FLAVOR_PLATFORM_TEXT_DOMAIN), count($modulos_desactivados)),
             [
                 'modulos_desactivados' => $modulos_desactivados,
                 'modulos_en_uso'       => $modulos_en_uso,
@@ -206,7 +206,7 @@ class Flavor_Module_Activator extends Flavor_Template_Component_Base {
         $modulos_requeridos = $definicion['modulos_requeridos'] ?? [];
         $modulos_opcionales = $definicion['modulos_opcionales'] ?? [];
 
-        $configuracion_plugin = get_option('flavor_chat_ia_settings', []);
+        $configuracion_plugin = flavor_get_main_settings();
         $modulos_activos = $configuracion_plugin['active_modules'] ?? [];
 
         $estado_modulos = [
@@ -338,19 +338,19 @@ class Flavor_Module_Activator extends Flavor_Template_Component_Base {
 
         if ($total_faltantes === 0 && $total_activos > 0) {
             return sprintf(
-                __('Todos los modulos requeridos estan activos (%d modulos).', 'flavor-chat-ia'),
+                __('Todos los modulos requeridos estan activos (%d modulos).', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $total_activos
             );
         }
 
         if ($total_faltantes > 0) {
             return sprintf(
-                __('Faltan %d modulos requeridos por activar: %s', 'flavor-chat-ia'),
+                __('Faltan %d modulos requeridos por activar: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $total_faltantes,
                 implode(', ', $estado_modulos['requeridos']['faltantes'])
             );
         }
 
-        return __('No hay modulos configurados para esta plantilla.', 'flavor-chat-ia');
+        return __('No hay modulos configurados para esta plantilla.', FLAVOR_PLATFORM_TEXT_DOMAIN);
     }
 }

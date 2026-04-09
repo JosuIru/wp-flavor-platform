@@ -27,8 +27,8 @@ if (!$tabla_conversaciones_existe) {
         <div class="dm-alert dm-alert--info">
             <span class="dashicons dashicons-info"></span>
             <div>
-                <strong><?php esc_html_e('Módulo en preparación', 'flavor-chat-ia'); ?></strong>
-                <p><?php esc_html_e('Las tablas del módulo Chat Interno aún no han sido creadas. Activa el módulo completamente para generar la estructura necesaria.', 'flavor-chat-ia'); ?></p>
+                <strong><?php esc_html_e('Módulo en preparación', 'flavor-platform'); ?></strong>
+                <p><?php esc_html_e('Las tablas del módulo Chat Interno aún no han sido creadas. Activa el módulo completamente para generar la estructura necesaria.', 'flavor-platform'); ?></p>
             </div>
         </div>
     </div>
@@ -89,8 +89,8 @@ $usuarios_top = $tabla_mensajes_existe ? $wpdb->get_results(
 <div class="dm-alert dm-alert--info" style="margin-bottom: 16px;">
     <span class="dashicons dashicons-lock"></span>
     <div>
-        <strong><?php esc_html_e('Mensajería Privada', 'flavor-chat-ia'); ?></strong>
-        <span><?php esc_html_e('Los mensajes entre usuarios son privados. Este panel solo muestra estadísticas agregadas, no contenido de conversaciones.', 'flavor-chat-ia'); ?></span>
+        <strong><?php esc_html_e('Mensajería Privada', 'flavor-platform'); ?></strong>
+        <span><?php esc_html_e('Los mensajes entre usuarios son privados. Este panel solo muestra estadísticas agregadas, no contenido de conversaciones.', 'flavor-platform'); ?></span>
     </div>
 </div>
 
@@ -98,19 +98,19 @@ $usuarios_top = $tabla_mensajes_existe ? $wpdb->get_results(
 <div class="dm-quick-actions">
     <a href="<?php echo esc_url(admin_url('admin.php?page=chat-interno-configuracion')); ?>" class="dm-quick-action">
         <span class="dashicons dashicons-admin-settings"></span>
-        <?php esc_html_e('Configuración', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Configuración', 'flavor-platform'); ?>
     </a>
     <a href="<?php echo esc_url(admin_url('admin.php?page=chat-interno-usuarios')); ?>" class="dm-quick-action">
         <span class="dashicons dashicons-groups"></span>
-        <?php esc_html_e('Usuarios Activos', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Usuarios Activos', 'flavor-platform'); ?>
     </a>
     <a href="<?php echo esc_url(admin_url('admin.php?page=chat-interno-reportes')); ?>" class="dm-quick-action">
         <span class="dashicons dashicons-flag"></span>
-        <?php esc_html_e('Reportes/Denuncias', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Reportes/Denuncias', 'flavor-platform'); ?>
     </a>
     <a href="<?php echo esc_url(admin_url('admin.php?page=chat-interno-bloqueos')); ?>" class="dm-quick-action dm-quick-action--outline">
         <span class="dashicons dashicons-dismiss"></span>
-        <?php esc_html_e('Usuarios Bloqueados', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Usuarios Bloqueados', 'flavor-platform'); ?>
     </a>
 </div>
 
@@ -119,7 +119,7 @@ $usuarios_top = $tabla_mensajes_existe ? $wpdb->get_results(
         <span class="dashicons dashicons-format-chat dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($total_conversaciones); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Conversaciones', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Conversaciones', 'flavor-platform'); ?></div>
         </div>
     </div>
 
@@ -127,7 +127,7 @@ $usuarios_top = $tabla_mensajes_existe ? $wpdb->get_results(
         <span class="dashicons dashicons-admin-users dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($usuarios_activos); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Usuarios Activos', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Usuarios Activos', 'flavor-platform'); ?></div>
         </div>
     </div>
 
@@ -135,7 +135,7 @@ $usuarios_top = $tabla_mensajes_existe ? $wpdb->get_results(
         <span class="dashicons dashicons-email-alt dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($total_mensajes)); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Total Mensajes', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Total Mensajes', 'flavor-platform'); ?></div>
         </div>
     </div>
 
@@ -143,7 +143,7 @@ $usuarios_top = $tabla_mensajes_existe ? $wpdb->get_results(
         <span class="dashicons dashicons-clock dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($mensajes_hoy); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Mensajes Hoy', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Mensajes Hoy', 'flavor-platform'); ?></div>
         </div>
     </div>
 </div>
@@ -153,27 +153,27 @@ $usuarios_top = $tabla_mensajes_existe ? $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-chart-bar"></span>
-                <?php esc_html_e('Actividad Semanal', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Actividad Semanal', 'flavor-platform'); ?>
             </h3>
-            <span class="dm-card__subtitle"><?php printf(esc_html__('%s mensajes', 'flavor-chat-ia'), number_format_i18n($mensajes_semana)); ?></span>
+            <span class="dm-card__subtitle"><?php printf(esc_html__('%s mensajes', 'flavor-platform'), number_format_i18n($mensajes_semana)); ?></span>
         </div>
         <div class="dm-card__body">
             <?php if (empty($actividad_diaria)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-chart-line"></span>
-                    <p><?php esc_html_e('No hay actividad en los últimos 7 días.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay actividad en los últimos 7 días.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <?php
                 $max_mensajes = max(array_column($actividad_diaria, 'total'));
                 $dias_semana = [
-                    __('Dom', 'flavor-chat-ia'),
-                    __('Lun', 'flavor-chat-ia'),
-                    __('Mar', 'flavor-chat-ia'),
-                    __('Mié', 'flavor-chat-ia'),
-                    __('Jue', 'flavor-chat-ia'),
-                    __('Vie', 'flavor-chat-ia'),
-                    __('Sáb', 'flavor-chat-ia')
+                    __('Dom', 'flavor-platform'),
+                    __('Lun', 'flavor-platform'),
+                    __('Mar', 'flavor-platform'),
+                    __('Mié', 'flavor-platform'),
+                    __('Jue', 'flavor-platform'),
+                    __('Vie', 'flavor-platform'),
+                    __('Sáb', 'flavor-platform')
                 ];
                 ?>
                 <div class="dm-chart-bars">
@@ -196,8 +196,8 @@ $usuarios_top = $tabla_mensajes_existe ? $wpdb->get_results(
             <div class="dm-alert dm-alert--warning" style="margin-top: 16px;">
                 <span class="dashicons dashicons-email"></span>
                 <div>
-                    <strong><?php printf(esc_html__('%s mensajes sin leer', 'flavor-chat-ia'), number_format_i18n($mensajes_no_leidos)); ?></strong>
-                    <span><?php printf(esc_html__('en %s conversaciones', 'flavor-chat-ia'), $conversaciones_pendientes); ?></span>
+                    <strong><?php printf(esc_html__('%s mensajes sin leer', 'flavor-platform'), number_format_i18n($mensajes_no_leidos)); ?></strong>
+                    <span><?php printf(esc_html__('en %s conversaciones', 'flavor-platform'), $conversaciones_pendientes); ?></span>
                 </div>
             </div>
             <?php endif; ?>
@@ -208,15 +208,15 @@ $usuarios_top = $tabla_mensajes_existe ? $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-awards"></span>
-                <?php esc_html_e('Usuarios Más Activos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Usuarios Más Activos', 'flavor-platform'); ?>
             </h3>
-            <span class="dm-card__subtitle"><?php esc_html_e('Últimos 30 días', 'flavor-chat-ia'); ?></span>
+            <span class="dm-card__subtitle"><?php esc_html_e('Últimos 30 días', 'flavor-platform'); ?></span>
         </div>
         <div class="dm-card__body">
             <?php if (empty($usuarios_top)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-admin-users"></span>
-                    <p><?php esc_html_e('No hay datos de actividad todavía.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay datos de actividad todavía.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <ul class="dm-ranking">
@@ -224,13 +224,13 @@ $usuarios_top = $tabla_mensajes_existe ? $wpdb->get_results(
                         <li class="dm-ranking__item">
                             <span class="dm-ranking__position"><?php echo ($index + 1); ?></span>
                             <div class="dm-ranking__avatar">
-                                <?php echo mb_substr($usuario->display_name ?: __('U', 'flavor-chat-ia'), 0, 1); ?>
+                                <?php echo mb_substr($usuario->display_name ?: __('U', 'flavor-platform'), 0, 1); ?>
                             </div>
                             <div class="dm-ranking__content">
-                                <strong class="dm-ranking__name"><?php echo esc_html($usuario->display_name ?: __('Usuario', 'flavor-chat-ia')); ?></strong>
+                                <strong class="dm-ranking__name"><?php echo esc_html($usuario->display_name ?: __('Usuario', 'flavor-platform')); ?></strong>
                             </div>
                             <span class="dm-badge dm-badge--info">
-                                <?php echo esc_html($usuario->total_mensajes); ?> <?php esc_html_e('msgs', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html($usuario->total_mensajes); ?> <?php esc_html_e('msgs', 'flavor-platform'); ?>
                             </span>
                         </li>
                     <?php endforeach; ?>
@@ -244,19 +244,19 @@ $usuarios_top = $tabla_mensajes_existe ? $wpdb->get_results(
     <div class="dm-stat-card dm-stat-card--info">
         <span class="dashicons dashicons-admin-comments dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($conversaciones_activas); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Conversaciones Activas', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Conversaciones Activas', 'flavor-platform'); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--error">
         <span class="dashicons dashicons-email dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($mensajes_no_leidos)); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Mensajes Sin Leer', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Mensajes Sin Leer', 'flavor-platform'); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--secondary">
         <span class="dashicons dashicons-visibility dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($conversaciones_pendientes); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Conv. con Pendientes', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Conv. con Pendientes', 'flavor-platform'); ?></div>
     </div>
 </div>
 
@@ -265,30 +265,30 @@ $usuarios_top = $tabla_mensajes_existe ? $wpdb->get_results(
     <div class="dm-card__header">
         <h3 class="dm-card__title">
             <span class="dashicons dashicons-external"></span>
-            <?php esc_html_e('Páginas Públicas del Módulo', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Páginas Públicas del Módulo', 'flavor-platform'); ?>
         </h3>
-        <span class="dm-card__subtitle"><?php esc_html_e('Shortcodes disponibles para el frontend', 'flavor-chat-ia'); ?></span>
+        <span class="dm-card__subtitle"><?php esc_html_e('Shortcodes disponibles para el frontend', 'flavor-platform'); ?></span>
     </div>
     <div class="dm-card__body">
         <div class="dm-link-grid">
             <a href="<?php echo esc_url(home_url('/mensajes/')); ?>" target="_blank" class="dm-link-card">
                 <span class="dashicons dashicons-email-alt"></span>
                 <div>
-                    <strong><?php esc_html_e('Bandeja de Entrada', 'flavor-chat-ia'); ?></strong>
+                    <strong><?php esc_html_e('Bandeja de Entrada', 'flavor-platform'); ?></strong>
                     <span>[chat_interno_inbox]</span>
                 </div>
             </a>
             <a href="<?php echo esc_url(home_url('/mensajes/nuevo/')); ?>" target="_blank" class="dm-link-card">
                 <span class="dashicons dashicons-plus-alt2"></span>
                 <div>
-                    <strong><?php esc_html_e('Iniciar Conversación', 'flavor-chat-ia'); ?></strong>
+                    <strong><?php esc_html_e('Iniciar Conversación', 'flavor-platform'); ?></strong>
                     <span>[chat_interno_iniciar]</span>
                 </div>
             </a>
             <div class="dm-link-card" style="cursor: default; opacity: 0.7;">
                 <span class="dashicons dashicons-format-chat"></span>
                 <div>
-                    <strong><?php esc_html_e('Ver Conversación', 'flavor-chat-ia'); ?></strong>
+                    <strong><?php esc_html_e('Ver Conversación', 'flavor-platform'); ?></strong>
                     <span>[chat_interno_conversacion id="X"]</span>
                 </div>
             </div>
@@ -297,8 +297,8 @@ $usuarios_top = $tabla_mensajes_existe ? $wpdb->get_results(
         <div class="dm-alert dm-alert--info" style="margin-top: 16px;">
             <span class="dashicons dashicons-info"></span>
             <div>
-                <strong><?php esc_html_e('Tip:', 'flavor-chat-ia'); ?></strong>
-                <span><?php esc_html_e('Usa estos shortcodes en cualquier página para mostrar la funcionalidad de chat interno a los usuarios.', 'flavor-chat-ia'); ?></span>
+                <strong><?php esc_html_e('Tip:', 'flavor-platform'); ?></strong>
+                <span><?php esc_html_e('Usa estos shortcodes en cualquier página para mostrar la funcionalidad de chat interno a los usuarios.', 'flavor-platform'); ?></span>
             </div>
         </div>
     </div>

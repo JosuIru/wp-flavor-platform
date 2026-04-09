@@ -9,49 +9,49 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$titulo = $titulo ?? __('Anuncios cerca de ti', 'flavor-chat-ia');
+$titulo = $titulo ?? __('Anuncios cerca de ti', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $color_primario = $color_primario ?? '#ff9800';
 $id_seccion = $id_seccion ?? '';
 
 $categorias_default = [
-    ['slug' => 'venta', 'nombre' => __('Venta', 'flavor-chat-ia'), 'icono' => 'tag', 'color' => '#22c55e'],
-    ['slug' => 'regalo', 'nombre' => __('Regalo', 'flavor-chat-ia'), 'icono' => 'heart', 'color' => '#ec4899'],
-    ['slug' => 'intercambio', 'nombre' => __('Intercambio', 'flavor-chat-ia'), 'icono' => 'randomize', 'color' => '#8b5cf6'],
-    ['slug' => 'alquiler', 'nombre' => __('Alquiler', 'flavor-chat-ia'), 'icono' => 'calendar', 'color' => '#06b6d4'],
-    ['slug' => 'servicios', 'nombre' => __('Servicios', 'flavor-chat-ia'), 'icono' => 'admin-tools', 'color' => '#f59e0b'],
+    ['slug' => 'venta', 'nombre' => __('Venta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'tag', 'color' => '#22c55e'],
+    ['slug' => 'regalo', 'nombre' => __('Regalo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'heart', 'color' => '#ec4899'],
+    ['slug' => 'intercambio', 'nombre' => __('Intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'randomize', 'color' => '#8b5cf6'],
+    ['slug' => 'alquiler', 'nombre' => __('Alquiler', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'calendar', 'color' => '#06b6d4'],
+    ['slug' => 'servicios', 'nombre' => __('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'admin-tools', 'color' => '#f59e0b'],
 ];
 
 $anuncios_default = [
     [
-        'titulo' => __('Bicicleta de montaña', 'flavor-chat-ia'),
+        'titulo' => __('Bicicleta de montaña', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'categoria' => 'venta',
         'precio' => '120€',
-        'ubicacion' => __('Centro', 'flavor-chat-ia'),
-        'tiempo' => __('Hace 2 horas', 'flavor-chat-ia'),
+        'ubicacion' => __('Centro', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'tiempo' => __('Hace 2 horas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'imagen' => '',
     ],
     [
-        'titulo' => __('Sofá 3 plazas', 'flavor-chat-ia'),
+        'titulo' => __('Sofá 3 plazas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'categoria' => 'regalo',
-        'precio' => __('Gratis', 'flavor-chat-ia'),
-        'ubicacion' => __('Ensanche', 'flavor-chat-ia'),
-        'tiempo' => __('Hace 5 horas', 'flavor-chat-ia'),
+        'precio' => __('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'ubicacion' => __('Ensanche', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'tiempo' => __('Hace 5 horas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'imagen' => '',
     ],
     [
-        'titulo' => __('Clases de guitarra', 'flavor-chat-ia'),
+        'titulo' => __('Clases de guitarra', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'categoria' => 'servicios',
         'precio' => '15€/h',
-        'ubicacion' => __('A domicilio', 'flavor-chat-ia'),
-        'tiempo' => __('Hace 1 día', 'flavor-chat-ia'),
+        'ubicacion' => __('A domicilio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'tiempo' => __('Hace 1 día', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'imagen' => '',
     ],
     [
-        'titulo' => __('Taladro profesional', 'flavor-chat-ia'),
+        'titulo' => __('Taladro profesional', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'categoria' => 'alquiler',
         'precio' => '5€/día',
-        'ubicacion' => __('San Juan', 'flavor-chat-ia'),
-        'tiempo' => __('Hace 1 día', 'flavor-chat-ia'),
+        'ubicacion' => __('San Juan', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'tiempo' => __('Hace 1 día', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'imagen' => '',
     ],
 ];
@@ -72,14 +72,14 @@ foreach ($categorias as $cat) {
             <h2 class="flavor-section-title"><?php echo esc_html($titulo); ?></h2>
             <a href="#publicar" class="flavor-publicar-btn">
                 <span class="dashicons dashicons-plus-alt2"></span>
-                <?php esc_html_e('Publicar anuncio', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Publicar anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
 
         <!-- Filtros por categoría -->
         <div class="flavor-categorias-filtro">
             <button class="flavor-filtro-btn is-active" data-categoria="todos">
-                <?php esc_html_e('Todos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <?php foreach ($categorias as $cat): ?>
                 <button class="flavor-filtro-btn" data-categoria="<?php echo esc_attr($cat['slug']); ?>" style="--cat-color: <?php echo esc_attr($cat['color']); ?>;">
@@ -125,29 +125,29 @@ foreach ($categorias as $cat) {
 
         <div class="flavor-marketplace-acciones">
             <a href="#todos" class="flavor-ver-mas">
-                <?php esc_html_e('Ver todos los anuncios', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver todos los anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <span class="dashicons dashicons-arrow-right-alt2"></span>
             </a>
         </div>
 
         <!-- Cómo funciona -->
         <div class="flavor-como-funciona">
-            <h3><?php esc_html_e('¿Cómo funciona?', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('¿Cómo funciona?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <div class="flavor-pasos">
                 <div class="flavor-paso">
                     <div class="flavor-paso-numero">1</div>
-                    <h4><?php esc_html_e('Publica', 'flavor-chat-ia'); ?></h4>
-                    <p><?php esc_html_e('Sube fotos y describe lo que ofreces', 'flavor-chat-ia'); ?></p>
+                    <h4><?php esc_html_e('Publica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                    <p><?php esc_html_e('Sube fotos y describe lo que ofreces', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <div class="flavor-paso">
                     <div class="flavor-paso-numero">2</div>
-                    <h4><?php esc_html_e('Conecta', 'flavor-chat-ia'); ?></h4>
-                    <p><?php esc_html_e('Los vecinos interesados te contactan', 'flavor-chat-ia'); ?></p>
+                    <h4><?php esc_html_e('Conecta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                    <p><?php esc_html_e('Los vecinos interesados te contactan', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <div class="flavor-paso">
                     <div class="flavor-paso-numero">3</div>
-                    <h4><?php esc_html_e('Acuerda', 'flavor-chat-ia'); ?></h4>
-                    <p><?php esc_html_e('Quedáis en persona para el intercambio', 'flavor-chat-ia'); ?></p>
+                    <h4><?php esc_html_e('Acuerda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                    <p><?php esc_html_e('Quedáis en persona para el intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             </div>
         </div>

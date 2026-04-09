@@ -15,7 +15,7 @@ $url_conectar = $url_conectar ?? '/dex-solana/conectar/';
 <section class="flavor-component flavor-section relative overflow-hidden" style="background: linear-gradient(135deg, var(--flavor-primary, #8B5CF6) 0%, var(--flavor-secondary, #7C3AED) 100%); min-height: 500px;">
     <!-- Patron Web3 -->
     <div class="absolute inset-0 opacity-10">
-        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 60 60%22><rect width=%2260%22 height=%2260%22 fill=%22none%22/><polygon points=%2230,5 55,20 55,50 30,65 5,50 5,20%22 fill=%22none%22 stroke=%22white%22 stroke-width=%220.5%22/></svg><?php echo esc_html__('\'); background-size: 60px 60px;">', 'flavor-chat-ia'); ?></div>
+        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 60 60%22><rect width=%2260%22 height=%2260%22 fill=%22none%22/><polygon points=%2230,5 55,20 55,50 30,65 5,50 5,20%22 fill=%22none%22 stroke=%22white%22 stroke-width=%220.5%22/></svg><?php echo esc_html__('\'); background-size: 60px 60px;">', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
     <!-- Particulas decorativas -->
     <div class="absolute top-20 left-10 w-2 h-2 rounded-full bg-violet-300/30 animate-pulse"></div>
@@ -29,7 +29,7 @@ $url_conectar = $url_conectar ?? '/dex-solana/conectar/';
                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                 </svg>
-                <span class="text-white text-sm font-medium"><?php echo esc_html__('Powered by Solana', 'flavor-chat-ia'); ?></span>
+                <span class="text-white text-sm font-medium"><?php echo esc_html__('Powered by Solana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
 
             <h1 class="text-4xl lg:text-6xl font-bold text-white mb-4">
@@ -44,7 +44,7 @@ $url_conectar = $url_conectar ?? '/dex-solana/conectar/';
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
                 </svg>
-                <?php echo esc_html__('Conectar Wallet', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Conectar Wallet', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
 
@@ -52,15 +52,15 @@ $url_conectar = $url_conectar ?? '/dex-solana/conectar/';
         <div class="grid grid-cols-3 gap-4 max-w-3xl mx-auto">
             <div class="text-center p-5 rounded-xl bg-white/10 backdrop-blur border border-white/20">
                 <div class="text-3xl lg:text-4xl font-bold text-white"><?php echo esc_html($total_tvl); ?></div>
-                <div class="text-sm text-white/70"><?php echo esc_html__('TVL', 'flavor-chat-ia'); ?></div>
+                <div class="text-sm text-white/70"><?php echo esc_html__('TVL', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
             <div class="text-center p-5 rounded-xl bg-white/10 backdrop-blur border border-white/20">
                 <div class="text-3xl lg:text-4xl font-bold text-white"><?php echo esc_html($tokens_listados); ?></div>
-                <div class="text-sm text-white/70"><?php echo esc_html__('Tokens Listados', 'flavor-chat-ia'); ?></div>
+                <div class="text-sm text-white/70"><?php echo esc_html__('Tokens Listados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
             <div class="text-center p-5 rounded-xl bg-white/10 backdrop-blur border border-white/20">
                 <div class="text-3xl lg:text-4xl font-bold text-white"><?php echo esc_html($volumen_24h); ?></div>
-                <div class="text-sm text-white/70"><?php echo esc_html__('Volumen 24h', 'flavor-chat-ia'); ?></div>
+                <div class="text-sm text-white/70"><?php echo esc_html__('Volumen 24h', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
     </div>

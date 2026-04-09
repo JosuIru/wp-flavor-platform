@@ -89,21 +89,21 @@ class Flavor_Bicicletas_Dashboard_Tab {
         }
 
         $tabs_existentes['bicicletas-mis-viajes'] = [
-            'label'    => __('Mis Viajes en Bici', 'flavor-chat-ia'),
+            'label'    => __('Mis Viajes en Bici', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => 'bike',
             'callback' => [$this, 'render_tab_mis_viajes'],
             'orden'    => 35,
         ];
 
         $tabs_existentes['bicicletas-mi-cuenta'] = [
-            'label'    => __('Mi Cuenta Bici', 'flavor-chat-ia'),
+            'label'    => __('Mi Cuenta Bici', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => 'wallet',
             'callback' => [$this, 'render_tab_mi_cuenta'],
             'orden'    => 36,
         ];
 
         $tabs_existentes['bicicletas-estadisticas'] = [
-            'label'    => __('Mis Estadísticas', 'flavor-chat-ia'),
+            'label'    => __('Mis Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => 'chart',
             'callback' => [$this, 'render_tab_estadisticas'],
             'orden'    => 37,
@@ -179,9 +179,9 @@ class Flavor_Bicicletas_Dashboard_Tab {
         ?>
         <div class="flavor-bicicletas-tab flavor-bicicletas-mis-viajes">
             <div class="flavor-tab-header">
-                <h2><?php esc_html_e('Mis Viajes en Bici', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Mis Viajes en Bici', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <p class="flavor-tab-description">
-                    <?php esc_html_e('Historial completo de tus préstamos y viajes en bicicleta.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Historial completo de tus préstamos y viajes en bicicleta.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
@@ -196,12 +196,12 @@ class Flavor_Bicicletas_Dashboard_Tab {
                         </svg>
                     </div>
                     <div class="flavor-viaje-activo-info">
-                        <strong><?php esc_html_e('Viaje en curso', 'flavor-chat-ia'); ?></strong>
+                        <strong><?php esc_html_e('Viaje en curso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                         <p>
                             <?php
                             printf(
                                 /* translators: %1$s: código bicicleta, %2$s: estación salida, %3$s: tiempo transcurrido */
-                                esc_html__('Bicicleta %1$s desde %2$s - %3$s', 'flavor-chat-ia'),
+                                esc_html__('Bicicleta %1$s desde %2$s - %3$s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 '<strong>' . esc_html($viaje_activo->bicicleta_codigo) . '</strong>',
                                 esc_html($viaje_activo->estacion_nombre),
                                 $this->formatear_duracion_viaje($viaje_activo->fecha_inicio)
@@ -222,8 +222,8 @@ class Flavor_Bicicletas_Dashboard_Tab {
                             <path d="M12 17.5V14l-3-3 4-3 2 3h3"/>
                         </svg>
                     </div>
-                    <h3><?php esc_html_e('Sin viajes registrados', 'flavor-chat-ia'); ?></h3>
-                    <p><?php esc_html_e('Aún no has realizado ningún viaje. ¡Encuentra una estación cercana y comienza a pedalear!', 'flavor-chat-ia'); ?></p>
+                    <h3><?php esc_html_e('Sin viajes registrados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php esc_html_e('Aún no has realizado ningún viaje. ¡Encuentra una estación cercana y comienza a pedalear!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else : ?>
                 <div class="flavor-viajes-lista" id="flavor-viajes-lista">
@@ -239,7 +239,7 @@ class Flavor_Bicicletas_Dashboard_Tab {
                                 id="flavor-cargar-mas-viajes"
                                 data-offset="10"
                                 data-total="<?php echo esc_attr($total_viajes); ?>">
-                            <?php esc_html_e('Cargar más viajes', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Cargar más viajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 <?php endif; ?>
@@ -256,7 +256,7 @@ class Flavor_Bicicletas_Dashboard_Tab {
                     var btn = this;
 
                     btn.disabled = true;
-                    btn.textContent = '<?php echo esc_js(__('Cargando...', 'flavor-chat-ia')); ?>';
+                    btn.textContent = '<?php echo esc_js(__('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
 
                     fetch('<?php echo esc_url(admin_url('admin-ajax.php')); ?>', {
                         method: 'POST',
@@ -273,13 +273,13 @@ class Flavor_Bicicletas_Dashboard_Tab {
                             } else {
                                 btn.dataset.offset = nuevoOffset;
                                 btn.disabled = false;
-                                btn.textContent = '<?php echo esc_js(__('Cargar más viajes', 'flavor-chat-ia')); ?>';
+                                btn.textContent = '<?php echo esc_js(__('Cargar más viajes', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
                             }
                         }
                     })
                     .catch(function() {
                         btn.disabled = false;
-                        btn.textContent = '<?php echo esc_js(__('Error. Reintentar', 'flavor-chat-ia')); ?>';
+                        btn.textContent = '<?php echo esc_js(__('Error. Reintentar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
                     });
                 });
             }
@@ -310,7 +310,7 @@ class Flavor_Bicicletas_Dashboard_Tab {
                     <?php echo esc_html($fecha_formateada); ?>
                 </div>
                 <span class="flavor-viaje-estado flavor-badge flavor-badge--<?php echo esc_attr($estado_clase); ?>">
-                    <?php echo $viaje->estado === 'finalizado' ? esc_html__('Completado', 'flavor-chat-ia') : esc_html__('En curso', 'flavor-chat-ia'); ?>
+                    <?php echo $viaje->estado === 'finalizado' ? esc_html__('Completado', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('En curso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
             </div>
 
@@ -331,7 +331,7 @@ class Flavor_Bicicletas_Dashboard_Tab {
                 <div class="flavor-viaje-ruta">
                     <div class="flavor-viaje-estacion flavor-viaje-estacion--salida">
                         <span class="flavor-estacion-punto"></span>
-                        <span><?php echo esc_html($viaje->estacion_salida_nombre ?: __('Estación de salida', 'flavor-chat-ia')); ?></span>
+                        <span><?php echo esc_html($viaje->estacion_salida_nombre ?: __('Estación de salida', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>
                     </div>
                     <?php if ($viaje->estacion_llegada_nombre) : ?>
                         <div class="flavor-viaje-linea"></div>
@@ -389,9 +389,9 @@ class Flavor_Bicicletas_Dashboard_Tab {
         ?>
         <div class="flavor-bicicletas-tab flavor-bicicletas-mi-cuenta">
             <div class="flavor-tab-header">
-                <h2><?php esc_html_e('Mi Cuenta Bici', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Mi Cuenta Bici', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <p class="flavor-tab-description">
-                    <?php esc_html_e('Gestiona tu saldo, plan de suscripción y preferencias.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Gestiona tu saldo, plan de suscripción y preferencias.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
@@ -406,11 +406,11 @@ class Flavor_Bicicletas_Dashboard_Tab {
                         </svg>
                     </div>
                     <div class="flavor-cuenta-card-content">
-                        <span class="flavor-cuenta-label"><?php esc_html_e('Saldo disponible', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-cuenta-label"><?php esc_html_e('Saldo disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="flavor-cuenta-valor"><?php echo esc_html(number_format($datos_cuenta['saldo'], 2)); ?> &euro;</span>
                     </div>
                     <button type="button" class="flavor-btn flavor-btn--primary flavor-btn--sm">
-                        <?php esc_html_e('Recargar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Recargar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
 
@@ -422,14 +422,14 @@ class Flavor_Bicicletas_Dashboard_Tab {
                         </svg>
                     </div>
                     <div class="flavor-cuenta-card-content">
-                        <span class="flavor-cuenta-label"><?php esc_html_e('Plan actual', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-cuenta-label"><?php esc_html_e('Plan actual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="flavor-cuenta-valor"><?php echo esc_html($datos_cuenta['plan_nombre']); ?></span>
                         <?php if ($datos_cuenta['plan_vencimiento']) : ?>
                             <span class="flavor-cuenta-detalle">
                                 <?php
                                 printf(
                                     /* translators: %s: fecha de vencimiento */
-                                    esc_html__('Válido hasta: %s', 'flavor-chat-ia'),
+                                    esc_html__('Válido hasta: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                     date_i18n('d M Y', strtotime($datos_cuenta['plan_vencimiento']))
                                 );
                                 ?>
@@ -437,7 +437,7 @@ class Flavor_Bicicletas_Dashboard_Tab {
                         <?php endif; ?>
                     </div>
                     <button type="button" class="flavor-btn flavor-btn--secondary flavor-btn--sm">
-                        <?php esc_html_e('Cambiar plan', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Cambiar plan', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
 
@@ -449,7 +449,7 @@ class Flavor_Bicicletas_Dashboard_Tab {
                         </svg>
                     </div>
                     <div class="flavor-cuenta-card-content">
-                        <span class="flavor-cuenta-label"><?php esc_html_e('Fianza depositada', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-cuenta-label"><?php esc_html_e('Fianza depositada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="flavor-cuenta-valor"><?php echo esc_html(number_format($datos_cuenta['fianza'], 2)); ?> &euro;</span>
                     </div>
                 </div>
@@ -457,7 +457,7 @@ class Flavor_Bicicletas_Dashboard_Tab {
 
             <!-- Planes disponibles -->
             <div class="flavor-planes-section">
-                <h3><?php esc_html_e('Planes disponibles', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Planes disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div class="flavor-planes-grid">
                     <?php
                     $planes_disponibles = $this->obtener_planes_disponibles();
@@ -466,7 +466,7 @@ class Flavor_Bicicletas_Dashboard_Tab {
                     ?>
                         <div class="flavor-plan-card <?php echo $plan_activo ? 'flavor-plan-card--activo' : ''; ?>">
                             <?php if ($plan['destacado']) : ?>
-                                <span class="flavor-plan-badge"><?php esc_html_e('Popular', 'flavor-chat-ia'); ?></span>
+                                <span class="flavor-plan-badge"><?php esc_html_e('Popular', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <?php endif; ?>
                             <h4><?php echo esc_html($plan['nombre']); ?></h4>
                             <div class="flavor-plan-precio">
@@ -484,10 +484,10 @@ class Flavor_Bicicletas_Dashboard_Tab {
                                 <?php endforeach; ?>
                             </ul>
                             <?php if ($plan_activo) : ?>
-                                <span class="flavor-btn flavor-btn--disabled"><?php esc_html_e('Plan actual', 'flavor-chat-ia'); ?></span>
+                                <span class="flavor-btn flavor-btn--disabled"><?php esc_html_e('Plan actual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <?php else : ?>
                                 <button type="button" class="flavor-btn flavor-btn--primary">
-                                    <?php esc_html_e('Seleccionar', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Seleccionar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             <?php endif; ?>
                         </div>
@@ -498,7 +498,7 @@ class Flavor_Bicicletas_Dashboard_Tab {
             <!-- Historial de transacciones -->
             <?php if (!empty($historial_transacciones)) : ?>
                 <div class="flavor-transacciones-section">
-                    <h3><?php esc_html_e('Últimas transacciones', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Últimas transacciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <div class="flavor-transacciones-lista">
                         <?php foreach ($historial_transacciones as $transaccion) : ?>
                             <div class="flavor-transaccion-item">
@@ -533,9 +533,9 @@ class Flavor_Bicicletas_Dashboard_Tab {
         ?>
         <div class="flavor-bicicletas-tab flavor-bicicletas-estadisticas">
             <div class="flavor-tab-header">
-                <h2><?php esc_html_e('Mis Estadísticas', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Mis Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <p class="flavor-tab-description">
-                    <?php esc_html_e('Tu impacto ambiental y resumen de actividad ciclista.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Tu impacto ambiental y resumen de actividad ciclista.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
@@ -550,7 +550,7 @@ class Flavor_Bicicletas_Dashboard_Tab {
                     </div>
                     <div class="flavor-stat-content">
                         <span class="flavor-stat-valor"><?php echo esc_html(number_format($estadisticas['total_km'], 1)); ?></span>
-                        <span class="flavor-stat-label"><?php esc_html_e('Kilómetros recorridos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-stat-label"><?php esc_html_e('Kilómetros recorridos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -564,12 +564,12 @@ class Flavor_Bicicletas_Dashboard_Tab {
                     </div>
                     <div class="flavor-stat-content">
                         <span class="flavor-stat-valor"><?php echo esc_html(number_format($estadisticas['co2_ahorrado'], 2)); ?></span>
-                        <span class="flavor-stat-label"><?php esc_html_e('kg CO₂ ahorrados', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-stat-label"><?php esc_html_e('kg CO₂ ahorrados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <span class="flavor-stat-detalle">
                         <?php
                         /* translators: %d: número de árboles equivalentes */
-                        printf(esc_html__('Equivale a %d árboles plantados', 'flavor-chat-ia'), $estadisticas['arboles_equivalentes']);
+                        printf(esc_html__('Equivale a %d árboles plantados', FLAVOR_PLATFORM_TEXT_DOMAIN), $estadisticas['arboles_equivalentes']);
                         ?>
                     </span>
                 </div>
@@ -583,7 +583,7 @@ class Flavor_Bicicletas_Dashboard_Tab {
                     </div>
                     <div class="flavor-stat-content">
                         <span class="flavor-stat-valor"><?php echo esc_html($this->formatear_tiempo_total($estadisticas['total_minutos'])); ?></span>
-                        <span class="flavor-stat-label"><?php esc_html_e('Tiempo total pedaleando', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-stat-label"><?php esc_html_e('Tiempo total pedaleando', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -598,7 +598,7 @@ class Flavor_Bicicletas_Dashboard_Tab {
                     </div>
                     <div class="flavor-stat-content">
                         <span class="flavor-stat-valor"><?php echo esc_html(number_format($estadisticas['total_viajes'])); ?></span>
-                        <span class="flavor-stat-label"><?php esc_html_e('Viajes realizados', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-stat-label"><?php esc_html_e('Viajes realizados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -612,7 +612,7 @@ class Flavor_Bicicletas_Dashboard_Tab {
                     </div>
                     <div class="flavor-stat-content">
                         <span class="flavor-stat-valor"><?php echo esc_html(number_format($estadisticas['calorias_quemadas'])); ?></span>
-                        <span class="flavor-stat-label"><?php esc_html_e('Calorías quemadas (aprox.)', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-stat-label"><?php esc_html_e('Calorías quemadas (aprox.)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -625,14 +625,14 @@ class Flavor_Bicicletas_Dashboard_Tab {
                     </div>
                     <div class="flavor-stat-content">
                         <span class="flavor-stat-valor"><?php echo esc_html(number_format($estadisticas['dinero_ahorrado'], 2)); ?> &euro;</span>
-                        <span class="flavor-stat-label"><?php esc_html_e('Dinero ahorrado vs coche', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-stat-label"><?php esc_html_e('Dinero ahorrado vs coche', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
 
             <!-- Gráfico de uso mensual -->
             <div class="flavor-grafico-section">
-                <h3><?php esc_html_e('Uso mensual', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Uso mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div class="flavor-grafico-container">
                     <canvas id="flavor-grafico-uso-mensual" height="300"></canvas>
                 </div>
@@ -640,7 +640,7 @@ class Flavor_Bicicletas_Dashboard_Tab {
 
             <!-- Logros y badges -->
             <div class="flavor-logros-section">
-                <h3><?php esc_html_e('Tus logros', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Tus logros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div class="flavor-logros-grid">
                     <?php
                     $logros = $this->obtener_logros_usuario($estadisticas);
@@ -674,7 +674,7 @@ class Flavor_Bicicletas_Dashboard_Tab {
                             labels: <?php echo wp_json_encode($datos_grafico_mensual['etiquetas']); ?>,
                             datasets: [
                                 {
-                                    label: '<?php echo esc_js(__('Kilómetros', 'flavor-chat-ia')); ?>',
+                                    label: '<?php echo esc_js(__('Kilómetros', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
                                     data: <?php echo wp_json_encode($datos_grafico_mensual['kilometros']); ?>,
                                     backgroundColor: 'rgba(34, 197, 94, 0.7)',
                                     borderColor: 'rgb(34, 197, 94)',
@@ -682,7 +682,7 @@ class Flavor_Bicicletas_Dashboard_Tab {
                                     yAxisID: 'y'
                                 },
                                 {
-                                    label: '<?php echo esc_js(__('Viajes', 'flavor-chat-ia')); ?>',
+                                    label: '<?php echo esc_js(__('Viajes', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
                                     data: <?php echo wp_json_encode($datos_grafico_mensual['viajes']); ?>,
                                     type: 'line',
                                     borderColor: 'rgb(59, 130, 246)',
@@ -707,7 +707,7 @@ class Flavor_Bicicletas_Dashboard_Tab {
                                     position: 'left',
                                     title: {
                                         display: true,
-                                        text: '<?php echo esc_js(__('Kilómetros', 'flavor-chat-ia')); ?>'
+                                        text: '<?php echo esc_js(__('Kilómetros', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>'
                                     }
                                 },
                                 y1: {
@@ -716,7 +716,7 @@ class Flavor_Bicicletas_Dashboard_Tab {
                                     position: 'right',
                                     title: {
                                         display: true,
-                                        text: '<?php echo esc_js(__('Viajes', 'flavor-chat-ia')); ?>'
+                                        text: '<?php echo esc_js(__('Viajes', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>'
                                     },
                                     grid: {
                                         drawOnChartArea: false
@@ -824,7 +824,7 @@ class Flavor_Bicicletas_Dashboard_Tab {
         $fianza_depositada = (float) get_user_meta($usuario_id, '_bicicletas_fianza', true);
 
         $planes = $this->obtener_planes_disponibles();
-        $nombre_plan = __('Sin plan', 'flavor-chat-ia');
+        $nombre_plan = __('Sin plan', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         foreach ($planes as $plan) {
             if ($plan['id'] === $plan_activo_id) {
@@ -879,50 +879,50 @@ class Flavor_Bicicletas_Dashboard_Tab {
         return [
             [
                 'id'              => 'gratuito',
-                'nombre'          => __('Gratuito', 'flavor-chat-ia'),
+                'nombre'          => __('Gratuito', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'precio'          => 0,
-                'periodo'         => __('mes', 'flavor-chat-ia'),
+                'periodo'         => __('mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'destacado'       => false,
                 'caracteristicas' => [
-                    __('30 minutos gratis/día', 'flavor-chat-ia'),
-                    __('Acceso a bicicletas urbanas', 'flavor-chat-ia'),
+                    __('30 minutos gratis/día', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Acceso a bicicletas urbanas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
             [
                 'id'              => 'basico',
-                'nombre'          => __('Básico', 'flavor-chat-ia'),
+                'nombre'          => __('Básico', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'precio'          => 5,
-                'periodo'         => __('mes', 'flavor-chat-ia'),
+                'periodo'         => __('mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'destacado'       => false,
                 'caracteristicas' => [
-                    __('2 horas gratis/día', 'flavor-chat-ia'),
-                    __('Acceso a todas las bicicletas', 'flavor-chat-ia'),
-                    __('Descuentos en hora extra', 'flavor-chat-ia'),
+                    __('2 horas gratis/día', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Acceso a todas las bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Descuentos en hora extra', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
             [
                 'id'              => 'premium',
-                'nombre'          => __('Premium', 'flavor-chat-ia'),
+                'nombre'          => __('Premium', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'precio'          => 15,
-                'periodo'         => __('mes', 'flavor-chat-ia'),
+                'periodo'         => __('mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'destacado'       => true,
                 'caracteristicas' => [
-                    __('Uso ilimitado', 'flavor-chat-ia'),
-                    __('Acceso a bicis eléctricas', 'flavor-chat-ia'),
-                    __('Reservas anticipadas', 'flavor-chat-ia'),
-                    __('Soporte prioritario', 'flavor-chat-ia'),
+                    __('Uso ilimitado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Acceso a bicis eléctricas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Reservas anticipadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Soporte prioritario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
             [
                 'id'              => 'anual',
-                'nombre'          => __('Anual', 'flavor-chat-ia'),
+                'nombre'          => __('Anual', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'precio'          => 99,
-                'periodo'         => __('año', 'flavor-chat-ia'),
+                'periodo'         => __('año', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'destacado'       => false,
                 'caracteristicas' => [
-                    __('Todo lo del Premium', 'flavor-chat-ia'),
-                    __('Ahorra 2 meses', 'flavor-chat-ia'),
-                    __('Sin fianza', 'flavor-chat-ia'),
+                    __('Todo lo del Premium', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Ahorra 2 meses', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Sin fianza', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
         ];
@@ -1030,48 +1030,48 @@ class Flavor_Bicicletas_Dashboard_Tab {
         return [
             [
                 'id'           => 'primer_viaje',
-                'nombre'       => __('Primer Pedaleo', 'flavor-chat-ia'),
-                'descripcion'  => __('Completa tu primer viaje', 'flavor-chat-ia'),
+                'nombre'       => __('Primer Pedaleo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion'  => __('Completa tu primer viaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono'        => '🚲',
                 'desbloqueado' => $total_viajes >= 1,
                 'progreso'     => min(100, $total_viajes * 100),
             ],
             [
                 'id'           => 'explorador',
-                'nombre'       => __('Explorador', 'flavor-chat-ia'),
-                'descripcion'  => __('Recorre 10 km en total', 'flavor-chat-ia'),
+                'nombre'       => __('Explorador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion'  => __('Recorre 10 km en total', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono'        => '🗺️',
                 'desbloqueado' => $total_km >= 10,
                 'progreso'     => min(100, ($total_km / 10) * 100),
             ],
             [
                 'id'           => 'ciclista_urbano',
-                'nombre'       => __('Ciclista Urbano', 'flavor-chat-ia'),
-                'descripcion'  => __('Completa 10 viajes', 'flavor-chat-ia'),
+                'nombre'       => __('Ciclista Urbano', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion'  => __('Completa 10 viajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono'        => '🏙️',
                 'desbloqueado' => $total_viajes >= 10,
                 'progreso'     => min(100, ($total_viajes / 10) * 100),
             ],
             [
                 'id'           => 'eco_warrior',
-                'nombre'       => __('Eco Warrior', 'flavor-chat-ia'),
-                'descripcion'  => __('Ahorra 5 kg de CO₂', 'flavor-chat-ia'),
+                'nombre'       => __('Eco Warrior', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion'  => __('Ahorra 5 kg de CO₂', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono'        => '🌱',
                 'desbloqueado' => $estadisticas['co2_ahorrado'] >= 5,
                 'progreso'     => min(100, ($estadisticas['co2_ahorrado'] / 5) * 100),
             ],
             [
                 'id'           => 'centurion',
-                'nombre'       => __('Centurión', 'flavor-chat-ia'),
-                'descripcion'  => __('Recorre 100 km en total', 'flavor-chat-ia'),
+                'nombre'       => __('Centurión', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion'  => __('Recorre 100 km en total', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono'        => '🏆',
                 'desbloqueado' => $total_km >= 100,
                 'progreso'     => min(100, ($total_km / 100) * 100),
             ],
             [
                 'id'           => 'leyenda',
-                'nombre'       => __('Leyenda del Pedal', 'flavor-chat-ia'),
-                'descripcion'  => __('Completa 100 viajes', 'flavor-chat-ia'),
+                'nombre'       => __('Leyenda del Pedal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion'  => __('Completa 100 viajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono'        => '👑',
                 'desbloqueado' => $total_viajes >= 100,
                 'progreso'     => min(100, ($total_viajes / 100) * 100),
@@ -1112,7 +1112,7 @@ class Flavor_Bicicletas_Dashboard_Tab {
      */
     private function formatear_duracion_minutos($minutos_totales) {
         if (!$minutos_totales) {
-            return __('En curso', 'flavor-chat-ia');
+            return __('En curso', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         if ($minutos_totales < 60) {
@@ -1159,7 +1159,7 @@ class Flavor_Bicicletas_Dashboard_Tab {
         check_ajax_referer('flavor_bicicletas_viajes', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $offset = isset($_POST['offset']) ? absint($_POST['offset']) : 0;

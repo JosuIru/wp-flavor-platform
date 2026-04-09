@@ -321,7 +321,7 @@ abstract class Flavor_Dashboard_Widget_Base implements Flavor_Dashboard_Widget_I
             $actions[] = [
                 'id'    => 'view-more',
                 'icon'  => 'dashicons-external',
-                'title' => __('Ver más', 'flavor-chat-ia'),
+                'title' => __('Ver más', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'type'  => 'link',
                 'url'   => $module_url,
             ];
@@ -331,7 +331,7 @@ abstract class Flavor_Dashboard_Widget_Base implements Flavor_Dashboard_Widget_I
             $actions[] = [
                 'id'    => 'refresh',
                 'icon'  => 'dashicons-update',
-                'title' => __('Actualizar', 'flavor-chat-ia'),
+                'title' => __('Actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'type'  => 'refresh',
             ];
         }
@@ -467,7 +467,7 @@ abstract class Flavor_Dashboard_Widget_Base implements Flavor_Dashboard_Widget_I
             'empresarial'           => 'flavor-empresarial-empresas',
             'tramites'              => 'flavor-tramites-solicitudes',
             'sello-conciencia'      => 'sello-conciencia',
-            'network'               => 'flavor-network',
+            'network'               => 'flavor-platform-network',
             'economia-circular'     => 'flavor-ec-settings',
 
             // ═══════════════════════════════════════════════════════════════
@@ -582,7 +582,7 @@ abstract class Flavor_Dashboard_Widget_Base implements Flavor_Dashboard_Widget_I
             'stats'       => [],
             'items'       => [],
             'actions'     => [],
-            'empty_state' => __('No hay datos disponibles', 'flavor-chat-ia'),
+            'empty_state' => __('No hay datos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer'      => $this->get_default_footer(),
         ];
     }
@@ -601,7 +601,7 @@ abstract class Flavor_Dashboard_Widget_Base implements Flavor_Dashboard_Widget_I
 
         return [
             [
-                'label' => __('Ver todo', 'flavor-chat-ia'),
+                'label' => __('Ver todo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url'   => $module_url,
                 'icon'  => 'dashicons-arrow-right-alt2',
             ],
@@ -723,7 +723,7 @@ abstract class Flavor_Dashboard_Widget_Base implements Flavor_Dashboard_Widget_I
      */
     protected function render_empty_state(string $message = ''): void {
         if (empty($message)) {
-            $message = __('No hay datos disponibles', 'flavor-chat-ia');
+            $message = __('No hay datos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         printf(
             '<div class="fud-empty-state">
@@ -743,7 +743,7 @@ abstract class Flavor_Dashboard_Widget_Base implements Flavor_Dashboard_Widget_I
     protected function render_footer(array $footer): void {
         echo '<div class="fud-widget-footer">';
         foreach ($footer as $link) {
-            $label = esc_html($link['label'] ?? __('Ver todo', 'flavor-chat-ia'));
+            $label = esc_html($link['label'] ?? __('Ver todo', FLAVOR_PLATFORM_TEXT_DOMAIN));
             $url   = esc_url($link['url'] ?? '#');
             $icon  = esc_attr($link['icon'] ?? 'dashicons-arrow-right-alt2');
 

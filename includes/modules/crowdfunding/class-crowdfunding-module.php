@@ -27,8 +27,8 @@ class Flavor_Chat_Crowdfunding_Module extends Flavor_Chat_Module_Base {
      */
     public function __construct() {
         $this->id = 'crowdfunding';
-        $this->name = __('Crowdfunding', 'flavor-chat-ia');
-        $this->description = __('Financiación colectiva para proyectos culturales, sociales y comunitarios. Integrable con artistas, eventos, colectivos y más.', 'flavor-chat-ia');
+        $this->name = __('Crowdfunding', 'flavor-platform');
+        $this->description = __('Financiación colectiva para proyectos culturales, sociales y comunitarios. Integrable con artistas, eventos, colectivos y más.', 'flavor-platform');
         $this->module_role = 'base';
         $this->ecosystem_supports_modules = ['eventos', 'colectivos', 'comunidades', 'campanias', 'socios'];
         $this->dashboard_parent_module = 'crowdfunding';
@@ -55,7 +55,7 @@ class Flavor_Chat_Crowdfunding_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Crowdfunding no están creadas. Activa el módulo para crearlas automáticamente.', 'flavor-chat-ia');
+            return __('Las tablas de Crowdfunding no están creadas. Activa el módulo para crearlas automáticamente.', 'flavor-platform');
         }
         return '';
     }
@@ -193,12 +193,12 @@ class Flavor_Chat_Crowdfunding_Module extends Flavor_Chat_Module_Base {
         $creador_id = $datos['creador_id'] ?? get_current_user_id();
 
         if (!$creador_id) {
-            return new WP_Error('sin_usuario', __('Debes iniciar sesión para crear un proyecto.', 'flavor-chat-ia'));
+            return new WP_Error('sin_usuario', __('Debes iniciar sesión para crear un proyecto.', 'flavor-platform'));
         }
 
         $titulo = sanitize_text_field($datos['titulo'] ?? '');
         if (empty($titulo)) {
-            return new WP_Error('sin_titulo', __('El título es obligatorio.', 'flavor-chat-ia'));
+            return new WP_Error('sin_titulo', __('El título es obligatorio.', 'flavor-platform'));
         }
 
         $objetivo = floatval($datos['objetivo_eur'] ?? 0);
@@ -207,7 +207,7 @@ class Flavor_Chat_Crowdfunding_Module extends Flavor_Chat_Module_Base {
 
         if ($objetivo < $minimo || $objetivo > $maximo) {
             return new WP_Error('objetivo_invalido', sprintf(
-                __('El objetivo debe estar entre %s€ y %s€.', 'flavor-chat-ia'),
+                __('El objetivo debe estar entre %s€ y %s€.', 'flavor-platform'),
                 number_format_i18n($minimo),
                 number_format_i18n($maximo)
             ));
@@ -259,7 +259,7 @@ class Flavor_Chat_Crowdfunding_Module extends Flavor_Chat_Module_Base {
         $insertado = $wpdb->insert($tabla, $datos_insertar);
 
         if (!$insertado) {
-            return new WP_Error('error_crear', __('Error al crear el proyecto.', 'flavor-chat-ia'));
+            return new WP_Error('error_crear', __('Error al crear el proyecto.', 'flavor-platform'));
         }
 
         $proyecto_id = $wpdb->insert_id;
@@ -546,11 +546,11 @@ class Flavor_Chat_Crowdfunding_Module extends Flavor_Chat_Module_Base {
         $proyecto = $this->get_proyecto($proyecto_id);
 
         if (!$proyecto) {
-            return new WP_Error('proyecto_no_existe', __('El proyecto no existe.', 'flavor-chat-ia'));
+            return new WP_Error('proyecto_no_existe', __('El proyecto no existe.', 'flavor-platform'));
         }
 
         if ($proyecto->estado !== 'activo') {
-            return new WP_Error('proyecto_inactivo', __('Este proyecto no está aceptando aportaciones.', 'flavor-chat-ia'));
+            return new WP_Error('proyecto_inactivo', __('Este proyecto no está aceptando aportaciones.', 'flavor-platform'));
         }
 
         $importe = floatval($datos['importe'] ?? 0);
@@ -558,7 +558,7 @@ class Flavor_Chat_Crowdfunding_Module extends Flavor_Chat_Module_Base {
 
         if ($importe < $proyecto->minimo_aportacion) {
             return new WP_Error('importe_minimo', sprintf(
-                __('La aportación mínima es %s.', 'flavor-chat-ia'),
+                __('La aportación mínima es %s.', 'flavor-platform'),
                 number_format_i18n($proyecto->minimo_aportacion, 2) . ($moneda === 'eur' ? '€' : ' ' . strtoupper($moneda))
             ));
         }
@@ -582,11 +582,11 @@ class Flavor_Chat_Crowdfunding_Module extends Flavor_Chat_Module_Base {
             ));
 
             if (!$tier) {
-                return new WP_Error('tier_invalido', __('El nivel de recompensa no es válido.', 'flavor-chat-ia'));
+                return new WP_Error('tier_invalido', __('El nivel de recompensa no es válido.', 'flavor-platform'));
             }
 
             if ($tier->cantidad_limitada && $tier->cantidad_vendida >= $tier->cantidad_limitada) {
-                return new WP_Error('tier_agotado', __('Este nivel de recompensa está agotado.', 'flavor-chat-ia'));
+                return new WP_Error('tier_agotado', __('Este nivel de recompensa está agotado.', 'flavor-platform'));
             }
         }
 
@@ -621,7 +621,7 @@ class Flavor_Chat_Crowdfunding_Module extends Flavor_Chat_Module_Base {
         $insertado = $wpdb->insert($tabla, $datos_insertar);
 
         if (!$insertado) {
-            return new WP_Error('error_aportacion', __('Error al registrar la aportación.', 'flavor-chat-ia'));
+            return new WP_Error('error_aportacion', __('Error al registrar la aportación.', 'flavor-platform'));
         }
 
         $aportacion_id = $wpdb->insert_id;
@@ -649,7 +649,7 @@ class Flavor_Chat_Crowdfunding_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$aportacion) {
-            return new WP_Error('aportacion_no_existe', __('La aportación no existe.', 'flavor-chat-ia'));
+            return new WP_Error('aportacion_no_existe', __('La aportación no existe.', 'flavor-platform'));
         }
 
         if ($aportacion->estado === 'completada') {
@@ -774,37 +774,37 @@ class Flavor_Chat_Crowdfunding_Module extends Flavor_Chat_Module_Base {
 
     private function get_estado_label($estado) {
         $estados = [
-            'borrador' => __('Borrador', 'flavor-chat-ia'),
-            'revision' => __('En revisión', 'flavor-chat-ia'),
-            'activo' => __('Activo', 'flavor-chat-ia'),
-            'pausado' => __('Pausado', 'flavor-chat-ia'),
-            'exitoso' => __('Financiado', 'flavor-chat-ia'),
-            'fallido' => __('No financiado', 'flavor-chat-ia'),
-            'cancelado' => __('Cancelado', 'flavor-chat-ia'),
+            'borrador' => __('Borrador', 'flavor-platform'),
+            'revision' => __('En revisión', 'flavor-platform'),
+            'activo' => __('Activo', 'flavor-platform'),
+            'pausado' => __('Pausado', 'flavor-platform'),
+            'exitoso' => __('Financiado', 'flavor-platform'),
+            'fallido' => __('No financiado', 'flavor-platform'),
+            'cancelado' => __('Cancelado', 'flavor-platform'),
         ];
         return $estados[$estado] ?? $estado;
     }
 
     private function get_tipo_label($tipo) {
         $tipos = [
-            'album' => __('Álbum/Grabación', 'flavor-chat-ia'),
-            'tour' => __('Gira/Tour', 'flavor-chat-ia'),
-            'produccion' => __('Producción', 'flavor-chat-ia'),
-            'equipamiento' => __('Equipamiento', 'flavor-chat-ia'),
-            'espacio' => __('Espacio', 'flavor-chat-ia'),
-            'evento' => __('Evento', 'flavor-chat-ia'),
-            'social' => __('Proyecto Social', 'flavor-chat-ia'),
-            'emergencia' => __('Emergencia', 'flavor-chat-ia'),
-            'otro' => __('Otro', 'flavor-chat-ia'),
+            'album' => __('Álbum/Grabación', 'flavor-platform'),
+            'tour' => __('Gira/Tour', 'flavor-platform'),
+            'produccion' => __('Producción', 'flavor-platform'),
+            'equipamiento' => __('Equipamiento', 'flavor-platform'),
+            'espacio' => __('Espacio', 'flavor-platform'),
+            'evento' => __('Evento', 'flavor-platform'),
+            'social' => __('Proyecto Social', 'flavor-platform'),
+            'emergencia' => __('Emergencia', 'flavor-platform'),
+            'otro' => __('Otro', 'flavor-platform'),
         ];
         return $tipos[$tipo] ?? $tipo;
     }
 
     private function get_modalidad_label($modalidad) {
         $modalidades = [
-            'todo_o_nada' => __('Todo o nada', 'flavor-chat-ia'),
-            'flexible' => __('Flexible', 'flavor-chat-ia'),
-            'donacion' => __('Donación', 'flavor-chat-ia'),
+            'todo_o_nada' => __('Todo o nada', 'flavor-platform'),
+            'flexible' => __('Flexible', 'flavor-platform'),
+            'donacion' => __('Donación', 'flavor-platform'),
         ];
         return $modalidades[$modalidad] ?? $modalidad;
     }
@@ -903,13 +903,13 @@ class Flavor_Chat_Crowdfunding_Module extends Flavor_Chat_Module_Base {
         }
 
         if (empty($identificador)) {
-            return '<p class="flavor-error">' . __('No se especificó ningún proyecto.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-error">' . __('No se especificó ningún proyecto.', 'flavor-platform') . '</p>';
         }
 
         $proyecto = $this->get_proyecto($identificador);
 
         if (!$proyecto) {
-            return '<p class="flavor-error">' . __('Proyecto no encontrado.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-error">' . __('Proyecto no encontrado.', 'flavor-platform') . '</p>';
         }
 
         // Incrementar visualizaciones

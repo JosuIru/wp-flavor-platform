@@ -85,7 +85,7 @@ class Flavor_Module_Config_API {
         if ($request_count >= $rate_limit) {
             return new WP_Error(
                 'rate_limit_exceeded',
-                __('Demasiadas peticiones. Intente de nuevo en un minuto.', 'flavor-chat-ia'),
+                __('Demasiadas peticiones. Intente de nuevo en un minuto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 429]
             );
         }

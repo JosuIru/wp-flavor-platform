@@ -20,8 +20,8 @@ $datos_gestor = is_array($datos_gestor ?? null) ? $datos_gestor : [];
 $estadisticas = is_array($estadisticas ?? null) ? $estadisticas : [];
 $progreso_onboarding = isset($progreso_onboarding) ? (int) $progreso_onboarding : 0;
 $checks_onboarding = is_array($checks_onboarding ?? null) ? $checks_onboarding : [];
-$nivel_salud = is_array($nivel_salud ?? null) ? $nivel_salud : ['clase' => 'is-neutral', 'icono' => 'dashicons-admin-tools', 'etiqueta' => __('Sin datos', 'flavor-chat-ia')];
-$estado_sistema = is_array($estado_sistema ?? null) ? $estado_sistema : ['estado' => __('Sin datos', 'flavor-chat-ia'), 'detalle' => ''];
+$nivel_salud = is_array($nivel_salud ?? null) ? $nivel_salud : ['clase' => 'is-neutral', 'icono' => 'dashicons-admin-tools', 'etiqueta' => __('Sin datos', FLAVOR_PLATFORM_TEXT_DOMAIN)];
+$estado_sistema = is_array($estado_sistema ?? null) ? $estado_sistema : ['estado' => __('Sin datos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'detalle' => ''];
 $acciones_rapidas = is_array($acciones_rapidas ?? null) ? $acciones_rapidas : ['principal' => [], 'secundarias' => []];
 
 $datos_gestor = wp_parse_args($datos_gestor, [
@@ -47,15 +47,15 @@ $estadisticas = wp_parse_args($estadisticas, [
             <?php
             echo esc_html(
                 $es_vista_gestor_grupos
-                    ? __('Panel de Gestión de Grupos', 'flavor-chat-ia')
-                    : __('Panel de Administración', 'flavor-chat-ia')
+                    ? __('Panel de Gestión de Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                    : __('Panel de Administración', FLAVOR_PLATFORM_TEXT_DOMAIN)
             );
             ?>
         </h1>
         <span class="flavor-dashboard-greeting">
             <?php
             $hora = (int) current_time('G');
-            $saludo = $hora < 12 ? __('Buenos días', 'flavor-chat-ia') : ($hora < 20 ? __('Buenas tardes', 'flavor-chat-ia') : __('Buenas noches', 'flavor-chat-ia'));
+            $saludo = $hora < 12 ? __('Buenos días', FLAVOR_PLATFORM_TEXT_DOMAIN) : ($hora < 20 ? __('Buenas tardes', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Buenas noches', FLAVOR_PLATFORM_TEXT_DOMAIN));
             $usuario = wp_get_current_user();
             printf('%s, <strong>%s</strong>', esc_html($saludo), esc_html($usuario->display_name));
             ?>
@@ -73,28 +73,28 @@ $estadisticas = wp_parse_args($estadisticas, [
                 <span class="flavor-stat-icon dashicons dashicons-groups"></span>
                 <div class="flavor-stat-data">
                     <span class="flavor-stat-value"><?php echo esc_html($datos_gestor['estadisticas']['total_grupos']); ?></span>
-                    <span class="flavor-stat-label"><?php esc_html_e('Mis grupos', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-stat-label"><?php esc_html_e('Mis grupos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
             <div class="flavor-stat-card">
                 <span class="flavor-stat-icon dashicons dashicons-admin-users"></span>
                 <div class="flavor-stat-data">
                     <span class="flavor-stat-value"><?php echo esc_html($datos_gestor['estadisticas']['total_miembros']); ?></span>
-                    <span class="flavor-stat-label"><?php esc_html_e('Total miembros', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-stat-label"><?php esc_html_e('Total miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
             <div class="flavor-stat-card <?php echo !empty($datos_gestor['solicitudes_pendientes']) ? 'flavor-stat-alert' : ''; ?>">
                 <span class="flavor-stat-icon dashicons dashicons-clock"></span>
                 <div class="flavor-stat-data">
                     <span class="flavor-stat-value"><?php echo esc_html(array_sum(array_column($datos_gestor['solicitudes_pendientes'], 'cantidad'))); ?></span>
-                    <span class="flavor-stat-label"><?php esc_html_e('Solicitudes pendientes', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-stat-label"><?php esc_html_e('Solicitudes pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
             <div class="flavor-stat-card <?php echo !empty($datos_gestor['contenido_pendiente']) ? 'flavor-stat-alert' : ''; ?>">
                 <span class="flavor-stat-icon dashicons dashicons-visibility"></span>
                 <div class="flavor-stat-data">
                     <span class="flavor-stat-value"><?php echo esc_html(count($datos_gestor['contenido_pendiente'])); ?></span>
-                    <span class="flavor-stat-label"><?php esc_html_e('Por moderar', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-stat-label"><?php esc_html_e('Por moderar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
         </div>
@@ -103,7 +103,7 @@ $estadisticas = wp_parse_args($estadisticas, [
             <!-- Mis Grupos -->
             <div class="flavor-dashboard-card">
                 <div class="flavor-card-header">
-                    <h2><span class="dashicons dashicons-networking"></span> <?php esc_html_e('Mis Grupos', 'flavor-chat-ia'); ?></h2>
+                    <h2><span class="dashicons dashicons-networking"></span> <?php esc_html_e('Mis Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 </div>
                 <div class="flavor-card-content">
                     <?php if (!empty($datos_gestor['mis_grupos'])): ?>
@@ -119,7 +119,7 @@ $estadisticas = wp_parse_args($estadisticas, [
                                             </span>
                                             <?php if ($grupo['pendientes'] > 0): ?>
                                                 <span class="flavor-grupo-pendientes">
-                                                    <?php echo esc_html($grupo['pendientes']); ?> <?php esc_html_e('pendientes', 'flavor-chat-ia'); ?>
+                                                    <?php echo esc_html($grupo['pendientes']); ?> <?php esc_html_e('pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                                 </span>
                                             <?php endif; ?>
                                         </span>
@@ -130,7 +130,7 @@ $estadisticas = wp_parse_args($estadisticas, [
                     <?php else: ?>
                         <div class="flavor-empty-state">
                             <span class="dashicons dashicons-groups"></span>
-                            <p><?php esc_html_e('No gestionas ningún grupo todavía', 'flavor-chat-ia'); ?></p>
+                            <p><?php esc_html_e('No gestionas ningún grupo todavía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -139,7 +139,7 @@ $estadisticas = wp_parse_args($estadisticas, [
             <!-- Solicitudes Pendientes -->
             <div class="flavor-dashboard-card">
                 <div class="flavor-card-header">
-                    <h2><span class="dashicons dashicons-clock"></span> <?php esc_html_e('Solicitudes de Membresía', 'flavor-chat-ia'); ?></h2>
+                    <h2><span class="dashicons dashicons-clock"></span> <?php esc_html_e('Solicitudes de Membresía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 </div>
                 <div class="flavor-card-content">
                     <?php if (!empty($datos_gestor['solicitudes_pendientes'])): ?>
@@ -156,7 +156,7 @@ $estadisticas = wp_parse_args($estadisticas, [
                     <?php else: ?>
                         <div class="flavor-empty-state flavor-empty-success">
                             <span class="dashicons dashicons-yes-alt"></span>
-                            <p><?php esc_html_e('No hay solicitudes pendientes', 'flavor-chat-ia'); ?></p>
+                            <p><?php esc_html_e('No hay solicitudes pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -165,7 +165,7 @@ $estadisticas = wp_parse_args($estadisticas, [
             <!-- Miembros Recientes -->
             <div class="flavor-dashboard-card">
                 <div class="flavor-card-header">
-                    <h2><span class="dashicons dashicons-admin-users"></span> <?php esc_html_e('Miembros Recientes', 'flavor-chat-ia'); ?></h2>
+                    <h2><span class="dashicons dashicons-admin-users"></span> <?php esc_html_e('Miembros Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 </div>
                 <div class="flavor-card-content">
                     <?php if (!empty($datos_gestor['miembros_recientes'])): ?>
@@ -185,7 +185,7 @@ $estadisticas = wp_parse_args($estadisticas, [
                     <?php else: ?>
                         <div class="flavor-empty-state">
                             <span class="dashicons dashicons-admin-users"></span>
-                            <p><?php esc_html_e('No hay nuevos miembros esta semana', 'flavor-chat-ia'); ?></p>
+                            <p><?php esc_html_e('No hay nuevos miembros esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -194,7 +194,7 @@ $estadisticas = wp_parse_args($estadisticas, [
             <!-- Contenido por Moderar -->
             <div class="flavor-dashboard-card">
                 <div class="flavor-card-header">
-                    <h2><span class="dashicons dashicons-visibility"></span> <?php esc_html_e('Contenido por Moderar', 'flavor-chat-ia'); ?></h2>
+                    <h2><span class="dashicons dashicons-visibility"></span> <?php esc_html_e('Contenido por Moderar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 </div>
                 <div class="flavor-card-content">
                     <?php if (!empty($datos_gestor['contenido_pendiente'])): ?>
@@ -213,7 +213,7 @@ $estadisticas = wp_parse_args($estadisticas, [
                     <?php else: ?>
                         <div class="flavor-empty-state flavor-empty-success">
                             <span class="dashicons dashicons-yes-alt"></span>
-                            <p><?php esc_html_e('Todo el contenido está revisado', 'flavor-chat-ia'); ?></p>
+                            <p><?php esc_html_e('Todo el contenido está revisado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -257,7 +257,7 @@ $estadisticas = wp_parse_args($estadisticas, [
             <!-- Tareas Pendientes -->
             <div class="flavor-dashboard-card flavor-card-primary">
                 <div class="flavor-card-header">
-                    <h2><span class="dashicons dashicons-list-view"></span> <?php esc_html_e('Tareas Pendientes', 'flavor-chat-ia'); ?></h2>
+                    <h2><span class="dashicons dashicons-list-view"></span> <?php esc_html_e('Tareas Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                     <?php if (!empty($tareas_pendientes)): ?>
                         <span class="flavor-badge-count"><?php echo count($tareas_pendientes); ?></span>
                     <?php endif; ?>
@@ -278,7 +278,7 @@ $estadisticas = wp_parse_args($estadisticas, [
                     <?php else: ?>
                         <div class="flavor-empty-state flavor-empty-success">
                             <span class="dashicons dashicons-yes-alt"></span>
-                            <p><?php esc_html_e('¡Todo al día! No hay tareas pendientes', 'flavor-chat-ia'); ?></p>
+                            <p><?php esc_html_e('¡Todo al día! No hay tareas pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -287,9 +287,9 @@ $estadisticas = wp_parse_args($estadisticas, [
             <!-- Módulos Activos -->
             <div class="flavor-dashboard-card">
                 <div class="flavor-card-header">
-                    <h2><span class="dashicons dashicons-screenoptions"></span> <?php esc_html_e('Módulos Activos', 'flavor-chat-ia'); ?></h2>
+                    <h2><span class="dashicons dashicons-screenoptions"></span> <?php esc_html_e('Módulos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-app-composer')); ?>" class="flavor-card-action">
-                        <?php esc_html_e('Ver todos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
                 <div class="flavor-card-content">
@@ -308,9 +308,9 @@ $estadisticas = wp_parse_args($estadisticas, [
                     <?php else: ?>
                         <div class="flavor-empty-state">
                             <span class="dashicons dashicons-screenoptions"></span>
-                            <p><?php esc_html_e('Activa módulos desde el Compositor', 'flavor-chat-ia'); ?></p>
+                            <p><?php esc_html_e('Activa módulos desde el Compositor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-app-composer')); ?>" class="button button-primary">
-                                <?php esc_html_e('Activar módulos', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Activar módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </div>
                     <?php endif; ?>
@@ -320,7 +320,7 @@ $estadisticas = wp_parse_args($estadisticas, [
             <!-- Accesos Rápidos -->
             <div class="flavor-dashboard-card">
                 <div class="flavor-card-header">
-                    <h2><span class="dashicons dashicons-admin-tools"></span> <?php esc_html_e('Acciones Rápidas', 'flavor-chat-ia'); ?></h2>
+                    <h2><span class="dashicons dashicons-admin-tools"></span> <?php esc_html_e('Acciones Rápidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 </div>
                 <div class="flavor-card-content">
                     <?php if (!empty($accesos_rapidos)): ?>
@@ -336,21 +336,21 @@ $estadisticas = wp_parse_args($estadisticas, [
                         </div>
                     <?php else: ?>
                         <div class="flavor-accesos-default">
-                            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-chat-config')); ?>" class="flavor-acceso-btn">
+                            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-platform-settings')); ?>" class="flavor-acceso-btn">
                                 <span class="dashicons dashicons-admin-generic"></span>
-                                <span><?php esc_html_e('Configuración', 'flavor-chat-ia'); ?></span>
+                                <span><?php esc_html_e('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </a>
                             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-app-composer')); ?>" class="flavor-acceso-btn">
                                 <span class="dashicons dashicons-screenoptions"></span>
-                                <span><?php esc_html_e('Módulos', 'flavor-chat-ia'); ?></span>
+                                <span><?php esc_html_e('Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </a>
                             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-create-pages')); ?>" class="flavor-acceso-btn">
                                 <span class="dashicons dashicons-admin-page"></span>
-                                <span><?php esc_html_e('Crear páginas', 'flavor-chat-ia'); ?></span>
+                                <span><?php esc_html_e('Crear páginas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </a>
                             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-design-settings')); ?>" class="flavor-acceso-btn">
                                 <span class="dashicons dashicons-art"></span>
-                                <span><?php esc_html_e('Diseño', 'flavor-chat-ia'); ?></span>
+                                <span><?php esc_html_e('Diseño', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </a>
                         </div>
                     <?php endif; ?>
@@ -362,9 +362,9 @@ $estadisticas = wp_parse_args($estadisticas, [
         <div class="flavor-dashboard-grid flavor-grid-1">
             <div class="flavor-dashboard-card">
                 <div class="flavor-card-header">
-                    <h2><span class="dashicons dashicons-backup"></span> <?php esc_html_e('Actividad Reciente', 'flavor-chat-ia'); ?></h2>
-                    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-activity-log')); ?>" class="flavor-card-action">
-                        <?php esc_html_e('Ver todo', 'flavor-chat-ia'); ?>
+                    <h2><span class="dashicons dashicons-backup"></span> <?php esc_html_e('Actividad Reciente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-platform-activity-log')); ?>" class="flavor-card-action">
+                        <?php esc_html_e('Ver todo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
                 <div class="flavor-card-content">
@@ -386,7 +386,7 @@ $estadisticas = wp_parse_args($estadisticas, [
                     <?php else: ?>
                         <div class="flavor-empty-state">
                             <span class="dashicons dashicons-backup"></span>
-                            <p><?php esc_html_e('No hay actividad reciente registrada', 'flavor-chat-ia'); ?></p>
+                            <p><?php esc_html_e('No hay actividad reciente registrada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -402,8 +402,8 @@ $estadisticas = wp_parse_args($estadisticas, [
             <details class="flavor-collapsible-panel" <?php echo ($paneles_estado['graficos'] ?? false) ? 'open' : ''; ?> data-panel="graficos">
                 <summary class="flavor-panel-header">
                     <span class="flavor-panel-icon dashicons dashicons-chart-area"></span>
-                    <span class="flavor-panel-title"><?php esc_html_e('Gráficos y Analítica', 'flavor-chat-ia'); ?></span>
-                    <span class="flavor-panel-desc"><?php esc_html_e('Usuarios, actividad por módulo, distribución de roles', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-panel-title"><?php esc_html_e('Gráficos y Analítica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                    <span class="flavor-panel-desc"><?php esc_html_e('Usuarios, actividad por módulo, distribución de roles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="flavor-panel-toggle dashicons dashicons-arrow-down-alt2"></span>
                 </summary>
                 <div class="flavor-panel-content">
@@ -411,7 +411,7 @@ $estadisticas = wp_parse_args($estadisticas, [
                         <!-- Gráfico: Usuarios nuevos -->
                         <div class="flavor-dashboard-card">
                             <div class="flavor-card-header">
-                                <h2><span class="dashicons dashicons-chart-line"></span> <?php esc_html_e('Usuarios Nuevos', 'flavor-chat-ia'); ?></h2>
+                                <h2><span class="dashicons dashicons-chart-line"></span> <?php esc_html_e('Usuarios Nuevos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                             </div>
                             <div class="flavor-card-content">
                                 <div class="flavor-chart-container">
@@ -423,7 +423,7 @@ $estadisticas = wp_parse_args($estadisticas, [
                         <!-- Gráfico: Actividad por módulo -->
                         <div class="flavor-dashboard-card">
                             <div class="flavor-card-header">
-                                <h2><span class="dashicons dashicons-chart-bar"></span> <?php esc_html_e('Actividad por Módulo', 'flavor-chat-ia'); ?></h2>
+                                <h2><span class="dashicons dashicons-chart-bar"></span> <?php esc_html_e('Actividad por Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                             </div>
                             <div class="flavor-card-content">
                                 <div class="flavor-chart-container">
@@ -435,7 +435,7 @@ $estadisticas = wp_parse_args($estadisticas, [
                         <!-- Gráfico: Distribución de roles -->
                         <div class="flavor-dashboard-card">
                             <div class="flavor-card-header">
-                                <h2><span class="dashicons dashicons-groups"></span> <?php esc_html_e('Distribución de Roles', 'flavor-chat-ia'); ?></h2>
+                                <h2><span class="dashicons dashicons-groups"></span> <?php esc_html_e('Distribución de Roles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                             </div>
                             <div class="flavor-card-content">
                                 <div class="flavor-chart-container flavor-chart-doughnut">
@@ -448,7 +448,7 @@ $estadisticas = wp_parse_args($estadisticas, [
                     <!-- KPIs principales -->
                     <?php if (!empty($kpis_principales)): ?>
                     <div class="flavor-kpis-section">
-                        <h3><span class="dashicons dashicons-performance"></span> <?php esc_html_e('KPIs Principales', 'flavor-chat-ia'); ?></h3>
+                        <h3><span class="dashicons dashicons-performance"></span> <?php esc_html_e('KPIs Principales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="flavor-kpis-grid">
                             <?php foreach ($kpis_principales as $kpi): ?>
                                 <div class="flavor-kpi-card">
@@ -472,8 +472,8 @@ $estadisticas = wp_parse_args($estadisticas, [
             <details class="flavor-collapsible-panel" <?php echo ($paneles_estado['red'] ?? false) ? 'open' : ''; ?> data-panel="red">
                 <summary class="flavor-panel-header">
                     <span class="flavor-panel-icon dashicons dashicons-networking"></span>
-                    <span class="flavor-panel-title"><?php esc_html_e('Red de Comunidades', 'flavor-chat-ia'); ?></span>
-                    <span class="flavor-panel-desc"><?php esc_html_e('Tu nodo, conexiones, mapa de actividad', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-panel-title"><?php esc_html_e('Red de Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                    <span class="flavor-panel-desc"><?php esc_html_e('Tu nodo, conexiones, mapa de actividad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="flavor-panel-toggle dashicons dashicons-arrow-down-alt2"></span>
                 </summary>
                 <div class="flavor-panel-content">
@@ -485,7 +485,7 @@ $estadisticas = wp_parse_args($estadisticas, [
                         <div class="flavor-node-banner-content">
                             <?php if (!empty($estadisticas_red['nodo_local'])): ?>
                                 <div class="flavor-node-info">
-                                    <h3><?php echo esc_html($estadisticas_red['nodo_local']['nombre'] ?? __('Mi Nodo', 'flavor-chat-ia')); ?></h3>
+                                    <h3><?php echo esc_html($estadisticas_red['nodo_local']['nombre'] ?? __('Mi Nodo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></h3>
                                     <div class="flavor-node-meta">
                                         <span class="flavor-node-status <?php echo esc_attr($estadisticas_red['nodo_local']['estado'] ?? 'activo'); ?>">
                                             <span class="dashicons dashicons-yes-alt"></span>
@@ -494,31 +494,31 @@ $estadisticas = wp_parse_args($estadisticas, [
                                         <?php if (($estadisticas_red['nodos_conectados'] ?? 0) > 0): ?>
                                         <span class="flavor-node-connections">
                                             <span class="dashicons dashicons-groups"></span>
-                                            <?php printf(esc_html__('%d nodos conectados', 'flavor-chat-ia'), $estadisticas_red['nodos_conectados']); ?>
+                                            <?php printf(esc_html__('%d nodos conectados', FLAVOR_PLATFORM_TEXT_DOMAIN), $estadisticas_red['nodos_conectados']); ?>
                                         </span>
                                         <?php endif; ?>
                                         <?php if (($estadisticas_red['mensajes_sin_leer'] ?? 0) > 0): ?>
                                         <span class="flavor-node-messages">
                                             <span class="dashicons dashicons-email-alt"></span>
-                                            <?php printf(esc_html__('%d mensajes', 'flavor-chat-ia'), $estadisticas_red['mensajes_sin_leer']); ?>
+                                            <?php printf(esc_html__('%d mensajes', FLAVOR_PLATFORM_TEXT_DOMAIN), $estadisticas_red['mensajes_sin_leer']); ?>
                                         </span>
                                         <?php endif; ?>
                                     </div>
                                 </div>
                             <?php else: ?>
                                 <div class="flavor-node-setup">
-                                    <h3><?php echo esc_html__('Configura tu Nodo', 'flavor-chat-ia'); ?></h3>
-                                    <p><?php echo esc_html__('Este sitio representa un nodo en la red. Configura tu identidad para conectar con otros nodos y compartir recursos.', 'flavor-chat-ia'); ?></p>
+                                    <h3><?php echo esc_html__('Configura tu Nodo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                                    <p><?php echo esc_html__('Este sitio representa un nodo en la red. Configura tu identidad para conectar con otros nodos y compartir recursos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                 </div>
                             <?php endif; ?>
                         </div>
                         <div class="flavor-node-banner-actions">
-                            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-network&tab=mi-nodo')); ?>" class="button button-primary">
-                                <?php echo !empty($estadisticas_red['nodo_local']) ? esc_html__('Gestionar Nodo', 'flavor-chat-ia') : esc_html__('Configurar Nodo', 'flavor-chat-ia'); ?>
+                            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-platform-network&tab=mi-nodo')); ?>" class="button button-primary">
+                                <?php echo !empty($estadisticas_red['nodo_local']) ? esc_html__('Gestionar Nodo', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Configurar Nodo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                             <?php if (!empty($estadisticas_red['nodo_local'])): ?>
-                            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-network&tab=directorio')); ?>" class="button">
-                                <?php echo esc_html__('Directorio', 'flavor-chat-ia'); ?>
+                            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-platform-network&tab=directorio')); ?>" class="button">
+                                <?php echo esc_html__('Directorio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                             <?php endif; ?>
                         </div>
@@ -529,15 +529,15 @@ $estadisticas = wp_parse_args($estadisticas, [
                     <div class="flavor-red-stats">
                         <div class="flavor-red-stat">
                             <span class="flavor-red-stat-value"><?php echo esc_html($estadisticas_red['nodos_conectados'] ?? 0); ?></span>
-                            <span class="flavor-red-stat-label"><?php esc_html_e('Nodos conectados', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-red-stat-label"><?php esc_html_e('Nodos conectados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                         <div class="flavor-red-stat">
                             <span class="flavor-red-stat-value"><?php echo esc_html($estadisticas_red['recursos_compartidos'] ?? 0); ?></span>
-                            <span class="flavor-red-stat-label"><?php esc_html_e('Recursos compartidos', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-red-stat-label"><?php esc_html_e('Recursos compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                         <div class="flavor-red-stat">
                             <span class="flavor-red-stat-value"><?php echo esc_html($estadisticas_red['usuarios_federados'] ?? 0); ?></span>
-                            <span class="flavor-red-stat-label"><?php esc_html_e('Usuarios en la red', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-red-stat-label"><?php esc_html_e('Usuarios en la red', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                     </div>
                     <?php endif; ?>
@@ -547,8 +547,8 @@ $estadisticas = wp_parse_args($estadisticas, [
                         <div id="flavor-activity-map" class="flavor-activity-map">
                             <div class="flavor-map-placeholder">
                                 <span class="dashicons dashicons-location-alt"></span>
-                                <p><?php esc_html_e('Mapa de actividad de la red', 'flavor-chat-ia'); ?></p>
-                                <small><?php esc_html_e('Requiere configuración de ubicación del nodo', 'flavor-chat-ia'); ?></small>
+                                <p><?php esc_html_e('Mapa de actividad de la red', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                                <small><?php esc_html_e('Requiere configuración de ubicación del nodo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                             </div>
                         </div>
                     </div>
@@ -559,8 +559,8 @@ $estadisticas = wp_parse_args($estadisticas, [
             <details class="flavor-collapsible-panel" <?php echo ($paneles_estado['gailu'] ?? false) ? 'open' : ''; ?> data-panel="gailu">
                 <summary class="flavor-panel-header">
                     <span class="flavor-panel-icon dashicons dashicons-superhero"></span>
-                    <span class="flavor-panel-title"><?php esc_html_e('Transición Regenerativa', 'flavor-chat-ia'); ?></span>
-                    <span class="flavor-panel-desc"><?php esc_html_e('Principios transformadores y capacidades regenerativas', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-panel-title"><?php esc_html_e('Transición Regenerativa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                    <span class="flavor-panel-desc"><?php esc_html_e('Principios transformadores y capacidades regenerativas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="flavor-panel-toggle dashicons dashicons-arrow-down-alt2"></span>
                 </summary>
                 <div class="flavor-panel-content">
@@ -572,36 +572,36 @@ $estadisticas = wp_parse_args($estadisticas, [
                     $porcentaje_cobertura = $total_principios > 0 ? round(($principios_cubiertos / $total_principios) * 100) : 0;
 
                     $etiquetas_principios = [
-                        'economia_local' => ['nombre' => __('Economía Local', 'flavor-chat-ia'), 'icono' => 'dashicons-store', 'color' => '#10b981'],
-                        'cuidados' => ['nombre' => __('Cuidados', 'flavor-chat-ia'), 'icono' => 'dashicons-heart', 'color' => '#ec4899'],
-                        'gobernanza' => ['nombre' => __('Gobernanza', 'flavor-chat-ia'), 'icono' => 'dashicons-groups', 'color' => '#8b5cf6'],
-                        'regeneracion' => ['nombre' => __('Regeneración', 'flavor-chat-ia'), 'icono' => 'dashicons-palmtree', 'color' => '#22c55e'],
-                        'aprendizaje' => ['nombre' => __('Aprendizaje', 'flavor-chat-ia'), 'icono' => 'dashicons-book', 'color' => '#f59e0b'],
+                        'economia_local' => ['nombre' => __('Economía Local', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-store', 'color' => '#10b981'],
+                        'cuidados' => ['nombre' => __('Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-heart', 'color' => '#ec4899'],
+                        'gobernanza' => ['nombre' => __('Gobernanza', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-groups', 'color' => '#8b5cf6'],
+                        'regeneracion' => ['nombre' => __('Regeneración', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-palmtree', 'color' => '#22c55e'],
+                        'aprendizaje' => ['nombre' => __('Aprendizaje', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-book', 'color' => '#f59e0b'],
                     ];
 
                     $etiquetas_contribuciones = [
-                        'autonomia' => ['nombre' => __('Autonomía', 'flavor-chat-ia'), 'icono' => 'dashicons-flag', 'color' => '#3b82f6'],
-                        'resiliencia' => ['nombre' => __('Resiliencia', 'flavor-chat-ia'), 'icono' => 'dashicons-shield', 'color' => '#06b6d4'],
-                        'cohesion' => ['nombre' => __('Cohesión', 'flavor-chat-ia'), 'icono' => 'dashicons-networking', 'color' => '#a855f7'],
-                        'impacto' => ['nombre' => __('Impacto', 'flavor-chat-ia'), 'icono' => 'dashicons-chart-line', 'color' => '#ef4444'],
+                        'autonomia' => ['nombre' => __('Autonomía', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-flag', 'color' => '#3b82f6'],
+                        'resiliencia' => ['nombre' => __('Resiliencia', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-shield', 'color' => '#06b6d4'],
+                        'cohesion' => ['nombre' => __('Cohesión', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-networking', 'color' => '#a855f7'],
+                        'impacto' => ['nombre' => __('Impacto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-chart-line', 'color' => '#ef4444'],
                     ];
                     ?>
 
                     <div class="flavor-regenerative-header">
                         <div class="flavor-regenerative-score-circle" style="--score: <?php echo esc_attr($porcentaje_cobertura); ?>">
                             <span class="flavor-score-value"><?php echo esc_html($porcentaje_cobertura); ?>%</span>
-                            <span class="flavor-score-label"><?php esc_html_e('cobertura', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-score-label"><?php esc_html_e('cobertura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                         <div class="flavor-regenerative-intro">
-                            <h3><?php esc_html_e('¿Cómo contribuye tu plataforma a la transición?', 'flavor-chat-ia'); ?></h3>
-                            <p><?php esc_html_e('Los módulos activos cubren diferentes principios de economía social y solidaria.', 'flavor-chat-ia'); ?></p>
+                            <h3><?php esc_html_e('¿Cómo contribuye tu plataforma a la transición?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                            <p><?php esc_html_e('Los módulos activos cubren diferentes principios de economía social y solidaria.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                     </div>
 
                     <div class="flavor-regenerative-grid">
                         <!-- Principios transformadores -->
                         <div class="flavor-regenerative-section">
-                            <h4><span class="dashicons dashicons-star-filled"></span> <?php esc_html_e('Principios Transformadores', 'flavor-chat-ia'); ?></h4>
+                            <h4><span class="dashicons dashicons-star-filled"></span> <?php esc_html_e('Principios Transformadores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                             <div class="flavor-principios-grid">
                                 <?php foreach ($etiquetas_principios as $clave => $datos): ?>
                                 <?php
@@ -610,7 +610,7 @@ $estadisticas = wp_parse_args($estadisticas, [
                                 ?>
                                 <div class="flavor-principio-card <?php echo $tiene_modulos ? 'activo' : 'inactivo'; ?>"
                                      style="--principio-color: <?php echo esc_attr($datos['color']); ?>"
-                                     title="<?php echo $tiene_modulos ? implode(', ', $modulos_principio) : __('Sin módulos activos', 'flavor-chat-ia'); ?>">
+                                     title="<?php echo $tiene_modulos ? implode(', ', $modulos_principio) : __('Sin módulos activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons <?php echo esc_attr($datos['icono']); ?>"></span>
                                     <span class="flavor-principio-nombre"><?php echo esc_html($datos['nombre']); ?></span>
                                     <?php if ($tiene_modulos): ?>
@@ -623,10 +623,10 @@ $estadisticas = wp_parse_args($estadisticas, [
 
                         <!-- Capacidades regenerativas -->
                         <div class="flavor-regenerative-section">
-                            <h4><span class="dashicons dashicons-awards"></span> <?php esc_html_e('Capacidades Regenerativas', 'flavor-chat-ia'); ?></h4>
+                            <h4><span class="dashicons dashicons-awards"></span> <?php esc_html_e('Capacidades Regenerativas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                             <div class="flavor-contribuciones-list">
                                 <?php
-                                $configuracion = get_option('flavor_chat_ia_settings', []);
+                                $configuracion = flavor_get_main_settings();
                                 $modulos_activos_ids = $configuracion['active_modules'] ?? [];
                                 $total_modulos_activos = max(1, count($modulos_activos_ids));
                                 ?>
@@ -654,7 +654,7 @@ $estadisticas = wp_parse_args($estadisticas, [
                     <div class="flavor-regenerative-footer">
                         <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-app-composer')); ?>" class="button">
                             <span class="dashicons dashicons-plus-alt2"></span>
-                            <?php esc_html_e('Activar más capacidades', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Activar más capacidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </div>
@@ -665,8 +665,8 @@ $estadisticas = wp_parse_args($estadisticas, [
             <details class="flavor-collapsible-panel" data-panel="addons">
                 <summary class="flavor-panel-header">
                     <span class="flavor-panel-icon dashicons dashicons-admin-plugins"></span>
-                    <span class="flavor-panel-title"><?php esc_html_e('Extensiones', 'flavor-chat-ia'); ?></span>
-                    <span class="flavor-panel-desc"><?php printf(esc_html__('%d addons instalados', 'flavor-chat-ia'), count($addons_registrados)); ?></span>
+                    <span class="flavor-panel-title"><?php esc_html_e('Extensiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                    <span class="flavor-panel-desc"><?php printf(esc_html__('%d addons instalados', FLAVOR_PLATFORM_TEXT_DOMAIN), count($addons_registrados)); ?></span>
                     <span class="flavor-panel-toggle dashicons dashicons-arrow-down-alt2"></span>
                 </summary>
                 <div class="flavor-panel-content">
@@ -681,13 +681,13 @@ $estadisticas = wp_parse_args($estadisticas, [
                                     <span class="flavor-addon-version">v<?php echo esc_html($datos_addon['version']); ?></span>
                                 </div>
                                 <span class="flavor-addon-status <?php echo in_array($slug_addon, $addons_activos) ? 'active' : 'inactive'; ?>">
-                                    <?php echo in_array($slug_addon, $addons_activos) ? esc_html__('Activo', 'flavor-chat-ia') : esc_html__('Inactivo', 'flavor-chat-ia'); ?>
+                                    <?php echo in_array($slug_addon, $addons_activos) ? esc_html__('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Inactivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                             </div>
                         <?php endforeach; ?>
                     </div>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-addons')); ?>" class="flavor-view-all-link">
-                        <?php esc_html_e('Gestionar extensiones', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Gestionar extensiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <span class="dashicons dashicons-arrow-right-alt2"></span>
                     </a>
                 </div>
@@ -2006,7 +2006,7 @@ $estadisticas = wp_parse_args($estadisticas, [
                 data: {
                     labels: datosUsuarios.etiquetas || [],
                     datasets: [{
-                        label: '<?php echo esc_js(__('Usuarios nuevos', 'flavor-chat-ia')); ?>',
+                        label: '<?php echo esc_js(__('Usuarios nuevos', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
                         data: datosUsuarios.datos || [],
                         borderColor: colores.primario,
                         backgroundColor: colores.primario + '20',
@@ -2036,7 +2036,7 @@ $estadisticas = wp_parse_args($estadisticas, [
                 data: {
                     labels: datosModulos.etiquetas || [],
                     datasets: [{
-                        label: '<?php echo esc_js(__('Actividad', 'flavor-chat-ia')); ?>',
+                        label: '<?php echo esc_js(__('Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
                         data: datosModulos.datos || [],
                         backgroundColor: datosModulos.colores || [
                             colores.primario,

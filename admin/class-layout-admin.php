@@ -52,9 +52,9 @@ class Flavor_Layout_Admin {
      */
     public function add_admin_menu() {
         add_submenu_page(
-            'flavor-chat-ia',
-            __('Layouts y Diseño', 'flavor-chat-ia'),
-            __('Layouts', 'flavor-chat-ia'),
+            FLAVOR_PLATFORM_TEXT_DOMAIN,
+            __('Layouts y Diseño', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Layouts', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-layouts',
             [$this, 'render_admin_page']
@@ -92,16 +92,16 @@ class Flavor_Layout_Admin {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_layout_nonce'),
             'strings' => [
-                'saving' => __('Guardando...', 'flavor-chat-ia'),
-                'saved' => __('Guardado correctamente', 'flavor-chat-ia'),
-                'error' => __('Error al guardar', 'flavor-chat-ia'),
-                'confirm_export' => __('¿Exportar configuración para apps móviles?', 'flavor-chat-ia'),
-                'exported' => __('Configuración exportada', 'flavor-chat-ia'),
-                'sponsor_name' => __('Nombre', 'flavor-chat-ia'),
-                'sponsor_logo' => __('URL del logo', 'flavor-chat-ia'),
-                'remove' => __('Eliminar', 'flavor-chat-ia'),
-                'select' => __('Seleccionar', 'flavor-chat-ia'),
-                'selected' => __('Seleccionado', 'flavor-chat-ia'),
+                'saving' => __('Guardando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'saved' => __('Guardado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al guardar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirm_export' => __('¿Exportar configuración para apps móviles?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'exported' => __('Configuración exportada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sponsor_name' => __('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sponsor_logo' => __('URL del logo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'remove' => __('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'select' => __('Seleccionar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'selected' => __('Seleccionado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -120,17 +120,17 @@ class Flavor_Layout_Admin {
         <div class="wrap flavor-layout-admin">
             <h1 class="flavor-admin-title">
                 <span class="dashicons dashicons-layout"></span>
-                <?php esc_html_e('Layouts Predefinidos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Layouts Predefinidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h1>
 
             <div class="flavor-admin-header">
                 <p class="flavor-admin-description">
-                    <?php esc_html_e('Selecciona el diseño de menú y footer para tu sitio web y aplicaciones móviles.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Selecciona el diseño de menú y footer para tu sitio web y aplicaciones móviles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
                 <div class="flavor-admin-actions">
                     <button type="button" class="button flavor-export-mobile" id="flavor-export-mobile">
                         <span class="dashicons dashicons-smartphone"></span>
-                        <?php esc_html_e('Exportar para APKs', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Exportar para APKs', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </div>
@@ -139,29 +139,29 @@ class Flavor_Layout_Admin {
                 <nav class="flavor-tabs-nav">
                     <button type="button" class="flavor-tab-btn active" data-tab="menus">
                         <span class="dashicons dashicons-menu-alt3"></span>
-                        <?php esc_html_e('Menús', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Menús', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button" class="flavor-tab-btn" data-tab="footers">
                         <span class="dashicons dashicons-editor-insertmore"></span>
-                        <?php esc_html_e('Footers', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Footers', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button" class="flavor-tab-btn" data-tab="presets">
                         <span class="dashicons dashicons-admin-customizer"></span>
-                        <?php esc_html_e('Presets', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Presets', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button" class="flavor-tab-btn" data-tab="settings">
                         <span class="dashicons dashicons-admin-generic"></span>
-                        <?php esc_html_e('Ajustes', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ajustes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button" class="flavor-tab-btn" data-tab="components">
                         <span class="dashicons dashicons-welcome-widgets-menus"></span>
-                        <?php esc_html_e('Componentes', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Componentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </nav>
 
                 <!-- Tab: Menús -->
                 <div class="flavor-tab-content active" data-tab="menus">
-                    <h2><?php esc_html_e('Selecciona un diseño de menú', 'flavor-chat-ia'); ?></h2>
+                    <h2><?php esc_html_e('Selecciona un diseño de menú', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                     <div class="flavor-layout-grid">
                         <?php foreach ($menus as $menu_id => $menu): ?>
                         <div class="flavor-layout-card <?php echo $active_layout['menu'] === $menu_id ? 'selected' : ''; ?>" data-type="menu" data-id="<?php echo esc_attr($menu_id); ?>">
@@ -178,7 +178,7 @@ class Flavor_Layout_Admin {
                                     <span class="flavor-layout-card__tag"><?php echo esc_html($menu['mobile_behavior']); ?></span>
                                     <?php if (!empty($menu['recommended_for'])): ?>
                                     <span class="flavor-layout-card__recommended">
-                                        <?php esc_html_e('Ideal para:', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Ideal para:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         <?php echo esc_html(implode(', ', array_slice($menu['recommended_for'], 0, 2))); ?>
                                     </span>
                                     <?php endif; ?>
@@ -186,7 +186,7 @@ class Flavor_Layout_Admin {
                             </div>
                             <div class="flavor-layout-card__actions">
                                 <button type="button" class="button flavor-select-layout <?php echo $active_layout['menu'] === $menu_id ? 'button-primary' : ''; ?>">
-                                    <?php echo $active_layout['menu'] === $menu_id ? esc_html__('Seleccionado', 'flavor-chat-ia') : esc_html__('Seleccionar', 'flavor-chat-ia'); ?>
+                                    <?php echo $active_layout['menu'] === $menu_id ? esc_html__('Seleccionado', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Seleccionar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                                 <button type="button" class="button flavor-preview-layout" data-preview="menu" data-id="<?php echo esc_attr($menu_id); ?>">
                                     <span class="dashicons dashicons-visibility"></span>
@@ -199,7 +199,7 @@ class Flavor_Layout_Admin {
 
                 <!-- Tab: Footers -->
                 <div class="flavor-tab-content" data-tab="footers">
-                    <h2><?php esc_html_e('Selecciona un diseño de footer', 'flavor-chat-ia'); ?></h2>
+                    <h2><?php esc_html_e('Selecciona un diseño de footer', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                     <div class="flavor-layout-grid">
                         <?php foreach ($footers as $footer_id => $footer): ?>
                         <div class="flavor-layout-card <?php echo $active_layout['footer'] === $footer_id ? 'selected' : ''; ?>" data-type="footer" data-id="<?php echo esc_attr($footer_id); ?>">
@@ -215,7 +215,7 @@ class Flavor_Layout_Admin {
                                 <div class="flavor-layout-card__meta">
                                     <?php if (!empty($footer['recommended_for'])): ?>
                                     <span class="flavor-layout-card__recommended">
-                                        <?php esc_html_e('Ideal para:', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Ideal para:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         <?php echo esc_html(implode(', ', array_slice($footer['recommended_for'], 0, 2))); ?>
                                     </span>
                                     <?php endif; ?>
@@ -223,7 +223,7 @@ class Flavor_Layout_Admin {
                             </div>
                             <div class="flavor-layout-card__actions">
                                 <button type="button" class="button flavor-select-layout <?php echo $active_layout['footer'] === $footer_id ? 'button-primary' : ''; ?>">
-                                    <?php echo $active_layout['footer'] === $footer_id ? esc_html__('Seleccionado', 'flavor-chat-ia') : esc_html__('Seleccionar', 'flavor-chat-ia'); ?>
+                                    <?php echo $active_layout['footer'] === $footer_id ? esc_html__('Seleccionado', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Seleccionar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                                 <button type="button" class="button flavor-preview-layout" data-preview="footer" data-id="<?php echo esc_attr($footer_id); ?>">
                                     <span class="dashicons dashicons-visibility"></span>
@@ -236,9 +236,9 @@ class Flavor_Layout_Admin {
 
                 <!-- Tab: Presets -->
                 <div class="flavor-tab-content" data-tab="presets">
-                    <h2><?php esc_html_e('Presets de Layout por Perfil', 'flavor-chat-ia'); ?></h2>
+                    <h2><?php esc_html_e('Presets de Layout por Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                     <p class="flavor-preset-description">
-                        <?php esc_html_e('Aplica una combinación predefinida de menú y footer optimizada para cada tipo de perfil.', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Aplica una combinación predefinida de menú y footer optimizada para cada tipo de perfil.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                     <div class="flavor-preset-grid">
                         <?php foreach ($layouts as $layout_id => $layout): ?>
@@ -251,7 +251,7 @@ class Flavor_Layout_Admin {
                             <div class="flavor-preset-card__header">
                                 <h3><?php echo esc_html($layout['name']); ?></h3>
                                 <?php if ($is_active): ?>
-                                <span class="flavor-preset-card__badge"><?php esc_html_e('Activo', 'flavor-chat-ia'); ?></span>
+                                <span class="flavor-preset-card__badge"><?php esc_html_e('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php endif; ?>
                             </div>
                             <div class="flavor-preset-card__preview">
@@ -276,7 +276,7 @@ class Flavor_Layout_Admin {
                                 </div>
                             </div>
                             <button type="button" class="button button-primary flavor-apply-preset" data-menu="<?php echo esc_attr($layout['menu']); ?>" data-footer="<?php echo esc_attr($layout['footer']); ?>">
-                                <?php esc_html_e('Aplicar Preset', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Aplicar Preset', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </div>
                         <?php endforeach; ?>
@@ -285,29 +285,29 @@ class Flavor_Layout_Admin {
 
                 <!-- Tab: Ajustes -->
                 <div class="flavor-tab-content" data-tab="settings">
-                    <h2><?php esc_html_e('Ajustes Generales', 'flavor-chat-ia'); ?></h2>
+                    <h2><?php esc_html_e('Ajustes Generales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
                     <form id="flavor-layout-settings-form" class="flavor-settings-form">
                         <!-- CTA Button -->
                         <div class="flavor-settings-section">
-                            <h3><?php esc_html_e('Botón CTA del Menú', 'flavor-chat-ia'); ?></h3>
+                            <h3><?php esc_html_e('Botón CTA del Menú', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                             <div class="flavor-settings-row">
-                                <label for="cta_text"><?php esc_html_e('Texto del botón', 'flavor-chat-ia'); ?></label>
-                                <input type="text" id="cta_text" name="cta_text" value="<?php echo esc_attr($settings['cta_text'] ?? ''); ?>" placeholder="<?php esc_attr_e('Empezar', 'flavor-chat-ia'); ?>">
+                                <label for="cta_text"><?php esc_html_e('Texto del botón', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                                <input type="text" id="cta_text" name="cta_text" value="<?php echo esc_attr($settings['cta_text'] ?? ''); ?>" placeholder="<?php esc_attr_e('Empezar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             </div>
                             <div class="flavor-settings-row">
-                                <label for="cta_url"><?php esc_html_e('URL del botón', 'flavor-chat-ia'); ?></label>
+                                <label for="cta_url"><?php esc_html_e('URL del botón', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <input type="url" id="cta_url" name="cta_url" value="<?php echo esc_url($settings['cta_url'] ?? ''); ?>" placeholder="https://">
                             </div>
                         </div>
 
                         <!-- Menu Settings -->
                         <div class="flavor-settings-section">
-                            <h3><?php esc_html_e('Ajustes de Menús', 'flavor-chat-ia'); ?></h3>
-                            <p class="description"><?php esc_html_e('Configura el comportamiento y orden de elementos por cada menú.', 'flavor-chat-ia'); ?></p>
+                            <h3><?php esc_html_e('Ajustes de Menús', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                            <p class="description"><?php esc_html_e('Configura el comportamiento y orden de elementos por cada menú.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                             <div class="flavor-settings-row">
-                                <label for="menu_settings_menu"><?php esc_html_e('Menú a configurar', 'flavor-chat-ia'); ?></label>
+                                <label for="menu_settings_menu"><?php esc_html_e('Menú a configurar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <select id="menu_settings_menu" class="flavor-menu-settings-select">
                                     <?php foreach ($menus as $menu_id => $menu): ?>
                                         <option value="<?php echo esc_attr($menu_id); ?>" <?php selected($active_layout['menu'] ?? 'classic', $menu_id); ?>>
@@ -327,7 +327,7 @@ class Flavor_Layout_Admin {
                             ?>
                             <div class="flavor-menu-settings" data-menu="<?php echo esc_attr($menu_id); ?>" <?php echo $is_active ? '' : 'style="display:none"'; ?>>
                                 <div class="flavor-settings-row">
-                                    <label><?php esc_html_e('Menú fijo (sticky)', 'flavor-chat-ia'); ?></label>
+                                    <label><?php esc_html_e('Menú fijo (sticky)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                     <label class="flavor-toggle">
                                         <input type="checkbox" name="menu_settings[<?php echo esc_attr($menu_id); ?>][sticky]" value="1" <?php checked($menu_cfg['sticky'] ?? true); ?>>
                                         <span class="flavor-toggle__slider"></span>
@@ -335,41 +335,41 @@ class Flavor_Layout_Admin {
                                 </div>
 
                                 <div class="flavor-settings-row">
-                                    <label><?php esc_html_e('Estado por defecto', 'flavor-chat-ia'); ?></label>
+                                    <label><?php esc_html_e('Estado por defecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                     <select name="menu_settings[<?php echo esc_attr($menu_id); ?>][menu_state]">
-                                        <option value="expanded" <?php selected($menu_cfg['menu_state'] ?? 'expanded', 'expanded'); ?>><?php esc_html_e('Desplegado', 'flavor-chat-ia'); ?></option>
-                                        <option value="collapsed" <?php selected($menu_cfg['menu_state'] ?? '', 'collapsed'); ?>><?php esc_html_e('Replegado', 'flavor-chat-ia'); ?></option>
+                                        <option value="expanded" <?php selected($menu_cfg['menu_state'] ?? 'expanded', 'expanded'); ?>><?php esc_html_e('Desplegado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                        <option value="collapsed" <?php selected($menu_cfg['menu_state'] ?? '', 'collapsed'); ?>><?php esc_html_e('Replegado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                     </select>
                                 </div>
 
                                 <div class="flavor-settings-row">
-                                    <label><?php esc_html_e('Orden de acciones', 'flavor-chat-ia'); ?></label>
+                                    <label><?php esc_html_e('Orden de acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                     <div class="flavor-action-order">
                                         <?php foreach ([0, 1, 2] as $index): ?>
                                             <select name="menu_settings[<?php echo esc_attr($menu_id); ?>][actions_order][<?php echo intval($index); ?>]">
-                                                <option value="search" <?php selected($actions_order[$index] ?? 'search', 'search'); ?>><?php esc_html_e('Buscar', 'flavor-chat-ia'); ?></option>
-                                                <option value="user" <?php selected($actions_order[$index] ?? '', 'user'); ?>><?php esc_html_e('Usuario', 'flavor-chat-ia'); ?></option>
-                                                <option value="cta" <?php selected($actions_order[$index] ?? '', 'cta'); ?>><?php esc_html_e('CTA', 'flavor-chat-ia'); ?></option>
+                                                <option value="search" <?php selected($actions_order[$index] ?? 'search', 'search'); ?>><?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                                <option value="user" <?php selected($actions_order[$index] ?? '', 'user'); ?>><?php esc_html_e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                                <option value="cta" <?php selected($actions_order[$index] ?? '', 'cta'); ?>><?php esc_html_e('CTA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                             </select>
                                         <?php endforeach; ?>
                                     </div>
                                 </div>
 
                                 <div class="flavor-settings-row">
-                                    <label><?php esc_html_e('Estilo vista normal', 'flavor-chat-ia'); ?></label>
+                                    <label><?php esc_html_e('Estilo vista normal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                     <select name="menu_settings[<?php echo esc_attr($menu_id); ?>][style_normal]">
-                                        <option value="light" <?php selected($menu_cfg['style_normal'] ?? 'light', 'light'); ?>><?php esc_html_e('Claro', 'flavor-chat-ia'); ?></option>
-                                        <option value="dark" <?php selected($menu_cfg['style_normal'] ?? '', 'dark'); ?>><?php esc_html_e('Oscuro', 'flavor-chat-ia'); ?></option>
-                                        <option value="transparent" <?php selected($menu_cfg['style_normal'] ?? '', 'transparent'); ?>><?php esc_html_e('Transparente', 'flavor-chat-ia'); ?></option>
+                                        <option value="light" <?php selected($menu_cfg['style_normal'] ?? 'light', 'light'); ?>><?php esc_html_e('Claro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                        <option value="dark" <?php selected($menu_cfg['style_normal'] ?? '', 'dark'); ?>><?php esc_html_e('Oscuro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                        <option value="transparent" <?php selected($menu_cfg['style_normal'] ?? '', 'transparent'); ?>><?php esc_html_e('Transparente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                     </select>
                                 </div>
 
                                 <div class="flavor-settings-row">
-                                    <label><?php esc_html_e('Estilo vista fija', 'flavor-chat-ia'); ?></label>
+                                    <label><?php esc_html_e('Estilo vista fija', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                     <select name="menu_settings[<?php echo esc_attr($menu_id); ?>][style_sticky]">
-                                        <option value="light" <?php selected($menu_cfg['style_sticky'] ?? 'light', 'light'); ?>><?php esc_html_e('Claro', 'flavor-chat-ia'); ?></option>
-                                        <option value="dark" <?php selected($menu_cfg['style_sticky'] ?? '', 'dark'); ?>><?php esc_html_e('Oscuro', 'flavor-chat-ia'); ?></option>
-                                        <option value="transparent" <?php selected($menu_cfg['style_sticky'] ?? '', 'transparent'); ?>><?php esc_html_e('Transparente', 'flavor-chat-ia'); ?></option>
+                                        <option value="light" <?php selected($menu_cfg['style_sticky'] ?? 'light', 'light'); ?>><?php esc_html_e('Claro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                        <option value="dark" <?php selected($menu_cfg['style_sticky'] ?? '', 'dark'); ?>><?php esc_html_e('Oscuro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                        <option value="transparent" <?php selected($menu_cfg['style_sticky'] ?? '', 'transparent'); ?>><?php esc_html_e('Transparente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                     </select>
                                 </div>
                             </div>
@@ -378,32 +378,32 @@ class Flavor_Layout_Admin {
 
                         <!-- Contact Info -->
                         <div class="flavor-settings-section">
-                            <h3><?php esc_html_e('Información de Contacto', 'flavor-chat-ia'); ?></h3>
+                            <h3><?php esc_html_e('Información de Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                             <div class="flavor-settings-row">
-                                <label for="contact_phone"><?php esc_html_e('Teléfono', 'flavor-chat-ia'); ?></label>
+                                <label for="contact_phone"><?php esc_html_e('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <input type="tel" id="contact_phone" name="contact_phone" value="<?php echo esc_attr($settings['contact_phone'] ?? ''); ?>" placeholder="+34 600 000 000">
                             </div>
                             <div class="flavor-settings-row">
-                                <label for="contact_email"><?php esc_html_e('Email', 'flavor-chat-ia'); ?></label>
+                                <label for="contact_email"><?php esc_html_e('Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <input type="email" id="contact_email" name="contact_email" value="<?php echo esc_attr($settings['contact_email'] ?? ''); ?>" placeholder="info@ejemplo.com">
                             </div>
                             <div class="flavor-settings-row">
-                                <label for="contact_address"><?php esc_html_e('Dirección', 'flavor-chat-ia'); ?></label>
+                                <label for="contact_address"><?php esc_html_e('Dirección', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <textarea id="contact_address" name="contact_address" rows="2"><?php echo esc_textarea($settings['contact_address'] ?? ''); ?></textarea>
                             </div>
                             <div class="flavor-settings-row">
-                                <label for="business_hours"><?php esc_html_e('Horario', 'flavor-chat-ia'); ?></label>
-                                <input type="text" id="business_hours" name="business_hours" value="<?php echo esc_attr($settings['business_hours'] ?? ''); ?>" placeholder="<?php esc_attr_e('Lun - Vie: 9:00 - 18:00', 'flavor-chat-ia'); ?>">
+                                <label for="business_hours"><?php esc_html_e('Horario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                                <input type="text" id="business_hours" name="business_hours" value="<?php echo esc_attr($settings['business_hours'] ?? ''); ?>" placeholder="<?php esc_attr_e('Lun - Vie: 9:00 - 18:00', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             </div>
                             <div class="flavor-settings-row">
-                                <label for="map_embed_url"><?php esc_html_e('URL del mapa (embed)', 'flavor-chat-ia'); ?></label>
+                                <label for="map_embed_url"><?php esc_html_e('URL del mapa (embed)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <input type="url" id="map_embed_url" name="map_embed_url" value="<?php echo esc_url($settings['map_embed_url'] ?? ''); ?>" placeholder="https://www.google.com/maps/embed?pb=...">
                             </div>
                         </div>
 
                         <!-- Social Links -->
                         <div class="flavor-settings-section">
-                            <h3><?php esc_html_e('Redes Sociales', 'flavor-chat-ia'); ?></h3>
+                            <h3><?php esc_html_e('Redes Sociales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                             <?php
                             $social_networks = [
                                 'facebook' => 'Facebook',
@@ -425,33 +425,33 @@ class Flavor_Layout_Admin {
 
                         <!-- App Links -->
                         <div class="flavor-settings-section">
-                            <h3><?php esc_html_e('Enlaces de Aplicaciones', 'flavor-chat-ia'); ?></h3>
+                            <h3><?php esc_html_e('Enlaces de Aplicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                             <div class="flavor-settings-row">
-                                <label for="app_store_url"><?php esc_html_e('App Store (iOS)', 'flavor-chat-ia'); ?></label>
+                                <label for="app_store_url"><?php esc_html_e('App Store (iOS)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <input type="url" id="app_store_url" name="app_store_url" value="<?php echo esc_url($settings['app_store_url'] ?? ''); ?>" placeholder="https://apps.apple.com/...">
                             </div>
                             <div class="flavor-settings-row">
-                                <label for="play_store_url"><?php esc_html_e('Google Play (Android)', 'flavor-chat-ia'); ?></label>
+                                <label for="play_store_url"><?php esc_html_e('Google Play (Android)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <input type="url" id="play_store_url" name="play_store_url" value="<?php echo esc_url($settings['play_store_url'] ?? ''); ?>" placeholder="https://play.google.com/store/apps/...">
                             </div>
                         </div>
 
                         <!-- Copyright -->
                         <div class="flavor-settings-section">
-                            <h3><?php esc_html_e('Copyright', 'flavor-chat-ia'); ?></h3>
+                            <h3><?php esc_html_e('Copyright', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                             <div class="flavor-settings-row">
-                                <label for="copyright_text"><?php esc_html_e('Texto de copyright', 'flavor-chat-ia'); ?></label>
-                                <input type="text" id="copyright_text" name="copyright_text" value="<?php echo esc_attr($settings['copyright_text'] ?? ''); ?>" placeholder="<?php echo esc_attr(sprintf(__('© %d %s. Todos los derechos reservados.', 'flavor-chat-ia'), date('Y'), get_bloginfo('name'))); ?>">
+                                <label for="copyright_text"><?php esc_html_e('Texto de copyright', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                                <input type="text" id="copyright_text" name="copyright_text" value="<?php echo esc_attr($settings['copyright_text'] ?? ''); ?>" placeholder="<?php echo esc_attr(sprintf(__('© %d %s. Todos los derechos reservados.', FLAVOR_PLATFORM_TEXT_DOMAIN), date('Y'), get_bloginfo('name'))); ?>">
                             </div>
                         </div>
 
                         <!-- Sponsors -->
                         <div class="flavor-settings-section">
-                            <h3><?php esc_html_e('Patrocinadores en Footer', 'flavor-chat-ia'); ?></h3>
-                            <p class="description"><?php esc_html_e('Añade logos de patrocinadores, sponsors o colaboradores para cada footer.', 'flavor-chat-ia'); ?></p>
+                            <h3><?php esc_html_e('Patrocinadores en Footer', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                            <p class="description"><?php esc_html_e('Añade logos de patrocinadores, sponsors o colaboradores para cada footer.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                             <div class="flavor-settings-row">
-                                <label for="footer_sponsors_footer"><?php esc_html_e('Footer a configurar', 'flavor-chat-ia'); ?></label>
+                                <label for="footer_sponsors_footer"><?php esc_html_e('Footer a configurar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <select id="footer_sponsors_footer" class="flavor-footer-sponsors-select">
                                     <?php foreach ($footers as $footer_id => $footer): ?>
                                         <option value="<?php echo esc_attr($footer_id); ?>" <?php selected($active_layout['footer'] ?? 'multi-column', $footer_id); ?>>
@@ -472,16 +472,16 @@ class Flavor_Layout_Admin {
                                     <?php if (!empty($sponsors)): ?>
                                         <?php foreach ($sponsors as $index => $sponsor): ?>
                                         <div class="flavor-sponsor-row">
-                                            <input type="text" name="footer_sponsors[<?php echo esc_attr($footer_id); ?>][<?php echo intval($index); ?>][name]" value="<?php echo esc_attr($sponsor['name'] ?? ''); ?>" placeholder="<?php esc_attr_e('Nombre', 'flavor-chat-ia'); ?>">
+                                            <input type="text" name="footer_sponsors[<?php echo esc_attr($footer_id); ?>][<?php echo intval($index); ?>][name]" value="<?php echo esc_attr($sponsor['name'] ?? ''); ?>" placeholder="<?php esc_attr_e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <input type="url" name="footer_sponsors[<?php echo esc_attr($footer_id); ?>][<?php echo intval($index); ?>][url]" value="<?php echo esc_url($sponsor['url'] ?? ''); ?>" placeholder="https://">
-                                            <input type="url" name="footer_sponsors[<?php echo esc_attr($footer_id); ?>][<?php echo intval($index); ?>][logo]" value="<?php echo esc_url($sponsor['logo'] ?? ''); ?>" placeholder="<?php esc_attr_e('URL del logo', 'flavor-chat-ia'); ?>">
-                                            <button type="button" class="button flavor-remove-sponsor"><?php esc_html_e('Eliminar', 'flavor-chat-ia'); ?></button>
+                                            <input type="url" name="footer_sponsors[<?php echo esc_attr($footer_id); ?>][<?php echo intval($index); ?>][logo]" value="<?php echo esc_url($sponsor['logo'] ?? ''); ?>" placeholder="<?php esc_attr_e('URL del logo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                                            <button type="button" class="button flavor-remove-sponsor"><?php esc_html_e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                                         </div>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
                                 </div>
                                 <button type="button" class="button flavor-add-sponsor" data-footer="<?php echo esc_attr($footer_id); ?>">
-                                    <?php esc_html_e('Añadir patrocinador', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Añadir patrocinador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             </div>
                             <?php endforeach; ?>
@@ -490,7 +490,7 @@ class Flavor_Layout_Admin {
                         <div class="flavor-settings-actions">
                             <button type="submit" class="button button-primary button-large">
                                 <span class="dashicons dashicons-saved"></span>
-                                <?php esc_html_e('Guardar Ajustes', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Guardar Ajustes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </div>
                     </form>
@@ -498,41 +498,41 @@ class Flavor_Layout_Admin {
 
                 <!-- Tab: Componentes -->
                 <div class="flavor-tab-content" data-tab="components">
-                    <h2><?php esc_html_e('Componentes Adicionales', 'flavor-chat-ia'); ?></h2>
-                    <p class="flavor-admin-description"><?php esc_html_e('Activa y configura componentes extra para mejorar la experiencia de usuario.', 'flavor-chat-ia'); ?></p>
+                    <h2><?php esc_html_e('Componentes Adicionales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                    <p class="flavor-admin-description"><?php esc_html_e('Activa y configura componentes extra para mejorar la experiencia de usuario.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                     <form id="flavor-components-settings-form" class="flavor-settings-form">
                         <!-- Announcement Bar -->
                         <div class="flavor-settings-section">
                             <h3>
                                 <span class="dashicons dashicons-megaphone"></span>
-                                <?php esc_html_e('Barra de Anuncios', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Barra de Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </h3>
                             <div class="flavor-settings-row">
-                                <label for="announcement_enabled"><?php esc_html_e('Activar', 'flavor-chat-ia'); ?></label>
+                                <label for="announcement_enabled"><?php esc_html_e('Activar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <label class="flavor-toggle">
                                     <input type="checkbox" id="announcement_enabled" name="announcement_enabled" value="1" <?php checked($settings['announcement_enabled'] ?? false); ?>>
                                     <span class="flavor-toggle__slider"></span>
                                 </label>
                             </div>
                             <div class="flavor-settings-row">
-                                <label for="announcement_message"><?php esc_html_e('Mensaje', 'flavor-chat-ia'); ?></label>
-                                <input type="text" id="announcement_message" name="announcement_message" value="<?php echo esc_attr($settings['announcement_message'] ?? ''); ?>" placeholder="<?php esc_attr_e('¡Ofertas especiales esta semana!', 'flavor-chat-ia'); ?>">
+                                <label for="announcement_message"><?php esc_html_e('Mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                                <input type="text" id="announcement_message" name="announcement_message" value="<?php echo esc_attr($settings['announcement_message'] ?? ''); ?>" placeholder="<?php esc_attr_e('¡Ofertas especiales esta semana!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             </div>
                             <div class="flavor-settings-row">
-                                <label for="announcement_link"><?php esc_html_e('Enlace', 'flavor-chat-ia'); ?></label>
+                                <label for="announcement_link"><?php esc_html_e('Enlace', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <input type="url" id="announcement_link" name="announcement_link" value="<?php echo esc_url($settings['announcement_link'] ?? ''); ?>" placeholder="https://">
                             </div>
                             <div class="flavor-settings-row">
-                                <label for="announcement_link_text"><?php esc_html_e('Texto del enlace', 'flavor-chat-ia'); ?></label>
-                                <input type="text" id="announcement_link_text" name="announcement_link_text" value="<?php echo esc_attr($settings['announcement_link_text'] ?? ''); ?>" placeholder="<?php esc_attr_e('Saber más', 'flavor-chat-ia'); ?>">
+                                <label for="announcement_link_text"><?php esc_html_e('Texto del enlace', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                                <input type="text" id="announcement_link_text" name="announcement_link_text" value="<?php echo esc_attr($settings['announcement_link_text'] ?? ''); ?>" placeholder="<?php esc_attr_e('Saber más', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             </div>
                             <div class="flavor-settings-row">
-                                <label for="announcement_bg"><?php esc_html_e('Color de fondo', 'flavor-chat-ia'); ?></label>
+                                <label for="announcement_bg"><?php esc_html_e('Color de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <input type="text" id="announcement_bg" name="announcement_bg" class="flavor-color-picker" value="<?php echo esc_attr($settings['announcement_bg'] ?? '#3b82f6'); ?>">
                             </div>
                             <div class="flavor-settings-row">
-                                <label for="announcement_dismissible"><?php esc_html_e('Permitir cerrar', 'flavor-chat-ia'); ?></label>
+                                <label for="announcement_dismissible"><?php esc_html_e('Permitir cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <label class="flavor-toggle">
                                     <input type="checkbox" id="announcement_dismissible" name="announcement_dismissible" value="1" <?php checked($settings['announcement_dismissible'] ?? true); ?>>
                                     <span class="flavor-toggle__slider"></span>
@@ -544,28 +544,28 @@ class Flavor_Layout_Admin {
                         <div class="flavor-settings-section">
                             <h3>
                                 <span class="dashicons dashicons-admin-appearance"></span>
-                                <?php esc_html_e('Modo Oscuro', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Modo Oscuro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </h3>
                             <div class="flavor-settings-row">
-                                <label for="dark_mode_enabled"><?php esc_html_e('Activar', 'flavor-chat-ia'); ?></label>
+                                <label for="dark_mode_enabled"><?php esc_html_e('Activar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <label class="flavor-toggle">
                                     <input type="checkbox" id="dark_mode_enabled" name="dark_mode_enabled" value="1" <?php checked($settings['dark_mode_enabled'] ?? false); ?>>
                                     <span class="flavor-toggle__slider"></span>
                                 </label>
                             </div>
                             <div class="flavor-settings-row">
-                                <label for="dark_mode_auto"><?php esc_html_e('Detectar preferencia del sistema', 'flavor-chat-ia'); ?></label>
+                                <label for="dark_mode_auto"><?php esc_html_e('Detectar preferencia del sistema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <label class="flavor-toggle">
                                     <input type="checkbox" id="dark_mode_auto" name="dark_mode_auto" value="1" <?php checked($settings['dark_mode_auto'] ?? true); ?>>
                                     <span class="flavor-toggle__slider"></span>
                                 </label>
                             </div>
                             <div class="flavor-settings-row">
-                                <label for="dark_bg_color"><?php esc_html_e('Color de fondo (oscuro)', 'flavor-chat-ia'); ?></label>
+                                <label for="dark_bg_color"><?php esc_html_e('Color de fondo (oscuro)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <input type="text" id="dark_bg_color" name="dark_bg_color" class="flavor-color-picker" value="<?php echo esc_attr($settings['dark_bg_color'] ?? '#0f172a'); ?>">
                             </div>
                             <div class="flavor-settings-row">
-                                <label for="dark_text_color"><?php esc_html_e('Color de texto (oscuro)', 'flavor-chat-ia'); ?></label>
+                                <label for="dark_text_color"><?php esc_html_e('Color de texto (oscuro)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <input type="text" id="dark_text_color" name="dark_text_color" class="flavor-color-picker" value="<?php echo esc_attr($settings['dark_text_color'] ?? '#f1f5f9'); ?>">
                             </div>
                         </div>
@@ -574,17 +574,17 @@ class Flavor_Layout_Admin {
                         <div class="flavor-settings-section">
                             <h3>
                                 <span class="dashicons dashicons-carrot"></span>
-                                <?php esc_html_e('Breadcrumbs (Migas de pan)', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Breadcrumbs (Migas de pan)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </h3>
                             <div class="flavor-settings-row">
-                                <label for="breadcrumbs_enabled"><?php esc_html_e('Activar', 'flavor-chat-ia'); ?></label>
+                                <label for="breadcrumbs_enabled"><?php esc_html_e('Activar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <label class="flavor-toggle">
                                     <input type="checkbox" id="breadcrumbs_enabled" name="breadcrumbs_enabled" value="1" <?php checked($settings['breadcrumbs_enabled'] ?? false); ?>>
                                     <span class="flavor-toggle__slider"></span>
                                 </label>
                             </div>
                             <div class="flavor-settings-row">
-                                <label for="breadcrumbs_separator"><?php esc_html_e('Separador', 'flavor-chat-ia'); ?></label>
+                                <label for="breadcrumbs_separator"><?php esc_html_e('Separador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <select id="breadcrumbs_separator" name="breadcrumbs_separator">
                                     <option value="›" <?php selected($settings['breadcrumbs_separator'] ?? '›', '›'); ?>>› (chevron)</option>
                                     <option value="/" <?php selected($settings['breadcrumbs_separator'] ?? '', '/'); ?>>/ (slash)</option>
@@ -598,24 +598,24 @@ class Flavor_Layout_Admin {
                         <div class="flavor-settings-section">
                             <h3>
                                 <span class="dashicons dashicons-arrow-up-alt"></span>
-                                <?php esc_html_e('Botón Volver Arriba', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Botón Volver Arriba', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </h3>
                             <div class="flavor-settings-row">
-                                <label for="back_to_top_enabled"><?php esc_html_e('Activar', 'flavor-chat-ia'); ?></label>
+                                <label for="back_to_top_enabled"><?php esc_html_e('Activar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <label class="flavor-toggle">
                                     <input type="checkbox" id="back_to_top_enabled" name="back_to_top_enabled" value="1" <?php checked($settings['back_to_top_enabled'] ?? true); ?>>
                                     <span class="flavor-toggle__slider"></span>
                                 </label>
                             </div>
                             <div class="flavor-settings-row">
-                                <label for="back_to_top_show_after"><?php esc_html_e('Mostrar después de (px)', 'flavor-chat-ia'); ?></label>
+                                <label for="back_to_top_show_after"><?php esc_html_e('Mostrar después de (px)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <input type="number" id="back_to_top_show_after" name="back_to_top_show_after" value="<?php echo intval($settings['back_to_top_show_after'] ?? 300); ?>" min="100" max="1000" step="50">
                             </div>
                             <div class="flavor-settings-row">
-                                <label for="back_to_top_position"><?php esc_html_e('Posición', 'flavor-chat-ia'); ?></label>
+                                <label for="back_to_top_position"><?php esc_html_e('Posición', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <select id="back_to_top_position" name="back_to_top_position">
-                                    <option value="right" <?php selected($settings['back_to_top_position'] ?? 'right', 'right'); ?>><?php esc_html_e('Derecha', 'flavor-chat-ia'); ?></option>
-                                    <option value="left" <?php selected($settings['back_to_top_position'] ?? '', 'left'); ?>><?php esc_html_e('Izquierda', 'flavor-chat-ia'); ?></option>
+                                    <option value="right" <?php selected($settings['back_to_top_position'] ?? 'right', 'right'); ?>><?php esc_html_e('Derecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                    <option value="left" <?php selected($settings['back_to_top_position'] ?? '', 'left'); ?>><?php esc_html_e('Izquierda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                 </select>
                             </div>
                         </div>
@@ -624,43 +624,43 @@ class Flavor_Layout_Admin {
                         <div class="flavor-settings-section">
                             <h3>
                                 <span class="dashicons dashicons-admin-comments"></span>
-                                <?php esc_html_e('Botón CTA Flotante', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Botón CTA Flotante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </h3>
                             <div class="flavor-settings-row">
-                                <label for="sticky_cta_enabled"><?php esc_html_e('Activar', 'flavor-chat-ia'); ?></label>
+                                <label for="sticky_cta_enabled"><?php esc_html_e('Activar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <label class="flavor-toggle">
                                     <input type="checkbox" id="sticky_cta_enabled" name="sticky_cta_enabled" value="1" <?php checked($settings['sticky_cta_enabled'] ?? false); ?>>
                                     <span class="flavor-toggle__slider"></span>
                                 </label>
                             </div>
                             <div class="flavor-settings-row">
-                                <label for="sticky_cta_icon"><?php esc_html_e('Icono', 'flavor-chat-ia'); ?></label>
+                                <label for="sticky_cta_icon"><?php esc_html_e('Icono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <select id="sticky_cta_icon" name="sticky_cta_icon">
                                     <option value="whatsapp" <?php selected($settings['sticky_cta_icon'] ?? 'whatsapp', 'whatsapp'); ?>>WhatsApp</option>
-                                    <option value="phone" <?php selected($settings['sticky_cta_icon'] ?? '', 'phone'); ?>><?php esc_html_e('Teléfono', 'flavor-chat-ia'); ?></option>
+                                    <option value="phone" <?php selected($settings['sticky_cta_icon'] ?? '', 'phone'); ?>><?php esc_html_e('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                     <option value="email" <?php selected($settings['sticky_cta_icon'] ?? '', 'email'); ?>>Email</option>
                                     <option value="chat" <?php selected($settings['sticky_cta_icon'] ?? '', 'chat'); ?>>Chat</option>
-                                    <option value="calendar" <?php selected($settings['sticky_cta_icon'] ?? '', 'calendar'); ?>><?php esc_html_e('Calendario', 'flavor-chat-ia'); ?></option>
+                                    <option value="calendar" <?php selected($settings['sticky_cta_icon'] ?? '', 'calendar'); ?>><?php esc_html_e('Calendario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                 </select>
                             </div>
                             <div class="flavor-settings-row">
-                                <label for="sticky_cta_text"><?php esc_html_e('Texto', 'flavor-chat-ia'); ?></label>
-                                <input type="text" id="sticky_cta_text" name="sticky_cta_text" value="<?php echo esc_attr($settings['sticky_cta_text'] ?? ''); ?>" placeholder="<?php esc_attr_e('¿Necesitas ayuda?', 'flavor-chat-ia'); ?>">
+                                <label for="sticky_cta_text"><?php esc_html_e('Texto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                                <input type="text" id="sticky_cta_text" name="sticky_cta_text" value="<?php echo esc_attr($settings['sticky_cta_text'] ?? ''); ?>" placeholder="<?php esc_attr_e('¿Necesitas ayuda?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             </div>
                             <div class="flavor-settings-row">
-                                <label for="sticky_cta_url"><?php esc_html_e('URL', 'flavor-chat-ia'); ?></label>
+                                <label for="sticky_cta_url"><?php esc_html_e('URL', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <input type="url" id="sticky_cta_url" name="sticky_cta_url" value="<?php echo esc_url($settings['sticky_cta_url'] ?? ''); ?>" placeholder="https://wa.me/34600000000">
                             </div>
                             <div class="flavor-settings-row">
-                                <label for="sticky_cta_position"><?php esc_html_e('Posición', 'flavor-chat-ia'); ?></label>
+                                <label for="sticky_cta_position"><?php esc_html_e('Posición', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <select id="sticky_cta_position" name="sticky_cta_position">
-                                    <option value="bottom-right" <?php selected($settings['sticky_cta_position'] ?? 'bottom-right', 'bottom-right'); ?>><?php esc_html_e('Abajo derecha', 'flavor-chat-ia'); ?></option>
-                                    <option value="bottom-left" <?php selected($settings['sticky_cta_position'] ?? '', 'bottom-left'); ?>><?php esc_html_e('Abajo izquierda', 'flavor-chat-ia'); ?></option>
-                                    <option value="bottom-center" <?php selected($settings['sticky_cta_position'] ?? '', 'bottom-center'); ?>><?php esc_html_e('Abajo centro', 'flavor-chat-ia'); ?></option>
+                                    <option value="bottom-right" <?php selected($settings['sticky_cta_position'] ?? 'bottom-right', 'bottom-right'); ?>><?php esc_html_e('Abajo derecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                    <option value="bottom-left" <?php selected($settings['sticky_cta_position'] ?? '', 'bottom-left'); ?>><?php esc_html_e('Abajo izquierda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                    <option value="bottom-center" <?php selected($settings['sticky_cta_position'] ?? '', 'bottom-center'); ?>><?php esc_html_e('Abajo centro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                 </select>
                             </div>
                             <div class="flavor-settings-row">
-                                <label for="sticky_cta_mobile"><?php esc_html_e('Mostrar en móvil', 'flavor-chat-ia'); ?></label>
+                                <label for="sticky_cta_mobile"><?php esc_html_e('Mostrar en móvil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <label class="flavor-toggle">
                                     <input type="checkbox" id="sticky_cta_mobile" name="sticky_cta_mobile" value="1" <?php checked($settings['sticky_cta_mobile'] ?? true); ?>>
                                     <span class="flavor-toggle__slider"></span>
@@ -672,24 +672,24 @@ class Flavor_Layout_Admin {
                         <div class="flavor-settings-section">
                             <h3>
                                 <span class="dashicons dashicons-shield"></span>
-                                <?php esc_html_e('Banner de Cookies (GDPR)', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Banner de Cookies (GDPR)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </h3>
                             <div class="flavor-settings-row">
-                                <label for="cookie_banner_enabled"><?php esc_html_e('Activar', 'flavor-chat-ia'); ?></label>
+                                <label for="cookie_banner_enabled"><?php esc_html_e('Activar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <label class="flavor-toggle">
                                     <input type="checkbox" id="cookie_banner_enabled" name="cookie_banner_enabled" value="1" <?php checked($settings['cookie_banner_enabled'] ?? false); ?>>
                                     <span class="flavor-toggle__slider"></span>
                                 </label>
                             </div>
                             <div class="flavor-settings-row">
-                                <label for="cookie_banner_message"><?php esc_html_e('Mensaje', 'flavor-chat-ia'); ?></label>
-                                <textarea id="cookie_banner_message" name="cookie_banner_message" rows="2"><?php echo esc_textarea($settings['cookie_banner_message'] ?? __('Utilizamos cookies para mejorar tu experiencia. Al continuar navegando, aceptas nuestra política de cookies.', 'flavor-chat-ia')); ?></textarea>
+                                <label for="cookie_banner_message"><?php esc_html_e('Mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                                <textarea id="cookie_banner_message" name="cookie_banner_message" rows="2"><?php echo esc_textarea($settings['cookie_banner_message'] ?? __('Utilizamos cookies para mejorar tu experiencia. Al continuar navegando, aceptas nuestra política de cookies.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></textarea>
                             </div>
                             <div class="flavor-settings-row">
-                                <label for="cookie_banner_position"><?php esc_html_e('Posición', 'flavor-chat-ia'); ?></label>
+                                <label for="cookie_banner_position"><?php esc_html_e('Posición', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <select id="cookie_banner_position" name="cookie_banner_position">
-                                    <option value="bottom" <?php selected($settings['cookie_banner_position'] ?? 'bottom', 'bottom'); ?>><?php esc_html_e('Abajo', 'flavor-chat-ia'); ?></option>
-                                    <option value="top" <?php selected($settings['cookie_banner_position'] ?? '', 'top'); ?>><?php esc_html_e('Arriba', 'flavor-chat-ia'); ?></option>
+                                    <option value="bottom" <?php selected($settings['cookie_banner_position'] ?? 'bottom', 'bottom'); ?>><?php esc_html_e('Abajo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                    <option value="top" <?php selected($settings['cookie_banner_position'] ?? '', 'top'); ?>><?php esc_html_e('Arriba', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                 </select>
                             </div>
                         </div>
@@ -697,7 +697,7 @@ class Flavor_Layout_Admin {
                         <div class="flavor-settings-actions">
                             <button type="submit" class="button button-primary button-large">
                                 <span class="dashicons dashicons-saved"></span>
-                                <?php esc_html_e('Guardar Componentes', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Guardar Componentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </div>
                     </form>
@@ -709,7 +709,7 @@ class Flavor_Layout_Admin {
                 <div class="flavor-modal__backdrop"></div>
                 <div class="flavor-modal__content">
                     <div class="flavor-modal__header">
-                        <h3 class="flavor-modal__title"><?php esc_html_e('Vista Previa', 'flavor-chat-ia'); ?></h3>
+                        <h3 class="flavor-modal__title"><?php esc_html_e('Vista Previa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <button type="button" class="flavor-modal__close">
                             <span class="dashicons dashicons-no-alt"></span>
                         </button>
@@ -902,14 +902,14 @@ class Flavor_Layout_Admin {
         check_ajax_referer('flavor_layout_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $type = sanitize_key($_POST['type'] ?? '');
         $id = sanitize_key($_POST['id'] ?? '');
 
         if (empty($type) || empty($id)) {
-            wp_send_json_error(['message' => __('Datos inválidos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos inválidos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $settings = get_option('flavor_layout_settings', []);
@@ -923,7 +923,7 @@ class Flavor_Layout_Admin {
         update_option('flavor_layout_settings', $settings);
 
         wp_send_json_success([
-            'message' => __('Layout actualizado', 'flavor-chat-ia'),
+            'message' => __('Layout actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'active_menu' => $settings['active_menu'] ?? 'classic',
             'active_footer' => $settings['active_footer'] ?? 'multi-column',
         ]);
@@ -936,7 +936,7 @@ class Flavor_Layout_Admin {
         check_ajax_referer('flavor_layout_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $settings = get_option('flavor_layout_settings', []);
@@ -1070,7 +1070,7 @@ class Flavor_Layout_Admin {
 
         update_option('flavor_layout_settings', $settings);
 
-        wp_send_json_success(['message' => __('Ajustes guardados', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Ajustes guardados', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -1080,7 +1080,7 @@ class Flavor_Layout_Admin {
         check_ajax_referer('flavor_layout_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $registry = flavor_layout_registry();
@@ -1103,7 +1103,7 @@ class Flavor_Layout_Admin {
         file_put_contents($config_dir . '/layout-config-latest.json', json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
         wp_send_json_success([
-            'message' => __('Configuración exportada', 'flavor-chat-ia'),
+            'message' => __('Configuración exportada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'filename' => $filename,
             'url' => $upload_dir['baseurl'] . '/flavor-chat-ia/mobile-config/' . $filename,
             'config' => $config,
@@ -1120,7 +1120,7 @@ class Flavor_Layout_Admin {
         $id = sanitize_key($_POST['id'] ?? '');
 
         if (empty($type) || empty($id)) {
-            wp_send_json_error(['message' => __('Datos inválidos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos inválidos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Generar URL de preview

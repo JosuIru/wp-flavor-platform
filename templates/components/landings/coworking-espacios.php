@@ -9,36 +9,36 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$titulo = $titulo ?? __('Nuestros Espacios', 'flavor-chat-ia');
+$titulo = $titulo ?? __('Nuestros Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $color_primario = $color_primario ?? '#00bcd4';
 $id_seccion = $id_seccion ?? '';
 
 $espacios_default = [
     [
-        'nombre' => __('Hot Desk', 'flavor-chat-ia'),
-        'descripcion' => __('Puesto flexible en zona compartida', 'flavor-chat-ia'),
+        'nombre' => __('Hot Desk', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Puesto flexible en zona compartida', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'laptop',
         'caracteristicas' => ['WiFi de alta velocidad', 'Café ilimitado', 'Taquilla personal'],
         'precio' => '150',
-        'periodo' => __('/mes', 'flavor-chat-ia'),
+        'periodo' => __('/mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'destacado' => false,
     ],
     [
-        'nombre' => __('Dedicated Desk', 'flavor-chat-ia'),
-        'descripcion' => __('Tu escritorio fijo 24/7', 'flavor-chat-ia'),
+        'nombre' => __('Dedicated Desk', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Tu escritorio fijo 24/7', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'desktop',
         'caracteristicas' => ['Puesto fijo asignado', 'Almacenamiento', 'Acceso 24h', 'Sala reuniones 4h/mes'],
         'precio' => '250',
-        'periodo' => __('/mes', 'flavor-chat-ia'),
+        'periodo' => __('/mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'destacado' => true,
     ],
     [
-        'nombre' => __('Oficina Privada', 'flavor-chat-ia'),
-        'descripcion' => __('Espacio cerrado para tu equipo', 'flavor-chat-ia'),
+        'nombre' => __('Oficina Privada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Espacio cerrado para tu equipo', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'building',
         'caracteristicas' => ['Desde 2 personas', 'Mobiliario incluido', 'Dirección fiscal', 'Sala reuniones 8h/mes'],
         'precio' => '450',
-        'periodo' => __('/mes', 'flavor-chat-ia'),
+        'periodo' => __('/mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'destacado' => false,
     ],
 ];
@@ -46,12 +46,12 @@ $espacios_default = [
 $espacios = $espacios ?? $espacios_default;
 
 $amenities = [
-    ['icono' => 'wifi', 'nombre' => __('WiFi Gigabit', 'flavor-chat-ia')],
-    ['icono' => 'coffee', 'nombre' => __('Café & Té', 'flavor-chat-ia')],
-    ['icono' => 'printer', 'nombre' => __('Impresora', 'flavor-chat-ia')],
-    ['icono' => 'groups', 'nombre' => __('Salas de Reuniones', 'flavor-chat-ia')],
-    ['icono' => 'phone', 'nombre' => __('Cabinas Telefónicas', 'flavor-chat-ia')],
-    ['icono' => 'calendar', 'nombre' => __('Eventos Networking', 'flavor-chat-ia')],
+    ['icono' => 'wifi', 'nombre' => __('WiFi Gigabit', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['icono' => 'coffee', 'nombre' => __('Café & Té', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['icono' => 'printer', 'nombre' => __('Impresora', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['icono' => 'groups', 'nombre' => __('Salas de Reuniones', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['icono' => 'phone', 'nombre' => __('Cabinas Telefónicas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['icono' => 'calendar', 'nombre' => __('Eventos Networking', FLAVOR_PLATFORM_TEXT_DOMAIN)],
 ];
 ?>
 
@@ -59,14 +59,14 @@ $amenities = [
     <div class="flavor-container">
         <div class="flavor-espacios-header">
             <h2 class="flavor-section-title"><?php echo esc_html($titulo); ?></h2>
-            <p class="flavor-espacios-subtitulo"><?php esc_html_e('Encuentra el espacio perfecto para trabajar', 'flavor-chat-ia'); ?></p>
+            <p class="flavor-espacios-subtitulo"><?php esc_html_e('Encuentra el espacio perfecto para trabajar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
 
         <div class="flavor-espacios-grid">
             <?php foreach ($espacios as $espacio): ?>
                 <article class="flavor-espacio-card <?php echo $espacio['destacado'] ? 'flavor-espacio--destacado' : ''; ?>">
                     <?php if ($espacio['destacado']): ?>
-                        <div class="flavor-espacio-badge"><?php esc_html_e('Más Popular', 'flavor-chat-ia'); ?></div>
+                        <div class="flavor-espacio-badge"><?php esc_html_e('Más Popular', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     <?php endif; ?>
 
                     <div class="flavor-espacio-icono">
@@ -91,14 +91,14 @@ $amenities = [
                     </ul>
 
                     <a href="#reservar" class="flavor-espacio-boton <?php echo $espacio['destacado'] ? 'flavor-boton--primario' : 'flavor-boton--secundario'; ?>">
-                        <?php esc_html_e('Reservar Visita', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Reservar Visita', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </article>
             <?php endforeach; ?>
         </div>
 
         <div class="flavor-amenities">
-            <h3 class="flavor-amenities-titulo"><?php esc_html_e('Todo incluido', 'flavor-chat-ia'); ?></h3>
+            <h3 class="flavor-amenities-titulo"><?php esc_html_e('Todo incluido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <div class="flavor-amenities-grid">
                 <?php foreach ($amenities as $amenity): ?>
                     <div class="flavor-amenity-item">

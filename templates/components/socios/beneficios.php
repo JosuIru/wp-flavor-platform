@@ -104,7 +104,7 @@ $colores_config = [
                 <?php endfor; ?>
             </div>
             <p class="text-rose-700 font-medium">
-                <?php echo esc_html__('El 96% de nuestros miembros recomiendan la membresia', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('El 96% de nuestros miembros recomiendan la membresia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
     </div>

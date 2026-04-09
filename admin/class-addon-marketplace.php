@@ -80,9 +80,9 @@ class Flavor_Addon_Marketplace {
      */
     public function add_marketplace_page() {
         add_submenu_page(
-            'flavor-chat-ia',
-            __('Marketplace', 'flavor-chat-ia'),
-            __('Marketplace', 'flavor-chat-ia') . ' <span class="dashicons dashicons-star-filled" style="font-size: 14px; color: #f0c33c;"></span>',
+            FLAVOR_PLATFORM_TEXT_DOMAIN,
+            __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN) . ' <span class="dashicons dashicons-star-filled" style="font-size: 14px; color: #f0c33c;"></span>',
             'manage_options',
             'flavor-marketplace',
             [$this, 'render_marketplace_page'],
@@ -528,29 +528,29 @@ class Flavor_Addon_Marketplace {
         ?>
         <div class="wrap flavor-marketplace-wrapper">
             <div class="flavor-marketplace-header">
-                <h1><?php echo esc_html__('Marketplace de Addons', 'flavor-chat-ia'); ?></h1>
-                <p><?php echo esc_html__('Descubre y añade nuevas funcionalidades a tu plataforma', 'flavor-chat-ia'); ?></p>
+                <h1><?php echo esc_html__('Marketplace de Addons', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
+                <p><?php echo esc_html__('Descubre y añade nuevas funcionalidades a tu plataforma', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                 <div class="flavor-marketplace-search">
-                    <input type="text" id="flavor-marketplace-search" placeholder="<?php esc_attr_e('Buscar addons...', 'flavor-chat-ia'); ?>">
+                    <input type="text" id="flavor-marketplace-search" placeholder="<?php esc_attr_e('Buscar addons...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
             </div>
 
             <div class="flavor-marketplace-filters">
                 <button class="flavor-marketplace-filter active" data-filter="all">
-                    <?php echo esc_html__('Todos', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button class="flavor-marketplace-filter" data-filter="free">
-                    <?php echo esc_html__('Gratis', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button class="flavor-marketplace-filter" data-filter="premium">
-                    <?php echo esc_html__('Premium', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Premium', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button class="flavor-marketplace-filter" data-filter="popular">
-                    <?php echo esc_html__('Populares', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Populares', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button class="flavor-marketplace-filter" data-filter="new">
-                    <?php echo esc_html__('Nuevos', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Nuevos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
 
@@ -577,7 +577,7 @@ class Flavor_Addon_Marketplace {
         check_ajax_referer('flavor_marketplace_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No tienes permisos', 'flavor-chat-ia'));
+            wp_send_json_error(__('No tienes permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $filter = sanitize_text_field($_POST['filter'] ?? 'all');
@@ -641,19 +641,19 @@ class Flavor_Addon_Marketplace {
         check_ajax_referer('flavor_marketplace_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No tienes permisos', 'flavor-chat-ia'));
+            wp_send_json_error(__('No tienes permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $slug = sanitize_text_field($_POST['slug'] ?? '');
 
         if (empty($slug)) {
-            wp_send_json_error(__('Slug requerido', 'flavor-chat-ia'));
+            wp_send_json_error(__('Slug requerido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $addon = $this->fetch_addon_details($slug);
 
         if (!$addon) {
-            wp_send_json_error(__('Addon no encontrado', 'flavor-chat-ia'));
+            wp_send_json_error(__('Addon no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         wp_send_json_success(['addon' => $addon]);
@@ -689,20 +689,20 @@ class Flavor_Addon_Marketplace {
         check_ajax_referer('flavor_marketplace_nonce', 'nonce');
 
         if (!current_user_can('install_plugins')) {
-            wp_send_json_error(__('No tienes permisos', 'flavor-chat-ia'));
+            wp_send_json_error(__('No tienes permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $slug = sanitize_text_field($_POST['slug'] ?? '');
 
         if (empty($slug)) {
-            wp_send_json_error(__('Slug requerido', 'flavor-chat-ia'));
+            wp_send_json_error(__('Slug requerido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Obtener URL de descarga
         $addon = $this->fetch_addon_details($slug);
 
         if (!$addon || empty($addon['download_url'])) {
-            wp_send_json_error(__('No se pudo obtener URL de descarga', 'flavor-chat-ia'));
+            wp_send_json_error(__('No se pudo obtener URL de descarga', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Usar WordPress upgrader
@@ -722,7 +722,7 @@ class Flavor_Addon_Marketplace {
         }
 
         wp_send_json_success([
-            'message' => __('Addon instalado y activado correctamente', 'flavor-chat-ia'),
+            'message' => __('Addon instalado y activado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -735,7 +735,7 @@ class Flavor_Addon_Marketplace {
         check_ajax_referer('flavor_marketplace_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No tienes permisos', 'flavor-chat-ia'));
+            wp_send_json_error(__('No tienes permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $search = sanitize_text_field($_POST['search'] ?? '');

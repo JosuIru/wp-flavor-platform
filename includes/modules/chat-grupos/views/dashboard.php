@@ -27,8 +27,8 @@ if (!$tabla_grupos_existe) {
         <div class="dm-alert dm-alert--info">
             <span class="dashicons dashicons-info"></span>
             <div>
-                <strong><?php esc_html_e('Módulo en preparación', 'flavor-chat-ia'); ?></strong>
-                <p><?php esc_html_e('Las tablas del módulo Chat Grupos aún no han sido creadas. Activa el módulo completamente para generar la estructura necesaria.', 'flavor-chat-ia'); ?></p>
+                <strong><?php esc_html_e('Módulo en preparación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                <p><?php esc_html_e('Las tablas del módulo Chat Grupos aún no han sido creadas. Activa el módulo completamente para generar la estructura necesaria.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
     </div>
@@ -94,7 +94,7 @@ $grupos_recientes = $wpdb->get_results(
         <span class="dashicons dashicons-groups dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($total_grupos); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Total Grupos', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Total Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -102,7 +102,7 @@ $grupos_recientes = $wpdb->get_results(
         <span class="dashicons dashicons-yes-alt dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($grupos_activos); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Grupos Activos', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Grupos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -110,7 +110,7 @@ $grupos_recientes = $wpdb->get_results(
         <span class="dashicons dashicons-admin-users dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($total_miembros); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Usuarios en Grupos', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Usuarios en Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -118,7 +118,7 @@ $grupos_recientes = $wpdb->get_results(
         <span class="dashicons dashicons-format-chat dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($mensajes_hoy); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Mensajes Hoy', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Mensajes Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 </div>
@@ -128,27 +128,27 @@ $grupos_recientes = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-chart-bar"></span>
-                <?php esc_html_e('Actividad Semanal', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Actividad Semanal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
-            <span class="dm-card__subtitle"><?php printf(esc_html__('%s mensajes', 'flavor-chat-ia'), number_format_i18n($mensajes_semana)); ?></span>
+            <span class="dm-card__subtitle"><?php printf(esc_html__('%s mensajes', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($mensajes_semana)); ?></span>
         </div>
         <div class="dm-card__body">
             <?php if (empty($actividad_diaria)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-chart-line"></span>
-                    <p><?php esc_html_e('No hay actividad en los últimos 7 días.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay actividad en los últimos 7 días.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <?php
                 $max_mensajes = max(array_column($actividad_diaria, 'total'));
                 $dias_semana = [
-                    __('Dom', 'flavor-chat-ia'),
-                    __('Lun', 'flavor-chat-ia'),
-                    __('Mar', 'flavor-chat-ia'),
-                    __('Mié', 'flavor-chat-ia'),
-                    __('Jue', 'flavor-chat-ia'),
-                    __('Vie', 'flavor-chat-ia'),
-                    __('Sáb', 'flavor-chat-ia')
+                    __('Dom', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Lun', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Mar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Mié', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Jue', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Vie', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Sáb', FLAVOR_PLATFORM_TEXT_DOMAIN)
                 ];
                 ?>
                 <div class="dm-chart-bars">
@@ -173,25 +173,25 @@ $grupos_recientes = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-chart-pie"></span>
-                <?php esc_html_e('Distribución de Grupos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Distribución de Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <div class="dm-data-list">
                 <div class="dm-data-list__item">
-                    <span class="dm-data-list__label"><?php esc_html_e('Grupos Públicos', 'flavor-chat-ia'); ?></span>
+                    <span class="dm-data-list__label"><?php esc_html_e('Grupos Públicos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="dm-data-list__value"><?php echo esc_html($grupos_publicos); ?></span>
                 </div>
                 <div class="dm-data-list__item">
-                    <span class="dm-data-list__label"><?php esc_html_e('Grupos Privados', 'flavor-chat-ia'); ?></span>
+                    <span class="dm-data-list__label"><?php esc_html_e('Grupos Privados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="dm-data-list__value"><?php echo esc_html($grupos_privados); ?></span>
                 </div>
                 <div class="dm-data-list__item">
-                    <span class="dm-data-list__label"><?php esc_html_e('Grupos Secretos', 'flavor-chat-ia'); ?></span>
+                    <span class="dm-data-list__label"><?php esc_html_e('Grupos Secretos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="dm-data-list__value"><?php echo esc_html($grupos_secretos); ?></span>
                 </div>
                 <div class="dm-data-list__item dm-data-list__item--highlight">
-                    <span class="dm-data-list__label"><?php esc_html_e('Total Mensajes', 'flavor-chat-ia'); ?></span>
+                    <span class="dm-data-list__label"><?php esc_html_e('Total Mensajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="dm-data-list__value"><?php echo esc_html(number_format_i18n($total_mensajes)); ?></span>
                 </div>
             </div>
@@ -204,15 +204,15 @@ $grupos_recientes = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-star-filled"></span>
-                <?php esc_html_e('Grupos Más Activos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Grupos Más Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
-            <span class="dm-card__subtitle"><?php esc_html_e('Últimos 30 días', 'flavor-chat-ia'); ?></span>
+            <span class="dm-card__subtitle"><?php esc_html_e('Últimos 30 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="dm-card__body">
             <?php if (empty($grupos_mas_activos)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-groups"></span>
-                    <p><?php esc_html_e('No hay actividad reciente en los grupos.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay actividad reciente en los grupos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <ul class="dm-ranking">
@@ -225,11 +225,11 @@ $grupos_recientes = $wpdb->get_results(
                             <div class="dm-ranking__content">
                                 <strong class="dm-ranking__name"><?php echo esc_html($grupo->nombre); ?></strong>
                                 <span class="dm-ranking__meta">
-                                    <?php echo esc_html($grupo->miembros_count); ?> <?php esc_html_e('miembros', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html($grupo->miembros_count); ?> <?php esc_html_e('miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                             </div>
                             <span class="dm-badge dm-badge--info">
-                                <?php echo esc_html(number_format_i18n($grupo->total_mensajes)); ?> <?php esc_html_e('msgs', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html(number_format_i18n($grupo->total_mensajes)); ?> <?php esc_html_e('msgs', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         </li>
                     <?php endforeach; ?>
@@ -242,14 +242,14 @@ $grupos_recientes = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-clock"></span>
-                <?php esc_html_e('Grupos Recientes', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Grupos Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <?php if (empty($grupos_recientes)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-groups"></span>
-                    <p><?php esc_html_e('No hay grupos creados todavía.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay grupos creados todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <ul class="dm-list">
@@ -258,7 +258,7 @@ $grupos_recientes = $wpdb->get_results(
                             <div class="dm-list__content">
                                 <strong class="dm-list__title"><?php echo esc_html($grupo->nombre); ?></strong>
                                 <span class="dm-list__meta">
-                                    <?php echo esc_html($grupo->num_miembros); ?> <?php esc_html_e('miembros', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html($grupo->num_miembros); ?> <?php esc_html_e('miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     &bull;
                                     <?php echo esc_html(human_time_diff(strtotime($grupo->fecha_creacion), current_time('timestamp'))); ?>
                                 </span>

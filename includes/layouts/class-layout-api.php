@@ -174,7 +174,7 @@ class Flavor_Layout_API {
         if (!$menu) {
             return new WP_Error(
                 'menu_not_found',
-                __('Menú no encontrado', 'flavor-chat-ia'),
+                __('Menú no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 404]
             );
         }
@@ -218,7 +218,7 @@ class Flavor_Layout_API {
         if (!$footer) {
             return new WP_Error(
                 'footer_not_found',
-                __('Footer no encontrado', 'flavor-chat-ia'),
+                __('Footer no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 404]
             );
         }
@@ -344,7 +344,7 @@ class Flavor_Layout_API {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => __('Configuración actualizada', 'flavor-chat-ia'),
+            'message' => __('Configuración actualizada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'data' => $registry->export_for_mobile(),
         ]);
     }

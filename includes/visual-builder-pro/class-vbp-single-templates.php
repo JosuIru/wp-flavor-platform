@@ -86,16 +86,16 @@ class Flavor_VBP_Single_Templates {
      */
     public function register_post_type() {
         $labels = array(
-            'name'               => __( 'Plantillas Single', 'flavor-chat-ia' ),
-            'singular_name'      => __( 'Plantilla Single', 'flavor-chat-ia' ),
-            'add_new'            => __( 'Nueva Plantilla', 'flavor-chat-ia' ),
-            'add_new_item'       => __( 'Nueva Plantilla Single', 'flavor-chat-ia' ),
-            'edit_item'          => __( 'Editar Plantilla', 'flavor-chat-ia' ),
-            'view_item'          => __( 'Ver Plantilla', 'flavor-chat-ia' ),
-            'all_items'          => __( 'Todas las Plantillas', 'flavor-chat-ia' ),
-            'search_items'       => __( 'Buscar Plantillas', 'flavor-chat-ia' ),
-            'not_found'          => __( 'No se encontraron plantillas', 'flavor-chat-ia' ),
-            'not_found_in_trash' => __( 'No hay plantillas en la papelera', 'flavor-chat-ia' ),
+            'name'               => __( 'Plantillas Single', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'singular_name'      => __( 'Plantilla Single', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'add_new'            => __( 'Nueva Plantilla', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'add_new_item'       => __( 'Nueva Plantilla Single', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'edit_item'          => __( 'Editar Plantilla', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'view_item'          => __( 'Ver Plantilla', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'all_items'          => __( 'Todas las Plantillas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'search_items'       => __( 'Buscar Plantillas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'not_found'          => __( 'No se encontraron plantillas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'not_found_in_trash' => __( 'No hay plantillas en la papelera', FLAVOR_PLATFORM_TEXT_DOMAIN ),
         );
 
         $args = array(
@@ -103,7 +103,7 @@ class Flavor_VBP_Single_Templates {
             'public'              => false,
             'publicly_queryable'  => false,
             'show_ui'             => true,
-            'show_in_menu'        => 'flavor-chat-ia',
+            'show_in_menu'        => FLAVOR_PLATFORM_TEXT_DOMAIN,
             'show_in_rest'        => true,
             'rest_base'           => 'vbp-single-templates',
             'capability_type'     => 'page',
@@ -590,37 +590,37 @@ class Flavor_VBP_Single_Templates {
             // Campos estándar de WordPress
             array(
                 'key'     => 'post_title',
-                'label'   => __( 'Título', 'flavor-chat-ia' ),
+                'label'   => __( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'type'    => 'text',
                 'source'  => 'core',
             ),
             array(
                 'key'     => 'post_content',
-                'label'   => __( 'Contenido', 'flavor-chat-ia' ),
+                'label'   => __( 'Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'type'    => 'html',
                 'source'  => 'core',
             ),
             array(
                 'key'     => 'post_excerpt',
-                'label'   => __( 'Extracto', 'flavor-chat-ia' ),
+                'label'   => __( 'Extracto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'type'    => 'text',
                 'source'  => 'core',
             ),
             array(
                 'key'     => 'post_date',
-                'label'   => __( 'Fecha de publicación', 'flavor-chat-ia' ),
+                'label'   => __( 'Fecha de publicación', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'type'    => 'date',
                 'source'  => 'core',
             ),
             array(
                 'key'     => 'post_author',
-                'label'   => __( 'Autor', 'flavor-chat-ia' ),
+                'label'   => __( 'Autor', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'type'    => 'author',
                 'source'  => 'core',
             ),
             array(
                 'key'     => 'featured_image',
-                'label'   => __( 'Imagen destacada', 'flavor-chat-ia' ),
+                'label'   => __( 'Imagen destacada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'type'    => 'image',
                 'source'  => 'core',
             ),
@@ -782,7 +782,7 @@ class Flavor_VBP_Single_Templates {
         $canvas_json = get_post_meta( $template_id, self::META_CANVAS, true );
 
         if ( ! $canvas_json ) {
-            return '<p>' . esc_html__( 'Plantilla vacía', 'flavor-chat-ia' ) . '</p>';
+            return '<p>' . esc_html__( 'Plantilla vacía', FLAVOR_PLATFORM_TEXT_DOMAIN ) . '</p>';
         }
 
         $canvas_data = json_decode( $canvas_json, true );
@@ -802,7 +802,7 @@ class Flavor_VBP_Single_Templates {
             );
         }
 
-        return '<p>' . esc_html__( 'Error: VBP Canvas no disponible', 'flavor-chat-ia' ) . '</p>';
+        return '<p>' . esc_html__( 'Error: VBP Canvas no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN ) . '</p>';
     }
 
     /**
@@ -867,19 +867,19 @@ class Flavor_VBP_Single_Templates {
         $library->registrar_bloque(
             array(
                 'id'       => 'dynamic-field',
-                'name'     => __( 'Campo Dinámico', 'flavor-chat-ia' ),
+                'name'     => __( 'Campo Dinámico', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category' => 'dynamic',
                 'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>',
                 'fields'   => array(
                     'field_key'  => array(
                         'type'    => 'text',
-                        'label'   => __( 'Campo', 'flavor-chat-ia' ),
+                        'label'   => __( 'Campo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 'post_title',
-                        'description' => __( 'Usar: post_title, post_content, featured_image, meta_*, taxonomy_*', 'flavor-chat-ia' ),
+                        'description' => __( 'Usar: post_title, post_content, featured_image, meta_*, taxonomy_*', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                     'tag'        => array(
                         'type'    => 'select',
-                        'label'   => __( 'Etiqueta HTML', 'flavor-chat-ia' ),
+                        'label'   => __( 'Etiqueta HTML', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'options' => array(
                             'div'  => 'div',
                             'p'    => 'p',
@@ -893,7 +893,7 @@ class Flavor_VBP_Single_Templates {
                     ),
                     'fallback'   => array(
                         'type'    => 'text',
-                        'label'   => __( 'Texto por defecto', 'flavor-chat-ia' ),
+                        'label'   => __( 'Texto por defecto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => '',
                     ),
                 ),
@@ -904,26 +904,26 @@ class Flavor_VBP_Single_Templates {
         $library->registrar_bloque(
             array(
                 'id'       => 'dynamic-featured-image',
-                'name'     => __( 'Imagen Destacada', 'flavor-chat-ia' ),
+                'name'     => __( 'Imagen Destacada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category' => 'dynamic',
                 'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>',
                 'fields'   => array(
                     'size'       => array(
                         'type'    => 'select',
-                        'label'   => __( 'Tamaño', 'flavor-chat-ia' ),
+                        'label'   => __( 'Tamaño', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'options' => array(
-                            'thumbnail' => __( 'Miniatura', 'flavor-chat-ia' ),
-                            'medium'    => __( 'Mediano', 'flavor-chat-ia' ),
-                            'large'     => __( 'Grande', 'flavor-chat-ia' ),
-                            'full'      => __( 'Completo', 'flavor-chat-ia' ),
+                            'thumbnail' => __( 'Miniatura', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                            'medium'    => __( 'Mediano', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                            'large'     => __( 'Grande', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                            'full'      => __( 'Completo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         ),
                         'default' => 'large',
                     ),
                     'aspect_ratio' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Proporción', 'flavor-chat-ia' ),
+                        'label'   => __( 'Proporción', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'options' => array(
-                            'auto'  => __( 'Auto', 'flavor-chat-ia' ),
+                            'auto'  => __( 'Auto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                             '16/9'  => '16:9',
                             '4/3'   => '4:3',
                             '1/1'   => '1:1',
@@ -933,7 +933,7 @@ class Flavor_VBP_Single_Templates {
                     ),
                     'fallback_image' => array(
                         'type'    => 'image',
-                        'label'   => __( 'Imagen por defecto', 'flavor-chat-ia' ),
+                        'label'   => __( 'Imagen por defecto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                 ),
             )
@@ -943,28 +943,28 @@ class Flavor_VBP_Single_Templates {
         $library->registrar_bloque(
             array(
                 'id'       => 'dynamic-author',
-                'name'     => __( 'Autor', 'flavor-chat-ia' ),
+                'name'     => __( 'Autor', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category' => 'dynamic',
                 'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
                 'fields'   => array(
                     'show_avatar'  => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar avatar', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar avatar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                     'show_name'    => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar nombre', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar nombre', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                     'show_bio'     => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar biografía', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar biografía', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => false,
                     ),
                     'avatar_size'  => array(
                         'type'    => 'number',
-                        'label'   => __( 'Tamaño avatar (px)', 'flavor-chat-ia' ),
+                        'label'   => __( 'Tamaño avatar (px)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 48,
                     ),
                 ),
@@ -975,30 +975,30 @@ class Flavor_VBP_Single_Templates {
         $library->registrar_bloque(
             array(
                 'id'       => 'dynamic-date',
-                'name'     => __( 'Fecha', 'flavor-chat-ia' ),
+                'name'     => __( 'Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category' => 'dynamic',
                 'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>',
                 'fields'   => array(
                     'format'       => array(
                         'type'    => 'select',
-                        'label'   => __( 'Formato', 'flavor-chat-ia' ),
+                        'label'   => __( 'Formato', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'options' => array(
-                            'human'   => __( 'Hace X tiempo', 'flavor-chat-ia' ),
-                            'full'    => __( 'Fecha completa', 'flavor-chat-ia' ),
-                            'short'   => __( 'Fecha corta', 'flavor-chat-ia' ),
-                            'custom'  => __( 'Personalizado', 'flavor-chat-ia' ),
+                            'human'   => __( 'Hace X tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                            'full'    => __( 'Fecha completa', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                            'short'   => __( 'Fecha corta', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                            'custom'  => __( 'Personalizado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         ),
                         'default' => 'full',
                     ),
                     'custom_format' => array(
                         'type'    => 'text',
-                        'label'   => __( 'Formato personalizado', 'flavor-chat-ia' ),
+                        'label'   => __( 'Formato personalizado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 'j F, Y',
-                        'description' => __( 'Formato PHP: j=día, F=mes, Y=año', 'flavor-chat-ia' ),
+                        'description' => __( 'Formato PHP: j=día, F=mes, Y=año', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                     'prefix'       => array(
                         'type'    => 'text',
-                        'label'   => __( 'Prefijo', 'flavor-chat-ia' ),
+                        'label'   => __( 'Prefijo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => '',
                     ),
                 ),
@@ -1009,30 +1009,30 @@ class Flavor_VBP_Single_Templates {
         $library->registrar_bloque(
             array(
                 'id'       => 'dynamic-terms',
-                'name'     => __( 'Categorías/Tags', 'flavor-chat-ia' ),
+                'name'     => __( 'Categorías/Tags', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category' => 'dynamic',
                 'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><circle cx="7" cy="7" r="1"/></svg>',
                 'fields'   => array(
                     'taxonomy'     => array(
                         'type'    => 'text',
-                        'label'   => __( 'Taxonomía', 'flavor-chat-ia' ),
+                        'label'   => __( 'Taxonomía', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 'category',
-                        'description' => __( 'category, post_tag, o taxonomía personalizada', 'flavor-chat-ia' ),
+                        'description' => __( 'category, post_tag, o taxonomía personalizada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                     'style'        => array(
                         'type'    => 'select',
-                        'label'   => __( 'Estilo', 'flavor-chat-ia' ),
+                        'label'   => __( 'Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'options' => array(
-                            'links' => __( 'Enlaces', 'flavor-chat-ia' ),
-                            'badges' => __( 'Badges', 'flavor-chat-ia' ),
-                            'pills' => __( 'Pills', 'flavor-chat-ia' ),
-                            'plain' => __( 'Texto plano', 'flavor-chat-ia' ),
+                            'links' => __( 'Enlaces', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                            'badges' => __( 'Badges', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                            'pills' => __( 'Pills', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                            'plain' => __( 'Texto plano', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         ),
                         'default' => 'badges',
                     ),
                     'separator'    => array(
                         'type'    => 'text',
-                        'label'   => __( 'Separador', 'flavor-chat-ia' ),
+                        'label'   => __( 'Separador', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => ', ',
                     ),
                 ),
@@ -1043,39 +1043,39 @@ class Flavor_VBP_Single_Templates {
         $library->registrar_bloque(
             array(
                 'id'       => 'dynamic-related-posts',
-                'name'     => __( 'Posts Relacionados', 'flavor-chat-ia' ),
+                'name'     => __( 'Posts Relacionados', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category' => 'dynamic',
                 'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>',
                 'fields'   => array(
                     'count'        => array(
                         'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 3,
                     ),
                     'columns'      => array(
                         'type'    => 'select',
-                        'label'   => __( 'Columnas', 'flavor-chat-ia' ),
+                        'label'   => __( 'Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'options' => array( '1' => '1', '2' => '2', '3' => '3', '4' => '4' ),
                         'default' => '3',
                     ),
                     'show_image'   => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar imagen', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar imagen', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                     'show_excerpt' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar extracto', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar extracto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => false,
                     ),
                     'relation'     => array(
                         'type'    => 'select',
-                        'label'   => __( 'Relación', 'flavor-chat-ia' ),
+                        'label'   => __( 'Relación', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'options' => array(
-                            'category' => __( 'Misma categoría', 'flavor-chat-ia' ),
-                            'tag'      => __( 'Mismo tag', 'flavor-chat-ia' ),
-                            'author'   => __( 'Mismo autor', 'flavor-chat-ia' ),
-                            'random'   => __( 'Aleatorio', 'flavor-chat-ia' ),
+                            'category' => __( 'Misma categoría', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                            'tag'      => __( 'Mismo tag', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                            'author'   => __( 'Mismo autor', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                            'random'   => __( 'Aleatorio', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         ),
                         'default' => 'category',
                     ),

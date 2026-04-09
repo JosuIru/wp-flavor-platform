@@ -19,12 +19,12 @@ if (!defined('ABSPATH')) {
 
 // Valores por defecto
 $defaults = [
-    'title' => __('Formulario', 'flavor-chat-ia'),
+    'title' => __('Formulario', FLAVOR_PLATFORM_TEXT_DOMAIN),
     'subtitle' => '',
     'icon' => '📝',
     'color' => 'primary',
     'fields' => [],
-    'submit_text' => __('Enviar', 'flavor-chat-ia'),
+    'submit_text' => __('Enviar', FLAVOR_PLATFORM_TEXT_DOMAIN),
     'cancel_url' => '',
     'require_login' => true,
     'ajax' => true,
@@ -133,7 +133,7 @@ $button_classes = $color_classes['bg_solid'] . ' hover:opacity-90';
                                 name="<?php echo esc_attr($field['name']); ?>"
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white"
                                 <?php if ($is_required): ?>required<?php endif; ?>>
-                            <option value=""><?php echo esc_html($placeholder ?: __('Seleccionar...', 'flavor-chat-ia')); ?></option>
+                            <option value=""><?php echo esc_html($placeholder ?: __('Seleccionar...', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></option>
                             <?php foreach (($field['options'] ?? []) as $opt_value => $opt_label): ?>
                             <option value="<?php echo esc_attr($opt_value); ?>" <?php selected($value, $opt_value); ?>>
                                 <?php echo esc_html($opt_label); ?>
@@ -233,7 +233,7 @@ $button_classes = $color_classes['bg_solid'] . ' hover:opacity-90';
                 <?php if ($args['cancel_url']): ?>
                 <a href="<?php echo esc_url($args['cancel_url']); ?>"
                    class="py-3 px-6 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition-colors">
-                    <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <?php endif; ?>
             </div>
@@ -284,7 +284,7 @@ $button_classes = $color_classes['bg_solid'] . ' hover:opacity-90';
             messages.classList.remove('hidden');
 
             if (data.success) {
-                successText.textContent = data.data?.message || '<?php echo esc_js(__('Enviado correctamente', 'flavor-chat-ia')); ?>';
+                successText.textContent = data.data?.message || '<?php echo esc_js(__('Enviado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
                 successDiv.classList.remove('hidden');
                 
                 if (data.data?.redirect) {
@@ -296,12 +296,12 @@ $button_classes = $color_classes['bg_solid'] . ' hover:opacity-90';
                     form.reset();
                 }
             } else {
-                errorText.textContent = data.data?.message || '<?php echo esc_js(__('Ha ocurrido un error', 'flavor-chat-ia')); ?>';
+                errorText.textContent = data.data?.message || '<?php echo esc_js(__('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
                 errorDiv.classList.remove('hidden');
             }
         } catch (error) {
             messages.classList.remove('hidden');
-            errorText.textContent = '<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>';
+            errorText.textContent = '<?php echo esc_js(__('Error de conexión', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
             errorDiv.classList.remove('hidden');
         } finally {
             submitBtn.disabled = false;

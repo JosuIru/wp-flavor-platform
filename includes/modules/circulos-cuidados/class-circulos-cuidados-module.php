@@ -72,8 +72,8 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
      */
     public function __construct() {
         $this->id = 'circulos_cuidados';
-        $this->name = __('Círculos de Cuidados', 'flavor-chat-ia');
-        $this->description = __('Organiza redes de apoyo mutuo para situaciones vitales.', 'flavor-chat-ia');
+        $this->name = __('Círculos de Cuidados', 'flavor-platform');
+        $this->description = __('Organiza redes de apoyo mutuo para situaciones vitales.', 'flavor-platform');
 
         // Principios Gailu que implementa este modulo
         $this->gailu_principios = ['cuidados', 'aprendizaje'];
@@ -341,24 +341,24 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
     public function get_admin_config(): array {
         return [
             'id' => 'circulos_cuidados',
-            'label' => __('Círculos de Cuidados', 'flavor-chat-ia'),
+            'label' => __('Círculos de Cuidados', 'flavor-platform'),
             'icon' => 'dashicons-heart',
             'capability' => 'manage_options',
             'categoria' => 'comunidad',
             'paginas' => [
                 [
                     'slug' => 'circulos-cuidados',
-                    'titulo' => __('Círculos de Cuidados', 'flavor-chat-ia'),
+                    'titulo' => __('Círculos de Cuidados', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_dashboard'],
                 ],
                 [
                     'slug' => 'cc-circulos',
-                    'titulo' => __('Círculos', 'flavor-chat-ia'),
+                    'titulo' => __('Círculos', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_circulos'],
                 ],
                 [
                     'slug' => 'cc-necesidades',
-                    'titulo' => __('Necesidades', 'flavor-chat-ia'),
+                    'titulo' => __('Necesidades', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_necesidades'],
                 ],
             ],
@@ -373,17 +373,17 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
         $necesidades = wp_count_posts('cc_necesidad');
         ?>
         <div class="wrap flavor-admin-circulos">
-            <h1><?php esc_html_e('Círculos de Cuidados', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Círculos de Cuidados', 'flavor-platform'); ?></h1>
             <div class="flavor-stats-grid">
                 <div class="flavor-stat-card">
                     <span class="dashicons dashicons-heart"></span>
                     <h3><?php echo esc_html($circulos->publish ?? 0); ?></h3>
-                    <p><?php esc_html_e('Círculos activos', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Círculos activos', 'flavor-platform'); ?></p>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="dashicons dashicons-sos"></span>
                     <h3><?php echo esc_html($necesidades->publish ?? 0); ?></h3>
-                    <p><?php esc_html_e('Necesidades abiertas', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Necesidades abiertas', 'flavor-platform'); ?></p>
                 </div>
             </div>
         </div>
@@ -397,11 +397,11 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
         $circulos = get_posts(['post_type' => 'cc_circulo', 'posts_per_page' => 50, 'post_status' => 'any']);
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e('Círculos', 'flavor-chat-ia'); ?>
-                <a href="<?php echo admin_url('post-new.php?post_type=cc_circulo'); ?>" class="page-title-action"><?php esc_html_e('Añadir', 'flavor-chat-ia'); ?></a>
+            <h1><?php esc_html_e('Círculos', 'flavor-platform'); ?>
+                <a href="<?php echo admin_url('post-new.php?post_type=cc_circulo'); ?>" class="page-title-action"><?php esc_html_e('Añadir', 'flavor-platform'); ?></a>
             </h1>
             <table class="wp-list-table widefat fixed striped">
-                <thead><tr><th><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Zona', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Miembros', 'flavor-chat-ia'); ?></th></tr></thead>
+                <thead><tr><th><?php esc_html_e('Nombre', 'flavor-platform'); ?></th><th><?php esc_html_e('Tipo', 'flavor-platform'); ?></th><th><?php esc_html_e('Zona', 'flavor-platform'); ?></th><th><?php esc_html_e('Miembros', 'flavor-platform'); ?></th></tr></thead>
                 <tbody>
                 <?php foreach ($circulos as $circulo): $tipo = get_post_meta($circulo->ID, '_cc_tipo', true); $miembros = get_post_meta($circulo->ID, '_cc_miembros', true) ?: []; ?>
                     <tr>
@@ -424,9 +424,9 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
         $necesidades = get_posts(['post_type' => 'cc_necesidad', 'posts_per_page' => 50, 'post_status' => 'any']);
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e('Necesidades de Cuidado', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Necesidades de Cuidado', 'flavor-platform'); ?></h1>
             <table class="wp-list-table widefat fixed striped">
-                <thead><tr><th><?php esc_html_e('Título', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Urgencia', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Horas', 'flavor-chat-ia'); ?></th></tr></thead>
+                <thead><tr><th><?php esc_html_e('Título', 'flavor-platform'); ?></th><th><?php esc_html_e('Urgencia', 'flavor-platform'); ?></th><th><?php esc_html_e('Estado', 'flavor-platform'); ?></th><th><?php esc_html_e('Horas', 'flavor-platform'); ?></th></tr></thead>
                 <tbody>
                 <?php foreach ($necesidades as $nec): ?>
                     <tr>
@@ -471,11 +471,11 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
         // CPT: Círculos de Cuidado
         register_post_type('cc_circulo', [
             'labels' => [
-                'name' => __('Círculos de Cuidado', 'flavor-chat-ia'),
-                'singular_name' => __('Círculo', 'flavor-chat-ia'),
-                'add_new' => __('Crear Círculo', 'flavor-chat-ia'),
-                'add_new_item' => __('Crear Nuevo Círculo', 'flavor-chat-ia'),
-                'edit_item' => __('Editar Círculo', 'flavor-chat-ia'),
+                'name' => __('Círculos de Cuidado', 'flavor-platform'),
+                'singular_name' => __('Círculo', 'flavor-platform'),
+                'add_new' => __('Crear Círculo', 'flavor-platform'),
+                'add_new_item' => __('Crear Nuevo Círculo', 'flavor-platform'),
+                'edit_item' => __('Editar Círculo', 'flavor-platform'),
             ],
             'public' => true,
             'has_archive' => true,
@@ -489,9 +489,9 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
         // CPT: Necesidades de Cuidado
         register_post_type('cc_necesidad', [
             'labels' => [
-                'name' => __('Necesidades de Cuidado', 'flavor-chat-ia'),
-                'singular_name' => __('Necesidad', 'flavor-chat-ia'),
-                'add_new' => __('Solicitar Ayuda', 'flavor-chat-ia'),
+                'name' => __('Necesidades de Cuidado', 'flavor-platform'),
+                'singular_name' => __('Necesidad', 'flavor-platform'),
+                'add_new' => __('Solicitar Ayuda', 'flavor-platform'),
             ],
             'public' => true,
             'has_archive' => true,
@@ -505,8 +505,8 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
         // CPT: Registro de Horas de Cuidado
         register_post_type('cc_registro_horas', [
             'labels' => [
-                'name' => __('Registro de Horas', 'flavor-chat-ia'),
-                'singular_name' => __('Registro', 'flavor-chat-ia'),
+                'name' => __('Registro de Horas', 'flavor-platform'),
+                'singular_name' => __('Registro', 'flavor-platform'),
             ],
             'public' => false,
             'show_ui' => true,
@@ -522,8 +522,8 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
     public function registrar_taxonomias() {
         register_taxonomy('cc_tipo_circulo', ['cc_circulo', 'cc_necesidad'], [
             'labels' => [
-                'name' => __('Tipos de Círculo', 'flavor-chat-ia'),
-                'singular_name' => __('Tipo', 'flavor-chat-ia'),
+                'name' => __('Tipos de Círculo', 'flavor-platform'),
+                'singular_name' => __('Tipo', 'flavor-platform'),
             ],
             'hierarchical' => true,
             'show_in_rest' => true,
@@ -531,8 +531,8 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
 
         register_taxonomy('cc_tipo_ayuda', 'cc_necesidad', [
             'labels' => [
-                'name' => __('Tipos de Ayuda', 'flavor-chat-ia'),
-                'singular_name' => __('Tipo de Ayuda', 'flavor-chat-ia'),
+                'name' => __('Tipos de Ayuda', 'flavor-platform'),
+                'singular_name' => __('Tipo de Ayuda', 'flavor-platform'),
             ],
             'hierarchical' => false,
             'show_in_rest' => true,
@@ -545,7 +545,7 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
     public function registrar_meta_boxes() {
         add_meta_box(
             'cc_circulo_datos',
-            __('Datos del Círculo', 'flavor-chat-ia'),
+            __('Datos del Círculo', 'flavor-platform'),
             [$this, 'render_meta_box_circulo'],
             'cc_circulo',
             'normal',
@@ -554,7 +554,7 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
 
         add_meta_box(
             'cc_necesidad_datos',
-            __('Datos de la Necesidad', 'flavor-chat-ia'),
+            __('Datos de la Necesidad', 'flavor-platform'),
             [$this, 'render_meta_box_necesidad'],
             'cc_necesidad',
             'normal',
@@ -563,7 +563,7 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
 
         add_meta_box(
             'cc_circulo_miembros',
-            __('Miembros del Círculo', 'flavor-chat-ia'),
+            __('Miembros del Círculo', 'flavor-platform'),
             [$this, 'render_meta_box_miembros'],
             'cc_circulo',
             'side',
@@ -585,7 +585,7 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
         ?>
         <table class="form-table">
             <tr>
-                <th><label for="cc_tipo"><?php esc_html_e('Tipo de Círculo', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="cc_tipo"><?php esc_html_e('Tipo de Círculo', 'flavor-platform'); ?></label></th>
                 <td>
                     <select name="cc_tipo" id="cc_tipo" class="regular-text">
                         <?php foreach (self::TIPOS_CIRCULO as $id => $data) : ?>
@@ -597,31 +597,31 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
                 </td>
             </tr>
             <tr>
-                <th><label for="cc_zona"><?php esc_html_e('Zona/Barrio', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="cc_zona"><?php esc_html_e('Zona/Barrio', 'flavor-platform'); ?></label></th>
                 <td>
                     <input type="text" name="cc_zona" id="cc_zona"
                            value="<?php echo esc_attr($zona); ?>" class="regular-text">
                 </td>
             </tr>
             <tr>
-                <th><label for="cc_max_miembros"><?php esc_html_e('Máximo miembros', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="cc_max_miembros"><?php esc_html_e('Máximo miembros', 'flavor-platform'); ?></label></th>
                 <td>
                     <input type="number" name="cc_max_miembros" id="cc_max_miembros"
                            value="<?php echo esc_attr($max_miembros); ?>" min="3" max="50">
                 </td>
             </tr>
             <tr>
-                <th><label for="cc_privacidad"><?php esc_html_e('Privacidad', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="cc_privacidad"><?php esc_html_e('Privacidad', 'flavor-platform'); ?></label></th>
                 <td>
                     <select name="cc_privacidad" id="cc_privacidad">
                         <option value="publico" <?php selected($privacidad, 'publico'); ?>>
-                            <?php esc_html_e('Público - Cualquiera puede unirse', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Público - Cualquiera puede unirse', 'flavor-platform'); ?>
                         </option>
                         <option value="solicitud" <?php selected($privacidad, 'solicitud'); ?>>
-                            <?php esc_html_e('Por solicitud - Requiere aprobación', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Por solicitud - Requiere aprobación', 'flavor-platform'); ?>
                         </option>
                         <option value="invitacion" <?php selected($privacidad, 'invitacion'); ?>>
-                            <?php esc_html_e('Solo invitación', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Solo invitación', 'flavor-platform'); ?>
                         </option>
                     </select>
                 </td>
@@ -645,70 +645,70 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
         ?>
         <table class="form-table">
             <tr>
-                <th><label for="cc_urgencia"><?php esc_html_e('Urgencia', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="cc_urgencia"><?php esc_html_e('Urgencia', 'flavor-platform'); ?></label></th>
                 <td>
                     <select name="cc_urgencia" id="cc_urgencia">
                         <option value="baja" <?php selected($urgencia, 'baja'); ?>>
-                            <?php esc_html_e('Baja - Puede esperar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Baja - Puede esperar', 'flavor-platform'); ?>
                         </option>
                         <option value="normal" <?php selected($urgencia, 'normal'); ?>>
-                            <?php esc_html_e('Normal', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Normal', 'flavor-platform'); ?>
                         </option>
                         <option value="alta" <?php selected($urgencia, 'alta'); ?>>
-                            <?php esc_html_e('Alta - Próximos días', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Alta - Próximos días', 'flavor-platform'); ?>
                         </option>
                         <option value="urgente" <?php selected($urgencia, 'urgente'); ?>>
-                            <?php esc_html_e('Urgente - Hoy/Mañana', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Urgente - Hoy/Mañana', 'flavor-platform'); ?>
                         </option>
                     </select>
                 </td>
             </tr>
             <tr>
-                <th><label for="cc_fecha_inicio"><?php esc_html_e('Fecha inicio', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="cc_fecha_inicio"><?php esc_html_e('Fecha inicio', 'flavor-platform'); ?></label></th>
                 <td>
                     <input type="datetime-local" name="cc_fecha_inicio" id="cc_fecha_inicio"
                            value="<?php echo esc_attr($fecha_inicio); ?>">
                 </td>
             </tr>
             <tr>
-                <th><label for="cc_fecha_fin"><?php esc_html_e('Fecha fin', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="cc_fecha_fin"><?php esc_html_e('Fecha fin', 'flavor-platform'); ?></label></th>
                 <td>
                     <input type="datetime-local" name="cc_fecha_fin" id="cc_fecha_fin"
                            value="<?php echo esc_attr($fecha_fin); ?>">
                 </td>
             </tr>
             <tr>
-                <th><label for="cc_horas"><?php esc_html_e('Horas necesarias', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="cc_horas"><?php esc_html_e('Horas necesarias', 'flavor-platform'); ?></label></th>
                 <td>
                     <input type="number" name="cc_horas_necesarias" id="cc_horas"
                            value="<?php echo esc_attr($horas_necesarias); ?>" min="0.5" step="0.5">
                 </td>
             </tr>
             <tr>
-                <th><label for="cc_anonimo"><?php esc_html_e('Solicitud anónima', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="cc_anonimo"><?php esc_html_e('Solicitud anónima', 'flavor-platform'); ?></label></th>
                 <td>
                     <label>
                         <input type="checkbox" name="cc_anonimo" id="cc_anonimo" value="1"
                                <?php checked($anonimo, '1'); ?>>
-                        <?php esc_html_e('No mostrar mi nombre públicamente', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('No mostrar mi nombre públicamente', 'flavor-platform'); ?>
                     </label>
                 </td>
             </tr>
             <tr>
-                <th><label for="cc_estado"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="cc_estado"><?php esc_html_e('Estado', 'flavor-platform'); ?></label></th>
                 <td>
                     <select name="cc_estado" id="cc_estado">
                         <option value="abierta" <?php selected($estado, 'abierta'); ?>>
-                            <?php esc_html_e('Abierta', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Abierta', 'flavor-platform'); ?>
                         </option>
                         <option value="en_proceso" <?php selected($estado, 'en_proceso'); ?>>
-                            <?php esc_html_e('En proceso', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('En proceso', 'flavor-platform'); ?>
                         </option>
                         <option value="cubierta" <?php selected($estado, 'cubierta'); ?>>
-                            <?php esc_html_e('Cubierta', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Cubierta', 'flavor-platform'); ?>
                         </option>
                         <option value="cerrada" <?php selected($estado, 'cerrada'); ?>>
-                            <?php esc_html_e('Cerrada', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Cerrada', 'flavor-platform'); ?>
                         </option>
                     </select>
                 </td>
@@ -725,7 +725,7 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
         $coordinador = get_post_meta($post->ID, '_cc_coordinador', true);
 
         if (empty($miembros)) {
-            echo '<p>' . esc_html__('No hay miembros aún.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('No hay miembros aún.', 'flavor-platform') . '</p>';
             return;
         }
 
@@ -735,7 +735,7 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
             if (!$user) continue;
 
             $es_coordinador = ((int) $user_id === (int) $coordinador);
-            $rol = $es_coordinador ? __('Coordinador', 'flavor-chat-ia') : __('Miembro', 'flavor-chat-ia');
+            $rol = $es_coordinador ? __('Coordinador', 'flavor-platform') : __('Miembro', 'flavor-platform');
 
             echo '<li>';
             echo esc_html($user->display_name);
@@ -743,7 +743,7 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
             echo '</li>';
         }
         echo '</ul>';
-        echo '<p><strong>' . count($miembros) . '</strong> ' . esc_html__('miembros', 'flavor-chat-ia') . '</p>';
+        echo '<p><strong>' . count($miembros) . '</strong> ' . esc_html__('miembros', 'flavor-platform') . '</p>';
     }
 
     /**
@@ -811,25 +811,25 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
         $user_id = get_current_user_id();
 
         if (!$circulo_id || !$user_id) {
-            wp_send_json_error(['message' => __('Datos inválidos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos inválidos', 'flavor-platform')]);
         }
 
         $miembros = get_post_meta($circulo_id, '_cc_miembros', true) ?: [];
         $max_miembros = get_post_meta($circulo_id, '_cc_max_miembros', true) ?: 15;
 
         if (in_array($user_id, $miembros)) {
-            wp_send_json_error(['message' => __('Ya eres miembro de este círculo', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Ya eres miembro de este círculo', 'flavor-platform')]);
         }
 
         if (count($miembros) >= $max_miembros) {
-            wp_send_json_error(['message' => __('El círculo está lleno', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('El círculo está lleno', 'flavor-platform')]);
         }
 
         $miembros[] = $user_id;
         update_post_meta($circulo_id, '_cc_miembros', $miembros);
 
         wp_send_json_success([
-            'message' => __('Te has unido al círculo', 'flavor-chat-ia'),
+            'message' => __('Te has unido al círculo', 'flavor-platform'),
             'miembros' => count($miembros),
         ]);
     }
@@ -846,7 +846,7 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
         $user_id = get_current_user_id();
 
         if (!$necesidad_id || !$user_id || $horas <= 0) {
-            wp_send_json_error(['message' => __('Datos inválidos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos inválidos', 'flavor-platform')]);
         }
 
         $ayudantes = get_post_meta($necesidad_id, '_cc_ayudantes', true) ?: [];
@@ -874,7 +874,7 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
         $this->notificar_oferta_ayuda($necesidad_id, $user_id, $solicitante_id);
 
         wp_send_json_success([
-            'message' => __('Gracias por ofrecer tu ayuda', 'flavor-chat-ia'),
+            'message' => __('Gracias por ofrecer tu ayuda', 'flavor-platform'),
         ]);
     }
 
@@ -890,14 +890,14 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
         $user_id = get_current_user_id();
 
         if (!$necesidad_id || !$user_id || $horas <= 0) {
-            wp_send_json_error(['message' => __('Datos inválidos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos inválidos', 'flavor-platform')]);
         }
 
         // Crear registro de horas
         $registro_id = wp_insert_post([
             'post_type' => 'cc_registro_horas',
             'post_title' => sprintf(
-                __('%s - %s horas', 'flavor-chat-ia'),
+                __('%s - %s horas', 'flavor-platform'),
                 get_userdata($user_id)->display_name,
                 $horas
             ),
@@ -908,7 +908,7 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
         if (is_wp_error($registro_id) || empty($registro_id)) {
             $error = is_wp_error($registro_id)
                 ? $registro_id->get_error_message()
-                : __('No se pudo registrar las horas.', 'flavor-chat-ia');
+                : __('No se pudo registrar las horas.', 'flavor-platform');
             wp_send_json_error(['message' => $error]);
         }
 
@@ -922,7 +922,7 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
         update_user_meta($user_id, '_cc_horas_totales', $horas_totales + $horas);
 
         wp_send_json_success([
-            'message' => __('Horas registradas correctamente', 'flavor-chat-ia'),
+            'message' => __('Horas registradas correctamente', 'flavor-platform'),
             'horas_totales' => $horas_totales + $horas,
         ]);
     }
@@ -948,8 +948,8 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
 
                 $nc->send(
                     $miembro_id,
-                    __('Necesidad urgente de cuidados', 'flavor-chat-ia'),
-                    sprintf(__('Se necesita ayuda urgente: %s', 'flavor-chat-ia'), $necesidad->post_title),
+                    __('Necesidad urgente de cuidados', 'flavor-platform'),
+                    sprintf(__('Se necesita ayuda urgente: %s', 'flavor-platform'), $necesidad->post_title),
                     [
                         'module_id' => $this->id,
                         'type' => 'warning',
@@ -973,8 +973,8 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
 
         $nc->send(
             $solicitante_id,
-            __('Alguien quiere ayudarte', 'flavor-chat-ia'),
-            sprintf(__('%s se ha ofrecido a ayudarte', 'flavor-chat-ia'), $ayudante->display_name),
+            __('Alguien quiere ayudarte', 'flavor-platform'),
+            sprintf(__('%s se ha ofrecido a ayudarte', 'flavor-platform'), $ayudante->display_name),
             [
                 'module_id' => $this->id,
                 'type' => 'success',
@@ -1002,7 +1002,7 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_mis_cuidados($atts) {
         if (!is_user_logged_in()) {
-            return '<p>' . __('Inicia sesión para ver tus cuidados.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('Inicia sesión para ver tus cuidados.', 'flavor-platform') . '</p>';
         }
 
         ob_start();
@@ -1104,8 +1104,8 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('cc_nonce'),
             'i18n' => [
-                'confirmUnirse' => __('¿Quieres unirte a este círculo?', 'flavor-chat-ia'),
-                'gracias' => __('¡Gracias por cuidar!', 'flavor-chat-ia'),
+                'confirmUnirse' => __('¿Quieres unirte a este círculo?', 'flavor-platform'),
+                'gracias' => __('¡Gracias por cuidar!', 'flavor-platform'),
             ],
         ]);
     }
@@ -1255,7 +1255,7 @@ KNOWLEDGE;
 
         return [
             'success' => false,
-            'message' => __('Acción no implementada', 'flavor-chat-ia'),
+            'message' => __('Acción no implementada', 'flavor-platform'),
         ];
     }
 
@@ -1299,30 +1299,30 @@ KNOWLEDGE;
     public function render_tab_foro($usuario_id): string {
         $circulo = $this->resolve_contextual_circulo();
         if (!$circulo) {
-            return '<p>' . esc_html__('Selecciona un círculo para ver su foro.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Selecciona un círculo para ver su foro.', 'flavor-platform') . '</p>';
         }
 
         return '<div class="flavor-contextual-block">'
-            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Foro del círculo', 'flavor-chat-ia') . '</h3><p>' . esc_html($circulo['nombre']) . '</p></div>'
+            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Foro del círculo', 'flavor-platform') . '</h3><p>' . esc_html($circulo['nombre']) . '</p></div>'
             . do_shortcode('[flavor_foros_integrado entidad="circulo" entidad_id="' . absint($circulo['id']) . '"]')
             . '</div>';
     }
 
     public function render_tab_chat($usuario_id): string {
         if (!$usuario_id) {
-            return '<p>' . esc_html__('Inicia sesión para acceder al chat del círculo.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Inicia sesión para acceder al chat del círculo.', 'flavor-platform') . '</p>';
         }
 
         $circulo = $this->resolve_contextual_circulo();
         if (!$circulo) {
-            return '<p>' . esc_html__('Selecciona un círculo para ver su chat.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Selecciona un círculo para ver su chat.', 'flavor-platform') . '</p>';
         }
 
         $cta = home_url('/mi-portal/chat-grupos/mensajes/?circulo_id=' . absint($circulo['id']));
 
         return '<div class="flavor-contextual-block">'
-            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Chat del círculo', 'flavor-chat-ia') . '</h3><p>' . esc_html($circulo['nombre']) . '</p>'
-            . '<p><a class="button button-primary" href="' . esc_url($cta) . '">' . esc_html__('Abrir chat completo', 'flavor-chat-ia') . '</a></p></div>'
+            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Chat del círculo', 'flavor-platform') . '</h3><p>' . esc_html($circulo['nombre']) . '</p>'
+            . '<p><a class="button button-primary" href="' . esc_url($cta) . '">' . esc_html__('Abrir chat completo', 'flavor-platform') . '</a></p></div>'
             . do_shortcode('[flavor_chat_grupo_integrado entidad="circulo" entidad_id="' . absint($circulo['id']) . '"]')
             . '</div>';
     }
@@ -1330,33 +1330,33 @@ KNOWLEDGE;
     public function render_tab_multimedia($usuario_id): string {
         $circulo = $this->resolve_contextual_circulo();
         if (!$circulo) {
-            return '<p>' . esc_html__('Selecciona un círculo para ver sus archivos.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Selecciona un círculo para ver sus archivos.', 'flavor-platform') . '</p>';
         }
 
         $cta = home_url('/mi-portal/multimedia/subir/?circulo_id=' . absint($circulo['id']));
 
         return '<div class="flavor-contextual-block">'
-            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Archivos del círculo', 'flavor-chat-ia') . '</h3><p>' . esc_html($circulo['nombre']) . '</p>'
-            . '<p><a class="button" href="' . esc_url($cta) . '">' . esc_html__('Subir archivo', 'flavor-chat-ia') . '</a></p></div>'
+            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Archivos del círculo', 'flavor-platform') . '</h3><p>' . esc_html($circulo['nombre']) . '</p>'
+            . '<p><a class="button" href="' . esc_url($cta) . '">' . esc_html__('Subir archivo', 'flavor-platform') . '</a></p></div>'
             . do_shortcode('[flavor_multimedia_galeria entidad="circulo" entidad_id="' . absint($circulo['id']) . '"]')
             . '</div>';
     }
 
     public function render_tab_red_social($usuario_id): string {
         if (!$usuario_id) {
-            return '<p>' . esc_html__('Inicia sesión para ver la actividad del círculo.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Inicia sesión para ver la actividad del círculo.', 'flavor-platform') . '</p>';
         }
 
         $circulo = $this->resolve_contextual_circulo();
         if (!$circulo) {
-            return '<p>' . esc_html__('Selecciona un círculo para ver su actividad social.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Selecciona un círculo para ver su actividad social.', 'flavor-platform') . '</p>';
         }
 
         $cta = home_url('/mi-portal/red-social/crear/?circulo_id=' . absint($circulo['id']));
 
         return '<div class="flavor-contextual-block">'
-            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Actividad del círculo', 'flavor-chat-ia') . '</h3><p>' . esc_html($circulo['nombre']) . '</p>'
-            . '<p><a class="button" href="' . esc_url($cta) . '">' . esc_html__('Publicar', 'flavor-chat-ia') . '</a></p></div>'
+            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Actividad del círculo', 'flavor-platform') . '</h3><p>' . esc_html($circulo['nombre']) . '</p>'
+            . '<p><a class="button" href="' . esc_url($cta) . '">' . esc_html__('Publicar', 'flavor-platform') . '</a></p></div>'
             . do_shortcode('[flavor_social_feed entidad="circulo" entidad_id="' . absint($circulo['id']) . '"]')
             . '</div>';
     }
@@ -1369,8 +1369,8 @@ KNOWLEDGE;
     public static function get_renderer_config(): array {
         return [
             'module'   => 'circulos-cuidados',
-            'title'    => __('Círculos de Cuidados', 'flavor-chat-ia'),
-            'subtitle' => __('Redes de apoyo mutuo para el cuidado colectivo', 'flavor-chat-ia'),
+            'title'    => __('Círculos de Cuidados', 'flavor-platform'),
+            'subtitle' => __('Redes de apoyo mutuo para el cuidado colectivo', 'flavor-platform'),
             'icon'     => '💜',
             'color'    => 'accent', // Usa variable CSS --flavor-primary del tema
 
@@ -1380,24 +1380,24 @@ KNOWLEDGE;
             ],
 
             'fields' => [
-                'nombre'       => ['type' => 'text', 'label' => __('Nombre del círculo', 'flavor-chat-ia'), 'required' => true],
-                'tipo'         => ['type' => 'select', 'label' => __('Tipo', 'flavor-chat-ia'), 'options' => ['mayores', 'infancia', 'enfermedad', 'duelo', 'maternidad', 'diversidad_funcional']],
-                'descripcion'  => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
-                'zona'         => ['type' => 'text', 'label' => __('Zona', 'flavor-chat-ia')],
-                'max_miembros' => ['type' => 'number', 'label' => __('Máximo miembros', 'flavor-chat-ia')],
+                'nombre'       => ['type' => 'text', 'label' => __('Nombre del círculo', 'flavor-platform'), 'required' => true],
+                'tipo'         => ['type' => 'select', 'label' => __('Tipo', 'flavor-platform'), 'options' => ['mayores', 'infancia', 'enfermedad', 'duelo', 'maternidad', 'diversidad_funcional']],
+                'descripcion'  => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-platform')],
+                'zona'         => ['type' => 'text', 'label' => __('Zona', 'flavor-platform')],
+                'max_miembros' => ['type' => 'number', 'label' => __('Máximo miembros', 'flavor-platform')],
             ],
 
             'estados' => [
-                'activo'   => ['label' => __('Activo', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🟢'],
-                'pausado'  => ['label' => __('Pausado', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏸️'],
-                'cerrado'  => ['label' => __('Cerrado', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '🔒'],
+                'activo'   => ['label' => __('Activo', 'flavor-platform'), 'color' => 'green', 'icon' => '🟢'],
+                'pausado'  => ['label' => __('Pausado', 'flavor-platform'), 'color' => 'yellow', 'icon' => '⏸️'],
+                'cerrado'  => ['label' => __('Cerrado', 'flavor-platform'), 'color' => 'gray', 'icon' => '🔒'],
             ],
 
             'stats' => [
-                'circulos_activos' => ['label' => __('Círculos activos', 'flavor-chat-ia'), 'icon' => '💜', 'color' => 'fuchsia'],
-                'cuidadores'       => ['label' => __('Cuidadores', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'blue'],
-                'horas_cuidado'    => ['label' => __('Horas de cuidado', 'flavor-chat-ia'), 'icon' => '⏱️', 'color' => 'purple'],
-                'necesidades_mes'  => ['label' => __('Necesidades/mes', 'flavor-chat-ia'), 'icon' => '❤️', 'color' => 'rose'],
+                'circulos_activos' => ['label' => __('Círculos activos', 'flavor-platform'), 'icon' => '💜', 'color' => 'fuchsia'],
+                'cuidadores'       => ['label' => __('Cuidadores', 'flavor-platform'), 'icon' => '👥', 'color' => 'blue'],
+                'horas_cuidado'    => ['label' => __('Horas de cuidado', 'flavor-platform'), 'icon' => '⏱️', 'color' => 'purple'],
+                'necesidades_mes'  => ['label' => __('Necesidades/mes', 'flavor-platform'), 'icon' => '❤️', 'color' => 'rose'],
             ],
 
             'card' => [
@@ -1410,54 +1410,54 @@ KNOWLEDGE;
 
             'tabs' => [
                 'circulos' => [
-                    'label'   => __('Círculos', 'flavor-chat-ia'),
+                    'label'   => __('Círculos', 'flavor-platform'),
                     'icon'    => 'dashicons-heart',
                     'content' => 'template:_archive.php',
                     'public'  => true,
                 ],
                 'necesidades' => [
-                    'label'   => __('Necesidades', 'flavor-chat-ia'),
+                    'label'   => __('Necesidades', 'flavor-platform'),
                     'icon'    => 'dashicons-sos',
                     'content' => 'shortcode:necesidades_cuidados',
                     'public'  => true,
                 ],
                 'unirse' => [
-                    'label'      => __('Unirse', 'flavor-chat-ia'),
+                    'label'      => __('Unirse', 'flavor-platform'),
                     'icon'       => 'dashicons-plus-alt',
                     'content'    => 'shortcode:circulos_cuidados',
                     'requires_login' => true,
                 ],
                 'mis-circulos' => [
-                    'label'      => __('Mis círculos', 'flavor-chat-ia'),
+                    'label'      => __('Mis círculos', 'flavor-platform'),
                     'icon'       => 'dashicons-admin-users',
                     'content'    => 'shortcode:mis_cuidados',
                     'requires_login' => true,
                 ],
                 'foro' => [
-                    'label'          => __('Foro', 'flavor-chat-ia'),
+                    'label'          => __('Foro', 'flavor-platform'),
                     'icon'           => 'dashicons-format-chat',
                     'content'        => 'callback:render_tab_foro',
                     'requires_login' => true,
                 ],
                 'chat' => [
-                    'label'          => __('Chat', 'flavor-chat-ia'),
+                    'label'          => __('Chat', 'flavor-platform'),
                     'icon'           => 'dashicons-format-status',
                     'content'        => 'callback:render_tab_chat',
                     'requires_login' => true,
                 ],
                 'multimedia' => [
-                    'label'   => __('Multimedia', 'flavor-chat-ia'),
+                    'label'   => __('Multimedia', 'flavor-platform'),
                     'icon'    => 'dashicons-format-gallery',
                     'content' => 'callback:render_tab_multimedia',
                 ],
                 'red-social' => [
-                    'label'          => __('Red social', 'flavor-chat-ia'),
+                    'label'          => __('Red social', 'flavor-platform'),
                     'icon'           => 'dashicons-share',
                     'content'        => 'callback:render_tab_red_social',
                     'requires_login' => true,
                 ],
                 'registrar-cuidado' => [
-                    'label'      => __('Registrar cuidado', 'flavor-chat-ia'),
+                    'label'      => __('Registrar cuidado', 'flavor-platform'),
                     'icon'       => 'dashicons-edit',
                     'content'    => 'shortcode:mis_cuidados',
                     'requires_login' => true,
@@ -1475,8 +1475,8 @@ KNOWLEDGE;
             'dashboard' => [
                 'widgets' => ['stats', 'necesidades_urgentes', 'mis_compromisos', 'calendario_cuidados'],
                 'actions' => [
-                    'necesidad' => ['label' => __('Publicar necesidad', 'flavor-chat-ia'), 'icon' => '❤️', 'color' => 'fuchsia'],
-                    'ofrecer'   => ['label' => __('Ofrecer cuidado', 'flavor-chat-ia'), 'icon' => '🤗', 'color' => 'purple'],
+                    'necesidad' => ['label' => __('Publicar necesidad', 'flavor-platform'), 'icon' => '❤️', 'color' => 'fuchsia'],
+                    'ofrecer'   => ['label' => __('Ofrecer cuidado', 'flavor-platform'), 'icon' => '🤗', 'color' => 'purple'],
                 ],
             ],
 

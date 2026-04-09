@@ -106,14 +106,14 @@ function get_capacity_class($current, $max) {
     <?php if (!$tablas_disponibles): ?>
         <div class="dm-alert dm-alert--info">
             <span class="dashicons dashicons-info"></span>
-            <p><?php esc_html_e('Faltan tablas del módulo Talleres o aún no hay inscripciones registradas.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('Faltan tablas del módulo Talleres o aún no hay inscripciones registradas.', 'flavor-platform'); ?></p>
         </div>
     <?php endif; ?>
 
     <div class="dm-header">
         <div class="dm-header__title">
             <span class="dashicons dashicons-hammer"></span>
-            <h1><?php esc_html_e('Dashboard - Talleres Prácticos', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Dashboard - Talleres Prácticos', 'flavor-platform'); ?></h1>
         </div>
     </div>
 
@@ -121,23 +121,23 @@ function get_capacity_class($current, $max) {
     <div class="dm-quick-links">
         <a href="<?php echo esc_url(admin_url('admin.php?page=talleres-listado')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-hammer"></span>
-            <span><?php esc_html_e('Talleres', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Talleres', 'flavor-platform'); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=talleres-inscripciones')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-clipboard"></span>
-            <span><?php esc_html_e('Inscripciones', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Inscripciones', 'flavor-platform'); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=talleres-materiales')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-admin-page"></span>
-            <span><?php esc_html_e('Materiales', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Materiales', 'flavor-platform'); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=talleres-configuracion')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-admin-settings"></span>
-            <span><?php esc_html_e('Configuración', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Configuración', 'flavor-platform'); ?></span>
         </a>
         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('talleres', '')); ?>" class="dm-quick-links__item" target="_blank">
             <span class="dashicons dashicons-external"></span>
-            <span><?php esc_html_e('Portal público', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Portal público', 'flavor-platform'); ?></span>
         </a>
     </div>
 
@@ -145,37 +145,37 @@ function get_capacity_class($current, $max) {
     <div class="dm-stats-grid dm-stats-grid--3">
         <div class="dm-stat-card dm-stat-card--primary">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($total_talleres); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Total Talleres', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Total Talleres', 'flavor-platform'); ?></div>
             <div class="dm-stat-card__icon"><span class="dashicons dashicons-welcome-learn-more"></span></div>
         </div>
 
         <div class="dm-stat-card dm-stat-card--success">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($talleres_activos); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Talleres Activos', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Talleres Activos', 'flavor-platform'); ?></div>
             <div class="dm-stat-card__icon"><span class="dashicons dashicons-yes"></span></div>
         </div>
 
         <div class="dm-stat-card dm-stat-card--warning">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($proximos_talleres); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Próximos Talleres', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Próximos Talleres', 'flavor-platform'); ?></div>
             <div class="dm-stat-card__icon"><span class="dashicons dashicons-calendar"></span></div>
         </div>
 
         <div class="dm-stat-card dm-stat-card--purple">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($total_participantes); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Total Participantes', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Total Participantes', 'flavor-platform'); ?></div>
             <div class="dm-stat-card__icon"><span class="dashicons dashicons-groups"></span></div>
         </div>
 
         <div class="dm-stat-card dm-stat-card--info">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($inscripciones_mes); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Inscripciones (mes)', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Inscripciones (mes)', 'flavor-platform'); ?></div>
             <div class="dm-stat-card__icon"><span class="dashicons dashicons-tickets"></span></div>
         </div>
 
         <div class="dm-stat-card">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($ingresos_mes, 2); ?>€</div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Ingresos (mes)', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Ingresos (mes)', 'flavor-platform'); ?></div>
             <div class="dm-stat-card__icon"><span class="dashicons dashicons-cart"></span></div>
         </div>
     </div>
@@ -184,7 +184,7 @@ function get_capacity_class($current, $max) {
     <div class="dm-grid dm-grid--2">
         <div class="dm-card dm-card--chart">
             <div class="dm-card__header">
-                <h3><?php esc_html_e('Inscripciones - Últimos 30 días', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Inscripciones - Últimos 30 días', 'flavor-platform'); ?></h3>
             </div>
             <div class="dm-card__chart">
                 <canvas id="chartInscripciones"></canvas>
@@ -193,13 +193,13 @@ function get_capacity_class($current, $max) {
 
         <div class="dm-card">
             <div class="dm-card__header">
-                <h3><?php esc_html_e('Talleres Más Populares', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Talleres Más Populares', 'flavor-platform'); ?></h3>
             </div>
             <table class="dm-table">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('Taller', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Inscritos', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Taller', 'flavor-platform'); ?></th>
+                        <th><?php esc_html_e('Inscritos', 'flavor-platform'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -229,7 +229,7 @@ function get_capacity_class($current, $max) {
                             <td colspan="2">
                                 <div class="dm-empty">
                                     <span class="dashicons dashicons-hammer"></span>
-                                    <p><?php esc_html_e('No hay talleres disponibles', 'flavor-chat-ia'); ?></p>
+                                    <p><?php esc_html_e('No hay talleres disponibles', 'flavor-platform'); ?></p>
                                 </div>
                             </td>
                         </tr>
@@ -242,16 +242,16 @@ function get_capacity_class($current, $max) {
     <!-- Próximos talleres -->
     <div class="dm-card">
         <div class="dm-card__header">
-            <h3><?php esc_html_e('Próximos Talleres', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Próximos Talleres', 'flavor-platform'); ?></h3>
         </div>
         <table class="dm-table">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Taller', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Organizador', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Participantes', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Taller', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Organizador', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Fecha', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Participantes', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -285,7 +285,7 @@ function get_capacity_class($current, $max) {
                         <td colspan="5">
                             <div class="dm-empty">
                                 <span class="dashicons dashicons-calendar-alt"></span>
-                                <p><?php esc_html_e('No hay talleres próximos', 'flavor-chat-ia'); ?></p>
+                                <p><?php esc_html_e('No hay talleres próximos', 'flavor-platform'); ?></p>
                             </div>
                         </td>
                     </tr>
@@ -311,7 +311,7 @@ jQuery(document).ready(function($) {
                     return fecha.getDate() + '/' + (fecha.getMonth() + 1);
                 }),
                 datasets: [{
-                    label: '<?php esc_html_e('Inscripciones', 'flavor-chat-ia'); ?>',
+                    label: '<?php esc_html_e('Inscripciones', 'flavor-platform'); ?>',
                     data: data.map(d => parseInt(d.total)),
                     borderColor: primaryColor,
                     backgroundColor: primaryColor + '20',

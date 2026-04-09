@@ -447,7 +447,7 @@ class Flavor_Grupos_Consumo_API {
 
         $post = get_post($id);
         if (!$post || $post->post_type !== 'pedido_colectivo') {
-            return new WP_Error('not_found', __('Pedido no encontrado', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Pedido no encontrado', 'flavor-platform'), ['status' => 404]);
         }
 
         return new WP_REST_Response([
@@ -467,14 +467,14 @@ class Flavor_Grupos_Consumo_API {
         // Verificar estado
         $estado = get_post_meta($id, '_estado', true);
         if ($estado !== 'abierto') {
-            return new WP_Error('closed', __('El pedido no está abierto', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('closed', __('El pedido no está abierto', 'flavor-platform'), ['status' => 400]);
         }
 
         // Verificar si ya participa
         $participantes = get_post_meta($id, '_participantes', true) ?: [];
         foreach ($participantes as $part) {
             if ($part['user_id'] == $user_id) {
-                return new WP_Error('already_joined', __('Ya participas en este pedido', 'flavor-chat-ia'), ['status' => 400]);
+                return new WP_Error('already_joined', __('Ya participas en este pedido', 'flavor-platform'), ['status' => 400]);
             }
         }
 
@@ -499,7 +499,7 @@ class Flavor_Grupos_Consumo_API {
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => __('¡Te has unido al pedido!', 'flavor-chat-ia'),
+            'message' => __('¡Te has unido al pedido!', 'flavor-platform'),
             'data' => [
                 'importe_total' => $cantidad * $precio_final,
                 'pedido' => $this->format_pedido($id),
@@ -561,12 +561,12 @@ class Flavor_Grupos_Consumo_API {
 
                 return new WP_REST_Response([
                     'success' => true,
-                    'message' => __('_precio_base', 'flavor-chat-ia'),
+                    'message' => __('_precio_base', 'flavor-platform'),
                 ], 200);
             }
         }
 
-        return new WP_Error('not_participant', __('No participas en este pedido', 'flavor-chat-ia'), ['status' => 400]);
+        return new WP_Error('not_participant', __('No participas en este pedido', 'flavor-platform'), ['status' => 400]);
     }
 
     /**
@@ -584,12 +584,12 @@ class Flavor_Grupos_Consumo_API {
 
                 return new WP_REST_Response([
                     'success' => true,
-                    'message' => __('¡Te has unido al pedido!', 'flavor-chat-ia'),
+                    'message' => __('¡Te has unido al pedido!', 'flavor-platform'),
                 ], 200);
             }
         }
 
-        return new WP_Error('not_participant', __('No participas en este pedido', 'flavor-chat-ia'), ['status' => 400]);
+        return new WP_Error('not_participant', __('No participas en este pedido', 'flavor-platform'), ['status' => 400]);
     }
 
     /**
@@ -732,13 +732,13 @@ class Flavor_Grupos_Consumo_API {
         ]);
 
         if (empty($grupos)) {
-            return new WP_Error('no_grupo', __('No hay grupos disponibles', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('no_grupo', __('No hay grupos disponibles', 'flavor-platform'), ['status' => 404]);
         }
 
         $consumidor = $consumidor_manager->obtener_consumidor($usuario_id, $grupos[0]->ID);
 
         if (!$consumidor) {
-            return new WP_Error('no_miembro', __('No eres miembro del grupo', 'flavor-chat-ia'), ['status' => 403]);
+            return new WP_Error('no_miembro', __('No eres miembro del grupo', 'flavor-platform'), ['status' => 403]);
         }
 
         $datos = [
@@ -906,13 +906,13 @@ class Flavor_Grupos_Consumo_API {
         $frecuencia = $request->get_param('frecuencia');
 
         if (!$tipo_cesta_id) {
-            return new WP_Error('missing_basket', __('Debes seleccionar una cesta valida', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('missing_basket', __('Debes seleccionar una cesta valida', 'flavor-platform'), ['status' => 400]);
         }
 
         $consumidor = $this->obtener_consumidor_actual($usuario_id);
 
         if (!$consumidor) {
-            return new WP_Error('no_miembro', __('No eres miembro del grupo', 'flavor-chat-ia'), ['status' => 403]);
+            return new WP_Error('no_miembro', __('No eres miembro del grupo', 'flavor-platform'), ['status' => 403]);
         }
 
         $suscripciones_manager = Flavor_GC_Subscriptions::get_instance();
@@ -933,7 +933,7 @@ class Flavor_Grupos_Consumo_API {
 
         // Verificar propiedad
         if (!$this->verificar_propiedad_suscripcion($suscripcion_id)) {
-            return new WP_Error('not_owner', __('No tienes permisos', 'flavor-chat-ia'), ['status' => 403]);
+            return new WP_Error('not_owner', __('No tienes permisos', 'flavor-platform'), ['status' => 403]);
         }
 
         $suscripciones_manager = Flavor_GC_Subscriptions::get_instance();
@@ -953,7 +953,7 @@ class Flavor_Grupos_Consumo_API {
         $suscripcion_id = absint($request->get_param('id'));
 
         if (!$this->verificar_propiedad_suscripcion($suscripcion_id)) {
-            return new WP_Error('not_owner', __('No tienes permisos', 'flavor-chat-ia'), ['status' => 403]);
+            return new WP_Error('not_owner', __('No tienes permisos', 'flavor-platform'), ['status' => 403]);
         }
 
         $suscripciones_manager = Flavor_GC_Subscriptions::get_instance();
@@ -975,7 +975,7 @@ class Flavor_Grupos_Consumo_API {
 
         // Verificar propiedad
         if (!$this->verificar_propiedad_suscripcion($suscripcion_id)) {
-            return new WP_Error('not_owner', __('No tienes permisos', 'flavor-chat-ia'), ['status' => 403]);
+            return new WP_Error('not_owner', __('No tienes permisos', 'flavor-platform'), ['status' => 403]);
         }
 
         $suscripciones_manager = Flavor_GC_Subscriptions::get_instance();

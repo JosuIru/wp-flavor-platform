@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$titulo = $titulo ?? __('Productos Destacados', 'flavor-chat-ia');
+$titulo = $titulo ?? __('Productos Destacados', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $columnas = $columnas ?? 4;
 $mostrar_precios = $mostrar_precios ?? true;
 $color_primario = $color_primario ?? '#00a0d2';
@@ -39,7 +39,7 @@ if (class_exists('WooCommerce')) {
         <div class="flavor-section-header">
             <h2 class="flavor-section-title"><?php echo esc_html($titulo); ?></h2>
             <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="flavor-ver-todos">
-                <?php esc_html_e('Ver todos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <span class="dashicons dashicons-arrow-right-alt2"></span>
             </a>
         </div>
@@ -53,7 +53,7 @@ if (class_exists('WooCommerce')) {
                                 <?php echo $producto->get_image('woocommerce_thumbnail'); ?>
                                 <?php if ($producto->is_on_sale()): ?>
                                     <span class="flavor-producto-badge flavor-badge--oferta">
-                                        <?php esc_html_e('Oferta', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Oferta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </span>
                                 <?php endif; ?>
                             </div>
@@ -68,7 +68,7 @@ if (class_exists('WooCommerce')) {
                         </a>
                         <button class="flavor-producto-carrito" data-product-id="<?php echo esc_attr($producto->get_id()); ?>">
                             <span class="dashicons dashicons-cart"></span>
-                            <span class="flavor-sr-only"><?php esc_html_e('Añadir al carrito', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-sr-only"><?php esc_html_e('Añadir al carrito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </button>
                     </article>
                 <?php endforeach; ?>

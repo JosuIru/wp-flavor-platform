@@ -18,7 +18,7 @@ $libro = $wpdb->get_row($wpdb->prepare(
 ));
 
 if (!$libro) {
-    echo '<div class="biblioteca-empty"><span class="dashicons dashicons-warning"></span><h3>' . __('Libro no encontrado', 'flavor-chat-ia') . '</h3></div>';
+    echo '<div class="biblioteca-empty"><span class="dashicons dashicons-warning"></span><h3>' . __('Libro no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3></div>';
     return;
 }
 
@@ -61,7 +61,7 @@ if ($usuario_id) {
 <div class="libro-detalle-wrapper">
     <a href="<?php echo remove_query_arg('libro_id'); ?>" class="btn btn-outline btn-sm" style="margin-bottom: 1rem;">
         <span class="dashicons dashicons-arrow-left-alt2"></span>
-        <?php _e('Volver al catálogo', 'flavor-chat-ia'); ?>
+        <?php _e('Volver al catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </a>
 
     <div class="libro-detalle">
@@ -80,48 +80,48 @@ if ($usuario_id) {
                     <?php for ($i = 1; $i <= 5; $i++): ?>
                         <span class="dashicons dashicons-star-<?php echo $i <= round($libro->valoracion_media) ? 'filled' : 'empty'; ?>" style="color: #fbbf24;"></span>
                     <?php endfor; ?>
-                    <span style="margin-left: 0.5rem; color: #6b7280;"><?php echo number_format($libro->valoracion_media, 1); ?> (<?php echo count($resenas); ?> <?php _e('reseñas', 'flavor-chat-ia'); ?>)</span>
+                    <span style="margin-left: 0.5rem; color: #6b7280;"><?php echo number_format($libro->valoracion_media, 1); ?> (<?php echo count($resenas); ?> <?php _e('reseñas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>)</span>
                 </div>
             <?php endif; ?>
 
             <div class="libro-detalle-meta">
                 <?php if ($libro->editorial): ?>
                     <div class="libro-detalle-meta-item">
-                        <label><?php _e('Editorial', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Editorial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <span><?php echo esc_html($libro->editorial); ?></span>
                     </div>
                 <?php endif; ?>
 
                 <?php if ($libro->ano_publicacion): ?>
                     <div class="libro-detalle-meta-item">
-                        <label><?php _e('Año', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Año', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <span><?php echo esc_html($libro->ano_publicacion); ?></span>
                     </div>
                 <?php endif; ?>
 
                 <?php if ($libro->genero): ?>
                     <div class="libro-detalle-meta-item">
-                        <label><?php _e('Género', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Género', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <span><?php echo esc_html($libro->genero); ?></span>
                     </div>
                 <?php endif; ?>
 
                 <?php if ($libro->num_paginas): ?>
                     <div class="libro-detalle-meta-item">
-                        <label><?php _e('Páginas', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Páginas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <span><?php echo esc_html($libro->num_paginas); ?></span>
                     </div>
                 <?php endif; ?>
 
                 <?php if ($libro->idioma): ?>
                     <div class="libro-detalle-meta-item">
-                        <label><?php _e('Idioma', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Idioma', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <span><?php echo esc_html($libro->idioma); ?></span>
                     </div>
                 <?php endif; ?>
 
                 <div class="libro-detalle-meta-item">
-                    <label><?php _e('Estado físico', 'flavor-chat-ia'); ?></label>
+                    <label><?php _e('Estado físico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <span><?php echo esc_html(ucfirst($libro->estado_fisico)); ?></span>
                 </div>
             </div>
@@ -131,13 +131,13 @@ if ($usuario_id) {
                     <?php echo strtoupper(substr($propietario ? $propietario->display_name : 'V', 0, 1)); ?>
                 </div>
                 <div class="libro-detalle-propietario-info">
-                    <strong><?php echo esc_html($propietario ? $propietario->display_name : __('Vecino', 'flavor-chat-ia')); ?></strong>
+                    <strong><?php echo esc_html($propietario ? $propietario->display_name : __('Vecino', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong>
                     <span>
                         <?php
                         $tipo_texto = [
-                            'donado' => __('Donado a la comunidad', 'flavor-chat-ia'),
-                            'prestamo' => __('Disponible para préstamo', 'flavor-chat-ia'),
-                            'intercambio' => __('Disponible para intercambio', 'flavor-chat-ia'),
+                            'donado' => __('Donado a la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'prestamo' => __('Disponible para préstamo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'intercambio' => __('Disponible para intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ];
                         echo $tipo_texto[$libro->tipo] ?? '';
                         ?>
@@ -155,25 +155,25 @@ if ($usuario_id) {
                 <?php if (!$es_propietario): ?>
                     <?php if ($libro->disponibilidad === 'disponible'): ?>
                         <?php if ($tiene_prestamo): ?>
-                            <button class="btn btn-outline" disabled><?php _e('Solicitud enviada', 'flavor-chat-ia'); ?></button>
+                            <button class="btn btn-outline" disabled><?php _e('Solicitud enviada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                         <?php else: ?>
                             <button class="btn btn-primary btn-solicitar-prestamo" data-libro-id="<?php echo $libro->id; ?>">
                                 <span class="dashicons dashicons-book"></span>
-                                <?php _e('Solicitar préstamo', 'flavor-chat-ia'); ?>
+                                <?php _e('Solicitar préstamo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         <?php endif; ?>
                     <?php elseif ($libro->disponibilidad === 'prestado'): ?>
                         <button class="btn btn-warning btn-reservar" data-libro-id="<?php echo $libro->id; ?>">
                             <span class="dashicons dashicons-bell"></span>
-                            <?php _e('Reservar', 'flavor-chat-ia'); ?>
+                            <?php _e('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     <?php else: ?>
-                        <button class="btn btn-outline" disabled><?php _e('No disponible', 'flavor-chat-ia'); ?></button>
+                        <button class="btn btn-outline" disabled><?php _e('No disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                     <?php endif; ?>
                 <?php else: ?>
                     <a href="<?php echo add_query_arg('editar', $libro->id, get_permalink()); ?>" class="btn btn-outline">
                         <span class="dashicons dashicons-edit"></span>
-                        <?php _e('Editar', 'flavor-chat-ia'); ?>
+                        <?php _e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 <?php endif; ?>
             </div>
@@ -182,7 +182,7 @@ if ($usuario_id) {
 
     <!-- Reseñas -->
     <div class="libro-resenas">
-        <h3><?php _e('Reseñas', 'flavor-chat-ia'); ?></h3>
+        <h3><?php _e('Reseñas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
         <?php if (is_user_logged_in() && !$ya_valoro && !$es_propietario): ?>
             <form class="form-resena" data-libro-id="<?php echo $libro->id; ?>" style="background: #f9fafb; padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;">
@@ -192,9 +192,9 @@ if ($usuario_id) {
                     <?php endfor; ?>
                 </div>
                 <div class="form-grupo" style="margin-bottom: 1rem;">
-                    <textarea name="resena" placeholder="<?php esc_attr_e('Escribe tu reseña (opcional)', 'flavor-chat-ia'); ?>" rows="3"></textarea>
+                    <textarea name="resena" placeholder="<?php esc_attr_e('Escribe tu reseña (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" rows="3"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary btn-sm"><?php _e('Enviar reseña', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="btn btn-primary btn-sm"><?php _e('Enviar reseña', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
             </form>
         <?php endif; ?>
 
@@ -216,7 +216,7 @@ if ($usuario_id) {
                 </div>
             <?php endforeach; ?>
         <?php else: ?>
-            <p style="color: #6b7280;"><?php _e('Aún no hay reseñas para este libro.', 'flavor-chat-ia'); ?></p>
+            <p style="color: #6b7280;"><?php _e('Aún no hay reseñas para este libro.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         <?php endif; ?>
     </div>
 </div>

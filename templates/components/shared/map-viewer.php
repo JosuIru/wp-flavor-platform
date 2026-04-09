@@ -56,7 +56,7 @@ $marker_colors = [
                     <input type="text"
                            id="<?php echo esc_attr($map_id); ?>-search"
                            class="w-full pl-10 pr-4 py-2 bg-white rounded-lg shadow-md border-0 text-sm focus:ring-2 focus:ring-blue-500"
-                           placeholder="<?php esc_attr_e('Buscar ubicación...', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php esc_attr_e('Buscar ubicación...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -71,7 +71,7 @@ $marker_colors = [
             <button type="button"
                     id="<?php echo esc_attr($map_id); ?>-locate"
                     class="p-2 bg-white rounded-lg shadow-md hover:bg-gray-50 transition-colors"
-                    title="<?php esc_attr_e('Mi ubicación', 'flavor-chat-ia'); ?>">
+                    title="<?php esc_attr_e('Mi ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -102,7 +102,7 @@ $marker_colors = [
     if (!empty($categories)):
     ?>
         <div class="absolute bottom-3 left-3 z-[1000] bg-white rounded-lg shadow-md p-3">
-            <p class="text-xs font-medium text-gray-500 mb-2"><?php esc_html_e('Leyenda', 'flavor-chat-ia'); ?></p>
+            <p class="text-xs font-medium text-gray-500 mb-2"><?php esc_html_e('Leyenda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <div class="space-y-1">
                 <?php foreach ($categories as $cat => $color): ?>
                     <div class="flex items-center gap-2 text-sm">
@@ -121,7 +121,7 @@ $marker_colors = [
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
             </svg>
-            <span><?php esc_html_e('Cargando mapa...', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Cargando mapa...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
     </div>
 </div>
@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
         map.on('locationfound', function(e) {
             L.marker(e.latlng, { icon: createIcon('blue') })
                 .addTo(map)
-                .bindPopup('<?php esc_html_e('Tu ubicación', 'flavor-chat-ia'); ?>')
+                .bindPopup('<?php esc_html_e('Tu ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>')
                 .openPopup();
 
             if (draggable) {
@@ -283,7 +283,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     .then(r => r.json())
                     .then(results => {
                         if (results.length === 0) {
-                            searchResults.innerHTML = '<p class="p-3 text-sm text-gray-500"><?php esc_html_e('Sin resultados', 'flavor-chat-ia'); ?></p>';
+                            searchResults.innerHTML = '<p class="p-3 text-sm text-gray-500"><?php esc_html_e('Sin resultados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>';
                         } else {
                             searchResults.innerHTML = results.map(r => `
                                 <button type="button" class="w-full text-left p-3 hover:bg-gray-50 border-b last:border-0 text-sm"

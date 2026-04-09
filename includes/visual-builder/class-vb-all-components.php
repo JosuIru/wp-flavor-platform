@@ -88,8 +88,8 @@ class Flavor_VB_All_Components {
     public function registrar_secciones_landing($builder) {
         // Hero Sections
         $builder->register_section('hero', [
-            'label'       => __('Hero', 'flavor-chat-ia'),
-            'description' => __('Sección principal con título y CTA', 'flavor-chat-ia'),
+            'label'       => __('Hero', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Sección principal con título y CTA', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-welcome-widgets-menus',
             'category'    => 'landing',
             'variants'    => ['fullscreen', 'split', 'centered', 'video', 'slider'],
@@ -99,8 +99,8 @@ class Flavor_VB_All_Components {
 
         // Features
         $builder->register_section('features', [
-            'label'       => __('Características', 'flavor-chat-ia'),
-            'description' => __('Grid de características con iconos', 'flavor-chat-ia'),
+            'label'       => __('Características', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Grid de características con iconos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-screenoptions',
             'category'    => 'landing',
             'variants'    => ['grid', 'list', 'alternating', 'cards'],
@@ -110,8 +110,8 @@ class Flavor_VB_All_Components {
 
         // Testimonios
         $builder->register_section('testimonios', [
-            'label'       => __('Testimonios', 'flavor-chat-ia'),
-            'description' => __('Testimonios de clientes', 'flavor-chat-ia'),
+            'label'       => __('Testimonios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Testimonios de clientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-format-quote',
             'category'    => 'landing',
             'variants'    => ['carousel', 'grid', 'single', 'masonry'],
@@ -121,8 +121,8 @@ class Flavor_VB_All_Components {
 
         // Pricing / Precios
         $builder->register_section('pricing', [
-            'label'       => __('Precios', 'flavor-chat-ia'),
-            'description' => __('Tabla de precios y planes', 'flavor-chat-ia'),
+            'label'       => __('Precios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Tabla de precios y planes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-money-alt',
             'category'    => 'landing',
             'variants'    => ['cards', 'table', 'toggle', 'comparison'],
@@ -132,8 +132,8 @@ class Flavor_VB_All_Components {
 
         // CTA (Call to Action)
         $builder->register_section('cta', [
-            'label'       => __('Call to Action', 'flavor-chat-ia'),
-            'description' => __('Sección de llamada a la acción', 'flavor-chat-ia'),
+            'label'       => __('Call to Action', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Sección de llamada a la acción', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-megaphone',
             'category'    => 'landing',
             'variants'    => ['simple', 'banner', 'split', 'gradient'],
@@ -143,8 +143,8 @@ class Flavor_VB_All_Components {
 
         // FAQ
         $builder->register_section('faq', [
-            'label'       => __('FAQ', 'flavor-chat-ia'),
-            'description' => __('Preguntas frecuentes', 'flavor-chat-ia'),
+            'label'       => __('FAQ', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Preguntas frecuentes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-editor-help',
             'category'    => 'landing',
             'variants'    => ['accordion', 'two-columns', 'categories'],
@@ -154,8 +154,8 @@ class Flavor_VB_All_Components {
 
         // Contacto
         $builder->register_section('contacto', [
-            'label'       => __('Contacto', 'flavor-chat-ia'),
-            'description' => __('Formulario e información de contacto', 'flavor-chat-ia'),
+            'label'       => __('Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Formulario e información de contacto', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-email-alt',
             'category'    => 'landing',
             'variants'    => ['form', 'split', 'map', 'cards'],
@@ -165,8 +165,8 @@ class Flavor_VB_All_Components {
 
         // Galería
         $builder->register_section('galeria', [
-            'label'       => __('Galería', 'flavor-chat-ia'),
-            'description' => __('Galería de imágenes', 'flavor-chat-ia'),
+            'label'       => __('Galería', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Galería de imágenes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-format-gallery',
             'category'    => 'landing',
             'variants'    => ['grid', 'masonry', 'carousel', 'lightbox'],
@@ -176,8 +176,8 @@ class Flavor_VB_All_Components {
 
         // Estadísticas / Números
         $builder->register_section('stats', [
-            'label'       => __('Estadísticas', 'flavor-chat-ia'),
-            'description' => __('Números y métricas destacadas', 'flavor-chat-ia'),
+            'label'       => __('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Números y métricas destacadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-chart-bar',
             'category'    => 'landing',
             'variants'    => ['counters', 'cards', 'horizontal'],
@@ -187,8 +187,8 @@ class Flavor_VB_All_Components {
 
         // Equipo
         $builder->register_section('equipo', [
-            'label'       => __('Equipo', 'flavor-chat-ia'),
-            'description' => __('Miembros del equipo', 'flavor-chat-ia'),
+            'label'       => __('Equipo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Miembros del equipo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-groups',
             'category'    => 'landing',
             'variants'    => ['grid', 'carousel', 'cards'],
@@ -198,8 +198,8 @@ class Flavor_VB_All_Components {
 
         // Logos / Partners
         $builder->register_section('logos', [
-            'label'       => __('Logos / Partners', 'flavor-chat-ia'),
-            'description' => __('Logos de partners o clientes', 'flavor-chat-ia'),
+            'label'       => __('Logos / Partners', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Logos de partners o clientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-awards',
             'category'    => 'landing',
             'variants'    => ['grid', 'carousel', 'grayscale'],
@@ -209,8 +209,8 @@ class Flavor_VB_All_Components {
 
         // Video
         $builder->register_section('video', [
-            'label'       => __('Video', 'flavor-chat-ia'),
-            'description' => __('Sección con video destacado', 'flavor-chat-ia'),
+            'label'       => __('Video', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Sección con video destacado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-video-alt3',
             'category'    => 'landing',
             'variants'    => ['fullwidth', 'modal', 'split'],
@@ -220,8 +220,8 @@ class Flavor_VB_All_Components {
 
         // Texto + Media
         $builder->register_section('texto-media', [
-            'label'       => __('Texto + Media', 'flavor-chat-ia'),
-            'description' => __('Texto con imagen o video lateral', 'flavor-chat-ia'),
+            'label'       => __('Texto + Media', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Texto con imagen o video lateral', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-align-pull-left',
             'category'    => 'landing',
             'variants'    => ['image-left', 'image-right', 'video'],
@@ -231,8 +231,8 @@ class Flavor_VB_All_Components {
 
         // Separador
         $builder->register_section('separador', [
-            'label'       => __('Separador', 'flavor-chat-ia'),
-            'description' => __('Separador visual entre secciones', 'flavor-chat-ia'),
+            'label'       => __('Separador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Separador visual entre secciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-minus',
             'category'    => 'landing',
             'variants'    => ['line', 'wave', 'angle', 'dots'],
@@ -242,8 +242,8 @@ class Flavor_VB_All_Components {
 
         // Newsletter
         $builder->register_section('newsletter', [
-            'label'       => __('Newsletter', 'flavor-chat-ia'),
-            'description' => __('Formulario de suscripción', 'flavor-chat-ia'),
+            'label'       => __('Newsletter', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Formulario de suscripción', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-email',
             'category'    => 'landing',
             'variants'    => ['simple', 'banner', 'popup'],
@@ -253,8 +253,8 @@ class Flavor_VB_All_Components {
 
         // Portfolio / Proyectos
         $builder->register_section('portfolio', [
-            'label'       => __('Portfolio', 'flavor-chat-ia'),
-            'description' => __('Galería de proyectos o trabajos', 'flavor-chat-ia'),
+            'label'       => __('Portfolio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Galería de proyectos o trabajos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-portfolio',
             'category'    => 'landing',
             'variants'    => ['grid', 'masonry', 'filterable'],
@@ -264,8 +264,8 @@ class Flavor_VB_All_Components {
 
         // Blog / Noticias
         $builder->register_section('blog', [
-            'label'       => __('Blog / Noticias', 'flavor-chat-ia'),
-            'description' => __('Últimas entradas del blog', 'flavor-chat-ia'),
+            'label'       => __('Blog / Noticias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Últimas entradas del blog', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-admin-post',
             'category'    => 'landing',
             'variants'    => ['grid', 'list', 'featured'],
@@ -275,8 +275,8 @@ class Flavor_VB_All_Components {
 
         // Timeline
         $builder->register_section('timeline', [
-            'label'       => __('Timeline', 'flavor-chat-ia'),
-            'description' => __('Línea de tiempo con eventos', 'flavor-chat-ia'),
+            'label'       => __('Timeline', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Línea de tiempo con eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-backup',
             'category'    => 'landing',
             'variants'    => ['vertical', 'horizontal'],
@@ -297,147 +297,147 @@ class Flavor_VB_All_Components {
     public function registrar_componentes_basicos($builder) {
         // Encabezado
         $builder->register_component('heading', [
-            'label'       => __('Encabezado', 'flavor-chat-ia'),
-            'description' => __('Título o encabezado', 'flavor-chat-ia'),
+            'label'       => __('Encabezado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Título o encabezado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-editor-bold',
             'category'    => 'basic',
             'fields'      => [
-                'texto' => ['type' => 'text', 'label' => __('Texto', 'flavor-chat-ia')],
-                'nivel' => ['type' => 'select', 'label' => __('Nivel', 'flavor-chat-ia'), 'options' => ['h1' => 'H1', 'h2' => 'H2', 'h3' => 'H3', 'h4' => 'H4', 'h5' => 'H5', 'h6' => 'H6']],
-                'alineacion' => ['type' => 'select', 'label' => __('Alineación', 'flavor-chat-ia'), 'options' => ['left' => 'Izquierda', 'center' => 'Centro', 'right' => 'Derecha']],
+                'texto' => ['type' => 'text', 'label' => __('Texto', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'nivel' => ['type' => 'select', 'label' => __('Nivel', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['h1' => 'H1', 'h2' => 'H2', 'h3' => 'H3', 'h4' => 'H4', 'h5' => 'H5', 'h6' => 'H6']],
+                'alineacion' => ['type' => 'select', 'label' => __('Alineación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['left' => 'Izquierda', 'center' => 'Centro', 'right' => 'Derecha']],
             ],
             'render_callback' => [$this, 'render_heading'],
         ]);
 
         // Texto / Párrafo
         $builder->register_component('text', [
-            'label'       => __('Texto', 'flavor-chat-ia'),
-            'description' => __('Bloque de texto enriquecido', 'flavor-chat-ia'),
+            'label'       => __('Texto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Bloque de texto enriquecido', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-editor-paragraph',
             'category'    => 'basic',
             'fields'      => [
-                'contenido' => ['type' => 'wysiwyg', 'label' => __('Contenido', 'flavor-chat-ia')],
+                'contenido' => ['type' => 'wysiwyg', 'label' => __('Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ],
             'render_callback' => [$this, 'render_text'],
         ]);
 
         // Imagen
         $builder->register_component('image', [
-            'label'       => __('Imagen', 'flavor-chat-ia'),
-            'description' => __('Imagen con opciones de tamaño', 'flavor-chat-ia'),
+            'label'       => __('Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Imagen con opciones de tamaño', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-format-image',
             'category'    => 'basic',
             'fields'      => [
-                'imagen_id' => ['type' => 'image', 'label' => __('Imagen', 'flavor-chat-ia')],
-                'alt' => ['type' => 'text', 'label' => __('Texto alternativo', 'flavor-chat-ia')],
-                'tamaño' => ['type' => 'select', 'label' => __('Tamaño', 'flavor-chat-ia'), 'options' => ['thumbnail' => 'Miniatura', 'medium' => 'Mediano', 'large' => 'Grande', 'full' => 'Original']],
-                'enlace' => ['type' => 'url', 'label' => __('Enlace', 'flavor-chat-ia')],
+                'imagen_id' => ['type' => 'image', 'label' => __('Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'alt' => ['type' => 'text', 'label' => __('Texto alternativo', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'tamaño' => ['type' => 'select', 'label' => __('Tamaño', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['thumbnail' => 'Miniatura', 'medium' => 'Mediano', 'large' => 'Grande', 'full' => 'Original']],
+                'enlace' => ['type' => 'url', 'label' => __('Enlace', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ],
             'render_callback' => [$this, 'render_image'],
         ]);
 
         // Botón
         $builder->register_component('button', [
-            'label'       => __('Botón', 'flavor-chat-ia'),
-            'description' => __('Botón de acción', 'flavor-chat-ia'),
+            'label'       => __('Botón', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Botón de acción', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-button',
             'category'    => 'basic',
             'fields'      => [
-                'texto' => ['type' => 'text', 'label' => __('Texto', 'flavor-chat-ia')],
-                'enlace' => ['type' => 'url', 'label' => __('Enlace', 'flavor-chat-ia')],
-                'estilo' => ['type' => 'select', 'label' => __('Estilo', 'flavor-chat-ia'), 'options' => ['primary' => 'Primario', 'secondary' => 'Secundario', 'outline' => 'Outline', 'ghost' => 'Ghost']],
-                'tamaño' => ['type' => 'select', 'label' => __('Tamaño', 'flavor-chat-ia'), 'options' => ['sm' => 'Pequeño', 'md' => 'Mediano', 'lg' => 'Grande']],
-                'nueva_ventana' => ['type' => 'toggle', 'label' => __('Abrir en nueva ventana', 'flavor-chat-ia')],
+                'texto' => ['type' => 'text', 'label' => __('Texto', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'enlace' => ['type' => 'url', 'label' => __('Enlace', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'estilo' => ['type' => 'select', 'label' => __('Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['primary' => 'Primario', 'secondary' => 'Secundario', 'outline' => 'Outline', 'ghost' => 'Ghost']],
+                'tamaño' => ['type' => 'select', 'label' => __('Tamaño', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['sm' => 'Pequeño', 'md' => 'Mediano', 'lg' => 'Grande']],
+                'nueva_ventana' => ['type' => 'toggle', 'label' => __('Abrir en nueva ventana', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ],
             'render_callback' => [$this, 'render_button'],
         ]);
 
         // Espaciador
         $builder->register_component('spacer', [
-            'label'       => __('Espaciador', 'flavor-chat-ia'),
-            'description' => __('Espacio vertical', 'flavor-chat-ia'),
+            'label'       => __('Espaciador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Espacio vertical', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-editor-expand',
             'category'    => 'basic',
             'fields'      => [
-                'altura' => ['type' => 'number', 'label' => __('Altura (px)', 'flavor-chat-ia'), 'default' => 50],
+                'altura' => ['type' => 'number', 'label' => __('Altura (px)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => 50],
             ],
             'render_callback' => [$this, 'render_spacer'],
         ]);
 
         // Divisor
         $builder->register_component('divider', [
-            'label'       => __('Divisor', 'flavor-chat-ia'),
-            'description' => __('Línea divisora', 'flavor-chat-ia'),
+            'label'       => __('Divisor', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Línea divisora', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-minus',
             'category'    => 'basic',
             'fields'      => [
-                'estilo' => ['type' => 'select', 'label' => __('Estilo', 'flavor-chat-ia'), 'options' => ['solid' => 'Sólido', 'dashed' => 'Punteado', 'dotted' => 'Puntos', 'double' => 'Doble']],
-                'ancho' => ['type' => 'select', 'label' => __('Ancho', 'flavor-chat-ia'), 'options' => ['full' => 'Completo', '75' => '75%', '50' => '50%', '25' => '25%']],
-                'color' => ['type' => 'color', 'label' => __('Color', 'flavor-chat-ia'), 'default' => '#e5e7eb'],
+                'estilo' => ['type' => 'select', 'label' => __('Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['solid' => 'Sólido', 'dashed' => 'Punteado', 'dotted' => 'Puntos', 'double' => 'Doble']],
+                'ancho' => ['type' => 'select', 'label' => __('Ancho', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['full' => 'Completo', '75' => '75%', '50' => '50%', '25' => '25%']],
+                'color' => ['type' => 'color', 'label' => __('Color', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => '#e5e7eb'],
             ],
             'render_callback' => [$this, 'render_divider'],
         ]);
 
         // HTML Personalizado
         $builder->register_component('html', [
-            'label'       => __('HTML', 'flavor-chat-ia'),
-            'description' => __('Código HTML personalizado', 'flavor-chat-ia'),
+            'label'       => __('HTML', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Código HTML personalizado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-editor-code',
             'category'    => 'basic',
             'fields'      => [
-                'codigo' => ['type' => 'code', 'label' => __('Código HTML', 'flavor-chat-ia')],
+                'codigo' => ['type' => 'code', 'label' => __('Código HTML', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ],
             'render_callback' => [$this, 'render_html'],
         ]);
 
         // Shortcode
         $builder->register_component('shortcode', [
-            'label'       => __('Shortcode', 'flavor-chat-ia'),
-            'description' => __('Insertar un shortcode', 'flavor-chat-ia'),
+            'label'       => __('Shortcode', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Insertar un shortcode', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-shortcode',
             'category'    => 'basic',
             'fields'      => [
-                'shortcode' => ['type' => 'text', 'label' => __('Shortcode', 'flavor-chat-ia')],
+                'shortcode' => ['type' => 'text', 'label' => __('Shortcode', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ],
             'render_callback' => [$this, 'render_shortcode'],
         ]);
 
         // Icono
         $builder->register_component('icon', [
-            'label'       => __('Icono', 'flavor-chat-ia'),
-            'description' => __('Icono con estilo', 'flavor-chat-ia'),
+            'label'       => __('Icono', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Icono con estilo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-star-empty',
             'category'    => 'basic',
             'fields'      => [
-                'icono' => ['type' => 'icon', 'label' => __('Icono', 'flavor-chat-ia')],
-                'tamaño' => ['type' => 'number', 'label' => __('Tamaño (px)', 'flavor-chat-ia'), 'default' => 48],
-                'color' => ['type' => 'color', 'label' => __('Color', 'flavor-chat-ia')],
+                'icono' => ['type' => 'icon', 'label' => __('Icono', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'tamaño' => ['type' => 'number', 'label' => __('Tamaño (px)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => 48],
+                'color' => ['type' => 'color', 'label' => __('Color', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ],
             'render_callback' => [$this, 'render_icon'],
         ]);
 
         // Columnas
         $builder->register_component('columns', [
-            'label'       => __('Columnas', 'flavor-chat-ia'),
-            'description' => __('Layout de columnas flexible', 'flavor-chat-ia'),
+            'label'       => __('Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Layout de columnas flexible', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-columns',
             'category'    => 'layout',
             'fields'      => [
-                'columnas' => ['type' => 'select', 'label' => __('Columnas', 'flavor-chat-ia'), 'options' => ['2' => '2 columnas', '3' => '3 columnas', '4' => '4 columnas']],
-                'gap' => ['type' => 'number', 'label' => __('Espaciado (px)', 'flavor-chat-ia'), 'default' => 20],
+                'columnas' => ['type' => 'select', 'label' => __('Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['2' => '2 columnas', '3' => '3 columnas', '4' => '4 columnas']],
+                'gap' => ['type' => 'number', 'label' => __('Espaciado (px)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => 20],
             ],
             'render_callback' => [$this, 'render_columns'],
         ]);
 
         // Contenedor
         $builder->register_component('container', [
-            'label'       => __('Contenedor', 'flavor-chat-ia'),
-            'description' => __('Contenedor con ancho máximo', 'flavor-chat-ia'),
+            'label'       => __('Contenedor', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Contenedor con ancho máximo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-align-center',
             'category'    => 'layout',
             'fields'      => [
-                'ancho_max' => ['type' => 'select', 'label' => __('Ancho máximo', 'flavor-chat-ia'), 'options' => ['sm' => 'Pequeño (640px)', 'md' => 'Mediano (768px)', 'lg' => 'Grande (1024px)', 'xl' => 'Extra (1280px)', 'full' => 'Completo']],
-                'padding' => ['type' => 'number', 'label' => __('Padding (px)', 'flavor-chat-ia'), 'default' => 20],
+                'ancho_max' => ['type' => 'select', 'label' => __('Ancho máximo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['sm' => 'Pequeño (640px)', 'md' => 'Mediano (768px)', 'lg' => 'Grande (1024px)', 'xl' => 'Extra (1280px)', 'full' => 'Completo']],
+                'padding' => ['type' => 'number', 'label' => __('Padding (px)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => 20],
             ],
             'render_callback' => [$this, 'render_container'],
         ]);
@@ -511,253 +511,253 @@ class Flavor_VB_All_Components {
 
     private function get_campos_hero() {
         return [
-            'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia')],
-            'subtitulo' => ['type' => 'text', 'label' => __('Subtítulo', 'flavor-chat-ia')],
-            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
-            'imagen_fondo' => ['type' => 'image', 'label' => __('Imagen de fondo', 'flavor-chat-ia')],
-            'video_fondo' => ['type' => 'url', 'label' => __('Video de fondo (URL)', 'flavor-chat-ia')],
-            'overlay_color' => ['type' => 'color', 'label' => __('Color overlay', 'flavor-chat-ia'), 'default' => 'rgba(0,0,0,0.5)'],
-            'boton_texto' => ['type' => 'text', 'label' => __('Texto del botón', 'flavor-chat-ia')],
-            'boton_url' => ['type' => 'url', 'label' => __('URL del botón', 'flavor-chat-ia')],
-            'boton_secundario_texto' => ['type' => 'text', 'label' => __('Texto botón secundario', 'flavor-chat-ia')],
-            'boton_secundario_url' => ['type' => 'url', 'label' => __('URL botón secundario', 'flavor-chat-ia')],
-            'altura' => ['type' => 'select', 'label' => __('Altura', 'flavor-chat-ia'), 'options' => ['auto' => 'Auto', 'screen' => 'Pantalla completa', '75vh' => '75%', '50vh' => '50%'], 'default' => 'screen'],
-            'alineacion' => ['type' => 'select', 'label' => __('Alineación', 'flavor-chat-ia'), 'options' => ['left' => 'Izquierda', 'center' => 'Centro', 'right' => 'Derecha'], 'default' => 'center'],
+            'titulo' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'subtitulo' => ['type' => 'text', 'label' => __('Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'imagen_fondo' => ['type' => 'image', 'label' => __('Imagen de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'video_fondo' => ['type' => 'url', 'label' => __('Video de fondo (URL)', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'overlay_color' => ['type' => 'color', 'label' => __('Color overlay', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => 'rgba(0,0,0,0.5)'],
+            'boton_texto' => ['type' => 'text', 'label' => __('Texto del botón', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'boton_url' => ['type' => 'url', 'label' => __('URL del botón', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'boton_secundario_texto' => ['type' => 'text', 'label' => __('Texto botón secundario', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'boton_secundario_url' => ['type' => 'url', 'label' => __('URL botón secundario', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'altura' => ['type' => 'select', 'label' => __('Altura', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['auto' => 'Auto', 'screen' => 'Pantalla completa', '75vh' => '75%', '50vh' => '50%'], 'default' => 'screen'],
+            'alineacion' => ['type' => 'select', 'label' => __('Alineación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['left' => 'Izquierda', 'center' => 'Centro', 'right' => 'Derecha'], 'default' => 'center'],
         ];
     }
 
     private function get_campos_features() {
         return [
-            'titulo_seccion' => ['type' => 'text', 'label' => __('Título de la sección', 'flavor-chat-ia')],
-            'subtitulo_seccion' => ['type' => 'text', 'label' => __('Subtítulo', 'flavor-chat-ia')],
-            'columnas' => ['type' => 'select', 'label' => __('Columnas', 'flavor-chat-ia'), 'options' => ['2' => '2', '3' => '3', '4' => '4'], 'default' => '3'],
-            'items' => ['type' => 'repeater', 'label' => __('Características', 'flavor-chat-ia'), 'fields' => [
-                'icono' => ['type' => 'icon', 'label' => __('Icono', 'flavor-chat-ia')],
-                'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia')],
-                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
-                'enlace' => ['type' => 'url', 'label' => __('Enlace', 'flavor-chat-ia')],
+            'titulo_seccion' => ['type' => 'text', 'label' => __('Título de la sección', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'subtitulo_seccion' => ['type' => 'text', 'label' => __('Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'columnas' => ['type' => 'select', 'label' => __('Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['2' => '2', '3' => '3', '4' => '4'], 'default' => '3'],
+            'items' => ['type' => 'repeater', 'label' => __('Características', FLAVOR_PLATFORM_TEXT_DOMAIN), 'fields' => [
+                'icono' => ['type' => 'icon', 'label' => __('Icono', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'titulo' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'enlace' => ['type' => 'url', 'label' => __('Enlace', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ]],
         ];
     }
 
     private function get_campos_testimonios() {
         return [
-            'titulo_seccion' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia')],
-            'items' => ['type' => 'repeater', 'label' => __('Testimonios', 'flavor-chat-ia'), 'fields' => [
-                'texto' => ['type' => 'textarea', 'label' => __('Testimonio', 'flavor-chat-ia')],
-                'autor' => ['type' => 'text', 'label' => __('Nombre', 'flavor-chat-ia')],
-                'cargo' => ['type' => 'text', 'label' => __('Cargo / Empresa', 'flavor-chat-ia')],
-                'foto' => ['type' => 'image', 'label' => __('Foto', 'flavor-chat-ia')],
-                'rating' => ['type' => 'select', 'label' => __('Valoración', 'flavor-chat-ia'), 'options' => ['5' => '5 estrellas', '4' => '4 estrellas', '3' => '3 estrellas']],
+            'titulo_seccion' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'items' => ['type' => 'repeater', 'label' => __('Testimonios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'fields' => [
+                'texto' => ['type' => 'textarea', 'label' => __('Testimonio', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'autor' => ['type' => 'text', 'label' => __('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'cargo' => ['type' => 'text', 'label' => __('Cargo / Empresa', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'foto' => ['type' => 'image', 'label' => __('Foto', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'rating' => ['type' => 'select', 'label' => __('Valoración', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['5' => '5 estrellas', '4' => '4 estrellas', '3' => '3 estrellas']],
             ]],
-            'autoplay' => ['type' => 'toggle', 'label' => __('Autoplay (carousel)', 'flavor-chat-ia'), 'default' => true],
+            'autoplay' => ['type' => 'toggle', 'label' => __('Autoplay (carousel)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => true],
         ];
     }
 
     private function get_campos_pricing() {
         return [
-            'titulo_seccion' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia')],
-            'subtitulo_seccion' => ['type' => 'text', 'label' => __('Subtítulo', 'flavor-chat-ia')],
-            'mostrar_toggle' => ['type' => 'toggle', 'label' => __('Mostrar toggle mensual/anual', 'flavor-chat-ia')],
-            'items' => ['type' => 'repeater', 'label' => __('Planes', 'flavor-chat-ia'), 'fields' => [
-                'nombre' => ['type' => 'text', 'label' => __('Nombre del plan', 'flavor-chat-ia')],
-                'precio' => ['type' => 'text', 'label' => __('Precio', 'flavor-chat-ia')],
-                'precio_anual' => ['type' => 'text', 'label' => __('Precio anual', 'flavor-chat-ia')],
-                'periodo' => ['type' => 'text', 'label' => __('Período', 'flavor-chat-ia'), 'default' => '/mes'],
-                'descripcion' => ['type' => 'text', 'label' => __('Descripción', 'flavor-chat-ia')],
-                'caracteristicas' => ['type' => 'textarea', 'label' => __('Características (una por línea)', 'flavor-chat-ia')],
-                'destacado' => ['type' => 'toggle', 'label' => __('Destacado', 'flavor-chat-ia')],
-                'boton_texto' => ['type' => 'text', 'label' => __('Texto del botón', 'flavor-chat-ia')],
-                'boton_url' => ['type' => 'url', 'label' => __('URL del botón', 'flavor-chat-ia')],
+            'titulo_seccion' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'subtitulo_seccion' => ['type' => 'text', 'label' => __('Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'mostrar_toggle' => ['type' => 'toggle', 'label' => __('Mostrar toggle mensual/anual', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'items' => ['type' => 'repeater', 'label' => __('Planes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'fields' => [
+                'nombre' => ['type' => 'text', 'label' => __('Nombre del plan', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'precio' => ['type' => 'text', 'label' => __('Precio', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'precio_anual' => ['type' => 'text', 'label' => __('Precio anual', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'periodo' => ['type' => 'text', 'label' => __('Período', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => '/mes'],
+                'descripcion' => ['type' => 'text', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'caracteristicas' => ['type' => 'textarea', 'label' => __('Características (una por línea)', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'destacado' => ['type' => 'toggle', 'label' => __('Destacado', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'boton_texto' => ['type' => 'text', 'label' => __('Texto del botón', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'boton_url' => ['type' => 'url', 'label' => __('URL del botón', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ]],
         ];
     }
 
     private function get_campos_cta() {
         return [
-            'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia')],
-            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
-            'boton_texto' => ['type' => 'text', 'label' => __('Texto del botón', 'flavor-chat-ia')],
-            'boton_url' => ['type' => 'url', 'label' => __('URL del botón', 'flavor-chat-ia')],
-            'boton_secundario_texto' => ['type' => 'text', 'label' => __('Botón secundario', 'flavor-chat-ia')],
-            'boton_secundario_url' => ['type' => 'url', 'label' => __('URL secundaria', 'flavor-chat-ia')],
-            'imagen_fondo' => ['type' => 'image', 'label' => __('Imagen de fondo', 'flavor-chat-ia')],
-            'color_fondo' => ['type' => 'color', 'label' => __('Color de fondo', 'flavor-chat-ia')],
+            'titulo' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'boton_texto' => ['type' => 'text', 'label' => __('Texto del botón', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'boton_url' => ['type' => 'url', 'label' => __('URL del botón', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'boton_secundario_texto' => ['type' => 'text', 'label' => __('Botón secundario', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'boton_secundario_url' => ['type' => 'url', 'label' => __('URL secundaria', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'imagen_fondo' => ['type' => 'image', 'label' => __('Imagen de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'color_fondo' => ['type' => 'color', 'label' => __('Color de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN)],
         ];
     }
 
     private function get_campos_faq() {
         return [
-            'titulo_seccion' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia')],
-            'subtitulo_seccion' => ['type' => 'text', 'label' => __('Subtítulo', 'flavor-chat-ia')],
-            'items' => ['type' => 'repeater', 'label' => __('Preguntas', 'flavor-chat-ia'), 'fields' => [
-                'pregunta' => ['type' => 'text', 'label' => __('Pregunta', 'flavor-chat-ia')],
-                'respuesta' => ['type' => 'wysiwyg', 'label' => __('Respuesta', 'flavor-chat-ia')],
-                'categoria' => ['type' => 'text', 'label' => __('Categoría', 'flavor-chat-ia')],
+            'titulo_seccion' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'subtitulo_seccion' => ['type' => 'text', 'label' => __('Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'items' => ['type' => 'repeater', 'label' => __('Preguntas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'fields' => [
+                'pregunta' => ['type' => 'text', 'label' => __('Pregunta', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'respuesta' => ['type' => 'wysiwyg', 'label' => __('Respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'categoria' => ['type' => 'text', 'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ]],
-            'abrir_primero' => ['type' => 'toggle', 'label' => __('Abrir primera pregunta', 'flavor-chat-ia'), 'default' => true],
+            'abrir_primero' => ['type' => 'toggle', 'label' => __('Abrir primera pregunta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => true],
         ];
     }
 
     private function get_campos_contacto() {
         return [
-            'titulo_seccion' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia')],
-            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
-            'email' => ['type' => 'email', 'label' => __('Email de contacto', 'flavor-chat-ia')],
-            'telefono' => ['type' => 'text', 'label' => __('Teléfono', 'flavor-chat-ia')],
-            'direccion' => ['type' => 'textarea', 'label' => __('Dirección', 'flavor-chat-ia')],
-            'horario' => ['type' => 'textarea', 'label' => __('Horario', 'flavor-chat-ia')],
-            'mapa_lat' => ['type' => 'text', 'label' => __('Latitud del mapa', 'flavor-chat-ia')],
-            'mapa_lng' => ['type' => 'text', 'label' => __('Longitud del mapa', 'flavor-chat-ia')],
-            'form_shortcode' => ['type' => 'text', 'label' => __('Shortcode del formulario', 'flavor-chat-ia')],
-            'redes_sociales' => ['type' => 'repeater', 'label' => __('Redes sociales', 'flavor-chat-ia'), 'fields' => [
-                'red' => ['type' => 'select', 'label' => __('Red', 'flavor-chat-ia'), 'options' => ['facebook' => 'Facebook', 'twitter' => 'Twitter/X', 'instagram' => 'Instagram', 'linkedin' => 'LinkedIn', 'youtube' => 'YouTube']],
-                'url' => ['type' => 'url', 'label' => __('URL', 'flavor-chat-ia')],
+            'titulo_seccion' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'email' => ['type' => 'email', 'label' => __('Email de contacto', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'telefono' => ['type' => 'text', 'label' => __('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'direccion' => ['type' => 'textarea', 'label' => __('Dirección', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'horario' => ['type' => 'textarea', 'label' => __('Horario', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'mapa_lat' => ['type' => 'text', 'label' => __('Latitud del mapa', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'mapa_lng' => ['type' => 'text', 'label' => __('Longitud del mapa', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'form_shortcode' => ['type' => 'text', 'label' => __('Shortcode del formulario', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'redes_sociales' => ['type' => 'repeater', 'label' => __('Redes sociales', FLAVOR_PLATFORM_TEXT_DOMAIN), 'fields' => [
+                'red' => ['type' => 'select', 'label' => __('Red', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['facebook' => 'Facebook', 'twitter' => 'Twitter/X', 'instagram' => 'Instagram', 'linkedin' => 'LinkedIn', 'youtube' => 'YouTube']],
+                'url' => ['type' => 'url', 'label' => __('URL', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ]],
         ];
     }
 
     private function get_campos_galeria() {
         return [
-            'titulo_seccion' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia')],
-            'imagenes' => ['type' => 'gallery', 'label' => __('Imágenes', 'flavor-chat-ia')],
-            'columnas' => ['type' => 'select', 'label' => __('Columnas', 'flavor-chat-ia'), 'options' => ['2' => '2', '3' => '3', '4' => '4', '5' => '5'], 'default' => '4'],
-            'gap' => ['type' => 'number', 'label' => __('Espaciado (px)', 'flavor-chat-ia'), 'default' => 10],
-            'lightbox' => ['type' => 'toggle', 'label' => __('Activar lightbox', 'flavor-chat-ia'), 'default' => true],
+            'titulo_seccion' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'imagenes' => ['type' => 'gallery', 'label' => __('Imágenes', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'columnas' => ['type' => 'select', 'label' => __('Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['2' => '2', '3' => '3', '4' => '4', '5' => '5'], 'default' => '4'],
+            'gap' => ['type' => 'number', 'label' => __('Espaciado (px)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => 10],
+            'lightbox' => ['type' => 'toggle', 'label' => __('Activar lightbox', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => true],
         ];
     }
 
     private function get_campos_stats() {
         return [
-            'titulo_seccion' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia')],
-            'items' => ['type' => 'repeater', 'label' => __('Estadísticas', 'flavor-chat-ia'), 'fields' => [
-                'numero' => ['type' => 'text', 'label' => __('Número', 'flavor-chat-ia')],
-                'sufijo' => ['type' => 'text', 'label' => __('Sufijo (+, %, etc)', 'flavor-chat-ia')],
-                'label' => ['type' => 'text', 'label' => __('Etiqueta', 'flavor-chat-ia')],
-                'icono' => ['type' => 'icon', 'label' => __('Icono', 'flavor-chat-ia')],
+            'titulo_seccion' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'items' => ['type' => 'repeater', 'label' => __('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'fields' => [
+                'numero' => ['type' => 'text', 'label' => __('Número', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'sufijo' => ['type' => 'text', 'label' => __('Sufijo (+, %, etc)', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'label' => ['type' => 'text', 'label' => __('Etiqueta', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'icono' => ['type' => 'icon', 'label' => __('Icono', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ]],
-            'animar' => ['type' => 'toggle', 'label' => __('Animar números', 'flavor-chat-ia'), 'default' => true],
-            'color_fondo' => ['type' => 'color', 'label' => __('Color de fondo', 'flavor-chat-ia')],
+            'animar' => ['type' => 'toggle', 'label' => __('Animar números', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => true],
+            'color_fondo' => ['type' => 'color', 'label' => __('Color de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN)],
         ];
     }
 
     private function get_campos_equipo() {
         return [
-            'titulo_seccion' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia')],
-            'subtitulo_seccion' => ['type' => 'text', 'label' => __('Subtítulo', 'flavor-chat-ia')],
-            'columnas' => ['type' => 'select', 'label' => __('Columnas', 'flavor-chat-ia'), 'options' => ['3' => '3', '4' => '4', '5' => '5'], 'default' => '4'],
-            'items' => ['type' => 'repeater', 'label' => __('Miembros', 'flavor-chat-ia'), 'fields' => [
-                'foto' => ['type' => 'image', 'label' => __('Foto', 'flavor-chat-ia')],
-                'nombre' => ['type' => 'text', 'label' => __('Nombre', 'flavor-chat-ia')],
-                'cargo' => ['type' => 'text', 'label' => __('Cargo', 'flavor-chat-ia')],
-                'bio' => ['type' => 'textarea', 'label' => __('Biografía', 'flavor-chat-ia')],
-                'linkedin' => ['type' => 'url', 'label' => __('LinkedIn', 'flavor-chat-ia')],
-                'twitter' => ['type' => 'url', 'label' => __('Twitter/X', 'flavor-chat-ia')],
-                'email' => ['type' => 'email', 'label' => __('Email', 'flavor-chat-ia')],
+            'titulo_seccion' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'subtitulo_seccion' => ['type' => 'text', 'label' => __('Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'columnas' => ['type' => 'select', 'label' => __('Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['3' => '3', '4' => '4', '5' => '5'], 'default' => '4'],
+            'items' => ['type' => 'repeater', 'label' => __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN), 'fields' => [
+                'foto' => ['type' => 'image', 'label' => __('Foto', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'nombre' => ['type' => 'text', 'label' => __('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'cargo' => ['type' => 'text', 'label' => __('Cargo', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'bio' => ['type' => 'textarea', 'label' => __('Biografía', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'linkedin' => ['type' => 'url', 'label' => __('LinkedIn', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'twitter' => ['type' => 'url', 'label' => __('Twitter/X', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'email' => ['type' => 'email', 'label' => __('Email', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ]],
         ];
     }
 
     private function get_campos_logos() {
         return [
-            'titulo_seccion' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia')],
-            'logos' => ['type' => 'gallery', 'label' => __('Logos', 'flavor-chat-ia')],
-            'columnas' => ['type' => 'select', 'label' => __('Columnas', 'flavor-chat-ia'), 'options' => ['4' => '4', '5' => '5', '6' => '6', '8' => '8'], 'default' => '6'],
-            'escala_grises' => ['type' => 'toggle', 'label' => __('Escala de grises', 'flavor-chat-ia'), 'default' => true],
-            'carousel' => ['type' => 'toggle', 'label' => __('Carousel automático', 'flavor-chat-ia')],
+            'titulo_seccion' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'logos' => ['type' => 'gallery', 'label' => __('Logos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'columnas' => ['type' => 'select', 'label' => __('Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['4' => '4', '5' => '5', '6' => '6', '8' => '8'], 'default' => '6'],
+            'escala_grises' => ['type' => 'toggle', 'label' => __('Escala de grises', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => true],
+            'carousel' => ['type' => 'toggle', 'label' => __('Carousel automático', FLAVOR_PLATFORM_TEXT_DOMAIN)],
         ];
     }
 
     private function get_campos_video() {
         return [
-            'titulo_seccion' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia')],
-            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
-            'video_url' => ['type' => 'url', 'label' => __('URL del video (YouTube/Vimeo)', 'flavor-chat-ia')],
-            'video_archivo' => ['type' => 'file', 'label' => __('Video archivo (MP4)', 'flavor-chat-ia')],
-            'imagen_preview' => ['type' => 'image', 'label' => __('Imagen de preview', 'flavor-chat-ia')],
-            'autoplay' => ['type' => 'toggle', 'label' => __('Autoplay', 'flavor-chat-ia')],
-            'loop' => ['type' => 'toggle', 'label' => __('Loop', 'flavor-chat-ia')],
-            'muted' => ['type' => 'toggle', 'label' => __('Sin sonido', 'flavor-chat-ia')],
+            'titulo_seccion' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'video_url' => ['type' => 'url', 'label' => __('URL del video (YouTube/Vimeo)', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'video_archivo' => ['type' => 'file', 'label' => __('Video archivo (MP4)', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'imagen_preview' => ['type' => 'image', 'label' => __('Imagen de preview', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'autoplay' => ['type' => 'toggle', 'label' => __('Autoplay', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'loop' => ['type' => 'toggle', 'label' => __('Loop', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'muted' => ['type' => 'toggle', 'label' => __('Sin sonido', FLAVOR_PLATFORM_TEXT_DOMAIN)],
         ];
     }
 
     private function get_campos_texto_media() {
         return [
-            'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia')],
-            'subtitulo' => ['type' => 'text', 'label' => __('Subtítulo', 'flavor-chat-ia')],
-            'contenido' => ['type' => 'wysiwyg', 'label' => __('Contenido', 'flavor-chat-ia')],
-            'imagen' => ['type' => 'image', 'label' => __('Imagen', 'flavor-chat-ia')],
-            'video_url' => ['type' => 'url', 'label' => __('URL de video (alternativa)', 'flavor-chat-ia')],
-            'invertir' => ['type' => 'toggle', 'label' => __('Imagen a la derecha', 'flavor-chat-ia')],
-            'boton_texto' => ['type' => 'text', 'label' => __('Texto del botón', 'flavor-chat-ia')],
-            'boton_url' => ['type' => 'url', 'label' => __('URL del botón', 'flavor-chat-ia')],
+            'titulo' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'subtitulo' => ['type' => 'text', 'label' => __('Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'contenido' => ['type' => 'wysiwyg', 'label' => __('Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'imagen' => ['type' => 'image', 'label' => __('Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'video_url' => ['type' => 'url', 'label' => __('URL de video (alternativa)', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'invertir' => ['type' => 'toggle', 'label' => __('Imagen a la derecha', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'boton_texto' => ['type' => 'text', 'label' => __('Texto del botón', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'boton_url' => ['type' => 'url', 'label' => __('URL del botón', FLAVOR_PLATFORM_TEXT_DOMAIN)],
         ];
     }
 
     private function get_campos_separador() {
         return [
-            'tipo' => ['type' => 'select', 'label' => __('Tipo', 'flavor-chat-ia'), 'options' => [
-                'line' => __('Línea', 'flavor-chat-ia'),
-                'wave' => __('Ola', 'flavor-chat-ia'),
-                'angle' => __('Ángulo', 'flavor-chat-ia'),
-                'curve' => __('Curva', 'flavor-chat-ia'),
-                'triangle' => __('Triángulo', 'flavor-chat-ia'),
+            'tipo' => ['type' => 'select', 'label' => __('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => [
+                'line' => __('Línea', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'wave' => __('Ola', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'angle' => __('Ángulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'curve' => __('Curva', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'triangle' => __('Triángulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]],
-            'color' => ['type' => 'color', 'label' => __('Color', 'flavor-chat-ia'), 'default' => '#ffffff'],
-            'altura' => ['type' => 'number', 'label' => __('Altura (px)', 'flavor-chat-ia'), 'default' => 100],
-            'invertir' => ['type' => 'toggle', 'label' => __('Invertir', 'flavor-chat-ia')],
+            'color' => ['type' => 'color', 'label' => __('Color', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => '#ffffff'],
+            'altura' => ['type' => 'number', 'label' => __('Altura (px)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => 100],
+            'invertir' => ['type' => 'toggle', 'label' => __('Invertir', FLAVOR_PLATFORM_TEXT_DOMAIN)],
         ];
     }
 
     private function get_campos_newsletter() {
         return [
-            'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia')],
-            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
-            'placeholder' => ['type' => 'text', 'label' => __('Placeholder', 'flavor-chat-ia'), 'default' => 'Tu email'],
-            'boton_texto' => ['type' => 'text', 'label' => __('Texto del botón', 'flavor-chat-ia'), 'default' => 'Suscribirse'],
-            'accion_form' => ['type' => 'url', 'label' => __('URL del formulario (Mailchimp, etc)', 'flavor-chat-ia')],
-            'color_fondo' => ['type' => 'color', 'label' => __('Color de fondo', 'flavor-chat-ia')],
+            'titulo' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'placeholder' => ['type' => 'text', 'label' => __('Placeholder', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => 'Tu email'],
+            'boton_texto' => ['type' => 'text', 'label' => __('Texto del botón', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => 'Suscribirse'],
+            'accion_form' => ['type' => 'url', 'label' => __('URL del formulario (Mailchimp, etc)', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'color_fondo' => ['type' => 'color', 'label' => __('Color de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN)],
         ];
     }
 
     private function get_campos_portfolio() {
         return [
-            'titulo_seccion' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia')],
-            'columnas' => ['type' => 'select', 'label' => __('Columnas', 'flavor-chat-ia'), 'options' => ['2' => '2', '3' => '3', '4' => '4'], 'default' => '3'],
-            'mostrar_filtros' => ['type' => 'toggle', 'label' => __('Mostrar filtros', 'flavor-chat-ia')],
-            'items' => ['type' => 'repeater', 'label' => __('Proyectos', 'flavor-chat-ia'), 'fields' => [
-                'imagen' => ['type' => 'image', 'label' => __('Imagen', 'flavor-chat-ia')],
-                'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia')],
-                'categoria' => ['type' => 'text', 'label' => __('Categoría', 'flavor-chat-ia')],
-                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
-                'enlace' => ['type' => 'url', 'label' => __('Enlace', 'flavor-chat-ia')],
+            'titulo_seccion' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'columnas' => ['type' => 'select', 'label' => __('Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['2' => '2', '3' => '3', '4' => '4'], 'default' => '3'],
+            'mostrar_filtros' => ['type' => 'toggle', 'label' => __('Mostrar filtros', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'items' => ['type' => 'repeater', 'label' => __('Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'fields' => [
+                'imagen' => ['type' => 'image', 'label' => __('Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'titulo' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'categoria' => ['type' => 'text', 'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'enlace' => ['type' => 'url', 'label' => __('Enlace', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ]],
         ];
     }
 
     private function get_campos_blog() {
         return [
-            'titulo_seccion' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia')],
-            'cantidad' => ['type' => 'number', 'label' => __('Cantidad de posts', 'flavor-chat-ia'), 'default' => 3],
-            'columnas' => ['type' => 'select', 'label' => __('Columnas', 'flavor-chat-ia'), 'options' => ['2' => '2', '3' => '3', '4' => '4'], 'default' => '3'],
-            'categoria' => ['type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'options' => []], // Se llena dinámicamente
-            'mostrar_fecha' => ['type' => 'toggle', 'label' => __('Mostrar fecha', 'flavor-chat-ia'), 'default' => true],
-            'mostrar_autor' => ['type' => 'toggle', 'label' => __('Mostrar autor', 'flavor-chat-ia'), 'default' => true],
-            'mostrar_extracto' => ['type' => 'toggle', 'label' => __('Mostrar extracto', 'flavor-chat-ia'), 'default' => true],
+            'titulo_seccion' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'cantidad' => ['type' => 'number', 'label' => __('Cantidad de posts', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => 3],
+            'columnas' => ['type' => 'select', 'label' => __('Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['2' => '2', '3' => '3', '4' => '4'], 'default' => '3'],
+            'categoria' => ['type' => 'select', 'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => []], // Se llena dinámicamente
+            'mostrar_fecha' => ['type' => 'toggle', 'label' => __('Mostrar fecha', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => true],
+            'mostrar_autor' => ['type' => 'toggle', 'label' => __('Mostrar autor', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => true],
+            'mostrar_extracto' => ['type' => 'toggle', 'label' => __('Mostrar extracto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => true],
         ];
     }
 
     private function get_campos_timeline() {
         return [
-            'titulo_seccion' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia')],
-            'items' => ['type' => 'repeater', 'label' => __('Eventos', 'flavor-chat-ia'), 'fields' => [
-                'fecha' => ['type' => 'text', 'label' => __('Fecha', 'flavor-chat-ia')],
-                'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia')],
-                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
-                'icono' => ['type' => 'icon', 'label' => __('Icono', 'flavor-chat-ia')],
-                'imagen' => ['type' => 'image', 'label' => __('Imagen', 'flavor-chat-ia')],
+            'titulo_seccion' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'items' => ['type' => 'repeater', 'label' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'fields' => [
+                'fecha' => ['type' => 'text', 'label' => __('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'titulo' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'icono' => ['type' => 'icon', 'label' => __('Icono', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'imagen' => ['type' => 'image', 'label' => __('Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ]],
-            'color_linea' => ['type' => 'color', 'label' => __('Color de línea', 'flavor-chat-ia')],
+            'color_linea' => ['type' => 'color', 'label' => __('Color de línea', FLAVOR_PLATFORM_TEXT_DOMAIN)],
         ];
     }
 
@@ -888,7 +888,7 @@ class Flavor_VB_All_Components {
 
                                 <?php if (!empty($item['enlace'])) : ?>
                                     <a href="<?php echo esc_url($item['enlace']); ?>" class="fvb-feature-card__link inline-flex items-center mt-4 text-primary-600 font-medium hover:underline">
-                                        <?php esc_html_e('Saber más', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Saber más', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         <span class="dashicons dashicons-arrow-right-alt2 ml-1"></span>
                                     </a>
                                 <?php endif; ?>
@@ -1047,7 +1047,7 @@ class Flavor_VB_All_Components {
     }
 
     public function render_button($data) {
-        $texto = $data['texto'] ?? __('Botón', 'flavor-chat-ia');
+        $texto = $data['texto'] ?? __('Botón', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $enlace = $data['enlace'] ?? '#';
         $estilo = $data['estilo'] ?? 'primary';
         $tamano = $data['tamaño'] ?? 'md';

@@ -129,7 +129,7 @@ class Flavor_API_Rate_Limiter {
             return new WP_Error(
                 'rate_limit_exceeded',
                 sprintf(
-                    __('Demasiadas peticiones. Por favor, espera %d segundos antes de intentarlo de nuevo.', 'flavor-chat-ia'),
+                    __('Demasiadas peticiones. Por favor, espera %d segundos antes de intentarlo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $segundos_restantes
                 ),
                 [

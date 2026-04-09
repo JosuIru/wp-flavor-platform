@@ -14,10 +14,10 @@ $elemento = $item ?? $card_item ?? [];
 if (empty($elemento)) return;
 
 $id = $elemento['id'] ?? 0;
-$titulo = $elemento['titulo'] ?? $elemento['title'] ?? __('Contenido multimedia', 'flavor-chat-ia');
+$titulo = $elemento['titulo'] ?? $elemento['title'] ?? __('Contenido multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $url = $elemento['url'] ?? '#';
 $tipo = $elemento['tipo'] ?? 'video';
-$autor = $elemento['autor'] ?? __('Autor', 'flavor-chat-ia');
+$autor = $elemento['autor'] ?? __('Autor', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $vistas = $elemento['vistas'] ?? 0;
 $fecha = $elemento['fecha'] ?? '';
 $duracion = $elemento['duracion'] ?? '';

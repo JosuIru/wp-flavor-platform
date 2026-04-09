@@ -24,7 +24,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
     public function get_integration_content_type() {
         return [
             'id' => 'biblioteca',
-            'label' => __('Biblioteca', 'flavor-chat-ia'),
+            'label' => __('Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-book',
             'table' => 'flavor_biblioteca_libros',
         ];
@@ -35,8 +35,8 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
      */
     public function __construct() {
         $this->id = 'biblioteca';
-        $this->name = __('Biblioteca Comunitaria', 'flavor-chat-ia');
-        $this->description = __('Sistema de préstamo e intercambio de libros entre vecinos de la comunidad.', 'flavor-chat-ia');
+        $this->name = __('Biblioteca Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Sistema de préstamo e intercambio de libros entre vecinos de la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         // Principios Gailu que implementa este modulo
         $this->gailu_principios = ['aprendizaje', 'economia_local'];
@@ -60,7 +60,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Biblioteca no están creadas. Se crearán automáticamente al activar.', 'flavor-chat-ia');
+            return __('Las tablas de Biblioteca no están creadas. Se crearán automáticamente al activar.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         return '';
     }
@@ -235,11 +235,11 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
             'user_logged_in' => is_user_logged_in(),
             'user_id' => get_current_user_id(),
             'strings' => [
-                'error_general' => __('Ha ocurrido un error. Inténtalo de nuevo.', 'flavor-chat-ia'),
-                'confirmar_prestamo' => __('¿Deseas solicitar el préstamo de este libro?', 'flavor-chat-ia'),
-                'prestamo_solicitado' => __('Tu solicitud de préstamo ha sido enviada.', 'flavor-chat-ia'),
-                'libro_devuelto' => __('El libro ha sido devuelto correctamente.', 'flavor-chat-ia'),
-                'login_requerido' => __('Debes iniciar sesión para realizar esta acción.', 'flavor-chat-ia'),
+                'error_general' => __('Ha ocurrido un error. Inténtalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmar_prestamo' => __('¿Deseas solicitar el préstamo de este libro?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'prestamo_solicitado' => __('Tu solicitud de préstamo ha sido enviada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'libro_devuelto' => __('El libro ha sido devuelto correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'login_requerido' => __('Debes iniciar sesión para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]
         ]);
     }
@@ -1374,14 +1374,14 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
     private function action_resenas_libro($params) {
         $libro = $this->resolve_contextual_libro((array) $params);
         if (!$libro) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un libro para ver sus reseñas.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un libro para ver sus reseñas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
         ?>
         <div class="flavor-contextual-tab flavor-contextual-resenas">
             <div class="flavor-contextual-header" style="margin-bottom:1.5rem;">
-                <h2><?php esc_html_e('Reseñas del libro', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Reseñas del libro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <p><?php echo esc_html($libro->titulo); ?></p>
             </div>
             <?php echo do_shortcode(sprintf(
@@ -1402,11 +1402,11 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
     private function action_chat_libro($params) {
         $libro = $this->resolve_contextual_libro((array) $params);
         if (!$libro) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un libro para ver su chat.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un libro para ver su chat.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         if (!is_user_logged_in()) {
-            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este libro.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este libro.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -1414,11 +1414,11 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         <div class="flavor-contextual-tab flavor-contextual-chat">
             <div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
                 <div>
-                    <h2><?php esc_html_e('Chat del libro', 'flavor-chat-ia'); ?></h2>
+                    <h2><?php esc_html_e('Chat del libro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                     <p><?php echo esc_html($libro->titulo); ?></p>
                 </div>
                 <a href="<?php echo esc_url(home_url('/mi-portal/chat-grupos/mensajes/?libro_id=' . absint($libro->id))); ?>" class="button button-secondary">
-                    <?php esc_html_e('Abrir chat completo', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Abrir chat completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php echo do_shortcode(sprintf(
@@ -1439,7 +1439,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
     private function action_multimedia_libro($params) {
         $libro = $this->resolve_contextual_libro((array) $params);
         if (!$libro) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un libro para ver su galería.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un libro para ver su galería.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -1447,11 +1447,11 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         <div class="flavor-contextual-tab flavor-contextual-multimedia">
             <div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
                 <div>
-                    <h2><?php esc_html_e('Multimedia del libro', 'flavor-chat-ia'); ?></h2>
+                    <h2><?php esc_html_e('Multimedia del libro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                     <p><?php echo esc_html($libro->titulo); ?></p>
                 </div>
                 <a href="<?php echo esc_url(home_url('/mi-portal/multimedia/subir/?libro_id=' . absint($libro->id))); ?>" class="button button-primary">
-                    <?php esc_html_e('Subir archivo', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Subir archivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php echo do_shortcode(sprintf(
@@ -1472,11 +1472,11 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
     private function action_red_social_libro($params) {
         $libro = $this->resolve_contextual_libro((array) $params);
         if (!$libro) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un libro para ver su actividad social.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un libro para ver su actividad social.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         if (!is_user_logged_in()) {
-            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este libro.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este libro.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -1484,11 +1484,11 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         <div class="flavor-contextual-tab flavor-contextual-red-social">
             <div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
                 <div>
-                    <h2><?php esc_html_e('Actividad social del libro', 'flavor-chat-ia'); ?></h2>
+                    <h2><?php esc_html_e('Actividad social del libro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                     <p><?php echo esc_html($libro->titulo); ?></p>
                 </div>
                 <a href="<?php echo esc_url(home_url('/mi-portal/red-social/crear/?libro_id=' . absint($libro->id))); ?>" class="button button-primary">
-                    <?php esc_html_e('Publicar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php echo do_shortcode(sprintf(
@@ -2118,7 +2118,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         $libro_id = $atts['id'] ?: (isset($_GET['libro_id']) ? intval($_GET['libro_id']) : 0);
 
         if (!$libro_id) {
-            return '<p>' . __('Libro no especificado.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('Libro no especificado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $base_url = plugins_url('assets/', __FILE__);
@@ -2143,7 +2143,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_mis_libros($atts) {
         if (!is_user_logged_in()) {
-            return '<p>' . __('Debes iniciar sesión para ver tus libros.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('Debes iniciar sesión para ver tus libros.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $base_url = plugins_url('assets/', __FILE__);
@@ -2168,7 +2168,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_mis_prestamos($atts) {
         if (!is_user_logged_in()) {
-            return '<p>' . __('Debes iniciar sesión para ver tus préstamos.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('Debes iniciar sesión para ver tus préstamos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $base_url = plugins_url('assets/', __FILE__);
@@ -2193,7 +2193,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_agregar($atts) {
         if (!is_user_logged_in()) {
-            return '<p>' . __('Debes iniciar sesión para agregar libros.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('Debes iniciar sesión para agregar libros.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $base_url = plugins_url('assets/', __FILE__);
@@ -2326,7 +2326,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
             'valoracion' => floatval($libro->valoracion_media),
             'veces_prestado' => intval($libro->veces_prestado),
             'propietario_id' => intval($libro->propietario_id),
-            'propietario' => $propietario ? $propietario->display_name : __('Vecino', 'flavor-chat-ia'),
+            'propietario' => $propietario ? $propietario->display_name : __('Vecino', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'fecha_agregado' => date_i18n(get_option('date_format'), strtotime($libro->fecha_agregado)),
         ];
     }
@@ -2394,7 +2394,7 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         }
 
         unset($libro['propietario_id'], $libro['ubicacion']);
-        $libro['propietario'] = __('Vecino', 'flavor-chat-ia');
+        $libro['propietario'] = __('Vecino', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         return $libro;
     }
@@ -2470,9 +2470,9 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
             return;
         }
 
-        $asunto = sprintf(__('Nueva solicitud de préstamo: %s', 'flavor-chat-ia'), $libro->titulo);
+        $asunto = sprintf(__('Nueva solicitud de préstamo: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $libro->titulo);
         $mensaje = sprintf(
-            __('%s ha solicitado prestado tu libro "%s". Revisa la solicitud en tu panel de biblioteca.', 'flavor-chat-ia'),
+            __('%s ha solicitado prestado tu libro "%s". Revisa la solicitud en tu panel de biblioteca.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $solicitante->display_name,
             $libro->titulo
         );
@@ -2498,11 +2498,11 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
             return;
         }
 
-        $asunto = sprintf(__('Préstamo aprobado: %s', 'flavor-chat-ia'), $libro->titulo);
+        $asunto = sprintf(__('Préstamo aprobado: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $libro->titulo);
         $mensaje = sprintf(
-            __('Tu solicitud de préstamo para "%s" ha sido aprobada. Punto de entrega: %s. Fecha de devolución: %s.', 'flavor-chat-ia'),
+            __('Tu solicitud de préstamo para "%s" ha sido aprobada. Punto de entrega: %s. Fecha de devolución: %s.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $libro->titulo,
-            $punto_entrega ?: __('A acordar', 'flavor-chat-ia'),
+            $punto_entrega ?: __('A acordar', FLAVOR_PLATFORM_TEXT_DOMAIN),
             date_i18n(get_option('date_format'), strtotime($fecha_devolucion))
         );
 
@@ -2527,11 +2527,11 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
             return;
         }
 
-        $asunto = sprintf(__('Préstamo no disponible: %s', 'flavor-chat-ia'), $libro->titulo);
+        $asunto = sprintf(__('Préstamo no disponible: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $libro->titulo);
         $mensaje = sprintf(
-            __('Tu solicitud de préstamo para "%s" no ha podido ser atendida. %s', 'flavor-chat-ia'),
+            __('Tu solicitud de préstamo para "%s" no ha podido ser atendida. %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $libro->titulo,
-            $motivo ? __('Motivo: ', 'flavor-chat-ia') . $motivo : ''
+            $motivo ? __('Motivo: ', FLAVOR_PLATFORM_TEXT_DOMAIN) . $motivo : ''
         );
 
         do_action('flavor_notificacion_enviar', $prestamo->prestatario_id, $asunto, $mensaje, 'biblioteca_rechazado');
@@ -2547,9 +2547,9 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
             return;
         }
 
-        $asunto = sprintf(__('Recordatorio: Devolución de "%s"', 'flavor-chat-ia'), $prestamo->titulo);
+        $asunto = sprintf(__('Recordatorio: Devolución de "%s"', FLAVOR_PLATFORM_TEXT_DOMAIN), $prestamo->titulo);
         $mensaje = sprintf(
-            __('Recuerda que el libro "%s" debe ser devuelto el %s. Si necesitas más tiempo, puedes solicitar una renovación.', 'flavor-chat-ia'),
+            __('Recuerda que el libro "%s" debe ser devuelto el %s. Si necesitas más tiempo, puedes solicitar una renovación.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $prestamo->titulo,
             date_i18n(get_option('date_format'), strtotime($prestamo->fecha_devolucion_prevista))
         );
@@ -2575,9 +2575,9 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
             return;
         }
 
-        $asunto = sprintf(__('Libro disponible: %s', 'flavor-chat-ia'), $libro->titulo);
+        $asunto = sprintf(__('Libro disponible: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $libro->titulo);
         $mensaje = sprintf(
-            __('¡Buenas noticias! El libro "%s" que reservaste ya está disponible. Tienes 48 horas para recogerlo.', 'flavor-chat-ia'),
+            __('¡Buenas noticias! El libro "%s" que reservaste ya está disponible. Tienes 48 horas para recogerlo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $libro->titulo
         );
 
@@ -2632,23 +2632,23 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
     public function get_web_components() {
         return [
             'hero_biblioteca' => [
-                'label' => __('Hero Biblioteca', 'flavor-chat-ia'),
+                'label' => __('Hero Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-book',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Biblioteca Comunitaria', 'flavor-chat-ia')],
-                    'subtitulo' => ['type' => 'textarea', 'default' => __('Miles de libros compartidos entre vecinos', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Biblioteca Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'subtitulo' => ['type' => 'textarea', 'default' => __('Miles de libros compartidos entre vecinos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'imagen_fondo' => ['type' => 'image', 'default' => ''],
                     'mostrar_buscador' => ['type' => 'toggle', 'default' => true],
                 ],
                 'template' => 'biblioteca/hero',
             ],
             'libros_grid' => [
-                'label' => __('Grid de Libros', 'flavor-chat-ia'),
+                'label' => __('Grid de Libros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-grid-view',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Libros Disponibles', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Libros Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'columnas' => ['type' => 'select', 'options' => [3, 4, 5, 6], 'default' => 5],
                     'limite' => ['type' => 'number', 'default' => 12],
                     'genero' => ['type' => 'text', 'default' => ''],
@@ -2657,17 +2657,17 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
                 'template' => 'biblioteca/grid',
             ],
             'generos_nav' => [
-                'label' => __('Navegación por Géneros', 'flavor-chat-ia'),
+                'label' => __('Navegación por Géneros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'navigation',
                 'icon' => 'dashicons-book-alt',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Explora por Género', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Explora por Género', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'estilo' => ['type' => 'select', 'options' => ['grid', 'carrusel'], 'default' => 'grid'],
                 ],
                 'template' => 'biblioteca/generos',
             ],
             'stats_biblioteca' => [
-                'label' => __('Estadísticas', 'flavor-chat-ia'),
+                'label' => __('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-chart-bar',
                 'fields' => [
@@ -2801,7 +2801,7 @@ KNOWLEDGE;
         $estadisticas['libros_disponibles'] = [
             'icon' => 'dashicons-book',
             'valor' => $libros_disponibles,
-            'label' => __('Libros disponibles', 'flavor-chat-ia'),
+            'label' => __('Libros disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'blue',
         ];
 
@@ -2817,7 +2817,7 @@ KNOWLEDGE;
             $estadisticas['mis_prestamos'] = [
                 'icon' => 'dashicons-book-alt',
                 'valor' => $prestamos_activos,
-                'label' => __('Mis préstamos', 'flavor-chat-ia'),
+                'label' => __('Mis préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $prestamos_activos > 0 ? 'green' : 'gray',
             ];
 
@@ -2833,7 +2833,7 @@ KNOWLEDGE;
                 $estadisticas['por_devolver'] = [
                     'icon' => 'dashicons-warning',
                     'valor' => $por_devolver,
-                    'label' => __('Por devolver', 'flavor-chat-ia'),
+                    'label' => __('Por devolver', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'orange',
                 ];
             }
@@ -2855,11 +2855,11 @@ KNOWLEDGE;
         return [
             // Página principal
             [
-                'title' => __('Biblioteca', 'flavor-chat-ia'),
+                'title' => __('Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'biblioteca',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Biblioteca Comunitaria', 'flavor-chat-ia'),
-                    'subtitle' => __('Comparte y toma prestados libros de la comunidad', 'flavor-chat-ia'),
+                    'title' => __('Biblioteca Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Comparte y toma prestados libros de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'background' => 'gradient',
                     'module' => 'biblioteca',
                     'current' => 'listado',
@@ -2870,11 +2870,11 @@ KNOWLEDGE;
 
             // Catálogo
             [
-                'title' => __('Catálogo', 'flavor-chat-ia'),
+                'title' => __('Catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'catalogo',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Catálogo de Libros', 'flavor-chat-ia'),
-                    'subtitle' => __('Explora todos los libros disponibles', 'flavor-chat-ia'),
+                    'title' => __('Catálogo de Libros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Explora todos los libros disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'module' => 'biblioteca',
                     'current' => 'catalogo',
                     'content_after' => '[flavor_module_listing module="biblioteca" action="catalogo_completo" columnas="4"]',
@@ -2884,11 +2884,11 @@ KNOWLEDGE;
 
             // Mis préstamos
             [
-                'title' => __('Mis Préstamos', 'flavor-chat-ia'),
+                'title' => __('Mis Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mis-prestamos',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Mis Préstamos', 'flavor-chat-ia'),
-                    'subtitle' => __('Libros que tienes en préstamo', 'flavor-chat-ia'),
+                    'title' => __('Mis Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Libros que tienes en préstamo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'module' => 'biblioteca',
                     'current' => 'prestamos',
                     'content_after' => '[flavor_module_listing module="biblioteca" action="mis_prestamos" user_specific="yes"]',
@@ -2898,11 +2898,11 @@ KNOWLEDGE;
 
             // Añadir libro
             [
-                'title' => __('Añadir Libro', 'flavor-chat-ia'),
+                'title' => __('Añadir Libro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'anadir',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Añadir un Libro', 'flavor-chat-ia'),
-                    'subtitle' => __('Comparte tus libros con la comunidad', 'flavor-chat-ia'),
+                    'title' => __('Añadir un Libro', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Comparte tus libros con la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'module' => 'biblioteca',
                     'current' => 'anadir',
                     'content_after' => '[flavor_module_form module="biblioteca" action="anadir_libro"]',
@@ -2912,11 +2912,11 @@ KNOWLEDGE;
 
             // Reservas
             [
-                'title' => __('Reservas', 'flavor-chat-ia'),
+                'title' => __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'reservas',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Mis Reservas', 'flavor-chat-ia'),
-                    'subtitle' => __('Libros que has reservado', 'flavor-chat-ia'),
+                    'title' => __('Mis Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Libros que has reservado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'module' => 'biblioteca',
                     'current' => 'reservas',
                     'content_after' => '[flavor_module_listing module="biblioteca" action="mis_reservas" user_specific="yes"]',
@@ -2932,8 +2932,8 @@ KNOWLEDGE;
     public static function get_renderer_config(): array {
         return [
             'module'   => 'biblioteca',
-            'title'    => __('Biblioteca Comunitaria', 'flavor-chat-ia'),
-            'subtitle' => __('Comparte y descubre libros con tus vecinos', 'flavor-chat-ia'),
+            'title'    => __('Biblioteca Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Comparte y descubre libros con tus vecinos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '📚',
             'color'    => 'primary', // Usa variable CSS --flavor-primary del tema
 
@@ -2957,16 +2957,16 @@ KNOWLEDGE;
             ],
 
             'estados' => [
-                'disponible' => ['label' => __('Disponible', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🟢'],
-                'prestado'   => ['label' => __('Prestado', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '🟡'],
-                'reservado'  => ['label' => __('Reservado', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '🔵'],
+                'disponible' => ['label' => __('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '🟢'],
+                'prestado'   => ['label' => __('Prestado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '🟡'],
+                'reservado'  => ['label' => __('Reservado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'blue', 'icon' => '🔵'],
             ],
 
             'stats' => [
-                ['label' => __('Libros', 'flavor-chat-ia'), 'icon' => '📚', 'color' => 'sky', 'count_where' => "1=1"],
-                ['label' => __('Disponibles', 'flavor-chat-ia'), 'icon' => '🟢', 'color' => 'green', 'count_where' => "disponibilidad = 'disponible'"],
-                ['label' => __('Prestados', 'flavor-chat-ia'), 'icon' => '📖', 'color' => 'yellow', 'count_where' => "disponibilidad = 'prestado'"],
-                ['label' => __('Lectores', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'blue', 'query' => "SELECT COUNT(DISTINCT usuario_id) FROM {table}_prestamos"],
+                ['label' => __('Libros', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📚', 'color' => 'sky', 'count_where' => "1=1"],
+                ['label' => __('Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🟢', 'color' => 'green', 'count_where' => "disponibilidad = 'disponible'"],
+                ['label' => __('Prestados', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📖', 'color' => 'yellow', 'count_where' => "disponibilidad = 'prestado'"],
+                ['label' => __('Lectores', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👥', 'color' => 'blue', 'query' => "SELECT COUNT(DISTINCT usuario_id) FROM {table}_prestamos"],
             ],
 
             'card' => [
@@ -2975,29 +2975,29 @@ KNOWLEDGE;
             ],
 
             'tabs' => [
-                'catalogo' => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-book-alt', 'content' => 'template:_archive.php'],
-                'mis-prestamos' => ['label' => __('Mis Préstamos', 'flavor-chat-ia'), 'icon' => 'dashicons-book', 'content' => 'template:mis-prestamos.php'],
-                'novedades' => ['label' => __('Novedades', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled'],
-                'resenas' => ['label' => __('Reseñas', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'content' => 'callback:render_tab_resenas'],
-                'chat' => ['label' => __('Chat', 'flavor-chat-ia'), 'icon' => 'dashicons-format-chat', 'content' => 'callback:render_tab_chat', 'requires_login' => true],
-                'multimedia' => ['label' => __('Multimedia', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery', 'content' => 'callback:render_tab_multimedia'],
-                'red-social' => ['label' => __('Red social', 'flavor-chat-ia'), 'icon' => 'dashicons-share', 'content' => 'callback:render_tab_red_social', 'requires_login' => true],
-                'clubes' => ['label' => __('Clubes', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'content' => 'callback:render_tab_clubes'],
+                'catalogo' => ['label' => __('Catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-book-alt', 'content' => 'template:_archive.php'],
+                'mis-prestamos' => ['label' => __('Mis Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-book', 'content' => 'template:mis-prestamos.php'],
+                'novedades' => ['label' => __('Novedades', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-star-filled'],
+                'resenas' => ['label' => __('Reseñas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-comments', 'content' => 'callback:render_tab_resenas'],
+                'chat' => ['label' => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-format-chat', 'content' => 'callback:render_tab_chat', 'requires_login' => true],
+                'multimedia' => ['label' => __('Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-format-gallery', 'content' => 'callback:render_tab_multimedia'],
+                'red-social' => ['label' => __('Red social', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-share', 'content' => 'callback:render_tab_red_social', 'requires_login' => true],
+                'clubes' => ['label' => __('Clubes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-groups', 'content' => 'callback:render_tab_clubes'],
             ],
 
             'archive' => [
                 'columns' => 4, 'per_page' => 16,
-                'cta_text' => __('Añadir libro', 'flavor-chat-ia'), 'cta_icon' => '➕',
-                'empty_state' => ['icon' => '📚', 'title' => __('No hay libros', 'flavor-chat-ia')],
+                'cta_text' => __('Añadir libro', FLAVOR_PLATFORM_TEXT_DOMAIN), 'cta_icon' => '➕',
+                'empty_state' => ['icon' => '📚', 'title' => __('No hay libros', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ],
 
             'dashboard' => [
                 'show_header' => true,
                 'quick_actions' => [
-                    ['title' => __('Catálogo', 'flavor-chat-ia'), 'icon' => '📚', 'color' => 'sky', 'url' => home_url('/mi-portal/biblioteca/')],
-                    ['title' => __('Préstamos', 'flavor-chat-ia'), 'icon' => '📖', 'color' => 'blue', 'url' => home_url('/mi-portal/biblioteca/?tab=mis-prestamos')],
-                    ['title' => __('Añadir', 'flavor-chat-ia'), 'icon' => '➕', 'color' => 'green', 'url' => home_url('/mi-portal/biblioteca/anadir/')],
-                    ['title' => __('Clubes', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'purple', 'url' => home_url('/mi-portal/biblioteca/?tab=clubes')],
+                    ['title' => __('Catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📚', 'color' => 'sky', 'url' => home_url('/mi-portal/biblioteca/')],
+                    ['title' => __('Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📖', 'color' => 'blue', 'url' => home_url('/mi-portal/biblioteca/?tab=mis-prestamos')],
+                    ['title' => __('Añadir', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '➕', 'color' => 'green', 'url' => home_url('/mi-portal/biblioteca/anadir/')],
+                    ['title' => __('Clubes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👥', 'color' => 'purple', 'url' => home_url('/mi-portal/biblioteca/?tab=clubes')],
                 ],
             ],
         ];
@@ -3060,35 +3060,35 @@ KNOWLEDGE;
     protected function get_admin_config() {
         return [
             'id'         => 'biblioteca',
-            'label'      => __('Biblioteca', 'flavor-chat-ia'),
+            'label'      => __('Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'       => 'dashicons-book',
             'capability' => 'manage_options',
             'categoria'  => 'comunidad',
             'paginas'    => [
                 [
                     'slug'     => 'biblioteca-dashboard',
-                    'titulo'   => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo'   => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug'     => 'biblioteca-catalogo',
-                    'titulo'   => __('Catálogo', 'flavor-chat-ia'),
+                    'titulo'   => __('Catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_catalogo'],
                 ],
                 [
                     'slug'     => 'biblioteca-prestamos',
-                    'titulo'   => __('Préstamos', 'flavor-chat-ia'),
+                    'titulo'   => __('Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_prestamos'],
                     'badge'    => [$this, 'contar_prestamos_pendientes'],
                 ],
                 [
                     'slug'     => 'biblioteca-usuarios',
-                    'titulo'   => __('Usuarios', 'flavor-chat-ia'),
+                    'titulo'   => __('Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_usuarios'],
                 ],
                 [
                     'slug'     => 'biblioteca-config',
-                    'titulo'   => __('Configuración', 'flavor-chat-ia'),
+                    'titulo'   => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_config'],
                 ],
             ],
@@ -3203,8 +3203,8 @@ KNOWLEDGE;
 
         ?>
         <div class="wrap flavor-admin-page">
-            <?php $this->render_page_header(__('Biblioteca - Dashboard', 'flavor-chat-ia'), [
-                ['label' => __('Añadir Libro', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=biblioteca-catalogo&action=nuevo'), 'class' => 'button-primary'],
+            <?php $this->render_page_header(__('Biblioteca - Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+                ['label' => __('Añadir Libro', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=biblioteca-catalogo&action=nuevo'), 'class' => 'button-primary'],
             ]); ?>
 
             <!-- KPIs -->
@@ -3212,49 +3212,49 @@ KNOWLEDGE;
                 <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: center;">
                     <span class="dashicons dashicons-book" style="font-size: 32px; color: #2271b1;"></span>
                     <div style="font-size: 28px; font-weight: 600; margin: 10px 0;"><?php echo number_format_i18n($total_libros); ?></div>
-                    <div style="color: #646970;"><?php _e('Total Libros', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #646970;"><?php _e('Total Libros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: center;">
                     <span class="dashicons dashicons-yes-alt" style="font-size: 32px; color: #00a32a;"></span>
                     <div style="font-size: 28px; font-weight: 600; margin: 10px 0;"><?php echo number_format_i18n($libros_disponibles); ?></div>
-                    <div style="color: #646970;"><?php _e('Disponibles', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #646970;"><?php _e('Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: center;">
                     <span class="dashicons dashicons-book-alt" style="font-size: 32px; color: #dba617;"></span>
                     <div style="font-size: 28px; font-weight: 600; margin: 10px 0;"><?php echo number_format_i18n($prestamos_activos); ?></div>
-                    <div style="color: #646970;"><?php _e('Préstamos Activos', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #646970;"><?php _e('Préstamos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: center;">
                     <span class="dashicons dashicons-clock" style="font-size: 32px; color: #d63638;"></span>
                     <div style="font-size: 28px; font-weight: 600; margin: 10px 0;"><?php echo number_format_i18n($prestamos_pendientes); ?></div>
-                    <div style="color: #646970;"><?php _e('Pendientes Aprobar', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #646970;"><?php _e('Pendientes Aprobar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: center;">
                     <span class="dashicons dashicons-calendar" style="font-size: 32px; color: #8c6c10;"></span>
                     <div style="font-size: 28px; font-weight: 600; margin: 10px 0;"><?php echo number_format_i18n($reservas_pendientes); ?></div>
-                    <div style="color: #646970;"><?php _e('Reservas', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #646970;"><?php _e('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: center;">
                     <span class="dashicons dashicons-groups" style="font-size: 32px; color: #3858e9;"></span>
                     <div style="font-size: 28px; font-weight: 600; margin: 10px 0;"><?php echo number_format_i18n($usuarios_activos); ?></div>
-                    <div style="color: #646970;"><?php _e('Usuarios Activos', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #646970;"><?php _e('Usuarios Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
 
             <?php if ($prestamos_retrasados > 0): ?>
             <div class="notice notice-warning" style="margin: 20px 0;">
                 <p>
-                    <strong><?php _e('Atención:', 'flavor-chat-ia'); ?></strong>
+                    <strong><?php _e('Atención:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                     <?php printf(
                         _n(
                             'Hay %d préstamo retrasado que requiere seguimiento.',
                             'Hay %d préstamos retrasados que requieren seguimiento.',
                             $prestamos_retrasados,
-                            'flavor-chat-ia'
+                            FLAVOR_PLATFORM_TEXT_DOMAIN
                         ),
                         $prestamos_retrasados
                     ); ?>
-                    <a href="<?php echo admin_url('admin.php?page=biblioteca-prestamos&estado=retrasado'); ?>"><?php _e('Ver préstamos retrasados', 'flavor-chat-ia'); ?></a>
+                    <a href="<?php echo admin_url('admin.php?page=biblioteca-prestamos&estado=retrasado'); ?>"><?php _e('Ver préstamos retrasados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 </p>
             </div>
             <?php endif; ?>
@@ -3264,16 +3264,16 @@ KNOWLEDGE;
                 <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                     <h3 style="margin-top: 0;">
                         <span class="dashicons dashicons-list-view"></span>
-                        <?php _e('Últimos Préstamos', 'flavor-chat-ia'); ?>
+                        <?php _e('Últimos Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <?php if (!empty($ultimos_prestamos)): ?>
                     <table class="widefat striped" style="border: none;">
                         <thead>
                             <tr>
-                                <th><?php _e('Libro', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Prestatario', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Libro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Prestatario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -3283,7 +3283,7 @@ KNOWLEDGE;
                                     <strong><?php echo esc_html($prestamo->titulo); ?></strong>
                                     <br><small><?php echo esc_html($prestamo->autor); ?></small>
                                 </td>
-                                <td><?php echo esc_html($prestamo->prestatario_nombre ?: __('Usuario', 'flavor-chat-ia')); ?></td>
+                                <td><?php echo esc_html($prestamo->prestatario_nombre ?: __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></td>
                                 <td>
                                     <?php
                                     $estados_colores = [
@@ -3306,11 +3306,11 @@ KNOWLEDGE;
                     </table>
                     <p style="margin-bottom: 0; text-align: right;">
                         <a href="<?php echo admin_url('admin.php?page=biblioteca-prestamos'); ?>" class="button">
-                            <?php _e('Ver todos los préstamos', 'flavor-chat-ia'); ?>
+                            <?php _e('Ver todos los préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </p>
                     <?php else: ?>
-                    <p style="color: #646970;"><?php _e('No hay préstamos registrados aún.', 'flavor-chat-ia'); ?></p>
+                    <p style="color: #646970;"><?php _e('No hay préstamos registrados aún.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php endif; ?>
                 </div>
 
@@ -3320,7 +3320,7 @@ KNOWLEDGE;
                     <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
                         <h3 style="margin-top: 0;">
                             <span class="dashicons dashicons-star-filled"></span>
-                            <?php _e('Libros Populares', 'flavor-chat-ia'); ?>
+                            <?php _e('Libros Populares', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
                         <?php if (!empty($libros_populares)): ?>
                         <ul style="margin: 0; padding: 0; list-style: none;">
@@ -3329,7 +3329,7 @@ KNOWLEDGE;
                                 <strong><?php echo esc_html($libro->titulo); ?></strong>
                                 <br><small style="color: #646970;">
                                     <?php echo esc_html($libro->autor); ?> |
-                                    <?php printf(__('%d préstamos', 'flavor-chat-ia'), $libro->veces_prestado); ?>
+                                    <?php printf(__('%d préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN), $libro->veces_prestado); ?>
                                     <?php if ($libro->valoracion_media > 0): ?>
                                     | <span style="color: #dba617;">★</span> <?php echo number_format($libro->valoracion_media, 1); ?>
                                     <?php endif; ?>
@@ -3338,7 +3338,7 @@ KNOWLEDGE;
                             <?php endforeach; ?>
                         </ul>
                         <?php else: ?>
-                        <p style="color: #646970;"><?php _e('Aún no hay datos suficientes.', 'flavor-chat-ia'); ?></p>
+                        <p style="color: #646970;"><?php _e('Aún no hay datos suficientes.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <?php endif; ?>
                     </div>
 
@@ -3346,7 +3346,7 @@ KNOWLEDGE;
                     <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                         <h3 style="margin-top: 0;">
                             <span class="dashicons dashicons-category"></span>
-                            <?php _e('Géneros Populares', 'flavor-chat-ia'); ?>
+                            <?php _e('Géneros Populares', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
                         <?php if (!empty($generos_populares)): ?>
                         <ul style="margin: 0; padding: 0; list-style: none;">
@@ -3360,7 +3360,7 @@ KNOWLEDGE;
                             <?php endforeach; ?>
                         </ul>
                         <?php else: ?>
-                        <p style="color: #646970;"><?php _e('No hay géneros definidos.', 'flavor-chat-ia'); ?></p>
+                        <p style="color: #646970;"><?php _e('No hay géneros definidos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -3451,52 +3451,52 @@ KNOWLEDGE;
 
         ?>
         <div class="wrap flavor-admin-page">
-            <?php $this->render_page_header(__('Catálogo de Libros', 'flavor-chat-ia'), [
-                ['label' => __('Añadir Libro', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=biblioteca-catalogo&action=nuevo'), 'class' => 'button-primary'],
-                ['label' => __('Exportar CSV', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=biblioteca-catalogo&action=exportar'), 'class' => ''],
+            <?php $this->render_page_header(__('Catálogo de Libros', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+                ['label' => __('Añadir Libro', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=biblioteca-catalogo&action=nuevo'), 'class' => 'button-primary'],
+                ['label' => __('Exportar CSV', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=biblioteca-catalogo&action=exportar'), 'class' => ''],
             ]); ?>
 
             <!-- Filtros -->
             <form method="get" style="margin: 20px 0; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
                 <input type="hidden" name="page" value="biblioteca-catalogo">
                 <input type="search" name="s" value="<?php echo esc_attr($filtro_busqueda); ?>"
-                       placeholder="<?php esc_attr_e('Buscar por título, autor o ISBN...', 'flavor-chat-ia'); ?>"
+                       placeholder="<?php esc_attr_e('Buscar por título, autor o ISBN...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                        style="min-width: 250px;">
                 <select name="disponibilidad">
-                    <option value=""><?php _e('Todas las disponibilidades', 'flavor-chat-ia'); ?></option>
-                    <option value="disponible" <?php selected($filtro_disponibilidad, 'disponible'); ?>><?php _e('Disponible', 'flavor-chat-ia'); ?></option>
-                    <option value="prestado" <?php selected($filtro_disponibilidad, 'prestado'); ?>><?php _e('Prestado', 'flavor-chat-ia'); ?></option>
-                    <option value="reservado" <?php selected($filtro_disponibilidad, 'reservado'); ?>><?php _e('Reservado', 'flavor-chat-ia'); ?></option>
-                    <option value="no_disponible" <?php selected($filtro_disponibilidad, 'no_disponible'); ?>><?php _e('No disponible', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todas las disponibilidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="disponible" <?php selected($filtro_disponibilidad, 'disponible'); ?>><?php _e('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="prestado" <?php selected($filtro_disponibilidad, 'prestado'); ?>><?php _e('Prestado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="reservado" <?php selected($filtro_disponibilidad, 'reservado'); ?>><?php _e('Reservado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="no_disponible" <?php selected($filtro_disponibilidad, 'no_disponible'); ?>><?php _e('No disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
                 <select name="genero">
-                    <option value=""><?php _e('Todos los géneros', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todos los géneros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($generos as $genero): ?>
                     <option value="<?php echo esc_attr($genero); ?>" <?php selected($filtro_genero, $genero); ?>><?php echo esc_html($genero); ?></option>
                     <?php endforeach; ?>
                 </select>
-                <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="button"><?php _e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                 <?php if ($filtro_busqueda || $filtro_disponibilidad || $filtro_genero): ?>
-                <a href="<?php echo admin_url('admin.php?page=biblioteca-catalogo'); ?>" class="button"><?php _e('Limpiar', 'flavor-chat-ia'); ?></a>
+                <a href="<?php echo admin_url('admin.php?page=biblioteca-catalogo'); ?>" class="button"><?php _e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 <?php endif; ?>
             </form>
 
             <p class="description">
-                <?php printf(__('Mostrando %d de %d libros', 'flavor-chat-ia'), count($libros), $total_items); ?>
+                <?php printf(__('Mostrando %d de %d libros', FLAVOR_PLATFORM_TEXT_DOMAIN), count($libros), $total_items); ?>
             </p>
 
             <!-- Tabla de libros -->
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th style="width: 60px;"><?php _e('Portada', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Título / Autor', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('ISBN', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Género', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Propietario', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Disponibilidad', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Préstamos', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 60px;"><?php _e('Portada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Título / Autor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('ISBN', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Género', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Propietario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Disponibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -3516,7 +3516,7 @@ KNOWLEDGE;
                             </td>
                             <td><?php echo esc_html($libro->isbn ?: '—'); ?></td>
                             <td><?php echo esc_html($libro->genero ?: '—'); ?></td>
-                            <td><?php echo esc_html($libro->propietario_nombre ?: __('Desconocido', 'flavor-chat-ia')); ?></td>
+                            <td><?php echo esc_html($libro->propietario_nombre ?: __('Desconocido', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></td>
                             <td>
                                 <?php
                                 $disponibilidad_colores = [
@@ -3539,7 +3539,7 @@ KNOWLEDGE;
                             </td>
                             <td>
                                 <a href="<?php echo admin_url('admin.php?page=biblioteca-catalogo&action=editar&libro_id=' . $libro->id); ?>" class="button button-small">
-                                    <?php _e('Editar', 'flavor-chat-ia'); ?>
+                                    <?php _e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </td>
                         </tr>
@@ -3547,7 +3547,7 @@ KNOWLEDGE;
                     <?php else: ?>
                         <tr>
                             <td colspan="8" style="text-align: center; padding: 40px;">
-                                <?php _e('No se encontraron libros con los filtros seleccionados.', 'flavor-chat-ia'); ?>
+                                <?php _e('No se encontraron libros con los filtros seleccionados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </td>
                         </tr>
                     <?php endif; ?>
@@ -3558,7 +3558,7 @@ KNOWLEDGE;
             <?php if ($total_paginas > 1): ?>
             <div class="tablenav bottom">
                 <div class="tablenav-pages">
-                    <span class="displaying-num"><?php printf(__('%d elementos', 'flavor-chat-ia'), $total_items); ?></span>
+                    <span class="displaying-num"><?php printf(__('%d elementos', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_items); ?></span>
                     <span class="pagination-links">
                         <?php
                         $paginas_enlaces = paginate_links([
@@ -3608,11 +3608,11 @@ KNOWLEDGE;
                     $wpdb->update($tabla_libros, ['disponibilidad' => 'prestado'], ['id' => $prestamo->libro_id]);
                     $wpdb->query($wpdb->prepare("UPDATE {$tabla_libros} SET veces_prestado = veces_prestado + 1 WHERE id = %d", $prestamo->libro_id));
 
-                    echo '<div class="notice notice-success is-dismissible"><p>' . __('Préstamo aprobado correctamente.', 'flavor-chat-ia') . '</p></div>';
+                    echo '<div class="notice notice-success is-dismissible"><p>' . __('Préstamo aprobado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
                 }
             } elseif ($accion === 'rechazar' && $prestamo_id > 0) {
                 $wpdb->update($tabla_prestamos, ['estado' => 'rechazado'], ['id' => $prestamo_id]);
-                echo '<div class="notice notice-success is-dismissible"><p>' . __('Préstamo rechazado.', 'flavor-chat-ia') . '</p></div>';
+                echo '<div class="notice notice-success is-dismissible"><p>' . __('Préstamo rechazado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             } elseif ($accion === 'devolver' && $prestamo_id > 0) {
                 $prestamo = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$tabla_prestamos} WHERE id = %d", $prestamo_id));
                 if ($prestamo) {
@@ -3621,7 +3621,7 @@ KNOWLEDGE;
                         'fecha_devolucion_real' => current_time('mysql'),
                     ], ['id' => $prestamo_id]);
                     $wpdb->update($tabla_libros, ['disponibilidad' => 'disponible'], ['id' => $prestamo->libro_id]);
-                    echo '<div class="notice notice-success is-dismissible"><p>' . __('Libro marcado como devuelto.', 'flavor-chat-ia') . '</p></div>';
+                    echo '<div class="notice notice-success is-dismissible"><p>' . __('Libro marcado como devuelto.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
                 }
             }
         }
@@ -3663,18 +3663,18 @@ KNOWLEDGE;
 
         ?>
         <div class="wrap flavor-admin-page">
-            <?php $this->render_page_header(__('Gestión de Préstamos', 'flavor-chat-ia')); ?>
+            <?php $this->render_page_header(__('Gestión de Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
 
             <!-- Tabs de estados -->
             <ul class="subsubsub" style="margin: 15px 0;">
                 <li>
                     <a href="<?php echo admin_url('admin.php?page=biblioteca-prestamos'); ?>" class="<?php echo empty($filtro_estado) ? 'current' : ''; ?>">
-                        <?php _e('Todos', 'flavor-chat-ia'); ?>
+                        <?php _e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a> |
                 </li>
                 <li>
                     <a href="<?php echo admin_url('admin.php?page=biblioteca-prestamos&estado=pendiente'); ?>" class="<?php echo $filtro_estado === 'pendiente' ? 'current' : ''; ?>">
-                        <?php _e('Pendientes', 'flavor-chat-ia'); ?>
+                        <?php _e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <?php if (!empty($conteos['pendiente'])): ?>
                         <span class="count">(<?php echo $conteos['pendiente']->cantidad; ?>)</span>
                         <?php endif; ?>
@@ -3682,7 +3682,7 @@ KNOWLEDGE;
                 </li>
                 <li>
                     <a href="<?php echo admin_url('admin.php?page=biblioteca-prestamos&estado=activo'); ?>" class="<?php echo $filtro_estado === 'activo' ? 'current' : ''; ?>">
-                        <?php _e('Activos', 'flavor-chat-ia'); ?>
+                        <?php _e('Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <?php if (!empty($conteos['activo'])): ?>
                         <span class="count">(<?php echo $conteos['activo']->cantidad; ?>)</span>
                         <?php endif; ?>
@@ -3690,7 +3690,7 @@ KNOWLEDGE;
                 </li>
                 <li>
                     <a href="<?php echo admin_url('admin.php?page=biblioteca-prestamos&estado=retrasado'); ?>" class="<?php echo $filtro_estado === 'retrasado' ? 'current' : ''; ?>">
-                        <?php _e('Retrasados', 'flavor-chat-ia'); ?>
+                        <?php _e('Retrasados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <?php if (!empty($conteos['retrasado'])): ?>
                         <span class="count">(<?php echo $conteos['retrasado']->cantidad; ?>)</span>
                         <?php endif; ?>
@@ -3698,7 +3698,7 @@ KNOWLEDGE;
                 </li>
                 <li>
                     <a href="<?php echo admin_url('admin.php?page=biblioteca-prestamos&estado=devuelto'); ?>" class="<?php echo $filtro_estado === 'devuelto' ? 'current' : ''; ?>">
-                        <?php _e('Devueltos', 'flavor-chat-ia'); ?>
+                        <?php _e('Devueltos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </li>
             </ul>
@@ -3707,13 +3707,13 @@ KNOWLEDGE;
             <table class="wp-list-table widefat fixed striped" style="margin-top: 20px;">
                 <thead>
                     <tr>
-                        <th style="width: 60px;"><?php _e('Libro', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Título / Autor', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Prestatario', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Propietario', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Fechas', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 60px;"><?php _e('Libro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Título / Autor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Prestatario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Propietario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Fechas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -3732,10 +3732,10 @@ KNOWLEDGE;
                                 <br><span style="color: #646970;"><?php echo esc_html($prestamo->autor); ?></span>
                             </td>
                             <td>
-                                <?php echo esc_html($prestamo->prestatario_nombre ?: __('Usuario', 'flavor-chat-ia')); ?>
+                                <?php echo esc_html($prestamo->prestatario_nombre ?: __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                                 <br><small style="color: #646970;"><?php echo esc_html($prestamo->prestatario_email); ?></small>
                             </td>
-                            <td><?php echo esc_html($prestamo->prestamista_nombre ?: __('Desconocido', 'flavor-chat-ia')); ?></td>
+                            <td><?php echo esc_html($prestamo->prestamista_nombre ?: __('Desconocido', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></td>
                             <td>
                                 <?php
                                 $estados_colores = [
@@ -3751,14 +3751,14 @@ KNOWLEDGE;
                                     <?php echo esc_html(ucfirst($prestamo->estado)); ?>
                                 </span>
                                 <?php if ($prestamo->renovaciones > 0): ?>
-                                <br><small><?php printf(__('%d renovaciones', 'flavor-chat-ia'), $prestamo->renovaciones); ?></small>
+                                <br><small><?php printf(__('%d renovaciones', FLAVOR_PLATFORM_TEXT_DOMAIN), $prestamo->renovaciones); ?></small>
                                 <?php endif; ?>
                             </td>
                             <td>
                                 <small>
-                                    <?php _e('Solicitado:', 'flavor-chat-ia'); ?> <?php echo date_i18n(get_option('date_format'), strtotime($prestamo->fecha_solicitud)); ?>
+                                    <?php _e('Solicitado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo date_i18n(get_option('date_format'), strtotime($prestamo->fecha_solicitud)); ?>
                                     <?php if ($prestamo->fecha_devolucion_prevista): ?>
-                                    <br><?php _e('Devolver:', 'flavor-chat-ia'); ?> <?php echo date_i18n(get_option('date_format'), strtotime($prestamo->fecha_devolucion_prevista)); ?>
+                                    <br><?php _e('Devolver:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo date_i18n(get_option('date_format'), strtotime($prestamo->fecha_devolucion_prevista)); ?>
                                     <?php endif; ?>
                                 </small>
                             </td>
@@ -3769,14 +3769,14 @@ KNOWLEDGE;
 
                                     <?php if ($prestamo->estado === 'pendiente'): ?>
                                     <button type="submit" name="accion_prestamo" value="aprobar" class="button button-small button-primary">
-                                        <?php _e('Aprobar', 'flavor-chat-ia'); ?>
+                                        <?php _e('Aprobar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
-                                    <button type="submit" name="accion_prestamo" value="rechazar" class="button button-small" onclick="return confirm('<?php esc_attr_e('¿Rechazar este préstamo?', 'flavor-chat-ia'); ?>')">
-                                        <?php _e('Rechazar', 'flavor-chat-ia'); ?>
+                                    <button type="submit" name="accion_prestamo" value="rechazar" class="button button-small" onclick="return confirm('<?php esc_attr_e('¿Rechazar este préstamo?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>')">
+                                        <?php _e('Rechazar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                     <?php elseif ($prestamo->estado === 'activo' || $prestamo->estado === 'retrasado'): ?>
                                     <button type="submit" name="accion_prestamo" value="devolver" class="button button-small">
-                                        <?php _e('Marcar Devuelto', 'flavor-chat-ia'); ?>
+                                        <?php _e('Marcar Devuelto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                     <?php endif; ?>
                                 </form>
@@ -3786,7 +3786,7 @@ KNOWLEDGE;
                     <?php else: ?>
                         <tr>
                             <td colspan="7" style="text-align: center; padding: 40px;">
-                                <?php _e('No hay préstamos que mostrar.', 'flavor-chat-ia'); ?>
+                                <?php _e('No hay préstamos que mostrar.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </td>
                         </tr>
                     <?php endif; ?>
@@ -3827,17 +3827,17 @@ KNOWLEDGE;
 
         ?>
         <div class="wrap flavor-admin-page">
-            <?php $this->render_page_header(__('Usuarios de la Biblioteca', 'flavor-chat-ia')); ?>
+            <?php $this->render_page_header(__('Usuarios de la Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
 
             <table class="wp-list-table widefat fixed striped" style="margin-top: 20px;">
                 <thead>
                     <tr>
-                        <th><?php _e('Usuario', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Libros Aportados', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Préstamos Solicitados', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Activos Ahora', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Retrasados', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Última Actividad', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Libros Aportados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Préstamos Solicitados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Activos Ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Retrasados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Última Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -3881,7 +3881,7 @@ KNOWLEDGE;
                     <?php else: ?>
                         <tr>
                             <td colspan="6" style="text-align: center; padding: 40px;">
-                                <?php _e('No hay usuarios con actividad en la biblioteca.', 'flavor-chat-ia'); ?>
+                                <?php _e('No hay usuarios con actividad en la biblioteca.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </td>
                         </tr>
                     <?php endif; ?>
@@ -3921,7 +3921,7 @@ KNOWLEDGE;
             $new_settings = array_merge($current_settings, $opciones);
             update_option('flavor_chat_ia_module_' . $this->id, $new_settings);
 
-            echo '<div class="notice notice-success is-dismissible"><p>' . __('Configuración guardada correctamente.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-success is-dismissible"><p>' . __('Configuración guardada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         // Obtener configuración actual
@@ -3929,7 +3929,7 @@ KNOWLEDGE;
 
         ?>
         <div class="wrap flavor-admin-page">
-            <?php $this->render_page_header(__('Configuración de Biblioteca', 'flavor-chat-ia')); ?>
+            <?php $this->render_page_header(__('Configuración de Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
 
             <form method="post" style="max-width: 800px;">
                 <?php wp_nonce_field('biblioteca_guardar_config'); ?>
@@ -3938,40 +3938,40 @@ KNOWLEDGE;
                 <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
                     <h3 style="margin-top: 0; border-bottom: 1px solid #f0f0f1; padding-bottom: 10px;">
                         <span class="dashicons dashicons-book-alt"></span>
-                        <?php _e('Configuración de Préstamos', 'flavor-chat-ia'); ?>
+                        <?php _e('Configuración de Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
 
                     <table class="form-table">
                         <tr>
                             <th scope="row">
-                                <label for="duracion_prestamo_dias"><?php _e('Duración del préstamo', 'flavor-chat-ia'); ?></label>
+                                <label for="duracion_prestamo_dias"><?php _e('Duración del préstamo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             </th>
                             <td>
                                 <input type="number" name="duracion_prestamo_dias" id="duracion_prestamo_dias"
                                        value="<?php echo esc_attr($settings['duracion_prestamo_dias'] ?? 30); ?>"
                                        min="1" max="365" class="small-text">
-                                <span><?php _e('días', 'flavor-chat-ia'); ?></span>
-                                <p class="description"><?php _e('Tiempo predeterminado que un usuario puede tener un libro.', 'flavor-chat-ia'); ?></p>
+                                <span><?php _e('días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                                <p class="description"><?php _e('Tiempo predeterminado que un usuario puede tener un libro.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">
-                                <label for="renovaciones_maximas"><?php _e('Renovaciones máximas', 'flavor-chat-ia'); ?></label>
+                                <label for="renovaciones_maximas"><?php _e('Renovaciones máximas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             </th>
                             <td>
                                 <input type="number" name="renovaciones_maximas" id="renovaciones_maximas"
                                        value="<?php echo esc_attr($settings['renovaciones_maximas'] ?? 2); ?>"
                                        min="0" max="10" class="small-text">
-                                <p class="description"><?php _e('Número de veces que se puede renovar un préstamo.', 'flavor-chat-ia'); ?></p>
+                                <p class="description"><?php _e('Número de veces que se puede renovar un préstamo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </td>
                         </tr>
                         <tr>
-                            <th scope="row"><?php _e('Permitir reservas', 'flavor-chat-ia'); ?></th>
+                            <th scope="row"><?php _e('Permitir reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             <td>
                                 <label>
                                     <input type="checkbox" name="permite_reservas" value="1"
                                            <?php checked($settings['permite_reservas'] ?? true); ?>>
-                                    <?php _e('Los usuarios pueden reservar libros que están prestados.', 'flavor-chat-ia'); ?>
+                                    <?php _e('Los usuarios pueden reservar libros que están prestados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </label>
                             </td>
                         </tr>
@@ -3982,27 +3982,27 @@ KNOWLEDGE;
                 <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
                     <h3 style="margin-top: 0; border-bottom: 1px solid #f0f0f1; padding-bottom: 10px;">
                         <span class="dashicons dashicons-update"></span>
-                        <?php _e('Tipos de Transacción', 'flavor-chat-ia'); ?>
+                        <?php _e('Tipos de Transacción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
 
                     <table class="form-table">
                         <tr>
-                            <th scope="row"><?php _e('Permitir donaciones', 'flavor-chat-ia'); ?></th>
+                            <th scope="row"><?php _e('Permitir donaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             <td>
                                 <label>
                                     <input type="checkbox" name="permite_donaciones" value="1"
                                            <?php checked($settings['permite_donaciones'] ?? true); ?>>
-                                    <?php _e('Los usuarios pueden donar libros a la comunidad.', 'flavor-chat-ia'); ?>
+                                    <?php _e('Los usuarios pueden donar libros a la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </label>
                             </td>
                         </tr>
                         <tr>
-                            <th scope="row"><?php _e('Permitir intercambios', 'flavor-chat-ia'); ?></th>
+                            <th scope="row"><?php _e('Permitir intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             <td>
                                 <label>
                                     <input type="checkbox" name="permite_intercambios" value="1"
                                            <?php checked($settings['permite_intercambios'] ?? true); ?>>
-                                    <?php _e('Los usuarios pueden intercambiar libros entre sí.', 'flavor-chat-ia'); ?>
+                                    <?php _e('Los usuarios pueden intercambiar libros entre sí.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </label>
                             </td>
                         </tr>
@@ -4013,23 +4013,23 @@ KNOWLEDGE;
                 <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
                     <h3 style="margin-top: 0; border-bottom: 1px solid #f0f0f1; padding-bottom: 10px;">
                         <span class="dashicons dashicons-awards"></span>
-                        <?php _e('Gamificación', 'flavor-chat-ia'); ?>
+                        <?php _e('Gamificación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
 
                     <table class="form-table">
                         <tr>
-                            <th scope="row"><?php _e('Sistema de puntos', 'flavor-chat-ia'); ?></th>
+                            <th scope="row"><?php _e('Sistema de puntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             <td>
                                 <label>
                                     <input type="checkbox" name="sistema_puntos" value="1"
                                            <?php checked($settings['sistema_puntos'] ?? true); ?>>
-                                    <?php _e('Activar sistema de puntos por actividad en la biblioteca.', 'flavor-chat-ia'); ?>
+                                    <?php _e('Activar sistema de puntos por actividad en la biblioteca.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </label>
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">
-                                <label for="puntos_por_prestamo"><?php _e('Puntos por aportar libro', 'flavor-chat-ia'); ?></label>
+                                <label for="puntos_por_prestamo"><?php _e('Puntos por aportar libro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             </th>
                             <td>
                                 <input type="number" name="puntos_por_prestamo" id="puntos_por_prestamo"
@@ -4039,7 +4039,7 @@ KNOWLEDGE;
                         </tr>
                         <tr>
                             <th scope="row">
-                                <label for="puntos_por_devolucion"><?php _e('Puntos por devolución', 'flavor-chat-ia'); ?></label>
+                                <label for="puntos_por_devolucion"><?php _e('Puntos por devolución', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             </th>
                             <td>
                                 <input type="number" name="puntos_por_devolucion" id="puntos_por_devolucion"
@@ -4054,29 +4054,29 @@ KNOWLEDGE;
                 <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
                     <h3 style="margin-top: 0; border-bottom: 1px solid #f0f0f1; padding-bottom: 10px;">
                         <span class="dashicons dashicons-bell"></span>
-                        <?php _e('Notificaciones', 'flavor-chat-ia'); ?>
+                        <?php _e('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
 
                     <table class="form-table">
                         <tr>
-                            <th scope="row"><?php _e('Notificar vencimientos', 'flavor-chat-ia'); ?></th>
+                            <th scope="row"><?php _e('Notificar vencimientos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             <td>
                                 <label>
                                     <input type="checkbox" name="notificar_vencimientos" value="1"
                                            <?php checked($settings['notificar_vencimientos'] ?? true); ?>>
-                                    <?php _e('Enviar recordatorios antes de la fecha de devolución.', 'flavor-chat-ia'); ?>
+                                    <?php _e('Enviar recordatorios antes de la fecha de devolución.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </label>
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">
-                                <label for="dias_antes_notificar"><?php _e('Días de anticipación', 'flavor-chat-ia'); ?></label>
+                                <label for="dias_antes_notificar"><?php _e('Días de anticipación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             </th>
                             <td>
                                 <input type="number" name="dias_antes_notificar" id="dias_antes_notificar"
                                        value="<?php echo esc_attr($settings['dias_antes_notificar'] ?? 3); ?>"
                                        min="1" max="14" class="small-text">
-                                <span><?php _e('días antes', 'flavor-chat-ia'); ?></span>
+                                <span><?php _e('días antes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </td>
                         </tr>
                     </table>
@@ -4086,19 +4086,19 @@ KNOWLEDGE;
                 <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
                     <h3 style="margin-top: 0; border-bottom: 1px solid #f0f0f1; padding-bottom: 10px;">
                         <span class="dashicons dashicons-yes-alt"></span>
-                        <?php _e('Verificación', 'flavor-chat-ia'); ?>
+                        <?php _e('Verificación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
 
                     <table class="form-table">
                         <tr>
-                            <th scope="row"><?php _e('Verificar ISBN', 'flavor-chat-ia'); ?></th>
+                            <th scope="row"><?php _e('Verificar ISBN', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             <td>
                                 <label>
                                     <input type="checkbox" name="requiere_verificacion_isbn" value="1"
                                            <?php checked($settings['requiere_verificacion_isbn'] ?? false); ?>>
-                                    <?php _e('Requerir ISBN válido al agregar libros.', 'flavor-chat-ia'); ?>
+                                    <?php _e('Requerir ISBN válido al agregar libros.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </label>
-                                <p class="description"><?php _e('Si está activo, se validará el ISBN contra la base de datos de Open Library.', 'flavor-chat-ia'); ?></p>
+                                <p class="description"><?php _e('Si está activo, se validará el ISBN contra la base de datos de Open Library.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </td>
                         </tr>
                     </table>
@@ -4106,7 +4106,7 @@ KNOWLEDGE;
 
                 <p class="submit">
                     <button type="submit" name="guardar_config" class="button button-primary button-large">
-                        <?php _e('Guardar Configuración', 'flavor-chat-ia'); ?>
+                        <?php _e('Guardar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </p>
             </form>
@@ -4143,8 +4143,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Catálogo de Biblioteca', 'flavor-chat-ia'),
-            __('Catálogo de Biblioteca', 'flavor-chat-ia'),
+            __('Catálogo de Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Catálogo de Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'biblioteca-catalogo',
             [$this, 'render_pagina_biblioteca_catalogo']
@@ -4152,8 +4152,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Configuración de Biblioteca', 'flavor-chat-ia'),
-            __('Configuración de Biblioteca', 'flavor-chat-ia'),
+            __('Configuración de Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Configuración de Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'biblioteca-config',
             [$this, 'render_pagina_biblioteca_config']
@@ -4161,8 +4161,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Préstamos de Biblioteca', 'flavor-chat-ia'),
-            __('Préstamos de Biblioteca', 'flavor-chat-ia'),
+            __('Préstamos de Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Préstamos de Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'biblioteca-prestamos',
             [$this, 'render_pagina_biblioteca_prestamos']
@@ -4170,8 +4170,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Usuarios de Biblioteca', 'flavor-chat-ia'),
-            __('Usuarios de Biblioteca', 'flavor-chat-ia'),
+            __('Usuarios de Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Usuarios de Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'biblioteca-usuarios',
             [$this, 'render_pagina_biblioteca_usuarios']
@@ -4186,7 +4186,7 @@ KNOWLEDGE;
         if (file_exists($ruta_vista)) {
             include $ruta_vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Catálogo de Biblioteca', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Catálogo de Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1><p>' . esc_html__('Vista no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -4198,7 +4198,7 @@ KNOWLEDGE;
         if (file_exists($ruta_vista)) {
             include $ruta_vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Configuración de Biblioteca', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Configuración de Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1><p>' . esc_html__('Vista no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -4210,7 +4210,7 @@ KNOWLEDGE;
         if (file_exists($ruta_vista)) {
             include $ruta_vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Préstamos de Biblioteca', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Préstamos de Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1><p>' . esc_html__('Vista no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -4222,7 +4222,7 @@ KNOWLEDGE;
         if (file_exists($ruta_vista)) {
             include $ruta_vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Usuarios de Biblioteca', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Usuarios de Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1><p>' . esc_html__('Vista no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 }

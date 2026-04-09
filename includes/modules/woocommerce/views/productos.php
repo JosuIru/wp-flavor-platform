@@ -13,16 +13,16 @@ if (!defined('ABSPATH')) {
 
 // Verificar permisos
 if (!current_user_can('manage_woocommerce')) {
-    wp_die(__('No tienes permisos suficientes para acceder a esta página.', 'flavor-chat-ia'));
+    wp_die(__('No tienes permisos suficientes para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
 }
 
 // Verificar que WooCommerce está activo
 if (!class_exists('WooCommerce')) {
     ?>
     <div class="wrap">
-        <h1><?php esc_html_e('Gestión de Productos', 'flavor-chat-ia'); ?></h1>
+        <h1><?php esc_html_e('Gestión de Productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
         <div class="notice notice-error">
-            <p><?php esc_html_e('WooCommerce no está instalado o activado.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('WooCommerce no está instalado o activado.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     </div>
     <?php
@@ -96,9 +96,9 @@ $url_base = admin_url('admin.php?page=flavor-woocommerce-productos');
 <div class="wrap flavor-admin-page flavor-woocommerce-productos">
     <h1>
         <span class="dashicons dashicons-archive"></span>
-        <?php esc_html_e('Gestión de Productos', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Gestión de Productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         <a href="<?php echo esc_url(admin_url('post-new.php?post_type=product')); ?>" class="page-title-action">
-            <?php esc_html_e('Añadir producto', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Añadir producto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </h1>
 
@@ -106,32 +106,32 @@ $url_base = admin_url('admin.php?page=flavor-woocommerce-productos');
     <div class="flavor-quick-stats">
         <a href="<?php echo esc_url($url_base); ?>" class="quick-stat <?php echo empty($stock_filtro) ? 'active' : ''; ?>">
             <span class="stat-value"><?php echo esc_html($total_publicados); ?></span>
-            <span class="stat-label"><?php esc_html_e('Total', 'flavor-chat-ia'); ?></span>
+            <span class="stat-label"><?php esc_html_e('Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(add_query_arg('stock', 'instock', $url_base)); ?>"
            class="quick-stat stat-success <?php echo $stock_filtro === 'instock' ? 'active' : ''; ?>">
             <span class="stat-value"><?php echo esc_html($total_en_stock); ?></span>
-            <span class="stat-label"><?php esc_html_e('En stock', 'flavor-chat-ia'); ?></span>
+            <span class="stat-label"><?php esc_html_e('En stock', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(add_query_arg('stock', 'outofstock', $url_base)); ?>"
            class="quick-stat stat-danger <?php echo $stock_filtro === 'outofstock' ? 'active' : ''; ?>">
             <span class="stat-value"><?php echo esc_html($total_sin_stock); ?></span>
-            <span class="stat-label"><?php esc_html_e('Sin stock', 'flavor-chat-ia'); ?></span>
+            <span class="stat-label"><?php esc_html_e('Sin stock', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(add_query_arg('stock', 'onbackorder', $url_base)); ?>"
            class="quick-stat stat-warning <?php echo $stock_filtro === 'onbackorder' ? 'active' : ''; ?>">
             <span class="stat-value"><?php echo esc_html($total_backorder); ?></span>
-            <span class="stat-label"><?php esc_html_e('Bajo pedido', 'flavor-chat-ia'); ?></span>
+            <span class="stat-label"><?php esc_html_e('Bajo pedido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
     </div>
 
     <!-- Filtros y búsqueda -->
     <div class="flavor-filters-bar">
         <form method="get" action="">
-            <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-woocommerce-productos', 'flavor-chat-ia'); ?>">
+            <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-woocommerce-productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
 
             <select name="category" class="filter-select">
-                <option value=""><?php esc_html_e('Todas las categorías', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php esc_html_e('Todas las categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 <?php foreach ($categorias as $categoria): ?>
                     <option value="<?php echo esc_attr($categoria->term_id); ?>"
                             <?php selected($categoria_filtro, $categoria->term_id); ?>>
@@ -141,31 +141,31 @@ $url_base = admin_url('admin.php?page=flavor-woocommerce-productos');
             </select>
 
             <select name="stock" class="filter-select">
-                <option value=""><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
-                <option value="<?php echo esc_attr__('instock', 'flavor-chat-ia'); ?>" <?php selected($stock_filtro, 'instock'); ?>>
-                    <?php esc_html_e('En stock', 'flavor-chat-ia'); ?>
+                <option value=""><?php esc_html_e('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('instock', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($stock_filtro, 'instock'); ?>>
+                    <?php esc_html_e('En stock', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </option>
-                <option value="<?php echo esc_attr__('outofstock', 'flavor-chat-ia'); ?>" <?php selected($stock_filtro, 'outofstock'); ?>>
-                    <?php esc_html_e('Sin stock', 'flavor-chat-ia'); ?>
+                <option value="<?php echo esc_attr__('outofstock', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($stock_filtro, 'outofstock'); ?>>
+                    <?php esc_html_e('Sin stock', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </option>
-                <option value="<?php echo esc_attr__('onbackorder', 'flavor-chat-ia'); ?>" <?php selected($stock_filtro, 'onbackorder'); ?>>
-                    <?php esc_html_e('Bajo pedido', 'flavor-chat-ia'); ?>
+                <option value="<?php echo esc_attr__('onbackorder', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($stock_filtro, 'onbackorder'); ?>>
+                    <?php esc_html_e('Bajo pedido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </option>
             </select>
 
             <input type="search"
                    name="s"
                    value="<?php echo esc_attr($busqueda); ?>"
-                   placeholder="<?php esc_attr_e('Buscar productos...', 'flavor-chat-ia'); ?>">
+                   placeholder="<?php esc_attr_e('Buscar productos...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
 
             <button type="submit" class="button">
                 <span class="dashicons dashicons-search"></span>
-                <?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
 
             <?php if (!empty($categoria_filtro) || !empty($stock_filtro) || !empty($busqueda)): ?>
                 <a href="<?php echo esc_url($url_base); ?>" class="button">
-                    <?php esc_html_e('Limpiar filtros', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Limpiar filtros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             <?php endif; ?>
         </form>
@@ -196,14 +196,14 @@ $url_base = admin_url('admin.php?page=flavor-woocommerce-productos');
                                     <?php
                                     if ($stock_status === 'instock') {
                                         if ($stock_quantity !== null) {
-                                            printf(esc_html__('Stock: %d', 'flavor-chat-ia'), $stock_quantity);
+                                            printf(esc_html__('Stock: %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $stock_quantity);
                                         } else {
-                                            esc_html_e('En stock', 'flavor-chat-ia');
+                                            esc_html_e('En stock', FLAVOR_PLATFORM_TEXT_DOMAIN);
                                         }
                                     } elseif ($stock_status === 'outofstock') {
-                                        esc_html_e('Sin stock', 'flavor-chat-ia');
+                                        esc_html_e('Sin stock', FLAVOR_PLATFORM_TEXT_DOMAIN);
                                     } else {
-                                        esc_html_e('Bajo pedido', 'flavor-chat-ia');
+                                        esc_html_e('Bajo pedido', FLAVOR_PLATFORM_TEXT_DOMAIN);
                                     }
                                     ?>
                                 </span>
@@ -232,25 +232,25 @@ $url_base = admin_url('admin.php?page=flavor-woocommerce-productos');
                                         <?php echo esc_html(wc_get_product_types()[$producto->get_type()] ?? $producto->get_type()); ?>
                                     </span>
                                     <span class="product-sales">
-                                        <?php printf(esc_html__('%d ventas', 'flavor-chat-ia'), $producto->get_total_sales()); ?>
+                                        <?php printf(esc_html__('%d ventas', FLAVOR_PLATFORM_TEXT_DOMAIN), $producto->get_total_sales()); ?>
                                     </span>
                                 </div>
                             </div>
                             <div class="product-actions">
                                 <a href="<?php echo esc_url(get_edit_post_link($product_id)); ?>"
                                    class="button button-small"
-                                   title="<?php esc_attr_e('Editar', 'flavor-chat-ia'); ?>">
+                                   title="<?php esc_attr_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-edit"></span>
                                 </a>
                                 <a href="<?php echo esc_url(get_permalink($product_id)); ?>"
                                    class="button button-small"
                                    target="_blank"
-                                   title="<?php esc_attr_e('Ver en tienda', 'flavor-chat-ia'); ?>">
+                                   title="<?php esc_attr_e('Ver en tienda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-external"></span>
                                 </a>
                                 <a href="<?php echo esc_url(admin_url('post.php?post=' . $product_id . '&action=edit#inventory_product_data')); ?>"
                                    class="button button-small"
-                                   title="<?php esc_attr_e('Gestionar stock', 'flavor-chat-ia'); ?>">
+                                   title="<?php esc_attr_e('Gestionar stock', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-archive"></span>
                                 </a>
                             </div>
@@ -276,7 +276,7 @@ $url_base = admin_url('admin.php?page=flavor-woocommerce-productos');
 
                         <span class="pagination-info">
                             <?php printf(
-                                esc_html__('Mostrando %1$d-%2$d de %3$d productos', 'flavor-chat-ia'),
+                                esc_html__('Mostrando %1$d-%2$d de %3$d productos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 (($pagina_actual - 1) * $por_pagina) + 1,
                                 min($pagina_actual * $por_pagina, $total_productos),
                                 $total_productos
@@ -286,20 +286,20 @@ $url_base = admin_url('admin.php?page=flavor-woocommerce-productos');
                         <div class="pagination-links">
                             <?php if ($pagina_actual > 1): ?>
                                 <a href="<?php echo esc_url(add_query_arg(array_merge($args_paginacion, ['paged' => 1]), $url_base)); ?>"
-                                   class="button"><?php echo esc_html__('&laquo;', 'flavor-chat-ia'); ?></a>
+                                   class="button"><?php echo esc_html__('&laquo;', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                                 <a href="<?php echo esc_url(add_query_arg(array_merge($args_paginacion, ['paged' => $pagina_actual - 1]), $url_base)); ?>"
-                                   class="button"><?php echo esc_html__('&lsaquo;', 'flavor-chat-ia'); ?></a>
+                                   class="button"><?php echo esc_html__('&lsaquo;', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                             <?php endif; ?>
 
                             <span class="current-page">
-                                <?php printf(esc_html__('Página %1$d de %2$d', 'flavor-chat-ia'), $pagina_actual, $total_paginas); ?>
+                                <?php printf(esc_html__('Página %1$d de %2$d', FLAVOR_PLATFORM_TEXT_DOMAIN), $pagina_actual, $total_paginas); ?>
                             </span>
 
                             <?php if ($pagina_actual < $total_paginas): ?>
                                 <a href="<?php echo esc_url(add_query_arg(array_merge($args_paginacion, ['paged' => $pagina_actual + 1]), $url_base)); ?>"
-                                   class="button"><?php echo esc_html__('&rsaquo;', 'flavor-chat-ia'); ?></a>
+                                   class="button"><?php echo esc_html__('&rsaquo;', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                                 <a href="<?php echo esc_url(add_query_arg(array_merge($args_paginacion, ['paged' => $total_paginas]), $url_base)); ?>"
-                                   class="button"><?php echo esc_html__('&raquo;', 'flavor-chat-ia'); ?></a>
+                                   class="button"><?php echo esc_html__('&raquo;', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -310,15 +310,15 @@ $url_base = admin_url('admin.php?page=flavor-woocommerce-productos');
                     <span class="dashicons dashicons-archive"></span>
                     <p>
                         <?php if (!empty($busqueda)): ?>
-                            <?php printf(esc_html__('No se encontraron productos para "%s".', 'flavor-chat-ia'), esc_html($busqueda)); ?>
+                            <?php printf(esc_html__('No se encontraron productos para "%s".', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($busqueda)); ?>
                         <?php elseif (!empty($categoria_filtro) || !empty($stock_filtro)): ?>
-                            <?php esc_html_e('No hay productos que coincidan con los filtros seleccionados.', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('No hay productos que coincidan con los filtros seleccionados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <?php else: ?>
-                            <?php esc_html_e('No hay productos registrados.', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('No hay productos registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <?php endif; ?>
                     </p>
                     <a href="<?php echo esc_url(admin_url('post-new.php?post_type=product')); ?>" class="button button-primary">
-                        <?php esc_html_e('Crear primer producto', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Crear primer producto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php endif; ?>

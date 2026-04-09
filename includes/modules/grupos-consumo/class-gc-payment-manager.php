@@ -162,14 +162,14 @@ class Flavor_GC_Payment_Manager {
         if (!$gateway) {
             return [
                 'success' => false,
-                'error' => __('Pasarela de pago no encontrada.', 'flavor-chat-ia'),
+                'error' => __('Pasarela de pago no encontrada.', 'flavor-platform'),
             ];
         }
 
         if (!$gateway->is_enabled()) {
             return [
                 'success' => false,
-                'error' => __('La pasarela de pago seleccionada no está disponible.', 'flavor-chat-ia'),
+                'error' => __('La pasarela de pago seleccionada no está disponible.', 'flavor-platform'),
             ];
         }
 
@@ -185,7 +185,7 @@ class Flavor_GC_Payment_Manager {
         if (!$entrega) {
             return [
                 'success' => false,
-                'error' => __('Entrega no encontrada.', 'flavor-chat-ia'),
+                'error' => __('Entrega no encontrada.', 'flavor-platform'),
             ];
         }
 
@@ -193,7 +193,7 @@ class Flavor_GC_Payment_Manager {
         if ((int) $entrega->usuario_id !== get_current_user_id()) {
             return [
                 'success' => false,
-                'error' => __('No tienes permisos para procesar esta entrega.', 'flavor-chat-ia'),
+                'error' => __('No tienes permisos para procesar esta entrega.', 'flavor-platform'),
             ];
         }
 
@@ -201,7 +201,7 @@ class Flavor_GC_Payment_Manager {
         if ($entrega->estado_pago === 'completado') {
             return [
                 'success' => false,
-                'error' => __('Esta entrega ya ha sido pagada.', 'flavor-chat-ia'),
+                'error' => __('Esta entrega ya ha sido pagada.', 'flavor-platform'),
             ];
         }
 
@@ -235,7 +235,7 @@ class Flavor_GC_Payment_Manager {
 
             return [
                 'success' => false,
-                'error' => __('Error al procesar el pago. Por favor, inténtalo de nuevo.', 'flavor-chat-ia'),
+                'error' => __('Error al procesar el pago. Por favor, inténtalo de nuevo.', 'flavor-platform'),
                 'debug' => WP_DEBUG ? $e->getMessage() : null,
             ];
         }
@@ -365,14 +365,14 @@ class Flavor_GC_Payment_Manager {
         check_ajax_referer('gc_checkout_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-platform')]);
         }
 
         $entrega_id = absint($_POST['entrega_id'] ?? 0);
         $gateway_id = sanitize_key($_POST['gateway_id'] ?? '');
 
         if (!$entrega_id || !$gateway_id) {
-            wp_send_json_error(['message' => __('Datos incompletos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos incompletos.', 'flavor-platform')]);
         }
 
         $resultado = $this->process_checkout($entrega_id, $gateway_id, $_POST);
@@ -393,14 +393,14 @@ class Flavor_GC_Payment_Manager {
         check_ajax_referer('gc_checkout_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-platform')]);
         }
 
         $gateway_id = sanitize_key($_POST['gateway_id'] ?? '');
         $gateway = $this->get_gateway($gateway_id);
 
         if (!$gateway || !$gateway->is_enabled()) {
-            wp_send_json_error(['message' => __('Pasarela no disponible.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Pasarela no disponible.', 'flavor-platform')]);
         }
 
         ob_start();
@@ -512,7 +512,7 @@ class Flavor_GC_Payment_Manager {
         if (!$summary) {
             return new WP_REST_Response([
                 'success' => false,
-                'message' => __('Entrega no encontrada.', 'flavor-chat-ia'),
+                'message' => __('Entrega no encontrada.', 'flavor-platform'),
             ], 404);
         }
 
@@ -535,7 +535,7 @@ class Flavor_GC_Payment_Manager {
         if (!$entrega_id || !$gateway_id) {
             return new WP_REST_Response([
                 'success' => false,
-                'message' => __('Datos incompletos.', 'flavor-chat-ia'),
+                'message' => __('Datos incompletos.', 'flavor-platform'),
             ], 400);
         }
 

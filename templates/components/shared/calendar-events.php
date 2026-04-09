@@ -60,15 +60,15 @@ $category_colors = [
     <!-- Header con navegación rápida -->
     <div class="flex flex-wrap items-center justify-between gap-4 mb-4 p-4 bg-white rounded-xl shadow-sm">
         <div class="flex items-center gap-2">
-            <button type="button" class="fc-custom-prev p-2 rounded-lg hover:bg-gray-100 transition-colors" title="<?php esc_attr_e('Anterior', 'flavor-chat-ia'); ?>">
+            <button type="button" class="fc-custom-prev p-2 rounded-lg hover:bg-gray-100 transition-colors" title="<?php esc_attr_e('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                 </svg>
             </button>
             <button type="button" class="fc-custom-today px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-                <?php esc_html_e('Hoy', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
-            <button type="button" class="fc-custom-next p-2 rounded-lg hover:bg-gray-100 transition-colors" title="<?php esc_attr_e('Siguiente', 'flavor-chat-ia'); ?>">
+            <button type="button" class="fc-custom-next p-2 rounded-lg hover:bg-gray-100 transition-colors" title="<?php esc_attr_e('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                 </svg>
@@ -80,13 +80,13 @@ $category_colors = [
             <!-- Selector de vista -->
             <div class="inline-flex rounded-lg border border-gray-200 p-0.5 bg-gray-50">
                 <button type="button" class="fc-view-btn px-3 py-1.5 text-sm font-medium rounded-md transition-all" data-view="dayGridMonth">
-                    <?php esc_html_e('Mes', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" class="fc-view-btn px-3 py-1.5 text-sm font-medium rounded-md transition-all" data-view="timeGridWeek">
-                    <?php esc_html_e('Semana', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" class="fc-view-btn px-3 py-1.5 text-sm font-medium rounded-md transition-all" data-view="listWeek">
-                    <?php esc_html_e('Lista', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Lista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
 
@@ -96,7 +96,7 @@ $category_colors = [
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                     </svg>
-                    <?php esc_html_e('Añadir', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Añadir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             <?php endif; ?>
         </div>
@@ -120,7 +120,7 @@ $category_colors = [
 
     <!-- Mini leyenda -->
     <div class="flex flex-wrap items-center gap-4 mt-4 px-4 py-3 bg-gray-50 rounded-lg text-sm">
-        <span class="text-gray-500"><?php esc_html_e('Categorías:', 'flavor-chat-ia'); ?></span>
+        <span class="text-gray-500"><?php esc_html_e('Categorías:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         <?php foreach (array_slice($category_colors, 0, 5) as $cat => $color): ?>
             <?php if ($cat !== 'default'): ?>
                 <span class="inline-flex items-center gap-1.5">
@@ -144,7 +144,7 @@ $category_colors = [
             </button>
 
             <h3 class="text-lg font-semibold text-gray-900 mb-4 fc-modal-title">
-                <?php esc_html_e('Nuevo evento', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Nuevo evento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
 
             <form class="fc-event-form space-y-4">
@@ -152,7 +152,7 @@ $category_colors = [
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">
-                        <?php esc_html_e('Título', 'flavor-chat-ia'); ?> *
+                        <?php esc_html_e('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *
                     </label>
                     <input type="text" name="title" required
                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
@@ -161,14 +161,14 @@ $category_colors = [
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">
-                            <?php esc_html_e('Inicio', 'flavor-chat-ia'); ?> *
+                            <?php esc_html_e('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *
                         </label>
                         <input type="datetime-local" name="start" required
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">
-                            <?php esc_html_e('Fin', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Fin', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                         <input type="datetime-local" name="end"
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
@@ -177,7 +177,7 @@ $category_colors = [
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">
-                        <?php esc_html_e('Categoría', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <select name="category" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <?php foreach ($category_colors as $cat => $color): ?>
@@ -190,7 +190,7 @@ $category_colors = [
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">
-                        <?php esc_html_e('Descripción', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <textarea name="description" rows="3"
                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
@@ -200,16 +200,16 @@ $category_colors = [
                     <input type="checkbox" name="all_day" id="<?php echo esc_attr($calendar_id); ?>-allday"
                            class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
                     <label for="<?php echo esc_attr($calendar_id); ?>-allday" class="text-sm text-gray-700">
-                        <?php esc_html_e('Todo el día', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Todo el día', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </div>
 
                 <div class="flex justify-end gap-3 pt-4 border-t">
                     <button type="button" class="fc-modal-close px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-                        <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="submit" class="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
-                        <?php esc_html_e('Guardar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Guardar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </form>
@@ -340,7 +340,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const title = modal.querySelector('.fc-modal-title');
 
         if (event) {
-            title.textContent = '<?php esc_html_e('Editar evento', 'flavor-chat-ia'); ?>';
+            title.textContent = '<?php esc_html_e('Editar evento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>';
             form.querySelector('[name="event_id"]').value = event.id;
             form.querySelector('[name="title"]').value = event.title;
             form.querySelector('[name="start"]').value = formatDateTimeLocal(event.start);
@@ -348,7 +348,7 @@ document.addEventListener('DOMContentLoaded', function() {
             form.querySelector('[name="description"]').value = event.extendedProps?.description || '';
             form.querySelector('[name="all_day"]').checked = event.allDay;
         } else {
-            title.textContent = '<?php esc_html_e('Nuevo evento', 'flavor-chat-ia'); ?>';
+            title.textContent = '<?php esc_html_e('Nuevo evento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>';
             form.reset();
             form.querySelector('[name="event_id"]').value = '';
             if (start) form.querySelector('[name="start"]').value = formatDateTimeLocal(start);

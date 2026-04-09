@@ -66,45 +66,45 @@ class Flavor_Module_Dashboards_Page {
         ksort($rows_by_category);
         ?>
         <div class="wrap flavor-module-dashboards-page">
-            <h1><?php esc_html_e('Dashboards de Módulos', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Dashboards de Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
             <p>
-                <?php esc_html_e('Índice compacto de dashboards administrativos del plugin, filtrado según la vista activa del shell.', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Índice compacto de dashboards administrativos del plugin, filtrado según la vista activa del shell.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
             <div style="display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 18px;">
                 <a class="button button-secondary" href="<?php echo esc_url(admin_url('admin.php?page=flavor-unified-dashboard')); ?>">
-                    <?php esc_html_e('Ir al tablero de widgets', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ir al tablero de widgets', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <p style="margin-top:-6px;color:#646970;">
                 <?php
                 printf(
                     /* translators: %s: active view label */
-                    esc_html__('Vista activa: %s', 'flavor-chat-ia'),
+                    esc_html__('Vista activa: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     esc_html($this->format_view_label($view))
                 );
                 ?>
             </p>
             <p style="margin-top:-6px;color:#646970;max-width:960px;">
-                <?php esc_html_e('Acceso gestor indica que el dashboard primario puede exponerse al rol gestor de grupos. Revisión interna indica que aún hay señales de checks legacy con manage_options dentro del propio módulo o su vista dashboard.', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Acceso gestor indica que el dashboard primario puede exponerse al rol gestor de grupos. Revisión interna indica que aún hay señales de checks legacy con manage_options dentro del propio módulo o su vista dashboard.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
 
             <form method="get" style="display:flex;gap:12px;flex-wrap:wrap;align-items:end;background:#fff;border:1px solid #dcdcde;padding:16px;margin:18px 0 22px;">
                 <input type="hidden" name="page" value="flavor-module-dashboards">
                 <div>
-                    <label for="flavor-dashboard-search" style="display:block;margin-bottom:6px;font-weight:600;"><?php esc_html_e('Buscar', 'flavor-chat-ia'); ?></label>
+                    <label for="flavor-dashboard-search" style="display:block;margin-bottom:6px;font-weight:600;"><?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input
                         id="flavor-dashboard-search"
                         type="search"
                         name="s"
                         value="<?php echo esc_attr($filters['search']); ?>"
                         class="regular-text"
-                        placeholder="<?php esc_attr_e('Módulo, slug o categoría', 'flavor-chat-ia'); ?>"
+                        placeholder="<?php esc_attr_e('Módulo, slug o categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                     >
                 </div>
                 <div>
-                    <label for="flavor-dashboard-category" style="display:block;margin-bottom:6px;font-weight:600;"><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></label>
+                    <label for="flavor-dashboard-category" style="display:block;margin-bottom:6px;font-weight:600;"><?php esc_html_e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="flavor-dashboard-category" name="category">
-                        <option value=""><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($filter_options['categories'] as $category_value => $category_label) : ?>
                             <option value="<?php echo esc_attr($category_value); ?>" <?php selected($filters['category'], $category_value); ?>>
                                 <?php echo esc_html($category_label); ?>
@@ -113,9 +113,9 @@ class Flavor_Module_Dashboards_Page {
                     </select>
                 </div>
                 <div>
-                    <label for="flavor-dashboard-status" style="display:block;margin-bottom:6px;font-weight:600;"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></label>
+                    <label for="flavor-dashboard-status" style="display:block;margin-bottom:6px;font-weight:600;"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="flavor-dashboard-status" name="status">
-                        <option value=""><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($filter_options['statuses'] as $status_value => $status_label) : ?>
                             <option value="<?php echo esc_attr($status_value); ?>" <?php selected($filters['status'], $status_value); ?>>
                                 <?php echo esc_html($status_label); ?>
@@ -124,9 +124,9 @@ class Flavor_Module_Dashboards_Page {
                     </select>
                 </div>
                 <div>
-                    <label for="flavor-dashboard-capability" style="display:block;margin-bottom:6px;font-weight:600;"><?php esc_html_e('Capacidad', 'flavor-chat-ia'); ?></label>
+                    <label for="flavor-dashboard-capability" style="display:block;margin-bottom:6px;font-weight:600;"><?php esc_html_e('Capacidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="flavor-dashboard-capability" name="capability">
-                        <option value=""><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($filter_options['capabilities'] as $capability) : ?>
                             <option value="<?php echo esc_attr($capability); ?>" <?php selected($filters['capability'], $capability); ?>>
                                 <?php echo esc_html($capability); ?>
@@ -135,8 +135,8 @@ class Flavor_Module_Dashboards_Page {
                     </select>
                 </div>
                 <div style="display:flex;gap:8px;">
-                    <button type="submit" class="button button-primary"><?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?></button>
-                    <a class="button" href="<?php echo esc_url(admin_url('admin.php?page=flavor-module-dashboards')); ?>"><?php esc_html_e('Limpiar', 'flavor-chat-ia'); ?></a>
+                    <button type="submit" class="button button-primary"><?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                    <a class="button" href="<?php echo esc_url(admin_url('admin.php?page=flavor-module-dashboards')); ?>"><?php esc_html_e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 </div>
             </form>
 
@@ -151,7 +151,7 @@ class Flavor_Module_Dashboards_Page {
 
             <?php if (empty($rows)) : ?>
                 <div class="notice notice-info">
-                    <p><?php esc_html_e('No hay dashboards visibles para la vista actual.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay dashboards visibles para la vista actual.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <?php
                 return;
@@ -175,19 +175,19 @@ class Flavor_Module_Dashboards_Page {
                                 <?php echo $this->render_badge($row['status_label'], $row['status_color']); ?>
                                 <?php echo $this->render_badge($row['capability'], '#50575e'); ?>
                                 <?php if ($row['has_view']) : ?>
-                                    <?php echo $this->render_badge(__('Vista dashboard', 'flavor-chat-ia'), '#2271b1'); ?>
+                                    <?php echo $this->render_badge(__('Vista dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN), '#2271b1'); ?>
                                 <?php endif; ?>
                                 <?php if ($row['has_widget']) : ?>
-                                    <?php echo $this->render_badge(__('Widget', 'flavor-chat-ia'), '#00a32a'); ?>
+                                    <?php echo $this->render_badge(__('Widget', FLAVOR_PLATFORM_TEXT_DOMAIN), '#00a32a'); ?>
                                 <?php endif; ?>
                                 <?php if ($row['has_tab']) : ?>
-                                    <?php echo $this->render_badge(__('Tab cliente', 'flavor-chat-ia'), '#8c8f94'); ?>
+                                    <?php echo $this->render_badge(__('Tab cliente', FLAVOR_PLATFORM_TEXT_DOMAIN), '#8c8f94'); ?>
                                 <?php endif; ?>
                                 <?php if ($row['gestor_access']) : ?>
-                                    <?php echo $this->render_badge(__('Acceso gestor', 'flavor-chat-ia'), '#3858e9'); ?>
+                                    <?php echo $this->render_badge(__('Acceso gestor', FLAVOR_PLATFORM_TEXT_DOMAIN), '#3858e9'); ?>
                                 <?php endif; ?>
                                 <?php if ($row['gestor_needs_review']) : ?>
-                                    <?php echo $this->render_badge(__('Revisión interna', 'flavor-chat-ia'), '#d63638'); ?>
+                                    <?php echo $this->render_badge(__('Revisión interna', FLAVOR_PLATFORM_TEXT_DOMAIN), '#d63638'); ?>
                                 <?php endif; ?>
                             </div>
 
@@ -195,19 +195,19 @@ class Flavor_Module_Dashboards_Page {
                                 <?php echo esc_html($row['development_note']); ?>
                             </p>
                             <p style="margin:0;color:#50575e;font-size:12px;">
-                                <strong><?php esc_html_e('Motivo:', 'flavor-chat-ia'); ?></strong>
+                                <strong><?php esc_html_e('Motivo:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                                 <?php echo esc_html($row['status_reason']); ?>
                             </p>
 
                             <div style="margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:12px;">
                                 <a class="button button-primary" href="<?php echo esc_url($row['url']); ?>">
-                                    <?php esc_html_e('Abrir dashboard', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Abrir dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                                 <span style="color:#646970;font-size:12px;">
                                     <?php
                                     printf(
                                         /* translators: 1: module id, 2: category */
-                                        esc_html__('%1$s · %2$s', 'flavor-chat-ia'),
+                                        esc_html__('%1$s · %2$s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                         esc_html($row['module_id']),
                                         esc_html($row['category_label'])
                                     );
@@ -445,19 +445,19 @@ class Flavor_Module_Dashboards_Page {
      */
     private function build_stats(array $rows) {
         $stats = [
-            __('Dashboards visibles', 'flavor-chat-ia') => count($rows),
-            __('Alta madurez', 'flavor-chat-ia') => 0,
-            __('Madurez media', 'flavor-chat-ia') => 0,
-            __('Parciales', 'flavor-chat-ia') => 0,
+            __('Dashboards visibles', FLAVOR_PLATFORM_TEXT_DOMAIN) => count($rows),
+            __('Alta madurez', FLAVOR_PLATFORM_TEXT_DOMAIN) => 0,
+            __('Madurez media', FLAVOR_PLATFORM_TEXT_DOMAIN) => 0,
+            __('Parciales', FLAVOR_PLATFORM_TEXT_DOMAIN) => 0,
         ];
 
         foreach ($rows as $row) {
             if ($row['status'] === 'alto') {
-                $stats[__('Alta madurez', 'flavor-chat-ia')]++;
+                $stats[__('Alta madurez', FLAVOR_PLATFORM_TEXT_DOMAIN)]++;
             } elseif ($row['status'] === 'medio') {
-                $stats[__('Madurez media', 'flavor-chat-ia')]++;
+                $stats[__('Madurez media', FLAVOR_PLATFORM_TEXT_DOMAIN)]++;
             } else {
-                $stats[__('Parciales', 'flavor-chat-ia')]++;
+                $stats[__('Parciales', FLAVOR_PLATFORM_TEXT_DOMAIN)]++;
             }
         }
 
@@ -528,43 +528,43 @@ class Flavor_Module_Dashboards_Page {
         if ($is_mapped && $has_admin_config && $has_render_admin) {
             return [
                 'status' => 'alto',
-                'label' => __('Alta madurez', 'flavor-chat-ia'),
+                'label' => __('Alta madurez', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => '#00a32a',
-                'note' => __('Tiene dashboard canónico, contrato admin declarado y renderer específico.', 'flavor-chat-ia'),
-                'reason' => __('Mapping canónico + get_admin_config + render de dashboard detectado.', 'flavor-chat-ia'),
+                'note' => __('Tiene dashboard canónico, contrato admin declarado y renderer específico.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'reason' => __('Mapping canónico + get_admin_config + render de dashboard detectado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
         if ($dashboard_slug !== '' && ($has_admin_config || $has_render_admin || $has_view || $has_tab || $has_widget)) {
             $missing_parts = [];
             if (!$is_mapped) {
-                $missing_parts[] = __('sin mapping canónico', 'flavor-chat-ia');
+                $missing_parts[] = __('sin mapping canónico', FLAVOR_PLATFORM_TEXT_DOMAIN);
             }
             if (!$has_admin_config) {
-                $missing_parts[] = __('sin get_admin_config', 'flavor-chat-ia');
+                $missing_parts[] = __('sin get_admin_config', FLAVOR_PLATFORM_TEXT_DOMAIN);
             }
             if (!$has_render_admin) {
-                $missing_parts[] = __('sin render de dashboard declarado', 'flavor-chat-ia');
+                $missing_parts[] = __('sin render de dashboard declarado', FLAVOR_PLATFORM_TEXT_DOMAIN);
             }
             if (empty($missing_parts)) {
-                $missing_parts[] = __('requiere canonización del contrato admin', 'flavor-chat-ia');
+                $missing_parts[] = __('requiere canonización del contrato admin', FLAVOR_PLATFORM_TEXT_DOMAIN);
             }
 
             return [
                 'status' => 'medio',
-                'label' => __('Madurez media', 'flavor-chat-ia'),
+                'label' => __('Madurez media', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => '#dba617',
-                'note' => __('Existe dashboard o infraestructura asociada, pero el contrato admin no está del todo canonizado.', 'flavor-chat-ia'),
+                'note' => __('Existe dashboard o infraestructura asociada, pero el contrato admin no está del todo canonizado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'reason' => implode(' · ', $missing_parts),
             ];
         }
 
         return [
             'status' => 'bajo',
-            'label' => __('Parcial', 'flavor-chat-ia'),
+            'label' => __('Parcial', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => '#d63638',
-            'note' => __('La presencia del dashboard es parcial o depende de piezas auxiliares sin cierre estructural.', 'flavor-chat-ia'),
-            'reason' => __('No se detecta combinación mínima de mapping/config/render para considerarlo dashboard consolidado.', 'flavor-chat-ia'),
+            'note' => __('La presencia del dashboard es parcial o depende de piezas auxiliares sin cierre estructural.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'reason' => __('No se detecta combinación mínima de mapping/config/render para considerarlo dashboard consolidado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -609,7 +609,7 @@ class Flavor_Module_Dashboards_Page {
      */
     private function format_category_label($category) {
         if ($category === '' || $category === 'Sin categoría') {
-            return __('Sin categoría', 'flavor-chat-ia');
+            return __('Sin categoría', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         return ucwords(str_replace('_', ' ', $category));
@@ -623,10 +623,10 @@ class Flavor_Module_Dashboards_Page {
      */
     private function format_view_label($view) {
         if ($view === Flavor_Admin_Menu_Manager::VISTA_GESTOR_GRUPOS) {
-            return __('Gestor de Grupos', 'flavor-chat-ia');
+            return __('Gestor de Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
-        return __('Administrador', 'flavor-chat-ia');
+        return __('Administrador', FLAVOR_PLATFORM_TEXT_DOMAIN);
     }
 
     /**

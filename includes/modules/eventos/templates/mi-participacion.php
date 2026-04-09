@@ -14,24 +14,24 @@ $eventos_organizados = $participacion['eventos_organizados'] ?? 0;
 
 // Determinar nivel
 $nivel = 1;
-$titulo_nivel = __('Asistente', 'flavor-chat-ia');
+$titulo_nivel = __('Asistente', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $siguiente_nivel = 50;
 
 if ($puntos >= 500) {
     $nivel = 5;
-    $titulo_nivel = __('Embajador', 'flavor-chat-ia');
+    $titulo_nivel = __('Embajador', FLAVOR_PLATFORM_TEXT_DOMAIN);
     $siguiente_nivel = null;
 } elseif ($puntos >= 200) {
     $nivel = 4;
-    $titulo_nivel = __('Organizador', 'flavor-chat-ia');
+    $titulo_nivel = __('Organizador', FLAVOR_PLATFORM_TEXT_DOMAIN);
     $siguiente_nivel = 500;
 } elseif ($puntos >= 100) {
     $nivel = 3;
-    $titulo_nivel = __('Colaborador', 'flavor-chat-ia');
+    $titulo_nivel = __('Colaborador', FLAVOR_PLATFORM_TEXT_DOMAIN);
     $siguiente_nivel = 200;
 } elseif ($puntos >= 50) {
     $nivel = 2;
-    $titulo_nivel = __('Participante', 'flavor-chat-ia');
+    $titulo_nivel = __('Participante', FLAVOR_PLATFORM_TEXT_DOMAIN);
     $siguiente_nivel = 100;
 }
 
@@ -52,11 +52,11 @@ $progreso = $siguiente_nivel ? min(100, ($puntos / $siguiente_nivel) * 100) : 10
     <!-- Progreso de nivel -->
     <div class="ev-mi-part__progreso">
         <div class="ev-mi-part__progreso-header">
-            <span><?php printf(esc_html__('%d puntos', 'flavor-chat-ia'), $puntos); ?></span>
+            <span><?php printf(esc_html__('%d puntos', FLAVOR_PLATFORM_TEXT_DOMAIN), $puntos); ?></span>
             <?php if ($siguiente_nivel): ?>
-                <span><?php printf(esc_html__('Siguiente nivel: %d pts', 'flavor-chat-ia'), $siguiente_nivel); ?></span>
+                <span><?php printf(esc_html__('Siguiente nivel: %d pts', FLAVOR_PLATFORM_TEXT_DOMAIN), $siguiente_nivel); ?></span>
             <?php else: ?>
-                <span><?php esc_html_e('¡Nivel máximo!', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('¡Nivel máximo!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             <?php endif; ?>
         </div>
         <div class="ev-mi-part__progreso-bar">
@@ -72,7 +72,7 @@ $progreso = $siguiente_nivel ? min(100, ($puntos / $siguiente_nivel) * 100) : 10
             </span>
             <div class="ev-mi-part__stat-info">
                 <span class="ev-mi-part__stat-valor"><?php echo esc_html($eventos_asistidos); ?></span>
-                <span class="ev-mi-part__stat-label"><?php esc_html_e('Eventos asistidos', 'flavor-chat-ia'); ?></span>
+                <span class="ev-mi-part__stat-label"><?php esc_html_e('Eventos asistidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
         <div class="ev-mi-part__stat">
@@ -81,7 +81,7 @@ $progreso = $siguiente_nivel ? min(100, ($puntos / $siguiente_nivel) * 100) : 10
             </span>
             <div class="ev-mi-part__stat-info">
                 <span class="ev-mi-part__stat-valor"><?php echo esc_html($horas_voluntariado); ?>h</span>
-                <span class="ev-mi-part__stat-label"><?php esc_html_e('Voluntariado', 'flavor-chat-ia'); ?></span>
+                <span class="ev-mi-part__stat-label"><?php esc_html_e('Voluntariado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
         <div class="ev-mi-part__stat">
@@ -90,7 +90,7 @@ $progreso = $siguiente_nivel ? min(100, ($puntos / $siguiente_nivel) * 100) : 10
             </span>
             <div class="ev-mi-part__stat-info">
                 <span class="ev-mi-part__stat-valor"><?php echo esc_html($eventos_organizados); ?></span>
-                <span class="ev-mi-part__stat-label"><?php esc_html_e('Organizados', 'flavor-chat-ia'); ?></span>
+                <span class="ev-mi-part__stat-label"><?php esc_html_e('Organizados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
@@ -100,16 +100,16 @@ $progreso = $siguiente_nivel ? min(100, ($puntos / $siguiente_nivel) * 100) : 10
         <div class="ev-mi-part__co2">
             <h4>
                 <span class="dashicons dashicons-cloud"></span>
-                <?php esc_html_e('Mi huella en eventos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Mi huella en eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h4>
             <div class="ev-mi-part__co2-grid">
                 <div class="ev-mi-part__co2-item ev-mi-part__co2-item--emitido">
                     <span class="ev-mi-part__co2-valor"><?php echo esc_html(number_format($participacion['co2_generado'] ?? 0, 1)); ?></span>
-                    <span class="ev-mi-part__co2-label"><?php esc_html_e('kg emitidos', 'flavor-chat-ia'); ?></span>
+                    <span class="ev-mi-part__co2-label"><?php esc_html_e('kg emitidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="ev-mi-part__co2-item ev-mi-part__co2-item--compensado">
                     <span class="ev-mi-part__co2-valor"><?php echo esc_html(number_format($participacion['co2_compensado'] ?? 0, 1)); ?></span>
-                    <span class="ev-mi-part__co2-label"><?php esc_html_e('kg compensados', 'flavor-chat-ia'); ?></span>
+                    <span class="ev-mi-part__co2-label"><?php esc_html_e('kg compensados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
         </div>
@@ -117,54 +117,54 @@ $progreso = $siguiente_nivel ? min(100, ($puntos / $siguiente_nivel) * 100) : 10
 
     <!-- Logros -->
     <div class="ev-mi-part__logros">
-        <h4><?php esc_html_e('Logros desbloqueados', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('Logros desbloqueados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <div class="ev-mi-part__logros-grid">
             <?php if ($eventos_asistidos >= 1): ?>
                 <div class="ev-mi-part__logro ev-mi-part__logro--desbloqueado">
                     <span class="dashicons dashicons-tickets-alt"></span>
-                    <span><?php esc_html_e('Primer evento', 'flavor-chat-ia'); ?></span>
+                    <span><?php esc_html_e('Primer evento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             <?php endif; ?>
             <?php if ($eventos_asistidos >= 10): ?>
                 <div class="ev-mi-part__logro ev-mi-part__logro--desbloqueado">
                     <span class="dashicons dashicons-star-filled"></span>
-                    <span><?php esc_html_e('10 eventos', 'flavor-chat-ia'); ?></span>
+                    <span><?php esc_html_e('10 eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             <?php endif; ?>
             <?php if ($horas_voluntariado >= 1): ?>
                 <div class="ev-mi-part__logro ev-mi-part__logro--desbloqueado">
                     <span class="dashicons dashicons-heart"></span>
-                    <span><?php esc_html_e('Voluntario', 'flavor-chat-ia'); ?></span>
+                    <span><?php esc_html_e('Voluntario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             <?php endif; ?>
             <?php if ($horas_voluntariado >= 10): ?>
                 <div class="ev-mi-part__logro ev-mi-part__logro--desbloqueado">
                     <span class="dashicons dashicons-superhero"></span>
-                    <span><?php esc_html_e('10h voluntariado', 'flavor-chat-ia'); ?></span>
+                    <span><?php esc_html_e('10h voluntariado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             <?php endif; ?>
             <?php if ($eventos_organizados >= 1): ?>
                 <div class="ev-mi-part__logro ev-mi-part__logro--desbloqueado">
                     <span class="dashicons dashicons-megaphone"></span>
-                    <span><?php esc_html_e('Organizador', 'flavor-chat-ia'); ?></span>
+                    <span><?php esc_html_e('Organizador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             <?php endif; ?>
             <?php if ($nivel >= 4): ?>
                 <div class="ev-mi-part__logro ev-mi-part__logro--desbloqueado">
                     <span class="dashicons dashicons-awards"></span>
-                    <span><?php esc_html_e('Nivel Organizador', 'flavor-chat-ia'); ?></span>
+                    <span><?php esc_html_e('Nivel Organizador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             <?php endif; ?>
             <?php if ($nivel >= 5): ?>
                 <div class="ev-mi-part__logro ev-mi-part__logro--desbloqueado">
                     <span class="dashicons dashicons-shield"></span>
-                    <span><?php esc_html_e('Embajador', 'flavor-chat-ia'); ?></span>
+                    <span><?php esc_html_e('Embajador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             <?php endif; ?>
             <?php if (($participacion['co2_compensado'] ?? 0) >= 50): ?>
                 <div class="ev-mi-part__logro ev-mi-part__logro--desbloqueado">
                     <span class="dashicons dashicons-palmtree"></span>
-                    <span><?php esc_html_e('Eco-consciente', 'flavor-chat-ia'); ?></span>
+                    <span><?php esc_html_e('Eco-consciente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             <?php endif; ?>
 
@@ -178,7 +178,7 @@ $progreso = $siguiente_nivel ? min(100, ($puntos / $siguiente_nivel) * 100) : 10
             ?>
                 <div class="ev-mi-part__logro ev-mi-part__logro--bloqueado">
                     <span class="dashicons dashicons-lock"></span>
-                    <span><?php esc_html_e('Participa para desbloquear', 'flavor-chat-ia'); ?></span>
+                    <span><?php esc_html_e('Participa para desbloquear', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             <?php endif; ?>
         </div>
@@ -186,25 +186,25 @@ $progreso = $siguiente_nivel ? min(100, ($puntos / $siguiente_nivel) * 100) : 10
 
     <!-- Beneficios del nivel -->
     <div class="ev-mi-part__beneficios">
-        <h4><?php esc_html_e('Beneficios de tu nivel', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('Beneficios de tu nivel', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <ul>
             <?php if ($nivel >= 2): ?>
-                <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Inscripción anticipada a eventos', 'flavor-chat-ia'); ?></li>
+                <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Inscripción anticipada a eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
             <?php endif; ?>
             <?php if ($nivel >= 3): ?>
-                <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Prioridad en eventos con aforo limitado', 'flavor-chat-ia'); ?></li>
+                <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Prioridad en eventos con aforo limitado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
             <?php endif; ?>
             <?php if ($nivel >= 4): ?>
-                <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Puede organizar eventos comunitarios', 'flavor-chat-ia'); ?></li>
+                <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Puede organizar eventos comunitarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
             <?php endif; ?>
             <?php if ($nivel >= 5): ?>
-                <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Descuentos en eventos de pago', 'flavor-chat-ia'); ?></li>
-                <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Acceso a eventos exclusivos', 'flavor-chat-ia'); ?></li>
+                <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Descuentos en eventos de pago', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Acceso a eventos exclusivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
             <?php endif; ?>
             <?php if ($nivel == 1): ?>
                 <li class="ev-mi-part__beneficio-bloqueado">
                     <span class="dashicons dashicons-lock"></span>
-                    <?php esc_html_e('Sube de nivel para obtener beneficios', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Sube de nivel para obtener beneficios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </li>
             <?php endif; ?>
         </ul>
@@ -213,7 +213,7 @@ $progreso = $siguiente_nivel ? min(100, ($puntos / $siguiente_nivel) * 100) : 10
     <!-- Próximos eventos -->
     <?php if (!empty($participacion['proximos_eventos'])): ?>
         <div class="ev-mi-part__proximos">
-            <h4><?php esc_html_e('Mis próximos eventos', 'flavor-chat-ia'); ?></h4>
+            <h4><?php esc_html_e('Mis próximos eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
             <div class="ev-mi-part__proximos-lista">
                 <?php foreach ($participacion['proximos_eventos'] as $evento): ?>
                     <div class="ev-mi-part__proximo">
@@ -228,7 +228,7 @@ $progreso = $siguiente_nivel ? min(100, ($puntos / $siguiente_nivel) * 100) : 10
                         <?php if ($evento->es_voluntario): ?>
                             <span class="ev-mi-part__proximo-badge">
                                 <span class="dashicons dashicons-heart"></span>
-                                <?php esc_html_e('Voluntario', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Voluntario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         <?php endif; ?>
                     </div>

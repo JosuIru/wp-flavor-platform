@@ -121,7 +121,7 @@ if ($busqueda && strlen($busqueda) >= 2) {
                            name="q"
                            class="rs-busqueda-input"
                            value="<?php echo esc_attr($busqueda); ?>"
-                           placeholder="<?php echo esc_attr__('Buscar publicaciones, personas o hashtags...', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php echo esc_attr__('Buscar publicaciones, personas o hashtags...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <?php if ($busqueda): ?>
                         <a href="?" class="rs-busqueda-clear">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -142,7 +142,7 @@ if ($busqueda && strlen($busqueda) >= 2) {
                     <?php if ($hashtag_info): ?>
                         <p class="rs-hashtag-stats">
                             <?php printf(
-                                esc_html__('%s publicaciones', 'flavor-chat-ia'),
+                                esc_html__('%s publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 number_format($hashtag_info->total_usos)
                             ); ?>
                         </p>
@@ -152,7 +152,7 @@ if ($busqueda && strlen($busqueda) >= 2) {
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M19 12H5M12 19l-7-7 7-7"/>
                     </svg>
-                    <?php echo esc_html__('Volver a explorar', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Volver a explorar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
@@ -165,7 +165,7 @@ if ($busqueda && strlen($busqueda) >= 2) {
                             <line x1="10" y1="3" x2="8" y2="21"></line>
                             <line x1="16" y1="3" x2="14" y2="21"></line>
                         </svg>
-                        <p><?php echo esc_html__('No hay publicaciones con este hashtag.', 'flavor-chat-ia'); ?></p>
+                        <p><?php echo esc_html__('No hay publicaciones con este hashtag.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 <?php else: ?>
                     <?php foreach ($publicaciones_hashtag as $publicacion): ?>
@@ -213,13 +213,13 @@ if ($busqueda && strlen($busqueda) >= 2) {
             <!-- Resultados de busqueda -->
             <div class="rs-resultados-busqueda">
                 <div class="rs-resultados-tabs">
-                    <button class="rs-resultados-tab active" data-tab="todos"><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></button>
+                    <button class="rs-resultados-tab active" data-tab="todos"><?php echo esc_html__('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                     <button class="rs-resultados-tab" data-tab="usuarios">
-                        <?php echo esc_html__('Personas', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Personas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <span class="rs-tab-badge"><?php echo count($resultados_busqueda_usuarios); ?></span>
                     </button>
                     <button class="rs-resultados-tab" data-tab="publicaciones">
-                        <?php echo esc_html__('Publicaciones', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <span class="rs-tab-badge"><?php echo count($resultados_busqueda_posts); ?></span>
                     </button>
                 </div>
@@ -227,7 +227,7 @@ if ($busqueda && strlen($busqueda) >= 2) {
                 <!-- Usuarios encontrados -->
                 <?php if (!empty($resultados_busqueda_usuarios)): ?>
                     <div class="rs-resultados-seccion" data-seccion="usuarios">
-                        <h3 class="rs-resultados-titulo"><?php echo esc_html__('Personas', 'flavor-chat-ia'); ?></h3>
+                        <h3 class="rs-resultados-titulo"><?php echo esc_html__('Personas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="rs-resultados-usuarios">
                             <?php foreach ($resultados_busqueda_usuarios as $usuario_encontrado): ?>
                                 <?php
@@ -256,7 +256,7 @@ if ($busqueda && strlen($busqueda) >= 2) {
                                     <?php if ($usuario_encontrado->ID != $usuario_id): ?>
                                         <button class="rs-btn-seguir-mini <?php echo $sigo_usuario ? 'rs-siguiendo' : ''; ?>"
                                                 data-usuario-id="<?php echo esc_attr($usuario_encontrado->ID); ?>">
-                                            <?php echo $sigo_usuario ? esc_html__('Siguiendo', 'flavor-chat-ia') : esc_html__('Seguir', 'flavor-chat-ia'); ?>
+                                            <?php echo $sigo_usuario ? esc_html__('Siguiendo', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Seguir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </button>
                                     <?php endif; ?>
                                 </div>
@@ -268,7 +268,7 @@ if ($busqueda && strlen($busqueda) >= 2) {
                 <!-- Publicaciones encontradas -->
                 <?php if (!empty($resultados_busqueda_posts)): ?>
                     <div class="rs-resultados-seccion" data-seccion="publicaciones">
-                        <h3 class="rs-resultados-titulo"><?php echo esc_html__('Publicaciones', 'flavor-chat-ia'); ?></h3>
+                        <h3 class="rs-resultados-titulo"><?php echo esc_html__('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="rs-feed">
                             <?php foreach ($resultados_busqueda_posts as $publicacion): ?>
                                 <?php
@@ -297,8 +297,8 @@ if ($busqueda && strlen($busqueda) >= 2) {
                             <circle cx="11" cy="11" r="8"></circle>
                             <path d="M21 21l-4.35-4.35"></path>
                         </svg>
-                        <p><?php printf(esc_html__('No se encontraron resultados para "%s"', 'flavor-chat-ia'), esc_html($busqueda)); ?></p>
-                        <span><?php echo esc_html__('Intenta con otros terminos de busqueda.', 'flavor-chat-ia'); ?></span>
+                        <p><?php printf(esc_html__('No se encontraron resultados para "%s"', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($busqueda)); ?></p>
+                        <span><?php echo esc_html__('Intenta con otros terminos de busqueda.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 <?php endif; ?>
             </div>
@@ -314,7 +314,7 @@ if ($busqueda && strlen($busqueda) >= 2) {
                                 <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
                                 <polyline points="17 6 23 6 23 12"></polyline>
                             </svg>
-                            <?php echo esc_html__('Tendencias', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Tendencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
                         <div class="rs-tendencias-lista">
                             <?php foreach ($hashtags_trending as $indice => $hashtag): ?>
@@ -327,7 +327,7 @@ if ($busqueda && strlen($busqueda) >= 2) {
                                 </a>
                             <?php endforeach; ?>
                             <?php if (empty($hashtags_trending)): ?>
-                                <p class="rs-widget-vacio"><?php echo esc_html__('No hay tendencias aun.', 'flavor-chat-ia'); ?></p>
+                                <p class="rs-widget-vacio"><?php echo esc_html__('No hay tendencias aun.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -341,7 +341,7 @@ if ($busqueda && strlen($busqueda) >= 2) {
                                 <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
                                 <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                             </svg>
-                            <?php echo esc_html__('Usuarios populares', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Usuarios populares', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
                         <div class="rs-populares-lista">
                             <?php foreach (array_slice($usuarios_populares, 0, 5) as $popular): ?>
@@ -375,7 +375,7 @@ if ($busqueda && strlen($busqueda) >= 2) {
                                     <?php if ($popular->usuario_id != $usuario_id): ?>
                                         <button class="rs-btn-seguir-sm <?php echo $sigo_popular ? 'rs-siguiendo' : ''; ?>"
                                                 data-usuario-id="<?php echo esc_attr($popular->usuario_id); ?>">
-                                            <?php echo $sigo_popular ? esc_html__('Siguiendo', 'flavor-chat-ia') : esc_html__('Seguir', 'flavor-chat-ia'); ?>
+                                            <?php echo $sigo_popular ? esc_html__('Siguiendo', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Seguir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </button>
                                     <?php endif; ?>
                                 </div>
@@ -386,7 +386,7 @@ if ($busqueda && strlen($busqueda) >= 2) {
 
                 <!-- Columna principal: Galeria -->
                 <div class="rs-explorar-main">
-                    <h2 class="rs-explorar-section-titulo"><?php echo esc_html__('Descubre', 'flavor-chat-ia'); ?></h2>
+                    <h2 class="rs-explorar-section-titulo"><?php echo esc_html__('Descubre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
                     <div class="rs-explorar-grid">
                         <?php foreach ($publicaciones_galeria as $publicacion): ?>
@@ -421,9 +421,9 @@ if ($busqueda && strlen($busqueda) >= 2) {
                                     <circle cx="8.5" cy="8.5" r="1.5"/>
                                     <path d="M21 15l-5-5L5 21"/>
                                 </svg>
-                                <p><?php echo esc_html__('Aun no hay contenido para explorar.', 'flavor-chat-ia'); ?></p>
+                                <p><?php echo esc_html__('Aun no hay contenido para explorar.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                 <?php if ($usuario_id): ?>
-                                    <span><?php echo esc_html__('Se el primero en compartir algo con la comunidad.', 'flavor-chat-ia'); ?></span>
+                                    <span><?php echo esc_html__('Se el primero en compartir algo con la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php endif; ?>
                             </div>
                         <?php endif; ?>

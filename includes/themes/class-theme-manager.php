@@ -54,8 +54,8 @@ class Flavor_Theme_Manager {
                 'name' => 'Default',
                 'description' => 'Tema por defecto con colores neutros',
                 'category' => 'general',
-                'category_label' => __('General', 'flavor-chat-ia'),
-                'ideal_for' => __('Cualquier proyecto, punto de partida personalizable', 'flavor-chat-ia'),
+                'category_label' => __('General', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ideal_for' => __('Cualquier proyecto, punto de partida personalizable', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Inter',
                 'font_family_body' => 'Inter',
                 'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/default.png',
@@ -128,8 +128,8 @@ class Flavor_Theme_Manager {
                 'name' => 'Modern Purple',
                 'description' => 'Tema moderno con tonos púrpura',
                 'category' => 'general',
-                'category_label' => __('General', 'flavor-chat-ia'),
-                'ideal_for' => __('Proyectos creativos, agencias, portfolios', 'flavor-chat-ia'),
+                'category_label' => __('General', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ideal_for' => __('Proyectos creativos, agencias, portfolios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Poppins',
                 'font_family_body' => 'Inter',
                 'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/purple.png',
@@ -165,8 +165,8 @@ class Flavor_Theme_Manager {
                 'name' => 'Ocean Blue',
                 'description' => 'Tema fresco con azules oceánicos',
                 'category' => 'general',
-                'category_label' => __('General', 'flavor-chat-ia'),
-                'ideal_for' => __('Proyectos marítimos, wellness, viajes', 'flavor-chat-ia'),
+                'category_label' => __('General', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ideal_for' => __('Proyectos marítimos, wellness, viajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Inter',
                 'font_family_body' => 'Inter',
                 'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/ocean.png',
@@ -198,8 +198,8 @@ class Flavor_Theme_Manager {
                 'name' => 'Forest Green',
                 'description' => 'Tema natural con verdes bosque',
                 'category' => 'general',
-                'category_label' => __('General', 'flavor-chat-ia'),
-                'ideal_for' => __('Proyectos ecológicos, naturaleza, sostenibilidad', 'flavor-chat-ia'),
+                'category_label' => __('General', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ideal_for' => __('Proyectos ecológicos, naturaleza, sostenibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Nunito',
                 'font_family_body' => 'Open Sans',
                 'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/forest.png',
@@ -228,8 +228,8 @@ class Flavor_Theme_Manager {
                 'name' => 'Sunset Orange',
                 'description' => 'Tema cálido con naranjas atardecer',
                 'category' => 'general',
-                'category_label' => __('General', 'flavor-chat-ia'),
-                'ideal_for' => __('Proyectos creativos, eventos, entretenimiento', 'flavor-chat-ia'),
+                'category_label' => __('General', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ideal_for' => __('Proyectos creativos, eventos, entretenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Montserrat',
                 'font_family_body' => 'Open Sans',
                 'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/sunset.png',
@@ -258,8 +258,8 @@ class Flavor_Theme_Manager {
                 'name' => 'Dark Mode',
                 'description' => 'Tema oscuro para uso nocturno',
                 'category' => 'tecnologia',
-                'category_label' => __('Tecnologia', 'flavor-chat-ia'),
-                'ideal_for' => __('Apps, plataformas tech, uso nocturno', 'flavor-chat-ia'),
+                'category_label' => __('Tecnologia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ideal_for' => __('Apps, plataformas tech, uso nocturno', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Inter',
                 'font_family_body' => 'Inter',
                 'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/dark.png',
@@ -291,8 +291,8 @@ class Flavor_Theme_Manager {
                 'name' => 'Minimal',
                 'description' => 'Tema minimalista en blanco y negro',
                 'category' => 'cultura',
-                'category_label' => __('Cultura y Arte', 'flavor-chat-ia'),
-                'ideal_for' => __('Portfolios, diseño editorial, marcas premium', 'flavor-chat-ia'),
+                'category_label' => __('Cultura y Arte', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ideal_for' => __('Portfolios, diseño editorial, marcas premium', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Inter',
                 'font_family_body' => 'Inter',
                 'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/minimal.png',
@@ -327,8 +327,8 @@ class Flavor_Theme_Manager {
                 'name' => 'Corporate',
                 'description' => 'Tema profesional para empresas',
                 'category' => 'legal',
-                'category_label' => __('Legal y Finanzas', 'flavor-chat-ia'),
-                'ideal_for' => __('Empresas, corporaciones, consultoras', 'flavor-chat-ia'),
+                'category_label' => __('Legal y Finanzas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ideal_for' => __('Empresas, corporaciones, consultoras', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Montserrat',
                 'font_family_body' => 'Open Sans',
                 'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/corporate.png',
@@ -360,8 +360,8 @@ class Flavor_Theme_Manager {
                 'name' => 'Themacle',
                 'description' => 'Tema profesional con tonos indigo y turquesa (basado en Themacle v3)',
                 'category' => 'tecnologia',
-                'category_label' => __('Tecnologia', 'flavor-chat-ia'),
-                'ideal_for' => __('Startups, SaaS, plataformas digitales', 'flavor-chat-ia'),
+                'category_label' => __('Tecnologia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ideal_for' => __('Startups, SaaS, plataformas digitales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Roboto',
                 'font_family_body' => 'Roboto',
                 'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/themacle.png',
@@ -434,8 +434,8 @@ class Flavor_Theme_Manager {
                 'name' => 'Themacle Dark',
                 'description' => 'Variante oscura del tema Themacle',
                 'category' => 'tecnologia',
-                'category_label' => __('Tecnologia', 'flavor-chat-ia'),
-                'ideal_for' => __('Apps nocturnas, dashboards, herramientas dev', 'flavor-chat-ia'),
+                'category_label' => __('Tecnologia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ideal_for' => __('Apps nocturnas, dashboards, herramientas dev', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Roboto',
                 'font_family_body' => 'Roboto',
                 'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/themacle-dark.png',
@@ -504,8 +504,8 @@ class Flavor_Theme_Manager {
                 'name' => 'Zunbeltz',
                 'description' => 'Tema organico y natural para comunidades ecologicas',
                 'category' => 'alimentacion',
-                'category_label' => __('Alimentacion', 'flavor-chat-ia'),
-                'ideal_for' => __('Comunidades ecologicas, huertos, sostenibilidad', 'flavor-chat-ia'),
+                'category_label' => __('Alimentacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ideal_for' => __('Comunidades ecologicas, huertos, sostenibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Merriweather',
                 'font_family_body' => 'Merriweather',
                 'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/zunbeltz.png',
@@ -571,8 +571,8 @@ class Flavor_Theme_Manager {
                 'name' => 'Naarq',
                 'description' => 'Tema minimal y arquitectonico con bordes rectos',
                 'category' => 'inmobiliaria',
-                'category_label' => __('Inmobiliaria', 'flavor-chat-ia'),
-                'ideal_for' => __('Estudios de arquitectura, inmobiliarias, interiorismo', 'flavor-chat-ia'),
+                'category_label' => __('Inmobiliaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ideal_for' => __('Estudios de arquitectura, inmobiliarias, interiorismo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Bricolage Grotesque',
                 'font_family_body' => 'Inter',
                 'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/naarq.png',
@@ -638,8 +638,8 @@ class Flavor_Theme_Manager {
                 'name' => 'Campi',
                 'description' => 'Tema teatral y bold con colores vibrantes',
                 'category' => 'cultura',
-                'category_label' => __('Cultura y Arte', 'flavor-chat-ia'),
-                'ideal_for' => __('Teatros, espacios culturales, eventos artisticos', 'flavor-chat-ia'),
+                'category_label' => __('Cultura y Arte', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ideal_for' => __('Teatros, espacios culturales, eventos artisticos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Poppins',
                 'font_family_body' => 'Montserrat',
                 'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/campi.png',
@@ -711,8 +711,8 @@ class Flavor_Theme_Manager {
                 'name' => 'Denendako',
                 'description' => 'Tema limpio y minimal con acentos amarillos',
                 'category' => 'general',
-                'category_label' => __('General', 'flavor-chat-ia'),
-                'ideal_for' => __('Redes locales, comunidades, plataformas civicas', 'flavor-chat-ia'),
+                'category_label' => __('General', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ideal_for' => __('Redes locales, comunidades, plataformas civicas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Inter',
                 'font_family_body' => 'Inter',
                 'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/denendako.png',
@@ -778,8 +778,8 @@ class Flavor_Theme_Manager {
                 'name' => 'Escena Familiar',
                 'description' => 'Tema infantil y colorido con formas redondeadas',
                 'category' => 'infantil',
-                'category_label' => __('Infantil', 'flavor-chat-ia'),
-                'ideal_for' => __('Teatro familiar, actividades infantiles, ludotecas', 'flavor-chat-ia'),
+                'category_label' => __('Infantil', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ideal_for' => __('Teatro familiar, actividades infantiles, ludotecas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Nunito',
                 'font_family_body' => 'Quicksand',
                 'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/escena-familiar.png',
@@ -851,8 +851,8 @@ class Flavor_Theme_Manager {
                 'name' => 'Grupos de Consumo',
                 'description' => 'Tema fresco y organico para grupos de consumo y cooperativas alimentarias',
                 'category' => 'alimentacion',
-                'category_label' => __('Alimentacion', 'flavor-chat-ia'),
-                'ideal_for' => __('Grupos de consumo, cooperativas alimentarias, km0', 'flavor-chat-ia'),
+                'category_label' => __('Alimentacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ideal_for' => __('Grupos de consumo, cooperativas alimentarias, km0', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Nunito Sans',
                 'font_family_body' => 'Inter',
                 'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/grupos-consumo.png',
@@ -924,8 +924,8 @@ class Flavor_Theme_Manager {
                 'name' => 'Comunidad Viva',
                 'description' => 'Red social cooperativa local - Dashboard central del ecosistema Gailu',
                 'category' => 'tecnologia',
-                'category_label' => __('Tecnologia', 'flavor-chat-ia'),
-                'ideal_for' => __('Redes sociales locales, comunidades digitales, dashboards', 'flavor-chat-ia'),
+                'category_label' => __('Tecnologia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ideal_for' => __('Redes sociales locales, comunidades digitales, dashboards', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Inter',
                 'font_family_body' => 'Nunito Sans',
                 'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/comunidad-viva.png',
@@ -997,8 +997,8 @@ class Flavor_Theme_Manager {
                 'name' => 'Jantoki',
                 'description' => 'Restaurante cooperativo - Cocina comunitaria km0',
                 'category' => 'hosteleria',
-                'category_label' => __('Hosteleria', 'flavor-chat-ia'),
-                'ideal_for' => __('Restaurantes, cocinas comunitarias, catering', 'flavor-chat-ia'),
+                'category_label' => __('Hosteleria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ideal_for' => __('Restaurantes, cocinas comunitarias, catering', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Playfair Display',
                 'font_family_body' => 'Inter',
                 'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/jantoki.png',
@@ -1070,8 +1070,8 @@ class Flavor_Theme_Manager {
                 'name' => 'Mercado Espiral',
                 'description' => 'Marketplace cooperativo local con cashback en SEMILLA',
                 'category' => 'alimentacion',
-                'category_label' => __('Alimentacion', 'flavor-chat-ia'),
-                'ideal_for' => __('Marketplaces locales, tiendas online, comercio km0', 'flavor-chat-ia'),
+                'category_label' => __('Alimentacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ideal_for' => __('Marketplaces locales, tiendas online, comercio km0', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Nunito',
                 'font_family_body' => 'Inter',
                 'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/mercado-espiral.png',
@@ -1143,8 +1143,8 @@ class Flavor_Theme_Manager {
                 'name' => 'Spiral Bank',
                 'description' => 'Sistema financiero cooperativo multi-moneda - EUR + SEMILLA + Horas + ESTRELLAS',
                 'category' => 'legal',
-                'category_label' => __('Legal y Finanzas', 'flavor-chat-ia'),
-                'ideal_for' => __('Banca cooperativa, finanzas eticas, criptomonedas', 'flavor-chat-ia'),
+                'category_label' => __('Legal y Finanzas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ideal_for' => __('Banca cooperativa, finanzas eticas, criptomonedas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Space Grotesk',
                 'font_family_body' => 'Inter',
                 'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/spiral-bank.png',
@@ -1216,8 +1216,8 @@ class Flavor_Theme_Manager {
                 'name' => 'Red de Cuidados',
                 'description' => 'Red de apoyo mutuo y cuidados comunitarios',
                 'category' => 'salud',
-                'category_label' => __('Salud y Bienestar', 'flavor-chat-ia'),
-                'ideal_for' => __('Redes de cuidados, apoyo mutuo, servicios sociales', 'flavor-chat-ia'),
+                'category_label' => __('Salud y Bienestar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ideal_for' => __('Redes de cuidados, apoyo mutuo, servicios sociales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Nunito Sans',
                 'font_family_body' => 'Inter',
                 'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/red-cuidados.png',
@@ -1289,8 +1289,8 @@ class Flavor_Theme_Manager {
                 'name' => 'Academia Espiral',
                 'description' => 'Plataforma de aprendizaje entre iguales P2P con recompensas',
                 'category' => 'educacion',
-                'category_label' => __('Educacion', 'flavor-chat-ia'),
-                'ideal_for' => __('Plataformas e-learning, educacion P2P, cursos online', 'flavor-chat-ia'),
+                'category_label' => __('Educacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ideal_for' => __('Plataformas e-learning, educacion P2P, cursos online', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Plus Jakarta Sans',
                 'font_family_body' => 'Inter',
                 'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/academia-espiral.png',
@@ -1362,8 +1362,8 @@ class Flavor_Theme_Manager {
                 'name' => 'Democracia Universal',
                 'description' => 'Toma de decisiones colectiva con democracia liquida y votacion cuadratica',
                 'category' => 'tecnologia',
-                'category_label' => __('Tecnologia', 'flavor-chat-ia'),
-                'ideal_for' => __('Gobernanza participativa, votaciones, asambleas digitales', 'flavor-chat-ia'),
+                'category_label' => __('Tecnologia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ideal_for' => __('Gobernanza participativa, votaciones, asambleas digitales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Inter',
                 'font_family_body' => 'Nunito Sans',
                 'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/democracia-universal.png',
@@ -1435,8 +1435,8 @@ class Flavor_Theme_Manager {
                 'name' => 'FLUJO',
                 'description' => 'Red de video consciente - Alternativa a YouTube que recompensa impacto',
                 'category' => 'tecnologia',
-                'category_label' => __('Tecnologia', 'flavor-chat-ia'),
-                'ideal_for' => __('Plataformas de video, streaming, contenido multimedia', 'flavor-chat-ia'),
+                'category_label' => __('Tecnologia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ideal_for' => __('Plataformas de video, streaming, contenido multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Poppins',
                 'font_family_body' => 'Inter',
                 'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/flujo.png',
@@ -1508,8 +1508,8 @@ class Flavor_Theme_Manager {
                 'name' => 'Kulturaka',
                 'description' => 'Plataforma de eventos y produccion cultural cooperativa',
                 'category' => 'cultura',
-                'category_label' => __('Cultura y Arte', 'flavor-chat-ia'),
-                'ideal_for' => __('Eventos culturales, festivales, produccion artistica', 'flavor-chat-ia'),
+                'category_label' => __('Cultura y Arte', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ideal_for' => __('Eventos culturales, festivales, produccion artistica', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'DM Sans',
                 'font_family_body' => 'Inter',
                 'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/kulturaka.png',
@@ -1581,8 +1581,8 @@ class Flavor_Theme_Manager {
                 'name' => 'Pueblo Vivo',
                 'description' => 'Revitalizacion rural - Combatir la despoblacion con infraestructura digital',
                 'category' => 'inmobiliaria',
-                'category_label' => __('Inmobiliaria', 'flavor-chat-ia'),
-                'ideal_for' => __('Revitalizacion rural, municipios, desarrollo local', 'flavor-chat-ia'),
+                'category_label' => __('Inmobiliaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ideal_for' => __('Revitalizacion rural, municipios, desarrollo local', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Outfit',
                 'font_family_body' => 'Inter',
                 'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/pueblo-vivo.png',
@@ -1654,8 +1654,8 @@ class Flavor_Theme_Manager {
                 'name' => 'Ecos Comunitarios',
                 'description' => 'Gestion de espacios comunes y recursos compartidos',
                 'category' => 'general',
-                'category_label' => __('General', 'flavor-chat-ia'),
-                'ideal_for' => __('Coworkings, espacios compartidos, gestion de recursos', 'flavor-chat-ia'),
+                'category_label' => __('General', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ideal_for' => __('Coworkings, espacios compartidos, gestion de recursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'font_family_headings' => 'Nunito Sans',
                 'font_family_body' => 'Inter',
                 'preview' => FLAVOR_CHAT_IA_URL . 'assets/images/themes/ecos-comunitarios.png',
@@ -1795,7 +1795,7 @@ class Flavor_Theme_Manager {
                     'description' => $configuracion_tema['description'] ?? '',
                     'preview' => $configuracion_tema['preview'] ?? '',
                     'category' => $configuracion_tema['category'] ?? 'general',
-                    'category_label' => $configuracion_tema['category_label'] ?? __('General', 'flavor-chat-ia'),
+                    'category_label' => $configuracion_tema['category_label'] ?? __('General', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'ideal_for' => $configuracion_tema['ideal_for'] ?? '',
                     'font_family_headings' => $configuracion_tema['font_family_headings'] ?? 'Inter',
                     'font_family_body' => $configuracion_tema['font_family_body'] ?? 'Inter',
@@ -1833,11 +1833,11 @@ class Flavor_Theme_Manager {
      * @return array Array de categorías únicas
      */
     public function get_available_categories() {
-        $categorias = ['all' => __('Todos los temas', 'flavor-chat-ia')];
+        $categorias = ['all' => __('Todos los temas', FLAVOR_PLATFORM_TEXT_DOMAIN)];
 
         foreach ($this->themes as $configuracion_tema) {
             $categoria_id = $configuracion_tema['category'] ?? 'general';
-            $categoria_label = $configuracion_tema['category_label'] ?? __('General', 'flavor-chat-ia');
+            $categoria_label = $configuracion_tema['category_label'] ?? __('General', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
             if (!isset($categorias[$categoria_id])) {
                 $categorias[$categoria_id] = $categoria_label;
@@ -2085,7 +2085,7 @@ class Flavor_Theme_Manager {
                 'is_custom' => isset($custom_themes[$theme_id]),
                 'is_active' => $theme_id === $this->active_theme,
                 'category' => $categoria_tema,
-                'category_label' => $theme['category_label'] ?? __('General', 'flavor-chat-ia'),
+                'category_label' => $theme['category_label'] ?? __('General', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'ideal_for' => $theme['ideal_for'] ?? '',
                 'font_family_headings' => $theme['font_family_headings'] ?? 'Inter',
                 'font_family_body' => $theme['font_family_body'] ?? 'Inter',
@@ -2107,21 +2107,21 @@ class Flavor_Theme_Manager {
         check_ajax_referer('flavor_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $theme_id = sanitize_text_field($_POST['theme_id'] ?? '');
 
         if (!$theme_id) {
-            wp_send_json_error(['message' => __('ID de tema requerido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID de tema requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $result = $this->set_active_theme($theme_id);
 
         if ($result) {
-            wp_send_json_success(['message' => __('Tema aplicado', 'flavor-chat-ia')]);
+            wp_send_json_success(['message' => __('Tema aplicado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
-            wp_send_json_error(['message' => __('Tema no encontrado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Tema no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -2132,7 +2132,7 @@ class Flavor_Theme_Manager {
         check_ajax_referer('flavor_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $theme_id = sanitize_key($_POST['theme_id'] ?? '');
@@ -2143,7 +2143,7 @@ class Flavor_Theme_Manager {
         $variables_raw = isset($_POST['variables']) && is_array($_POST['variables']) ? $_POST['variables'] : [];
 
         if (!$theme_id || !$name) {
-            wp_send_json_error(['message' => __('Datos incompletos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // No permitir sobrescribir temas predefinidos
@@ -2171,7 +2171,7 @@ class Flavor_Theme_Manager {
         update_option('flavor_custom_themes', $custom_themes);
 
         wp_send_json_success([
-            'message' => __('Tema guardado', 'flavor-chat-ia'),
+            'message' => __('Tema guardado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'theme_id' => $theme_id,
         ]);
     }
@@ -2183,20 +2183,20 @@ class Flavor_Theme_Manager {
         check_ajax_referer('flavor_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $theme_id = sanitize_text_field($_POST['theme_id'] ?? '');
 
         // No permitir eliminar temas predefinidos
         if (isset($this->themes[$theme_id])) {
-            wp_send_json_error(['message' => __('No se puede eliminar un tema predefinido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No se puede eliminar un tema predefinido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $custom_themes = get_option('flavor_custom_themes', []);
 
         if (!isset($custom_themes[$theme_id])) {
-            wp_send_json_error(['message' => __('Tema no encontrado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Tema no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Si es el tema activo, cambiar al default
@@ -2207,7 +2207,7 @@ class Flavor_Theme_Manager {
         unset($custom_themes[$theme_id]);
         update_option('flavor_custom_themes', $custom_themes);
 
-        wp_send_json_success(['message' => __('Tema eliminado', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Tema eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -2220,7 +2220,7 @@ class Flavor_Theme_Manager {
         $theme = $this->get_theme($theme_id);
 
         if (!$theme) {
-            wp_send_json_error(['message' => __('Tema no encontrado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Tema no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $export_data = [
@@ -2245,25 +2245,25 @@ class Flavor_Theme_Manager {
         check_ajax_referer('flavor_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $theme_data_raw = isset($_POST['theme_data']) ? sanitize_textarea_field(wp_unslash($_POST['theme_data'])) : '';
 
         if (!$theme_data_raw) {
-            wp_send_json_error(['message' => __('Datos de tema requeridos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos de tema requeridos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $theme = json_decode($theme_data_raw, true);
 
         // Validar estructura del JSON
         if (!is_array($theme) || !isset($theme['name']) || !isset($theme['variables'])) {
-            wp_send_json_error(['message' => __('Formato de tema inválido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Formato de tema inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Validar que variables sea un array
         if (!is_array($theme['variables'])) {
-            wp_send_json_error(['message' => __('Las variables deben ser un array', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Las variables deben ser un array', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Generar ID único
@@ -2289,7 +2289,7 @@ class Flavor_Theme_Manager {
         update_option('flavor_custom_themes', $custom_themes);
 
         wp_send_json_success([
-            'message' => __('Tema importado', 'flavor-chat-ia'),
+            'message' => __('Tema importado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'theme_id' => $theme_id,
         ]);
     }
@@ -2382,7 +2382,7 @@ class Flavor_Theme_Manager {
         }
 
         return rest_ensure_response([
-            'message' => __('Tema guardado', 'flavor-chat-ia'),
+            'message' => __('Tema guardado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'active_theme' => $this->active_theme,
         ]);
     }

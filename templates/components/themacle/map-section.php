@@ -70,7 +70,7 @@ $url_mapa_incrustado = ! empty( $direccion )
                             <div>
                                 <p class="font-semibold text-sm uppercase tracking-wider mb-1"
                                    style="color: var(--flavor-heading-color, #111827);">
-                                    <?php echo esc_html__( 'Address', 'flavor-chat-ia' ); ?>
+                                    <?php echo esc_html__( 'Address', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                                 </p>
                                 <p style="color: var(--flavor-text-color, #374151);">
                                     <?php echo esc_html( $direccion ); ?>
@@ -92,7 +92,7 @@ $url_mapa_incrustado = ! empty( $direccion )
                             <div>
                                 <p class="font-semibold text-sm uppercase tracking-wider mb-1"
                                    style="color: var(--flavor-heading-color, #111827);">
-                                    <?php echo esc_html__( 'Phone', 'flavor-chat-ia' ); ?>
+                                    <?php echo esc_html__( 'Phone', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                                 </p>
                                 <a href="tel:<?php echo esc_attr( $telefono ); ?>"
                                    class="hover:underline transition-colors duration-200"
@@ -116,7 +116,7 @@ $url_mapa_incrustado = ! empty( $direccion )
                             <div>
                                 <p class="font-semibold text-sm uppercase tracking-wider mb-1"
                                    style="color: var(--flavor-heading-color, #111827);">
-                                    <?php echo esc_html__( 'Email', 'flavor-chat-ia' ); ?>
+                                    <?php echo esc_html__( 'Email', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                                 </p>
                                 <a href="mailto:<?php echo esc_attr( $email ); ?>"
                                    class="hover:underline transition-colors duration-200"
@@ -140,7 +140,7 @@ $url_mapa_incrustado = ! empty( $direccion )
                             <div>
                                 <p class="font-semibold text-sm uppercase tracking-wider mb-1"
                                    style="color: var(--flavor-heading-color, #111827);">
-                                    <?php echo esc_html__( 'Hours', 'flavor-chat-ia' ); ?>
+                                    <?php echo esc_html__( 'Hours', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                                 </p>
                                 <p style="color: var(--flavor-text-color, #374151);">
                                     <?php echo esc_html( $horario ); ?>
@@ -159,7 +159,7 @@ $url_mapa_incrustado = ! empty( $direccion )
 
                         <h3 class="text-xl font-bold mb-6"
                             style="color: var(--flavor-heading-color, #111827);">
-                            <?php echo esc_html__( 'Send us a message', 'flavor-chat-ia' ); ?>
+                            <?php echo esc_html__( 'Send us a message', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                         </h3>
 
                         <form class="flavor-contact-form space-y-4" method="post">
@@ -170,7 +170,7 @@ $url_mapa_incrustado = ! empty( $direccion )
                                 <label for="flavor_contact_nombre"
                                        class="block text-sm font-medium mb-1"
                                        style="color: var(--flavor-heading-color, #111827);">
-                                    <?php echo esc_html__( 'Name', 'flavor-chat-ia' ); ?>
+                                    <?php echo esc_html__( 'Name', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                                 </label>
                                 <input type="text"
                                        id="flavor_contact_nombre"
@@ -180,14 +180,14 @@ $url_mapa_incrustado = ! empty( $direccion )
                                               focus:outline-none focus:ring-2 transition-shadow duration-200"
                                        style="border-color: var(--flavor-border-color, #d1d5db);
                                               focus-ring-color: var(--flavor-primary, #3b82f6);"
-                                       placeholder="<?php echo esc_attr__( 'Your name', 'flavor-chat-ia' ); ?>" />
+                                       placeholder="<?php echo esc_attr__( 'Your name', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>" />
                             </div>
 
                             <div>
                                 <label for="flavor_contact_email"
                                        class="block text-sm font-medium mb-1"
                                        style="color: var(--flavor-heading-color, #111827);">
-                                    <?php echo esc_html__( 'Email', 'flavor-chat-ia' ); ?>
+                                    <?php echo esc_html__( 'Email', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                                 </label>
                                 <input type="email"
                                        id="flavor_contact_email"
@@ -196,14 +196,14 @@ $url_mapa_incrustado = ! empty( $direccion )
                                        class="w-full rounded-lg border px-4 py-2.5 text-sm
                                               focus:outline-none focus:ring-2 transition-shadow duration-200"
                                        style="border-color: var(--flavor-border-color, #d1d5db);"
-                                       placeholder="<?php echo esc_attr__( 'your@email.com', 'flavor-chat-ia' ); ?>" />
+                                       placeholder="<?php echo esc_attr__( 'your@email.com', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>" />
                             </div>
 
                             <div>
                                 <label for="flavor_contact_mensaje"
                                        class="block text-sm font-medium mb-1"
                                        style="color: var(--flavor-heading-color, #111827);">
-                                    <?php echo esc_html__( 'Message', 'flavor-chat-ia' ); ?>
+                                    <?php echo esc_html__( 'Message', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                                 </label>
                                 <textarea id="flavor_contact_mensaje"
                                           name="flavor_contact_mensaje"
@@ -212,7 +212,7 @@ $url_mapa_incrustado = ! empty( $direccion )
                                           class="w-full rounded-lg border px-4 py-2.5 text-sm resize-y
                                                  focus:outline-none focus:ring-2 transition-shadow duration-200"
                                           style="border-color: var(--flavor-border-color, #d1d5db);"
-                                          placeholder="<?php echo esc_attr__( 'How can we help?', 'flavor-chat-ia' ); ?>"></textarea>
+                                          placeholder="<?php echo esc_attr__( 'How can we help?', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"></textarea>
                             </div>
 
                             <button type="submit"
@@ -221,7 +221,7 @@ $url_mapa_incrustado = ! empty( $direccion )
                                            focus:outline-none focus:ring-2 focus:ring-offset-2"
                                     style="background-color: var(--flavor-primary, #3b82f6);
                                            --tw-ring-color: var(--flavor-primary, #3b82f6);">
-                                <?php echo esc_html__( 'Send message', 'flavor-chat-ia' ); ?>
+                                <?php echo esc_html__( 'Send message', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                             </button>
                         </form>
                     </div>
@@ -240,14 +240,14 @@ $url_mapa_incrustado = ! empty( $direccion )
                                 allowfullscreen=""
                                 loading="lazy"
                                 referrerpolicy="no-referrer-when-downgrade"
-                                title="<?php echo esc_attr__( 'Map location', 'flavor-chat-ia' ); ?>">
+                                title="<?php echo esc_attr__( 'Map location', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
                         </iframe>
                     </div>
                 <?php else : ?>
                     <div class="rounded-xl flex items-center justify-center h-full min-h-[400px]"
                          style="background-color: var(--flavor-surface-color, #f3f4f6);">
                         <p class="text-center px-6" style="color: var(--flavor-text-color, #6b7280);">
-                            <?php echo esc_html__( 'No address provided for the map.', 'flavor-chat-ia' ); ?>
+                            <?php echo esc_html__( 'No address provided for the map.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                         </p>
                     </div>
                 <?php endif; ?>

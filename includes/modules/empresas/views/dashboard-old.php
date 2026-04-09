@@ -14,14 +14,14 @@ if (!defined('ABSPATH')) {
         <div class="dm-header-content">
             <h1 class="dm-title">
                 <span class="dashicons dashicons-building"></span>
-                <?php esc_html_e('Dashboard de Empresas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Dashboard de Empresas', 'flavor-platform'); ?>
             </h1>
-            <p class="dm-subtitle"><?php esc_html_e('Gestiona las empresas de tu comunidad', 'flavor-chat-ia'); ?></p>
+            <p class="dm-subtitle"><?php esc_html_e('Gestiona las empresas de tu comunidad', 'flavor-platform'); ?></p>
         </div>
         <div class="dm-header-actions">
             <a href="<?php echo esc_url(admin_url('admin.php?page=empresas-listado&action=crear')); ?>" class="button button-primary">
                 <span class="dashicons dashicons-plus-alt"></span>
-                <?php esc_html_e('Nueva empresa', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Nueva empresa', 'flavor-platform'); ?>
             </a>
         </div>
     </div>
@@ -29,27 +29,27 @@ if (!defined('ABSPATH')) {
     <!-- KPIs -->
     <div class="dm-kpi-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px;">
         <div style="background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;padding:20px;border-radius:12px;">
-            <div style="font-size:12px;opacity:0.9;margin-bottom:4px;"><?php esc_html_e('Empresas activas', 'flavor-chat-ia'); ?></div>
+            <div style="font-size:12px;opacity:0.9;margin-bottom:4px;"><?php esc_html_e('Empresas activas', 'flavor-platform'); ?></div>
             <div style="font-size:32px;font-weight:700;"><?php echo esc_html($total_activas); ?></div>
         </div>
 
         <div style="background:linear-gradient(135deg,<?php echo $total_pendientes > 0 ? '#f59e0b,#d97706' : '#6b7280,#4b5563'; ?>);color:#fff;padding:20px;border-radius:12px;">
-            <div style="font-size:12px;opacity:0.9;margin-bottom:4px;"><?php esc_html_e('Solicitudes pendientes', 'flavor-chat-ia'); ?></div>
+            <div style="font-size:12px;opacity:0.9;margin-bottom:4px;"><?php esc_html_e('Solicitudes pendientes', 'flavor-platform'); ?></div>
             <div style="font-size:32px;font-weight:700;"><?php echo esc_html($total_pendientes); ?></div>
             <?php if ($total_pendientes > 0): ?>
             <a href="<?php echo esc_url(admin_url('admin.php?page=empresas-solicitudes')); ?>" style="color:#fff;font-size:12px;opacity:0.9;">
-                <?php esc_html_e('Revisar →', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Revisar →', 'flavor-platform'); ?>
             </a>
             <?php endif; ?>
         </div>
 
         <div style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;padding:20px;border-radius:12px;">
-            <div style="font-size:12px;opacity:0.9;margin-bottom:4px;"><?php esc_html_e('Miembros totales', 'flavor-chat-ia'); ?></div>
+            <div style="font-size:12px;opacity:0.9;margin-bottom:4px;"><?php esc_html_e('Miembros totales', 'flavor-platform'); ?></div>
             <div style="font-size:32px;font-weight:700;"><?php echo esc_html($total_miembros); ?></div>
         </div>
 
         <div style="background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;padding:20px;border-radius:12px;">
-            <div style="font-size:12px;opacity:0.9;margin-bottom:4px;"><?php esc_html_e('Suspendidas', 'flavor-chat-ia'); ?></div>
+            <div style="font-size:12px;opacity:0.9;margin-bottom:4px;"><?php esc_html_e('Suspendidas', 'flavor-platform'); ?></div>
             <div style="font-size:32px;font-weight:700;"><?php echo esc_html($total_suspendidas); ?></div>
         </div>
     </div>
@@ -62,16 +62,16 @@ if (!defined('ABSPATH')) {
             <div style="background:#fff;padding:20px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1);margin-bottom:20px;">
                 <h3 style="margin:0 0 16px;font-size:16px;font-weight:600;">
                     <span class="dashicons dashicons-building" style="color:#3b82f6;"></span>
-                    <?php esc_html_e('Últimas empresas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Últimas empresas', 'flavor-platform'); ?>
                 </h3>
                 <?php if (!empty($ultimas_empresas)): ?>
                 <table class="widefat" style="border:none;">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('Empresa', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Sector', 'flavor-chat-ia'); ?></th>
-                            <th style="text-align:center;"><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Empresa', 'flavor-platform'); ?></th>
+                            <th><?php esc_html_e('Tipo', 'flavor-platform'); ?></th>
+                            <th><?php esc_html_e('Sector', 'flavor-platform'); ?></th>
+                            <th style="text-align:center;"><?php esc_html_e('Acciones', 'flavor-platform'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -92,10 +92,10 @@ if (!defined('ABSPATH')) {
                             </td>
                             <td><?php echo esc_html(ucfirst($emp->sector ?: '-')); ?></td>
                             <td style="text-align:center;">
-                                <a href="<?php echo esc_url(admin_url('admin.php?page=empresas-listado&action=ver&id=' . $emp->id)); ?>" title="<?php esc_attr_e('Ver', 'flavor-chat-ia'); ?>">
+                                <a href="<?php echo esc_url(admin_url('admin.php?page=empresas-listado&action=ver&id=' . $emp->id)); ?>" title="<?php esc_attr_e('Ver', 'flavor-platform'); ?>">
                                     <span class="dashicons dashicons-visibility"></span>
                                 </a>
-                                <a href="<?php echo esc_url(admin_url('admin.php?page=empresas-listado&action=miembros&id=' . $emp->id)); ?>" title="<?php esc_attr_e('Miembros', 'flavor-chat-ia'); ?>">
+                                <a href="<?php echo esc_url(admin_url('admin.php?page=empresas-listado&action=miembros&id=' . $emp->id)); ?>" title="<?php esc_attr_e('Miembros', 'flavor-platform'); ?>">
                                     <span class="dashicons dashicons-groups"></span>
                                 </a>
                             </td>
@@ -104,14 +104,14 @@ if (!defined('ABSPATH')) {
                     </tbody>
                 </table>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=empresas-listado')); ?>" style="display:block;text-align:center;margin-top:12px;color:#2563eb;">
-                    <?php esc_html_e('Ver todas las empresas →', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver todas las empresas →', 'flavor-platform'); ?>
                 </a>
                 <?php else: ?>
                 <p style="color:#666;text-align:center;padding:20px;">
-                    <?php esc_html_e('No hay empresas registradas aún.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('No hay empresas registradas aún.', 'flavor-platform'); ?>
                     <br>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=empresas-listado&action=crear')); ?>" class="button" style="margin-top:10px;">
-                        <?php esc_html_e('Crear primera empresa', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Crear primera empresa', 'flavor-platform'); ?>
                     </a>
                 </p>
                 <?php endif; ?>
@@ -122,7 +122,7 @@ if (!defined('ABSPATH')) {
             <div style="background:#fff;padding:20px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
                 <h3 style="margin:0 0 16px;font-size:16px;font-weight:600;color:#f59e0b;">
                     <span class="dashicons dashicons-clock"></span>
-                    <?php esc_html_e('Solicitudes pendientes', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Solicitudes pendientes', 'flavor-platform'); ?>
                 </h3>
                 <table class="widefat" style="border:none;">
                     <tbody>
@@ -137,7 +137,7 @@ if (!defined('ABSPATH')) {
                             <td><?php echo esc_html(strtoupper($sol->tipo)); ?></td>
                             <td style="text-align:right;">
                                 <a href="<?php echo esc_url(admin_url('admin.php?page=empresas-solicitudes')); ?>" class="button button-small">
-                                    <?php esc_html_e('Revisar', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Revisar', 'flavor-platform'); ?>
                                 </a>
                             </td>
                         </tr>
@@ -153,7 +153,7 @@ if (!defined('ABSPATH')) {
             <!-- Por tipo -->
             <div style="background:#fff;padding:20px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1);margin-bottom:20px;">
                 <h3 style="margin:0 0 16px;font-size:16px;font-weight:600;">
-                    <?php esc_html_e('Por tipo', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Por tipo', 'flavor-platform'); ?>
                 </h3>
                 <?php if (!empty($por_tipo)): ?>
                 <ul style="list-style:none;margin:0;padding:0;">
@@ -177,14 +177,14 @@ if (!defined('ABSPATH')) {
                     <?php endforeach; ?>
                 </ul>
                 <?php else: ?>
-                <p style="color:#666;"><?php esc_html_e('Sin datos', 'flavor-chat-ia'); ?></p>
+                <p style="color:#666;"><?php esc_html_e('Sin datos', 'flavor-platform'); ?></p>
                 <?php endif; ?>
             </div>
 
             <!-- Por sector -->
             <div style="background:#fff;padding:20px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
                 <h3 style="margin:0 0 16px;font-size:16px;font-weight:600;">
-                    <?php esc_html_e('Por sector', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Por sector', 'flavor-platform'); ?>
                 </h3>
                 <?php if (!empty($por_sector)): ?>
                 <ul style="list-style:none;margin:0;padding:0;">
@@ -196,7 +196,7 @@ if (!defined('ABSPATH')) {
                     <?php endforeach; ?>
                 </ul>
                 <?php else: ?>
-                <p style="color:#666;"><?php esc_html_e('Sin datos', 'flavor-chat-ia'); ?></p>
+                <p style="color:#666;"><?php esc_html_e('Sin datos', 'flavor-platform'); ?></p>
                 <?php endif; ?>
             </div>
         </div>

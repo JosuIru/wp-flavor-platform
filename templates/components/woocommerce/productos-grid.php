@@ -41,7 +41,7 @@ $productos_ejemplo = $productos_ejemplo ?? [
     <div class="flavor-container">
         <div class="text-center mb-10">
             <h2 class="text-2xl lg:text-3xl font-bold text-gray-800 mb-2"><?php echo esc_html($titulo_seccion); ?></h2>
-            <p class="text-gray-500"><?php echo esc_html__('Los productos mas populares de nuestra tienda', 'flavor-chat-ia'); ?></p>
+            <p class="text-gray-500"><?php echo esc_html__('Los productos mas populares de nuestra tienda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
@@ -60,7 +60,7 @@ $productos_ejemplo = $productos_ejemplo ?? [
                         </div>
                         <?php if (!empty($producto_item['precio_oferta'])) : ?>
                             <div class="absolute top-3 right-3 px-2 py-1 rounded-md bg-red-500 text-white text-xs font-bold">
-                                <?php echo esc_html__('OFERTA', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('OFERTA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -105,7 +105,7 @@ $productos_ejemplo = $productos_ejemplo ?? [
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/>
                             </svg>
-                            <?php echo esc_html__('Anadir al Carrito', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Anadir al Carrito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </div>

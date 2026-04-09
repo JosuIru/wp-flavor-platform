@@ -134,13 +134,13 @@ $iconos_caracteristicas = [
 
 // Etiquetas de caracteristicas
 $etiquetas_caracteristicas = [
-    'terraza'        => __('Terraza', 'flavor-chat-ia'),
-    'wifi'           => __('WiFi', 'flavor-chat-ia'),
-    'accesible'      => __('Accesible', 'flavor-chat-ia'),
-    'mascotas'       => __('Mascotas', 'flavor-chat-ia'),
-    'reservas'       => __('Reservas', 'flavor-chat-ia'),
-    'musica_en_vivo' => __('Musica en vivo', 'flavor-chat-ia'),
-    'vistas'         => __('Vistas', 'flavor-chat-ia'),
+    'terraza'        => __('Terraza', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'wifi'           => __('WiFi', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'accesible'      => __('Accesible', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'mascotas'       => __('Mascotas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'reservas'       => __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'musica_en_vivo' => __('Musica en vivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'vistas'         => __('Vistas', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 
@@ -150,26 +150,26 @@ $etiquetas_caracteristicas = [
             <!-- Header -->
             <div class="text-center mb-12">
                 <h2 class="text-4xl md:text-5xl font-black mb-4" style="color: var(--flavor-text, #111827);">
-                    <?php echo esc_html($titulo_seccion ?? __('Establecimientos Destacados', 'flavor-chat-ia')); ?>
+                    <?php echo esc_html($titulo_seccion ?? __('Establecimientos Destacados', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                 </h2>
                 <p class="text-xl max-w-3xl mx-auto" style="color: var(--flavor-text-muted, #6b7280);">
-                    <?php _e('Encuentra tu proximo lugar favorito entre nuestra seleccion de bares, restaurantes y mas', 'flavor-chat-ia'); ?>
+                    <?php _e('Encuentra tu proximo lugar favorito entre nuestra seleccion de bares, restaurantes y mas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
             <!-- Filtros por tipo -->
             <div class="flex flex-wrap justify-center gap-3 mb-12">
                 <button class="px-6 py-2.5 rounded-full font-semibold text-sm transition-all duration-200 hover:shadow-md" style="background: var(--flavor-primary); color: white;">
-                    <?php _e('Todos', 'flavor-chat-ia'); ?>
+                    <?php _e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <?php
                 $filtros_tipo_disponibles = [
-                    'bar'         => __('Bares', 'flavor-chat-ia'),
-                    'restaurante' => __('Restaurantes', 'flavor-chat-ia'),
-                    'cafeteria'   => __('Cafeterias', 'flavor-chat-ia'),
-                    'pub'         => __('Pubs', 'flavor-chat-ia'),
-                    'terraza'     => __('Terrazas', 'flavor-chat-ia'),
-                    'cocteleria'  => __('Coctelerias', 'flavor-chat-ia'),
+                    'bar'         => __('Bares', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'restaurante' => __('Restaurantes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'cafeteria'   => __('Cafeterias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'pub'         => __('Pubs', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'terraza'     => __('Terrazas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'cocteleria'  => __('Coctelerias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
                 foreach ($filtros_tipo_disponibles as $clave_filtro => $texto_filtro): ?>
                     <button class="px-6 py-2.5 bg-white rounded-full font-semibold text-sm border transition-all duration-200 hover:shadow-md" style="color: var(--flavor-text, #374151); border-color: #e5e7eb;">
@@ -244,10 +244,10 @@ $etiquetas_caracteristicas = [
                         <!-- Acciones -->
                         <div class="flex items-center justify-between">
                             <a href="#ver-carta" class="text-sm font-semibold transition-colors" style="color: var(--flavor-primary);">
-                                <?php _e('Ver carta', 'flavor-chat-ia'); ?> &rarr;
+                                <?php _e('Ver carta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> &rarr;
                             </a>
                             <a href="#reservar" class="px-5 py-2 rounded-lg font-semibold text-sm text-white transition-all duration-200 hover:shadow-lg" style="background: var(--flavor-primary);">
-                                <?php _e('Reservar', 'flavor-chat-ia'); ?>
+                                <?php _e('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </div>
                     </div>
@@ -258,7 +258,7 @@ $etiquetas_caracteristicas = [
             <!-- Cargar mas -->
             <div class="text-center mt-12">
                 <button class="px-8 py-3 rounded-full font-bold text-white shadow-lg hover:shadow-xl transition-all duration-200" style="background: var(--flavor-primary);">
-                    <?php _e('Ver mas establecimientos', 'flavor-chat-ia'); ?>
+                    <?php _e('Ver mas establecimientos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </div>

@@ -84,8 +84,8 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
     public function __construct() {
         global $wpdb;
         $this->prefix_tabla = $wpdb->prefix . 'flavor_gc_';
-        $this->title = __('Grupos de Consumo', 'flavor-chat-ia');
-        $this->description = __('Gestiona tus pedidos y compras colaborativas', 'flavor-chat-ia');
+        $this->title = __('Grupos de Consumo', 'flavor-platform');
+        $this->description = __('Gestiona tus pedidos y compras colaborativas', 'flavor-platform');
 
         parent::__construct([
             'id' => $this->widget_id,
@@ -112,7 +112,7 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             return [
                 'stats' => [],
                 'items' => [],
-                'empty_state' => __('Inicia sesión para ver tus datos', 'flavor-chat-ia'),
+                'empty_state' => __('Inicia sesión para ver tus datos', 'flavor-platform'),
                 'footer' => [],
             ];
         }
@@ -193,7 +193,7 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $stats[] = [
                 'icon' => 'dashicons-calendar-alt',
                 'valor' => $ciclo_activo['titulo'],
-                'label' => __('Ciclo activo', 'flavor-chat-ia'),
+                'label' => __('Ciclo activo', 'flavor-platform'),
                 'color' => 'success',
                 'url' => $es_admin ? admin_url('admin.php?page=grupos-consumo') : Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos'),
             ];
@@ -203,14 +203,14 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $stats[] = [
                 'icon' => 'dashicons-clock',
                 'valor' => $tiempo_restante,
-                'label' => __('Cierra en', 'flavor-chat-ia'),
+                'label' => __('Cierra en', 'flavor-platform'),
                 'color' => $this->get_urgencia_color($ciclo_activo['fecha_cierre']),
             ];
         } else {
             $stats[] = [
                 'icon' => 'dashicons-calendar-alt',
-                'valor' => __('Sin ciclo', 'flavor-chat-ia'),
-                'label' => __('Ciclo activo', 'flavor-chat-ia'),
+                'valor' => __('Sin ciclo', 'flavor-platform'),
+                'label' => __('Ciclo activo', 'flavor-platform'),
                 'color' => 'gray',
             ];
         }
@@ -219,7 +219,7 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         $stats[] = [
             'icon' => 'dashicons-chart-line',
             'valor' => number_format($gasto_mes, 2, ',', '.') . ' €',
-            'label' => __('Este mes', 'flavor-chat-ia'),
+            'label' => __('Este mes', 'flavor-platform'),
             'color' => 'primary',
             'url' => $es_admin ? admin_url('admin.php?page=gc-pedidos') : Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mis-pedidos'),
         ];
@@ -228,7 +228,7 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         $stats[] = [
             'icon' => 'dashicons-cart',
             'valor' => $items_cesta,
-            'label' => __('En cesta', 'flavor-chat-ia'),
+            'label' => __('En cesta', 'flavor-platform'),
             'color' => $items_cesta > 0 ? 'warning' : 'gray',
             'url' => $es_admin ? admin_url('admin.php?page=gc-pedidos') : Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mi-pedido'),
         ];
@@ -239,10 +239,10 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats,
             'items' => $items,
-            'empty_state' => __('No tienes productos en tu cesta', 'flavor-chat-ia'),
+            'empty_state' => __('No tienes productos en tu cesta', 'flavor-platform'),
             'footer' => [
                 [
-                    'label' => $es_admin ? __('Ver panel', 'flavor-chat-ia') : __('Ver productos', 'flavor-chat-ia'),
+                    'label' => $es_admin ? __('Ver panel', 'flavor-platform') : __('Ver productos', 'flavor-platform'),
                     'url' => $es_admin ? admin_url('admin.php?page=grupos-consumo') : Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
@@ -329,24 +329,24 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         $diferencia = $timestamp_cierre - $timestamp_actual;
 
         if ($diferencia <= 0) {
-            return __('Cerrado', 'flavor-chat-ia');
+            return __('Cerrado', 'flavor-platform');
         }
 
         if ($diferencia < 3600) {
             // Menos de 1 hora
             $minutos = ceil($diferencia / 60);
-            return sprintf(__('%d min', 'flavor-chat-ia'), $minutos);
+            return sprintf(__('%d min', 'flavor-platform'), $minutos);
         }
 
         if ($diferencia < 86400) {
             // Menos de 24 horas
             $horas = ceil($diferencia / 3600);
-            return sprintf(__('%d h', 'flavor-chat-ia'), $horas);
+            return sprintf(__('%d h', 'flavor-platform'), $horas);
         }
 
         // Días
         $dias = ceil($diferencia / 86400);
-        return sprintf(_n('%d día', '%d días', $dias, 'flavor-chat-ia'), $dias);
+        return sprintf(_n('%d día', '%d días', $dias, 'flavor-platform'), $dias);
     }
 
     /**
@@ -416,8 +416,8 @@ class Flavor_GC_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         foreach ($items_db as $item) {
             $items[] = [
                 'icon' => 'dashicons-carrot',
-                'title' => $item->nombre_producto ?: __('Producto', 'flavor-chat-ia'),
-                'meta' => sprintf(__('Cantidad: %d', 'flavor-chat-ia'), $item->cantidad),
+                'title' => $item->nombre_producto ?: __('Producto', 'flavor-platform'),
+                'meta' => sprintf(__('Cantidad: %d', 'flavor-platform'), $item->cantidad),
                 'url' => $url_cesta,
             ];
         }

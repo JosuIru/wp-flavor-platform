@@ -34,7 +34,7 @@ $esta_logueado = is_user_logged_in();
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
             </svg>
-            <?php esc_html_e('Contenido exclusivo', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Contenido exclusivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </div>
 
         <div class="flavor-access-icon">
@@ -47,7 +47,7 @@ $esta_logueado = is_user_logged_in();
         </div>
 
         <h2 class="flavor-access-title">
-            <?php esc_html_e('Area exclusiva para miembros', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Area exclusiva para miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
 
         <p class="flavor-access-description">
@@ -55,7 +55,7 @@ $esta_logueado = is_user_logged_in();
                 <?php
                 printf(
                     /* translators: %s: nombre de usuario */
-                    esc_html__('Hola %s, este contenido esta reservado para miembros activos de nuestra comunidad. Si crees que deberias tener acceso, contacta con nosotros.', 'flavor-chat-ia'),
+                    esc_html__('Hola %s, este contenido esta reservado para miembros activos de nuestra comunidad. Si crees que deberias tener acceso, contacta con nosotros.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     esc_html($usuario_actual->display_name)
                 );
                 ?>
@@ -63,7 +63,7 @@ $esta_logueado = is_user_logged_in();
                 <?php
                 printf(
                     /* translators: %s: nombre de la organizacion */
-                    esc_html__('Este contenido esta disponible exclusivamente para los miembros de %s. Unete a nuestra comunidad para disfrutar de todos los beneficios.', 'flavor-chat-ia'),
+                    esc_html__('Este contenido esta disponible exclusivamente para los miembros de %s. Unete a nuestra comunidad para disfrutar de todos los beneficios.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     esc_html($nombre_organizacion)
                 );
                 ?>
@@ -72,23 +72,23 @@ $esta_logueado = is_user_logged_in();
 
         <?php if (!$esta_logueado) : ?>
             <div class="flavor-access-benefits">
-                <h3><?php esc_html_e('Beneficios de ser miembro:', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Beneficios de ser miembro:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <ul>
                     <li>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                        <?php esc_html_e('Acceso a contenido exclusivo', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Acceso a contenido exclusivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </li>
                     <li>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                        <?php esc_html_e('Participacion en actividades', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Participacion en actividades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </li>
                     <li>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                        <?php esc_html_e('Descuentos y promociones especiales', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Descuentos y promociones especiales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </li>
                     <li>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                        <?php esc_html_e('Comunidad y networking', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Comunidad y networking', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </li>
                 </ul>
             </div>
@@ -98,20 +98,20 @@ $esta_logueado = is_user_logged_in();
             <?php if (!$esta_logueado) : ?>
                 <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="flavor-btn flavor-btn-secondary">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
-                    <?php esc_html_e('Ya soy miembro', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ya soy miembro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="<?php echo esc_url($url_membresia); ?>" class="flavor-btn flavor-btn-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
-                    <?php esc_html_e('Hacerme miembro', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Hacerme miembro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             <?php else : ?>
                 <a href="<?php echo esc_url($url_membresia); ?>" class="flavor-btn flavor-btn-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
-                    <?php esc_html_e('Activar mi membresia', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Activar mi membresia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="<?php echo esc_url($url_contacto); ?>" class="flavor-btn flavor-btn-secondary">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-                    <?php esc_html_e('Contactar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Contactar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             <?php endif; ?>
         </div>
@@ -119,7 +119,7 @@ $esta_logueado = is_user_logged_in();
         <?php if (!$esta_logueado) : ?>
             <p class="flavor-access-note">
                 <a href="<?php echo esc_url($url_beneficios); ?>">
-                    <?php esc_html_e('Ver todos los beneficios de ser miembro', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver todos los beneficios de ser miembro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                 </a>
             </p>

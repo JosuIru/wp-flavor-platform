@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$titulo_de_seccion          = !empty($titulo_seccion) ? $titulo_seccion : __('Proyectos en Marcha', 'flavor-chat-ia');
+$titulo_de_seccion          = !empty($titulo_seccion) ? $titulo_seccion : __('Proyectos en Marcha', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $debe_mostrar_progreso      = isset($mostrar_progreso) ? (bool) $mostrar_progreso : true;
 $clases_componente          = !empty($component_classes) ? $component_classes : '';
 
@@ -106,10 +106,10 @@ $colores_estado_proyecto = [
 ];
 
 $etiquetas_estado_proyecto = [
-    'planificado' => __('Planificado', 'flavor-chat-ia'),
-    'en_curso'    => __('En curso', 'flavor-chat-ia'),
-    'completado'  => __('Completado', 'flavor-chat-ia'),
-    'cancelado'   => __('Cancelado', 'flavor-chat-ia'),
+    'planificado' => __('Planificado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'en_curso'    => __('En curso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'completado'  => __('Completado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cancelado'   => __('Cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 
@@ -121,7 +121,7 @@ $etiquetas_estado_proyecto = [
                 <?php echo esc_html($titulo_de_seccion); ?>
             </h2>
             <p class="text-lg max-w-2xl mx-auto" style="color: var(--flavor-text-muted, #6B7280);">
-                <?php esc_html_e('Iniciativas impulsadas por los colectivos de nuestra comunidad', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Iniciativas impulsadas por los colectivos de nuestra comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
 
@@ -169,7 +169,7 @@ $etiquetas_estado_proyecto = [
                         <?php if ($debe_mostrar_progreso): ?>
                             <div class="mb-4">
                                 <div class="flex items-center justify-between text-sm mb-1">
-                                    <span style="color: var(--flavor-text-muted, #6B7280);"><?php esc_html_e('Progreso', 'flavor-chat-ia'); ?></span>
+                                    <span style="color: var(--flavor-text-muted, #6B7280);"><?php esc_html_e('Progreso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     <span class="font-semibold" style="color: <?php echo esc_attr($colores_actuales['texto']); ?>;">
                                         <?php echo esc_html($progreso_actual); ?>%
                                     </span>
@@ -185,14 +185,14 @@ $etiquetas_estado_proyecto = [
                             <!-- Presupuesto -->
                             <div>
                                 <div class="text-xs mb-1" style="color: var(--flavor-text-muted, #9CA3AF);">
-                                    <?php esc_html_e('Presupuesto', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Presupuesto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </div>
                                 <div class="text-sm font-semibold" style="color: var(--flavor-text, #111827);">
                                     <?php
                                     if ($presupuesto_actual > 0) {
                                         echo esc_html(number_format($presupuesto_actual, 0, ',', '.') . ' EUR');
                                     } else {
-                                        esc_html_e('Sin definir', 'flavor-chat-ia');
+                                        esc_html_e('Sin definir', FLAVOR_PLATFORM_TEXT_DOMAIN);
                                     }
                                     ?>
                                 </div>
@@ -201,7 +201,7 @@ $etiquetas_estado_proyecto = [
                             <!-- Participantes -->
                             <div>
                                 <div class="text-xs mb-1" style="color: var(--flavor-text-muted, #9CA3AF);">
-                                    <?php esc_html_e('Participantes', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Participantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </div>
                                 <div class="flex items-center gap-1">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--flavor-text-muted, #9CA3AF);">
@@ -217,7 +217,7 @@ $etiquetas_estado_proyecto = [
                             <?php if (!empty($proyecto_item->fecha_inicio)): ?>
                                 <div>
                                     <div class="text-xs mb-1" style="color: var(--flavor-text-muted, #9CA3AF);">
-                                        <?php esc_html_e('Inicio', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </div>
                                     <div class="text-sm font-medium" style="color: var(--flavor-text, #374151);">
                                         <?php echo esc_html(date_i18n('M Y', strtotime($proyecto_item->fecha_inicio))); ?>
@@ -229,7 +229,7 @@ $etiquetas_estado_proyecto = [
                             <?php if (!empty($proyecto_item->fecha_fin)): ?>
                                 <div>
                                     <div class="text-xs mb-1" style="color: var(--flavor-text-muted, #9CA3AF);">
-                                        <?php esc_html_e('Fin previsto', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Fin previsto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </div>
                                     <div class="text-sm font-medium" style="color: var(--flavor-text, #374151);">
                                         <?php echo esc_html(date_i18n('M Y', strtotime($proyecto_item->fecha_fin))); ?>
@@ -245,7 +245,7 @@ $etiquetas_estado_proyecto = [
         <!-- Ver todos los proyectos -->
         <div class="text-center mt-12">
             <button class="inline-flex items-center px-8 py-3 rounded-full font-bold transition-all duration-300 border-2 hover:shadow-lg" style="border-color: var(--flavor-primary, #6366F1); color: var(--flavor-primary, #6366F1); background: transparent;">
-                <?php esc_html_e('Ver Todos los Proyectos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver Todos los Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                 </svg>

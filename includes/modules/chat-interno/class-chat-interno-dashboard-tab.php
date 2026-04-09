@@ -27,7 +27,7 @@ class Flavor_Chat_Interno_Dashboard_Tab {
 
     public function registrar_tabs($tabs) {
         $tabs['chat-interno'] = [
-            'label' => __('Mensajes', 'flavor-chat-ia'),
+            'label' => __('Mensajes', 'flavor-platform'),
             'icon' => 'dashicons-email-alt2',
             'callback' => [$this, 'render_tab'],
             'priority' => 17,
@@ -42,13 +42,13 @@ class Flavor_Chat_Interno_Dashboard_Tab {
         <div class="flavor-chat-interno-dashboard">
             <div class="flavor-dashboard-subtabs">
                 <a href="?tab=chat-interno" class="subtab <?php echo !$conversacion_id ? 'active' : ''; ?>">
-                    <span class="dashicons dashicons-email-alt2"></span> <?php esc_html_e('Conversaciones', 'flavor-chat-ia'); ?>
+                    <span class="dashicons dashicons-email-alt2"></span> <?php esc_html_e('Conversaciones', 'flavor-platform'); ?>
                 </a>
                 <a href="?tab=chat-interno&subtab=nuevo" class="subtab <?php echo (isset($_GET['subtab']) && $_GET['subtab'] === 'nuevo') ? 'active' : ''; ?>">
-                    <span class="dashicons dashicons-plus-alt"></span> <?php esc_html_e('Nuevo', 'flavor-chat-ia'); ?>
+                    <span class="dashicons dashicons-plus-alt"></span> <?php esc_html_e('Nuevo', 'flavor-platform'); ?>
                 </a>
                 <a href="?tab=chat-interno&subtab=archivados" class="subtab <?php echo (isset($_GET['subtab']) && $_GET['subtab'] === 'archivados') ? 'active' : ''; ?>">
-                    <span class="dashicons dashicons-archive"></span> <?php esc_html_e('Archivados', 'flavor-chat-ia'); ?>
+                    <span class="dashicons dashicons-archive"></span> <?php esc_html_e('Archivados', 'flavor-platform'); ?>
                 </a>
             </div>
 

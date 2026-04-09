@@ -16,21 +16,21 @@ $pedido_actual = $args['pedido_actual'] ?? null;
 
 <div class="gc-dashboard-pedidos">
     <div class="gc-dashboard-header">
-        <h2><?php _e('Historial', 'flavor-chat-ia'); ?></h2>
+        <h2><?php _e('Historial', 'flavor-platform'); ?></h2>
     </div>
 
     <?php if ($pedido_actual): ?>
         <!-- Pedido del ciclo actual -->
         <div class="gc-pedido-actual">
             <div class="gc-pedido-actual-header">
-                <span class="gc-badge gc-badge-success"><?php _e('Pedido activo', 'flavor-chat-ia'); ?></span>
+                <span class="gc-badge gc-badge-success"><?php _e('Pedido activo', 'flavor-platform'); ?></span>
                 <h3><?php echo esc_html($pedido_actual['ciclo_titulo']); ?></h3>
             </div>
 
             <div class="gc-pedido-actual-info">
                 <div class="gc-info-item">
                     <span class="dashicons dashicons-calendar-alt"></span>
-                    <span><?php printf(__('Entrega: %s', 'flavor-chat-ia'), date_i18n('d M Y', strtotime($pedido_actual['fecha_entrega']))); ?></span>
+                    <span><?php printf(__('Entrega: %s', 'flavor-platform'), date_i18n('d M Y', strtotime($pedido_actual['fecha_entrega']))); ?></span>
                 </div>
                 <div class="gc-info-item">
                     <span class="dashicons dashicons-location"></span>
@@ -43,7 +43,7 @@ $pedido_actual = $args['pedido_actual'] ?? null;
             </div>
 
             <div class="gc-pedido-actual-productos">
-                <h4><?php _e('Productos pedidos:', 'flavor-chat-ia'); ?></h4>
+                <h4><?php _e('Productos pedidos:', 'flavor-platform'); ?></h4>
                 <ul>
                     <?php foreach ($pedido_actual['productos'] as $producto): ?>
                         <li>
@@ -57,12 +57,12 @@ $pedido_actual = $args['pedido_actual'] ?? null;
 
             <div class="gc-pedido-actual-footer">
                 <div class="gc-pedido-total">
-                    <span><?php _e('Total:', 'flavor-chat-ia'); ?></span>
+                    <span><?php _e('Total:', 'flavor-platform'); ?></span>
                     <strong><?php echo number_format($pedido_actual['total'], 2, ',', '.'); ?> €</strong>
                 </div>
                 <div class="gc-pedido-estado">
                     <span class="gc-estado gc-estado-<?php echo esc_attr($pedido_actual['estado_pago']); ?>">
-                        <?php echo $pedido_actual['estado_pago'] === 'pagado' ? __('Pagado', 'flavor-chat-ia') : __('Pendiente de pago', 'flavor-chat-ia'); ?>
+                        <?php echo $pedido_actual['estado_pago'] === 'pagado' ? __('Pagado', 'flavor-platform') : __('Pendiente de pago', 'flavor-platform'); ?>
                     </span>
                 </div>
             </div>
@@ -72,13 +72,13 @@ $pedido_actual = $args['pedido_actual'] ?? null;
     <?php if (empty($pedidos) && !$pedido_actual): ?>
         <div class="gc-dashboard-empty">
             <div class="gc-empty-icon">📦</div>
-            <h3><?php _e('No tienes pedidos', 'flavor-chat-ia'); ?></h3>
-            <p><?php _e('Tu historial de pedidos aparecerá aquí.', 'flavor-chat-ia'); ?></p>
+            <h3><?php _e('No tienes pedidos', 'flavor-platform'); ?></h3>
+            <p><?php _e('Tu historial de pedidos aparecerá aquí.', 'flavor-platform'); ?></p>
         </div>
     <?php elseif (!empty($pedidos)): ?>
         <!-- Historial -->
         <div class="gc-pedidos-historial">
-            <h3><?php _e('Historial', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Historial', 'flavor-platform'); ?></h3>
 
             <div class="gc-pedidos-lista">
                 <?php foreach ($pedidos as $pedido): ?>
@@ -90,7 +90,7 @@ $pedido_actual = $args['pedido_actual'] ?? null;
 
                         <div class="gc-pedido-mini-info">
                             <strong><?php echo esc_html($pedido['ciclo_titulo']); ?></strong>
-                            <span><?php echo count($pedido['productos']); ?> <?php _e('productos', 'flavor-chat-ia'); ?></span>
+                            <span><?php echo count($pedido['productos']); ?> <?php _e('productos', 'flavor-platform'); ?></span>
                         </div>
 
                         <div class="gc-pedido-mini-total">
@@ -112,7 +112,7 @@ $pedido_actual = $args['pedido_actual'] ?? null;
             </div>
 
             <a href="<?php echo esc_url(add_query_arg('gc_section', 'historial')); ?>" class="gc-btn gc-btn-secondary gc-btn-full">
-                <?php _e('Ver historial completo', 'flavor-chat-ia'); ?>
+                <?php _e('Ver historial completo', 'flavor-platform'); ?>
             </a>
         </div>
     <?php endif; ?>

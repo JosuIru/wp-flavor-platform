@@ -99,7 +99,7 @@ class Flavor_Foros_Frontend_Controller {
     public function registrar_dashboard_tabs($tabs) {
         $tabs['foros'] = [
             'id' => 'foros',
-            'label' => __('Foros', 'flavor-chat-ia'),
+            'label' => __('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-format-chat',
             'orden' => 35,
             'callback' => [$this, 'render_dashboard_tab'],
@@ -107,7 +107,7 @@ class Flavor_Foros_Frontend_Controller {
 
         $tabs['foros-mis-temas'] = [
             'id' => 'foros-mis-temas',
-            'label' => __('Mis Temas', 'flavor-chat-ia'),
+            'label' => __('Mis Temas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-admin-comments',
             'orden' => 36,
             'parent' => 'foros',
@@ -177,10 +177,10 @@ class Flavor_Foros_Frontend_Controller {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_foros_nonce'),
             'strings' => [
-                'confirmarEliminar' => __('¿Estás seguro de eliminar este contenido?', 'flavor-chat-ia'),
-                'enviando' => __('Enviando...', 'flavor-chat-ia'),
-                'error' => __('Error al procesar la solicitud', 'flavor-chat-ia'),
-                'exito' => __('Operación completada', 'flavor-chat-ia'),
+                'confirmarEliminar' => __('¿Estás seguro de eliminar este contenido?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'enviando' => __('Enviando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al procesar la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'exito' => __('Operación completada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -231,7 +231,7 @@ class Flavor_Foros_Frontend_Controller {
 
         if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_foros)) {
             return '<div class="flavor-alert flavor-alert-warning">' .
-                   __('El sistema de foros no está configurado.', 'flavor-chat-ia') . '</div>';
+                   __('El sistema de foros no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         global $wpdb;
@@ -251,12 +251,12 @@ class Flavor_Foros_Frontend_Controller {
         ?>
         <div class="flavor-foros-listado <?php echo esc_attr($visual_class_string); ?>">
             <div class="flavor-foros-header">
-                <h2><?php _e('Foros de Discusión', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Foros de Discusión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <?php if (is_user_logged_in()): ?>
                 <div class="flavor-foros-acciones">
                     <a href="#buscar" class="flavor-btn flavor-btn-outline flavor-btn-sm">
                         <span class="dashicons dashicons-search"></span>
-                        <?php _e('Buscar', 'flavor-chat-ia'); ?>
+                        <?php _e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
                 <?php endif; ?>
@@ -264,9 +264,9 @@ class Flavor_Foros_Frontend_Controller {
 
             <?php if (empty($foros)): ?>
                 <div class="flavor-alert flavor-alert-info">
-                    <p><?php _e('No hay foros disponibles.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No hay foros disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(home_url('/mi-portal/foros/')); ?>" class="flavor-btn flavor-btn-outline">
-                        <?php _e('Recargar listado', 'flavor-chat-ia'); ?>
+                        <?php _e('Recargar listado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -291,14 +291,14 @@ class Flavor_Foros_Frontend_Controller {
                                         <span class="flavor-stat">
                                             <span class="dashicons dashicons-admin-comments"></span>
                                             <?php printf(
-                                                _n('%d tema', '%d temas', $foro->total_temas, 'flavor-chat-ia'),
+                                                _n('%d tema', '%d temas', $foro->total_temas, FLAVOR_PLATFORM_TEXT_DOMAIN),
                                                 $foro->total_temas
                                             ); ?>
                                         </span>
                                         <span class="flavor-stat">
                                             <span class="dashicons dashicons-format-status"></span>
                                             <?php printf(
-                                                _n('%d respuesta', '%d respuestas', $foro->total_respuestas, 'flavor-chat-ia'),
+                                                _n('%d respuesta', '%d respuestas', $foro->total_respuestas, FLAVOR_PLATFORM_TEXT_DOMAIN),
                                                 $foro->total_respuestas
                                             ); ?>
                                         </span>
@@ -344,7 +344,7 @@ class Flavor_Foros_Frontend_Controller {
 
         if (!$foro) {
             return '<div class="flavor-alert flavor-alert-warning">' .
-                   __('Foro no encontrado.', 'flavor-chat-ia') . '</div>';
+                   __('Foro no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         $pagina = max(1, absint($_GET['pag'] ?? 1));
@@ -379,7 +379,7 @@ class Flavor_Foros_Frontend_Controller {
         <div class="flavor-foros-categoria">
             <div class="flavor-foros-breadcrumb">
                 <a href="<?php echo esc_url(remove_query_arg('foro_id')); ?>">
-                    <?php _e('Foros', 'flavor-chat-ia'); ?>
+                    <?php _e('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <span class="dashicons dashicons-arrow-right-alt2"></span>
                 <span><?php echo esc_html($foro->nombre); ?></span>
@@ -396,14 +396,14 @@ class Flavor_Foros_Frontend_Controller {
                     <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('foros', 'nuevo-tema', ['foro_id' => $foro_id])); ?>"
                        class="flavor-btn flavor-btn-primary">
                         <span class="dashicons dashicons-plus"></span>
-                        <?php _e('Nuevo Tema', 'flavor-chat-ia'); ?>
+                        <?php _e('Nuevo Tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 <?php endif; ?>
             </div>
 
             <?php if (empty($temas)): ?>
                 <div class="flavor-alert flavor-alert-info">
-                    <?php _e('No hay temas en este foro. ¡Sé el primero en crear uno!', 'flavor-chat-ia'); ?>
+                    <?php _e('No hay temas en este foro. ¡Sé el primero en crear uno!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </div>
             <?php else: ?>
                 <div class="flavor-temas-lista">
@@ -411,10 +411,10 @@ class Flavor_Foros_Frontend_Controller {
                         <div class="flavor-tema-item <?php echo $tema->es_fijado ? 'flavor-tema-fijado' : ''; ?> <?php echo $tema->tiene_solucion ? 'flavor-tema-resuelto' : ''; ?>">
                             <div class="flavor-tema-estado">
                                 <?php if ($tema->es_fijado): ?>
-                                    <span class="dashicons dashicons-admin-post" title="<?php esc_attr_e('Fijado', 'flavor-chat-ia'); ?>"></span>
+                                    <span class="dashicons dashicons-admin-post" title="<?php esc_attr_e('Fijado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></span>
                                 <?php endif; ?>
                                 <?php if ($tema->tiene_solucion): ?>
-                                    <span class="dashicons dashicons-yes-alt flavor-color-success" title="<?php esc_attr_e('Resuelto', 'flavor-chat-ia'); ?>"></span>
+                                    <span class="dashicons dashicons-yes-alt flavor-color-success" title="<?php esc_attr_e('Resuelto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></span>
                                 <?php endif; ?>
                             </div>
                             <div class="flavor-tema-contenido">
@@ -436,11 +436,11 @@ class Flavor_Foros_Frontend_Controller {
                             <div class="flavor-tema-stats">
                                 <div class="flavor-stat-item">
                                     <span class="flavor-stat-valor"><?php echo absint($tema->total_respuestas); ?></span>
-                                    <span class="flavor-stat-label"><?php _e('respuestas', 'flavor-chat-ia'); ?></span>
+                                    <span class="flavor-stat-label"><?php _e('respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                                 <div class="flavor-stat-item">
                                     <span class="flavor-stat-valor"><?php echo absint($tema->vistas); ?></span>
-                                    <span class="flavor-stat-label"><?php _e('vistas', 'flavor-chat-ia'); ?></span>
+                                    <span class="flavor-stat-label"><?php _e('vistas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                             </div>
                         </div>
@@ -466,7 +466,7 @@ class Flavor_Foros_Frontend_Controller {
         $tema_id = absint($atts['tema_id'] ?: (isset($_GET['tema_id']) ? $_GET['tema_id'] : 0));
         if (!$tema_id) {
             return '<div class="flavor-alert flavor-alert-warning">' .
-                   __('Tema no especificado.', 'flavor-chat-ia') . '</div>';
+                   __('Tema no especificado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         $this->enqueue_assets();
@@ -497,7 +497,7 @@ class Flavor_Foros_Frontend_Controller {
 
         if (!$tema) {
             return '<div class="flavor-alert flavor-alert-warning">' .
-                   __('Tema no encontrado.', 'flavor-chat-ia') . '</div>';
+                   __('Tema no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         $pagina = max(1, absint($_GET['pag'] ?? 1));
@@ -526,7 +526,7 @@ class Flavor_Foros_Frontend_Controller {
         <div class="flavor-foros-tema">
             <div class="flavor-foros-breadcrumb">
                 <a href="<?php echo esc_url(remove_query_arg(['foro_id', 'tema_id'])); ?>">
-                    <?php _e('Foros', 'flavor-chat-ia'); ?>
+                    <?php _e('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <span class="dashicons dashicons-arrow-right-alt2"></span>
                 <a href="<?php echo esc_url(add_query_arg('foro_id', $tema->foro_id, remove_query_arg('tema_id'))); ?>">
@@ -550,7 +550,7 @@ class Flavor_Foros_Frontend_Controller {
                         <?php if ($tema->tiene_solucion): ?>
                             <span class="flavor-badge flavor-badge-success">
                                 <span class="dashicons dashicons-yes"></span>
-                                <?php _e('Resuelto', 'flavor-chat-ia'); ?>
+                                <?php _e('Resuelto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         <?php endif; ?>
                     </div>
@@ -569,14 +569,14 @@ class Flavor_Foros_Frontend_Controller {
                         endif; ?>
                     </div>
                     <div class="flavor-tema-stats">
-                        <span><span class="dashicons dashicons-visibility"></span> <?php echo absint($tema->vistas); ?> <?php _e('vistas', 'flavor-chat-ia'); ?></span>
-                        <span><span class="dashicons dashicons-admin-comments"></span> <?php echo absint($total_respuestas); ?> <?php _e('respuestas', 'flavor-chat-ia'); ?></span>
+                        <span><span class="dashicons dashicons-visibility"></span> <?php echo absint($tema->vistas); ?> <?php _e('vistas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                        <span><span class="dashicons dashicons-admin-comments"></span> <?php echo absint($total_respuestas); ?> <?php _e('respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </footer>
             </article>
 
             <section class="flavor-respuestas-seccion">
-                <h2><?php printf(__('%d Respuestas', 'flavor-chat-ia'), $total_respuestas); ?></h2>
+                <h2><?php printf(__('%d Respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_respuestas); ?></h2>
 
                 <?php if (!empty($respuestas)): ?>
                     <div class="flavor-respuestas-lista">
@@ -590,21 +590,21 @@ class Flavor_Foros_Frontend_Controller {
 
                 <?php if (is_user_logged_in()): ?>
                     <div class="flavor-responder-formulario">
-                        <h3><?php _e('Tu Respuesta', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Tu Respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <form id="flavor-form-respuesta" class="flavor-form">
                             <?php wp_nonce_field('flavor_foros_nonce', 'nonce'); ?>
                             <input type="hidden" name="tema_id" value="<?php echo esc_attr($tema_id); ?>">
 
                             <div class="flavor-form-group">
                                 <textarea name="contenido" id="respuesta-contenido" rows="6"
-                                          placeholder="<?php esc_attr_e('Escribe tu respuesta...', 'flavor-chat-ia'); ?>"
+                                          placeholder="<?php esc_attr_e('Escribe tu respuesta...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                                           required minlength="10"></textarea>
                             </div>
 
                             <div class="flavor-form-actions">
                                 <button type="submit" class="flavor-btn flavor-btn-primary">
                                     <span class="dashicons dashicons-edit"></span>
-                                    <?php _e('Publicar Respuesta', 'flavor-chat-ia'); ?>
+                                    <?php _e('Publicar Respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             </div>
                         </form>
@@ -612,7 +612,7 @@ class Flavor_Foros_Frontend_Controller {
                 <?php else: ?>
                     <div class="flavor-alert flavor-alert-info">
                         <?php printf(
-                            __('<a href="%s">Inicia sesión</a> para responder a este tema.', 'flavor-chat-ia'),
+                            __('<a href="%s">Inicia sesión</a> para responder a este tema.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             wp_login_url(flavor_current_request_url())
                         ); ?>
                     </div>
@@ -635,7 +635,7 @@ class Flavor_Foros_Frontend_Controller {
             <?php if ($respuesta->es_solucion): ?>
                 <div class="flavor-solucion-badge">
                     <span class="dashicons dashicons-yes-alt"></span>
-                    <?php _e('Solución aceptada', 'flavor-chat-ia'); ?>
+                    <?php _e('Solución aceptada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </div>
             <?php endif; ?>
 
@@ -668,13 +668,13 @@ class Flavor_Foros_Frontend_Controller {
                     <?php if ($puede_marcar_solucion): ?>
                         <button class="flavor-btn flavor-btn-sm flavor-btn-outline flavor-marcar-solucion">
                             <span class="dashicons dashicons-yes"></span>
-                            <?php _e('Marcar como solución', 'flavor-chat-ia'); ?>
+                            <?php _e('Marcar como solución', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     <?php endif; ?>
                     <?php if ($usuario_actual): ?>
                         <button class="flavor-btn flavor-btn-sm flavor-btn-text flavor-reportar" data-tipo="respuesta">
                             <span class="dashicons dashicons-flag"></span>
-                            <?php _e('Reportar', 'flavor-chat-ia'); ?>
+                            <?php _e('Reportar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     <?php endif; ?>
                 </div>
@@ -689,7 +689,7 @@ class Flavor_Foros_Frontend_Controller {
     public function shortcode_nuevo_tema($atts) {
         if (!is_user_logged_in()) {
             return '<div class="flavor-alert flavor-alert-warning">' .
-                   sprintf(__('<a href="%s">Inicia sesión</a> para crear un tema.', 'flavor-chat-ia'), wp_login_url(flavor_current_request_url())) .
+                   sprintf(__('<a href="%s">Inicia sesión</a> para crear un tema.', FLAVOR_PLATFORM_TEXT_DOMAIN), wp_login_url(flavor_current_request_url())) .
                    '</div>';
         }
 
@@ -703,15 +703,15 @@ class Flavor_Foros_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-nuevo-tema">
-            <h2><?php _e('Crear Nuevo Tema', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Crear Nuevo Tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <form id="flavor-form-nuevo-tema" class="flavor-form">
                 <?php wp_nonce_field('flavor_foros_nonce', 'nonce'); ?>
 
                 <div class="flavor-form-group">
-                    <label for="foro_id"><?php _e('Foro', 'flavor-chat-ia'); ?> *</label>
+                    <label for="foro_id"><?php _e('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <select name="foro_id" id="foro_id" required>
-                        <option value=""><?php _e('Selecciona un foro', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Selecciona un foro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($foros as $foro): ?>
                             <option value="<?php echo esc_attr($foro->id); ?>"
                                     <?php selected($foro_id, $foro->id); ?>>
@@ -722,32 +722,32 @@ class Flavor_Foros_Frontend_Controller {
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="titulo"><?php _e('Título', 'flavor-chat-ia'); ?> *</label>
+                    <label for="titulo"><?php _e('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <input type="text" name="titulo" id="titulo" required
-                           placeholder="<?php esc_attr_e('¿Cuál es tu pregunta o tema?', 'flavor-chat-ia'); ?>"
+                           placeholder="<?php esc_attr_e('¿Cuál es tu pregunta o tema?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                            minlength="10" maxlength="200">
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="contenido"><?php _e('Contenido', 'flavor-chat-ia'); ?> *</label>
+                    <label for="contenido"><?php _e('Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <textarea name="contenido" id="contenido" rows="10" required
-                              placeholder="<?php esc_attr_e('Describe tu tema con el mayor detalle posible...', 'flavor-chat-ia'); ?>"
+                              placeholder="<?php esc_attr_e('Describe tu tema con el mayor detalle posible...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                               minlength="50"></textarea>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="etiquetas"><?php _e('Etiquetas', 'flavor-chat-ia'); ?></label>
+                    <label for="etiquetas"><?php _e('Etiquetas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="text" name="etiquetas" id="etiquetas"
-                           placeholder="<?php esc_attr_e('Ej: ayuda, duda, sugerencia (separadas por coma)', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php esc_attr_e('Ej: ayuda, duda, sugerencia (separadas por coma)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
 
                 <div class="flavor-form-actions">
                     <button type="submit" class="flavor-btn flavor-btn-primary">
                         <span class="dashicons dashicons-welcome-add-page"></span>
-                        <?php _e('Publicar Tema', 'flavor-chat-ia'); ?>
+                        <?php _e('Publicar Tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_module_url('foros')); ?>" class="flavor-btn flavor-btn-outline">
-                        <?php _e('Cancelar', 'flavor-chat-ia'); ?>
+                        <?php _e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </form>
@@ -762,7 +762,7 @@ class Flavor_Foros_Frontend_Controller {
     public function shortcode_mis_temas($atts) {
         if (!is_user_logged_in()) {
             return '<div class="flavor-alert flavor-alert-warning">' .
-                   __('Debes iniciar sesión para ver tus temas.', 'flavor-chat-ia') . '</div>';
+                   __('Debes iniciar sesión para ver tus temas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         $this->enqueue_assets();
@@ -788,22 +788,22 @@ class Flavor_Foros_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-mis-temas">
-            <h2><?php _e('Mis Temas', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Mis Temas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <?php if (empty($temas)): ?>
                 <div class="flavor-alert flavor-alert-info">
-                    <?php _e('No has creado ningún tema todavía.', 'flavor-chat-ia'); ?>
+                    <?php _e('No has creado ningún tema todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </div>
             <?php else: ?>
                 <div class="flavor-tabla-responsive">
                     <table class="flavor-table">
                         <thead>
                             <tr>
-                                <th><?php _e('Tema', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Foro', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Respuestas', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -818,9 +818,9 @@ class Flavor_Foros_Frontend_Controller {
                                     <td><?php echo absint($tema->total_respuestas); ?></td>
                                     <td>
                                         <?php if ($tema->tiene_solucion): ?>
-                                            <span class="flavor-badge flavor-badge-success"><?php _e('Resuelto', 'flavor-chat-ia'); ?></span>
+                                            <span class="flavor-badge flavor-badge-success"><?php _e('Resuelto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         <?php else: ?>
-                                            <span class="flavor-badge flavor-badge-info"><?php _e('Abierto', 'flavor-chat-ia'); ?></span>
+                                            <span class="flavor-badge flavor-badge-info"><?php _e('Abierto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         <?php endif; ?>
                                     </td>
                                     <td><?php echo human_time_diff(strtotime($tema->created_at)); ?></td>
@@ -859,11 +859,11 @@ class Flavor_Foros_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-mis-respuestas">
-            <h2><?php _e('Mis Respuestas', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Mis Respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <?php if (empty($respuestas)): ?>
                 <div class="flavor-alert flavor-alert-info">
-                    <?php _e('No has respondido a ningún tema todavía.', 'flavor-chat-ia'); ?>
+                    <?php _e('No has respondido a ningún tema todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </div>
             <?php else: ?>
                 <div class="flavor-respuestas-lista-compacta">
@@ -885,7 +885,7 @@ class Flavor_Foros_Frontend_Controller {
                                 </span>
                                 <?php if ($respuesta->es_solucion): ?>
                                     <span class="flavor-badge flavor-badge-success flavor-badge-sm">
-                                        <?php _e('Solución', 'flavor-chat-ia'); ?>
+                                        <?php _e('Solución', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </span>
                                 <?php endif; ?>
                             </div>
@@ -910,7 +910,7 @@ class Flavor_Foros_Frontend_Controller {
         <div class="flavor-foros-buscar">
             <form method="get" class="flavor-buscar-form">
                 <input type="text" name="q" value="<?php echo esc_attr($busqueda); ?>"
-                       placeholder="<?php esc_attr_e('Buscar en los foros...', 'flavor-chat-ia'); ?>">
+                       placeholder="<?php esc_attr_e('Buscar en los foros...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <button type="submit" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-search"></span>
                 </button>
@@ -957,12 +957,12 @@ class Flavor_Foros_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-actividad-reciente">
-            <h3><?php _e('Actividad Reciente', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Actividad Reciente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <?php if (empty($actividad)): ?>
                 <div class="flavor-empty-state">
-                    <p class="flavor-no-actividad"><?php _e('No hay actividad reciente.', 'flavor-chat-ia'); ?></p>
+                    <p class="flavor-no-actividad"><?php _e('No hay actividad reciente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(home_url('/mi-portal/foros/')); ?>" class="flavor-btn flavor-btn-outline">
-                        <?php _e('Ver foros', 'flavor-chat-ia'); ?>
+                        <?php _e('Ver foros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -972,7 +972,7 @@ class Flavor_Foros_Frontend_Controller {
                             <span class="dashicons <?php echo $item->tipo === 'tema' ? 'dashicons-admin-comments' : 'dashicons-format-status'; ?>"></span>
                             <span class="flavor-actividad-texto">
                                 <strong><?php echo esc_html($item->autor); ?></strong>
-                                <?php echo $item->tipo === 'tema' ? __('creó', 'flavor-chat-ia') : __('respondió a', 'flavor-chat-ia'); ?>
+                                <?php echo $item->tipo === 'tema' ? __('creó', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('respondió a', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 <a href="<?php echo esc_url(add_query_arg('tema_id', $item->tema_id)); ?>">
                                     <?php echo esc_html(wp_trim_words($item->titulo, 8)); ?>
                                 </a>
@@ -1040,36 +1040,36 @@ class Flavor_Foros_Frontend_Controller {
                     <div class="flavor-kpi-icono"><span class="dashicons dashicons-admin-comments"></span></div>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo absint($stats['mis_temas']); ?></span>
-                        <span class="flavor-kpi-label"><?php _e('Temas', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Temas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <div class="flavor-kpi-icono"><span class="dashicons dashicons-format-status"></span></div>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo absint($stats['mis_respuestas']); ?></span>
-                        <span class="flavor-kpi-label"><?php _e('Respuestas', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <div class="flavor-kpi-icono"><span class="dashicons dashicons-thumbs-up"></span></div>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo absint($stats['votos_recibidos']); ?></span>
-                        <span class="flavor-kpi-label"><?php _e('Votos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Votos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <div class="flavor-kpi-icono"><span class="dashicons dashicons-yes-alt"></span></div>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo absint($stats['soluciones']); ?></span>
-                        <span class="flavor-kpi-label"><?php _e('Soluciones', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Soluciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
 
             <div class="flavor-panel">
-                <h3><?php _e('Tu Actividad Reciente', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Tu Actividad Reciente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <?php if (empty($actividad)): ?>
-                    <p class="flavor-no-datos"><?php _e('No tienes actividad reciente en los foros.', 'flavor-chat-ia'); ?></p>
+                    <p class="flavor-no-datos"><?php _e('No tienes actividad reciente en los foros.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php else: ?>
                     <ul class="flavor-actividad-lista">
                         <?php foreach ($actividad as $item): ?>
@@ -1106,7 +1106,7 @@ class Flavor_Foros_Frontend_Controller {
         check_ajax_referer('flavor_foros_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $foro_id = absint($_POST['foro_id'] ?? 0);
@@ -1115,7 +1115,7 @@ class Flavor_Foros_Frontend_Controller {
         $etiquetas = sanitize_text_field($_POST['etiquetas'] ?? '');
 
         if (!$foro_id || empty($titulo) || empty($contenido)) {
-            wp_send_json_error(['message' => __('Todos los campos son requeridos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Todos los campos son requeridos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1127,7 +1127,7 @@ class Flavor_Foros_Frontend_Controller {
         ));
 
         if (!$foro) {
-            wp_send_json_error(['message' => __('Foro no válido.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Foro no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $resultado = $wpdb->insert($this->tabla_temas, [
@@ -1144,12 +1144,12 @@ class Flavor_Foros_Frontend_Controller {
         if ($resultado) {
             $tema_id = $wpdb->insert_id;
             wp_send_json_success([
-                'message' => __('Tema creado correctamente.', 'flavor-chat-ia'),
+                'message' => __('Tema creado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'tema_id' => $tema_id,
                 'redirect' => Flavor_Chat_Helpers::get_item_url('foros', $tema_id),
             ]);
         } else {
-            wp_send_json_error(['message' => __('Error al crear el tema.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al crear el tema.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -1160,7 +1160,7 @@ class Flavor_Foros_Frontend_Controller {
         check_ajax_referer('flavor_foros_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $tema_id = absint($_POST['tema_id'] ?? 0);
@@ -1168,7 +1168,7 @@ class Flavor_Foros_Frontend_Controller {
         $padre_id = absint($_POST['padre_id'] ?? 0);
 
         if (!$tema_id || empty($contenido)) {
-            wp_send_json_error(['message' => __('El contenido es requerido.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('El contenido es requerido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1180,7 +1180,7 @@ class Flavor_Foros_Frontend_Controller {
         ));
 
         if (!$tema) {
-            wp_send_json_error(['message' => __('Tema no encontrado.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Tema no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $resultado = $wpdb->insert($this->tabla_respuestas, [
@@ -1205,11 +1205,11 @@ class Flavor_Foros_Frontend_Controller {
             );
 
             wp_send_json_success([
-                'message' => __('Respuesta publicada.', 'flavor-chat-ia'),
+                'message' => __('Respuesta publicada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'respuesta_id' => $wpdb->insert_id,
             ]);
         } else {
-            wp_send_json_error(['message' => __('Error al publicar respuesta.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al publicar respuesta.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -1220,14 +1220,14 @@ class Flavor_Foros_Frontend_Controller {
         check_ajax_referer('flavor_foros_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $respuesta_id = absint($_POST['respuesta_id'] ?? 0);
         $tipo = sanitize_text_field($_POST['tipo'] ?? '');
 
         if (!$respuesta_id || !in_array($tipo, ['positivo', 'negativo'])) {
-            wp_send_json_error(['message' => __('Datos inválidos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos inválidos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $usuario_id = get_current_user_id();
@@ -1290,7 +1290,7 @@ class Flavor_Foros_Frontend_Controller {
         check_ajax_referer('flavor_foros_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $respuesta_id = absint($_POST['respuesta_id'] ?? 0);
@@ -1308,12 +1308,12 @@ class Flavor_Foros_Frontend_Controller {
         ));
 
         if (!$respuesta) {
-            wp_send_json_error(['message' => __('Respuesta no encontrada.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Respuesta no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Solo el autor del tema puede marcar solución
         if ($respuesta->tema_autor_id != $usuario_id) {
-            wp_send_json_error(['message' => __('No tienes permiso para esta acción.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes permiso para esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Marcar respuesta como solución
@@ -1325,7 +1325,7 @@ class Flavor_Foros_Frontend_Controller {
 
         // Marcar tema como resuelto
         wp_send_json_success([
-            'message' => __('Respuesta marcada como solución.', 'flavor-chat-ia'),
+            'message' => __('Respuesta marcada como solución.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -1336,7 +1336,7 @@ class Flavor_Foros_Frontend_Controller {
         $busqueda = sanitize_text_field($_POST['q'] ?? $_GET['q'] ?? '');
 
         if (strlen($busqueda) < 3) {
-            wp_send_json_error(['message' => __('La búsqueda debe tener al menos 3 caracteres.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('La búsqueda debe tener al menos 3 caracteres.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $html = $this->realizar_busqueda($busqueda);
@@ -1386,7 +1386,7 @@ class Flavor_Foros_Frontend_Controller {
         check_ajax_referer('flavor_foros_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $tipo = sanitize_text_field($_POST['tipo'] ?? '');
@@ -1394,14 +1394,14 @@ class Flavor_Foros_Frontend_Controller {
         $motivo = sanitize_textarea_field($_POST['motivo'] ?? '');
 
         if (!in_array($tipo, ['tema', 'respuesta']) || !$id) {
-            wp_send_json_error(['message' => __('Datos inválidos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos inválidos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Aquí se podría guardar el reporte en una tabla o enviar notificación
         do_action('flavor_foros_contenido_reportado', $tipo, $id, get_current_user_id(), $motivo);
 
         wp_send_json_success([
-            'message' => __('Gracias por tu reporte. Lo revisaremos pronto.', 'flavor-chat-ia'),
+            'message' => __('Gracias por tu reporte. Lo revisaremos pronto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -1430,7 +1430,7 @@ class Flavor_Foros_Frontend_Controller {
 
         if (empty($resultados)) {
             return '<div class="flavor-alert flavor-alert-info">' .
-                   __('No se encontraron resultados.', 'flavor-chat-ia') . '</div>';
+                   __('No se encontraron resultados.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         $html = '<div class="flavor-resultados-lista">';

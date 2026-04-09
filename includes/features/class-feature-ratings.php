@@ -56,7 +56,7 @@ class Flavor_Feature_Ratings extends Flavor_Feature_Base {
 
     public function register_action($entity_type, $entity_id, $user_id, $value = null) {
         if (!$user_id || $value < 1 || $value > 5) {
-            return new WP_Error('invalid_rating', __('Valoración inválida', 'flavor-chat-ia'));
+            return new WP_Error('invalid_rating', __('Valoración inválida', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;

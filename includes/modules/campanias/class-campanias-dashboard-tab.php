@@ -88,7 +88,7 @@ class Flavor_Campanias_Dashboard_Tab {
     public function registrar_tabs($tabs) {
         // Tab: Mis Firmas
         $tabs['campanias-mis-firmas'] = [
-            'label'       => __('Mis Firmas', 'flavor-chat-ia'),
+            'label'       => __('Mis Firmas', 'flavor-platform'),
             'icon'        => '✍️',
             'callback'    => [$this, 'render_tab_mis_firmas'],
             'priority'    => 30,
@@ -98,7 +98,7 @@ class Flavor_Campanias_Dashboard_Tab {
 
         // Tab: Mis Campanias
         $tabs['campanias-mis-campanias'] = [
-            'label'       => __('Mis Campanias', 'flavor-chat-ia'),
+            'label'       => __('Mis Campanias', 'flavor-platform'),
             'icon'        => '📣',
             'callback'    => [$this, 'render_tab_mis_campanias'],
             'priority'    => 31,
@@ -108,7 +108,7 @@ class Flavor_Campanias_Dashboard_Tab {
 
         // Tab: Siguiendo
         $tabs['campanias-siguiendo'] = [
-            'label'       => __('Campanias Siguiendo', 'flavor-chat-ia'),
+            'label'       => __('Campanias Siguiendo', 'flavor-platform'),
             'icon'        => '👁️',
             'callback'    => [$this, 'render_tab_siguiendo'],
             'priority'    => 32,
@@ -146,11 +146,11 @@ class Flavor_Campanias_Dashboard_Tab {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce'   => wp_create_nonce('campanias_dashboard_nonce'),
             'strings' => [
-                'confirmarRetirarFirma'  => __('¿Seguro que deseas retirar tu firma de esta campaña?', 'flavor-chat-ia'),
-                'confirmarDejarSeguir'   => __('¿Seguro que deseas dejar de seguir esta campaña?', 'flavor-chat-ia'),
-                'firmaRetirada'          => __('Firma retirada correctamente.', 'flavor-chat-ia'),
-                'dejadoDeSeguir'         => __('Has dejado de seguir la campaña.', 'flavor-chat-ia'),
-                'errorOperacion'         => __('Error al procesar la operacion.', 'flavor-chat-ia'),
+                'confirmarRetirarFirma'  => __('¿Seguro que deseas retirar tu firma de esta campaña?', 'flavor-platform'),
+                'confirmarDejarSeguir'   => __('¿Seguro que deseas dejar de seguir esta campaña?', 'flavor-platform'),
+                'firmaRetirada'          => __('Firma retirada correctamente.', 'flavor-platform'),
+                'dejadoDeSeguir'         => __('Has dejado de seguir la campaña.', 'flavor-platform'),
+                'errorOperacion'         => __('Error al procesar la operacion.', 'flavor-platform'),
             ],
         ]);
     }
@@ -194,20 +194,20 @@ class Flavor_Campanias_Dashboard_Tab {
             <div class="flavor-tab-header">
                 <h2 class="flavor-tab-title">
                     <span class="flavor-tab-icon">✍️</span>
-                    <?php esc_html_e('Campanias que has firmado', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Campanias que has firmado', 'flavor-platform'); ?>
                 </h2>
                 <p class="flavor-tab-description">
-                    <?php esc_html_e('Listado de todas las campanias ciudadanas donde has dejado tu firma de apoyo.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Listado de todas las campanias ciudadanas donde has dejado tu firma de apoyo.', 'flavor-platform'); ?>
                 </p>
             </div>
 
             <?php if (empty($campanias_firmadas)): ?>
                 <div class="flavor-empty-state">
                     <div class="flavor-empty-icon">📝</div>
-                    <h3><?php esc_html_e('Aun no has firmado ninguna campania', 'flavor-chat-ia'); ?></h3>
-                    <p><?php esc_html_e('Explora las campanias activas y firma aquellas que apoyes.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php esc_html_e('Aun no has firmado ninguna campania', 'flavor-platform'); ?></h3>
+                    <p><?php esc_html_e('Explora las campanias activas y firma aquellas que apoyes.', 'flavor-platform'); ?></p>
                     <a href="<?php echo esc_url($this->get_url_campanias()); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php esc_html_e('Ver campanias activas', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver campanias activas', 'flavor-platform'); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -234,16 +234,16 @@ class Flavor_Campanias_Dashboard_Tab {
                     <div>
                         <h2 class="flavor-tab-title">
                             <span class="flavor-tab-icon">📣</span>
-                            <?php esc_html_e('Mis Campanias', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Mis Campanias', 'flavor-platform'); ?>
                         </h2>
                         <p class="flavor-tab-description">
-                            <?php esc_html_e('Gestiona las campanias que has creado y sigue su progreso.', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Gestiona las campanias que has creado y sigue su progreso.', 'flavor-platform'); ?>
                         </p>
                     </div>
                     <div class="flavor-tab-actions">
                         <a href="<?php echo esc_url($this->get_url_crear_campania()); ?>" class="flavor-btn flavor-btn-primary">
                             <span class="dashicons dashicons-plus-alt"></span>
-                            <?php esc_html_e('Nueva Campania', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Nueva Campania', 'flavor-platform'); ?>
                         </a>
                     </div>
                 </div>
@@ -252,10 +252,10 @@ class Flavor_Campanias_Dashboard_Tab {
             <?php if (empty($mis_campanias)): ?>
                 <div class="flavor-empty-state">
                     <div class="flavor-empty-icon">📣</div>
-                    <h3><?php esc_html_e('No has creado ninguna campania todavia', 'flavor-chat-ia'); ?></h3>
-                    <p><?php esc_html_e('Crea tu primera campania para movilizar a la comunidad.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php esc_html_e('No has creado ninguna campania todavia', 'flavor-platform'); ?></h3>
+                    <p><?php esc_html_e('Crea tu primera campania para movilizar a la comunidad.', 'flavor-platform'); ?></p>
                     <a href="<?php echo esc_url($this->get_url_crear_campania()); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php esc_html_e('Crear mi primera campania', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Crear mi primera campania', 'flavor-platform'); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -280,20 +280,20 @@ class Flavor_Campanias_Dashboard_Tab {
             <div class="flavor-tab-header">
                 <h2 class="flavor-tab-title">
                     <span class="flavor-tab-icon">👁️</span>
-                    <?php esc_html_e('Campanias que sigues', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Campanias que sigues', 'flavor-platform'); ?>
                 </h2>
                 <p class="flavor-tab-description">
-                    <?php esc_html_e('Campanias donde participas como colaborador/a y recibes actualizaciones.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Campanias donde participas como colaborador/a y recibes actualizaciones.', 'flavor-platform'); ?>
                 </p>
             </div>
 
             <?php if (empty($campanias_siguiendo)): ?>
                 <div class="flavor-empty-state">
                     <div class="flavor-empty-icon">👁️</div>
-                    <h3><?php esc_html_e('No estas siguiendo ninguna campania', 'flavor-chat-ia'); ?></h3>
-                    <p><?php esc_html_e('Unete a campanias para recibir actualizaciones y colaborar.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php esc_html_e('No estas siguiendo ninguna campania', 'flavor-platform'); ?></h3>
+                    <p><?php esc_html_e('Unete a campanias para recibir actualizaciones y colaborar.', 'flavor-platform'); ?></p>
                     <a href="<?php echo esc_url($this->get_url_campanias()); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php esc_html_e('Explorar campanias', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Explorar campanias', 'flavor-platform'); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -356,13 +356,13 @@ class Flavor_Campanias_Dashboard_Tab {
                         <div class="flavor-progreso-stats">
                             <span class="flavor-progreso-stats__firmas">
                                 <strong><?php echo esc_html(number_format_i18n($campania->firmas_actuales)); ?></strong>
-                                <?php esc_html_e('firmas', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('firmas', 'flavor-platform'); ?>
                             </span>
                             <span class="flavor-progreso-stats__objetivo">
                                 <?php
                                 printf(
                                     /* translators: %d: numero de firmas objetivo */
-                                    esc_html__('de %s objetivo', 'flavor-chat-ia'),
+                                    esc_html__('de %s objetivo', 'flavor-platform'),
                                     number_format_i18n($campania->objetivo_firmas)
                                 );
                                 ?>
@@ -379,7 +379,7 @@ class Flavor_Campanias_Dashboard_Tab {
                             <?php
                             printf(
                                 /* translators: %d: numero de participantes */
-                                esc_html__('%d participantes', 'flavor-chat-ia'),
+                                esc_html__('%d participantes', 'flavor-platform'),
                                 $this->contar_participantes_campania($campania->id)
                             );
                             ?>
@@ -409,7 +409,7 @@ class Flavor_Campanias_Dashboard_Tab {
                             <?php
                             printf(
                                 /* translators: %s: fecha de firma */
-                                esc_html__('Firmada el %s', 'flavor-chat-ia'),
+                                esc_html__('Firmada el %s', 'flavor-platform'),
                                 date_i18n(get_option('date_format'), strtotime($campania->fecha_firma))
                             );
                             ?>
@@ -420,32 +420,32 @@ class Flavor_Campanias_Dashboard_Tab {
                 <!-- Acciones segun contexto -->
                 <div class="flavor-campania-card__acciones">
                     <a href="<?php echo esc_url($url_detalle); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
-                        <?php esc_html_e('Ver detalle', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver detalle', 'flavor-platform'); ?>
                     </a>
 
                     <?php if ($contexto === 'creador'): ?>
                         <a href="<?php echo esc_url($this->get_url_editar_campania($campania->id)); ?>" class="flavor-btn flavor-btn-sm flavor-btn-secondary">
                             <span class="dashicons dashicons-edit"></span>
-                            <?php esc_html_e('Editar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Editar', 'flavor-platform'); ?>
                         </a>
                         <button type="button"
                                 class="flavor-btn flavor-btn-sm flavor-btn-outline flavor-campania-cambiar-estado"
                                 data-campania-id="<?php echo esc_attr($campania->id); ?>"
                                 data-estado-actual="<?php echo esc_attr($campania->estado); ?>">
                             <span class="dashicons dashicons-admin-generic"></span>
-                            <?php esc_html_e('Estado', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Estado', 'flavor-platform'); ?>
                         </button>
                     <?php elseif ($contexto === 'firma'): ?>
                         <button type="button"
                                 class="flavor-btn flavor-btn-sm flavor-btn-danger-outline flavor-campania-retirar-firma"
                                 data-campania-id="<?php echo esc_attr($campania->id); ?>">
-                            <?php esc_html_e('Retirar firma', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Retirar firma', 'flavor-platform'); ?>
                         </button>
                     <?php elseif ($contexto === 'seguidor'): ?>
                         <button type="button"
                                 class="flavor-btn flavor-btn-sm flavor-btn-outline flavor-campania-dejar-seguir"
                                 data-campania-id="<?php echo esc_attr($campania->id); ?>">
-                            <?php esc_html_e('Dejar de seguir', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Dejar de seguir', 'flavor-platform'); ?>
                         </button>
                     <?php endif; ?>
                 </div>
@@ -630,11 +630,11 @@ class Flavor_Campanias_Dashboard_Tab {
      */
     private function get_label_estado($estado) {
         $labels = [
-            'planificada' => __('Planificada', 'flavor-chat-ia'),
-            'activa'      => __('Activa', 'flavor-chat-ia'),
-            'pausada'     => __('Pausada', 'flavor-chat-ia'),
-            'completada'  => __('Completada', 'flavor-chat-ia'),
-            'cancelada'   => __('Cancelada', 'flavor-chat-ia'),
+            'planificada' => __('Planificada', 'flavor-platform'),
+            'activa'      => __('Activa', 'flavor-platform'),
+            'pausada'     => __('Pausada', 'flavor-platform'),
+            'completada'  => __('Completada', 'flavor-platform'),
+            'cancelada'   => __('Cancelada', 'flavor-platform'),
         ];
         return $labels[$estado] ?? ucfirst($estado);
     }
@@ -647,14 +647,14 @@ class Flavor_Campanias_Dashboard_Tab {
      */
     private function get_label_tipo($tipo) {
         $labels = [
-            'protesta'          => __('Protesta', 'flavor-chat-ia'),
-            'recogida_firmas'   => __('Recogida de firmas', 'flavor-chat-ia'),
-            'concentracion'     => __('Concentracion', 'flavor-chat-ia'),
-            'boicot'            => __('Boicot', 'flavor-chat-ia'),
-            'denuncia_publica'  => __('Denuncia publica', 'flavor-chat-ia'),
-            'sensibilizacion'   => __('Sensibilizacion', 'flavor-chat-ia'),
-            'accion_legal'      => __('Accion legal', 'flavor-chat-ia'),
-            'otra'              => __('Otra', 'flavor-chat-ia'),
+            'protesta'          => __('Protesta', 'flavor-platform'),
+            'recogida_firmas'   => __('Recogida de firmas', 'flavor-platform'),
+            'concentracion'     => __('Concentracion', 'flavor-platform'),
+            'boicot'            => __('Boicot', 'flavor-platform'),
+            'denuncia_publica'  => __('Denuncia publica', 'flavor-platform'),
+            'sensibilizacion'   => __('Sensibilizacion', 'flavor-platform'),
+            'accion_legal'      => __('Accion legal', 'flavor-platform'),
+            'otra'              => __('Otra', 'flavor-platform'),
         ];
         return $labels[$tipo] ?? ucfirst(str_replace('_', ' ', $tipo));
     }
@@ -706,7 +706,7 @@ class Flavor_Campanias_Dashboard_Tab {
         check_ajax_referer('campanias_dashboard_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['error' => __('Debes iniciar sesion.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Debes iniciar sesion.', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -722,7 +722,7 @@ class Flavor_Campanias_Dashboard_Tab {
         ));
 
         if (!$firma_existe) {
-            wp_send_json_error(['error' => __('No tienes una firma registrada en esta campania.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('No tienes una firma registrada en esta campania.', 'flavor-platform')]);
         }
 
         // Eliminar la firma
@@ -736,7 +736,7 @@ class Flavor_Campanias_Dashboard_Tab {
         );
 
         if ($resultado === false) {
-            wp_send_json_error(['error' => __('Error al retirar la firma.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Error al retirar la firma.', 'flavor-platform')]);
         }
 
         // Actualizar contador de firmas
@@ -746,7 +746,7 @@ class Flavor_Campanias_Dashboard_Tab {
         ));
 
         wp_send_json_success([
-            'mensaje' => __('Firma retirada correctamente.', 'flavor-chat-ia'),
+            'mensaje' => __('Firma retirada correctamente.', 'flavor-platform'),
         ]);
     }
 
@@ -757,7 +757,7 @@ class Flavor_Campanias_Dashboard_Tab {
         check_ajax_referer('campanias_dashboard_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['error' => __('Debes iniciar sesion.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Debes iniciar sesion.', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -775,11 +775,11 @@ class Flavor_Campanias_Dashboard_Tab {
         );
 
         if ($resultado === false) {
-            wp_send_json_error(['error' => __('Error al abandonar la campania.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Error al abandonar la campania.', 'flavor-platform')]);
         }
 
         wp_send_json_success([
-            'mensaje' => __('Has dejado de seguir la campania.', 'flavor-chat-ia'),
+            'mensaje' => __('Has dejado de seguir la campania.', 'flavor-platform'),
         ]);
     }
 
@@ -790,7 +790,7 @@ class Flavor_Campanias_Dashboard_Tab {
         check_ajax_referer('campanias_dashboard_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['error' => __('Debes iniciar sesion.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Debes iniciar sesion.', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -805,13 +805,13 @@ class Flavor_Campanias_Dashboard_Tab {
         ));
 
         if ((int) $creador_id !== get_current_user_id()) {
-            wp_send_json_error(['error' => __('No tienes permisos para modificar esta campania.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('No tienes permisos para modificar esta campania.', 'flavor-platform')]);
         }
 
         // Validar estado
         $estados_validos = ['planificada', 'activa', 'pausada', 'completada', 'cancelada'];
         if (!in_array($nuevo_estado, $estados_validos, true)) {
-            wp_send_json_error(['error' => __('Estado no valido.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Estado no valido.', 'flavor-platform')]);
         }
 
         // Actualizar estado
@@ -824,11 +824,11 @@ class Flavor_Campanias_Dashboard_Tab {
         );
 
         if ($resultado === false) {
-            wp_send_json_error(['error' => __('Error al actualizar el estado.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Error al actualizar el estado.', 'flavor-platform')]);
         }
 
         wp_send_json_success([
-            'mensaje'      => __('Estado actualizado correctamente.', 'flavor-chat-ia'),
+            'mensaje'      => __('Estado actualizado correctamente.', 'flavor-platform'),
             'nuevo_estado' => $nuevo_estado,
             'estado_label' => $this->get_label_estado($nuevo_estado),
         ]);

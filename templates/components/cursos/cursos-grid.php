@@ -30,22 +30,22 @@ if (!defined('ABSPATH')) exit;
             <?php if (!empty($filtros)): ?>
                 <div class="flex flex-wrap justify-center gap-3 mb-12">
                     <button class="px-6 py-2 bg-purple-600 text-white rounded-full font-medium hover:bg-purple-700 transition-colors">
-                        <?php echo esc_html__('Todos', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button class="px-6 py-2 bg-white text-gray-700 rounded-full font-medium hover:bg-gray-100 border border-gray-200 transition-colors">
-                        <?php echo esc_html__('Tecnología', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button class="px-6 py-2 bg-white text-gray-700 rounded-full font-medium hover:bg-gray-100 border border-gray-200 transition-colors">
-                        <?php echo esc_html__('Idiomas', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Idiomas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button class="px-6 py-2 bg-white text-gray-700 rounded-full font-medium hover:bg-gray-100 border border-gray-200 transition-colors">
-                        <?php echo esc_html__('Arte', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Arte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button class="px-6 py-2 bg-white text-gray-700 rounded-full font-medium hover:bg-gray-100 border border-gray-200 transition-colors">
-                        <?php echo esc_html__('Salud', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Salud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button class="px-6 py-2 bg-white text-gray-700 rounded-full font-medium hover:bg-gray-100 border border-gray-200 transition-colors">
-                        <?php echo esc_html__('Negocios', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Negocios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             <?php endif; ?>
@@ -63,7 +63,7 @@ if (!defined('ABSPATH')) exit;
                         </div>
                         <!-- Badge -->
                         <div class="absolute top-4 left-4 px-3 py-1 bg-white rounded-full text-xs font-bold text-purple-600">
-                            <?php echo esc_html__('Tecnología', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                         <!-- Rating -->
                         <div class="absolute top-4 right-4 px-3 py-1 bg-black/50 backdrop-blur-sm rounded-full text-xs font-bold text-white flex items-center gap-1">
@@ -77,10 +77,10 @@ if (!defined('ABSPATH')) exit;
                     <!-- Course Content -->
                     <div class="p-6">
                         <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-purple-600 transition-colors">
-                            <?php echo esc_html__('Programación Web para Principiantes', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Programación Web para Principiantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
                         <p class="text-gray-600 text-sm mb-4 line-clamp-2">
-                            <?php echo esc_html__('Aprende HTML, CSS y JavaScript desde cero. Perfecto para comenzar tu carrera en desarrollo web.', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Aprende HTML, CSS y JavaScript desde cero. Perfecto para comenzar tu carrera en desarrollo web.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
 
                         <!-- Meta Info -->
@@ -89,34 +89,34 @@ if (!defined('ABSPATH')) exit;
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                 </svg>
-                                <?php echo esc_html__('12 semanas', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('12 semanas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </div>
                             <div class="flex items-center gap-1">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                                 </svg>
-                                <?php echo esc_html__('45 alumnos', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('45 alumnos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </div>
                         </div>
 
                         <!-- Instructor -->
                         <div class="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100">
                             <div class="w-10 h-10 bg-gradient-to-br from-purple-400 to-indigo-500 rounded-full flex items-center justify-center text-white font-bold">
-                                <?php echo esc_html__('JM', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('JM', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </div>
                             <div>
-                                <p class="text-sm font-semibold text-gray-900"><?php echo esc_html__('Juan Martínez', 'flavor-chat-ia'); ?></p>
-                                <p class="text-xs text-gray-500"><?php echo esc_html__('Desarrollador Senior', 'flavor-chat-ia'); ?></p>
+                                <p class="text-sm font-semibold text-gray-900"><?php echo esc_html__('Juan Martínez', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                                <p class="text-xs text-gray-500"><?php echo esc_html__('Desarrollador Senior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </div>
                         </div>
 
                         <!-- Footer -->
                         <div class="flex items-center justify-between">
                             <div>
-                                <span class="text-2xl font-bold text-purple-600"><?php echo esc_html__('Gratis', 'flavor-chat-ia'); ?></span>
+                                <span class="text-2xl font-bold text-purple-600"><?php echo esc_html__('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                             <a href="#inscribirse" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition-colors">
-                                <?php echo esc_html__('Inscribirse', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Inscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </div>
                     </div>
@@ -131,7 +131,7 @@ if (!defined('ABSPATH')) exit;
                             </svg>
                         </div>
                         <div class="absolute top-4 left-4 px-3 py-1 bg-white rounded-full text-xs font-bold text-blue-600">
-                            <?php echo esc_html__('Idiomas', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Idiomas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                         <div class="absolute top-4 right-4 px-3 py-1 bg-black/50 backdrop-blur-sm rounded-full text-xs font-bold text-white flex items-center gap-1">
                             <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
@@ -143,10 +143,10 @@ if (!defined('ABSPATH')) exit;
 
                     <div class="p-6">
                         <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-                            <?php echo esc_html__('Inglés Conversacional', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Inglés Conversacional', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
                         <p class="text-gray-600 text-sm mb-4 line-clamp-2">
-                            <?php echo esc_html__('Mejora tu fluidez en inglés con práctica diaria y conversaciones reales con nativos.', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Mejora tu fluidez en inglés con práctica diaria y conversaciones reales con nativos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
 
                         <div class="flex items-center gap-4 text-sm text-gray-500 mb-4">
@@ -154,33 +154,33 @@ if (!defined('ABSPATH')) exit;
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                 </svg>
-                                <?php echo esc_html__('8 semanas', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('8 semanas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </div>
                             <div class="flex items-center gap-1">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                                 </svg>
-                                <?php echo esc_html__('32 alumnos', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('32 alumnos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </div>
                         </div>
 
                         <div class="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100">
                             <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold">
-                                <?php echo esc_html__('SL', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('SL', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </div>
                             <div>
-                                <p class="text-sm font-semibold text-gray-900"><?php echo esc_html__('Sarah Lee', 'flavor-chat-ia'); ?></p>
-                                <p class="text-xs text-gray-500"><?php echo esc_html__('Profesora Nativa', 'flavor-chat-ia'); ?></p>
+                                <p class="text-sm font-semibold text-gray-900"><?php echo esc_html__('Sarah Lee', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                                <p class="text-xs text-gray-500"><?php echo esc_html__('Profesora Nativa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </div>
                         </div>
 
                         <div class="flex items-center justify-between">
                             <div>
                                 <span class="text-2xl font-bold text-blue-600">€49</span>
-                                <span class="text-sm text-gray-500"><?php echo esc_html__('/mes', 'flavor-chat-ia'); ?></span>
+                                <span class="text-sm text-gray-500"><?php echo esc_html__('/mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                             <a href="#inscribirse" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors">
-                                <?php echo esc_html__('Inscribirse', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Inscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </div>
                     </div>
@@ -195,7 +195,7 @@ if (!defined('ABSPATH')) exit;
                             </svg>
                         </div>
                         <div class="absolute top-4 left-4 px-3 py-1 bg-white rounded-full text-xs font-bold text-pink-600">
-                            <?php echo esc_html__('Arte', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Arte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                         <div class="absolute top-4 right-4 px-3 py-1 bg-black/50 backdrop-blur-sm rounded-full text-xs font-bold text-white flex items-center gap-1">
                             <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
@@ -207,10 +207,10 @@ if (!defined('ABSPATH')) exit;
 
                     <div class="p-6">
                         <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-pink-600 transition-colors">
-                            <?php echo esc_html__('Pintura al Óleo Nivel Básico', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Pintura al Óleo Nivel Básico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
                         <p class="text-gray-600 text-sm mb-4 line-clamp-2">
-                            <?php echo esc_html__('Descubre el arte de la pintura al óleo. Desde técnicas básicas hasta tu primera obra.', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Descubre el arte de la pintura al óleo. Desde técnicas básicas hasta tu primera obra.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
 
                         <div class="flex items-center gap-4 text-sm text-gray-500 mb-4">
@@ -218,33 +218,33 @@ if (!defined('ABSPATH')) exit;
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                 </svg>
-                                <?php echo esc_html__('10 semanas', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('10 semanas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </div>
                             <div class="flex items-center gap-1">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                                 </svg>
-                                <?php echo esc_html__('28 alumnos', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('28 alumnos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </div>
                         </div>
 
                         <div class="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100">
                             <div class="w-10 h-10 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full flex items-center justify-center text-white font-bold">
-                                <?php echo esc_html__('LC', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('LC', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </div>
                             <div>
-                                <p class="text-sm font-semibold text-gray-900"><?php echo esc_html__('Laura Castro', 'flavor-chat-ia'); ?></p>
-                                <p class="text-xs text-gray-500"><?php echo esc_html__('Artista Plástica', 'flavor-chat-ia'); ?></p>
+                                <p class="text-sm font-semibold text-gray-900"><?php echo esc_html__('Laura Castro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                                <p class="text-xs text-gray-500"><?php echo esc_html__('Artista Plástica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </div>
                         </div>
 
                         <div class="flex items-center justify-between">
                             <div>
                                 <span class="text-2xl font-bold text-pink-600">€35</span>
-                                <span class="text-sm text-gray-500"><?php echo esc_html__('/mes', 'flavor-chat-ia'); ?></span>
+                                <span class="text-sm text-gray-500"><?php echo esc_html__('/mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                             <a href="#inscribirse" class="px-6 py-2 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-lg transition-colors">
-                                <?php echo esc_html__('Inscribirse', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Inscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </div>
                     </div>
@@ -256,7 +256,7 @@ if (!defined('ABSPATH')) exit;
             <!-- Load More -->
             <div class="text-center mt-12">
                 <button class="px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-full shadow-lg hover:shadow-xl transition-all">
-                    <?php echo esc_html__('Ver Más Cursos', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Ver Más Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </div>

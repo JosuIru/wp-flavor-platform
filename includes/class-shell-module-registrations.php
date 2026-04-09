@@ -109,27 +109,27 @@ class Flavor_Shell_Module_Registrations {
         $registry->register_module_subpages('eventos-dashboard', [
             [
                 'slug' => 'eventos-proximos',
-                'label' => __('Próximos', 'flavor-chat-ia'),
+                'label' => __('Próximos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-calendar-alt',
             ],
             [
                 'slug' => 'eventos-calendario',
-                'label' => __('Calendario', 'flavor-chat-ia'),
+                'label' => __('Calendario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-calendar',
             ],
             [
                 'slug' => 'eventos-asistentes',
-                'label' => __('Asistentes', 'flavor-chat-ia'),
+                'label' => __('Asistentes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-groups',
             ],
             [
                 'slug' => 'eventos-nuevo',
-                'label' => __('Nuevo evento', 'flavor-chat-ia'),
+                'label' => __('Nuevo evento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-plus-alt2',
             ],
             [
                 'slug' => 'eventos-config',
-                'label' => __('Configuración', 'flavor-chat-ia'),
+                'label' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-settings',
             ],
         ]);
@@ -168,22 +168,22 @@ class Flavor_Shell_Module_Registrations {
         $registry->register_module_subpages('tramites-dashboard', [
             [
                 'slug' => 'tramites-pendientes',
-                'label' => __('Pendientes', 'flavor-chat-ia'),
+                'label' => __('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-clock',
             ],
             [
                 'slug' => 'tramites-historial',
-                'label' => __('Historial', 'flavor-chat-ia'),
+                'label' => __('Historial', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-backup',
             ],
             [
                 'slug' => 'tramites-tipos',
-                'label' => __('Tipos', 'flavor-chat-ia'),
+                'label' => __('Tipos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-category',
             ],
             [
                 'slug' => 'tramites-config',
-                'label' => __('Configuración', 'flavor-chat-ia'),
+                'label' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-settings',
             ],
         ]);
@@ -220,22 +220,22 @@ class Flavor_Shell_Module_Registrations {
         $registry->register_module_subpages('incidencias-dashboard', [
             [
                 'slug' => 'incidencias-abiertas',
-                'label' => __('Abiertas', 'flavor-chat-ia'),
+                'label' => __('Abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-warning',
             ],
             [
                 'slug' => 'incidencias-todas',
-                'label' => __('Todas', 'flavor-chat-ia'),
+                'label' => __('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-list-view',
             ],
             [
                 'slug' => 'incidencias-mapa',
-                'label' => __('Mapa', 'flavor-chat-ia'),
+                'label' => __('Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-location-alt',
             ],
             [
                 'slug' => 'incidencias-config',
-                'label' => __('Configuración', 'flavor-chat-ia'),
+                'label' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-settings',
             ],
         ]);
@@ -272,22 +272,22 @@ class Flavor_Shell_Module_Registrations {
         $registry->register_module_subpages('socios-dashboard', [
             [
                 'slug' => 'socios-listado',
-                'label' => __('Listado', 'flavor-chat-ia'),
+                'label' => __('Listado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-groups',
             ],
             [
                 'slug' => 'socios-solicitudes',
-                'label' => __('Solicitudes', 'flavor-chat-ia'),
+                'label' => __('Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-users',
             ],
             [
                 'slug' => 'socios-cuotas',
-                'label' => __('Cuotas', 'flavor-chat-ia'),
+                'label' => __('Cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-money-alt',
             ],
             [
                 'slug' => 'socios-config',
-                'label' => __('Configuración', 'flavor-chat-ia'),
+                'label' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-settings',
             ],
         ]);
@@ -312,22 +312,22 @@ class Flavor_Shell_Module_Registrations {
         $registry->register_module_subpages('marketplace-dashboard', [
             [
                 'slug' => 'marketplace-anuncios',
-                'label' => __('Anuncios', 'flavor-chat-ia'),
+                'label' => __('Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-megaphone',
             ],
             [
                 'slug' => 'marketplace-vendedores',
-                'label' => __('Vendedores', 'flavor-chat-ia'),
+                'label' => __('Vendedores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-businessman',
             ],
             [
                 'slug' => 'marketplace-ventas',
-                'label' => __('Ventas', 'flavor-chat-ia'),
+                'label' => __('Ventas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-cart',
             ],
             [
                 'slug' => 'marketplace-config',
-                'label' => __('Configuración', 'flavor-chat-ia'),
+                'label' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-settings',
             ],
         ]);
@@ -352,22 +352,22 @@ class Flavor_Shell_Module_Registrations {
         $registry->register_module_subpages('reservas-dashboard', [
             [
                 'slug' => 'reservas-calendario',
-                'label' => __('Calendario', 'flavor-chat-ia'),
+                'label' => __('Calendario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-calendar',
             ],
             [
                 'slug' => 'reservas-espacios',
-                'label' => __('Espacios', 'flavor-chat-ia'),
+                'label' => __('Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-building',
             ],
             [
                 'slug' => 'reservas-pendientes',
-                'label' => __('Pendientes', 'flavor-chat-ia'),
+                'label' => __('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-clock',
             ],
             [
                 'slug' => 'reservas-config',
-                'label' => __('Configuración', 'flavor-chat-ia'),
+                'label' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-settings',
             ],
         ]);
@@ -392,22 +392,22 @@ class Flavor_Shell_Module_Registrations {
         $registry->register_module_subpages('foros-dashboard', [
             [
                 'slug' => 'foros-temas',
-                'label' => __('Temas', 'flavor-chat-ia'),
+                'label' => __('Temas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-format-chat',
             ],
             [
                 'slug' => 'foros-categorias',
-                'label' => __('Categorías', 'flavor-chat-ia'),
+                'label' => __('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-category',
             ],
             [
                 'slug' => 'foros-moderacion',
-                'label' => __('Moderación', 'flavor-chat-ia'),
+                'label' => __('Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-shield',
             ],
             [
                 'slug' => 'foros-config',
-                'label' => __('Configuración', 'flavor-chat-ia'),
+                'label' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-settings',
             ],
         ]);
@@ -452,17 +452,17 @@ class Flavor_Shell_Module_Registrations {
         $registry->register_module_subpages('participacion-dashboard', [
             [
                 'slug' => 'participacion-propuestas',
-                'label' => __('Propuestas', 'flavor-chat-ia'),
+                'label' => __('Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-lightbulb',
             ],
             [
                 'slug' => 'participacion-votaciones',
-                'label' => __('Votaciones', 'flavor-chat-ia'),
+                'label' => __('Votaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-yes',
             ],
             [
                 'slug' => 'participacion-config',
-                'label' => __('Configuración', 'flavor-chat-ia'),
+                'label' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-settings',
             ],
         ]);
@@ -487,27 +487,27 @@ class Flavor_Shell_Module_Registrations {
         $registry->register_module_subpages('huertos-dashboard', [
             [
                 'slug' => 'huertos-parcelas',
-                'label' => __('Parcelas', 'flavor-chat-ia'),
+                'label' => __('Parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-layout',
             ],
             [
                 'slug' => 'huertos-huertanos',
-                'label' => __('Huertanos', 'flavor-chat-ia'),
+                'label' => __('Huertanos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-groups',
             ],
             [
                 'slug' => 'huertos-cosechas',
-                'label' => __('Cosechas', 'flavor-chat-ia'),
+                'label' => __('Cosechas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-carrot',
             ],
             [
                 'slug' => 'huertos-recursos',
-                'label' => __('Recursos', 'flavor-chat-ia'),
+                'label' => __('Recursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-archive',
             ],
             [
                 'slug' => 'huertos-config',
-                'label' => __('Configuración', 'flavor-chat-ia'),
+                'label' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-settings',
             ],
         ]);
@@ -532,17 +532,17 @@ class Flavor_Shell_Module_Registrations {
         $registry->register_module_subpages('comunidades-dashboard', [
             [
                 'slug' => 'comunidades-listado',
-                'label' => __('Listado', 'flavor-chat-ia'),
+                'label' => __('Listado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-multisite',
             ],
             [
                 'slug' => 'comunidades-miembros',
-                'label' => __('Miembros', 'flavor-chat-ia'),
+                'label' => __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-groups',
             ],
             [
                 'slug' => 'comunidades-config',
-                'label' => __('Configuración', 'flavor-chat-ia'),
+                'label' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-settings',
             ],
         ]);
@@ -555,17 +555,17 @@ class Flavor_Shell_Module_Registrations {
         $registry->register_module_subpages('flavor-colectivos-dashboard', [
             [
                 'slug' => 'colectivos-listado',
-                'label' => __('Listado', 'flavor-chat-ia'),
+                'label' => __('Listado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-networking',
             ],
             [
                 'slug' => 'colectivos-solicitudes',
-                'label' => __('Solicitudes', 'flavor-chat-ia'),
+                'label' => __('Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-users',
             ],
             [
                 'slug' => 'colectivos-config',
-                'label' => __('Configuración', 'flavor-chat-ia'),
+                'label' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-settings',
             ],
         ]);
@@ -590,22 +590,22 @@ class Flavor_Shell_Module_Registrations {
         $registry->register_module_subpages('banco-tiempo-dashboard', [
             [
                 'slug' => 'banco-tiempo-servicios',
-                'label' => __('Servicios', 'flavor-chat-ia'),
+                'label' => __('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-hammer',
             ],
             [
                 'slug' => 'banco-tiempo-intercambios',
-                'label' => __('Intercambios', 'flavor-chat-ia'),
+                'label' => __('Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-randomize',
             ],
             [
                 'slug' => 'banco-tiempo-miembros',
-                'label' => __('Miembros', 'flavor-chat-ia'),
+                'label' => __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-groups',
             ],
             [
                 'slug' => 'banco-tiempo-config',
-                'label' => __('Configuración', 'flavor-chat-ia'),
+                'label' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-settings',
             ],
         ]);
@@ -637,22 +637,22 @@ class Flavor_Shell_Module_Registrations {
         $registry->register_module_subpages('biblioteca-dashboard', [
             [
                 'slug' => 'biblioteca-catalogo',
-                'label' => __('Catálogo', 'flavor-chat-ia'),
+                'label' => __('Catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-book-alt',
             ],
             [
                 'slug' => 'biblioteca-prestamos',
-                'label' => __('Préstamos', 'flavor-chat-ia'),
+                'label' => __('Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-migrate',
             ],
             [
                 'slug' => 'biblioteca-reservas',
-                'label' => __('Reservas', 'flavor-chat-ia'),
+                'label' => __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-calendar',
             ],
             [
                 'slug' => 'biblioteca-config',
-                'label' => __('Configuración', 'flavor-chat-ia'),
+                'label' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-settings',
             ],
         ]);
@@ -688,17 +688,17 @@ class Flavor_Shell_Module_Registrations {
         $registry->register_module_subpages('cursos-dashboard', [
             [
                 'slug' => 'cursos-listado',
-                'label' => __('Listado', 'flavor-chat-ia'),
+                'label' => __('Listado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-welcome-learn-more',
             ],
             [
                 'slug' => 'cursos-inscripciones',
-                'label' => __('Inscripciones', 'flavor-chat-ia'),
+                'label' => __('Inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-groups',
             ],
             [
                 'slug' => 'cursos-config',
-                'label' => __('Configuración', 'flavor-chat-ia'),
+                'label' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-settings',
             ],
         ]);
@@ -711,22 +711,22 @@ class Flavor_Shell_Module_Registrations {
         $registry->register_module_subpages('talleres-dashboard', [
             [
                 'slug' => 'talleres-listado',
-                'label' => __('Listado', 'flavor-chat-ia'),
+                'label' => __('Listado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-hammer',
             ],
             [
                 'slug' => 'talleres-inscripciones',
-                'label' => __('Inscripciones', 'flavor-chat-ia'),
+                'label' => __('Inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-groups',
             ],
             [
                 'slug' => 'talleres-materiales',
-                'label' => __('Materiales', 'flavor-chat-ia'),
+                'label' => __('Materiales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-archive',
             ],
             [
                 'slug' => 'talleres-config',
-                'label' => __('Configuración', 'flavor-chat-ia'),
+                'label' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-settings',
             ],
         ]);
@@ -739,17 +739,17 @@ class Flavor_Shell_Module_Registrations {
         $registry->register_module_subpages('flavor-radio-dashboard', [
             [
                 'slug' => 'radio-programas',
-                'label' => __('Programas', 'flavor-chat-ia'),
+                'label' => __('Programas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-playlist-audio',
             ],
             [
                 'slug' => 'radio-locutores',
-                'label' => __('Locutores', 'flavor-chat-ia'),
+                'label' => __('Locutores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-microphone',
             ],
             [
                 'slug' => 'radio-config',
-                'label' => __('Configuración', 'flavor-chat-ia'),
+                'label' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-settings',
             ],
         ]);
@@ -762,17 +762,17 @@ class Flavor_Shell_Module_Registrations {
         $registry->register_module_subpages('podcast-dashboard', [
             [
                 'slug' => 'podcast-episodios',
-                'label' => __('Episodios', 'flavor-chat-ia'),
+                'label' => __('Episodios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-format-audio',
             ],
             [
                 'slug' => 'podcast-series',
-                'label' => __('Series', 'flavor-chat-ia'),
+                'label' => __('Series', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-playlist-audio',
             ],
             [
                 'slug' => 'podcast-config',
-                'label' => __('Configuración', 'flavor-chat-ia'),
+                'label' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-settings',
             ],
         ]);
@@ -785,17 +785,17 @@ class Flavor_Shell_Module_Registrations {
         $registry->register_module_subpages('campanias-dashboard', [
             [
                 'slug' => 'campanias-listado',
-                'label' => __('Campañas', 'flavor-chat-ia'),
+                'label' => __('Campañas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-megaphone',
             ],
             [
                 'slug' => 'campanias-estadisticas',
-                'label' => __('Estadísticas', 'flavor-chat-ia'),
+                'label' => __('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-chart-bar',
             ],
             [
                 'slug' => 'campanias-config',
-                'label' => __('Configuración', 'flavor-chat-ia'),
+                'label' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-settings',
             ],
         ]);
@@ -808,17 +808,17 @@ class Flavor_Shell_Module_Registrations {
         $registry->register_module_subpages('contabilidad-dashboard', [
             [
                 'slug' => 'contabilidad-dashboard',
-                'label' => __('Resumen', 'flavor-chat-ia'),
+                'label' => __('Resumen', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-chart-pie',
             ],
             [
                 'slug' => 'contabilidad-movimientos',
-                'label' => __('Movimientos', 'flavor-chat-ia'),
+                'label' => __('Movimientos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-list-view',
             ],
             [
                 'slug' => 'contabilidad-config',
-                'label' => __('Configuración', 'flavor-chat-ia'),
+                'label' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-settings',
             ],
         ]);
@@ -841,21 +841,21 @@ class Flavor_Shell_Module_Registrations {
      * Registrar módulo Chat IA
      */
     private function register_chat_ia($registry) {
-        $registry->register_module_subpages('flavor-chat-config', [
+        $registry->register_module_subpages('flavor-platform-settings', [
             [
-                'slug' => 'flavor-chat-ia-escalations',
-                'label' => __('Escalados', 'flavor-chat-ia'),
+                'slug' => 'flavor-platform-escalations',
+                'label' => __('Escalados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-warning',
             ],
             [
                 'slug' => 'flavor-chat-ia-analytics',
-                'label' => __('Analíticas', 'flavor-chat-ia'),
+                'label' => __('Analíticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-chart-area',
             ],
         ]);
 
         // Badge: escalados pendientes
-        $registry->register_badge_callback('flavor-chat-ia-escalations', function() {
+        $registry->register_badge_callback('flavor-platform-escalations', function() {
             global $wpdb;
             $tabla = $wpdb->prefix . 'flavor_chat_escalations';
             if (!$this->table_exists($tabla)) {

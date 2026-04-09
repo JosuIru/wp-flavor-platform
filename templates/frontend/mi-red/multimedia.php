@@ -17,16 +17,16 @@ $albumes = $datos_vista['albumes'] ?? [];
 
 <div class="mi-red-multimedia">
     <header class="mi-red-multimedia__header">
-        <h1><?php esc_html_e('Mi Multimedia', 'flavor-chat-ia'); ?></h1>
+        <h1><?php esc_html_e('Mi Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
         <a href="<?php echo esc_url(home_url('/multimedia/subir/')); ?>" class="mi-red-btn mi-red-btn--primary">
-            <?php esc_html_e('Subir', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Subir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </header>
 
     <!-- Tabs -->
     <div class="mi-red-tabs">
-        <button class="mi-red-tab mi-red-tab--active" data-tab="galeria"><?php esc_html_e('Galería', 'flavor-chat-ia'); ?></button>
-        <button class="mi-red-tab" data-tab="albumes"><?php esc_html_e('Álbumes', 'flavor-chat-ia'); ?></button>
+        <button class="mi-red-tab mi-red-tab--active" data-tab="galeria"><?php esc_html_e('Galería', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+        <button class="mi-red-tab" data-tab="albumes"><?php esc_html_e('Álbumes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
     </div>
 
     <!-- Galería -->
@@ -34,10 +34,10 @@ $albumes = $datos_vista['albumes'] ?? [];
         <?php if (empty($galeria)) : ?>
             <div class="mi-red-empty-state">
                 <div class="mi-red-empty-state__icon">📸</div>
-                <h3><?php esc_html_e('No tienes contenido multimedia', 'flavor-chat-ia'); ?></h3>
-                <p><?php esc_html_e('Sube fotos, videos o audios para verlos aquí.', 'flavor-chat-ia'); ?></p>
+                <h3><?php esc_html_e('No tienes contenido multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php esc_html_e('Sube fotos, videos o audios para verlos aquí.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <a href="<?php echo esc_url(home_url('/multimedia/subir/')); ?>" class="mi-red-btn mi-red-btn--primary">
-                    <?php esc_html_e('Subir contenido', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Subir contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         <?php else : ?>
@@ -67,8 +67,8 @@ $albumes = $datos_vista['albumes'] ?? [];
         <?php if (empty($albumes)) : ?>
             <div class="mi-red-empty-state">
                 <div class="mi-red-empty-state__icon">📁</div>
-                <p><?php esc_html_e('No tienes álbumes', 'flavor-chat-ia'); ?></p>
-                <button class="mi-red-btn mi-red-btn--primary"><?php esc_html_e('Crear álbum', 'flavor-chat-ia'); ?></button>
+                <p><?php esc_html_e('No tienes álbumes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                <button class="mi-red-btn mi-red-btn--primary"><?php esc_html_e('Crear álbum', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
             </div>
         <?php else : ?>
             <div class="mi-red-albumes-grid">
@@ -76,7 +76,7 @@ $albumes = $datos_vista['albumes'] ?? [];
                     <a href="#" class="mi-red-album-card">
                         <div class="mi-red-album-card__cover"></div>
                         <h3 class="mi-red-album-card__nombre"><?php echo esc_html($album['nombre'] ?? ''); ?></h3>
-                        <span class="mi-red-album-card__count"><?php echo esc_html($album['total'] ?? 0); ?> <?php esc_html_e('elementos', 'flavor-chat-ia'); ?></span>
+                        <span class="mi-red-album-card__count"><?php echo esc_html($album['total'] ?? 0); ?> <?php esc_html_e('elementos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </a>
                 <?php endforeach; ?>
             </div>

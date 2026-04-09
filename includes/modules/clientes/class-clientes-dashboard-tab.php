@@ -34,7 +34,7 @@ class Flavor_Clientes_Dashboard_Tab {
         }
 
         $tabs['clientes'] = [
-            'label' => __('CRM', 'flavor-chat-ia'),
+            'label' => __('CRM', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-businessman',
             'callback' => [$this, 'render_tab'],
             'priority' => 60,

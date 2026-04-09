@@ -33,14 +33,14 @@ $listas_activas_ids = array_column(array_filter($listas_suscriptor, function($l)
 
 <div class="em-preferencias-wrapper">
     <div class="em-preferencias-header">
-        <h2><?php _e('Preferencias de email', 'flavor-chat-ia'); ?></h2>
-        <p><?php printf(__('Gestiona tus suscripciones para %s', 'flavor-chat-ia'), '<strong>' . esc_html($suscriptor->email) . '</strong>'); ?></p>
+        <h2><?php _e('Preferencias de email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p><?php printf(__('Gestiona tus suscripciones para %s', FLAVOR_PLATFORM_TEXT_DOMAIN), '<strong>' . esc_html($suscriptor->email) . '</strong>'); ?></p>
     </div>
 
     <form id="em-form-preferencias" class="em-preferencias-form" data-token="<?php echo esc_attr($token); ?>">
         <div class="em-preferencias-section">
-            <h3><?php _e('Listas de correo', 'flavor-chat-ia'); ?></h3>
-            <p class="em-descripcion"><?php _e('Selecciona las listas de las que quieres recibir emails.', 'flavor-chat-ia'); ?></p>
+            <h3><?php _e('Listas de correo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p class="em-descripcion"><?php _e('Selecciona las listas de las que quieres recibir emails.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
             <div class="em-listas-opciones">
                 <?php foreach ($todas_listas as $lista): ?>
@@ -60,7 +60,7 @@ $listas_activas_ids = array_column(array_filter($listas_suscriptor, function($l)
 
         <div class="em-preferencias-acciones">
             <button type="submit" class="em-btn em-btn-primary">
-                <?php _e('Guardar preferencias', 'flavor-chat-ia'); ?>
+                <?php _e('Guardar preferencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
 
@@ -69,9 +69,9 @@ $listas_activas_ids = array_column(array_filter($listas_suscriptor, function($l)
 
     <div class="em-preferencias-baja">
         <hr>
-        <p><?php _e('¿Quieres darte de baja completamente?', 'flavor-chat-ia'); ?></p>
+        <p><?php _e('¿Quieres darte de baja completamente?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         <a href="<?php echo esc_url(add_query_arg('token', $token, home_url('/baja-newsletter/'))); ?>" class="em-link-baja">
-            <?php _e('Darme de baja de todas las listas', 'flavor-chat-ia'); ?>
+            <?php _e('Darme de baja de todas las listas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 </div>

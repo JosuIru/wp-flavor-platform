@@ -148,12 +148,12 @@ $tipos_residuo = [
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-carrot" style="color: #795548;"></span>
-        <?php echo esc_html__('Producción de Compost', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Producción de Compost', 'flavor-platform'); ?>
     </h1>
 
     <?php if ($usar_demo): ?>
         <div class="notice notice-info" style="margin: 15px 0;">
-            <p><span class="dashicons dashicons-info"></span> <?php echo esc_html__('Mostrando datos de demostración.', 'flavor-chat-ia'); ?></p>
+            <p><span class="dashicons dashicons-info"></span> <?php echo esc_html__('Mostrando datos de demostración.', 'flavor-platform'); ?></p>
         </div>
     <?php endif; ?>
 
@@ -165,7 +165,7 @@ $tipos_residuo = [
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div style="font-size: 28px; font-weight: bold; color: #795548;"><?php echo number_format($total_recogidas); ?></div>
-                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Total Recogidas', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Total Recogidas', 'flavor-platform'); ?></div>
                 </div>
                 <span class="dashicons dashicons-archive" style="font-size: 32px; color: #795548; opacity: 0.3;"></span>
             </div>
@@ -175,7 +175,7 @@ $tipos_residuo = [
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div style="font-size: 28px; font-weight: bold; color: #28a745;"><?php echo number_format($total_kg, 1); ?></div>
-                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Kg Totales', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Kg Totales', 'flavor-platform'); ?></div>
                 </div>
                 <span class="dashicons dashicons-chart-bar" style="font-size: 32px; color: #28a745; opacity: 0.3;"></span>
             </div>
@@ -185,7 +185,7 @@ $tipos_residuo = [
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div style="font-size: 28px; font-weight: bold; color: #17a2b8;"><?php echo number_format($kg_mes_actual, 1); ?></div>
-                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Kg Este Mes', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Kg Este Mes', 'flavor-platform'); ?></div>
                 </div>
                 <span class="dashicons dashicons-calendar" style="font-size: 32px; color: #17a2b8; opacity: 0.3;"></span>
             </div>
@@ -195,7 +195,7 @@ $tipos_residuo = [
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div style="font-size: 28px; font-weight: bold; color: #6f42c1;"><?php echo number_format($participantes_activos); ?></div>
-                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Participantes Activos', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Participantes Activos', 'flavor-platform'); ?></div>
                 </div>
                 <span class="dashicons dashicons-groups" style="font-size: 32px; color: #6f42c1; opacity: 0.3;"></span>
             </div>
@@ -205,7 +205,7 @@ $tipos_residuo = [
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div style="font-size: 28px; font-weight: bold; color: #f39c12;"><?php echo number_format($promedio_kg, 2); ?></div>
-                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Kg/Recogida', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Kg/Recogida', 'flavor-platform'); ?></div>
                 </div>
                 <span class="dashicons dashicons-performance" style="font-size: 32px; color: #f39c12; opacity: 0.3;"></span>
             </div>
@@ -219,9 +219,9 @@ $tipos_residuo = [
                 <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page'] ?? 'compostaje-produccion'); ?>">
 
                 <div>
-                    <label style="display: block; font-weight: 500; margin-bottom: 4px; font-size: 12px;"><?php echo esc_html__('Compostera', 'flavor-chat-ia'); ?></label>
+                    <label style="display: block; font-weight: 500; margin-bottom: 4px; font-size: 12px;"><?php echo esc_html__('Compostera', 'flavor-platform'); ?></label>
                     <select name="compostera_id" style="min-width: 150px;">
-                        <option value="0"><?php echo esc_html__('Todas', 'flavor-chat-ia'); ?></option>
+                        <option value="0"><?php echo esc_html__('Todas', 'flavor-platform'); ?></option>
                         <?php foreach ($composteras_disponibles as $compostera): ?>
                             <option value="<?php echo esc_attr($compostera->id); ?>" <?php selected($filtro_compostera, $compostera->id); ?>>
                                 <?php echo esc_html($compostera->nombre); ?>
@@ -231,20 +231,20 @@ $tipos_residuo = [
                 </div>
 
                 <div>
-                    <label style="display: block; font-weight: 500; margin-bottom: 4px; font-size: 12px;"><?php echo esc_html__('Desde', 'flavor-chat-ia'); ?></label>
+                    <label style="display: block; font-weight: 500; margin-bottom: 4px; font-size: 12px;"><?php echo esc_html__('Desde', 'flavor-platform'); ?></label>
                     <input type="date" name="fecha_desde" value="<?php echo esc_attr($filtro_fecha_desde); ?>" style="width: 140px;">
                 </div>
 
                 <div>
-                    <label style="display: block; font-weight: 500; margin-bottom: 4px; font-size: 12px;"><?php echo esc_html__('Hasta', 'flavor-chat-ia'); ?></label>
+                    <label style="display: block; font-weight: 500; margin-bottom: 4px; font-size: 12px;"><?php echo esc_html__('Hasta', 'flavor-platform'); ?></label>
                     <input type="date" name="fecha_hasta" value="<?php echo esc_attr($filtro_fecha_hasta); ?>" style="width: 140px;">
                 </div>
 
-                <button type="submit" class="button button-primary"><?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="button button-primary"><?php echo esc_html__('Filtrar', 'flavor-platform'); ?></button>
 
                 <?php if ($filtro_compostera > 0 || !empty($filtro_fecha_desde) || !empty($filtro_fecha_hasta)): ?>
                     <a href="<?php echo admin_url('admin.php?page=' . esc_attr($_GET['page'] ?? 'compostaje-produccion')); ?>" class="button">
-                        <?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Limpiar', 'flavor-platform'); ?>
                     </a>
                 <?php endif; ?>
             </form>
@@ -254,7 +254,7 @@ $tipos_residuo = [
         <div style="background: #fff; padding: 15px 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #666;">
                 <span class="dashicons dashicons-chart-area" style="font-size: 16px;"></span>
-                <?php echo esc_html__('Producción Mensual (kg)', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Producción Mensual (kg)', 'flavor-platform'); ?>
             </h4>
             <canvas id="chartProduccion" height="100"></canvas>
         </div>
@@ -265,13 +265,13 @@ $tipos_residuo = [
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th style="width: 50px;"><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 110px;"><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Usuario', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Compostera', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 100px;"><?php echo esc_html__('Tipo', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 100px; text-align: right;"><?php echo esc_html__('Cantidad', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Notas', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 50px;"><?php echo esc_html__('ID', 'flavor-platform'); ?></th>
+                    <th style="width: 110px;"><?php echo esc_html__('Fecha', 'flavor-platform'); ?></th>
+                    <th><?php echo esc_html__('Usuario', 'flavor-platform'); ?></th>
+                    <th><?php echo esc_html__('Compostera', 'flavor-platform'); ?></th>
+                    <th style="width: 100px;"><?php echo esc_html__('Tipo', 'flavor-platform'); ?></th>
+                    <th style="width: 100px; text-align: right;"><?php echo esc_html__('Cantidad', 'flavor-platform'); ?></th>
+                    <th><?php echo esc_html__('Notas', 'flavor-platform'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -279,7 +279,7 @@ $tipos_residuo = [
                     <tr>
                         <td colspan="7" style="text-align: center; padding: 40px;">
                             <span class="dashicons dashicons-carrot" style="font-size: 48px; color: #ddd;"></span>
-                            <p style="color: #666; margin-top: 10px;"><?php echo esc_html__('No hay recogidas registradas.', 'flavor-chat-ia'); ?></p>
+                            <p style="color: #666; margin-top: 10px;"><?php echo esc_html__('No hay recogidas registradas.', 'flavor-platform'); ?></p>
                         </td>
                     </tr>
                 <?php else: ?>
@@ -317,7 +317,7 @@ $tipos_residuo = [
     <?php if ($total_paginas > 1): ?>
         <div class="tablenav bottom" style="margin-top: 20px;">
             <div class="tablenav-pages">
-                <span class="displaying-num"><?php printf(esc_html__('%s recogidas', 'flavor-chat-ia'), number_format($total_registros)); ?></span>
+                <span class="displaying-num"><?php printf(esc_html__('%s recogidas', 'flavor-platform'), number_format($total_registros)); ?></span>
                 <span class="pagination-links">
                     <?php
                     $url_base = admin_url('admin.php?page=' . esc_attr($_GET['page'] ?? 'compostaje-produccion'));

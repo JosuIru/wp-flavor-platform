@@ -206,7 +206,7 @@ class Flavor_VBP_Unsplash {
     public function buscar_imagenes( $request ) {
         if ( ! $this->esta_configurado() ) {
             return new WP_REST_Response(
-                array( 'error' => __( 'Unsplash no está configurado', 'flavor-chat-ia' ) ),
+                array( 'error' => __( 'Unsplash no está configurado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                 400
             );
         }
@@ -254,7 +254,7 @@ class Flavor_VBP_Unsplash {
     public function obtener_imagen( $request ) {
         if ( ! $this->esta_configurado() ) {
             return new WP_REST_Response(
-                array( 'error' => __( 'Unsplash no está configurado', 'flavor-chat-ia' ) ),
+                array( 'error' => __( 'Unsplash no está configurado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                 400
             );
         }
@@ -285,7 +285,7 @@ class Flavor_VBP_Unsplash {
     public function registrar_descarga( $request ) {
         if ( ! $this->esta_configurado() ) {
             return new WP_REST_Response(
-                array( 'error' => __( 'Unsplash no está configurado', 'flavor-chat-ia' ) ),
+                array( 'error' => __( 'Unsplash no está configurado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                 400
             );
         }
@@ -320,7 +320,7 @@ class Flavor_VBP_Unsplash {
     public function obtener_curadas( $request ) {
         if ( ! $this->esta_configurado() ) {
             return new WP_REST_Response(
-                array( 'error' => __( 'Unsplash no está configurado', 'flavor-chat-ia' ) ),
+                array( 'error' => __( 'Unsplash no está configurado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                 400
             );
         }
@@ -365,8 +365,8 @@ class Flavor_VBP_Unsplash {
             array(
                 'configured' => $this->esta_configurado(),
                 'message'    => $this->esta_configurado()
-                    ? __( 'Unsplash está configurado correctamente', 'flavor-chat-ia' )
-                    : __( 'Configura tu Access Key de Unsplash en los ajustes', 'flavor-chat-ia' ),
+                    ? __( 'Unsplash está configurado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN )
+                    : __( 'Configura tu Access Key de Unsplash en los ajustes', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             200
         );
@@ -399,7 +399,7 @@ class Flavor_VBP_Unsplash {
         $data = json_decode( $body, true );
 
         if ( $code !== 200 ) {
-            $mensaje = isset( $data['errors'][0] ) ? $data['errors'][0] : __( 'Error en la API de Unsplash', 'flavor-chat-ia' );
+            $mensaje = isset( $data['errors'][0] ) ? $data['errors'][0] : __( 'Error en la API de Unsplash', FLAVOR_PLATFORM_TEXT_DOMAIN );
             return new WP_Error( 'unsplash_error', $mensaje );
         }
 
@@ -461,10 +461,10 @@ class Flavor_VBP_Unsplash {
 
         return sprintf(
             '<span class="vbp-unsplash-attribution">%s <a href="%s?utm_source=flavor_vbp&utm_medium=referral" target="_blank" rel="noopener">%s</a> %s <a href="https://unsplash.com/?utm_source=flavor_vbp&utm_medium=referral" target="_blank" rel="noopener">Unsplash</a></span>',
-            __( 'Foto de', 'flavor-chat-ia' ),
+            __( 'Foto de', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             $link,
             $nombre,
-            __( 'en', 'flavor-chat-ia' )
+            __( 'en', FLAVOR_PLATFORM_TEXT_DOMAIN )
         );
     }
 }

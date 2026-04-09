@@ -29,7 +29,7 @@ $url_buscar_servicio     = $url_buscar_servicio ?? '/banco-tiempo/buscar/';
 <section class="flavor-component flavor-section relative overflow-hidden" style="background: linear-gradient(135deg, #F59E0B 0%, #CA8A04 100%); min-height: 500px;">
     <!-- Patron decorativo -->
     <div class="absolute inset-0 opacity-10">
-        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22><rect width=%2280%22 height=%2280%22 fill=%22none%22/><circle cx=%2240%22 cy=%2240%22 r=%222%22 fill=%22white%22/></svg><?php echo esc_html__('\'); background-size: 80px 80px;">', 'flavor-chat-ia'); ?></div>
+        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22><rect width=%2280%22 height=%2280%22 fill=%22none%22/><circle cx=%2240%22 cy=%2240%22 r=%222%22 fill=%22white%22/></svg><?php echo esc_html__('\'); background-size: 80px 80px;">', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 
     <div class="flavor-container relative z-10 py-16 lg:py-24">
@@ -39,7 +39,7 @@ $url_buscar_servicio     = $url_buscar_servicio ?? '/banco-tiempo/buscar/';
                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                <span class="text-white text-sm font-medium"><?php echo esc_html__('1 hora = 1 credito de tiempo', 'flavor-chat-ia'); ?></span>
+                <span class="text-white text-sm font-medium"><?php echo esc_html__('1 hora = 1 credito de tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
 
             <h1 class="text-4xl lg:text-5xl font-bold text-white mb-4">
@@ -56,10 +56,10 @@ $url_buscar_servicio     = $url_buscar_servicio ?? '/banco-tiempo/buscar/';
                         <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
-                        <input type="text" name="buscar_servicio" placeholder="<?php echo esc_attr__('Que servicio necesitas?', 'flavor-chat-ia'); ?>" class="w-full pl-12 pr-4 py-4 rounded-xl bg-white/10 backdrop-blur text-white placeholder-white/60 border border-white/20 focus:outline-none focus:ring-2 focus:ring-white/30" />
+                        <input type="text" name="buscar_servicio" placeholder="<?php echo esc_attr__('Que servicio necesitas?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" class="w-full pl-12 pr-4 py-4 rounded-xl bg-white/10 backdrop-blur text-white placeholder-white/60 border border-white/20 focus:outline-none focus:ring-2 focus:ring-white/30" />
                     </div>
                     <button type="submit" class="px-6 py-4 rounded-xl bg-white text-amber-600 font-semibold hover:bg-white/90 transition-colors">
-                        <?php echo esc_html__('Buscar', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </form>
             </div>
@@ -70,13 +70,13 @@ $url_buscar_servicio     = $url_buscar_servicio ?? '/banco-tiempo/buscar/';
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                     </svg>
-                    <?php echo esc_html__('Ofrecer Servicio', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Ofrecer Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="<?php echo esc_url($url_buscar_servicio); ?>" class="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl border-2 border-white/30 text-white font-semibold text-lg hover:bg-white/10 transition-all">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
-                    <?php echo esc_html__('Buscar Servicios', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Buscar Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -85,15 +85,15 @@ $url_buscar_servicio     = $url_buscar_servicio ?? '/banco-tiempo/buscar/';
         <div class="grid grid-cols-3 gap-4 max-w-2xl mx-auto">
             <div class="text-center p-4 rounded-xl bg-white/10 backdrop-blur border border-white/20">
                 <div class="text-3xl font-bold text-white"><?php echo esc_html($servicios_disponibles); ?></div>
-                <div class="text-sm text-white/70"><?php echo esc_html__('Servicios Disponibles', 'flavor-chat-ia'); ?></div>
+                <div class="text-sm text-white/70"><?php echo esc_html__('Servicios Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
             <div class="text-center p-4 rounded-xl bg-white/10 backdrop-blur border border-white/20">
                 <div class="text-3xl font-bold text-white"><?php echo esc_html(number_format_i18n($horas_intercambiadas)); ?></div>
-                <div class="text-sm text-white/70"><?php echo esc_html__('Horas Intercambiadas', 'flavor-chat-ia'); ?></div>
+                <div class="text-sm text-white/70"><?php echo esc_html__('Horas Intercambiadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
             <div class="text-center p-4 rounded-xl bg-white/10 backdrop-blur border border-white/20">
                 <div class="text-3xl font-bold text-white"><?php echo esc_html($miembros_activos); ?></div>
-                <div class="text-sm text-white/70"><?php echo esc_html__('Miembros Activos', 'flavor-chat-ia'); ?></div>
+                <div class="text-sm text-white/70"><?php echo esc_html__('Miembros Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
     </div>

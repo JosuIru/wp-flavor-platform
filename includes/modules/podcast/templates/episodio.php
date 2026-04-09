@@ -23,7 +23,7 @@ $episodios_relacionados = $episodios_relacionados ?? [];
 $puede_interactuar = $puede_interactuar ?? is_user_logged_in();
 
 if (!$episodio) {
-    echo '<div class="flavor-aviso flavor-aviso-error">' . esc_html__('Episodio no encontrado.', 'flavor-chat-ia') . '</div>';
+    echo '<div class="flavor-aviso flavor-aviso-error">' . esc_html__('Episodio no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
     return;
 }
 
@@ -47,7 +47,7 @@ if (!empty($episodio->duracion_segundos)) {
     <nav class="flavor-podcast-breadcrumb">
         <a href="<?php echo esc_url(home_url('/podcast/')); ?>" class="flavor-breadcrumb-link">
             <span class="dashicons dashicons-microphone"></span>
-            <?php esc_html_e('Podcasts', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Podcasts', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <span class="flavor-breadcrumb-sep">/</span>
         <?php if ($serie): ?>
@@ -57,7 +57,7 @@ if (!empty($episodio->duracion_segundos)) {
         <span class="flavor-breadcrumb-sep">/</span>
         <?php endif; ?>
         <span class="flavor-breadcrumb-actual">
-            <?php echo esc_html__('Episodio', 'flavor-chat-ia') . ' ' . intval($episodio->numero_episodio ?? 1); ?>
+            <?php echo esc_html__('Episodio', FLAVOR_PLATFORM_TEXT_DOMAIN) . ' ' . intval($episodio->numero_episodio ?? 1); ?>
         </span>
     </nav>
 
@@ -82,7 +82,7 @@ if (!empty($episodio->duracion_segundos)) {
         <div class="flavor-episodio-info-principal">
             <?php if (!empty($episodio->numero_episodio)): ?>
             <span class="flavor-episodio-numero-badge">
-                <?php echo sprintf(esc_html__('Episodio %d', 'flavor-chat-ia'), intval($episodio->numero_episodio)); ?>
+                <?php echo sprintf(esc_html__('Episodio %d', FLAVOR_PLATFORM_TEXT_DOMAIN), intval($episodio->numero_episodio)); ?>
             </span>
             <?php endif; ?>
 
@@ -115,7 +115,7 @@ if (!empty($episodio->duracion_segundos)) {
                 <span class="flavor-meta-item">
                     <span class="dashicons dashicons-controls-play"></span>
                     <?php echo esc_html(number_format_i18n($episodio->reproducciones)); ?>
-                    <?php esc_html_e('reproducciones', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('reproducciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
                 <?php endif; ?>
             </div>
@@ -132,20 +132,20 @@ if (!empty($episodio->duracion_segundos)) {
                    class="flavor-audio-principal"
                    preload="metadata">
                 <source src="<?php echo esc_url($episodio->audio_url ?? ''); ?>" type="audio/mpeg">
-                <?php esc_html_e('Tu navegador no soporta el elemento de audio.', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Tu navegador no soporta el elemento de audio.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </audio>
 
             <div class="flavor-player-controles-principales">
-                <button type="button" class="flavor-player-btn-retroceder" title="<?php esc_attr_e('Retroceder 15s', 'flavor-chat-ia'); ?>">
+                <button type="button" class="flavor-player-btn-retroceder" title="<?php esc_attr_e('Retroceder 15s', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-controls-skipback"></span>
                     <span class="flavor-player-salto">15</span>
                 </button>
 
-                <button type="button" class="flavor-player-btn-play-principal" title="<?php esc_attr_e('Reproducir', 'flavor-chat-ia'); ?>">
+                <button type="button" class="flavor-player-btn-play-principal" title="<?php esc_attr_e('Reproducir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-controls-play"></span>
                 </button>
 
-                <button type="button" class="flavor-player-btn-avanzar" title="<?php esc_attr_e('Avanzar 30s', 'flavor-chat-ia'); ?>">
+                <button type="button" class="flavor-player-btn-avanzar" title="<?php esc_attr_e('Avanzar 30s', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-controls-skipforward"></span>
                     <span class="flavor-player-salto">30</span>
                 </button>
@@ -166,7 +166,7 @@ if (!empty($episodio->duracion_segundos)) {
                 </div>
 
                 <div class="flavor-player-volumen">
-                    <button type="button" class="flavor-player-btn-mute" title="<?php esc_attr_e('Silenciar', 'flavor-chat-ia'); ?>">
+                    <button type="button" class="flavor-player-btn-mute" title="<?php esc_attr_e('Silenciar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-controls-volumeon"></span>
                     </button>
                     <input type="range" class="flavor-player-volumen-slider" min="0" max="100" value="80">
@@ -182,7 +182,7 @@ if (!empty($episodio->duracion_segundos)) {
                 class="flavor-btn flavor-btn-outline flavor-btn-like-episodio"
                 data-episodio-id="<?php echo intval($episodio->id); ?>">
             <span class="dashicons dashicons-heart"></span>
-            <?php esc_html_e('Me gusta', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Me gusta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <?php if (isset($episodio->likes) && $episodio->likes > 0): ?>
             <span class="flavor-like-count"><?php echo intval($episodio->likes); ?></span>
             <?php endif; ?>
@@ -190,7 +190,7 @@ if (!empty($episodio->duracion_segundos)) {
 
         <button type="button" class="flavor-btn flavor-btn-outline flavor-btn-compartir-episodio">
             <span class="dashicons dashicons-share"></span>
-            <?php esc_html_e('Compartir', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Compartir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
 
         <?php if (!empty($episodio->audio_url)): ?>
@@ -198,7 +198,7 @@ if (!empty($episodio->duracion_segundos)) {
            class="flavor-btn flavor-btn-outline"
            download>
             <span class="dashicons dashicons-download"></span>
-            <?php esc_html_e('Descargar', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Descargar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <?php endif; ?>
     </div>
@@ -209,7 +209,7 @@ if (!empty($episodio->duracion_segundos)) {
     <section class="flavor-episodio-descripcion-seccion">
         <h2 class="flavor-seccion-titulo">
             <span class="dashicons dashicons-text"></span>
-            <?php esc_html_e('Descripcion', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Descripcion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
         <div class="flavor-episodio-descripcion-contenido">
             <?php echo wp_kses_post($episodio->descripcion); ?>
@@ -222,7 +222,7 @@ if (!empty($episodio->duracion_segundos)) {
     <section class="flavor-episodio-notas-seccion">
         <h2 class="flavor-seccion-titulo">
             <span class="dashicons dashicons-edit"></span>
-            <?php esc_html_e('Notas del episodio', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Notas del episodio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
         <div class="flavor-episodio-notas-contenido">
             <?php echo wp_kses_post($episodio->notas); ?>
@@ -235,7 +235,7 @@ if (!empty($episodio->duracion_segundos)) {
     <section class="flavor-episodios-relacionados-seccion">
         <h2 class="flavor-seccion-titulo">
             <span class="dashicons dashicons-playlist-audio"></span>
-            <?php esc_html_e('Mas episodios de esta serie', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Mas episodios de esta serie', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
         <div class="flavor-episodios-relacionados-lista">
             <?php foreach ($episodios_relacionados as $episodio_relacionado):

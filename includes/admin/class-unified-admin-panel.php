@@ -222,7 +222,7 @@ class Flavor_Unified_Admin_Panel {
                 'labels' => $labels,
                 'datasets' => [
                     [
-                        'label' => __('Actividad', 'flavor-chat-ia'),
+                        'label' => __('Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'data' => $datos_actividad,
                         'borderColor' => '#2271b1',
                         'backgroundColor' => 'rgba(34, 113, 177, 0.1)',
@@ -270,55 +270,55 @@ class Flavor_Unified_Admin_Panel {
     private function definir_categorias() {
         $this->categorias = [
             'personas' => [
-                'label' => __('Personas', 'flavor-chat-ia'),
+                'label' => __('Personas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-groups',
                 'orden' => 10,
                 'modulos' => ['socios', 'consumidores', 'clientes', 'empleados', 'usuarios'],
             ],
             'economia' => [
-                'label' => __('Economía', 'flavor-chat-ia'),
+                'label' => __('Economía', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-money-alt',
                 'orden' => 20,
                 'modulos' => ['facturas', 'pagos', 'cuotas', 'presupuestos', 'tesoreria'],
             ],
             'operaciones' => [
-                'label' => __('Operaciones', 'flavor-chat-ia'),
+                'label' => __('Operaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-clipboard',
                 'orden' => 30,
                 'modulos' => ['reservas', 'pedidos', 'entregas', 'turnos', 'citas'],
             ],
             'recursos' => [
-                'label' => __('Recursos', 'flavor-chat-ia'),
+                'label' => __('Recursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-building',
                 'orden' => 40,
                 'modulos' => ['espacios', 'inventario', 'vehiculos', 'equipamiento'],
             ],
             'comunicacion' => [
-                'label' => __('Comunicación', 'flavor-chat-ia'),
+                'label' => __('Comunicación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-megaphone',
                 'orden' => 50,
                 'modulos' => ['avisos', 'newsletter', 'notificaciones', 'mensajes'],
             ],
             'actividades' => [
-                'label' => __('Actividades', 'flavor-chat-ia'),
+                'label' => __('Actividades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-calendar-alt',
                 'orden' => 60,
                 'modulos' => ['eventos', 'talleres', 'cursos', 'formacion'],
             ],
             'servicios' => [
-                'label' => __('Servicios', 'flavor-chat-ia'),
+                'label' => __('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-tools',
                 'orden' => 70,
                 'modulos' => ['tramites', 'incidencias', 'solicitudes', 'tickets'],
             ],
             'comunidad' => [
-                'label' => __('Comunidad', 'flavor-chat-ia'),
+                'label' => __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-share',
                 'orden' => 80,
                 'modulos' => ['participacion', 'banco_tiempo', 'ayuda_vecinal', 'foros'],
             ],
             'sostenibilidad' => [
-                'label' => __('Sostenibilidad', 'flavor-chat-ia'),
+                'label' => __('Sostenibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-palmtree',
                 'orden' => 90,
                 'modulos' => ['reciclaje', 'compostaje', 'huertos', 'bicicletas', 'carpooling'],
@@ -423,14 +423,14 @@ class Flavor_Unified_Admin_Panel {
 
         // Calcular badge total (notificaciones pendientes)
         $badge_total = $this->calcular_badge_total();
-        $menu_titulo = __('Gestión', 'flavor-chat-ia');
+        $menu_titulo = __('Gestión', FLAVOR_PLATFORM_TEXT_DOMAIN);
         if ($badge_total > 0) {
             $menu_titulo .= sprintf(' <span class="awaiting-mod">%d</span>', $badge_total);
         }
 
         // Menú principal
         add_menu_page(
-            __('Panel de Gestión', 'flavor-chat-ia'),
+            __('Panel de Gestión', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $menu_titulo,
             'read', // Capability mínima, cada página verifica la suya
             self::MENU_SLUG,
@@ -442,8 +442,8 @@ class Flavor_Unified_Admin_Panel {
         // Dashboard como primer submenú
         add_submenu_page(
             self::MENU_SLUG,
-            __('Dashboard', 'flavor-chat-ia'),
-            __('Dashboard', 'flavor-chat-ia'),
+            __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'read',
             self::MENU_SLUG,
             [$this, 'render_dashboard']
@@ -648,12 +648,12 @@ class Flavor_Unified_Admin_Panel {
         <div class="wrap flavor-gestion-dashboard">
             <h1>
                 <span class="dashicons dashicons-analytics"></span>
-                <?php _e('Panel de Gestión', 'flavor-chat-ia'); ?>
+                <?php _e('Panel de Gestión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h1>
 
             <?php if (empty($modulos)): ?>
                 <div class="notice notice-info">
-                    <p><?php _e('No hay módulos de gestión activos. Activa módulos desde el Compositor de Apps.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No hay módulos de gestión activos. Activa módulos desde el Compositor de Apps.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
 
@@ -766,7 +766,7 @@ class Flavor_Unified_Admin_Panel {
                     </div>
                     <?php if (!empty($stat['enlace'])): ?>
                         <a href="<?php echo esc_url($stat['enlace']); ?>" class="stat-link">
-                            <?php _e('Ver', 'flavor-chat-ia'); ?> →
+                            <?php _e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> →
                         </a>
                     <?php endif; ?>
                 </div>
@@ -816,7 +816,7 @@ class Flavor_Unified_Admin_Panel {
                 [
                     'icon' => 'dashicons-admin-plugins',
                     'valor' => count($this->modulos_registrados),
-                    'label' => __('Módulos activos', 'flavor-chat-ia'),
+                    'label' => __('Módulos activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'blue',
                 ],
             ];
@@ -866,8 +866,8 @@ class Flavor_Unified_Admin_Panel {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_gestion_nonce'),
             'i18n' => [
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
-                'error' => __('Error al cargar datos', 'flavor-chat-ia'),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al cargar datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
 

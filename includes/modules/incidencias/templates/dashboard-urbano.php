@@ -15,9 +15,9 @@ $tasa_resolucion = $metricas->total_incidencias > 0
 // Tiempo medio en formato legible
 $horas = $metricas->tiempo_medio_resolucion ?? 0;
 if ($horas >= 24) {
-    $tiempo_texto = sprintf(__('%d días', 'flavor-chat-ia'), round($horas / 24));
+    $tiempo_texto = sprintf(__('%d días', FLAVOR_PLATFORM_TEXT_DOMAIN), round($horas / 24));
 } else {
-    $tiempo_texto = sprintf(__('%d horas', 'flavor-chat-ia'), round($horas));
+    $tiempo_texto = sprintf(__('%d horas', FLAVOR_PLATFORM_TEXT_DOMAIN), round($horas));
 }
 ?>
 <div class="inc-dashboard">
@@ -26,7 +26,7 @@ if ($horas >= 24) {
             <span class="dashicons dashicons-chart-area"></span>
         </span>
         <div>
-            <h3><?php esc_html_e('Dashboard Urbano', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Dashboard Urbano', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <span class="inc-dashboard__periodo"><?php echo esc_html($periodo_texto); ?></span>
         </div>
     </div>
@@ -38,28 +38,28 @@ if ($horas >= 24) {
                 <span class="dashicons dashicons-flag"></span>
             </span>
             <span class="inc-dashboard__metrica-valor"><?php echo esc_html($metricas->total_incidencias); ?></span>
-            <span class="inc-dashboard__metrica-label"><?php esc_html_e('Incidencias', 'flavor-chat-ia'); ?></span>
+            <span class="inc-dashboard__metrica-label"><?php esc_html_e('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="inc-dashboard__metrica">
             <span class="inc-dashboard__metrica-icono" style="background: #4caf50;">
                 <span class="dashicons dashicons-yes-alt"></span>
             </span>
             <span class="inc-dashboard__metrica-valor"><?php echo esc_html($metricas->resueltas); ?></span>
-            <span class="inc-dashboard__metrica-label"><?php esc_html_e('Resueltas', 'flavor-chat-ia'); ?></span>
+            <span class="inc-dashboard__metrica-label"><?php esc_html_e('Resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="inc-dashboard__metrica">
             <span class="inc-dashboard__metrica-icono" style="background: #2196f3;">
                 <span class="dashicons dashicons-groups"></span>
             </span>
             <span class="inc-dashboard__metrica-valor"><?php echo esc_html($metricas->participacion_ciudadana); ?></span>
-            <span class="inc-dashboard__metrica-label"><?php esc_html_e('Ciudadanos', 'flavor-chat-ia'); ?></span>
+            <span class="inc-dashboard__metrica-label"><?php esc_html_e('Ciudadanos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="inc-dashboard__metrica">
             <span class="inc-dashboard__metrica-icono" style="background: #e91e63;">
                 <span class="dashicons dashicons-heart"></span>
             </span>
             <span class="inc-dashboard__metrica-valor"><?php echo esc_html($metricas->voluntariados); ?></span>
-            <span class="inc-dashboard__metrica-label"><?php esc_html_e('Voluntariados', 'flavor-chat-ia'); ?></span>
+            <span class="inc-dashboard__metrica-label"><?php esc_html_e('Voluntariados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
     </div>
 
@@ -68,7 +68,7 @@ if ($horas >= 24) {
         <div class="inc-dashboard__indicador">
             <div class="inc-dashboard__indicador-header">
                 <span class="dashicons dashicons-chart-pie"></span>
-                <span><?php esc_html_e('Tasa de resolución', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Tasa de resolución', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="inc-dashboard__gauge">
                 <?php $clase_tasa = $tasa_resolucion >= 70 ? 'bueno' : ($tasa_resolucion >= 40 ? 'medio' : 'bajo'); ?>
@@ -82,7 +82,7 @@ if ($horas >= 24) {
         <div class="inc-dashboard__indicador">
             <div class="inc-dashboard__indicador-header">
                 <span class="dashicons dashicons-clock"></span>
-                <span><?php esc_html_e('Tiempo medio resolución', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Tiempo medio resolución', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="inc-dashboard__tiempo">
                 <span class="inc-dashboard__tiempo-valor"><?php echo esc_html($tiempo_texto); ?></span>
@@ -93,7 +93,7 @@ if ($horas >= 24) {
             <div class="inc-dashboard__indicador">
                 <div class="inc-dashboard__indicador-header">
                     <span class="dashicons dashicons-star-filled"></span>
-                    <span><?php esc_html_e('Satisfacción', 'flavor-chat-ia'); ?></span>
+                    <span><?php esc_html_e('Satisfacción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="inc-dashboard__satisfaccion">
                     <?php
@@ -113,7 +113,7 @@ if ($horas >= 24) {
     <!-- Por categoría -->
     <?php if (!empty($por_categoria)): ?>
         <div class="inc-dashboard__categorias">
-            <h4><?php esc_html_e('Por categoría', 'flavor-chat-ia'); ?></h4>
+            <h4><?php esc_html_e('Por categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
             <?php foreach ($por_categoria as $cat): ?>
                 <?php
                 $tasa_cat = $cat->total > 0 ? round(($cat->resueltas / $cat->total) * 100) : 0;
@@ -144,7 +144,7 @@ if ($horas >= 24) {
     <!-- Tendencia -->
     <?php if (!empty($tendencia)): ?>
         <div class="inc-dashboard__tendencia">
-            <h4><?php esc_html_e('Tendencia mensual', 'flavor-chat-ia'); ?></h4>
+            <h4><?php esc_html_e('Tendencia mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
             <div class="inc-dashboard__tendencia-chart">
                 <?php
                 $max_valor = max(array_column($tendencia, 'total'));
@@ -164,8 +164,8 @@ if ($horas >= 24) {
                 <?php endforeach; ?>
             </div>
             <div class="inc-dashboard__tendencia-leyenda">
-                <span><span class="inc-dashboard__leyenda-color inc-dashboard__leyenda-color--total"></span> <?php esc_html_e('Reportadas', 'flavor-chat-ia'); ?></span>
-                <span><span class="inc-dashboard__leyenda-color inc-dashboard__leyenda-color--resueltas"></span> <?php esc_html_e('Resueltas', 'flavor-chat-ia'); ?></span>
+                <span><span class="inc-dashboard__leyenda-color inc-dashboard__leyenda-color--total"></span> <?php esc_html_e('Reportadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                <span><span class="inc-dashboard__leyenda-color inc-dashboard__leyenda-color--resueltas"></span> <?php esc_html_e('Resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     <?php endif; ?>
@@ -175,11 +175,11 @@ if ($horas >= 24) {
         <div class="inc-dashboard__ambiental">
             <h4>
                 <span class="dashicons dashicons-admin-site-alt3"></span>
-                <?php esc_html_e('Impacto Ambiental', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Impacto Ambiental', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h4>
             <div class="inc-dashboard__ambiental-valor">
                 <?php echo esc_html($metricas->incidencias_ambientales); ?>
-                <span><?php esc_html_e('incidencias con impacto ambiental', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('incidencias con impacto ambiental', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     <?php endif; ?>

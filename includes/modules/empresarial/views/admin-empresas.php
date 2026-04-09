@@ -65,26 +65,26 @@ $conteo_estados = $wpdb->get_results(
                 <input type="hidden" name="page" value="flavor-empresarial-empresas">
 
                 <select name="estado">
-                    <option value=""><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <option value="nuevo" <?php selected($estado_filtro, 'nuevo'); ?>>
-                        <?php esc_html_e('Nuevos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Nuevos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         (<?php echo esc_html($conteo_estados['nuevo']->cantidad ?? 0); ?>)
                     </option>
                     <option value="leido" <?php selected($estado_filtro, 'leido'); ?>>
-                        <?php esc_html_e('Leídos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Leídos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         (<?php echo esc_html($conteo_estados['leido']->cantidad ?? 0); ?>)
                     </option>
                     <option value="respondido" <?php selected($estado_filtro, 'respondido'); ?>>
-                        <?php esc_html_e('Respondidos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Respondidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         (<?php echo esc_html($conteo_estados['respondido']->cantidad ?? 0); ?>)
                     </option>
                     <option value="archivado" <?php selected($estado_filtro, 'archivado'); ?>>
-                        <?php esc_html_e('Archivados', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Archivados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         (<?php echo esc_html($conteo_estados['archivado']->cantidad ?? 0); ?>)
                     </option>
                 </select>
 
-                <input type="submit" class="button" value="<?php esc_attr_e('Filtrar', 'flavor-chat-ia'); ?>">
+                <input type="submit" class="button" value="<?php esc_attr_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             </form>
         </div>
 
@@ -92,15 +92,15 @@ $conteo_estados = $wpdb->get_results(
             <form method="get" action="">
                 <input type="hidden" name="page" value="flavor-empresarial-empresas">
                 <input type="search" name="s" value="<?php echo esc_attr($busqueda_termino); ?>"
-                       placeholder="<?php esc_attr_e('Buscar contactos...', 'flavor-chat-ia'); ?>">
-                <input type="submit" class="button" value="<?php esc_attr_e('Buscar', 'flavor-chat-ia'); ?>">
+                       placeholder="<?php esc_attr_e('Buscar contactos...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                <input type="submit" class="button" value="<?php esc_attr_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             </form>
         </div>
 
         <div class="tablenav-pages">
             <span class="displaying-num">
                 <?php printf(
-                    esc_html(_n('%s contacto', '%s contactos', $total_contactos, 'flavor-chat-ia')),
+                    esc_html(_n('%s contacto', '%s contactos', $total_contactos, FLAVOR_PLATFORM_TEXT_DOMAIN)),
                     number_format_i18n($total_contactos)
                 ); ?>
             </span>
@@ -112,13 +112,13 @@ $conteo_estados = $wpdb->get_results(
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th scope="col" class="column-nombre"><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?></th>
-                    <th scope="col" class="column-empresa"><?php esc_html_e('Empresa', 'flavor-chat-ia'); ?></th>
-                    <th scope="col" class="column-asunto"><?php esc_html_e('Asunto', 'flavor-chat-ia'); ?></th>
-                    <th scope="col" class="column-origen"><?php esc_html_e('Origen', 'flavor-chat-ia'); ?></th>
-                    <th scope="col" class="column-estado"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                    <th scope="col" class="column-fecha"><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                    <th scope="col" class="column-acciones"><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th scope="col" class="column-nombre"><?php esc_html_e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th scope="col" class="column-empresa"><?php esc_html_e('Empresa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th scope="col" class="column-asunto"><?php esc_html_e('Asunto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th scope="col" class="column-origen"><?php esc_html_e('Origen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th scope="col" class="column-estado"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th scope="col" class="column-fecha"><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th scope="col" class="column-acciones"><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -141,7 +141,7 @@ $conteo_estados = $wpdb->get_results(
                             <?php echo esc_html($contacto['empresa'] ?: '-'); ?>
                         </td>
                         <td class="column-asunto">
-                            <?php echo esc_html($contacto['asunto'] ?: __('Sin asunto', 'flavor-chat-ia')); ?>
+                            <?php echo esc_html($contacto['asunto'] ?: __('Sin asunto', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                         </td>
                         <td class="column-origen">
                             <span class="origen-badge origen-<?php echo esc_attr($contacto['origen']); ?>">
@@ -208,8 +208,8 @@ $conteo_estados = $wpdb->get_results(
     <?php else: ?>
         <div class="flavor-empty-state">
             <span class="dashicons dashicons-email-alt"></span>
-            <h3><?php esc_html_e('No hay contactos', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('No se encontraron contactos con los filtros seleccionados.', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('No hay contactos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php esc_html_e('No se encontraron contactos con los filtros seleccionados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php endif; ?>
 </div>
@@ -219,7 +219,7 @@ $conteo_estados = $wpdb->get_results(
     <div class="flavor-modal-overlay"></div>
     <div class="flavor-modal-content">
         <div class="flavor-modal-header">
-            <h2><?php esc_html_e('Detalle del Contacto', 'flavor-chat-ia'); ?></h2>
+            <h2><?php esc_html_e('Detalle del Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <button type="button" class="flavor-modal-close">&times;</button>
         </div>
         <div class="flavor-modal-body" id="contacto-detalle">
@@ -229,10 +229,10 @@ $conteo_estados = $wpdb->get_results(
         </div>
         <div class="flavor-modal-footer">
             <button type="button" class="button" id="btn-cerrar-modal">
-                <?php esc_html_e('Cerrar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <button type="button" class="button button-primary" id="btn-responder-contacto" style="display: none;">
-                <?php esc_html_e('Marcar como Respondido', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Marcar como Respondido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     </div>
@@ -464,7 +464,7 @@ jQuery(document).ready(function($) {
     // Marcar como respondido
     $('.marcar-respondido, #btn-responder-contacto').on('click', function() {
         var contactoId = $(this).data('id');
-        if (confirm('<?php echo esc_js(__('¿Marcar este contacto como respondido?', 'flavor-chat-ia')); ?>')) {
+        if (confirm('<?php echo esc_js(__('¿Marcar este contacto como respondido?', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>')) {
             // En producción, llamar a AJAX
             $('tr[data-contacto-id="' + contactoId + '"] .estado-badge')
                 .removeClass('estado-nuevo estado-leido')
@@ -477,7 +477,7 @@ jQuery(document).ready(function($) {
     // Archivar contacto
     $('.archivar-contacto').on('click', function() {
         var contactoId = $(this).data('id');
-        if (confirm('<?php echo esc_js(__('¿Archivar este contacto?', 'flavor-chat-ia')); ?>')) {
+        if (confirm('<?php echo esc_js(__('¿Archivar este contacto?', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>')) {
             // En producción, llamar a AJAX
             $('tr[data-contacto-id="' + contactoId + '"]').fadeOut();
         }

@@ -88,7 +88,7 @@ $modal_size = $size_classes[$size] ?? $size_classes['md'];
                         <button type="button"
                                 onclick="flavorModal.close('<?php echo esc_js($modal_id); ?>')"
                                 class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-                                aria-label="<?php esc_attr_e('Cerrar', 'flavor-chat-ia'); ?>">
+                                aria-label="<?php esc_attr_e('Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="text-xl">✕</span>
                         </button>
                     <?php endif; ?>

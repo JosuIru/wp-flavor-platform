@@ -80,7 +80,7 @@ $parkings_url = Flavor_Chat_Helpers::get_action_url('parkings', '');
         <header class="widget-header">
             <h3 class="widget-titulo">
                 <span class="dashicons dashicons-car"></span>
-                <?php esc_html_e('Parkings', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Parkings', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </header>
     <?php endif; ?>
@@ -89,18 +89,18 @@ $parkings_url = Flavor_Chat_Helpers::get_action_url('parkings', '');
     <div class="ocupacion-resumen-compacto">
         <div class="resumen-circulo" style="--porcentaje: <?php echo esc_attr($porcentaje_general); ?>; --color: <?php echo esc_attr($color_estado); ?>">
             <span class="circulo-valor"><?php echo esc_html($plazas_libres_general); ?></span>
-            <span class="circulo-label"><?php esc_html_e('libres', 'flavor-chat-ia'); ?></span>
+            <span class="circulo-label"><?php esc_html_e('libres', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="resumen-texto">
             <span class="texto-principal">
                 <?php printf(
-                    esc_html__('%d de %d plazas ocupadas', 'flavor-chat-ia'),
+                    esc_html__('%d de %d plazas ocupadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $total_ocupadas_general,
                     $total_plazas_general
                 ); ?>
             </span>
             <span class="texto-secundario" style="color: <?php echo esc_attr($color_estado); ?>">
-                <?php echo esc_html($porcentaje_general); ?>% <?php esc_html_e('ocupación', 'flavor-chat-ia'); ?>
+                <?php echo esc_html($porcentaje_general); ?>% <?php esc_html_e('ocupación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
         </div>
     </div>
@@ -128,7 +128,7 @@ $parkings_url = Flavor_Chat_Helpers::get_action_url('parkings', '');
 
     <!-- Enlace a ver más -->
     <a href="<?php echo esc_url($parkings_url . 'ocupacion/'); ?>" class="widget-ver-mas">
-        <?php esc_html_e('Ver todos los parkings', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Ver todos los parkings', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         <span class="dashicons dashicons-arrow-right-alt2"></span>
     </a>
 </div>

@@ -23,11 +23,11 @@ if (!defined('ABSPATH')) {
 }
 
 $sections = $sections ?? [];
-$title = $title ?? __('Configuración', 'flavor-chat-ia');
+$title = $title ?? __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $description = $description ?? '';
 $color = $color ?? 'blue';
 $save_action = $save_action ?? '';
-$save_label = $save_label ?? __('Guardar cambios', 'flavor-chat-ia');
+$save_label = $save_label ?? __('Guardar cambios', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $actions = $actions ?? [];
 $ajax = $ajax ?? true;
 $nonce_action = $nonce_action ?? 'flavor_settings_nonce';
@@ -249,14 +249,14 @@ $active_section = $sections[0]['id'] ?? '';
                 <!-- Footer con botón guardar -->
                 <div class="p-6 border-t border-gray-100 bg-gray-50/50 flex items-center justify-between">
                     <div class="settings-status text-sm text-gray-500 hidden">
-                        <span class="saving hidden"><?php esc_html_e('Guardando...', 'flavor-chat-ia'); ?></span>
-                        <span class="saved hidden text-green-600">✓ <?php esc_html_e('Guardado', 'flavor-chat-ia'); ?></span>
-                        <span class="error hidden text-red-600">✗ <?php esc_html_e('Error al guardar', 'flavor-chat-ia'); ?></span>
+                        <span class="saving hidden"><?php esc_html_e('Guardando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                        <span class="saved hidden text-green-600">✓ <?php esc_html_e('Guardado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                        <span class="error hidden text-red-600">✗ <?php esc_html_e('Error al guardar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="flex items-center gap-3">
                         <button type="reset"
                                 class="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-xl transition-colors">
-                            <?php esc_html_e('Restablecer', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Restablecer', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <button type="submit"
                                 class="px-6 py-2 text-sm font-medium text-white <?php echo esc_attr($color_classes['bg_solid']); ?> hover:opacity-90 rounded-xl transition-colors">

@@ -21,10 +21,10 @@ if (!defined('ABSPATH')) {
 }
 
 $items = $items ?? [];
-$title = $title ?? __('Actividad Reciente', 'flavor-chat-ia');
+$title = $title ?? __('Actividad Reciente', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $color = $color ?? 'blue';
 $limit = $limit ?? 10;
-$empty_text = $empty_text ?? __('No hay actividad reciente', 'flavor-chat-ia');
+$empty_text = $empty_text ?? __('No hay actividad reciente', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $actions = $actions ?? [];
 $compact = $compact ?? false;
 
@@ -156,7 +156,7 @@ $type_icons = [
             <button type="button"
                     class="text-sm <?php echo esc_attr($color_classes['text']); ?> hover:underline"
                     onclick="this.dispatchEvent(new CustomEvent('load-more-activity', {bubbles: true}))">
-                <?php esc_html_e('Ver más actividad', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver más actividad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     <?php endif; ?>

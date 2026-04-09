@@ -35,15 +35,15 @@ $estados = Flavor_Chat_Economia_Don_Module::ESTADOS_DON;
 
 <div class="ed-listado">
     <header class="ed-listado__header">
-        <h2><?php esc_html_e('Economía del Don', 'flavor-chat-ia'); ?></h2>
-        <p><?php esc_html_e('Dar y recibir sin esperar nada a cambio', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Economía del Don', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p><?php esc_html_e('Dar y recibir sin esperar nada a cambio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </header>
 
     <!-- Filtros por categoría -->
     <div class="ed-filtros">
         <button class="ed-filtro-btn is-active" data-categoria="todos">
             <span class="dashicons dashicons-grid-view"></span>
-            <?php esc_html_e('Todos', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
         <?php foreach ($categorias as $cat_id => $cat_data) : ?>
         <button class="ed-filtro-btn" data-categoria="<?php echo esc_attr($cat_id); ?>"
@@ -58,7 +58,7 @@ $estados = Flavor_Chat_Economia_Don_Module::ESTADOS_DON;
     <div style="text-align: center; margin-bottom: 2rem;">
         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia_don', 'ofrecer')); ?>" class="ed-btn-publicar">
             <span class="dashicons dashicons-heart"></span>
-            <?php esc_html_e('Ofrecer un don', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Ofrecer un don', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
     <?php endif; ?>
@@ -74,7 +74,7 @@ $estados = Flavor_Chat_Economia_Don_Module::ESTADOS_DON;
             $disponibilidad = get_post_meta(get_the_ID(), '_ed_disponibilidad', true);
 
             $donante_nombre = $anonimo
-                ? __('Donante anónimo', 'flavor-chat-ia')
+                ? __('Donante anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN)
                 : get_the_author();
         ?>
         <article class="ed-don-card" data-categoria="<?php echo esc_attr($categoria); ?>"
@@ -127,12 +127,12 @@ $estados = Flavor_Chat_Economia_Don_Module::ESTADOS_DON;
                         <?php if ($estado === 'disponible') : ?>
                         <button class="ed-btn-solicitar" data-don="<?php echo esc_attr(get_the_ID()); ?>">
                             <span class="dashicons dashicons-heart"></span>
-                            <?php esc_html_e('Lo quiero', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Lo quiero', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <?php endif; ?>
                     <?php elseif (!is_user_logged_in()) : ?>
                         <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="ed-btn-solicitar">
-                            <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     <?php endif; ?>
                 </footer>
@@ -143,7 +143,7 @@ $estados = Flavor_Chat_Economia_Don_Module::ESTADOS_DON;
     <?php else : ?>
     <div class="ed-empty-state">
         <span class="dashicons dashicons-heart"></span>
-        <p><?php esc_html_e('No hay dones disponibles aún. ¡Sé el primero en ofrecer algo!', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('No hay dones disponibles aún. ¡Sé el primero en ofrecer algo!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php endif; ?>
 </div>

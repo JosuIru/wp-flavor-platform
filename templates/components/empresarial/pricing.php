@@ -90,12 +90,12 @@ $clase_grid = $grid_clases[(string)$numero_planes] ?? $grid_clases['3'];
                     <button class="px-6 py-2 rounded-full font-semibold transition-all duration-300 plan-toggle active"
                             data-periodo="mensual"
                             style="background: linear-gradient(135deg, var(--flavor-primary, #667eea) 0%, var(--flavor-secondary, #764ba2) 100%); color: white;">
-                        <?php echo esc_html__('Mensual', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button class="px-6 py-2 rounded-full font-semibold transition-all duration-300 plan-toggle"
                             data-periodo="anual"
                             style="color: var(--flavor-text-secondary, #666666);">
-                        <?php echo esc_html__('Anual', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Anual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <span class="ml-2 text-xs px-2 py-1 rounded-full" style="background: var(--flavor-primary, #667eea); color: white;">
                             -20%
                         </span>
@@ -140,7 +140,7 @@ $clase_grid = $grid_clases[(string)$numero_planes] ?? $grid_clases['3'];
                                             <span class="text-6xl font-bold mx-1" style="color: var(--flavor-text-primary, #1a1a1a);">
                                                 <?php echo esc_html($plan['precio_mensual']); ?>
                                             </span>
-                                            <span class="text-xl mt-8" style="color: var(--flavor-text-secondary, #666666);"><?php echo esc_html__('/mes', 'flavor-chat-ia'); ?></span>
+                                            <span class="text-xl mt-8" style="color: var(--flavor-text-secondary, #666666);"><?php echo esc_html__('/mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         </div>
                                     <?php else: ?>
                                         <div class="text-4xl font-bold" style="color: var(--flavor-text-primary, #1a1a1a);">
@@ -158,7 +158,7 @@ $clase_grid = $grid_clases[(string)$numero_planes] ?? $grid_clases['3'];
                                             <span class="text-6xl font-bold mx-1" style="color: var(--flavor-text-primary, #1a1a1a);">
                                                 <?php echo esc_html($plan['precio_anual']); ?>
                                             </span>
-                                            <span class="text-xl mt-8" style="color: var(--flavor-text-secondary, #666666);"><?php echo esc_html__('/año', 'flavor-chat-ia'); ?></span>
+                                            <span class="text-xl mt-8" style="color: var(--flavor-text-secondary, #666666);"><?php echo esc_html__('/año', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         </div>
                                     <?php else: ?>
                                         <div class="text-4xl font-bold" style="color: var(--flavor-text-primary, #1a1a1a);">
@@ -199,26 +199,26 @@ $clase_grid = $grid_clases[(string)$numero_planes] ?? $grid_clases['3'];
         <!-- Información adicional -->
         <div class="text-center mt-16 max-w-3xl mx-auto">
             <p class="text-lg mb-6" style="color: var(--flavor-text-secondary, #666666);">
-                <?php echo esc_html__('Todos los planes incluyen 30 días de garantía de devolución', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Todos los planes incluyen 30 días de garantía de devolución', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
             <div class="flex flex-wrap justify-center gap-8">
                 <div class="flex items-center gap-2">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--flavor-primary, #667eea);">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
                     </svg>
-                    <span class="font-semibold" style="color: var(--flavor-text-primary, #1a1a1a);"><?php echo esc_html__('Pagos Seguros', 'flavor-chat-ia'); ?></span>
+                    <span class="font-semibold" style="color: var(--flavor-text-primary, #1a1a1a);"><?php echo esc_html__('Pagos Seguros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="flex items-center gap-2">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--flavor-primary, #667eea);">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                     </svg>
-                    <span class="font-semibold" style="color: var(--flavor-text-primary, #1a1a1a);"><?php echo esc_html__('Datos Encriptados', 'flavor-chat-ia'); ?></span>
+                    <span class="font-semibold" style="color: var(--flavor-text-primary, #1a1a1a);"><?php echo esc_html__('Datos Encriptados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="flex items-center gap-2">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--flavor-primary, #667eea);">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/>
                     </svg>
-                    <span class="font-semibold" style="color: var(--flavor-text-primary, #1a1a1a);"><?php echo esc_html__('Soporte 24/7', 'flavor-chat-ia'); ?></span>
+                    <span class="font-semibold" style="color: var(--flavor-text-primary, #1a1a1a);"><?php echo esc_html__('Soporte 24/7', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
         </div>

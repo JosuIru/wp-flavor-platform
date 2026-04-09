@@ -34,14 +34,14 @@ $defaults = [
 $configuracion_actual = wp_parse_args($configuracion_actual, $defaults);
 
 $categorias_disponibles = [
-    'presupuestos' => __('Presupuestos', 'flavor-chat-ia'),
-    'contratos' => __('Contratos', 'flavor-chat-ia'),
-    'subvenciones' => __('Subvenciones', 'flavor-chat-ia'),
-    'normativa' => __('Normativa', 'flavor-chat-ia'),
-    'actas' => __('Actas', 'flavor-chat-ia'),
-    'personal' => __('Personal', 'flavor-chat-ia'),
-    'indicadores' => __('Indicadores', 'flavor-chat-ia'),
-    'patrimonio' => __('Patrimonio', 'flavor-chat-ia'),
+    'presupuestos' => __('Presupuestos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'contratos' => __('Contratos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'subvenciones' => __('Subvenciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'normativa' => __('Normativa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'actas' => __('Actas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'personal' => __('Personal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'indicadores' => __('Indicadores', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'patrimonio' => __('Patrimonio', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $formatos_disponibles = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'odt', 'ods', 'csv', 'txt'];
@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['transparencia_guardar
     $configuracion_actual = $nueva_configuracion;
 
     echo '<div class="notice notice-success is-dismissible"><p>' .
-        esc_html__('Configuración guardada correctamente.', 'flavor-chat-ia') .
+        esc_html__('Configuración guardada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN) .
         '</p></div>';
 }
 
@@ -117,39 +117,39 @@ $tamano_actual_mb = max(1, (int) floor(((int) $configuracion_actual['tamano_maxi
 ?>
 
 <div class="wrap flavor-admin-page">
-    <h1><?php esc_html_e('Configuración de Transparencia', 'flavor-chat-ia'); ?></h1>
+    <h1><?php esc_html_e('Configuración de Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
     <p class="description">
-        <?php esc_html_e('Ajusta cómo se publican los datos, cómo se reciben solicitudes y qué formatos se permiten en el portal.', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Ajusta cómo se publican los datos, cómo se reciben solicitudes y qué formatos se permiten en el portal.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </p>
 
     <form method="post">
         <?php wp_nonce_field('transparencia_config', 'transparencia_nonce'); ?>
         <input type="hidden" name="transparencia_guardar_config" value="1">
 
-        <h2><?php esc_html_e('Solicitudes de Información', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Solicitudes de Información', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <table class="form-table" role="presentation">
             <tr>
-                <th scope="row"><?php esc_html_e('Plazo de respuesta (días hábiles)', 'flavor-chat-ia'); ?></th>
+                <th scope="row"><?php esc_html_e('Plazo de respuesta (días hábiles)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number" min="1" max="90" class="small-text" name="dias_plazo_respuesta" value="<?php echo esc_attr((int) $configuracion_actual['dias_plazo_respuesta']); ?>">
-                    <p class="description"><?php esc_html_e('Se usa para calcular la fecha límite de cada solicitud.', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Se usa para calcular la fecha límite de cada solicitud.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
             <tr>
-                <th scope="row"><?php esc_html_e('Solicitudes anónimas', 'flavor-chat-ia'); ?></th>
+                <th scope="row"><?php esc_html_e('Solicitudes anónimas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox" name="permite_solicitudes_anonimas" value="1" <?php checked(!empty($configuracion_actual['permite_solicitudes_anonimas'])); ?>>
-                        <?php esc_html_e('Permitir solicitudes sin usuario autenticado.', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Permitir solicitudes sin usuario autenticado.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
             <tr>
-                <th scope="row"><?php esc_html_e('Notificaciones', 'flavor-chat-ia'); ?></th>
+                <th scope="row"><?php esc_html_e('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox" name="notificar_nuevas_solicitudes" value="1" <?php checked(!empty($configuracion_actual['notificar_nuevas_solicitudes'])); ?>>
-                        <?php esc_html_e('Enviar aviso al recibir nuevas solicitudes.', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Enviar aviso al recibir nuevas solicitudes.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <p style="margin-top:8px;">
                         <input type="email" class="regular-text" name="email_notificaciones" value="<?php echo esc_attr((string) $configuracion_actual['email_notificaciones']); ?>" placeholder="<?php echo esc_attr(get_option('admin_email')); ?>">
@@ -158,62 +158,62 @@ $tamano_actual_mb = max(1, (int) floor(((int) $configuracion_actual['tamano_maxi
             </tr>
         </table>
 
-        <h2><?php esc_html_e('Publicación y Moderación', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Publicación y Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <table class="form-table" role="presentation">
             <tr>
-                <th scope="row"><?php esc_html_e('Publicación automática', 'flavor-chat-ia'); ?></th>
+                <th scope="row"><?php esc_html_e('Publicación automática', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox" name="publicacion_automatica" value="1" <?php checked(!empty($configuracion_actual['publicacion_automatica'])); ?>>
-                        <?php esc_html_e('Publicar documentos sin revisión manual.', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Publicar documentos sin revisión manual.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
             <tr>
-                <th scope="row"><?php esc_html_e('Aprobación de publicación', 'flavor-chat-ia'); ?></th>
+                <th scope="row"><?php esc_html_e('Aprobación de publicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox" name="requiere_aprobacion_publicacion" value="1" <?php checked(!empty($configuracion_actual['requiere_aprobacion_publicacion'])); ?>>
-                        <?php esc_html_e('Requerir aprobación antes de publicar.', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Requerir aprobación antes de publicar.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
             <tr>
-                <th scope="row"><?php esc_html_e('Contexto de disponibilidad', 'flavor-chat-ia'); ?></th>
+                <th scope="row"><?php esc_html_e('Contexto de disponibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <select name="disponible_app">
-                        <option value="cliente" <?php selected((string) $configuracion_actual['disponible_app'], 'cliente'); ?>><?php esc_html_e('Cliente', 'flavor-chat-ia'); ?></option>
-                        <option value="admin" <?php selected((string) $configuracion_actual['disponible_app'], 'admin'); ?>><?php esc_html_e('Administración', 'flavor-chat-ia'); ?></option>
+                        <option value="cliente" <?php selected((string) $configuracion_actual['disponible_app'], 'cliente'); ?>><?php esc_html_e('Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="admin" <?php selected((string) $configuracion_actual['disponible_app'], 'admin'); ?>><?php esc_html_e('Administración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </td>
             </tr>
         </table>
 
-        <h2><?php esc_html_e('Documentos y Visualización', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Documentos y Visualización', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <table class="form-table" role="presentation">
             <tr>
-                <th scope="row"><?php esc_html_e('Documentos por página', 'flavor-chat-ia'); ?></th>
+                <th scope="row"><?php esc_html_e('Documentos por página', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number" min="6" max="100" class="small-text" name="limite_documentos_por_pagina" value="<?php echo esc_attr((int) $configuracion_actual['limite_documentos_por_pagina']); ?>">
                 </td>
             </tr>
             <tr>
-                <th scope="row"><?php esc_html_e('Mostrar gráficos', 'flavor-chat-ia'); ?></th>
+                <th scope="row"><?php esc_html_e('Mostrar gráficos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox" name="mostrar_graficos" value="1" <?php checked(!empty($configuracion_actual['mostrar_graficos'])); ?>>
-                        <?php esc_html_e('Activar gráficas de presupuesto y actividad.', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Activar gráficas de presupuesto y actividad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
             <tr>
-                <th scope="row"><?php esc_html_e('Tamaño máximo por archivo (MB)', 'flavor-chat-ia'); ?></th>
+                <th scope="row"><?php esc_html_e('Tamaño máximo por archivo (MB)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number" min="1" max="200" class="small-text" name="tamano_maximo_archivo_mb" value="<?php echo esc_attr($tamano_actual_mb); ?>">
                 </td>
             </tr>
             <tr>
-                <th scope="row"><?php esc_html_e('Categorías habilitadas', 'flavor-chat-ia'); ?></th>
+                <th scope="row"><?php esc_html_e('Categorías habilitadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <?php foreach ($categorias_disponibles as $categoria_key => $categoria_label) : ?>
                         <label style="display:inline-block; margin: 0 14px 8px 0;">
@@ -224,7 +224,7 @@ $tamano_actual_mb = max(1, (int) floor(((int) $configuracion_actual['tamano_maxi
                 </td>
             </tr>
             <tr>
-                <th scope="row"><?php esc_html_e('Formatos permitidos', 'flavor-chat-ia'); ?></th>
+                <th scope="row"><?php esc_html_e('Formatos permitidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <?php foreach ($formatos_disponibles as $formato) : ?>
                         <label style="display:inline-block; margin: 0 10px 8px 0; text-transform: uppercase;">
@@ -237,7 +237,7 @@ $tamano_actual_mb = max(1, (int) floor(((int) $configuracion_actual['tamano_maxi
         </table>
 
         <p class="submit">
-            <button type="submit" class="button button-primary"><?php esc_html_e('Guardar configuración', 'flavor-chat-ia'); ?></button>
+            <button type="submit" class="button button-primary"><?php esc_html_e('Guardar configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
         </p>
     </form>
 </div>

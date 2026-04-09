@@ -134,41 +134,41 @@ $colores_estado = [
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-layout" style="color: #28a745;"></span>
-        <?php echo esc_html__('Gestión de Parcelas', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Gestión de Parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <a href="<?php echo esc_url(admin_url('admin.php?page=huertos-parcelas&action=new')); ?>" class="page-title-action">
-        <?php echo esc_html__('Añadir Parcela', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Añadir Parcela', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </a>
 
     <hr class="wp-header-end">
 
     <?php if ($usar_datos_demo): ?>
         <div class="notice notice-info">
-            <p><span class="dashicons dashicons-info"></span> <?php echo esc_html__('Mostrando datos de demostración.', 'flavor-chat-ia'); ?></p>
+            <p><span class="dashicons dashicons-info"></span> <?php echo esc_html__('Mostrando datos de demostración.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php endif; ?>
 
     <!-- Estadísticas -->
     <div class="flavor-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 20px 0;">
         <div class="flavor-stat-card" style="background: #fff; border-left: 4px solid #28a745; padding: 15px 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 4px;">
-            <p style="margin: 0; color: #646970; font-size: 12px;"><?php echo esc_html__('Total Parcelas', 'flavor-chat-ia'); ?></p>
+            <p style="margin: 0; color: #646970; font-size: 12px;"><?php echo esc_html__('Total Parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <h3 style="margin: 5px 0 0; font-size: 24px; color: #1d2327;"><?php echo number_format($total_parcelas); ?></h3>
         </div>
         <div class="flavor-stat-card" style="background: #fff; border-left: 4px solid #155724; padding: 15px 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 4px;">
-            <p style="margin: 0; color: #646970; font-size: 12px;"><?php echo esc_html__('Ocupadas', 'flavor-chat-ia'); ?></p>
+            <p style="margin: 0; color: #646970; font-size: 12px;"><?php echo esc_html__('Ocupadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <h3 style="margin: 5px 0 0; font-size: 24px; color: #155724;"><?php echo number_format($parcelas_ocupadas); ?></h3>
         </div>
         <div class="flavor-stat-card" style="background: #fff; border-left: 4px solid #004085; padding: 15px 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 4px;">
-            <p style="margin: 0; color: #646970; font-size: 12px;"><?php echo esc_html__('Disponibles', 'flavor-chat-ia'); ?></p>
+            <p style="margin: 0; color: #646970; font-size: 12px;"><?php echo esc_html__('Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <h3 style="margin: 5px 0 0; font-size: 24px; color: #004085;"><?php echo number_format($parcelas_disponibles); ?></h3>
         </div>
         <div class="flavor-stat-card" style="background: #fff; border-left: 4px solid #856404; padding: 15px 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 4px;">
-            <p style="margin: 0; color: #646970; font-size: 12px;"><?php echo esc_html__('Mantenimiento', 'flavor-chat-ia'); ?></p>
+            <p style="margin: 0; color: #646970; font-size: 12px;"><?php echo esc_html__('Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <h3 style="margin: 5px 0 0; font-size: 24px; color: #856404;"><?php echo number_format($parcelas_mantenimiento); ?></h3>
         </div>
         <div class="flavor-stat-card" style="background: #fff; border-left: 4px solid #2271b1; padding: 15px 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 4px;">
-            <p style="margin: 0; color: #646970; font-size: 12px;"><?php echo esc_html__('Metros Totales', 'flavor-chat-ia'); ?></p>
+            <p style="margin: 0; color: #646970; font-size: 12px;"><?php echo esc_html__('Metros Totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <h3 style="margin: 5px 0 0; font-size: 24px; color: #2271b1;"><?php echo number_format($metros_totales); ?> m²</h3>
         </div>
     </div>
@@ -179,7 +179,7 @@ $colores_estado = [
             <input type="hidden" name="page" value="huertos-parcelas">
 
             <select name="huerto_id" style="min-width: 150px;">
-                <option value=""><?php echo esc_html__('Todos los huertos', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php echo esc_html__('Todos los huertos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 <?php foreach ($huertos_lista as $huerto): ?>
                     <option value="<?php echo esc_attr($huerto->id); ?>" <?php selected($filtro_huerto, $huerto->id); ?>>
                         <?php echo esc_html($huerto->nombre); ?>
@@ -188,22 +188,22 @@ $colores_estado = [
             </select>
 
             <select name="estado" style="min-width: 130px;">
-                <option value=""><?php echo esc_html__('Todos los estados', 'flavor-chat-ia'); ?></option>
-                <option value="ocupada" <?php selected($filtro_estado, 'ocupada'); ?>><?php echo esc_html__('Ocupada', 'flavor-chat-ia'); ?></option>
-                <option value="disponible" <?php selected($filtro_estado, 'disponible'); ?>><?php echo esc_html__('Disponible', 'flavor-chat-ia'); ?></option>
-                <option value="mantenimiento" <?php selected($filtro_estado, 'mantenimiento'); ?>><?php echo esc_html__('Mantenimiento', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php echo esc_html__('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="ocupada" <?php selected($filtro_estado, 'ocupada'); ?>><?php echo esc_html__('Ocupada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="disponible" <?php selected($filtro_estado, 'disponible'); ?>><?php echo esc_html__('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="mantenimiento" <?php selected($filtro_estado, 'mantenimiento'); ?>><?php echo esc_html__('Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             </select>
 
-            <input type="search" name="s" value="<?php echo esc_attr($busqueda); ?>" placeholder="<?php echo esc_attr__('Buscar...', 'flavor-chat-ia'); ?>" style="min-width: 200px;">
+            <input type="search" name="s" value="<?php echo esc_attr($busqueda); ?>" placeholder="<?php echo esc_attr__('Buscar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" style="min-width: 200px;">
 
-            <button type="submit" class="button"><?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?></button>
+            <button type="submit" class="button"><?php echo esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
 
             <?php if ($filtro_huerto || $filtro_estado || $busqueda): ?>
-                <a href="<?php echo esc_url(admin_url('admin.php?page=huertos-parcelas')); ?>" class="button"><?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?></a>
+                <a href="<?php echo esc_url(admin_url('admin.php?page=huertos-parcelas')); ?>" class="button"><?php echo esc_html__('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
             <?php endif; ?>
 
             <span class="displaying-num" style="margin-left: auto;">
-                <?php printf(esc_html__('%s parcelas', 'flavor-chat-ia'), number_format($total_resultados)); ?>
+                <?php printf(esc_html__('%s parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($total_resultados)); ?>
             </span>
         </form>
     </div>
@@ -212,14 +212,14 @@ $colores_estado = [
     <table class="wp-list-table widefat fixed striped">
         <thead>
             <tr>
-                <th style="width: 50px;"><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
-                <th><?php echo esc_html__('Huerto', 'flavor-chat-ia'); ?></th>
-                <th style="width: 100px;"><?php echo esc_html__('Parcela', 'flavor-chat-ia'); ?></th>
-                <th style="width: 80px;"><?php echo esc_html__('Tamaño', 'flavor-chat-ia'); ?></th>
-                <th style="width: 110px;"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
-                <th><?php echo esc_html__('Responsable', 'flavor-chat-ia'); ?></th>
-                <th style="width: 100px;"><?php echo esc_html__('Desde', 'flavor-chat-ia'); ?></th>
-                <th style="width: 120px;"><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
+                <th style="width: 50px;"><?php echo esc_html__('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th><?php echo esc_html__('Huerto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="width: 100px;"><?php echo esc_html__('Parcela', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="width: 80px;"><?php echo esc_html__('Tamaño', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="width: 110px;"><?php echo esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th><?php echo esc_html__('Responsable', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="width: 100px;"><?php echo esc_html__('Desde', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="width: 120px;"><?php echo esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -231,7 +231,7 @@ $colores_estado = [
                     <tr>
                         <td><strong>#<?php echo esc_html($parcela->id); ?></strong></td>
                         <td>
-                            <strong><?php echo esc_html($parcela->huerto_nombre ?: __('Sin huerto', 'flavor-chat-ia')); ?></strong>
+                            <strong><?php echo esc_html($parcela->huerto_nombre ?: __('Sin huerto', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong>
                         </td>
                         <td>
                             <span style="background: #f0f0f1; padding: 3px 8px; border-radius: 3px; font-family: monospace;">
@@ -260,11 +260,11 @@ $colores_estado = [
                             <?php endif; ?>
                         </td>
                         <td>
-                            <a href="<?php echo esc_url(admin_url('admin.php?page=huertos-parcelas&action=edit&id=' . $parcela->id)); ?>" class="button button-small" title="<?php echo esc_attr__('Editar', 'flavor-chat-ia'); ?>">
+                            <a href="<?php echo esc_url(admin_url('admin.php?page=huertos-parcelas&action=edit&id=' . $parcela->id)); ?>" class="button button-small" title="<?php echo esc_attr__('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <span class="dashicons dashicons-edit" style="font-size: 14px; line-height: 1.8;"></span>
                             </a>
                             <?php if ($parcela->estado === 'disponible'): ?>
-                                <a href="<?php echo esc_url(admin_url('admin.php?page=huertos-parcelas&action=assign&id=' . $parcela->id)); ?>" class="button button-small button-primary" title="<?php echo esc_attr__('Asignar', 'flavor-chat-ia'); ?>">
+                                <a href="<?php echo esc_url(admin_url('admin.php?page=huertos-parcelas&action=assign&id=' . $parcela->id)); ?>" class="button button-small button-primary" title="<?php echo esc_attr__('Asignar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-admin-users" style="font-size: 14px; line-height: 1.8;"></span>
                                 </a>
                             <?php endif; ?>
@@ -275,7 +275,7 @@ $colores_estado = [
                 <tr>
                     <td colspan="8" style="text-align: center; padding: 40px;">
                         <span class="dashicons dashicons-layout" style="font-size: 48px; color: #ddd;"></span>
-                        <p style="color: #646970; margin-top: 10px;"><?php echo esc_html__('No se encontraron parcelas', 'flavor-chat-ia'); ?></p>
+                        <p style="color: #646970; margin-top: 10px;"><?php echo esc_html__('No se encontraron parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </td>
                 </tr>
             <?php endif; ?>
@@ -286,7 +286,7 @@ $colores_estado = [
     <?php if ($total_paginas > 1): ?>
         <div class="tablenav bottom">
             <div class="tablenav-pages">
-                <span class="displaying-num"><?php printf(esc_html__('%s parcelas', 'flavor-chat-ia'), number_format($total_resultados)); ?></span>
+                <span class="displaying-num"><?php printf(esc_html__('%s parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($total_resultados)); ?></span>
                 <span class="pagination-links">
                     <?php
                     $base_url = admin_url('admin.php?page=huertos-parcelas');

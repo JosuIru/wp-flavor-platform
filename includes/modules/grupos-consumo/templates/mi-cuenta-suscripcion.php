@@ -17,7 +17,7 @@ $historial_entregas = $args['historial'] ?? [];
 
 <div class="gc-dashboard-suscripcion">
     <div class="gc-dashboard-header">
-        <h2><?php _e('Mi Cesta', 'flavor-chat-ia'); ?></h2>
+        <h2><?php _e('Mi Cesta', 'flavor-platform'); ?></h2>
     </div>
 
     <?php if ($suscripcion): ?>
@@ -36,8 +36,8 @@ $historial_entregas = $args['historial'] ?? [];
                         <span class="gc-badge gc-badge-<?php echo esc_attr($suscripcion['estado']); ?>">
                             <?php
                             $estados = [
-                                'activa' => __('Activa', 'flavor-chat-ia'),
-                                'pausada' => __('Pausada', 'flavor-chat-ia'),
+                                'activa' => __('Activa', 'flavor-platform'),
+                                'pausada' => __('Pausada', 'flavor-platform'),
                             ];
                             echo esc_html($estados[$suscripcion['estado']] ?? $suscripcion['estado']);
                             ?>
@@ -47,13 +47,13 @@ $historial_entregas = $args['historial'] ?? [];
 
                 <div class="gc-suscripcion-detalles">
                     <div class="gc-detalle">
-                        <span class="gc-detalle-label"><?php _e('Frecuencia:', 'flavor-chat-ia'); ?></span>
+                        <span class="gc-detalle-label"><?php _e('Frecuencia:', 'flavor-platform'); ?></span>
                         <span class="gc-detalle-valor">
                             <?php
                             $frecuencias = [
-                                'semanal' => __('Semanal', 'flavor-chat-ia'),
-                                'quincenal' => __('Quincenal', 'flavor-chat-ia'),
-                                'mensual' => __('Mensual', 'flavor-chat-ia'),
+                                'semanal' => __('Semanal', 'flavor-platform'),
+                                'quincenal' => __('Quincenal', 'flavor-platform'),
+                                'mensual' => __('Mensual', 'flavor-platform'),
                             ];
                             echo esc_html($frecuencias[$suscripcion['frecuencia']] ?? $suscripcion['frecuencia']);
                             ?>
@@ -61,19 +61,19 @@ $historial_entregas = $args['historial'] ?? [];
                     </div>
 
                     <div class="gc-detalle">
-                        <span class="gc-detalle-label"><?php _e('Importe:', 'flavor-chat-ia'); ?></span>
+                        <span class="gc-detalle-label"><?php _e('Importe:', 'flavor-platform'); ?></span>
                         <span class="gc-detalle-valor gc-importe"><?php echo number_format($suscripcion['importe'], 2, ',', '.'); ?> €</span>
                     </div>
 
                     <div class="gc-detalle">
-                        <span class="gc-detalle-label"><?php _e('Próxima entrega:', 'flavor-chat-ia'); ?></span>
+                        <span class="gc-detalle-label"><?php _e('Próxima entrega:', 'flavor-platform'); ?></span>
                         <span class="gc-detalle-valor">
                             <?php echo date_i18n('d M Y', strtotime($suscripcion['fecha_proximo_cargo'])); ?>
                         </span>
                     </div>
 
                     <div class="gc-detalle">
-                        <span class="gc-detalle-label"><?php _e('Desde:', 'flavor-chat-ia'); ?></span>
+                        <span class="gc-detalle-label"><?php _e('Desde:', 'flavor-platform'); ?></span>
                         <span class="gc-detalle-valor">
                             <?php echo date_i18n('d M Y', strtotime($suscripcion['fecha_inicio'])); ?>
                         </span>
@@ -90,30 +90,30 @@ $historial_entregas = $args['historial'] ?? [];
                     <?php if ($suscripcion['estado'] === 'activa'): ?>
                         <button type="button" class="gc-btn gc-btn-secondary gc-btn-pausar" data-id="<?php echo esc_attr($suscripcion['id']); ?>">
                             <span class="dashicons dashicons-controls-pause"></span>
-                            <?php _e('Pausar', 'flavor-chat-ia'); ?>
+                            <?php _e('Pausar', 'flavor-platform'); ?>
                         </button>
                     <?php else: ?>
                         <button type="button" class="gc-btn gc-btn-primary gc-btn-reanudar" data-id="<?php echo esc_attr($suscripcion['id']); ?>">
                             <span class="dashicons dashicons-controls-play"></span>
-                            <?php _e('Reanudar', 'flavor-chat-ia'); ?>
+                            <?php _e('Reanudar', 'flavor-platform'); ?>
                         </button>
                     <?php endif; ?>
 
                     <button type="button" class="gc-btn gc-btn-outline gc-btn-cambiar" data-id="<?php echo esc_attr($suscripcion['id']); ?>">
                         <span class="dashicons dashicons-randomize"></span>
-                        <?php _e('Cambiar cesta', 'flavor-chat-ia'); ?>
+                        <?php _e('Cambiar cesta', 'flavor-platform'); ?>
                     </button>
 
                     <button type="button" class="gc-btn gc-btn-danger-outline gc-btn-cancelar" data-id="<?php echo esc_attr($suscripcion['id']); ?>">
                         <span class="dashicons dashicons-no"></span>
-                        <?php _e('Cancelar', 'flavor-chat-ia'); ?>
+                        <?php _e('Cancelar', 'flavor-platform'); ?>
                     </button>
                 </div>
             </div>
 
             <?php if (!empty($historial_entregas)): ?>
                 <div class="gc-suscripcion-historial">
-                    <h4><?php _e('Últimas entregas', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php _e('Últimas entregas', 'flavor-platform'); ?></h4>
                     <ul class="gc-historial-mini">
                         <?php foreach (array_slice($historial_entregas, 0, 5) as $entrega): ?>
                             <li>
@@ -132,14 +132,14 @@ $historial_entregas = $args['historial'] ?? [];
         <!-- Sin suscripción -->
         <div class="gc-suscripcion-vacia">
             <div class="gc-empty-icon">🧺</div>
-            <h3><?php _e('No tienes una cesta suscrita', 'flavor-chat-ia'); ?></h3>
-            <p><?php _e('Suscríbete a una cesta y recibe productos frescos periódicamente sin tener que hacer pedidos manuales.', 'flavor-chat-ia'); ?></p>
+            <h3><?php _e('No tienes una cesta suscrita', 'flavor-platform'); ?></h3>
+            <p><?php _e('Suscríbete a una cesta y recibe productos frescos periódicamente sin tener que hacer pedidos manuales.', 'flavor-platform'); ?></p>
         </div>
 
         <!-- Cestas disponibles -->
         <?php if (!empty($cestas_disponibles)): ?>
             <div class="gc-cestas-disponibles">
-                <h3><?php _e('Cestas disponibles', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Cestas disponibles', 'flavor-platform'); ?></h3>
 
                 <div class="gc-cestas-grid">
                     <?php foreach ($cestas_disponibles as $cesta): ?>
@@ -171,12 +171,12 @@ $historial_entregas = $args['historial'] ?? [];
                                     <?php if ($cesta['precio_base'] > 0): ?>
                                         <?php echo number_format($cesta['precio_base'], 2, ',', '.'); ?> €
                                     <?php else: ?>
-                                        <?php _e('Variable', 'flavor-chat-ia'); ?>
+                                        <?php _e('Variable', 'flavor-platform'); ?>
                                     <?php endif; ?>
                                 </span>
 
                                 <button type="button" class="gc-btn gc-btn-primary gc-btn-sm gc-btn-suscribir" data-cesta="<?php echo esc_attr($cesta['id']); ?>">
-                                    <?php _e('Suscribirme', 'flavor-chat-ia'); ?>
+                                    <?php _e('Suscribirme', 'flavor-platform'); ?>
                                 </button>
                             </div>
                         </div>
@@ -190,36 +190,36 @@ $historial_entregas = $args['historial'] ?? [];
 <!-- Modal de suscripción -->
 <div class="gc-modal gc-modal-suscripcion" id="gc-modal-suscripcion" style="display: none;">
     <div class="gc-modal-content">
-        <button type="button" class="gc-modal-close"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></button>
+        <button type="button" class="gc-modal-close"><?php echo esc_html__('&times;', 'flavor-platform'); ?></button>
         <div class="gc-modal-header">
-            <h3><?php _e('Suscribirse a cesta', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Suscribirse a cesta', 'flavor-platform'); ?></h3>
         </div>
         <div class="gc-modal-body">
             <form id="gc-form-suscripcion">
                 <input type="hidden" name="cesta_id" id="gc-suscripcion-cesta-id">
 
                 <div class="gc-form-grupo">
-                    <label for="gc-suscripcion-frecuencia"><?php _e('Frecuencia de entrega:', 'flavor-chat-ia'); ?></label>
+                    <label for="gc-suscripcion-frecuencia"><?php _e('Frecuencia de entrega:', 'flavor-platform'); ?></label>
                     <select name="frecuencia" id="gc-suscripcion-frecuencia" required>
-                        <option value="<?php echo esc_attr__('semanal', 'flavor-chat-ia'); ?>"><?php _e('Semanal', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('quincenal', 'flavor-chat-ia'); ?>"><?php _e('Quincenal', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('mensual', 'flavor-chat-ia'); ?>"><?php _e('Mensual', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('semanal', 'flavor-platform'); ?>"><?php _e('Semanal', 'flavor-platform'); ?></option>
+                        <option value="<?php echo esc_attr__('quincenal', 'flavor-platform'); ?>"><?php _e('Quincenal', 'flavor-platform'); ?></option>
+                        <option value="<?php echo esc_attr__('mensual', 'flavor-platform'); ?>"><?php _e('Mensual', 'flavor-platform'); ?></option>
                     </select>
                 </div>
 
                 <div class="gc-form-grupo">
-                    <label for="gc-suscripcion-inicio"><?php _e('Fecha de inicio:', 'flavor-chat-ia'); ?></label>
+                    <label for="gc-suscripcion-inicio"><?php _e('Fecha de inicio:', 'flavor-platform'); ?></label>
                     <input type="date" name="fecha_inicio" id="gc-suscripcion-inicio" required min="<?php echo date('Y-m-d'); ?>">
                 </div>
 
                 <div class="gc-form-grupo">
-                    <label for="gc-suscripcion-notas"><?php _e('Notas o preferencias:', 'flavor-chat-ia'); ?></label>
-                    <textarea name="notas" id="gc-suscripcion-notas" rows="3" placeholder="<?php esc_attr_e('Alergias, preferencias, instrucciones especiales...', 'flavor-chat-ia'); ?>"></textarea>
+                    <label for="gc-suscripcion-notas"><?php _e('Notas o preferencias:', 'flavor-platform'); ?></label>
+                    <textarea name="notas" id="gc-suscripcion-notas" rows="3" placeholder="<?php esc_attr_e('Alergias, preferencias, instrucciones especiales...', 'flavor-platform'); ?>"></textarea>
                 </div>
 
                 <div class="gc-modal-acciones">
-                    <button type="button" class="gc-btn gc-btn-secondary gc-modal-cancelar"><?php _e('Cancelar', 'flavor-chat-ia'); ?></button>
-                    <button type="submit" class="gc-btn gc-btn-primary"><?php _e('Confirmar suscripción', 'flavor-chat-ia'); ?></button>
+                    <button type="button" class="gc-btn gc-btn-secondary gc-modal-cancelar"><?php _e('Cancelar', 'flavor-platform'); ?></button>
+                    <button type="submit" class="gc-btn gc-btn-primary"><?php _e('Confirmar suscripción', 'flavor-platform'); ?></button>
                 </div>
             </form>
         </div>

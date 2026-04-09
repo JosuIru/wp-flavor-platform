@@ -1726,7 +1726,7 @@ class Flavor_Privacy_Manager {
      */
     public function add_admin_menu() {
         add_submenu_page(
-            'flavor-chat-ia',
+            FLAVOR_PLATFORM_TEXT_DOMAIN,
             'Privacidad y RGPD',
             'Privacidad',
             'manage_options',
@@ -1780,7 +1780,7 @@ class Flavor_Privacy_Manager {
      * Registrar exportador de datos para WordPress Privacy Tools
      */
     public function register_data_exporter($exporters) {
-        $exporters['flavor-chat-ia'] = [
+        $exporters[FLAVOR_PLATFORM_TEXT_DOMAIN] = [
             'exporter_friendly_name' => 'Flavor Chat IA',
             'callback' => [$this, 'wp_privacy_exporter']
         ];
@@ -1823,7 +1823,7 @@ class Flavor_Privacy_Manager {
      * Registrar borrador de datos para WordPress Privacy Tools
      */
     public function register_data_eraser($erasers) {
-        $erasers['flavor-chat-ia'] = [
+        $erasers[FLAVOR_PLATFORM_TEXT_DOMAIN] = [
             'eraser_friendly_name' => 'Flavor Chat IA',
             'callback' => [$this, 'wp_privacy_eraser']
         ];

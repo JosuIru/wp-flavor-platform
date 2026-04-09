@@ -70,7 +70,7 @@ class Flavor_Weekly_Report_Generator {
         check_ajax_referer('flavor_weekly_report', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['error' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $week_start = sanitize_text_field($_POST['week_start'] ?? '');
@@ -92,7 +92,7 @@ class Flavor_Weekly_Report_Generator {
         check_ajax_referer('flavor_weekly_report', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['error' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $metrics = $this->collect_metrics();
@@ -346,7 +346,7 @@ class Flavor_Weekly_Report_Generator {
         if (!empty($metrics['socios']['nuevos'])) {
             $trend = $variations['socios']['nuevos']['trend'] ?? 'stable';
             $highlights[] = sprintf(
-                __('%d nuevos socios esta semana (%s respecto a la anterior)', 'flavor-chat-ia'),
+                __('%d nuevos socios esta semana (%s respecto a la anterior)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $metrics['socios']['nuevos'],
                 $this->trend_text($trend, $variations['socios']['nuevos']['change'] ?? 0)
             );
@@ -355,7 +355,7 @@ class Flavor_Weekly_Report_Generator {
         // Eventos
         if (!empty($metrics['eventos']['celebrados'])) {
             $highlights[] = sprintf(
-                __('%d eventos celebrados con %d participantes', 'flavor-chat-ia'),
+                __('%d eventos celebrados con %d participantes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $metrics['eventos']['celebrados'],
                 $metrics['eventos']['inscritos']
             );
@@ -364,7 +364,7 @@ class Flavor_Weekly_Report_Generator {
         // Incidencias
         if (!empty($metrics['incidencias']['pendientes'])) {
             $highlights[] = sprintf(
-                __('%d incidencias pendientes de resolver', 'flavor-chat-ia'),
+                __('%d incidencias pendientes de resolver', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $metrics['incidencias']['pendientes']
             );
         }
@@ -382,17 +382,17 @@ class Flavor_Weekly_Report_Generator {
         if (isset($variations['socios']['nuevos']) && $variations['socios']['nuevos']['trend'] === 'down') {
             $recommendations[] = [
                 'type' => 'warning',
-                'title' => __('Captación de socios', 'flavor-chat-ia'),
-                'text' => __('La captación de nuevos socios ha bajado. Considera lanzar una campaña de captación.', 'flavor-chat-ia'),
+                'title' => __('Captación de socios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'text' => __('La captación de nuevos socios ha bajado. Considera lanzar una campaña de captación.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
         if (!empty($metrics['incidencias']['pendientes']) && $metrics['incidencias']['pendientes'] > 10) {
             $recommendations[] = [
                 'type' => 'alert',
-                'title' => __('Incidencias acumuladas', 'flavor-chat-ia'),
+                'title' => __('Incidencias acumuladas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'text' => sprintf(
-                    __('Hay %d incidencias pendientes. Prioriza la resolución para mantener la satisfacción.', 'flavor-chat-ia'),
+                    __('Hay %d incidencias pendientes. Prioriza la resolución para mantener la satisfacción.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $metrics['incidencias']['pendientes']
                 ),
             ];
@@ -403,9 +403,9 @@ class Flavor_Weekly_Report_Generator {
             if ($cancel_rate > 20) {
                 $recommendations[] = [
                     'type' => 'warning',
-                    'title' => __('Alta tasa de cancelaciones', 'flavor-chat-ia'),
+                    'title' => __('Alta tasa de cancelaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'text' => sprintf(
-                        __('El %.0f%% de las reservas se cancelaron. Revisa las políticas de reserva.', 'flavor-chat-ia'),
+                        __('El %.0f%% de las reservas se cancelaron. Revisa las políticas de reserva.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $cancel_rate
                     ),
                 ];
@@ -415,9 +415,9 @@ class Flavor_Weekly_Report_Generator {
         if (!empty($metrics['eventos']['proximos']) && $metrics['eventos']['proximos'] > 0) {
             $recommendations[] = [
                 'type' => 'info',
-                'title' => __('Próximos eventos', 'flavor-chat-ia'),
+                'title' => __('Próximos eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'text' => sprintf(
-                    __('Hay %d eventos programados para la próxima semana. Recuerda enviar recordatorios.', 'flavor-chat-ia'),
+                    __('Hay %d eventos programados para la próxima semana. Recuerda enviar recordatorios.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $metrics['eventos']['proximos']
                 ),
             ];
@@ -464,7 +464,7 @@ class Flavor_Weekly_Report_Generator {
             case 'down':
                 return sprintf('-%.0f%%', $abs_change);
             default:
-                return __('sin cambios', 'flavor-chat-ia');
+                return __('sin cambios', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
     }
 
@@ -552,7 +552,7 @@ class Flavor_Weekly_Report_Generator {
         $admin_email = get_option('admin_email');
         $site_name = get_bloginfo('name');
 
-        $subject = sprintf(__('[%s] Resumen Semanal - %s', 'flavor-chat-ia'),
+        $subject = sprintf(__('[%s] Resumen Semanal - %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $site_name,
             $report['period']['start']
         );
@@ -567,18 +567,18 @@ class Flavor_Weekly_Report_Generator {
      */
     private function format_report_email($report) {
         $html = '<html><body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">';
-        $html .= '<h1 style="color: #333;">📊 ' . __('Resumen Semanal', 'flavor-chat-ia') . '</h1>';
+        $html .= '<h1 style="color: #333;">📊 ' . __('Resumen Semanal', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
         $html .= '<p style="color: #666;">' . sprintf(
-            __('Periodo: %s - %s', 'flavor-chat-ia'),
+            __('Periodo: %s - %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $report['period']['start'],
             $report['period']['end']
         ) . '</p>';
 
-        $html .= '<h2>' . __('Análisis', 'flavor-chat-ia') . '</h2>';
+        $html .= '<h2>' . __('Análisis', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2>';
         $html .= '<p>' . nl2br(esc_html($report['analysis'])) . '</p>';
 
         if (!empty($report['recommendations'])) {
-            $html .= '<h2>' . __('Recomendaciones', 'flavor-chat-ia') . '</h2>';
+            $html .= '<h2>' . __('Recomendaciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2>';
             $html .= '<ul>';
             foreach ($report['recommendations'] as $rec) {
                 $html .= '<li><strong>' . esc_html($rec['title']) . '</strong>: ' . esc_html($rec['text']) . '</li>';

@@ -2,7 +2,7 @@
 
 ## Resumen
 
-`flavor-chat-ia` es una plataforma WordPress modular con foco en comunidades, administracion, contenidos, economia colaborativa, sostenibilidad, paneles de usuario y herramientas transversales.
+Flavor Platform es una plataforma WordPress modular con foco en comunidades, administracion, contenidos, economia colaborativa, sostenibilidad, paneles de usuario y herramientas transversales.
 
 La version declarada en el plugin es `3.1.1`.
 

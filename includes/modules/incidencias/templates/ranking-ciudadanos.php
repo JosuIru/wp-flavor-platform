@@ -7,16 +7,16 @@
 if (!defined('ABSPATH')) exit;
 
 $titulos_nivel = [
-    1 => __('Vecino', 'flavor-chat-ia'),
-    2 => __('Observador', 'flavor-chat-ia'),
-    3 => __('Reportero', 'flavor-chat-ia'),
-    4 => __('Colaborador', 'flavor-chat-ia'),
-    5 => __('Vigilante', 'flavor-chat-ia'),
-    6 => __('Guardián', 'flavor-chat-ia'),
-    7 => __('Protector', 'flavor-chat-ia'),
-    8 => __('Defensor', 'flavor-chat-ia'),
-    9 => __('Héroe Urbano', 'flavor-chat-ia'),
-    10 => __('Leyenda', 'flavor-chat-ia'),
+    1 => __('Vecino', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    2 => __('Observador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    3 => __('Reportero', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    4 => __('Colaborador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    5 => __('Vigilante', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    6 => __('Guardián', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    7 => __('Protector', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    8 => __('Defensor', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    9 => __('Héroe Urbano', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    10 => __('Leyenda', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 <div class="inc-ranking">
@@ -25,15 +25,15 @@ $titulos_nivel = [
             <span class="dashicons dashicons-awards"></span>
         </span>
         <div>
-            <h3><?php esc_html_e('Ciudadanos más activos', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('Vecinos que más contribuyen a mejorar el barrio', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('Ciudadanos más activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php esc_html_e('Vecinos que más contribuyen a mejorar el barrio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     </div>
 
     <?php if (empty($ranking)): ?>
         <div class="inc-ranking__vacio">
             <span class="dashicons dashicons-groups"></span>
-            <p><?php esc_html_e('Aún no hay participación registrada. ¡Sé el primero!', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('Aún no hay participación registrada. ¡Sé el primero!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php else: ?>
         <!-- Top 3 destacados -->
@@ -78,11 +78,11 @@ $titulos_nivel = [
                         </span>
                     </div>
                     <div class="inc-ranking__item-stats">
-                        <span title="<?php esc_attr_e('Reportadas', 'flavor-chat-ia'); ?>">
+                        <span title="<?php esc_attr_e('Reportadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-flag"></span>
                             <?php echo esc_html($usuario->incidencias_reportadas); ?>
                         </span>
-                        <span title="<?php esc_attr_e('Voluntariados', 'flavor-chat-ia'); ?>">
+                        <span title="<?php esc_attr_e('Voluntariados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-heart"></span>
                             <?php echo esc_html($usuario->voluntariados_completados); ?>
                         </span>
@@ -97,23 +97,23 @@ $titulos_nivel = [
 
     <!-- Cómo subir en el ranking -->
     <div class="inc-ranking__tips">
-        <h4><?php esc_html_e('¿Cómo subir en el ranking?', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('¿Cómo subir en el ranking?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <div class="inc-ranking__tips-grid">
             <div class="inc-ranking__tip">
                 <span class="dashicons dashicons-flag"></span>
-                <span><?php esc_html_e('Reporta incidencias (+10 pts)', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Reporta incidencias (+10 pts)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="inc-ranking__tip">
                 <span class="dashicons dashicons-heart"></span>
-                <span><?php esc_html_e('Voluntariado (+15 pts/h)', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Voluntariado (+15 pts/h)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="inc-ranking__tip">
                 <span class="dashicons dashicons-admin-comments"></span>
-                <span><?php esc_html_e('Comenta útilmente (+2 pts)', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Comenta útilmente (+2 pts)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="inc-ranking__tip">
                 <span class="dashicons dashicons-yes-alt"></span>
-                <span><?php esc_html_e('Resuelve problemas (+5 pts)', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Resuelve problemas (+5 pts)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>

@@ -30,7 +30,7 @@ if (!defined('ABSPATH')) exit;
             <div class="mb-12">
                 <div class="max-w-2xl mx-auto mb-6">
                     <div class="relative">
-                        <input type="text" placeholder="<?php echo esc_attr__('Buscar por título, autor, ISBN...', 'flavor-chat-ia'); ?>" class="w-full px-6 py-4 pr-12 rounded-full border-2 border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 outline-none transition-all">
+                        <input type="text" placeholder="<?php echo esc_attr__('Buscar por título, autor, ISBN...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" class="w-full px-6 py-4 pr-12 rounded-full border-2 border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 outline-none transition-all">
                         <button class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-orange-500 hover:bg-orange-600 rounded-full flex items-center justify-center text-white transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -42,22 +42,22 @@ if (!defined('ABSPATH')) exit;
                 <?php if ($mostrar_filtros): ?>
                     <div class="flex flex-wrap justify-center gap-3">
                         <button class="px-6 py-2 bg-orange-600 text-white rounded-full font-medium hover:bg-orange-700 transition-colors">
-                            <?php echo esc_html__('Todos', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <button class="px-6 py-2 bg-white text-gray-700 rounded-full font-medium hover:bg-gray-100 border border-gray-200 transition-colors">
-                            <?php echo esc_html__('Ficción', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Ficción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <button class="px-6 py-2 bg-white text-gray-700 rounded-full font-medium hover:bg-gray-100 border border-gray-200 transition-colors">
-                            <?php echo esc_html__('No Ficción', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('No Ficción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <button class="px-6 py-2 bg-white text-gray-700 rounded-full font-medium hover:bg-gray-100 border border-gray-200 transition-colors">
-                            <?php echo esc_html__('Juvenil', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Juvenil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <button class="px-6 py-2 bg-white text-gray-700 rounded-full font-medium hover:bg-gray-100 border border-gray-200 transition-colors">
-                            <?php echo esc_html__('Infantil', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Infantil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <button class="px-6 py-2 bg-white text-gray-700 rounded-full font-medium hover:bg-gray-100 border border-gray-200 transition-colors">
-                            <?php echo esc_html__('Cómic', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Cómic', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 <?php endif; ?>
@@ -73,13 +73,13 @@ if (!defined('ABSPATH')) exit;
                             <svg class="w-16 h-16 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                             </svg>
-                            <h3 class="font-bold text-lg text-center mb-2"><?php echo esc_html__('Cien Años de Soledad', 'flavor-chat-ia'); ?></h3>
-                            <p class="text-sm text-center opacity-90"><?php echo esc_html__('Gabriel García Márquez', 'flavor-chat-ia'); ?></p>
+                            <h3 class="font-bold text-lg text-center mb-2"><?php echo esc_html__('Cien Años de Soledad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                            <p class="text-sm text-center opacity-90"><?php echo esc_html__('Gabriel García Márquez', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
 
                         <!-- Availability Badge -->
                         <div class="absolute top-3 right-3 px-2 py-1 bg-green-500 text-white text-xs font-bold rounded-full">
-                            <?php echo esc_html__('Disponible', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     </div>
 
@@ -92,10 +92,10 @@ if (!defined('ABSPATH')) exit;
                                 </svg>
                                 4.9
                             </span>
-                            <span><?php echo esc_html__('Ficción', 'flavor-chat-ia'); ?></span>
+                            <span><?php echo esc_html__('Ficción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                         <button class="w-full py-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg transition-colors">
-                            <?php echo esc_html__('Reservar', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </div>
@@ -107,11 +107,11 @@ if (!defined('ABSPATH')) exit;
                             <svg class="w-16 h-16 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                             </svg>
-                            <h3 class="font-bold text-lg text-center mb-2"><?php echo esc_html__('Sapiens', 'flavor-chat-ia'); ?></h3>
-                            <p class="text-sm text-center opacity-90"><?php echo esc_html__('Yuval Noah Harari', 'flavor-chat-ia'); ?></p>
+                            <h3 class="font-bold text-lg text-center mb-2"><?php echo esc_html__('Sapiens', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                            <p class="text-sm text-center opacity-90"><?php echo esc_html__('Yuval Noah Harari', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                         <div class="absolute top-3 right-3 px-2 py-1 bg-yellow-500 text-white text-xs font-bold rounded-full">
-                            <?php echo esc_html__('Prestado', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Prestado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     </div>
 
@@ -123,10 +123,10 @@ if (!defined('ABSPATH')) exit;
                                 </svg>
                                 5.0
                             </span>
-                            <span><?php echo esc_html__('No Ficción', 'flavor-chat-ia'); ?></span>
+                            <span><?php echo esc_html__('No Ficción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                         <button class="w-full py-2 bg-gray-400 text-white font-semibold rounded-lg cursor-not-allowed" disabled>
-                            <?php echo esc_html__('No Disponible', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('No Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </div>
@@ -138,11 +138,11 @@ if (!defined('ABSPATH')) exit;
                             <svg class="w-16 h-16 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                             </svg>
-                            <h3 class="font-bold text-lg text-center mb-2"><?php echo esc_html__('Harry Potter y la Piedra Filosofal', 'flavor-chat-ia'); ?></h3>
-                            <p class="text-sm text-center opacity-90"><?php echo esc_html__('J.K. Rowling', 'flavor-chat-ia'); ?></p>
+                            <h3 class="font-bold text-lg text-center mb-2"><?php echo esc_html__('Harry Potter y la Piedra Filosofal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                            <p class="text-sm text-center opacity-90"><?php echo esc_html__('J.K. Rowling', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                         <div class="absolute top-3 right-3 px-2 py-1 bg-green-500 text-white text-xs font-bold rounded-full">
-                            <?php echo esc_html__('Disponible', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     </div>
 
@@ -154,10 +154,10 @@ if (!defined('ABSPATH')) exit;
                                 </svg>
                                 4.8
                             </span>
-                            <span><?php echo esc_html__('Juvenil', 'flavor-chat-ia'); ?></span>
+                            <span><?php echo esc_html__('Juvenil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                         <button class="w-full py-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg transition-colors">
-                            <?php echo esc_html__('Reservar', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </div>
@@ -169,11 +169,11 @@ if (!defined('ABSPATH')) exit;
                             <svg class="w-16 h-16 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                             </svg>
-                            <h3 class="font-bold text-lg text-center mb-2"><?php echo esc_html__('El Principito', 'flavor-chat-ia'); ?></h3>
-                            <p class="text-sm text-center opacity-90"><?php echo esc_html__('Antoine de Saint-Exupéry', 'flavor-chat-ia'); ?></p>
+                            <h3 class="font-bold text-lg text-center mb-2"><?php echo esc_html__('El Principito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                            <p class="text-sm text-center opacity-90"><?php echo esc_html__('Antoine de Saint-Exupéry', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                         <div class="absolute top-3 right-3 px-2 py-1 bg-green-500 text-white text-xs font-bold rounded-full">
-                            <?php echo esc_html__('Disponible', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     </div>
 
@@ -185,10 +185,10 @@ if (!defined('ABSPATH')) exit;
                                 </svg>
                                 4.9
                             </span>
-                            <span><?php echo esc_html__('Infantil', 'flavor-chat-ia'); ?></span>
+                            <span><?php echo esc_html__('Infantil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                         <button class="w-full py-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg transition-colors">
-                            <?php echo esc_html__('Reservar', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </div>
@@ -201,10 +201,10 @@ if (!defined('ABSPATH')) exit;
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                             </svg>
                             <h3 class="font-bold text-lg text-center mb-2">1984</h3>
-                            <p class="text-sm text-center opacity-90"><?php echo esc_html__('George Orwell', 'flavor-chat-ia'); ?></p>
+                            <p class="text-sm text-center opacity-90"><?php echo esc_html__('George Orwell', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                         <div class="absolute top-3 right-3 px-2 py-1 bg-green-500 text-white text-xs font-bold rounded-full">
-                            <?php echo esc_html__('Disponible', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     </div>
 
@@ -216,10 +216,10 @@ if (!defined('ABSPATH')) exit;
                                 </svg>
                                 4.8
                             </span>
-                            <span><?php echo esc_html__('Ficción', 'flavor-chat-ia'); ?></span>
+                            <span><?php echo esc_html__('Ficción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                         <button class="w-full py-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg transition-colors">
-                            <?php echo esc_html__('Reservar', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </div>
@@ -228,7 +228,7 @@ if (!defined('ABSPATH')) exit;
             <!-- Load More -->
             <div class="text-center mt-12">
                 <button class="px-8 py-3 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-full shadow-lg hover:shadow-xl transition-all">
-                    <?php echo esc_html__('Ver Más Libros', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Ver Más Libros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </div>

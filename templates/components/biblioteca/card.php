@@ -16,7 +16,7 @@ if (empty($libro)) return;
 $id = $libro['id'] ?? 0;
 $titulo = $libro['titulo'] ?? $libro['title'] ?? '';
 $url = $libro['url'] ?? '#';
-$autor = $libro['autor'] ?? __('Autor desconocido', 'flavor-chat-ia');
+$autor = $libro['autor'] ?? __('Autor desconocido', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $genero = $libro['genero'] ?? 'General';
 $portada = $libro['portada'] ?? 'https://picsum.photos/seed/libro' . ($id ?: rand(1, 100)) . '/300/450';
 $disponible = !empty($libro['disponible']);
@@ -31,11 +31,11 @@ $disponible = !empty($libro['disponible']);
 
         <?php if ($disponible): ?>
             <span class="absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-bold bg-green-500 text-white">
-                <?php echo esc_html__('Disponible', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
         <?php else: ?>
             <span class="absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-bold bg-orange-500 text-white">
-                <?php echo esc_html__('Prestado', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Prestado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
         <?php endif; ?>
     </div>

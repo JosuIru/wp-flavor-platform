@@ -1042,7 +1042,7 @@
 		registerServiceWorker: async function () {
 			try {
 				this.swRegistration = await navigator.serviceWorker.register(
-					'/wp-content/plugins/flavor-chat-ia/assets/js/sw-mi-red.js',
+					'/wp-content/plugins/flavor-platform/assets/js/sw-mi-red.js',
 					{ scope: '/mi-portal/mi-red/' }
 				);
 

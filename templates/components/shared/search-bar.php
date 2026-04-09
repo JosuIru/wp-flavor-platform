@@ -24,7 +24,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$placeholder = $placeholder ?? __('Buscar...', 'flavor-chat-ia');
+$placeholder = $placeholder ?? __('Buscar...', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $value = $value ?? '';
 $color = $color ?? 'blue';
 $filters = $filters ?? [];
@@ -156,7 +156,7 @@ $sizes = $size_config[$size] ?? $size_config['md'];
             <button type="submit"
                     class="<?php echo esc_attr($sizes['btn']); ?> rounded-xl font-medium text-white <?php echo esc_attr($color_classes['bg_solid']); ?> hover:opacity-90 transition-all flex items-center gap-2">
                 🔍
-                <span class="hidden md:inline"><?php echo esc_html__('Buscar', 'flavor-chat-ia'); ?></span>
+                <span class="hidden md:inline"><?php echo esc_html__('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </button>
         </div>
     </form>

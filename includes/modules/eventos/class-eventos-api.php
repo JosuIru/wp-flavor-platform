@@ -186,7 +186,7 @@ class Flavor_Eventos_API {
         if ($resultado === false) {
             return new WP_Error(
                 'evento_create_error',
-                __('Error al crear el evento', 'flavor-chat-ia'),
+                __('Error al crear el evento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 500]
             );
         }
@@ -197,7 +197,7 @@ class Flavor_Eventos_API {
             'success' => true,
             'data' => [
                 'id' => $evento_id,
-                'message' => __('Evento creado correctamente', 'flavor-chat-ia'),
+                'message' => __('Evento creado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'redirect' => add_query_arg('evento_id', $evento_id, Flavor_Chat_Helpers::get_action_url('eventos', 'detalle')),
             ],
         ]);
@@ -209,12 +209,12 @@ class Flavor_Eventos_API {
     public function ajax_crear_evento() {
         // Verificar nonce
         if (!isset($_POST['eventos_nonce']) || !wp_verify_nonce($_POST['eventos_nonce'], 'eventos_crear')) {
-            wp_send_json_error(['message' => __('Sesion expirada. Recarga la pagina.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sesion expirada. Recarga la pagina.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar permisos
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => __('No tienes permisos para crear eventos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes permisos para crear eventos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -228,7 +228,7 @@ class Flavor_Eventos_API {
         $fecha_inicio = isset($_POST['fecha_inicio']) ? sanitize_text_field($_POST['fecha_inicio']) : '';
 
         if (empty($titulo) || empty($descripcion) || empty($tipo) || empty($fecha_inicio)) {
-            wp_send_json_error(['message' => __('Completa todos los campos requeridos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Completa todos los campos requeridos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Preparar datos
@@ -256,14 +256,14 @@ class Flavor_Eventos_API {
         $resultado = $wpdb->insert($tabla_eventos, $datos_evento);
 
         if ($resultado === false) {
-            wp_send_json_error(['message' => __('Error al guardar el evento. Intentalo de nuevo.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al guardar el evento. Intentalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $evento_id = $wpdb->insert_id;
 
         wp_send_json_success([
             'id' => $evento_id,
-            'message' => __('Evento creado correctamente', 'flavor-chat-ia'),
+            'message' => __('Evento creado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'redirect' => add_query_arg('evento_id', $evento_id, Flavor_Chat_Helpers::get_action_url('eventos', 'detalle')),
         ]);
     }
@@ -341,7 +341,7 @@ class Flavor_Eventos_API {
         if (!$evento) {
             return new WP_Error(
                 'evento_not_found',
-                __('Evento no encontrado', 'flavor-chat-ia'),
+                __('Evento no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 404]
             );
         }
@@ -388,7 +388,7 @@ class Flavor_Eventos_API {
         if (!$evento) {
             return new WP_Error(
                 'evento_not_found',
-                __('Evento no encontrado', 'flavor-chat-ia'),
+                __('Evento no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 404]
             );
         }
@@ -397,7 +397,7 @@ class Flavor_Eventos_API {
         if ($this->usuario_inscrito($evento_id, $user_id)) {
             return new WP_Error(
                 'already_registered',
-                __('Ya estás inscrito en este evento', 'flavor-chat-ia'),
+                __('Ya estás inscrito en este evento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 400]
             );
         }
@@ -413,7 +413,7 @@ class Flavor_Eventos_API {
             if ($plazas_ocupadas >= $evento['plazas_totales']) {
                 return new WP_Error(
                     'no_places',
-                    __('No quedan plazas disponibles', 'flavor-chat-ia'),
+                    __('No quedan plazas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ['status' => 400]
                 );
             }
@@ -435,14 +435,14 @@ class Flavor_Eventos_API {
         if ($result === false) {
             return new WP_Error(
                 'insert_failed',
-                __('Error al crear la inscripción', 'flavor-chat-ia'),
+                __('Error al crear la inscripción', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 500]
             );
         }
 
         return rest_ensure_response([
             'success' => true,
-            'message' => __('Inscripción realizada correctamente', 'flavor-chat-ia'),
+            'message' => __('Inscripción realizada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'inscripcion_id' => $wpdb->insert_id,
         ]);
     }
@@ -470,14 +470,14 @@ class Flavor_Eventos_API {
         if ($result === false || $result === 0) {
             return new WP_Error(
                 'not_found',
-                __('No se encontró la inscripción', 'flavor-chat-ia'),
+                __('No se encontró la inscripción', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 404]
             );
         }
 
         return rest_ensure_response([
             'success' => true,
-            'message' => __('Inscripción cancelada correctamente', 'flavor-chat-ia'),
+            'message' => __('Inscripción cancelada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 

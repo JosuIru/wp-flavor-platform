@@ -36,7 +36,7 @@ if (isset($_POST['gc_payment_settings_nonce']) && wp_verify_nonce($_POST['gc_pay
     update_option('flavor_gc_payment_settings', $new_settings);
     $settings = $new_settings;
 
-    echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Configuración guardada correctamente.', 'flavor-chat-ia') . '</p></div>';
+    echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Configuración guardada correctamente.', 'flavor-platform') . '</p></div>';
 }
 ?>
 
@@ -45,31 +45,31 @@ if (isset($_POST['gc_payment_settings_nonce']) && wp_verify_nonce($_POST['gc_pay
     <nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">
         <a href="<?php echo admin_url('admin.php?page=grupos-consumo'); ?>" style="color: #2271b1; text-decoration: none;">
             <span class="dashicons dashicons-store" style="font-size: 14px; vertical-align: middle;"></span>
-            <?php _e('Grupos de Consumo', 'flavor-chat-ia'); ?>
+            <?php _e('Grupos de Consumo', 'flavor-platform'); ?>
         </a>
         <span style="color: #646970; margin: 0 5px;">›</span>
-        <span style="color: #1d2327;"><?php _e('Configuración de Pagos', 'flavor-chat-ia'); ?></span>
+        <span style="color: #1d2327;"><?php _e('Configuración de Pagos', 'flavor-platform'); ?></span>
     </nav>
 
-    <h1><?php esc_html_e('Configuración de Pagos - Grupos de Consumo', 'flavor-chat-ia'); ?></h1>
+    <h1><?php esc_html_e('Configuración de Pagos - Grupos de Consumo', 'flavor-platform'); ?></h1>
 
     <nav class="nav-tab-wrapper">
         <a href="<?php echo esc_url(add_query_arg('tab', 'general')); ?>"
            class="nav-tab <?php echo $active_tab === 'general' ? 'nav-tab-active' : ''; ?>">
-            <?php esc_html_e('General', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('General', 'flavor-platform'); ?>
         </a>
         <?php foreach ($gateways as $gateway_id => $gateway) : ?>
         <a href="<?php echo esc_url(add_query_arg('tab', $gateway_id)); ?>"
            class="nav-tab <?php echo $active_tab === $gateway_id ? 'nav-tab-active' : ''; ?>">
             <?php echo esc_html($gateway->get_name()); ?>
             <?php if ($gateway->is_enabled()) : ?>
-            <span class="gc-gateway-badge gc-badge-active"><?php esc_html_e('Activa', 'flavor-chat-ia'); ?></span>
+            <span class="gc-gateway-badge gc-badge-active"><?php esc_html_e('Activa', 'flavor-platform'); ?></span>
             <?php endif; ?>
         </a>
         <?php endforeach; ?>
         <a href="<?php echo esc_url(add_query_arg('tab', 'transactions')); ?>"
            class="nav-tab <?php echo $active_tab === 'transactions' ? 'nav-tab-active' : ''; ?>">
-            <?php esc_html_e('Transacciones', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Transacciones', 'flavor-platform'); ?>
         </a>
     </nav>
 
@@ -79,11 +79,11 @@ if (isset($_POST['gc_payment_settings_nonce']) && wp_verify_nonce($_POST['gc_pay
         <?php if ($active_tab === 'general') : ?>
         <!-- Tab General -->
         <div class="gc-settings-section">
-            <h2><?php esc_html_e('Configuración General', 'flavor-chat-ia'); ?></h2>
+            <h2><?php esc_html_e('Configuración General', 'flavor-platform'); ?></h2>
 
             <table class="form-table">
                 <tr>
-                    <th scope="row"><?php esc_html_e('Pasarelas activas', 'flavor-chat-ia'); ?></th>
+                    <th scope="row"><?php esc_html_e('Pasarelas activas', 'flavor-platform'); ?></th>
                     <td>
                         <ul class="gc-gateways-list">
                             <?php foreach ($gateways as $gateway_id => $gateway) : ?>
@@ -92,11 +92,11 @@ if (isset($_POST['gc_payment_settings_nonce']) && wp_verify_nonce($_POST['gc_pay
                                 <strong><?php echo esc_html($gateway->get_name()); ?></strong>
                                 <span class="gc-gateway-status">
                                     <?php if ($gateway->is_enabled()) : ?>
-                                    <span class="gc-status-active"><?php esc_html_e('Activa', 'flavor-chat-ia'); ?></span>
+                                    <span class="gc-status-active"><?php esc_html_e('Activa', 'flavor-platform'); ?></span>
                                     <?php elseif (!$gateway->can_activate()) : ?>
-                                    <span class="gc-status-warning"><?php esc_html_e('Requiere configuración', 'flavor-chat-ia'); ?></span>
+                                    <span class="gc-status-warning"><?php esc_html_e('Requiere configuración', 'flavor-platform'); ?></span>
                                     <?php else : ?>
-                                    <span class="gc-status-inactive"><?php esc_html_e('Inactiva', 'flavor-chat-ia'); ?></span>
+                                    <span class="gc-status-inactive"><?php esc_html_e('Inactiva', 'flavor-platform'); ?></span>
                                     <?php endif; ?>
                                 </span>
                             </li>
@@ -105,35 +105,35 @@ if (isset($_POST['gc_payment_settings_nonce']) && wp_verify_nonce($_POST['gc_pay
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row"><?php esc_html_e('Moneda', 'flavor-chat-ia'); ?></th>
+                    <th scope="row"><?php esc_html_e('Moneda', 'flavor-platform'); ?></th>
                     <td>
                         <select name="gateway[general][currency]" id="gc_currency">
                             <option value="EUR" selected>EUR (€)</option>
                         </select>
-                        <p class="description"><?php esc_html_e('Moneda utilizada para los pagos.', 'flavor-chat-ia'); ?></p>
+                        <p class="description"><?php esc_html_e('Moneda utilizada para los pagos.', 'flavor-platform'); ?></p>
                     </td>
                 </tr>
             </table>
 
-            <h3><?php esc_html_e('Estadísticas de Pagos', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Estadísticas de Pagos', 'flavor-platform'); ?></h3>
             <?php
             $stats = $manager->get_transaction_stats();
             ?>
             <div class="gc-payment-stats">
                 <div class="gc-stat-card gc-stat-success">
                     <div class="gc-stat-value"><?php echo number_format($stats['completado']['total'], 2, ',', '.'); ?> €</div>
-                    <div class="gc-stat-label"><?php esc_html_e('Completados', 'flavor-chat-ia'); ?></div>
-                    <div class="gc-stat-count"><?php echo (int) $stats['completado']['cantidad']; ?> <?php esc_html_e('transacciones', 'flavor-chat-ia'); ?></div>
+                    <div class="gc-stat-label"><?php esc_html_e('Completados', 'flavor-platform'); ?></div>
+                    <div class="gc-stat-count"><?php echo (int) $stats['completado']['cantidad']; ?> <?php esc_html_e('transacciones', 'flavor-platform'); ?></div>
                 </div>
                 <div class="gc-stat-card gc-stat-pending">
                     <div class="gc-stat-value"><?php echo number_format($stats['pendiente']['total'], 2, ',', '.'); ?> €</div>
-                    <div class="gc-stat-label"><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></div>
-                    <div class="gc-stat-count"><?php echo (int) $stats['pendiente']['cantidad']; ?> <?php esc_html_e('transacciones', 'flavor-chat-ia'); ?></div>
+                    <div class="gc-stat-label"><?php esc_html_e('Pendientes', 'flavor-platform'); ?></div>
+                    <div class="gc-stat-count"><?php echo (int) $stats['pendiente']['cantidad']; ?> <?php esc_html_e('transacciones', 'flavor-platform'); ?></div>
                 </div>
                 <div class="gc-stat-card gc-stat-refund">
                     <div class="gc-stat-value"><?php echo number_format($stats['reembolsado']['total'], 2, ',', '.'); ?> €</div>
-                    <div class="gc-stat-label"><?php esc_html_e('Reembolsados', 'flavor-chat-ia'); ?></div>
-                    <div class="gc-stat-count"><?php echo (int) $stats['reembolsado']['cantidad']; ?> <?php esc_html_e('transacciones', 'flavor-chat-ia'); ?></div>
+                    <div class="gc-stat-label"><?php esc_html_e('Reembolsados', 'flavor-platform'); ?></div>
+                    <div class="gc-stat-count"><?php echo (int) $stats['reembolsado']['cantidad']; ?> <?php esc_html_e('transacciones', 'flavor-platform'); ?></div>
                 </div>
             </div>
         </div>
@@ -141,7 +141,7 @@ if (isset($_POST['gc_payment_settings_nonce']) && wp_verify_nonce($_POST['gc_pay
         <?php elseif ($active_tab === 'transactions') : ?>
         <!-- Tab Transacciones -->
         <div class="gc-settings-section">
-            <h2><?php esc_html_e('Historial de Transacciones', 'flavor-chat-ia'); ?></h2>
+            <h2><?php esc_html_e('Historial de Transacciones', 'flavor-platform'); ?></h2>
             <?php
             global $wpdb;
             $tabla_pagos = $wpdb->prefix . 'flavor_gc_pagos';
@@ -164,24 +164,24 @@ if (isset($_POST['gc_payment_settings_nonce']) && wp_verify_nonce($_POST['gc_pay
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('ID', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Usuario', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Pasarela', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Importe', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('ID', 'flavor-platform'); ?></th>
+                        <th><?php esc_html_e('Usuario', 'flavor-platform'); ?></th>
+                        <th><?php esc_html_e('Pasarela', 'flavor-platform'); ?></th>
+                        <th><?php esc_html_e('Importe', 'flavor-platform'); ?></th>
+                        <th><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
+                        <th><?php esc_html_e('Fecha', 'flavor-platform'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($transacciones)) : ?>
                     <tr>
-                        <td colspan="6"><?php esc_html_e('No hay transacciones registradas.', 'flavor-chat-ia'); ?></td>
+                        <td colspan="6"><?php esc_html_e('No hay transacciones registradas.', 'flavor-platform'); ?></td>
                     </tr>
                     <?php else : ?>
                     <?php foreach ($transacciones as $tx) : ?>
                     <tr>
                         <td>#<?php echo esc_html($tx->id); ?></td>
-                        <td><?php echo esc_html($tx->usuario_nombre ?: __('Usuario eliminado', 'flavor-chat-ia')); ?></td>
+                        <td><?php echo esc_html($tx->usuario_nombre ?: __('Usuario eliminado', 'flavor-platform')); ?></td>
                         <td><?php echo esc_html(ucfirst($tx->pasarela)); ?></td>
                         <td><?php echo number_format($tx->importe, 2, ',', '.'); ?> <?php echo esc_html($tx->moneda); ?></td>
                         <td>
@@ -226,7 +226,7 @@ if (isset($_POST['gc_payment_settings_nonce']) && wp_verify_nonce($_POST['gc_pay
 
             <?php if (!$gateway->can_activate() && !empty($gateway_settings['enabled'])) : ?>
             <div class="notice notice-warning inline">
-                <p><?php esc_html_e('Esta pasarela está habilitada pero no puede activarse. Verifica la configuración.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('Esta pasarela está habilitada pero no puede activarse. Verifica la configuración.', 'flavor-platform'); ?></p>
             </div>
             <?php endif; ?>
 
@@ -325,7 +325,7 @@ if (isset($_POST['gc_payment_settings_nonce']) && wp_verify_nonce($_POST['gc_pay
         <?php if ($active_tab !== 'transactions') : ?>
         <p class="submit">
             <button type="submit" class="button button-primary">
-                <?php esc_html_e('Guardar cambios', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Guardar cambios', 'flavor-platform'); ?>
             </button>
         </p>
         <?php endif; ?>

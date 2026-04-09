@@ -90,7 +90,7 @@ $identificador_acordeon = 'flavor-accordion-' . wp_unique_id();
             </div>
         <?php else : ?>
             <p class="text-center py-8" style="color: var(--flavor-text-color, #6b7280);">
-                <?php echo esc_html__( 'No items have been added to this accordion.', 'flavor-chat-ia' ); ?>
+                <?php echo esc_html__( 'No items have been added to this accordion.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
             </p>
         <?php endif; ?>
 

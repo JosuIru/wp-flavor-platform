@@ -18,7 +18,7 @@ $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
 $comunidad_id = isset($_GET['id']) ? absint($_GET['id']) : 0;
 
 if (!$comunidad_id) {
-    echo '<div class="wrap"><div class="notice notice-error"><p>' . __('Comunidad no especificada.', 'flavor-chat-ia') . '</p></div></div>';
+    echo '<div class="wrap"><div class="notice notice-error"><p>' . __('Comunidad no especificada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div></div>';
     return;
 }
 
@@ -29,7 +29,7 @@ $comunidad = $wpdb->get_row($wpdb->prepare(
 ));
 
 if (!$comunidad) {
-    echo '<div class="wrap"><div class="notice notice-error"><p>' . __('Comunidad no encontrada.', 'flavor-chat-ia') . '</p></div></div>';
+    echo '<div class="wrap"><div class="notice notice-error"><p>' . __('Comunidad no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div></div>';
     return;
 }
 
@@ -52,7 +52,7 @@ if (isset($_POST['comunidades_editar']) && wp_verify_nonce($_POST['comunidades_n
     $reglas = sanitize_textarea_field($_POST['reglas'] ?? '');
 
     if (empty($nombre)) {
-        $mensaje = __('El nombre de la comunidad es obligatorio.', 'flavor-chat-ia');
+        $mensaje = __('El nombre de la comunidad es obligatorio.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $tipo_mensaje = 'error';
     } else {
         $resultado = $wpdb->update(
@@ -72,7 +72,7 @@ if (isset($_POST['comunidades_editar']) && wp_verify_nonce($_POST['comunidades_n
         );
 
         if ($resultado !== false) {
-            $mensaje = __('Comunidad actualizada correctamente.', 'flavor-chat-ia');
+            $mensaje = __('Comunidad actualizada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             $tipo_mensaje = 'success';
 
             // Recargar datos
@@ -81,7 +81,7 @@ if (isset($_POST['comunidades_editar']) && wp_verify_nonce($_POST['comunidades_n
                 $comunidad_id
             ));
         } else {
-            $mensaje = __('Error al actualizar la comunidad.', 'flavor-chat-ia');
+            $mensaje = __('Error al actualizar la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             $tipo_mensaje = 'error';
         }
     }
@@ -89,25 +89,25 @@ if (isset($_POST['comunidades_editar']) && wp_verify_nonce($_POST['comunidades_n
 
 // Categorías disponibles
 $categorias = [
-    'vecinal'     => __('Vecinal', 'flavor-chat-ia'),
-    'deportiva'   => __('Deportiva', 'flavor-chat-ia'),
-    'cultural'    => __('Cultural', 'flavor-chat-ia'),
-    'educativa'   => __('Educativa', 'flavor-chat-ia'),
-    'social'      => __('Social', 'flavor-chat-ia'),
-    'profesional' => __('Profesional', 'flavor-chat-ia'),
-    'otra'        => __('Otra', 'flavor-chat-ia'),
+    'vecinal'     => __('Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'deportiva'   => __('Deportiva', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cultural'    => __('Cultural', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'educativa'   => __('Educativa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'social'      => __('Social', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'profesional' => __('Profesional', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'otra'        => __('Otra', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $estados = [
-    'activa'    => __('Activa', 'flavor-chat-ia'),
-    'inactiva'  => __('Inactiva', 'flavor-chat-ia'),
-    'archivada' => __('Archivada', 'flavor-chat-ia'),
+    'activa'    => __('Activa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'inactiva'  => __('Inactiva', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'archivada' => __('Archivada', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $privacidades = [
-    'publica' => __('Pública', 'flavor-chat-ia'),
-    'privada' => __('Privada', 'flavor-chat-ia'),
-    'secreta' => __('Secreta', 'flavor-chat-ia'),
+    'publica' => __('Pública', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'privada' => __('Privada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'secreta' => __('Secreta', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 
@@ -116,11 +116,11 @@ $privacidades = [
     <nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">
         <a href="<?php echo admin_url('admin.php?page=comunidades-dashboard'); ?>" style="color: #2271b1; text-decoration: none;">
             <span class="dashicons dashicons-admin-multisite" style="font-size: 14px; vertical-align: middle;"></span>
-            <?php _e('Comunidades', 'flavor-chat-ia'); ?>
+            <?php _e('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <span style="color: #646970; margin: 0 5px;">›</span>
         <a href="<?php echo admin_url('admin.php?page=comunidades-listado'); ?>" style="color: #2271b1; text-decoration: none;">
-            <?php _e('Listado', 'flavor-chat-ia'); ?>
+            <?php _e('Listado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <span style="color: #646970; margin: 0 5px;">›</span>
         <span style="color: #1d2327;"><?php echo esc_html($comunidad->nombre); ?></span>
@@ -128,7 +128,7 @@ $privacidades = [
 
     <h1>
         <span class="dashicons dashicons-edit"></span>
-        <?php printf(__('Editar: %s', 'flavor-chat-ia'), esc_html($comunidad->nombre)); ?>
+        <?php printf(__('Editar: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($comunidad->nombre)); ?>
     </h1>
 
     <?php if ($mensaje): ?>
@@ -147,13 +147,13 @@ $privacidades = [
                     <div class="postbox">
                         <h2 class="hndle" style="padding: 12px; margin: 0; border-bottom: 1px solid #c3c4c7;">
                             <span class="dashicons dashicons-edit"></span>
-                            <?php _e('Información básica', 'flavor-chat-ia'); ?>
+                            <?php _e('Información básica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h2>
                         <div class="inside">
                             <table class="form-table">
                                 <tr>
                                     <th scope="row">
-                                        <label for="nombre"><?php _e('Nombre', 'flavor-chat-ia'); ?> <span class="required">*</span></label>
+                                        <label for="nombre"><?php _e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="required">*</span></label>
                                     </th>
                                     <td>
                                         <input type="text" id="nombre" name="nombre" class="regular-text" required
@@ -162,7 +162,7 @@ $privacidades = [
                                 </tr>
                                 <tr>
                                     <th scope="row">
-                                        <label for="descripcion"><?php _e('Descripción', 'flavor-chat-ia'); ?></label>
+                                        <label for="descripcion"><?php _e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                     </th>
                                     <td>
                                         <textarea id="descripcion" name="descripcion" rows="4" class="large-text"><?php echo esc_textarea($comunidad->descripcion ?? ''); ?></textarea>
@@ -170,11 +170,11 @@ $privacidades = [
                                 </tr>
                                 <tr>
                                     <th scope="row">
-                                        <label for="reglas"><?php _e('Reglas', 'flavor-chat-ia'); ?></label>
+                                        <label for="reglas"><?php _e('Reglas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                     </th>
                                     <td>
                                         <textarea id="reglas" name="reglas" rows="3" class="large-text"><?php echo esc_textarea($comunidad->reglas ?? ''); ?></textarea>
-                                        <p class="description"><?php _e('Normas de convivencia para los miembros.', 'flavor-chat-ia'); ?></p>
+                                        <p class="description"><?php _e('Normas de convivencia para los miembros.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                     </td>
                                 </tr>
                             </table>
@@ -185,21 +185,21 @@ $privacidades = [
                     <div class="postbox">
                         <h2 class="hndle" style="padding: 12px; margin: 0; border-bottom: 1px solid #c3c4c7;">
                             <span class="dashicons dashicons-admin-links"></span>
-                            <?php _e('Acciones rápidas', 'flavor-chat-ia'); ?>
+                            <?php _e('Acciones rápidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h2>
                         <div class="inside">
                             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                                 <a href="<?php echo admin_url('admin.php?page=comunidades-miembros&comunidad=' . $comunidad_id); ?>" class="button">
                                     <span class="dashicons dashicons-groups" style="margin-top: 4px;"></span>
-                                    <?php printf(__('Ver %d miembros', 'flavor-chat-ia'), $total_miembros); ?>
+                                    <?php printf(__('Ver %d miembros', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_miembros); ?>
                                 </a>
                                 <a href="<?php echo admin_url('admin.php?page=comunidades-publicaciones&comunidad=' . $comunidad_id); ?>" class="button">
                                     <span class="dashicons dashicons-format-chat" style="margin-top: 4px;"></span>
-                                    <?php _e('Ver publicaciones', 'flavor-chat-ia'); ?>
+                                    <?php _e('Ver publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                                 <a href="<?php echo home_url('/comunidad/?comunidad=' . $comunidad_id); ?>" class="button" target="_blank">
                                     <span class="dashicons dashicons-external" style="margin-top: 4px;"></span>
-                                    <?php _e('Ver en frontend', 'flavor-chat-ia'); ?>
+                                    <?php _e('Ver en frontend', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </div>
                         </div>
@@ -211,11 +211,11 @@ $privacidades = [
                     <div class="postbox">
                         <h2 class="hndle" style="padding: 12px; margin: 0; border-bottom: 1px solid #c3c4c7;">
                             <span class="dashicons dashicons-admin-settings"></span>
-                            <?php _e('Opciones', 'flavor-chat-ia'); ?>
+                            <?php _e('Opciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h2>
                         <div class="inside">
                             <p>
-                                <label for="estado"><strong><?php _e('Estado', 'flavor-chat-ia'); ?></strong></label><br>
+                                <label for="estado"><strong><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label><br>
                                 <select id="estado" name="estado" style="width: 100%; margin-top: 5px;">
                                     <?php foreach ($estados as $slug => $label): ?>
                                     <option value="<?php echo esc_attr($slug); ?>" <?php selected($comunidad->estado, $slug); ?>>
@@ -226,7 +226,7 @@ $privacidades = [
                             </p>
 
                             <p>
-                                <label for="categoria"><strong><?php _e('Categoría', 'flavor-chat-ia'); ?></strong></label><br>
+                                <label for="categoria"><strong><?php _e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label><br>
                                 <select id="categoria" name="categoria" style="width: 100%; margin-top: 5px;">
                                     <?php foreach ($categorias as $slug => $label): ?>
                                     <option value="<?php echo esc_attr($slug); ?>" <?php selected($comunidad->categoria, $slug); ?>>
@@ -237,7 +237,7 @@ $privacidades = [
                             </p>
 
                             <p>
-                                <label for="privacidad"><strong><?php _e('Privacidad', 'flavor-chat-ia'); ?></strong></label><br>
+                                <label for="privacidad"><strong><?php _e('Privacidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label><br>
                                 <select id="privacidad" name="privacidad" style="width: 100%; margin-top: 5px;">
                                     <?php foreach ($privacidades as $slug => $label): ?>
                                     <option value="<?php echo esc_attr($slug); ?>" <?php selected($comunidad->privacidad, $slug); ?>>
@@ -250,12 +250,12 @@ $privacidades = [
                             <hr>
 
                             <p style="color: #646970; font-size: 12px;">
-                                <strong><?php _e('Creada:', 'flavor-chat-ia'); ?></strong><br>
+                                <strong><?php _e('Creada:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong><br>
                                 <?php echo esc_html(date_i18n(get_option('date_format') . ' ' . get_option('time_format'), strtotime($comunidad->created_at))); ?>
                             </p>
 
                             <p style="color: #646970; font-size: 12px;">
-                                <strong><?php _e('Miembros:', 'flavor-chat-ia'); ?></strong> <?php echo number_format($total_miembros); ?>
+                                <strong><?php _e('Miembros:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo number_format($total_miembros); ?>
                             </p>
 
                             <hr>
@@ -263,13 +263,13 @@ $privacidades = [
                             <p>
                                 <button type="submit" name="comunidades_editar" class="button button-primary button-large" style="width: 100%;">
                                     <span class="dashicons dashicons-saved" style="margin-top: 4px;"></span>
-                                    <?php _e('Guardar Cambios', 'flavor-chat-ia'); ?>
+                                    <?php _e('Guardar Cambios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             </p>
 
                             <p style="text-align: center;">
                                 <a href="<?php echo admin_url('admin.php?page=comunidades-listado'); ?>" class="button">
-                                    <?php _e('Volver al listado', 'flavor-chat-ia'); ?>
+                                    <?php _e('Volver al listado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </p>
                         </div>

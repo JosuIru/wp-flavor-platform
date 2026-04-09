@@ -42,7 +42,7 @@ elseif (!empty($module) && is_object($module) && isset($module->id)) {
 
 if (empty($detected_module)) {
     echo '<div class="flavor-notice flavor-notice-error">';
-    echo '<p>' . esc_html__('No se pudo detectar el módulo.', 'flavor-chat-ia') . '</p>';
+    echo '<p>' . esc_html__('No se pudo detectar el módulo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
     echo '</div>';
     return;
 }

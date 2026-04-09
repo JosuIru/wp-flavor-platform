@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!is_user_logged_in()) {
-    echo '<div class="espacios-empty"><span class="dashicons dashicons-lock"></span><h3>' . esc_html__('Inicia sesion para solicitar una reserva', 'flavor-chat-ia') . '</h3></div>';
+    echo '<div class="espacios-empty"><span class="dashicons dashicons-lock"></span><h3>' . esc_html__('Inicia sesion para solicitar una reserva', 'flavor-platform') . '</h3></div>';
     return;
 }
 
@@ -35,14 +35,14 @@ $espacio_preseleccionado = isset($_GET['espacio_id']) ? intval($_GET['espacio_id
 
 // Tipos de evento comunes
 $tipos_evento = [
-    'reunion'      => __('Reunion', 'flavor-chat-ia'),
-    'taller'       => __('Taller/Curso', 'flavor-chat-ia'),
-    'celebracion'  => __('Celebracion/Fiesta', 'flavor-chat-ia'),
-    'comunidad'    => __('Evento comunitario', 'flavor-chat-ia'),
-    'deportivo'    => __('Actividad deportiva', 'flavor-chat-ia'),
-    'cultural'     => __('Evento cultural', 'flavor-chat-ia'),
-    'formacion'    => __('Formacion/Charla', 'flavor-chat-ia'),
-    'otro'         => __('Otro', 'flavor-chat-ia'),
+    'reunion'      => __('Reunion', 'flavor-platform'),
+    'taller'       => __('Taller/Curso', 'flavor-platform'),
+    'celebracion'  => __('Celebracion/Fiesta', 'flavor-platform'),
+    'comunidad'    => __('Evento comunitario', 'flavor-platform'),
+    'deportivo'    => __('Actividad deportiva', 'flavor-platform'),
+    'cultural'     => __('Evento cultural', 'flavor-platform'),
+    'formacion'    => __('Formacion/Charla', 'flavor-platform'),
+    'otro'         => __('Otro', 'flavor-platform'),
 ];
 
 // Funcion helper para obtener la primera imagen
@@ -76,31 +76,31 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$anticipacion_maxima_dias} days"));
     <div class="espacios-header">
         <h2 class="espacios-titulo">
             <span class="dashicons dashicons-plus-alt"></span>
-            <?php esc_html_e('Solicitar Reserva', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Solicitar Reserva', 'flavor-platform'); ?>
         </h2>
         <a href="<?php echo esc_url(remove_query_arg(['tab', 'espacio_id'])); ?>" class="btn btn-outline">
             <span class="dashicons dashicons-arrow-left-alt2"></span>
-            <?php esc_html_e('Ver espacios', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Ver espacios', 'flavor-platform'); ?>
         </a>
     </div>
 
     <?php if (empty($espacios_disponibles)): ?>
         <div class="espacios-empty">
             <span class="dashicons dashicons-warning"></span>
-            <h3><?php esc_html_e('No hay espacios disponibles', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('En este momento no hay espacios habilitados para reservar.', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('No hay espacios disponibles', 'flavor-platform'); ?></h3>
+            <p><?php esc_html_e('En este momento no hay espacios habilitados para reservar.', 'flavor-platform'); ?></p>
         </div>
     <?php else: ?>
 
     <div class="solicitar-container">
         <!-- Informacion del proceso -->
         <div class="solicitar-info-box">
-            <h4><span class="dashicons dashicons-info"></span> <?php esc_html_e('Proceso de reserva', 'flavor-chat-ia'); ?></h4>
+            <h4><span class="dashicons dashicons-info"></span> <?php esc_html_e('Proceso de reserva', 'flavor-platform'); ?></h4>
             <ol>
-                <li><?php esc_html_e('Selecciona el espacio y la fecha', 'flavor-chat-ia'); ?></li>
-                <li><?php esc_html_e('Completa los detalles del evento', 'flavor-chat-ia'); ?></li>
-                <li><?php esc_html_e('Envia tu solicitud', 'flavor-chat-ia'); ?></li>
-                <li><?php esc_html_e('Espera confirmacion (24-48h)', 'flavor-chat-ia'); ?></li>
+                <li><?php esc_html_e('Selecciona el espacio y la fecha', 'flavor-platform'); ?></li>
+                <li><?php esc_html_e('Completa los detalles del evento', 'flavor-platform'); ?></li>
+                <li><?php esc_html_e('Envia tu solicitud', 'flavor-platform'); ?></li>
+                <li><?php esc_html_e('Espera confirmacion (24-48h)', 'flavor-platform'); ?></li>
             </ol>
         </div>
 
@@ -111,7 +111,7 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$anticipacion_maxima_dias} days"));
             <div class="solicitar-seccion">
                 <h3 class="solicitar-seccion-titulo">
                     <span class="paso-numero">1</span>
-                    <?php esc_html_e('Selecciona el espacio', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Selecciona el espacio', 'flavor-platform'); ?>
                 </h3>
 
                 <div class="espacios-selector">
@@ -144,13 +144,13 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$anticipacion_maxima_dias} days"));
                                     <strong><?php echo esc_html($espacio->nombre); ?></strong>
                                     <span class="espacio-opcion-meta">
                                         <span class="dashicons dashicons-groups"></span>
-                                        <?php printf(esc_html__('%d personas', 'flavor-chat-ia'), $espacio->capacidad_personas); ?>
+                                        <?php printf(esc_html__('%d personas', 'flavor-platform'), $espacio->capacidad_personas); ?>
                                     </span>
                                     <span class="espacio-opcion-precio">
                                         <?php if ($espacio->precio_hora > 0): ?>
                                             <?php echo number_format($espacio->precio_hora, 2); ?>€/h
                                         <?php else: ?>
-                                            <span class="gratuito"><?php esc_html_e('Gratuito', 'flavor-chat-ia'); ?></span>
+                                            <span class="gratuito"><?php esc_html_e('Gratuito', 'flavor-platform'); ?></span>
                                         <?php endif; ?>
                                     </span>
                                 </div>
@@ -167,27 +167,27 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$anticipacion_maxima_dias} days"));
             <div class="solicitar-seccion">
                 <h3 class="solicitar-seccion-titulo">
                     <span class="paso-numero">2</span>
-                    <?php esc_html_e('Fecha y horario', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Fecha y horario', 'flavor-platform'); ?>
                 </h3>
 
                 <div class="solicitar-fila">
                     <div class="solicitar-campo">
-                        <label for="fecha"><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?> <span class="requerido">*</span></label>
+                        <label for="fecha"><?php esc_html_e('Fecha', 'flavor-platform'); ?> <span class="requerido">*</span></label>
                         <input type="date"
                                id="fecha"
                                name="fecha"
                                min="<?php echo esc_attr($fecha_minima); ?>"
                                max="<?php echo esc_attr($fecha_maxima); ?>"
                                required>
-                        <small><?php printf(esc_html__('Reserva con al menos %d horas de anticipacion', 'flavor-chat-ia'), $anticipacion_minima_horas); ?></small>
+                        <small><?php printf(esc_html__('Reserva con al menos %d horas de anticipacion', 'flavor-platform'), $anticipacion_minima_horas); ?></small>
                     </div>
                 </div>
 
                 <div class="solicitar-fila solicitar-fila-doble">
                     <div class="solicitar-campo">
-                        <label for="hora_inicio"><?php esc_html_e('Hora inicio', 'flavor-chat-ia'); ?> <span class="requerido">*</span></label>
+                        <label for="hora_inicio"><?php esc_html_e('Hora inicio', 'flavor-platform'); ?> <span class="requerido">*</span></label>
                         <select id="hora_inicio" name="hora_inicio" required>
-                            <option value=""><?php esc_html_e('Seleccionar...', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php esc_html_e('Seleccionar...', 'flavor-platform'); ?></option>
                             <?php for ($hora = 8; $hora <= 21; $hora++): ?>
                                 <option value="<?php echo sprintf('%02d:00', $hora); ?>"><?php echo sprintf('%02d:00', $hora); ?></option>
                                 <option value="<?php echo sprintf('%02d:30', $hora); ?>"><?php echo sprintf('%02d:30', $hora); ?></option>
@@ -195,9 +195,9 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$anticipacion_maxima_dias} days"));
                         </select>
                     </div>
                     <div class="solicitar-campo">
-                        <label for="hora_fin"><?php esc_html_e('Hora fin', 'flavor-chat-ia'); ?> <span class="requerido">*</span></label>
+                        <label for="hora_fin"><?php esc_html_e('Hora fin', 'flavor-platform'); ?> <span class="requerido">*</span></label>
                         <select id="hora_fin" name="hora_fin" required>
-                            <option value=""><?php esc_html_e('Seleccionar...', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php esc_html_e('Seleccionar...', 'flavor-platform'); ?></option>
                             <?php for ($hora = 9; $hora <= 22; $hora++): ?>
                                 <option value="<?php echo sprintf('%02d:00', $hora); ?>"><?php echo sprintf('%02d:00', $hora); ?></option>
                                 <?php if ($hora < 22): ?>
@@ -205,7 +205,7 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$anticipacion_maxima_dias} days"));
                                 <?php endif; ?>
                             <?php endfor; ?>
                         </select>
-                        <small><?php printf(esc_html__('Duracion maxima: %d horas', 'flavor-chat-ia'), $duracion_maxima_horas); ?></small>
+                        <small><?php printf(esc_html__('Duracion maxima: %d horas', 'flavor-platform'), $duracion_maxima_horas); ?></small>
                     </div>
                 </div>
 
@@ -217,7 +217,7 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$anticipacion_maxima_dias} days"));
                     </div>
                     <div class="resumen-item" id="precio-estimado-container" style="display: none;">
                         <span class="dashicons dashicons-money-alt"></span>
-                        <span><?php esc_html_e('Precio estimado:', 'flavor-chat-ia'); ?> <strong id="precio-estimado">0€</strong></span>
+                        <span><?php esc_html_e('Precio estimado:', 'flavor-platform'); ?> <strong id="precio-estimado">0€</strong></span>
                     </div>
                 </div>
             </div>
@@ -226,40 +226,40 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$anticipacion_maxima_dias} days"));
             <div class="solicitar-seccion">
                 <h3 class="solicitar-seccion-titulo">
                     <span class="paso-numero">3</span>
-                    <?php esc_html_e('Detalles del evento', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Detalles del evento', 'flavor-platform'); ?>
                 </h3>
 
                 <div class="solicitar-fila solicitar-fila-doble">
                     <div class="solicitar-campo">
-                        <label for="tipo_evento"><?php esc_html_e('Tipo de evento', 'flavor-chat-ia'); ?></label>
+                        <label for="tipo_evento"><?php esc_html_e('Tipo de evento', 'flavor-platform'); ?></label>
                         <select id="tipo_evento" name="tipo_evento">
-                            <option value=""><?php esc_html_e('Seleccionar...', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php esc_html_e('Seleccionar...', 'flavor-platform'); ?></option>
                             <?php foreach ($tipos_evento as $tipo_valor => $tipo_label): ?>
                                 <option value="<?php echo esc_attr($tipo_valor); ?>"><?php echo esc_html($tipo_label); ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="solicitar-campo">
-                        <label for="num_asistentes"><?php esc_html_e('Numero de asistentes', 'flavor-chat-ia'); ?></label>
+                        <label for="num_asistentes"><?php esc_html_e('Numero de asistentes', 'flavor-platform'); ?></label>
                         <input type="number" id="num_asistentes" name="num_asistentes" min="1" max="500" placeholder="Ej: 15">
                         <small id="capacidad-aviso" style="display: none; color: #dc2626;"></small>
                     </div>
                 </div>
 
                 <div class="solicitar-campo">
-                    <label for="motivo"><?php esc_html_e('Motivo / Descripcion', 'flavor-chat-ia'); ?></label>
+                    <label for="motivo"><?php esc_html_e('Motivo / Descripcion', 'flavor-platform'); ?></label>
                     <textarea id="motivo"
                               name="motivo"
                               rows="3"
-                              placeholder="<?php esc_attr_e('Describe brevemente el uso que le daras al espacio...', 'flavor-chat-ia'); ?>"></textarea>
+                              placeholder="<?php esc_attr_e('Describe brevemente el uso que le daras al espacio...', 'flavor-platform'); ?>"></textarea>
                 </div>
 
                 <div class="solicitar-campo">
-                    <label for="instrucciones"><?php esc_html_e('Instrucciones especiales', 'flavor-chat-ia'); ?></label>
+                    <label for="instrucciones"><?php esc_html_e('Instrucciones especiales', 'flavor-platform'); ?></label>
                     <textarea id="instrucciones"
                               name="instrucciones"
                               rows="2"
-                              placeholder="<?php esc_attr_e('Necesidades especiales, montaje, equipamiento adicional...', 'flavor-chat-ia'); ?>"></textarea>
+                              placeholder="<?php esc_attr_e('Necesidades especiales, montaje, equipamiento adicional...', 'flavor-platform'); ?>"></textarea>
                 </div>
             </div>
 
@@ -267,18 +267,18 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$anticipacion_maxima_dias} days"));
             <div class="solicitar-seccion solicitar-resumen">
                 <h3 class="solicitar-seccion-titulo">
                     <span class="paso-numero">4</span>
-                    <?php esc_html_e('Confirmar solicitud', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Confirmar solicitud', 'flavor-platform'); ?>
                 </h3>
 
                 <div id="resumen-reserva" class="resumen-reserva">
-                    <p class="resumen-placeholder"><?php esc_html_e('Completa los campos anteriores para ver el resumen', 'flavor-chat-ia'); ?></p>
+                    <p class="resumen-placeholder"><?php esc_html_e('Completa los campos anteriores para ver el resumen', 'flavor-platform'); ?></p>
                 </div>
 
                 <div class="solicitar-terminos">
                     <label>
                         <input type="checkbox" name="acepta_normas" value="1" required>
                         <?php printf(
-                            esc_html__('He leido y acepto las %snormas de uso%s de los espacios comunes', 'flavor-chat-ia'),
+                            esc_html__('He leido y acepto las %snormas de uso%s de los espacios comunes', 'flavor-platform'),
                             '<a href="' . esc_url(home_url('/espacios-comunes/normas/')) . '" target="_blank">',
                             '</a>'
                         ); ?>
@@ -288,13 +288,13 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$anticipacion_maxima_dias} days"));
                 <div class="solicitar-acciones">
                     <button type="submit" class="btn btn-primary btn-lg" id="btn-enviar-solicitud">
                         <span class="dashicons dashicons-yes"></span>
-                        <?php esc_html_e('Enviar Solicitud', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Enviar Solicitud', 'flavor-platform'); ?>
                     </button>
                 </div>
 
                 <p class="solicitar-nota">
                     <span class="dashicons dashicons-info"></span>
-                    <?php esc_html_e('Recibiras una notificacion cuando tu solicitud sea revisada.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Recibiras una notificacion cuando tu solicitud sea revisada.', 'flavor-platform'); ?>
                 </p>
             </div>
         </form>
@@ -667,7 +667,7 @@ jQuery(document).ready(function($) {
         var $aviso = $('#capacidad-aviso');
 
         if (capacidadMax > 0 && numAsistentes > capacidadMax) {
-            $aviso.text('<?php echo esc_js(__('Supera la capacidad maxima del espacio', 'flavor-chat-ia')); ?> (' + capacidadMax + ')').show();
+            $aviso.text('<?php echo esc_js(__('Supera la capacidad maxima del espacio', 'flavor-platform')); ?> (' + capacidadMax + ')').show();
         } else {
             $aviso.hide();
         }
@@ -695,7 +695,7 @@ jQuery(document).ready(function($) {
         }
 
         var duracionHoras = duracionMs / (1000 * 60 * 60);
-        var duracionTexto = duracionHoras + ' <?php echo esc_js(__('hora(s)', 'flavor-chat-ia')); ?>';
+        var duracionTexto = duracionHoras + ' <?php echo esc_js(__('hora(s)', 'flavor-platform')); ?>';
 
         $('#duracion-texto').text(duracionTexto);
 
@@ -737,12 +737,12 @@ jQuery(document).ready(function($) {
         });
 
         var html = '<div class="resumen-detalle">';
-        html += '<p><strong><?php echo esc_js(__('Espacio:', 'flavor-chat-ia')); ?></strong> ' + espacioNombre + '</p>';
-        html += '<p><strong><?php echo esc_js(__('Fecha:', 'flavor-chat-ia')); ?></strong> ' + fechaFormateada + '</p>';
-        html += '<p><strong><?php echo esc_js(__('Horario:', 'flavor-chat-ia')); ?></strong> ' + horaInicio + ' - ' + horaFin + '</p>';
+        html += '<p><strong><?php echo esc_js(__('Espacio:', 'flavor-platform')); ?></strong> ' + espacioNombre + '</p>';
+        html += '<p><strong><?php echo esc_js(__('Fecha:', 'flavor-platform')); ?></strong> ' + fechaFormateada + '</p>';
+        html += '<p><strong><?php echo esc_js(__('Horario:', 'flavor-platform')); ?></strong> ' + horaInicio + ' - ' + horaFin + '</p>';
 
         if (fianza > 0) {
-            html += '<p class="resumen-fianza"><strong><?php echo esc_js(__('Fianza requerida:', 'flavor-chat-ia')); ?></strong> ' + fianza.toFixed(2) + '€</p>';
+            html += '<p class="resumen-fianza"><strong><?php echo esc_js(__('Fianza requerida:', 'flavor-platform')); ?></strong> ' + fianza.toFixed(2) + '€</p>';
         }
 
         html += '</div>';
@@ -758,7 +758,7 @@ jQuery(document).ready(function($) {
         var $btn = $('#btn-enviar-solicitud');
         var textoOriginal = $btn.html();
 
-        $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> <?php echo esc_js(__('Enviando...', 'flavor-chat-ia')); ?>');
+        $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> <?php echo esc_js(__('Enviando...', 'flavor-platform')); ?>');
 
         var formData = $form.serialize();
         formData += '&action=espacios_crear_reserva';
@@ -774,17 +774,17 @@ jQuery(document).ready(function($) {
                     // Mostrar mensaje de exito
                     $form.html('<div class="solicitar-exito">' +
                         '<span class="dashicons dashicons-yes-alt"></span>' +
-                        '<h3><?php echo esc_js(__('Solicitud enviada', 'flavor-chat-ia')); ?></h3>' +
-                        '<p>' + (response.mensaje || '<?php echo esc_js(__('Tu solicitud ha sido enviada. Te notificaremos cuando sea revisada.', 'flavor-chat-ia')); ?>') + '</p>' +
-                        '<a href="?tab=mis-reservas" class="btn btn-primary"><?php echo esc_js(__('Ver mis reservas', 'flavor-chat-ia')); ?></a>' +
+                        '<h3><?php echo esc_js(__('Solicitud enviada', 'flavor-platform')); ?></h3>' +
+                        '<p>' + (response.mensaje || '<?php echo esc_js(__('Tu solicitud ha sido enviada. Te notificaremos cuando sea revisada.', 'flavor-platform')); ?>') + '</p>' +
+                        '<a href="?tab=mis-reservas" class="btn btn-primary"><?php echo esc_js(__('Ver mis reservas', 'flavor-platform')); ?></a>' +
                     '</div>');
                 } else {
-                    alert(response.error || '<?php echo esc_js(__('Error al enviar la solicitud', 'flavor-chat-ia')); ?>');
+                    alert(response.error || '<?php echo esc_js(__('Error al enviar la solicitud', 'flavor-platform')); ?>');
                     $btn.prop('disabled', false).html(textoOriginal);
                 }
             },
             error: function() {
-                alert('<?php echo esc_js(__('Error de conexion', 'flavor-chat-ia')); ?>');
+                alert('<?php echo esc_js(__('Error de conexion', 'flavor-platform')); ?>');
                 $btn.prop('disabled', false).html(textoOriginal);
             }
         });

@@ -41,7 +41,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!class_exists('WooCommerce')) {
-            return __('WooCommerce no está instalado o activado.', 'flavor-chat-ia');
+            return __('WooCommerce no está instalado o activado.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         return '';
     }
@@ -352,7 +352,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!function_exists('WC') || !WC()->cart) {
             return [
                 'success' => false,
-                'error' => __('WooCommerce no está disponible.', 'flavor-chat-ia'),
+                'error' => __('WooCommerce no está disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -427,7 +427,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!function_exists('WC') || !WC()->cart) {
             return [
                 'success' => false,
-                'error' => __('ID de producto no válido.', 'flavor-chat-ia'),
+                'error' => __('ID de producto no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -439,7 +439,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if ($product_id <= 0) {
             return [
                 'success' => false,
-                'error' => __('ID de producto inválido.', 'flavor-chat-ia'),
+                'error' => __('ID de producto inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -448,7 +448,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!$product) {
             return [
                 'success' => false,
-                'error' => __('Producto no encontrado.', 'flavor-chat-ia'),
+                'error' => __('Producto no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -456,7 +456,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!$product->is_in_stock()) {
             return [
                 'success' => false,
-                'error' => __('Este producto no está disponible actualmente.', 'flavor-chat-ia'),
+                'error' => __('Este producto no está disponible actualmente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -482,10 +482,10 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
 
             return [
                 'success' => false,
-                'error' => __('Este producto requiere seleccionar una variación.', 'flavor-chat-ia'),
+                'error' => __('Este producto requiere seleccionar una variación.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requiere_variacion' => true,
                 'atributos' => $attributes,
-                'instrucciones' => __('Pregunta al usuario qué variación prefiere.', 'flavor-chat-ia'),
+                'instrucciones' => __('Pregunta al usuario qué variación prefiere.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -498,7 +498,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
                     'success' => true,
                     'mensaje' => sprintf(
                         /* translators: %s: nombre del producto */
-                        __('%s añadido al carrito.', 'flavor-chat-ia'),
+                        __('%s añadido al carrito.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $product->get_name()
                     ),
                     'cart_item_key' => $cart_item_key,
@@ -517,7 +517,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
 
             return [
                 'success' => false,
-                'error' => __('No se pudo añadir el producto al carrito.', 'flavor-chat-ia'),
+                'error' => __('No se pudo añadir el producto al carrito.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
 
         } catch (Exception $e) {
@@ -535,7 +535,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!function_exists('WC') || !WC()->cart) {
             return [
                 'success' => false,
-                'error' => __('WooCommerce no está disponible', 'flavor-chat-ia'),
+                'error' => __('WooCommerce no está disponible', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -546,7 +546,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
             $cart->empty_cart();
             return [
                 'success' => true,
-                'mensaje' => __('Carrito vaciado.', 'flavor-chat-ia'),
+                'mensaje' => __('Carrito vaciado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'cart_updated' => true,
             ];
         }
@@ -559,7 +559,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
             if ($cart->remove_cart_item($cart_item_key)) {
                 return [
                     'success' => true,
-                    'mensaje' => __('Producto eliminado del carrito.', 'flavor-chat-ia'),
+                    'mensaje' => __('Producto eliminado del carrito.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'cart_updated' => true,
                 ];
             }
@@ -572,7 +572,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
                     if ($cart->remove_cart_item($key)) {
                         return [
                             'success' => true,
-                            'mensaje' => __('Carrito vaciado.', 'flavor-chat-ia'),
+                            'mensaje' => __('Carrito vaciado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             'cart_updated' => true,
                         ];
                     }
@@ -582,7 +582,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error' => __('No se pudo eliminar el producto del carrito.', 'flavor-chat-ia'),
+            'error' => __('No se pudo eliminar el producto del carrito.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -593,7 +593,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!function_exists('WC') || !WC()->cart) {
             return [
                 'success' => false,
-                'error' => __('WooCommerce no está disponible.', 'flavor-chat-ia'),
+                'error' => __('WooCommerce no está disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -603,7 +603,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (empty($cart_item_key)) {
             return [
                 'success' => false,
-                'error' => __('Producto no encontrado en el carrito.', 'flavor-chat-ia'),
+                'error' => __('Producto no encontrado en el carrito.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -615,7 +615,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!$cart_item) {
             return [
                 'success' => false,
-                'error' => __('Producto no encontrado en el carrito.', 'flavor-chat-ia'),
+                'error' => __('Producto no encontrado en el carrito.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -645,7 +645,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!function_exists('WC') || !WC()->cart) {
             return [
                 'success' => false,
-                'error' => __('WooCommerce no está disponible.', 'flavor-chat-ia'),
+                'error' => __('WooCommerce no está disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -654,7 +654,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (empty($codigo)) {
             return [
                 'success' => false,
-                'error' => __('Debes proporcionar un código de cupón.', 'flavor-chat-ia'),
+                'error' => __('Debes proporcionar un código de cupón.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -662,7 +662,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (WC()->cart->has_discount($codigo)) {
             return [
                 'success' => false,
-                'error' => __('Este cupón ya está aplicado.', 'flavor-chat-ia'),
+                'error' => __('Este cupón ya está aplicado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -792,7 +792,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if ($product_id <= 0) {
             return [
                 'success' => false,
-                'error' => __('ID de producto inválido.', 'flavor-chat-ia'),
+                'error' => __('ID de producto inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -801,7 +801,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!$product) {
             return [
                 'success' => false,
-                'error' => __('Producto no encontrado.', 'flavor-chat-ia'),
+                'error' => __('Producto no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -886,7 +886,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if ($order_id <= 0) {
             return [
                 'success' => false,
-                'error' => __('ID de pedido inválido.', 'flavor-chat-ia'),
+                'error' => __('ID de pedido inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -895,7 +895,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!$order) {
             return [
                 'success' => false,
-                'error' => __('Pedido no encontrado.', 'flavor-chat-ia'),
+                'error' => __('Pedido no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -903,7 +903,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (!empty($email) && $order->get_billing_email() !== $email) {
             return [
                 'success' => false,
-                'error' => __('No tienes permiso para ver este pedido.', 'flavor-chat-ia'),
+                'error' => __('No tienes permiso para ver este pedido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1209,127 +1209,127 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
     public function get_web_components() {
         return [
             'hero' => [
-                'label' => __('Hero Tienda', 'flavor-chat-ia'),
-                'description' => __('Sección hero con productos destacados', 'flavor-chat-ia'),
+                'label' => __('Hero Tienda', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Sección hero con productos destacados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-cart',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Nuestra Tienda', 'flavor-chat-ia'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Nuestra Tienda', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'subtitulo' => [
                         'type' => 'textarea',
-                        'label' => __('Subtítulo', 'flavor-chat-ia'),
-                        'default' => __('Descubre nuestros productos', 'flavor-chat-ia'),
+                        'label' => __('Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Descubre nuestros productos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'mostrar_ofertas' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar ofertas destacadas', 'flavor-chat-ia'),
+                        'label' => __('Mostrar ofertas destacadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                 ],
                 'template' => 'woocommerce/hero',
             ],
             'productos_grid' => [
-                'label' => __('Grid de Productos', 'flavor-chat-ia'),
-                'description' => __('Listado de productos WooCommerce', 'flavor-chat-ia'),
+                'label' => __('Grid de Productos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Listado de productos WooCommerce', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-grid-view',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Productos', 'flavor-chat-ia'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Productos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'tipo' => [
                         'type' => 'select',
-                        'label' => __('Mostrar', 'flavor-chat-ia'),
+                        'label' => __('Mostrar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['todos', 'destacados', 'ofertas', 'nuevos'],
                         'default' => 'todos',
                     ],
                     'columnas' => [
                         'type' => 'select',
-                        'label' => __('Columnas', 'flavor-chat-ia'),
+                        'label' => __('Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => [2, 3, 4],
                         'default' => 4,
                     ],
                     'limite' => [
                         'type' => 'number',
-                        'label' => __('Número máximo', 'flavor-chat-ia'),
+                        'label' => __('Número máximo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 12,
                     ],
                 ],
                 'template' => 'woocommerce/productos-grid',
             ],
             'categorias' => [
-                'label' => __('Categorías de Productos', 'flavor-chat-ia'),
-                'description' => __('Grid de categorías de la tienda', 'flavor-chat-ia'),
+                'label' => __('Categorías de Productos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Grid de categorías de la tienda', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'navigation',
                 'icon' => 'dashicons-category',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Categorías', 'flavor-chat-ia'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'mostrar_imagen' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar imagen', 'flavor-chat-ia'),
+                        'label' => __('Mostrar imagen', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                     'mostrar_contador' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar contador', 'flavor-chat-ia'),
+                        'label' => __('Mostrar contador', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                 ],
                 'template' => 'woocommerce/categorias',
             ],
             'ofertas_banner' => [
-                'label' => __('Banner de Ofertas', 'flavor-chat-ia'),
-                'description' => __('Banner promocional con ofertas', 'flavor-chat-ia'),
+                'label' => __('Banner de Ofertas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Banner promocional con ofertas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'cta',
                 'icon' => 'dashicons-tag',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('¡Ofertas Especiales!', 'flavor-chat-ia'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('¡Ofertas Especiales!', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'subtitulo' => [
                         'type' => 'text',
-                        'label' => __('Subtítulo', 'flavor-chat-ia'),
-                        'default' => __('Hasta 50% de descuento', 'flavor-chat-ia'),
+                        'label' => __('Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Hasta 50% de descuento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'boton_texto' => [
                         'type' => 'text',
-                        'label' => __('Texto del botón', 'flavor-chat-ia'),
-                        'default' => __('Ver Ofertas', 'flavor-chat-ia'),
+                        'label' => __('Texto del botón', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Ver Ofertas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'color_fondo' => [
                         'type' => 'color',
-                        'label' => __('Color de fondo', 'flavor-chat-ia'),
+                        'label' => __('Color de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '#ef4444',
                     ],
                 ],
                 'template' => 'woocommerce/ofertas-banner',
             ],
             'carrito_mini' => [
-                'label' => __('Mini Carrito', 'flavor-chat-ia'),
-                'description' => __('Widget de carrito flotante', 'flavor-chat-ia'),
+                'label' => __('Mini Carrito', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Widget de carrito flotante', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-cart',
                 'fields' => [
                     'mostrar_total' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar total', 'flavor-chat-ia'),
+                        'label' => __('Mostrar total', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                     'mostrar_items' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar número de items', 'flavor-chat-ia'),
+                        'label' => __('Mostrar número de items', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                 ],
@@ -1346,7 +1346,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'woocommerce',
-            'label' => __('WooCommerce', 'flavor-chat-ia'),
+            'label' => __('WooCommerce', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-cart',
             'capability' => 'manage_woocommerce',
             'categoria' => 'economia',
@@ -1354,18 +1354,18 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
             'paginas' => [
                 [
                     'slug' => 'flavor-woocommerce-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'flavor-woocommerce-pedidos',
-                    'titulo' => __('Pedidos', 'flavor-chat-ia'),
+                    'titulo' => __('Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_pedidos'],
                     'badge' => [$this, 'contar_pedidos_pendientes'],
                 ],
                 [
                     'slug' => 'flavor-woocommerce-productos',
-                    'titulo' => __('Productos', 'flavor-chat-ia'),
+                    'titulo' => __('Productos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_productos'],
                 ],
             ],
@@ -1402,7 +1402,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (file_exists($ruta_vista)) {
             include $ruta_vista;
         } else {
-            $this->render_vista_placeholder(__('Dashboard de WooCommerce', 'flavor-chat-ia'));
+            $this->render_vista_placeholder(__('Dashboard de WooCommerce', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -1427,7 +1427,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (file_exists($ruta_vista)) {
             include $ruta_vista;
         } else {
-            $this->render_vista_placeholder(__('Gestión de Pedidos', 'flavor-chat-ia'));
+            $this->render_vista_placeholder(__('Gestión de Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -1440,7 +1440,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         if (file_exists($ruta_vista)) {
             include $ruta_vista;
         } else {
-            $this->render_vista_placeholder(__('Gestión de Productos', 'flavor-chat-ia'));
+            $this->render_vista_placeholder(__('Gestión de Productos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -1455,17 +1455,17 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         <div class="wrap flavor-admin-page">
             <?php $this->render_page_header($titulo_pagina); ?>
             <div class="notice notice-warning">
-                <p><?php esc_html_e('La plantilla específica no está disponible en esta instalación. Se muestra un resumen operativo para mantener el módulo utilizable.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('La plantilla específica no está disponible en esta instalación. Se muestra un resumen operativo para mantener el módulo utilizable.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <div class="flavor-woo-fallback-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin:20px 0;">
-                <div class="card"><h3><?php esc_html_e('Pedidos hoy', 'flavor-chat-ia'); ?></h3><p><?php echo esc_html($estadisticas['pedidos_hoy']); ?></p></div>
-                <div class="card"><h3><?php esc_html_e('Ventas hoy', 'flavor-chat-ia'); ?></h3><p><?php echo esc_html($estadisticas['ventas_hoy_formateado']); ?></p></div>
-                <div class="card"><h3><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></h3><p><?php echo esc_html($estadisticas['pendientes']); ?></p></div>
+                <div class="card"><h3><?php esc_html_e('Pedidos hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3><p><?php echo esc_html($estadisticas['pedidos_hoy']); ?></p></div>
+                <div class="card"><h3><?php esc_html_e('Ventas hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3><p><?php echo esc_html($estadisticas['ventas_hoy_formateado']); ?></p></div>
+                <div class="card"><h3><?php esc_html_e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3><p><?php echo esc_html($estadisticas['pendientes']); ?></p></div>
             </div>
             <p>
-                <a class="button button-primary" href="<?php echo esc_url(admin_url('admin.php?page=flavor-woocommerce-dashboard')); ?>"><?php esc_html_e('Dashboard', 'flavor-chat-ia'); ?></a>
-                <a class="button" href="<?php echo esc_url(admin_url('admin.php?page=flavor-woocommerce-pedidos')); ?>"><?php esc_html_e('Pedidos', 'flavor-chat-ia'); ?></a>
-                <a class="button" href="<?php echo esc_url(admin_url('admin.php?page=flavor-woocommerce-productos')); ?>"><?php esc_html_e('Productos', 'flavor-chat-ia'); ?></a>
+                <a class="button button-primary" href="<?php echo esc_url(admin_url('admin.php?page=flavor-woocommerce-dashboard')); ?>"><?php esc_html_e('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
+                <a class="button" href="<?php echo esc_url(admin_url('admin.php?page=flavor-woocommerce-pedidos')); ?>"><?php esc_html_e('Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
+                <a class="button" href="<?php echo esc_url(admin_url('admin.php?page=flavor-woocommerce-productos')); ?>"><?php esc_html_e('Productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
             </p>
         </div>
         <?php
@@ -1481,20 +1481,20 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
             <div class="widget-stats">
                 <div class="stat-item">
                     <span class="stat-value"><?php echo esc_html($estadisticas['pedidos_hoy']); ?></span>
-                    <span class="stat-label"><?php esc_html_e('Pedidos hoy', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Pedidos hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-value"><?php echo esc_html($estadisticas['ventas_hoy_formateado']); ?></span>
-                    <span class="stat-label"><?php esc_html_e('Ventas hoy', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Ventas hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-value"><?php echo esc_html($estadisticas['pendientes']); ?></span>
-                    <span class="stat-label"><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
             <div class="widget-actions">
                 <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-woocommerce-pedidos')); ?>" class="button">
-                    <?php esc_html_e('Ver pedidos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -1580,37 +1580,37 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Tienda', 'flavor-chat-ia'),
+                'title' => __('Tienda', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'tienda-woo',
-                'content' => '<h1>' . __('Tienda', 'flavor-chat-ia') . '</h1>
-<p>' . __('Explora nuestros productos', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Tienda', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Explora nuestros productos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="woocommerce" action="productos" columnas="3" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Categorías', 'flavor-chat-ia'),
+                'title' => __('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'categorias-tienda',
-                'content' => '<h1>' . __('Categorías', 'flavor-chat-ia') . '</h1>
-<p>' . __('Navega por categorías de productos', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Navega por categorías de productos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="woocommerce" action="categorias"]',
                 'parent' => 'tienda-woo',
             ],
             [
-                'title' => __('Mis Pedidos', 'flavor-chat-ia'),
+                'title' => __('Mis Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mis-pedidos-woo',
-                'content' => '<h1>' . __('Mis Pedidos', 'flavor-chat-ia') . '</h1>
-<p>' . __('Consulta el estado de tus pedidos', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Mis Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Consulta el estado de tus pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_dashboard module="woocommerce" action="mis_pedidos"]',
                 'parent' => 'tienda-woo',
             ],
             [
-                'title' => __('Ofertas', 'flavor-chat-ia'),
+                'title' => __('Ofertas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'ofertas-tienda',
-                'content' => '<h1>' . __('Ofertas', 'flavor-chat-ia') . '</h1>
-<p>' . __('Descubre las mejores ofertas', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Ofertas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Descubre las mejores ofertas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="woocommerce" action="ofertas"]',
                 'parent' => 'tienda-woo',

@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$titulo_seccion_valor  = $titulo_seccion ?? __('Explora Comunidades', 'flavor-chat-ia');
+$titulo_seccion_valor  = $titulo_seccion ?? __('Explora Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $columnas_valor        = $columnas ?? '3';
 $tipo_filtro_valor     = $tipo_filtro ?? 'todos';
 $mostrar_miembros_valor = isset($mostrar_miembros) ? (bool) $mostrar_miembros : true;
@@ -149,23 +149,23 @@ switch ($columnas_valor) {
                     <?php echo esc_html($titulo_seccion_valor); ?>
                 </h2>
                 <p class="text-lg max-w-2xl mx-auto" style="color: var(--flavor-text-secondary, #6b7280);">
-                    <?php esc_html_e('Unete a comunidades activas o crea la tuya propia', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Unete a comunidades activas o crea la tuya propia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
             <!-- Filtros de categoria -->
             <div class="flex flex-wrap justify-center gap-3 mb-10">
                 <button class="px-4 py-2 rounded-full text-sm font-semibold transition-all" style="background: var(--flavor-primary); color: white;">
-                    <?php esc_html_e('Todas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <?php
                 $categorias_disponibles = [
-                    'tecnologia'    => __('Tecnologia', 'flavor-chat-ia'),
-                    'deportes'      => __('Deportes', 'flavor-chat-ia'),
-                    'cultura'       => __('Cultura', 'flavor-chat-ia'),
-                    'medioambiente' => __('Medio Ambiente', 'flavor-chat-ia'),
-                    'salud'         => __('Salud', 'flavor-chat-ia'),
-                    'vecinal'       => __('Vecinal', 'flavor-chat-ia'),
+                    'tecnologia'    => __('Tecnologia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'deportes'      => __('Deportes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'cultura'       => __('Cultura', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'medioambiente' => __('Medio Ambiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'salud'         => __('Salud', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'vecinal'       => __('Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
                 foreach ($categorias_disponibles as $clave_categoria => $etiqueta_categoria): ?>
                     <button class="px-4 py-2 rounded-full text-sm font-semibold transition-all border-2" style="border-color: var(--flavor-border, #e5e7eb); color: var(--flavor-text-secondary, #6b7280); background: white;">
@@ -195,9 +195,9 @@ switch ($columnas_valor) {
                             <div class="absolute top-4 right-4 px-3 py-1 bg-white rounded-full text-xs font-bold <?php echo esc_attr($colores_actuales[2]); ?>">
                                 <?php
                                 $etiquetas_tipo = [
-                                    'abierta' => __('Abierta', 'flavor-chat-ia'),
-                                    'cerrada' => __('Cerrada', 'flavor-chat-ia'),
-                                    'secreta' => __('Secreta', 'flavor-chat-ia'),
+                                    'abierta' => __('Abierta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    'cerrada' => __('Cerrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    'secreta' => __('Secreta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 ];
                                 echo esc_html($etiquetas_tipo[$tipo_actual] ?? $tipo_actual);
                                 ?>
@@ -238,7 +238,7 @@ switch ($columnas_valor) {
                                     </svg>
                                     <span>
                                         <?php echo esc_html(sprintf(
-                                            _n('%d miembro', '%d miembros', $comunidad_item->miembros_count, 'flavor-chat-ia'),
+                                            _n('%d miembro', '%d miembros', $comunidad_item->miembros_count, FLAVOR_PLATFORM_TEXT_DOMAIN),
                                             $comunidad_item->miembros_count
                                         )); ?>
                                     </span>
@@ -249,9 +249,9 @@ switch ($columnas_valor) {
                                    class="px-5 py-2 text-white font-semibold rounded-lg transition-all text-sm bg-gradient-to-r <?php echo esc_attr($colores_actuales[0] . ' ' . $colores_actuales[1]); ?> hover:opacity-90 hover:shadow-md">
                                     <?php
                                     if ($tipo_actual === 'cerrada') {
-                                        esc_html_e('Solicitar Acceso', 'flavor-chat-ia');
+                                        esc_html_e('Solicitar Acceso', FLAVOR_PLATFORM_TEXT_DOMAIN);
                                     } else {
-                                        esc_html_e('Unirse', 'flavor-chat-ia');
+                                        esc_html_e('Unirse', FLAVOR_PLATFORM_TEXT_DOMAIN);
                                     }
                                     ?>
                                 </a>
@@ -264,7 +264,7 @@ switch ($columnas_valor) {
             <!-- Boton ver mas -->
             <div class="text-center mt-12">
                 <a href="#todas-comunidades" class="inline-flex items-center gap-2 px-8 py-3 font-bold rounded-full shadow-lg hover:shadow-xl transition-all" style="background: var(--flavor-primary); color: white;">
-                    <?php esc_html_e('Ver Todas las Comunidades', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver Todas las Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                     </svg>

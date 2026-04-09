@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
     <div class="flavor-notifications-header">
         <div class="flavor-notifications-title">
             <span class="flavor-notifications-icon">🔔</span>
-            <h3><?php _e('Notificaciones', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <?php if ($unread_count > 0) : ?>
                 <span class="flavor-notifications-badge"><?php echo esc_html($unread_count); ?></span>
             <?php endif; ?>
@@ -27,7 +27,7 @@ if (!defined('ABSPATH')) {
             <?php if (!empty($notifications)) : ?>
                 <button type="button" class="flavor-notifications-mark-all" data-action="mark-all-read">
                     <span class="dashicons dashicons-yes"></span>
-                    <?php _e('Marcar todas como leídas', 'flavor-chat-ia'); ?>
+                    <?php _e('Marcar todas como leídas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             <?php endif; ?>
         </div>
@@ -37,7 +37,7 @@ if (!defined('ABSPATH')) {
         <?php if (empty($notifications)) : ?>
             <div class="flavor-notifications-empty">
                 <div class="flavor-notifications-empty-icon">📭</div>
-                <p><?php _e('No tienes notificaciones', 'flavor-chat-ia'); ?></p>
+                <p><?php _e('No tienes notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         <?php else : ?>
             <?php foreach ($notifications as $notification) : ?>
@@ -71,7 +71,7 @@ if (!defined('ABSPATH')) {
 
                         <div class="flavor-notification-meta">
                             <span class="flavor-notification-time">
-                                <?php echo human_time_diff(strtotime($notification['created_at']), current_time('timestamp')); ?> <?php _e('atrás', 'flavor-chat-ia'); ?>
+                                <?php echo human_time_diff(strtotime($notification['created_at']), current_time('timestamp')); ?> <?php _e('atrás', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
 
                             <?php if (!$notification['is_read']) : ?>
@@ -84,7 +84,7 @@ if (!defined('ABSPATH')) {
                         <?php if (!empty($notification['link'])) : ?>
                             <a href="<?php echo esc_url($notification['link']); ?>"
                                class="flavor-notification-action flavor-notification-view"
-                               title="<?php esc_attr_e('Ver detalles', 'flavor-chat-ia'); ?>">
+                               title="<?php esc_attr_e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <span class="dashicons dashicons-external"></span>
                             </a>
                         <?php endif; ?>
@@ -93,7 +93,7 @@ if (!defined('ABSPATH')) {
                             <button type="button"
                                     class="flavor-notification-action flavor-notification-mark-read"
                                     data-id="<?php echo esc_attr($notification['id']); ?>"
-                                    title="<?php esc_attr_e('Marcar como leída', 'flavor-chat-ia'); ?>">
+                                    title="<?php esc_attr_e('Marcar como leída', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <span class="dashicons dashicons-yes"></span>
                             </button>
                         <?php endif; ?>
@@ -101,7 +101,7 @@ if (!defined('ABSPATH')) {
                         <button type="button"
                                 class="flavor-notification-action flavor-notification-delete"
                                 data-id="<?php echo esc_attr($notification['id']); ?>"
-                                title="<?php esc_attr_e('Eliminar', 'flavor-chat-ia'); ?>">
+                                title="<?php esc_attr_e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-trash"></span>
                         </button>
                     </div>
@@ -113,7 +113,7 @@ if (!defined('ABSPATH')) {
     <?php if ($atts['show_all_link'] === 'yes' && !empty($notifications)) : ?>
         <div class="flavor-notifications-footer">
             <a href="<?php echo Flavor_Chat_Helpers::get_action_url('', '') . '#notifications'; ?>" class="flavor-notifications-view-all">
-                <?php _e('Ver todas las notificaciones', 'flavor-chat-ia'); ?> →
+                <?php _e('Ver todas las notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> →
             </a>
         </div>
     <?php endif; ?>

@@ -37,11 +37,11 @@ while (have_posts()) : the_post();
 
     // Traducciones de estado
     $estados_traduccion = [
-        'nuevo' => __('Nuevo', 'flavor-chat-ia'),
-        'como_nuevo' => __('Como nuevo', 'flavor-chat-ia'),
-        'buen_estado' => __('Buen estado', 'flavor-chat-ia'),
-        'usado' => __('Usado', 'flavor-chat-ia'),
-        'reparar' => __('Necesita reparación', 'flavor-chat-ia'),
+        'nuevo' => __('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'como_nuevo' => __('Como nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'buen_estado' => __('Buen estado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'usado' => __('Usado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'reparar' => __('Necesita reparación', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ];
     ?>
 
@@ -58,7 +58,7 @@ while (have_posts()) : the_post();
                 <?php else: ?>
                     <div class="marketplace-imagen-placeholder">
                         <span class="dashicons dashicons-format-image"></span>
-                        <p><?php _e('Sin imagen', 'flavor-chat-ia'); ?></p>
+                        <p><?php _e('Sin imagen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 <?php endif; ?>
 
@@ -89,12 +89,12 @@ while (have_posts()) : the_post();
                         <div class="marketplace-precio">
                             <?php echo Flavor_Chat_Helpers::formatear_precio($precio); ?>
                             <?php if ($tipos[0]->slug === 'alquiler'): ?>
-                                <span class="marketplace-precio-periodo"><?php _e('/ día', 'flavor-chat-ia'); ?></span>
+                                <span class="marketplace-precio-periodo"><?php _e('/ día', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <?php endif; ?>
                         </div>
                     <?php elseif ($tipos[0]->slug ?? '' === 'regalo'): ?>
                         <div class="marketplace-precio marketplace-precio-regalo">
-                            <?php _e('¡GRATIS!', 'flavor-chat-ia'); ?>
+                            <?php _e('¡GRATIS!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     <?php endif; ?>
                 </header>
@@ -103,7 +103,7 @@ while (have_posts()) : the_post();
                 <div class="marketplace-meta">
                     <div class="marketplace-meta-item">
                         <span class="dashicons dashicons-location"></span>
-                        <span><?php echo $ubicacion ? esc_html($ubicacion) : __('No especificada', 'flavor-chat-ia'); ?></span>
+                        <span><?php echo $ubicacion ? esc_html($ubicacion) : __('No especificada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
 
                     <div class="marketplace-meta-item">
@@ -124,7 +124,7 @@ while (have_posts()) : the_post();
                             <span>
                                 <?php
                                 printf(
-                                    __('Válido hasta %s', 'flavor-chat-ia'),
+                                    __('Válido hasta %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                     Flavor_Chat_Helpers::formatear_fecha($fecha_expiracion, 'short')
                                 );
                                 ?>
@@ -135,7 +135,7 @@ while (have_posts()) : the_post();
 
                 <!-- Descripción -->
                 <div class="marketplace-descripcion">
-                    <h2><?php _e('Descripción', 'flavor-chat-ia'); ?></h2>
+                    <h2><?php _e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                     <div class="marketplace-contenido">
                         <?php the_content(); ?>
                     </div>
@@ -144,14 +144,14 @@ while (have_posts()) : the_post();
                 <!-- Preferencias de intercambio (si es cambio) -->
                 <?php if ($tipos[0]->slug ?? '' === 'cambio' && $intercambio_preferencias): ?>
                     <div class="marketplace-intercambio">
-                        <h3><?php _e('Busco a cambio:', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Busco a cambio:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <p><?php echo esc_html($intercambio_preferencias); ?></p>
                     </div>
                 <?php endif; ?>
 
                 <!-- Información del vendedor -->
                 <div class="marketplace-vendedor">
-                    <h3><?php _e('Publicado por', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Publicado por', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <div class="marketplace-vendedor-info">
                         <?php if ($autor_avatar): ?>
                             <img src="<?php echo esc_url($autor_avatar); ?>"
@@ -163,7 +163,7 @@ while (have_posts()) : the_post();
                             <span class="marketplace-vendedor-registro">
                                 <?php
                                 printf(
-                                    __('Miembro desde %s', 'flavor-chat-ia'),
+                                    __('Miembro desde %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                     Flavor_Chat_Helpers::formatear_fecha(get_the_author_meta('user_registered', $autor_id), 'short')
                                 );
                                 ?>
@@ -180,25 +180,25 @@ while (have_posts()) : the_post();
                                     data-anuncio-id="<?php echo esc_attr($post_id); ?>"
                                     data-vendedor-id="<?php echo esc_attr($autor_id); ?>">
                                 <span class="dashicons dashicons-email"></span>
-                                <?php _e('Contactar', 'flavor-chat-ia'); ?>
+                                <?php _e('Contactar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
 
                             <button class="marketplace-btn marketplace-btn-secundario marketplace-btn-favorito"
                                     data-anuncio-id="<?php echo esc_attr($post_id); ?>">
                                 <span class="dashicons dashicons-heart"></span>
-                                <?php _e('Guardar', 'flavor-chat-ia'); ?>
+                                <?php _e('Guardar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         <?php else: ?>
                             <a href="<?php echo get_edit_post_link(); ?>" class="marketplace-btn marketplace-btn-secundario">
                                 <span class="dashicons dashicons-edit"></span>
-                                <?php _e('Editar anuncio', 'flavor-chat-ia'); ?>
+                                <?php _e('Editar anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         <?php endif; ?>
                     <?php else: ?>
                         <p class="marketplace-aviso">
                             <?php
                             printf(
-                                __('<a href="%s">Inicia sesión</a> para contactar con el vendedor', 'flavor-chat-ia'),
+                                __('<a href="%s">Inicia sesión</a> para contactar con el vendedor', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 wp_login_url(flavor_current_request_url())
                             );
                             ?>
@@ -208,7 +208,7 @@ while (have_posts()) : the_post();
 
                 <!-- Compartir en redes sociales -->
                 <div class="marketplace-compartir">
-                    <span><?php _e('Compartir:', 'flavor-chat-ia'); ?></span>
+                    <span><?php _e('Compartir:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode(get_permalink()); ?>"
                        target="_blank" class="marketplace-social-link">
                         <span class="dashicons dashicons-facebook"></span>
@@ -243,7 +243,7 @@ while (have_posts()) : the_post();
 
         if ($anuncios_relacionados->have_posts()): ?>
             <div class="marketplace-relacionados">
-                <h2><?php _e('Anuncios relacionados', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Anuncios relacionados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <div class="marketplace-grid">
                     <?php while ($anuncios_relacionados->have_posts()): $anuncios_relacionados->the_post(); ?>
                         <div class="marketplace-card">

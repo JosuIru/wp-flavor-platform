@@ -48,7 +48,7 @@ class Flavor_API_Adapter {
 
         return new WP_Error(
             'no_chat_system',
-            __('No hay ningún sistema de chat activo', 'flavor-chat-ia'),
+            __('No hay ningún sistema de chat activo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ['status' => 503]
         );
     }
@@ -76,7 +76,7 @@ class Flavor_API_Adapter {
         }
 
         if ($has_flavor) {
-            $info['systems_active'][] = 'flavor-chat-ia';
+            $info['systems_active'][] = FLAVOR_PLATFORM_TEXT_DOMAIN;
             $info['flavor'] = $this->get_flavor_site_info();
         }
 
@@ -108,7 +108,7 @@ class Flavor_API_Adapter {
             'session_id' => $response['session_id'] ?? $session_id,
             'suggestions' => $response['suggestions'] ?? [],
             'actions' => $response['actions'] ?? [],
-            'system' => 'flavor-chat-ia',
+            'system' => FLAVOR_PLATFORM_TEXT_DOMAIN,
         ], 200);
     }
 

@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!is_user_logged_in()) {
-    echo '<div class="td-empty-state"><p>' . esc_html__('Debes iniciar sesión para gestionar tu perfil.', 'flavor-chat-ia') . '</p></div>';
+    echo '<div class="td-empty-state"><p>' . esc_html__('Debes iniciar sesión para gestionar tu perfil.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
 
@@ -69,19 +69,19 @@ foreach ($ofertas_con_postulaciones as $oferta) {
 
 <div class="td-container">
     <header class="td-header">
-        <h2><?php esc_html_e('Mi Perfil Profesional', 'flavor-chat-ia'); ?></h2>
-        <p><?php esc_html_e('Gestiona tu información y consulta tus postulaciones', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Mi Perfil Profesional', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p><?php esc_html_e('Gestiona tu información y consulta tus postulaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </header>
 
     <!-- Tabs -->
     <div class="td-tabs">
         <button class="td-tab activo" data-tab="tab-perfil">
             <span class="dashicons dashicons-id-alt"></span>
-            <?php esc_html_e('Mi Perfil', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Mi Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
         <button class="td-tab" data-tab="tab-postulaciones">
             <span class="dashicons dashicons-portfolio"></span>
-            <?php esc_html_e('Mis Postulaciones', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Mis Postulaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <?php if (count($mis_postulaciones) > 0) : ?>
             <span style="background: var(--td-primary); color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.75rem; margin-left: 4px;">
                 <?php echo esc_html(count($mis_postulaciones)); ?>
@@ -105,35 +105,35 @@ foreach ($ofertas_con_postulaciones as $oferta) {
 
             <form class="td-form td-form-perfil" style="box-shadow: none; padding: 0;">
                 <div class="td-form-grupo">
-                    <label for="td-perfil-titulo"><?php esc_html_e('Título profesional', 'flavor-chat-ia'); ?></label>
+                    <label for="td-perfil-titulo"><?php esc_html_e('Título profesional', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="text" name="titulo" id="td-perfil-titulo"
                            value="<?php echo esc_attr($perfil_data['titulo'] ?? ''); ?>"
-                           placeholder="<?php esc_attr_e('Ej: Desarrollador/a web, Técnico/a agrícola...', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php esc_attr_e('Ej: Desarrollador/a web, Técnico/a agrícola...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
 
                 <div class="td-form-grupo">
-                    <label for="td-perfil-descripcion"><?php esc_html_e('Sobre mí', 'flavor-chat-ia'); ?></label>
+                    <label for="td-perfil-descripcion"><?php esc_html_e('Sobre mí', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <textarea name="descripcion" id="td-perfil-descripcion" rows="4"
-                              placeholder="<?php esc_attr_e('Breve descripción profesional...', 'flavor-chat-ia'); ?>"><?php echo esc_textarea($perfil_data['descripcion'] ?? ''); ?></textarea>
+                              placeholder="<?php esc_attr_e('Breve descripción profesional...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_textarea($perfil_data['descripcion'] ?? ''); ?></textarea>
                 </div>
 
                 <div class="td-form-row">
                     <div class="td-form-grupo">
-                        <label for="td-perfil-experiencia"><?php esc_html_e('Experiencia', 'flavor-chat-ia'); ?></label>
+                        <label for="td-perfil-experiencia"><?php esc_html_e('Experiencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <textarea name="experiencia" id="td-perfil-experiencia" rows="4"
-                                  placeholder="<?php esc_attr_e('Detalla tu experiencia laboral...', 'flavor-chat-ia'); ?>"><?php echo esc_textarea($perfil_data['experiencia'] ?? ''); ?></textarea>
+                                  placeholder="<?php esc_attr_e('Detalla tu experiencia laboral...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_textarea($perfil_data['experiencia'] ?? ''); ?></textarea>
                     </div>
                     <div class="td-form-grupo">
-                        <label for="td-perfil-formacion"><?php esc_html_e('Formación', 'flavor-chat-ia'); ?></label>
+                        <label for="td-perfil-formacion"><?php esc_html_e('Formación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <textarea name="formacion" id="td-perfil-formacion" rows="4"
-                                  placeholder="<?php esc_attr_e('Estudios, cursos, certificaciones...', 'flavor-chat-ia'); ?>"><?php echo esc_textarea($perfil_data['formacion'] ?? ''); ?></textarea>
+                                  placeholder="<?php esc_attr_e('Estudios, cursos, certificaciones...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_textarea($perfil_data['formacion'] ?? ''); ?></textarea>
                     </div>
                 </div>
 
                 <div class="td-form-grupo">
-                    <label for="td-perfil-disponibilidad"><?php esc_html_e('Disponibilidad', 'flavor-chat-ia'); ?></label>
+                    <label for="td-perfil-disponibilidad"><?php esc_html_e('Disponibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="disponibilidad" id="td-perfil-disponibilidad">
-                        <option value=""><?php esc_html_e('Selecciona...', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Selecciona...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($jornadas as $jornada_id => $jornada_nombre) : ?>
                         <option value="<?php echo esc_attr($jornada_id); ?>" <?php selected($perfil_data['disponibilidad'] ?? '', $jornada_id); ?>>
                             <?php echo esc_html($jornada_nombre); ?>
@@ -145,7 +145,7 @@ foreach ($ofertas_con_postulaciones as $oferta) {
                 <div style="text-align: center; margin-top: 2rem;">
                     <button type="submit" class="td-btn td-btn--primary">
                         <span class="dashicons dashicons-saved"></span>
-                        <?php esc_html_e('Guardar Perfil', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Guardar Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </form>
@@ -167,9 +167,9 @@ foreach ($ofertas_con_postulaciones as $oferta) {
                 <span class="td-postulacion-item__estado td-postulacion-item__estado--<?php echo esc_attr($postulacion['estado']); ?>">
                     <?php
                     $estados_labels = [
-                        'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-                        'aceptada' => __('Aceptada', 'flavor-chat-ia'),
-                        'rechazada' => __('Rechazada', 'flavor-chat-ia'),
+                        'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'aceptada' => __('Aceptada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'rechazada' => __('Rechazada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ];
                     echo esc_html($estados_labels[$postulacion['estado']] ?? $postulacion['estado']);
                     ?>
@@ -180,9 +180,9 @@ foreach ($ofertas_con_postulaciones as $oferta) {
         <?php else : ?>
         <div class="td-empty-state">
             <span class="dashicons dashicons-portfolio"></span>
-            <p><?php esc_html_e('Aún no has postulado a ninguna oferta.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('Aún no has postulado a ninguna oferta.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <a href="<?php echo esc_url(home_url('/trabajo-digno/')); ?>" class="td-btn td-btn--primary">
-                <?php esc_html_e('Ver ofertas disponibles', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver ofertas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
         <?php endif; ?>

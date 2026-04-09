@@ -27,8 +27,8 @@ class Flavor_PP_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
     public function __construct() {
         global $wpdb;
         $this->prefix_tabla = $wpdb->prefix . 'flavor_pp_';
-        $this->title = __('Presupuestos', 'flavor-chat-ia');
-        $this->description = __('Decide cómo se invierte en tu comunidad', 'flavor-chat-ia');
+        $this->title = __('Presupuestos', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Decide cómo se invierte en tu comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         parent::__construct([
             'id' => $this->widget_id,
@@ -95,22 +95,22 @@ class Flavor_PP_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $stats[] = [
                 'icon' => 'dashicons-chart-pie',
                 'valor' => number_format($presupuesto_activo->importe_total, 0, ',', '.') . ' €',
-                'label' => __('Presupuesto', 'flavor-chat-ia'),
+                'label' => __('Presupuesto', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'primary',
                 'url' => $es_admin ? admin_url('admin.php?page=presupuestos-participativos') : Flavor_Chat_Helpers::get_action_url('presupuestos_participativos', ''),
             ];
 
             $fase_texto = [
-                'propuestas' => __('Propuestas', 'flavor-chat-ia'),
-                'votacion' => __('Votación', 'flavor-chat-ia'),
-                'ejecucion' => __('Ejecución', 'flavor-chat-ia'),
-                'cerrado' => __('Cerrado', 'flavor-chat-ia'),
+                'propuestas' => __('Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'votacion' => __('Votación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ejecucion' => __('Ejecución', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cerrado' => __('Cerrado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
 
             $stats[] = [
                 'icon' => 'dashicons-flag',
                 'valor' => $fase_texto[$presupuesto_activo->fase] ?? $presupuesto_activo->fase,
-                'label' => __('Fase actual', 'flavor-chat-ia'),
+                'label' => __('Fase actual', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $presupuesto_activo->fase === 'votacion' ? 'warning' : 'info',
             ];
 
@@ -118,7 +118,7 @@ class Flavor_PP_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 $stats[] = [
                     'icon' => 'dashicons-lightbulb',
                     'valor' => $proyectos_en_votacion,
-                    'label' => __('Proyectos', 'flavor-chat-ia'),
+                    'label' => __('Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'success',
                     'url' => $es_admin ? admin_url('admin.php?page=presupuestos-participativos&tab=proyectos') : Flavor_Chat_Helpers::get_action_url('presupuestos_participativos', 'proyectos'),
                 ];
@@ -126,8 +126,8 @@ class Flavor_PP_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         } else {
             $stats[] = [
                 'icon' => 'dashicons-info',
-                'valor' => __('Sin proceso', 'flavor-chat-ia'),
-                'label' => __('Presupuesto', 'flavor-chat-ia'),
+                'valor' => __('Sin proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'label' => __('Presupuesto', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'gray',
             ];
         }
@@ -137,10 +137,10 @@ class Flavor_PP_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats,
             'items' => $items,
-            'empty_state' => __('No hay proceso de presupuestos activo', 'flavor-chat-ia'),
+            'empty_state' => __('No hay proceso de presupuestos activo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => __('Ver presupuestos', 'flavor-chat-ia'),
+                    'label' => __('Ver presupuestos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => $es_admin ? admin_url('admin.php?page=presupuestos-participativos') : Flavor_Chat_Helpers::get_action_url('presupuestos_participativos', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],

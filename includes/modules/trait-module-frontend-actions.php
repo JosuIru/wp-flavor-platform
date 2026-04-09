@@ -58,20 +58,20 @@ trait Flavor_Module_Frontend_Actions {
             // Reservas y alquileres
             'bicicletas-compartidas' => [
                 'alquilar' => [
-                    'label' => __('Alquilar Bicicleta', 'flavor-chat-ia'),
+                    'label' => __('Alquilar Bicicleta', 'flavor-platform'),
                     'icon' => 'dashicons-unlock',
                     'type' => 'form',
                     'fields' => ['estacion', 'duracion'],
                     'capability' => 'read',
                 ],
                 'devolver' => [
-                    'label' => __('Devolver Bicicleta', 'flavor-chat-ia'),
+                    'label' => __('Devolver Bicicleta', 'flavor-platform'),
                     'icon' => 'dashicons-lock',
                     'type' => 'action',
                     'capability' => 'read',
                 ],
                 'ver_mapa' => [
-                    'label' => __('Ver Mapa', 'flavor-chat-ia'),
+                    'label' => __('Ver Mapa', 'flavor-platform'),
                     'icon' => 'dashicons-location',
                     'type' => 'page',
                     'page' => 'mapa-bicicletas',
@@ -79,13 +79,13 @@ trait Flavor_Module_Frontend_Actions {
             ],
             'parking' => [
                 'reservar' => [
-                    'label' => __('Reservar Plaza', 'flavor-chat-ia'),
+                    'label' => __('Reservar Plaza', 'flavor-platform'),
                     'icon' => 'dashicons-car',
                     'type' => 'form',
                     'fields' => ['fecha', 'hora_inicio', 'hora_fin', 'matricula'],
                 ],
                 'mis_reservas' => [
-                    'label' => __('Mis Reservas', 'flavor-chat-ia'),
+                    'label' => __('Mis Reservas', 'flavor-platform'),
                     'icon' => 'dashicons-list-view',
                     'type' => 'page',
                     'page' => 'mis-reservas-parking',
@@ -93,19 +93,19 @@ trait Flavor_Module_Frontend_Actions {
             ],
             'carpooling' => [
                 'buscar_viaje' => [
-                    'label' => __('Buscar Viaje', 'flavor-chat-ia'),
+                    'label' => __('Buscar Viaje', 'flavor-platform'),
                     'icon' => 'dashicons-search',
                     'type' => 'form',
                     'fields' => ['origen', 'destino', 'fecha'],
                 ],
                 'ofrecer_viaje' => [
-                    'label' => __('Ofrecer Viaje', 'flavor-chat-ia'),
+                    'label' => __('Ofrecer Viaje', 'flavor-platform'),
                     'icon' => 'dashicons-plus-alt',
                     'type' => 'form',
                     'fields' => ['origen', 'destino', 'fecha', 'hora', 'plazas', 'precio'],
                 ],
                 'mis_viajes' => [
-                    'label' => __('Mis Viajes', 'flavor-chat-ia'),
+                    'label' => __('Mis Viajes', 'flavor-platform'),
                     'icon' => 'dashicons-car',
                     'type' => 'page',
                 ],
@@ -113,37 +113,37 @@ trait Flavor_Module_Frontend_Actions {
             // Eventos y cursos
             'eventos' => [
                 'inscribirse' => [
-                    'label' => __('Inscribirse', 'flavor-chat-ia'),
+                    'label' => __('Inscribirse', 'flavor-platform'),
                     'icon' => 'dashicons-yes-alt',
                     'type' => 'action',
                     'requires' => ['evento_id'],
                 ],
                 'ver_calendario' => [
-                    'label' => __('Calendario', 'flavor-chat-ia'),
+                    'label' => __('Calendario', 'flavor-platform'),
                     'icon' => 'dashicons-calendar-alt',
                     'type' => 'page',
                     'page' => 'calendario-eventos',
                 ],
                 'mis_inscripciones' => [
-                    'label' => __('Mis Inscripciones', 'flavor-chat-ia'),
+                    'label' => __('Mis Inscripciones', 'flavor-platform'),
                     'icon' => 'dashicons-tickets-alt',
                     'type' => 'page',
                 ],
             ],
             'cursos' => [
                 'inscribirse' => [
-                    'label' => __('Inscribirse al Curso', 'flavor-chat-ia'),
+                    'label' => __('Inscribirse al Curso', 'flavor-platform'),
                     'icon' => 'dashicons-welcome-learn-more',
                     'type' => 'form',
                     'fields' => ['curso_id', 'modalidad'],
                 ],
                 'mis_cursos' => [
-                    'label' => __('Mis Cursos', 'flavor-chat-ia'),
+                    'label' => __('Mis Cursos', 'flavor-platform'),
                     'icon' => 'dashicons-book',
                     'type' => 'page',
                 ],
                 'catalogo' => [
-                    'label' => __('Ver Catálogo', 'flavor-chat-ia'),
+                    'label' => __('Ver Catálogo', 'flavor-platform'),
                     'icon' => 'dashicons-grid-view',
                     'type' => 'page',
                     'page' => 'catalogo-cursos',
@@ -151,12 +151,12 @@ trait Flavor_Module_Frontend_Actions {
             ],
             'talleres' => [
                 'inscribirse' => [
-                    'label' => __('Inscribirse', 'flavor-chat-ia'),
+                    'label' => __('Inscribirse', 'flavor-platform'),
                     'icon' => 'dashicons-hammer',
                     'type' => 'action',
                 ],
                 'ver_talleres' => [
-                    'label' => __('Ver Talleres', 'flavor-chat-ia'),
+                    'label' => __('Ver Talleres', 'flavor-platform'),
                     'icon' => 'dashicons-admin-tools',
                     'type' => 'page',
                 ],
@@ -164,38 +164,38 @@ trait Flavor_Module_Frontend_Actions {
             // Espacios y recursos
             'espacios-comunes' => [
                 'reservar' => [
-                    'label' => __('Reservar Espacio', 'flavor-chat-ia'),
+                    'label' => __('Reservar Espacio', 'flavor-platform'),
                     'icon' => 'dashicons-building',
                     'type' => 'form',
                     'fields' => ['espacio_id', 'fecha', 'hora_inicio', 'hora_fin', 'motivo'],
                 ],
                 'ver_disponibilidad' => [
-                    'label' => __('Ver Disponibilidad', 'flavor-chat-ia'),
+                    'label' => __('Ver Disponibilidad', 'flavor-platform'),
                     'icon' => 'dashicons-calendar',
                     'type' => 'page',
                     'page' => 'disponibilidad-espacios',
                 ],
                 'mis_reservas' => [
-                    'label' => __('Mis Reservas', 'flavor-chat-ia'),
+                    'label' => __('Mis Reservas', 'flavor-platform'),
                     'icon' => 'dashicons-list-view',
                     'type' => 'page',
                 ],
             ],
             'biblioteca' => [
                 'buscar' => [
-                    'label' => __('Buscar Libro', 'flavor-chat-ia'),
+                    'label' => __('Buscar Libro', 'flavor-platform'),
                     'icon' => 'dashicons-search',
                     'type' => 'form',
                     'fields' => ['titulo', 'autor', 'categoria'],
                 ],
                 'reservar' => [
-                    'label' => __('Reservar Libro', 'flavor-chat-ia'),
+                    'label' => __('Reservar Libro', 'flavor-platform'),
                     'icon' => 'dashicons-book-alt',
                     'type' => 'action',
                     'requires' => ['libro_id'],
                 ],
                 'mis_prestamos' => [
-                    'label' => __('Mis Préstamos', 'flavor-chat-ia'),
+                    'label' => __('Mis Préstamos', 'flavor-platform'),
                     'icon' => 'dashicons-book',
                     'type' => 'page',
                 ],
@@ -203,50 +203,50 @@ trait Flavor_Module_Frontend_Actions {
             // Comercio
             'marketplace' => [
                 'publicar' => [
-                    'label' => __('Publicar Anuncio', 'flavor-chat-ia'),
+                    'label' => __('Publicar Anuncio', 'flavor-platform'),
                     'icon' => 'dashicons-plus',
                     'type' => 'form',
                     'fields' => ['titulo', 'descripcion', 'precio', 'categoria', 'imagenes'],
                 ],
                 'buscar' => [
-                    'label' => __('Buscar', 'flavor-chat-ia'),
+                    'label' => __('Buscar', 'flavor-platform'),
                     'icon' => 'dashicons-search',
                     'type' => 'page',
                     'page' => 'marketplace',
                 ],
                 'mis_anuncios' => [
-                    'label' => __('Mis Anuncios', 'flavor-chat-ia'),
+                    'label' => __('Mis Anuncios', 'flavor-platform'),
                     'icon' => 'dashicons-megaphone',
                     'type' => 'page',
                 ],
             ],
             'tienda-local' => [
                 'comprar' => [
-                    'label' => __('Comprar', 'flavor-chat-ia'),
+                    'label' => __('Comprar', 'flavor-platform'),
                     'icon' => 'dashicons-cart',
                     'type' => 'page',
                     'page' => 'tienda',
                 ],
                 'mis_pedidos' => [
-                    'label' => __('Mis Pedidos', 'flavor-chat-ia'),
+                    'label' => __('Mis Pedidos', 'flavor-platform'),
                     'icon' => 'dashicons-clipboard',
                     'type' => 'page',
                 ],
             ],
             'grupos-consumo' => [
                 'unirse' => [
-                    'label' => __('Unirse a Grupo', 'flavor-chat-ia'),
+                    'label' => __('Unirse a Grupo', 'flavor-platform'),
                     'icon' => 'dashicons-groups',
                     'type' => 'form',
                     'fields' => ['grupo_id'],
                 ],
                 'ver_grupos' => [
-                    'label' => __('Ver Grupos', 'flavor-chat-ia'),
+                    'label' => __('Ver Grupos', 'flavor-platform'),
                     'icon' => 'dashicons-networking',
                     'type' => 'page',
                 ],
                 'hacer_pedido' => [
-                    'label' => __('Hacer Pedido', 'flavor-chat-ia'),
+                    'label' => __('Hacer Pedido', 'flavor-platform'),
                     'icon' => 'dashicons-cart',
                     'type' => 'form',
                 ],
@@ -254,39 +254,39 @@ trait Flavor_Module_Frontend_Actions {
             // Servicios municipales
             'incidencias' => [
                 'reportar' => [
-                    'label' => __('Reportar Incidencia', 'flavor-chat-ia'),
+                    'label' => __('Reportar Incidencia', 'flavor-platform'),
                     'icon' => 'dashicons-warning',
                     'type' => 'form',
                     'fields' => ['tipo', 'ubicacion', 'descripcion', 'foto'],
                 ],
                 'mis_incidencias' => [
-                    'label' => __('Mis Incidencias', 'flavor-chat-ia'),
+                    'label' => __('Mis Incidencias', 'flavor-platform'),
                     'icon' => 'dashicons-list-view',
                     'type' => 'page',
                 ],
             ],
             'tramites' => [
                 'iniciar' => [
-                    'label' => __('Iniciar Trámite', 'flavor-chat-ia'),
+                    'label' => __('Iniciar Trámite', 'flavor-platform'),
                     'icon' => 'dashicons-media-document',
                     'type' => 'page',
                     'page' => 'tramites',
                 ],
                 'mis_tramites' => [
-                    'label' => __('Mis Trámites', 'flavor-chat-ia'),
+                    'label' => __('Mis Trámites', 'flavor-platform'),
                     'icon' => 'dashicons-portfolio',
                     'type' => 'page',
                 ],
             ],
             'participacion-ciudadana' => [
                 'votar' => [
-                    'label' => __('Votar', 'flavor-chat-ia'),
+                    'label' => __('Votar', 'flavor-platform'),
                     'icon' => 'dashicons-forms',
                     'type' => 'page',
                     'page' => 'votaciones',
                 ],
                 'proponer' => [
-                    'label' => __('Hacer Propuesta', 'flavor-chat-ia'),
+                    'label' => __('Hacer Propuesta', 'flavor-platform'),
                     'icon' => 'dashicons-lightbulb',
                     'type' => 'form',
                     'fields' => ['titulo', 'descripcion', 'categoria'],
@@ -294,17 +294,17 @@ trait Flavor_Module_Frontend_Actions {
             ],
             'presupuestos-participativos' => [
                 'ver_proyectos' => [
-                    'label' => __('Ver Proyectos', 'flavor-chat-ia'),
+                    'label' => __('Ver Proyectos', 'flavor-platform'),
                     'icon' => 'dashicons-chart-pie',
                     'type' => 'page',
                 ],
                 'votar' => [
-                    'label' => __('Votar Proyecto', 'flavor-chat-ia'),
+                    'label' => __('Votar Proyecto', 'flavor-platform'),
                     'icon' => 'dashicons-yes',
                     'type' => 'action',
                 ],
                 'proponer' => [
-                    'label' => __('Proponer Proyecto', 'flavor-chat-ia'),
+                    'label' => __('Proponer Proyecto', 'flavor-platform'),
                     'icon' => 'dashicons-plus-alt2',
                     'type' => 'form',
                 ],
@@ -312,48 +312,48 @@ trait Flavor_Module_Frontend_Actions {
             // Sostenibilidad
             'huertos-urbanos' => [
                 'solicitar_parcela' => [
-                    'label' => __('Solicitar Parcela', 'flavor-chat-ia'),
+                    'label' => __('Solicitar Parcela', 'flavor-platform'),
                     'icon' => 'dashicons-admin-site',
                     'type' => 'form',
                     'fields' => ['zona', 'tamano', 'experiencia'],
                 ],
                 'mi_huerto' => [
-                    'label' => __('Mi Huerto', 'flavor-chat-ia'),
+                    'label' => __('Mi Huerto', 'flavor-platform'),
                     'icon' => 'dashicons-carrot',
                     'type' => 'page',
                 ],
                 'registrar_actividad' => [
-                    'label' => __('Registrar Actividad', 'flavor-chat-ia'),
+                    'label' => __('Registrar Actividad', 'flavor-platform'),
                     'icon' => 'dashicons-edit',
                     'type' => 'form',
                 ],
             ],
             'reciclaje' => [
                 'registrar' => [
-                    'label' => __('Registrar Reciclaje', 'flavor-chat-ia'),
+                    'label' => __('Registrar Reciclaje', 'flavor-platform'),
                     'icon' => 'dashicons-image-rotate',
                     'type' => 'form',
                     'fields' => ['tipo', 'cantidad', 'punto_limpio'],
                 ],
                 'puntos_limpios' => [
-                    'label' => __('Puntos Limpios', 'flavor-chat-ia'),
+                    'label' => __('Puntos Limpios', 'flavor-platform'),
                     'icon' => 'dashicons-location',
                     'type' => 'page',
                 ],
                 'mis_stats' => [
-                    'label' => __('Mis Estadísticas', 'flavor-chat-ia'),
+                    'label' => __('Mis Estadísticas', 'flavor-platform'),
                     'icon' => 'dashicons-chart-bar',
                     'type' => 'page',
                 ],
             ],
             'compostaje' => [
                 'solicitar_compostador' => [
-                    'label' => __('Solicitar Compostador', 'flavor-chat-ia'),
+                    'label' => __('Solicitar Compostador', 'flavor-platform'),
                     'icon' => 'dashicons-carrot',
                     'type' => 'form',
                 ],
                 'registrar_aporte' => [
-                    'label' => __('Registrar Aporte', 'flavor-chat-ia'),
+                    'label' => __('Registrar Aporte', 'flavor-platform'),
                     'icon' => 'dashicons-plus',
                     'type' => 'form',
                 ],
@@ -361,26 +361,26 @@ trait Flavor_Module_Frontend_Actions {
             // Comunicación
             'chat-grupos' => [
                 'crear_grupo' => [
-                    'label' => __('Crear Grupo', 'flavor-chat-ia'),
+                    'label' => __('Crear Grupo', 'flavor-platform'),
                     'icon' => 'dashicons-groups',
                     'type' => 'form',
                     'fields' => ['nombre', 'descripcion', 'tipo'],
                 ],
                 'mis_grupos' => [
-                    'label' => __('Mis Grupos', 'flavor-chat-ia'),
+                    'label' => __('Mis Grupos', 'flavor-platform'),
                     'icon' => 'dashicons-admin-comments',
                     'type' => 'page',
                 ],
             ],
             'foros' => [
                 'nuevo_tema' => [
-                    'label' => __('Nuevo Tema', 'flavor-chat-ia'),
+                    'label' => __('Nuevo Tema', 'flavor-platform'),
                     'icon' => 'dashicons-edit',
                     'type' => 'form',
                     'fields' => ['titulo', 'contenido', 'categoria'],
                 ],
                 'ver_foros' => [
-                    'label' => __('Ver Foros', 'flavor-chat-ia'),
+                    'label' => __('Ver Foros', 'flavor-platform'),
                     'icon' => 'dashicons-format-chat',
                     'type' => 'page',
                 ],
@@ -388,36 +388,36 @@ trait Flavor_Module_Frontend_Actions {
             // Ayuda mutua
             'banco-tiempo' => [
                 'ofrecer_servicio' => [
-                    'label' => __('Ofrecer Servicio', 'flavor-chat-ia'),
+                    'label' => __('Ofrecer Servicio', 'flavor-platform'),
                     'icon' => 'dashicons-heart',
                     'type' => 'form',
                     'fields' => ['servicio', 'descripcion', 'horas'],
                 ],
                 'buscar_servicio' => [
-                    'label' => __('Buscar Servicio', 'flavor-chat-ia'),
+                    'label' => __('Buscar Servicio', 'flavor-platform'),
                     'icon' => 'dashicons-search',
                     'type' => 'page',
                 ],
                 'mi_saldo' => [
-                    'label' => __('Mi Saldo', 'flavor-chat-ia'),
+                    'label' => __('Mi Saldo', 'flavor-platform'),
                     'icon' => 'dashicons-clock',
                     'type' => 'page',
                 ],
             ],
             'ayuda-vecinal' => [
                 'pedir_ayuda' => [
-                    'label' => __('Pedir Ayuda', 'flavor-chat-ia'),
+                    'label' => __('Pedir Ayuda', 'flavor-platform'),
                     'icon' => 'dashicons-sos',
                     'type' => 'form',
                     'fields' => ['tipo', 'descripcion', 'urgencia'],
                 ],
                 'ofrecer_ayuda' => [
-                    'label' => __('Ofrecer Ayuda', 'flavor-chat-ia'),
+                    'label' => __('Ofrecer Ayuda', 'flavor-platform'),
                     'icon' => 'dashicons-buddicons-buddypress-logo',
                     'type' => 'form',
                 ],
                 'ver_solicitudes' => [
-                    'label' => __('Ver Solicitudes', 'flavor-chat-ia'),
+                    'label' => __('Ver Solicitudes', 'flavor-platform'),
                     'icon' => 'dashicons-list-view',
                     'type' => 'page',
                 ],
@@ -425,17 +425,17 @@ trait Flavor_Module_Frontend_Actions {
             // Usuario
             'fichaje-empleados' => [
                 'fichar_entrada' => [
-                    'label' => __('Fichar Entrada', 'flavor-chat-ia'),
+                    'label' => __('Fichar Entrada', 'flavor-platform'),
                     'icon' => 'dashicons-clock',
                     'type' => 'action',
                 ],
                 'fichar_salida' => [
-                    'label' => __('Fichar Salida', 'flavor-chat-ia'),
+                    'label' => __('Fichar Salida', 'flavor-platform'),
                     'icon' => 'dashicons-migrate',
                     'type' => 'action',
                 ],
                 'mis_fichajes' => [
-                    'label' => __('Mis Fichajes', 'flavor-chat-ia'),
+                    'label' => __('Mis Fichajes', 'flavor-platform'),
                     'icon' => 'dashicons-calendar-alt',
                     'type' => 'page',
                 ],
@@ -603,9 +603,9 @@ trait Flavor_Module_Frontend_Actions {
         ob_start();
         ?>
         <div class="flavor-login-required">
-            <p><?php _e('Debes iniciar sesión para realizar esta acción.', 'flavor-chat-ia'); ?></p>
+            <p><?php _e('Debes iniciar sesión para realizar esta acción.', 'flavor-platform'); ?></p>
             <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="flavor-button flavor-button--primary">
-                <?php _e('Iniciar Sesión', 'flavor-chat-ia'); ?>
+                <?php _e('Iniciar Sesión', 'flavor-platform'); ?>
             </a>
         </div>
         <?php
@@ -633,24 +633,24 @@ trait Flavor_Module_Frontend_Actions {
     public function ajax_ejecutar_accion() {
         // Verificar nonce
         if (!check_ajax_referer('flavor_module_action', 'nonce', false)) {
-            wp_send_json_error(__('Token inválido', 'flavor-chat-ia'));
+            wp_send_json_error(__('Token inválido', 'flavor-platform'));
         }
 
         $action_id = sanitize_key($_POST['action_id'] ?? '');
 
         if (empty($action_id)) {
-            wp_send_json_error(__('Acción no especificada', 'flavor-chat-ia'));
+            wp_send_json_error(__('Acción no especificada', 'flavor-platform'));
         }
 
         // Verificar que la acción existe
         $acciones = $this->get_frontend_actions();
         if (!isset($acciones[$action_id])) {
-            wp_send_json_error(__('Acción no válida', 'flavor-chat-ia'));
+            wp_send_json_error(__('Acción no válida', 'flavor-platform'));
         }
 
         // Verificar permisos
         if (!$this->user_can_action($acciones[$action_id])) {
-            wp_send_json_error(__('No tienes permisos para esta acción', 'flavor-chat-ia'));
+            wp_send_json_error(__('No tienes permisos para esta acción', 'flavor-platform'));
         }
 
         // Obtener parámetros
@@ -669,7 +669,7 @@ trait Flavor_Module_Frontend_Actions {
         if ($result['success']) {
             wp_send_json_success($result);
         } else {
-            wp_send_json_error($result['message'] ?? __('Error al procesar', 'flavor-chat-ia'));
+            wp_send_json_error($result['message'] ?? __('Error al procesar', 'flavor-platform'));
         }
     }
 
@@ -677,7 +677,7 @@ trait Flavor_Module_Frontend_Actions {
      * Handler AJAX para usuarios no autenticados
      */
     public function ajax_ejecutar_accion_no_auth() {
-        wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+        wp_send_json_error(__('Debes iniciar sesión', 'flavor-platform'));
     }
 
     /**
@@ -692,7 +692,7 @@ trait Flavor_Module_Frontend_Actions {
         // Implementación por defecto - los módulos deben sobrescribir
         return [
             'success' => false,
-            'message' => __('Acción no implementada', 'flavor-chat-ia'),
+            'message' => __('Acción no implementada', 'flavor-platform'),
         ];
     }
 
@@ -722,7 +722,7 @@ trait Flavor_Module_Frontend_Actions {
             'title' => $action['label'] ?? '',
             'description' => $action['description'] ?? '',
             'fields' => $field_configs,
-            'submit_text' => $action['submit_text'] ?? __('Enviar', 'flavor-chat-ia'),
+            'submit_text' => $action['submit_text'] ?? __('Enviar', 'flavor-platform'),
             'ajax' => true,
         ];
     }
@@ -734,113 +734,113 @@ trait Flavor_Module_Frontend_Actions {
         $campos_comunes = [
             'fecha' => [
                 'type' => 'date',
-                'label' => __('Fecha', 'flavor-chat-ia'),
+                'label' => __('Fecha', 'flavor-platform'),
                 'required' => true,
             ],
             'hora' => [
                 'type' => 'time',
-                'label' => __('Hora', 'flavor-chat-ia'),
+                'label' => __('Hora', 'flavor-platform'),
                 'required' => true,
             ],
             'hora_inicio' => [
                 'type' => 'time',
-                'label' => __('Hora inicio', 'flavor-chat-ia'),
+                'label' => __('Hora inicio', 'flavor-platform'),
                 'required' => true,
             ],
             'hora_fin' => [
                 'type' => 'time',
-                'label' => __('Hora fin', 'flavor-chat-ia'),
+                'label' => __('Hora fin', 'flavor-platform'),
                 'required' => true,
             ],
             'titulo' => [
                 'type' => 'text',
-                'label' => __('Título', 'flavor-chat-ia'),
+                'label' => __('Título', 'flavor-platform'),
                 'required' => true,
             ],
             'descripcion' => [
                 'type' => 'textarea',
-                'label' => __('Descripción', 'flavor-chat-ia'),
+                'label' => __('Descripción', 'flavor-platform'),
                 'required' => false,
             ],
             'precio' => [
                 'type' => 'number',
-                'label' => __('Precio', 'flavor-chat-ia'),
+                'label' => __('Precio', 'flavor-platform'),
                 'required' => false,
                 'min' => 0,
                 'step' => '0.01',
             ],
             'cantidad' => [
                 'type' => 'number',
-                'label' => __('Cantidad', 'flavor-chat-ia'),
+                'label' => __('Cantidad', 'flavor-platform'),
                 'required' => true,
                 'min' => 1,
             ],
             'ubicacion' => [
                 'type' => 'text',
-                'label' => __('Ubicación', 'flavor-chat-ia'),
+                'label' => __('Ubicación', 'flavor-platform'),
                 'required' => true,
             ],
             'origen' => [
                 'type' => 'text',
-                'label' => __('Origen', 'flavor-chat-ia'),
+                'label' => __('Origen', 'flavor-platform'),
                 'required' => true,
             ],
             'destino' => [
                 'type' => 'text',
-                'label' => __('Destino', 'flavor-chat-ia'),
+                'label' => __('Destino', 'flavor-platform'),
                 'required' => true,
             ],
             'plazas' => [
                 'type' => 'number',
-                'label' => __('Plazas disponibles', 'flavor-chat-ia'),
+                'label' => __('Plazas disponibles', 'flavor-platform'),
                 'required' => true,
                 'min' => 1,
                 'max' => 8,
             ],
             'matricula' => [
                 'type' => 'text',
-                'label' => __('Matrícula', 'flavor-chat-ia'),
+                'label' => __('Matrícula', 'flavor-platform'),
                 'required' => true,
             ],
             'motivo' => [
                 'type' => 'textarea',
-                'label' => __('Motivo', 'flavor-chat-ia'),
+                'label' => __('Motivo', 'flavor-platform'),
                 'required' => false,
             ],
             'tipo' => [
                 'type' => 'select',
-                'label' => __('Tipo', 'flavor-chat-ia'),
+                'label' => __('Tipo', 'flavor-platform'),
                 'required' => true,
                 'options' => [], // Se llena dinámicamente
             ],
             'categoria' => [
                 'type' => 'select',
-                'label' => __('Categoría', 'flavor-chat-ia'),
+                'label' => __('Categoría', 'flavor-platform'),
                 'required' => false,
                 'options' => [],
             ],
             'foto' => [
                 'type' => 'file',
-                'label' => __('Foto', 'flavor-chat-ia'),
+                'label' => __('Foto', 'flavor-platform'),
                 'accept' => 'image/*',
                 'required' => false,
             ],
             'imagenes' => [
                 'type' => 'file',
-                'label' => __('Imágenes', 'flavor-chat-ia'),
+                'label' => __('Imágenes', 'flavor-platform'),
                 'accept' => 'image/*',
                 'multiple' => true,
                 'required' => false,
             ],
             'urgencia' => [
                 'type' => 'select',
-                'label' => __('Urgencia', 'flavor-chat-ia'),
+                'label' => __('Urgencia', 'flavor-platform'),
                 'required' => true,
                 'options' => [
-                    'baja' => __('Baja', 'flavor-chat-ia'),
-                    'media' => __('Media', 'flavor-chat-ia'),
-                    'alta' => __('Alta', 'flavor-chat-ia'),
-                    'urgente' => __('Urgente', 'flavor-chat-ia'),
+                    'baja' => __('Baja', 'flavor-platform'),
+                    'media' => __('Media', 'flavor-platform'),
+                    'alta' => __('Alta', 'flavor-platform'),
+                    'urgente' => __('Urgente', 'flavor-platform'),
                 ],
             ],
         ];

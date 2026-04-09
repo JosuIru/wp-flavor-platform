@@ -114,7 +114,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Encuestas no están creadas. Activa el módulo para crearlas automáticamente.', 'flavor-chat-ia');
+            return __('Las tablas de Encuestas no están creadas. Activa el módulo para crearlas automáticamente.', 'flavor-platform');
         }
         return '';
     }
@@ -285,16 +285,16 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
             'userId'        => get_current_user_id(),
             'isLoggedIn'    => is_user_logged_in(),
             'strings'       => [
-                'confirmarEliminar'  => __('¿Eliminar esta encuesta?', 'flavor-chat-ia'),
-                'confirmarCerrar'    => __('¿Cerrar esta encuesta? No se podrán añadir más respuestas.', 'flavor-chat-ia'),
-                'enviando'           => __('Enviando...', 'flavor-chat-ia'),
-                'graciasRespuesta'   => __('¡Gracias por tu respuesta!', 'flavor-chat-ia'),
-                'error'              => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'campoRequerido'     => __('Este campo es obligatorio', 'flavor-chat-ia'),
-                'seleccionaOpcion'   => __('Selecciona una opción', 'flavor-chat-ia'),
-                'buscando'           => __('Buscando...', 'flavor-chat-ia'),
-                'sinResultados'      => __('No se han encontrado resultados', 'flavor-chat-ia'),
-                'contextoObligatorio'=> __('Debes seleccionar un destino para el contexto elegido', 'flavor-chat-ia'),
+                'confirmarEliminar'  => __('¿Eliminar esta encuesta?', 'flavor-platform'),
+                'confirmarCerrar'    => __('¿Cerrar esta encuesta? No se podrán añadir más respuestas.', 'flavor-platform'),
+                'enviando'           => __('Enviando...', 'flavor-platform'),
+                'graciasRespuesta'   => __('¡Gracias por tu respuesta!', 'flavor-platform'),
+                'error'              => __('Ha ocurrido un error', 'flavor-platform'),
+                'campoRequerido'     => __('Este campo es obligatorio', 'flavor-platform'),
+                'seleccionaOpcion'   => __('Selecciona una opción', 'flavor-platform'),
+                'buscando'           => __('Buscando...', 'flavor-platform'),
+                'sinResultados'      => __('No se han encontrado resultados', 'flavor-platform'),
+                'contextoObligatorio'=> __('Debes seleccionar un destino para el contexto elegido', 'flavor-platform'),
             ],
             'tiposCampo'    => self::TIPOS_CAMPO,
         ]);
@@ -355,12 +355,12 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id && empty($datos['autor_id'])) {
-            return new WP_Error('no_auth', __('Debes iniciar sesión para crear encuestas', 'flavor-chat-ia'));
+            return new WP_Error('no_auth', __('Debes iniciar sesión para crear encuestas', 'flavor-platform'));
         }
 
         // Validar datos mínimos
         if (empty($datos['titulo'])) {
-            return new WP_Error('titulo_vacio', __('El título es obligatorio', 'flavor-chat-ia'));
+            return new WP_Error('titulo_vacio', __('El título es obligatorio', 'flavor-platform'));
         }
 
         // Preparar datos
@@ -385,7 +385,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         $resultado = $wpdb->insert($tabla, $datos_encuesta);
 
         if ($resultado === false) {
-            return new WP_Error('db_error', __('Error al crear la encuesta', 'flavor-chat-ia'));
+            return new WP_Error('db_error', __('Error al crear la encuesta', 'flavor-platform'));
         }
 
         $encuesta_id = $wpdb->insert_id;
@@ -449,12 +449,12 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
 
         $encuesta = $this->obtener_encuesta($encuesta_id, false);
         if (!$encuesta) {
-            return new WP_Error('no_encontrada', __('Encuesta no encontrada', 'flavor-chat-ia'));
+            return new WP_Error('no_encontrada', __('Encuesta no encontrada', 'flavor-platform'));
         }
 
         // Verificar permisos
         if (!$this->puede_editar_encuesta($encuesta_id)) {
-            return new WP_Error('sin_permisos', __('No tienes permisos para editar esta encuesta', 'flavor-chat-ia'));
+            return new WP_Error('sin_permisos', __('No tienes permisos para editar esta encuesta', 'flavor-platform'));
         }
 
         $datos_actualizacion = [];
@@ -491,7 +491,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         );
 
         if ($resultado === false) {
-            return new WP_Error('db_error', __('Error al actualizar la encuesta', 'flavor-chat-ia'));
+            return new WP_Error('db_error', __('Error al actualizar la encuesta', 'flavor-platform'));
         }
 
         do_action('flavor_encuesta_actualizada', $encuesta_id, $datos_actualizacion);
@@ -509,7 +509,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         if (!$this->puede_editar_encuesta($encuesta_id)) {
-            return new WP_Error('sin_permisos', __('No tienes permisos para eliminar esta encuesta', 'flavor-chat-ia'));
+            return new WP_Error('sin_permisos', __('No tienes permisos para eliminar esta encuesta', 'flavor-platform'));
         }
 
         $prefix = $wpdb->prefix . 'flavor_';
@@ -549,11 +549,11 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         if (empty($datos['encuesta_id'])) {
-            return new WP_Error('sin_encuesta', __('ID de encuesta requerido', 'flavor-chat-ia'));
+            return new WP_Error('sin_encuesta', __('ID de encuesta requerido', 'flavor-platform'));
         }
 
         if (empty($datos['etiqueta'])) {
-            return new WP_Error('sin_etiqueta', __('La pregunta es obligatoria', 'flavor-chat-ia'));
+            return new WP_Error('sin_etiqueta', __('La pregunta es obligatoria', 'flavor-platform'));
         }
 
         $datos_campo = [
@@ -573,7 +573,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         $resultado = $wpdb->insert($tabla, $datos_campo);
 
         if ($resultado === false) {
-            return new WP_Error('db_error', __('Error al crear el campo', 'flavor-chat-ia'));
+            return new WP_Error('db_error', __('Error al crear el campo', 'flavor-platform'));
         }
 
         return $wpdb->insert_id;
@@ -679,17 +679,17 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
 
         $encuesta = $this->obtener_encuesta($encuesta_id);
         if (!$encuesta) {
-            return new WP_Error('no_encontrada', __('Encuesta no encontrada', 'flavor-chat-ia'));
+            return new WP_Error('no_encontrada', __('Encuesta no encontrada', 'flavor-platform'));
         }
 
         // Verificar que la encuesta está activa
         if ($encuesta->estado !== 'activa') {
-            return new WP_Error('encuesta_cerrada', __('Esta encuesta ya no acepta respuestas', 'flavor-chat-ia'));
+            return new WP_Error('encuesta_cerrada', __('Esta encuesta ya no acepta respuestas', 'flavor-platform'));
         }
 
         // Verificar fecha de cierre
         if ($encuesta->fecha_cierre && strtotime($encuesta->fecha_cierre) < time()) {
-            return new WP_Error('encuesta_expirada', __('Esta encuesta ha expirado', 'flavor-chat-ia'));
+            return new WP_Error('encuesta_expirada', __('Esta encuesta ha expirado', 'flavor-platform'));
         }
 
         $usuario_id = get_current_user_id();
@@ -699,7 +699,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         if (!$encuesta->es_anonima || !$encuesta->permite_multiples) {
             $ya_participo = $this->usuario_ya_participo($encuesta_id, $usuario_id, $sesion_id);
             if ($ya_participo) {
-                return new WP_Error('ya_participo', __('Ya has respondido a esta encuesta', 'flavor-chat-ia'));
+                return new WP_Error('ya_participo', __('Ya has respondido a esta encuesta', 'flavor-platform'));
             }
         }
 
@@ -708,7 +708,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
             if ($campo->es_requerido && empty($respuestas[$campo->id])) {
                 return new WP_Error(
                     'campo_requerido',
-                    sprintf(__('El campo "%s" es obligatorio', 'flavor-chat-ia'), $campo->etiqueta)
+                    sprintf(__('El campo "%s" es obligatorio', 'flavor-platform'), $campo->etiqueta)
                 );
             }
         }
@@ -1184,8 +1184,8 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
 
         if (empty($encuestas)) {
             return '<div class="flavor-encuestas-lista__empty-state">' .
-                '<p class="flavor-encuestas-lista__empty">' . esc_html__('No has creado encuestas todavía.', 'flavor-chat-ia') . '</p>' .
-                '<p><a class="flavor-encuestas-lista__empty-cta" href="' . esc_url(home_url('/mi-portal/encuestas/crear/')) . '">' . esc_html__('Crear encuesta', 'flavor-chat-ia') . '</a></p>' .
+                '<p class="flavor-encuestas-lista__empty">' . esc_html__('No has creado encuestas todavía.', 'flavor-platform') . '</p>' .
+                '<p><a class="flavor-encuestas-lista__empty-cta" href="' . esc_url(home_url('/mi-portal/encuestas/crear/')) . '">' . esc_html__('Crear encuesta', 'flavor-platform') . '</a></p>' .
                 '</div>';
         }
 
@@ -1198,7 +1198,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                         <h4 class="flavor-encuestas-lista__titulo"><?php echo esc_html($encuesta->titulo); ?></h4>
                         <div class="flavor-encuestas-lista__meta">
                             <span><?php echo esc_html(ucfirst((string) $encuesta->estado)); ?></span>
-                            <span><?php echo esc_html((int) $encuesta->total_participantes); ?> <?php esc_html_e('participantes', 'flavor-chat-ia'); ?></span>
+                            <span><?php echo esc_html((int) $encuesta->total_participantes); ?> <?php esc_html_e('participantes', 'flavor-platform'); ?></span>
                         </div>
                     </a>
                 </div>
@@ -1272,8 +1272,8 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
 
         if (empty($encuestas)) {
             return '<div class="flavor-encuestas-lista__empty-state">' .
-                '<p class="flavor-encuestas-lista__empty">' . esc_html__('No hay resultados disponibles todavía.', 'flavor-chat-ia') . '</p>' .
-                '<p><a class="flavor-encuestas-lista__empty-cta" href="' . esc_url(home_url('/mi-portal/encuestas/crear/')) . '">' . esc_html__('Crear encuesta', 'flavor-chat-ia') . '</a></p>' .
+                '<p class="flavor-encuestas-lista__empty">' . esc_html__('No hay resultados disponibles todavía.', 'flavor-platform') . '</p>' .
+                '<p><a class="flavor-encuestas-lista__empty-cta" href="' . esc_url(home_url('/mi-portal/encuestas/crear/')) . '">' . esc_html__('Crear encuesta', 'flavor-platform') . '</a></p>' .
                 '</div>';
         }
 
@@ -1285,8 +1285,8 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                     <a class="flavor-encuestas-lista__link" href="<?php echo esc_url(home_url('/mi-portal/encuestas/' . absint($encuesta->id) . '/')); ?>">
                         <h4 class="flavor-encuestas-lista__titulo"><?php echo esc_html($encuesta->titulo); ?></h4>
                         <div class="flavor-encuestas-lista__meta">
-                            <span><?php echo esc_html((int) $encuesta->total_respuestas); ?> <?php esc_html_e('respuestas', 'flavor-chat-ia'); ?></span>
-                            <span><?php echo esc_html((int) $encuesta->total_participantes); ?> <?php esc_html_e('participantes', 'flavor-chat-ia'); ?></span>
+                            <span><?php echo esc_html((int) $encuesta->total_respuestas); ?> <?php esc_html_e('respuestas', 'flavor-platform'); ?></span>
+                            <span><?php echo esc_html((int) $encuesta->total_participantes); ?> <?php esc_html_e('participantes', 'flavor-platform'); ?></span>
                         </div>
                     </a>
                 </div>
@@ -1326,7 +1326,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_encuestas_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
         }
 
         $datos = [
@@ -1351,7 +1351,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
 
         wp_send_json_success([
             'id'      => $resultado,
-            'message' => __('Encuesta creada correctamente', 'flavor-chat-ia'),
+            'message' => __('Encuesta creada correctamente', 'flavor-platform'),
         ]);
     }
 
@@ -1365,7 +1365,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         $respuestas = $_POST['respuestas'] ?? [];
 
         if (!$encuesta_id || empty($respuestas)) {
-            wp_send_json_error(['message' => __('Datos incompletos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos incompletos', 'flavor-platform')]);
         }
 
         $resultado = $this->registrar_respuestas($encuesta_id, $respuestas);
@@ -1381,7 +1381,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         }
 
         wp_send_json_success([
-            'message'    => __('¡Gracias por tu respuesta!', 'flavor-chat-ia'),
+            'message'    => __('¡Gracias por tu respuesta!', 'flavor-platform'),
             'resultados' => $resultados,
         ]);
     }
@@ -1393,11 +1393,11 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         $encuesta_id = absint($_GET['encuesta_id'] ?? $_POST['encuesta_id'] ?? 0);
 
         if (!$encuesta_id) {
-            wp_send_json_error(['message' => __('ID de encuesta requerido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID de encuesta requerido', 'flavor-platform')]);
         }
 
         if (!$this->puede_ver_resultados($encuesta_id)) {
-            wp_send_json_error(['message' => __('No tienes permiso para ver los resultados', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes permiso para ver los resultados', 'flavor-platform')]);
         }
 
         $resultados = $this->obtener_resultados($encuesta_id);
@@ -1414,7 +1414,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         $encuesta_id = absint($_POST['encuesta_id'] ?? 0);
 
         if (!$this->puede_editar_encuesta($encuesta_id)) {
-            wp_send_json_error(['message' => __('No tienes permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes permisos', 'flavor-platform')]);
         }
 
         $resultado = $this->cerrar_encuesta($encuesta_id);
@@ -1423,7 +1423,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
             wp_send_json_error(['message' => $resultado->get_error_message()]);
         }
 
-        wp_send_json_success(['message' => __('Encuesta cerrada', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Encuesta cerrada', 'flavor-platform')]);
     }
 
     /**
@@ -1433,7 +1433,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_encuestas_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')], 401);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')], 401);
         }
 
         $contexto_tipo = sanitize_key((string) ($_POST['contexto_tipo'] ?? $_GET['contexto_tipo'] ?? ''));
@@ -1513,7 +1513,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                     $params[] = $limit;
 
                     $rows = $wpdb->get_results($this->prepare_query($sql, $params));
-                    $items = $this->mapear_items_desde_filas($rows, 'nombre', 'descripcion', __('Grupo de chat', 'flavor-chat-ia'));
+                    $items = $this->mapear_items_desde_filas($rows, 'nombre', 'descripcion', __('Grupo de chat', 'flavor-platform'));
                 }
                 break;
 
@@ -1539,7 +1539,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                     $params[] = $limit;
 
                     $rows = $wpdb->get_results($this->prepare_query($sql, $params));
-                    $items = $this->mapear_items_desde_filas($rows, 'nombre', 'descripcion', __('Foro', 'flavor-chat-ia'));
+                    $items = $this->mapear_items_desde_filas($rows, 'nombre', 'descripcion', __('Foro', 'flavor-platform'));
                 }
                 break;
 
@@ -1586,7 +1586,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                     $params[] = $limit;
 
                     $rows = $wpdb->get_results($this->prepare_query($sql, $params));
-                    $items = $this->mapear_items_desde_filas($rows, 'nombre', 'descripcion', __('Comunidad', 'flavor-chat-ia'));
+                    $items = $this->mapear_items_desde_filas($rows, 'nombre', 'descripcion', __('Comunidad', 'flavor-platform'));
                 }
                 break;
 
@@ -1631,7 +1631,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                     $rows = $wpdb->get_results($this->prepare_query($sql, $params));
 
                     foreach ((array) $rows as $row) {
-                        $subtitle = __('Evento', 'flavor-chat-ia');
+                        $subtitle = __('Evento', 'flavor-platform');
                         if (!empty($row->fecha_inicio)) {
                             $subtitle .= ' • ' . mysql2date(get_option('date_format'), $row->fecha_inicio);
                         }
@@ -1639,7 +1639,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                             'id'       => (int) $row->id,
                             'label'    => wp_strip_all_tags((string) $row->titulo),
                             'subtitle' => $subtitle,
-                            'type_label' => __('Evento', 'flavor-chat-ia'),
+                            'type_label' => __('Evento', 'flavor-platform'),
                             'status_label' => !empty($row->estado) ? $this->formatear_estado_contexto($row->estado) : '',
                         ];
                     }
@@ -1685,7 +1685,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                     $params[] = $limit;
 
                     $rows = $wpdb->get_results($this->prepare_query($sql, $params));
-                    $items = $this->mapear_items_desde_filas($rows, 'titulo', 'descripcion', __('Curso', 'flavor-chat-ia'));
+                    $items = $this->mapear_items_desde_filas($rows, 'titulo', 'descripcion', __('Curso', 'flavor-platform'));
                 }
                 break;
 
@@ -1719,9 +1719,9 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                     foreach ((array) $rows as $row) {
                         $items[] = [
                             'id'       => (int) $row->id,
-                            'label'    => sprintf(__('Publicación #%d', 'flavor-chat-ia'), (int) $row->id),
+                            'label'    => sprintf(__('Publicación #%d', 'flavor-platform'), (int) $row->id),
                             'subtitle' => wp_trim_words(wp_strip_all_tags((string) $row->contenido), 12, '…'),
-                            'type_label' => __('Red social', 'flavor-chat-ia'),
+                            'type_label' => __('Red social', 'flavor-platform'),
                             'status_label' => !empty($row->estado) ? $this->formatear_estado_contexto($row->estado) : '',
                         ];
                     }
@@ -1938,28 +1938,28 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
             'paginas'    => [
                 [
                     'slug'     => 'encuestas-dashboard',
-                    'titulo'   => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo'   => __('Dashboard', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_dashboard'],
                 ],
                 [
                     'slug'     => 'encuestas-listado',
-                    'titulo'   => __('Encuestas', 'flavor-chat-ia'),
+                    'titulo'   => __('Encuestas', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_listado'],
                     'badge'    => [$this, 'contar_encuestas_activas'],
                 ],
                 [
                     'slug'     => 'encuestas-crear',
-                    'titulo'   => __('Crear Encuesta', 'flavor-chat-ia'),
+                    'titulo'   => __('Crear Encuesta', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_crear'],
                 ],
                 [
                     'slug'     => 'encuestas-resultados',
-                    'titulo'   => __('Resultados', 'flavor-chat-ia'),
+                    'titulo'   => __('Resultados', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_resultados'],
                 ],
                 [
                     'slug'     => 'encuestas-config',
-                    'titulo'   => __('Configuración', 'flavor-chat-ia'),
+                    'titulo'   => __('Configuración', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_config'],
                 ],
             ],
@@ -1984,8 +1984,8 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         // Páginas ocultas (sin menú visible en el sidebar de WordPress)
         add_submenu_page(
             null,
-            __('Dashboard Encuestas', 'flavor-chat-ia'),
-            __('Dashboard', 'flavor-chat-ia'),
+            __('Dashboard Encuestas', 'flavor-platform'),
+            __('Dashboard', 'flavor-platform'),
             $capability,
             'encuestas-dashboard',
             [$this, 'render_admin_dashboard']
@@ -1993,8 +1993,8 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
 
         add_submenu_page(
             null,
-            __('Listado de Encuestas', 'flavor-chat-ia'),
-            __('Encuestas', 'flavor-chat-ia'),
+            __('Listado de Encuestas', 'flavor-platform'),
+            __('Encuestas', 'flavor-platform'),
             $capability,
             'encuestas-listado',
             [$this, 'render_admin_listado']
@@ -2002,8 +2002,8 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
 
         add_submenu_page(
             null,
-            __('Crear Encuesta', 'flavor-chat-ia'),
-            __('Crear', 'flavor-chat-ia'),
+            __('Crear Encuesta', 'flavor-platform'),
+            __('Crear', 'flavor-platform'),
             $capability,
             'encuestas-crear',
             [$this, 'render_admin_crear']
@@ -2011,8 +2011,8 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
 
         add_submenu_page(
             null,
-            __('Resultados de Encuestas', 'flavor-chat-ia'),
-            __('Resultados', 'flavor-chat-ia'),
+            __('Resultados de Encuestas', 'flavor-platform'),
+            __('Resultados', 'flavor-platform'),
             $capability,
             'encuestas-resultados',
             [$this, 'render_admin_resultados']
@@ -2020,8 +2020,8 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
 
         add_submenu_page(
             null,
-            __('Configuración de Encuestas', 'flavor-chat-ia'),
-            __('Configuración', 'flavor-chat-ia'),
+            __('Configuración de Encuestas', 'flavor-platform'),
+            __('Configuración', 'flavor-platform'),
             $capability,
             'encuestas-config',
             [$this, 'render_admin_config']
@@ -2074,25 +2074,25 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
             [
                 'icon'  => 'dashicons-forms',
                 'valor' => $total_encuestas,
-                'label' => __('Total Encuestas', 'flavor-chat-ia'),
+                'label' => __('Total Encuestas', 'flavor-platform'),
                 'color' => 'purple',
             ],
             [
                 'icon'  => 'dashicons-yes-alt',
                 'valor' => $encuestas_activas,
-                'label' => __('Activas', 'flavor-chat-ia'),
+                'label' => __('Activas', 'flavor-platform'),
                 'color' => 'green',
             ],
             [
                 'icon'  => 'dashicons-chart-bar',
                 'valor' => $total_respuestas,
-                'label' => __('Respuestas', 'flavor-chat-ia'),
+                'label' => __('Respuestas', 'flavor-platform'),
                 'color' => 'blue',
             ],
             [
                 'icon'  => 'dashicons-groups',
                 'valor' => $total_participantes,
-                'label' => __('Participantes', 'flavor-chat-ia'),
+                'label' => __('Participantes', 'flavor-platform'),
                 'color' => 'orange',
             ],
         ];
@@ -2106,7 +2106,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         $tabla_encuestas = $wpdb->prefix . 'flavor_encuestas';
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_encuestas)) {
-            echo '<p>' . __('Módulo no inicializado.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('Módulo no inicializado.', 'flavor-platform') . '</p>';
             return;
         }
 
@@ -2114,12 +2114,12 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         $ultima_encuesta = $wpdb->get_row("SELECT titulo, total_participantes FROM $tabla_encuestas ORDER BY fecha_creacion DESC LIMIT 1");
 
         echo '<div class="flavor-encuestas-widget">';
-        echo '<p><strong>' . $encuestas_activas . '</strong> ' . __('encuestas activas', 'flavor-chat-ia') . '</p>';
+        echo '<p><strong>' . $encuestas_activas . '</strong> ' . __('encuestas activas', 'flavor-platform') . '</p>';
 
         if ($ultima_encuesta) {
             echo '<p class="description">';
-            echo __('Última:', 'flavor-chat-ia') . ' ' . esc_html($ultima_encuesta->titulo);
-            echo ' (' . $ultima_encuesta->total_participantes . ' ' . __('participantes', 'flavor-chat-ia') . ')';
+            echo __('Última:', 'flavor-platform') . ' ' . esc_html($ultima_encuesta->titulo);
+            echo ' (' . $ultima_encuesta->total_participantes . ' ' . __('participantes', 'flavor-platform') . ')';
             echo '</p>';
         }
 
@@ -2141,8 +2141,8 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
 
         // Verificar si la tabla existe
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_encuestas)) {
-            $this->render_page_header(__('Dashboard de Encuestas', 'flavor-chat-ia'));
-            echo '<div class="notice notice-warning"><p>' . __('Las tablas del módulo no están creadas. Por favor, desactiva y reactiva el módulo.', 'flavor-chat-ia') . '</p></div>';
+            $this->render_page_header(__('Dashboard de Encuestas', 'flavor-platform'));
+            echo '<div class="notice notice-warning"><p>' . __('Las tablas del módulo no están creadas. Por favor, desactiva y reactiva el módulo.', 'flavor-platform') . '</p></div>';
             return;
         }
 
@@ -2179,15 +2179,15 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         );
 
         $this->render_page_header(
-            __('Dashboard de Encuestas', 'flavor-chat-ia'),
+            __('Dashboard de Encuestas', 'flavor-platform'),
             [
                 [
-                    'label' => __('Nueva Encuesta', 'flavor-chat-ia'),
+                    'label' => __('Nueva Encuesta', 'flavor-platform'),
                     'url'   => admin_url('admin.php?page=encuestas-crear'),
                     'class' => 'button-primary',
                 ],
                 [
-                    'label' => __('Ver Todas', 'flavor-chat-ia'),
+                    'label' => __('Ver Todas', 'flavor-platform'),
                     'url'   => admin_url('admin.php?page=encuestas-listado'),
                     'class' => '',
                 ],
@@ -2231,28 +2231,28 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                     <span class="dashicons dashicons-forms"></span>
                     <div class="flavor-stat-content">
                         <span class="stat-value"><?php echo esc_html($total_encuestas); ?></span>
-                        <span class="stat-label"><?php _e('Total Encuestas', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('Total Encuestas', 'flavor-platform'); ?></span>
                     </div>
                 </div>
                 <div class="flavor-stat-card green">
                     <span class="dashicons dashicons-yes-alt"></span>
                     <div class="flavor-stat-content">
                         <span class="stat-value"><?php echo esc_html($encuestas_activas); ?></span>
-                        <span class="stat-label"><?php _e('Activas', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('Activas', 'flavor-platform'); ?></span>
                     </div>
                 </div>
                 <div class="flavor-stat-card blue">
                     <span class="dashicons dashicons-chart-bar"></span>
                     <div class="flavor-stat-content">
                         <span class="stat-value"><?php echo esc_html($total_respuestas); ?></span>
-                        <span class="stat-label"><?php _e('Respuestas Totales', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('Respuestas Totales', 'flavor-platform'); ?></span>
                     </div>
                 </div>
                 <div class="flavor-stat-card orange">
                     <span class="dashicons dashicons-groups"></span>
                     <div class="flavor-stat-content">
                         <span class="stat-value"><?php echo esc_html($total_participantes); ?></span>
-                        <span class="stat-label"><?php _e('Participantes', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('Participantes', 'flavor-platform'); ?></span>
                     </div>
                 </div>
             </div>
@@ -2263,10 +2263,10 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                 <div class="flavor-dashboard-card">
                     <h3>
                         <span class="dashicons dashicons-clock"></span>
-                        <?php _e('Encuestas Recientes', 'flavor-chat-ia'); ?>
+                        <?php _e('Encuestas Recientes', 'flavor-platform'); ?>
                     </h3>
                     <?php if (empty($encuestas_recientes)): ?>
-                        <p class="description"><?php _e('No hay encuestas creadas aún.', 'flavor-chat-ia'); ?></p>
+                        <p class="description"><?php _e('No hay encuestas creadas aún.', 'flavor-platform'); ?></p>
                     <?php else: ?>
                         <ul class="flavor-encuesta-list">
                             <?php foreach ($encuestas_recientes as $encuesta): ?>
@@ -2277,7 +2277,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                                         </a>
                                         <div class="flavor-encuesta-meta">
                                             <?php echo esc_html(ucfirst($encuesta->tipo)); ?> &bull;
-                                            <?php echo esc_html(human_time_diff(strtotime($encuesta->fecha_creacion), current_time('timestamp'))); ?> <?php _e('atrás', 'flavor-chat-ia'); ?>
+                                            <?php echo esc_html(human_time_diff(strtotime($encuesta->fecha_creacion), current_time('timestamp'))); ?> <?php _e('atrás', 'flavor-platform'); ?>
                                         </div>
                                     </div>
                                     <span class="flavor-estado flavor-estado-<?php echo esc_attr($encuesta->estado); ?>">
@@ -2293,10 +2293,10 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                 <div class="flavor-dashboard-card">
                     <h3>
                         <span class="dashicons dashicons-star-filled"></span>
-                        <?php _e('Más Populares', 'flavor-chat-ia'); ?>
+                        <?php _e('Más Populares', 'flavor-platform'); ?>
                     </h3>
                     <?php if (empty($encuestas_populares)): ?>
-                        <p class="description"><?php _e('Aún no hay encuestas con participantes.', 'flavor-chat-ia'); ?></p>
+                        <p class="description"><?php _e('Aún no hay encuestas con participantes.', 'flavor-platform'); ?></p>
                     <?php else: ?>
                         <ul class="flavor-encuesta-list">
                             <?php foreach ($encuestas_populares as $encuesta): ?>
@@ -2306,8 +2306,8 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                                             <?php echo esc_html($encuesta->titulo); ?>
                                         </a>
                                         <div class="flavor-encuesta-meta">
-                                            <?php echo $encuesta->total_participantes; ?> <?php _e('participantes', 'flavor-chat-ia'); ?> &bull;
-                                            <?php echo $encuesta->total_respuestas; ?> <?php _e('respuestas', 'flavor-chat-ia'); ?>
+                                            <?php echo $encuesta->total_participantes; ?> <?php _e('participantes', 'flavor-platform'); ?> &bull;
+                                            <?php echo $encuesta->total_respuestas; ?> <?php _e('respuestas', 'flavor-platform'); ?>
                                         </div>
                                     </div>
                                     <span class="flavor-estado flavor-estado-<?php echo esc_attr($encuesta->estado); ?>">
@@ -2324,17 +2324,17 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
             <div class="flavor-dashboard-card" style="margin-top: 20px;">
                 <h3>
                     <span class="dashicons dashicons-chart-pie"></span>
-                    <?php _e('Distribución por Estado', 'flavor-chat-ia'); ?>
+                    <?php _e('Distribución por Estado', 'flavor-platform'); ?>
                 </h3>
                 <div style="display: flex; gap: 30px; flex-wrap: wrap;">
                     <div>
-                        <span class="flavor-estado flavor-estado-activa" style="font-size: 14px;"><?php echo $encuestas_activas; ?> <?php _e('Activas', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-estado flavor-estado-activa" style="font-size: 14px;"><?php echo $encuestas_activas; ?> <?php _e('Activas', 'flavor-platform'); ?></span>
                     </div>
                     <div>
-                        <span class="flavor-estado flavor-estado-borrador" style="font-size: 14px;"><?php echo $encuestas_borradores; ?> <?php _e('Borradores', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-estado flavor-estado-borrador" style="font-size: 14px;"><?php echo $encuestas_borradores; ?> <?php _e('Borradores', 'flavor-platform'); ?></span>
                     </div>
                     <div>
-                        <span class="flavor-estado flavor-estado-cerrada" style="font-size: 14px;"><?php echo $encuestas_cerradas; ?> <?php _e('Cerradas', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-estado flavor-estado-cerrada" style="font-size: 14px;"><?php echo $encuestas_cerradas; ?> <?php _e('Cerradas', 'flavor-platform'); ?></span>
                     </div>
                 </div>
             </div>
@@ -2356,18 +2356,18 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         // Eliminar encuesta
         if ($action === 'eliminar' && $encuesta_id && wp_verify_nonce($_GET['_wpnonce'] ?? '', 'eliminar_encuesta_' . $encuesta_id)) {
             $this->eliminar_encuesta($encuesta_id);
-            echo '<div class="notice notice-success"><p>' . __('Encuesta eliminada correctamente.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-success"><p>' . __('Encuesta eliminada correctamente.', 'flavor-platform') . '</p></div>';
         }
 
         // Cambiar estado
         if ($action === 'activar' && $encuesta_id && wp_verify_nonce($_GET['_wpnonce'] ?? '', 'activar_encuesta_' . $encuesta_id)) {
             $this->actualizar_encuesta($encuesta_id, ['estado' => 'activa']);
-            echo '<div class="notice notice-success"><p>' . __('Encuesta activada.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-success"><p>' . __('Encuesta activada.', 'flavor-platform') . '</p></div>';
         }
 
         if ($action === 'cerrar' && $encuesta_id && wp_verify_nonce($_GET['_wpnonce'] ?? '', 'cerrar_encuesta_' . $encuesta_id)) {
             $this->cerrar_encuesta($encuesta_id);
-            echo '<div class="notice notice-success"><p>' . __('Encuesta cerrada.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-success"><p>' . __('Encuesta cerrada.', 'flavor-platform') . '</p></div>';
         }
 
         // Filtros
@@ -2375,10 +2375,10 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         $busqueda = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
 
         $this->render_page_header(
-            __('Gestión de Encuestas', 'flavor-chat-ia'),
+            __('Gestión de Encuestas', 'flavor-platform'),
             [
                 [
-                    'label' => __('Nueva Encuesta', 'flavor-chat-ia'),
+                    'label' => __('Nueva Encuesta', 'flavor-platform'),
                     'url'   => admin_url('admin.php?page=encuestas-crear'),
                     'class' => 'button-primary',
                 ],
@@ -2387,10 +2387,10 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
 
         // Tabs de filtro
         $this->render_page_tabs([
-            ['slug' => 'todas', 'label' => __('Todas', 'flavor-chat-ia')],
-            ['slug' => 'activas', 'label' => __('Activas', 'flavor-chat-ia'), 'badge' => $this->contar_encuestas_activas()],
-            ['slug' => 'borradores', 'label' => __('Borradores', 'flavor-chat-ia')],
-            ['slug' => 'cerradas', 'label' => __('Cerradas', 'flavor-chat-ia')],
+            ['slug' => 'todas', 'label' => __('Todas', 'flavor-platform')],
+            ['slug' => 'activas', 'label' => __('Activas', 'flavor-platform'), 'badge' => $this->contar_encuestas_activas()],
+            ['slug' => 'borradores', 'label' => __('Borradores', 'flavor-platform')],
+            ['slug' => 'cerradas', 'label' => __('Cerradas', 'flavor-platform')],
         ], $tab_actual);
 
         // Construir query
@@ -2433,28 +2433,28 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                 <input type="hidden" name="page" value="encuestas-listado">
                 <input type="hidden" name="tab" value="<?php echo esc_attr($tab_actual); ?>">
                 <p class="search-box">
-                    <input type="search" name="s" value="<?php echo esc_attr($busqueda); ?>" placeholder="<?php _e('Buscar encuestas...', 'flavor-chat-ia'); ?>">
-                    <input type="submit" class="button" value="<?php _e('Buscar', 'flavor-chat-ia'); ?>">
+                    <input type="search" name="s" value="<?php echo esc_attr($busqueda); ?>" placeholder="<?php _e('Buscar encuestas...', 'flavor-platform'); ?>">
+                    <input type="submit" class="button" value="<?php _e('Buscar', 'flavor-platform'); ?>">
                 </p>
             </form>
 
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th style="width: 50px;"><?php _e('ID', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Título', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 100px;"><?php _e('Tipo', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 100px;"><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 120px;"><?php _e('Respuestas', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 120px;"><?php _e('Participantes', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 150px;"><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 180px;"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 50px;"><?php _e('ID', 'flavor-platform'); ?></th>
+                        <th><?php _e('Título', 'flavor-platform'); ?></th>
+                        <th style="width: 100px;"><?php _e('Tipo', 'flavor-platform'); ?></th>
+                        <th style="width: 100px;"><?php _e('Estado', 'flavor-platform'); ?></th>
+                        <th style="width: 120px;"><?php _e('Respuestas', 'flavor-platform'); ?></th>
+                        <th style="width: 120px;"><?php _e('Participantes', 'flavor-platform'); ?></th>
+                        <th style="width: 150px;"><?php _e('Fecha', 'flavor-platform'); ?></th>
+                        <th style="width: 180px;"><?php _e('Acciones', 'flavor-platform'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($encuestas)): ?>
                         <tr>
-                            <td colspan="8"><?php _e('No hay encuestas que mostrar.', 'flavor-chat-ia'); ?></td>
+                            <td colspan="8"><?php _e('No hay encuestas que mostrar.', 'flavor-platform'); ?></td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($encuestas as $encuesta): ?>
@@ -2482,22 +2482,22 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                                     <?php echo esc_html(date_i18n(get_option('date_format'), strtotime($encuesta->fecha_creacion))); ?>
                                 </td>
                                 <td>
-                                    <a href="<?php echo admin_url('admin.php?page=encuestas-resultados&id=' . $encuesta->id); ?>" class="button button-small" title="<?php _e('Ver resultados', 'flavor-chat-ia'); ?>">
+                                    <a href="<?php echo admin_url('admin.php?page=encuestas-resultados&id=' . $encuesta->id); ?>" class="button button-small" title="<?php _e('Ver resultados', 'flavor-platform'); ?>">
                                         <span class="dashicons dashicons-chart-bar" style="vertical-align: middle;"></span>
                                     </a>
-                                    <a href="<?php echo admin_url('admin.php?page=encuestas-crear&id=' . $encuesta->id); ?>" class="button button-small" title="<?php _e('Editar', 'flavor-chat-ia'); ?>">
+                                    <a href="<?php echo admin_url('admin.php?page=encuestas-crear&id=' . $encuesta->id); ?>" class="button button-small" title="<?php _e('Editar', 'flavor-platform'); ?>">
                                         <span class="dashicons dashicons-edit" style="vertical-align: middle;"></span>
                                     </a>
                                     <?php if ($encuesta->estado === 'borrador'): ?>
-                                        <a href="<?php echo wp_nonce_url(admin_url('admin.php?page=encuestas-listado&action=activar&id=' . $encuesta->id), 'activar_encuesta_' . $encuesta->id); ?>" class="button button-small button-primary" title="<?php _e('Activar', 'flavor-chat-ia'); ?>">
+                                        <a href="<?php echo wp_nonce_url(admin_url('admin.php?page=encuestas-listado&action=activar&id=' . $encuesta->id), 'activar_encuesta_' . $encuesta->id); ?>" class="button button-small button-primary" title="<?php _e('Activar', 'flavor-platform'); ?>">
                                             <span class="dashicons dashicons-yes" style="vertical-align: middle;"></span>
                                         </a>
                                     <?php elseif ($encuesta->estado === 'activa'): ?>
-                                        <a href="<?php echo wp_nonce_url(admin_url('admin.php?page=encuestas-listado&action=cerrar&id=' . $encuesta->id), 'cerrar_encuesta_' . $encuesta->id); ?>" class="button button-small" title="<?php _e('Cerrar', 'flavor-chat-ia'); ?>">
+                                        <a href="<?php echo wp_nonce_url(admin_url('admin.php?page=encuestas-listado&action=cerrar&id=' . $encuesta->id), 'cerrar_encuesta_' . $encuesta->id); ?>" class="button button-small" title="<?php _e('Cerrar', 'flavor-platform'); ?>">
                                             <span class="dashicons dashicons-lock" style="vertical-align: middle;"></span>
                                         </a>
                                     <?php endif; ?>
-                                    <a href="<?php echo wp_nonce_url(admin_url('admin.php?page=encuestas-listado&action=eliminar&id=' . $encuesta->id), 'eliminar_encuesta_' . $encuesta->id); ?>" class="button button-small" onclick="return confirm('<?php _e('¿Estás seguro de eliminar esta encuesta?', 'flavor-chat-ia'); ?>');" title="<?php _e('Eliminar', 'flavor-chat-ia'); ?>">
+                                    <a href="<?php echo wp_nonce_url(admin_url('admin.php?page=encuestas-listado&action=eliminar&id=' . $encuesta->id), 'eliminar_encuesta_' . $encuesta->id); ?>" class="button button-small" onclick="return confirm('<?php _e('¿Estás seguro de eliminar esta encuesta?', 'flavor-platform'); ?>');" title="<?php _e('Eliminar', 'flavor-platform'); ?>">
                                         <span class="dashicons dashicons-trash" style="vertical-align: middle;"></span>
                                     </a>
                                 </td>
@@ -2584,7 +2584,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                 }
 
                 if (!is_wp_error($resultado)) {
-                    echo '<div class="notice notice-success"><p>' . __('Encuesta actualizada correctamente.', 'flavor-chat-ia') . '</p></div>';
+                    echo '<div class="notice notice-success"><p>' . __('Encuesta actualizada correctamente.', 'flavor-platform') . '</p></div>';
                     $encuesta = $this->obtener_encuesta($encuesta_id, true);
                     $campos = $encuesta->campos ?? [];
                 }
@@ -2592,7 +2592,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                 // Crear nueva encuesta
                 $resultado = $this->crear_encuesta($datos);
                 if (!is_wp_error($resultado)) {
-                    echo '<div class="notice notice-success"><p>' . __('Encuesta creada correctamente.', 'flavor-chat-ia') . ' <a href="' . admin_url('admin.php?page=encuestas-listado') . '">' . __('Ver listado', 'flavor-chat-ia') . '</a></p></div>';
+                    echo '<div class="notice notice-success"><p>' . __('Encuesta creada correctamente.', 'flavor-platform') . ' <a href="' . admin_url('admin.php?page=encuestas-listado') . '">' . __('Ver listado', 'flavor-platform') . '</a></p></div>';
                     // Redirigir a edición
                     wp_redirect(admin_url('admin.php?page=encuestas-crear&id=' . $resultado));
                     exit;
@@ -2602,7 +2602,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
             }
         }
 
-        $titulo_pagina = $encuesta_id ? __('Editar Encuesta', 'flavor-chat-ia') : __('Nueva Encuesta', 'flavor-chat-ia');
+        $titulo_pagina = $encuesta_id ? __('Editar Encuesta', 'flavor-platform') : __('Nueva Encuesta', 'flavor-platform');
         $this->render_page_header($titulo_pagina);
         ?>
         <div class="wrap">
@@ -2642,20 +2642,20 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
 
                 <!-- Datos básicos -->
                 <div class="flavor-form-section">
-                    <h3><span class="dashicons dashicons-edit"></span> <?php _e('Información General', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-edit"></span> <?php _e('Información General', 'flavor-platform'); ?></h3>
 
                     <div class="flavor-form-row">
-                        <label for="titulo"><?php _e('Título de la encuesta', 'flavor-chat-ia'); ?> <span class="required">*</span></label>
+                        <label for="titulo"><?php _e('Título de la encuesta', 'flavor-platform'); ?> <span class="required">*</span></label>
                         <input type="text" id="titulo" name="titulo" value="<?php echo esc_attr($encuesta->titulo ?? ''); ?>" required>
                     </div>
 
                     <div class="flavor-form-row">
-                        <label for="descripcion"><?php _e('Descripción', 'flavor-chat-ia'); ?></label>
+                        <label for="descripcion"><?php _e('Descripción', 'flavor-platform'); ?></label>
                         <textarea id="descripcion" name="descripcion"><?php echo esc_textarea($encuesta->descripcion ?? ''); ?></textarea>
                     </div>
 
                     <div class="flavor-form-row">
-                        <label for="tipo"><?php _e('Tipo', 'flavor-chat-ia'); ?></label>
+                        <label for="tipo"><?php _e('Tipo', 'flavor-platform'); ?></label>
                         <select id="tipo" name="tipo">
                             <?php foreach (self::TIPOS_ENCUESTA as $tipo_valor): ?>
                                 <option value="<?php echo esc_attr($tipo_valor); ?>" <?php selected(($encuesta->tipo ?? ''), $tipo_valor); ?>>
@@ -2666,7 +2666,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                     </div>
 
                     <div class="flavor-form-row">
-                        <label for="estado"><?php _e('Estado', 'flavor-chat-ia'); ?></label>
+                        <label for="estado"><?php _e('Estado', 'flavor-platform'); ?></label>
                         <select id="estado" name="estado">
                             <?php foreach (self::ESTADOS_ENCUESTA as $estado_valor): ?>
                                 <option value="<?php echo esc_attr($estado_valor); ?>" <?php selected(($encuesta->estado ?? 'borrador'), $estado_valor); ?>>
@@ -2677,39 +2677,39 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                     </div>
 
                     <div class="flavor-form-row">
-                        <label for="fecha_cierre"><?php _e('Fecha de cierre (opcional)', 'flavor-chat-ia'); ?></label>
+                        <label for="fecha_cierre"><?php _e('Fecha de cierre (opcional)', 'flavor-platform'); ?></label>
                         <input type="datetime-local" id="fecha_cierre" name="fecha_cierre" value="<?php echo esc_attr($encuesta->fecha_cierre ?? ''); ?>">
                     </div>
                 </div>
 
                 <!-- Opciones -->
                 <div class="flavor-form-section">
-                    <h3><span class="dashicons dashicons-admin-settings"></span> <?php _e('Opciones', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-admin-settings"></span> <?php _e('Opciones', 'flavor-platform'); ?></h3>
 
                     <div class="flavor-form-row flavor-checkbox-row">
                         <input type="checkbox" id="es_anonima" name="es_anonima" value="1" <?php checked(!empty($encuesta->es_anonima)); ?>>
-                        <label for="es_anonima"><?php _e('Respuestas anónimas', 'flavor-chat-ia'); ?></label>
+                        <label for="es_anonima"><?php _e('Respuestas anónimas', 'flavor-platform'); ?></label>
                     </div>
 
                     <div class="flavor-form-row flavor-checkbox-row">
                         <input type="checkbox" id="permite_multiples" name="permite_multiples" value="1" <?php checked(!empty($encuesta->permite_multiples)); ?>>
-                        <label for="permite_multiples"><?php _e('Permitir múltiples respuestas por usuario', 'flavor-chat-ia'); ?></label>
+                        <label for="permite_multiples"><?php _e('Permitir múltiples respuestas por usuario', 'flavor-platform'); ?></label>
                     </div>
 
                     <div class="flavor-form-row">
-                        <label for="mostrar_resultados"><?php _e('Mostrar resultados', 'flavor-chat-ia'); ?></label>
+                        <label for="mostrar_resultados"><?php _e('Mostrar resultados', 'flavor-platform'); ?></label>
                         <select id="mostrar_resultados" name="mostrar_resultados">
-                            <option value="siempre" <?php selected(($encuesta->mostrar_resultados ?? ''), 'siempre'); ?>><?php _e('Siempre', 'flavor-chat-ia'); ?></option>
-                            <option value="al_votar" <?php selected(($encuesta->mostrar_resultados ?? 'al_votar'), 'al_votar'); ?>><?php _e('Después de votar', 'flavor-chat-ia'); ?></option>
-                            <option value="al_cerrar" <?php selected(($encuesta->mostrar_resultados ?? ''), 'al_cerrar'); ?>><?php _e('Al cerrar encuesta', 'flavor-chat-ia'); ?></option>
-                            <option value="nunca" <?php selected(($encuesta->mostrar_resultados ?? ''), 'nunca'); ?>><?php _e('Nunca', 'flavor-chat-ia'); ?></option>
+                            <option value="siempre" <?php selected(($encuesta->mostrar_resultados ?? ''), 'siempre'); ?>><?php _e('Siempre', 'flavor-platform'); ?></option>
+                            <option value="al_votar" <?php selected(($encuesta->mostrar_resultados ?? 'al_votar'), 'al_votar'); ?>><?php _e('Después de votar', 'flavor-platform'); ?></option>
+                            <option value="al_cerrar" <?php selected(($encuesta->mostrar_resultados ?? ''), 'al_cerrar'); ?>><?php _e('Al cerrar encuesta', 'flavor-platform'); ?></option>
+                            <option value="nunca" <?php selected(($encuesta->mostrar_resultados ?? ''), 'nunca'); ?>><?php _e('Nunca', 'flavor-platform'); ?></option>
                         </select>
                     </div>
                 </div>
 
                 <!-- Preguntas -->
                 <div class="flavor-form-section">
-                    <h3><span class="dashicons dashicons-list-view"></span> <?php _e('Preguntas', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-list-view"></span> <?php _e('Preguntas', 'flavor-platform'); ?></h3>
 
                     <div class="flavor-preguntas-container" id="preguntas-container">
                         <?php
@@ -2718,15 +2718,15 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                         ?>
                             <div class="flavor-pregunta-item" data-index="<?php echo $indice; ?>">
                                 <div class="flavor-pregunta-header">
-                                    <span class="flavor-pregunta-numero"><?php printf(__('Pregunta %d', 'flavor-chat-ia'), $indice + 1); ?></span>
-                                    <button type="button" class="flavor-pregunta-eliminar" onclick="eliminarPregunta(this)"><?php _e('Eliminar', 'flavor-chat-ia'); ?></button>
+                                    <span class="flavor-pregunta-numero"><?php printf(__('Pregunta %d', 'flavor-platform'), $indice + 1); ?></span>
+                                    <button type="button" class="flavor-pregunta-eliminar" onclick="eliminarPregunta(this)"><?php _e('Eliminar', 'flavor-platform'); ?></button>
                                 </div>
                                 <div class="flavor-form-row">
-                                    <label><?php _e('Pregunta', 'flavor-chat-ia'); ?></label>
+                                    <label><?php _e('Pregunta', 'flavor-platform'); ?></label>
                                     <input type="text" name="preguntas[<?php echo $indice; ?>][etiqueta]" value="<?php echo esc_attr($campo->etiqueta); ?>" required>
                                 </div>
                                 <div class="flavor-form-row">
-                                    <label><?php _e('Tipo de respuesta', 'flavor-chat-ia'); ?></label>
+                                    <label><?php _e('Tipo de respuesta', 'flavor-platform'); ?></label>
                                     <select name="preguntas[<?php echo $indice; ?>][tipo]" onchange="toggleOpciones(this)">
                                         <?php foreach (self::TIPOS_CAMPO as $tipo_key => $tipo_label): ?>
                                             <option value="<?php echo esc_attr($tipo_key); ?>" <?php selected($campo->tipo, $tipo_key); ?>>
@@ -2737,21 +2737,21 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                                 </div>
                                 <?php if (in_array($campo->tipo, ['seleccion_unica', 'seleccion_multiple'])): ?>
                                 <div class="flavor-opciones-container">
-                                    <label><?php _e('Opciones', 'flavor-chat-ia'); ?></label>
+                                    <label><?php _e('Opciones', 'flavor-platform'); ?></label>
                                     <?php if (!empty($campo->opciones) && is_array($campo->opciones)): ?>
                                         <?php foreach ($campo->opciones as $opcion_idx => $opcion): ?>
                                         <div class="flavor-opcion-item">
-                                            <input type="text" name="preguntas[<?php echo $indice; ?>][opciones][]" value="<?php echo esc_attr($opcion); ?>" placeholder="<?php _e('Opción', 'flavor-chat-ia'); ?>">
+                                            <input type="text" name="preguntas[<?php echo $indice; ?>][opciones][]" value="<?php echo esc_attr($opcion); ?>" placeholder="<?php _e('Opción', 'flavor-platform'); ?>">
                                             <button type="button" class="flavor-opcion-eliminar" onclick="eliminarOpcion(this)">×</button>
                                         </div>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
-                                    <button type="button" class="flavor-agregar-opcion" onclick="agregarOpcion(this)"><?php _e('+ Añadir opción', 'flavor-chat-ia'); ?></button>
+                                    <button type="button" class="flavor-agregar-opcion" onclick="agregarOpcion(this)"><?php _e('+ Añadir opción', 'flavor-platform'); ?></button>
                                 </div>
                                 <?php endif; ?>
                                 <div class="flavor-form-row flavor-checkbox-row" style="margin-top: 10px;">
                                     <input type="checkbox" name="preguntas[<?php echo $indice; ?>][es_requerido]" value="1" <?php checked($campo->es_requerido); ?>>
-                                    <label><?php _e('Campo obligatorio', 'flavor-chat-ia'); ?></label>
+                                    <label><?php _e('Campo obligatorio', 'flavor-platform'); ?></label>
                                 </div>
                             </div>
                         <?php
@@ -2762,16 +2762,16 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
 
                     <button type="button" class="flavor-agregar-pregunta" onclick="agregarPregunta()">
                         <span class="dashicons dashicons-plus-alt" style="vertical-align: middle;"></span>
-                        <?php _e('Añadir pregunta', 'flavor-chat-ia'); ?>
+                        <?php _e('Añadir pregunta', 'flavor-platform'); ?>
                     </button>
                 </div>
 
                 <p class="submit">
                     <button type="submit" class="button button-primary button-large">
-                        <?php echo $encuesta_id ? __('Guardar Cambios', 'flavor-chat-ia') : __('Crear Encuesta', 'flavor-chat-ia'); ?>
+                        <?php echo $encuesta_id ? __('Guardar Cambios', 'flavor-platform') : __('Crear Encuesta', 'flavor-platform'); ?>
                     </button>
                     <a href="<?php echo admin_url('admin.php?page=encuestas-listado'); ?>" class="button button-large">
-                        <?php _e('Cancelar', 'flavor-chat-ia'); ?>
+                        <?php _e('Cancelar', 'flavor-platform'); ?>
                     </a>
                 </p>
             </form>
@@ -2788,34 +2788,34 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
             const html = `
                 <div class="flavor-pregunta-item" data-index="${preguntaIndex}">
                     <div class="flavor-pregunta-header">
-                        <span class="flavor-pregunta-numero"><?php _e('Pregunta', 'flavor-chat-ia'); ?> ${preguntaIndex + 1}</span>
-                        <button type="button" class="flavor-pregunta-eliminar" onclick="eliminarPregunta(this)"><?php _e('Eliminar', 'flavor-chat-ia'); ?></button>
+                        <span class="flavor-pregunta-numero"><?php _e('Pregunta', 'flavor-platform'); ?> ${preguntaIndex + 1}</span>
+                        <button type="button" class="flavor-pregunta-eliminar" onclick="eliminarPregunta(this)"><?php _e('Eliminar', 'flavor-platform'); ?></button>
                     </div>
                     <div class="flavor-form-row">
-                        <label><?php _e('Pregunta', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Pregunta', 'flavor-platform'); ?></label>
                         <input type="text" name="preguntas[${preguntaIndex}][etiqueta]" required>
                     </div>
                     <div class="flavor-form-row">
-                        <label><?php _e('Tipo de respuesta', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Tipo de respuesta', 'flavor-platform'); ?></label>
                         <select name="preguntas[${preguntaIndex}][tipo]" onchange="toggleOpciones(this)">
                             ${Object.entries(tiposCampo).map(([key, label]) => `<option value="${key}">${label}</option>`).join('')}
                         </select>
                     </div>
                     <div class="flavor-opciones-container" style="display: none;">
-                        <label><?php _e('Opciones', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Opciones', 'flavor-platform'); ?></label>
                         <div class="flavor-opcion-item">
-                            <input type="text" name="preguntas[${preguntaIndex}][opciones][]" placeholder="<?php _e('Opción 1', 'flavor-chat-ia'); ?>">
+                            <input type="text" name="preguntas[${preguntaIndex}][opciones][]" placeholder="<?php _e('Opción 1', 'flavor-platform'); ?>">
                             <button type="button" class="flavor-opcion-eliminar" onclick="eliminarOpcion(this)">×</button>
                         </div>
                         <div class="flavor-opcion-item">
-                            <input type="text" name="preguntas[${preguntaIndex}][opciones][]" placeholder="<?php _e('Opción 2', 'flavor-chat-ia'); ?>">
+                            <input type="text" name="preguntas[${preguntaIndex}][opciones][]" placeholder="<?php _e('Opción 2', 'flavor-platform'); ?>">
                             <button type="button" class="flavor-opcion-eliminar" onclick="eliminarOpcion(this)">×</button>
                         </div>
-                        <button type="button" class="flavor-agregar-opcion" onclick="agregarOpcion(this)"><?php _e('+ Añadir opción', 'flavor-chat-ia'); ?></button>
+                        <button type="button" class="flavor-agregar-opcion" onclick="agregarOpcion(this)"><?php _e('+ Añadir opción', 'flavor-platform'); ?></button>
                     </div>
                     <div class="flavor-form-row flavor-checkbox-row" style="margin-top: 10px;">
                         <input type="checkbox" name="preguntas[${preguntaIndex}][es_requerido]" value="1" checked>
-                        <label><?php _e('Campo obligatorio', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Campo obligatorio', 'flavor-platform'); ?></label>
                     </div>
                 </div>
             `;
@@ -2829,7 +2829,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         }
 
         function eliminarPregunta(btn) {
-            if (confirm('<?php _e('¿Eliminar esta pregunta?', 'flavor-chat-ia'); ?>')) {
+            if (confirm('<?php _e('¿Eliminar esta pregunta?', 'flavor-platform'); ?>')) {
                 btn.closest('.flavor-pregunta-item').remove();
             }
         }
@@ -2849,7 +2849,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
 
             const html = `
                 <div class="flavor-opcion-item">
-                    <input type="text" name="preguntas[${index}][opciones][]" placeholder="<?php _e('Opción', 'flavor-chat-ia'); ?> ${opcionCount + 1}">
+                    <input type="text" name="preguntas[${index}][opciones][]" placeholder="<?php _e('Opción', 'flavor-platform'); ?> ${opcionCount + 1}">
                     <button type="button" class="flavor-opcion-eliminar" onclick="eliminarOpcion(this)">×</button>
                 </div>
             `;
@@ -2875,10 +2875,10 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         $encuesta_id = isset($_GET['id']) ? absint($_GET['id']) : 0;
 
         $this->render_page_header(
-            __('Resultados de Encuestas', 'flavor-chat-ia'),
+            __('Resultados de Encuestas', 'flavor-platform'),
             [
                 [
-                    'label' => __('Ver Listado', 'flavor-chat-ia'),
+                    'label' => __('Ver Listado', 'flavor-platform'),
                     'url'   => admin_url('admin.php?page=encuestas-listado'),
                     'class' => '',
                 ],
@@ -2897,18 +2897,18 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
             );
             ?>
             <div class="wrap">
-                <h3><?php _e('Selecciona una encuesta para ver sus resultados', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Selecciona una encuesta para ver sus resultados', 'flavor-platform'); ?></h3>
                 <?php if (empty($encuestas)): ?>
-                    <p class="description"><?php _e('No hay encuestas con respuestas aún.', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php _e('No hay encuestas con respuestas aún.', 'flavor-platform'); ?></p>
                 <?php else: ?>
                     <table class="wp-list-table widefat fixed striped">
                         <thead>
                             <tr>
-                                <th><?php _e('Encuesta', 'flavor-chat-ia'); ?></th>
-                                <th style="width: 100px;"><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                                <th style="width: 120px;"><?php _e('Participantes', 'flavor-chat-ia'); ?></th>
-                                <th style="width: 120px;"><?php _e('Respuestas', 'flavor-chat-ia'); ?></th>
-                                <th style="width: 100px;"><?php _e('Acción', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Encuesta', 'flavor-platform'); ?></th>
+                                <th style="width: 100px;"><?php _e('Estado', 'flavor-platform'); ?></th>
+                                <th style="width: 120px;"><?php _e('Participantes', 'flavor-platform'); ?></th>
+                                <th style="width: 120px;"><?php _e('Respuestas', 'flavor-platform'); ?></th>
+                                <th style="width: 100px;"><?php _e('Acción', 'flavor-platform'); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -2924,7 +2924,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                                     <td><?php echo esc_html($enc->total_respuestas); ?></td>
                                     <td>
                                         <a href="<?php echo admin_url('admin.php?page=encuestas-resultados&id=' . $enc->id); ?>" class="button button-primary button-small">
-                                            <?php _e('Ver', 'flavor-chat-ia'); ?>
+                                            <?php _e('Ver', 'flavor-platform'); ?>
                                         </a>
                                     </td>
                                 </tr>
@@ -2948,7 +2948,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         $encuesta = $this->obtener_encuesta($encuesta_id);
 
         if (!$encuesta) {
-            echo '<div class="notice notice-error"><p>' . __('Encuesta no encontrada.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-error"><p>' . __('Encuesta no encontrada.', 'flavor-platform') . '</p></div>';
             return;
         }
         ?>
@@ -2987,11 +2987,11 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                 <div class="flavor-resultado-stats">
                     <div class="flavor-resultado-stat">
                         <div class="valor"><?php echo esc_html($resultados['total_participantes']); ?></div>
-                        <div class="label"><?php _e('Participantes', 'flavor-chat-ia'); ?></div>
+                        <div class="label"><?php _e('Participantes', 'flavor-platform'); ?></div>
                     </div>
                     <div class="flavor-resultado-stat">
                         <div class="valor"><?php echo esc_html($resultados['total_respuestas']); ?></div>
-                        <div class="label"><?php _e('Respuestas', 'flavor-chat-ia'); ?></div>
+                        <div class="label"><?php _e('Respuestas', 'flavor-platform'); ?></div>
                     </div>
                     <div class="flavor-resultado-stat">
                         <div class="valor">
@@ -2999,7 +2999,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                                 <?php echo esc_html(ucfirst($encuesta->estado)); ?>
                             </span>
                         </div>
-                        <div class="label"><?php _e('Estado', 'flavor-chat-ia'); ?></div>
+                        <div class="label"><?php _e('Estado', 'flavor-platform'); ?></div>
                     </div>
                 </div>
             </div>
@@ -3022,7 +3022,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                             $opciones = $campo['opciones'] ?? [];
 
                             if ($campo['tipo'] === 'si_no') {
-                                $opciones = [__('Sí', 'flavor-chat-ia'), __('No', 'flavor-chat-ia')];
+                                $opciones = [__('Sí', 'flavor-platform'), __('No', 'flavor-platform')];
                             }
 
                             foreach ($opciones as $idx => $opcion):
@@ -3032,7 +3032,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                             <div class="flavor-barra-container">
                                 <div class="flavor-barra-label">
                                     <span class="flavor-barra-opcion"><?php echo esc_html($opcion); ?></span>
-                                    <span class="flavor-barra-count"><?php echo $votos; ?> <?php _e('votos', 'flavor-chat-ia'); ?></span>
+                                    <span class="flavor-barra-count"><?php echo $votos; ?> <?php _e('votos', 'flavor-platform'); ?></span>
                                 </div>
                                 <div class="flavor-barra">
                                     <div class="flavor-barra-fill" style="width: <?php echo $porcentaje; ?>%;">
@@ -3087,15 +3087,15 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                             <div class="flavor-estadisticas-num">
                                 <div class="flavor-stat-box">
                                     <div class="valor"><?php echo esc_html(number_format($stats['promedio'] ?? 0, 2)); ?></div>
-                                    <div class="label"><?php _e('Promedio', 'flavor-chat-ia'); ?></div>
+                                    <div class="label"><?php _e('Promedio', 'flavor-platform'); ?></div>
                                 </div>
                                 <div class="flavor-stat-box">
                                     <div class="valor"><?php echo esc_html($stats['minimo'] ?? 0); ?></div>
-                                    <div class="label"><?php _e('Mínimo', 'flavor-chat-ia'); ?></div>
+                                    <div class="label"><?php _e('Mínimo', 'flavor-platform'); ?></div>
                                 </div>
                                 <div class="flavor-stat-box">
                                     <div class="valor"><?php echo esc_html($stats['maximo'] ?? 0); ?></div>
-                                    <div class="label"><?php _e('Máximo', 'flavor-chat-ia'); ?></div>
+                                    <div class="label"><?php _e('Máximo', 'flavor-platform'); ?></div>
                                 </div>
                             </div>
                             <?php
@@ -3106,7 +3106,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                             ?>
                             <div class="flavor-respuestas-texto">
                                 <?php if (empty($respuestas)): ?>
-                                    <p class="description"><?php _e('Sin respuestas.', 'flavor-chat-ia'); ?></p>
+                                    <p class="description"><?php _e('Sin respuestas.', 'flavor-platform'); ?></p>
                                 <?php else: ?>
                                     <?php foreach ($respuestas as $respuesta): ?>
                                         <p><?php echo esc_html($respuesta); ?></p>
@@ -3124,12 +3124,12 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
             <div style="margin-top: 20px;">
                 <a href="<?php echo admin_url('admin.php?page=encuestas-crear&id=' . $encuesta_id); ?>" class="button">
                     <span class="dashicons dashicons-edit" style="vertical-align: middle;"></span>
-                    <?php _e('Editar Encuesta', 'flavor-chat-ia'); ?>
+                    <?php _e('Editar Encuesta', 'flavor-platform'); ?>
                 </a>
                 <?php if ($encuesta->estado === 'activa'): ?>
                     <a href="<?php echo wp_nonce_url(admin_url('admin.php?page=encuestas-listado&action=cerrar&id=' . $encuesta_id), 'cerrar_encuesta_' . $encuesta_id); ?>" class="button">
                         <span class="dashicons dashicons-lock" style="vertical-align: middle;"></span>
-                        <?php _e('Cerrar Encuesta', 'flavor-chat-ia'); ?>
+                        <?php _e('Cerrar Encuesta', 'flavor-platform'); ?>
                     </a>
                 <?php endif; ?>
             </div>
@@ -3160,12 +3160,12 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                 $this->set_setting($key, $value);
             }
 
-            echo '<div class="notice notice-success"><p>' . __('Configuración guardada correctamente.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-success"><p>' . __('Configuración guardada correctamente.', 'flavor-platform') . '</p></div>';
         }
 
         $config = $this->get_settings();
 
-        $this->render_page_header(__('Configuración de Encuestas', 'flavor-chat-ia'));
+        $this->render_page_header(__('Configuración de Encuestas', 'flavor-platform'));
         ?>
         <div class="wrap">
             <style>
@@ -3186,62 +3186,62 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
 
                 <!-- Opciones generales -->
                 <div class="flavor-config-section">
-                    <h3><span class="dashicons dashicons-admin-settings"></span> <?php _e('Opciones Generales', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-admin-settings"></span> <?php _e('Opciones Generales', 'flavor-platform'); ?></h3>
 
                     <div class="flavor-config-row">
                         <label>
                             <input type="checkbox" name="permitir_encuestas_anonimas" value="1" <?php checked($config['permitir_encuestas_anonimas'] ?? true); ?>>
-                            <?php _e('Permitir encuestas anónimas', 'flavor-chat-ia'); ?>
+                            <?php _e('Permitir encuestas anónimas', 'flavor-platform'); ?>
                         </label>
-                        <p class="flavor-config-description"><?php _e('Los creadores pueden elegir si las respuestas son anónimas.', 'flavor-chat-ia'); ?></p>
+                        <p class="flavor-config-description"><?php _e('Los creadores pueden elegir si las respuestas son anónimas.', 'flavor-platform'); ?></p>
                     </div>
 
                     <div class="flavor-config-row">
                         <label>
                             <input type="checkbox" name="permitir_multiples_respuestas" value="1" <?php checked($config['permitir_multiples_respuestas'] ?? false); ?>>
-                            <?php _e('Permitir múltiples respuestas por defecto', 'flavor-chat-ia'); ?>
+                            <?php _e('Permitir múltiples respuestas por defecto', 'flavor-platform'); ?>
                         </label>
-                        <p class="flavor-config-description"><?php _e('Los usuarios pueden responder varias veces a la misma encuesta.', 'flavor-chat-ia'); ?></p>
+                        <p class="flavor-config-description"><?php _e('Los usuarios pueden responder varias veces a la misma encuesta.', 'flavor-platform'); ?></p>
                     </div>
 
                     <div class="flavor-config-row">
                         <label>
                             <input type="checkbox" name="moderacion_encuestas" value="1" <?php checked($config['moderacion_encuestas'] ?? true); ?>>
-                            <?php _e('Moderar encuestas antes de publicar', 'flavor-chat-ia'); ?>
+                            <?php _e('Moderar encuestas antes de publicar', 'flavor-platform'); ?>
                         </label>
-                        <p class="flavor-config-description"><?php _e('Las encuestas requieren aprobación de un administrador.', 'flavor-chat-ia'); ?></p>
+                        <p class="flavor-config-description"><?php _e('Las encuestas requieren aprobación de un administrador.', 'flavor-platform'); ?></p>
                     </div>
 
                     <div class="flavor-config-row">
                         <label>
                             <input type="checkbox" name="mostrar_estadisticas_publicas" value="1" <?php checked($config['mostrar_estadisticas_publicas'] ?? true); ?>>
-                            <?php _e('Mostrar estadísticas públicas', 'flavor-chat-ia'); ?>
+                            <?php _e('Mostrar estadísticas públicas', 'flavor-platform'); ?>
                         </label>
-                        <p class="flavor-config-description"><?php _e('Permite ver resultados según configuración de cada encuesta.', 'flavor-chat-ia'); ?></p>
+                        <p class="flavor-config-description"><?php _e('Permite ver resultados según configuración de cada encuesta.', 'flavor-platform'); ?></p>
                     </div>
                 </div>
 
                 <!-- Límites -->
                 <div class="flavor-config-section">
-                    <h3><span class="dashicons dashicons-editor-ol"></span> <?php _e('Límites', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-editor-ol"></span> <?php _e('Límites', 'flavor-platform'); ?></h3>
 
                     <div class="flavor-config-row">
                         <label>
-                            <?php _e('Máximo de opciones por pregunta:', 'flavor-chat-ia'); ?>
+                            <?php _e('Máximo de opciones por pregunta:', 'flavor-platform'); ?>
                             <input type="number" name="max_opciones_por_pregunta" value="<?php echo esc_attr($config['max_opciones_por_pregunta'] ?? 10); ?>" min="2" max="50">
                         </label>
                     </div>
 
                     <div class="flavor-config-row">
                         <label>
-                            <?php _e('Máximo de preguntas por encuesta:', 'flavor-chat-ia'); ?>
+                            <?php _e('Máximo de preguntas por encuesta:', 'flavor-platform'); ?>
                             <input type="number" name="max_campos_por_encuesta" value="<?php echo esc_attr($config['max_campos_por_encuesta'] ?? 20); ?>" min="1" max="100">
                         </label>
                     </div>
 
                     <div class="flavor-config-row">
                         <label>
-                            <?php _e('Duración por defecto (días):', 'flavor-chat-ia'); ?>
+                            <?php _e('Duración por defecto (días):', 'flavor-platform'); ?>
                             <input type="number" name="duracion_default_dias" value="<?php echo esc_attr($config['duracion_default_dias'] ?? 7); ?>" min="1" max="365">
                         </label>
                     </div>
@@ -3249,39 +3249,39 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
 
                 <!-- Notificaciones -->
                 <div class="flavor-config-section">
-                    <h3><span class="dashicons dashicons-bell"></span> <?php _e('Notificaciones', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-bell"></span> <?php _e('Notificaciones', 'flavor-platform'); ?></h3>
 
                     <div class="flavor-config-row">
                         <label>
                             <input type="checkbox" name="notificar_nuevas_respuestas" value="1" <?php checked($config['notificar_nuevas_respuestas'] ?? true); ?>>
-                            <?php _e('Notificar nuevas respuestas al autor', 'flavor-chat-ia'); ?>
+                            <?php _e('Notificar nuevas respuestas al autor', 'flavor-platform'); ?>
                         </label>
                     </div>
 
                     <div class="flavor-config-row">
                         <label>
                             <input type="checkbox" name="notificar_cierre_encuesta" value="1" <?php checked($config['notificar_cierre_encuesta'] ?? true); ?>>
-                            <?php _e('Notificar al cerrar encuesta', 'flavor-chat-ia'); ?>
+                            <?php _e('Notificar al cerrar encuesta', 'flavor-platform'); ?>
                         </label>
                     </div>
                 </div>
 
                 <!-- Exportación -->
                 <div class="flavor-config-section">
-                    <h3><span class="dashicons dashicons-download"></span> <?php _e('Exportación', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-download"></span> <?php _e('Exportación', 'flavor-platform'); ?></h3>
 
                     <div class="flavor-config-row">
                         <label>
                             <input type="checkbox" name="permitir_exportar_resultados" value="1" <?php checked($config['permitir_exportar_resultados'] ?? true); ?>>
-                            <?php _e('Permitir exportar resultados', 'flavor-chat-ia'); ?>
+                            <?php _e('Permitir exportar resultados', 'flavor-platform'); ?>
                         </label>
-                        <p class="flavor-config-description"><?php _e('Los autores pueden exportar resultados a CSV.', 'flavor-chat-ia'); ?></p>
+                        <p class="flavor-config-description"><?php _e('Los autores pueden exportar resultados a CSV.', 'flavor-platform'); ?></p>
                     </div>
                 </div>
 
                 <p class="submit">
                     <button type="submit" class="button button-primary">
-                        <?php _e('Guardar Configuración', 'flavor-chat-ia'); ?>
+                        <?php _e('Guardar Configuración', 'flavor-platform'); ?>
                     </button>
                 </p>
             </form>
@@ -3299,18 +3299,18 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
     public function get_actions() {
         return [
             'crear_encuesta' => [
-                'label'       => __('Crear encuesta', 'flavor-chat-ia'),
-                'description' => __('Crea una nueva encuesta', 'flavor-chat-ia'),
+                'label'       => __('Crear encuesta', 'flavor-platform'),
+                'description' => __('Crea una nueva encuesta', 'flavor-platform'),
                 'callback'    => [$this, 'crear_encuesta'],
             ],
             'cerrar_encuesta' => [
-                'label'       => __('Cerrar encuesta', 'flavor-chat-ia'),
-                'description' => __('Cierra una encuesta para no aceptar más respuestas', 'flavor-chat-ia'),
+                'label'       => __('Cerrar encuesta', 'flavor-platform'),
+                'description' => __('Cierra una encuesta para no aceptar más respuestas', 'flavor-platform'),
                 'callback'    => [$this, 'cerrar_encuesta'],
             ],
             'obtener_resultados' => [
-                'label'       => __('Obtener resultados', 'flavor-chat-ia'),
-                'description' => __('Obtiene los resultados de una encuesta', 'flavor-chat-ia'),
+                'label'       => __('Obtener resultados', 'flavor-platform'),
+                'description' => __('Obtiene los resultados de una encuesta', 'flavor-platform'),
                 'callback'    => [$this, 'obtener_resultados'],
             ],
         ];
@@ -3325,7 +3325,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         if (!isset($acciones[$action_name])) {
             return [
                 'success' => false,
-                'error'   => __('Acción no encontrada', 'flavor-chat-ia'),
+                'error'   => __('Acción no encontrada', 'flavor-platform'),
             ];
         }
 
@@ -3356,7 +3356,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function get_knowledge_base() {
-        return __('Sistema de encuestas y formularios que permite crear votaciones, cuestionarios y formularios reutilizables en diferentes contextos de la plataforma.', 'flavor-chat-ia');
+        return __('Sistema de encuestas y formularios que permite crear votaciones, cuestionarios y formularios reutilizables en diferentes contextos de la plataforma.', 'flavor-platform');
     }
 
     /**
@@ -3385,8 +3385,8 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
     public static function get_renderer_config(): array {
         return [
             'module'   => 'encuestas',
-            'title'    => __('Encuestas y Votaciones', 'flavor-chat-ia'),
-            'subtitle' => __('Crea encuestas, votaciones y formularios para tu comunidad', 'flavor-chat-ia'),
+            'title'    => __('Encuestas y Votaciones', 'flavor-platform'),
+            'subtitle' => __('Crea encuestas, votaciones y formularios para tu comunidad', 'flavor-platform'),
             'icon'     => '📊',
             'color'    => 'accent', // Usa variable CSS --flavor-primary del tema
 
@@ -3396,28 +3396,28 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
             ],
 
             'fields' => [
-                'titulo'       => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'required' => true],
-                'descripcion'  => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
-                'tipo'         => ['type' => 'select', 'label' => __('Tipo', 'flavor-chat-ia'), 'options' => ['encuesta', 'votacion', 'formulario', 'quiz']],
-                'fecha_inicio' => ['type' => 'datetime', 'label' => __('Fecha inicio', 'flavor-chat-ia')],
-                'fecha_fin'    => ['type' => 'datetime', 'label' => __('Fecha fin', 'flavor-chat-ia')],
-                'anonima'      => ['type' => 'checkbox', 'label' => __('Respuestas anónimas', 'flavor-chat-ia')],
-                'multiple'     => ['type' => 'checkbox', 'label' => __('Selección múltiple', 'flavor-chat-ia')],
+                'titulo'       => ['type' => 'text', 'label' => __('Título', 'flavor-platform'), 'required' => true],
+                'descripcion'  => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-platform')],
+                'tipo'         => ['type' => 'select', 'label' => __('Tipo', 'flavor-platform'), 'options' => ['encuesta', 'votacion', 'formulario', 'quiz']],
+                'fecha_inicio' => ['type' => 'datetime', 'label' => __('Fecha inicio', 'flavor-platform')],
+                'fecha_fin'    => ['type' => 'datetime', 'label' => __('Fecha fin', 'flavor-platform')],
+                'anonima'      => ['type' => 'checkbox', 'label' => __('Respuestas anónimas', 'flavor-platform')],
+                'multiple'     => ['type' => 'checkbox', 'label' => __('Selección múltiple', 'flavor-platform')],
             ],
 
             'estados' => [
-                'borrador'   => ['label' => __('Borrador', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '📝'],
-                'activa'     => ['label' => __('Activa', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🟢'],
-                'pausada'    => ['label' => __('Pausada', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏸️'],
-                'finalizada' => ['label' => __('Finalizada', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '✅'],
-                'archivada'  => ['label' => __('Archivada', 'flavor-chat-ia'), 'color' => 'slate', 'icon' => '🗄️'],
+                'borrador'   => ['label' => __('Borrador', 'flavor-platform'), 'color' => 'gray', 'icon' => '📝'],
+                'activa'     => ['label' => __('Activa', 'flavor-platform'), 'color' => 'green', 'icon' => '🟢'],
+                'pausada'    => ['label' => __('Pausada', 'flavor-platform'), 'color' => 'yellow', 'icon' => '⏸️'],
+                'finalizada' => ['label' => __('Finalizada', 'flavor-platform'), 'color' => 'blue', 'icon' => '✅'],
+                'archivada'  => ['label' => __('Archivada', 'flavor-platform'), 'color' => 'slate', 'icon' => '🗄️'],
             ],
 
             'stats' => [
-                'encuestas_activas' => ['label' => __('Activas', 'flavor-chat-ia'), 'icon' => '📊', 'color' => 'violet'],
-                'respuestas_total'  => ['label' => __('Respuestas', 'flavor-chat-ia'), 'icon' => '✏️', 'color' => 'blue'],
-                'participacion'     => ['label' => __('Participación', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'green'],
-                'finalizadas_mes'   => ['label' => __('Finalizadas/mes', 'flavor-chat-ia'), 'icon' => '📈', 'color' => 'purple'],
+                'encuestas_activas' => ['label' => __('Activas', 'flavor-platform'), 'icon' => '📊', 'color' => 'violet'],
+                'respuestas_total'  => ['label' => __('Respuestas', 'flavor-platform'), 'icon' => '✏️', 'color' => 'blue'],
+                'participacion'     => ['label' => __('Participación', 'flavor-platform'), 'icon' => '👥', 'color' => 'green'],
+                'finalizadas_mes'   => ['label' => __('Finalizadas/mes', 'flavor-platform'), 'icon' => '📈', 'color' => 'purple'],
             ],
 
             'card' => [
@@ -3431,25 +3431,25 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
 
             'tabs' => [
                 'activas' => [
-                    'label'   => __('Activas', 'flavor-chat-ia'),
+                    'label'   => __('Activas', 'flavor-platform'),
                     'icon'    => 'dashicons-chart-bar',
                     'content' => 'template:_archive.php',
                     'public'  => true,
                 ],
                 'crear' => [
-                    'label'      => __('Crear encuesta', 'flavor-chat-ia'),
+                    'label'      => __('Crear encuesta', 'flavor-platform'),
                     'icon'       => 'dashicons-plus-alt',
                     'content'    => 'shortcode:flavor_encuesta_crear',
                     'requires_login' => true,
                 ],
                 'mis-encuestas' => [
-                    'label'      => __('Mis encuestas', 'flavor-chat-ia'),
+                    'label'      => __('Mis encuestas', 'flavor-platform'),
                     'icon'       => 'dashicons-admin-users',
                     'content'    => 'shortcode:encuestas_mis_encuestas',
                     'requires_login' => true,
                 ],
                 'resultados' => [
-                    'label'   => __('Resultados', 'flavor-chat-ia'),
+                    'label'   => __('Resultados', 'flavor-platform'),
                     'icon'    => 'dashicons-chart-pie',
                     'content' => 'shortcode:encuestas_resultados',
                     'public'  => true,
@@ -3467,8 +3467,8 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
             'dashboard' => [
                 'widgets' => ['stats', 'encuestas_activas', 'mis_respuestas', 'resultados_recientes'],
                 'actions' => [
-                    'crear'      => ['label' => __('Nueva encuesta', 'flavor-chat-ia'), 'icon' => '📊', 'color' => 'violet'],
-                    'responder'  => ['label' => __('Participar', 'flavor-chat-ia'), 'icon' => '✏️', 'color' => 'blue'],
+                    'crear'      => ['label' => __('Nueva encuesta', 'flavor-platform'), 'icon' => '📊', 'color' => 'violet'],
+                    'responder'  => ['label' => __('Participar', 'flavor-platform'), 'icon' => '✏️', 'color' => 'blue'],
                 ],
             ],
 

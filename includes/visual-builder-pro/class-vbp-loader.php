@@ -275,8 +275,8 @@ class Flavor_VBP_Loader {
             'vbp_template',
             array(
                 'labels'              => array(
-                    'name'          => __( 'Templates VBP', 'flavor-chat-ia' ),
-                    'singular_name' => __( 'Template VBP', 'flavor-chat-ia' ),
+                    'name'          => __( 'Templates VBP', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'singular_name' => __( 'Template VBP', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 'public'              => false,
                 'publicly_queryable'  => false,

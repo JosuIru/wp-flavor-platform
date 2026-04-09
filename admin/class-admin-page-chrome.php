@@ -33,29 +33,32 @@ class Flavor_Admin_Page_Chrome {
 
         $definitions = [
             'home' => [
-                ['slug' => 'flavor-unified-dashboard', 'label' => __('Widgets', 'flavor-chat-ia'), 'icon' => 'dashicons-grid-view'],
-                ['slug' => 'flavor-app-composer', 'label' => __('Ecosistema', 'flavor-chat-ia'), 'icon' => 'dashicons-screenoptions'],
-                ['slug' => 'flavor-design-settings', 'label' => __('Configuración', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-generic'],
-                ['slug' => 'flavor-health-check', 'label' => __('Sistema', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-tools'],
+                ['slug' => 'flavor-unified-dashboard', 'label' => __('Widgets', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-grid-view'],
+                ['slug' => 'flavor-app-composer', 'label' => __('Ecosistema', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-screenoptions'],
+                ['slug' => 'flavor-design-settings', 'label' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-generic'],
+                ['slug' => 'flavor-platform-health-check', 'label' => __('Sistema', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-tools'],
             ],
             'ecosystem' => [
-                ['slug' => 'flavor-module-dashboards', 'label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-screenoptions'],
-                ['slug' => 'flavor-addons', 'label' => __('Addons', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-plugins'],
-                ['slug' => 'flavor-marketplace', 'label' => __('Marketplace', 'flavor-chat-ia'), 'icon' => 'dashicons-store'],
+                ['slug' => 'flavor-module-dashboards', 'label' => __('Catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-screenoptions'],
+                ['slug' => 'flavor-addons', 'label' => __('Addons', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-plugins'],
+                ['slug' => 'flavor-marketplace', 'label' => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-store'],
             ],
             'configuration' => [
-                ['slug' => 'flavor-design-settings', 'label' => __('Diseño', 'flavor-chat-ia'), 'icon' => 'dashicons-art'],
-                ['slug' => 'flavor-layouts', 'label' => __('Layouts', 'flavor-chat-ia'), 'icon' => 'dashicons-layout'],
-                ['slug' => 'flavor-create-pages', 'label' => __('Páginas', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-page'],
-                ['slug' => 'flavor-permissions', 'label' => __('Permisos', 'flavor-chat-ia'), 'icon' => 'dashicons-lock'],
-                ['slug' => 'flavor-chat-config', 'label' => __('Ajustes IA', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-generic'],
+                ['slug' => 'flavor-design-settings', 'label' => __('Diseño', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-art'],
+                ['slug' => 'flavor-layouts', 'label' => __('Layouts', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-layout'],
+                ['slug' => 'flavor-create-pages', 'label' => __('Páginas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-page'],
+                ['slug' => 'flavor-permissions', 'label' => __('Permisos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-lock'],
+                ['slug' => 'flavor-platform-settings', 'label' => __('Ajustes IA', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-generic'],
+                ['slug' => 'flavor-platform-apps', 'label' => __('Apps Móviles', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-smartphone'],
+                ['slug' => 'flavor-platform-deep-links', 'label' => __('Deep Links', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-links'],
+                ['slug' => 'flavor-platform-network', 'label' => __('Red de Nodos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-networking'],
             ],
             'system' => [
-                ['slug' => 'flavor-health-check', 'label' => __('Diagnóstico', 'flavor-chat-ia'), 'icon' => 'dashicons-heart'],
-                ['slug' => 'flavor-export-import', 'label' => __('Export / Import', 'flavor-chat-ia'), 'icon' => 'dashicons-migrate'],
-                ['slug' => 'flavor-activity-log', 'label' => __('Actividad', 'flavor-chat-ia'), 'icon' => 'dashicons-backup'],
-                ['slug' => 'flavor-documentation', 'label' => __('Documentación', 'flavor-chat-ia'), 'icon' => 'dashicons-book'],
-                ['slug' => 'flavor-tours', 'label' => __('Tours', 'flavor-chat-ia'), 'icon' => 'dashicons-location'],
+                ['slug' => 'flavor-platform-health-check', 'label' => __('Diagnóstico', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-heart'],
+                ['slug' => 'flavor-platform-export-import', 'label' => __('Export / Import', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-migrate'],
+                ['slug' => 'flavor-platform-activity-log', 'label' => __('Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-backup'],
+                ['slug' => 'flavor-platform-docs', 'label' => __('Documentación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-book'],
+                ['slug' => 'flavor-tours', 'label' => __('Tours', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-location'],
             ],
         ];
 
@@ -126,7 +129,7 @@ class Flavor_Admin_Page_Chrome {
 
         self::enqueue_styles();
         ?>
-        <nav class="flavor-admin-breadcrumbs" aria-label="<?php echo esc_attr__('Breadcrumbs', 'flavor-chat-ia'); ?>">
+        <nav class="flavor-admin-breadcrumbs" aria-label="<?php echo esc_attr__('Breadcrumbs', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <?php foreach ($breadcrumbs as $index => $item): ?>
                 <?php
                 $label = isset($item['label']) ? (string) $item['label'] : '';
@@ -237,7 +240,7 @@ class Flavor_Admin_Page_Chrome {
 
         if ($home_url !== '') {
             $items[] = [
-                'label' => __('Flavor', 'flavor-chat-ia'),
+                'label' => __('Flavor', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => $home_url,
                 'current' => false,
             ];

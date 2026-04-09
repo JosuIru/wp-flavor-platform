@@ -10,13 +10,13 @@ if (!defined('ABSPATH')) {
 }
 ?>
 <div class="wrap flavor-modulo-page">
-    <?php $this->render_page_header(__('Solicitudes de registro', 'flavor-chat-ia')); ?>
+    <?php $this->render_page_header(__('Solicitudes de registro', 'flavor-platform')); ?>
 
     <?php if (empty($solicitudes)): ?>
     <div style="background:#fff;padding:40px;border-radius:12px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
         <span class="dashicons dashicons-yes-alt" style="font-size:48px;width:48px;height:48px;color:#10b981;"></span>
-        <h3 style="margin:16px 0 8px;"><?php esc_html_e('No hay solicitudes pendientes', 'flavor-chat-ia'); ?></h3>
-        <p style="color:#666;"><?php esc_html_e('Todas las solicitudes han sido procesadas.', 'flavor-chat-ia'); ?></p>
+        <h3 style="margin:16px 0 8px;"><?php esc_html_e('No hay solicitudes pendientes', 'flavor-platform'); ?></h3>
+        <p style="color:#666;"><?php esc_html_e('Todas las solicitudes han sido procesadas.', 'flavor-platform'); ?></p>
     </div>
     <?php else: ?>
 
@@ -32,11 +32,11 @@ if (!defined('ABSPATH')) {
 
                     <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;margin-top:12px;">
                         <?php if ($sol->cif_nif): ?>
-                        <span><strong><?php esc_html_e('CIF/NIF:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($sol->cif_nif); ?></span>
+                        <span><strong><?php esc_html_e('CIF/NIF:', 'flavor-platform'); ?></strong> <?php echo esc_html($sol->cif_nif); ?></span>
                         <?php endif; ?>
-                        <span><strong><?php esc_html_e('Tipo:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html(strtoupper($sol->tipo)); ?></span>
+                        <span><strong><?php esc_html_e('Tipo:', 'flavor-platform'); ?></strong> <?php echo esc_html(strtoupper($sol->tipo)); ?></span>
                         <?php if ($sol->sector): ?>
-                        <span><strong><?php esc_html_e('Sector:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html(ucfirst($sol->sector)); ?></span>
+                        <span><strong><?php esc_html_e('Sector:', 'flavor-platform'); ?></strong> <?php echo esc_html(ucfirst($sol->sector)); ?></span>
                         <?php endif; ?>
                     </div>
 
@@ -58,12 +58,12 @@ if (!defined('ABSPATH')) {
                     <?php endif; ?>
 
                     <p style="margin:12px 0 0;font-size:12px;color:#999;">
-                        <?php printf(esc_html__('Solicitado el %s', 'flavor-chat-ia'), date_i18n('d/m/Y H:i', strtotime($sol->created_at))); ?>
+                        <?php printf(esc_html__('Solicitado el %s', 'flavor-platform'), date_i18n('d/m/Y H:i', strtotime($sol->created_at))); ?>
                         <?php
                         $creador = get_userdata($sol->creador_id);
                         if ($creador):
                         ?>
-                        <?php printf(esc_html__('por %s', 'flavor-chat-ia'), esc_html($creador->display_name)); ?>
+                        <?php printf(esc_html__('por %s', 'flavor-platform'), esc_html($creador->display_name)); ?>
                         <?php endif; ?>
                     </p>
                 </div>
@@ -75,18 +75,18 @@ if (!defined('ABSPATH')) {
 
                         <button type="submit" name="accion_solicitud" value="aprobar" class="button button-primary">
                             <span class="dashicons dashicons-yes" style="vertical-align:middle;"></span>
-                            <?php esc_html_e('Aprobar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Aprobar', 'flavor-platform'); ?>
                         </button>
 
                         <button type="button" class="button" onclick="this.nextElementSibling.style.display='block';this.style.display='none';">
                             <span class="dashicons dashicons-no" style="vertical-align:middle;"></span>
-                            <?php esc_html_e('Rechazar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Rechazar', 'flavor-platform'); ?>
                         </button>
 
                         <div style="display:none;">
-                            <textarea name="motivo" placeholder="<?php esc_attr_e('Motivo del rechazo (opcional)...', 'flavor-chat-ia'); ?>" style="width:200px;height:60px;margin-bottom:8px;"></textarea>
+                            <textarea name="motivo" placeholder="<?php esc_attr_e('Motivo del rechazo (opcional)...', 'flavor-platform'); ?>" style="width:200px;height:60px;margin-bottom:8px;"></textarea>
                             <button type="submit" name="accion_solicitud" value="rechazar" class="button" style="width:100%;">
-                                <?php esc_html_e('Confirmar rechazo', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Confirmar rechazo', 'flavor-platform'); ?>
                             </button>
                         </div>
                     </form>

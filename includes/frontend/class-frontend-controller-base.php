@@ -222,7 +222,7 @@ abstract class Flavor_Frontend_Controller_Base {
         // Verificar nonce si es POST
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', 'flavor_' . $this->slug . '_' . $action)) {
-                wp_die(__('Acción no permitida', 'flavor-chat-ia'));
+                wp_die(__('Acción no permitida', FLAVOR_PLATFORM_TEXT_DOMAIN));
             }
         }
 
@@ -240,7 +240,7 @@ abstract class Flavor_Frontend_Controller_Base {
     protected function render_404() {
         status_header(404);
         $this->render_template('404', [
-            'mensaje' => __('Página no encontrada', 'flavor-chat-ia'),
+            'mensaje' => __('Página no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -525,7 +525,7 @@ abstract class Flavor_Frontend_Controller_Base {
         $datos = $this->get_single_data($id);
 
         if (empty($datos)) {
-            return new WP_REST_Response(['error' => __('No encontrado', 'flavor-chat-ia')], 404);
+            return new WP_REST_Response(['error' => __('No encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)], 404);
         }
 
         return new WP_REST_Response($datos, 200);
@@ -539,7 +539,7 @@ abstract class Flavor_Frontend_Controller_Base {
      */
     public function rest_create_item($request) {
         // Sobrescribir en clases hijas
-        return new WP_REST_Response(['error' => __('No implementado', 'flavor-chat-ia')], 501);
+        return new WP_REST_Response(['error' => __('No implementado', FLAVOR_PLATFORM_TEXT_DOMAIN)], 501);
     }
 
     /**
@@ -548,7 +548,7 @@ abstract class Flavor_Frontend_Controller_Base {
     public function handle_ajax() {
         // Verificar nonce
         if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', 'flavor_' . $this->slug)) {
-            wp_send_json_error(['message' => __('Nonce inválido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Nonce inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $sub_action = sanitize_text_field($_POST['sub_action'] ?? '');
@@ -558,7 +558,7 @@ abstract class Flavor_Frontend_Controller_Base {
             $resultado = $this->$metodo($_POST);
             wp_send_json_success($resultado);
         } else {
-            wp_send_json_error(['message' => __('Acción no encontrada', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Acción no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 

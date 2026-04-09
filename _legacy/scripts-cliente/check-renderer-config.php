@@ -159,7 +159,7 @@ foreach ($sin_config as $modulo) {
     echo "        'estado'      => 'estado',\n";
     echo "    ],\n";
     echo "    'stats' => [\n";
-    echo "        ['label' => __('" . ucwords(str_replace('-', ' ', $modulo)) . "', 'flavor-chat-ia'), 'icon' => '📋', 'color' => 'blue', 'count_where' => \"1=1\"],\n";
+    echo "        ['label' => __('" . ucwords(str_replace('-', ' ', $modulo)) . "', 'flavor-platform'), 'icon' => '📋', 'color' => 'blue', 'count_where' => \"1=1\"],\n";
     echo "    ],\n";
     echo "],\n\n";
 }

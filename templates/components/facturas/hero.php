@@ -15,7 +15,7 @@ $url_crear_factura = $url_crear_factura ?? '/facturas/crear/';
 <section class="flavor-component flavor-section relative overflow-hidden" style="background: linear-gradient(135deg, var(--flavor-primary, #14B8A6) 0%, var(--flavor-secondary, #059669) 100%); min-height: 500px;">
     <!-- Patron decorativo -->
     <div class="absolute inset-0 opacity-10">
-        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22><rect width=%2280%22 height=%2280%22 fill=%22none%22/><circle cx=%2240%22 cy=%2240%22 r=%222%22 fill=%22white%22/></svg><?php echo esc_html__('\'); background-size: 80px 80px;">', 'flavor-chat-ia'); ?></div>
+        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22><rect width=%2280%22 height=%2280%22 fill=%22none%22/><circle cx=%2240%22 cy=%2240%22 r=%222%22 fill=%22white%22/></svg><?php echo esc_html__('\'); background-size: 80px 80px;">', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 
     <div class="flavor-container relative z-10 py-16 lg:py-24">
@@ -25,7 +25,7 @@ $url_crear_factura = $url_crear_factura ?? '/facturas/crear/';
                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                 </svg>
-                <span class="text-white text-sm font-medium"><?php echo esc_html__('Facturacion profesional', 'flavor-chat-ia'); ?></span>
+                <span class="text-white text-sm font-medium"><?php echo esc_html__('Facturacion profesional', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
 
             <h1 class="text-4xl lg:text-5xl font-bold text-white mb-4">
@@ -40,7 +40,7 @@ $url_crear_factura = $url_crear_factura ?? '/facturas/crear/';
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                 </svg>
-                <?php echo esc_html__('Crear Factura', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Crear Factura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
 
@@ -48,15 +48,15 @@ $url_crear_factura = $url_crear_factura ?? '/facturas/crear/';
         <div class="grid grid-cols-3 gap-4 max-w-2xl mx-auto">
             <div class="text-center p-4 rounded-xl bg-white/10 backdrop-blur border border-white/20">
                 <div class="text-3xl font-bold text-white"><?php echo esc_html(number_format_i18n($facturas_emitidas)); ?></div>
-                <div class="text-sm text-white/70"><?php echo esc_html__('Facturas Emitidas', 'flavor-chat-ia'); ?></div>
+                <div class="text-sm text-white/70"><?php echo esc_html__('Facturas Emitidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
             <div class="text-center p-4 rounded-xl bg-white/10 backdrop-blur border border-white/20">
                 <div class="text-3xl font-bold text-white"><?php echo esc_html($importe_total); ?>&euro;</div>
-                <div class="text-sm text-white/70"><?php echo esc_html__('Importe Total', 'flavor-chat-ia'); ?></div>
+                <div class="text-sm text-white/70"><?php echo esc_html__('Importe Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
             <div class="text-center p-4 rounded-xl bg-white/10 backdrop-blur border border-white/20">
                 <div class="text-3xl font-bold text-white"><?php echo esc_html($total_clientes); ?></div>
-                <div class="text-sm text-white/70"><?php echo esc_html__('Clientes', 'flavor-chat-ia'); ?></div>
+                <div class="text-sm text-white/70"><?php echo esc_html__('Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
     </div>

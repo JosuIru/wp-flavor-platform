@@ -43,7 +43,7 @@ $dias_calendario = $dias_calendario ?? [
                 <?php echo esc_html($titulo_resumen); ?>
             </h2>
             <p class="text-gray-500 text-lg max-w-2xl mx-auto">
-                <?php echo esc_html__('Vista general de tu actividad laboral', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Vista general de tu actividad laboral', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
 
@@ -57,7 +57,7 @@ $dias_calendario = $dias_calendario ?? [
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                     </div>
-                    <span class="text-sm font-medium text-gray-400"><?php echo esc_html__('Esta semana', 'flavor-chat-ia'); ?></span>
+                    <span class="text-sm font-medium text-gray-400"><?php echo esc_html__('Esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="mb-3">
                     <span class="text-3xl font-bold text-gray-800"><?php echo esc_html($horas_esta_semana); ?>h</span>
@@ -80,7 +80,7 @@ $dias_calendario = $dias_calendario ?? [
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                         </svg>
                     </div>
-                    <span class="text-sm font-medium text-gray-400"><?php echo esc_html__('Este mes', 'flavor-chat-ia'); ?></span>
+                    <span class="text-sm font-medium text-gray-400"><?php echo esc_html__('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="mb-3">
                     <span class="text-3xl font-bold text-gray-800"><?php echo esc_html($horas_este_mes); ?>h</span>
@@ -103,7 +103,7 @@ $dias_calendario = $dias_calendario ?? [
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
                     </div>
-                    <span class="text-sm font-medium text-gray-400"><?php echo esc_html__('Media diaria', 'flavor-chat-ia'); ?></span>
+                    <span class="text-sm font-medium text-gray-400"><?php echo esc_html__('Media diaria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="mb-3">
                     <span class="text-3xl font-bold text-gray-800"><?php echo esc_html($media_diaria_horas); ?></span>
@@ -114,7 +114,7 @@ $dias_calendario = $dias_calendario ?? [
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                     </svg>
                     <span class="text-sm text-gray-500">
-                        <?php echo esc_html($dias_trabajados_mes); ?>/<?php echo esc_html($dias_laborables_mes); ?> <?php echo esc_html__('dias trabajados', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html($dias_trabajados_mes); ?>/<?php echo esc_html($dias_laborables_mes); ?> <?php echo esc_html__('dias trabajados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                 </div>
             </div>
@@ -125,10 +125,10 @@ $dias_calendario = $dias_calendario ?? [
             <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-lg font-semibold text-gray-800">
-                        <?php echo esc_html__('Esta semana', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <span class="text-sm text-gray-400">
-                        <?php echo esc_html($porcentaje_dias); ?>% <?php echo esc_html__('asistencia mensual', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html($porcentaje_dias); ?>% <?php echo esc_html__('asistencia mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                 </div>
 
@@ -157,7 +157,7 @@ $dias_calendario = $dias_calendario ?? [
                 <!-- Barra de progreso general del mes -->
                 <div class="mt-6 pt-6 border-t border-gray-100">
                     <div class="flex items-center justify-between mb-2">
-                        <span class="text-sm font-medium text-gray-600"><?php echo esc_html__('Progreso mensual', 'flavor-chat-ia'); ?></span>
+                        <span class="text-sm font-medium text-gray-600"><?php echo esc_html__('Progreso mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="text-sm font-semibold text-gray-800"><?php echo esc_html($horas_este_mes); ?>h / <?php echo esc_html($horas_esperadas_mes); ?>h</span>
                     </div>
                     <div class="w-full bg-gray-100 rounded-full h-3">

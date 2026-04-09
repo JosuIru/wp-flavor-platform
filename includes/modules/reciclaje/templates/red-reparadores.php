@@ -22,8 +22,8 @@ $especialidades = [
             <span class="dashicons dashicons-admin-tools"></span>
         </span>
         <div>
-            <h3><?php esc_html_e('Red de Reparadores', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('Conecta con vecinos que pueden reparar tus objetos', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('Red de Reparadores', 'flavor-platform'); ?></h3>
+            <p><?php esc_html_e('Conecta con vecinos que pueden reparar tus objetos', 'flavor-platform'); ?></p>
         </div>
     </div>
 
@@ -31,17 +31,17 @@ $especialidades = [
     <div class="rec-reparadores__tabs">
         <button class="rec-reparadores__tab rec-reparadores__tab--active" data-tab="buscar">
             <span class="dashicons dashicons-search"></span>
-            <?php esc_html_e('Buscar', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Buscar', 'flavor-platform'); ?>
         </button>
         <button class="rec-reparadores__tab" data-tab="solicitudes">
-            <?php esc_html_e('Mis solicitudes', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Mis solicitudes', 'flavor-platform'); ?>
             <?php if (!empty($mis_solicitudes)): ?>
                 <span class="rec-reparadores__tab-count"><?php echo count($mis_solicitudes); ?></span>
             <?php endif; ?>
         </button>
         <button class="rec-reparadores__tab" data-tab="ofrecer">
             <span class="dashicons dashicons-plus-alt"></span>
-            <?php esc_html_e('Ofrecer servicio', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Ofrecer servicio', 'flavor-platform'); ?>
         </button>
     </div>
 
@@ -50,7 +50,7 @@ $especialidades = [
         <!-- Filtros -->
         <div class="rec-reparadores__filtros">
             <select class="rec-reparadores__filtro-esp" id="filtro-especialidad">
-                <option value=""><?php esc_html_e('Todas las especialidades', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php esc_html_e('Todas las especialidades', 'flavor-platform'); ?></option>
                 <?php foreach ($especialidades as $key => $esp): ?>
                     <option value="<?php echo esc_attr($key); ?>"><?php echo esc_html(ucfirst($key)); ?></option>
                 <?php endforeach; ?>
@@ -60,8 +60,8 @@ $especialidades = [
         <?php if (empty($reparadores)): ?>
             <div class="rec-reparadores__vacio">
                 <span class="dashicons dashicons-admin-tools"></span>
-                <p><?php esc_html_e('No hay reparadores disponibles.', 'flavor-chat-ia'); ?></p>
-                <p class="rec-reparadores__vacio-sub"><?php esc_html_e('¡Sé el primero en ofrecer tus habilidades!', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No hay reparadores disponibles.', 'flavor-platform'); ?></p>
+                <p class="rec-reparadores__vacio-sub"><?php esc_html_e('¡Sé el primero en ofrecer tus habilidades!', 'flavor-platform'); ?></p>
             </div>
         <?php else: ?>
             <div class="rec-reparadores__grid">
@@ -94,7 +94,7 @@ $especialidades = [
                         <div class="rec-reparadores__stats">
                             <span class="rec-reparadores__stat">
                                 <span class="dashicons dashicons-hammer"></span>
-                                <?php printf(esc_html__('%d reparaciones', 'flavor-chat-ia'), $rep->total_reparaciones ?? 0); ?>
+                                <?php printf(esc_html__('%d reparaciones', 'flavor-platform'), $rep->total_reparaciones ?? 0); ?>
                             </span>
                             <?php if ($rep->ubicacion): ?>
                                 <span class="rec-reparadores__stat">
@@ -114,7 +114,7 @@ $especialidades = [
                         <div class="rec-reparadores__card-footer">
                             <button type="button" class="rec-btn rec-btn--primary rec-solicitar-reparacion" data-id="<?php echo esc_attr($rep->id); ?>">
                                 <span class="dashicons dashicons-email"></span>
-                                <?php esc_html_e('Solicitar', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Solicitar', 'flavor-platform'); ?>
                             </button>
                         </div>
                     </div>
@@ -128,18 +128,18 @@ $especialidades = [
         <?php if (empty($mis_solicitudes)): ?>
             <div class="rec-reparadores__vacio">
                 <span class="dashicons dashicons-clipboard"></span>
-                <p><?php esc_html_e('No tienes solicitudes de reparación.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No tienes solicitudes de reparación.', 'flavor-platform'); ?></p>
             </div>
         <?php else: ?>
             <div class="rec-reparadores__solicitudes">
                 <?php foreach ($mis_solicitudes as $sol):
                     $esp_info = $especialidades[$sol->tipo_objeto] ?? $especialidades['otros'];
                     $estados = [
-                        'pendiente' => ['label' => __('Pendiente', 'flavor-chat-ia'), 'color' => '#ff9800'],
-                        'aceptada' => ['label' => __('Aceptada', 'flavor-chat-ia'), 'color' => '#2196f3'],
-                        'en_proceso' => ['label' => __('En proceso', 'flavor-chat-ia'), 'color' => '#9c27b0'],
-                        'completada' => ['label' => __('Completada', 'flavor-chat-ia'), 'color' => '#4caf50'],
-                        'cancelada' => ['label' => __('Cancelada', 'flavor-chat-ia'), 'color' => '#f44336'],
+                        'pendiente' => ['label' => __('Pendiente', 'flavor-platform'), 'color' => '#ff9800'],
+                        'aceptada' => ['label' => __('Aceptada', 'flavor-platform'), 'color' => '#2196f3'],
+                        'en_proceso' => ['label' => __('En proceso', 'flavor-platform'), 'color' => '#9c27b0'],
+                        'completada' => ['label' => __('Completada', 'flavor-platform'), 'color' => '#4caf50'],
+                        'cancelada' => ['label' => __('Cancelada', 'flavor-platform'), 'color' => '#f44336'],
                     ];
                     $estado_info = $estados[$sol->estado] ?? $estados['pendiente'];
                 ?>
@@ -151,7 +151,7 @@ $especialidades = [
                             <div class="rec-reparadores__solicitud-info">
                                 <strong><?php echo esc_html($sol->descripcion_objeto); ?></strong>
                                 <span class="rec-reparadores__reparador-nombre">
-                                    <?php printf(esc_html__('Reparador: %s', 'flavor-chat-ia'), $sol->reparador_nombre); ?>
+                                    <?php printf(esc_html__('Reparador: %s', 'flavor-platform'), $sol->reparador_nombre); ?>
                                 </span>
                             </div>
                             <span class="rec-reparadores__estado" style="background: <?php echo esc_attr($estado_info['color']); ?>">
@@ -173,7 +173,7 @@ $especialidades = [
                         <?php if ($sol->estado === 'completada' && empty($sol->valoracion)): ?>
                             <button type="button" class="rec-btn rec-btn--outline rec-valorar-reparacion" data-id="<?php echo esc_attr($sol->id); ?>">
                                 <span class="dashicons dashicons-star-filled"></span>
-                                <?php esc_html_e('Valorar', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Valorar', 'flavor-platform'); ?>
                             </button>
                         <?php endif; ?>
                     </div>
@@ -187,67 +187,67 @@ $especialidades = [
         <form class="rec-reparadores__form" id="form-ofrecer-reparacion">
             <div class="rec-reparadores__form-intro">
                 <span class="dashicons dashicons-heart"></span>
-                <p><?php esc_html_e('Comparte tus habilidades con la comunidad y ayuda a reducir residuos.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('Comparte tus habilidades con la comunidad y ayuda a reducir residuos.', 'flavor-platform'); ?></p>
             </div>
 
             <div class="rec-reparadores__field">
-                <label><?php esc_html_e('Especialidad principal', 'flavor-chat-ia'); ?></label>
+                <label><?php esc_html_e('Especialidad principal', 'flavor-platform'); ?></label>
                 <select name="especialidad" required>
-                    <option value=""><?php esc_html_e('Selecciona...', 'flavor-chat-ia'); ?></option>
-                    <option value="electronica"><?php esc_html_e('Electrónica', 'flavor-chat-ia'); ?></option>
-                    <option value="ropa"><?php esc_html_e('Ropa/Costura', 'flavor-chat-ia'); ?></option>
-                    <option value="muebles"><?php esc_html_e('Muebles', 'flavor-chat-ia'); ?></option>
-                    <option value="bicicletas"><?php esc_html_e('Bicicletas', 'flavor-chat-ia'); ?></option>
-                    <option value="electrodomesticos"><?php esc_html_e('Electrodomésticos', 'flavor-chat-ia'); ?></option>
-                    <option value="otros"><?php esc_html_e('Otros', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Selecciona...', 'flavor-platform'); ?></option>
+                    <option value="electronica"><?php esc_html_e('Electrónica', 'flavor-platform'); ?></option>
+                    <option value="ropa"><?php esc_html_e('Ropa/Costura', 'flavor-platform'); ?></option>
+                    <option value="muebles"><?php esc_html_e('Muebles', 'flavor-platform'); ?></option>
+                    <option value="bicicletas"><?php esc_html_e('Bicicletas', 'flavor-platform'); ?></option>
+                    <option value="electrodomesticos"><?php esc_html_e('Electrodomésticos', 'flavor-platform'); ?></option>
+                    <option value="otros"><?php esc_html_e('Otros', 'flavor-platform'); ?></option>
                 </select>
             </div>
 
             <div class="rec-reparadores__field">
-                <label><?php esc_html_e('Descripción de tus habilidades', 'flavor-chat-ia'); ?></label>
-                <textarea name="descripcion" rows="3" required placeholder="<?php esc_attr_e('Ej: Reparo móviles, tablets y pequeños electrodomésticos...', 'flavor-chat-ia'); ?>"></textarea>
+                <label><?php esc_html_e('Descripción de tus habilidades', 'flavor-platform'); ?></label>
+                <textarea name="descripcion" rows="3" required placeholder="<?php esc_attr_e('Ej: Reparo móviles, tablets y pequeños electrodomésticos...', 'flavor-platform'); ?>"></textarea>
             </div>
 
             <div class="rec-reparadores__field">
-                <label><?php esc_html_e('Ubicación aproximada', 'flavor-chat-ia'); ?></label>
-                <input type="text" name="ubicacion" placeholder="<?php esc_attr_e('Ej: Centro, Barrio Norte...', 'flavor-chat-ia'); ?>">
+                <label><?php esc_html_e('Ubicación aproximada', 'flavor-platform'); ?></label>
+                <input type="text" name="ubicacion" placeholder="<?php esc_attr_e('Ej: Centro, Barrio Norte...', 'flavor-platform'); ?>">
             </div>
 
             <div class="rec-reparadores__field">
                 <label>
                     <input type="checkbox" name="acepto_condiciones" required>
-                    <?php esc_html_e('Acepto ofrecer mis servicios de forma solidaria o a precios justos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Acepto ofrecer mis servicios de forma solidaria o a precios justos', 'flavor-platform'); ?>
                 </label>
             </div>
 
             <button type="submit" class="rec-btn rec-btn--primary rec-btn--full">
                 <span class="dashicons dashicons-yes"></span>
-                <?php esc_html_e('Unirme a la red', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Unirme a la red', 'flavor-platform'); ?>
             </button>
         </form>
     </div>
 
     <!-- Impacto de la red -->
     <div class="rec-reparadores__impacto-global">
-        <h4><?php esc_html_e('Impacto de nuestra red', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('Impacto de nuestra red', 'flavor-platform'); ?></h4>
         <div class="rec-reparadores__impacto-grid">
             <div class="rec-reparadores__impacto-item">
                 <span class="rec-reparadores__impacto-valor"><?php echo esc_html(count($reparadores)); ?></span>
-                <span class="rec-reparadores__impacto-label"><?php esc_html_e('Reparadores', 'flavor-chat-ia'); ?></span>
+                <span class="rec-reparadores__impacto-label"><?php esc_html_e('Reparadores', 'flavor-platform'); ?></span>
             </div>
             <div class="rec-reparadores__impacto-item">
                 <?php
                 $total_reparaciones = array_sum(array_column($reparadores, 'total_reparaciones'));
                 ?>
                 <span class="rec-reparadores__impacto-valor"><?php echo esc_html($total_reparaciones); ?></span>
-                <span class="rec-reparadores__impacto-label"><?php esc_html_e('Reparaciones', 'flavor-chat-ia'); ?></span>
+                <span class="rec-reparadores__impacto-label"><?php esc_html_e('Reparaciones', 'flavor-platform'); ?></span>
             </div>
             <div class="rec-reparadores__impacto-item">
                 <?php
                 $co2_total = array_sum(array_column($reparadores, 'co2_total_ahorrado'));
                 ?>
                 <span class="rec-reparadores__impacto-valor"><?php echo esc_html(number_format($co2_total, 0)); ?></span>
-                <span class="rec-reparadores__impacto-label"><?php esc_html_e('kg CO₂ ahorrados', 'flavor-chat-ia'); ?></span>
+                <span class="rec-reparadores__impacto-label"><?php esc_html_e('kg CO₂ ahorrados', 'flavor-platform'); ?></span>
             </div>
         </div>
     </div>

@@ -20,7 +20,7 @@ $tabla_clientes_existe = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $t
 $tabla_notas_existe = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla_notas)) === $tabla_notas;
 
 if (!$tabla_clientes_existe) {
-    echo '<div class="dm-alert dm-alert--warning">' . esc_html__('La tabla principal de clientes no está disponible. Activa el módulo para crearla.', 'flavor-chat-ia') . '</div>';
+    echo '<div class="dm-alert dm-alert--warning">' . esc_html__('La tabla principal de clientes no está disponible. Activa el módulo para crearla.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
     return;
 }
 
@@ -124,16 +124,16 @@ $tipos_iconos = [
     <div class="dm-dashboard__header">
         <div class="dm-dashboard__title">
             <span class="dashicons dashicons-businessman"></span>
-            <h1><?php esc_html_e('Gestión de Clientes', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Gestión de Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
         </div>
         <div class="dm-dashboard__actions">
             <a href="<?php echo esc_url(admin_url('admin.php?page=clientes-listado&action=nuevo')); ?>" class="button button-primary">
                 <span class="dashicons dashicons-plus-alt2"></span>
-                <?php esc_html_e('Nuevo Cliente', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Nuevo Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=clientes-listado')); ?>" class="button">
                 <span class="dashicons dashicons-list-view"></span>
-                <?php esc_html_e('Ver Listado', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver Listado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>
@@ -146,7 +146,7 @@ $tipos_iconos = [
             </div>
             <div class="dm-stat-card__content">
                 <span class="dm-stat-card__value"><?php echo number_format_i18n($total_clientes); ?></span>
-                <span class="dm-stat-card__label"><?php esc_html_e('Total Clientes', 'flavor-chat-ia'); ?></span>
+                <span class="dm-stat-card__label"><?php esc_html_e('Total Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -156,7 +156,7 @@ $tipos_iconos = [
             </div>
             <div class="dm-stat-card__content">
                 <span class="dm-stat-card__value"><?php echo number_format_i18n($clientes_activos); ?></span>
-                <span class="dm-stat-card__label"><?php esc_html_e('Activos', 'flavor-chat-ia'); ?></span>
+                <span class="dm-stat-card__label"><?php esc_html_e('Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -166,7 +166,7 @@ $tipos_iconos = [
             </div>
             <div class="dm-stat-card__content">
                 <span class="dm-stat-card__value"><?php echo number_format_i18n($clientes_potenciales); ?></span>
-                <span class="dm-stat-card__label"><?php esc_html_e('Potenciales', 'flavor-chat-ia'); ?></span>
+                <span class="dm-stat-card__label"><?php esc_html_e('Potenciales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -176,7 +176,7 @@ $tipos_iconos = [
             </div>
             <div class="dm-stat-card__content">
                 <span class="dm-stat-card__value"><?php echo number_format_i18n($nuevos_mes); ?></span>
-                <span class="dm-stat-card__label"><?php esc_html_e('Nuevos este mes', 'flavor-chat-ia'); ?></span>
+                <span class="dm-stat-card__label"><?php esc_html_e('Nuevos este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
@@ -188,17 +188,17 @@ $tipos_iconos = [
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-clock"></span>
-                    <?php esc_html_e('Clientes Recientes', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Clientes Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=clientes-listado')); ?>" class="dm-card__link">
-                    <?php esc_html_e('Ver todos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <div class="dm-card__body">
                 <?php if (empty($clientes_recientes)) : ?>
                     <div class="dm-empty-state dm-empty-state--small">
                         <span class="dashicons dashicons-admin-users"></span>
-                        <p><?php esc_html_e('No hay clientes registrados aún.', 'flavor-chat-ia'); ?></p>
+                        <p><?php esc_html_e('No hay clientes registrados aún.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 <?php else : ?>
                     <ul class="dm-list dm-list--clientes">
@@ -231,7 +231,7 @@ $tipos_iconos = [
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-star-filled"></span>
-                    <?php esc_html_e('Clientes Potenciales', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Clientes Potenciales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <span class="dm-card__badge"><?php echo number_format_i18n($clientes_potenciales); ?></span>
             </div>
@@ -239,7 +239,7 @@ $tipos_iconos = [
                 <?php if (empty($potenciales_prioritarios)) : ?>
                     <div class="dm-empty-state dm-empty-state--small">
                         <span class="dashicons dashicons-star-empty"></span>
-                        <p><?php esc_html_e('No hay clientes potenciales actualmente.', 'flavor-chat-ia'); ?></p>
+                        <p><?php esc_html_e('No hay clientes potenciales actualmente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 <?php else : ?>
                     <ul class="dm-list">
@@ -255,7 +255,7 @@ $tipos_iconos = [
                                     <?php endif; ?>
                                 </div>
                                 <div class="dm-list__actions">
-                                    <button type="button" class="button button-small" title="<?php esc_attr_e('Contactar', 'flavor-chat-ia'); ?>">
+                                    <button type="button" class="button button-small" title="<?php esc_attr_e('Contactar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                         <span class="dashicons dashicons-email"></span>
                                     </button>
                                 </div>
@@ -274,12 +274,12 @@ $tipos_iconos = [
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-category"></span>
-                    <?php esc_html_e('Por Tipo', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Por Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <div class="dm-card__body">
                 <?php if (empty($por_tipo)) : ?>
-                    <p class="dm-text-muted"><?php esc_html_e('Sin datos', 'flavor-chat-ia'); ?></p>
+                    <p class="dm-text-muted"><?php esc_html_e('Sin datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php else : ?>
                     <ul class="dm-breakdown-list">
                         <?php foreach ($por_tipo as $tipo) :
@@ -301,12 +301,12 @@ $tipos_iconos = [
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-chart-pie"></span>
-                    <?php esc_html_e('Por Origen', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Por Origen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <div class="dm-card__body">
                 <?php if (empty($por_origen)) : ?>
-                    <p class="dm-text-muted"><?php esc_html_e('Sin datos', 'flavor-chat-ia'); ?></p>
+                    <p class="dm-text-muted"><?php esc_html_e('Sin datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php else : ?>
                     <ul class="dm-breakdown-list">
                         <?php foreach ($por_origen as $origen) : ?>
@@ -325,29 +325,29 @@ $tipos_iconos = [
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-visibility"></span>
-                    <?php esc_html_e('Estados', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <div class="dm-card__body">
                 <ul class="dm-breakdown-list">
                     <li class="dm-breakdown-list__item">
                         <span class="dm-dot dm-dot--green"></span>
-                        <span class="dm-breakdown-list__label"><?php esc_html_e('Activos', 'flavor-chat-ia'); ?></span>
+                        <span class="dm-breakdown-list__label"><?php esc_html_e('Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="dm-breakdown-list__value"><?php echo number_format_i18n($clientes_activos); ?></span>
                     </li>
                     <li class="dm-breakdown-list__item">
                         <span class="dm-dot dm-dot--blue"></span>
-                        <span class="dm-breakdown-list__label"><?php esc_html_e('Potenciales', 'flavor-chat-ia'); ?></span>
+                        <span class="dm-breakdown-list__label"><?php esc_html_e('Potenciales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="dm-breakdown-list__value"><?php echo number_format_i18n($clientes_potenciales); ?></span>
                     </li>
                     <li class="dm-breakdown-list__item">
                         <span class="dm-dot dm-dot--gray"></span>
-                        <span class="dm-breakdown-list__label"><?php esc_html_e('Inactivos', 'flavor-chat-ia'); ?></span>
+                        <span class="dm-breakdown-list__label"><?php esc_html_e('Inactivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="dm-breakdown-list__value"><?php echo number_format_i18n($clientes_inactivos); ?></span>
                     </li>
                     <li class="dm-breakdown-list__item">
                         <span class="dm-dot dm-dot--red"></span>
-                        <span class="dm-breakdown-list__label"><?php esc_html_e('Perdidos', 'flavor-chat-ia'); ?></span>
+                        <span class="dm-breakdown-list__label"><?php esc_html_e('Perdidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="dm-breakdown-list__value"><?php echo number_format_i18n($clientes_perdidos); ?></span>
                     </li>
                 </ul>
@@ -361,7 +361,7 @@ $tipos_iconos = [
         <div class="dm-card__header">
             <h3>
                 <span class="dashicons dashicons-edit"></span>
-                <?php esc_html_e('Actividad Reciente', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Actividad Reciente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <div class="dm-card__body">
@@ -372,8 +372,8 @@ $tipos_iconos = [
                             <span class="dashicons dashicons-format-aside"></span>
                         </div>
                         <div class="dm-activity-list__content">
-                            <strong><?php echo esc_html($nota->autor_nombre ?: __('Usuario', 'flavor-chat-ia')); ?></strong>
-                            <?php esc_html_e('añadió una nota en', 'flavor-chat-ia'); ?>
+                            <strong><?php echo esc_html($nota->autor_nombre ?: __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong>
+                            <?php esc_html_e('añadió una nota en', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             <strong><?php echo esc_html($nota->cliente_nombre); ?></strong>
                             <?php if (!empty($nota->cliente_empresa)) : ?>
                                 (<?php echo esc_html($nota->cliente_empresa); ?>)
@@ -395,7 +395,7 @@ $tipos_iconos = [
         <div class="dm-card__header">
             <h3>
                 <span class="dashicons dashicons-chart-line"></span>
-                <?php esc_html_e('Evolución Mensual', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Evolución Mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <div class="dm-card__body">
@@ -415,7 +415,7 @@ $tipos_iconos = [
             data: {
                 labels: <?php echo wp_json_encode($meses_labels); ?>,
                 datasets: [{
-                    label: '<?php echo esc_js(__('Nuevos clientes', 'flavor-chat-ia')); ?>',
+                    label: '<?php echo esc_js(__('Nuevos clientes', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
                     data: <?php echo wp_json_encode($meses_data); ?>,
                     backgroundColor: 'rgba(34, 113, 177, 0.7)',
                     borderColor: 'rgba(34, 113, 177, 1)',

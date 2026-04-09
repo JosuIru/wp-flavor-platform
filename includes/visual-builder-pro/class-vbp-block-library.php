@@ -80,71 +80,71 @@ class Flavor_VBP_Block_Library {
         return array(
             '_separator_estilo' => array(
                 'type'  => 'separator',
-                'label' => __( '🎨 Estilo Visual', 'flavor-chat-ia' ),
+                'label' => __( '🎨 Estilo Visual', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'esquema_color' => array(
                 'type'    => 'select',
-                'label'   => __( 'Esquema de color', 'flavor-chat-ia' ),
+                'label'   => __( 'Esquema de color', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'options' => array(
-                    'default'   => __( 'Por defecto', 'flavor-chat-ia' ),
-                    'primary'   => __( 'Primario (azul)', 'flavor-chat-ia' ),
-                    'success'   => __( 'Éxito (verde)', 'flavor-chat-ia' ),
-                    'warning'   => __( 'Advertencia (amarillo)', 'flavor-chat-ia' ),
-                    'danger'    => __( 'Peligro (rojo)', 'flavor-chat-ia' ),
-                    'purple'    => __( 'Púrpura', 'flavor-chat-ia' ),
-                    'pink'      => __( 'Rosa', 'flavor-chat-ia' ),
-                    'dark'      => __( 'Oscuro', 'flavor-chat-ia' ),
-                    'custom'    => __( 'Personalizado', 'flavor-chat-ia' ),
+                    'default'   => __( 'Por defecto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'primary'   => __( 'Primario (azul)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'success'   => __( 'Éxito (verde)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'warning'   => __( 'Advertencia (amarillo)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'danger'    => __( 'Peligro (rojo)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'purple'    => __( 'Púrpura', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'pink'      => __( 'Rosa', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'dark'      => __( 'Oscuro', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'custom'    => __( 'Personalizado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 'default' => 'default',
             ),
             'color_primario' => array(
                 'type'      => 'color',
-                'label'     => __( 'Color primario', 'flavor-chat-ia' ),
+                'label'     => __( 'Color primario', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default'   => '#3b82f6',
                 'condition' => array( 'esquema_color' => 'custom' ),
             ),
             'color_secundario' => array(
                 'type'      => 'color',
-                'label'     => __( 'Color secundario', 'flavor-chat-ia' ),
+                'label'     => __( 'Color secundario', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default'   => '#64748b',
                 'condition' => array( 'esquema_color' => 'custom' ),
             ),
             'radio_bordes' => array(
                 'type'    => 'select',
-                'label'   => __( 'Bordes redondeados', 'flavor-chat-ia' ),
+                'label'   => __( 'Bordes redondeados', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'options' => array(
-                    'none'   => __( 'Sin redondear', 'flavor-chat-ia' ),
-                    'sm'     => __( 'Pequeño (4px)', 'flavor-chat-ia' ),
-                    'md'     => __( 'Mediano (8px)', 'flavor-chat-ia' ),
-                    'lg'     => __( 'Grande (12px)', 'flavor-chat-ia' ),
-                    'xl'     => __( 'Extra grande (16px)', 'flavor-chat-ia' ),
-                    'full'   => __( 'Completo (circular)', 'flavor-chat-ia' ),
+                    'none'   => __( 'Sin redondear', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'sm'     => __( 'Pequeño (4px)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'md'     => __( 'Mediano (8px)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'lg'     => __( 'Grande (12px)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'xl'     => __( 'Extra grande (16px)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'full'   => __( 'Completo (circular)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 'default' => 'lg',
             ),
             'sombra' => array(
                 'type'    => 'select',
-                'label'   => __( 'Sombra', 'flavor-chat-ia' ),
+                'label'   => __( 'Sombra', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'options' => array(
-                    'none' => __( 'Sin sombra', 'flavor-chat-ia' ),
-                    'sm'   => __( 'Sutil', 'flavor-chat-ia' ),
-                    'md'   => __( 'Media', 'flavor-chat-ia' ),
-                    'lg'   => __( 'Pronunciada', 'flavor-chat-ia' ),
-                    'xl'   => __( 'Muy pronunciada', 'flavor-chat-ia' ),
+                    'none' => __( 'Sin sombra', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'sm'   => __( 'Sutil', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'md'   => __( 'Media', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'lg'   => __( 'Pronunciada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'xl'   => __( 'Muy pronunciada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 'default' => 'md',
             ),
             'animacion_entrada' => array(
                 'type'    => 'select',
-                'label'   => __( 'Animación de entrada', 'flavor-chat-ia' ),
+                'label'   => __( 'Animación de entrada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'options' => array(
-                    'none'      => __( 'Sin animación', 'flavor-chat-ia' ),
-                    'fade'      => __( 'Aparecer', 'flavor-chat-ia' ),
-                    'slide-up'  => __( 'Deslizar arriba', 'flavor-chat-ia' ),
-                    'slide-down'=> __( 'Deslizar abajo', 'flavor-chat-ia' ),
-                    'zoom'      => __( 'Zoom', 'flavor-chat-ia' ),
-                    'bounce'    => __( 'Rebote', 'flavor-chat-ia' ),
+                    'none'      => __( 'Sin animación', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'fade'      => __( 'Aparecer', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'slide-up'  => __( 'Deslizar arriba', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'slide-down'=> __( 'Deslizar abajo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'zoom'      => __( 'Zoom', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'bounce'    => __( 'Rebote', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 'default' => 'fade',
             ),
@@ -161,33 +161,33 @@ class Flavor_VBP_Block_Library {
         return array(
             '_separator_seccion' => array(
                 'type'  => 'separator',
-                'label' => __( '📋 Cabecera de Sección', 'flavor-chat-ia' ),
+                'label' => __( '📋 Cabecera de Sección', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'titulo' => array(
                 'type'    => 'text',
-                'label'   => __( 'Título de sección', 'flavor-chat-ia' ),
+                'label'   => __( 'Título de sección', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => '',
                 'ai'      => true,
             ),
             'subtitulo' => array(
                 'type'    => 'text',
-                'label'   => __( 'Subtítulo', 'flavor-chat-ia' ),
+                'label'   => __( 'Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => '',
                 'ai'      => true,
             ),
             'titulo_color' => array(
                 'type'    => 'color',
-                'label'   => __( 'Color del título', 'flavor-chat-ia' ),
+                'label'   => __( 'Color del título', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => '#ffffff',
             ),
             'subtitulo_color' => array(
                 'type'    => 'color',
-                'label'   => __( 'Color del subtítulo', 'flavor-chat-ia' ),
+                'label'   => __( 'Color del subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => '#9CA3AF',
             ),
             'color_fondo' => array(
                 'type'    => 'color',
-                'label'   => __( 'Color de fondo', 'flavor-chat-ia' ),
+                'label'   => __( 'Color de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => 'transparent',
             ),
         );
@@ -203,134 +203,134 @@ class Flavor_VBP_Block_Library {
             // Colores de texto
             '_separator_colores_texto' => array(
                 'type'  => 'separator',
-                'label' => __( '🎨 Colores de Texto', 'flavor-chat-ia' ),
+                'label' => __( '🎨 Colores de Texto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'titulo_color' => array(
                 'type'    => 'color',
-                'label'   => __( 'Color del título', 'flavor-chat-ia' ),
+                'label'   => __( 'Color del título', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => '#1f2937',
             ),
             'subtitulo_color' => array(
                 'type'    => 'color',
-                'label'   => __( 'Color del subtítulo', 'flavor-chat-ia' ),
+                'label'   => __( 'Color del subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => '#6b7280',
             ),
             'texto_color' => array(
                 'type'    => 'color',
-                'label'   => __( 'Color del texto', 'flavor-chat-ia' ),
+                'label'   => __( 'Color del texto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => '#374151',
             ),
 
             // Colores de botón
             '_separator_colores_boton' => array(
                 'type'  => 'separator',
-                'label' => __( '🔘 Colores de Botón', 'flavor-chat-ia' ),
+                'label' => __( '🔘 Colores de Botón', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'boton_color_fondo' => array(
                 'type'    => 'color',
-                'label'   => __( 'Fondo del botón', 'flavor-chat-ia' ),
+                'label'   => __( 'Fondo del botón', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => '#3b82f6',
             ),
             'boton_color_texto' => array(
                 'type'    => 'color',
-                'label'   => __( 'Texto del botón', 'flavor-chat-ia' ),
+                'label'   => __( 'Texto del botón', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => '#ffffff',
             ),
             'boton_color_hover' => array(
                 'type'    => 'color',
-                'label'   => __( 'Fondo hover', 'flavor-chat-ia' ),
+                'label'   => __( 'Fondo hover', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => '#2563eb',
             ),
 
             // Fondo de sección
             '_separator_fondo_seccion' => array(
                 'type'  => 'separator',
-                'label' => __( '🖼️ Fondo de Sección', 'flavor-chat-ia' ),
+                'label' => __( '🖼️ Fondo de Sección', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'seccion_fondo_tipo' => array(
                 'type'    => 'select',
-                'label'   => __( 'Tipo de fondo', 'flavor-chat-ia' ),
+                'label'   => __( 'Tipo de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'options' => array(
-                    'color'    => __( 'Color sólido', 'flavor-chat-ia' ),
-                    'gradient' => __( 'Gradiente', 'flavor-chat-ia' ),
-                    'image'    => __( 'Imagen', 'flavor-chat-ia' ),
+                    'color'    => __( 'Color sólido', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'gradient' => __( 'Gradiente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'image'    => __( 'Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 'default' => 'color',
             ),
             'seccion_fondo_color' => array(
                 'type'    => 'color',
-                'label'   => __( 'Color de fondo', 'flavor-chat-ia' ),
+                'label'   => __( 'Color de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => '#ffffff',
             ),
             'seccion_fondo_gradiente_inicio' => array(
                 'type'    => 'color',
-                'label'   => __( 'Gradiente inicio', 'flavor-chat-ia' ),
+                'label'   => __( 'Gradiente inicio', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => '#3b82f6',
             ),
             'seccion_fondo_gradiente_fin' => array(
                 'type'    => 'color',
-                'label'   => __( 'Gradiente fin', 'flavor-chat-ia' ),
+                'label'   => __( 'Gradiente fin', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => '#8b5cf6',
             ),
             'seccion_fondo_imagen' => array(
                 'type'  => 'image',
-                'label' => __( 'Imagen de fondo', 'flavor-chat-ia' ),
+                'label' => __( 'Imagen de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'seccion_overlay_color' => array(
                 'type'    => 'color',
-                'label'   => __( 'Color overlay', 'flavor-chat-ia' ),
+                'label'   => __( 'Color overlay', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => 'rgba(0,0,0,0.5)',
             ),
 
             // Tarjetas/Cards
             '_separator_tarjetas' => array(
                 'type'  => 'separator',
-                'label' => __( '🃏 Colores de Tarjetas', 'flavor-chat-ia' ),
+                'label' => __( '🃏 Colores de Tarjetas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'card_fondo_color' => array(
                 'type'    => 'color',
-                'label'   => __( 'Fondo de tarjeta', 'flavor-chat-ia' ),
+                'label'   => __( 'Fondo de tarjeta', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => '#ffffff',
             ),
             'card_borde_color' => array(
                 'type'    => 'color',
-                'label'   => __( 'Borde de tarjeta', 'flavor-chat-ia' ),
+                'label'   => __( 'Borde de tarjeta', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => '#e5e7eb',
             ),
             'card_titulo_color' => array(
                 'type'    => 'color',
-                'label'   => __( 'Título de tarjeta', 'flavor-chat-ia' ),
+                'label'   => __( 'Título de tarjeta', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => '#1f2937',
             ),
             'card_texto_color' => array(
                 'type'    => 'color',
-                'label'   => __( 'Texto de tarjeta', 'flavor-chat-ia' ),
+                'label'   => __( 'Texto de tarjeta', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => '#6b7280',
             ),
             'card_icono_color' => array(
                 'type'    => 'color',
-                'label'   => __( 'Color de iconos', 'flavor-chat-ia' ),
+                'label'   => __( 'Color de iconos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => '#3b82f6',
             ),
 
             // Acentos
             '_separator_acentos' => array(
                 'type'  => 'separator',
-                'label' => __( '✨ Colores de Acento', 'flavor-chat-ia' ),
+                'label' => __( '✨ Colores de Acento', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'acento_color' => array(
                 'type'    => 'color',
-                'label'   => __( 'Color de acento', 'flavor-chat-ia' ),
+                'label'   => __( 'Color de acento', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => '#3b82f6',
             ),
             'destacado_fondo' => array(
                 'type'    => 'color',
-                'label'   => __( 'Fondo destacado', 'flavor-chat-ia' ),
+                'label'   => __( 'Fondo destacado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => '#eff6ff',
             ),
             'destacado_borde' => array(
                 'type'    => 'color',
-                'label'   => __( 'Borde destacado', 'flavor-chat-ia' ),
+                'label'   => __( 'Borde destacado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => '#3b82f6',
             ),
         );
@@ -345,23 +345,23 @@ class Flavor_VBP_Block_Library {
         return array(
             '_separator_layout' => array(
                 'type'  => 'separator',
-                'label' => __( '📐 Disposición', 'flavor-chat-ia' ),
+                'label' => __( '📐 Disposición', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'columnas' => array(
                 'type'    => 'select',
-                'label'   => __( 'Columnas', 'flavor-chat-ia' ),
+                'label'   => __( 'Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'options' => array(
                     '1' => '1 columna',
                     '2' => '2 columnas',
                     '3' => '3 columnas',
                     '4' => '4 columnas',
-                    'auto' => __( 'Automático', 'flavor-chat-ia' ),
+                    'auto' => __( 'Automático', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 'default' => '3',
             ),
             'columnas_tablet' => array(
                 'type'    => 'select',
-                'label'   => __( 'Columnas (tablet)', 'flavor-chat-ia' ),
+                'label'   => __( 'Columnas (tablet)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'options' => array(
                     '1' => '1 columna',
                     '2' => '2 columnas',
@@ -371,7 +371,7 @@ class Flavor_VBP_Block_Library {
             ),
             'columnas_movil' => array(
                 'type'    => 'select',
-                'label'   => __( 'Columnas (móvil)', 'flavor-chat-ia' ),
+                'label'   => __( 'Columnas (móvil)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'options' => array(
                     '1' => '1 columna',
                     '2' => '2 columnas',
@@ -380,13 +380,13 @@ class Flavor_VBP_Block_Library {
             ),
             'espacio_items' => array(
                 'type'    => 'select',
-                'label'   => __( 'Espacio entre items', 'flavor-chat-ia' ),
+                'label'   => __( 'Espacio entre items', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'options' => array(
-                    'xs'  => __( 'Muy pequeño (8px)', 'flavor-chat-ia' ),
-                    'sm'  => __( 'Pequeño (12px)', 'flavor-chat-ia' ),
-                    'md'  => __( 'Mediano (16px)', 'flavor-chat-ia' ),
-                    'lg'  => __( 'Grande (24px)', 'flavor-chat-ia' ),
-                    'xl'  => __( 'Extra grande (32px)', 'flavor-chat-ia' ),
+                    'xs'  => __( 'Muy pequeño (8px)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'sm'  => __( 'Pequeño (12px)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'md'  => __( 'Mediano (16px)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'lg'  => __( 'Grande (24px)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'xl'  => __( 'Extra grande (32px)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 'default' => 'md',
             ),
@@ -402,61 +402,61 @@ class Flavor_VBP_Block_Library {
         return array(
             '_separator_tarjeta' => array(
                 'type'  => 'separator',
-                'label' => __( '🃏 Estilo de Tarjeta', 'flavor-chat-ia' ),
+                'label' => __( '🃏 Estilo de Tarjeta', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'estilo_tarjeta' => array(
                 'type'    => 'select',
-                'label'   => __( 'Estilo de tarjeta', 'flavor-chat-ia' ),
+                'label'   => __( 'Estilo de tarjeta', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'options' => array(
-                    'default'    => __( 'Por defecto', 'flavor-chat-ia' ),
-                    'elevated'   => __( 'Elevada', 'flavor-chat-ia' ),
-                    'outlined'   => __( 'Con borde', 'flavor-chat-ia' ),
-                    'filled'     => __( 'Rellena', 'flavor-chat-ia' ),
-                    'glass'      => __( 'Cristal (glassmorphism)', 'flavor-chat-ia' ),
-                    'gradient'   => __( 'Gradiente', 'flavor-chat-ia' ),
-                    'minimal'    => __( 'Minimalista', 'flavor-chat-ia' ),
+                    'default'    => __( 'Por defecto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'elevated'   => __( 'Elevada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'outlined'   => __( 'Con borde', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'filled'     => __( 'Rellena', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'glass'      => __( 'Cristal (glassmorphism)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'gradient'   => __( 'Gradiente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'minimal'    => __( 'Minimalista', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 'default' => 'elevated',
             ),
             'mostrar_imagen' => array(
                 'type'    => 'toggle',
-                'label'   => __( 'Mostrar imagen destacada', 'flavor-chat-ia' ),
+                'label'   => __( 'Mostrar imagen destacada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => true,
             ),
             'ratio_imagen' => array(
                 'type'      => 'select',
-                'label'     => __( 'Proporción imagen', 'flavor-chat-ia' ),
+                'label'     => __( 'Proporción imagen', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'options'   => array(
-                    '1:1'   => __( 'Cuadrada (1:1)', 'flavor-chat-ia' ),
-                    '4:3'   => __( 'Estándar (4:3)', 'flavor-chat-ia' ),
-                    '16:9'  => __( 'Panorámica (16:9)', 'flavor-chat-ia' ),
-                    '3:2'   => __( 'Fotografía (3:2)', 'flavor-chat-ia' ),
-                    '21:9'  => __( 'Cine (21:9)', 'flavor-chat-ia' ),
+                    '1:1'   => __( 'Cuadrada (1:1)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    '4:3'   => __( 'Estándar (4:3)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    '16:9'  => __( 'Panorámica (16:9)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    '3:2'   => __( 'Fotografía (3:2)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    '21:9'  => __( 'Cine (21:9)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 'default'   => '16:9',
                 'condition' => array( 'mostrar_imagen' => true ),
             ),
             'hover_effect' => array(
                 'type'    => 'select',
-                'label'   => __( 'Efecto hover', 'flavor-chat-ia' ),
+                'label'   => __( 'Efecto hover', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'options' => array(
-                    'none'      => __( 'Ninguno', 'flavor-chat-ia' ),
-                    'lift'      => __( 'Elevar', 'flavor-chat-ia' ),
-                    'grow'      => __( 'Crecer', 'flavor-chat-ia' ),
-                    'glow'      => __( 'Resplandor', 'flavor-chat-ia' ),
-                    'border'    => __( 'Borde color', 'flavor-chat-ia' ),
-                    'overlay'   => __( 'Superposición', 'flavor-chat-ia' ),
+                    'none'      => __( 'Ninguno', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'lift'      => __( 'Elevar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'grow'      => __( 'Crecer', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'glow'      => __( 'Resplandor', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'border'    => __( 'Borde color', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'overlay'   => __( 'Superposición', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 'default' => 'lift',
             ),
             'mostrar_badges' => array(
                 'type'    => 'toggle',
-                'label'   => __( 'Mostrar badges/etiquetas', 'flavor-chat-ia' ),
+                'label'   => __( 'Mostrar badges/etiquetas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => true,
             ),
             'mostrar_meta' => array(
                 'type'    => 'toggle',
-                'label'   => __( 'Mostrar meta info (fecha, autor)', 'flavor-chat-ia' ),
+                'label'   => __( 'Mostrar meta info (fecha, autor)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => true,
             ),
         );
@@ -471,44 +471,44 @@ class Flavor_VBP_Block_Library {
         return array(
             '_separator_cabecera' => array(
                 'type'  => 'separator',
-                'label' => __( '📝 Cabecera', 'flavor-chat-ia' ),
+                'label' => __( '📝 Cabecera', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'mostrar_titulo' => array(
                 'type'    => 'toggle',
-                'label'   => __( 'Mostrar título', 'flavor-chat-ia' ),
+                'label'   => __( 'Mostrar título', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => true,
             ),
             'titulo_personalizado' => array(
                 'type'      => 'text',
-                'label'     => __( 'Título personalizado', 'flavor-chat-ia' ),
+                'label'     => __( 'Título personalizado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default'   => '',
-                'placeholder' => __( 'Dejar vacío para usar título por defecto', 'flavor-chat-ia' ),
+                'placeholder' => __( 'Dejar vacío para usar título por defecto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'condition' => array( 'mostrar_titulo' => true ),
             ),
             'mostrar_descripcion' => array(
                 'type'    => 'toggle',
-                'label'   => __( 'Mostrar descripción', 'flavor-chat-ia' ),
+                'label'   => __( 'Mostrar descripción', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => false,
             ),
             'descripcion' => array(
                 'type'      => 'textarea',
-                'label'     => __( 'Descripción', 'flavor-chat-ia' ),
+                'label'     => __( 'Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default'   => '',
                 'rows'      => 2,
                 'condition' => array( 'mostrar_descripcion' => true ),
             ),
             'mostrar_icono' => array(
                 'type'    => 'toggle',
-                'label'   => __( 'Mostrar icono', 'flavor-chat-ia' ),
+                'label'   => __( 'Mostrar icono', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => true,
             ),
             'alineacion_cabecera' => array(
                 'type'    => 'select',
-                'label'   => __( 'Alineación cabecera', 'flavor-chat-ia' ),
+                'label'   => __( 'Alineación cabecera', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'options' => array(
-                    'left'   => __( 'Izquierda', 'flavor-chat-ia' ),
-                    'center' => __( 'Centro', 'flavor-chat-ia' ),
-                    'right'  => __( 'Derecha', 'flavor-chat-ia' ),
+                    'left'   => __( 'Izquierda', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'center' => __( 'Centro', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'right'  => __( 'Derecha', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 'default' => 'left',
             ),
@@ -524,22 +524,22 @@ class Flavor_VBP_Block_Library {
         return array(
             '_separator_paginacion' => array(
                 'type'  => 'separator',
-                'label' => __( '📄 Paginación', 'flavor-chat-ia' ),
+                'label' => __( '📄 Paginación', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'paginacion' => array(
                 'type'    => 'select',
-                'label'   => __( 'Tipo de paginación', 'flavor-chat-ia' ),
+                'label'   => __( 'Tipo de paginación', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'options' => array(
-                    'none'     => __( 'Sin paginación', 'flavor-chat-ia' ),
-                    'numbers'  => __( 'Números de página', 'flavor-chat-ia' ),
-                    'loadmore' => __( 'Botón cargar más', 'flavor-chat-ia' ),
-                    'infinite' => __( 'Scroll infinito', 'flavor-chat-ia' ),
+                    'none'     => __( 'Sin paginación', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'numbers'  => __( 'Números de página', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'loadmore' => __( 'Botón cargar más', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'infinite' => __( 'Scroll infinito', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 'default' => 'loadmore',
             ),
             'items_pagina' => array(
                 'type'      => 'number',
-                'label'     => __( 'Items por página', 'flavor-chat-ia' ),
+                'label'     => __( 'Items por página', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default'   => 12,
                 'min'       => 3,
                 'max'       => 48,
@@ -555,67 +555,67 @@ class Flavor_VBP_Block_Library {
         $this->categorias = array(
             'sections' => array(
                 'id'    => 'sections',
-                'name'  => __( 'Secciones', 'flavor-chat-ia' ),
+                'name'  => __( 'Secciones', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'  => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>',
                 'order' => 10,
             ),
             'basic' => array(
                 'id'    => 'basic',
-                'name'  => __( 'Básicos', 'flavor-chat-ia' ),
+                'name'  => __( 'Básicos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'  => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>',
                 'order' => 20,
             ),
             'layout' => array(
                 'id'    => 'layout',
-                'name'  => __( 'Layout', 'flavor-chat-ia' ),
+                'name'  => __( 'Layout', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'  => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>',
                 'order' => 30,
             ),
             'forms' => array(
                 'id'    => 'forms',
-                'name'  => __( 'Formularios', 'flavor-chat-ia' ),
+                'name'  => __( 'Formularios', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'  => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>',
                 'order' => 40,
             ),
             'media' => array(
                 'id'    => 'media',
-                'name'  => __( 'Media', 'flavor-chat-ia' ),
+                'name'  => __( 'Media', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'  => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5,3 19,12 5,21"/></svg>',
                 'order' => 50,
             ),
             'modules' => array(
                 'id'    => 'modules',
-                'name'  => __( 'Módulos', 'flavor-chat-ia' ),
+                'name'  => __( 'Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'  => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>',
                 'order' => 60,
             ),
             'maps' => array(
                 'id'    => 'maps',
-                'name'  => __( 'Mapas', 'flavor-chat-ia' ),
+                'name'  => __( 'Mapas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'  => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1,6 1,22 8,18 16,22 23,18 23,2 16,6 8,2"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>',
                 'order' => 70,
             ),
             'economy' => array(
                 'id'    => 'economy',
-                'name'  => __( 'Economía Social', 'flavor-chat-ia' ),
+                'name'  => __( 'Economía Social', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'  => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 100 4h4a2 2 0 110 4H8"/><path d="M12 6v2m0 8v2"/></svg>',
                 'order' => 80,
             ),
             'community' => array(
                 'id'    => 'community',
-                'name'  => __( 'Comunidad', 'flavor-chat-ia' ),
+                'name'  => __( 'Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'  => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>',
                 'order' => 90,
             ),
             'dashboard' => array(
                 'id'    => 'dashboard',
-                'name'  => __( 'Widgets Dashboard', 'flavor-chat-ia' ),
+                'name'  => __( 'Widgets Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'  => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="7" y="7" width="3" height="5" fill="currentColor" opacity="0.3"/><rect x="14" y="7" width="3" height="9" fill="currentColor" opacity="0.3"/><path d="M7 16h3M14 16h3"/></svg>',
                 'order' => 95,
             ),
             'dynamic' => array(
                 'id'    => 'dynamic',
-                'name'  => __( 'Campos Dinámicos', 'flavor-chat-ia' ),
+                'name'  => __( 'Campos Dinámicos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'  => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M12 18v-6"/><path d="M9 15l3 3 3-3"/></svg>',
                 'order' => 100,
             ),
@@ -629,62 +629,62 @@ class Flavor_VBP_Block_Library {
         // Hero
         $this->registrar_bloque( array(
             'id'       => 'hero',
-            'name'     => __( 'Hero', 'flavor-chat-ia' ),
+            'name'     => __( 'Hero', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
             'variants' => array(
-                'fullscreen'   => __( 'Pantalla completa', 'flavor-chat-ia' ),
-                'split'        => __( 'Dividido', 'flavor-chat-ia' ),
-                'centered'     => __( 'Centrado', 'flavor-chat-ia' ),
-                'video'        => __( 'Con video', 'flavor-chat-ia' ),
-                'slider'       => __( 'Slider', 'flavor-chat-ia' ),
-                'glassmorphism'=> __( 'Glassmorphism', 'flavor-chat-ia' ),
-                'gradient'     => __( 'Gradiente animado', 'flavor-chat-ia' ),
-                'parallax'     => __( 'Parallax', 'flavor-chat-ia' ),
-                'particles'    => __( 'Con partículas', 'flavor-chat-ia' ),
-                'minimal'      => __( 'Minimalista', 'flavor-chat-ia' ),
-                '3d'           => __( 'Efecto 3D', 'flavor-chat-ia' ),
-                'typewriter'   => __( 'Efecto máquina de escribir', 'flavor-chat-ia' ),
+                'fullscreen'   => __( 'Pantalla completa', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'split'        => __( 'Dividido', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'centered'     => __( 'Centrado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'video'        => __( 'Con video', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'slider'       => __( 'Slider', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'glassmorphism'=> __( 'Glassmorphism', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'gradient'     => __( 'Gradiente animado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'parallax'     => __( 'Parallax', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'particles'    => __( 'Con partículas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'minimal'      => __( 'Minimalista', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                '3d'           => __( 'Efecto 3D', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'typewriter'   => __( 'Efecto máquina de escribir', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'fields'   => array(
                 // Contenido
-                '_separator_contenido' => array( 'type' => 'separator', 'label' => __( '📝 Contenido', 'flavor-chat-ia' ) ),
-                'titulo'        => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ), 'ai' => true ),
-                'subtitulo'     => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', 'flavor-chat-ia' ), 'ai' => true ),
-                'boton_texto'   => array( 'type' => 'text', 'label' => __( 'Texto del botón', 'flavor-chat-ia' ) ),
-                'boton_url'     => array( 'type' => 'url', 'label' => __( 'URL del botón', 'flavor-chat-ia' ) ),
-                'boton_2_texto' => array( 'type' => 'text', 'label' => __( 'Segundo botón (texto)', 'flavor-chat-ia' ) ),
-                'boton_2_url'   => array( 'type' => 'url', 'label' => __( 'Segundo botón (URL)', 'flavor-chat-ia' ) ),
+                '_separator_contenido' => array( 'type' => 'separator', 'label' => __( '📝 Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'titulo'        => array( 'type' => 'text', 'label' => __( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'ai' => true ),
+                'subtitulo'     => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'ai' => true ),
+                'boton_texto'   => array( 'type' => 'text', 'label' => __( 'Texto del botón', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'boton_url'     => array( 'type' => 'url', 'label' => __( 'URL del botón', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'boton_2_texto' => array( 'type' => 'text', 'label' => __( 'Segundo botón (texto)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'boton_2_url'   => array( 'type' => 'url', 'label' => __( 'Segundo botón (URL)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
 
                 // Colores de texto
-                '_separator_colores_texto' => array( 'type' => 'separator', 'label' => __( '🎨 Colores de Texto', 'flavor-chat-ia' ) ),
-                'titulo_color'    => array( 'type' => 'color', 'label' => __( 'Color del título', 'flavor-chat-ia' ), 'default' => '#ffffff' ),
-                'subtitulo_color' => array( 'type' => 'color', 'label' => __( 'Color del subtítulo', 'flavor-chat-ia' ), 'default' => '#e0e0e0' ),
+                '_separator_colores_texto' => array( 'type' => 'separator', 'label' => __( '🎨 Colores de Texto', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'titulo_color'    => array( 'type' => 'color', 'label' => __( 'Color del título', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => '#ffffff' ),
+                'subtitulo_color' => array( 'type' => 'color', 'label' => __( 'Color del subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => '#e0e0e0' ),
 
                 // Colores de botones
-                '_separator_colores_botones' => array( 'type' => 'separator', 'label' => __( '🔘 Botón Principal', 'flavor-chat-ia' ) ),
-                'boton_color_fondo' => array( 'type' => 'color', 'label' => __( 'Color de fondo', 'flavor-chat-ia' ), 'default' => '#3b82f6' ),
-                'boton_color_texto' => array( 'type' => 'color', 'label' => __( 'Color del texto', 'flavor-chat-ia' ), 'default' => '#ffffff' ),
-                'boton_border_radius' => array( 'type' => 'text', 'label' => __( 'Border radius', 'flavor-chat-ia' ), 'default' => '8px' ),
+                '_separator_colores_botones' => array( 'type' => 'separator', 'label' => __( '🔘 Botón Principal', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'boton_color_fondo' => array( 'type' => 'color', 'label' => __( 'Color de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => '#3b82f6' ),
+                'boton_color_texto' => array( 'type' => 'color', 'label' => __( 'Color del texto', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => '#ffffff' ),
+                'boton_border_radius' => array( 'type' => 'text', 'label' => __( 'Border radius', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => '8px' ),
 
-                '_separator_boton_secundario' => array( 'type' => 'separator', 'label' => __( '🔘 Botón Secundario', 'flavor-chat-ia' ) ),
-                'boton_2_color_fondo' => array( 'type' => 'color', 'label' => __( 'Color de fondo', 'flavor-chat-ia' ), 'default' => 'transparent' ),
-                'boton_2_color_texto' => array( 'type' => 'color', 'label' => __( 'Color del texto', 'flavor-chat-ia' ), 'default' => '#ffffff' ),
-                'boton_2_color_borde' => array( 'type' => 'color', 'label' => __( 'Color del borde', 'flavor-chat-ia' ), 'default' => '#ffffff' ),
+                '_separator_boton_secundario' => array( 'type' => 'separator', 'label' => __( '🔘 Botón Secundario', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'boton_2_color_fondo' => array( 'type' => 'color', 'label' => __( 'Color de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => 'transparent' ),
+                'boton_2_color_texto' => array( 'type' => 'color', 'label' => __( 'Color del texto', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => '#ffffff' ),
+                'boton_2_color_borde' => array( 'type' => 'color', 'label' => __( 'Color del borde', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => '#ffffff' ),
 
                 // Fondo
-                '_separator_fondo' => array( 'type' => 'separator', 'label' => __( '🖼️ Fondo', 'flavor-chat-ia' ) ),
-                'imagen_fondo'  => array( 'type' => 'image', 'label' => __( 'Imagen de fondo', 'flavor-chat-ia' ) ),
-                'video_url'     => array( 'type' => 'url', 'label' => __( 'URL del video (YouTube/Vimeo)', 'flavor-chat-ia' ) ),
-                'color_fondo'   => array( 'type' => 'color', 'label' => __( 'Color de fondo', 'flavor-chat-ia' ), 'default' => '#1a1a2e' ),
-                'overlay_color' => array( 'type' => 'color', 'label' => __( 'Color overlay', 'flavor-chat-ia' ) ),
-                'overlay_opacity' => array( 'type' => 'range', 'label' => __( 'Opacidad overlay', 'flavor-chat-ia' ), 'min' => 0, 'max' => 100 ),
+                '_separator_fondo' => array( 'type' => 'separator', 'label' => __( '🖼️ Fondo', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'imagen_fondo'  => array( 'type' => 'image', 'label' => __( 'Imagen de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'video_url'     => array( 'type' => 'url', 'label' => __( 'URL del video (YouTube/Vimeo)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'color_fondo'   => array( 'type' => 'color', 'label' => __( 'Color de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => '#1a1a2e' ),
+                'overlay_color' => array( 'type' => 'color', 'label' => __( 'Color overlay', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'overlay_opacity' => array( 'type' => 'range', 'label' => __( 'Opacidad overlay', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'min' => 0, 'max' => 100 ),
 
                 // Layout
-                '_separator_layout' => array( 'type' => 'separator', 'label' => __( '📐 Layout', 'flavor-chat-ia' ) ),
-                'altura'        => array( 'type' => 'select', 'label' => __( 'Altura', 'flavor-chat-ia' ), 'options' => array( 'auto' => 'Auto', '50vh' => '50%', '75vh' => '75%', '100vh' => '100%' ) ),
-                'alineacion'    => array( 'type' => 'select', 'label' => __( 'Alineación', 'flavor-chat-ia' ), 'options' => array( 'left' => 'Izquierda', 'center' => 'Centro', 'right' => 'Derecha' ) ),
-                'padding_vertical' => array( 'type' => 'text', 'label' => __( 'Padding vertical', 'flavor-chat-ia' ), 'default' => '80px' ),
+                '_separator_layout' => array( 'type' => 'separator', 'label' => __( '📐 Layout', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'altura'        => array( 'type' => 'select', 'label' => __( 'Altura', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'auto' => 'Auto', '50vh' => '50%', '75vh' => '75%', '100vh' => '100%' ) ),
+                'alineacion'    => array( 'type' => 'select', 'label' => __( 'Alineación', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'left' => 'Izquierda', 'center' => 'Centro', 'right' => 'Derecha' ) ),
+                'padding_vertical' => array( 'type' => 'text', 'label' => __( 'Padding vertical', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => '80px' ),
             ),
             'presets' => array(
                 'startup' => array(
@@ -705,31 +705,31 @@ class Flavor_VBP_Block_Library {
         // Features
         $this->registrar_bloque( array(
             'id'       => 'features',
-            'name'     => __( 'Características', 'flavor-chat-ia' ),
+            'name'     => __( 'Características', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>',
             'variants' => array(
-                'grid'        => __( 'Cuadrícula', 'flavor-chat-ia' ),
-                'list'        => __( 'Lista', 'flavor-chat-ia' ),
-                'alternating' => __( 'Alternado', 'flavor-chat-ia' ),
-                'cards'       => __( 'Tarjetas', 'flavor-chat-ia' ),
-                'zigzag'      => __( 'Zigzag', 'flavor-chat-ia' ),
-                'timeline'    => __( 'Línea de tiempo', 'flavor-chat-ia' ),
-                'tabs'        => __( 'Pestañas', 'flavor-chat-ia' ),
-                'accordion'   => __( 'Acordeón', 'flavor-chat-ia' ),
-                'icons-only'  => __( 'Solo iconos', 'flavor-chat-ia' ),
-                'bento'       => __( 'Bento Grid', 'flavor-chat-ia' ),
-                'hover-cards' => __( 'Tarjetas con hover', 'flavor-chat-ia' ),
+                'grid'        => __( 'Cuadrícula', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'list'        => __( 'Lista', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'alternating' => __( 'Alternado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'cards'       => __( 'Tarjetas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'zigzag'      => __( 'Zigzag', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'timeline'    => __( 'Línea de tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'tabs'        => __( 'Pestañas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'accordion'   => __( 'Acordeón', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'icons-only'  => __( 'Solo iconos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'bento'       => __( 'Bento Grid', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'hover-cards' => __( 'Tarjetas con hover', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'fields'   => array(
-                'titulo'    => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ), 'ai' => true ),
-                'subtitulo' => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', 'flavor-chat-ia' ), 'ai' => true ),
-                'columnas'  => array( 'type' => 'select', 'label' => __( 'Columnas', 'flavor-chat-ia' ), 'options' => array( '2' => '2', '3' => '3', '4' => '4' ) ),
-                'items'     => array( 'type' => 'repeater', 'label' => __( 'Características', 'flavor-chat-ia' ), 'fields' => array(
-                    'icono'       => array( 'type' => 'icon', 'label' => __( 'Icono', 'flavor-chat-ia' ) ),
-                    'titulo'      => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ) ),
-                    'descripcion' => array( 'type' => 'textarea', 'label' => __( 'Descripción', 'flavor-chat-ia' ) ),
-                    'enlace'      => array( 'type' => 'url', 'label' => __( 'Enlace', 'flavor-chat-ia' ) ),
+                'titulo'    => array( 'type' => 'text', 'label' => __( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'ai' => true ),
+                'subtitulo' => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'ai' => true ),
+                'columnas'  => array( 'type' => 'select', 'label' => __( 'Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( '2' => '2', '3' => '3', '4' => '4' ) ),
+                'items'     => array( 'type' => 'repeater', 'label' => __( 'Características', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'fields' => array(
+                    'icono'       => array( 'type' => 'icon', 'label' => __( 'Icono', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'titulo'      => array( 'type' => 'text', 'label' => __( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'descripcion' => array( 'type' => 'textarea', 'label' => __( 'Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'enlace'      => array( 'type' => 'url', 'label' => __( 'Enlace', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                 ) ),
             ),
             'presets' => array(
@@ -750,35 +750,35 @@ class Flavor_VBP_Block_Library {
         // Testimonios
         $this->registrar_bloque( array(
             'id'       => 'testimonials',
-            'name'     => __( 'Testimonios', 'flavor-chat-ia' ),
+            'name'     => __( 'Testimonios', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>',
             'variants' => array(
-                'carousel'    => __( 'Carrusel', 'flavor-chat-ia' ),
-                'grid'        => __( 'Cuadrícula', 'flavor-chat-ia' ),
-                'single'      => __( 'Único destacado', 'flavor-chat-ia' ),
-                'masonry'     => __( 'Masonry', 'flavor-chat-ia' ),
-                'video'       => __( 'Video testimonios', 'flavor-chat-ia' ),
-                'rating'      => __( 'Con estrellas', 'flavor-chat-ia' ),
-                'avatar-large'=> __( 'Avatar grande', 'flavor-chat-ia' ),
-                'quote-card'  => __( 'Tarjeta con cita', 'flavor-chat-ia' ),
-                'logos'       => __( 'Con logos de empresas', 'flavor-chat-ia' ),
-                'twitter'     => __( 'Estilo Twitter/X', 'flavor-chat-ia' ),
+                'carousel'    => __( 'Carrusel', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'grid'        => __( 'Cuadrícula', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'single'      => __( 'Único destacado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'masonry'     => __( 'Masonry', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'video'       => __( 'Video testimonios', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'rating'      => __( 'Con estrellas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'avatar-large'=> __( 'Avatar grande', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'quote-card'  => __( 'Tarjeta con cita', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'logos'       => __( 'Con logos de empresas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'twitter'     => __( 'Estilo Twitter/X', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'fields'   => array(
-                'titulo'       => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ), 'ai' => true ),
-                'subtitulo'    => array( 'type' => 'text', 'label' => __( 'Subtítulo', 'flavor-chat-ia' ), 'ai' => true ),
-                'autoplay'     => array( 'type' => 'toggle', 'label' => __( 'Autoplay', 'flavor-chat-ia' ) ),
-                'mostrar_rating' => array( 'type' => 'toggle', 'label' => __( 'Mostrar rating', 'flavor-chat-ia' ) ),
-                'testimonios'  => array( 'type' => 'repeater', 'label' => __( 'Testimonios', 'flavor-chat-ia' ), 'fields' => array(
-                    'texto'    => array( 'type' => 'textarea', 'label' => __( 'Testimonio', 'flavor-chat-ia' ) ),
-                    'nombre'   => array( 'type' => 'text', 'label' => __( 'Nombre', 'flavor-chat-ia' ) ),
-                    'cargo'    => array( 'type' => 'text', 'label' => __( 'Cargo', 'flavor-chat-ia' ) ),
-                    'empresa'  => array( 'type' => 'text', 'label' => __( 'Empresa', 'flavor-chat-ia' ) ),
-                    'avatar'   => array( 'type' => 'image', 'label' => __( 'Foto', 'flavor-chat-ia' ) ),
-                    'logo'     => array( 'type' => 'image', 'label' => __( 'Logo empresa', 'flavor-chat-ia' ) ),
-                    'rating'   => array( 'type' => 'select', 'label' => __( 'Rating', 'flavor-chat-ia' ), 'options' => array( '5' => '5 estrellas', '4' => '4 estrellas', '3' => '3 estrellas' ) ),
-                    'video_url'=> array( 'type' => 'url', 'label' => __( 'Video (opcional)', 'flavor-chat-ia' ) ),
+                'titulo'       => array( 'type' => 'text', 'label' => __( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'ai' => true ),
+                'subtitulo'    => array( 'type' => 'text', 'label' => __( 'Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'ai' => true ),
+                'autoplay'     => array( 'type' => 'toggle', 'label' => __( 'Autoplay', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'mostrar_rating' => array( 'type' => 'toggle', 'label' => __( 'Mostrar rating', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'testimonios'  => array( 'type' => 'repeater', 'label' => __( 'Testimonios', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'fields' => array(
+                    'texto'    => array( 'type' => 'textarea', 'label' => __( 'Testimonio', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'nombre'   => array( 'type' => 'text', 'label' => __( 'Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'cargo'    => array( 'type' => 'text', 'label' => __( 'Cargo', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'empresa'  => array( 'type' => 'text', 'label' => __( 'Empresa', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'avatar'   => array( 'type' => 'image', 'label' => __( 'Foto', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'logo'     => array( 'type' => 'image', 'label' => __( 'Logo empresa', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'rating'   => array( 'type' => 'select', 'label' => __( 'Rating', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( '5' => '5 estrellas', '4' => '4 estrellas', '3' => '3 estrellas' ) ),
+                    'video_url'=> array( 'type' => 'url', 'label' => __( 'Video (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                 ) ),
             ),
         ) );
@@ -786,39 +786,39 @@ class Flavor_VBP_Block_Library {
         // Precios
         $this->registrar_bloque( array(
             'id'       => 'pricing',
-            'name'     => __( 'Precios', 'flavor-chat-ia' ),
+            'name'     => __( 'Precios', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 100 4h4a2 2 0 110 4H8"/><path d="M12 6v2m0 8v2"/></svg>',
             'variants' => array(
-                'cards'       => __( 'Tarjetas', 'flavor-chat-ia' ),
-                'table'       => __( 'Tabla comparativa', 'flavor-chat-ia' ),
-                'toggle'      => __( 'Toggle mensual/anual', 'flavor-chat-ia' ),
-                'comparison'  => __( 'Comparación lado a lado', 'flavor-chat-ia' ),
-                'slider'      => __( 'Slider de planes', 'flavor-chat-ia' ),
-                'minimal'     => __( 'Minimalista', 'flavor-chat-ia' ),
-                'gradient'    => __( 'Gradiente destacado', 'flavor-chat-ia' ),
-                'enterprise'  => __( 'Enterprise con contacto', 'flavor-chat-ia' ),
-                'freemium'    => __( 'Freemium destacado', 'flavor-chat-ia' ),
-                'horizontal'  => __( 'Horizontal', 'flavor-chat-ia' ),
+                'cards'       => __( 'Tarjetas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'table'       => __( 'Tabla comparativa', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'toggle'      => __( 'Toggle mensual/anual', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'comparison'  => __( 'Comparación lado a lado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'slider'      => __( 'Slider de planes', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'minimal'     => __( 'Minimalista', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'gradient'    => __( 'Gradiente destacado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'enterprise'  => __( 'Enterprise con contacto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'freemium'    => __( 'Freemium destacado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'horizontal'  => __( 'Horizontal', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'fields'   => array(
-                'titulo'      => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ), 'ai' => true ),
-                'subtitulo'   => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', 'flavor-chat-ia' ), 'ai' => true ),
-                'moneda'      => array( 'type' => 'text', 'label' => __( 'Moneda', 'flavor-chat-ia' ), 'default' => '€' ),
-                'periodo'     => array( 'type' => 'select', 'label' => __( 'Período', 'flavor-chat-ia' ), 'options' => array( 'mes' => 'Mes', 'año' => 'Año', 'único' => 'Pago único' ) ),
-                'mostrar_toggle' => array( 'type' => 'toggle', 'label' => __( 'Mostrar toggle mensual/anual', 'flavor-chat-ia' ) ),
-                'descuento_anual' => array( 'type' => 'number', 'label' => __( 'Descuento anual (%)', 'flavor-chat-ia' ), 'default' => 20 ),
-                'planes'      => array( 'type' => 'repeater', 'label' => __( 'Planes', 'flavor-chat-ia' ), 'fields' => array(
-                    'nombre'        => array( 'type' => 'text', 'label' => __( 'Nombre del plan', 'flavor-chat-ia' ) ),
-                    'descripcion'   => array( 'type' => 'textarea', 'label' => __( 'Descripción', 'flavor-chat-ia' ) ),
-                    'precio'        => array( 'type' => 'number', 'label' => __( 'Precio', 'flavor-chat-ia' ) ),
-                    'precio_anual'  => array( 'type' => 'number', 'label' => __( 'Precio anual', 'flavor-chat-ia' ) ),
-                    'destacado'     => array( 'type' => 'toggle', 'label' => __( 'Plan destacado', 'flavor-chat-ia' ) ),
-                    'etiqueta'      => array( 'type' => 'text', 'label' => __( 'Etiqueta (ej: Popular)', 'flavor-chat-ia' ) ),
-                    'boton_texto'   => array( 'type' => 'text', 'label' => __( 'Texto del botón', 'flavor-chat-ia' ) ),
-                    'boton_url'     => array( 'type' => 'url', 'label' => __( 'URL del botón', 'flavor-chat-ia' ) ),
-                    'caracteristicas' => array( 'type' => 'textarea', 'label' => __( 'Características (una por línea)', 'flavor-chat-ia' ) ),
-                    'icono'         => array( 'type' => 'icon', 'label' => __( 'Icono', 'flavor-chat-ia' ) ),
+                'titulo'      => array( 'type' => 'text', 'label' => __( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'ai' => true ),
+                'subtitulo'   => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'ai' => true ),
+                'moneda'      => array( 'type' => 'text', 'label' => __( 'Moneda', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => '€' ),
+                'periodo'     => array( 'type' => 'select', 'label' => __( 'Período', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'mes' => 'Mes', 'año' => 'Año', 'único' => 'Pago único' ) ),
+                'mostrar_toggle' => array( 'type' => 'toggle', 'label' => __( 'Mostrar toggle mensual/anual', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'descuento_anual' => array( 'type' => 'number', 'label' => __( 'Descuento anual (%)', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => 20 ),
+                'planes'      => array( 'type' => 'repeater', 'label' => __( 'Planes', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'fields' => array(
+                    'nombre'        => array( 'type' => 'text', 'label' => __( 'Nombre del plan', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'descripcion'   => array( 'type' => 'textarea', 'label' => __( 'Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'precio'        => array( 'type' => 'number', 'label' => __( 'Precio', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'precio_anual'  => array( 'type' => 'number', 'label' => __( 'Precio anual', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'destacado'     => array( 'type' => 'toggle', 'label' => __( 'Plan destacado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'etiqueta'      => array( 'type' => 'text', 'label' => __( 'Etiqueta (ej: Popular)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'boton_texto'   => array( 'type' => 'text', 'label' => __( 'Texto del botón', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'boton_url'     => array( 'type' => 'url', 'label' => __( 'URL del botón', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'caracteristicas' => array( 'type' => 'textarea', 'label' => __( 'Características (una por línea)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'icono'         => array( 'type' => 'icon', 'label' => __( 'Icono', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                 ) ),
             ),
             'presets' => array(
@@ -851,36 +851,36 @@ class Flavor_VBP_Block_Library {
         // CTA
         $this->registrar_bloque( array(
             'id'       => 'cta',
-            'name'     => __( 'Llamada a acción', 'flavor-chat-ia' ),
+            'name'     => __( 'Llamada a acción', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>',
             'variants' => array(
-                'simple'      => __( 'Simple', 'flavor-chat-ia' ),
-                'banner'      => __( 'Banner', 'flavor-chat-ia' ),
-                'split'       => __( 'Dividido', 'flavor-chat-ia' ),
-                'gradient'    => __( 'Gradiente', 'flavor-chat-ia' ),
-                'newsletter'  => __( 'Newsletter', 'flavor-chat-ia' ),
-                'countdown'   => __( 'Con cuenta atrás', 'flavor-chat-ia' ),
-                'floating'    => __( 'Flotante', 'flavor-chat-ia' ),
-                'video'       => __( 'Con video', 'flavor-chat-ia' ),
-                'testimonial' => __( 'Con testimonio', 'flavor-chat-ia' ),
-                'stats'       => __( 'Con estadísticas', 'flavor-chat-ia' ),
+                'simple'      => __( 'Simple', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'banner'      => __( 'Banner', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'split'       => __( 'Dividido', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'gradient'    => __( 'Gradiente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'newsletter'  => __( 'Newsletter', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'countdown'   => __( 'Con cuenta atrás', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'floating'    => __( 'Flotante', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'video'       => __( 'Con video', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'testimonial' => __( 'Con testimonio', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'stats'       => __( 'Con estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'fields'   => array(
-                'titulo'       => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ), 'ai' => true ),
-                'descripcion'  => array( 'type' => 'textarea', 'label' => __( 'Descripción', 'flavor-chat-ia' ), 'ai' => true ),
-                'boton_texto'  => array( 'type' => 'text', 'label' => __( 'Texto del botón', 'flavor-chat-ia' ) ),
-                'boton_url'    => array( 'type' => 'url', 'label' => __( 'URL del botón', 'flavor-chat-ia' ) ),
-                'boton_estilo' => array( 'type' => 'select', 'label' => __( 'Estilo del botón', 'flavor-chat-ia' ), 'options' => array( 'primary' => 'Primario', 'secondary' => 'Secundario', 'white' => 'Blanco', 'outline' => 'Contorno' ) ),
-                'boton_2_texto'=> array( 'type' => 'text', 'label' => __( 'Segundo botón (texto)', 'flavor-chat-ia' ) ),
-                'boton_2_url'  => array( 'type' => 'url', 'label' => __( 'Segundo botón (URL)', 'flavor-chat-ia' ) ),
-                'imagen_fondo' => array( 'type' => 'image', 'label' => __( 'Imagen de fondo', 'flavor-chat-ia' ) ),
-                'video_url'    => array( 'type' => 'url', 'label' => __( 'Video de fondo (URL)', 'flavor-chat-ia' ) ),
-                'overlay_color'=> array( 'type' => 'color', 'label' => __( 'Color overlay', 'flavor-chat-ia' ) ),
-                'overlay_opacity' => array( 'type' => 'range', 'label' => __( 'Opacidad overlay', 'flavor-chat-ia' ), 'min' => 0, 'max' => 100 ),
-                'formulario_email' => array( 'type' => 'toggle', 'label' => __( 'Mostrar campo email', 'flavor-chat-ia' ) ),
-                'fecha_limite' => array( 'type' => 'datetime', 'label' => __( 'Fecha límite (countdown)', 'flavor-chat-ia' ) ),
-                'alineacion'   => array( 'type' => 'select', 'label' => __( 'Alineación', 'flavor-chat-ia' ), 'options' => array( 'left' => 'Izquierda', 'center' => 'Centro', 'right' => 'Derecha' ) ),
+                'titulo'       => array( 'type' => 'text', 'label' => __( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'ai' => true ),
+                'descripcion'  => array( 'type' => 'textarea', 'label' => __( 'Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'ai' => true ),
+                'boton_texto'  => array( 'type' => 'text', 'label' => __( 'Texto del botón', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'boton_url'    => array( 'type' => 'url', 'label' => __( 'URL del botón', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'boton_estilo' => array( 'type' => 'select', 'label' => __( 'Estilo del botón', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'primary' => 'Primario', 'secondary' => 'Secundario', 'white' => 'Blanco', 'outline' => 'Contorno' ) ),
+                'boton_2_texto'=> array( 'type' => 'text', 'label' => __( 'Segundo botón (texto)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'boton_2_url'  => array( 'type' => 'url', 'label' => __( 'Segundo botón (URL)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'imagen_fondo' => array( 'type' => 'image', 'label' => __( 'Imagen de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'video_url'    => array( 'type' => 'url', 'label' => __( 'Video de fondo (URL)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'overlay_color'=> array( 'type' => 'color', 'label' => __( 'Color overlay', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'overlay_opacity' => array( 'type' => 'range', 'label' => __( 'Opacidad overlay', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'min' => 0, 'max' => 100 ),
+                'formulario_email' => array( 'type' => 'toggle', 'label' => __( 'Mostrar campo email', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'fecha_limite' => array( 'type' => 'datetime', 'label' => __( 'Fecha límite (countdown)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'alineacion'   => array( 'type' => 'select', 'label' => __( 'Alineación', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'left' => 'Izquierda', 'center' => 'Centro', 'right' => 'Derecha' ) ),
             ),
             'presets' => array(
                 'newsletter' => array(
@@ -901,33 +901,33 @@ class Flavor_VBP_Block_Library {
         // FAQ
         $this->registrar_bloque( array(
             'id'       => 'faq',
-            'name'     => __( 'FAQ', 'flavor-chat-ia' ),
+            'name'     => __( 'FAQ', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>',
             'variants' => array(
-                'accordion'    => __( 'Acordeón', 'flavor-chat-ia' ),
-                'two-columns'  => __( 'Dos columnas', 'flavor-chat-ia' ),
-                'categories'   => __( 'Por categorías', 'flavor-chat-ia' ),
-                'tabs'         => __( 'Con pestañas', 'flavor-chat-ia' ),
-                'search'       => __( 'Con buscador', 'flavor-chat-ia' ),
-                'sidebar'      => __( 'Con sidebar', 'flavor-chat-ia' ),
-                'cards'        => __( 'Tarjetas', 'flavor-chat-ia' ),
-                'minimal'      => __( 'Minimalista', 'flavor-chat-ia' ),
+                'accordion'    => __( 'Acordeón', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'two-columns'  => __( 'Dos columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'categories'   => __( 'Por categorías', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'tabs'         => __( 'Con pestañas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'search'       => __( 'Con buscador', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'sidebar'      => __( 'Con sidebar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'cards'        => __( 'Tarjetas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'minimal'      => __( 'Minimalista', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'fields'   => array(
-                'titulo'    => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ), 'ai' => true ),
-                'subtitulo' => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', 'flavor-chat-ia' ), 'ai' => true ),
-                'mostrar_buscador' => array( 'type' => 'toggle', 'label' => __( 'Mostrar buscador', 'flavor-chat-ia' ) ),
-                'abrir_primero'    => array( 'type' => 'toggle', 'label' => __( 'Abrir primera pregunta', 'flavor-chat-ia' ) ),
-                'icono_expandir'   => array( 'type' => 'select', 'label' => __( 'Icono expandir', 'flavor-chat-ia' ), 'options' => array( 'plus' => 'Plus/Minus', 'chevron' => 'Chevron', 'arrow' => 'Flecha' ) ),
-                'preguntas' => array( 'type' => 'repeater', 'label' => __( 'Preguntas', 'flavor-chat-ia' ), 'fields' => array(
-                    'pregunta'  => array( 'type' => 'text', 'label' => __( 'Pregunta', 'flavor-chat-ia' ) ),
-                    'respuesta' => array( 'type' => 'editor', 'label' => __( 'Respuesta', 'flavor-chat-ia' ) ),
-                    'categoria' => array( 'type' => 'text', 'label' => __( 'Categoría', 'flavor-chat-ia' ) ),
-                    'icono'     => array( 'type' => 'icon', 'label' => __( 'Icono', 'flavor-chat-ia' ) ),
+                'titulo'    => array( 'type' => 'text', 'label' => __( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'ai' => true ),
+                'subtitulo' => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'ai' => true ),
+                'mostrar_buscador' => array( 'type' => 'toggle', 'label' => __( 'Mostrar buscador', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'abrir_primero'    => array( 'type' => 'toggle', 'label' => __( 'Abrir primera pregunta', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'icono_expandir'   => array( 'type' => 'select', 'label' => __( 'Icono expandir', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'plus' => 'Plus/Minus', 'chevron' => 'Chevron', 'arrow' => 'Flecha' ) ),
+                'preguntas' => array( 'type' => 'repeater', 'label' => __( 'Preguntas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'fields' => array(
+                    'pregunta'  => array( 'type' => 'text', 'label' => __( 'Pregunta', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'respuesta' => array( 'type' => 'editor', 'label' => __( 'Respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'categoria' => array( 'type' => 'text', 'label' => __( 'Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'icono'     => array( 'type' => 'icon', 'label' => __( 'Icono', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                 ) ),
-                'texto_contacto' => array( 'type' => 'text', 'label' => __( 'Texto de contacto', 'flavor-chat-ia' ) ),
-                'enlace_contacto' => array( 'type' => 'url', 'label' => __( 'Enlace de contacto', 'flavor-chat-ia' ) ),
+                'texto_contacto' => array( 'type' => 'text', 'label' => __( 'Texto de contacto', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'enlace_contacto' => array( 'type' => 'url', 'label' => __( 'Enlace de contacto', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
             'presets' => array(
                 'general' => array(
@@ -949,36 +949,36 @@ class Flavor_VBP_Block_Library {
         // Contacto
         $this->registrar_bloque( array(
             'id'       => 'contact',
-            'name'     => __( 'Contacto', 'flavor-chat-ia' ),
+            'name'     => __( 'Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',
             'variants' => array(
-                'form'          => __( 'Formulario', 'flavor-chat-ia' ),
-                'split'         => __( 'Dividido', 'flavor-chat-ia' ),
-                'map'           => __( 'Con mapa', 'flavor-chat-ia' ),
-                'info'          => __( 'Solo información', 'flavor-chat-ia' ),
-                'cards'         => __( 'Tarjetas de contacto', 'flavor-chat-ia' ),
-                'chat'          => __( 'Estilo chat', 'flavor-chat-ia' ),
-                'minimal'       => __( 'Minimalista', 'flavor-chat-ia' ),
-                'fullwidth-map' => __( 'Mapa ancho completo', 'flavor-chat-ia' ),
+                'form'          => __( 'Formulario', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'split'         => __( 'Dividido', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'map'           => __( 'Con mapa', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'info'          => __( 'Solo información', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'cards'         => __( 'Tarjetas de contacto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'chat'          => __( 'Estilo chat', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'minimal'       => __( 'Minimalista', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'fullwidth-map' => __( 'Mapa ancho completo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'fields'   => array(
-                'titulo'         => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ), 'ai' => true ),
-                'subtitulo'      => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', 'flavor-chat-ia' ), 'ai' => true ),
-                'email'          => array( 'type' => 'text', 'label' => __( 'Email', 'flavor-chat-ia' ) ),
-                'telefono'       => array( 'type' => 'text', 'label' => __( 'Teléfono', 'flavor-chat-ia' ) ),
-                'whatsapp'       => array( 'type' => 'text', 'label' => __( 'WhatsApp', 'flavor-chat-ia' ) ),
-                'direccion'      => array( 'type' => 'textarea', 'label' => __( 'Dirección', 'flavor-chat-ia' ) ),
-                'horario'        => array( 'type' => 'textarea', 'label' => __( 'Horario de atención', 'flavor-chat-ia' ) ),
-                'mapa_lat'       => array( 'type' => 'number', 'label' => __( 'Latitud', 'flavor-chat-ia' ) ),
-                'mapa_lng'       => array( 'type' => 'number', 'label' => __( 'Longitud', 'flavor-chat-ia' ) ),
-                'mapa_zoom'      => array( 'type' => 'number', 'label' => __( 'Zoom del mapa', 'flavor-chat-ia' ), 'default' => 15 ),
-                'redes_sociales' => array( 'type' => 'repeater', 'label' => __( 'Redes sociales', 'flavor-chat-ia' ), 'fields' => array(
-                    'red'   => array( 'type' => 'select', 'label' => __( 'Red', 'flavor-chat-ia' ), 'options' => array( 'facebook' => 'Facebook', 'twitter' => 'Twitter/X', 'instagram' => 'Instagram', 'linkedin' => 'LinkedIn', 'youtube' => 'YouTube', 'tiktok' => 'TikTok' ) ),
-                    'url'   => array( 'type' => 'url', 'label' => __( 'URL', 'flavor-chat-ia' ) ),
+                'titulo'         => array( 'type' => 'text', 'label' => __( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'ai' => true ),
+                'subtitulo'      => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'ai' => true ),
+                'email'          => array( 'type' => 'text', 'label' => __( 'Email', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'telefono'       => array( 'type' => 'text', 'label' => __( 'Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'whatsapp'       => array( 'type' => 'text', 'label' => __( 'WhatsApp', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'direccion'      => array( 'type' => 'textarea', 'label' => __( 'Dirección', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'horario'        => array( 'type' => 'textarea', 'label' => __( 'Horario de atención', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'mapa_lat'       => array( 'type' => 'number', 'label' => __( 'Latitud', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'mapa_lng'       => array( 'type' => 'number', 'label' => __( 'Longitud', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'mapa_zoom'      => array( 'type' => 'number', 'label' => __( 'Zoom del mapa', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => 15 ),
+                'redes_sociales' => array( 'type' => 'repeater', 'label' => __( 'Redes sociales', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'fields' => array(
+                    'red'   => array( 'type' => 'select', 'label' => __( 'Red', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'facebook' => 'Facebook', 'twitter' => 'Twitter/X', 'instagram' => 'Instagram', 'linkedin' => 'LinkedIn', 'youtube' => 'YouTube', 'tiktok' => 'TikTok' ) ),
+                    'url'   => array( 'type' => 'url', 'label' => __( 'URL', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                 ) ),
-                'formulario_campos' => array( 'type' => 'multiselect', 'label' => __( 'Campos del formulario', 'flavor-chat-ia' ), 'options' => array( 'nombre' => 'Nombre', 'email' => 'Email', 'telefono' => 'Teléfono', 'asunto' => 'Asunto', 'mensaje' => 'Mensaje' ) ),
-                'boton_texto'    => array( 'type' => 'text', 'label' => __( 'Texto del botón', 'flavor-chat-ia' ), 'default' => 'Enviar mensaje' ),
+                'formulario_campos' => array( 'type' => 'multiselect', 'label' => __( 'Campos del formulario', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'nombre' => 'Nombre', 'email' => 'Email', 'telefono' => 'Teléfono', 'asunto' => 'Asunto', 'mensaje' => 'Mensaje' ) ),
+                'boton_texto'    => array( 'type' => 'text', 'label' => __( 'Texto del botón', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => 'Enviar mensaje' ),
             ),
             'presets' => array(
                 'empresa' => array(
@@ -995,35 +995,35 @@ class Flavor_VBP_Block_Library {
         // Equipo
         $this->registrar_bloque( array(
             'id'       => 'team',
-            'name'     => __( 'Equipo', 'flavor-chat-ia' ),
+            'name'     => __( 'Equipo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>',
             'variants' => array(
-                'grid'        => __( 'Cuadrícula', 'flavor-chat-ia' ),
-                'carousel'    => __( 'Carrusel', 'flavor-chat-ia' ),
-                'list'        => __( 'Lista', 'flavor-chat-ia' ),
-                'cards'       => __( 'Tarjetas hover', 'flavor-chat-ia' ),
-                'circular'    => __( 'Fotos circulares', 'flavor-chat-ia' ),
-                'minimal'     => __( 'Minimalista', 'flavor-chat-ia' ),
-                'detailed'    => __( 'Detallado con bio', 'flavor-chat-ia' ),
-                'hierarchy'   => __( 'Organigrama', 'flavor-chat-ia' ),
+                'grid'        => __( 'Cuadrícula', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'carousel'    => __( 'Carrusel', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'list'        => __( 'Lista', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'cards'       => __( 'Tarjetas hover', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'circular'    => __( 'Fotos circulares', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'minimal'     => __( 'Minimalista', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'detailed'    => __( 'Detallado con bio', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'hierarchy'   => __( 'Organigrama', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'fields'   => array(
-                'titulo'    => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ), 'ai' => true ),
-                'subtitulo' => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', 'flavor-chat-ia' ), 'ai' => true ),
-                'columnas'  => array( 'type' => 'select', 'label' => __( 'Columnas', 'flavor-chat-ia' ), 'options' => array( '2' => '2', '3' => '3', '4' => '4', '5' => '5' ) ),
-                'miembros'  => array( 'type' => 'repeater', 'label' => __( 'Miembros', 'flavor-chat-ia' ), 'fields' => array(
-                    'nombre'    => array( 'type' => 'text', 'label' => __( 'Nombre', 'flavor-chat-ia' ) ),
-                    'cargo'     => array( 'type' => 'text', 'label' => __( 'Cargo', 'flavor-chat-ia' ) ),
-                    'bio'       => array( 'type' => 'textarea', 'label' => __( 'Biografía', 'flavor-chat-ia' ) ),
-                    'foto'      => array( 'type' => 'image', 'label' => __( 'Foto', 'flavor-chat-ia' ) ),
-                    'email'     => array( 'type' => 'text', 'label' => __( 'Email', 'flavor-chat-ia' ) ),
-                    'linkedin'  => array( 'type' => 'url', 'label' => __( 'LinkedIn', 'flavor-chat-ia' ) ),
-                    'twitter'   => array( 'type' => 'url', 'label' => __( 'Twitter/X', 'flavor-chat-ia' ) ),
-                    'departamento' => array( 'type' => 'text', 'label' => __( 'Departamento', 'flavor-chat-ia' ) ),
+                'titulo'    => array( 'type' => 'text', 'label' => __( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'ai' => true ),
+                'subtitulo' => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'ai' => true ),
+                'columnas'  => array( 'type' => 'select', 'label' => __( 'Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( '2' => '2', '3' => '3', '4' => '4', '5' => '5' ) ),
+                'miembros'  => array( 'type' => 'repeater', 'label' => __( 'Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'fields' => array(
+                    'nombre'    => array( 'type' => 'text', 'label' => __( 'Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'cargo'     => array( 'type' => 'text', 'label' => __( 'Cargo', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'bio'       => array( 'type' => 'textarea', 'label' => __( 'Biografía', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'foto'      => array( 'type' => 'image', 'label' => __( 'Foto', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'email'     => array( 'type' => 'text', 'label' => __( 'Email', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'linkedin'  => array( 'type' => 'url', 'label' => __( 'LinkedIn', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'twitter'   => array( 'type' => 'url', 'label' => __( 'Twitter/X', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'departamento' => array( 'type' => 'text', 'label' => __( 'Departamento', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                 ) ),
-                'mostrar_redes' => array( 'type' => 'toggle', 'label' => __( 'Mostrar redes sociales', 'flavor-chat-ia' ) ),
-                'mostrar_email' => array( 'type' => 'toggle', 'label' => __( 'Mostrar email', 'flavor-chat-ia' ) ),
+                'mostrar_redes' => array( 'type' => 'toggle', 'label' => __( 'Mostrar redes sociales', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'mostrar_email' => array( 'type' => 'toggle', 'label' => __( 'Mostrar email', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
             'presets' => array(
                 'startup' => array(
@@ -1041,67 +1041,67 @@ class Flavor_VBP_Block_Library {
         // Galería
         $this->registrar_bloque( array(
             'id'       => 'gallery',
-            'name'     => __( 'Galería', 'flavor-chat-ia' ),
+            'name'     => __( 'Galería', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>',
             'variants' => array(
-                'grid'        => __( 'Cuadrícula', 'flavor-chat-ia' ),
-                'masonry'     => __( 'Masonry', 'flavor-chat-ia' ),
-                'carousel'    => __( 'Carrusel', 'flavor-chat-ia' ),
-                'lightbox'    => __( 'Con lightbox', 'flavor-chat-ia' ),
-                'justified'   => __( 'Justificada', 'flavor-chat-ia' ),
-                'slider'      => __( 'Slider fullwidth', 'flavor-chat-ia' ),
-                'mosaic'      => __( 'Mosaico', 'flavor-chat-ia' ),
-                'polaroid'    => __( 'Estilo Polaroid', 'flavor-chat-ia' ),
-                'filterable'  => __( 'Con filtros', 'flavor-chat-ia' ),
+                'grid'        => __( 'Cuadrícula', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'masonry'     => __( 'Masonry', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'carousel'    => __( 'Carrusel', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'lightbox'    => __( 'Con lightbox', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'justified'   => __( 'Justificada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'slider'      => __( 'Slider fullwidth', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'mosaic'      => __( 'Mosaico', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'polaroid'    => __( 'Estilo Polaroid', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'filterable'  => __( 'Con filtros', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'fields'   => array(
-                'titulo'      => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ), 'ai' => true ),
-                'subtitulo'   => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', 'flavor-chat-ia' ), 'ai' => true ),
-                'imagenes'    => array( 'type' => 'gallery', 'label' => __( 'Imágenes', 'flavor-chat-ia' ) ),
-                'columnas'    => array( 'type' => 'select', 'label' => __( 'Columnas', 'flavor-chat-ia' ), 'options' => array( '2' => '2', '3' => '3', '4' => '4', '5' => '5', '6' => '6' ) ),
-                'gap'         => array( 'type' => 'select', 'label' => __( 'Espaciado', 'flavor-chat-ia' ), 'options' => array( '0' => 'Sin espacio', '4' => 'Pequeño', '8' => 'Normal', '16' => 'Grande' ) ),
-                'lightbox'    => array( 'type' => 'toggle', 'label' => __( 'Lightbox', 'flavor-chat-ia' ) ),
-                'captions'    => array( 'type' => 'toggle', 'label' => __( 'Mostrar títulos', 'flavor-chat-ia' ) ),
-                'hover_effect'=> array( 'type' => 'select', 'label' => __( 'Efecto hover', 'flavor-chat-ia' ), 'options' => array( 'none' => 'Ninguno', 'zoom' => 'Zoom', 'overlay' => 'Overlay', 'grayscale' => 'Escala de grises', 'blur' => 'Desenfoque' ) ),
-                'aspect_ratio'=> array( 'type' => 'select', 'label' => __( 'Proporción', 'flavor-chat-ia' ), 'options' => array( 'auto' => 'Auto', 'square' => 'Cuadrado', '4:3' => '4:3', '16:9' => '16:9', '3:2' => '3:2' ) ),
-                'autoplay'    => array( 'type' => 'toggle', 'label' => __( 'Autoplay (carrusel)', 'flavor-chat-ia' ) ),
-                'categorias'  => array( 'type' => 'text', 'label' => __( 'Categorías (separadas por coma)', 'flavor-chat-ia' ) ),
+                'titulo'      => array( 'type' => 'text', 'label' => __( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'ai' => true ),
+                'subtitulo'   => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'ai' => true ),
+                'imagenes'    => array( 'type' => 'gallery', 'label' => __( 'Imágenes', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'columnas'    => array( 'type' => 'select', 'label' => __( 'Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( '2' => '2', '3' => '3', '4' => '4', '5' => '5', '6' => '6' ) ),
+                'gap'         => array( 'type' => 'select', 'label' => __( 'Espaciado', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( '0' => 'Sin espacio', '4' => 'Pequeño', '8' => 'Normal', '16' => 'Grande' ) ),
+                'lightbox'    => array( 'type' => 'toggle', 'label' => __( 'Lightbox', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'captions'    => array( 'type' => 'toggle', 'label' => __( 'Mostrar títulos', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'hover_effect'=> array( 'type' => 'select', 'label' => __( 'Efecto hover', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'none' => 'Ninguno', 'zoom' => 'Zoom', 'overlay' => 'Overlay', 'grayscale' => 'Escala de grises', 'blur' => 'Desenfoque' ) ),
+                'aspect_ratio'=> array( 'type' => 'select', 'label' => __( 'Proporción', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'auto' => 'Auto', 'square' => 'Cuadrado', '4:3' => '4:3', '16:9' => '16:9', '3:2' => '3:2' ) ),
+                'autoplay'    => array( 'type' => 'toggle', 'label' => __( 'Autoplay (carrusel)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'categorias'  => array( 'type' => 'text', 'label' => __( 'Categorías (separadas por coma)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
         ) );
 
         // Blog
         $this->registrar_bloque( array(
             'id'       => 'blog',
-            'name'     => __( 'Blog', 'flavor-chat-ia' ),
+            'name'     => __( 'Blog', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>',
             'variants' => array(
-                'grid'          => __( 'Cuadrícula', 'flavor-chat-ia' ),
-                'list'          => __( 'Lista', 'flavor-chat-ia' ),
-                'featured'      => __( 'Destacado + grid', 'flavor-chat-ia' ),
-                'masonry'       => __( 'Masonry', 'flavor-chat-ia' ),
-                'carousel'      => __( 'Carrusel', 'flavor-chat-ia' ),
-                'minimal'       => __( 'Minimalista', 'flavor-chat-ia' ),
-                'cards-overlay' => __( 'Tarjetas con overlay', 'flavor-chat-ia' ),
-                'timeline'      => __( 'Línea de tiempo', 'flavor-chat-ia' ),
+                'grid'          => __( 'Cuadrícula', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'list'          => __( 'Lista', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'featured'      => __( 'Destacado + grid', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'masonry'       => __( 'Masonry', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'carousel'      => __( 'Carrusel', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'minimal'       => __( 'Minimalista', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'cards-overlay' => __( 'Tarjetas con overlay', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'timeline'      => __( 'Línea de tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'fields'   => array(
-                'titulo'       => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ), 'ai' => true ),
-                'subtitulo'    => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', 'flavor-chat-ia' ), 'ai' => true ),
-                'cantidad'     => array( 'type' => 'number', 'label' => __( 'Cantidad de posts', 'flavor-chat-ia' ), 'default' => 6 ),
-                'categoria'    => array( 'type' => 'taxonomy', 'label' => __( 'Categoría', 'flavor-chat-ia' ), 'taxonomy' => 'category' ),
-                'etiquetas'    => array( 'type' => 'taxonomy', 'label' => __( 'Etiquetas', 'flavor-chat-ia' ), 'taxonomy' => 'post_tag' ),
-                'columnas'     => array( 'type' => 'select', 'label' => __( 'Columnas', 'flavor-chat-ia' ), 'options' => array( '2' => '2', '3' => '3', '4' => '4' ) ),
-                'orden'        => array( 'type' => 'select', 'label' => __( 'Ordenar por', 'flavor-chat-ia' ), 'options' => array( 'date' => 'Fecha', 'title' => 'Título', 'rand' => 'Aleatorio', 'comment_count' => 'Comentarios' ) ),
-                'mostrar_extracto' => array( 'type' => 'toggle', 'label' => __( 'Mostrar extracto', 'flavor-chat-ia' ) ),
-                'mostrar_fecha' => array( 'type' => 'toggle', 'label' => __( 'Mostrar fecha', 'flavor-chat-ia' ) ),
-                'mostrar_autor' => array( 'type' => 'toggle', 'label' => __( 'Mostrar autor', 'flavor-chat-ia' ) ),
-                'mostrar_categorias' => array( 'type' => 'toggle', 'label' => __( 'Mostrar categorías', 'flavor-chat-ia' ) ),
-                'mostrar_imagen' => array( 'type' => 'toggle', 'label' => __( 'Mostrar imagen', 'flavor-chat-ia' ), 'default' => true ),
-                'leer_mas_texto' => array( 'type' => 'text', 'label' => __( 'Texto "Leer más"', 'flavor-chat-ia' ), 'default' => 'Leer más' ),
-                'ver_todos_url' => array( 'type' => 'url', 'label' => __( 'URL "Ver todos"', 'flavor-chat-ia' ) ),
-                'ver_todos_texto' => array( 'type' => 'text', 'label' => __( 'Texto "Ver todos"', 'flavor-chat-ia' ) ),
+                'titulo'       => array( 'type' => 'text', 'label' => __( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'ai' => true ),
+                'subtitulo'    => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'ai' => true ),
+                'cantidad'     => array( 'type' => 'number', 'label' => __( 'Cantidad de posts', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => 6 ),
+                'categoria'    => array( 'type' => 'taxonomy', 'label' => __( 'Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'taxonomy' => 'category' ),
+                'etiquetas'    => array( 'type' => 'taxonomy', 'label' => __( 'Etiquetas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'taxonomy' => 'post_tag' ),
+                'columnas'     => array( 'type' => 'select', 'label' => __( 'Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( '2' => '2', '3' => '3', '4' => '4' ) ),
+                'orden'        => array( 'type' => 'select', 'label' => __( 'Ordenar por', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'date' => 'Fecha', 'title' => 'Título', 'rand' => 'Aleatorio', 'comment_count' => 'Comentarios' ) ),
+                'mostrar_extracto' => array( 'type' => 'toggle', 'label' => __( 'Mostrar extracto', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'mostrar_fecha' => array( 'type' => 'toggle', 'label' => __( 'Mostrar fecha', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'mostrar_autor' => array( 'type' => 'toggle', 'label' => __( 'Mostrar autor', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'mostrar_categorias' => array( 'type' => 'toggle', 'label' => __( 'Mostrar categorías', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'mostrar_imagen' => array( 'type' => 'toggle', 'label' => __( 'Mostrar imagen', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => true ),
+                'leer_mas_texto' => array( 'type' => 'text', 'label' => __( 'Texto "Leer más"', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => 'Leer más' ),
+                'ver_todos_url' => array( 'type' => 'url', 'label' => __( 'URL "Ver todos"', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'ver_todos_texto' => array( 'type' => 'text', 'label' => __( 'Texto "Ver todos"', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
             'presets' => array(
                 'noticias' => array(
@@ -1120,34 +1120,34 @@ class Flavor_VBP_Block_Library {
         // Video
         $this->registrar_bloque( array(
             'id'       => 'video-section',
-            'name'     => __( 'Video', 'flavor-chat-ia' ),
+            'name'     => __( 'Video', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5,3 19,12 5,21"/></svg>',
             'variants' => array(
-                'embed'       => __( 'Embed simple', 'flavor-chat-ia' ),
-                'background'  => __( 'Video de fondo', 'flavor-chat-ia' ),
-                'lightbox'    => __( 'Con lightbox', 'flavor-chat-ia' ),
-                'split'       => __( 'Dividido con texto', 'flavor-chat-ia' ),
-                'fullscreen'  => __( 'Pantalla completa', 'flavor-chat-ia' ),
-                'playlist'    => __( 'Playlist', 'flavor-chat-ia' ),
-                'testimonial' => __( 'Video testimonio', 'flavor-chat-ia' ),
-                'tutorial'    => __( 'Tutorial con pasos', 'flavor-chat-ia' ),
+                'embed'       => __( 'Embed simple', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'background'  => __( 'Video de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'lightbox'    => __( 'Con lightbox', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'split'       => __( 'Dividido con texto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'fullscreen'  => __( 'Pantalla completa', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'playlist'    => __( 'Playlist', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'testimonial' => __( 'Video testimonio', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'tutorial'    => __( 'Tutorial con pasos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'fields'   => array(
-                'titulo'       => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ), 'ai' => true ),
-                'descripcion'  => array( 'type' => 'textarea', 'label' => __( 'Descripción', 'flavor-chat-ia' ), 'ai' => true ),
-                'video_url'    => array( 'type' => 'url', 'label' => __( 'URL del video (YouTube/Vimeo)', 'flavor-chat-ia' ) ),
-                'video_file'   => array( 'type' => 'file', 'label' => __( 'Archivo de video', 'flavor-chat-ia' ), 'accept' => 'video/*' ),
-                'thumbnail'    => array( 'type' => 'image', 'label' => __( 'Imagen de portada', 'flavor-chat-ia' ) ),
-                'autoplay'     => array( 'type' => 'toggle', 'label' => __( 'Autoplay', 'flavor-chat-ia' ) ),
-                'loop'         => array( 'type' => 'toggle', 'label' => __( 'Loop', 'flavor-chat-ia' ) ),
-                'muted'        => array( 'type' => 'toggle', 'label' => __( 'Silenciado', 'flavor-chat-ia' ) ),
-                'controls'     => array( 'type' => 'toggle', 'label' => __( 'Mostrar controles', 'flavor-chat-ia' ), 'default' => true ),
-                'aspect_ratio' => array( 'type' => 'select', 'label' => __( 'Proporción', 'flavor-chat-ia' ), 'options' => array( '16:9' => '16:9', '4:3' => '4:3', '21:9' => '21:9 (Cine)', '1:1' => 'Cuadrado' ) ),
-                'play_icon'    => array( 'type' => 'select', 'label' => __( 'Estilo icono play', 'flavor-chat-ia' ), 'options' => array( 'default' => 'Defecto', 'circle' => 'Círculo', 'minimal' => 'Minimalista', 'youtube' => 'Estilo YouTube' ) ),
-                'overlay_color'=> array( 'type' => 'color', 'label' => __( 'Color overlay', 'flavor-chat-ia' ) ),
-                'boton_texto'  => array( 'type' => 'text', 'label' => __( 'Texto del botón', 'flavor-chat-ia' ) ),
-                'boton_url'    => array( 'type' => 'url', 'label' => __( 'URL del botón', 'flavor-chat-ia' ) ),
+                'titulo'       => array( 'type' => 'text', 'label' => __( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'ai' => true ),
+                'descripcion'  => array( 'type' => 'textarea', 'label' => __( 'Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'ai' => true ),
+                'video_url'    => array( 'type' => 'url', 'label' => __( 'URL del video (YouTube/Vimeo)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'video_file'   => array( 'type' => 'file', 'label' => __( 'Archivo de video', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'accept' => 'video/*' ),
+                'thumbnail'    => array( 'type' => 'image', 'label' => __( 'Imagen de portada', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'autoplay'     => array( 'type' => 'toggle', 'label' => __( 'Autoplay', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'loop'         => array( 'type' => 'toggle', 'label' => __( 'Loop', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'muted'        => array( 'type' => 'toggle', 'label' => __( 'Silenciado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'controls'     => array( 'type' => 'toggle', 'label' => __( 'Mostrar controles', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => true ),
+                'aspect_ratio' => array( 'type' => 'select', 'label' => __( 'Proporción', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( '16:9' => '16:9', '4:3' => '4:3', '21:9' => '21:9 (Cine)', '1:1' => 'Cuadrado' ) ),
+                'play_icon'    => array( 'type' => 'select', 'label' => __( 'Estilo icono play', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'default' => 'Defecto', 'circle' => 'Círculo', 'minimal' => 'Minimalista', 'youtube' => 'Estilo YouTube' ) ),
+                'overlay_color'=> array( 'type' => 'color', 'label' => __( 'Color overlay', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'boton_texto'  => array( 'type' => 'text', 'label' => __( 'Texto del botón', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'boton_url'    => array( 'type' => 'url', 'label' => __( 'URL del botón', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
             'presets' => array(
                 'demo' => array(
@@ -1164,36 +1164,36 @@ class Flavor_VBP_Block_Library {
         // Estadísticas
         $this->registrar_bloque( array(
             'id'       => 'stats',
-            'name'     => __( 'Estadísticas', 'flavor-chat-ia' ),
+            'name'     => __( 'Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>',
             'variants' => array(
-                'counters'    => __( 'Contadores', 'flavor-chat-ia' ),
-                'progress'    => __( 'Barras de progreso', 'flavor-chat-ia' ),
-                'charts'      => __( 'Gráficos', 'flavor-chat-ia' ),
-                'cards'       => __( 'Tarjetas', 'flavor-chat-ia' ),
-                'icons'       => __( 'Con iconos', 'flavor-chat-ia' ),
-                'radial'      => __( 'Progreso circular', 'flavor-chat-ia' ),
-                'minimal'     => __( 'Minimalista', 'flavor-chat-ia' ),
-                'comparison'  => __( 'Comparación antes/después', 'flavor-chat-ia' ),
+                'counters'    => __( 'Contadores', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'progress'    => __( 'Barras de progreso', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'charts'      => __( 'Gráficos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'cards'       => __( 'Tarjetas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'icons'       => __( 'Con iconos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'radial'      => __( 'Progreso circular', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'minimal'     => __( 'Minimalista', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'comparison'  => __( 'Comparación antes/después', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'fields'   => array(
-                'titulo'       => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ), 'ai' => true ),
-                'subtitulo'    => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', 'flavor-chat-ia' ), 'ai' => true ),
-                'columnas'     => array( 'type' => 'select', 'label' => __( 'Columnas', 'flavor-chat-ia' ), 'options' => array( '2' => '2', '3' => '3', '4' => '4', '5' => '5' ) ),
-                'estadisticas' => array( 'type' => 'repeater', 'label' => __( 'Estadísticas', 'flavor-chat-ia' ), 'fields' => array(
-                    'valor'       => array( 'type' => 'text', 'label' => __( 'Valor', 'flavor-chat-ia' ) ),
-                    'etiqueta'    => array( 'type' => 'text', 'label' => __( 'Etiqueta', 'flavor-chat-ia' ) ),
-                    'descripcion' => array( 'type' => 'text', 'label' => __( 'Descripción', 'flavor-chat-ia' ) ),
-                    'icono'       => array( 'type' => 'icon', 'label' => __( 'Icono', 'flavor-chat-ia' ) ),
-                    'prefijo'     => array( 'type' => 'text', 'label' => __( 'Prefijo (ej: $, €)', 'flavor-chat-ia' ) ),
-                    'sufijo'      => array( 'type' => 'text', 'label' => __( 'Sufijo (ej: %, +)', 'flavor-chat-ia' ) ),
-                    'porcentaje'  => array( 'type' => 'number', 'label' => __( 'Porcentaje (para barras)', 'flavor-chat-ia' ), 'min' => 0, 'max' => 100 ),
-                    'color'       => array( 'type' => 'color', 'label' => __( 'Color', 'flavor-chat-ia' ) ),
+                'titulo'       => array( 'type' => 'text', 'label' => __( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'ai' => true ),
+                'subtitulo'    => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'ai' => true ),
+                'columnas'     => array( 'type' => 'select', 'label' => __( 'Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( '2' => '2', '3' => '3', '4' => '4', '5' => '5' ) ),
+                'estadisticas' => array( 'type' => 'repeater', 'label' => __( 'Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'fields' => array(
+                    'valor'       => array( 'type' => 'text', 'label' => __( 'Valor', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'etiqueta'    => array( 'type' => 'text', 'label' => __( 'Etiqueta', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'descripcion' => array( 'type' => 'text', 'label' => __( 'Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'icono'       => array( 'type' => 'icon', 'label' => __( 'Icono', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'prefijo'     => array( 'type' => 'text', 'label' => __( 'Prefijo (ej: $, €)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'sufijo'      => array( 'type' => 'text', 'label' => __( 'Sufijo (ej: %, +)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                    'porcentaje'  => array( 'type' => 'number', 'label' => __( 'Porcentaje (para barras)', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'min' => 0, 'max' => 100 ),
+                    'color'       => array( 'type' => 'color', 'label' => __( 'Color', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                 ) ),
-                'animacion'    => array( 'type' => 'toggle', 'label' => __( 'Animación de conteo', 'flavor-chat-ia' ), 'default' => true ),
-                'duracion'     => array( 'type' => 'number', 'label' => __( 'Duración animación (ms)', 'flavor-chat-ia' ), 'default' => 2000 ),
-                'color_fondo'  => array( 'type' => 'color', 'label' => __( 'Color de fondo', 'flavor-chat-ia' ) ),
+                'animacion'    => array( 'type' => 'toggle', 'label' => __( 'Animación de conteo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => true ),
+                'duracion'     => array( 'type' => 'number', 'label' => __( 'Duración animación (ms)', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => 2000 ),
+                'color_fondo'  => array( 'type' => 'color', 'label' => __( 'Color de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
             'presets' => array(
                 'empresa' => array(
@@ -1216,73 +1216,73 @@ class Flavor_VBP_Block_Library {
         // Carrusel Avanzado
         $this->registrar_bloque( array(
             'id'       => 'carousel',
-            'name'     => __( 'Carrusel', 'flavor-chat-ia' ),
+            'name'     => __( 'Carrusel', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M8 18l4 2 4-2"/><circle cx="8" cy="21" r="1" fill="currentColor"/><circle cx="12" cy="21" r="1" fill="currentColor"/><circle cx="16" cy="21" r="1" fill="currentColor"/></svg>',
             'variants' => array(
-                'simple'       => __( 'Simple', 'flavor-chat-ia' ),
-                'cards'        => __( 'Tarjetas', 'flavor-chat-ia' ),
-                'fullwidth'    => __( 'Ancho completo', 'flavor-chat-ia' ),
-                'testimonials' => __( 'Testimonios', 'flavor-chat-ia' ),
-                'gallery'      => __( 'Galería', 'flavor-chat-ia' ),
+                'simple'       => __( 'Simple', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'cards'        => __( 'Tarjetas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'fullwidth'    => __( 'Ancho completo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'testimonials' => __( 'Testimonios', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'gallery'      => __( 'Galería', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'fields'   => array(
                 'items' => array(
                     'type'   => 'repeater',
-                    'label'  => __( 'Slides', 'flavor-chat-ia' ),
+                    'label'  => __( 'Slides', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'fields' => array(
-                        'imagen'      => array( 'type' => 'image', 'label' => __( 'Imagen', 'flavor-chat-ia' ) ),
-                        'titulo'      => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ) ),
-                        'descripcion' => array( 'type' => 'textarea', 'label' => __( 'Descripción', 'flavor-chat-ia' ) ),
-                        'enlace_url'  => array( 'type' => 'text', 'label' => __( 'URL del enlace', 'flavor-chat-ia' ) ),
-                        'enlace_texto'=> array( 'type' => 'text', 'label' => __( 'Texto del enlace', 'flavor-chat-ia' ) ),
+                        'imagen'      => array( 'type' => 'image', 'label' => __( 'Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                        'titulo'      => array( 'type' => 'text', 'label' => __( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                        'descripcion' => array( 'type' => 'textarea', 'label' => __( 'Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                        'enlace_url'  => array( 'type' => 'text', 'label' => __( 'URL del enlace', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                        'enlace_texto'=> array( 'type' => 'text', 'label' => __( 'Texto del enlace', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                     ),
                 ),
                 '_separator_config' => array(
                     'type'  => 'separator',
-                    'label' => __( '⚙️ Configuración', 'flavor-chat-ia' ),
+                    'label' => __( '⚙️ Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 'autoplay' => array(
                     'type'    => 'toggle',
-                    'label'   => __( 'Autoplay', 'flavor-chat-ia' ),
+                    'label'   => __( 'Autoplay', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => true,
                 ),
                 'intervalo' => array(
                     'type'    => 'number',
-                    'label'   => __( 'Intervalo (segundos)', 'flavor-chat-ia' ),
+                    'label'   => __( 'Intervalo (segundos)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => 5,
                     'min'     => 1,
                     'max'     => 30,
                 ),
                 'mostrar_flechas' => array(
                     'type'    => 'toggle',
-                    'label'   => __( 'Mostrar flechas', 'flavor-chat-ia' ),
+                    'label'   => __( 'Mostrar flechas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => true,
                 ),
                 'mostrar_dots' => array(
                     'type'    => 'toggle',
-                    'label'   => __( 'Mostrar indicadores', 'flavor-chat-ia' ),
+                    'label'   => __( 'Mostrar indicadores', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => true,
                 ),
                 'loop' => array(
                     'type'    => 'toggle',
-                    'label'   => __( 'Loop infinito', 'flavor-chat-ia' ),
+                    'label'   => __( 'Loop infinito', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => true,
                 ),
                 'slides_visibles' => array(
                     'type'    => 'number',
-                    'label'   => __( 'Slides visibles', 'flavor-chat-ia' ),
+                    'label'   => __( 'Slides visibles', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => 1,
                     'min'     => 1,
                     'max'     => 5,
                 ),
                 'efecto_transicion' => array(
                     'type'    => 'select',
-                    'label'   => __( 'Efecto de transición', 'flavor-chat-ia' ),
+                    'label'   => __( 'Efecto de transición', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'options' => array(
-                        'slide' => __( 'Deslizar', 'flavor-chat-ia' ),
-                        'fade'  => __( 'Desvanecer', 'flavor-chat-ia' ),
-                        'scale' => __( 'Escalar', 'flavor-chat-ia' ),
+                        'slide' => __( 'Deslizar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'fade'  => __( 'Desvanecer', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'scale' => __( 'Escalar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                     'default' => 'slide',
                 ),
@@ -1292,52 +1292,52 @@ class Flavor_VBP_Block_Library {
         // Pestañas (Tabs)
         $this->registrar_bloque( array(
             'id'       => 'tabs',
-            'name'     => __( 'Pestañas', 'flavor-chat-ia' ),
+            'name'     => __( 'Pestañas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 3v6"/></svg>',
             'variants' => array(
-                'horizontal' => __( 'Horizontal', 'flavor-chat-ia' ),
-                'vertical'   => __( 'Vertical', 'flavor-chat-ia' ),
-                'pills'      => __( 'Pills', 'flavor-chat-ia' ),
-                'underlined' => __( 'Subrayado', 'flavor-chat-ia' ),
-                'boxed'      => __( 'Con caja', 'flavor-chat-ia' ),
+                'horizontal' => __( 'Horizontal', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'vertical'   => __( 'Vertical', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'pills'      => __( 'Pills', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'underlined' => __( 'Subrayado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'boxed'      => __( 'Con caja', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'fields'   => array_merge(
                 $this->get_campos_header_seccion(),
                 array(
                     'tabs' => array(
                         'type'   => 'repeater',
-                        'label'  => __( 'Pestañas', 'flavor-chat-ia' ),
+                        'label'  => __( 'Pestañas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'fields' => array(
-                            'titulo'    => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ) ),
-                            'icono'     => array( 'type' => 'icon', 'label' => __( 'Icono', 'flavor-chat-ia' ) ),
-                            'contenido' => array( 'type' => 'editor', 'label' => __( 'Contenido', 'flavor-chat-ia' ) ),
+                            'titulo'    => array( 'type' => 'text', 'label' => __( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                            'icono'     => array( 'type' => 'icon', 'label' => __( 'Icono', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                            'contenido' => array( 'type' => 'editor', 'label' => __( 'Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         ),
                     ),
                     '_separator_estilo' => array(
                         'type'  => 'separator',
-                        'label' => __( '🎨 Estilo', 'flavor-chat-ia' ),
+                        'label' => __( '🎨 Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                     'tab_activa_defecto' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Tab activa por defecto', 'flavor-chat-ia' ),
+                        'label'   => __( 'Tab activa por defecto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 0,
                         'min'     => 0,
                     ),
                     'alineacion_tabs' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Alineación tabs', 'flavor-chat-ia' ),
+                        'label'   => __( 'Alineación tabs', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'options' => array(
-                            'left'   => __( 'Izquierda', 'flavor-chat-ia' ),
-                            'center' => __( 'Centro', 'flavor-chat-ia' ),
-                            'right'  => __( 'Derecha', 'flavor-chat-ia' ),
-                            'full'   => __( 'Ancho completo', 'flavor-chat-ia' ),
+                            'left'   => __( 'Izquierda', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                            'center' => __( 'Centro', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                            'right'  => __( 'Derecha', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                            'full'   => __( 'Ancho completo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         ),
                         'default' => 'left',
                     ),
                     'animacion' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Animación al cambiar', 'flavor-chat-ia' ),
+                        'label'   => __( 'Animación al cambiar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 )
@@ -1347,51 +1347,51 @@ class Flavor_VBP_Block_Library {
         // Acordeón
         $this->registrar_bloque( array(
             'id'       => 'accordion',
-            'name'     => __( 'Acordeón', 'flavor-chat-ia' ),
+            'name'     => __( 'Acordeón', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="4" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="17" width="18" height="4" rx="1"/><path d="M15 5l2-2 2 2" fill="currentColor"/></svg>',
             'variants' => array(
-                'simple'   => __( 'Simple', 'flavor-chat-ia' ),
-                'bordered' => __( 'Con bordes', 'flavor-chat-ia' ),
-                'cards'    => __( 'Tarjetas', 'flavor-chat-ia' ),
-                'minimal'  => __( 'Minimalista', 'flavor-chat-ia' ),
-                'faq'      => __( 'FAQ', 'flavor-chat-ia' ),
+                'simple'   => __( 'Simple', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'bordered' => __( 'Con bordes', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'cards'    => __( 'Tarjetas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'minimal'  => __( 'Minimalista', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'faq'      => __( 'FAQ', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'fields'   => array_merge(
                 $this->get_campos_header_seccion(),
                 array(
                     'items' => array(
                         'type'   => 'repeater',
-                        'label'  => __( 'Items', 'flavor-chat-ia' ),
+                        'label'  => __( 'Items', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'fields' => array(
-                            'titulo'    => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ) ),
-                            'contenido' => array( 'type' => 'editor', 'label' => __( 'Contenido', 'flavor-chat-ia' ) ),
-                            'icono'     => array( 'type' => 'icon', 'label' => __( 'Icono', 'flavor-chat-ia' ) ),
-                            'abierto'   => array( 'type' => 'toggle', 'label' => __( 'Abierto por defecto', 'flavor-chat-ia' ), 'default' => false ),
+                            'titulo'    => array( 'type' => 'text', 'label' => __( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                            'contenido' => array( 'type' => 'editor', 'label' => __( 'Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                            'icono'     => array( 'type' => 'icon', 'label' => __( 'Icono', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                            'abierto'   => array( 'type' => 'toggle', 'label' => __( 'Abierto por defecto', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'default' => false ),
                         ),
                     ),
                     '_separator_config' => array(
                         'type'  => 'separator',
-                        'label' => __( '⚙️ Configuración', 'flavor-chat-ia' ),
+                        'label' => __( '⚙️ Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                     'multiple_abiertos' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Permitir múltiples abiertos', 'flavor-chat-ia' ),
+                        'label'   => __( 'Permitir múltiples abiertos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => false,
                     ),
                     'icono_expandir' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Icono expandir', 'flavor-chat-ia' ),
+                        'label'   => __( 'Icono expandir', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'options' => array(
-                            'chevron' => __( 'Chevron', 'flavor-chat-ia' ),
-                            'plus'    => __( 'Plus/Minus', 'flavor-chat-ia' ),
-                            'arrow'   => __( 'Flecha', 'flavor-chat-ia' ),
+                            'chevron' => __( 'Chevron', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                            'plus'    => __( 'Plus/Minus', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                            'arrow'   => __( 'Flecha', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         ),
                         'default' => 'chevron',
                     ),
                     'animacion' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Animación suave', 'flavor-chat-ia' ),
+                        'label'   => __( 'Animación suave', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 )
@@ -1401,36 +1401,36 @@ class Flavor_VBP_Block_Library {
         // Línea de Tiempo (Timeline)
         $this->registrar_bloque( array(
             'id'       => 'timeline',
-            'name'     => __( 'Línea de Tiempo', 'flavor-chat-ia' ),
+            'name'     => __( 'Línea de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="2" x2="12" y2="22"/><circle cx="12" cy="6" r="3"/><circle cx="12" cy="12" r="3"/><circle cx="12" cy="18" r="3"/><path d="M15 6h6"/><path d="M3 12h6"/><path d="M15 18h6"/></svg>',
             'variants' => array(
-                'vertical'    => __( 'Vertical', 'flavor-chat-ia' ),
-                'horizontal'  => __( 'Horizontal', 'flavor-chat-ia' ),
-                'alternating' => __( 'Alternado', 'flavor-chat-ia' ),
-                'compact'     => __( 'Compacto', 'flavor-chat-ia' ),
-                'roadmap'     => __( 'Roadmap', 'flavor-chat-ia' ),
+                'vertical'    => __( 'Vertical', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'horizontal'  => __( 'Horizontal', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'alternating' => __( 'Alternado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'compact'     => __( 'Compacto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'roadmap'     => __( 'Roadmap', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'fields'   => array_merge(
                 $this->get_campos_header_seccion(),
                 array(
                     'eventos' => array(
                         'type'   => 'repeater',
-                        'label'  => __( 'Eventos', 'flavor-chat-ia' ),
+                        'label'  => __( 'Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'fields' => array(
-                            'fecha'       => array( 'type' => 'text', 'label' => __( 'Fecha', 'flavor-chat-ia' ) ),
-                            'titulo'      => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ) ),
-                            'descripcion' => array( 'type' => 'textarea', 'label' => __( 'Descripción', 'flavor-chat-ia' ) ),
-                            'icono'       => array( 'type' => 'icon', 'label' => __( 'Icono', 'flavor-chat-ia' ) ),
-                            'imagen'      => array( 'type' => 'image', 'label' => __( 'Imagen', 'flavor-chat-ia' ) ),
-                            'color'       => array( 'type' => 'color', 'label' => __( 'Color del marcador', 'flavor-chat-ia' ) ),
+                            'fecha'       => array( 'type' => 'text', 'label' => __( 'Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                            'titulo'      => array( 'type' => 'text', 'label' => __( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                            'descripcion' => array( 'type' => 'textarea', 'label' => __( 'Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                            'icono'       => array( 'type' => 'icon', 'label' => __( 'Icono', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                            'imagen'      => array( 'type' => 'image', 'label' => __( 'Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                            'color'       => array( 'type' => 'color', 'label' => __( 'Color del marcador', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                             'estado'      => array(
                                 'type'    => 'select',
-                                'label'   => __( 'Estado', 'flavor-chat-ia' ),
+                                'label'   => __( 'Estado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                                 'options' => array(
-                                    'completed' => __( 'Completado', 'flavor-chat-ia' ),
-                                    'current'   => __( 'Actual', 'flavor-chat-ia' ),
-                                    'upcoming'  => __( 'Próximo', 'flavor-chat-ia' ),
+                                    'completed' => __( 'Completado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                                    'current'   => __( 'Actual', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                                    'upcoming'  => __( 'Próximo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                                 ),
                                 'default' => 'completed',
                             ),
@@ -1438,26 +1438,26 @@ class Flavor_VBP_Block_Library {
                     ),
                     '_separator_estilo' => array(
                         'type'  => 'separator',
-                        'label' => __( '🎨 Estilo', 'flavor-chat-ia' ),
+                        'label' => __( '🎨 Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                     'color_linea' => array(
                         'type'    => 'color',
-                        'label'   => __( 'Color de la línea', 'flavor-chat-ia' ),
+                        'label'   => __( 'Color de la línea', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => '#3b82f6',
                     ),
                     'color_marcador' => array(
                         'type'    => 'color',
-                        'label'   => __( 'Color de marcadores', 'flavor-chat-ia' ),
+                        'label'   => __( 'Color de marcadores', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => '#3b82f6',
                     ),
                     'animacion_scroll' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Animar al hacer scroll', 'flavor-chat-ia' ),
+                        'label'   => __( 'Animar al hacer scroll', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                     'mostrar_conectores' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar líneas conectoras', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar líneas conectoras', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 )
@@ -1469,87 +1469,87 @@ class Flavor_VBP_Block_Library {
         // ====================================
         $this->registrar_bloque( array(
             'id'       => 'carousel',
-            'name'     => __( 'Carrusel', 'flavor-chat-ia' ),
+            'name'     => __( 'Carrusel', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h4v4H6z"/><circle cx="18" cy="12" r="1"/><circle cx="15" cy="12" r="1"/></svg>',
             'variants' => array(
-                'simple'       => __( 'Simple', 'flavor-chat-ia' ),
-                'cards'        => __( 'Tarjetas', 'flavor-chat-ia' ),
-                'fullwidth'    => __( 'Ancho completo', 'flavor-chat-ia' ),
-                'testimonials' => __( 'Testimonios', 'flavor-chat-ia' ),
+                'simple'       => __( 'Simple', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'cards'        => __( 'Tarjetas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'fullwidth'    => __( 'Ancho completo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'testimonials' => __( 'Testimonios', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'fields'   => array(
                 'slides' => array(
                     'type'   => 'repeater',
-                    'label'  => __( 'Slides', 'flavor-chat-ia' ),
+                    'label'  => __( 'Slides', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'fields' => array(
                         'imagen' => array(
                             'type'  => 'image',
-                            'label' => __( 'Imagen', 'flavor-chat-ia' ),
+                            'label' => __( 'Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         ),
                         'titulo' => array(
                             'type'  => 'text',
-                            'label' => __( 'Título', 'flavor-chat-ia' ),
+                            'label' => __( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         ),
                         'descripcion' => array(
                             'type'  => 'textarea',
-                            'label' => __( 'Descripción', 'flavor-chat-ia' ),
+                            'label' => __( 'Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         ),
                         'enlace' => array(
                             'type'  => 'url',
-                            'label' => __( 'Enlace', 'flavor-chat-ia' ),
+                            'label' => __( 'Enlace', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         ),
                         'texto_boton' => array(
                             'type'  => 'text',
-                            'label' => __( 'Texto del botón', 'flavor-chat-ia' ),
+                            'label' => __( 'Texto del botón', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         ),
                     ),
                 ),
                 '_separator_config' => array(
                     'type'  => 'separator',
-                    'label' => __( '⚙️ Configuración', 'flavor-chat-ia' ),
+                    'label' => __( '⚙️ Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 'autoplay' => array(
                     'type'    => 'toggle',
-                    'label'   => __( 'Autoplay', 'flavor-chat-ia' ),
+                    'label'   => __( 'Autoplay', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => true,
                 ),
                 'intervalo' => array(
                     'type'    => 'number',
-                    'label'   => __( 'Intervalo (segundos)', 'flavor-chat-ia' ),
+                    'label'   => __( 'Intervalo (segundos)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => 5,
                     'min'     => 1,
                     'max'     => 30,
                 ),
                 'mostrar_flechas' => array(
                     'type'    => 'toggle',
-                    'label'   => __( 'Mostrar flechas', 'flavor-chat-ia' ),
+                    'label'   => __( 'Mostrar flechas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => true,
                 ),
                 'mostrar_dots' => array(
                     'type'    => 'toggle',
-                    'label'   => __( 'Mostrar indicadores', 'flavor-chat-ia' ),
+                    'label'   => __( 'Mostrar indicadores', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => true,
                 ),
                 'loop' => array(
                     'type'    => 'toggle',
-                    'label'   => __( 'Loop infinito', 'flavor-chat-ia' ),
+                    'label'   => __( 'Loop infinito', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => true,
                 ),
                 'slides_visibles' => array(
                     'type'    => 'number',
-                    'label'   => __( 'Slides visibles', 'flavor-chat-ia' ),
+                    'label'   => __( 'Slides visibles', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => 1,
                     'min'     => 1,
                     'max'     => 6,
                 ),
                 'efecto' => array(
                     'type'    => 'select',
-                    'label'   => __( 'Efecto de transición', 'flavor-chat-ia' ),
+                    'label'   => __( 'Efecto de transición', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'options' => array(
-                        'slide' => __( 'Deslizar', 'flavor-chat-ia' ),
-                        'fade'  => __( 'Fade', 'flavor-chat-ia' ),
-                        'zoom'  => __( 'Zoom', 'flavor-chat-ia' ),
+                        'slide' => __( 'Deslizar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'fade'  => __( 'Fade', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'zoom'  => __( 'Zoom', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                     'default' => 'slide',
                 ),
@@ -1561,51 +1561,51 @@ class Flavor_VBP_Block_Library {
         // ====================================
         $this->registrar_bloque( array(
             'id'       => 'tabs',
-            'name'     => __( 'Pestañas', 'flavor-chat-ia' ),
+            'name'     => __( 'Pestañas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 3v6"/></svg>',
             'variants' => array(
-                'horizontal' => __( 'Horizontal', 'flavor-chat-ia' ),
-                'vertical'   => __( 'Vertical', 'flavor-chat-ia' ),
-                'pills'      => __( 'Pills', 'flavor-chat-ia' ),
-                'underlined' => __( 'Subrayado', 'flavor-chat-ia' ),
+                'horizontal' => __( 'Horizontal', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'vertical'   => __( 'Vertical', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'pills'      => __( 'Pills', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'underlined' => __( 'Subrayado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'fields'   => array(
                 'tabs' => array(
                     'type'   => 'repeater',
-                    'label'  => __( 'Pestañas', 'flavor-chat-ia' ),
+                    'label'  => __( 'Pestañas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'fields' => array(
                         'titulo' => array(
                             'type'  => 'text',
-                            'label' => __( 'Título', 'flavor-chat-ia' ),
+                            'label' => __( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         ),
                         'icono' => array(
                             'type'  => 'icon',
-                            'label' => __( 'Icono', 'flavor-chat-ia' ),
+                            'label' => __( 'Icono', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         ),
                         'contenido' => array(
                             'type'  => 'richtext',
-                            'label' => __( 'Contenido', 'flavor-chat-ia' ),
+                            'label' => __( 'Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         ),
                     ),
                 ),
                 '_separator_estilo' => array(
                     'type'  => 'separator',
-                    'label' => __( '🎨 Estilo', 'flavor-chat-ia' ),
+                    'label' => __( '🎨 Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 'color_activo' => array(
                     'type'    => 'color',
-                    'label'   => __( 'Color activo', 'flavor-chat-ia' ),
+                    'label'   => __( 'Color activo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => '#6366f1',
                 ),
                 'color_fondo_activo' => array(
                     'type'    => 'color',
-                    'label'   => __( 'Fondo activo', 'flavor-chat-ia' ),
+                    'label'   => __( 'Fondo activo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => '#eef2ff',
                 ),
                 'animacion' => array(
                     'type'    => 'toggle',
-                    'label'   => __( 'Animar cambio', 'flavor-chat-ia' ),
+                    'label'   => __( 'Animar cambio', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => true,
                 ),
             ),
@@ -1616,70 +1616,70 @@ class Flavor_VBP_Block_Library {
         // ====================================
         $this->registrar_bloque( array(
             'id'       => 'accordion',
-            'name'     => __( 'Acordeón', 'flavor-chat-ia' ),
+            'name'     => __( 'Acordeón', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="4" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="17" width="18" height="4" rx="1"/></svg>',
             'variants' => array(
-                'simple'   => __( 'Simple', 'flavor-chat-ia' ),
-                'bordered' => __( 'Con bordes', 'flavor-chat-ia' ),
-                'cards'    => __( 'Tarjetas', 'flavor-chat-ia' ),
-                'minimal'  => __( 'Minimalista', 'flavor-chat-ia' ),
+                'simple'   => __( 'Simple', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'bordered' => __( 'Con bordes', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'cards'    => __( 'Tarjetas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'minimal'  => __( 'Minimalista', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'fields'   => array(
                 'items' => array(
                     'type'   => 'repeater',
-                    'label'  => __( 'Items', 'flavor-chat-ia' ),
+                    'label'  => __( 'Items', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'fields' => array(
                         'titulo' => array(
                             'type'  => 'text',
-                            'label' => __( 'Título', 'flavor-chat-ia' ),
+                            'label' => __( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         ),
                         'contenido' => array(
                             'type'  => 'richtext',
-                            'label' => __( 'Contenido', 'flavor-chat-ia' ),
+                            'label' => __( 'Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         ),
                         'icono' => array(
                             'type'  => 'icon',
-                            'label' => __( 'Icono', 'flavor-chat-ia' ),
+                            'label' => __( 'Icono', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         ),
                         'abierto' => array(
                             'type'    => 'toggle',
-                            'label'   => __( 'Abierto por defecto', 'flavor-chat-ia' ),
+                            'label'   => __( 'Abierto por defecto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                             'default' => false,
                         ),
                     ),
                 ),
                 '_separator_config' => array(
                     'type'  => 'separator',
-                    'label' => __( '⚙️ Configuración', 'flavor-chat-ia' ),
+                    'label' => __( '⚙️ Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 'multiple_abiertos' => array(
                     'type'    => 'toggle',
-                    'label'   => __( 'Permitir múltiples abiertos', 'flavor-chat-ia' ),
+                    'label'   => __( 'Permitir múltiples abiertos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => false,
                 ),
                 'icono_abrir' => array(
                     'type'    => 'select',
-                    'label'   => __( 'Icono expandir', 'flavor-chat-ia' ),
+                    'label'   => __( 'Icono expandir', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'options' => array(
-                        'chevron' => __( 'Chevron', 'flavor-chat-ia' ),
-                        'plus'    => __( 'Plus/Minus', 'flavor-chat-ia' ),
-                        'arrow'   => __( 'Flecha', 'flavor-chat-ia' ),
+                        'chevron' => __( 'Chevron', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'plus'    => __( 'Plus/Minus', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'arrow'   => __( 'Flecha', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                     'default' => 'chevron',
                 ),
                 '_separator_estilo' => array(
                     'type'  => 'separator',
-                    'label' => __( '🎨 Estilo', 'flavor-chat-ia' ),
+                    'label' => __( '🎨 Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 'color_header' => array(
                     'type'    => 'color',
-                    'label'   => __( 'Color cabecera', 'flavor-chat-ia' ),
+                    'label'   => __( 'Color cabecera', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => '#f8fafc',
                 ),
                 'color_borde' => array(
                     'type'    => 'color',
-                    'label'   => __( 'Color borde', 'flavor-chat-ia' ),
+                    'label'   => __( 'Color borde', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => '#e2e8f0',
                 ),
             ),
@@ -1693,129 +1693,129 @@ class Flavor_VBP_Block_Library {
         // Texto
         $this->registrar_bloque( array(
             'id'       => 'text',
-            'name'     => __( 'Texto', 'flavor-chat-ia' ),
+            'name'     => __( 'Texto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'basic',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4,7 4,4 20,4 20,7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>',
             'fields'   => array(
-                'contenido'   => array( 'type' => 'textarea', 'label' => __( 'Contenido', 'flavor-chat-ia' ) ),
-                'alineacion'  => array( 'type' => 'select', 'label' => __( 'Alineación', 'flavor-chat-ia' ), 'options' => array( 'left' => 'Izquierda', 'center' => 'Centro', 'right' => 'Derecha', 'justify' => 'Justificado' ) ),
-                'tamano'      => array( 'type' => 'select', 'label' => __( 'Tamaño', 'flavor-chat-ia' ), 'options' => array( 'sm' => 'Pequeño', 'base' => 'Normal', 'lg' => 'Grande', 'xl' => 'Extra grande' ) ),
-                'color'       => array( 'type' => 'color', 'label' => __( 'Color', 'flavor-chat-ia' ) ),
+                'contenido'   => array( 'type' => 'textarea', 'label' => __( 'Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'alineacion'  => array( 'type' => 'select', 'label' => __( 'Alineación', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'left' => 'Izquierda', 'center' => 'Centro', 'right' => 'Derecha', 'justify' => 'Justificado' ) ),
+                'tamano'      => array( 'type' => 'select', 'label' => __( 'Tamaño', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'sm' => 'Pequeño', 'base' => 'Normal', 'lg' => 'Grande', 'xl' => 'Extra grande' ) ),
+                'color'       => array( 'type' => 'color', 'label' => __( 'Color', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
         ) );
 
         // Encabezado
         $this->registrar_bloque( array(
             'id'       => 'heading',
-            'name'     => __( 'Encabezado', 'flavor-chat-ia' ),
+            'name'     => __( 'Encabezado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'basic',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4v16M18 4v16M6 12h12"/></svg>',
             'fields'   => array(
-                'texto'      => array( 'type' => 'text', 'label' => __( 'Texto', 'flavor-chat-ia' ) ),
-                'nivel'      => array( 'type' => 'select', 'label' => __( 'Nivel', 'flavor-chat-ia' ), 'options' => array( 'h1' => 'H1', 'h2' => 'H2', 'h3' => 'H3', 'h4' => 'H4', 'h5' => 'H5', 'h6' => 'H6' ) ),
-                'alineacion' => array( 'type' => 'select', 'label' => __( 'Alineación', 'flavor-chat-ia' ), 'options' => array( 'left' => 'Izquierda', 'center' => 'Centro', 'right' => 'Derecha' ) ),
-                'color'      => array( 'type' => 'color', 'label' => __( 'Color', 'flavor-chat-ia' ) ),
+                'texto'      => array( 'type' => 'text', 'label' => __( 'Texto', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'nivel'      => array( 'type' => 'select', 'label' => __( 'Nivel', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'h1' => 'H1', 'h2' => 'H2', 'h3' => 'H3', 'h4' => 'H4', 'h5' => 'H5', 'h6' => 'H6' ) ),
+                'alineacion' => array( 'type' => 'select', 'label' => __( 'Alineación', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'left' => 'Izquierda', 'center' => 'Centro', 'right' => 'Derecha' ) ),
+                'color'      => array( 'type' => 'color', 'label' => __( 'Color', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
         ) );
 
         // Imagen
         $this->registrar_bloque( array(
             'id'       => 'image',
-            'name'     => __( 'Imagen', 'flavor-chat-ia' ),
+            'name'     => __( 'Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'basic',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>',
             'fields'   => array(
-                'imagen'     => array( 'type' => 'image', 'label' => __( 'Imagen', 'flavor-chat-ia' ) ),
-                'alt'        => array( 'type' => 'text', 'label' => __( 'Texto alternativo', 'flavor-chat-ia' ) ),
-                'tamano'     => array( 'type' => 'select', 'label' => __( 'Tamaño', 'flavor-chat-ia' ), 'options' => array( 'auto' => 'Auto', 'full' => 'Completo', 'contain' => 'Contener', 'cover' => 'Cubrir' ) ),
-                'alineacion' => array( 'type' => 'select', 'label' => __( 'Alineación', 'flavor-chat-ia' ), 'options' => array( 'left' => 'Izquierda', 'center' => 'Centro', 'right' => 'Derecha' ) ),
-                'enlace'     => array( 'type' => 'url', 'label' => __( 'Enlace', 'flavor-chat-ia' ) ),
-                'lightbox'   => array( 'type' => 'toggle', 'label' => __( 'Lightbox', 'flavor-chat-ia' ) ),
+                'imagen'     => array( 'type' => 'image', 'label' => __( 'Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'alt'        => array( 'type' => 'text', 'label' => __( 'Texto alternativo', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'tamano'     => array( 'type' => 'select', 'label' => __( 'Tamaño', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'auto' => 'Auto', 'full' => 'Completo', 'contain' => 'Contener', 'cover' => 'Cubrir' ) ),
+                'alineacion' => array( 'type' => 'select', 'label' => __( 'Alineación', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'left' => 'Izquierda', 'center' => 'Centro', 'right' => 'Derecha' ) ),
+                'enlace'     => array( 'type' => 'url', 'label' => __( 'Enlace', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'lightbox'   => array( 'type' => 'toggle', 'label' => __( 'Lightbox', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
         ) );
 
         // Botón
         $this->registrar_bloque( array(
             'id'       => 'button',
-            'name'     => __( 'Botón', 'flavor-chat-ia' ),
+            'name'     => __( 'Botón', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'basic',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="8" rx="2"/></svg>',
             'fields'   => array(
-                'texto'       => array( 'type' => 'text', 'label' => __( 'Texto', 'flavor-chat-ia' ) ),
-                'url'         => array( 'type' => 'url', 'label' => __( 'URL', 'flavor-chat-ia' ) ),
-                'estilo'      => array( 'type' => 'select', 'label' => __( 'Estilo', 'flavor-chat-ia' ), 'options' => array( 'primary' => 'Primario', 'secondary' => 'Secundario', 'outline' => 'Contorno', 'ghost' => 'Transparente' ) ),
-                'tamano'      => array( 'type' => 'select', 'label' => __( 'Tamaño', 'flavor-chat-ia' ), 'options' => array( 'sm' => 'Pequeño', 'md' => 'Mediano', 'lg' => 'Grande' ) ),
-                'icono'       => array( 'type' => 'icon', 'label' => __( 'Icono', 'flavor-chat-ia' ) ),
-                'nueva_vent'  => array( 'type' => 'toggle', 'label' => __( 'Nueva ventana', 'flavor-chat-ia' ) ),
-                'ancho_full'  => array( 'type' => 'toggle', 'label' => __( 'Ancho completo', 'flavor-chat-ia' ) ),
+                'texto'       => array( 'type' => 'text', 'label' => __( 'Texto', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'url'         => array( 'type' => 'url', 'label' => __( 'URL', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'estilo'      => array( 'type' => 'select', 'label' => __( 'Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'primary' => 'Primario', 'secondary' => 'Secundario', 'outline' => 'Contorno', 'ghost' => 'Transparente' ) ),
+                'tamano'      => array( 'type' => 'select', 'label' => __( 'Tamaño', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'sm' => 'Pequeño', 'md' => 'Mediano', 'lg' => 'Grande' ) ),
+                'icono'       => array( 'type' => 'icon', 'label' => __( 'Icono', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'nueva_vent'  => array( 'type' => 'toggle', 'label' => __( 'Nueva ventana', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'ancho_full'  => array( 'type' => 'toggle', 'label' => __( 'Ancho completo', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
         ) );
 
         // Divisor
         $this->registrar_bloque( array(
             'id'       => 'divider',
-            'name'     => __( 'Divisor', 'flavor-chat-ia' ),
+            'name'     => __( 'Divisor', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'basic',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18"/></svg>',
             'fields'   => array(
-                'estilo'  => array( 'type' => 'select', 'label' => __( 'Estilo', 'flavor-chat-ia' ), 'options' => array( 'solid' => 'Sólido', 'dashed' => 'Guiones', 'dotted' => 'Puntos', 'double' => 'Doble' ) ),
-                'color'   => array( 'type' => 'color', 'label' => __( 'Color', 'flavor-chat-ia' ) ),
-                'grosor'  => array( 'type' => 'select', 'label' => __( 'Grosor', 'flavor-chat-ia' ), 'options' => array( '1' => '1px', '2' => '2px', '3' => '3px', '4' => '4px' ) ),
-                'ancho'   => array( 'type' => 'select', 'label' => __( 'Ancho', 'flavor-chat-ia' ), 'options' => array( '25' => '25%', '50' => '50%', '75' => '75%', '100' => '100%' ) ),
-                'margen'  => array( 'type' => 'spacing', 'label' => __( 'Margen', 'flavor-chat-ia' ) ),
+                'estilo'  => array( 'type' => 'select', 'label' => __( 'Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'solid' => 'Sólido', 'dashed' => 'Guiones', 'dotted' => 'Puntos', 'double' => 'Doble' ) ),
+                'color'   => array( 'type' => 'color', 'label' => __( 'Color', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'grosor'  => array( 'type' => 'select', 'label' => __( 'Grosor', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( '1' => '1px', '2' => '2px', '3' => '3px', '4' => '4px' ) ),
+                'ancho'   => array( 'type' => 'select', 'label' => __( 'Ancho', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( '25' => '25%', '50' => '50%', '75' => '75%', '100' => '100%' ) ),
+                'margen'  => array( 'type' => 'spacing', 'label' => __( 'Margen', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
         ) );
 
         // Espaciador
         $this->registrar_bloque( array(
             'id'       => 'spacer',
-            'name'     => __( 'Espaciador', 'flavor-chat-ia' ),
+            'name'     => __( 'Espaciador', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'basic',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
             'fields'   => array(
-                'altura'         => array( 'type' => 'number', 'label' => __( 'Altura (px)', 'flavor-chat-ia' ) ),
-                'altura_mobile'  => array( 'type' => 'number', 'label' => __( 'Altura móvil (px)', 'flavor-chat-ia' ) ),
+                'altura'         => array( 'type' => 'number', 'label' => __( 'Altura (px)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'altura_mobile'  => array( 'type' => 'number', 'label' => __( 'Altura móvil (px)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
         ) );
 
         // Icono
         $this->registrar_bloque( array(
             'id'       => 'icon',
-            'name'     => __( 'Icono', 'flavor-chat-ia' ),
+            'name'     => __( 'Icono', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'basic',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>',
             'fields'   => array(
-                'icono'       => array( 'type' => 'icon', 'label' => __( 'Icono', 'flavor-chat-ia' ) ),
-                'tamano'      => array( 'type' => 'select', 'label' => __( 'Tamaño', 'flavor-chat-ia' ), 'options' => array( 'sm' => 'Pequeño', 'md' => 'Mediano', 'lg' => 'Grande', 'xl' => 'Extra grande' ) ),
-                'color'       => array( 'type' => 'color', 'label' => __( 'Color', 'flavor-chat-ia' ) ),
-                'fondo'       => array( 'type' => 'color', 'label' => __( 'Color de fondo', 'flavor-chat-ia' ) ),
-                'borde'       => array( 'type' => 'toggle', 'label' => __( 'Borde', 'flavor-chat-ia' ) ),
-                'redondeado'  => array( 'type' => 'toggle', 'label' => __( 'Redondeado', 'flavor-chat-ia' ) ),
-                'enlace'      => array( 'type' => 'url', 'label' => __( 'Enlace', 'flavor-chat-ia' ) ),
+                'icono'       => array( 'type' => 'icon', 'label' => __( 'Icono', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'tamano'      => array( 'type' => 'select', 'label' => __( 'Tamaño', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'sm' => 'Pequeño', 'md' => 'Mediano', 'lg' => 'Grande', 'xl' => 'Extra grande' ) ),
+                'color'       => array( 'type' => 'color', 'label' => __( 'Color', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'fondo'       => array( 'type' => 'color', 'label' => __( 'Color de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'borde'       => array( 'type' => 'toggle', 'label' => __( 'Borde', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'redondeado'  => array( 'type' => 'toggle', 'label' => __( 'Redondeado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'enlace'      => array( 'type' => 'url', 'label' => __( 'Enlace', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
         ) );
 
         // HTML
         $this->registrar_bloque( array(
             'id'       => 'html',
-            'name'     => __( 'HTML', 'flavor-chat-ia' ),
+            'name'     => __( 'HTML', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'basic',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16,18 22,12 16,6"/><polyline points="8,6 2,12 8,18"/></svg>',
             'fields'   => array(
-                'codigo'      => array( 'type' => 'code', 'label' => __( 'Código HTML', 'flavor-chat-ia' ), 'language' => 'html' ),
-                'contenedor'  => array( 'type' => 'toggle', 'label' => __( 'Contenedor', 'flavor-chat-ia' ) ),
+                'codigo'      => array( 'type' => 'code', 'label' => __( 'Código HTML', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'language' => 'html' ),
+                'contenedor'  => array( 'type' => 'toggle', 'label' => __( 'Contenedor', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
         ) );
 
         // Shortcode
         $this->registrar_bloque( array(
             'id'       => 'shortcode',
-            'name'     => __( 'Shortcode', 'flavor-chat-ia' ),
+            'name'     => __( 'Shortcode', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'basic',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 17l6-6-6-6M12 19h8"/></svg>',
             'fields'   => array(
-                'shortcode'   => array( 'type' => 'text', 'label' => __( 'Shortcode', 'flavor-chat-ia' ), 'placeholder' => '[mi_shortcode]' ),
-                'descripcion' => array( 'type' => 'text', 'label' => __( 'Descripción', 'flavor-chat-ia' ) ),
+                'shortcode'   => array( 'type' => 'text', 'label' => __( 'Shortcode', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'placeholder' => '[mi_shortcode]' ),
+                'descripcion' => array( 'type' => 'text', 'label' => __( 'Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
         ) );
     }
@@ -1826,49 +1826,49 @@ class Flavor_VBP_Block_Library {
     private function registrar_bloques_layout() {
         $this->registrar_bloque( array(
             'id'       => 'container',
-            'name'     => __( 'Contenedor', 'flavor-chat-ia' ),
+            'name'     => __( 'Contenedor', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'layout',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>',
             'fields'   => array(
-                'max_width'  => array( 'type' => 'select', 'label' => __( 'Ancho máximo', 'flavor-chat-ia' ), 'options' => array( 'full' => 'Completo', '1200px' => '1200px', '960px' => '960px', '720px' => '720px' ) ),
-                'padding'    => array( 'type' => 'spacing', 'label' => __( 'Padding', 'flavor-chat-ia' ) ),
-                'background' => array( 'type' => 'color', 'label' => __( 'Fondo', 'flavor-chat-ia' ) ),
+                'max_width'  => array( 'type' => 'select', 'label' => __( 'Ancho máximo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'full' => 'Completo', '1200px' => '1200px', '960px' => '960px', '720px' => '720px' ) ),
+                'padding'    => array( 'type' => 'spacing', 'label' => __( 'Padding', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'background' => array( 'type' => 'color', 'label' => __( 'Fondo', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
         ) );
 
         $this->registrar_bloque( array(
             'id'       => 'row',
-            'name'     => __( 'Fila', 'flavor-chat-ia' ),
+            'name'     => __( 'Fila', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'layout',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="8" rx="1"/></svg>',
             'fields'   => array(
-                'align'   => array( 'type' => 'select', 'label' => __( 'Alineación', 'flavor-chat-ia' ), 'options' => array( 'start' => 'Inicio', 'center' => 'Centro', 'end' => 'Final', 'stretch' => 'Estirar' ) ),
-                'gap'     => array( 'type' => 'number', 'label' => __( 'Espacio', 'flavor-chat-ia' ) ),
-                'reverse' => array( 'type' => 'toggle', 'label' => __( 'Invertir', 'flavor-chat-ia' ) ),
+                'align'   => array( 'type' => 'select', 'label' => __( 'Alineación', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'start' => 'Inicio', 'center' => 'Centro', 'end' => 'Final', 'stretch' => 'Estirar' ) ),
+                'gap'     => array( 'type' => 'number', 'label' => __( 'Espacio', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'reverse' => array( 'type' => 'toggle', 'label' => __( 'Invertir', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
         ) );
 
         $this->registrar_bloque( array(
             'id'       => 'columns',
-            'name'     => __( 'Columnas', 'flavor-chat-ia' ),
+            'name'     => __( 'Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'layout',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="18" rx="1"/></svg>',
             'fields'   => array(
-                'columnas' => array( 'type' => 'select', 'label' => __( 'Columnas', 'flavor-chat-ia' ), 'options' => array( '2' => '2', '3' => '3', '4' => '4', '5' => '5', '6' => '6' ) ),
-                'gap'      => array( 'type' => 'number', 'label' => __( 'Espacio', 'flavor-chat-ia' ) ),
-                'stack_on' => array( 'type' => 'select', 'label' => __( 'Apilar en', 'flavor-chat-ia' ), 'options' => array( 'mobile' => 'Móvil', 'tablet' => 'Tablet', 'never' => 'Nunca' ) ),
+                'columnas' => array( 'type' => 'select', 'label' => __( 'Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( '2' => '2', '3' => '3', '4' => '4', '5' => '5', '6' => '6' ) ),
+                'gap'      => array( 'type' => 'number', 'label' => __( 'Espacio', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'stack_on' => array( 'type' => 'select', 'label' => __( 'Apilar en', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'mobile' => 'Móvil', 'tablet' => 'Tablet', 'never' => 'Nunca' ) ),
             ),
         ) );
 
         $this->registrar_bloque( array(
             'id'       => 'grid',
-            'name'     => __( 'Grid', 'flavor-chat-ia' ),
+            'name'     => __( 'Grid', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'layout',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>',
             'fields'   => array(
-                'columnas' => array( 'type' => 'number', 'label' => __( 'Columnas', 'flavor-chat-ia' ) ),
-                'filas'    => array( 'type' => 'number', 'label' => __( 'Filas', 'flavor-chat-ia' ) ),
-                'gap'      => array( 'type' => 'number', 'label' => __( 'Espacio', 'flavor-chat-ia' ) ),
+                'columnas' => array( 'type' => 'number', 'label' => __( 'Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'filas'    => array( 'type' => 'number', 'label' => __( 'Filas', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'gap'      => array( 'type' => 'number', 'label' => __( 'Espacio', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
         ) );
     }
@@ -1879,64 +1879,64 @@ class Flavor_VBP_Block_Library {
     private function registrar_bloques_formularios() {
         $this->registrar_bloque( array(
             'id'       => 'form',
-            'name'     => __( 'Formulario', 'flavor-chat-ia' ),
+            'name'     => __( 'Formulario', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'forms',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h6M9 17h4"/></svg>',
             'fields'   => array(
-                'action'       => array( 'type' => 'url', 'label' => __( 'URL de envío', 'flavor-chat-ia' ) ),
-                'method'       => array( 'type' => 'select', 'label' => __( 'Método', 'flavor-chat-ia' ), 'options' => array( 'POST' => 'POST', 'GET' => 'GET' ) ),
-                'submit_text'  => array( 'type' => 'text', 'label' => __( 'Texto del botón', 'flavor-chat-ia' ) ),
-                'success_msg'  => array( 'type' => 'text', 'label' => __( 'Mensaje de éxito', 'flavor-chat-ia' ) ),
+                'action'       => array( 'type' => 'url', 'label' => __( 'URL de envío', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'method'       => array( 'type' => 'select', 'label' => __( 'Método', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'POST' => 'POST', 'GET' => 'GET' ) ),
+                'submit_text'  => array( 'type' => 'text', 'label' => __( 'Texto del botón', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'success_msg'  => array( 'type' => 'text', 'label' => __( 'Mensaje de éxito', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
         ) );
 
         $this->registrar_bloque( array(
             'id'       => 'input',
-            'name'     => __( 'Campo de texto', 'flavor-chat-ia' ),
+            'name'     => __( 'Campo de texto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'forms',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 12h.01"/></svg>',
             'fields'   => array(
-                'label'       => array( 'type' => 'text', 'label' => __( 'Etiqueta', 'flavor-chat-ia' ) ),
-                'placeholder' => array( 'type' => 'text', 'label' => __( 'Placeholder', 'flavor-chat-ia' ) ),
-                'type'        => array( 'type' => 'select', 'label' => __( 'Tipo', 'flavor-chat-ia' ), 'options' => array( 'text' => 'Texto', 'email' => 'Email', 'tel' => 'Teléfono', 'number' => 'Número', 'password' => 'Contraseña' ) ),
-                'required'    => array( 'type' => 'toggle', 'label' => __( 'Requerido', 'flavor-chat-ia' ) ),
+                'label'       => array( 'type' => 'text', 'label' => __( 'Etiqueta', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'placeholder' => array( 'type' => 'text', 'label' => __( 'Placeholder', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'type'        => array( 'type' => 'select', 'label' => __( 'Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( 'text' => 'Texto', 'email' => 'Email', 'tel' => 'Teléfono', 'number' => 'Número', 'password' => 'Contraseña' ) ),
+                'required'    => array( 'type' => 'toggle', 'label' => __( 'Requerido', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
         ) );
 
         $this->registrar_bloque( array(
             'id'       => 'textarea',
-            'name'     => __( 'Área de texto', 'flavor-chat-ia' ),
+            'name'     => __( 'Área de texto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'forms',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="7" y1="16" x2="13" y2="16"/></svg>',
             'fields'   => array(
-                'label'       => array( 'type' => 'text', 'label' => __( 'Etiqueta', 'flavor-chat-ia' ) ),
-                'placeholder' => array( 'type' => 'text', 'label' => __( 'Placeholder', 'flavor-chat-ia' ) ),
-                'rows'        => array( 'type' => 'number', 'label' => __( 'Filas', 'flavor-chat-ia' ) ),
-                'required'    => array( 'type' => 'toggle', 'label' => __( 'Requerido', 'flavor-chat-ia' ) ),
+                'label'       => array( 'type' => 'text', 'label' => __( 'Etiqueta', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'placeholder' => array( 'type' => 'text', 'label' => __( 'Placeholder', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'rows'        => array( 'type' => 'number', 'label' => __( 'Filas', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'required'    => array( 'type' => 'toggle', 'label' => __( 'Requerido', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
         ) );
 
         $this->registrar_bloque( array(
             'id'       => 'select',
-            'name'     => __( 'Selector', 'flavor-chat-ia' ),
+            'name'     => __( 'Selector', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'forms',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="12" rx="2"/><polyline points="8,10 12,14 16,10"/></svg>',
             'fields'   => array(
-                'label'    => array( 'type' => 'text', 'label' => __( 'Etiqueta', 'flavor-chat-ia' ) ),
-                'options'  => array( 'type' => 'repeater', 'label' => __( 'Opciones', 'flavor-chat-ia' ) ),
-                'required' => array( 'type' => 'toggle', 'label' => __( 'Requerido', 'flavor-chat-ia' ) ),
+                'label'    => array( 'type' => 'text', 'label' => __( 'Etiqueta', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'options'  => array( 'type' => 'repeater', 'label' => __( 'Opciones', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'required' => array( 'type' => 'toggle', 'label' => __( 'Requerido', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
         ) );
 
         $this->registrar_bloque( array(
             'id'       => 'checkbox',
-            'name'     => __( 'Checkbox', 'flavor-chat-ia' ),
+            'name'     => __( 'Checkbox', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'forms',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9,12 11,14 15,10"/></svg>',
             'fields'   => array(
-                'label'    => array( 'type' => 'text', 'label' => __( 'Etiqueta', 'flavor-chat-ia' ) ),
-                'checked'  => array( 'type' => 'toggle', 'label' => __( 'Marcado', 'flavor-chat-ia' ) ),
-                'required' => array( 'type' => 'toggle', 'label' => __( 'Requerido', 'flavor-chat-ia' ) ),
+                'label'    => array( 'type' => 'text', 'label' => __( 'Etiqueta', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'checked'  => array( 'type' => 'toggle', 'label' => __( 'Marcado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'required' => array( 'type' => 'toggle', 'label' => __( 'Requerido', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
         ) );
     }
@@ -1947,53 +1947,53 @@ class Flavor_VBP_Block_Library {
     private function registrar_bloques_media() {
         $this->registrar_bloque( array(
             'id'       => 'video-embed',
-            'name'     => __( 'Video embed', 'flavor-chat-ia' ),
+            'name'     => __( 'Video embed', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'media',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><polygon points="10,8 16,12 10,16 10,8"/></svg>',
             'fields'   => array(
-                'url'        => array( 'type' => 'url', 'label' => __( 'URL del video', 'flavor-chat-ia' ) ),
-                'autoplay'   => array( 'type' => 'toggle', 'label' => __( 'Autoplay', 'flavor-chat-ia' ) ),
-                'muted'      => array( 'type' => 'toggle', 'label' => __( 'Sin sonido', 'flavor-chat-ia' ) ),
-                'loop'       => array( 'type' => 'toggle', 'label' => __( 'Bucle', 'flavor-chat-ia' ) ),
-                'aspect'     => array( 'type' => 'select', 'label' => __( 'Aspecto', 'flavor-chat-ia' ), 'options' => array( '16:9' => '16:9', '4:3' => '4:3', '1:1' => '1:1' ) ),
+                'url'        => array( 'type' => 'url', 'label' => __( 'URL del video', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'autoplay'   => array( 'type' => 'toggle', 'label' => __( 'Autoplay', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'muted'      => array( 'type' => 'toggle', 'label' => __( 'Sin sonido', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'loop'       => array( 'type' => 'toggle', 'label' => __( 'Bucle', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'aspect'     => array( 'type' => 'select', 'label' => __( 'Aspecto', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'options' => array( '16:9' => '16:9', '4:3' => '4:3', '1:1' => '1:1' ) ),
             ),
         ) );
 
         $this->registrar_bloque( array(
             'id'       => 'audio',
-            'name'     => __( 'Audio', 'flavor-chat-ia' ),
+            'name'     => __( 'Audio', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'media',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>',
             'fields'   => array(
-                'url'      => array( 'type' => 'url', 'label' => __( 'URL del audio', 'flavor-chat-ia' ) ),
-                'autoplay' => array( 'type' => 'toggle', 'label' => __( 'Autoplay', 'flavor-chat-ia' ) ),
-                'loop'     => array( 'type' => 'toggle', 'label' => __( 'Bucle', 'flavor-chat-ia' ) ),
-                'controls' => array( 'type' => 'toggle', 'label' => __( 'Controles', 'flavor-chat-ia' ) ),
+                'url'      => array( 'type' => 'url', 'label' => __( 'URL del audio', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'autoplay' => array( 'type' => 'toggle', 'label' => __( 'Autoplay', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'loop'     => array( 'type' => 'toggle', 'label' => __( 'Bucle', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'controls' => array( 'type' => 'toggle', 'label' => __( 'Controles', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
         ) );
 
         $this->registrar_bloque( array(
             'id'       => 'map',
-            'name'     => __( 'Mapa', 'flavor-chat-ia' ),
+            'name'     => __( 'Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'media',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1,6 1,22 8,18 16,22 23,18 23,2 16,6 8,2"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>',
             'fields'   => array(
-                'lat'     => array( 'type' => 'number', 'label' => __( 'Latitud', 'flavor-chat-ia' ) ),
-                'lng'     => array( 'type' => 'number', 'label' => __( 'Longitud', 'flavor-chat-ia' ) ),
-                'zoom'    => array( 'type' => 'number', 'label' => __( 'Zoom', 'flavor-chat-ia' ) ),
-                'height'  => array( 'type' => 'number', 'label' => __( 'Altura (px)', 'flavor-chat-ia' ) ),
-                'marker'  => array( 'type' => 'toggle', 'label' => __( 'Mostrar marcador', 'flavor-chat-ia' ) ),
+                'lat'     => array( 'type' => 'number', 'label' => __( 'Latitud', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'lng'     => array( 'type' => 'number', 'label' => __( 'Longitud', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'zoom'    => array( 'type' => 'number', 'label' => __( 'Zoom', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'height'  => array( 'type' => 'number', 'label' => __( 'Altura (px)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'marker'  => array( 'type' => 'toggle', 'label' => __( 'Mostrar marcador', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
         ) );
 
         $this->registrar_bloque( array(
             'id'       => 'embed',
-            'name'     => __( 'Embed HTML', 'flavor-chat-ia' ),
+            'name'     => __( 'Embed HTML', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category' => 'media',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16,18 22,12 16,6"/><polyline points="8,6 2,12 8,18"/></svg>',
             'fields'   => array(
-                'code'   => array( 'type' => 'code', 'label' => __( 'Código HTML', 'flavor-chat-ia' ) ),
-                'height' => array( 'type' => 'number', 'label' => __( 'Altura (px)', 'flavor-chat-ia' ) ),
+                'code'   => array( 'type' => 'code', 'label' => __( 'Código HTML', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
+                'height' => array( 'type' => 'number', 'label' => __( 'Altura (px)', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
         ) );
     }
@@ -2017,26 +2017,26 @@ class Flavor_VBP_Block_Library {
         $campos_mapa_comunes = array(
             'altura' => array(
                 'type'    => 'number',
-                'label'   => __( 'Altura (px)', 'flavor-chat-ia' ),
+                'label'   => __( 'Altura (px)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => 400,
                 'min'     => 200,
                 'max'     => 800,
             ),
             'zoom' => array(
                 'type'    => 'number',
-                'label'   => __( 'Zoom inicial', 'flavor-chat-ia' ),
+                'label'   => __( 'Zoom inicial', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => 14,
                 'min'     => 8,
                 'max'     => 18,
             ),
             'mostrar_filtros' => array(
                 'type'    => 'toggle',
-                'label'   => __( 'Mostrar filtros', 'flavor-chat-ia' ),
+                'label'   => __( 'Mostrar filtros', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => true,
             ),
             'mostrar_listado' => array(
                 'type'    => 'toggle',
-                'label'   => __( 'Mostrar listado', 'flavor-chat-ia' ),
+                'label'   => __( 'Mostrar listado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'default' => true,
             ),
         );
@@ -2044,7 +2044,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'parkings', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'mapa-parkings',
-                'name'      => __( 'Mapa de Parkings', 'flavor-chat-ia' ),
+                'name'      => __( 'Mapa de Parkings', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'maps',
                 'shortcode' => 'flavor_mapa_parkings',
                 'module'    => 'parkings',
@@ -2052,7 +2052,7 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array_merge( $campos_mapa_comunes, array(
                     'solo_disponibles' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Solo con plazas', 'flavor-chat-ia' ),
+                        'label'   => __( 'Solo con plazas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => false,
                     ),
                 ) ),
@@ -2062,7 +2062,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'huertos-urbanos', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'mapa-huertos',
-                'name'      => __( 'Mapa de Huertos', 'flavor-chat-ia' ),
+                'name'      => __( 'Mapa de Huertos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'maps',
                 'shortcode' => 'mapa_huertos',
                 'module'    => 'huertos-urbanos',
@@ -2070,7 +2070,7 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array_merge( $campos_mapa_comunes, array(
                     'solo_activos' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Solo activos', 'flavor-chat-ia' ),
+                        'label'   => __( 'Solo activos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ) ),
@@ -2080,7 +2080,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'compostaje', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'mapa-composteras',
-                'name'      => __( 'Mapa de Composteras', 'flavor-chat-ia' ),
+                'name'      => __( 'Mapa de Composteras', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'maps',
                 'shortcode' => 'mapa_composteras',
                 'module'    => 'compostaje',
@@ -2092,7 +2092,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'biodiversidad-local', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'mapa-biodiversidad',
-                'name'      => __( 'Mapa de Biodiversidad', 'flavor-chat-ia' ),
+                'name'      => __( 'Mapa de Biodiversidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'maps',
                 'shortcode' => 'biodiversidad_mapa',
                 'module'    => 'biodiversidad-local',
@@ -2100,8 +2100,8 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array_merge( $campos_mapa_comunes, array(
                     'tipo_especie' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Tipo de especie', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todas', 'flavor-chat-ia' ), 'flora' => __( 'Flora', 'flavor-chat-ia' ), 'fauna' => __( 'Fauna', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Tipo de especie', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'flora' => __( 'Flora', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'fauna' => __( 'Fauna', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                 ) ),
@@ -2111,7 +2111,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'incidencias', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'mapa-incidencias',
-                'name'      => __( 'Mapa de Incidencias', 'flavor-chat-ia' ),
+                'name'      => __( 'Mapa de Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'maps',
                 'shortcode' => 'mapa_incidencias',
                 'module'    => 'incidencias',
@@ -2119,13 +2119,13 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array_merge( $campos_mapa_comunes, array(
                     'estado' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Estado', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todas', 'flavor-chat-ia' ), 'pendiente' => __( 'Pendientes', 'flavor-chat-ia' ), 'en_proceso' => __( 'En proceso', 'flavor-chat-ia' ), 'resueltas' => __( 'Resueltas', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Estado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'pendiente' => __( 'Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'en_proceso' => __( 'En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'resueltas' => __( 'Resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'dias' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Últimos días', 'flavor-chat-ia' ),
+                        'label'   => __( 'Últimos días', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 30,
                         'min'     => 7,
                         'max'     => 365,
@@ -2138,7 +2138,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'banco-tiempo', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'bt-dashboard',
-                'name'      => __( 'Dashboard Banco de Tiempo', 'flavor-chat-ia' ),
+                'name'      => __( 'Dashboard Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'economy',
                 'shortcode' => 'bt_dashboard_sostenibilidad',
                 'module'    => 'banco-tiempo',
@@ -2146,25 +2146,25 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'periodo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Período', 'flavor-chat-ia' ),
-                        'options' => array( 'week' => __( 'Semana', 'flavor-chat-ia' ), 'month' => __( 'Mes', 'flavor-chat-ia' ), 'year' => __( 'Año', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Período', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'week' => __( 'Semana', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'month' => __( 'Mes', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'year' => __( 'Año', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'month',
                     ),
                     'mostrar_ranking' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar ranking', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar ranking', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                     'mostrar_estadisticas' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar estadísticas', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'bt-ranking',
-                'name'      => __( 'Ranking Comunitario', 'flavor-chat-ia' ),
+                'name'      => __( 'Ranking Comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'economy',
                 'shortcode' => 'bt_ranking_comunidad',
                 'module'    => 'banco-tiempo',
@@ -2172,15 +2172,15 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Top usuarios', 'flavor-chat-ia' ),
+                        'label'   => __( 'Top usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 10,
                         'min'     => 3,
                         'max'     => 50,
                     ),
                     'periodo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Período', 'flavor-chat-ia' ),
-                        'options' => array( 'week' => __( 'Semana', 'flavor-chat-ia' ), 'month' => __( 'Mes', 'flavor-chat-ia' ), 'year' => __( 'Año', 'flavor-chat-ia' ), 'all' => __( 'Todo', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Período', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'week' => __( 'Semana', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'month' => __( 'Mes', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'year' => __( 'Año', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'all' => __( 'Todo', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'month',
                     ),
                 ),
@@ -2190,7 +2190,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'economia-don', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'economia-don',
-                'name'      => __( 'Economía del Don', 'flavor-chat-ia' ),
+                'name'      => __( 'Economía del Don', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'economy',
                 'shortcode' => 'economia_don',
                 'module'    => 'economia-don',
@@ -2198,27 +2198,27 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 12,
                         'min'     => 4,
                         'max'     => 48,
                     ),
                     'categoria' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Categoría', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todas', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todas', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'mostrar_donante' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar donante', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar donante', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'muro-gratitud',
-                'name'      => __( 'Muro de Gratitud', 'flavor-chat-ia' ),
+                'name'      => __( 'Muro de Gratitud', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'economy',
                 'shortcode' => 'muro_gratitud',
                 'module'    => 'economia-don',
@@ -2226,20 +2226,20 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Mensajes', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mensajes', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 20,
                         'min'     => 5,
                         'max'     => 50,
                     ),
                     'estilo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Estilo', 'flavor-chat-ia' ),
-                        'options' => array( 'grid' => __( 'Cuadrícula', 'flavor-chat-ia' ), 'masonry' => __( 'Masonry', 'flavor-chat-ia' ), 'carousel' => __( 'Carrusel', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'grid' => __( 'Cuadrícula', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'masonry' => __( 'Masonry', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'carousel' => __( 'Carrusel', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'masonry',
                     ),
                     'permitir_envio' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Permitir envío', 'flavor-chat-ia' ),
+                        'label'   => __( 'Permitir envío', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
@@ -2249,7 +2249,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'grupos-consumo', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'gc-catalogo',
-                'name'      => __( 'Catálogo Productos', 'flavor-chat-ia' ),
+                'name'      => __( 'Catálogo Productos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'economy',
                 'shortcode' => 'gc_catalogo',
                 'module'    => 'grupos-consumo',
@@ -2257,32 +2257,32 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'categoria' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Categoría', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todas', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todas', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 12,
                         'min'     => 1,
                         'max'     => 48,
                     ),
                     'solo_disponibles' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Solo disponibles', 'flavor-chat-ia' ),
+                        'label'   => __( 'Solo disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                     'mostrar_productor' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar productor', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar productor', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'gc-productores',
-                'name'      => __( 'Productores Cercanos', 'flavor-chat-ia' ),
+                'name'      => __( 'Productores Cercanos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'economy',
                 'shortcode' => 'gc_productores_cercanos',
                 'module'    => 'grupos-consumo',
@@ -2290,21 +2290,21 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 8,
                         'min'     => 1,
                         'max'     => 24,
                     ),
                     'radio_km' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Radio (km)', 'flavor-chat-ia' ),
+                        'label'   => __( 'Radio (km)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 50,
                         'min'     => 5,
                         'max'     => 200,
                     ),
                     'mostrar_mapa' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar mapa', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar mapa', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
@@ -2315,7 +2315,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'multimedia', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'galeria-multimedia',
-                'name'      => __( 'Galería Multimedia', 'flavor-chat-ia' ),
+                'name'      => __( 'Galería Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'flavor_galeria',
                 'module'    => 'multimedia',
@@ -2323,39 +2323,39 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'album' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Álbum', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todos', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Álbum', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todos', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 12,
                         'min'     => 4,
                         'max'     => 48,
                     ),
                     'columnas' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Columnas', 'flavor-chat-ia' ),
+                        'label'   => __( 'Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'options' => array( '3' => '3', '4' => '4', '5' => '5', '6' => '6' ),
                         'default' => '4',
                     ),
                     'estilo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Estilo', 'flavor-chat-ia' ),
-                        'options' => array( 'grid' => __( 'Cuadrícula', 'flavor-chat-ia' ), 'masonry' => __( 'Masonry', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'grid' => __( 'Cuadrícula', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'masonry' => __( 'Masonry', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'grid',
                     ),
                     'lightbox' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Abrir en lightbox', 'flavor-chat-ia' ),
+                        'label'   => __( 'Abrir en lightbox', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'carousel-imagenes',
-                'name'      => __( 'Carrusel de Imágenes', 'flavor-chat-ia' ),
+                'name'      => __( 'Carrusel de Imágenes', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'flavor_carousel',
                 'module'    => 'multimedia',
@@ -2363,30 +2363,30 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'album' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Álbum', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todos', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Álbum', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todos', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'autoplay' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Autoplay', 'flavor-chat-ia' ),
+                        'label'   => __( 'Autoplay', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                     'intervalo' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Intervalo (seg)', 'flavor-chat-ia' ),
+                        'label'   => __( 'Intervalo (seg)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 5,
                         'min'     => 2,
                         'max'     => 15,
                     ),
                     'mostrar_flechas' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar flechas', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar flechas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                     'mostrar_puntos' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar indicadores', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar indicadores', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
@@ -2396,7 +2396,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'radio', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'radio-player',
-                'name'      => __( 'Player de Radio', 'flavor-chat-ia' ),
+                'name'      => __( 'Player de Radio', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'flavor_radio_player',
                 'module'    => 'radio',
@@ -2404,30 +2404,30 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'estilo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Estilo', 'flavor-chat-ia' ),
-                        'options' => array( 'compacto' => __( 'Compacto', 'flavor-chat-ia' ), 'expandido' => __( 'Expandido', 'flavor-chat-ia' ), 'mini' => __( 'Mini', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'compacto' => __( 'Compacto', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'expandido' => __( 'Expandido', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'mini' => __( 'Mini', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'compacto',
                     ),
                     'autoplay' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Autoplay', 'flavor-chat-ia' ),
+                        'label'   => __( 'Autoplay', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => false,
                     ),
                     'mostrar_programa' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar programa actual', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar programa actual', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                     'mostrar_oyentes' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar oyentes', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar oyentes', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => false,
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'radio-programacion',
-                'name'      => __( 'Programación Radio', 'flavor-chat-ia' ),
+                'name'      => __( 'Programación Radio', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'flavor_radio_programacion',
                 'module'    => 'radio',
@@ -2435,18 +2435,18 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'vista' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Vista', 'flavor-chat-ia' ),
-                        'options' => array( 'semana' => __( 'Semanal', 'flavor-chat-ia' ), 'dia' => __( 'Diaria', 'flavor-chat-ia' ), 'lista' => __( 'Lista', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Vista', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'semana' => __( 'Semanal', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'dia' => __( 'Diaria', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'lista' => __( 'Lista', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'semana',
                     ),
                     'mostrar_locutor' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar locutor', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar locutor', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                     'destacar_actual' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Destacar programa actual', 'flavor-chat-ia' ),
+                        'label'   => __( 'Destacar programa actual', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
@@ -2456,7 +2456,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'avisos-municipales', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'avisos-activos',
-                'name'      => __( 'Avisos Municipales', 'flavor-chat-ia' ),
+                'name'      => __( 'Avisos Municipales', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'avisos_activos',
                 'module'    => 'avisos-municipales',
@@ -2464,33 +2464,33 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'categoria' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Categoría', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todas', 'flavor-chat-ia' ), 'info' => __( 'Información', 'flavor-chat-ia' ), 'evento' => __( 'Eventos', 'flavor-chat-ia' ), 'servicio' => __( 'Servicios', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'info' => __( 'Información', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'evento' => __( 'Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'servicio' => __( 'Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 5,
                         'min'     => 1,
                         'max'     => 20,
                     ),
                     'estilo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Estilo', 'flavor-chat-ia' ),
-                        'options' => array( 'lista' => __( 'Lista', 'flavor-chat-ia' ), 'cards' => __( 'Tarjetas', 'flavor-chat-ia' ), 'marquee' => __( 'Marquesina', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'lista' => __( 'Lista', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'cards' => __( 'Tarjetas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'marquee' => __( 'Marquesina', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'lista',
                     ),
                     'mostrar_fecha' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar fecha', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar fecha', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'avisos-urgentes',
-                'name'      => __( 'Avisos Urgentes', 'flavor-chat-ia' ),
+                'name'      => __( 'Avisos Urgentes', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'avisos_urgentes',
                 'module'    => 'avisos-municipales',
@@ -2498,20 +2498,20 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 3,
                         'min'     => 1,
                         'max'     => 10,
                     ),
                     'estilo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Estilo', 'flavor-chat-ia' ),
-                        'options' => array( 'banner' => __( 'Banner', 'flavor-chat-ia' ), 'modal' => __( 'Modal', 'flavor-chat-ia' ), 'sticky' => __( 'Fijo', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'banner' => __( 'Banner', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'modal' => __( 'Modal', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'sticky' => __( 'Fijo', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'banner',
                     ),
                     'auto_ocultar' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Auto ocultar', 'flavor-chat-ia' ),
+                        'label'   => __( 'Auto ocultar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => false,
                     ),
                 ),
@@ -2521,7 +2521,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'cursos', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'cursos-catalogo',
-                'name'      => __( 'Catálogo de Cursos', 'flavor-chat-ia' ),
+                'name'      => __( 'Catálogo de Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'cursos_catalogo',
                 'module'    => 'cursos',
@@ -2529,31 +2529,31 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'categoria' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Categoría', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todas', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todas', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 12,
                         'min'     => 1,
                         'max'     => 50,
                     ),
                     'columnas' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Columnas', 'flavor-chat-ia' ),
+                        'label'   => __( 'Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'options' => array( '2' => '2', '3' => '3', '4' => '4' ),
                         'default' => '3',
                     ),
                     'mostrar_precio' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar precio', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar precio', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                     'mostrar_duracion' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar duración', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar duración', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
@@ -2563,7 +2563,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'eventos', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'eventos-listado',
-                'name'      => __( 'Listado de Eventos', 'flavor-chat-ia' ),
+                'name'      => __( 'Listado de Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'module'    => 'eventos',
                 'icon'      => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
@@ -2572,53 +2572,53 @@ class Flavor_VBP_Block_Library {
                     array(
                         'categoria' => array(
                             'type'    => 'select',
-                            'label'   => __( 'Categoría', 'flavor-chat-ia' ),
-                            'options' => array( '' => __( 'Todas', 'flavor-chat-ia' ) ),
+                            'label'   => __( 'Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                            'options' => array( '' => __( 'Todas', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                             'default' => '',
                         ),
                         'limite' => array(
                             'type'    => 'number',
-                            'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                            'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                             'default' => 6,
                             'min'     => 1,
                             'max'     => 24,
                         ),
                         'columnas' => array(
                             'type'    => 'number',
-                            'label'   => __( 'Columnas', 'flavor-chat-ia' ),
+                            'label'   => __( 'Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                             'default' => 3,
                             'min'     => 1,
                             'max'     => 4,
                         ),
                         'vista' => array(
                             'type'    => 'select',
-                            'label'   => __( 'Vista', 'flavor-chat-ia' ),
-                            'options' => array( 'grid' => __( 'Cuadrícula', 'flavor-chat-ia' ), 'list' => __( 'Lista', 'flavor-chat-ia' ) ),
+                            'label'   => __( 'Vista', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                            'options' => array( 'grid' => __( 'Cuadrícula', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'list' => __( 'Lista', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                             'default' => 'grid',
                         ),
                         'mostrar_fecha' => array(
                             'type'    => 'toggle',
-                            'label'   => __( 'Mostrar fecha', 'flavor-chat-ia' ),
+                            'label'   => __( 'Mostrar fecha', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                             'default' => true,
                         ),
                         'mostrar_ubicacion' => array(
                             'type'    => 'toggle',
-                            'label'   => __( 'Mostrar ubicación', 'flavor-chat-ia' ),
+                            'label'   => __( 'Mostrar ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                             'default' => true,
                         ),
                         'mostrar_inscripcion' => array(
                             'type'    => 'toggle',
-                            'label'   => __( 'Mostrar inscripción', 'flavor-chat-ia' ),
+                            'label'   => __( 'Mostrar inscripción', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                             'default' => true,
                         ),
                         'solo_proximos' => array(
                             'type'    => 'toggle',
-                            'label'   => __( 'Solo próximos', 'flavor-chat-ia' ),
+                            'label'   => __( 'Solo próximos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                             'default' => true,
                         ),
                         'mostrar_filtros' => array(
                             'type'    => 'toggle',
-                            'label'   => __( 'Mostrar filtros', 'flavor-chat-ia' ),
+                            'label'   => __( 'Mostrar filtros', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                             'default' => false,
                         ),
                     )
@@ -2626,7 +2626,7 @@ class Flavor_VBP_Block_Library {
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'eventos-calendario',
-                'name'      => __( 'Calendario de Eventos', 'flavor-chat-ia' ),
+                'name'      => __( 'Calendario de Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'module'    => 'eventos',
                 'icon'      => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><rect x="7" y="14" width="3" height="3"/></svg>',
@@ -2635,13 +2635,13 @@ class Flavor_VBP_Block_Library {
                     array(
                         'vista_inicial' => array(
                             'type'    => 'select',
-                            'label'   => __( 'Vista inicial', 'flavor-chat-ia' ),
-                            'options' => array( 'month' => __( 'Mes', 'flavor-chat-ia' ), 'week' => __( 'Semana', 'flavor-chat-ia' ), 'day' => __( 'Día', 'flavor-chat-ia' ) ),
+                            'label'   => __( 'Vista inicial', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                            'options' => array( 'month' => __( 'Mes', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'week' => __( 'Semana', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'day' => __( 'Día', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                             'default' => 'month',
                         ),
                         'mostrar_controles' => array(
                             'type'    => 'toggle',
-                            'label'   => __( 'Mostrar controles', 'flavor-chat-ia' ),
+                            'label'   => __( 'Mostrar controles', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                             'default' => true,
                         ),
                     )
@@ -2653,7 +2653,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'transparencia', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'transparencia-portal',
-                'name'      => __( 'Portal Transparencia', 'flavor-chat-ia' ),
+                'name'      => __( 'Portal Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'modules',
                 'shortcode' => 'transparencia_portal',
                 'module'    => 'transparencia',
@@ -2661,26 +2661,26 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'seccion' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Sección', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todas', 'flavor-chat-ia' ), 'contratos' => __( 'Contratos', 'flavor-chat-ia' ), 'subvenciones' => __( 'Subvenciones', 'flavor-chat-ia' ), 'personal' => __( 'Personal', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Sección', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'contratos' => __( 'Contratos', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'subvenciones' => __( 'Subvenciones', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'personal' => __( 'Personal', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'anio' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Año', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Actual', 'flavor-chat-ia' ), '2024' => '2024', '2023' => '2023', '2022' => '2022' ),
+                        'label'   => __( 'Año', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Actual', FLAVOR_PLATFORM_TEXT_DOMAIN ), '2024' => '2024', '2023' => '2023', '2022' => '2022' ),
                         'default' => '',
                     ),
                     'mostrar_buscador' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar buscador', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar buscador', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'transparencia-presupuesto',
-                'name'      => __( 'Gráfico Presupuesto', 'flavor-chat-ia' ),
+                'name'      => __( 'Gráfico Presupuesto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'modules',
                 'shortcode' => 'transparencia_grafico_presupuesto',
                 'module'    => 'transparencia',
@@ -2688,24 +2688,24 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'tipo_grafico' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Tipo de gráfico', 'flavor-chat-ia' ),
-                        'options' => array( 'pie' => __( 'Circular', 'flavor-chat-ia' ), 'bar' => __( 'Barras', 'flavor-chat-ia' ), 'donut' => __( 'Donut', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Tipo de gráfico', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'pie' => __( 'Circular', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'bar' => __( 'Barras', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'donut' => __( 'Donut', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'donut',
                     ),
                     'anio' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Año', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Actual', 'flavor-chat-ia' ), '2024' => '2024', '2023' => '2023' ),
+                        'label'   => __( 'Año', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Actual', FLAVOR_PLATFORM_TEXT_DOMAIN ), '2024' => '2024', '2023' => '2023' ),
                         'default' => '',
                     ),
                     'mostrar_leyenda' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar leyenda', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar leyenda', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                     'mostrar_valores' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar valores', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar valores', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
@@ -2715,7 +2715,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'presupuestos-participativos', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'presupuestos-listado',
-                'name'      => __( 'Proyectos Participativos', 'flavor-chat-ia' ),
+                'name'      => __( 'Proyectos Participativos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'modules',
                 'shortcode' => 'presupuestos_listado',
                 'module'    => 'presupuestos-participativos',
@@ -2723,26 +2723,26 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'estado' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Estado', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todos', 'flavor-chat-ia' ), 'votacion' => __( 'En votación', 'flavor-chat-ia' ), 'aprobados' => __( 'Aprobados', 'flavor-chat-ia' ), 'ejecucion' => __( 'En ejecución', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Estado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todos', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'votacion' => __( 'En votación', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'aprobados' => __( 'Aprobados', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'ejecucion' => __( 'En ejecución', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 12,
                         'min'     => 1,
                         'max'     => 50,
                     ),
                     'ordenar' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Ordenar por', 'flavor-chat-ia' ),
-                        'options' => array( 'votos' => __( 'Más votados', 'flavor-chat-ia' ), 'recientes' => __( 'Más recientes', 'flavor-chat-ia' ), 'presupuesto' => __( 'Presupuesto', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Ordenar por', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'votos' => __( 'Más votados', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'recientes' => __( 'Más recientes', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'presupuesto' => __( 'Presupuesto', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'votos',
                     ),
                     'permitir_votar' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Permitir votar', 'flavor-chat-ia' ),
+                        'label'   => __( 'Permitir votar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
@@ -2752,7 +2752,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'huella-ecologica', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'huella-ecologica',
-                'name'      => __( 'Calculadora Huella', 'flavor-chat-ia' ),
+                'name'      => __( 'Calculadora Huella', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'modules',
                 'shortcode' => 'huella_ecologica_calculadora',
                 'module'    => 'huella-ecologica',
@@ -2760,18 +2760,18 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'modo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Modo', 'flavor-chat-ia' ),
-                        'options' => array( 'completo' => __( 'Completo', 'flavor-chat-ia' ), 'rapido' => __( 'Rápido', 'flavor-chat-ia' ), 'comparativo' => __( 'Comparativo', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Modo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'completo' => __( 'Completo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'rapido' => __( 'Rápido', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'comparativo' => __( 'Comparativo', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'completo',
                     ),
                     'mostrar_consejos' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar consejos', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar consejos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                     'guardar_historial' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Guardar historial', 'flavor-chat-ia' ),
+                        'label'   => __( 'Guardar historial', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
@@ -2781,7 +2781,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'sello-conciencia', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'sello-conciencia',
-                'name'      => __( 'Sello de Conciencia', 'flavor-chat-ia' ),
+                'name'      => __( 'Sello de Conciencia', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'modules',
                 'shortcode' => 'sello_conciencia',
                 'module'    => 'sello-conciencia',
@@ -2789,19 +2789,19 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'categoria' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Categoría', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todas', 'flavor-chat-ia' ), 'eco' => __( 'Ecológico', 'flavor-chat-ia' ), 'social' => __( 'Social', 'flavor-chat-ia' ), 'comercio_justo' => __( 'Comercio justo', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'eco' => __( 'Ecológico', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'social' => __( 'Social', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'comercio_justo' => __( 'Comercio justo', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'estilo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Estilo', 'flavor-chat-ia' ),
-                        'options' => array( 'badge' => __( 'Insignia', 'flavor-chat-ia' ), 'card' => __( 'Tarjeta', 'flavor-chat-ia' ), 'banner' => __( 'Banner', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'badge' => __( 'Insignia', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'card' => __( 'Tarjeta', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'banner' => __( 'Banner', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'badge',
                     ),
                     'mostrar_criterios' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar criterios', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar criterios', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
@@ -2812,7 +2812,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'email-marketing', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'newsletter-form',
-                'name'      => __( 'Formulario Newsletter', 'flavor-chat-ia' ),
+                'name'      => __( 'Formulario Newsletter', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'modules',
                 'shortcode' => 'flavor_suscripcion_newsletter',
                 'module'    => 'email-marketing',
@@ -2820,25 +2820,25 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'lista' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Lista', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Por defecto', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Lista', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Por defecto', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'estilo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Estilo', 'flavor-chat-ia' ),
-                        'options' => array( 'inline' => __( 'En línea', 'flavor-chat-ia' ), 'vertical' => __( 'Vertical', 'flavor-chat-ia' ), 'card' => __( 'Tarjeta', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'inline' => __( 'En línea', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'vertical' => __( 'Vertical', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'card' => __( 'Tarjeta', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'inline',
                     ),
                     'mostrar_nombre' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Pedir nombre', 'flavor-chat-ia' ),
+                        'label'   => __( 'Pedir nombre', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => false,
                     ),
                     'texto_boton' => array(
                         'type'    => 'text',
-                        'label'   => __( 'Texto botón', 'flavor-chat-ia' ),
-                        'default' => __( 'Suscribirse', 'flavor-chat-ia' ),
+                        'label'   => __( 'Texto botón', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'default' => __( 'Suscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                 ),
             ) );
@@ -2848,44 +2848,44 @@ class Flavor_VBP_Block_Library {
         // Bloque para insertar landing pages completas de módulos
         $this->registrar_bloque( array(
             'id'        => 'flavor-landing',
-            'name'      => __( 'Landing de Módulo', 'flavor-chat-ia' ),
+            'name'      => __( 'Landing de Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category'  => 'sections',
             'shortcode' => 'flavor_landing',
             'icon'      => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>',
             'fields'    => array(
                 'module' => array(
                     'type'    => 'select',
-                    'label'   => __( 'Módulo', 'flavor-chat-ia' ),
+                    'label'   => __( 'Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'options' => array(
-                        ''                 => __( '-- Seleccionar módulo --', 'flavor-chat-ia' ),
-                        'grupos-consumo'   => __( 'Grupos de Consumo', 'flavor-chat-ia' ),
-                        'banco-tiempo'     => __( 'Banco de Tiempo', 'flavor-chat-ia' ),
-                        'ayuntamiento'     => __( 'Ayuntamiento', 'flavor-chat-ia' ),
-                        'comunidades'      => __( 'Comunidades', 'flavor-chat-ia' ),
-                        'espacios-comunes' => __( 'Espacios Comunes', 'flavor-chat-ia' ),
-                        'ayuda-vecinal'    => __( 'Ayuda Vecinal', 'flavor-chat-ia' ),
-                        'huertos-urbanos'  => __( 'Huertos Urbanos', 'flavor-chat-ia' ),
-                        'biblioteca'       => __( 'Biblioteca', 'flavor-chat-ia' ),
-                        'cursos'           => __( 'Cursos', 'flavor-chat-ia' ),
-                        'eventos'          => __( 'Eventos', 'flavor-chat-ia' ),
-                        'marketplace'      => __( 'Marketplace', 'flavor-chat-ia' ),
-                        'incidencias'      => __( 'Incidencias', 'flavor-chat-ia' ),
-                        'bicicletas'       => __( 'Bicicletas Compartidas', 'flavor-chat-ia' ),
-                        'reciclaje'        => __( 'Reciclaje', 'flavor-chat-ia' ),
-                        'restaurante'      => __( 'Restaurante', 'flavor-chat-ia' ),
-                        'peluqueria'       => __( 'Peluquería', 'flavor-chat-ia' ),
-                        'gimnasio'         => __( 'Gimnasio', 'flavor-chat-ia' ),
-                        'clinica'          => __( 'Clínica', 'flavor-chat-ia' ),
-                        'hotel'            => __( 'Hotel', 'flavor-chat-ia' ),
-                        'inmobiliaria'     => __( 'Inmobiliaria', 'flavor-chat-ia' ),
-                        'tienda'           => __( 'Tienda', 'flavor-chat-ia' ),
-                        'podcast'          => __( 'Podcast', 'flavor-chat-ia' ),
+                        ''                 => __( '-- Seleccionar módulo --', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'grupos-consumo'   => __( 'Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'banco-tiempo'     => __( 'Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'ayuntamiento'     => __( 'Ayuntamiento', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'comunidades'      => __( 'Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'espacios-comunes' => __( 'Espacios Comunes', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'ayuda-vecinal'    => __( 'Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'huertos-urbanos'  => __( 'Huertos Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'biblioteca'       => __( 'Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'cursos'           => __( 'Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'eventos'          => __( 'Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'marketplace'      => __( 'Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'incidencias'      => __( 'Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'bicicletas'       => __( 'Bicicletas Compartidas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'reciclaje'        => __( 'Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'restaurante'      => __( 'Restaurante', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'peluqueria'       => __( 'Peluquería', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'gimnasio'         => __( 'Gimnasio', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'clinica'          => __( 'Clínica', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'hotel'            => __( 'Hotel', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'inmobiliaria'     => __( 'Inmobiliaria', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'tienda'           => __( 'Tienda', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'podcast'          => __( 'Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                     'default' => '',
                 ),
                 'color' => array(
                     'type'    => 'color',
-                    'label'   => __( 'Color primario', 'flavor-chat-ia' ),
+                    'label'   => __( 'Color primario', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => '',
                 ),
             ),
@@ -2905,7 +2905,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'advertising', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'ad-banner',
-                'name'      => __( 'Banner Publicitario', 'flavor-chat-ia' ),
+                'name'      => __( 'Banner Publicitario', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'modules',
                 'shortcode' => 'flavor_ad',
                 'module'    => 'advertising',
@@ -2913,26 +2913,26 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'posicion' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Posición', 'flavor-chat-ia' ),
-                        'options' => array( 'header' => __( 'Cabecera', 'flavor-chat-ia' ), 'sidebar' => __( 'Lateral', 'flavor-chat-ia' ), 'content' => __( 'Contenido', 'flavor-chat-ia' ), 'footer' => __( 'Pie', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Posición', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'header' => __( 'Cabecera', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'sidebar' => __( 'Lateral', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'content' => __( 'Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'footer' => __( 'Pie', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'content',
                     ),
                     'formato' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Formato', 'flavor-chat-ia' ),
-                        'options' => array( 'horizontal' => __( 'Horizontal', 'flavor-chat-ia' ), 'vertical' => __( 'Vertical', 'flavor-chat-ia' ), 'cuadrado' => __( 'Cuadrado', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Formato', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'horizontal' => __( 'Horizontal', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'vertical' => __( 'Vertical', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'cuadrado' => __( 'Cuadrado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'horizontal',
                     ),
                     'rotacion' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Rotar anuncios', 'flavor-chat-ia' ),
+                        'label'   => __( 'Rotar anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'ads-dashboard',
-                'name'      => __( 'Dashboard Anunciante', 'flavor-chat-ia' ),
+                'name'      => __( 'Dashboard Anunciante', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'modules',
                 'shortcode' => 'flavor_ads_dashboard',
                 'module'    => 'advertising',
@@ -2940,14 +2940,14 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'vista' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Vista', 'flavor-chat-ia' ),
-                        'options' => array( 'resumen' => __( 'Resumen', 'flavor-chat-ia' ), 'campanas' => __( 'Campañas', 'flavor-chat-ia' ), 'estadisticas' => __( 'Estadísticas', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Vista', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'resumen' => __( 'Resumen', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'campanas' => __( 'Campañas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'estadisticas' => __( 'Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'resumen',
                     ),
                     'periodo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Período', 'flavor-chat-ia' ),
-                        'options' => array( '7d' => __( 'Últimos 7 días', 'flavor-chat-ia' ), '30d' => __( 'Últimos 30 días', 'flavor-chat-ia' ), '90d' => __( 'Últimos 90 días', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Período', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '7d' => __( 'Últimos 7 días', FLAVOR_PLATFORM_TEXT_DOMAIN ), '30d' => __( 'Últimos 30 días', FLAVOR_PLATFORM_TEXT_DOMAIN ), '90d' => __( 'Últimos 90 días', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '30d',
                     ),
                 ),
@@ -2958,7 +2958,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'biblioteca', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'biblioteca-catalogo',
-                'name'      => __( 'Catálogo Biblioteca', 'flavor-chat-ia' ),
+                'name'      => __( 'Catálogo Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'biblioteca_catalogo',
                 'module'    => 'biblioteca',
@@ -2966,38 +2966,38 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'genero' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Género', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todos', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Género', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todos', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 12,
                         'min'     => 1,
                         'max'     => 48,
                     ),
                     'columnas' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Columnas', 'flavor-chat-ia' ),
+                        'label'   => __( 'Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'options' => array( '3' => '3', '4' => '4', '6' => '6' ),
                         'default' => '4',
                     ),
                     'mostrar_disponibilidad' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar disponibilidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar disponibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                     'mostrar_autor' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar autor', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar autor', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'biblioteca-mis-prestamos',
-                'name'      => __( 'Mis Préstamos', 'flavor-chat-ia' ),
+                'name'      => __( 'Mis Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'biblioteca_mis_prestamos',
                 'module'    => 'biblioteca',
@@ -3005,13 +3005,13 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'estado' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Estado', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todos', 'flavor-chat-ia' ), 'activos' => __( 'Activos', 'flavor-chat-ia' ), 'vencidos' => __( 'Vencidos', 'flavor-chat-ia' ), 'historial' => __( 'Historial', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Estado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todos', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'activos' => __( 'Activos', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'vencidos' => __( 'Vencidos', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'historial' => __( 'Historial', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'activos',
                     ),
                     'mostrar_renovar' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Botón renovar', 'flavor-chat-ia' ),
+                        'label'   => __( 'Botón renovar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
@@ -3022,7 +3022,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'carpooling', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'carpooling-buscar',
-                'name'      => __( 'Buscar Viaje', 'flavor-chat-ia' ),
+                'name'      => __( 'Buscar Viaje', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'carpooling_buscar_viaje',
                 'module'    => 'carpooling',
@@ -3030,19 +3030,19 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'mostrar_mapa' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar mapa', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar mapa', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                     'radio_km' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Radio (km)', 'flavor-chat-ia' ),
+                        'label'   => __( 'Radio (km)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 50,
                         'min'     => 5,
                         'max'     => 200,
                     ),
                     'resultados' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Resultados', 'flavor-chat-ia' ),
+                        'label'   => __( 'Resultados', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 10,
                         'min'     => 5,
                         'max'     => 50,
@@ -3051,7 +3051,7 @@ class Flavor_VBP_Block_Library {
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'carpooling-publicar',
-                'name'      => __( 'Publicar Viaje', 'flavor-chat-ia' ),
+                'name'      => __( 'Publicar Viaje', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'carpooling_publicar_viaje',
                 'module'    => 'carpooling',
@@ -3059,13 +3059,13 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'modo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Modo', 'flavor-chat-ia' ),
-                        'options' => array( 'completo' => __( 'Completo', 'flavor-chat-ia' ), 'rapido' => __( 'Rápido', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Modo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'completo' => __( 'Completo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'rapido' => __( 'Rápido', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'completo',
                     ),
                     'recurrente' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Permitir recurrentes', 'flavor-chat-ia' ),
+                        'label'   => __( 'Permitir recurrentes', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
@@ -3076,7 +3076,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'chat-grupos', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'chat-grupos-lista',
-                'name'      => __( 'Lista de Grupos', 'flavor-chat-ia' ),
+                'name'      => __( 'Lista de Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'flavor_grupos_lista',
                 'module'    => 'chat-grupos',
@@ -3084,27 +3084,27 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'tipo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Mostrar', 'flavor-chat-ia' ),
-                        'options' => array( 'mis_grupos' => __( 'Mis grupos', 'flavor-chat-ia' ), 'todos' => __( 'Todos', 'flavor-chat-ia' ), 'recientes' => __( 'Recientes', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Mostrar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'mis_grupos' => __( 'Mis grupos', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'todos' => __( 'Todos', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'recientes' => __( 'Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'mis_grupos',
                     ),
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 10,
                         'min'     => 5,
                         'max'     => 50,
                     ),
                     'mostrar_miembros' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar miembros', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar miembros', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'chat-grupos-explorar',
-                'name'      => __( 'Explorar Grupos', 'flavor-chat-ia' ),
+                'name'      => __( 'Explorar Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'flavor_grupos_explorar',
                 'module'    => 'chat-grupos',
@@ -3112,21 +3112,21 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'categoria' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Categoría', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todas', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todas', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 12,
                         'min'     => 6,
                         'max'     => 48,
                     ),
                     'ordenar' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Ordenar por', 'flavor-chat-ia' ),
-                        'options' => array( 'populares' => __( 'Más populares', 'flavor-chat-ia' ), 'recientes' => __( 'Más recientes', 'flavor-chat-ia' ), 'activos' => __( 'Más activos', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Ordenar por', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'populares' => __( 'Más populares', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'recientes' => __( 'Más recientes', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'activos' => __( 'Más activos', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'populares',
                     ),
                 ),
@@ -3137,7 +3137,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'chat-interno', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'chat-inbox',
-                'name'      => __( 'Bandeja de Mensajes', 'flavor-chat-ia' ),
+                'name'      => __( 'Bandeja de Mensajes', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'flavor_chat_inbox',
                 'module'    => 'chat-interno',
@@ -3145,18 +3145,18 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'vista' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Vista', 'flavor-chat-ia' ),
-                        'options' => array( 'lista' => __( 'Lista', 'flavor-chat-ia' ), 'completa' => __( 'Completa', 'flavor-chat-ia' ), 'compacta' => __( 'Compacta', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Vista', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'lista' => __( 'Lista', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'completa' => __( 'Completa', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'compacta' => __( 'Compacta', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'lista',
                     ),
                     'mostrar_no_leidos' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Destacar no leídos', 'flavor-chat-ia' ),
+                        'label'   => __( 'Destacar no leídos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                     'sonido' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Sonido notificaciones', 'flavor-chat-ia' ),
+                        'label'   => __( 'Sonido notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
@@ -3167,7 +3167,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'circulos-cuidados', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'circulos-cuidados-lista',
-                'name'      => __( 'Círculos de Cuidados', 'flavor-chat-ia' ),
+                'name'      => __( 'Círculos de Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'circulos_cuidados',
                 'module'    => 'circulos-cuidados',
@@ -3175,27 +3175,27 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'zona' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Zona', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todas', 'flavor-chat-ia' ), 'cercanos' => __( 'Cercanos', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Zona', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'cercanos' => __( 'Cercanos', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 8,
                         'min'     => 4,
                         'max'     => 24,
                     ),
                     'mostrar_miembros' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar miembros', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar miembros', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'necesidades-cuidados',
-                'name'      => __( 'Necesidades de Cuidados', 'flavor-chat-ia' ),
+                'name'      => __( 'Necesidades de Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'necesidades_cuidados',
                 'module'    => 'circulos-cuidados',
@@ -3203,19 +3203,19 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'tipo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Tipo', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todos', 'flavor-chat-ia' ), 'mayores' => __( 'Mayores', 'flavor-chat-ia' ), 'infancia' => __( 'Infancia', 'flavor-chat-ia' ), 'diversidad' => __( 'Diversidad funcional', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todos', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'mayores' => __( 'Mayores', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'infancia' => __( 'Infancia', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'diversidad' => __( 'Diversidad funcional', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'urgencia' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Urgencia', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todas', 'flavor-chat-ia' ), 'alta' => __( 'Alta', 'flavor-chat-ia' ), 'media' => __( 'Media', 'flavor-chat-ia' ), 'baja' => __( 'Baja', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Urgencia', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'alta' => __( 'Alta', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'media' => __( 'Media', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'baja' => __( 'Baja', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'mostrar_voluntarios' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar voluntarios', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar voluntarios', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
@@ -3226,7 +3226,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'comunidades', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'comunidades-listar',
-                'name'      => __( 'Listar Comunidades', 'flavor-chat-ia' ),
+                'name'      => __( 'Listar Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'comunidades_listar',
                 'module'    => 'comunidades',
@@ -3234,28 +3234,28 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'tipo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Tipo', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todas', 'flavor-chat-ia' ), 'barrio' => __( 'Barrio', 'flavor-chat-ia' ), 'interes' => __( 'Interés', 'flavor-chat-ia' ), 'proyecto' => __( 'Proyecto', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'barrio' => __( 'Barrio', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'interes' => __( 'Interés', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'proyecto' => __( 'Proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 12,
                         'min'     => 4,
                         'max'     => 48,
                     ),
                     'ordenar' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Ordenar por', 'flavor-chat-ia' ),
-                        'options' => array( 'miembros' => __( 'Más miembros', 'flavor-chat-ia' ), 'activas' => __( 'Más activas', 'flavor-chat-ia' ), 'recientes' => __( 'Más recientes', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Ordenar por', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'miembros' => __( 'Más miembros', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'activas' => __( 'Más activas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'recientes' => __( 'Más recientes', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'miembros',
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'comunidades-actividad',
-                'name'      => __( 'Feed de Actividad', 'flavor-chat-ia' ),
+                'name'      => __( 'Feed de Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'comunidades_actividad',
                 'module'    => 'comunidades',
@@ -3263,20 +3263,20 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'comunidad' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Comunidad', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todas', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todas', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Publicaciones', 'flavor-chat-ia' ),
+                        'label'   => __( 'Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 20,
                         'min'     => 5,
                         'max'     => 100,
                     ),
                     'permitir_publicar' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Permitir publicar', 'flavor-chat-ia' ),
+                        'label'   => __( 'Permitir publicar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
@@ -3287,7 +3287,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'economia-suficiencia', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'suficiencia-intro',
-                'name'      => __( 'Intro Suficiencia', 'flavor-chat-ia' ),
+                'name'      => __( 'Intro Suficiencia', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'economy',
                 'shortcode' => 'suficiencia_intro',
                 'module'    => 'economia-suficiencia',
@@ -3295,20 +3295,20 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'estilo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Estilo', 'flavor-chat-ia' ),
-                        'options' => array( 'completo' => __( 'Completo', 'flavor-chat-ia' ), 'resumido' => __( 'Resumido', 'flavor-chat-ia' ), 'visual' => __( 'Visual', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'completo' => __( 'Completo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'resumido' => __( 'Resumido', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'visual' => __( 'Visual', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'completo',
                     ),
                     'mostrar_cta' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar CTA', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar CTA', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'suficiencia-evaluacion',
-                'name'      => __( 'Evaluación Personal', 'flavor-chat-ia' ),
+                'name'      => __( 'Evaluación Personal', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'economy',
                 'shortcode' => 'suficiencia_evaluacion',
                 'module'    => 'economia-suficiencia',
@@ -3316,18 +3316,18 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'modo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Modo', 'flavor-chat-ia' ),
-                        'options' => array( 'completo' => __( 'Completo', 'flavor-chat-ia' ), 'rapido' => __( 'Rápido', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Modo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'completo' => __( 'Completo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'rapido' => __( 'Rápido', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'completo',
                     ),
                     'guardar_resultados' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Guardar resultados', 'flavor-chat-ia' ),
+                        'label'   => __( 'Guardar resultados', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                     'mostrar_recursos' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar recursos', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar recursos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
@@ -3338,7 +3338,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'empresarial', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'empresarial-servicios',
-                'name'      => __( 'Servicios Empresa', 'flavor-chat-ia' ),
+                'name'      => __( 'Servicios Empresa', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'modules',
                 'shortcode' => 'empresarial_servicios',
                 'module'    => 'empresarial',
@@ -3346,26 +3346,26 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'columnas' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Columnas', 'flavor-chat-ia' ),
+                        'label'   => __( 'Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'options' => array( '2' => '2', '3' => '3', '4' => '4' ),
                         'default' => '3',
                     ),
                     'estilo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Estilo', 'flavor-chat-ia' ),
-                        'options' => array( 'cards' => __( 'Tarjetas', 'flavor-chat-ia' ), 'lista' => __( 'Lista', 'flavor-chat-ia' ), 'iconos' => __( 'Iconos', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'cards' => __( 'Tarjetas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'lista' => __( 'Lista', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'iconos' => __( 'Iconos', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'cards',
                     ),
                     'mostrar_precio' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar precio', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar precio', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'empresarial-equipo',
-                'name'      => __( 'Equipo Empresa', 'flavor-chat-ia' ),
+                'name'      => __( 'Equipo Empresa', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'modules',
                 'shortcode' => 'empresarial_equipo',
                 'module'    => 'empresarial',
@@ -3373,31 +3373,31 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'departamento' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Departamento', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todos', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Departamento', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todos', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'columnas' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Columnas', 'flavor-chat-ia' ),
+                        'label'   => __( 'Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'options' => array( '3' => '3', '4' => '4', '5' => '5' ),
                         'default' => '4',
                     ),
                     'mostrar_cargo' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar cargo', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar cargo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                     'mostrar_redes' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar redes', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar redes', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'empresarial-portfolio',
-                'name'      => __( 'Portfolio Empresa', 'flavor-chat-ia' ),
+                'name'      => __( 'Portfolio Empresa', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'modules',
                 'shortcode' => 'empresarial_portfolio',
                 'module'    => 'empresarial',
@@ -3405,21 +3405,21 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'categoria' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Categoría', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todas', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todas', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 9,
                         'min'     => 3,
                         'max'     => 24,
                     ),
                     'estilo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Estilo', 'flavor-chat-ia' ),
-                        'options' => array( 'grid' => __( 'Cuadrícula', 'flavor-chat-ia' ), 'masonry' => __( 'Masonry', 'flavor-chat-ia' ), 'carousel' => __( 'Carrusel', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'grid' => __( 'Cuadrícula', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'masonry' => __( 'Masonry', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'carousel' => __( 'Carrusel', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'grid',
                     ),
                 ),
@@ -3430,7 +3430,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'espacios-comunes', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'espacios-listado',
-                'name'      => __( 'Listado Espacios', 'flavor-chat-ia' ),
+                'name'      => __( 'Listado Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'espacios_listado',
                 'module'    => 'espacios-comunes',
@@ -3438,27 +3438,27 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'tipo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Tipo', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todos', 'flavor-chat-ia' ), 'sala' => __( 'Salas', 'flavor-chat-ia' ), 'exterior' => __( 'Exteriores', 'flavor-chat-ia' ), 'deportivo' => __( 'Deportivos', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todos', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'sala' => __( 'Salas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'exterior' => __( 'Exteriores', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'deportivo' => __( 'Deportivos', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 12,
                         'min'     => 4,
                         'max'     => 24,
                     ),
                     'mostrar_disponibilidad' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar disponibilidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar disponibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'espacios-calendario',
-                'name'      => __( 'Calendario Espacios', 'flavor-chat-ia' ),
+                'name'      => __( 'Calendario Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'espacios_calendario',
                 'module'    => 'espacios-comunes',
@@ -3466,19 +3466,19 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'espacio' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Espacio', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todos', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Espacio', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todos', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'vista' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Vista', 'flavor-chat-ia' ),
-                        'options' => array( 'mes' => __( 'Mes', 'flavor-chat-ia' ), 'semana' => __( 'Semana', 'flavor-chat-ia' ), 'dia' => __( 'Día', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Vista', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'mes' => __( 'Mes', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'semana' => __( 'Semana', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'dia' => __( 'Día', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'semana',
                     ),
                     'permitir_reservar' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Permitir reservar', 'flavor-chat-ia' ),
+                        'label'   => __( 'Permitir reservar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
@@ -3489,7 +3489,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'facturas', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'mis-facturas',
-                'name'      => __( 'Mis Facturas', 'flavor-chat-ia' ),
+                'name'      => __( 'Mis Facturas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'modules',
                 'shortcode' => 'flavor_mis_facturas',
                 'module'    => 'facturas',
@@ -3497,26 +3497,26 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'estado' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Estado', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todas', 'flavor-chat-ia' ), 'pendientes' => __( 'Pendientes', 'flavor-chat-ia' ), 'pagadas' => __( 'Pagadas', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Estado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'pendientes' => __( 'Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'pagadas' => __( 'Pagadas', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'anio' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Año', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todos', 'flavor-chat-ia' ), '2024' => '2024', '2023' => '2023' ),
+                        'label'   => __( 'Año', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todos', FLAVOR_PLATFORM_TEXT_DOMAIN ), '2024' => '2024', '2023' => '2023' ),
                         'default' => '',
                     ),
                     'permitir_descarga' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Permitir descarga', 'flavor-chat-ia' ),
+                        'label'   => __( 'Permitir descarga', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'historial-pagos',
-                'name'      => __( 'Historial Pagos', 'flavor-chat-ia' ),
+                'name'      => __( 'Historial Pagos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'modules',
                 'shortcode' => 'flavor_historial_pagos',
                 'module'    => 'facturas',
@@ -3524,13 +3524,13 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'periodo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Período', 'flavor-chat-ia' ),
-                        'options' => array( '30d' => __( 'Últimos 30 días', 'flavor-chat-ia' ), '90d' => __( 'Últimos 90 días', 'flavor-chat-ia' ), 'anio' => __( 'Este año', 'flavor-chat-ia' ), 'todo' => __( 'Todo', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Período', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '30d' => __( 'Últimos 30 días', FLAVOR_PLATFORM_TEXT_DOMAIN ), '90d' => __( 'Últimos 90 días', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'anio' => __( 'Este año', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'todo' => __( 'Todo', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'anio',
                     ),
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 20,
                         'min'     => 10,
                         'max'     => 100,
@@ -3543,7 +3543,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'justicia-restaurativa', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'justicia-info',
-                'name'      => __( 'Info Justicia Restaurativa', 'flavor-chat-ia' ),
+                'name'      => __( 'Info Justicia Restaurativa', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'justicia_restaurativa',
                 'module'    => 'justicia-restaurativa',
@@ -3551,20 +3551,20 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'seccion' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Sección', 'flavor-chat-ia' ),
-                        'options' => array( 'intro' => __( 'Introducción', 'flavor-chat-ia' ), 'proceso' => __( 'Proceso', 'flavor-chat-ia' ), 'faq' => __( 'Preguntas frecuentes', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Sección', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'intro' => __( 'Introducción', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'proceso' => __( 'Proceso', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'faq' => __( 'Preguntas frecuentes', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'intro',
                     ),
                     'mostrar_casos' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar casos ejemplo', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar casos ejemplo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'solicitar-mediacion',
-                'name'      => __( 'Solicitar Mediación', 'flavor-chat-ia' ),
+                'name'      => __( 'Solicitar Mediación', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'solicitar_mediacion',
                 'module'    => 'justicia-restaurativa',
@@ -3572,13 +3572,13 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'tipo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Tipo', 'flavor-chat-ia' ),
-                        'options' => array( 'vecinal' => __( 'Vecinal', 'flavor-chat-ia' ), 'familiar' => __( 'Familiar', 'flavor-chat-ia' ), 'comunitario' => __( 'Comunitario', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'vecinal' => __( 'Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'familiar' => __( 'Familiar', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'comunitario' => __( 'Comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'vecinal',
                     ),
                     'anonimo' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Permitir anónimo', 'flavor-chat-ia' ),
+                        'label'   => __( 'Permitir anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
@@ -3589,7 +3589,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'marketplace', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'marketplace-listado',
-                'name'      => __( 'Listado Marketplace', 'flavor-chat-ia' ),
+                'name'      => __( 'Listado Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'economy',
                 'shortcode' => 'marketplace_listado',
                 'module'    => 'marketplace',
@@ -3597,39 +3597,39 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'tipo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Tipo', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todos', 'flavor-chat-ia' ), 'venta' => __( 'Venta', 'flavor-chat-ia' ), 'busco' => __( 'Busco', 'flavor-chat-ia' ), 'regalo' => __( 'Regalo', 'flavor-chat-ia' ), 'intercambio' => __( 'Intercambio', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todos', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'venta' => __( 'Venta', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'busco' => __( 'Busco', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'regalo' => __( 'Regalo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'intercambio' => __( 'Intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'categoria' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Categoría', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todas', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todas', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 12,
                         'min'     => 1,
                         'max'     => 48,
                     ),
                     'orden' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Ordenar por', 'flavor-chat-ia' ),
-                        'options' => array( 'recent' => __( 'Más recientes', 'flavor-chat-ia' ), 'price_asc' => __( 'Precio menor', 'flavor-chat-ia' ), 'price_desc' => __( 'Precio mayor', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Ordenar por', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'recent' => __( 'Más recientes', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'price_asc' => __( 'Precio menor', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'price_desc' => __( 'Precio mayor', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'recent',
                     ),
                     'mostrar_precio' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar precio', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar precio', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'marketplace-formulario',
-                'name'      => __( 'Publicar Anuncio', 'flavor-chat-ia' ),
+                'name'      => __( 'Publicar Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'economy',
                 'shortcode' => 'marketplace_formulario',
                 'module'    => 'marketplace',
@@ -3637,18 +3637,18 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'tipo_default' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Tipo por defecto', 'flavor-chat-ia' ),
-                        'options' => array( 'venta' => __( 'Venta', 'flavor-chat-ia' ), 'busco' => __( 'Busco', 'flavor-chat-ia' ), 'regalo' => __( 'Regalo', 'flavor-chat-ia' ), 'intercambio' => __( 'Intercambio', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Tipo por defecto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'venta' => __( 'Venta', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'busco' => __( 'Busco', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'regalo' => __( 'Regalo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'intercambio' => __( 'Intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'venta',
                     ),
                     'permitir_imagenes' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Permitir imágenes', 'flavor-chat-ia' ),
+                        'label'   => __( 'Permitir imágenes', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                     'max_imagenes' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Máx. imágenes', 'flavor-chat-ia' ),
+                        'label'   => __( 'Máx. imágenes', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 5,
                         'min'     => 1,
                         'max'     => 10,
@@ -3661,7 +3661,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'participacion', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'propuestas-activas',
-                'name'      => __( 'Propuestas Activas', 'flavor-chat-ia' ),
+                'name'      => __( 'Propuestas Activas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'propuestas_activas',
                 'module'    => 'participacion',
@@ -3669,28 +3669,28 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'estado' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Estado', 'flavor-chat-ia' ),
-                        'options' => array( 'activas' => __( 'Activas', 'flavor-chat-ia' ), 'votacion' => __( 'En votación', 'flavor-chat-ia' ), 'aprobadas' => __( 'Aprobadas', 'flavor-chat-ia' ), 'todas' => __( 'Todas', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Estado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'activas' => __( 'Activas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'votacion' => __( 'En votación', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'aprobadas' => __( 'Aprobadas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'todas' => __( 'Todas', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'activas',
                     ),
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 10,
                         'min'     => 5,
                         'max'     => 50,
                     ),
                     'ordenar' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Ordenar por', 'flavor-chat-ia' ),
-                        'options' => array( 'votos' => __( 'Más votadas', 'flavor-chat-ia' ), 'recientes' => __( 'Más recientes', 'flavor-chat-ia' ), 'comentarios' => __( 'Más comentadas', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Ordenar por', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'votos' => __( 'Más votadas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'recientes' => __( 'Más recientes', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'comentarios' => __( 'Más comentadas', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'recientes',
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'votacion-activa',
-                'name'      => __( 'Votación Activa', 'flavor-chat-ia' ),
+                'name'      => __( 'Votación Activa', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'votacion_activa',
                 'module'    => 'participacion',
@@ -3698,17 +3698,17 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'mostrar_progreso' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar progreso', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar progreso', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                     'mostrar_resultados' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar resultados', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar resultados', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => false,
                     ),
                     'permitir_comentarios' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Permitir comentarios', 'flavor-chat-ia' ),
+                        'label'   => __( 'Permitir comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
@@ -3719,7 +3719,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'podcast', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'podcast-player',
-                'name'      => __( 'Reproductor Podcast', 'flavor-chat-ia' ),
+                'name'      => __( 'Reproductor Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'podcast_player',
                 'module'    => 'podcast',
@@ -3727,26 +3727,26 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'episodio' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Episodio', 'flavor-chat-ia' ),
-                        'options' => array( 'ultimo' => __( 'Último', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Episodio', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'ultimo' => __( 'Último', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'ultimo',
                     ),
                     'estilo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Estilo', 'flavor-chat-ia' ),
-                        'options' => array( 'completo' => __( 'Completo', 'flavor-chat-ia' ), 'mini' => __( 'Mini', 'flavor-chat-ia' ), 'card' => __( 'Tarjeta', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'completo' => __( 'Completo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'mini' => __( 'Mini', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'card' => __( 'Tarjeta', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'completo',
                     ),
                     'autoplay' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Autoplay', 'flavor-chat-ia' ),
+                        'label'   => __( 'Autoplay', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => false,
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'podcast-episodios',
-                'name'      => __( 'Lista Episodios', 'flavor-chat-ia' ),
+                'name'      => __( 'Lista Episodios', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'podcast_lista_episodios',
                 'module'    => 'podcast',
@@ -3754,20 +3754,20 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 10,
                         'min'     => 5,
                         'max'     => 50,
                     ),
                     'ordenar' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Ordenar por', 'flavor-chat-ia' ),
-                        'options' => array( 'recientes' => __( 'Más recientes', 'flavor-chat-ia' ), 'populares' => __( 'Más populares', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Ordenar por', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'recientes' => __( 'Más recientes', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'populares' => __( 'Más populares', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'recientes',
                     ),
                     'mostrar_duracion' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar duración', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar duración', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
@@ -3778,7 +3778,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'red-social', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'rs-feed',
-                'name'      => __( 'Feed Social', 'flavor-chat-ia' ),
+                'name'      => __( 'Feed Social', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'rs_feed',
                 'module'    => 'red-social',
@@ -3786,32 +3786,32 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'tipo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Tipo', 'flavor-chat-ia' ),
-                        'options' => array( 'todos' => __( 'Todos', 'flavor-chat-ia' ), 'siguiendo' => __( 'Siguiendo', 'flavor-chat-ia' ), 'populares' => __( 'Populares', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'todos' => __( 'Todos', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'siguiendo' => __( 'Siguiendo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'populares' => __( 'Populares', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'todos',
                     ),
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Publicaciones', 'flavor-chat-ia' ),
+                        'label'   => __( 'Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 20,
                         'min'     => 5,
                         'max'     => 100,
                     ),
                     'permitir_publicar' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Permitir publicar', 'flavor-chat-ia' ),
+                        'label'   => __( 'Permitir publicar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                     'mostrar_reacciones' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar reacciones', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar reacciones', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'rs-historias',
-                'name'      => __( 'Historias', 'flavor-chat-ia' ),
+                'name'      => __( 'Historias', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'rs_historias',
                 'module'    => 'red-social',
@@ -3819,20 +3819,20 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'tipo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Mostrar', 'flavor-chat-ia' ),
-                        'options' => array( 'todos' => __( 'Todas', 'flavor-chat-ia' ), 'siguiendo' => __( 'Siguiendo', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Mostrar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'todos' => __( 'Todas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'siguiendo' => __( 'Siguiendo', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'siguiendo',
                     ),
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 15,
                         'min'     => 5,
                         'max'     => 30,
                     ),
                     'permitir_crear' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Permitir crear', 'flavor-chat-ia' ),
+                        'label'   => __( 'Permitir crear', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
@@ -3843,7 +3843,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'reciclaje', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'reciclaje-puntos',
-                'name'      => __( 'Puntos de Reciclaje', 'flavor-chat-ia' ),
+                'name'      => __( 'Puntos de Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'maps',
                 'shortcode' => 'reciclaje_puntos_cercanos',
                 'module'    => 'reciclaje',
@@ -3851,27 +3851,27 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'tipo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Tipo', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todos', 'flavor-chat-ia' ), 'contenedor' => __( 'Contenedores', 'flavor-chat-ia' ), 'punto_limpio' => __( 'Puntos limpios', 'flavor-chat-ia' ), 'textil' => __( 'Textil', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todos', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'contenedor' => __( 'Contenedores', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'punto_limpio' => __( 'Puntos limpios', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'textil' => __( 'Textil', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'radio_km' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Radio (km)', 'flavor-chat-ia' ),
+                        'label'   => __( 'Radio (km)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 5,
                         'min'     => 1,
                         'max'     => 50,
                     ),
                     'mostrar_listado' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar listado', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar listado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'reciclaje-guia',
-                'name'      => __( 'Guía de Reciclaje', 'flavor-chat-ia' ),
+                'name'      => __( 'Guía de Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'reciclaje_guia',
                 'module'    => 'reciclaje',
@@ -3879,21 +3879,21 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'categoria' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Categoría', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todas', 'flavor-chat-ia' ), 'plasticos' => __( 'Plásticos', 'flavor-chat-ia' ), 'vidrio' => __( 'Vidrio', 'flavor-chat-ia' ), 'papel' => __( 'Papel', 'flavor-chat-ia' ), 'organico' => __( 'Orgánico', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'plasticos' => __( 'Plásticos', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'vidrio' => __( 'Vidrio', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'papel' => __( 'Papel', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'organico' => __( 'Orgánico', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'estilo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Estilo', 'flavor-chat-ia' ),
-                        'options' => array( 'visual' => __( 'Visual', 'flavor-chat-ia' ), 'lista' => __( 'Lista', 'flavor-chat-ia' ), 'buscador' => __( 'Buscador', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'visual' => __( 'Visual', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'lista' => __( 'Lista', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'buscador' => __( 'Buscador', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'visual',
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'reciclaje-ranking',
-                'name'      => __( 'Ranking Reciclaje', 'flavor-chat-ia' ),
+                'name'      => __( 'Ranking Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'reciclaje_ranking',
                 'module'    => 'reciclaje',
@@ -3901,20 +3901,20 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'periodo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Período', 'flavor-chat-ia' ),
-                        'options' => array( 'semana' => __( 'Esta semana', 'flavor-chat-ia' ), 'mes' => __( 'Este mes', 'flavor-chat-ia' ), 'anio' => __( 'Este año', 'flavor-chat-ia' ), 'total' => __( 'Total', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Período', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'semana' => __( 'Esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'mes' => __( 'Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'anio' => __( 'Este año', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'total' => __( 'Total', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'mes',
                     ),
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Top', 'flavor-chat-ia' ),
+                        'label'   => __( 'Top', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 10,
                         'min'     => 5,
                         'max'     => 50,
                     ),
                     'mostrar_puntos' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar puntos', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar puntos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
@@ -3925,7 +3925,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'saberes-ancestrales', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'saberes-catalogo',
-                'name'      => __( 'Catálogo Saberes', 'flavor-chat-ia' ),
+                'name'      => __( 'Catálogo Saberes', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'saberes_catalogo',
                 'module'    => 'saberes-ancestrales',
@@ -3933,28 +3933,28 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'categoria' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Categoría', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todas', 'flavor-chat-ia' ), 'oficios' => __( 'Oficios', 'flavor-chat-ia' ), 'medicina' => __( 'Medicina tradicional', 'flavor-chat-ia' ), 'artesania' => __( 'Artesanía', 'flavor-chat-ia' ), 'cocina' => __( 'Cocina', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'oficios' => __( 'Oficios', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'medicina' => __( 'Medicina tradicional', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'artesania' => __( 'Artesanía', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'cocina' => __( 'Cocina', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 12,
                         'min'     => 4,
                         'max'     => 48,
                     ),
                     'estilo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Estilo', 'flavor-chat-ia' ),
-                        'options' => array( 'cards' => __( 'Tarjetas', 'flavor-chat-ia' ), 'lista' => __( 'Lista', 'flavor-chat-ia' ), 'galeria' => __( 'Galería', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'cards' => __( 'Tarjetas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'lista' => __( 'Lista', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'galeria' => __( 'Galería', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'cards',
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'saberes-portadores',
-                'name'      => __( 'Portadores de Saber', 'flavor-chat-ia' ),
+                'name'      => __( 'Portadores de Saber', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'saberes_portadores',
                 'module'    => 'saberes-ancestrales',
@@ -3962,20 +3962,20 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'especialidad' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Especialidad', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todas', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Especialidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todas', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 8,
                         'min'     => 4,
                         'max'     => 24,
                     ),
                     'mostrar_bio' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar biografía', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar biografía', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
@@ -3986,7 +3986,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'socios', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'socios-pagar-cuota',
-                'name'      => __( 'Pagar Cuota', 'flavor-chat-ia' ),
+                'name'      => __( 'Pagar Cuota', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'modules',
                 'shortcode' => 'socios_pagar_cuota',
                 'module'    => 'socios',
@@ -3994,20 +3994,20 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'mostrar_historial' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar historial', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar historial', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                     'metodos_pago' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Métodos de pago', 'flavor-chat-ia' ),
-                        'options' => array( 'todos' => __( 'Todos', 'flavor-chat-ia' ), 'tarjeta' => __( 'Solo tarjeta', 'flavor-chat-ia' ), 'transferencia' => __( 'Solo transferencia', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Métodos de pago', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'todos' => __( 'Todos', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'tarjeta' => __( 'Solo tarjeta', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'transferencia' => __( 'Solo transferencia', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'todos',
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'socios-perfil',
-                'name'      => __( 'Mi Perfil Socio', 'flavor-chat-ia' ),
+                'name'      => __( 'Mi Perfil Socio', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'modules',
                 'shortcode' => 'socios_mi_perfil',
                 'module'    => 'socios',
@@ -4015,18 +4015,18 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'secciones' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Secciones', 'flavor-chat-ia' ),
-                        'options' => array( 'todas' => __( 'Todas', 'flavor-chat-ia' ), 'basico' => __( 'Solo datos básicos', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Secciones', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'todas' => __( 'Todas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'basico' => __( 'Solo datos básicos', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'todas',
                     ),
                     'editable' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Permitir edición', 'flavor-chat-ia' ),
+                        'label'   => __( 'Permitir edición', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                     'mostrar_carnet' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar carnet', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar carnet', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
@@ -4037,7 +4037,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'talleres', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'talleres-proximos',
-                'name'      => __( 'Próximos Talleres', 'flavor-chat-ia' ),
+                'name'      => __( 'Próximos Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'proximos_talleres',
                 'module'    => 'talleres',
@@ -4045,33 +4045,33 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'categoria' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Categoría', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todas', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todas', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 6,
                         'min'     => 3,
                         'max'     => 24,
                     ),
                     'estilo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Estilo', 'flavor-chat-ia' ),
-                        'options' => array( 'cards' => __( 'Tarjetas', 'flavor-chat-ia' ), 'lista' => __( 'Lista', 'flavor-chat-ia' ), 'timeline' => __( 'Timeline', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'cards' => __( 'Tarjetas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'lista' => __( 'Lista', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'timeline' => __( 'Timeline', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'cards',
                     ),
                     'mostrar_plazas' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar plazas', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar plazas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'talleres-calendario',
-                'name'      => __( 'Calendario Talleres', 'flavor-chat-ia' ),
+                'name'      => __( 'Calendario Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'community',
                 'shortcode' => 'calendario_talleres',
                 'module'    => 'talleres',
@@ -4079,13 +4079,13 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'vista' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Vista', 'flavor-chat-ia' ),
-                        'options' => array( 'mes' => __( 'Mes', 'flavor-chat-ia' ), 'semana' => __( 'Semana', 'flavor-chat-ia' ), 'lista' => __( 'Lista', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Vista', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'mes' => __( 'Mes', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'semana' => __( 'Semana', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'lista' => __( 'Lista', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'mes',
                     ),
                     'mostrar_filtros' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar filtros', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar filtros', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
@@ -4096,7 +4096,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'trabajo-digno', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'trabajo-ofertas',
-                'name'      => __( 'Ofertas de Trabajo', 'flavor-chat-ia' ),
+                'name'      => __( 'Ofertas de Trabajo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'economy',
                 'shortcode' => 'trabajo_digno_ofertas',
                 'module'    => 'trabajo-digno',
@@ -4104,33 +4104,33 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'tipo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Tipo', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todos', 'flavor-chat-ia' ), 'empleo' => __( 'Empleo', 'flavor-chat-ia' ), 'colaboracion' => __( 'Colaboración', 'flavor-chat-ia' ), 'voluntariado' => __( 'Voluntariado', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todos', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'empleo' => __( 'Empleo', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'colaboracion' => __( 'Colaboración', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'voluntariado' => __( 'Voluntariado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'sector' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Sector', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todos', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Sector', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todos', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 10,
                         'min'     => 5,
                         'max'     => 50,
                     ),
                     'mostrar_salario' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar salario', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar salario', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'trabajo-formacion',
-                'name'      => __( 'Formación Laboral', 'flavor-chat-ia' ),
+                'name'      => __( 'Formación Laboral', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'economy',
                 'shortcode' => 'trabajo_digno_formacion',
                 'module'    => 'trabajo-digno',
@@ -4138,20 +4138,20 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'area' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Área', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todas', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Área', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todas', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 8,
                         'min'     => 4,
                         'max'     => 24,
                     ),
                     'solo_gratuitos' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Solo gratuitos', 'flavor-chat-ia' ),
+                        'label'   => __( 'Solo gratuitos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => false,
                     ),
                 ),
@@ -4162,7 +4162,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'trading-ia', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'trading-dashboard',
-                'name'      => __( 'Dashboard Trading', 'flavor-chat-ia' ),
+                'name'      => __( 'Dashboard Trading', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'modules',
                 'shortcode' => 'trading_ia_dashboard',
                 'module'    => 'trading-ia',
@@ -4170,26 +4170,26 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'vista' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Vista', 'flavor-chat-ia' ),
-                        'options' => array( 'resumen' => __( 'Resumen', 'flavor-chat-ia' ), 'detalle' => __( 'Detalle', 'flavor-chat-ia' ), 'grafico' => __( 'Gráfico', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Vista', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'resumen' => __( 'Resumen', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'detalle' => __( 'Detalle', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'grafico' => __( 'Gráfico', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'resumen',
                     ),
                     'periodo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Período', 'flavor-chat-ia' ),
-                        'options' => array( '24h' => __( '24 horas', 'flavor-chat-ia' ), '7d' => __( '7 días', 'flavor-chat-ia' ), '30d' => __( '30 días', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Período', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '24h' => __( '24 horas', FLAVOR_PLATFORM_TEXT_DOMAIN ), '7d' => __( '7 días', FLAVOR_PLATFORM_TEXT_DOMAIN ), '30d' => __( '30 días', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '24h',
                     ),
                     'actualizar_auto' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Actualización automática', 'flavor-chat-ia' ),
+                        'label'   => __( 'Actualización automática', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'trading-widget',
-                'name'      => __( 'Widget Precio', 'flavor-chat-ia' ),
+                'name'      => __( 'Widget Precio', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'modules',
                 'shortcode' => 'trading_ia_widget_precio',
                 'module'    => 'trading-ia',
@@ -4197,19 +4197,19 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'moneda' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Moneda', 'flavor-chat-ia' ),
+                        'label'   => __( 'Moneda', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'options' => array( 'btc' => 'Bitcoin (BTC)', 'eth' => 'Ethereum (ETH)', 'eur' => 'Euro (EUR)' ),
                         'default' => 'btc',
                     ),
                     'estilo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Estilo', 'flavor-chat-ia' ),
-                        'options' => array( 'mini' => __( 'Mini', 'flavor-chat-ia' ), 'normal' => __( 'Normal', 'flavor-chat-ia' ), 'completo' => __( 'Completo', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'mini' => __( 'Mini', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'normal' => __( 'Normal', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'completo' => __( 'Completo', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'normal',
                     ),
                     'mostrar_variacion' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar variación', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar variación', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
@@ -4220,7 +4220,7 @@ class Flavor_VBP_Block_Library {
         if ( $this->modulo_activo( 'tramites', $modulos_activos ) ) {
             $this->registrar_bloque( array(
                 'id'        => 'tramites-catalogo',
-                'name'      => __( 'Catálogo Trámites', 'flavor-chat-ia' ),
+                'name'      => __( 'Catálogo Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'modules',
                 'shortcode' => 'catalogo_tramites',
                 'module'    => 'tramites',
@@ -4228,26 +4228,26 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'categoria' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Categoría', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todas', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todas', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'estilo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Estilo', 'flavor-chat-ia' ),
-                        'options' => array( 'cards' => __( 'Tarjetas', 'flavor-chat-ia' ), 'lista' => __( 'Lista', 'flavor-chat-ia' ), 'acordeon' => __( 'Acordeón', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( 'cards' => __( 'Tarjetas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'lista' => __( 'Lista', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'acordeon' => __( 'Acordeón', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => 'cards',
                     ),
                     'mostrar_buscador' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar buscador', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar buscador', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'mis-expedientes',
-                'name'      => __( 'Mis Expedientes', 'flavor-chat-ia' ),
+                'name'      => __( 'Mis Expedientes', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'category'  => 'modules',
                 'shortcode' => 'mis_expedientes',
                 'module'    => 'tramites',
@@ -4255,20 +4255,20 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'estado' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Estado', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todos', 'flavor-chat-ia' ), 'en_curso' => __( 'En curso', 'flavor-chat-ia' ), 'pendiente' => __( 'Pendiente doc.', 'flavor-chat-ia' ), 'finalizado' => __( 'Finalizados', 'flavor-chat-ia' ) ),
+                        'label'   => __( 'Estado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'options' => array( '' => __( 'Todos', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'en_curso' => __( 'En curso', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'pendiente' => __( 'Pendiente doc.', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'finalizado' => __( 'Finalizados', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                         'default' => '',
                     ),
                     'limite' => array(
                         'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                        'label'   => __( 'Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => 20,
                         'min'     => 5,
                         'max'     => 100,
                     ),
                     'mostrar_seguimiento' => array(
                         'type'    => 'toggle',
-                        'label'   => __( 'Mostrar seguimiento', 'flavor-chat-ia' ),
+                        'label'   => __( 'Mostrar seguimiento', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => true,
                     ),
                 ),
@@ -4369,10 +4369,10 @@ class Flavor_VBP_Block_Library {
             // === ANIMACIONES ===
             '_animacion' => array(
                 'type'    => 'select',
-                'label'   => __( 'Animación de entrada', 'flavor-chat-ia' ),
+                'label'   => __( 'Animación de entrada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'group'   => 'animacion',
                 'options' => array(
-                    'none'       => __( 'Ninguna', 'flavor-chat-ia' ),
+                    'none'       => __( 'Ninguna', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'fadeIn'     => 'Fade In',
                     'fadeInUp'   => 'Fade In Up',
                     'fadeInDown' => 'Fade In Down',
@@ -4399,7 +4399,7 @@ class Flavor_VBP_Block_Library {
             ),
             '_animacion_duracion' => array(
                 'type'    => 'select',
-                'label'   => __( 'Duración', 'flavor-chat-ia' ),
+                'label'   => __( 'Duración', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'group'   => 'animacion',
                 'options' => array(
                     'faster' => '0.3s',
@@ -4412,10 +4412,10 @@ class Flavor_VBP_Block_Library {
             ),
             '_animacion_delay' => array(
                 'type'    => 'select',
-                'label'   => __( 'Retraso', 'flavor-chat-ia' ),
+                'label'   => __( 'Retraso', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'group'   => 'animacion',
                 'options' => array(
-                    '0'    => __( 'Sin retraso', 'flavor-chat-ia' ),
+                    '0'    => __( 'Sin retraso', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     '100'  => '0.1s',
                     '200'  => '0.2s',
                     '300'  => '0.3s',
@@ -4429,13 +4429,13 @@ class Flavor_VBP_Block_Library {
             ),
             '_animacion_trigger' => array(
                 'type'    => 'select',
-                'label'   => __( 'Disparador', 'flavor-chat-ia' ),
+                'label'   => __( 'Disparador', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'group'   => 'animacion',
                 'options' => array(
-                    'viewport' => __( 'Al entrar en viewport', 'flavor-chat-ia' ),
-                    'load'     => __( 'Al cargar página', 'flavor-chat-ia' ),
-                    'hover'    => __( 'Al pasar el mouse', 'flavor-chat-ia' ),
-                    'click'    => __( 'Al hacer click', 'flavor-chat-ia' ),
+                    'viewport' => __( 'Al entrar en viewport', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'load'     => __( 'Al cargar página', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'hover'    => __( 'Al pasar el mouse', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'click'    => __( 'Al hacer click', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 'default' => 'viewport',
             ),
@@ -4443,17 +4443,17 @@ class Flavor_VBP_Block_Library {
             // === RESPONSIVE ===
             '_ocultar_en' => array(
                 'type'    => 'multiselect',
-                'label'   => __( 'Ocultar en', 'flavor-chat-ia' ),
+                'label'   => __( 'Ocultar en', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'group'   => 'responsive',
                 'options' => array(
-                    'mobile'  => __( 'Móvil', 'flavor-chat-ia' ),
-                    'tablet'  => __( 'Tablet', 'flavor-chat-ia' ),
-                    'desktop' => __( 'Escritorio', 'flavor-chat-ia' ),
+                    'mobile'  => __( 'Móvil', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'tablet'  => __( 'Tablet', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'desktop' => __( 'Escritorio', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
             ),
             '_orden_mobile' => array(
                 'type'    => 'number',
-                'label'   => __( 'Orden en móvil', 'flavor-chat-ia' ),
+                'label'   => __( 'Orden en móvil', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'group'   => 'responsive',
                 'min'     => -10,
                 'max'     => 100,
@@ -4461,29 +4461,29 @@ class Flavor_VBP_Block_Library {
             ),
             '_padding_mobile' => array(
                 'type'    => 'spacing',
-                'label'   => __( 'Padding en móvil', 'flavor-chat-ia' ),
+                'label'   => __( 'Padding en móvil', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'group'   => 'responsive',
             ),
             '_margin_mobile' => array(
                 'type'    => 'spacing',
-                'label'   => __( 'Margen en móvil', 'flavor-chat-ia' ),
+                'label'   => __( 'Margen en móvil', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'group'   => 'responsive',
             ),
 
             // === AVANZADO ===
             '_css_id' => array(
                 'type'  => 'text',
-                'label' => __( 'ID CSS', 'flavor-chat-ia' ),
+                'label' => __( 'ID CSS', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'group' => 'avanzado',
             ),
             '_css_classes' => array(
                 'type'  => 'text',
-                'label' => __( 'Clases CSS adicionales', 'flavor-chat-ia' ),
+                'label' => __( 'Clases CSS adicionales', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'group' => 'avanzado',
             ),
             '_custom_css' => array(
                 'type'     => 'code',
-                'label'    => __( 'CSS personalizado', 'flavor-chat-ia' ),
+                'label'    => __( 'CSS personalizado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'group'    => 'avanzado',
                 'language' => 'css',
             ),
@@ -4640,7 +4640,7 @@ class Flavor_VBP_Block_Library {
             }
 
             return '<div class="' . esc_attr( $clases_preview ) . '" data-module="' . esc_attr( $nombre_modulo ) . '" data-block="' . esc_attr( $block_id ) . '" style="' . esc_attr( $estilos_css ) . '">' .
-                   '<div class="vbp-module-preview-badge">' . esc_html__( 'Preview', 'flavor-chat-ia' ) . ' - ' . esc_html( $nombre_bloque ) . '</div>' .
+                   '<div class="vbp-module-preview-badge">' . esc_html__( 'Preview', FLAVOR_PLATFORM_TEXT_DOMAIN ) . ' - ' . esc_html( $nombre_bloque ) . '</div>' .
                    $preview_html .
                    '</div>';
         }
@@ -4753,7 +4753,7 @@ class Flavor_VBP_Block_Library {
         }
 
         // Bloque genérico para insertar cualquier widget
-        $widget_options = array( '' => __( 'Seleccionar widget...', 'flavor-chat-ia' ) );
+        $widget_options = array( '' => __( 'Seleccionar widget...', FLAVOR_PLATFORM_TEXT_DOMAIN ) );
         foreach ( $all_widgets as $widget_id => $widget_data ) {
             $config = $widget_data['config'];
             $cat_id = $config['category'] ?? 'sistema';
@@ -4764,47 +4764,47 @@ class Flavor_VBP_Block_Library {
         // Bloque principal: Widget Individual
         $this->registrar_bloque( array(
             'id'        => 'dashboard-widget',
-            'name'      => __( 'Widget Dashboard', 'flavor-chat-ia' ),
+            'name'      => __( 'Widget Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category'  => 'dashboard',
             'shortcode' => 'flavor_widget',
             'icon'      => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="7" y="7" width="4" height="6" fill="currentColor" opacity="0.2"/><rect x="13" y="7" width="4" height="10" fill="currentColor" opacity="0.2"/></svg>',
             'fields'    => array(
                 'id' => array(
                     'type'    => 'select',
-                    'label'   => __( 'Widget', 'flavor-chat-ia' ),
+                    'label'   => __( 'Widget', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'options' => $widget_options,
                     'default' => '',
                 ),
                 'titulo' => array(
                     'type'    => 'text',
-                    'label'   => __( 'Título personalizado', 'flavor-chat-ia' ),
+                    'label'   => __( 'Título personalizado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => '',
-                    'placeholder' => __( 'Dejar vacío para usar el del widget', 'flavor-chat-ia' ),
+                    'placeholder' => __( 'Dejar vacío para usar el del widget', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 'titulo_visible' => array(
                     'type'    => 'toggle',
-                    'label'   => __( 'Mostrar título', 'flavor-chat-ia' ),
+                    'label'   => __( 'Mostrar título', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => true,
                 ),
                 'estilo' => array(
                     'type'    => 'select',
-                    'label'   => __( 'Estilo visual', 'flavor-chat-ia' ),
+                    'label'   => __( 'Estilo visual', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'options' => array(
-                        'elevated' => __( 'Elevado (sombra)', 'flavor-chat-ia' ),
-                        'outlined' => __( 'Con borde', 'flavor-chat-ia' ),
-                        'flat'     => __( 'Plano', 'flavor-chat-ia' ),
-                        'glass'    => __( 'Glassmorphism', 'flavor-chat-ia' ),
+                        'elevated' => __( 'Elevado (sombra)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'outlined' => __( 'Con borde', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'flat'     => __( 'Plano', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'glass'    => __( 'Glassmorphism', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                     'default' => 'elevated',
                 ),
                 'animacion' => array(
                     'type'    => 'toggle',
-                    'label'   => __( 'Animación hover', 'flavor-chat-ia' ),
+                    'label'   => __( 'Animación hover', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => true,
                 ),
                 'acciones' => array(
                     'type'    => 'toggle',
-                    'label'   => __( 'Mostrar acciones', 'flavor-chat-ia' ),
+                    'label'   => __( 'Mostrar acciones', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => true,
                 ),
             ),
@@ -4813,21 +4813,21 @@ class Flavor_VBP_Block_Library {
         // Bloque: Grid de Múltiples Widgets
         $this->registrar_bloque( array(
             'id'        => 'dashboard-widgets-grid',
-            'name'      => __( 'Grid de Widgets', 'flavor-chat-ia' ),
+            'name'      => __( 'Grid de Widgets', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category'  => 'dashboard',
             'shortcode' => 'flavor_widgets',
             'icon'      => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>',
             'fields'    => array(
                 'ids' => array(
                     'type'    => 'text',
-                    'label'   => __( 'IDs de widgets', 'flavor-chat-ia' ),
+                    'label'   => __( 'IDs de widgets', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => '',
-                    'placeholder' => __( 'eventos,reservas,socios', 'flavor-chat-ia' ),
-                    'description' => __( 'Separar IDs con comas', 'flavor-chat-ia' ),
+                    'placeholder' => __( 'eventos,reservas,socios', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'description' => __( 'Separar IDs con comas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 'columnas' => array(
                     'type'    => 'select',
-                    'label'   => __( 'Columnas', 'flavor-chat-ia' ),
+                    'label'   => __( 'Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'options' => array(
                         '1' => '1',
                         '2' => '2',
@@ -4838,22 +4838,22 @@ class Flavor_VBP_Block_Library {
                 ),
                 'gap' => array(
                     'type'    => 'select',
-                    'label'   => __( 'Espaciado', 'flavor-chat-ia' ),
+                    'label'   => __( 'Espaciado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'options' => array(
-                        'compact'     => __( 'Compacto', 'flavor-chat-ia' ),
-                        'normal'      => __( 'Normal', 'flavor-chat-ia' ),
-                        'comfortable' => __( 'Espacioso', 'flavor-chat-ia' ),
+                        'compact'     => __( 'Compacto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'normal'      => __( 'Normal', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'comfortable' => __( 'Espacioso', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                     'default' => 'normal',
                 ),
                 'estilo' => array(
                     'type'    => 'select',
-                    'label'   => __( 'Estilo visual', 'flavor-chat-ia' ),
+                    'label'   => __( 'Estilo visual', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'options' => array(
-                        'elevated' => __( 'Elevado', 'flavor-chat-ia' ),
-                        'outlined' => __( 'Con borde', 'flavor-chat-ia' ),
-                        'flat'     => __( 'Plano', 'flavor-chat-ia' ),
-                        'glass'    => __( 'Glass', 'flavor-chat-ia' ),
+                        'elevated' => __( 'Elevado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'outlined' => __( 'Con borde', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'flat'     => __( 'Plano', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'glass'    => __( 'Glass', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                     'default' => 'elevated',
                 ),
@@ -4861,40 +4861,40 @@ class Flavor_VBP_Block_Library {
         ) );
 
         // Bloque: Widgets por Categoría
-        $categoria_options = array( '' => __( 'Seleccionar categoría...', 'flavor-chat-ia' ) );
+        $categoria_options = array( '' => __( 'Seleccionar categoría...', FLAVOR_PLATFORM_TEXT_DOMAIN ) );
         foreach ( $categories as $cat_id => $cat_info ) {
             $categoria_options[ $cat_id ] = $cat_info['label'];
         }
 
         $this->registrar_bloque( array(
             'id'        => 'dashboard-widgets-category',
-            'name'      => __( 'Widgets por Categoría', 'flavor-chat-ia' ),
+            'name'      => __( 'Widgets por Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'category'  => 'dashboard',
             'shortcode' => 'flavor_widgets_categoria',
             'icon'      => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 3H6a2 2 0 00-2 2v14c0 1.1.9 2 2 2h12a2 2 0 002-2V9l-6-6z"/><path d="M14 3v6h6"/></svg>',
             'fields'    => array(
                 'categoria' => array(
                     'type'    => 'select',
-                    'label'   => __( 'Categoría', 'flavor-chat-ia' ),
+                    'label'   => __( 'Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'options' => $categoria_options,
                     'default' => '',
                 ),
                 'limite' => array(
                     'type'    => 'number',
-                    'label'   => __( 'Límite', 'flavor-chat-ia' ),
+                    'label'   => __( 'Límite', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => 4,
                     'min'     => 1,
                     'max'     => 12,
                 ),
                 'columnas' => array(
                     'type'    => 'select',
-                    'label'   => __( 'Columnas', 'flavor-chat-ia' ),
+                    'label'   => __( 'Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'options' => array( '1' => '1', '2' => '2', '3' => '3', '4' => '4' ),
                     'default' => '2',
                 ),
                 'titulo' => array(
                     'type'    => 'toggle',
-                    'label'   => __( 'Mostrar título de categoría', 'flavor-chat-ia' ),
+                    'label'   => __( 'Mostrar título de categoría', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'default' => true,
                 ),
             ),
@@ -4902,12 +4902,12 @@ class Flavor_VBP_Block_Library {
 
         // Registrar widgets individuales más populares como bloques directos
         $widgets_populares = array(
-            'eventos'     => array( 'name' => __( 'Widget: Eventos', 'flavor-chat-ia' ), 'icon' => 'dashicons-calendar-alt' ),
-            'reservas'    => array( 'name' => __( 'Widget: Reservas', 'flavor-chat-ia' ), 'icon' => 'dashicons-tickets-alt' ),
-            'socios'      => array( 'name' => __( 'Widget: Miembros', 'flavor-chat-ia' ), 'icon' => 'dashicons-id-alt' ),
-            'comunidades' => array( 'name' => __( 'Widget: Comunidades', 'flavor-chat-ia' ), 'icon' => 'dashicons-groups' ),
-            'foros'       => array( 'name' => __( 'Widget: Foros', 'flavor-chat-ia' ), 'icon' => 'dashicons-format-chat' ),
-            'marketplace' => array( 'name' => __( 'Widget: Marketplace', 'flavor-chat-ia' ), 'icon' => 'dashicons-store' ),
+            'eventos'     => array( 'name' => __( 'Widget: Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'icon' => 'dashicons-calendar-alt' ),
+            'reservas'    => array( 'name' => __( 'Widget: Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'icon' => 'dashicons-tickets-alt' ),
+            'socios'      => array( 'name' => __( 'Widget: Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'icon' => 'dashicons-id-alt' ),
+            'comunidades' => array( 'name' => __( 'Widget: Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'icon' => 'dashicons-groups' ),
+            'foros'       => array( 'name' => __( 'Widget: Foros', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'icon' => 'dashicons-format-chat' ),
+            'marketplace' => array( 'name' => __( 'Widget: Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN ), 'icon' => 'dashicons-store' ),
         );
 
         foreach ( $widgets_populares as $widget_id => $widget_info ) {
@@ -4929,17 +4929,17 @@ class Flavor_VBP_Block_Library {
                 'fields'    => array(
                     'titulo' => array(
                         'type'    => 'text',
-                        'label'   => __( 'Título personalizado', 'flavor-chat-ia' ),
+                        'label'   => __( 'Título personalizado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'default' => '',
                     ),
                     'estilo' => array(
                         'type'    => 'select',
-                        'label'   => __( 'Estilo', 'flavor-chat-ia' ),
+                        'label'   => __( 'Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'options' => array(
-                            'elevated' => __( 'Elevado', 'flavor-chat-ia' ),
-                            'outlined' => __( 'Con borde', 'flavor-chat-ia' ),
-                            'flat'     => __( 'Plano', 'flavor-chat-ia' ),
-                            'glass'    => __( 'Glass', 'flavor-chat-ia' ),
+                            'elevated' => __( 'Elevado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                            'outlined' => __( 'Con borde', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                            'flat'     => __( 'Plano', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                            'glass'    => __( 'Glass', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         ),
                         'default' => 'elevated',
                     ),
@@ -6386,9 +6386,9 @@ class Flavor_VBP_Block_Library {
                 ' . ( ! empty( $icono ) ? '<div class="vbp-module-placeholder-icon">' . $icono . '</div>' : '' ) . '
                 <div class="vbp-module-placeholder-info">
                     <span class="vbp-module-placeholder-name">' . esc_html( $nombre_bloque ) . '</span>
-                    <span class="vbp-module-placeholder-module">' . sprintf( esc_html__( 'Módulo "%s"', 'flavor-chat-ia' ), esc_html( $nombre_modulo ) ) . '</span>
+                    <span class="vbp-module-placeholder-module">' . sprintf( esc_html__( 'Módulo "%s"', FLAVOR_PLATFORM_TEXT_DOMAIN ), esc_html( $nombre_modulo ) ) . '</span>
                 </div>
-                <span class="vbp-module-placeholder-badge">' . esc_html__( 'Preview', 'flavor-chat-ia' ) . '</span>
+                <span class="vbp-module-placeholder-badge">' . esc_html__( 'Preview', FLAVOR_PLATFORM_TEXT_DOMAIN ) . '</span>
             </div>
         </div>';
     }

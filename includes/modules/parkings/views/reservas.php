@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 
 // Verificar permisos
 if (!current_user_can('manage_options')) {
-    wp_die(__('No tienes permisos suficientes para acceder a esta página.', 'flavor-chat-ia'));
+    wp_die(__('No tienes permisos suficientes para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
 }
 
 global $wpdb;
@@ -71,7 +71,7 @@ $stats = $wpdb->get_row(
 ?>
 
 <div class="wrap">
-    <h1 class="wp-heading-inline"><?php echo esc_html__('Gestión de Reservas', 'flavor-chat-ia'); ?></h1>
+    <h1 class="wp-heading-inline"><?php echo esc_html__('Gestión de Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
     <hr class="wp-header-end">
 
     <!-- Estadísticas rápidas -->
@@ -81,7 +81,7 @@ $stats = $wpdb->get_row(
                 <?php echo esc_html(number_format($stats->activas, 0, ',', '.')); ?>
             </div>
             <div style="color: #666; font-size: 12px; text-transform: uppercase;">
-                <?php esc_html_e('Activas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
         </div>
         <div class="card" style="padding: 15px; text-align: center; min-width: 150px;">
@@ -89,7 +89,7 @@ $stats = $wpdb->get_row(
                 <?php echo esc_html(number_format($stats->completadas, 0, ',', '.')); ?>
             </div>
             <div style="color: #666; font-size: 12px; text-transform: uppercase;">
-                <?php esc_html_e('Completadas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Completadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
         </div>
         <div class="card" style="padding: 15px; text-align: center; min-width: 150px;">
@@ -97,7 +97,7 @@ $stats = $wpdb->get_row(
                 <?php echo esc_html(number_format($stats->canceladas, 0, ',', '.')); ?>
             </div>
             <div style="color: #666; font-size: 12px; text-transform: uppercase;">
-                <?php esc_html_e('Canceladas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Canceladas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
         </div>
         <div class="card" style="padding: 15px; text-align: center; min-width: 150px;">
@@ -105,7 +105,7 @@ $stats = $wpdb->get_row(
                 €<?php echo esc_html(number_format($stats->ingresos, 2, ',', '.')); ?>
             </div>
             <div style="color: #666; font-size: 12px; text-transform: uppercase;">
-                <?php esc_html_e('Ingresos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ingresos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
         </div>
     </div>
@@ -116,17 +116,17 @@ $stats = $wpdb->get_row(
             <input type="hidden" name="page" value="flavor-parkings-reservas">
             <div style="display: flex; gap: 15px; align-items: end; flex-wrap: wrap;">
                 <div>
-                    <label for="estado"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></label>
+                    <label for="estado"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="estado" id="estado" class="regular-text">
-                        <option value="todos" <?php selected($filtro_estado, 'todos'); ?>><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
-                        <option value="activa" <?php selected($filtro_estado, 'activa'); ?>><?php esc_html_e('Activa', 'flavor-chat-ia'); ?></option>
-                        <option value="completada" <?php selected($filtro_estado, 'completada'); ?>><?php esc_html_e('Completada', 'flavor-chat-ia'); ?></option>
-                        <option value="cancelada" <?php selected($filtro_estado, 'cancelada'); ?>><?php esc_html_e('Cancelada', 'flavor-chat-ia'); ?></option>
+                        <option value="todos" <?php selected($filtro_estado, 'todos'); ?>><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="activa" <?php selected($filtro_estado, 'activa'); ?>><?php esc_html_e('Activa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="completada" <?php selected($filtro_estado, 'completada'); ?>><?php esc_html_e('Completada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="cancelada" <?php selected($filtro_estado, 'cancelada'); ?>><?php esc_html_e('Cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
                 <div>
-                    <button type="submit" class="button button-primary"><?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?></button>
-                    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-parkings-reservas')); ?>" class="button"><?php esc_html_e('Limpiar', 'flavor-chat-ia'); ?></a>
+                    <button type="submit" class="button button-primary"><?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-parkings-reservas')); ?>" class="button"><?php esc_html_e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 </div>
             </div>
         </form>
@@ -137,15 +137,15 @@ $stats = $wpdb->get_row(
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th style="width: 50px;"><?php esc_html_e('ID', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Usuario', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Plaza', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Inicio', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Fin', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Duración', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Precio', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 50px;"><?php esc_html_e('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Plaza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Fin', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Duración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Precio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -181,7 +181,7 @@ $stats = $wpdb->get_row(
                             </td>
                             <td>
                                 <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-parkings-reservas&action=ver&reserva_id=' . $reserva->id)); ?>" class="button button-small">
-                                    <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </td>
                         </tr>
@@ -191,7 +191,7 @@ $stats = $wpdb->get_row(
                         <td colspan="9" style="text-align: center; padding: 40px;">
                             <div style="color: #666;">
                                 <span class="dashicons dashicons-calendar" style="font-size: 48px; opacity: 0.3;"></span>
-                                <p><?php esc_html_e('No se encontraron reservas.', 'flavor-chat-ia'); ?></p>
+                                <p><?php esc_html_e('No se encontraron reservas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </div>
                         </td>
                     </tr>
@@ -204,7 +204,7 @@ $stats = $wpdb->get_row(
     <?php if ($total_paginas > 1) : ?>
         <div class="tablenav bottom">
             <div class="tablenav-pages">
-                <span class="displaying-num"><?php printf(esc_html__('%s reservas', 'flavor-chat-ia'), number_format_i18n($total_reservas)); ?></span>
+                <span class="displaying-num"><?php printf(esc_html__('%s reservas', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($total_reservas)); ?></span>
                 <?php echo paginate_links(['base' => add_query_arg('paged', '%#%'), 'format' => '', 'prev_text' => '&laquo;', 'next_text' => '&raquo;', 'total' => $total_paginas, 'current' => $pagina_actual]); ?>
             </div>
         </div>

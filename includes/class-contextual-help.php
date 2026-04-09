@@ -205,7 +205,7 @@ class Flavor_Contextual_Help {
             if (strpos($screen->id, $page_slug) !== false) {
                 $screen->add_help_tab([
                     'id' => 'flavor_help_' . $page_slug,
-                    'title' => $help_data['titulo'] ?? __('Ayuda', 'flavor-chat-ia'),
+                    'title' => $help_data['titulo'] ?? __('Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'content' => $help_data['contenido'] ?? '',
                 ]);
 
@@ -226,39 +226,39 @@ class Flavor_Contextual_Help {
         $tooltips_comunes = [
             // Campos de API
             'input[name*="api_key"]' => [
-                'contenido' => __('Tu clave API del proveedor. Se almacena de forma segura y encriptada en la base de datos.', 'flavor-chat-ia'),
+                'contenido' => __('Tu clave API del proveedor. Se almacena de forma segura y encriptada en la base de datos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'posicion' => 'right',
             ],
             'select[name*="engine"]' => [
-                'contenido' => __('Selecciona el motor de IA que deseas usar. Cada motor tiene diferentes capacidades y costos.', 'flavor-chat-ia'),
+                'contenido' => __('Selecciona el motor de IA que deseas usar. Cada motor tiene diferentes capacidades y costos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'posicion' => 'bottom',
             ],
             'select[name*="model"]' => [
-                'contenido' => __('El modelo determina la calidad y velocidad de las respuestas. Modelos más recientes suelen ser mejores.', 'flavor-chat-ia'),
+                'contenido' => __('El modelo determina la calidad y velocidad de las respuestas. Modelos más recientes suelen ser mejores.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'posicion' => 'bottom',
             ],
 
             // Campos de diseño
             'input[type="color"]' => [
-                'contenido' => __('Haz clic para abrir el selector de color. Puedes escribir directamente un código hexadecimal.', 'flavor-chat-ia'),
+                'contenido' => __('Haz clic para abrir el selector de color. Puedes escribir directamente un código hexadecimal.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'posicion' => 'left',
             ],
             'input[name*="font"]' => [
-                'contenido' => __('Selecciona una fuente. Las fuentes de Google se cargan automáticamente.', 'flavor-chat-ia'),
+                'contenido' => __('Selecciona una fuente. Las fuentes de Google se cargan automáticamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'posicion' => 'bottom',
             ],
 
             // Campos de configuración
             'textarea[name*="system_prompt"]' => [
-                'contenido' => __('El prompt del sistema define la personalidad y comportamiento del asistente. Sé específico sobre el tono y las capacidades.', 'flavor-chat-ia'),
+                'contenido' => __('El prompt del sistema define la personalidad y comportamiento del asistente. Sé específico sobre el tono y las capacidades.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'posicion' => 'top',
             ],
             'input[name*="max_tokens"]' => [
-                'contenido' => __('Número máximo de tokens en la respuesta. Más tokens permiten respuestas más largas pero cuestan más.', 'flavor-chat-ia'),
+                'contenido' => __('Número máximo de tokens en la respuesta. Más tokens permiten respuestas más largas pero cuestan más.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'posicion' => 'right',
             ],
             'input[name*="temperature"]' => [
-                'contenido' => __('Controla la creatividad de las respuestas. Valores bajos (0.1-0.3) son más precisos, valores altos (0.7-1.0) más creativos.', 'flavor-chat-ia'),
+                'contenido' => __('Controla la creatividad de las respuestas. Valores bajos (0.1-0.3) son más precisos, valores altos (0.7-1.0) más creativos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'posicion' => 'right',
             ],
         ];
@@ -274,49 +274,49 @@ class Flavor_Contextual_Help {
 
         // Registrar ayuda para páginas principales
         $this->register_page_help('flavor-dashboard', [
-            'titulo' => __('Dashboard de Flavor', 'flavor-chat-ia'),
+            'titulo' => __('Dashboard de Flavor', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'contenido' => '
-                <h3>' . __('Bienvenido al Dashboard', 'flavor-chat-ia') . '</h3>
-                <p>' . __('Este es el centro de control de Flavor Platform. Desde aquí puedes:', 'flavor-chat-ia') . '</p>
+                <h3>' . __('Bienvenido al Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>
+                <p>' . __('Este es el centro de control de Flavor Platform. Desde aquí puedes:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
                 <ul>
-                    <li>' . __('Ver estadísticas de uso en tiempo real', 'flavor-chat-ia') . '</li>
-                    <li>' . __('Acceder rápidamente a las configuraciones principales', 'flavor-chat-ia') . '</li>
-                    <li>' . __('Monitorear la actividad reciente', 'flavor-chat-ia') . '</li>
-                    <li>' . __('Gestionar addons y módulos', 'flavor-chat-ia') . '</li>
+                    <li>' . __('Ver estadísticas de uso en tiempo real', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</li>
+                    <li>' . __('Acceder rápidamente a las configuraciones principales', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</li>
+                    <li>' . __('Monitorear la actividad reciente', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</li>
+                    <li>' . __('Gestionar addons y módulos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</li>
                 </ul>
             ',
             'sidebar' => '
-                <p><strong>' . __('Recursos', 'flavor-chat-ia') . '</strong></p>
-                <p><a href="https://docs.flavor-platform.com" target="_blank">' . __('Documentación', 'flavor-chat-ia') . '</a></p>
-                <p><a href="https://support.flavor-platform.com" target="_blank">' . __('Soporte', 'flavor-chat-ia') . '</a></p>
+                <p><strong>' . __('Recursos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong></p>
+                <p><a href="https://docs.flavor-platform.com" target="_blank">' . __('Documentación', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p>
+                <p><a href="https://support.flavor-platform.com" target="_blank">' . __('Soporte', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p>
             ',
         ]);
 
         $this->register_page_help('flavor-modules', [
-            'titulo' => __('Módulos del Chat', 'flavor-chat-ia'),
+            'titulo' => __('Módulos del Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'contenido' => '
-                <h3>' . __('Gestión de Módulos', 'flavor-chat-ia') . '</h3>
-                <p>' . __('Los módulos extienden las capacidades del chat IA con funcionalidades especializadas:', 'flavor-chat-ia') . '</p>
+                <h3>' . __('Gestión de Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>
+                <p>' . __('Los módulos extienden las capacidades del chat IA con funcionalidades especializadas:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
                 <ul>
-                    <li><strong>' . __('Reservas:', 'flavor-chat-ia') . '</strong> ' . __('Sistema de reservas y citas', 'flavor-chat-ia') . '</li>
-                    <li><strong>' . __('Productos:', 'flavor-chat-ia') . '</strong> ' . __('Catálogo y recomendaciones', 'flavor-chat-ia') . '</li>
-                    <li><strong>' . __('Ubicación:', 'flavor-chat-ia') . '</strong> ' . __('Información de tiendas y direcciones', 'flavor-chat-ia') . '</li>
-                    <li><strong>' . __('Horarios:', 'flavor-chat-ia') . '</strong> ' . __('Horarios de atención', 'flavor-chat-ia') . '</li>
+                    <li><strong>' . __('Reservas:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ' . __('Sistema de reservas y citas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</li>
+                    <li><strong>' . __('Productos:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ' . __('Catálogo y recomendaciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</li>
+                    <li><strong>' . __('Ubicación:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ' . __('Información de tiendas y direcciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</li>
+                    <li><strong>' . __('Horarios:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ' . __('Horarios de atención', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</li>
                 </ul>
-                <p>' . __('Activa solo los módulos que necesites para optimizar el rendimiento.', 'flavor-chat-ia') . '</p>
+                <p>' . __('Activa solo los módulos que necesites para optimizar el rendimiento.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
             ',
         ]);
 
         $this->register_page_help('flavor-design', [
-            'titulo' => __('Diseño y Apariencia', 'flavor-chat-ia'),
+            'titulo' => __('Diseño y Apariencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'contenido' => '
-                <h3>' . __('Personalización Visual', 'flavor-chat-ia') . '</h3>
-                <p>' . __('Personaliza la apariencia del chat para que coincida con tu marca:', 'flavor-chat-ia') . '</p>
+                <h3>' . __('Personalización Visual', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>
+                <p>' . __('Personaliza la apariencia del chat para que coincida con tu marca:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
                 <ul>
-                    <li><strong>' . __('Colores:', 'flavor-chat-ia') . '</strong> ' . __('Define tu paleta de colores', 'flavor-chat-ia') . '</li>
-                    <li><strong>' . __('Tipografía:', 'flavor-chat-ia') . '</strong> ' . __('Selecciona fuentes para títulos y texto', 'flavor-chat-ia') . '</li>
-                    <li><strong>' . __('Layout:', 'flavor-chat-ia') . '</strong> ' . __('Posición y tamaño del widget', 'flavor-chat-ia') . '</li>
-                    <li><strong>' . __('Animaciones:', 'flavor-chat-ia') . '</strong> ' . __('Efectos visuales y transiciones', 'flavor-chat-ia') . '</li>
+                    <li><strong>' . __('Colores:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ' . __('Define tu paleta de colores', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</li>
+                    <li><strong>' . __('Tipografía:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ' . __('Selecciona fuentes para títulos y texto', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</li>
+                    <li><strong>' . __('Layout:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ' . __('Posición y tamaño del widget', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</li>
+                    <li><strong>' . __('Animaciones:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ' . __('Efectos visuales y transiciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</li>
                 </ul>
             ',
         ]);
@@ -469,7 +469,7 @@ class Flavor_Contextual_Help {
             'selector' => $selector,
             'contenido' => '',
             'video_url' => $video_url,
-            'video_titulo' => $titulo ?: __('Ver video tutorial', 'flavor-chat-ia'),
+            'video_titulo' => $titulo ?: __('Ver video tutorial', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'posicion' => 'bottom',
             'trigger' => 'click',
             'is_video' => true,

@@ -34,14 +34,14 @@ $beneficios_vender = $beneficios_vender ?? [
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
                 </svg>
-                <?php echo esc_html__('Empieza a vender hoy', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Empieza a vender hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
 
             <h2 class="text-3xl lg:text-4xl font-bold text-gray-800 mb-4">
                 <?php echo esc_html($titulo_cta); ?>
             </h2>
             <p class="text-lg text-gray-600 mb-10 max-w-2xl mx-auto">
-                <?php echo esc_html__('Publica tu anuncio en segundos y llega a compradores de tu zona. Facil, rapido y gratis.', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Publica tu anuncio en segundos y llega a compradores de tu zona. Facil, rapido y gratis.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
 
             <!-- Beneficios -->
@@ -64,7 +64,7 @@ $beneficios_vender = $beneficios_vender ?? [
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                 </svg>
-                <?php echo esc_html__('Publicar Anuncio Gratis', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Publicar Anuncio Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>

@@ -84,8 +84,8 @@ class Flavor_Network_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
     public function __construct() {
         global $wpdb;
         $this->prefix_tabla = $wpdb->prefix . 'flavor_network_';
-        $this->title = __('Red de Comunidades', 'flavor-chat-ia');
-        $this->description = __('Conexiones y contenido compartido con otras comunidades', 'flavor-chat-ia');
+        $this->title = __('Red de Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Conexiones y contenido compartido con otras comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         parent::__construct([
             'id' => $this->widget_id,
@@ -125,11 +125,11 @@ class Flavor_Network_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             return [
                 'stats' => [],
                 'items' => [],
-                'empty_state' => __('Red no configurada', 'flavor-chat-ia'),
+                'empty_state' => __('Red no configurada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'footer' => [
                     [
-                        'label' => __('Configurar red', 'flavor-chat-ia'),
-                        'url' => admin_url('admin.php?page=flavor-network'),
+                        'label' => __('Configurar red', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'url' => admin_url('admin.php?page=flavor-platform-network'),
                         'icon' => 'dashicons-admin-settings',
                     ],
                 ],
@@ -179,28 +179,28 @@ class Flavor_Network_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             [
                 'icon' => 'dashicons-groups',
                 'valor' => $nodos_activos,
-                'label' => __('Comunidades', 'flavor-chat-ia'),
+                'label' => __('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'primary',
                 'url' => home_url('/red/directorio/'),
             ],
             [
                 'icon' => 'dashicons-calendar',
                 'valor' => $eventos_red,
-                'label' => __('Eventos red', 'flavor-chat-ia'),
+                'label' => __('Eventos red', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $eventos_red > 0 ? 'success' : 'gray',
                 'url' => home_url('/red/eventos/'),
             ],
             [
                 'icon' => 'dashicons-share',
                 'valor' => $contenido_compartido,
-                'label' => __('Compartido', 'flavor-chat-ia'),
+                'label' => __('Compartido', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'info',
                 'url' => home_url('/red/catalogo/'),
             ],
             [
                 'icon' => 'dashicons-warning',
                 'valor' => $alertas_activas,
-                'label' => __('Alertas', 'flavor-chat-ia'),
+                'label' => __('Alertas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $alertas_activas > 0 ? 'danger' : 'gray',
                 'url' => home_url('/red/alertas/'),
             ],
@@ -212,10 +212,10 @@ class Flavor_Network_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats,
             'items' => $items,
-            'empty_state' => __('No hay eventos próximos en la red', 'flavor-chat-ia'),
+            'empty_state' => __('No hay eventos próximos en la red', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => __('Explorar red', 'flavor-chat-ia'),
+                    'label' => __('Explorar red', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => home_url('/red/'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
@@ -261,13 +261,13 @@ class Flavor_Network_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
 
             $badge = null;
             if (!empty($evento->tipo) && $evento->tipo === 'online') {
-                $badge = __('Online', 'flavor-chat-ia');
+                $badge = __('Online', FLAVOR_PLATFORM_TEXT_DOMAIN);
             }
 
             $items[] = [
                 'icon' => $tipo_icono,
                 'title' => $evento->titulo,
-                'meta' => sprintf('%s - %s', $evento->nodo_nombre ?: __('Red', 'flavor-chat-ia'), $fecha_formateada),
+                'meta' => sprintf('%s - %s', $evento->nodo_nombre ?: __('Red', FLAVOR_PLATFORM_TEXT_DOMAIN), $fecha_formateada),
                 'url' => home_url('/red/eventos/' . $evento->id . '/'),
                 'badge' => $badge,
             ];
@@ -343,7 +343,7 @@ class Flavor_Network_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         if (!empty($data['extra']['tiene_alertas'])) {
             echo '<div class="fud-widget-alert-indicator" aria-live="polite">';
             echo '<span class="dashicons dashicons-warning"></span> ';
-            echo esc_html__('Hay alertas solidarias activas', 'flavor-chat-ia');
+            echo esc_html__('Hay alertas solidarias activas', FLAVOR_PLATFORM_TEXT_DOMAIN);
             echo '</div>';
         }
 

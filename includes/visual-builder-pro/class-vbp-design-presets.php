@@ -85,8 +85,8 @@ class Flavor_VBP_Design_Presets {
         $this->presets_predefinidos = array(
             'modern-blue' => array(
                 'id'          => 'modern-blue',
-                'nombre'      => __( 'Azul Moderno', 'flavor-chat-ia' ),
-                'descripcion' => __( 'Esquema profesional con tonos azules', 'flavor-chat-ia' ),
+                'nombre'      => __( 'Azul Moderno', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'descripcion' => __( 'Esquema profesional con tonos azules', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'colores'     => array(
                     'primary'    => '#3b82f6',
                     'secondary'  => '#1e40af',
@@ -114,8 +114,8 @@ class Flavor_VBP_Design_Presets {
             ),
             'eco-green' => array(
                 'id'          => 'eco-green',
-                'nombre'      => __( 'Verde Ecológico', 'flavor-chat-ia' ),
-                'descripcion' => __( 'Esquema natural y sostenible', 'flavor-chat-ia' ),
+                'nombre'      => __( 'Verde Ecológico', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'descripcion' => __( 'Esquema natural y sostenible', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'colores'     => array(
                     'primary'    => '#22c55e',
                     'secondary'  => '#15803d',
@@ -143,8 +143,8 @@ class Flavor_VBP_Design_Presets {
             ),
             'warm-orange' => array(
                 'id'          => 'warm-orange',
-                'nombre'      => __( 'Naranja Cálido', 'flavor-chat-ia' ),
-                'descripcion' => __( 'Esquema energético y acogedor', 'flavor-chat-ia' ),
+                'nombre'      => __( 'Naranja Cálido', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'descripcion' => __( 'Esquema energético y acogedor', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'colores'     => array(
                     'primary'    => '#f97316',
                     'secondary'  => '#c2410c',
@@ -172,8 +172,8 @@ class Flavor_VBP_Design_Presets {
             ),
             'elegant-purple' => array(
                 'id'          => 'elegant-purple',
-                'nombre'      => __( 'Púrpura Elegante', 'flavor-chat-ia' ),
-                'descripcion' => __( 'Esquema sofisticado y creativo', 'flavor-chat-ia' ),
+                'nombre'      => __( 'Púrpura Elegante', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'descripcion' => __( 'Esquema sofisticado y creativo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'colores'     => array(
                     'primary'    => '#8b5cf6',
                     'secondary'  => '#6d28d9',
@@ -201,8 +201,8 @@ class Flavor_VBP_Design_Presets {
             ),
             'antifa-red' => array(
                 'id'          => 'antifa-red',
-                'nombre'      => __( 'Rojo Antifa', 'flavor-chat-ia' ),
-                'descripcion' => __( 'Esquema activista y comprometido', 'flavor-chat-ia' ),
+                'nombre'      => __( 'Rojo Antifa', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'descripcion' => __( 'Esquema activista y comprometido', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'colores'     => array(
                     'primary'    => '#dc2626',
                     'secondary'  => '#1f2937',
@@ -230,8 +230,8 @@ class Flavor_VBP_Design_Presets {
             ),
             'dark-mode' => array(
                 'id'          => 'dark-mode',
-                'nombre'      => __( 'Modo Oscuro', 'flavor-chat-ia' ),
-                'descripcion' => __( 'Esquema oscuro para reducir fatiga visual', 'flavor-chat-ia' ),
+                'nombre'      => __( 'Modo Oscuro', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'descripcion' => __( 'Esquema oscuro para reducir fatiga visual', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'colores'     => array(
                     'primary'    => '#6366f1',
                     'secondary'  => '#4f46e5',
@@ -259,8 +259,8 @@ class Flavor_VBP_Design_Presets {
             ),
             'minimal-mono' => array(
                 'id'          => 'minimal-mono',
-                'nombre'      => __( 'Minimalista Monocromático', 'flavor-chat-ia' ),
-                'descripcion' => __( 'Esquema limpio en blanco y negro', 'flavor-chat-ia' ),
+                'nombre'      => __( 'Minimalista Monocromático', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'descripcion' => __( 'Esquema limpio en blanco y negro', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'colores'     => array(
                     'primary'    => '#18181b',
                     'secondary'  => '#27272a',
@@ -443,7 +443,7 @@ class Flavor_VBP_Design_Presets {
         if ( ! $preset ) {
             return new WP_Error(
                 'preset_no_encontrado',
-                __( 'El preset no existe', 'flavor-chat-ia' ),
+                __( 'El preset no existe', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 404 )
             );
         }
@@ -492,7 +492,7 @@ class Flavor_VBP_Design_Presets {
 
         return rest_ensure_response( array(
             'success' => true,
-            'mensaje' => __( 'Preset creado correctamente', 'flavor-chat-ia' ),
+            'mensaje' => __( 'Preset creado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'preset'  => $preset_nuevo,
         ) );
     }
@@ -510,7 +510,7 @@ class Flavor_VBP_Design_Presets {
         if ( isset( $this->presets_predefinidos[ $preset_id ] ) ) {
             return new WP_Error(
                 'preset_sistema',
-                __( 'No se pueden modificar los presets del sistema', 'flavor-chat-ia' ),
+                __( 'No se pueden modificar los presets del sistema', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 403 )
             );
         }
@@ -520,7 +520,7 @@ class Flavor_VBP_Design_Presets {
         if ( ! isset( $presets_personalizados[ $preset_id ] ) ) {
             return new WP_Error(
                 'preset_no_encontrado',
-                __( 'El preset no existe', 'flavor-chat-ia' ),
+                __( 'El preset no existe', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 404 )
             );
         }
@@ -551,7 +551,7 @@ class Flavor_VBP_Design_Presets {
 
         return rest_ensure_response( array(
             'success' => true,
-            'mensaje' => __( 'Preset actualizado correctamente', 'flavor-chat-ia' ),
+            'mensaje' => __( 'Preset actualizado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'preset'  => $preset_actual,
         ) );
     }
@@ -569,7 +569,7 @@ class Flavor_VBP_Design_Presets {
         if ( isset( $this->presets_predefinidos[ $preset_id ] ) ) {
             return new WP_Error(
                 'preset_sistema',
-                __( 'No se pueden eliminar los presets del sistema', 'flavor-chat-ia' ),
+                __( 'No se pueden eliminar los presets del sistema', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 403 )
             );
         }
@@ -579,7 +579,7 @@ class Flavor_VBP_Design_Presets {
         if ( ! isset( $presets_personalizados[ $preset_id ] ) ) {
             return new WP_Error(
                 'preset_no_encontrado',
-                __( 'El preset no existe', 'flavor-chat-ia' ),
+                __( 'El preset no existe', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 404 )
             );
         }
@@ -594,7 +594,7 @@ class Flavor_VBP_Design_Presets {
 
         return rest_ensure_response( array(
             'success' => true,
-            'mensaje' => __( 'Preset eliminado correctamente', 'flavor-chat-ia' ),
+            'mensaje' => __( 'Preset eliminado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
         ) );
     }
 
@@ -611,7 +611,7 @@ class Flavor_VBP_Design_Presets {
         if ( ! $preset ) {
             return new WP_Error(
                 'preset_no_encontrado',
-                __( 'El preset no existe', 'flavor-chat-ia' ),
+                __( 'El preset no existe', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 404 )
             );
         }
@@ -621,7 +621,7 @@ class Flavor_VBP_Design_Presets {
         return rest_ensure_response( array(
             'success' => true,
             'mensaje' => sprintf(
-                __( 'Preset "%s" aplicado correctamente', 'flavor-chat-ia' ),
+                __( 'Preset "%s" aplicado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 $preset['nombre']
             ),
             'preset'  => $preset,
@@ -663,7 +663,7 @@ class Flavor_VBP_Design_Presets {
         if ( ! $preset ) {
             return new WP_Error(
                 'preset_no_encontrado',
-                __( 'El preset no existe', 'flavor-chat-ia' ),
+                __( 'El preset no existe', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 404 )
             );
         }
@@ -924,7 +924,7 @@ class Flavor_VBP_Design_Presets {
         if ( ! $preset_original ) {
             return new WP_Error(
                 'preset_no_encontrado',
-                __( 'El preset original no existe', 'flavor-chat-ia' )
+                __( 'El preset original no existe', FLAVOR_PLATFORM_TEXT_DOMAIN )
             );
         }
 
@@ -935,7 +935,7 @@ class Flavor_VBP_Design_Presets {
             'id'          => $nuevo_id,
             'nombre'      => $nuevo_nombre,
             'descripcion' => sprintf(
-                __( 'Copia de %s', 'flavor-chat-ia' ),
+                __( 'Copia de %s', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 $preset_original['nombre']
             ),
             'colores'     => $preset_original['colores'],
@@ -966,7 +966,7 @@ class Flavor_VBP_Design_Presets {
         if ( ! $preset ) {
             return new WP_Error(
                 'preset_no_encontrado',
-                __( 'El preset no existe', 'flavor-chat-ia' )
+                __( 'El preset no existe', FLAVOR_PLATFORM_TEXT_DOMAIN )
             );
         }
 
@@ -989,7 +989,7 @@ class Flavor_VBP_Design_Presets {
         if ( json_last_error() !== JSON_ERROR_NONE ) {
             return new WP_Error(
                 'json_invalido',
-                __( 'El JSON del preset no es válido', 'flavor-chat-ia' )
+                __( 'El JSON del preset no es válido', FLAVOR_PLATFORM_TEXT_DOMAIN )
             );
         }
 
@@ -997,7 +997,7 @@ class Flavor_VBP_Design_Presets {
         if ( empty( $preset_datos['nombre'] ) || empty( $preset_datos['colores'] ) ) {
             return new WP_Error(
                 'datos_incompletos',
-                __( 'El preset debe tener nombre y colores', 'flavor-chat-ia' )
+                __( 'El preset debe tener nombre y colores', FLAVOR_PLATFORM_TEXT_DOMAIN )
             );
         }
 

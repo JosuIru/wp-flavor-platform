@@ -32,47 +32,47 @@ $talleres_activos = count(array_filter($mis_talleres, function($t) { return $t->
 ?>
 
 <div class="talleres-organizador-panel">
-    <h2><?php _e('Panel del Organizador', 'flavor-chat-ia'); ?></h2>
+    <h2><?php _e('Panel del Organizador', 'flavor-platform'); ?></h2>
 
     <div class="talleres-stats-grid">
         <div class="talleres-stat-card">
             <span class="talleres-stat-numero"><?php echo esc_html($total_talleres); ?></span>
-            <span class="talleres-stat-label"><?php _e('Talleres creados', 'flavor-chat-ia'); ?></span>
+            <span class="talleres-stat-label"><?php _e('Talleres creados', 'flavor-platform'); ?></span>
         </div>
         <div class="talleres-stat-card">
             <span class="talleres-stat-numero"><?php echo esc_html($talleres_activos); ?></span>
-            <span class="talleres-stat-label"><?php _e('Talleres activos', 'flavor-chat-ia'); ?></span>
+            <span class="talleres-stat-label"><?php _e('Talleres activos', 'flavor-platform'); ?></span>
         </div>
         <div class="talleres-stat-card">
             <span class="talleres-stat-numero"><?php echo esc_html($total_inscritos); ?></span>
-            <span class="talleres-stat-label"><?php _e('Total inscritos', 'flavor-chat-ia'); ?></span>
+            <span class="talleres-stat-label"><?php _e('Total inscritos', 'flavor-platform'); ?></span>
         </div>
     </div>
 
     <div class="talleres-panel-acciones">
         <a href="<?php echo esc_url(add_query_arg('accion', 'nuevo', home_url('/organizar-taller/'))); ?>" class="talleres-btn talleres-btn-primary">
             <span class="dashicons dashicons-plus-alt"></span>
-            <?php _e('Crear nuevo taller', 'flavor-chat-ia'); ?>
+            <?php _e('Crear nuevo taller', 'flavor-platform'); ?>
         </a>
     </div>
 
-    <h3><?php _e('Mis Talleres', 'flavor-chat-ia'); ?></h3>
+    <h3><?php _e('Mis Talleres', 'flavor-platform'); ?></h3>
 
     <?php if (empty($mis_talleres)): ?>
     <div class="talleres-empty">
         <span class="dashicons dashicons-welcome-learn-more"></span>
-        <p><?php _e('Aun no has creado ningun taller.', 'flavor-chat-ia'); ?></p>
+        <p><?php _e('Aun no has creado ningun taller.', 'flavor-platform'); ?></p>
     </div>
     <?php else: ?>
     <div class="talleres-tabla-container">
         <table class="talleres-tabla">
             <thead>
                 <tr>
-                    <th><?php _e('Taller', 'flavor-chat-ia'); ?></th>
-                    <th><?php _e('Categoria', 'flavor-chat-ia'); ?></th>
-                    <th><?php _e('Inscritos', 'flavor-chat-ia'); ?></th>
-                    <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                    <th><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th><?php _e('Taller', 'flavor-platform'); ?></th>
+                    <th><?php _e('Categoria', 'flavor-platform'); ?></th>
+                    <th><?php _e('Inscritos', 'flavor-platform'); ?></th>
+                    <th><?php _e('Estado', 'flavor-platform'); ?></th>
+                    <th><?php _e('Acciones', 'flavor-platform'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -95,13 +95,13 @@ $talleres_activos = count(array_filter($mis_talleres, function($t) { return $t->
                         </span>
                     </td>
                     <td class="talleres-acciones">
-                        <a href="<?php echo esc_url(add_query_arg(['accion' => 'editar', 'id' => $taller->id], home_url('/organizar-taller/'))); ?>" class="talleres-btn-icon" title="<?php esc_attr_e('Editar', 'flavor-chat-ia'); ?>">
+                        <a href="<?php echo esc_url(add_query_arg(['accion' => 'editar', 'id' => $taller->id], home_url('/organizar-taller/'))); ?>" class="talleres-btn-icon" title="<?php esc_attr_e('Editar', 'flavor-platform'); ?>">
                             <span class="dashicons dashicons-edit"></span>
                         </a>
-                        <a href="<?php echo esc_url(add_query_arg(['accion' => 'inscritos', 'id' => $taller->id], home_url('/organizar-taller/'))); ?>" class="talleres-btn-icon" title="<?php esc_attr_e('Ver inscritos', 'flavor-chat-ia'); ?>">
+                        <a href="<?php echo esc_url(add_query_arg(['accion' => 'inscritos', 'id' => $taller->id], home_url('/organizar-taller/'))); ?>" class="talleres-btn-icon" title="<?php esc_attr_e('Ver inscritos', 'flavor-platform'); ?>">
                             <span class="dashicons dashicons-groups"></span>
                         </a>
-                        <a href="<?php echo esc_url(add_query_arg('taller_id', $taller->id, home_url('/taller/'))); ?>" class="talleres-btn-icon" title="<?php esc_attr_e('Ver', 'flavor-chat-ia'); ?>">
+                        <a href="<?php echo esc_url(add_query_arg('taller_id', $taller->id, home_url('/taller/'))); ?>" class="talleres-btn-icon" title="<?php esc_attr_e('Ver', 'flavor-platform'); ?>">
                             <span class="dashicons dashicons-visibility"></span>
                         </a>
                     </td>

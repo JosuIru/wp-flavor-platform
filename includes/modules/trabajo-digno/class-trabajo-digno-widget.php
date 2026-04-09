@@ -17,7 +17,7 @@ class Flavor_Trabajo_Digno_Widget extends Flavor_Dashboard_Widget_Base {
         $this->module = $module;
 
         $this->widget_id = 'trabajo-digno';
-        $this->title = __('Trabajo Digno', 'flavor-chat-ia');
+        $this->title = __('Trabajo Digno', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $this->icon = 'dashicons-businessman';
         $this->size = 'medium';
         $this->category = 'economia';
@@ -32,19 +32,19 @@ class Flavor_Trabajo_Digno_Widget extends Flavor_Dashboard_Widget_Base {
             [
                 'icon' => 'dashicons-businessman',
                 'valor' => $stats['ofertas_activas'],
-                'label' => __('Ofertas', 'flavor-chat-ia'),
+                'label' => __('Ofertas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'primary',
             ],
             [
                 'icon' => 'dashicons-welcome-learn-more',
                 'valor' => $stats['formaciones_disponibles'],
-                'label' => __('Formación', 'flavor-chat-ia'),
+                'label' => __('Formación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'purple',
             ],
             [
                 'icon' => 'dashicons-store',
                 'valor' => $stats['emprendimientos_locales'],
-                'label' => __('Empresas', 'flavor-chat-ia'),
+                'label' => __('Empresas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'green',
             ],
         ];
@@ -56,7 +56,7 @@ class Flavor_Trabajo_Digno_Widget extends Flavor_Dashboard_Widget_Base {
             $items[] = [
                 'icon' => 'dashicons-portfolio',
                 'title' => sprintf(
-                    _n('%d postulación activa', '%d postulaciones activas', $stats['mis_postulaciones'], 'flavor-chat-ia'),
+                    _n('%d postulación activa', '%d postulaciones activas', $stats['mis_postulaciones'], FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $stats['mis_postulaciones']
                 ),
                 'url' => $this->get_context_url('/mi-portal/trabajo-digno/', 'flavor-trabajo-digno'),
@@ -88,15 +88,15 @@ class Flavor_Trabajo_Digno_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats_array,
             'items' => $items,
-            'empty_state' => __('Explora oportunidades de trabajo digno', 'flavor-chat-ia'),
+            'empty_state' => __('Explora oportunidades de trabajo digno', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => __('Ver ofertas', 'flavor-chat-ia'),
+                    'label' => __('Ver ofertas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => home_url('/trabajo-digno/'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
                 [
-                    'label' => __('Publicar', 'flavor-chat-ia'),
+                    'label' => __('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => home_url('/trabajo-digno/publicar/'),
                     'icon' => 'dashicons-plus-alt',
                 ],

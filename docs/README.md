@@ -1,5 +1,7 @@
 # Documentación Flavor Platform
 
+Nota de compatibilidad: el nombre comercial es `Flavor Platform`, pero el slug técnico actual del plugin sigue siendo `flavor-chat-ia`.
+
 ## Inicio Rápido
 
 | Documento | Descripción |

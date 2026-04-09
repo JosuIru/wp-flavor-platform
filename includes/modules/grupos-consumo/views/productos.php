@@ -88,18 +88,18 @@ $base_url = admin_url('admin.php?page=' . $current_page);
         <div class="dm-header__content">
             <h1 class="dm-header__title">
                 <span class="dashicons dashicons-carrot"></span>
-                <?php esc_html_e('Productos del Grupo de Consumo', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Productos del Grupo de Consumo', 'flavor-platform'); ?>
             </h1>
             <p class="dm-header__description">
-                <?php esc_html_e('Catálogo interno de productos, precios y disponibilidad por productor.', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Catálogo interno de productos, precios y disponibilidad por productor.', 'flavor-platform'); ?>
             </p>
         </div>
         <div class="dm-header__actions">
             <a href="<?php echo esc_url(admin_url('post-new.php?post_type=gc_producto')); ?>" class="dm-btn dm-btn--primary">
-                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nuevo producto', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nuevo producto', 'flavor-platform'); ?>
             </a>
             <a href="<?php echo esc_url(admin_url('edit.php?post_type=gc_producto')); ?>" class="dm-btn dm-btn--secondary">
-                <?php esc_html_e('Editor nativo', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Editor nativo', 'flavor-platform'); ?>
             </a>
         </div>
     </div>
@@ -108,31 +108,31 @@ $base_url = admin_url('admin.php?page=' . $current_page);
         <div class="dm-stat-card">
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_publicados); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Publicados', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Publicados', 'flavor-platform'); ?></div>
             </div>
         </div>
         <div class="dm-stat-card dm-stat-card--warning">
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_pendiente); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Pendientes', 'flavor-platform'); ?></div>
             </div>
         </div>
         <div class="dm-stat-card dm-stat-card--info">
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_borrador); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Borradores', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Borradores', 'flavor-platform'); ?></div>
             </div>
         </div>
         <div class="dm-stat-card dm-stat-card--pink">
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_sin_stock); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Sin stock', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Sin stock', 'flavor-platform'); ?></div>
             </div>
         </div>
         <div class="dm-stat-card dm-stat-card--purple">
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($avg_precio, 2); ?> €</div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Precio medio', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Precio medio', 'flavor-platform'); ?></div>
             </div>
         </div>
     </div>
@@ -140,13 +140,13 @@ $base_url = admin_url('admin.php?page=' . $current_page);
     <form method="get" class="dm-card" style="padding:16px; margin-bottom:16px; display:grid; gap:12px; grid-template-columns: 1.4fr 1fr 1fr auto; align-items:end;">
         <input type="hidden" name="page" value="<?php echo esc_attr($current_page); ?>" />
         <div>
-            <label for="gc-productos-search"><strong><?php esc_html_e('Buscar', 'flavor-chat-ia'); ?></strong></label>
-            <input id="gc-productos-search" type="search" name="s" value="<?php echo esc_attr($search); ?>" class="regular-text" style="width:100%;" placeholder="<?php esc_attr_e('Título o descripción', 'flavor-chat-ia'); ?>" />
+            <label for="gc-productos-search"><strong><?php esc_html_e('Buscar', 'flavor-platform'); ?></strong></label>
+            <input id="gc-productos-search" type="search" name="s" value="<?php echo esc_attr($search); ?>" class="regular-text" style="width:100%;" placeholder="<?php esc_attr_e('Título o descripción', 'flavor-platform'); ?>" />
         </div>
         <div>
-            <label for="gc-productos-productor"><strong><?php esc_html_e('Productor', 'flavor-chat-ia'); ?></strong></label>
+            <label for="gc-productos-productor"><strong><?php esc_html_e('Productor', 'flavor-platform'); ?></strong></label>
             <select id="gc-productos-productor" name="productor" style="width:100%;">
-                <option value="0"><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
+                <option value="0"><?php esc_html_e('Todos', 'flavor-platform'); ?></option>
                 <?php foreach ($productores as $productor) : ?>
                     <option value="<?php echo esc_attr($productor->ID); ?>" <?php selected($filtro_productor, (int) $productor->ID); ?>>
                         <?php echo esc_html($productor->post_title); ?>
@@ -155,16 +155,16 @@ $base_url = admin_url('admin.php?page=' . $current_page);
             </select>
         </div>
         <div>
-            <label for="gc-productos-estado"><strong><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></strong></label>
+            <label for="gc-productos-estado"><strong><?php esc_html_e('Estado', 'flavor-platform'); ?></strong></label>
             <select id="gc-productos-estado" name="estado" style="width:100%;">
-                <option value="publish" <?php selected($filtro_estado, 'publish'); ?>><?php esc_html_e('Publicados', 'flavor-chat-ia'); ?></option>
-                <option value="pending" <?php selected($filtro_estado, 'pending'); ?>><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></option>
-                <option value="draft" <?php selected($filtro_estado, 'draft'); ?>><?php esc_html_e('Borradores', 'flavor-chat-ia'); ?></option>
-                <option value="private" <?php selected($filtro_estado, 'private'); ?>><?php esc_html_e('Privados', 'flavor-chat-ia'); ?></option>
+                <option value="publish" <?php selected($filtro_estado, 'publish'); ?>><?php esc_html_e('Publicados', 'flavor-platform'); ?></option>
+                <option value="pending" <?php selected($filtro_estado, 'pending'); ?>><?php esc_html_e('Pendientes', 'flavor-platform'); ?></option>
+                <option value="draft" <?php selected($filtro_estado, 'draft'); ?>><?php esc_html_e('Borradores', 'flavor-platform'); ?></option>
+                <option value="private" <?php selected($filtro_estado, 'private'); ?>><?php esc_html_e('Privados', 'flavor-platform'); ?></option>
             </select>
         </div>
         <div>
-            <button type="submit" class="button button-primary"><?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?></button>
+            <button type="submit" class="button button-primary"><?php esc_html_e('Filtrar', 'flavor-platform'); ?></button>
         </div>
     </form>
 
@@ -172,13 +172,13 @@ $base_url = admin_url('admin.php?page=' . $current_page);
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Producto', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Productor', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Precio', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Unidad', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Stock', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Actualizado', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Producto', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Productor', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Precio', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Unidad', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Stock', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Actualizado', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Acciones', 'flavor-platform'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -190,7 +190,7 @@ $base_url = admin_url('admin.php?page=' . $current_page);
                         $precio = get_post_meta($producto_id, '_gc_precio', true);
                         $unidad = get_post_meta($producto_id, '_gc_unidad', true) ?: 'ud';
                         $stock = get_post_meta($producto_id, '_gc_stock', true);
-                        $productor_nombre = $productor_id ? get_the_title($productor_id) : __('Sin asignar', 'flavor-chat-ia');
+                        $productor_nombre = $productor_id ? get_the_title($productor_id) : __('Sin asignar', 'flavor-platform');
                         ?>
                         <tr>
                             <td>
@@ -201,7 +201,7 @@ $base_url = admin_url('admin.php?page=' . $current_page);
                             <td><?php echo esc_html($unidad); ?></td>
                             <td>
                                 <?php if ($stock === '' || $stock === null) : ?>
-                                    <span class="dm-badge dm-badge--info"><?php esc_html_e('Ilimitado', 'flavor-chat-ia'); ?></span>
+                                    <span class="dm-badge dm-badge--info"><?php esc_html_e('Ilimitado', 'flavor-platform'); ?></span>
                                 <?php else : ?>
                                     <?php $stock_num = (float) $stock; ?>
                                     <span class="dm-badge <?php echo $stock_num <= 0 ? 'dm-badge--error' : ($stock_num <= 5 ? 'dm-badge--warning' : 'dm-badge--success'); ?>">
@@ -211,15 +211,15 @@ $base_url = admin_url('admin.php?page=' . $current_page);
                             </td>
                             <td><?php echo esc_html(get_the_modified_date(get_option('date_format') . ' ' . get_option('time_format'))); ?></td>
                             <td>
-                                <a class="button button-small" href="<?php echo esc_url(get_edit_post_link($producto_id)); ?>"><?php esc_html_e('Editar', 'flavor-chat-ia'); ?></a>
-                                <a class="button button-small" href="<?php echo esc_url(get_permalink($producto_id)); ?>" target="_blank" rel="noopener"><?php esc_html_e('Ver', 'flavor-chat-ia'); ?></a>
+                                <a class="button button-small" href="<?php echo esc_url(get_edit_post_link($producto_id)); ?>"><?php esc_html_e('Editar', 'flavor-platform'); ?></a>
+                                <a class="button button-small" href="<?php echo esc_url(get_permalink($producto_id)); ?>" target="_blank" rel="noopener"><?php esc_html_e('Ver', 'flavor-platform'); ?></a>
                             </td>
                         </tr>
                     <?php endwhile; ?>
                     <?php wp_reset_postdata(); ?>
                 <?php else : ?>
                     <tr>
-                        <td colspan="7"><?php esc_html_e('No hay productos para los filtros seleccionados.', 'flavor-chat-ia'); ?></td>
+                        <td colspan="7"><?php esc_html_e('No hay productos para los filtros seleccionados.', 'flavor-platform'); ?></td>
                     </tr>
                 <?php endif; ?>
             </tbody>

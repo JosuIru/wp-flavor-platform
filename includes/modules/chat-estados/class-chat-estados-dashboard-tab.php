@@ -27,7 +27,7 @@ class Flavor_Chat_Estados_Dashboard_Tab {
 
     public function registrar_tabs($tabs) {
         $tabs['estados'] = [
-            'label' => __('Estados', 'flavor-chat-ia'),
+            'label' => __('Estados', 'flavor-platform'),
             'icon' => 'dashicons-format-status',
             'callback' => [$this, 'render_tab'],
             'priority' => 19,
@@ -40,13 +40,13 @@ class Flavor_Chat_Estados_Dashboard_Tab {
         <div class="flavor-estados-dashboard">
             <div class="flavor-dashboard-subtabs">
                 <a href="?tab=estados&subtab=estados" class="subtab <?php echo (!isset($_GET['subtab']) || $_GET['subtab'] === 'estados') ? 'active' : ''; ?>">
-                    <span class="dashicons dashicons-format-status"></span> <?php esc_html_e('Estados', 'flavor-chat-ia'); ?>
+                    <span class="dashicons dashicons-format-status"></span> <?php esc_html_e('Estados', 'flavor-platform'); ?>
                 </a>
                 <a href="?tab=estados&subtab=crear" class="subtab <?php echo (isset($_GET['subtab']) && $_GET['subtab'] === 'crear') ? 'active' : ''; ?>">
-                    <span class="dashicons dashicons-plus-alt"></span> <?php esc_html_e('Crear', 'flavor-chat-ia'); ?>
+                    <span class="dashicons dashicons-plus-alt"></span> <?php esc_html_e('Crear', 'flavor-platform'); ?>
                 </a>
                 <a href="?tab=estados&subtab=mis-estados" class="subtab <?php echo (isset($_GET['subtab']) && $_GET['subtab'] === 'mis-estados') ? 'active' : ''; ?>">
-                    <span class="dashicons dashicons-admin-users"></span> <?php esc_html_e('Mis estados', 'flavor-chat-ia'); ?>
+                    <span class="dashicons dashicons-admin-users"></span> <?php esc_html_e('Mis estados', 'flavor-platform'); ?>
                 </a>
             </div>
 

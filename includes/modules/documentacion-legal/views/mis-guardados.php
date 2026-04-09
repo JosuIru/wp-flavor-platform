@@ -25,32 +25,32 @@ $documentos_guardados = $wpdb->get_results($wpdb->prepare(
 ));
 
 $categorias = [
-    'normativa' => __('Normativa', 'flavor-chat-ia'),
-    'estatutos' => __('Estatutos', 'flavor-chat-ia'),
-    'contratos' => __('Contratos', 'flavor-chat-ia'),
-    'formularios' => __('Formularios', 'flavor-chat-ia'),
-    'guias' => __('Guias', 'flavor-chat-ia'),
-    'otros' => __('Otros', 'flavor-chat-ia'),
+    'normativa' => __('Normativa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'estatutos' => __('Estatutos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'contratos' => __('Contratos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'formularios' => __('Formularios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'guias' => __('Guias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'otros' => __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 
 <div class="doc-legal-guardados">
-    <h2><?php _e('Mis documentos guardados', 'flavor-chat-ia'); ?></h2>
+    <h2><?php _e('Mis documentos guardados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
     <?php if (empty($documentos_guardados)): ?>
     <div class="doc-legal-empty">
         <span class="dashicons dashicons-star-empty"></span>
-        <p><?php _e('No tienes documentos guardados.', 'flavor-chat-ia'); ?></p>
-        <p><?php _e('Guarda documentos para acceder a ellos rapidamente.', 'flavor-chat-ia'); ?></p>
+        <p><?php _e('No tienes documentos guardados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+        <p><?php _e('Guarda documentos para acceder a ellos rapidamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         <a href="<?php echo esc_url(home_url('/documentacion-legal/')); ?>" class="doc-legal-btn doc-legal-btn-primary">
-            <?php _e('Explorar documentos', 'flavor-chat-ia'); ?>
+            <?php _e('Explorar documentos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
     <?php else: ?>
 
     <div class="doc-legal-lista">
         <?php foreach ($documentos_guardados as $doc):
-            $categoria_nombre = $categorias[$doc->categoria ?? 'otros'] ?? __('Otros', 'flavor-chat-ia');
+            $categoria_nombre = $categorias[$doc->categoria ?? 'otros'] ?? __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN);
         ?>
         <div class="doc-legal-item" data-id="<?php echo esc_attr($doc->id); ?>">
             <div class="doc-legal-item-icono">
@@ -67,7 +67,7 @@ $categorias = [
                 <div class="doc-legal-item-meta">
                     <span class="doc-legal-badge"><?php echo esc_html($categoria_nombre); ?></span>
                     <span class="doc-legal-fecha-guardado">
-                        <?php printf(__('Guardado: %s', 'flavor-chat-ia'), date_i18n('d/m/Y', strtotime($doc->fecha_guardado))); ?>
+                        <?php printf(__('Guardado: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), date_i18n('d/m/Y', strtotime($doc->fecha_guardado))); ?>
                     </span>
                 </div>
 
@@ -78,11 +78,11 @@ $categorias = [
 
             <div class="doc-legal-item-acciones">
                 <?php if (!empty($doc->archivo_url)): ?>
-                <a href="<?php echo esc_url($doc->archivo_url); ?>" class="doc-legal-btn-icon" title="<?php esc_attr_e('Descargar', 'flavor-chat-ia'); ?>" download>
+                <a href="<?php echo esc_url($doc->archivo_url); ?>" class="doc-legal-btn-icon" title="<?php esc_attr_e('Descargar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" download>
                     <span class="dashicons dashicons-download"></span>
                 </a>
                 <?php endif; ?>
-                <button class="doc-legal-btn-icon doc-legal-quitar-guardado" data-id="<?php echo esc_attr($doc->id); ?>" title="<?php esc_attr_e('Quitar de guardados', 'flavor-chat-ia'); ?>">
+                <button class="doc-legal-btn-icon doc-legal-quitar-guardado" data-id="<?php echo esc_attr($doc->id); ?>" title="<?php esc_attr_e('Quitar de guardados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-star-filled"></span>
                 </button>
             </div>
@@ -91,7 +91,7 @@ $categorias = [
     </div>
 
     <p class="doc-legal-total">
-        <?php printf(_n('%d documento guardado', '%d documentos guardados', count($documentos_guardados), 'flavor-chat-ia'), count($documentos_guardados)); ?>
+        <?php printf(_n('%d documento guardado', '%d documentos guardados', count($documentos_guardados), FLAVOR_PLATFORM_TEXT_DOMAIN), count($documentos_guardados)); ?>
     </p>
 
     <?php endif; ?>

@@ -44,14 +44,14 @@ if (Flavor_Chat_Helpers::tabla_existe($tabla_instalaciones)) {
 
 // Tipos de instalación
 $tipos = [
-    'solar_fotovoltaica' => ['label' => __('Solar Fotovoltaica', 'flavor-chat-ia'), 'icon' => '☀️', 'color' => '#f59e0b'],
-    'solar_termica' => ['label' => __('Solar Térmica', 'flavor-chat-ia'), 'icon' => '🌡️', 'color' => '#ef4444'],
-    'eolica' => ['label' => __('Eólica', 'flavor-chat-ia'), 'icon' => '💨', 'color' => '#3b82f6'],
-    'biomasa' => ['label' => __('Biomasa', 'flavor-chat-ia'), 'icon' => '🌿', 'color' => '#10b981'],
-    'hidraulica' => ['label' => __('Hidráulica', 'flavor-chat-ia'), 'icon' => '💧', 'color' => '#06b6d4'],
-    'bateria' => ['label' => __('Batería/Almacenamiento', 'flavor-chat-ia'), 'icon' => '🔋', 'color' => '#8b5cf6'],
-    'punto_recarga' => ['label' => __('Punto de Recarga', 'flavor-chat-ia'), 'icon' => '⚡', 'color' => '#ec4899'],
-    'otro' => ['label' => __('Otro', 'flavor-chat-ia'), 'icon' => '⚙️', 'color' => '#6b7280'],
+    'solar_fotovoltaica' => ['label' => __('Solar Fotovoltaica', 'flavor-platform'), 'icon' => '☀️', 'color' => '#f59e0b'],
+    'solar_termica' => ['label' => __('Solar Térmica', 'flavor-platform'), 'icon' => '🌡️', 'color' => '#ef4444'],
+    'eolica' => ['label' => __('Eólica', 'flavor-platform'), 'icon' => '💨', 'color' => '#3b82f6'],
+    'biomasa' => ['label' => __('Biomasa', 'flavor-platform'), 'icon' => '🌿', 'color' => '#10b981'],
+    'hidraulica' => ['label' => __('Hidráulica', 'flavor-platform'), 'icon' => '💧', 'color' => '#06b6d4'],
+    'bateria' => ['label' => __('Batería/Almacenamiento', 'flavor-platform'), 'icon' => '🔋', 'color' => '#8b5cf6'],
+    'punto_recarga' => ['label' => __('Punto de Recarga', 'flavor-platform'), 'icon' => '⚡', 'color' => '#ec4899'],
+    'otro' => ['label' => __('Otro', 'flavor-platform'), 'icon' => '⚙️', 'color' => '#6b7280'],
 ];
 
 // Comunidades para filtro
@@ -62,22 +62,22 @@ $comunidades = $wpdb->get_results("SELECT id, nombre FROM $tabla_comunidades WHE
     <!-- Filtros -->
     <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;">
         <select x-model="filtroTipo" @change="filtrar()" style="padding: 8px 12px;">
-            <option value=""><?php esc_html_e('Todos los tipos', 'flavor-chat-ia'); ?></option>
+            <option value=""><?php esc_html_e('Todos los tipos', 'flavor-platform'); ?></option>
             <?php foreach ($tipos as $key => $tipo): ?>
                 <option value="<?php echo esc_attr($key); ?>"><?php echo esc_html($tipo['icon'] . ' ' . $tipo['label']); ?></option>
             <?php endforeach; ?>
         </select>
 
         <select x-model="filtroEstado" @change="filtrar()" style="padding: 8px 12px;">
-            <option value=""><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
-            <option value="activa"><?php esc_html_e('Activa', 'flavor-chat-ia'); ?></option>
-            <option value="mantenimiento"><?php esc_html_e('En mantenimiento', 'flavor-chat-ia'); ?></option>
-            <option value="inactiva"><?php esc_html_e('Inactiva', 'flavor-chat-ia'); ?></option>
+            <option value=""><?php esc_html_e('Todos los estados', 'flavor-platform'); ?></option>
+            <option value="activa"><?php esc_html_e('Activa', 'flavor-platform'); ?></option>
+            <option value="mantenimiento"><?php esc_html_e('En mantenimiento', 'flavor-platform'); ?></option>
+            <option value="inactiva"><?php esc_html_e('Inactiva', 'flavor-platform'); ?></option>
         </select>
 
         <?php if ($comunidades): ?>
         <select x-model="filtroComunidad" @change="filtrar()" style="padding: 8px 12px;">
-            <option value=""><?php esc_html_e('Todas las comunidades', 'flavor-chat-ia'); ?></option>
+            <option value=""><?php esc_html_e('Todas las comunidades', 'flavor-platform'); ?></option>
             <?php foreach ($comunidades as $com): ?>
                 <option value="<?php echo esc_attr($com->id); ?>"><?php echo esc_html($com->nombre); ?></option>
             <?php endforeach; ?>
@@ -88,7 +88,7 @@ $comunidades = $wpdb->get_results("SELECT id, nombre FROM $tabla_comunidades WHE
 
         <button class="button button-primary" @click="showModalInstalacion = true">
             <span class="dashicons dashicons-plus-alt2"></span>
-            <?php esc_html_e('Nueva Instalación', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Nueva Instalación', 'flavor-platform'); ?>
         </button>
     </div>
 
@@ -112,11 +112,11 @@ $comunidades = $wpdb->get_results("SELECT id, nombre FROM $tabla_comunidades WHE
             <div style="padding: 16px;">
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 12px;">
                     <div>
-                        <div style="font-size: 11px; color: #666; text-transform: uppercase;"><?php esc_html_e('Potencia', 'flavor-chat-ia'); ?></div>
+                        <div style="font-size: 11px; color: #666; text-transform: uppercase;"><?php esc_html_e('Potencia', 'flavor-platform'); ?></div>
                         <div style="font-size: 18px; font-weight: bold;"><?php echo number_format($inst->potencia_kw, 2); ?> kW</div>
                     </div>
                     <div>
-                        <div style="font-size: 11px; color: #666; text-transform: uppercase;"><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></div>
+                        <div style="font-size: 11px; color: #666; text-transform: uppercase;"><?php esc_html_e('Tipo', 'flavor-platform'); ?></div>
                         <div style="font-size: 14px;"><?php echo esc_html($tipo_info['label']); ?></div>
                     </div>
                 </div>
@@ -137,7 +137,7 @@ $comunidades = $wpdb->get_results("SELECT id, nombre FROM $tabla_comunidades WHE
 
                 <div style="display: flex; gap: 8px;">
                     <button class="button" style="flex: 1;" @click="editarInstalacion(<?php echo $inst->id; ?>)">
-                        <?php esc_html_e('Editar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Editar', 'flavor-platform'); ?>
                     </button>
                     <button class="button" @click="registrarLectura(<?php echo $inst->id; ?>)">
                         <span class="dashicons dashicons-chart-area"></span>
@@ -153,10 +153,10 @@ $comunidades = $wpdb->get_results("SELECT id, nombre FROM $tabla_comunidades WHE
     <?php else: ?>
     <div style="text-align: center; padding: 60px 20px; background: #f9fafb; border-radius: 12px;">
         <span style="font-size: 64px;">⚡</span>
-        <h3><?php esc_html_e('No hay instalaciones registradas', 'flavor-chat-ia'); ?></h3>
-        <p style="color: #666;"><?php esc_html_e('Añade tu primera instalación energética para empezar a gestionar la producción.', 'flavor-chat-ia'); ?></p>
+        <h3><?php esc_html_e('No hay instalaciones registradas', 'flavor-platform'); ?></h3>
+        <p style="color: #666;"><?php esc_html_e('Añade tu primera instalación energética para empezar a gestionar la producción.', 'flavor-platform'); ?></p>
         <button class="button button-primary button-hero" @click="showModalInstalacion = true">
-            <?php esc_html_e('Añadir Instalación', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Añadir Instalación', 'flavor-platform'); ?>
         </button>
     </div>
     <?php endif; ?>
@@ -167,7 +167,7 @@ $comunidades = $wpdb->get_results("SELECT id, nombre FROM $tabla_comunidades WHE
          @click.self="showModalInstalacion = false">
         <div style="background: #fff; border-radius: 12px; padding: 24px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="margin: 0;"><?php esc_html_e('Nueva Instalación', 'flavor-chat-ia'); ?></h2>
+                <h2 style="margin: 0;"><?php esc_html_e('Nueva Instalación', 'flavor-platform'); ?></h2>
                 <button @click="showModalInstalacion = false" style="background: none; border: none; cursor: pointer; font-size: 20px;">&times;</button>
             </div>
             <?php echo do_shortcode('[flavor_energia_form_instalacion]'); ?>

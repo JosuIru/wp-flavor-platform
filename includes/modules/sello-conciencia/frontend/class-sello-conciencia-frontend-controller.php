@@ -79,8 +79,8 @@ class Flavor_Sello_Conciencia_Frontend_Controller {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('sello-conciencia_nonce'),
             'i18n' => [
-                'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
+                'error' => __('Ha ocurrido un error', 'flavor-platform'),
+                'cargando' => __('Cargando...', 'flavor-platform'),
             ],
         ]);
     }
@@ -114,7 +114,7 @@ class Flavor_Sello_Conciencia_Frontend_Controller {
 
         ob_start();
         echo '<div class="flavor-sello-conciencia-listado">';
-        echo '<p>' . __('Módulo Sello de Conciencia - Listado', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Módulo Sello de Conciencia - Listado', 'flavor-platform') . '</p>';
         echo '</div>';
         return ob_get_clean();
     }
@@ -124,7 +124,7 @@ class Flavor_Sello_Conciencia_Frontend_Controller {
      */
     public function registrar_tabs($tabs) {
         $tabs['sello-conciencia'] = [
-            'titulo' => __('Sello de Conciencia', 'flavor-chat-ia'),
+            'titulo' => __('Sello de Conciencia', 'flavor-platform'),
             'icono' => 'dashicons-admin-generic',
             'callback' => [$this, 'render_tab_principal'],
             'orden' => 50,
@@ -140,8 +140,8 @@ class Flavor_Sello_Conciencia_Frontend_Controller {
     public function render_tab_principal() {
         $this->encolar_assets();
         echo '<div class="flavor-sello-conciencia-tab">';
-        echo '<h3>' . esc_html__('Sello de Conciencia', 'flavor-chat-ia') . '</h3>';
-        echo '<p>' . esc_html__('Contenido del tab de Sello de Conciencia.', 'flavor-chat-ia') . '</p>';
+        echo '<h3>' . esc_html__('Sello de Conciencia', 'flavor-platform') . '</h3>';
+        echo '<p>' . esc_html__('Contenido del tab de Sello de Conciencia.', 'flavor-platform') . '</p>';
         echo '</div>';
     }
 }

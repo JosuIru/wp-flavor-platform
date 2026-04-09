@@ -182,20 +182,20 @@ trait Flavor_Module_Admin_Pages_Trait {
      * protected function get_admin_config() {
      *     return [
      *         'id' => 'mi_modulo',
-     *         'label' => __('Mi Módulo', 'flavor-chat-ia'),
+     *         'label' => __('Mi Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
      *         'icon' => 'dashicons-admin-generic',
      *         'capability' => 'manage_options',
      *         'categoria' => 'operaciones', // personas|economia|operaciones|recursos|comunicacion|actividades|servicios|comunidad|sostenibilidad
      *         'paginas' => [
      *             [
      *                 'slug' => 'mi-modulo-dashboard',
-     *                 'titulo' => __('Dashboard', 'flavor-chat-ia'),
+     *                 'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
      *                 'callback' => [$this, 'render_dashboard'],
      *                 'badge' => [$this, 'contar_pendientes'], // opcional
      *             ],
      *             [
      *                 'slug' => 'mi-modulo-listado',
-     *                 'titulo' => __('Listado', 'flavor-chat-ia'),
+     *                 'titulo' => __('Listado', FLAVOR_PLATFORM_TEXT_DOMAIN),
      *                 'callback' => [$this, 'render_listado'],
      *             ],
      *         ],

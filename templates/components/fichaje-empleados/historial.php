@@ -71,7 +71,7 @@ $estados_registro_config = [
                 <?php echo esc_html($titulo_historial); ?>
             </h2>
             <p class="text-gray-500 text-lg max-w-2xl mx-auto">
-                <?php echo esc_html__('Consulta tus registros de entrada y salida recientes', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Consulta tus registros de entrada y salida recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
 
@@ -82,12 +82,12 @@ $estados_registro_config = [
                 <table class="w-full">
                     <thead>
                         <tr class="bg-gray-50 border-b border-gray-100">
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider"><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider"><?php echo esc_html__('Entrada', 'flavor-chat-ia'); ?></th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider"><?php echo esc_html__('Salida', 'flavor-chat-ia'); ?></th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider"><?php echo esc_html__('Pausas', 'flavor-chat-ia'); ?></th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider"><?php echo esc_html__('Total Horas', 'flavor-chat-ia'); ?></th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider"><?php echo esc_html__('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider"><?php echo esc_html__('Entrada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider"><?php echo esc_html__('Salida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider"><?php echo esc_html__('Pausas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider"><?php echo esc_html__('Total Horas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider"><?php echo esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
@@ -125,19 +125,19 @@ $estados_registro_config = [
                         </div>
                         <div class="grid grid-cols-2 gap-2 text-sm">
                             <div>
-                                <span class="text-gray-400"><?php echo esc_html__('Entrada:', 'flavor-chat-ia'); ?></span>
+                                <span class="text-gray-400"><?php echo esc_html__('Entrada:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="text-gray-700 ml-1"><?php echo esc_html($registro_movil['entrada']); ?></span>
                             </div>
                             <div>
-                                <span class="text-gray-400"><?php echo esc_html__('Salida:', 'flavor-chat-ia'); ?></span>
+                                <span class="text-gray-400"><?php echo esc_html__('Salida:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="text-gray-700 ml-1"><?php echo esc_html($registro_movil['salida']); ?></span>
                             </div>
                             <div>
-                                <span class="text-gray-400"><?php echo esc_html__('Pausas:', 'flavor-chat-ia'); ?></span>
+                                <span class="text-gray-400"><?php echo esc_html__('Pausas:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="text-gray-700 ml-1"><?php echo esc_html($registro_movil['pausas']); ?></span>
                             </div>
                             <div>
-                                <span class="text-gray-400"><?php echo esc_html__('Total:', 'flavor-chat-ia'); ?></span>
+                                <span class="text-gray-400"><?php echo esc_html__('Total:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="font-semibold text-gray-800 ml-1"><?php echo esc_html($registro_movil['total_horas']); ?></span>
                             </div>
                         </div>
@@ -152,7 +152,7 @@ $estados_registro_config = [
                     <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                     </svg>
-                    <?php echo esc_html__('Solicitar Correccion', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Solicitar Correccion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>

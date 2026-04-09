@@ -9,13 +9,13 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$titulo = $titulo ?? __('Nuestra Carta', 'flavor-chat-ia');
+$titulo = $titulo ?? __('Nuestra Carta', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $color_primario = $color_primario ?? '#f56e28';
 
 // Categorías de ejemplo si no hay datos
 $categorias_default = [
     [
-        'nombre' => __('Entrantes', 'flavor-chat-ia'),
+        'nombre' => __('Entrantes', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'carrot',
         'platos' => [
             ['nombre' => 'Ensalada Mediterránea', 'descripcion' => 'Tomate, pepino, aceitunas, queso feta', 'precio' => '8.50'],
@@ -24,7 +24,7 @@ $categorias_default = [
         ]
     ],
     [
-        'nombre' => __('Principales', 'flavor-chat-ia'),
+        'nombre' => __('Principales', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'food',
         'platos' => [
             ['nombre' => 'Risotto de Setas', 'descripcion' => 'Arroz carnaroli, setas de temporada, parmesano', 'precio' => '14.50'],
@@ -33,7 +33,7 @@ $categorias_default = [
         ]
     ],
     [
-        'nombre' => __('Postres', 'flavor-chat-ia'),
+        'nombre' => __('Postres', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'heart',
         'platos' => [
             ['nombre' => 'Tiramisú', 'descripcion' => 'Receta tradicional italiana', 'precio' => '6.50'],
@@ -48,9 +48,9 @@ $categorias = $categorias ?? $categorias_default;
 <section class="flavor-restaurante-menu" id="carta-completa" style="--color-primario: <?php echo esc_attr($color_primario); ?>;">
     <div class="flavor-container">
         <div class="flavor-menu-header">
-            <span class="flavor-menu-badge"><?php esc_html_e('Carta', 'flavor-chat-ia'); ?></span>
+            <span class="flavor-menu-badge"><?php esc_html_e('Carta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             <h2 class="flavor-section-title"><?php echo esc_html($titulo); ?></h2>
-            <p class="flavor-menu-subtitulo"><?php esc_html_e('Productos frescos y de temporada', 'flavor-chat-ia'); ?></p>
+            <p class="flavor-menu-subtitulo"><?php esc_html_e('Productos frescos y de temporada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
 
         <div class="flavor-menu-categorias">
@@ -80,11 +80,11 @@ $categorias = $categorias ?? $categorias_default;
         <div class="flavor-menu-acciones">
             <a href="#reservar" class="flavor-button flavor-button--primary">
                 <span class="dashicons dashicons-calendar-alt"></span>
-                <?php esc_html_e('Reservar Mesa', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Reservar Mesa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="#" class="flavor-button flavor-button--secondary">
                 <span class="dashicons dashicons-download"></span>
-                <?php esc_html_e('Descargar Carta PDF', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Descargar Carta PDF', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>

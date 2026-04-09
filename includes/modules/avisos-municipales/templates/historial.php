@@ -18,7 +18,7 @@ $tabla_zonas = $wpdb->prefix . 'flavor_avisos_zonas';
 
 // Verificar si existe la tabla
 if (!Flavor_Chat_Helpers::tabla_existe($tabla_avisos)) {
-    echo '<div class="avisos-empty"><p>' . esc_html__('El modulo de avisos municipales no esta configurado.', 'flavor-chat-ia') . '</p></div>';
+    echo '<div class="avisos-empty"><p>' . esc_html__('El modulo de avisos municipales no esta configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
 
@@ -109,26 +109,26 @@ $anios_disponibles = $wpdb->get_col("SELECT DISTINCT YEAR(fecha_inicio) as anio 
 
 // Meses para el filtro
 $meses = [
-    1 => __('Enero', 'flavor-chat-ia'),
-    2 => __('Febrero', 'flavor-chat-ia'),
-    3 => __('Marzo', 'flavor-chat-ia'),
-    4 => __('Abril', 'flavor-chat-ia'),
-    5 => __('Mayo', 'flavor-chat-ia'),
-    6 => __('Junio', 'flavor-chat-ia'),
-    7 => __('Julio', 'flavor-chat-ia'),
-    8 => __('Agosto', 'flavor-chat-ia'),
-    9 => __('Septiembre', 'flavor-chat-ia'),
-    10 => __('Octubre', 'flavor-chat-ia'),
-    11 => __('Noviembre', 'flavor-chat-ia'),
-    12 => __('Diciembre', 'flavor-chat-ia'),
+    1 => __('Enero', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    2 => __('Febrero', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    3 => __('Marzo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    4 => __('Abril', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    5 => __('Mayo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    6 => __('Junio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    7 => __('Julio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    8 => __('Agosto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    9 => __('Septiembre', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    10 => __('Octubre', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    11 => __('Noviembre', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    12 => __('Diciembre', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 // Labels de prioridades
 $prioridades_config = [
-    'urgente' => ['label' => __('Urgente', 'flavor-chat-ia'), 'color' => '#dc2626'],
-    'alta'    => ['label' => __('Alta', 'flavor-chat-ia'), 'color' => '#f97316'],
-    'media'   => ['label' => __('Media', 'flavor-chat-ia'), 'color' => '#eab308'],
-    'baja'    => ['label' => __('Baja', 'flavor-chat-ia'), 'color' => '#22c55e'],
+    'urgente' => ['label' => __('Urgente', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#dc2626'],
+    'alta'    => ['label' => __('Alta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#f97316'],
+    'media'   => ['label' => __('Media', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#eab308'],
+    'baja'    => ['label' => __('Baja', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#22c55e'],
 ];
 
 // URL base para los detalles
@@ -139,13 +139,13 @@ $url_actual = strtok($_SERVER['REQUEST_URI'], '?');
 <div class="avisos-historial-wrapper">
     <header class="avisos-historial-header">
         <div>
-            <h2><?php esc_html_e('Historial de Avisos', 'flavor-chat-ia'); ?></h2>
-            <p><?php esc_html_e('Consulta los comunicados anteriores', 'flavor-chat-ia'); ?></p>
+            <h2><?php esc_html_e('Historial de Avisos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+            <p><?php esc_html_e('Consulta los comunicados anteriores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
         <div class="avisos-historial-stats">
             <span class="avisos-stat">
                 <span class="dashicons dashicons-archive"></span>
-                <?php printf(esc_html__('%d avisos', 'flavor-chat-ia'), $total_avisos); ?>
+                <?php printf(esc_html__('%d avisos', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_avisos); ?>
             </span>
         </div>
     </header>
@@ -154,9 +154,9 @@ $url_actual = strtok($_SERVER['REQUEST_URI'], '?');
     <form class="avisos-filtros" method="get">
         <div class="avisos-filtros-row">
             <div class="filtro-grupo">
-                <label for="anio"><?php esc_html_e('Anio', 'flavor-chat-ia'); ?></label>
+                <label for="anio"><?php esc_html_e('Anio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="anio" id="anio">
-                    <option value=""><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($anios_disponibles as $anio): ?>
                     <option value="<?php echo esc_attr($anio); ?>" <?php selected($anio_filtro, $anio); ?>>
                         <?php echo esc_html($anio); ?>
@@ -166,9 +166,9 @@ $url_actual = strtok($_SERVER['REQUEST_URI'], '?');
             </div>
             <?php if ($anio_filtro): ?>
             <div class="filtro-grupo">
-                <label for="mes"><?php esc_html_e('Mes', 'flavor-chat-ia'); ?></label>
+                <label for="mes"><?php esc_html_e('Mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="mes" id="mes">
-                    <option value=""><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($meses as $numero_mes => $nombre_mes): ?>
                     <option value="<?php echo esc_attr($numero_mes); ?>" <?php selected($mes_filtro, $numero_mes); ?>>
                         <?php echo esc_html($nombre_mes); ?>
@@ -178,9 +178,9 @@ $url_actual = strtok($_SERVER['REQUEST_URI'], '?');
             </div>
             <?php endif; ?>
             <div class="filtro-grupo">
-                <label for="categoria"><?php esc_html_e('Categoria', 'flavor-chat-ia'); ?></label>
+                <label for="categoria"><?php esc_html_e('Categoria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="categoria" id="categoria">
-                    <option value=""><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($categorias_disponibles as $categoria): ?>
                     <option value="<?php echo esc_attr($categoria->id); ?>" <?php selected($categoria_filtro, $categoria->id); ?>>
                         <?php echo esc_html($categoria->nombre); ?>
@@ -189,18 +189,18 @@ $url_actual = strtok($_SERVER['REQUEST_URI'], '?');
                 </select>
             </div>
             <div class="filtro-grupo filtro-buscar">
-                <label for="buscar"><?php esc_html_e('Buscar', 'flavor-chat-ia'); ?></label>
+                <label for="buscar"><?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <input type="text" name="buscar" id="buscar" value="<?php echo esc_attr($buscar); ?>"
-                       placeholder="<?php esc_attr_e('Buscar en historial...', 'flavor-chat-ia'); ?>">
+                       placeholder="<?php esc_attr_e('Buscar en historial...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             </div>
             <div class="filtro-grupo filtro-acciones">
                 <button type="submit" class="btn btn-primary">
                     <span class="dashicons dashicons-search"></span>
-                    <?php esc_html_e('Buscar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <?php if ($categoria_filtro || $anio_filtro || $mes_filtro || $buscar): ?>
                 <a href="<?php echo esc_url($url_actual); ?>" class="btn btn-outline">
-                    <?php esc_html_e('Limpiar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <?php endif; ?>
             </div>
@@ -299,14 +299,14 @@ $url_actual = strtok($_SERVER['REQUEST_URI'], '?');
                     <?php if ($aviso->visualizaciones): ?>
                     <span>
                         <span class="dashicons dashicons-visibility"></span>
-                        <?php echo number_format_i18n($aviso->visualizaciones); ?> <?php esc_html_e('vistas', 'flavor-chat-ia'); ?>
+                        <?php echo number_format_i18n($aviso->visualizaciones); ?> <?php esc_html_e('vistas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                     <?php endif; ?>
                 </div>
             </div>
             <div class="aviso-historial-accion">
                 <a href="<?php echo esc_url($avisos_base_url . '?aviso=' . $aviso->id); ?>" class="btn btn-sm btn-outline">
-                    <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </article>
@@ -319,7 +319,7 @@ $url_actual = strtok($_SERVER['REQUEST_URI'], '?');
     <nav class="avisos-paginacion">
         <div class="paginacion-info">
             <?php printf(
-                esc_html__('Pagina %1$d de %2$d', 'flavor-chat-ia'),
+                esc_html__('Pagina %1$d de %2$d', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $pagina_actual,
                 $total_paginas
             ); ?>
@@ -328,7 +328,7 @@ $url_actual = strtok($_SERVER['REQUEST_URI'], '?');
             <?php if ($pagina_actual > 1): ?>
             <a href="<?php echo esc_url(add_query_arg('pag', $pagina_actual - 1)); ?>" class="paginacion-link">
                 <span class="dashicons dashicons-arrow-left-alt2"></span>
-                <?php esc_html_e('Anterior', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <?php endif; ?>
 
@@ -360,7 +360,7 @@ $url_actual = strtok($_SERVER['REQUEST_URI'], '?');
 
             <?php if ($pagina_actual < $total_paginas): ?>
             <a href="<?php echo esc_url(add_query_arg('pag', $pagina_actual + 1)); ?>" class="paginacion-link">
-                <?php esc_html_e('Siguiente', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <span class="dashicons dashicons-arrow-right-alt2"></span>
             </a>
             <?php endif; ?>
@@ -371,11 +371,11 @@ $url_actual = strtok($_SERVER['REQUEST_URI'], '?');
     <?php else: ?>
     <div class="avisos-empty">
         <span class="dashicons dashicons-archive"></span>
-        <h3><?php esc_html_e('Sin resultados', 'flavor-chat-ia'); ?></h3>
-        <p><?php esc_html_e('No se encontraron avisos en el historial con los criterios seleccionados.', 'flavor-chat-ia'); ?></p>
+        <h3><?php esc_html_e('Sin resultados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+        <p><?php esc_html_e('No se encontraron avisos en el historial con los criterios seleccionados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         <?php if ($categoria_filtro || $anio_filtro || $buscar): ?>
         <a href="<?php echo esc_url($url_actual); ?>" class="btn btn-outline">
-            <?php esc_html_e('Ver todo el historial', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Ver todo el historial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <?php endif; ?>
     </div>

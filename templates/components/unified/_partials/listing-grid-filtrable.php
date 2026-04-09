@@ -64,7 +64,7 @@ $identificador_unico = 'listing-filtrable-' . wp_unique_id();
                         style="background-color: <?php echo $color_primario_escapado; ?>; color: #fff; border-color: <?php echo $color_primario_escapado; ?>;"
                         data-filtro="todos"
                     >
-                        <?php esc_html_e( 'Todos', 'flavor-chat-ia' ); ?>
+                        <?php esc_html_e( 'Todos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                     </button>
                     <?php foreach ( $lista_filtros as $filtro ) : ?>
                         <button
@@ -84,7 +84,7 @@ $identificador_unico = 'listing-filtrable-' . wp_unique_id();
                         type="text"
                         class="w-full rounded-lg border border-gray-300 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 placeholder-gray-400 transition-colors duration-200 focus:border-transparent focus:outline-none focus:ring-2"
                         style="--tw-ring-color: <?php echo $color_primario_escapado; ?>;"
-                        placeholder="<?php esc_attr_e( 'Buscar...', 'flavor-chat-ia' ); ?>"
+                        placeholder="<?php esc_attr_e( 'Buscar...', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
                         data-buscador-input
                     />
                     <svg class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -151,7 +151,7 @@ $identificador_unico = 'listing-filtrable-' . wp_unique_id();
         <svg class="mx-auto h-12 w-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
-        <p class="mt-4 text-sm text-gray-500"><?php esc_html_e( 'No se encontraron resultados.', 'flavor-chat-ia' ); ?></p>
+        <p class="mt-4 text-sm text-gray-500"><?php esc_html_e( 'No se encontraron resultados.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
     </div>
 </div>
 

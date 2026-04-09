@@ -113,7 +113,7 @@ $identificador_seccion = 'testimonios-quotes-' . wp_unique_id();
                                 contenedor.parentElement.querySelectorAll('button[class*=rounded-full]').forEach(function(b){b.style.opacity='0.3'});
                                 this.style.opacity='1';
                             }).call(this)"
-                            aria-label="<?php echo esc_attr( sprintf( __( 'Testimonio %d', 'flavor-chat-ia' ), $indice_testimonio + 1 ) ); ?>"
+                            aria-label="<?php echo esc_attr( sprintf( __( 'Testimonio %d', FLAVOR_PLATFORM_TEXT_DOMAIN ), $indice_testimonio + 1 ) ); ?>"
                         ></button>
                     <?php endforeach; ?>
                 </div>

@@ -48,27 +48,27 @@ class Flavor_Module_Setup_Assistant {
     private function define_module_requirements() {
         $this->module_requirements = [
             'socios' => [
-                'nombre' => __('Gestión de Miembros', 'flavor-chat-ia'),
+                'nombre' => __('Gestión de Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-groups',
                 'pasos' => [
                     [
                         'id' => 'tipos_socio',
-                        'titulo' => __('Definir tipos de socio', 'flavor-chat-ia'),
-                        'descripcion' => __('Configura los diferentes tipos de membresía (ej: consumidor, colaborador)', 'flavor-chat-ia'),
+                        'titulo' => __('Definir tipos de socio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('Configura los diferentes tipos de membresía (ej: consumidor, colaborador)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'check' => 'check_socios_tipos',
                         'url' => 'admin.php?page=socios-dashboard&tab=configuracion',
                     ],
                     [
                         'id' => 'cuotas',
-                        'titulo' => __('Configurar cuotas', 'flavor-chat-ia'),
-                        'descripcion' => __('Establece los importes de cuota mensual/anual', 'flavor-chat-ia'),
+                        'titulo' => __('Configurar cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('Establece los importes de cuota mensual/anual', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'check' => 'check_socios_cuotas',
                         'url' => 'admin.php?page=socios-dashboard&tab=cuotas',
                     ],
                     [
                         'id' => 'campos_formulario',
-                        'titulo' => __('Personalizar formulario de alta', 'flavor-chat-ia'),
-                        'descripcion' => __('Define qué campos pedir en el registro', 'flavor-chat-ia'),
+                        'titulo' => __('Personalizar formulario de alta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('Define qué campos pedir en el registro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'check' => 'check_socios_formulario',
                         'url' => 'admin.php?page=socios-dashboard&tab=configuracion#formulario',
                         'opcional' => true,
@@ -77,28 +77,28 @@ class Flavor_Module_Setup_Assistant {
             ],
 
             'eventos' => [
-                'nombre' => __('Eventos', 'flavor-chat-ia'),
+                'nombre' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-calendar-alt',
                 'pasos' => [
                     [
                         'id' => 'categorias',
-                        'titulo' => __('Crear categorías de eventos', 'flavor-chat-ia'),
-                        'descripcion' => __('Organiza los eventos por tipo (talleres, charlas, fiestas...)', 'flavor-chat-ia'),
+                        'titulo' => __('Crear categorías de eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('Organiza los eventos por tipo (talleres, charlas, fiestas...)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'check' => 'check_eventos_categorias',
                         'url' => 'admin.php?page=eventos-dashboard&tab=categorias',
                     ],
                     [
                         'id' => 'ubicaciones',
-                        'titulo' => __('Definir ubicaciones', 'flavor-chat-ia'),
-                        'descripcion' => __('Añade las ubicaciones donde se realizan eventos', 'flavor-chat-ia'),
+                        'titulo' => __('Definir ubicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('Añade las ubicaciones donde se realizan eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'check' => 'check_eventos_ubicaciones',
                         'url' => 'admin.php?page=eventos-dashboard&tab=ubicaciones',
                         'opcional' => true,
                     ],
                     [
                         'id' => 'primer_evento',
-                        'titulo' => __('Crear primer evento', 'flavor-chat-ia'),
-                        'descripcion' => __('Publica tu primer evento de prueba', 'flavor-chat-ia'),
+                        'titulo' => __('Crear primer evento', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('Publica tu primer evento de prueba', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'check' => 'check_eventos_tiene_eventos',
                         'url' => 'admin.php?page=eventos-dashboard&action=nuevo',
                     ],
@@ -106,27 +106,27 @@ class Flavor_Module_Setup_Assistant {
             ],
 
             'reservas' => [
-                'nombre' => __('Reservas', 'flavor-chat-ia'),
+                'nombre' => __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-calendar',
                 'pasos' => [
                     [
                         'id' => 'recursos',
-                        'titulo' => __('Crear recursos reservables', 'flavor-chat-ia'),
-                        'descripcion' => __('Define qué se puede reservar (salas, equipos, vehículos...)', 'flavor-chat-ia'),
+                        'titulo' => __('Crear recursos reservables', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('Define qué se puede reservar (salas, equipos, vehículos...)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'check' => 'check_reservas_recursos',
                         'url' => 'admin.php?page=reservas-dashboard&tab=recursos',
                     ],
                     [
                         'id' => 'horarios',
-                        'titulo' => __('Configurar horarios', 'flavor-chat-ia'),
-                        'descripcion' => __('Define horarios de disponibilidad y duración de slots', 'flavor-chat-ia'),
+                        'titulo' => __('Configurar horarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('Define horarios de disponibilidad y duración de slots', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'check' => 'check_reservas_horarios',
                         'url' => 'admin.php?page=reservas-dashboard&tab=configuracion',
                     ],
                     [
                         'id' => 'reglas',
-                        'titulo' => __('Establecer reglas de reserva', 'flavor-chat-ia'),
-                        'descripcion' => __('Antelación mínima, máximo de reservas por usuario, etc.', 'flavor-chat-ia'),
+                        'titulo' => __('Establecer reglas de reserva', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('Antelación mínima, máximo de reservas por usuario, etc.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'check' => 'check_reservas_reglas',
                         'url' => 'admin.php?page=reservas-dashboard&tab=configuracion#reglas',
                         'opcional' => true,
@@ -135,27 +135,27 @@ class Flavor_Module_Setup_Assistant {
             ],
 
             'grupos-consumo' => [
-                'nombre' => __('Grupos de Consumo', 'flavor-chat-ia'),
+                'nombre' => __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-cart',
                 'pasos' => [
                     [
                         'id' => 'productores',
-                        'titulo' => __('Añadir productores', 'flavor-chat-ia'),
-                        'descripcion' => __('Registra los productores/proveedores del grupo', 'flavor-chat-ia'),
+                        'titulo' => __('Añadir productores', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('Registra los productores/proveedores del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'check' => 'check_gc_productores',
                         'url' => 'admin.php?page=grupos-consumo-dashboard&tab=productores',
                     ],
                     [
                         'id' => 'productos',
-                        'titulo' => __('Cargar productos', 'flavor-chat-ia'),
-                        'descripcion' => __('Añade los productos disponibles para pedidos', 'flavor-chat-ia'),
+                        'titulo' => __('Cargar productos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('Añade los productos disponibles para pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'check' => 'check_gc_productos',
                         'url' => 'admin.php?page=grupos-consumo-dashboard&tab=productos',
                     ],
                     [
                         'id' => 'ciclo',
-                        'titulo' => __('Crear primer ciclo de pedidos', 'flavor-chat-ia'),
-                        'descripcion' => __('Abre el primer ciclo para que los miembros puedan pedir', 'flavor-chat-ia'),
+                        'titulo' => __('Crear primer ciclo de pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('Abre el primer ciclo para que los miembros puedan pedir', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'check' => 'check_gc_ciclos',
                         'url' => 'admin.php?page=grupos-consumo-dashboard&tab=ciclos&action=nuevo',
                     ],
@@ -163,20 +163,20 @@ class Flavor_Module_Setup_Assistant {
             ],
 
             'incidencias' => [
-                'nombre' => __('Incidencias', 'flavor-chat-ia'),
+                'nombre' => __('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-warning',
                 'pasos' => [
                     [
                         'id' => 'categorias',
-                        'titulo' => __('Crear categorías', 'flavor-chat-ia'),
-                        'descripcion' => __('Tipos de incidencias (averías, sugerencias, quejas...)', 'flavor-chat-ia'),
+                        'titulo' => __('Crear categorías', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('Tipos de incidencias (averías, sugerencias, quejas...)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'check' => 'check_incidencias_categorias',
                         'url' => 'admin.php?page=incidencias-dashboard&tab=categorias',
                     ],
                     [
                         'id' => 'responsables',
-                        'titulo' => __('Asignar responsables', 'flavor-chat-ia'),
-                        'descripcion' => __('Define quién puede gestionar incidencias', 'flavor-chat-ia'),
+                        'titulo' => __('Asignar responsables', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('Define quién puede gestionar incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'check' => 'check_incidencias_responsables',
                         'url' => 'admin.php?page=incidencias-dashboard&tab=configuracion',
                         'opcional' => true,
@@ -185,20 +185,20 @@ class Flavor_Module_Setup_Assistant {
             ],
 
             'cursos' => [
-                'nombre' => __('Cursos', 'flavor-chat-ia'),
+                'nombre' => __('Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-welcome-learn-more',
                 'pasos' => [
                     [
                         'id' => 'categorias',
-                        'titulo' => __('Crear categorías', 'flavor-chat-ia'),
-                        'descripcion' => __('Organiza los cursos por temática', 'flavor-chat-ia'),
+                        'titulo' => __('Crear categorías', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('Organiza los cursos por temática', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'check' => 'check_cursos_categorias',
                         'url' => 'admin.php?page=cursos-dashboard&tab=categorias',
                     ],
                     [
                         'id' => 'primer_curso',
-                        'titulo' => __('Crear primer curso', 'flavor-chat-ia'),
-                        'descripcion' => __('Publica tu primer curso con lecciones', 'flavor-chat-ia'),
+                        'titulo' => __('Crear primer curso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('Publica tu primer curso con lecciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'check' => 'check_cursos_tiene_cursos',
                         'url' => 'admin.php?page=cursos-dashboard&action=nuevo',
                     ],
@@ -206,27 +206,27 @@ class Flavor_Module_Setup_Assistant {
             ],
 
             'biblioteca' => [
-                'nombre' => __('Biblioteca', 'flavor-chat-ia'),
+                'nombre' => __('Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-book',
                 'pasos' => [
                     [
                         'id' => 'categorias',
-                        'titulo' => __('Crear categorías', 'flavor-chat-ia'),
-                        'descripcion' => __('Organiza el catálogo por géneros o tipos', 'flavor-chat-ia'),
+                        'titulo' => __('Crear categorías', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('Organiza el catálogo por géneros o tipos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'check' => 'check_biblioteca_categorias',
                         'url' => 'admin.php?page=biblioteca-dashboard&tab=categorias',
                     ],
                     [
                         'id' => 'libros',
-                        'titulo' => __('Añadir libros', 'flavor-chat-ia'),
-                        'descripcion' => __('Carga el catálogo de libros disponibles', 'flavor-chat-ia'),
+                        'titulo' => __('Añadir libros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('Carga el catálogo de libros disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'check' => 'check_biblioteca_libros',
                         'url' => 'admin.php?page=biblioteca-dashboard&action=nuevo',
                     ],
                     [
                         'id' => 'reglas_prestamo',
-                        'titulo' => __('Configurar préstamos', 'flavor-chat-ia'),
-                        'descripcion' => __('Días de préstamo, renovaciones, multas...', 'flavor-chat-ia'),
+                        'titulo' => __('Configurar préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('Días de préstamo, renovaciones, multas...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'check' => 'check_biblioteca_reglas',
                         'url' => 'admin.php?page=biblioteca-dashboard&tab=configuracion',
                         'opcional' => true,
@@ -235,13 +235,13 @@ class Flavor_Module_Setup_Assistant {
             ],
 
             'foros' => [
-                'nombre' => __('Foros', 'flavor-chat-ia'),
+                'nombre' => __('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-format-chat',
                 'pasos' => [
                     [
                         'id' => 'foros',
-                        'titulo' => __('Crear foros', 'flavor-chat-ia'),
-                        'descripcion' => __('Crea los foros de discusión principales', 'flavor-chat-ia'),
+                        'titulo' => __('Crear foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('Crea los foros de discusión principales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'check' => 'check_foros_tiene_foros',
                         'url' => 'admin.php?page=foros-dashboard&action=nuevo',
                     ],
@@ -249,13 +249,13 @@ class Flavor_Module_Setup_Assistant {
             ],
 
             'encuestas' => [
-                'nombre' => __('Encuestas', 'flavor-chat-ia'),
+                'nombre' => __('Encuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-chart-bar',
                 'pasos' => [
                     [
                         'id' => 'primera_encuesta',
-                        'titulo' => __('Crear primera encuesta', 'flavor-chat-ia'),
-                        'descripcion' => __('Publica tu primera encuesta o votación', 'flavor-chat-ia'),
+                        'titulo' => __('Crear primera encuesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('Publica tu primera encuesta o votación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'check' => 'check_encuestas_tiene_encuestas',
                         'url' => 'admin.php?page=encuestas-dashboard&action=nueva',
                     ],
@@ -263,13 +263,13 @@ class Flavor_Module_Setup_Assistant {
             ],
 
             'banco-tiempo' => [
-                'nombre' => __('Banco de Tiempo', 'flavor-chat-ia'),
+                'nombre' => __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-clock',
                 'pasos' => [
                     [
                         'id' => 'categorias',
-                        'titulo' => __('Crear categorías de servicios', 'flavor-chat-ia'),
-                        'descripcion' => __('Organiza los servicios por tipo (hogar, idiomas, informática...)', 'flavor-chat-ia'),
+                        'titulo' => __('Crear categorías de servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('Organiza los servicios por tipo (hogar, idiomas, informática...)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'check' => 'check_bt_categorias',
                         'url' => 'admin.php?page=banco-tiempo-dashboard&tab=categorias',
                     ],
@@ -277,20 +277,20 @@ class Flavor_Module_Setup_Assistant {
             ],
 
             'marketplace' => [
-                'nombre' => __('Marketplace', 'flavor-chat-ia'),
+                'nombre' => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-store',
                 'pasos' => [
                     [
                         'id' => 'categorias',
-                        'titulo' => __('Crear categorías', 'flavor-chat-ia'),
-                        'descripcion' => __('Organiza los anuncios por tipo', 'flavor-chat-ia'),
+                        'titulo' => __('Crear categorías', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('Organiza los anuncios por tipo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'check' => 'check_marketplace_categorias',
                         'url' => 'admin.php?page=marketplace-dashboard&tab=categorias',
                     ],
                     [
                         'id' => 'reglas',
-                        'titulo' => __('Configurar reglas', 'flavor-chat-ia'),
-                        'descripcion' => __('Moderación, límites de anuncios, caducidad...', 'flavor-chat-ia'),
+                        'titulo' => __('Configurar reglas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'descripcion' => __('Moderación, límites de anuncios, caducidad...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'check' => 'check_marketplace_reglas',
                         'url' => 'admin.php?page=marketplace-dashboard&tab=configuracion',
                         'opcional' => true,

@@ -89,16 +89,16 @@ $comunidades = $wpdb->get_results("SELECT id, nombre FROM {$tabla_comunidades} O
 
 // Roles y estados
 $roles = [
-    'miembro' => __('Miembro', 'flavor-chat-ia'),
-    'moderador' => __('Moderador', 'flavor-chat-ia'),
-    'admin' => __('Administrador', 'flavor-chat-ia'),
+    'miembro' => __('Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'moderador' => __('Moderador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'admin' => __('Administrador', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $estados = [
-    'activo' => __('Activo', 'flavor-chat-ia'),
-    'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-    'suspendido' => __('Suspendido', 'flavor-chat-ia'),
-    'expulsado' => __('Expulsado', 'flavor-chat-ia'),
+    'activo' => __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'suspendido' => __('Suspendido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'expulsado' => __('Expulsado', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $colores_estado = [
@@ -120,15 +120,15 @@ $colores_rol = [
     <nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">
         <a href="<?php echo admin_url('admin.php?page=comunidades-dashboard'); ?>" style="color: #2271b1; text-decoration: none;">
             <span class="dashicons dashicons-admin-multisite" style="font-size: 14px; vertical-align: middle;"></span>
-            <?php _e('Comunidades', 'flavor-chat-ia'); ?>
+            <?php _e('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <span style="color: #646970; margin: 0 5px;">›</span>
-        <span style="color: #1d2327;"><?php _e('Miembros', 'flavor-chat-ia'); ?></span>
+        <span style="color: #1d2327;"><?php _e('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
     </nav>
 
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-groups"></span>
-        <?php _e('Miembros de Comunidades', 'flavor-chat-ia'); ?>
+        <?php _e('Miembros de Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <hr class="wp-header-end">
@@ -140,7 +140,7 @@ $colores_rol = [
 
             <div class="alignleft actions" style="display: flex; gap: 8px; flex-wrap: wrap;">
                 <select name="comunidad">
-                    <option value=""><?php _e('Todas las comunidades', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todas las comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($comunidades as $com): ?>
                     <option value="<?php echo esc_attr($com->id); ?>" <?php selected($comunidad_filtro, $com->id); ?>>
                         <?php echo esc_html($com->nombre); ?>
@@ -149,7 +149,7 @@ $colores_rol = [
                 </select>
 
                 <select name="estado">
-                    <option value=""><?php _e('Todos los estados', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($estados as $slug => $label): ?>
                     <option value="<?php echo esc_attr($slug); ?>" <?php selected($estado_filtro, $slug); ?>>
                         <?php echo esc_html($label); ?>
@@ -158,7 +158,7 @@ $colores_rol = [
                 </select>
 
                 <select name="rol">
-                    <option value=""><?php _e('Todos los roles', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todos los roles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($roles as $slug => $label): ?>
                     <option value="<?php echo esc_attr($slug); ?>" <?php selected($rol_filtro, $slug); ?>>
                         <?php echo esc_html($label); ?>
@@ -166,19 +166,19 @@ $colores_rol = [
                     <?php endforeach; ?>
                 </select>
 
-                <input type="search" name="s" value="<?php echo esc_attr($buscar); ?>" placeholder="<?php esc_attr_e('Buscar usuario...', 'flavor-chat-ia'); ?>">
+                <input type="search" name="s" value="<?php echo esc_attr($buscar); ?>" placeholder="<?php esc_attr_e('Buscar usuario...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
 
-                <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="button"><?php _e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
 
                 <?php if ($comunidad_filtro || $estado_filtro || $rol_filtro || $buscar): ?>
-                <a href="<?php echo admin_url('admin.php?page=comunidades-miembros'); ?>" class="button"><?php _e('Limpiar', 'flavor-chat-ia'); ?></a>
+                <a href="<?php echo admin_url('admin.php?page=comunidades-miembros'); ?>" class="button"><?php _e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 <?php endif; ?>
             </div>
         </form>
 
         <div class="tablenav-pages">
             <span class="displaying-num">
-                <?php printf(_n('%s elemento', '%s elementos', $total_items, 'flavor-chat-ia'), number_format($total_items)); ?>
+                <?php printf(_n('%s elemento', '%s elementos', $total_items, FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($total_items)); ?>
             </span>
         </div>
     </div>
@@ -187,13 +187,13 @@ $colores_rol = [
     <table class="wp-list-table widefat fixed striped">
         <thead>
             <tr>
-                <th scope="col" style="width: 60px;"><?php _e('ID', 'flavor-chat-ia'); ?></th>
-                <th scope="col"><?php _e('Usuario', 'flavor-chat-ia'); ?></th>
-                <th scope="col"><?php _e('Comunidad', 'flavor-chat-ia'); ?></th>
-                <th scope="col" style="width: 100px;"><?php _e('Rol', 'flavor-chat-ia'); ?></th>
-                <th scope="col" style="width: 100px;"><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                <th scope="col" style="width: 140px;"><?php _e('Fecha unión', 'flavor-chat-ia'); ?></th>
-                <th scope="col" style="width: 100px;"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                <th scope="col" style="width: 60px;"><?php _e('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col"><?php _e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col"><?php _e('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col" style="width: 100px;"><?php _e('Rol', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col" style="width: 100px;"><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col" style="width: 140px;"><?php _e('Fecha unión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col" style="width: 100px;"><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -201,7 +201,7 @@ $colores_rol = [
             <tr>
                 <td colspan="7" style="text-align: center; padding: 40px;">
                     <span class="dashicons dashicons-groups" style="font-size: 48px; color: #c3c4c7;"></span>
-                    <p style="color: #646970;"><?php _e('No se encontraron miembros.', 'flavor-chat-ia'); ?></p>
+                    <p style="color: #646970;"><?php _e('No se encontraron miembros.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
             <?php else: ?>
@@ -212,14 +212,14 @@ $colores_rol = [
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <?php echo get_avatar($miembro->user_id, 32); ?>
                             <div>
-                                <strong><?php echo esc_html($miembro->display_name ?: __('Usuario eliminado', 'flavor-chat-ia')); ?></strong>
+                                <strong><?php echo esc_html($miembro->display_name ?: __('Usuario eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong>
                                 <br><small style="color: #646970;"><?php echo esc_html($miembro->user_email); ?></small>
                             </div>
                         </div>
                     </td>
                     <td>
                         <a href="<?php echo admin_url('admin.php?page=comunidades-editar&id=' . $miembro->comunidad_id); ?>">
-                            <?php echo esc_html($miembro->comunidad_nombre ?: __('Comunidad eliminada', 'flavor-chat-ia')); ?>
+                            <?php echo esc_html($miembro->comunidad_nombre ?: __('Comunidad eliminada', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                         </a>
                     </td>
                     <td>
@@ -236,7 +236,7 @@ $colores_rol = [
                         <?php echo esc_html(date_i18n(get_option('date_format'), strtotime($miembro->fecha_union))); ?>
                     </td>
                     <td>
-                        <a href="<?php echo admin_url('user-edit.php?user_id=' . $miembro->user_id); ?>" class="button button-small" title="<?php esc_attr_e('Ver usuario', 'flavor-chat-ia'); ?>">
+                        <a href="<?php echo admin_url('user-edit.php?user_id=' . $miembro->user_id); ?>" class="button button-small" title="<?php esc_attr_e('Ver usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-admin-users" style="margin-top: 3px;"></span>
                         </a>
                     </td>

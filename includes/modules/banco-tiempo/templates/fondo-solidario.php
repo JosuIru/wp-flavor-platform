@@ -25,21 +25,21 @@ $usuario_logueado = is_user_logged_in();
         <span class="bt-fondo__icono">
             <span class="dashicons dashicons-heart"></span>
         </span>
-        <h3 class="bt-fondo__titulo"><?php esc_html_e('Fondo Solidario', 'flavor-chat-ia'); ?></h3>
+        <h3 class="bt-fondo__titulo"><?php esc_html_e('Fondo Solidario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         <p class="bt-fondo__descripcion">
-            <?php esc_html_e('Horas donadas por la comunidad para quienes más lo necesitan.', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Horas donadas por la comunidad para quienes más lo necesitan.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </div>
 
     <div class="bt-fondo__balance">
         <div class="bt-fondo__horas">
             <span class="bt-fondo__horas-valor"><?php echo esc_html(number_format($fondo, 1)); ?></span>
-            <span class="bt-fondo__horas-label"><?php esc_html_e('horas disponibles', 'flavor-chat-ia'); ?></span>
+            <span class="bt-fondo__horas-label"><?php esc_html_e('horas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="bt-fondo__donantes">
             <span class="dashicons dashicons-groups"></span>
             <?php printf(
-                esc_html(_n('%d persona ha contribuido', '%d personas han contribuido', $total_donantes, 'flavor-chat-ia')),
+                esc_html(_n('%d persona ha contribuido', '%d personas han contribuido', $total_donantes, FLAVOR_PLATFORM_TEXT_DOMAIN)),
                 $total_donantes
             ); ?>
         </div>
@@ -47,7 +47,7 @@ $usuario_logueado = is_user_logged_in();
 
     <?php if (!empty($ultimas_donaciones)): ?>
         <div class="bt-fondo__ultimas">
-            <h4><?php esc_html_e('Últimas contribuciones', 'flavor-chat-ia'); ?></h4>
+            <h4><?php esc_html_e('Últimas contribuciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
             <ul class="bt-fondo__lista">
                 <?php foreach ($ultimas_donaciones as $donacion): ?>
                     <li class="bt-fondo__donacion">
@@ -57,7 +57,7 @@ $usuario_logueado = is_user_logged_in();
                         <span class="bt-fondo__donacion-info">
                             <strong><?php echo esc_html($donacion['display_name']); ?></strong>
                             <?php printf(
-                                esc_html__('donó %s horas', 'flavor-chat-ia'),
+                                esc_html__('donó %s horas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 esc_html(number_format($donacion['horas'], 1))
                             ); ?>
                         </span>
@@ -74,16 +74,16 @@ $usuario_logueado = is_user_logged_in();
         <?php if ($usuario_logueado): ?>
             <button type="button" class="bt-btn bt-btn--primary bt-fondo__donar-btn">
                 <span class="dashicons dashicons-heart"></span>
-                <?php esc_html_e('Donar horas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Donar horas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <button type="button" class="bt-btn bt-btn--outline bt-fondo__solicitar-btn">
                 <span class="dashicons dashicons-businessman"></span>
-                <?php esc_html_e('Solicitar ayuda', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Solicitar ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         <?php else: ?>
             <p class="bt-fondo__login-aviso">
                 <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>">
-                    <?php esc_html_e('Inicia sesión para contribuir o solicitar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Inicia sesión para contribuir o solicitar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </p>
         <?php endif; ?>
@@ -96,20 +96,20 @@ $usuario_logueado = is_user_logged_in();
             <button type="button" class="bt-modal__cerrar">
                 <span class="dashicons dashicons-no-alt"></span>
             </button>
-            <h3><?php esc_html_e('Donar al fondo solidario', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Donar al fondo solidario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <form class="bt-form bt-fondo__form-donar">
                 <div class="bt-form__grupo">
-                    <label for="bt-donar-horas"><?php esc_html_e('Horas a donar', 'flavor-chat-ia'); ?></label>
+                    <label for="bt-donar-horas"><?php esc_html_e('Horas a donar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="number" id="bt-donar-horas" name="horas" min="0.5" max="100" step="0.5" value="1" required>
                 </div>
                 <div class="bt-form__grupo">
-                    <label for="bt-donar-mensaje"><?php esc_html_e('Mensaje (opcional)', 'flavor-chat-ia'); ?></label>
-                    <textarea id="bt-donar-mensaje" name="mensaje" rows="2" placeholder="<?php esc_attr_e('Unas palabras para la comunidad...', 'flavor-chat-ia'); ?>"></textarea>
+                    <label for="bt-donar-mensaje"><?php esc_html_e('Mensaje (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                    <textarea id="bt-donar-mensaje" name="mensaje" rows="2" placeholder="<?php esc_attr_e('Unas palabras para la comunidad...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                 </div>
                 <input type="hidden" name="tipo" value="fondo_comunitario">
                 <div class="bt-form__acciones">
-                    <button type="button" class="bt-btn bt-btn--outline bt-modal__cancelar"><?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?></button>
-                    <button type="submit" class="bt-btn bt-btn--primary"><?php esc_html_e('Donar', 'flavor-chat-ia'); ?></button>
+                    <button type="button" class="bt-btn bt-btn--outline bt-modal__cancelar"><?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                    <button type="submit" class="bt-btn bt-btn--primary"><?php esc_html_e('Donar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                 </div>
             </form>
         </div>
@@ -122,22 +122,22 @@ $usuario_logueado = is_user_logged_in();
             <button type="button" class="bt-modal__cerrar">
                 <span class="dashicons dashicons-no-alt"></span>
             </button>
-            <h3><?php esc_html_e('Solicitar ayuda del fondo', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Solicitar ayuda del fondo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <p class="bt-modal__info">
-                <?php esc_html_e('Las solicitudes son revisadas por los coordinadores para garantizar un uso justo del fondo.', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Las solicitudes son revisadas por los coordinadores para garantizar un uso justo del fondo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
             <form class="bt-form bt-fondo__form-solicitar">
                 <div class="bt-form__grupo">
-                    <label for="bt-solicitar-horas"><?php esc_html_e('Horas que necesitas', 'flavor-chat-ia'); ?></label>
+                    <label for="bt-solicitar-horas"><?php esc_html_e('Horas que necesitas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="number" id="bt-solicitar-horas" name="horas" min="0.5" max="20" step="0.5" value="2" required>
                 </div>
                 <div class="bt-form__grupo">
-                    <label for="bt-solicitar-motivo"><?php esc_html_e('Motivo de la solicitud', 'flavor-chat-ia'); ?></label>
-                    <textarea id="bt-solicitar-motivo" name="motivo" rows="3" required placeholder="<?php esc_attr_e('Explica brevemente tu situación...', 'flavor-chat-ia'); ?>"></textarea>
+                    <label for="bt-solicitar-motivo"><?php esc_html_e('Motivo de la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                    <textarea id="bt-solicitar-motivo" name="motivo" rows="3" required placeholder="<?php esc_attr_e('Explica brevemente tu situación...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                 </div>
                 <div class="bt-form__acciones">
-                    <button type="button" class="bt-btn bt-btn--outline bt-modal__cancelar"><?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?></button>
-                    <button type="submit" class="bt-btn bt-btn--primary"><?php esc_html_e('Enviar solicitud', 'flavor-chat-ia'); ?></button>
+                    <button type="button" class="bt-btn bt-btn--outline bt-modal__cancelar"><?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                    <button type="submit" class="bt-btn bt-btn--primary"><?php esc_html_e('Enviar solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                 </div>
             </form>
         </div>

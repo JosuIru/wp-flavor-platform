@@ -46,25 +46,25 @@ function obtener_badge_tipo_lista($tipo) {
     $tipos = [
         'newsletter' => [
             'clase' => 'newsletter',
-            'texto' => __('Newsletter', 'flavor-chat-ia'),
+            'texto' => __('Newsletter', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'email-alt',
             'color' => '#3b82f6'
         ],
         'segmento' => [
             'clase' => 'segmento',
-            'texto' => __('Segmento', 'flavor-chat-ia'),
+            'texto' => __('Segmento', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'filter',
             'color' => '#8b5cf6'
         ],
         'automatica' => [
             'clase' => 'automatica',
-            'texto' => __('Automática', 'flavor-chat-ia'),
+            'texto' => __('Automática', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'controls-repeat',
             'color' => '#10b981'
         ],
         'transaccional' => [
             'clase' => 'transaccional',
-            'texto' => __('Transaccional', 'flavor-chat-ia'),
+            'texto' => __('Transaccional', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'cart',
             'color' => '#f59e0b'
         ]
@@ -81,17 +81,17 @@ function obtener_badge_estado_lista($estado) {
     $estados = [
         'activa' => [
             'clase' => 'success',
-            'texto' => __('Activa', 'flavor-chat-ia'),
+            'texto' => __('Activa', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'yes-alt'
         ],
         'pausada' => [
             'clase' => 'warning',
-            'texto' => __('Pausada', 'flavor-chat-ia'),
+            'texto' => __('Pausada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'controls-pause'
         ],
         'archivada' => [
             'clase' => 'secondary',
-            'texto' => __('Archivada', 'flavor-chat-ia'),
+            'texto' => __('Archivada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'archive'
         ]
     ];
@@ -107,13 +107,13 @@ function calcular_engagement_lista($tasa_apertura, $tasa_clics) {
     $promedio = ($tasa_apertura + $tasa_clics) / 2;
 
     if ($promedio >= 30) {
-        return ['nivel' => __('Excelente', 'flavor-chat-ia'), 'clase' => 'excelente', 'color' => '#10b981'];
+        return ['nivel' => __('Excelente', FLAVOR_PLATFORM_TEXT_DOMAIN), 'clase' => 'excelente', 'color' => '#10b981'];
     } elseif ($promedio >= 20) {
-        return ['nivel' => __('Bueno', 'flavor-chat-ia'), 'clase' => 'bueno', 'color' => '#3b82f6'];
+        return ['nivel' => __('Bueno', FLAVOR_PLATFORM_TEXT_DOMAIN), 'clase' => 'bueno', 'color' => '#3b82f6'];
     } elseif ($promedio >= 10) {
-        return ['nivel' => __('Regular', 'flavor-chat-ia'), 'clase' => 'regular', 'color' => '#f59e0b'];
+        return ['nivel' => __('Regular', FLAVOR_PLATFORM_TEXT_DOMAIN), 'clase' => 'regular', 'color' => '#f59e0b'];
     }
-    return ['nivel' => __('Bajo', 'flavor-chat-ia'), 'clase' => 'bajo', 'color' => '#ef4444'];
+    return ['nivel' => __('Bajo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'clase' => 'bajo', 'color' => '#ef4444'];
 }
 
 /**
@@ -254,18 +254,18 @@ if ($tablas_email_disponibles) {
 <div class="wrap flavor-em-listas">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-list-view"></span>
-        <?php echo esc_html__('Listas de Suscriptores', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Listas de Suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
     <button type="button" class="page-title-action em-btn-nueva-lista">
         <span class="dashicons dashicons-plus-alt2"></span>
-        <?php echo esc_html__('Nueva Lista', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Nueva Lista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </button>
 
     <?php if (!$tablas_email_disponibles): ?>
     <div class="notice notice-info inline" style="margin: 15px 0;">
         <p>
             <span class="dashicons dashicons-info"></span>
-            <?php echo esc_html__('No hay datos disponibles: faltan tablas del módulo Email Marketing.', 'flavor-chat-ia'); ?>
+            <?php echo esc_html__('No hay datos disponibles: faltan tablas del módulo Email Marketing.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </div>
     <?php endif; ?>
@@ -278,7 +278,7 @@ if ($tablas_email_disponibles) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value"><?php echo number_format($estadisticas['total_listas']); ?></span>
-                <span class="flavor-stat-label"><?php echo esc_html__('Total Listas', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php echo esc_html__('Total Listas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -288,7 +288,7 @@ if ($tablas_email_disponibles) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value"><?php echo number_format($estadisticas['total_suscriptores']); ?></span>
-                <span class="flavor-stat-label"><?php echo esc_html__('Total Suscriptores', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php echo esc_html__('Total Suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -298,7 +298,7 @@ if ($tablas_email_disponibles) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value"><?php echo number_format($estadisticas['promedio_apertura'], 1); ?>%</span>
-                <span class="flavor-stat-label"><?php echo esc_html__('Tasa Apertura Prom.', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php echo esc_html__('Tasa Apertura Prom.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -308,7 +308,7 @@ if ($tablas_email_disponibles) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value">+<?php echo number_format($estadisticas['nuevos_mes']); ?></span>
-                <span class="flavor-stat-label"><?php echo esc_html__('Nuevos Este Mes', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php echo esc_html__('Nuevos Este Mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
@@ -322,58 +322,58 @@ if ($tablas_email_disponibles) {
                     <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page'] ?? 'flavor-em-listas'); ?>">
 
                     <div class="flavor-filtro-grupo">
-                        <label for="buscar"><?php echo esc_html__('Buscar', 'flavor-chat-ia'); ?></label>
-                        <input type="text" id="buscar" name="buscar" value="<?php echo esc_attr($filtro_busqueda); ?>" placeholder="<?php echo esc_attr__('Nombre, descripción...', 'flavor-chat-ia'); ?>">
+                        <label for="buscar"><?php echo esc_html__('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                        <input type="text" id="buscar" name="buscar" value="<?php echo esc_attr($filtro_busqueda); ?>" placeholder="<?php echo esc_attr__('Nombre, descripción...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     </div>
 
                     <div class="flavor-filtro-grupo">
-                        <label for="tipo"><?php echo esc_html__('Tipo', 'flavor-chat-ia'); ?></label>
+                        <label for="tipo"><?php echo esc_html__('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select id="tipo" name="tipo">
-                            <option value=""><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></option>
-                            <option value="newsletter" <?php selected($filtro_tipo, 'newsletter'); ?>><?php echo esc_html__('Newsletter', 'flavor-chat-ia'); ?></option>
-                            <option value="segmento" <?php selected($filtro_tipo, 'segmento'); ?>><?php echo esc_html__('Segmento', 'flavor-chat-ia'); ?></option>
-                            <option value="automatica" <?php selected($filtro_tipo, 'automatica'); ?>><?php echo esc_html__('Automática', 'flavor-chat-ia'); ?></option>
-                            <option value="transaccional" <?php selected($filtro_tipo, 'transaccional'); ?>><?php echo esc_html__('Transaccional', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php echo esc_html__('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="newsletter" <?php selected($filtro_tipo, 'newsletter'); ?>><?php echo esc_html__('Newsletter', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="segmento" <?php selected($filtro_tipo, 'segmento'); ?>><?php echo esc_html__('Segmento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="automatica" <?php selected($filtro_tipo, 'automatica'); ?>><?php echo esc_html__('Automática', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="transaccional" <?php selected($filtro_tipo, 'transaccional'); ?>><?php echo esc_html__('Transaccional', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
 
                     <div class="flavor-filtro-grupo">
-                        <label for="estado"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></label>
+                        <label for="estado"><?php echo esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select id="estado" name="estado">
-                            <option value=""><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></option>
-                            <option value="activa" <?php selected($filtro_estado, 'activa'); ?>><?php echo esc_html__('Activa', 'flavor-chat-ia'); ?></option>
-                            <option value="pausada" <?php selected($filtro_estado, 'pausada'); ?>><?php echo esc_html__('Pausada', 'flavor-chat-ia'); ?></option>
-                            <option value="archivada" <?php selected($filtro_estado, 'archivada'); ?>><?php echo esc_html__('Archivada', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php echo esc_html__('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="activa" <?php selected($filtro_estado, 'activa'); ?>><?php echo esc_html__('Activa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="pausada" <?php selected($filtro_estado, 'pausada'); ?>><?php echo esc_html__('Pausada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="archivada" <?php selected($filtro_estado, 'archivada'); ?>><?php echo esc_html__('Archivada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
 
                     <div class="flavor-filtro-grupo">
-                        <label for="optin"><?php echo esc_html__('Doble Opt-in', 'flavor-chat-ia'); ?></label>
+                        <label for="optin"><?php echo esc_html__('Doble Opt-in', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select id="optin" name="optin">
-                            <option value=""><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></option>
-                            <option value="1" <?php selected($filtro_optin, '1'); ?>><?php echo esc_html__('Sí', 'flavor-chat-ia'); ?></option>
-                            <option value="0" <?php selected($filtro_optin, '0'); ?>><?php echo esc_html__('No', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php echo esc_html__('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="1" <?php selected($filtro_optin, '1'); ?>><?php echo esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="0" <?php selected($filtro_optin, '0'); ?>><?php echo esc_html__('No', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
 
                     <div class="flavor-filtro-grupo">
-                        <label for="orden"><?php echo esc_html__('Ordenar por', 'flavor-chat-ia'); ?></label>
+                        <label for="orden"><?php echo esc_html__('Ordenar por', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select id="orden" name="orden">
-                            <option value="suscriptores_desc" <?php selected($filtro_orden, 'suscriptores_desc'); ?>><?php echo esc_html__('Más suscriptores', 'flavor-chat-ia'); ?></option>
-                            <option value="suscriptores_asc" <?php selected($filtro_orden, 'suscriptores_asc'); ?>><?php echo esc_html__('Menos suscriptores', 'flavor-chat-ia'); ?></option>
-                            <option value="apertura_desc" <?php selected($filtro_orden, 'apertura_desc'); ?>><?php echo esc_html__('Mayor apertura', 'flavor-chat-ia'); ?></option>
-                            <option value="nombre_asc" <?php selected($filtro_orden, 'nombre_asc'); ?>><?php echo esc_html__('Nombre A-Z', 'flavor-chat-ia'); ?></option>
-                            <option value="fecha_desc" <?php selected($filtro_orden, 'fecha_desc'); ?>><?php echo esc_html__('Más recientes', 'flavor-chat-ia'); ?></option>
+                            <option value="suscriptores_desc" <?php selected($filtro_orden, 'suscriptores_desc'); ?>><?php echo esc_html__('Más suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="suscriptores_asc" <?php selected($filtro_orden, 'suscriptores_asc'); ?>><?php echo esc_html__('Menos suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="apertura_desc" <?php selected($filtro_orden, 'apertura_desc'); ?>><?php echo esc_html__('Mayor apertura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="nombre_asc" <?php selected($filtro_orden, 'nombre_asc'); ?>><?php echo esc_html__('Nombre A-Z', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="fecha_desc" <?php selected($filtro_orden, 'fecha_desc'); ?>><?php echo esc_html__('Más recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
 
                     <div class="flavor-filtro-acciones">
                         <button type="submit" class="button button-primary">
                             <span class="dashicons dashicons-search"></span>
-                            <?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <a href="<?php echo esc_url(admin_url('admin.php?page=' . ($_GET['page'] ?? 'flavor-em-listas'))); ?>" class="button">
-                            <?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </form>
@@ -384,7 +384,7 @@ if ($tablas_email_disponibles) {
                 <span>
                     <?php
                     printf(
-                        esc_html__('Mostrando %d-%d de %d listas', 'flavor-chat-ia'),
+                        esc_html__('Mostrando %d-%d de %d listas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         min($offset + 1, $total_items),
                         min($offset + $items_por_pagina, $total_items),
                         $total_items
@@ -397,10 +397,10 @@ if ($tablas_email_disponibles) {
             <?php if (empty($listas)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-list-view"></span>
-                    <h3><?php echo esc_html__('No se encontraron listas', 'flavor-chat-ia'); ?></h3>
-                    <p><?php echo esc_html__('Intenta ajustar los filtros o crea una nueva lista.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php echo esc_html__('No se encontraron listas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php echo esc_html__('Intenta ajustar los filtros o crea una nueva lista.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <button type="button" class="button button-primary button-hero em-btn-nueva-lista">
-                        <?php echo esc_html__('Crear Lista', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Crear Lista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             <?php else: ?>
@@ -426,7 +426,7 @@ if ($tablas_email_disponibles) {
                                     </span>
                                 </div>
                                 <?php if ($lista->doble_optin): ?>
-                                    <span class="flavor-optin-badge" title="<?php echo esc_attr__('Doble opt-in activado', 'flavor-chat-ia'); ?>">
+                                    <span class="flavor-optin-badge" title="<?php echo esc_attr__('Doble opt-in activado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                         <span class="dashicons dashicons-shield-alt"></span>
                                     </span>
                                 <?php endif; ?>
@@ -443,18 +443,18 @@ if ($tablas_email_disponibles) {
                                 <div class="flavor-lista-stats-main">
                                     <div class="flavor-lista-stat-big">
                                         <span class="flavor-stat-numero"><?php echo number_format($lista->total_suscriptores ?? 0); ?></span>
-                                        <span class="flavor-stat-etiqueta"><?php echo esc_html__('Suscriptores', 'flavor-chat-ia'); ?></span>
+                                        <span class="flavor-stat-etiqueta"><?php echo esc_html__('Suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </div>
                                     <div class="flavor-lista-metricas">
                                         <div class="flavor-metrica">
                                             <span class="dashicons dashicons-email-alt"></span>
                                             <strong><?php echo number_format($lista->tasa_apertura ?? 0, 1); ?>%</strong>
-                                            <span><?php echo esc_html__('Apertura', 'flavor-chat-ia'); ?></span>
+                                            <span><?php echo esc_html__('Apertura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         </div>
                                         <div class="flavor-metrica">
                                             <span class="dashicons dashicons-admin-links"></span>
                                             <strong><?php echo number_format($lista->tasa_clics ?? 0, 1); ?>%</strong>
-                                            <span><?php echo esc_html__('Clics', 'flavor-chat-ia'); ?></span>
+                                            <span><?php echo esc_html__('Clics', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         </div>
                                     </div>
                                 </div>
@@ -462,7 +462,7 @@ if ($tablas_email_disponibles) {
                                 <!-- Barra de suscriptores activos -->
                                 <div class="flavor-lista-activos">
                                     <div class="flavor-activos-header">
-                                        <span><?php echo esc_html__('Suscriptores activos', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Suscriptores activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         <strong><?php echo $porcentaje_activos; ?>%</strong>
                                     </div>
                                     <div class="flavor-progress-bar">
@@ -478,7 +478,7 @@ if ($tablas_email_disponibles) {
                                 <div class="flavor-lista-info">
                                     <div class="flavor-info-item">
                                         <span class="dashicons dashicons-megaphone"></span>
-                                        <span><?php echo number_format($lista->campanas_enviadas ?? 0); ?> <?php echo esc_html__('campañas', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo number_format($lista->campanas_enviadas ?? 0); ?> <?php echo esc_html__('campañas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </div>
                                     <?php if (!empty($lista->ultima_campana)): ?>
                                     <div class="flavor-info-item">
@@ -491,7 +491,7 @@ if ($tablas_email_disponibles) {
                                 <!-- Shortcode -->
                                 <div class="flavor-lista-shortcode">
                                     <code>[em_formulario_suscripcion lista="<?php echo esc_attr($lista->slug); ?>"]</code>
-                                    <button type="button" class="flavor-copiar-shortcode" data-shortcode='[em_formulario_suscripcion lista="<?php echo esc_attr($lista->slug); ?>"]' title="<?php echo esc_attr__('Copiar shortcode', 'flavor-chat-ia'); ?>">
+                                    <button type="button" class="flavor-copiar-shortcode" data-shortcode='[em_formulario_suscripcion lista="<?php echo esc_attr($lista->slug); ?>"]' title="<?php echo esc_attr__('Copiar shortcode', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                         <span class="dashicons dashicons-clipboard"></span>
                                     </button>
                                 </div>
@@ -500,7 +500,7 @@ if ($tablas_email_disponibles) {
                             <div class="flavor-lista-footer">
                                 <a href="<?php echo admin_url('admin.php?page=flavor-em-suscriptores&lista=' . $lista->id); ?>" class="button button-small">
                                     <span class="dashicons dashicons-groups"></span>
-                                    <?php echo esc_html__('Ver suscriptores', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Ver suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                                 <button type="button" class="button button-small em-btn-editar-lista" data-id="<?php echo esc_attr($lista->id); ?>">
                                     <span class="dashicons dashicons-edit"></span>
@@ -524,8 +524,8 @@ if ($tablas_email_disponibles) {
                             'format' => '',
                             'current' => $pagina_actual,
                             'total' => $total_paginas,
-                            'prev_text' => '&laquo; ' . __('Anterior', 'flavor-chat-ia'),
-                            'next_text' => __('Siguiente', 'flavor-chat-ia') . ' &raquo;',
+                            'prev_text' => '&laquo; ' . __('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'next_text' => __('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN) . ' &raquo;',
                             'type' => 'list'
                         ];
                         echo paginate_links($pagination_args);
@@ -541,7 +541,7 @@ if ($tablas_email_disponibles) {
             <div class="flavor-sidebar-card">
                 <h3>
                     <span class="dashicons dashicons-star-filled"></span>
-                    <?php echo esc_html__('Listas Más Grandes', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Listas Más Grandes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <?php if (!empty($top_listas)): ?>
                     <ul class="flavor-top-list">
@@ -557,7 +557,7 @@ if ($tablas_email_disponibles) {
                         <?php endforeach; ?>
                     </ul>
                 <?php else: ?>
-                    <p class="flavor-no-data"><?php echo esc_html__('Sin datos disponibles', 'flavor-chat-ia'); ?></p>
+                    <p class="flavor-no-data"><?php echo esc_html__('Sin datos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php endif; ?>
             </div>
 
@@ -565,7 +565,7 @@ if ($tablas_email_disponibles) {
             <div class="flavor-sidebar-card">
                 <h3>
                     <span class="dashicons dashicons-chart-pie"></span>
-                    <?php echo esc_html__('Por Tipo', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Por Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <canvas id="graficoTipos" height="200"></canvas>
             </div>
@@ -574,24 +574,24 @@ if ($tablas_email_disponibles) {
             <div class="flavor-sidebar-card flavor-sidebar-gdpr">
                 <h3>
                     <span class="dashicons dashicons-shield"></span>
-                    <?php echo esc_html__('Cumplimiento GDPR', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Cumplimiento GDPR', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <ul class="flavor-gdpr-checklist">
                     <li>
                         <span class="dashicons dashicons-yes-alt"></span>
-                        <?php echo esc_html__('Doble opt-in disponible', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Doble opt-in disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </li>
                     <li>
                         <span class="dashicons dashicons-yes-alt"></span>
-                        <?php echo esc_html__('Desuscripción en 1 clic', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Desuscripción en 1 clic', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </li>
                     <li>
                         <span class="dashicons dashicons-yes-alt"></span>
-                        <?php echo esc_html__('Registro de consentimiento', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Registro de consentimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </li>
                     <li>
                         <span class="dashicons dashicons-yes-alt"></span>
-                        <?php echo esc_html__('Exportación de datos', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Exportación de datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </li>
                 </ul>
             </div>
@@ -600,20 +600,20 @@ if ($tablas_email_disponibles) {
             <div class="flavor-sidebar-card">
                 <h3>
                     <span class="dashicons dashicons-admin-tools"></span>
-                    <?php echo esc_html__('Acciones Rápidas', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Acciones Rápidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <div class="flavor-quick-actions">
                     <a href="<?php echo admin_url('admin.php?page=flavor-em-importar'); ?>" class="button button-secondary">
                         <span class="dashicons dashicons-upload"></span>
-                        <?php echo esc_html__('Importar CSV', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Importar CSV', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="<?php echo admin_url('admin.php?page=flavor-em-exportar'); ?>" class="button button-secondary">
                         <span class="dashicons dashicons-download"></span>
-                        <?php echo esc_html__('Exportar Listas', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Exportar Listas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="<?php echo admin_url('admin.php?page=flavor-em-limpiar'); ?>" class="button button-secondary">
                         <span class="dashicons dashicons-trash"></span>
-                        <?php echo esc_html__('Limpiar Inactivos', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Limpiar Inactivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </div>
@@ -626,53 +626,53 @@ if ($tablas_email_disponibles) {
     <div class="flavor-modal-overlay em-modal-close"></div>
     <div class="flavor-modal-content">
         <button type="button" class="flavor-modal-close-btn em-modal-close">&times;</button>
-        <h3 id="em-modal-lista-titulo"><?php echo esc_html__('Nueva Lista', 'flavor-chat-ia'); ?></h3>
+        <h3 id="em-modal-lista-titulo"><?php echo esc_html__('Nueva Lista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
         <form id="em-form-lista">
             <input type="hidden" name="lista_id" id="em-lista-id" value="">
 
             <div class="flavor-form-grid">
                 <div class="flavor-form-group flavor-form-full">
-                    <label for="em-lista-nombre"><?php echo esc_html__('Nombre de la lista', 'flavor-chat-ia'); ?> *</label>
+                    <label for="em-lista-nombre"><?php echo esc_html__('Nombre de la lista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <input type="text" id="em-lista-nombre" name="nombre" required>
                 </div>
 
                 <div class="flavor-form-group flavor-form-full">
-                    <label for="em-lista-descripcion"><?php echo esc_html__('Descripción', 'flavor-chat-ia'); ?></label>
+                    <label for="em-lista-descripcion"><?php echo esc_html__('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <textarea id="em-lista-descripcion" name="descripcion" rows="3"></textarea>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="em-lista-tipo"><?php echo esc_html__('Tipo', 'flavor-chat-ia'); ?></label>
+                    <label for="em-lista-tipo"><?php echo esc_html__('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="em-lista-tipo" name="tipo">
-                        <option value="newsletter"><?php echo esc_html__('Newsletter', 'flavor-chat-ia'); ?></option>
-                        <option value="segmento"><?php echo esc_html__('Segmento', 'flavor-chat-ia'); ?></option>
-                        <option value="automatica"><?php echo esc_html__('Automática', 'flavor-chat-ia'); ?></option>
-                        <option value="transaccional"><?php echo esc_html__('Transaccional', 'flavor-chat-ia'); ?></option>
+                        <option value="newsletter"><?php echo esc_html__('Newsletter', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="segmento"><?php echo esc_html__('Segmento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="automatica"><?php echo esc_html__('Automática', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="transaccional"><?php echo esc_html__('Transaccional', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="em-lista-estado"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></label>
+                    <label for="em-lista-estado"><?php echo esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="em-lista-estado" name="estado">
-                        <option value="activa"><?php echo esc_html__('Activa', 'flavor-chat-ia'); ?></option>
-                        <option value="pausada"><?php echo esc_html__('Pausada', 'flavor-chat-ia'); ?></option>
-                        <option value="archivada"><?php echo esc_html__('Archivada', 'flavor-chat-ia'); ?></option>
+                        <option value="activa"><?php echo esc_html__('Activa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="pausada"><?php echo esc_html__('Pausada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="archivada"><?php echo esc_html__('Archivada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div class="flavor-form-group flavor-form-full">
                     <label class="flavor-checkbox-label">
                         <input type="checkbox" name="doble_optin" id="em-lista-doble-optin" value="1" checked>
-                        <?php echo esc_html__('Requerir confirmación por email (doble opt-in)', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Requerir confirmación por email (doble opt-in)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
-                    <p class="description"><?php echo esc_html__('Recomendado para cumplir con GDPR y mejorar la calidad de la lista.', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php echo esc_html__('Recomendado para cumplir con GDPR y mejorar la calidad de la lista.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             </div>
 
             <div class="flavor-modal-actions">
-                <button type="button" class="button em-modal-close"><?php echo esc_html__('Cancelar', 'flavor-chat-ia'); ?></button>
-                <button type="submit" class="button button-primary"><?php echo esc_html__('Guardar', 'flavor-chat-ia'); ?></button>
+                <button type="button" class="button em-modal-close"><?php echo esc_html__('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                <button type="submit" class="button button-primary"><?php echo esc_html__('Guardar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
             </div>
         </form>
     </div>
@@ -1472,7 +1472,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Abrir modal nueva lista
     document.querySelectorAll('.em-btn-nueva-lista').forEach(btn => {
         btn.addEventListener('click', function() {
-            document.getElementById('em-modal-lista-titulo').textContent = '<?php echo esc_js(__('Nueva Lista', 'flavor-chat-ia')); ?>';
+            document.getElementById('em-modal-lista-titulo').textContent = '<?php echo esc_js(__('Nueva Lista', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
             document.getElementById('em-form-lista').reset();
             document.getElementById('em-lista-id').value = '';
             document.getElementById('em-modal-lista').style.display = 'flex';
@@ -1520,7 +1520,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Eliminar lista
     document.querySelectorAll('.em-btn-eliminar-lista').forEach(btn => {
         btn.addEventListener('click', function() {
-            if (confirm('<?php echo esc_js(__('¿Estás seguro de eliminar esta lista? Esta acción no se puede deshacer.', 'flavor-chat-ia')); ?>')) {
+            if (confirm('<?php echo esc_js(__('¿Estás seguro de eliminar esta lista? Esta acción no se puede deshacer.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>')) {
                 const id = this.dataset.id;
                 window.location.href = '<?php echo admin_url('admin.php?page=flavor-em-listas&eliminar='); ?>' + id + '&_wpnonce=<?php echo wp_create_nonce('eliminar_lista'); ?>';
             }

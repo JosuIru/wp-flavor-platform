@@ -55,13 +55,13 @@ $overlay_opacity = flavor_design_get('hero_overlay_opacity', 0.6);
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                         </svg>
-                                        <?php _e('Origen', 'flavor-chat-ia'); ?>
+                                        <?php _e('Origen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </span>
                                 </label>
                                 <input
                                     type="text"
                                     name="origen"
-                                    placeholder="<?php _e('¿Desde dónde viajas?', 'flavor-chat-ia'); ?>"
+                                    placeholder="<?php _e('¿Desde dónde viajas?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                                     class="w-full px-4 py-3 border rounded-lg focus:outline-none transition-colors"
                                     style="border-color: #e5e7eb; font-size: var(--flavor-font-size-base);"
                                     onfocus="this.style.borderColor='var(--flavor-primary)'"
@@ -76,13 +76,13 @@ $overlay_opacity = flavor_design_get('hero_overlay_opacity', 0.6);
                                         <svg class="w-5 h-5 mr-2" style="color: var(--flavor-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
                                         </svg>
-                                        <?php _e('Destino', 'flavor-chat-ia'); ?>
+                                        <?php _e('Destino', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </span>
                                 </label>
                                 <input
                                     type="text"
                                     name="destino"
-                                    placeholder="<?php _e('¿A dónde vas?', 'flavor-chat-ia'); ?>"
+                                    placeholder="<?php _e('¿A dónde vas?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                                     class="w-full px-4 py-3 border rounded-lg focus:outline-none transition-colors"
                                     style="border-color: #e5e7eb; font-size: var(--flavor-font-size-base);"
                                     onfocus="this.style.borderColor='var(--flavor-primary)'"
@@ -97,7 +97,7 @@ $overlay_opacity = flavor_design_get('hero_overlay_opacity', 0.6);
                                         <svg class="w-5 h-5 mr-2" style="color: var(--flavor-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                         </svg>
-                                        <?php _e('Fecha', 'flavor-chat-ia'); ?>
+                                        <?php _e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </span>
                                 </label>
                                 <input
@@ -117,14 +117,14 @@ $overlay_opacity = flavor_design_get('hero_overlay_opacity', 0.6);
                                         <svg class="w-5 h-5 mr-2" style="color: var(--flavor-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                         </svg>
-                                        <?php _e('Pasajeros', 'flavor-chat-ia'); ?>
+                                        <?php _e('Pasajeros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </span>
                                 </label>
                                 <select name="pasajeros" class="w-full px-4 py-3 border rounded-lg focus:outline-none transition-colors" style="border-color: #e5e7eb; font-size: var(--flavor-font-size-base);" onfocus="this.style.borderColor='var(--flavor-primary)'" onblur="this.style.borderColor='#e5e7eb'">
-                                    <option value="1"><?php echo esc_html__('1 pasajero', 'flavor-chat-ia'); ?></option>
-                                    <option value="2"><?php echo esc_html__('2 pasajeros', 'flavor-chat-ia'); ?></option>
-                                    <option value="3"><?php echo esc_html__('3 pasajeros', 'flavor-chat-ia'); ?></option>
-                                    <option value="4"><?php echo esc_html__('4+ pasajeros', 'flavor-chat-ia'); ?></option>
+                                    <option value="1"><?php echo esc_html__('1 pasajero', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                    <option value="2"><?php echo esc_html__('2 pasajeros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                    <option value="3"><?php echo esc_html__('3 pasajeros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                    <option value="4"><?php echo esc_html__('4+ pasajeros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                 </select>
                             </div>
                         </div>
@@ -135,7 +135,7 @@ $overlay_opacity = flavor_design_get('hero_overlay_opacity', 0.6);
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                 </svg>
-                                <?php _e('Buscar Viajes', 'flavor-chat-ia'); ?>
+                                <?php _e('Buscar Viajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </div>
                     </form>
@@ -144,15 +144,15 @@ $overlay_opacity = flavor_design_get('hero_overlay_opacity', 0.6);
                     <div class="grid grid-cols-3 gap-6 mt-8 pt-8 border-t" style="border-color: #e5e7eb;">
                         <div class="text-center">
                             <div class="text-3xl font-bold" style="color: var(--flavor-primary);">2,450</div>
-                            <div class="text-sm" style="color: var(--flavor-text-muted);"><?php _e('Viajes activos', 'flavor-chat-ia'); ?></div>
+                            <div class="text-sm" style="color: var(--flavor-text-muted);"><?php _e('Viajes activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                         </div>
                         <div class="text-center">
                             <div class="text-3xl font-bold" style="color: var(--flavor-primary);">8,340</div>
-                            <div class="text-sm" style="color: var(--flavor-text-muted);"><?php _e('Usuarios', 'flavor-chat-ia'); ?></div>
+                            <div class="text-sm" style="color: var(--flavor-text-muted);"><?php _e('Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                         </div>
                         <div class="text-center">
-                            <div class="text-3xl font-bold" style="color: var(--flavor-primary);"><?php echo esc_html__('€12.5k', 'flavor-chat-ia'); ?></div>
-                            <div class="text-sm" style="color: var(--flavor-text-muted);"><?php _e('Ahorrados', 'flavor-chat-ia'); ?></div>
+                            <div class="text-3xl font-bold" style="color: var(--flavor-primary);"><?php echo esc_html__('€12.5k', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                            <div class="text-sm" style="color: var(--flavor-text-muted);"><?php _e('Ahorrados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                         </div>
                     </div>
                 </div>

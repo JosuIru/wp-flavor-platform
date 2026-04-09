@@ -27,8 +27,8 @@ class Flavor_Multimedia_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
     public function __construct() {
         global $wpdb;
         $this->prefix_tabla = $wpdb->prefix . 'flavor_multimedia_';
-        $this->title = __('Multimedia', 'flavor-chat-ia');
-        $this->description = __('Galería de fotos y vídeos', 'flavor-chat-ia');
+        $this->title = __('Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Galería de fotos y vídeos', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         parent::__construct([
             'id' => $this->widget_id,
@@ -84,14 +84,14 @@ class Flavor_Multimedia_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             [
                 'icon' => 'dashicons-format-gallery',
                 'valor' => $total_albumes,
-                'label' => __('Álbumes', 'flavor-chat-ia'),
+                'label' => __('Álbumes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'primary',
                 'url' => $es_admin ? admin_url('admin.php?page=multimedia-albumes') : Flavor_Chat_Helpers::get_action_url('multimedia', 'galeria'),
             ],
             [
                 'icon' => 'dashicons-images-alt2',
                 'valor' => $total_archivos,
-                'label' => __('Archivos', 'flavor-chat-ia'),
+                'label' => __('Archivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'info',
                 'url' => $es_admin ? admin_url('admin.php?page=multimedia-galeria') : Flavor_Chat_Helpers::get_action_url('multimedia', 'galeria'),
             ],
@@ -101,7 +101,7 @@ class Flavor_Multimedia_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $stats[] = [
                 'icon' => 'dashicons-upload',
                 'valor' => $mis_archivos,
-                'label' => __('Mis archivos', 'flavor-chat-ia'),
+                'label' => __('Mis archivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'success',
                 'url' => $es_admin ? admin_url('admin.php?page=multimedia-galeria&autor=' . $user_id) : Flavor_Chat_Helpers::get_action_url('multimedia', 'mi-galeria'),
             ];
@@ -112,10 +112,10 @@ class Flavor_Multimedia_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats,
             'items' => $items,
-            'empty_state' => __('No hay contenido multimedia disponible', 'flavor-chat-ia'),
+            'empty_state' => __('No hay contenido multimedia disponible', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => __('Ver galería', 'flavor-chat-ia'),
+                    'label' => __('Ver galería', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => $es_admin ? admin_url('admin.php?page=multimedia-galeria') : Flavor_Chat_Helpers::get_action_url('multimedia', 'galeria'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
@@ -146,7 +146,7 @@ class Flavor_Multimedia_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $items[] = [
                 'icon' => 'dashicons-format-gallery',
                 'title' => wp_trim_words($album->titulo, 4, '...'),
-                'meta' => sprintf(_n('%d archivo', '%d archivos', $album->total_archivos ?? 0, 'flavor-chat-ia'), $album->total_archivos ?? 0),
+                'meta' => sprintf(_n('%d archivo', '%d archivos', $album->total_archivos ?? 0, FLAVOR_PLATFORM_TEXT_DOMAIN), $album->total_archivos ?? 0),
                 'url' => $es_admin
                     ? admin_url('admin.php?page=multimedia-albumes&album=' . $album->id)
                     : add_query_arg('album_id', $album->id, Flavor_Chat_Helpers::get_action_url('multimedia', 'mi-galeria')),

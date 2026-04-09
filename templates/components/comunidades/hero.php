@@ -86,20 +86,20 @@ $total_actividad_mostrar = $estadisticas_comunidades['total_actividad'] > 0
             </div>
 
             <h1 class="mb-6" style="color: white; font-size: 3rem; font-weight: 800; line-height: 1.1;">
-                <?php echo esc_html($titulo ?? __('Comunidades', 'flavor-chat-ia')); ?>
+                <?php echo esc_html($titulo ?? __('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
             </h1>
 
             <p class="text-xl md:text-2xl mb-12" style="color: rgba(255,255,255,0.9); max-width: 600px; margin-left: auto; margin-right: auto;">
-                <?php echo esc_html($subtitulo ?? __('Encuentra tu tribu y conecta con personas que comparten tus intereses', 'flavor-chat-ia')); ?>
+                <?php echo esc_html($subtitulo ?? __('Encuentra tu tribu y conecta con personas que comparten tus intereses', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
             </p>
 
             <!-- Botones de accion -->
             <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
                 <a href="#comunidades" class="flavor-button flavor-button-primary px-8 py-3 text-lg font-bold rounded-full shadow-lg hover:shadow-xl transition-all" style="background: white; color: var(--flavor-primary);">
-                    <?php esc_html_e('Explorar Comunidades', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Explorar Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="#crear" class="flavor-button px-8 py-3 text-lg font-bold rounded-full transition-all" style="background: rgba(255,255,255,0.15); color: white; border: 2px solid rgba(255,255,255,0.3); backdrop-filter: blur(10px);">
-                    <?php esc_html_e('Crear Comunidad', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Crear Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
@@ -110,7 +110,7 @@ $total_actividad_mostrar = $estadisticas_comunidades['total_actividad'] > 0
                         <?php echo esc_html($total_comunidades_mostrar); ?>+
                     </div>
                     <div class="text-sm font-medium" style="color: rgba(255,255,255,0.75);">
-                        <?php esc_html_e('Comunidades', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </div>
                 </div>
                 <div class="text-center">
@@ -118,7 +118,7 @@ $total_actividad_mostrar = $estadisticas_comunidades['total_actividad'] > 0
                         <?php echo esc_html($total_miembros_mostrar); ?>+
                     </div>
                     <div class="text-sm font-medium" style="color: rgba(255,255,255,0.75);">
-                        <?php esc_html_e('Miembros', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </div>
                 </div>
                 <div class="text-center">
@@ -126,7 +126,7 @@ $total_actividad_mostrar = $estadisticas_comunidades['total_actividad'] > 0
                         <?php echo esc_html($total_actividad_mostrar); ?>+
                     </div>
                     <div class="text-sm font-medium" style="color: rgba(255,255,255,0.75);">
-                        <?php esc_html_e('Publicaciones', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </div>
                 </div>
             </div>

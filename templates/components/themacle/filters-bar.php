@@ -42,7 +42,7 @@ if ( is_wp_error( $terminos ) || empty( $terminos ) ) {
     return;
 }
 
-$texto_todos        = __( 'Todos', 'flavor-chat-ia' );
+$texto_todos        = __( 'Todos', FLAVOR_PLATFORM_TEXT_DOMAIN );
 $estilos_permitidos = array( 'underline', 'pills', 'dropdown' );
 if ( ! in_array( $estilo, $estilos_permitidos, true ) ) {
     $estilo = 'underline';
@@ -51,7 +51,7 @@ if ( ! in_array( $estilo, $estilos_permitidos, true ) ) {
 
 <nav
     class="flavor-filters-bar w-full <?php echo esc_attr( $component_classes ); ?>"
-    aria-label="<?php echo esc_attr__( 'Filtros', 'flavor-chat-ia' ); ?>"
+    aria-label="<?php echo esc_attr__( 'Filtros', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
     data-taxonomy="<?php echo esc_attr( $taxonomia ); ?>"
     data-style="<?php echo esc_attr( $estilo ); ?>"
 >
@@ -116,7 +116,7 @@ if ( ! in_array( $estilo, $estilos_permitidos, true ) ) {
         ?>
         <div class="flavor-filters-bar__dropdown inline-block w-full max-w-xs">
             <label for="<?php echo esc_attr( $identificador_select ); ?>" class="sr-only">
-                <?php echo esc_html__( 'Filtrar por', 'flavor-chat-ia' ); ?>
+                <?php echo esc_html__( 'Filtrar por', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
             </label>
             <select
                 id="<?php echo esc_attr( $identificador_select ); ?>"

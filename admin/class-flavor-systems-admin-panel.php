@@ -125,10 +125,10 @@ class Flavor_Systems_Admin_Panel {
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_systems_admin'),
             'i18n' => [
-                'loading' => __('Cargando...', 'flavor-chat-ia'),
-                'error' => __('Error al cargar datos', 'flavor-chat-ia'),
-                'success' => __('Operación completada', 'flavor-chat-ia'),
-                'confirm_optimize' => __('¿Estás seguro de optimizar el sistema?', 'flavor-chat-ia'),
+                'loading' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al cargar datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'success' => __('Operación completada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirm_optimize' => __('¿Estás seguro de optimizar el sistema?', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -139,22 +139,22 @@ class Flavor_Systems_Admin_Panel {
     public function render_admin_page() {
         ?>
         <div class="wrap flavor-systems-panel">
-            <h1><?php _e('Flavor Systems V3 - Panel de Control', 'flavor-chat-ia'); ?></h1>
+            <h1><?php _e('Flavor Systems V3 - Panel de Control', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
 
             <div class="flavor-systems-header">
                 <div class="system-version">
                     <span class="version-badge">v3.0.0</span>
-                    <span class="status-badge status-active"><?php _e('Activo', 'flavor-chat-ia'); ?></span>
+                    <span class="status-badge status-active"><?php _e('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
             <div id="flavor-tabs" class="flavor-admin-tabs">
                 <ul>
-                    <li><a href="#tab-overview"><?php _e('Vista General', 'flavor-chat-ia'); ?></a></li>
-                    <li><a href="#tab-notifications"><?php _e('Notificaciones', 'flavor-chat-ia'); ?></a></li>
-                    <li><a href="#tab-pages"><?php _e('Páginas V3', 'flavor-chat-ia'); ?></a></li>
-                    <li><a href="#tab-menus"><?php _e('Menús', 'flavor-chat-ia'); ?></a></li>
-                    <li><a href="#tab-dependencies"><?php _e('Dependencias', 'flavor-chat-ia'); ?></a></li>
+                    <li><a href="#tab-overview"><?php _e('Vista General', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a></li>
+                    <li><a href="#tab-notifications"><?php _e('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a></li>
+                    <li><a href="#tab-pages"><?php _e('Páginas V3', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a></li>
+                    <li><a href="#tab-menus"><?php _e('Menús', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a></li>
+                    <li><a href="#tab-dependencies"><?php _e('Dependencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a></li>
                 </ul>
 
                 <!-- Tab: Vista General -->
@@ -197,25 +197,25 @@ class Flavor_Systems_Admin_Panel {
             <div class="system-card">
                 <div class="card-header">
                     <span class="dashicons dashicons-bell"></span>
-                    <h3><?php _e('Notification Center', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Notification Center', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="card-body">
                     <div class="stat-row">
-                        <span class="stat-label"><?php _e('Total Notificaciones:', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('Total Notificaciones:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="stat-value"><?php echo number_format($stats['notifications']['total']); ?></span>
                     </div>
                     <div class="stat-row">
-                        <span class="stat-label"><?php _e('No Leídas:', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('No Leídas:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="stat-value highlight"><?php echo number_format($stats['notifications']['unread']); ?></span>
                     </div>
                     <div class="stat-row">
-                        <span class="stat-label"><?php _e('Última 24h:', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('Última 24h:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="stat-value"><?php echo number_format($stats['notifications']['last_24h']); ?></span>
                     </div>
                 </div>
                 <div class="card-footer">
                     <span class="status-indicator status-active"></span>
-                    <span><?php _e('Activo y Funcionando', 'flavor-chat-ia'); ?></span>
+                    <span><?php _e('Activo y Funcionando', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
@@ -223,25 +223,25 @@ class Flavor_Systems_Admin_Panel {
             <div class="system-card">
                 <div class="card-header">
                     <span class="dashicons dashicons-admin-page"></span>
-                    <h3><?php _e('Page Creator V3', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Page Creator V3', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="card-body">
                     <div class="stat-row">
-                        <span class="stat-label"><?php _e('Módulos Migrados:', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('Módulos Migrados:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="stat-value"><?php echo $stats['pages']['modules_migrated']; ?></span>
                     </div>
                     <div class="stat-row">
-                        <span class="stat-label"><?php _e('Páginas Creadas:', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('Páginas Creadas:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="stat-value"><?php echo $stats['pages']['total_pages']; ?></span>
                     </div>
                     <div class="stat-row">
-                        <span class="stat-label"><?php _e('Reducción de Código:', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('Reducción de Código:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="stat-value success">-81%</span>
                     </div>
                 </div>
                 <div class="card-footer">
                     <span class="status-indicator status-active"></span>
-                    <span><?php _e('Sistema Modular Activo', 'flavor-chat-ia'); ?></span>
+                    <span><?php _e('Sistema Modular Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
@@ -249,25 +249,25 @@ class Flavor_Systems_Admin_Panel {
             <div class="system-card">
                 <div class="card-header">
                     <span class="dashicons dashicons-menu"></span>
-                    <h3><?php _e('Menu Manager', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Menu Manager', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="card-body">
                     <div class="stat-row">
-                        <span class="stat-label"><?php _e('Menús Activos:', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('Menús Activos:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="stat-value"><?php echo $stats['menus']['active_menus']; ?></span>
                     </div>
                     <div class="stat-row">
-                        <span class="stat-label"><?php _e('Categorías:', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('Categorías:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="stat-value">9</span>
                     </div>
                     <div class="stat-row">
-                        <span class="stat-label"><?php _e('Auto-generación:', 'flavor-chat-ia'); ?></span>
-                        <span class="stat-value success"><?php _e('Habilitada', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('Auto-generación:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                        <span class="stat-value success"><?php _e('Habilitada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="card-footer">
                     <span class="status-indicator status-active"></span>
-                    <span><?php _e('Generación Automática', 'flavor-chat-ia'); ?></span>
+                    <span><?php _e('Generación Automática', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
@@ -275,32 +275,32 @@ class Flavor_Systems_Admin_Panel {
             <div class="system-card">
                 <div class="card-header">
                     <span class="dashicons dashicons-networking"></span>
-                    <h3><?php _e('Dependency Resolver', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Dependency Resolver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="card-body">
                     <div class="stat-row">
-                        <span class="stat-label"><?php _e('Módulos con Deps:', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('Módulos con Deps:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="stat-value"><?php echo $stats['dependencies']['modules_with_deps']; ?></span>
                     </div>
                     <div class="stat-row">
-                        <span class="stat-label"><?php _e('Conflictos:', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('Conflictos:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="stat-value"><?php echo $stats['dependencies']['conflicts']; ?></span>
                     </div>
                     <div class="stat-row">
-                        <span class="stat-label"><?php _e('Auto-resolución:', 'flavor-chat-ia'); ?></span>
-                        <span class="stat-value success"><?php _e('Activa', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('Auto-resolución:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                        <span class="stat-value success"><?php _e('Activa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="card-footer">
                     <span class="status-indicator status-active"></span>
-                    <span><?php _e('Validación Activa', 'flavor-chat-ia'); ?></span>
+                    <span><?php _e('Validación Activa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
         </div>
 
         <!-- Gráficos -->
         <div class="flavor-charts-section">
-            <h2><?php _e('Estadísticas en Tiempo Real', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Estadísticas en Tiempo Real', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <div class="charts-grid">
                 <div class="chart-container">
                     <canvas id="notifications-chart"></canvas>
@@ -345,25 +345,25 @@ class Flavor_Systems_Admin_Panel {
         ?>
         <div class="notifications-manager">
             <div class="manager-header">
-                <h2><?php _e('Gestión de Notificaciones', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Gestión de Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <div class="header-actions">
                     <button class="button button-secondary" id="clear-old-notifications">
-                        <?php _e('Limpiar Antiguas (>30 días)', 'flavor-chat-ia'); ?>
+                        <?php _e('Limpiar Antiguas (>30 días)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button class="button button-secondary" id="clear-notification-cache">
-                        <?php _e('Limpiar Caché', 'flavor-chat-ia'); ?>
+                        <?php _e('Limpiar Caché', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </div>
 
             <div class="stats-grid">
                 <div class="stat-box">
-                    <h3><?php _e('Por Tipo', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Por Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <table class="wp-list-table widefat striped">
                         <thead>
                             <tr>
-                                <th><?php _e('Tipo', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Cantidad', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -382,12 +382,12 @@ class Flavor_Systems_Admin_Panel {
                 </div>
 
                 <div class="stat-box">
-                    <h3><?php _e('Top 10 Módulos', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Top 10 Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <table class="wp-list-table widefat striped">
                         <thead>
                             <tr>
-                                <th><?php _e('Módulo', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Notificaciones', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -403,17 +403,17 @@ class Flavor_Systems_Admin_Panel {
             </div>
 
             <div class="recent-notifications-section">
-                <h3><?php _e('Últimas 20 Notificaciones', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Últimas 20 Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <table class="wp-list-table widefat striped">
                     <thead>
                         <tr>
-                            <th><?php _e('ID', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Usuario', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Título', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Tipo', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Módulo', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -431,9 +431,9 @@ class Flavor_Systems_Admin_Panel {
                             <td><?php echo mysql2date('d/m/Y H:i', $notif->created_at); ?></td>
                             <td>
                                 <?php if ($notif->is_read): ?>
-                                    <span class="status-badge status-read"><?php _e('Leída', 'flavor-chat-ia'); ?></span>
+                                    <span class="status-badge status-read"><?php _e('Leída', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php else: ?>
-                                    <span class="status-badge status-unread"><?php _e('No leída', 'flavor-chat-ia'); ?></span>
+                                    <span class="status-badge status-unread"><?php _e('No leída', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php endif; ?>
                             </td>
                         </tr>
@@ -450,7 +450,7 @@ class Flavor_Systems_Admin_Panel {
      */
     private function render_pages_tab() {
         if (!class_exists('Flavor_Page_Creator_V3')) {
-            echo '<p>' . __('Page Creator V3 no está disponible', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('Page Creator V3 no está disponible', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -459,16 +459,16 @@ class Flavor_Systems_Admin_Panel {
         ?>
         <div class="pages-v3-manager">
             <div class="manager-header">
-                <h2><?php _e('Estado de Migración a V3', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Estado de Migración a V3', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <div class="header-actions">
                     <button class="button button-primary" id="regenerate-all-pages">
-                        <?php _e('Regenerar Todas las Páginas', 'flavor-chat-ia'); ?>
+                        <?php _e('Regenerar Todas las Páginas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </div>
 
             <div class="migration-progress">
-                <h3><?php _e('Progreso de Migración', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Progreso de Migración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div class="progress-bar-container">
                     <div class="progress-bar" style="width: <?php echo $modules_status['migration_percentage']; ?>%;">
                         <?php echo $modules_status['migration_percentage']; ?>%
@@ -477,7 +477,7 @@ class Flavor_Systems_Admin_Panel {
                 <p>
                     <?php
                     printf(
-                        __('%d de %d módulos migrados', 'flavor-chat-ia'),
+                        __('%d de %d módulos migrados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $modules_status['migrated_count'],
                         $modules_status['total_count']
                     );
@@ -488,10 +488,10 @@ class Flavor_Systems_Admin_Panel {
             <table class="wp-list-table widefat striped">
                 <thead>
                     <tr>
-                        <th><?php _e('Módulo', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Páginas', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Páginas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -500,19 +500,19 @@ class Flavor_Systems_Admin_Panel {
                         <td><strong><?php echo esc_html($module_info['name']); ?></strong></td>
                         <td>
                             <?php if ($module_info['is_migrated']): ?>
-                                <span class="status-badge status-active"><?php _e('Migrado V3', 'flavor-chat-ia'); ?></span>
+                                <span class="status-badge status-active"><?php _e('Migrado V3', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <?php else: ?>
-                                <span class="status-badge status-pending"><?php _e('Pendiente', 'flavor-chat-ia'); ?></span>
+                                <span class="status-badge status-pending"><?php _e('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <?php endif; ?>
                         </td>
                         <td><?php echo $module_info['page_count']; ?> páginas</td>
                         <td>
                             <?php if ($module_info['is_migrated']): ?>
                                 <button class="button button-small" data-module="<?php echo esc_attr($module_info['id']); ?>" onclick="regenerateModulePages(this)">
-                                    <?php _e('Regenerar', 'flavor-chat-ia'); ?>
+                                    <?php _e('Regenerar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             <?php else: ?>
-                                <span class="description"><?php _e('Requiere migración manual', 'flavor-chat-ia'); ?></span>
+                                <span class="description"><?php _e('Requiere migración manual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <?php endif; ?>
                         </td>
                     </tr>
@@ -530,26 +530,26 @@ class Flavor_Systems_Admin_Panel {
         $menu_manager = class_exists('Flavor_Module_Menu_Manager') ? Flavor_Module_Menu_Manager::get_instance() : null;
 
         if (!$menu_manager) {
-            echo '<p>' . __('Module Menu Manager no está disponible', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('Module Menu Manager no está disponible', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
         $categories = [
-            'servicios' => __('Servicios', 'flavor-chat-ia'),
-            'comunidad' => __('Comunidad', 'flavor-chat-ia'),
-            'solidaridad' => __('Solidaridad', 'flavor-chat-ia'),
-            'espacios' => __('Espacios', 'flavor-chat-ia'),
-            'cultura' => __('Cultura', 'flavor-chat-ia'),
-            'gestion' => __('Gestión', 'flavor-chat-ia'),
-            'participacion' => __('Participación', 'flavor-chat-ia'),
-            'sostenibilidad' => __('Sostenibilidad', 'flavor-chat-ia'),
-            'comunicacion' => __('Comunicación', 'flavor-chat-ia'),
+            'servicios' => __('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'comunidad' => __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'solidaridad' => __('Solidaridad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'espacios' => __('Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cultura' => __('Cultura', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'gestion' => __('Gestión', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'participacion' => __('Participación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'sostenibilidad' => __('Sostenibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'comunicacion' => __('Comunicación', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
         ?>
         <div class="menus-manager">
-            <h2><?php _e('Categorías de Menú', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Categorías de Menú', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <p class="description">
-                <?php _e('Los módulos se organizan automáticamente en estas 9 categorías según su configuración.', 'flavor-chat-ia'); ?>
+                <?php _e('Los módulos se organizan automáticamente en estas 9 categorías según su configuración.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
 
             <div class="categories-grid">
@@ -558,7 +558,7 @@ class Flavor_Systems_Admin_Panel {
                     <h3><?php echo esc_html($label); ?></h3>
                     <p class="category-key"><?php echo esc_html($key); ?></p>
                     <div class="category-modules" data-category="<?php echo esc_attr($key); ?>">
-                        <?php _e('Cargando módulos...', 'flavor-chat-ia'); ?>
+                        <?php _e('Cargando módulos...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </div>
                 </div>
                 <?php endforeach; ?>
@@ -573,17 +573,17 @@ class Flavor_Systems_Admin_Panel {
     private function render_dependencies_tab() {
         ?>
         <div class="dependencies-manager">
-            <h2><?php _e('Gestor de Dependencias', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Gestor de Dependencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <p class="description">
-                <?php _e('Visualiza y gestiona las dependencias entre módulos.', 'flavor-chat-ia'); ?>
+                <?php _e('Visualiza y gestiona las dependencias entre módulos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
 
             <div id="dependency-graph" class="dependency-graph">
-                <?php _e('Cargando grafo de dependencias...', 'flavor-chat-ia'); ?>
+                <?php _e('Cargando grafo de dependencias...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
 
             <div class="dependency-list">
-                <h3><?php _e('Lista de Dependencias', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Lista de Dependencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div id="dependencies-table-container"></div>
             </div>
         </div>
@@ -596,7 +596,7 @@ class Flavor_Systems_Admin_Panel {
     public function render_notifications_page() {
         ?>
         <div class="wrap">
-            <h1><?php _e('Gestión de Notificaciones', 'flavor-chat-ia'); ?></h1>
+            <h1><?php _e('Gestión de Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
             <?php $this->render_notifications_tab(); ?>
         </div>
         <?php
@@ -608,7 +608,7 @@ class Flavor_Systems_Admin_Panel {
     public function render_pages_v3() {
         ?>
         <div class="wrap">
-            <h1><?php _e('Páginas V3', 'flavor-chat-ia'); ?></h1>
+            <h1><?php _e('Páginas V3', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
             <?php $this->render_pages_tab(); ?>
         </div>
         <?php
@@ -620,44 +620,44 @@ class Flavor_Systems_Admin_Panel {
     public function render_optimization_page() {
         ?>
         <div class="wrap flavor-optimization-panel">
-            <h1><?php _e('Optimización del Sistema', 'flavor-chat-ia'); ?></h1>
+            <h1><?php _e('Optimización del Sistema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
 
             <div class="optimization-sections">
                 <div class="optimization-section">
-                    <h2><?php _e('Caché', 'flavor-chat-ia'); ?></h2>
-                    <p><?php _e('Limpia y optimiza el sistema de caché.', 'flavor-chat-ia'); ?></p>
+                    <h2><?php _e('Caché', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                    <p><?php _e('Limpia y optimiza el sistema de caché.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <button class="button button-primary" id="clear-all-caches">
-                        <?php _e('Limpiar Todo el Caché', 'flavor-chat-ia'); ?>
+                        <?php _e('Limpiar Todo el Caché', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
 
                 <div class="optimization-section">
-                    <h2><?php _e('Base de Datos', 'flavor-chat-ia'); ?></h2>
-                    <p><?php _e('Optimiza las tablas de la base de datos.', 'flavor-chat-ia'); ?></p>
+                    <h2><?php _e('Base de Datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                    <p><?php _e('Optimiza las tablas de la base de datos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <button class="button button-primary" id="optimize-database">
-                        <?php _e('Optimizar Base de Datos', 'flavor-chat-ia'); ?>
+                        <?php _e('Optimizar Base de Datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
 
                 <div class="optimization-section">
-                    <h2><?php _e('Notificaciones Antiguas', 'flavor-chat-ia'); ?></h2>
-                    <p><?php _e('Elimina notificaciones leídas con más de 30 días.', 'flavor-chat-ia'); ?></p>
+                    <h2><?php _e('Notificaciones Antiguas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                    <p><?php _e('Elimina notificaciones leídas con más de 30 días.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <button class="button button-secondary" id="cleanup-old-notifications">
-                        <?php _e('Limpiar Notificaciones Antiguas', 'flavor-chat-ia'); ?>
+                        <?php _e('Limpiar Notificaciones Antiguas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
 
                 <div class="optimization-section">
-                    <h2><?php _e('Assets', 'flavor-chat-ia'); ?></h2>
-                    <p><?php _e('Regenera archivos CSS/JS minificados.', 'flavor-chat-ia'); ?></p>
+                    <h2><?php _e('Assets', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                    <p><?php _e('Regenera archivos CSS/JS minificados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <button class="button button-secondary" id="regenerate-assets">
-                        <?php _e('Regenerar Assets', 'flavor-chat-ia'); ?>
+                        <?php _e('Regenerar Assets', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </div>
 
             <div id="optimization-results" class="optimization-results" style="display:none;">
-                <h2><?php _e('Resultados', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Resultados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <div id="optimization-output"></div>
             </div>
         </div>
@@ -805,7 +805,7 @@ class Flavor_Systems_Admin_Panel {
         check_ajax_referer('flavor_systems_admin', 'nonce');
 
         if (!current_user_can($this->capability)) {
-            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $stats = $this->get_system_statistics();
@@ -819,7 +819,7 @@ class Flavor_Systems_Admin_Panel {
         check_ajax_referer('flavor_systems_admin', 'nonce');
 
         if (!current_user_can($this->capability)) {
-            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -844,7 +844,7 @@ class Flavor_Systems_Admin_Panel {
         check_ajax_referer('flavor_systems_admin', 'nonce');
 
         if (!current_user_can($this->capability)) {
-            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $status = $this->get_modules_v3_status();
@@ -858,23 +858,23 @@ class Flavor_Systems_Admin_Panel {
         check_ajax_referer('flavor_systems_admin', 'nonce');
 
         if (!current_user_can($this->capability)) {
-            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $results = [];
 
         // Limpiar caché de WordPress
         wp_cache_flush();
-        $results[] = __('Caché de WordPress limpiado', 'flavor-chat-ia');
+        $results[] = __('Caché de WordPress limpiado', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         // Limpiar transients expirados
         global $wpdb;
         $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_%' AND option_value < UNIX_TIMESTAMP()");
-        $results[] = __('Transients expirados eliminados', 'flavor-chat-ia');
+        $results[] = __('Transients expirados eliminados', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         // Optimizar tablas
         $wpdb->query("OPTIMIZE TABLE {$wpdb->prefix}flavor_notifications");
-        $results[] = __('Tabla de notificaciones optimizada', 'flavor-chat-ia');
+        $results[] = __('Tabla de notificaciones optimizada', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         wp_send_json_success(['results' => $results]);
     }
@@ -886,14 +886,14 @@ class Flavor_Systems_Admin_Panel {
         check_ajax_referer('flavor_systems_admin', 'nonce');
 
         if (!current_user_can($this->capability)) {
-            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Limpiar transients relacionados con notificaciones
         global $wpdb;
         $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_flavor_notifications_%'");
 
-        wp_send_json_success(['message' => __('Caché de notificaciones limpiado', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Caché de notificaciones limpiado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -903,13 +903,13 @@ class Flavor_Systems_Admin_Panel {
         check_ajax_referer('flavor_systems_admin', 'nonce');
 
         if (!current_user_can($this->capability)) {
-            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $category = isset($_POST['category']) ? sanitize_text_field($_POST['category']) : '';
 
         if (empty($category)) {
-            wp_send_json_error(['message' => __('Categoría no especificada', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Categoría no especificada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $loader = class_exists('Flavor_Chat_Module_Loader') ? Flavor_Chat_Module_Loader::get_instance() : null;
@@ -937,7 +937,7 @@ class Flavor_Systems_Admin_Panel {
         check_ajax_referer('flavor_systems_admin', 'nonce');
 
         if (!current_user_can($this->capability)) {
-            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $loader = class_exists('Flavor_Chat_Module_Loader') ? Flavor_Chat_Module_Loader::get_instance() : null;
@@ -957,7 +957,7 @@ class Flavor_Systems_Admin_Panel {
                     'module' => $module->name,
                     'depends_on' => $deps,
                     'status' => 'active',
-                    'status_label' => __('Activo', 'flavor-chat-ia')
+                    'status_label' => __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN)
                 ];
             }
         }
@@ -972,11 +972,11 @@ class Flavor_Systems_Admin_Panel {
         check_ajax_referer('flavor_systems_admin', 'nonce');
 
         if (!current_user_can($this->capability)) {
-            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (!class_exists('Flavor_Page_Creator_V3')) {
-            wp_send_json_error(['message' => __('Page Creator V3 no está disponible', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Page Creator V3 no está disponible', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $creator = Flavor_Page_Creator_V3::get_instance();
@@ -984,7 +984,7 @@ class Flavor_Systems_Admin_Panel {
         try {
             $result = $creator->create_all_pages();
             wp_send_json_success([
-                'message' => sprintf(__('Se regeneraron %d páginas correctamente', 'flavor-chat-ia'), $result['total_created'])
+                'message' => sprintf(__('Se regeneraron %d páginas correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN), $result['total_created'])
             ]);
         } catch (Exception $e) {
             wp_send_json_error(['message' => $e->getMessage()]);
@@ -998,17 +998,17 @@ class Flavor_Systems_Admin_Panel {
         check_ajax_referer('flavor_systems_admin', 'nonce');
 
         if (!current_user_can($this->capability)) {
-            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $module_id = isset($_POST['module_id']) ? sanitize_text_field($_POST['module_id']) : '';
 
         if (empty($module_id)) {
-            wp_send_json_error(['message' => __('ID de módulo no especificado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID de módulo no especificado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (!class_exists('Flavor_Page_Creator_V3')) {
-            wp_send_json_error(['message' => __('Page Creator V3 no está disponible', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Page Creator V3 no está disponible', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $creator = Flavor_Page_Creator_V3::get_instance();
@@ -1021,7 +1021,7 @@ class Flavor_Systems_Admin_Panel {
             $result = $creator->create_all_pages();
 
             wp_send_json_success([
-                'message' => sprintf(__('Páginas del módulo %s regeneradas', 'flavor-chat-ia'), $module_id)
+                'message' => sprintf(__('Páginas del módulo %s regeneradas', FLAVOR_PLATFORM_TEXT_DOMAIN), $module_id)
             ]);
         } catch (Exception $e) {
             wp_send_json_error(['message' => $e->getMessage()]);
@@ -1035,7 +1035,7 @@ class Flavor_Systems_Admin_Panel {
         check_ajax_referer('flavor_systems_admin', 'nonce');
 
         if (!current_user_can($this->capability)) {
-            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1049,7 +1049,7 @@ class Flavor_Systems_Admin_Panel {
         );
 
         wp_send_json_success([
-            'message' => sprintf(__('Se eliminaron %d notificaciones antiguas', 'flavor-chat-ia'), $deleted)
+            'message' => sprintf(__('Se eliminaron %d notificaciones antiguas', FLAVOR_PLATFORM_TEXT_DOMAIN), $deleted)
         ]);
     }
 }

@@ -367,7 +367,7 @@ class Flavor_API_Key_Encryption {
      * @return array Resultado de la operación
      */
     public function rotate_encryption() {
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $key_fields = ['api_key', 'claude_api_key', 'openai_api_key', 'deepseek_api_key', 'mistral_api_key'];
 
         $results = ['success' => 0, 'failed' => 0];
@@ -387,7 +387,7 @@ class Flavor_API_Key_Encryption {
             }
         }
 
-        update_option('flavor_chat_ia_settings', $settings);
+        flavor_update_main_settings($settings);
 
         return $results;
     }

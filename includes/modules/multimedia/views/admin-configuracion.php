@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['multimedia_config_non
         ];
 
         update_option('flavor_multimedia_settings', $settings);
-        echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Configuración guardada correctamente.', 'flavor-chat-ia') . '</p></div>';
+        echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Configuración guardada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     }
 }
 
@@ -49,13 +49,13 @@ $settings = get_option('flavor_multimedia_settings', [
     <nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">
         <a href="<?php echo admin_url('admin.php?page=flavor-multimedia'); ?>" style="color: #2271b1; text-decoration: none;">
             <span class="dashicons dashicons-format-gallery" style="font-size: 14px; vertical-align: middle;"></span>
-            <?php _e('Multimedia', 'flavor-chat-ia'); ?>
+            <?php _e('Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <span style="color: #646970; margin: 0 5px;">›</span>
-        <span style="color: #1d2327;"><?php _e('Configuración', 'flavor-chat-ia'); ?></span>
+        <span style="color: #1d2327;"><?php _e('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
     </nav>
 
-    <h1><?php _e('Configuración de Multimedia', 'flavor-chat-ia'); ?></h1>
+    <h1><?php _e('Configuración de Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
 
     <form method="post" action="">
         <?php wp_nonce_field('multimedia_save_config', 'multimedia_config_nonce'); ?>
@@ -63,28 +63,28 @@ $settings = get_option('flavor_multimedia_settings', [
         <!-- Configuración General -->
         <div class="multimedia-settings-section" style="background: #fff; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <h2 style="margin-top: 0; padding-bottom: 10px; border-bottom: 1px solid #eee;">
-                <?php _e('Configuración General', 'flavor-chat-ia'); ?>
+                <?php _e('Configuración General', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <table class="form-table">
                 <tr>
-                    <th scope="row"><?php _e('Subida de usuarios', 'flavor-chat-ia'); ?></th>
+                    <th scope="row"><?php _e('Subida de usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <label>
                             <input type="checkbox" name="permitir_subida_usuarios" value="1"
                                 <?php checked($settings['permitir_subida_usuarios'] ?? false); ?>>
-                            <?php _e('Permitir a los usuarios subir contenido multimedia', 'flavor-chat-ia'); ?>
+                            <?php _e('Permitir a los usuarios subir contenido multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row"><?php _e('Moderación', 'flavor-chat-ia'); ?></th>
+                    <th scope="row"><?php _e('Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <label>
                             <input type="checkbox" name="requiere_moderacion" value="1"
                                 <?php checked($settings['requiere_moderacion'] ?? true); ?>>
-                            <?php _e('Requerir aprobación antes de publicar', 'flavor-chat-ia'); ?>
+                            <?php _e('Requerir aprobación antes de publicar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
-                        <p class="description"><?php _e('El contenido subido por usuarios quedará pendiente de revisión.', 'flavor-chat-ia'); ?></p>
+                        <p class="description"><?php _e('El contenido subido por usuarios quedará pendiente de revisión.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </td>
                 </tr>
             </table>
@@ -93,21 +93,21 @@ $settings = get_option('flavor_multimedia_settings', [
         <!-- Restricciones de archivos -->
         <div class="multimedia-settings-section" style="background: #fff; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <h2 style="margin-top: 0; padding-bottom: 10px; border-bottom: 1px solid #eee;">
-                <?php _e('Restricciones de Archivos', 'flavor-chat-ia'); ?>
+                <?php _e('Restricciones de Archivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <table class="form-table">
                 <tr>
                     <th scope="row">
-                        <label for="tamano_maximo_mb"><?php _e('Tamaño máximo (MB)', 'flavor-chat-ia'); ?></label>
+                        <label for="tamano_maximo_mb"><?php _e('Tamaño máximo (MB)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     </th>
                     <td>
                         <input type="number" name="tamano_maximo_mb" id="tamano_maximo_mb" class="small-text"
                                value="<?php echo esc_attr($settings['tamano_maximo_mb'] ?? 10); ?>" min="1" max="100">
-                        <p class="description"><?php _e('Tamaño máximo permitido por archivo.', 'flavor-chat-ia'); ?></p>
+                        <p class="description"><?php _e('Tamaño máximo permitido por archivo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row"><?php _e('Tipos de archivo permitidos', 'flavor-chat-ia'); ?></th>
+                    <th scope="row"><?php _e('Tipos de archivo permitidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <?php
                         $tipos_disponibles = [
@@ -135,12 +135,12 @@ $settings = get_option('flavor_multimedia_settings', [
         <!-- Procesamiento de imágenes -->
         <div class="multimedia-settings-section" style="background: #fff; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <h2 style="margin-top: 0; padding-bottom: 10px; border-bottom: 1px solid #eee;">
-                <?php _e('Procesamiento de Imágenes', 'flavor-chat-ia'); ?>
+                <?php _e('Procesamiento de Imágenes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <table class="form-table">
                 <tr>
                     <th scope="row">
-                        <label for="ancho_maximo"><?php _e('Dimensiones máximas', 'flavor-chat-ia'); ?></label>
+                        <label for="ancho_maximo"><?php _e('Dimensiones máximas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     </th>
                     <td>
                         <input type="number" name="ancho_maximo" id="ancho_maximo" class="small-text"
@@ -149,39 +149,39 @@ $settings = get_option('flavor_multimedia_settings', [
                         <input type="number" name="alto_maximo" id="alto_maximo" class="small-text"
                                value="<?php echo esc_attr($settings['alto_maximo'] ?? 1080); ?>" min="100" max="4096">
                         px
-                        <p class="description"><?php _e('Las imágenes más grandes serán redimensionadas automáticamente.', 'flavor-chat-ia'); ?></p>
+                        <p class="description"><?php _e('Las imágenes más grandes serán redimensionadas automáticamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row">
-                        <label for="calidad_compresion"><?php _e('Calidad de compresión', 'flavor-chat-ia'); ?></label>
+                        <label for="calidad_compresion"><?php _e('Calidad de compresión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     </th>
                     <td>
                         <input type="range" name="calidad_compresion" id="calidad_compresion"
                                value="<?php echo esc_attr($settings['calidad_compresion'] ?? 85); ?>" min="50" max="100"
                                style="vertical-align: middle;">
                         <span id="calidad_valor"><?php echo esc_html($settings['calidad_compresion'] ?? 85); ?>%</span>
-                        <p class="description"><?php _e('Mayor calidad = archivos más grandes.', 'flavor-chat-ia'); ?></p>
+                        <p class="description"><?php _e('Mayor calidad = archivos más grandes.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row"><?php _e('Marca de agua', 'flavor-chat-ia'); ?></th>
+                    <th scope="row"><?php _e('Marca de agua', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <label>
                             <input type="checkbox" name="marca_agua_enabled" value="1"
                                 <?php checked($settings['marca_agua_enabled'] ?? false); ?>>
-                            <?php _e('Añadir marca de agua a las imágenes', 'flavor-chat-ia'); ?>
+                            <?php _e('Añadir marca de agua a las imágenes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                         <br><br>
                         <input type="text" name="marca_agua_texto" class="regular-text"
                                value="<?php echo esc_attr($settings['marca_agua_texto'] ?? ''); ?>"
-                               placeholder="<?php echo esc_attr__('Texto de la marca de agua', 'flavor-chat-ia'); ?>">
+                               placeholder="<?php echo esc_attr__('Texto de la marca de agua', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     </td>
                 </tr>
             </table>
         </div>
 
-        <?php submit_button(__('Guardar Cambios', 'flavor-chat-ia')); ?>
+        <?php submit_button(__('Guardar Cambios', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
     </form>
 </div>
 

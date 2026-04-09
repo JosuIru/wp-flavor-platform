@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 
 // El dashboard primario puede abrirse por administradores o por el rol gestor habilitado.
 if (!current_user_can('manage_options') && !current_user_can('flavor_ver_dashboard')) {
-    wp_die(__('No tienes permisos suficientes para acceder a esta página.', 'flavor-chat-ia'));
+    wp_die(__('No tienes permisos suficientes para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
 }
 
 // Obtener estadísticas
@@ -133,14 +133,14 @@ foreach ($datos_grafica as $dato) {
         <div class="dm-header__title">
             <span class="dashicons dashicons-car" style="font-size: 28px;"></span>
             <div>
-                <h1><?php esc_html_e('Dashboard de Parkings', 'flavor-chat-ia'); ?></h1>
-                <p><?php esc_html_e('Gestión de plazas de aparcamiento compartido', 'flavor-chat-ia'); ?></p>
+                <h1><?php esc_html_e('Dashboard de Parkings', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
+                <p><?php esc_html_e('Gestión de plazas de aparcamiento compartido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
         <div class="dm-header__actions">
             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-parkings-plazas&action=nueva')); ?>" class="dm-btn dm-btn--primary">
                 <span class="dashicons dashicons-plus-alt2"></span>
-                <?php esc_html_e('Nueva Plaza', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Nueva Plaza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>
@@ -148,33 +148,33 @@ foreach ($datos_grafica as $dato) {
     <?php if (!$tablas_disponibles) : ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <?php esc_html_e('Faltan tablas del módulo Parkings o aún no hay datos registrados.', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Faltan tablas del módulo Parkings o aún no hay datos registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </div>
     <?php endif; ?>
 
     <!-- Quick Links -->
     <div class="dm-quick-links">
-        <h3 class="dm-quick-links__title"><?php esc_html_e('Acceso Rápido', 'flavor-chat-ia'); ?></h3>
+        <h3 class="dm-quick-links__title"><?php esc_html_e('Acceso Rápido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         <div class="dm-quick-links__grid">
             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-parkings-plazas')); ?>" class="dm-quick-links__item dm-quick-links__item--primary">
                 <span class="dashicons dashicons-location"></span>
-                <?php esc_html_e('Gestionar Plazas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Gestionar Plazas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-parkings-reservas')); ?>" class="dm-quick-links__item dm-quick-links__item--info">
                 <span class="dashicons dashicons-calendar-alt"></span>
-                <?php esc_html_e('Ver Reservas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-parkings-propietarios')); ?>" class="dm-quick-links__item dm-quick-links__item--purple">
                 <span class="dashicons dashicons-groups"></span>
-                <?php esc_html_e('Propietarios', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Propietarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-parkings-calendario')); ?>" class="dm-quick-links__item dm-quick-links__item--success">
                 <span class="dashicons dashicons-calendar"></span>
-                <?php esc_html_e('Calendario', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Calendario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('parkings', '')); ?>" class="dm-quick-links__item" target="_blank">
                 <span class="dashicons dashicons-external"></span>
-                <?php esc_html_e('Portal público', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Portal público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>
@@ -187,8 +187,8 @@ foreach ($datos_grafica as $dato) {
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($total_plazas)); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Total Plazas', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php esc_html_e('En el sistema', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Total Plazas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('En el sistema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -198,7 +198,7 @@ foreach ($datos_grafica as $dato) {
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($plazas_disponibles)); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Disponibles', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 <div class="dm-stat-card__meta"><?php echo esc_html(number_format_i18n(($total_plazas > 0 ? ($plazas_disponibles / $total_plazas) * 100 : 0), 1)); ?>% del total</div>
             </div>
         </div>
@@ -209,8 +209,8 @@ foreach ($datos_grafica as $dato) {
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($tasa_ocupacion, 1)); ?>%</div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Tasa de Ocupación', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php echo esc_html($plazas_ocupadas); ?> / <?php echo esc_html($total_plazas); ?> <?php esc_html_e('ocupadas', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Tasa de Ocupación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php echo esc_html($plazas_ocupadas); ?> / <?php echo esc_html($total_plazas); ?> <?php esc_html_e('ocupadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -220,8 +220,8 @@ foreach ($datos_grafica as $dato) {
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($reservas_activas)); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Reservas Activas', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php esc_html_e('En curso ahora', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Reservas Activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('En curso ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -231,8 +231,8 @@ foreach ($datos_grafica as $dato) {
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value">€<?php echo esc_html(number_format_i18n($ingresos_mes, 2)); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Ingresos del Mes', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php echo esc_html($reservas_mes); ?> <?php esc_html_e('reservas', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Ingresos del Mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php echo esc_html($reservas_mes); ?> <?php esc_html_e('reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -242,8 +242,8 @@ foreach ($datos_grafica as $dato) {
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($propietarios_activos)); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Propietarios', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php esc_html_e('Activos', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Propietarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
     </div>
@@ -252,7 +252,7 @@ foreach ($datos_grafica as $dato) {
     <div class="dm-grid dm-grid--2-1">
         <div class="dm-card dm-card--chart">
             <div class="dm-card__header">
-                <h3><?php esc_html_e('Actividad - Últimos 30 días', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Actividad - Últimos 30 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             </div>
             <div class="dm-card__chart">
                 <canvas id="flavor-parkings-chart"></canvas>
@@ -261,7 +261,7 @@ foreach ($datos_grafica as $dato) {
 
         <div class="dm-card dm-card--chart">
             <div class="dm-card__header">
-                <h3><?php esc_html_e('Estado de Plazas', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Estado de Plazas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             </div>
             <div class="dm-card__chart">
                 <canvas id="flavor-parkings-pie-chart"></canvas>
@@ -272,17 +272,17 @@ foreach ($datos_grafica as $dato) {
     <!-- Distribución por Zona -->
     <div class="dm-card">
         <div class="dm-card__header">
-            <h3><?php esc_html_e('Distribución por Zona', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Distribución por Zona', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         </div>
         <?php if (!empty($plazas_por_zona)) : ?>
         <table class="dm-table">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Zona', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Total', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Disponibles', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Ocupadas', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('% Ocupación', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Zona', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Ocupadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('% Ocupación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -310,7 +310,7 @@ foreach ($datos_grafica as $dato) {
         <?php else : ?>
         <div class="dm-empty">
             <span class="dashicons dashicons-location"></span>
-            <p><?php esc_html_e('No hay datos de zonas disponibles.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('No hay datos de zonas disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
         <?php endif; ?>
     </div>
@@ -318,9 +318,9 @@ foreach ($datos_grafica as $dato) {
     <!-- Top Propietarios -->
     <div class="dm-card">
         <div class="dm-card__header">
-            <h3><?php esc_html_e('Top 5 Propietarios por Ingresos', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Top 5 Propietarios por Ingresos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-parkings-propietarios')); ?>" class="dm-btn dm-btn--ghost dm-btn--sm">
-                <?php esc_html_e('Ver todos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
         <?php if (!empty($top_propietarios)) : ?>
@@ -328,12 +328,12 @@ foreach ($datos_grafica as $dato) {
             <thead>
                 <tr>
                     <th>#</th>
-                    <th><?php esc_html_e('Propietario', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Plazas', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Ocupadas', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Reservas', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Ingresos', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Propietario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Plazas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Ocupadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Ingresos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -351,7 +351,7 @@ foreach ($datos_grafica as $dato) {
                         <td class="dm-text-success"><strong>€<?php echo esc_html(number_format_i18n($propietario->ingresos_totales, 2)); ?></strong></td>
                         <td>
                             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-parkings-propietarios&propietario_id=' . $propietario->id)); ?>" class="dm-btn dm-btn--ghost dm-btn--sm">
-                                <?php esc_html_e('Ver Perfil', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Ver Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </td>
                     </tr>
@@ -361,7 +361,7 @@ foreach ($datos_grafica as $dato) {
         <?php else : ?>
         <div class="dm-empty">
             <span class="dashicons dashicons-businessman"></span>
-            <p><?php esc_html_e('No hay propietarios registrados.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('No hay propietarios registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
         <?php endif; ?>
     </div>
@@ -388,7 +388,7 @@ jQuery(document).ready(function($) {
                 labels: fechas,
                 datasets: [
                     {
-                        label: '<?php echo esc_js(__('Reservas', 'flavor-chat-ia')); ?>',
+                        label: '<?php echo esc_js(__('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
                         data: reservas,
                         borderColor: primaryColor,
                         backgroundColor: primaryColor + '1a',
@@ -397,7 +397,7 @@ jQuery(document).ready(function($) {
                         fill: true
                     },
                     {
-                        label: '<?php echo esc_js(__('Ingresos (€)', 'flavor-chat-ia')); ?>',
+                        label: '<?php echo esc_js(__('Ingresos (€)', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
                         data: ingresos,
                         borderColor: successColor,
                         backgroundColor: successColor + '1a',
@@ -455,9 +455,9 @@ jQuery(document).ready(function($) {
             type: 'doughnut',
             data: {
                 labels: [
-                    '<?php echo esc_js(__('Disponibles', 'flavor-chat-ia')); ?>',
-                    '<?php echo esc_js(__('Ocupadas', 'flavor-chat-ia')); ?>',
-                    '<?php echo esc_js(__('Mantenimiento', 'flavor-chat-ia')); ?>'
+                    '<?php echo esc_js(__('Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
+                    '<?php echo esc_js(__('Ocupadas', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
+                    '<?php echo esc_js(__('Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>'
                 ],
                 datasets: [{
                     data: [

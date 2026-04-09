@@ -19,13 +19,13 @@ $tabla_suscripciones = $wpdb->prefix . 'flavor_avisos_suscripciones';
 
 // Verificar si existe la tabla
 if (!Flavor_Chat_Helpers::tabla_existe($tabla_avisos)) {
-    echo '<div class="avisos-empty"><p>' . esc_html__('El modulo de avisos municipales no esta configurado.', 'flavor-chat-ia') . '</p></div>';
+    echo '<div class="avisos-empty"><p>' . esc_html__('El modulo de avisos municipales no esta configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
 
 // Parametros del template
-$titulo = isset($atts['titulo']) ? sanitize_text_field($atts['titulo']) : __('Suscribete a los avisos', 'flavor-chat-ia');
-$descripcion = isset($atts['descripcion']) ? sanitize_text_field($atts['descripcion']) : __('Recibe notificaciones de los avisos que te interesan', 'flavor-chat-ia');
+$titulo = isset($atts['titulo']) ? sanitize_text_field($atts['titulo']) : __('Suscribete a los avisos', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$descripcion = isset($atts['descripcion']) ? sanitize_text_field($atts['descripcion']) : __('Recibe notificaciones de los avisos que te interesan', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $mostrar_push = isset($atts['push']) ? ($atts['push'] === 'true') : true;
 $estilo = isset($atts['estilo']) ? sanitize_text_field($atts['estilo']) : 'card'; // card | inline | minimal
 
@@ -56,10 +56,10 @@ if ($suscripcion_existente) {
 
 // Prioridades disponibles
 $prioridades_opciones = [
-    'baja'    => __('Todas (incluyendo baja prioridad)', 'flavor-chat-ia'),
-    'media'   => __('Media y superiores', 'flavor-chat-ia'),
-    'alta'    => __('Alta y urgentes', 'flavor-chat-ia'),
-    'urgente' => __('Solo urgentes', 'flavor-chat-ia'),
+    'baja'    => __('Todas (incluyendo baja prioridad)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'media'   => __('Media y superiores', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'alta'    => __('Alta y urgentes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'urgente' => __('Solo urgentes', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 // Nonce para el formulario
@@ -74,11 +74,11 @@ $nonce = wp_create_nonce('flavor_avisos_suscripcion_nonce');
             <span class="dashicons dashicons-yes-alt"></span>
         </div>
         <div class="suscripcion-activa-info">
-            <h3><?php esc_html_e('Ya estas suscrito', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('Recibiras notificaciones de los avisos municipales segun tu configuracion.', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('Ya estas suscrito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php esc_html_e('Recibiras notificaciones de los avisos municipales segun tu configuracion.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <button type="button" class="btn btn-outline btn-modificar-suscripcion">
                 <span class="dashicons dashicons-edit"></span>
-                <?php esc_html_e('Modificar preferencias', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Modificar preferencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     </div>
@@ -101,20 +101,20 @@ $nonce = wp_create_nonce('flavor_avisos_suscripcion_nonce');
             <div class="form-seccion">
                 <h4 class="form-seccion-titulo">
                     <span class="dashicons dashicons-admin-users"></span>
-                    <?php esc_html_e('Tus datos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Tus datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h4>
                 <div class="form-row">
                     <div class="form-grupo">
-                        <label for="suscripcion-nombre"><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?></label>
+                        <label for="suscripcion-nombre"><?php esc_html_e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="text" id="suscripcion-nombre" name="nombre"
                                value="<?php echo esc_attr($usuario_actual->display_name ?? ''); ?>"
-                               placeholder="<?php esc_attr_e('Tu nombre', 'flavor-chat-ia'); ?>">
+                               placeholder="<?php esc_attr_e('Tu nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     </div>
                     <div class="form-grupo">
-                        <label for="suscripcion-email"><?php esc_html_e('Email', 'flavor-chat-ia'); ?> <span class="requerido">*</span></label>
+                        <label for="suscripcion-email"><?php esc_html_e('Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="requerido">*</span></label>
                         <input type="email" id="suscripcion-email" name="email" required
                                value="<?php echo esc_attr($usuario_actual->user_email ?? ''); ?>"
-                               placeholder="<?php esc_attr_e('tu@email.com', 'flavor-chat-ia'); ?>">
+                               placeholder="<?php esc_attr_e('tu@email.com', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     </div>
                 </div>
             </div>
@@ -123,13 +123,13 @@ $nonce = wp_create_nonce('flavor_avisos_suscripcion_nonce');
             <div class="form-seccion">
                 <h4 class="form-seccion-titulo">
                     <span class="dashicons dashicons-category"></span>
-                    <?php esc_html_e('Categorias de interes', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Categorias de interes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h4>
-                <p class="form-seccion-ayuda"><?php esc_html_e('Selecciona las categorias sobre las que deseas recibir notificaciones', 'flavor-chat-ia'); ?></p>
+                <p class="form-seccion-ayuda"><?php esc_html_e('Selecciona las categorias sobre las que deseas recibir notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <div class="form-checkbox-grid">
                     <label class="form-checkbox form-checkbox--todas">
                         <input type="checkbox" id="categorias-todas" checked>
-                        <span class="checkbox-label"><?php esc_html_e('Todas las categorias', 'flavor-chat-ia'); ?></span>
+                        <span class="checkbox-label"><?php esc_html_e('Todas las categorias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </label>
                     <?php foreach ($categorias_disponibles as $categoria):
                         $esta_suscrita = empty($categorias_suscritas) || in_array($categoria->id, $categorias_suscritas);
@@ -149,13 +149,13 @@ $nonce = wp_create_nonce('flavor_avisos_suscripcion_nonce');
             <div class="form-seccion">
                 <h4 class="form-seccion-titulo">
                     <span class="dashicons dashicons-location"></span>
-                    <?php esc_html_e('Zonas de interes', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Zonas de interes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h4>
-                <p class="form-seccion-ayuda"><?php esc_html_e('Recibe avisos especificos de tu zona', 'flavor-chat-ia'); ?></p>
+                <p class="form-seccion-ayuda"><?php esc_html_e('Recibe avisos especificos de tu zona', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <div class="form-checkbox-grid">
                     <label class="form-checkbox form-checkbox--todas">
                         <input type="checkbox" id="zonas-todas" checked>
-                        <span class="checkbox-label"><?php esc_html_e('Todas las zonas', 'flavor-chat-ia'); ?></span>
+                        <span class="checkbox-label"><?php esc_html_e('Todas las zonas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </label>
                     <?php foreach ($zonas_disponibles as $zona):
                         $esta_suscrita = empty($zonas_suscritas) || in_array($zona->id, $zonas_suscritas);
@@ -175,9 +175,9 @@ $nonce = wp_create_nonce('flavor_avisos_suscripcion_nonce');
             <div class="form-seccion">
                 <h4 class="form-seccion-titulo">
                     <span class="dashicons dashicons-flag"></span>
-                    <?php esc_html_e('Prioridad minima', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Prioridad minima', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h4>
-                <p class="form-seccion-ayuda"><?php esc_html_e('Elige el nivel minimo de prioridad de los avisos que quieres recibir', 'flavor-chat-ia'); ?></p>
+                <p class="form-seccion-ayuda"><?php esc_html_e('Elige el nivel minimo de prioridad de los avisos que quieres recibir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <div class="form-grupo">
                     <select name="prioridad_minima" id="prioridad-minima">
                         <?php foreach ($prioridades_opciones as $valor => $etiqueta): ?>
@@ -194,7 +194,7 @@ $nonce = wp_create_nonce('flavor_avisos_suscripcion_nonce');
             <div class="form-seccion">
                 <h4 class="form-seccion-titulo">
                     <span class="dashicons dashicons-email-alt"></span>
-                    <?php esc_html_e('Canales de notificacion', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Canales de notificacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h4>
                 <div class="form-canales">
                     <label class="form-canal">
@@ -203,8 +203,8 @@ $nonce = wp_create_nonce('flavor_avisos_suscripcion_nonce');
                             <span class="dashicons dashicons-email"></span>
                         </div>
                         <div class="canal-info">
-                            <span class="canal-nombre"><?php esc_html_e('Email', 'flavor-chat-ia'); ?></span>
-                            <span class="canal-descripcion"><?php esc_html_e('Recibe avisos en tu correo', 'flavor-chat-ia'); ?></span>
+                            <span class="canal-nombre"><?php esc_html_e('Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                            <span class="canal-descripcion"><?php esc_html_e('Recibe avisos en tu correo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                     </label>
 
@@ -215,8 +215,8 @@ $nonce = wp_create_nonce('flavor_avisos_suscripcion_nonce');
                             <span class="dashicons dashicons-bell"></span>
                         </div>
                         <div class="canal-info">
-                            <span class="canal-nombre"><?php esc_html_e('Notificaciones Push', 'flavor-chat-ia'); ?></span>
-                            <span class="canal-descripcion"><?php esc_html_e('Recibe alertas en tu navegador', 'flavor-chat-ia'); ?></span>
+                            <span class="canal-nombre"><?php esc_html_e('Notificaciones Push', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                            <span class="canal-descripcion"><?php esc_html_e('Recibe alertas en tu navegador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                     </label>
                     <?php endif; ?>
@@ -230,7 +230,7 @@ $nonce = wp_create_nonce('flavor_avisos_suscripcion_nonce');
                     <span class="checkbox-marca"></span>
                     <span class="checkbox-label">
                         <?php printf(
-                            esc_html__('Acepto recibir comunicaciones y he leido la %spolitica de privacidad%s', 'flavor-chat-ia'),
+                            esc_html__('Acepto recibir comunicaciones y he leido la %spolitica de privacidad%s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             '<a href="' . esc_url(get_privacy_policy_url()) . '" target="_blank">',
                             '</a>'
                         ); ?>
@@ -244,16 +244,16 @@ $nonce = wp_create_nonce('flavor_avisos_suscripcion_nonce');
                 <button type="submit" class="btn btn-primary btn-lg">
                     <span class="dashicons dashicons-yes"></span>
                     <?php echo $suscripcion_existente
-                        ? esc_html__('Actualizar suscripcion', 'flavor-chat-ia')
-                        : esc_html__('Suscribirme', 'flavor-chat-ia'); ?>
+                        ? esc_html__('Actualizar suscripcion', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                        : esc_html__('Suscribirme', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <?php if ($suscripcion_existente): ?>
                 <button type="button" class="btn btn-outline btn-cancelar-edicion">
-                    <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" class="btn btn-danger btn-cancelar-suscripcion">
                     <span class="dashicons dashicons-no"></span>
-                    <?php esc_html_e('Cancelar suscripcion', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Cancelar suscripcion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <?php endif; ?>
             </div>
@@ -813,7 +813,7 @@ $nonce = wp_create_nonce('flavor_avisos_suscripcion_nonce');
             const originalText = submitBtn.innerHTML;
 
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="dashicons dashicons-update"></span> <?php esc_html_e('Procesando...', 'flavor-chat-ia'); ?>';
+            submitBtn.innerHTML = '<span class="dashicons dashicons-update"></span> <?php esc_html_e('Procesando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>';
 
             fetch('<?php echo admin_url('admin-ajax.php'); ?>', {
                 method: 'POST',
@@ -823,19 +823,19 @@ $nonce = wp_create_nonce('flavor_avisos_suscripcion_nonce');
             .then(data => {
                 if (data.success) {
                     mensajeEl.className = 'form-mensaje exito';
-                    mensajeEl.textContent = data.data.message || '<?php esc_html_e('Suscripcion procesada correctamente', 'flavor-chat-ia'); ?>';
+                    mensajeEl.textContent = data.data.message || '<?php esc_html_e('Suscripcion procesada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>';
 
                     if (data.data.solicitar_push) {
                         solicitarPermisosPush();
                     }
                 } else {
                     mensajeEl.className = 'form-mensaje error';
-                    mensajeEl.textContent = data.data.message || '<?php esc_html_e('Error al procesar la suscripcion', 'flavor-chat-ia'); ?>';
+                    mensajeEl.textContent = data.data.message || '<?php esc_html_e('Error al procesar la suscripcion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>';
                 }
             })
             .catch(error => {
                 mensajeEl.className = 'form-mensaje error';
-                mensajeEl.textContent = '<?php esc_html_e('Error de conexion. Intenta de nuevo.', 'flavor-chat-ia'); ?>';
+                mensajeEl.textContent = '<?php esc_html_e('Error de conexion. Intenta de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>';
             })
             .finally(() => {
                 submitBtn.disabled = false;

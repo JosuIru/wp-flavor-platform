@@ -32,9 +32,9 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_podcasts WHE
 <div class="wrap">
     <h1>
         <span class="dashicons dashicons-book-alt"></span>
-        <?php echo esc_html__('Series de Podcast', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Series de Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         <a href="#" class="page-title-action" onclick="abrirModalNuevaSerie(); return false;">
-            <span class="dashicons dashicons-plus-alt"></span> <?php echo esc_html__('Nueva Serie', 'flavor-chat-ia'); ?>
+            <span class="dashicons dashicons-plus-alt"></span> <?php echo esc_html__('Nueva Serie', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </h1>
 
@@ -44,10 +44,10 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_podcasts WHE
         <?php if (empty($podcasts)): ?>
             <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: #fff; border-radius: 8px;">
                 <span class="dashicons dashicons-book-alt" style="font-size: 64px; color: #ddd;"></span>
-                <h3 style="color: #666;"><?php echo esc_html__('No hay series de podcast todavía', 'flavor-chat-ia'); ?></h3>
-                <p style="color: #999;"><?php echo esc_html__('Crea tu primera serie para comenzar a publicar episodios', 'flavor-chat-ia'); ?></p>
+                <h3 style="color: #666;"><?php echo esc_html__('No hay series de podcast todavía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p style="color: #999;"><?php echo esc_html__('Crea tu primera serie para comenzar a publicar episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <button onclick="abrirModalNuevaSerie()" class="button button-primary button-large">
-                    <span class="dashicons dashicons-plus-alt"></span> <?php echo esc_html__('Crear Primera Serie', 'flavor-chat-ia'); ?>
+                    <span class="dashicons dashicons-plus-alt"></span> <?php echo esc_html__('Crear Primera Serie', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         <?php else: ?>
@@ -100,33 +100,33 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_podcasts WHE
                             <div style="flex: 1;">
                                 <span class="dashicons dashicons-playlist-audio" style="color: #2271b1;"></span>
                                 <strong><?php echo $podcast->total_episodios_reales; ?></strong>
-                                <div style="color: #666; font-size: 11px;"><?php echo esc_html__('Episodios', 'flavor-chat-ia'); ?></div>
+                                <div style="color: #666; font-size: 11px;"><?php echo esc_html__('Episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                             </div>
                             <div style="flex: 1;">
                                 <span class="dashicons dashicons-groups" style="color: #8c49d8;"></span>
                                 <strong><?php echo number_format($podcast->suscriptores); ?></strong>
-                                <div style="color: #666; font-size: 11px;"><?php echo esc_html__('Suscriptores', 'flavor-chat-ia'); ?></div>
+                                <div style="color: #666; font-size: 11px;"><?php echo esc_html__('Suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                             </div>
                             <div style="flex: 1;">
                                 <span class="dashicons dashicons-controls-play" style="color: #00a32a;"></span>
                                 <strong><?php echo number_format($podcast->total_reproducciones ?? 0); ?></strong>
-                                <div style="color: #666; font-size: 11px;"><?php echo esc_html__('Reproducciones', 'flavor-chat-ia'); ?></div>
+                                <div style="color: #666; font-size: 11px;"><?php echo esc_html__('Reproducciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                             </div>
                         </div>
 
                         <!-- Acciones -->
                         <div style="display: flex; gap: 10px; margin-top: 15px;">
                             <button onclick="editarSerie(<?php echo $podcast->id; ?>)" class="button button-small" style="flex: 1;">
-                                <span class="dashicons dashicons-edit"></span> <?php echo esc_html__('Editar', 'flavor-chat-ia'); ?>
+                                <span class="dashicons dashicons-edit"></span> <?php echo esc_html__('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                             <button onclick="verEpisodiosSerie(<?php echo $podcast->id; ?>)" class="button button-small button-primary" style="flex: 1;">
-                                <span class="dashicons dashicons-playlist-audio"></span> <?php echo esc_html__('Episodios', 'flavor-chat-ia'); ?>
+                                <span class="dashicons dashicons-playlist-audio"></span> <?php echo esc_html__('Episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </div>
 
                         <div style="margin-top: 10px;">
                             <button onclick="generarRSS(<?php echo $podcast->id; ?>)" class="button button-small" style="width: 100%;">
-                                <span class="dashicons dashicons-rss"></span> <?php echo esc_html__('Feed RSS', 'flavor-chat-ia'); ?>
+                                <span class="dashicons dashicons-rss"></span> <?php echo esc_html__('Feed RSS', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </div>
                     </div>
@@ -145,26 +145,26 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_podcasts WHE
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h2 style="margin: 0;">
                 <span class="dashicons dashicons-plus-alt"></span>
-                <?php echo esc_html__('Nueva Serie de Podcast', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Nueva Serie de Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
-            <button onclick="cerrarModalNuevaSerie()" style="background: none; border: none; font-size: 24px; cursor: pointer;"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></button>
+            <button onclick="cerrarModalNuevaSerie()" style="background: none; border: none; font-size: 24px; cursor: pointer;"><?php echo esc_html__('&times;', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
         </div>
 
         <form id="form-nueva-serie" method="post" enctype="multipart/form-data">
 
             <div style="margin-bottom: 20px;">
-                <label for="serie_titulo" style="display: block; margin-bottom: 5px; font-weight: 600;"><?php echo esc_html__('Título de la Serie:', 'flavor-chat-ia'); ?></label>
-                <input type="text" name="titulo" id="serie_titulo" class="regular-text" required style="width: 100%;" placeholder="<?php echo esc_attr__('Ej: Historias del Barrio', 'flavor-chat-ia'); ?>">
+                <label for="serie_titulo" style="display: block; margin-bottom: 5px; font-weight: 600;"><?php echo esc_html__('Título de la Serie:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                <input type="text" name="titulo" id="serie_titulo" class="regular-text" required style="width: 100%;" placeholder="<?php echo esc_attr__('Ej: Historias del Barrio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             </div>
 
             <div style="margin-bottom: 20px;">
-                <label for="serie_descripcion" style="display: block; margin-bottom: 5px; font-weight: 600;"><?php echo esc_html__('Descripción:', 'flavor-chat-ia'); ?></label>
-                <textarea name="descripcion" id="serie_descripcion" rows="5" class="large-text" required style="width: 100%;" placeholder="<?php echo esc_attr__('Describe de qué trata tu podcast...', 'flavor-chat-ia'); ?>"></textarea>
+                <label for="serie_descripcion" style="display: block; margin-bottom: 5px; font-weight: 600;"><?php echo esc_html__('Descripción:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                <textarea name="descripcion" id="serie_descripcion" rows="5" class="large-text" required style="width: 100%;" placeholder="<?php echo esc_attr__('Describe de qué trata tu podcast...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
             </div>
 
             <div style="margin-bottom: 20px;">
-                <label for="serie_categoria" style="display: block; margin-bottom: 5px; font-weight: 600;"><?php echo esc_html__('Categoría:', 'flavor-chat-ia'); ?></label>
-                <input type="text" name="categoria" id="serie_categoria" class="regular-text" list="categorias-existentes" style="width: 100%;" placeholder="<?php echo esc_attr__('Ej: Noticias locales', 'flavor-chat-ia'); ?>">
+                <label for="serie_categoria" style="display: block; margin-bottom: 5px; font-weight: 600;"><?php echo esc_html__('Categoría:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                <input type="text" name="categoria" id="serie_categoria" class="regular-text" list="categorias-existentes" style="width: 100%;" placeholder="<?php echo esc_attr__('Ej: Noticias locales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <datalist id="categorias-existentes">
                     <?php foreach ($categorias as $categoria): ?>
                         <option value="<?php echo esc_attr($categoria); ?>">
@@ -173,33 +173,33 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_podcasts WHE
             </div>
 
             <div style="margin-bottom: 20px;">
-                <label for="serie_idioma" style="display: block; margin-bottom: 5px; font-weight: 600;"><?php echo esc_html__('Idioma:', 'flavor-chat-ia'); ?></label>
+                <label for="serie_idioma" style="display: block; margin-bottom: 5px; font-weight: 600;"><?php echo esc_html__('Idioma:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="idioma" id="serie_idioma" class="regular-text">
-                    <option value="<?php echo esc_attr__('es', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Español', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('eu', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Euskera', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('ca', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Catalán', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('gl', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Gallego', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('es', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_html__('Español', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="<?php echo esc_attr__('eu', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_html__('Euskera', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="<?php echo esc_attr__('ca', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_html__('Catalán', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="<?php echo esc_attr__('gl', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_html__('Gallego', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
             </div>
 
             <div style="margin-bottom: 20px;">
-                <label for="serie_imagen" style="display: block; margin-bottom: 5px; font-weight: 600;"><?php echo esc_html__('Imagen de Portada:', 'flavor-chat-ia'); ?></label>
+                <label for="serie_imagen" style="display: block; margin-bottom: 5px; font-weight: 600;"><?php echo esc_html__('Imagen de Portada:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <input type="file" name="imagen_portada" id="serie_imagen" accept="image/*">
-                <p class="description"><?php echo esc_html__('Recomendado: 1400x1400px (formato cuadrado)', 'flavor-chat-ia'); ?></p>
+                <p class="description"><?php echo esc_html__('Recomendado: 1400x1400px (formato cuadrado)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <div style="margin-bottom: 20px;">
-                <label for="serie_estado" style="display: block; margin-bottom: 5px; font-weight: 600;"><?php echo esc_html__('Estado Inicial:', 'flavor-chat-ia'); ?></label>
+                <label for="serie_estado" style="display: block; margin-bottom: 5px; font-weight: 600;"><?php echo esc_html__('Estado Inicial:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="estado" id="serie_estado" class="regular-text">
-                    <option value="<?php echo esc_attr__('publicado', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Publicado', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('borrador', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Borrador', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('publicado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_html__('Publicado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="<?php echo esc_attr__('borrador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_html__('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
             </div>
 
             <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 30px;">
-                <button type="button" onclick="cerrarModalNuevaSerie()" class="button button-large"><?php echo esc_html__('Cancelar', 'flavor-chat-ia'); ?></button>
+                <button type="button" onclick="cerrarModalNuevaSerie()" class="button button-large"><?php echo esc_html__('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                 <button type="submit" class="button button-primary button-large">
-                    <span class="dashicons dashicons-saved"></span> <?php echo esc_html__('Crear Serie', 'flavor-chat-ia'); ?>
+                    <span class="dashicons dashicons-saved"></span> <?php echo esc_html__('Crear Serie', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
 

@@ -125,15 +125,15 @@ $component_classes = $component_classes ?? '';
             <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="bg-blue-50 rounded-xl p-6 text-center">
                     <div class="text-3xl font-bold text-blue-600 mb-2">100%</div>
-                    <div class="text-gray-700"><?php _e('Seguro y Verificado', 'flavor-chat-ia'); ?></div>
+                    <div class="text-gray-700"><?php _e('Seguro y Verificado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="bg-green-50 rounded-xl p-6 text-center">
                     <div class="text-3xl font-bold text-green-600 mb-2">-40%</div>
-                    <div class="text-gray-700"><?php _e('Ahorro Medio', 'flavor-chat-ia'); ?></div>
+                    <div class="text-gray-700"><?php _e('Ahorro Medio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="bg-purple-50 rounded-xl p-6 text-center">
                     <div class="text-3xl font-bold text-purple-600 mb-2">24/7</div>
-                    <div class="text-gray-700"><?php _e('Soporte Disponible', 'flavor-chat-ia'); ?></div>
+                    <div class="text-gray-700"><?php _e('Soporte Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
         </div>

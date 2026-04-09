@@ -121,20 +121,20 @@ $porcentaje_almacenamiento = min(100, round(($almacenamiento_mb / $limite_almace
 
     <h1>
         <span class="dashicons dashicons-format-gallery"></span>
-        <?php echo esc_html__('Dashboard Multimedia', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Dashboard Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <hr class="wp-header-end">
 
     <?php if (!$tablas_disponibles): ?>
         <div class="notice notice-info">
-            <p><span class="dashicons dashicons-info"></span> <?php echo esc_html__('Faltan tablas del módulo Multimedia o aún no hay contenido publicado.', 'flavor-chat-ia'); ?></p>
+            <p><span class="dashicons dashicons-info"></span> <?php echo esc_html__('Faltan tablas del módulo Multimedia o aún no hay contenido publicado.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php endif; ?>
 
     <?php if ($is_dashboard_viewer): ?>
         <div class="notice notice-info">
-            <p><?php echo esc_html__('Vista resumida para gestor de grupos. La galería administrativa, la configuración y la moderación siguen reservadas a administración.', 'flavor-chat-ia'); ?></p>
+            <p><?php echo esc_html__('Vista resumida para gestor de grupos. La galería administrativa, la configuración y la moderación siguen reservadas a administración.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php endif; ?>
 
@@ -143,11 +143,11 @@ $porcentaje_almacenamiento = min(100, round(($almacenamiento_mb / $limite_almace
             <p>
                 <span class="dashicons dashicons-warning"></span>
                 <?php printf(
-                    esc_html__('Hay %d elementos pendientes de moderación.', 'flavor-chat-ia'),
+                    esc_html__('Hay %d elementos pendientes de moderación.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $pendientes_moderacion
                 ); ?>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=multimedia-moderacion')); ?>" class="button button-small" style="margin-left: 10px;">
-                    <?php echo esc_html__('Moderar ahora', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Moderar ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </p>
         </div>
@@ -157,28 +157,28 @@ $porcentaje_almacenamiento = min(100, round(($almacenamiento_mb / $limite_almace
     <div class="multimedia-quick-access" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 20px 0;">
         <a href="<?php echo esc_url($is_dashboard_viewer ? Flavor_Chat_Helpers::get_action_url('multimedia', '') : admin_url('admin.php?page=multimedia-galeria')); ?>" class="multimedia-quick-link" style="display: flex; align-items: center; gap: 10px; padding: 14px 16px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
             <span class="dashicons dashicons-format-gallery" style="font-size: 22px; color: #2271b1;"></span>
-            <span><?php echo esc_html($is_dashboard_viewer ? __('Ver en portal', 'flavor-chat-ia') : __('Galería', 'flavor-chat-ia')); ?></span>
+            <span><?php echo esc_html($is_dashboard_viewer ? __('Ver en portal', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Galería', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>
         </a>
         <a href="<?php echo esc_url($is_dashboard_viewer ? Flavor_Chat_Helpers::get_action_url('multimedia', 'albumes') : admin_url('admin.php?page=multimedia-albumes')); ?>" class="multimedia-quick-link" style="display: flex; align-items: center; gap: 10px; padding: 14px 16px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
             <span class="dashicons dashicons-images-alt" style="font-size: 22px; color: #00a32a;"></span>
-            <span><?php echo esc_html__('Álbumes', 'flavor-chat-ia'); ?></span>
+            <span><?php echo esc_html__('Álbumes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url($is_dashboard_viewer ? Flavor_Chat_Helpers::get_action_url('multimedia', 'subir') : admin_url('admin.php?page=multimedia-subir')); ?>" class="multimedia-quick-link" style="display: flex; align-items: center; gap: 10px; padding: 14px 16px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
             <span class="dashicons dashicons-upload" style="font-size: 22px; color: #8c49d8;"></span>
-            <span><?php echo esc_html__('Subir', 'flavor-chat-ia'); ?></span>
+            <span><?php echo esc_html__('Subir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <?php if (!$is_dashboard_viewer): ?>
         <a href="<?php echo esc_url(admin_url('admin.php?page=multimedia-moderacion')); ?>" class="multimedia-quick-link" style="display: flex; align-items: center; gap: 10px; padding: 14px 16px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
             <span class="dashicons dashicons-shield" style="font-size: 22px; color: #dba617;"></span>
-            <span><?php echo esc_html__('Moderación', 'flavor-chat-ia'); ?></span>
+            <span><?php echo esc_html__('Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=multimedia-estadisticas')); ?>" class="multimedia-quick-link" style="display: flex; align-items: center; gap: 10px; padding: 14px 16px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
             <span class="dashicons dashicons-chart-bar" style="font-size: 22px; color: #d63638;"></span>
-            <span><?php echo esc_html__('Estadísticas', 'flavor-chat-ia'); ?></span>
+            <span><?php echo esc_html__('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-multimedia-configuracion')); ?>" class="multimedia-quick-link" style="display: flex; align-items: center; gap: 10px; padding: 14px 16px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
             <span class="dashicons dashicons-admin-settings" style="font-size: 22px; color: #646970;"></span>
-            <span><?php echo esc_html__('Configuración', 'flavor-chat-ia'); ?></span>
+            <span><?php echo esc_html__('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <?php endif; ?>
     </div>
@@ -189,7 +189,7 @@ $porcentaje_almacenamiento = min(100, round(($almacenamiento_mb / $limite_almace
         <div class="flavor-stat-card" style="background: #fff; border-left: 4px solid #2271b1; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 4px;">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px;"><?php echo esc_html__('Total Contenido', 'flavor-chat-ia'); ?></p>
+                    <p style="margin: 0; color: #646970; font-size: 13px;"><?php echo esc_html__('Total Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <h2 style="margin: 8px 0 0; font-size: 28px; color: #1d2327;"><?php echo number_format($total_multimedia); ?></h2>
                 </div>
                 <span class="dashicons dashicons-format-gallery" style="font-size: 40px; color: #2271b1; opacity: 0.3;"></span>
@@ -199,7 +199,7 @@ $porcentaje_almacenamiento = min(100, round(($almacenamiento_mb / $limite_almace
         <div class="flavor-stat-card" style="background: #fff; border-left: 4px solid #00a32a; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 4px;">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px;"><?php echo esc_html__('Fotos', 'flavor-chat-ia'); ?></p>
+                    <p style="margin: 0; color: #646970; font-size: 13px;"><?php echo esc_html__('Fotos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <h2 style="margin: 8px 0 0; font-size: 28px; color: #1d2327;"><?php echo number_format($total_fotos); ?></h2>
                 </div>
                 <span class="dashicons dashicons-camera" style="font-size: 40px; color: #00a32a; opacity: 0.3;"></span>
@@ -209,7 +209,7 @@ $porcentaje_almacenamiento = min(100, round(($almacenamiento_mb / $limite_almace
         <div class="flavor-stat-card" style="background: #fff; border-left: 4px solid #8c49d8; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 4px;">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px;"><?php echo esc_html__('Videos', 'flavor-chat-ia'); ?></p>
+                    <p style="margin: 0; color: #646970; font-size: 13px;"><?php echo esc_html__('Videos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <h2 style="margin: 8px 0 0; font-size: 28px; color: #1d2327;"><?php echo number_format($total_videos); ?></h2>
                 </div>
                 <span class="dashicons dashicons-video-alt3" style="font-size: 40px; color: #8c49d8; opacity: 0.3;"></span>
@@ -219,7 +219,7 @@ $porcentaje_almacenamiento = min(100, round(($almacenamiento_mb / $limite_almace
         <div class="flavor-stat-card" style="background: #fff; border-left: 4px solid #dba617; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 4px;">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px;"><?php echo esc_html__('Álbumes', 'flavor-chat-ia'); ?></p>
+                    <p style="margin: 0; color: #646970; font-size: 13px;"><?php echo esc_html__('Álbumes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <h2 style="margin: 8px 0 0; font-size: 28px; color: #1d2327;"><?php echo number_format($total_albumes); ?></h2>
                 </div>
                 <span class="dashicons dashicons-images-alt2" style="font-size: 40px; color: #dba617; opacity: 0.3;"></span>
@@ -229,7 +229,7 @@ $porcentaje_almacenamiento = min(100, round(($almacenamiento_mb / $limite_almace
         <div class="flavor-stat-card" style="background: #fff; border-left: 4px solid #135e96; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 4px;">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px;"><?php echo esc_html__('Visitas Hoy', 'flavor-chat-ia'); ?></p>
+                    <p style="margin: 0; color: #646970; font-size: 13px;"><?php echo esc_html__('Visitas Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <h2 style="margin: 8px 0 0; font-size: 28px; color: #1d2327;"><?php echo number_format($visitas_hoy); ?></h2>
                 </div>
                 <span class="dashicons dashicons-visibility" style="font-size: 40px; color: #135e96; opacity: 0.3;"></span>
@@ -239,7 +239,7 @@ $porcentaje_almacenamiento = min(100, round(($almacenamiento_mb / $limite_almace
         <div class="flavor-stat-card" style="background: #fff; border-left: 4px solid #d63638; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 4px;">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px;"><?php echo esc_html__('Descargas', 'flavor-chat-ia'); ?></p>
+                    <p style="margin: 0; color: #646970; font-size: 13px;"><?php echo esc_html__('Descargas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <h2 style="margin: 8px 0 0; font-size: 28px; color: #1d2327;"><?php echo number_format($descargas_totales); ?></h2>
                 </div>
                 <span class="dashicons dashicons-download" style="font-size: 40px; color: #d63638; opacity: 0.3;"></span>
@@ -255,7 +255,7 @@ $porcentaje_almacenamiento = min(100, round(($almacenamiento_mb / $limite_almace
         <div class="postbox" style="margin: 0;">
             <h2 class="hndle" style="padding: 12px; margin: 0; border-bottom: 1px solid #c3c4c7;">
                 <span class="dashicons dashicons-category" style="margin-right: 8px;"></span>
-                <?php echo esc_html__('Distribución por Categoría', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Distribución por Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <div class="inside" style="padding: 20px;">
                 <canvas id="grafico-categorias" style="max-height: 280px;"></canvas>
@@ -266,7 +266,7 @@ $porcentaje_almacenamiento = min(100, round(($almacenamiento_mb / $limite_almace
         <div class="postbox" style="margin: 0;">
             <h2 class="hndle" style="padding: 12px; margin: 0; border-bottom: 1px solid #c3c4c7;">
                 <span class="dashicons dashicons-chart-line" style="margin-right: 8px;"></span>
-                <?php echo esc_html__('Actividad Últimos 7 Días', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Actividad Últimos 7 Días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <div class="inside" style="padding: 20px;">
                 <canvas id="grafico-actividad" style="max-height: 280px;"></canvas>
@@ -282,16 +282,16 @@ $porcentaje_almacenamiento = min(100, round(($almacenamiento_mb / $limite_almace
         <div class="postbox" style="margin: 0;">
             <h2 class="hndle" style="padding: 12px; margin: 0; border-bottom: 1px solid #c3c4c7;">
                 <span class="dashicons dashicons-clock" style="margin-right: 8px;"></span>
-                <?php echo esc_html__('Contenido Reciente', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Contenido Reciente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <div class="inside" style="padding: 0;">
                 <table class="wp-list-table widefat fixed striped" style="border: none;">
                     <thead>
                         <tr>
-                            <th style="width: 50px;"><?php echo esc_html__('Tipo', 'flavor-chat-ia'); ?></th>
-                            <th><?php echo esc_html__('Título', 'flavor-chat-ia'); ?></th>
-                            <th><?php echo esc_html__('Autor', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 80px;"><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></th>
+                            <th style="width: 50px;"><?php echo esc_html__('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php echo esc_html__('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php echo esc_html__('Autor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 80px;"><?php echo esc_html__('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -313,12 +313,12 @@ $porcentaje_almacenamiento = min(100, round(($almacenamiento_mb / $limite_almace
                                         <span class="dashicons <?php echo esc_attr($tipo_icon); ?>" style="color: <?php echo esc_attr($tipo_color); ?>;"></span>
                                     </td>
                                     <td>
-                                        <strong><?php echo esc_html($item->titulo ?: __('Sin título', 'flavor-chat-ia')); ?></strong>
+                                        <strong><?php echo esc_html($item->titulo ?: __('Sin título', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong>
                                         <?php if (!empty($item->categoria)): ?>
                                             <br><small style="color: #646970;"><?php echo esc_html($item->categoria); ?></small>
                                         <?php endif; ?>
                                     </td>
-                                    <td><?php echo esc_html($item->autor_nombre ?: __('Anónimo', 'flavor-chat-ia')); ?></td>
+                                    <td><?php echo esc_html($item->autor_nombre ?: __('Anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></td>
                                     <td>
                                         <small><?php echo esc_html(human_time_diff(strtotime($item->fecha_creacion), current_time('timestamp'))); ?></small>
                                     </td>
@@ -327,7 +327,7 @@ $porcentaje_almacenamiento = min(100, round(($almacenamiento_mb / $limite_almace
                         <?php else: ?>
                             <tr>
                                 <td colspan="4" style="text-align: center; padding: 30px; color: #646970;">
-                                    <?php echo esc_html__('No hay contenido reciente', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('No hay contenido reciente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </td>
                             </tr>
                         <?php endif; ?>
@@ -340,16 +340,16 @@ $porcentaje_almacenamiento = min(100, round(($almacenamiento_mb / $limite_almace
         <div class="postbox" style="margin: 0;">
             <h2 class="hndle" style="padding: 12px; margin: 0; border-bottom: 1px solid #c3c4c7;">
                 <span class="dashicons dashicons-star-filled" style="margin-right: 8px;"></span>
-                <?php echo esc_html__('Contenido Más Visto', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Contenido Más Visto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <div class="inside" style="padding: 0;">
                 <table class="wp-list-table widefat fixed striped" style="border: none;">
                     <thead>
                         <tr>
-                            <th style="width: 50px;"><?php echo esc_html__('Tipo', 'flavor-chat-ia'); ?></th>
-                            <th><?php echo esc_html__('Título', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 80px;"><?php echo esc_html__('Visitas', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 80px;"><?php echo esc_html__('Descargas', 'flavor-chat-ia'); ?></th>
+                            <th style="width: 50px;"><?php echo esc_html__('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php echo esc_html__('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 80px;"><?php echo esc_html__('Visitas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 80px;"><?php echo esc_html__('Descargas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -371,8 +371,8 @@ $porcentaje_almacenamiento = min(100, round(($almacenamiento_mb / $limite_almace
                                         <span class="dashicons <?php echo esc_attr($tipo_icon); ?>" style="color: <?php echo esc_attr($tipo_color); ?>;"></span>
                                     </td>
                                     <td>
-                                        <strong><?php echo esc_html($item->titulo ?: __('Sin título', 'flavor-chat-ia')); ?></strong>
-                                        <br><small style="color: #646970;"><?php echo esc_html($item->autor_nombre ?: __('Anónimo', 'flavor-chat-ia')); ?></small>
+                                        <strong><?php echo esc_html($item->titulo ?: __('Sin título', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong>
+                                        <br><small style="color: #646970;"><?php echo esc_html($item->autor_nombre ?: __('Anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></small>
                                     </td>
                                     <td style="text-align: center;">
                                         <span style="background: #e7f3ff; color: #2271b1; padding: 3px 8px; border-radius: 3px; font-size: 12px;">
@@ -389,7 +389,7 @@ $porcentaje_almacenamiento = min(100, round(($almacenamiento_mb / $limite_almace
                         <?php else: ?>
                             <tr>
                                 <td colspan="4" style="text-align: center; padding: 30px; color: #646970;">
-                                    <?php echo esc_html__('No hay datos de popularidad', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('No hay datos de popularidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </td>
                             </tr>
                         <?php endif; ?>
@@ -404,7 +404,7 @@ $porcentaje_almacenamiento = min(100, round(($almacenamiento_mb / $limite_almace
     <div class="postbox" style="margin: 20px 0;">
         <h2 class="hndle" style="padding: 12px; margin: 0; border-bottom: 1px solid #c3c4c7;">
             <span class="dashicons dashicons-database" style="margin-right: 8px;"></span>
-            <?php echo esc_html__('Uso de Almacenamiento', 'flavor-chat-ia'); ?>
+            <?php echo esc_html__('Uso de Almacenamiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
         <div class="inside" style="padding: 20px;">
             <div style="display: flex; align-items: center; gap: 20px;">
@@ -472,7 +472,7 @@ jQuery(document).ready(function($) {
             data: {
                 labels: <?php echo wp_json_encode($actividad_labels); ?>,
                 datasets: [{
-                    label: '<?php echo esc_js(__('Subidas', 'flavor-chat-ia')); ?>',
+                    label: '<?php echo esc_js(__('Subidas', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
                     data: <?php echo wp_json_encode($actividad_data); ?>,
                     backgroundColor: '#2271b1',
                     borderRadius: 4,

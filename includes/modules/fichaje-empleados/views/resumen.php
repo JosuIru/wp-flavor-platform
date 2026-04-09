@@ -10,24 +10,24 @@ if (!defined('ABSPATH')) {
 }
 
 $meses = [
-    1 => __('Enero', 'flavor-chat-ia'),
-    2 => __('Febrero', 'flavor-chat-ia'),
-    3 => __('Marzo', 'flavor-chat-ia'),
-    4 => __('Abril', 'flavor-chat-ia'),
-    5 => __('Mayo', 'flavor-chat-ia'),
-    6 => __('Junio', 'flavor-chat-ia'),
-    7 => __('Julio', 'flavor-chat-ia'),
-    8 => __('Agosto', 'flavor-chat-ia'),
-    9 => __('Septiembre', 'flavor-chat-ia'),
-    10 => __('Octubre', 'flavor-chat-ia'),
-    11 => __('Noviembre', 'flavor-chat-ia'),
-    12 => __('Diciembre', 'flavor-chat-ia'),
+    1 => __('Enero', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    2 => __('Febrero', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    3 => __('Marzo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    4 => __('Abril', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    5 => __('Mayo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    6 => __('Junio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    7 => __('Julio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    8 => __('Agosto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    9 => __('Septiembre', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    10 => __('Octubre', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    11 => __('Noviembre', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    12 => __('Diciembre', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 
 <div class="fichaje-resumen">
     <div class="fichaje-resumen-header">
-        <h3><?php esc_html_e('Resumen de Horas', 'flavor-chat-ia'); ?></h3>
+        <h3><?php esc_html_e('Resumen de Horas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
         <div class="fichaje-periodo-selector">
             <select id="fichaje-mes" class="fichaje-select">
@@ -52,24 +52,24 @@ $meses = [
     <div class="fichaje-resumen-stats">
         <div class="fichaje-stat-card">
             <div class="stat-valor"><?php echo esc_html(number_format($resumen['total_horas'], 1)); ?></div>
-            <div class="stat-label"><?php esc_html_e('Horas totales', 'flavor-chat-ia'); ?></div>
+            <div class="stat-label"><?php esc_html_e('Horas totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
 
         <div class="fichaje-stat-card">
             <div class="stat-valor"><?php echo esc_html($resumen['dias_trabajados']); ?></div>
-            <div class="stat-label"><?php esc_html_e('Días trabajados', 'flavor-chat-ia'); ?></div>
+            <div class="stat-label"><?php esc_html_e('Días trabajados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
 
         <div class="fichaje-stat-card">
             <div class="stat-valor"><?php echo esc_html(number_format($resumen['promedio_horas_diarias'], 1)); ?></div>
-            <div class="stat-label"><?php esc_html_e('Promedio diario', 'flavor-chat-ia'); ?></div>
+            <div class="stat-label"><?php esc_html_e('Promedio diario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
     <?php if (!empty($resumen['detalle_dias'])): ?>
     <!-- Gráfico de barras simple -->
     <div class="fichaje-grafico">
-        <h4><?php esc_html_e('Horas por día', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('Horas por día', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <div class="fichaje-grafico-barras">
             <?php
             $max_horas = max(array_column($resumen['detalle_dias'], 'horas'));
@@ -88,13 +88,13 @@ $meses = [
 
     <!-- Detalle por día -->
     <div class="fichaje-detalle-dias">
-        <h4><?php esc_html_e('Detalle por día', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('Detalle por día', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <table class="fichaje-tabla fichaje-tabla-detalle">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Horas', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Fichajes', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Horas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Fichajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -116,14 +116,14 @@ $meses = [
     <?php else: ?>
     <div class="fichaje-resumen-vacio">
         <span class="dashicons dashicons-calendar-alt"></span>
-        <p><?php esc_html_e('No hay registros para este periodo.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('No hay registros para este periodo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php endif; ?>
 
     <div class="fichaje-resumen-acciones">
         <a href="<?php echo esc_url(home_url('/fichaje-empleados/')); ?>" class="fichaje-btn fichaje-btn-secundario">
             <span class="dashicons dashicons-arrow-left-alt"></span>
-            <?php esc_html_e('Volver al panel', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Volver al panel', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 </div>

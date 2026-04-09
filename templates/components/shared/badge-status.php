@@ -31,51 +31,51 @@ $pulse = $pulse ?? false;
 // Mapeo de estados a colores y etiquetas
 $status_config = [
     // Estados generales
-    'pending'    => ['color' => 'yellow', 'label' => __('Pendiente', 'flavor-chat-ia'), 'icon' => '⏳'],
-    'active'     => ['color' => 'green', 'label' => __('Activo', 'flavor-chat-ia'), 'icon' => '✅'],
-    'completed'  => ['color' => 'green', 'label' => __('Completado', 'flavor-chat-ia'), 'icon' => '✔️'],
-    'cancelled'  => ['color' => 'red', 'label' => __('Cancelado', 'flavor-chat-ia'), 'icon' => '❌'],
-    'rejected'   => ['color' => 'red', 'label' => __('Rechazado', 'flavor-chat-ia'), 'icon' => '🚫'],
-    'expired'    => ['color' => 'gray', 'label' => __('Expirado', 'flavor-chat-ia'), 'icon' => '⌛'],
-    'draft'      => ['color' => 'gray', 'label' => __('Borrador', 'flavor-chat-ia'), 'icon' => '📝'],
-    'published'  => ['color' => 'blue', 'label' => __('Publicado', 'flavor-chat-ia'), 'icon' => '📢'],
+    'pending'    => ['color' => 'yellow', 'label' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '⏳'],
+    'active'     => ['color' => 'green', 'label' => __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '✅'],
+    'completed'  => ['color' => 'green', 'label' => __('Completado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '✔️'],
+    'cancelled'  => ['color' => 'red', 'label' => __('Cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '❌'],
+    'rejected'   => ['color' => 'red', 'label' => __('Rechazado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🚫'],
+    'expired'    => ['color' => 'gray', 'label' => __('Expirado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '⌛'],
+    'draft'      => ['color' => 'gray', 'label' => __('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📝'],
+    'published'  => ['color' => 'blue', 'label' => __('Publicado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📢'],
 
     // Estados de proceso
-    'in_progress'=> ['color' => 'blue', 'label' => __('En progreso', 'flavor-chat-ia'), 'icon' => '🔄'],
-    'processing' => ['color' => 'blue', 'label' => __('Procesando', 'flavor-chat-ia'), 'icon' => '⚙️'],
-    'reviewing'  => ['color' => 'purple', 'label' => __('En revisión', 'flavor-chat-ia'), 'icon' => '👁️'],
-    'approved'   => ['color' => 'green', 'label' => __('Aprobado', 'flavor-chat-ia'), 'icon' => '👍'],
+    'in_progress'=> ['color' => 'blue', 'label' => __('En progreso', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🔄'],
+    'processing' => ['color' => 'blue', 'label' => __('Procesando', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '⚙️'],
+    'reviewing'  => ['color' => 'purple', 'label' => __('En revisión', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👁️'],
+    'approved'   => ['color' => 'green', 'label' => __('Aprobado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👍'],
 
     // Estados de incidencias
-    'reported'   => ['color' => 'orange', 'label' => __('Reportado', 'flavor-chat-ia'), 'icon' => '⚠️'],
-    'assigned'   => ['color' => 'blue', 'label' => __('Asignado', 'flavor-chat-ia'), 'icon' => '👤'],
-    'resolved'   => ['color' => 'green', 'label' => __('Resuelto', 'flavor-chat-ia'), 'icon' => '✅'],
-    'closed'     => ['color' => 'gray', 'label' => __('Cerrado', 'flavor-chat-ia'), 'icon' => '🔒'],
+    'reported'   => ['color' => 'orange', 'label' => __('Reportado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '⚠️'],
+    'assigned'   => ['color' => 'blue', 'label' => __('Asignado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👤'],
+    'resolved'   => ['color' => 'green', 'label' => __('Resuelto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '✅'],
+    'closed'     => ['color' => 'gray', 'label' => __('Cerrado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🔒'],
 
     // Estados de pagos
-    'paid'       => ['color' => 'green', 'label' => __('Pagado', 'flavor-chat-ia'), 'icon' => '💰'],
-    'unpaid'     => ['color' => 'red', 'label' => __('Sin pagar', 'flavor-chat-ia'), 'icon' => '💸'],
-    'refunded'   => ['color' => 'purple', 'label' => __('Reembolsado', 'flavor-chat-ia'), 'icon' => '↩️'],
+    'paid'       => ['color' => 'green', 'label' => __('Pagado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '💰'],
+    'unpaid'     => ['color' => 'red', 'label' => __('Sin pagar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '💸'],
+    'refunded'   => ['color' => 'purple', 'label' => __('Reembolsado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '↩️'],
 
     // Estados de reservas/pedidos
-    'confirmed'  => ['color' => 'green', 'label' => __('Confirmado', 'flavor-chat-ia'), 'icon' => '✓'],
-    'waiting'    => ['color' => 'yellow', 'label' => __('En espera', 'flavor-chat-ia'), 'icon' => '⏰'],
-    'shipped'    => ['color' => 'blue', 'label' => __('Enviado', 'flavor-chat-ia'), 'icon' => '📦'],
-    'delivered'  => ['color' => 'green', 'label' => __('Entregado', 'flavor-chat-ia'), 'icon' => '🎁'],
-    'pickup'     => ['color' => 'orange', 'label' => __('Para recoger', 'flavor-chat-ia'), 'icon' => '📍'],
+    'confirmed'  => ['color' => 'green', 'label' => __('Confirmado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '✓'],
+    'waiting'    => ['color' => 'yellow', 'label' => __('En espera', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '⏰'],
+    'shipped'    => ['color' => 'blue', 'label' => __('Enviado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📦'],
+    'delivered'  => ['color' => 'green', 'label' => __('Entregado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🎁'],
+    'pickup'     => ['color' => 'orange', 'label' => __('Para recoger', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📍'],
 
     // Estados de usuarios
-    'online'     => ['color' => 'green', 'label' => __('En línea', 'flavor-chat-ia'), 'icon' => '🟢'],
-    'offline'    => ['color' => 'gray', 'label' => __('Desconectado', 'flavor-chat-ia'), 'icon' => '⚫'],
-    'away'       => ['color' => 'yellow', 'label' => __('Ausente', 'flavor-chat-ia'), 'icon' => '🟡'],
-    'busy'       => ['color' => 'red', 'label' => __('Ocupado', 'flavor-chat-ia'), 'icon' => '🔴'],
+    'online'     => ['color' => 'green', 'label' => __('En línea', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🟢'],
+    'offline'    => ['color' => 'gray', 'label' => __('Desconectado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '⚫'],
+    'away'       => ['color' => 'yellow', 'label' => __('Ausente', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🟡'],
+    'busy'       => ['color' => 'red', 'label' => __('Ocupado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🔴'],
 
     // Grupos consumo
-    'open'       => ['color' => 'green', 'label' => __('Abierto', 'flavor-chat-ia'), 'icon' => '🛒'],
-    'sin_stock'  => ['color' => 'orange', 'label' => __('Sin stock', 'flavor-chat-ia'), 'icon' => '📭'],
+    'open'       => ['color' => 'green', 'label' => __('Abierto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🛒'],
+    'sin_stock'  => ['color' => 'orange', 'label' => __('Sin stock', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📭'],
 
     // Default
-    'default'    => ['color' => 'gray', 'label' => __('Estado', 'flavor-chat-ia'), 'icon' => ''],
+    'default'    => ['color' => 'gray', 'label' => __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => ''],
 ];
 
 // Normalizar status

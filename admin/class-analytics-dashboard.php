@@ -57,9 +57,9 @@ class Flavor_Analytics_Dashboard {
      */
     public function add_menu() {
         add_submenu_page(
-            'flavor-chat-ia',
-            __('Analytics', 'flavor-chat-ia'),
-            __('Analytics', 'flavor-chat-ia'),
+            FLAVOR_PLATFORM_TEXT_DOMAIN,
+            __('Analytics', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Analytics', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-analytics',
             [$this, 'render_dashboard']
@@ -104,12 +104,12 @@ class Flavor_Analytics_Dashboard {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_analytics'),
             'i18n' => [
-                'loading' => __('Cargando...', 'flavor-chat-ia'),
-                'error' => __('Error al cargar datos', 'flavor-chat-ia'),
-                'noData' => __('Sin datos disponibles', 'flavor-chat-ia'),
-                'usuarios' => __('Usuarios', 'flavor-chat-ia'),
-                'contenido' => __('Contenido', 'flavor-chat-ia'),
-                'engagement' => __('Engagement', 'flavor-chat-ia')
+                'loading' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al cargar datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'noData' => __('Sin datos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'usuarios' => __('Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'contenido' => __('Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'engagement' => __('Engagement', FLAVOR_PLATFORM_TEXT_DOMAIN)
             ]
         ]);
     }
@@ -119,7 +119,7 @@ class Flavor_Analytics_Dashboard {
      */
     public function render_dashboard() {
         if (!current_user_can('manage_options')) {
-            wp_die(__('No tienes permisos para acceder a esta página.', 'flavor-chat-ia'));
+            wp_die(__('No tienes permisos para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $kpis = $this->get_kpis();
@@ -127,24 +127,24 @@ class Flavor_Analytics_Dashboard {
         <div class="wrap flavor-analytics-wrap">
             <h1 class="wp-heading-inline">
                 <span class="dashicons dashicons-chart-area"></span>
-                <?php _e('Analytics Dashboard', 'flavor-chat-ia'); ?>
+                <?php _e('Analytics Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h1>
 
             <!-- Filtros de período -->
             <div class="flavor-analytics-filters">
                 <select id="analytics-period" class="flavor-analytics-period">
-                    <option value="7"><?php _e('Últimos 7 días', 'flavor-chat-ia'); ?></option>
-                    <option value="30" selected><?php _e('Últimos 30 días', 'flavor-chat-ia'); ?></option>
-                    <option value="90"><?php _e('Últimos 90 días', 'flavor-chat-ia'); ?></option>
-                    <option value="365"><?php _e('Último año', 'flavor-chat-ia'); ?></option>
+                    <option value="7"><?php _e('Últimos 7 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="30" selected><?php _e('Últimos 30 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="90"><?php _e('Últimos 90 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="365"><?php _e('Último año', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
                 <button type="button" class="button" id="btn-refresh-analytics">
                     <span class="dashicons dashicons-update"></span>
-                    <?php _e('Actualizar', 'flavor-chat-ia'); ?>
+                    <?php _e('Actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" class="button" id="btn-export-analytics">
                     <span class="dashicons dashicons-download"></span>
-                    <?php _e('Exportar CSV', 'flavor-chat-ia'); ?>
+                    <?php _e('Exportar CSV', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
 
@@ -156,7 +156,7 @@ class Flavor_Analytics_Dashboard {
                     </div>
                     <div class="kpi-content">
                         <div class="kpi-value" id="kpi-usuarios"><?php echo number_format($kpis['usuarios_activos']); ?></div>
-                        <div class="kpi-label"><?php _e('Usuarios Activos', 'flavor-chat-ia'); ?></div>
+                        <div class="kpi-label"><?php _e('Usuarios Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                         <div class="kpi-change <?php echo $kpis['usuarios_cambio'] >= 0 ? 'positive' : 'negative'; ?>">
                             <?php echo ($kpis['usuarios_cambio'] >= 0 ? '+' : '') . $kpis['usuarios_cambio']; ?>%
                         </div>
@@ -169,7 +169,7 @@ class Flavor_Analytics_Dashboard {
                     </div>
                     <div class="kpi-content">
                         <div class="kpi-value" id="kpi-contenido"><?php echo number_format($kpis['contenido_creado']); ?></div>
-                        <div class="kpi-label"><?php _e('Contenido Creado', 'flavor-chat-ia'); ?></div>
+                        <div class="kpi-label"><?php _e('Contenido Creado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                         <div class="kpi-change <?php echo $kpis['contenido_cambio'] >= 0 ? 'positive' : 'negative'; ?>">
                             <?php echo ($kpis['contenido_cambio'] >= 0 ? '+' : '') . $kpis['contenido_cambio']; ?>%
                         </div>
@@ -182,7 +182,7 @@ class Flavor_Analytics_Dashboard {
                     </div>
                     <div class="kpi-content">
                         <div class="kpi-value" id="kpi-engagement"><?php echo number_format($kpis['interacciones']); ?></div>
-                        <div class="kpi-label"><?php _e('Interacciones', 'flavor-chat-ia'); ?></div>
+                        <div class="kpi-label"><?php _e('Interacciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                         <div class="kpi-change <?php echo $kpis['engagement_cambio'] >= 0 ? 'positive' : 'negative'; ?>">
                             <?php echo ($kpis['engagement_cambio'] >= 0 ? '+' : '') . $kpis['engagement_cambio']; ?>%
                         </div>
@@ -195,7 +195,7 @@ class Flavor_Analytics_Dashboard {
                     </div>
                     <div class="kpi-content">
                         <div class="kpi-value" id="kpi-eventos"><?php echo number_format($kpis['eventos_activos']); ?></div>
-                        <div class="kpi-label"><?php _e('Eventos Activos', 'flavor-chat-ia'); ?></div>
+                        <div class="kpi-label"><?php _e('Eventos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                         <div class="kpi-change <?php echo $kpis['eventos_cambio'] >= 0 ? 'positive' : 'negative'; ?>">
                             <?php echo ($kpis['eventos_cambio'] >= 0 ? '+' : '') . $kpis['eventos_cambio']; ?>%
                         </div>
@@ -206,17 +206,17 @@ class Flavor_Analytics_Dashboard {
             <!-- Gráficos -->
             <div class="flavor-analytics-charts">
                 <div class="chart-card chart-large">
-                    <h3><?php _e('Actividad por Día', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Actividad por Día', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <canvas id="chart-actividad"></canvas>
                 </div>
 
                 <div class="chart-card">
-                    <h3><?php _e('Distribución por Módulo', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Distribución por Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <canvas id="chart-modulos"></canvas>
                 </div>
 
                 <div class="chart-card">
-                    <h3><?php _e('Tipos de Interacción', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Tipos de Interacción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <canvas id="chart-interacciones"></canvas>
                 </div>
             </div>
@@ -224,14 +224,14 @@ class Flavor_Analytics_Dashboard {
             <!-- Tablas de datos -->
             <div class="flavor-analytics-tables">
                 <div class="table-card">
-                    <h3><?php _e('Top Usuarios', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Top Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <table class="widefat striped">
                         <thead>
                             <tr>
-                                <th><?php _e('Usuario', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Nivel', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Puntos', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Actividad', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Nivel', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Puntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody id="table-top-usuarios">
@@ -241,14 +241,14 @@ class Flavor_Analytics_Dashboard {
                 </div>
 
                 <div class="table-card">
-                    <h3><?php _e('Contenido Popular', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Contenido Popular', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <table class="widefat striped">
                         <thead>
                             <tr>
-                                <th><?php _e('Contenido', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Tipo', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Vistas', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Interacciones', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Vistas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Interacciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody id="table-top-contenido">
@@ -260,7 +260,7 @@ class Flavor_Analytics_Dashboard {
 
             <!-- Métricas por módulo -->
             <div class="flavor-analytics-modules">
-                <h3><?php _e('Métricas por Módulo', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Métricas por Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div class="module-metrics-grid" id="module-metrics">
                     <?php echo $this->render_module_metrics(); ?>
                 </div>
@@ -530,13 +530,13 @@ class Flavor_Analytics_Dashboard {
      */
     private function render_top_usuarios() {
         if (!function_exists('flavor_reputation')) {
-            return '<tr><td colspan="4">' . __('Sistema de reputación no disponible', 'flavor-chat-ia') . '</td></tr>';
+            return '<tr><td colspan="4">' . __('Sistema de reputación no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</td></tr>';
         }
 
         $leaderboard = flavor_reputation()->get_leaderboard('mes', 5);
 
         if (empty($leaderboard)) {
-            return '<tr><td colspan="4">' . __('Sin datos disponibles', 'flavor-chat-ia') . '</td></tr>';
+            return '<tr><td colspan="4">' . __('Sin datos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</td></tr>';
         }
 
         $html = '';
@@ -578,7 +578,7 @@ class Flavor_Analytics_Dashboard {
         );
 
         if (empty($posts)) {
-            return '<tr><td colspan="4">' . __('Sin datos disponibles', 'flavor-chat-ia') . '</td></tr>';
+            return '<tr><td colspan="4">' . __('Sin datos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</td></tr>';
         }
 
         $html = '';

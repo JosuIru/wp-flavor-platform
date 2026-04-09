@@ -7,7 +7,7 @@
 
 module.exports = {
     // Nombre del proyecto
-    displayName: 'flavor-chat-ia',
+    displayName: 'flavor-platform',
 
     // Entorno de pruebas
     testEnvironment: 'jsdom',

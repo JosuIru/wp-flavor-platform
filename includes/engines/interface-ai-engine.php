@@ -117,7 +117,7 @@ abstract class Chat_IA_Engine_Base implements Chat_IA_Engine_Interface {
      * Carga la configuración del proveedor
      */
     protected function load_config() {
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $provider_id = $this->get_id();
 
         // Obtener API key (puede estar encriptada)

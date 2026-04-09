@@ -23,8 +23,8 @@ $formaciones = get_posts([
 
 <div class="td-container">
     <header class="td-header">
-        <h2><?php esc_html_e('Formación y Capacitación', 'flavor-chat-ia'); ?></h2>
-        <p><?php esc_html_e('Cursos, talleres y formaciones para tu desarrollo profesional', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Formación y Capacitación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p><?php esc_html_e('Cursos, talleres y formaciones para tu desarrollo profesional', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </header>
 
     <?php if ($formaciones) : ?>
@@ -82,18 +82,18 @@ $formaciones = get_posts([
                     <?php if ($plazas > 0) : ?>
                     / <?php echo esc_html($plazas); ?>
                     <?php endif; ?>
-                    <?php esc_html_e('inscritos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('inscritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
 
                 <?php if (is_user_logged_in()) : ?>
                     <?php if ($ya_inscrito) : ?>
-                    <span class="td-btn td-btn--secondary td-btn--small"><?php esc_html_e('Inscrito/a', 'flavor-chat-ia'); ?></span>
+                    <span class="td-btn td-btn--secondary td-btn--small"><?php esc_html_e('Inscrito/a', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <?php elseif ($plazas_disponibles) : ?>
                     <button class="td-btn td-btn--primary td-btn--small td-btn-inscribir" data-formacion="<?php echo esc_attr($formacion->ID); ?>">
-                        <?php esc_html_e('Inscribirme', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Inscribirme', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <?php else : ?>
-                    <span class="td-btn td-btn--secondary td-btn--small"><?php esc_html_e('Completo', 'flavor-chat-ia'); ?></span>
+                    <span class="td-btn td-btn--secondary td-btn--small"><?php esc_html_e('Completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <?php endif; ?>
                 <?php endif; ?>
             </div>
@@ -103,7 +103,7 @@ $formaciones = get_posts([
     <?php else : ?>
     <div class="td-empty-state">
         <span class="dashicons dashicons-welcome-learn-more"></span>
-        <p><?php esc_html_e('No hay formaciones programadas.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('No hay formaciones programadas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php endif; ?>
 </div>

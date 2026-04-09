@@ -275,8 +275,8 @@ class Flavor_Frontend_Cursos_Controller extends Flavor_Frontend_Controller_Base 
 
     protected function ajax_inscribirse($data) {
         if (!is_user_logged_in()) {
-            return ['error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
+            return ['error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
-        return ['success' => true, 'mensaje' => __('Inscripción realizada', 'flavor-chat-ia')];
+        return ['success' => true, 'mensaje' => __('Inscripción realizada', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 }

@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 
 $usuario_id = get_current_user_id();
 if (!$usuario_id) {
-    echo '<div class="fl-login-required"><p>' . esc_html__('Debes iniciar sesión para ver tus intercambios.', 'flavor-chat-ia') . '</p></div>';
+    echo '<div class="fl-login-required"><p>' . esc_html__('Debes iniciar sesión para ver tus intercambios.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
 
@@ -24,37 +24,37 @@ $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
 // Estados y sus estilos
 $estados = [
     'pendiente' => [
-        'label' => __('Pendiente', 'flavor-chat-ia'),
+        'label' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon' => 'dashicons-hourglass',
         'color' => '#d97706',
         'bg' => '#fef3c7',
     ],
     'aceptado' => [
-        'label' => __('Aceptado', 'flavor-chat-ia'),
+        'label' => __('Aceptado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon' => 'dashicons-yes-alt',
         'color' => '#2563eb',
         'bg' => '#dbeafe',
     ],
     'en_curso' => [
-        'label' => __('En curso', 'flavor-chat-ia'),
+        'label' => __('En curso', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon' => 'dashicons-update',
         'color' => '#7c3aed',
         'bg' => '#ede9fe',
     ],
     'completado' => [
-        'label' => __('Completado', 'flavor-chat-ia'),
+        'label' => __('Completado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon' => 'dashicons-yes',
         'color' => '#059669',
         'bg' => '#d1fae5',
     ],
     'cancelado' => [
-        'label' => __('Cancelado', 'flavor-chat-ia'),
+        'label' => __('Cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon' => 'dashicons-no-alt',
         'color' => '#dc2626',
         'bg' => '#fee2e2',
     ],
     'rechazado' => [
-        'label' => __('Rechazado', 'flavor-chat-ia'),
+        'label' => __('Rechazado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon' => 'dashicons-dismiss',
         'color' => '#9ca3af',
         'bg' => '#f3f4f6',
@@ -129,17 +129,17 @@ $historial = $wpdb->get_results($wpdb->prepare(
         <div class="fl-stat-pill fl-stat-pending">
             <span class="fl-stat-icon"><span class="dashicons dashicons-hourglass"></span></span>
             <span class="fl-stat-value"><?php echo intval($mis_stats['pendientes']); ?></span>
-            <span class="fl-stat-label"><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></span>
+            <span class="fl-stat-label"><?php esc_html_e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="fl-stat-pill fl-stat-active">
             <span class="fl-stat-icon"><span class="dashicons dashicons-update"></span></span>
             <span class="fl-stat-value"><?php echo intval($mis_stats['en_curso']); ?></span>
-            <span class="fl-stat-label"><?php esc_html_e('En curso', 'flavor-chat-ia'); ?></span>
+            <span class="fl-stat-label"><?php esc_html_e('En curso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="fl-stat-pill fl-stat-completed">
             <span class="fl-stat-icon"><span class="dashicons dashicons-yes"></span></span>
             <span class="fl-stat-value"><?php echo intval($mis_stats['completados']); ?></span>
-            <span class="fl-stat-label"><?php esc_html_e('Completados', 'flavor-chat-ia'); ?></span>
+            <span class="fl-stat-label"><?php esc_html_e('Completados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
     </div>
 
@@ -148,7 +148,7 @@ $historial = $wpdb->get_results($wpdb->prepare(
         <div class="fl-section-header">
             <h3 class="fl-section-title">
                 <span class="dashicons dashicons-randomize"></span>
-                <?php esc_html_e('Intercambios Activos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Intercambios Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
 
@@ -169,17 +169,17 @@ $historial = $wpdb->get_results($wpdb->prepare(
                         <?php echo get_avatar($otra_persona_id, 48); ?>
                     </div>
                     <div class="fl-exchange-info">
-                        <h4 class="fl-exchange-title"><?php echo esc_html($intercambio->servicio_titulo ?: __('Servicio', 'flavor-chat-ia')); ?></h4>
+                        <h4 class="fl-exchange-title"><?php echo esc_html($intercambio->servicio_titulo ?: __('Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></h4>
                         <p class="fl-exchange-meta">
                             <?php if ($intercambio->rol === 'solicite') : ?>
                                 <span class="fl-exchange-direction fl-direction-out">
                                     <span class="dashicons dashicons-arrow-right-alt"></span>
-                                    <?php esc_html_e('Solicité a', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Solicité a', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                             <?php else : ?>
                                 <span class="fl-exchange-direction fl-direction-in">
                                     <span class="dashicons dashicons-arrow-left-alt"></span>
-                                    <?php esc_html_e('Me solicitó', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Me solicitó', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                             <?php endif; ?>
                             <strong><?php echo esc_html($otra_persona); ?></strong>
@@ -202,25 +202,25 @@ $historial = $wpdb->get_results($wpdb->prepare(
                     <div class="fl-exchange-actions">
                         <button type="button" class="fl-btn fl-btn-success fl-btn-sm bt-btn-aceptar-intercambio" data-intercambio-id="<?php echo esc_attr($intercambio->id); ?>">
                             <span class="dashicons dashicons-yes"></span>
-                            <?php esc_html_e('Aceptar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Aceptar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <button type="button" class="fl-btn fl-btn-danger fl-btn-sm bt-btn-rechazar-intercambio" data-intercambio-id="<?php echo esc_attr($intercambio->id); ?>">
                             <span class="dashicons dashicons-no"></span>
-                            <?php esc_html_e('Rechazar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Rechazar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                     <?php elseif ($intercambio->estado === 'pendiente' && $intercambio->rol === 'solicite') : ?>
                     <div class="fl-exchange-actions">
                         <button type="button" class="fl-btn fl-btn-outline fl-btn-sm bt-btn-cancelar-intercambio" data-intercambio-id="<?php echo esc_attr($intercambio->id); ?>">
                             <span class="dashicons dashicons-no-alt"></span>
-                            <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                     <?php elseif ($intercambio->estado === 'aceptado' || $intercambio->estado === 'en_curso') : ?>
                     <div class="fl-exchange-actions">
                         <button type="button" class="fl-btn fl-btn-primary fl-btn-sm bt-btn-completar-intercambio" data-intercambio-id="<?php echo esc_attr($intercambio->id); ?>">
                             <span class="dashicons dashicons-yes-alt"></span>
-                            <?php esc_html_e('Completar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Completar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                     <?php endif; ?>
@@ -231,9 +231,9 @@ $historial = $wpdb->get_results($wpdb->prepare(
         <?php else : ?>
         <div class="fl-empty-state">
             <span class="dashicons dashicons-randomize"></span>
-            <p><?php esc_html_e('No tienes intercambios activos. ¡Explora los servicios disponibles!', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('No tienes intercambios activos. ¡Explora los servicios disponibles!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('banco_tiempo', '')); ?>" class="fl-btn fl-btn-outline">
-                <?php esc_html_e('Ver servicios', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
         <?php endif; ?>
@@ -245,7 +245,7 @@ $historial = $wpdb->get_results($wpdb->prepare(
         <div class="fl-section-header">
             <h3 class="fl-section-title">
                 <span class="dashicons dashicons-backup"></span>
-                <?php esc_html_e('Historial', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Historial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <div class="fl-history-list">
@@ -258,9 +258,9 @@ $historial = $wpdb->get_results($wpdb->prepare(
                     <span class="dashicons <?php echo esc_attr($estado_info['icon']); ?>"></span>
                 </div>
                 <div class="fl-history-content">
-                    <span class="fl-history-title"><?php echo esc_html($item->servicio_titulo ?: __('Servicio', 'flavor-chat-ia')); ?></span>
+                    <span class="fl-history-title"><?php echo esc_html($item->servicio_titulo ?: __('Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>
                     <span class="fl-history-meta">
-                        <?php echo $item->rol === 'solicite' ? esc_html__('con', 'flavor-chat-ia') : esc_html__('de', 'flavor-chat-ia'); ?>
+                        <?php echo $item->rol === 'solicite' ? esc_html__('con', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('de', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <?php echo esc_html($otra_persona); ?>
                         •
                         <?php echo esc_html(date_i18n('j M Y', strtotime($item->fecha_completado ?: $item->fecha_solicitud))); ?>

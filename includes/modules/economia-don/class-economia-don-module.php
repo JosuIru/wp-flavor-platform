@@ -81,8 +81,8 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
      */
     public function __construct() {
         $this->id = 'economia_don';
-        $this->name = __('Economía del Don', 'flavor-chat-ia');
-        $this->description = __('Dar y recibir sin esperar nada a cambio.', 'flavor-chat-ia');
+        $this->name = __('Economía del Don', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Dar y recibir sin esperar nada a cambio.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $this->icon = 'dashicons-heart';
         $this->color = '#e74c3c';
 
@@ -313,7 +313,7 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
                 'categoria_nombre' => self::CATEGORIAS_DON[$cat_key]['nombre'] ?? $cat_key,
                 'ubicacion' => get_post_meta($don->ID, '_ed_ubicacion', true),
                 'disponibilidad' => get_post_meta($don->ID, '_ed_disponibilidad', true),
-                'autor' => $anonimo ? __('Anónimo', 'flavor-chat-ia') : get_the_author_meta('display_name', $don->post_author),
+                'autor' => $anonimo ? __('Anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN) : get_the_author_meta('display_name', $don->post_author),
                 'imagen' => get_the_post_thumbnail_url($don->ID, 'medium'),
                 'fecha' => get_the_date('Y-m-d', $don),
             ];
@@ -361,7 +361,7 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
                 'ubicacion' => get_post_meta($don->ID, '_ed_ubicacion', true),
                 'disponibilidad' => get_post_meta($don->ID, '_ed_disponibilidad', true),
                 'condiciones' => get_post_meta($don->ID, '_ed_condiciones', true),
-                'autor' => $anonimo ? __('Anónimo', 'flavor-chat-ia') : get_the_author_meta('display_name', $don->post_author),
+                'autor' => $anonimo ? __('Anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN) : get_the_author_meta('display_name', $don->post_author),
                 'imagen' => get_the_post_thumbnail_url($don->ID, 'large'),
             ],
         ], 200);
@@ -391,7 +391,7 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
         ], true);
 
         if (is_wp_error($don_id) || empty($don_id)) {
-            $error = is_wp_error($don_id) ? $don_id->get_error_message() : __('No se pudo crear el don.', 'flavor-chat-ia');
+            $error = is_wp_error($don_id) ? $don_id->get_error_message() : __('No se pudo crear el don.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             return new \WP_REST_Response(['success' => false, 'error' => $error], 500);
         }
 
@@ -403,7 +403,7 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
 
         return new \WP_REST_Response([
             'success' => true,
-            'mensaje' => __('¡Don publicado! Gracias por tu generosidad.', 'flavor-chat-ia'),
+            'mensaje' => __('¡Don publicado! Gracias por tu generosidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'id' => $don_id,
         ], 201);
     }
@@ -423,13 +423,13 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
 
         $solicitud_id = wp_insert_post([
             'post_type' => 'ed_solicitud',
-            'post_title' => sprintf(__('Solicitud de %s', 'flavor-chat-ia'), get_userdata($user_id)->display_name),
+            'post_title' => sprintf(__('Solicitud de %s', FLAVOR_PLATFORM_TEXT_DOMAIN), get_userdata($user_id)->display_name),
             'post_status' => 'publish',
             'post_author' => $user_id,
         ], true);
 
         if (is_wp_error($solicitud_id) || empty($solicitud_id)) {
-            $error = is_wp_error($solicitud_id) ? $solicitud_id->get_error_message() : __('No se pudo crear la solicitud.', 'flavor-chat-ia');
+            $error = is_wp_error($solicitud_id) ? $solicitud_id->get_error_message() : __('No se pudo crear la solicitud.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             return new \WP_REST_Response(['success' => false, 'error' => $error], 500);
         }
 
@@ -441,7 +441,7 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
 
         return new \WP_REST_Response([
             'success' => true,
-            'mensaje' => __('¡Solicitud enviada! El donante se pondrá en contacto.', 'flavor-chat-ia'),
+            'mensaje' => __('¡Solicitud enviada! El donante se pondrá en contacto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 200);
     }
 
@@ -465,7 +465,7 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
 
         return new \WP_REST_Response([
             'success' => true,
-            'mensaje' => __('¡Entrega confirmada! Gracias por tu generosidad.', 'flavor-chat-ia'),
+            'mensaje' => __('¡Entrega confirmada! Gracias por tu generosidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 200);
     }
 
@@ -532,30 +532,30 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'economia-don',
-            'label' => __('Economía del Don', 'flavor-chat-ia'),
+            'label' => __('Economía del Don', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-heart',
             'capability' => 'manage_options',
             'categoria' => 'economia',
             'paginas' => [
                 [
                     'slug' => 'economia-don-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_dashboard'],
                 ],
                 [
                     'slug' => 'economia-don-listado',
-                    'titulo' => __('Dones', 'flavor-chat-ia'),
+                    'titulo' => __('Dones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_listado'],
                 ],
                 [
                     'slug' => 'economia-don-solicitudes',
-                    'titulo' => __('Solicitudes', 'flavor-chat-ia'),
+                    'titulo' => __('Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_solicitudes'],
                     'badge' => [$this, 'contar_solicitudes_pendientes'],
                 ],
                 [
                     'slug' => 'economia-don-gratitudes',
-                    'titulo' => __('Gratitudes', 'flavor-chat-ia'),
+                    'titulo' => __('Gratitudes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_gratitudes'],
                 ],
             ],
@@ -595,7 +595,7 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
         $resultado[] = [
             'icon' => 'dashicons-heart',
             'valor' => $dones_disponibles,
-            'label' => __('Dones disponibles', 'flavor-chat-ia'),
+            'label' => __('Dones disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'green',
             'enlace' => admin_url('admin.php?page=economia-don-listado'),
         ];
@@ -607,7 +607,7 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
         $resultado[] = [
             'icon' => 'dashicons-smiley',
             'valor' => $gratitudes,
-            'label' => __('Gratitudes', 'flavor-chat-ia'),
+            'label' => __('Gratitudes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'blue',
             'enlace' => admin_url('admin.php?page=economia-don-gratitudes'),
         ];
@@ -625,7 +625,7 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
         } else {
             // Fallback inline si no existe la vista
             echo '<div class="wrap flavor-modulo-page">';
-            $this->render_page_header(__('Economía del Don', 'flavor-chat-ia'));
+            $this->render_page_header(__('Economía del Don', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
             global $wpdb;
             $disponibles = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->posts} p INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id WHERE p.post_type = 'ed_don' AND p.post_status = 'publish' AND pm.meta_key = '_ed_estado' AND pm.meta_value = 'disponible'");
@@ -633,9 +633,9 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
             $gratitudes = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'ed_gratitud' AND post_status = 'publish'");
 
             echo '<div class="flavor-stats-grid">';
-            echo '<div class="flavor-stat-card"><span class="dashicons dashicons-heart"></span><div class="stat-content"><span class="stat-number">' . esc_html($disponibles) . '</span><span class="stat-label">' . esc_html__('Disponibles', 'flavor-chat-ia') . '</span></div></div>';
-            echo '<div class="flavor-stat-card"><span class="dashicons dashicons-yes"></span><div class="stat-content"><span class="stat-number">' . esc_html($entregados) . '</span><span class="stat-label">' . esc_html__('Entregados', 'flavor-chat-ia') . '</span></div></div>';
-            echo '<div class="flavor-stat-card"><span class="dashicons dashicons-smiley"></span><div class="stat-content"><span class="stat-number">' . esc_html($gratitudes) . '</span><span class="stat-label">' . esc_html__('Gratitudes', 'flavor-chat-ia') . '</span></div></div>';
+            echo '<div class="flavor-stat-card"><span class="dashicons dashicons-heart"></span><div class="stat-content"><span class="stat-number">' . esc_html($disponibles) . '</span><span class="stat-label">' . esc_html__('Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div></div>';
+            echo '<div class="flavor-stat-card"><span class="dashicons dashicons-yes"></span><div class="stat-content"><span class="stat-number">' . esc_html($entregados) . '</span><span class="stat-label">' . esc_html__('Entregados', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div></div>';
+            echo '<div class="flavor-stat-card"><span class="dashicons dashicons-smiley"></span><div class="stat-content"><span class="stat-number">' . esc_html($gratitudes) . '</span><span class="stat-label">' . esc_html__('Gratitudes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div></div>';
             echo '</div></div>';
         }
     }
@@ -645,20 +645,20 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_listado() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Dones', 'flavor-chat-ia'), [
-            ['label' => __('Nuevo Don', 'flavor-chat-ia'), 'url' => admin_url('post-new.php?post_type=ed_don'), 'class' => 'button-primary'],
+        $this->render_page_header(__('Dones', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+            ['label' => __('Nuevo Don', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('post-new.php?post_type=ed_don'), 'class' => 'button-primary'],
         ]);
 
         $dones = get_posts(['post_type' => 'ed_don', 'posts_per_page' => 50, 'post_status' => ['publish', 'draft']]);
 
         if (empty($dones)) {
-            echo '<p>' . esc_html__('No hay dones publicados.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('No hay dones publicados.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         } else {
-            echo '<table class="widefat striped"><thead><tr><th>ID</th><th>' . esc_html__('Título', 'flavor-chat-ia') . '</th><th>' . esc_html__('Categoría', 'flavor-chat-ia') . '</th><th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th><th>' . esc_html__('Acciones', 'flavor-chat-ia') . '</th></tr></thead><tbody>';
+            echo '<table class="widefat striped"><thead><tr><th>ID</th><th>' . esc_html__('Título', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th></tr></thead><tbody>';
             foreach ($dones as $don) {
                 $cat_key = get_post_meta($don->ID, '_ed_categoria', true);
                 $estado = get_post_meta($don->ID, '_ed_estado', true) ?: 'disponible';
-                echo '<tr><td>' . esc_html($don->ID) . '</td><td>' . esc_html($don->post_title) . '</td><td>' . esc_html(self::CATEGORIAS_DON[$cat_key]['nombre'] ?? $cat_key) . '</td><td>' . esc_html(self::ESTADOS_DON[$estado]['nombre'] ?? $estado) . '</td><td><a href="' . esc_url(get_edit_post_link($don->ID)) . '" class="button button-small">' . esc_html__('Editar', 'flavor-chat-ia') . '</a></td></tr>';
+                echo '<tr><td>' . esc_html($don->ID) . '</td><td>' . esc_html($don->post_title) . '</td><td>' . esc_html(self::CATEGORIAS_DON[$cat_key]['nombre'] ?? $cat_key) . '</td><td>' . esc_html(self::ESTADOS_DON[$estado]['nombre'] ?? $estado) . '</td><td><a href="' . esc_url(get_edit_post_link($don->ID)) . '" class="button button-small">' . esc_html__('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></td></tr>';
             }
             echo '</tbody></table>';
         }
@@ -670,14 +670,14 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_solicitudes() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Solicitudes de Dones', 'flavor-chat-ia'));
+        $this->render_page_header(__('Solicitudes de Dones', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         $solicitudes = get_posts(['post_type' => 'ed_solicitud', 'posts_per_page' => 50]);
 
         if (empty($solicitudes)) {
-            echo '<p>' . esc_html__('No hay solicitudes.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('No hay solicitudes.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         } else {
-            echo '<table class="widefat striped"><thead><tr><th>ID</th><th>' . esc_html__('Solicitante', 'flavor-chat-ia') . '</th><th>' . esc_html__('Don', 'flavor-chat-ia') . '</th><th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th></tr></thead><tbody>';
+            echo '<table class="widefat striped"><thead><tr><th>ID</th><th>' . esc_html__('Solicitante', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Don', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th></tr></thead><tbody>';
             foreach ($solicitudes as $sol) {
                 $don_id = get_post_meta($sol->ID, '_ed_don_id', true);
                 $estado = get_post_meta($sol->ID, '_ed_estado', true);
@@ -693,12 +693,12 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_gratitudes() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Muro de Gratitud', 'flavor-chat-ia'));
+        $this->render_page_header(__('Muro de Gratitud', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         $gratitudes = get_posts(['post_type' => 'ed_gratitud', 'posts_per_page' => 50, 'post_status' => 'publish']);
 
         if (empty($gratitudes)) {
-            echo '<p>' . esc_html__('No hay gratitudes publicadas.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('No hay gratitudes publicadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         } else {
             echo '<div class="flavor-gratitudes-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;">';
             foreach ($gratitudes as $g) {
@@ -744,11 +744,11 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
         // CPT: Dones (objetos/servicios ofrecidos)
         register_post_type('ed_don', [
             'labels' => [
-                'name' => __('Dones', 'flavor-chat-ia'),
-                'singular_name' => __('Don', 'flavor-chat-ia'),
-                'add_new' => __('Ofrecer Don', 'flavor-chat-ia'),
-                'add_new_item' => __('Ofrecer Nuevo Don', 'flavor-chat-ia'),
-                'edit_item' => __('Editar Don', 'flavor-chat-ia'),
+                'name' => __('Dones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Don', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'add_new' => __('Ofrecer Don', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'add_new_item' => __('Ofrecer Nuevo Don', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'edit_item' => __('Editar Don', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => true,
             'has_archive' => true,
@@ -762,8 +762,8 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
         // CPT: Solicitudes de don
         register_post_type('ed_solicitud', [
             'labels' => [
-                'name' => __('Solicitudes', 'flavor-chat-ia'),
-                'singular_name' => __('Solicitud', 'flavor-chat-ia'),
+                'name' => __('Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => false,
             'show_ui' => true,
@@ -774,8 +774,8 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
         // CPT: Gratitudes
         register_post_type('ed_gratitud', [
             'labels' => [
-                'name' => __('Gratitudes', 'flavor-chat-ia'),
-                'singular_name' => __('Gratitud', 'flavor-chat-ia'),
+                'name' => __('Gratitudes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Gratitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => true,
             'has_archive' => true,
@@ -792,8 +792,8 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
     public function registrar_taxonomias() {
         register_taxonomy('ed_categoria', 'ed_don', [
             'labels' => [
-                'name' => __('Categorías de Don', 'flavor-chat-ia'),
-                'singular_name' => __('Categoría', 'flavor-chat-ia'),
+                'name' => __('Categorías de Don', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'hierarchical' => true,
             'show_in_rest' => true,
@@ -806,7 +806,7 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
     public function registrar_meta_boxes() {
         add_meta_box(
             'ed_don_datos',
-            __('Datos del Don', 'flavor-chat-ia'),
+            __('Datos del Don', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_meta_box_don'],
             'ed_don',
             'normal',
@@ -829,7 +829,7 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
         ?>
         <table class="form-table">
             <tr>
-                <th><label for="ed_categoria"><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="ed_categoria"><?php esc_html_e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <select name="ed_categoria" id="ed_categoria" class="regular-text">
                         <?php foreach (self::CATEGORIAS_DON as $id => $data) : ?>
@@ -841,7 +841,7 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
                 </td>
             </tr>
             <tr>
-                <th><label for="ed_estado"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="ed_estado"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <select name="ed_estado" id="ed_estado">
                         <?php foreach (self::ESTADOS_DON as $id => $data) : ?>
@@ -853,36 +853,36 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
                 </td>
             </tr>
             <tr>
-                <th><label for="ed_ubicacion"><?php esc_html_e('Ubicación/Zona', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="ed_ubicacion"><?php esc_html_e('Ubicación/Zona', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <input type="text" name="ed_ubicacion" id="ed_ubicacion"
                            value="<?php echo esc_attr($ubicacion); ?>" class="regular-text"
-                           placeholder="<?php esc_attr_e('Ej: Centro, Barrio Norte...', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php esc_attr_e('Ej: Centro, Barrio Norte...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </td>
             </tr>
             <tr>
-                <th><label for="ed_disponibilidad"><?php esc_html_e('Disponibilidad', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="ed_disponibilidad"><?php esc_html_e('Disponibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <input type="text" name="ed_disponibilidad" id="ed_disponibilidad"
                            value="<?php echo esc_attr($disponibilidad); ?>" class="regular-text"
-                           placeholder="<?php esc_attr_e('Ej: Tardes de 17-20h', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php esc_attr_e('Ej: Tardes de 17-20h', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </td>
             </tr>
             <tr>
-                <th><label for="ed_condiciones"><?php esc_html_e('Condiciones (opcional)', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="ed_condiciones"><?php esc_html_e('Condiciones (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <textarea name="ed_condiciones" id="ed_condiciones" rows="2" class="large-text"
-                              placeholder="<?php esc_attr_e('Ej: Recoger en mi domicilio', 'flavor-chat-ia'); ?>"><?php echo esc_textarea($condiciones); ?></textarea>
-                    <p class="description"><?php esc_html_e('Requisitos para recibir el don (no monetarios)', 'flavor-chat-ia'); ?></p>
+                              placeholder="<?php esc_attr_e('Ej: Recoger en mi domicilio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_textarea($condiciones); ?></textarea>
+                    <p class="description"><?php esc_html_e('Requisitos para recibir el don (no monetarios)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
             <tr>
-                <th><label for="ed_anonimo"><?php esc_html_e('Donación anónima', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="ed_anonimo"><?php esc_html_e('Donación anónima', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <label>
                         <input type="checkbox" name="ed_anonimo" id="ed_anonimo" value="1"
                                <?php checked($anonimo, '1'); ?>>
-                        <?php esc_html_e('No mostrar mi nombre públicamente', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('No mostrar mi nombre públicamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
@@ -923,20 +923,20 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
         $user_id = get_current_user_id();
 
         if (!$don_id || !$user_id) {
-            wp_send_json_error(['message' => __('Datos inválidos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos inválidos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar que el don está disponible
         $estado = get_post_meta($don_id, '_ed_estado', true);
         if ($estado !== 'disponible') {
-            wp_send_json_error(['message' => __('Este don ya no está disponible', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Este don ya no está disponible', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Crear solicitud
         $solicitud_id = wp_insert_post([
             'post_type' => 'ed_solicitud',
             'post_title' => sprintf(
-                __('Solicitud de %s', 'flavor-chat-ia'),
+                __('Solicitud de %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 get_userdata($user_id)->display_name
             ),
             'post_status' => 'publish',
@@ -957,13 +957,13 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
             update_post_meta($don_id, '_ed_receptor_id', $user_id);
 
             wp_send_json_success([
-                'message' => __('¡Solicitud enviada! El donante se pondrá en contacto contigo.', 'flavor-chat-ia'),
+                'message' => __('¡Solicitud enviada! El donante se pondrá en contacto contigo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
 
         $error_message = is_wp_error($solicitud_id)
             ? $solicitud_id->get_error_message()
-            : __('Error al procesar la solicitud', 'flavor-chat-ia');
+            : __('Error al procesar la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN);
         wp_send_json_error(['message' => $error_message]);
     }
 
@@ -977,13 +977,13 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
         $user_id = get_current_user_id();
 
         if (!$don_id || !$user_id) {
-            wp_send_json_error(['message' => __('Datos inválidos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos inválidos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar que es el donante
         $donante_id = get_post_field('post_author', $don_id);
         if ($donante_id != $user_id) {
-            wp_send_json_error(['message' => __('No tienes permiso', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes permiso', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         update_post_meta($don_id, '_ed_estado', 'entregado');
@@ -1000,7 +1000,7 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
         }
 
         wp_send_json_success([
-            'message' => __('¡Entrega confirmada! Gracias por tu generosidad.', 'flavor-chat-ia'),
+            'message' => __('¡Entrega confirmada! Gracias por tu generosidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -1015,19 +1015,19 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
         $user_id = get_current_user_id();
 
         if (!$don_id || !$user_id || !$mensaje) {
-            wp_send_json_error(['message' => __('Datos inválidos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos inválidos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar que es el receptor
         $receptor_id = get_post_meta($don_id, '_ed_receptor_id', true);
         if ($receptor_id != $user_id) {
-            wp_send_json_error(['message' => __('No tienes permiso', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes permiso', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Crear gratitud
         $gratitud_id = wp_insert_post([
             'post_type' => 'ed_gratitud',
-            'post_title' => sprintf(__('Gratitud por "%s"', 'flavor-chat-ia'), get_the_title($don_id)),
+            'post_title' => sprintf(__('Gratitud por "%s"', FLAVOR_PLATFORM_TEXT_DOMAIN), get_the_title($don_id)),
             'post_content' => $mensaje,
             'post_status' => 'publish',
             'post_author' => $user_id,
@@ -1043,13 +1043,13 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
             update_user_meta($user_id, '_ed_dones_recibidos', $dones_recibidos + 1);
 
             wp_send_json_success([
-                'message' => __('¡Gracias por tu gratitud! Se ha publicado en el muro.', 'flavor-chat-ia'),
+                'message' => __('¡Gracias por tu gratitud! Se ha publicado en el muro.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
 
         $error_message = is_wp_error($gratitud_id)
             ? $gratitud_id->get_error_message()
-            : __('Error al publicar gratitud', 'flavor-chat-ia');
+            : __('Error al publicar gratitud', FLAVOR_PLATFORM_TEXT_DOMAIN);
         wp_send_json_error(['message' => $error_message]);
     }
 
@@ -1060,7 +1060,7 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('ed_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $titulo = sanitize_text_field($_POST['titulo'] ?? '');
@@ -1072,7 +1072,7 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
         $user_id = get_current_user_id();
 
         if (!$titulo) {
-            wp_send_json_error(['message' => __('El título es obligatorio', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('El título es obligatorio', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $don_id = wp_insert_post([
@@ -1091,7 +1091,7 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
             update_post_meta($don_id, '_ed_anonimo', $anonimo ? '1' : '0');
 
             wp_send_json_success([
-                'message' => __('¡Don publicado! Gracias por tu generosidad.', 'flavor-chat-ia'),
+                'message' => __('¡Don publicado! Gracias por tu generosidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'don_id' => $don_id,
                 'url' => get_permalink($don_id),
             ]);
@@ -1099,7 +1099,7 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
 
         $error_message = is_wp_error($don_id)
             ? $don_id->get_error_message()
-            : __('Error al publicar el don', 'flavor-chat-ia');
+            : __('Error al publicar el don', FLAVOR_PLATFORM_TEXT_DOMAIN);
         wp_send_json_error(['message' => $error_message]);
     }
 
@@ -1116,9 +1116,9 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
 
         $nc->send(
             $donante_id,
-            __('Alguien quiere recibir tu don', 'flavor-chat-ia'),
+            __('Alguien quiere recibir tu don', FLAVOR_PLATFORM_TEXT_DOMAIN),
             sprintf(
-                __('%s ha solicitado "%s"', 'flavor-chat-ia'),
+                __('%s ha solicitado "%s"', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $solicitante->display_name,
                 get_the_title($don_id)
             ),
@@ -1142,9 +1142,9 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
 
         $nc->send(
             $receptor_id,
-            __('¡Has recibido un don!', 'flavor-chat-ia'),
+            __('¡Has recibido un don!', FLAVOR_PLATFORM_TEXT_DOMAIN),
             sprintf(
-                __('El donante ha confirmado la entrega de "%s". ¡No olvides agradecer!', 'flavor-chat-ia'),
+                __('El donante ha confirmado la entrega de "%s". ¡No olvides agradecer!', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 get_the_title($don_id)
             ),
             [
@@ -1174,7 +1174,7 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_mis_dones($atts) {
         if (!is_user_logged_in()) {
-            return '<p>' . __('Inicia sesión para ver tus dones.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('Inicia sesión para ver tus dones.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -1187,7 +1187,7 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_ofrecer($atts) {
         if (!is_user_logged_in()) {
-            return '<p>' . __('Inicia sesión para ofrecer un don.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('Inicia sesión para ofrecer un don.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -1291,9 +1291,9 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('ed_nonce'),
             'i18n' => [
-                'confirmSolicitar' => __('¿Deseas solicitar este don?', 'flavor-chat-ia'),
-                'confirmEntrega' => __('¿Confirmas que has entregado este don?', 'flavor-chat-ia'),
-                'gracias' => __('¡Gracias por tu generosidad!', 'flavor-chat-ia'),
+                'confirmSolicitar' => __('¿Deseas solicitar este don?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmEntrega' => __('¿Confirmas que has entregado este don?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'gracias' => __('¡Gracias por tu generosidad!', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -1431,7 +1431,7 @@ KNOWLEDGE;
 
         return [
             'success' => false,
-            'error' => __('Acción no implementada', 'flavor-chat-ia'),
+            'error' => __('Acción no implementada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -1491,12 +1491,12 @@ KNOWLEDGE;
     private function action_foro_don($params) {
         $don = $this->resolve_contextual_don($params);
         if (!$don) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un don para ver su foro.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un don para ver su foro.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-foro">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;">'
-            . '<h2>' . esc_html__('Foro del don', 'flavor-chat-ia') . '</h2>'
+            . '<h2>' . esc_html__('Foro del don', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2>'
             . '<p>' . esc_html($don['titulo']) . '</p>'
             . '</div>'
             . do_shortcode('[flavor_foros_integrado entidad="economia_don" entidad_id="' . absint($don['id']) . '"]')
@@ -1506,18 +1506,18 @@ KNOWLEDGE;
     private function action_chat_don($params) {
         $don = $this->resolve_contextual_don($params);
         if (!$don) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un don para ver su chat.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un don para ver su chat.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         if (!is_user_logged_in()) {
-            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este don.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este don.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-chat">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Chat del don', 'flavor-chat-ia') . '</h2><p>' . esc_html($don['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Chat del don', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($don['titulo']) . '</p></div>'
             . '<a href="' . esc_url(home_url('/mi-portal/chat-grupos/mensajes/?don_id=' . absint($don['id']))) . '" class="button button-secondary">'
-            . esc_html__('Abrir chat completo', 'flavor-chat-ia')
+            . esc_html__('Abrir chat completo', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>'
             . do_shortcode('[flavor_chat_grupo_integrado entidad="economia_don" entidad_id="' . absint($don['id']) . '"]')
             . '</div>';
@@ -1526,14 +1526,14 @@ KNOWLEDGE;
     private function action_multimedia_don($params) {
         $don = $this->resolve_contextual_don($params);
         if (!$don) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un don para ver sus archivos.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un don para ver sus archivos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-multimedia">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Archivos del don', 'flavor-chat-ia') . '</h2><p>' . esc_html($don['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Archivos del don', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($don['titulo']) . '</p></div>'
             . '<a href="' . esc_url(home_url('/mi-portal/multimedia/subir/?don_id=' . absint($don['id']))) . '" class="button button-primary">'
-            . esc_html__('Subir archivo', 'flavor-chat-ia')
+            . esc_html__('Subir archivo', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>'
             . do_shortcode('[flavor_multimedia_galeria entidad="economia_don" entidad_id="' . absint($don['id']) . '"]')
             . '</div>';
@@ -1542,18 +1542,18 @@ KNOWLEDGE;
     private function action_red_social_don($params) {
         $don = $this->resolve_contextual_don($params);
         if (!$don) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un don para ver su actividad social.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un don para ver su actividad social.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         if (!is_user_logged_in()) {
-            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este don.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este don.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-red-social">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Actividad social del don', 'flavor-chat-ia') . '</h2><p>' . esc_html($don['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Actividad social del don', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($don['titulo']) . '</p></div>'
             . '<a href="' . esc_url(home_url('/mi-portal/red-social/crear/?don_id=' . absint($don['id']))) . '" class="button button-primary">'
-            . esc_html__('Publicar', 'flavor-chat-ia')
+            . esc_html__('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>'
             . do_shortcode('[flavor_social_feed entidad="economia_don" entidad_id="' . absint($don['id']) . '"]')
             . '</div>';
@@ -1574,8 +1574,8 @@ KNOWLEDGE;
     public static function get_renderer_config(): array {
         return [
             'module'   => 'economia-don',
-            'title'    => __('Economía del Don', 'flavor-chat-ia'),
-            'subtitle' => __('Dar y recibir sin esperar retorno directo', 'flavor-chat-ia'),
+            'title'    => __('Economía del Don', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Dar y recibir sin esperar retorno directo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '🎁',
             'color'    => 'accent', // Usa variable CSS --flavor-primary del tema
 
@@ -1585,26 +1585,26 @@ KNOWLEDGE;
             ],
 
             'fields' => [
-                'titulo'      => ['type' => 'text', 'label' => __('Qué ofreces', 'flavor-chat-ia'), 'required' => true],
-                'categoria'   => ['type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'options' => ['objetos', 'alimentos', 'servicios', 'tiempo', 'conocimiento', 'espacios']],
-                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
-                'ubicacion'   => ['type' => 'text', 'label' => __('Ubicación', 'flavor-chat-ia')],
-                'disponibilidad' => ['type' => 'text', 'label' => __('Disponibilidad', 'flavor-chat-ia')],
-                'imagen'      => ['type' => 'image', 'label' => __('Imagen', 'flavor-chat-ia')],
+                'titulo'      => ['type' => 'text', 'label' => __('Qué ofreces', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'categoria'   => ['type' => 'select', 'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['objetos', 'alimentos', 'servicios', 'tiempo', 'conocimiento', 'espacios']],
+                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'ubicacion'   => ['type' => 'text', 'label' => __('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'disponibilidad' => ['type' => 'text', 'label' => __('Disponibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'imagen'      => ['type' => 'image', 'label' => __('Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ],
 
             'estados' => [
-                'disponible' => ['label' => __('Disponible', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🟢'],
-                'reservado'  => ['label' => __('Reservado', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '🟡'],
-                'entregado'  => ['label' => __('Entregado', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '✅'],
-                'expirado'   => ['label' => __('Expirado', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '⏰'],
+                'disponible' => ['label' => __('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '🟢'],
+                'reservado'  => ['label' => __('Reservado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '🟡'],
+                'entregado'  => ['label' => __('Entregado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'blue', 'icon' => '✅'],
+                'expirado'   => ['label' => __('Expirado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'gray', 'icon' => '⏰'],
             ],
 
             'stats' => [
-                'dones_activos'  => ['label' => __('Dones activos', 'flavor-chat-ia'), 'icon' => '🎁', 'color' => 'amber'],
-                'dones_dados'    => ['label' => __('Dones dados', 'flavor-chat-ia'), 'icon' => '💝', 'color' => 'rose'],
-                'dones_recibidos' => ['label' => __('Dones recibidos', 'flavor-chat-ia'), 'icon' => '🤲', 'color' => 'blue'],
-                'participantes'  => ['label' => __('Participantes', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'purple'],
+                'dones_activos'  => ['label' => __('Dones activos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🎁', 'color' => 'amber'],
+                'dones_dados'    => ['label' => __('Dones dados', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '💝', 'color' => 'rose'],
+                'dones_recibidos' => ['label' => __('Dones recibidos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🤲', 'color' => 'blue'],
+                'participantes'  => ['label' => __('Participantes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👥', 'color' => 'purple'],
             ],
 
             'card' => [
@@ -1618,25 +1618,25 @@ KNOWLEDGE;
 
             'tabs' => [
                 'dones' => [
-                    'label'   => __('Dones disponibles', 'flavor-chat-ia'),
+                    'label'   => __('Dones disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-heart',
                     'content' => 'template:_archive.php',
                     'public'  => true,
                 ],
                 'ofrecer' => [
-                    'label'      => __('Ofrecer don', 'flavor-chat-ia'),
+                    'label'      => __('Ofrecer don', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-plus-alt',
                     'content'    => 'shortcode:economia_don_ofrecer',
                     'requires_login' => true,
                 ],
                 'mis-dones' => [
-                    'label'      => __('Mis dones', 'flavor-chat-ia'),
+                    'label'      => __('Mis dones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-admin-users',
                     'content'    => 'shortcode:economia_don_mis_dones',
                     'requires_login' => true,
                 ],
                 'recibidos' => [
-                    'label'      => __('Recibidos', 'flavor-chat-ia'),
+                    'label'      => __('Recibidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-download',
                     'content'    => 'shortcode:economia_don_recibidos',
                     'requires_login' => true,
@@ -1654,8 +1654,8 @@ KNOWLEDGE;
             'dashboard' => [
                 'widgets' => ['stats', 'dones_recientes', 'mis_ofrecimientos', 'solicitudes_pendientes'],
                 'actions' => [
-                    'ofrecer'  => ['label' => __('Ofrecer don', 'flavor-chat-ia'), 'icon' => '🎁', 'color' => 'amber'],
-                    'explorar' => ['label' => __('Explorar dones', 'flavor-chat-ia'), 'icon' => '🔍', 'color' => 'blue'],
+                    'ofrecer'  => ['label' => __('Ofrecer don', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🎁', 'color' => 'amber'],
+                    'explorar' => ['label' => __('Explorar dones', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🔍', 'color' => 'blue'],
                 ],
             ],
 

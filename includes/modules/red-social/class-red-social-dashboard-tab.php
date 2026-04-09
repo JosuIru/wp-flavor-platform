@@ -27,7 +27,7 @@ class Flavor_Red_Social_Dashboard_Tab {
 
     public function registrar_tabs($tabs) {
         $tabs['red-social'] = [
-            'label' => __('Mi Red', 'flavor-chat-ia'),
+            'label' => __('Mi Red', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-share',
             'callback' => [$this, 'render_tab'],
             'priority' => 15,

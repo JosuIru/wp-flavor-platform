@@ -79,8 +79,8 @@ class Flavor_Agregador_Contenido_Frontend_Controller {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('agregador-contenido_nonce'),
             'i18n' => [
-                'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
+                'error' => __('Ha ocurrido un error', 'flavor-platform'),
+                'cargando' => __('Cargando...', 'flavor-platform'),
             ],
         ]);
     }
@@ -114,7 +114,7 @@ class Flavor_Agregador_Contenido_Frontend_Controller {
 
         ob_start();
         echo '<div class="flavor-agregador-contenido-listado">';
-        echo '<p>' . __('Módulo Agregador de Contenido - Listado', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Módulo Agregador de Contenido - Listado', 'flavor-platform') . '</p>';
         echo '</div>';
         return ob_get_clean();
     }
@@ -124,7 +124,7 @@ class Flavor_Agregador_Contenido_Frontend_Controller {
      */
     public function registrar_tabs($tabs) {
         $tabs['agregador-contenido'] = [
-            'titulo' => __('Agregador de Contenido', 'flavor-chat-ia'),
+            'titulo' => __('Agregador de Contenido', 'flavor-platform'),
             'icono' => 'dashicons-admin-generic',
             'callback' => [$this, 'render_tab_principal'],
             'orden' => 50,
@@ -140,8 +140,8 @@ class Flavor_Agregador_Contenido_Frontend_Controller {
     public function render_tab_principal() {
         $this->encolar_assets();
         echo '<div class="flavor-agregador-contenido-tab">';
-        echo '<h3>' . esc_html__('Agregador de Contenido', 'flavor-chat-ia') . '</h3>';
-        echo '<p>' . esc_html__('Contenido del tab de Agregador de Contenido.', 'flavor-chat-ia') . '</p>';
+        echo '<h3>' . esc_html__('Agregador de Contenido', 'flavor-platform') . '</h3>';
+        echo '<p>' . esc_html__('Contenido del tab de Agregador de Contenido.', 'flavor-platform') . '</p>';
         echo '</div>';
     }
 }

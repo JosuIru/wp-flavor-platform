@@ -50,12 +50,12 @@ $nonce = wp_create_nonce('flavor_foros_admin');
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-category"></span>
-        <?php echo esc_html__('Gestion de Foros', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Gestion de Foros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <a href="<?php echo admin_url('admin.php?page=foros'); ?>" class="page-title-action">
         <span class="dashicons dashicons-arrow-left-alt"></span>
-        <?php echo esc_html__('Volver al Dashboard', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Volver al Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </a>
 
     <hr class="wp-header-end">
@@ -67,19 +67,19 @@ $nonce = wp_create_nonce('flavor_foros_admin');
             <div class="postbox">
                 <h2 class="hndle" style="padding: 12px;">
                     <span class="dashicons dashicons-list-view"></span>
-                    <?php echo esc_html__('Categorias de Foros', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Categorias de Foros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <div class="inside" style="padding: 0;">
                     <table class="wp-list-table widefat fixed striped">
                         <thead>
                             <tr>
-                                <th style="width: 50px;"><?php echo esc_html__('Orden', 'flavor-chat-ia'); ?></th>
-                                <th style="width: 50px;"><?php echo esc_html__('Icono', 'flavor-chat-ia'); ?></th>
-                                <th><?php echo esc_html__('Nombre', 'flavor-chat-ia'); ?></th>
-                                <th><?php echo esc_html__('Descripcion', 'flavor-chat-ia'); ?></th>
-                                <th style="width: 80px;"><?php echo esc_html__('Hilos', 'flavor-chat-ia'); ?></th>
-                                <th style="width: 100px;"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
-                                <th style="width: 140px;"><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
+                                <th style="width: 50px;"><?php echo esc_html__('Orden', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th style="width: 50px;"><?php echo esc_html__('Icono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php echo esc_html__('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php echo esc_html__('Descripcion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th style="width: 80px;"><?php echo esc_html__('Hilos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th style="width: 100px;"><?php echo esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th style="width: 140px;"><?php echo esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody id="foros-lista">
@@ -87,8 +87,8 @@ $nonce = wp_create_nonce('flavor_foros_admin');
                                 <tr>
                                     <td colspan="7" style="text-align: center; padding: 40px;">
                                         <span class="dashicons dashicons-format-chat" style="font-size: 48px; color: #ccc; display: block; margin-bottom: 10px;"></span>
-                                        <p><?php echo esc_html__('No hay categorias de foros creadas.', 'flavor-chat-ia'); ?></p>
-                                        <p><?php echo esc_html__('Usa el formulario de la derecha para crear tu primera categoria.', 'flavor-chat-ia'); ?></p>
+                                        <p><?php echo esc_html__('No hay categorias de foros creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                                        <p><?php echo esc_html__('Usa el formulario de la derecha para crear tu primera categoria.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                     </td>
                                 </tr>
                             <?php else : ?>
@@ -131,14 +131,14 @@ $nonce = wp_create_nonce('flavor_foros_admin');
                                         <td>
                                             <a href="<?php echo esc_url(admin_url('admin.php?page=foros-listado&action=editar&id=' . $foro->id)); ?>"
                                                class="button button-small">
-                                                <?php echo esc_html__('Editar', 'flavor-chat-ia'); ?>
+                                                <?php echo esc_html__('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </a>
                                             <button type="button"
                                                     class="button button-small button-link-delete foro-eliminar-btn"
                                                     data-id="<?php echo esc_attr($foro->id); ?>"
                                                     data-nombre="<?php echo esc_attr($foro->nombre); ?>"
                                                     data-hilos="<?php echo intval($foro->total_hilos); ?>">
-                                                <?php echo esc_html__('Eliminar', 'flavor-chat-ia'); ?>
+                                                <?php echo esc_html__('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </button>
                                         </td>
                                     </tr>
@@ -156,8 +156,8 @@ $nonce = wp_create_nonce('flavor_foros_admin');
                 <h2 class="hndle" style="padding: 12px;">
                     <span class="dashicons dashicons-<?php echo $editando ? 'edit' : 'plus-alt'; ?>"></span>
                     <?php echo $editando
-                        ? esc_html__('Editar Categoria', 'flavor-chat-ia')
-                        : esc_html__('Nueva Categoria', 'flavor-chat-ia'); ?>
+                        ? esc_html__('Editar Categoria', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                        : esc_html__('Nueva Categoria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <div class="inside">
                     <form id="form-foro-categoria" method="post">
@@ -167,7 +167,7 @@ $nonce = wp_create_nonce('flavor_foros_admin');
                         <table class="form-table">
                             <tr>
                                 <th scope="row">
-                                    <label for="foro-nombre"><?php echo esc_html__('Nombre', 'flavor-chat-ia'); ?> <span style="color: red;">*</span></label>
+                                    <label for="foro-nombre"><?php echo esc_html__('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span style="color: red;">*</span></label>
                                 </th>
                                 <td>
                                     <input type="text"
@@ -175,25 +175,25 @@ $nonce = wp_create_nonce('flavor_foros_admin');
                                            name="nombre"
                                            class="regular-text"
                                            required
-                                           placeholder="<?php echo esc_attr__('Ej: General, Soporte, Ideas...', 'flavor-chat-ia'); ?>"
+                                           placeholder="<?php echo esc_attr__('Ej: General, Soporte, Ideas...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                                            value="<?php echo $editando ? esc_attr($editando->nombre) : ''; ?>">
                                 </td>
                             </tr>
                             <tr>
                                 <th scope="row">
-                                    <label for="foro-descripcion"><?php echo esc_html__('Descripcion', 'flavor-chat-ia'); ?></label>
+                                    <label for="foro-descripcion"><?php echo esc_html__('Descripcion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 </th>
                                 <td>
                                     <textarea id="foro-descripcion"
                                               name="descripcion"
                                               class="large-text"
                                               rows="3"
-                                              placeholder="<?php echo esc_attr__('Describe el proposito de este foro...', 'flavor-chat-ia'); ?>"><?php echo $editando ? esc_textarea($editando->descripcion) : ''; ?></textarea>
+                                              placeholder="<?php echo esc_attr__('Describe el proposito de este foro...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo $editando ? esc_textarea($editando->descripcion) : ''; ?></textarea>
                                 </td>
                             </tr>
                             <tr>
                                 <th scope="row">
-                                    <label for="foro-icono"><?php echo esc_html__('Icono', 'flavor-chat-ia'); ?></label>
+                                    <label for="foro-icono"><?php echo esc_html__('Icono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 </th>
                                 <td>
                                     <input type="text"
@@ -202,12 +202,12 @@ $nonce = wp_create_nonce('flavor_foros_admin');
                                            class="small-text"
                                            placeholder="💬"
                                            value="<?php echo $editando ? esc_attr($editando->icono) : '💬'; ?>">
-                                    <p class="description"><?php echo esc_html__('Usa un emoji', 'flavor-chat-ia'); ?></p>
+                                    <p class="description"><?php echo esc_html__('Usa un emoji', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                 </td>
                             </tr>
                             <tr>
                                 <th scope="row">
-                                    <label for="foro-orden"><?php echo esc_html__('Orden', 'flavor-chat-ia'); ?></label>
+                                    <label for="foro-orden"><?php echo esc_html__('Orden', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 </th>
                                 <td>
                                     <input type="number"
@@ -220,18 +220,18 @@ $nonce = wp_create_nonce('flavor_foros_admin');
                             </tr>
                             <tr>
                                 <th scope="row">
-                                    <label for="foro-estado"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></label>
+                                    <label for="foro-estado"><?php echo esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 </th>
                                 <td>
                                     <select id="foro-estado" name="estado" class="regular-text">
                                         <option value="activo" <?php selected($editando->estado ?? 'activo', 'activo'); ?>>
-                                            <?php echo esc_html__('Activo - Se pueden crear hilos', 'flavor-chat-ia'); ?>
+                                            <?php echo esc_html__('Activo - Se pueden crear hilos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </option>
                                         <option value="cerrado" <?php selected($editando->estado ?? '', 'cerrado'); ?>>
-                                            <?php echo esc_html__('Cerrado - Solo lectura', 'flavor-chat-ia'); ?>
+                                            <?php echo esc_html__('Cerrado - Solo lectura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </option>
                                         <option value="archivado" <?php selected($editando->estado ?? '', 'archivado'); ?>>
-                                            <?php echo esc_html__('Archivado - Oculto al publico', 'flavor-chat-ia'); ?>
+                                            <?php echo esc_html__('Archivado - Oculto al publico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </option>
                                     </select>
                                 </td>
@@ -241,12 +241,12 @@ $nonce = wp_create_nonce('flavor_foros_admin');
                         <p class="submit" style="padding-top: 0;">
                             <button type="submit" class="button button-primary button-large">
                                 <?php echo $editando
-                                    ? esc_html__('Guardar Cambios', 'flavor-chat-ia')
-                                    : esc_html__('Crear Categoria', 'flavor-chat-ia'); ?>
+                                    ? esc_html__('Guardar Cambios', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                                    : esc_html__('Crear Categoria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                             <?php if ($editando) : ?>
                                 <a href="<?php echo esc_url(admin_url('admin.php?page=foros-listado')); ?>" class="button button-large">
-                                    <?php echo esc_html__('Cancelar', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             <?php endif; ?>
                         </p>
@@ -258,14 +258,14 @@ $nonce = wp_create_nonce('flavor_foros_admin');
             <div class="postbox" style="margin-top: 15px;">
                 <h2 class="hndle" style="padding: 12px;">
                     <span class="dashicons dashicons-editor-help"></span>
-                    <?php echo esc_html__('Ayuda', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <div class="inside">
-                    <p><strong><?php echo esc_html__('Estados disponibles:', 'flavor-chat-ia'); ?></strong></p>
+                    <p><strong><?php echo esc_html__('Estados disponibles:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></p>
                     <ul style="list-style: disc; margin-left: 20px;">
-                        <li><strong><?php echo esc_html__('Activo:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html__('Los usuarios pueden ver y crear hilos.', 'flavor-chat-ia'); ?></li>
-                        <li><strong><?php echo esc_html__('Cerrado:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html__('Visible pero no se pueden crear nuevos hilos.', 'flavor-chat-ia'); ?></li>
-                        <li><strong><?php echo esc_html__('Archivado:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html__('Oculto del listado publico.', 'flavor-chat-ia'); ?></li>
+                        <li><strong><?php echo esc_html__('Activo:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html__('Los usuarios pueden ver y crear hilos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                        <li><strong><?php echo esc_html__('Cerrado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html__('Visible pero no se pueden crear nuevos hilos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                        <li><strong><?php echo esc_html__('Archivado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html__('Oculto del listado publico.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
                     </ul>
                 </div>
             </div>
@@ -285,7 +285,7 @@ jQuery(document).ready(function($) {
         var $btn = $form.find('button[type="submit"]');
         var textoOriginal = $btn.text();
 
-        $btn.prop('disabled', true).text('<?php echo esc_js(__('Guardando...', 'flavor-chat-ia')); ?>');
+        $btn.prop('disabled', true).text('<?php echo esc_js(__('Guardando...', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
 
         $.ajax({
             url: ajaxurl,
@@ -304,12 +304,12 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     window.location.href = '<?php echo esc_js(admin_url('admin.php?page=foros-listado&saved=1')); ?>';
                 } else {
-                    alert(response.data || '<?php echo esc_js(__('Error al guardar', 'flavor-chat-ia')); ?>');
+                    alert(response.data || '<?php echo esc_js(__('Error al guardar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                     $btn.prop('disabled', false).text(textoOriginal);
                 }
             },
             error: function() {
-                alert('<?php echo esc_js(__('Error de conexion', 'flavor-chat-ia')); ?>');
+                alert('<?php echo esc_js(__('Error de conexion', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                 $btn.prop('disabled', false).text(textoOriginal);
             }
         });
@@ -321,9 +321,9 @@ jQuery(document).ready(function($) {
         var nombre = $(this).data('nombre');
         var hilos = $(this).data('hilos');
 
-        var mensaje = '<?php echo esc_js(__('Eliminar la categoria', 'flavor-chat-ia')); ?> "' + nombre + '"?';
+        var mensaje = '<?php echo esc_js(__('Eliminar la categoria', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?> "' + nombre + '"?';
         if (hilos > 0) {
-            mensaje += '\n\n<?php echo esc_js(__('Esta categoria tiene', 'flavor-chat-ia')); ?> ' + hilos + ' <?php echo esc_js(__('hilos que tambien se eliminaran.', 'flavor-chat-ia')); ?>';
+            mensaje += '\n\n<?php echo esc_js(__('Esta categoria tiene', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?> ' + hilos + ' <?php echo esc_js(__('hilos que tambien se eliminaran.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
         }
 
         if (!confirm(mensaje)) {
@@ -342,7 +342,7 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     window.location.reload();
                 } else {
-                    alert(response.data || '<?php echo esc_js(__('Error al eliminar', 'flavor-chat-ia')); ?>');
+                    alert(response.data || '<?php echo esc_js(__('Error al eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                 }
             }
         });
@@ -368,7 +368,7 @@ jQuery(document).ready(function($) {
 
     // Mostrar mensaje de guardado exitoso
     <?php if (isset($_GET['saved'])) : ?>
-        var $notice = $('<div class="notice notice-success is-dismissible"><p><?php echo esc_js(__('Categoria guardada correctamente.', 'flavor-chat-ia')); ?></p></div>');
+        var $notice = $('<div class="notice notice-success is-dismissible"><p><?php echo esc_js(__('Categoria guardada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></p></div>');
         $('.wrap h1').first().after($notice);
     <?php endif; ?>
 });

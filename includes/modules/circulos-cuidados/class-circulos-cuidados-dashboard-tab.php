@@ -56,14 +56,14 @@ class Flavor_Circulos_Cuidados_Dashboard_Tab {
      */
     public function registrar_tabs($tabs) {
         $tabs['cuidados-resumen'] = [
-            'label' => __('Círculos de Cuidados', 'flavor-chat-ia'),
+            'label' => __('Círculos de Cuidados', 'flavor-platform'),
             'icon' => 'hands-helping',
             'callback' => [$this, 'render_tab_resumen'],
             'orden' => 73,
         ];
 
         $tabs['cuidados-mis-circulos'] = [
-            'label' => __('Mis Círculos', 'flavor-chat-ia'),
+            'label' => __('Mis Círculos', 'flavor-platform'),
             'icon' => 'users',
             'callback' => [$this, 'render_tab_mis_circulos'],
             'orden' => 74,
@@ -78,7 +78,7 @@ class Flavor_Circulos_Cuidados_Dashboard_Tab {
     public function render_tab_resumen() {
         $user_id = get_current_user_id();
         if (!$user_id) {
-            echo '<p>' . esc_html__('Debes iniciar sesión para ver este contenido.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Debes iniciar sesión para ver este contenido.', 'flavor-platform') . '</p>';
             return;
         }
 
@@ -119,8 +119,8 @@ class Flavor_Circulos_Cuidados_Dashboard_Tab {
         ?>
         <div class="flavor-panel flavor-cuidados-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-heart"></span> <?php esc_html_e('Círculos de Cuidados', 'flavor-chat-ia'); ?></h2>
-                <p class="flavor-panel-subtitle"><?php esc_html_e('Cuidarnos mutuamente, tejer comunidad', 'flavor-chat-ia'); ?></p>
+                <h2><span class="dashicons dashicons-heart"></span> <?php esc_html_e('Círculos de Cuidados', 'flavor-platform'); ?></h2>
+                <p class="flavor-panel-subtitle"><?php esc_html_e('Cuidarnos mutuamente, tejer comunidad', 'flavor-platform'); ?></p>
             </div>
 
             <div class="flavor-panel-kpis">
@@ -128,58 +128,58 @@ class Flavor_Circulos_Cuidados_Dashboard_Tab {
                     <span class="flavor-kpi-icon dashicons dashicons-groups"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($circulos_activos); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Círculos Activos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Círculos Activos', 'flavor-platform'); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icon dashicons dashicons-admin-users"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($mis_circulos); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Mis Círculos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Mis Círculos', 'flavor-platform'); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-warning">
                     <span class="flavor-kpi-icon dashicons dashicons-megaphone"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($necesidades_pendientes); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Necesidades Pendientes', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Necesidades Pendientes', 'flavor-platform'); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-success">
                     <span class="flavor-kpi-icon dashicons dashicons-heart"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($cuidados_ofrecidos); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Cuidados Ofrecidos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Cuidados Ofrecidos', 'flavor-platform'); ?></span>
                     </div>
                 </div>
             </div>
 
             <div class="flavor-panel-section">
-                <h3><?php esc_html_e('Tipos de Cuidados', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Tipos de Cuidados', 'flavor-platform'); ?></h3>
                 <div class="flavor-cuidados-grid">
                     <div class="flavor-cuidado-tipo">
                         <span class="dashicons dashicons-admin-users"></span>
-                        <span><?php esc_html_e('Acompañamiento', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Acompañamiento', 'flavor-platform'); ?></span>
                     </div>
                     <div class="flavor-cuidado-tipo">
                         <span class="dashicons dashicons-cart"></span>
-                        <span><?php esc_html_e('Recados y compras', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Recados y compras', 'flavor-platform'); ?></span>
                     </div>
                     <div class="flavor-cuidado-tipo">
                         <span class="dashicons dashicons-food"></span>
-                        <span><?php esc_html_e('Comidas', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Comidas', 'flavor-platform'); ?></span>
                     </div>
                     <div class="flavor-cuidado-tipo">
                         <span class="dashicons dashicons-car"></span>
-                        <span><?php esc_html_e('Transporte', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Transporte', 'flavor-platform'); ?></span>
                     </div>
                     <div class="flavor-cuidado-tipo">
                         <span class="dashicons dashicons-smiley"></span>
-                        <span><?php esc_html_e('Cuidado infantil', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Cuidado infantil', 'flavor-platform'); ?></span>
                     </div>
                     <div class="flavor-cuidado-tipo">
                         <span class="dashicons dashicons-admin-home"></span>
-                        <span><?php esc_html_e('Tareas domésticas', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Tareas domésticas', 'flavor-platform'); ?></span>
                     </div>
                 </div>
             </div>
@@ -187,15 +187,15 @@ class Flavor_Circulos_Cuidados_Dashboard_Tab {
             <div class="flavor-panel-actions">
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('circulos_cuidados', 'necesidades')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-search"></span>
-                    <?php esc_html_e('Ver Necesidades', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver Necesidades', 'flavor-platform'); ?>
                 </a>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('circulos_cuidados', 'solicitar')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-megaphone"></span>
-                    <?php esc_html_e('Solicitar Cuidado', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Solicitar Cuidado', 'flavor-platform'); ?>
                 </a>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('circulos_cuidados', 'unirse')); ?>" class="flavor-btn flavor-btn-outline">
                     <span class="dashicons dashicons-plus-alt"></span>
-                    <?php esc_html_e('Unirse a Círculo', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Unirse a Círculo', 'flavor-platform'); ?>
                 </a>
             </div>
         </div>
@@ -208,7 +208,7 @@ class Flavor_Circulos_Cuidados_Dashboard_Tab {
     public function render_tab_mis_circulos() {
         $user_id = get_current_user_id();
         if (!$user_id) {
-            echo '<p>' . esc_html__('Debes iniciar sesión para ver este contenido.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Debes iniciar sesión para ver este contenido.', 'flavor-platform') . '</p>';
             return;
         }
 
@@ -231,24 +231,24 @@ class Flavor_Circulos_Cuidados_Dashboard_Tab {
         ?>
         <div class="flavor-panel flavor-mis-circulos-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-groups"></span> <?php esc_html_e('Mis Círculos', 'flavor-chat-ia'); ?></h2>
+                <h2><span class="dashicons dashicons-groups"></span> <?php esc_html_e('Mis Círculos', 'flavor-platform'); ?></h2>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('circulos_cuidados', 'crear-circulo')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt"></span>
-                    <?php esc_html_e('Crear Círculo', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Crear Círculo', 'flavor-platform'); ?>
                 </a>
             </div>
 
             <?php if (empty($mis_circulos)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-groups"></span>
-                    <p><?php esc_html_e('Aún no perteneces a ningún círculo de cuidados.', 'flavor-chat-ia'); ?></p>
-                    <p class="flavor-text-muted"><?php esc_html_e('Los círculos de cuidados son redes de apoyo mutuo entre vecinos.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Aún no perteneces a ningún círculo de cuidados.', 'flavor-platform'); ?></p>
+                    <p class="flavor-text-muted"><?php esc_html_e('Los círculos de cuidados son redes de apoyo mutuo entre vecinos.', 'flavor-platform'); ?></p>
                     <div class="flavor-empty-actions">
                         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('circulos_cuidados', 'unirse')); ?>" class="flavor-btn flavor-btn-primary">
-                            <?php esc_html_e('Unirse a un círculo', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Unirse a un círculo', 'flavor-platform'); ?>
                         </a>
                         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('circulos_cuidados', 'crear-circulo')); ?>" class="flavor-btn flavor-btn-outline">
-                            <?php esc_html_e('Crear un círculo', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Crear un círculo', 'flavor-platform'); ?>
                         </a>
                     </div>
                 </div>
@@ -276,12 +276,12 @@ class Flavor_Circulos_Cuidados_Dashboard_Tab {
                             <div class="flavor-card-footer">
                                 <span class="flavor-text-muted">
                                     <?php printf(
-                                        esc_html__('Miembro desde %s', 'flavor-chat-ia'),
+                                        esc_html__('Miembro desde %s', 'flavor-platform'),
                                         date_i18n(get_option('date_format'), strtotime($circulo->fecha_union))
                                     ); ?>
                                 </span>
                                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('circulos_cuidados', 'circulo') . '/' . $circulo->id); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
-                                    <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Ver', 'flavor-platform'); ?>
                                 </a>
                             </div>
                         </div>

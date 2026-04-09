@@ -35,23 +35,23 @@ $mostrar_resumen = filter_var($atts['mostrar_resumen'], FILTER_VALIDATE_BOOLEAN)
         <?php if ($estado['estado'] === 'fuera' || $estado['estado'] === 'sin_fichar'): ?>
             <button type="button" class="fichaje-btn fichaje-btn-entrada fichaje-btn-principal" data-action="entrada">
                 <span class="btn-icono dashicons dashicons-yes-alt"></span>
-                <span class="btn-texto"><?php esc_html_e('Fichar Entrada', 'flavor-chat-ia'); ?></span>
+                <span class="btn-texto"><?php esc_html_e('Fichar Entrada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </button>
         <?php elseif ($estado['estado'] === 'trabajando'): ?>
             <div class="fichaje-btns-row">
                 <button type="button" class="fichaje-btn fichaje-btn-pausa" data-action="pausa">
                     <span class="btn-icono dashicons dashicons-coffee"></span>
-                    <span class="btn-texto"><?php esc_html_e('Pausa', 'flavor-chat-ia'); ?></span>
+                    <span class="btn-texto"><?php esc_html_e('Pausa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </button>
                 <button type="button" class="fichaje-btn fichaje-btn-salida fichaje-btn-principal" data-action="salida">
                     <span class="btn-icono dashicons dashicons-migrate"></span>
-                    <span class="btn-texto"><?php esc_html_e('Fichar Salida', 'flavor-chat-ia'); ?></span>
+                    <span class="btn-texto"><?php esc_html_e('Fichar Salida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </button>
             </div>
         <?php elseif ($estado['estado'] === 'en_pausa'): ?>
             <button type="button" class="fichaje-btn fichaje-btn-reanudar fichaje-btn-principal" data-action="reanudar">
                 <span class="btn-icono dashicons dashicons-controls-play"></span>
-                <span class="btn-texto"><?php esc_html_e('Reanudar Jornada', 'flavor-chat-ia'); ?></span>
+                <span class="btn-texto"><?php esc_html_e('Reanudar Jornada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </button>
         <?php endif; ?>
     </div>
@@ -60,24 +60,24 @@ $mostrar_resumen = filter_var($atts['mostrar_resumen'], FILTER_VALIDATE_BOOLEAN)
     <div class="fichaje-modal" id="fichaje-modal-notas" style="display: none;">
         <div class="fichaje-modal-content">
             <h3 class="fichaje-modal-titulo"></h3>
-            <textarea id="fichaje-notas" rows="3" placeholder="<?php esc_attr_e('Notas opcionales...', 'flavor-chat-ia'); ?>"></textarea>
+            <textarea id="fichaje-notas" rows="3" placeholder="<?php esc_attr_e('Notas opcionales...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
 
             <div id="fichaje-pausa-tipos" style="display: none;">
-                <label><?php esc_html_e('Tipo de pausa:', 'flavor-chat-ia'); ?></label>
+                <label><?php esc_html_e('Tipo de pausa:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select id="fichaje-tipo-pausa">
-                    <option value="comida"><?php esc_html_e('Comida', 'flavor-chat-ia'); ?></option>
-                    <option value="descanso"><?php esc_html_e('Descanso', 'flavor-chat-ia'); ?></option>
-                    <option value="reunion"><?php esc_html_e('Reunión', 'flavor-chat-ia'); ?></option>
-                    <option value="otros"><?php esc_html_e('Otros', 'flavor-chat-ia'); ?></option>
+                    <option value="comida"><?php esc_html_e('Comida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="descanso"><?php esc_html_e('Descanso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="reunion"><?php esc_html_e('Reunión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="otros"><?php esc_html_e('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
             </div>
 
             <div class="fichaje-modal-acciones">
                 <button type="button" class="fichaje-btn fichaje-btn-cancelar" id="fichaje-modal-cancelar">
-                    <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" class="fichaje-btn fichaje-btn-confirmar" id="fichaje-modal-confirmar">
-                    <?php esc_html_e('Confirmar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Confirmar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </div>
@@ -89,15 +89,15 @@ $mostrar_resumen = filter_var($atts['mostrar_resumen'], FILTER_VALIDATE_BOOLEAN)
     <!-- Resumen del día -->
     <?php if (!empty($fichajes_hoy['fichajes'])): ?>
     <div class="fichaje-resumen-dia">
-        <h3><?php esc_html_e('Hoy', 'flavor-chat-ia'); ?></h3>
+        <h3><?php esc_html_e('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         <div class="fichaje-stats">
             <div class="fichaje-stat">
                 <span class="stat-valor"><?php echo esc_html(count($fichajes_hoy['fichajes'])); ?></span>
-                <span class="stat-label"><?php esc_html_e('Fichajes', 'flavor-chat-ia'); ?></span>
+                <span class="stat-label"><?php esc_html_e('Fichajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="fichaje-stat">
                 <span class="stat-valor"><?php echo esc_html(number_format($fichajes_hoy['horas_trabajadas'], 1)); ?>h</span>
-                <span class="stat-label"><?php esc_html_e('Trabajadas', 'flavor-chat-ia'); ?></span>
+                <span class="stat-label"><?php esc_html_e('Trabajadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -120,12 +120,12 @@ $mostrar_resumen = filter_var($atts['mostrar_resumen'], FILTER_VALIDATE_BOOLEAN)
     <div class="fichaje-panel-links">
         <a href="<?php echo esc_url(home_url('/fichaje-empleados/mis-fichajes/')); ?>" class="fichaje-link">
             <span class="dashicons dashicons-list-view"></span>
-            <?php esc_html_e('Ver historial completo', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Ver historial completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <?php if ($mostrar_resumen): ?>
         <a href="<?php echo esc_url(add_query_arg('tab', 'resumen', home_url('/fichaje-empleados/mis-fichajes/'))); ?>" class="fichaje-link">
             <span class="dashicons dashicons-chart-bar"></span>
-            <?php esc_html_e('Resumen mensual', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Resumen mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <?php endif; ?>
     </div>

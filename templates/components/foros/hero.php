@@ -43,10 +43,10 @@ $imagen_url_fondo = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_
             </div>
 
             <h1 class="text-4xl md:text-6xl font-bold mb-6" style="color: white;">
-                <?php echo esc_html($titulo ?? __('Foros de la Comunidad', 'flavor-chat-ia')); ?>
+                <?php echo esc_html($titulo ?? __('Foros de la Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
             </h1>
             <p class="text-xl md:text-2xl mb-12" style="color: rgba(255,255,255,0.9);">
-                <?php echo esc_html($subtitulo ?? __('Participa en las discusiones, comparte conocimiento y conecta con tu comunidad', 'flavor-chat-ia')); ?>
+                <?php echo esc_html($subtitulo ?? __('Participa en las discusiones, comparte conocimiento y conecta con tu comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
             </p>
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center mb-16">
@@ -54,13 +54,13 @@ $imagen_url_fondo = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
                     </svg>
-                    <?php echo esc_html__('Explorar Foros', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Explorar Foros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="/foros/nuevo-tema/" class="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-300 hover:scale-105" style="background: rgba(255,255,255,0.15); color: white; border: 2px solid rgba(255,255,255,0.3); backdrop-filter: blur(10px);">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                     </svg>
-                    <?php echo esc_html__('Nuevo Hilo', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Nuevo Hilo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
@@ -68,15 +68,15 @@ $imagen_url_fondo = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_
             <div class="grid grid-cols-3 gap-6 max-w-lg mx-auto">
                 <div class="text-center">
                     <div class="text-3xl md:text-4xl font-bold" style="color: white;">12</div>
-                    <div class="text-sm mt-1" style="color: rgba(255,255,255,0.75);"><?php echo esc_html__('Foros', 'flavor-chat-ia'); ?></div>
+                    <div class="text-sm mt-1" style="color: rgba(255,255,255,0.75);"><?php echo esc_html__('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="text-center">
                     <div class="text-3xl md:text-4xl font-bold" style="color: white;">248</div>
-                    <div class="text-sm mt-1" style="color: rgba(255,255,255,0.75);"><?php echo esc_html__('Hilos', 'flavor-chat-ia'); ?></div>
+                    <div class="text-sm mt-1" style="color: rgba(255,255,255,0.75);"><?php echo esc_html__('Hilos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="text-center">
-                    <div class="text-3xl md:text-4xl font-bold" style="color: white;"><?php echo esc_html__('1.5K', 'flavor-chat-ia'); ?></div>
-                    <div class="text-sm mt-1" style="color: rgba(255,255,255,0.75);"><?php echo esc_html__('Respuestas', 'flavor-chat-ia'); ?></div>
+                    <div class="text-3xl md:text-4xl font-bold" style="color: white;"><?php echo esc_html__('1.5K', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                    <div class="text-sm mt-1" style="color: rgba(255,255,255,0.75);"><?php echo esc_html__('Respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
         </div>

@@ -671,19 +671,19 @@ class Chat_IA_Admin_Assistant {
         $message = sanitize_textarea_field($_POST['message'] ?? '');
 
         if (empty($message)) {
-            wp_send_json_error(['error' => __('Mensaje vacío', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Mensaje vacío', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Obtener motor de IA (contexto backend = admin assistant)
         if (!class_exists('Chat_IA_Engine_Manager')) {
-            wp_send_json_error(['error' => __('Motor de IA no disponible', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Motor de IA no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $engine_manager = Chat_IA_Engine_Manager::get_instance();
         $engine = $engine_manager->get_backend_engine();
 
         if (!$engine || !$engine->is_configured()) {
-            wp_send_json_error(['error' => __('Configura un proveedor de IA primero', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Configura un proveedor de IA primero', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Obtener historial de conversación
@@ -837,19 +837,19 @@ class Chat_IA_Admin_Assistant {
      */
     public function process_message($message, $session_id = null) {
         if (empty($message)) {
-            return ['success' => false, 'error' => __('Mensaje vacío', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Mensaje vacío', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Obtener motor de IA (contexto backend = admin assistant)
         if (!class_exists('Chat_IA_Engine_Manager')) {
-            return ['success' => false, 'error' => __('Motor de IA no disponible', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Motor de IA no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $engine_manager = Chat_IA_Engine_Manager::get_instance();
         $engine = $engine_manager->get_backend_engine();
 
         if (!$engine || !$engine->is_configured()) {
-            return ['success' => false, 'error' => __('Configura un proveedor de IA primero', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Configura un proveedor de IA primero', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Obtener historial de conversación (usando session_id si se proporciona)

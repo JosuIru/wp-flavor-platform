@@ -122,7 +122,7 @@ class Flavor_Economia_Don_Frontend_Controller {
     public function registrar_dashboard_tabs($tabs) {
         $tabs['economia-don'] = [
             'id' => 'economia-don',
-            'label' => __('Dar/Recibir', 'flavor-chat-ia'),
+            'label' => __('Dar/Recibir', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-heart',
             'orden' => 55,
             'callback' => [$this, 'render_dashboard_tab'],
@@ -154,9 +154,9 @@ class Flavor_Economia_Don_Frontend_Controller {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_don_nonce'),
             'strings' => [
-                'confirmar' => __('¿Confirmar?', 'flavor-chat-ia'),
-                'enviando' => __('Enviando...', 'flavor-chat-ia'),
-                'gracias' => __('Gracias por tu generosidad', 'flavor-chat-ia'),
+                'confirmar' => __('¿Confirmar?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'enviando' => __('Enviando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'gracias' => __('Gracias por tu generosidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -186,7 +186,7 @@ class Flavor_Economia_Don_Frontend_Controller {
 
         if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_dones)) {
             return '<div class="flavor-alert flavor-alert-warning">' .
-                   __('El sistema no está configurado.', 'flavor-chat-ia') . '</div>';
+                   __('El sistema no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         global $wpdb;
@@ -224,20 +224,20 @@ class Flavor_Economia_Don_Frontend_Controller {
         <div class="flavor-don-listado">
             <div class="flavor-don-header">
                 <div class="flavor-don-intro">
-                    <h2><?php _e('Economía del Don', 'flavor-chat-ia'); ?></h2>
-                    <p><?php _e('Dar y recibir sin esperar nada a cambio. El placer está en el acto de dar.', 'flavor-chat-ia'); ?></p>
+                    <h2><?php _e('Economía del Don', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                    <p><?php _e('Dar y recibir sin esperar nada a cambio. El placer está en el acto de dar.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <div class="flavor-don-stats-mini">
-                    <span><strong><?php echo number_format($stats['total_dones']); ?></strong> <?php _e('dones ofrecidos', 'flavor-chat-ia'); ?></span>
-                    <span><strong><?php echo number_format($stats['entregados']); ?></strong> <?php _e('entregados', 'flavor-chat-ia'); ?></span>
-                    <span><strong><?php echo number_format($stats['donantes']); ?></strong> <?php _e('personas dando', 'flavor-chat-ia'); ?></span>
+                    <span><strong><?php echo number_format($stats['total_dones']); ?></strong> <?php _e('dones ofrecidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                    <span><strong><?php echo number_format($stats['entregados']); ?></strong> <?php _e('entregados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                    <span><strong><?php echo number_format($stats['donantes']); ?></strong> <?php _e('personas dando', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
             <div class="flavor-don-categorias">
                 <a href="<?php echo esc_url(remove_query_arg('categoria')); ?>"
                    class="flavor-cat-btn <?php echo empty($filtro_cat) ? 'activo' : ''; ?>">
-                    <?php _e('Todos', 'flavor-chat-ia'); ?>
+                    <?php _e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <?php foreach ($this->categorias as $clave => $cat): ?>
                     <a href="<?php echo esc_url(add_query_arg('categoria', $clave)); ?>"
@@ -253,14 +253,14 @@ class Flavor_Economia_Don_Frontend_Controller {
                 <div class="flavor-don-cta-ofrecer">
                     <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia-don', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-lg">
                         <span class="dashicons dashicons-heart"></span>
-                        <?php _e('Ofrecer un don', 'flavor-chat-ia'); ?>
+                        <?php _e('Ofrecer un don', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php endif; ?>
 
             <?php if (empty($dones)): ?>
                 <div class="flavor-alert flavor-alert-info">
-                    <?php _e('No hay dones disponibles en esta categoría.', 'flavor-chat-ia'); ?>
+                    <?php _e('No hay dones disponibles en esta categoría.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </div>
             <?php else: ?>
                 <div class="flavor-dones-grid">
@@ -342,7 +342,7 @@ class Flavor_Economia_Don_Frontend_Controller {
 
         if (!$don) {
             return '<div class="flavor-alert flavor-alert-warning">' .
-                   __('Don no encontrado.', 'flavor-chat-ia') . '</div>';
+                   __('Don no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         $cat_info = $this->categorias[$don->categoria] ?? ['nombre' => $don->categoria, 'icono' => 'dashicons-heart', 'color' => '#6b7280'];
@@ -355,7 +355,7 @@ class Flavor_Economia_Don_Frontend_Controller {
         <div class="flavor-don-detalle">
             <div class="flavor-don-breadcrumb">
                 <a href="<?php echo esc_url(remove_query_arg('don_id')); ?>">
-                    <?php _e('Dones', 'flavor-chat-ia'); ?>
+                    <?php _e('Dones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <span class="dashicons dashicons-arrow-right-alt2"></span>
                 <span><?php echo esc_html(wp_trim_words($don->titulo, 5)); ?></span>
@@ -391,7 +391,7 @@ class Flavor_Economia_Don_Frontend_Controller {
 
                         <?php if (!empty($don->condiciones)): ?>
                             <div class="flavor-don-condiciones">
-                                <h3><?php _e('Condiciones', 'flavor-chat-ia'); ?></h3>
+                                <h3><?php _e('Condiciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                                 <?php echo wp_kses_post(wpautop($don->condiciones)); ?>
                             </div>
                         <?php endif; ?>
@@ -401,9 +401,9 @@ class Flavor_Economia_Don_Frontend_Controller {
                                 <button class="flavor-btn flavor-btn-primary flavor-btn-lg flavor-solicitar-don"
                                         data-don-id="<?php echo esc_attr($don_id); ?>">
                                     <span class="dashicons dashicons-heart"></span>
-                                    <?php _e('Me gustaría recibirlo', 'flavor-chat-ia'); ?>
+                                    <?php _e('Me gustaría recibirlo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
-                                <p class="flavor-nota"><?php _e('Sin compromiso. Solo expresas tu interés.', 'flavor-chat-ia'); ?></p>
+                                <p class="flavor-nota"><?php _e('Sin compromiso. Solo expresas tu interés.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -411,7 +411,7 @@ class Flavor_Economia_Don_Frontend_Controller {
 
                 <aside class="flavor-don-sidebar">
                     <section class="flavor-panel">
-                        <h3><?php _e('Ofrecido por', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Ofrecido por', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="flavor-donante-perfil">
                             <?php echo get_avatar($don->usuario_id, 64); ?>
                             <span class="flavor-donante-nombre"><?php echo esc_html($don->donante_nombre); ?></span>
@@ -420,14 +420,14 @@ class Flavor_Economia_Don_Frontend_Controller {
 
                     <?php if (!empty($don->ubicacion)): ?>
                         <section class="flavor-panel">
-                            <h3><?php _e('Ubicación', 'flavor-chat-ia'); ?></h3>
+                            <h3><?php _e('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                             <p><span class="dashicons dashicons-location"></span> <?php echo esc_html($don->ubicacion); ?></p>
                         </section>
                     <?php endif; ?>
 
                     <section class="flavor-panel flavor-mensaje-don">
-                        <h3><?php _e('Sobre el don', 'flavor-chat-ia'); ?></h3>
-                        <p><?php _e('El don se ofrece sin esperar nada a cambio. El único "pago" es la gratitud y, si quieres, dar también algo a alguien en el futuro.', 'flavor-chat-ia'); ?></p>
+                        <h3><?php _e('Sobre el don', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                        <p><?php _e('El don se ofrece sin esperar nada a cambio. El único "pago" es la gratitud y, si quieres, dar también algo a alguien en el futuro.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </section>
                 </aside>
             </div>
@@ -442,7 +442,7 @@ class Flavor_Economia_Don_Frontend_Controller {
     public function shortcode_ofrecer($atts) {
         if (!is_user_logged_in()) {
             return '<div class="flavor-alert flavor-alert-warning">' .
-                   sprintf(__('<a href="%s">Inicia sesión</a> para ofrecer un don.', 'flavor-chat-ia'), wp_login_url(flavor_current_request_url())) .
+                   sprintf(__('<a href="%s">Inicia sesión</a> para ofrecer un don.', FLAVOR_PLATFORM_TEXT_DOMAIN), wp_login_url(flavor_current_request_url())) .
                    '</div>';
         }
 
@@ -451,20 +451,20 @@ class Flavor_Economia_Don_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-ofrecer-don">
-            <h2><?php _e('Ofrecer un Don', 'flavor-chat-ia'); ?></h2>
-            <p class="flavor-intro"><?php _e('Dar por el placer de dar. Sin esperar nada a cambio.', 'flavor-chat-ia'); ?></p>
+            <h2><?php _e('Ofrecer un Don', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+            <p class="flavor-intro"><?php _e('Dar por el placer de dar. Sin esperar nada a cambio.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
             <form id="flavor-form-ofrecer-don" class="flavor-form" enctype="multipart/form-data">
                 <?php wp_nonce_field('flavor_don_nonce', 'nonce'); ?>
 
                 <div class="flavor-form-group">
-                    <label for="titulo"><?php _e('¿Qué ofreces?', 'flavor-chat-ia'); ?> *</label>
+                    <label for="titulo"><?php _e('¿Qué ofreces?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <input type="text" name="titulo" id="titulo" required
-                           placeholder="<?php esc_attr_e('Ej: Libros de cocina, clases de guitarra...', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php esc_attr_e('Ej: Libros de cocina, clases de guitarra...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="categoria"><?php _e('Categoría', 'flavor-chat-ia'); ?> *</label>
+                    <label for="categoria"><?php _e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <div class="flavor-categoria-selector">
                         <?php foreach ($this->categorias as $clave => $cat): ?>
                             <label class="flavor-cat-option">
@@ -479,35 +479,35 @@ class Flavor_Economia_Don_Frontend_Controller {
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="descripcion"><?php _e('Descripción', 'flavor-chat-ia'); ?> *</label>
+                    <label for="descripcion"><?php _e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <textarea name="descripcion" id="descripcion" rows="5" required
-                              placeholder="<?php esc_attr_e('Describe lo que ofreces con detalle...', 'flavor-chat-ia'); ?>"></textarea>
+                              placeholder="<?php esc_attr_e('Describe lo que ofreces con detalle...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="condiciones"><?php _e('Condiciones (opcional)', 'flavor-chat-ia'); ?></label>
+                    <label for="condiciones"><?php _e('Condiciones (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <textarea name="condiciones" id="condiciones" rows="3"
-                              placeholder="<?php esc_attr_e('¿Hay alguna condición? Ej: Recoger en mano, solo fines de semana...', 'flavor-chat-ia'); ?>"></textarea>
+                              placeholder="<?php esc_attr_e('¿Hay alguna condición? Ej: Recoger en mano, solo fines de semana...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="ubicacion"><?php _e('Ubicación', 'flavor-chat-ia'); ?></label>
+                    <label for="ubicacion"><?php _e('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="text" name="ubicacion" id="ubicacion"
-                           placeholder="<?php esc_attr_e('Barrio o zona', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php esc_attr_e('Barrio o zona', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="imagen"><?php _e('Foto (opcional)', 'flavor-chat-ia'); ?></label>
+                    <label for="imagen"><?php _e('Foto (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="file" name="imagen" id="imagen" accept="image/*">
                 </div>
 
                 <div class="flavor-form-actions">
                     <button type="submit" class="flavor-btn flavor-btn-primary">
                         <span class="dashicons dashicons-heart"></span>
-                        <?php _e('Ofrecer Don', 'flavor-chat-ia'); ?>
+                        <?php _e('Ofrecer Don', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_module_url('economia-don')); ?>" class="flavor-btn flavor-btn-outline">
-                        <?php _e('Cancelar', 'flavor-chat-ia'); ?>
+                        <?php _e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </form>
@@ -539,13 +539,13 @@ class Flavor_Economia_Don_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-mis-dones">
-            <h2><?php _e('Mis Dones Ofrecidos', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Mis Dones Ofrecidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <?php if (empty($dones)): ?>
                 <div class="flavor-alert flavor-alert-info">
-                    <?php _e('No has ofrecido ningún don todavía.', 'flavor-chat-ia'); ?>
+                    <?php _e('No has ofrecido ningún don todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia-don', 'ofrecer')); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
-                        <?php _e('Ofrecer mi primer don', 'flavor-chat-ia'); ?>
+                        <?php _e('Ofrecer mi primer don', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -553,11 +553,11 @@ class Flavor_Economia_Don_Frontend_Controller {
                     <table class="flavor-table">
                         <thead>
                             <tr>
-                                <th><?php _e('Don', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Categoría', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Solicitudes', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Don', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -618,29 +618,29 @@ class Flavor_Economia_Don_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-mis-recepciones">
-            <h2><?php _e('Dones Recibidos', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Dones Recibidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <?php if (empty($recepciones)): ?>
-                <p class="flavor-no-datos"><?php _e('No has recibido dones todavía.', 'flavor-chat-ia'); ?></p>
+                <p class="flavor-no-datos"><?php _e('No has recibido dones todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php else: ?>
                 <div class="flavor-recepciones-lista">
                     <?php foreach ($recepciones as $recepcion): ?>
                         <div class="flavor-recepcion-item">
                             <div class="flavor-recepcion-info">
                                 <h4><?php echo esc_html($recepcion->don_titulo); ?></h4>
-                                <p><?php printf(__('De %s', 'flavor-chat-ia'), esc_html($recepcion->donante_nombre)); ?></p>
+                                <p><?php printf(__('De %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($recepcion->donante_nombre)); ?></p>
                                 <span class="flavor-fecha"><?php echo date_i18n(get_option('date_format'), strtotime($recepcion->fecha_entrega)); ?></span>
                             </div>
                             <?php if (empty($recepcion->gratitud_enviada)): ?>
                                 <button class="flavor-btn flavor-btn-sm flavor-btn-primary flavor-agradecer"
                                         data-entrega-id="<?php echo esc_attr($recepcion->id); ?>">
                                     <span class="dashicons dashicons-heart"></span>
-                                    <?php _e('Agradecer', 'flavor-chat-ia'); ?>
+                                    <?php _e('Agradecer', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             <?php else: ?>
                                 <span class="flavor-badge flavor-badge-success">
                                     <span class="dashicons dashicons-yes"></span>
-                                    <?php _e('Agradecido', 'flavor-chat-ia'); ?>
+                                    <?php _e('Agradecido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                             <?php endif; ?>
                         </div>
@@ -675,11 +675,11 @@ class Flavor_Economia_Don_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-muro-gratitud">
-            <h2><?php _e('Muro de Gratitud', 'flavor-chat-ia'); ?></h2>
-            <p class="flavor-intro"><?php _e('Mensajes de agradecimiento por los dones recibidos.', 'flavor-chat-ia'); ?></p>
+            <h2><?php _e('Muro de Gratitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+            <p class="flavor-intro"><?php _e('Mensajes de agradecimiento por los dones recibidos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
             <?php if (empty($gratitudes)): ?>
-                <p class="flavor-no-datos"><?php _e('Aún no hay mensajes de gratitud.', 'flavor-chat-ia'); ?></p>
+                <p class="flavor-no-datos"><?php _e('Aún no hay mensajes de gratitud.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php else: ?>
                 <div class="flavor-gratitudes-grid">
                     <?php foreach ($gratitudes as $gratitud): ?>
@@ -688,7 +688,7 @@ class Flavor_Economia_Don_Frontend_Controller {
                                 <?php echo get_avatar($gratitud->usuario_id, 40); ?>
                                 <div class="flavor-gratitud-meta">
                                     <span class="flavor-receptor"><?php echo esc_html($gratitud->receptor_nombre); ?></span>
-                                    <span class="flavor-accion"><?php _e('agradeció a', 'flavor-chat-ia'); ?></span>
+                                    <span class="flavor-accion"><?php _e('agradeció a', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     <span class="flavor-donante"><?php echo esc_html($gratitud->donante_nombre); ?></span>
                                 </div>
                             </div>
@@ -735,41 +735,41 @@ class Flavor_Economia_Don_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-don-estadisticas">
-            <h2><?php _e('Estadísticas del Don', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Estadísticas del Don', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <div class="flavor-kpi-grid flavor-grid-4">
                 <div class="flavor-kpi-card">
                     <div class="flavor-kpi-icono"><span class="dashicons dashicons-heart"></span></div>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo number_format($stats['total_dones']); ?></span>
-                        <span class="flavor-kpi-label"><?php _e('Dones ofrecidos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Dones ofrecidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <div class="flavor-kpi-icono"><span class="dashicons dashicons-yes-alt"></span></div>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo number_format($stats['entregados']); ?></span>
-                        <span class="flavor-kpi-label"><?php _e('Entregados', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Entregados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <div class="flavor-kpi-icono"><span class="dashicons dashicons-admin-users"></span></div>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo number_format($stats['donantes']); ?></span>
-                        <span class="flavor-kpi-label"><?php _e('Personas dando', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Personas dando', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <div class="flavor-kpi-icono"><span class="dashicons dashicons-groups"></span></div>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo number_format($stats['receptores']); ?></span>
-                        <span class="flavor-kpi-label"><?php _e('Personas recibiendo', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Personas recibiendo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
 
             <div class="flavor-panel">
-                <h3><?php _e('Por categoría', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Por categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div class="flavor-stats-bars">
                     <?php foreach ($por_categoria as $cat):
                         $cat_info = $this->categorias[$cat->categoria] ?? ['nombre' => $cat->categoria, 'color' => '#6b7280'];
@@ -825,21 +825,21 @@ class Flavor_Economia_Don_Frontend_Controller {
                     <div class="flavor-kpi-icono"><span class="dashicons dashicons-heart"></span></div>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo absint($mis_dones); ?></span>
-                        <span class="flavor-kpi-label"><?php _e('Dones ofrecidos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Dones ofrecidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <div class="flavor-kpi-icono"><span class="dashicons dashicons-yes-alt"></span></div>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo absint($dones_entregados); ?></span>
-                        <span class="flavor-kpi-label"><?php _e('Entregados', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Entregados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <div class="flavor-kpi-icono"><span class="dashicons dashicons-gift"></span></div>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo absint($dones_recibidos); ?></span>
-                        <span class="flavor-kpi-label"><?php _e('Recibidos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Recibidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -847,7 +847,7 @@ class Flavor_Economia_Don_Frontend_Controller {
             <div class="flavor-acciones-rapidas">
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia-don', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-heart"></span>
-                    <?php _e('Ofrecer un don', 'flavor-chat-ia'); ?>
+                    <?php _e('Ofrecer un don', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -865,7 +865,7 @@ class Flavor_Economia_Don_Frontend_Controller {
         check_ajax_referer('flavor_don_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $titulo = sanitize_text_field($_POST['titulo'] ?? '');
@@ -873,7 +873,7 @@ class Flavor_Economia_Don_Frontend_Controller {
         $descripcion = wp_kses_post($_POST['descripcion'] ?? '');
 
         if (empty($titulo) || empty($categoria) || empty($descripcion)) {
-            wp_send_json_error(['message' => __('Completa los campos requeridos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Completa los campos requeridos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Manejar imagen
@@ -904,12 +904,12 @@ class Flavor_Economia_Don_Frontend_Controller {
 
         if ($resultado) {
             wp_send_json_success([
-                'message' => __('¡Gracias por tu generosidad! Tu don está disponible.', 'flavor-chat-ia'),
+                'message' => __('¡Gracias por tu generosidad! Tu don está disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'don_id' => $wpdb->insert_id,
                 'redirect' => Flavor_Chat_Helpers::get_item_url('economia-don', $wpdb->insert_id),
             ]);
         } else {
-            wp_send_json_error(['message' => __('Error al publicar.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al publicar.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -920,7 +920,7 @@ class Flavor_Economia_Don_Frontend_Controller {
         check_ajax_referer('flavor_don_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $don_id = absint($_POST['don_id'] ?? 0);
@@ -935,7 +935,7 @@ class Flavor_Economia_Don_Frontend_Controller {
         ));
 
         if (!$don || $don->usuario_id == $usuario_id) {
-            wp_send_json_error(['message' => __('No puedes solicitar este don.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No puedes solicitar este don.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $resultado = $wpdb->insert($this->tabla_solicitudes, [
@@ -948,10 +948,10 @@ class Flavor_Economia_Don_Frontend_Controller {
 
         if ($resultado) {
             wp_send_json_success([
-                'message' => __('Tu interés ha sido registrado. El donante se pondrá en contacto contigo.', 'flavor-chat-ia'),
+                'message' => __('Tu interés ha sido registrado. El donante se pondrá en contacto contigo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         } else {
-            wp_send_json_error(['message' => __('Error al solicitar.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al solicitar.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -962,7 +962,7 @@ class Flavor_Economia_Don_Frontend_Controller {
         check_ajax_referer('flavor_don_nonce', 'nonce');
 
         // Implementar confirmación de entrega
-        wp_send_json_success(['message' => __('Entrega confirmada.', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Entrega confirmada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -972,7 +972,7 @@ class Flavor_Economia_Don_Frontend_Controller {
         check_ajax_referer('flavor_don_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $entrega_id = absint($_POST['entrega_id'] ?? 0);
@@ -987,13 +987,13 @@ class Flavor_Economia_Don_Frontend_Controller {
         ));
 
         if (!$entrega) {
-            wp_send_json_error(['message' => __('Entrega no encontrada.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Entrega no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $wpdb->insert($this->tabla_gratitudes, [
             'don_id' => $entrega->don_id,
             'usuario_id' => get_current_user_id(),
-            'mensaje' => $mensaje ?: __('Gracias por tu generosidad.', 'flavor-chat-ia'),
+            'mensaje' => $mensaje ?: __('Gracias por tu generosidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'publico' => 1,
             'fecha' => current_time('mysql'),
         ]);
@@ -1005,7 +1005,7 @@ class Flavor_Economia_Don_Frontend_Controller {
             ['id' => $entrega_id]
         );
 
-        wp_send_json_success(['message' => __('¡Gracias enviadas!', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('¡Gracias enviadas!', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**

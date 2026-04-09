@@ -478,7 +478,7 @@ class _ChangeBusinessScreenState extends ConsumerState<ChangeBusinessScreen> {
           ),
           const SizedBox(height: 10),
           Text(
-            'Introduce la URL base del negocio, por ejemplo: https://basabere.com',
+            'Introduce la URL base del negocio, por ejemplo: https://tudominio.com',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color:
                       Theme.of(context).colorScheme.onSurface.withOpacity(0.7),

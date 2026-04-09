@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$titulo_seccion = $titulo_seccion ?? __('Nuestros Clientes', 'flavor-chat-ia');
+$titulo_seccion = $titulo_seccion ?? __('Nuestros Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $estado_filtro = $estado_filtro ?? 'todos';
 $limite_mostrar = absint($limite ?? 12);
 
@@ -134,10 +134,10 @@ if (empty($clientes_lista)) {
 
 // Colores por estado
 $colores_estado = [
-    'activo' => ['bg' => 'rgba(16, 185, 129, 0.1)', 'text' => '#10b981', 'label' => __('Activo', 'flavor-chat-ia')],
-    'potencial' => ['bg' => 'rgba(245, 158, 11, 0.1)', 'text' => '#f59e0b', 'label' => __('Potencial', 'flavor-chat-ia')],
-    'inactivo' => ['bg' => 'rgba(107, 114, 128, 0.1)', 'text' => '#6b7280', 'label' => __('Inactivo', 'flavor-chat-ia')],
-    'perdido' => ['bg' => 'rgba(239, 68, 68, 0.1)', 'text' => '#ef4444', 'label' => __('Perdido', 'flavor-chat-ia')],
+    'activo' => ['bg' => 'rgba(16, 185, 129, 0.1)', 'text' => '#10b981', 'label' => __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    'potencial' => ['bg' => 'rgba(245, 158, 11, 0.1)', 'text' => '#f59e0b', 'label' => __('Potencial', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    'inactivo' => ['bg' => 'rgba(107, 114, 128, 0.1)', 'text' => '#6b7280', 'label' => __('Inactivo', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    'perdido' => ['bg' => 'rgba(239, 68, 68, 0.1)', 'text' => '#ef4444', 'label' => __('Perdido', FLAVOR_PLATFORM_TEXT_DOMAIN)],
 ];
 
 // Iconos por tipo
@@ -157,7 +157,7 @@ $iconos_tipo = [
                 <?php echo esc_html($titulo_seccion); ?>
             </h2>
             <p class="text-lg" style="color: var(--flavor-text-secondary, #666666);">
-                <?php esc_html_e('Gestiona tu cartera de clientes de forma eficiente', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Gestiona tu cartera de clientes de forma eficiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
 
@@ -165,11 +165,11 @@ $iconos_tipo = [
         <div class="flex flex-wrap justify-center gap-3 mb-10">
             <?php
             $filtros_disponibles = [
-                'todos' => __('Todos', 'flavor-chat-ia'),
-                'activo' => __('Activos', 'flavor-chat-ia'),
-                'potencial' => __('Potenciales', 'flavor-chat-ia'),
-                'inactivo' => __('Inactivos', 'flavor-chat-ia'),
-                'perdido' => __('Perdidos', 'flavor-chat-ia'),
+                'todos' => __('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'activo' => __('Activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'potencial' => __('Potenciales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'inactivo' => __('Inactivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'perdido' => __('Perdidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
             foreach ($filtros_disponibles as $filtro_clave => $filtro_etiqueta):
                 $filtro_activo = ($estado_filtro === $filtro_clave);
@@ -208,11 +208,11 @@ $iconos_tipo = [
                 if (!empty($cliente_item->ultima_interaccion)) {
                     $diferencia_tiempo = time() - strtotime($cliente_item->ultima_interaccion);
                     if ($diferencia_tiempo < 3600) {
-                        $tiempo_transcurrido = sprintf(__('Hace %d min', 'flavor-chat-ia'), floor($diferencia_tiempo / 60));
+                        $tiempo_transcurrido = sprintf(__('Hace %d min', FLAVOR_PLATFORM_TEXT_DOMAIN), floor($diferencia_tiempo / 60));
                     } elseif ($diferencia_tiempo < 86400) {
-                        $tiempo_transcurrido = sprintf(__('Hace %d h', 'flavor-chat-ia'), floor($diferencia_tiempo / 3600));
+                        $tiempo_transcurrido = sprintf(__('Hace %d h', FLAVOR_PLATFORM_TEXT_DOMAIN), floor($diferencia_tiempo / 3600));
                     } else {
-                        $tiempo_transcurrido = sprintf(__('Hace %d dias', 'flavor-chat-ia'), floor($diferencia_tiempo / 86400));
+                        $tiempo_transcurrido = sprintf(__('Hace %d dias', FLAVOR_PLATFORM_TEXT_DOMAIN), floor($diferencia_tiempo / 86400));
                     }
                 }
 
@@ -313,7 +313,7 @@ $iconos_tipo = [
                                 </span>
                             <?php else: ?>
                                 <span class="text-sm" style="color: var(--flavor-text-muted, #999);">
-                                    <?php esc_html_e('Sin valor', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Sin valor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                             <?php endif; ?>
 
@@ -346,10 +346,10 @@ $iconos_tipo = [
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                 </svg>
                 <h3 class="text-xl font-semibold mb-2" style="color: var(--flavor-text-primary, #1a1a1a);">
-                    <?php esc_html_e('No hay clientes aun', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('No hay clientes aun', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <p style="color: var(--flavor-text-secondary, #666);">
-                    <?php esc_html_e('Empieza a agregar clientes a tu CRM para verlos aqui.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Empieza a agregar clientes a tu CRM para verlos aqui.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
         <?php endif; ?>

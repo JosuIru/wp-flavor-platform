@@ -45,24 +45,24 @@ if ($filtro_equipamiento) {
 
 <div class="espacios-wrapper">
     <div class="espacios-header">
-        <h2 class="espacios-titulo"><?php _e('Equipamiento Disponible', 'flavor-chat-ia'); ?></h2>
+        <h2 class="espacios-titulo"><?php _e('Equipamiento Disponible', 'flavor-platform'); ?></h2>
         <a href="<?php echo remove_query_arg(['vista', 'equipo']); ?>" class="btn btn-outline">
             <span class="dashicons dashicons-arrow-left-alt2"></span>
-            <?php _e('Ver espacios', 'flavor-chat-ia'); ?>
+            <?php _e('Ver espacios', 'flavor-platform'); ?>
         </a>
     </div>
 
     <p style="color: #6b7280; margin-bottom: 1.5rem;">
-        <?php _e('Consulta el equipamiento disponible en cada espacio para planificar mejor tu reserva.', 'flavor-chat-ia'); ?>
+        <?php _e('Consulta el equipamiento disponible en cada espacio para planificar mejor tu reserva.', 'flavor-platform'); ?>
     </p>
 
     <!-- Filtro rápido por tipo de equipamiento -->
     <div style="margin-bottom: 2rem;">
-        <label style="font-weight: 500; display: block; margin-bottom: 0.5rem;"><?php _e('Buscar espacios con:', 'flavor-chat-ia'); ?></label>
+        <label style="font-weight: 500; display: block; margin-bottom: 0.5rem;"><?php _e('Buscar espacios con:', 'flavor-platform'); ?></label>
         <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
             <a href="<?php echo remove_query_arg('equipo'); ?>"
                class="btn btn-sm <?php echo !$filtro_equipamiento ? 'btn-primary' : 'btn-outline'; ?>">
-                <?php _e('Todos', 'flavor-chat-ia'); ?>
+                <?php _e('Todos', 'flavor-platform'); ?>
             </a>
             <?php foreach ($tipos_equipamiento as $tipo): ?>
                 <a href="<?php echo add_query_arg('equipo', urlencode($tipo)); ?>"
@@ -116,7 +116,7 @@ if ($filtro_equipamiento) {
                             <div style="margin-top: 0.5rem; display: flex; gap: 1rem; font-size: 0.875rem; color: #6b7280;">
                                 <span>
                                     <span class="dashicons dashicons-groups" style="font-size: 14px; width: 14px; height: 14px;"></span>
-                                    <?php printf(__('Hasta %d personas', 'flavor-chat-ia'), $espacio->capacidad_personas); ?>
+                                    <?php printf(__('Hasta %d personas', 'flavor-platform'), $espacio->capacidad_personas); ?>
                                 </span>
                                 <span>
                                     <?php echo ucfirst($espacio->tipo); ?>
@@ -128,7 +128,7 @@ if ($filtro_equipamiento) {
                     <?php if ($equipamiento): ?>
                         <div style="margin-top: 1rem;">
                             <label style="font-size: 0.75rem; color: #6b7280; text-transform: uppercase; display: block; margin-bottom: 0.5rem;">
-                                <?php _e('Equipamiento disponible', 'flavor-chat-ia'); ?>
+                                <?php _e('Equipamiento disponible', 'flavor-platform'); ?>
                             </label>
                             <div class="equipamiento-lista">
                                 <?php foreach ($equipamiento as $equipo): ?>
@@ -152,18 +152,18 @@ if ($filtro_equipamiento) {
                         </div>
                     <?php else: ?>
                         <p style="color: #9ca3af; font-style: italic; margin-top: 1rem;">
-                            <?php _e('No hay equipamiento registrado para este espacio.', 'flavor-chat-ia'); ?>
+                            <?php _e('No hay equipamiento registrado para este espacio.', 'flavor-platform'); ?>
                         </p>
                     <?php endif; ?>
 
                     <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e5e7eb;">
                         <a href="<?php echo add_query_arg('espacio_id', $espacio->id, remove_query_arg(['vista', 'equipo'])); ?>" class="btn btn-primary btn-sm">
-                            <?php _e('Ver espacio', 'flavor-chat-ia'); ?>
+                            <?php _e('Ver espacio', 'flavor-platform'); ?>
                         </a>
                         <?php if (is_user_logged_in()): ?>
                             <button class="btn btn-outline btn-sm btn-reservar-espacio" data-espacio-id="<?php echo $espacio->id; ?>">
                                 <span class="dashicons dashicons-calendar-alt"></span>
-                                <?php _e('Reservar', 'flavor-chat-ia'); ?>
+                                <?php _e('Reservar', 'flavor-platform'); ?>
                             </button>
                         <?php endif; ?>
                     </div>
@@ -173,14 +173,14 @@ if ($filtro_equipamiento) {
     <?php else: ?>
         <div class="espacios-empty">
             <span class="dashicons dashicons-clipboard"></span>
-            <h3><?php _e('No se encontraron espacios', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('No se encontraron espacios', 'flavor-platform'); ?></h3>
             <?php if ($filtro_equipamiento): ?>
-                <p><?php printf(__('No hay espacios con "%s" disponible.', 'flavor-chat-ia'), esc_html($filtro_equipamiento)); ?></p>
+                <p><?php printf(__('No hay espacios con "%s" disponible.', 'flavor-platform'), esc_html($filtro_equipamiento)); ?></p>
                 <a href="<?php echo remove_query_arg('equipo'); ?>" class="btn btn-primary">
-                    <?php _e('Ver todos los espacios', 'flavor-chat-ia'); ?>
+                    <?php _e('Ver todos los espacios', 'flavor-platform'); ?>
                 </a>
             <?php else: ?>
-                <p><?php _e('No hay espacios disponibles en este momento.', 'flavor-chat-ia'); ?></p>
+                <p><?php _e('No hay espacios disponibles en este momento.', 'flavor-platform'); ?></p>
             <?php endif; ?>
         </div>
     <?php endif; ?>
@@ -188,7 +188,7 @@ if ($filtro_equipamiento) {
     <!-- Resumen de equipamiento por tipo -->
     <?php if (!$filtro_equipamiento && $tipos_equipamiento): ?>
         <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #e5e7eb;">
-            <h3 style="margin-bottom: 1rem;"><?php _e('Resumen de equipamiento', 'flavor-chat-ia'); ?></h3>
+            <h3 style="margin-bottom: 1rem;"><?php _e('Resumen de equipamiento', 'flavor-platform'); ?></h3>
             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">
                 <?php foreach ($tipos_equipamiento as $tipo): ?>
                     <?php
@@ -203,7 +203,7 @@ if ($filtro_equipamiento) {
                         <div style="flex: 1;">
                             <strong style="display: block;"><?php echo esc_html($tipo); ?></strong>
                             <span style="font-size: 0.875rem; color: #6b7280;">
-                                <?php printf(_n('%d espacio', '%d espacios', $count, 'flavor-chat-ia'), $count); ?>
+                                <?php printf(_n('%d espacio', '%d espacios', $count, 'flavor-platform'), $count); ?>
                             </span>
                         </div>
                         <span class="dashicons dashicons-arrow-right-alt2" style="color: #9ca3af;"></span>

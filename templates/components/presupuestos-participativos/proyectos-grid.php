@@ -102,7 +102,7 @@ $estados_proyecto = [
                         <div class="mb-4">
                             <div class="flex justify-between text-sm mb-1">
                                 <span class="font-semibold text-amber-600">
-                                    <?php echo esc_html(number_format($proyecto['votos'], 0, ',', '.')); ?> <?php echo esc_html__('votos', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html(number_format($proyecto['votos'], 0, ',', '.')); ?> <?php echo esc_html__('votos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                                 <span class="text-gray-400">
                                     <?php echo esc_html($porcentaje_votos); ?>%
@@ -119,7 +119,7 @@ $estados_proyecto = [
                             <svg class="inline-block w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
                             </svg>
-                            <?php echo esc_html__('Votar este proyecto', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Votar este proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </div>

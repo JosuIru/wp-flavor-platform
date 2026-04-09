@@ -49,9 +49,9 @@ class Flavor_Permissions_Admin {
      */
     public function registrar_menu() {
         add_submenu_page(
-            'flavor-chat-ia', // Parent slug
-            __('Gestion de Permisos', 'flavor-chat-ia'),
-            __('Permisos', 'flavor-chat-ia'),
+            FLAVOR_PLATFORM_TEXT_DOMAIN, // Parent slug
+            __('Gestion de Permisos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Permisos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'flavor_manage_permissions',
             'flavor-permissions',
             [$this, 'render_pagina']
@@ -92,13 +92,13 @@ class Flavor_Permissions_Admin {
         check_ajax_referer('flavor_permissions_nonce', 'nonce');
 
         if (!current_user_can('flavor_manage_permissions')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')], 403);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)], 403);
         }
 
         $user_id = intval($_POST['user_id']);
 
         if (!$user_id) {
-            wp_send_json_error(['message' => __('ID de usuario invalido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID de usuario invalido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $resumen = Flavor_Permission_Helper::get_permissions_summary($user_id);
@@ -118,7 +118,7 @@ class Flavor_Permissions_Admin {
         check_ajax_referer('flavor_permissions_nonce', 'nonce');
 
         if (!current_user_can('flavor_manage_permissions')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')], 403);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)], 403);
         }
 
         $user_id = intval($_POST['user_id']);
@@ -126,17 +126,17 @@ class Flavor_Permissions_Admin {
         $role = sanitize_key($_POST['role']);
 
         if (!$user_id || !$module || !$role) {
-            wp_send_json_error(['message' => __('Datos incompletos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $resultado = Flavor_Permission_Helper::assign_module_role($user_id, $module, $role);
 
         if ($resultado) {
             wp_send_json_success([
-                'message' => __('Rol asignado correctamente', 'flavor-chat-ia'),
+                'message' => __('Rol asignado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         } else {
-            wp_send_json_error(['message' => __('No se pudo asignar el rol', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No se pudo asignar el rol', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -147,24 +147,24 @@ class Flavor_Permissions_Admin {
         check_ajax_referer('flavor_permissions_nonce', 'nonce');
 
         if (!current_user_can('flavor_manage_permissions')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')], 403);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)], 403);
         }
 
         $user_id = intval($_POST['user_id']);
         $module = sanitize_key($_POST['module']);
 
         if (!$user_id || !$module) {
-            wp_send_json_error(['message' => __('Datos incompletos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $resultado = Flavor_Permission_Helper::revoke_module_role($user_id, $module);
 
         if ($resultado) {
             wp_send_json_success([
-                'message' => __('Rol revocado correctamente', 'flavor-chat-ia'),
+                'message' => __('Rol revocado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         } else {
-            wp_send_json_error(['message' => __('No se pudo revocar el rol', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No se pudo revocar el rol', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -175,14 +175,14 @@ class Flavor_Permissions_Admin {
         check_ajax_referer('flavor_permissions_nonce', 'nonce');
 
         if (!current_user_can('flavor_manage_roles')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')], 403);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)], 403);
         }
 
         $role_slug = sanitize_key($_POST['role']);
         $capabilities = isset($_POST['capabilities']) ? array_map('sanitize_key', $_POST['capabilities']) : [];
 
         if (!$role_slug) {
-            wp_send_json_error(['message' => __('Rol invalido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Rol invalido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $role_manager = Flavor_Role_Manager::get_instance();
@@ -190,10 +190,10 @@ class Flavor_Permissions_Admin {
 
         if ($resultado) {
             wp_send_json_success([
-                'message' => __('Capabilities actualizadas correctamente', 'flavor-chat-ia'),
+                'message' => __('Capabilities actualizadas correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         } else {
-            wp_send_json_error(['message' => __('No se pudieron actualizar las capabilities', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No se pudieron actualizar las capabilities', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 

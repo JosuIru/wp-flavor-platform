@@ -26,18 +26,18 @@ $imagen_url = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_fondo,
 
             <div class="grid grid-cols-2 gap-4 mb-8 max-w-2xl mx-auto">
                 <div class="flavor-card text-center">
-                    <div class="text-3xl font-bold mb-1" style="color: var(--flavor-primary);"><?php echo esc_html__('FM 102.5', 'flavor-chat-ia'); ?></div>
-                    <div class="text-sm" style="color: var(--flavor-text-muted);"><?php echo esc_html__('Frecuencia', 'flavor-chat-ia'); ?></div>
+                    <div class="text-3xl font-bold mb-1" style="color: var(--flavor-primary);"><?php echo esc_html__('FM 102.5', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                    <div class="text-sm" style="color: var(--flavor-text-muted);"><?php echo esc_html__('Frecuencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="flavor-card text-center">
-                    <div class="text-3xl font-bold mb-1" style="color: var(--flavor-primary);"><?php echo esc_html__('5K+', 'flavor-chat-ia'); ?></div>
-                    <div class="text-sm" style="color: var(--flavor-text-muted);"><?php echo esc_html__('Oyentes/día', 'flavor-chat-ia'); ?></div>
+                    <div class="text-3xl font-bold mb-1" style="color: var(--flavor-primary);"><?php echo esc_html__('5K+', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                    <div class="text-sm" style="color: var(--flavor-text-muted);"><?php echo esc_html__('Oyentes/día', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="#programacion" class="flavor-button flavor-button-primary px-8"><?php echo esc_html__('Ver Programación', 'flavor-chat-ia'); ?></a>
-                <a href="#participar" class="flavor-button px-8"><?php echo esc_html__('Participar', 'flavor-chat-ia'); ?></a>
+                <a href="#programacion" class="flavor-button flavor-button-primary px-8"><?php echo esc_html__('Ver Programación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
+                <a href="#participar" class="flavor-button px-8"><?php echo esc_html__('Participar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
             </div>
         </div>
     </div>

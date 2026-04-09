@@ -21,7 +21,7 @@ $tabla_reservas_existe = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $t
 $tabla_recursos_existe = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla_recursos)) === $tabla_recursos;
 
 if (!$tabla_reservas_existe) {
-    echo '<div class="dm-alert dm-alert--warning">' . esc_html__('La tabla principal de reservas no está disponible en esta instalación.', 'flavor-chat-ia') . '</div>';
+    echo '<div class="dm-alert dm-alert--warning">' . esc_html__('La tabla principal de reservas no está disponible en esta instalación.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
     return;
 }
 
@@ -163,10 +163,10 @@ $mensual = $wpdb->get_results(
 );
 
 $estado_labels = [
-    'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-    'confirmada' => __('Confirmada', 'flavor-chat-ia'),
-    'cancelada' => __('Cancelada', 'flavor-chat-ia'),
-    'completada' => __('Completada', 'flavor-chat-ia'),
+    'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'confirmada' => __('Confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cancelada' => __('Cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'completada' => __('Completada', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $estado_badge_classes = [
@@ -211,8 +211,8 @@ if (in_array('espacios_comunes', $active_modules) || in_array('espacios-comunes'
             $datos_html .= '</div>';
 
             $modulos_relacionados['espacios-comunes'] = [
-                'titulo' => sprintf(__('Espacios Reservables (%d)', 'flavor-chat-ia'), count($espacios_reservables)),
-                'descripcion' => __('Salas y espacios disponibles para reserva', 'flavor-chat-ia'),
+                'titulo' => sprintf(__('Espacios Reservables (%d)', FLAVOR_PLATFORM_TEXT_DOMAIN), count($espacios_reservables)),
+                'descripcion' => __('Salas y espacios disponibles para reserva', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-building',
                 'url' => admin_url('admin.php?page=flavor-espacios-comunes'),
                 'datos' => $datos_html,
@@ -250,8 +250,8 @@ if (in_array('eventos', $active_modules)) {
             $datos_html .= '</div>';
 
             $modulos_relacionados['eventos'] = [
-                'titulo' => sprintf(__('Eventos con Reserva (%d)', 'flavor-chat-ia'), count($eventos_reservas)),
-                'descripcion' => __('Próximos eventos que requieren espacio', 'flavor-chat-ia'),
+                'titulo' => sprintf(__('Eventos con Reserva (%d)', FLAVOR_PLATFORM_TEXT_DOMAIN), count($eventos_reservas)),
+                'descripcion' => __('Próximos eventos que requieren espacio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-calendar-alt',
                 'url' => admin_url('admin.php?page=flavor-eventos'),
                 'datos' => $datos_html,
@@ -291,8 +291,8 @@ if (in_array('talleres', $active_modules)) {
             $datos_html .= '</div>';
 
             $modulos_relacionados['talleres'] = [
-                'titulo' => sprintf(__('Talleres Próximos (%d)', 'flavor-chat-ia'), count($talleres_proximos)),
-                'descripcion' => __('Talleres que requieren espacio reservado', 'flavor-chat-ia'),
+                'titulo' => sprintf(__('Talleres Próximos (%d)', FLAVOR_PLATFORM_TEXT_DOMAIN), count($talleres_proximos)),
+                'descripcion' => __('Talleres que requieren espacio reservado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-hammer',
                 'url' => admin_url('admin.php?page=flavor-talleres'),
                 'datos' => $datos_html,
@@ -327,14 +327,14 @@ if (in_array('socios', $active_modules)) {
                         <span class="dm-widget-meta">🆓 Sin coste extra</span>
                     </div>
                 </div>',
-                sprintf(__('%d socios activos', 'flavor-chat-ia'), $socios_activos),
-                __('vs 3 días estándar', 'flavor-chat-ia'),
-                __('Reservas ilimitadas', 'flavor-chat-ia')
+                sprintf(__('%d socios activos', FLAVOR_PLATFORM_TEXT_DOMAIN), $socios_activos),
+                __('vs 3 días estándar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Reservas ilimitadas', FLAVOR_PLATFORM_TEXT_DOMAIN)
             );
 
             $modulos_relacionados['socios'] = [
-                'titulo' => sprintf(__('Beneficios Socios (%d)', 'flavor-chat-ia'), $socios_activos),
-                'descripcion' => __('Ventajas exclusivas en reservas de espacios', 'flavor-chat-ia'),
+                'titulo' => sprintf(__('Beneficios Socios (%d)', FLAVOR_PLATFORM_TEXT_DOMAIN), $socios_activos),
+                'descripcion' => __('Ventajas exclusivas en reservas de espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-groups',
                 'url' => admin_url('admin.php?page=flavor-socios'),
                 'datos' => $datos_html,
@@ -376,8 +376,8 @@ if (in_array('bicicletas_compartidas', $active_modules) || in_array('bicicletas-
             $datos_html .= '</div>';
 
             $modulos_relacionados['bicicletas-compartidas'] = [
-                'titulo' => sprintf(__('Bicicletas Disponibles (%d)', 'flavor-chat-ia'), count($bicicletas_disponibles)),
-                'descripcion' => __('Bicicletas listas para reservar', 'flavor-chat-ia'),
+                'titulo' => sprintf(__('Bicicletas Disponibles (%d)', FLAVOR_PLATFORM_TEXT_DOMAIN), count($bicicletas_disponibles)),
+                'descripcion' => __('Bicicletas listas para reservar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-location',
                 'url' => admin_url('admin.php?page=flavor-bicicletas-compartidas'),
                 'datos' => $datos_html,
@@ -419,8 +419,8 @@ if (in_array('parkings', $active_modules)) {
             $datos_html .= '</div>';
 
             $modulos_relacionados['parkings'] = [
-                'titulo' => sprintf(__('Plazas de Parking (%d)', 'flavor-chat-ia'), count($plazas_disponibles)),
-                'descripcion' => __('Plazas disponibles para reservar', 'flavor-chat-ia'),
+                'titulo' => sprintf(__('Plazas de Parking (%d)', FLAVOR_PLATFORM_TEXT_DOMAIN), count($plazas_disponibles)),
+                'descripcion' => __('Plazas disponibles para reservar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-admin-multisite',
                 'url' => admin_url('admin.php?page=flavor-parkings'),
                 'datos' => $datos_html,
@@ -440,10 +440,10 @@ if (in_array('parkings', $active_modules)) {
     <div class="dm-header">
         <div class="dm-header__title">
             <span class="dashicons dashicons-calendar-alt"></span>
-            <h1><?php esc_html_e('Dashboard de Reservas', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Dashboard de Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
         </div>
         <p class="dm-header__description">
-            <?php esc_html_e('Panel operativo para controlar la cola de reservas, el uso de recursos y la carga próxima del servicio.', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Panel operativo para controlar la cola de reservas, el uso de recursos y la carga próxima del servicio.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </div>
 
@@ -451,27 +451,27 @@ if (in_array('parkings', $active_modules)) {
     <div class="dm-quick-links">
         <a href="<?php echo esc_url(admin_url('admin.php?page=reservas-calendario')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-calendar-alt"></span>
-            <span><?php esc_html_e('Calendario', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Calendario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=reservas-listado')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-list-view"></span>
-            <span><?php esc_html_e('Todas las reservas', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Todas las reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=reservas-nueva')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-plus-alt"></span>
-            <span><?php esc_html_e('Nueva reserva', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Nueva reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=reservas-recursos')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-building"></span>
-            <span><?php esc_html_e('Recursos', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Recursos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=reservas-config')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-admin-settings"></span>
-            <span><?php esc_html_e('Configuración', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('reservas', '')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-external"></span>
-            <span><?php esc_html_e('Portal público', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Portal público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
     </div>
 
@@ -483,8 +483,8 @@ if (in_array('parkings', $active_modules)) {
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($reservas_activas); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Reservas activas', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php printf(esc_html__('%s entradas en 48h', 'flavor-chat-ia'), number_format_i18n($entradas_48h)); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Reservas activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php printf(esc_html__('%s entradas en 48h', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($entradas_48h)); ?></div>
             </div>
         </div>
 
@@ -494,8 +494,8 @@ if (in_array('parkings', $active_modules)) {
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($reservas_pendientes); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php printf(esc_html__('%s vencidas', 'flavor-chat-ia'), number_format_i18n($pendientes_vencidas)); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php printf(esc_html__('%s vencidas', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($pendientes_vencidas)); ?></div>
             </div>
         </div>
 
@@ -505,8 +505,8 @@ if (in_array('parkings', $active_modules)) {
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($reservas_confirmadas_mes); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Confirmadas este mes', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php printf(esc_html__('%s completadas', 'flavor-chat-ia'), number_format_i18n($reservas_completadas_mes)); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Confirmadas este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php printf(esc_html__('%s completadas', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($reservas_completadas_mes)); ?></div>
             </div>
         </div>
 
@@ -516,8 +516,8 @@ if (in_array('parkings', $active_modules)) {
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($recursos_activos); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Recursos activos', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php printf(esc_html__('%s reservas totales', 'flavor-chat-ia'), number_format_i18n($total_reservas)); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Recursos activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php printf(esc_html__('%s reservas totales', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($total_reservas)); ?></div>
             </div>
         </div>
     </div>
@@ -526,9 +526,9 @@ if (in_array('parkings', $active_modules)) {
     <?php if (!empty($modulos_relacionados)): ?>
         <div class="dm-section">
             <div class="dm-section__header">
-                <h2><?php esc_html_e('Módulos Relacionados', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Módulos Relacionados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <p class="dm-section__description">
-                    <?php esc_html_e('Datos en vivo de módulos que interactúan con reservas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Datos en vivo de módulos que interactúan con reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
@@ -551,7 +551,7 @@ if (in_array('parkings', $active_modules)) {
 
                         <a href="<?php echo esc_url($modulo['url']); ?>"
                            style="display: inline-flex; align-items: center; gap: 5px; color: var(--dm-primary); text-decoration: none; font-size: 13px; margin-top: 8px;">
-                            <?php esc_html_e('Ver todos', 'flavor-chat-ia'); ?> →
+                            <?php esc_html_e('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> →
                         </a>
                     </div>
                 <?php endforeach; ?>
@@ -566,14 +566,14 @@ if (in_array('parkings', $active_modules)) {
         <!-- Acciones Rápidas -->
         <div class="dm-card">
             <div class="dm-card__header">
-                <h2><?php esc_html_e('Acciones rápidas', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Acciones rápidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
             <div class="dm-action-grid dm-action-grid--2">
                 <a href="<?php echo esc_url(admin_url('admin.php?page=reservas-listado&estado=pendiente')); ?>" class="dm-action-card <?php echo $reservas_pendientes > 0 ? 'dm-action-card--warning' : ''; ?>">
                     <span class="dashicons dashicons-clock"></span>
                     <div class="dm-action-card__content">
-                        <strong><?php esc_html_e('Cola pendiente', 'flavor-chat-ia'); ?></strong>
-                        <span><?php esc_html_e('Revisar solicitudes pendientes', 'flavor-chat-ia'); ?></span>
+                        <strong><?php esc_html_e('Cola pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                        <span><?php esc_html_e('Revisar solicitudes pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <?php if ($reservas_pendientes > 0) : ?>
                         <span class="dm-badge dm-badge--warning"><?php echo number_format_i18n($reservas_pendientes); ?></span>
@@ -583,16 +583,16 @@ if (in_array('parkings', $active_modules)) {
                 <a href="<?php echo esc_url(admin_url('admin.php?page=reservas-calendario')); ?>" class="dm-action-card dm-action-card--primary">
                     <span class="dashicons dashicons-calendar-alt"></span>
                     <div class="dm-action-card__content">
-                        <strong><?php esc_html_e('Calendario', 'flavor-chat-ia'); ?></strong>
-                        <span><?php esc_html_e('Ver ocupación y próximas franjas', 'flavor-chat-ia'); ?></span>
+                        <strong><?php esc_html_e('Calendario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                        <span><?php esc_html_e('Ver ocupación y próximas franjas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </a>
 
                 <a href="<?php echo esc_url(admin_url('admin.php?page=reservas-recursos')); ?>" class="dm-action-card dm-action-card--success">
                     <span class="dashicons dashicons-building"></span>
                     <div class="dm-action-card__content">
-                        <strong><?php esc_html_e('Recursos', 'flavor-chat-ia'); ?></strong>
-                        <span><?php esc_html_e('Gestionar espacios y capacidad', 'flavor-chat-ia'); ?></span>
+                        <strong><?php esc_html_e('Recursos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                        <span><?php esc_html_e('Gestionar espacios y capacidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <?php if ($recursos_activos > 0) : ?>
                         <span class="dm-badge dm-badge--success"><?php echo number_format_i18n($recursos_activos); ?></span>
@@ -602,8 +602,8 @@ if (in_array('parkings', $active_modules)) {
                 <a href="<?php echo esc_url(admin_url('admin.php?page=reservas-nueva')); ?>" class="dm-action-card dm-action-card--primary">
                     <span class="dashicons dashicons-plus-alt2"></span>
                     <div class="dm-action-card__content">
-                        <strong><?php esc_html_e('Nueva reserva', 'flavor-chat-ia'); ?></strong>
-                        <span><?php esc_html_e('Registrar una reserva desde administración', 'flavor-chat-ia'); ?></span>
+                        <strong><?php esc_html_e('Nueva reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                        <span><?php esc_html_e('Registrar una reserva desde administración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </a>
             </div>
@@ -612,23 +612,23 @@ if (in_array('parkings', $active_modules)) {
         <!-- Panel de Alertas -->
         <div class="dm-card">
             <div class="dm-card__header">
-                <h2><?php esc_html_e('Alertas operativas', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Alertas operativas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
             <div class="dm-focus-list">
                 <div class="dm-focus-list__item <?php echo $pendientes_vencidas > 0 ? 'dm-focus-list__item--error' : 'dm-focus-list__item--success'; ?>">
-                    <span class="dm-focus-list__label"><?php esc_html_e('Pendientes con fecha ya vencida', 'flavor-chat-ia'); ?></span>
+                    <span class="dm-focus-list__label"><?php esc_html_e('Pendientes con fecha ya vencida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="dm-focus-list__value"><?php echo number_format_i18n($pendientes_vencidas); ?></span>
                 </div>
                 <div class="dm-focus-list__item <?php echo $reservas_sin_recurso > 0 ? 'dm-focus-list__item--error' : 'dm-focus-list__item--success'; ?>">
-                    <span class="dm-focus-list__label"><?php esc_html_e('Reservas sin recurso asignado', 'flavor-chat-ia'); ?></span>
+                    <span class="dm-focus-list__label"><?php esc_html_e('Reservas sin recurso asignado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="dm-focus-list__value"><?php echo number_format_i18n($reservas_sin_recurso); ?></span>
                 </div>
                 <div class="dm-focus-list__item <?php echo $reservas_canceladas_mes > 0 ? 'dm-focus-list__item--warning' : 'dm-focus-list__item--success'; ?>">
-                    <span class="dm-focus-list__label"><?php esc_html_e('Canceladas este mes', 'flavor-chat-ia'); ?></span>
+                    <span class="dm-focus-list__label"><?php esc_html_e('Canceladas este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="dm-focus-list__value"><?php echo number_format_i18n($reservas_canceladas_mes); ?></span>
                 </div>
                 <div class="dm-focus-list__item <?php echo $entradas_48h > 0 ? 'dm-focus-list__item--warning' : 'dm-focus-list__item--success'; ?>">
-                    <span class="dm-focus-list__label"><?php esc_html_e('Entradas previstas en 48 horas', 'flavor-chat-ia'); ?></span>
+                    <span class="dm-focus-list__label"><?php esc_html_e('Entradas previstas en 48 horas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="dm-focus-list__value"><?php echo number_format_i18n($entradas_48h); ?></span>
                 </div>
             </div>
@@ -640,7 +640,7 @@ if (in_array('parkings', $active_modules)) {
         <!-- Distribución por estado -->
         <div class="dm-card">
             <div class="dm-card__header">
-                <h2><?php esc_html_e('Distribución por estado', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Distribución por estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
             <?php if (!empty($por_estado)) : ?>
                 <div class="dm-badge-list">
@@ -655,7 +655,7 @@ if (in_array('parkings', $active_modules)) {
                 </div>
             <?php else : ?>
                 <div class="dm-empty">
-                    <p><?php esc_html_e('Aún no hay reservas registradas.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Aún no hay reservas registradas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
         </div>
@@ -663,20 +663,20 @@ if (in_array('parkings', $active_modules)) {
         <!-- Tipos de servicio -->
         <div class="dm-card">
             <div class="dm-card__header">
-                <h2><?php esc_html_e('Tipos de servicio con más uso', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Tipos de servicio con más uso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
             <?php if (!empty($por_tipo_servicio)) : ?>
                 <ol class="dm-ranking">
                     <?php foreach ($por_tipo_servicio as $tipo) : ?>
                         <li class="dm-ranking__item">
-                            <span class="dm-ranking__label"><?php echo esc_html($tipo->tipo_servicio ?: __('Sin tipo', 'flavor-chat-ia')); ?></span>
+                            <span class="dm-ranking__label"><?php echo esc_html($tipo->tipo_servicio ?: __('Sin tipo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>
                             <span class="dm-ranking__value"><?php echo number_format_i18n((int) $tipo->total); ?></span>
                         </li>
                     <?php endforeach; ?>
                 </ol>
             <?php else : ?>
                 <div class="dm-empty">
-                    <p><?php esc_html_e('Sin tipos de servicio con actividad todavía.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Sin tipos de servicio con actividad todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
         </div>
@@ -684,7 +684,7 @@ if (in_array('parkings', $active_modules)) {
         <!-- Carga mensual -->
         <div class="dm-card">
             <div class="dm-card__header">
-                <h2><?php esc_html_e('Carga mensual', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Carga mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
             <?php if (!empty($mensual)) : ?>
                 <?php
@@ -705,7 +705,7 @@ if (in_array('parkings', $active_modules)) {
                 </div>
             <?php else : ?>
                 <div class="dm-empty">
-                    <p><?php esc_html_e('Aún no hay histórico suficiente para mostrar tendencia.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Aún no hay histórico suficiente para mostrar tendencia.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
         </div>

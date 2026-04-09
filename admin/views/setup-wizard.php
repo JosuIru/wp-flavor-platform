@@ -30,7 +30,7 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
 <head>
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo esc_html__('Configuración Inicial - Flavor Platform', 'flavor-chat-ia'); ?></title>
+    <title><?php echo esc_html__('Configuración Inicial - Flavor Platform', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></title>
     <?php wp_head(); ?>
 </head>
 <body class="flavor-wizard-body">
@@ -50,10 +50,10 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                     </linearGradient>
                 </defs>
             </svg>
-            <span class="flavor-wizard__brand"><?php esc_html_e('Flavor Platform', 'flavor-chat-ia'); ?></span>
+            <span class="flavor-wizard__brand"><?php esc_html_e('Flavor Platform', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <button type="button" class="flavor-wizard__skip-btn" id="wizard-skip-btn">
-            <?php echo esc_html__('Saltar configuración', 'flavor-chat-ia'); ?>
+            <?php echo esc_html__('Saltar configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
     </header>
 
@@ -100,10 +100,10 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                      data-step="bienvenida">
                 <div class="flavor-wizard__panel-header">
                     <h1 class="flavor-wizard__title">
-                        <?php echo esc_html__('Bienvenido a Flavor Platform', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Bienvenido a Flavor Platform', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h1>
                     <p class="flavor-wizard__subtitle">
-                        <?php echo esc_html__('Selecciona el tipo de organización que mejor describe tu proyecto. Esto nos ayudará a configurar los módulos adecuados.', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Selecciona el tipo de organización que mejor describe tu proyecto. Esto nos ayudará a configurar los módulos adecuados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
 
@@ -139,10 +139,10 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                      data-step="info_basica">
                 <div class="flavor-wizard__panel-header">
                     <h1 class="flavor-wizard__title">
-                        <?php echo esc_html__('Información de tu sitio', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Información de tu sitio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h1>
                     <p class="flavor-wizard__subtitle">
-                        <?php echo esc_html__('Configura el nombre, logo y colores principales de tu plataforma.', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Configura el nombre, logo y colores principales de tu plataforma.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
 
@@ -150,7 +150,7 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                     <!-- Nombre del sitio -->
                     <div class="flavor-wizard__form-group flavor-wizard__form-group--full">
                         <label for="nombre_sitio" class="flavor-wizard__label">
-                            <?php echo esc_html__('Nombre del sitio', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Nombre del sitio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             <span class="flavor-wizard__required">*</span>
                         </label>
                         <input type="text"
@@ -158,7 +158,7 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                                name="nombre_sitio"
                                class="flavor-wizard__input"
                                value="<?php echo esc_attr($datos_wizard['nombre_sitio']); ?>"
-                               placeholder="<?php echo esc_attr__('Ej: Mi Comunidad', 'flavor-chat-ia'); ?>"
+                               placeholder="<?php echo esc_attr__('Ej: Mi Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                                required>
                         <span class="flavor-wizard__input-error"></span>
                     </div>
@@ -166,27 +166,27 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                     <!-- Logo -->
                     <div class="flavor-wizard__form-group flavor-wizard__form-group--full">
                         <label class="flavor-wizard__label">
-                            <?php echo esc_html__('Logo', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Logo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                         <div class="flavor-wizard__logo-upload">
                             <div class="flavor-wizard__logo-preview" id="logo-preview">
                                 <?php if (!empty($datos_wizard['logo_url'])): ?>
-                                    <img src="<?php echo esc_url($datos_wizard['logo_url']); ?>" alt="<?php esc_attr_e('Logo', 'flavor-chat-ia'); ?>">
+                                    <img src="<?php echo esc_url($datos_wizard['logo_url']); ?>" alt="<?php esc_attr_e('Logo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <?php else: ?>
                                     <span class="dashicons dashicons-format-image"></span>
                                     <span class="flavor-wizard__logo-placeholder-text">
-                                        <?php echo esc_html__('Sin logo', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Sin logo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </span>
                                 <?php endif; ?>
                             </div>
                             <div class="flavor-wizard__logo-actions">
                                 <button type="button" class="flavor-wizard__btn flavor-wizard__btn--secondary" id="upload-logo-btn">
                                     <span class="dashicons dashicons-upload"></span>
-                                    <?php echo esc_html__('Subir logo', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Subir logo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                                 <button type="button" class="flavor-wizard__btn flavor-wizard__btn--text" id="remove-logo-btn"
                                         style="<?php echo empty($datos_wizard['logo_url']) ? 'display:none;' : ''; ?>">
-                                    <?php echo esc_html__('Eliminar', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                                 <input type="hidden" id="logo_url" name="logo_url" value="<?php echo esc_attr($datos_wizard['logo_url']); ?>">
                             </div>
@@ -196,7 +196,7 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                     <!-- Colores -->
                     <div class="flavor-wizard__form-group">
                         <label for="color_primario" class="flavor-wizard__label">
-                            <?php echo esc_html__('Color primario', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Color primario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                         <div class="flavor-wizard__color-picker-wrap">
                             <input type="text"
@@ -209,7 +209,7 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
 
                     <div class="flavor-wizard__form-group">
                         <label for="color_secundario" class="flavor-wizard__label">
-                            <?php echo esc_html__('Color secundario', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Color secundario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                         <div class="flavor-wizard__color-picker-wrap">
                             <input type="text"
@@ -224,13 +224,13 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                 <!-- Preview en vivo -->
                 <div class="flavor-wizard__live-preview">
                     <h3 class="flavor-wizard__preview-title">
-                        <?php echo esc_html__('Vista previa', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Vista previa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <div class="flavor-wizard__preview-card" id="info-preview">
                         <div class="flavor-wizard__preview-header" id="preview-header">
                             <div class="flavor-wizard__preview-logo" id="preview-logo">
                                 <?php if (!empty($datos_wizard['logo_url'])): ?>
-                                    <img src="<?php echo esc_url($datos_wizard['logo_url']); ?>" alt="<?php esc_attr_e('Logo preview', 'flavor-chat-ia'); ?>">
+                                    <img src="<?php echo esc_url($datos_wizard['logo_url']); ?>" alt="<?php esc_attr_e('Logo preview', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <?php else: ?>
                                     <span class="dashicons dashicons-admin-site"></span>
                                 <?php endif; ?>
@@ -241,10 +241,10 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                         </div>
                         <div class="flavor-wizard__preview-body">
                             <div class="flavor-wizard__preview-btn" id="preview-btn-primary">
-                                <?php echo esc_html__('Botón primario', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Botón primario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </div>
                             <div class="flavor-wizard__preview-btn flavor-wizard__preview-btn--secondary" id="preview-btn-secondary">
-                                <?php echo esc_html__('Botón secundario', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Botón secundario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </div>
                         </div>
                     </div>
@@ -256,38 +256,38 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                      data-step="modulos">
                 <div class="flavor-wizard__panel-header">
                     <h1 class="flavor-wizard__title">
-                        <?php echo esc_html__('Selecciona módulos adicionales', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Selecciona módulos adicionales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h1>
                     <p class="flavor-wizard__subtitle">
-                        <?php echo esc_html__('Activa las funcionalidades que necesites. Puedes cambiarlas en cualquier momento.', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Activa las funcionalidades que necesites. Puedes cambiarlas en cualquier momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
 
                 <!-- Filtro por categorías -->
                 <div class="flavor-wizard__module-filters">
                     <button type="button" class="flavor-wizard__filter-btn flavor-wizard__filter-btn--active" data-category="all">
-                        <?php echo esc_html__('Todos', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button" class="flavor-wizard__filter-btn" data-category="contenido">
-                        <?php echo esc_html__('Contenido', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button" class="flavor-wizard__filter-btn" data-category="comunidad">
-                        <?php echo esc_html__('Comunidad', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button" class="flavor-wizard__filter-btn" data-category="comercio">
-                        <?php echo esc_html__('Comercio', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Comercio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button" class="flavor-wizard__filter-btn" data-category="comunicacion">
-                        <?php echo esc_html__('Comunicación', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Comunicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button" class="flavor-wizard__filter-btn" data-category="operaciones">
-                        <?php echo esc_html__('Operaciones', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Operaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button" class="flavor-wizard__filter-btn" data-category="sostenibilidad">
-                        <?php echo esc_html__('Sostenibilidad', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Sostenibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button" class="flavor-wizard__filter-btn" data-category="gobernanza">
-                        <?php echo esc_html__('Gobernanza', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Gobernanza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
 
@@ -317,7 +317,7 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                 </div>
 
                 <div class="flavor-wizard__modules-counter">
-                    <span id="modules-count">0</span> <?php echo esc_html__('módulos seleccionados', 'flavor-chat-ia'); ?>
+                    <span id="modules-count">0</span> <?php echo esc_html__('módulos seleccionados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </div>
             </section>
 
@@ -326,10 +326,10 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                      data-step="diseno">
                 <div class="flavor-wizard__panel-header">
                     <h1 class="flavor-wizard__title">
-                        <?php echo esc_html__('Elige un tema visual', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Elige un tema visual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h1>
                     <p class="flavor-wizard__subtitle">
-                        <?php echo esc_html__('Selecciona el estilo que mejor represente tu proyecto. Podrás personalizarlo después.', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Selecciona el estilo que mejor represente tu proyecto. Podrás personalizarlo después.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
 
@@ -377,7 +377,7 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                     ?>
                         <div class="flavor-wizard__theme-cta" style="margin-top: 16px;">
                             <a class="button button-primary" href="<?php echo esc_url($starter_url); ?>">
-                                <?php echo esc_html($starter_theme->exists() ? __('Activar tema Flavor Starter', 'flavor-chat-ia') : __('Instalar y activar tema Flavor Starter', 'flavor-chat-ia')); ?>
+                                <?php echo esc_html($starter_theme->exists() ? __('Activar tema Flavor Starter', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Instalar y activar tema Flavor Starter', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                             </a>
                         </div>
                     <?php endif; ?>
@@ -385,7 +385,7 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                     <!-- Preview grande del tema seleccionado -->
                     <div class="flavor-wizard__theme-full-preview" id="theme-full-preview">
                         <h3 class="flavor-wizard__preview-title">
-                            <?php echo esc_html__('Vista previa de la landing', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Vista previa de la landing', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
                         <div class="flavor-wizard__landing-preview" id="landing-preview">
                             <div class="flavor-wizard__landing-header">
@@ -414,10 +414,10 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                      data-step="demo_data">
                 <div class="flavor-wizard__panel-header">
                     <h1 class="flavor-wizard__title">
-                        <?php echo esc_html__('Importar datos de ejemplo', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Importar datos de ejemplo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h1>
                     <p class="flavor-wizard__subtitle">
-                        <?php echo esc_html__('Puedes importar contenido de ejemplo para explorar las funcionalidades de tu plataforma.', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Puedes importar contenido de ejemplo para explorar las funcionalidades de tu plataforma.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
 
@@ -427,8 +427,8 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                             <span class="dashicons dashicons-database-import"></span>
                         </div>
                         <div class="flavor-wizard__demo-content">
-                            <h3><?php echo esc_html__('Importar datos de ejemplo', 'flavor-chat-ia'); ?></h3>
-                            <p><?php echo esc_html__('Se crearán contenidos ficticios adaptados al perfil que has seleccionado:', 'flavor-chat-ia'); ?></p>
+                            <h3><?php echo esc_html__('Importar datos de ejemplo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                            <p><?php echo esc_html__('Se crearán contenidos ficticios adaptados al perfil que has seleccionado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                             <ul class="flavor-wizard__demo-list" id="demo-content-list">
                                 <!-- Se llenará dinámicamente según el perfil -->
@@ -437,7 +437,7 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                             <div class="flavor-wizard__demo-actions">
                                 <button type="button" class="flavor-wizard__btn flavor-wizard__btn--primary" id="import-demo-btn">
                                     <span class="dashicons dashicons-download"></span>
-                                    <?php echo esc_html__('Importar datos de ejemplo', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Importar datos de ejemplo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             </div>
 
@@ -447,7 +447,7 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                                     <div class="flavor-wizard__import-progress-fill" id="import-progress-fill"></div>
                                 </div>
                                 <span class="flavor-wizard__import-status" id="import-status">
-                                    <?php echo esc_html__('Importando...', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Importando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                             </div>
 
@@ -464,8 +464,8 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                             <span class="dashicons dashicons-no-alt"></span>
                         </div>
                         <div class="flavor-wizard__demo-content">
-                            <h3><?php echo esc_html__('Empezar desde cero', 'flavor-chat-ia'); ?></h3>
-                            <p><?php echo esc_html__('Prefiero crear mi propio contenido sin datos de ejemplo. Puedo importarlos más tarde desde el panel de administración.', 'flavor-chat-ia'); ?></p>
+                            <h3><?php echo esc_html__('Empezar desde cero', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                            <p><?php echo esc_html__('Prefiero crear mi propio contenido sin datos de ejemplo. Puedo importarlos más tarde desde el panel de administración.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                     </div>
                 </div>
@@ -478,10 +478,10 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                      data-step="notificaciones">
                 <div class="flavor-wizard__panel-header">
                     <h1 class="flavor-wizard__title">
-                        <?php echo esc_html__('Configurar notificaciones', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Configurar notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h1>
                     <p class="flavor-wizard__subtitle">
-                        <?php echo esc_html__('Define cómo quieres mantener informados a tus usuarios.', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Define cómo quieres mantener informados a tus usuarios.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
 
@@ -497,27 +497,27 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                                     <input type="checkbox"
                                            name="notificaciones_email"
                                            id="notificaciones_email"
-                                           value="<?php echo esc_attr__('true', 'flavor-chat-ia'); ?>"
+                                           value="<?php echo esc_attr__('true', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                                            <?php checked($datos_wizard['notificaciones_email']); ?>>
                                     <span class="flavor-wizard__switch-slider"></span>
                                 </label>
                             </div>
                         </div>
                         <div class="flavor-wizard__notification-content">
-                            <h3><?php echo esc_html__('Notificaciones por Email', 'flavor-chat-ia'); ?></h3>
-                            <p><?php echo esc_html__('Enviar emails automáticos para eventos, recordatorios y actualizaciones importantes.', 'flavor-chat-ia'); ?></p>
+                            <h3><?php echo esc_html__('Notificaciones por Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                            <p><?php echo esc_html__('Enviar emails automáticos para eventos, recordatorios y actualizaciones importantes.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                         <div class="flavor-wizard__notification-options" id="email-options">
                             <div class="flavor-wizard__form-group">
                                 <label for="email_remitente" class="flavor-wizard__label">
-                                    <?php echo esc_html__('Email remitente', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Email remitente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </label>
                                 <input type="email"
                                        id="email_remitente"
                                        name="email_remitente"
                                        class="flavor-wizard__input"
                                        value="<?php echo esc_attr(get_option('admin_email')); ?>"
-                                       placeholder="<?php echo esc_attr__('noreply@tusitio.com', 'flavor-chat-ia'); ?>">
+                                       placeholder="<?php echo esc_attr__('noreply@tusitio.com', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             </div>
                         </div>
                     </div>
@@ -533,19 +533,19 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                                     <input type="checkbox"
                                            name="notificaciones_push"
                                            id="notificaciones_push"
-                                           value="<?php echo esc_attr__('true', 'flavor-chat-ia'); ?>"
+                                           value="<?php echo esc_attr__('true', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                                            <?php checked($datos_wizard['notificaciones_push']); ?>>
                                     <span class="flavor-wizard__switch-slider"></span>
                                 </label>
                             </div>
                         </div>
                         <div class="flavor-wizard__notification-content">
-                            <h3><?php echo esc_html__('Notificaciones Push', 'flavor-chat-ia'); ?></h3>
-                            <p><?php echo esc_html__('Enviar notificaciones push al navegador o aplicación móvil para alertas en tiempo real.', 'flavor-chat-ia'); ?></p>
+                            <h3><?php echo esc_html__('Notificaciones Push', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                            <p><?php echo esc_html__('Enviar notificaciones push al navegador o aplicación móvil para alertas en tiempo real.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                         <div class="flavor-wizard__notification-info">
                             <span class="dashicons dashicons-info-outline"></span>
-                            <?php echo esc_html__('Requiere configurar Firebase Cloud Messaging después.', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Requiere configurar Firebase Cloud Messaging después.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     </div>
                 </div>
@@ -556,10 +556,10 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                      data-step="resumen">
                 <div class="flavor-wizard__panel-header">
                     <h1 class="flavor-wizard__title">
-                        <?php echo esc_html__('Resumen de configuración', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Resumen de configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h1>
                     <p class="flavor-wizard__subtitle">
-                        <?php echo esc_html__('Revisa tu configuración antes de finalizar. Podrás cambiar todo esto después.', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Revisa tu configuración antes de finalizar. Podrás cambiar todo esto después.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
 
@@ -570,7 +570,7 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                             <span class="dashicons dashicons-admin-users"></span>
                         </div>
                         <div class="flavor-wizard__summary-content">
-                            <h4><?php echo esc_html__('Tipo de organización', 'flavor-chat-ia'); ?></h4>
+                            <h4><?php echo esc_html__('Tipo de organización', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                             <p id="summary-perfil">-</p>
                         </div>
                         <button type="button" class="flavor-wizard__summary-edit" data-goto="bienvenida">
@@ -584,7 +584,7 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                             <span class="dashicons dashicons-admin-settings"></span>
                         </div>
                         <div class="flavor-wizard__summary-content">
-                            <h4><?php echo esc_html__('Información del sitio', 'flavor-chat-ia'); ?></h4>
+                            <h4><?php echo esc_html__('Información del sitio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                             <p id="summary-info">-</p>
                         </div>
                         <button type="button" class="flavor-wizard__summary-edit" data-goto="info_basica">
@@ -598,7 +598,7 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                             <span class="dashicons dashicons-admin-plugins"></span>
                         </div>
                         <div class="flavor-wizard__summary-content">
-                            <h4><?php echo esc_html__('Módulos activos', 'flavor-chat-ia'); ?></h4>
+                            <h4><?php echo esc_html__('Módulos activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                             <p id="summary-modulos">-</p>
                         </div>
                         <button type="button" class="flavor-wizard__summary-edit" data-goto="modulos">
@@ -612,7 +612,7 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                             <span class="dashicons dashicons-art"></span>
                         </div>
                         <div class="flavor-wizard__summary-content">
-                            <h4><?php echo esc_html__('Tema visual', 'flavor-chat-ia'); ?></h4>
+                            <h4><?php echo esc_html__('Tema visual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                             <p id="summary-tema">-</p>
                         </div>
                         <button type="button" class="flavor-wizard__summary-edit" data-goto="diseno">
@@ -626,7 +626,7 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                             <span class="dashicons dashicons-database"></span>
                         </div>
                         <div class="flavor-wizard__summary-content">
-                            <h4><?php echo esc_html__('Datos de ejemplo', 'flavor-chat-ia'); ?></h4>
+                            <h4><?php echo esc_html__('Datos de ejemplo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                             <p id="summary-demo">-</p>
                         </div>
                         <button type="button" class="flavor-wizard__summary-edit" data-goto="demo_data">
@@ -640,7 +640,7 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                             <span class="dashicons dashicons-bell"></span>
                         </div>
                         <div class="flavor-wizard__summary-content">
-                            <h4><?php echo esc_html__('Notificaciones', 'flavor-chat-ia'); ?></h4>
+                            <h4><?php echo esc_html__('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                             <p id="summary-notificaciones">-</p>
                         </div>
                         <button type="button" class="flavor-wizard__summary-edit" data-goto="notificaciones">
@@ -653,8 +653,8 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                     <div class="flavor-wizard__complete-icon">
                         <span class="dashicons dashicons-yes-alt"></span>
                     </div>
-                    <h3><?php echo esc_html__('Todo listo para empezar', 'flavor-chat-ia'); ?></h3>
-                    <p><?php echo esc_html__('Haz clic en "Finalizar" para aplicar la configuración e ir al panel de control.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php echo esc_html__('Todo listo para empezar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php echo esc_html__('Haz clic en "Finalizar" para aplicar la configuración e ir al panel de control.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php
                     $starter_theme = wp_get_theme('flavor-starter');
                     $starter_bundled = file_exists(FLAVOR_CHAT_IA_PATH . 'assets/companion-theme/flavor-starter/style.css');
@@ -664,7 +664,7 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                     ?>
                         <p style="margin-top:10px;">
                             <a class="button button-primary" href="<?php echo esc_url($starter_url); ?>">
-                                <?php echo esc_html($starter_theme->exists() ? __('Activar tema Flavor Starter', 'flavor-chat-ia') : __('Instalar y activar tema Flavor Starter', 'flavor-chat-ia')); ?>
+                                <?php echo esc_html($starter_theme->exists() ? __('Activar tema Flavor Starter', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Instalar y activar tema Flavor Starter', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                             </a>
                         </p>
                     <?php endif; ?>
@@ -680,14 +680,14 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
             <button type="button" class="flavor-wizard__btn flavor-wizard__btn--secondary" id="wizard-prev-btn"
                     style="<?php echo $indice_paso_actual === 0 ? 'visibility: hidden;' : ''; ?>">
                 <span class="dashicons dashicons-arrow-left-alt"></span>
-                <?php echo esc_html__('Anterior', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
         <div class="flavor-wizard__footer-center">
             <span class="flavor-wizard__step-indicator">
-                <?php echo esc_html__('Paso', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Paso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <strong id="current-step-num"><?php echo esc_html($indice_paso_actual + 1); ?></strong>
-                <?php echo esc_html__('de', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('de', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <strong><?php echo esc_html($total_pasos); ?></strong>
             </span>
         </div>
@@ -697,13 +697,13 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
                     id="wizard-complete-btn"
                     style="<?php echo $paso_actual === 'resumen' ? '' : 'display: none;'; ?>">
                 <span class="dashicons dashicons-yes"></span>
-                <?php echo esc_html__('Finalizar', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Finalizar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <button type="button"
                     class="flavor-wizard__btn flavor-wizard__btn--primary"
                     id="wizard-next-btn"
                     style="<?php echo $paso_actual === 'resumen' ? 'display: none;' : ''; ?>">
-                <?php echo esc_html__('Siguiente', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <span class="dashicons dashicons-arrow-right-alt"></span>
             </button>
         </div>
@@ -716,14 +716,14 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
             <div class="flavor-wizard__modal-icon">
                 <span class="dashicons dashicons-backup"></span>
             </div>
-            <h3><?php echo esc_html__('Tienes progreso guardado', 'flavor-chat-ia'); ?></h3>
-            <p><?php echo esc_html__('Detectamos que ya habías comenzado la configuración. ¿Quieres continuar donde lo dejaste?', 'flavor-chat-ia'); ?></p>
+            <h3><?php echo esc_html__('Tienes progreso guardado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php echo esc_html__('Detectamos que ya habías comenzado la configuración. ¿Quieres continuar donde lo dejaste?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <div class="flavor-wizard__modal-actions">
                 <button type="button" class="flavor-wizard__btn flavor-wizard__btn--secondary" id="start-fresh-btn">
-                    <?php echo esc_html__('Empezar de nuevo', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Empezar de nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" class="flavor-wizard__btn flavor-wizard__btn--primary" id="continue-btn">
-                    <?php echo esc_html__('Continuar', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Continuar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </div>
@@ -733,7 +733,7 @@ $porcentaje_progreso = (($indice_paso_actual) / ($total_pasos - 1)) * 100;
     <!-- Loader -->
     <div class="flavor-wizard__loader" id="wizard-loader" style="display: none;">
         <div class="flavor-wizard__loader-spinner"></div>
-        <span id="loader-text"><?php echo esc_html__('Guardando...', 'flavor-chat-ia'); ?></span>
+        <span id="loader-text"><?php echo esc_html__('Guardando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
     </div>
 
 </div>

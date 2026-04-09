@@ -9,7 +9,7 @@ $titulo = $titulo ?? '';
 $subtitulo = $subtitulo ?? '';
 $color_primario = $color_primario ?? '#3b82f6';
 $campos = $campos ?? [];
-$texto_boton = $texto_boton ?? __('Enviar', 'flavor-chat-ia');
+$texto_boton = $texto_boton ?? __('Enviar', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $accion = $accion ?? '';
 
 $variantes_permitidas = ['simple', 'multi_paso'];

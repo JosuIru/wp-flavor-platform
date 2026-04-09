@@ -37,7 +37,7 @@ $imagen_hero_url = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_f
                 <svg class="w-5 h-5 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
-                <span class="text-white text-sm font-medium"><?php echo esc_html__('Comunidad exclusiva', 'flavor-chat-ia'); ?></span>
+                <span class="text-white text-sm font-medium"><?php echo esc_html__('Comunidad exclusiva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
 
             <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6" style="color: white;">
@@ -64,19 +64,19 @@ $imagen_hero_url = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_f
                     <div class="text-4xl font-bold text-white mb-1">
                         <?php echo esc_html($estadistica_socios ?? '2.340'); ?>
                     </div>
-                    <div class="text-white text-opacity-80 text-sm"><?php echo esc_html__('Miembros activos', 'flavor-chat-ia'); ?></div>
+                    <div class="text-white text-opacity-80 text-sm"><?php echo esc_html__('Miembros activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="bg-white bg-opacity-15 backdrop-blur-sm rounded-xl p-6 text-center">
                     <div class="text-4xl font-bold text-white mb-1">
                         <?php echo esc_html($estadistica_eventos ?? '48'); ?>
                     </div>
-                    <div class="text-white text-opacity-80 text-sm"><?php echo esc_html__('Eventos exclusivos/ano', 'flavor-chat-ia'); ?></div>
+                    <div class="text-white text-opacity-80 text-sm"><?php echo esc_html__('Eventos exclusivos/ano', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="bg-white bg-opacity-15 backdrop-blur-sm rounded-xl p-6 text-center">
                     <div class="text-4xl font-bold text-white mb-1">
                         <?php echo esc_html($estadistica_descuentos ?? '25%'); ?>
                     </div>
-                    <div class="text-white text-opacity-80 text-sm"><?php echo esc_html__('Descuento medio', 'flavor-chat-ia'); ?></div>
+                    <div class="text-white text-opacity-80 text-sm"><?php echo esc_html__('Descuento medio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
         </div>

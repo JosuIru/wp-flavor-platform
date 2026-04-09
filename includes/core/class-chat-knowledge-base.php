@@ -41,7 +41,7 @@ class Flavor_Chat_Knowledge_Base {
      */
     public function get_full_context($language = 'es') {
         $context = [];
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
 
         // Información del negocio
         $business_info = $settings['business_info'] ?? [];
@@ -147,7 +147,7 @@ class Flavor_Chat_Knowledge_Base {
      * @return bool
      */
     public function add_knowledge($titulo, $contenido) {
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
 
         if (!isset($settings['knowledge_base'])) {
             $settings['knowledge_base'] = [];
@@ -158,7 +158,7 @@ class Flavor_Chat_Knowledge_Base {
             'contenido' => sanitize_textarea_field($contenido),
         ];
 
-        return update_option('flavor_chat_ia_settings', $settings);
+        return flavor_update_main_settings($settings);
     }
 
     /**
@@ -169,7 +169,7 @@ class Flavor_Chat_Knowledge_Base {
      * @return bool
      */
     public function add_faq($pregunta, $respuesta) {
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
 
         if (!isset($settings['faqs'])) {
             $settings['faqs'] = [];
@@ -180,6 +180,6 @@ class Flavor_Chat_Knowledge_Base {
             'respuesta' => sanitize_textarea_field($respuesta),
         ];
 
-        return update_option('flavor_chat_ia_settings', $settings);
+        return flavor_update_main_settings($settings);
     }
 }

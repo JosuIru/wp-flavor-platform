@@ -27,14 +27,14 @@ class Flavor_Eventos_Dashboard_Tab {
 
     public function registrar_tabs($tabs) {
         $tabs['eventos-proximos'] = [
-            'label' => __('Eventos', 'flavor-chat-ia'),
+            'label' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'calendar-alt',
             'callback' => [$this, 'render_tab_proximos'],
             'orden' => 30,
         ];
 
         $tabs['eventos-mis-inscripciones'] = [
-            'label' => __('Mis Inscripciones', 'flavor-chat-ia'),
+            'label' => __('Mis Inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'tickets-alt',
             'callback' => [$this, 'render_tab_inscripciones'],
             'orden' => 31,
@@ -82,7 +82,7 @@ class Flavor_Eventos_Dashboard_Tab {
         ?>
         <div class="flavor-panel flavor-eventos-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-calendar-alt"></span> <?php esc_html_e('Próximos Eventos', 'flavor-chat-ia'); ?></h2>
+                <h2><span class="dashicons dashicons-calendar-alt"></span> <?php esc_html_e('Próximos Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
 
             <div class="flavor-panel-kpis">
@@ -90,21 +90,21 @@ class Flavor_Eventos_Dashboard_Tab {
                     <span class="flavor-kpi-icon dashicons dashicons-calendar"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($proximos); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Próximos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Próximos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icon dashicons dashicons-tickets-alt"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($mis_inscripciones); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Mis Inscripciones', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Mis Inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icon dashicons dashicons-admin-site"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($total_eventos); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Total Eventos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Total Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -134,7 +134,7 @@ class Flavor_Eventos_Dashboard_Tab {
                             </div>
                             <div class="flavor-card-footer">
                                 <a href="<?php echo esc_url(add_query_arg('evento_id', $evento->id, Flavor_Chat_Helpers::get_action_url('eventos', 'detalle'))); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
-                                    <?php esc_html_e('Ver más', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Ver más', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </div>
                         </div>
@@ -143,13 +143,13 @@ class Flavor_Eventos_Dashboard_Tab {
             <?php else: ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-calendar-alt"></span>
-                    <p><?php esc_html_e('No hay eventos próximos programados.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay eventos próximos programados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
 
             <div class="flavor-panel-actions">
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('eventos', '')); ?>" class="flavor-btn flavor-btn-primary">
-                    <?php esc_html_e('Ver todos los eventos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver todos los eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -159,7 +159,7 @@ class Flavor_Eventos_Dashboard_Tab {
     public function render_tab_inscripciones() {
         $user_id = get_current_user_id();
         if (!$user_id) {
-            echo '<p>' . esc_html__('Debes iniciar sesión.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -182,15 +182,15 @@ class Flavor_Eventos_Dashboard_Tab {
         ?>
         <div class="flavor-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-tickets-alt"></span> <?php esc_html_e('Mis Inscripciones', 'flavor-chat-ia'); ?></h2>
+                <h2><span class="dashicons dashicons-tickets-alt"></span> <?php esc_html_e('Mis Inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
 
             <?php if (empty($inscripciones)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-tickets-alt"></span>
-                    <p><?php esc_html_e('No estás inscrito en ningún evento.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No estás inscrito en ningún evento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('eventos', '')); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php esc_html_e('Explorar eventos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Explorar eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -198,10 +198,10 @@ class Flavor_Eventos_Dashboard_Tab {
                     <table class="flavor-table">
                         <thead>
                             <tr>
-                                <th><?php esc_html_e('Evento', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Evento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -216,7 +216,7 @@ class Flavor_Eventos_Dashboard_Tab {
                                     </td>
                                     <td>
                                         <a href="<?php echo esc_url(add_query_arg('evento_id', $insc->evento_id, Flavor_Chat_Helpers::get_action_url('eventos', 'detalle'))); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
-                                            <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                                            <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </a>
                                     </td>
                                 </tr>

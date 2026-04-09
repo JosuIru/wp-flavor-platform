@@ -102,44 +102,44 @@ class Flavor_Setup_Wizard {
     private function init_pasos() {
         $this->pasos = [
             'bienvenida' => [
-                'nombre' => __('Bienvenida', 'flavor-chat-ia'),
-                'descripcion' => __('Tipo de organización', 'flavor-chat-ia'),
+                'nombre' => __('Bienvenida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Tipo de organización', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-welcome-learn-more',
                 'numero' => 1,
             ],
             'info_basica' => [
-                'nombre' => __('Información', 'flavor-chat-ia'),
-                'descripcion' => __('Nombre, logo y colores', 'flavor-chat-ia'),
+                'nombre' => __('Información', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Nombre, logo y colores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-admin-settings',
                 'numero' => 2,
             ],
             'modulos' => [
-                'nombre' => __('Módulos', 'flavor-chat-ia'),
-                'descripcion' => __('Funcionalidades adicionales', 'flavor-chat-ia'),
+                'nombre' => __('Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Funcionalidades adicionales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-admin-plugins',
                 'numero' => 3,
             ],
             'diseno' => [
-                'nombre' => __('Diseño', 'flavor-chat-ia'),
-                'descripcion' => __('Tema visual', 'flavor-chat-ia'),
+                'nombre' => __('Diseño', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Tema visual', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-art',
                 'numero' => 4,
             ],
             'demo_data' => [
-                'nombre' => __('Datos Demo', 'flavor-chat-ia'),
-                'descripcion' => __('Importar contenido de ejemplo', 'flavor-chat-ia'),
+                'nombre' => __('Datos Demo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Importar contenido de ejemplo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-database-import',
                 'numero' => 5,
             ],
             'notificaciones' => [
-                'nombre' => __('Notificaciones', 'flavor-chat-ia'),
-                'descripcion' => __('Email y push', 'flavor-chat-ia'),
+                'nombre' => __('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Email y push', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-bell',
                 'numero' => 6,
             ],
             'resumen' => [
-                'nombre' => __('Resumen', 'flavor-chat-ia'),
-                'descripcion' => __('Revisar y finalizar', 'flavor-chat-ia'),
+                'nombre' => __('Resumen', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Revisar y finalizar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-yes-alt',
                 'numero' => 7,
             ],
@@ -154,64 +154,64 @@ class Flavor_Setup_Wizard {
     private function init_temas_visuales() {
         $this->temas_visuales = [
             'default' => [
-                'nombre' => __('Clásico', 'flavor-chat-ia'),
-                'descripcion' => __('Tema limpio y profesional con colores neutros', 'flavor-chat-ia'),
+                'nombre' => __('Clásico', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Tema limpio y profesional con colores neutros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color_primario' => '#3b82f6',
                 'color_secundario' => '#6b7280',
                 'color_fondo' => '#ffffff',
                 'preview_class' => 'theme-default',
             ],
             'modern-purple' => [
-                'nombre' => __('Púrpura Moderno', 'flavor-chat-ia'),
-                'descripcion' => __('Estilo moderno con acentos en púrpura', 'flavor-chat-ia'),
+                'nombre' => __('Púrpura Moderno', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Estilo moderno con acentos en púrpura', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color_primario' => '#8b5cf6',
                 'color_secundario' => '#64748b',
                 'color_fondo' => '#faf5ff',
                 'preview_class' => 'theme-purple',
             ],
             'ocean-blue' => [
-                'nombre' => __('Océano', 'flavor-chat-ia'),
-                'descripcion' => __('Tonos frescos y azules oceánicos', 'flavor-chat-ia'),
+                'nombre' => __('Océano', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Tonos frescos y azules oceánicos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color_primario' => '#0891b2',
                 'color_secundario' => '#64748b',
                 'color_fondo' => '#f0fdfa',
                 'preview_class' => 'theme-ocean',
             ],
             'forest-green' => [
-                'nombre' => __('Bosque', 'flavor-chat-ia'),
-                'descripcion' => __('Colores naturales verdes', 'flavor-chat-ia'),
+                'nombre' => __('Bosque', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Colores naturales verdes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color_primario' => '#16a34a',
                 'color_secundario' => '#64748b',
                 'color_fondo' => '#f0fdf4',
                 'preview_class' => 'theme-forest',
             ],
             'sunset-orange' => [
-                'nombre' => __('Atardecer', 'flavor-chat-ia'),
-                'descripcion' => __('Cálidos tonos naranjas', 'flavor-chat-ia'),
+                'nombre' => __('Atardecer', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Cálidos tonos naranjas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color_primario' => '#ea580c',
                 'color_secundario' => '#78716c',
                 'color_fondo' => '#fff7ed',
                 'preview_class' => 'theme-sunset',
             ],
             'rose-pink' => [
-                'nombre' => __('Rosa', 'flavor-chat-ia'),
-                'descripcion' => __('Elegante con tonos rosados', 'flavor-chat-ia'),
+                'nombre' => __('Rosa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Elegante con tonos rosados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color_primario' => '#e11d48',
                 'color_secundario' => '#64748b',
                 'color_fondo' => '#fff1f2',
                 'preview_class' => 'theme-rose',
             ],
             'dark-mode' => [
-                'nombre' => __('Modo Oscuro', 'flavor-chat-ia'),
-                'descripcion' => __('Tema oscuro para reducir fatiga visual', 'flavor-chat-ia'),
+                'nombre' => __('Modo Oscuro', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Tema oscuro para reducir fatiga visual', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color_primario' => '#60a5fa',
                 'color_secundario' => '#94a3b8',
                 'color_fondo' => '#1e293b',
                 'preview_class' => 'theme-dark',
             ],
             'minimal' => [
-                'nombre' => __('Minimalista', 'flavor-chat-ia'),
-                'descripcion' => __('Diseño ultra limpio en blanco y negro', 'flavor-chat-ia'),
+                'nombre' => __('Minimalista', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Diseño ultra limpio en blanco y negro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color_primario' => '#171717',
                 'color_secundario' => '#525252',
                 'color_fondo' => '#fafafa',
@@ -228,122 +228,122 @@ class Flavor_Setup_Wizard {
     private function init_modulos() {
         $this->modulos_disponibles = [
             'eventos' => [
-                'nombre' => __('Eventos', 'flavor-chat-ia'),
-                'descripcion' => __('Crear y gestionar eventos con inscripciones y recordatorios', 'flavor-chat-ia'),
+                'nombre' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Crear y gestionar eventos con inscripciones y recordatorios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-calendar-alt',
                 'categoria' => 'contenido',
             ],
             'talleres' => [
-                'nombre' => __('Talleres', 'flavor-chat-ia'),
-                'descripcion' => __('Organizar talleres formativos con plazas limitadas', 'flavor-chat-ia'),
+                'nombre' => __('Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Organizar talleres formativos con plazas limitadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-welcome-learn-more',
                 'categoria' => 'contenido',
             ],
             'cursos' => [
-                'nombre' => __('Cursos Online', 'flavor-chat-ia'),
-                'descripcion' => __('Plataforma de formación con lecciones y certificados', 'flavor-chat-ia'),
+                'nombre' => __('Cursos Online', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Plataforma de formación con lecciones y certificados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-book',
                 'categoria' => 'contenido',
             ],
             'socios' => [
-                'nombre' => __('Gestión de Miembros', 'flavor-chat-ia'),
-                'descripcion' => __('Base de datos de miembros con cuotas y carnets', 'flavor-chat-ia'),
+                'nombre' => __('Gestión de Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Base de datos de miembros con cuotas y carnets', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-groups',
                 'categoria' => 'comunidad',
             ],
             'marketplace' => [
-                'nombre' => __('Marketplace', 'flavor-chat-ia'),
-                'descripcion' => __('Compraventa entre usuarios de la comunidad', 'flavor-chat-ia'),
+                'nombre' => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Compraventa entre usuarios de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-store',
                 'categoria' => 'comercio',
             ],
             'grupos_consumo' => [
-                'nombre' => __('Grupos de Consumo', 'flavor-chat-ia'),
-                'descripcion' => __('Pedidos colectivos a productores locales', 'flavor-chat-ia'),
+                'nombre' => __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Pedidos colectivos a productores locales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-carrot',
                 'categoria' => 'comercio',
             ],
             'banco_tiempo' => [
-                'nombre' => __('Banco de Tiempo', 'flavor-chat-ia'),
-                'descripcion' => __('Intercambio de servicios por horas', 'flavor-chat-ia'),
+                'nombre' => __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Intercambio de servicios por horas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-clock',
                 'categoria' => 'comunidad',
             ],
             'chat_grupos' => [
-                'nombre' => __('Chat Grupal', 'flavor-chat-ia'),
-                'descripcion' => __('Mensajería en grupo para comunidades', 'flavor-chat-ia'),
+                'nombre' => __('Chat Grupal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Mensajería en grupo para comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-format-chat',
                 'categoria' => 'comunicacion',
             ],
             'chat_interno' => [
-                'nombre' => __('Chat Interno', 'flavor-chat-ia'),
-                'descripcion' => __('Mensajería privada entre usuarios', 'flavor-chat-ia'),
+                'nombre' => __('Chat Interno', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Mensajería privada entre usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-email-alt',
                 'categoria' => 'comunicacion',
             ],
             'reservas' => [
-                'nombre' => __('Reservas', 'flavor-chat-ia'),
-                'descripcion' => __('Sistema de reservas de espacios o servicios', 'flavor-chat-ia'),
+                'nombre' => __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Sistema de reservas de espacios o servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-calendar',
                 'categoria' => 'operaciones',
             ],
             'espacios_comunes' => [
-                'nombre' => __('Espacios Comunes', 'flavor-chat-ia'),
-                'descripcion' => __('Gestión de salas y recursos compartidos', 'flavor-chat-ia'),
+                'nombre' => __('Espacios Comunes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Gestión de salas y recursos compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-building',
                 'categoria' => 'operaciones',
             ],
             'huertos_urbanos' => [
-                'nombre' => __('Huertos Urbanos', 'flavor-chat-ia'),
-                'descripcion' => __('Gestión de parcelas y huertos comunitarios', 'flavor-chat-ia'),
+                'nombre' => __('Huertos Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Gestión de parcelas y huertos comunitarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-palmtree',
                 'categoria' => 'sostenibilidad',
             ],
             'bicicletas_compartidas' => [
-                'nombre' => __('Bicis Compartidas', 'flavor-chat-ia'),
-                'descripcion' => __('Sistema de préstamo de bicicletas', 'flavor-chat-ia'),
+                'nombre' => __('Bicis Compartidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Sistema de préstamo de bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-performance',
                 'categoria' => 'sostenibilidad',
             ],
             'reciclaje' => [
-                'nombre' => __('Reciclaje', 'flavor-chat-ia'),
-                'descripcion' => __('Puntos limpios y gamificación de reciclaje', 'flavor-chat-ia'),
+                'nombre' => __('Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Puntos limpios y gamificación de reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-admin-site',
                 'categoria' => 'sostenibilidad',
             ],
             'participacion' => [
-                'nombre' => __('Participación', 'flavor-chat-ia'),
-                'descripcion' => __('Votaciones y encuestas ciudadanas', 'flavor-chat-ia'),
+                'nombre' => __('Participación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Votaciones y encuestas ciudadanas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-megaphone',
                 'categoria' => 'gobernanza',
             ],
             'transparencia' => [
-                'nombre' => __('Transparencia', 'flavor-chat-ia'),
-                'descripcion' => __('Portal de datos abiertos y rendición de cuentas', 'flavor-chat-ia'),
+                'nombre' => __('Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Portal de datos abiertos y rendición de cuentas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-visibility',
                 'categoria' => 'gobernanza',
             ],
             'incidencias' => [
-                'nombre' => __('Incidencias', 'flavor-chat-ia'),
-                'descripcion' => __('Reporte y seguimiento de incidencias', 'flavor-chat-ia'),
+                'nombre' => __('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Reporte y seguimiento de incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-warning',
                 'categoria' => 'operaciones',
             ],
             'ayuda_vecinal' => [
-                'nombre' => __('Ayuda Vecinal', 'flavor-chat-ia'),
-                'descripcion' => __('Red de apoyo mutuo entre vecinos', 'flavor-chat-ia'),
+                'nombre' => __('Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Red de apoyo mutuo entre vecinos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-heart',
                 'categoria' => 'comunidad',
             ],
             'facturas' => [
-                'nombre' => __('Facturación', 'flavor-chat-ia'),
-                'descripcion' => __('Generación y gestión de facturas', 'flavor-chat-ia'),
+                'nombre' => __('Facturación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Generación y gestión de facturas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-media-text',
                 'categoria' => 'comercio',
             ],
             'multimedia' => [
-                'nombre' => __('Multimedia', 'flavor-chat-ia'),
-                'descripcion' => __('Galería de fotos, vídeos y documentos', 'flavor-chat-ia'),
+                'nombre' => __('Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Galería de fotos, vídeos y documentos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-format-gallery',
                 'categoria' => 'contenido',
             ],
@@ -466,8 +466,8 @@ class Flavor_Setup_Wizard {
     public function add_wizard_page() {
         add_submenu_page(
             null, // Parent null = oculta del menú
-            __('Configuración Inicial', 'flavor-chat-ia'),
-            __('Setup Wizard', 'flavor-chat-ia'),
+            __('Configuración Inicial', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Setup Wizard', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-setup-wizard',
             [$this, 'render_wizard']
@@ -500,14 +500,14 @@ class Flavor_Setup_Wizard {
         check_ajax_referer('flavor_wizard_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos suficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes permisos suficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $paso = isset($_POST['step']) ? sanitize_text_field($_POST['step']) : '';
         $datos = isset($_POST['data']) ? $_POST['data'] : [];
 
         if (empty($paso) || !isset($this->pasos[$paso])) {
-            wp_send_json_error(['message' => __('Paso no válido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Paso no válido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Sanitizar datos según el paso
@@ -521,7 +521,7 @@ class Flavor_Setup_Wizard {
         $this->aplicar_configuracion_paso($paso, $datos_sanitizados);
 
         wp_send_json_success([
-            'message' => __('Paso guardado correctamente', 'flavor-chat-ia'),
+            'message' => __('Paso guardado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'next_step' => $this->obtener_siguiente_paso($paso),
         ]);
     }
@@ -608,9 +608,9 @@ class Flavor_Setup_Wizard {
                             $modulos_perfil = $datos_perfil['modulos_requeridos'];
 
                             // Guardar solo en flavor_chat_ia_settings['active_modules']
-                            $settings = get_option('flavor_chat_ia_settings', []);
+                            $settings = flavor_get_main_settings();
                             $settings['active_modules'] = $modulos_perfil;
-                            update_option('flavor_chat_ia_settings', $settings);
+                            flavor_update_main_settings($settings);
                         }
                     }
                 }
@@ -648,11 +648,11 @@ class Flavor_Setup_Wizard {
             case 'modulos':
                 if (!empty($datos['modulos_activos'])) {
                     // Guardar solo en flavor_chat_ia_settings['active_modules']
-                    $settings = get_option('flavor_chat_ia_settings', []);
+                    $settings = flavor_get_main_settings();
                     $modulos_actuales = $settings['active_modules'] ?? [];
                     $modulos_finales = array_unique(array_merge($modulos_actuales, $datos['modulos_activos']));
                     $settings['active_modules'] = array_values($modulos_finales);
-                    update_option('flavor_chat_ia_settings', $settings);
+                    flavor_update_main_settings($settings);
                 }
                 break;
 
@@ -698,7 +698,7 @@ class Flavor_Setup_Wizard {
         check_ajax_referer('flavor_wizard_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos suficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes permisos suficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $perfil = isset($_POST['perfil']) ? sanitize_text_field($_POST['perfil']) : '';
@@ -764,14 +764,14 @@ class Flavor_Setup_Wizard {
 
             return [
                 'success' => true,
-                'message' => sprintf(__('Se han importado %d elementos de ejemplo', 'flavor-chat-ia'), count($importados)),
+                'message' => sprintf(__('Se han importado %d elementos de ejemplo', FLAVOR_PLATFORM_TEXT_DOMAIN), count($importados)),
                 'imported' => $importados,
             ];
         }
 
         return [
             'success' => false,
-            'message' => __('No se pudieron importar los datos de ejemplo', 'flavor-chat-ia'),
+            'message' => __('No se pudieron importar los datos de ejemplo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'imported' => [],
         ];
     }
@@ -1230,7 +1230,7 @@ class Flavor_Setup_Wizard {
         check_ajax_referer('flavor_wizard_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos suficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes permisos suficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Marcar como completado
@@ -1245,7 +1245,7 @@ class Flavor_Setup_Wizard {
         delete_transient('flavor_setup_redirect');
 
         wp_send_json_success([
-            'message' => __('Configuración completada correctamente', 'flavor-chat-ia'),
+            'message' => __('Configuración completada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'redirect_url' => admin_url('admin.php?page=flavor-dashboard'),
         ]);
     }
@@ -1259,7 +1259,7 @@ class Flavor_Setup_Wizard {
         check_ajax_referer('flavor_wizard_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos suficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes permisos suficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Marcar como completado (saltado)
@@ -1273,7 +1273,7 @@ class Flavor_Setup_Wizard {
         delete_transient('flavor_setup_redirect');
 
         wp_send_json_success([
-            'message' => __('Configuración saltada', 'flavor-chat-ia'),
+            'message' => __('Configuración saltada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'redirect_url' => admin_url('admin.php?page=flavor-dashboard'),
         ]);
     }
@@ -1287,7 +1287,7 @@ class Flavor_Setup_Wizard {
         check_ajax_referer('flavor_wizard_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos suficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes permisos suficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         wp_send_json_success([
@@ -1392,32 +1392,32 @@ class Flavor_Setup_Wizard {
         // Fallback si la clase no está disponible
         return [
             'grupo_consumo' => [
-                'nombre' => __('Grupo de Consumo', 'flavor-chat-ia'),
-                'descripcion' => __('Gestión de pedidos colectivos y productores locales', 'flavor-chat-ia'),
+                'nombre' => __('Grupo de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Gestión de pedidos colectivos y productores locales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-carrot',
                 'color' => '#46b450',
             ],
             'comunidad' => [
-                'nombre' => __('Comunidad/Asociación', 'flavor-chat-ia'),
-                'descripcion' => __('Gestión de miembros, eventos y recursos', 'flavor-chat-ia'),
+                'nombre' => __('Comunidad/Asociación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Gestión de miembros, eventos y recursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-groups',
                 'color' => '#e91e63',
             ],
             'banco_tiempo' => [
-                'nombre' => __('Banco de Tiempo', 'flavor-chat-ia'),
-                'descripcion' => __('Intercambio de servicios por horas', 'flavor-chat-ia'),
+                'nombre' => __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Intercambio de servicios por horas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-clock',
                 'color' => '#9b59b6',
             ],
             'barrio' => [
-                'nombre' => __('Barrio/Vecindario', 'flavor-chat-ia'),
-                'descripcion' => __('Plataforma vecinal con servicios comunitarios', 'flavor-chat-ia'),
+                'nombre' => __('Barrio/Vecindario', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Plataforma vecinal con servicios comunitarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-location',
                 'color' => '#22c55e',
             ],
             'personalizado' => [
-                'nombre' => __('Personalizado', 'flavor-chat-ia'),
-                'descripcion' => __('Configura manualmente los módulos que necesitas', 'flavor-chat-ia'),
+                'nombre' => __('Personalizado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Configura manualmente los módulos que necesitas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-admin-generic',
                 'color' => '#95a5a6',
             ],
@@ -1468,17 +1468,17 @@ class Flavor_Setup_Wizard {
             'datos_guardados' => $this->datos_wizard,
             'temas' => $this->temas_visuales,
             'strings' => [
-                'guardando' => __('Guardando...', 'flavor-chat-ia'),
-                'guardado' => __('Guardado', 'flavor-chat-ia'),
-                'error' => __('Error al guardar', 'flavor-chat-ia'),
-                'importando' => __('Importando datos...', 'flavor-chat-ia'),
-                'importado' => __('Datos importados correctamente', 'flavor-chat-ia'),
-                'error_importar' => __('Error al importar datos', 'flavor-chat-ia'),
-                'confirmar_saltar' => __('¿Estás seguro de que quieres saltar la configuración? Podrás configurar todo manualmente después.', 'flavor-chat-ia'),
-                'seleccionar_logo' => __('Seleccionar Logo', 'flavor-chat-ia'),
-                'usar_imagen' => __('Usar esta imagen', 'flavor-chat-ia'),
-                'campo_requerido' => __('Este campo es requerido', 'flavor-chat-ia'),
-                'email_invalido' => __('Email no válido', 'flavor-chat-ia'),
+                'guardando' => __('Guardando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'guardado' => __('Guardado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al guardar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'importando' => __('Importando datos...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'importado' => __('Datos importados correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error_importar' => __('Error al importar datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmar_saltar' => __('¿Estás seguro de que quieres saltar la configuración? Podrás configurar todo manualmente después.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'seleccionar_logo' => __('Seleccionar Logo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'usar_imagen' => __('Usar esta imagen', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'campo_requerido' => __('Este campo es requerido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'email_invalido' => __('Email no válido', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }

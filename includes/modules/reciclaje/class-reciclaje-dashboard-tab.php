@@ -84,7 +84,7 @@ class Flavor_Reciclaje_Dashboard_Tab {
         }
 
         $tabs['reciclaje-mis-aportes'] = [
-            'label'    => __('Mis Aportes', 'flavor-chat-ia'),
+            'label'    => __('Mis Aportes', 'flavor-platform'),
             'icon'     => 'dashicons-image-rotate',
             'callback' => [$this, 'render_tab_mis_aportes'],
             'priority' => 30,
@@ -93,7 +93,7 @@ class Flavor_Reciclaje_Dashboard_Tab {
         ];
 
         $tabs['reciclaje-mis-puntos'] = [
-            'label'    => __('Mis Puntos', 'flavor-chat-ia'),
+            'label'    => __('Mis Puntos', 'flavor-platform'),
             'icon'     => 'dashicons-star-filled',
             'callback' => [$this, 'render_tab_mis_puntos'],
             'priority' => 31,
@@ -102,7 +102,7 @@ class Flavor_Reciclaje_Dashboard_Tab {
         ];
 
         $tabs['reciclaje-recompensas'] = [
-            'label'    => __('Recompensas', 'flavor-chat-ia'),
+            'label'    => __('Recompensas', 'flavor-platform'),
             'icon'     => 'dashicons-awards',
             'callback' => [$this, 'render_tab_recompensas'],
             'priority' => 32,
@@ -110,7 +110,7 @@ class Flavor_Reciclaje_Dashboard_Tab {
         ];
 
         $tabs['reciclaje-estadisticas'] = [
-            'label'    => __('Mi Impacto', 'flavor-chat-ia'),
+            'label'    => __('Mi Impacto', 'flavor-platform'),
             'icon'     => 'dashicons-chart-area',
             'callback' => [$this, 'render_tab_estadisticas'],
             'priority' => 33,
@@ -149,10 +149,10 @@ class Flavor_Reciclaje_Dashboard_Tab {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce'   => wp_create_nonce('reciclaje_dashboard_nonce'),
             'i18n'    => [
-                'loading'      => __('Cargando...', 'flavor-chat-ia'),
-                'error'        => __('Error al cargar los datos', 'flavor-chat-ia'),
-                'confirmCanje' => __('Confirmar canje de puntos?', 'flavor-chat-ia'),
-                'success'      => __('Operacion completada', 'flavor-chat-ia'),
+                'loading'      => __('Cargando...', 'flavor-platform'),
+                'error'        => __('Error al cargar los datos', 'flavor-platform'),
+                'confirmCanje' => __('Confirmar canje de puntos?', 'flavor-platform'),
+                'success'      => __('Operacion completada', 'flavor-platform'),
             ],
         ]);
     }
@@ -168,52 +168,52 @@ class Flavor_Reciclaje_Dashboard_Tab {
         ?>
         <div class="flavor-dashboard-tab reciclaje-mis-aportes">
             <div class="tab-header">
-                <h2><?php esc_html_e('Mis Aportes de Reciclaje', 'flavor-chat-ia'); ?></h2>
-                <p class="descripcion"><?php esc_html_e('Historial de todos tus depositos de reciclaje', 'flavor-chat-ia'); ?></p>
+                <h2><?php esc_html_e('Mis Aportes de Reciclaje', 'flavor-platform'); ?></h2>
+                <p class="descripcion"><?php esc_html_e('Historial de todos tus depositos de reciclaje', 'flavor-platform'); ?></p>
             </div>
 
             <!-- Resumen del mes -->
             <div class="resumen-mensual">
-                <h3><?php esc_html_e('Este Mes', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Este Mes', 'flavor-platform'); ?></h3>
                 <div class="stats-grid stats-grid-4">
                     <div class="stat-card">
                         <span class="stat-icon dashicons dashicons-image-rotate"></span>
                         <span class="stat-valor"><?php echo esc_html(number_format_i18n($resumen_mensual['depositos_mes'])); ?></span>
-                        <span class="stat-label"><?php esc_html_e('Depositos', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php esc_html_e('Depositos', 'flavor-platform'); ?></span>
                     </div>
                     <div class="stat-card">
                         <span class="stat-icon dashicons dashicons-cart"></span>
                         <span class="stat-valor"><?php echo esc_html(number_format_i18n($resumen_mensual['kg_mes'], 2)); ?> kg</span>
-                        <span class="stat-label"><?php esc_html_e('Material', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php esc_html_e('Material', 'flavor-platform'); ?></span>
                     </div>
                     <div class="stat-card">
                         <span class="stat-icon dashicons dashicons-star-filled"></span>
                         <span class="stat-valor"><?php echo esc_html(number_format_i18n($resumen_mensual['puntos_mes'])); ?></span>
-                        <span class="stat-label"><?php esc_html_e('Puntos ganados', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php esc_html_e('Puntos ganados', 'flavor-platform'); ?></span>
                     </div>
                     <div class="stat-card">
                         <span class="stat-icon dashicons dashicons-yes-alt"></span>
                         <span class="stat-valor"><?php echo esc_html($resumen_mensual['verificados_mes']); ?></span>
-                        <span class="stat-label"><?php esc_html_e('Verificados', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php esc_html_e('Verificados', 'flavor-platform'); ?></span>
                     </div>
                 </div>
             </div>
 
             <!-- Listado de aportes -->
             <div class="listado-aportes">
-                <h3><?php esc_html_e('Historial de Depositos', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Historial de Depositos', 'flavor-platform'); ?></h3>
 
                 <?php if (!empty($aportes)): ?>
                     <div class="aportes-tabla-wrapper">
                         <table class="aportes-tabla">
                             <thead>
                                 <tr>
-                                    <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Punto de Reciclaje', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Material', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Cantidad', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Puntos', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                                    <th><?php esc_html_e('Fecha', 'flavor-platform'); ?></th>
+                                    <th><?php esc_html_e('Punto de Reciclaje', 'flavor-platform'); ?></th>
+                                    <th><?php esc_html_e('Material', 'flavor-platform'); ?></th>
+                                    <th><?php esc_html_e('Cantidad', 'flavor-platform'); ?></th>
+                                    <th><?php esc_html_e('Puntos', 'flavor-platform'); ?></th>
+                                    <th><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -223,7 +223,7 @@ class Flavor_Reciclaje_Dashboard_Tab {
                                             <?php echo esc_html(date_i18n('d/m/Y H:i', strtotime($aporte->fecha_deposito))); ?>
                                         </td>
                                         <td class="punto">
-                                            <?php echo esc_html($aporte->punto_nombre ?: __('Punto eliminado', 'flavor-chat-ia')); ?>
+                                            <?php echo esc_html($aporte->punto_nombre ?: __('Punto eliminado', 'flavor-platform')); ?>
                                         </td>
                                         <td class="material">
                                             <span class="material-badge material-<?php echo esc_attr(sanitize_title($aporte->tipo_material)); ?>">
@@ -240,12 +240,12 @@ class Flavor_Reciclaje_Dashboard_Tab {
                                             <?php if ($aporte->verificado): ?>
                                                 <span class="estado-badge estado-verificado">
                                                     <span class="dashicons dashicons-yes-alt"></span>
-                                                    <?php esc_html_e('Verificado', 'flavor-chat-ia'); ?>
+                                                    <?php esc_html_e('Verificado', 'flavor-platform'); ?>
                                                 </span>
                                             <?php else: ?>
                                                 <span class="estado-badge estado-pendiente">
                                                     <span class="dashicons dashicons-clock"></span>
-                                                    <?php esc_html_e('Pendiente', 'flavor-chat-ia'); ?>
+                                                    <?php esc_html_e('Pendiente', 'flavor-platform'); ?>
                                                 </span>
                                             <?php endif; ?>
                                         </td>
@@ -257,9 +257,9 @@ class Flavor_Reciclaje_Dashboard_Tab {
                 <?php else: ?>
                     <div class="empty-state">
                         <span class="dashicons dashicons-image-rotate"></span>
-                        <p><?php esc_html_e('Aun no has realizado ningun deposito de reciclaje.', 'flavor-chat-ia'); ?></p>
+                        <p><?php esc_html_e('Aun no has realizado ningun deposito de reciclaje.', 'flavor-platform'); ?></p>
                         <a href="<?php echo esc_url(get_permalink(get_option('flavor_reciclaje_puntos_page'))); ?>" class="button button-primary">
-                            <?php esc_html_e('Encontrar puntos de reciclaje', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Encontrar puntos de reciclaje', 'flavor-platform'); ?>
                         </a>
                     </div>
                 <?php endif; ?>
@@ -280,35 +280,35 @@ class Flavor_Reciclaje_Dashboard_Tab {
         ?>
         <div class="flavor-dashboard-tab reciclaje-mis-puntos">
             <div class="tab-header">
-                <h2><?php esc_html_e('Mis Puntos de Reciclaje', 'flavor-chat-ia'); ?></h2>
-                <p class="descripcion"><?php esc_html_e('Puntos acumulados y tu posicion en el ranking comunitario', 'flavor-chat-ia'); ?></p>
+                <h2><?php esc_html_e('Mis Puntos de Reciclaje', 'flavor-platform'); ?></h2>
+                <p class="descripcion"><?php esc_html_e('Puntos acumulados y tu posicion en el ranking comunitario', 'flavor-platform'); ?></p>
             </div>
 
             <!-- Tarjeta principal de puntos -->
             <div class="puntos-hero">
                 <div class="puntos-disponibles">
                     <span class="puntos-numero"><?php echo esc_html(number_format_i18n($resumen_puntos['disponibles'])); ?></span>
-                    <span class="puntos-label"><?php esc_html_e('Puntos disponibles', 'flavor-chat-ia'); ?></span>
+                    <span class="puntos-label"><?php esc_html_e('Puntos disponibles', 'flavor-platform'); ?></span>
                 </div>
                 <div class="puntos-detalles">
                     <div class="detalle">
                         <span class="valor"><?php echo esc_html(number_format_i18n($resumen_puntos['total_ganados'])); ?></span>
-                        <span class="label"><?php esc_html_e('Total ganados', 'flavor-chat-ia'); ?></span>
+                        <span class="label"><?php esc_html_e('Total ganados', 'flavor-platform'); ?></span>
                     </div>
                     <div class="detalle">
                         <span class="valor"><?php echo esc_html(number_format_i18n($resumen_puntos['canjeados'])); ?></span>
-                        <span class="label"><?php esc_html_e('Canjeados', 'flavor-chat-ia'); ?></span>
+                        <span class="label"><?php esc_html_e('Canjeados', 'flavor-platform'); ?></span>
                     </div>
                 </div>
             </div>
 
             <!-- Ranking del usuario -->
             <div class="ranking-section">
-                <h3><?php esc_html_e('Tu Posicion en el Ranking', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Tu Posicion en el Ranking', 'flavor-platform'); ?></h3>
                 <div class="ranking-card">
                     <div class="ranking-posicion">
                         <span class="posicion-numero">#<?php echo esc_html($ranking_usuario['posicion']); ?></span>
-                        <span class="posicion-label"><?php esc_html_e('de', 'flavor-chat-ia'); ?> <?php echo esc_html($ranking_usuario['total_participantes']); ?></span>
+                        <span class="posicion-label"><?php esc_html_e('de', 'flavor-platform'); ?> <?php echo esc_html($ranking_usuario['total_participantes']); ?></span>
                     </div>
                     <div class="ranking-progreso">
                         <div class="progreso-bar">
@@ -317,7 +317,7 @@ class Flavor_Reciclaje_Dashboard_Tab {
                         <span class="progreso-texto">
                             <?php
                             printf(
-                                esc_html__('Estas en el top %d%% de recicladores', 'flavor-chat-ia'),
+                                esc_html__('Estas en el top %d%% de recicladores', 'flavor-platform'),
                                 100 - intval($ranking_usuario['percentil'])
                             );
                             ?>
@@ -328,7 +328,7 @@ class Flavor_Reciclaje_Dashboard_Tab {
                     <?php $badges = $this->obtener_badges_usuario($usuario_id); ?>
                     <?php if (!empty($badges)): ?>
                         <div class="badges-container">
-                            <h4><?php esc_html_e('Insignias Obtenidas', 'flavor-chat-ia'); ?></h4>
+                            <h4><?php esc_html_e('Insignias Obtenidas', 'flavor-platform'); ?></h4>
                             <div class="badges-grid">
                                 <?php foreach ($badges as $badge): ?>
                                     <div class="badge <?php echo esc_attr($badge['clase']); ?>" title="<?php echo esc_attr($badge['descripcion']); ?>">
@@ -344,7 +344,7 @@ class Flavor_Reciclaje_Dashboard_Tab {
 
             <!-- Top 5 del ranking -->
             <div class="top-ranking">
-                <h3><?php esc_html_e('Top 5 Recicladores', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Top 5 Recicladores', 'flavor-platform'); ?></h3>
                 <?php $top_usuarios = $this->obtener_top_usuarios(5); ?>
                 <ol class="top-lista">
                     <?php foreach ($top_usuarios as $posicion => $usuario_ranking): ?>
@@ -362,7 +362,7 @@ class Flavor_Reciclaje_Dashboard_Tab {
 
             <!-- Grafico de progreso mensual -->
             <div class="grafico-progreso">
-                <h3><?php esc_html_e('Puntos por Mes', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Puntos por Mes', 'flavor-platform'); ?></h3>
                 <div class="grafico-container">
                     <?php $puntos_mensuales = $this->obtener_puntos_mensuales($usuario_id, 6); ?>
                     <div class="grafico-barras">
@@ -398,23 +398,23 @@ class Flavor_Reciclaje_Dashboard_Tab {
         ?>
         <div class="flavor-dashboard-tab reciclaje-recompensas">
             <div class="tab-header">
-                <h2><?php esc_html_e('Recompensas de Reciclaje', 'flavor-chat-ia'); ?></h2>
-                <p class="descripcion"><?php esc_html_e('Canjea tus puntos por increibles recompensas', 'flavor-chat-ia'); ?></p>
+                <h2><?php esc_html_e('Recompensas de Reciclaje', 'flavor-platform'); ?></h2>
+                <p class="descripcion"><?php esc_html_e('Canjea tus puntos por increibles recompensas', 'flavor-platform'); ?></p>
             </div>
 
             <!-- Puntos disponibles -->
             <div class="puntos-banner">
                 <span class="puntos-icono dashicons dashicons-star-filled"></span>
                 <span class="puntos-texto">
-                    <?php esc_html_e('Tienes', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Tienes', 'flavor-platform'); ?>
                     <strong><?php echo esc_html(number_format_i18n($puntos_disponibles)); ?></strong>
-                    <?php esc_html_e('puntos disponibles para canjear', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('puntos disponibles para canjear', 'flavor-platform'); ?>
                 </span>
             </div>
 
             <!-- Recompensas disponibles -->
             <div class="recompensas-disponibles">
-                <h3><?php esc_html_e('Recompensas Disponibles', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Recompensas Disponibles', 'flavor-platform'); ?></h3>
 
                 <?php if (!empty($recompensas_disponibles)): ?>
                     <div class="recompensas-grid">
@@ -440,17 +440,17 @@ class Flavor_Reciclaje_Dashboard_Tab {
                                     <div class="recompensa-footer">
                                         <span class="recompensa-puntos">
                                             <span class="dashicons dashicons-star-filled"></span>
-                                            <?php echo esc_html(number_format_i18n($puntos_necesarios)); ?> <?php esc_html_e('puntos', 'flavor-chat-ia'); ?>
+                                            <?php echo esc_html(number_format_i18n($puntos_necesarios)); ?> <?php esc_html_e('puntos', 'flavor-platform'); ?>
                                         </span>
                                         <?php if ($puede_canjear): ?>
                                             <button class="button button-primary btn-canjear" data-recompensa-id="<?php echo esc_attr($recompensa->ID); ?>" data-puntos="<?php echo esc_attr($puntos_necesarios); ?>">
-                                                <?php esc_html_e('Canjear', 'flavor-chat-ia'); ?>
+                                                <?php esc_html_e('Canjear', 'flavor-platform'); ?>
                                             </button>
                                         <?php else: ?>
                                             <span class="puntos-faltantes">
                                                 <?php
                                                 $faltantes = $puntos_necesarios - $puntos_disponibles;
-                                                printf(esc_html__('Faltan %s pts', 'flavor-chat-ia'), number_format_i18n($faltantes));
+                                                printf(esc_html__('Faltan %s pts', 'flavor-platform'), number_format_i18n($faltantes));
                                                 ?>
                                             </span>
                                         <?php endif; ?>
@@ -462,14 +462,14 @@ class Flavor_Reciclaje_Dashboard_Tab {
                 <?php else: ?>
                     <div class="empty-state">
                         <span class="dashicons dashicons-awards"></span>
-                        <p><?php esc_html_e('No hay recompensas disponibles en este momento.', 'flavor-chat-ia'); ?></p>
+                        <p><?php esc_html_e('No hay recompensas disponibles en este momento.', 'flavor-platform'); ?></p>
                     </div>
                 <?php endif; ?>
             </div>
 
             <!-- Historial de canjes -->
             <div class="historial-canjes">
-                <h3><?php esc_html_e('Mis Canjes', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Mis Canjes', 'flavor-platform'); ?></h3>
 
                 <?php if (!empty($canjes_usuario)): ?>
                     <div class="canjes-lista">
@@ -487,7 +487,7 @@ class Flavor_Reciclaje_Dashboard_Tab {
                         <?php endforeach; ?>
                     </div>
                 <?php else: ?>
-                    <p class="sin-canjes"><?php esc_html_e('Aun no has realizado ningun canje.', 'flavor-chat-ia'); ?></p>
+                    <p class="sin-canjes"><?php esc_html_e('Aun no has realizado ningun canje.', 'flavor-platform'); ?></p>
                 <?php endif; ?>
             </div>
         </div>
@@ -506,8 +506,8 @@ class Flavor_Reciclaje_Dashboard_Tab {
         ?>
         <div class="flavor-dashboard-tab reciclaje-estadisticas">
             <div class="tab-header">
-                <h2><?php esc_html_e('Mi Impacto Ambiental', 'flavor-chat-ia'); ?></h2>
-                <p class="descripcion"><?php esc_html_e('Descubre el impacto positivo de tu reciclaje en el medio ambiente', 'flavor-chat-ia'); ?></p>
+                <h2><?php esc_html_e('Mi Impacto Ambiental', 'flavor-platform'); ?></h2>
+                <p class="descripcion"><?php esc_html_e('Descubre el impacto positivo de tu reciclaje en el medio ambiente', 'flavor-platform'); ?></p>
             </div>
 
             <!-- Impacto ambiental hero -->
@@ -515,40 +515,40 @@ class Flavor_Reciclaje_Dashboard_Tab {
                 <div class="impacto-total">
                     <span class="impacto-numero"><?php echo esc_html(number_format_i18n($impacto['kg_total'], 1)); ?></span>
                     <span class="impacto-unidad">kg</span>
-                    <span class="impacto-label"><?php esc_html_e('Total reciclado', 'flavor-chat-ia'); ?></span>
+                    <span class="impacto-label"><?php esc_html_e('Total reciclado', 'flavor-platform'); ?></span>
                 </div>
             </div>
 
             <!-- Metricas de impacto -->
             <div class="impacto-metricas">
-                <h3><?php esc_html_e('Tu Contribucion Equivale A', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Tu Contribucion Equivale A', 'flavor-platform'); ?></h3>
                 <div class="metricas-grid">
                     <div class="metrica-card">
                         <span class="metrica-icono">&#127795;</span>
                         <span class="metrica-valor"><?php echo esc_html(number_format_i18n($impacto['arboles_salvados'], 1)); ?></span>
-                        <span class="metrica-label"><?php esc_html_e('Arboles salvados', 'flavor-chat-ia'); ?></span>
+                        <span class="metrica-label"><?php esc_html_e('Arboles salvados', 'flavor-platform'); ?></span>
                     </div>
                     <div class="metrica-card">
                         <span class="metrica-icono">&#128167;</span>
                         <span class="metrica-valor"><?php echo esc_html(number_format_i18n($impacto['litros_agua_ahorrados'])); ?></span>
-                        <span class="metrica-label"><?php esc_html_e('Litros de agua ahorrados', 'flavor-chat-ia'); ?></span>
+                        <span class="metrica-label"><?php esc_html_e('Litros de agua ahorrados', 'flavor-platform'); ?></span>
                     </div>
                     <div class="metrica-card">
                         <span class="metrica-icono">&#9889;</span>
                         <span class="metrica-valor"><?php echo esc_html(number_format_i18n($impacto['energia_kwh'], 1)); ?></span>
-                        <span class="metrica-label"><?php esc_html_e('kWh de energia ahorrados', 'flavor-chat-ia'); ?></span>
+                        <span class="metrica-label"><?php esc_html_e('kWh de energia ahorrados', 'flavor-platform'); ?></span>
                     </div>
                     <div class="metrica-card">
                         <span class="metrica-icono">&#127757;</span>
                         <span class="metrica-valor"><?php echo esc_html(number_format_i18n($impacto['co2_evitado'], 1)); ?></span>
-                        <span class="metrica-label"><?php esc_html_e('kg CO2 evitados', 'flavor-chat-ia'); ?></span>
+                        <span class="metrica-label"><?php esc_html_e('kg CO2 evitados', 'flavor-platform'); ?></span>
                     </div>
                 </div>
             </div>
 
             <!-- Desglose por material -->
             <div class="desglose-materiales">
-                <h3><?php esc_html_e('Desglose por Material', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Desglose por Material', 'flavor-platform'); ?></h3>
                 <?php if (!empty($estadisticas_material)): ?>
                     <div class="materiales-lista">
                         <?php
@@ -562,7 +562,7 @@ class Flavor_Reciclaje_Dashboard_Tab {
                                     <span class="material-nombre"><?php echo esc_html(ucfirst($material['tipo_material'])); ?></span>
                                     <span class="material-stats">
                                         <?php echo esc_html(number_format_i18n($material['total_kg'], 2)); ?> kg
-                                        (<?php echo esc_html($material['num_depositos']); ?> <?php esc_html_e('depositos', 'flavor-chat-ia'); ?>)
+                                        (<?php echo esc_html($material['num_depositos']); ?> <?php esc_html_e('depositos', 'flavor-platform'); ?>)
                                     </span>
                                 </div>
                                 <div class="material-barra">
@@ -573,20 +573,20 @@ class Flavor_Reciclaje_Dashboard_Tab {
                         <?php endforeach; ?>
                     </div>
                 <?php else: ?>
-                    <p class="sin-datos"><?php esc_html_e('Aun no tienes depositos verificados.', 'flavor-chat-ia'); ?></p>
+                    <p class="sin-datos"><?php esc_html_e('Aun no tienes depositos verificados.', 'flavor-platform'); ?></p>
                 <?php endif; ?>
             </div>
 
             <!-- Comparativa con la comunidad -->
             <div class="comparativa-comunidad">
-                <h3><?php esc_html_e('Comparativa con la Comunidad', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Comparativa con la Comunidad', 'flavor-platform'); ?></h3>
                 <div class="comparativa-grid">
                     <div class="comparativa-item">
-                        <span class="comparativa-label"><?php esc_html_e('Tu promedio mensual', 'flavor-chat-ia'); ?></span>
+                        <span class="comparativa-label"><?php esc_html_e('Tu promedio mensual', 'flavor-platform'); ?></span>
                         <span class="comparativa-valor tu-valor"><?php echo esc_html(number_format_i18n($comparativa['promedio_usuario'], 2)); ?> kg</span>
                     </div>
                     <div class="comparativa-item">
-                        <span class="comparativa-label"><?php esc_html_e('Promedio comunidad', 'flavor-chat-ia'); ?></span>
+                        <span class="comparativa-label"><?php esc_html_e('Promedio comunidad', 'flavor-platform'); ?></span>
                         <span class="comparativa-valor comunidad"><?php echo esc_html(number_format_i18n($comparativa['promedio_comunidad'], 2)); ?> kg</span>
                     </div>
                     <div class="comparativa-item destacado">
@@ -595,7 +595,7 @@ class Flavor_Reciclaje_Dashboard_Tab {
                         $clase_diferencia = $diferencia >= 0 ? 'positiva' : 'negativa';
                         $icono_diferencia = $diferencia >= 0 ? 'arrow-up-alt' : 'arrow-down-alt';
                         ?>
-                        <span class="comparativa-label"><?php esc_html_e('Tu rendimiento', 'flavor-chat-ia'); ?></span>
+                        <span class="comparativa-label"><?php esc_html_e('Tu rendimiento', 'flavor-platform'); ?></span>
                         <span class="comparativa-valor diferencia <?php echo esc_attr($clase_diferencia); ?>">
                             <span class="dashicons dashicons-<?php echo esc_attr($icono_diferencia); ?>"></span>
                             <?php echo esc_html(number_format_i18n(abs($diferencia), 2)); ?> kg
@@ -606,7 +606,7 @@ class Flavor_Reciclaje_Dashboard_Tab {
 
             <!-- Grafico de evolucion -->
             <div class="evolucion-anual">
-                <h3><?php esc_html_e('Tu Evolucion Anual', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Tu Evolucion Anual', 'flavor-platform'); ?></h3>
                 <?php $evolucion = $this->obtener_evolucion_anual($usuario_id); ?>
                 <div class="evolucion-grafico">
                     <?php
@@ -855,9 +855,9 @@ class Flavor_Reciclaje_Dashboard_Tab {
         // Badge por primer deposito
         if ($estadisticas->total_depositos >= 1) {
             $badges[] = [
-                'nombre'      => __('Iniciado', 'flavor-chat-ia'),
+                'nombre'      => __('Iniciado', 'flavor-platform'),
                 'icono'       => '&#127793;',
-                'descripcion' => __('Primer deposito realizado', 'flavor-chat-ia'),
+                'descripcion' => __('Primer deposito realizado', 'flavor-platform'),
                 'clase'       => 'badge-bronce',
             ];
         }
@@ -865,9 +865,9 @@ class Flavor_Reciclaje_Dashboard_Tab {
         // Badge por 10 depositos
         if ($estadisticas->total_depositos >= 10) {
             $badges[] = [
-                'nombre'      => __('Constante', 'flavor-chat-ia'),
+                'nombre'      => __('Constante', 'flavor-platform'),
                 'icono'       => '&#127942;',
-                'descripcion' => __('10 depositos realizados', 'flavor-chat-ia'),
+                'descripcion' => __('10 depositos realizados', 'flavor-platform'),
                 'clase'       => 'badge-plata',
             ];
         }
@@ -875,9 +875,9 @@ class Flavor_Reciclaje_Dashboard_Tab {
         // Badge por 50 depositos
         if ($estadisticas->total_depositos >= 50) {
             $badges[] = [
-                'nombre'      => __('Experto', 'flavor-chat-ia'),
+                'nombre'      => __('Experto', 'flavor-platform'),
                 'icono'       => '&#127941;',
-                'descripcion' => __('50 depositos realizados', 'flavor-chat-ia'),
+                'descripcion' => __('50 depositos realizados', 'flavor-platform'),
                 'clase'       => 'badge-oro',
             ];
         }
@@ -885,9 +885,9 @@ class Flavor_Reciclaje_Dashboard_Tab {
         // Badge por kg reciclados
         if ($estadisticas->total_kg >= 100) {
             $badges[] = [
-                'nombre'      => __('Eco Guerrero', 'flavor-chat-ia'),
+                'nombre'      => __('Eco Guerrero', 'flavor-platform'),
                 'icono'       => '&#127795;',
-                'descripcion' => __('100 kg reciclados', 'flavor-chat-ia'),
+                'descripcion' => __('100 kg reciclados', 'flavor-platform'),
                 'clase'       => 'badge-verde',
             ];
         }
@@ -895,9 +895,9 @@ class Flavor_Reciclaje_Dashboard_Tab {
         // Badge por diversidad de materiales
         if ($estadisticas->tipos_diferentes >= 5) {
             $badges[] = [
-                'nombre'      => __('Diversificado', 'flavor-chat-ia'),
+                'nombre'      => __('Diversificado', 'flavor-platform'),
                 'icono'       => '&#127752;',
-                'descripcion' => __('5 tipos de materiales diferentes', 'flavor-chat-ia'),
+                'descripcion' => __('5 tipos de materiales diferentes', 'flavor-platform'),
                 'clase'       => 'badge-arcoiris',
             ];
         }
@@ -905,9 +905,9 @@ class Flavor_Reciclaje_Dashboard_Tab {
         // Badge por puntos
         if ($estadisticas->total_puntos >= 1000) {
             $badges[] = [
-                'nombre'      => __('Mil Puntos', 'flavor-chat-ia'),
+                'nombre'      => __('Mil Puntos', 'flavor-platform'),
                 'icono'       => '&#11088;',
-                'descripcion' => __('1000 puntos acumulados', 'flavor-chat-ia'),
+                'descripcion' => __('1000 puntos acumulados', 'flavor-platform'),
                 'clase'       => 'badge-estrella',
             ];
         }
@@ -1011,7 +1011,7 @@ class Flavor_Reciclaje_Dashboard_Tab {
         foreach ($canjes_guardados as $canje) {
             $titulo_recompensa = get_the_title($canje['recompensa_id']);
             if (!$titulo_recompensa) {
-                $titulo_recompensa = __('Recompensa eliminada', 'flavor-chat-ia');
+                $titulo_recompensa = __('Recompensa eliminada', 'flavor-platform');
             }
             $canjes_con_titulo[] = [
                 'titulo' => $titulo_recompensa,
@@ -1214,7 +1214,7 @@ class Flavor_Reciclaje_Dashboard_Tab {
         check_ajax_referer('reciclaje_dashboard_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-platform')]);
         }
 
         $tab_solicitada = sanitize_text_field($_POST['tab'] ?? '');
@@ -1235,7 +1235,7 @@ class Flavor_Reciclaje_Dashboard_Tab {
                 $this->render_tab_estadisticas();
                 break;
             default:
-                wp_send_json_error(['message' => __('Tab no valida', 'flavor-chat-ia')]);
+                wp_send_json_error(['message' => __('Tab no valida', 'flavor-platform')]);
                 return;
         }
 

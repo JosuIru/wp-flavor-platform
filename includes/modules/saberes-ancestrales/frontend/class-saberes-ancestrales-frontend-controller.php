@@ -87,10 +87,10 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
                 'ajaxUrl' => admin_url('admin-ajax.php'),
                 'nonce' => wp_create_nonce('flavor_saberes_nonce'),
                 'strings' => [
-                    'procesando' => __('Procesando...', 'flavor-chat-ia'),
-                    'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                    'solicitudEnviada' => __('Solicitud enviada correctamente', 'flavor-chat-ia'),
-                    'graciasValorar' => __('Gracias por tu valoración', 'flavor-chat-ia'),
+                    'procesando' => __('Procesando...', 'flavor-platform'),
+                    'error' => __('Ha ocurrido un error', 'flavor-platform'),
+                    'solicitudEnviada' => __('Solicitud enviada correctamente', 'flavor-platform'),
+                    'graciasValorar' => __('Gracias por tu valoración', 'flavor-platform'),
                 ],
             ]);
         }
@@ -114,7 +114,7 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
 
     public function register_dashboard_tabs($tabs) {
         $tabs['saberes-ancestrales'] = [
-            'titulo' => __('Saberes Ancestrales', 'flavor-chat-ia'),
+            'titulo' => __('Saberes Ancestrales', 'flavor-platform'),
             'icono' => 'dashicons-book-alt',
             'callback' => [$this, 'render_dashboard_tab'],
             'prioridad' => 45,
@@ -141,15 +141,15 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
         <div class="flavor-saberes-catalogo">
             <div class="flavor-saberes-header">
                 <div>
-                    <h2><?php _e('Saberes Ancestrales', 'flavor-chat-ia'); ?></h2>
+                    <h2><?php _e('Saberes Ancestrales', 'flavor-platform'); ?></h2>
                     <p class="flavor-saberes-intro">
-                        <?php _e('Conocimientos tradicionales transmitidos de generación en generación.', 'flavor-chat-ia'); ?>
+                        <?php _e('Conocimientos tradicionales transmitidos de generación en generación.', 'flavor-platform'); ?>
                     </p>
                 </div>
                 <?php if (is_user_logged_in()): ?>
                 <a href="<?php echo esc_url($this->get_documentar_url()); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus"></span>
-                    <?php _e('Documentar saber', 'flavor-chat-ia'); ?>
+                    <?php _e('Documentar saber', 'flavor-platform'); ?>
                 </a>
                 <?php endif; ?>
             </div>
@@ -157,12 +157,12 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
             <div class="flavor-saberes-filtros">
                 <form class="flavor-filtros-form" method="get">
                     <div class="flavor-filtro-grupo">
-                        <input type="text" name="buscar" placeholder="<?php esc_attr_e('Buscar saber...', 'flavor-chat-ia'); ?>"
+                        <input type="text" name="buscar" placeholder="<?php esc_attr_e('Buscar saber...', 'flavor-platform'); ?>"
                                value="<?php echo esc_attr($_GET['buscar'] ?? ''); ?>">
                     </div>
                     <div class="flavor-filtro-grupo">
                         <select name="categoria">
-                            <option value=""><?php _e('Todas las categorías', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php _e('Todas las categorías', 'flavor-platform'); ?></option>
                             <?php foreach ($categorias as $cat): ?>
                             <option value="<?php echo esc_attr($cat['slug']); ?>"
                                     <?php selected($_GET['categoria'] ?? '', $cat['slug']); ?>>
@@ -181,7 +181,7 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
                 <?php if (empty($saberes)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-book-alt"></span>
-                    <p><?php _e('No se encontraron saberes con esos criterios.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No se encontraron saberes con esos criterios.', 'flavor-platform'); ?></p>
                 </div>
                 <?php else: ?>
                     <?php foreach ($saberes as $saber): ?>
@@ -212,7 +212,7 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
                                 </span>
                                 <?php if ($saber['aprendices'] > 0): ?>
                                 <span class="flavor-saber-aprendices">
-                                    <?php printf(_n('%d aprendiz', '%d aprendices', $saber['aprendices'], 'flavor-chat-ia'), $saber['aprendices']); ?>
+                                    <?php printf(_n('%d aprendiz', '%d aprendices', $saber['aprendices'], 'flavor-platform'), $saber['aprendices']); ?>
                                 </span>
                                 <?php endif; ?>
                             </div>
@@ -231,12 +231,12 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
         $saber_id = intval($atts['id']) ?: intval($_GET['saber_id'] ?? 0);
 
         if (!$saber_id) {
-            return '<div class="flavor-error">' . __('Saber no especificado.', 'flavor-chat-ia') . '</div>';
+            return '<div class="flavor-error">' . __('Saber no especificado.', 'flavor-platform') . '</div>';
         }
 
         $saber = $this->obtener_saber($saber_id);
         if (!$saber) {
-            return '<div class="flavor-error">' . __('Saber no encontrado.', 'flavor-chat-ia') . '</div>';
+            return '<div class="flavor-error">' . __('Saber no encontrado.', 'flavor-platform') . '</div>';
         }
 
         $sesiones = $this->obtener_sesiones_saber($saber_id);
@@ -265,7 +265,7 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
                     <div class="flavor-saber-maestro-card">
                         <img src="<?php echo esc_url(get_avatar_url($saber['maestro_id'], ['size' => 60])); ?>" alt="">
                         <div>
-                            <span class="flavor-maestro-label"><?php _e('Maestro/a', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-maestro-label"><?php _e('Maestro/a', 'flavor-platform'); ?></span>
                             <h4><?php echo esc_html($saber['maestro_nombre']); ?></h4>
                             <?php if (!empty($saber['maestro_experiencia'])): ?>
                             <p><?php echo esc_html($saber['maestro_experiencia']); ?></p>
@@ -276,16 +276,16 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
                     <div class="flavor-saber-stats">
                         <div class="flavor-stat">
                             <span class="flavor-stat-valor"><?php echo intval($saber['aprendices']); ?></span>
-                            <span class="flavor-stat-label"><?php _e('Aprendices', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-stat-label"><?php _e('Aprendices', 'flavor-platform'); ?></span>
                         </div>
                         <div class="flavor-stat">
                             <span class="flavor-stat-valor"><?php echo intval($saber['sesiones_realizadas']); ?></span>
-                            <span class="flavor-stat-label"><?php _e('Sesiones', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-stat-label"><?php _e('Sesiones', 'flavor-platform'); ?></span>
                         </div>
                         <?php if ($saber['valoracion'] > 0): ?>
                         <div class="flavor-stat">
                             <span class="flavor-stat-valor"><?php echo number_format($saber['valoracion'], 1); ?></span>
-                            <span class="flavor-stat-label"><?php _e('Valoración', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-stat-label"><?php _e('Valoración', 'flavor-platform'); ?></span>
                         </div>
                         <?php endif; ?>
                     </div>
@@ -294,12 +294,12 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
                     <button type="button" class="flavor-btn flavor-btn-primary flavor-btn-lg flavor-solicitar-aprendizaje"
                             data-saber-id="<?php echo esc_attr($saber_id); ?>">
                         <span class="dashicons dashicons-welcome-learn-more"></span>
-                        <?php _e('Quiero aprender', 'flavor-chat-ia'); ?>
+                        <?php _e('Quiero aprender', 'flavor-platform'); ?>
                     </button>
                     <?php elseif ($ya_aprendiz): ?>
                     <span class="flavor-badge flavor-badge-success flavor-badge-lg">
                         <span class="dashicons dashicons-yes"></span>
-                        <?php _e('Eres aprendiz de este saber', 'flavor-chat-ia'); ?>
+                        <?php _e('Eres aprendiz de este saber', 'flavor-platform'); ?>
                     </span>
                     <?php endif; ?>
                 </div>
@@ -309,7 +309,7 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
                 <div class="flavor-saber-main">
                     <?php if (!empty($saber['contenido'])): ?>
                     <section class="flavor-panel">
-                        <h3><?php _e('Sobre este saber', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Sobre este saber', 'flavor-platform'); ?></h3>
                         <div class="flavor-saber-contenido-texto">
                             <?php echo wp_kses_post($saber['contenido']); ?>
                         </div>
@@ -318,7 +318,7 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
 
                     <?php if (!empty($saber['historia'])): ?>
                     <section class="flavor-panel">
-                        <h3><?php _e('Historia y origen', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Historia y origen', 'flavor-platform'); ?></h3>
                         <div class="flavor-saber-historia">
                             <?php echo wp_kses_post($saber['historia']); ?>
                         </div>
@@ -327,7 +327,7 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
 
                     <?php if (!empty($recursos)): ?>
                     <section class="flavor-panel">
-                        <h3><?php _e('Recursos documentales', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Recursos documentales', 'flavor-platform'); ?></h3>
                         <div class="flavor-recursos-lista">
                             <?php foreach ($recursos as $recurso): ?>
                             <a href="<?php echo esc_url($recurso['url']); ?>" target="_blank" class="flavor-recurso-item">
@@ -343,7 +343,7 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
                 <div class="flavor-saber-sidebar">
                     <?php if (!empty($sesiones)): ?>
                     <div class="flavor-panel">
-                        <h3><?php _e('Próximas sesiones', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Próximas sesiones', 'flavor-platform'); ?></h3>
                         <div class="flavor-sesiones-lista">
                             <?php foreach (array_slice($sesiones, 0, 3) as $sesion): ?>
                             <div class="flavor-sesion-item">
@@ -362,26 +362,26 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
                     <?php endif; ?>
 
                     <div class="flavor-panel">
-                        <h3><?php _e('Información', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Información', 'flavor-platform'); ?></h3>
                         <ul class="flavor-info-lista">
                             <?php if (!empty($saber['duracion_aprendizaje'])): ?>
                             <li>
                                 <span class="dashicons dashicons-calendar-alt"></span>
-                                <strong><?php _e('Duración:', 'flavor-chat-ia'); ?></strong>
+                                <strong><?php _e('Duración:', 'flavor-platform'); ?></strong>
                                 <?php echo esc_html($saber['duracion_aprendizaje']); ?>
                             </li>
                             <?php endif; ?>
                             <?php if (!empty($saber['nivel'])): ?>
                             <li>
                                 <span class="dashicons dashicons-chart-line"></span>
-                                <strong><?php _e('Nivel:', 'flavor-chat-ia'); ?></strong>
+                                <strong><?php _e('Nivel:', 'flavor-platform'); ?></strong>
                                 <?php echo esc_html($saber['nivel']); ?>
                             </li>
                             <?php endif; ?>
                             <?php if (!empty($saber['materiales'])): ?>
                             <li>
                                 <span class="dashicons dashicons-hammer"></span>
-                                <strong><?php _e('Materiales:', 'flavor-chat-ia'); ?></strong>
+                                <strong><?php _e('Materiales:', 'flavor-platform'); ?></strong>
                                 <?php echo esc_html($saber['materiales']); ?>
                             </li>
                             <?php endif; ?>
@@ -402,8 +402,8 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
         ?>
         <div class="flavor-maestros-lista">
             <div class="flavor-maestros-header">
-                <h2><?php _e('Maestros y Portadores de Saberes', 'flavor-chat-ia'); ?></h2>
-                <p><?php _e('Personas que preservan y transmiten conocimientos ancestrales.', 'flavor-chat-ia'); ?></p>
+                <h2><?php _e('Maestros y Portadores de Saberes', 'flavor-platform'); ?></h2>
+                <p><?php _e('Personas que preservan y transmiten conocimientos ancestrales.', 'flavor-platform'); ?></p>
             </div>
 
             <div class="flavor-maestros-grid">
@@ -415,12 +415,12 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
                     <h3><?php echo esc_html($maestro['nombre']); ?></h3>
                     <p class="flavor-maestro-especialidad"><?php echo esc_html($maestro['especialidad']); ?></p>
                     <div class="flavor-maestro-stats">
-                        <span><?php printf(__('%d saberes', 'flavor-chat-ia'), $maestro['total_saberes']); ?></span>
-                        <span><?php printf(__('%d aprendices', 'flavor-chat-ia'), $maestro['total_aprendices']); ?></span>
+                        <span><?php printf(__('%d saberes', 'flavor-platform'), $maestro['total_saberes']); ?></span>
+                        <span><?php printf(__('%d aprendices', 'flavor-platform'), $maestro['total_aprendices']); ?></span>
                     </div>
                     <a href="<?php echo esc_url($this->get_maestro_url($maestro['user_id'])); ?>"
                        class="flavor-btn flavor-btn-outline flavor-btn-sm">
-                        <?php _e('Ver perfil', 'flavor-chat-ia'); ?>
+                        <?php _e('Ver perfil', 'flavor-platform'); ?>
                     </a>
                 </div>
                 <?php endforeach; ?>
@@ -432,7 +432,7 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
 
     public function shortcode_documentar($atts) {
         if (!is_user_logged_in()) {
-            return '<div class="flavor-login-required">' . __('Inicia sesión para documentar un saber.', 'flavor-chat-ia') . '</div>';
+            return '<div class="flavor-login-required">' . __('Inicia sesión para documentar un saber.', 'flavor-platform') . '</div>';
         }
 
         $categorias = $this->obtener_categorias();
@@ -440,22 +440,22 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-documentar-saber">
-            <h2><?php _e('Documentar un Saber Ancestral', 'flavor-chat-ia'); ?></h2>
-            <p class="flavor-intro"><?php _e('Ayuda a preservar el conocimiento tradicional de nuestra comunidad.', 'flavor-chat-ia'); ?></p>
+            <h2><?php _e('Documentar un Saber Ancestral', 'flavor-platform'); ?></h2>
+            <p class="flavor-intro"><?php _e('Ayuda a preservar el conocimiento tradicional de nuestra comunidad.', 'flavor-platform'); ?></p>
 
             <form id="flavor-form-documentar" class="flavor-form" enctype="multipart/form-data">
                 <?php wp_nonce_field('flavor_saberes_nonce', 'saber_nonce'); ?>
 
                 <div class="flavor-form-group">
-                    <label for="nombre"><?php _e('Nombre del saber', 'flavor-chat-ia'); ?> *</label>
+                    <label for="nombre"><?php _e('Nombre del saber', 'flavor-platform'); ?> *</label>
                     <input type="text" id="nombre" name="nombre" required
-                           placeholder="<?php esc_attr_e('Ej: Cestería de mimbre', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php esc_attr_e('Ej: Cestería de mimbre', 'flavor-platform'); ?>">
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="categoria"><?php _e('Categoría', 'flavor-chat-ia'); ?> *</label>
+                    <label for="categoria"><?php _e('Categoría', 'flavor-platform'); ?> *</label>
                     <select id="categoria" name="categoria" required>
-                        <option value=""><?php _e('Selecciona una categoría', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Selecciona una categoría', 'flavor-platform'); ?></option>
                         <?php foreach ($categorias as $cat): ?>
                         <option value="<?php echo esc_attr($cat['slug']); ?>"><?php echo esc_html($cat['nombre']); ?></option>
                         <?php endforeach; ?>
@@ -463,60 +463,60 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="descripcion"><?php _e('Descripción breve', 'flavor-chat-ia'); ?> *</label>
+                    <label for="descripcion"><?php _e('Descripción breve', 'flavor-platform'); ?> *</label>
                     <textarea id="descripcion" name="descripcion" rows="3" required
-                              placeholder="<?php esc_attr_e('Describe brevemente en qué consiste este saber...', 'flavor-chat-ia'); ?>"></textarea>
+                              placeholder="<?php esc_attr_e('Describe brevemente en qué consiste este saber...', 'flavor-platform'); ?>"></textarea>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="contenido"><?php _e('Contenido detallado', 'flavor-chat-ia'); ?></label>
+                    <label for="contenido"><?php _e('Contenido detallado', 'flavor-platform'); ?></label>
                     <textarea id="contenido" name="contenido" rows="6"
-                              placeholder="<?php esc_attr_e('Explica en detalle las técnicas, procesos, herramientas...', 'flavor-chat-ia'); ?>"></textarea>
+                              placeholder="<?php esc_attr_e('Explica en detalle las técnicas, procesos, herramientas...', 'flavor-platform'); ?>"></textarea>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="historia"><?php _e('Historia y origen', 'flavor-chat-ia'); ?></label>
+                    <label for="historia"><?php _e('Historia y origen', 'flavor-platform'); ?></label>
                     <textarea id="historia" name="historia" rows="4"
-                              placeholder="<?php esc_attr_e('¿De dónde viene este saber? ¿Quién te lo enseñó?', 'flavor-chat-ia'); ?>"></textarea>
+                              placeholder="<?php esc_attr_e('¿De dónde viene este saber? ¿Quién te lo enseñó?', 'flavor-platform'); ?>"></textarea>
                 </div>
 
                 <div class="flavor-form-row">
                     <div class="flavor-form-group">
-                        <label for="duracion"><?php _e('Duración aproximada de aprendizaje', 'flavor-chat-ia'); ?></label>
-                        <input type="text" id="duracion" name="duracion" placeholder="<?php esc_attr_e('Ej: 3-6 meses', 'flavor-chat-ia'); ?>">
+                        <label for="duracion"><?php _e('Duración aproximada de aprendizaje', 'flavor-platform'); ?></label>
+                        <input type="text" id="duracion" name="duracion" placeholder="<?php esc_attr_e('Ej: 3-6 meses', 'flavor-platform'); ?>">
                     </div>
                     <div class="flavor-form-group">
-                        <label for="nivel"><?php _e('Nivel de dificultad', 'flavor-chat-ia'); ?></label>
+                        <label for="nivel"><?php _e('Nivel de dificultad', 'flavor-platform'); ?></label>
                         <select id="nivel" name="nivel">
-                            <option value="basico"><?php _e('Básico', 'flavor-chat-ia'); ?></option>
-                            <option value="intermedio"><?php _e('Intermedio', 'flavor-chat-ia'); ?></option>
-                            <option value="avanzado"><?php _e('Avanzado', 'flavor-chat-ia'); ?></option>
+                            <option value="basico"><?php _e('Básico', 'flavor-platform'); ?></option>
+                            <option value="intermedio"><?php _e('Intermedio', 'flavor-platform'); ?></option>
+                            <option value="avanzado"><?php _e('Avanzado', 'flavor-platform'); ?></option>
                         </select>
                     </div>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="materiales"><?php _e('Materiales necesarios', 'flavor-chat-ia'); ?></label>
+                    <label for="materiales"><?php _e('Materiales necesarios', 'flavor-platform'); ?></label>
                     <input type="text" id="materiales" name="materiales"
-                           placeholder="<?php esc_attr_e('Lista los materiales o herramientas necesarias', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php esc_attr_e('Lista los materiales o herramientas necesarias', 'flavor-platform'); ?>">
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="imagen"><?php _e('Imagen representativa', 'flavor-chat-ia'); ?></label>
+                    <label for="imagen"><?php _e('Imagen representativa', 'flavor-platform'); ?></label>
                     <input type="file" id="imagen" name="imagen" accept="image/*">
                 </div>
 
                 <div class="flavor-form-group flavor-checkbox-group">
                     <label>
                         <input type="checkbox" name="disponible_ensenar" value="1" checked>
-                        <?php _e('Estoy disponible para enseñar este saber', 'flavor-chat-ia'); ?>
+                        <?php _e('Estoy disponible para enseñar este saber', 'flavor-platform'); ?>
                     </label>
                 </div>
 
                 <div class="flavor-form-actions">
                     <button type="submit" class="flavor-btn flavor-btn-primary flavor-btn-lg">
                         <span class="dashicons dashicons-yes"></span>
-                        <?php _e('Documentar saber', 'flavor-chat-ia'); ?>
+                        <?php _e('Documentar saber', 'flavor-platform'); ?>
                     </button>
                 </div>
             </form>
@@ -527,7 +527,7 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
 
     public function shortcode_mis_aprendizajes($atts) {
         if (!is_user_logged_in()) {
-            return '<div class="flavor-login-required">' . __('Inicia sesión para ver tus aprendizajes.', 'flavor-chat-ia') . '</div>';
+            return '<div class="flavor-login-required">' . __('Inicia sesión para ver tus aprendizajes.', 'flavor-platform') . '</div>';
         }
 
         $user_id = get_current_user_id();
@@ -539,10 +539,10 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
         <div class="flavor-mis-aprendizajes">
             <div class="flavor-tabs">
                 <button class="flavor-tab activo" data-tab="aprendizajes">
-                    <?php _e('Lo que aprendo', 'flavor-chat-ia'); ?>
+                    <?php _e('Lo que aprendo', 'flavor-platform'); ?>
                 </button>
                 <button class="flavor-tab" data-tab="ensenanzas">
-                    <?php _e('Lo que enseño', 'flavor-chat-ia'); ?>
+                    <?php _e('Lo que enseño', 'flavor-platform'); ?>
                 </button>
             </div>
 
@@ -550,9 +550,9 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
                 <?php if (empty($aprendizajes)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-welcome-learn-more"></span>
-                    <p><?php _e('Aún no te has inscrito en ningún aprendizaje.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('Aún no te has inscrito en ningún aprendizaje.', 'flavor-platform'); ?></p>
                     <a href="<?php echo esc_url($this->get_catalogo_url()); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php _e('Explorar saberes', 'flavor-chat-ia'); ?>
+                        <?php _e('Explorar saberes', 'flavor-platform'); ?>
                     </a>
                 </div>
                 <?php else: ?>
@@ -561,7 +561,7 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
                     <div class="flavor-aprendizaje-item">
                         <div class="flavor-aprendizaje-info">
                             <h4><?php echo esc_html($aprendizaje['saber_nombre']); ?></h4>
-                            <p><?php _e('Maestro:', 'flavor-chat-ia'); ?> <?php echo esc_html($aprendizaje['maestro_nombre']); ?></p>
+                            <p><?php _e('Maestro:', 'flavor-platform'); ?> <?php echo esc_html($aprendizaje['maestro_nombre']); ?></p>
                             <span class="flavor-badge"><?php echo esc_html($aprendizaje['estado']); ?></span>
                         </div>
                         <div class="flavor-aprendizaje-progreso">
@@ -580,9 +580,9 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
                 <?php if (empty($ensenanzas)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-admin-users"></span>
-                    <p><?php _e('Aún no has documentado ningún saber.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('Aún no has documentado ningún saber.', 'flavor-platform'); ?></p>
                     <a href="<?php echo esc_url($this->get_documentar_url()); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php _e('Documentar saber', 'flavor-chat-ia'); ?>
+                        <?php _e('Documentar saber', 'flavor-platform'); ?>
                     </a>
                 </div>
                 <?php else: ?>
@@ -591,11 +591,11 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
                     <div class="flavor-ensenanza-item">
                         <div class="flavor-ensenanza-info">
                             <h4><?php echo esc_html($saber['nombre']); ?></h4>
-                            <p><?php printf(__('%d aprendices', 'flavor-chat-ia'), $saber['aprendices']); ?></p>
+                            <p><?php printf(__('%d aprendices', 'flavor-platform'), $saber['aprendices']); ?></p>
                         </div>
                         <a href="<?php echo esc_url($this->get_saber_url($saber['id'])); ?>"
                            class="flavor-btn flavor-btn-sm flavor-btn-outline">
-                            <?php _e('Gestionar', 'flavor-chat-ia'); ?>
+                            <?php _e('Gestionar', 'flavor-platform'); ?>
                         </a>
                     </div>
                     <?php endforeach; ?>
@@ -612,8 +612,8 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
         ?>
         <div class="flavor-mapa-saberes">
             <div class="flavor-mapa-header">
-                <h2><?php _e('Mapa de Saberes', 'flavor-chat-ia'); ?></h2>
-                <p><?php _e('Localización geográfica de los saberes y maestros de la comunidad.', 'flavor-chat-ia'); ?></p>
+                <h2><?php _e('Mapa de Saberes', 'flavor-platform'); ?></h2>
+                <p><?php _e('Localización geográfica de los saberes y maestros de la comunidad.', 'flavor-platform'); ?></p>
             </div>
             <div id="mapa-saberes" class="flavor-mapa-container"></div>
         </div>
@@ -627,24 +627,24 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-saberes-estadisticas">
-            <h2><?php _e('Estado de la Preservación', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Estado de la Preservación', 'flavor-platform'); ?></h2>
 
             <div class="flavor-stats-grid">
                 <div class="flavor-stat-card">
                     <span class="flavor-stat-valor"><?php echo intval($stats['total_saberes']); ?></span>
-                    <span class="flavor-stat-label"><?php _e('Saberes documentados', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-stat-label"><?php _e('Saberes documentados', 'flavor-platform'); ?></span>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="flavor-stat-valor"><?php echo intval($stats['total_maestros']); ?></span>
-                    <span class="flavor-stat-label"><?php _e('Maestros activos', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-stat-label"><?php _e('Maestros activos', 'flavor-platform'); ?></span>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="flavor-stat-valor"><?php echo intval($stats['total_aprendices']); ?></span>
-                    <span class="flavor-stat-label"><?php _e('Aprendices', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-stat-label"><?php _e('Aprendices', 'flavor-platform'); ?></span>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="flavor-stat-valor"><?php echo intval($stats['sesiones_mes']); ?></span>
-                    <span class="flavor-stat-label"><?php _e('Sesiones este mes', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-stat-label"><?php _e('Sesiones este mes', 'flavor-platform'); ?></span>
                 </div>
             </div>
         </div>
@@ -672,23 +672,23 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
             <div class="flavor-kpi-grid">
                 <div class="flavor-kpi-card">
                     <div class="flavor-kpi-valor"><?php echo intval($stats['aprendiendo']); ?></div>
-                    <div class="flavor-kpi-label"><?php _e('Aprendiendo', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-kpi-label"><?php _e('Aprendiendo', 'flavor-platform'); ?></div>
                 </div>
                 <div class="flavor-kpi-card">
                     <div class="flavor-kpi-valor"><?php echo intval($stats['ensenando']); ?></div>
-                    <div class="flavor-kpi-label"><?php _e('Enseñando', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-kpi-label"><?php _e('Enseñando', 'flavor-platform'); ?></div>
                 </div>
                 <div class="flavor-kpi-card">
                     <div class="flavor-kpi-valor"><?php echo intval($stats['sesiones_completadas']); ?></div>
-                    <div class="flavor-kpi-label"><?php _e('Sesiones', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-kpi-label"><?php _e('Sesiones', 'flavor-platform'); ?></div>
                 </div>
             </div>
 
             <div class="flavor-panel">
                 <div class="flavor-panel-header">
-                    <h3><?php _e('Mis Aprendizajes', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Mis Aprendizajes', 'flavor-platform'); ?></h3>
                     <a href="<?php echo esc_url($this->get_catalogo_url()); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
-                        <?php _e('Explorar saberes', 'flavor-chat-ia'); ?>
+                        <?php _e('Explorar saberes', 'flavor-platform'); ?>
                     </a>
                 </div>
                 <?php if (!empty($aprendizajes)): ?>
@@ -705,7 +705,7 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
                     <?php endforeach; ?>
                 </div>
                 <?php else: ?>
-                <p class="flavor-text-muted"><?php _e('No tienes aprendizajes activos.', 'flavor-chat-ia'); ?></p>
+                <p class="flavor-text-muted"><?php _e('No tienes aprendizajes activos.', 'flavor-platform'); ?></p>
                 <?php endif; ?>
             </div>
         </div>
@@ -720,7 +720,7 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
         check_ajax_referer('flavor_saberes_nonce', 'saber_nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-platform')]);
         }
 
         $nombre = sanitize_text_field($_POST['nombre'] ?? '');
@@ -728,14 +728,14 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
         $descripcion = sanitize_textarea_field($_POST['descripcion'] ?? '');
 
         if (empty($nombre) || empty($categoria) || empty($descripcion)) {
-            wp_send_json_error(['message' => __('Completa los campos obligatorios.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Completa los campos obligatorios.', 'flavor-platform')]);
         }
 
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_saberes_ancestrales';
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
-            wp_send_json_error(['message' => __('Sistema no disponible.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sistema no disponible.', 'flavor-platform')]);
         }
 
         $user_id = get_current_user_id();
@@ -767,11 +767,11 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
 
         if ($result) {
             wp_send_json_success([
-                'message' => __('Saber documentado correctamente.', 'flavor-chat-ia'),
+                'message' => __('Saber documentado correctamente.', 'flavor-platform'),
                 'redirect' => $this->get_saber_url($wpdb->insert_id),
             ]);
         } else {
-            wp_send_json_error(['message' => __('Error al guardar.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al guardar.', 'flavor-platform')]);
         }
     }
 
@@ -779,21 +779,21 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
         check_ajax_referer('flavor_saberes_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-platform')]);
         }
 
         $saber_id = intval($_POST['saber_id'] ?? 0);
         $user_id = get_current_user_id();
 
         if (!$saber_id) {
-            wp_send_json_error(['message' => __('Saber no especificado.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Saber no especificado.', 'flavor-platform')]);
         }
 
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_saberes_aprendices';
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
-            wp_send_json_error(['message' => __('Sistema no disponible.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sistema no disponible.', 'flavor-platform')]);
         }
 
         // Verificar si ya es aprendiz
@@ -803,7 +803,7 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
         ));
 
         if ($existe) {
-            wp_send_json_error(['message' => __('Ya eres aprendiz de este saber.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Ya eres aprendiz de este saber.', 'flavor-platform')]);
         }
 
         $result = $wpdb->insert($tabla, [
@@ -814,16 +814,16 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
         ]);
 
         if ($result) {
-            wp_send_json_success(['message' => __('Solicitud de aprendizaje enviada.', 'flavor-chat-ia')]);
+            wp_send_json_success(['message' => __('Solicitud de aprendizaje enviada.', 'flavor-platform')]);
         } else {
-            wp_send_json_error(['message' => __('Error al procesar.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al procesar.', 'flavor-platform')]);
         }
     }
 
     public function ajax_confirmar_sesion() {
         check_ajax_referer('flavor_saberes_nonce', 'nonce');
         // Implementación de confirmación de sesión
-        wp_send_json_success(['message' => __('Sesión confirmada.', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Sesión confirmada.', 'flavor-platform')]);
     }
 
     public function ajax_valorar() {
@@ -833,16 +833,16 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
         $valoracion = intval($_POST['valoracion'] ?? 0);
 
         if (!$saber_id || $valoracion < 1 || $valoracion > 5) {
-            wp_send_json_error(['message' => __('Datos inválidos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos inválidos.', 'flavor-platform')]);
         }
 
         // Guardar valoración
-        wp_send_json_success(['message' => __('Gracias por tu valoración.', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Gracias por tu valoración.', 'flavor-platform')]);
     }
 
     public function ajax_ofrecer_ensenanza() {
         check_ajax_referer('flavor_saberes_nonce', 'nonce');
-        wp_send_json_success(['message' => __('Oferta registrada.', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Oferta registrada.', 'flavor-platform')]);
     }
 
     public function ajax_buscar() {

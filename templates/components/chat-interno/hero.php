@@ -27,7 +27,7 @@ $caracteristicas_destacadas = $caracteristicas_destacadas ?? [
 <section class="flavor-component flavor-section relative overflow-hidden" style="background: linear-gradient(135deg, var(--flavor-primary, #F43F5E) 0%, var(--flavor-secondary, #EC4899) 100%); min-height: 500px;">
     <!-- Patron decorativo -->
     <div class="absolute inset-0 opacity-10">
-        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22><rect width=%2280%22 height=%2280%22 fill=%22none%22/><circle cx=%2240%22 cy=%2240%22 r=%222%22 fill=%22white%22/></svg><?php echo esc_html__('\'); background-size: 80px 80px;">', 'flavor-chat-ia'); ?></div>
+        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22><rect width=%2280%22 height=%2280%22 fill=%22none%22/><circle cx=%2240%22 cy=%2240%22 r=%222%22 fill=%22white%22/></svg><?php echo esc_html__('\'); background-size: 80px 80px;">', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 
     <div class="flavor-container relative z-10 py-16 lg:py-24">
@@ -37,7 +37,7 @@ $caracteristicas_destacadas = $caracteristicas_destacadas ?? [
                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                 </svg>
-                <span class="text-white text-sm font-medium"><?php echo esc_html__('Mensajeria segura', 'flavor-chat-ia'); ?></span>
+                <span class="text-white text-sm font-medium"><?php echo esc_html__('Mensajeria segura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
 
             <h1 class="text-4xl lg:text-5xl font-bold text-white mb-4">
@@ -66,7 +66,7 @@ $caracteristicas_destacadas = $caracteristicas_destacadas ?? [
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                 </svg>
-                <?php echo esc_html__('Empezar a Chatear', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Empezar a Chatear', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>

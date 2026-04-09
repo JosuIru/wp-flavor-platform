@@ -82,8 +82,8 @@ class Flavor_Reservas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
     public function __construct() {
         global $wpdb;
         $this->prefix_tabla = $wpdb->prefix . 'flavor_reservas_';
-        $this->title = __('Reservas', 'flavor-chat-ia');
-        $this->description = __('Reserva espacios y recursos comunitarios', 'flavor-chat-ia');
+        $this->title = __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Reserva espacios y recursos comunitarios', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         parent::__construct([
             'id' => $this->widget_id,
@@ -181,7 +181,7 @@ class Flavor_Reservas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $stats[] = [
                 'icon' => 'dashicons-calendar-alt',
                 'valor' => $proximas_reservas,
-                'label' => __('Próximas reservas', 'flavor-chat-ia'),
+                'label' => __('Próximas reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $proximas_reservas > 0 ? 'success' : 'gray',
                 'url' => $es_admin ? admin_url('admin.php?page=reservas') : add_query_arg('tab', 'mis-reservas', Flavor_Chat_Helpers::get_action_url('reservas', '')),
             ];
@@ -204,7 +204,7 @@ class Flavor_Reservas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $stats[] = [
                 'icon' => 'dashicons-warning',
                 'valor' => $pendientes_confirmacion,
-                'label' => __('Pendientes', 'flavor-chat-ia'),
+                'label' => __('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'warning',
                 'url' => $es_admin ? admin_url('admin.php?page=reservas&filter=pendientes') : add_query_arg(['tab' => 'mis-reservas', 'estado' => 'pendiente'], Flavor_Chat_Helpers::get_action_url('reservas', '')),
             ];
@@ -214,7 +214,7 @@ class Flavor_Reservas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         $stats[] = [
             'icon' => 'dashicons-building',
             'valor' => $total_recursos,
-            'label' => __('Espacios', 'flavor-chat-ia'),
+            'label' => __('Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'primary',
             'url' => $es_admin ? admin_url('admin.php?page=reservas&tab=recursos') : add_query_arg('tab', 'recursos', Flavor_Chat_Helpers::get_action_url('reservas', '')),
         ];
@@ -225,10 +225,10 @@ class Flavor_Reservas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats,
             'items' => $items,
-            'empty_state' => $user_id ? __('No tienes reservas próximas', 'flavor-chat-ia') : __('Inicia sesión para ver tus reservas', 'flavor-chat-ia'),
+            'empty_state' => $user_id ? __('No tienes reservas próximas', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Inicia sesión para ver tus reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => __('Nueva reserva', 'flavor-chat-ia'),
+                    'label' => __('Nueva reserva', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => $es_admin ? admin_url('admin.php?page=reservas&action=nueva') : add_query_arg('tab', 'nueva-reserva', Flavor_Chat_Helpers::get_action_url('reservas', '')),
                     'icon' => 'dashicons-plus-alt2',
                 ],
@@ -280,10 +280,10 @@ class Flavor_Reservas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
 
             $items[] = [
                 'icon' => $icono,
-                'title' => $reserva->recurso_nombre ?: __('Recurso', 'flavor-chat-ia'),
+                'title' => $reserva->recurso_nombre ?: __('Recurso', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'meta' => $fecha . ' · ' . $hora,
                 'url' => $es_admin ? admin_url('admin.php?page=reservas&id=' . $reserva->id) : add_query_arg(['tab' => 'mis-reservas', 'reserva_id' => $reserva->id], Flavor_Chat_Helpers::get_action_url('reservas', '')),
-                'badge' => $reserva->estado === 'pendiente' ? __('Pendiente', 'flavor-chat-ia') : null,
+                'badge' => $reserva->estado === 'pendiente' ? __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN) : null,
             ];
         }
 
@@ -332,7 +332,7 @@ class Flavor_Reservas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
 
             $capacidad_texto = '';
             if ($recurso->capacidad > 0) {
-                $capacidad_texto = sprintf(__('%d personas', 'flavor-chat-ia'), $recurso->capacidad);
+                $capacidad_texto = sprintf(__('%d personas', FLAVOR_PLATFORM_TEXT_DOMAIN), $recurso->capacidad);
             }
 
             $items[] = [

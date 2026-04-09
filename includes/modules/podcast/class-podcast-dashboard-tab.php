@@ -179,13 +179,13 @@ class Flavor_Podcast_Dashboard_Tab {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_podcast_dashboard_nonce'),
             'strings' => [
-                'confirmEliminar' => __('¿Eliminar este elemento del historial?', 'flavor-chat-ia'),
-                'confirmCancelar' => __('¿Cancelar esta suscripción?', 'flavor-chat-ia'),
-                'eliminado' => __('Eliminado correctamente', 'flavor-chat-ia'),
-                'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'favoritoAgregado' => __('Agregado a favoritos', 'flavor-chat-ia'),
-                'favoritoEliminado' => __('Eliminado de favoritos', 'flavor-chat-ia'),
-                'descargaIniciada' => __('Descarga iniciada', 'flavor-chat-ia'),
+                'confirmEliminar' => __('¿Eliminar este elemento del historial?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmCancelar' => __('¿Cancelar esta suscripción?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'eliminado' => __('Eliminado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'favoritoAgregado' => __('Agregado a favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'favoritoEliminado' => __('Eliminado de favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descargaIniciada' => __('Descarga iniciada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -208,7 +208,7 @@ class Flavor_Podcast_Dashboard_Tab {
     public function registrar_tabs($tabs) {
         // Tab de Suscripciones
         $tabs['podcast-suscripciones'] = [
-            'titulo'    => __('Mis Suscripciones', 'flavor-chat-ia'),
+            'titulo'    => __('Mis Suscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono'     => 'dashicons-rss',
             'prioridad' => 56,
             'callback'  => [$this, 'render_tab_suscripciones'],
@@ -217,7 +217,7 @@ class Flavor_Podcast_Dashboard_Tab {
 
         // Tab de Historial
         $tabs['podcast-historial'] = [
-            'titulo'    => __('Historial', 'flavor-chat-ia'),
+            'titulo'    => __('Historial', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono'     => 'dashicons-backup',
             'prioridad' => 57,
             'callback'  => [$this, 'render_tab_historial'],
@@ -226,7 +226,7 @@ class Flavor_Podcast_Dashboard_Tab {
 
         // Tab de Favoritos
         $tabs['podcast-favoritos'] = [
-            'titulo'    => __('Favoritos', 'flavor-chat-ia'),
+            'titulo'    => __('Favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono'     => 'dashicons-heart',
             'prioridad' => 58,
             'callback'  => [$this, 'render_tab_favoritos'],
@@ -235,7 +235,7 @@ class Flavor_Podcast_Dashboard_Tab {
 
         // Tab de Descargas
         $tabs['podcast-descargas'] = [
-            'titulo'    => __('Descargas', 'flavor-chat-ia'),
+            'titulo'    => __('Descargas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono'     => 'dashicons-download',
             'prioridad' => 59,
             'callback'  => [$this, 'render_tab_descargas'],
@@ -294,7 +294,7 @@ class Flavor_Podcast_Dashboard_Tab {
             <div class="flavor-tab-header">
                 <h2>
                     <span class="dashicons dashicons-rss"></span>
-                    <?php _e('Series Suscritas', 'flavor-chat-ia'); ?>
+                    <?php _e('Series Suscritas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <span class="flavor-badge flavor-badge-count">
                     <?php echo count($suscripciones); ?>
@@ -304,8 +304,8 @@ class Flavor_Podcast_Dashboard_Tab {
             <?php if (empty($suscripciones)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-rss"></span>
-                    <h3><?php _e('No tienes suscripciones', 'flavor-chat-ia'); ?></h3>
-                    <p><?php _e('Explora nuestro catálogo y suscríbete a las series que te interesen.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php _e('No tienes suscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php _e('Explora nuestro catálogo y suscríbete a las series que te interesen.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="flavor-suscripciones-grid">
@@ -323,7 +323,7 @@ class Flavor_Podcast_Dashboard_Tab {
                                 <?php if ($suscripcion->episodios_nuevos > 0): ?>
                                     <span class="flavor-badge-nuevo">
                                         <?php echo intval($suscripcion->episodios_nuevos); ?>
-                                        <?php _e('nuevo(s)', 'flavor-chat-ia'); ?>
+                                        <?php _e('nuevo(s)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </span>
                                 <?php endif; ?>
                             </div>
@@ -333,7 +333,7 @@ class Flavor_Podcast_Dashboard_Tab {
                                     <?php echo esc_html($suscripcion->serie_titulo); ?>
                                 </h3>
                                 <p class="flavor-suscripcion-autor">
-                                    <?php _e('Por', 'flavor-chat-ia'); ?>
+                                    <?php _e('Por', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     <?php echo esc_html($suscripcion->autor_nombre); ?>
                                 </p>
 
@@ -347,7 +347,7 @@ class Flavor_Podcast_Dashboard_Tab {
                                     <span>
                                         <span class="dashicons dashicons-playlist-audio"></span>
                                         <?php echo intval($suscripcion->total_episodios); ?>
-                                        <?php _e('episodios', 'flavor-chat-ia'); ?>
+                                        <?php _e('episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </span>
                                     <span>
                                         <span class="dashicons dashicons-groups"></span>
@@ -357,7 +357,7 @@ class Flavor_Podcast_Dashboard_Tab {
 
                                 <?php if (!empty($suscripcion->ultimo_episodio_titulo)): ?>
                                     <div class="flavor-ultimo-episodio">
-                                        <strong><?php _e('Último:', 'flavor-chat-ia'); ?></strong>
+                                        <strong><?php _e('Último:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                                         <?php echo esc_html(wp_trim_words($suscripcion->ultimo_episodio_titulo, 8)); ?>
                                         <span class="flavor-fecha">
                                             <?php echo human_time_diff(strtotime($suscripcion->ultimo_episodio_fecha)); ?>
@@ -370,7 +370,7 @@ class Flavor_Podcast_Dashboard_Tab {
                                 <a href="<?php echo esc_url(add_query_arg('serie', $suscripcion->serie_id)); ?>"
                                    class="flavor-btn flavor-btn-sm flavor-btn-primary">
                                     <span class="dashicons dashicons-controls-play"></span>
-                                    <?php _e('Escuchar', 'flavor-chat-ia'); ?>
+                                    <?php _e('Escuchar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                                 <button type="button"
                                         class="flavor-btn flavor-btn-sm flavor-btn-outline flavor-btn-cancelar-suscripcion"
@@ -443,12 +443,12 @@ class Flavor_Podcast_Dashboard_Tab {
             <div class="flavor-tab-header">
                 <h2>
                     <span class="dashicons dashicons-backup"></span>
-                    <?php _e('Historial de Reproducción', 'flavor-chat-ia'); ?>
+                    <?php _e('Historial de Reproducción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <?php if (!empty($historial)): ?>
                     <button type="button" class="flavor-btn flavor-btn-sm flavor-btn-outline flavor-btn-limpiar-historial">
                         <span class="dashicons dashicons-trash"></span>
-                        <?php _e('Limpiar todo', 'flavor-chat-ia'); ?>
+                        <?php _e('Limpiar todo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 <?php endif; ?>
             </div>
@@ -456,8 +456,8 @@ class Flavor_Podcast_Dashboard_Tab {
             <?php if (empty($historial)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-backup"></span>
-                    <h3><?php _e('Sin historial', 'flavor-chat-ia'); ?></h3>
-                    <p><?php _e('Los episodios que escuches aparecerán aquí.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php _e('Sin historial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php _e('Los episodios que escuches aparecerán aquí.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="flavor-historial-lista">
@@ -473,7 +473,7 @@ class Flavor_Podcast_Dashboard_Tab {
                                 <span class="flavor-progreso-texto">
                                     <?php if ($item->completado): ?>
                                         <span class="dashicons dashicons-yes-alt"></span>
-                                        <?php _e('Completado', 'flavor-chat-ia'); ?>
+                                        <?php _e('Completado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     <?php else: ?>
                                         <?php echo $this->formatear_duracion($item->posicion_actual); ?> /
                                         <?php echo $this->formatear_duracion($item->duracion_segundos); ?>
@@ -492,13 +492,13 @@ class Flavor_Podcast_Dashboard_Tab {
                                         class="flavor-btn-icon flavor-btn-continuar"
                                         data-episodio-id="<?php echo intval($item->episodio_id); ?>"
                                         data-posicion="<?php echo intval($item->posicion_actual); ?>"
-                                        title="<?php esc_attr_e('Continuar', 'flavor-chat-ia'); ?>">
+                                        title="<?php esc_attr_e('Continuar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-controls-play"></span>
                                 </button>
                                 <button type="button"
                                         class="flavor-btn-icon flavor-btn-eliminar-historial"
                                         data-reproduccion-id="<?php echo intval($item->reproduccion_id); ?>"
-                                        title="<?php esc_attr_e('Eliminar del historial', 'flavor-chat-ia'); ?>">
+                                        title="<?php esc_attr_e('Eliminar del historial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-no-alt"></span>
                                 </button>
                             </div>
@@ -559,7 +559,7 @@ class Flavor_Podcast_Dashboard_Tab {
             <div class="flavor-tab-header">
                 <h2>
                     <span class="dashicons dashicons-heart"></span>
-                    <?php _e('Mis Favoritos', 'flavor-chat-ia'); ?>
+                    <?php _e('Mis Favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <span class="flavor-badge flavor-badge-count">
                     <?php echo count($favoritos); ?>
@@ -569,8 +569,8 @@ class Flavor_Podcast_Dashboard_Tab {
             <?php if (empty($favoritos)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-heart"></span>
-                    <h3><?php _e('Sin favoritos', 'flavor-chat-ia'); ?></h3>
-                    <p><?php _e('Marca episodios como favoritos para encontrarlos fácilmente.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php _e('Sin favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php _e('Marca episodios como favoritos para encontrarlos fácilmente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="flavor-favoritos-grid">
@@ -588,7 +588,7 @@ class Flavor_Podcast_Dashboard_Tab {
                                     <?php echo number_format_i18n($favorito->me_gusta); ?>
                                 </span>
                                 <span class="flavor-fecha">
-                                    <?php _e('Guardado', 'flavor-chat-ia'); ?>:
+                                    <?php _e('Guardado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>:
                                     <?php echo human_time_diff(strtotime($favorito->fecha_agregado)); ?>
                                 </span>
                             </div>
@@ -597,14 +597,14 @@ class Flavor_Podcast_Dashboard_Tab {
                                 <button type="button"
                                         class="flavor-btn-icon flavor-btn-quitar-favorito"
                                         data-episodio-id="<?php echo intval($favorito->episodio_id); ?>"
-                                        title="<?php esc_attr_e('Quitar de favoritos', 'flavor-chat-ia'); ?>">
+                                        title="<?php esc_attr_e('Quitar de favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-heart"></span>
                                 </button>
                                 <button type="button"
                                         class="flavor-btn-icon flavor-btn-descargar"
                                         data-episodio-id="<?php echo intval($favorito->episodio_id); ?>"
                                         data-url="<?php echo esc_url($favorito->archivo_url); ?>"
-                                        title="<?php esc_attr_e('Descargar', 'flavor-chat-ia'); ?>">
+                                        title="<?php esc_attr_e('Descargar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-download"></span>
                                 </button>
                             </div>
@@ -668,12 +668,12 @@ class Flavor_Podcast_Dashboard_Tab {
             <div class="flavor-tab-header">
                 <h2>
                     <span class="dashicons dashicons-download"></span>
-                    <?php _e('Mis Descargas', 'flavor-chat-ia'); ?>
+                    <?php _e('Mis Descargas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <div class="flavor-header-info">
                     <span class="flavor-badge flavor-badge-count">
                         <?php echo count($descargas); ?>
-                        <?php _e('episodios', 'flavor-chat-ia'); ?>
+                        <?php _e('episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                     <span class="flavor-espacio-total">
                         <?php echo $this->formatear_tamano($espacio_total); ?>
@@ -684,8 +684,8 @@ class Flavor_Podcast_Dashboard_Tab {
             <?php if (empty($descargas)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-download"></span>
-                    <h3><?php _e('Sin descargas', 'flavor-chat-ia'); ?></h3>
-                    <p><?php _e('Descarga episodios para escucharlos sin conexión.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php _e('Sin descargas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php _e('Descarga episodios para escucharlos sin conexión.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="flavor-descargas-lista">
@@ -713,13 +713,13 @@ class Flavor_Podcast_Dashboard_Tab {
                                 <a href="<?php echo esc_url($descarga->archivo_url); ?>"
                                    class="flavor-btn-icon"
                                    download
-                                   title="<?php esc_attr_e('Descargar de nuevo', 'flavor-chat-ia'); ?>">
+                                   title="<?php esc_attr_e('Descargar de nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-download"></span>
                                 </a>
                                 <button type="button"
                                         class="flavor-btn-icon flavor-btn-eliminar-descarga"
                                         data-descarga-id="<?php echo intval($descarga->descarga_id); ?>"
-                                        title="<?php esc_attr_e('Eliminar descarga', 'flavor-chat-ia'); ?>">
+                                        title="<?php esc_attr_e('Eliminar descarga', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-trash"></span>
                                 </button>
                             </div>
@@ -805,10 +805,10 @@ class Flavor_Podcast_Dashboard_Tab {
         ?>
         <div class="flavor-login-required">
             <span class="dashicons dashicons-lock"></span>
-            <h3><?php _e('Inicia sesión', 'flavor-chat-ia'); ?></h3>
-            <p><?php _e('Necesitas iniciar sesión para ver esta sección.', 'flavor-chat-ia'); ?></p>
+            <h3><?php _e('Inicia sesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php _e('Necesitas iniciar sesión para ver esta sección.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <a href="<?php echo wp_login_url(flavor_current_request_url()); ?>" class="flavor-btn flavor-btn-primary">
-                <?php _e('Iniciar sesión', 'flavor-chat-ia'); ?>
+                <?php _e('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
         <?php
@@ -875,12 +875,12 @@ class Flavor_Podcast_Dashboard_Tab {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $episodio_id = intval($_POST['episodio_id'] ?? 0);
         if (!$episodio_id) {
-            wp_send_json_error(['message' => __('Episodio no válido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Episodio no válido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -912,7 +912,7 @@ class Flavor_Podcast_Dashboard_Tab {
 
             wp_send_json_success([
                 'action' => 'removed',
-                'message' => __('Eliminado de favoritos', 'flavor-chat-ia'),
+                'message' => __('Eliminado de favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         } else {
             // Agregar a favoritos
@@ -934,7 +934,7 @@ class Flavor_Podcast_Dashboard_Tab {
 
             wp_send_json_success([
                 'action' => 'added',
-                'message' => __('Agregado a favoritos', 'flavor-chat-ia'),
+                'message' => __('Agregado a favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
     }
@@ -947,14 +947,14 @@ class Flavor_Podcast_Dashboard_Tab {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $episodio_id = intval($_POST['episodio_id'] ?? 0);
         $dispositivo = sanitize_text_field($_POST['dispositivo'] ?? '');
 
         if (!$episodio_id) {
-            wp_send_json_error(['message' => __('Episodio no válido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Episodio no válido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1003,7 +1003,7 @@ class Flavor_Podcast_Dashboard_Tab {
         }
 
         wp_send_json_success([
-            'message' => __('Descarga registrada', 'flavor-chat-ia'),
+            'message' => __('Descarga registrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -1015,7 +1015,7 @@ class Flavor_Podcast_Dashboard_Tab {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $reproduccion_id = intval($_POST['reproduccion_id'] ?? 0);
@@ -1032,7 +1032,7 @@ class Flavor_Podcast_Dashboard_Tab {
             );
 
             wp_send_json_success([
-                'message' => sprintf(__('%d elementos eliminados', 'flavor-chat-ia'), $eliminados),
+                'message' => sprintf(__('%d elementos eliminados', FLAVOR_PLATFORM_TEXT_DOMAIN), $eliminados),
                 'cleared_all' => true,
             ]);
         } elseif ($reproduccion_id) {
@@ -1044,7 +1044,7 @@ class Flavor_Podcast_Dashboard_Tab {
             ));
 
             if (!$pertenece) {
-                wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
+                wp_send_json_error(['message' => __('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             }
 
             $wpdb->delete(
@@ -1054,10 +1054,10 @@ class Flavor_Podcast_Dashboard_Tab {
             );
 
             wp_send_json_success([
-                'message' => __('Eliminado del historial', 'flavor-chat-ia'),
+                'message' => __('Eliminado del historial', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         } else {
-            wp_send_json_error(['message' => __('Parámetros inválidos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Parámetros inválidos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -1069,12 +1069,12 @@ class Flavor_Podcast_Dashboard_Tab {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $serie_id = intval($_POST['serie_id'] ?? 0);
         if (!$serie_id) {
-            wp_send_json_error(['message' => __('Serie no válida', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Serie no válida', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1097,10 +1097,10 @@ class Flavor_Podcast_Dashboard_Tab {
             ));
 
             wp_send_json_success([
-                'message' => __('Suscripción cancelada', 'flavor-chat-ia'),
+                'message' => __('Suscripción cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         } else {
-            wp_send_json_error(['message' => __('No se pudo cancelar la suscripción', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No se pudo cancelar la suscripción', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -1112,12 +1112,12 @@ class Flavor_Podcast_Dashboard_Tab {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $descarga_id = intval($_POST['descarga_id'] ?? 0);
         if (!$descarga_id) {
-            wp_send_json_error(['message' => __('Descarga no válida', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Descarga no válida', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1130,7 +1130,7 @@ class Flavor_Podcast_Dashboard_Tab {
         ));
 
         if (!$pertenece) {
-            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Marcar como eliminado (soft delete)
@@ -1144,10 +1144,10 @@ class Flavor_Podcast_Dashboard_Tab {
 
         if ($actualizado !== false) {
             wp_send_json_success([
-                'message' => __('Descarga eliminada', 'flavor-chat-ia'),
+                'message' => __('Descarga eliminada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         } else {
-            wp_send_json_error(['message' => __('No se pudo eliminar la descarga', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No se pudo eliminar la descarga', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 }

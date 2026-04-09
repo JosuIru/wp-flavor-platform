@@ -17,17 +17,17 @@ get_header();
 <div class="mi-red-login-required">
     <div class="mi-red-login-required__card">
         <div class="mi-red-login-required__icon">🔐</div>
-        <h1 class="mi-red-login-required__title"><?php esc_html_e('Inicia sesión para continuar', 'flavor-chat-ia'); ?></h1>
+        <h1 class="mi-red-login-required__title"><?php esc_html_e('Inicia sesión para continuar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
         <p class="mi-red-login-required__text">
-            <?php esc_html_e('Necesitas iniciar sesión para acceder a Mi Red Social y conectar con la comunidad.', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Necesitas iniciar sesión para acceder a Mi Red Social y conectar con la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
         <div class="mi-red-login-required__actions">
             <a href="<?php echo esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('mi_red', ''))); ?>" class="mi-red-btn mi-red-btn--primary">
-                <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <?php if (get_option('users_can_register')) : ?>
                 <a href="<?php echo esc_url(wp_registration_url()); ?>" class="mi-red-btn mi-red-btn--outline">
-                    <?php esc_html_e('Crear cuenta', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Crear cuenta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             <?php endif; ?>
         </div>

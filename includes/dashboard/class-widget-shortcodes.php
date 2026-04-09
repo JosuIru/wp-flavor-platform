@@ -99,10 +99,10 @@ class Flavor_Widget_Shortcodes {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce'   => wp_create_nonce('flavor_widget_shortcode'),
             'i18n'    => [
-                'loading'    => __('Cargando...', 'flavor-chat-ia'),
-                'error'      => __('Error al cargar el widget', 'flavor-chat-ia'),
-                'retry'      => __('Reintentar', 'flavor-chat-ia'),
-                'noAccess'   => __('No tienes acceso a este widget', 'flavor-chat-ia'),
+                'loading'    => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error'      => __('Error al cargar el widget', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'retry'      => __('Reintentar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'noAccess'   => __('No tienes acceso a este widget', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -156,7 +156,7 @@ class Flavor_Widget_Shortcodes {
 
         // Validar ID
         if (empty($atts['id'])) {
-            return $this->render_error(__('ID de widget no especificado', 'flavor-chat-ia'));
+            return $this->render_error(__('ID de widget no especificado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Obtener el registro de widgets
@@ -165,7 +165,7 @@ class Flavor_Widget_Shortcodes {
 
         if (!$widget) {
             return $this->render_error(
-                sprintf(__('Widget "%s" no encontrado', 'flavor-chat-ia'), esc_html($atts['id']))
+                sprintf(__('Widget "%s" no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($atts['id']))
             );
         }
 
@@ -263,7 +263,7 @@ class Flavor_Widget_Shortcodes {
         ], $atts, 'flavor_widgets');
 
         if (empty($atts['ids'])) {
-            return $this->render_error(__('No se especificaron widgets', 'flavor-chat-ia'));
+            return $this->render_error(__('No se especificaron widgets', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $widget_ids = array_map('trim', explode(',', $atts['ids']));
@@ -315,14 +315,14 @@ class Flavor_Widget_Shortcodes {
         ], $atts, 'flavor_widgets_categoria');
 
         if (empty($atts['categoria'])) {
-            return $this->render_error(__('Categoría no especificada', 'flavor-chat-ia'));
+            return $this->render_error(__('Categoría no especificada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $registry = Flavor_Widget_Registry::get_instance();
         $widgets = $registry->get_by_category($atts['categoria']);
 
         if (empty($widgets)) {
-            return $this->render_empty(__('No hay widgets en esta categoría', 'flavor-chat-ia'));
+            return $this->render_empty(__('No hay widgets en esta categoría', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Limitar cantidad
@@ -389,10 +389,10 @@ class Flavor_Widget_Shortcodes {
         <div class="fws-selector">
             <h3 class="fws-selector__title">
                 <span class="dashicons dashicons-screenoptions"></span>
-                <?php _e('Widgets Disponibles', 'flavor-chat-ia'); ?>
+                <?php _e('Widgets Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <p class="fws-selector__description">
-                <?php _e('Copia el shortcode del widget que quieras insertar:', 'flavor-chat-ia'); ?>
+                <?php _e('Copia el shortcode del widget que quieras insertar:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
 
             <?php foreach ($categories as $cat_id => $cat_info):
@@ -428,7 +428,7 @@ class Flavor_Widget_Shortcodes {
             <?php endforeach; ?>
 
             <div class="fws-selector__tips">
-                <h4><?php _e('Ejemplos de uso:', 'flavor-chat-ia'); ?></h4>
+                <h4><?php _e('Ejemplos de uso:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                 <code>[flavor_widget id="eventos" estilo="glass"]</code>
                 <code>[flavor_widgets ids="eventos,reservas,socios" columnas="3"]</code>
                 <code>[flavor_widgets_categoria categoria="economia" limite="4"]</code>
@@ -517,9 +517,9 @@ class Flavor_Widget_Shortcodes {
                 <p>%s</p>
                 <a href="%s" class="fws-login-button">%s</a>
             </div>',
-            esc_html__('Inicia sesión para ver este contenido', 'flavor-chat-ia'),
+            esc_html__('Inicia sesión para ver este contenido', FLAVOR_PLATFORM_TEXT_DOMAIN),
             esc_url($login_url),
-            esc_html__('Iniciar sesión', 'flavor-chat-ia')
+            esc_html__('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)
         );
     }
 

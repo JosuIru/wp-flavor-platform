@@ -44,7 +44,7 @@ $rating = floatval($reputacion['rating_promedio'] ?? 0);
         <div class="bt-reputacion__avatar">
             <img src="<?php echo esc_url($reputacion['avatar']); ?>" alt="<?php echo esc_attr($reputacion['nombre']); ?>">
             <?php if ($estado === 'verificado' || $estado === 'destacado' || $estado === 'mentor'): ?>
-                <span class="bt-reputacion__verificado" title="<?php esc_attr_e('Usuario verificado', 'flavor-chat-ia'); ?>">
+                <span class="bt-reputacion__verificado" title="<?php esc_attr_e('Usuario verificado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-yes-alt"></span>
                 </span>
             <?php endif; ?>
@@ -53,10 +53,10 @@ $rating = floatval($reputacion['rating_promedio'] ?? 0);
             <h3 class="bt-reputacion__nombre"><?php echo esc_html($reputacion['nombre']); ?></h3>
             <div class="bt-reputacion__nivel">
                 <span class="bt-reputacion__nivel-badge">
-                    <?php printf(esc_html__('Nivel %d', 'flavor-chat-ia'), $nivel); ?>
+                    <?php printf(esc_html__('Nivel %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $nivel); ?>
                 </span>
                 <span class="bt-reputacion__puntos">
-                    <?php printf(esc_html__('%d pts confianza', 'flavor-chat-ia'), intval($reputacion['puntos_confianza'])); ?>
+                    <?php printf(esc_html__('%d pts confianza', FLAVOR_PLATFORM_TEXT_DOMAIN), intval($reputacion['puntos_confianza'])); ?>
                 </span>
             </div>
         </div>
@@ -72,7 +72,7 @@ $rating = floatval($reputacion['rating_promedio'] ?? 0);
         </div>
         <span class="bt-reputacion__total-intercambios">
             <?php printf(
-                esc_html(_n('%d intercambio', '%d intercambios', intval($reputacion['total_intercambios_completados']), 'flavor-chat-ia')),
+                esc_html(_n('%d intercambio', '%d intercambios', intval($reputacion['total_intercambios_completados']), FLAVOR_PLATFORM_TEXT_DOMAIN)),
                 intval($reputacion['total_intercambios_completados'])
             ); ?>
         </span>
@@ -82,11 +82,11 @@ $rating = floatval($reputacion['rating_promedio'] ?? 0);
     <div class="bt-reputacion__stats">
         <div class="bt-reputacion__stat">
             <span class="bt-reputacion__stat-valor"><?php echo esc_html(number_format($reputacion['total_horas_dadas'], 1)); ?>h</span>
-            <span class="bt-reputacion__stat-label"><?php esc_html_e('Horas dadas', 'flavor-chat-ia'); ?></span>
+            <span class="bt-reputacion__stat-label"><?php esc_html_e('Horas dadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="bt-reputacion__stat">
             <span class="bt-reputacion__stat-valor"><?php echo esc_html(number_format($reputacion['total_horas_recibidas'], 1)); ?>h</span>
-            <span class="bt-reputacion__stat-label"><?php esc_html_e('Horas recibidas', 'flavor-chat-ia'); ?></span>
+            <span class="bt-reputacion__stat-label"><?php esc_html_e('Horas recibidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="bt-reputacion__stat">
             <?php
@@ -96,30 +96,30 @@ $rating = floatval($reputacion['rating_promedio'] ?? 0);
             <span class="bt-reputacion__stat-valor bt-reputacion__stat-valor--<?php echo esc_attr($clase_saldo); ?>">
                 <?php echo ($saldo >= 0 ? '+' : '') . esc_html(number_format($saldo, 1)); ?>h
             </span>
-            <span class="bt-reputacion__stat-label"><?php esc_html_e('Balance', 'flavor-chat-ia'); ?></span>
+            <span class="bt-reputacion__stat-label"><?php esc_html_e('Balance', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
     </div>
 
     <!-- Ratings detallados -->
     <?php if ($reputacion['total_intercambios_completados'] > 0): ?>
         <div class="bt-reputacion__ratings-detalle">
-            <h4><?php esc_html_e('Valoraciones', 'flavor-chat-ia'); ?></h4>
+            <h4><?php esc_html_e('Valoraciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
             <div class="bt-reputacion__rating-item">
-                <span class="bt-reputacion__rating-label"><?php esc_html_e('Puntualidad', 'flavor-chat-ia'); ?></span>
+                <span class="bt-reputacion__rating-label"><?php esc_html_e('Puntualidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <div class="bt-reputacion__rating-bar">
                     <div class="bt-reputacion__rating-fill" style="width: <?php echo esc_attr(($reputacion['rating_puntualidad'] / 5) * 100); ?>%"></div>
                 </div>
                 <span class="bt-reputacion__rating-num"><?php echo esc_html(number_format($reputacion['rating_puntualidad'], 1)); ?></span>
             </div>
             <div class="bt-reputacion__rating-item">
-                <span class="bt-reputacion__rating-label"><?php esc_html_e('Calidad', 'flavor-chat-ia'); ?></span>
+                <span class="bt-reputacion__rating-label"><?php esc_html_e('Calidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <div class="bt-reputacion__rating-bar">
                     <div class="bt-reputacion__rating-fill" style="width: <?php echo esc_attr(($reputacion['rating_calidad'] / 5) * 100); ?>%"></div>
                 </div>
                 <span class="bt-reputacion__rating-num"><?php echo esc_html(number_format($reputacion['rating_calidad'], 1)); ?></span>
             </div>
             <div class="bt-reputacion__rating-item">
-                <span class="bt-reputacion__rating-label"><?php esc_html_e('Comunicación', 'flavor-chat-ia'); ?></span>
+                <span class="bt-reputacion__rating-label"><?php esc_html_e('Comunicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <div class="bt-reputacion__rating-bar">
                     <div class="bt-reputacion__rating-fill" style="width: <?php echo esc_attr(($reputacion['rating_comunicacion'] / 5) * 100); ?>%"></div>
                 </div>
@@ -131,7 +131,7 @@ $rating = floatval($reputacion['rating_promedio'] ?? 0);
     <!-- Badges -->
     <?php if (!empty($badges_info)): ?>
         <div class="bt-reputacion__badges">
-            <h4><?php esc_html_e('Insignias obtenidas', 'flavor-chat-ia'); ?></h4>
+            <h4><?php esc_html_e('Insignias obtenidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
             <div class="bt-reputacion__badges-grid">
                 <?php foreach ($badges_info as $badge): ?>
                     <div class="bt-reputacion__badge" title="<?php echo esc_attr($badge['descripcion']); ?>">
@@ -143,7 +143,7 @@ $rating = floatval($reputacion['rating_promedio'] ?? 0);
         </div>
     <?php else: ?>
         <div class="bt-reputacion__badges bt-reputacion__badges--vacio">
-            <p><?php esc_html_e('Completa tu primer intercambio para obtener tu primera insignia.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('Completa tu primer intercambio para obtener tu primera insignia.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php endif; ?>
 
@@ -152,7 +152,7 @@ $rating = floatval($reputacion['rating_promedio'] ?? 0);
         <div class="bt-reputacion__footer">
             <span class="dashicons dashicons-calendar-alt"></span>
             <?php printf(
-                esc_html__('Miembro desde %s', 'flavor-chat-ia'),
+                esc_html__('Miembro desde %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 esc_html(date_i18n(get_option('date_format'), strtotime($reputacion['fecha_primer_intercambio'])))
             ); ?>
         </div>

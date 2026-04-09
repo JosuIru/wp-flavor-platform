@@ -56,13 +56,13 @@ foreach ($events as $event) {
 
 // Días de la semana
 $weekdays = [
-    __('D', 'flavor-chat-ia'),
-    __('L', 'flavor-chat-ia'),
-    __('M', 'flavor-chat-ia'),
-    __('X', 'flavor-chat-ia'),
-    __('J', 'flavor-chat-ia'),
-    __('V', 'flavor-chat-ia'),
-    __('S', 'flavor-chat-ia'),
+    __('D', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    __('L', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    __('M', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    __('X', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    __('J', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    __('V', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    __('S', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $calendar_id = 'calendar-' . wp_rand(1000, 9999);
@@ -164,7 +164,7 @@ $calendar_id = 'calendar-' . wp_rand(1000, 9999);
     if (!empty($show_events)):
     ?>
         <div class="border-t border-gray-100 p-3">
-            <h4 class="text-xs font-medium text-gray-500 mb-2"><?php esc_html_e('Hoy', 'flavor-chat-ia'); ?></h4>
+            <h4 class="text-xs font-medium text-gray-500 mb-2"><?php esc_html_e('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
             <div class="space-y-2">
                 <?php foreach (array_slice($show_events, 0, 3) as $event):
                     $event_color = $event['color'] ?? $color;

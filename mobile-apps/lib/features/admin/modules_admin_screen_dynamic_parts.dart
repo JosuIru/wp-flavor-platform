@@ -90,7 +90,6 @@ Widget _buildAdminModuleScreen(String moduleId, String moduleName) {
     case 'woocommerce':
       return const WooCommerceAdminScreen();
     case 'campamentos':
-    case 'basabere-campamentos':
       return const CampsManagementScreen();
     case 'avisos_municipales':
     case 'avisos-municipales':

@@ -20,21 +20,21 @@ if (isset($estadisticas) && is_array($estadisticas)) {
     <div class="flavor-admin-widget-mapa-actores">
         <ul class="flavor-widget-list">
             <li>
-                <strong><?php esc_html_e('Total actores', 'flavor-chat-ia'); ?>:</strong>
+                <strong><?php esc_html_e('Total actores', 'flavor-platform'); ?>:</strong>
                 <?php echo esc_html(number_format_i18n($total)); ?>
             </li>
             <li>
-                <strong><?php esc_html_e('Aliados', 'flavor-chat-ia'); ?>:</strong>
+                <strong><?php esc_html_e('Aliados', 'flavor-platform'); ?>:</strong>
                 <?php echo esc_html(number_format_i18n($aliados)); ?>
             </li>
             <li>
-                <strong><?php esc_html_e('Opositores', 'flavor-chat-ia'); ?>:</strong>
+                <strong><?php esc_html_e('Opositores', 'flavor-platform'); ?>:</strong>
                 <?php echo esc_html(number_format_i18n($opositores)); ?>
             </li>
         </ul>
         <p style="margin: 10px 0 0;">
             <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado')); ?>" class="button button-small">
-                <?php esc_html_e('Ver listado', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver listado', 'flavor-platform'); ?>
             </a>
         </p>
     </div>
@@ -48,5 +48,5 @@ if (isset($this) && method_exists($this, 'render_admin_dashboard')) {
 }
 
 echo '<div class="notice notice-error"><p>'
-    . esc_html__('No se pudo renderizar el dashboard de mapa de actores.', 'flavor-chat-ia')
+    . esc_html__('No se pudo renderizar el dashboard de mapa de actores.', 'flavor-platform')
     . '</p></div>';

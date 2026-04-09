@@ -15,8 +15,8 @@ const DYNAMIC_CACHE = CACHE_VERSION + '-dynamic';
 
 // Assets a cachear inmediatamente
 const STATIC_ASSETS = [
-	'/wp-content/plugins/flavor-chat-ia/assets/css/mi-red-social.css',
-	'/wp-content/plugins/flavor-chat-ia/assets/js/mi-red-social.js',
+	'/wp-content/plugins/flavor-platform/assets/css/mi-red-social.css',
+	'/wp-content/plugins/flavor-platform/assets/js/mi-red-social.js',
 ];
 
 // Instalar Service Worker
@@ -76,8 +76,8 @@ self.addEventListener('push', (event) => {
 	const data = event.data.json();
 	const options = {
 		body: data.body || '',
-		icon: data.icon || '/wp-content/plugins/flavor-chat-ia/assets/img/notification-icon.png',
-		badge: '/wp-content/plugins/flavor-chat-ia/assets/img/badge-icon.png',
+		icon: data.icon || '/wp-content/plugins/flavor-platform/assets/img/notification-icon.png',
+		badge: '/wp-content/plugins/flavor-platform/assets/img/badge-icon.png',
 		vibrate: [100, 50, 100],
 		data: {
 			url: data.url || '/mi-portal/mi-red/',

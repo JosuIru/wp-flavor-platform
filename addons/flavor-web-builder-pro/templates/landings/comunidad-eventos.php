@@ -9,33 +9,33 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$titulo = $titulo ?? __('Próximos Eventos', 'flavor-chat-ia');
+$titulo = $titulo ?? __('Próximos Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $color_primario = $color_primario ?? '#e91e63';
 
 $eventos_default = [
     [
-        'titulo' => __('Asamblea General', 'flavor-chat-ia'),
+        'titulo' => __('Asamblea General', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'fecha' => date('Y-m-d', strtotime('+5 days')),
         'hora' => '18:00',
-        'lugar' => __('Salón de Actos', 'flavor-chat-ia'),
+        'lugar' => __('Salón de Actos', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'tipo' => 'asamblea',
         'plazas' => 50,
         'inscritos' => 32,
     ],
     [
-        'titulo' => __('Taller de Huerto Urbano', 'flavor-chat-ia'),
+        'titulo' => __('Taller de Huerto Urbano', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'fecha' => date('Y-m-d', strtotime('+7 days')),
         'hora' => '10:00',
-        'lugar' => __('Huerto Comunitario', 'flavor-chat-ia'),
+        'lugar' => __('Huerto Comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'tipo' => 'taller',
         'plazas' => 15,
         'inscritos' => 12,
     ],
     [
-        'titulo' => __('Mercadillo de Intercambio', 'flavor-chat-ia'),
+        'titulo' => __('Mercadillo de Intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'fecha' => date('Y-m-d', strtotime('+14 days')),
         'hora' => '11:00',
-        'lugar' => __('Plaza Central', 'flavor-chat-ia'),
+        'lugar' => __('Plaza Central', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'tipo' => 'mercadillo',
         'plazas' => 0,
         'inscritos' => 0,
@@ -58,11 +58,11 @@ $tipo_colores = [
         <div class="flavor-eventos-header">
             <div>
                 <h2 class="flavor-section-title"><?php echo esc_html($titulo); ?></h2>
-                <p class="flavor-eventos-subtitulo"><?php esc_html_e('Participa en las actividades de nuestra comunidad', 'flavor-chat-ia'); ?></p>
+                <p class="flavor-eventos-subtitulo"><?php esc_html_e('Participa en las actividades de nuestra comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <a href="<?php echo esc_url($mostrar_todos_url ?? '#eventos'); ?>" class="flavor-ver-calendario">
                 <span class="dashicons dashicons-calendar-alt"></span>
-                <?php esc_html_e('Ver calendario', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver calendario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
 
@@ -95,7 +95,7 @@ $tipo_colores = [
                             <?php if ($plazas_disponibles !== null): ?>
                                 <span class="flavor-detalle flavor-plazas <?php echo $plazas_disponibles < 5 ? 'flavor-plazas--pocas' : ''; ?>">
                                     <span class="dashicons dashicons-groups"></span>
-                                    <?php printf(esc_html__('%d plazas disponibles', 'flavor-chat-ia'), $plazas_disponibles); ?>
+                                    <?php printf(esc_html__('%d plazas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN), $plazas_disponibles); ?>
                                 </span>
                             <?php endif; ?>
                         </div>
@@ -103,7 +103,7 @@ $tipo_colores = [
 
                     <div class="flavor-evento-accion">
                         <a href="#inscribirse" class="flavor-inscribirse-btn">
-                            <?php esc_html_e('Inscribirse', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Inscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </article>
@@ -112,11 +112,11 @@ $tipo_colores = [
 
         <div class="flavor-eventos-cta">
             <div class="flavor-cta-content">
-                <h3><?php esc_html_e('¿Quieres organizar un evento?', 'flavor-chat-ia'); ?></h3>
-                <p><?php esc_html_e('Los miembros pueden proponer actividades para la comunidad', 'flavor-chat-ia'); ?></p>
+                <h3><?php esc_html_e('¿Quieres organizar un evento?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php esc_html_e('Los miembros pueden proponer actividades para la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <a href="#proponer" class="flavor-button flavor-button--outline">
-                <?php esc_html_e('Proponer evento', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Proponer evento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>

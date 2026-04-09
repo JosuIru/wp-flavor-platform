@@ -15,9 +15,9 @@ if (!defined('ABSPATH')) {
 
 if (!is_user_logged_in()) {
     echo '<div class="gc-pedidos-login">';
-    echo '<p>' . esc_html__('Inicia sesión para ver tus pedidos.', 'flavor-chat-ia') . '</p>';
+    echo '<p>' . esc_html__('Inicia sesión para ver tus pedidos.', 'flavor-platform') . '</p>';
     echo '<a href="' . esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mis-pedidos'))) . '" class="gc-btn gc-btn-primary">';
-    echo esc_html__('Iniciar sesión', 'flavor-chat-ia');
+    echo esc_html__('Iniciar sesión', 'flavor-platform');
     echo '</a></div>';
     return;
 }
@@ -45,16 +45,16 @@ $mensaje = '';
 $payment_status = isset($_GET['payment']) ? sanitize_key($_GET['payment']) : '';
 $pedido_destacado_id = isset($_GET['order']) ? absint($_GET['order']) : 0;
 if ($payment_status === 'success') {
-    $mensaje = '<div class="gc-notice gc-notice-success"><span class="dashicons dashicons-yes"></span> ' . esc_html__('Pago realizado correctamente.', 'flavor-chat-ia') . '</div>';
+    $mensaje = '<div class="gc-notice gc-notice-success"><span class="dashicons dashicons-yes"></span> ' . esc_html__('Pago realizado correctamente.', 'flavor-platform') . '</div>';
 } elseif ($payment_status === 'cancelled') {
-    $mensaje = '<div class="gc-notice gc-notice-warning"><span class="dashicons dashicons-info"></span> ' . esc_html__('El pago fue cancelado.', 'flavor-chat-ia') . '</div>';
+    $mensaje = '<div class="gc-notice gc-notice-warning"><span class="dashicons dashicons-info"></span> ' . esc_html__('El pago fue cancelado.', 'flavor-platform') . '</div>';
 }
 ?>
 
 <div class="gc-pedidos-container">
     <h2 class="gc-pedidos-title">
         <span class="dashicons dashicons-clipboard"></span>
-        <?php esc_html_e('Historial', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Historial', 'flavor-platform'); ?>
     </h2>
 
     <?php echo $mensaje; ?>
@@ -62,9 +62,9 @@ if ($payment_status === 'success') {
     <?php if (empty($entregas)) : ?>
     <div class="gc-pedidos-empty">
         <span class="dashicons dashicons-clipboard"></span>
-        <p><?php esc_html_e('Aún no tienes ningún pedido.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('Aún no tienes ningún pedido.', 'flavor-platform'); ?></p>
         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-primary">
-            <?php esc_html_e('Ver productos', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Ver productos', 'flavor-platform'); ?>
         </a>
     </div>
     <?php else : ?>
@@ -86,16 +86,16 @@ if ($payment_status === 'success') {
             switch ($entrega->estado_pago) {
                 case 'completado':
                     $estado_pago_class = 'gc-status-success';
-                    $estado_pago_label = __('Pagado', 'flavor-chat-ia');
+                    $estado_pago_label = __('Pagado', 'flavor-platform');
                     break;
                 case 'pendiente':
                 case 'pendiente_recogida':
                     $estado_pago_class = 'gc-status-warning';
-                    $estado_pago_label = __('Pendiente', 'flavor-chat-ia');
+                    $estado_pago_label = __('Pendiente', 'flavor-platform');
                     break;
                 case 'procesando':
                     $estado_pago_class = 'gc-status-info';
-                    $estado_pago_label = __('Procesando', 'flavor-chat-ia');
+                    $estado_pago_label = __('Procesando', 'flavor-platform');
                     break;
                 default:
                     $estado_pago_class = 'gc-status-secondary';
@@ -107,11 +107,11 @@ if ($payment_status === 'success') {
             switch ($entrega->estado_recogida ?? 'pendiente') {
                 case 'recogido':
                     $estado_recogida_class = 'gc-status-success';
-                    $estado_recogida_label = __('Recogido', 'flavor-chat-ia');
+                    $estado_recogida_label = __('Recogido', 'flavor-platform');
                     break;
                 case 'pendiente':
                     $estado_recogida_class = 'gc-status-warning';
-                    $estado_recogida_label = __('Por recoger', 'flavor-chat-ia');
+                    $estado_recogida_label = __('Por recoger', 'flavor-platform');
                     break;
                 default:
                     $estado_recogida_class = 'gc-status-secondary';
@@ -123,7 +123,7 @@ if ($payment_status === 'success') {
             <div class="gc-pedido-header">
                 <div class="gc-pedido-info">
                     <span class="gc-pedido-id">#<?php echo esc_html($entrega->id); ?></span>
-                    <span class="gc-pedido-ciclo"><?php echo esc_html($entrega->ciclo_nombre ?: __('Ciclo', 'flavor-chat-ia')); ?></span>
+                    <span class="gc-pedido-ciclo"><?php echo esc_html($entrega->ciclo_nombre ?: __('Ciclo', 'flavor-platform')); ?></span>
                 </div>
                 <div class="gc-pedido-estados">
                     <span class="gc-status-badge <?php echo esc_attr($estado_pago_class); ?>">
@@ -150,7 +150,7 @@ if ($payment_status === 'success') {
                     <?php endforeach; ?>
                     <?php if (count($items) > 3) : ?>
                     <div class="gc-pedido-mas">
-                        +<?php echo (count($items) - 3); ?> <?php esc_html_e('más', 'flavor-chat-ia'); ?>
+                        +<?php echo (count($items) - 3); ?> <?php esc_html_e('más', 'flavor-platform'); ?>
                     </div>
                     <?php endif; ?>
                 </div>
@@ -159,13 +159,13 @@ if ($payment_status === 'success') {
                     <?php if ($entrega->fecha_entrega) : ?>
                     <div class="gc-meta-item">
                         <span class="dashicons dashicons-calendar-alt"></span>
-                        <?php esc_html_e('Entrega:', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Entrega:', 'flavor-platform'); ?>
                         <?php echo esc_html(date_i18n(get_option('date_format'), strtotime($entrega->fecha_entrega))); ?>
                     </div>
                     <?php endif; ?>
                     <div class="gc-meta-item">
                         <span class="dashicons dashicons-clock"></span>
-                        <?php esc_html_e('Pedido:', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Pedido:', 'flavor-platform'); ?>
                         <?php echo esc_html(date_i18n(get_option('date_format'), strtotime($entrega->fecha_creacion))); ?>
                     </div>
                 </div>
@@ -173,7 +173,7 @@ if ($payment_status === 'success') {
 
             <div class="gc-pedido-footer">
                 <div class="gc-pedido-total">
-                    <span class="gc-total-label"><?php esc_html_e('Total:', 'flavor-chat-ia'); ?></span>
+                    <span class="gc-total-label"><?php esc_html_e('Total:', 'flavor-platform'); ?></span>
                     <span class="gc-total-value"><?php echo number_format($entrega->total_final, 2, ',', '.'); ?> €</span>
                 </div>
 
@@ -181,28 +181,28 @@ if ($payment_status === 'success') {
                     <?php if ($entrega->estado_pago === 'pendiente') : ?>
                     <a href="<?php echo esc_url(add_query_arg('entrega_id', $entrega->id, Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'checkout'))); ?>"
                        class="gc-btn gc-btn-primary gc-btn-sm">
-                        <?php esc_html_e('Pagar ahora', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Pagar ahora', 'flavor-platform'); ?>
                     </a>
                     <?php endif; ?>
 
                     <button type="button"
                             class="gc-btn gc-btn-secondary gc-btn-sm gc-btn-toggle-details"
                             data-entrega="<?php echo esc_attr($entrega->id); ?>">
-                        <?php esc_html_e('Ver detalles', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver detalles', 'flavor-platform'); ?>
                     </button>
                 </div>
             </div>
 
             <!-- Detalles expandibles -->
             <div class="gc-pedido-details" id="gc-details-<?php echo esc_attr($entrega->id); ?>" style="display: none;">
-                <h4><?php esc_html_e('Detalle del pedido', 'flavor-chat-ia'); ?></h4>
+                <h4><?php esc_html_e('Detalle del pedido', 'flavor-platform'); ?></h4>
                 <table class="gc-details-table">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('Producto', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Cantidad', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Precio', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Subtotal', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Producto', 'flavor-platform'); ?></th>
+                            <th><?php esc_html_e('Cantidad', 'flavor-platform'); ?></th>
+                            <th><?php esc_html_e('Precio', 'flavor-platform'); ?></th>
+                            <th><?php esc_html_e('Subtotal', 'flavor-platform'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -219,7 +219,7 @@ if ($payment_status === 'success') {
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="3"><?php esc_html_e('Total pedido', 'flavor-chat-ia'); ?></td>
+                            <td colspan="3"><?php esc_html_e('Total pedido', 'flavor-platform'); ?></td>
                             <td><strong><?php echo number_format($entrega->total_final, 2, ',', '.'); ?> €</strong></td>
                         </tr>
                     </tfoot>
@@ -227,7 +227,7 @@ if ($payment_status === 'success') {
 
                 <?php if ($entrega->notas) : ?>
                 <div class="gc-pedido-notas">
-                    <strong><?php esc_html_e('Notas:', 'flavor-chat-ia'); ?></strong>
+                    <strong><?php esc_html_e('Notas:', 'flavor-platform'); ?></strong>
                     <p><?php echo esc_html($entrega->notas); ?></p>
                 </div>
                 <?php endif; ?>
@@ -252,9 +252,9 @@ if ($payment_status === 'success') {
 
         $details.slideToggle(200, function() {
             if ($details.is(':visible')) {
-                $btn.text('<?php echo esc_js(__('Ocultar detalles', 'flavor-chat-ia')); ?>');
+                $btn.text('<?php echo esc_js(__('Ocultar detalles', 'flavor-platform')); ?>');
             } else {
-                $btn.text('<?php echo esc_js(__('Ver detalles', 'flavor-chat-ia')); ?>');
+                $btn.text('<?php echo esc_js(__('Ver detalles', 'flavor-platform')); ?>');
             }
         });
     });

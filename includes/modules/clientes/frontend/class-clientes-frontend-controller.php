@@ -79,8 +79,8 @@ class Flavor_Clientes_Frontend_Controller {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('clientes_nonce'),
             'i18n' => [
-                'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
+                'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -114,7 +114,7 @@ class Flavor_Clientes_Frontend_Controller {
 
         ob_start();
         echo '<div class="flavor-clientes-listado">';
-        echo '<p>' . __('Módulo Clientes - Listado', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Módulo Clientes - Listado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         echo '</div>';
         return ob_get_clean();
     }
@@ -124,7 +124,7 @@ class Flavor_Clientes_Frontend_Controller {
      */
     public function registrar_tabs($tabs) {
         $tabs['clientes'] = [
-            'titulo' => __('Clientes', 'flavor-chat-ia'),
+            'titulo' => __('Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'dashicons-admin-generic',
             'callback' => [$this, 'render_tab_principal'],
             'orden' => 50,
@@ -140,8 +140,8 @@ class Flavor_Clientes_Frontend_Controller {
     public function render_tab_principal() {
         $this->encolar_assets();
         echo '<div class="flavor-clientes-tab">';
-        echo '<h3>' . esc_html__('Clientes', 'flavor-chat-ia') . '</h3>';
-        echo '<p>' . esc_html__('Contenido del tab de Clientes.', 'flavor-chat-ia') . '</p>';
+        echo '<h3>' . esc_html__('Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
+        echo '<p>' . esc_html__('Contenido del tab de Clientes.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         echo '</div>';
     }
 }

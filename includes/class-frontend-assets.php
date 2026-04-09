@@ -109,10 +109,10 @@ class Flavor_Frontend_Assets {
             'userId' => get_current_user_id(),
             'debug' => defined('WP_DEBUG') && WP_DEBUG,
             'i18n' => [
-                'loading' => __('Cargando...', 'flavor-chat-ia'),
-                'error' => __('Error', 'flavor-chat-ia'),
-                'success' => __('Éxito', 'flavor-chat-ia'),
-                'required' => __('Este campo es obligatorio', 'flavor-chat-ia'),
+                'loading' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'success' => __('Éxito', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'required' => __('Este campo es obligatorio', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
 
@@ -165,10 +165,10 @@ class Flavor_Frontend_Assets {
             'userId' => get_current_user_id(),
             'debug' => true,
             'i18n' => [
-                'loading' => __('Cargando...', 'flavor-chat-ia'),
-                'error' => __('Error', 'flavor-chat-ia'),
-                'success' => __('Éxito', 'flavor-chat-ia'),
-                'required' => __('Este campo es obligatorio', 'flavor-chat-ia'),
+                'loading' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'success' => __('Éxito', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'required' => __('Este campo es obligatorio', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
 

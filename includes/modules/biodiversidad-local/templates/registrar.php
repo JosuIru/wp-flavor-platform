@@ -32,19 +32,19 @@ $especies = get_posts([
 
 <div class="bl-container">
     <header class="bl-header">
-        <h2><?php esc_html_e('Registrar Avistamiento', 'flavor-chat-ia'); ?></h2>
-        <p><?php esc_html_e('Contribuye al catálogo de biodiversidad local', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Registrar Avistamiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p><?php esc_html_e('Contribuye al catálogo de biodiversidad local', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </header>
 
     <!-- Tabs -->
     <div class="bl-tabs">
         <button class="bl-tab activo" data-tab="tab-avistamiento">
             <span class="dashicons dashicons-camera"></span>
-            <?php esc_html_e('Registrar Avistamiento', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Registrar Avistamiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
         <button class="bl-tab" data-tab="tab-especie">
             <span class="dashicons dashicons-plus-alt"></span>
-            <?php esc_html_e('Proponer Nueva Especie', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Proponer Nueva Especie', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
     </div>
 
@@ -52,9 +52,9 @@ $especies = get_posts([
     <div id="tab-avistamiento" class="bl-tab-contenido">
         <form class="bl-form bl-form-avistamiento">
             <div class="bl-form-grupo">
-                <label for="bl-especie"><?php esc_html_e('Especie observada', 'flavor-chat-ia'); ?> *</label>
+                <label for="bl-especie"><?php esc_html_e('Especie observada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                 <select name="especie_id" id="bl-especie" required>
-                    <option value=""><?php esc_html_e('Selecciona una especie...', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Selecciona una especie...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($categorias as $cat_id => $cat_data) : ?>
                     <optgroup label="<?php echo esc_attr($cat_data['nombre']); ?>">
                         <?php foreach ($especies as $especie) :
@@ -67,25 +67,25 @@ $especies = get_posts([
                         <?php endif; endforeach; ?>
                     </optgroup>
                     <?php endforeach; ?>
-                    <option value="desconocida"><?php esc_html_e('No identificada / Desconocida', 'flavor-chat-ia'); ?></option>
+                    <option value="desconocida"><?php esc_html_e('No identificada / Desconocida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
             </div>
 
             <div class="bl-form-row">
                 <div class="bl-form-grupo">
-                    <label for="bl-fecha"><?php esc_html_e('Fecha del avistamiento', 'flavor-chat-ia'); ?> *</label>
+                    <label for="bl-fecha"><?php esc_html_e('Fecha del avistamiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <input type="date" name="fecha" id="bl-fecha" required value="<?php echo esc_attr(date('Y-m-d')); ?>">
                 </div>
                 <div class="bl-form-grupo">
-                    <label for="bl-cantidad"><?php esc_html_e('Cantidad de ejemplares', 'flavor-chat-ia'); ?></label>
+                    <label for="bl-cantidad"><?php esc_html_e('Cantidad de ejemplares', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="number" name="cantidad" id="bl-cantidad" min="1" value="1">
                 </div>
             </div>
 
             <div class="bl-form-grupo">
-                <label for="bl-habitat"><?php esc_html_e('Hábitat', 'flavor-chat-ia'); ?></label>
+                <label for="bl-habitat"><?php esc_html_e('Hábitat', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="habitat" id="bl-habitat">
-                    <option value=""><?php esc_html_e('Selecciona un hábitat...', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Selecciona un hábitat...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($habitats as $hab_id => $hab_data) : ?>
                     <option value="<?php echo esc_attr($hab_id); ?>"><?php echo esc_html($hab_data['nombre']); ?></option>
                     <?php endforeach; ?>
@@ -93,29 +93,29 @@ $especies = get_posts([
             </div>
 
             <div class="bl-form-grupo">
-                <label><?php esc_html_e('Ubicación', 'flavor-chat-ia'); ?></label>
+                <label><?php esc_html_e('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <div style="display: flex; gap: 1rem; margin-bottom: 0.5rem;">
-                    <input type="text" name="latitud" id="bl-latitud" placeholder="<?php esc_attr_e('Latitud', 'flavor-chat-ia'); ?>" style="flex: 1;">
-                    <input type="text" name="longitud" id="bl-longitud" placeholder="<?php esc_attr_e('Longitud', 'flavor-chat-ia'); ?>" style="flex: 1;">
+                    <input type="text" name="latitud" id="bl-latitud" placeholder="<?php esc_attr_e('Latitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" style="flex: 1;">
+                    <input type="text" name="longitud" id="bl-longitud" placeholder="<?php esc_attr_e('Longitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" style="flex: 1;">
                     <button type="button" class="bl-btn bl-btn--secondary bl-btn-ubicacion">
                         <span class="dashicons dashicons-location-alt"></span>
-                        <?php esc_html_e('Mi ubicación', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Mi ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
                 <div id="bl-mapa" class="bl-mapa bl-mapa-seleccionar" style="height: 300px; border-radius: 8px;"></div>
-                <small style="color: var(--bl-text-light);"><?php esc_html_e('Haz clic en el mapa para marcar la ubicación exacta', 'flavor-chat-ia'); ?></small>
+                <small style="color: var(--bl-text-light);"><?php esc_html_e('Haz clic en el mapa para marcar la ubicación exacta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
             </div>
 
             <div class="bl-form-grupo">
-                <label for="bl-descripcion"><?php esc_html_e('Descripción / Notas', 'flavor-chat-ia'); ?></label>
+                <label for="bl-descripcion"><?php esc_html_e('Descripción / Notas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <textarea name="descripcion" id="bl-descripcion" rows="4"
-                          placeholder="<?php esc_attr_e('Describe lo que observaste: comportamiento, condiciones, etc.', 'flavor-chat-ia'); ?>"></textarea>
+                          placeholder="<?php esc_attr_e('Describe lo que observaste: comportamiento, condiciones, etc.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
             </div>
 
             <div style="text-align: center;">
                 <button type="submit" class="bl-btn bl-btn--primary">
                     <span class="dashicons dashicons-camera"></span>
-                    <?php esc_html_e('Registrar Avistamiento', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Registrar Avistamiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </form>
@@ -126,29 +126,29 @@ $especies = get_posts([
         <form class="bl-form bl-form-especie">
             <div class="bl-form-row">
                 <div class="bl-form-grupo">
-                    <label for="bl-nombre-comun"><?php esc_html_e('Nombre común', 'flavor-chat-ia'); ?> *</label>
+                    <label for="bl-nombre-comun"><?php esc_html_e('Nombre común', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <input type="text" name="nombre_comun" id="bl-nombre-comun" required
-                           placeholder="<?php esc_attr_e('Ej: Jilguero europeo', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php esc_attr_e('Ej: Jilguero europeo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
                 <div class="bl-form-grupo">
-                    <label for="bl-nombre-cientifico"><?php esc_html_e('Nombre científico', 'flavor-chat-ia'); ?></label>
+                    <label for="bl-nombre-cientifico"><?php esc_html_e('Nombre científico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="text" name="nombre_cientifico" id="bl-nombre-cientifico"
-                           placeholder="<?php esc_attr_e('Ej: Carduelis carduelis', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php esc_attr_e('Ej: Carduelis carduelis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
             </div>
 
             <div class="bl-form-row">
                 <div class="bl-form-grupo">
-                    <label for="bl-categoria"><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?> *</label>
+                    <label for="bl-categoria"><?php esc_html_e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <select name="categoria" id="bl-categoria" required>
-                        <option value=""><?php esc_html_e('Selecciona...', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Selecciona...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($categorias as $cat_id => $cat_data) : ?>
                         <option value="<?php echo esc_attr($cat_id); ?>"><?php echo esc_html($cat_data['nombre']); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="bl-form-grupo">
-                    <label for="bl-estado"><?php esc_html_e('Estado de conservación', 'flavor-chat-ia'); ?></label>
+                    <label for="bl-estado"><?php esc_html_e('Estado de conservación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="estado_conservacion" id="bl-estado">
                         <?php foreach ($estados as $est_id => $est_data) : ?>
                         <option value="<?php echo esc_attr($est_id); ?>"><?php echo esc_html($est_data['nombre']); ?></option>
@@ -158,7 +158,7 @@ $especies = get_posts([
             </div>
 
             <div class="bl-form-grupo">
-                <label><?php esc_html_e('Hábitats donde se encuentra', 'flavor-chat-ia'); ?></label>
+                <label><?php esc_html_e('Hábitats donde se encuentra', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <div class="bl-habitats-checkboxes">
                     <?php foreach ($habitats as $hab_id => $hab_data) : ?>
                     <label class="bl-habitat-checkbox">
@@ -171,15 +171,15 @@ $especies = get_posts([
             </div>
 
             <div class="bl-form-grupo">
-                <label for="bl-descripcion-especie"><?php esc_html_e('Descripción de la especie', 'flavor-chat-ia'); ?> *</label>
+                <label for="bl-descripcion-especie"><?php esc_html_e('Descripción de la especie', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                 <textarea name="descripcion" id="bl-descripcion-especie" rows="6" required
-                          placeholder="<?php esc_attr_e('Describe la especie: características físicas, comportamiento, alimentación, etc.', 'flavor-chat-ia'); ?>"></textarea>
+                          placeholder="<?php esc_attr_e('Describe la especie: características físicas, comportamiento, alimentación, etc.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
             </div>
 
             <div style="text-align: center;">
                 <button type="submit" class="bl-btn bl-btn--primary">
                     <span class="dashicons dashicons-plus-alt2"></span>
-                    <?php esc_html_e('Proponer Especie', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Proponer Especie', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </form>

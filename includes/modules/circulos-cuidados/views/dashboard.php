@@ -29,8 +29,8 @@ if (!$tabla_circulos_existe) {
         <div class="dm-alert dm-alert--info">
             <span class="dashicons dashicons-info"></span>
             <div>
-                <strong><?php esc_html_e('Módulo en preparación', 'flavor-chat-ia'); ?></strong>
-                <p><?php esc_html_e('Las tablas del módulo Círculos de Cuidados aún no han sido creadas. Activa el módulo completamente para generar la estructura necesaria.', 'flavor-chat-ia'); ?></p>
+                <strong><?php esc_html_e('Módulo en preparación', 'flavor-platform'); ?></strong>
+                <p><?php esc_html_e('Las tablas del módulo Círculos de Cuidados aún no han sido creadas. Activa el módulo completamente para generar la estructura necesaria.', 'flavor-platform'); ?></p>
             </div>
         </div>
     </div>
@@ -114,7 +114,7 @@ $cuidadores_top = $tabla_respuestas_existe ? $wpdb->get_results(
         <span class="dashicons dashicons-heart dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($circulos_activos); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Círculos Activos', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Círculos Activos', 'flavor-platform'); ?></div>
         </div>
     </div>
 
@@ -122,7 +122,7 @@ $cuidadores_top = $tabla_respuestas_existe ? $wpdb->get_results(
         <span class="dashicons dashicons-groups dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($miembros_unicos); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Participantes', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Participantes', 'flavor-platform'); ?></div>
         </div>
     </div>
 
@@ -130,7 +130,7 @@ $cuidadores_top = $tabla_respuestas_existe ? $wpdb->get_results(
         <span class="dashicons dashicons-sos dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($total_necesidades); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Necesidades', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Necesidades', 'flavor-platform'); ?></div>
         </div>
     </div>
 
@@ -138,7 +138,7 @@ $cuidadores_top = $tabla_respuestas_existe ? $wpdb->get_results(
         <span class="dashicons dashicons-clock dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($total_horas, 1)); ?>h</div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Horas de Cuidado', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Horas de Cuidado', 'flavor-platform'); ?></div>
         </div>
     </div>
 </div>
@@ -147,7 +147,7 @@ $cuidadores_top = $tabla_respuestas_existe ? $wpdb->get_results(
 <div class="dm-alert dm-alert--warning">
     <span class="dashicons dashicons-warning"></span>
     <div>
-        <strong><?php printf(esc_html__('%s necesidades pendientes de atención', 'flavor-chat-ia'), number_format_i18n($necesidades_pendientes)); ?></strong>
+        <strong><?php printf(esc_html__('%s necesidades pendientes de atención', 'flavor-platform'), number_format_i18n($necesidades_pendientes)); ?></strong>
     </div>
 </div>
 <?php endif; ?>
@@ -157,23 +157,23 @@ $cuidadores_top = $tabla_respuestas_existe ? $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-chart-bar"></span>
-                <?php esc_html_e('Necesidades Esta Semana', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Necesidades Esta Semana', 'flavor-platform'); ?>
             </h3>
-            <span class="dm-card__subtitle"><?php printf(esc_html__('%s este mes', 'flavor-chat-ia'), number_format_i18n($necesidades_mes)); ?></span>
+            <span class="dm-card__subtitle"><?php printf(esc_html__('%s este mes', 'flavor-platform'), number_format_i18n($necesidades_mes)); ?></span>
         </div>
         <div class="dm-card__body">
             <?php if (empty($actividad_semanal)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-chart-line"></span>
-                    <p><?php esc_html_e('No hay necesidades registradas esta semana.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay necesidades registradas esta semana.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <?php
                 $max_necesidades = max(array_column($actividad_semanal, 'total'));
                 $dias_semana = [
-                    __('Dom', 'flavor-chat-ia'), __('Lun', 'flavor-chat-ia'), __('Mar', 'flavor-chat-ia'),
-                    __('Mié', 'flavor-chat-ia'), __('Jue', 'flavor-chat-ia'), __('Vie', 'flavor-chat-ia'),
-                    __('Sáb', 'flavor-chat-ia')
+                    __('Dom', 'flavor-platform'), __('Lun', 'flavor-platform'), __('Mar', 'flavor-platform'),
+                    __('Mié', 'flavor-platform'), __('Jue', 'flavor-platform'), __('Vie', 'flavor-platform'),
+                    __('Sáb', 'flavor-platform')
                 ];
                 ?>
                 <div class="dm-chart-bars">
@@ -198,14 +198,14 @@ $cuidadores_top = $tabla_respuestas_existe ? $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-category"></span>
-                <?php esc_html_e('Tipos de Necesidades', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Tipos de Necesidades', 'flavor-platform'); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <?php if (empty($tipos_necesidades)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-list-view"></span>
-                    <p><?php esc_html_e('No hay necesidades registradas.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay necesidades registradas.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <div class="dm-data-list">
@@ -226,14 +226,14 @@ $cuidadores_top = $tabla_respuestas_existe ? $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-heart"></span>
-                <?php esc_html_e('Círculos Más Activos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Círculos Más Activos', 'flavor-platform'); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <?php if (empty($circulos_activos_top)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-groups"></span>
-                    <p><?php esc_html_e('No hay círculos activos.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay círculos activos.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <ul class="dm-ranking">
@@ -243,9 +243,9 @@ $cuidadores_top = $tabla_respuestas_existe ? $wpdb->get_results(
                             <div class="dm-ranking__content">
                                 <strong class="dm-ranking__name"><?php echo esc_html($circulo->nombre); ?></strong>
                                 <span class="dm-ranking__meta">
-                                    <?php echo esc_html($circulo->num_miembros); ?> <?php esc_html_e('miembros', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html($circulo->num_miembros); ?> <?php esc_html_e('miembros', 'flavor-platform'); ?>
                                     &bull;
-                                    <?php echo esc_html($circulo->num_necesidades); ?> <?php esc_html_e('necesidades', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html($circulo->num_necesidades); ?> <?php esc_html_e('necesidades', 'flavor-platform'); ?>
                                 </span>
                             </div>
                             <?php if ($circulo->tipo): ?>
@@ -262,15 +262,15 @@ $cuidadores_top = $tabla_respuestas_existe ? $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-awards"></span>
-                <?php esc_html_e('Cuidadores Más Activos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Cuidadores Más Activos', 'flavor-platform'); ?>
             </h3>
-            <span class="dm-card__subtitle"><?php esc_html_e('Últimos 30 días', 'flavor-chat-ia'); ?></span>
+            <span class="dm-card__subtitle"><?php esc_html_e('Últimos 30 días', 'flavor-platform'); ?></span>
         </div>
         <div class="dm-card__body">
             <?php if (empty($cuidadores_top)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-admin-users"></span>
-                    <p><?php esc_html_e('No hay datos de actividad todavía.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay datos de actividad todavía.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <ul class="dm-ranking">
@@ -278,13 +278,13 @@ $cuidadores_top = $tabla_respuestas_existe ? $wpdb->get_results(
                         <li class="dm-ranking__item">
                             <span class="dm-ranking__position"><?php echo ($index + 1); ?></span>
                             <div class="dm-ranking__avatar">
-                                <?php echo mb_substr($cuidador->display_name ?: __('C', 'flavor-chat-ia'), 0, 1); ?>
+                                <?php echo mb_substr($cuidador->display_name ?: __('C', 'flavor-platform'), 0, 1); ?>
                             </div>
                             <div class="dm-ranking__content">
-                                <strong class="dm-ranking__name"><?php echo esc_html($cuidador->display_name ?: __('Cuidador', 'flavor-chat-ia')); ?></strong>
+                                <strong class="dm-ranking__name"><?php echo esc_html($cuidador->display_name ?: __('Cuidador', 'flavor-platform')); ?></strong>
                             </div>
                             <span class="dm-badge dm-badge--success">
-                                <?php echo esc_html($cuidador->total_ayudas); ?> <?php esc_html_e('ayudas', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html($cuidador->total_ayudas); ?> <?php esc_html_e('ayudas', 'flavor-platform'); ?>
                             </span>
                         </li>
                     <?php endforeach; ?>
@@ -298,24 +298,24 @@ $cuidadores_top = $tabla_respuestas_existe ? $wpdb->get_results(
     <div class="dm-stat-card dm-stat-card--secondary">
         <span class="dashicons dashicons-networking dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($total_circulos); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Total Círculos', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Total Círculos', 'flavor-platform'); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--success">
         <span class="dashicons dashicons-yes-alt dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($necesidades_atendidas); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Atendidas', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Atendidas', 'flavor-platform'); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--info">
         <span class="dashicons dashicons-thumbs-up dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($total_respuestas); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Respuestas', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Respuestas', 'flavor-platform'); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--primary">
         <span class="dashicons dashicons-chart-pie dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($tasa_atencion); ?>%</div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Tasa Atención', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Tasa Atención', 'flavor-platform'); ?></div>
     </div>
 </div>

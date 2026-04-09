@@ -81,7 +81,7 @@ class Flavor_App_Config_API {
         if ( ! flavor_check_vbp_automation_access( $api_key, 'app_config' ) ) {
             return new WP_Error(
                 'rest_forbidden',
-                __( 'API key inválida', 'flavor-chat-ia' ),
+                __( 'API key inválida', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 403 )
             );
         }

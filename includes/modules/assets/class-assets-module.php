@@ -55,9 +55,9 @@ class Flavor_Assets_Module extends Flavor_Chat_Module_Base {
      */
     public function registrar_paginas_admin() {
         add_submenu_page(
-            'flavor-chat-ia',
-            __('Assets y Recursos', 'flavor-chat-ia'),
-            __('Assets', 'flavor-chat-ia'),
+            'flavor-platform',
+            __('Assets y Recursos', 'flavor-platform'),
+            __('Assets', 'flavor-platform'),
             'manage_options',
             'flavor-assets',
             [$this, 'render_admin_page']
@@ -72,13 +72,13 @@ class Flavor_Assets_Module extends Flavor_Chat_Module_Base {
     public function render_admin_page() {
         echo '<div class="wrap flavor-modulo-page">';
         if (method_exists($this, 'render_page_header')) {
-            $this->render_page_header(__('Assets y Recursos', 'flavor-chat-ia'));
+            $this->render_page_header(__('Assets y Recursos', 'flavor-platform'));
         }
         $vista = dirname(__FILE__) . '/views/dashboard.php';
         if (file_exists($vista)) {
             include $vista;
         } else {
-            echo '<div class="notice notice-warning inline"><p>' . esc_html__('El panel de assets no está disponible en este momento.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-warning inline"><p>' . esc_html__('El panel de assets no está disponible en este momento.', 'flavor-platform') . '</p></div>';
         }
         echo '</div>';
     }
@@ -91,14 +91,14 @@ class Flavor_Assets_Module extends Flavor_Chat_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'assets',
-            'label' => __('Assets y Recursos', 'flavor-chat-ia'),
+            'label' => __('Assets y Recursos', 'flavor-platform'),
             'icon' => 'dashicons-media-code',
             'capability' => 'manage_options',
             'categoria' => 'recursos',
             'paginas' => [
                 [
                     'slug' => 'flavor-assets',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_page'],
                 ],
             ],
@@ -234,7 +234,7 @@ class Flavor_Assets_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function get_knowledge_base() {
-        return __('El módulo Assets gestiona recursos compartidos (CSS, JS, plantillas) utilizados por otros módulos de Flavor Platform.', 'flavor-chat-ia');
+        return __('El módulo Assets gestiona recursos compartidos (CSS, JS, plantillas) utilizados por otros módulos de Flavor Platform.', 'flavor-platform');
     }
 
     /**
@@ -243,13 +243,13 @@ class Flavor_Assets_Module extends Flavor_Chat_Module_Base {
     public static function get_renderer_config(): array {
         return [
             'module' => 'assets',
-            'title' => __('Assets y Recursos', 'flavor-chat-ia'),
-            'subtitle' => __('Gestión de recursos compartidos del sistema.', 'flavor-chat-ia'),
+            'title' => __('Assets y Recursos', 'flavor-platform'),
+            'subtitle' => __('Gestión de recursos compartidos del sistema.', 'flavor-platform'),
             'icon' => '📦',
             'color' => 'purple',
             'tabs' => [
                 'info' => [
-                    'label' => __('Información', 'flavor-chat-ia'),
+                    'label' => __('Información', 'flavor-platform'),
                     'icon' => 'ℹ️',
                     'content' => 'shortcode:assets_info',
                 ],

@@ -60,10 +60,10 @@ $tipos_cestas = $suscripciones_manager->listar_tipos_cestas(true);
 
 <div class="wrap gc-admin-suscripciones">
     <h1 class="wp-heading-inline">
-        <?php _e('Gestión de Suscripciones', 'flavor-chat-ia'); ?>
+        <?php _e('Gestión de Suscripciones', 'flavor-platform'); ?>
     </h1>
     <button type="button" class="page-title-action gc-modal-trigger" data-modal="modal-gestionar-cestas">
-        <?php _e('Gestionar Cestas', 'flavor-chat-ia'); ?>
+        <?php _e('Gestionar Cestas', 'flavor-platform'); ?>
     </button>
     <hr class="wp-header-end">
 
@@ -71,26 +71,26 @@ $tipos_cestas = $suscripciones_manager->listar_tipos_cestas(true);
     <div class="gc-stats-grid">
         <div class="gc-stat-card gc-stat-activo">
             <span class="gc-stat-numero"><?php echo esc_html($estadisticas['total_activas']); ?></span>
-            <span class="gc-stat-label"><?php _e('Activas', 'flavor-chat-ia'); ?></span>
+            <span class="gc-stat-label"><?php _e('Activas', 'flavor-platform'); ?></span>
         </div>
         <div class="gc-stat-card gc-stat-pausada">
             <span class="gc-stat-numero"><?php echo esc_html($estadisticas['total_pausadas']); ?></span>
-            <span class="gc-stat-label"><?php _e('Pausadas', 'flavor-chat-ia'); ?></span>
+            <span class="gc-stat-label"><?php _e('Pausadas', 'flavor-platform'); ?></span>
         </div>
         <div class="gc-stat-card gc-stat-cancelada">
             <span class="gc-stat-numero"><?php echo esc_html($estadisticas['total_canceladas']); ?></span>
-            <span class="gc-stat-label"><?php _e('Canceladas', 'flavor-chat-ia'); ?></span>
+            <span class="gc-stat-label"><?php _e('Canceladas', 'flavor-platform'); ?></span>
         </div>
         <div class="gc-stat-card gc-stat-ingresos">
             <span class="gc-stat-numero"><?php echo number_format($estadisticas['ingresos_mensuales'], 0); ?> €</span>
-            <span class="gc-stat-label"><?php _e('Ingresos/mes estimados', 'flavor-chat-ia'); ?></span>
+            <span class="gc-stat-label"><?php _e('Ingresos/mes estimados', 'flavor-platform'); ?></span>
         </div>
     </div>
 
     <!-- Distribución por cesta -->
     <?php if (!empty($estadisticas['por_tipo_cesta'])): ?>
     <div class="gc-distribucion-cestas">
-        <h3><?php _e('Distribución por tipo de cesta', 'flavor-chat-ia'); ?></h3>
+        <h3><?php _e('Distribución por tipo de cesta', 'flavor-platform'); ?></h3>
         <div class="gc-cestas-bars">
             <?php
             $max_cantidad = max($estadisticas['por_tipo_cesta']);
@@ -112,20 +112,20 @@ $tipos_cestas = $suscripciones_manager->listar_tipos_cestas(true);
     <!-- Filtros -->
     <div class="gc-filtros-wrapper">
         <form method="get" class="gc-filtros-form">
-            <input type="hidden" name="page" value="<?php echo esc_attr__('gc-suscripciones', 'flavor-chat-ia'); ?>">
+            <input type="hidden" name="page" value="<?php echo esc_attr__('gc-suscripciones', 'flavor-platform'); ?>">
 
             <div class="gc-filtro">
-                <label for="filtro-estado"><?php _e('Estado:', 'flavor-chat-ia'); ?></label>
+                <label for="filtro-estado"><?php _e('Estado:', 'flavor-platform'); ?></label>
                 <select id="filtro-estado" name="estado">
-                    <option value=""><?php _e('Todos', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('activa', 'flavor-chat-ia'); ?>" <?php selected($estado_filtro, 'activa'); ?>><?php _e('Activa', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('pausada', 'flavor-chat-ia'); ?>" <?php selected($estado_filtro, 'pausada'); ?>><?php _e('Pausada', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('cancelada', 'flavor-chat-ia'); ?>" <?php selected($estado_filtro, 'cancelada'); ?>><?php _e('Cancelada', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todos', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('activa', 'flavor-platform'); ?>" <?php selected($estado_filtro, 'activa'); ?>><?php _e('Activa', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('pausada', 'flavor-platform'); ?>" <?php selected($estado_filtro, 'pausada'); ?>><?php _e('Pausada', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('cancelada', 'flavor-platform'); ?>" <?php selected($estado_filtro, 'cancelada'); ?>><?php _e('Cancelada', 'flavor-platform'); ?></option>
                 </select>
             </div>
 
-            <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
-            <a href="<?php echo admin_url('admin.php?page=gc-suscripciones'); ?>" class="button"><?php _e('Limpiar', 'flavor-chat-ia'); ?></a>
+            <button type="submit" class="button"><?php _e('Filtrar', 'flavor-platform'); ?></button>
+            <a href="<?php echo admin_url('admin.php?page=gc-suscripciones'); ?>" class="button"><?php _e('Limpiar', 'flavor-platform'); ?></a>
         </form>
     </div>
 
@@ -133,19 +133,19 @@ $tipos_cestas = $suscripciones_manager->listar_tipos_cestas(true);
     <table class="wp-list-table widefat fixed striped gc-tabla-suscripciones">
         <thead>
             <tr>
-                <th scope="col" class="column-usuario"><?php _e('Usuario', 'flavor-chat-ia'); ?></th>
-                <th scope="col" class="column-cesta"><?php _e('Cesta', 'flavor-chat-ia'); ?></th>
-                <th scope="col" class="column-frecuencia"><?php _e('Frecuencia', 'flavor-chat-ia'); ?></th>
-                <th scope="col" class="column-importe"><?php _e('Importe', 'flavor-chat-ia'); ?></th>
-                <th scope="col" class="column-estado"><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                <th scope="col" class="column-proximo"><?php _e('Próximo Cargo', 'flavor-chat-ia'); ?></th>
-                <th scope="col" class="column-acciones"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                <th scope="col" class="column-usuario"><?php _e('Usuario', 'flavor-platform'); ?></th>
+                <th scope="col" class="column-cesta"><?php _e('Cesta', 'flavor-platform'); ?></th>
+                <th scope="col" class="column-frecuencia"><?php _e('Frecuencia', 'flavor-platform'); ?></th>
+                <th scope="col" class="column-importe"><?php _e('Importe', 'flavor-platform'); ?></th>
+                <th scope="col" class="column-estado"><?php _e('Estado', 'flavor-platform'); ?></th>
+                <th scope="col" class="column-proximo"><?php _e('Próximo Cargo', 'flavor-platform'); ?></th>
+                <th scope="col" class="column-acciones"><?php _e('Acciones', 'flavor-platform'); ?></th>
             </tr>
         </thead>
         <tbody>
             <?php if (empty($suscripciones)): ?>
                 <tr>
-                    <td colspan="7"><?php _e('No se encontraron suscripciones.', 'flavor-chat-ia'); ?></td>
+                    <td colspan="7"><?php _e('No se encontraron suscripciones.', 'flavor-platform'); ?></td>
                 </tr>
             <?php else: ?>
                 <?php foreach ($suscripciones as $suscripcion): ?>
@@ -178,16 +178,16 @@ $tipos_cestas = $suscripciones_manager->listar_tipos_cestas(true);
                         <td class="column-acciones">
                             <?php if ($suscripcion->estado === 'activa'): ?>
                                 <button type="button" class="button gc-pausar-suscripcion" data-id="<?php echo esc_attr($suscripcion->id); ?>">
-                                    <?php _e('Pausar', 'flavor-chat-ia'); ?>
+                                    <?php _e('Pausar', 'flavor-platform'); ?>
                                 </button>
                             <?php elseif ($suscripcion->estado === 'pausada'): ?>
                                 <button type="button" class="button button-primary gc-reanudar-suscripcion" data-id="<?php echo esc_attr($suscripcion->id); ?>">
-                                    <?php _e('Reanudar', 'flavor-chat-ia'); ?>
+                                    <?php _e('Reanudar', 'flavor-platform'); ?>
                                 </button>
                             <?php endif; ?>
                             <?php if ($suscripcion->estado !== 'cancelada'): ?>
                                 <button type="button" class="button gc-cancelar-suscripcion" data-id="<?php echo esc_attr($suscripcion->id); ?>">
-                                    <?php _e('Cancelar', 'flavor-chat-ia'); ?>
+                                    <?php _e('Cancelar', 'flavor-platform'); ?>
                                 </button>
                             <?php endif; ?>
                         </td>
@@ -202,7 +202,7 @@ $tipos_cestas = $suscripciones_manager->listar_tipos_cestas(true);
         <div class="tablenav bottom">
             <div class="tablenav-pages">
                 <span class="displaying-num">
-                    <?php printf(_n('%s elemento', '%s elementos', $total, 'flavor-chat-ia'), number_format_i18n($total)); ?>
+                    <?php printf(_n('%s elemento', '%s elementos', $total, 'flavor-platform'), number_format_i18n($total)); ?>
                 </span>
                 <span class="pagination-links">
                     <?php
@@ -225,17 +225,17 @@ $tipos_cestas = $suscripciones_manager->listar_tipos_cestas(true);
 <div id="modal-gestionar-cestas" class="gc-modal" style="display:none;">
     <div class="gc-modal-content gc-modal-lg">
         <div class="gc-modal-header">
-            <h2><?php _e('Tipos de Cestas', 'flavor-chat-ia'); ?></h2>
-            <button type="button" class="gc-modal-close"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></button>
+            <h2><?php _e('Tipos de Cestas', 'flavor-platform'); ?></h2>
+            <button type="button" class="gc-modal-close"><?php echo esc_html__('&times;', 'flavor-platform'); ?></button>
         </div>
         <div class="gc-modal-body">
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th><?php _e('Nombre', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Precio Base', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Nombre', 'flavor-platform'); ?></th>
+                        <th><?php _e('Precio Base', 'flavor-platform'); ?></th>
+                        <th><?php _e('Estado', 'flavor-platform'); ?></th>
+                        <th><?php _e('Acciones', 'flavor-platform'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -248,12 +248,12 @@ $tipos_cestas = $suscripciones_manager->listar_tipos_cestas(true);
                             <td><?php echo number_format($cesta->precio_base, 2); ?> €</td>
                             <td>
                                 <span class="gc-estado-badge <?php echo $cesta->activa ? 'gc-estado-activo' : 'gc-estado-inactivo'; ?>">
-                                    <?php echo $cesta->activa ? __('Activa', 'flavor-chat-ia') : __('Inactiva', 'flavor-chat-ia'); ?>
+                                    <?php echo $cesta->activa ? __('Activa', 'flavor-platform') : __('Inactiva', 'flavor-platform'); ?>
                                 </span>
                             </td>
                             <td>
                                 <button type="button" class="button button-small gc-editar-cesta" data-id="<?php echo esc_attr($cesta->id); ?>">
-                                    <?php _e('Editar', 'flavor-chat-ia'); ?>
+                                    <?php _e('Editar', 'flavor-platform'); ?>
                                 </button>
                             </td>
                         </tr>
@@ -274,7 +274,7 @@ jQuery(document).ready(function($) {
 
     function gcConfirmar(mensaje, onConfirm) {
         $('.gc-inline-confirm').remove();
-        var $confirm = $('<div class="gc-inline-confirm"><p></p><div class="gc-inline-confirm-actions"><button type="button" class="button button-primary gc-inline-confirm-ok"><?php echo esc_js(__('Confirmar', 'flavor-chat-ia')); ?></button><button type="button" class="button gc-inline-confirm-cancel"><?php echo esc_js(__('Cancelar', 'flavor-chat-ia')); ?></button></div></div>');
+        var $confirm = $('<div class="gc-inline-confirm"><p></p><div class="gc-inline-confirm-actions"><button type="button" class="button button-primary gc-inline-confirm-ok"><?php echo esc_js(__('Confirmar', 'flavor-platform')); ?></button><button type="button" class="button gc-inline-confirm-cancel"><?php echo esc_js(__('Cancelar', 'flavor-platform')); ?></button></div></div>');
         $confirm.find('p').text(mensaje);
         $confirm.insertAfter('.wrap h1.wp-heading-inline').hide().fadeIn(150);
 
@@ -310,7 +310,7 @@ jQuery(document).ready(function($) {
     // Acciones suscripción
     $('.gc-pausar-suscripcion').on('click', function() {
         var id = $(this).data('id');
-        gcConfirmar('<?php echo esc_js(__('¿Pausar esta suscripción?', 'flavor-chat-ia')); ?>', function() {
+        gcConfirmar('<?php echo esc_js(__('¿Pausar esta suscripción?', 'flavor-platform')); ?>', function() {
             $.post(ajaxurl, {
                 action: 'gc_pausar_suscripcion',
                 suscripcion_id: id,
@@ -342,7 +342,7 @@ jQuery(document).ready(function($) {
 
     $('.gc-cancelar-suscripcion').on('click', function() {
         var id = $(this).data('id');
-        gcConfirmar('<?php echo esc_js(__('¿Cancelar esta suscripción? Esta acción no se puede deshacer.', 'flavor-chat-ia')); ?>', function() {
+        gcConfirmar('<?php echo esc_js(__('¿Cancelar esta suscripción? Esta acción no se puede deshacer.', 'flavor-platform')); ?>', function() {
             $.post(ajaxurl, {
                 action: 'gc_cancelar_suscripcion',
                 suscripcion_id: id,

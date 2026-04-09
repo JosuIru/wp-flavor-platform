@@ -14,7 +14,7 @@ $compostera = $item ?? $card_item ?? [];
 if (empty($compostera)) return;
 
 $id = $compostera['id'] ?? 0;
-$nombre = $compostera['nombre'] ?? __('Compostera', 'flavor-chat-ia');
+$nombre = $compostera['nombre'] ?? __('Compostera', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $url = $compostera['url'] ?? '#';
 $ubicacion = $compostera['ubicacion'] ?? '';
 $estado = $compostera['estado'] ?? 'activa';
@@ -56,7 +56,7 @@ $color_barra = $capacidad > 80 ? 'bg-amber-500' : 'bg-green-500';
         <!-- Barra de capacidad -->
         <div class="mb-4">
             <div class="flex items-center justify-between text-sm mb-1">
-                <span class="text-gray-600"><?php echo esc_html__('Capacidad', 'flavor-chat-ia'); ?></span>
+                <span class="text-gray-600"><?php echo esc_html__('Capacidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="font-bold <?php echo $capacidad > 80 ? 'text-amber-600' : 'text-green-600'; ?>">
                     <?php echo esc_html($capacidad); ?>%
                 </span>
@@ -71,18 +71,18 @@ $color_barra = $capacidad > 80 ? 'bg-amber-500' : 'bg-green-500';
         <div class="space-y-2 text-sm text-gray-500">
             <?php if ($proxima_recogida): ?>
             <div class="flex items-center gap-2">
-                📅 <span><?php echo esc_html__('Próxima recogida:', 'flavor-chat-ia'); ?> <?php echo esc_html($proxima_recogida); ?></span>
+                📅 <span><?php echo esc_html__('Próxima recogida:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html($proxima_recogida); ?></span>
             </div>
             <?php endif; ?>
             <div class="flex items-center gap-2">
-                👥 <span><?php echo esc_html($usuarios); ?> <?php echo esc_html__('usuarios', 'flavor-chat-ia'); ?></span>
+                👥 <span><?php echo esc_html($usuarios); ?> <?php echo esc_html__('usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
         <div class="mt-4 pt-4 border-t border-gray-100">
             <a href="<?php echo esc_url($url); ?>"
                class="block w-full py-2 rounded-xl text-center text-green-600 font-semibold text-sm bg-green-50 hover:bg-green-100 transition-colors">
-                <?php echo esc_html__('Ver compostera', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Ver compostera', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>

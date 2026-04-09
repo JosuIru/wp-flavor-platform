@@ -45,13 +45,13 @@ if ($mes_siguiente > 12) {
 
     <div class="flavor-calendario-grid">
         <div class="flavor-calendario-dias-semana">
-            <span><?php esc_html_e('Lun', 'flavor-chat-ia'); ?></span>
-            <span><?php esc_html_e('Mar', 'flavor-chat-ia'); ?></span>
-            <span><?php esc_html_e('Mié', 'flavor-chat-ia'); ?></span>
-            <span><?php esc_html_e('Jue', 'flavor-chat-ia'); ?></span>
-            <span><?php esc_html_e('Vie', 'flavor-chat-ia'); ?></span>
-            <span><?php esc_html_e('Sáb', 'flavor-chat-ia'); ?></span>
-            <span><?php esc_html_e('Dom', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Lun', 'flavor-platform'); ?></span>
+            <span><?php esc_html_e('Mar', 'flavor-platform'); ?></span>
+            <span><?php esc_html_e('Mié', 'flavor-platform'); ?></span>
+            <span><?php esc_html_e('Jue', 'flavor-platform'); ?></span>
+            <span><?php esc_html_e('Vie', 'flavor-platform'); ?></span>
+            <span><?php esc_html_e('Sáb', 'flavor-platform'); ?></span>
+            <span><?php esc_html_e('Dom', 'flavor-platform'); ?></span>
         </div>
 
         <div class="flavor-calendario-dias">
@@ -91,11 +91,11 @@ if ($mes_siguiente > 12) {
     <div class="flavor-calendario-leyenda">
         <span class="flavor-leyenda-item">
             <span class="flavor-leyenda-color flavor-leyenda-taller"></span>
-            <?php esc_html_e('Taller programado', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Taller programado', 'flavor-platform'); ?>
         </span>
         <span class="flavor-leyenda-item">
             <span class="flavor-leyenda-color flavor-leyenda-completo"></span>
-            <?php esc_html_e('Completo', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Completo', 'flavor-platform'); ?>
         </span>
     </div>
 </div>

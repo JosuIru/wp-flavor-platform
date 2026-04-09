@@ -73,7 +73,7 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Podcast no están creadas. Se crearán automáticamente al activar.', 'flavor-chat-ia');
+            return __('Las tablas de Podcast no están creadas. Se crearán automáticamente al activar.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         
     return '';
@@ -234,17 +234,17 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
                 'restUrl' => rest_url('flavor-podcast/v1/'),
                 'nonce' => wp_create_nonce('flavor_podcast_nonce'),
                 'strings' => [
-                    'play' => __('Reproducir', 'flavor-chat-ia'),
-                    'pause' => __('Pausar', 'flavor-chat-ia'),
-                    'loading' => __('Cargando...', 'flavor-chat-ia'),
-                    'error' => __('Error al cargar el audio', 'flavor-chat-ia'),
-                    'subscribe' => __('Suscribirse', 'flavor-chat-ia'),
-                    'unsubscribe' => __('Cancelar suscripción', 'flavor-chat-ia'),
-                    'subscribed' => __('Suscrito', 'flavor-chat-ia'),
-                    'share' => __('Compartir', 'flavor-chat-ia'),
-                    'copied' => __('Enlace copiado', 'flavor-chat-ia'),
-                    'speed' => __('Velocidad', 'flavor-chat-ia'),
-                    'volume' => __('Volumen', 'flavor-chat-ia'),
+                    'play' => __('Reproducir', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'pause' => __('Pausar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'loading' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'error' => __('Error al cargar el audio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subscribe' => __('Suscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'unsubscribe' => __('Cancelar suscripción', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subscribed' => __('Suscrito', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'share' => __('Compartir', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'copied' => __('Enlace copiado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'speed' => __('Velocidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'volume' => __('Volumen', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
                 'settings' => [
                     'autoplay' => $this->get_setting('autoplay_siguiente'),
@@ -458,17 +458,17 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
         if ($episodio_id > 0) {
             $episodio = $this->obtener_episodio($episodio_id);
             if (!$episodio) {
-                return '<p class="flavor-podcast-error">' . __('Episodio no encontrado', 'flavor-chat-ia') . '</p>';
+                return '<p class="flavor-podcast-error">' . __('Episodio no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             }
             $serie = $this->obtener_serie($episodio->serie_id);
         } elseif ($serie_id > 0) {
             $serie = $this->obtener_serie($serie_id);
             if (!$serie) {
-                return '<p class="flavor-podcast-error">' . __('Serie no encontrada', 'flavor-chat-ia') . '</p>';
+                return '<p class="flavor-podcast-error">' . __('Serie no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             }
             $episodio = $this->obtener_ultimo_episodio($serie_id);
         } else {
-            return '<p class="flavor-podcast-error">' . __('Especifica episodio_id o serie_id', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-podcast-error">' . __('Especifica episodio_id o serie_id', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $color_personalizado = !empty($atributos['color']) ? esc_attr($atributos['color']) : $this->get_setting('color_player_primario');
@@ -536,17 +536,17 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
                 </div>
 
                 <div class="player-buttons">
-                    <button class="player-btn player-btn-rewind" data-seconds="-15" title="<?php esc_attr_e('Retroceder 15s', 'flavor-chat-ia'); ?>">
+                    <button class="player-btn player-btn-rewind" data-seconds="-15" title="<?php esc_attr_e('Retroceder 15s', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-controls-skipback"></span>
                         <span class="btn-label">15</span>
                     </button>
 
-                    <button class="player-btn player-btn-play" title="<?php esc_attr_e('Reproducir', 'flavor-chat-ia'); ?>">
+                    <button class="player-btn player-btn-play" title="<?php esc_attr_e('Reproducir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-controls-play play-icon"></span>
                         <span class="dashicons dashicons-controls-pause pause-icon" style="display:none;"></span>
                     </button>
 
-                    <button class="player-btn player-btn-forward" data-seconds="30" title="<?php esc_attr_e('Adelantar 30s', 'flavor-chat-ia'); ?>">
+                    <button class="player-btn player-btn-forward" data-seconds="30" title="<?php esc_attr_e('Adelantar 30s', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-controls-skipforward"></span>
                         <span class="btn-label">30</span>
                     </button>
@@ -554,21 +554,21 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
 
                 <div class="player-secondary-controls">
                     <div class="player-speed-control">
-                        <button class="player-btn player-btn-speed" title="<?php esc_attr_e('Velocidad', 'flavor-chat-ia'); ?>">
-                            <span class="speed-value"><?php echo esc_html__('1x', 'flavor-chat-ia'); ?></span>
+                        <button class="player-btn player-btn-speed" title="<?php esc_attr_e('Velocidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                            <span class="speed-value"><?php echo esc_html__('1x', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </button>
                         <div class="speed-menu" style="display:none;">
-                            <button data-speed="0.5"><?php echo esc_html__('0.5x', 'flavor-chat-ia'); ?></button>
-                            <button data-speed="0.75"><?php echo esc_html__('0.75x', 'flavor-chat-ia'); ?></button>
-                            <button data-speed="1" class="active"><?php echo esc_html__('1x', 'flavor-chat-ia'); ?></button>
-                            <button data-speed="1.25"><?php echo esc_html__('1.25x', 'flavor-chat-ia'); ?></button>
-                            <button data-speed="1.5"><?php echo esc_html__('1.5x', 'flavor-chat-ia'); ?></button>
-                            <button data-speed="2"><?php echo esc_html__('2x', 'flavor-chat-ia'); ?></button>
+                            <button data-speed="0.5"><?php echo esc_html__('0.5x', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                            <button data-speed="0.75"><?php echo esc_html__('0.75x', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                            <button data-speed="1" class="active"><?php echo esc_html__('1x', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                            <button data-speed="1.25"><?php echo esc_html__('1.25x', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                            <button data-speed="1.5"><?php echo esc_html__('1.5x', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                            <button data-speed="2"><?php echo esc_html__('2x', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                         </div>
                     </div>
 
                     <div class="player-volume-control">
-                        <button class="player-btn player-btn-volume" title="<?php esc_attr_e('Volumen', 'flavor-chat-ia'); ?>">
+                        <button class="player-btn player-btn-volume" title="<?php esc_attr_e('Volumen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-controls-volumeon volume-on"></span>
                             <span class="dashicons dashicons-controls-volumeoff volume-off" style="display:none;"></span>
                         </button>
@@ -577,11 +577,11 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
                         </div>
                     </div>
 
-                    <button class="player-btn player-btn-share" title="<?php esc_attr_e('Compartir', 'flavor-chat-ia'); ?>">
+                    <button class="player-btn player-btn-share" title="<?php esc_attr_e('Compartir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-share"></span>
                     </button>
 
-                    <button class="player-btn player-btn-download" title="<?php esc_attr_e('Descargar', 'flavor-chat-ia'); ?>">
+                    <button class="player-btn player-btn-download" title="<?php esc_attr_e('Descargar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <a href="<?php echo esc_url($episodio->archivo_url); ?>" download>
                             <span class="dashicons dashicons-download"></span>
                         </a>
@@ -595,13 +595,13 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
 
             <?php if ($atributos['mostrar_descripcion'] && !empty($episodio->descripcion)): ?>
             <div class="podcast-descripcion">
-                <h5><?php _e('Descripción', 'flavor-chat-ia'); ?></h5>
+                <h5><?php _e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h5>
                 <div class="descripcion-contenido">
                     <?php echo wp_kses_post($episodio->descripcion); ?>
                 </div>
                 <?php if (!empty($episodio->notas_episodio)): ?>
                 <div class="notas-episodio">
-                    <h6><?php _e('Notas del episodio', 'flavor-chat-ia'); ?></h6>
+                    <h6><?php _e('Notas del episodio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h6>
                     <?php echo wp_kses_post($episodio->notas_episodio); ?>
                 </div>
                 <?php endif; ?>
@@ -612,7 +612,7 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
             <div class="podcast-transcripcion">
                 <h5>
                     <span class="dashicons dashicons-text"></span>
-                    <?php _e('Transcripción', 'flavor-chat-ia'); ?>
+                    <?php _e('Transcripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h5>
                 <div class="transcripcion-contenido" data-episodio-id="<?php echo $episodio->id; ?>">
                     <?php echo wp_kses_post(nl2br($transcripcion->contenido_texto)); ?>
@@ -623,7 +623,7 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
 
             <?php if ($atributos['mostrar_lista'] && !empty($episodios_lista)): ?>
             <div class="podcast-lista-episodios">
-                <h5><?php _e('Más episodios', 'flavor-chat-ia'); ?></h5>
+                <h5><?php _e('Más episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h5>
                 <ul class="episodios-lista">
                     <?php foreach ($episodios_lista as $ep): ?>
                     <li class="episodio-item <?php echo ($episodio && $ep->id === $episodio->id) ? 'activo' : ''; ?>"
@@ -665,12 +665,12 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
 
         $serie_id = absint($atributos['serie_id']);
         if ($serie_id === 0) {
-            return '<p class="flavor-podcast-error">' . __('Especifica serie_id', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-podcast-error">' . __('Especifica serie_id', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $serie = $this->obtener_serie($serie_id);
         if (!$serie) {
-            return '<p class="flavor-podcast-error">' . __('Serie no encontrada', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-podcast-error">' . __('Serie no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $pagina_actual = max(1, absint($_GET['podcast_pagina'] ?? 1));
@@ -688,9 +688,9 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
             <div class="lista-header">
                 <h3><?php echo esc_html($serie->titulo); ?></h3>
                 <p class="lista-meta">
-                    <?php printf(__('%d episodios', 'flavor-chat-ia'), $total_episodios); ?>
+                    <?php printf(__('%d episodios', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_episodios); ?>
                     <?php if ($temporada > 0): ?>
-                        &middot; <?php printf(__('Temporada %d', 'flavor-chat-ia'), $temporada); ?>
+                        &middot; <?php printf(__('Temporada %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $temporada); ?>
                     <?php endif; ?>
                 </p>
             </div>
@@ -698,10 +698,10 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
             <?php if ($this->obtener_temporadas_serie($serie_id) > 1): ?>
             <div class="lista-filtros">
                 <select class="filtro-temporada">
-                    <option value="0"><?php _e('Todas las temporadas', 'flavor-chat-ia'); ?></option>
+                    <option value="0"><?php _e('Todas las temporadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php for ($temporada_num = 1; $temporada_num <= $this->obtener_temporadas_serie($serie_id); $temporada_num++): ?>
                         <option value="<?php echo $temporada_num; ?>" <?php selected($temporada, $temporada_num); ?>>
-                            <?php printf(__('Temporada %d', 'flavor-chat-ia'), $temporada_num); ?>
+                            <?php printf(__('Temporada %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $temporada_num); ?>
                         </option>
                     <?php endfor; ?>
                 </select>
@@ -752,17 +752,17 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
             <nav class="podcast-paginacion">
                 <?php if ($pagina_actual > 1): ?>
                     <a href="<?php echo add_query_arg('podcast_pagina', $pagina_actual - 1); ?>" class="pagina-anterior">
-                        &laquo; <?php _e('Anterior', 'flavor-chat-ia'); ?>
+                        &laquo; <?php _e('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 <?php endif; ?>
 
                 <span class="pagina-info">
-                    <?php printf(__('Página %d de %d', 'flavor-chat-ia'), $pagina_actual, $total_paginas); ?>
+                    <?php printf(__('Página %d de %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $pagina_actual, $total_paginas); ?>
                 </span>
 
                 <?php if ($pagina_actual < $total_paginas): ?>
                     <a href="<?php echo add_query_arg('podcast_pagina', $pagina_actual + 1); ?>" class="pagina-siguiente">
-                        <?php _e('Siguiente', 'flavor-chat-ia'); ?> &raquo;
+                        <?php _e('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> &raquo;
                     </a>
                 <?php endif; ?>
             </nav>
@@ -819,7 +819,7 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
                         <?php if ($atributos['mostrar_episodios']): ?>
                             <span class="meta-episodios">
                                 <span class="dashicons dashicons-playlist-audio"></span>
-                                <?php printf(_n('%d episodio', '%d episodios', $serie->total_episodios, 'flavor-chat-ia'), $serie->total_episodios); ?>
+                                <?php printf(_n('%d episodio', '%d episodios', $serie->total_episodios, FLAVOR_PLATFORM_TEXT_DOMAIN), $serie->total_episodios); ?>
                             </span>
                         <?php endif; ?>
                         <?php if ($atributos['mostrar_suscriptores']): ?>
@@ -867,7 +867,7 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
                     <?php echo $usuario_id === 0 ? 'data-requiere-login="true"' : ''; ?>>
                 <span class="dashicons <?php echo $esta_suscrito ? 'dashicons-yes' : 'dashicons-plus-alt'; ?>"></span>
                 <span class="btn-texto">
-                    <?php echo $esta_suscrito ? __('Suscrito', 'flavor-chat-ia') : __('Suscribirse', 'flavor-chat-ia'); ?>
+                    <?php echo $esta_suscrito ? __('Suscrito', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Suscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
             </button>
             <?php if ($atributos['mostrar_contador']): ?>
@@ -896,7 +896,7 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
 
         $serie = $this->obtener_serie($serie_id);
         if (!$serie || $serie->autor_id != $usuario_id) {
-            return '<p class="flavor-podcast-error">' . __('No tienes permiso para ver estas estadísticas', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-podcast-error">' . __('No tienes permiso para ver estas estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $estadisticas = $this->obtener_estadisticas_serie($serie_id, absint($atributos['periodo']));
@@ -904,23 +904,23 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
         ob_start();
         ?>
         <div class="flavor-podcast-estadisticas">
-            <h3><?php _e('Estadísticas', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <div class="estadisticas-grid">
                 <div class="stat-card">
                     <span class="stat-valor"><?php echo number_format_i18n($estadisticas['reproducciones_totales']); ?></span>
-                    <span class="stat-label"><?php _e('Reproducciones', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php _e('Reproducciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="stat-card">
                     <span class="stat-valor"><?php echo number_format_i18n($estadisticas['suscriptores']); ?></span>
-                    <span class="stat-label"><?php _e('Suscriptores', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php _e('Suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="stat-card">
                     <span class="stat-valor"><?php echo $this->formatear_duracion($estadisticas['tiempo_escucha_total']); ?></span>
-                    <span class="stat-label"><?php _e('Tiempo de escucha', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php _e('Tiempo de escucha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="stat-card">
                     <span class="stat-valor"><?php echo number_format($estadisticas['porcentaje_completado_promedio'], 1); ?>%</span>
-                    <span class="stat-label"><?php _e('Tasa de completado', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php _e('Tasa de completado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
         </div>
@@ -933,7 +933,7 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_buscar($atts) {
         $atributos = shortcode_atts([
-            'placeholder' => __('Buscar podcasts y episodios...', 'flavor-chat-ia'),
+            'placeholder' => __('Buscar podcasts y episodios...', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'mostrar_filtros' => true,
             'limite' => 12,
         ], $atts);
@@ -972,7 +972,7 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
                 <?php if ($atributos['mostrar_filtros']): ?>
                 <div class="buscador-filtros">
                     <select name="podcast_categoria">
-                        <option value=""><?php _e('Todas las categorías', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Todas las categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($this->categorias_disponibles as $slug => $nombre): ?>
                             <option value="<?php echo esc_attr($slug); ?>" <?php selected($categoria_filtro, $slug); ?>>
                                 <?php echo esc_html($nombre); ?>
@@ -980,20 +980,20 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
                         <?php endforeach; ?>
                     </select>
                     <select name="podcast_tipo">
-                        <option value=""><?php _e('Series y episodios', 'flavor-chat-ia'); ?></option>
-                        <option value="series" <?php selected($tipo_filtro, 'series'); ?>><?php _e('Solo series', 'flavor-chat-ia'); ?></option>
-                        <option value="episodios" <?php selected($tipo_filtro, 'episodios'); ?>><?php _e('Solo episodios', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Series y episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="series" <?php selected($tipo_filtro, 'series'); ?>><?php _e('Solo series', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="episodios" <?php selected($tipo_filtro, 'episodios'); ?>><?php _e('Solo episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
                 <?php endif; ?>
-                <button type="submit" class="buscador-btn"><?php _e('Buscar', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="buscador-btn"><?php _e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
             </form>
 
             <?php if (!empty($termino_busqueda)): ?>
             <div class="buscador-resultados">
                 <p class="resultados-count">
                     <?php printf(
-                        _n('%d resultado para "%s"', '%d resultados para "%s"', $total_resultados, 'flavor-chat-ia'),
+                        _n('%d resultado para "%s"', '%d resultados para "%s"', $total_resultados, FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $total_resultados,
                         esc_html($termino_busqueda)
                     ); ?>
@@ -1001,7 +1001,7 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
 
                 <?php if (!empty($series_encontradas)): ?>
                 <div class="resultados-seccion">
-                    <h3><?php _e('Series', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Series', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <div class="podcast-grid podcast-grid-series">
                         <?php foreach ($series_encontradas as $serie): ?>
                         <div class="podcast-card podcast-serie-card">
@@ -1037,7 +1037,7 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
 
                 <?php if (!empty($episodios_encontrados)): ?>
                 <div class="resultados-seccion">
-                    <h3><?php _e('Episodios', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <div class="podcast-grid podcast-grid-episodios">
                         <?php foreach ($episodios_encontrados as $episodio): ?>
                         <div class="podcast-card podcast-episodio-card">
@@ -1071,8 +1071,8 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
                 <?php if ($total_resultados === 0): ?>
                 <div class="sin-resultados">
                     <span class="dashicons dashicons-search"></span>
-                    <p><?php _e('No se encontraron resultados para tu búsqueda.', 'flavor-chat-ia'); ?></p>
-                    <p class="sugerencia"><?php _e('Intenta con otros términos o revisa los filtros.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No se encontraron resultados para tu búsqueda.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                    <p class="sugerencia"><?php _e('Intenta con otros términos o revisa los filtros.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <?php endif; ?>
             </div>
@@ -1096,7 +1096,7 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
             wp_send_json($resultado);
         }
 
-        wp_send_json_error(['message' => __('Acción no válida', 'flavor-chat-ia')]);
+        wp_send_json_error(['message' => __('Acción no válida', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -1107,7 +1107,7 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
 
         $episodio_id = absint($datos['episodio_id'] ?? 0);
         if ($episodio_id === 0) {
-            return ['success' => false, 'message' => __('ID de episodio requerido', 'flavor-chat-ia')];
+            return ['success' => false, 'message' => __('ID de episodio requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $usuario_id = get_current_user_id();
@@ -1246,12 +1246,12 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if ($usuario_id === 0) {
-            return ['success' => false, 'message' => __('Debes iniciar sesión', 'flavor-chat-ia'), 'requiere_login' => true];
+            return ['success' => false, 'message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN), 'requiere_login' => true];
         }
 
         $serie_id = absint($datos['serie_id'] ?? 0);
         if ($serie_id === 0) {
-            return ['success' => false, 'message' => __('Serie no especificada', 'flavor-chat-ia')];
+            return ['success' => false, 'message' => __('Serie no especificada', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $suscripcion_existente = $wpdb->get_var($wpdb->prepare(
@@ -1438,7 +1438,7 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
     public function rest_obtener_serie($request) {
         $serie = $this->obtener_serie($request->get_param('id'));
         if (!$serie) {
-            return new WP_Error('not_found', __('Serie no encontrada', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Serie no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         $respuesta = [
@@ -1474,7 +1474,7 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
     public function rest_obtener_episodio($request) {
         $episodio = $this->obtener_episodio($request->get_param('id'));
         if (!$episodio) {
-            return new WP_Error('not_found', __('Episodio no encontrado', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Episodio no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         $respuesta = [
@@ -1498,7 +1498,7 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
         $descripcion = wp_kses_post($datos['descripcion'] ?? '');
 
         if (empty($titulo) || empty($descripcion)) {
-            return new WP_Error('missing_data', __('Título y descripción son requeridos', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('missing_data', __('Título y descripción son requeridos', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $series_usuario = $wpdb->get_var($wpdb->prepare(
@@ -1508,7 +1508,7 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
 
         $limite_series = $this->get_setting('limite_series_por_usuario');
         if ($series_usuario >= $limite_series) {
-            return new WP_Error('limit_reached', sprintf(__('Has alcanzado el límite de %d series', 'flavor-chat-ia'), $limite_series), ['status' => 403]);
+            return new WP_Error('limit_reached', sprintf(__('Has alcanzado el límite de %d series', FLAVOR_PLATFORM_TEXT_DOMAIN), $limite_series), ['status' => 403]);
         }
 
         $slug = wp_unique_post_slug(sanitize_title($titulo), 0, 'publish', 'podcast_serie', 0);
@@ -1526,7 +1526,7 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
         ]);
 
         if (!$resultado_insercion) {
-            return new WP_Error('db_error', __('Error al crear la serie', 'flavor-chat-ia'), ['status' => 500]);
+            return new WP_Error('db_error', __('Error al crear la serie', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 500]);
         }
 
         $serie = $this->obtener_serie($wpdb->insert_id);
@@ -1534,7 +1534,7 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
         return rest_ensure_response([
             'success' => true,
             'data' => $this->formatear_serie_respuesta($serie),
-            'message' => __('Serie creada correctamente', 'flavor-chat-ia'),
+            'message' => __('Serie creada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -1551,14 +1551,14 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
         $serie = $this->obtener_serie($serie_id);
 
         if (!$serie || $serie->autor_id != $usuario_id) {
-            return new WP_Error('forbidden', __('No tienes permiso para añadir episodios', 'flavor-chat-ia'), ['status' => 403]);
+            return new WP_Error('forbidden', __('No tienes permiso para añadir episodios', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 403]);
         }
 
         $titulo = sanitize_text_field($datos['titulo'] ?? '');
         $archivo_url = esc_url_raw($datos['archivo_url'] ?? '');
 
         if (empty($titulo) || empty($archivo_url)) {
-            return new WP_Error('missing_data', __('Título y archivo son requeridos', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('missing_data', __('Título y archivo son requeridos', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $ultimo_numero_episodio = $wpdb->get_var($wpdb->prepare(
@@ -1589,7 +1589,7 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
         ]);
 
         if (!$resultado_insercion) {
-            return new WP_Error('db_error', __('Error al crear el episodio', 'flavor-chat-ia'), ['status' => 500]);
+            return new WP_Error('db_error', __('Error al crear el episodio', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 500]);
         }
 
         $wpdb->query($wpdb->prepare(
@@ -1718,12 +1718,12 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
 
         $serie_id = absint(get_query_var('serie_id'));
         if ($serie_id === 0) {
-            wp_die(__('Serie no especificada', 'flavor-chat-ia'), '', ['response' => 404]);
+            wp_die(__('Serie no especificada', FLAVOR_PLATFORM_TEXT_DOMAIN), '', ['response' => 404]);
         }
 
         $serie = $this->obtener_serie($serie_id);
         if (!$serie || $serie->estado !== 'publicado') {
-            wp_die(__('Serie no encontrada', 'flavor-chat-ia'), '', ['response' => 404]);
+            wp_die(__('Serie no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN), '', ['response' => 404]);
         }
 
         $episodios = $this->obtener_episodios_serie($serie_id, $this->get_setting('rss_items_limite'), 0, 'recientes');
@@ -2425,14 +2425,14 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
     private function action_foro_serie($params) {
         $serie = $this->resolve_contextual_serie((array) $params);
         if (!$serie) {
-            return $this->render_mensaje_error(__('Selecciona una serie para ver su foro.', 'flavor-chat-ia'));
+            return $this->render_mensaje_error(__('Selecciona una serie para ver su foro.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         ob_start();
         ?>
         <div class="flavor-contextual-tab flavor-contextual-foro">
             <div class="flavor-contextual-header mb-6">
-                <h2 class="text-2xl font-bold text-gray-900"><?php esc_html_e('Foro de la serie', 'flavor-chat-ia'); ?></h2>
+                <h2 class="text-2xl font-bold text-gray-900"><?php esc_html_e('Foro de la serie', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <p class="text-gray-600 mt-1"><?php echo esc_html($serie->titulo); ?></p>
             </div>
             <?php echo do_shortcode(sprintf(
@@ -2462,7 +2462,7 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
     private function action_multimedia_serie($params) {
         $serie = $this->resolve_contextual_serie((array) $params);
         if (!$serie) {
-            return $this->render_mensaje_error(__('Selecciona una serie para ver su galería.', 'flavor-chat-ia'));
+            return $this->render_mensaje_error(__('Selecciona una serie para ver su galería.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         ob_start();
@@ -2470,13 +2470,13 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
         <div class="flavor-contextual-tab flavor-contextual-multimedia">
             <div class="flavor-contextual-header mb-6 flex flex-wrap items-center justify-between gap-4">
                 <div>
-                    <h2 class="text-2xl font-bold text-gray-900"><?php esc_html_e('Multimedia de la serie', 'flavor-chat-ia'); ?></h2>
+                    <h2 class="text-2xl font-bold text-gray-900"><?php esc_html_e('Multimedia de la serie', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                     <p class="text-gray-600 mt-1"><?php echo esc_html($serie->titulo); ?></p>
                 </div>
                 <a href="<?php echo esc_url(home_url('/mi-portal/multimedia/subir/?serie_id=' . absint($serie->id))); ?>"
                    class="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
                     <span class="dashicons dashicons-upload"></span>
-                    <?php esc_html_e('Subir archivo', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Subir archivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php echo do_shortcode(sprintf(
@@ -2506,11 +2506,11 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
     private function action_red_social_serie($params) {
         $serie = $this->resolve_contextual_serie((array) $params);
         if (!$serie) {
-            return $this->render_mensaje_error(__('Selecciona una serie para ver su actividad social.', 'flavor-chat-ia'));
+            return $this->render_mensaje_error(__('Selecciona una serie para ver su actividad social.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         if (!is_user_logged_in()) {
-            return $this->render_mensaje_login(__('Inicia sesion para participar en la actividad social de esta serie.', 'flavor-chat-ia'));
+            return $this->render_mensaje_login(__('Inicia sesion para participar en la actividad social de esta serie.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         ob_start();
@@ -2518,13 +2518,13 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
         <div class="flavor-contextual-tab flavor-contextual-red-social">
             <div class="flavor-contextual-header mb-6 flex flex-wrap items-center justify-between gap-4">
                 <div>
-                    <h2 class="text-2xl font-bold text-gray-900"><?php esc_html_e('Actividad social de la serie', 'flavor-chat-ia'); ?></h2>
+                    <h2 class="text-2xl font-bold text-gray-900"><?php esc_html_e('Actividad social de la serie', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                     <p class="text-gray-600 mt-1"><?php echo esc_html($serie->titulo); ?></p>
                 </div>
                 <a href="<?php echo esc_url(home_url('/mi-portal/red-social/crear/?serie_id=' . absint($serie->id))); ?>"
                    class="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
                     <span class="dashicons dashicons-edit"></span>
-                    <?php esc_html_e('Publicar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php echo do_shortcode(sprintf(
@@ -2551,52 +2551,52 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
     public function get_web_components() {
         return [
             'hero_podcast' => [
-                'label' => __('Hero Podcasts', 'flavor-chat-ia'),
-                'description' => __('Sección hero para podcasts comunitarios', 'flavor-chat-ia'),
+                'label' => __('Hero Podcasts', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Sección hero para podcasts comunitarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-microphone',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'default' => __('Podcasts de la Comunidad', 'flavor-chat-ia')],
-                    'subtitulo' => ['type' => 'textarea', 'label' => __('Subtítulo', 'flavor-chat-ia'), 'default' => __('Historias, conversaciones y conocimiento local', 'flavor-chat-ia')],
-                    'imagen_fondo' => ['type' => 'image', 'label' => __('Imagen de fondo', 'flavor-chat-ia'), 'default' => ''],
-                    'serie_destacada_id' => ['type' => 'number', 'label' => __('ID de la serie destacada', 'flavor-chat-ia'), 'default' => 0],
+                    'titulo' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => __('Podcasts de la Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'subtitulo' => ['type' => 'textarea', 'label' => __('Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => __('Historias, conversaciones y conocimiento local', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'imagen_fondo' => ['type' => 'image', 'label' => __('Imagen de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                    'serie_destacada_id' => ['type' => 'number', 'label' => __('ID de la serie destacada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => 0],
                 ],
                 'template' => 'podcast/hero',
             ],
             'podcast_grid' => [
-                'label' => __('Grid de Series', 'flavor-chat-ia'),
-                'description' => __('Listado de series en tarjetas', 'flavor-chat-ia'),
+                'label' => __('Grid de Series', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Listado de series en tarjetas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-grid-view',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'default' => __('Explora Nuestros Podcasts', 'flavor-chat-ia')],
-                    'columnas' => ['type' => 'select', 'label' => __('Columnas', 'flavor-chat-ia'), 'options' => [2, 3, 4], 'default' => 3],
-                    'limite' => ['type' => 'number', 'label' => __('Número de series', 'flavor-chat-ia'), 'default' => 6],
-                    'categoria' => ['type' => 'text', 'label' => __('Filtrar por categoría', 'flavor-chat-ia'), 'default' => ''],
+                    'titulo' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => __('Explora Nuestros Podcasts', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'columnas' => ['type' => 'select', 'label' => __('Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => [2, 3, 4], 'default' => 3],
+                    'limite' => ['type' => 'number', 'label' => __('Número de series', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => 6],
+                    'categoria' => ['type' => 'text', 'label' => __('Filtrar por categoría', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
                 ],
                 'template' => 'podcast/grid',
             ],
             'episodios_recientes' => [
-                'label' => __('Episodios Recientes', 'flavor-chat-ia'),
-                'description' => __('Lista de últimos episodios publicados', 'flavor-chat-ia'),
+                'label' => __('Episodios Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Lista de últimos episodios publicados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-playlist-audio',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'default' => __('Últimos Episodios', 'flavor-chat-ia')],
-                    'limite' => ['type' => 'number', 'label' => __('Número de episodios', 'flavor-chat-ia'), 'default' => 5],
-                    'estilo' => ['type' => 'select', 'label' => __('Estilo', 'flavor-chat-ia'), 'options' => ['lista', 'tarjetas'], 'default' => 'tarjetas'],
+                    'titulo' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => __('Últimos Episodios', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'limite' => ['type' => 'number', 'label' => __('Número de episodios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => 5],
+                    'estilo' => ['type' => 'select', 'label' => __('Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['lista', 'tarjetas'], 'default' => 'tarjetas'],
                 ],
                 'template' => 'podcast/episodios-recientes',
             ],
             'podcast_player_embed' => [
-                'label' => __('Player Embebido', 'flavor-chat-ia'),
-                'description' => __('Reproductor de podcast embebido', 'flavor-chat-ia'),
+                'label' => __('Player Embebido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Reproductor de podcast embebido', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'media',
                 'icon' => 'dashicons-format-audio',
                 'fields' => [
-                    'serie_id' => ['type' => 'number', 'label' => __('ID de la serie', 'flavor-chat-ia'), 'default' => 0],
-                    'episodio_id' => ['type' => 'number', 'label' => __('ID del episodio', 'flavor-chat-ia'), 'default' => 0],
-                    'mostrar_lista' => ['type' => 'toggle', 'label' => __('Mostrar lista', 'flavor-chat-ia'), 'default' => true],
+                    'serie_id' => ['type' => 'number', 'label' => __('ID de la serie', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => 0],
+                    'episodio_id' => ['type' => 'number', 'label' => __('ID del episodio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => 0],
+                    'mostrar_lista' => ['type' => 'toggle', 'label' => __('Mostrar lista', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => true],
                 ],
                 'template' => 'podcast/player-embed',
             ],
@@ -2690,29 +2690,29 @@ KNOWLEDGE;
     protected function get_admin_config() {
         return [
             'id'         => 'podcast',
-            'label'      => __('Podcast', 'flavor-chat-ia'),
+            'label'      => __('Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'       => 'dashicons-playlist-audio',
             'capability' => 'manage_options',
             'categoria'  => 'comunicacion',
             'paginas'    => [
                 [
                     'slug'     => 'flavor-podcast-dashboard',
-                    'titulo'   => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo'   => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug'     => 'flavor-podcast-episodios',
-                    'titulo'   => __('Episodios', 'flavor-chat-ia'),
+                    'titulo'   => __('Episodios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_episodios'],
                 ],
                 [
                     'slug'     => 'flavor-podcast-programas',
-                    'titulo'   => __('Programas', 'flavor-chat-ia'),
+                    'titulo'   => __('Programas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_programas'],
                 ],
                 [
                     'slug'     => 'podcast-config',
-                    'titulo'   => __('Configuración', 'flavor-chat-ia'),
+                    'titulo'   => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_configuracion'],
                 ],
             ],
@@ -2730,9 +2730,9 @@ KNOWLEDGE;
         $total_reproducciones = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->tabla_reproducciones}");
         $total_suscripciones = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->tabla_suscripciones}");
 
-        $this->render_page_header(__('Dashboard de Podcast', 'flavor-chat-ia'), [
+        $this->render_page_header(__('Dashboard de Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN), [
             [
-                'label' => __('Nuevo Programa', 'flavor-chat-ia'),
+                'label' => __('Nuevo Programa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url'   => $this->admin_page_url('flavor-podcast-programas') . '&action=nuevo',
                 'class' => 'button-primary',
             ],
@@ -2743,28 +2743,28 @@ KNOWLEDGE;
                 <span class="dashicons dashicons-microphone"></span>
                 <div class="stat-content">
                     <span class="stat-value"><?php echo esc_html(number_format_i18n($total_series)); ?></span>
-                    <span class="stat-label"><?php esc_html_e('Programas', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Programas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
             <div class="stat-card">
                 <span class="dashicons dashicons-playlist-audio"></span>
                 <div class="stat-content">
                     <span class="stat-value"><?php echo esc_html(number_format_i18n($total_episodios)); ?></span>
-                    <span class="stat-label"><?php esc_html_e('Episodios', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
             <div class="stat-card">
                 <span class="dashicons dashicons-controls-play"></span>
                 <div class="stat-content">
                     <span class="stat-value"><?php echo esc_html(number_format_i18n($total_reproducciones)); ?></span>
-                    <span class="stat-label"><?php esc_html_e('Reproducciones', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Reproducciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
             <div class="stat-card">
                 <span class="dashicons dashicons-groups"></span>
                 <div class="stat-content">
                     <span class="stat-value"><?php echo esc_html(number_format_i18n($total_suscripciones)); ?></span>
-                    <span class="stat-label"><?php esc_html_e('Suscripciones', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Suscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
         </div>
@@ -2789,9 +2789,9 @@ KNOWLEDGE;
     public function render_admin_episodios() {
         global $wpdb;
 
-        $this->render_page_header(__('Episodios', 'flavor-chat-ia'), [
+        $this->render_page_header(__('Episodios', FLAVOR_PLATFORM_TEXT_DOMAIN), [
             [
-                'label' => __('Nuevo Episodio', 'flavor-chat-ia'),
+                'label' => __('Nuevo Episodio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url'   => $this->admin_page_url('flavor-podcast-episodios') . '&action=nuevo',
                 'class' => 'button-primary',
             ],
@@ -2808,17 +2808,17 @@ KNOWLEDGE;
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Título', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Programa', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Duración', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Programa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Duración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($episodios)): ?>
                     <tr>
-                        <td colspan="5"><?php esc_html_e('No hay episodios disponibles.', 'flavor-chat-ia'); ?></td>
+                        <td colspan="5"><?php esc_html_e('No hay episodios disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                     </tr>
                 <?php else: ?>
                     <?php foreach ($episodios as $episodio): ?>
@@ -2846,9 +2846,9 @@ KNOWLEDGE;
     public function render_admin_programas() {
         global $wpdb;
 
-        $this->render_page_header(__('Programas', 'flavor-chat-ia'), [
+        $this->render_page_header(__('Programas', FLAVOR_PLATFORM_TEXT_DOMAIN), [
             [
-                'label' => __('Nuevo Programa', 'flavor-chat-ia'),
+                'label' => __('Nuevo Programa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url'   => $this->admin_page_url('flavor-podcast-programas') . '&action=nuevo',
                 'class' => 'button-primary',
             ],
@@ -2866,17 +2866,17 @@ KNOWLEDGE;
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Programa', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Autor', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Episodios', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Suscriptores', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Programa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Autor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($programas)): ?>
                     <tr>
-                        <td colspan="5"><?php esc_html_e('No hay programas disponibles.', 'flavor-chat-ia'); ?></td>
+                        <td colspan="5"><?php esc_html_e('No hay programas disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                     </tr>
                 <?php else: ?>
                     <?php foreach ($programas as $programa): ?>
@@ -2952,7 +2952,7 @@ KNOWLEDGE;
         $estadisticas['series'] = [
             'icon' => 'dashicons-microphone',
             'valor' => $total_series,
-            'label' => __('Series', 'flavor-chat-ia'),
+            'label' => __('Series', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'purple',
         ];
 
@@ -2965,7 +2965,7 @@ KNOWLEDGE;
             $estadisticas['episodios'] = [
                 'icon' => 'dashicons-playlist-audio',
                 'valor' => $total_episodios,
-                'label' => __('Episodios', 'flavor-chat-ia'),
+                'label' => __('Episodios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'blue',
             ];
         }
@@ -2983,7 +2983,7 @@ KNOWLEDGE;
                 $estadisticas['suscripciones'] = [
                     'icon' => 'dashicons-rss',
                     'valor' => $mis_suscripciones,
-                    'label' => __('Suscripciones', 'flavor-chat-ia'),
+                    'label' => __('Suscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'green',
                 ];
             }
@@ -3000,28 +3000,28 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Podcasts', 'flavor-chat-ia'),
+                'title' => __('Podcasts', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'podcast',
-                'content' => '<h1>' . __('Podcasts', 'flavor-chat-ia') . '</h1>
-<p>' . __('Descubre y escucha los mejores podcasts de nuestra comunidad. Explora programas sobre diversos temas, suscríbete a tus favoritos y disfruta de contenido de calidad.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Podcasts', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Descubre y escucha los mejores podcasts de nuestra comunidad. Explora programas sobre diversos temas, suscríbete a tus favoritos y disfruta de contenido de calidad.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="podcast" action="listar" columnas="3" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Crear Podcast', 'flavor-chat-ia'),
+                'title' => __('Crear Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'crear-podcast',
-                'content' => '<h1>' . __('Crear Podcast', 'flavor-chat-ia') . '</h1>
-<p>' . __('Crea tu propio programa de podcast y comparte tu contenido con la comunidad. Sube episodios, gestiona suscriptores y haz crecer tu audiencia.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Crear Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Crea tu propio programa de podcast y comparte tu contenido con la comunidad. Sube episodios, gestiona suscriptores y haz crecer tu audiencia.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="podcast" action="crear"]',
                 'parent' => 'podcast',
             ],
             [
-                'title' => __('Mis Podcasts', 'flavor-chat-ia'),
+                'title' => __('Mis Podcasts', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mis-podcasts',
-                'content' => '<h1>' . __('Mis Podcasts', 'flavor-chat-ia') . '</h1>
-<p>' . __('Gestiona tus programas de podcast, revisa estadísticas y administra tus episodios publicados.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Mis Podcasts', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Gestiona tus programas de podcast, revisa estadísticas y administra tus episodios publicados.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="podcast" action="mis_items"]',
                 'parent' => 'podcast',
@@ -3037,8 +3037,8 @@ KNOWLEDGE;
     public static function get_renderer_config(): array {
         return [
             'module'   => 'podcast',
-            'title'    => __('Podcasts', 'flavor-chat-ia'),
-            'subtitle' => __('Escucha y crea contenido de audio', 'flavor-chat-ia'),
+            'title'    => __('Podcasts', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Escucha y crea contenido de audio', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '🎙️',
             'color'    => 'primary', // Usa variable CSS --flavor-primary del tema
 
@@ -3048,25 +3048,25 @@ KNOWLEDGE;
             ],
 
             'fields' => [
-                'titulo'      => ['label' => __('Título', 'flavor-chat-ia'), 'type' => 'text', 'required' => true],
-                'descripcion' => ['label' => __('Descripción', 'flavor-chat-ia'), 'type' => 'textarea'],
-                'portada'     => ['label' => __('Portada', 'flavor-chat-ia'), 'type' => 'image'],
-                'categoria'   => ['label' => __('Categoría', 'flavor-chat-ia'), 'type' => 'select'],
-                'estado'      => ['label' => __('Estado', 'flavor-chat-ia'), 'type' => 'select'],
+                'titulo'      => ['label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'text', 'required' => true],
+                'descripcion' => ['label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'textarea'],
+                'portada'     => ['label' => __('Portada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'image'],
+                'categoria'   => ['label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'select'],
+                'estado'      => ['label' => __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'select'],
             ],
 
             'estados' => [
-                'publicado'  => ['label' => __('Publicado', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
-                'borrador'   => ['label' => __('Borrador', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '📝'],
-                'pausado'    => ['label' => __('Pausado', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏸️'],
-                'archivado'  => ['label' => __('Archivado', 'flavor-chat-ia'), 'color' => 'orange', 'icon' => '📦'],
+                'publicado'  => ['label' => __('Publicado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '✅'],
+                'borrador'   => ['label' => __('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'gray', 'icon' => '📝'],
+                'pausado'    => ['label' => __('Pausado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '⏸️'],
+                'archivado'  => ['label' => __('Archivado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'orange', 'icon' => '📦'],
             ],
 
             'stats' => [
-                'total_series'    => ['label' => __('Series', 'flavor-chat-ia'), 'icon' => '🎙️', 'color' => 'purple'],
-                'total_episodios' => ['label' => __('Episodios', 'flavor-chat-ia'), 'icon' => '🎧', 'color' => 'blue'],
-                'suscriptores'    => ['label' => __('Suscriptores', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'green'],
-                'reproducciones'  => ['label' => __('Reproducciones', 'flavor-chat-ia'), 'icon' => '▶️', 'color' => 'indigo'],
+                'total_series'    => ['label' => __('Series', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🎙️', 'color' => 'purple'],
+                'total_episodios' => ['label' => __('Episodios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🎧', 'color' => 'blue'],
+                'suscriptores'    => ['label' => __('Suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👥', 'color' => 'green'],
+                'reproducciones'  => ['label' => __('Reproducciones', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '▶️', 'color' => 'indigo'],
             ],
 
             'card' => [
@@ -3079,40 +3079,40 @@ KNOWLEDGE;
 
             'tabs' => [
                 'episodios' => [
-                    'label'    => __('Episodios', 'flavor-chat-ia'),
+                    'label'    => __('Episodios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'     => 'dashicons-playlist-audio',
                     'content'  => 'callback:render_tab_episodios',
                     'default'  => true,
                 ],
                 'programas' => [
-                    'label'    => __('Programas', 'flavor-chat-ia'),
+                    'label'    => __('Programas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'     => 'dashicons-microphone',
                     'content'  => 'callback:render_tab_programas',
                 ],
                 'mis-suscripciones' => [
-                    'label'    => __('Mis Suscripciones', 'flavor-chat-ia'),
+                    'label'    => __('Mis Suscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'     => 'dashicons-rss',
                     'content'  => 'callback:render_tab_suscripciones',
                     'requires_login' => true,
                 ],
                 'favoritos' => [
-                    'label'    => __('Favoritos', 'flavor-chat-ia'),
+                    'label'    => __('Favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'     => 'dashicons-heart',
                     'content'  => 'callback:render_tab_favoritos',
                     'requires_login' => true,
                 ],
                 'foro' => [
-                    'label' => __('Foro', 'flavor-chat-ia'),
+                    'label' => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon' => 'dashicons-admin-comments',
                     'content' => 'callback:render_tab_foro',
                 ],
                 'multimedia' => [
-                    'label' => __('Multimedia', 'flavor-chat-ia'),
+                    'label' => __('Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon' => 'dashicons-format-gallery',
                     'content' => 'callback:render_tab_multimedia',
                 ],
                 'red-social' => [
-                    'label' => __('Red social', 'flavor-chat-ia'),
+                    'label' => __('Red social', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon' => 'dashicons-share',
                     'content' => 'callback:render_tab_red_social',
                     'requires_login' => true,
@@ -3130,8 +3130,8 @@ KNOWLEDGE;
                 'show_stats'   => true,
                 'show_actions' => true,
                 'actions'      => [
-                    'crear_serie'   => ['label' => __('Crear serie', 'flavor-chat-ia'), 'icon' => '➕', 'color' => 'purple'],
-                    'subir_episodio'=> ['label' => __('Subir episodio', 'flavor-chat-ia'), 'icon' => '🎧', 'color' => 'blue'],
+                    'crear_serie'   => ['label' => __('Crear serie', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '➕', 'color' => 'purple'],
+                    'subir_episodio'=> ['label' => __('Subir episodio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🎧', 'color' => 'blue'],
                 ],
             ],
         ];
@@ -3176,18 +3176,18 @@ KNOWLEDGE;
             <div class="flavor-tab-header mb-6">
                 <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
                     <span class="dashicons dashicons-playlist-audio text-purple-600"></span>
-                    <?php esc_html_e('Ultimos Episodios', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ultimos Episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <p class="text-gray-600 mt-1">
-                    <?php printf(esc_html__('%d episodios disponibles', 'flavor-chat-ia'), $total_episodios); ?>
+                    <?php printf(esc_html__('%d episodios disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_episodios); ?>
                 </p>
             </div>
 
             <?php if (empty($episodios)): ?>
                 <div class="flavor-empty-state bg-gray-50 rounded-2xl p-12 text-center">
                     <span class="dashicons dashicons-playlist-audio text-gray-300 text-6xl mb-4"></span>
-                    <h3 class="text-lg font-semibold text-gray-700 mb-2"><?php esc_html_e('No hay episodios todavia', 'flavor-chat-ia'); ?></h3>
-                    <p class="text-gray-500"><?php esc_html_e('Los episodios publicados apareceran aqui.', 'flavor-chat-ia'); ?></p>
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2"><?php esc_html_e('No hay episodios todavia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p class="text-gray-500"><?php esc_html_e('Los episodios publicados apareceran aqui.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -3260,18 +3260,18 @@ KNOWLEDGE;
                         <?php if ($pagina_actual > 1): ?>
                             <a href="<?php echo esc_url(add_query_arg('pag', $pagina_actual - 1)); ?>"
                                class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                                <?php esc_html_e('Anterior', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         <?php endif; ?>
 
                         <span class="px-4 py-2 text-gray-600">
-                            <?php printf(esc_html__('Pagina %d de %d', 'flavor-chat-ia'), $pagina_actual, $total_paginas); ?>
+                            <?php printf(esc_html__('Pagina %d de %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $pagina_actual, $total_paginas); ?>
                         </span>
 
                         <?php if ($pagina_actual < $total_paginas): ?>
                             <a href="<?php echo esc_url(add_query_arg('pag', $pagina_actual + 1)); ?>"
                                class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
-                                <?php esc_html_e('Siguiente', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         <?php endif; ?>
                     </nav>
@@ -3340,10 +3340,10 @@ KNOWLEDGE;
                     <div>
                         <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
                             <span class="dashicons dashicons-microphone text-purple-600"></span>
-                            <?php esc_html_e('Programas', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Programas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h2>
                         <p class="text-gray-600 mt-1">
-                            <?php printf(esc_html__('%d series de podcast', 'flavor-chat-ia'), $total_series); ?>
+                            <?php printf(esc_html__('%d series de podcast', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_series); ?>
                         </p>
                     </div>
 
@@ -3351,7 +3351,7 @@ KNOWLEDGE;
                         <div class="flex flex-wrap gap-2">
                             <a href="<?php echo esc_url(remove_query_arg(['categoria', 'pag'])); ?>"
                                class="px-3 py-1.5 rounded-full text-sm <?php echo empty($categoria_filtro) ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
-                                <?php esc_html_e('Todos', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                             <?php foreach ($categorias as $categoria): ?>
                                 <a href="<?php echo esc_url(add_query_arg(['categoria' => $categoria, 'pag' => 1])); ?>"
@@ -3367,8 +3367,8 @@ KNOWLEDGE;
             <?php if (empty($series)): ?>
                 <div class="flavor-empty-state bg-gray-50 rounded-2xl p-12 text-center">
                     <span class="dashicons dashicons-microphone text-gray-300 text-6xl mb-4"></span>
-                    <h3 class="text-lg font-semibold text-gray-700 mb-2"><?php esc_html_e('No hay programas todavia', 'flavor-chat-ia'); ?></h3>
-                    <p class="text-gray-500"><?php esc_html_e('Los programas publicados apareceran aqui.', 'flavor-chat-ia'); ?></p>
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2"><?php esc_html_e('No hay programas todavia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p class="text-gray-500"><?php esc_html_e('Los programas publicados apareceran aqui.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -3394,7 +3394,7 @@ KNOWLEDGE;
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
                                     <a href="<?php echo esc_url($this->obtener_url_serie($serie)); ?>"
                                        class="w-full text-center bg-white text-purple-600 font-medium py-2 rounded-lg hover:bg-purple-50 transition-colors">
-                                        <?php esc_html_e('Ver programa', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Ver programa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 </div>
                             </div>
@@ -3405,7 +3405,7 @@ KNOWLEDGE;
                                 </h3>
 
                                 <p class="text-sm text-gray-500 mb-3">
-                                    <?php esc_html_e('Por', 'flavor-chat-ia'); ?> <?php echo esc_html($serie->autor_nombre); ?>
+                                    <?php esc_html_e('Por', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html($serie->autor_nombre); ?>
                                 </p>
 
                                 <p class="text-sm text-gray-600 line-clamp-2 mb-3">
@@ -3416,7 +3416,7 @@ KNOWLEDGE;
                                     <span class="flex items-center gap-1">
                                         <span class="dashicons dashicons-playlist-audio text-xs"></span>
                                         <?php echo intval($serie->total_episodios_pub ?: $serie->total_episodios); ?>
-                                        <?php esc_html_e('episodios', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </span>
                                     <span class="flex items-center gap-1">
                                         <span class="dashicons dashicons-groups text-xs"></span>
@@ -3433,18 +3433,18 @@ KNOWLEDGE;
                         <?php if ($pagina_actual > 1): ?>
                             <a href="<?php echo esc_url(add_query_arg('pag', $pagina_actual - 1)); ?>"
                                class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                                <?php esc_html_e('Anterior', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         <?php endif; ?>
 
                         <span class="px-4 py-2 text-gray-600">
-                            <?php printf(esc_html__('Pagina %d de %d', 'flavor-chat-ia'), $pagina_actual, $total_paginas); ?>
+                            <?php printf(esc_html__('Pagina %d de %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $pagina_actual, $total_paginas); ?>
                         </span>
 
                         <?php if ($pagina_actual < $total_paginas): ?>
                             <a href="<?php echo esc_url(add_query_arg('pag', $pagina_actual + 1)); ?>"
                                class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
-                                <?php esc_html_e('Siguiente', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         <?php endif; ?>
                     </nav>
@@ -3462,7 +3462,7 @@ KNOWLEDGE;
      */
     public function render_tab_suscripciones(): string {
         if (!is_user_logged_in()) {
-            return $this->render_mensaje_login(__('Inicia sesion para ver tus suscripciones', 'flavor-chat-ia'));
+            return $this->render_mensaje_login(__('Inicia sesion para ver tus suscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -3495,21 +3495,21 @@ KNOWLEDGE;
             <div class="flavor-tab-header mb-6">
                 <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
                     <span class="dashicons dashicons-rss text-purple-600"></span>
-                    <?php esc_html_e('Mis Suscripciones', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Mis Suscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <p class="text-gray-600 mt-1">
-                    <?php printf(esc_html__('%d series suscritas', 'flavor-chat-ia'), count($suscripciones)); ?>
+                    <?php printf(esc_html__('%d series suscritas', FLAVOR_PLATFORM_TEXT_DOMAIN), count($suscripciones)); ?>
                 </p>
             </div>
 
             <?php if (empty($suscripciones)): ?>
                 <div class="flavor-empty-state bg-gray-50 rounded-2xl p-12 text-center">
                     <span class="dashicons dashicons-rss text-gray-300 text-6xl mb-4"></span>
-                    <h3 class="text-lg font-semibold text-gray-700 mb-2"><?php esc_html_e('No tienes suscripciones', 'flavor-chat-ia'); ?></h3>
-                    <p class="text-gray-500 mb-4"><?php esc_html_e('Explora el catalogo y suscribete a las series que te interesen.', 'flavor-chat-ia'); ?></p>
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2"><?php esc_html_e('No tienes suscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p class="text-gray-500 mb-4"><?php esc_html_e('Explora el catalogo y suscribete a las series que te interesen.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="?tab=programas" class="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
                         <span class="dashicons dashicons-search"></span>
-                        <?php esc_html_e('Explorar programas', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Explorar programas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -3535,12 +3535,12 @@ KNOWLEDGE;
                                             <?php echo esc_html($suscripcion->titulo); ?>
                                             <?php if ($suscripcion->episodios_nuevos > 0): ?>
                                                 <span class="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
-                                                    <?php echo intval($suscripcion->episodios_nuevos); ?> <?php esc_html_e('nuevo(s)', 'flavor-chat-ia'); ?>
+                                                    <?php echo intval($suscripcion->episodios_nuevos); ?> <?php esc_html_e('nuevo(s)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                                 </span>
                                             <?php endif; ?>
                                         </h3>
                                         <p class="text-sm text-gray-500">
-                                            <?php esc_html_e('Por', 'flavor-chat-ia'); ?> <?php echo esc_html($suscripcion->autor_nombre); ?>
+                                            <?php esc_html_e('Por', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html($suscripcion->autor_nombre); ?>
                                             <?php if ($suscripcion->categoria): ?>
                                                 - <?php echo esc_html(ucfirst($suscripcion->categoria)); ?>
                                             <?php endif; ?>
@@ -3550,7 +3550,7 @@ KNOWLEDGE;
                                     <button type="button"
                                             class="flavor-btn-cancelar-suscripcion text-gray-400 hover:text-red-500 transition-colors"
                                             data-serie-id="<?php echo intval($suscripcion->serie_id); ?>"
-                                            title="<?php esc_attr_e('Cancelar suscripcion', 'flavor-chat-ia'); ?>">
+                                            title="<?php esc_attr_e('Cancelar suscripcion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                         <span class="dashicons dashicons-no-alt"></span>
                                     </button>
                                 </div>
@@ -3558,7 +3558,7 @@ KNOWLEDGE;
                                 <?php if ($suscripcion->ultimo_episodio): ?>
                                     <div class="mt-2 p-2 bg-gray-50 rounded-lg">
                                         <p class="text-sm text-gray-600">
-                                            <span class="font-medium"><?php esc_html_e('Ultimo:', 'flavor-chat-ia'); ?></span>
+                                            <span class="font-medium"><?php esc_html_e('Ultimo:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                             <?php echo esc_html(wp_trim_words($suscripcion->ultimo_episodio, 10)); ?>
                                             <span class="text-gray-400">- <?php echo esc_html(human_time_diff(strtotime($suscripcion->fecha_ultimo_episodio))); ?></span>
                                         </p>
@@ -3568,11 +3568,11 @@ KNOWLEDGE;
                                 <div class="flex items-center gap-4 mt-3 text-sm text-gray-400">
                                     <span class="flex items-center gap-1">
                                         <span class="dashicons dashicons-playlist-audio text-xs"></span>
-                                        <?php echo intval($suscripcion->total_episodios); ?> <?php esc_html_e('episodios', 'flavor-chat-ia'); ?>
+                                        <?php echo intval($suscripcion->total_episodios); ?> <?php esc_html_e('episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </span>
                                     <span class="flex items-center gap-1">
                                         <span class="dashicons dashicons-calendar-alt text-xs"></span>
-                                        <?php esc_html_e('Suscrito', 'flavor-chat-ia'); ?> <?php echo esc_html(human_time_diff(strtotime($suscripcion->fecha_suscripcion))); ?>
+                                        <?php esc_html_e('Suscrito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html(human_time_diff(strtotime($suscripcion->fecha_suscripcion))); ?>
                                     </span>
                                 </div>
                             </div>
@@ -3580,7 +3580,7 @@ KNOWLEDGE;
                             <a href="<?php echo esc_url(add_query_arg('serie', $suscripcion->serie_id)); ?>"
                                class="flex-shrink-0 px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors">
                                 <span class="dashicons dashicons-controls-play"></span>
-                                <?php esc_html_e('Escuchar', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Escuchar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </div>
                     <?php endforeach; ?>
@@ -3598,7 +3598,7 @@ KNOWLEDGE;
      */
     public function render_tab_favoritos(): string {
         if (!is_user_logged_in()) {
-            return $this->render_mensaje_login(__('Inicia sesion para ver tus favoritos', 'flavor-chat-ia'));
+            return $this->render_mensaje_login(__('Inicia sesion para ver tus favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -3607,7 +3607,7 @@ KNOWLEDGE;
 
         // Verificar si existe la tabla de favoritos
         if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_favoritos'") !== $tabla_favoritos) {
-            return $this->render_mensaje_error(__('La funcionalidad de favoritos no esta disponible.', 'flavor-chat-ia'));
+            return $this->render_mensaje_error(__('La funcionalidad de favoritos no esta disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Obtener favoritos
@@ -3630,21 +3630,21 @@ KNOWLEDGE;
             <div class="flavor-tab-header mb-6">
                 <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
                     <span class="dashicons dashicons-heart text-red-500"></span>
-                    <?php esc_html_e('Mis Favoritos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Mis Favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <p class="text-gray-600 mt-1">
-                    <?php printf(esc_html__('%d episodios guardados', 'flavor-chat-ia'), count($favoritos)); ?>
+                    <?php printf(esc_html__('%d episodios guardados', FLAVOR_PLATFORM_TEXT_DOMAIN), count($favoritos)); ?>
                 </p>
             </div>
 
             <?php if (empty($favoritos)): ?>
                 <div class="flavor-empty-state bg-gray-50 rounded-2xl p-12 text-center">
                     <span class="dashicons dashicons-heart text-gray-300 text-6xl mb-4"></span>
-                    <h3 class="text-lg font-semibold text-gray-700 mb-2"><?php esc_html_e('No tienes favoritos', 'flavor-chat-ia'); ?></h3>
-                    <p class="text-gray-500 mb-4"><?php esc_html_e('Guarda episodios que te gusten para escucharlos mas tarde.', 'flavor-chat-ia'); ?></p>
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2"><?php esc_html_e('No tienes favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p class="text-gray-500 mb-4"><?php esc_html_e('Guarda episodios que te gusten para escucharlos mas tarde.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="?tab=episodios" class="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
                         <span class="dashicons dashicons-search"></span>
-                        <?php esc_html_e('Explorar episodios', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Explorar episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -3686,7 +3686,7 @@ KNOWLEDGE;
                                     <button type="button"
                                             class="flavor-btn-quitar-favorito text-red-500 hover:text-red-600 transition-colors"
                                             data-episodio-id="<?php echo intval($favorito->episodio_id); ?>"
-                                            title="<?php esc_attr_e('Quitar de favoritos', 'flavor-chat-ia'); ?>">
+                                            title="<?php esc_attr_e('Quitar de favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                         <span class="dashicons dashicons-heart"></span>
                                     </button>
                                 </div>
@@ -3716,7 +3716,7 @@ KNOWLEDGE;
                                     class="flex-shrink-0 w-12 h-12 bg-purple-600 text-white rounded-full flex items-center justify-center hover:bg-purple-700 transition-colors"
                                     data-play-episodio="<?php echo esc_attr($favorito->episodio_id); ?>"
                                     data-audio-url="<?php echo esc_url($favorito->archivo_url); ?>"
-                                    title="<?php esc_attr_e('Reproducir', 'flavor-chat-ia'); ?>">
+                                    title="<?php esc_attr_e('Reproducir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <span class="dashicons dashicons-controls-play text-xl ml-0.5"></span>
                             </button>
                         </div>
@@ -3736,19 +3736,19 @@ KNOWLEDGE;
      */
     private function render_mensaje_login(string $mensaje = ''): string {
         if (empty($mensaje)) {
-            $mensaje = __('Debes iniciar sesion para acceder a esta seccion.', 'flavor-chat-ia');
+            $mensaje = __('Debes iniciar sesion para acceder a esta seccion.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         ob_start();
         ?>
         <div class="flavor-login-required bg-gray-50 rounded-2xl p-12 text-center">
             <span class="dashicons dashicons-lock text-gray-300 text-6xl mb-4"></span>
-            <h3 class="text-lg font-semibold text-gray-700 mb-2"><?php esc_html_e('Acceso restringido', 'flavor-chat-ia'); ?></h3>
+            <h3 class="text-lg font-semibold text-gray-700 mb-2"><?php esc_html_e('Acceso restringido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <p class="text-gray-500 mb-4"><?php echo esc_html($mensaje); ?></p>
             <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>"
                class="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
                 <span class="dashicons dashicons-admin-users"></span>
-                <?php esc_html_e('Iniciar sesion', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
         <?php
@@ -3787,27 +3787,27 @@ KNOWLEDGE;
         $capability = 'manage_options';
 
         // Páginas ocultas (sin menú visible en el sidebar)
-        add_submenu_page(null, __('Episodios', 'flavor-chat-ia'), __('Episodios', 'flavor-chat-ia'), $capability, 'podcast-episodios', [$this, 'render_pagina_episodios']);
-        add_submenu_page(null, __('Series', 'flavor-chat-ia'), __('Series', 'flavor-chat-ia'), $capability, 'podcast-series', [$this, 'render_pagina_series']);
-        add_submenu_page(null, __('Suscriptores', 'flavor-chat-ia'), __('Suscriptores', 'flavor-chat-ia'), $capability, 'podcast-suscriptores', [$this, 'render_pagina_suscriptores']);
+        add_submenu_page(null, __('Episodios', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Episodios', FLAVOR_PLATFORM_TEXT_DOMAIN), $capability, 'podcast-episodios', [$this, 'render_pagina_episodios']);
+        add_submenu_page(null, __('Series', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Series', FLAVOR_PLATFORM_TEXT_DOMAIN), $capability, 'podcast-series', [$this, 'render_pagina_series']);
+        add_submenu_page(null, __('Suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN), $capability, 'podcast-suscriptores', [$this, 'render_pagina_suscriptores']);
     }
 
     public function render_pagina_episodios() {
         $views_path = dirname(__FILE__) . '/views/episodios.php';
         if (file_exists($views_path)) { include $views_path; }
-        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Episodios', 'flavor-chat-ia') . '</h1></div>'; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Episodios', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>'; }
     }
 
     public function render_pagina_series() {
         $views_path = dirname(__FILE__) . '/views/series.php';
         if (file_exists($views_path)) { include $views_path; }
-        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Series', 'flavor-chat-ia') . '</h1></div>'; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Series', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>'; }
     }
 
     public function render_pagina_suscriptores() {
         $views_path = dirname(__FILE__) . '/views/suscriptores.php';
         if (file_exists($views_path)) { include $views_path; }
-        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Suscriptores', 'flavor-chat-ia') . '</h1></div>'; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>'; }
     }
 
     /**

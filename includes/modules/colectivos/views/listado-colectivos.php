@@ -19,13 +19,13 @@ $columnas = absint($atributos['columnas'] ?? 3);
     <div class="flavor-col-filtros">
         <div class="flavor-col-busqueda">
             <input type="text" id="col-buscar" class="flavor-col-input"
-                   placeholder="<?php esc_attr_e('Buscar colectivos...', 'flavor-chat-ia'); ?>">
+                   placeholder="<?php esc_attr_e('Buscar colectivos...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <span class="dashicons dashicons-search"></span>
         </div>
 
         <div class="flavor-col-filtros-selectores">
             <select id="col-filtro-tipo" class="flavor-col-select">
-                <option value=""><?php esc_html_e('Todos los tipos', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php esc_html_e('Todos los tipos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 <?php foreach ($categorias as $clave => $etiqueta): ?>
                     <option value="<?php echo esc_attr($clave); ?>"><?php echo esc_html($etiqueta); ?></option>
                 <?php endforeach; ?>
@@ -36,12 +36,12 @@ $columnas = absint($atributos['columnas'] ?? 3);
     <?php if (empty($colectivos)): ?>
         <div class="flavor-col-vacio">
             <span class="dashicons dashicons-networking"></span>
-            <h3><?php esc_html_e('No hay colectivos disponibles', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('Sé el primero en crear un colectivo o asociación.', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('No hay colectivos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php esc_html_e('Sé el primero en crear un colectivo o asociación.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php if (is_user_logged_in()): ?>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('colectivos', 'crear')); ?>" class="flavor-col-btn flavor-col-btn-primary">
                     <span class="dashicons dashicons-plus-alt"></span>
-                    <?php esc_html_e('Crear colectivo', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Crear colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             <?php endif; ?>
         </div>
@@ -77,12 +77,12 @@ $columnas = absint($atributos['columnas'] ?? 3);
                             <span class="flavor-col-stat">
                                 <span class="dashicons dashicons-admin-users"></span>
                                 <?php echo intval($colectivo['miembros_count']); ?>
-                                <?php esc_html_e('miembros', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                             <span class="flavor-col-stat">
                                 <span class="dashicons dashicons-portfolio"></span>
                                 <?php echo intval($colectivo['proyectos_count']); ?>
-                                <?php esc_html_e('proyectos', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         </div>
                     </div>
@@ -90,7 +90,7 @@ $columnas = absint($atributos['columnas'] ?? 3);
                     <div class="flavor-col-card-footer">
                         <a href="<?php echo esc_url(add_query_arg('colectivo', $colectivo['id'], Flavor_Chat_Helpers::get_action_url('colectivos', ''))); ?>"
                            class="flavor-col-btn flavor-col-btn-secondary">
-                            <?php esc_html_e('Ver colectivo', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Ver colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </article>

@@ -109,64 +109,64 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('banco_tiempo_nonce'),
             'categorias' => [
-                'cuidados' => __('Cuidados', 'flavor-chat-ia'),
-                'educacion' => __('Educación', 'flavor-chat-ia'),
-                'bricolaje' => __('Bricolaje', 'flavor-chat-ia'),
-                'tecnologia' => __('Tecnología', 'flavor-chat-ia'),
-                'transporte' => __('Transporte', 'flavor-chat-ia'),
-                'otros' => __('Otros', 'flavor-chat-ia'),
+                'cuidados' => __('Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'educacion' => __('Educación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'bricolaje' => __('Bricolaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'tecnologia' => __('Tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'transporte' => __('Transporte', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'otros' => __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'i18n' => [
-                'solicitud_enviada' => __('Solicitud enviada correctamente', 'flavor-chat-ia'),
-                'servicio_publicado' => __('Servicio publicado correctamente', 'flavor-chat-ia'),
-                'intercambio_completado' => __('Intercambio completado', 'flavor-chat-ia'),
-                'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'confirmacion' => __('¿Estás seguro?', 'flavor-chat-ia'),
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
-                'gracias_valoracion' => __('Gracias por tu valoración', 'flavor-chat-ia'),
-                'error_conexion' => __('Error de conexión', 'flavor-chat-ia'),
-                'sin_servicios' => __('No hay servicios disponibles', 'flavor-chat-ia'),
-                'sin_resultados' => __('No se encontraron servicios', 'flavor-chat-ia'),
-                'ofrecer_servicio' => __('Ofrecer servicio', 'flavor-chat-ia'),
-                'ver_mas' => __('Ver más', 'flavor-chat-ia'),
-                'solicitar_servicio' => __('Solicitar servicio', 'flavor-chat-ia'),
-                'mensaje_proveedor' => __('Mensaje para el proveedor', 'flavor-chat-ia'),
-                'fecha_preferida' => __('Fecha preferida', 'flavor-chat-ia'),
-                'explica_necesidad' => __('Explica brevemente por qué necesitas este servicio...', 'flavor-chat-ia'),
-                'cancelar' => __('Cancelar', 'flavor-chat-ia'),
-                'enviar_solicitud' => __('Enviar solicitud', 'flavor-chat-ia'),
-                'escribe_mensaje' => __('Por favor escribe un mensaje', 'flavor-chat-ia'),
-                'categoria' => __('Categoría', 'flavor-chat-ia'),
-                'horas_estimadas' => __('Horas estimadas', 'flavor-chat-ia'),
-                'publicado' => __('Publicado', 'flavor-chat-ia'),
-                'cerrar' => __('Cerrar', 'flavor-chat-ia'),
-                'ofrecer_nuevo_servicio' => __('Ofrecer nuevo servicio', 'flavor-chat-ia'),
-                'publicar_servicio' => __('Publicar servicio', 'flavor-chat-ia'),
-                'selecciona_categoria' => __('Selecciona categoría', 'flavor-chat-ia'),
-                'error_publicar_servicio' => __('Error al publicar servicio', 'flavor-chat-ia'),
-                'error_enviar_solicitud' => __('Error al enviar solicitud', 'flavor-chat-ia'),
-                'sin_intercambios' => __('No hay intercambios', 'flavor-chat-ia'),
-                'de' => __('De: ', 'flavor-chat-ia'),
-                'para' => __('Para: ', 'flavor-chat-ia'),
-                'intercambio_aceptado' => __('Intercambio aceptado', 'flavor-chat-ia'),
-                'error_aceptar' => __('Error al aceptar', 'flavor-chat-ia'),
-                'confirmar_rechazar_intercambio' => __('¿Estás seguro de rechazar este intercambio?', 'flavor-chat-ia'),
-                'intercambio_rechazado' => __('Intercambio rechazado', 'flavor-chat-ia'),
-                'error_generico' => __('Error', 'flavor-chat-ia'),
-                'completar_intercambio' => __('Completar intercambio', 'flavor-chat-ia'),
-                'horas_reales_servicio' => __('Horas reales del servicio', 'flavor-chat-ia'),
-                'valoracion' => __('Valoración', 'flavor-chat-ia'),
-                'comentario' => __('Comentario', 'flavor-chat-ia'),
-                'comparte_experiencia' => __('Comparte tu experiencia...', 'flavor-chat-ia'),
-                'confirmar' => __('Confirmar', 'flavor-chat-ia'),
-                'confirmar_cancelar_intercambio' => __('¿Estás seguro de cancelar este intercambio?', 'flavor-chat-ia'),
-                'intercambio_cancelado' => __('Intercambio cancelado', 'flavor-chat-ia'),
-                'sin_servicios_publicados' => __('No tienes servicios publicados', 'flavor-chat-ia'),
-                'solicitudes' => __('solicitudes', 'flavor-chat-ia'),
-                'editar' => __('Editar', 'flavor-chat-ia'),
-                'pausar' => __('Pausar', 'flavor-chat-ia'),
-                'activar' => __('Activar', 'flavor-chat-ia'),
-                'eliminar' => __('Eliminar', 'flavor-chat-ia'),
+                'solicitud_enviada' => __('Solicitud enviada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'servicio_publicado' => __('Servicio publicado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'intercambio_completado' => __('Intercambio completado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmacion' => __('¿Estás seguro?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'gracias_valoracion' => __('Gracias por tu valoración', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error_conexion' => __('Error de conexión', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sin_servicios' => __('No hay servicios disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sin_resultados' => __('No se encontraron servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ofrecer_servicio' => __('Ofrecer servicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ver_mas' => __('Ver más', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'solicitar_servicio' => __('Solicitar servicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'mensaje_proveedor' => __('Mensaje para el proveedor', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'fecha_preferida' => __('Fecha preferida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'explica_necesidad' => __('Explica brevemente por qué necesitas este servicio...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cancelar' => __('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'enviar_solicitud' => __('Enviar solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'escribe_mensaje' => __('Por favor escribe un mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'categoria' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'horas_estimadas' => __('Horas estimadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'publicado' => __('Publicado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cerrar' => __('Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ofrecer_nuevo_servicio' => __('Ofrecer nuevo servicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'publicar_servicio' => __('Publicar servicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'selecciona_categoria' => __('Selecciona categoría', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error_publicar_servicio' => __('Error al publicar servicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error_enviar_solicitud' => __('Error al enviar solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sin_intercambios' => __('No hay intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'de' => __('De: ', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'para' => __('Para: ', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'intercambio_aceptado' => __('Intercambio aceptado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error_aceptar' => __('Error al aceptar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmar_rechazar_intercambio' => __('¿Estás seguro de rechazar este intercambio?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'intercambio_rechazado' => __('Intercambio rechazado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error_generico' => __('Error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'completar_intercambio' => __('Completar intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'horas_reales_servicio' => __('Horas reales del servicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'valoracion' => __('Valoración', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'comentario' => __('Comentario', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'comparte_experiencia' => __('Comparte tu experiencia...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmar' => __('Confirmar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmar_cancelar_intercambio' => __('¿Estás seguro de cancelar este intercambio?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'intercambio_cancelado' => __('Intercambio cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sin_servicios_publicados' => __('No tienes servicios publicados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'solicitudes' => __('solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'editar' => __('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'pausar' => __('Pausar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'activar' => __('Activar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'eliminar' => __('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -245,14 +245,14 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
      */
     public function shortcode_widget_saldo($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . __('Inicia sesión para ver tu saldo.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-login-required">' . __('Inicia sesión para ver tu saldo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         global $wpdb;
         $tabla_transacciones = $wpdb->prefix . 'flavor_banco_tiempo_transacciones';
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_transacciones)) {
-            return '<p class="flavor-empty">' . __('El historial de intercambios aún no está disponible.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-empty">' . __('El historial de intercambios aún no está disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $usuario_id = get_current_user_id();
@@ -284,15 +284,15 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         ?>
         <div class="bt-widget-resumen bt-widget-resumen-saldo">
             <div class="bt-widget-kpi">
-                <span class="bt-widget-kpi__label"><?php esc_html_e('Saldo actual', 'flavor-chat-ia'); ?></span>
+                <span class="bt-widget-kpi__label"><?php esc_html_e('Saldo actual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <strong class="bt-widget-kpi__value bt-widget-kpi__value--<?php echo esc_attr($saldo_clase); ?>">
                     <?php echo esc_html(($saldo >= 0 ? '+' : '') . number_format($saldo, 1)); ?>h
                 </strong>
             </div>
             <div class="bt-widget-meta">
-                <span><?php echo esc_html(number_format($horas_dadas, 1)); ?>h <?php esc_html_e('dadas', 'flavor-chat-ia'); ?></span>
-                <span><?php echo esc_html(number_format($horas_recibidas, 1)); ?>h <?php esc_html_e('recibidas', 'flavor-chat-ia'); ?></span>
-                <span><?php echo esc_html(number_format_i18n($pendientes)); ?> <?php esc_html_e('pendientes', 'flavor-chat-ia'); ?></span>
+                <span><?php echo esc_html(number_format($horas_dadas, 1)); ?>h <?php esc_html_e('dadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                <span><?php echo esc_html(number_format($horas_recibidas, 1)); ?>h <?php esc_html_e('recibidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                <span><?php echo esc_html(number_format_i18n($pendientes)); ?> <?php esc_html_e('pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
         <?php
@@ -304,7 +304,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
      */
     public function shortcode_widget_intercambios($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . __('Inicia sesión para ver tus intercambios.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-login-required">' . __('Inicia sesión para ver tus intercambios.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         global $wpdb;
@@ -312,7 +312,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_transacciones)) {
-            return '<p class="flavor-empty">' . __('Aún no hay intercambios disponibles.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-empty">' . __('Aún no hay intercambios disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $atts = shortcode_atts([
@@ -333,7 +333,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         ));
 
         if (empty($intercambios)) {
-            return '<p class="flavor-empty">' . __('No tienes intercambios registrados todavía.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-empty">' . __('No tienes intercambios registrados todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -342,7 +342,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
             <?php foreach ($intercambios as $intercambio): ?>
                 <div class="bt-widget-item">
                     <div class="bt-widget-item__main">
-                        <strong><?php echo esc_html($intercambio->servicio_titulo ?: __('Intercambio', 'flavor-chat-ia')); ?></strong>
+                        <strong><?php echo esc_html($intercambio->servicio_titulo ?: __('Intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong>
                         <span><?php echo esc_html(number_format((float) $intercambio->horas, 1)); ?>h</span>
                     </div>
                     <div class="bt-widget-item__meta">
@@ -386,7 +386,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         ));
 
         if (empty($intercambios)) {
-            return '<p class="flavor-empty">' . __('No hay intercambios recientes.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-empty">' . __('No hay intercambios recientes.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -464,7 +464,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
      */
     public function shortcode_mi_saldo($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . __('Inicia sesión para ver tu saldo.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-login-required">' . __('Inicia sesión para ver tu saldo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $this->encolar_assets();
@@ -479,7 +479,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
      */
     public function shortcode_mis_servicios($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . __('Inicia sesión para ver tus servicios.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-login-required">' . __('Inicia sesión para ver tus servicios.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $this->encolar_assets();
@@ -503,7 +503,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
      */
     public function shortcode_mis_intercambios($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . __('Inicia sesión para ver tus intercambios.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-login-required">' . __('Inicia sesión para ver tus intercambios.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $this->encolar_assets();
@@ -523,7 +523,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
      */
     public function shortcode_ofrecer($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . __('Inicia sesión para ofrecer un servicio.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-login-required">' . __('Inicia sesión para ofrecer un servicio.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $this->encolar_assets();
@@ -550,7 +550,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         $servicio_id = $atts['id'] ?: (isset($_GET['servicio_id']) ? absint($_GET['servicio_id']) : 0);
 
         if (!$servicio_id) {
-            return '<p class="flavor-error">' . __('Servicio no especificado.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-error">' . __('Servicio no especificado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -581,7 +581,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_servicios)) {
-            echo '<p class="flavor-error">' . __('El módulo de banco de tiempo no está configurado.', 'flavor-chat-ia') . '</p>';
+            echo '<p class="flavor-error">' . __('El módulo de banco de tiempo no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -654,19 +654,19 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         } else {
             ?>
             <div class="flavor-bt-saldo">
-                <h3><?php _e('Mi Saldo de Tiempo', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Mi Saldo de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div class="saldo-grid">
                     <div class="saldo-item saldo-dado">
                         <span class="valor"><?php echo esc_html(number_format($horas_dadas, 1)); ?>h</span>
-                        <span class="label"><?php _e('Horas Dadas', 'flavor-chat-ia'); ?></span>
+                        <span class="label"><?php _e('Horas Dadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="saldo-item saldo-recibido">
                         <span class="valor"><?php echo esc_html(number_format($horas_recibidas, 1)); ?>h</span>
-                        <span class="label"><?php _e('Horas Recibidas', 'flavor-chat-ia'); ?></span>
+                        <span class="label"><?php _e('Horas Recibidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="saldo-item saldo-total <?php echo $saldo >= 0 ? 'positivo' : 'negativo'; ?>">
                         <span class="valor"><?php echo esc_html(($saldo >= 0 ? '+' : '') . number_format($saldo, 1)); ?>h</span>
-                        <span class="label"><?php _e('Saldo Actual', 'flavor-chat-ia'); ?></span>
+                        <span class="label"><?php _e('Saldo Actual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -682,12 +682,12 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
         $usuario_id = get_current_user_id();
         $categorias = [
-            'cuidados' => __('Cuidados', 'flavor-chat-ia'),
-            'educacion' => __('Educación', 'flavor-chat-ia'),
-            'bricolaje' => __('Bricolaje', 'flavor-chat-ia'),
-            'tecnologia' => __('Tecnología', 'flavor-chat-ia'),
-            'transporte' => __('Transporte', 'flavor-chat-ia'),
-            'otros' => __('Otros', 'flavor-chat-ia'),
+            'cuidados' => __('Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'educacion' => __('Educación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'bricolaje' => __('Bricolaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'tecnologia' => __('Tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'transporte' => __('Transporte', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'otros' => __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $servicios = $wpdb->get_results($wpdb->prepare(
@@ -704,7 +704,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
 
         if (empty($servicios)) {
             echo '<div class="fl-empty-state"><span class="dashicons dashicons-admin-tools"></span><p>' .
-                esc_html__('No tienes servicios publicados todavía.', 'flavor-chat-ia') .
+                esc_html__('No tienes servicios publicados todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN) .
                 '</p></div>';
             return;
         }
@@ -714,12 +714,12 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
             $categoria = $this->normalize_service_category($servicio->categoria ?? '');
             $estado_key = $this->normalize_service_status($servicio->estado ?? '');
             $estado = $estado_key === 'activo'
-                ? __('Activo', 'flavor-chat-ia')
-                : __('Pausado', 'flavor-chat-ia');
+                ? __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                : __('Pausado', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
             echo '<div class="fl-service-card fl-service-mine ' . ($estado_key === 'pausado' ? 'fl-service-paused' : '') . '">';
             echo '<div class="fl-service-header">';
-            echo '<span class="fl-service-category">' . esc_html($categorias[$categoria] ?? __('Otros', 'flavor-chat-ia')) . '</span>';
+            echo '<span class="fl-service-category">' . esc_html($categorias[$categoria] ?? __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '</span>';
             echo '<span class="fl-service-status fl-status-' . esc_attr($estado_key) . '">' . esc_html($estado) . '</span>';
             echo '</div>';
             echo '<h4 class="fl-service-title">' . esc_html($servicio->titulo) . '</h4>';
@@ -770,38 +770,38 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         } else {
             ?>
             <div class="flavor-bt-ofrecer">
-                <h3><?php _e('Ofrecer un Servicio', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Ofrecer un Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <form id="form-ofrecer-servicio" class="flavor-form">
                     <?php wp_nonce_field('banco_tiempo_nonce', 'bt_nonce_field'); ?>
                     <?php if ($comunidad_id > 0): ?>
                         <input type="hidden" name="comunidad_id" value="<?php echo esc_attr($comunidad_id); ?>">
                     <?php endif; ?>
                     <p>
-                        <label><?php _e('Título del servicio', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Título del servicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="text" name="titulo" required>
                     </p>
                     <p>
-                        <label><?php _e('Descripción', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <textarea name="descripcion" rows="4" required></textarea>
                     </p>
                     <p>
-                        <label><?php _e('Categoría', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select name="categoria" required>
-                            <option value="cuidados"><?php _e('Cuidados', 'flavor-chat-ia'); ?></option>
-                            <option value="educacion"><?php _e('Educación', 'flavor-chat-ia'); ?></option>
-                            <option value="bricolaje"><?php _e('Bricolaje', 'flavor-chat-ia'); ?></option>
-                            <option value="tecnologia"><?php _e('Tecnología', 'flavor-chat-ia'); ?></option>
-                            <option value="transporte"><?php _e('Transporte', 'flavor-chat-ia'); ?></option>
-                            <option value="otros"><?php _e('Otros', 'flavor-chat-ia'); ?></option>
+                            <option value="cuidados"><?php _e('Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="educacion"><?php _e('Educación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="bricolaje"><?php _e('Bricolaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="tecnologia"><?php _e('Tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="transporte"><?php _e('Transporte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="otros"><?php _e('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </p>
                     <p>
-                        <label><?php _e('Horas estimadas', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Horas estimadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="number" name="horas_estimadas" min="0.5" max="8" step="0.5" value="1" required>
                     </p>
                     <p>
                         <button type="submit" class="flavor-btn flavor-btn-primary">
-                            <?php _e('Publicar Servicio', 'flavor-chat-ia'); ?>
+                            <?php _e('Publicar Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </p>
                 </form>
@@ -823,18 +823,18 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         ));
 
         if (!$servicio) {
-            echo '<p class="flavor-error">' . __('Servicio no encontrado.', 'flavor-chat-ia') . '</p>';
+            echo '<p class="flavor-error">' . __('Servicio no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
         $usuario = get_userdata($servicio->usuario_id);
         $categorias = [
-            'cuidados' => __('Cuidados', 'flavor-chat-ia'),
-            'educacion' => __('Educación', 'flavor-chat-ia'),
-            'bricolaje' => __('Bricolaje', 'flavor-chat-ia'),
-            'tecnologia' => __('Tecnología', 'flavor-chat-ia'),
-            'transporte' => __('Transporte', 'flavor-chat-ia'),
-            'otros' => __('Otros', 'flavor-chat-ia'),
+            'cuidados' => __('Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'educacion' => __('Educación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'bricolaje' => __('Bricolaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'tecnologia' => __('Tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'transporte' => __('Transporte', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'otros' => __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
         $categoria = $this->normalize_service_category($servicio->categoria ?? '');
 
@@ -848,10 +848,10 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         echo '<h3>' . esc_html($servicio->titulo) . '</h3>';
         echo '<p>' . esc_html($servicio->descripcion) . '</p>';
         echo '<div class="flavor-bt-detalle__meta">';
-        echo '<span><strong>' . esc_html__('Categoría:', 'flavor-chat-ia') . '</strong> ' . esc_html($categorias[$categoria] ?? __('Otros', 'flavor-chat-ia')) . '</span>';
-        echo '<span><strong>' . esc_html__('Horas estimadas:', 'flavor-chat-ia') . '</strong> ' . esc_html(number_format((float) $servicio->horas_estimadas, 1)) . 'h</span>';
+        echo '<span><strong>' . esc_html__('Categoría:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ' . esc_html($categorias[$categoria] ?? __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '</span>';
+        echo '<span><strong>' . esc_html__('Horas estimadas:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ' . esc_html(number_format((float) $servicio->horas_estimadas, 1)) . 'h</span>';
         if ($usuario) {
-            echo '<span><strong>' . esc_html__('Ofrecido por:', 'flavor-chat-ia') . '</strong> ' . esc_html($usuario->display_name) . '</span>';
+            echo '<span><strong>' . esc_html__('Ofrecido por:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ' . esc_html($usuario->display_name) . '</span>';
         }
         echo '</div>';
         echo '</div>';
@@ -885,7 +885,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
      */
     public function registrar_tabs($tabs) {
         $tabs['banco-tiempo-saldo'] = [
-            'titulo' => __('Mi Saldo', 'flavor-chat-ia'),
+            'titulo' => __('Mi Saldo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'dashicons-clock',
             'callback' => [$this, 'render_tab_saldo'],
             'orden' => 30,
@@ -893,7 +893,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         ];
 
         $tabs['banco-tiempo-intercambios'] = [
-            'titulo' => __('Mis Intercambios', 'flavor-chat-ia'),
+            'titulo' => __('Mis Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'dashicons-randomize',
             'callback' => [$this, 'render_tab_intercambios'],
             'orden' => 31,
@@ -901,7 +901,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         ];
 
         $tabs['banco-tiempo-servicios'] = [
-            'titulo' => __('Mis Servicios', 'flavor-chat-ia'),
+            'titulo' => __('Mis Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'dashicons-admin-tools',
             'callback' => [$this, 'render_tab_servicios'],
             'orden' => 32,
@@ -949,7 +949,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         check_ajax_referer('banco_tiempo_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $servicio_id = isset($_POST['servicio_id']) ? absint($_POST['servicio_id']) : 0;
@@ -958,7 +958,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         $usuario_id = get_current_user_id();
 
         if (!$servicio_id) {
-            wp_send_json_error(__('Servicio no válido', 'flavor-chat-ia'));
+            wp_send_json_error(__('Servicio no válido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -972,11 +972,11 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         ));
 
         if (!$servicio) {
-            wp_send_json_error(__('Servicio no disponible', 'flavor-chat-ia'));
+            wp_send_json_error(__('Servicio no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         if ($servicio->usuario_id == $usuario_id) {
-            wp_send_json_error(__('No puedes solicitar tu propio servicio', 'flavor-chat-ia'));
+            wp_send_json_error(__('No puedes solicitar tu propio servicio', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Crear transacción
@@ -992,11 +992,11 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
 
         if ($resultado) {
             wp_send_json_success([
-                'mensaje' => __('Solicitud enviada correctamente', 'flavor-chat-ia'),
+                'mensaje' => __('Solicitud enviada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'transaccion_id' => $wpdb->insert_id,
             ]);
         } else {
-            wp_send_json_error(__('Error al enviar solicitud', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al enviar solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -1007,7 +1007,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         check_ajax_referer('banco_tiempo_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $titulo = isset($_POST['titulo']) ? sanitize_text_field($_POST['titulo']) : '';
@@ -1018,7 +1018,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         $usuario_id = get_current_user_id();
 
         if (empty($titulo) || empty($descripcion)) {
-            wp_send_json_error(__('Título y descripción son obligatorios', 'flavor-chat-ia'));
+            wp_send_json_error(__('Título y descripción son obligatorios', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -1039,11 +1039,11 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
 
         if ($resultado) {
             wp_send_json_success([
-                'mensaje' => __('Servicio publicado correctamente', 'flavor-chat-ia'),
+                'mensaje' => __('Servicio publicado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'servicio_id' => $wpdb->insert_id,
             ]);
         } else {
-            wp_send_json_error(__('Error al publicar servicio', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al publicar servicio', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -1054,7 +1054,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         check_ajax_referer('banco_tiempo_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $transaccion_id = isset($_POST['transaccion_id']) ? absint($_POST['transaccion_id']) : 0;
@@ -1077,9 +1077,9 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         );
 
         if ($resultado !== false) {
-            wp_send_json_success(['mensaje' => __('Solicitud aceptada', 'flavor-chat-ia')]);
+            wp_send_json_success(['mensaje' => __('Solicitud aceptada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
-            wp_send_json_error(__('Error al aceptar solicitud', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al aceptar solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -1090,7 +1090,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         check_ajax_referer('banco_tiempo_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $transaccion_id = isset($_POST['transaccion_id']) ? absint($_POST['transaccion_id']) : 0;
@@ -1114,9 +1114,9 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         );
 
         if ($resultado !== false) {
-            wp_send_json_success(['mensaje' => __('Solicitud rechazada', 'flavor-chat-ia')]);
+            wp_send_json_success(['mensaje' => __('Solicitud rechazada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
-            wp_send_json_error(__('Error al rechazar solicitud', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al rechazar solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -1127,7 +1127,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         check_ajax_referer('banco_tiempo_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $transaccion_id = isset($_POST['transaccion_id']) ? absint($_POST['transaccion_id']) : 0;
@@ -1146,7 +1146,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         ));
 
         if (!$transaccion) {
-            wp_send_json_error(__('Transacción no encontrada', 'flavor-chat-ia'));
+            wp_send_json_error(__('Transacción no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $update_data = [
@@ -1164,9 +1164,9 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
             // Disparar acción para actualizar saldos
             do_action('flavor_banco_tiempo_servicio_completado', $transaccion_id, $transaccion->horas);
 
-            wp_send_json_success(['mensaje' => __('Intercambio completado', 'flavor-chat-ia')]);
+            wp_send_json_success(['mensaje' => __('Intercambio completado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
-            wp_send_json_error(__('Error al completar intercambio', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al completar intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -1177,14 +1177,14 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         check_ajax_referer('banco_tiempo_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $transaccion_id = isset($_POST['intercambio_id']) ? absint($_POST['intercambio_id']) : 0;
         $usuario_id = get_current_user_id();
 
         if (!$transaccion_id) {
-            wp_send_json_error(__('Transacción no válida', 'flavor-chat-ia'));
+            wp_send_json_error(__('Transacción no válida', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -1204,10 +1204,10 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         );
 
         if ($resultado === false) {
-            wp_send_json_error(__('Error al cancelar intercambio', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al cancelar intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
-        wp_send_json_success(['mensaje' => __('Intercambio cancelado', 'flavor-chat-ia')]);
+        wp_send_json_success(['mensaje' => __('Intercambio cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -1217,7 +1217,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         check_ajax_referer('banco_tiempo_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $transaccion_id = isset($_POST['transaccion_id']) ? absint($_POST['transaccion_id']) : 0;
@@ -1226,7 +1226,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         $usuario_id = get_current_user_id();
 
         if (!$transaccion_id || $valoracion < 1 || $valoracion > 5) {
-            wp_send_json_error(__('Datos no válidos', 'flavor-chat-ia'));
+            wp_send_json_error(__('Datos no válidos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -1240,7 +1240,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         ));
 
         if (!$transaccion) {
-            wp_send_json_error(__('Transacción no encontrada', 'flavor-chat-ia'));
+            wp_send_json_error(__('Transacción no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $rol = $transaccion->usuario_solicitante_id == $usuario_id ? 'solicitante' : 'receptor';
@@ -1257,9 +1257,9 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         ]);
 
         if ($resultado) {
-            wp_send_json_success(['mensaje' => __('Gracias por tu valoración', 'flavor-chat-ia')]);
+            wp_send_json_success(['mensaje' => __('Gracias por tu valoración', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
-            wp_send_json_error(__('Error al guardar valoración', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al guardar valoración', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -1302,7 +1302,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
                 $this->render_servicio_card($servicio);
             }
         } else {
-            echo '<p class="no-resultados">' . __('No se encontraron servicios', 'flavor-chat-ia') . '</p>';
+            echo '<p class="no-resultados">' . __('No se encontraron servicios', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
         $html = ob_get_clean();
 
@@ -1316,7 +1316,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         check_ajax_referer('banco_tiempo_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $filtro = isset($_POST['filtro']) ? sanitize_text_field($_POST['filtro']) : '';
@@ -1362,22 +1362,22 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
 
         $data = array_map(function($intercambio) {
             $estados = [
-                'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-                'aceptado' => __('Aceptado', 'flavor-chat-ia'),
-                'en_curso' => __('En curso', 'flavor-chat-ia'),
-                'completado' => __('Completado', 'flavor-chat-ia'),
-                'cancelado' => __('Cancelado', 'flavor-chat-ia'),
-                'rechazado' => __('Rechazado', 'flavor-chat-ia'),
+                'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'aceptado' => __('Aceptado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'en_curso' => __('En curso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'completado' => __('Completado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cancelado' => __('Cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'rechazado' => __('Rechazado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
 
             return [
                 'id' => (int) $intercambio->id,
-                'servicio_titulo' => $intercambio->servicio_titulo ?: __('Servicio', 'flavor-chat-ia'),
-                'otro_usuario' => $intercambio->otro_usuario ?: __('Usuario', 'flavor-chat-ia'),
+                'servicio_titulo' => $intercambio->servicio_titulo ?: __('Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'otro_usuario' => $intercambio->otro_usuario ?: __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'direccion' => $intercambio->direccion,
                 'horas' => (float) $intercambio->horas,
                 'estado' => $intercambio->estado,
-                'estado_texto' => $estados[$intercambio->estado] ?? __('Pendiente', 'flavor-chat-ia'),
+                'estado_texto' => $estados[$intercambio->estado] ?? __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha' => $intercambio->fecha,
             ];
         }, $intercambios ?: []);
@@ -1392,7 +1392,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         check_ajax_referer('banco_tiempo_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -1415,12 +1415,12 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         ));
 
         $categorias = [
-            'cuidados' => __('Cuidados', 'flavor-chat-ia'),
-            'educacion' => __('Educación', 'flavor-chat-ia'),
-            'bricolaje' => __('Bricolaje', 'flavor-chat-ia'),
-            'tecnologia' => __('Tecnología', 'flavor-chat-ia'),
-            'transporte' => __('Transporte', 'flavor-chat-ia'),
-            'otros' => __('Otros', 'flavor-chat-ia'),
+            'cuidados' => __('Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'educacion' => __('Educación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'bricolaje' => __('Bricolaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'tecnologia' => __('Tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'transporte' => __('Transporte', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'otros' => __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $data = array_map(function($servicio) use ($categorias) {
@@ -1429,10 +1429,10 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
                 'titulo' => $servicio->titulo,
                 'descripcion' => $servicio->descripcion,
                 'categoria' => $servicio->categoria,
-                'categoria_nombre' => $categorias[$servicio->categoria] ?? __('Otros', 'flavor-chat-ia'),
+                'categoria_nombre' => $categorias[$servicio->categoria] ?? __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'horas_estimadas' => (float) $servicio->horas_estimadas,
                 'estado' => $servicio->estado,
-                'estado_texto' => $servicio->estado === 'activo' ? __('Activo', 'flavor-chat-ia') : __('Pausado', 'flavor-chat-ia'),
+                'estado_texto' => $servicio->estado === 'activo' ? __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Pausado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'solicitudes_count' => (int) $servicio->solicitudes_count,
             ];
         }, $servicios ?: []);
@@ -1449,7 +1449,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         $servicio_id = isset($_POST['servicio_id']) ? absint($_POST['servicio_id']) : 0;
 
         if (!$servicio_id) {
-            wp_send_json_error(__('Servicio no válido', 'flavor-chat-ia'));
+            wp_send_json_error(__('Servicio no válido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -1460,21 +1460,21 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         ));
 
         if (!$servicio) {
-            wp_send_json_error(__('Servicio no encontrado', 'flavor-chat-ia'));
+            wp_send_json_error(__('Servicio no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $usuario_id = get_current_user_id();
         if ($servicio->estado !== 'activo' && (int) $servicio->usuario_id !== (int) $usuario_id) {
-            wp_send_json_error(__('No tienes acceso a este servicio', 'flavor-chat-ia'));
+            wp_send_json_error(__('No tienes acceso a este servicio', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $categorias = [
-            'cuidados' => __('Cuidados', 'flavor-chat-ia'),
-            'educacion' => __('Educación', 'flavor-chat-ia'),
-            'bricolaje' => __('Bricolaje', 'flavor-chat-ia'),
-            'tecnologia' => __('Tecnología', 'flavor-chat-ia'),
-            'transporte' => __('Transporte', 'flavor-chat-ia'),
-            'otros' => __('Otros', 'flavor-chat-ia'),
+            'cuidados' => __('Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'educacion' => __('Educación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'bricolaje' => __('Bricolaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'tecnologia' => __('Tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'transporte' => __('Transporte', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'otros' => __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         wp_send_json_success([
@@ -1482,7 +1482,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
             'titulo' => $servicio->titulo,
             'descripcion' => $servicio->descripcion,
             'categoria' => $servicio->categoria,
-            'categoria_nombre' => $categorias[$servicio->categoria] ?? __('Otros', 'flavor-chat-ia'),
+            'categoria_nombre' => $categorias[$servicio->categoria] ?? __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'horas_estimadas' => (float) $servicio->horas_estimadas,
             'estado' => $servicio->estado,
             'fecha_publicacion' => $servicio->fecha_publicacion,
@@ -1496,7 +1496,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         check_ajax_referer('banco_tiempo_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $servicio_id = isset($_POST['servicio_id']) ? absint($_POST['servicio_id']) : 0;
@@ -1506,7 +1506,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         $horas_estimadas = isset($_POST['horas_estimadas']) ? floatval($_POST['horas_estimadas']) : 1;
 
         if (!$servicio_id || $titulo === '' || $descripcion === '') {
-            wp_send_json_error(__('Datos no válidos', 'flavor-chat-ia'));
+            wp_send_json_error(__('Datos no válidos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -1528,24 +1528,24 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         );
 
         if ($resultado === false) {
-            wp_send_json_error(__('Error al actualizar servicio', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al actualizar servicio', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
-        wp_send_json_success(['mensaje' => __('Servicio actualizado correctamente', 'flavor-chat-ia')]);
+        wp_send_json_success(['mensaje' => __('Servicio actualizado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
      * AJAX: Pausar servicio propio
      */
     public function ajax_pausar_servicio() {
-        $this->ajax_cambiar_estado_servicio('inactivo', __('Servicio pausado', 'flavor-chat-ia'));
+        $this->ajax_cambiar_estado_servicio('inactivo', __('Servicio pausado', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**
      * AJAX: Activar servicio propio
      */
     public function ajax_activar_servicio() {
-        $this->ajax_cambiar_estado_servicio('activo', __('Servicio activado', 'flavor-chat-ia'));
+        $this->ajax_cambiar_estado_servicio('activo', __('Servicio activado', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**
@@ -1555,13 +1555,13 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         check_ajax_referer('banco_tiempo_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $servicio_id = isset($_POST['servicio_id']) ? absint($_POST['servicio_id']) : 0;
 
         if (!$servicio_id) {
-            wp_send_json_error(__('Servicio no válido', 'flavor-chat-ia'));
+            wp_send_json_error(__('Servicio no válido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -1574,10 +1574,10 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         ]);
 
         if ($resultado === false) {
-            wp_send_json_error(__('Error al eliminar servicio', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al eliminar servicio', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
-        wp_send_json_success(['mensaje' => __('Servicio eliminado correctamente', 'flavor-chat-ia')]);
+        wp_send_json_success(['mensaje' => __('Servicio eliminado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -1587,13 +1587,13 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         check_ajax_referer('banco_tiempo_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $servicio_id = isset($_POST['servicio_id']) ? absint($_POST['servicio_id']) : 0;
 
         if (!$servicio_id) {
-            wp_send_json_error(__('Servicio no válido', 'flavor-chat-ia'));
+            wp_send_json_error(__('Servicio no válido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -1610,7 +1610,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         );
 
         if ($resultado === false) {
-            wp_send_json_error(__('Error al actualizar servicio', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al actualizar servicio', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         wp_send_json_success(['mensaje' => $mensaje_ok]);
@@ -1626,13 +1626,13 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         <div class="flavor-bt-servicio-card" data-id="<?php echo esc_attr($servicio->id); ?>">
             <div class="servicio-header">
                 <span class="categoria"><?php echo esc_html([
-                    'cuidados' => __('Cuidados', 'flavor-chat-ia'),
-                    'educacion' => __('Educación', 'flavor-chat-ia'),
-                    'bricolaje' => __('Bricolaje', 'flavor-chat-ia'),
-                    'tecnologia' => __('Tecnología', 'flavor-chat-ia'),
-                    'transporte' => __('Transporte', 'flavor-chat-ia'),
-                    'otros' => __('Otros', 'flavor-chat-ia'),
-                ][$categoria] ?? __('Otros', 'flavor-chat-ia')); ?></span>
+                    'cuidados' => __('Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'educacion' => __('Educación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'bricolaje' => __('Bricolaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'tecnologia' => __('Tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'transporte' => __('Transporte', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'otros' => __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                ][$categoria] ?? __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>
                 <span class="horas"><?php echo esc_html(number_format($servicio->horas_estimadas, 1)); ?>h</span>
             </div>
             <h3><?php echo esc_html($servicio->titulo); ?></h3>
@@ -1640,10 +1640,10 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
             <div class="servicio-footer">
                 <span class="usuario">
                     <?php echo get_avatar($servicio->usuario_id, 24); ?>
-                    <?php echo esc_html($usuario ? $usuario->display_name : __('Usuario', 'flavor-chat-ia')); ?>
+                    <?php echo esc_html($usuario ? $usuario->display_name : __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                 </span>
                 <a href="<?php echo esc_url(add_query_arg('servicio_id', $servicio->id, home_url('/mi-portal/banco-tiempo/servicios/'))); ?>" class="flavor-btn flavor-btn-sm">
-                    <?php _e('Ver', 'flavor-chat-ia'); ?>
+                    <?php _e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>

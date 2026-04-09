@@ -23,9 +23,9 @@ $mostrar_filtros = ($atributos['mostrar_filtros'] ?? 'si') === 'si';
     <?php if ($mostrar_filtros && !empty($categorias)): ?>
     <div class="flavor-com-filtros">
         <div class="flavor-com-filtros-grupo">
-            <label for="flavor-com-filtro-categoria"><?php esc_html_e('Categoria:', 'flavor-chat-ia'); ?></label>
+            <label for="flavor-com-filtro-categoria"><?php esc_html_e('Categoria:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <select id="flavor-com-filtro-categoria" class="flavor-com-select">
-                <option value=""><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 <?php foreach ($categorias as $slug => $nombre): ?>
                     <option value="<?php echo esc_attr($slug); ?>"><?php echo esc_html($nombre); ?></option>
                 <?php endforeach; ?>
@@ -33,16 +33,16 @@ $mostrar_filtros = ($atributos['mostrar_filtros'] ?? 'si') === 'si';
         </div>
 
         <div class="flavor-com-filtros-grupo">
-            <label for="flavor-com-filtro-tipo"><?php esc_html_e('Tipo:', 'flavor-chat-ia'); ?></label>
+            <label for="flavor-com-filtro-tipo"><?php esc_html_e('Tipo:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <select id="flavor-com-filtro-tipo" class="flavor-com-select">
-                <option value=""><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
-                <option value="publica"><?php esc_html_e('Publicas', 'flavor-chat-ia'); ?></option>
-                <option value="privada"><?php esc_html_e('Privadas', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="publica"><?php esc_html_e('Publicas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="privada"><?php esc_html_e('Privadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             </select>
         </div>
 
         <div class="flavor-com-filtros-grupo">
-            <input type="text" id="flavor-com-buscar" class="flavor-com-input" placeholder="<?php esc_attr_e('Buscar comunidades...', 'flavor-chat-ia'); ?>">
+            <input type="text" id="flavor-com-buscar" class="flavor-com-input" placeholder="<?php esc_attr_e('Buscar comunidades...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
         </div>
     </div>
     <?php endif; ?>
@@ -51,7 +51,7 @@ $mostrar_filtros = ($atributos['mostrar_filtros'] ?? 'si') === 'si';
         <?php if (is_user_logged_in()): ?>
         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('comunidades', 'crear')); ?>" class="flavor-com-boton flavor-com-boton-primario">
             <span class="dashicons dashicons-plus-alt"></span>
-            <?php esc_html_e('Crear comunidad', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Crear comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <?php endif; ?>
     </div>
@@ -59,10 +59,10 @@ $mostrar_filtros = ($atributos['mostrar_filtros'] ?? 'si') === 'si';
     <?php if (empty($comunidades)): ?>
         <div class="flavor-com-vacio">
             <span class="dashicons dashicons-groups"></span>
-            <p><?php esc_html_e('No hay comunidades disponibles.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('No hay comunidades disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php if (is_user_logged_in()): ?>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('comunidades', 'crear')); ?>" class="flavor-com-boton flavor-com-boton-primario">
-                    <?php esc_html_e('Crea la primera comunidad', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Crea la primera comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             <?php endif; ?>
         </div>
@@ -91,7 +91,7 @@ $mostrar_filtros = ($atributos['mostrar_filtros'] ?? 'si') === 'si';
                     <?php if (($comunidad->tipo ?? 'publica') === 'privada'): ?>
                     <span class="flavor-com-badge-privada">
                         <span class="dashicons dashicons-lock"></span>
-                        <?php esc_html_e('Privada', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Privada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                     <?php endif; ?>
 
@@ -108,7 +108,7 @@ $mostrar_filtros = ($atributos['mostrar_filtros'] ?? 'si') === 'si';
                     <div class="flavor-com-card-meta">
                         <span class="flavor-com-meta-item">
                             <span class="dashicons dashicons-admin-users"></span>
-                            <?php echo esc_html($comunidad->total_miembros ?? 0); ?> <?php esc_html_e('miembros', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html($comunidad->total_miembros ?? 0); ?> <?php esc_html_e('miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
                     </div>
 
@@ -116,16 +116,16 @@ $mostrar_filtros = ($atributos['mostrar_filtros'] ?? 'si') === 'si';
                         <?php if ($es_miembro): ?>
                             <span class="flavor-com-badge-miembro">
                                 <span class="dashicons dashicons-yes"></span>
-                                <?php esc_html_e('Eres miembro', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Eres miembro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         <?php elseif (is_user_logged_in()): ?>
                             <button type="button" class="flavor-com-boton flavor-com-boton-primario flavor-com-btn-unirse" data-comunidad-id="<?php echo esc_attr($comunidad->id); ?>">
-                                <?php esc_html_e('Unirse', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Unirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         <?php endif; ?>
 
                         <a href="<?php echo esc_url(add_query_arg('comunidad', $comunidad->id, home_url('/comunidad/'))); ?>" class="flavor-com-boton flavor-com-boton-texto">
-                            <?php esc_html_e('Ver mas', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Ver mas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </div>
@@ -135,7 +135,7 @@ $mostrar_filtros = ($atributos['mostrar_filtros'] ?? 'si') === 'si';
 
         <div class="flavor-com-cargar-mas" id="flavor-com-cargar-mas" style="display: none;">
             <button type="button" class="flavor-com-boton flavor-com-boton-secundario">
-                <?php esc_html_e('Cargar mas comunidades', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Cargar mas comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     <?php endif; ?>

@@ -89,11 +89,11 @@ class Flavor_Export_Import_Command {
         $secciones_exportar = array_intersect($secciones_solicitadas, $secciones_validas);
 
         if (empty($secciones_exportar)) {
-            WP_CLI::error(__('No se especificaron secciones válidas para exportar.', 'flavor-chat-ia'));
+            WP_CLI::error(__('No se especificaron secciones válidas para exportar.', 'flavor-platform'));
         }
 
         WP_CLI::log(sprintf(
-            __('Exportando secciones: %s', 'flavor-chat-ia'),
+            __('Exportando secciones: %s', 'flavor-platform'),
             implode(', ', $secciones_exportar)
         ));
 
@@ -147,13 +147,13 @@ class Flavor_Export_Import_Command {
 
             if ($bytes_escritos === false) {
                 WP_CLI::error(sprintf(
-                    __('No se pudo escribir el archivo: %s', 'flavor-chat-ia'),
+                    __('No se pudo escribir el archivo: %s', 'flavor-platform'),
                     $ruta_archivo
                 ));
             }
 
             WP_CLI::success(sprintf(
-                __('Configuración exportada a: %s (%s bytes)', 'flavor-chat-ia'),
+                __('Configuración exportada a: %s (%s bytes)', 'flavor-platform'),
                 $ruta_archivo,
                 number_format($bytes_escritos)
             ));
@@ -209,24 +209,24 @@ class Flavor_Export_Import_Command {
      */
     public function import($argumentos, $argumentos_asociativos) {
         if (empty($argumentos[0])) {
-            WP_CLI::error(__('Debes especificar un archivo JSON para importar.', 'flavor-chat-ia'));
+            WP_CLI::error(__('Debes especificar un archivo JSON para importar.', 'flavor-platform'));
         }
 
         $ruta_archivo = $argumentos[0];
 
         if (!file_exists($ruta_archivo)) {
-            WP_CLI::error(sprintf(__('Archivo no encontrado: %s', 'flavor-chat-ia'), $ruta_archivo));
+            WP_CLI::error(sprintf(__('Archivo no encontrado: %s', 'flavor-platform'), $ruta_archivo));
         }
 
         // Leer archivo
         $contenido_json = file_get_contents($ruta_archivo);
         if ($contenido_json === false) {
-            WP_CLI::error(__('No se pudo leer el archivo.', 'flavor-chat-ia'));
+            WP_CLI::error(__('No se pudo leer el archivo.', 'flavor-platform'));
         }
 
         $datos_json = json_decode($contenido_json, true);
         if ($datos_json === null) {
-            WP_CLI::error(__('El archivo no contiene JSON válido.', 'flavor-chat-ia'));
+            WP_CLI::error(__('El archivo no contiene JSON válido.', 'flavor-platform'));
         }
 
         $export_import = Flavor_Export_Import::get_instance();
@@ -269,7 +269,7 @@ class Flavor_Export_Import_Command {
             $secciones_importar = array_intersect($secciones_solicitadas, $secciones_disponibles);
 
             if (empty($secciones_importar)) {
-                WP_CLI::error(__('Ninguna de las secciones especificadas está disponible en el archivo.', 'flavor-chat-ia'));
+                WP_CLI::error(__('Ninguna de las secciones especificadas está disponible en el archivo.', 'flavor-platform'));
             }
         }
 
@@ -313,7 +313,7 @@ class Flavor_Export_Import_Command {
 
         if (!in_array($modo_importacion, $modos_validos, true)) {
             WP_CLI::error(sprintf(
-                __('Modo inválido. Opciones: %s', 'flavor-chat-ia'),
+                __('Modo inválido. Opciones: %s', 'flavor-platform'),
                 implode(', ', $modos_validos)
             ));
         }
@@ -323,15 +323,15 @@ class Flavor_Export_Import_Command {
 
         // Dry run
         if (isset($argumentos_asociativos['dry-run'])) {
-            WP_CLI::success(__('Dry-run completado. No se realizaron cambios.', 'flavor-chat-ia'));
+            WP_CLI::success(__('Dry-run completado. No se realizaron cambios.', 'flavor-platform'));
             return;
         }
 
         // Confirmación
-        WP_CLI::confirm(__('¿Deseas proceder con la importación?', 'flavor-chat-ia'), $argumentos_asociativos);
+        WP_CLI::confirm(__('¿Deseas proceder con la importación?', 'flavor-platform'), $argumentos_asociativos);
 
         // Ejecutar importación
-        WP_CLI::log(__('Importando...', 'flavor-chat-ia'));
+        WP_CLI::log(__('Importando...', 'flavor-platform'));
 
         $resultado = $export_import->import_config($datos_json, array(
             'mode' => $modo_importacion,
@@ -380,9 +380,9 @@ class Flavor_Export_Import_Command {
         WP_CLI::log('');
 
         if ($resultado['success']) {
-            WP_CLI::success(__('Importación completada correctamente.', 'flavor-chat-ia'));
+            WP_CLI::success(__('Importación completada correctamente.', 'flavor-platform'));
         } else {
-            WP_CLI::warning(__('Importación completada con algunos errores.', 'flavor-chat-ia'));
+            WP_CLI::warning(__('Importación completada con algunos errores.', 'flavor-platform'));
         }
     }
 
@@ -412,7 +412,7 @@ class Flavor_Export_Import_Command {
         $presets_disponibles = $propiedad->getValue($export_import);
 
         if (empty($presets_disponibles)) {
-            WP_CLI::log(__('No hay presets disponibles.', 'flavor-chat-ia'));
+            WP_CLI::log(__('No hay presets disponibles.', 'flavor-platform'));
             return;
         }
 
@@ -456,7 +456,7 @@ class Flavor_Export_Import_Command {
      */
     public function apply_preset($argumentos, $argumentos_asociativos) {
         if (empty($argumentos[0])) {
-            WP_CLI::error(__('Debes especificar el ID del preset.', 'flavor-chat-ia'));
+            WP_CLI::error(__('Debes especificar el ID del preset.', 'flavor-platform'));
         }
 
         $id_preset = sanitize_key($argumentos[0]);
@@ -470,28 +470,28 @@ class Flavor_Export_Import_Command {
 
         if (!isset($presets_disponibles[$id_preset])) {
             WP_CLI::error(sprintf(
-                __('Preset "%s" no encontrado. Usa "wp flavor presets" para ver los disponibles.', 'flavor-chat-ia'),
+                __('Preset "%s" no encontrado. Usa "wp flavor presets" para ver los disponibles.', 'flavor-platform'),
                 $id_preset
             ));
         }
 
         $datos_preset = $presets_disponibles[$id_preset];
 
-        WP_CLI::log(sprintf(__('Preset: %s', 'flavor-chat-ia'), $datos_preset['nombre']));
-        WP_CLI::log(sprintf(__('Descripción: %s', 'flavor-chat-ia'), $datos_preset['descripcion']));
+        WP_CLI::log(sprintf(__('Preset: %s', 'flavor-platform'), $datos_preset['nombre']));
+        WP_CLI::log(sprintf(__('Descripción: %s', 'flavor-platform'), $datos_preset['descripcion']));
 
         if (isset($datos_preset['config']['active_modules'])) {
             WP_CLI::log(sprintf(
-                __('Módulos: %s', 'flavor-chat-ia'),
+                __('Módulos: %s', 'flavor-platform'),
                 implode(', ', $datos_preset['config']['active_modules'])
             ));
         }
 
         WP_CLI::log('');
-        WP_CLI::confirm(__('¿Deseas aplicar este preset?', 'flavor-chat-ia'), $argumentos_asociativos);
+        WP_CLI::confirm(__('¿Deseas aplicar este preset?', 'flavor-platform'), $argumentos_asociativos);
 
         // Aplicar preset
-        WP_CLI::log(__('Aplicando preset...', 'flavor-chat-ia'));
+        WP_CLI::log(__('Aplicando preset...', 'flavor-platform'));
 
         // Aplicar configuración
         if (isset($datos_preset['config'])) {
@@ -523,7 +523,7 @@ class Flavor_Export_Import_Command {
             WP_CLI::log('  - Visibilidad de módulos actualizada');
         }
 
-        WP_CLI::success(sprintf(__('Preset "%s" aplicado correctamente.', 'flavor-chat-ia'), $datos_preset['nombre']));
+        WP_CLI::success(sprintf(__('Preset "%s" aplicado correctamente.', 'flavor-platform'), $datos_preset['nombre']));
     }
 
     // =========================================================================

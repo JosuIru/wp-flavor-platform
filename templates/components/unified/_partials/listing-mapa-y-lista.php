@@ -52,10 +52,10 @@ $identificador_unico = 'listing-mapa-' . wp_unique_id();
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                     </svg>
                     <p class="mt-3 text-sm font-medium text-gray-400">
-                        <?php esc_html_e( 'Mapa interactivo', 'flavor-chat-ia' ); ?>
+                        <?php esc_html_e( 'Mapa interactivo', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                     </p>
                     <p class="mt-1 text-xs text-gray-400">
-                        <?php esc_html_e( 'Integra aquí tu proveedor de mapas', 'flavor-chat-ia' ); ?>
+                        <?php esc_html_e( 'Integra aquí tu proveedor de mapas', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                     </p>
                 </div>
                 <div class="absolute bottom-0 left-0 right-0 h-1" style="background-color: <?php echo $color_primario_escapado; ?>;"></div>
@@ -70,7 +70,7 @@ $identificador_unico = 'listing-mapa-' . wp_unique_id();
                         type="text"
                         class="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-4 text-sm text-gray-700 placeholder-gray-400 focus:border-transparent focus:outline-none focus:ring-2"
                         style="--tw-ring-color: <?php echo $color_primario_escapado; ?>;"
-                        placeholder="<?php esc_attr_e( 'Buscar ubicación...', 'flavor-chat-ia' ); ?>"
+                        placeholder="<?php esc_attr_e( 'Buscar ubicación...', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
                         data-buscador-mapa
                     />
                     <svg class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -133,7 +133,7 @@ $identificador_unico = 'listing-mapa-' . wp_unique_id();
             </div>
 
             <div class="mt-3 hidden py-8 text-center" data-sin-resultados-mapa>
-                <p class="text-sm text-gray-500"><?php esc_html_e( 'No se encontraron ubicaciones.', 'flavor-chat-ia' ); ?></p>
+                <p class="text-sm text-gray-500"><?php esc_html_e( 'No se encontraron ubicaciones.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
             </div>
         </div>
     </div>

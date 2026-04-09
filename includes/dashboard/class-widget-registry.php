@@ -83,109 +83,109 @@ class Flavor_Widget_Registry {
         $this->categories = [
             // Categoria: Personas - Usuarios, empleados, socios
             'personas' => [
-                'label'       => __('Personas', 'flavor-chat-ia'),
+                'label'       => __('Personas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-admin-users',
                 'order'       => 10,
-                'description' => __('Gestion de usuarios, empleados y miembros', 'flavor-chat-ia'),
+                'description' => __('Gestion de usuarios, empleados y miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color'       => '#ec4899', // Rosa
             ],
 
             // Categoria: Economia - Finanzas, transacciones, marketplace
             'economia' => [
-                'label'       => __('Economia', 'flavor-chat-ia'),
+                'label'       => __('Economia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-chart-line',
                 'order'       => 20,
-                'description' => __('Finanzas, transacciones y comercio', 'flavor-chat-ia'),
+                'description' => __('Finanzas, transacciones y comercio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color'       => '#10b981', // Verde
             ],
 
             // Categoria: Operaciones - Reservas, fichaje, incidencias
             'operaciones' => [
-                'label'       => __('Operaciones', 'flavor-chat-ia'),
+                'label'       => __('Operaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-admin-tools',
                 'order'       => 30,
-                'description' => __('Operaciones diarias y gestion', 'flavor-chat-ia'),
+                'description' => __('Operaciones diarias y gestion', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color'       => '#f97316', // Naranja
             ],
 
             // Categoria: Recursos - Espacios, equipamiento, biblioteca
             'recursos' => [
-                'label'       => __('Recursos', 'flavor-chat-ia'),
+                'label'       => __('Recursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-archive',
                 'order'       => 40,
-                'description' => __('Espacios, equipamiento y recursos compartidos', 'flavor-chat-ia'),
+                'description' => __('Espacios, equipamiento y recursos compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color'       => '#14b8a6', // Teal
             ],
 
             // Categoria: Comunicacion - Chat, foros, avisos
             'comunicacion' => [
-                'label'       => __('Comunicacion', 'flavor-chat-ia'),
+                'label'       => __('Comunicacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-megaphone',
                 'order'       => 50,
-                'description' => __('Canales de comunicacion y mensajeria', 'flavor-chat-ia'),
+                'description' => __('Canales de comunicacion y mensajeria', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color'       => '#8b5cf6', // Violeta
             ],
 
             // Categoria: Actividades - Eventos, cursos, talleres
             'actividades' => [
-                'label'       => __('Actividades', 'flavor-chat-ia'),
+                'label'       => __('Actividades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-calendar-alt',
                 'order'       => 60,
-                'description' => __('Eventos, cursos y formacion', 'flavor-chat-ia'),
+                'description' => __('Eventos, cursos y formacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color'       => '#a855f7', // Purple
             ],
 
             // Categoria: Servicios - Tramites, ayuda, soporte
             'servicios' => [
-                'label'       => __('Servicios', 'flavor-chat-ia'),
+                'label'       => __('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-admin-site',
                 'order'       => 70,
-                'description' => __('Tramites, servicios y soporte', 'flavor-chat-ia'),
+                'description' => __('Tramites, servicios y soporte', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color'       => '#0ea5e9', // Sky
             ],
 
             // Categoria: Comunidad - Red social, participacion
             'comunidad' => [
-                'label'       => __('Comunidad', 'flavor-chat-ia'),
+                'label'       => __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-groups',
                 'order'       => 80,
-                'description' => __('Vida comunitaria y participacion', 'flavor-chat-ia'),
+                'description' => __('Vida comunitaria y participacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color'       => '#f59e0b', // Amarillo
             ],
 
             // Categoria: Sostenibilidad - Huertos, reciclaje, movilidad
             'sostenibilidad' => [
-                'label'       => __('Sostenibilidad', 'flavor-chat-ia'),
+                'label'       => __('Sostenibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-palmtree',
                 'order'       => 90,
-                'description' => __('Medio ambiente y sostenibilidad', 'flavor-chat-ia'),
+                'description' => __('Medio ambiente y sostenibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color'       => '#84cc16', // Lima
             ],
 
             // Categoria legacy: Gestion (alias de operaciones)
             'gestion' => [
-                'label'       => __('Gestion', 'flavor-chat-ia'),
+                'label'       => __('Gestion', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-clipboard',
                 'order'       => 35,
-                'description' => __('Gestion general', 'flavor-chat-ia'),
+                'description' => __('Gestion general', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color'       => '#3b82f6', // Azul
             ],
 
             // Categoria: Red de Nodos - Federacion
             'red' => [
-                'label'       => __('Red de Nodos', 'flavor-chat-ia'),
+                'label'       => __('Red de Nodos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-networking',
                 'order'       => 95,
-                'description' => __('Red federada de comunidades', 'flavor-chat-ia'),
+                'description' => __('Red federada de comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color'       => '#06b6d4', // Cyan
             ],
 
             // Categoria: Sistema - Configuracion, estado
             'sistema' => [
-                'label'       => __('Sistema', 'flavor-chat-ia'),
+                'label'       => __('Sistema', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-admin-generic',
                 'order'       => 100,
-                'description' => __('Configuracion y estado del sistema', 'flavor-chat-ia'),
+                'description' => __('Configuracion y estado del sistema', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color'       => '#6b7280', // Gris
             ],
         ];
@@ -644,13 +644,13 @@ class Flavor_Widget_Registry {
         check_ajax_referer('fud_dashboard_nonce', 'nonce');
 
         if (!current_user_can('read')) {
-            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $widget_id = sanitize_key($_POST['widget_id'] ?? '');
 
         if (empty($widget_id) || !$this->has_widget($widget_id)) {
-            wp_send_json_error(['message' => __('Widget no encontrado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Widget no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $widget = $this->get_widget($widget_id);
@@ -770,7 +770,7 @@ class Flavor_Widget_Registry {
         if (!$this->has_widget($widget_id)) {
             return new WP_REST_Response([
                 'success' => false,
-                'message' => __('Widget no encontrado', 'flavor-chat-ia'),
+                'message' => __('Widget no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ], 404);
         }
 
@@ -804,7 +804,7 @@ class Flavor_Widget_Registry {
         if (!is_array($order)) {
             return new WP_REST_Response([
                 'success' => false,
-                'message' => __('Formato de orden invalido', 'flavor-chat-ia'),
+                'message' => __('Formato de orden invalido', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ], 400);
         }
 
@@ -813,8 +813,8 @@ class Flavor_Widget_Registry {
         return new WP_REST_Response([
             'success' => $saved,
             'message' => $saved
-                ? __('Orden guardado correctamente', 'flavor-chat-ia')
-                : __('Error al guardar el orden', 'flavor-chat-ia'),
+                ? __('Orden guardado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                : __('Error al guardar el orden', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], $saved ? 200 : 500);
     }
 
@@ -830,7 +830,7 @@ class Flavor_Widget_Registry {
         if (!is_array($visible)) {
             return new WP_REST_Response([
                 'success' => false,
-                'message' => __('Formato de visibilidad invalido', 'flavor-chat-ia'),
+                'message' => __('Formato de visibilidad invalido', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ], 400);
         }
 
@@ -839,8 +839,8 @@ class Flavor_Widget_Registry {
         return new WP_REST_Response([
             'success' => $saved,
             'message' => $saved
-                ? __('Visibilidad guardada correctamente', 'flavor-chat-ia')
-                : __('Error al guardar la visibilidad', 'flavor-chat-ia'),
+                ? __('Visibilidad guardada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                : __('Error al guardar la visibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], $saved ? 200 : 500);
     }
 }

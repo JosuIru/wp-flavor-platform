@@ -241,7 +241,7 @@ class Flavor_Reciclaje_Conciencia_Features {
      */
     public function shortcode_economia_circular($atts): string {
         if (!is_user_logged_in()) {
-            return '<p>' . esc_html__('Inicia sesión para participar en la economía circular.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Inicia sesión para participar en la economía circular.', 'flavor-platform') . '</p>';
         }
 
         global $wpdb;
@@ -279,7 +279,7 @@ class Flavor_Reciclaje_Conciencia_Features {
      */
     public function shortcode_mi_huella($atts): string {
         if (!is_user_logged_in()) {
-            return '<p>' . esc_html__('Inicia sesión para ver tu huella de reciclaje.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Inicia sesión para ver tu huella de reciclaje.', 'flavor-platform') . '</p>';
         }
 
         global $wpdb;
@@ -615,7 +615,7 @@ class Flavor_Reciclaje_Conciencia_Features {
         check_ajax_referer('rec_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-platform')]);
         }
 
         $material_tipo = sanitize_text_field($_POST['material_tipo'] ?? '');
@@ -624,7 +624,7 @@ class Flavor_Reciclaje_Conciencia_Features {
         $ubicacion = sanitize_text_field($_POST['ubicacion'] ?? '');
 
         if (empty($material_tipo)) {
-            wp_send_json_error(['message' => __('Indica el tipo de material.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Indica el tipo de material.', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -645,7 +645,7 @@ class Flavor_Reciclaje_Conciencia_Features {
         ]);
 
         wp_send_json_success([
-            'message' => __('Material publicado para reutilización.', 'flavor-chat-ia'),
+            'message' => __('Material publicado para reutilización.', 'flavor-platform'),
             'id' => $wpdb->insert_id,
         ]);
     }
@@ -657,13 +657,13 @@ class Flavor_Reciclaje_Conciencia_Features {
         check_ajax_referer('rec_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-platform')]);
         }
 
         $reto_id = intval($_POST['reto_id'] ?? 0);
 
         if (!$reto_id) {
-            wp_send_json_error(['message' => __('Reto no válido.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Reto no válido.', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -678,7 +678,7 @@ class Flavor_Reciclaje_Conciencia_Features {
         ));
 
         if (!$reto) {
-            wp_send_json_error(['message' => __('El reto no está disponible.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('El reto no está disponible.', 'flavor-platform')]);
         }
 
         // Verificar si ya participa
@@ -688,7 +688,7 @@ class Flavor_Reciclaje_Conciencia_Features {
         ));
 
         if ($existe) {
-            wp_send_json_error(['message' => __('Ya participas en este reto.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Ya participas en este reto.', 'flavor-platform')]);
         }
 
         $wpdb->insert($tabla_part, [
@@ -702,7 +702,7 @@ class Flavor_Reciclaje_Conciencia_Features {
             $reto_id
         ));
 
-        wp_send_json_success(['message' => __('¡Te has unido al reto!', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('¡Te has unido al reto!', 'flavor-platform')]);
     }
 
     /**
@@ -712,14 +712,14 @@ class Flavor_Reciclaje_Conciencia_Features {
         check_ajax_referer('rec_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-platform')]);
         }
 
         $categoria = sanitize_text_field($_POST['categoria'] ?? '');
         $descripcion = sanitize_textarea_field($_POST['descripcion'] ?? '');
 
         if (empty($categoria) || empty($descripcion)) {
-            wp_send_json_error(['message' => __('Completa todos los campos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Completa todos los campos.', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -734,7 +734,7 @@ class Flavor_Reciclaje_Conciencia_Features {
         ]);
 
         wp_send_json_success([
-            'message' => __('Solicitud de reparación publicada.', 'flavor-chat-ia'),
+            'message' => __('Solicitud de reparación publicada.', 'flavor-platform'),
             'id' => $wpdb->insert_id,
         ]);
     }
@@ -746,7 +746,7 @@ class Flavor_Reciclaje_Conciencia_Features {
         check_ajax_referer('rec_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-platform')]);
         }
 
         $material_id = intval($_POST['material_id'] ?? 0);
@@ -762,11 +762,11 @@ class Flavor_Reciclaje_Conciencia_Features {
         ));
 
         if (!$material) {
-            wp_send_json_error(['message' => __('Material no disponible.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Material no disponible.', 'flavor-platform')]);
         }
 
         if ($material->usuario_id == $user_id) {
-            wp_send_json_error(['message' => __('No puedes solicitar tu propio material.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No puedes solicitar tu propio material.', 'flavor-platform')]);
         }
 
         $wpdb->update(
@@ -778,7 +778,7 @@ class Flavor_Reciclaje_Conciencia_Features {
             ['id' => $material_id]
         );
 
-        wp_send_json_success(['message' => __('Material reservado. Contacta con el dueño para recogerlo.', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Material reservado. Contacta con el dueño para recogerlo.', 'flavor-platform')]);
     }
 
     /**

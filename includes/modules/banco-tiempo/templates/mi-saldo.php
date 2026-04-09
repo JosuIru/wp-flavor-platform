@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 
 $usuario_id = get_current_user_id();
 if (!$usuario_id) {
-    echo '<div class="fl-login-required"><p>' . esc_html__('Debes iniciar sesión para ver tu saldo.', 'flavor-chat-ia') . '</p></div>';
+    echo '<div class="fl-login-required"><p>' . esc_html__('Debes iniciar sesión para ver tu saldo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
 
@@ -75,24 +75,24 @@ $ultimos_movimientos = $wpdb->get_results($wpdb->prepare(
             <span class="fl-saldo-icon">
                 <span class="dashicons dashicons-clock"></span>
             </span>
-            <h3><?php esc_html_e('Mi Saldo de Tiempo', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Mi Saldo de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         </div>
         <div class="fl-saldo-value <?php echo $saldo_actual >= 0 ? 'fl-saldo-positive' : 'fl-saldo-negative'; ?>">
             <?php echo number_format(abs($saldo_actual), 1); ?>h
             <span class="fl-saldo-label">
-                <?php echo $saldo_actual >= 0 ? esc_html__('a favor', 'flavor-chat-ia') : esc_html__('por devolver', 'flavor-chat-ia'); ?>
+                <?php echo $saldo_actual >= 0 ? esc_html__('a favor', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('por devolver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
         </div>
         <div class="fl-saldo-breakdown">
             <div class="fl-saldo-item fl-saldo-given">
                 <span class="dashicons dashicons-arrow-up-alt"></span>
                 <span class="fl-saldo-item-value"><?php echo number_format($horas_dadas, 1); ?>h</span>
-                <span class="fl-saldo-item-label"><?php esc_html_e('Horas dadas', 'flavor-chat-ia'); ?></span>
+                <span class="fl-saldo-item-label"><?php esc_html_e('Horas dadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="fl-saldo-item fl-saldo-received">
                 <span class="dashicons dashicons-arrow-down-alt"></span>
                 <span class="fl-saldo-item-value"><?php echo number_format($horas_recibidas, 1); ?>h</span>
-                <span class="fl-saldo-item-label"><?php esc_html_e('Horas recibidas', 'flavor-chat-ia'); ?></span>
+                <span class="fl-saldo-item-label"><?php esc_html_e('Horas recibidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
@@ -105,7 +105,7 @@ $ultimos_movimientos = $wpdb->get_results($wpdb->prepare(
             </div>
             <div class="fl-stat-content">
                 <span class="fl-stat-value"><?php echo intval($servicios_activos); ?></span>
-                <span class="fl-stat-label"><?php esc_html_e('Servicios activos', 'flavor-chat-ia'); ?></span>
+                <span class="fl-stat-label"><?php esc_html_e('Servicios activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
         <div class="fl-stat-card">
@@ -114,7 +114,7 @@ $ultimos_movimientos = $wpdb->get_results($wpdb->prepare(
             </div>
             <div class="fl-stat-content">
                 <span class="fl-stat-value"><?php echo intval($intercambios_pendientes); ?></span>
-                <span class="fl-stat-label"><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></span>
+                <span class="fl-stat-label"><?php esc_html_e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
         <div class="fl-stat-card">
@@ -123,7 +123,7 @@ $ultimos_movimientos = $wpdb->get_results($wpdb->prepare(
             </div>
             <div class="fl-stat-content">
                 <span class="fl-stat-value"><?php echo intval($intercambios_completados); ?></span>
-                <span class="fl-stat-label"><?php esc_html_e('Completados', 'flavor-chat-ia'); ?></span>
+                <span class="fl-stat-label"><?php esc_html_e('Completados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
@@ -131,7 +131,7 @@ $ultimos_movimientos = $wpdb->get_results($wpdb->prepare(
     <!-- Últimos Movimientos -->
     <?php if (!empty($ultimos_movimientos)) : ?>
     <div class="fl-movements-section">
-        <h4 class="fl-section-title"><?php esc_html_e('Últimos movimientos', 'flavor-chat-ia'); ?></h4>
+        <h4 class="fl-section-title"><?php esc_html_e('Últimos movimientos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <div class="fl-movements-list">
             <?php foreach ($ultimos_movimientos as $mov) : ?>
             <div class="fl-movement-item">
@@ -139,7 +139,7 @@ $ultimos_movimientos = $wpdb->get_results($wpdb->prepare(
                     <span class="dashicons dashicons-<?php echo $mov->tipo === 'dado' ? 'arrow-up-alt' : 'arrow-down-alt'; ?>"></span>
                 </div>
                 <div class="fl-movement-content">
-                    <span class="fl-movement-title"><?php echo esc_html($mov->servicio_titulo ?: __('Servicio', 'flavor-chat-ia')); ?></span>
+                    <span class="fl-movement-title"><?php echo esc_html($mov->servicio_titulo ?: __('Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>
                     <span class="fl-movement-date"><?php echo esc_html(date_i18n('j M Y', strtotime($mov->fecha_completado))); ?></span>
                 </div>
                 <div class="fl-movement-value <?php echo $mov->tipo === 'dado' ? 'fl-value-positive' : 'fl-value-negative'; ?>">
@@ -152,7 +152,7 @@ $ultimos_movimientos = $wpdb->get_results($wpdb->prepare(
     <?php else : ?>
     <div class="fl-empty-state">
         <span class="dashicons dashicons-calendar-alt"></span>
-        <p><?php esc_html_e('Aún no tienes movimientos. ¡Empieza a intercambiar servicios!', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('Aún no tienes movimientos. ¡Empieza a intercambiar servicios!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php endif; ?>
 </div>

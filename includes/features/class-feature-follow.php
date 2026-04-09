@@ -17,7 +17,7 @@ class Flavor_Feature_Follow extends Flavor_Feature_Base {
             '<button class="flavor-follow %s" data-entity="%s" data-id="%d"><span class="count">%d</span> %s</button>',
             $is_following ? 'following' : '',
             esc_attr($entity_type), $entity_id, $count,
-            $is_following ? __('Siguiendo', 'flavor-chat-ia') : __('Seguir', 'flavor-chat-ia')
+            $is_following ? __('Siguiendo', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Seguir', FLAVOR_PLATFORM_TEXT_DOMAIN)
         );
     }
 
@@ -31,7 +31,7 @@ class Flavor_Feature_Follow extends Flavor_Feature_Base {
     }
 
     public function register_action($entity_type, $entity_id, $user_id, $value = null) {
-        if (!$user_id) return new WP_Error('auth', __('Debes iniciar sesión', 'flavor-chat-ia'));
+        if (!$user_id) return new WP_Error('auth', __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         global $wpdb;
         $table = $wpdb->prefix . 'flavor_follows';

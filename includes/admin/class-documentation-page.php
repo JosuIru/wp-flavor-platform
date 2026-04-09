@@ -24,7 +24,8 @@ class Flavor_Documentation_Page {
     /**
      * Slug de la página
      */
-    const PAGE_SLUG = 'flavor-documentation';
+    const PAGE_SLUG = 'flavor-platform-docs';
+    const PAGE_SLUG_LEGACY = 'flavor-documentation';
 
     /**
      * Obtiene la instancia singleton
@@ -51,8 +52,8 @@ class Flavor_Documentation_Page {
     public function add_menu_page() {
         add_submenu_page(
             'flavor-platform',
-            __('Documentación', 'flavor-chat-ia'),
-            __('📚 Documentación', 'flavor-chat-ia'),
+            __('Documentación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('📚 Documentación', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             self::PAGE_SLUG,
             [$this, 'render_page']
@@ -65,7 +66,14 @@ class Flavor_Documentation_Page {
     public function enqueue_assets($hook) {
         // Detectar tanto el slug canonico como el alias heredado
         $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
-        if ($current_page !== self::PAGE_SLUG && $current_page !== 'flavor-documentacion' && strpos($hook, self::PAGE_SLUG) === false) {
+        if (
+            $current_page !== self::PAGE_SLUG
+            && $current_page !== self::PAGE_SLUG_LEGACY
+            && $current_page !== 'flavor-documentacion'
+            && $current_page !== 'flavor-docs'
+            && strpos($hook, self::PAGE_SLUG) === false
+            && strpos($hook, self::PAGE_SLUG_LEGACY) === false
+        ) {
             return;
         }
 
@@ -116,14 +124,14 @@ class Flavor_Documentation_Page {
         <div class="wrap flavor-docs-wrap">
             <h1>
                 <span class="dashicons dashicons-book"></span>
-                <?php _e('Documentación de Flavor Platform', 'flavor-chat-ia'); ?>
+                <?php _e('Documentación de Flavor Platform', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h1>
 
             <div class="notice notice-info" style="margin: 16px 0 20px;">
                 <p>
-                    <?php _e('Auditoría vigente de estado real:', 'flavor-chat-ia'); ?>
+                    <?php _e('Auditoría vigente de estado real:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <strong>2026-03-04</strong>.
-                    <?php _e('Las referencias históricas anteriores deben leerse como contexto, no como foto final del sistema.', 'flavor-chat-ia'); ?>
+                    <?php _e('Las referencias históricas anteriores deben leerse como contexto, no como foto final del sistema.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
@@ -131,98 +139,98 @@ class Flavor_Documentation_Page {
                 <!-- Sidebar con índice -->
                 <div class="flavor-docs-sidebar">
                     <div class="docs-nav">
-                        <h3><?php _e('Índice', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Índice', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
                         <div class="docs-section">
-                            <h4><?php _e('Inicio', 'flavor-chat-ia'); ?></h4>
+                            <h4><?php _e('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                             <ul>
                                 <li class="<?php echo $current_doc === 'indice' ? 'active' : ''; ?>">
                                     <a href="<?php echo $this->get_doc_url('indice'); ?>">
-                                        <?php _e('Índice General', 'flavor-chat-ia'); ?>
+                                        <?php _e('Índice General', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 </li>
                                 <li class="<?php echo $current_doc === 'filosofia' ? 'active' : ''; ?>">
                                     <a href="<?php echo $this->get_doc_url('filosofia'); ?>">
-                                        <?php _e('Filosofía del Plugin', 'flavor-chat-ia'); ?>
+                                        <?php _e('Filosofía del Plugin', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 </li>
                                 <li class="<?php echo $current_doc === 'inicio-rapido' ? 'active' : ''; ?>">
                                     <a href="<?php echo $this->get_doc_url('inicio-rapido'); ?>">
-                                        <?php _e('Guía de Inicio Rápido', 'flavor-chat-ia'); ?>
+                                        <?php _e('Guía de Inicio Rápido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 </li>
                                 <li class="<?php echo $current_doc === 'plugin-completo' ? 'active' : ''; ?>">
                                     <a href="<?php echo $this->get_doc_url('plugin-completo'); ?>">
-                                        <?php _e('Plugin Completo', 'flavor-chat-ia'); ?>
+                                        <?php _e('Plugin Completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 </li>
                             </ul>
                         </div>
 
                         <div class="docs-section">
-                            <h4><?php _e('Operación', 'flavor-chat-ia'); ?></h4>
+                            <h4><?php _e('Operación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                             <ul>
                                 <li class="<?php echo $current_doc === 'admin' ? 'active' : ''; ?>">
                                     <a href="<?php echo $this->get_doc_url('admin'); ?>">
-                                        <?php _e('Guía de Administración', 'flavor-chat-ia'); ?>
+                                        <?php _e('Guía de Administración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 </li>
                                 <li class="<?php echo $current_doc === 'estado-real' ? 'active' : ''; ?>">
                                     <a href="<?php echo $this->get_doc_url('estado-real'); ?>">
-                                        <?php _e('Estado Real y Límites', 'flavor-chat-ia'); ?>
+                                        <?php _e('Estado Real y Límites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 </li>
                             </ul>
                         </div>
 
                         <div class="docs-section">
-                            <h4><?php _e('Arquitectura', 'flavor-chat-ia'); ?></h4>
+                            <h4><?php _e('Arquitectura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                             <ul>
                                 <li class="<?php echo $current_doc === 'arquitectura' ? 'active' : ''; ?>">
                                     <a href="<?php echo $this->get_doc_url('arquitectura'); ?>">
-                                        <?php _e('Arquitectura del Plugin', 'flavor-chat-ia'); ?>
+                                        <?php _e('Arquitectura del Plugin', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 </li>
                                 <li class="<?php echo $current_doc === 'integraciones' ? 'active' : ''; ?>">
                                     <a href="<?php echo $this->get_doc_url('integraciones'); ?>">
-                                        <?php _e('Integraciones entre Módulos', 'flavor-chat-ia'); ?>
+                                        <?php _e('Integraciones entre Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 </li>
                                 <li class="<?php echo $current_doc === 'funcionalidades' ? 'active' : ''; ?>">
                                     <a href="<?php echo $this->get_doc_url('funcionalidades'); ?>">
-                                        <?php _e('Funcionalidades Compartidas', 'flavor-chat-ia'); ?>
+                                        <?php _e('Funcionalidades Compartidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 </li>
                             </ul>
                         </div>
 
                         <div class="docs-section">
-                            <h4><?php _e('Módulos', 'flavor-chat-ia'); ?></h4>
+                            <h4><?php _e('Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                             <ul>
                                 <li class="<?php echo $current_doc === 'guia-modulos' ? 'active' : ''; ?>">
                                     <a href="<?php echo $this->get_doc_url('guia-modulos'); ?>">
-                                        <?php _e('Guía de Módulos', 'flavor-chat-ia'); ?>
+                                        <?php _e('Guía de Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 </li>
                                 <li class="<?php echo $current_doc === 'catalogo-modulos' ? 'active' : ''; ?>">
                                     <a href="<?php echo $this->get_doc_url('catalogo-modulos'); ?>">
-                                        <?php _e('Catálogo Detallado', 'flavor-chat-ia'); ?>
+                                        <?php _e('Catálogo Detallado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 </li>
                             </ul>
                         </div>
 
                         <div class="docs-section">
-                            <h4><?php _e('Técnico', 'flavor-chat-ia'); ?></h4>
+                            <h4><?php _e('Técnico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                             <ul>
                                 <li class="<?php echo $current_doc === 'permisos' ? 'active' : ''; ?>">
                                     <a href="<?php echo $this->get_doc_url('permisos'); ?>">
-                                        <?php _e('Sistema de Permisos', 'flavor-chat-ia'); ?>
+                                        <?php _e('Sistema de Permisos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 </li>
                                 <li class="<?php echo $current_doc === 'api' ? 'active' : ''; ?>">
                                     <a href="<?php echo $this->get_doc_url('api'); ?>">
-                                        <?php _e('APIs REST', 'flavor-chat-ia'); ?>
+                                        <?php _e('APIs REST', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 </li>
                             </ul>
@@ -231,7 +239,7 @@ class Flavor_Documentation_Page {
 
                     <div class="docs-version">
                         <small>
-                            <?php printf(__('Flavor Platform v%s', 'flavor-chat-ia'), FLAVOR_CHAT_IA_VERSION); ?>
+                            <?php printf(__('Flavor Platform v%s', FLAVOR_PLATFORM_TEXT_DOMAIN), FLAVOR_CHAT_IA_VERSION); ?>
                         </small>
                     </div>
                 </div>
@@ -258,55 +266,55 @@ class Flavor_Documentation_Page {
     private function get_available_docs() {
         return [
             'indice' => [
-                'title' => __('Índice de Documentación', 'flavor-chat-ia'),
+                'title' => __('Índice de Documentación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'file'  => 'INDICE-DOCUMENTACION.md',
             ],
             'filosofia' => [
-                'title' => __('Filosofía del Plugin', 'flavor-chat-ia'),
+                'title' => __('Filosofía del Plugin', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'file'  => 'FILOSOFIA-PLUGIN.md',
             ],
             'inicio-rapido' => [
-                'title' => __('Guía de Inicio Rápido', 'flavor-chat-ia'),
+                'title' => __('Guía de Inicio Rápido', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'file'  => 'GUIA-INICIO-RAPIDO.md',
             ],
             'plugin-completo' => [
-                'title' => __('Plugin Completo', 'flavor-chat-ia'),
+                'title' => __('Plugin Completo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'file'  => 'PLUGIN-COMPLETO.md',
             ],
             'admin' => [
-                'title' => __('Guía de Administración', 'flavor-chat-ia'),
+                'title' => __('Guía de Administración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'file'  => 'GUIA-ADMINISTRACION.md',
             ],
             'estado-real' => [
-                'title' => __('Estado Real y Límites', 'flavor-chat-ia'),
+                'title' => __('Estado Real y Límites', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'file'  => 'ESTADO-REAL-PLUGIN.md',
             ],
             'arquitectura' => [
-                'title' => __('Arquitectura del Plugin', 'flavor-chat-ia'),
+                'title' => __('Arquitectura del Plugin', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'file'  => 'ARQUITECTURA-PLUGIN.md',
             ],
             'integraciones' => [
-                'title' => __('Integraciones entre Módulos', 'flavor-chat-ia'),
+                'title' => __('Integraciones entre Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'file'  => 'INTEGRACIONES.md',
             ],
             'funcionalidades' => [
-                'title' => __('Funcionalidades Compartidas', 'flavor-chat-ia'),
+                'title' => __('Funcionalidades Compartidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'file'  => 'FUNCIONALIDADES-COMPARTIDAS.md',
             ],
             'guia-modulos' => [
-                'title' => __('Guía de Módulos', 'flavor-chat-ia'),
+                'title' => __('Guía de Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'file'  => 'GUIA_MODULOS.md',
             ],
             'catalogo-modulos' => [
-                'title' => __('Catálogo de Módulos', 'flavor-chat-ia'),
+                'title' => __('Catálogo de Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'file'  => 'CATALOGO-MODULOS.md',
             ],
             'permisos' => [
-                'title' => __('Sistema de Permisos', 'flavor-chat-ia'),
+                'title' => __('Sistema de Permisos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'file'  => 'PERMISSIONS-USAGE.md',
             ],
             'api' => [
-                'title' => __('APIs REST', 'flavor-chat-ia'),
+                'title' => __('APIs REST', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'callback' => 'render_api_docs',
             ],
         ];
@@ -348,7 +356,7 @@ class Flavor_Documentation_Page {
 
         if (!file_exists($filepath)) {
             echo '<div class="notice notice-error"><p>';
-            printf(__('Archivo no encontrado: %s', 'flavor-chat-ia'), esc_html($filename));
+            printf(__('Archivo no encontrado: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($filename));
             echo '</p></div>';
             return;
         }
@@ -526,126 +534,126 @@ class Flavor_Documentation_Page {
     private function render_api_docs() {
         ?>
         <div class="api-docs">
-            <h3><?php _e('Endpoints REST Disponibles', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Endpoints REST Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <div class="api-section">
-                <h4><?php _e('Sistema de Integraciones', 'flavor-chat-ia'); ?></h4>
+                <h4><?php _e('Sistema de Integraciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                 <p><code>Base: /wp-json/flavor-integration/v1/</code></p>
 
                 <table class="widefat striped">
                     <thead>
                         <tr>
-                            <th><?php _e('Método', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Endpoint', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Descripción', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Método', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Endpoint', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td><span class="method get">GET</span></td>
                             <td><code>/providers</code></td>
-                            <td><?php _e('Lista de providers registrados', 'flavor-chat-ia'); ?></td>
+                            <td><?php _e('Lista de providers registrados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                         </tr>
                         <tr>
                             <td><span class="method get">GET</span></td>
                             <td><code>/consumers</code></td>
-                            <td><?php _e('Lista de consumers registrados', 'flavor-chat-ia'); ?></td>
+                            <td><?php _e('Lista de consumers registrados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                         </tr>
                         <tr>
                             <td><span class="method get">GET</span></td>
                             <td><code>/network-content</code></td>
-                            <td><?php _e('Contenido compartido en la red', 'flavor-chat-ia'); ?></td>
+                            <td><?php _e('Contenido compartido en la red', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                         </tr>
                         <tr>
                             <td><span class="method get">GET</span></td>
                             <td><code>/network-stats</code></td>
-                            <td><?php _e('Estadísticas de contenido de red', 'flavor-chat-ia'); ?></td>
+                            <td><?php _e('Estadísticas de contenido de red', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
             <div class="api-section">
-                <h4><?php _e('Funcionalidades Compartidas', 'flavor-chat-ia'); ?></h4>
+                <h4><?php _e('Funcionalidades Compartidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                 <p><code>Base: /wp-json/flavor-features/v1/</code></p>
 
                 <table class="widefat striped">
                     <thead>
                         <tr>
-                            <th><?php _e('Método', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Endpoint', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Descripción', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Método', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Endpoint', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td><span class="method post">POST</span></td>
                             <td><code>/interact</code></td>
-                            <td><?php _e('Realizar interacción (favorito, rating, etc)', 'flavor-chat-ia'); ?></td>
+                            <td><?php _e('Realizar interacción (favorito, rating, etc)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                         </tr>
                         <tr>
                             <td><span class="method get">GET</span></td>
                             <td><code>/entity/{type}/{id}</code></td>
-                            <td><?php _e('Obtener interacciones de una entidad', 'flavor-chat-ia'); ?></td>
+                            <td><?php _e('Obtener interacciones de una entidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                         </tr>
                         <tr>
                             <td><span class="method get">GET</span></td>
                             <td><code>/user/interactions</code></td>
-                            <td><?php _e('Interacciones del usuario actual', 'flavor-chat-ia'); ?></td>
+                            <td><?php _e('Interacciones del usuario actual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
             <div class="api-section">
-                <h4><?php _e('Red de Nodos (addon)', 'flavor-chat-ia'); ?></h4>
+                <h4><?php _e('Red de Nodos (addon)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                 <p><code>Base: /wp-json/flavor-network/v1/</code></p>
 
                 <table class="widefat striped">
                     <thead>
                         <tr>
-                            <th><?php _e('Método', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Endpoint', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Descripción', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Método', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Endpoint', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td><span class="method get">GET</span></td>
                             <td><code>/directory</code></td>
-                            <td><?php _e('Directorio de nodos', 'flavor-chat-ia'); ?></td>
+                            <td><?php _e('Directorio de nodos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                         </tr>
                         <tr>
                             <td><span class="method get">GET</span></td>
                             <td><code>/node/{slug}</code></td>
-                            <td><?php _e('Perfil de un nodo', 'flavor-chat-ia'); ?></td>
+                            <td><?php _e('Perfil de un nodo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                         </tr>
                         <tr>
                             <td><span class="method get">GET</span></td>
                             <td><code>/map</code></td>
-                            <td><?php _e('Datos para mapa de nodos', 'flavor-chat-ia'); ?></td>
+                            <td><?php _e('Datos para mapa de nodos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                         </tr>
                         <tr>
                             <td><span class="method get">GET</span></td>
                             <td><code>/nearby</code></td>
-                            <td><?php _e('Nodos cercanos por geolocalización', 'flavor-chat-ia'); ?></td>
+                            <td><?php _e('Nodos cercanos por geolocalización', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
             <div class="api-section">
-                <h4><?php _e('Probar API', 'flavor-chat-ia'); ?></h4>
-                <p><?php _e('Puedes probar los endpoints directamente:', 'flavor-chat-ia'); ?></p>
+                <h4><?php _e('Probar API', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                <p><?php _e('Puedes probar los endpoints directamente:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <ul>
                     <li>
                         <a href="<?php echo rest_url('flavor-integration/v1/network-stats'); ?>" target="_blank">
-                            <?php _e('Ver estadísticas de red', 'flavor-chat-ia'); ?> →
+                            <?php _e('Ver estadísticas de red', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> →
                         </a>
                     </li>
                     <li>
                         <a href="<?php echo rest_url('flavor-features/v1/entity/post/1'); ?>" target="_blank">
-                            <?php _e('Ver interacciones de ejemplo', 'flavor-chat-ia'); ?> →
+                            <?php _e('Ver interacciones de ejemplo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> →
                         </a>
                     </li>
                 </ul>

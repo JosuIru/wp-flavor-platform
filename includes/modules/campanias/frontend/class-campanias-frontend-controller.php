@@ -175,12 +175,12 @@ class Flavor_Campanias_Frontend_Controller {
             'tipos' => $this->tipos,
             'estados' => $this->estados,
             'strings' => [
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
-                'error' => __('Error al procesar la solicitud', 'flavor-chat-ia'),
-                'firma_registrada' => __('Tu firma ha sido registrada', 'flavor-chat-ia'),
-                'ya_firmado' => __('Ya has firmado esta campaña', 'flavor-chat-ia'),
-                'participando' => __('Ya estás participando', 'flavor-chat-ia'),
-                'sin_campanias' => __('No hay campañas activas', 'flavor-chat-ia'),
+                'cargando' => __('Cargando...', 'flavor-platform'),
+                'error' => __('Error al procesar la solicitud', 'flavor-platform'),
+                'firma_registrada' => __('Tu firma ha sido registrada', 'flavor-platform'),
+                'ya_firmado' => __('Ya has firmado esta campaña', 'flavor-platform'),
+                'participando' => __('Ya estás participando', 'flavor-platform'),
+                'sin_campanias' => __('No hay campañas activas', 'flavor-platform'),
             ],
             'usuarioId' => get_current_user_id()
         ]);

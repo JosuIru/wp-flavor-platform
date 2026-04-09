@@ -76,7 +76,7 @@ if ($tabla_existe) {
             'categoria' => ucfirst($incidencia->tipo ?? 'General'),
             'estado' => $incidencia->estado,
             'ubicacion' => $incidencia->ubicacion ?? '',
-            'fecha' => sprintf(__('Hace %s', 'flavor-chat-ia'), $fecha_legible),
+            'fecha' => sprintf(__('Hace %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $fecha_legible),
             'votos' => intval($incidencia->votos ?? 0),
             'comentarios' => intval($incidencia->comentarios ?? 0),
             'imagen' => $imagen,
@@ -169,25 +169,25 @@ if ($tabla_existe) {
     $estadisticas_generales = [
         [
             'numero' => $total ?: '0',
-            'etiqueta' => __('Total', 'flavor-chat-ia'),
+            'etiqueta' => __('Total', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'gray',
             'icono' => '📊',
         ],
         [
             'numero' => $pendientes ?: '0',
-            'etiqueta' => __('Pendientes', 'flavor-chat-ia'),
+            'etiqueta' => __('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'yellow',
             'icono' => '⏳',
         ],
         [
             'numero' => $en_proceso ?: '0',
-            'etiqueta' => __('En Proceso', 'flavor-chat-ia'),
+            'etiqueta' => __('En Proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'blue',
             'icono' => '🔧',
         ],
         [
             'numero' => $resueltas ?: '0',
-            'etiqueta' => __('Resueltas', 'flavor-chat-ia'),
+            'etiqueta' => __('Resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'green',
             'icono' => '✅',
         ],
@@ -213,7 +213,7 @@ $grid_clase = match($columnas) {
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                 </svg>
-                <?php echo esc_html__('Vista en Grid', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Vista en Grid', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
             <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4"><?php echo esc_html($titulo_grid); ?></h2>
             <p class="text-xl text-gray-600"><?php echo esc_html($descripcion_grid); ?></p>
@@ -236,16 +236,16 @@ $grid_clase = match($columnas) {
         <?php if ($mostrar_filtros): ?>
             <div class="flavor-filtros mb-8 flex flex-wrap justify-center gap-2">
                 <button class="flavor-filtro-btn px-4 py-2 rounded-full text-sm font-medium transition-all" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white;">
-                    <?php echo esc_html__('Todas', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button class="flavor-filtro-btn px-4 py-2 rounded-full text-sm font-medium bg-yellow-100 text-yellow-700 hover:bg-yellow-200 transition-colors">
-                    <?php echo esc_html__('⏳ Pendientes', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('⏳ Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button class="flavor-filtro-btn px-4 py-2 rounded-full text-sm font-medium bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors">
-                    <?php echo esc_html__('🔧 En Proceso', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('🔧 En Proceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button class="flavor-filtro-btn px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-700 hover:bg-green-200 transition-colors">
-                    <?php echo esc_html__('✅ Resueltas', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('✅ Resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         <?php endif; ?>
@@ -318,17 +318,17 @@ $grid_clase = match($columnas) {
 
                         <!-- Acciones -->
                         <div class="flavor-acciones mt-auto flex gap-2 pt-4 border-t border-gray-200">
-                            <button class="flex-1 px-3 py-2 text-xs font-semibold text-gray-600 bg-gray-100 rounded-lg hover:bg-red-100 hover:text-red-600 transition-colors" title="<?php echo esc_attr__('Votar', 'flavor-chat-ia'); ?>">
+                            <button class="flex-1 px-3 py-2 text-xs font-semibold text-gray-600 bg-gray-100 rounded-lg hover:bg-red-100 hover:text-red-600 transition-colors" title="<?php echo esc_attr__('Votar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
                                 </svg>
-                                <?php echo esc_html__('Votar', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Votar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
-                            <button class="flex-1 px-3 py-2 text-xs font-semibold text-gray-600 bg-gray-100 rounded-lg hover:bg-blue-100 hover:text-blue-600 transition-colors" title="<?php echo esc_attr__('Comentar', 'flavor-chat-ia'); ?>">
+                            <button class="flex-1 px-3 py-2 text-xs font-semibold text-gray-600 bg-gray-100 rounded-lg hover:bg-blue-100 hover:text-blue-600 transition-colors" title="<?php echo esc_attr__('Comentar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                                 </svg>
-                                <?php echo esc_html__('Comentar', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Comentar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </div>
                     </div>
@@ -339,8 +339,8 @@ $grid_clase = match($columnas) {
         <!-- Estado vacío -->
         <div class="text-center py-16 bg-white rounded-2xl shadow-md mb-10">
             <div class="text-6xl mb-4">🔍</div>
-            <h3 class="text-xl font-bold text-gray-900 mb-2"><?php echo esc_html__('No hay incidencias reportadas', 'flavor-chat-ia'); ?></h3>
-            <p class="text-gray-600 mb-6"><?php echo esc_html__('Sé el primero en reportar una incidencia en tu zona.', 'flavor-chat-ia'); ?></p>
+            <h3 class="text-xl font-bold text-gray-900 mb-2"><?php echo esc_html__('No hay incidencias reportadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p class="text-gray-600 mb-6"><?php echo esc_html__('Sé el primero en reportar una incidencia en tu zona.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
         <?php endif; ?>
 
@@ -350,10 +350,10 @@ $grid_clase = match($columnas) {
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                 </svg>
-                <?php echo esc_html__('Reportar Nueva Incidencia', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Reportar Nueva Incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <p class="text-gray-600">
-                <?php echo esc_html__('¿Encontraste un problema en tu zona?', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('¿Encontraste un problema en tu zona?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
     </div>

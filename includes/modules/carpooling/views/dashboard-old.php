@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!current_user_can('manage_options') && !current_user_can('flavor_ver_dashboard')) {
-    wp_die(__('No tienes permisos suficientes para acceder a esta página.', 'flavor-chat-ia'));
+    wp_die(__('No tienes permisos suficientes para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
 }
 
 global $wpdb;
@@ -125,8 +125,8 @@ foreach ($datos_grafica_viajes as $dato) {
     <?php if (!$tablas_disponibles): ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <strong><?php esc_html_e('Sin datos disponibles:', 'flavor-chat-ia'); ?></strong>
-        <?php esc_html_e('Faltan tablas del módulo Carpooling o aún no hay viajes registrados.', 'flavor-chat-ia'); ?>
+        <strong><?php esc_html_e('Sin datos disponibles:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+        <?php esc_html_e('Faltan tablas del módulo Carpooling o aún no hay viajes registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </div>
     <?php endif; ?>
 
@@ -135,13 +135,13 @@ foreach ($datos_grafica_viajes as $dato) {
         <div class="dm-header__title">
             <span class="dashicons dashicons-car"></span>
             <div>
-                <h1><?php esc_html_e('Dashboard de Carpooling', 'flavor-chat-ia'); ?></h1>
-                <p><?php esc_html_e('Comparte coche y reduce emisiones', 'flavor-chat-ia'); ?></p>
+                <h1><?php esc_html_e('Dashboard de Carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
+                <p><?php esc_html_e('Comparte coche y reduce emisiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
         <div class="dm-header__actions">
             <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('carpooling', 'publicar')); ?>" class="dm-btn dm-btn--primary">
-                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Publicar Viaje', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Publicar Viaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>
@@ -150,24 +150,24 @@ foreach ($datos_grafica_viajes as $dato) {
     <div class="dm-quick-links">
         <h2 class="dm-quick-links__title">
             <span class="dashicons dashicons-admin-links"></span>
-            <?php esc_html_e('Accesos Rápidos', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Accesos Rápidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
         <div class="dm-quick-links__grid">
             <a href="<?php echo esc_url(admin_url('admin.php?page=carpooling-viajes')); ?>" class="dm-quick-links__item">
                 <span class="dashicons dashicons-car"></span>
-                <span><?php esc_html_e('Viajes', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Viajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=carpooling-reservas')); ?>" class="dm-quick-links__item dm-quick-links__item--warning">
                 <span class="dashicons dashicons-tickets-alt"></span>
-                <span><?php esc_html_e('Reservas', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=carpooling-config')); ?>" class="dm-quick-links__item">
                 <span class="dashicons dashicons-admin-settings"></span>
-                <span><?php esc_html_e('Configuración', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
             <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('carpooling', '')); ?>" class="dm-quick-links__item dm-quick-links__item--purple">
                 <span class="dashicons dashicons-external"></span>
-                <span><?php esc_html_e('Portal', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Portal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
         </div>
     </div>
@@ -178,7 +178,7 @@ foreach ($datos_grafica_viajes as $dato) {
             <span class="dashicons dashicons-car dm-stat-card__icon"></span>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($viajes_activos); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Viajes Activos', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Viajes Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -186,8 +186,8 @@ foreach ($datos_grafica_viajes as $dato) {
             <span class="dashicons dashicons-yes-alt dm-stat-card__icon"></span>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($viajes_completados_mes); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Completados', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Completados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -195,7 +195,7 @@ foreach ($datos_grafica_viajes as $dato) {
             <span class="dashicons dashicons-clock dm-stat-card__icon"></span>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($reservas_pendientes); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Reservas Pendientes', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Reservas Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -203,7 +203,7 @@ foreach ($datos_grafica_viajes as $dato) {
             <span class="dashicons dashicons-id dm-stat-card__icon"></span>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($conductores_activos); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Conductores', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Conductores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -211,8 +211,8 @@ foreach ($datos_grafica_viajes as $dato) {
             <span class="dashicons dashicons-palmtree dm-stat-card__icon"></span>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($co2_ahorrado_kg, 1); ?> kg</div>
-                <div class="dm-stat-card__label"><?php esc_html_e('CO₂ Ahorrado', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('CO₂ Ahorrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -220,7 +220,7 @@ foreach ($datos_grafica_viajes as $dato) {
             <span class="dashicons dashicons-groups dm-stat-card__icon"></span>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($usuarios_participantes); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Usuarios Activos', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Usuarios Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
     </div>
@@ -231,7 +231,7 @@ foreach ($datos_grafica_viajes as $dato) {
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-chart-line"></span>
-                    <?php esc_html_e('Actividad de Viajes - Últimos 30 días', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Actividad de Viajes - Últimos 30 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <div class="dm-card__chart">
@@ -243,15 +243,15 @@ foreach ($datos_grafica_viajes as $dato) {
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-location-alt"></span>
-                    <?php esc_html_e('Rutas Más Populares', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Rutas Más Populares', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <table class="dm-table">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('Ruta', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Viajes', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Plazas', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Ruta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Viajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Plazas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -277,7 +277,7 @@ foreach ($datos_grafica_viajes as $dato) {
                         <tr>
                             <td colspan="3" class="dm-table__empty">
                                 <span class="dashicons dashicons-location-alt"></span>
-                                <?php esc_html_e('No hay datos disponibles', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('No hay datos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </td>
                         </tr>
                     <?php endif; ?>
@@ -291,16 +291,16 @@ foreach ($datos_grafica_viajes as $dato) {
         <div class="dm-card__header">
             <h3>
                 <span class="dashicons dashicons-awards"></span>
-                <?php esc_html_e('Top 5 Conductores', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Top 5 Conductores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <table class="dm-table">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Conductor', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Total Viajes', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Completados', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Conductor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Total Viajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Completados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -321,7 +321,7 @@ foreach ($datos_grafica_viajes as $dato) {
                         </td>
                         <td>
                             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-conductores&conductor_id=' . $conductor->id)); ?>" class="dm-btn dm-btn--sm dm-btn--ghost">
-                                <?php esc_html_e('Ver Perfil', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Ver Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </td>
                     </tr>
@@ -330,7 +330,7 @@ foreach ($datos_grafica_viajes as $dato) {
                     <tr>
                         <td colspan="4" class="dm-table__empty">
                             <span class="dashicons dashicons-id"></span>
-                            <?php esc_html_e('No hay conductores disponibles', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('No hay conductores disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </td>
                     </tr>
                 <?php endif; ?>
@@ -342,15 +342,15 @@ foreach ($datos_grafica_viajes as $dato) {
     <div class="dm-action-grid dm-action-grid--3">
         <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-viajes')); ?>" class="dm-action-card dm-action-card--primary">
             <span class="dashicons dashicons-car"></span>
-            <span><?php esc_html_e('Gestionar Viajes', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Gestionar Viajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-reservas')); ?>" class="dm-action-card">
             <span class="dashicons dashicons-tickets-alt"></span>
-            <span><?php esc_html_e('Ver Reservas', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Ver Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-conductores')); ?>" class="dm-action-card">
             <span class="dashicons dashicons-groups"></span>
-            <span><?php esc_html_e('Gestionar Conductores', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Gestionar Conductores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
     </div>
 </div>
@@ -375,7 +375,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 labels: fechas,
                 datasets: [
                     {
-                        label: '<?php echo esc_js(__('Viajes Publicados', 'flavor-chat-ia')); ?>',
+                        label: '<?php echo esc_js(__('Viajes Publicados', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
                         data: viajes,
                         borderColor: primaryColor,
                         backgroundColor: primaryColor + '1A',
@@ -383,7 +383,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         fill: true
                     },
                     {
-                        label: '<?php echo esc_js(__('Plazas Disponibles', 'flavor-chat-ia')); ?>',
+                        label: '<?php echo esc_js(__('Plazas Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
                         data: plazas,
                         borderColor: successColor,
                         backgroundColor: successColor + '1A',

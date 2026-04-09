@@ -29,9 +29,9 @@ $programacion = $wpdb->get_results("
 <div class="wrap">
     <h1>
         <span class="dashicons dashicons-calendar-alt"></span>
-        <?php echo esc_html__('Programación / Parrilla Horaria', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Programación / Parrilla Horaria', 'flavor-platform'); ?>
         <a href="#" class="page-title-action" onclick="abrirModalAgregarSlot(); return false;">
-            <span class="dashicons dashicons-plus-alt"></span> <?php echo esc_html__('Agregar Slot', 'flavor-chat-ia'); ?>
+            <span class="dashicons dashicons-plus-alt"></span> <?php echo esc_html__('Agregar Slot', 'flavor-platform'); ?>
         </a>
     </h1>
 
@@ -40,7 +40,7 @@ $programacion = $wpdb->get_results("
         <table class="flavor-parrilla" style="width: 100%; border-collapse: collapse;">
             <thead>
                 <tr>
-                    <th style="padding: 10px; border: 1px solid #ddd; background: #f0f0f1; min-width: 80px;"><?php echo esc_html__('Hora', 'flavor-chat-ia'); ?></th>
+                    <th style="padding: 10px; border: 1px solid #ddd; background: #f0f0f1; min-width: 80px;"><?php echo esc_html__('Hora', 'flavor-platform'); ?></th>
                     <?php foreach ($dias_semana as $dia): ?>
                         <th style="padding: 10px; border: 1px solid #ddd; background: #f0f0f1;"><?php echo $dia; ?></th>
                     <?php endforeach; ?>
@@ -82,12 +82,12 @@ $programacion = $wpdb->get_results("
     <div class="flavor-modal-overlay" onclick="cerrarModalSlot()"></div>
     <div class="flavor-modal-content" style="min-width:400px;">
         <button class="flavor-modal-close" onclick="cerrarModalSlot()">&times;</button>
-        <h3><?php echo esc_html__('Nuevo Slot de Programación', 'flavor-chat-ia'); ?></h3>
+        <h3><?php echo esc_html__('Nuevo Slot de Programación', 'flavor-platform'); ?></h3>
         <form id="form-slot" method="post">
             <?php wp_nonce_field('nuevo_slot', 'slot_nonce'); ?>
             <input type="hidden" name="accion" value="crear_slot">
             <div style="margin-bottom:15px;">
-                <label style="display:block;margin-bottom:5px;font-weight:600;"><?php echo esc_html__('Programa', 'flavor-chat-ia'); ?></label>
+                <label style="display:block;margin-bottom:5px;font-weight:600;"><?php echo esc_html__('Programa', 'flavor-platform'); ?></label>
                 <select name="programa_id" required style="width:100%;padding:8px;">
                     <?php
                     global $wpdb;
@@ -99,30 +99,30 @@ $programacion = $wpdb->get_results("
                 </select>
             </div>
             <div style="margin-bottom:15px;">
-                <label style="display:block;margin-bottom:5px;font-weight:600;"><?php echo esc_html__('Día', 'flavor-chat-ia'); ?></label>
+                <label style="display:block;margin-bottom:5px;font-weight:600;"><?php echo esc_html__('Día', 'flavor-platform'); ?></label>
                 <select name="dia_semana" required style="width:100%;padding:8px;">
-                    <option value="1"><?php echo esc_html__('Lunes', 'flavor-chat-ia'); ?></option>
-                    <option value="2"><?php echo esc_html__('Martes', 'flavor-chat-ia'); ?></option>
-                    <option value="3"><?php echo esc_html__('Miércoles', 'flavor-chat-ia'); ?></option>
-                    <option value="4"><?php echo esc_html__('Jueves', 'flavor-chat-ia'); ?></option>
-                    <option value="5"><?php echo esc_html__('Viernes', 'flavor-chat-ia'); ?></option>
-                    <option value="6"><?php echo esc_html__('Sábado', 'flavor-chat-ia'); ?></option>
-                    <option value="0"><?php echo esc_html__('Domingo', 'flavor-chat-ia'); ?></option>
+                    <option value="1"><?php echo esc_html__('Lunes', 'flavor-platform'); ?></option>
+                    <option value="2"><?php echo esc_html__('Martes', 'flavor-platform'); ?></option>
+                    <option value="3"><?php echo esc_html__('Miércoles', 'flavor-platform'); ?></option>
+                    <option value="4"><?php echo esc_html__('Jueves', 'flavor-platform'); ?></option>
+                    <option value="5"><?php echo esc_html__('Viernes', 'flavor-platform'); ?></option>
+                    <option value="6"><?php echo esc_html__('Sábado', 'flavor-platform'); ?></option>
+                    <option value="0"><?php echo esc_html__('Domingo', 'flavor-platform'); ?></option>
                 </select>
             </div>
             <div style="display:flex;gap:15px;margin-bottom:15px;">
                 <div style="flex:1;">
-                    <label style="display:block;margin-bottom:5px;font-weight:600;"><?php echo esc_html__('Hora inicio', 'flavor-chat-ia'); ?></label>
+                    <label style="display:block;margin-bottom:5px;font-weight:600;"><?php echo esc_html__('Hora inicio', 'flavor-platform'); ?></label>
                     <input type="time" name="hora_inicio" required style="width:100%;padding:8px;">
                 </div>
                 <div style="flex:1;">
-                    <label style="display:block;margin-bottom:5px;font-weight:600;"><?php echo esc_html__('Hora fin', 'flavor-chat-ia'); ?></label>
+                    <label style="display:block;margin-bottom:5px;font-weight:600;"><?php echo esc_html__('Hora fin', 'flavor-platform'); ?></label>
                     <input type="time" name="hora_fin" required style="width:100%;padding:8px;">
                 </div>
             </div>
             <div style="text-align:right;">
-                <button type="button" class="button" onclick="cerrarModalSlot()"><?php echo esc_html__('Cancelar', 'flavor-chat-ia'); ?></button>
-                <button type="submit" class="button button-primary"><?php echo esc_html__('Guardar', 'flavor-chat-ia'); ?></button>
+                <button type="button" class="button" onclick="cerrarModalSlot()"><?php echo esc_html__('Cancelar', 'flavor-platform'); ?></button>
+                <button type="submit" class="button button-primary"><?php echo esc_html__('Guardar', 'flavor-platform'); ?></button>
             </div>
         </form>
     </div>

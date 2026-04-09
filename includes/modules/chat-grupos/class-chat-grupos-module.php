@@ -44,7 +44,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Chat de Grupos no están creadas. Se crearán automáticamente al activar.', 'flavor-chat-ia');
+            return __('Las tablas de Chat de Grupos no están creadas. Se crearán automáticamente al activar.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         
     return '';
@@ -92,7 +92,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             // Tab de chat para Grupos de Consumo
             'grupos_consumo' => [
                 'id'       => 'chat-grupo',
-                'label'    => __('Chat', 'flavor-chat-ia'),
+                'label'    => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-status',
                 'content'  => '[flavor_chat_grupo_integrado entidad="grupo_consumo" entidad_id="{entity_id}"]',
                 'priority' => 95,
@@ -104,7 +104,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             // Tab de chat para Eventos
             'eventos' => [
                 'id'       => 'chat-evento',
-                'label'    => __('Chat', 'flavor-chat-ia'),
+                'label'    => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-status',
                 'content'  => '[flavor_chat_grupo_integrado entidad="evento" entidad_id="{entity_id}"]',
                 'priority' => 95,
@@ -116,7 +116,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             // Tab de chat para Comunidades
             'comunidades' => [
                 'id'       => 'chat-comunidad',
-                'label'    => __('Chat', 'flavor-chat-ia'),
+                'label'    => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-status',
                 'content'  => '[flavor_chat_grupo_integrado entidad="comunidad" entidad_id="{entity_id}"]',
                 'priority' => 85,
@@ -127,7 +127,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
 
             'incidencias' => [
                 'id'       => 'chat-incidencia',
-                'label'    => __('Chat', 'flavor-chat-ia'),
+                'label'    => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-status',
                 'content'  => '[flavor_chat_grupo_integrado entidad="incidencia" entidad_id="{entity_id}"]',
                 'priority' => 90,
@@ -138,7 +138,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
 
             'documentacion_legal' => [
                 'id'       => 'chat-documento-legal',
-                'label'    => __('Chat', 'flavor-chat-ia'),
+                'label'    => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-status',
                 'content'  => '[flavor_chat_grupo_integrado entidad="documento_legal" entidad_id="{entity_id}"]',
                 'priority' => 90,
@@ -149,7 +149,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
 
             'presupuestos_participativos' => [
                 'id'       => 'chat-pp-proyecto',
-                'label'    => __('Chat', 'flavor-chat-ia'),
+                'label'    => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-status',
                 'content'  => '[flavor_chat_grupo_integrado entidad="pp_proyecto" entidad_id="{entity_id}"]',
                 'priority' => 90,
@@ -160,7 +160,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
 
             'saberes_ancestrales' => [
                 'id'       => 'chat-saber-ancestral',
-                'label'    => __('Chat', 'flavor-chat-ia'),
+                'label'    => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-status',
                 'content'  => '[flavor_chat_grupo_integrado entidad="saber_ancestral" entidad_id="{entity_id}"]',
                 'priority' => 90,
@@ -171,7 +171,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
 
             'transparencia' => [
                 'id'       => 'chat-documento-transparencia',
-                'label'    => __('Chat', 'flavor-chat-ia'),
+                'label'    => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-status',
                 'content'  => '[flavor_chat_grupo_integrado entidad="documento_transparencia" entidad_id="{entity_id}"]',
                 'priority' => 90,
@@ -182,7 +182,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
 
             'avisos_municipales' => [
                 'id'       => 'chat-aviso-municipal',
-                'label'    => __('Chat', 'flavor-chat-ia'),
+                'label'    => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-status',
                 'content'  => '[flavor_chat_grupo_integrado entidad="aviso_municipal" entidad_id="{entity_id}"]',
                 'priority' => 90,
@@ -193,7 +193,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
 
             'economia_don' => [
                 'id'       => 'chat-economia-don',
-                'label'    => __('Chat', 'flavor-chat-ia'),
+                'label'    => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-status',
                 'content'  => '[flavor_chat_grupo_integrado entidad="economia_don" entidad_id="{entity_id}"]',
                 'priority' => 90,
@@ -204,7 +204,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
 
             'advertising' => [
                 'id'       => 'chat-advertising-ad',
-                'label'    => __('Chat', 'flavor-chat-ia'),
+                'label'    => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-status',
                 'content'  => '[flavor_chat_grupo_integrado entidad="advertising_ad" entidad_id="{entity_id}"]',
                 'priority' => 90,
@@ -215,7 +215,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
 
             'radio' => [
                 'id'       => 'chat-radio-programa',
-                'label'    => __('Chat', 'flavor-chat-ia'),
+                'label'    => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-status',
                 'content'  => '[flavor_chat_grupo_integrado entidad="radio_programa" entidad_id="{entity_id}"]',
                 'priority' => 90,
@@ -226,7 +226,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
 
             'energia_comunitaria' => [
                 'id'       => 'chat-energia-comunidad',
-                'label'    => __('Chat', 'flavor-chat-ia'),
+                'label'    => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-status',
                 'content'  => '[flavor_chat_grupo_integrado entidad="energia_comunidad" entidad_id="{entity_id}"]',
                 'priority' => 90,
@@ -238,7 +238,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             // Tab de chat para Cursos
             'cursos' => [
                 'id'       => 'chat-curso',
-                'label'    => __('Chat del Curso', 'flavor-chat-ia'),
+                'label'    => __('Chat del Curso', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-status',
                 'content'  => '[flavor_chat_grupo_integrado entidad="curso" entidad_id="{entity_id}"]',
                 'priority' => 95,
@@ -250,7 +250,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             // Tab de chat para Talleres
             'talleres' => [
                 'id'       => 'chat-taller',
-                'label'    => __('Chat del Taller', 'flavor-chat-ia'),
+                'label'    => __('Chat del Taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-status',
                 'content'  => '[flavor_chat_grupo_integrado entidad="taller" entidad_id="{entity_id}"]',
                 'priority' => 95,
@@ -262,7 +262,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             // Tab de chat para Colectivos
             'colectivos' => [
                 'id'       => 'chat-colectivo',
-                'label'    => __('Chat', 'flavor-chat-ia'),
+                'label'    => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-status',
                 'content'  => '[flavor_chat_grupo_integrado entidad="colectivo" entidad_id="{entity_id}"]',
                 'priority' => 95,
@@ -274,7 +274,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             // Tab de chat para Círculos de Cuidados
             'circulos_cuidados' => [
                 'id'       => 'chat-circulo',
-                'label'    => __('Chat', 'flavor-chat-ia'),
+                'label'    => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-status',
                 'content'  => '[flavor_chat_grupo_integrado entidad="circulo" entidad_id="{entity_id}"]',
                 'priority' => 95,
@@ -286,7 +286,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             // Tab de chat para Banco de Tiempo
             'banco_tiempo' => [
                 'id'       => 'chat-servicio',
-                'label'    => __('Chat', 'flavor-chat-ia'),
+                'label'    => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-status',
                 'content'  => '[flavor_chat_grupo_integrado entidad="servicio_bt" entidad_id="{entity_id}"]',
                 'priority' => 95,
@@ -298,7 +298,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             // Tab de chat para Trabajo Digno
             'trabajo_digno' => [
                 'id'       => 'chat-oferta-trabajo',
-                'label'    => __('Chat', 'flavor-chat-ia'),
+                'label'    => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-status',
                 'content'  => '[flavor_chat_grupo_integrado entidad="trabajo_digno_oferta" entidad_id="{entity_id}"]',
                 'priority' => 95,
@@ -310,7 +310,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             // Tab de chat para Huertos Urbanos
             'huertos_urbanos' => [
                 'id'       => 'chat-huerto',
-                'label'    => __('Chat', 'flavor-chat-ia'),
+                'label'    => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-status',
                 'content'  => '[flavor_chat_grupo_integrado entidad="huerto" entidad_id="{entity_id}"]',
                 'priority' => 95,
@@ -320,7 +320,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             ],
             'participacion' => [
                 'id'       => 'chat-propuesta',
-                'label'    => __('Chat', 'flavor-chat-ia'),
+                'label'    => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-status',
                 'content'  => '[flavor_chat_grupo_integrado entidad="participacion_propuesta" entidad_id="{entity_id}"]',
                 'priority' => 95,
@@ -330,7 +330,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             ],
             'economia_suficiencia' => [
                 'id'       => 'chat-recurso-suficiencia',
-                'label'    => __('Chat', 'flavor-chat-ia'),
+                'label'    => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-status',
                 'content'  => '[flavor_chat_grupo_integrado entidad="es_recurso" entidad_id="{entity_id}"]',
                 'priority' => 95,
@@ -340,7 +340,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             ],
             'justicia_restaurativa' => [
                 'id'       => 'chat-proceso-restaurativo',
-                'label'    => __('Chat', 'flavor-chat-ia'),
+                'label'    => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-status',
                 'content'  => '[flavor_chat_grupo_integrado entidad="jr_proceso" entidad_id="{entity_id}"]',
                 'priority' => 95,
@@ -826,42 +826,42 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             'polling_interval' => 3000,
             'typing_timeout' => 3000,
             'strings' => [
-                'escribiendo' => __('escribiendo...', 'flavor-chat-ia'),
-                'tu' => __('Tú', 'flavor-chat-ia'),
-                'ahora' => __('ahora', 'flavor-chat-ia'),
-                'ayer' => __('ayer', 'flavor-chat-ia'),
-                'mensaje_eliminado' => __('Mensaje eliminado', 'flavor-chat-ia'),
-                'mensaje_editado' => __('editado', 'flavor-chat-ia'),
-                'sin_mensajes' => __('No hay mensajes aún. ¡Sé el primero en escribir!', 'flavor-chat-ia'),
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
-                'error' => __('Error al procesar la solicitud', 'flavor-chat-ia'),
+                'escribiendo' => __('escribiendo...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'tu' => __('Tú', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ahora' => __('ahora', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ayer' => __('ayer', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'mensaje_eliminado' => __('Mensaje eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'mensaje_editado' => __('editado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sin_mensajes' => __('No hay mensajes aún. ¡Sé el primero en escribir!', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al procesar la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 // Strings para modal de crear grupo
-                'crear_grupo' => __('Crear nuevo grupo', 'flavor-chat-ia'),
-                'nombre' => __('Nombre del grupo', 'flavor-chat-ia'),
-                'nombre_placeholder' => __('Ej: Vecinos del barrio', 'flavor-chat-ia'),
-                'descripcion' => __('Descripción', 'flavor-chat-ia'),
-                'descripcion_placeholder' => __('Describe el propósito del grupo...', 'flavor-chat-ia'),
-                'tipo' => __('Tipo de grupo', 'flavor-chat-ia'),
-                'tipo_abierto' => __('Abierto', 'flavor-chat-ia'),
-                'tipo_cerrado' => __('Cerrado', 'flavor-chat-ia'),
-                'tipo_privado' => __('Privado', 'flavor-chat-ia'),
-                'color' => __('Color', 'flavor-chat-ia'),
-                'categoria' => __('Categoría', 'flavor-chat-ia'),
-                'seleccionar' => __('Seleccionar...', 'flavor-chat-ia'),
-                'cat_vecinos' => __('Vecinos', 'flavor-chat-ia'),
-                'cat_deportes' => __('Deportes', 'flavor-chat-ia'),
-                'cat_cultura' => __('Cultura', 'flavor-chat-ia'),
-                'cat_educacion' => __('Educación', 'flavor-chat-ia'),
-                'cat_trabajo' => __('Trabajo', 'flavor-chat-ia'),
-                'cat_ocio' => __('Ocio', 'flavor-chat-ia'),
-                'cat_otros' => __('Otros', 'flavor-chat-ia'),
-                'cancelar' => __('Cancelar', 'flavor-chat-ia'),
-                'crear' => __('Crear grupo', 'flavor-chat-ia'),
-                'creando' => __('Creando...', 'flavor-chat-ia'),
-                'grupo_creado' => __('Grupo creado correctamente', 'flavor-chat-ia'),
-                'error_crear' => __('Error al crear el grupo', 'flavor-chat-ia'),
-                'confirmar' => __('Confirmar', 'flavor-chat-ia'),
-                'confirmar_eliminar' => __('¿Eliminar este mensaje?', 'flavor-chat-ia'),
+                'crear_grupo' => __('Crear nuevo grupo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'nombre' => __('Nombre del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'nombre_placeholder' => __('Ej: Vecinos del barrio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion_placeholder' => __('Describe el propósito del grupo...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'tipo' => __('Tipo de grupo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'tipo_abierto' => __('Abierto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'tipo_cerrado' => __('Cerrado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'tipo_privado' => __('Privado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'color' => __('Color', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'categoria' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'seleccionar' => __('Seleccionar...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cat_vecinos' => __('Vecinos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cat_deportes' => __('Deportes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cat_cultura' => __('Cultura', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cat_educacion' => __('Educación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cat_trabajo' => __('Trabajo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cat_ocio' => __('Ocio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cat_otros' => __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cancelar' => __('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'crear' => __('Crear grupo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'creando' => __('Creando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'grupo_creado' => __('Grupo creado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error_crear' => __('Error al crear el grupo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmar' => __('Confirmar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmar_eliminar' => __('¿Eliminar este mensaje?', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -1026,7 +1026,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error' => __('La vista solicitada no está disponible en Chat Grupos.', 'flavor-chat-ia'),
+            'error' => __('La vista solicitada no está disponible en Chat Grupos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -1066,7 +1066,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function action_mis_grupos($params) {
         $usuario_id = !empty($params['usuario_id']) ? absint($params['usuario_id']) : get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -1230,17 +1230,17 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function action_crear_grupo($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $settings = $this->get_settings();
         if (!$settings['permite_crear_grupos']) {
-            return ['success' => false, 'error' => __('No tienes permisos para crear grupos', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No tienes permisos para crear grupos', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $nombre = sanitize_text_field($params['nombre'] ?? '');
         if (strlen($nombre) < 3) {
-            return ['success' => false, 'error' => __('El nombre del grupo debe tener al menos 3 caracteres', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('El nombre del grupo debe tener al menos 3 caracteres', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $tipo = in_array($params['tipo'] ?? '', ['publico', 'privado', 'secreto']) ? $params['tipo'] : 'publico';
@@ -1272,7 +1272,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ]);
 
         if (!$insertado) {
-            return ['success' => false, 'error' => __('Error al crear el grupo', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Error al crear el grupo', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $grupo_id = $wpdb->insert_id;
@@ -1296,7 +1296,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             'success' => true,
             'grupo_id' => $grupo_id,
             'slug' => $slug,
-            'mensaje' => __('Grupo creado correctamente', 'flavor-chat-ia'),
+            'mensaje' => __('Grupo creado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -1306,12 +1306,12 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function action_unirse_grupo($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $grupo_id = intval($params['grupo_id'] ?? 0);
         if (!$grupo_id) {
-            return ['success' => false, 'error' => __('Grupo no especificado', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Grupo no especificado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -1325,7 +1325,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$grupo) {
-            return ['success' => false, 'error' => __('El grupo no existe o no está activo', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('El grupo no existe o no está activo', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Verificar si ya es miembro
@@ -1335,12 +1335,12 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if ($es_miembro) {
-            return ['success' => false, 'error' => __('Ya eres miembro de este grupo', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Ya eres miembro de este grupo', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Verificar límite de miembros
         if ($grupo->miembros_count >= $grupo->max_miembros) {
-            return ['success' => false, 'error' => __('El grupo ha alcanzado el límite de miembros', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('El grupo ha alcanzado el límite de miembros', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Para grupos privados/secretos, verificar invitación
@@ -1365,7 +1365,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             }
 
             if (!$invitacion) {
-                return ['success' => false, 'error' => __('Necesitas una invitación para unirte a este grupo', 'flavor-chat-ia')];
+                return ['success' => false, 'error' => __('Necesitas una invitación para unirte a este grupo', FLAVOR_PLATFORM_TEXT_DOMAIN)];
             }
 
             // Marcar invitación como aceptada
@@ -1391,7 +1391,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             'usuario_nombre' => wp_get_current_user()->display_name,
         ]);
 
-        return ['success' => true, 'mensaje' => __('Te has unido al grupo.', 'flavor-chat-ia')];
+        return ['success' => true, 'mensaje' => __('Te has unido al grupo.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     /**
@@ -1400,7 +1400,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function action_salir_grupo($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $grupo_id = intval($params['grupo_id'] ?? 0);
@@ -1415,7 +1415,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$miembro) {
-            return ['success' => false, 'error' => __('No eres miembro de este grupo', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No eres miembro de este grupo', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Si es el único admin, no puede salir
@@ -1427,7 +1427,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             ));
 
             if (!$otros_admins) {
-                return ['success' => false, 'error' => __('Debes asignar otro administrador antes de salir', 'flavor-chat-ia')];
+                return ['success' => false, 'error' => __('Debes asignar otro administrador antes de salir', FLAVOR_PLATFORM_TEXT_DOMAIN)];
             }
         }
 
@@ -1443,7 +1443,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             'usuario_nombre' => wp_get_current_user()->display_name,
         ]);
 
-        return ['success' => true, 'mensaje' => __('Has salido del grupo', 'flavor-chat-ia')];
+        return ['success' => true, 'mensaje' => __('Has salido del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     /**
@@ -1454,7 +1454,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         $grupo_id = intval($params['grupo_id'] ?? 0);
 
         if (!$this->usuario_puede_ver_grupo($usuario_id, $grupo_id)) {
-            return ['success' => false, 'error' => __('No tienes acceso a este grupo', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No tienes acceso a este grupo', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -1551,22 +1551,22 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function action_enviar_mensaje($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $grupo_id = intval($params['grupo_id'] ?? 0);
 
         if (!$this->usuario_puede_escribir($usuario_id, $grupo_id)) {
-            return ['success' => false, 'error' => __('No puedes escribir en este grupo', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No puedes escribir en este grupo', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $mensaje = trim($params['mensaje'] ?? '');
         if (empty($mensaje) && empty($params['adjuntos'])) {
-            return ['success' => false, 'error' => __('El mensaje no puede estar vacío', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('El mensaje no puede estar vacío', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if (strlen($mensaje) > 5000) {
-            return ['success' => false, 'error' => __('El mensaje es demasiado largo (máximo 5000 caracteres)', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('El mensaje es demasiado largo (máximo 5000 caracteres)', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -1665,7 +1665,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
                 'editado' => false,
                 'eliminado' => false,
                 'fecha' => current_time('mysql'),
-                'fecha_humana' => __('ahora', 'flavor-chat-ia'),
+                'fecha_humana' => __('ahora', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'es_mio' => true,
             ],
         ];
@@ -1679,7 +1679,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         $grupo_id = intval($params['grupo_id'] ?? 0);
 
         if (!$this->usuario_puede_ver_grupo($usuario_id, $grupo_id)) {
-            return ['success' => false, 'error' => __('No tienes acceso a este grupo', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No tienes acceso a este grupo', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -1694,7 +1694,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$grupo) {
-            return ['success' => false, 'error' => __('Grupo no encontrado', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Grupo no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Obtener mi membresía
@@ -1785,7 +1785,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         $grupo_id = intval($params['grupo_id'] ?? 0);
 
         if (!$this->usuario_puede_ver_grupo($usuario_id, $grupo_id)) {
-            return ['success' => false, 'error' => __('No tienes acceso a este grupo', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No tienes acceso a este grupo', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -1822,13 +1822,13 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function action_invitar_miembro($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $grupo_id = intval($params['grupo_id'] ?? 0);
 
         if (!$this->usuario_es_admin_o_mod($usuario_id, $grupo_id)) {
-            return ['success' => false, 'error' => __('No tienes permisos para invitar miembros', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No tienes permisos para invitar miembros', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -1839,7 +1839,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         $email = sanitize_email($params['email'] ?? '');
 
         if (!$invitado_id && !$email) {
-            return ['success' => false, 'error' => __('Debes especificar un usuario o email', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes especificar un usuario o email', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Verificar si ya es miembro
@@ -1849,7 +1849,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
                 $grupo_id, $invitado_id
             ));
             if ($ya_miembro) {
-                return ['success' => false, 'error' => __('El usuario ya es miembro del grupo', 'flavor-chat-ia')];
+                return ['success' => false, 'error' => __('El usuario ya es miembro del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN)];
             }
         }
 
@@ -1876,7 +1876,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         return [
             'success' => true,
             'codigo' => $codigo,
-            'mensaje' => __('Invitación enviada correctamente', 'flavor-chat-ia'),
+            'mensaje' => __('Invitación enviada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -1886,18 +1886,18 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function action_expulsar_miembro($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $grupo_id = intval($params['grupo_id'] ?? 0);
         $expulsado_id = intval($params['usuario_id'] ?? 0);
 
         if (!$this->usuario_es_admin_o_mod($usuario_id, $grupo_id)) {
-            return ['success' => false, 'error' => __('No tienes permisos para expulsar miembros', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No tienes permisos para expulsar miembros', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if ($expulsado_id === $usuario_id) {
-            return ['success' => false, 'error' => __('No puedes expulsarte a ti mismo', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No puedes expulsarte a ti mismo', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -1909,7 +1909,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         $su_rol = $this->obtener_rol_usuario($expulsado_id, $grupo_id);
 
         if ($su_rol === 'admin' && $mi_rol !== 'admin') {
-            return ['success' => false, 'error' => __('No puedes expulsar a un administrador', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No puedes expulsar a un administrador', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $wpdb->delete($tabla_miembros, ['grupo_id' => $grupo_id, 'usuario_id' => $expulsado_id]);
@@ -1927,7 +1927,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             'por_nombre' => wp_get_current_user()->display_name,
         ]);
 
-        return ['success' => true, 'mensaje' => __('Usuario expulsado del grupo', 'flavor-chat-ia')];
+        return ['success' => true, 'mensaje' => __('Usuario expulsado del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     /**
@@ -1936,7 +1936,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function action_cambiar_rol($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $grupo_id = intval($params['grupo_id'] ?? 0);
@@ -1944,11 +1944,11 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         $nuevo_rol = $params['rol'] ?? '';
 
         if (!in_array($nuevo_rol, ['miembro', 'moderador', 'admin'])) {
-            return ['success' => false, 'error' => __('Rol no válido', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Rol no válido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if (!$this->usuario_es_admin($usuario_id, $grupo_id)) {
-            return ['success' => false, 'error' => __('Solo los administradores pueden cambiar roles', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Solo los administradores pueden cambiar roles', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -1960,7 +1960,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             ['grupo_id' => $grupo_id, 'usuario_id' => $miembro_id]
         );
 
-        return ['success' => true, 'mensaje' => __('Rol actualizado correctamente', 'flavor-chat-ia')];
+        return ['success' => true, 'mensaje' => __('Rol actualizado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     /**
@@ -1969,7 +1969,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function action_silenciar_grupo($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $grupo_id = intval($params['grupo_id'] ?? 0);
@@ -2001,12 +2001,12 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         $grupo_id = intval($params['grupo_id'] ?? 0);
 
         if (!$this->usuario_puede_ver_grupo($usuario_id, $grupo_id)) {
-            return ['success' => false, 'error' => __('No tienes acceso a este grupo', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No tienes acceso a este grupo', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $query = sanitize_text_field($params['query'] ?? '');
         if (strlen($query) < 3) {
-            return ['success' => false, 'error' => __('La búsqueda debe tener al menos 3 caracteres', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('La búsqueda debe tener al menos 3 caracteres', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -2045,13 +2045,13 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function action_crear_encuesta($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $grupo_id = intval($params['grupo_id'] ?? 0);
 
         if (!$this->usuario_puede_escribir($usuario_id, $grupo_id)) {
-            return ['success' => false, 'error' => __('No puedes escribir en este grupo', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No puedes escribir en este grupo', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -2063,18 +2063,18 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$grupo || !$grupo->permite_encuestas) {
-            return ['success' => false, 'error' => __('Las encuestas no están permitidas en este grupo', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Las encuestas no están permitidas en este grupo', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $pregunta = sanitize_text_field($params['pregunta'] ?? '');
         $opciones = $params['opciones'] ?? [];
 
         if (strlen($pregunta) < 5) {
-            return ['success' => false, 'error' => __('La pregunta debe tener al menos 5 caracteres', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('La pregunta debe tener al menos 5 caracteres', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if (!is_array($opciones) || count($opciones) < 2) {
-            return ['success' => false, 'error' => __('La encuesta debe tener al menos 2 opciones', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('La encuesta debe tener al menos 2 opciones', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $opciones = array_map('sanitize_text_field', array_slice($opciones, 0, 10));
@@ -2113,7 +2113,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             'success' => true,
             'encuesta_id' => $encuesta_id,
             'mensaje_id' => $mensaje_id,
-            'mensaje' => __('encuesta_id', 'flavor-chat-ia'),
+            'mensaje' => __('encuesta_id', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -2123,7 +2123,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function action_votar_encuesta($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $encuesta_id = intval($params['encuesta_id'] ?? 0);
@@ -2139,16 +2139,16 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$encuesta) {
-            return ['success' => false, 'error' => __('Encuesta no encontrada', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Encuesta no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if ($encuesta->cerrada) {
-            return ['success' => false, 'error' => __('Esta encuesta está cerrada', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Esta encuesta está cerrada', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $opciones = json_decode($encuesta->opciones, true);
         if ($opcion < 0 || $opcion >= count($opciones)) {
-            return ['success' => false, 'error' => __('Opción no válida', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Opción no válida', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Si no es múltiple, eliminar voto anterior
@@ -2209,14 +2209,14 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function action_reaccionar($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $mensaje_id = intval($params['mensaje_id'] ?? 0);
         $emoji = sanitize_text_field($params['emoji'] ?? '');
 
         if (!$emoji) {
-            return ['success' => false, 'error' => __('Emoji no especificado', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Emoji no especificado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         global $wpdb;
@@ -2230,12 +2230,12 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$mensaje) {
-            return ['success' => false, 'error' => __('Mensaje no encontrado', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Mensaje no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Verificar acceso al grupo
         if (!$this->usuario_puede_ver_grupo($usuario_id, $mensaje->grupo_id)) {
-            return ['success' => false, 'error' => __('No tienes acceso a este grupo', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No tienes acceso a este grupo', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Toggle reacción
@@ -2277,7 +2277,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function action_fijar_mensaje($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $mensaje_id = intval($params['mensaje_id'] ?? 0);
@@ -2292,11 +2292,11 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$mensaje) {
-            return ['success' => false, 'error' => __('Mensaje no encontrado', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Mensaje no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if (!$this->usuario_es_admin_o_mod($usuario_id, $mensaje->grupo_id)) {
-            return ['success' => false, 'error' => __('Solo moderadores y admins pueden fijar mensajes', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Solo moderadores y admins pueden fijar mensajes', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Toggle fijado
@@ -2572,7 +2572,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ], $atts);
 
         if (!is_user_logged_in()) {
-            return '<div class="cg-login-required"><p>' . __('Inicia sesión para acceder al chat de grupos.', 'flavor-chat-ia') . '</p></div>';
+            return '<div class="cg-login-required"><p>' . __('Inicia sesión para acceder al chat de grupos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         $grupo_id_inicial = absint($atts['grupo_id'] ?? 0);
@@ -2585,26 +2585,26 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         <div id="flavor-chat-grupos-app" class="cg-app" data-user-id="<?php echo get_current_user_id(); ?>">
             <div class="cg-sidebar">
                 <div class="cg-sidebar-header">
-                    <h3><?php _e('Mis Grupos', 'flavor-chat-ia'); ?></h3>
-                    <button class="cg-btn-crear" title="<?php esc_attr_e('Crear grupo', 'flavor-chat-ia'); ?>">
+                    <h3><?php _e('Mis Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <button class="cg-btn-crear" title="<?php esc_attr_e('Crear grupo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-plus-alt2"></span>
                     </button>
                 </div>
                 <div class="cg-grupos-lista" id="cg-mis-grupos">
-                    <div class="cg-loading"><?php _e('Cargando...', 'flavor-chat-ia'); ?></div>
+                    <div class="cg-loading"><?php _e('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="cg-sidebar-footer">
                     <a href="#explorar" class="cg-link-explorar">
                         <span class="dashicons dashicons-search"></span>
-                        <?php _e('Explorar grupos', 'flavor-chat-ia'); ?>
+                        <?php _e('Explorar grupos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </div>
             <div class="cg-main">
                 <div class="cg-no-grupo-seleccionado">
                     <span class="dashicons dashicons-format-chat"></span>
-                    <h3><?php _e('Selecciona un grupo', 'flavor-chat-ia'); ?></h3>
-                    <p><?php _e('Elige un grupo de la lista para ver los mensajes', 'flavor-chat-ia'); ?></p>
+                    <h3><?php _e('Selecciona un grupo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php _e('Elige un grupo de la lista para ver los mensajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <div class="cg-chat-container" style="display:none;">
                     <div class="cg-chat-header">
@@ -2616,26 +2616,26 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
                             </div>
                         </div>
                         <div class="cg-chat-acciones">
-                            <button class="cg-btn-buscar" title="<?php esc_attr_e('Buscar', 'flavor-chat-ia'); ?>">
+                            <button class="cg-btn-buscar" title="<?php esc_attr_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <span class="dashicons dashicons-search"></span>
                             </button>
-                            <button class="cg-btn-info" title="<?php esc_attr_e('Info del grupo', 'flavor-chat-ia'); ?>">
+                            <button class="cg-btn-info" title="<?php esc_attr_e('Info del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <span class="dashicons dashicons-info"></span>
                             </button>
                         </div>
                     </div>
                     <div class="cg-mensajes-container" id="cg-mensajes">
-                        <div class="cg-loading"><?php _e('Cargando mensajes...', 'flavor-chat-ia'); ?></div>
+                        <div class="cg-loading"><?php _e('Cargando mensajes...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     </div>
                     <div class="cg-escribiendo" style="display:none;"></div>
                     <div class="cg-input-container">
-                        <button class="cg-btn-adjuntar" title="<?php esc_attr_e('Adjuntar archivo', 'flavor-chat-ia'); ?>">
+                        <button class="cg-btn-adjuntar" title="<?php esc_attr_e('Adjuntar archivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-paperclip"></span>
                         </button>
                         <div class="cg-input-wrapper">
-                            <textarea id="cg-mensaje-input" placeholder="<?php esc_attr_e('Escribe un mensaje...', 'flavor-chat-ia'); ?>" rows="1"></textarea>
+                            <textarea id="cg-mensaje-input" placeholder="<?php esc_attr_e('Escribe un mensaje...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" rows="1"></textarea>
                         </div>
-                        <button class="cg-btn-enviar" title="<?php esc_attr_e('Enviar', 'flavor-chat-ia'); ?>">
+                        <button class="cg-btn-enviar" title="<?php esc_attr_e('Enviar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-arrow-right-alt"></span>
                         </button>
                     </div>
@@ -2676,11 +2676,11 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         }
 
         if (!$grupo_id) {
-            return '<p>' . __('Grupo no encontrado.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('Grupo no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         if (!is_user_logged_in()) {
-            return '<div class="cg-login-required"><p>' . __('Inicia sesión para acceder al chat.', 'flavor-chat-ia') . '</p></div>';
+            return '<div class="cg-login-required"><p>' . __('Inicia sesión para acceder al chat.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         // Modo embebido: interfaz compacta sin sidebar
@@ -2709,14 +2709,14 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ], $atts);
 
         if (!is_user_logged_in()) {
-            return '<div class="cg-login-required"><p>' . __('Inicia sesión para acceder al chat.', 'flavor-chat-ia') . '</p></div>';
+            return '<div class="cg-login-required"><p>' . __('Inicia sesión para acceder al chat.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         $entidad_tipo = sanitize_key($atts['entidad']);
         $entidad_id = absint($atts['entidad_id']);
 
         if (!$entidad_tipo || !$entidad_id) {
-            return '<p class="cg-aviso">' . __('Configuración del chat incompleta.', 'flavor-chat-ia') . '</p>';
+            return '<p class="cg-aviso">' . __('Configuración del chat incompleta.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         global $wpdb;
@@ -2738,7 +2738,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         if (!$grupo_id) {
             return '<div class="cg-no-grupo">
                 <span class="dashicons dashicons-format-status"></span>
-                <p>' . __('El chat de este grupo aún no está disponible.', 'flavor-chat-ia') . '</p>
+                <p>' . __('El chat de este grupo aún no está disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
             </div>';
         }
 
@@ -2768,9 +2768,9 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
 
         $resultado = $wpdb->insert($tabla_grupos, [
-            'nombre'        => sprintf(__('Chat: %s', 'flavor-chat-ia'), $nombre_grupo),
+            'nombre'        => sprintf(__('Chat: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $nombre_grupo),
             'slug'          => sanitize_title($entidad_tipo . '-' . $entidad_id),
-            'descripcion'   => sprintf(__('Grupo de chat para %s', 'flavor-chat-ia'), $nombre_grupo),
+            'descripcion'   => sprintf(__('Grupo de chat para %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $nombre_grupo),
             'tipo'          => 'entidad',
             'privacidad'    => 'miembros',
             'entidad_tipo'  => $entidad_tipo,
@@ -2931,7 +2931,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$grupo) {
-            return '<p>' . __('Grupo no disponible.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('Grupo no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         // Verificar membresía
@@ -2942,7 +2942,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$es_miembro) {
-            return '<div class="cg-no-acceso"><p>' . __('No tienes acceso a este chat.', 'flavor-chat-ia') . '</p></div>';
+            return '<div class="cg-no-acceso"><p>' . __('No tienes acceso a este chat.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         $altura_css = esc_attr($altura);
@@ -2960,26 +2960,26 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
                 </div>
                 <div class="cg-grupo-datos">
                     <h4 class="cg-grupo-nombre"><?php echo esc_html($grupo->nombre); ?></h4>
-                    <span class="cg-grupo-miembros"><?php printf(__('%d miembros', 'flavor-chat-ia'), $grupo->miembros_count); ?></span>
+                    <span class="cg-grupo-miembros"><?php printf(__('%d miembros', FLAVOR_PLATFORM_TEXT_DOMAIN), $grupo->miembros_count); ?></span>
                 </div>
                 <div class="cg-embebido-acciones">
-                    <button class="cg-btn-buscar-emb" title="<?php esc_attr_e('Buscar', 'flavor-chat-ia'); ?>">
+                    <button class="cg-btn-buscar-emb" title="<?php esc_attr_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-search"></span>
                     </button>
                 </div>
             </div>
             <div class="cg-embebido-mensajes" id="cg-emb-mensajes-<?php echo esc_attr($grupo_id); ?>">
-                <div class="cg-loading"><?php _e('Cargando mensajes...', 'flavor-chat-ia'); ?></div>
+                <div class="cg-loading"><?php _e('Cargando mensajes...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
             <div class="cg-embebido-escribiendo" style="display:none;"></div>
             <div class="cg-embebido-input">
-                <button class="cg-btn-adjuntar-emb" title="<?php esc_attr_e('Adjuntar', 'flavor-chat-ia'); ?>">
+                <button class="cg-btn-adjuntar-emb" title="<?php esc_attr_e('Adjuntar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-paperclip"></span>
                 </button>
                 <div class="cg-input-wrapper">
-                    <textarea class="cg-emb-mensaje-input" placeholder="<?php esc_attr_e('Escribe un mensaje...', 'flavor-chat-ia'); ?>" rows="1"></textarea>
+                    <textarea class="cg-emb-mensaje-input" placeholder="<?php esc_attr_e('Escribe un mensaje...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" rows="1"></textarea>
                 </div>
-                <button class="cg-btn-enviar-emb" title="<?php esc_attr_e('Enviar', 'flavor-chat-ia'); ?>">
+                <button class="cg-btn-enviar-emb" title="<?php esc_attr_e('Enviar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-arrow-right-alt"></span>
                 </button>
             </div>
@@ -3011,7 +3011,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ]);
 
         if (!$resultado['success'] || empty($resultado['grupos'])) {
-            return '<p>' . __('No hay grupos disponibles.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('No hay grupos disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $grupos = array_slice($resultado['grupos'], 0, intval($atts['limite']));
@@ -3036,9 +3036,9 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
                 </div>
                 <div class="cg-grupo-card-footer">
                     <?php if ($grupo['es_miembro']): ?>
-                        <a href="<?php echo esc_url(home_url('/mi-portal/chat-grupos/mensajes/?grupo_id=' . intval($grupo['id']))); ?>" class="cg-btn cg-btn-primary"><?php _e('Abrir', 'flavor-chat-ia'); ?></a>
+                        <a href="<?php echo esc_url(home_url('/mi-portal/chat-grupos/mensajes/?grupo_id=' . intval($grupo['id']))); ?>" class="cg-btn cg-btn-primary"><?php _e('Abrir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                     <?php else: ?>
-                        <button class="cg-btn cg-btn-outline cg-btn-unirse" data-id="<?php echo $grupo['id']; ?>"><?php _e('Unirse', 'flavor-chat-ia'); ?></button>
+                        <button class="cg-btn cg-btn-outline cg-btn-unirse" data-id="<?php echo $grupo['id']; ?>"><?php _e('Unirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                     <?php endif; ?>
                 </div>
             </div>
@@ -3093,7 +3093,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         }
 
         if (empty($grupos_activos)) {
-            return '<p class="cg-no-grupos">' . __('No hay grupos activos disponibles.', 'flavor-chat-ia') . '</p>';
+            return '<p class="cg-no-grupos">' . __('No hay grupos activos disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $usuario_id = get_current_user_id();
@@ -3120,7 +3120,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
                         <span class="cg-grupo-icono"><?php echo esc_html(mb_substr($grupo->nombre, 0, 1)); ?></span>
                     <?php endif; ?>
                     <?php if ($grupo->mensajes_recientes > 0): ?>
-                        <span class="cg-badge-activo" title="<?php esc_attr_e('Actividad reciente', 'flavor-chat-ia'); ?>">
+                        <span class="cg-badge-activo" title="<?php esc_attr_e('Actividad reciente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-format-chat"></span>
                             <?php echo intval($grupo->mensajes_recientes); ?>
                         </span>
@@ -3140,11 +3140,11 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
                 </div>
                 <div class="cg-grupo-card-footer">
                     <?php if ($es_miembro): ?>
-                        <a href="<?php echo esc_url(home_url('/mi-portal/chat-grupos/mensajes/?grupo_id=' . intval($grupo->id))); ?>" class="cg-btn cg-btn-primary"><?php _e('Abrir', 'flavor-chat-ia'); ?></a>
+                        <a href="<?php echo esc_url(home_url('/mi-portal/chat-grupos/mensajes/?grupo_id=' . intval($grupo->id))); ?>" class="cg-btn cg-btn-primary"><?php _e('Abrir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                     <?php elseif (is_user_logged_in()): ?>
-                        <button class="cg-btn cg-btn-outline cg-btn-unirse" data-id="<?php echo intval($grupo->id); ?>"><?php _e('Unirse', 'flavor-chat-ia'); ?></button>
+                        <button class="cg-btn cg-btn-outline cg-btn-unirse" data-id="<?php echo intval($grupo->id); ?>"><?php _e('Unirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                     <?php else: ?>
-                        <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="cg-btn cg-btn-outline"><?php _e('Inicia sesión', 'flavor-chat-ia'); ?></a>
+                        <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="cg-btn cg-btn-outline"><?php _e('Inicia sesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                     <?php endif; ?>
                 </div>
             </div>
@@ -3159,20 +3159,20 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         ?>
         <div id="cg-explorar" class="cg-explorar">
             <div class="cg-explorar-header">
-                <h2><?php _e('Explorar Grupos', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Explorar Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <div class="cg-explorar-busqueda">
-                    <input type="text" id="cg-buscar-grupos" placeholder="<?php esc_attr_e('Buscar grupos...', 'flavor-chat-ia'); ?>">
+                    <input type="text" id="cg-buscar-grupos" placeholder="<?php esc_attr_e('Buscar grupos...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <select id="cg-filtro-categoria">
-                        <option value=""><?php _e('Todas las categorías', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('general', 'flavor-chat-ia'); ?>"><?php _e('General', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('deportes', 'flavor-chat-ia'); ?>"><?php _e('Deportes', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('cultura', 'flavor-chat-ia'); ?>"><?php _e('Cultura', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('vecinal', 'flavor-chat-ia'); ?>"><?php _e('Vecinal', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Todas las categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('general', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('General', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('deportes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Deportes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('cultura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Cultura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
             </div>
             <div id="cg-explorar-resultados" class="cg-grupos-grid columnas-3">
-                <div class="cg-loading"><?php _e('Cargando grupos...', 'flavor-chat-ia'); ?></div>
+                <div class="cg-loading"><?php _e('Cargando grupos...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
             <div class="cg-explorar-paginacion" id="cg-paginacion"></div>
         </div>
@@ -3182,55 +3182,55 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
 
     public function shortcode_crear_grupo($atts) {
         if (!is_user_logged_in()) {
-            return '<p>' . __('Inicia sesión para crear un grupo.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('Inicia sesión para crear un grupo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $settings = $this->get_settings();
         if (!$settings['permite_crear_grupos']) {
-            return '<p>' . __('La creación de grupos está deshabilitada.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('La creación de grupos está deshabilitada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
         ?>
         <div class="cg-crear-grupo-form">
-            <h3><?php _e('Crear Nuevo Grupo', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Crear Nuevo Grupo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <form id="cg-form-crear">
                 <div class="cg-form-field">
-                    <label for="cg-nombre"><?php _e('Nombre del grupo', 'flavor-chat-ia'); ?> *</label>
+                    <label for="cg-nombre"><?php _e('Nombre del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <input type="text" id="cg-nombre" name="nombre" required minlength="3" maxlength="100">
                 </div>
                 <div class="cg-form-field">
-                    <label for="cg-descripcion"><?php _e('Descripción', 'flavor-chat-ia'); ?></label>
+                    <label for="cg-descripcion"><?php _e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <textarea id="cg-descripcion" name="descripcion" rows="3" maxlength="500"></textarea>
                 </div>
                 <div class="cg-form-row">
                     <div class="cg-form-field">
-                        <label for="cg-tipo"><?php _e('Tipo', 'flavor-chat-ia'); ?></label>
+                        <label for="cg-tipo"><?php _e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select id="cg-tipo" name="tipo">
-                            <option value="<?php echo esc_attr__('publico', 'flavor-chat-ia'); ?>"><?php _e('Público', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('publico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php if ($settings['permite_grupos_privados']): ?>
-                            <option value="<?php echo esc_attr__('privado', 'flavor-chat-ia'); ?>"><?php _e('Privado', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('secreto', 'flavor-chat-ia'); ?>"><?php _e('Secreto', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('privado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Privado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="<?php echo esc_attr__('secreto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Secreto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php endif; ?>
                         </select>
                     </div>
                     <div class="cg-form-field">
-                        <label for="cg-categoria"><?php _e('Categoría', 'flavor-chat-ia'); ?></label>
+                        <label for="cg-categoria"><?php _e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select id="cg-categoria" name="categoria">
-                            <option value=""><?php _e('Sin categoría', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('general', 'flavor-chat-ia'); ?>"><?php _e('General', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('deportes', 'flavor-chat-ia'); ?>"><?php _e('Deportes', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('cultura', 'flavor-chat-ia'); ?>"><?php _e('Cultura', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('vecinal', 'flavor-chat-ia'); ?>"><?php _e('Vecinal', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php _e('Sin categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="<?php echo esc_attr__('general', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('General', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="<?php echo esc_attr__('deportes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Deportes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="<?php echo esc_attr__('cultura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Cultura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="<?php echo esc_attr__('vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
                 </div>
                 <div class="cg-form-field">
-                    <label for="cg-color"><?php _e('Color', 'flavor-chat-ia'); ?></label>
-                    <input type="color" id="cg-color" name="color" value="<?php echo esc_attr__('#2271b1', 'flavor-chat-ia'); ?>">
+                    <label for="cg-color"><?php _e('Color', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                    <input type="color" id="cg-color" name="color" value="<?php echo esc_attr__('#2271b1', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
                 <div class="cg-form-actions">
-                    <button type="submit" class="cg-btn cg-btn-primary"><?php _e('Crear Grupo', 'flavor-chat-ia'); ?></button>
+                    <button type="submit" class="cg-btn cg-btn-primary"><?php _e('Crear Grupo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                 </div>
             </form>
         </div>
@@ -3291,7 +3291,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         <div class="chat-grupos-sin-leer">
             <div class="sin-leer-badge">
                 <span class="badge-numero"><?php echo esc_html($total_sin_leer); ?></span>
-                <span class="badge-texto"><?php esc_html_e('mensajes sin leer', 'flavor-chat-ia'); ?></span>
+                <span class="badge-texto"><?php esc_html_e('mensajes sin leer', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
 
             <?php if ($atts['mostrar_lista'] === 'true'): ?>
@@ -3357,7 +3357,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
                 return esc_html($total);
 
             case 'texto':
-                return sprintf(esc_html__('%d mensajes sin leer', 'flavor-chat-ia'), $total);
+                return sprintf(esc_html__('%d mensajes sin leer', FLAVOR_PLATFORM_TEXT_DOMAIN), $total);
 
             case 'badge':
             default:
@@ -3369,7 +3369,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
 
     public function add_dashboard_tab($tabs) {
         $tabs['chat-grupos'] = [
-            'label' => __('Mis Grupos', 'flavor-chat-ia'),
+            'label' => __('Mis Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'format-chat',
             'callback' => [$this, 'render_dashboard_tab'],
             'orden' => 30,
@@ -3486,11 +3486,11 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         $timestamp = strtotime($fecha);
         $diff = time() - $timestamp;
 
-        if ($diff < 60) return __('ahora', 'flavor-chat-ia');
-        if ($diff < 3600) return sprintf(__('hace %d min', 'flavor-chat-ia'), floor($diff / 60));
-        if ($diff < 86400) return sprintf(__('hace %d h', 'flavor-chat-ia'), floor($diff / 3600));
-        if ($diff < 172800) return __('ayer', 'flavor-chat-ia');
-        if ($diff < 604800) return sprintf(__('hace %d días', 'flavor-chat-ia'), floor($diff / 86400));
+        if ($diff < 60) return __('ahora', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        if ($diff < 3600) return sprintf(__('hace %d min', FLAVOR_PLATFORM_TEXT_DOMAIN), floor($diff / 60));
+        if ($diff < 86400) return sprintf(__('hace %d h', FLAVOR_PLATFORM_TEXT_DOMAIN), floor($diff / 3600));
+        if ($diff < 172800) return __('ayer', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        if ($diff < 604800) return sprintf(__('hace %d días', FLAVOR_PLATFORM_TEXT_DOMAIN), floor($diff / 86400));
 
         return date_i18n('j M', $timestamp);
     }
@@ -3506,21 +3506,21 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     public function get_web_components() {
         return [
             'hero_chat_grupos' => [
-                'label' => __('Hero Chat Grupos', 'flavor-chat-ia'),
+                'label' => __('Hero Chat Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-format-chat',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Chat de Grupos', 'flavor-chat-ia')],
-                    'subtitulo' => ['type' => 'textarea', 'default' => __('Comunícate en tiempo real', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Chat de Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'subtitulo' => ['type' => 'textarea', 'default' => __('Comunícate en tiempo real', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'template' => 'chat-grupos/hero',
             ],
             'grupos_destacados' => [
-                'label' => __('Grupos Destacados', 'flavor-chat-ia'),
+                'label' => __('Grupos Destacados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-groups',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Grupos Populares', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Grupos Populares', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'columnas' => ['type' => 'select', 'options' => [2, 3, 4], 'default' => 3],
                     'limite' => ['type' => 'number', 'default' => 6],
                 ],
@@ -3577,25 +3577,25 @@ KNOWLEDGE;
     protected function get_admin_config() {
         return [
             'id' => 'chat_grupos',
-            'label' => __('Chat de Grupos', 'flavor-chat-ia'),
+            'label' => __('Chat de Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-format-chat',
             'capability' => 'manage_options',
             'categoria' => 'comunicacion',
             'paginas' => [
                 [
                     'slug' => 'flavor-chat-grupos-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_dashboard'],
                 ],
                 [
                     'slug' => 'flavor-chat-grupos-grupos',
-                    'titulo' => __('Grupos', 'flavor-chat-ia'),
+                    'titulo' => __('Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_grupos'],
                     'badge' => [$this, 'contar_grupos_pendientes'],
                 ],
                 [
                     'slug' => 'flavor-chat-grupos-moderacion',
-                    'titulo' => __('Moderación', 'flavor-chat-ia'),
+                    'titulo' => __('Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_moderacion'],
                     'badge' => [$this, 'contar_reportes_pendientes'],
                 ],
@@ -3617,57 +3617,57 @@ KNOWLEDGE;
             $acciones = $is_dashboard_viewer
                 ? [
                     [
-                        'label' => __('Ver en portal', 'flavor-chat-ia'),
+                        'label' => __('Ver en portal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'url' => home_url('/mi-portal/chat-grupos/'),
                         'class' => '',
                     ],
                 ]
                 : [
                     [
-                        'label' => __('Gestionar grupos', 'flavor-chat-ia'),
+                        'label' => __('Gestionar grupos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'url' => admin_url('admin.php?page=flavor-chat-grupos-listado'),
                         'class' => 'button-primary',
                     ],
                     [
-                        'label' => __('Moderación', 'flavor-chat-ia'),
+                        'label' => __('Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'url' => admin_url('admin.php?page=flavor-chat-grupos-moderacion'),
                         'class' => '',
                     ],
                 ];
-            $this->render_page_header(__('Dashboard de Chat Grupos', 'flavor-chat-ia'), $acciones);
+            $this->render_page_header(__('Dashboard de Chat Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN), $acciones);
             if ($is_dashboard_viewer) :
             ?>
-                <div class="notice notice-info"><p><?php esc_html_e('Vista resumida para gestor de grupos. La gestión detallada y la moderación siguen reservadas a administración.', 'flavor-chat-ia'); ?></p></div>
+                <div class="notice notice-info"><p><?php esc_html_e('Vista resumida para gestor de grupos. La gestión detallada y la moderación siguen reservadas a administración.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p></div>
             <?php endif; ?>
 
             <div class="flavor-stats-grid">
                 <div class="stat-card">
                     <span class="dashicons dashicons-groups"></span>
                     <div class="stat-value"><?php echo intval($estadisticas['total_grupos'] ?? 0); ?></div>
-                    <div class="stat-label"><?php esc_html_e('Grupos activos', 'flavor-chat-ia'); ?></div>
+                    <div class="stat-label"><?php esc_html_e('Grupos activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="stat-card">
                     <span class="dashicons dashicons-format-chat"></span>
                     <div class="stat-value"><?php echo intval($estadisticas['total_mensajes'] ?? 0); ?></div>
-                    <div class="stat-label"><?php esc_html_e('Mensajes', 'flavor-chat-ia'); ?></div>
+                    <div class="stat-label"><?php esc_html_e('Mensajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="stat-card">
                     <span class="dashicons dashicons-admin-users"></span>
                     <div class="stat-value"><?php echo intval($estadisticas['total_miembros'] ?? 0); ?></div>
-                    <div class="stat-label"><?php esc_html_e('Miembros', 'flavor-chat-ia'); ?></div>
+                    <div class="stat-label"><?php esc_html_e('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="stat-card">
                     <span class="dashicons dashicons-clock"></span>
                     <div class="stat-value"><?php echo intval($estadisticas['mensajes_hoy'] ?? 0); ?></div>
-                    <div class="stat-label"><?php esc_html_e('Mensajes hoy', 'flavor-chat-ia'); ?></div>
+                    <div class="stat-label"><?php esc_html_e('Mensajes hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
 
             <div class="flavor-admin-section">
-                <h2><?php esc_html_e('Resumen operativo', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Resumen operativo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <ul class="flavor-widget-stats">
-                    <li><span class="label"><?php esc_html_e('Grupos pendientes:', 'flavor-chat-ia'); ?></span> <span class="value"><?php echo intval($this->contar_grupos_pendientes()); ?></span></li>
-                    <li><span class="label"><?php esc_html_e('Reportes pendientes:', 'flavor-chat-ia'); ?></span> <span class="value"><?php echo intval($this->contar_reportes_pendientes()); ?></span></li>
+                    <li><span class="label"><?php esc_html_e('Grupos pendientes:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span> <span class="value"><?php echo intval($this->contar_grupos_pendientes()); ?></span></li>
+                    <li><span class="label"><?php esc_html_e('Reportes pendientes:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span> <span class="value"><?php echo intval($this->contar_reportes_pendientes()); ?></span></li>
                 </ul>
             </div>
         </div>
@@ -3810,7 +3810,7 @@ KNOWLEDGE;
         ));
 
         if (!$grupo) {
-            return ['success' => false, 'error' => __('Grupo no encontrado.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Grupo no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Verificar si ya es miembro
@@ -3820,12 +3820,12 @@ KNOWLEDGE;
         ));
 
         if ($membresia_existente) {
-            return ['success' => true, 'mensaje' => __('El usuario ya es miembro del grupo.', 'flavor-chat-ia')];
+            return ['success' => true, 'mensaje' => __('El usuario ya es miembro del grupo.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Verificar límite de miembros
         if ($grupo->miembros_count >= $grupo->max_miembros) {
-            return ['success' => false, 'error' => __('El grupo ha alcanzado el límite de miembros.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('El grupo ha alcanzado el límite de miembros.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Añadir como miembro
@@ -3836,7 +3836,7 @@ KNOWLEDGE;
         ]);
 
         if (!$insertado) {
-            return ['success' => false, 'error' => __('Error al agregar miembro.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Error al agregar miembro.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Actualizar contador
@@ -3854,7 +3854,7 @@ KNOWLEDGE;
             ]);
         }
 
-        return ['success' => true, 'mensaje' => __('Miembro agregado correctamente.', 'flavor-chat-ia')];
+        return ['success' => true, 'mensaje' => __('Miembro agregado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     /**
@@ -3878,7 +3878,7 @@ KNOWLEDGE;
         ));
 
         if (!$miembro) {
-            return ['success' => true, 'mensaje' => __('El usuario no es miembro del grupo.', 'flavor-chat-ia')];
+            return ['success' => true, 'mensaje' => __('El usuario no es miembro del grupo.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Eliminar membresía
@@ -3888,7 +3888,7 @@ KNOWLEDGE;
         ]);
 
         if (!$eliminado) {
-            return ['success' => false, 'error' => __('Error al quitar miembro.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Error al quitar miembro.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Actualizar contador
@@ -3906,7 +3906,7 @@ KNOWLEDGE;
             ]);
         }
 
-        return ['success' => true, 'mensaje' => __('Miembro eliminado correctamente.', 'flavor-chat-ia')];
+        return ['success' => true, 'mensaje' => __('Miembro eliminado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     /**
@@ -3938,7 +3938,7 @@ KNOWLEDGE;
             $estadisticas['mis_grupos'] = [
                 'icon' => 'dashicons-groups',
                 'valor' => $mis_grupos,
-                'label' => __('Mis grupos', 'flavor-chat-ia'),
+                'label' => __('Mis grupos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $mis_grupos > 0 ? 'purple' : 'gray',
             ];
 
@@ -3958,7 +3958,7 @@ KNOWLEDGE;
                     $estadisticas['sin_leer'] = [
                         'icon' => 'dashicons-email',
                         'valor' => $sin_leer,
-                        'label' => __('Sin leer', 'flavor-chat-ia'),
+                        'label' => __('Sin leer', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'color' => 'orange',
                     ];
                 }
@@ -3976,28 +3976,28 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Chat en Grupos', 'flavor-chat-ia'),
+                'title' => __('Chat en Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'chat-grupos',
-                'content' => '<h1>' . __('Chat en Grupos', 'flavor-chat-ia') . '</h1>
-<p>' . __('Únete a grupos de chat, comparte mensajes y conecta con comunidades de interés.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Chat en Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Únete a grupos de chat, comparte mensajes y conecta con comunidades de interés.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="chat_grupos" action="listar" columnas="3" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Crear Grupo', 'flavor-chat-ia'),
+                'title' => __('Crear Grupo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'crear-grupo',
-                'content' => '<h1>' . __('Crear Grupo de Chat', 'flavor-chat-ia') . '</h1>
-<p>' . __('Crea tu propio grupo de chat y reúne a personas con intereses comunes.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Crear Grupo de Chat', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Crea tu propio grupo de chat y reúne a personas con intereses comunes.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="chat_grupos" action="crear"]',
                 'parent' => 'chat-grupos',
             ],
             [
-                'title' => __('Mis Grupos', 'flavor-chat-ia'),
+                'title' => __('Mis Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mis-grupos',
-                'content' => '<h1>' . __('Mis Grupos', 'flavor-chat-ia') . '</h1>
-<p>' . __('Gestiona los grupos de chat a los que perteneces y los que has creado.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Mis Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Gestiona los grupos de chat a los que perteneces y los que has creado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="chat_grupos" action="mis_grupos" columnas="3" limite="12"]',
                 'parent' => 'chat-grupos',
@@ -4013,8 +4013,8 @@ KNOWLEDGE;
     public static function get_renderer_config(): array {
         return [
             'module'   => 'chat-grupos',
-            'title'    => __('Chat en Grupos', 'flavor-chat-ia'),
-            'subtitle' => __('Comunicación en tiempo real por grupos temáticos', 'flavor-chat-ia'),
+            'title'    => __('Chat en Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Comunicación en tiempo real por grupos temáticos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '💬',
             'color'    => 'primary', // Usa variable CSS --flavor-primary del tema
 
@@ -4024,25 +4024,25 @@ KNOWLEDGE;
             ],
 
             'fields' => [
-                'nombre'       => ['type' => 'text', 'label' => __('Nombre del grupo', 'flavor-chat-ia'), 'required' => true],
-                'descripcion'  => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
-                'tipo'         => ['type' => 'select', 'label' => __('Tipo', 'flavor-chat-ia'), 'options' => ['publico', 'privado', 'secreto']],
-                'categoria'    => ['type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia')],
-                'imagen'       => ['type' => 'image', 'label' => __('Imagen', 'flavor-chat-ia')],
-                'max_miembros' => ['type' => 'number', 'label' => __('Máx. miembros', 'flavor-chat-ia')],
+                'nombre'       => ['type' => 'text', 'label' => __('Nombre del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'descripcion'  => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'tipo'         => ['type' => 'select', 'label' => __('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['publico', 'privado', 'secreto']],
+                'categoria'    => ['type' => 'select', 'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'imagen'       => ['type' => 'image', 'label' => __('Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'max_miembros' => ['type' => 'number', 'label' => __('Máx. miembros', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ],
 
             'estados' => [
-                'activo'    => ['label' => __('Activo', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🟢'],
-                'pausado'   => ['label' => __('Pausado', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏸️'],
-                'archivado' => ['label' => __('Archivado', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '🗄️'],
+                'activo'    => ['label' => __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '🟢'],
+                'pausado'   => ['label' => __('Pausado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '⏸️'],
+                'archivado' => ['label' => __('Archivado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'gray', 'icon' => '🗄️'],
             ],
 
             'stats' => [
-                'grupos_activos'   => ['label' => __('Grupos activos', 'flavor-chat-ia'), 'icon' => '💬', 'color' => 'sky'],
-                'miembros_totales' => ['label' => __('Miembros', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'blue'],
-                'mensajes_hoy'     => ['label' => __('Mensajes hoy', 'flavor-chat-ia'), 'icon' => '📝', 'color' => 'green'],
-                'usuarios_online'  => ['label' => __('Online ahora', 'flavor-chat-ia'), 'icon' => '🟢', 'color' => 'emerald'],
+                'grupos_activos'   => ['label' => __('Grupos activos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '💬', 'color' => 'sky'],
+                'miembros_totales' => ['label' => __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👥', 'color' => 'blue'],
+                'mensajes_hoy'     => ['label' => __('Mensajes hoy', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📝', 'color' => 'green'],
+                'usuarios_online'  => ['label' => __('Online ahora', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🟢', 'color' => 'emerald'],
             ],
 
             'card' => [
@@ -4056,25 +4056,25 @@ KNOWLEDGE;
 
             'tabs' => [
                 'grupos' => [
-                    'label'   => __('Grupos', 'flavor-chat-ia'),
+                    'label'   => __('Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-groups',
                     'content' => 'template:_archive.php',
                     'public'  => true,
                 ],
                 'crear' => [
-                    'label'      => __('Crear grupo', 'flavor-chat-ia'),
+                    'label'      => __('Crear grupo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-plus-alt',
                     'content'    => 'shortcode:chat_grupos_crear',
                     'requires_login' => true,
                 ],
                 'mis-grupos' => [
-                    'label'      => __('Mis grupos', 'flavor-chat-ia'),
+                    'label'      => __('Mis grupos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-admin-users',
                     'content'    => 'shortcode:chat_grupos_mis_grupos',
                     'requires_login' => true,
                 ],
                 'mensajes' => [
-                    'label'      => __('Mensajes', 'flavor-chat-ia'),
+                    'label'      => __('Mensajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-email',
                     'content'    => 'shortcode:chat_grupos_mensajes',
                     'requires_login' => true,
@@ -4093,8 +4093,8 @@ KNOWLEDGE;
             'dashboard' => [
                 'widgets' => ['grupos_recientes', 'mensajes_sin_leer', 'usuarios_online', 'stats'],
                 'actions' => [
-                    'crear'  => ['label' => __('Crear grupo', 'flavor-chat-ia'), 'icon' => '➕', 'color' => 'sky'],
-                    'buscar' => ['label' => __('Buscar grupos', 'flavor-chat-ia'), 'icon' => '🔍', 'color' => 'blue'],
+                    'crear'  => ['label' => __('Crear grupo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '➕', 'color' => 'sky'],
+                    'buscar' => ['label' => __('Buscar grupos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🔍', 'color' => 'blue'],
                 ],
             ],
 
@@ -4135,11 +4135,11 @@ KNOWLEDGE;
         $tabla_mensajes = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
 
         $mensajes = [
-            'grupo_creado'  => sprintf(__('%s ha creado el grupo', 'flavor-chat-ia'), $datos['usuario_nombre'] ?? __('Un usuario', 'flavor-chat-ia')),
-            'usuario_unido' => sprintf(__('%s se ha unido al grupo', 'flavor-chat-ia'), $datos['usuario_nombre'] ?? __('Un usuario', 'flavor-chat-ia')),
-            'usuario_salio' => sprintf(__('%s ha salido del grupo', 'flavor-chat-ia'), $datos['usuario_nombre'] ?? __('Un usuario', 'flavor-chat-ia')),
-            'usuario_expulsado' => sprintf(__('%s ha sido expulsado del grupo', 'flavor-chat-ia'), $datos['usuario_nombre'] ?? __('Un usuario', 'flavor-chat-ia')),
-            'rol_cambiado'  => sprintf(__('%s ahora es %s', 'flavor-chat-ia'), $datos['usuario_nombre'] ?? __('Un usuario', 'flavor-chat-ia'), $datos['nuevo_rol'] ?? 'miembro'),
+            'grupo_creado'  => sprintf(__('%s ha creado el grupo', FLAVOR_PLATFORM_TEXT_DOMAIN), $datos['usuario_nombre'] ?? __('Un usuario', FLAVOR_PLATFORM_TEXT_DOMAIN)),
+            'usuario_unido' => sprintf(__('%s se ha unido al grupo', FLAVOR_PLATFORM_TEXT_DOMAIN), $datos['usuario_nombre'] ?? __('Un usuario', FLAVOR_PLATFORM_TEXT_DOMAIN)),
+            'usuario_salio' => sprintf(__('%s ha salido del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN), $datos['usuario_nombre'] ?? __('Un usuario', FLAVOR_PLATFORM_TEXT_DOMAIN)),
+            'usuario_expulsado' => sprintf(__('%s ha sido expulsado del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN), $datos['usuario_nombre'] ?? __('Un usuario', FLAVOR_PLATFORM_TEXT_DOMAIN)),
+            'rol_cambiado'  => sprintf(__('%s ahora es %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $datos['usuario_nombre'] ?? __('Un usuario', FLAVOR_PLATFORM_TEXT_DOMAIN), $datos['nuevo_rol'] ?? 'miembro'),
         ];
 
         $mensaje_texto = $mensajes[$tipo] ?? $tipo;
@@ -4211,7 +4211,7 @@ KNOWLEDGE;
         $usuario_id = get_current_user_id();
 
         if (!$grupo_id || !$usuario_id) {
-            wp_send_json(['success' => false, 'error' => __('Datos incompletos', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -4226,7 +4226,7 @@ KNOWLEDGE;
         ));
 
         if (!$miembro) {
-            wp_send_json(['success' => false, 'error' => __('No eres miembro de este grupo', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('No eres miembro de este grupo', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -4238,7 +4238,7 @@ KNOWLEDGE;
             ));
 
             if (!$otros_admins) {
-                wp_send_json(['success' => false, 'error' => __('Debes asignar otro administrador antes de salir', 'flavor-chat-ia')]);
+                wp_send_json(['success' => false, 'error' => __('Debes asignar otro administrador antes de salir', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
                 return;
             }
         }
@@ -4273,19 +4273,19 @@ KNOWLEDGE;
         $adjuntos_raw = isset($_POST['adjuntos']) ? json_decode(stripslashes($_POST['adjuntos']), true) : [];
 
         if (!$grupo_id || empty($mensaje_texto)) {
-            wp_send_json(['success' => false, 'error' => __('Datos incompletos', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
         // Limitar longitud del mensaje
         if (mb_strlen($mensaje_texto) > 5000) {
-            wp_send_json(['success' => false, 'error' => __('El mensaje es demasiado largo (máximo 5000 caracteres)', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('El mensaje es demasiado largo (máximo 5000 caracteres)', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json(['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -4293,7 +4293,7 @@ KNOWLEDGE;
         $rate_limit_key = "cg_rate_{$usuario_id}_{$grupo_id}";
         $mensajes_recientes = get_transient($rate_limit_key) ?: 0;
         if ($mensajes_recientes >= 30) {
-            wp_send_json(['success' => false, 'error' => __('Estás enviando mensajes muy rápido. Espera un momento.', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Estás enviando mensajes muy rápido. Espera un momento.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
         set_transient($rate_limit_key, $mensajes_recientes + 1, 60);
@@ -4307,7 +4307,7 @@ KNOWLEDGE;
         ));
 
         if (!$es_miembro) {
-            wp_send_json(['success' => false, 'error' => __('No eres miembro de este grupo', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('No eres miembro de este grupo', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -4351,7 +4351,7 @@ KNOWLEDGE;
         ]);
 
         if (!$insertado) {
-            wp_send_json(['success' => false, 'error' => __('Error al guardar mensaje', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Error al guardar mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -4371,7 +4371,7 @@ KNOWLEDGE;
             'mensaje'      => $mensaje_procesado['texto'],
             'mensaje_html' => $mensaje_procesado['html'],
             'fecha'        => current_time('mysql'),
-            'fecha_humana' => __('ahora', 'flavor-chat-ia'),
+            'fecha_humana' => __('ahora', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'es_mio'       => true,
             'responde_a'   => $responde_a ?: null,
             'adjuntos'     => $adjuntos,
@@ -4391,7 +4391,7 @@ KNOWLEDGE;
         $antes_de = intval($_GET['antes_de'] ?? 0);
 
         if (!$grupo_id) {
-            wp_send_json(['success' => false, 'error' => __('Grupo no especificado', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Grupo no especificado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -4408,7 +4408,7 @@ KNOWLEDGE;
         ));
 
         if (!$grupo || $grupo->estado !== 'activo') {
-            wp_send_json(['success' => false, 'error' => __('Grupo no encontrado', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Grupo no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -4423,7 +4423,7 @@ KNOWLEDGE;
 
         // Grupos privados/secretos requieren membresía
         if (in_array($grupo->tipo, ['privado', 'secreto'], true) && !$es_miembro) {
-            wp_send_json(['success' => false, 'error' => __('No tienes acceso a este grupo', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('No tienes acceso a este grupo', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -4469,7 +4469,7 @@ KNOWLEDGE;
                 'id'           => $msg->id,
                 'grupo_id'     => $msg->grupo_id,
                 'usuario_id'   => $msg->usuario_id,
-                'autor_nombre' => $msg->autor_nombre ?: __('Usuario', 'flavor-chat-ia'),
+                'autor_nombre' => $msg->autor_nombre ?: __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'autor_avatar' => get_avatar_url($msg->usuario_id, ['size' => 48]),
                 'mensaje'      => $msg->mensaje,
                 'mensaje_html' => $msg->mensaje_html ?: esc_html($msg->mensaje),
@@ -4568,7 +4568,7 @@ KNOWLEDGE;
         $usuario_id = get_current_user_id();
 
         if (!$mensaje_id || !$emoji || !$usuario_id) {
-            wp_send_json(['success' => false, 'error' => __('Datos incompletos', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -4608,7 +4608,7 @@ KNOWLEDGE;
         $usuario_id = get_current_user_id();
 
         if (!$mensaje_id || !$usuario_id) {
-            wp_send_json(['success' => false, 'error' => __('Datos incompletos', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -4622,7 +4622,7 @@ KNOWLEDGE;
         ));
 
         if (!$mensaje) {
-            wp_send_json(['success' => false, 'error' => __('Mensaje no encontrado', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Mensaje no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -4631,7 +4631,7 @@ KNOWLEDGE;
         $es_admin = $this->es_admin_grupo($mensaje->grupo_id, $usuario_id);
 
         if (!$es_autor && !$es_admin) {
-            wp_send_json(['success' => false, 'error' => __('No tienes permiso para eliminar este mensaje', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('No tienes permiso para eliminar este mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -4735,13 +4735,13 @@ KNOWLEDGE;
         $usuario_id = get_current_user_id();
 
         if (!$grupo_id || strlen($query) < 2) {
-            wp_send_json(['success' => false, 'error' => __('Búsqueda muy corta', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Búsqueda muy corta', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
         // Requiere autenticación para buscar
         if (!$usuario_id) {
-            wp_send_json(['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -4756,7 +4756,7 @@ KNOWLEDGE;
         ));
 
         if (!$es_miembro) {
-            wp_send_json(['success' => false, 'error' => __('No tienes acceso a este grupo', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('No tienes acceso a este grupo', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -4790,7 +4790,7 @@ KNOWLEDGE;
         check_ajax_referer('flavor_chat_grupos_nonce', 'nonce');
 
         if (empty($_FILES['archivo'])) {
-            wp_send_json(['success' => false, 'data' => __('No se recibió ningún archivo', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'data' => __('No se recibió ningún archivo', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -4798,7 +4798,7 @@ KNOWLEDGE;
         $usuario_id = get_current_user_id();
 
         if (!$grupo_id || !$usuario_id) {
-            wp_send_json(['success' => false, 'data' => __('Datos incompletos', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'data' => __('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -4811,21 +4811,21 @@ KNOWLEDGE;
         ));
 
         if (!$es_miembro) {
-            wp_send_json(['success' => false, 'data' => __('No eres miembro del grupo', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'data' => __('No eres miembro del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
         // Verificar configuración
         $settings = $this->get_settings();
         if (!$settings['permite_archivos']) {
-            wp_send_json(['success' => false, 'data' => __('No se permiten archivos en este grupo', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'data' => __('No se permiten archivos en este grupo', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
         // Verificar tamaño
         $max_bytes = ($settings['max_archivo_mb'] ?? 10) * 1024 * 1024;
         if ($_FILES['archivo']['size'] > $max_bytes) {
-            wp_send_json(['success' => false, 'data' => sprintf(__('El archivo excede el límite de %d MB', 'flavor-chat-ia'), $settings['max_archivo_mb'])]);
+            wp_send_json(['success' => false, 'data' => sprintf(__('El archivo excede el límite de %d MB', FLAVOR_PLATFORM_TEXT_DOMAIN), $settings['max_archivo_mb'])]);
             return;
         }
 
@@ -4859,7 +4859,7 @@ KNOWLEDGE;
      */
     public function ajax_invitar() {
         check_ajax_referer('flavor_chat_grupos_nonce', 'nonce');
-        wp_send_json(['success' => false, 'error' => __('Función no implementada', 'flavor-chat-ia')]);
+        wp_send_json(['success' => false, 'error' => __('Función no implementada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -4867,7 +4867,7 @@ KNOWLEDGE;
      */
     public function ajax_expulsar() {
         check_ajax_referer('flavor_chat_grupos_nonce', 'nonce');
-        wp_send_json(['success' => false, 'error' => __('Función no implementada', 'flavor-chat-ia')]);
+        wp_send_json(['success' => false, 'error' => __('Función no implementada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -4875,7 +4875,7 @@ KNOWLEDGE;
      */
     public function ajax_cambiar_rol() {
         check_ajax_referer('flavor_chat_grupos_nonce', 'nonce');
-        wp_send_json(['success' => false, 'error' => __('Función no implementada', 'flavor-chat-ia')]);
+        wp_send_json(['success' => false, 'error' => __('Función no implementada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -4883,7 +4883,7 @@ KNOWLEDGE;
      */
     public function ajax_actualizar_config() {
         check_ajax_referer('flavor_chat_grupos_nonce', 'nonce');
-        wp_send_json(['success' => false, 'error' => __('Función no implementada', 'flavor-chat-ia')]);
+        wp_send_json(['success' => false, 'error' => __('Función no implementada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -4891,7 +4891,7 @@ KNOWLEDGE;
      */
     public function ajax_crear_encuesta() {
         check_ajax_referer('flavor_chat_grupos_nonce', 'nonce');
-        wp_send_json(['success' => false, 'error' => __('Función no implementada', 'flavor-chat-ia')]);
+        wp_send_json(['success' => false, 'error' => __('Función no implementada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -4899,7 +4899,7 @@ KNOWLEDGE;
      */
     public function ajax_votar_encuesta() {
         check_ajax_referer('flavor_chat_grupos_nonce', 'nonce');
-        wp_send_json(['success' => false, 'error' => __('Función no implementada', 'flavor-chat-ia')]);
+        wp_send_json(['success' => false, 'error' => __('Función no implementada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -4913,7 +4913,7 @@ KNOWLEDGE;
         $usuario_id = get_current_user_id();
 
         if (!$mensaje_id || empty($nuevo_texto) || !$usuario_id) {
-            wp_send_json(['success' => false, 'error' => __('Datos incompletos', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -4927,7 +4927,7 @@ KNOWLEDGE;
         ));
 
         if (!$mensaje) {
-            wp_send_json(['success' => false, 'error' => __('No puedes editar este mensaje', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('No puedes editar este mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -4948,6 +4948,6 @@ KNOWLEDGE;
      */
     public function ajax_fijar_mensaje() {
         check_ajax_referer('flavor_chat_grupos_nonce', 'nonce');
-        wp_send_json(['success' => false, 'error' => __('Función no implementada', 'flavor-chat-ia')]);
+        wp_send_json(['success' => false, 'error' => __('Función no implementada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 }

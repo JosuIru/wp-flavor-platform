@@ -285,7 +285,7 @@ class Flavor_VBP_AI_Content {
         if ( ! in_array( $action, $valid_actions, true ) ) {
             return new WP_Error(
                 'invalid_action',
-                __( 'Acción no válida', 'flavor-chat-ia' ),
+                __( 'Acción no válida', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 400 )
             );
         }
@@ -375,23 +375,23 @@ class Flavor_VBP_AI_Content {
                 'industries'    => $this->prompts->get_industries(),
                 'tones'         => $this->prompts->get_tones(),
                 'actions'       => array(
-                    'rewrite'    => __( 'Reescribir (más persuasivo)', 'flavor-chat-ia' ),
-                    'shorten'    => __( 'Acortar', 'flavor-chat-ia' ),
-                    'expand'     => __( 'Expandir', 'flavor-chat-ia' ),
-                    'formal'     => __( 'Hacer más formal', 'flavor-chat-ia' ),
-                    'casual'     => __( 'Hacer más casual', 'flavor-chat-ia' ),
-                    'persuasive' => __( 'Hacer más persuasivo', 'flavor-chat-ia' ),
+                    'rewrite'    => __( 'Reescribir (más persuasivo)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'shorten'    => __( 'Acortar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'expand'     => __( 'Expandir', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'formal'     => __( 'Hacer más formal', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'casual'     => __( 'Hacer más casual', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'persuasive' => __( 'Hacer más persuasivo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 'languages'     => array(
-                    'es' => __( 'Español', 'flavor-chat-ia' ),
-                    'en' => __( 'Inglés', 'flavor-chat-ia' ),
-                    'fr' => __( 'Francés', 'flavor-chat-ia' ),
-                    'de' => __( 'Alemán', 'flavor-chat-ia' ),
-                    'it' => __( 'Italiano', 'flavor-chat-ia' ),
-                    'pt' => __( 'Portugués', 'flavor-chat-ia' ),
-                    'ca' => __( 'Catalán', 'flavor-chat-ia' ),
-                    'eu' => __( 'Euskera', 'flavor-chat-ia' ),
-                    'gl' => __( 'Gallego', 'flavor-chat-ia' ),
+                    'es' => __( 'Español', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'en' => __( 'Inglés', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'fr' => __( 'Francés', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'de' => __( 'Alemán', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'it' => __( 'Italiano', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'pt' => __( 'Portugués', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'ca' => __( 'Catalán', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'eu' => __( 'Euskera', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'gl' => __( 'Gallego', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
             ),
             200
@@ -437,7 +437,7 @@ class Flavor_VBP_AI_Content {
             default:
                 return new WP_Error(
                     'invalid_type',
-                    __( 'Tipo de contenido no válido', 'flavor-chat-ia' ),
+                    __( 'Tipo de contenido no válido', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     array( 'status' => 400 )
                 );
         }
@@ -454,7 +454,7 @@ class Flavor_VBP_AI_Content {
         if ( ! class_exists( 'Flavor_Engine_Manager' ) ) {
             return new WP_Error(
                 'ai_not_available',
-                __( 'El motor de IA no está disponible', 'flavor-chat-ia' ),
+                __( 'El motor de IA no está disponible', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 500 )
             );
         }
@@ -474,7 +474,7 @@ class Flavor_VBP_AI_Content {
         if ( ! $response['success'] ) {
             return new WP_Error(
                 'ai_error',
-                $response['error'] ?? __( 'Error al generar contenido', 'flavor-chat-ia' ),
+                $response['error'] ?? __( 'Error al generar contenido', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 500 )
             );
         }
@@ -552,8 +552,8 @@ class Flavor_VBP_AI_Content {
         $status = array(
             'available' => $available,
             'message'   => $available
-                ? __( 'IA configurada y lista', 'flavor-chat-ia' )
-                : __( 'IA no configurada. Configura un proveedor en Ajustes > Chat IA', 'flavor-chat-ia' ),
+                ? __( 'IA configurada y lista', FLAVOR_PLATFORM_TEXT_DOMAIN )
+                : __( 'IA no configurada. Configura un proveedor en Ajustes > Chat IA', FLAVOR_PLATFORM_TEXT_DOMAIN ),
         );
 
         if ( $available && class_exists( 'Flavor_Engine_Manager' ) ) {
@@ -582,7 +582,7 @@ class Flavor_VBP_AI_Content {
         if ( ! in_array( $page_type, $valid_page_types, true ) ) {
             return new WP_Error(
                 'invalid_page_type',
-                __( 'Tipo de página no válido', 'flavor-chat-ia' ),
+                __( 'Tipo de página no válido', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 400 )
             );
         }
@@ -648,7 +648,7 @@ class Flavor_VBP_AI_Content {
 
         return new WP_Error(
             'parse_error',
-            __( 'Error al procesar la respuesta de IA', 'flavor-chat-ia' ),
+            __( 'Error al procesar la respuesta de IA', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             array( 'status' => 500 )
         );
     }

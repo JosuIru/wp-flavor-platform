@@ -37,7 +37,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
 
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Contabilidad no estan creadas. Se crearan automaticamente al activar.', 'flavor-chat-ia');
+            return __('Las tablas de Contabilidad no estan creadas. Se crearan automaticamente al activar.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         return '';
@@ -95,29 +95,29 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'contabilidad',
-            'label' => __('Contabilidad', 'flavor-chat-ia'),
+            'label' => __('Contabilidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-chart-pie',
             'capability' => 'manage_options',
             'categoria' => 'economia',
             'paginas' => [
                 [
                     'slug' => 'contabilidad-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_dashboard'],
                 ],
                 [
                     'slug' => 'contabilidad-movimientos',
-                    'titulo' => __('Movimientos', 'flavor-chat-ia'),
+                    'titulo' => __('Movimientos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_movimientos'],
                 ],
                 [
                     'slug' => 'contabilidad-informes',
-                    'titulo' => __('Informes', 'flavor-chat-ia'),
+                    'titulo' => __('Informes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_informes'],
                 ],
                 [
                     'slug' => 'contabilidad-config',
-                    'titulo' => __('Configuracion', 'flavor-chat-ia'),
+                    'titulo' => __('Configuracion', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_config'],
                 ],
             ],
@@ -314,7 +314,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
             'tipo_movimiento' => 'ingreso',
             // Evita doble contabilizacion: el ingreso confirmado se reconoce en el cobro.
             'estado' => 'borrador',
-            'concepto' => sprintf(__('Factura emitida %s', 'flavor-chat-ia'), (string) $factura->numero_factura),
+            'concepto' => sprintf(__('Factura emitida %s', FLAVOR_PLATFORM_TEXT_DOMAIN), (string) $factura->numero_factura),
             'categoria' => 'ventas',
             'modulo_origen' => 'facturas',
             'entidad_tipo' => 'factura',
@@ -353,7 +353,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
             'fecha_movimiento' => current_time('Y-m-d'),
             'tipo_movimiento' => 'ingreso',
             'estado' => 'confirmado',
-            'concepto' => sprintf(__('Cobro factura %s', 'flavor-chat-ia'), (string) $factura->numero_factura),
+            'concepto' => sprintf(__('Cobro factura %s', FLAVOR_PLATFORM_TEXT_DOMAIN), (string) $factura->numero_factura),
             'categoria' => 'cobros',
             'subcategoria' => 'facturas',
             'modulo_origen' => 'facturas',
@@ -441,10 +441,10 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
             $fecha = date('Y-m-d', strtotime((string) $transaccion->fecha_completado));
         }
 
-        $concepto = __('Cobro de cuota de socio', 'flavor-chat-ia');
+        $concepto = __('Cobro de cuota de socio', FLAVOR_PLATFORM_TEXT_DOMAIN);
         if (!empty($cuota->concepto)) {
             $concepto = sprintf(
-                __('Cobro cuota socio: %s', 'flavor-chat-ia'),
+                __('Cobro cuota socio: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 (string) $cuota->concepto
             );
         }
@@ -512,7 +512,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
             'fecha_movimiento' => $fecha,
             'tipo_movimiento' => 'ingreso',
             'estado' => 'confirmado',
-            'concepto' => sprintf(__('Cobro reserva #%d', 'flavor-chat-ia'), absint($reserva_id)),
+            'concepto' => sprintf(__('Cobro reserva #%d', FLAVOR_PLATFORM_TEXT_DOMAIN), absint($reserva_id)),
             'categoria' => 'servicios',
             'subcategoria' => 'reservas',
             'modulo_origen' => 'reservas',
@@ -558,7 +558,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
             'fecha_movimiento' => $fecha,
             'tipo_movimiento' => 'gasto',
             'estado' => 'confirmado',
-            'concepto' => sprintf(__('Devolución reserva #%d', 'flavor-chat-ia'), absint($reserva_id)),
+            'concepto' => sprintf(__('Devolución reserva #%d', FLAVOR_PLATFORM_TEXT_DOMAIN), absint($reserva_id)),
             'categoria' => 'servicios',
             'subcategoria' => 'devoluciones_reservas',
             'modulo_origen' => 'reservas',
@@ -619,7 +619,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
             'fecha_movimiento' => current_time('Y-m-d'),
             'tipo_movimiento' => 'ingreso',
             'estado' => 'confirmado',
-            'concepto' => sprintf(__('Venta marketplace: %s', 'flavor-chat-ia'), $titulo ?: ('#' . $anuncio_id)),
+            'concepto' => sprintf(__('Venta marketplace: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $titulo ?: ('#' . $anuncio_id)),
             'categoria' => 'ventas',
             'subcategoria' => 'marketplace',
             'modulo_origen' => 'marketplace',
@@ -684,7 +684,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
             'fecha_movimiento' => current_time('Y-m-d'),
             'tipo_movimiento' => 'ingreso',
             'estado' => 'confirmado',
-            'concepto' => sprintf(__('Aportación crowdfunding proyecto #%d', 'flavor-chat-ia'), absint($proyecto_id)),
+            'concepto' => sprintf(__('Aportación crowdfunding proyecto #%d', FLAVOR_PLATFORM_TEXT_DOMAIN), absint($proyecto_id)),
             'categoria' => 'donaciones',
             'subcategoria' => 'crowdfunding',
             'modulo_origen' => 'crowdfunding',
@@ -727,7 +727,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
             'fecha_movimiento' => current_time('Y-m-d'),
             'tipo_movimiento' => 'gasto',
             'estado' => 'confirmado',
-            'concepto' => sprintf(__('Coste adquisición cliente: %s', 'flavor-chat-ia'), $nombre ?: ('#' . absint($cliente_id))),
+            'concepto' => sprintf(__('Coste adquisición cliente: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $nombre ?: ('#' . absint($cliente_id))),
             'categoria' => 'marketing',
             'subcategoria' => 'captacion_clientes',
             'modulo_origen' => 'clientes',
@@ -788,7 +788,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
             'fecha_movimiento' => current_time('Y-m-d'),
             'tipo_movimiento' => 'gasto',
             'estado' => 'confirmado',
-            'concepto' => sprintf(__('Coste envío campaña email: %s', 'flavor-chat-ia'), sanitize_text_field((string) ($campaign['nombre'] ?? ('#' . absint($campaign_id))))),
+            'concepto' => sprintf(__('Coste envío campaña email: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), sanitize_text_field((string) ($campaign['nombre'] ?? ('#' . absint($campaign_id))))),
             'categoria' => 'marketing',
             'subcategoria' => 'email_marketing',
             'modulo_origen' => 'email_marketing',
@@ -828,7 +828,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
             'fecha_movimiento' => current_time('Y-m-d'),
             'tipo_movimiento' => 'gasto',
             'estado' => 'confirmado',
-            'concepto' => sprintf(__('Coste captación suscriptor: %s', 'flavor-chat-ia'), $nombre ?: ('#' . absint($subscriber_id))),
+            'concepto' => sprintf(__('Coste captación suscriptor: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $nombre ?: ('#' . absint($subscriber_id))),
             'categoria' => 'marketing',
             'subcategoria' => 'captacion_suscriptores',
             'modulo_origen' => 'email_marketing',
@@ -877,18 +877,18 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                 <div class="dm-header-content">
                     <h1 class="dm-title">
                         <span class="dashicons dashicons-chart-pie"></span>
-                        <?php esc_html_e('Dashboard de Contabilidad', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Dashboard de Contabilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h1>
-                    <p class="dm-subtitle"><?php esc_html_e('Control financiero integrado de todos los módulos', 'flavor-chat-ia'); ?></p>
+                    <p class="dm-subtitle"><?php esc_html_e('Control financiero integrado de todos los módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <div class="dm-header-actions">
                     <a href="<?php echo esc_url(admin_url('admin.php?page=contabilidad-movimientos&action=nuevo&tipo=ingreso')); ?>" class="button">
                         <span class="dashicons dashicons-plus-alt"></span>
-                        <?php esc_html_e('Nuevo ingreso', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Nuevo ingreso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=contabilidad-movimientos&action=nuevo&tipo=gasto')); ?>" class="button button-primary">
                         <span class="dashicons dashicons-minus"></span>
-                        <?php esc_html_e('Nuevo gasto', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Nuevo gasto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </div>
@@ -899,18 +899,18 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                     <input type="hidden" name="page" value="contabilidad-dashboard" />
 
                     <div style="display:flex;flex-direction:column;gap:4px;">
-                        <label style="font-size:11px;color:#666;font-weight:500;"><?php esc_html_e('Periodo', 'flavor-chat-ia'); ?></label>
+                        <label style="font-size:11px;color:#666;font-weight:500;"><?php esc_html_e('Periodo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select name="periodo" style="min-width:120px;">
-                            <option value="mes" <?php selected($periodo, 'mes'); ?>><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></option>
-                            <option value="trimestre" <?php selected($periodo, 'trimestre'); ?>><?php esc_html_e('Este trimestre', 'flavor-chat-ia'); ?></option>
-                            <option value="ano" <?php selected($periodo, 'ano'); ?>><?php esc_html_e('Este año', 'flavor-chat-ia'); ?></option>
+                            <option value="mes" <?php selected($periodo, 'mes'); ?>><?php esc_html_e('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="trimestre" <?php selected($periodo, 'trimestre'); ?>><?php esc_html_e('Este trimestre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="ano" <?php selected($periodo, 'ano'); ?>><?php esc_html_e('Este año', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
 
                     <div style="display:flex;flex-direction:column;gap:4px;">
-                        <label style="font-size:11px;color:#666;font-weight:500;"><?php esc_html_e('Módulo', 'flavor-chat-ia'); ?></label>
+                        <label style="font-size:11px;color:#666;font-weight:500;"><?php esc_html_e('Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select name="modulo_origen" style="min-width:150px;">
-                            <option value=""><?php esc_html_e('Todos los módulos', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php esc_html_e('Todos los módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php foreach ($modulos_disponibles as $mod): ?>
                                 <option value="<?php echo esc_attr($mod); ?>" <?php selected($modulo_origen, $mod); ?>><?php echo esc_html(ucfirst($mod)); ?></option>
                             <?php endforeach; ?>
@@ -919,12 +919,12 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
 
                     <button type="submit" class="button" style="margin-top:18px;">
                         <span class="dashicons dashicons-filter" style="vertical-align:middle;"></span>
-                        <?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </form>
 
                 <div style="margin-left:auto;display:flex;gap:8px;">
-                    <a href="<?php echo esc_url(admin_url('admin.php?page=contabilidad-movimientos&export_csv=1')); ?>" class="button" title="<?php esc_attr_e('Exportar CSV', 'flavor-chat-ia'); ?>">
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=contabilidad-movimientos&export_csv=1')); ?>" class="button" title="<?php esc_attr_e('Exportar CSV', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-download"></span>
                         CSV
                     </a>
@@ -934,15 +934,15 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
             <?php if ($modulo_origen !== ''): ?>
             <div style="background:#e0f2fe;padding:10px 16px;border-radius:6px;margin-bottom:20px;display:flex;align-items:center;gap:8px;">
                 <span class="dashicons dashicons-filter" style="color:#0369a1;"></span>
-                <span><?php printf(esc_html__('Filtrando por módulo: %s', 'flavor-chat-ia'), '<strong>' . esc_html(ucfirst($modulo_origen)) . '</strong>'); ?></span>
-                <a href="<?php echo esc_url(admin_url('admin.php?page=contabilidad-dashboard&periodo=' . $periodo)); ?>" style="margin-left:auto;color:#0369a1;"><?php esc_html_e('Quitar filtro', 'flavor-chat-ia'); ?></a>
+                <span><?php printf(esc_html__('Filtrando por módulo: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), '<strong>' . esc_html(ucfirst($modulo_origen)) . '</strong>'); ?></span>
+                <a href="<?php echo esc_url(admin_url('admin.php?page=contabilidad-dashboard&periodo=' . $periodo)); ?>" style="margin-left:auto;color:#0369a1;"><?php esc_html_e('Quitar filtro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
             </div>
             <?php endif; ?>
 
             <!-- KPIs principales -->
             <div class="dm-kpi-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px;">
                 <div class="dm-kpi-card" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;padding:20px;border-radius:12px;">
-                    <div style="font-size:12px;opacity:0.9;margin-bottom:4px;"><?php esc_html_e('Ingresos', 'flavor-chat-ia'); ?></div>
+                    <div style="font-size:12px;opacity:0.9;margin-bottom:4px;"><?php esc_html_e('Ingresos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     <div style="font-size:28px;font-weight:700;"><?php echo esc_html($this->format_money($actual['ingresos'])); ?></div>
                     <?php $variacion_ing = $anterior['ingresos'] > 0 ? (($actual['ingresos'] - $anterior['ingresos']) / $anterior['ingresos'] * 100) : 0; ?>
                     <div style="font-size:12px;margin-top:8px;opacity:0.9;">
@@ -951,7 +951,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                 </div>
 
                 <div class="dm-kpi-card" style="background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;padding:20px;border-radius:12px;">
-                    <div style="font-size:12px;opacity:0.9;margin-bottom:4px;"><?php esc_html_e('Gastos', 'flavor-chat-ia'); ?></div>
+                    <div style="font-size:12px;opacity:0.9;margin-bottom:4px;"><?php esc_html_e('Gastos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     <div style="font-size:28px;font-weight:700;"><?php echo esc_html($this->format_money($actual['gastos'])); ?></div>
                     <?php $variacion_gas = $anterior['gastos'] > 0 ? (($actual['gastos'] - $anterior['gastos']) / $anterior['gastos'] * 100) : 0; ?>
                     <div style="font-size:12px;margin-top:8px;opacity:0.9;">
@@ -960,7 +960,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                 </div>
 
                 <div class="dm-kpi-card" style="background:linear-gradient(135deg,<?php echo $actual['resultado'] >= 0 ? '#3b82f6,#2563eb' : '#f97316,#ea580c'; ?>);color:#fff;padding:20px;border-radius:12px;">
-                    <div style="font-size:12px;opacity:0.9;margin-bottom:4px;"><?php esc_html_e('Resultado neto', 'flavor-chat-ia'); ?></div>
+                    <div style="font-size:12px;opacity:0.9;margin-bottom:4px;"><?php esc_html_e('Resultado neto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     <div style="font-size:28px;font-weight:700;"><?php echo esc_html($this->format_money($actual['resultado'])); ?></div>
                     <div style="font-size:12px;margin-top:8px;opacity:0.9;">
                         <?php echo $actual['resultado'] >= 0 ? '✓ Beneficio' : '⚠ Pérdida'; ?>
@@ -968,7 +968,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                 </div>
 
                 <div class="dm-kpi-card" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;padding:20px;border-radius:12px;">
-                    <div style="font-size:12px;opacity:0.9;margin-bottom:4px;"><?php esc_html_e('IVA neto a liquidar', 'flavor-chat-ia'); ?></div>
+                    <div style="font-size:12px;opacity:0.9;margin-bottom:4px;"><?php esc_html_e('IVA neto a liquidar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     <div style="font-size:28px;font-weight:700;"><?php echo esc_html($this->format_money($actual['iva_repercutido'] - $actual['iva_soportado'])); ?></div>
                     <div style="font-size:12px;margin-top:8px;opacity:0.9;">
                         Rep: <?php echo esc_html($this->format_money($actual['iva_repercutido'])); ?> | Sop: <?php echo esc_html($this->format_money($actual['iva_soportado'])); ?>
@@ -980,7 +980,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
             <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-bottom:24px;">
                 <!-- Gráfico de evolución -->
                 <div style="background:#fff;padding:20px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-                    <h3 style="margin:0 0 16px;font-size:16px;font-weight:600;"><?php esc_html_e('Evolución últimos 12 meses', 'flavor-chat-ia'); ?></h3>
+                    <h3 style="margin:0 0 16px;font-size:16px;font-weight:600;"><?php esc_html_e('Evolución últimos 12 meses', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <div style="position:relative;height:250px;width:100%;">
                         <canvas id="chart-evolucion"></canvas>
                     </div>
@@ -988,15 +988,15 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
 
                 <!-- Desglose por módulo -->
                 <div style="background:#fff;padding:20px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-                    <h3 style="margin:0 0 16px;font-size:16px;font-weight:600;"><?php esc_html_e('Desglose por módulo', 'flavor-chat-ia'); ?></h3>
+                    <h3 style="margin:0 0 16px;font-size:16px;font-weight:600;"><?php esc_html_e('Desglose por módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <?php if (!empty($desglose_modulo)): ?>
                     <table class="widefat" style="border:none;">
                         <thead>
                             <tr>
-                                <th style="padding:8px 12px;"><?php esc_html_e('Módulo', 'flavor-chat-ia'); ?></th>
-                                <th style="padding:8px 12px;text-align:right;"><?php esc_html_e('Ingresos', 'flavor-chat-ia'); ?></th>
-                                <th style="padding:8px 12px;text-align:right;"><?php esc_html_e('Gastos', 'flavor-chat-ia'); ?></th>
-                                <th style="padding:8px 12px;text-align:right;"><?php esc_html_e('Neto', 'flavor-chat-ia'); ?></th>
+                                <th style="padding:8px 12px;"><?php esc_html_e('Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th style="padding:8px 12px;text-align:right;"><?php esc_html_e('Ingresos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th style="padding:8px 12px;text-align:right;"><?php esc_html_e('Gastos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th style="padding:8px 12px;text-align:right;"><?php esc_html_e('Neto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1021,7 +1021,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                         </tbody>
                     </table>
                     <?php else: ?>
-                    <p style="color:#666;text-align:center;padding:20px;"><?php esc_html_e('Sin movimientos en el periodo', 'flavor-chat-ia'); ?></p>
+                    <p style="color:#666;text-align:center;padding:20px;"><?php esc_html_e('Sin movimientos en el periodo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php endif; ?>
                 </div>
             </div>
@@ -1032,7 +1032,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                 <div style="background:#fff;padding:20px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
                     <h3 style="margin:0 0 16px;font-size:16px;font-weight:600;color:#10b981;">
                         <span class="dashicons dashicons-arrow-down-alt" style="color:#10b981;"></span>
-                        <?php esc_html_e('Ingresos por categoría', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ingresos por categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <?php if (!empty($desglose_ingresos)): ?>
                     <ul style="list-style:none;margin:0;padding:0;">
@@ -1044,7 +1044,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                         <?php endforeach; ?>
                     </ul>
                     <?php else: ?>
-                    <p style="color:#666;"><?php esc_html_e('Sin ingresos', 'flavor-chat-ia'); ?></p>
+                    <p style="color:#666;"><?php esc_html_e('Sin ingresos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php endif; ?>
                 </div>
 
@@ -1052,7 +1052,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                 <div style="background:#fff;padding:20px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
                     <h3 style="margin:0 0 16px;font-size:16px;font-weight:600;color:#ef4444;">
                         <span class="dashicons dashicons-arrow-up-alt" style="color:#ef4444;"></span>
-                        <?php esc_html_e('Gastos por categoría', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Gastos por categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <?php if (!empty($desglose_gastos)): ?>
                     <ul style="list-style:none;margin:0;padding:0;">
@@ -1064,7 +1064,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                         <?php endforeach; ?>
                     </ul>
                     <?php else: ?>
-                    <p style="color:#666;"><?php esc_html_e('Sin gastos', 'flavor-chat-ia'); ?></p>
+                    <p style="color:#666;"><?php esc_html_e('Sin gastos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php endif; ?>
                 </div>
 
@@ -1072,7 +1072,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                 <div style="background:#fff;padding:20px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
                     <h3 style="margin:0 0 16px;font-size:16px;font-weight:600;">
                         <span class="dashicons dashicons-list-view"></span>
-                        <?php esc_html_e('Últimos movimientos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Últimos movimientos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <?php if (!empty($ultimos_movimientos)): ?>
                     <ul style="list-style:none;margin:0;padding:0;max-height:280px;overflow-y:auto;">
@@ -1096,10 +1096,10 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                         <?php endforeach; ?>
                     </ul>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=contabilidad-movimientos')); ?>" style="display:block;text-align:center;margin-top:12px;color:#2563eb;font-size:13px;">
-                        <?php esc_html_e('Ver todos los movimientos →', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver todos los movimientos →', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <?php else: ?>
-                    <p style="color:#666;text-align:center;padding:20px;"><?php esc_html_e('Sin movimientos', 'flavor-chat-ia'); ?></p>
+                    <p style="color:#666;text-align:center;padding:20px;"><?php esc_html_e('Sin movimientos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php endif; ?>
                 </div>
             </div>
@@ -1108,23 +1108,23 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
                 <!-- Comparativa -->
                 <div style="background:#fff;padding:20px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-                    <h3 style="margin:0 0 16px;font-size:16px;font-weight:600;"><?php esc_html_e('Comparativa vs periodo anterior', 'flavor-chat-ia'); ?></h3>
+                    <h3 style="margin:0 0 16px;font-size:16px;font-weight:600;"><?php esc_html_e('Comparativa vs periodo anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <table class="widefat" style="border:none;">
                         <thead>
                             <tr>
-                                <th><?php esc_html_e('Métrica', 'flavor-chat-ia'); ?></th>
-                                <th style="text-align:right;"><?php esc_html_e('Actual', 'flavor-chat-ia'); ?></th>
-                                <th style="text-align:right;"><?php esc_html_e('Anterior', 'flavor-chat-ia'); ?></th>
-                                <th style="text-align:right;"><?php esc_html_e('Var.', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Métrica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th style="text-align:right;"><?php esc_html_e('Actual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th style="text-align:right;"><?php esc_html_e('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th style="text-align:right;"><?php esc_html_e('Var.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
                             $metricas = [
-                                ['label' => __('Ingresos', 'flavor-chat-ia'), 'actual' => $actual['ingresos'], 'anterior' => $anterior['ingresos']],
-                                ['label' => __('Gastos', 'flavor-chat-ia'), 'actual' => $actual['gastos'], 'anterior' => $anterior['gastos']],
-                                ['label' => __('Resultado', 'flavor-chat-ia'), 'actual' => $actual['resultado'], 'anterior' => $anterior['resultado']],
-                                ['label' => __('IVA neto', 'flavor-chat-ia'), 'actual' => $actual['iva_repercutido'] - $actual['iva_soportado'], 'anterior' => $anterior['iva_repercutido'] - $anterior['iva_soportado']],
+                                ['label' => __('Ingresos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'actual' => $actual['ingresos'], 'anterior' => $anterior['ingresos']],
+                                ['label' => __('Gastos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'actual' => $actual['gastos'], 'anterior' => $anterior['gastos']],
+                                ['label' => __('Resultado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'actual' => $actual['resultado'], 'anterior' => $anterior['resultado']],
+                                ['label' => __('IVA neto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'actual' => $actual['iva_repercutido'] - $actual['iva_soportado'], 'anterior' => $anterior['iva_repercutido'] - $anterior['iva_soportado']],
                             ];
                             foreach ($metricas as $m):
                                 $var = $m['anterior'] != 0 ? (($m['actual'] - $m['anterior']) / abs($m['anterior']) * 100) : 0;
@@ -1144,22 +1144,22 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
 
                 <!-- Resumen anual -->
                 <div style="background:#fff;padding:20px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-                    <h3 style="margin:0 0 16px;font-size:16px;font-weight:600;"><?php printf(esc_html__('Acumulado %s', 'flavor-chat-ia'), date('Y')); ?></h3>
+                    <h3 style="margin:0 0 16px;font-size:16px;font-weight:600;"><?php printf(esc_html__('Acumulado %s', FLAVOR_PLATFORM_TEXT_DOMAIN), date('Y')); ?></h3>
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
                         <div style="padding:16px;background:#f0fdf4;border-radius:8px;text-align:center;">
-                            <div style="font-size:12px;color:#166534;margin-bottom:4px;"><?php esc_html_e('Total ingresos', 'flavor-chat-ia'); ?></div>
+                            <div style="font-size:12px;color:#166534;margin-bottom:4px;"><?php esc_html_e('Total ingresos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                             <div style="font-size:20px;font-weight:700;color:#166534;"><?php echo esc_html($this->format_money($totales_ano['ingresos'])); ?></div>
                         </div>
                         <div style="padding:16px;background:#fef2f2;border-radius:8px;text-align:center;">
-                            <div style="font-size:12px;color:#991b1b;margin-bottom:4px;"><?php esc_html_e('Total gastos', 'flavor-chat-ia'); ?></div>
+                            <div style="font-size:12px;color:#991b1b;margin-bottom:4px;"><?php esc_html_e('Total gastos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                             <div style="font-size:20px;font-weight:700;color:#991b1b;"><?php echo esc_html($this->format_money($totales_ano['gastos'])); ?></div>
                         </div>
                         <div style="padding:16px;background:<?php echo $totales_ano['resultado'] >= 0 ? '#eff6ff' : '#fff7ed'; ?>;border-radius:8px;text-align:center;">
-                            <div style="font-size:12px;color:<?php echo $totales_ano['resultado'] >= 0 ? '#1e40af' : '#9a3412'; ?>;margin-bottom:4px;"><?php esc_html_e('Resultado', 'flavor-chat-ia'); ?></div>
+                            <div style="font-size:12px;color:<?php echo $totales_ano['resultado'] >= 0 ? '#1e40af' : '#9a3412'; ?>;margin-bottom:4px;"><?php esc_html_e('Resultado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                             <div style="font-size:20px;font-weight:700;color:<?php echo $totales_ano['resultado'] >= 0 ? '#1e40af' : '#9a3412'; ?>;"><?php echo esc_html($this->format_money($totales_ano['resultado'])); ?></div>
                         </div>
                         <div style="padding:16px;background:#faf5ff;border-radius:8px;text-align:center;">
-                            <div style="font-size:12px;color:#6b21a8;margin-bottom:4px;"><?php esc_html_e('IVA a liquidar', 'flavor-chat-ia'); ?></div>
+                            <div style="font-size:12px;color:#6b21a8;margin-bottom:4px;"><?php esc_html_e('IVA a liquidar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                             <div style="font-size:20px;font-weight:700;color:#6b21a8;"><?php echo esc_html($this->format_money($totales_ano['iva_neto'])); ?></div>
                         </div>
                     </div>
@@ -1183,7 +1183,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                         labels: evolucionData.map(d => d.mes),
                         datasets: [
                             {
-                                label: '<?php esc_html_e('Ingresos', 'flavor-chat-ia'); ?>',
+                                label: '<?php esc_html_e('Ingresos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                                 data: evolucionData.map(d => d.ingresos),
                                 borderColor: '#10b981',
                                 backgroundColor: 'rgba(16, 185, 129, 0.1)',
@@ -1191,7 +1191,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                                 tension: 0.4
                             },
                             {
-                                label: '<?php esc_html_e('Gastos', 'flavor-chat-ia'); ?>',
+                                label: '<?php esc_html_e('Gastos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                                 data: evolucionData.map(d => d.gastos),
                                 borderColor: '#ef4444',
                                 backgroundColor: 'rgba(239, 68, 68, 0.1)',
@@ -1199,7 +1199,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                                 tension: 0.4
                             },
                             {
-                                label: '<?php esc_html_e('Resultado', 'flavor-chat-ia'); ?>',
+                                label: '<?php esc_html_e('Resultado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                                 data: evolucionData.map(d => d.resultado),
                                 borderColor: '#3b82f6',
                                 borderDash: [5, 5],
@@ -1254,9 +1254,9 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
         }
 
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Movimientos contables', 'flavor-chat-ia'), [
-            ['label' => __('Nuevo gasto', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=contabilidad-movimientos&action=nuevo&tipo=gasto'), 'class' => 'button-primary'],
-            ['label' => __('Nuevo ingreso', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=contabilidad-movimientos&action=nuevo&tipo=ingreso'), 'class' => 'button'],
+        $this->render_page_header(__('Movimientos contables', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+            ['label' => __('Nuevo gasto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=contabilidad-movimientos&action=nuevo&tipo=gasto'), 'class' => 'button-primary'],
+            ['label' => __('Nuevo ingreso', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=contabilidad-movimientos&action=nuevo&tipo=ingreso'), 'class' => 'button'],
         ]);
 
         if ($action === 'nuevo' || $action === 'editar') {
@@ -1307,7 +1307,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$mov) {
-            echo '<div class="notice notice-error"><p>' . esc_html__('Movimiento no encontrado.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-error"><p>' . esc_html__('Movimiento no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             return;
         }
 
@@ -1316,18 +1316,18 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
         ?>
         <div style="max-width:800px;">
             <a href="<?php echo esc_url(admin_url('admin.php?page=contabilidad-movimientos')); ?>" class="button" style="margin-bottom:16px;">
-                ← <?php esc_html_e('Volver a movimientos', 'flavor-chat-ia'); ?>
+                ← <?php esc_html_e('Volver a movimientos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
 
             <div style="background:#fff;padding:24px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
                 <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:20px;">
                     <div>
                         <span style="display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;background:<?php echo $es_ingreso ? '#dcfce7' : '#fee2e2'; ?>;color:<?php echo $es_ingreso ? '#166534' : '#991b1b'; ?>;">
-                            <?php echo $es_ingreso ? esc_html__('Ingreso', 'flavor-chat-ia') : esc_html__('Gasto', 'flavor-chat-ia'); ?>
+                            <?php echo $es_ingreso ? esc_html__('Ingreso', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Gasto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
                         <?php if ($mov->estado === 'anulado'): ?>
                         <span style="display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;background:#fee2e2;color:#991b1b;margin-left:8px;">
-                            <?php esc_html_e('ANULADO', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('ANULADO', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
                         <?php endif; ?>
                         <h2 style="margin:8px 0 0;font-size:20px;"><?php echo esc_html($mov->concepto); ?></h2>
@@ -1345,21 +1345,21 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                 <table class="widefat" style="border:none;">
                     <tbody>
                         <tr>
-                            <td style="padding:10px 12px;width:200px;color:#666;"><?php esc_html_e('ID', 'flavor-chat-ia'); ?></td>
+                            <td style="padding:10px 12px;width:200px;color:#666;"><?php esc_html_e('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                             <td style="padding:10px 12px;font-weight:500;">#<?php echo esc_html($mov->id); ?></td>
                         </tr>
                         <tr>
-                            <td style="padding:10px 12px;color:#666;"><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></td>
+                            <td style="padding:10px 12px;color:#666;"><?php esc_html_e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                             <td style="padding:10px 12px;"><?php echo esc_html(ucfirst($mov->categoria ?: 'otros')); ?></td>
                         </tr>
                         <?php if ($mov->subcategoria): ?>
                         <tr>
-                            <td style="padding:10px 12px;color:#666;"><?php esc_html_e('Subcategoría', 'flavor-chat-ia'); ?></td>
+                            <td style="padding:10px 12px;color:#666;"><?php esc_html_e('Subcategoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                             <td style="padding:10px 12px;"><?php echo esc_html($mov->subcategoria); ?></td>
                         </tr>
                         <?php endif; ?>
                         <tr>
-                            <td style="padding:10px 12px;color:#666;"><?php esc_html_e('Módulo origen', 'flavor-chat-ia'); ?></td>
+                            <td style="padding:10px 12px;color:#666;"><?php esc_html_e('Módulo origen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                             <td style="padding:10px 12px;">
                                 <a href="<?php echo esc_url(admin_url('admin.php?page=contabilidad-movimientos&modulo_origen=' . esc_attr($mov->modulo_origen ?: 'manual'))); ?>">
                                     <?php echo esc_html(ucfirst($mov->modulo_origen ?: 'manual')); ?>
@@ -1368,36 +1368,36 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                         </tr>
                         <?php if ($mov->tercero_nombre): ?>
                         <tr>
-                            <td style="padding:10px 12px;color:#666;"><?php esc_html_e('Tercero', 'flavor-chat-ia'); ?></td>
+                            <td style="padding:10px 12px;color:#666;"><?php esc_html_e('Tercero', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                             <td style="padding:10px 12px;"><?php echo esc_html($mov->tercero_nombre); ?></td>
                         </tr>
                         <?php endif; ?>
                         <tr style="background:#f8fafc;">
-                            <td style="padding:10px 12px;color:#666;"><?php esc_html_e('Base imponible', 'flavor-chat-ia'); ?></td>
+                            <td style="padding:10px 12px;color:#666;"><?php esc_html_e('Base imponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                             <td style="padding:10px 12px;"><?php echo esc_html($this->format_money($mov->base_imponible)); ?></td>
                         </tr>
                         <tr>
-                            <td style="padding:10px 12px;color:#666;"><?php esc_html_e('IVA', 'flavor-chat-ia'); ?></td>
+                            <td style="padding:10px 12px;color:#666;"><?php esc_html_e('IVA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                             <td style="padding:10px 12px;"><?php echo esc_html(number_format($mov->iva_porcentaje, 1)); ?>% = <?php echo esc_html($this->format_money($mov->iva_importe)); ?></td>
                         </tr>
                         <?php if ((float) $mov->retencion_importe > 0): ?>
                         <tr>
-                            <td style="padding:10px 12px;color:#666;"><?php esc_html_e('Retención', 'flavor-chat-ia'); ?></td>
+                            <td style="padding:10px 12px;color:#666;"><?php esc_html_e('Retención', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                             <td style="padding:10px 12px;"><?php echo esc_html(number_format($mov->retencion_porcentaje, 1)); ?>% = <?php echo esc_html($this->format_money($mov->retencion_importe)); ?></td>
                         </tr>
                         <?php endif; ?>
                         <tr style="background:#f8fafc;">
-                            <td style="padding:10px 12px;color:#666;font-weight:600;"><?php esc_html_e('Total', 'flavor-chat-ia'); ?></td>
+                            <td style="padding:10px 12px;color:#666;font-weight:600;"><?php esc_html_e('Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                             <td style="padding:10px 12px;font-weight:700;font-size:16px;"><?php echo esc_html($this->format_money($mov->total)); ?></td>
                         </tr>
                         <?php if (!empty($metadata)): ?>
                         <tr>
-                            <td style="padding:10px 12px;color:#666;"><?php esc_html_e('Metadatos', 'flavor-chat-ia'); ?></td>
+                            <td style="padding:10px 12px;color:#666;"><?php esc_html_e('Metadatos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                             <td style="padding:10px 12px;"><code style="font-size:12px;"><?php echo esc_html(wp_json_encode($metadata, JSON_PRETTY_PRINT)); ?></code></td>
                         </tr>
                         <?php endif; ?>
                         <tr>
-                            <td style="padding:10px 12px;color:#666;"><?php esc_html_e('Registrado', 'flavor-chat-ia'); ?></td>
+                            <td style="padding:10px 12px;color:#666;"><?php esc_html_e('Registrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                             <td style="padding:10px 12px;"><?php echo esc_html($mov->created_at); ?></td>
                         </tr>
                     </tbody>
@@ -1407,11 +1407,11 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                 <div style="margin-top:20px;padding-top:16px;border-top:1px solid #e5e7eb;display:flex;gap:8px;">
                     <a href="<?php echo esc_url(admin_url('admin.php?page=contabilidad-movimientos&action=editar&id=' . $mov->id)); ?>" class="button">
                         <span class="dashicons dashicons-edit" style="vertical-align:middle;"></span>
-                        <?php esc_html_e('Editar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
-                    <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=contabilidad-movimientos&action=anular&id=' . $mov->id), 'anular_movimiento_' . $mov->id)); ?>" class="button" style="color:#dc2626;" onclick="return confirm('<?php esc_attr_e('¿Seguro que deseas anular este movimiento?', 'flavor-chat-ia'); ?>');">
+                    <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=contabilidad-movimientos&action=anular&id=' . $mov->id), 'anular_movimiento_' . $mov->id)); ?>" class="button" style="color:#dc2626;" onclick="return confirm('<?php esc_attr_e('¿Seguro que deseas anular este movimiento?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');">
                         <span class="dashicons dashicons-dismiss" style="vertical-align:middle;"></span>
-                        <?php esc_html_e('Anular', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Anular', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
                 <?php endif; ?>
@@ -1433,7 +1433,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                 $editando_id
             ));
             if (!$movimiento) {
-                echo '<div class="notice notice-error"><p>' . esc_html__('Movimiento no encontrado.', 'flavor-chat-ia') . '</p></div>';
+                echo '<div class="notice notice-error"><p>' . esc_html__('Movimiento no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
                 return;
             }
         }
@@ -1447,7 +1447,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
         if (isset($_POST['conta_guardar'])) {
             $nonce = isset($_POST['conta_nonce']) ? sanitize_text_field(wp_unslash((string) $_POST['conta_nonce'])) : '';
             if (!wp_verify_nonce($nonce, 'conta_guardar_movimiento')) {
-                echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+                echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             } else {
                 $base = (float) str_replace(',', '.', (string) ($_POST['base_imponible'] ?? '0'));
                 $iva_porcentaje = (float) str_replace(',', '.', (string) ($_POST['iva_porcentaje'] ?? '0'));
@@ -1492,7 +1492,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                     }
                 }
 
-                echo '<div class="notice notice-error"><p>' . esc_html__('No se pudo guardar el movimiento.', 'flavor-chat-ia') . '</p></div>';
+                echo '<div class="notice notice-error"><p>' . esc_html__('No se pudo guardar el movimiento.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             }
         }
 
@@ -1510,13 +1510,13 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
         ];
 
         $titulo_form = $editando_id > 0
-            ? sprintf(__('Editar movimiento #%d', 'flavor-chat-ia'), $editando_id)
-            : ($tipo === 'ingreso' ? __('Nuevo ingreso', 'flavor-chat-ia') : __('Nuevo gasto', 'flavor-chat-ia'));
+            ? sprintf(__('Editar movimiento #%d', FLAVOR_PLATFORM_TEXT_DOMAIN), $editando_id)
+            : ($tipo === 'ingreso' ? __('Nuevo ingreso', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Nuevo gasto', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         ?>
         <div style="max-width:700px;">
             <a href="<?php echo esc_url(admin_url('admin.php?page=contabilidad-movimientos')); ?>" class="button" style="margin-bottom:16px;">
-                ← <?php esc_html_e('Volver a movimientos', 'flavor-chat-ia'); ?>
+                ← <?php esc_html_e('Volver a movimientos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
 
             <div style="background:#fff;padding:24px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
@@ -1528,51 +1528,51 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                     <table class="form-table" role="presentation">
                         <tbody>
                             <tr>
-                                <th><label for="tipo_movimiento"><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></label></th>
+                                <th><label for="tipo_movimiento"><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                                 <td>
                                     <select id="tipo_movimiento" name="tipo_movimiento">
-                                        <option value="ingreso" <?php selected($valores['tipo_movimiento'], 'ingreso'); ?>><?php esc_html_e('Ingreso', 'flavor-chat-ia'); ?></option>
-                                        <option value="gasto" <?php selected($valores['tipo_movimiento'], 'gasto'); ?>><?php esc_html_e('Gasto', 'flavor-chat-ia'); ?></option>
+                                        <option value="ingreso" <?php selected($valores['tipo_movimiento'], 'ingreso'); ?>><?php esc_html_e('Ingreso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                        <option value="gasto" <?php selected($valores['tipo_movimiento'], 'gasto'); ?>><?php esc_html_e('Gasto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                     </select>
                                 </td>
                             </tr>
                             <tr>
-                                <th><label for="fecha_movimiento"><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></label></th>
+                                <th><label for="fecha_movimiento"><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                                 <td><input type="date" id="fecha_movimiento" name="fecha_movimiento" value="<?php echo esc_attr($valores['fecha_movimiento']); ?>" /></td>
                             </tr>
                             <tr>
-                                <th><label for="concepto"><?php esc_html_e('Concepto', 'flavor-chat-ia'); ?> *</label></th>
+                                <th><label for="concepto"><?php esc_html_e('Concepto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label></th>
                                 <td><input type="text" class="regular-text" id="concepto" name="concepto" value="<?php echo esc_attr($valores['concepto']); ?>" required /></td>
                             </tr>
                             <tr>
-                                <th><label for="categoria"><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></label></th>
+                                <th><label for="categoria"><?php esc_html_e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                                 <td><input type="text" class="regular-text" id="categoria" name="categoria" value="<?php echo esc_attr($valores['categoria']); ?>" /></td>
                             </tr>
                             <tr>
-                                <th><label for="subcategoria"><?php esc_html_e('Subcategoría', 'flavor-chat-ia'); ?></label></th>
+                                <th><label for="subcategoria"><?php esc_html_e('Subcategoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                                 <td><input type="text" class="regular-text" id="subcategoria" name="subcategoria" value="<?php echo esc_attr($valores['subcategoria']); ?>" /></td>
                             </tr>
                             <tr>
-                                <th><label for="tercero_nombre"><?php esc_html_e('Tercero', 'flavor-chat-ia'); ?></label></th>
+                                <th><label for="tercero_nombre"><?php esc_html_e('Tercero', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                                 <td><input type="text" class="regular-text" id="tercero_nombre" name="tercero_nombre" value="<?php echo esc_attr($valores['tercero_nombre']); ?>" /></td>
                             </tr>
                             <tr>
-                                <th><label for="modulo_origen"><?php esc_html_e('Módulo origen', 'flavor-chat-ia'); ?></label></th>
+                                <th><label for="modulo_origen"><?php esc_html_e('Módulo origen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                                 <td><input type="text" class="regular-text" id="modulo_origen" name="modulo_origen" value="<?php echo esc_attr($valores['modulo_origen']); ?>" /></td>
                             </tr>
                             <tr>
-                                <th><label for="base_imponible"><?php esc_html_e('Base imponible', 'flavor-chat-ia'); ?></label></th>
+                                <th><label for="base_imponible"><?php esc_html_e('Base imponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                                 <td><input type="number" step="0.01" id="base_imponible" name="base_imponible" value="<?php echo esc_attr($valores['base_imponible']); ?>" /></td>
                             </tr>
                             <tr>
-                                <th><label for="iva_porcentaje"><?php esc_html_e('IVA %', 'flavor-chat-ia'); ?></label></th>
+                                <th><label for="iva_porcentaje"><?php esc_html_e('IVA %', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                                 <td><input type="number" step="0.01" id="iva_porcentaje" name="iva_porcentaje" value="<?php echo esc_attr($valores['iva_porcentaje']); ?>" /></td>
                             </tr>
                         </tbody>
                     </table>
 
                     <?php
-                    $boton_texto = $editando_id > 0 ? __('Actualizar movimiento', 'flavor-chat-ia') : __('Guardar movimiento', 'flavor-chat-ia');
+                    $boton_texto = $editando_id > 0 ? __('Actualizar movimiento', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Guardar movimiento', FLAVOR_PLATFORM_TEXT_DOMAIN);
                     submit_button($boton_texto, 'primary', 'conta_guardar');
                     ?>
                 </form>
@@ -1583,10 +1583,10 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
 
     private function render_admin_tabla_movimientos($filtros = []) {
         if (isset($_GET['created']) && absint($_GET['created']) === 1) {
-            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Movimiento guardado.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Movimiento guardado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
         if (isset($_GET['anulado']) && absint($_GET['anulado']) === 1) {
-            echo '<div class="notice notice-warning is-dismissible"><p>' . esc_html__('Movimiento anulado.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-warning is-dismissible"><p>' . esc_html__('Movimiento anulado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         if (empty($filtros) || !is_array($filtros)) {
@@ -1621,38 +1621,38 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                 <input type="hidden" name="page" value="contabilidad-movimientos" />
 
                 <div>
-                    <label style="display:block;font-size:11px;color:#666;margin-bottom:4px;"><?php esc_html_e('Desde', 'flavor-chat-ia'); ?></label>
+                    <label style="display:block;font-size:11px;color:#666;margin-bottom:4px;"><?php esc_html_e('Desde', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="date" name="desde" value="<?php echo esc_attr($desde); ?>" />
                 </div>
 
                 <div>
-                    <label style="display:block;font-size:11px;color:#666;margin-bottom:4px;"><?php esc_html_e('Hasta', 'flavor-chat-ia'); ?></label>
+                    <label style="display:block;font-size:11px;color:#666;margin-bottom:4px;"><?php esc_html_e('Hasta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="date" name="hasta" value="<?php echo esc_attr($hasta); ?>" />
                 </div>
 
                 <div>
-                    <label style="display:block;font-size:11px;color:#666;margin-bottom:4px;"><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></label>
+                    <label style="display:block;font-size:11px;color:#666;margin-bottom:4px;"><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="tipo">
-                        <option value=""><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
-                        <option value="ingreso" <?php selected($tipo, 'ingreso'); ?>><?php esc_html_e('Ingreso', 'flavor-chat-ia'); ?></option>
-                        <option value="gasto" <?php selected($tipo, 'gasto'); ?>><?php esc_html_e('Gasto', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="ingreso" <?php selected($tipo, 'ingreso'); ?>><?php esc_html_e('Ingreso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="gasto" <?php selected($tipo, 'gasto'); ?>><?php esc_html_e('Gasto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div>
-                    <label style="display:block;font-size:11px;color:#666;margin-bottom:4px;"><?php esc_html_e('Módulo', 'flavor-chat-ia'); ?></label>
+                    <label style="display:block;font-size:11px;color:#666;margin-bottom:4px;"><?php esc_html_e('Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="modulo_origen">
-                        <option value=""><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($modulos_disponibles as $mod): ?>
                         <option value="<?php echo esc_attr($mod); ?>" <?php selected($modulo_origen, $mod); ?>><?php echo esc_html(ucfirst($mod)); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
 
-                <button class="button"><?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?></button>
+                <button class="button"><?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                 <button class="button" type="submit" name="export_csv" value="1">
                     <span class="dashicons dashicons-download" style="vertical-align:middle;"></span>
-                    <?php esc_html_e('CSV', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('CSV', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </form>
         </div>
@@ -1660,19 +1660,19 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
         <!-- Resumen rápido -->
         <div style="display:flex;gap:16px;margin-bottom:16px;">
             <div style="background:#dcfce7;padding:12px 20px;border-radius:8px;flex:1;">
-                <span style="font-size:12px;color:#166534;"><?php esc_html_e('Ingresos', 'flavor-chat-ia'); ?></span>
+                <span style="font-size:12px;color:#166534;"><?php esc_html_e('Ingresos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <div style="font-size:20px;font-weight:700;color:#166534;"><?php echo esc_html($this->format_money($total_ingresos)); ?></div>
             </div>
             <div style="background:#fee2e2;padding:12px 20px;border-radius:8px;flex:1;">
-                <span style="font-size:12px;color:#991b1b;"><?php esc_html_e('Gastos', 'flavor-chat-ia'); ?></span>
+                <span style="font-size:12px;color:#991b1b;"><?php esc_html_e('Gastos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <div style="font-size:20px;font-weight:700;color:#991b1b;"><?php echo esc_html($this->format_money($total_gastos)); ?></div>
             </div>
             <div style="background:<?php echo ($total_ingresos - $total_gastos) >= 0 ? '#dbeafe' : '#ffedd5'; ?>;padding:12px 20px;border-radius:8px;flex:1;">
-                <span style="font-size:12px;color:<?php echo ($total_ingresos - $total_gastos) >= 0 ? '#1e40af' : '#9a3412'; ?>;"><?php esc_html_e('Resultado', 'flavor-chat-ia'); ?></span>
+                <span style="font-size:12px;color:<?php echo ($total_ingresos - $total_gastos) >= 0 ? '#1e40af' : '#9a3412'; ?>;"><?php esc_html_e('Resultado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <div style="font-size:20px;font-weight:700;color:<?php echo ($total_ingresos - $total_gastos) >= 0 ? '#1e40af' : '#9a3412'; ?>;"><?php echo esc_html($this->format_money($total_ingresos - $total_gastos)); ?></div>
             </div>
             <div style="background:#f3f4f6;padding:12px 20px;border-radius:8px;">
-                <span style="font-size:12px;color:#666;"><?php esc_html_e('Movimientos', 'flavor-chat-ia'); ?></span>
+                <span style="font-size:12px;color:#666;"><?php esc_html_e('Movimientos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <div style="font-size:20px;font-weight:700;"><?php echo esc_html(count($rows)); ?></div>
             </div>
         </div>
@@ -1681,13 +1681,13 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
         <table class="widefat striped" style="background:#fff;border-radius:8px;overflow:hidden;">
             <thead>
                 <tr>
-                    <th style="padding:12px;"><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                    <th style="padding:12px;"><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th>
-                    <th style="padding:12px;"><?php esc_html_e('Concepto', 'flavor-chat-ia'); ?></th>
-                    <th style="padding:12px;"><?php esc_html_e('Módulo', 'flavor-chat-ia'); ?></th>
-                    <th style="padding:12px;text-align:right;"><?php esc_html_e('Total', 'flavor-chat-ia'); ?></th>
-                    <th style="padding:12px;text-align:center;"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                    <th style="padding:12px;text-align:center;"><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th style="padding:12px;"><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="padding:12px;"><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="padding:12px;"><?php esc_html_e('Concepto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="padding:12px;"><?php esc_html_e('Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="padding:12px;text-align:right;"><?php esc_html_e('Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="padding:12px;text-align:center;"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="padding:12px;text-align:center;"><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -1700,7 +1700,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                         <td style="padding:10px 12px;"><?php echo esc_html(date_i18n('d/m/Y', strtotime($row->fecha_movimiento))); ?></td>
                         <td style="padding:10px 12px;">
                             <span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:500;background:<?php echo $es_ingreso ? '#dcfce7' : '#fee2e2'; ?>;color:<?php echo $es_ingreso ? '#166534' : '#991b1b'; ?>;">
-                                <?php echo $es_ingreso ? esc_html__('Ingreso', 'flavor-chat-ia') : esc_html__('Gasto', 'flavor-chat-ia'); ?>
+                                <?php echo $es_ingreso ? esc_html__('Ingreso', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Gasto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         </td>
                         <td style="padding:10px 12px;">
@@ -1718,20 +1718,20 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                         </td>
                         <td style="padding:10px 12px;text-align:center;">
                             <?php if ($anulado): ?>
-                            <span style="color:#dc2626;font-size:11px;"><?php esc_html_e('Anulado', 'flavor-chat-ia'); ?></span>
+                            <span style="color:#dc2626;font-size:11px;"><?php esc_html_e('Anulado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <?php else: ?>
                             <span style="color:#10b981;font-size:11px;">✓</span>
                             <?php endif; ?>
                         </td>
                         <td style="padding:10px 12px;text-align:center;">
-                            <a href="<?php echo esc_url(admin_url('admin.php?page=contabilidad-movimientos&action=ver&id=' . $row->id)); ?>" title="<?php esc_attr_e('Ver', 'flavor-chat-ia'); ?>" style="margin-right:4px;">
+                            <a href="<?php echo esc_url(admin_url('admin.php?page=contabilidad-movimientos&action=ver&id=' . $row->id)); ?>" title="<?php esc_attr_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" style="margin-right:4px;">
                                 <span class="dashicons dashicons-visibility" style="color:#666;"></span>
                             </a>
                             <?php if (!$anulado): ?>
-                            <a href="<?php echo esc_url(admin_url('admin.php?page=contabilidad-movimientos&action=editar&id=' . $row->id)); ?>" title="<?php esc_attr_e('Editar', 'flavor-chat-ia'); ?>" style="margin-right:4px;">
+                            <a href="<?php echo esc_url(admin_url('admin.php?page=contabilidad-movimientos&action=editar&id=' . $row->id)); ?>" title="<?php esc_attr_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" style="margin-right:4px;">
                                 <span class="dashicons dashicons-edit" style="color:#2563eb;"></span>
                             </a>
-                            <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=contabilidad-movimientos&action=anular&id=' . $row->id), 'anular_movimiento_' . $row->id)); ?>" title="<?php esc_attr_e('Anular', 'flavor-chat-ia'); ?>" onclick="return confirm('<?php esc_attr_e('¿Seguro que deseas anular este movimiento?', 'flavor-chat-ia'); ?>');">
+                            <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=contabilidad-movimientos&action=anular&id=' . $row->id), 'anular_movimiento_' . $row->id)); ?>" title="<?php esc_attr_e('Anular', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" onclick="return confirm('<?php esc_attr_e('¿Seguro que deseas anular este movimiento?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');">
                                 <span class="dashicons dashicons-dismiss" style="color:#dc2626;"></span>
                             </a>
                             <?php endif; ?>
@@ -1739,7 +1739,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                     </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <tr><td colspan="7" style="padding:20px;text-align:center;color:#666;"><?php esc_html_e('No hay movimientos.', 'flavor-chat-ia'); ?></td></tr>
+                    <tr><td colspan="7" style="padding:20px;text-align:center;color:#666;"><?php esc_html_e('No hay movimientos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td></tr>
                 <?php endif; ?>
             </tbody>
         </table>
@@ -1755,24 +1755,24 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                 $this->update_setting('coste_adquisicion_cliente', (float) str_replace(',', '.', (string) ($_POST['coste_adquisicion_cliente'] ?? '0')));
                 $this->update_setting('coste_email_por_envio', (float) str_replace(',', '.', (string) ($_POST['coste_email_por_envio'] ?? '0')));
                 $this->update_setting('coste_nuevo_suscriptor', (float) str_replace(',', '.', (string) ($_POST['coste_nuevo_suscriptor'] ?? '0')));
-                echo '<div class="notice notice-success"><p>' . esc_html__('Configuración guardada.', 'flavor-chat-ia') . '</p></div>';
+                echo '<div class="notice notice-success"><p>' . esc_html__('Configuración guardada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             }
         }
 
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Configuración de Contabilidad', 'flavor-chat-ia'));
+        $this->render_page_header(__('Configuración de Contabilidad', FLAVOR_PLATFORM_TEXT_DOMAIN));
         echo '<form method="post">';
         wp_nonce_field('conta_config_guardar', 'conta_config_nonce');
         echo '<table class="form-table" role="presentation"><tbody>';
-        echo '<tr><th><label for="moneda">' . esc_html__('Moneda', 'flavor-chat-ia') . '</label></th><td><input id="moneda" name="moneda" class="regular-text" value="' . esc_attr((string) $this->get_setting('moneda', 'EUR')) . '" /></td></tr>';
-        echo '<tr><th><label for="simbolo_moneda">' . esc_html__('Símbolo', 'flavor-chat-ia') . '</label></th><td><input id="simbolo_moneda" name="simbolo_moneda" class="regular-text" value="' . esc_attr((string) $this->get_setting('simbolo_moneda', '€')) . '" /></td></tr>';
-        echo '<tr><th><label for="coste_adquisicion_cliente">' . esc_html__('Coste adquisición cliente', 'flavor-chat-ia') . '</label></th><td><input type="number" min="0" step="0.01" id="coste_adquisicion_cliente" name="coste_adquisicion_cliente" class="small-text" value="' . esc_attr((string) $this->get_setting('coste_adquisicion_cliente', 0)) . '" /> <span class="description">' . esc_html__('Gasto automático por alta de cliente (0 desactiva)', 'flavor-chat-ia') . '</span></td></tr>';
-        echo '<tr><th><label for="coste_email_por_envio">' . esc_html__('Coste por email enviado', 'flavor-chat-ia') . '</label></th><td><input type="number" min="0" step="0.0001" id="coste_email_por_envio" name="coste_email_por_envio" class="small-text" value="' . esc_attr((string) $this->get_setting('coste_email_por_envio', 0)) . '" /> <span class="description">' . esc_html__('Se aplica al pasar campaña a enviada (0 desactiva)', 'flavor-chat-ia') . '</span></td></tr>';
-        echo '<tr><th><label for="coste_nuevo_suscriptor">' . esc_html__('Coste nuevo suscriptor', 'flavor-chat-ia') . '</label></th><td><input type="number" min="0" step="0.01" id="coste_nuevo_suscriptor" name="coste_nuevo_suscriptor" class="small-text" value="' . esc_attr((string) $this->get_setting('coste_nuevo_suscriptor', 0)) . '" /> <span class="description">' . esc_html__('Gasto automático por cada suscriptor creado (0 desactiva)', 'flavor-chat-ia') . '</span></td></tr>';
+        echo '<tr><th><label for="moneda">' . esc_html__('Moneda', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th><td><input id="moneda" name="moneda" class="regular-text" value="' . esc_attr((string) $this->get_setting('moneda', 'EUR')) . '" /></td></tr>';
+        echo '<tr><th><label for="simbolo_moneda">' . esc_html__('Símbolo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th><td><input id="simbolo_moneda" name="simbolo_moneda" class="regular-text" value="' . esc_attr((string) $this->get_setting('simbolo_moneda', '€')) . '" /></td></tr>';
+        echo '<tr><th><label for="coste_adquisicion_cliente">' . esc_html__('Coste adquisición cliente', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th><td><input type="number" min="0" step="0.01" id="coste_adquisicion_cliente" name="coste_adquisicion_cliente" class="small-text" value="' . esc_attr((string) $this->get_setting('coste_adquisicion_cliente', 0)) . '" /> <span class="description">' . esc_html__('Gasto automático por alta de cliente (0 desactiva)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></td></tr>';
+        echo '<tr><th><label for="coste_email_por_envio">' . esc_html__('Coste por email enviado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th><td><input type="number" min="0" step="0.0001" id="coste_email_por_envio" name="coste_email_por_envio" class="small-text" value="' . esc_attr((string) $this->get_setting('coste_email_por_envio', 0)) . '" /> <span class="description">' . esc_html__('Se aplica al pasar campaña a enviada (0 desactiva)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></td></tr>';
+        echo '<tr><th><label for="coste_nuevo_suscriptor">' . esc_html__('Coste nuevo suscriptor', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th><td><input type="number" min="0" step="0.01" id="coste_nuevo_suscriptor" name="coste_nuevo_suscriptor" class="small-text" value="' . esc_attr((string) $this->get_setting('coste_nuevo_suscriptor', 0)) . '" /> <span class="description">' . esc_html__('Gasto automático por cada suscriptor creado (0 desactiva)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></td></tr>';
         echo '</tbody></table>';
-        submit_button(__('Guardar', 'flavor-chat-ia'), 'primary', 'conta_config_guardar');
+        submit_button(__('Guardar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'primary', 'conta_config_guardar');
         echo '</form>';
-        echo '<p>' . esc_html__('Integración transversal: cualquier módulo puede enviar movimientos con el hook flavor_contabilidad_registrar_movimiento.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . esc_html__('Integración transversal: cualquier módulo puede enviar movimientos con el hook flavor_contabilidad_registrar_movimiento.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         echo '</div>';
     }
 
@@ -1788,14 +1788,14 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
         if ($tipo_informe === 'anual') {
             $desde = "{$ano}-01-01";
             $hasta = "{$ano}-12-31";
-            $titulo_periodo = sprintf(__('Año %d', 'flavor-chat-ia'), $ano);
+            $titulo_periodo = sprintf(__('Año %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $ano);
         } else {
             $mes_inicio = (($trimestre - 1) * 3) + 1;
             $mes_fin = $trimestre * 3;
             $desde = sprintf('%d-%02d-01', $ano, $mes_inicio);
             $ultimo_dia = (int) date('t', strtotime($desde . ' +2 months'));
             $hasta = sprintf('%d-%02d-%02d', $ano, $mes_fin, $ultimo_dia);
-            $titulo_periodo = sprintf(__('%dT %d', 'flavor-chat-ia'), $trimestre, $ano);
+            $titulo_periodo = sprintf(__('%dT %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $trimestre, $ano);
         }
 
         // Obtener datos del periodo
@@ -1807,7 +1807,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
 
         ?>
         <div class="wrap flavor-modulo-page">
-            <?php $this->render_page_header(__('Informes Contables', 'flavor-chat-ia')); ?>
+            <?php $this->render_page_header(__('Informes Contables', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
 
             <!-- Selector de periodo -->
             <div style="background:#fff;padding:16px 20px;border-radius:8px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
@@ -1815,15 +1815,15 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                     <input type="hidden" name="page" value="contabilidad-informes" />
 
                     <div>
-                        <label style="display:block;font-size:11px;color:#666;margin-bottom:4px;"><?php esc_html_e('Tipo de informe', 'flavor-chat-ia'); ?></label>
+                        <label style="display:block;font-size:11px;color:#666;margin-bottom:4px;"><?php esc_html_e('Tipo de informe', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select name="tipo">
-                            <option value="trimestral" <?php selected($tipo_informe, 'trimestral'); ?>><?php esc_html_e('Trimestral (Modelo 303)', 'flavor-chat-ia'); ?></option>
-                            <option value="anual" <?php selected($tipo_informe, 'anual'); ?>><?php esc_html_e('Anual (Modelo 390)', 'flavor-chat-ia'); ?></option>
+                            <option value="trimestral" <?php selected($tipo_informe, 'trimestral'); ?>><?php esc_html_e('Trimestral (Modelo 303)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="anual" <?php selected($tipo_informe, 'anual'); ?>><?php esc_html_e('Anual (Modelo 390)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
 
                     <div>
-                        <label style="display:block;font-size:11px;color:#666;margin-bottom:4px;"><?php esc_html_e('Año', 'flavor-chat-ia'); ?></label>
+                        <label style="display:block;font-size:11px;color:#666;margin-bottom:4px;"><?php esc_html_e('Año', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select name="ano">
                             <?php for ($a = (int) date('Y'); $a >= (int) date('Y') - 5; $a--): ?>
                             <option value="<?php echo esc_attr($a); ?>" <?php selected($ano, $a); ?>><?php echo esc_html($a); ?></option>
@@ -1833,7 +1833,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
 
                     <?php if ($tipo_informe === 'trimestral'): ?>
                     <div>
-                        <label style="display:block;font-size:11px;color:#666;margin-bottom:4px;"><?php esc_html_e('Trimestre', 'flavor-chat-ia'); ?></label>
+                        <label style="display:block;font-size:11px;color:#666;margin-bottom:4px;"><?php esc_html_e('Trimestre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select name="trimestre">
                             <option value="1" <?php selected($trimestre, 1); ?>>1T (Ene-Mar)</option>
                             <option value="2" <?php selected($trimestre, 2); ?>>2T (Abr-Jun)</option>
@@ -1845,12 +1845,12 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
 
                     <button type="submit" class="button button-primary">
                         <span class="dashicons dashicons-chart-bar" style="vertical-align:middle;"></span>
-                        <?php esc_html_e('Generar informe', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Generar informe', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
 
                     <a href="<?php echo esc_url(add_query_arg('export_pdf', '1')); ?>" class="button" style="margin-left:auto;">
                         <span class="dashicons dashicons-pdf"></span>
-                        <?php esc_html_e('Exportar PDF', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Exportar PDF', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </form>
             </div>
@@ -1860,47 +1860,47 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                 <div style="background:#fff;padding:24px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
                     <h3 style="margin:0 0 20px;font-size:18px;display:flex;align-items:center;gap:8px;">
                         <span class="dashicons dashicons-media-spreadsheet" style="color:#8b5cf6;"></span>
-                        <?php printf(esc_html__('Liquidación IVA - %s', 'flavor-chat-ia'), esc_html($titulo_periodo)); ?>
+                        <?php printf(esc_html__('Liquidación IVA - %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($titulo_periodo)); ?>
                     </h3>
 
                     <table class="widefat" style="border:none;">
                         <tbody>
                             <tr style="background:#f0fdf4;">
                                 <td colspan="2" style="padding:12px;font-weight:600;color:#166534;">
-                                    <?php esc_html_e('IVA Repercutido (Ventas)', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('IVA Repercutido (Ventas)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </td>
                             </tr>
                             <tr>
-                                <td style="padding:10px 12px;"><?php esc_html_e('Base imponible ventas', 'flavor-chat-ia'); ?></td>
+                                <td style="padding:10px 12px;"><?php esc_html_e('Base imponible ventas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                                 <td style="padding:10px 12px;text-align:right;font-weight:500;"><?php echo esc_html($this->format_money($datos_iva['base_ventas'])); ?></td>
                             </tr>
                             <tr>
-                                <td style="padding:10px 12px;"><?php esc_html_e('IVA repercutido', 'flavor-chat-ia'); ?></td>
+                                <td style="padding:10px 12px;"><?php esc_html_e('IVA repercutido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                                 <td style="padding:10px 12px;text-align:right;font-weight:500;color:#10b981;"><?php echo esc_html($this->format_money($datos_iva['iva_repercutido'])); ?></td>
                             </tr>
 
                             <tr style="background:#fef2f2;">
                                 <td colspan="2" style="padding:12px;font-weight:600;color:#991b1b;">
-                                    <?php esc_html_e('IVA Soportado (Compras)', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('IVA Soportado (Compras)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </td>
                             </tr>
                             <tr>
-                                <td style="padding:10px 12px;"><?php esc_html_e('Base imponible compras', 'flavor-chat-ia'); ?></td>
+                                <td style="padding:10px 12px;"><?php esc_html_e('Base imponible compras', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                                 <td style="padding:10px 12px;text-align:right;font-weight:500;"><?php echo esc_html($this->format_money($datos_iva['base_compras'])); ?></td>
                             </tr>
                             <tr>
-                                <td style="padding:10px 12px;"><?php esc_html_e('IVA soportado deducible', 'flavor-chat-ia'); ?></td>
+                                <td style="padding:10px 12px;"><?php esc_html_e('IVA soportado deducible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                                 <td style="padding:10px 12px;text-align:right;font-weight:500;color:#ef4444;"><?php echo esc_html($this->format_money($datos_iva['iva_soportado'])); ?></td>
                             </tr>
 
                             <tr style="background:#eff6ff;">
-                                <td style="padding:14px 12px;font-weight:700;font-size:15px;"><?php esc_html_e('Resultado a liquidar', 'flavor-chat-ia'); ?></td>
+                                <td style="padding:14px 12px;font-weight:700;font-size:15px;"><?php esc_html_e('Resultado a liquidar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                                 <td style="padding:14px 12px;text-align:right;font-weight:700;font-size:18px;color:<?php echo $datos_iva['resultado_iva'] >= 0 ? '#1e40af' : '#dc2626'; ?>;">
                                     <?php echo esc_html($this->format_money($datos_iva['resultado_iva'])); ?>
                                     <?php if ($datos_iva['resultado_iva'] >= 0): ?>
-                                        <span style="font-size:12px;font-weight:400;">(<?php esc_html_e('A ingresar', 'flavor-chat-ia'); ?>)</span>
+                                        <span style="font-size:12px;font-weight:400;">(<?php esc_html_e('A ingresar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>)</span>
                                     <?php else: ?>
-                                        <span style="font-size:12px;font-weight:400;">(<?php esc_html_e('A compensar', 'flavor-chat-ia'); ?>)</span>
+                                        <span style="font-size:12px;font-weight:400;">(<?php esc_html_e('A compensar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>)</span>
                                     <?php endif; ?>
                                 </td>
                             </tr>
@@ -1912,31 +1912,31 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                 <div style="background:#fff;padding:24px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
                     <h3 style="margin:0 0 20px;font-size:18px;display:flex;align-items:center;gap:8px;">
                         <span class="dashicons dashicons-chart-line" style="color:#3b82f6;"></span>
-                        <?php printf(esc_html__('Cuenta de Resultados - %s', 'flavor-chat-ia'), esc_html($titulo_periodo)); ?>
+                        <?php printf(esc_html__('Cuenta de Resultados - %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($titulo_periodo)); ?>
                     </h3>
 
                     <table class="widefat" style="border:none;">
                         <tbody>
                             <tr>
-                                <td style="padding:10px 12px;"><?php esc_html_e('Total ingresos', 'flavor-chat-ia'); ?></td>
+                                <td style="padding:10px 12px;"><?php esc_html_e('Total ingresos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                                 <td style="padding:10px 12px;text-align:right;font-weight:500;color:#10b981;">+<?php echo esc_html($this->format_money($datos_iva['total_ingresos'])); ?></td>
                             </tr>
                             <tr>
-                                <td style="padding:10px 12px;"><?php esc_html_e('Total gastos', 'flavor-chat-ia'); ?></td>
+                                <td style="padding:10px 12px;"><?php esc_html_e('Total gastos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                                 <td style="padding:10px 12px;text-align:right;font-weight:500;color:#ef4444;">-<?php echo esc_html($this->format_money($datos_iva['total_gastos'])); ?></td>
                             </tr>
                             <tr style="border-top:2px solid #e5e7eb;">
-                                <td style="padding:12px;font-weight:600;"><?php esc_html_e('Resultado bruto', 'flavor-chat-ia'); ?></td>
+                                <td style="padding:12px;font-weight:600;"><?php esc_html_e('Resultado bruto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                                 <td style="padding:12px;text-align:right;font-weight:700;font-size:16px;color:<?php echo $datos_iva['resultado_bruto'] >= 0 ? '#10b981' : '#ef4444'; ?>;">
                                     <?php echo esc_html($this->format_money($datos_iva['resultado_bruto'])); ?>
                                 </td>
                             </tr>
                             <tr>
-                                <td style="padding:10px 12px;color:#666;"><?php esc_html_e('(-) IVA neto a liquidar', 'flavor-chat-ia'); ?></td>
+                                <td style="padding:10px 12px;color:#666;"><?php esc_html_e('(-) IVA neto a liquidar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                                 <td style="padding:10px 12px;text-align:right;color:#666;"><?php echo esc_html($this->format_money($datos_iva['resultado_iva'])); ?></td>
                             </tr>
                             <tr style="background:#f8fafc;">
-                                <td style="padding:14px 12px;font-weight:700;font-size:15px;"><?php esc_html_e('Resultado neto estimado', 'flavor-chat-ia'); ?></td>
+                                <td style="padding:14px 12px;font-weight:700;font-size:15px;"><?php esc_html_e('Resultado neto estimado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                                 <td style="padding:14px 12px;text-align:right;font-weight:700;font-size:18px;color:<?php echo ($datos_iva['resultado_bruto'] - $datos_iva['resultado_iva']) >= 0 ? '#059669' : '#dc2626'; ?>;">
                                     <?php echo esc_html($this->format_money($datos_iva['resultado_bruto'] - max(0, $datos_iva['resultado_iva']))); ?>
                                 </td>
@@ -1945,7 +1945,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                     </table>
 
                     <p style="margin-top:12px;font-size:12px;color:#666;">
-                        <?php esc_html_e('Nota: Este es un cálculo simplificado. Consulta con tu asesor fiscal.', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Nota: Este es un cálculo simplificado. Consulta con tu asesor fiscal.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
             </div>
@@ -1956,15 +1956,15 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                 <div style="background:#fff;padding:20px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
                     <h4 style="margin:0 0 16px;font-size:15px;font-weight:600;">
                         <span class="dashicons dashicons-admin-plugins" style="color:#6366f1;"></span>
-                        <?php esc_html_e('Por módulo', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Por módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h4>
                     <?php if (!empty($desglose_modulo)): ?>
                     <table class="widefat" style="border:none;font-size:13px;">
                         <thead>
                             <tr>
-                                <th style="padding:6px 8px;"><?php esc_html_e('Módulo', 'flavor-chat-ia'); ?></th>
-                                <th style="padding:6px 8px;text-align:right;"><?php esc_html_e('Ing.', 'flavor-chat-ia'); ?></th>
-                                <th style="padding:6px 8px;text-align:right;"><?php esc_html_e('Gas.', 'flavor-chat-ia'); ?></th>
+                                <th style="padding:6px 8px;"><?php esc_html_e('Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th style="padding:6px 8px;text-align:right;"><?php esc_html_e('Ing.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th style="padding:6px 8px;text-align:right;"><?php esc_html_e('Gas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1978,7 +1978,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                         </tbody>
                     </table>
                     <?php else: ?>
-                    <p style="color:#666;text-align:center;"><?php esc_html_e('Sin datos', 'flavor-chat-ia'); ?></p>
+                    <p style="color:#666;text-align:center;"><?php esc_html_e('Sin datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php endif; ?>
                 </div>
 
@@ -1986,7 +1986,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                 <div style="background:#fff;padding:20px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
                     <h4 style="margin:0 0 16px;font-size:15px;font-weight:600;color:#10b981;">
                         <span class="dashicons dashicons-arrow-down-alt"></span>
-                        <?php esc_html_e('Ingresos por categoría', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ingresos por categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h4>
                     <?php if (!empty($desglose_ingresos)): ?>
                     <ul style="list-style:none;margin:0;padding:0;">
@@ -1998,7 +1998,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                         <?php endforeach; ?>
                     </ul>
                     <?php else: ?>
-                    <p style="color:#666;text-align:center;"><?php esc_html_e('Sin datos', 'flavor-chat-ia'); ?></p>
+                    <p style="color:#666;text-align:center;"><?php esc_html_e('Sin datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php endif; ?>
                 </div>
 
@@ -2006,7 +2006,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                 <div style="background:#fff;padding:20px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
                     <h4 style="margin:0 0 16px;font-size:15px;font-weight:600;color:#ef4444;">
                         <span class="dashicons dashicons-arrow-up-alt"></span>
-                        <?php esc_html_e('Gastos por categoría', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Gastos por categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h4>
                     <?php if (!empty($desglose_gastos)): ?>
                     <ul style="list-style:none;margin:0;padding:0;">
@@ -2018,7 +2018,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
                         <?php endforeach; ?>
                     </ul>
                     <?php else: ?>
-                    <p style="color:#666;text-align:center;"><?php esc_html_e('Sin datos', 'flavor-chat-ia'); ?></p>
+                    <p style="color:#666;text-align:center;"><?php esc_html_e('Sin datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php endif; ?>
                 </div>
             </div>
@@ -2026,7 +2026,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
             <!-- Enlace a movimientos del periodo -->
             <div style="margin-top:20px;text-align:center;">
                 <a href="<?php echo esc_url(admin_url('admin.php?page=contabilidad-movimientos&desde=' . $desde . '&hasta=' . $hasta)); ?>" class="button">
-                    <?php esc_html_e('Ver todos los movimientos del periodo →', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver todos los movimientos del periodo →', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -2097,21 +2097,21 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
             [
                 'icon' => 'dashicons-arrow-up-alt',
                 'valor' => $this->format_money($actual['ingresos']),
-                'label' => __('Ingresos mes', 'flavor-chat-ia'),
+                'label' => __('Ingresos mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'green',
                 'enlace' => admin_url('admin.php?page=contabilidad-dashboard&periodo=mes'),
             ],
             [
                 'icon' => 'dashicons-arrow-down-alt',
                 'valor' => $this->format_money($actual['gastos']),
-                'label' => __('Gastos mes', 'flavor-chat-ia'),
+                'label' => __('Gastos mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'orange',
                 'enlace' => admin_url('admin.php?page=contabilidad-dashboard&periodo=mes'),
             ],
             [
                 'icon' => 'dashicons-chart-line',
                 'valor' => $this->format_money($actual['resultado']),
-                'label' => __('Resultado', 'flavor-chat-ia'),
+                'label' => __('Resultado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $actual['resultado'] >= 0 ? 'blue' : 'red',
                 'enlace' => admin_url('admin.php?page=contabilidad-dashboard&periodo=mes'),
             ],
@@ -2124,15 +2124,15 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
     public function get_actions() {
         return [
             'listar_movimientos' => [
-                'description' => __('Listar movimientos contables con filtros', 'flavor-chat-ia'),
+                'description' => __('Listar movimientos contables con filtros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'params' => ['desde', 'hasta', 'tipo', 'estado', 'modulo_origen', 'limite'],
             ],
             'registrar_movimiento' => [
-                'description' => __('Registrar un movimiento contable', 'flavor-chat-ia'),
+                'description' => __('Registrar un movimiento contable', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'params' => ['tipo_movimiento', 'concepto', 'base_imponible', 'iva_porcentaje', 'fecha_movimiento', 'categoria'],
             ],
             'estadisticas' => [
-                'description' => __('Obtener resumen contable por periodo', 'flavor-chat-ia'),
+                'description' => __('Obtener resumen contable por periodo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'params' => ['periodo', 'offset'],
             ],
         ];
@@ -2160,7 +2160,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error' => __('Acción no disponible en Contabilidad.', 'flavor-chat-ia'),
+            'error' => __('Acción no disponible en Contabilidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -2221,7 +2221,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
         $stats = $this->obtener_estadisticas_periodo('mes', 0);
 
         return sprintf(
-            __("Módulo de Contabilidad:\n- Ingresos del mes: %s\n- Gastos del mes: %s\n- Resultado del mes: %s\n- IVA repercutido: %s\n- IVA soportado: %s\n\nPermite registrar movimientos manuales y automáticos, consolidar módulos y analizar periodos mensuales, trimestrales y anuales.", 'flavor-chat-ia'),
+            __("Módulo de Contabilidad:\n- Ingresos del mes: %s\n- Gastos del mes: %s\n- Resultado del mes: %s\n- IVA repercutido: %s\n- IVA soportado: %s\n\nPermite registrar movimientos manuales y automáticos, consolidar módulos y analizar periodos mensuales, trimestrales y anuales.", FLAVOR_PLATFORM_TEXT_DOMAIN),
             $this->format_money($stats['ingresos']),
             $this->format_money($stats['gastos']),
             $this->format_money($stats['resultado']),
@@ -2240,7 +2240,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_movimientos)) {
-            return ['success' => false, 'error' => __('Tabla de contabilidad no disponible.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Tabla de contabilidad no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $desde = isset($params['desde']) ? sanitize_text_field((string) $params['desde']) : '';
@@ -2313,7 +2313,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
      */
     private function action_registrar_movimiento($params) {
         if (!current_user_can('manage_options')) {
-            return ['success' => false, 'error' => __('Sin permisos para registrar movimientos.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Sin permisos para registrar movimientos.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $base = (float) ($params['base_imponible'] ?? 0);
@@ -2338,7 +2338,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
         ]);
 
         if ($id <= 0) {
-            return ['success' => false, 'error' => __('No se pudo registrar el movimiento.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No se pudo registrar el movimiento.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         return ['success' => true, 'id' => (int) $id];
@@ -2655,7 +2655,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
      */
     private function exportar_movimientos_csv($filtros) {
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('Sin permisos para exportar.', 'flavor-chat-ia'));
+            wp_die(esc_html__('Sin permisos para exportar.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $rows = $this->obtener_movimientos_filtrados($filtros, 2000);
@@ -2667,7 +2667,7 @@ class Flavor_Chat_Contabilidad_Module extends Flavor_Chat_Module_Base {
 
         $output = fopen('php://output', 'w');
         if ($output === false) {
-            wp_die(esc_html__('No se pudo generar el CSV.', 'flavor-chat-ia'));
+            wp_die(esc_html__('No se pudo generar el CSV.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         fwrite($output, "\xEF\xBB\xBF");

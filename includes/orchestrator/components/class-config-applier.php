@@ -29,7 +29,7 @@ class Flavor_Config_Applier extends Flavor_Template_Component_Base {
      */
     public function __construct() {
         $this->componente_id = 'config';
-        $this->componente_nombre = __('Aplicador de Configuracion', 'flavor-chat-ia');
+        $this->componente_nombre = __('Aplicador de Configuracion', FLAVOR_PLATFORM_TEXT_DOMAIN);
     }
 
     /**
@@ -48,7 +48,7 @@ class Flavor_Config_Applier extends Flavor_Template_Component_Base {
 
         if (empty($configuraciones)) {
             return $this->respuesta_exito(
-                __('No hay configuraciones predeterminadas definidas.', 'flavor-chat-ia'),
+                __('No hay configuraciones predeterminadas definidas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['modulos_configurados' => []]
             );
         }
@@ -72,7 +72,7 @@ class Flavor_Config_Applier extends Flavor_Template_Component_Base {
             if (!empty($config_actual) && !$sobrescribir) {
                 $modulos_omitidos[] = [
                     'modulo'  => $modulo_normalizado,
-                    'motivo'  => __('Ya tiene configuracion existente', 'flavor-chat-ia'),
+                    'motivo'  => __('Ya tiene configuracion existente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
                 continue;
             }
@@ -102,13 +102,13 @@ class Flavor_Config_Applier extends Flavor_Template_Component_Base {
         $this->guardar_meta_instalacion($plantilla_id, 'configuracion_aplicada', $configuraciones);
 
         $mensaje = sprintf(
-            __('Se configuro %d modulos correctamente.', 'flavor-chat-ia'),
+            __('Se configuro %d modulos correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             count($modulos_configurados)
         );
 
         if (!empty($modulos_omitidos)) {
             $mensaje .= ' ' . sprintf(
-                __('%d modulos omitidos (ya tenian configuracion).', 'flavor-chat-ia'),
+                __('%d modulos omitidos (ya tenian configuracion).', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 count($modulos_omitidos)
             );
         }
@@ -136,7 +136,7 @@ class Flavor_Config_Applier extends Flavor_Template_Component_Base {
 
         if (empty($modulos_configurados)) {
             return $this->respuesta_exito(
-                __('No hay configuraciones registradas para esta plantilla.', 'flavor-chat-ia'),
+                __('No hay configuraciones registradas para esta plantilla.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['modulos_restaurados' => []]
             );
         }
@@ -165,7 +165,7 @@ class Flavor_Config_Applier extends Flavor_Template_Component_Base {
             } else {
                 $this->registrar_advertencia(
                     'sin_snapshot',
-                    __('No se encontro snapshot de configuracion anterior.', 'flavor-chat-ia')
+                    __('No se encontro snapshot de configuracion anterior.', FLAVOR_PLATFORM_TEXT_DOMAIN)
                 );
 
                 // Sin snapshot, solo limpiar las configuraciones
@@ -183,19 +183,19 @@ class Flavor_Config_Applier extends Flavor_Template_Component_Base {
         $mensaje = '';
         if (!empty($modulos_restaurados)) {
             $mensaje .= sprintf(
-                __('%d modulos restaurados a configuracion anterior.', 'flavor-chat-ia'),
+                __('%d modulos restaurados a configuracion anterior.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 count($modulos_restaurados)
             );
         }
         if (!empty($modulos_limpiados)) {
             $mensaje .= ' ' . sprintf(
-                __('%d modulos con configuracion eliminada.', 'flavor-chat-ia'),
+                __('%d modulos con configuracion eliminada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 count($modulos_limpiados)
             );
         }
 
         if (empty($mensaje)) {
-            $mensaje = __('Configuraciones procesadas.', 'flavor-chat-ia');
+            $mensaje = __('Configuraciones procesadas.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         return $this->respuesta_exito(trim($mensaje), [
@@ -218,7 +218,7 @@ class Flavor_Config_Applier extends Flavor_Template_Component_Base {
             return [
                 'estado'   => 'no_aplica',
                 'detalles' => [],
-                'mensaje'  => __('No hay configuraciones definidas para esta plantilla.', 'flavor-chat-ia'),
+                'mensaje'  => __('No hay configuraciones definidas para esta plantilla.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -277,7 +277,7 @@ class Flavor_Config_Applier extends Flavor_Template_Component_Base {
                 'sin_configurar'   => $modulos_sin_configurar,
             ],
             'mensaje'  => sprintf(
-                __('%d de %d modulos con configuracion completa.', 'flavor-chat-ia'),
+                __('%d de %d modulos con configuracion completa.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $total_completos,
                 $total_esperados
             ),
@@ -324,7 +324,7 @@ class Flavor_Config_Applier extends Flavor_Template_Component_Base {
         } catch (Exception $excepcion) {
             $this->registrar_error(
                 'config_error',
-                sprintf(__('Error aplicando configuracion a %s: %s', 'flavor-chat-ia'), $modulo_id, $excepcion->getMessage())
+                sprintf(__('Error aplicando configuracion a %s: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $modulo_id, $excepcion->getMessage())
             );
 
             return [
@@ -395,7 +395,7 @@ class Flavor_Config_Applier extends Flavor_Template_Component_Base {
 
             // Verificar requerido
             if (!empty($reglas['required']) && $valor === null) {
-                $errores[] = sprintf(__('El campo "%s" es requerido.', 'flavor-chat-ia'), $clave);
+                $errores[] = sprintf(__('El campo "%s" es requerido.', FLAVOR_PLATFORM_TEXT_DOMAIN), $clave);
                 continue;
             }
 
@@ -408,7 +408,7 @@ class Flavor_Config_Applier extends Flavor_Template_Component_Base {
                 $tipo_valido = $this->verificar_tipo($valor, $reglas['type']);
                 if (!$tipo_valido) {
                     $errores[] = sprintf(
-                        __('El campo "%s" debe ser de tipo %s.', 'flavor-chat-ia'),
+                        __('El campo "%s" debe ser de tipo %s.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $clave,
                         $reglas['type']
                     );
@@ -418,7 +418,7 @@ class Flavor_Config_Applier extends Flavor_Template_Component_Base {
             // Verificar valores permitidos
             if (!empty($reglas['enum']) && !in_array($valor, $reglas['enum'], true)) {
                 $errores[] = sprintf(
-                    __('El campo "%s" tiene un valor no permitido.', 'flavor-chat-ia'),
+                    __('El campo "%s" tiene un valor no permitido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $clave
                 );
             }
@@ -426,7 +426,7 @@ class Flavor_Config_Applier extends Flavor_Template_Component_Base {
             // Verificar minimo/maximo
             if (isset($reglas['min']) && $valor < $reglas['min']) {
                 $errores[] = sprintf(
-                    __('El campo "%s" debe ser mayor o igual a %s.', 'flavor-chat-ia'),
+                    __('El campo "%s" debe ser mayor o igual a %s.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $clave,
                     $reglas['min']
                 );
@@ -434,7 +434,7 @@ class Flavor_Config_Applier extends Flavor_Template_Component_Base {
 
             if (isset($reglas['max']) && $valor > $reglas['max']) {
                 $errores[] = sprintf(
-                    __('El campo "%s" debe ser menor o igual a %s.', 'flavor-chat-ia'),
+                    __('El campo "%s" debe ser menor o igual a %s.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $clave,
                     $reglas['max']
                 );

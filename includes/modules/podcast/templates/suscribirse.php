@@ -69,7 +69,7 @@ $usuario_id = get_current_user_id();
                 <?php endif; ?>
                 <?php if (isset($serie->total_episodios)): ?>
                 <span class="flavor-suscripcion-episodios">
-                    <?php echo sprintf(esc_html__('%d episodios', 'flavor-chat-ia'), intval($serie->total_episodios)); ?>
+                    <?php echo sprintf(esc_html__('%d episodios', FLAVOR_PLATFORM_TEXT_DOMAIN), intval($serie->total_episodios)); ?>
                 </span>
                 <?php endif; ?>
             </div>
@@ -80,11 +80,11 @@ $usuario_id = get_current_user_id();
             <?php if (!$usuario_logueado): ?>
             <!-- Usuario no logueado -->
             <div class="flavor-suscripcion-login">
-                <p><?php esc_html_e('Inicia sesion para suscribirte y recibir notificaciones de nuevos episodios.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('Inicia sesion para suscribirte y recibir notificaciones de nuevos episodios.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <a href="<?php echo esc_url(wp_login_url(add_query_arg(null, null))); ?>"
                    class="flavor-btn flavor-btn-primary flavor-btn-block">
                     <span class="dashicons dashicons-admin-users"></span>
-                    <?php esc_html_e('Iniciar sesion', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
@@ -95,19 +95,19 @@ $usuario_id = get_current_user_id();
                     <span class="flavor-icono-check">
                         <span class="dashicons dashicons-yes-alt"></span>
                     </span>
-                    <span><?php esc_html_e('Estas suscrito a esta serie', 'flavor-chat-ia'); ?></span>
+                    <span><?php esc_html_e('Estas suscrito a esta serie', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
 
                 <?php if ($mostrar_opciones): ?>
                 <div class="flavor-suscripcion-opciones">
-                    <h4><?php esc_html_e('Preferencias de notificacion', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php esc_html_e('Preferencias de notificacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <form class="flavor-form-preferencias">
                         <label class="flavor-checkbox-label">
                             <input type="checkbox" name="notif_email" value="1" checked>
                             <span class="flavor-checkbox-custom"></span>
                             <span class="flavor-checkbox-texto">
                                 <span class="dashicons dashicons-email-alt"></span>
-                                <?php esc_html_e('Recibir por email', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Recibir por email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         </label>
                         <label class="flavor-checkbox-label">
@@ -115,11 +115,11 @@ $usuario_id = get_current_user_id();
                             <span class="flavor-checkbox-custom"></span>
                             <span class="flavor-checkbox-texto">
                                 <span class="dashicons dashicons-bell"></span>
-                                <?php esc_html_e('Notificaciones push', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Notificaciones push', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         </label>
                         <button type="submit" class="flavor-btn flavor-btn-sm flavor-btn-outline flavor-btn-guardar-prefs">
-                            <?php esc_html_e('Guardar preferencias', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Guardar preferencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </form>
                 </div>
@@ -129,7 +129,7 @@ $usuario_id = get_current_user_id();
                         class="flavor-btn flavor-btn-outline flavor-btn-block flavor-btn-cancelar-suscripcion"
                         data-serie-id="<?php echo $serie ? intval($serie->id) : 0; ?>">
                     <span class="dashicons dashicons-no"></span>
-                    <?php esc_html_e('Cancelar suscripcion', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Cancelar suscripcion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
 
@@ -137,19 +137,19 @@ $usuario_id = get_current_user_id();
             <!-- Formulario de suscripcion -->
             <div class="flavor-suscripcion-formulario">
                 <div class="flavor-suscripcion-beneficios">
-                    <h4><?php esc_html_e('Al suscribirte recibiras:', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php esc_html_e('Al suscribirte recibiras:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <ul>
                         <li>
                             <span class="dashicons dashicons-bell"></span>
-                            <?php esc_html_e('Notificaciones de nuevos episodios', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Notificaciones de nuevos episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </li>
                         <li>
                             <span class="dashicons dashicons-email-alt"></span>
-                            <?php esc_html_e('Resumen semanal por email', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Resumen semanal por email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </li>
                         <li>
                             <span class="dashicons dashicons-star-filled"></span>
-                            <?php esc_html_e('Acceso a contenido exclusivo', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Acceso a contenido exclusivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </li>
                     </ul>
                 </div>
@@ -158,11 +158,11 @@ $usuario_id = get_current_user_id();
                         class="flavor-btn flavor-btn-primary flavor-btn-block flavor-btn-suscribir-grande"
                         data-serie-id="<?php echo $serie ? intval($serie->id) : 0; ?>">
                     <span class="dashicons dashicons-heart"></span>
-                    <?php esc_html_e('Suscribirse gratis', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Suscribirse gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
 
                 <p class="flavor-suscripcion-nota">
-                    <?php esc_html_e('Puedes cancelar en cualquier momento.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Puedes cancelar en cualquier momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
             <?php endif; ?>
@@ -172,7 +172,7 @@ $usuario_id = get_current_user_id();
         <?php if (!empty($plataformas) && $serie): ?>
         <div class="flavor-suscripcion-plataformas">
             <p class="flavor-plataformas-titulo">
-                <?php esc_html_e('Tambien disponible en:', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Tambien disponible en:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
             <div class="flavor-plataformas-grid">
                 <?php foreach ($plataformas as $clave_plataforma => $datos_plataforma):
@@ -199,7 +199,7 @@ $usuario_id = get_current_user_id();
         <div class="flavor-suscripcion-rss">
             <button type="button" class="flavor-btn-rss" data-rss="<?php echo esc_url($serie->rss_url); ?>">
                 <span class="dashicons dashicons-rss"></span>
-                <?php esc_html_e('Copiar enlace RSS', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Copiar enlace RSS', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
         <?php endif; ?>
@@ -212,21 +212,21 @@ $usuario_id = get_current_user_id();
         <a href="<?php echo esc_url(wp_login_url(add_query_arg(null, null))); ?>"
            class="flavor-btn flavor-btn-primary">
             <span class="dashicons dashicons-heart"></span>
-            <?php esc_html_e('Suscribirse', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Suscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <?php elseif ($esta_suscrito): ?>
         <button type="button"
                 class="flavor-btn flavor-btn-outline flavor-suscrito flavor-btn-cancelar-suscripcion"
                 data-serie-id="<?php echo $serie ? intval($serie->id) : 0; ?>">
             <span class="dashicons dashicons-yes"></span>
-            <?php esc_html_e('Suscrito', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Suscrito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
         <?php else: ?>
         <button type="button"
                 class="flavor-btn flavor-btn-primary flavor-btn-suscribir"
                 data-serie-id="<?php echo $serie ? intval($serie->id) : 0; ?>">
             <span class="dashicons dashicons-heart"></span>
-            <?php esc_html_e('Suscribirse', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Suscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
         <?php endif; ?>
     </div>
@@ -244,7 +244,7 @@ $usuario_id = get_current_user_id();
                 <img src="<?php echo esc_url($serie->imagen_url); ?>" alt="">
             </div>
             <?php endif; ?>
-            <h3><?php esc_html_e('Suscribete a este podcast', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Suscribete a este podcast', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <?php if ($serie): ?>
             <p class="flavor-modal-serie"><?php echo esc_html($serie->titulo); ?></p>
             <?php endif; ?>
@@ -252,17 +252,17 @@ $usuario_id = get_current_user_id();
 
         <div class="flavor-modal-body">
             <?php if (!$usuario_logueado): ?>
-            <p><?php esc_html_e('Necesitas iniciar sesion para suscribirte.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('Necesitas iniciar sesion para suscribirte.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <a href="<?php echo esc_url(wp_login_url(add_query_arg(null, null))); ?>"
                class="flavor-btn flavor-btn-primary flavor-btn-block">
-                <?php esc_html_e('Iniciar sesion', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <?php else: ?>
             <div class="flavor-modal-opciones">
                 <label class="flavor-checkbox-label">
                     <input type="checkbox" name="notif_email" value="1" checked>
                     <span class="flavor-checkbox-custom"></span>
-                    <?php esc_html_e('Notificarme por email', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Notificarme por email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </label>
             </div>
 
@@ -270,7 +270,7 @@ $usuario_id = get_current_user_id();
                     class="flavor-btn flavor-btn-primary flavor-btn-block flavor-btn-suscribir"
                     data-serie-id="<?php echo $serie ? intval($serie->id) : 0; ?>">
                 <span class="dashicons dashicons-heart"></span>
-                <?php esc_html_e('Confirmar suscripcion', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Confirmar suscripcion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <?php endif; ?>
         </div>
@@ -715,7 +715,7 @@ $usuario_id = get_current_user_id();
     var btnsCancelar = contenedor.querySelectorAll('.flavor-btn-cancelar-suscripcion');
     btnsCancelar.forEach(function(btn) {
         btn.addEventListener('click', function() {
-            if (confirm('<?php echo esc_js(__('Seguro que quieres cancelar la suscripcion?', 'flavor-chat-ia')); ?>')) {
+            if (confirm('<?php echo esc_js(__('Seguro que quieres cancelar la suscripcion?', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>')) {
                 cancelarSuscripcion(this);
             }
         });
@@ -729,13 +729,13 @@ $usuario_id = get_current_user_id();
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(rssUrl).then(function() {
                     var textoOriginal = btnRss.innerHTML;
-                    btnRss.innerHTML = '<span class="dashicons dashicons-yes"></span> <?php echo esc_js(__('Copiado!', 'flavor-chat-ia')); ?>';
+                    btnRss.innerHTML = '<span class="dashicons dashicons-yes"></span> <?php echo esc_js(__('Copiado!', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
                     setTimeout(function() {
                         btnRss.innerHTML = textoOriginal;
                     }, 2000);
                 });
             } else {
-                prompt('<?php echo esc_js(__('Copia este enlace RSS:', 'flavor-chat-ia')); ?>', rssUrl);
+                prompt('<?php echo esc_js(__('Copia este enlace RSS:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>', rssUrl);
             }
         });
     }
@@ -749,7 +749,7 @@ $usuario_id = get_current_user_id();
             // Aqui iria la llamada AJAX para guardar preferencias
             var btnGuardar = this.querySelector('.flavor-btn-guardar-prefs');
             var textoOriginal = btnGuardar.textContent;
-            btnGuardar.textContent = '<?php echo esc_js(__('Guardado!', 'flavor-chat-ia')); ?>';
+            btnGuardar.textContent = '<?php echo esc_js(__('Guardado!', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
             setTimeout(function() {
                 btnGuardar.textContent = textoOriginal;
             }, 2000);
@@ -774,12 +774,12 @@ $usuario_id = get_current_user_id();
                 if (response.success) {
                     location.reload();
                 } else {
-                    alert(response.data.message || '<?php echo esc_js(__('Error al suscribirse', 'flavor-chat-ia')); ?>');
+                    alert(response.data.message || '<?php echo esc_js(__('Error al suscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                 }
             },
             error: function() {
                 contenedor.classList.remove('flavor-suscripcion-cargando');
-                alert('<?php echo esc_js(__('Error de conexion', 'flavor-chat-ia')); ?>');
+                alert('<?php echo esc_js(__('Error de conexion', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
             }
         });
     }
@@ -802,12 +802,12 @@ $usuario_id = get_current_user_id();
                 if (response.success && !response.data.suscrito) {
                     location.reload();
                 } else {
-                    alert(response.data.message || '<?php echo esc_js(__('Error al cancelar', 'flavor-chat-ia')); ?>');
+                    alert(response.data.message || '<?php echo esc_js(__('Error al cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                 }
             },
             error: function() {
                 contenedor.classList.remove('flavor-suscripcion-cargando');
-                alert('<?php echo esc_js(__('Error de conexion', 'flavor-chat-ia')); ?>');
+                alert('<?php echo esc_js(__('Error de conexion', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
             }
         });
     }

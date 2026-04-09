@@ -28,8 +28,8 @@ if (!$tabla_especies_existe) {
         <div class="dm-alert dm-alert--info">
             <span class="dashicons dashicons-info"></span>
             <div>
-                <strong><?php esc_html_e('Módulo en preparación', 'flavor-chat-ia'); ?></strong>
-                <p><?php esc_html_e('Las tablas del módulo Biodiversidad Local aún no han sido creadas. Activa el módulo completamente para generar la estructura necesaria.', 'flavor-chat-ia'); ?></p>
+                <strong><?php esc_html_e('Módulo en preparación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                <p><?php esc_html_e('Las tablas del módulo Biodiversidad Local aún no han sido creadas. Activa el módulo completamente para generar la estructura necesaria.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
     </div>
@@ -114,7 +114,7 @@ $colores_categoria = [
         <span class="dashicons dashicons-pets dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($total_especies); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Especies Catalogadas', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Especies Catalogadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -122,7 +122,7 @@ $colores_categoria = [
         <span class="dashicons dashicons-visibility dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($total_avistamientos)); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Avistamientos', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Avistamientos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -130,7 +130,7 @@ $colores_categoria = [
         <span class="dashicons dashicons-admin-users dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($total_observadores); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Observadores', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Observadores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -138,7 +138,7 @@ $colores_categoria = [
         <span class="dashicons dashicons-portfolio dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($proyectos_activos); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Proyectos Activos', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Proyectos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 </div>
@@ -147,8 +147,8 @@ $colores_categoria = [
 <div class="dm-alert dm-alert--warning">
     <span class="dashicons dashicons-warning"></span>
     <div>
-        <strong><?php printf(esc_html__('%s avistamientos pendientes de verificación', 'flavor-chat-ia'), number_format_i18n($avistamientos_pendientes)); ?></strong>
-        <span><?php esc_html_e('Requieren revisión por parte de expertos.', 'flavor-chat-ia'); ?></span>
+        <strong><?php printf(esc_html__('%s avistamientos pendientes de verificación', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($avistamientos_pendientes)); ?></strong>
+        <span><?php esc_html_e('Requieren revisión por parte de expertos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
     </div>
 </div>
 <?php endif; ?>
@@ -158,32 +158,32 @@ $colores_categoria = [
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-chart-area"></span>
-                <?php esc_html_e('Actividad de Avistamientos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Actividad de Avistamientos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
-            <span class="dm-card__subtitle"><?php printf(esc_html__('%s este mes', 'flavor-chat-ia'), number_format_i18n($avistamientos_mes)); ?></span>
+            <span class="dm-card__subtitle"><?php printf(esc_html__('%s este mes', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($avistamientos_mes)); ?></span>
         </div>
         <div class="dm-card__body">
             <?php if (empty($actividad_mensual)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-chart-line"></span>
-                    <p><?php esc_html_e('No hay avistamientos registrados.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay avistamientos registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <?php
                 $max_avistamientos = max(array_column($actividad_mensual, 'total'));
                 $meses = [
-                    '01' => __('Ene', 'flavor-chat-ia'),
-                    '02' => __('Feb', 'flavor-chat-ia'),
-                    '03' => __('Mar', 'flavor-chat-ia'),
-                    '04' => __('Abr', 'flavor-chat-ia'),
-                    '05' => __('May', 'flavor-chat-ia'),
-                    '06' => __('Jun', 'flavor-chat-ia'),
-                    '07' => __('Jul', 'flavor-chat-ia'),
-                    '08' => __('Ago', 'flavor-chat-ia'),
-                    '09' => __('Sep', 'flavor-chat-ia'),
-                    '10' => __('Oct', 'flavor-chat-ia'),
-                    '11' => __('Nov', 'flavor-chat-ia'),
-                    '12' => __('Dic', 'flavor-chat-ia'),
+                    '01' => __('Ene', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    '02' => __('Feb', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    '03' => __('Mar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    '04' => __('Abr', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    '05' => __('May', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    '06' => __('Jun', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    '07' => __('Jul', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    '08' => __('Ago', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    '09' => __('Sep', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    '10' => __('Oct', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    '11' => __('Nov', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    '12' => __('Dic', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
                 ?>
                 <div class="dm-chart-bars">
@@ -208,14 +208,14 @@ $colores_categoria = [
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-category"></span>
-                <?php esc_html_e('Especies por Categoría', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Especies por Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <?php if (empty($por_categoria)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-pets"></span>
-                    <p><?php esc_html_e('No hay especies catalogadas.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay especies catalogadas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="dm-data-list">
@@ -240,14 +240,14 @@ $colores_categoria = [
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-star-filled"></span>
-                <?php esc_html_e('Especies Más Avistadas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Especies Más Avistadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <?php if (empty($especies_populares)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-pets"></span>
-                    <p><?php esc_html_e('No hay avistamientos verificados todavía.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay avistamientos verificados todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <ul class="dm-ranking">
@@ -278,23 +278,23 @@ $colores_categoria = [
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-clock"></span>
-                <?php esc_html_e('Avistamientos Recientes', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Avistamientos Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <?php if (empty($avistamientos_recientes)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-visibility"></span>
-                    <p><?php esc_html_e('No hay avistamientos registrados.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay avistamientos registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <ul class="dm-list">
                     <?php foreach ($avistamientos_recientes as $avistamiento): ?>
                         <li class="dm-list__item">
                             <div class="dm-list__content">
-                                <strong class="dm-list__title"><?php echo esc_html($avistamiento->nombre_comun ?: __('Especie desconocida', 'flavor-chat-ia')); ?></strong>
+                                <strong class="dm-list__title"><?php echo esc_html($avistamiento->nombre_comun ?: __('Especie desconocida', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong>
                                 <span class="dm-list__meta">
-                                    <?php echo esc_html($avistamiento->display_name ?: __('Anónimo', 'flavor-chat-ia')); ?>
+                                    <?php echo esc_html($avistamiento->display_name ?: __('Anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                                     &bull;
                                     <?php echo esc_html(human_time_diff(strtotime($avistamiento->fecha_creacion), current_time('timestamp'))); ?>
                                 </span>
@@ -317,18 +317,18 @@ $colores_categoria = [
     <div class="dm-stat-card dm-stat-card--success">
         <span class="dashicons dashicons-yes dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($avistamientos_verificados); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Avistamientos Verificados', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Avistamientos Verificados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--info">
         <span class="dashicons dashicons-star-filled dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($especies_verificadas); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Especies Verificadas', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Especies Verificadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--secondary">
         <span class="dashicons dashicons-portfolio dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($total_proyectos); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Total Proyectos', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Total Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 </div>

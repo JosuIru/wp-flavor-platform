@@ -106,7 +106,7 @@ class Chat_IA_Admin_Backup {
         if ($resultado === false) {
             return [
                 'success' => false,
-                'error' => __('No se pudo crear el archivo de backup', 'flavor-chat-ia'),
+                'error' => __('No se pudo crear el archivo de backup', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -159,7 +159,7 @@ class Chat_IA_Admin_Backup {
         if ($resultado === false) {
             return [
                 'success' => false,
-                'error' => __('No se pudo crear el archivo de backup', 'flavor-chat-ia'),
+                'error' => __('No se pudo crear el archivo de backup', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -249,7 +249,7 @@ class Chat_IA_Admin_Backup {
         if (!$backup_data || empty($backup_data['datos'])) {
             return [
                 'success' => false,
-                'error' => __('Archivo de backup corrupto o vacío', 'flavor-chat-ia'),
+                'error' => __('Archivo de backup corrupto o vacío', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -309,7 +309,7 @@ class Chat_IA_Admin_Backup {
         if (!$backup_data) {
             return [
                 'success' => false,
-                'error' => __('Archivo de backup corrupto', 'flavor-chat-ia'),
+                'error' => __('Archivo de backup corrupto', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -361,7 +361,7 @@ class Chat_IA_Admin_Backup {
             if (time() - $fecha_backup < 86400) {
                 return [
                     'success' => false,
-                    'error' => __('No se pueden eliminar backups automáticos de las últimas 24 horas', 'flavor-chat-ia'),
+                    'error' => __('No se pueden eliminar backups automáticos de las últimas 24 horas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
         }
@@ -376,7 +376,7 @@ class Chat_IA_Admin_Backup {
 
         return [
             'success' => false,
-            'error' => __('No se pudo eliminar el archivo', 'flavor-chat-ia'),
+            'error' => __('No se pudo eliminar el archivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 

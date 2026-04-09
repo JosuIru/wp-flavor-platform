@@ -42,15 +42,15 @@ $modulo = new Flavor_Chat_Trabajo_Digno_Module();
 
 <div class="td-container">
     <header class="td-header">
-        <h2><?php esc_html_e('Bolsa de Trabajo Digno', 'flavor-chat-ia'); ?></h2>
-        <p><?php esc_html_e('Ofertas de empleo con criterios éticos y condiciones justas', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Bolsa de Trabajo Digno', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p><?php esc_html_e('Ofertas de empleo con criterios éticos y condiciones justas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </header>
 
     <!-- Stats -->
     <div class="td-stats-bar">
         <div class="td-stat-item">
             <div class="td-stat-item__valor"><?php echo esc_html(count($ofertas)); ?></div>
-            <div class="td-stat-item__label"><?php esc_html_e('Ofertas activas', 'flavor-chat-ia'); ?></div>
+            <div class="td-stat-item__label"><?php esc_html_e('Ofertas activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
         <?php foreach ($tipos as $tipo_id => $tipo_data) : ?>
         <div class="td-stat-item">
@@ -65,14 +65,14 @@ $modulo = new Flavor_Chat_Trabajo_Digno_Module();
     <!-- Filtros -->
     <div class="td-filtros">
         <select class="td-filtro-sector">
-            <option value="todos"><?php esc_html_e('Todos los sectores', 'flavor-chat-ia'); ?></option>
+            <option value="todos"><?php esc_html_e('Todos los sectores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             <?php foreach ($sectores as $sector_id => $sector_data) : ?>
             <option value="<?php echo esc_attr($sector_id); ?>"><?php echo esc_html($sector_data['nombre']); ?></option>
             <?php endforeach; ?>
         </select>
 
         <select class="td-filtro-jornada">
-            <option value="todos"><?php esc_html_e('Todas las jornadas', 'flavor-chat-ia'); ?></option>
+            <option value="todos"><?php esc_html_e('Todas las jornadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             <?php foreach ($jornadas as $jornada_id => $jornada_nombre) : ?>
             <option value="<?php echo esc_attr($jornada_id); ?>"><?php echo esc_html($jornada_nombre); ?></option>
             <?php endforeach; ?>
@@ -81,7 +81,7 @@ $modulo = new Flavor_Chat_Trabajo_Digno_Module();
         <?php if (is_user_logged_in()) : ?>
         <a href="<?php echo esc_url(home_url('/trabajo-digno/publicar/')); ?>" class="td-btn td-btn--primary" style="margin-left: auto;">
             <span class="dashicons dashicons-plus-alt2"></span>
-            <?php esc_html_e('Publicar oferta', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Publicar oferta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <?php endif; ?>
     </div>
@@ -89,7 +89,7 @@ $modulo = new Flavor_Chat_Trabajo_Digno_Module();
     <!-- Tipos tabs -->
     <div class="td-tipos-tabs">
         <button class="td-tipo-tab activo" data-tipo="todos">
-            <?php esc_html_e('Todos', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
         <?php foreach ($tipos as $tipo_id => $tipo_data) : ?>
         <button class="td-tipo-tab" data-tipo="<?php echo esc_attr($tipo_id); ?>">
@@ -137,7 +137,7 @@ $modulo = new Flavor_Chat_Trabajo_Digno_Module();
                     <span class="dashicons <?php echo esc_attr($tipo_data['icono']); ?>"></span>
                     <?php echo esc_html($tipo_data['nombre']); ?>
                 </span>
-                <div class="td-oferta-card__dignidad" title="<?php esc_attr_e('Índice de trabajo digno', 'flavor-chat-ia'); ?>">
+                <div class="td-oferta-card__dignidad" title="<?php esc_attr_e('Índice de trabajo digno', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span><?php echo esc_html($indice_dignidad); ?>%</span>
                     <div class="td-dignidad-bar">
                         <div class="td-dignidad-bar__fill" style="width: <?php echo esc_attr($indice_dignidad); ?>%"></div>
@@ -147,7 +147,7 @@ $modulo = new Flavor_Chat_Trabajo_Digno_Module();
 
             <h3 class="td-oferta-card__titulo"><?php echo esc_html($oferta->post_title); ?></h3>
             <div class="td-oferta-card__empresa">
-                <?php echo esc_html($autor ? $autor->display_name : __('Anónimo', 'flavor-chat-ia')); ?>
+                <?php echo esc_html($autor ? $autor->display_name : __('Anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
             </div>
 
             <div class="td-oferta-card__meta">
@@ -183,10 +183,10 @@ $modulo = new Flavor_Chat_Trabajo_Digno_Module();
 
                 <?php if (is_user_logged_in() && $oferta->post_author != $user_id) : ?>
                     <?php if ($ya_postulo) : ?>
-                    <span class="td-btn td-btn--secondary td-btn--small"><?php esc_html_e('Postulado', 'flavor-chat-ia'); ?></span>
+                    <span class="td-btn td-btn--secondary td-btn--small"><?php esc_html_e('Postulado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <?php else : ?>
                     <button class="td-btn td-btn--primary td-btn--small td-btn-postular" data-oferta="<?php echo esc_attr($oferta->ID); ?>">
-                        <?php esc_html_e('Postular', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Postular', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <?php endif; ?>
                 <?php endif; ?>
@@ -197,10 +197,10 @@ $modulo = new Flavor_Chat_Trabajo_Digno_Module();
     <?php else : ?>
     <div class="td-empty-state">
         <span class="dashicons dashicons-businessman"></span>
-        <p><?php esc_html_e('No hay ofertas de trabajo publicadas.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('No hay ofertas de trabajo publicadas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         <?php if (is_user_logged_in()) : ?>
         <a href="<?php echo esc_url(home_url('/trabajo-digno/publicar/')); ?>" class="td-btn td-btn--primary">
-            <?php esc_html_e('Publicar la primera oferta', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Publicar la primera oferta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <?php endif; ?>
     </div>

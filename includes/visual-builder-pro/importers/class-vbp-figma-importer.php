@@ -180,7 +180,7 @@ class Flavor_VBP_Figma_Importer {
         if ( ! $this->api->is_configured() ) {
             return new WP_Error(
                 'figma_not_configured',
-                __( 'Token de Figma no configurado. Configúralo en Ajustes > Chat IA.', 'flavor-chat-ia' ),
+                __( 'Token de Figma no configurado. Configúralo en Ajustes > Chat IA.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 400 )
             );
         }
@@ -206,7 +206,7 @@ class Flavor_VBP_Figma_Importer {
         if ( ! $file_key ) {
             return new WP_Error(
                 'missing_file_key',
-                __( 'Se requiere file_key o URL de Figma', 'flavor-chat-ia' ),
+                __( 'Se requiere file_key o URL de Figma', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 400 )
             );
         }
@@ -245,7 +245,7 @@ class Flavor_VBP_Figma_Importer {
         if ( ! $node ) {
             return new WP_Error(
                 'no_node_found',
-                __( 'No se encontró contenido para importar', 'flavor-chat-ia' ),
+                __( 'No se encontró contenido para importar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 404 )
             );
         }
@@ -286,7 +286,7 @@ class Flavor_VBP_Figma_Importer {
         if ( ! $this->api->is_configured() ) {
             return new WP_Error(
                 'figma_not_configured',
-                __( 'Token de Figma no configurado', 'flavor-chat-ia' ),
+                __( 'Token de Figma no configurado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 400 )
             );
         }
@@ -308,7 +308,7 @@ class Flavor_VBP_Figma_Importer {
         if ( ! $file_key ) {
             return new WP_Error(
                 'missing_file_key',
-                __( 'Se requiere file_key o URL de Figma', 'flavor-chat-ia' ),
+                __( 'Se requiere file_key o URL de Figma', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 400 )
             );
         }
@@ -400,7 +400,7 @@ class Flavor_VBP_Figma_Importer {
                 array(
                     'configured' => false,
                     'connected'  => false,
-                    'message'    => __( 'Token de Figma no configurado', 'flavor-chat-ia' ),
+                    'message'    => __( 'Token de Figma no configurado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 200
             );
@@ -415,8 +415,8 @@ class Flavor_VBP_Figma_Importer {
                 'connected'  => $verification['success'],
                 'user'       => $verification['user'] ?? null,
                 'message'    => $verification['success']
-                    ? __( 'Conectado a Figma', 'flavor-chat-ia' )
-                    : ( $verification['error'] ?? __( 'Error de conexión', 'flavor-chat-ia' ) ),
+                    ? __( 'Conectado a Figma', FLAVOR_PLATFORM_TEXT_DOMAIN )
+                    : ( $verification['error'] ?? __( 'Error de conexión', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             ),
             200
         );
@@ -502,13 +502,13 @@ class Flavor_VBP_Figma_Importer {
         check_ajax_referer( 'flavor_admin_nonce', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( array( 'message' => __( 'Sin permisos', 'flavor-chat-ia' ) ) );
+            wp_send_json_error( array( 'message' => __( 'Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) );
         }
 
         $token = sanitize_text_field( $_POST['token'] ?? '' );
 
         if ( empty( $token ) ) {
-            wp_send_json_error( array( 'message' => __( 'Token vacío', 'flavor-chat-ia' ) ) );
+            wp_send_json_error( array( 'message' => __( 'Token vacío', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) );
         }
 
         // Establecer temporalmente el token
@@ -519,7 +519,7 @@ class Flavor_VBP_Figma_Importer {
 
         if ( $verification['success'] ) {
             wp_send_json_success( array(
-                'message' => __( 'Token válido', 'flavor-chat-ia' ),
+                'message' => __( 'Token válido', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'user'    => $verification['user'],
             ) );
         } else {
@@ -536,7 +536,7 @@ class Flavor_VBP_Figma_Importer {
         check_ajax_referer( 'flavor_admin_nonce', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( array( 'message' => __( 'Sin permisos', 'flavor-chat-ia' ) ) );
+            wp_send_json_error( array( 'message' => __( 'Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) );
         }
 
         $token = sanitize_text_field( $_POST['token'] ?? '' );
@@ -553,7 +553,7 @@ class Flavor_VBP_Figma_Importer {
         }
 
         wp_send_json_success( array(
-            'message' => __( 'Token guardado correctamente', 'flavor-chat-ia' ),
+            'message' => __( 'Token guardado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
         ) );
     }
 
@@ -564,14 +564,14 @@ class Flavor_VBP_Figma_Importer {
      */
     public function get_token_instructions() {
         return array(
-            'title' => __( 'Cómo obtener tu token de Figma', 'flavor-chat-ia' ),
+            'title' => __( 'Cómo obtener tu token de Figma', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'steps' => array(
-                __( 'Inicia sesión en Figma', 'flavor-chat-ia' ),
-                __( 'Ve a tu perfil (esquina superior derecha) > Settings', 'flavor-chat-ia' ),
-                __( 'Desplázate hasta "Personal access tokens"', 'flavor-chat-ia' ),
-                __( 'Haz clic en "Generate new token"', 'flavor-chat-ia' ),
-                __( 'Dale un nombre descriptivo y copia el token generado', 'flavor-chat-ia' ),
-                __( 'Pega el token aquí y guárdalo', 'flavor-chat-ia' ),
+                __( 'Inicia sesión en Figma', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                __( 'Ve a tu perfil (esquina superior derecha) > Settings', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                __( 'Desplázate hasta "Personal access tokens"', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                __( 'Haz clic en "Generate new token"', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                __( 'Dale un nombre descriptivo y copia el token generado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                __( 'Pega el token aquí y guárdalo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'link'  => 'https://www.figma.com/developers/api#access-tokens',
         );

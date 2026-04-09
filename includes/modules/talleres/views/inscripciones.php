@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
 
 // Verificar permisos
 if (!current_user_can('manage_options')) {
-    wp_die(__('No tienes permisos suficientes para acceder a esta página.', 'flavor-chat-ia'));
+    wp_die(__('No tienes permisos suficientes para acceder a esta página.', 'flavor-platform'));
 }
 
 // =============================================================================
@@ -27,12 +27,12 @@ if (!current_user_can('manage_options')) {
  */
 function obtener_badge_estado_inscripcion($estado) {
     $estados = [
-        'confirmada' => ['clase' => 'success', 'texto' => __('Confirmada', 'flavor-chat-ia'), 'icono' => 'yes-alt'],
-        'pendiente' => ['clase' => 'warning', 'texto' => __('Pendiente', 'flavor-chat-ia'), 'icono' => 'clock'],
-        'lista_espera' => ['clase' => 'info', 'texto' => __('Lista de espera', 'flavor-chat-ia'), 'icono' => 'hourglass'],
-        'cancelada' => ['clase' => 'danger', 'texto' => __('Cancelada', 'flavor-chat-ia'), 'icono' => 'dismiss'],
-        'asistio' => ['clase' => 'primary', 'texto' => __('Asistió', 'flavor-chat-ia'), 'icono' => 'awards'],
-        'no_asistio' => ['clase' => 'secondary', 'texto' => __('No asistió', 'flavor-chat-ia'), 'icono' => 'no'],
+        'confirmada' => ['clase' => 'success', 'texto' => __('Confirmada', 'flavor-platform'), 'icono' => 'yes-alt'],
+        'pendiente' => ['clase' => 'warning', 'texto' => __('Pendiente', 'flavor-platform'), 'icono' => 'clock'],
+        'lista_espera' => ['clase' => 'info', 'texto' => __('Lista de espera', 'flavor-platform'), 'icono' => 'hourglass'],
+        'cancelada' => ['clase' => 'danger', 'texto' => __('Cancelada', 'flavor-platform'), 'icono' => 'dismiss'],
+        'asistio' => ['clase' => 'primary', 'texto' => __('Asistió', 'flavor-platform'), 'icono' => 'awards'],
+        'no_asistio' => ['clase' => 'secondary', 'texto' => __('No asistió', 'flavor-platform'), 'icono' => 'no'],
     ];
 
     if (isset($estados[$estado])) {
@@ -47,21 +47,21 @@ function obtener_badge_estado_inscripcion($estado) {
  */
 function obtener_badge_estado_pago($estado_pago, $precio) {
     if ($precio == 0) {
-        return ['clase' => 'info', 'texto' => __('Gratis', 'flavor-chat-ia'), 'icono' => 'heart'];
+        return ['clase' => 'info', 'texto' => __('Gratis', 'flavor-platform'), 'icono' => 'heart'];
     }
 
     $estados = [
-        'pagado' => ['clase' => 'success', 'texto' => __('Pagado', 'flavor-chat-ia'), 'icono' => 'yes-alt'],
-        'pendiente' => ['clase' => 'warning', 'texto' => __('Pendiente', 'flavor-chat-ia'), 'icono' => 'clock'],
-        'parcial' => ['clase' => 'info', 'texto' => __('Parcial', 'flavor-chat-ia'), 'icono' => 'chart-pie'],
-        'reembolsado' => ['clase' => 'secondary', 'texto' => __('Reembolsado', 'flavor-chat-ia'), 'icono' => 'undo'],
+        'pagado' => ['clase' => 'success', 'texto' => __('Pagado', 'flavor-platform'), 'icono' => 'yes-alt'],
+        'pendiente' => ['clase' => 'warning', 'texto' => __('Pendiente', 'flavor-platform'), 'icono' => 'clock'],
+        'parcial' => ['clase' => 'info', 'texto' => __('Parcial', 'flavor-platform'), 'icono' => 'chart-pie'],
+        'reembolsado' => ['clase' => 'secondary', 'texto' => __('Reembolsado', 'flavor-platform'), 'icono' => 'undo'],
     ];
 
     if (isset($estados[$estado_pago])) {
         return $estados[$estado_pago];
     }
 
-    return ['clase' => 'warning', 'texto' => __('Pendiente', 'flavor-chat-ia'), 'icono' => 'clock'];
+    return ['clase' => 'warning', 'texto' => __('Pendiente', 'flavor-platform'), 'icono' => 'clock'];
 }
 
 // =============================================================================
@@ -664,7 +664,7 @@ if ($tablas_talleres_disponibles) {
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-welcome-learn-more" style="margin-right: 8px;"></span>
-        <?php echo esc_html__('Gestión de Inscripciones', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Gestión de Inscripciones', 'flavor-platform'); ?>
     </h1>
     <hr class="wp-header-end">
 
@@ -672,7 +672,7 @@ if ($tablas_talleres_disponibles) {
         <?php if (!$tablas_talleres_disponibles): ?>
             <div class="flavor-inscripciones-demo-notice">
                 <span class="dashicons dashicons-info"></span>
-                <span><?php echo esc_html__('No hay datos disponibles: faltan tablas del módulo Talleres.', 'flavor-chat-ia'); ?></span>
+                <span><?php echo esc_html__('No hay datos disponibles: faltan tablas del módulo Talleres.', 'flavor-platform'); ?></span>
             </div>
         <?php endif; ?>
 
@@ -684,8 +684,8 @@ if ($tablas_talleres_disponibles) {
                 </div>
                 <div class="flavor-inscripciones-stat-content">
                     <h3><?php echo number_format($total_inscripciones); ?></h3>
-                    <span><?php echo esc_html__('Total Inscripciones', 'flavor-chat-ia'); ?></span>
-                    <small><?php printf(esc_html__('%d este mes', 'flavor-chat-ia'), $inscripciones_mes); ?></small>
+                    <span><?php echo esc_html__('Total Inscripciones', 'flavor-platform'); ?></span>
+                    <small><?php printf(esc_html__('%d este mes', 'flavor-platform'), $inscripciones_mes); ?></small>
                 </div>
             </div>
 
@@ -695,8 +695,8 @@ if ($tablas_talleres_disponibles) {
                 </div>
                 <div class="flavor-inscripciones-stat-content">
                     <h3><?php echo number_format($inscripciones_confirmadas); ?></h3>
-                    <span><?php echo esc_html__('Confirmadas', 'flavor-chat-ia'); ?></span>
-                    <small><?php printf(esc_html__('%d pendientes', 'flavor-chat-ia'), $inscripciones_pendientes); ?></small>
+                    <span><?php echo esc_html__('Confirmadas', 'flavor-platform'); ?></span>
+                    <small><?php printf(esc_html__('%d pendientes', 'flavor-platform'), $inscripciones_pendientes); ?></small>
                 </div>
             </div>
 
@@ -706,8 +706,8 @@ if ($tablas_talleres_disponibles) {
                 </div>
                 <div class="flavor-inscripciones-stat-content">
                     <h3><?php echo number_format($ingresos_totales, 2); ?> €</h3>
-                    <span><?php echo esc_html__('Ingresos Recaudados', 'flavor-chat-ia'); ?></span>
-                    <small><?php printf(esc_html__('%s € pendientes', 'flavor-chat-ia'), number_format($ingresos_pendientes, 2)); ?></small>
+                    <span><?php echo esc_html__('Ingresos Recaudados', 'flavor-platform'); ?></span>
+                    <small><?php printf(esc_html__('%s € pendientes', 'flavor-platform'), number_format($ingresos_pendientes, 2)); ?></small>
                 </div>
             </div>
 
@@ -717,7 +717,7 @@ if ($tablas_talleres_disponibles) {
                 </div>
                 <div class="flavor-inscripciones-stat-content">
                     <h3><?php echo $tasa_asistencia; ?>%</h3>
-                    <span><?php echo esc_html__('Tasa de Asistencia', 'flavor-chat-ia'); ?></span>
+                    <span><?php echo esc_html__('Tasa de Asistencia', 'flavor-platform'); ?></span>
                 </div>
             </div>
         </div>
@@ -735,14 +735,14 @@ if ($tablas_talleres_disponibles) {
 
                     <div class="flavor-inscripciones-filters-grid">
                         <div class="flavor-inscripciones-filter-group">
-                            <label><?php echo esc_html__('Buscar', 'flavor-chat-ia'); ?></label>
-                            <input type="text" name="s" value="<?php echo esc_attr($filtro_busqueda); ?>" placeholder="<?php echo esc_attr__('Nombre o email...', 'flavor-chat-ia'); ?>">
+                            <label><?php echo esc_html__('Buscar', 'flavor-platform'); ?></label>
+                            <input type="text" name="s" value="<?php echo esc_attr($filtro_busqueda); ?>" placeholder="<?php echo esc_attr__('Nombre o email...', 'flavor-platform'); ?>">
                         </div>
 
                         <div class="flavor-inscripciones-filter-group">
-                            <label><?php echo esc_html__('Taller', 'flavor-chat-ia'); ?></label>
+                            <label><?php echo esc_html__('Taller', 'flavor-platform'); ?></label>
                             <select name="taller_id">
-                                <option value=""><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></option>
+                                <option value=""><?php echo esc_html__('Todos', 'flavor-platform'); ?></option>
                                 <?php foreach ($talleres_disponibles as $taller): ?>
                                     <option value="<?php echo esc_attr($taller->id); ?>" <?php selected($filtro_taller, $taller->id); ?>>
                                         <?php echo esc_html($taller->titulo); ?>
@@ -752,51 +752,51 @@ if ($tablas_talleres_disponibles) {
                         </div>
 
                         <div class="flavor-inscripciones-filter-group">
-                            <label><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></label>
+                            <label><?php echo esc_html__('Estado', 'flavor-platform'); ?></label>
                             <select name="estado">
-                                <option value=""><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></option>
-                                <option value="confirmada" <?php selected($filtro_estado, 'confirmada'); ?>><?php echo esc_html__('Confirmada', 'flavor-chat-ia'); ?></option>
-                                <option value="pendiente" <?php selected($filtro_estado, 'pendiente'); ?>><?php echo esc_html__('Pendiente', 'flavor-chat-ia'); ?></option>
-                                <option value="lista_espera" <?php selected($filtro_estado, 'lista_espera'); ?>><?php echo esc_html__('Lista de espera', 'flavor-chat-ia'); ?></option>
-                                <option value="asistio" <?php selected($filtro_estado, 'asistio'); ?>><?php echo esc_html__('Asistió', 'flavor-chat-ia'); ?></option>
-                                <option value="cancelada" <?php selected($filtro_estado, 'cancelada'); ?>><?php echo esc_html__('Cancelada', 'flavor-chat-ia'); ?></option>
+                                <option value=""><?php echo esc_html__('Todos', 'flavor-platform'); ?></option>
+                                <option value="confirmada" <?php selected($filtro_estado, 'confirmada'); ?>><?php echo esc_html__('Confirmada', 'flavor-platform'); ?></option>
+                                <option value="pendiente" <?php selected($filtro_estado, 'pendiente'); ?>><?php echo esc_html__('Pendiente', 'flavor-platform'); ?></option>
+                                <option value="lista_espera" <?php selected($filtro_estado, 'lista_espera'); ?>><?php echo esc_html__('Lista de espera', 'flavor-platform'); ?></option>
+                                <option value="asistio" <?php selected($filtro_estado, 'asistio'); ?>><?php echo esc_html__('Asistió', 'flavor-platform'); ?></option>
+                                <option value="cancelada" <?php selected($filtro_estado, 'cancelada'); ?>><?php echo esc_html__('Cancelada', 'flavor-platform'); ?></option>
                             </select>
                         </div>
 
                         <div class="flavor-inscripciones-filter-group">
-                            <label><?php echo esc_html__('Pago', 'flavor-chat-ia'); ?></label>
+                            <label><?php echo esc_html__('Pago', 'flavor-platform'); ?></label>
                             <select name="estado_pago">
-                                <option value=""><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></option>
-                                <option value="pagado" <?php selected($filtro_pago, 'pagado'); ?>><?php echo esc_html__('Pagado', 'flavor-chat-ia'); ?></option>
-                                <option value="pendiente" <?php selected($filtro_pago, 'pendiente'); ?>><?php echo esc_html__('Pendiente', 'flavor-chat-ia'); ?></option>
+                                <option value=""><?php echo esc_html__('Todos', 'flavor-platform'); ?></option>
+                                <option value="pagado" <?php selected($filtro_pago, 'pagado'); ?>><?php echo esc_html__('Pagado', 'flavor-platform'); ?></option>
+                                <option value="pendiente" <?php selected($filtro_pago, 'pendiente'); ?>><?php echo esc_html__('Pendiente', 'flavor-platform'); ?></option>
                             </select>
                         </div>
 
                         <div class="flavor-inscripciones-filter-group">
-                            <label><?php echo esc_html__('Ordenar por', 'flavor-chat-ia'); ?></label>
+                            <label><?php echo esc_html__('Ordenar por', 'flavor-platform'); ?></label>
                             <select name="orderby">
-                                <option value="fecha_inscripcion" <?php selected($filtro_orden, 'fecha_inscripcion'); ?>><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></option>
-                                <option value="participante_nombre" <?php selected($filtro_orden, 'participante_nombre'); ?>><?php echo esc_html__('Nombre', 'flavor-chat-ia'); ?></option>
-                                <option value="taller_titulo" <?php selected($filtro_orden, 'taller_titulo'); ?>><?php echo esc_html__('Taller', 'flavor-chat-ia'); ?></option>
-                                <option value="precio_pagado" <?php selected($filtro_orden, 'precio_pagado'); ?>><?php echo esc_html__('Precio', 'flavor-chat-ia'); ?></option>
+                                <option value="fecha_inscripcion" <?php selected($filtro_orden, 'fecha_inscripcion'); ?>><?php echo esc_html__('Fecha', 'flavor-platform'); ?></option>
+                                <option value="participante_nombre" <?php selected($filtro_orden, 'participante_nombre'); ?>><?php echo esc_html__('Nombre', 'flavor-platform'); ?></option>
+                                <option value="taller_titulo" <?php selected($filtro_orden, 'taller_titulo'); ?>><?php echo esc_html__('Taller', 'flavor-platform'); ?></option>
+                                <option value="precio_pagado" <?php selected($filtro_orden, 'precio_pagado'); ?>><?php echo esc_html__('Precio', 'flavor-platform'); ?></option>
                             </select>
                         </div>
 
                         <div class="flavor-inscripciones-filter-group">
-                            <label><?php echo esc_html__('Orden', 'flavor-chat-ia'); ?></label>
+                            <label><?php echo esc_html__('Orden', 'flavor-platform'); ?></label>
                             <select name="order">
-                                <option value="DESC" <?php selected($filtro_orden_dir, 'DESC'); ?>><?php echo esc_html__('Descendente', 'flavor-chat-ia'); ?></option>
-                                <option value="ASC" <?php selected($filtro_orden_dir, 'ASC'); ?>><?php echo esc_html__('Ascendente', 'flavor-chat-ia'); ?></option>
+                                <option value="DESC" <?php selected($filtro_orden_dir, 'DESC'); ?>><?php echo esc_html__('Descendente', 'flavor-platform'); ?></option>
+                                <option value="ASC" <?php selected($filtro_orden_dir, 'ASC'); ?>><?php echo esc_html__('Ascendente', 'flavor-platform'); ?></option>
                             </select>
                         </div>
 
                         <div class="flavor-inscripciones-filters-actions">
                             <button type="submit" class="button button-primary">
                                 <span class="dashicons dashicons-search" style="vertical-align: middle;"></span>
-                                <?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Filtrar', 'flavor-platform'); ?>
                             </button>
                             <a href="<?php echo esc_url(remove_query_arg(['s', 'taller_id', 'estado', 'estado_pago', 'orderby', 'order', 'paged'])); ?>" class="button">
-                                <?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Limpiar', 'flavor-platform'); ?>
                             </a>
                         </div>
                     </div>
@@ -807,14 +807,14 @@ if ($tablas_talleres_disponibles) {
                     <table class="flavor-inscripciones-table">
                         <thead>
                             <tr>
-                                <th style="width: 50px;"><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
-                                <th><?php echo esc_html__('Participante', 'flavor-chat-ia'); ?></th>
-                                <th><?php echo esc_html__('Taller', 'flavor-chat-ia'); ?></th>
-                                <th><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></th>
-                                <th><?php echo esc_html__('Precio', 'flavor-chat-ia'); ?></th>
-                                <th><?php echo esc_html__('Pago', 'flavor-chat-ia'); ?></th>
-                                <th><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
-                                <th><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
+                                <th style="width: 50px;"><?php echo esc_html__('ID', 'flavor-platform'); ?></th>
+                                <th><?php echo esc_html__('Participante', 'flavor-platform'); ?></th>
+                                <th><?php echo esc_html__('Taller', 'flavor-platform'); ?></th>
+                                <th><?php echo esc_html__('Fecha', 'flavor-platform'); ?></th>
+                                <th><?php echo esc_html__('Precio', 'flavor-platform'); ?></th>
+                                <th><?php echo esc_html__('Pago', 'flavor-platform'); ?></th>
+                                <th><?php echo esc_html__('Estado', 'flavor-platform'); ?></th>
+                                <th><?php echo esc_html__('Acciones', 'flavor-platform'); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -844,7 +844,7 @@ if ($tablas_talleres_disponibles) {
                                     </td>
                                     <td>
                                         <span class="flavor-inscripciones-precio <?php echo esc_attr($precio_clase); ?>">
-                                            <?php echo ($inscripcion->precio_pagado ?? 0) > 0 ? number_format($inscripcion->precio_pagado, 2) . ' €' : __('Gratis', 'flavor-chat-ia'); ?>
+                                            <?php echo ($inscripcion->precio_pagado ?? 0) > 0 ? number_format($inscripcion->precio_pagado, 2) . ' €' : __('Gratis', 'flavor-platform'); ?>
                                         </span>
                                     </td>
                                     <td>
@@ -861,11 +861,11 @@ if ($tablas_talleres_disponibles) {
                                     </td>
                                     <td>
                                         <div class="flavor-inscripciones-acciones">
-                                            <button type="button" class="button button-small" title="<?php echo esc_attr__('Ver detalles', 'flavor-chat-ia'); ?>">
+                                            <button type="button" class="button button-small" title="<?php echo esc_attr__('Ver detalles', 'flavor-platform'); ?>">
                                                 <span class="dashicons dashicons-visibility" style="font-size: 14px; line-height: 1.4;"></span>
                                             </button>
                                             <?php if ($inscripcion->estado === 'pendiente'): ?>
-                                                <button type="button" class="button button-small button-primary" title="<?php echo esc_attr__('Confirmar', 'flavor-chat-ia'); ?>">
+                                                <button type="button" class="button button-small button-primary" title="<?php echo esc_attr__('Confirmar', 'flavor-platform'); ?>">
                                                     <span class="dashicons dashicons-yes" style="font-size: 14px; line-height: 1.4;"></span>
                                                 </button>
                                             <?php endif; ?>
@@ -881,7 +881,7 @@ if ($tablas_talleres_disponibles) {
                         <div class="flavor-inscripciones-pagination">
                             <span class="flavor-inscripciones-pagination-info">
                                 <?php printf(
-                                    esc_html__('Mostrando %d-%d de %d inscripciones', 'flavor-chat-ia'),
+                                    esc_html__('Mostrando %d-%d de %d inscripciones', 'flavor-platform'),
                                     $offset + 1,
                                     min($offset + $elementos_por_pagina, $total_filtrado),
                                     $total_filtrado
@@ -905,9 +905,9 @@ if ($tablas_talleres_disponibles) {
                 <?php else: ?>
                     <div class="flavor-inscripciones-empty">
                         <span class="dashicons dashicons-welcome-learn-more"></span>
-                        <p><?php echo esc_html__('No se encontraron inscripciones con los filtros aplicados.', 'flavor-chat-ia'); ?></p>
+                        <p><?php echo esc_html__('No se encontraron inscripciones con los filtros aplicados.', 'flavor-platform'); ?></p>
                         <a href="<?php echo esc_url(remove_query_arg(['s', 'taller_id', 'estado', 'estado_pago', 'orderby', 'order', 'paged'])); ?>" class="button">
-                            <?php echo esc_html__('Ver todas las inscripciones', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Ver todas las inscripciones', 'flavor-platform'); ?>
                         </a>
                     </div>
                 <?php endif; ?>
@@ -919,7 +919,7 @@ if ($tablas_talleres_disponibles) {
                 <div class="flavor-inscripciones-sidebar-card">
                     <h3>
                         <span class="dashicons dashicons-star-filled"></span>
-                        <?php echo esc_html__('Talleres Más Populares', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Talleres Más Populares', 'flavor-platform'); ?>
                     </h3>
                     <?php if (!empty($top_talleres)): ?>
                         <ul class="flavor-inscripciones-top-list">
@@ -940,7 +940,7 @@ if ($tablas_talleres_disponibles) {
                         </ul>
                     <?php else: ?>
                         <div style="padding: 20px; text-align: center; color: #64748b;">
-                            <?php echo esc_html__('Sin datos disponibles', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Sin datos disponibles', 'flavor-platform'); ?>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -950,7 +950,7 @@ if ($tablas_talleres_disponibles) {
                 <div class="flavor-inscripciones-sidebar-card">
                     <h3>
                         <span class="dashicons dashicons-chart-pie"></span>
-                        <?php echo esc_html__('Distribución por Estado', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Distribución por Estado', 'flavor-platform'); ?>
                     </h3>
                     <div class="flavor-inscripciones-chart-container">
                         <canvas id="flavor-inscripciones-estados-chart" height="200"></canvas>

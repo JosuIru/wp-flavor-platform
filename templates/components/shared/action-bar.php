@@ -29,7 +29,7 @@ if (!defined('ABSPATH')) {
 $bulk_actions = $bulk_actions ?? [];
 $filters = $filters ?? [];
 $show_search = $show_search ?? true;
-$search_placeholder = $search_placeholder ?? __('Buscar...', 'flavor-chat-ia');
+$search_placeholder = $search_placeholder ?? __('Buscar...', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $view_modes = $view_modes ?? [];
 $active_view = $active_view ?? 'grid';
 $actions = $actions ?? [];
@@ -68,7 +68,7 @@ $bar_id = 'action-bar-' . wp_rand(1000, 9999);
                 <!-- Contador de seleccionados -->
                 <span class="selected-count text-sm text-gray-500 <?php echo $selected_count === 0 ? 'hidden' : ''; ?>">
                     <?php printf(
-                        esc_html(_n('%d seleccionado', '%d seleccionados', $selected_count, 'flavor-chat-ia')),
+                        esc_html(_n('%d seleccionado', '%d seleccionados', $selected_count, FLAVOR_PLATFORM_TEXT_DOMAIN)),
                         $selected_count
                     ); ?>
                 </span>
@@ -78,7 +78,7 @@ $bar_id = 'action-bar-' . wp_rand(1000, 9999);
                     <button type="button"
                             onclick="this.nextElementSibling.classList.toggle('hidden')"
                             class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors">
-                        <span><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="text-xs">▼</span>
                     </button>
                     <div class="hidden absolute left-0 top-full mt-1 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-20">
@@ -139,7 +139,7 @@ $bar_id = 'action-bar-' . wp_rand(1000, 9999);
                                 <button type="button"
                                         onclick="flavorActionBar.clearFilter('<?php echo esc_js($bar_id); ?>', '<?php echo esc_js($filter['id'] ?? ''); ?>')"
                                         class="w-full px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 text-left">
-                                    <?php esc_html_e('Limpiar filtro', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Limpiar filtro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             </div>
                         </div>
@@ -150,7 +150,7 @@ $bar_id = 'action-bar-' . wp_rand(1000, 9999);
                 <button type="button"
                         class="clear-all-filters hidden px-3 py-2 text-sm text-<?php echo esc_attr($color); ?>-600 hover:bg-<?php echo esc_attr($color); ?>-50 rounded-xl transition-colors"
                         onclick="flavorActionBar.clearAllFilters('<?php echo esc_js($bar_id); ?>')">
-                    ✕ <?php esc_html_e('Limpiar filtros', 'flavor-chat-ia'); ?>
+                    ✕ <?php esc_html_e('Limpiar filtros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         <?php endif; ?>
@@ -274,7 +274,7 @@ window.flavorActionBar = window.flavorActionBar || {
         if (ids.length === 0) return;
 
         if (needsConfirm) {
-            if (!confirm('<?php echo esc_js(__('¿Estás seguro de realizar esta acción en los elementos seleccionados?', 'flavor-chat-ia')); ?>')) {
+            if (!confirm('<?php echo esc_js(__('¿Estás seguro de realizar esta acción en los elementos seleccionados?', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>')) {
                 return;
             }
         }

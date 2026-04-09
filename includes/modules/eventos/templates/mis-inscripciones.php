@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!is_user_logged_in()) {
-    echo '<div class="eventos-login-required"><span class="dashicons dashicons-lock"></span><h3>' . __('Inicia sesión para ver tus inscripciones', 'flavor-chat-ia') . '</h3><a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="btn btn-primary">' . __('Iniciar sesión', 'flavor-chat-ia') . '</a></div>';
+    echo '<div class="eventos-login-required"><span class="dashicons dashicons-lock"></span><h3>' . __('Inicia sesión para ver tus inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3><a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="btn btn-primary">' . __('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></div>';
     return;
 }
 
@@ -49,23 +49,23 @@ foreach ($inscripciones as $inscripcion) {
 }
 
 $estados_labels = [
-    'confirmada' => __('Confirmada', 'flavor-chat-ia'),
-    'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-    'cancelada' => __('Cancelada', 'flavor-chat-ia'),
-    'lista_espera' => __('Lista de espera', 'flavor-chat-ia'),
+    'confirmada' => __('Confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cancelada' => __('Cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'lista_espera' => __('Lista de espera', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 
 <div class="eventos-inscripciones-wrapper">
     <div class="eventos-tabs">
         <button class="eventos-tab active" data-tab="proximas">
-            <?php _e('Próximas', 'flavor-chat-ia'); ?>
+            <?php _e('Próximas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <?php if (count($proximas) > 0): ?>
                 <span class="eventos-badge"><?php echo count($proximas); ?></span>
             <?php endif; ?>
         </button>
         <button class="eventos-tab" data-tab="pasadas">
-            <?php _e('Historial', 'flavor-chat-ia'); ?>
+            <?php _e('Historial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
     </div>
 
@@ -113,11 +113,11 @@ $estados_labels = [
                         </div>
                         <div class="evento-card-footer">
                             <a href="<?php echo esc_url(add_query_arg('evento_id', $inscripcion->evento_id, Flavor_Chat_Helpers::get_action_url('eventos', 'detalle'))); ?>" class="btn btn-outline btn-sm">
-                                <?php _e('Ver evento', 'flavor-chat-ia'); ?>
+                                <?php _e('Ver evento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                             <?php if ($inscripcion->estado === 'confirmada' || $inscripcion->estado === 'pendiente'): ?>
                                 <button class="btn btn-danger btn-sm btn-cancelar-inscripcion" data-inscripcion-id="<?php echo $inscripcion->id; ?>">
-                                    <?php _e('Cancelar', 'flavor-chat-ia'); ?>
+                                    <?php _e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             <?php endif; ?>
                         </div>
@@ -127,10 +127,10 @@ $estados_labels = [
         <?php else: ?>
             <div class="eventos-empty">
                 <span class="dashicons dashicons-calendar-alt"></span>
-                <h3><?php _e('No tienes inscripciones próximas', 'flavor-chat-ia'); ?></h3>
-                <p><?php _e('Explora los eventos disponibles y apúntate.', 'flavor-chat-ia'); ?></p>
+                <h3><?php _e('No tienes inscripciones próximas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php _e('Explora los eventos disponibles y apúntate.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('eventos', '')); ?>" class="btn btn-primary">
-                    <?php _e('Ver eventos', 'flavor-chat-ia'); ?>
+                    <?php _e('Ver eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         <?php endif; ?>
@@ -169,8 +169,8 @@ $estados_labels = [
         <?php else: ?>
             <div class="eventos-empty">
                 <span class="dashicons dashicons-backup"></span>
-                <h3><?php _e('Sin historial', 'flavor-chat-ia'); ?></h3>
-                <p><?php _e('Aquí aparecerán tus eventos pasados.', 'flavor-chat-ia'); ?></p>
+                <h3><?php _e('Sin historial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php _e('Aquí aparecerán tus eventos pasados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         <?php endif; ?>
     </div>

@@ -24,7 +24,7 @@ $serie = $serie ?? null;
 $estilo = $estilo ?? 'card';
 $mostrar_serie = $mostrar_serie ?? true;
 $mostrar_boton_serie = $mostrar_boton_serie ?? true;
-$titulo_widget = $titulo_widget ?? __('Ultimo episodio', 'flavor-chat-ia');
+$titulo_widget = $titulo_widget ?? __('Ultimo episodio', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
 if (!$episodio) {
     return; // No mostrar nada si no hay episodio
@@ -52,11 +52,11 @@ $tiempo_transcurrido = '';
 if ($fecha_publicacion) {
     $diferencia = time() - $fecha_publicacion;
     if ($diferencia < 86400) {
-        $tiempo_transcurrido = __('Hoy', 'flavor-chat-ia');
+        $tiempo_transcurrido = __('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN);
     } elseif ($diferencia < 172800) {
-        $tiempo_transcurrido = __('Ayer', 'flavor-chat-ia');
+        $tiempo_transcurrido = __('Ayer', FLAVOR_PLATFORM_TEXT_DOMAIN);
     } elseif ($diferencia < 604800) {
-        $tiempo_transcurrido = sprintf(__('Hace %d dias', 'flavor-chat-ia'), floor($diferencia / 86400));
+        $tiempo_transcurrido = sprintf(__('Hace %d dias', FLAVOR_PLATFORM_TEXT_DOMAIN), floor($diferencia / 86400));
     } else {
         $tiempo_transcurrido = date_i18n('j M Y', $fecha_publicacion);
     }
@@ -126,7 +126,7 @@ $widget_id = 'flavor-ultimo-episodio-' . intval($episodio->id);
                         <?php endif; ?>
                         <?php if (!empty($episodio->numero_episodio)): ?>
                         <span class="flavor-meta-item">
-                            <?php echo sprintf(esc_html__('Ep. %d', 'flavor-chat-ia'), intval($episodio->numero_episodio)); ?>
+                            <?php echo sprintf(esc_html__('Ep. %d', FLAVOR_PLATFORM_TEXT_DOMAIN), intval($episodio->numero_episodio)); ?>
                         </span>
                         <?php endif; ?>
                     </div>
@@ -136,12 +136,12 @@ $widget_id = 'flavor-ultimo-episodio-' . intval($episodio->id);
                                 class="flavor-btn flavor-btn-primary flavor-btn-play-episodio"
                                 data-audio="<?php echo esc_url($episodio->audio_url ?? ''); ?>">
                             <span class="dashicons dashicons-controls-play"></span>
-                            <?php esc_html_e('Escuchar ahora', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Escuchar ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <?php if ($mostrar_boton_serie && $serie): ?>
                         <a href="<?php echo esc_url(add_query_arg('serie', $serie->id, home_url('/podcast/'))); ?>"
                            class="flavor-btn flavor-btn-outline flavor-btn-ver-serie">
-                            <?php esc_html_e('Ver serie', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Ver serie', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                         <?php endif; ?>
                     </div>
@@ -210,7 +210,7 @@ $widget_id = 'flavor-ultimo-episodio-' . intval($episodio->id);
             </button>
         </div>
         <div class="flavor-ultimo-compact-info">
-            <span class="flavor-compact-badge"><?php esc_html_e('Nuevo', 'flavor-chat-ia'); ?></span>
+            <span class="flavor-compact-badge"><?php esc_html_e('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             <a href="<?php echo esc_url(add_query_arg('episodio', $episodio->id, home_url('/podcast/'))); ?>"
                class="flavor-compact-titulo">
                 <?php echo esc_html(wp_trim_words($episodio->titulo, 8)); ?>
@@ -266,7 +266,7 @@ $widget_id = 'flavor-ultimo-episodio-' . intval($episodio->id);
                 <div class="flavor-ultimo-card-meta">
                     <?php if (!empty($episodio->numero_episodio)): ?>
                     <span class="flavor-badge-sm">
-                        <?php echo sprintf(esc_html__('Ep. %d', 'flavor-chat-ia'), intval($episodio->numero_episodio)); ?>
+                        <?php echo sprintf(esc_html__('Ep. %d', FLAVOR_PLATFORM_TEXT_DOMAIN), intval($episodio->numero_episodio)); ?>
                     </span>
                     <?php endif; ?>
                     <?php if ($tiempo_transcurrido): ?>
@@ -284,12 +284,12 @@ $widget_id = 'flavor-ultimo-episodio-' . intval($episodio->id);
                     class="flavor-btn flavor-btn-primary flavor-btn-sm flavor-btn-play-episodio"
                     data-audio="<?php echo esc_url($episodio->audio_url ?? ''); ?>">
                 <span class="dashicons dashicons-controls-play"></span>
-                <?php esc_html_e('Escuchar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Escuchar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <?php if ($mostrar_boton_serie && $serie): ?>
             <a href="<?php echo esc_url(add_query_arg('serie', $serie->id, home_url('/podcast/'))); ?>"
                class="flavor-btn flavor-btn-outline flavor-btn-sm">
-                <?php esc_html_e('Ver serie', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver serie', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <?php endif; ?>
         </div>

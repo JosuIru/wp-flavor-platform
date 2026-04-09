@@ -42,8 +42,8 @@ $beneficios_suscripcion = $beneficios_suscripcion ?? [
                                 </svg>
                             </div>
                             <div>
-                                <p class="text-sm font-semibold text-gray-900"><?php echo esc_html__('Mis Alertas', 'flavor-chat-ia'); ?></p>
-                                <p class="text-xs text-gray-400"><?php echo esc_html__('3 categorias activas', 'flavor-chat-ia'); ?></p>
+                                <p class="text-sm font-semibold text-gray-900"><?php echo esc_html__('Mis Alertas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                                <p class="text-xs text-gray-400"><?php echo esc_html__('3 categorias activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </div>
                         </div>
                         <!-- Simulacion de notificaciones -->
@@ -51,22 +51,22 @@ $beneficios_suscripcion = $beneficios_suscripcion ?? [
                             <div class="flex items-center gap-3 p-2 rounded-lg bg-red-50">
                                 <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse flex-shrink-0"></span>
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-xs font-semibold text-gray-800 truncate"><?php echo esc_html__('Aviso urgente recibido', 'flavor-chat-ia'); ?></p>
-                                    <p class="text-xs text-gray-400"><?php echo esc_html__('Hace 5 min', 'flavor-chat-ia'); ?></p>
+                                    <p class="text-xs font-semibold text-gray-800 truncate"><?php echo esc_html__('Aviso urgente recibido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                                    <p class="text-xs text-gray-400"><?php echo esc_html__('Hace 5 min', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                 </div>
                             </div>
                             <div class="flex items-center gap-3 p-2 rounded-lg bg-blue-50">
                                 <span class="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></span>
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-xs font-semibold text-gray-800 truncate"><?php echo esc_html__('Nuevo aviso de Cultura', 'flavor-chat-ia'); ?></p>
-                                    <p class="text-xs text-gray-400"><?php echo esc_html__('Hace 2 horas', 'flavor-chat-ia'); ?></p>
+                                    <p class="text-xs font-semibold text-gray-800 truncate"><?php echo esc_html__('Nuevo aviso de Cultura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                                    <p class="text-xs text-gray-400"><?php echo esc_html__('Hace 2 horas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                 </div>
                             </div>
                             <div class="flex items-center gap-3 p-2 rounded-lg bg-orange-50">
                                 <span class="w-2 h-2 bg-orange-500 rounded-full flex-shrink-0"></span>
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-xs font-semibold text-gray-800 truncate"><?php echo esc_html__('Obras: desvio de trafico', 'flavor-chat-ia'); ?></p>
-                                    <p class="text-xs text-gray-400"><?php echo esc_html__('Ayer', 'flavor-chat-ia'); ?></p>
+                                    <p class="text-xs font-semibold text-gray-800 truncate"><?php echo esc_html__('Obras: desvio de trafico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                                    <p class="text-xs text-gray-400"><?php echo esc_html__('Ayer', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                 </div>
                             </div>
                         </div>
@@ -76,7 +76,7 @@ $beneficios_suscripcion = $beneficios_suscripcion ?? [
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                 </svg>
-                                <?php echo esc_html__('Notificaciones activas', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Notificaciones activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         </div>
                     </div>
@@ -111,14 +111,14 @@ $beneficios_suscripcion = $beneficios_suscripcion ?? [
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
                         </svg>
-                        <?php echo esc_html__('Suscribirme a Alertas', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Suscribirme a Alertas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="<?php echo esc_url($url_configurar_alertas); ?>" class="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl border-2 border-red-300 text-red-600 font-semibold text-lg hover:bg-red-50 transition-all">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                         </svg>
-                        <?php echo esc_html__('Configurar Alertas', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Configurar Alertas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </div>

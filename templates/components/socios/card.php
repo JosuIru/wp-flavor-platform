@@ -44,7 +44,7 @@ $nivel_clase = match($nivel) {
 
     <?php if ($miembro_desde): ?>
     <p class="text-sm text-gray-500 mb-3">
-        <?php echo esc_html__('Socio desde', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Socio desde', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         <?php echo esc_html(date_i18n('F Y', strtotime($miembro_desde))); ?>
     </p>
     <?php endif; ?>
@@ -61,6 +61,6 @@ $nivel_clase = match($nivel) {
 
     <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_item_url('socios', $id, 'perfil')); ?>"
        class="block w-full text-center py-2 border border-rose-300 text-rose-600 rounded-lg text-sm font-medium hover:bg-rose-50 transition-colors">
-        <?php echo esc_html__('Contactar', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Contactar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </a>
 </article>

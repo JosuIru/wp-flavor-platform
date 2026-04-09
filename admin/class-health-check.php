@@ -12,8 +12,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Flavor_Health_Check {
 
 	private static $instance = null;
-	const PARENT_MENU_SLUG = 'flavor-chat-ia';
-	const PAGE_SLUG = 'flavor-health-check';
+	const PARENT_MENU_SLUG = FLAVOR_PLATFORM_TEXT_DOMAIN;
+	const PAGE_SLUG = 'flavor-platform-health-check';
 
 	public static function get_instance() {
 		if ( self::$instance === null ) {
@@ -41,7 +41,7 @@ class Flavor_Health_Check {
 		$module_check_results = array();
 		$module_loader      = Flavor_Chat_Module_Loader::get_instance();
 		$loaded_modules     = $module_loader->get_loaded_modules();
-		$plugin_settings    = get_option( 'flavor_chat_ia_settings', array() );
+		$plugin_settings    = flavor_get_main_settings();
 		$active_module_ids  = isset( $plugin_settings['active_modules'] )
 			? $plugin_settings['active_modules']
 			: array( 'woocommerce' );
@@ -362,7 +362,7 @@ class Flavor_Health_Check {
 
 	public function render_page() {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( __('No tienes permisos para acceder a esta pagina.', 'flavor-chat-ia') );
+			wp_die( __('No tienes permisos para acceder a esta pagina.', FLAVOR_PLATFORM_TEXT_DOMAIN) );
 		}
 		$module_check_results    = $this->check_modules();
 		$database_table_results  = $this->check_database_tables();

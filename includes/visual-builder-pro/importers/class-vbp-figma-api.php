@@ -109,7 +109,7 @@ class Flavor_VBP_Figma_API {
         if ( ! $this->is_configured() ) {
             return array(
                 'success' => false,
-                'error'   => __( 'Token de Figma no configurado', 'flavor-chat-ia' ),
+                'error'   => __( 'Token de Figma no configurado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             );
         }
 
@@ -222,7 +222,7 @@ class Flavor_VBP_Figma_API {
 
         return new WP_Error(
             'invalid_url',
-            __( 'URL de Figma no válida', 'flavor-chat-ia' )
+            __( 'URL de Figma no válida', FLAVOR_PLATFORM_TEXT_DOMAIN )
         );
     }
 
@@ -238,7 +238,7 @@ class Flavor_VBP_Figma_API {
         if ( ! $this->is_configured() ) {
             return new WP_Error(
                 'no_token',
-                __( 'Token de Figma no configurado', 'flavor-chat-ia' )
+                __( 'Token de Figma no configurado', FLAVOR_PLATFORM_TEXT_DOMAIN )
             );
         }
 
@@ -268,12 +268,12 @@ class Flavor_VBP_Figma_API {
         $data = json_decode( $body, true );
 
         if ( $status_code !== 200 ) {
-            $error_message = $data['err'] ?? $data['message'] ?? __( 'Error en la API de Figma', 'flavor-chat-ia' );
+            $error_message = $data['err'] ?? $data['message'] ?? __( 'Error en la API de Figma', FLAVOR_PLATFORM_TEXT_DOMAIN );
 
             if ( $status_code === 403 ) {
-                $error_message = __( 'Token de Figma no válido o sin permisos', 'flavor-chat-ia' );
+                $error_message = __( 'Token de Figma no válido o sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN );
             } elseif ( $status_code === 404 ) {
-                $error_message = __( 'Archivo o nodo no encontrado', 'flavor-chat-ia' );
+                $error_message = __( 'Archivo o nodo no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN );
             }
 
             return new WP_Error(
@@ -295,7 +295,7 @@ class Flavor_VBP_Figma_API {
      */
     public function download_image( $image_url, $filename = null ) {
         if ( empty( $image_url ) ) {
-            return new WP_Error( 'no_url', __( 'URL de imagen vacía', 'flavor-chat-ia' ) );
+            return new WP_Error( 'no_url', __( 'URL de imagen vacía', FLAVOR_PLATFORM_TEXT_DOMAIN ) );
         }
 
         // Descargar la imagen

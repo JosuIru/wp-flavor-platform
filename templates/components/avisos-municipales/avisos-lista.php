@@ -155,7 +155,7 @@ $opciones_filtrar = $opciones_filtrar ?? [
                                         <?php echo esc_html($aviso_item['departamento']); ?>
                                     </span>
                                     <a href="<?php echo esc_url('/avisos-municipales/detalle/'); ?>" class="flex items-center gap-1 text-red-500 hover:text-red-700 font-medium transition-colors">
-                                        <?php echo esc_html__('Leer mas', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Leer mas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                         </svg>
@@ -171,7 +171,7 @@ $opciones_filtrar = $opciones_filtrar ?? [
         <!-- Boton ver mas -->
         <div class="text-center mt-10">
             <a href="<?php echo esc_url('/avisos-municipales/'); ?>" class="inline-flex items-center gap-2 px-8 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-full shadow-lg hover:shadow-xl transition-all">
-                <?php echo esc_html__('Ver Todos los Avisos', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Ver Todos los Avisos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                 </svg>

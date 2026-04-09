@@ -24,17 +24,17 @@ if (class_exists('Flavor_Engine_Manager')) {
 <div class="wrap flavor-ai-hub">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-admin-generic"></span>
-        <?php esc_html_e('Herramientas IA', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Herramientas IA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <?php if (!$is_ai_configured): ?>
     <div class="notice notice-warning flavor-ai-notice">
         <p>
             <span class="dashicons dashicons-warning"></span>
-            <strong><?php esc_html_e('Motor de IA no configurado', 'flavor-chat-ia'); ?></strong><br>
-            <?php esc_html_e('Para usar las herramientas de IA, primero configura una API key en', 'flavor-chat-ia'); ?>
-            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-chat-config')); ?>">
-                <?php esc_html_e('Configuración del Chat IA', 'flavor-chat-ia'); ?>
+            <strong><?php esc_html_e('Motor de IA no configurado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong><br>
+            <?php esc_html_e('Para usar las herramientas de IA, primero configura una API key en', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-platform-settings')); ?>">
+                <?php esc_html_e('Configuración de Flavor Platform', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </p>
     </div>
@@ -42,7 +42,7 @@ if (class_exists('Flavor_Engine_Manager')) {
 
     <div class="flavor-ai-hub-intro">
         <p>
-            <?php esc_html_e('Las herramientas de IA te ayudan a gestionar tu comunidad de forma más eficiente. Desde generar contenido hasta analizar datos y obtener recomendaciones automáticas.', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Las herramientas de IA te ayudan a gestionar tu comunidad de forma más eficiente. Desde generar contenido hasta analizar datos y obtener recomendaciones automáticas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </div>
 
@@ -53,10 +53,10 @@ if (class_exists('Flavor_Engine_Manager')) {
         <div class="flavor-ai-category">
             <h2>
                 <span class="dashicons dashicons-editor-code"></span>
-                <?php esc_html_e('Herramientas Integradas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Herramientas Integradas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <p class="description">
-                <?php esc_html_e('Se activan automáticamente en los editores y formularios de cada módulo.', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Se activan automáticamente en los editores y formularios de cada módulo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
 
             <div class="flavor-ai-tools-list">
@@ -75,12 +75,12 @@ if (class_exists('Flavor_Engine_Manager')) {
                         <?php if ($tool['status'] === 'active'): ?>
                             <span class="status-badge active">
                                 <span class="dashicons dashicons-yes-alt"></span>
-                                <?php esc_html_e('Activo', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         <?php else: ?>
                             <span class="status-badge disabled">
                                 <span class="dashicons dashicons-warning"></span>
-                                <?php esc_html_e('Requiere IA', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Requiere IA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         <?php endif; ?>
                     </div>
@@ -93,10 +93,10 @@ if (class_exists('Flavor_Engine_Manager')) {
         <div class="flavor-ai-category">
             <h2>
                 <span class="dashicons dashicons-screenoptions"></span>
-                <?php esc_html_e('Widgets', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Widgets', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <p class="description">
-                <?php esc_html_e('Aparecen en las páginas del admin para asistirte contextualmente.', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Aparecen en las páginas del admin para asistirte contextualmente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
 
             <div class="flavor-ai-tools-list">
@@ -115,12 +115,12 @@ if (class_exists('Flavor_Engine_Manager')) {
                         <?php if ($tool['status'] === 'active'): ?>
                             <span class="status-badge active">
                                 <span class="dashicons dashicons-yes-alt"></span>
-                                <?php esc_html_e('Activo', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         <?php else: ?>
                             <span class="status-badge disabled">
                                 <span class="dashicons dashicons-warning"></span>
-                                <?php esc_html_e('Requiere IA', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Requiere IA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         <?php endif; ?>
                     </div>
@@ -133,10 +133,10 @@ if (class_exists('Flavor_Engine_Manager')) {
         <div class="flavor-ai-category">
             <h2>
                 <span class="dashicons dashicons-admin-page"></span>
-                <?php esc_html_e('Herramientas Avanzadas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Herramientas Avanzadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <p class="description">
-                <?php esc_html_e('Páginas dedicadas para análisis y generación de reportes.', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Páginas dedicadas para análisis y generación de reportes.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
 
             <div class="flavor-ai-tools-list">
@@ -154,13 +154,13 @@ if (class_exists('Flavor_Engine_Manager')) {
                     <div class="tool-actions">
                         <?php if ($tool['status'] === 'active' && !empty($tool['url'])): ?>
                             <a href="<?php echo esc_url($tool['url']); ?>" class="button button-primary">
-                                <?php esc_html_e('Abrir', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Abrir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 <span class="dashicons dashicons-arrow-right-alt"></span>
                             </a>
                         <?php elseif ($tool['status'] === 'disabled'): ?>
                             <span class="status-badge disabled">
                                 <span class="dashicons dashicons-warning"></span>
-                                <?php esc_html_e('Requiere IA', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Requiere IA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         <?php endif; ?>
                     </div>
@@ -174,25 +174,25 @@ if (class_exists('Flavor_Engine_Manager')) {
     <div class="flavor-ai-stats-section">
         <h2>
             <span class="dashicons dashicons-chart-bar"></span>
-            <?php esc_html_e('Uso de IA', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Uso de IA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
 
         <div class="flavor-ai-stats-grid">
             <div class="stat-card">
                 <div class="stat-value" id="ai-requests-today">-</div>
-                <div class="stat-label"><?php esc_html_e('Consultas hoy', 'flavor-chat-ia'); ?></div>
+                <div class="stat-label"><?php esc_html_e('Consultas hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="ai-requests-week">-</div>
-                <div class="stat-label"><?php esc_html_e('Esta semana', 'flavor-chat-ia'); ?></div>
+                <div class="stat-label"><?php esc_html_e('Esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="ai-content-generated">-</div>
-                <div class="stat-label"><?php esc_html_e('Contenido generado', 'flavor-chat-ia'); ?></div>
+                <div class="stat-label"><?php esc_html_e('Contenido generado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="ai-time-saved">-</div>
-                <div class="stat-label"><?php esc_html_e('Tiempo ahorrado', 'flavor-chat-ia'); ?></div>
+                <div class="stat-label"><?php esc_html_e('Tiempo ahorrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
     </div>
@@ -201,28 +201,28 @@ if (class_exists('Flavor_Engine_Manager')) {
     <div class="flavor-ai-quick-actions">
         <h2>
             <span class="dashicons dashicons-performance"></span>
-            <?php esc_html_e('Acciones Rápidas', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Acciones Rápidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
 
         <div class="quick-actions-grid">
             <button type="button" class="quick-action-btn" id="quick-generate-report" <?php echo !$is_ai_configured ? 'disabled' : ''; ?>>
                 <span class="dashicons dashicons-media-document"></span>
-                <span><?php esc_html_e('Generar Reporte Semanal', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Generar Reporte Semanal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </button>
 
             <button type="button" class="quick-action-btn" id="quick-analyze-data" <?php echo !$is_ai_configured ? 'disabled' : ''; ?>>
                 <span class="dashicons dashicons-chart-pie"></span>
-                <span><?php esc_html_e('Analizar Datos', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Analizar Datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </button>
 
-            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-chat-config')); ?>" class="quick-action-btn">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-platform-settings')); ?>" class="quick-action-btn">
                 <span class="dashicons dashicons-admin-settings"></span>
-                <span><?php esc_html_e('Configurar IA', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Configurar IA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
 
-            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-documentation&section=ai-tools')); ?>" class="quick-action-btn">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-platform-docs&section=ai-tools')); ?>" class="quick-action-btn">
                 <span class="dashicons dashicons-book"></span>
-                <span><?php esc_html_e('Documentación', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Documentación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
         </div>
     </div>

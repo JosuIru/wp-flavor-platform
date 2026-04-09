@@ -101,7 +101,7 @@ $identificador_unico = 'cta-flotante-' . wp_unique_id();
                         type="button"
                         class="inline-flex items-center justify-center w-8 h-8 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors duration-200"
                         onclick="document.getElementById('<?php echo esc_attr( $identificador_unico ); ?>').classList.add('translate-y-full'); document.getElementById('<?php echo esc_attr( $identificador_unico ); ?>').classList.remove('translate-y-0');"
-                        aria-label="<?php esc_attr_e( 'Cerrar', 'flavor-chat-ia' ); ?>"
+                        aria-label="<?php esc_attr_e( 'Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
                     >
                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>

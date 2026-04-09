@@ -66,7 +66,7 @@ class Flavor_Global_Search {
                 'campo_descripcion'   => 'descripcion',
                 'campo_estado'        => 'estado',
                 'valor_estado_activo' => 'publicado',
-                'etiqueta'            => __('Eventos', 'flavor-chat-ia'),
+                'etiqueta'            => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'bares' => [
                 'tabla'               => 'flavor_bares',
@@ -75,7 +75,7 @@ class Flavor_Global_Search {
                 'campo_descripcion'   => 'descripcion',
                 'campo_estado'        => 'estado',
                 'valor_estado_activo' => 'activo',
-                'etiqueta'            => __('Bares', 'flavor-chat-ia'),
+                'etiqueta'            => __('Bares', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'foros_hilos' => [
                 'tabla'               => 'flavor_foros_hilos',
@@ -84,7 +84,7 @@ class Flavor_Global_Search {
                 'campo_descripcion'   => 'contenido',
                 'campo_estado'        => 'estado',
                 'valor_estado_activo' => 'abierto',
-                'etiqueta'            => __('Foros', 'flavor-chat-ia'),
+                'etiqueta'            => __('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'comunidades' => [
                 'tabla'               => 'flavor_comunidades',
@@ -93,7 +93,7 @@ class Flavor_Global_Search {
                 'campo_descripcion'   => 'descripcion',
                 'campo_estado'        => 'estado',
                 'valor_estado_activo' => 'activa',
-                'etiqueta'            => __('Comunidades', 'flavor-chat-ia'),
+                'etiqueta'            => __('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'colectivos' => [
                 'tabla'               => 'flavor_colectivos',
@@ -102,21 +102,21 @@ class Flavor_Global_Search {
                 'campo_descripcion'   => 'descripcion',
                 'campo_estado'        => 'estado',
                 'valor_estado_activo' => 'activo',
-                'etiqueta'            => __('Colectivos', 'flavor-chat-ia'),
+                'etiqueta'            => __('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'clientes' => [
                 'tabla'               => 'flavor_clientes_crm',
                 'campos_busqueda'     => ['nombre', 'email', 'empresa', 'telefono', 'notas'],
                 'campo_titulo'        => 'nombre',
                 'campo_descripcion'   => 'notas',
-                'etiqueta'            => __('Clientes', 'flavor-chat-ia'),
+                'etiqueta'            => __('Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'contactos_empresarial' => [
                 'tabla'               => 'flavor_contactos_empresarial',
                 'campos_busqueda'     => ['nombre', 'email', 'asunto', 'mensaje'],
                 'campo_titulo'        => 'nombre',
                 'campo_descripcion'   => 'asunto',
-                'etiqueta'            => __('Contactos', 'flavor-chat-ia'),
+                'etiqueta'            => __('Contactos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'proyectos_empresarial' => [
                 'tabla'               => 'flavor_proyectos_empresarial',
@@ -125,7 +125,7 @@ class Flavor_Global_Search {
                 'campo_descripcion'   => 'descripcion',
                 'campo_estado'        => 'estado',
                 'valor_estado_activo' => null,
-                'etiqueta'            => __('Proyectos', 'flavor-chat-ia'),
+                'etiqueta'            => __('Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
 
@@ -143,7 +143,7 @@ class Flavor_Global_Search {
 
         $termino_busqueda = sanitize_text_field($termino_busqueda);
         if (strlen($termino_busqueda) < 2) {
-            return ['success' => false, 'error' => __('El termino de busqueda debe tener al menos 2 caracteres', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('El termino de busqueda debe tener al menos 2 caracteres', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $limite_por_entidad   = isset($opciones['limite']) ? absint($opciones['limite']) : 5;
@@ -282,7 +282,7 @@ class Flavor_Global_Search {
         check_ajax_referer('flavor_chat_ia_nonce', 'nonce');
 
         if (!current_user_can('read')) {
-            wp_send_json_error(__('Sin permisos', 'flavor-chat-ia'));
+            wp_send_json_error(__('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $termino = sanitize_text_field($_POST['termino'] ?? '');
@@ -330,8 +330,8 @@ class Flavor_Global_Search {
 
     public function registrar_acciones_globales($acciones) {
         $acciones['busqueda_global'] = [
-            'label'       => __('Busqueda global', 'flavor-chat-ia'),
-            'description' => __('Busca en todos los modulos de la plataforma', 'flavor-chat-ia'),
+            'label'       => __('Busqueda global', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Busca en todos los modulos de la plataforma', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'callback'    => [$this, 'ejecutar_busqueda_desde_chat'],
         ];
 
@@ -416,7 +416,7 @@ class Flavor_Global_Search {
 
         $lista_modulos = implode(', ', array_values($entidades_disponibles));
         return sprintf(
-            __('Dispones de una herramienta de busqueda global que busca en: %s. Usa busqueda_global cuando el usuario quiera buscar algo y no sepas en que modulo esta.', 'flavor-chat-ia'),
+            __('Dispones de una herramienta de busqueda global que busca en: %s. Usa busqueda_global cuando el usuario quiera buscar algo y no sepas en que modulo esta.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $lista_modulos
         );
     }
@@ -456,7 +456,7 @@ class Flavor_Global_Search {
 
         return [
             'success' => false,
-            'error'   => __('Accion no reconocida', 'flavor-chat-ia'),
+            'error'   => __('Accion no reconocida', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 

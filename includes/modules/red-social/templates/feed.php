@@ -199,7 +199,7 @@ if ($usuario_id) {
                             <div class="rs-crear-post-input">
                                 <textarea class="rs-crear-post-textarea"
                                           id="rs-contenido-nuevo"
-                                          placeholder="<?php echo esc_attr__('Que quieres compartir con la comunidad?', 'flavor-chat-ia'); ?>"
+                                          placeholder="<?php echo esc_attr__('Que quieres compartir con la comunidad?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                                           maxlength="5000"></textarea>
                             </div>
                         </div>
@@ -214,7 +214,7 @@ if ($usuario_id) {
                                         <circle cx="8.5" cy="8.5" r="1.5"/>
                                         <path d="M21 15l-5-5L5 21"/>
                                     </svg>
-                                    <?php echo esc_html__('Foto', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Foto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     <input type="file" name="adjuntos[]" accept="image/*" multiple style="display: none;" id="rs-input-fotos">
                                 </label>
                                 <label class="rs-adjunto-btn">
@@ -222,19 +222,19 @@ if ($usuario_id) {
                                         <polygon points="23 7 16 12 23 17 23 7"/>
                                         <rect x="1" y="5" width="15" height="14" rx="2"/>
                                     </svg>
-                                    <?php echo esc_html__('Video', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Video', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     <input type="file" name="video" accept="video/*" style="display: none;" id="rs-input-video">
                                 </label>
                             </div>
                             <div class="rs-crear-post-opciones">
                                 <select name="visibilidad" class="rs-select-visibilidad">
-                                    <option value="comunidad"><?php echo esc_html__('Comunidad', 'flavor-chat-ia'); ?></option>
-                                    <option value="publica"><?php echo esc_html__('Publica', 'flavor-chat-ia'); ?></option>
-                                    <option value="seguidores"><?php echo esc_html__('Seguidores', 'flavor-chat-ia'); ?></option>
-                                    <option value="privada"><?php echo esc_html__('Solo yo', 'flavor-chat-ia'); ?></option>
+                                    <option value="comunidad"><?php echo esc_html__('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                    <option value="publica"><?php echo esc_html__('Publica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                    <option value="seguidores"><?php echo esc_html__('Seguidores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                    <option value="privada"><?php echo esc_html__('Solo yo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                 </select>
                                 <button type="submit" class="rs-btn-publicar" id="rs-btn-publicar">
-                                    <?php echo esc_html__('Publicar', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             </div>
                         </div>
@@ -242,9 +242,9 @@ if ($usuario_id) {
                 </div>
             <?php else: ?>
                 <div class="rs-login-prompt">
-                    <p><?php echo esc_html__('Inicia sesion para compartir con la comunidad.', 'flavor-chat-ia'); ?></p>
+                    <p><?php echo esc_html__('Inicia sesion para compartir con la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('red_social', ''))); ?>" class="rs-btn-primary">
-                        <?php echo esc_html__('Iniciar sesion', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php endif; ?>
@@ -253,17 +253,17 @@ if ($usuario_id) {
             <div class="rs-feed-header">
                 <div class="rs-feed-tabs">
                     <a href="?tipo=timeline" class="rs-feed-tab <?php echo $tipo_feed === 'timeline' ? 'active' : ''; ?>">
-                        <?php echo esc_html__('Para ti', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Para ti', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="?tipo=comunidad" class="rs-feed-tab <?php echo $tipo_feed === 'comunidad' ? 'active' : ''; ?>">
-                        <?php echo esc_html__('Comunidad', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="?tipo=trending" class="rs-feed-tab <?php echo $tipo_feed === 'trending' ? 'active' : ''; ?>">
-                        <?php echo esc_html__('Trending', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Trending', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <?php if ($usuario_id): ?>
                         <a href="?tipo=siguiendo" class="rs-feed-tab <?php echo $tipo_feed === 'siguiendo' ? 'active' : ''; ?>">
-                            <?php echo esc_html__('Siguiendo', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Siguiendo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                         <a href="?tipo=guardados" class="rs-feed-tab <?php echo $tipo_feed === 'guardados' ? 'active' : ''; ?>">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -285,22 +285,22 @@ if ($usuario_id) {
                                 <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
                                 <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
                             </svg>
-                            <p><?php echo esc_html__('Aun no sigues a nadie.', 'flavor-chat-ia'); ?></p>
-                            <span><?php echo esc_html__('Explora la comunidad y sigue a personas interesantes.', 'flavor-chat-ia'); ?></span>
-                            <a href="<?php echo esc_url($rs_url_explorar); ?>" class="rs-btn-primary"><?php echo esc_html__('Explorar', 'flavor-chat-ia'); ?></a>
+                            <p><?php echo esc_html__('Aun no sigues a nadie.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                            <span><?php echo esc_html__('Explora la comunidad y sigue a personas interesantes.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                            <a href="<?php echo esc_url($rs_url_explorar); ?>" class="rs-btn-primary"><?php echo esc_html__('Explorar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                         <?php elseif ($tipo_feed === 'guardados'): ?>
                             <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                                 <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
                             </svg>
-                            <p><?php echo esc_html__('No has guardado publicaciones.', 'flavor-chat-ia'); ?></p>
-                            <span><?php echo esc_html__('Guarda publicaciones para verlas mas tarde.', 'flavor-chat-ia'); ?></span>
+                            <p><?php echo esc_html__('No has guardado publicaciones.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                            <span><?php echo esc_html__('Guarda publicaciones para verlas mas tarde.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <?php else: ?>
                             <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                             </svg>
-                            <p><?php echo esc_html__('No hay publicaciones aun.', 'flavor-chat-ia'); ?></p>
+                            <p><?php echo esc_html__('No hay publicaciones aun.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             <?php if ($usuario_id): ?>
-                                <span><?php echo esc_html__('Se el primero en compartir algo.', 'flavor-chat-ia'); ?></span>
+                                <span><?php echo esc_html__('Se el primero en compartir algo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <?php endif; ?>
                         <?php endif; ?>
                     </div>
@@ -357,12 +357,12 @@ if ($usuario_id) {
                                             <span>@<?php echo esc_html($autor ? $autor->user_login : ''); ?></span>
                                             <span class="rs-post-tiempo"><?php echo human_time_diff(strtotime($publicacion->fecha_publicacion), current_time('timestamp')); ?></span>
                                             <?php if ($publicacion->visibilidad === 'seguidores'): ?>
-                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="<?php echo esc_attr__('Solo seguidores', 'flavor-chat-ia'); ?>">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="<?php echo esc_attr__('Solo seguidores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
                                                     <circle cx="9" cy="7" r="4"/>
                                                 </svg>
                                             <?php elseif ($publicacion->visibilidad === 'privada'): ?>
-                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="<?php echo esc_attr__('Privada', 'flavor-chat-ia'); ?>">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="<?php echo esc_attr__('Privada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                                                     <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                                                 </svg>
@@ -403,12 +403,12 @@ if ($usuario_id) {
                                 <div class="rs-post-stats">
                                     <div class="rs-post-likes-count">
                                         <?php if ($publicacion->me_gusta > 0): ?>
-                                            <span><?php echo number_format($publicacion->me_gusta); ?> <?php echo esc_html__('me gusta', 'flavor-chat-ia'); ?></span>
+                                            <span><?php echo number_format($publicacion->me_gusta); ?> <?php echo esc_html__('me gusta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         <?php endif; ?>
                                     </div>
                                     <div>
                                         <?php if ($publicacion->comentarios > 0): ?>
-                                            <span><?php echo number_format($publicacion->comentarios); ?> <?php echo esc_html__('comentarios', 'flavor-chat-ia'); ?></span>
+                                            <span><?php echo number_format($publicacion->comentarios); ?> <?php echo esc_html__('comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         <?php endif; ?>
                                     </div>
                                 </div>
@@ -465,7 +465,7 @@ if ($usuario_id) {
             <!-- Cargando mas -->
             <div class="rs-loading" id="rs-loading" style="display: none;">
                 <div class="rs-spinner"></div>
-                <span><?php echo esc_html__('Cargando mas publicaciones...', 'flavor-chat-ia'); ?></span>
+                <span><?php echo esc_html__('Cargando mas publicaciones...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
 
             <!-- Paginacion -->
@@ -477,18 +477,18 @@ if ($usuario_id) {
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <polyline points="15 18 9 12 15 6"></polyline>
                             </svg>
-                            <?php echo esc_html__('Anterior', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     <?php endif; ?>
 
                     <span class="rs-paginacion-info">
-                        <?php printf(esc_html__('Pagina %d de %d', 'flavor-chat-ia'), $pagina_actual, $total_paginas); ?>
+                        <?php printf(esc_html__('Pagina %d de %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $pagina_actual, $total_paginas); ?>
                     </span>
 
                     <?php if ($pagina_actual < $total_paginas): ?>
                         <a href="?tipo=<?php echo esc_attr($tipo_feed); ?>&pag=<?php echo $pagina_actual + 1; ?>"
                            class="rs-paginacion-btn">
-                            <?php echo esc_html__('Siguiente', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <polyline points="9 18 15 12 9 6"></polyline>
                             </svg>
@@ -503,7 +503,7 @@ if ($usuario_id) {
             <!-- Widget de sugerencias -->
             <?php if (!empty($sugerencias_usuarios)): ?>
                 <div class="rs-widget">
-                    <h3 class="rs-widget-titulo"><?php echo esc_html__('Sugerencias para ti', 'flavor-chat-ia'); ?></h3>
+                    <h3 class="rs-widget-titulo"><?php echo esc_html__('Sugerencias para ti', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <div class="rs-sugerencias-lista">
                         <?php foreach ($sugerencias_usuarios as $sugerencia): ?>
                             <div class="rs-sugerencia">
@@ -517,7 +517,7 @@ if ($usuario_id) {
                                     </div>
                                 </a>
                                 <button class="rs-btn-seguir-sm" data-usuario-id="<?php echo esc_attr($sugerencia->ID); ?>">
-                                    <?php echo esc_html__('Seguir', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Seguir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             </div>
                         <?php endforeach; ?>
@@ -528,13 +528,13 @@ if ($usuario_id) {
             <!-- Widget de tendencias -->
             <?php if (!empty($hashtags_trending)): ?>
                 <div class="rs-widget">
-                    <h3 class="rs-widget-titulo"><?php echo esc_html__('Tendencias', 'flavor-chat-ia'); ?></h3>
+                    <h3 class="rs-widget-titulo"><?php echo esc_html__('Tendencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <div class="rs-trending-lista">
                         <?php foreach ($hashtags_trending as $indice => $hashtag): ?>
                             <a href="<?php echo esc_url(add_query_arg('hashtag', $hashtag->hashtag, $rs_url_explorar)); ?>" class="rs-trending-item">
-                                <div class="rs-trending-categoria"><?php echo $indice + 1; ?>. <?php echo esc_html__('Tendencia', 'flavor-chat-ia'); ?></div>
+                                <div class="rs-trending-categoria"><?php echo $indice + 1; ?>. <?php echo esc_html__('Tendencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                                 <div class="rs-trending-hashtag">#<?php echo esc_html($hashtag->hashtag); ?></div>
-                                <div class="rs-trending-posts"><?php echo number_format($hashtag->total_usos); ?> <?php echo esc_html__('publicaciones', 'flavor-chat-ia'); ?></div>
+                                <div class="rs-trending-posts"><?php echo number_format($hashtag->total_usos); ?> <?php echo esc_html__('publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                             </a>
                         <?php endforeach; ?>
                     </div>
@@ -543,11 +543,11 @@ if ($usuario_id) {
 
             <!-- Pie de pagina de la red -->
             <div class="rs-sidebar-footer">
-                <p><?php echo esc_html__('Red social comunitaria sin publicidad.', 'flavor-chat-ia'); ?></p>
+                <p><?php echo esc_html__('Red social comunitaria sin publicidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <nav class="rs-sidebar-nav">
-                    <span><?php echo esc_html__('Acerca de', 'flavor-chat-ia'); ?></span>
-                    <span><?php echo esc_html__('Privacidad', 'flavor-chat-ia'); ?></span>
-                    <span><?php echo esc_html__('Terminos', 'flavor-chat-ia'); ?></span>
+                    <span><?php echo esc_html__('Acerca de', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                    <span><?php echo esc_html__('Privacidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                    <span><?php echo esc_html__('Terminos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </nav>
             </div>
         </aside>

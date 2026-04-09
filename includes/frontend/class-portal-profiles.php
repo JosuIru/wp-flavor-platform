@@ -56,13 +56,13 @@ class Flavor_Portal_Profiles {
             // ====================================================================
             'grupo_consumo' => [
                 'layout' => 'simple',
-                'titulo' => __('Mi Cooperativa', 'flavor-chat-ia'),
-                'descripcion' => __('Gestiona tus pedidos, eventos y participación', 'flavor-chat-ia'),
+                'titulo' => __('Mi Cooperativa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Gestiona tus pedidos, eventos y participación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'secciones' => [
                     'hero' => [
                         'tipo' => 'hero_simple',
-                        'mensaje_bienvenida' => __('¡Hola, {nombre}!', 'flavor-chat-ia'),
-                        'mensaje_secundario' => __('Bienvenido a tu cooperativa de consumo', 'flavor-chat-ia'),
+                        'mensaje_bienvenida' => __('¡Hola, {nombre}!', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'mensaje_secundario' => __('Bienvenido a tu cooperativa de consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'acciones_rapidas' => [
                         'mostrar' => true,
@@ -105,13 +105,13 @@ class Flavor_Portal_Profiles {
             // ====================================================================
             'comunidad' => [
                 'layout' => 'balanced',
-                'titulo' => __('Mi Comunidad', 'flavor-chat-ia'),
-                'descripcion' => __('Tu espacio para participar y conectar', 'flavor-chat-ia'),
+                'titulo' => __('Mi Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Tu espacio para participar y conectar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'secciones' => [
                     'hero' => [
                         'tipo' => 'hero_card',
-                        'mensaje_bienvenida' => __('Hola, {nombre}', 'flavor-chat-ia'),
-                        'mensaje_secundario' => __('¿Qué quieres hacer hoy?', 'flavor-chat-ia'),
+                        'mensaje_bienvenida' => __('Hola, {nombre}', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'mensaje_secundario' => __('¿Qué quieres hacer hoy?', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'acciones_rapidas' => [
                         'mostrar' => true,
@@ -156,13 +156,13 @@ class Flavor_Portal_Profiles {
             // ====================================================================
             'barrio' => [
                 'layout' => 'territorial',
-                'titulo' => __('Mi Barrio', 'flavor-chat-ia'),
-                'descripcion' => __('Ayuda mutua, recursos compartidos y vecindad', 'flavor-chat-ia'),
+                'titulo' => __('Mi Barrio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Ayuda mutua, recursos compartidos y vecindad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'secciones' => [
                     'hero' => [
                         'tipo' => 'hero_mapa',
-                        'mensaje_bienvenida' => __('Hola, vecino/a', 'flavor-chat-ia'),
-                        'mensaje_secundario' => __('¿Necesitas ayuda o quieres colaborar?', 'flavor-chat-ia'),
+                        'mensaje_bienvenida' => __('Hola, vecino/a', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'mensaje_secundario' => __('¿Necesitas ayuda o quieres colaborar?', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'acciones_rapidas' => [
                         'mostrar' => true,
@@ -207,12 +207,12 @@ class Flavor_Portal_Profiles {
             // ====================================================================
             'coworking' => [
                 'layout' => 'professional',
-                'titulo' => __('Mi Espacio', 'flavor-chat-ia'),
-                'descripcion' => __('Reservas, accesos y comunidad', 'flavor-chat-ia'),
+                'titulo' => __('Mi Espacio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Reservas, accesos y comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'secciones' => [
                     'hero' => [
                         'tipo' => 'hero_minimal',
-                        'mensaje_bienvenida' => __('Bienvenido/a', 'flavor-chat-ia'),
+                        'mensaje_bienvenida' => __('Bienvenido/a', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'acciones_rapidas' => [
                         'mostrar' => true,
@@ -254,13 +254,13 @@ class Flavor_Portal_Profiles {
             // ====================================================================
             'cooperativa' => [
                 'layout' => 'participative',
-                'titulo' => __('Mi Cooperativa', 'flavor-chat-ia'),
-                'descripcion' => __('Participación, transparencia y gobernanza', 'flavor-chat-ia'),
+                'titulo' => __('Mi Cooperativa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Participación, transparencia y gobernanza', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'secciones' => [
                     'hero' => [
                         'tipo' => 'hero_stats',
-                        'mensaje_bienvenida' => __('Hola, cooperativista', 'flavor-chat-ia'),
-                        'mensaje_secundario' => __('Tu voz cuenta', 'flavor-chat-ia'),
+                        'mensaje_bienvenida' => __('Hola, cooperativista', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'mensaje_secundario' => __('Tu voz cuenta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'acciones_rapidas' => [
                         'mostrar' => true,
@@ -304,13 +304,13 @@ class Flavor_Portal_Profiles {
             // ====================================================================
             'academia' => [
                 'layout' => 'educational',
-                'titulo' => __('Mi Academia', 'flavor-chat-ia'),
-                'descripcion' => __('Cursos, talleres y aprendizaje', 'flavor-chat-ia'),
+                'titulo' => __('Mi Academia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Cursos, talleres y aprendizaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'secciones' => [
                     'hero' => [
                         'tipo' => 'hero_progress',
-                        'mensaje_bienvenida' => __('Hola, estudiante', 'flavor-chat-ia'),
-                        'mensaje_secundario' => __('Continúa aprendiendo', 'flavor-chat-ia'),
+                        'mensaje_bienvenida' => __('Hola, estudiante', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'mensaje_secundario' => __('Continúa aprendiendo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'acciones_rapidas' => [
                         'mostrar' => true,
@@ -354,13 +354,13 @@ class Flavor_Portal_Profiles {
             // ====================================================================
             'marketplace' => [
                 'layout' => 'commercial',
-                'titulo' => __('Mi Marketplace', 'flavor-chat-ia'),
-                'descripcion' => __('Compra, vende, intercambia', 'flavor-chat-ia'),
+                'titulo' => __('Mi Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Compra, vende, intercambia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'secciones' => [
                     'hero' => [
                         'tipo' => 'hero_featured',
-                        'mensaje_bienvenida' => __('Hola, {nombre}', 'flavor-chat-ia'),
-                        'mensaje_secundario' => __('¿Qué buscas hoy?', 'flavor-chat-ia'),
+                        'mensaje_bienvenida' => __('Hola, {nombre}', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'mensaje_secundario' => __('¿Qué buscas hoy?', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'acciones_rapidas' => [
                         'mostrar' => true,
@@ -404,12 +404,12 @@ class Flavor_Portal_Profiles {
             // ====================================================================
             'default' => [
                 'layout' => 'adaptive',
-                'titulo' => __('Mi Portal', 'flavor-chat-ia'),
-                'descripcion' => __('Tu espacio personal', 'flavor-chat-ia'),
+                'titulo' => __('Mi Portal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Tu espacio personal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'secciones' => [
                     'hero' => [
                         'tipo' => 'hero_simple',
-                        'mensaje_bienvenida' => __('Bienvenido/a', 'flavor-chat-ia'),
+                        'mensaje_bienvenida' => __('Bienvenido/a', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'acciones_rapidas' => [
                         'mostrar' => false,
@@ -529,14 +529,14 @@ class Flavor_Portal_Profiles {
      */
     private function get_profile_name($profile_slug) {
         $names = [
-            'grupo_consumo' => __('Grupo de Consumo', 'flavor-chat-ia'),
-            'comunidad' => __('Comunidad', 'flavor-chat-ia'),
-            'barrio' => __('Barrio', 'flavor-chat-ia'),
-            'coworking' => __('Coworking', 'flavor-chat-ia'),
-            'cooperativa' => __('Cooperativa', 'flavor-chat-ia'),
-            'academia' => __('Academia', 'flavor-chat-ia'),
-            'marketplace' => __('Marketplace', 'flavor-chat-ia'),
-            'default' => __('Portal', 'flavor-chat-ia'),
+            'grupo_consumo' => __('Grupo de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'comunidad' => __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'barrio' => __('Barrio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'coworking' => __('Coworking', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cooperativa' => __('Cooperativa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'academia' => __('Academia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'marketplace' => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'default' => __('Portal', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         return isset($names[$profile_slug]) ? $names[$profile_slug] : $names['default'];

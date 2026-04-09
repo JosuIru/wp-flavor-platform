@@ -91,7 +91,7 @@ $shell_item_is_active = static function(array $item) use ($current_page, $curren
 
 <!-- Skip Link para Accesibilidad -->
 <a href="#wpbody-content" class="fls-shell__skip-link">
-    <?php esc_html_e('Saltar al contenido', 'flavor-chat-ia'); ?>
+    <?php esc_html_e('Saltar al contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
 </a>
 
 <!-- Mobile Toggle Button -->
@@ -100,7 +100,7 @@ $shell_item_is_active = static function(array $item) use ($current_page, $curren
     class="fls-shell__mobile-toggle"
     x-data
     @click="$dispatch('toggle-mobile-shell')"
-    aria-label="<?php esc_attr_e('Abrir menú', 'flavor-chat-ia'); ?>"
+    aria-label="<?php esc_attr_e('Abrir menú', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
 >
     <span class="dashicons dashicons-menu"></span>
 </button>
@@ -128,7 +128,7 @@ $shell_item_is_active = static function(array $item) use ($current_page, $curren
                 @keydown.up.prevent="navigateResults(-1)"
                 @keydown.enter.prevent="selectResult()"
                 class="fls-shell-search__input"
-                placeholder="<?php esc_attr_e('Buscar páginas, módulos, acciones...', 'flavor-chat-ia'); ?>"
+                placeholder="<?php esc_attr_e('Buscar páginas, módulos, acciones...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                 autocomplete="off"
             >
             <kbd class="fls-shell-search__kbd">ESC</kbd>
@@ -138,7 +138,7 @@ $shell_item_is_active = static function(array $item) use ($current_page, $curren
             <template x-if="results.length === 0 && query.length > 0">
                 <div class="fls-shell-search__empty">
                     <span class="dashicons dashicons-search"></span>
-                    <p><?php esc_html_e('No se encontraron resultados', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No se encontraron resultados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             </template>
 
@@ -170,9 +170,9 @@ $shell_item_is_active = static function(array $item) use ($current_page, $curren
         </div>
 
         <div class="fls-shell-search__footer">
-            <span><kbd>&uarr;</kbd><kbd>&darr;</kbd> <?php esc_html_e('navegar', 'flavor-chat-ia'); ?></span>
-            <span><kbd>Enter</kbd> <?php esc_html_e('ir', 'flavor-chat-ia'); ?></span>
-            <span><kbd>Esc</kbd> <?php esc_html_e('cerrar', 'flavor-chat-ia'); ?></span>
+            <span><kbd>&uarr;</kbd><kbd>&darr;</kbd> <?php esc_html_e('navegar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+            <span><kbd>Enter</kbd> <?php esc_html_e('ir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+            <span><kbd>Esc</kbd> <?php esc_html_e('cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
     </div>
 </div>
@@ -201,8 +201,8 @@ $shell_item_is_active = static function(array $item) use ($current_page, $curren
             type="button"
             class="fls-shell__collapse-btn"
             @click="toggleCollapse()"
-            :aria-label="collapsed ? '<?php echo esc_js(__('Expandir menú', 'flavor-chat-ia')); ?>' : '<?php echo esc_js(__('Colapsar menú', 'flavor-chat-ia')); ?>'"
-            :title="collapsed ? '<?php echo esc_js(__('Expandir menú', 'flavor-chat-ia')); ?>' : '<?php echo esc_js(__('Colapsar menú', 'flavor-chat-ia')); ?>'"
+            :aria-label="collapsed ? '<?php echo esc_js(__('Expandir menú', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>' : '<?php echo esc_js(__('Colapsar menú', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>'"
+            :title="collapsed ? '<?php echo esc_js(__('Expandir menú', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>' : '<?php echo esc_js(__('Colapsar menú', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>'"
         >
             <span class="dashicons dashicons-arrow-left-alt2"></span>
         </button>
@@ -213,10 +213,10 @@ $shell_item_is_active = static function(array $item) use ($current_page, $curren
         type="button"
         class="fls-shell__search-btn"
         @click="$dispatch('open-shell-search')"
-        data-tooltip="<?php esc_attr_e('Buscar (Cmd+K)', 'flavor-chat-ia'); ?>"
+        data-tooltip="<?php esc_attr_e('Buscar (Cmd+K)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
     >
         <span class="dashicons dashicons-search"></span>
-        <span class="fls-shell__search-text"><?php esc_html_e('Buscar...', 'flavor-chat-ia'); ?></span>
+        <span class="fls-shell__search-text"><?php esc_html_e('Buscar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         <kbd class="fls-shell__search-kbd">
             <span><?php echo (strpos(strtolower($_SERVER['HTTP_USER_AGENT'] ?? ''), 'mac') !== false) ? '⌘' : 'Ctrl'; ?></span>K
         </kbd>
@@ -227,10 +227,10 @@ $shell_item_is_active = static function(array $item) use ($current_page, $curren
         href="<?php echo esc_url(home_url('/mi-portal/')); ?>"
         target="_blank"
         class="fls-shell__portal-btn"
-        data-tooltip="<?php esc_attr_e('Abrir Mi Portal', 'flavor-chat-ia'); ?>"
+        data-tooltip="<?php esc_attr_e('Abrir Mi Portal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
     >
         <span class="dashicons dashicons-admin-home"></span>
-        <span class="fls-shell__portal-text"><?php esc_html_e('Mi Portal', 'flavor-chat-ia'); ?></span>
+        <span class="fls-shell__portal-text"><?php esc_html_e('Mi Portal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         <span class="dashicons dashicons-external fls-shell__portal-external"></span>
     </a>
 
@@ -241,7 +241,7 @@ $shell_item_is_active = static function(array $item) use ($current_page, $curren
     $es_vista_admin = $vista_activa === Flavor_Admin_Menu_Manager::VISTA_ADMIN;
 
     // Determinar nombre e icono de vista activa
-    $vista_nombre = $es_vista_admin ? __('Admin', 'flavor-chat-ia') : __('Gestor', 'flavor-chat-ia');
+    $vista_nombre = $es_vista_admin ? __('Admin', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Gestor', FLAVOR_PLATFORM_TEXT_DOMAIN);
     $vista_icono = $es_vista_admin ? '👤' : '👥';
 
     if ($active_custom_view && !in_array($active_custom_view, ['admin', 'gestor'], true)) {
@@ -268,14 +268,14 @@ $shell_item_is_active = static function(array $item) use ($current_page, $curren
         </button>
         <div class="fls-shell__vista-dropdown" x-show="vistaOpen" x-transition x-cloak>
             <!-- Vistas del sistema -->
-            <div class="fls-shell__vista-group-title"><?php esc_html_e('Vistas del sistema', 'flavor-chat-ia'); ?></div>
+            <div class="fls-shell__vista-group-title"><?php esc_html_e('Vistas del sistema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <button
                 type="button"
                 class="fls-shell__vista-option <?php echo ($es_vista_admin && !$active_custom_view) ? 'fls-shell__vista-option--active' : ''; ?>"
                 @click="cambiarVista('<?php echo esc_js(Flavor_Admin_Menu_Manager::VISTA_ADMIN); ?>')"
             >
                 <span class="fls-shell__vista-check"><?php echo ($es_vista_admin && !$active_custom_view) ? '✓' : ''; ?></span>
-                <span>👤 <?php esc_html_e('Administrador', 'flavor-chat-ia'); ?></span>
+                <span>👤 <?php esc_html_e('Administrador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </button>
             <button
                 type="button"
@@ -283,7 +283,7 @@ $shell_item_is_active = static function(array $item) use ($current_page, $curren
                 @click="cambiarVista('<?php echo esc_js(Flavor_Admin_Menu_Manager::VISTA_GESTOR_GRUPOS); ?>')"
             >
                 <span class="fls-shell__vista-check"><?php echo (!$es_vista_admin && !$active_custom_view) ? '✓' : ''; ?></span>
-                <span>👥 <?php esc_html_e('Gestor de Grupos', 'flavor-chat-ia'); ?></span>
+                <span>👥 <?php esc_html_e('Gestor de Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </button>
 
             <?php if (!empty($available_views)) : ?>
@@ -294,7 +294,7 @@ $shell_item_is_active = static function(array $item) use ($current_page, $curren
                 });
                 if (!empty($custom_views_only)) :
                 ?>
-                    <div class="fls-shell__vista-group-title"><?php esc_html_e('Vistas personalizadas', 'flavor-chat-ia'); ?></div>
+                    <div class="fls-shell__vista-group-title"><?php esc_html_e('Vistas personalizadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     <?php foreach ($custom_views_only as $view) : ?>
                         <button
                             type="button"
@@ -312,16 +312,16 @@ $shell_item_is_active = static function(array $item) use ($current_page, $curren
             <hr class="fls-shell__vista-divider">
             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-module-dashboards')); ?>" class="fls-shell__vista-option">
                 <span class="fls-shell__vista-check"></span>
-                <span>📊 <?php esc_html_e('Índice de dashboards', 'flavor-chat-ia'); ?></span>
+                <span>📊 <?php esc_html_e('Índice de dashboards', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
-            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-config-vistas')); ?>" class="fls-shell__vista-option">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-platform-views')); ?>" class="fls-shell__vista-option">
                 <span class="fls-shell__vista-check"></span>
-                <span>⚙️ <?php esc_html_e('Configurar vistas', 'flavor-chat-ia'); ?></span>
+                <span>⚙️ <?php esc_html_e('Configurar vistas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
             <?php if (current_user_can('manage_options')) : ?>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-shell-views')); ?>" class="fls-shell__vista-option">
                     <span class="fls-shell__vista-check"></span>
-                    <span>➕ <?php esc_html_e('Crear vista', 'flavor-chat-ia'); ?></span>
+                    <span>➕ <?php esc_html_e('Crear vista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </a>
             <?php endif; ?>
         </div>
@@ -337,7 +337,7 @@ $shell_item_is_active = static function(array $item) use ($current_page, $curren
             >
                 <span class="fls-shell__section-title">
                     <span class="dashicons dashicons-star-filled fls-shell__section-icon"></span>
-                    <?php esc_html_e('Favoritos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
                 <span class="dashicons fls-shell__section-arrow" :class="favoritesOpen ? 'dashicons-arrow-up-alt2' : 'dashicons-arrow-down-alt2'"></span>
             </button>
@@ -360,7 +360,7 @@ $shell_item_is_active = static function(array $item) use ($current_page, $curren
                                 type="button"
                                 class="fls-shell__quick-remove"
                                 @click.prevent.stop="removeFavorite('<?php echo esc_js($favorite['slug']); ?>')"
-                                title="<?php esc_attr_e('Quitar de favoritos', 'flavor-chat-ia'); ?>"
+                                title="<?php esc_attr_e('Quitar de favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                             >
                                 <span class="dashicons dashicons-no-alt"></span>
                             </button>
@@ -381,7 +381,7 @@ $shell_item_is_active = static function(array $item) use ($current_page, $curren
             >
                 <span class="fls-shell__section-title">
                     <span class="dashicons dashicons-backup fls-shell__section-icon"></span>
-                    <?php esc_html_e('Recientes', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
                 <span class="dashicons fls-shell__section-arrow" :class="recentOpen ? 'dashicons-arrow-up-alt2' : 'dashicons-arrow-down-alt2'"></span>
             </button>
@@ -404,7 +404,7 @@ $shell_item_is_active = static function(array $item) use ($current_page, $curren
                                 type="button"
                                 class="fls-shell__quick-favorite"
                                 @click.prevent.stop="addToFavorites('<?php echo esc_js($recent_item['slug']); ?>', '<?php echo esc_js($recent_item['label']); ?>', '<?php echo esc_js($recent_item['icon'] ?? 'dashicons-star-filled'); ?>')"
-                                title="<?php esc_attr_e('Añadir a favoritos', 'flavor-chat-ia'); ?>"
+                                title="<?php esc_attr_e('Añadir a favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                             >
                                 <span class="dashicons dashicons-star-empty"></span>
                             </button>
@@ -416,7 +416,7 @@ $shell_item_is_active = static function(array $item) use ($current_page, $curren
     <?php endif; ?>
 
     <!-- Navigation -->
-    <nav class="fls-shell__nav" role="navigation" aria-label="<?php esc_attr_e('Menú principal', 'flavor-chat-ia'); ?>">
+    <nav class="fls-shell__nav" role="navigation" aria-label="<?php esc_attr_e('Menú principal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
         <?php
         $section_index = 0;
         foreach ($navigation as $section_id => $section) :
@@ -504,7 +504,7 @@ $shell_item_is_active = static function(array $item) use ($current_page, $curren
                                     type="button"
                                     class="fls-shell__menu-fav<?php echo $is_favorite ? ' fls-shell__menu-fav--active' : ''; ?>"
                                     @click.prevent.stop="toggleFavorite('<?php echo esc_js($item['slug']); ?>', '<?php echo esc_js($item['label']); ?>', '<?php echo esc_js($item['icon']); ?>')"
-                                    title="<?php echo $is_favorite ? esc_attr__('Quitar de favoritos', 'flavor-chat-ia') : esc_attr__('Añadir a favoritos', 'flavor-chat-ia'); ?>"
+                                    title="<?php echo $is_favorite ? esc_attr__('Quitar de favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_attr__('Añadir a favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                                 >
                                     <span class="dashicons <?php echo $is_favorite ? 'dashicons-star-filled' : 'dashicons-star-empty'; ?>"></span>
                                 </button>
@@ -563,8 +563,8 @@ $shell_item_is_active = static function(array $item) use ($current_page, $curren
             type="button"
             class="fls-shell__footer-btn"
             @click="$dispatch('open-shell-search')"
-            data-tooltip="<?php echo esc_attr__('Buscar (Cmd+K)', 'flavor-chat-ia'); ?>"
-            aria-label="<?php esc_attr_e('Abrir búsqueda rápida', 'flavor-chat-ia'); ?>"
+            data-tooltip="<?php echo esc_attr__('Buscar (Cmd+K)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
+            aria-label="<?php esc_attr_e('Abrir búsqueda rápida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
         >
             <span class="dashicons dashicons-search"></span>
         </button>
@@ -575,8 +575,8 @@ $shell_item_is_active = static function(array $item) use ($current_page, $curren
             class="fls-shell__footer-btn"
             :class="{ 'fls-shell__footer-btn--active': darkMode }"
             @click="toggleDarkMode()"
-            :data-tooltip="darkMode ? '<?php echo esc_attr__('Modo claro', 'flavor-chat-ia'); ?>' : '<?php echo esc_attr__('Modo oscuro', 'flavor-chat-ia'); ?>'"
-            :aria-label="darkMode ? '<?php echo esc_attr__('Cambiar a modo claro', 'flavor-chat-ia'); ?>' : '<?php echo esc_attr__('Cambiar a modo oscuro', 'flavor-chat-ia'); ?>'"
+            :data-tooltip="darkMode ? '<?php echo esc_attr__('Modo claro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>' : '<?php echo esc_attr__('Modo oscuro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>'"
+            :aria-label="darkMode ? '<?php echo esc_attr__('Cambiar a modo claro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>' : '<?php echo esc_attr__('Cambiar a modo oscuro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>'"
         >
             <span class="fls-shell__darkmode-icon">
                 <svg x-show="!darkMode" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -601,8 +601,8 @@ $shell_item_is_active = static function(array $item) use ($current_page, $curren
             type="button"
             class="fls-shell__footer-btn"
             @click="goToWPDashboard()"
-            data-tooltip="<?php echo esc_attr__('Volver a WordPress', 'flavor-chat-ia'); ?>"
-            aria-label="<?php esc_attr_e('Volver al escritorio de WordPress', 'flavor-chat-ia'); ?>"
+            data-tooltip="<?php echo esc_attr__('Volver a WordPress', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
+            aria-label="<?php esc_attr_e('Volver al escritorio de WordPress', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
         >
             <span class="dashicons dashicons-wordpress"></span>
         </button>
@@ -612,8 +612,8 @@ $shell_item_is_active = static function(array $item) use ($current_page, $curren
             type="button"
             class="fls-shell__footer-btn"
             @click="disableShell()"
-            data-tooltip="<?php echo esc_attr__('Desactivar shell', 'flavor-chat-ia'); ?>"
-            aria-label="<?php esc_attr_e('Desactivar shell de navegación', 'flavor-chat-ia'); ?>"
+            data-tooltip="<?php echo esc_attr__('Desactivar shell', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
+            aria-label="<?php esc_attr_e('Desactivar shell de navegación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
         >
             <span class="dashicons dashicons-dismiss"></span>
         </button>
@@ -659,31 +659,31 @@ $shell_item_is_active = static function(array $item) use ($current_page, $curren
             <hr class="fls-shell__user-divider">
             <a href="<?php echo esc_url(admin_url('profile.php')); ?>" class="fls-shell__user-option">
                 <span class="dashicons dashicons-admin-users"></span>
-                <?php esc_html_e('Editar perfil', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Editar perfil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="<?php echo esc_url(admin_url('profile.php#password')); ?>" class="fls-shell__user-option">
                 <span class="dashicons dashicons-lock"></span>
-                <?php esc_html_e('Cambiar contraseña', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Cambiar contraseña', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="<?php echo esc_url(admin_url('options-general.php')); ?>" class="fls-shell__user-option">
                 <span class="dashicons dashicons-admin-settings"></span>
-                <?php esc_html_e('Ajustes', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ajustes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <hr class="fls-shell__user-divider">
             <a href="<?php echo esc_url(home_url('/mi-portal/')); ?>" class="fls-shell__user-option" target="_blank">
                 <span class="dashicons dashicons-admin-home"></span>
-                <?php esc_html_e('Ver Mi Portal', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver Mi Portal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <span class="dashicons dashicons-external" style="font-size: 12px; margin-left: auto; opacity: 0.5;"></span>
             </a>
             <a href="<?php echo esc_url(home_url('/')); ?>" class="fls-shell__user-option" target="_blank">
                 <span class="dashicons dashicons-welcome-view-site"></span>
-                <?php esc_html_e('Ver sitio web', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver sitio web', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <span class="dashicons dashicons-external" style="font-size: 12px; margin-left: auto; opacity: 0.5;"></span>
             </a>
             <hr class="fls-shell__user-divider">
             <a href="<?php echo esc_url(wp_logout_url(admin_url())); ?>" class="fls-shell__user-option fls-shell__user-option--logout">
                 <span class="dashicons dashicons-exit"></span>
-                <?php esc_html_e('Cerrar sesión', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Cerrar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>

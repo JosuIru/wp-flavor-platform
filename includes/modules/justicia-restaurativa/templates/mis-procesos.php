@@ -43,11 +43,11 @@ $procesos_pendientes = $wpdb->get_results($wpdb->prepare(
 ?>
 
 <div class="jr-mis-procesos">
-    <h2><?php esc_html_e('Mis Procesos Restaurativos', 'flavor-chat-ia'); ?></h2>
+    <h2><?php esc_html_e('Mis Procesos Restaurativos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
     <?php if ($procesos_pendientes) : ?>
     <section class="jr-seccion jr-seccion--pendientes">
-        <h3><?php esc_html_e('Invitaciones pendientes', 'flavor-chat-ia'); ?></h3>
+        <h3><?php esc_html_e('Invitaciones pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
         <?php foreach ($procesos_pendientes as $proceso) :
             $tipo = get_post_meta($proceso->ID, '_jr_tipo', true);
@@ -61,26 +61,26 @@ $procesos_pendientes = $wpdb->get_results($wpdb->prepare(
                     <span class="jr-proceso-card__tipo"><?php echo esc_html($tipo_data['nombre']); ?></span>
                     <h4 class="jr-proceso-card__titulo">
                         <?php printf(
-                            esc_html__('Invitación de %s', 'flavor-chat-ia'),
+                            esc_html__('Invitación de %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             esc_html($solicitante->display_name)
                         ); ?>
                     </h4>
                 </div>
                 <span class="jr-estado-badge jr-estado-badge--solicitado">
-                    <?php esc_html_e('Pendiente de respuesta', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Pendiente de respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
             </header>
 
             <p style="margin: 1rem 0; color: var(--jr-text-light);">
-                <?php esc_html_e('Te han invitado a participar en un proceso de mediación. Tu participación es voluntaria.', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Te han invitado a participar en un proceso de mediación. Tu participación es voluntaria.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
 
             <div class="jr-proceso-card__actions">
                 <button class="jr-btn jr-btn--primary jr-btn-aceptar" data-proceso="<?php echo esc_attr($proceso->ID); ?>">
-                    <?php esc_html_e('Aceptar participar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Aceptar participar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button class="jr-btn jr-btn--secondary jr-btn-rechazar" data-proceso="<?php echo esc_attr($proceso->ID); ?>">
-                    <?php esc_html_e('No participar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('No participar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </article>
@@ -89,7 +89,7 @@ $procesos_pendientes = $wpdb->get_results($wpdb->prepare(
     <?php endif; ?>
 
     <section class="jr-seccion">
-        <h3><?php esc_html_e('Historial de procesos', 'flavor-chat-ia'); ?></h3>
+        <h3><?php esc_html_e('Historial de procesos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
         <?php if ($mis_procesos) : ?>
         <div class="jr-procesos-lista">
@@ -127,14 +127,14 @@ $procesos_pendientes = $wpdb->get_results($wpdb->prepare(
                     <?php if ($mediador) : ?>
                     <span>
                         <span class="dashicons dashicons-admin-users"></span>
-                        <?php printf(esc_html__('Mediador: %s', 'flavor-chat-ia'), esc_html($mediador->display_name)); ?>
+                        <?php printf(esc_html__('Mediador: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($mediador->display_name)); ?>
                     </span>
                     <?php endif; ?>
                     <span>
                         <span class="dashicons dashicons-<?php echo $soy_solicitante ? 'arrow-right-alt' : 'arrow-left-alt'; ?>"></span>
                         <?php echo $soy_solicitante
-                            ? esc_html__('Iniciado por ti', 'flavor-chat-ia')
-                            : esc_html__('Te invitaron', 'flavor-chat-ia'); ?>
+                            ? esc_html__('Iniciado por ti', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                            : esc_html__('Te invitaron', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                 </div>
             </article>
@@ -143,7 +143,7 @@ $procesos_pendientes = $wpdb->get_results($wpdb->prepare(
         <?php else : ?>
         <div class="jr-empty-state">
             <span class="dashicons dashicons-shield"></span>
-            <p><?php esc_html_e('No tienes procesos restaurativos activos.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('No tienes procesos restaurativos activos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
         <?php endif; ?>
     </section>
@@ -151,7 +151,7 @@ $procesos_pendientes = $wpdb->get_results($wpdb->prepare(
     <div style="text-align: center; margin-top: 2rem;">
         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('justicia_restaurativa', 'solicitar')); ?>" class="jr-btn jr-btn--primary">
             <span class="dashicons dashicons-plus-alt"></span>
-            <?php esc_html_e('Iniciar nuevo proceso', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Iniciar nuevo proceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 </div>

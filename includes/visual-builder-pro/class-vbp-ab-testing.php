@@ -342,7 +342,7 @@ class Flavor_VBP_AB_Testing {
 
         if ( ! $post_id || ! $element_id ) {
             return new WP_REST_Response(
-                array( 'error' => __( 'Post ID y Element ID son requeridos', 'flavor-chat-ia' ) ),
+                array( 'error' => __( 'Post ID y Element ID son requeridos', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                 400
             );
         }
@@ -352,7 +352,7 @@ class Flavor_VBP_AB_Testing {
             array(
                 'post_id'    => $post_id,
                 'element_id' => $element_id,
-                'name'       => $name ?: __( 'Test A/B', 'flavor-chat-ia' ),
+                'name'       => $name ?: __( 'Test A/B', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'goal_type'  => $goal_type,
                 'status'     => 'draft',
             ),
@@ -378,7 +378,7 @@ class Flavor_VBP_AB_Testing {
         return new WP_REST_Response(
             array(
                 'id'      => $test_id,
-                'message' => __( 'Test A/B creado', 'flavor-chat-ia' ),
+                'message' => __( 'Test A/B creado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             201
         );
@@ -400,7 +400,7 @@ class Flavor_VBP_AB_Testing {
 
         if ( ! $test ) {
             return new WP_REST_Response(
-                array( 'error' => __( 'Test no encontrado', 'flavor-chat-ia' ) ),
+                array( 'error' => __( 'Test no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                 404
             );
         }
@@ -487,7 +487,7 @@ class Flavor_VBP_AB_Testing {
         }
 
         return new WP_REST_Response(
-            array( 'message' => __( 'Test actualizado', 'flavor-chat-ia' ) ),
+            array( 'message' => __( 'Test actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             200
         );
     }
@@ -525,7 +525,7 @@ class Flavor_VBP_AB_Testing {
         $wpdb->delete( $this->tabla_tests, array( 'id' => $test_id ), array( '%d' ) );
 
         return new WP_REST_Response(
-            array( 'message' => __( 'Test eliminado', 'flavor-chat-ia' ) ),
+            array( 'message' => __( 'Test eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             200
         );
     }
@@ -627,7 +627,7 @@ class Flavor_VBP_AB_Testing {
         return new WP_REST_Response(
             array(
                 'id'      => $wpdb->insert_id,
-                'message' => __( 'Variante creada', 'flavor-chat-ia' ),
+                'message' => __( 'Variante creada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             201
         );

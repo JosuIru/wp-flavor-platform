@@ -78,7 +78,7 @@ class Flavor_Socios_Subscriptions {
 
             $importe_cuota  = floatval( $socio->cuota_mensual );
             $concepto_cuota = sprintf(
-                __( 'Cuota socio %1$s/%2$s', 'flavor-chat-ia' ),
+                __( 'Cuota socio %1$s/%2$s', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 str_pad( $mes_actual, 2, '0', STR_PAD_LEFT ),
                 $anio_actual
             );
@@ -258,19 +258,19 @@ class Flavor_Socios_Subscriptions {
         $importe_formateado = number_format( (float) $cuota->importe, 2, ',', '.' );
 
         $asunto_email = sprintf(
-            __( '[%s] Tu cuota vence pronto', 'flavor-chat-ia' ),
+            __( '[%s] Tu cuota vence pronto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             $nombre_sitio
         );
 
         $contenido_html = $this->construir_plantilla_email(
-            __( 'Tu cuota vence pronto', 'flavor-chat-ia' ),
+            __( 'Tu cuota vence pronto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             sprintf(
-                __( 'Te recordamos que tu cuota del periodo <strong>%1$s</strong> por importe de <strong>%2$s &euro;</strong> vence el <strong>%3$s</strong>.', 'flavor-chat-ia' ),
+                __( 'Te recordamos que tu cuota del periodo <strong>%1$s</strong> por importe de <strong>%2$s &euro;</strong> vence el <strong>%3$s</strong>.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 esc_html( $cuota->periodo ),
                 esc_html( $importe_formateado ),
                 esc_html( $fecha_formateada )
             ),
-            __( 'Por favor, asegurate de tener el pago al corriente antes de la fecha de vencimiento.', 'flavor-chat-ia' ),
+            __( 'Por favor, asegurate de tener el pago al corriente antes de la fecha de vencimiento.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             '#3498db'
         );
 
@@ -282,18 +282,18 @@ class Flavor_Socios_Subscriptions {
         $importe_formateado = number_format( (float) $cuota->importe, 2, ',', '.' );
 
         $asunto_email = sprintf(
-            __( '[%s] Recordatorio: Tu cuota vence hoy', 'flavor-chat-ia' ),
+            __( '[%s] Recordatorio: Tu cuota vence hoy', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             $nombre_sitio
         );
 
         $contenido_html = $this->construir_plantilla_email(
-            __( 'Tu cuota vence hoy', 'flavor-chat-ia' ),
+            __( 'Tu cuota vence hoy', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             sprintf(
-                __( 'Hoy es la fecha de vencimiento de tu cuota del periodo <strong>%1$s</strong> por importe de <strong>%2$s &euro;</strong>.', 'flavor-chat-ia' ),
+                __( 'Hoy es la fecha de vencimiento de tu cuota del periodo <strong>%1$s</strong> por importe de <strong>%2$s &euro;</strong>.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 esc_html( $cuota->periodo ),
                 esc_html( $importe_formateado )
             ),
-            __( 'Si ya has realizado el pago, puedes ignorar este mensaje. En caso contrario, te rogamos que lo hagas a la mayor brevedad posible.', 'flavor-chat-ia' ),
+            __( 'Si ya has realizado el pago, puedes ignorar este mensaje. En caso contrario, te rogamos que lo hagas a la mayor brevedad posible.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             '#f39c12'
         );
 
@@ -305,18 +305,18 @@ class Flavor_Socios_Subscriptions {
         $importe_formateado = number_format( (float) $cuota->importe, 2, ',', '.' );
 
         $asunto_email = sprintf(
-            __( '[%s] Cuota vencida - Accion requerida', 'flavor-chat-ia' ),
+            __( '[%s] Cuota vencida - Accion requerida', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             $nombre_sitio
         );
 
         $contenido_html = $this->construir_plantilla_email(
-            __( 'Cuota vencida', 'flavor-chat-ia' ),
+            __( 'Cuota vencida', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             sprintf(
-                __( 'Tu cuota del periodo <strong>%1$s</strong> por importe de <strong>%2$s &euro;</strong> se encuentra <strong>vencida</strong>.', 'flavor-chat-ia' ),
+                __( 'Tu cuota del periodo <strong>%1$s</strong> por importe de <strong>%2$s &euro;</strong> se encuentra <strong>vencida</strong>.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 esc_html( $cuota->periodo ),
                 esc_html( $importe_formateado )
             ),
-            __( 'Te rogamos que regularices tu situacion lo antes posible. Si tienes alguna dificultad, no dudes en contactar con nosotros.', 'flavor-chat-ia' ),
+            __( 'Te rogamos que regularices tu situacion lo antes posible. Si tienes alguna dificultad, no dudes en contactar con nosotros.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             '#e74c3c'
         );
 

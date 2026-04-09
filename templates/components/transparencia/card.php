@@ -69,7 +69,7 @@ $icono = $iconos_formato[$formato] ?? ['bg' => 'bg-gray-100', 'text' => 'text-gr
     <div class="px-5 py-3 bg-gray-50 border-t border-gray-100">
         <a href="<?php echo esc_url($enlace_descarga); ?>"
            class="w-full inline-flex items-center justify-center gap-2 bg-teal-500 text-white py-2 px-4 rounded-lg font-medium hover:bg-teal-600 transition-colors text-sm">
-            ⬇️ <?php echo esc_html__('Descargar', 'flavor-chat-ia'); ?>
+            ⬇️ <?php echo esc_html__('Descargar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 </article>

@@ -250,7 +250,7 @@ class Flavor_EC_Conciencia_Features {
         ));
 
         if (!$reserva) {
-            return ['success' => false, 'error' => __('Reserva no encontrada o no tienes permiso.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Reserva no encontrada o no tienes permiso.', 'flavor-platform')];
         }
 
         // Verificar que no esté ya cedida
@@ -260,7 +260,7 @@ class Flavor_EC_Conciencia_Features {
         ));
 
         if ($ya_cedida) {
-            return ['success' => false, 'error' => __('Esta reserva ya está cedida.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Esta reserva ya está cedida.', 'flavor-platform')];
         }
 
         // Crear cesión
@@ -284,12 +284,12 @@ class Flavor_EC_Conciencia_Features {
                 'success' => true,
                 'cesion_id' => $wpdb->insert_id,
                 'message' => $es_solidaria
-                    ? __('Reserva cedida al fondo solidario. ¡Gracias por tu generosidad!', 'flavor-chat-ia')
-                    : __('Reserva publicada para cesión.', 'flavor-chat-ia'),
+                    ? __('Reserva cedida al fondo solidario. ¡Gracias por tu generosidad!', 'flavor-platform')
+                    : __('Reserva publicada para cesión.', 'flavor-platform'),
             ];
         }
 
-        return ['success' => false, 'error' => __('Error al procesar la cesión.', 'flavor-chat-ia')];
+        return ['success' => false, 'error' => __('Error al procesar la cesión.', 'flavor-platform')];
     }
 
     /**
@@ -307,12 +307,12 @@ class Flavor_EC_Conciencia_Features {
         ));
 
         if (!$cesion) {
-            return ['success' => false, 'error' => __('Cesión no disponible.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Cesión no disponible.', 'flavor-platform')];
         }
 
         // No puede reclamar el mismo que cede
         if ($cesion->cedente_id == $usuario_id) {
-            return ['success' => false, 'error' => __('No puedes reclamar tu propia cesión.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No puedes reclamar tu propia cesión.', 'flavor-platform')];
         }
 
         // Actualizar cesión
@@ -338,7 +338,7 @@ class Flavor_EC_Conciencia_Features {
 
         return [
             'success' => true,
-            'message' => __('¡Reserva reclamada con éxito! Ya es tuya.', 'flavor-chat-ia'),
+            'message' => __('¡Reserva reclamada con éxito! Ya es tuya.', 'flavor-platform'),
         ];
     }
 
@@ -409,9 +409,9 @@ class Flavor_EC_Conciencia_Features {
                 $nc = Flavor_Notification_Center::get_instance();
                 $nc->send(
                     $usuario->usuario_id,
-                    __('¡Espacio disponible!', 'flavor-chat-ia'),
+                    __('¡Espacio disponible!', 'flavor-platform'),
                     sprintf(
-                        __('Hay una reserva disponible para el espacio que buscabas el %s. ¡Reclámala antes que otros!', 'flavor-chat-ia'),
+                        __('Hay una reserva disponible para el espacio que buscabas el %s. ¡Reclámala antes que otros!', 'flavor-platform'),
                         date_i18n(get_option('date_format'), strtotime($fecha_inicio))
                     ),
                     ['type' => 'success', 'link' => home_url('/espacios-comunes/cesiones/')]
@@ -440,7 +440,7 @@ class Flavor_EC_Conciencia_Features {
         ));
 
         if ($existe) {
-            return ['success' => false, 'error' => __('Ya estás en la lista de espera para este espacio.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Ya estás en la lista de espera para este espacio.', 'flavor-platform')];
         }
 
         $resultado = $wpdb->insert($tabla_lista, [
@@ -457,12 +457,12 @@ class Flavor_EC_Conciencia_Features {
             return [
                 'success' => true,
                 'message' => $es_prioritario
-                    ? __('Añadido a lista prioritaria. Serás notificado primero.', 'flavor-chat-ia')
-                    : __('Añadido a lista de espera. Te avisaremos cuando haya disponibilidad.', 'flavor-chat-ia'),
+                    ? __('Añadido a lista prioritaria. Serás notificado primero.', 'flavor-platform')
+                    : __('Añadido a lista de espera. Te avisaremos cuando haya disponibilidad.', 'flavor-platform'),
             ];
         }
 
-        return ['success' => false, 'error' => __('Error al añadir a la lista.', 'flavor-chat-ia')];
+        return ['success' => false, 'error' => __('Error al añadir a la lista.', 'flavor-platform')];
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -505,7 +505,7 @@ class Flavor_EC_Conciencia_Features {
             ];
         }
 
-        return ['success' => false, 'error' => __('Error al registrar consumo.', 'flavor-chat-ia')];
+        return ['success' => false, 'error' => __('Error al registrar consumo.', 'flavor-platform')];
     }
 
     /**
@@ -615,7 +615,7 @@ class Flavor_EC_Conciencia_Features {
             return ['success' => true, 'tarea_id' => $wpdb->insert_id];
         }
 
-        return ['success' => false, 'error' => __('Error al crear la tarea.', 'flavor-chat-ia')];
+        return ['success' => false, 'error' => __('Error al crear la tarea.', 'flavor-platform')];
     }
 
     /**
@@ -633,12 +633,12 @@ class Flavor_EC_Conciencia_Features {
         ));
 
         if (!$tarea) {
-            return ['success' => false, 'error' => __('Tarea no disponible.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Tarea no disponible.', 'flavor-platform')];
         }
 
         // Verificar plazas
         if ($tarea->personas_apuntadas >= $tarea->personas_necesarias) {
-            return ['success' => false, 'error' => __('No quedan plazas disponibles.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No quedan plazas disponibles.', 'flavor-platform')];
         }
 
         // Verificar que no esté ya apuntado
@@ -649,7 +649,7 @@ class Flavor_EC_Conciencia_Features {
         ));
 
         if ($ya_apuntado) {
-            return ['success' => false, 'error' => __('Ya estás apuntado a esta tarea.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Ya estás apuntado a esta tarea.', 'flavor-platform')];
         }
 
         // Apuntar
@@ -667,7 +667,7 @@ class Flavor_EC_Conciencia_Features {
 
         return [
             'success' => true,
-            'message' => __('¡Te has apuntado! Recibirás un recordatorio.', 'flavor-chat-ia'),
+            'message' => __('¡Te has apuntado! Recibirás un recordatorio.', 'flavor-platform'),
         ];
     }
 
@@ -685,7 +685,7 @@ class Flavor_EC_Conciencia_Features {
         ));
 
         if (!$tarea) {
-            return ['success' => false, 'error' => __('Tarea no encontrada.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Tarea no encontrada.', 'flavor-platform')];
         }
 
         $horas = $horas_trabajadas ?? $tarea->horas_estimadas;
@@ -708,7 +708,7 @@ class Flavor_EC_Conciencia_Features {
         return [
             'success' => true,
             'puntos' => $puntos,
-            'message' => sprintf(__('¡Gracias! Has ganado %d puntos de cuidado comunitario.', 'flavor-chat-ia'), $puntos),
+            'message' => sprintf(__('¡Gracias! Has ganado %d puntos de cuidado comunitario.', 'flavor-platform'), $puntos),
         ];
     }
 
@@ -938,8 +938,8 @@ class Flavor_EC_Conciencia_Features {
                 $alertas[] = [
                     'tipo' => 'warning',
                     'icono' => 'dashicons-warning',
-                    'titulo' => sprintf(__('Alto consumo en %s', 'flavor-chat-ia'), $espacio->nombre),
-                    'descripcion' => sprintf(__('CO2: %.1f kg (20%% sobre la media)', 'flavor-chat-ia'), $espacio->co2_total),
+                    'titulo' => sprintf(__('Alto consumo en %s', 'flavor-platform'), $espacio->nombre),
+                    'descripcion' => sprintf(__('CO2: %.1f kg (20%% sobre la media)', 'flavor-platform'), $espacio->co2_total),
                 ];
             }
         }
@@ -954,8 +954,8 @@ class Flavor_EC_Conciencia_Features {
             $alertas[] = [
                 'tipo' => 'error',
                 'icono' => 'dashicons-hammer',
-                'titulo' => sprintf(_n('%d tarea urgente pendiente', '%d tareas urgentes pendientes', $tareas_urgentes, 'flavor-chat-ia'), $tareas_urgentes),
-                'descripcion' => __('Necesitamos voluntarios para mantenimiento urgente.', 'flavor-chat-ia'),
+                'titulo' => sprintf(_n('%d tarea urgente pendiente', '%d tareas urgentes pendientes', $tareas_urgentes, 'flavor-platform'), $tareas_urgentes),
+                'descripcion' => __('Necesitamos voluntarios para mantenimiento urgente.', 'flavor-platform'),
             ];
         }
 
@@ -989,7 +989,7 @@ class Flavor_EC_Conciencia_Features {
         check_ajax_referer('ec_conciencia_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos.', 'flavor-platform')]);
         }
 
         $resultado = $this->registrar_consumo(
@@ -1016,7 +1016,7 @@ class Flavor_EC_Conciencia_Features {
         check_ajax_referer('ec_conciencia_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos.', 'flavor-platform')]);
         }
 
         $tarea_id = absint($_POST['tarea_id'] ?? 0);
@@ -1069,7 +1069,7 @@ class Flavor_EC_Conciencia_Features {
         ], $atts);
 
         if (!$atts['espacio_id']) {
-            return '<p>' . __('Especifica un espacio.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('Especifica un espacio.', 'flavor-platform') . '</p>';
         }
 
         $huella = $this->obtener_huella_espacio($atts['espacio_id'], $atts['periodo'] ?: null);
@@ -1109,7 +1109,7 @@ class Flavor_EC_Conciencia_Features {
 
     public function shortcode_mi_impacto($atts) {
         if (!is_user_logged_in()) {
-            return '<p>' . __('Inicia sesión para ver tu impacto.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('Inicia sesión para ver tu impacto.', 'flavor-platform') . '</p>';
         }
 
         $usuario_id = get_current_user_id();

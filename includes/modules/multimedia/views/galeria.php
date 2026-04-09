@@ -47,9 +47,9 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_multimedia W
 <div class="wrap">
     <h1>
         <span class="dashicons dashicons-format-gallery"></span>
-        <?php echo esc_html__('Galería Multimedia', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Galería Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         <button type="button" class="page-title-action" onclick="abrirModalSubir();">
-            <span class="dashicons dashicons-upload"></span> <?php echo esc_html__('Subir Archivo', 'flavor-chat-ia'); ?>
+            <span class="dashicons dashicons-upload"></span> <?php echo esc_html__('Subir Archivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
     </h1>
 
@@ -59,18 +59,18 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_multimedia W
             <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']); ?>">
 
             <div style="flex: 1; min-width: 200px;">
-                <label for="tipo"><?php echo esc_html__('Tipo:', 'flavor-chat-ia'); ?></label>
+                <label for="tipo"><?php echo esc_html__('Tipo:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="tipo" id="tipo" class="regular-text">
-                    <option value=""><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('foto', 'flavor-chat-ia'); ?>" <?php selected($tipo_filtro, 'foto'); ?>><?php echo esc_html__('Fotos', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('video', 'flavor-chat-ia'); ?>" <?php selected($tipo_filtro, 'video'); ?>><?php echo esc_html__('Videos', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php echo esc_html__('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="<?php echo esc_attr__('foto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($tipo_filtro, 'foto'); ?>><?php echo esc_html__('Fotos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="<?php echo esc_attr__('video', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($tipo_filtro, 'video'); ?>><?php echo esc_html__('Videos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
             </div>
 
             <div style="flex: 1; min-width: 200px;">
-                <label for="categoria"><?php echo esc_html__('Categoría:', 'flavor-chat-ia'); ?></label>
+                <label for="categoria"><?php echo esc_html__('Categoría:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="categoria" id="categoria" class="regular-text">
-                    <option value=""><?php echo esc_html__('Todas', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php echo esc_html__('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($categorias as $categoria): ?>
                         <option value="<?php echo esc_attr($categoria); ?>" <?php selected($categoria_filtro, $categoria); ?>>
                             <?php echo esc_html($categoria); ?>
@@ -79,8 +79,8 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_multimedia W
                 </select>
             </div>
 
-            <button type="submit" class="button button-primary"><?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?></button>
-            <a href="?page=<?php echo esc_attr($_GET['page']); ?>" class="button"><?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?></a>
+            <button type="submit" class="button button-primary"><?php echo esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+            <a href="?page=<?php echo esc_attr($_GET['page']); ?>" class="button"><?php echo esc_html__('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
         </form>
     </div>
 
@@ -90,7 +90,7 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_multimedia W
             <?php if (empty($multimedia)): ?>
                 <div style="grid-column: 1 / -1; text-align: center; padding: 60px;">
                     <span class="dashicons dashicons-format-gallery" style="font-size: 64px; color: #ddd;"></span>
-                    <h3 style="color: #666;"><?php echo esc_html__('No se encontró contenido', 'flavor-chat-ia'); ?></h3>
+                    <h3 style="color: #666;"><?php echo esc_html__('No se encontró contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
             <?php else: ?>
                 <?php foreach ($multimedia as $item): ?>
@@ -136,25 +136,25 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_multimedia W
     <div class="flavor-modal-overlay" onclick="cerrarModalSubir()"></div>
     <div class="flavor-modal-content" style="min-width:500px;">
         <button class="flavor-modal-close" onclick="cerrarModalSubir()">&times;</button>
-        <h3><?php echo esc_html__('Subir Archivo Multimedia', 'flavor-chat-ia'); ?></h3>
+        <h3><?php echo esc_html__('Subir Archivo Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         <form id="form-subir-multimedia" method="post" enctype="multipart/form-data">
             <?php wp_nonce_field('subir_multimedia', 'multimedia_nonce'); ?>
             <input type="hidden" name="accion" value="subir_multimedia">
             <div class="form-row" style="margin-bottom:15px;">
-                <label style="display:block;margin-bottom:5px;font-weight:600;"><?php echo esc_html__('Archivo', 'flavor-chat-ia'); ?></label>
+                <label style="display:block;margin-bottom:5px;font-weight:600;"><?php echo esc_html__('Archivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <input type="file" name="archivo" accept="image/*,video/*,audio/*" required>
             </div>
             <div class="form-row" style="margin-bottom:15px;">
-                <label style="display:block;margin-bottom:5px;font-weight:600;"><?php echo esc_html__('Título', 'flavor-chat-ia'); ?></label>
+                <label style="display:block;margin-bottom:5px;font-weight:600;"><?php echo esc_html__('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <input type="text" name="titulo" style="width:100%;padding:8px;">
             </div>
             <div class="form-row" style="margin-bottom:15px;">
-                <label style="display:block;margin-bottom:5px;font-weight:600;"><?php echo esc_html__('Descripción', 'flavor-chat-ia'); ?></label>
+                <label style="display:block;margin-bottom:5px;font-weight:600;"><?php echo esc_html__('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <textarea name="descripcion" rows="2" style="width:100%;padding:8px;"></textarea>
             </div>
             <div style="text-align:right;">
-                <button type="button" class="button" onclick="cerrarModalSubir()"><?php echo esc_html__('Cancelar', 'flavor-chat-ia'); ?></button>
-                <button type="submit" class="button button-primary"><?php echo esc_html__('Subir', 'flavor-chat-ia'); ?></button>
+                <button type="button" class="button" onclick="cerrarModalSubir()"><?php echo esc_html__('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                <button type="submit" class="button button-primary"><?php echo esc_html__('Subir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
             </div>
         </form>
     </div>
@@ -178,7 +178,7 @@ function cerrarModalSubir() {
 }
 
 function verDetalle(id) {
-    document.getElementById('modal-detalle-contenido').innerHTML = '<p><?php echo esc_js(__('Cargando...', 'flavor-chat-ia')); ?></p>';
+    document.getElementById('modal-detalle-contenido').innerHTML = '<p><?php echo esc_js(__('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></p>';
     document.getElementById('modal-detalle').style.display = 'block';
 
     jQuery.get(ajaxurl, {
@@ -191,15 +191,15 @@ function verDetalle(id) {
             var html = '<div style="display:flex;gap:20px;">' +
                 '<div style="flex:1;"><img src="' + m.url + '" style="max-width:100%;border-radius:8px;"></div>' +
                 '<div style="flex:1;">' +
-                '<h3>' + (m.titulo || '<?php echo esc_js(__('Sin título', 'flavor-chat-ia')); ?>') + '</h3>' +
+                '<h3>' + (m.titulo || '<?php echo esc_js(__('Sin título', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>') + '</h3>' +
                 '<p>' + (m.descripcion || '') + '</p>' +
-                '<p><strong><?php echo esc_js(__('Tipo:', 'flavor-chat-ia')); ?></strong> ' + m.tipo + '</p>' +
-                '<p><strong><?php echo esc_js(__('Tamaño:', 'flavor-chat-ia')); ?></strong> ' + m.tamano + '</p>' +
-                '<p><strong><?php echo esc_js(__('Fecha:', 'flavor-chat-ia')); ?></strong> ' + m.fecha + '</p>' +
+                '<p><strong><?php echo esc_js(__('Tipo:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong> ' + m.tipo + '</p>' +
+                '<p><strong><?php echo esc_js(__('Tamaño:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong> ' + m.tamano + '</p>' +
+                '<p><strong><?php echo esc_js(__('Fecha:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong> ' + m.fecha + '</p>' +
                 '</div></div>';
             document.getElementById('modal-detalle-contenido').innerHTML = html;
         } else {
-            document.getElementById('modal-detalle-contenido').innerHTML = '<p><?php echo esc_js(__('Error al cargar', 'flavor-chat-ia')); ?></p>';
+            document.getElementById('modal-detalle-contenido').innerHTML = '<p><?php echo esc_js(__('Error al cargar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></p>';
         }
     });
 }

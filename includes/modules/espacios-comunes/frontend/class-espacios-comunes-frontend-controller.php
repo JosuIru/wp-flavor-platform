@@ -114,13 +114,13 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('espacios_nonce'),
             'i18n' => [
-                'reserva_confirmada' => __('Reserva confirmada', 'flavor-chat-ia'),
-                'reserva_cancelada' => __('Reserva cancelada', 'flavor-chat-ia'),
-                'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
-                'confirmar_cancelar' => __('¿Confirmas que quieres cancelar esta reserva?', 'flavor-chat-ia'),
-                'selecciona_fecha' => __('Selecciona una fecha', 'flavor-chat-ia'),
-                'selecciona_horario' => __('Selecciona un horario', 'flavor-chat-ia'),
+                'reserva_confirmada' => __('Reserva confirmada', 'flavor-platform'),
+                'reserva_cancelada' => __('Reserva cancelada', 'flavor-platform'),
+                'error' => __('Ha ocurrido un error', 'flavor-platform'),
+                'cargando' => __('Cargando...', 'flavor-platform'),
+                'confirmar_cancelar' => __('¿Confirmas que quieres cancelar esta reserva?', 'flavor-platform'),
+                'selecciona_fecha' => __('Selecciona una fecha', 'flavor-platform'),
+                'selecciona_horario' => __('Selecciona un horario', 'flavor-platform'),
             ],
         ]);
     }
@@ -185,7 +185,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
         if (!$proxima) {
             return '<div class="flavor-widget flavor-widget--empty">
                 <span class="dashicons dashicons-calendar-alt"></span>
-                <p>' . esc_html__('No tienes reservas próximas', 'flavor-chat-ia') . '</p>
+                <p>' . esc_html__('No tienes reservas próximas', 'flavor-platform') . '</p>
             </div>';
         }
 
@@ -222,7 +222,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
         $tabla_espacios = $wpdb->prefix . 'flavor_espacios_comunes';
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_espacios)) {
-            return '<p class="flavor-error">' . __('El módulo no está configurado.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-error">' . __('El módulo no está configurado.', 'flavor-platform') . '</p>';
         }
 
         $where = "estado = 'disponible'";
@@ -256,7 +256,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
             <?php if (empty($espacios)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-building"></span>
-                    <p><?php esc_html_e('No hay espacios disponibles.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay espacios disponibles.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <div class="flavor-grid flavor-grid-3">
@@ -280,7 +280,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
                                     <?php if ($espacio->capacidad): ?>
                                         <span class="info-item">
                                             <span class="dashicons dashicons-groups"></span>
-                                            <?php echo intval($espacio->capacidad); ?> <?php esc_html_e('personas', 'flavor-chat-ia'); ?>
+                                            <?php echo intval($espacio->capacidad); ?> <?php esc_html_e('personas', 'flavor-platform'); ?>
                                         </span>
                                     <?php endif; ?>
                                     <?php if ($espacio->superficie): ?>
@@ -293,20 +293,20 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
 
                                 <?php if ($espacio->tarifa_hora > 0): ?>
                                     <p class="espacio-tarifa">
-                                        <strong><?php echo number_format_i18n($espacio->tarifa_hora, 2); ?> €</strong>/<?php esc_html_e('hora', 'flavor-chat-ia'); ?>
+                                        <strong><?php echo number_format_i18n($espacio->tarifa_hora, 2); ?> €</strong>/<?php esc_html_e('hora', 'flavor-platform'); ?>
                                     </p>
                                 <?php else: ?>
-                                    <p class="espacio-tarifa gratuito"><?php esc_html_e('Gratuito', 'flavor-chat-ia'); ?></p>
+                                    <p class="espacio-tarifa gratuito"><?php esc_html_e('Gratuito', 'flavor-platform'); ?></p>
                                 <?php endif; ?>
                             </div>
 
                             <div class="flavor-card-footer">
                                 <a href="<?php echo esc_url(home_url('/espacios/' . $espacio->slug)); ?>" class="flavor-btn flavor-btn-outline">
-                                    <?php esc_html_e('Ver Detalles', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Ver Detalles', 'flavor-platform'); ?>
                                 </a>
                                 <?php if (is_user_logged_in()): ?>
                                     <a href="<?php echo esc_url(home_url('/espacios/' . $espacio->slug . '/reservar')); ?>" class="flavor-btn flavor-btn-primary">
-                                        <?php esc_html_e('Reservar', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Reservar', 'flavor-platform'); ?>
                                     </a>
                                 <?php endif; ?>
                             </div>
@@ -347,7 +347,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
         }
 
         if (!$espacio) {
-            return '<p class="flavor-error">' . __('Espacio no encontrado.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-error">' . __('Espacio no encontrado.', 'flavor-platform') . '</p>';
         }
 
         $equipamiento = !empty($espacio->equipamiento) ? json_decode($espacio->equipamiento, true) : [];
@@ -382,7 +382,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
                         <span class="dashicons dashicons-groups"></span>
                         <div>
                             <span class="stat-value"><?php echo intval($espacio->capacidad); ?></span>
-                            <span class="stat-label"><?php esc_html_e('Capacidad', 'flavor-chat-ia'); ?></span>
+                            <span class="stat-label"><?php esc_html_e('Capacidad', 'flavor-platform'); ?></span>
                         </div>
                     </div>
                 <?php endif; ?>
@@ -391,7 +391,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
                         <span class="dashicons dashicons-editor-expand"></span>
                         <div>
                             <span class="stat-value"><?php echo number_format_i18n($espacio->superficie, 0); ?> m²</span>
-                            <span class="stat-label"><?php esc_html_e('Superficie', 'flavor-chat-ia'); ?></span>
+                            <span class="stat-label"><?php esc_html_e('Superficie', 'flavor-platform'); ?></span>
                         </div>
                     </div>
                 <?php endif; ?>
@@ -401,23 +401,23 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
                         <?php if ($espacio->tarifa_hora > 0): ?>
                             <span class="stat-value"><?php echo number_format_i18n($espacio->tarifa_hora, 2); ?> €/h</span>
                         <?php else: ?>
-                            <span class="stat-value gratuito"><?php esc_html_e('Gratuito', 'flavor-chat-ia'); ?></span>
+                            <span class="stat-value gratuito"><?php esc_html_e('Gratuito', 'flavor-platform'); ?></span>
                         <?php endif; ?>
-                        <span class="stat-label"><?php esc_html_e('Tarifa', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php esc_html_e('Tarifa', 'flavor-platform'); ?></span>
                     </div>
                 </div>
             </div>
 
             <?php if ($espacio->descripcion): ?>
                 <div class="espacio-descripcion">
-                    <h2><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?></h2>
+                    <h2><?php esc_html_e('Descripción', 'flavor-platform'); ?></h2>
                     <?php echo wp_kses_post($espacio->descripcion); ?>
                 </div>
             <?php endif; ?>
 
             <?php if (!empty($equipamiento)): ?>
                 <div class="espacio-equipamiento">
-                    <h2><?php esc_html_e('Equipamiento', 'flavor-chat-ia'); ?></h2>
+                    <h2><?php esc_html_e('Equipamiento', 'flavor-platform'); ?></h2>
                     <ul class="equipamiento-lista">
                         <?php foreach ($equipamiento as $item): ?>
                             <li><span class="dashicons dashicons-yes-alt"></span> <?php echo esc_html($item); ?></li>
@@ -428,7 +428,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
 
             <?php if ($espacio->horario_apertura && $espacio->horario_cierre): ?>
                 <div class="espacio-horarios">
-                    <h2><?php esc_html_e('Horarios', 'flavor-chat-ia'); ?></h2>
+                    <h2><?php esc_html_e('Horarios', 'flavor-platform'); ?></h2>
                     <p>
                         <span class="dashicons dashicons-clock"></span>
                         <?php echo esc_html($espacio->horario_apertura); ?> - <?php echo esc_html($espacio->horario_cierre); ?>
@@ -441,7 +441,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
 
             <?php if (!empty($galeria)): ?>
                 <div class="espacio-galeria">
-                    <h2><?php esc_html_e('Galería', 'flavor-chat-ia'); ?></h2>
+                    <h2><?php esc_html_e('Galería', 'flavor-platform'); ?></h2>
                     <div class="galeria-grid">
                         <?php foreach ($galeria as $imagen): ?>
                             <a href="<?php echo esc_url($imagen); ?>" class="galeria-item" data-lightbox="espacio">
@@ -454,7 +454,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
 
             <?php if ($espacio->normas): ?>
                 <div class="espacio-normas">
-                    <h3><?php esc_html_e('Normas de Uso', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Normas de Uso', 'flavor-platform'); ?></h3>
                     <?php echo wp_kses_post($espacio->normas); ?>
                 </div>
             <?php endif; ?>
@@ -463,12 +463,12 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
                 <div class="espacio-cta">
                     <a href="<?php echo esc_url(home_url('/espacios/' . $espacio->slug . '/reservar')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-lg">
                         <span class="dashicons dashicons-calendar-alt"></span>
-                        <?php esc_html_e('Reservar este Espacio', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Reservar este Espacio', 'flavor-platform'); ?>
                     </a>
                 </div>
             <?php elseif (!is_user_logged_in()): ?>
                 <div class="espacio-cta">
-                    <p><?php esc_html_e('Inicia sesión para reservar este espacio.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Inicia sesión para reservar este espacio.', 'flavor-platform'); ?></p>
                 </div>
             <?php endif; ?>
         </div>
@@ -481,7 +481,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
      */
     public function shortcode_reservar($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . __('Debes iniciar sesión para reservar.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-login-required">' . __('Debes iniciar sesión para reservar.', 'flavor-platform') . '</p>';
         }
 
         $this->encolar_assets();
@@ -508,7 +508,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
         }
 
         if (!$espacio) {
-            return '<p class="flavor-error">' . __('Espacio no disponible para reservas.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-error">' . __('Espacio no disponible para reservas.', 'flavor-platform') . '</p>';
         }
 
         // Generar franjas horarias
@@ -525,11 +525,11 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
         ?>
         <div class="flavor-espacios-reservar">
             <div class="reserva-header">
-                <h2><?php esc_html_e('Reservar', 'flavor-chat-ia'); ?> <?php echo esc_html($espacio->nombre); ?></h2>
+                <h2><?php esc_html_e('Reservar', 'flavor-platform'); ?> <?php echo esc_html($espacio->nombre); ?></h2>
                 <?php if ($espacio->tarifa_hora > 0): ?>
                     <p class="reserva-tarifa">
                         <span class="dashicons dashicons-money-alt"></span>
-                        <?php echo number_format_i18n($espacio->tarifa_hora, 2); ?> €/<?php esc_html_e('hora', 'flavor-chat-ia'); ?>
+                        <?php echo number_format_i18n($espacio->tarifa_hora, 2); ?> €/<?php esc_html_e('hora', 'flavor-platform'); ?>
                     </p>
                 <?php endif; ?>
             </div>
@@ -540,7 +540,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
 
                 <div class="flavor-form-row">
                     <div class="flavor-form-group flavor-form-col-6">
-                        <label for="fecha"><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?> *</label>
+                        <label for="fecha"><?php esc_html_e('Fecha', 'flavor-platform'); ?> *</label>
                         <input type="date" name="fecha" id="fecha" required
                             min="<?php echo date('Y-m-d'); ?>"
                             max="<?php echo date('Y-m-d', strtotime('+' . ($espacio->dias_antelacion_max ?? 30) . ' days')); ?>">
@@ -549,18 +549,18 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
 
                 <div class="flavor-form-row">
                     <div class="flavor-form-group flavor-form-col-6">
-                        <label for="hora_inicio"><?php esc_html_e('Hora inicio', 'flavor-chat-ia'); ?> *</label>
+                        <label for="hora_inicio"><?php esc_html_e('Hora inicio', 'flavor-platform'); ?> *</label>
                         <select name="hora_inicio" id="hora_inicio" required>
-                            <option value=""><?php esc_html_e('Selecciona...', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php esc_html_e('Selecciona...', 'flavor-platform'); ?></option>
                             <?php foreach ($franjas as $franja): ?>
                                 <option value="<?php echo esc_attr($franja); ?>"><?php echo esc_html($franja); ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="flavor-form-group flavor-form-col-6">
-                        <label for="hora_fin"><?php esc_html_e('Hora fin', 'flavor-chat-ia'); ?> *</label>
+                        <label for="hora_fin"><?php esc_html_e('Hora fin', 'flavor-platform'); ?> *</label>
                         <select name="hora_fin" id="hora_fin" required>
-                            <option value=""><?php esc_html_e('Selecciona...', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php esc_html_e('Selecciona...', 'flavor-platform'); ?></option>
                             <?php foreach ($franjas as $index => $franja): ?>
                                 <?php if ($index > 0): ?>
                                     <option value="<?php echo esc_attr($franja); ?>"><?php echo esc_html($franja); ?></option>
@@ -572,41 +572,41 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="motivo"><?php esc_html_e('Motivo de la reserva', 'flavor-chat-ia'); ?> *</label>
+                    <label for="motivo"><?php esc_html_e('Motivo de la reserva', 'flavor-platform'); ?> *</label>
                     <textarea name="motivo" id="motivo" rows="3" required></textarea>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="asistentes"><?php esc_html_e('Número de asistentes', 'flavor-chat-ia'); ?></label>
+                    <label for="asistentes"><?php esc_html_e('Número de asistentes', 'flavor-platform'); ?></label>
                     <input type="number" name="asistentes" id="asistentes" min="1" max="<?php echo intval($espacio->capacidad ?? 100); ?>">
                     <?php if ($espacio->capacidad): ?>
-                        <p class="flavor-form-help"><?php printf(esc_html__('Capacidad máxima: %d personas', 'flavor-chat-ia'), intval($espacio->capacidad)); ?></p>
+                        <p class="flavor-form-help"><?php printf(esc_html__('Capacidad máxima: %d personas', 'flavor-platform'), intval($espacio->capacidad)); ?></p>
                     <?php endif; ?>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="notas"><?php esc_html_e('Notas adicionales', 'flavor-chat-ia'); ?></label>
+                    <label for="notas"><?php esc_html_e('Notas adicionales', 'flavor-platform'); ?></label>
                     <textarea name="notas" id="notas" rows="2"></textarea>
                 </div>
 
                 <?php if ($espacio->tarifa_hora > 0): ?>
                     <div class="reserva-resumen" id="resumen-reserva" style="display:none;">
-                        <h4><?php esc_html_e('Resumen', 'flavor-chat-ia'); ?></h4>
-                        <p><?php esc_html_e('Duración:', 'flavor-chat-ia'); ?> <span id="duracion-horas">-</span> <?php esc_html_e('horas', 'flavor-chat-ia'); ?></p>
-                        <p><?php esc_html_e('Total estimado:', 'flavor-chat-ia'); ?> <strong><span id="total-importe">-</span> €</strong></p>
+                        <h4><?php esc_html_e('Resumen', 'flavor-platform'); ?></h4>
+                        <p><?php esc_html_e('Duración:', 'flavor-platform'); ?> <span id="duracion-horas">-</span> <?php esc_html_e('horas', 'flavor-platform'); ?></p>
+                        <p><?php esc_html_e('Total estimado:', 'flavor-platform'); ?> <strong><span id="total-importe">-</span> €</strong></p>
                     </div>
                 <?php endif; ?>
 
                 <div class="flavor-form-actions">
                     <button type="submit" class="flavor-btn flavor-btn-primary">
                         <span class="dashicons dashicons-calendar-alt"></span>
-                        <?php esc_html_e('Confirmar Reserva', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Confirmar Reserva', 'flavor-platform'); ?>
                     </button>
                 </div>
             </form>
 
             <div id="disponibilidad-horaria" class="disponibilidad-panel" style="display:none;">
-                <h4><?php esc_html_e('Horarios ocupados', 'flavor-chat-ia'); ?></h4>
+                <h4><?php esc_html_e('Horarios ocupados', 'flavor-platform'); ?></h4>
                 <div class="horarios-ocupados"></div>
             </div>
         </div>
@@ -619,7 +619,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
      */
     public function shortcode_mis_reservas($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . __('Debes iniciar sesión.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-login-required">' . __('Debes iniciar sesión.', 'flavor-platform') . '</p>';
         }
 
         $this->encolar_assets();
@@ -653,14 +653,14 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-espacios-mis-reservas">
-            <h2><?php esc_html_e('Mis Reservas', 'flavor-chat-ia'); ?></h2>
+            <h2><?php esc_html_e('Mis Reservas', 'flavor-platform'); ?></h2>
 
             <?php if (empty($reservas)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-calendar-alt"></span>
-                    <p><?php esc_html_e('No tienes reservas.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No tienes reservas.', 'flavor-platform'); ?></p>
                     <a href="<?php echo esc_url(home_url('/espacios/')); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php esc_html_e('Ver Espacios Disponibles', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver Espacios Disponibles', 'flavor-platform'); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -672,7 +672,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
                     ?>
 
                     <?php if (!empty($reservas_futuras)): ?>
-                        <h3><?php esc_html_e('Próximas Reservas', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php esc_html_e('Próximas Reservas', 'flavor-platform'); ?></h3>
                         <div class="reservas-grid">
                             <?php foreach ($reservas_futuras as $reserva): ?>
                                 <div class="reserva-card">
@@ -698,7 +698,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
                                     <div class="reserva-acciones">
                                         <?php if ($reserva->estado === 'pendiente' || $reserva->estado === 'confirmada'): ?>
                                             <button type="button" class="flavor-btn flavor-btn-sm flavor-btn-danger btn-cancelar-reserva" data-reserva="<?php echo esc_attr($reserva->id); ?>">
-                                                <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                                                <?php esc_html_e('Cancelar', 'flavor-platform'); ?>
                                             </button>
                                         <?php endif; ?>
                                     </div>
@@ -708,15 +708,15 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
                     <?php endif; ?>
 
                     <?php if (!empty($reservas_pasadas)): ?>
-                        <h3><?php esc_html_e('Historial', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php esc_html_e('Historial', 'flavor-platform'); ?></h3>
                         <div class="flavor-table-responsive">
                             <table class="flavor-table">
                                 <thead>
                                     <tr>
-                                        <th><?php esc_html_e('Espacio', 'flavor-chat-ia'); ?></th>
-                                        <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                                        <th><?php esc_html_e('Horario', 'flavor-chat-ia'); ?></th>
-                                        <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                                        <th><?php esc_html_e('Espacio', 'flavor-platform'); ?></th>
+                                        <th><?php esc_html_e('Fecha', 'flavor-platform'); ?></th>
+                                        <th><?php esc_html_e('Horario', 'flavor-platform'); ?></th>
+                                        <th><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -765,7 +765,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
         <div class="flavor-espacios-calendario">
             <div class="calendario-filtros">
                 <select id="filtro-espacio-calendario">
-                    <option value=""><?php esc_html_e('Todos los espacios', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todos los espacios', 'flavor-platform'); ?></option>
                     <?php foreach ($espacios as $espacio): ?>
                         <option value="<?php echo esc_attr($espacio->id); ?>" <?php selected($atts['espacio_id'], $espacio->id); ?>>
                             <?php echo esc_html($espacio->nombre); ?>
@@ -776,13 +776,13 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
 
             <div id="calendario-espacios" class="calendario-container" data-espacio="<?php echo intval($atts['espacio_id']); ?>">
                 <!-- Calendario renderizado por JS -->
-                <p class="cargando"><?php esc_html_e('Cargando calendario...', 'flavor-chat-ia'); ?></p>
+                <p class="cargando"><?php esc_html_e('Cargando calendario...', 'flavor-platform'); ?></p>
             </div>
 
             <div class="calendario-leyenda">
-                <span class="leyenda-item disponible"><span class="dot"></span> <?php esc_html_e('Disponible', 'flavor-chat-ia'); ?></span>
-                <span class="leyenda-item ocupado"><span class="dot"></span> <?php esc_html_e('Ocupado', 'flavor-chat-ia'); ?></span>
-                <span class="leyenda-item mi-reserva"><span class="dot"></span> <?php esc_html_e('Mi reserva', 'flavor-chat-ia'); ?></span>
+                <span class="leyenda-item disponible"><span class="dot"></span> <?php esc_html_e('Disponible', 'flavor-platform'); ?></span>
+                <span class="leyenda-item ocupado"><span class="dot"></span> <?php esc_html_e('Ocupado', 'flavor-platform'); ?></span>
+                <span class="leyenda-item mi-reserva"><span class="dot"></span> <?php esc_html_e('Mi reserva', 'flavor-platform'); ?></span>
             </div>
         </div>
         <?php
@@ -800,7 +800,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
         check_ajax_referer('espacios_nonce', 'espacios_nonce_field');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesión', 'flavor-platform'));
         }
 
         $espacio_id = isset($_POST['espacio_id']) ? absint($_POST['espacio_id']) : 0;
@@ -812,12 +812,12 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
         $notas = isset($_POST['notas']) ? sanitize_textarea_field($_POST['notas']) : '';
 
         if (!$espacio_id || empty($fecha) || empty($hora_inicio) || empty($hora_fin) || empty($motivo)) {
-            wp_send_json_error(__('Todos los campos obligatorios deben completarse', 'flavor-chat-ia'));
+            wp_send_json_error(__('Todos los campos obligatorios deben completarse', 'flavor-platform'));
         }
 
         // Validar fecha
         if (strtotime($fecha) < strtotime('today')) {
-            wp_send_json_error(__('No puedes reservar en fechas pasadas', 'flavor-chat-ia'));
+            wp_send_json_error(__('No puedes reservar en fechas pasadas', 'flavor-platform'));
         }
 
         global $wpdb;
@@ -830,7 +830,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
         ));
 
         if (!$espacio) {
-            wp_send_json_error(__('Espacio no disponible', 'flavor-chat-ia'));
+            wp_send_json_error(__('Espacio no disponible', 'flavor-platform'));
         }
 
         // Verificar conflictos
@@ -845,7 +845,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
         ));
 
         if ($conflicto) {
-            wp_send_json_error(__('El horario seleccionado no está disponible', 'flavor-chat-ia'));
+            wp_send_json_error(__('El horario seleccionado no está disponible', 'flavor-platform'));
         }
 
         // Calcular importe
@@ -873,8 +873,8 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
             do_action('espacio_reserva_created', $reserva_id, $usuario_id, $espacio_id);
 
             $mensaje = $espacio->requiere_aprobacion
-                ? __('Reserva enviada. Recibirás confirmación pronto.', 'flavor-chat-ia')
-                : __('¡Reserva confirmada!', 'flavor-chat-ia');
+                ? __('Reserva enviada. Recibirás confirmación pronto.', 'flavor-platform')
+                : __('¡Reserva confirmada!', 'flavor-platform');
 
             wp_send_json_success([
                 'mensaje' => $mensaje,
@@ -882,7 +882,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
                 'redirect' => home_url('/mi-portal/espacios/'),
             ]);
         } else {
-            wp_send_json_error(__('Error al crear la reserva', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al crear la reserva', 'flavor-platform'));
         }
     }
 
@@ -893,14 +893,14 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
         check_ajax_referer('espacios_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesión', 'flavor-platform'));
         }
 
         $reserva_id = isset($_POST['reserva_id']) ? absint($_POST['reserva_id']) : 0;
         $usuario_id = get_current_user_id();
 
         if (!$reserva_id) {
-            wp_send_json_error(__('Reserva no válida', 'flavor-chat-ia'));
+            wp_send_json_error(__('Reserva no válida', 'flavor-platform'));
         }
 
         global $wpdb;
@@ -914,17 +914,17 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
         ));
 
         if (!$reserva) {
-            wp_send_json_error(__('Reserva no encontrada', 'flavor-chat-ia'));
+            wp_send_json_error(__('Reserva no encontrada', 'flavor-platform'));
         }
 
         if ($reserva->estado === 'cancelada') {
-            wp_send_json_error(__('Esta reserva ya está cancelada', 'flavor-chat-ia'));
+            wp_send_json_error(__('Esta reserva ya está cancelada', 'flavor-platform'));
         }
 
         // Verificar que no sea muy tarde para cancelar
         $fecha_reserva = $reserva->fecha . ' ' . $reserva->hora_inicio;
         if (strtotime($fecha_reserva) < time()) {
-            wp_send_json_error(__('No puedes cancelar una reserva pasada', 'flavor-chat-ia'));
+            wp_send_json_error(__('No puedes cancelar una reserva pasada', 'flavor-platform'));
         }
 
         $resultado = $wpdb->update(
@@ -938,9 +938,9 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
 
         if ($resultado !== false) {
             do_action('espacio_reserva_cancelled', $reserva_id, $usuario_id);
-            wp_send_json_success(['mensaje' => __('Reserva cancelada', 'flavor-chat-ia')]);
+            wp_send_json_success(['mensaje' => __('Reserva cancelada', 'flavor-platform')]);
         } else {
-            wp_send_json_error(__('Error al cancelar la reserva', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al cancelar la reserva', 'flavor-platform'));
         }
     }
 
@@ -952,7 +952,7 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
         $fecha = isset($_POST['fecha']) ? sanitize_text_field($_POST['fecha']) : '';
 
         if (!$espacio_id || empty($fecha)) {
-            wp_send_json_error(__('Datos incompletos', 'flavor-chat-ia'));
+            wp_send_json_error(__('Datos incompletos', 'flavor-platform'));
         }
 
         global $wpdb;

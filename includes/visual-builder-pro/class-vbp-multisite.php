@@ -401,7 +401,7 @@ class Flavor_VBP_Multisite {
         $params = $request->get_json_params();
 
         if ( empty( $params['template_id'] ) || empty( $params['source_site_id'] ) ) {
-            return new WP_Error( 'missing_params', __( 'Parámetros requeridos faltantes', 'flavor-chat-ia' ), array( 'status' => 400 ) );
+            return new WP_Error( 'missing_params', __( 'Parámetros requeridos faltantes', FLAVOR_PLATFORM_TEXT_DOMAIN ), array( 'status' => 400 ) );
         }
 
         $template_id   = sanitize_text_field( $params['template_id'] );
@@ -417,7 +417,7 @@ class Flavor_VBP_Multisite {
         restore_current_blog();
 
         if ( ! $template_data ) {
-            return new WP_Error( 'template_not_found', __( 'Template no encontrado', 'flavor-chat-ia' ), array( 'status' => 404 ) );
+            return new WP_Error( 'template_not_found', __( 'Template no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ), array( 'status' => 404 ) );
         }
 
         // Crear entrada de template compartido
@@ -463,7 +463,7 @@ class Flavor_VBP_Multisite {
             }
         }
 
-        return new WP_Error( 'not_found', __( 'Template no encontrado', 'flavor-chat-ia' ), array( 'status' => 404 ) );
+        return new WP_Error( 'not_found', __( 'Template no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ), array( 'status' => 404 ) );
     }
 
     /**
@@ -486,7 +486,7 @@ class Flavor_VBP_Multisite {
         }
 
         if ( ! $found ) {
-            return new WP_Error( 'not_found', __( 'Template no encontrado', 'flavor-chat-ia' ), array( 'status' => 404 ) );
+            return new WP_Error( 'not_found', __( 'Template no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ), array( 'status' => 404 ) );
         }
 
         update_site_option( self::SHARED_TEMPLATES_KEY, array_values( $templates ) );
@@ -515,7 +515,7 @@ class Flavor_VBP_Multisite {
         }
 
         if ( ! $template ) {
-            return new WP_Error( 'not_found', __( 'Template no encontrado', 'flavor-chat-ia' ), array( 'status' => 404 ) );
+            return new WP_Error( 'not_found', __( 'Template no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ), array( 'status' => 404 ) );
         }
 
         // Importar al sitio actual
@@ -644,7 +644,7 @@ class Flavor_VBP_Multisite {
         $params = $request->get_json_params();
 
         if ( empty( $params['widget_id'] ) || empty( $params['source_site_id'] ) ) {
-            return new WP_Error( 'missing_params', __( 'Parámetros requeridos faltantes', 'flavor-chat-ia' ), array( 'status' => 400 ) );
+            return new WP_Error( 'missing_params', __( 'Parámetros requeridos faltantes', FLAVOR_PLATFORM_TEXT_DOMAIN ), array( 'status' => 400 ) );
         }
 
         $widget_id = absint( $params['widget_id'] );
@@ -658,7 +658,7 @@ class Flavor_VBP_Multisite {
         restore_current_blog();
 
         if ( ! $widget_post || ! $widget_data ) {
-            return new WP_Error( 'widget_not_found', __( 'Widget no encontrado', 'flavor-chat-ia' ), array( 'status' => 404 ) );
+            return new WP_Error( 'widget_not_found', __( 'Widget no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ), array( 'status' => 404 ) );
         }
 
         $shared_widget = array(
@@ -961,8 +961,8 @@ class Flavor_VBP_Multisite {
     public function add_network_admin_menu() {
         add_submenu_page(
             'settings.php',
-            __( 'Visual Builder Pro - Red', 'flavor-chat-ia' ),
-            __( 'VBP Red', 'flavor-chat-ia' ),
+            __( 'Visual Builder Pro - Red', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            __( 'VBP Red', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'manage_network_options',
             'vbp-network-settings',
             array( $this, 'render_network_admin_page' )
@@ -976,107 +976,107 @@ class Flavor_VBP_Multisite {
         $settings = $this->get_network_settings();
         ?>
         <div class="wrap" x-data="vbpNetworkAdmin()">
-            <h1><?php esc_html_e( 'Visual Builder Pro - Configuración de Red', 'flavor-chat-ia' ); ?></h1>
+            <h1><?php esc_html_e( 'Visual Builder Pro - Configuración de Red', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h1>
 
             <div class="vbp-network-admin">
                 <!-- Tabs -->
                 <nav class="nav-tab-wrapper">
-                    <a href="#" class="nav-tab" :class="{ 'nav-tab-active': activeTab === 'overview' }" @click.prevent="activeTab = 'overview'"><?php esc_html_e( 'Resumen', 'flavor-chat-ia' ); ?></a>
-                    <a href="#" class="nav-tab" :class="{ 'nav-tab-active': activeTab === 'settings' }" @click.prevent="activeTab = 'settings'"><?php esc_html_e( 'Configuración', 'flavor-chat-ia' ); ?></a>
-                    <a href="#" class="nav-tab" :class="{ 'nav-tab-active': activeTab === 'templates' }" @click.prevent="activeTab = 'templates'"><?php esc_html_e( 'Templates Compartidos', 'flavor-chat-ia' ); ?></a>
-                    <a href="#" class="nav-tab" :class="{ 'nav-tab-active': activeTab === 'tokens' }" @click.prevent="activeTab = 'tokens'"><?php esc_html_e( 'Design Tokens', 'flavor-chat-ia' ); ?></a>
-                    <a href="#" class="nav-tab" :class="{ 'nav-tab-active': activeTab === 'sites' }" @click.prevent="activeTab = 'sites'"><?php esc_html_e( 'Sitios', 'flavor-chat-ia' ); ?></a>
+                    <a href="#" class="nav-tab" :class="{ 'nav-tab-active': activeTab === 'overview' }" @click.prevent="activeTab = 'overview'"><?php esc_html_e( 'Resumen', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></a>
+                    <a href="#" class="nav-tab" :class="{ 'nav-tab-active': activeTab === 'settings' }" @click.prevent="activeTab = 'settings'"><?php esc_html_e( 'Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></a>
+                    <a href="#" class="nav-tab" :class="{ 'nav-tab-active': activeTab === 'templates' }" @click.prevent="activeTab = 'templates'"><?php esc_html_e( 'Templates Compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></a>
+                    <a href="#" class="nav-tab" :class="{ 'nav-tab-active': activeTab === 'tokens' }" @click.prevent="activeTab = 'tokens'"><?php esc_html_e( 'Design Tokens', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></a>
+                    <a href="#" class="nav-tab" :class="{ 'nav-tab-active': activeTab === 'sites' }" @click.prevent="activeTab = 'sites'"><?php esc_html_e( 'Sitios', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></a>
                 </nav>
 
                 <!-- Tab Content -->
                 <div class="vbp-network-content">
                     <!-- Overview Tab -->
                     <div x-show="activeTab === 'overview'" class="vbp-network-panel">
-                        <h2><?php esc_html_e( 'Estadísticas de la Red', 'flavor-chat-ia' ); ?></h2>
+                        <h2><?php esc_html_e( 'Estadísticas de la Red', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h2>
                         <div class="vbp-stats-grid" x-show="stats">
                             <div class="vbp-stat-card">
                                 <span class="vbp-stat-value" x-text="stats.total_sites"></span>
-                                <span class="vbp-stat-label"><?php esc_html_e( 'Sitios Totales', 'flavor-chat-ia' ); ?></span>
+                                <span class="vbp-stat-label"><?php esc_html_e( 'Sitios Totales', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
                             </div>
                             <div class="vbp-stat-card">
                                 <span class="vbp-stat-value" x-text="stats.active_sites"></span>
-                                <span class="vbp-stat-label"><?php esc_html_e( 'Sitios con VBP', 'flavor-chat-ia' ); ?></span>
+                                <span class="vbp-stat-label"><?php esc_html_e( 'Sitios con VBP', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
                             </div>
                             <div class="vbp-stat-card">
                                 <span class="vbp-stat-value" x-text="stats.total_vbp_pages"></span>
-                                <span class="vbp-stat-label"><?php esc_html_e( 'Páginas VBP', 'flavor-chat-ia' ); ?></span>
+                                <span class="vbp-stat-label"><?php esc_html_e( 'Páginas VBP', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
                             </div>
                             <div class="vbp-stat-card">
                                 <span class="vbp-stat-value" x-text="stats.shared_templates"></span>
-                                <span class="vbp-stat-label"><?php esc_html_e( 'Templates Compartidos', 'flavor-chat-ia' ); ?></span>
+                                <span class="vbp-stat-label"><?php esc_html_e( 'Templates Compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
                             </div>
                         </div>
-                        <p x-show="!stats" class="description"><?php esc_html_e( 'Cargando estadísticas...', 'flavor-chat-ia' ); ?></p>
+                        <p x-show="!stats" class="description"><?php esc_html_e( 'Cargando estadísticas...', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
                     </div>
 
                     <!-- Settings Tab -->
                     <div x-show="activeTab === 'settings'" class="vbp-network-panel">
-                        <h2><?php esc_html_e( 'Configuración de Red', 'flavor-chat-ia' ); ?></h2>
+                        <h2><?php esc_html_e( 'Configuración de Red', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h2>
                         <table class="form-table">
                             <tr>
-                                <th scope="row"><?php esc_html_e( 'Templates Compartidos', 'flavor-chat-ia' ); ?></th>
+                                <th scope="row"><?php esc_html_e( 'Templates Compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
                                 <td>
                                     <label>
                                         <input type="checkbox" x-model="settings.enable_shared_templates">
-                                        <?php esc_html_e( 'Permitir compartir templates entre sitios', 'flavor-chat-ia' ); ?>
+                                        <?php esc_html_e( 'Permitir compartir templates entre sitios', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                                     </label>
                                 </td>
                             </tr>
                             <tr>
-                                <th scope="row"><?php esc_html_e( 'Design Tokens de Red', 'flavor-chat-ia' ); ?></th>
+                                <th scope="row"><?php esc_html_e( 'Design Tokens de Red', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
                                 <td>
                                     <label>
                                         <input type="checkbox" x-model="settings.enable_network_tokens">
-                                        <?php esc_html_e( 'Habilitar design tokens a nivel de red', 'flavor-chat-ia' ); ?>
+                                        <?php esc_html_e( 'Habilitar design tokens a nivel de red', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                                     </label>
                                 </td>
                             </tr>
                             <tr>
-                                <th scope="row"><?php esc_html_e( 'Widgets Compartidos', 'flavor-chat-ia' ); ?></th>
+                                <th scope="row"><?php esc_html_e( 'Widgets Compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
                                 <td>
                                     <label>
                                         <input type="checkbox" x-model="settings.enable_shared_widgets">
-                                        <?php esc_html_e( 'Permitir compartir widgets globales entre sitios', 'flavor-chat-ia' ); ?>
+                                        <?php esc_html_e( 'Permitir compartir widgets globales entre sitios', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                                     </label>
                                 </td>
                             </tr>
                             <tr>
-                                <th scope="row"><?php esc_html_e( 'Auto-sincronización', 'flavor-chat-ia' ); ?></th>
+                                <th scope="row"><?php esc_html_e( 'Auto-sincronización', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
                                 <td>
                                     <label>
                                         <input type="checkbox" x-model="settings.auto_sync_tokens">
-                                        <?php esc_html_e( 'Sincronizar tokens del sitio principal a la red automáticamente', 'flavor-chat-ia' ); ?>
+                                        <?php esc_html_e( 'Sincronizar tokens del sitio principal a la red automáticamente', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                                     </label>
                                 </td>
                             </tr>
                         </table>
                         <p class="submit">
                             <button type="button" class="button button-primary" @click="saveSettings()" :disabled="isSaving">
-                                <span x-show="!isSaving"><?php esc_html_e( 'Guardar Configuración', 'flavor-chat-ia' ); ?></span>
-                                <span x-show="isSaving"><?php esc_html_e( 'Guardando...', 'flavor-chat-ia' ); ?></span>
+                                <span x-show="!isSaving"><?php esc_html_e( 'Guardar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
+                                <span x-show="isSaving"><?php esc_html_e( 'Guardando...', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
                             </button>
                         </p>
                     </div>
 
                     <!-- Templates Tab -->
                     <div x-show="activeTab === 'templates'" class="vbp-network-panel">
-                        <h2><?php esc_html_e( 'Templates Compartidos', 'flavor-chat-ia' ); ?></h2>
+                        <h2><?php esc_html_e( 'Templates Compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h2>
                         <div x-show="sharedTemplates.length === 0" class="notice notice-info">
-                            <p><?php esc_html_e( 'No hay templates compartidos en la red.', 'flavor-chat-ia' ); ?></p>
+                            <p><?php esc_html_e( 'No hay templates compartidos en la red.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
                         </div>
                         <table class="wp-list-table widefat fixed striped" x-show="sharedTemplates.length > 0">
                             <thead>
                                 <tr>
-                                    <th><?php esc_html_e( 'Nombre', 'flavor-chat-ia' ); ?></th>
-                                    <th><?php esc_html_e( 'Sitio Origen', 'flavor-chat-ia' ); ?></th>
-                                    <th><?php esc_html_e( 'Categoría', 'flavor-chat-ia' ); ?></th>
-                                    <th><?php esc_html_e( 'Importaciones', 'flavor-chat-ia' ); ?></th>
-                                    <th><?php esc_html_e( 'Acciones', 'flavor-chat-ia' ); ?></th>
+                                    <th><?php esc_html_e( 'Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
+                                    <th><?php esc_html_e( 'Sitio Origen', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
+                                    <th><?php esc_html_e( 'Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
+                                    <th><?php esc_html_e( 'Importaciones', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
+                                    <th><?php esc_html_e( 'Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1087,7 +1087,7 @@ class Flavor_VBP_Multisite {
                                         <td x-text="template.category"></td>
                                         <td x-text="template.import_count"></td>
                                         <td>
-                                            <button class="button button-small" @click="deleteSharedTemplate(template.id)"><?php esc_html_e( 'Eliminar', 'flavor-chat-ia' ); ?></button>
+                                            <button class="button button-small" @click="deleteSharedTemplate(template.id)"><?php esc_html_e( 'Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></button>
                                         </td>
                                     </tr>
                                 </template>
@@ -1097,10 +1097,10 @@ class Flavor_VBP_Multisite {
 
                     <!-- Tokens Tab -->
                     <div x-show="activeTab === 'tokens'" class="vbp-network-panel">
-                        <h2><?php esc_html_e( 'Design Tokens de Red', 'flavor-chat-ia' ); ?></h2>
-                        <p class="description"><?php esc_html_e( 'Estos tokens se aplicarán como base en todos los sitios de la red.', 'flavor-chat-ia' ); ?></p>
+                        <h2><?php esc_html_e( 'Design Tokens de Red', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h2>
+                        <p class="description"><?php esc_html_e( 'Estos tokens se aplicarán como base en todos los sitios de la red.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
 
-                        <h3><?php esc_html_e( 'Colores', 'flavor-chat-ia' ); ?></h3>
+                        <h3><?php esc_html_e( 'Colores', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h3>
                         <table class="form-table">
                             <template x-for="(value, key) in networkTokens.colors" :key="'color-' + key">
                                 <tr>
@@ -1115,26 +1115,26 @@ class Flavor_VBP_Multisite {
 
                         <p class="submit">
                             <button type="button" class="button button-primary" @click="saveNetworkTokens()" :disabled="isSaving">
-                                <?php esc_html_e( 'Guardar Tokens', 'flavor-chat-ia' ); ?>
+                                <?php esc_html_e( 'Guardar Tokens', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                             </button>
                             <button type="button" class="button" @click="syncTokensToSites()" :disabled="isSyncing">
-                                <span x-show="!isSyncing"><?php esc_html_e( 'Sincronizar a Todos los Sitios', 'flavor-chat-ia' ); ?></span>
-                                <span x-show="isSyncing"><?php esc_html_e( 'Sincronizando...', 'flavor-chat-ia' ); ?></span>
+                                <span x-show="!isSyncing"><?php esc_html_e( 'Sincronizar a Todos los Sitios', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
+                                <span x-show="isSyncing"><?php esc_html_e( 'Sincronizando...', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
                             </button>
                         </p>
                     </div>
 
                     <!-- Sites Tab -->
                     <div x-show="activeTab === 'sites'" class="vbp-network-panel">
-                        <h2><?php esc_html_e( 'Sitios de la Red', 'flavor-chat-ia' ); ?></h2>
+                        <h2><?php esc_html_e( 'Sitios de la Red', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h2>
                         <table class="wp-list-table widefat fixed striped">
                             <thead>
                                 <tr>
-                                    <th><?php esc_html_e( 'Sitio', 'flavor-chat-ia' ); ?></th>
-                                    <th><?php esc_html_e( 'URL', 'flavor-chat-ia' ); ?></th>
-                                    <th><?php esc_html_e( 'Páginas VBP', 'flavor-chat-ia' ); ?></th>
-                                    <th><?php esc_html_e( 'Templates', 'flavor-chat-ia' ); ?></th>
-                                    <th><?php esc_html_e( 'Acciones', 'flavor-chat-ia' ); ?></th>
+                                    <th><?php esc_html_e( 'Sitio', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
+                                    <th><?php esc_html_e( 'URL', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
+                                    <th><?php esc_html_e( 'Páginas VBP', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
+                                    <th><?php esc_html_e( 'Templates', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
+                                    <th><?php esc_html_e( 'Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1142,13 +1142,13 @@ class Flavor_VBP_Multisite {
                                     <tr>
                                         <td>
                                             <strong x-text="site.name"></strong>
-                                            <span x-show="site.is_main_site" class="dashicons dashicons-star-filled" title="<?php esc_attr_e( 'Sitio principal', 'flavor-chat-ia' ); ?>"></span>
+                                            <span x-show="site.is_main_site" class="dashicons dashicons-star-filled" title="<?php esc_attr_e( 'Sitio principal', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"></span>
                                         </td>
                                         <td><a :href="site.url" target="_blank" x-text="site.url"></a></td>
                                         <td x-text="site.vbp_pages_count"></td>
                                         <td x-text="site.templates_count"></td>
                                         <td>
-                                            <a :href="site.admin_url + 'admin.php?page=vbp-landing-list'" class="button button-small" target="_blank"><?php esc_html_e( 'Abrir VBP', 'flavor-chat-ia' ); ?></a>
+                                            <a :href="site.admin_url + 'admin.php?page=vbp-landing-list'" class="button button-small" target="_blank"><?php esc_html_e( 'Abrir VBP', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></a>
                                         </td>
                                     </tr>
                                 </template>
@@ -1245,9 +1245,9 @@ class Flavor_VBP_Multisite {
                             },
                             body: JSON.stringify(this.settings)
                         });
-                        alert('<?php echo esc_js( __( 'Configuración guardada', 'flavor-chat-ia' ) ); ?>');
+                        alert('<?php echo esc_js( __( 'Configuración guardada', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>');
                     } catch (e) {
-                        alert('<?php echo esc_js( __( 'Error al guardar', 'flavor-chat-ia' ) ); ?>');
+                        alert('<?php echo esc_js( __( 'Error al guardar', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>');
                     }
                     this.isSaving = false;
                 },
@@ -1263,15 +1263,15 @@ class Flavor_VBP_Multisite {
                             },
                             body: JSON.stringify(this.networkTokens)
                         });
-                        alert('<?php echo esc_js( __( 'Tokens guardados', 'flavor-chat-ia' ) ); ?>');
+                        alert('<?php echo esc_js( __( 'Tokens guardados', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>');
                     } catch (e) {
-                        alert('<?php echo esc_js( __( 'Error al guardar', 'flavor-chat-ia' ) ); ?>');
+                        alert('<?php echo esc_js( __( 'Error al guardar', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>');
                     }
                     this.isSaving = false;
                 },
 
                 async syncTokensToSites() {
-                    if (!confirm('<?php echo esc_js( __( '¿Sincronizar tokens a todos los sitios de la red?', 'flavor-chat-ia' ) ); ?>')) {
+                    if (!confirm('<?php echo esc_js( __( '¿Sincronizar tokens a todos los sitios de la red?', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>')) {
                         return;
                     }
                     this.isSyncing = true;
@@ -1285,15 +1285,15 @@ class Flavor_VBP_Multisite {
                             body: JSON.stringify({ merge_mode: 'override' })
                         });
                         const result = await response.json();
-                        alert('<?php echo esc_js( __( 'Sincronizado a', 'flavor-chat-ia' ) ); ?> ' + result.synced_count + ' <?php echo esc_js( __( 'sitios', 'flavor-chat-ia' ) ); ?>');
+                        alert('<?php echo esc_js( __( 'Sincronizado a', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?> ' + result.synced_count + ' <?php echo esc_js( __( 'sitios', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>');
                     } catch (e) {
-                        alert('<?php echo esc_js( __( 'Error al sincronizar', 'flavor-chat-ia' ) ); ?>');
+                        alert('<?php echo esc_js( __( 'Error al sincronizar', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>');
                     }
                     this.isSyncing = false;
                 },
 
                 async deleteSharedTemplate(id) {
-                    if (!confirm('<?php echo esc_js( __( '¿Eliminar este template compartido?', 'flavor-chat-ia' ) ); ?>')) {
+                    if (!confirm('<?php echo esc_js( __( '¿Eliminar este template compartido?', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>')) {
                         return;
                     }
                     try {
@@ -1303,7 +1303,7 @@ class Flavor_VBP_Multisite {
                         });
                         this.loadSharedTemplates();
                     } catch (e) {
-                        alert('<?php echo esc_js( __( 'Error al eliminar', 'flavor-chat-ia' ) ); ?>');
+                        alert('<?php echo esc_js( __( 'Error al eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>');
                     }
                 }
             }));

@@ -97,7 +97,7 @@ $get_value = function($field, $default = '') use ($item) {
 
 // Extraer valores principales
 $item_id = $get_value($fields['id'] ?? 'id', 0);
-$title = $get_value($fields['title'] ?? 'titulo', __('Sin título', 'flavor-chat-ia'));
+$title = $get_value($fields['title'] ?? 'titulo', __('Sin título', FLAVOR_PLATFORM_TEXT_DOMAIN));
 $subtitle = $get_value($fields['subtitle'] ?? 'descripcion', '');
 $image = $get_value($fields['image'] ?? 'imagen', '');
 $url = $get_value($fields['url'] ?? 'url', '#');

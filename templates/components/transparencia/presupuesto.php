@@ -16,7 +16,7 @@
 if (!defined('ABSPATH')) exit;
 
 // Extraer variables con valores por defecto
-$titulo_presupuesto = isset($args['titulo']) ? $args['titulo'] : __('Presupuesto Municipal', 'flavor-chat-ia');
+$titulo_presupuesto = isset($args['titulo']) ? $args['titulo'] : __('Presupuesto Municipal', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $año_presupuesto = isset($args['año']) ? $args['año'] : date('Y');
 $moneda_simbolo = isset($args['moneda']) ? $args['moneda'] : '€';
 $tipo_grafico = isset($args['mostrar_grafico']) ? $args['mostrar_grafico'] : 'ambos';
@@ -84,7 +84,7 @@ function flavor_formatear_moneda($cantidad, $simbolo) {
             <span class="flavor-presupuesto-año"><?php echo esc_html($año_presupuesto); ?></span>
         </h2>
         <div class="flavor-presupuesto-total">
-            <span class="flavor-presupuesto-total-label"><?php esc_html_e('Presupuesto Total:', 'flavor-chat-ia'); ?></span>
+            <span class="flavor-presupuesto-total-label"><?php esc_html_e('Presupuesto Total:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             <span class="flavor-presupuesto-total-cantidad"><?php echo esc_html(flavor_formatear_moneda($total_presupuesto, $moneda_simbolo)); ?></span>
         </div>
     </header>
@@ -163,11 +163,11 @@ function flavor_formatear_moneda($cantidad, $simbolo) {
 
     <footer class="flavor-presupuesto-footer">
         <p class="flavor-presupuesto-nota">
-            <?php esc_html_e('Datos actualizados a fecha:', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Datos actualizados a fecha:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <time datetime="<?php echo esc_attr(date('Y-m-d')); ?>"><?php echo esc_html(date_i18n(get_option('date_format'))); ?></time>
         </p>
         <a href="#" class="flavor-presupuesto-enlace-detalle">
-            <?php esc_html_e('Ver presupuesto completo', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Ver presupuesto completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <span class="dashicons dashicons-arrow-right-alt2"></span>
         </a>
     </footer>

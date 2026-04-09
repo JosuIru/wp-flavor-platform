@@ -6,15 +6,15 @@
 if (!defined('ABSPATH')) exit;
 ?>
 <div class="wrap flavor-matches-management">
-    <h1><?php _e('Matching Solicitudes-Voluntarios', 'flavor-chat-ia'); ?></h1>
+    <h1><?php _e('Matching Solicitudes-Voluntarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
     <hr class="wp-header-end">
     <div class="flavor-grid-two-columns">
         <div class="flavor-card">
-            <div class="flavor-card-header"><h2><?php _e('Solicitudes Sin Asignar', 'flavor-chat-ia'); ?></h2></div>
+            <div class="flavor-card-header"><h2><?php _e('Solicitudes Sin Asignar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2></div>
             <div class="flavor-card-body" id="solicitudes-sin-asignar"></div>
         </div>
         <div class="flavor-card">
-            <div class="flavor-card-header"><h2><?php _e('Sugerencias de Matching', 'flavor-chat-ia'); ?></h2></div>
+            <div class="flavor-card-header"><h2><?php _e('Sugerencias de Matching', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2></div>
             <div class="flavor-card-body" id="sugerencias-matching"></div>
         </div>
     </div>
@@ -39,11 +39,11 @@ jQuery(document).ready(function($) {
                             <strong>${sol.titulo}</strong>
                             <p style="font-size:12px;color:#666;margin:5px 0 0 0;">${sol.categoria} · ${sol.fecha}</p>
                             <button class="button button-small btn-buscar-match" data-id="${sol.id}" style="margin-top:8px;">
-                                <?php _e('Buscar voluntario', 'flavor-chat-ia'); ?>
+                                <?php _e('Buscar voluntario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </div>`;
                     });
-                    $('#solicitudes-sin-asignar').html(html || '<p><?php _e('No hay solicitudes sin asignar', 'flavor-chat-ia'); ?></p>');
+                    $('#solicitudes-sin-asignar').html(html || '<p><?php _e('No hay solicitudes sin asignar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>');
                 }
             }
         });
@@ -60,17 +60,17 @@ jQuery(document).ready(function($) {
                         html += `<div class="flavor-match-suggestion">
                             <strong>${match.solicitud_titulo}</strong>
                             <span class="flavor-match-score">${match.score}% Match</span>
-                            <p style="font-size:13px;margin:8px 0;"><strong><?php _e('Voluntario:', 'flavor-chat-ia'); ?></strong> ${match.voluntario_nombre}</p>
+                            <p style="font-size:13px;margin:8px 0;"><strong><?php _e('Voluntario:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> ${match.voluntario_nombre}</p>
                             <p style="font-size:12px;color:#666;">${match.razon}</p>
                             <div class="flavor-match-actions">
                                 <button class="button button-primary button-small btn-asignar-match" data-solicitud="${match.solicitud_id}" data-voluntario="${match.voluntario_id}">
-                                    <?php _e('Asignar', 'flavor-chat-ia'); ?>
+                                    <?php _e('Asignar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
-                                <button class="button button-small"><?php _e('Descartar', 'flavor-chat-ia'); ?></button>
+                                <button class="button button-small"><?php _e('Descartar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                             </div>
                         </div>`;
                     });
-                    $('#sugerencias-matching').html(html || '<p><?php _e('No hay sugerencias disponibles', 'flavor-chat-ia'); ?></p>');
+                    $('#sugerencias-matching').html(html || '<p><?php _e('No hay sugerencias disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>');
                 }
             }
         });
@@ -90,7 +90,7 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     cargarSolicitudesSinAsignar();
                     cargarSugerencias();
-                    alert('<?php _e('Voluntario asignado correctamente', 'flavor-chat-ia'); ?>');
+                    alert('<?php _e('Voluntario asignado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                 }
             }
         });

@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 
 // Verificar permisos
 if (!current_user_can('manage_options')) {
-    wp_die(__('No tienes permisos suficientes para acceder a esta página.', 'flavor-chat-ia'));
+    wp_die(__('No tienes permisos suficientes para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
 }
 
 global $wpdb;
@@ -93,9 +93,9 @@ foreach ($stats_estados as $stat) {
 ?>
 
 <div class="wrap">
-    <h1 class="wp-heading-inline"><?php echo esc_html__('Gestión de Viajes', 'flavor-chat-ia'); ?></h1>
+    <h1 class="wp-heading-inline"><?php echo esc_html__('Gestión de Viajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-viajes&action=nuevo')); ?>" class="page-title-action">
-        <?php esc_html_e('Añadir Nuevo', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Añadir Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </a>
     <hr class="wp-header-end">
 
@@ -106,7 +106,7 @@ foreach ($stats_estados as $stat) {
                 <?php echo esc_html(number_format($stats['activo'], 0, ',', '.')); ?>
             </div>
             <div style="color: #666; font-size: 12px; text-transform: uppercase;">
-                <?php esc_html_e('Activos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
         </div>
         <div class="card" style="padding: 15px; text-align: center; min-width: 150px;">
@@ -114,7 +114,7 @@ foreach ($stats_estados as $stat) {
                 <?php echo esc_html(number_format($stats['completado'], 0, ',', '.')); ?>
             </div>
             <div style="color: #666; font-size: 12px; text-transform: uppercase;">
-                <?php esc_html_e('Completados', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Completados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
         </div>
         <div class="card" style="padding: 15px; text-align: center; min-width: 150px;">
@@ -122,7 +122,7 @@ foreach ($stats_estados as $stat) {
                 <?php echo esc_html(number_format($stats['cancelado'], 0, ',', '.')); ?>
             </div>
             <div style="color: #666; font-size: 12px; text-transform: uppercase;">
-                <?php esc_html_e('Cancelados', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Cancelados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
         </div>
     </div>
@@ -135,37 +135,37 @@ foreach ($stats_estados as $stat) {
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; align-items: end;">
 
                 <div>
-                    <label for="estado"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></label>
+                    <label for="estado"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="estado" id="estado" class="regular-text">
-                        <option value="todos" <?php selected($filtro_estado, 'todos'); ?>><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
-                        <option value="activo" <?php selected($filtro_estado, 'activo'); ?>><?php esc_html_e('Activo', 'flavor-chat-ia'); ?></option>
-                        <option value="pendiente" <?php selected($filtro_estado, 'pendiente'); ?>><?php esc_html_e('Pendiente', 'flavor-chat-ia'); ?></option>
-                        <option value="completado" <?php selected($filtro_estado, 'completado'); ?>><?php esc_html_e('Completado', 'flavor-chat-ia'); ?></option>
-                        <option value="cancelado" <?php selected($filtro_estado, 'cancelado'); ?>><?php esc_html_e('Cancelado', 'flavor-chat-ia'); ?></option>
+                        <option value="todos" <?php selected($filtro_estado, 'todos'); ?>><?php esc_html_e('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="activo" <?php selected($filtro_estado, 'activo'); ?>><?php esc_html_e('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="pendiente" <?php selected($filtro_estado, 'pendiente'); ?>><?php esc_html_e('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="completado" <?php selected($filtro_estado, 'completado'); ?>><?php esc_html_e('Completado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="cancelado" <?php selected($filtro_estado, 'cancelado'); ?>><?php esc_html_e('Cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div>
-                    <label for="fecha_desde"><?php esc_html_e('Desde', 'flavor-chat-ia'); ?></label>
+                    <label for="fecha_desde"><?php esc_html_e('Desde', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="date" name="fecha_desde" id="fecha_desde" class="regular-text" value="<?php echo esc_attr($filtro_fecha_desde); ?>">
                 </div>
 
                 <div>
-                    <label for="fecha_hasta"><?php esc_html_e('Hasta', 'flavor-chat-ia'); ?></label>
+                    <label for="fecha_hasta"><?php esc_html_e('Hasta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="date" name="fecha_hasta" id="fecha_hasta" class="regular-text" value="<?php echo esc_attr($filtro_fecha_hasta); ?>">
                 </div>
 
                 <div>
-                    <label for="busqueda"><?php esc_html_e('Buscar ruta', 'flavor-chat-ia'); ?></label>
-                    <input type="text" name="s" id="busqueda" class="regular-text" placeholder="<?php esc_attr_e('Origen o destino', 'flavor-chat-ia'); ?>" value="<?php echo esc_attr($filtro_busqueda); ?>">
+                    <label for="busqueda"><?php esc_html_e('Buscar ruta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                    <input type="text" name="s" id="busqueda" class="regular-text" placeholder="<?php esc_attr_e('Origen o destino', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" value="<?php echo esc_attr($filtro_busqueda); ?>">
                 </div>
 
                 <div>
                     <button type="submit" class="button button-primary">
-                        <?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-viajes')); ?>" class="button">
-                        <?php esc_html_e('Limpiar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
 
@@ -178,15 +178,15 @@ foreach ($stats_estados as $stat) {
         <table class="wp-list-table widefat striped" style="min-width: 900px;">
             <thead>
                 <tr>
-                    <th style="width: 50px;"><?php esc_html_e('ID', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 22%;"><?php esc_html_e('Ruta', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 12%;"><?php esc_html_e('Conductor', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 10%;"><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 70px;"><?php esc_html_e('Plazas', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 70px;"><?php esc_html_e('Precio', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 80px;"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 90px;"><?php esc_html_e('Reservas', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 130px;"><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 50px;"><?php esc_html_e('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 22%;"><?php esc_html_e('Ruta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 12%;"><?php esc_html_e('Conductor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 10%;"><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 70px;"><?php esc_html_e('Plazas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 70px;"><?php esc_html_e('Precio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 80px;"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 90px;"><?php esc_html_e('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 130px;"><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -235,15 +235,15 @@ foreach ($stats_estados as $stat) {
                             </td>
                             <td>
                                 <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-reservas&viaje_id=' . $viaje->id)); ?>">
-                                    <?php echo esc_html($viaje->total_reservas); ?> <?php esc_html_e('reservas', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html($viaje->total_reservas); ?> <?php esc_html_e('reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </td>
                             <td>
                                 <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-viajes&action=ver&viaje_id=' . $viaje->id)); ?>" class="button button-small">
-                                    <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                                 <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-viajes&action=editar&viaje_id=' . $viaje->id)); ?>" class="button button-small">
-                                    <?php esc_html_e('Editar', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </td>
                         </tr>
@@ -253,7 +253,7 @@ foreach ($stats_estados as $stat) {
                         <td colspan="9" style="text-align: center; padding: 40px;">
                             <div style="color: #666;">
                                 <span class="dashicons dashicons-car" style="font-size: 48px; opacity: 0.3;"></span>
-                                <p><?php esc_html_e('No se encontraron viajes con los filtros seleccionados.', 'flavor-chat-ia'); ?></p>
+                                <p><?php esc_html_e('No se encontraron viajes con los filtros seleccionados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </div>
                         </td>
                     </tr>
@@ -268,7 +268,7 @@ foreach ($stats_estados as $stat) {
             <div class="tablenav-pages">
                 <span class="displaying-num">
                     <?php printf(
-                        esc_html__('%s viajes', 'flavor-chat-ia'),
+                        esc_html__('%s viajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         number_format_i18n($total_viajes)
                     ); ?>
                 </span>

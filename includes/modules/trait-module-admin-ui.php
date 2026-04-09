@@ -271,7 +271,7 @@ trait Flavor_Module_Admin_UI_Trait {
         $defaults = [
             'striped' => true,
             'hover' => true,
-            'empty_message' => __('No hay datos disponibles', 'flavor-chat-ia'),
+            'empty_message' => __('No hay datos disponibles', 'flavor-platform'),
             'class' => '',
         ];
         $config = wp_parse_args($config, $defaults);
@@ -361,7 +361,7 @@ trait Flavor_Module_Admin_UI_Trait {
     protected function render_quick_actions(array $actions): void {
         ?>
         <div class="fmod-quick-actions">
-            <h3 class="fmod-quick-actions__title"><?php esc_html_e('Acciones rápidas', 'flavor-chat-ia'); ?></h3>
+            <h3 class="fmod-quick-actions__title"><?php esc_html_e('Acciones rápidas', 'flavor-platform'); ?></h3>
             <div class="fmod-quick-actions__grid">
                 <?php foreach ($actions as $action): ?>
                     <a href="<?php echo esc_url($action['url']); ?>"

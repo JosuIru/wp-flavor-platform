@@ -831,9 +831,9 @@ class Flavor_VBP_Audit_Log {
      */
     public function add_admin_menu() {
         add_submenu_page(
-            'flavor-chat-ia',
-            __( 'Audit Log VBP', 'flavor-chat-ia' ),
-            __( 'Audit Log', 'flavor-chat-ia' ),
+            FLAVOR_PLATFORM_TEXT_DOMAIN,
+            __( 'Audit Log VBP', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            __( 'Audit Log', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'manage_options',
             'vbp-audit-log',
             array( $this, 'render_admin_page' )
@@ -846,7 +846,7 @@ class Flavor_VBP_Audit_Log {
     public function render_admin_page() {
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e( 'Visual Builder Pro - Audit Log', 'flavor-chat-ia' ); ?></h1>
+            <h1><?php esc_html_e( 'Visual Builder Pro - Audit Log', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h1>
             <div id="vbp-audit-log-app"></div>
         </div>
         <script>

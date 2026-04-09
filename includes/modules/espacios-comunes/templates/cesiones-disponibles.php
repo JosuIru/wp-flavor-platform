@@ -22,18 +22,18 @@ $usuario_logueado = is_user_logged_in();
     <div class="ec-cesiones__header">
         <div class="ec-cesiones__titulo-wrap">
             <span class="dashicons dashicons-share-alt"></span>
-            <h3 class="ec-cesiones__titulo"><?php esc_html_e('Reservas Compartidas', 'flavor-chat-ia'); ?></h3>
+            <h3 class="ec-cesiones__titulo"><?php esc_html_e('Reservas Compartidas', 'flavor-platform'); ?></h3>
         </div>
         <p class="ec-cesiones__descripcion">
-            <?php esc_html_e('Espacios cedidos por vecinos solidarios. ¡Aprovéchalos!', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Espacios cedidos por vecinos solidarios. ¡Aprovéchalos!', 'flavor-platform'); ?>
         </p>
     </div>
 
     <?php if (empty($cesiones)): ?>
         <div class="ec-cesiones__vacio">
             <span class="dashicons dashicons-calendar-alt"></span>
-            <p><?php esc_html_e('No hay cesiones disponibles en este momento.', 'flavor-chat-ia'); ?></p>
-            <small><?php esc_html_e('Las cesiones aparecerán aquí cuando otros usuarios compartan sus reservas.', 'flavor-chat-ia'); ?></small>
+            <p><?php esc_html_e('No hay cesiones disponibles en este momento.', 'flavor-platform'); ?></p>
+            <small><?php esc_html_e('Las cesiones aparecerán aquí cuando otros usuarios compartan sus reservas.', 'flavor-platform'); ?></small>
         </div>
     <?php else: ?>
         <div class="ec-cesiones__lista">
@@ -47,7 +47,7 @@ $usuario_logueado = is_user_logged_in();
                     <?php if ($cesion->es_solidaria): ?>
                         <span class="ec-cesion__badge-solidaria">
                             <span class="dashicons dashicons-heart"></span>
-                            <?php esc_html_e('Solidaria', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Solidaria', 'flavor-platform'); ?>
                         </span>
                     <?php endif; ?>
 
@@ -79,13 +79,13 @@ $usuario_logueado = is_user_logged_in();
                     <?php if ($cesion->capacidad): ?>
                         <div class="ec-cesion__capacidad">
                             <span class="dashicons dashicons-groups"></span>
-                            <span><?php printf(esc_html__('Hasta %d personas', 'flavor-chat-ia'), $cesion->capacidad); ?></span>
+                            <span><?php printf(esc_html__('Hasta %d personas', 'flavor-platform'), $cesion->capacidad); ?></span>
                         </div>
                     <?php endif; ?>
 
                     <div class="ec-cesion__cedente">
                         <?php echo get_avatar($cesion->cedente_id, 24); ?>
-                        <span><?php printf(esc_html__('Cedido por %s', 'flavor-chat-ia'), esc_html($cedente->display_name)); ?></span>
+                        <span><?php printf(esc_html__('Cedido por %s', 'flavor-platform'), esc_html($cedente->display_name)); ?></span>
                     </div>
 
                     <?php if ($cesion->motivo): ?>
@@ -99,14 +99,14 @@ $usuario_logueado = is_user_logged_in();
                             <?php if ($cesion->cedente_id != get_current_user_id()): ?>
                                 <button type="button" class="ec-btn ec-btn--primary ec-cesion__reclamar" data-cesion="<?php echo esc_attr($cesion->id); ?>">
                                     <span class="dashicons dashicons-yes"></span>
-                                    <?php esc_html_e('Reclamar', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Reclamar', 'flavor-platform'); ?>
                                 </button>
                             <?php else: ?>
-                                <span class="ec-cesion__propia"><?php esc_html_e('Tu cesión', 'flavor-chat-ia'); ?></span>
+                                <span class="ec-cesion__propia"><?php esc_html_e('Tu cesión', 'flavor-platform'); ?></span>
                             <?php endif; ?>
                         <?php else: ?>
                             <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="ec-btn ec-btn--outline">
-                                <?php esc_html_e('Inicia sesión para reclamar', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Inicia sesión para reclamar', 'flavor-platform'); ?>
                             </a>
                         <?php endif; ?>
                     </div>
@@ -350,12 +350,12 @@ $usuario_logueado = is_user_logged_in();
             btn.addEventListener('click', function() {
                 const cesionId = this.dataset.cesion;
 
-                if (!confirm('<?php echo esc_js(__('¿Reclamar esta reserva? Pasará a ser tuya.', 'flavor-chat-ia')); ?>')) {
+                if (!confirm('<?php echo esc_js(__('¿Reclamar esta reserva? Pasará a ser tuya.', 'flavor-platform')); ?>')) {
                     return;
                 }
 
                 this.disabled = true;
-                this.innerHTML = '<span class="dashicons dashicons-update"></span> <?php echo esc_js(__('Procesando...', 'flavor-chat-ia')); ?>';
+                this.innerHTML = '<span class="dashicons dashicons-update"></span> <?php echo esc_js(__('Procesando...', 'flavor-platform')); ?>';
 
                 fetch('<?php echo esc_url(admin_url('admin-ajax.php')); ?>', {
                     method: 'POST',
@@ -368,12 +368,12 @@ $usuario_logueado = is_user_logged_in();
                 })
                 .then(r => r.json())
                 .then(data => {
-                    alert(data.success ? data.message : (data.error || '<?php echo esc_js(__('Error', 'flavor-chat-ia')); ?>'));
+                    alert(data.success ? data.message : (data.error || '<?php echo esc_js(__('Error', 'flavor-platform')); ?>'));
                     if (data.success) {
                         location.reload();
                     } else {
                         this.disabled = false;
-                        this.innerHTML = '<span class="dashicons dashicons-yes"></span> <?php echo esc_js(__('Reclamar', 'flavor-chat-ia')); ?>';
+                        this.innerHTML = '<span class="dashicons dashicons-yes"></span> <?php echo esc_js(__('Reclamar', 'flavor-platform')); ?>';
                     }
                 });
             });

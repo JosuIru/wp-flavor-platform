@@ -15,33 +15,33 @@ $tabla_documentos = $wpdb->prefix . 'flavor_documentacion_legal';
 
 $categorias = [
     'normativa' => [
-        'nombre' => __('Normativa', 'flavor-chat-ia'),
-        'descripcion' => __('Leyes, ordenanzas y normativas aplicables', 'flavor-chat-ia'),
+        'nombre' => __('Normativa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Leyes, ordenanzas y normativas aplicables', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-book',
     ],
     'estatutos' => [
-        'nombre' => __('Estatutos', 'flavor-chat-ia'),
-        'descripcion' => __('Estatutos de la asociacion y reglamentos internos', 'flavor-chat-ia'),
+        'nombre' => __('Estatutos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Estatutos de la asociacion y reglamentos internos', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-media-document',
     ],
     'contratos' => [
-        'nombre' => __('Contratos', 'flavor-chat-ia'),
-        'descripcion' => __('Modelos de contratos y convenios', 'flavor-chat-ia'),
+        'nombre' => __('Contratos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Modelos de contratos y convenios', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-clipboard',
     ],
     'formularios' => [
-        'nombre' => __('Formularios', 'flavor-chat-ia'),
-        'descripcion' => __('Formularios y plantillas para tramites', 'flavor-chat-ia'),
+        'nombre' => __('Formularios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Formularios y plantillas para tramites', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-forms',
     ],
     'guias' => [
-        'nombre' => __('Guias', 'flavor-chat-ia'),
-        'descripcion' => __('Guias practicas y manuales', 'flavor-chat-ia'),
+        'nombre' => __('Guias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Guias practicas y manuales', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-lightbulb',
     ],
     'otros' => [
-        'nombre' => __('Otros', 'flavor-chat-ia'),
-        'descripcion' => __('Documentos varios', 'flavor-chat-ia'),
+        'nombre' => __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Documentos varios', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-portfolio',
     ],
 ];
@@ -57,8 +57,8 @@ unset($cat);
 ?>
 
 <div class="doc-legal-categorias">
-    <h2><?php _e('Categorias', 'flavor-chat-ia'); ?></h2>
-    <p class="doc-legal-intro"><?php _e('Explora los documentos organizados por categoria.', 'flavor-chat-ia'); ?></p>
+    <h2><?php _e('Categorias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+    <p class="doc-legal-intro"><?php _e('Explora los documentos organizados por categoria.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
     <div class="doc-legal-categorias-grid">
         <?php foreach ($categorias as $slug => $cat): ?>
@@ -69,7 +69,7 @@ unset($cat);
             <h3 class="doc-legal-categoria-nombre"><?php echo esc_html($cat['nombre']); ?></h3>
             <p class="doc-legal-categoria-desc"><?php echo esc_html($cat['descripcion']); ?></p>
             <span class="doc-legal-categoria-count">
-                <?php printf(_n('%d documento', '%d documentos', $cat['count'], 'flavor-chat-ia'), $cat['count']); ?>
+                <?php printf(_n('%d documento', '%d documentos', $cat['count'], FLAVOR_PLATFORM_TEXT_DOMAIN), $cat['count']); ?>
             </span>
         </a>
         <?php endforeach; ?>

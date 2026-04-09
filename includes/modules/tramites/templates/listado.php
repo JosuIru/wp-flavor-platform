@@ -18,7 +18,7 @@ $tabla_estados = $wpdb->prefix . 'flavor_estados_tramite';
 
 // Verificar si existe la tabla
 if (!Flavor_Chat_Helpers::tabla_existe($tabla_expedientes)) {
-    echo '<div class="tramites-empty"><p>' . esc_html__('El modulo de tramites no esta configurado.', 'flavor-chat-ia') . '</p></div>';
+    echo '<div class="tramites-empty"><p>' . esc_html__('El modulo de tramites no esta configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
 
@@ -82,14 +82,14 @@ $tipos_disponibles = $wpdb->get_results("SELECT id, nombre FROM $tabla_tipos_tra
 
 // Labels y colores para estados
 $estados_labels = [
-    'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-    'en_proceso' => __('En proceso', 'flavor-chat-ia'),
-    'en_revision' => __('En revision', 'flavor-chat-ia'),
-    'requiere_documentacion' => __('Requiere documentacion', 'flavor-chat-ia'),
-    'aprobado' => __('Aprobado', 'flavor-chat-ia'),
-    'rechazado' => __('Rechazado', 'flavor-chat-ia'),
-    'resuelto' => __('Resuelto', 'flavor-chat-ia'),
-    'cancelado' => __('Cancelado', 'flavor-chat-ia'),
+    'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'en_proceso' => __('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'en_revision' => __('En revision', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'requiere_documentacion' => __('Requiere documentacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'aprobado' => __('Aprobado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'rechazado' => __('Rechazado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'resuelto' => __('Resuelto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cancelado' => __('Cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $estados_colores = [
@@ -121,12 +121,12 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
 
 <div class="tramites-listado-wrapper">
     <div class="tramites-header">
-        <h2><?php esc_html_e('Listado de Tramites', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Listado de Tramites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <div class="tramites-header-actions">
             <?php if (is_user_logged_in()): ?>
                 <a href="<?php echo esc_url($tramites_base_url . 'nuevo/'); ?>" class="btn btn-primary">
                     <span class="dashicons dashicons-plus-alt2"></span>
-                    <?php esc_html_e('Nuevo tramite', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Nuevo tramite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             <?php endif; ?>
         </div>
@@ -136,19 +136,19 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
     <div class="tramites-stats-grid">
         <div class="stat-card">
             <span class="stat-valor"><?php echo esc_html($total_expedientes); ?></span>
-            <span class="stat-label"><?php esc_html_e('Total', 'flavor-chat-ia'); ?></span>
+            <span class="stat-label"><?php esc_html_e('Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="stat-card warning">
             <span class="stat-valor"><?php echo esc_html($pendientes_count); ?></span>
-            <span class="stat-label"><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></span>
+            <span class="stat-label"><?php esc_html_e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="stat-card info">
             <span class="stat-valor"><?php echo esc_html($en_proceso_count); ?></span>
-            <span class="stat-label"><?php esc_html_e('En proceso', 'flavor-chat-ia'); ?></span>
+            <span class="stat-label"><?php esc_html_e('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="stat-card success">
             <span class="stat-valor"><?php echo esc_html($resueltos_count); ?></span>
-            <span class="stat-label"><?php esc_html_e('Resueltos', 'flavor-chat-ia'); ?></span>
+            <span class="stat-label"><?php esc_html_e('Resueltos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
     </div>
 
@@ -158,11 +158,11 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
     <form class="tramites-filtros" method="get">
         <div class="filtro-grupo filtro-buscar">
             <input type="text" name="buscar" value="<?php echo esc_attr($buscar); ?>"
-                   placeholder="<?php esc_attr_e('Buscar por numero de expediente...', 'flavor-chat-ia'); ?>">
+                   placeholder="<?php esc_attr_e('Buscar por numero de expediente...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
         </div>
         <div class="filtro-grupo">
             <select name="estado">
-                <option value=""><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php esc_html_e('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 <?php foreach ($estados_disponibles as $estado): ?>
                     <option value="<?php echo esc_attr($estado); ?>" <?php selected($estado_filtro, $estado); ?>>
                         <?php echo esc_html($estados_labels[$estado] ?? ucfirst($estado)); ?>
@@ -173,7 +173,7 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
         <?php if ($tipos_disponibles): ?>
             <div class="filtro-grupo">
                 <select name="tipo">
-                    <option value=""><?php esc_html_e('Todos los tipos', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todos los tipos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($tipos_disponibles as $tipo): ?>
                         <option value="<?php echo esc_attr($tipo->id); ?>" <?php selected($tipo_filtro, $tipo->id); ?>>
                             <?php echo esc_html($tipo->nombre); ?>
@@ -184,16 +184,16 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
         <?php endif; ?>
         <div class="filtro-grupo">
             <input type="date" name="fecha_desde" value="<?php echo esc_attr($fecha_desde); ?>"
-                   placeholder="<?php esc_attr_e('Desde', 'flavor-chat-ia'); ?>">
+                   placeholder="<?php esc_attr_e('Desde', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
         </div>
         <div class="filtro-grupo">
             <input type="date" name="fecha_hasta" value="<?php echo esc_attr($fecha_hasta); ?>"
-                   placeholder="<?php esc_attr_e('Hasta', 'flavor-chat-ia'); ?>">
+                   placeholder="<?php esc_attr_e('Hasta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
         </div>
-        <button type="submit" class="btn btn-outline"><?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?></button>
+        <button type="submit" class="btn btn-outline"><?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
         <?php if ($estado_filtro || $tipo_filtro || $buscar || $fecha_desde || $fecha_hasta): ?>
             <a href="<?php echo esc_url(remove_query_arg(['estado', 'tipo', 'buscar', 'fecha_desde', 'fecha_hasta'])); ?>" class="btn btn-text">
-                <?php esc_html_e('Limpiar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         <?php endif; ?>
     </form>
@@ -205,13 +205,13 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
             <table class="tramites-tabla">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('Expediente', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Tipo de tramite', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Solicitante', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Prioridad', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Expediente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Tipo de tramite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Solicitante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Prioridad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -225,11 +225,11 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
                                     <span class="tipo-icono" style="background: <?php echo esc_attr($expediente->tipo_color ?: '#6b7280'); ?>">
                                         <span class="dashicons <?php echo esc_attr($expediente->tipo_icono ?: 'dashicons-clipboard'); ?>"></span>
                                     </span>
-                                    <span><?php echo esc_html($expediente->tipo_nombre ?: __('Sin tipo', 'flavor-chat-ia')); ?></span>
+                                    <span><?php echo esc_html($expediente->tipo_nombre ?: __('Sin tipo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>
                                 </div>
                             </td>
                             <td>
-                                <?php echo esc_html($expediente->solicitante_nombre ?: __('Anonimo', 'flavor-chat-ia')); ?>
+                                <?php echo esc_html($expediente->solicitante_nombre ?: __('Anonimo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                             </td>
                             <td>
                                 <span class="fecha-solicitud">
@@ -257,7 +257,7 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
                             </td>
                             <td>
                                 <a href="<?php echo esc_url($tramites_base_url . 'expediente/?id=' . $expediente->id); ?>" class="btn btn-sm btn-outline">
-                                    <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </td>
                         </tr>
@@ -268,11 +268,11 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
     <?php else: ?>
         <div class="tramites-empty">
             <span class="dashicons dashicons-clipboard"></span>
-            <h3><?php esc_html_e('No hay tramites', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('No se encontraron tramites con los filtros seleccionados.', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('No hay tramites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php esc_html_e('No se encontraron tramites con los filtros seleccionados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php if ($estado_filtro || $tipo_filtro || $buscar): ?>
                 <a href="<?php echo esc_url(remove_query_arg(['estado', 'tipo', 'buscar', 'fecha_desde', 'fecha_hasta'])); ?>" class="btn btn-outline">
-                    <?php esc_html_e('Limpiar filtros', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Limpiar filtros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             <?php endif; ?>
         </div>

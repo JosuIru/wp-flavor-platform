@@ -32,7 +32,7 @@ $size = $size ?? 'md';
 $variant = $variant ?? 'rounded';
 $show_labels = $show_labels ?? false;
 $show_counts = $show_counts ?? false;
-$label = $label ?? __('Compartir:', 'flavor-chat-ia');
+$label = $label ?? __('Compartir:', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
 // Codificar para URLs
 $encoded_url = urlencode($url);
@@ -84,7 +84,7 @@ $social_networks = [
         'url'   => "mailto:?subject={$encoded_title}&body={$encoded_description}%0A%0A{$encoded_url}",
     ],
     'copy' => [
-        'name'  => __('Copiar enlace', 'flavor-chat-ia'),
+        'name'  => __('Copiar enlace', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon'  => '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>',
         'color' => '#374151',
         'url'   => '',
@@ -154,7 +154,7 @@ $btn_class = $variant_classes[$variant] ?? $variant_classes['rounded'];
 
 <!-- Toast de confirmación para copiar -->
 <div id="flavor-share-toast" class="fixed bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-gray-900 text-white text-sm rounded-lg shadow-lg opacity-0 transition-opacity duration-300 pointer-events-none z-50">
-    ✓ <?php esc_html_e('Enlace copiado', 'flavor-chat-ia'); ?>
+    ✓ <?php esc_html_e('Enlace copiado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
 </div>
 
 <script>
@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.execCommand('copy');
                 document.body.removeChild(input);
 
-                alert('<?php esc_html_e('Enlace copiado', 'flavor-chat-ia'); ?>');
+                alert('<?php esc_html_e('Enlace copiado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
             }
         });
     });

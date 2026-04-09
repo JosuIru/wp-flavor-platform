@@ -47,7 +47,7 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Bicicletas Compartidas no están creadas. Se crearán automáticamente al activar.', 'flavor-chat-ia');
+            return __('Las tablas de Bicicletas Compartidas no están creadas. Se crearán automáticamente al activar.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         
     return '';
@@ -184,12 +184,12 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
             'user_logged_in' => is_user_logged_in(),
             'user_id' => get_current_user_id(),
             'strings' => [
-                'error_general' => __('Ha ocurrido un error. Inténtalo de nuevo.', 'flavor-chat-ia'),
-                'confirmar_reserva' => __('¿Deseas reservar esta bicicleta?', 'flavor-chat-ia'),
-                'reserva_confirmada' => __('Tu reserva ha sido confirmada.', 'flavor-chat-ia'),
-                'viaje_iniciado' => __('Tu viaje ha comenzado.', 'flavor-chat-ia'),
-                'viaje_finalizado' => __('Tu viaje ha finalizado correctamente.', 'flavor-chat-ia'),
-                'login_requerido' => __('Debes iniciar sesión para realizar esta acción.', 'flavor-chat-ia'),
+                'error_general' => __('Ha ocurrido un error. Inténtalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmar_reserva' => __('¿Deseas reservar esta bicicleta?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'reserva_confirmada' => __('Tu reserva ha sido confirmada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'viaje_iniciado' => __('Tu viaje ha comenzado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'viaje_finalizado' => __('Tu viaje ha finalizado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'login_requerido' => __('Debes iniciar sesión para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]
         ]);
     }
@@ -273,12 +273,12 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                     <div class="flex items-center gap-3">
                         <span class="text-2xl">🚲</span>
                         <div>
-                            <h3 class="text-lg font-bold"><?php esc_html_e('Estaciones de Bicicletas', 'flavor-chat-ia'); ?></h3>
-                            <p class="text-sm opacity-90"><?php echo esc_html(count($estaciones)); ?> <?php esc_html_e('estaciones activas', 'flavor-chat-ia'); ?></p>
+                            <h3 class="text-lg font-bold"><?php esc_html_e('Estaciones de Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                            <p class="text-sm opacity-90"><?php echo esc_html(count($estaciones)); ?> <?php esc_html_e('estaciones activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                     </div>
                     <button type="button" class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg text-sm" onclick="flavorBicicletasGeolocate('<?php echo esc_js($mapa_id); ?>')">
-                        📍 <?php esc_html_e('Mi ubicación', 'flavor-chat-ia'); ?>
+                        📍 <?php esc_html_e('Mi ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </div>
@@ -287,9 +287,9 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
 
             <?php if ($atributos['mostrar_leyenda'] === 'yes'): ?>
             <div class="flex flex-wrap gap-4 mt-3 text-sm text-gray-600">
-                <span class="flex items-center gap-1"><span class="w-3 h-3 bg-green-500 rounded-full"></span> <?php esc_html_e('Alta disponibilidad', 'flavor-chat-ia'); ?></span>
-                <span class="flex items-center gap-1"><span class="w-3 h-3 bg-yellow-500 rounded-full"></span> <?php esc_html_e('Pocas bicis', 'flavor-chat-ia'); ?></span>
-                <span class="flex items-center gap-1"><span class="w-3 h-3 bg-red-500 rounded-full"></span> <?php esc_html_e('Sin bicis', 'flavor-chat-ia'); ?></span>
+                <span class="flex items-center gap-1"><span class="w-3 h-3 bg-green-500 rounded-full"></span> <?php esc_html_e('Alta disponibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                <span class="flex items-center gap-1"><span class="w-3 h-3 bg-yellow-500 rounded-full"></span> <?php esc_html_e('Pocas bicis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                <span class="flex items-center gap-1"><span class="w-3 h-3 bg-red-500 rounded-full"></span> <?php esc_html_e('Sin bicis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <?php endif; ?>
         </div>
@@ -378,9 +378,9 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                             iconSize: [20, 20],
                             iconAnchor: [10, 10]
                         })
-                    }).addTo(map).bindPopup('<?php echo esc_js(__('Tu ubicación', 'flavor-chat-ia')); ?>');
+                    }).addTo(map).bindPopup('<?php echo esc_js(__('Tu ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                 }, function(err) {
-                    alert('<?php echo esc_js(__('No se pudo obtener tu ubicación', 'flavor-chat-ia')); ?>');
+                    alert('<?php echo esc_js(__('No se pudo obtener tu ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                 });
             }
         }
@@ -439,8 +439,8 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                 <div class="flex items-center gap-3">
                     <span class="text-2xl">📍</span>
                     <div>
-                        <h3 class="text-lg font-bold"><?php esc_html_e('Estaciones de Bicicletas', 'flavor-chat-ia'); ?></h3>
-                        <p class="text-sm opacity-90"><?php echo esc_html(count($estaciones)); ?> <?php esc_html_e('con bicicletas disponibles', 'flavor-chat-ia'); ?></p>
+                        <h3 class="text-lg font-bold"><?php esc_html_e('Estaciones de Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                        <p class="text-sm opacity-90"><?php echo esc_html(count($estaciones)); ?> <?php esc_html_e('con bicicletas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 </div>
             </div>
@@ -448,14 +448,14 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
             <?php if (empty($estaciones)): ?>
                 <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6 text-center">
                     <span class="text-4xl mb-2 block">🚲</span>
-                    <p class="text-yellow-700"><?php esc_html_e('No hay estaciones con bicicletas disponibles en este momento.', 'flavor-chat-ia'); ?></p>
+                    <p class="text-yellow-700"><?php esc_html_e('No hay estaciones con bicicletas disponibles en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="grid <?php echo esc_attr($columnas_clase); ?> gap-4">
                     <?php foreach ($estaciones as $estacion):
                         $porcentaje_ocupacion = ($estacion->bicicletas_disponibles / max(1, $estacion->capacidad_total)) * 100;
                         $color_barra = $porcentaje_ocupacion >= 50 ? 'bg-green-500' : ($porcentaje_ocupacion >= 20 ? 'bg-yellow-500' : 'bg-red-500');
-                        $estado_texto = $porcentaje_ocupacion >= 50 ? __('Alta disponibilidad', 'flavor-chat-ia') : ($porcentaje_ocupacion >= 20 ? __('Pocas bicis', 'flavor-chat-ia') : __('Casi vacía', 'flavor-chat-ia'));
+                        $estado_texto = $porcentaje_ocupacion >= 50 ? __('Alta disponibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN) : ($porcentaje_ocupacion >= 20 ? __('Pocas bicis', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Casi vacía', FLAVOR_PLATFORM_TEXT_DOMAIN));
                     ?>
                         <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow border border-gray-100 overflow-hidden">
                             <div class="p-4">
@@ -470,7 +470,7 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                                 <div class="flex items-center gap-4 mb-3">
                                     <div class="text-center">
                                         <span class="text-3xl font-bold text-gray-800"><?php echo esc_html($estacion->bicicletas_disponibles); ?></span>
-                                        <p class="text-xs text-gray-500"><?php esc_html_e('disponibles', 'flavor-chat-ia'); ?></p>
+                                        <p class="text-xs text-gray-500"><?php esc_html_e('disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                     </div>
                                     <div class="flex-1">
                                         <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -482,7 +482,7 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
 
                                 <div class="flex items-center justify-between text-sm">
                                     <span class="text-gray-500">
-                                        <?php echo esc_html($estacion->capacidad_total - $estacion->bicicletas_disponibles); ?> <?php esc_html_e('huecos libres', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html($estacion->capacidad_total - $estacion->bicicletas_disponibles); ?> <?php esc_html_e('huecos libres', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </span>
                                     <span class="px-2 py-1 bg-gray-100 rounded text-xs text-gray-600">
                                         <?php echo esc_html(ucfirst($estacion->tipo)); ?>
@@ -492,7 +492,7 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
 
                             <div class="border-t border-gray-100 p-3 bg-gray-50">
                                 <a href="?estacion_id=<?php echo esc_attr($estacion->id); ?>" class="block w-full text-center py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg text-sm font-medium transition-colors">
-                                    <?php esc_html_e('Ver bicicletas', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Ver bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </div>
                         </div>
@@ -568,8 +568,8 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                 <div class="flex items-center gap-3">
                     <span class="text-2xl">🚲</span>
                     <div>
-                        <h3 class="text-lg font-bold"><?php esc_html_e('Reservar Bicicleta', 'flavor-chat-ia'); ?></h3>
-                        <p class="text-sm opacity-90"><?php esc_html_e('Selecciona una bicicleta disponible', 'flavor-chat-ia'); ?></p>
+                        <h3 class="text-lg font-bold"><?php esc_html_e('Reservar Bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                        <p class="text-sm opacity-90"><?php esc_html_e('Selecciona una bicicleta disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 </div>
             </div>
@@ -579,16 +579,16 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                     <!-- Usuario ya tiene un préstamo activo -->
                     <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 text-center">
                         <span class="text-4xl mb-3 block">🚴</span>
-                        <h4 class="font-bold text-blue-800 mb-2"><?php esc_html_e('Ya tienes una bicicleta en uso', 'flavor-chat-ia'); ?></h4>
+                        <h4 class="font-bold text-blue-800 mb-2"><?php esc_html_e('Ya tienes una bicicleta en uso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                         <p class="text-blue-600 mb-4">
                             <?php printf(
-                                esc_html__('Bicicleta %s desde %s', 'flavor-chat-ia'),
+                                esc_html__('Bicicleta %s desde %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 '<strong>' . esc_html($prestamo_activo->bicicleta_codigo) . '</strong>',
                                 esc_html(date_i18n('d/m/Y H:i', strtotime($prestamo_activo->fecha_inicio)))
                             ); ?>
                         </p>
                         <a href="?accion=devolver" class="inline-block px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium">
-                            <?php esc_html_e('Devolver bicicleta', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Devolver bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 <?php else: ?>
@@ -598,13 +598,13 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                         <!-- Paso 1: Seleccionar estación -->
                         <div class="form-group">
                             <label for="estacion_id" class="block text-sm font-medium text-gray-700 mb-2">
-                                <?php esc_html_e('1. Selecciona una estación', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('1. Selecciona una estación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
                             <select name="estacion_id" id="estacion_id" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" required>
-                                <option value=""><?php esc_html_e('-- Elige una estación --', 'flavor-chat-ia'); ?></option>
+                                <option value=""><?php esc_html_e('-- Elige una estación --', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                 <?php foreach ($estaciones as $estacion): ?>
                                     <option value="<?php echo esc_attr($estacion->id); ?>" <?php selected($estacion_seleccionada_id, $estacion->id); ?>>
-                                        <?php echo esc_html($estacion->nombre); ?> (<?php echo esc_html($estacion->bicicletas_disponibles); ?> <?php esc_html_e('bicis', 'flavor-chat-ia'); ?>)
+                                        <?php echo esc_html($estacion->nombre); ?> (<?php echo esc_html($estacion->bicicletas_disponibles); ?> <?php esc_html_e('bicis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>)
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -613,7 +613,7 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                         <!-- Paso 2: Seleccionar bicicleta -->
                         <div class="form-group" id="bicicletas-container" style="<?php echo empty($bicicletas_disponibles) ? 'display:none;' : ''; ?>">
                             <label class="block text-sm font-medium text-gray-700 mb-2">
-                                <?php esc_html_e('2. Selecciona una bicicleta', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('2. Selecciona una bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
                             <div id="bicicletas-lista" class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 <?php foreach ($bicicletas_disponibles as $bicicleta): ?>
@@ -625,7 +625,7 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                                                 <span class="px-2 py-0.5 bg-gray-100 rounded text-xs"><?php echo esc_html(ucfirst($bicicleta->tipo)); ?></span>
                                             </div>
                                             <p class="text-sm text-gray-500"><?php echo esc_html($bicicleta->marca . ' ' . $bicicleta->modelo); ?></p>
-                                            <p class="text-xs text-gray-400"><?php esc_html_e('Talla:', 'flavor-chat-ia'); ?> <?php echo esc_html($bicicleta->talla); ?> | <?php esc_html_e('Color:', 'flavor-chat-ia'); ?> <?php echo esc_html($bicicleta->color); ?></p>
+                                            <p class="text-xs text-gray-400"><?php esc_html_e('Talla:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html($bicicleta->talla); ?> | <?php esc_html_e('Color:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html($bicicleta->color); ?></p>
                                         </div>
                                         <span class="text-2xl">🚲</span>
                                     </label>
@@ -639,10 +639,10 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                             <div class="flex items-start gap-3">
                                 <span class="text-xl">💰</span>
                                 <div>
-                                    <h5 class="font-medium text-yellow-800"><?php esc_html_e('Fianza requerida', 'flavor-chat-ia'); ?></h5>
+                                    <h5 class="font-medium text-yellow-800"><?php esc_html_e('Fianza requerida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h5>
                                     <p class="text-sm text-yellow-700">
                                         <?php printf(
-                                            esc_html__('Se requiere una fianza de %s€ que será devuelta al entregar la bicicleta en buen estado.', 'flavor-chat-ia'),
+                                            esc_html__('Se requiere una fianza de %s€ que será devuelta al entregar la bicicleta en buen estado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                             esc_html(number_format($importe_fianza, 2, ',', '.'))
                                         ); ?>
                                     </p>
@@ -656,7 +656,7 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                             <label class="flex items-start gap-3 cursor-pointer">
                                 <input type="checkbox" name="acepto_terminos" id="acepto_terminos" required class="mt-1 w-4 h-4 text-green-500 border-gray-300 rounded focus:ring-green-500">
                                 <span class="text-sm text-gray-600">
-                                    <?php esc_html_e('Acepto las condiciones de uso del servicio de bicicletas compartidas y me comprometo a devolver la bicicleta en buen estado.', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Acepto las condiciones de uso del servicio de bicicletas compartidas y me comprometo a devolver la bicicleta en buen estado.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                             </label>
                         </div>
@@ -664,8 +664,8 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                         <!-- Botón de reserva -->
                         <div class="pt-4">
                             <button type="submit" id="btn-reservar" class="w-full py-3 px-6 bg-green-500 hover:bg-green-600 text-white rounded-xl font-bold text-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                                <span class="normal-state"><?php esc_html_e('Reservar Bicicleta', 'flavor-chat-ia'); ?> 🚲</span>
-                                <span class="loading-state hidden"><?php esc_html_e('Procesando...', 'flavor-chat-ia'); ?></span>
+                                <span class="normal-state"><?php esc_html_e('Reservar Bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> 🚲</span>
+                                <span class="loading-state hidden"><?php esc_html_e('Procesando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </button>
                         </div>
 
@@ -689,7 +689,7 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                                 return;
                             }
 
-                            bicicletasLista.innerHTML = '<div class="col-span-2 text-center py-4"><span class="animate-spin inline-block">⏳</span> <?php echo esc_js(__('Cargando bicicletas...', 'flavor-chat-ia')); ?></div>';
+                            bicicletasLista.innerHTML = '<div class="col-span-2 text-center py-4"><span class="animate-spin inline-block">⏳</span> <?php echo esc_js(__('Cargando bicicletas...', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></div>';
                             bicicletasContainer.style.display = 'block';
 
                             fetch('<?php echo esc_url(rest_url('flavor/v1/bicicletas')); ?>?estacion_id=' + estacionId + '&estado=disponible')
@@ -714,11 +714,11 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                                         bicicletasLista.innerHTML = html;
                                         initBicicletaOpciones();
                                     } else {
-                                        bicicletasLista.innerHTML = '<div class="col-span-2 text-center py-4 text-gray-500"><?php echo esc_js(__('No hay bicicletas disponibles en esta estación', 'flavor-chat-ia')); ?></div>';
+                                        bicicletasLista.innerHTML = '<div class="col-span-2 text-center py-4 text-gray-500"><?php echo esc_js(__('No hay bicicletas disponibles en esta estación', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></div>';
                                     }
                                 })
                                 .catch(function(err) {
-                                    bicicletasLista.innerHTML = '<div class="col-span-2 text-center py-4 text-red-500"><?php echo esc_js(__('Error al cargar bicicletas', 'flavor-chat-ia')); ?></div>';
+                                    bicicletasLista.innerHTML = '<div class="col-span-2 text-center py-4 text-red-500"><?php echo esc_js(__('Error al cargar bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></div>';
                                 });
                         });
 
@@ -741,7 +741,7 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
 
                             var bicicletaId = form.querySelector('input[name="bicicleta_id"]:checked');
                             if (!bicicletaId) {
-                                alert('<?php echo esc_js(__('Selecciona una bicicleta', 'flavor-chat-ia')); ?>');
+                                alert('<?php echo esc_js(__('Selecciona una bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                                 return;
                             }
 
@@ -769,12 +769,12 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                                         window.location.reload();
                                     }, 2000);
                                 } else {
-                                    mensajeDiv.innerHTML = '<div class="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700"><strong>✗</strong> ' + (data.data || '<?php echo esc_js(__('Error al reservar', 'flavor-chat-ia')); ?>') + '</div>';
+                                    mensajeDiv.innerHTML = '<div class="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700"><strong>✗</strong> ' + (data.data || '<?php echo esc_js(__('Error al reservar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>') + '</div>';
                                     mensajeDiv.classList.remove('hidden');
                                 }
                             })
                             .catch(function(err) {
-                                mensajeDiv.innerHTML = '<div class="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700"><?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?></div>';
+                                mensajeDiv.innerHTML = '<div class="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700"><?php echo esc_js(__('Error de conexión', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></div>';
                                 mensajeDiv.classList.remove('hidden');
                             })
                             .finally(function() {
@@ -866,8 +866,8 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                 <div class="flex items-center gap-3">
                     <span class="text-2xl">📋</span>
                     <div>
-                        <h3 class="text-lg font-bold"><?php esc_html_e('Mis Viajes en Bicicleta', 'flavor-chat-ia'); ?></h3>
-                        <p class="text-sm opacity-90"><?php echo esc_html($total_viajes); ?> <?php esc_html_e('viajes realizados', 'flavor-chat-ia'); ?></p>
+                        <h3 class="text-lg font-bold"><?php esc_html_e('Mis Viajes en Bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                        <p class="text-sm opacity-90"><?php echo esc_html($total_viajes); ?> <?php esc_html_e('viajes realizados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 </div>
             </div>
@@ -880,17 +880,17 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                             <div class="flex items-center gap-3">
                                 <span class="text-3xl animate-bounce">🚴</span>
                                 <div>
-                                    <span class="font-bold text-blue-800"><?php esc_html_e('Viaje en curso', 'flavor-chat-ia'); ?></span>
+                                    <span class="font-bold text-blue-800"><?php esc_html_e('Viaje en curso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     <p class="text-sm text-blue-600">
                                         <?php echo esc_html($prestamo_activo->bicicleta_codigo); ?> -
-                                        <?php printf(esc_html__('Desde %s', 'flavor-chat-ia'), esc_html($prestamo_activo->estacion_salida_nombre)); ?>
+                                        <?php printf(esc_html__('Desde %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($prestamo_activo->estacion_salida_nombre)); ?>
                                     </p>
                                     <p class="text-xs text-blue-500">
                                         <?php
                                         $inicio = strtotime($prestamo_activo->fecha_inicio);
                                         $duracion_actual = round((time() - $inicio) / 60);
                                         printf(
-                                            esc_html__('Iniciado hace %s minutos', 'flavor-chat-ia'),
+                                            esc_html__('Iniciado hace %s minutos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                             esc_html($duracion_actual)
                                         );
                                         ?>
@@ -898,7 +898,7 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                                 </div>
                             </div>
                             <a href="?accion=devolver" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium">
-                                <?php esc_html_e('Devolver', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Devolver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </div>
                     </div>
@@ -907,9 +907,9 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                 <?php if (empty($prestamos) && !$prestamo_activo): ?>
                     <div class="p-8 text-center">
                         <span class="text-4xl mb-3 block">🚲</span>
-                        <p class="text-gray-500"><?php esc_html_e('Aún no has realizado ningún viaje.', 'flavor-chat-ia'); ?></p>
+                        <p class="text-gray-500"><?php esc_html_e('Aún no has realizado ningún viaje.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <a href="?pagina=reservar" class="inline-block mt-4 px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg">
-                            <?php esc_html_e('Reservar mi primera bicicleta', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Reservar mi primera bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 <?php else: ?>
@@ -917,15 +917,15 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                     <div class="grid grid-cols-3 gap-4 p-4 border-b border-gray-100">
                         <div class="text-center">
                             <span class="text-2xl font-bold text-gray-800"><?php echo esc_html($total_viajes); ?></span>
-                            <p class="text-xs text-gray-500"><?php esc_html_e('Viajes', 'flavor-chat-ia'); ?></p>
+                            <p class="text-xs text-gray-500"><?php esc_html_e('Viajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                         <div class="text-center">
                             <span class="text-2xl font-bold text-gray-800"><?php echo esc_html(number_format($total_km, 1)); ?></span>
-                            <p class="text-xs text-gray-500"><?php esc_html_e('Km totales', 'flavor-chat-ia'); ?></p>
+                            <p class="text-xs text-gray-500"><?php esc_html_e('Km totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                         <div class="text-center">
                             <span class="text-2xl font-bold text-gray-800"><?php echo esc_html(round($total_minutos / 60, 1)); ?></span>
-                            <p class="text-xs text-gray-500"><?php esc_html_e('Horas', 'flavor-chat-ia'); ?></p>
+                            <p class="text-xs text-gray-500"><?php esc_html_e('Horas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                     </div>
 
@@ -1055,8 +1055,8 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                 <div class="flex items-center gap-3 mb-4">
                     <span class="text-3xl">📊</span>
                     <div>
-                        <h3 class="text-xl font-bold"><?php esc_html_e('Tus Estadísticas de Ciclismo', 'flavor-chat-ia'); ?></h3>
-                        <p class="text-sm opacity-90"><?php esc_html_e('Impacto positivo en el medio ambiente', 'flavor-chat-ia'); ?></p>
+                        <h3 class="text-xl font-bold"><?php esc_html_e('Tus Estadísticas de Ciclismo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                        <p class="text-sm opacity-90"><?php esc_html_e('Impacto positivo en el medio ambiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 </div>
 
@@ -1064,19 +1064,19 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div class="bg-white/20 rounded-xl p-4 text-center backdrop-blur-sm">
                         <span class="text-3xl font-bold"><?php echo esc_html($estadisticas['total_viajes']); ?></span>
-                        <p class="text-sm opacity-90"><?php esc_html_e('Viajes', 'flavor-chat-ia'); ?></p>
+                        <p class="text-sm opacity-90"><?php esc_html_e('Viajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                     <div class="bg-white/20 rounded-xl p-4 text-center backdrop-blur-sm">
                         <span class="text-3xl font-bold"><?php echo esc_html(number_format($estadisticas['total_km'], 1)); ?></span>
-                        <p class="text-sm opacity-90"><?php esc_html_e('Kilómetros', 'flavor-chat-ia'); ?></p>
+                        <p class="text-sm opacity-90"><?php esc_html_e('Kilómetros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                     <div class="bg-white/20 rounded-xl p-4 text-center backdrop-blur-sm">
                         <span class="text-3xl font-bold"><?php echo esc_html($horas_totales); ?></span>
-                        <p class="text-sm opacity-90"><?php esc_html_e('Horas', 'flavor-chat-ia'); ?></p>
+                        <p class="text-sm opacity-90"><?php esc_html_e('Horas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                     <div class="bg-white/20 rounded-xl p-4 text-center backdrop-blur-sm">
                         <span class="text-3xl font-bold"><?php echo esc_html(number_format($estadisticas['co2_ahorrado'], 1)); ?></span>
-                        <p class="text-sm opacity-90"><?php esc_html_e('kg CO₂ ahorrado', 'flavor-chat-ia'); ?></p>
+                        <p class="text-sm opacity-90"><?php esc_html_e('kg CO₂ ahorrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 </div>
             </div>
@@ -1084,39 +1084,39 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
             <div class="bg-white rounded-b-xl shadow-lg p-6">
                 <!-- Impacto ambiental -->
                 <h4 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    <span>🌍</span> <?php esc_html_e('Tu Impacto Ambiental', 'flavor-chat-ia'); ?>
+                    <span>🌍</span> <?php esc_html_e('Tu Impacto Ambiental', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h4>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div class="bg-green-50 rounded-xl p-4 text-center">
                         <span class="text-4xl mb-2 block">🌳</span>
                         <span class="text-2xl font-bold text-green-700"><?php echo esc_html($arboles_equivalentes); ?></span>
-                        <p class="text-sm text-green-600"><?php esc_html_e('Árboles equivalentes', 'flavor-chat-ia'); ?></p>
-                        <p class="text-xs text-gray-500 mt-1"><?php esc_html_e('en absorción de CO₂', 'flavor-chat-ia'); ?></p>
+                        <p class="text-sm text-green-600"><?php esc_html_e('Árboles equivalentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                        <p class="text-xs text-gray-500 mt-1"><?php esc_html_e('en absorción de CO₂', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                     <div class="bg-orange-50 rounded-xl p-4 text-center">
                         <span class="text-4xl mb-2 block">🔥</span>
                         <span class="text-2xl font-bold text-orange-700"><?php echo esc_html(number_format($estadisticas['calorias_quemadas'])); ?></span>
-                        <p class="text-sm text-orange-600"><?php esc_html_e('Calorías quemadas', 'flavor-chat-ia'); ?></p>
-                        <p class="text-xs text-gray-500 mt-1"><?php esc_html_e('equivale a', 'flavor-chat-ia'); ?> <?php echo esc_html(round($estadisticas['calorias_quemadas'] / 280)); ?> 🍔</p>
+                        <p class="text-sm text-orange-600"><?php esc_html_e('Calorías quemadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                        <p class="text-xs text-gray-500 mt-1"><?php esc_html_e('equivale a', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html(round($estadisticas['calorias_quemadas'] / 280)); ?> 🍔</p>
                     </div>
                     <div class="bg-blue-50 rounded-xl p-4 text-center">
                         <span class="text-4xl mb-2 block">💰</span>
                         <span class="text-2xl font-bold text-blue-700"><?php echo esc_html(number_format($estadisticas['total_km'] * 0.15, 2)); ?>€</span>
-                        <p class="text-sm text-blue-600"><?php esc_html_e('Dinero ahorrado', 'flavor-chat-ia'); ?></p>
-                        <p class="text-xs text-gray-500 mt-1"><?php esc_html_e('vs transporte público', 'flavor-chat-ia'); ?></p>
+                        <p class="text-sm text-blue-600"><?php esc_html_e('Dinero ahorrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                        <p class="text-xs text-gray-500 mt-1"><?php esc_html_e('vs transporte público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 </div>
 
                 <!-- Estadísticas del mes -->
                 <h4 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    <span>📅</span> <?php esc_html_e('Este Mes', 'flavor-chat-ia'); ?>
+                    <span>📅</span> <?php esc_html_e('Este Mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h4>
 
                 <div class="flex items-center gap-6">
                     <div class="flex-1">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm text-gray-600"><?php esc_html_e('Viajes realizados', 'flavor-chat-ia'); ?></span>
+                            <span class="text-sm text-gray-600"><?php esc_html_e('Viajes realizados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span class="font-bold"><?php echo esc_html($estadisticas['viajes_mes_actual']); ?></span>
                         </div>
                         <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -1125,7 +1125,7 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                     </div>
                     <div class="flex-1">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm text-gray-600"><?php esc_html_e('Kilómetros', 'flavor-chat-ia'); ?></span>
+                            <span class="text-sm text-gray-600"><?php esc_html_e('Kilómetros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span class="font-bold"><?php echo esc_html(number_format($estadisticas['km_mes_actual'], 1)); ?></span>
                         </div>
                         <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -1137,9 +1137,9 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                 <?php if ($estadisticas['total_viajes'] === 0): ?>
                     <div class="mt-6 text-center bg-gray-50 rounded-xl p-6">
                         <span class="text-4xl mb-2 block">🚲</span>
-                        <p class="text-gray-600"><?php esc_html_e('¡Aún no has realizado ningún viaje!', 'flavor-chat-ia'); ?></p>
+                        <p class="text-gray-600"><?php esc_html_e('¡Aún no has realizado ningún viaje!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <a href="?pagina=reservar" class="inline-block mt-3 px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg">
-                            <?php esc_html_e('Hacer mi primer viaje', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Hacer mi primer viaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 <?php endif; ?>
@@ -1170,8 +1170,8 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
         <div class="flavor-bicicletas-tarifas">
             <div class="bg-gradient-to-r from-green-500 to-teal-500 rounded-t-xl p-6 text-white text-center">
                 <span class="text-4xl mb-2 block">💳</span>
-                <h3 class="text-2xl font-bold"><?php esc_html_e('Tarifas y Planes', 'flavor-chat-ia'); ?></h3>
-                <p class="text-sm opacity-90"><?php esc_html_e('Elige el plan que mejor se adapte a ti', 'flavor-chat-ia'); ?></p>
+                <h3 class="text-2xl font-bold"><?php esc_html_e('Tarifas y Planes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p class="text-sm opacity-90"><?php esc_html_e('Elige el plan que mejor se adapte a ti', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <div class="bg-white rounded-b-xl shadow-lg p-6">
@@ -1180,31 +1180,31 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                     <!-- Plan Por Uso -->
                     <div class="border-2 border-gray-200 rounded-xl overflow-hidden hover:border-green-300 transition-colors">
                         <div class="bg-gray-50 p-4 text-center">
-                            <h4 class="font-bold text-gray-800"><?php esc_html_e('Por Uso', 'flavor-chat-ia'); ?></h4>
-                            <p class="text-sm text-gray-500"><?php esc_html_e('Pago por hora', 'flavor-chat-ia'); ?></p>
+                            <h4 class="font-bold text-gray-800"><?php esc_html_e('Por Uso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                            <p class="text-sm text-gray-500"><?php esc_html_e('Pago por hora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                         <div class="p-6 text-center">
                             <div class="text-4xl font-bold text-gray-800 mb-1">
                                 <?php if ($precio_hora > 0): ?>
                                     <?php echo esc_html(number_format($precio_hora, 2, ',', '.')); ?>€
                                 <?php else: ?>
-                                    <?php esc_html_e('Gratis', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 <?php endif; ?>
                             </div>
-                            <p class="text-sm text-gray-500"><?php esc_html_e('por hora', 'flavor-chat-ia'); ?></p>
+                            <p class="text-sm text-gray-500"><?php esc_html_e('por hora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                             <ul class="text-left text-sm text-gray-600 mt-4 space-y-2">
                                 <li class="flex items-center gap-2">
                                     <span class="text-green-500">✓</span>
-                                    <?php esc_html_e('Sin compromiso', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Sin compromiso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </li>
                                 <li class="flex items-center gap-2">
                                     <span class="text-green-500">✓</span>
-                                    <?php esc_html_e('Todas las estaciones', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Todas las estaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </li>
                                 <li class="flex items-center gap-2">
                                     <span class="text-green-500">✓</span>
-                                    <?php printf(esc_html__('Máx. %d días', 'flavor-chat-ia'), $duracion_maxima_dias); ?>
+                                    <?php printf(esc_html__('Máx. %d días', FLAVOR_PLATFORM_TEXT_DOMAIN), $duracion_maxima_dias); ?>
                                 </li>
                             </ul>
                         </div>
@@ -1213,31 +1213,31 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                     <!-- Plan Diario -->
                     <div class="border-2 border-gray-200 rounded-xl overflow-hidden hover:border-green-300 transition-colors">
                         <div class="bg-gray-50 p-4 text-center">
-                            <h4 class="font-bold text-gray-800"><?php esc_html_e('Pase Diario', 'flavor-chat-ia'); ?></h4>
-                            <p class="text-sm text-gray-500"><?php esc_html_e('Todo el día', 'flavor-chat-ia'); ?></p>
+                            <h4 class="font-bold text-gray-800"><?php esc_html_e('Pase Diario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                            <p class="text-sm text-gray-500"><?php esc_html_e('Todo el día', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                         <div class="p-6 text-center">
                             <div class="text-4xl font-bold text-gray-800 mb-1">
                                 <?php if ($precio_dia > 0): ?>
                                     <?php echo esc_html(number_format($precio_dia, 2, ',', '.')); ?>€
                                 <?php else: ?>
-                                    <?php esc_html_e('Gratis', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 <?php endif; ?>
                             </div>
-                            <p class="text-sm text-gray-500"><?php esc_html_e('24 horas', 'flavor-chat-ia'); ?></p>
+                            <p class="text-sm text-gray-500"><?php esc_html_e('24 horas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                             <ul class="text-left text-sm text-gray-600 mt-4 space-y-2">
                                 <li class="flex items-center gap-2">
                                     <span class="text-green-500">✓</span>
-                                    <?php esc_html_e('Uso ilimitado 24h', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Uso ilimitado 24h', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </li>
                                 <li class="flex items-center gap-2">
                                     <span class="text-green-500">✓</span>
-                                    <?php esc_html_e('Ideal para turistas', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Ideal para turistas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </li>
                                 <li class="flex items-center gap-2">
                                     <span class="text-green-500">✓</span>
-                                    <?php esc_html_e('Sin límite de viajes', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Sin límite de viajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </li>
                             </ul>
                         </div>
@@ -1246,39 +1246,39 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                     <!-- Plan Mensual (destacado) -->
                     <div class="border-2 border-green-500 rounded-xl overflow-hidden relative">
                         <div class="absolute top-0 right-0 bg-green-500 text-white text-xs px-3 py-1 rounded-bl-lg font-medium">
-                            <?php esc_html_e('RECOMENDADO', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('RECOMENDADO', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                         <div class="bg-green-500 text-white p-4 text-center">
-                            <h4 class="font-bold"><?php esc_html_e('Abono Mensual', 'flavor-chat-ia'); ?></h4>
-                            <p class="text-sm opacity-90"><?php esc_html_e('La mejor opción', 'flavor-chat-ia'); ?></p>
+                            <h4 class="font-bold"><?php esc_html_e('Abono Mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                            <p class="text-sm opacity-90"><?php esc_html_e('La mejor opción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                         <div class="p-6 text-center">
                             <div class="text-4xl font-bold text-green-600 mb-1">
                                 <?php echo esc_html(number_format($precio_mes, 2, ',', '.')); ?>€
                             </div>
-                            <p class="text-sm text-gray-500"><?php esc_html_e('al mes', 'flavor-chat-ia'); ?></p>
+                            <p class="text-sm text-gray-500"><?php esc_html_e('al mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                             <ul class="text-left text-sm text-gray-600 mt-4 space-y-2">
                                 <li class="flex items-center gap-2">
                                     <span class="text-green-500">✓</span>
-                                    <?php esc_html_e('Viajes ilimitados', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Viajes ilimitados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </li>
                                 <li class="flex items-center gap-2">
                                     <span class="text-green-500">✓</span>
-                                    <?php esc_html_e('Reserva prioritaria', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Reserva prioritaria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </li>
                                 <li class="flex items-center gap-2">
                                     <span class="text-green-500">✓</span>
-                                    <?php esc_html_e('Bicis eléctricas', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Bicis eléctricas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </li>
                                 <li class="flex items-center gap-2">
                                     <span class="text-green-500">✓</span>
-                                    <?php esc_html_e('Estadísticas detalladas', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Estadísticas detalladas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </li>
                             </ul>
 
                             <a href="?plan=mensual" class="mt-4 block w-full py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-colors">
-                                <?php esc_html_e('Suscribirme', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Suscribirme', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </div>
                     </div>
@@ -1290,10 +1290,10 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                     <div class="flex items-start gap-3">
                         <span class="text-2xl">💰</span>
                         <div>
-                            <h5 class="font-bold text-yellow-800"><?php esc_html_e('Fianza', 'flavor-chat-ia'); ?></h5>
+                            <h5 class="font-bold text-yellow-800"><?php esc_html_e('Fianza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h5>
                             <p class="text-sm text-yellow-700">
                                 <?php printf(
-                                    esc_html__('Se requiere una fianza de %s€ que será devuelta íntegramente al finalizar tu suscripción o al devolver la bicicleta en buen estado.', 'flavor-chat-ia'),
+                                    esc_html__('Se requiere una fianza de %s€ que será devuelta íntegramente al finalizar tu suscripción o al devolver la bicicleta en buen estado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                     esc_html(number_format($importe_fianza, 2, ',', '.'))
                                 ); ?>
                             </p>
@@ -1304,27 +1304,27 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
 
                 <!-- Condiciones -->
                 <div class="bg-gray-50 rounded-xl p-4">
-                    <h5 class="font-bold text-gray-800 mb-3"><?php esc_html_e('Condiciones del servicio', 'flavor-chat-ia'); ?></h5>
+                    <h5 class="font-bold text-gray-800 mb-3"><?php esc_html_e('Condiciones del servicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h5>
                     <ul class="text-sm text-gray-600 space-y-2">
                         <li class="flex items-start gap-2">
                             <span class="text-gray-400">•</span>
-                            <?php printf(esc_html__('Duración máxima por préstamo: %d días', 'flavor-chat-ia'), $duracion_maxima_dias); ?>
+                            <?php printf(esc_html__('Duración máxima por préstamo: %d días', FLAVOR_PLATFORM_TEXT_DOMAIN), $duracion_maxima_dias); ?>
                         </li>
                         <li class="flex items-start gap-2">
                             <span class="text-gray-400">•</span>
-                            <?php esc_html_e('Devolución en cualquier estación con espacio disponible', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Devolución en cualquier estación con espacio disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </li>
                         <li class="flex items-start gap-2">
                             <span class="text-gray-400">•</span>
-                            <?php esc_html_e('Uso del casco obligatorio', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Uso del casco obligatorio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </li>
                         <li class="flex items-start gap-2">
                             <span class="text-gray-400">•</span>
-                            <?php esc_html_e('El usuario es responsable de la bicicleta durante el préstamo', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('El usuario es responsable de la bicicleta durante el préstamo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </li>
                         <li class="flex items-start gap-2">
                             <span class="text-gray-400">•</span>
-                            <?php esc_html_e('Reportar cualquier incidencia inmediatamente', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Reportar cualquier incidencia inmediatamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </li>
                     </ul>
                 </div>
@@ -1349,18 +1349,18 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
         ?>
         <div class="flavor-login-required bg-gray-50 border border-gray-200 rounded-xl p-8 text-center">
             <span class="text-4xl mb-3 block">🔒</span>
-            <h4 class="font-bold text-gray-800 mb-2"><?php esc_html_e('Acceso restringido', 'flavor-chat-ia'); ?></h4>
+            <h4 class="font-bold text-gray-800 mb-2"><?php esc_html_e('Acceso restringido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
             <p class="text-gray-600 mb-4">
                 <?php
                 if ($accion_descripcion) {
-                    printf(esc_html__('Debes iniciar sesión para %s.', 'flavor-chat-ia'), esc_html($accion_descripcion));
+                    printf(esc_html__('Debes iniciar sesión para %s.', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($accion_descripcion));
                 } else {
-                    esc_html_e('Debes iniciar sesión para acceder a esta funcionalidad.', 'flavor-chat-ia');
+                    esc_html_e('Debes iniciar sesión para acceder a esta funcionalidad.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 }
                 ?>
             </p>
             <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="inline-block px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium">
-                <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
         <?php
@@ -1389,18 +1389,18 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
     public function ajax_reservar_bicicleta() {
         // Verificar nonce
         if (!check_ajax_referer('bicicletas_reservar', 'bicicletas_nonce', false)) {
-            wp_send_json_error(__('Sesión expirada. Recarga la página.', 'flavor-chat-ia'));
+            wp_send_json_error(__('Sesión expirada. Recarga la página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Verificar login
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $bicicleta_id = isset($_POST['bicicleta_id']) ? absint($_POST['bicicleta_id']) : 0;
 
         if (!$bicicleta_id) {
-            wp_send_json_error(__('Selecciona una bicicleta', 'flavor-chat-ia'));
+            wp_send_json_error(__('Selecciona una bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Crear un WP_REST_Request para reusar la lógica existente
@@ -1417,7 +1417,7 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
             ]);
         } else {
             $datos = $resultado->get_data();
-            wp_send_json_error($datos['error'] ?? __('Error al reservar', 'flavor-chat-ia'));
+            wp_send_json_error($datos['error'] ?? __('Error al reservar', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -1425,7 +1425,7 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
      * AJAX: Login requerido
      */
     public function ajax_login_required() {
-        wp_send_json_error(__('Debes iniciar sesión para realizar esta acción.', 'flavor-chat-ia'));
+        wp_send_json_error(__('Debes iniciar sesión para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**
@@ -2258,19 +2258,19 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
     public function get_web_components() {
         return [
             'hero_bicis' => [
-                'label' => __('Hero Bicicletas', 'flavor-chat-ia'),
+                'label' => __('Hero Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-admin-site',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Bicicletas Compartidas', 'flavor-chat-ia')],
-                    'subtitulo' => ['type' => 'textarea', 'default' => __('Movilidad sostenible y saludable', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Bicicletas Compartidas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'subtitulo' => ['type' => 'textarea', 'default' => __('Movilidad sostenible y saludable', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'imagen_fondo' => ['type' => 'image', 'default' => ''],
                     'mostrar_mapa_estaciones' => ['type' => 'toggle', 'default' => true],
                 ],
                 'template' => 'bicicletas/hero',
             ],
             'mapa_estaciones' => [
-                'label' => __('Mapa de Estaciones', 'flavor-chat-ia'),
+                'label' => __('Mapa de Estaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-location',
                 'fields' => [
@@ -2281,24 +2281,24 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                 'template' => 'bicicletas/mapa',
             ],
             'tipos_bicicletas' => [
-                'label' => __('Tipos de Bicicletas', 'flavor-chat-ia'),
+                'label' => __('Tipos de Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'features',
                 'icon' => 'dashicons-admin-site',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Elige tu Bicicleta', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Elige tu Bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'mostrar_precios' => ['type' => 'toggle', 'default' => true],
                 ],
                 'template' => 'bicicletas/tipos',
             ],
             'como_usar' => [
-                'label' => __('Cómo Usar', 'flavor-chat-ia'),
+                'label' => __('Cómo Usar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-info',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('¿Cómo funciona?', 'flavor-chat-ia')],
-                    'paso1' => ['type' => 'text', 'default' => __('Encuentra estación cercana', 'flavor-chat-ia')],
-                    'paso2' => ['type' => 'text', 'default' => __('Escanea código QR', 'flavor-chat-ia')],
-                    'paso3' => ['type' => 'text', 'default' => __('¡Pedalea!', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('¿Cómo funciona?', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'paso1' => ['type' => 'text', 'default' => __('Encuentra estación cercana', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'paso2' => ['type' => 'text', 'default' => __('Escanea código QR', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'paso3' => ['type' => 'text', 'default' => __('¡Pedalea!', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'template' => 'bicicletas/como-usar',
             ],
@@ -2393,35 +2393,35 @@ KNOWLEDGE;
     protected function get_admin_config() {
         return [
             'id' => 'bicicletas_compartidas',
-            'label' => __('Bicicletas', 'flavor-chat-ia'),
+            'label' => __('Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-car',
             'capability' => 'manage_options',
             'categoria' => 'sostenibilidad',
             'paginas' => [
                 [
                     'slug' => 'flavor-bicicletas-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'flavor-bicicletas-flota',
-                    'titulo' => __('Flota', 'flavor-chat-ia'),
+                    'titulo' => __('Flota', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_flota'],
                 ],
                 [
                     'slug' => 'flavor-bicicletas-estaciones',
-                    'titulo' => __('Estaciones', 'flavor-chat-ia'),
+                    'titulo' => __('Estaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_estaciones'],
                 ],
                 [
                     'slug' => 'flavor-bicicletas-prestamos',
-                    'titulo' => __('Préstamos Activos', 'flavor-chat-ia'),
+                    'titulo' => __('Préstamos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_prestamos'],
                     'badge' => [$this, 'contar_prestamos_activos'],
                 ],
                 [
                     'slug' => 'flavor-bicicletas-configuracion',
-                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'titulo' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_configuracion'],
                 ],
             ],
@@ -2458,14 +2458,14 @@ KNOWLEDGE;
             [
                 'icon' => 'dashicons-car',
                 'valor' => $bicicletas_disponibles,
-                'label' => __('Bicis disponibles', 'flavor-chat-ia'),
+                'label' => __('Bicis disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'green',
                 'enlace' => admin_url('admin.php?page=flavor-bicicletas-flota'),
             ],
             [
                 'icon' => 'dashicons-migrate',
                 'valor' => $prestamos_activos,
-                'label' => __('Préstamos activos', 'flavor-chat-ia'),
+                'label' => __('Préstamos activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'blue',
                 'enlace' => admin_url('admin.php?page=flavor-bicicletas-prestamos'),
             ],
@@ -2532,67 +2532,67 @@ KNOWLEDGE;
 
         ?>
         <div class="wrap flavor-admin-page">
-            <?php $this->render_page_header(__('Bicicletas Compartidas - Dashboard', 'flavor-chat-ia')); ?>
+            <?php $this->render_page_header(__('Bicicletas Compartidas - Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
 
             <div class="flavor-stats-grid">
                 <div class="flavor-stat-card">
                     <span class="dashicons dashicons-car"></span>
                     <div class="stat-content">
                         <span class="stat-number"><?php echo esc_html($total_bicicletas); ?></span>
-                        <span class="stat-label"><?php _e('Total Bicicletas', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('Total Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-stat-card green">
                     <span class="dashicons dashicons-yes-alt"></span>
                     <div class="stat-content">
                         <span class="stat-number"><?php echo esc_html($bicicletas_disponibles); ?></span>
-                        <span class="stat-label"><?php _e('Disponibles', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-stat-card blue">
                     <span class="dashicons dashicons-migrate"></span>
                     <div class="stat-content">
                         <span class="stat-number"><?php echo esc_html($bicicletas_en_uso); ?></span>
-                        <span class="stat-label"><?php _e('En Uso', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('En Uso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-stat-card orange">
                     <span class="dashicons dashicons-admin-tools"></span>
                     <div class="stat-content">
                         <span class="stat-number"><?php echo esc_html($bicicletas_mantenimiento); ?></span>
-                        <span class="stat-label"><?php _e('En Mantenimiento', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('En Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="dashicons dashicons-location"></span>
                     <div class="stat-content">
                         <span class="stat-number"><?php echo esc_html($total_estaciones); ?></span>
-                        <span class="stat-label"><?php _e('Estaciones Activas', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('Estaciones Activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-stat-card purple">
                     <span class="dashicons dashicons-clock"></span>
                     <div class="stat-content">
                         <span class="stat-number"><?php echo esc_html($prestamos_hoy); ?></span>
-                        <span class="stat-label"><?php _e('Préstamos Hoy', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php _e('Préstamos Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
 
             <div class="flavor-admin-section">
-                <h2><?php _e('Accesos Rápidos', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Accesos Rápidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <div class="flavor-quick-actions">
                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-flota')); ?>" class="button button-primary">
                         <span class="dashicons dashicons-car"></span>
-                        <?php _e('Gestionar Flota', 'flavor-chat-ia'); ?>
+                        <?php _e('Gestionar Flota', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-estaciones')); ?>" class="button">
                         <span class="dashicons dashicons-location"></span>
-                        <?php _e('Ver Estaciones', 'flavor-chat-ia'); ?>
+                        <?php _e('Ver Estaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-prestamos')); ?>" class="button">
                         <span class="dashicons dashicons-migrate"></span>
-                        <?php _e('Préstamos Activos', 'flavor-chat-ia'); ?>
+                        <?php _e('Préstamos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </div>
@@ -2632,10 +2632,10 @@ KNOWLEDGE;
         <div class="wrap flavor-admin-page">
             <?php
             $this->render_page_header(
-                __('Gestión de Flota', 'flavor-chat-ia'),
+                __('Gestión de Flota', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 [
                     [
-                        'label' => __('Añadir Bicicleta', 'flavor-chat-ia'),
+                        'label' => __('Añadir Bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'url' => '#',
                         'class' => 'button-primary',
                     ],
@@ -2646,19 +2646,19 @@ KNOWLEDGE;
             <div class="flavor-admin-section">
                 <?php if (empty($bicicletas)): ?>
                     <div class="notice notice-info">
-                        <p><?php _e('No hay bicicletas registradas. Añade la primera bicicleta a la flota.', 'flavor-chat-ia'); ?></p>
+                        <p><?php _e('No hay bicicletas registradas. Añade la primera bicicleta a la flota.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 <?php else: ?>
                     <table class="wp-list-table widefat fixed striped">
                         <thead>
                             <tr>
-                                <th><?php _e('Código', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Tipo', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Marca/Modelo', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Talla', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Km Acumulados', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Código', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Marca/Modelo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Talla', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Km Acumulados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -2675,7 +2675,7 @@ KNOWLEDGE;
                                     </td>
                                     <td><?php echo esc_html(number_format($bicicleta->kilometros_acumulados)); ?> km</td>
                                     <td>
-                                        <a href="<?php echo esc_url(admin_url('admin.php?page=bicicletas-flota&action=editar&id=' . $bicicleta->id)); ?>" class="button button-small"><?php _e('Editar', 'flavor-chat-ia'); ?></a>
+                                        <a href="<?php echo esc_url(admin_url('admin.php?page=bicicletas-flota&action=editar&id=' . $bicicleta->id)); ?>" class="button button-small"><?php _e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -2707,10 +2707,10 @@ KNOWLEDGE;
         <div class="wrap flavor-admin-page">
             <?php
             $this->render_page_header(
-                __('Estaciones de Bicicletas', 'flavor-chat-ia'),
+                __('Estaciones de Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 [
                     [
-                        'label' => __('Añadir Estación', 'flavor-chat-ia'),
+                        'label' => __('Añadir Estación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'url' => '#',
                         'class' => 'button-primary',
                     ],
@@ -2721,19 +2721,19 @@ KNOWLEDGE;
             <div class="flavor-admin-section">
                 <?php if (empty($estaciones)): ?>
                     <div class="notice notice-info">
-                        <p><?php _e('No hay estaciones registradas. Configura la primera estación de bicicletas.', 'flavor-chat-ia'); ?></p>
+                        <p><?php _e('No hay estaciones registradas. Configura la primera estación de bicicletas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 <?php else: ?>
                     <table class="wp-list-table widefat fixed striped">
                         <thead>
                             <tr>
-                                <th><?php _e('Nombre', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Dirección', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Tipo', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Capacidad', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Disponibles', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Dirección', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Capacidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -2750,7 +2750,7 @@ KNOWLEDGE;
                                         </span>
                                     </td>
                                     <td>
-                                        <a href="<?php echo esc_url(admin_url('admin.php?page=bicicletas-estaciones&action=editar&id=' . $estacion->id)); ?>" class="button button-small"><?php _e('Editar', 'flavor-chat-ia'); ?></a>
+                                        <a href="<?php echo esc_url(admin_url('admin.php?page=bicicletas-estaciones&action=editar&id=' . $estacion->id)); ?>" class="button button-small"><?php _e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -2786,24 +2786,24 @@ KNOWLEDGE;
 
         ?>
         <div class="wrap flavor-admin-page">
-            <?php $this->render_page_header(__('Préstamos Activos', 'flavor-chat-ia')); ?>
+            <?php $this->render_page_header(__('Préstamos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
 
             <div class="flavor-admin-section">
                 <?php if (empty($prestamos)): ?>
                     <div class="notice notice-info">
-                        <p><?php _e('No hay préstamos activos en este momento.', 'flavor-chat-ia'); ?></p>
+                        <p><?php _e('No hay préstamos activos en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 <?php else: ?>
                     <table class="wp-list-table widefat fixed striped">
                         <thead>
                             <tr>
-                                <th><?php _e('ID', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Bicicleta', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Usuario', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Estación Salida', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Inicio', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Duración', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Estación Salida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Duración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -2826,7 +2826,7 @@ KNOWLEDGE;
                                             <?php wp_nonce_field('finalizar_prestamo_bici', '_wpnonce'); ?>
                                             <input type="hidden" name="accion" value="finalizar_prestamo">
                                             <input type="hidden" name="prestamo_id" value="<?php echo esc_attr($prestamo->id); ?>">
-                                            <button type="submit" class="button button-small" onclick="return confirm('<?php echo esc_js(__('¿Finalizar este préstamo?', 'flavor-chat-ia')); ?>');"><?php _e('Finalizar', 'flavor-chat-ia'); ?></button>
+                                            <button type="submit" class="button button-small" onclick="return confirm('<?php echo esc_js(__('¿Finalizar este préstamo?', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');"><?php _e('Finalizar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                                         </form>
                                     </td>
                                 </tr>
@@ -2847,7 +2847,7 @@ KNOWLEDGE;
 
         ?>
         <div class="wrap flavor-admin-page">
-            <?php $this->render_page_header(__('Configuración de Bicicletas', 'flavor-chat-ia')); ?>
+            <?php $this->render_page_header(__('Configuración de Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
 
             <div class="flavor-admin-section">
                 <form method="post" action="">
@@ -2856,17 +2856,17 @@ KNOWLEDGE;
                     <table class="form-table">
                         <tr>
                             <th scope="row">
-                                <label for="requiere_fianza"><?php _e('Requiere Fianza', 'flavor-chat-ia'); ?></label>
+                                <label for="requiere_fianza"><?php _e('Requiere Fianza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             </th>
                             <td>
                                 <input type="checkbox" id="requiere_fianza" name="requiere_fianza" value="1"
                                     <?php checked($configuracion['requiere_fianza'] ?? true); ?>>
-                                <p class="description"><?php _e('Solicitar fianza para préstamos de bicicletas.', 'flavor-chat-ia'); ?></p>
+                                <p class="description"><?php _e('Solicitar fianza para préstamos de bicicletas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">
-                                <label for="importe_fianza"><?php _e('Importe Fianza', 'flavor-chat-ia'); ?></label>
+                                <label for="importe_fianza"><?php _e('Importe Fianza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             </th>
                             <td>
                                 <input type="number" id="importe_fianza" name="importe_fianza"
@@ -2876,40 +2876,40 @@ KNOWLEDGE;
                         </tr>
                         <tr>
                             <th scope="row">
-                                <label for="duracion_maxima_prestamo_dias"><?php _e('Duración Máxima Préstamo', 'flavor-chat-ia'); ?></label>
+                                <label for="duracion_maxima_prestamo_dias"><?php _e('Duración Máxima Préstamo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             </th>
                             <td>
                                 <input type="number" id="duracion_maxima_prestamo_dias" name="duracion_maxima_prestamo_dias"
                                     value="<?php echo esc_attr($configuracion['duracion_maxima_prestamo_dias'] ?? 7); ?>"
-                                    min="1" class="small-text"> <?php _e('días', 'flavor-chat-ia'); ?>
+                                    min="1" class="small-text"> <?php _e('días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">
-                                <label for="permite_reservas"><?php _e('Permitir Reservas', 'flavor-chat-ia'); ?></label>
+                                <label for="permite_reservas"><?php _e('Permitir Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             </th>
                             <td>
                                 <input type="checkbox" id="permite_reservas" name="permite_reservas" value="1"
                                     <?php checked($configuracion['permite_reservas'] ?? true); ?>>
-                                <p class="description"><?php _e('Permitir a los usuarios reservar bicicletas con antelación.', 'flavor-chat-ia'); ?></p>
+                                <p class="description"><?php _e('Permitir a los usuarios reservar bicicletas con antelación.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">
-                                <label for="precio_mes"><?php _e('Precio Mensual', 'flavor-chat-ia'); ?></label>
+                                <label for="precio_mes"><?php _e('Precio Mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             </th>
                             <td>
                                 <input type="number" id="precio_mes" name="precio_mes"
                                     value="<?php echo esc_attr($configuracion['precio_mes'] ?? 10); ?>"
                                     min="0" step="0.01" class="small-text"> &euro;
-                                <p class="description"><?php _e('Tarifa de abono mensual (0 = gratuito).', 'flavor-chat-ia'); ?></p>
+                                <p class="description"><?php _e('Tarifa de abono mensual (0 = gratuito).', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </td>
                         </tr>
                     </table>
 
                     <p class="submit">
                         <button type="submit" name="guardar_config" class="button button-primary">
-                            <?php _e('Guardar Configuración', 'flavor-chat-ia'); ?>
+                            <?php _e('Guardar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </p>
                 </form>
@@ -2948,37 +2948,37 @@ KNOWLEDGE;
     public function get_form_config($action_name) {
         $configs = [
             'reservar_bicicleta' => [
-                'title' => __('Reservar Bicicleta', 'flavor-chat-ia'),
-                'description' => __('Selecciona una bicicleta para reservar', 'flavor-chat-ia'),
+                'title' => __('Reservar Bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Selecciona una bicicleta para reservar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fields' => [
                     'bicicleta_id' => [
                         'type' => 'select',
-                        'label' => __('Bicicleta', 'flavor-chat-ia'),
+                        'label' => __('Bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'options' => $this->get_bicicletas_disponibles_options(),
                     ],
                 ],
-                'submit_text' => __('Reservar', 'flavor-chat-ia'),
-                'success_message' => __('Bicicleta reservada correctamente', 'flavor-chat-ia'),
+                'submit_text' => __('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'success_message' => __('Bicicleta reservada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'reportar_problema' => [
-                'title' => __('Reportar Problema', 'flavor-chat-ia'),
-                'description' => __('Reporta un problema con una bicicleta', 'flavor-chat-ia'),
+                'title' => __('Reportar Problema', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Reporta un problema con una bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fields' => [
                     'bicicleta_id' => [
                         'type' => 'number',
-                        'label' => __('ID de Bicicleta', 'flavor-chat-ia'),
+                        'label' => __('ID de Bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                     ],
                     'descripcion' => [
                         'type' => 'textarea',
-                        'label' => __('Descripción del problema', 'flavor-chat-ia'),
+                        'label' => __('Descripción del problema', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'rows' => 4,
                     ],
                 ],
-                'submit_text' => __('Enviar Reporte', 'flavor-chat-ia'),
-                'success_message' => __('Reporte enviado correctamente', 'flavor-chat-ia'),
+                'submit_text' => __('Enviar Reporte', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'success_message' => __('Reporte enviado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
 
@@ -3005,7 +3005,7 @@ KNOWLEDGE;
         }
 
         if (empty($options)) {
-            $options[''] = __('No hay bicicletas disponibles', 'flavor-chat-ia');
+            $options[''] = __('No hay bicicletas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         return $options;
@@ -3019,19 +3019,19 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Bicicletas Compartidas', 'flavor-chat-ia'),
+                'title' => __('Bicicletas Compartidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'bicicletas-compartidas',
-                'content' => '<h1>' . __('Bicicletas Compartidas', 'flavor-chat-ia') . '</h1>
-<p>' . __('Sistema de préstamo de bicicletas comunitario. Encuentra estaciones cercanas, reserva tu bici y disfruta de movilidad sostenible.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Bicicletas Compartidas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Sistema de préstamo de bicicletas comunitario. Encuentra estaciones cercanas, reserva tu bici y disfruta de movilidad sostenible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="bicicletas_compartidas" action="estaciones" columnas="3" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Alquilar Bicicleta', 'flavor-chat-ia'),
+                'title' => __('Alquilar Bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'alquilar',
-                'content' => '<h1>' . __('Alquilar Bicicleta', 'flavor-chat-ia') . '</h1>
-<p>' . __('Selecciona una bicicleta disponible y comienza tu viaje.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Alquilar Bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Selecciona una bicicleta disponible y comienza tu viaje.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="bicicletas_compartidas" action="bicicletas_disponibles" columnas="3" limite="12"]
 
@@ -3039,10 +3039,10 @@ KNOWLEDGE;
                 'parent' => 'bicicletas-compartidas',
             ],
             [
-                'title' => __('Mis Alquileres', 'flavor-chat-ia'),
+                'title' => __('Mis Alquileres', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mis-alquileres',
-                'content' => '<h1>' . __('Mis Alquileres', 'flavor-chat-ia') . '</h1>
-<p>' . __('Consulta tu historial de préstamos y alquileres de bicicletas.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Mis Alquileres', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Consulta tu historial de préstamos y alquileres de bicicletas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="bicicletas_compartidas" action="mis_prestamos" columnas="2" limite="20"]',
                 'parent' => 'bicicletas-compartidas',
@@ -3058,8 +3058,8 @@ KNOWLEDGE;
     public static function get_renderer_config(): array {
         return [
             'module'   => 'bicicletas-compartidas',
-            'title'    => __('Bicicletas Compartidas', 'flavor-chat-ia'),
-            'subtitle' => __('Sistema de préstamo de bicicletas comunitario', 'flavor-chat-ia'),
+            'title'    => __('Bicicletas Compartidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Sistema de préstamo de bicicletas comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '🚲',
             'color'    => 'success', // Usa variable CSS --flavor-success del tema
 
@@ -3069,25 +3069,25 @@ KNOWLEDGE;
             ],
 
             'fields' => [
-                'codigo'       => ['type' => 'text', 'label' => __('Código bicicleta', 'flavor-chat-ia'), 'required' => true],
-                'tipo'         => ['type' => 'select', 'label' => __('Tipo', 'flavor-chat-ia'), 'options' => ['urbana', 'montaña', 'electrica', 'plegable', 'cargo']],
-                'estacion_id'  => ['type' => 'select', 'label' => __('Estación', 'flavor-chat-ia')],
-                'estado_fisico' => ['type' => 'select', 'label' => __('Estado físico', 'flavor-chat-ia'), 'options' => ['perfecto', 'bueno', 'reparacion']],
-                'bateria'      => ['type' => 'number', 'label' => __('Batería %', 'flavor-chat-ia'), 'min' => 0, 'max' => 100],
+                'codigo'       => ['type' => 'text', 'label' => __('Código bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'tipo'         => ['type' => 'select', 'label' => __('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['urbana', 'montaña', 'electrica', 'plegable', 'cargo']],
+                'estacion_id'  => ['type' => 'select', 'label' => __('Estación', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'estado_fisico' => ['type' => 'select', 'label' => __('Estado físico', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['perfecto', 'bueno', 'reparacion']],
+                'bateria'      => ['type' => 'number', 'label' => __('Batería %', FLAVOR_PLATFORM_TEXT_DOMAIN), 'min' => 0, 'max' => 100],
             ],
 
             'estados' => [
-                'disponible' => ['label' => __('Disponible', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🟢'],
-                'en_uso'     => ['label' => __('En uso', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '🚴'],
-                'reservada'  => ['label' => __('Reservada', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '🟡'],
-                'reparacion' => ['label' => __('En reparación', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '🔧'],
+                'disponible' => ['label' => __('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '🟢'],
+                'en_uso'     => ['label' => __('En uso', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'blue', 'icon' => '🚴'],
+                'reservada'  => ['label' => __('Reservada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '🟡'],
+                'reparacion' => ['label' => __('En reparación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'red', 'icon' => '🔧'],
             ],
 
             'stats' => [
-                'bicis_disponibles' => ['label' => __('Disponibles', 'flavor-chat-ia'), 'icon' => '🚲', 'color' => 'lime'],
-                'en_uso'            => ['label' => __('En uso', 'flavor-chat-ia'), 'icon' => '🚴', 'color' => 'blue'],
-                'estaciones'        => ['label' => __('Estaciones', 'flavor-chat-ia'), 'icon' => '📍', 'color' => 'purple'],
-                'km_recorridos'     => ['label' => __('km recorridos', 'flavor-chat-ia'), 'icon' => '🛤️', 'color' => 'green'],
+                'bicis_disponibles' => ['label' => __('Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🚲', 'color' => 'lime'],
+                'en_uso'            => ['label' => __('En uso', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🚴', 'color' => 'blue'],
+                'estaciones'        => ['label' => __('Estaciones', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📍', 'color' => 'purple'],
+                'km_recorridos'     => ['label' => __('km recorridos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🛤️', 'color' => 'green'],
             ],
 
             'card' => [
@@ -3100,25 +3100,25 @@ KNOWLEDGE;
 
             'tabs' => [
                 'mapa' => [
-                    'label'   => __('Mapa', 'flavor-chat-ia'),
+                    'label'   => __('Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-location',
                     'content' => 'shortcode:bicicletas_mapa',
                     'public'  => true,
                 ],
                 'estaciones' => [
-                    'label'   => __('Estaciones', 'flavor-chat-ia'),
+                    'label'   => __('Estaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-marker',
                     'content' => 'template:_archive.php',
                     'public'  => true,
                 ],
                 'alquilar' => [
-                    'label'      => __('Alquilar', 'flavor-chat-ia'),
+                    'label'      => __('Alquilar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-unlock',
                     'content'    => 'shortcode:bicicletas_alquilar',
                     'requires_login' => true,
                 ],
                 'mis-alquileres' => [
-                    'label'      => __('Mis alquileres', 'flavor-chat-ia'),
+                    'label'      => __('Mis alquileres', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-admin-users',
                     'content'    => 'shortcode:bicicletas_mis_alquileres',
                     'requires_login' => true,
@@ -3137,8 +3137,8 @@ KNOWLEDGE;
             'dashboard' => [
                 'widgets' => ['mapa_tiempo_real', 'stats', 'mis_alquileres', 'estaciones_cercanas'],
                 'actions' => [
-                    'alquilar'  => ['label' => __('Alquilar bici', 'flavor-chat-ia'), 'icon' => '🚲', 'color' => 'lime'],
-                    'devolver'  => ['label' => __('Devolver bici', 'flavor-chat-ia'), 'icon' => '🔒', 'color' => 'blue'],
+                    'alquilar'  => ['label' => __('Alquilar bici', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🚲', 'color' => 'lime'],
+                    'devolver'  => ['label' => __('Devolver bici', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🔒', 'color' => 'blue'],
                 ],
             ],
 
@@ -3167,8 +3167,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Bicicletas', 'flavor-chat-ia'),
-            __('Bicicletas', 'flavor-chat-ia'),
+            __('Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-bicicletas-bicicletas',
             [$this, 'render_pagina_bicicletas']
@@ -3176,8 +3176,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Configuración de Bicicletas', 'flavor-chat-ia'),
-            __('Configuración de Bicicletas', 'flavor-chat-ia'),
+            __('Configuración de Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Configuración de Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-bicicletas-configuracion',
             [$this, 'render_pagina_configuracion']
@@ -3185,8 +3185,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Estaciones de Bicicletas', 'flavor-chat-ia'),
-            __('Estaciones de Bicicletas', 'flavor-chat-ia'),
+            __('Estaciones de Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Estaciones de Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-bicicletas-estaciones',
             [$this, 'render_pagina_estaciones']
@@ -3194,8 +3194,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Flota de Bicicletas', 'flavor-chat-ia'),
-            __('Flota de Bicicletas', 'flavor-chat-ia'),
+            __('Flota de Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Flota de Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-bicicletas-flota',
             [$this, 'render_pagina_flota']
@@ -3203,8 +3203,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Mantenimiento de Bicicletas', 'flavor-chat-ia'),
-            __('Mantenimiento de Bicicletas', 'flavor-chat-ia'),
+            __('Mantenimiento de Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Mantenimiento de Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-bicicletas-mantenimiento',
             [$this, 'render_pagina_mantenimiento']
@@ -3212,8 +3212,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Préstamos de Bicicletas', 'flavor-chat-ia'),
-            __('Préstamos de Bicicletas', 'flavor-chat-ia'),
+            __('Préstamos de Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Préstamos de Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-bicicletas-prestamos',
             [$this, 'render_pagina_prestamos']
@@ -3221,8 +3221,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Uso de Bicicletas', 'flavor-chat-ia'),
-            __('Uso de Bicicletas', 'flavor-chat-ia'),
+            __('Uso de Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Uso de Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-bicicletas-uso',
             [$this, 'render_pagina_uso']
@@ -3237,7 +3237,7 @@ KNOWLEDGE;
         if (file_exists($ruta_vista)) {
             include $ruta_vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Bicicletas', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1><p>' . esc_html__('Vista no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -3249,7 +3249,7 @@ KNOWLEDGE;
         if (file_exists($ruta_vista)) {
             include $ruta_vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Configuración de Bicicletas', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Configuración de Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1><p>' . esc_html__('Vista no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -3261,7 +3261,7 @@ KNOWLEDGE;
         if (file_exists($ruta_vista)) {
             include $ruta_vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Estaciones de Bicicletas', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Estaciones de Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1><p>' . esc_html__('Vista no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -3273,7 +3273,7 @@ KNOWLEDGE;
         if (file_exists($ruta_vista)) {
             include $ruta_vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Flota de Bicicletas', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Flota de Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1><p>' . esc_html__('Vista no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -3285,7 +3285,7 @@ KNOWLEDGE;
         if (file_exists($ruta_vista)) {
             include $ruta_vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Mantenimiento de Bicicletas', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Mantenimiento de Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1><p>' . esc_html__('Vista no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -3297,7 +3297,7 @@ KNOWLEDGE;
         if (file_exists($ruta_vista)) {
             include $ruta_vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Préstamos de Bicicletas', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Préstamos de Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1><p>' . esc_html__('Vista no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -3309,7 +3309,7 @@ KNOWLEDGE;
         if (file_exists($ruta_vista)) {
             include $ruta_vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Uso de Bicicletas', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Uso de Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1><p>' . esc_html__('Vista no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 }

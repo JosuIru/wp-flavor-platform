@@ -20,7 +20,7 @@ $lista_redes        = $redes_sociales ?? [];
 $url_logo           = $logo ?? '';
 
 if ( empty( $texto_derechos ) ) {
-    $texto_derechos = sprintf( '&copy; %s. %s', date( 'Y' ), __( 'Todos los derechos reservados.', 'flavor-chat-ia' ) );
+    $texto_derechos = sprintf( '&copy; %s. %s', date( 'Y' ), __( 'Todos los derechos reservados.', FLAVOR_PLATFORM_TEXT_DOMAIN ) );
 }
 ?>
 

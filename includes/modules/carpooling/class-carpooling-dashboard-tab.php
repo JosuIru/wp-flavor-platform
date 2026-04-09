@@ -132,11 +132,11 @@ class Flavor_Carpooling_Dashboard_Tab {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('carpooling_dashboard_nonce'),
             'i18n' => [
-                'confirmarCancelar' => __('¿Seguro que quieres cancelar este viaje?', 'flavor-chat-ia'),
-                'confirmarCancelarReserva' => __('¿Seguro que quieres cancelar esta reserva?', 'flavor-chat-ia'),
-                'confirmarFinalizar' => __('¿Marcar este viaje como finalizado?', 'flavor-chat-ia'),
-                'gracias' => __('¡Gracias por tu valoración!', 'flavor-chat-ia'),
-                'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
+                'confirmarCancelar' => __('¿Seguro que quieres cancelar este viaje?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmarCancelarReserva' => __('¿Seguro que quieres cancelar esta reserva?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmarFinalizar' => __('¿Marcar este viaje como finalizado?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'gracias' => __('¡Gracias por tu valoración!', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -171,7 +171,7 @@ class Flavor_Carpooling_Dashboard_Tab {
 
         // Tab: Mis Viajes (como conductor)
         $tabs['carpooling-mis-viajes'] = [
-            'label' => __('Mis Viajes', 'flavor-chat-ia'),
+            'label' => __('Mis Viajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'car',
             'callback' => [$this, 'render_tab_mis_viajes'],
             'orden' => 50,
@@ -181,7 +181,7 @@ class Flavor_Carpooling_Dashboard_Tab {
 
         // Tab: Mis Reservas (como pasajero)
         $tabs['carpooling-mis-reservas'] = [
-            'label' => __('Mis Reservas', 'flavor-chat-ia'),
+            'label' => __('Mis Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'tickets-alt',
             'callback' => [$this, 'render_tab_mis_reservas'],
             'orden' => 51,
@@ -191,7 +191,7 @@ class Flavor_Carpooling_Dashboard_Tab {
 
         // Tab: Estadisticas
         $tabs['carpooling-estadisticas'] = [
-            'label' => __('Impacto Ambiental', 'flavor-chat-ia'),
+            'label' => __('Impacto Ambiental', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'chart-area',
             'callback' => [$this, 'render_tab_estadisticas'],
             'orden' => 52,
@@ -256,7 +256,7 @@ class Flavor_Carpooling_Dashboard_Tab {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            echo '<p class="carpooling-login-requerido">' . esc_html__('Inicia sesión para ver tus viajes.', 'flavor-chat-ia') . '</p>';
+            echo '<p class="carpooling-login-requerido">' . esc_html__('Inicia sesión para ver tus viajes.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -295,11 +295,11 @@ class Flavor_Carpooling_Dashboard_Tab {
             <div class="carpooling-resumen-rapido">
                 <div class="resumen-item">
                     <span class="resumen-numero"><?php echo esc_html($estadisticas_conductor['total_viajes']); ?></span>
-                    <span class="resumen-label"><?php esc_html_e('Viajes publicados', 'flavor-chat-ia'); ?></span>
+                    <span class="resumen-label"><?php esc_html_e('Viajes publicados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="resumen-item">
                     <span class="resumen-numero"><?php echo esc_html($estadisticas_conductor['pasajeros_transportados']); ?></span>
-                    <span class="resumen-label"><?php esc_html_e('Pasajeros', 'flavor-chat-ia'); ?></span>
+                    <span class="resumen-label"><?php esc_html_e('Pasajeros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="resumen-item valoracion">
                     <span class="resumen-numero">
@@ -310,7 +310,7 @@ class Flavor_Carpooling_Dashboard_Tab {
                             -
                         <?php endif; ?>
                     </span>
-                    <span class="resumen-label"><?php esc_html_e('Valoración', 'flavor-chat-ia'); ?></span>
+                    <span class="resumen-label"><?php esc_html_e('Valoración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
@@ -318,7 +318,7 @@ class Flavor_Carpooling_Dashboard_Tab {
             <div class="carpooling-accion-principal">
                 <a href="<?php echo esc_url($this->obtener_url_publicar_viaje()); ?>" class="btn btn-primary btn-publicar-viaje">
                     <span class="dashicons dashicons-plus-alt"></span>
-                    <?php esc_html_e('Publicar nuevo viaje', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Publicar nuevo viaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
@@ -326,15 +326,15 @@ class Flavor_Carpooling_Dashboard_Tab {
             <div class="carpooling-seccion">
                 <h3 class="seccion-titulo">
                     <span class="dashicons dashicons-calendar-alt"></span>
-                    <?php esc_html_e('Próximos viajes', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Próximos viajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
 
                 <?php if (empty($viajes_proximos)): ?>
                     <div class="carpooling-vacio">
                         <span class="dashicons dashicons-car"></span>
-                        <p><?php esc_html_e('No tienes viajes programados.', 'flavor-chat-ia'); ?></p>
+                        <p><?php esc_html_e('No tienes viajes programados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <a href="<?php echo esc_url($this->obtener_url_publicar_viaje()); ?>" class="btn btn-outline">
-                            <?php esc_html_e('Publicar mi primer viaje', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Publicar mi primer viaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 <?php else: ?>
@@ -351,7 +351,7 @@ class Flavor_Carpooling_Dashboard_Tab {
                 <div class="carpooling-seccion carpooling-historial">
                     <h3 class="seccion-titulo">
                         <span class="dashicons dashicons-backup"></span>
-                        <?php esc_html_e('Historial de viajes', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Historial de viajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <div class="carpooling-viajes-historial">
                         <?php foreach ($viajes_historial as $viaje): ?>
@@ -372,7 +372,7 @@ class Flavor_Carpooling_Dashboard_Tab {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            echo '<p class="carpooling-login-requerido">' . esc_html__('Inicia sesión para ver tus reservas.', 'flavor-chat-ia') . '</p>';
+            echo '<p class="carpooling-login-requerido">' . esc_html__('Inicia sesión para ver tus reservas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -426,15 +426,15 @@ class Flavor_Carpooling_Dashboard_Tab {
             <div class="carpooling-resumen-rapido">
                 <div class="resumen-item">
                     <span class="resumen-numero"><?php echo esc_html($estadisticas_pasajero['viajes_realizados']); ?></span>
-                    <span class="resumen-label"><?php esc_html_e('Viajes realizados', 'flavor-chat-ia'); ?></span>
+                    <span class="resumen-label"><?php esc_html_e('Viajes realizados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="resumen-item ahorro">
                     <span class="resumen-numero"><?php echo number_format($estadisticas_pasajero['dinero_ahorrado'], 2); ?>€</span>
-                    <span class="resumen-label"><?php esc_html_e('Ahorrado (aprox.)', 'flavor-chat-ia'); ?></span>
+                    <span class="resumen-label"><?php esc_html_e('Ahorrado (aprox.)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="resumen-item eco">
                     <span class="resumen-numero"><?php echo number_format($estadisticas_pasajero['co2_evitado'], 1); ?> kg</span>
-                    <span class="resumen-label"><?php esc_html_e('CO₂ evitado', 'flavor-chat-ia'); ?></span>
+                    <span class="resumen-label"><?php esc_html_e('CO₂ evitado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
@@ -442,7 +442,7 @@ class Flavor_Carpooling_Dashboard_Tab {
             <div class="carpooling-accion-principal">
                 <a href="<?php echo esc_url($this->obtener_url_buscar_viaje()); ?>" class="btn btn-primary btn-buscar-viaje">
                     <span class="dashicons dashicons-search"></span>
-                    <?php esc_html_e('Buscar viaje', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Buscar viaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
@@ -450,15 +450,15 @@ class Flavor_Carpooling_Dashboard_Tab {
             <div class="carpooling-seccion">
                 <h3 class="seccion-titulo">
                     <span class="dashicons dashicons-tickets-alt"></span>
-                    <?php esc_html_e('Mis próximos viajes', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Mis próximos viajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
 
                 <?php if (empty($reservas_activas)): ?>
                     <div class="carpooling-vacio">
                         <span class="dashicons dashicons-tickets-alt"></span>
-                        <p><?php esc_html_e('No tienes reservas activas.', 'flavor-chat-ia'); ?></p>
+                        <p><?php esc_html_e('No tienes reservas activas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <a href="<?php echo esc_url($this->obtener_url_buscar_viaje()); ?>" class="btn btn-outline">
-                            <?php esc_html_e('Buscar un viaje', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Buscar un viaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 <?php else: ?>
@@ -475,7 +475,7 @@ class Flavor_Carpooling_Dashboard_Tab {
                 <div class="carpooling-seccion carpooling-historial">
                     <h3 class="seccion-titulo">
                         <span class="dashicons dashicons-backup"></span>
-                        <?php esc_html_e('Historial de viajes', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Historial de viajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <div class="carpooling-reservas-historial">
                         <?php foreach ($reservas_historial as $reserva): ?>
@@ -496,7 +496,7 @@ class Flavor_Carpooling_Dashboard_Tab {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            echo '<p class="carpooling-login-requerido">' . esc_html__('Inicia sesión para ver tus estadísticas.', 'flavor-chat-ia') . '</p>';
+            echo '<p class="carpooling-login-requerido">' . esc_html__('Inicia sesión para ver tus estadísticas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -504,9 +504,9 @@ class Flavor_Carpooling_Dashboard_Tab {
         ?>
         <div class="carpooling-dashboard-tab carpooling-estadisticas">
             <div class="estadisticas-header">
-                <h3><?php esc_html_e('Tu impacto ambiental', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Tu impacto ambiental', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <p class="estadisticas-subtitulo">
-                    <?php esc_html_e('Gracias por compartir coche, estos son tus logros:', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Gracias por compartir coche, estos son tus logros:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
@@ -519,7 +519,7 @@ class Flavor_Carpooling_Dashboard_Tab {
                     <div class="kpi-contenido">
                         <span class="kpi-valor"><?php echo number_format($estadisticas['co2_total_evitado'], 1); ?></span>
                         <span class="kpi-unidad">kg CO₂</span>
-                        <span class="kpi-label"><?php esc_html_e('Emisiones evitadas', 'flavor-chat-ia'); ?></span>
+                        <span class="kpi-label"><?php esc_html_e('Emisiones evitadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="kpi-equivalencia">
                         <span class="dashicons dashicons-editor-help"></span>
@@ -527,7 +527,7 @@ class Flavor_Carpooling_Dashboard_Tab {
                             <?php
                             $arboles_equivalentes = round($estadisticas['co2_total_evitado'] / 21, 1);
                             printf(
-                                esc_html__('Equivale a lo que absorben %s árboles en un año', 'flavor-chat-ia'),
+                                esc_html__('Equivale a lo que absorben %s árboles en un año', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 '<strong>' . esc_html($arboles_equivalentes) . '</strong>'
                             );
                             ?>
@@ -542,7 +542,7 @@ class Flavor_Carpooling_Dashboard_Tab {
                     <div class="kpi-contenido">
                         <span class="kpi-valor"><?php echo number_format($estadisticas['km_compartidos'], 0); ?></span>
                         <span class="kpi-unidad">km</span>
-                        <span class="kpi-label"><?php esc_html_e('Kilómetros compartidos', 'flavor-chat-ia'); ?></span>
+                        <span class="kpi-label"><?php esc_html_e('Kilómetros compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -553,7 +553,7 @@ class Flavor_Carpooling_Dashboard_Tab {
                     <div class="kpi-contenido">
                         <span class="kpi-valor"><?php echo number_format($estadisticas['ahorro_estimado'], 2); ?></span>
                         <span class="kpi-unidad">€</span>
-                        <span class="kpi-label"><?php esc_html_e('Ahorro estimado', 'flavor-chat-ia'); ?></span>
+                        <span class="kpi-label"><?php esc_html_e('Ahorro estimado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -564,7 +564,7 @@ class Flavor_Carpooling_Dashboard_Tab {
                     <div class="kpi-contenido">
                         <span class="kpi-valor"><?php echo number_format($estadisticas['litros_combustible_ahorrados'], 1); ?></span>
                         <span class="kpi-unidad">L</span>
-                        <span class="kpi-label"><?php esc_html_e('Combustible ahorrado', 'flavor-chat-ia'); ?></span>
+                        <span class="kpi-label"><?php esc_html_e('Combustible ahorrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -574,27 +574,27 @@ class Flavor_Carpooling_Dashboard_Tab {
                 <div class="desglose-columna desglose-conductor">
                     <h4>
                         <span class="dashicons dashicons-car"></span>
-                        <?php esc_html_e('Como conductor', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Como conductor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h4>
                     <ul class="desglose-lista">
                         <li>
-                            <span class="desglose-label"><?php esc_html_e('Viajes realizados', 'flavor-chat-ia'); ?></span>
+                            <span class="desglose-label"><?php esc_html_e('Viajes realizados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span class="desglose-valor"><?php echo esc_html($estadisticas['viajes_como_conductor']); ?></span>
                         </li>
                         <li>
-                            <span class="desglose-label"><?php esc_html_e('Pasajeros transportados', 'flavor-chat-ia'); ?></span>
+                            <span class="desglose-label"><?php esc_html_e('Pasajeros transportados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span class="desglose-valor"><?php echo esc_html($estadisticas['pasajeros_transportados']); ?></span>
                         </li>
                         <li>
-                            <span class="desglose-label"><?php esc_html_e('Km como conductor', 'flavor-chat-ia'); ?></span>
+                            <span class="desglose-label"><?php esc_html_e('Km como conductor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span class="desglose-valor"><?php echo number_format($estadisticas['km_como_conductor'], 0); ?> km</span>
                         </li>
                         <li>
-                            <span class="desglose-label"><?php esc_html_e('Ingresos totales', 'flavor-chat-ia'); ?></span>
+                            <span class="desglose-label"><?php esc_html_e('Ingresos totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span class="desglose-valor"><?php echo number_format($estadisticas['ingresos_conductor'], 2); ?>€</span>
                         </li>
                         <li>
-                            <span class="desglose-label"><?php esc_html_e('Valoración media', 'flavor-chat-ia'); ?></span>
+                            <span class="desglose-label"><?php esc_html_e('Valoración media', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span class="desglose-valor">
                                 <?php if ($estadisticas['valoracion_conductor'] > 0): ?>
                                     <span class="dashicons dashicons-star-filled"></span>
@@ -610,23 +610,23 @@ class Flavor_Carpooling_Dashboard_Tab {
                 <div class="desglose-columna desglose-pasajero">
                     <h4>
                         <span class="dashicons dashicons-groups"></span>
-                        <?php esc_html_e('Como pasajero', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Como pasajero', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h4>
                     <ul class="desglose-lista">
                         <li>
-                            <span class="desglose-label"><?php esc_html_e('Viajes realizados', 'flavor-chat-ia'); ?></span>
+                            <span class="desglose-label"><?php esc_html_e('Viajes realizados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span class="desglose-valor"><?php echo esc_html($estadisticas['viajes_como_pasajero']); ?></span>
                         </li>
                         <li>
-                            <span class="desglose-label"><?php esc_html_e('Km como pasajero', 'flavor-chat-ia'); ?></span>
+                            <span class="desglose-label"><?php esc_html_e('Km como pasajero', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span class="desglose-valor"><?php echo number_format($estadisticas['km_como_pasajero'], 0); ?> km</span>
                         </li>
                         <li>
-                            <span class="desglose-label"><?php esc_html_e('Gastos totales', 'flavor-chat-ia'); ?></span>
+                            <span class="desglose-label"><?php esc_html_e('Gastos totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span class="desglose-valor"><?php echo number_format($estadisticas['gastos_pasajero'], 2); ?>€</span>
                         </li>
                         <li>
-                            <span class="desglose-label"><?php esc_html_e('Ahorro vs coche propio', 'flavor-chat-ia'); ?></span>
+                            <span class="desglose-label"><?php esc_html_e('Ahorro vs coche propio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span class="desglose-valor ahorro"><?php echo number_format($estadisticas['ahorro_vs_coche_propio'], 2); ?>€</span>
                         </li>
                     </ul>
@@ -639,7 +639,7 @@ class Flavor_Carpooling_Dashboard_Tab {
                 <div class="estadisticas-proximo-viaje">
                     <h4>
                         <span class="dashicons dashicons-calendar-alt"></span>
-                        <?php esc_html_e('Tu próximo viaje', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Tu próximo viaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h4>
                     <div class="proximo-viaje-card">
                         <div class="viaje-info">
@@ -656,9 +656,9 @@ class Flavor_Carpooling_Dashboard_Tab {
                             </div>
                             <div class="viaje-rol">
                                 <?php if ($proximo_viaje->es_conductor): ?>
-                                    <span class="badge badge-conductor"><?php esc_html_e('Conductor', 'flavor-chat-ia'); ?></span>
+                                    <span class="badge badge-conductor"><?php esc_html_e('Conductor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php else: ?>
-                                    <span class="badge badge-pasajero"><?php esc_html_e('Pasajero', 'flavor-chat-ia'); ?></span>
+                                    <span class="badge badge-pasajero"><?php esc_html_e('Pasajero', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -678,7 +678,7 @@ class Flavor_Carpooling_Dashboard_Tab {
             <div class="estadisticas-logros">
                 <h4>
                     <span class="dashicons dashicons-awards"></span>
-                    <?php esc_html_e('Tus logros', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Tus logros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h4>
                 <div class="logros-grid">
                     <?php echo wp_kses_post($this->render_logros($estadisticas)); ?>
@@ -740,7 +740,7 @@ class Flavor_Carpooling_Dashboard_Tab {
             <?php if ($es_proximo): ?>
                 <div class="viaje-badge-proximo">
                     <span class="dashicons dashicons-warning"></span>
-                    <?php esc_html_e('Próximamente', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Próximamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </div>
             <?php endif; ?>
 
@@ -768,7 +768,7 @@ class Flavor_Carpooling_Dashboard_Tab {
                         <?php
                         $plazas_ocupadas = $viaje->plazas_disponibles - ($viaje->plazas_disponibles - intval($viaje->reservas_confirmadas ?? 0));
                         printf(
-                            esc_html__('%d/%d plazas', 'flavor-chat-ia'),
+                            esc_html__('%d/%d plazas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             $viaje->reservas_confirmadas ?? 0,
                             $viaje->plazas_disponibles + intval($viaje->reservas_confirmadas ?? 0)
                         );
@@ -792,7 +792,7 @@ class Flavor_Carpooling_Dashboard_Tab {
                             '%d solicitud pendiente',
                             '%d solicitudes pendientes',
                             $viaje->reservas_pendientes,
-                            'flavor-chat-ia'
+                            FLAVOR_PLATFORM_TEXT_DOMAIN
                         )),
                         $viaje->reservas_pendientes
                     );
@@ -803,12 +803,12 @@ class Flavor_Carpooling_Dashboard_Tab {
             <div class="viaje-acciones">
                 <a href="<?php echo esc_url($this->obtener_url_detalle_viaje($viaje->id)); ?>" class="btn btn-sm btn-outline">
                     <span class="dashicons dashicons-visibility"></span>
-                    <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <?php if ($viaje->estado === 'activo'): ?>
                     <button type="button" class="btn btn-sm btn-danger btn-cancelar-viaje" data-viaje-id="<?php echo esc_attr($viaje->id); ?>">
                         <span class="dashicons dashicons-no"></span>
-                        <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 <?php endif; ?>
             </div>
@@ -869,15 +869,15 @@ class Flavor_Carpooling_Dashboard_Tab {
             <?php if ($es_proximo): ?>
                 <div class="viaje-badge-proximo">
                     <span class="dashicons dashicons-warning"></span>
-                    <?php esc_html_e('Próximamente', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Próximamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </div>
             <?php endif; ?>
 
             <div class="reserva-estado">
                 <?php if ($reserva->estado_reserva === 'pendiente'): ?>
-                    <span class="badge badge-warning"><?php esc_html_e('Pendiente de confirmación', 'flavor-chat-ia'); ?></span>
+                    <span class="badge badge-warning"><?php esc_html_e('Pendiente de confirmación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <?php elseif ($reserva->estado_reserva === 'confirmada'): ?>
-                    <span class="badge badge-success"><?php esc_html_e('Confirmada', 'flavor-chat-ia'); ?></span>
+                    <span class="badge badge-success"><?php esc_html_e('Confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <?php endif; ?>
             </div>
 
@@ -900,7 +900,7 @@ class Flavor_Carpooling_Dashboard_Tab {
 
             <div class="reserva-conductor">
                 <span class="dashicons dashicons-admin-users"></span>
-                <?php esc_html_e('Conductor:', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Conductor:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <strong><?php echo esc_html($reserva->nombre_conductor); ?></strong>
             </div>
 
@@ -909,7 +909,7 @@ class Flavor_Carpooling_Dashboard_Tab {
                     <span class="dashicons dashicons-tickets-alt"></span>
                     <?php
                     printf(
-                        esc_html(_n('%d plaza', '%d plazas', $reserva->numero_plazas, 'flavor-chat-ia')),
+                        esc_html(_n('%d plaza', '%d plazas', $reserva->numero_plazas, FLAVOR_PLATFORM_TEXT_DOMAIN)),
                         $reserva->numero_plazas
                     );
                     ?>
@@ -926,7 +926,7 @@ class Flavor_Carpooling_Dashboard_Tab {
                 <?php if ($reserva->estado_reserva !== 'cancelada'): ?>
                     <button type="button" class="btn btn-sm btn-danger btn-cancelar-reserva" data-reserva-id="<?php echo esc_attr($reserva->reserva_id); ?>">
                         <span class="dashicons dashicons-no"></span>
-                        <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 <?php endif; ?>
             </div>
@@ -967,7 +967,7 @@ class Flavor_Carpooling_Dashboard_Tab {
                 <?php if ($reserva->estado_reserva === 'completada' && !$reserva->ya_valorado): ?>
                     <button type="button" class="btn btn-sm btn-primary btn-valorar" data-reserva-id="<?php echo esc_attr($reserva->reserva_id); ?>" data-conductor-id="<?php echo esc_attr($reserva->conductor_id); ?>">
                         <span class="dashicons dashicons-star-empty"></span>
-                        <?php esc_html_e('Valorar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Valorar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 <?php elseif ($reserva->ya_valorado): ?>
                     <span class="valorado">
@@ -1299,8 +1299,8 @@ class Flavor_Carpooling_Dashboard_Tab {
         if ($estadisticas['viajes_como_conductor'] > 0 || $estadisticas['viajes_como_pasajero'] > 0) {
             $logros[] = [
                 'icono' => 'flag',
-                'nombre' => __('Primera vez', 'flavor-chat-ia'),
-                'descripcion' => __('Completaste tu primer viaje compartido', 'flavor-chat-ia'),
+                'nombre' => __('Primera vez', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Completaste tu primer viaje compartido', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'conseguido' => true,
             ];
         }
@@ -1309,8 +1309,8 @@ class Flavor_Carpooling_Dashboard_Tab {
         $total_viajes = $estadisticas['viajes_como_conductor'] + $estadisticas['viajes_como_pasajero'];
         $logros[] = [
             'icono' => 'car',
-            'nombre' => __('Viajero habitual', 'flavor-chat-ia'),
-            'descripcion' => __('Completa 10 viajes compartidos', 'flavor-chat-ia'),
+            'nombre' => __('Viajero habitual', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'descripcion' => __('Completa 10 viajes compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'conseguido' => $total_viajes >= 10,
             'progreso' => min(100, ($total_viajes / 10) * 100),
         ];
@@ -1318,8 +1318,8 @@ class Flavor_Carpooling_Dashboard_Tab {
         // Logro: 100 km
         $logros[] = [
             'icono' => 'location-alt',
-            'nombre' => __('Kilómetros verdes', 'flavor-chat-ia'),
-            'descripcion' => __('Comparte 100 km', 'flavor-chat-ia'),
+            'nombre' => __('Kilómetros verdes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'descripcion' => __('Comparte 100 km', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'conseguido' => $estadisticas['km_compartidos'] >= 100,
             'progreso' => min(100, ($estadisticas['km_compartidos'] / 100) * 100),
         ];
@@ -1327,8 +1327,8 @@ class Flavor_Carpooling_Dashboard_Tab {
         // Logro: 50 kg CO2
         $logros[] = [
             'icono' => 'cloud',
-            'nombre' => __('Eco-héroe', 'flavor-chat-ia'),
-            'descripcion' => __('Evita 50 kg de CO₂', 'flavor-chat-ia'),
+            'nombre' => __('Eco-héroe', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'descripcion' => __('Evita 50 kg de CO₂', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'conseguido' => $estadisticas['co2_total_evitado'] >= 50,
             'progreso' => min(100, ($estadisticas['co2_total_evitado'] / 50) * 100),
         ];
@@ -1337,8 +1337,8 @@ class Flavor_Carpooling_Dashboard_Tab {
         if ($estadisticas['valoracion_conductor'] >= 4.8 && $estadisticas['viajes_como_conductor'] >= 5) {
             $logros[] = [
                 'icono' => 'star-filled',
-                'nombre' => __('Conductor estrella', 'flavor-chat-ia'),
-                'descripcion' => __('Mantén una valoración de 4.8+ con 5 viajes', 'flavor-chat-ia'),
+                'nombre' => __('Conductor estrella', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Mantén una valoración de 4.8+ con 5 viajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'conseguido' => true,
             ];
         }
@@ -1346,8 +1346,8 @@ class Flavor_Carpooling_Dashboard_Tab {
         // Logro: 10 pasajeros
         $logros[] = [
             'icono' => 'groups',
-            'nombre' => __('Socialista de la carretera', 'flavor-chat-ia'),
-            'descripcion' => __('Transporta a 10 pasajeros', 'flavor-chat-ia'),
+            'nombre' => __('Socialista de la carretera', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'descripcion' => __('Transporta a 10 pasajeros', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'conseguido' => $estadisticas['pasajeros_transportados'] >= 10,
             'progreso' => min(100, ($estadisticas['pasajeros_transportados'] / 10) * 100),
         ];
@@ -1381,10 +1381,10 @@ class Flavor_Carpooling_Dashboard_Tab {
      */
     private function traducir_estado($estado) {
         $estados = [
-            'activo' => __('Activo', 'flavor-chat-ia'),
-            'completo' => __('Completo', 'flavor-chat-ia'),
-            'cancelado' => __('Cancelado', 'flavor-chat-ia'),
-            'finalizado' => __('Finalizado', 'flavor-chat-ia'),
+            'activo' => __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'completo' => __('Completo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cancelado' => __('Cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'finalizado' => __('Finalizado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         return $estados[$estado] ?? $estado;
@@ -1398,10 +1398,10 @@ class Flavor_Carpooling_Dashboard_Tab {
      */
     private function traducir_estado_reserva($estado) {
         $estados = [
-            'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-            'confirmada' => __('Confirmada', 'flavor-chat-ia'),
-            'cancelada' => __('Cancelada', 'flavor-chat-ia'),
-            'completada' => __('Completada', 'flavor-chat-ia'),
+            'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'confirmada' => __('Confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cancelada' => __('Cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'completada' => __('Completada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         return $estados[$estado] ?? $estado;
@@ -1450,7 +1450,7 @@ class Flavor_Carpooling_Dashboard_Tab {
         check_ajax_referer('carpooling_dashboard_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1466,7 +1466,7 @@ class Flavor_Carpooling_Dashboard_Tab {
         ));
 
         if (!$viaje) {
-            wp_send_json_error(['message' => __('Viaje no encontrado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Viaje no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Actualizar estado
@@ -1486,7 +1486,7 @@ class Flavor_Carpooling_Dashboard_Tab {
         // Notificar a los pasajeros (implementar segun el sistema de notificaciones)
         do_action('carpooling_viaje_cancelado', $viaje_id);
 
-        wp_send_json_success(['message' => __('Viaje cancelado correctamente', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Viaje cancelado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -1496,7 +1496,7 @@ class Flavor_Carpooling_Dashboard_Tab {
         check_ajax_referer('carpooling_dashboard_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1512,7 +1512,7 @@ class Flavor_Carpooling_Dashboard_Tab {
         ));
 
         if (!$viaje) {
-            wp_send_json_error(['message' => __('Viaje no encontrado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Viaje no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Actualizar estados
@@ -1530,7 +1530,7 @@ class Flavor_Carpooling_Dashboard_Tab {
 
         do_action('carpooling_viaje_finalizado', $viaje_id);
 
-        wp_send_json_success(['message' => __('Viaje marcado como finalizado', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Viaje marcado como finalizado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -1540,7 +1540,7 @@ class Flavor_Carpooling_Dashboard_Tab {
         check_ajax_referer('carpooling_dashboard_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1559,7 +1559,7 @@ class Flavor_Carpooling_Dashboard_Tab {
         ));
 
         if (!$reserva) {
-            wp_send_json_error(['message' => __('Reserva no encontrada', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Reserva no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Actualizar estado de reserva
@@ -1585,7 +1585,7 @@ class Flavor_Carpooling_Dashboard_Tab {
 
         do_action('carpooling_reserva_cancelada', $reserva_id);
 
-        wp_send_json_success(['message' => __('Reserva cancelada correctamente', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Reserva cancelada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -1595,7 +1595,7 @@ class Flavor_Carpooling_Dashboard_Tab {
         check_ajax_referer('carpooling_dashboard_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1606,7 +1606,7 @@ class Flavor_Carpooling_Dashboard_Tab {
         $usuario_id = get_current_user_id();
 
         if ($puntuacion < 1 || $puntuacion > 5) {
-            wp_send_json_error(['message' => __('Puntuación inválida', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Puntuación inválida', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar que puede valorar
@@ -1620,7 +1620,7 @@ class Flavor_Carpooling_Dashboard_Tab {
         ));
 
         if (!$reserva) {
-            wp_send_json_error(['message' => __('Reserva no encontrada', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Reserva no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar que no ha valorado ya
@@ -1632,7 +1632,7 @@ class Flavor_Carpooling_Dashboard_Tab {
         ));
 
         if ($existente) {
-            wp_send_json_error(['message' => __('Ya has valorado este viaje', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Ya has valorado este viaje', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Insertar valoracion
@@ -1649,7 +1649,7 @@ class Flavor_Carpooling_Dashboard_Tab {
             ]
         );
 
-        wp_send_json_success(['message' => __('¡Gracias por tu valoración!', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('¡Gracias por tu valoración!', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 }
 

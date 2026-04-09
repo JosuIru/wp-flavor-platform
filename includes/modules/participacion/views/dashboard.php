@@ -110,14 +110,14 @@ if ($tabla_votos_existe) {
     <?php if (!$tablas_disponibles): ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <p><?php esc_html_e('Faltan tablas del módulo Participación o aún no hay actividad registrada.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('Faltan tablas del módulo Participación o aún no hay actividad registrada.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php endif; ?>
 
     <div class="dm-header">
         <div class="dm-header__title">
             <span class="dashicons dashicons-groups"></span>
-            <h1><?php esc_html_e('Dashboard de Participación Ciudadana', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Dashboard de Participación Ciudadana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
         </div>
     </div>
 
@@ -125,27 +125,27 @@ if ($tabla_votos_existe) {
     <div class="dm-quick-links">
         <a href="<?php echo esc_url(admin_url('admin.php?page=participacion-propuestas')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-lightbulb"></span>
-            <span><?php esc_html_e('Propuestas', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=participacion-votaciones')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-megaphone"></span>
-            <span><?php esc_html_e('Votaciones', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Votaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=participacion-debates')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-format-chat"></span>
-            <span><?php esc_html_e('Debates', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Debates', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=participacion-resultados')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-chart-bar"></span>
-            <span><?php esc_html_e('Resultados', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Resultados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=participacion-config')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-admin-settings"></span>
-            <span><?php esc_html_e('Configuración', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(home_url('/mi-portal/participacion/')); ?>" class="dm-quick-links__item" target="_blank">
             <span class="dashicons dashicons-external"></span>
-            <span><?php esc_html_e('Portal público', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Portal público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
     </div>
 
@@ -157,8 +157,8 @@ if ($tabla_votos_existe) {
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($propuestas_activas); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Propuestas Activas', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php printf(esc_html__('de %s totales', 'flavor-chat-ia'), number_format_i18n($total_propuestas)); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Propuestas Activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php printf(esc_html__('de %s totales', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($total_propuestas)); ?></div>
             </div>
         </div>
 
@@ -168,8 +168,8 @@ if ($tabla_votos_existe) {
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($votaciones_activas); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Votaciones Activas', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php esc_html_e('en curso ahora', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Votaciones Activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('en curso ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -179,8 +179,8 @@ if ($tabla_votos_existe) {
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_votos); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Participación Total', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php esc_html_e('votos emitidos', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Participación Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('votos emitidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -190,8 +190,8 @@ if ($tabla_votos_existe) {
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo esc_html($tasa_participacion); ?>%</div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Tasa Participación', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php echo number_format_i18n($votantes_unicos); ?> <?php esc_html_e('ciudadanos', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Tasa Participación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php echo number_format_i18n($votantes_unicos); ?> <?php esc_html_e('ciudadanos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
     </div>
@@ -202,7 +202,7 @@ if ($tabla_votos_existe) {
             <div class="dm-card__header">
                 <h2>
                     <span class="dashicons dashicons-chart-line"></span>
-                    <?php esc_html_e('Tendencia de Participación (30 días)', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Tendencia de Participación (30 días)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
             </div>
             <div class="dm-card__chart">
@@ -214,7 +214,7 @@ if ($tabla_votos_existe) {
             <div class="dm-card__header">
                 <h2>
                     <span class="dashicons dashicons-chart-pie"></span>
-                    <?php esc_html_e('Propuestas por Estado', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Propuestas por Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
             </div>
             <div class="dm-card__chart">
@@ -229,7 +229,7 @@ if ($tabla_votos_existe) {
             <div class="dm-card__header">
                 <h2>
                     <span class="dashicons dashicons-megaphone"></span>
-                    <?php esc_html_e('Votaciones Activas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Votaciones Activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
             </div>
             <?php if (!empty($votaciones_recientes)) : ?>
@@ -239,13 +239,13 @@ if ($tabla_votos_existe) {
                             <div class="dm-item-list__content">
                                 <strong><?php echo esc_html($votacion->titulo); ?></strong>
                                 <span class="dm-item-list__muted">
-                                    <?php esc_html_e('Finaliza:', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Finaliza:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     <?php echo esc_html(date_i18n('d/m/Y', strtotime($votacion->fecha_fin))); ?>
                                 </span>
                             </div>
                             <div class="dm-item-list__meta">
                                 <span class="dm-text-primary dm-text-lg"><?php echo number_format_i18n($votacion->total_votos); ?></span>
-                                <span class="dm-item-list__muted"><?php esc_html_e('votos', 'flavor-chat-ia'); ?></span>
+                                <span class="dm-item-list__muted"><?php esc_html_e('votos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -253,7 +253,7 @@ if ($tabla_votos_existe) {
             <?php else : ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-megaphone"></span>
-                    <p><?php esc_html_e('No hay votaciones activas', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay votaciones activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
         </div>
@@ -262,7 +262,7 @@ if ($tabla_votos_existe) {
             <div class="dm-card__header">
                 <h2>
                     <span class="dashicons dashicons-lightbulb"></span>
-                    <?php esc_html_e('Propuestas Más Populares', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Propuestas Más Populares', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
             </div>
             <?php if (!empty($propuestas_populares)) : ?>
@@ -283,7 +283,7 @@ if ($tabla_votos_existe) {
             <?php else : ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-lightbulb"></span>
-                    <p><?php esc_html_e('No hay propuestas disponibles', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay propuestas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
         </div>

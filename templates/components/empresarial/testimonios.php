@@ -74,7 +74,7 @@ unset($testimonio_item);
             </div>
 
             <p class="text-xl text-white text-opacity-95">
-                <?php echo esc_html__('Más de 500 empresas confían en nosotros', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Más de 500 empresas confían en nosotros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
 
@@ -215,12 +215,12 @@ unset($testimonio_item);
         <!-- Call to action -->
         <div class="text-center mt-16">
             <p class="text-2xl font-semibold text-white mb-6">
-                <?php echo esc_html__('¿Listo para unirte a nuestros clientes satisfechos?', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('¿Listo para unirte a nuestros clientes satisfechos?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
             <a href="#contacto"
                class="flavor-button inline-flex items-center gap-2 px-8 py-4 text-lg font-semibold rounded-lg transition-all duration-300 hover:transform hover:scale-105 hover:shadow-2xl"
                style="background: white; color: var(--flavor-primary, #667eea);">
-                <span><?php echo esc_html__('Comienza Hoy', 'flavor-chat-ia'); ?></span>
+                <span><?php echo esc_html__('Comienza Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                 </svg>

@@ -37,21 +37,21 @@ $dones_recibidos = $wpdb->get_results($wpdb->prepare(
 ?>
 
 <div class="ed-mis-dones">
-    <h2><?php esc_html_e('Mis Dones', 'flavor-chat-ia'); ?></h2>
+    <h2><?php esc_html_e('Mis Dones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
     <!-- Estadísticas -->
     <div class="ed-stats-row">
         <div class="ed-stat-box">
             <div class="ed-stat-box__valor"><?php echo esc_html($stats['dones_dados']); ?></div>
-            <div class="ed-stat-box__label"><?php esc_html_e('Dones dados', 'flavor-chat-ia'); ?></div>
+            <div class="ed-stat-box__label"><?php esc_html_e('Dones dados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
         <div class="ed-stat-box ed-stat-box--recibidos">
             <div class="ed-stat-box__valor"><?php echo esc_html($stats['dones_recibidos']); ?></div>
-            <div class="ed-stat-box__label"><?php esc_html_e('Dones recibidos', 'flavor-chat-ia'); ?></div>
+            <div class="ed-stat-box__label"><?php esc_html_e('Dones recibidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
         <div class="ed-stat-box ed-stat-box--activos">
             <div class="ed-stat-box__valor"><?php echo esc_html($stats['dones_activos']); ?></div>
-            <div class="ed-stat-box__label"><?php esc_html_e('Activos ahora', 'flavor-chat-ia'); ?></div>
+            <div class="ed-stat-box__label"><?php esc_html_e('Activos ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -59,13 +59,13 @@ $dones_recibidos = $wpdb->get_results($wpdb->prepare(
     <div style="text-align: center; margin-bottom: 2rem;">
         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia_don', 'ofrecer')); ?>" class="ed-btn-publicar">
             <span class="dashicons dashicons-heart"></span>
-            <?php esc_html_e('Ofrecer un nuevo don', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Ofrecer un nuevo don', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 
     <!-- Dones que he ofrecido -->
     <section class="ed-seccion">
-        <h3><?php esc_html_e('Dones que he ofrecido', 'flavor-chat-ia'); ?></h3>
+        <h3><?php esc_html_e('Dones que he ofrecido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
         <?php if ($mis_dones) : ?>
         <div class="ed-listado__grid">
@@ -99,22 +99,22 @@ $dones_recibidos = $wpdb->get_results($wpdb->prepare(
                     ?>
                     <p class="ed-don-card__receptor">
                         <?php printf(
-                            esc_html__('Reservado para: %s', 'flavor-chat-ia'),
+                            esc_html__('Reservado para: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             esc_html($receptor->display_name)
                         ); ?>
                     </p>
                     <button class="ed-btn-confirmar-entrega" data-don="<?php echo esc_attr($don->ID); ?>">
-                        <?php esc_html_e('Confirmar entrega', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Confirmar entrega', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <?php elseif ($estado === 'entregado') : ?>
                     <span class="ed-badge-entregado">
                         <span class="dashicons dashicons-yes-alt"></span>
-                        <?php esc_html_e('Entregado', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Entregado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                     <?php elseif ($estado === 'recibido') : ?>
                     <span class="ed-badge-recibido">
                         <span class="dashicons dashicons-smiley"></span>
-                        <?php esc_html_e('Recibido con gratitud', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Recibido con gratitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                     <?php endif; ?>
                 </div>
@@ -122,13 +122,13 @@ $dones_recibidos = $wpdb->get_results($wpdb->prepare(
             <?php endforeach; ?>
         </div>
         <?php else : ?>
-        <p class="ed-empty-text"><?php esc_html_e('Aún no has ofrecido ningún don.', 'flavor-chat-ia'); ?></p>
+        <p class="ed-empty-text"><?php esc_html_e('Aún no has ofrecido ningún don.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         <?php endif; ?>
     </section>
 
     <!-- Dones que he recibido -->
     <section class="ed-seccion" style="margin-top: 2rem;">
-        <h3><?php esc_html_e('Dones que he recibido', 'flavor-chat-ia'); ?></h3>
+        <h3><?php esc_html_e('Dones que he recibido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
         <?php if ($dones_recibidos) : ?>
         <div class="ed-listado__grid">
@@ -141,7 +141,7 @@ $dones_recibidos = $wpdb->get_results($wpdb->prepare(
                 $gratitud_id = get_post_meta($don->ID, '_ed_gratitud_id', true);
 
                 $donante_nombre = $anonimo
-                    ? __('Donante anónimo', 'flavor-chat-ia')
+                    ? __('Donante anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN)
                     : get_userdata($donante_id)->display_name;
             ?>
             <article class="ed-don-card" style="--don-color: <?php echo esc_attr($cat_data['color']); ?>">
@@ -158,7 +158,7 @@ $dones_recibidos = $wpdb->get_results($wpdb->prepare(
 
                     <p class="ed-don-card__donante-info">
                         <?php printf(
-                            esc_html__('Recibido de: %s', 'flavor-chat-ia'),
+                            esc_html__('Recibido de: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             esc_html($donante_nombre)
                         ); ?>
                     </p>
@@ -166,36 +166,36 @@ $dones_recibidos = $wpdb->get_results($wpdb->prepare(
                     <?php if ($estado === 'entregado' && !$gratitud_id) : ?>
                     <button class="ed-btn-agradecer" data-cc-modal="ed-modal-agradecer-<?php echo esc_attr($don->ID); ?>">
                         <span class="dashicons dashicons-smiley"></span>
-                        <?php esc_html_e('Agradecer', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Agradecer', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
 
                     <!-- Modal agradecer -->
                     <div class="ed-modal" id="ed-modal-agradecer-<?php echo esc_attr($don->ID); ?>">
                         <div class="ed-modal__contenido">
                             <div class="ed-modal__header">
-                                <h3 class="ed-modal__titulo"><?php esc_html_e('Expresar gratitud', 'flavor-chat-ia'); ?></h3>
+                                <h3 class="ed-modal__titulo"><?php esc_html_e('Expresar gratitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                                 <button class="ed-modal__cerrar">&times;</button>
                             </div>
                             <form class="ed-form-agradecer">
                                 <input type="hidden" name="don_id" value="<?php echo esc_attr($don->ID); ?>">
                                 <div class="ed-modal__body">
                                     <p style="margin-bottom: 1rem; color: var(--ed-text-light);">
-                                        <?php esc_html_e('Tu agradecimiento se publicará en el Muro de Gratitud.', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Tu agradecimiento se publicará en el Muro de Gratitud.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </p>
                                     <div class="ed-form-grupo">
                                         <label for="ed-gratitud-<?php echo esc_attr($don->ID); ?>">
-                                            <?php esc_html_e('Tu mensaje de gratitud', 'flavor-chat-ia'); ?>
+                                            <?php esc_html_e('Tu mensaje de gratitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </label>
                                         <textarea name="mensaje" id="ed-gratitud-<?php echo esc_attr($don->ID); ?>" rows="4" required
-                                            placeholder="<?php esc_attr_e('Escribe unas palabras de agradecimiento...', 'flavor-chat-ia'); ?>"></textarea>
+                                            placeholder="<?php esc_attr_e('Escribe unas palabras de agradecimiento...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                                     </div>
                                 </div>
                                 <div class="ed-modal__footer">
                                     <button type="button" class="ed-btn ed-btn--secondary ed-modal__cerrar">
-                                        <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                     <button type="submit" class="ed-btn-publicar">
-                                        <?php esc_html_e('Publicar gratitud', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Publicar gratitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 </div>
                             </form>
@@ -204,7 +204,7 @@ $dones_recibidos = $wpdb->get_results($wpdb->prepare(
                     <?php elseif ($gratitud_id) : ?>
                     <span class="ed-badge-agradecido">
                         <span class="dashicons dashicons-smiley"></span>
-                        <?php esc_html_e('Agradecido', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Agradecido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                     <?php endif; ?>
                 </div>
@@ -212,7 +212,7 @@ $dones_recibidos = $wpdb->get_results($wpdb->prepare(
             <?php endforeach; ?>
         </div>
         <?php else : ?>
-        <p class="ed-empty-text"><?php esc_html_e('Aún no has recibido ningún don.', 'flavor-chat-ia'); ?></p>
+        <p class="ed-empty-text"><?php esc_html_e('Aún no has recibido ningún don.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         <?php endif; ?>
     </section>
 </div>

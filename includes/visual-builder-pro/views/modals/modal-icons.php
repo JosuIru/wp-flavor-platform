@@ -67,7 +67,7 @@ $material_icons = array(
 // Font Awesome 6 Free Icons organizados por categoría
 $fontawesome_categories = array(
     'solid' => array(
-        'label' => __( 'Sólidos', 'flavor-chat-ia' ),
+        'label' => __( 'Sólidos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
         'icons' => array(
             // Flechas
             'fa-arrow-up', 'fa-arrow-down', 'fa-arrow-left', 'fa-arrow-right',
@@ -123,7 +123,7 @@ $fontawesome_categories = array(
         ),
     ),
     'brands' => array(
-        'label' => __( 'Marcas', 'flavor-chat-ia' ),
+        'label' => __( 'Marcas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
         'icons' => array(
             // Redes Sociales
             'fa-facebook', 'fa-facebook-f', 'fa-twitter', 'fa-x-twitter', 'fa-instagram',
@@ -150,7 +150,7 @@ $fontawesome_categories = array(
 <div id="vbp-icon-modal" class="vbp-modal-overlay" x-data="vbpIconSelector()" x-show="$store.vbpModals.iconSelector.open" x-cloak @keydown.escape.window="closeModal()">
     <div class="vbp-modal vbp-modal-large" @click.outside="closeModal()">
         <div class="vbp-modal-header">
-            <h3 class="vbp-modal-title"><?php esc_html_e( 'Seleccionar icono', 'flavor-chat-ia' ); ?></h3>
+            <h3 class="vbp-modal-title"><?php esc_html_e( 'Seleccionar icono', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h3>
             <button type="button" @click="closeModal()" class="vbp-modal-close">&times;</button>
         </div>
 
@@ -160,21 +160,21 @@ $fontawesome_categories = array(
                     :class="{ 'active': activeTab === 'material' }"
                     class="vbp-modal-tab">
                 <span class="material-icons">category</span>
-                <?php esc_html_e( 'Material', 'flavor-chat-ia' ); ?>
+                <?php esc_html_e( 'Material', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
             </button>
             <button type="button"
                     @click="activeTab = 'fontawesome'"
                     :class="{ 'active': activeTab === 'fontawesome' }"
                     class="vbp-modal-tab">
                 <i class="fa-solid fa-font-awesome"></i>
-                <?php esc_html_e( 'Font Awesome', 'flavor-chat-ia' ); ?>
+                <?php esc_html_e( 'Font Awesome', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
             </button>
             <button type="button"
                     @click="activeTab = 'brands'"
                     :class="{ 'active': activeTab === 'brands' }"
                     class="vbp-modal-tab">
                 <i class="fa-brands fa-font-awesome"></i>
-                <?php esc_html_e( 'Marcas', 'flavor-chat-ia' ); ?>
+                <?php esc_html_e( 'Marcas', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
             </button>
             <button type="button"
                     @click="activeTab = 'svg'"
@@ -185,7 +185,7 @@ $fontawesome_categories = array(
                     <polyline points="17 8 12 3 7 8"/>
                     <line x1="12" y1="3" x2="12" y2="15"/>
                 </svg>
-                <?php esc_html_e( 'SVG', 'flavor-chat-ia' ); ?>
+                <?php esc_html_e( 'SVG', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
             </button>
         </div>
 
@@ -199,7 +199,7 @@ $fontawesome_categories = array(
                 <input type="text"
                        x-model="searchQuery"
                        @input="filterIcons()"
-                       :placeholder="activeTab === 'svg' ? '<?php esc_attr_e( 'Buscar en biblioteca...', 'flavor-chat-ia' ); ?>' : '<?php esc_attr_e( 'Buscar icono...', 'flavor-chat-ia' ); ?>'"
+                       :placeholder="activeTab === 'svg' ? '<?php esc_attr_e( 'Buscar en biblioteca...', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>' : '<?php esc_attr_e( 'Buscar icono...', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>'"
                        class="vbp-icon-search-input">
                 <button type="button" x-show="searchQuery" @click="searchQuery = ''" class="vbp-search-clear">&times;</button>
             </div>
@@ -280,9 +280,9 @@ $fontawesome_categories = array(
                         <polyline points="17 8 12 3 7 8"/>
                         <line x1="12" y1="3" x2="12" y2="15"/>
                     </svg>
-                    <p><?php esc_html_e( 'Arrastra un SVG aquí o', 'flavor-chat-ia' ); ?></p>
+                    <p><?php esc_html_e( 'Arrastra un SVG aquí o', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
                     <button type="button" @click="openMediaLibrarySvg()" class="vbp-btn vbp-btn-secondary">
-                        <?php esc_html_e( 'Seleccionar de la biblioteca', 'flavor-chat-ia' ); ?>
+                        <?php esc_html_e( 'Seleccionar de la biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                     </button>
                 </div>
             </div>
@@ -293,14 +293,14 @@ $fontawesome_categories = array(
                         <circle cx="12" cy="12" r="10"/>
                         <path d="M12 16v-4M12 8h.01"/>
                     </svg>
-                    <?php esc_html_e( 'Sube archivos SVG para usar como iconos personalizados.', 'flavor-chat-ia' ); ?>
+                    <?php esc_html_e( 'Sube archivos SVG para usar como iconos personalizados.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                 </p>
             </div>
         </div>
 
         <div class="vbp-modal-footer">
             <div class="vbp-selected-preview" x-show="selectedIcon || customSvgUrl">
-                <span class="vbp-preview-label"><?php esc_html_e( 'Seleccionado:', 'flavor-chat-ia' ); ?></span>
+                <span class="vbp-preview-label"><?php esc_html_e( 'Seleccionado:', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
                 <template x-if="selectedType === 'material'">
                     <span class="material-icons" x-text="selectedIcon"></span>
                 </template>
@@ -314,13 +314,13 @@ $fontawesome_categories = array(
             </div>
             <div class="vbp-modal-actions">
                 <button type="button" @click="closeModal()" class="vbp-btn vbp-btn-ghost">
-                    <?php esc_html_e( 'Cancelar', 'flavor-chat-ia' ); ?>
+                    <?php esc_html_e( 'Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                 </button>
                 <button type="button"
                         @click="confirmSelection()"
                         class="vbp-btn vbp-btn-primary"
                         :disabled="!selectedIcon && !customSvgUrl">
-                    <?php esc_html_e( 'Aplicar', 'flavor-chat-ia' ); ?>
+                    <?php esc_html_e( 'Aplicar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                 </button>
             </div>
         </div>

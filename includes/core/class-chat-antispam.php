@@ -117,7 +117,7 @@ class Flavor_Chat_Antispam {
             $this->increment_violations($ip);
             return [
                 'valid' => false,
-                'error' => __('Solicitud no válida', 'flavor-chat-ia'),
+                'error' => __('Solicitud no válida', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'error_code' => 'bot_detected',
                 'spam_score' => 100,
             ];
@@ -141,7 +141,7 @@ class Flavor_Chat_Antispam {
         if ($this->is_ip_blocked($ip)) {
             return [
                 'valid' => false,
-                'error' => __('Acceso temporalmente restringido', 'flavor-chat-ia'),
+                'error' => __('Acceso temporalmente restringido', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'error_code' => 'ip_blocked',
                 'spam_score' => 100,
             ];
@@ -157,7 +157,7 @@ class Flavor_Chat_Antispam {
                 $this->block_ip($ip, 'rate_limit_exceeded');
                 return [
                     'valid' => false,
-                    'error' => __('Demasiados mensajes. Por favor, espera unos minutos.', 'flavor-chat-ia'),
+                    'error' => __('Demasiados mensajes. Por favor, espera unos minutos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'error_code' => 'rate_limited',
                     'spam_score' => $spam_score,
                 ];
@@ -173,7 +173,7 @@ class Flavor_Chat_Antispam {
             if ($repeat_check['block']) {
                 return [
                     'valid' => false,
-                    'error' => __('Por favor, no envíes el mismo mensaje repetidamente.', 'flavor-chat-ia'),
+                    'error' => __('Por favor, no envíes el mismo mensaje repetidamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'error_code' => 'repeated_message',
                     'spam_score' => $spam_score,
                 ];
@@ -194,7 +194,7 @@ class Flavor_Chat_Antispam {
                 $this->increment_violations($ip);
                 return [
                     'valid' => false,
-                    'error' => __('Tu mensaje contiene contenido inapropiado.', 'flavor-chat-ia'),
+                    'error' => __('Tu mensaje contiene contenido inapropiado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'error_code' => 'offensive_content',
                     'spam_score' => $spam_score,
                 ];
@@ -227,7 +227,7 @@ class Flavor_Chat_Antispam {
 
             return [
                 'valid' => false,
-                'error' => __('Tu mensaje ha sido marcado como spam.', 'flavor-chat-ia'),
+                'error' => __('Tu mensaje ha sido marcado como spam.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'error_code' => 'spam_detected',
                 'spam_score' => $spam_score,
             ];
@@ -509,7 +509,7 @@ class Flavor_Chat_Antispam {
         $message .= "Violaciones en la última hora: {$violations}\n";
         $message .= "Razones: " . implode(', ', $reasons) . "\n\n";
         $message .= "Puedes revisar y gestionar las IPs bloqueadas en:\n";
-        $message .= admin_url('admin.php?page=flavor-chat-config') . "\n";
+        $message .= admin_url('admin.php?page=flavor-platform-settings') . "\n";
 
         wp_mail($admin_email, $subject, $message);
     }

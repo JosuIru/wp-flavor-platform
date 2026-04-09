@@ -15,7 +15,7 @@ $url_fichar = $url_fichar ?? '/fichaje/';
 <section class="flavor-component flavor-section relative overflow-hidden" style="background: linear-gradient(135deg, var(--flavor-primary, #64748B) 0%, var(--flavor-secondary, #4B5563) 100%); min-height: 500px;">
     <!-- Patron decorativo -->
     <div class="absolute inset-0 opacity-10">
-        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22><rect width=%2280%22 height=%2280%22 fill=%22none%22/><circle cx=%2240%22 cy=%2240%22 r=%222%22 fill=%22white%22/></svg><?php echo esc_html__('\'); background-size: 80px 80px;">', 'flavor-chat-ia'); ?></div>
+        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22><rect width=%2280%22 height=%2280%22 fill=%22none%22/><circle cx=%2240%22 cy=%2240%22 r=%222%22 fill=%22white%22/></svg><?php echo esc_html__('\'); background-size: 80px 80px;">', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 
     <div class="flavor-container relative z-10 py-16 lg:py-24">
@@ -25,7 +25,7 @@ $url_fichar = $url_fichar ?? '/fichaje/';
                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                <span class="text-white text-sm font-medium"><?php echo esc_html($fichajes_hoy); ?> <?php echo esc_html__('fichajes hoy', 'flavor-chat-ia'); ?></span>
+                <span class="text-white text-sm font-medium"><?php echo esc_html($fichajes_hoy); ?> <?php echo esc_html__('fichajes hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
 
             <h1 class="text-4xl lg:text-5xl font-bold text-white mb-4">
@@ -40,7 +40,7 @@ $url_fichar = $url_fichar ?? '/fichaje/';
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                <?php echo esc_html__('Fichar Ahora', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Fichar Ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
 
@@ -48,15 +48,15 @@ $url_fichar = $url_fichar ?? '/fichaje/';
         <div class="grid grid-cols-3 gap-4 max-w-2xl mx-auto">
             <div class="text-center p-4 rounded-xl bg-white/10 backdrop-blur border border-white/20">
                 <div class="text-3xl font-bold text-white"><?php echo esc_html($empleados_registrados); ?></div>
-                <div class="text-sm text-white/70"><?php echo esc_html__('Empleados Registrados', 'flavor-chat-ia'); ?></div>
+                <div class="text-sm text-white/70"><?php echo esc_html__('Empleados Registrados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
             <div class="text-center p-4 rounded-xl bg-white/10 backdrop-blur border border-white/20">
                 <div class="text-3xl font-bold text-white"><?php echo esc_html($fichajes_hoy); ?></div>
-                <div class="text-sm text-white/70"><?php echo esc_html__('Fichajes Hoy', 'flavor-chat-ia'); ?></div>
+                <div class="text-sm text-white/70"><?php echo esc_html__('Fichajes Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
             <div class="text-center p-4 rounded-xl bg-white/10 backdrop-blur border border-white/20">
                 <div class="text-3xl font-bold text-white"><?php echo esc_html($horas_totales); ?>h</div>
-                <div class="text-sm text-white/70"><?php echo esc_html__('Horas Totales', 'flavor-chat-ia'); ?></div>
+                <div class="text-sm text-white/70"><?php echo esc_html__('Horas Totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
     </div>

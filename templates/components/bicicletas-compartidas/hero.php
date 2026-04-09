@@ -9,8 +9,8 @@
 if (!defined('ABSPATH')) exit;
 
 // Valores por defecto extraídos de $args o variables legacy
-$titulo = $args['titulo'] ?? $titulo ?? __('Comparte Bicicleta', 'flavor-chat-ia');
-$subtitulo = $args['subtitulo'] ?? $subtitulo ?? __('Transporte sostenible para tu ciudad', 'flavor-chat-ia');
+$titulo = $args['titulo'] ?? $titulo ?? __('Comparte Bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$subtitulo = $args['subtitulo'] ?? $subtitulo ?? __('Transporte sostenible para tu ciudad', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $imagen_fondo_id = $args['imagen_fondo_id'] ?? $imagen_fondo ?? null;
 $mostrar_buscador = $args['mostrar_buscador'] ?? true;
 $color_primario = $args['color_primario'] ?? '#3b82f6';
@@ -50,36 +50,36 @@ $imagen_url = !empty($imagen_fondo_id) ? wp_get_attachment_image_url($imagen_fon
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-sm font-medium mb-2 text-gray-700">
-                                <?php echo esc_html__('Ubicación Actual', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Ubicación Actual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
                             <input type="text"
-                                   placeholder="<?php echo esc_attr__('Mi ubicación', 'flavor-chat-ia'); ?>"
+                                   placeholder="<?php echo esc_attr__('Mi ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                                    class="flavor-input w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                    style="border-color: #e5e7eb;">
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-2 text-gray-700">
-                                <?php echo esc_html__('Estación Destino', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Estación Destino', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
                             <input type="text"
-                                   placeholder="<?php echo esc_attr__('Destino', 'flavor-chat-ia'); ?>"
+                                   placeholder="<?php echo esc_attr__('Destino', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                                    class="flavor-input w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                    style="border-color: #e5e7eb;">
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-2 text-gray-700">
-                                <?php echo esc_html__('Tipo de Viaje', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Tipo de Viaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
                             <select class="flavor-select w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     style="border-color: #e5e7eb;">
-                                <option><?php echo esc_html__('Una sola vez', 'flavor-chat-ia'); ?></option>
-                                <option><?php echo esc_html__('Diario', 'flavor-chat-ia'); ?></option>
-                                <option><?php echo esc_html__('Semanal', 'flavor-chat-ia'); ?></option>
+                                <option><?php echo esc_html__('Una sola vez', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option><?php echo esc_html__('Diario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option><?php echo esc_html__('Semanal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             </select>
                         </div>
                     </div>
                     <button type="submit" class="flavor-button flavor-button-primary w-full md:w-auto px-12 py-3" style="background-color: <?php echo esc_attr($color_primario); ?>;">
-                        🔍 <?php echo esc_html__('Buscar Bicicletas', 'flavor-chat-ia'); ?>
+                        🔍 <?php echo esc_html__('Buscar Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </form>
 
@@ -88,19 +88,19 @@ $imagen_url = !empty($imagen_fondo_id) ? wp_get_attachment_image_url($imagen_fon
                     <div class="text-center">
                         <div class="text-3xl font-bold text-blue-600">487</div>
                         <div class="text-sm text-gray-600">
-                            <?php echo esc_html__('Bicicletas disponibles', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Bicicletas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     </div>
                     <div class="text-center">
                         <div class="text-3xl font-bold text-blue-600">52</div>
                         <div class="text-sm text-gray-600">
-                            <?php echo esc_html__('Estaciones activas', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Estaciones activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     </div>
                     <div class="text-center">
                         <div class="text-3xl font-bold text-blue-600">12,450</div>
                         <div class="text-sm text-gray-600">
-                            <?php echo esc_html__('Usuarios activos', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Usuarios activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     </div>
                 </div>

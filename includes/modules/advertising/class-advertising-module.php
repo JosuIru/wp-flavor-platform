@@ -58,30 +58,30 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'advertising',
-            'label' => __('Publicidad Ética', 'flavor-chat-ia'),
+            'label' => __('Publicidad Ética', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-megaphone',
             'capability' => 'manage_options',
             'categoria' => 'economia',
             'paginas' => [
                 [
                     'slug' => 'advertising-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_dashboard'],
                 ],
                 [
                     'slug' => 'advertising-anuncios',
-                    'titulo' => __('Anuncios', 'flavor-chat-ia'),
+                    'titulo' => __('Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_anuncios'],
                     'badge' => [$this, 'contar_anuncios_pendientes'],
                 ],
                 [
                     'slug' => 'advertising-campanas',
-                    'titulo' => __('Campañas', 'flavor-chat-ia'),
+                    'titulo' => __('Campañas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_campanas'],
                 ],
                 [
                     'slug' => 'advertising-config',
-                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'titulo' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_config'],
                 ],
             ],
@@ -131,7 +131,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
         $estadisticas[] = [
             'icon' => 'dashicons-megaphone',
             'valor' => $total_anuncios_activos,
-            'label' => __('Anuncios activos', 'flavor-chat-ia'),
+            'label' => __('Anuncios activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => $total_anuncios_activos > 0 ? 'blue' : 'gray',
             'enlace' => admin_url('admin.php?page=advertising-anuncios'),
         ];
@@ -142,7 +142,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
             $estadisticas[] = [
                 'icon' => 'dashicons-clock',
                 'valor' => $anuncios_pendientes,
-                'label' => __('Pendientes de aprobación', 'flavor-chat-ia'),
+                'label' => __('Pendientes de aprobación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'orange',
                 'enlace' => admin_url('admin.php?page=advertising-anuncios&estado=pending'),
             ];
@@ -159,7 +159,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
             $estadisticas[] = [
                 'icon' => 'dashicons-chart-bar',
                 'valor' => number_format((float)$ingresos_mes, 2) . '€',
-                'label' => __('Ingresos este mes', 'flavor-chat-ia'),
+                'label' => __('Ingresos este mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => (float)$ingresos_mes > 0 ? 'green' : 'gray',
                 'enlace' => admin_url('admin.php?page=advertising-dashboard'),
             ];
@@ -173,8 +173,8 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_dashboard() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Dashboard de Publicidad', 'flavor-chat-ia'), [
-            ['label' => __('Nuevo Anuncio', 'flavor-chat-ia'), 'url' => admin_url('post-new.php?post_type=flavor_ad'), 'class' => 'button-primary'],
+        $this->render_page_header(__('Dashboard de Publicidad', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+            ['label' => __('Nuevo Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('post-new.php?post_type=flavor_ad'), 'class' => 'button-primary'],
         ]);
 
         // Estadísticas generales
@@ -182,18 +182,18 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
         if ($resultado_estadisticas['success'] && !empty($resultado_estadisticas['data'])) {
             $datos = $resultado_estadisticas['data'];
             echo '<div class="flavor-stats-grid">';
-            echo '<div class="flavor-stat-card"><span class="stat-number">' . number_format($datos['impresiones']) . '</span><span class="stat-label">' . __('Impresiones', 'flavor-chat-ia') . '</span></div>';
-            echo '<div class="flavor-stat-card"><span class="stat-number">' . number_format($datos['clics']) . '</span><span class="stat-label">' . __('Clics', 'flavor-chat-ia') . '</span></div>';
-            echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($datos['ctr']) . '%</span><span class="stat-label">' . __('CTR', 'flavor-chat-ia') . '</span></div>';
-            echo '<div class="flavor-stat-card"><span class="stat-number">' . number_format($datos['gasto'], 2) . '€</span><span class="stat-label">' . __('Ingresos', 'flavor-chat-ia') . '</span></div>';
+            echo '<div class="flavor-stat-card"><span class="stat-number">' . number_format($datos['impresiones']) . '</span><span class="stat-label">' . __('Impresiones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
+            echo '<div class="flavor-stat-card"><span class="stat-number">' . number_format($datos['clics']) . '</span><span class="stat-label">' . __('Clics', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
+            echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($datos['ctr']) . '%</span><span class="stat-label">' . __('CTR', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
+            echo '<div class="flavor-stat-card"><span class="stat-number">' . number_format($datos['gasto'], 2) . '€</span><span class="stat-label">' . __('Ingresos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
             echo '</div>';
         }
 
         // Pool de la comunidad
         $pool_comunidad = get_option('flavor_ads_pool_comunidad', 0);
         echo '<div class="postbox" style="margin-top: 20px;">';
-        echo '<h2 class="hndle" style="padding: 12px;"><span class="dashicons dashicons-groups" style="margin-right: 8px;"></span>' . __('Reparto Comunitario', 'flavor-chat-ia') . '</h2>';
-        echo '<div class="inside"><p>' . sprintf(__('Pool acumulado para la comunidad: <strong>%s€</strong>', 'flavor-chat-ia'), number_format((float)$pool_comunidad, 2)) . '</p></div>';
+        echo '<h2 class="hndle" style="padding: 12px;"><span class="dashicons dashicons-groups" style="margin-right: 8px;"></span>' . __('Reparto Comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2>';
+        echo '<div class="inside"><p>' . sprintf(__('Pool acumulado para la comunidad: <strong>%s€</strong>', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format((float)$pool_comunidad, 2)) . '</p></div>';
         echo '</div>';
 
         echo '</div>';
@@ -204,17 +204,17 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_anuncios() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Gestión de Anuncios', 'flavor-chat-ia'), [
-            ['label' => __('Nuevo Anuncio', 'flavor-chat-ia'), 'url' => admin_url('post-new.php?post_type=flavor_ad'), 'class' => 'button-primary'],
+        $this->render_page_header(__('Gestión de Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+            ['label' => __('Nuevo Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('post-new.php?post_type=flavor_ad'), 'class' => 'button-primary'],
         ]);
 
         // Tabs para filtrar por estado
         $estado_actual = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : 'all';
         $this->render_page_tabs([
-            ['slug' => 'all', 'label' => __('Todos', 'flavor-chat-ia')],
-            ['slug' => 'publish', 'label' => __('Activos', 'flavor-chat-ia')],
-            ['slug' => 'pending', 'label' => __('Pendientes', 'flavor-chat-ia'), 'badge' => $this->contar_anuncios_pendientes()],
-            ['slug' => 'draft', 'label' => __('Borradores', 'flavor-chat-ia')],
+            ['slug' => 'all', 'label' => __('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            ['slug' => 'publish', 'label' => __('Activos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            ['slug' => 'pending', 'label' => __('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'badge' => $this->contar_anuncios_pendientes()],
+            ['slug' => 'draft', 'label' => __('Borradores', FLAVOR_PLATFORM_TEXT_DOMAIN)],
         ], $estado_actual);
 
         // Listado de anuncios
@@ -228,12 +228,12 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
         if (!empty($anuncios)) {
             echo '<table class="wp-list-table widefat fixed striped" style="margin-top: 20px;">';
             echo '<thead><tr>';
-            echo '<th>' . __('Título', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Tipo', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Anunciante', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Presupuesto', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Estado', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Acciones', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Anunciante', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Presupuesto', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
             echo '</tr></thead>';
             echo '<tbody>';
 
@@ -257,9 +257,9 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
                 echo '<td>' . ($presupuesto_anuncio ? esc_html(number_format((float)$presupuesto_anuncio, 2)) . '€' : '-') . '</td>';
                 echo '<td><span class="' . esc_attr($clase_estado) . '">' . esc_html(ucfirst($anuncio->post_status)) . '</span></td>';
                 echo '<td>';
-                echo '<a href="' . esc_url(get_edit_post_link($anuncio->ID)) . '" class="button button-small">' . __('Editar', 'flavor-chat-ia') . '</a> ';
+                echo '<a href="' . esc_url(get_edit_post_link($anuncio->ID)) . '" class="button button-small">' . __('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a> ';
                 if ($anuncio->post_status === 'pending') {
-                    echo '<button class="button button-small button-primary aprobar-anuncio" data-id="' . esc_attr($anuncio->ID) . '">' . __('Aprobar', 'flavor-chat-ia') . '</button>';
+                    echo '<button class="button button-small button-primary aprobar-anuncio" data-id="' . esc_attr($anuncio->ID) . '">' . __('Aprobar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</button>';
                 }
                 echo '</td>';
                 echo '</tr>';
@@ -267,7 +267,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
 
             echo '</tbody></table>';
         } else {
-            echo '<p style="margin-top: 20px;">' . __('No hay anuncios con este filtro.', 'flavor-chat-ia') . '</p>';
+            echo '<p style="margin-top: 20px;">' . __('No hay anuncios con este filtro.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         echo '</div>';
@@ -278,8 +278,8 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_campanas() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Campañas Publicitarias', 'flavor-chat-ia'), [
-            ['label' => __('Nueva Campaña', 'flavor-chat-ia'), 'url' => admin_url('post-new.php?post_type=flavor_ad_campaign'), 'class' => 'button-primary'],
+        $this->render_page_header(__('Campañas Publicitarias', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+            ['label' => __('Nueva Campaña', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('post-new.php?post_type=flavor_ad_campaign'), 'class' => 'button-primary'],
         ]);
 
         // Listado de campañas
@@ -292,10 +292,10 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
         if (!empty($campanas)) {
             echo '<table class="wp-list-table widefat fixed striped" style="margin-top: 20px;">';
             echo '<thead><tr>';
-            echo '<th>' . __('Nombre', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Estado', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Fecha creación', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Acciones', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Fecha creación', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
             echo '</tr></thead>';
             echo '<tbody>';
 
@@ -304,13 +304,13 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
                 echo '<td><strong><a href="' . esc_url(get_edit_post_link($campana->ID)) . '">' . esc_html($campana->post_title) . '</a></strong></td>';
                 echo '<td>' . esc_html(ucfirst($campana->post_status)) . '</td>';
                 echo '<td>' . esc_html(date_i18n('d/m/Y', strtotime($campana->post_date))) . '</td>';
-                echo '<td><a href="' . esc_url(get_edit_post_link($campana->ID)) . '" class="button button-small">' . __('Editar', 'flavor-chat-ia') . '</a></td>';
+                echo '<td><a href="' . esc_url(get_edit_post_link($campana->ID)) . '" class="button button-small">' . __('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></td>';
                 echo '</tr>';
             }
 
             echo '</tbody></table>';
         } else {
-            echo '<p style="margin-top: 20px;">' . __('No hay campañas creadas. Crea tu primera campaña para agrupar anuncios.', 'flavor-chat-ia') . '</p>';
+            echo '<p style="margin-top: 20px;">' . __('No hay campañas creadas. Crea tu primera campaña para agrupar anuncios.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         echo '</div>';
@@ -321,7 +321,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_config() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Configuración de Publicidad', 'flavor-chat-ia'));
+        $this->render_page_header(__('Configuración de Publicidad', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         $configuracion_actual = $this->get_settings();
 
@@ -329,30 +329,30 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
         wp_nonce_field('flavor_advertising_config', 'flavor_advertising_nonce');
         echo '<table class="form-table">';
 
-        echo '<tr><th scope="row"><label for="reparto_comunidad_default">' . __('% Reparto comunidad (por defecto)', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="reparto_comunidad_default">' . __('% Reparto comunidad (por defecto)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="number" name="reparto_comunidad_default" id="reparto_comunidad_default" value="' . esc_attr($configuracion_actual['reparto_comunidad_default']) . '" min="0" max="100" step="5" class="small-text" />';
-        echo '<p class="description">' . __('Porcentaje de ingresos que se reparte con la comunidad.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . __('Porcentaje de ingresos que se reparte con la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="precio_clic_default">' . __('Precio por clic (€)', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="precio_clic_default">' . __('Precio por clic (€)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="number" name="precio_clic_default" id="precio_clic_default" value="' . esc_attr($configuracion_actual['precio_clic_default']) . '" min="0" step="0.01" class="small-text" /></td></tr>';
 
-        echo '<tr><th scope="row"><label for="precio_cpm_default">' . __('Precio CPM (€)', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="precio_cpm_default">' . __('Precio CPM (€)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="number" name="precio_cpm_default" id="precio_cpm_default" value="' . esc_attr($configuracion_actual['precio_cpm_default']) . '" min="0" step="0.01" class="small-text" />';
-        echo '<p class="description">' . __('Precio por cada 1000 impresiones.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . __('Precio por cada 1000 impresiones.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="minimo_pago">' . __('Mínimo para pago (€)', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="minimo_pago">' . __('Mínimo para pago (€)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="number" name="minimo_pago" id="minimo_pago" value="' . esc_attr($configuracion_actual['minimo_pago']) . '" min="1" step="1" class="small-text" />';
-        echo '<p class="description">' . __('Cantidad mínima acumulada para procesar pagos a la comunidad.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . __('Cantidad mínima acumulada para procesar pagos a la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="aprobacion_automatica">' . __('Aprobación automática', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="aprobacion_automatica">' . __('Aprobación automática', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="checkbox" name="aprobacion_automatica" id="aprobacion_automatica" ' . checked($configuracion_actual['aprobacion_automatica'], true, false) . ' />';
-        echo '<p class="description">' . __('Los anuncios se publican automáticamente sin revisión.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . __('Los anuncios se publican automáticamente sin revisión.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="mostrar_etiqueta">' . __('Mostrar etiqueta "Anuncio"', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="mostrar_etiqueta">' . __('Mostrar etiqueta "Anuncio"', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="checkbox" name="mostrar_etiqueta" id="mostrar_etiqueta" ' . checked($configuracion_actual['mostrar_etiqueta'], true, false) . ' /></td></tr>';
 
         echo '</table>';
-        echo '<p class="submit"><input type="submit" name="guardar_config_advertising" class="button-primary" value="' . __('Guardar Configuración', 'flavor-chat-ia') . '" /></p>';
+        echo '<p class="submit"><input type="submit" name="guardar_config_advertising" class="button-primary" value="' . __('Guardar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN) . '" /></p>';
         echo '</form>';
         echo '</div>';
 
@@ -367,7 +367,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
                 'mostrar_etiqueta' => !empty($_POST['mostrar_etiqueta']),
             ];
             $this->save_settings($nueva_configuracion);
-            echo '<div class="notice notice-success"><p>' . __('Configuración guardada correctamente.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-success"><p>' . __('Configuración guardada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -540,18 +540,18 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
     public function register_post_types() {
         register_post_type('flavor_ad', [
             'labels' => [
-                'name' => __('Anuncios', 'flavor-chat-ia'),
-                'singular_name' => __('Anuncio', 'flavor-chat-ia'),
-                'add_new' => __('Añadir nuevo', 'flavor-chat-ia'),
-                'add_new_item' => __('Añadir nuevo anuncio', 'flavor-chat-ia'),
-                'edit_item' => __('Editar anuncio', 'flavor-chat-ia'),
-                'view_item' => __('Ver anuncio', 'flavor-chat-ia'),
-                'search_items' => __('Buscar anuncios', 'flavor-chat-ia'),
-                'not_found' => __('No se encontraron anuncios', 'flavor-chat-ia'),
+                'name' => __('Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'add_new' => __('Añadir nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'add_new_item' => __('Añadir nuevo anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'edit_item' => __('Editar anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'view_item' => __('Ver anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'search_items' => __('Buscar anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'not_found' => __('No se encontraron anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => false,
             'show_ui' => true,
-            'show_in_menu' => 'flavor-chat-ia',
+            'show_in_menu' => FLAVOR_PLATFORM_TEXT_DOMAIN,
             'supports' => ['title', 'thumbnail'],
             'menu_icon' => 'dashicons-megaphone',
             'has_archive' => false,
@@ -560,8 +560,8 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
 
         register_post_type('flavor_ad_campaign', [
             'labels' => [
-                'name' => __('Campañas', 'flavor-chat-ia'),
-                'singular_name' => __('Campaña', 'flavor-chat-ia'),
+                'name' => __('Campañas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Campaña', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => false,
             'show_ui' => true,
@@ -576,8 +576,8 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
     public function register_taxonomies() {
         register_taxonomy('ad_ubicacion', 'flavor_ad', [
             'labels' => [
-                'name' => __('Ubicaciones', 'flavor-chat-ia'),
-                'singular_name' => __('Ubicación', 'flavor-chat-ia'),
+                'name' => __('Ubicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'hierarchical' => true,
             'show_admin_column' => true,
@@ -586,8 +586,8 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
 
         register_taxonomy('ad_categoria', 'flavor_ad', [
             'labels' => [
-                'name' => __('Categorías de anuncio', 'flavor-chat-ia'),
-                'singular_name' => __('Categoría', 'flavor-chat-ia'),
+                'name' => __('Categorías de anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'hierarchical' => true,
             'show_admin_column' => true,
@@ -601,7 +601,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
     public function add_meta_boxes() {
         add_meta_box(
             'flavor_ad_settings',
-            __('Configuración del anuncio', 'flavor-chat-ia'),
+            __('Configuración del anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_ad_settings_metabox'],
             'flavor_ad',
             'normal',
@@ -610,7 +610,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
 
         add_meta_box(
             'flavor_ad_stats',
-            __('Estadísticas', 'flavor-chat-ia'),
+            __('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_ad_stats_metabox'],
             'flavor_ad',
             'side'
@@ -634,7 +634,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
         $anunciante_id = get_post_meta($post->ID, '_ad_anunciante_id', true);
         $contenido_html = get_post_meta($post->ID, '_ad_contenido_html', true);
         $imagen_url = get_post_meta($post->ID, '_ad_imagen_url', true);
-        $texto_cta = get_post_meta($post->ID, '_ad_texto_cta', true) ?: __('Saber más', 'flavor-chat-ia');
+        $texto_cta = get_post_meta($post->ID, '_ad_texto_cta', true) ?: __('Saber más', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $segmentacion = get_post_meta($post->ID, '_ad_segmentacion', true) ?: [];
         ?>
         <style>
@@ -648,67 +648,67 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
         </style>
         <div class="flavor-ad-metabox">
             <div>
-                <label><?php _e('Tipo de anuncio', 'flavor-chat-ia'); ?></label>
+                <label><?php _e('Tipo de anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="ad_tipo">
-                    <option value="<?php echo esc_attr__('banner_horizontal', 'flavor-chat-ia'); ?>" <?php selected($tipo, 'banner_horizontal'); ?>><?php _e('Banner Horizontal (728x90)', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('banner_sidebar', 'flavor-chat-ia'); ?>" <?php selected($tipo, 'banner_sidebar'); ?>><?php _e('Banner Sidebar (300x250)', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('banner_card', 'flavor-chat-ia'); ?>" <?php selected($tipo, 'banner_card'); ?>><?php _e('Tarjeta', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('banner_nativo', 'flavor-chat-ia'); ?>" <?php selected($tipo, 'banner_nativo'); ?>><?php _e('Nativo', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('video', 'flavor-chat-ia'); ?>" <?php selected($tipo, 'video'); ?>><?php _e('Video', 'flavor-chat-ia'); ?></option>
+                    <option value="<?php echo esc_attr__('banner_horizontal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($tipo, 'banner_horizontal'); ?>><?php _e('Banner Horizontal (728x90)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="<?php echo esc_attr__('banner_sidebar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($tipo, 'banner_sidebar'); ?>><?php _e('Banner Sidebar (300x250)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="<?php echo esc_attr__('banner_card', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($tipo, 'banner_card'); ?>><?php _e('Tarjeta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="<?php echo esc_attr__('banner_nativo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($tipo, 'banner_nativo'); ?>><?php _e('Nativo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="<?php echo esc_attr__('video', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($tipo, 'video'); ?>><?php _e('Video', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
             </div>
             <div>
-                <label><?php _e('Anunciante', 'flavor-chat-ia'); ?></label>
+                <label><?php _e('Anunciante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <?php
                 wp_dropdown_users([
                     'name' => 'ad_anunciante_id',
                     'selected' => $anunciante_id,
-                    'show_option_none' => __('Seleccionar...', 'flavor-chat-ia'),
+                    'show_option_none' => __('Seleccionar...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'option_none_value' => '',
                     'role__in' => ['administrator', 'editor', 'author', 'subscriber'],
                 ]);
                 ?>
             </div>
             <div class="full-width">
-                <label><?php _e('URL de destino', 'flavor-chat-ia'); ?></label>
-                <input type="url" name="ad_url_destino" value="<?php echo esc_attr($url_destino); ?>" placeholder="<?php echo esc_attr__('https://...', 'flavor-chat-ia'); ?>">
+                <label><?php _e('URL de destino', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                <input type="url" name="ad_url_destino" value="<?php echo esc_attr($url_destino); ?>" placeholder="<?php echo esc_attr__('https://...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             </div>
             <div class="full-width">
-                <label><?php _e('Imagen del anuncio', 'flavor-chat-ia'); ?></label>
-                <input type="url" name="ad_imagen_url" value="<?php echo esc_attr($imagen_url); ?>" placeholder="<?php echo esc_attr__('URL de la imagen', 'flavor-chat-ia'); ?>">
-                <p class="description"><?php _e('O usa la imagen destacada del post', 'flavor-chat-ia'); ?></p>
+                <label><?php _e('Imagen del anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                <input type="url" name="ad_imagen_url" value="<?php echo esc_attr($imagen_url); ?>" placeholder="<?php echo esc_attr__('URL de la imagen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                <p class="description"><?php _e('O usa la imagen destacada del post', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <div class="full-width">
-                <label><?php _e('Contenido HTML (opcional)', 'flavor-chat-ia'); ?></label>
-                <textarea name="ad_contenido_html" rows="4" placeholder="<?php echo esc_attr__('HTML personalizado...', 'flavor-chat-ia'); ?>"><?php echo esc_textarea($contenido_html); ?></textarea>
+                <label><?php _e('Contenido HTML (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                <textarea name="ad_contenido_html" rows="4" placeholder="<?php echo esc_attr__('HTML personalizado...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_textarea($contenido_html); ?></textarea>
             </div>
             <div>
-                <label><?php _e('Texto del botón CTA', 'flavor-chat-ia'); ?></label>
+                <label><?php _e('Texto del botón CTA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <input type="text" name="ad_texto_cta" value="<?php echo esc_attr($texto_cta); ?>">
             </div>
             <div>
-                <label><?php _e('% para la comunidad', 'flavor-chat-ia'); ?></label>
+                <label><?php _e('% para la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <input type="number" name="ad_reparto_comunidad" value="<?php echo esc_attr($reparto_comunidad); ?>" min="0" max="100" step="5">
-                <p class="description"><?php _e('Porcentaje de ingresos que se reparten con la comunidad', 'flavor-chat-ia'); ?></p>
+                <p class="description"><?php _e('Porcentaje de ingresos que se reparten con la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <div>
-                <label><?php _e('Fecha inicio', 'flavor-chat-ia'); ?></label>
+                <label><?php _e('Fecha inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <input type="date" name="ad_fecha_inicio" value="<?php echo esc_attr($fecha_inicio); ?>">
             </div>
             <div>
-                <label><?php _e('Fecha fin', 'flavor-chat-ia'); ?></label>
+                <label><?php _e('Fecha fin', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <input type="date" name="ad_fecha_fin" value="<?php echo esc_attr($fecha_fin); ?>">
             </div>
             <div>
-                <label><?php _e('Presupuesto total (€)', 'flavor-chat-ia'); ?></label>
+                <label><?php _e('Presupuesto total (€)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <input type="number" name="ad_presupuesto" value="<?php echo esc_attr($presupuesto); ?>" min="0" step="0.01">
             </div>
             <div>
-                <label><?php _e('Precio por clic (€)', 'flavor-chat-ia'); ?></label>
+                <label><?php _e('Precio por clic (€)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <input type="number" name="ad_precio_clic" value="<?php echo esc_attr($precio_clic); ?>" min="0" step="0.01">
             </div>
             <div>
-                <label><?php _e('Precio por 1000 impresiones (€)', 'flavor-chat-ia'); ?></label>
+                <label><?php _e('Precio por 1000 impresiones (€)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <input type="number" name="ad_precio_impresion" value="<?php echo esc_attr($precio_impresion); ?>" min="0" step="0.001">
             </div>
         </div>
@@ -737,10 +737,10 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
         $ctr = $impresiones > 0 ? round(($clics / $impresiones) * 100, 2) : 0;
         ?>
         <div style="padding: 10px 0;">
-            <p><strong><?php _e('Impresiones:', 'flavor-chat-ia'); ?></strong> <?php echo number_format($impresiones); ?></p>
-            <p><strong><?php _e('Clics:', 'flavor-chat-ia'); ?></strong> <?php echo number_format($clics); ?></p>
-            <p><strong><?php _e('CTR:', 'flavor-chat-ia'); ?></strong> <?php echo $ctr; ?>%</p>
-            <p><strong><?php _e('Gasto total:', 'flavor-chat-ia'); ?></strong> <?php echo number_format($gasto, 2); ?>€</p>
+            <p><strong><?php _e('Impresiones:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo number_format($impresiones); ?></p>
+            <p><strong><?php _e('Clics:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo number_format($clics); ?></p>
+            <p><strong><?php _e('CTR:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo $ctr; ?>%</p>
+            <p><strong><?php _e('Gasto total:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo number_format($gasto, 2); ?>€</p>
         </div>
         <?php
     }
@@ -876,12 +876,12 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
     private function action_foro_anuncio($params) {
         $anuncio = $this->resolve_contextual_anuncio($params);
         if (!$anuncio) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un anuncio para ver su foro.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un anuncio para ver su foro.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-foro">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;">'
-            . '<h2>' . esc_html__('Foro del anuncio', 'flavor-chat-ia') . '</h2>'
+            . '<h2>' . esc_html__('Foro del anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2>'
             . '<p>' . esc_html($anuncio['titulo']) . '</p>'
             . '</div>'
             . do_shortcode('[flavor_foros_integrado entidad="advertising_ad" entidad_id="' . absint($anuncio['id']) . '"]')
@@ -891,18 +891,18 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
     private function action_chat_anuncio($params) {
         $anuncio = $this->resolve_contextual_anuncio($params);
         if (!$anuncio) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un anuncio para ver su chat.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un anuncio para ver su chat.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         if (!is_user_logged_in()) {
-            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este anuncio.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este anuncio.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-chat">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Chat del anuncio', 'flavor-chat-ia') . '</h2><p>' . esc_html($anuncio['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Chat del anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($anuncio['titulo']) . '</p></div>'
             . '<a href="' . esc_url(home_url('/mi-portal/chat-grupos/mensajes/?ad_id=' . absint($anuncio['id']))) . '" class="button button-secondary">'
-            . esc_html__('Abrir chat completo', 'flavor-chat-ia')
+            . esc_html__('Abrir chat completo', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>'
             . do_shortcode('[flavor_chat_grupo_integrado entidad="advertising_ad" entidad_id="' . absint($anuncio['id']) . '"]')
             . '</div>';
@@ -911,14 +911,14 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
     private function action_multimedia_anuncio($params) {
         $anuncio = $this->resolve_contextual_anuncio($params);
         if (!$anuncio) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un anuncio para ver sus archivos.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un anuncio para ver sus archivos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-multimedia">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Multimedia del anuncio', 'flavor-chat-ia') . '</h2><p>' . esc_html($anuncio['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Multimedia del anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($anuncio['titulo']) . '</p></div>'
             . '<a href="' . esc_url(home_url('/mi-portal/multimedia/subir/?ad_id=' . absint($anuncio['id']))) . '" class="button button-primary">'
-            . esc_html__('Subir archivo', 'flavor-chat-ia')
+            . esc_html__('Subir archivo', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>'
             . do_shortcode('[flavor_multimedia_galeria entidad="advertising_ad" entidad_id="' . absint($anuncio['id']) . '"]')
             . '</div>';
@@ -927,18 +927,18 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
     private function action_red_social_anuncio($params) {
         $anuncio = $this->resolve_contextual_anuncio($params);
         if (!$anuncio) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un anuncio para ver su actividad social.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un anuncio para ver su actividad social.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         if (!is_user_logged_in()) {
-            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este anuncio.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este anuncio.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-red-social">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Actividad social del anuncio', 'flavor-chat-ia') . '</h2><p>' . esc_html($anuncio['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Actividad social del anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($anuncio['titulo']) . '</p></div>'
             . '<a href="' . esc_url(home_url('/mi-portal/red-social/crear/?ad_id=' . absint($anuncio['id']))) . '" class="button button-primary">'
-            . esc_html__('Publicar', 'flavor-chat-ia')
+            . esc_html__('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>'
             . do_shortcode('[flavor_social_feed entidad="advertising_ad" entidad_id="' . absint($anuncio['id']) . '"]')
             . '</div>';
@@ -1040,7 +1040,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
     private function action_crear_anuncio($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $titulo = sanitize_text_field($params['titulo'] ?? '');
@@ -1050,7 +1050,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
         $presupuesto = floatval($params['presupuesto'] ?? 0);
 
         if (empty($titulo)) {
-            return ['success' => false, 'error' => __('El título es requerido', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('El título es requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $post_id = wp_insert_post([
@@ -1061,7 +1061,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
         ], true);
 
         if (is_wp_error($post_id) || empty($post_id)) {
-            $error = is_wp_error($post_id) ? $post_id->get_error_message() : __('No se pudo crear el anuncio.', 'flavor-chat-ia');
+            $error = is_wp_error($post_id) ? $post_id->get_error_message() : __('No se pudo crear el anuncio.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             return ['success' => false, 'error' => $error];
         }
 
@@ -1085,7 +1085,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => true,
-            'message' => __('Anuncio creado y pendiente de aprobación', 'flavor-chat-ia'),
+            'message' => __('Anuncio creado y pendiente de aprobación', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'data' => ['ad_id' => $post_id],
         ];
     }
@@ -1096,7 +1096,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
     private function action_mis_anuncios($params) {
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $anuncios = get_posts([
@@ -1145,12 +1145,12 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
         $usuario_id = get_current_user_id();
 
         if (!$ad_id) {
-            return ['success' => false, 'error' => __('ID de anuncio requerido', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('ID de anuncio requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $anunciante = get_post_meta($ad_id, '_ad_anunciante_id', true);
         if ($anunciante != $usuario_id && !current_user_can('manage_options')) {
-            return ['success' => false, 'error' => __('No tienes permiso', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No tienes permiso', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         wp_update_post([
@@ -1158,7 +1158,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
             'post_status' => 'draft',
         ]);
 
-        return ['success' => true, 'message' => __('Anuncio pausado', 'flavor-chat-ia')];
+        return ['success' => true, 'message' => __('Anuncio pausado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     /**
@@ -1170,7 +1170,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
 
         $anunciante = get_post_meta($ad_id, '_ad_anunciante_id', true);
         if ($anunciante != $usuario_id && !current_user_can('manage_options')) {
-            return ['success' => false, 'error' => __('No tienes permiso', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No tienes permiso', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         wp_update_post([
@@ -1178,7 +1178,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
             'post_status' => 'publish',
         ]);
 
-        return ['success' => true, 'message' => __('Anuncio reanudado', 'flavor-chat-ia')];
+        return ['success' => true, 'message' => __('Anuncio reanudado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     /**
@@ -1190,7 +1190,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
         $usuario_id = get_current_user_id();
 
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $periodo = $params['periodo'] ?? 'month';
@@ -1380,7 +1380,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
         $ad = get_post($request['id']);
 
         if (!$ad || $ad->post_type !== 'flavor_ad') {
-            return new WP_Error('not_found', __('Anuncio no encontrado', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Anuncio no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         return rest_ensure_response($this->format_ad_response($ad));
@@ -1548,7 +1548,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_ads_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Sin permiso', 'flavor-chat-ia'));
+            wp_send_json_error(__('Sin permiso', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $ad_id = intval($_POST['ad_id']);
@@ -1569,7 +1569,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
             ]);
         }
 
-        wp_send_json_success(__('Anuncio aprobado', 'flavor-chat-ia'));
+        wp_send_json_success(__('Anuncio aprobado', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**
@@ -1579,7 +1579,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_ads_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Sin permiso', 'flavor-chat-ia'));
+            wp_send_json_error(__('Sin permiso', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $ad_id = intval($_POST['ad_id']);
@@ -1605,7 +1605,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
             ]);
         }
 
-        wp_send_json_success(__('Anuncio rechazado', 'flavor-chat-ia'));
+        wp_send_json_success(__('Anuncio rechazado', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**
@@ -1615,7 +1615,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_ads_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Sin permiso', 'flavor-chat-ia'));
+            wp_send_json_error(__('Sin permiso', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -1636,7 +1636,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
             'datos' => ['cantidad' => $cantidad],
         ]);
 
-        wp_send_json_success(__('Pago procesado', 'flavor-chat-ia'));
+        wp_send_json_success(__('Pago procesado', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**
@@ -1775,7 +1775,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
         ?>
         <div class="flavor-ad flavor-ad-<?php echo esc_attr($tipo); ?> <?php echo esc_attr($atts['class']); ?>"
              data-ad-id="<?php echo $ad->ID; ?>">
-            <span class="flavor-ad-label"><?php _e('Anuncio', 'flavor-chat-ia'); ?></span>
+            <span class="flavor-ad-label"><?php _e('Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             <?php if ($html): ?>
                 <?php echo wp_kses_post($html); ?>
             <?php else: ?>
@@ -1804,7 +1804,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_dashboard($atts) {
         if (!is_user_logged_in()) {
-            return '<p>' . __('Debes iniciar sesión para ver tu panel de anunciante.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('Debes iniciar sesión para ver tu panel de anunciante.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $this->enqueue_frontend_assets();
@@ -1824,9 +1824,9 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
         ?>
         <div class="flavor-ads-dashboard">
             <div class="ads-dashboard-header">
-                <h2><?php _e('Mis Anuncios', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Mis Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <a href="<?php echo add_query_arg('vista', 'crear'); ?>" class="btn btn-primary">
-                    <?php _e('Crear anuncio', 'flavor-chat-ia'); ?>
+                    <?php _e('Crear anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
@@ -1844,15 +1844,15 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
                             <div class="ads-card-stats">
                                 <div>
                                     <strong><?php echo number_format($ad['impresiones']); ?></strong>
-                                    <span><?php _e('Impresiones', 'flavor-chat-ia'); ?></span>
+                                    <span><?php _e('Impresiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                                 <div>
                                     <strong><?php echo number_format($ad['clics']); ?></strong>
-                                    <span><?php _e('Clics', 'flavor-chat-ia'); ?></span>
+                                    <span><?php _e('Clics', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                                 <div>
                                     <strong><?php echo number_format($ad['gasto'], 2); ?>€</strong>
-                                    <span><?php _e('Gasto', 'flavor-chat-ia'); ?></span>
+                                    <span><?php _e('Gasto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                             </div>
                         </div>
@@ -1860,7 +1860,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
                 </div>
             <?php else: ?>
                 <div class="ads-empty">
-                    <p><?php _e('Aún no tienes anuncios. ¡Crea tu primera campaña!', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('Aún no tienes anuncios. ¡Crea tu primera campaña!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
         </div>
@@ -1873,7 +1873,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_crear($atts) {
         if (!is_user_logged_in()) {
-            return '<p>' . __('Debes iniciar sesión para crear anuncios.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('Debes iniciar sesión para crear anuncios.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $this->enqueue_frontend_assets();
@@ -1888,41 +1888,41 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
         ob_start();
         ?>
         <div class="flavor-ads-crear">
-            <h2><?php _e('Crear nuevo anuncio', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Crear nuevo anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <form class="ads-form" id="crear-anuncio-form">
                 <?php wp_nonce_field('flavor_ads_nonce', 'nonce'); ?>
 
                 <div class="form-grupo">
-                    <label><?php _e('Título del anuncio', 'flavor-chat-ia'); ?> *</label>
+                    <label><?php _e('Título del anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <input type="text" name="titulo" required>
                 </div>
 
                 <div class="form-grupo">
-                    <label><?php _e('Tipo de anuncio', 'flavor-chat-ia'); ?></label>
+                    <label><?php _e('Tipo de anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="tipo">
-                        <option value="<?php echo esc_attr__('banner_horizontal', 'flavor-chat-ia'); ?>"><?php _e('Banner Horizontal', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('banner_sidebar', 'flavor-chat-ia'); ?>"><?php _e('Banner Sidebar', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('banner_card', 'flavor-chat-ia'); ?>"><?php _e('Tarjeta', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('banner_nativo', 'flavor-chat-ia'); ?>"><?php _e('Nativo', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('banner_horizontal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Banner Horizontal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('banner_sidebar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Banner Sidebar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('banner_card', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Tarjeta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('banner_nativo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Nativo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div class="form-grupo">
-                    <label><?php _e('URL de destino', 'flavor-chat-ia'); ?> *</label>
-                    <input type="url" name="url_destino" required placeholder="<?php echo esc_attr__('https://...', 'flavor-chat-ia'); ?>">
+                    <label><?php _e('URL de destino', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
+                    <input type="url" name="url_destino" required placeholder="<?php echo esc_attr__('https://...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
 
                 <div class="form-grupo">
-                    <label><?php _e('Imagen del anuncio', 'flavor-chat-ia'); ?></label>
-                    <input type="url" name="imagen" placeholder="<?php echo esc_attr__('URL de la imagen', 'flavor-chat-ia'); ?>">
+                    <label><?php _e('Imagen del anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                    <input type="url" name="imagen" placeholder="<?php echo esc_attr__('URL de la imagen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
 
                 <div class="form-grupo">
-                    <label><?php _e('Presupuesto (€)', 'flavor-chat-ia'); ?></label>
+                    <label><?php _e('Presupuesto (€)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="number" name="presupuesto" min="0" step="0.01" value="50">
                 </div>
 
-                <button type="submit" class="btn btn-primary"><?php _e('Enviar para revisión', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="btn btn-primary"><?php _e('Enviar para revisión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
             </form>
         </div>
         <?php
@@ -1934,7 +1934,7 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_ingresos($atts) {
         if (!is_user_logged_in()) {
-            return '<p>' . __('Debes iniciar sesión para ver tus ingresos.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('Debes iniciar sesión para ver tus ingresos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $this->enqueue_frontend_assets();
@@ -1953,17 +1953,17 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
         ob_start();
         ?>
         <div class="flavor-ads-ingresos">
-            <h2><?php esc_html_e('Mis Ingresos por Publicidad', 'flavor-chat-ia'); ?></h2>
-            <p style="color: #6b7280;"><?php esc_html_e('Como miembro de la comunidad, recibes una parte de los ingresos publicitarios.', 'flavor-chat-ia'); ?></p>
+            <h2><?php esc_html_e('Mis Ingresos por Publicidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+            <p style="color: #6b7280;"><?php esc_html_e('Como miembro de la comunidad, recibes una parte de los ingresos publicitarios.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
             <div class="ingresos-stats">
                 <div class="ingreso-card">
                     <span class="ingreso-valor"><?php echo esc_html(number_format($data['total_periodo'] ?? 0, 2)); ?>€</span>
-                    <span class="ingreso-label"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></span>
+                    <span class="ingreso-label"><?php esc_html_e('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="ingreso-card">
                     <span class="ingreso-valor"><?php echo esc_html(number_format($data['pendiente_pago'] ?? 0, 2)); ?>€</span>
-                    <span class="ingreso-label"><?php esc_html_e('Pendiente de pago', 'flavor-chat-ia'); ?></span>
+                    <span class="ingreso-label"><?php esc_html_e('Pendiente de pago', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
         </div>
@@ -2004,9 +2004,9 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
             'ajaxurl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_ads_nonce'),
             'strings' => [
-                'confirmar' => __('¿Estás seguro?', 'flavor-chat-ia'),
-                'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'exito' => __('Operación completada', 'flavor-chat-ia'),
+                'confirmar' => __('¿Estás seguro?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'exito' => __('Operación completada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
 
@@ -2216,71 +2216,71 @@ KNOWLEDGE;
     public function get_web_components() {
         return [
             'banner_horizontal' => [
-                'label' => __('Banner Horizontal', 'flavor-chat-ia'),
-                'description' => __('Banner publicitario horizontal (728x90 o similar)', 'flavor-chat-ia'),
+                'label' => __('Banner Horizontal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Banner publicitario horizontal (728x90 o similar)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-slides',
                 'fields' => [
                     'ad_id' => [
                         'type' => 'select',
-                        'label' => __('Anuncio', 'flavor-chat-ia'),
+                        'label' => __('Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => $this->get_available_ads(),
                         'default' => '',
                     ],
                     'position' => [
                         'type' => 'select',
-                        'label' => __('Posición', 'flavor-chat-ia'),
+                        'label' => __('Posición', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['header', 'content_top', 'content_bottom', 'footer'],
                         'default' => 'content_top',
                     ],
                     'mostrar_etiqueta' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar etiqueta "Anuncio"', 'flavor-chat-ia'),
+                        'label' => __('Mostrar etiqueta "Anuncio"', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                 ],
                 'template' => 'advertising/banner-horizontal',
             ],
             'banner_sidebar' => [
-                'label' => __('Banner Sidebar', 'flavor-chat-ia'),
-                'description' => __('Banner vertical para barra lateral (300x250)', 'flavor-chat-ia'),
+                'label' => __('Banner Sidebar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Banner vertical para barra lateral (300x250)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-slides',
                 'fields' => [
                     'ad_id' => [
                         'type' => 'select',
-                        'label' => __('Anuncio', 'flavor-chat-ia'),
+                        'label' => __('Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => $this->get_available_ads(),
                         'default' => '',
                     ],
                     'mostrar_etiqueta' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar etiqueta "Anuncio"', 'flavor-chat-ia'),
+                        'label' => __('Mostrar etiqueta "Anuncio"', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                     'sticky' => [
                         'type' => 'toggle',
-                        'label' => __('Fijo al hacer scroll', 'flavor-chat-ia'),
+                        'label' => __('Fijo al hacer scroll', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => false,
                     ],
                 ],
                 'template' => 'advertising/banner-sidebar',
             ],
             'banner_card' => [
-                'label' => __('Anuncio Tipo Tarjeta', 'flavor-chat-ia'),
-                'description' => __('Anuncio integrado como tarjeta de contenido', 'flavor-chat-ia'),
+                'label' => __('Anuncio Tipo Tarjeta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Anuncio integrado como tarjeta de contenido', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'cards',
                 'icon' => 'dashicons-format-aside',
                 'fields' => [
                     'ad_id' => [
                         'type' => 'select',
-                        'label' => __('Anuncio', 'flavor-chat-ia'),
+                        'label' => __('Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => $this->get_available_ads(),
                         'default' => '',
                     ],
                     'estilo' => [
                         'type' => 'select',
-                        'label' => __('Estilo', 'flavor-chat-ia'),
+                        'label' => __('Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['minimal', 'card', 'featured'],
                         'default' => 'card',
                     ],
@@ -2288,20 +2288,20 @@ KNOWLEDGE;
                 'template' => 'advertising/banner-card',
             ],
             'banner_nativo' => [
-                'label' => __('Anuncio Nativo', 'flavor-chat-ia'),
-                'description' => __('Anuncio que se integra con el diseño del contenido', 'flavor-chat-ia'),
+                'label' => __('Anuncio Nativo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Anuncio que se integra con el diseño del contenido', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-admin-page',
                 'fields' => [
                     'ad_id' => [
                         'type' => 'select',
-                        'label' => __('Anuncio', 'flavor-chat-ia'),
+                        'label' => __('Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => $this->get_available_ads(),
                         'default' => '',
                     ],
                     'titulo_personalizado' => [
                         'type' => 'text',
-                        'label' => __('Título personalizado', 'flavor-chat-ia'),
+                        'label' => __('Título personalizado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                 ],
@@ -2320,7 +2320,7 @@ KNOWLEDGE;
             'post_status' => 'publish',
         ]);
 
-        $options = ['' => __('Seleccionar anuncio', 'flavor-chat-ia')];
+        $options = ['' => __('Seleccionar anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         foreach ($ads as $ad) {
             $options[$ad->ID] = $ad->post_title;
         }
@@ -2362,37 +2362,37 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Publicidad', 'flavor-chat-ia'),
+                'title' => __('Publicidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'publicidad',
-                'content' => '<h1>' . __('Publicidad', 'flavor-chat-ia') . '</h1>
-<p>' . __('Promociona tu negocio o servicios', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Publicidad', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Promociona tu negocio o servicios', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="advertising" action="listar_anuncios" columnas="3" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Crear Anuncio', 'flavor-chat-ia'),
+                'title' => __('Crear Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'crear-anuncio',
-                'content' => '<h1>' . __('Crear Anuncio', 'flavor-chat-ia') . '</h1>
-<p>' . __('Crea un nuevo anuncio publicitario', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Crear Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Crea un nuevo anuncio publicitario', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_form module="advertising" action="crear_anuncio"]',
                 'parent' => 'publicidad',
             ],
             [
-                'title' => __('Mis Campañas', 'flavor-chat-ia'),
+                'title' => __('Mis Campañas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mis-campanas',
-                'content' => '<h1>' . __('Mis Campañas', 'flavor-chat-ia') . '</h1>
-<p>' . __('Gestiona tus campañas publicitarias', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Mis Campañas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Gestiona tus campañas publicitarias', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_dashboard module="advertising" action="mis_campanas"]',
                 'parent' => 'publicidad',
             ],
             [
-                'title' => __('Estadísticas', 'flavor-chat-ia'),
+                'title' => __('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'estadisticas-publicidad',
-                'content' => '<h1>' . __('Estadísticas', 'flavor-chat-ia') . '</h1>
-<p>' . __('Analiza el rendimiento de tus anuncios', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Analiza el rendimiento de tus anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="advertising" action="estadisticas"]',
                 'parent' => 'publicidad',
@@ -2408,52 +2408,52 @@ KNOWLEDGE;
     public function get_shortcodes() {
         return [
             'flavor_ad' => [
-                'name' => __('Mostrar Anuncio', 'flavor-chat-ia'),
-                'description' => __('Muestra un anuncio específico o aleatorio según el tipo', 'flavor-chat-ia'),
+                'name' => __('Mostrar Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Muestra un anuncio específico o aleatorio según el tipo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'atts' => [
                     'id' => [
                         'type' => 'number',
-                        'label' => __('ID del anuncio', 'flavor-chat-ia'),
-                        'description' => __('ID específico del anuncio a mostrar (opcional)', 'flavor-chat-ia'),
+                        'label' => __('ID del anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'description' => __('ID específico del anuncio a mostrar (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 0,
                     ],
                     'tipo' => [
                         'type' => 'select',
-                        'label' => __('Tipo de anuncio', 'flavor-chat-ia'),
+                        'label' => __('Tipo de anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => [
-                            'banner_horizontal' => __('Banner Horizontal', 'flavor-chat-ia'),
-                            'banner_sidebar' => __('Banner Sidebar', 'flavor-chat-ia'),
-                            'banner_card' => __('Tarjeta', 'flavor-chat-ia'),
-                            'banner_nativo' => __('Nativo', 'flavor-chat-ia'),
+                            'banner_horizontal' => __('Banner Horizontal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'banner_sidebar' => __('Banner Sidebar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'banner_card' => __('Tarjeta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'banner_nativo' => __('Nativo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ],
                         'default' => 'banner_horizontal',
                     ],
                     'ubicacion' => [
                         'type' => 'text',
-                        'label' => __('Ubicación', 'flavor-chat-ia'),
-                        'description' => __('Slug de la taxonomía de ubicación', 'flavor-chat-ia'),
+                        'label' => __('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'description' => __('Slug de la taxonomía de ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                     'class' => [
                         'type' => 'text',
-                        'label' => __('Clases CSS adicionales', 'flavor-chat-ia'),
+                        'label' => __('Clases CSS adicionales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                 ],
             ],
             'flavor_ads_dashboard' => [
-                'name' => __('Dashboard del Anunciante', 'flavor-chat-ia'),
-                'description' => __('Panel de control para gestionar anuncios propios', 'flavor-chat-ia'),
+                'name' => __('Dashboard del Anunciante', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Panel de control para gestionar anuncios propios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'atts' => [],
             ],
             'flavor_ads_crear' => [
-                'name' => __('Formulario Crear Anuncio', 'flavor-chat-ia'),
-                'description' => __('Formulario para crear un nuevo anuncio', 'flavor-chat-ia'),
+                'name' => __('Formulario Crear Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Formulario para crear un nuevo anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'atts' => [],
             ],
             'flavor_ads_ingresos' => [
-                'name' => __('Mis Ingresos Publicitarios', 'flavor-chat-ia'),
-                'description' => __('Muestra los ingresos del usuario por reparto publicitario', 'flavor-chat-ia'),
+                'name' => __('Mis Ingresos Publicitarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Muestra los ingresos del usuario por reparto publicitario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'atts' => [],
             ],
         ];
@@ -2466,48 +2466,48 @@ KNOWLEDGE;
      */
     public function get_form_config() {
         return [
-            'titulo' => __('Crear Anuncio', 'flavor-chat-ia'),
-            'descripcion' => __('Completa el formulario para crear un nuevo anuncio publicitario', 'flavor-chat-ia'),
+            'titulo' => __('Crear Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'descripcion' => __('Completa el formulario para crear un nuevo anuncio publicitario', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'campos' => [
                 'titulo' => [
                     'type' => 'text',
-                    'label' => __('Título del anuncio', 'flavor-chat-ia'),
+                    'label' => __('Título del anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'required' => true,
-                    'placeholder' => __('Ej: Promoción de verano', 'flavor-chat-ia'),
+                    'placeholder' => __('Ej: Promoción de verano', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
                 'tipo' => [
                     'type' => 'select',
-                    'label' => __('Tipo de anuncio', 'flavor-chat-ia'),
+                    'label' => __('Tipo de anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'required' => true,
                     'options' => [
-                        'banner_horizontal' => __('Banner Horizontal (728x90)', 'flavor-chat-ia'),
-                        'banner_sidebar' => __('Banner Sidebar (300x250)', 'flavor-chat-ia'),
-                        'banner_card' => __('Tarjeta con imagen', 'flavor-chat-ia'),
-                        'banner_nativo' => __('Anuncio nativo', 'flavor-chat-ia'),
+                        'banner_horizontal' => __('Banner Horizontal (728x90)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'banner_sidebar' => __('Banner Sidebar (300x250)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'banner_card' => __('Tarjeta con imagen', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'banner_nativo' => __('Anuncio nativo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                 ],
                 'url_destino' => [
                     'type' => 'url',
-                    'label' => __('URL de destino', 'flavor-chat-ia'),
+                    'label' => __('URL de destino', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'required' => true,
                     'placeholder' => 'https://tu-sitio.com/landing',
                 ],
                 'imagen' => [
                     'type' => 'url',
-                    'label' => __('URL de la imagen', 'flavor-chat-ia'),
+                    'label' => __('URL de la imagen', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'required' => false,
                     'placeholder' => 'https://...',
-                    'description' => __('Tamaño recomendado según tipo de anuncio', 'flavor-chat-ia'),
+                    'description' => __('Tamaño recomendado según tipo de anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
                 'texto_cta' => [
                     'type' => 'text',
-                    'label' => __('Texto del botón', 'flavor-chat-ia'),
+                    'label' => __('Texto del botón', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'required' => false,
-                    'default' => __('Saber más', 'flavor-chat-ia'),
+                    'default' => __('Saber más', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
                 'presupuesto' => [
                     'type' => 'number',
-                    'label' => __('Presupuesto (€)', 'flavor-chat-ia'),
+                    'label' => __('Presupuesto (€)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'required' => false,
                     'min' => 5,
                     'step' => 0.01,
@@ -2515,16 +2515,16 @@ KNOWLEDGE;
                 ],
                 'fecha_inicio' => [
                     'type' => 'date',
-                    'label' => __('Fecha de inicio', 'flavor-chat-ia'),
+                    'label' => __('Fecha de inicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'required' => false,
                 ],
                 'fecha_fin' => [
                     'type' => 'date',
-                    'label' => __('Fecha de fin', 'flavor-chat-ia'),
+                    'label' => __('Fecha de fin', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'required' => false,
                 ],
             ],
-            'submit_text' => __('Enviar para revisión', 'flavor-chat-ia'),
+            'submit_text' => __('Enviar para revisión', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'action' => 'crear_anuncio',
         ];
     }

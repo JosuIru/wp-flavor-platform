@@ -1,10 +1,10 @@
 # Workflow: Crear un Sitio Completo con las APIs
 
-Este tutorial guía paso a paso cómo crear un sitio web completo usando las APIs de Flavor Chat IA.
+Este tutorial guía paso a paso cómo crear un sitio web completo usando las APIs de Flavor Platform.
 
 ## Requisitos Previos
 
-- WordPress instalado con Flavor Chat IA activo
+- WordPress instalado con Flavor Platform activo
 - API Key configurada en la instalación actual
 - URL base del sitio (ejemplo: `https://mi-sitio.com`)
 

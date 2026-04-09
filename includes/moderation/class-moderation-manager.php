@@ -1424,7 +1424,7 @@ class Flavor_Moderation_Manager {
      */
     public function add_admin_menu() {
         add_submenu_page(
-            'flavor-chat-ia',
+            'flavor-platform',
             'Moderación',
             'Moderación',
             'edit_posts',

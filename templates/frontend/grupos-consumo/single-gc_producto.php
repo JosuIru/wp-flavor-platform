@@ -49,7 +49,7 @@ while (have_posts()) :
 
                     <?php if ($productor): ?>
                     <p class="gc-producto-productor">
-                        <?php _e('Por', 'flavor-chat-ia'); ?>
+                        <?php _e('Por', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <a href="<?php echo get_permalink($productor->ID); ?>"><?php echo esc_html($productor->post_title); ?></a>
                     </p>
                     <?php endif; ?>
@@ -61,10 +61,10 @@ while (have_posts()) :
 
                     <div class="gc-producto-disponibilidad">
                         <?php if ($disponible && $stock !== '' && (int)$stock > 0): ?>
-                        <span class="gc-badge gc-badge-disponible"><?php _e('Disponible', 'flavor-chat-ia'); ?></span>
-                        <span class="gc-stock"><?php printf(__('Stock: %s', 'flavor-chat-ia'), esc_html($stock)); ?></span>
+                        <span class="gc-badge gc-badge-disponible"><?php _e('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                        <span class="gc-stock"><?php printf(__('Stock: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($stock)); ?></span>
                         <?php elseif (!$disponible): ?>
-                        <span class="gc-badge gc-badge-agotado"><?php _e('No disponible', 'flavor-chat-ia'); ?></span>
+                        <span class="gc-badge gc-badge-agotado"><?php _e('No disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <?php endif; ?>
                     </div>
                 </header>
@@ -76,7 +76,7 @@ while (have_posts()) :
                         <input type="hidden" name="producto_id" value="<?php echo esc_attr($producto_id); ?>">
 
                         <div class="gc-cantidad-control">
-                            <label for="cantidad"><?php _e('Cantidad', 'flavor-chat-ia'); ?></label>
+                            <label for="cantidad"><?php _e('Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <div class="gc-cantidad-input">
                                 <button type="button" class="gc-cantidad-btn gc-cantidad-menos">-</button>
                                 <input type="number" id="cantidad" name="cantidad" value="1" min="1" max="<?php echo esc_attr($stock ?: 99); ?>">
@@ -86,27 +86,27 @@ while (have_posts()) :
 
                         <button type="submit" name="gc_agregar_cesta" class="gc-btn gc-btn-primary gc-btn-block">
                             <span class="dashicons dashicons-cart"></span>
-                            <?php _e('Agregar a la cesta', 'flavor-chat-ia'); ?>
+                            <?php _e('Agregar a la cesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </form>
                 </div>
                 <?php elseif (!is_user_logged_in()): ?>
                 <div class="gc-producto-login">
-                    <p><?php _e('Inicia sesion para hacer pedidos.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('Inicia sesion para hacer pedidos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="gc-btn gc-btn-primary">
-                        <?php _e('Iniciar sesion', 'flavor-chat-ia'); ?>
+                        <?php _e('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
                 <?php endif; ?>
 
                 <div class="gc-producto-detalles">
-                    <h2><?php _e('Descripcion', 'flavor-chat-ia'); ?></h2>
+                    <h2><?php _e('Descripcion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                     <div class="gc-producto-descripcion">
                         <?php the_content(); ?>
                     </div>
 
                     <?php if (!empty($origen)): ?>
-                    <p><strong><?php _e('Origen:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($origen); ?></p>
+                    <p><strong><?php _e('Origen:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html($origen); ?></p>
                     <?php endif; ?>
                 </div>
             </div>
@@ -116,12 +116,12 @@ while (have_posts()) :
             <?php if ($ciclo): ?>
             <a href="<?php echo get_permalink($ciclo->ID); ?>" class="gc-btn gc-btn-link">
                 <span class="dashicons dashicons-arrow-left-alt"></span>
-                <?php _e('Volver al ciclo', 'flavor-chat-ia'); ?>
+                <?php _e('Volver al ciclo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <?php else: ?>
             <a href="<?php echo esc_url(home_url('/grupos-consumo/')); ?>" class="gc-btn gc-btn-link">
                 <span class="dashicons dashicons-arrow-left-alt"></span>
-                <?php _e('Volver', 'flavor-chat-ia'); ?>
+                <?php _e('Volver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <?php endif; ?>
         </nav>

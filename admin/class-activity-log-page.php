@@ -17,7 +17,7 @@ class Flavor_Activity_Log_Page {
 
     private static $instancia = null;
 
-    const SLUG_PAGINA = 'flavor-activity-log';
+    const SLUG_PAGINA = 'flavor-platform-activity-log';
 
     public static function get_instance() {
         if (self::$instancia === null) {
@@ -32,9 +32,9 @@ class Flavor_Activity_Log_Page {
 
     public function registrar_pagina_menu() {
         add_submenu_page(
-            'flavor-chat-ia',
-            __('Registro de Actividad', 'flavor-chat-ia'),
-            __('Actividad', 'flavor-chat-ia'),
+            FLAVOR_PLATFORM_TEXT_DOMAIN,
+            __('Registro de Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             self::SLUG_PAGINA,
             [$this, 'renderizar_pagina']
@@ -43,7 +43,7 @@ class Flavor_Activity_Log_Page {
 
     public function renderizar_pagina() {
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('No tienes permisos para acceder a esta pagina.', 'flavor-chat-ia'));
+            wp_die(esc_html__('No tienes permisos para acceder a esta pagina.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         if (!class_exists('Flavor_Activity_Log')) {
@@ -107,25 +107,25 @@ class Flavor_Activity_Log_Page {
 
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e('Registro de Actividad', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Registro de Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
 
             <div style="display:flex;gap:16px;margin:20px 0;flex-wrap:wrap;">
                 <div style="background:#fff;border-left:4px solid #2271b1;padding:16px 20px;min-width:150px;box-shadow:0 1px 1px rgba(0,0,0,.04);">
-                    <div style="font-size:13px;color:#50575e;"><?php esc_html_e('Total (7 dias)', 'flavor-chat-ia'); ?></div>
+                    <div style="font-size:13px;color:#50575e;"><?php esc_html_e('Total (7 dias)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     <div style="font-size:28px;font-weight:600;color:#2271b1;"><?php echo esc_html($resumen_actividad['total']); ?></div>
                 </div>
                 <div style="background:#fff;border-left:4px solid #d63638;padding:16px 20px;min-width:150px;box-shadow:0 1px 1px rgba(0,0,0,.04);">
-                    <div style="font-size:13px;color:#50575e;"><?php esc_html_e('Errores', 'flavor-chat-ia'); ?></div>
+                    <div style="font-size:13px;color:#50575e;"><?php esc_html_e('Errores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     <div style="font-size:28px;font-weight:600;color:#d63638;"><?php echo esc_html($total_por_tipo['error'] ?? 0); ?></div>
                 </div>
                 <div style="background:#fff;border-left:4px solid #dba617;padding:16px 20px;min-width:150px;box-shadow:0 1px 1px rgba(0,0,0,.04);">
-                    <div style="font-size:13px;color:#50575e;"><?php esc_html_e('Advertencias', 'flavor-chat-ia'); ?></div>
+                    <div style="font-size:13px;color:#50575e;"><?php esc_html_e('Advertencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     <div style="font-size:28px;font-weight:600;color:#dba617;"><?php echo esc_html($total_por_tipo['advertencia'] ?? 0); ?></div>
                 </div>
                 <div style="background:#fff;border-left:4px solid #00a32a;padding:16px 20px;min-width:150px;box-shadow:0 1px 1px rgba(0,0,0,.04);">
-                    <div style="font-size:13px;color:#50575e;"><?php esc_html_e('Modulo mas activo', 'flavor-chat-ia'); ?></div>
+                    <div style="font-size:13px;color:#50575e;"><?php esc_html_e('Modulo mas activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     <div style="font-size:18px;font-weight:600;color:#00a32a;"><?php echo esc_html(ucfirst($modulo_mas_activo_nombre)); ?></div>
-                    <div style="font-size:12px;color:#50575e;"><?php echo esc_html($modulo_mas_activo_total); ?> <?php esc_html_e('eventos', 'flavor-chat-ia'); ?></div>
+                    <div style="font-size:12px;color:#50575e;"><?php echo esc_html($modulo_mas_activo_total); ?> <?php esc_html_e('eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
 
@@ -133,9 +133,9 @@ class Flavor_Activity_Log_Page {
                 <input type="hidden" name="page" value="<?php echo esc_attr(self::SLUG_PAGINA); ?>">
                 <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
                     <div>
-                        <label style="display:block;font-size:12px;margin-bottom:4px;font-weight:600;"><?php esc_html_e('Modulo', 'flavor-chat-ia'); ?></label>
+                        <label style="display:block;font-size:12px;margin-bottom:4px;font-weight:600;"><?php esc_html_e('Modulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select name="modulo" style="min-width:140px;">
-                            <option value=""><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php foreach ($modulos_disponibles as $modulo_opcion) : ?>
                                 <option value="<?php echo esc_attr($modulo_opcion); ?>" <?php selected($filtros_aplicados['modulo_id'], $modulo_opcion); ?>>
                                     <?php echo esc_html(ucfirst(str_replace('_', ' ', $modulo_opcion))); ?>
@@ -144,30 +144,30 @@ class Flavor_Activity_Log_Page {
                         </select>
                     </div>
                     <div>
-                        <label style="display:block;font-size:12px;margin-bottom:4px;font-weight:600;"><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></label>
+                        <label style="display:block;font-size:12px;margin-bottom:4px;font-weight:600;"><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select name="tipo" style="min-width:140px;">
-                            <option value=""><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
-                            <option value="info" <?php selected($filtros_aplicados['tipo'], 'info'); ?>><?php esc_html_e('Info', 'flavor-chat-ia'); ?></option>
-                            <option value="exito" <?php selected($filtros_aplicados['tipo'], 'exito'); ?>><?php esc_html_e('Exito', 'flavor-chat-ia'); ?></option>
-                            <option value="advertencia" <?php selected($filtros_aplicados['tipo'], 'advertencia'); ?>><?php esc_html_e('Advertencia', 'flavor-chat-ia'); ?></option>
-                            <option value="error" <?php selected($filtros_aplicados['tipo'], 'error'); ?>><?php esc_html_e('Error', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="info" <?php selected($filtros_aplicados['tipo'], 'info'); ?>><?php esc_html_e('Info', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="exito" <?php selected($filtros_aplicados['tipo'], 'exito'); ?>><?php esc_html_e('Exito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="advertencia" <?php selected($filtros_aplicados['tipo'], 'advertencia'); ?>><?php esc_html_e('Advertencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="error" <?php selected($filtros_aplicados['tipo'], 'error'); ?>><?php esc_html_e('Error', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
                     <div>
-                        <label style="display:block;font-size:12px;margin-bottom:4px;font-weight:600;"><?php esc_html_e('Desde', 'flavor-chat-ia'); ?></label>
+                        <label style="display:block;font-size:12px;margin-bottom:4px;font-weight:600;"><?php esc_html_e('Desde', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="date" name="desde" value="<?php echo esc_attr($filtros_aplicados['fecha_desde']); ?>">
                     </div>
                     <div>
-                        <label style="display:block;font-size:12px;margin-bottom:4px;font-weight:600;"><?php esc_html_e('Hasta', 'flavor-chat-ia'); ?></label>
+                        <label style="display:block;font-size:12px;margin-bottom:4px;font-weight:600;"><?php esc_html_e('Hasta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="date" name="hasta" value="<?php echo esc_attr($filtros_aplicados['fecha_hasta']); ?>">
                     </div>
                     <div>
-                        <label style="display:block;font-size:12px;margin-bottom:4px;font-weight:600;"><?php esc_html_e('Buscar', 'flavor-chat-ia'); ?></label>
-                        <input type="text" name="buscar" value="<?php echo esc_attr($filtros_aplicados['buscar']); ?>" placeholder="<?php esc_attr_e('Titulo o descripcion...', 'flavor-chat-ia'); ?>" style="min-width:160px;">
+                        <label style="display:block;font-size:12px;margin-bottom:4px;font-weight:600;"><?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                        <input type="text" name="buscar" value="<?php echo esc_attr($filtros_aplicados['buscar']); ?>" placeholder="<?php esc_attr_e('Titulo o descripcion...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" style="min-width:160px;">
                     </div>
                     <div>
-                        <button type="submit" class="button button-primary"><?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?></button>
-                        <a href="<?php echo esc_url($url_base_pagina); ?>" class="button"><?php esc_html_e('Limpiar', 'flavor-chat-ia'); ?></a>
+                        <button type="submit" class="button button-primary"><?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                        <a href="<?php echo esc_url($url_base_pagina); ?>" class="button"><?php esc_html_e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                     </div>
                 </div>
             </form>
@@ -175,7 +175,7 @@ class Flavor_Activity_Log_Page {
             <div class="tablenav top">
                 <div class="tablenav-pages">
                     <span class="displaying-num">
-                        <?php printf(esc_html__('%d elementos', 'flavor-chat-ia'), $resultado_actividad['total']); ?>
+                        <?php printf(esc_html__('%d elementos', FLAVOR_PLATFORM_TEXT_DOMAIN), $resultado_actividad['total']); ?>
                     </span>
                     <?php if ($resultado_actividad['paginas'] > 1) : ?>
                         <?php
@@ -210,19 +210,19 @@ class Flavor_Activity_Log_Page {
             <table class="widefat striped">
                 <thead>
                     <tr>
-                        <th style="width:40px;"><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th>
-                        <th style="width:120px;"><?php esc_html_e('Modulo', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Titulo', 'flavor-chat-ia'); ?></th>
-                        <th style="width:120px;"><?php esc_html_e('Accion', 'flavor-chat-ia'); ?></th>
-                        <th style="width:120px;"><?php esc_html_e('Usuario', 'flavor-chat-ia'); ?></th>
-                        <th style="width:150px;"><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
+                        <th style="width:40px;"><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width:120px;"><?php esc_html_e('Modulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Titulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width:120px;"><?php esc_html_e('Accion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width:120px;"><?php esc_html_e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width:150px;"><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($resultado_actividad['registros'])) : ?>
                         <tr>
                             <td colspan="6" style="text-align:center;padding:20px;color:#50575e;">
-                                <?php esc_html_e('No se encontraron registros de actividad.', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('No se encontraron registros de actividad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </td>
                         </tr>
                     <?php else : ?>
@@ -257,7 +257,7 @@ class Flavor_Activity_Log_Page {
                                     <code style="font-size:11px;"><?php echo esc_html($registro_fila->accion); ?></code>
                                 </td>
                                 <td>
-                                    <?php echo esc_html($registro_fila->nombre_usuario ?? __('Sistema', 'flavor-chat-ia')); ?>
+                                    <?php echo esc_html($registro_fila->nombre_usuario ?? __('Sistema', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                                 </td>
                                 <td style="font-size:12px;color:#646970;white-space:nowrap;">
                                     <?php echo esc_html(date_i18n('d/m/Y H:i', strtotime($registro_fila->fecha))); ?>

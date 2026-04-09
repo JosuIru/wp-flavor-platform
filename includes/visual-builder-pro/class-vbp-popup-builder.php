@@ -64,16 +64,16 @@ class Flavor_VBP_Popup_Builder {
             self::POST_TYPE,
             array(
                 'labels'              => array(
-                    'name'               => __( 'Popups', 'flavor-chat-ia' ),
-                    'singular_name'      => __( 'Popup', 'flavor-chat-ia' ),
-                    'add_new'            => __( 'Añadir nuevo', 'flavor-chat-ia' ),
-                    'add_new_item'       => __( 'Añadir nuevo Popup', 'flavor-chat-ia' ),
-                    'edit_item'          => __( 'Editar Popup', 'flavor-chat-ia' ),
-                    'new_item'           => __( 'Nuevo Popup', 'flavor-chat-ia' ),
-                    'view_item'          => __( 'Ver Popup', 'flavor-chat-ia' ),
-                    'search_items'       => __( 'Buscar Popups', 'flavor-chat-ia' ),
-                    'not_found'          => __( 'No se encontraron popups', 'flavor-chat-ia' ),
-                    'not_found_in_trash' => __( 'No hay popups en la papelera', 'flavor-chat-ia' ),
+                    'name'               => __( 'Popups', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'singular_name'      => __( 'Popup', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'add_new'            => __( 'Añadir nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'add_new_item'       => __( 'Añadir nuevo Popup', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'edit_item'          => __( 'Editar Popup', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'new_item'           => __( 'Nuevo Popup', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'view_item'          => __( 'Ver Popup', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'search_items'       => __( 'Buscar Popups', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'not_found'          => __( 'No se encontraron popups', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'not_found_in_trash' => __( 'No hay popups en la papelera', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 'public'              => false,
                 'publicly_queryable'  => false,
@@ -208,7 +208,7 @@ class Flavor_VBP_Popup_Builder {
         $titulo = sanitize_text_field( $request->get_param( 'title' ) );
 
         if ( empty( $titulo ) ) {
-            $titulo = __( 'Nuevo Popup', 'flavor-chat-ia' );
+            $titulo = __( 'Nuevo Popup', FLAVOR_PLATFORM_TEXT_DOMAIN );
         }
 
         // Config por defecto
@@ -255,7 +255,7 @@ class Flavor_VBP_Popup_Builder {
                 'id'      => $popup_id,
                 'title'   => $titulo,
                 'config'  => $config_default,
-                'message' => __( 'Popup creado correctamente', 'flavor-chat-ia' ),
+                'message' => __( 'Popup creado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             201
         );
@@ -273,7 +273,7 @@ class Flavor_VBP_Popup_Builder {
 
         if ( ! $popup || self::POST_TYPE !== $popup->post_type ) {
             return new WP_REST_Response(
-                array( 'error' => __( 'Popup no encontrado', 'flavor-chat-ia' ) ),
+                array( 'error' => __( 'Popup no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                 404
             );
         }
@@ -305,7 +305,7 @@ class Flavor_VBP_Popup_Builder {
 
         if ( ! $popup || self::POST_TYPE !== $popup->post_type ) {
             return new WP_REST_Response(
-                array( 'error' => __( 'Popup no encontrado', 'flavor-chat-ia' ) ),
+                array( 'error' => __( 'Popup no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                 404
             );
         }
@@ -338,7 +338,7 @@ class Flavor_VBP_Popup_Builder {
         return new WP_REST_Response(
             array(
                 'id'      => $popup_id,
-                'message' => __( 'Popup actualizado', 'flavor-chat-ia' ),
+                'message' => __( 'Popup actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             200
         );
@@ -356,7 +356,7 @@ class Flavor_VBP_Popup_Builder {
 
         if ( ! $popup || self::POST_TYPE !== $popup->post_type ) {
             return new WP_REST_Response(
-                array( 'error' => __( 'Popup no encontrado', 'flavor-chat-ia' ) ),
+                array( 'error' => __( 'Popup no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                 404
             );
         }
@@ -364,7 +364,7 @@ class Flavor_VBP_Popup_Builder {
         wp_delete_post( $popup_id, true );
 
         return new WP_REST_Response(
-            array( 'message' => __( 'Popup eliminado', 'flavor-chat-ia' ) ),
+            array( 'message' => __( 'Popup eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             200
         );
     }
@@ -381,7 +381,7 @@ class Flavor_VBP_Popup_Builder {
 
         if ( ! $popup || self::POST_TYPE !== $popup->post_type ) {
             return new WP_REST_Response(
-                array( 'error' => __( 'Popup no encontrado', 'flavor-chat-ia' ) ),
+                array( 'error' => __( 'Popup no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                 404
             );
         }
@@ -389,7 +389,7 @@ class Flavor_VBP_Popup_Builder {
         // Crear copia
         $nuevo_popup_id = wp_insert_post(
             array(
-                'post_title'  => $popup->post_title . ' ' . __( '(copia)', 'flavor-chat-ia' ),
+                'post_title'  => $popup->post_title . ' ' . __( '(copia)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'post_type'   => self::POST_TYPE,
                 'post_status' => 'publish',
             )
@@ -417,7 +417,7 @@ class Flavor_VBP_Popup_Builder {
         return new WP_REST_Response(
             array(
                 'id'      => $nuevo_popup_id,
-                'message' => __( 'Popup duplicado', 'flavor-chat-ia' ),
+                'message' => __( 'Popup duplicado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             201
         );
@@ -567,7 +567,7 @@ class Flavor_VBP_Popup_Builder {
         <div class="vbp-popup-overlay" style="<?php echo $overlay_style; ?>" <?php echo $data_string; ?>>
             <div class="<?php echo esc_attr( implode( ' ', $clases ) ); ?>">
                 <?php if ( ! empty( $config['showCloseButton'] ) ) : ?>
-                <button type="button" class="vbp-popup-close" aria-label="<?php esc_attr_e( 'Cerrar', 'flavor-chat-ia' ); ?>">
+                <button type="button" class="vbp-popup-close" aria-label="<?php esc_attr_e( 'Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M18 6L6 18M6 6l12 12"/>
                     </svg>

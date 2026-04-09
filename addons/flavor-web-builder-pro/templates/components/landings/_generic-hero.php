@@ -24,7 +24,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Valores por defecto
-$titulo = $titulo ?? __('Bienvenido', 'flavor-chat-ia');
+$titulo = $titulo ?? __('Bienvenido', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $subtitulo = $subtitulo ?? '';
 $descripcion = $descripcion ?? '';
 $imagen_fondo = $imagen_fondo ?? '';

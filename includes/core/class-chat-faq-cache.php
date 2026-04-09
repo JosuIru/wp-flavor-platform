@@ -55,7 +55,7 @@ class Flavor_Chat_FAQ_Cache {
         $normalized = $this->normalize_question($question);
 
         // Buscar en FAQs configuradas
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $faqs = $settings['faqs'] ?? [];
 
         foreach ($faqs as $faq) {

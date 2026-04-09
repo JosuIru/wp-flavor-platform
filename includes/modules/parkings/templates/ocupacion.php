@@ -19,7 +19,7 @@ $tabla_reservas = $wpdb->prefix . 'flavor_parkings_reservas';
 
 // Verificar si existe la tabla
 if (!Flavor_Chat_Helpers::tabla_existe($tabla_parkings)) {
-    echo '<div class="parkings-empty"><p>' . esc_html__('El módulo de parkings no está configurado.', 'flavor-chat-ia') . '</p></div>';
+    echo '<div class="parkings-empty"><p>' . esc_html__('El módulo de parkings no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
 
@@ -73,17 +73,17 @@ function obtener_color_ocupacion($porcentaje) {
  * Determina el estado textual según el porcentaje
  */
 function obtener_estado_ocupacion($porcentaje) {
-    if ($porcentaje >= 90) return __('Casi lleno', 'flavor-chat-ia');
-    if ($porcentaje >= 70) return __('Alta ocupación', 'flavor-chat-ia');
-    if ($porcentaje >= 50) return __('Ocupación media', 'flavor-chat-ia');
-    return __('Buena disponibilidad', 'flavor-chat-ia');
+    if ($porcentaje >= 90) return __('Casi lleno', FLAVOR_PLATFORM_TEXT_DOMAIN);
+    if ($porcentaje >= 70) return __('Alta ocupación', FLAVOR_PLATFORM_TEXT_DOMAIN);
+    if ($porcentaje >= 50) return __('Ocupación media', FLAVOR_PLATFORM_TEXT_DOMAIN);
+    return __('Buena disponibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN);
 }
 ?>
 
 <div class="parkings-ocupacion">
     <header class="ocupacion-header">
-        <h2><?php esc_html_e('Ocupación en Tiempo Real', 'flavor-chat-ia'); ?></h2>
-        <p><?php esc_html_e('Estado actual de los parkings', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Ocupación en Tiempo Real', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p><?php esc_html_e('Estado actual de los parkings', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </header>
 
     <!-- Resumen general -->
@@ -100,21 +100,21 @@ function obtener_estado_ocupacion($porcentaje) {
             </svg>
             <div class="donut-centro">
                 <span class="donut-porcentaje"><?php echo esc_html($porcentaje_general); ?>%</span>
-                <span class="donut-label"><?php esc_html_e('ocupado', 'flavor-chat-ia'); ?></span>
+                <span class="donut-label"><?php esc_html_e('ocupado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
         <div class="resumen-stats">
             <div class="stat-item">
                 <span class="stat-numero"><?php echo esc_html($total_plazas_general); ?></span>
-                <span class="stat-label"><?php esc_html_e('Plazas totales', 'flavor-chat-ia'); ?></span>
+                <span class="stat-label"><?php esc_html_e('Plazas totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="stat-item stat-item--ocupadas">
                 <span class="stat-numero"><?php echo esc_html($total_ocupadas_general); ?></span>
-                <span class="stat-label"><?php esc_html_e('Ocupadas', 'flavor-chat-ia'); ?></span>
+                <span class="stat-label"><?php esc_html_e('Ocupadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="stat-item stat-item--libres">
                 <span class="stat-numero"><?php echo esc_html($total_plazas_general - $total_ocupadas_general); ?></span>
-                <span class="stat-label"><?php esc_html_e('Disponibles', 'flavor-chat-ia'); ?></span>
+                <span class="stat-label"><?php esc_html_e('Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
@@ -123,10 +123,10 @@ function obtener_estado_ocupacion($porcentaje) {
     <div class="ocupacion-timestamp">
         <span class="dashicons dashicons-clock"></span>
         <?php printf(
-            esc_html__('Última actualización: %s', 'flavor-chat-ia'),
+            esc_html__('Última actualización: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
             date_i18n('H:i:s')
         ); ?>
-        <button class="btn-refresh" onclick="location.reload()" title="<?php esc_attr_e('Actualizar', 'flavor-chat-ia'); ?>">
+        <button class="btn-refresh" onclick="location.reload()" title="<?php esc_attr_e('Actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <span class="dashicons dashicons-update"></span>
         </button>
     </div>
@@ -166,10 +166,10 @@ function obtener_estado_ocupacion($porcentaje) {
                             </div>
                             <div class="ocupacion-valores">
                                 <span class="valor-ocupadas" style="color: <?php echo esc_attr($color_ocupacion); ?>">
-                                    <?php echo esc_html($plazas_ocupadas); ?> <?php esc_html_e('ocupadas', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html($plazas_ocupadas); ?> <?php esc_html_e('ocupadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                                 <span class="valor-libres">
-                                    <?php echo esc_html($plazas_libres); ?> <?php esc_html_e('libres', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html($plazas_libres); ?> <?php esc_html_e('libres', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                             </div>
                         </div>
@@ -185,12 +185,12 @@ function obtener_estado_ocupacion($porcentaje) {
                     <div class="parking-acciones">
                         <a href="<?php echo esc_url(add_query_arg('parking', $parking->id, $parkings_base_url . 'disponibilidad/')); ?>"
                            class="btn btn-outline btn-sm">
-                            <?php esc_html_e('Ver plazas', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Ver plazas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                         <?php if ($plazas_libres > 0 && is_user_logged_in()): ?>
                             <a href="<?php echo esc_url(add_query_arg('parking', $parking->id, $parkings_base_url . 'solicitar/')); ?>"
                                class="btn btn-primary btn-sm">
-                                <?php esc_html_e('Reservar', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         <?php endif; ?>
                     </div>
@@ -200,7 +200,7 @@ function obtener_estado_ocupacion($porcentaje) {
     <?php else: ?>
         <div class="ocupacion-empty-state">
             <span class="dashicons dashicons-car"></span>
-            <p><?php esc_html_e('No hay parkings configurados actualmente.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('No hay parkings configurados actualmente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php endif; ?>
 </div>

@@ -138,11 +138,11 @@ class Flavor_WPML_Integration {
 
         // Strings del chat
         $strings = [
-            'chat_title' => __('Asistente Virtual', 'flavor-chat-ia'),
-            'chat_placeholder' => __('Escribe tu mensaje...', 'flavor-chat-ia'),
-            'chat_send' => __('Enviar', 'flavor-chat-ia'),
-            'chat_thinking' => __('Pensando...', 'flavor-chat-ia'),
-            'chat_error' => __('Error al enviar mensaje', 'flavor-chat-ia'),
+            'chat_title' => __('Asistente Virtual', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'chat_placeholder' => __('Escribe tu mensaje...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'chat_send' => __('Enviar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'chat_thinking' => __('Pensando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'chat_error' => __('Error al enviar mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         // Permitir que modulos y addons registren strings dinamicos
@@ -154,7 +154,7 @@ class Flavor_WPML_Integration {
         }
 
         foreach ($strings as $name => $value) {
-            icl_register_string('flavor-chat-ia', $name, $value);
+            icl_register_string(FLAVOR_PLATFORM_TEXT_DOMAIN, $name, $value);
         }
     }
 
@@ -219,7 +219,7 @@ class Flavor_WPML_Integration {
 
         // Si el contexto tiene un string name, traducir
         if (!empty($context)) {
-            return icl_t('flavor-chat-ia', $context, $content);
+            return icl_t(FLAVOR_PLATFORM_TEXT_DOMAIN, $context, $content);
         }
 
         return $content;

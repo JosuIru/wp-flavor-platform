@@ -116,12 +116,12 @@ $tasa_ocupacion = $total_parcelas > 0 ? round(($parcelas_ocupadas / $total_parce
     <div class="dm-header">
         <div class="dm-header__title">
             <span class="dashicons dashicons-carrot"></span>
-            <h1><?php esc_html_e('Huertos Urbanos', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Huertos Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
         </div>
         <div class="dm-header__actions">
             <a href="<?php echo esc_url(admin_url('admin.php?page=huertos-parcelas&action=nueva')); ?>" class="dm-btn dm-btn--primary">
                 <span class="dashicons dashicons-plus-alt2"></span>
-                <?php esc_html_e('Nuevo Huerto', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Nuevo Huerto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>
@@ -130,8 +130,8 @@ $tasa_ocupacion = $total_parcelas > 0 ? round(($parcelas_ocupadas / $total_parce
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info-outline dm-alert__icon"></span>
         <div class="dm-alert__content">
-            <strong><?php esc_html_e('Sin datos disponibles', 'flavor-chat-ia'); ?>:</strong>
-            <?php esc_html_e('Faltan tablas del módulo Huertos Urbanos o aún no hay huertos registrados.', 'flavor-chat-ia'); ?>
+            <strong><?php esc_html_e('Sin datos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>:</strong>
+            <?php esc_html_e('Faltan tablas del módulo Huertos Urbanos o aún no hay huertos registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </div>
     </div>
     <?php endif; ?>
@@ -140,10 +140,10 @@ $tasa_ocupacion = $total_parcelas > 0 ? round(($parcelas_ocupadas / $total_parce
     <div class="dm-alert dm-alert--warning">
         <span class="dashicons dashicons-info-outline dm-alert__icon"></span>
         <div class="dm-alert__content">
-            <strong><?php esc_html_e('Atención', 'flavor-chat-ia'); ?>:</strong>
-            <?php printf(esc_html__('Hay %s solicitud(es) de parcela pendiente(s) de asignar.', 'flavor-chat-ia'), '<strong>' . $solicitudes_pendientes . '</strong>'); ?>
+            <strong><?php esc_html_e('Atención', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>:</strong>
+            <?php printf(esc_html__('Hay %s solicitud(es) de parcela pendiente(s) de asignar.', FLAVOR_PLATFORM_TEXT_DOMAIN), '<strong>' . $solicitudes_pendientes . '</strong>'); ?>
             <a href="<?php echo esc_url(admin_url('admin.php?page=huertos-parcelas&estado=pendiente')); ?>">
-                <?php esc_html_e('Gestionar solicitudes', 'flavor-chat-ia'); ?> →
+                <?php esc_html_e('Gestionar solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> →
             </a>
         </div>
     </div>
@@ -157,7 +157,7 @@ $tasa_ocupacion = $total_parcelas > 0 ? round(($parcelas_ocupadas / $total_parce
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($huertos_activos); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Huertos Activos', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Huertos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -167,7 +167,7 @@ $tasa_ocupacion = $total_parcelas > 0 ? round(($parcelas_ocupadas / $total_parce
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_parcelas); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Total Parcelas', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Total Parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -177,7 +177,7 @@ $tasa_ocupacion = $total_parcelas > 0 ? round(($parcelas_ocupadas / $total_parce
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($parcelas_ocupadas); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Parcelas Ocupadas', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Parcelas Ocupadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -187,7 +187,7 @@ $tasa_ocupacion = $total_parcelas > 0 ? round(($parcelas_ocupadas / $total_parce
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_huertanos); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Huertanos', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Huertanos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -197,7 +197,7 @@ $tasa_ocupacion = $total_parcelas > 0 ? round(($parcelas_ocupadas / $total_parce
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($kg_cosechados, 0); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Kg Cosechados', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Kg Cosechados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -207,7 +207,7 @@ $tasa_ocupacion = $total_parcelas > 0 ? round(($parcelas_ocupadas / $total_parce
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($lista_espera); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Lista de Espera', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Lista de Espera', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
     </div>
@@ -216,31 +216,31 @@ $tasa_ocupacion = $total_parcelas > 0 ? round(($parcelas_ocupadas / $total_parce
     <div class="dm-quick-links">
         <a href="<?php echo esc_url(admin_url('admin.php?page=huertos-listado')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-admin-home"></span>
-            <span><?php esc_html_e('Todos los huertos', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Todos los huertos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=huertos-parcelas')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-grid-view"></span>
-            <span><?php esc_html_e('Gestionar parcelas', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Gestionar parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=huertos-huertanos')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-groups"></span>
-            <span><?php esc_html_e('Huertanos', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Huertanos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=huertos-cosechas')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-carrot"></span>
-            <span><?php esc_html_e('Registro de cosechas', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Registro de cosechas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=huertos-actividades')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-calendar-alt"></span>
-            <span><?php esc_html_e('Actividades', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Actividades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=huertos-config')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-admin-settings"></span>
-            <span><?php esc_html_e('Configuración', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('huertos_urbanos', '')); ?>" class="dm-quick-links__item" target="_blank">
             <span class="dashicons dashicons-external"></span>
-            <span><?php esc_html_e('Portal público', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Portal público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
     </div>
 
@@ -250,7 +250,7 @@ $tasa_ocupacion = $total_parcelas > 0 ? round(($parcelas_ocupadas / $total_parce
             <div class="dm-card__header">
                 <h2>
                     <span class="dashicons dashicons-chart-pie"></span>
-                    <?php esc_html_e('Ocupación de Parcelas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ocupación de Parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
             </div>
             <div class="dm-progress-wrapper">
@@ -261,11 +261,11 @@ $tasa_ocupacion = $total_parcelas > 0 ? round(($parcelas_ocupadas / $total_parce
             </div>
             <div class="dm-focus-list" style="margin-top: 16px;">
                 <div class="dm-focus-list__item dm-focus-list__item--success">
-                    <span class="dm-focus-list__label"><?php esc_html_e('Disponibles', 'flavor-chat-ia'); ?></span>
+                    <span class="dm-focus-list__label"><?php esc_html_e('Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="dm-focus-list__value"><?php echo number_format_i18n($parcelas_disponibles); ?></span>
                 </div>
                 <div class="dm-focus-list__item dm-focus-list__item--warning">
-                    <span class="dm-focus-list__label"><?php esc_html_e('Ocupadas', 'flavor-chat-ia'); ?></span>
+                    <span class="dm-focus-list__label"><?php esc_html_e('Ocupadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="dm-focus-list__value"><?php echo number_format_i18n($parcelas_ocupadas); ?></span>
                 </div>
             </div>
@@ -275,7 +275,7 @@ $tasa_ocupacion = $total_parcelas > 0 ? round(($parcelas_ocupadas / $total_parce
             <div class="dm-card__header">
                 <h2>
                     <span class="dashicons dashicons-carrot"></span>
-                    <?php esc_html_e('Cosechas del Año (por cultivo)', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Cosechas del Año (por cultivo)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
             </div>
             <div class="dm-card__chart">
@@ -290,19 +290,19 @@ $tasa_ocupacion = $total_parcelas > 0 ? round(($parcelas_ocupadas / $total_parce
             <div class="dm-card__header">
                 <h2>
                     <span class="dashicons dashicons-admin-home"></span>
-                    <?php esc_html_e('Huertos Registrados', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Huertos Registrados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=huertos-listado')); ?>" class="dm-btn dm-btn--secondary dm-btn--sm">
-                    <?php esc_html_e('Ver todos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php if (!empty($huertos_recientes)) : ?>
                 <table class="dm-table">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('Huerto', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 80px; text-align: center;"><?php esc_html_e('Parcelas', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 100px;"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Huerto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 80px; text-align: center;"><?php esc_html_e('Parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 100px;"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -331,7 +331,7 @@ $tasa_ocupacion = $total_parcelas > 0 ? round(($parcelas_ocupadas / $total_parce
             <?php else : ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-admin-home"></span>
-                    <p><?php esc_html_e('No hay huertos registrados', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay huertos registrados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
         </div>
@@ -340,19 +340,19 @@ $tasa_ocupacion = $total_parcelas > 0 ? round(($parcelas_ocupadas / $total_parce
             <div class="dm-card__header">
                 <h2>
                     <span class="dashicons dashicons-calendar-alt"></span>
-                    <?php esc_html_e('Próximas Actividades', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Próximas Actividades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=huertos-actividades')); ?>" class="dm-btn dm-btn--secondary dm-btn--sm">
-                    <?php esc_html_e('Ver calendario', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver calendario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php if (!empty($lista_actividades)) : ?>
                 <table class="dm-table">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('Actividad', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 90px;"><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 80px;"><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 90px;"><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 80px;"><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -364,7 +364,7 @@ $tasa_ocupacion = $total_parcelas > 0 ? round(($parcelas_ocupadas / $total_parce
                             <td>
                                 <strong><?php echo esc_html($actividad['titulo']); ?></strong>
                                 <span class="dm-table__subtitle">
-                                    <?php echo esc_html($actividad['huerto_nombre'] ?? __('General', 'flavor-chat-ia')); ?> • <?php echo esc_html($actividad['hora']); ?>h
+                                    <?php echo esc_html($actividad['huerto_nombre'] ?? __('General', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?> • <?php echo esc_html($actividad['hora']); ?>h
                                 </span>
                             </td>
                             <td>
@@ -384,7 +384,7 @@ $tasa_ocupacion = $total_parcelas > 0 ? round(($parcelas_ocupadas / $total_parce
             <?php else : ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-calendar-alt"></span>
-                    <p><?php esc_html_e('No hay actividades programadas', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay actividades programadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
         </div>
@@ -405,7 +405,7 @@ document.addEventListener('DOMContentLoaded', function() {
             data: {
                 labels: cosechasData.map(c => c.label),
                 datasets: [{
-                    label: '<?php esc_attr_e('Kg cosechados', 'flavor-chat-ia'); ?>',
+                    label: '<?php esc_attr_e('Kg cosechados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                     data: cosechasData.map(c => c.value),
                     backgroundColor: [
                         'var(--dm-success, #22c55e)',

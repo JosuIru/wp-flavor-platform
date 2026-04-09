@@ -94,13 +94,13 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('fichaje_empleados_nonce'),
             'strings' => [
-                'confirmEntrada' => __('¿Confirmas fichar entrada?', 'flavor-chat-ia'),
-                'confirmSalida' => __('¿Confirmas fichar salida?', 'flavor-chat-ia'),
-                'confirmPausa' => __('¿Confirmas iniciar pausa?', 'flavor-chat-ia'),
-                'confirmReanudar' => __('¿Confirmas reanudar la jornada?', 'flavor-chat-ia'),
-                'procesando' => __('Procesando...', 'flavor-chat-ia'),
-                'error' => __('Error al procesar la solicitud', 'flavor-chat-ia'),
-                'exito' => __('Fichaje registrado correctamente', 'flavor-chat-ia'),
+                'confirmEntrada' => __('¿Confirmas fichar entrada?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmSalida' => __('¿Confirmas fichar salida?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmPausa' => __('¿Confirmas iniciar pausa?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmReanudar' => __('¿Confirmas reanudar la jornada?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'procesando' => __('Procesando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al procesar la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'exito' => __('Fichaje registrado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -235,23 +235,23 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
                 <?php if ($estado['estado'] === 'fuera' || $estado['estado'] === 'sin_fichar'): ?>
                     <button type="button" class="fichaje-btn fichaje-btn-entrada" data-action="entrada">
                         <span class="dashicons dashicons-yes-alt"></span>
-                        <?php esc_html_e('Fichar Entrada', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Fichar Entrada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 <?php elseif ($estado['estado'] === 'trabajando'): ?>
                     <div class="fichaje-btns-grupo">
                         <button type="button" class="fichaje-btn fichaje-btn-pausa" data-action="pausa">
                             <span class="dashicons dashicons-coffee"></span>
-                            <?php esc_html_e('Pausa', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Pausa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <button type="button" class="fichaje-btn fichaje-btn-salida" data-action="salida">
                             <span class="dashicons dashicons-migrate"></span>
-                            <?php esc_html_e('Fichar Salida', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Fichar Salida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 <?php elseif ($estado['estado'] === 'en_pausa'): ?>
                     <button type="button" class="fichaje-btn fichaje-btn-reanudar" data-action="reanudar">
                         <span class="dashicons dashicons-controls-play"></span>
-                        <?php esc_html_e('Reanudar Jornada', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Reanudar Jornada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 <?php endif; ?>
             <?php else: ?>
@@ -268,7 +268,7 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
                 <?php if (!empty($estado['ultimo_fichaje'])): ?>
                     <span class="fichaje-ultima-hora">
                         <?php printf(
-                            esc_html__('Último: %s a las %s', 'flavor-chat-ia'),
+                            esc_html__('Último: %s a las %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             esc_html($estado['ultimo_fichaje']['tipo']),
                             esc_html($estado['ultimo_fichaje']['hora'])
                         ); ?>
@@ -305,7 +305,7 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
 
                 <?php if (!empty($estado['ultimo_fichaje'])): ?>
                 <div class="fichaje-ultimo">
-                    <strong><?php esc_html_e('Último fichaje:', 'flavor-chat-ia'); ?></strong>
+                    <strong><?php esc_html_e('Último fichaje:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                     <?php printf(
                         '%s - %s',
                         esc_html(ucfirst($estado['ultimo_fichaje']['tipo'])),
@@ -316,9 +316,9 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
 
                 <?php if (!empty($fichajes_hoy['horas_trabajadas'])): ?>
                 <div class="fichaje-horas-hoy">
-                    <strong><?php esc_html_e('Horas hoy:', 'flavor-chat-ia'); ?></strong>
+                    <strong><?php esc_html_e('Horas hoy:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                     <?php printf(
-                        esc_html__('%s horas', 'flavor-chat-ia'),
+                        esc_html__('%s horas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         number_format($fichajes_hoy['horas_trabajadas'], 2)
                     ); ?>
                 </div>
@@ -343,39 +343,39 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
         ob_start();
         ?>
         <div class="fichaje-form-cambio">
-            <h3><?php esc_html_e('Solicitar Corrección de Fichaje', 'flavor-chat-ia'); ?></h3>
-            <p class="fichaje-form-desc"><?php esc_html_e('¿Olvidaste fichar? Solicita una corrección aquí.', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('Solicitar Corrección de Fichaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p class="fichaje-form-desc"><?php esc_html_e('¿Olvidaste fichar? Solicita una corrección aquí.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
             <form id="fichaje-solicitar-cambio-form" class="fichaje-form">
                 <div class="fichaje-form-row">
-                    <label for="fichaje-fecha"><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></label>
+                    <label for="fichaje-fecha"><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="date" id="fichaje-fecha" name="fecha" required
                            max="<?php echo esc_attr(date('Y-m-d')); ?>">
                 </div>
 
                 <div class="fichaje-form-row">
-                    <label for="fichaje-tipo"><?php esc_html_e('Tipo de fichaje', 'flavor-chat-ia'); ?></label>
+                    <label for="fichaje-tipo"><?php esc_html_e('Tipo de fichaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="fichaje-tipo" name="tipo" required>
-                        <option value=""><?php esc_html_e('Selecciona...', 'flavor-chat-ia'); ?></option>
-                        <option value="entrada"><?php esc_html_e('Entrada', 'flavor-chat-ia'); ?></option>
-                        <option value="salida"><?php esc_html_e('Salida', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Selecciona...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="entrada"><?php esc_html_e('Entrada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="salida"><?php esc_html_e('Salida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div class="fichaje-form-row">
-                    <label for="fichaje-hora"><?php esc_html_e('Hora correcta', 'flavor-chat-ia'); ?></label>
+                    <label for="fichaje-hora"><?php esc_html_e('Hora correcta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="time" id="fichaje-hora" name="hora" required>
                 </div>
 
                 <div class="fichaje-form-row">
-                    <label for="fichaje-motivo"><?php esc_html_e('Motivo', 'flavor-chat-ia'); ?></label>
+                    <label for="fichaje-motivo"><?php esc_html_e('Motivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <textarea id="fichaje-motivo" name="motivo" rows="3" required
-                              placeholder="<?php esc_attr_e('Explica por qué necesitas esta corrección...', 'flavor-chat-ia'); ?>"></textarea>
+                              placeholder="<?php esc_attr_e('Explica por qué necesitas esta corrección...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                 </div>
 
                 <div class="fichaje-form-actions">
                     <button type="submit" class="fichaje-btn fichaje-btn-submit">
-                        <?php esc_html_e('Enviar Solicitud', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Enviar Solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
 
@@ -397,7 +397,7 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
         check_ajax_referer('fichaje_empleados_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $notas = sanitize_textarea_field($_POST['notas'] ?? '');
@@ -406,7 +406,7 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
         if ($resultado['success']) {
             wp_send_json_success($resultado);
         } else {
-            wp_send_json_error(['message' => $resultado['error'] ?? __('Error al fichar', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => $resultado['error'] ?? __('Error al fichar', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -417,7 +417,7 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
         check_ajax_referer('fichaje_empleados_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $notas = sanitize_textarea_field($_POST['notas'] ?? '');
@@ -426,7 +426,7 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
         if ($resultado['success']) {
             wp_send_json_success($resultado);
         } else {
-            wp_send_json_error(['message' => $resultado['error'] ?? __('Error al fichar', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => $resultado['error'] ?? __('Error al fichar', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -437,7 +437,7 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
         check_ajax_referer('fichaje_empleados_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $tipo_pausa = sanitize_text_field($_POST['tipo_pausa'] ?? 'descanso');
@@ -446,7 +446,7 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
         if ($resultado['success']) {
             wp_send_json_success($resultado);
         } else {
-            wp_send_json_error(['message' => $resultado['error'] ?? __('Error al iniciar pausa', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => $resultado['error'] ?? __('Error al iniciar pausa', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -457,7 +457,7 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
         check_ajax_referer('fichaje_empleados_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $resultado = $this->module->execute_action('reanudar_jornada', []);
@@ -465,7 +465,7 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
         if ($resultado['success']) {
             wp_send_json_success($resultado);
         } else {
-            wp_send_json_error(['message' => $resultado['error'] ?? __('Error al reanudar', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => $resultado['error'] ?? __('Error al reanudar', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -476,7 +476,7 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
         check_ajax_referer('fichaje_empleados_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $estado = $this->obtener_estado_actual(get_current_user_id());
@@ -490,7 +490,7 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
         check_ajax_referer('fichaje_empleados_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $desde = sanitize_text_field($_POST['desde'] ?? '');
@@ -513,7 +513,7 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
         check_ajax_referer('fichaje_empleados_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $params = [
@@ -528,7 +528,7 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
         if ($resultado['success']) {
             wp_send_json_success($resultado);
         } else {
-            wp_send_json_error(['message' => $resultado['error'] ?? __('Error al enviar solicitud', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => $resultado['error'] ?? __('Error al enviar solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -740,10 +740,10 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
      */
     private function get_label_estado($estado) {
         $labels = [
-            'sin_fichar' => __('Sin fichar', 'flavor-chat-ia'),
-            'trabajando' => __('Trabajando', 'flavor-chat-ia'),
-            'en_pausa' => __('En pausa', 'flavor-chat-ia'),
-            'fuera' => __('Fuera', 'flavor-chat-ia'),
+            'sin_fichar' => __('Sin fichar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'trabajando' => __('Trabajando', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'en_pausa' => __('En pausa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'fuera' => __('Fuera', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
         return $labels[$estado] ?? $estado;
     }
@@ -756,10 +756,10 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
      */
     private function get_label_boton($tipo) {
         $labels = [
-            'entrada' => __('Fichar Entrada', 'flavor-chat-ia'),
-            'salida' => __('Fichar Salida', 'flavor-chat-ia'),
-            'pausa' => __('Iniciar Pausa', 'flavor-chat-ia'),
-            'reanudar' => __('Reanudar Jornada', 'flavor-chat-ia'),
+            'entrada' => __('Fichar Entrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'salida' => __('Fichar Salida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'pausa' => __('Iniciar Pausa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'reanudar' => __('Reanudar Jornada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
         return $labels[$tipo] ?? $tipo;
     }
@@ -775,9 +775,9 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
                 <p>%s</p>
                 <a href="%s" class="fichaje-btn">%s</a>
             </div>',
-            esc_html__('Debes iniciar sesión para acceder al sistema de fichaje.', 'flavor-chat-ia'),
+            esc_html__('Debes iniciar sesión para acceder al sistema de fichaje.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             esc_url(wp_login_url(flavor_current_request_url())),
-            esc_html__('Iniciar sesión', 'flavor-chat-ia')
+            esc_html__('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)
         );
     }
 
@@ -812,7 +812,7 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
                 <?php if (!empty($estado['ultimo_fichaje'])): ?>
                 <span class="fichaje-ultimo-registro">
                     <?php printf(
-                        esc_html__('Último: %s a las %s', 'flavor-chat-ia'),
+                        esc_html__('Último: %s a las %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         esc_html($estado['ultimo_fichaje']['tipo']),
                         esc_html($estado['ultimo_fichaje']['hora'])
                     ); ?>
@@ -825,28 +825,28 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
                 <?php if ($estado['estado'] === 'fuera' || $estado['estado'] === 'sin_fichar'): ?>
                     <button type="button" class="fichaje-btn fichaje-btn-entrada fichaje-btn-primary" data-action="entrada">
                         <span class="dashicons dashicons-yes-alt"></span>
-                        <?php esc_html_e('Fichar Entrada', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Fichar Entrada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 <?php elseif ($estado['estado'] === 'trabajando'): ?>
                     <button type="button" class="fichaje-btn fichaje-btn-pausa" data-action="pausa">
                         <span class="dashicons dashicons-coffee"></span>
-                        <?php esc_html_e('Pausa', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Pausa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button" class="fichaje-btn fichaje-btn-salida fichaje-btn-secondary" data-action="salida">
                         <span class="dashicons dashicons-migrate"></span>
-                        <?php esc_html_e('Fichar Salida', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Fichar Salida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 <?php elseif ($estado['estado'] === 'en_pausa'): ?>
                     <button type="button" class="fichaje-btn fichaje-btn-reanudar fichaje-btn-primary" data-action="reanudar">
                         <span class="dashicons dashicons-controls-play"></span>
-                        <?php esc_html_e('Reanudar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Reanudar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 <?php endif; ?>
             </div>
 
             <?php if ($atts['mostrar_horas'] === 'true' && !empty($fichajes_hoy['horas_trabajadas'])): ?>
             <div class="fichaje-horas-info">
-                <span class="fichaje-horas-label"><?php esc_html_e('Horas hoy:', 'flavor-chat-ia'); ?></span>
+                <span class="fichaje-horas-label"><?php esc_html_e('Horas hoy:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="fichaje-horas-valor"><?php echo esc_html(number_format($fichajes_hoy['horas_trabajadas'], 2)); ?>h</span>
             </div>
             <?php endif; ?>

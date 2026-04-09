@@ -86,18 +86,18 @@ $base_url = admin_url('admin.php?page=' . $current_page);
         <div class="dm-header__content">
             <h1 class="dm-header__title">
                 <span class="dashicons dashicons-megaphone"></span>
-                <?php esc_html_e('Anuncios del Marketplace', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Anuncios del Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h1>
             <p class="dm-header__description">
-                <?php esc_html_e('Gestión centralizada de publicaciones, estado y metadatos de catálogo.', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Gestión centralizada de publicaciones, estado y metadatos de catálogo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
         <div class="dm-header__actions">
             <a href="<?php echo esc_url(admin_url('post-new.php?post_type=marketplace_item')); ?>" class="dm-btn dm-btn--primary">
-                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nuevo anuncio', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nuevo anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="<?php echo esc_url(admin_url('edit.php?post_type=marketplace_item')); ?>" class="dm-btn dm-btn--secondary">
-                <?php esc_html_e('Editor nativo', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Editor nativo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>
@@ -106,25 +106,25 @@ $base_url = admin_url('admin.php?page=' . $current_page);
         <div class="dm-stat-card">
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_publicados); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Publicados', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Publicados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
         <div class="dm-stat-card dm-stat-card--warning">
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_pendientes); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
         <div class="dm-stat-card dm-stat-card--info">
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_borradores); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Borradores', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Borradores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
         <div class="dm-stat-card dm-stat-card--purple">
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($precio_promedio, 2); ?> €</div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Precio medio', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Precio medio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
     </div>
@@ -132,22 +132,22 @@ $base_url = admin_url('admin.php?page=' . $current_page);
     <form method="get" class="dm-card" style="padding:16px; margin-bottom:16px; display:grid; gap:12px; grid-template-columns: 1.5fr 1fr 1fr 1fr auto; align-items:end;">
         <input type="hidden" name="page" value="<?php echo esc_attr($current_page); ?>" />
         <div>
-            <label for="marketplace-search"><strong><?php esc_html_e('Buscar', 'flavor-chat-ia'); ?></strong></label>
-            <input id="marketplace-search" type="search" name="s" value="<?php echo esc_attr($search); ?>" class="regular-text" style="width:100%;" placeholder="<?php esc_attr_e('Título o contenido', 'flavor-chat-ia'); ?>" />
+            <label for="marketplace-search"><strong><?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label>
+            <input id="marketplace-search" type="search" name="s" value="<?php echo esc_attr($search); ?>" class="regular-text" style="width:100%;" placeholder="<?php esc_attr_e('Título o contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" />
         </div>
         <div>
-            <label for="marketplace-estado"><strong><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></strong></label>
+            <label for="marketplace-estado"><strong><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label>
             <select id="marketplace-estado" name="estado" style="width:100%;">
-                <option value="publish" <?php selected($filtro_estado, 'publish'); ?>><?php esc_html_e('Publicados', 'flavor-chat-ia'); ?></option>
-                <option value="pending" <?php selected($filtro_estado, 'pending'); ?>><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></option>
-                <option value="draft" <?php selected($filtro_estado, 'draft'); ?>><?php esc_html_e('Borradores', 'flavor-chat-ia'); ?></option>
-                <option value="private" <?php selected($filtro_estado, 'private'); ?>><?php esc_html_e('Privados', 'flavor-chat-ia'); ?></option>
+                <option value="publish" <?php selected($filtro_estado, 'publish'); ?>><?php esc_html_e('Publicados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="pending" <?php selected($filtro_estado, 'pending'); ?>><?php esc_html_e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="draft" <?php selected($filtro_estado, 'draft'); ?>><?php esc_html_e('Borradores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="private" <?php selected($filtro_estado, 'private'); ?>><?php esc_html_e('Privados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             </select>
         </div>
         <div>
-            <label for="marketplace-tipo"><strong><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></strong></label>
+            <label for="marketplace-tipo"><strong><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label>
             <select id="marketplace-tipo" name="tipo" style="width:100%;">
-                <option value=""><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 <?php if (!is_wp_error($tipos) && !empty($tipos)) : ?>
                     <?php foreach ($tipos as $tipo) : ?>
                         <option value="<?php echo esc_attr($tipo->slug); ?>" <?php selected($filtro_tipo, $tipo->slug); ?>><?php echo esc_html($tipo->name); ?></option>
@@ -156,9 +156,9 @@ $base_url = admin_url('admin.php?page=' . $current_page);
             </select>
         </div>
         <div>
-            <label for="marketplace-categoria"><strong><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></strong></label>
+            <label for="marketplace-categoria"><strong><?php esc_html_e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label>
             <select id="marketplace-categoria" name="categoria" style="width:100%;">
-                <option value=""><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 <?php if (!is_wp_error($categorias) && !empty($categorias)) : ?>
                     <?php foreach ($categorias as $categoria) : ?>
                         <option value="<?php echo esc_attr($categoria->slug); ?>" <?php selected($filtro_categoria, $categoria->slug); ?>><?php echo esc_html($categoria->name); ?></option>
@@ -167,7 +167,7 @@ $base_url = admin_url('admin.php?page=' . $current_page);
             </select>
         </div>
         <div>
-            <button type="submit" class="button button-primary"><?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?></button>
+            <button type="submit" class="button button-primary"><?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
         </div>
     </form>
 
@@ -175,14 +175,14 @@ $base_url = admin_url('admin.php?page=' . $current_page);
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Anuncio', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Categorías', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Precio', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Estado item', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Ubicación', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Autor', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Precio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Estado item', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Autor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -209,15 +209,15 @@ $base_url = admin_url('admin.php?page=' . $current_page);
                             <td><?php echo $ubicacion ? esc_html($ubicacion) : '—'; ?></td>
                             <td><?php echo esc_html($autor ?: '—'); ?></td>
                             <td>
-                                <a class="button button-small" href="<?php echo esc_url(get_edit_post_link($anuncio_id)); ?>"><?php esc_html_e('Editar', 'flavor-chat-ia'); ?></a>
-                                <a class="button button-small" href="<?php echo esc_url(get_permalink($anuncio_id)); ?>" target="_blank" rel="noopener"><?php esc_html_e('Ver', 'flavor-chat-ia'); ?></a>
+                                <a class="button button-small" href="<?php echo esc_url(get_edit_post_link($anuncio_id)); ?>"><?php esc_html_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
+                                <a class="button button-small" href="<?php echo esc_url(get_permalink($anuncio_id)); ?>" target="_blank" rel="noopener"><?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                             </td>
                         </tr>
                     <?php endwhile; ?>
                     <?php wp_reset_postdata(); ?>
                 <?php else : ?>
                     <tr>
-                        <td colspan="8"><?php esc_html_e('No hay anuncios para los filtros seleccionados.', 'flavor-chat-ia'); ?></td>
+                        <td colspan="8"><?php esc_html_e('No hay anuncios para los filtros seleccionados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                     </tr>
                 <?php endif; ?>
             </tbody>

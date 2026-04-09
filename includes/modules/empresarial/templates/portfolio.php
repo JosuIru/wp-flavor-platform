@@ -37,50 +37,50 @@ if (empty($proyectos_completados)) {
     $proyectos_completados = [
         [
             'id'          => 1,
-            'titulo'      => __('Transformación Digital', 'flavor-chat-ia'),
+            'titulo'      => __('Transformación Digital', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'cliente_nombre' => 'Tech Corp',
-            'descripcion' => __('Implementación completa de sistemas digitales que aumentaron la productividad en un 40%.', 'flavor-chat-ia'),
-            'categoria'   => __('Tecnología', 'flavor-chat-ia'),
+            'descripcion' => __('Implementación completa de sistemas digitales que aumentaron la productividad en un 40%.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'categoria'   => __('Tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'imagen'      => '',
         ],
         [
             'id'          => 2,
-            'titulo'      => __('Estrategia de Marketing', 'flavor-chat-ia'),
+            'titulo'      => __('Estrategia de Marketing', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'cliente_nombre' => 'Retail Plus',
-            'descripcion' => __('Campaña de marketing digital que generó un incremento del 150% en ventas online.', 'flavor-chat-ia'),
-            'categoria'   => __('Marketing', 'flavor-chat-ia'),
+            'descripcion' => __('Campaña de marketing digital que generó un incremento del 150% en ventas online.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'categoria'   => __('Marketing', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'imagen'      => '',
         ],
         [
             'id'          => 3,
-            'titulo'      => __('Optimización de Procesos', 'flavor-chat-ia'),
+            'titulo'      => __('Optimización de Procesos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'cliente_nombre' => 'Industrias Modernas',
-            'descripcion' => __('Reingeniería de procesos que redujo costes operativos en un 25%.', 'flavor-chat-ia'),
-            'categoria'   => __('Consultoría', 'flavor-chat-ia'),
+            'descripcion' => __('Reingeniería de procesos que redujo costes operativos en un 25%.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'categoria'   => __('Consultoría', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'imagen'      => '',
         ],
         [
             'id'          => 4,
-            'titulo'      => __('Desarrollo de App', 'flavor-chat-ia'),
+            'titulo'      => __('Desarrollo de App', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'cliente_nombre' => 'Startup Innovation',
-            'descripcion' => __('Desarrollo de aplicación móvil con más de 50.000 descargas en el primer mes.', 'flavor-chat-ia'),
-            'categoria'   => __('Desarrollo', 'flavor-chat-ia'),
+            'descripcion' => __('Desarrollo de aplicación móvil con más de 50.000 descargas en el primer mes.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'categoria'   => __('Desarrollo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'imagen'      => '',
         ],
         [
             'id'          => 5,
-            'titulo'      => __('Formación Corporativa', 'flavor-chat-ia'),
+            'titulo'      => __('Formación Corporativa', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'cliente_nombre' => 'Grupo Financiero',
-            'descripcion' => __('Programa de formación para 500 empleados en nuevas metodologías ágiles.', 'flavor-chat-ia'),
-            'categoria'   => __('Formación', 'flavor-chat-ia'),
+            'descripcion' => __('Programa de formación para 500 empleados en nuevas metodologías ágiles.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'categoria'   => __('Formación', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'imagen'      => '',
         ],
         [
             'id'          => 6,
-            'titulo'      => __('Infraestructura Cloud', 'flavor-chat-ia'),
+            'titulo'      => __('Infraestructura Cloud', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'cliente_nombre' => 'E-Commerce Global',
-            'descripcion' => __('Migración a la nube con 99.9% de disponibilidad y reducción de costes del 30%.', 'flavor-chat-ia'),
-            'categoria'   => __('Tecnología', 'flavor-chat-ia'),
+            'descripcion' => __('Migración a la nube con 99.9% de disponibilidad y reducción de costes del 30%.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'categoria'   => __('Tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'imagen'      => '',
         ],
     ];
@@ -108,7 +108,7 @@ foreach ($proyectos_completados as $proyecto) {
     <?php if (!empty($categorias_unicas)): ?>
         <div class="flavor-emp-portfolio-filtros">
             <button type="button" class="filtro-btn active" data-categoria="todos">
-                <?php esc_html_e('Todos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <?php foreach ($categorias_unicas as $categoria): ?>
                 <button type="button" class="filtro-btn" data-categoria="<?php echo esc_attr(sanitize_title($categoria)); ?>">
@@ -140,7 +140,7 @@ foreach ($proyectos_completados as $proyecto) {
                     <div class="proyecto-overlay">
                         <button type="button" class="ver-proyecto" data-id="<?php echo esc_attr($proyecto['id']); ?>">
                             <span class="dashicons dashicons-visibility"></span>
-                            <?php esc_html_e('Ver más', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Ver más', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </div>

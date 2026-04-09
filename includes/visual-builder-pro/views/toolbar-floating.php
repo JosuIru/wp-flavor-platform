@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             @click="window.vbpTextEditor.formatText('bold')"
             :class="{ 'active': window.vbpTextEditor.isFormatActive('bold') }"
             class="vbp-toolbar-btn"
-            title="<?php esc_attr_e( 'Negrita (Ctrl+B)', 'flavor-chat-ia' ); ?>"
+            title="<?php esc_attr_e( 'Negrita (Ctrl+B)', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
         >
             <strong>B</strong>
         </button>
@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             @click="window.vbpTextEditor.formatText('italic')"
             :class="{ 'active': window.vbpTextEditor.isFormatActive('italic') }"
             class="vbp-toolbar-btn"
-            title="<?php esc_attr_e( 'Cursiva (Ctrl+I)', 'flavor-chat-ia' ); ?>"
+            title="<?php esc_attr_e( 'Cursiva (Ctrl+I)', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
         >
             <em>I</em>
         </button>
@@ -43,7 +43,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             @click="window.vbpTextEditor.formatText('underline')"
             :class="{ 'active': window.vbpTextEditor.isFormatActive('underline') }"
             class="vbp-toolbar-btn"
-            title="<?php esc_attr_e( 'Subrayado (Ctrl+U)', 'flavor-chat-ia' ); ?>"
+            title="<?php esc_attr_e( 'Subrayado (Ctrl+U)', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
         >
             <u>U</u>
         </button>
@@ -52,7 +52,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             @click="window.vbpTextEditor.formatText('strikeThrough')"
             :class="{ 'active': window.vbpTextEditor.isFormatActive('strikeThrough') }"
             class="vbp-toolbar-btn"
-            title="<?php esc_attr_e( 'Tachado', 'flavor-chat-ia' ); ?>"
+            title="<?php esc_attr_e( 'Tachado', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
         >
             <s>S</s>
         </button>
@@ -66,7 +66,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             type="button"
             @click="window.vbpTextEditor.insertLink()"
             class="vbp-toolbar-btn"
-            title="<?php esc_attr_e( 'Insertar enlace (Ctrl+K)', 'flavor-chat-ia' ); ?>"
+            title="<?php esc_attr_e( 'Insertar enlace (Ctrl+K)', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
         >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/>
@@ -77,7 +77,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             type="button"
             @click="window.vbpTextEditor.removeLink()"
             class="vbp-toolbar-btn"
-            title="<?php esc_attr_e( 'Eliminar enlace', 'flavor-chat-ia' ); ?>"
+            title="<?php esc_attr_e( 'Eliminar enlace', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
         >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/>
@@ -92,7 +92,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     <!-- Headings -->
     <div class="vbp-toolbar-group">
         <select @change="window.vbpTextEditor.formatHeading($event.target.value)" class="vbp-toolbar-select">
-            <option value="p"><?php esc_html_e( 'Párrafo', 'flavor-chat-ia' ); ?></option>
+            <option value="p"><?php esc_html_e( 'Párrafo', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
             <option value="h1">H1</option>
             <option value="h2">H2</option>
             <option value="h3">H3</option>
@@ -110,7 +110,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             type="button"
             @click="window.vbpTextEditor.formatText('insertUnorderedList')"
             class="vbp-toolbar-btn"
-            title="<?php esc_attr_e( 'Lista con viñetas', 'flavor-chat-ia' ); ?>"
+            title="<?php esc_attr_e( 'Lista con viñetas', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
         >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="8" y1="6" x2="21" y2="6"/>
@@ -125,7 +125,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             type="button"
             @click="window.vbpTextEditor.formatText('insertOrderedList')"
             class="vbp-toolbar-btn"
-            title="<?php esc_attr_e( 'Lista numerada', 'flavor-chat-ia' ); ?>"
+            title="<?php esc_attr_e( 'Lista numerada', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
         >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="10" y1="6" x2="21" y2="6"/>
@@ -145,7 +145,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             type="button"
             @click="window.vbpTextEditor.formatText('justifyLeft')"
             class="vbp-toolbar-btn"
-            title="<?php esc_attr_e( 'Alinear izquierda', 'flavor-chat-ia' ); ?>"
+            title="<?php esc_attr_e( 'Alinear izquierda', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
         >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="3" y1="6" x2="21" y2="6"/>
@@ -157,7 +157,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             type="button"
             @click="window.vbpTextEditor.formatText('justifyCenter')"
             class="vbp-toolbar-btn"
-            title="<?php esc_attr_e( 'Centrar', 'flavor-chat-ia' ); ?>"
+            title="<?php esc_attr_e( 'Centrar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
         >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="3" y1="6" x2="21" y2="6"/>
@@ -169,7 +169,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             type="button"
             @click="window.vbpTextEditor.formatText('justifyRight')"
             class="vbp-toolbar-btn"
-            title="<?php esc_attr_e( 'Alinear derecha', 'flavor-chat-ia' ); ?>"
+            title="<?php esc_attr_e( 'Alinear derecha', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
         >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="3" y1="6" x2="21" y2="6"/>
@@ -187,7 +187,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             type="button"
             @click="window.vbpTextEditor.clearFormatting()"
             class="vbp-toolbar-btn"
-            title="<?php esc_attr_e( 'Limpiar formato', 'flavor-chat-ia' ); ?>"
+            title="<?php esc_attr_e( 'Limpiar formato', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
         >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M4 7h16"/>

@@ -60,21 +60,21 @@ $has_next = $current < $total_pages;
 ?>
 
 <div id="<?php echo esc_attr($pagination_id); ?>" class="flex justify-center mt-8">
-    <nav class="flex items-center gap-2" role="navigation" aria-label="<?php esc_attr_e('Paginación', 'flavor-chat-ia'); ?>">
+    <nav class="flex items-center gap-2" role="navigation" aria-label="<?php esc_attr_e('Paginación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
         <!-- Botón Anterior -->
         <?php if ($base_url): ?>
         <a href="<?php echo $has_prev ? esc_url($get_page_url($current - 1)) : '#'; ?>"
            class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors <?php echo !$has_prev ? 'opacity-50 pointer-events-none' : ''; ?>"
            <?php if (!$has_prev): ?>aria-disabled="true"<?php endif; ?>
-           aria-label="<?php esc_attr_e('Página anterior', 'flavor-chat-ia'); ?>">
-            <?php echo esc_html__('← Anterior', 'flavor-chat-ia'); ?>
+           aria-label="<?php esc_attr_e('Página anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+            <?php echo esc_html__('← Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <?php else: ?>
         <button type="button"
                 class="pagination-prev px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors <?php echo !$has_prev ? 'opacity-50 cursor-not-allowed' : ''; ?>"
                 <?php if (!$has_prev): ?>disabled<?php endif; ?>
-                aria-label="<?php esc_attr_e('Página anterior', 'flavor-chat-ia'); ?>">
-            <?php echo esc_html__('← Anterior', 'flavor-chat-ia'); ?>
+                aria-label="<?php esc_attr_e('Página anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+            <?php echo esc_html__('← Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
         <?php endif; ?>
 
@@ -82,7 +82,7 @@ $has_next = $current < $total_pages;
         <span class="px-4 py-2 text-gray-600" aria-live="polite">
             <?php
             printf(
-                esc_html__('Página %1$d de %2$d', 'flavor-chat-ia'),
+                esc_html__('Página %1$d de %2$d', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $current,
                 $total_pages
             );
@@ -94,15 +94,15 @@ $has_next = $current < $total_pages;
         <a href="<?php echo $has_next ? esc_url($get_page_url($current + 1)) : '#'; ?>"
            class="px-4 py-2 rounded-lg <?php echo esc_attr($color_classes['bg_solid']); ?> text-white hover:opacity-90 transition-opacity <?php echo !$has_next ? 'opacity-50 pointer-events-none' : ''; ?>"
            <?php if (!$has_next): ?>aria-disabled="true"<?php endif; ?>
-           aria-label="<?php esc_attr_e('Página siguiente', 'flavor-chat-ia'); ?>">
-            <?php echo esc_html__('Siguiente →', 'flavor-chat-ia'); ?>
+           aria-label="<?php esc_attr_e('Página siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+            <?php echo esc_html__('Siguiente →', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <?php else: ?>
         <button type="button"
                 class="pagination-next px-4 py-2 rounded-lg <?php echo esc_attr($color_classes['bg_solid']); ?> text-white hover:opacity-90 transition-opacity <?php echo !$has_next ? 'opacity-50 cursor-not-allowed' : ''; ?>"
                 <?php if (!$has_next): ?>disabled<?php endif; ?>
-                aria-label="<?php esc_attr_e('Página siguiente', 'flavor-chat-ia'); ?>">
-            <?php echo esc_html__('Siguiente →', 'flavor-chat-ia'); ?>
+                aria-label="<?php esc_attr_e('Página siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+            <?php echo esc_html__('Siguiente →', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
         <?php endif; ?>
     </nav>

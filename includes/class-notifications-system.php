@@ -298,11 +298,11 @@ class Flavor_Notifications_System {
 
         if ($result) {
             wp_send_json_success([
-                'message' => __('Notificación marcada como leída', 'flavor-chat-ia'),
+                'message' => __('Notificación marcada como leída', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'unread_count' => $this->get_unread_count(),
             ]);
         } else {
-            wp_send_json_error(['message' => __('Error al marcar notificación', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al marcar notificación', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -316,11 +316,11 @@ class Flavor_Notifications_System {
 
         if ($result !== false) {
             wp_send_json_success([
-                'message' => __('Todas las notificaciones marcadas como leídas', 'flavor-chat-ia'),
+                'message' => __('Todas las notificaciones marcadas como leídas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'unread_count' => 0,
             ]);
         } else {
-            wp_send_json_error(['message' => __('Error al marcar notificaciones', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al marcar notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -340,11 +340,11 @@ class Flavor_Notifications_System {
 
         if ($result) {
             wp_send_json_success([
-                'message' => __('Notificación eliminada', 'flavor-chat-ia'),
+                'message' => __('Notificación eliminada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'unread_count' => $this->get_unread_count(),
             ]);
         } else {
-            wp_send_json_error(['message' => __('Error al eliminar notificación', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al eliminar notificación', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -356,8 +356,8 @@ class Flavor_Notifications_System {
         return $system->create(
             $user_id,
             'event',
-            __('Nuevo Evento', 'flavor-chat-ia'),
-            sprintf(__('Se ha creado el evento "%s"', 'flavor-chat-ia'), $event_title),
+            __('Nuevo Evento', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            sprintf(__('Se ha creado el evento "%s"', FLAVOR_PLATFORM_TEXT_DOMAIN), $event_title),
             ['link' => home_url('/eventos/'), 'icon' => '📅']
         );
     }
@@ -367,8 +367,8 @@ class Flavor_Notifications_System {
         return $system->create(
             $user_id,
             'success',
-            __('Taller Aprobado', 'flavor-chat-ia'),
-            sprintf(__('Tu taller "%s" ha sido aprobado', 'flavor-chat-ia'), $taller_title),
+            __('Taller Aprobado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            sprintf(__('Tu taller "%s" ha sido aprobado', FLAVOR_PLATFORM_TEXT_DOMAIN), $taller_title),
             ['link' => home_url('/talleres/mis-talleres/'), 'icon' => '✅']
         );
     }
@@ -378,8 +378,8 @@ class Flavor_Notifications_System {
         return $system->create(
             $user_id,
             'success',
-            __('Incidencia Resuelta', 'flavor-chat-ia'),
-            __('Tu incidencia ha sido marcada como resuelta', 'flavor-chat-ia'),
+            __('Incidencia Resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Tu incidencia ha sido marcada como resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ['link' => home_url("/incidencias/{$incidencia_id}/"), 'icon' => '✅']
         );
     }
@@ -389,8 +389,8 @@ class Flavor_Notifications_System {
         return $system->create(
             $user_id,
             'success',
-            __('Reserva Confirmada', 'flavor-chat-ia'),
-            sprintf(__('Tu reserva de "%s" para %s ha sido confirmada', 'flavor-chat-ia'), $espacio_name, $fecha),
+            __('Reserva Confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            sprintf(__('Tu reserva de "%s" para %s ha sido confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN), $espacio_name, $fecha),
             ['link' => home_url('/espacios-comunes/mis-reservas/'), 'icon' => '🏛️']
         );
     }
@@ -400,8 +400,8 @@ class Flavor_Notifications_System {
         return $system->create(
             $user_id,
             'info',
-            __('Pedido Listo', 'flavor-chat-ia'),
-            __('Tu pedido está listo para recoger', 'flavor-chat-ia'),
+            __('Pedido Listo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Tu pedido está listo para recoger', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ['link' => Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mi-grupo'), 'icon' => '🛒']
         );
     }

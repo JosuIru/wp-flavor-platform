@@ -57,7 +57,7 @@ $lista_planes      = $items ?? [];
                             class="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-white text-sm font-semibold"
                             style="background-color: <?php echo esc_attr( $color_principal ); ?>;"
                         >
-                            <?php echo esc_html__( 'Recomendado', 'flavor-chat-ia' ); ?>
+                            <?php echo esc_html__( 'Recomendado', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                         </div>
                     <?php endif; ?>
 

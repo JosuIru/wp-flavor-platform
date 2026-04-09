@@ -69,7 +69,7 @@ foreach ( $lista_eventos as $evento ) {
                                 class="text-xs font-semibold px-2 py-0.5 rounded-full text-white"
                                 style="background-color: <?php echo esc_attr( $color_principal ); ?>;"
                             >
-                                <?php echo esc_html__( 'Hoy', 'flavor-chat-ia' ); ?>
+                                <?php echo esc_html__( 'Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                             </span>
                         <?php endif; ?>
                         <div class="flex-1 h-px bg-gray-200"></div>

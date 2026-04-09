@@ -82,8 +82,8 @@ class Flavor_Socios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
     public function __construct() {
         global $wpdb;
         $this->prefix_tabla = $wpdb->prefix . 'flavor_socios_';
-        $this->title = __('Mi Membresía', 'flavor-chat-ia');
-        $this->description = __('Estado de tu membresía y cuotas', 'flavor-chat-ia');
+        $this->title = __('Mi Membresía', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Estado de tu membresía y cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         parent::__construct([
             'id' => $this->widget_id,
@@ -110,7 +110,7 @@ class Flavor_Socios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             return [
                 'stats' => [],
                 'items' => [],
-                'empty_state' => __('Inicia sesión para ver tu membresía', 'flavor-chat-ia'),
+                'empty_state' => __('Inicia sesión para ver tu membresía', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'footer' => [],
             ];
         }
@@ -168,22 +168,22 @@ class Flavor_Socios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $estado_socio = (string) ($socio->estado ?? '');
             // Stat 1: Estado de membresía
             $estado_color = 'gray';
-            $estado_texto = __('Inactivo', 'flavor-chat-ia');
+            $estado_texto = __('Inactivo', FLAVOR_PLATFORM_TEXT_DOMAIN);
             if ($socio->estado === 'activo') {
                 $estado_color = 'success';
-                $estado_texto = __('Activo', 'flavor-chat-ia');
+                $estado_texto = __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN);
             } elseif ($socio->estado === 'pendiente') {
                 $estado_color = 'warning';
-                $estado_texto = __('Pendiente', 'flavor-chat-ia');
+                $estado_texto = __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN);
             } elseif ($socio->estado === 'suspendido') {
                 $estado_color = 'danger';
-                $estado_texto = __('Suspendido', 'flavor-chat-ia');
+                $estado_texto = __('Suspendido', FLAVOR_PLATFORM_TEXT_DOMAIN);
             }
 
             $stats[] = [
                 'icon' => 'dashicons-yes-alt',
                 'valor' => $estado_texto,
-                'label' => $socio->tipo_nombre ?: __('Socio', 'flavor-chat-ia'),
+                'label' => $socio->tipo_nombre ?: __('Socio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $estado_color,
                 'url' => $es_admin ? admin_url('admin.php?page=socios') : Flavor_Chat_Helpers::get_action_url('socios', 'mi-perfil'),
             ];
@@ -193,7 +193,7 @@ class Flavor_Socios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 $stats[] = [
                     'icon' => 'dashicons-id',
                     'valor' => '#' . $socio->numero_socio,
-                    'label' => __('Nº Socio', 'flavor-chat-ia'),
+                    'label' => __('Nº Socio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'primary',
                 ];
             }
@@ -218,15 +218,15 @@ class Flavor_Socios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 $stats[] = [
                     'icon' => 'dashicons-warning',
                     'valor' => number_format($importe_pendiente, 2, ',', '.') . ' €',
-                    'label' => sprintf(_n('%d cuota', '%d cuotas', $cuotas_pendientes, 'flavor-chat-ia'), $cuotas_pendientes),
+                    'label' => sprintf(_n('%d cuota', '%d cuotas', $cuotas_pendientes, FLAVOR_PLATFORM_TEXT_DOMAIN), $cuotas_pendientes),
                     'color' => 'danger',
                     'url' => $es_admin ? admin_url('admin.php?page=socios&tab=cuotas') : Flavor_Chat_Helpers::get_action_url('socios', 'mis-cuotas'),
                 ];
             } else {
                 $stats[] = [
                     'icon' => 'dashicons-saved',
-                    'valor' => __('Al día', 'flavor-chat-ia'),
-                    'label' => __('Cuotas', 'flavor-chat-ia'),
+                    'valor' => __('Al día', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'label' => __('Cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'success',
                 ];
             }
@@ -237,7 +237,7 @@ class Flavor_Socios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 $stats[] = [
                     'icon' => 'dashicons-calendar-alt',
                     'valor' => $antiguedad,
-                    'label' => __('Antigüedad', 'flavor-chat-ia'),
+                    'label' => __('Antigüedad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'info',
                 ];
             }
@@ -251,8 +251,8 @@ class Flavor_Socios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $cuotas_pendientes = 0;
             $stats[] = [
                 'icon' => 'dashicons-info',
-                'valor' => __('No registrado', 'flavor-chat-ia'),
-                'label' => __('Membresía', 'flavor-chat-ia'),
+                'valor' => __('No registrado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'label' => __('Membresía', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'gray',
             ];
 
@@ -266,10 +266,10 @@ class Flavor_Socios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'estado_socio' => $estado_socio,
                 'cuotas_pendientes' => (int) ($cuotas_pendientes ?? 0),
             ],
-            'empty_state' => $socio ? __('No hay cuotas registradas', 'flavor-chat-ia') : __('Hazte socio para disfrutar de todos los beneficios', 'flavor-chat-ia'),
+            'empty_state' => $socio ? __('No hay cuotas registradas', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Hazte socio para disfrutar de todos los beneficios', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => $socio ? __('Ver mi cuenta', 'flavor-chat-ia') : __('Hacerse socio', 'flavor-chat-ia'),
+                    'label' => $socio ? __('Ver mi cuenta', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Hacerse socio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => $es_admin ? admin_url('admin.php?page=socios') : Flavor_Chat_Helpers::get_action_url('socios', $socio ? 'mi-perfil' : 'unirse'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
@@ -364,18 +364,18 @@ class Flavor_Socios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
 
         if ($estado_socio === 'suspendido' || $cuotas_pendientes > 0) {
             $severity = Flavor_Dashboard_Severity::get_payload('attention');
-            $severity['reason'] = __('Tu vínculo de socio requiere atención por suspensión o cuotas pendientes.', 'flavor-chat-ia');
+            $severity['reason'] = __('Tu vínculo de socio requiere atención por suspensión o cuotas pendientes.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             return $severity;
         }
 
         if ($estado_socio === 'pendiente') {
             $severity = Flavor_Dashboard_Severity::get_payload('followup');
-            $severity['reason'] = __('Tu membresía sigue pendiente de consolidación o revisión.', 'flavor-chat-ia');
+            $severity['reason'] = __('Tu membresía sigue pendiente de consolidación o revisión.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             return $severity;
         }
 
         $severity = Flavor_Dashboard_Severity::get_payload('stable');
-        $severity['reason'] = __('Tu membresía está estable y sin alertas económicas inmediatas.', 'flavor-chat-ia');
+        $severity['reason'] = __('Tu membresía está estable y sin alertas económicas inmediatas.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         return $severity;
     }
 

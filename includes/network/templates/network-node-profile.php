@@ -8,6 +8,6 @@ if (!defined('ABSPATH')) exit;
 ?>
 <div class="flavor-network-widget flavor-network-node-profile-widget" data-slug="<?php echo esc_attr($atts['slug']); ?>">
     <div class="fn-node-profile-content">
-        <div class="fn-loading"><?php _e('Cargando perfil...', 'flavor-chat-ia'); ?></div>
+        <div class="fn-loading"><?php _e('Cargando perfil...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 </div>

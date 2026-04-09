@@ -1,4 +1,4 @@
-# Documentación de Módulos - Flavor Chat IA
+# Documentación de Módulos - Flavor Platform
 
 Este directorio contiene la documentación técnica detallada de cada módulo del plugin.
 

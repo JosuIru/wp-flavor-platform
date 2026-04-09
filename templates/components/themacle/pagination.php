@@ -30,7 +30,7 @@ $total_paginas       = isset( $wp_query->max_num_pages ) ? (int) $wp_query->max_
 $tiene_paginacion    = $total_paginas > 1;
 ?>
 
-<nav class="flavor-pagination w-full py-6 <?php echo esc_attr( $component_classes ); ?>" aria-label="<?php echo esc_attr__( 'Paginación', 'flavor-chat-ia' ); ?>">
+<nav class="flavor-pagination w-full py-6 <?php echo esc_attr( $component_classes ); ?>" aria-label="<?php echo esc_attr__( 'Paginación', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
 
     <?php
     /* ---------------------------------------------------------------------- */
@@ -129,7 +129,7 @@ $tiene_paginacion    = $total_paginas > 1;
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                         </svg>
-                        <?php echo esc_html__( 'Anterior', 'flavor-chat-ia' ); ?>
+                        <?php echo esc_html__( 'Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                     </a>
                 <?php else : ?>
                     <span
@@ -140,7 +140,7 @@ $tiene_paginacion    = $total_paginas > 1;
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                         </svg>
-                        <?php echo esc_html__( 'Anterior', 'flavor-chat-ia' ); ?>
+                        <?php echo esc_html__( 'Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                     </span>
                 <?php endif; ?>
 
@@ -148,7 +148,7 @@ $tiene_paginacion    = $total_paginas > 1;
                     <?php
                     printf(
                         /* translators: %1$s: current page number, %2$s: total pages */
-                        esc_html__( 'Página %1$s de %2$s', 'flavor-chat-ia' ),
+                        esc_html__( 'Página %1$s de %2$s', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         esc_html( $pagina_actual ),
                         esc_html( $total_paginas )
                     );
@@ -161,7 +161,7 @@ $tiene_paginacion    = $total_paginas > 1;
                         class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:shadow-md"
                         style="color: var(--flavor-primary, #2563eb); background-color: var(--flavor-bg-alt, #f3f4f6);"
                     >
-                        <?php echo esc_html__( 'Siguiente', 'flavor-chat-ia' ); ?>
+                        <?php echo esc_html__( 'Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                         </svg>
@@ -172,7 +172,7 @@ $tiene_paginacion    = $total_paginas > 1;
                         style="color: var(--flavor-text, #9ca3af); background-color: var(--flavor-bg-alt, #f3f4f6);"
                         aria-disabled="true"
                     >
-                        <?php echo esc_html__( 'Siguiente', 'flavor-chat-ia' ); ?>
+                        <?php echo esc_html__( 'Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                         </svg>
@@ -200,10 +200,10 @@ $tiene_paginacion    = $total_paginas > 1;
                     style="background-color: var(--flavor-primary, #2563eb); focus-ring-color: var(--flavor-primary, #2563eb);"
                     data-page="<?php echo esc_attr( $pagina_actual ); ?>"
                     data-max-pages="<?php echo esc_attr( $total_paginas ); ?>"
-                    aria-label="<?php echo esc_attr__( 'Cargar más elementos', 'flavor-chat-ia' ); ?>"
+                    aria-label="<?php echo esc_attr__( 'Cargar más elementos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
                 >
                     <span class="flavor-load-more-btn__texto">
-                        <?php echo esc_html__( 'Cargar más', 'flavor-chat-ia' ); ?>
+                        <?php echo esc_html__( 'Cargar más', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                     </span>
 
                     <span class="flavor-load-more-btn__spinner hidden" aria-hidden="true">
@@ -229,7 +229,7 @@ $tiene_paginacion    = $total_paginas > 1;
                         'Queda %s página por cargar',
                         'Quedan %s páginas por cargar',
                         $elementos_restantes,
-                        'flavor-chat-ia'
+                        FLAVOR_PLATFORM_TEXT_DOMAIN
                     ) ),
                     esc_html( number_format_i18n( $elementos_restantes ) )
                 );
@@ -240,7 +240,7 @@ $tiene_paginacion    = $total_paginas > 1;
 
             <div class="flavor-pagination--load-more-done flex justify-center">
                 <p class="text-sm py-3" style="color: var(--flavor-text, #9ca3af);">
-                    <?php echo esc_html__( 'Has visto todos los elementos.', 'flavor-chat-ia' ); ?>
+                    <?php echo esc_html__( 'Has visto todos los elementos.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                 </p>
             </div>
 

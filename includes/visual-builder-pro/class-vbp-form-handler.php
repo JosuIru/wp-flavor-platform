@@ -107,7 +107,7 @@ class Flavor_VBP_Form_Handler {
         // Verificar nonce si está presente
         if ( isset( $_POST['_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ), 'vbp_form_submit' ) ) {
             wp_send_json_error(
-                array( 'message' => __( 'Error de seguridad. Recarga la página e inténtalo de nuevo.', 'flavor-chat-ia' ) ),
+                array( 'message' => __( 'Error de seguridad. Recarga la página e inténtalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                 403
             );
         }
@@ -119,7 +119,7 @@ class Flavor_VBP_Form_Handler {
 
         if ( $rate_count !== false && $rate_count >= 5 ) {
             wp_send_json_error(
-                array( 'message' => __( 'Has enviado demasiados formularios. Por favor, espera unos minutos.', 'flavor-chat-ia' ) ),
+                array( 'message' => __( 'Has enviado demasiados formularios. Por favor, espera unos minutos.', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                 429
             );
         }
@@ -138,31 +138,31 @@ class Flavor_VBP_Form_Handler {
         $errores = array();
 
         if ( empty( $name ) ) {
-            $errores['name'] = __( 'El nombre es obligatorio.', 'flavor-chat-ia' );
+            $errores['name'] = __( 'El nombre es obligatorio.', FLAVOR_PLATFORM_TEXT_DOMAIN );
         }
 
         if ( empty( $email ) ) {
-            $errores['email'] = __( 'El email es obligatorio.', 'flavor-chat-ia' );
+            $errores['email'] = __( 'El email es obligatorio.', FLAVOR_PLATFORM_TEXT_DOMAIN );
         } elseif ( ! is_email( $email ) ) {
-            $errores['email'] = __( 'El email no es válido.', 'flavor-chat-ia' );
+            $errores['email'] = __( 'El email no es válido.', FLAVOR_PLATFORM_TEXT_DOMAIN );
         }
 
         if ( empty( $message ) ) {
-            $errores['message'] = __( 'El mensaje es obligatorio.', 'flavor-chat-ia' );
+            $errores['message'] = __( 'El mensaje es obligatorio.', FLAVOR_PLATFORM_TEXT_DOMAIN );
         }
 
         // Verificar honeypot (campo oculto para bots)
         if ( ! empty( $_POST['website_url'] ) ) {
             // Probable bot, simular éxito pero no hacer nada
             wp_send_json_success(
-                array( 'message' => __( '¡Mensaje enviado correctamente!', 'flavor-chat-ia' ) )
+                array( 'message' => __( '¡Mensaje enviado correctamente!', FLAVOR_PLATFORM_TEXT_DOMAIN ) )
             );
         }
 
         if ( ! empty( $errores ) ) {
             wp_send_json_error(
                 array(
-                    'message' => __( 'Por favor, corrige los errores en el formulario.', 'flavor-chat-ia' ),
+                    'message' => __( 'Por favor, corrige los errores en el formulario.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'errors'  => $errores,
                 ),
                 400
@@ -196,7 +196,7 @@ class Flavor_VBP_Form_Handler {
 
         if ( ! $submission_id ) {
             wp_send_json_error(
-                array( 'message' => __( 'Error al guardar el mensaje. Por favor, inténtalo de nuevo.', 'flavor-chat-ia' ) ),
+                array( 'message' => __( 'Error al guardar el mensaje. Por favor, inténtalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                 500
             );
         }
@@ -209,7 +209,7 @@ class Flavor_VBP_Form_Handler {
 
         wp_send_json_success(
             array(
-                'message'       => __( '¡Mensaje enviado correctamente! Te responderemos pronto.', 'flavor-chat-ia' ),
+                'message'       => __( '¡Mensaje enviado correctamente! Te responderemos pronto.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'submission_id' => $submission_id,
             )
         );
@@ -273,7 +273,7 @@ class Flavor_VBP_Form_Handler {
 
         $subject = sprintf(
             /* translators: %s: Site name */
-            __( '[%s] Nuevo mensaje de contacto', 'flavor-chat-ia' ),
+            __( '[%s] Nuevo mensaje de contacto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             get_bloginfo( 'name' )
         );
 
@@ -281,12 +281,12 @@ class Flavor_VBP_Form_Handler {
         $message_lines = array();
         $message_lines[] = '<html><body style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, sans-serif; line-height: 1.6;">';
         $message_lines[] = '<div style="max-width: 600px; margin: 0 auto; padding: 20px;">';
-        $message_lines[] = '<h2 style="color: #333; margin-bottom: 20px;">' . esc_html__( 'Nuevo mensaje de contacto', 'flavor-chat-ia' ) . '</h2>';
+        $message_lines[] = '<h2 style="color: #333; margin-bottom: 20px;">' . esc_html__( 'Nuevo mensaje de contacto', FLAVOR_PLATFORM_TEXT_DOMAIN ) . '</h2>';
 
         if ( $post_title ) {
             $message_lines[] = '<p style="color: #666; margin-bottom: 20px;">' . sprintf(
                 /* translators: %s: Page title */
-                esc_html__( 'Desde la página: %s', 'flavor-chat-ia' ),
+                esc_html__( 'Desde la página: %s', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 '<strong>' . esc_html( $post_title ) . '</strong>'
             ) . '</p>';
         }
@@ -305,7 +305,7 @@ class Flavor_VBP_Form_Handler {
         $message_lines[] = '<hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;">';
         $message_lines[] = '<p style="font-size: 12px; color: #999;">' . sprintf(
             /* translators: %s: Date/time */
-            esc_html__( 'Enviado el %s', 'flavor-chat-ia' ),
+            esc_html__( 'Enviado el %s', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             wp_date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) )
         ) . '</p>';
         $message_lines[] = '</div></body></html>';

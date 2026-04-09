@@ -70,7 +70,7 @@ function formatear_duracion_stats($segundos) {
 <div class="wrap">
     <h1>
         <span class="dashicons dashicons-chart-bar"></span>
-        <?php echo esc_html__('Estadísticas Detalladas', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Estadísticas Detalladas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <!-- Selector de podcast -->
@@ -79,9 +79,9 @@ function formatear_duracion_stats($segundos) {
             <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']); ?>">
 
             <div style="flex: 1;">
-                <label for="podcast_id" style="display: block; margin-bottom: 5px; font-weight: 600;"><?php echo esc_html__('Selecciona un Podcast:', 'flavor-chat-ia'); ?></label>
+                <label for="podcast_id" style="display: block; margin-bottom: 5px; font-weight: 600;"><?php echo esc_html__('Selecciona un Podcast:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="podcast_id" id="podcast_id" class="regular-text" style="width: 100%;">
-                    <option value="0"><?php echo esc_html__('Seleccionar podcast...', 'flavor-chat-ia'); ?></option>
+                    <option value="0"><?php echo esc_html__('Seleccionar podcast...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($podcasts as $podcast): ?>
                         <option value="<?php echo $podcast->id; ?>" <?php selected($podcast_seleccionado, $podcast->id); ?>>
                             <?php echo esc_html($podcast->titulo); ?>
@@ -91,7 +91,7 @@ function formatear_duracion_stats($segundos) {
             </div>
 
             <button type="submit" class="button button-primary button-large">
-                <span class="dashicons dashicons-search"></span> <?php echo esc_html__('Ver Estadísticas', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-search"></span> <?php echo esc_html__('Ver Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </form>
     </div>
@@ -115,32 +115,32 @@ function formatear_duracion_stats($segundos) {
         <div class="flavor-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0;">
 
             <div class="flavor-stat-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <p style="margin: 0; color: #666; font-size: 14px;"><?php echo esc_html__('Total Episodios', 'flavor-chat-ia'); ?></p>
+                <p style="margin: 0; color: #666; font-size: 14px;"><?php echo esc_html__('Total Episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <h2 style="margin: 10px 0; font-size: 32px; color: #2271b1;"><?php echo number_format($estadisticas_detalladas->total_episodios); ?></h2>
             </div>
 
             <div class="flavor-stat-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <p style="margin: 0; color: #666; font-size: 14px;"><?php echo esc_html__('Total Reproducciones', 'flavor-chat-ia'); ?></p>
+                <p style="margin: 0; color: #666; font-size: 14px;"><?php echo esc_html__('Total Reproducciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <h2 style="margin: 10px 0; font-size: 32px; color: #00a32a;"><?php echo number_format($estadisticas_detalladas->total_reproducciones ?? 0); ?></h2>
             </div>
 
             <div class="flavor-stat-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <p style="margin: 0; color: #666; font-size: 14px;"><?php echo esc_html__('Total Suscriptores', 'flavor-chat-ia'); ?></p>
+                <p style="margin: 0; color: #666; font-size: 14px;"><?php echo esc_html__('Total Suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <h2 style="margin: 10px 0; font-size: 32px; color: #8c49d8;"><?php echo number_format($estadisticas_detalladas->suscriptores); ?></h2>
             </div>
 
             <div class="flavor-stat-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <p style="margin: 0; color: #666; font-size: 14px;"><?php echo esc_html__('Me Gusta Total', 'flavor-chat-ia'); ?></p>
+                <p style="margin: 0; color: #666; font-size: 14px;"><?php echo esc_html__('Me Gusta Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <h2 style="margin: 10px 0; font-size: 32px; color: #d63638;"><?php echo number_format($estadisticas_detalladas->total_me_gusta ?? 0); ?></h2>
             </div>
 
             <div class="flavor-stat-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <p style="margin: 0; color: #666; font-size: 14px;"><?php echo esc_html__('Duración Promedio', 'flavor-chat-ia'); ?></p>
+                <p style="margin: 0; color: #666; font-size: 14px;"><?php echo esc_html__('Duración Promedio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <h2 style="margin: 10px 0; font-size: 32px; color: #dba617;"><?php echo formatear_duracion_stats($estadisticas_detalladas->duracion_promedio); ?></h2>
             </div>
 
             <div class="flavor-stat-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <p style="margin: 0; color: #666; font-size: 14px;"><?php echo esc_html__('Promedio por Episodio', 'flavor-chat-ia'); ?></p>
+                <p style="margin: 0; color: #666; font-size: 14px;"><?php echo esc_html__('Promedio por Episodio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <h2 style="margin: 10px 0; font-size: 32px; color: #00a32a;">
                     <?php
                     $promedio_reproducciones = $estadisticas_detalladas->total_episodios > 0
@@ -157,7 +157,7 @@ function formatear_duracion_stats($segundos) {
         <div style="background: #fff; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <h3 style="margin-top: 0;">
                 <span class="dashicons dashicons-chart-line"></span>
-                <?php echo esc_html__('Crecimiento de Suscriptores (90 días)', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Crecimiento de Suscriptores (90 días)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <canvas id="grafico-crecimiento" style="max-height: 300px;"></canvas>
         </div>
@@ -166,19 +166,19 @@ function formatear_duracion_stats($segundos) {
         <div style="background: #fff; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <h3 style="margin-top: 0;">
                 <span class="dashicons dashicons-list-view"></span>
-                <?php echo esc_html__('Rendimiento por Episodio', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Rendimiento por Episodio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
 
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
                         <th style="width: 60px;">#</th>
-                        <th><?php echo esc_html__('Título', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 120px;"><?php echo esc_html__('Reproducciones', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 100px;"><?php echo esc_html__('Me Gusta', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 120px;"><?php echo esc_html__('Reprod. / Día', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 100px;"><?php echo esc_html__('Engagement', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 120px;"><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width: 120px;"><?php echo esc_html__('Reproducciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width: 100px;"><?php echo esc_html__('Me Gusta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width: 120px;"><?php echo esc_html__('Reprod. / Día', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width: 100px;"><?php echo esc_html__('Engagement', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width: 120px;"><?php echo esc_html__('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -186,7 +186,7 @@ function formatear_duracion_stats($segundos) {
                         <tr>
                             <td colspan="7" style="text-align: center; padding: 40px;">
                                 <span class="dashicons dashicons-analytics" style="font-size: 48px; color: #ddd;"></span>
-                                <p style="color: #666;"><?php echo esc_html__('No hay episodios publicados', 'flavor-chat-ia'); ?></p>
+                                <p style="color: #666;"><?php echo esc_html__('No hay episodios publicados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </td>
                         </tr>
                     <?php else: ?>
@@ -269,14 +269,14 @@ function formatear_duracion_stats($segundos) {
 
         <div style="text-align: center; padding: 60px 20px; background: #fff; border-radius: 8px; margin: 20px 0;">
             <span class="dashicons dashicons-warning" style="font-size: 64px; color: #dba617;"></span>
-            <h3 style="color: #666;"><?php echo esc_html__('No se encontró el podcast seleccionado', 'flavor-chat-ia'); ?></h3>
+            <h3 style="color: #666;"><?php echo esc_html__('No se encontró el podcast seleccionado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         </div>
 
     <?php else: ?>
 
         <div style="text-align: center; padding: 60px 20px; background: #fff; border-radius: 8px; margin: 20px 0;">
             <span class="dashicons dashicons-chart-bar" style="font-size: 64px; color: #ddd;"></span>
-            <h3 style="color: #666;"><?php echo esc_html__('Selecciona un podcast para ver sus estadísticas', 'flavor-chat-ia'); ?></h3>
+            <h3 style="color: #666;"><?php echo esc_html__('Selecciona un podcast para ver sus estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         </div>
 
     <?php endif; ?>

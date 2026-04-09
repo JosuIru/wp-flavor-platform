@@ -61,7 +61,7 @@ class Flavor_Socios_Gateway_WooCommerce {
         if (!$this->is_configured()) {
             return [
                 'success' => false,
-                'error'   => __('WooCommerce no está configurado.', 'flavor-chat-ia'),
+                'error'   => __('WooCommerce no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -80,7 +80,7 @@ class Flavor_Socios_Gateway_WooCommerce {
             if (!$socio) {
                 return [
                     'success' => false,
-                    'error'   => __('Socio no encontrado.', 'flavor-chat-ia'),
+                    'error'   => __('Socio no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
 
@@ -93,7 +93,7 @@ class Flavor_Socios_Gateway_WooCommerce {
             if (!$producto_id) {
                 return [
                     'success' => false,
-                    'error'   => __('No se pudo crear el producto de cuota.', 'flavor-chat-ia'),
+                    'error'   => __('No se pudo crear el producto de cuota.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
 
@@ -109,7 +109,7 @@ class Flavor_Socios_Gateway_WooCommerce {
             if (!$clave_carrito) {
                 return [
                     'success' => false,
-                    'error'   => __('Error al añadir al carrito.', 'flavor-chat-ia'),
+                    'error'   => __('Error al añadir al carrito.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
 
@@ -143,7 +143,7 @@ class Flavor_Socios_Gateway_WooCommerce {
 
         // Crear producto
         $producto = new WC_Product_Simple();
-        $producto->set_name(__('Cuota de Socio', 'flavor-chat-ia'));
+        $producto->set_name(__('Cuota de Socio', FLAVOR_PLATFORM_TEXT_DOMAIN));
         $producto->set_status('private');
         $producto->set_catalog_visibility('hidden');
         $producto->set_price(0);

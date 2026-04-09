@@ -76,20 +76,20 @@
                                     <svg class="w-4 h-4 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
-                                    <span class="text-xs font-semibold" style="color: #6B4423;"><?php echo esc_html__('Duración: Inmediato', 'flavor-chat-ia'); ?></span>
+                                    <span class="text-xs font-semibold" style="color: #6B4423;"><?php echo esc_html__('Duración: Inmediato', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                                 <ul class="text-xs space-y-1 text-left" style="color: #78716c;">
                                     <li class="flex items-start gap-1">
                                         <span>•</span>
-                                        <span><?php echo esc_html__('Trocea los residuos', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Trocea los residuos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                     <li class="flex items-start gap-1">
                                         <span>•</span>
-                                        <span><?php echo esc_html__('Evita plásticos', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Evita plásticos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                     <li class="flex items-start gap-1">
                                         <span>•</span>
-                                        <span><?php echo esc_html__('Mezcla bien', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Mezcla bien', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                 </ul>
                             </div>
@@ -130,20 +130,20 @@
                                     <svg class="w-4 h-4 text-orange-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
-                                    <span class="text-xs font-semibold" style="color: #d97706;"><?php echo esc_html__('Duración: 2-4 semanas', 'flavor-chat-ia'); ?></span>
+                                    <span class="text-xs font-semibold" style="color: #d97706;"><?php echo esc_html__('Duración: 2-4 semanas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                                 <ul class="text-xs space-y-1 text-left" style="color: #78716c;">
                                     <li class="flex items-start gap-1">
                                         <span>•</span>
-                                        <span><?php echo esc_html__('Temperatura 40-60°C', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Temperatura 40-60°C', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                     <li class="flex items-start gap-1">
                                         <span>•</span>
-                                        <span><?php echo esc_html__('Alta actividad microbiana', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Alta actividad microbiana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                     <li class="flex items-start gap-1">
                                         <span>•</span>
-                                        <span><?php echo esc_html__('Vapor visible', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Vapor visible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                 </ul>
                             </div>
@@ -184,20 +184,20 @@
                                     <svg class="w-4 h-4 text-green-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
-                                    <span class="text-xs font-semibold" style="color: #2D5016;"><?php echo esc_html__('Duración: 4-8 semanas', 'flavor-chat-ia'); ?></span>
+                                    <span class="text-xs font-semibold" style="color: #2D5016;"><?php echo esc_html__('Duración: 4-8 semanas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                                 <ul class="text-xs space-y-1 text-left" style="color: #78716c;">
                                     <li class="flex items-start gap-1">
                                         <span>•</span>
-                                        <span><?php echo esc_html__('Temperatura desciende', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Temperatura desciende', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                     <li class="flex items-start gap-1">
                                         <span>•</span>
-                                        <span><?php echo esc_html__('Color marrón oscuro', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Color marrón oscuro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                     <li class="flex items-start gap-1">
                                         <span>•</span>
-                                        <span><?php echo esc_html__('Textura desmenuzable', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Textura desmenuzable', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                 </ul>
                             </div>
@@ -238,20 +238,20 @@
                                     <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
-                                    <span class="text-xs font-semibold" style="color: #16a34a;"><?php echo esc_html__('Total: 2-3 meses', 'flavor-chat-ia'); ?></span>
+                                    <span class="text-xs font-semibold" style="color: #16a34a;"><?php echo esc_html__('Total: 2-3 meses', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                                 <ul class="text-xs space-y-1 text-left" style="color: #78716c;">
                                     <li class="flex items-start gap-1">
                                         <span>•</span>
-                                        <span><?php echo esc_html__('Olor a tierra húmeda', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Olor a tierra húmeda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                     <li class="flex items-start gap-1">
                                         <span>•</span>
-                                        <span><?php echo esc_html__('Rico en nutrientes', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Rico en nutrientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                     <li class="flex items-start gap-1">
                                         <span>•</span>
-                                        <span><?php echo esc_html__('Listo para usar', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo esc_html__('Listo para usar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </li>
                                 </ul>
                             </div>
@@ -262,7 +262,7 @@
 
             <!-- Factores que influyen en el proceso -->
             <div class="mt-20 bg-white rounded-2xl shadow-xl p-8 md:p-12 border-2" style="border-color: #d4c5b9;">
-                <h3 class="text-3xl font-bold mb-8 text-center" style="color: #2D5016;"><?php echo esc_html__('Factores Clave del Compostaje', 'flavor-chat-ia'); ?></h3>
+                <h3 class="text-3xl font-bold mb-8 text-center" style="color: #2D5016;"><?php echo esc_html__('Factores Clave del Compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <!-- Aireación -->
@@ -272,8 +272,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
                             </svg>
                         </div>
-                        <h4 class="font-bold mb-2" style="color: #2D5016;"><?php echo esc_html__('Aireación', 'flavor-chat-ia'); ?></h4>
-                        <p class="text-sm" style="color: #57534e;"><?php echo esc_html__('Oxígeno necesario para microorganismos aeróbicos', 'flavor-chat-ia'); ?></p>
+                        <h4 class="font-bold mb-2" style="color: #2D5016;"><?php echo esc_html__('Aireación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                        <p class="text-sm" style="color: #57534e;"><?php echo esc_html__('Oxígeno necesario para microorganismos aeróbicos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
 
                     <!-- Humedad -->
@@ -283,8 +283,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
                             </svg>
                         </div>
-                        <h4 class="font-bold mb-2" style="color: #0e7490;"><?php echo esc_html__('Humedad', 'flavor-chat-ia'); ?></h4>
-                        <p class="text-sm" style="color: #57534e;"><?php echo esc_html__('Nivel óptimo del 40-60% para la descomposición', 'flavor-chat-ia'); ?></p>
+                        <h4 class="font-bold mb-2" style="color: #0e7490;"><?php echo esc_html__('Humedad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                        <p class="text-sm" style="color: #57534e;"><?php echo esc_html__('Nivel óptimo del 40-60% para la descomposición', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
 
                     <!-- Temperatura -->
@@ -294,8 +294,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                             </svg>
                         </div>
-                        <h4 class="font-bold mb-2" style="color: #c2410c;"><?php echo esc_html__('Temperatura', 'flavor-chat-ia'); ?></h4>
-                        <p class="text-sm" style="color: #57534e;"><?php echo esc_html__('Entre 40-60°C en fase activa elimina patógenos', 'flavor-chat-ia'); ?></p>
+                        <h4 class="font-bold mb-2" style="color: #c2410c;"><?php echo esc_html__('Temperatura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                        <p class="text-sm" style="color: #57534e;"><?php echo esc_html__('Entre 40-60°C en fase activa elimina patógenos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
 
                     <!-- pH Equilibrado -->
@@ -305,8 +305,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
                             </svg>
                         </div>
-                        <h4 class="font-bold mb-2" style="color: #92400e;"><?php echo esc_html__('pH Equilibrado', 'flavor-chat-ia'); ?></h4>
-                        <p class="text-sm" style="color: #57534e;"><?php echo esc_html__('Nivel neutro (6-8) favorece la actividad biológica', 'flavor-chat-ia'); ?></p>
+                        <h4 class="font-bold mb-2" style="color: #92400e;"><?php echo esc_html__('pH Equilibrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                        <p class="text-sm" style="color: #57534e;"><?php echo esc_html__('Nivel neutro (6-8) favorece la actividad biológica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 </div>
             </div>
@@ -317,24 +317,24 @@
                     <svg class="w-12 h-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <h4 class="text-xl font-bold mb-2"><?php echo esc_html__('Para el Medio Ambiente', 'flavor-chat-ia'); ?></h4>
-                    <p class="text-sm opacity-90"><?php echo esc_html__('Reduce residuos en vertederos y emisiones de metano', 'flavor-chat-ia'); ?></p>
+                    <h4 class="text-xl font-bold mb-2"><?php echo esc_html__('Para el Medio Ambiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                    <p class="text-sm opacity-90"><?php echo esc_html__('Reduce residuos en vertederos y emisiones de metano', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
 
                 <div class="bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl p-8 text-white shadow-xl transform hover:scale-105 transition-all duration-300">
                     <svg class="w-12 h-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <h4 class="text-xl font-bold mb-2"><?php echo esc_html__('Para la Economía', 'flavor-chat-ia'); ?></h4>
-                    <p class="text-sm opacity-90"><?php echo esc_html__('Ahorra en fertilizantes químicos y gestión de residuos', 'flavor-chat-ia'); ?></p>
+                    <h4 class="text-xl font-bold mb-2"><?php echo esc_html__('Para la Economía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                    <p class="text-sm opacity-90"><?php echo esc_html__('Ahorra en fertilizantes químicos y gestión de residuos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
 
                 <div class="bg-gradient-to-br from-emerald-600 to-green-700 rounded-xl p-8 text-white shadow-xl transform hover:scale-105 transition-all duration-300">
                     <svg class="w-12 h-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                     </svg>
-                    <h4 class="text-xl font-bold mb-2"><?php echo esc_html__('Para el Suelo', 'flavor-chat-ia'); ?></h4>
-                    <p class="text-sm opacity-90"><?php echo esc_html__('Mejora la estructura, fertilidad y retención de agua', 'flavor-chat-ia'); ?></p>
+                    <h4 class="text-xl font-bold mb-2"><?php echo esc_html__('Para el Suelo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                    <p class="text-sm opacity-90"><?php echo esc_html__('Mejora la estructura, fertilidad y retención de agua', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             </div>
         </div>

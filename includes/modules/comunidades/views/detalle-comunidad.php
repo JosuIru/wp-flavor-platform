@@ -37,7 +37,7 @@ $es_admin = ($rol_usuario === 'admin' || $rol_usuario === 'fundador');
                 <?php if ($comunidad->tipo === 'privada'): ?>
                 <span class="flavor-com-badge-privada">
                     <span class="dashicons dashicons-lock"></span>
-                    <?php esc_html_e('Privada', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Privada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
                 <?php endif; ?>
             </div>
@@ -47,12 +47,12 @@ $es_admin = ($rol_usuario === 'admin' || $rol_usuario === 'fundador');
             <div class="flavor-com-detalle-stats">
                 <span class="flavor-com-stat">
                     <span class="dashicons dashicons-admin-users"></span>
-                    <strong><?php echo esc_html(count($miembros)); ?></strong> <?php esc_html_e('miembros', 'flavor-chat-ia'); ?>
+                    <strong><?php echo esc_html(count($miembros)); ?></strong> <?php esc_html_e('miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
                 <span class="flavor-com-stat">
                     <span class="dashicons dashicons-calendar-alt"></span>
                     <?php printf(
-                        esc_html__('Creada el %s', 'flavor-chat-ia'),
+                        esc_html__('Creada el %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         date_i18n(get_option('date_format'), strtotime($comunidad->fecha_creacion))
                     ); ?>
                 </span>
@@ -61,22 +61,22 @@ $es_admin = ($rol_usuario === 'admin' || $rol_usuario === 'fundador');
             <div class="flavor-com-detalle-acciones">
                 <?php if (!$identificador_usuario): ?>
                     <a href="<?php echo esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('comunidades', ''))); ?>" class="flavor-com-boton flavor-com-boton-primario">
-                        <?php esc_html_e('Inicia sesion para unirte', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Inicia sesion para unirte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 <?php elseif ($es_miembro): ?>
                     <?php if ($es_admin): ?>
                         <a href="<?php echo esc_url(add_query_arg(['comunidad' => $comunidad->id, 'gestionar' => 1], home_url('/comunidad/'))); ?>" class="flavor-com-boton flavor-com-boton-secundario">
                             <span class="dashicons dashicons-admin-generic"></span>
-                            <?php esc_html_e('Gestionar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Gestionar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     <?php endif; ?>
                     <button type="button" class="flavor-com-boton flavor-com-boton-peligro-outline flavor-com-btn-salir" data-comunidad-id="<?php echo esc_attr($comunidad->id); ?>">
-                        <?php esc_html_e('Abandonar comunidad', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Abandonar comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 <?php else: ?>
                     <button type="button" class="flavor-com-boton flavor-com-boton-primario flavor-com-btn-unirse" data-comunidad-id="<?php echo esc_attr($comunidad->id); ?>">
                         <span class="dashicons dashicons-plus-alt"></span>
-                        <?php esc_html_e('Unirse a la comunidad', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Unirse a la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 <?php endif; ?>
             </div>
@@ -87,22 +87,22 @@ $es_admin = ($rol_usuario === 'admin' || $rol_usuario === 'fundador');
         <div class="flavor-com-tabs">
             <button type="button" class="flavor-com-tab active" data-tab="actividad">
                 <span class="dashicons dashicons-admin-comments"></span>
-                <?php esc_html_e('Actividad', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <button type="button" class="flavor-com-tab" data-tab="miembros">
                 <span class="dashicons dashicons-admin-users"></span>
-                <?php esc_html_e('Miembros', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <?php if ($es_miembro && !empty($chat_grupos_activo)): ?>
             <button type="button" class="flavor-com-tab" data-tab="chat">
                 <span class="dashicons dashicons-format-chat"></span>
-                <?php esc_html_e('Chat', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <?php endif; ?>
             <?php if (!empty($comunidad->reglas)): ?>
             <button type="button" class="flavor-com-tab" data-tab="reglas">
                 <span class="dashicons dashicons-clipboard"></span>
-                <?php esc_html_e('Reglas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Reglas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <?php endif; ?>
         </div>
@@ -113,10 +113,10 @@ $es_admin = ($rol_usuario === 'admin' || $rol_usuario === 'fundador');
                 <form id="flavor-com-form-publicar" class="flavor-com-form-publicar">
                     <input type="hidden" name="comunidad_id" value="<?php echo esc_attr($comunidad->id); ?>">
                     <textarea name="contenido" class="flavor-com-textarea" rows="3"
-                              placeholder="<?php esc_attr_e('Comparte algo con la comunidad...', 'flavor-chat-ia'); ?>"></textarea>
+                              placeholder="<?php esc_attr_e('Comparte algo con la comunidad...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                     <div class="flavor-com-publicar-acciones">
                         <button type="submit" class="flavor-com-boton flavor-com-boton-primario">
-                            <?php esc_html_e('Publicar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </form>
@@ -126,7 +126,7 @@ $es_admin = ($rol_usuario === 'admin' || $rol_usuario === 'fundador');
             <div class="flavor-com-feed" id="flavor-com-feed">
                 <div class="flavor-com-cargando">
                     <span class="flavor-com-spinner"></span>
-                    <?php esc_html_e('Cargando actividad...', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Cargando actividad...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </div>
             </div>
         </div>
@@ -143,10 +143,10 @@ $es_admin = ($rol_usuario === 'admin' || $rol_usuario === 'fundador');
                         <span class="flavor-com-miembro-rol flavor-com-rol-<?php echo esc_attr($miembro['rol']); ?>">
                             <?php
                             $roles_nombres = [
-                                'fundador' => __('Fundador', 'flavor-chat-ia'),
-                                'admin' => __('Administrador', 'flavor-chat-ia'),
-                                'moderador' => __('Moderador', 'flavor-chat-ia'),
-                                'miembro' => __('Miembro', 'flavor-chat-ia'),
+                                'fundador' => __('Fundador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'admin' => __('Administrador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'moderador' => __('Moderador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'miembro' => __('Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             ];
                             echo esc_html($roles_nombres[$miembro['rol']] ?? ucfirst($miembro['rol']));
                             ?>
@@ -160,7 +160,7 @@ $es_admin = ($rol_usuario === 'admin' || $rol_usuario === 'fundador');
         <?php if (!empty($comunidad->reglas)): ?>
         <div class="flavor-com-tab-content" id="tab-reglas">
             <div class="flavor-com-reglas">
-                <h3><?php esc_html_e('Reglas de la comunidad', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Reglas de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div class="flavor-com-reglas-contenido">
                     <?php echo nl2br(esc_html($comunidad->reglas)); ?>
                 </div>

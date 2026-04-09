@@ -304,7 +304,7 @@ class Flavor_Assets_Frontend_Controller {
      */
     public function render_tab_principal() {
         echo '<div class="flavor-assets-tab">';
-        echo '<p>' . __('Este módulo gestiona recursos compartidos del sistema.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Este módulo gestiona recursos compartidos del sistema.', 'flavor-platform') . '</p>';
         echo '</div>';
     }
 }

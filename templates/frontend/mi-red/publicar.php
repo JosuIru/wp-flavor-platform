@@ -17,13 +17,13 @@ $comunidades = $datos_vista['comunidades'] ?? [];
 
 <div class="mi-red-publicar">
     <header class="mi-red-publicar__header">
-        <h1 class="mi-red-publicar__title"><?php esc_html_e('Crear publicación', 'flavor-chat-ia'); ?></h1>
+        <h1 class="mi-red-publicar__title"><?php esc_html_e('Crear publicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
     </header>
 
     <form class="mi-red-publicar__form" id="form-publicar-completo">
         <!-- Tipo de contenido -->
         <div class="mi-red-form-group">
-            <label class="mi-red-form-label"><?php esc_html_e('Tipo de contenido', 'flavor-chat-ia'); ?></label>
+            <label class="mi-red-form-label"><?php esc_html_e('Tipo de contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <div class="mi-red-tipo-selector">
                 <?php foreach ($tipos_permitidos as $key => $tipo) : ?>
                     <label class="mi-red-tipo-option">
@@ -37,18 +37,18 @@ $comunidades = $datos_vista['comunidades'] ?? [];
 
         <!-- Contenido -->
         <div class="mi-red-form-group">
-            <label class="mi-red-form-label" for="contenido"><?php esc_html_e('¿Qué quieres compartir?', 'flavor-chat-ia'); ?></label>
-            <textarea name="contenido" id="contenido" class="mi-red-textarea" rows="6" placeholder="<?php esc_attr_e('Escribe tu publicación...', 'flavor-chat-ia'); ?>" required></textarea>
+            <label class="mi-red-form-label" for="contenido"><?php esc_html_e('¿Qué quieres compartir?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+            <textarea name="contenido" id="contenido" class="mi-red-textarea" rows="6" placeholder="<?php esc_attr_e('Escribe tu publicación...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" required></textarea>
         </div>
 
         <!-- Adjuntos -->
         <div class="mi-red-form-group">
-            <label class="mi-red-form-label"><?php esc_html_e('Adjuntos', 'flavor-chat-ia'); ?></label>
+            <label class="mi-red-form-label"><?php esc_html_e('Adjuntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <div class="mi-red-upload-area" id="upload-area">
                 <div class="mi-red-upload-area__content">
                     <span class="mi-red-upload-area__icon">📎</span>
-                    <p class="mi-red-upload-area__text"><?php esc_html_e('Arrastra archivos aquí o haz clic para seleccionar', 'flavor-chat-ia'); ?></p>
-                    <p class="mi-red-upload-area__hint"><?php esc_html_e('Imágenes, videos o audios', 'flavor-chat-ia'); ?></p>
+                    <p class="mi-red-upload-area__text"><?php esc_html_e('Arrastra archivos aquí o haz clic para seleccionar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                    <p class="mi-red-upload-area__hint"><?php esc_html_e('Imágenes, videos o audios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <input type="file" name="adjuntos[]" multiple accept="image/*,video/*,audio/*" hidden>
             </div>
@@ -57,20 +57,20 @@ $comunidades = $datos_vista['comunidades'] ?? [];
 
         <!-- Visibilidad -->
         <div class="mi-red-form-group">
-            <label class="mi-red-form-label" for="visibilidad"><?php esc_html_e('Visibilidad', 'flavor-chat-ia'); ?></label>
+            <label class="mi-red-form-label" for="visibilidad"><?php esc_html_e('Visibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <select name="visibilidad" id="visibilidad" class="mi-red-select">
-                <option value="comunidad"><?php esc_html_e('Comunidad - Visible para todos los miembros', 'flavor-chat-ia'); ?></option>
-                <option value="publica"><?php esc_html_e('Público - Visible para todos', 'flavor-chat-ia'); ?></option>
-                <option value="seguidores"><?php esc_html_e('Seguidores - Solo tus seguidores', 'flavor-chat-ia'); ?></option>
+                <option value="comunidad"><?php esc_html_e('Comunidad - Visible para todos los miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="publica"><?php esc_html_e('Público - Visible para todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="seguidores"><?php esc_html_e('Seguidores - Solo tus seguidores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             </select>
         </div>
 
         <!-- Publicar en comunidad -->
         <?php if (!empty($comunidades)) : ?>
             <div class="mi-red-form-group">
-                <label class="mi-red-form-label" for="comunidad"><?php esc_html_e('Publicar en comunidad', 'flavor-chat-ia'); ?></label>
+                <label class="mi-red-form-label" for="comunidad"><?php esc_html_e('Publicar en comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="comunidad_id" id="comunidad" class="mi-red-select">
-                    <option value=""><?php esc_html_e('Ninguna - Solo en mi perfil', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Ninguna - Solo en mi perfil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($comunidades as $com) : ?>
                         <option value="<?php echo esc_attr($com['id']); ?>"><?php echo esc_html($com['nombre']); ?></option>
                     <?php endforeach; ?>
@@ -81,10 +81,10 @@ $comunidades = $datos_vista['comunidades'] ?? [];
         <!-- Acciones -->
         <div class="mi-red-form-actions">
             <a href="<?php echo esc_url($base_url); ?>" class="mi-red-btn mi-red-btn--secondary">
-                <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <button type="submit" class="mi-red-btn mi-red-btn--primary">
-                <?php esc_html_e('Publicar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     </form>

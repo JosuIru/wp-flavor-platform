@@ -34,7 +34,7 @@ $total_final = $total_carrito + $gastos_gestion;
      data-visible="false">
 
     <!-- Boton del carrito (siempre visible) -->
-    <button type="button" class="flavor-gc-carrito-boton" id="gc-carrito-toggle" aria-label="<?php esc_attr_e('Ver carrito', 'flavor-chat-ia'); ?>">
+    <button type="button" class="flavor-gc-carrito-boton" id="gc-carrito-toggle" aria-label="<?php esc_attr_e('Ver carrito', 'flavor-platform'); ?>">
         <span class="dashicons dashicons-cart"></span>
         <span class="flavor-gc-carrito-contador" id="gc-carrito-contador">
             <?php echo esc_html($total_items); ?>
@@ -46,9 +46,9 @@ $total_final = $total_carrito + $gastos_gestion;
         <header class="flavor-gc-carrito-panel-header">
             <h3>
                 <span class="dashicons dashicons-cart"></span>
-                <?php _e('Pedido actual', 'flavor-chat-ia'); ?>
+                <?php _e('Pedido actual', 'flavor-platform'); ?>
             </h3>
-            <button type="button" class="flavor-gc-carrito-cerrar" id="gc-carrito-cerrar" aria-label="<?php esc_attr_e('Cerrar', 'flavor-chat-ia'); ?>">
+            <button type="button" class="flavor-gc-carrito-cerrar" id="gc-carrito-cerrar" aria-label="<?php esc_attr_e('Cerrar', 'flavor-platform'); ?>">
                 <span class="dashicons dashicons-no-alt"></span>
             </button>
         </header>
@@ -59,7 +59,7 @@ $total_final = $total_carrito + $gastos_gestion;
                 <div class="flavor-gc-carrito-ciclo-info">
                     <span class="flavor-gc-ciclo-nombre"><?php echo esc_html($ciclo_activo['titulo']); ?></span>
                     <span class="flavor-gc-ciclo-cierre">
-                        <?php printf(__('Cierre: %s', 'flavor-chat-ia'), date_i18n('j M, H:i', strtotime($ciclo_activo['fecha_cierre']))); ?>
+                        <?php printf(__('Cierre: %s', 'flavor-platform'), date_i18n('j M, H:i', strtotime($ciclo_activo['fecha_cierre']))); ?>
                     </span>
                 </div>
             </div>
@@ -69,9 +69,9 @@ $total_final = $total_carrito + $gastos_gestion;
             <?php if (empty($items_carrito)): ?>
                 <div class="flavor-gc-carrito-vacio">
                     <span class="dashicons dashicons-products"></span>
-                    <p><?php _e('Tu pedido esta vacio', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('Tu pedido esta vacio', 'flavor-platform'); ?></p>
                     <span class="flavor-gc-carrito-vacio-hint">
-                        <?php _e('Anade productos desde el catalogo', 'flavor-chat-ia'); ?>
+                        <?php _e('Anade productos desde el catalogo', 'flavor-platform'); ?>
                     </span>
                 </div>
             <?php else: ?>
@@ -94,7 +94,7 @@ $total_final = $total_carrito + $gastos_gestion;
                             <div class="flavor-gc-item-subtotal">
                                 <?php echo number_format($item['precio'] * $item['cantidad'], 2, ',', '.'); ?> EUR
                             </div>
-                            <button type="button" class="flavor-gc-item-eliminar" data-action="eliminar-item" title="<?php esc_attr_e('Eliminar', 'flavor-chat-ia'); ?>">
+                            <button type="button" class="flavor-gc-item-eliminar" data-action="eliminar-item" title="<?php esc_attr_e('Eliminar', 'flavor-platform'); ?>">
                                 <span class="dashicons dashicons-no"></span>
                             </button>
                         </li>
@@ -103,7 +103,7 @@ $total_final = $total_carrito + $gastos_gestion;
 
                 <?php if (count($items_carrito) > 5): ?>
                     <div class="flavor-gc-carrito-mas">
-                        <?php printf(__('+ %d productos mas', 'flavor-chat-ia'), count($items_carrito) - 5); ?>
+                        <?php printf(__('+ %d productos mas', 'flavor-platform'), count($items_carrito) - 5); ?>
                     </div>
                 <?php endif; ?>
             <?php endif; ?>
@@ -112,7 +112,7 @@ $total_final = $total_carrito + $gastos_gestion;
         <?php if (!empty($items_carrito)): ?>
             <div class="flavor-gc-carrito-resumen">
                 <div class="flavor-gc-resumen-linea">
-                    <span><?php _e('Subtotal', 'flavor-chat-ia'); ?></span>
+                    <span><?php _e('Subtotal', 'flavor-platform'); ?></span>
                     <span class="flavor-gc-subtotal-valor" id="gc-carrito-subtotal">
                         <?php echo number_format($total_carrito, 2, ',', '.'); ?> EUR
                     </span>
@@ -121,8 +121,8 @@ $total_final = $total_carrito + $gastos_gestion;
                 <?php if ($porcentaje_gestion > 0): ?>
                     <div class="flavor-gc-resumen-linea flavor-gc-gestion">
                         <span>
-                            <?php printf(__('Gastos gestion (%s%%)', 'flavor-chat-ia'), $porcentaje_gestion); ?>
-                            <span class="dashicons dashicons-info flavor-gc-tooltip" title="<?php esc_attr_e('Porcentaje para cubrir gastos operativos del grupo', 'flavor-chat-ia'); ?>"></span>
+                            <?php printf(__('Gastos gestion (%s%%)', 'flavor-platform'), $porcentaje_gestion); ?>
+                            <span class="dashicons dashicons-info flavor-gc-tooltip" title="<?php esc_attr_e('Porcentaje para cubrir gastos operativos del grupo', 'flavor-platform'); ?>"></span>
                         </span>
                         <span class="flavor-gc-gestion-valor" id="gc-carrito-gestion">
                             <?php echo number_format($gastos_gestion, 2, ',', '.'); ?> EUR
@@ -131,7 +131,7 @@ $total_final = $total_carrito + $gastos_gestion;
                 <?php endif; ?>
 
                 <div class="flavor-gc-resumen-linea flavor-gc-total">
-                    <strong><?php _e('Total', 'flavor-chat-ia'); ?></strong>
+                    <strong><?php _e('Total', 'flavor-platform'); ?></strong>
                     <strong class="flavor-gc-total-valor" id="gc-carrito-total">
                         <?php echo number_format($total_final, 2, ',', '.'); ?> EUR
                     </strong>
@@ -140,11 +140,11 @@ $total_final = $total_carrito + $gastos_gestion;
 
             <footer class="flavor-gc-carrito-panel-footer">
                 <a href="<?php echo esc_url($url_carrito); ?>" class="flavor-gc-btn flavor-gc-btn-secondary">
-                    <?php _e('Ver pedido completo', 'flavor-chat-ia'); ?>
+                    <?php _e('Ver pedido completo', 'flavor-platform'); ?>
                 </a>
                 <?php if ($ciclo_activo && $ciclo_activo['estado'] === 'abierto'): ?>
                     <button type="button" class="flavor-gc-btn flavor-gc-btn-primary" id="gc-confirmar-pedido-flotante">
-                        <?php _e('Confirmar pedido', 'flavor-chat-ia'); ?>
+                        <?php _e('Confirmar pedido', 'flavor-platform'); ?>
                     </button>
                 <?php endif; ?>
             </footer>
@@ -152,7 +152,7 @@ $total_final = $total_carrito + $gastos_gestion;
             <div class="flavor-gc-carrito-acciones-secundarias">
                 <button type="button" class="flavor-gc-btn-text" id="gc-vaciar-carrito">
                     <span class="dashicons dashicons-trash"></span>
-                    <?php _e('Vaciar pedido', 'flavor-chat-ia'); ?>
+                    <?php _e('Vaciar pedido', 'flavor-platform'); ?>
                 </button>
             </div>
         <?php endif; ?>

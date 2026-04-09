@@ -82,8 +82,8 @@ class Flavor_Foros_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
     public function __construct() {
         global $wpdb;
         $this->prefix_tabla = $wpdb->prefix . 'flavor_foros_';
-        $this->title = __('Foros', 'flavor-chat-ia');
-        $this->description = __('Debates y discusiones de la comunidad', 'flavor-chat-ia');
+        $this->title = __('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Debates y discusiones de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         parent::__construct([
             'id' => $this->widget_id,
@@ -176,7 +176,7 @@ class Flavor_Foros_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         $stats[] = [
             'icon' => 'dashicons-admin-comments',
             'valor' => $total_temas,
-            'label' => __('Temas activos', 'flavor-chat-ia'),
+            'label' => __('Temas activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'primary',
             'url' => $es_admin ? admin_url('admin.php?page=foros') : Flavor_Chat_Helpers::get_action_url('foros', ''),
         ];
@@ -186,7 +186,7 @@ class Flavor_Foros_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $stats[] = [
                 'icon' => 'dashicons-bell',
                 'valor' => $respuestas_nuevas,
-                'label' => __('Nuevas respuestas', 'flavor-chat-ia'),
+                'label' => __('Nuevas respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'warning',
                 'url' => $es_admin ? admin_url('admin.php?page=foros&filter=suscritos') : Flavor_Chat_Helpers::get_action_url('foros', 'suscritos'),
             ];
@@ -198,7 +198,7 @@ class Flavor_Foros_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $stats[] = [
                 'icon' => 'dashicons-edit',
                 'valor' => $participaciones,
-                'label' => __('Participaciones', 'flavor-chat-ia'),
+                'label' => __('Participaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $participaciones > 0 ? 'success' : 'gray',
                 'url' => $es_admin ? admin_url('admin.php?page=foros&filter=mios') : Flavor_Chat_Helpers::get_action_url('foros', 'mis-temas'),
             ];
@@ -208,8 +208,8 @@ class Flavor_Foros_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         if ($user_id) {
             $stats[] = [
                 'icon' => 'dashicons-plus-alt2',
-                'valor' => __('Nuevo', 'flavor-chat-ia'),
-                'label' => __('Crear tema', 'flavor-chat-ia'),
+                'valor' => __('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'label' => __('Crear tema', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'info',
                 'url' => $es_admin ? admin_url('admin.php?page=foros&action=nuevo') : Flavor_Chat_Helpers::get_action_url('foros', 'nuevo'),
             ];
@@ -221,10 +221,10 @@ class Flavor_Foros_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats,
             'items' => $items,
-            'empty_state' => __('No hay temas de discusión abiertos', 'flavor-chat-ia'),
+            'empty_state' => __('No hay temas de discusión abiertos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => __('Ver todos los temas', 'flavor-chat-ia'),
+                    'label' => __('Ver todos los temas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => $es_admin ? admin_url('admin.php?page=foros') : Flavor_Chat_Helpers::get_action_url('foros', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
@@ -270,7 +270,7 @@ class Flavor_Foros_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $items[] = [
                 'icon' => 'dashicons-format-chat',
                 'title' => wp_trim_words($tema->titulo, 6, '...'),
-                'meta' => $tema->nombre_autor ?: __('Anónimo', 'flavor-chat-ia'),
+                'meta' => $tema->nombre_autor ?: __('Anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => $es_admin ? admin_url('admin.php?page=foros&tema=' . $tema->id) : add_query_arg('tema_id', $tema->id, Flavor_Chat_Helpers::get_action_url('foros', '')),
                 'badge' => $total_respuestas > 0 ? $total_respuestas : null,
             ];

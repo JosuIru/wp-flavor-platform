@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) exit;
 
 // Verificar permisos
 if (!current_user_can('manage_options')) {
-    wp_die(__('No tienes permisos suficientes para acceder a esta página.', 'flavor-chat-ia'));
+    wp_die(__('No tienes permisos suficientes para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
 }
 
 // =============================================================================
@@ -25,11 +25,11 @@ if (!current_user_can('manage_options')) {
  */
 function obtener_badge_estado_conservacion($estado) {
     $estados = [
-        'nuevo' => ['clase' => 'success', 'texto' => __('Nuevo', 'flavor-chat-ia'), 'icono' => 'star-filled'],
-        'como_nuevo' => ['clase' => 'info', 'texto' => __('Como nuevo', 'flavor-chat-ia'), 'icono' => 'yes-alt'],
-        'buen_estado' => ['clase' => 'primary', 'texto' => __('Buen estado', 'flavor-chat-ia'), 'icono' => 'thumbs-up'],
-        'usado' => ['clase' => 'warning', 'texto' => __('Usado', 'flavor-chat-ia'), 'icono' => 'admin-tools'],
-        'para_reparar' => ['clase' => 'danger', 'texto' => __('Para reparar', 'flavor-chat-ia'), 'icono' => 'warning'],
+        'nuevo' => ['clase' => 'success', 'texto' => __('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'star-filled'],
+        'como_nuevo' => ['clase' => 'info', 'texto' => __('Como nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'yes-alt'],
+        'buen_estado' => ['clase' => 'primary', 'texto' => __('Buen estado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'thumbs-up'],
+        'usado' => ['clase' => 'warning', 'texto' => __('Usado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'admin-tools'],
+        'para_reparar' => ['clase' => 'danger', 'texto' => __('Para reparar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'warning'],
     ];
 
     $estado_key = str_replace([' ', '-'], '_', strtolower($estado));
@@ -46,15 +46,15 @@ function obtener_badge_estado_conservacion($estado) {
  */
 function obtener_rango_precio($precio) {
     if ($precio == 0) {
-        return ['clase' => 'success', 'texto' => __('Gratis', 'flavor-chat-ia')];
+        return ['clase' => 'success', 'texto' => __('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     } elseif ($precio <= 10) {
-        return ['clase' => 'info', 'texto' => __('Económico', 'flavor-chat-ia')];
+        return ['clase' => 'info', 'texto' => __('Económico', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     } elseif ($precio <= 50) {
-        return ['clase' => 'primary', 'texto' => __('Medio', 'flavor-chat-ia')];
+        return ['clase' => 'primary', 'texto' => __('Medio', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     } elseif ($precio <= 200) {
-        return ['clase' => 'warning', 'texto' => __('Alto', 'flavor-chat-ia')];
+        return ['clase' => 'warning', 'texto' => __('Alto', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     } else {
-        return ['clase' => 'danger', 'texto' => __('Premium', 'flavor-chat-ia')];
+        return ['clase' => 'danger', 'texto' => __('Premium', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 }
 
@@ -680,7 +680,7 @@ $top_caros = new WP_Query($args_caros);
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-cart" style="margin-right: 8px;"></span>
-        <?php echo esc_html__('Ventas del Marketplace', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Ventas del Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
     <hr class="wp-header-end">
 
@@ -693,7 +693,7 @@ $top_caros = new WP_Query($args_caros);
                 </div>
                 <div class="flavor-ventas-stat-content">
                     <h3><?php echo number_format($total_ventas); ?></h3>
-                    <span><?php echo esc_html__('Total Productos', 'flavor-chat-ia'); ?></span>
+                    <span><?php echo esc_html__('Total Productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
@@ -703,7 +703,7 @@ $top_caros = new WP_Query($args_caros);
                 </div>
                 <div class="flavor-ventas-stat-content">
                     <h3><?php echo number_format($valor_total, 2); ?> €</h3>
-                    <span><?php echo esc_html__('Valor Total', 'flavor-chat-ia'); ?></span>
+                    <span><?php echo esc_html__('Valor Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
@@ -713,7 +713,7 @@ $top_caros = new WP_Query($args_caros);
                 </div>
                 <div class="flavor-ventas-stat-content">
                     <h3><?php echo number_format($precio_promedio, 2); ?> €</h3>
-                    <span><?php echo esc_html__('Precio Promedio', 'flavor-chat-ia'); ?></span>
+                    <span><?php echo esc_html__('Precio Promedio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
@@ -723,7 +723,7 @@ $top_caros = new WP_Query($args_caros);
                 </div>
                 <div class="flavor-ventas-stat-content">
                     <h3><?php echo number_format($ventas_nuevas_mes); ?></h3>
-                    <span><?php echo esc_html__('Nuevos este mes', 'flavor-chat-ia'); ?></span>
+                    <span><?php echo esc_html__('Nuevos este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
         </div>
@@ -741,56 +741,56 @@ $top_caros = new WP_Query($args_caros);
 
                     <div class="flavor-ventas-filters-grid">
                         <div class="flavor-ventas-filter-group">
-                            <label><?php echo esc_html__('Buscar', 'flavor-chat-ia'); ?></label>
-                            <input type="text" name="s" value="<?php echo esc_attr($filtro_busqueda); ?>" placeholder="<?php echo esc_attr__('Nombre del producto...', 'flavor-chat-ia'); ?>">
+                            <label><?php echo esc_html__('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                            <input type="text" name="s" value="<?php echo esc_attr($filtro_busqueda); ?>" placeholder="<?php echo esc_attr__('Nombre del producto...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         </div>
 
                         <div class="flavor-ventas-filter-group">
-                            <label><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></label>
+                            <label><?php echo esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <select name="estado_conservacion">
-                                <option value=""><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></option>
-                                <option value="nuevo" <?php selected($filtro_estado, 'nuevo'); ?>><?php echo esc_html__('Nuevo', 'flavor-chat-ia'); ?></option>
-                                <option value="como_nuevo" <?php selected($filtro_estado, 'como_nuevo'); ?>><?php echo esc_html__('Como nuevo', 'flavor-chat-ia'); ?></option>
-                                <option value="buen_estado" <?php selected($filtro_estado, 'buen_estado'); ?>><?php echo esc_html__('Buen estado', 'flavor-chat-ia'); ?></option>
-                                <option value="usado" <?php selected($filtro_estado, 'usado'); ?>><?php echo esc_html__('Usado', 'flavor-chat-ia'); ?></option>
-                                <option value="para_reparar" <?php selected($filtro_estado, 'para_reparar'); ?>><?php echo esc_html__('Para reparar', 'flavor-chat-ia'); ?></option>
+                                <option value=""><?php echo esc_html__('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="nuevo" <?php selected($filtro_estado, 'nuevo'); ?>><?php echo esc_html__('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="como_nuevo" <?php selected($filtro_estado, 'como_nuevo'); ?>><?php echo esc_html__('Como nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="buen_estado" <?php selected($filtro_estado, 'buen_estado'); ?>><?php echo esc_html__('Buen estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="usado" <?php selected($filtro_estado, 'usado'); ?>><?php echo esc_html__('Usado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="para_reparar" <?php selected($filtro_estado, 'para_reparar'); ?>><?php echo esc_html__('Para reparar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             </select>
                         </div>
 
                         <div class="flavor-ventas-filter-group">
-                            <label><?php echo esc_html__('Precio mín.', 'flavor-chat-ia'); ?></label>
+                            <label><?php echo esc_html__('Precio mín.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="number" name="precio_min" value="<?php echo esc_attr($filtro_precio_min); ?>" min="0" step="0.01" placeholder="0">
                         </div>
 
                         <div class="flavor-ventas-filter-group">
-                            <label><?php echo esc_html__('Precio máx.', 'flavor-chat-ia'); ?></label>
+                            <label><?php echo esc_html__('Precio máx.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="number" name="precio_max" value="<?php echo esc_attr($filtro_precio_max); ?>" min="0" step="0.01" placeholder="∞">
                         </div>
 
                         <div class="flavor-ventas-filter-group">
-                            <label><?php echo esc_html__('Ordenar por', 'flavor-chat-ia'); ?></label>
+                            <label><?php echo esc_html__('Ordenar por', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <select name="orderby">
-                                <option value="date" <?php selected($filtro_orden, 'date'); ?>><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></option>
-                                <option value="title" <?php selected($filtro_orden, 'title'); ?>><?php echo esc_html__('Nombre', 'flavor-chat-ia'); ?></option>
-                                <option value="price" <?php selected($filtro_orden, 'price'); ?>><?php echo esc_html__('Precio', 'flavor-chat-ia'); ?></option>
+                                <option value="date" <?php selected($filtro_orden, 'date'); ?>><?php echo esc_html__('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="title" <?php selected($filtro_orden, 'title'); ?>><?php echo esc_html__('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="price" <?php selected($filtro_orden, 'price'); ?>><?php echo esc_html__('Precio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             </select>
                         </div>
 
                         <div class="flavor-ventas-filter-group">
-                            <label><?php echo esc_html__('Orden', 'flavor-chat-ia'); ?></label>
+                            <label><?php echo esc_html__('Orden', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <select name="order">
-                                <option value="DESC" <?php selected($filtro_orden_dir, 'DESC'); ?>><?php echo esc_html__('Descendente', 'flavor-chat-ia'); ?></option>
-                                <option value="ASC" <?php selected($filtro_orden_dir, 'ASC'); ?>><?php echo esc_html__('Ascendente', 'flavor-chat-ia'); ?></option>
+                                <option value="DESC" <?php selected($filtro_orden_dir, 'DESC'); ?>><?php echo esc_html__('Descendente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="ASC" <?php selected($filtro_orden_dir, 'ASC'); ?>><?php echo esc_html__('Ascendente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             </select>
                         </div>
 
                         <div class="flavor-ventas-filters-actions">
                             <button type="submit" class="button button-primary">
                                 <span class="dashicons dashicons-search" style="vertical-align: middle;"></span>
-                                <?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                             <a href="<?php echo esc_url(remove_query_arg(['s', 'estado_conservacion', 'precio_min', 'precio_max', 'orderby', 'order', 'paged'])); ?>" class="button">
-                                <?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </div>
                     </div>
@@ -801,13 +801,13 @@ $top_caros = new WP_Query($args_caros);
                     <table class="flavor-ventas-table">
                         <thead>
                             <tr>
-                                <th><?php echo esc_html__('Producto', 'flavor-chat-ia'); ?></th>
-                                <th><?php echo esc_html__('Vendedor', 'flavor-chat-ia'); ?></th>
-                                <th><?php echo esc_html__('Precio', 'flavor-chat-ia'); ?></th>
-                                <th><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
-                                <th><?php echo esc_html__('Ubicación', 'flavor-chat-ia'); ?></th>
-                                <th><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></th>
-                                <th><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
+                                <th><?php echo esc_html__('Producto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php echo esc_html__('Vendedor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php echo esc_html__('Precio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php echo esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php echo esc_html__('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php echo esc_html__('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php echo esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -850,7 +850,7 @@ $top_caros = new WP_Query($args_caros);
                                         <?php if ($precio > 0): ?>
                                             <span class="flavor-ventas-precio"><?php echo number_format($precio, 2); ?> €</span>
                                         <?php else: ?>
-                                            <span class="flavor-ventas-precio gratis"><?php echo esc_html__('Gratis', 'flavor-chat-ia'); ?></span>
+                                            <span class="flavor-ventas-precio gratis"><?php echo esc_html__('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         <?php endif; ?>
                                     </td>
                                     <td>
@@ -873,10 +873,10 @@ $top_caros = new WP_Query($args_caros);
                                     </td>
                                     <td>
                                         <div class="flavor-ventas-acciones">
-                                            <a href="<?php echo get_edit_post_link(); ?>" class="button button-small" title="<?php echo esc_attr__('Editar', 'flavor-chat-ia'); ?>">
+                                            <a href="<?php echo get_edit_post_link(); ?>" class="button button-small" title="<?php echo esc_attr__('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                                 <span class="dashicons dashicons-edit" style="font-size: 14px; line-height: 1.4;"></span>
                                             </a>
-                                            <a href="<?php the_permalink(); ?>" class="button button-small" target="_blank" title="<?php echo esc_attr__('Ver', 'flavor-chat-ia'); ?>">
+                                            <a href="<?php the_permalink(); ?>" class="button button-small" target="_blank" title="<?php echo esc_attr__('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                                 <span class="dashicons dashicons-external" style="font-size: 14px; line-height: 1.4;"></span>
                                             </a>
                                         </div>
@@ -892,7 +892,7 @@ $top_caros = new WP_Query($args_caros);
                         <div class="flavor-ventas-pagination">
                             <span class="flavor-ventas-pagination-info">
                                 <?php printf(
-                                    esc_html__('Mostrando %d-%d de %d productos', 'flavor-chat-ia'),
+                                    esc_html__('Mostrando %d-%d de %d productos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                     $offset + 1,
                                     min($offset + $elementos_por_pagina, $total_filtrado),
                                     $total_filtrado
@@ -917,9 +917,9 @@ $top_caros = new WP_Query($args_caros);
                 <?php else: ?>
                     <div class="flavor-ventas-empty">
                         <span class="dashicons dashicons-cart"></span>
-                        <p><?php echo esc_html__('No se encontraron productos con los filtros aplicados.', 'flavor-chat-ia'); ?></p>
+                        <p><?php echo esc_html__('No se encontraron productos con los filtros aplicados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <a href="<?php echo esc_url(remove_query_arg(['s', 'estado_conservacion', 'precio_min', 'precio_max', 'orderby', 'order', 'paged'])); ?>" class="button">
-                            <?php echo esc_html__('Ver todos los productos', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Ver todos los productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 <?php endif; ?>
@@ -931,7 +931,7 @@ $top_caros = new WP_Query($args_caros);
                 <div class="flavor-ventas-sidebar-card">
                     <h3>
                         <span class="dashicons dashicons-clock"></span>
-                        <?php echo esc_html__('Más Recientes', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Más Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <?php if ($top_recientes->have_posts()): ?>
                         <ul class="flavor-ventas-top-list">
@@ -948,7 +948,7 @@ $top_caros = new WP_Query($args_caros);
                                         <span><?php echo get_the_date('d/m/Y'); ?></span>
                                     </div>
                                     <span class="flavor-ventas-top-price">
-                                        <?php echo $precio_top > 0 ? number_format($precio_top, 2) . ' €' : __('Gratis', 'flavor-chat-ia'); ?>
+                                        <?php echo $precio_top > 0 ? number_format($precio_top, 2) . ' €' : __('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </span>
                                 </li>
                                 <?php $posicion++; ?>
@@ -957,7 +957,7 @@ $top_caros = new WP_Query($args_caros);
                         </ul>
                     <?php else: ?>
                         <div style="padding: 20px; text-align: center; color: #64748b;">
-                            <?php echo esc_html__('Sin productos recientes', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Sin productos recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -966,7 +966,7 @@ $top_caros = new WP_Query($args_caros);
                 <div class="flavor-ventas-sidebar-card">
                     <h3>
                         <span class="dashicons dashicons-star-filled"></span>
-                        <?php echo esc_html__('Mayor Valor', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Mayor Valor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <?php if ($top_caros->have_posts()): ?>
                         <ul class="flavor-ventas-top-list">
@@ -983,7 +983,7 @@ $top_caros = new WP_Query($args_caros);
                                         <span><?php the_author(); ?></span>
                                     </div>
                                     <span class="flavor-ventas-top-price">
-                                        <?php echo $precio_top > 0 ? number_format($precio_top, 2) . ' €' : __('Gratis', 'flavor-chat-ia'); ?>
+                                        <?php echo $precio_top > 0 ? number_format($precio_top, 2) . ' €' : __('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </span>
                                 </li>
                                 <?php $posicion++; ?>
@@ -992,7 +992,7 @@ $top_caros = new WP_Query($args_caros);
                         </ul>
                     <?php else: ?>
                         <div style="padding: 20px; text-align: center; color: #64748b;">
-                            <?php echo esc_html__('Sin productos', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Sin productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -1002,7 +1002,7 @@ $top_caros = new WP_Query($args_caros);
                 <div class="flavor-ventas-sidebar-card">
                     <h3>
                         <span class="dashicons dashicons-chart-pie"></span>
-                        <?php echo esc_html__('Por Estado', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Por Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <div class="flavor-ventas-chart-container">
                         <canvas id="flavor-ventas-estados-chart" height="200"></canvas>

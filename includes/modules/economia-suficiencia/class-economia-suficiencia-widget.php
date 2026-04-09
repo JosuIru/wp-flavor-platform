@@ -30,7 +30,7 @@ class Flavor_Economia_Suficiencia_Widget extends Flavor_Dashboard_Widget_Base {
         $this->module = $module;
 
         $this->widget_id = 'economia-suficiencia';
-        $this->title = __('Economía de Suficiencia', 'flavor-chat-ia');
+        $this->title = __('Economía de Suficiencia', 'flavor-platform');
         $this->icon = 'dashicons-editor-expand';
         $this->size = 'small';
         $this->category = 'economia';
@@ -49,7 +49,7 @@ class Flavor_Economia_Suficiencia_Widget extends Flavor_Dashboard_Widget_Base {
             return [
                 'stats' => [],
                 'items' => [],
-                'empty_state' => __('Inicia sesión para ver tu camino de suficiencia', 'flavor-chat-ia'),
+                'empty_state' => __('Inicia sesión para ver tu camino de suficiencia', 'flavor-platform'),
             ];
         }
 
@@ -62,14 +62,14 @@ class Flavor_Economia_Suficiencia_Widget extends Flavor_Dashboard_Widget_Base {
             [
                 'icon' => 'dashicons-awards',
                 'valor' => $nivel['nivel']['nombre'],
-                'label' => __('Nivel', 'flavor-chat-ia'),
+                'label' => __('Nivel', 'flavor-platform'),
                 'color' => 'green',
                 'extra' => $iconos_nivel[$nivel['nivel']['id']] ?? '🌱',
             ],
             [
                 'icon' => 'dashicons-yes-alt',
                 'valor' => $stats['compromisos_activos'],
-                'label' => __('Compromisos', 'flavor-chat-ia'),
+                'label' => __('Compromisos', 'flavor-platform'),
                 'color' => 'blue',
             ],
         ];
@@ -80,7 +80,7 @@ class Flavor_Economia_Suficiencia_Widget extends Flavor_Dashboard_Widget_Base {
             $items[] = [
                 'icon' => 'dashicons-calendar-alt',
                 'title' => sprintf(
-                    _n('%d práctica este mes', '%d prácticas este mes', $stats['practicas_mes'], 'flavor-chat-ia'),
+                    _n('%d práctica este mes', '%d prácticas este mes', $stats['practicas_mes'], 'flavor-platform'),
                     $stats['practicas_mes']
                 ),
                 'url' => $this->get_context_url('/mi-portal/economia-suficiencia/compromisos/', 'flavor-economia-suficiencia'),
@@ -91,7 +91,7 @@ class Flavor_Economia_Suficiencia_Widget extends Flavor_Dashboard_Widget_Base {
             $items[] = [
                 'icon' => 'dashicons-share',
                 'title' => sprintf(
-                    _n('%d objeto compartido', '%d objetos compartidos', $stats['recursos_compartidos'], 'flavor-chat-ia'),
+                    _n('%d objeto compartido', '%d objetos compartidos', $stats['recursos_compartidos'], 'flavor-platform'),
                     $stats['recursos_compartidos']
                 ),
                 'url' => $this->get_context_url('/mi-portal/economia-suficiencia/biblioteca/', 'flavor-economia-suficiencia'),
@@ -101,10 +101,10 @@ class Flavor_Economia_Suficiencia_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats_array,
             'items' => $items,
-            'empty_state' => __('Empieza tu camino de suficiencia', 'flavor-chat-ia'),
+            'empty_state' => __('Empieza tu camino de suficiencia', 'flavor-platform'),
             'footer' => [
                 [
-                    'label' => __('Mi camino', 'flavor-chat-ia'),
+                    'label' => __('Mi camino', 'flavor-platform'),
                     'url' => $this->get_context_url('/mi-portal/economia-suficiencia/mi-camino/', 'flavor-economia-suficiencia'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],

@@ -106,7 +106,7 @@ $tasa_resolucion_periodo = $stats_generales->total_reportes > 0 ?
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-chart-line"></span>
-        <?php echo esc_html__('Estadísticas y Analytics', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Estadísticas y Analytics', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <hr class="wp-header-end">
@@ -115,23 +115,23 @@ $tasa_resolucion_periodo = $stats_generales->total_reportes > 0 ?
     <div class="postbox" style="margin: 20px 0;">
         <div class="inside">
             <form method="get" action="" style="display: flex; align-items: end; gap: 15px; flex-wrap: wrap;">
-                <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-incidencias-estadisticas', 'flavor-chat-ia'); ?>">
+                <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-incidencias-estadisticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
 
                 <div>
-                    <label><strong><?php echo esc_html__('Fecha Inicio:', 'flavor-chat-ia'); ?></strong></label><br>
+                    <label><strong><?php echo esc_html__('Fecha Inicio:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label><br>
                     <input type="date" name="fecha_inicio" value="<?php echo esc_attr($fecha_inicio); ?>" class="regular-text">
                 </div>
 
                 <div>
-                    <label><strong><?php echo esc_html__('Fecha Fin:', 'flavor-chat-ia'); ?></strong></label><br>
+                    <label><strong><?php echo esc_html__('Fecha Fin:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label><br>
                     <input type="date" name="fecha_fin" value="<?php echo esc_attr($fecha_fin); ?>" class="regular-text">
                 </div>
 
                 <div>
                     <button type="submit" class="button button-primary">
-                        <span class="dashicons dashicons-filter"></span> <?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?>
+                        <span class="dashicons dashicons-filter"></span> <?php echo esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
-                    <a href="?page=incidencias-estadisticas" class="button"><?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?></a>
+                    <a href="?page=incidencias-estadisticas" class="button"><?php echo esc_html__('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 </div>
             </form>
         </div>
@@ -142,19 +142,19 @@ $tasa_resolucion_periodo = $stats_generales->total_reportes > 0 ?
 
         <div class="flavor-kpi-card" style="background: white; padding: 25px; border-radius: 8px; border-left: 4px solid #2271b1; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="color: #646970; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">
-                <?php echo esc_html__('Total Reportes', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Total Reportes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
             <div style="font-size: 42px; font-weight: 700; color: #2271b1; margin-bottom: 5px;">
                 <?php echo number_format($stats_generales->total_reportes); ?>
             </div>
             <div style="color: #646970; font-size: 13px;">
-                <?php echo esc_html__('en el período seleccionado', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('en el período seleccionado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
         </div>
 
         <div class="flavor-kpi-card" style="background: white; padding: 25px; border-radius: 8px; border-left: 4px solid #00a32a; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="color: #646970; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">
-                <?php echo esc_html__('Tasa de Resolución', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Tasa de Resolución', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
             <div style="font-size: 42px; font-weight: 700; color: #00a32a; margin-bottom: 5px;">
                 <?php echo $tasa_resolucion_periodo; ?>%
@@ -166,25 +166,25 @@ $tasa_resolucion_periodo = $stats_generales->total_reportes > 0 ?
 
         <div class="flavor-kpi-card" style="background: white; padding: 25px; border-radius: 8px; border-left: 4px solid #f0b849; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="color: #646970; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">
-                <?php echo esc_html__('Tiempo Promedio', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Tiempo Promedio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
             <div style="font-size: 42px; font-weight: 700; color: #f0b849; margin-bottom: 5px;">
                 <?php echo $stats_generales->tiempo_promedio_resolucion ? round($stats_generales->tiempo_promedio_resolucion) : 0; ?>h
             </div>
             <div style="color: #646970; font-size: 13px;">
-                <?php echo esc_html__('de resolución', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('de resolución', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
         </div>
 
         <div class="flavor-kpi-card" style="background: white; padding: 25px; border-radius: 8px; border-left: 4px solid #d63638; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="color: #646970; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">
-                <?php echo esc_html__('Incidencias Abiertas', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Incidencias Abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
             <div style="font-size: 42px; font-weight: 700; color: #d63638; margin-bottom: 5px;">
                 <?php echo number_format($stats_generales->total_abiertas); ?>
             </div>
             <div style="color: #646970; font-size: 13px;">
-                <?php echo esc_html__('pendientes o en proceso', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('pendientes o en proceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
         </div>
 
@@ -196,7 +196,7 @@ $tasa_resolucion_periodo = $stats_generales->total_reportes > 0 ?
         <!-- Tendencia diaria -->
         <div class="postbox">
             <div class="postbox-header">
-                <h2><?php echo esc_html__('Tendencia de Reportes Diarios', 'flavor-chat-ia'); ?></h2>
+                <h2><?php echo esc_html__('Tendencia de Reportes Diarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
             <div class="inside">
                 <canvas id="chart-tendencia-diaria" style="max-height: 300px;"></canvas>
@@ -206,7 +206,7 @@ $tasa_resolucion_periodo = $stats_generales->total_reportes > 0 ?
         <!-- Top categorías -->
         <div class="postbox">
             <div class="postbox-header">
-                <h2><?php echo esc_html__('Top 5 Categorías', 'flavor-chat-ia'); ?></h2>
+                <h2><?php echo esc_html__('Top 5 Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
             <div class="inside">
                 <canvas id="chart-top-categorias" style="max-height: 300px;"></canvas>
@@ -221,7 +221,7 @@ $tasa_resolucion_periodo = $stats_generales->total_reportes > 0 ?
         <!-- Distribución horaria -->
         <div class="postbox">
             <div class="postbox-header">
-                <h2><?php echo esc_html__('Distribución por Hora del Día', 'flavor-chat-ia'); ?></h2>
+                <h2><?php echo esc_html__('Distribución por Hora del Día', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
             <div class="inside">
                 <canvas id="chart-distribucion-horaria" style="max-height: 250px;"></canvas>
@@ -231,7 +231,7 @@ $tasa_resolucion_periodo = $stats_generales->total_reportes > 0 ?
         <!-- Estadísticas por prioridad -->
         <div class="postbox">
             <div class="postbox-header">
-                <h2><?php echo esc_html__('Tiempo de Resolución por Prioridad', 'flavor-chat-ia'); ?></h2>
+                <h2><?php echo esc_html__('Tiempo de Resolución por Prioridad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
             <div class="inside">
                 <canvas id="chart-prioridad" style="max-height: 250px;"></canvas>
@@ -243,7 +243,7 @@ $tasa_resolucion_periodo = $stats_generales->total_reportes > 0 ?
     <!-- Comparativa mensual -->
     <div class="postbox" style="margin: 20px 0;">
         <div class="postbox-header">
-            <h2><?php echo esc_html__('Comparativa Mensual (Últimos 6 Meses)', 'flavor-chat-ia'); ?></h2>
+            <h2><?php echo esc_html__('Comparativa Mensual (Últimos 6 Meses)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         </div>
         <div class="inside">
             <canvas id="chart-comparativa-mensual" style="max-height: 300px;"></canvas>
@@ -253,7 +253,7 @@ $tasa_resolucion_periodo = $stats_generales->total_reportes > 0 ?
     <!-- Tabla de estadísticas detalladas -->
     <div class="postbox" style="margin: 20px 0;">
         <div class="postbox-header">
-            <h2><?php echo esc_html__('Estadísticas Detalladas por Categoría', 'flavor-chat-ia'); ?></h2>
+            <h2><?php echo esc_html__('Estadísticas Detalladas por Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         </div>
         <div class="inside" style="padding: 0;">
             <?php
@@ -276,13 +276,13 @@ $tasa_resolucion_periodo = $stats_generales->total_reportes > 0 ?
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th><?php echo esc_html__('Categoría', 'flavor-chat-ia'); ?></th>
-                        <th><?php echo esc_html__('Total', 'flavor-chat-ia'); ?></th>
-                        <th><?php echo esc_html__('Pendientes', 'flavor-chat-ia'); ?></th>
-                        <th><?php echo esc_html__('En Proceso', 'flavor-chat-ia'); ?></th>
-                        <th><?php echo esc_html__('Resueltas', 'flavor-chat-ia'); ?></th>
-                        <th><?php echo esc_html__('Tasa Resolución', 'flavor-chat-ia'); ?></th>
-                        <th><?php echo esc_html__('Tiempo Promedio', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php echo esc_html__('Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php echo esc_html__('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php echo esc_html__('En Proceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php echo esc_html__('Resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php echo esc_html__('Tasa Resolución', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php echo esc_html__('Tiempo Promedio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>

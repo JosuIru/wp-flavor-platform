@@ -118,12 +118,12 @@ class Flavor_Radio_Frontend_Controller {
             'nombreRadio' => $radio_settings['nombre_radio'] ?? 'Radio Comunitaria',
             'chatHabilitado' => !empty($radio_settings['chat_en_vivo']),
             'strings' => [
-                'reproduciendo' => __('En vivo', 'flavor-chat-ia'),
-                'pausado' => __('Pausado', 'flavor-chat-ia'),
-                'cargando' => __('Conectando...', 'flavor-chat-ia'),
-                'error' => __('Error de conexión', 'flavor-chat-ia'),
-                'enviado' => __('Mensaje enviado', 'flavor-chat-ia'),
-                'dedicatoriaEnviada' => __('Dedicatoria enviada correctamente', 'flavor-chat-ia'),
+                'reproduciendo' => __('En vivo', 'flavor-platform'),
+                'pausado' => __('Pausado', 'flavor-platform'),
+                'cargando' => __('Conectando...', 'flavor-platform'),
+                'error' => __('Error de conexión', 'flavor-platform'),
+                'enviado' => __('Mensaje enviado', 'flavor-platform'),
+                'dedicatoriaEnviada' => __('Dedicatoria enviada correctamente', 'flavor-platform'),
             ],
         ]);
     }
@@ -149,7 +149,7 @@ class Flavor_Radio_Frontend_Controller {
      */
     public function registrar_dashboard_tabs($tabs) {
         $tabs['radio'] = [
-            'titulo' => __('Radio', 'flavor-chat-ia'),
+            'titulo' => __('Radio', 'flavor-platform'),
             'icono' => 'dashicons-format-audio',
             'prioridad' => 60,
             'callback' => [$this, 'render_dashboard_tab'],
@@ -200,15 +200,15 @@ class Flavor_Radio_Frontend_Controller {
                             <span></span><span></span><span></span><span></span><span></span>
                         </div>
                         <div class="flavor-radio-status" id="radio-status">
-                            <span class="flavor-radio-badge-live"><?php _e('EN VIVO', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-radio-badge-live"><?php _e('EN VIVO', 'flavor-platform'); ?></span>
                         </div>
                     </div>
                     <div class="flavor-radio-info">
-                        <h2><?php echo esc_html($radio_settings['nombre_radio'] ?? __('Radio Comunitaria', 'flavor-chat-ia')); ?></h2>
+                        <h2><?php echo esc_html($radio_settings['nombre_radio'] ?? __('Radio Comunitaria', 'flavor-platform')); ?></h2>
                         <p class="flavor-radio-slogan"><?php echo esc_html($radio_settings['slogan'] ?? ''); ?></p>
                         <?php if ($programa_actual): ?>
                         <div class="flavor-ahora-suena">
-                            <strong><?php _e('Ahora:', 'flavor-chat-ia'); ?></strong>
+                            <strong><?php _e('Ahora:', 'flavor-platform'); ?></strong>
                             <?php echo esc_html($programa_actual->nombre); ?>
                         </div>
                         <?php endif; ?>
@@ -229,15 +229,15 @@ class Flavor_Radio_Frontend_Controller {
             <div class="flavor-radio-acciones">
                 <button type="button" class="flavor-accion-card" id="btn-dedicatoria">
                     <span class="dashicons dashicons-heart"></span>
-                    <span><?php _e('Enviar dedicatoria', 'flavor-chat-ia'); ?></span>
+                    <span><?php _e('Enviar dedicatoria', 'flavor-platform'); ?></span>
                 </button>
                 <a href="#programacion" class="flavor-accion-card">
                     <span class="dashicons dashicons-calendar-alt"></span>
-                    <span><?php _e('Programación', 'flavor-chat-ia'); ?></span>
+                    <span><?php _e('Programación', 'flavor-platform'); ?></span>
                 </a>
                 <a href="#podcasts" class="flavor-accion-card">
                     <span class="dashicons dashicons-microphone"></span>
-                    <span><?php _e('Podcasts', 'flavor-chat-ia'); ?></span>
+                    <span><?php _e('Podcasts', 'flavor-platform'); ?></span>
                 </a>
             </div>
 
@@ -245,7 +245,7 @@ class Flavor_Radio_Frontend_Controller {
             <div class="flavor-panel">
                 <h3 class="flavor-panel-titulo">
                     <span class="dashicons dashicons-heart"></span>
-                    <?php _e('Mis dedicatorias', 'flavor-chat-ia'); ?>
+                    <?php _e('Mis dedicatorias', 'flavor-platform'); ?>
                 </h3>
                 <?php if (!empty($mis_dedicatorias)): ?>
                 <div class="flavor-dedicatorias-lista">
@@ -254,7 +254,7 @@ class Flavor_Radio_Frontend_Controller {
                         <div class="flavor-dedicatoria-texto">
                             <p>"<?php echo esc_html($ded->mensaje); ?>"</p>
                             <?php if (!empty($ded->cancion_solicitada)): ?>
-                            <small><?php _e('Canción:', 'flavor-chat-ia'); ?> <?php echo esc_html($ded->cancion_solicitada); ?></small>
+                            <small><?php _e('Canción:', 'flavor-platform'); ?> <?php echo esc_html($ded->cancion_solicitada); ?></small>
                             <?php endif; ?>
                         </div>
                         <div class="flavor-dedicatoria-meta">
@@ -267,7 +267,7 @@ class Flavor_Radio_Frontend_Controller {
                     <?php endforeach; ?>
                 </div>
                 <?php else: ?>
-                <p class="flavor-vacio"><?php _e('Aún no has enviado dedicatorias', 'flavor-chat-ia'); ?></p>
+                <p class="flavor-vacio"><?php _e('Aún no has enviado dedicatorias', 'flavor-platform'); ?></p>
                 <?php endif; ?>
             </div>
 
@@ -275,27 +275,27 @@ class Flavor_Radio_Frontend_Controller {
             <div id="modal-dedicatoria" class="flavor-modal" style="display:none;">
                 <div class="flavor-modal-contenido">
                     <button type="button" class="flavor-modal-cerrar">&times;</button>
-                    <h3><?php _e('Enviar dedicatoria', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Enviar dedicatoria', 'flavor-platform'); ?></h3>
                     <form id="form-dedicatoria">
                         <div class="flavor-form-grupo">
-                            <label><?php _e('Para quién', 'flavor-chat-ia'); ?></label>
-                            <input type="text" name="destinatario" required placeholder="<?php esc_attr_e('Nombre del destinatario', 'flavor-chat-ia'); ?>">
+                            <label><?php _e('Para quién', 'flavor-platform'); ?></label>
+                            <input type="text" name="destinatario" required placeholder="<?php esc_attr_e('Nombre del destinatario', 'flavor-platform'); ?>">
                         </div>
                         <div class="flavor-form-grupo">
-                            <label><?php _e('Tu mensaje', 'flavor-chat-ia'); ?></label>
-                            <textarea name="mensaje" rows="3" required placeholder="<?php esc_attr_e('Escribe tu dedicatoria...', 'flavor-chat-ia'); ?>"></textarea>
+                            <label><?php _e('Tu mensaje', 'flavor-platform'); ?></label>
+                            <textarea name="mensaje" rows="3" required placeholder="<?php esc_attr_e('Escribe tu dedicatoria...', 'flavor-platform'); ?>"></textarea>
                         </div>
                         <div class="flavor-form-grupo">
-                            <label><?php _e('Canción solicitada (opcional)', 'flavor-chat-ia'); ?></label>
-                            <input type="text" name="cancion" placeholder="<?php esc_attr_e('Artista - Canción', 'flavor-chat-ia'); ?>">
+                            <label><?php _e('Canción solicitada (opcional)', 'flavor-platform'); ?></label>
+                            <input type="text" name="cancion" placeholder="<?php esc_attr_e('Artista - Canción', 'flavor-platform'); ?>">
                         </div>
                         <div class="flavor-form-acciones">
                             <button type="button" class="flavor-btn flavor-btn-outline flavor-modal-cerrar-btn">
-                                <?php _e('Cancelar', 'flavor-chat-ia'); ?>
+                                <?php _e('Cancelar', 'flavor-platform'); ?>
                             </button>
                             <button type="submit" class="flavor-btn flavor-btn-primary">
                                 <span class="dashicons dashicons-heart"></span>
-                                <?php _e('Enviar', 'flavor-chat-ia'); ?>
+                                <?php _e('Enviar', 'flavor-platform'); ?>
                             </button>
                         </div>
                     </form>
@@ -336,7 +336,7 @@ class Flavor_Radio_Frontend_Controller {
                     <p><?php echo esc_html($radio_settings['slogan'] ?? ''); ?></p>
                 </div>
                 <span class="flavor-radio-badge-live" id="badge-live" style="display:none;">
-                    <?php _e('EN VIVO', 'flavor-chat-ia'); ?>
+                    <?php _e('EN VIVO', 'flavor-platform'); ?>
                 </span>
             </div>
             <?php endif; ?>
@@ -347,7 +347,7 @@ class Flavor_Radio_Frontend_Controller {
                 </button>
 
                 <div class="flavor-radio-info-actual" id="info-actual">
-                    <span class="flavor-radio-estado"><?php _e('Haz clic para escuchar', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-radio-estado"><?php _e('Haz clic para escuchar', 'flavor-platform'); ?></span>
                 </div>
 
                 <div class="flavor-radio-volumen">
@@ -370,7 +370,7 @@ class Flavor_Radio_Frontend_Controller {
                     <div class="now-playing-title">-</div>
                     <div class="now-playing-artist">-</div>
                 </div>
-                <button type="button" class="btn-share-song" title="<?php esc_attr_e('Compartir', 'flavor-chat-ia'); ?>">
+                <button type="button" class="btn-share-song" title="<?php esc_attr_e('Compartir', 'flavor-platform'); ?>">
                     <span class="dashicons dashicons-share"></span>
                 </button>
             </div>
@@ -391,7 +391,7 @@ class Flavor_Radio_Frontend_Controller {
                 <button type="button" class="btn-share whatsapp" data-red="whatsapp" data-tipo="radio" title="WhatsApp">
                     <span class="dashicons dashicons-whatsapp"></span>
                 </button>
-                <button type="button" class="btn-share copy-link" data-red="copy" data-tipo="radio" title="<?php esc_attr_e('Copiar enlace', 'flavor-chat-ia'); ?>">
+                <button type="button" class="btn-share copy-link" data-red="copy" data-tipo="radio" title="<?php esc_attr_e('Copiar enlace', 'flavor-platform'); ?>">
                     <span class="dashicons dashicons-admin-links"></span>
                 </button>
             </div>
@@ -410,7 +410,7 @@ class Flavor_Radio_Frontend_Controller {
         $tabla_programas = $wpdb->prefix . 'flavor_radio_programas';
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_programas)) {
-            return '<p class="flavor-aviso">' . __('Programación no disponible', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-aviso">' . __('Programación no disponible', 'flavor-platform') . '</p>';
         }
 
         $atts = shortcode_atts([
@@ -420,13 +420,13 @@ class Flavor_Radio_Frontend_Controller {
 
         $dias = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
         $dias_es = [
-            'monday' => __('Lunes', 'flavor-chat-ia'),
-            'tuesday' => __('Martes', 'flavor-chat-ia'),
-            'wednesday' => __('Miércoles', 'flavor-chat-ia'),
-            'thursday' => __('Jueves', 'flavor-chat-ia'),
-            'friday' => __('Viernes', 'flavor-chat-ia'),
-            'saturday' => __('Sábado', 'flavor-chat-ia'),
-            'sunday' => __('Domingo', 'flavor-chat-ia'),
+            'monday' => __('Lunes', 'flavor-platform'),
+            'tuesday' => __('Martes', 'flavor-platform'),
+            'wednesday' => __('Miércoles', 'flavor-platform'),
+            'thursday' => __('Jueves', 'flavor-platform'),
+            'friday' => __('Viernes', 'flavor-platform'),
+            'saturday' => __('Sábado', 'flavor-platform'),
+            'sunday' => __('Domingo', 'flavor-platform'),
         ];
 
         $programacion = [];
@@ -443,7 +443,7 @@ class Flavor_Radio_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-radio-programacion" id="programacion">
-            <h2><?php _e('Programación', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Programación', 'flavor-platform'); ?></h2>
 
             <div class="flavor-programacion-tabs">
                 <?php foreach ($dias as $dia): ?>
@@ -483,14 +483,14 @@ class Flavor_Radio_Frontend_Controller {
                             <?php endif; ?>
                             <?php if (is_user_logged_in()): ?>
                             <button type="button" class="btn-favorito" data-programa-id="<?php echo esc_attr($programa->id); ?>"
-                                    title="<?php esc_attr_e('Añadir a favoritos', 'flavor-chat-ia'); ?>">
+                                    title="<?php esc_attr_e('Añadir a favoritos', 'flavor-platform'); ?>">
                                 <span class="dashicons dashicons-heart"></span>
                             </button>
                             <?php endif; ?>
                         </div>
                         <?php endforeach; ?>
                     <?php else: ?>
-                    <p class="flavor-vacio"><?php _e('Sin programación para este día', 'flavor-chat-ia'); ?></p>
+                    <p class="flavor-vacio"><?php _e('Sin programación para este día', 'flavor-platform'); ?></p>
                     <?php endif; ?>
                 </div>
                 <?php endforeach; ?>
@@ -505,7 +505,7 @@ class Flavor_Radio_Frontend_Controller {
      */
     public function shortcode_dedicatorias($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-aviso">' . __('Inicia sesión para enviar dedicatorias', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-aviso">' . __('Inicia sesión para enviar dedicatorias', 'flavor-platform') . '</p>';
         }
 
         $this->cargar_assets();
@@ -513,23 +513,23 @@ class Flavor_Radio_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-radio-dedicatorias">
-            <h3><?php _e('Enviar dedicatoria', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Enviar dedicatoria', 'flavor-platform'); ?></h3>
             <form id="form-dedicatoria-standalone" class="flavor-form-dedicatoria">
                 <div class="flavor-form-grupo">
-                    <label><?php _e('Para', 'flavor-chat-ia'); ?></label>
-                    <input type="text" name="destinatario" required placeholder="<?php esc_attr_e('Nombre del destinatario', 'flavor-chat-ia'); ?>">
+                    <label><?php _e('Para', 'flavor-platform'); ?></label>
+                    <input type="text" name="destinatario" required placeholder="<?php esc_attr_e('Nombre del destinatario', 'flavor-platform'); ?>">
                 </div>
                 <div class="flavor-form-grupo">
-                    <label><?php _e('Mensaje', 'flavor-chat-ia'); ?></label>
-                    <textarea name="mensaje" rows="3" required placeholder="<?php esc_attr_e('Tu dedicatoria...', 'flavor-chat-ia'); ?>"></textarea>
+                    <label><?php _e('Mensaje', 'flavor-platform'); ?></label>
+                    <textarea name="mensaje" rows="3" required placeholder="<?php esc_attr_e('Tu dedicatoria...', 'flavor-platform'); ?>"></textarea>
                 </div>
                 <div class="flavor-form-grupo">
-                    <label><?php _e('Canción (opcional)', 'flavor-chat-ia'); ?></label>
-                    <input type="text" name="cancion" placeholder="<?php esc_attr_e('Artista - Título', 'flavor-chat-ia'); ?>">
+                    <label><?php _e('Canción (opcional)', 'flavor-platform'); ?></label>
+                    <input type="text" name="cancion" placeholder="<?php esc_attr_e('Artista - Título', 'flavor-platform'); ?>">
                 </div>
                 <button type="submit" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-heart"></span>
-                    <?php _e('Enviar dedicatoria', 'flavor-chat-ia'); ?>
+                    <?php _e('Enviar dedicatoria', 'flavor-platform'); ?>
                 </button>
             </form>
         </div>
@@ -554,7 +554,7 @@ class Flavor_Radio_Frontend_Controller {
             <div class="flavor-chat-header">
                 <h4>
                     <span class="dashicons dashicons-admin-comments"></span>
-                    <?php _e('Chat en vivo', 'flavor-chat-ia'); ?>
+                    <?php _e('Chat en vivo', 'flavor-platform'); ?>
                 </h4>
                 <span class="flavor-chat-oyentes" id="contador-oyentes">0 oyentes</span>
             </div>
@@ -563,13 +563,13 @@ class Flavor_Radio_Frontend_Controller {
             </div>
             <?php if (is_user_logged_in()): ?>
             <form id="form-chat-radio" class="flavor-chat-form">
-                <input type="text" name="mensaje" placeholder="<?php esc_attr_e('Escribe un mensaje...', 'flavor-chat-ia'); ?>" autocomplete="off" maxlength="200">
+                <input type="text" name="mensaje" placeholder="<?php esc_attr_e('Escribe un mensaje...', 'flavor-platform'); ?>" autocomplete="off" maxlength="200">
                 <button type="submit" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-arrow-right-alt"></span>
                 </button>
             </form>
             <?php else: ?>
-            <p class="flavor-chat-login"><?php _e('Inicia sesión para participar en el chat', 'flavor-chat-ia'); ?></p>
+            <p class="flavor-chat-login"><?php _e('Inicia sesión para participar en el chat', 'flavor-platform'); ?></p>
             <?php endif; ?>
         </div>
         <?php
@@ -604,7 +604,7 @@ class Flavor_Radio_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-radio-podcasts" id="podcasts">
-            <h2><?php _e('Programas grabados', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Programas grabados', 'flavor-platform'); ?></h2>
             <div class="flavor-podcasts-grid">
                 <?php foreach ($grabaciones as $grabacion): ?>
                 <article class="flavor-podcast-card">
@@ -663,17 +663,17 @@ class Flavor_Radio_Frontend_Controller {
                 <div class="flavor-stat-card">
                     <span class="flavor-stat-icono dashicons dashicons-microphone"></span>
                     <div class="flavor-stat-valor"><?php echo intval($stats->programas); ?></div>
-                    <div class="flavor-stat-etiqueta"><?php _e('Programas', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-stat-etiqueta"><?php _e('Programas', 'flavor-platform'); ?></div>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="flavor-stat-icono dashicons dashicons-heart"></span>
                     <div class="flavor-stat-valor"><?php echo number_format($stats->dedicatorias); ?></div>
-                    <div class="flavor-stat-etiqueta"><?php _e('Dedicatorias', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-stat-etiqueta"><?php _e('Dedicatorias', 'flavor-platform'); ?></div>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="flavor-stat-icono dashicons dashicons-groups"></span>
                     <div class="flavor-stat-valor"><?php echo number_format($stats->oyentes_unicos); ?></div>
-                    <div class="flavor-stat-etiqueta"><?php _e('Oyentes', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-stat-etiqueta"><?php _e('Oyentes', 'flavor-platform'); ?></div>
                 </div>
             </div>
         </div>
@@ -731,7 +731,7 @@ class Flavor_Radio_Frontend_Controller {
         <div class="flavor-radio-programa-actual-widget">
             <?php if ($programa_actual): ?>
                 <div class="flavor-programa-actual">
-                    <span class="flavor-badge flavor-badge-live"><?php _e('EN DIRECTO', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-badge flavor-badge-live"><?php _e('EN DIRECTO', 'flavor-platform'); ?></span>
                     <h4><?php echo esc_html($programa_actual->nombre); ?></h4>
                     <?php if (!empty($programa_actual->conductor)): ?>
                         <p class="flavor-programa-conductor">
@@ -746,13 +746,13 @@ class Flavor_Radio_Frontend_Controller {
                 </div>
             <?php else: ?>
                 <div class="flavor-sin-programa">
-                    <p><?php _e('Música continua', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('Música continua', 'flavor-platform'); ?></p>
                 </div>
             <?php endif; ?>
 
             <?php if ($programa_siguiente): ?>
                 <div class="flavor-programa-siguiente">
-                    <span class="flavor-label"><?php _e('A continuación:', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-label"><?php _e('A continuación:', 'flavor-platform'); ?></span>
                     <strong><?php echo esc_html($programa_siguiente->nombre); ?></strong>
                     <span class="flavor-hora"><?php echo esc_html(substr($programa_siguiente->hora_inicio, 0, 5)); ?></span>
                 </div>
@@ -773,7 +773,7 @@ class Flavor_Radio_Frontend_Controller {
         check_ajax_referer('flavor_radio_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -784,7 +784,7 @@ class Flavor_Radio_Frontend_Controller {
         $cancion = sanitize_text_field($_POST['cancion'] ?? '');
 
         if (empty($mensaje)) {
-            wp_send_json_error(['message' => __('El mensaje es obligatorio', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('El mensaje es obligatorio', 'flavor-platform')]);
         }
 
         $resultado = $wpdb->insert($tabla_dedicatorias, [
@@ -797,11 +797,11 @@ class Flavor_Radio_Frontend_Controller {
         ]);
 
         if ($resultado === false) {
-            wp_send_json_error(['message' => __('Error al enviar la dedicatoria', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al enviar la dedicatoria', 'flavor-platform')]);
         }
 
         wp_send_json_success([
-            'message' => __('Dedicatoria enviada correctamente. Será emitida pronto.', 'flavor-chat-ia'),
+            'message' => __('Dedicatoria enviada correctamente. Será emitida pronto.', 'flavor-platform'),
         ]);
     }
 
@@ -812,7 +812,7 @@ class Flavor_Radio_Frontend_Controller {
         check_ajax_referer('flavor_radio_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -824,7 +824,7 @@ class Flavor_Radio_Frontend_Controller {
         $duracion = absint($_POST['duracion'] ?? 60);
 
         if (empty($nombre)) {
-            wp_send_json_error(['message' => __('El nombre es obligatorio', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('El nombre es obligatorio', 'flavor-platform')]);
         }
 
         if (Flavor_Chat_Helpers::tabla_existe($tabla_propuestas)) {
@@ -840,7 +840,7 @@ class Flavor_Radio_Frontend_Controller {
         }
 
         wp_send_json_success([
-            'message' => __('Propuesta enviada. El equipo la revisará pronto.', 'flavor-chat-ia'),
+            'message' => __('Propuesta enviada. El equipo la revisará pronto.', 'flavor-platform'),
         ]);
     }
 
@@ -851,7 +851,7 @@ class Flavor_Radio_Frontend_Controller {
         check_ajax_referer('flavor_radio_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -860,7 +860,7 @@ class Flavor_Radio_Frontend_Controller {
         $mensaje = sanitize_text_field($_POST['mensaje'] ?? '');
 
         if (empty($mensaje)) {
-            wp_send_json_error(['message' => __('Mensaje vacío', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Mensaje vacío', 'flavor-platform')]);
         }
 
         if (Flavor_Chat_Helpers::tabla_existe($tabla_chat)) {
@@ -882,7 +882,7 @@ class Flavor_Radio_Frontend_Controller {
             ]);
         }
 
-        wp_send_json_error(['message' => __('Error al enviar mensaje', 'flavor-chat-ia')]);
+        wp_send_json_error(['message' => __('Error al enviar mensaje', 'flavor-platform')]);
     }
 
     // ==========================================
@@ -907,10 +907,10 @@ class Flavor_Radio_Frontend_Controller {
      */
     private function obtener_etiqueta_estado($estado) {
         $etiquetas = [
-            'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-            'aprobada' => __('Aprobada', 'flavor-chat-ia'),
-            'emitida' => __('Emitida', 'flavor-chat-ia'),
-            'rechazada' => __('Rechazada', 'flavor-chat-ia'),
+            'pendiente' => __('Pendiente', 'flavor-platform'),
+            'aprobada' => __('Aprobada', 'flavor-platform'),
+            'emitida' => __('Emitida', 'flavor-platform'),
+            'rechazada' => __('Rechazada', 'flavor-platform'),
         ];
         return $etiquetas[$estado] ?? ucfirst($estado);
     }
@@ -933,12 +933,12 @@ class Flavor_Radio_Frontend_Controller {
 
         $locutor_id = absint($atts['id']);
         if (!$locutor_id) {
-            return '<p class="flavor-aviso">' . __('Locutor no especificado', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-aviso">' . __('Locutor no especificado', 'flavor-platform') . '</p>';
         }
 
         $user = get_userdata($locutor_id);
         if (!$user) {
-            return '<p class="flavor-aviso">' . __('Locutor no encontrado', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-aviso">' . __('Locutor no encontrado', 'flavor-platform') . '</p>';
         }
 
         // Obtener programas
@@ -970,7 +970,7 @@ class Flavor_Radio_Frontend_Controller {
             <div class="locutor-header">
                 <img src="<?php echo esc_url(get_avatar_url($locutor_id, ['size' => 200])); ?>" alt="" class="locutor-avatar">
                 <h2 class="locutor-nombre"><?php echo esc_html($user->display_name); ?></h2>
-                <p class="locutor-rol"><?php _e('Locutor', 'flavor-chat-ia'); ?></p>
+                <p class="locutor-rol"><?php _e('Locutor', 'flavor-platform'); ?></p>
 
                 <?php if (!empty($redes)): ?>
                 <div class="locutor-redes">
@@ -993,21 +993,21 @@ class Flavor_Radio_Frontend_Controller {
                 <div class="locutor-stats">
                     <div class="locutor-stat">
                         <div class="locutor-stat-valor"><?php echo esc_html($total_programas); ?></div>
-                        <div class="locutor-stat-label"><?php _e('Programas', 'flavor-chat-ia'); ?></div>
+                        <div class="locutor-stat-label"><?php _e('Programas', 'flavor-platform'); ?></div>
                     </div>
                     <div class="locutor-stat">
                         <div class="locutor-stat-valor"><?php echo esc_html($total_episodios); ?></div>
-                        <div class="locutor-stat-label"><?php _e('Episodios', 'flavor-chat-ia'); ?></div>
+                        <div class="locutor-stat-label"><?php _e('Episodios', 'flavor-platform'); ?></div>
                     </div>
                     <div class="locutor-stat">
                         <div class="locutor-stat-valor"><?php echo esc_html($oyentes_promedio); ?></div>
-                        <div class="locutor-stat-label"><?php _e('Oyentes/ep', 'flavor-chat-ia'); ?></div>
+                        <div class="locutor-stat-label"><?php _e('Oyentes/ep', 'flavor-platform'); ?></div>
                     </div>
                 </div>
 
                 <?php if (!empty($programas)): ?>
                 <div class="locutor-programas">
-                    <h4><span class="dashicons dashicons-playlist-audio"></span> <?php _e('Sus programas', 'flavor-chat-ia'); ?></h4>
+                    <h4><span class="dashicons dashicons-playlist-audio"></span> <?php _e('Sus programas', 'flavor-platform'); ?></h4>
                     <div class="mis-favoritos-grid">
                         <?php foreach ($programas as $prog): ?>
                         <div class="favorito-card">
@@ -1067,7 +1067,7 @@ class Flavor_Radio_Frontend_Controller {
      */
     public function shortcode_mis_favoritos($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-aviso">' . __('Inicia sesión para ver tus favoritos', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-aviso">' . __('Inicia sesión para ver tus favoritos', 'flavor-platform') . '</p>';
         }
 
         $this->cargar_assets();
@@ -1093,7 +1093,7 @@ class Flavor_Radio_Frontend_Controller {
         <div class="flavor-radio-favoritos">
             <h3>
                 <span class="dashicons dashicons-heart"></span>
-                <?php _e('Mis programas favoritos', 'flavor-chat-ia'); ?>
+                <?php _e('Mis programas favoritos', 'flavor-platform'); ?>
             </h3>
 
             <?php if (!empty($favoritos)): ?>
@@ -1118,14 +1118,14 @@ class Flavor_Radio_Frontend_Controller {
                     </div>
                     <button type="button" class="btn-notificacion <?php echo $fav->notificaciones ? 'activo' : ''; ?>"
                             data-programa-id="<?php echo esc_attr($fav->programa_id); ?>"
-                            title="<?php esc_attr_e('Notificaciones', 'flavor-chat-ia'); ?>">
+                            title="<?php esc_attr_e('Notificaciones', 'flavor-platform'); ?>">
                         <span class="dashicons dashicons-bell"></span>
                     </button>
                 </div>
                 <?php endforeach; ?>
             </div>
             <?php else: ?>
-            <p class="flavor-vacio"><?php _e('No tienes programas favoritos todavía', 'flavor-chat-ia'); ?></p>
+            <p class="flavor-vacio"><?php _e('No tienes programas favoritos todavía', 'flavor-platform'); ?></p>
             <?php endif; ?>
         </div>
         <?php

@@ -12,46 +12,46 @@ if (!defined('ABSPATH')) {
 
 <div class="wrap flavor-solicitudes-management">
     <h1 class="wp-heading-inline">
-        <?php _e('Gestión de Solicitudes', 'flavor-chat-ia'); ?>
+        <?php _e('Gestión de Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
     <button type="button" class="page-title-action" id="btn-nueva-solicitud">
-        <?php _e('Nueva Solicitud', 'flavor-chat-ia'); ?>
+        <?php _e('Nueva Solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </button>
     <hr class="wp-header-end">
 
     <!-- Filtros -->
     <div class="flavor-filters-bar">
         <div class="flavor-filter-group">
-            <label><?php _e('Buscar:', 'flavor-chat-ia'); ?></label>
-            <input type="text" id="search-solicitudes" class="flavor-search-input" placeholder="<?php _e('Título, solicitante...', 'flavor-chat-ia'); ?>">
+            <label><?php _e('Buscar:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+            <input type="text" id="search-solicitudes" class="flavor-search-input" placeholder="<?php _e('Título, solicitante...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
         </div>
         <div class="flavor-filter-group">
-            <label><?php _e('Estado:', 'flavor-chat-ia'); ?></label>
+            <label><?php _e('Estado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <select id="filtro-estado" class="flavor-select">
-                <option value=""><?php _e('Todos', 'flavor-chat-ia'); ?></option>
-                <option value="<?php echo esc_attr__('pendiente', 'flavor-chat-ia'); ?>"><?php _e('Pendiente', 'flavor-chat-ia'); ?></option>
-                <option value="<?php echo esc_attr__('asignada', 'flavor-chat-ia'); ?>"><?php _e('Asignada', 'flavor-chat-ia'); ?></option>
-                <option value="<?php echo esc_attr__('en_proceso', 'flavor-chat-ia'); ?>"><?php _e('En proceso', 'flavor-chat-ia'); ?></option>
-                <option value="<?php echo esc_attr__('completada', 'flavor-chat-ia'); ?>"><?php _e('Completada', 'flavor-chat-ia'); ?></option>
-                <option value="<?php echo esc_attr__('cancelada', 'flavor-chat-ia'); ?>"><?php _e('Cancelada', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php _e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('asignada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Asignada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('en_proceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('completada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Completada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             </select>
         </div>
         <div class="flavor-filter-group">
-            <label><?php _e('Categoría:', 'flavor-chat-ia'); ?></label>
+            <label><?php _e('Categoría:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <select id="filtro-categoria" class="flavor-select">
-                <option value=""><?php _e('Todas', 'flavor-chat-ia'); ?></option>
-                <option value="<?php echo esc_attr__('compras', 'flavor-chat-ia'); ?>"><?php _e('Compras', 'flavor-chat-ia'); ?></option>
-                <option value="<?php echo esc_attr__('transporte', 'flavor-chat-ia'); ?>"><?php _e('Transporte', 'flavor-chat-ia'); ?></option>
-                <option value="<?php echo esc_attr__('companía', 'flavor-chat-ia'); ?>"><?php _e('Compañía', 'flavor-chat-ia'); ?></option>
-                <option value="<?php echo esc_attr__('tramites', 'flavor-chat-ia'); ?>"><?php _e('Trámites', 'flavor-chat-ia'); ?></option>
-                <option value="<?php echo esc_attr__('tecnologia', 'flavor-chat-ia'); ?>"><?php _e('Tecnología', 'flavor-chat-ia'); ?></option>
-                <option value="<?php echo esc_attr__('otro', 'flavor-chat-ia'); ?>"><?php _e('Otro', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php _e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('compras', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Compras', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('transporte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Transporte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('companía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Compañía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('tramites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('tecnologia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('otro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Otro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             </select>
         </div>
         <div class="flavor-filter-group">
             <label>
                 <input type="checkbox" id="filtro-urgente" value="1">
-                <?php _e('Solo urgentes', 'flavor-chat-ia'); ?>
+                <?php _e('Solo urgentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </label>
         </div>
     </div>
@@ -61,19 +61,19 @@ if (!defined('ABSPATH')) {
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th><?php _e('ID', 'flavor-chat-ia'); ?></th>
-                    <th><?php _e('Título', 'flavor-chat-ia'); ?></th>
-                    <th><?php _e('Solicitante', 'flavor-chat-ia'); ?></th>
-                    <th><?php _e('Categoría', 'flavor-chat-ia'); ?></th>
-                    <th><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
-                    <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                    <th><?php _e('Voluntario', 'flavor-chat-ia'); ?></th>
-                    <th><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th><?php _e('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php _e('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php _e('Solicitante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php _e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php _e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php _e('Voluntario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody id="solicitudes-list">
                 <tr>
-                    <td colspan="8" class="flavor-loading"><?php _e('Cargando solicitudes...', 'flavor-chat-ia'); ?></td>
+                    <td colspan="8" class="flavor-loading"><?php _e('Cargando solicitudes...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                 </tr>
             </tbody>
         </table>
@@ -85,7 +85,7 @@ if (!defined('ABSPATH')) {
     <div class="flavor-modal-overlay"></div>
     <div class="flavor-modal-content">
         <div class="flavor-modal-header">
-            <h2 id="modal-solicitud-title"><?php _e('Nueva Solicitud', 'flavor-chat-ia'); ?></h2>
+            <h2 id="modal-solicitud-title"><?php _e('Nueva Solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <button type="button" class="flavor-modal-close">
                 <span class="dashicons dashicons-no"></span>
             </button>
@@ -95,70 +95,70 @@ if (!defined('ABSPATH')) {
                 <input type="hidden" id="solicitud-id" name="id">
 
                 <div class="flavor-form-group">
-                    <label for="solicitud-titulo"><?php _e('Título', 'flavor-chat-ia'); ?> *</label>
+                    <label for="solicitud-titulo"><?php _e('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <input type="text" id="solicitud-titulo" name="titulo" required class="widefat">
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="solicitud-descripcion"><?php _e('Descripción', 'flavor-chat-ia'); ?> *</label>
+                    <label for="solicitud-descripcion"><?php _e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <textarea id="solicitud-descripcion" name="descripcion" rows="4" required class="widefat"></textarea>
                 </div>
 
                 <div class="flavor-form-row">
                     <div class="flavor-form-group">
-                        <label for="solicitud-categoria"><?php _e('Categoría', 'flavor-chat-ia'); ?> *</label>
+                        <label for="solicitud-categoria"><?php _e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                         <select id="solicitud-categoria" name="categoria" required class="widefat">
-                            <option value="<?php echo esc_attr__('compras', 'flavor-chat-ia'); ?>"><?php _e('Compras', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('transporte', 'flavor-chat-ia'); ?>"><?php _e('Transporte', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('companía', 'flavor-chat-ia'); ?>"><?php _e('Compañía', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('tramites', 'flavor-chat-ia'); ?>"><?php _e('Trámites', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('tecnologia', 'flavor-chat-ia'); ?>"><?php _e('Tecnología', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('otro', 'flavor-chat-ia'); ?>"><?php _e('Otro', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('compras', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Compras', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="<?php echo esc_attr__('transporte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Transporte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="<?php echo esc_attr__('companía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Compañía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="<?php echo esc_attr__('tramites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="<?php echo esc_attr__('tecnologia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="<?php echo esc_attr__('otro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Otro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
 
                     <div class="flavor-form-group">
-                        <label for="solicitud-fecha"><?php _e('Fecha necesaria', 'flavor-chat-ia'); ?> *</label>
+                        <label for="solicitud-fecha"><?php _e('Fecha necesaria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                         <input type="date" id="solicitud-fecha" name="fecha_necesaria" required class="widefat">
                     </div>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="solicitud-solicitante"><?php _e('Solicitante', 'flavor-chat-ia'); ?> *</label>
+                    <label for="solicitud-solicitante"><?php _e('Solicitante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <select id="solicitud-solicitante" name="solicitante_id" required class="widefat">
-                        <option value=""><?php _e('Seleccionar...', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Seleccionar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div class="flavor-form-group">
                     <label>
                         <input type="checkbox" id="solicitud-urgente" name="urgente" value="1">
-                        <?php _e('Marcar como urgente', 'flavor-chat-ia'); ?>
+                        <?php _e('Marcar como urgente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="solicitud-estado"><?php _e('Estado', 'flavor-chat-ia'); ?></label>
+                    <label for="solicitud-estado"><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="solicitud-estado" name="estado" class="widefat">
-                        <option value="<?php echo esc_attr__('pendiente', 'flavor-chat-ia'); ?>"><?php _e('Pendiente', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('asignada', 'flavor-chat-ia'); ?>"><?php _e('Asignada', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('en_proceso', 'flavor-chat-ia'); ?>"><?php _e('En proceso', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('completada', 'flavor-chat-ia'); ?>"><?php _e('Completada', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('cancelada', 'flavor-chat-ia'); ?>"><?php _e('Cancelada', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('asignada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Asignada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('en_proceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('completada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Completada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div class="flavor-form-group" id="select-voluntario" style="display: none;">
-                    <label for="solicitud-voluntario"><?php _e('Asignar voluntario', 'flavor-chat-ia'); ?></label>
+                    <label for="solicitud-voluntario"><?php _e('Asignar voluntario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="solicitud-voluntario" name="voluntario_id" class="widefat">
-                        <option value=""><?php _e('Sin asignar', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Sin asignar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
             </form>
         </div>
         <div class="flavor-modal-footer">
-            <button type="button" class="button" id="btn-cancelar-solicitud"><?php _e('Cancelar', 'flavor-chat-ia'); ?></button>
-            <button type="button" class="button button-primary" id="btn-guardar-solicitud"><?php _e('Guardar', 'flavor-chat-ia'); ?></button>
+            <button type="button" class="button" id="btn-cancelar-solicitud"><?php _e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+            <button type="button" class="button button-primary" id="btn-guardar-solicitud"><?php _e('Guardar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
         </div>
     </div>
 </div>
@@ -172,7 +172,7 @@ jQuery(document).ready(function($) {
     $('#btn-nueva-solicitud').on('click', function() {
         $('#form-solicitud')[0].reset();
         $('#solicitud-id').val('');
-        $('#modal-solicitud-title').text('<?php _e('Nueva Solicitud', 'flavor-chat-ia'); ?>');
+        $('#modal-solicitud-title').text('<?php _e('Nueva Solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
         $('#modal-solicitud').fadeIn();
     });
 
@@ -228,7 +228,7 @@ jQuery(document).ready(function($) {
 
     function renderizarSolicitudes(solicitudes) {
         if (solicitudes.length === 0) {
-            $('#solicitudes-list').html('<tr><td colspan="8" style="text-align: center;"><?php _e('No se encontraron solicitudes', 'flavor-chat-ia'); ?></td></tr>');
+            $('#solicitudes-list').html('<tr><td colspan="8" style="text-align: center;"><?php _e('No se encontraron solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td></tr>');
             return;
         }
 
@@ -265,9 +265,9 @@ jQuery(document).ready(function($) {
             data: { action: 'ayuda_vecinal_listar_usuarios' },
             success: function(response) {
                 if (response.success) {
-                    let options = '<option value=""><?php _e('Seleccionar...', 'flavor-chat-ia'); ?></option>';
+                    let options = '<option value=""><?php _e('Seleccionar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>';
                     response.data.forEach(usuario => {
-                        options += `<option value="<?php echo esc_attr__('${usuario.id}', 'flavor-chat-ia'); ?>">${usuario.nombre}</option>`;
+                        options += `<option value="<?php echo esc_attr__('${usuario.id}', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">${usuario.nombre}</option>`;
                     });
                     $('#solicitud-solicitante').html(options);
                 }
@@ -282,9 +282,9 @@ jQuery(document).ready(function($) {
             data: { action: 'ayuda_vecinal_listar_voluntarios' },
             success: function(response) {
                 if (response.success) {
-                    let options = '<option value=""><?php _e('Sin asignar', 'flavor-chat-ia'); ?></option>';
+                    let options = '<option value=""><?php _e('Sin asignar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>';
                     response.data.forEach(voluntario => {
-                        options += `<option value="<?php echo esc_attr__('${voluntario.id}', 'flavor-chat-ia'); ?>">${voluntario.nombre}</option>`;
+                        options += `<option value="<?php echo esc_attr__('${voluntario.id}', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">${voluntario.nombre}</option>`;
                     });
                     $('#solicitud-voluntario').html(options);
                 }

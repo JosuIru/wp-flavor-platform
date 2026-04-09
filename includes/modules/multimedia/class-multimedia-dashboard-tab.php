@@ -86,28 +86,28 @@ class Flavor_Multimedia_Dashboard_Tab {
      */
     public function registrar_tabs($tabs) {
         $tabs['multimedia-mis-fotos'] = [
-            'label'    => __('Mis Fotos', 'flavor-chat-ia'),
+            'label'    => __('Mis Fotos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => 'camera',
             'callback' => [$this, 'render_tab_mis_fotos'],
             'orden'    => 60,
         ];
 
         $tabs['multimedia-mis-albumes'] = [
-            'label'    => __('Mis Albumes', 'flavor-chat-ia'),
+            'label'    => __('Mis Albumes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => 'images',
             'callback' => [$this, 'render_tab_mis_albumes'],
             'orden'    => 61,
         ];
 
         $tabs['multimedia-favoritos'] = [
-            'label'    => __('Favoritos', 'flavor-chat-ia'),
+            'label'    => __('Favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => 'heart',
             'callback' => [$this, 'render_tab_favoritos'],
             'orden'    => 62,
         ];
 
         $tabs['multimedia-estadisticas'] = [
-            'label'    => __('Estadisticas', 'flavor-chat-ia'),
+            'label'    => __('Estadisticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => 'chart-bar',
             'callback' => [$this, 'render_tab_estadisticas'],
             'orden'    => 63,
@@ -174,11 +174,11 @@ class Flavor_Multimedia_Dashboard_Tab {
             <div class="flavor-panel-header">
                 <h2>
                     <span class="dashicons dashicons-format-gallery"></span>
-                    <?php esc_html_e('Mis Fotos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Mis Fotos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('multimedia', 'subir')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-upload"></span>
-                    <?php esc_html_e('Subir Foto', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Subir Foto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
@@ -187,21 +187,21 @@ class Flavor_Multimedia_Dashboard_Tab {
                     <span class="flavor-kpi-icon dashicons dashicons-format-image"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($total_fotos); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Fotos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Fotos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icon dashicons dashicons-video-alt3"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($total_videos); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Videos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Videos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icon dashicons dashicons-format-audio"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($total_audio); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Audios', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Audios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -209,12 +209,12 @@ class Flavor_Multimedia_Dashboard_Tab {
             <?php if (empty($fotos)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-format-gallery"></span>
-                    <p><?php esc_html_e('Aun no has subido ninguna foto.', 'flavor-chat-ia'); ?></p>
-                    <p class="flavor-text-muted"><?php esc_html_e('Comparte tus mejores momentos con la comunidad.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Aun no has subido ninguna foto.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                    <p class="flavor-text-muted"><?php esc_html_e('Comparte tus mejores momentos con la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <div class="flavor-empty-actions">
                         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('multimedia', 'subir')); ?>" class="flavor-btn flavor-btn-primary">
                             <span class="dashicons dashicons-upload"></span>
-                            <?php esc_html_e('Subir mi primera foto', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Subir mi primera foto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </div>
@@ -227,27 +227,27 @@ class Flavor_Multimedia_Dashboard_Tab {
                                 $thumbnail_url = !empty($foto->thumbnail_url) ? $foto->thumbnail_url : $foto->archivo_url;
                                 ?>
                                 <img src="<?php echo esc_url($thumbnail_url); ?>"
-                                     alt="<?php echo esc_attr($foto->titulo ?: __('Imagen', 'flavor-chat-ia')); ?>"
+                                     alt="<?php echo esc_attr($foto->titulo ?: __('Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>"
                                      loading="lazy" />
 
                                 <div class="flavor-galeria-overlay">
                                     <div class="flavor-galeria-stats">
-                                        <span title="<?php esc_attr_e('Vistas', 'flavor-chat-ia'); ?>">
+                                        <span title="<?php esc_attr_e('Vistas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <span class="dashicons dashicons-visibility"></span>
                                             <?php echo number_format_i18n($foto->vistas); ?>
                                         </span>
-                                        <span title="<?php esc_attr_e('Me gusta', 'flavor-chat-ia'); ?>">
+                                        <span title="<?php esc_attr_e('Me gusta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <span class="dashicons dashicons-heart"></span>
                                             <?php echo number_format_i18n($foto->me_gusta); ?>
                                         </span>
                                     </div>
                                     <div class="flavor-galeria-actions">
                                         <a href="<?php echo esc_url(add_query_arg('archivo_id', $foto->id, Flavor_Chat_Helpers::get_action_url('multimedia', 'mi-galeria'))); ?>"
-                                           class="flavor-btn-icon" title="<?php esc_attr_e('Ver', 'flavor-chat-ia'); ?>">
+                                           class="flavor-btn-icon" title="<?php esc_attr_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <span class="dashicons dashicons-visibility"></span>
                                         </a>
                                         <a href="<?php echo esc_url(add_query_arg('editar_archivo', $foto->id, Flavor_Chat_Helpers::get_action_url('multimedia', 'mi-galeria'))); ?>"
-                                           class="flavor-btn-icon" title="<?php esc_attr_e('Editar', 'flavor-chat-ia'); ?>">
+                                           class="flavor-btn-icon" title="<?php esc_attr_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <span class="dashicons dashicons-edit"></span>
                                         </a>
                                     </div>
@@ -276,7 +276,7 @@ class Flavor_Multimedia_Dashboard_Tab {
                 <?php if ($total_fotos > 50): ?>
                     <div class="flavor-panel-footer">
                         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('multimedia', 'galeria')); ?>" class="flavor-btn flavor-btn-outline">
-                            <?php printf(esc_html__('Ver todas (%d)', 'flavor-chat-ia'), $total_fotos); ?>
+                            <?php printf(esc_html__('Ver todas (%d)', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_fotos); ?>
                         </a>
                     </div>
                 <?php endif; ?>
@@ -320,23 +320,23 @@ class Flavor_Multimedia_Dashboard_Tab {
             <div class="flavor-panel-header">
                 <h2>
                     <span class="dashicons dashicons-portfolio"></span>
-                    <?php esc_html_e('Mis Albumes', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Mis Albumes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <a href="<?php echo esc_url(add_query_arg(['tab' => 'albumes', 'crear_album' => 1], Flavor_Chat_Helpers::get_action_url('multimedia', 'mi-galeria'))); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt"></span>
-                    <?php esc_html_e('Crear Album', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Crear Album', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
             <?php if (empty($albumes)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-portfolio"></span>
-                    <p><?php esc_html_e('Aun no has creado ningun album.', 'flavor-chat-ia'); ?></p>
-                    <p class="flavor-text-muted"><?php esc_html_e('Organiza tus fotos en albumes tematicos.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Aun no has creado ningun album.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                    <p class="flavor-text-muted"><?php esc_html_e('Organiza tus fotos en albumes tematicos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <div class="flavor-empty-actions">
                         <a href="<?php echo esc_url(add_query_arg(['tab' => 'albumes', 'crear_album' => 1], Flavor_Chat_Helpers::get_action_url('multimedia', 'mi-galeria'))); ?>" class="flavor-btn flavor-btn-primary">
                             <span class="dashicons dashicons-plus-alt"></span>
-                            <?php esc_html_e('Crear mi primer album', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Crear mi primer album', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </div>
@@ -376,10 +376,10 @@ class Flavor_Multimedia_Dashboard_Tab {
                             <div class="flavor-card-footer">
                                 <a href="<?php echo esc_url(add_query_arg('album_id', $album->id, Flavor_Chat_Helpers::get_action_url('multimedia', 'mi-galeria'))); ?>"
                                    class="flavor-btn flavor-btn-sm flavor-btn-outline">
-                                    <?php esc_html_e('Ver Album', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Ver Album', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                                 <a href="<?php echo esc_url(add_query_arg(['tab' => 'albumes', 'editar_album' => $album->id], Flavor_Chat_Helpers::get_action_url('multimedia', 'mi-galeria'))); ?>"
-                                   class="flavor-btn-icon" title="<?php esc_attr_e('Editar', 'flavor-chat-ia'); ?>">
+                                   class="flavor-btn-icon" title="<?php esc_attr_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-edit"></span>
                                 </a>
                             </div>
@@ -433,7 +433,7 @@ class Flavor_Multimedia_Dashboard_Tab {
             <div class="flavor-panel-header">
                 <h2>
                     <span class="dashicons dashicons-heart"></span>
-                    <?php esc_html_e('Mis Favoritos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Mis Favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <span class="flavor-badge"><?php echo number_format_i18n($total_favoritos); ?></span>
             </div>
@@ -441,12 +441,12 @@ class Flavor_Multimedia_Dashboard_Tab {
             <?php if (empty($favoritos)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-heart"></span>
-                    <p><?php esc_html_e('Aun no has marcado contenido como favorito.', 'flavor-chat-ia'); ?></p>
-                    <p class="flavor-text-muted"><?php esc_html_e('Explora la galeria y dale "me gusta" al contenido que te interese.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Aun no has marcado contenido como favorito.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                    <p class="flavor-text-muted"><?php esc_html_e('Explora la galeria y dale "me gusta" al contenido que te interese.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <div class="flavor-empty-actions">
                         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('multimedia', 'galeria')); ?>" class="flavor-btn flavor-btn-primary">
                             <span class="dashicons dashicons-search"></span>
-                            <?php esc_html_e('Explorar Galeria', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Explorar Galeria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </div>
@@ -458,7 +458,7 @@ class Flavor_Multimedia_Dashboard_Tab {
                                 <?php if ($archivo->tipo === 'imagen'): ?>
                                     <?php $thumbnail_url = !empty($archivo->thumbnail_url) ? $archivo->thumbnail_url : $archivo->archivo_url; ?>
                                     <img src="<?php echo esc_url($thumbnail_url); ?>"
-                                         alt="<?php echo esc_attr($archivo->titulo ?: __('Imagen', 'flavor-chat-ia')); ?>"
+                                         alt="<?php echo esc_attr($archivo->titulo ?: __('Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>"
                                          loading="lazy" />
                                 <?php elseif ($archivo->tipo === 'video'): ?>
                                     <div class="flavor-media-placeholder flavor-video-placeholder">
@@ -486,7 +486,7 @@ class Flavor_Multimedia_Dashboard_Tab {
                                     <h4><?php echo esc_html(wp_trim_words($archivo->titulo, 5)); ?></h4>
                                 <?php endif; ?>
                                 <span class="flavor-galeria-autor">
-                                    <?php printf(esc_html__('por %s', 'flavor-chat-ia'), esc_html($archivo->autor_nombre)); ?>
+                                    <?php printf(esc_html__('por %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($archivo->autor_nombre)); ?>
                                 </span>
                                 <span class="flavor-galeria-meta">
                                     <span class="dashicons dashicons-heart"></span>
@@ -500,7 +500,7 @@ class Flavor_Multimedia_Dashboard_Tab {
                 <?php if ($total_favoritos > 50): ?>
                     <div class="flavor-panel-footer">
                         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('multimedia', 'favoritos')); ?>" class="flavor-btn flavor-btn-outline">
-                            <?php printf(esc_html__('Ver todos (%d)', 'flavor-chat-ia'), $total_favoritos); ?>
+                            <?php printf(esc_html__('Ver todos (%d)', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_favoritos); ?>
                         </a>
                     </div>
                 <?php endif; ?>
@@ -589,7 +589,7 @@ class Flavor_Multimedia_Dashboard_Tab {
             <div class="flavor-panel-header">
                 <h2>
                     <span class="dashicons dashicons-chart-bar"></span>
-                    <?php esc_html_e('Estadisticas de mi Contenido', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Estadisticas de mi Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
             </div>
 
@@ -598,28 +598,28 @@ class Flavor_Multimedia_Dashboard_Tab {
                     <span class="flavor-kpi-icon dashicons dashicons-format-gallery"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas_generales->total_archivos ?: 0); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Archivos Totales', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Archivos Totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icon dashicons dashicons-visibility"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas_generales->total_vistas ?: 0); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Vistas Totales', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Vistas Totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-success">
                     <span class="flavor-kpi-icon dashicons dashicons-heart"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas_generales->total_likes ?: 0); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Me Gusta Totales', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Me Gusta Totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-info">
                     <span class="flavor-kpi-icon dashicons dashicons-admin-comments"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas_generales->total_comentarios ?: 0); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Comentarios', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -629,28 +629,28 @@ class Flavor_Multimedia_Dashboard_Tab {
                     <span class="flavor-kpi-icon dashicons dashicons-format-image"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas_generales->total_imagenes ?: 0); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Imagenes', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Imagenes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-mini">
                     <span class="flavor-kpi-icon dashicons dashicons-video-alt3"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas_generales->total_videos ?: 0); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Videos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Videos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-mini">
                     <span class="flavor-kpi-icon dashicons dashicons-format-audio"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas_generales->total_audios ?: 0); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Audios', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Audios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-mini">
                     <span class="flavor-kpi-icon dashicons dashicons-download"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas_generales->total_descargas ?: 0); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Descargas', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Descargas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -660,7 +660,7 @@ class Flavor_Multimedia_Dashboard_Tab {
                     <span class="dashicons dashicons-heart"></span>
                     <span>
                         <?php printf(
-                            esc_html__('Has recibido %s likes en los ultimos 30 dias', 'flavor-chat-ia'),
+                            esc_html__('Has recibido %s likes en los ultimos 30 dias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             '<strong>' . number_format_i18n($likes_mes) . '</strong>'
                         ); ?>
                     </span>
@@ -672,7 +672,7 @@ class Flavor_Multimedia_Dashboard_Tab {
                 <div class="flavor-panel-section">
                     <h3>
                         <span class="dashicons dashicons-visibility"></span>
-                        <?php esc_html_e('Mas Vistos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Mas Vistos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <?php if (!empty($archivos_populares)): ?>
                         <div class="flavor-stats-list">
@@ -688,7 +688,7 @@ class Flavor_Multimedia_Dashboard_Tab {
                                         <?php endif; ?>
                                     </div>
                                     <div class="flavor-stats-info">
-                                        <span class="flavor-stats-title"><?php echo esc_html($archivo->titulo ?: __('Sin titulo', 'flavor-chat-ia')); ?></span>
+                                        <span class="flavor-stats-title"><?php echo esc_html($archivo->titulo ?: __('Sin titulo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>
                                         <span class="flavor-stats-meta">
                                             <span class="dashicons dashicons-visibility"></span>
                                             <?php echo number_format_i18n($archivo->vistas); ?>
@@ -698,7 +698,7 @@ class Flavor_Multimedia_Dashboard_Tab {
                             <?php endforeach; ?>
                         </div>
                     <?php else: ?>
-                        <p class="flavor-text-muted"><?php esc_html_e('Sin datos aun', 'flavor-chat-ia'); ?></p>
+                        <p class="flavor-text-muted"><?php esc_html_e('Sin datos aun', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php endif; ?>
                 </div>
 
@@ -706,7 +706,7 @@ class Flavor_Multimedia_Dashboard_Tab {
                 <div class="flavor-panel-section">
                     <h3>
                         <span class="dashicons dashicons-heart"></span>
-                        <?php esc_html_e('Mas Gustados', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Mas Gustados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <?php if (!empty($archivos_gustados)): ?>
                         <div class="flavor-stats-list">
@@ -722,7 +722,7 @@ class Flavor_Multimedia_Dashboard_Tab {
                                         <?php endif; ?>
                                     </div>
                                     <div class="flavor-stats-info">
-                                        <span class="flavor-stats-title"><?php echo esc_html($archivo->titulo ?: __('Sin titulo', 'flavor-chat-ia')); ?></span>
+                                        <span class="flavor-stats-title"><?php echo esc_html($archivo->titulo ?: __('Sin titulo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>
                                         <span class="flavor-stats-meta">
                                             <span class="dashicons dashicons-heart"></span>
                                             <?php echo number_format_i18n($archivo->me_gusta); ?>
@@ -732,7 +732,7 @@ class Flavor_Multimedia_Dashboard_Tab {
                             <?php endforeach; ?>
                         </div>
                     <?php else: ?>
-                        <p class="flavor-text-muted"><?php esc_html_e('Sin datos aun', 'flavor-chat-ia'); ?></p>
+                        <p class="flavor-text-muted"><?php esc_html_e('Sin datos aun', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php endif; ?>
                 </div>
             </div>
@@ -741,7 +741,7 @@ class Flavor_Multimedia_Dashboard_Tab {
                 <div class="flavor-panel-section">
                     <h3>
                         <span class="dashicons dashicons-calendar-alt"></span>
-                        <?php esc_html_e('Actividad Ultimos 30 Dias', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Actividad Ultimos 30 Dias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <div class="flavor-activity-chart">
                         <?php
@@ -771,7 +771,7 @@ class Flavor_Multimedia_Dashboard_Tab {
                         </div>
                         <div class="flavor-chart-labels">
                             <span><?php echo esc_html(date_i18n('d M', strtotime('-29 days'))); ?></span>
-                            <span><?php esc_html_e('Hoy', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                     </div>
                 </div>
@@ -788,11 +788,11 @@ class Flavor_Multimedia_Dashboard_Tab {
      */
     private function get_estado_label($estado) {
         $estados = [
-            'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-            'publico'   => __('Publico', 'flavor-chat-ia'),
-            'privado'   => __('Privado', 'flavor-chat-ia'),
-            'comunidad' => __('Comunidad', 'flavor-chat-ia'),
-            'rechazado' => __('Rechazado', 'flavor-chat-ia'),
+            'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'publico'   => __('Publico', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'privado'   => __('Privado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'comunidad' => __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'rechazado' => __('Rechazado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
         return $estados[$estado] ?? $estado;
     }
@@ -805,9 +805,9 @@ class Flavor_Multimedia_Dashboard_Tab {
      */
     private function get_privacidad_label($privacidad) {
         $privacidades = [
-            'publico'   => __('Publico', 'flavor-chat-ia'),
-            'privado'   => __('Privado', 'flavor-chat-ia'),
-            'comunidad' => __('Comunidad', 'flavor-chat-ia'),
+            'publico'   => __('Publico', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'privado'   => __('Privado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'comunidad' => __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
         return $privacidades[$privacidad] ?? $privacidad;
     }
@@ -833,9 +833,9 @@ class Flavor_Multimedia_Dashboard_Tab {
     private function render_login_requerido() {
         ?>
         <div class="flavor-panel flavor-panel-warning">
-            <p><?php esc_html_e('Debes iniciar sesion para ver este contenido.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('Debes iniciar sesion para ver este contenido.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <a href="<?php echo esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('multimedia', 'mi-galeria'))); ?>" class="flavor-btn flavor-btn-primary">
-                <?php esc_html_e('Iniciar Sesion', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Iniciar Sesion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
         <?php
@@ -847,8 +847,8 @@ class Flavor_Multimedia_Dashboard_Tab {
     private function render_modulo_no_disponible() {
         ?>
         <div class="flavor-panel flavor-panel-info">
-            <p><?php esc_html_e('El modulo de Multimedia no esta configurado correctamente.', 'flavor-chat-ia'); ?></p>
-            <p class="flavor-text-muted"><?php esc_html_e('Contacta al administrador del sitio.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('El modulo de Multimedia no esta configurado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+            <p class="flavor-text-muted"><?php esc_html_e('Contacta al administrador del sitio.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
         <?php
     }

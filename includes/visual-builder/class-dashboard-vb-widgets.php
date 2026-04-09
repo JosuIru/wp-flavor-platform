@@ -182,52 +182,52 @@ class Flavor_Dashboard_VB_Widgets {
     private function definir_categorias() {
         $this->categorias = [
             'usuario' => [
-                'label' => __('Mi Cuenta', 'flavor-chat-ia'),
+                'label' => __('Mi Cuenta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'  => 'dashicons-admin-users',
                 'orden' => 10,
             ],
             'reservas' => [
-                'label' => __('Reservas y Espacios', 'flavor-chat-ia'),
+                'label' => __('Reservas y Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'  => 'dashicons-calendar-alt',
                 'orden' => 20,
             ],
             'eventos' => [
-                'label' => __('Eventos y Actividades', 'flavor-chat-ia'),
+                'label' => __('Eventos y Actividades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'  => 'dashicons-tickets-alt',
                 'orden' => 30,
             ],
             'comunicacion' => [
-                'label' => __('Comunicación', 'flavor-chat-ia'),
+                'label' => __('Comunicación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'  => 'dashicons-megaphone',
                 'orden' => 40,
             ],
             'sostenibilidad' => [
-                'label' => __('Sostenibilidad', 'flavor-chat-ia'),
+                'label' => __('Sostenibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'  => 'dashicons-admin-site-alt3',
                 'orden' => 50,
             ],
             'economia' => [
-                'label' => __('Economía Local', 'flavor-chat-ia'),
+                'label' => __('Economía Local', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'  => 'dashicons-cart',
                 'orden' => 60,
             ],
             'participacion' => [
-                'label' => __('Participación', 'flavor-chat-ia'),
+                'label' => __('Participación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'  => 'dashicons-groups',
                 'orden' => 70,
             ],
             'mapas' => [
-                'label' => __('Mapas y Ubicación', 'flavor-chat-ia'),
+                'label' => __('Mapas y Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'  => 'dashicons-location',
                 'orden' => 80,
             ],
             'estadisticas' => [
-                'label' => __('Estadísticas', 'flavor-chat-ia'),
+                'label' => __('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'  => 'dashicons-chart-area',
                 'orden' => 90,
             ],
             'red' => [
-                'label' => __('Red y Comunidad', 'flavor-chat-ia'),
+                'label' => __('Red y Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'  => 'dashicons-networking',
                 'orden' => 100,
             ],
@@ -417,15 +417,15 @@ class Flavor_Dashboard_VB_Widgets {
                 <div class="fvb-widget__body">
                     <div class="fvb-widget__login-message">
                         <span class="dashicons dashicons-lock"></span>
-                        <h2><?php esc_html_e('Dashboard Personal', 'flavor-chat-ia'); ?></h2>
-                        <p><?php esc_html_e('Inicia sesion para acceder a tu dashboard personalizado con todas tus actividades y widgets.', 'flavor-chat-ia'); ?></p>
+                        <h2><?php esc_html_e('Dashboard Personal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                        <p><?php esc_html_e('Inicia sesion para acceder a tu dashboard personalizado con todas tus actividades y widgets.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <div class="fvb-widget__login-actions">
                             <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="fvb-btn fvb-btn--primary">
-                                <?php esc_html_e('Iniciar Sesion', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Iniciar Sesion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                             <?php if (get_option('users_can_register')) : ?>
                                 <a href="<?php echo esc_url(wp_registration_url()); ?>" class="fvb-btn fvb-btn--secondary">
-                                    <?php esc_html_e('Registrarse', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Registrarse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             <?php endif; ?>
                         </div>
@@ -461,9 +461,9 @@ class Flavor_Dashboard_VB_Widgets {
             'nonce'   => wp_create_nonce('fvb_dashboard_widgets'),
             'userId'  => get_current_user_id(),
             'i18n'    => [
-                'cargando'    => __('Cargando...', 'flavor-chat-ia'),
-                'error'       => __('Error al cargar', 'flavor-chat-ia'),
-                'actualizado' => __('Actualizado', 'flavor-chat-ia'),
+                'cargando'    => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error'       => __('Error al cargar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'actualizado' => __('Actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -514,8 +514,8 @@ class Flavor_Dashboard_VB_Widgets {
     public function registrar_secciones_dashboard($builder) {
         // Sección principal de Dashboard
         $builder->register_section('dashboard-completo', [
-            'label'       => __('Dashboard Completo', 'flavor-chat-ia'),
-            'description' => __('Dashboard con todos los widgets disponibles', 'flavor-chat-ia'),
+            'label'       => __('Dashboard Completo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Dashboard con todos los widgets disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-dashboard',
             'category'    => 'dashboard',
             'variants'    => ['grid', 'masonry', 'list'],
@@ -525,8 +525,8 @@ class Flavor_Dashboard_VB_Widgets {
 
         // Sección de estadísticas rápidas
         $builder->register_section('dashboard-stats', [
-            'label'       => __('Estadísticas Rápidas', 'flavor-chat-ia'),
-            'description' => __('Barra de estadísticas del usuario', 'flavor-chat-ia'),
+            'label'       => __('Estadísticas Rápidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Barra de estadísticas del usuario', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-chart-bar',
             'category'    => 'dashboard',
             'variants'    => ['horizontal', 'cards', 'minimal'],
@@ -536,8 +536,8 @@ class Flavor_Dashboard_VB_Widgets {
 
         // Sección de actividad reciente
         $builder->register_section('dashboard-actividad', [
-            'label'       => __('Actividad Reciente', 'flavor-chat-ia'),
-            'description' => __('Timeline de actividad del usuario', 'flavor-chat-ia'),
+            'label'       => __('Actividad Reciente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Timeline de actividad del usuario', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-backup',
             'category'    => 'dashboard',
             'variants'    => ['timeline', 'compact', 'detailed'],
@@ -547,8 +547,8 @@ class Flavor_Dashboard_VB_Widgets {
 
         // Sección de accesos rápidos
         $builder->register_section('dashboard-shortcuts', [
-            'label'       => __('Accesos Rápidos', 'flavor-chat-ia'),
-            'description' => __('Botones de acceso rápido a funciones', 'flavor-chat-ia'),
+            'label'       => __('Accesos Rápidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Botones de acceso rápido a funciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'        => 'dashicons-admin-links',
             'category'    => 'dashboard',
             'variants'    => ['icons', 'buttons', 'cards'],
@@ -595,35 +595,35 @@ class Flavor_Dashboard_VB_Widgets {
             // CATEGORÍA: USUARIO
             // =====================================================================
             'perfil-usuario' => [
-                'label'       => __('Mi Perfil', 'flavor-chat-ia'),
-                'description' => __('Avatar e información del usuario', 'flavor-chat-ia'),
+                'label'       => __('Mi Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Avatar e información del usuario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-admin-users',
                 'categoria'   => 'usuario',
                 'modulo'      => null, // Siempre disponible
                 'tamano'      => 'small',
                 'fields'      => [
-                    'mostrar_avatar'   => ['type' => 'toggle', 'label' => __('Mostrar avatar', 'flavor-chat-ia'), 'default' => true],
-                    'mostrar_rol'      => ['type' => 'toggle', 'label' => __('Mostrar rol', 'flavor-chat-ia'), 'default' => true],
-                    'mostrar_registro' => ['type' => 'toggle', 'label' => __('Mostrar fecha de registro', 'flavor-chat-ia'), 'default' => false],
+                    'mostrar_avatar'   => ['type' => 'toggle', 'label' => __('Mostrar avatar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => true],
+                    'mostrar_rol'      => ['type' => 'toggle', 'label' => __('Mostrar rol', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => true],
+                    'mostrar_registro' => ['type' => 'toggle', 'label' => __('Mostrar fecha de registro', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => false],
                 ],
                 'render'      => 'renderizar_widget_perfil',
             ],
             'notificaciones' => [
-                'label'       => __('Notificaciones', 'flavor-chat-ia'),
-                'description' => __('Notificaciones pendientes del usuario', 'flavor-chat-ia'),
+                'label'       => __('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Notificaciones pendientes del usuario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-bell',
                 'categoria'   => 'usuario',
                 'modulo'      => null,
                 'tamano'      => 'medium',
                 'fields'      => [
-                    'cantidad'      => ['type' => 'number', 'label' => __('Cantidad a mostrar', 'flavor-chat-ia'), 'default' => 5],
-                    'solo_sin_leer' => ['type' => 'toggle', 'label' => __('Solo sin leer', 'flavor-chat-ia'), 'default' => true],
+                    'cantidad'      => ['type' => 'number', 'label' => __('Cantidad a mostrar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => 5],
+                    'solo_sin_leer' => ['type' => 'toggle', 'label' => __('Solo sin leer', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => true],
                 ],
                 'render'      => 'renderizar_widget_notificaciones',
             ],
             'puntos-nivel' => [
-                'label'       => __('Puntos y Nivel', 'flavor-chat-ia'),
-                'description' => __('Puntos acumulados y nivel del usuario', 'flavor-chat-ia'),
+                'label'       => __('Puntos y Nivel', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Puntos acumulados y nivel del usuario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-star-filled',
                 'categoria'   => 'usuario',
                 'modulo'      => 'gamificacion',
@@ -635,22 +635,22 @@ class Flavor_Dashboard_VB_Widgets {
             // CATEGORÍA: RESERVAS Y ESPACIOS
             // =====================================================================
             'mis-reservas' => [
-                'label'       => __('Mis Reservas', 'flavor-chat-ia'),
-                'description' => __('Listado de reservas del usuario', 'flavor-chat-ia'),
+                'label'       => __('Mis Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Listado de reservas del usuario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-calendar-alt',
                 'categoria'   => 'reservas',
                 'modulo'      => 'espacios-comunes',
                 'tamano'      => 'medium',
                 'fields'      => [
-                    'cantidad'        => ['type' => 'number', 'label' => __('Cantidad', 'flavor-chat-ia'), 'default' => 5],
-                    'solo_proximas'   => ['type' => 'toggle', 'label' => __('Solo próximas', 'flavor-chat-ia'), 'default' => true],
-                    'mostrar_estado'  => ['type' => 'toggle', 'label' => __('Mostrar estado', 'flavor-chat-ia'), 'default' => true],
+                    'cantidad'        => ['type' => 'number', 'label' => __('Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => 5],
+                    'solo_proximas'   => ['type' => 'toggle', 'label' => __('Solo próximas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => true],
+                    'mostrar_estado'  => ['type' => 'toggle', 'label' => __('Mostrar estado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => true],
                 ],
                 'render'      => 'renderizar_widget_reservas',
             ],
             'espacios-disponibles' => [
-                'label'       => __('Espacios Disponibles', 'flavor-chat-ia'),
-                'description' => __('Espacios comunes disponibles hoy', 'flavor-chat-ia'),
+                'label'       => __('Espacios Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Espacios comunes disponibles hoy', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-building',
                 'categoria'   => 'reservas',
                 'modulo'      => 'espacios-comunes',
@@ -658,8 +658,8 @@ class Flavor_Dashboard_VB_Widgets {
                 'render'      => 'renderizar_widget_espacios',
             ],
             'bicicletas-disponibles' => [
-                'label'       => __('Bicicletas', 'flavor-chat-ia'),
-                'description' => __('Bicicletas compartidas disponibles', 'flavor-chat-ia'),
+                'label'       => __('Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Bicicletas compartidas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-image-rotate',
                 'categoria'   => 'reservas',
                 'modulo'      => 'bicicletas-compartidas',
@@ -667,8 +667,8 @@ class Flavor_Dashboard_VB_Widgets {
                 'render'      => 'renderizar_widget_bicicletas',
             ],
             'parkings' => [
-                'label'       => __('Parkings', 'flavor-chat-ia'),
-                'description' => __('Disponibilidad de parkings', 'flavor-chat-ia'),
+                'label'       => __('Parkings', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Disponibilidad de parkings', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-car',
                 'categoria'   => 'reservas',
                 'modulo'      => 'parkings',
@@ -676,8 +676,8 @@ class Flavor_Dashboard_VB_Widgets {
                 'render'      => 'renderizar_widget_parkings',
             ],
             'carpooling' => [
-                'label'       => __('Carpooling', 'flavor-chat-ia'),
-                'description' => __('Viajes compartidos disponibles', 'flavor-chat-ia'),
+                'label'       => __('Carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Viajes compartidos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-car',
                 'categoria'   => 'reservas',
                 'modulo'      => 'carpooling',
@@ -689,35 +689,35 @@ class Flavor_Dashboard_VB_Widgets {
             // CATEGORÍA: EVENTOS Y ACTIVIDADES
             // =====================================================================
             'calendario-eventos' => [
-                'label'       => __('Calendario de Eventos', 'flavor-chat-ia'),
-                'description' => __('Calendario con eventos próximos', 'flavor-chat-ia'),
+                'label'       => __('Calendario de Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Calendario con eventos próximos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-calendar',
                 'categoria'   => 'eventos',
                 'modulo'      => 'eventos',
                 'tamano'      => 'large',
                 'fields'      => [
-                    'vista'           => ['type' => 'select', 'label' => __('Vista', 'flavor-chat-ia'), 'options' => ['mes' => 'Mes', 'semana' => 'Semana', 'agenda' => 'Agenda'], 'default' => 'mes'],
-                    'categorias'      => ['type' => 'multiselect', 'label' => __('Categorías', 'flavor-chat-ia')],
-                    'mostrar_inscritos' => ['type' => 'toggle', 'label' => __('Destacar inscritos', 'flavor-chat-ia'), 'default' => true],
+                    'vista'           => ['type' => 'select', 'label' => __('Vista', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['mes' => 'Mes', 'semana' => 'Semana', 'agenda' => 'Agenda'], 'default' => 'mes'],
+                    'categorias'      => ['type' => 'multiselect', 'label' => __('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'mostrar_inscritos' => ['type' => 'toggle', 'label' => __('Destacar inscritos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => true],
                 ],
                 'render'      => 'renderizar_widget_calendario',
             ],
             'proximos-eventos' => [
-                'label'       => __('Próximos Eventos', 'flavor-chat-ia'),
-                'description' => __('Lista de próximos eventos', 'flavor-chat-ia'),
+                'label'       => __('Próximos Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Lista de próximos eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-tickets-alt',
                 'categoria'   => 'eventos',
                 'modulo'      => 'eventos',
                 'tamano'      => 'medium',
                 'fields'      => [
-                    'cantidad'   => ['type' => 'number', 'label' => __('Cantidad', 'flavor-chat-ia'), 'default' => 5],
-                    'dias'       => ['type' => 'number', 'label' => __('Próximos días', 'flavor-chat-ia'), 'default' => 30],
+                    'cantidad'   => ['type' => 'number', 'label' => __('Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => 5],
+                    'dias'       => ['type' => 'number', 'label' => __('Próximos días', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => 30],
                 ],
                 'render'      => 'renderizar_widget_proximos_eventos',
             ],
             'mis-inscripciones' => [
-                'label'       => __('Mis Inscripciones', 'flavor-chat-ia'),
-                'description' => __('Eventos donde estoy inscrito', 'flavor-chat-ia'),
+                'label'       => __('Mis Inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Eventos donde estoy inscrito', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-yes-alt',
                 'categoria'   => 'eventos',
                 'modulo'      => 'eventos',
@@ -725,20 +725,20 @@ class Flavor_Dashboard_VB_Widgets {
                 'render'      => 'renderizar_widget_inscripciones',
             ],
             'cursos-activos' => [
-                'label'       => __('Mis Cursos', 'flavor-chat-ia'),
-                'description' => __('Cursos en los que participo', 'flavor-chat-ia'),
+                'label'       => __('Mis Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Cursos en los que participo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-welcome-learn-more',
                 'categoria'   => 'eventos',
                 'modulo'      => 'cursos',
                 'tamano'      => 'medium',
                 'fields'      => [
-                    'mostrar_progreso' => ['type' => 'toggle', 'label' => __('Mostrar progreso', 'flavor-chat-ia'), 'default' => true],
+                    'mostrar_progreso' => ['type' => 'toggle', 'label' => __('Mostrar progreso', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => true],
                 ],
                 'render'      => 'renderizar_widget_cursos',
             ],
             'talleres' => [
-                'label'       => __('Talleres', 'flavor-chat-ia'),
-                'description' => __('Talleres disponibles', 'flavor-chat-ia'),
+                'label'       => __('Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Talleres disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-hammer',
                 'categoria'   => 'eventos',
                 'modulo'      => 'talleres',
@@ -750,21 +750,21 @@ class Flavor_Dashboard_VB_Widgets {
             // CATEGORÍA: COMUNICACIÓN
             // =====================================================================
             'avisos-municipales' => [
-                'label'       => __('Avisos Municipales', 'flavor-chat-ia'),
-                'description' => __('Últimos avisos del ayuntamiento', 'flavor-chat-ia'),
+                'label'       => __('Avisos Municipales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Últimos avisos del ayuntamiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-megaphone',
                 'categoria'   => 'comunicacion',
                 'modulo'      => 'avisos-municipales',
                 'tamano'      => 'medium',
                 'fields'      => [
-                    'cantidad'       => ['type' => 'number', 'label' => __('Cantidad', 'flavor-chat-ia'), 'default' => 5],
-                    'solo_urgentes'  => ['type' => 'toggle', 'label' => __('Solo urgentes', 'flavor-chat-ia'), 'default' => false],
+                    'cantidad'       => ['type' => 'number', 'label' => __('Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => 5],
+                    'solo_urgentes'  => ['type' => 'toggle', 'label' => __('Solo urgentes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => false],
                 ],
                 'render'      => 'renderizar_widget_avisos',
             ],
             'chat-grupos' => [
-                'label'       => __('Mis Grupos de Chat', 'flavor-chat-ia'),
-                'description' => __('Grupos de chat activos', 'flavor-chat-ia'),
+                'label'       => __('Mis Grupos de Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Grupos de chat activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-format-chat',
                 'categoria'   => 'comunicacion',
                 'modulo'      => 'chat-grupos',
@@ -772,8 +772,8 @@ class Flavor_Dashboard_VB_Widgets {
                 'render'      => 'renderizar_widget_chat_grupos',
             ],
             'mensajes-internos' => [
-                'label'       => __('Mensajes', 'flavor-chat-ia'),
-                'description' => __('Mensajes privados', 'flavor-chat-ia'),
+                'label'       => __('Mensajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Mensajes privados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-email-alt',
                 'categoria'   => 'comunicacion',
                 'modulo'      => 'chat-interno',
@@ -781,8 +781,8 @@ class Flavor_Dashboard_VB_Widgets {
                 'render'      => 'renderizar_widget_mensajes',
             ],
             'foros' => [
-                'label'       => __('Foros', 'flavor-chat-ia'),
-                'description' => __('Últimos temas en foros', 'flavor-chat-ia'),
+                'label'       => __('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Últimos temas en foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-format-status',
                 'categoria'   => 'comunicacion',
                 'modulo'      => 'foros',
@@ -790,8 +790,8 @@ class Flavor_Dashboard_VB_Widgets {
                 'render'      => 'renderizar_widget_foros',
             ],
             'podcast' => [
-                'label'       => __('Podcast', 'flavor-chat-ia'),
-                'description' => __('Últimos episodios de podcast', 'flavor-chat-ia'),
+                'label'       => __('Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Últimos episodios de podcast', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-microphone',
                 'categoria'   => 'comunicacion',
                 'modulo'      => 'podcast',
@@ -799,8 +799,8 @@ class Flavor_Dashboard_VB_Widgets {
                 'render'      => 'renderizar_widget_podcast',
             ],
             'radio' => [
-                'label'       => __('Radio', 'flavor-chat-ia'),
-                'description' => __('Reproductor de radio en vivo', 'flavor-chat-ia'),
+                'label'       => __('Radio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Reproductor de radio en vivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-controls-volumeon',
                 'categoria'   => 'comunicacion',
                 'modulo'      => 'radio',
@@ -808,8 +808,8 @@ class Flavor_Dashboard_VB_Widgets {
                 'render'      => 'renderizar_widget_radio',
             ],
             'multimedia' => [
-                'label'       => __('Multimedia', 'flavor-chat-ia'),
-                'description' => __('Galería de fotos y videos', 'flavor-chat-ia'),
+                'label'       => __('Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Galería de fotos y videos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-format-gallery',
                 'categoria'   => 'comunicacion',
                 'modulo'      => 'multimedia',
@@ -821,21 +821,21 @@ class Flavor_Dashboard_VB_Widgets {
             // CATEGORÍA: SOSTENIBILIDAD
             // =====================================================================
             'huertos-urbanos' => [
-                'label'       => __('Mi Huerto', 'flavor-chat-ia'),
-                'description' => __('Estado de mi parcela de huerto', 'flavor-chat-ia'),
+                'label'       => __('Mi Huerto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Estado de mi parcela de huerto', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-carrot',
                 'categoria'   => 'sostenibilidad',
                 'modulo'      => 'huertos-urbanos',
                 'tamano'      => 'medium',
                 'fields'      => [
-                    'mostrar_ciclo'   => ['type' => 'toggle', 'label' => __('Mostrar ciclo actual', 'flavor-chat-ia'), 'default' => true],
-                    'mostrar_tareas'  => ['type' => 'toggle', 'label' => __('Mostrar tareas pendientes', 'flavor-chat-ia'), 'default' => true],
+                    'mostrar_ciclo'   => ['type' => 'toggle', 'label' => __('Mostrar ciclo actual', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => true],
+                    'mostrar_tareas'  => ['type' => 'toggle', 'label' => __('Mostrar tareas pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => true],
                 ],
                 'render'      => 'renderizar_widget_huertos',
             ],
             'reciclaje' => [
-                'label'       => __('Reciclaje', 'flavor-chat-ia'),
-                'description' => __('Mis estadísticas de reciclaje', 'flavor-chat-ia'),
+                'label'       => __('Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Mis estadísticas de reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-image-rotate-right',
                 'categoria'   => 'sostenibilidad',
                 'modulo'      => 'reciclaje',
@@ -843,8 +843,8 @@ class Flavor_Dashboard_VB_Widgets {
                 'render'      => 'renderizar_widget_reciclaje',
             ],
             'compostaje' => [
-                'label'       => __('Compostaje', 'flavor-chat-ia'),
-                'description' => __('Mi compostaje comunitario', 'flavor-chat-ia'),
+                'label'       => __('Compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Mi compostaje comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-admin-site-alt3',
                 'categoria'   => 'sostenibilidad',
                 'modulo'      => 'compostaje',
@@ -856,8 +856,8 @@ class Flavor_Dashboard_VB_Widgets {
             // CATEGORÍA: ECONOMÍA LOCAL
             // =====================================================================
             'marketplace' => [
-                'label'       => __('Marketplace', 'flavor-chat-ia'),
-                'description' => __('Mis anuncios y compras', 'flavor-chat-ia'),
+                'label'       => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Mis anuncios y compras', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-store',
                 'categoria'   => 'economia',
                 'modulo'      => 'marketplace',
@@ -865,8 +865,8 @@ class Flavor_Dashboard_VB_Widgets {
                 'render'      => 'renderizar_widget_marketplace',
             ],
             'tienda-local' => [
-                'label'       => __('Tienda Local', 'flavor-chat-ia'),
-                'description' => __('Productos de tiendas locales', 'flavor-chat-ia'),
+                'label'       => __('Tienda Local', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Productos de tiendas locales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-cart',
                 'categoria'   => 'economia',
                 'modulo'      => 'tienda-local',
@@ -874,8 +874,8 @@ class Flavor_Dashboard_VB_Widgets {
                 'render'      => 'renderizar_widget_tienda',
             ],
             'mis-pedidos' => [
-                'label'       => __('Mis Pedidos', 'flavor-chat-ia'),
-                'description' => __('Estado de mis pedidos', 'flavor-chat-ia'),
+                'label'       => __('Mis Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Estado de mis pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-products',
                 'categoria'   => 'economia',
                 'modulo'      => 'tienda-local',
@@ -883,8 +883,8 @@ class Flavor_Dashboard_VB_Widgets {
                 'render'      => 'renderizar_widget_pedidos',
             ],
             'grupos-consumo' => [
-                'label'       => __('Grupos de Consumo', 'flavor-chat-ia'),
-                'description' => __('Mis grupos de consumo', 'flavor-chat-ia'),
+                'label'       => __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Mis grupos de consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-groups',
                 'categoria'   => 'economia',
                 'modulo'      => 'grupos-consumo',
@@ -892,8 +892,8 @@ class Flavor_Dashboard_VB_Widgets {
                 'render'      => 'renderizar_widget_grupos_consumo',
             ],
             'banco-tiempo' => [
-                'label'       => __('Banco del Tiempo', 'flavor-chat-ia'),
-                'description' => __('Mi saldo en el banco del tiempo', 'flavor-chat-ia'),
+                'label'       => __('Banco del Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Mi saldo en el banco del tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-clock',
                 'categoria'   => 'economia',
                 'modulo'      => 'banco-tiempo',
@@ -901,8 +901,8 @@ class Flavor_Dashboard_VB_Widgets {
                 'render'      => 'renderizar_widget_banco_tiempo',
             ],
             'facturas' => [
-                'label'       => __('Mis Facturas', 'flavor-chat-ia'),
-                'description' => __('Historial de facturas', 'flavor-chat-ia'),
+                'label'       => __('Mis Facturas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Historial de facturas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-media-text',
                 'categoria'   => 'economia',
                 'modulo'      => 'facturas',
@@ -914,8 +914,8 @@ class Flavor_Dashboard_VB_Widgets {
             // CATEGORÍA: PARTICIPACIÓN
             // =====================================================================
             'participacion' => [
-                'label'       => __('Participación Ciudadana', 'flavor-chat-ia'),
-                'description' => __('Procesos participativos activos', 'flavor-chat-ia'),
+                'label'       => __('Participación Ciudadana', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Procesos participativos activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-megaphone',
                 'categoria'   => 'participacion',
                 'modulo'      => 'participacion',
@@ -923,8 +923,8 @@ class Flavor_Dashboard_VB_Widgets {
                 'render'      => 'renderizar_widget_participacion',
             ],
             'presupuestos-participativos' => [
-                'label'       => __('Presupuestos Participativos', 'flavor-chat-ia'),
-                'description' => __('Votaciones de presupuestos', 'flavor-chat-ia'),
+                'label'       => __('Presupuestos Participativos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Votaciones de presupuestos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-money-alt',
                 'categoria'   => 'participacion',
                 'modulo'      => 'presupuestos-participativos',
@@ -932,8 +932,8 @@ class Flavor_Dashboard_VB_Widgets {
                 'render'      => 'renderizar_widget_presupuestos',
             ],
             'incidencias' => [
-                'label'       => __('Mis Incidencias', 'flavor-chat-ia'),
-                'description' => __('Incidencias reportadas', 'flavor-chat-ia'),
+                'label'       => __('Mis Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Incidencias reportadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-warning',
                 'categoria'   => 'participacion',
                 'modulo'      => 'incidencias',
@@ -941,8 +941,8 @@ class Flavor_Dashboard_VB_Widgets {
                 'render'      => 'renderizar_widget_incidencias',
             ],
             'tramites' => [
-                'label'       => __('Mis Trámites', 'flavor-chat-ia'),
-                'description' => __('Estado de trámites', 'flavor-chat-ia'),
+                'label'       => __('Mis Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Estado de trámites', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-clipboard',
                 'categoria'   => 'participacion',
                 'modulo'      => 'tramites',
@@ -950,8 +950,8 @@ class Flavor_Dashboard_VB_Widgets {
                 'render'      => 'renderizar_widget_tramites',
             ],
             'ayuda-vecinal' => [
-                'label'       => __('Ayuda Vecinal', 'flavor-chat-ia'),
-                'description' => __('Solicitudes de ayuda entre vecinos', 'flavor-chat-ia'),
+                'label'       => __('Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Solicitudes de ayuda entre vecinos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-heart',
                 'categoria'   => 'participacion',
                 'modulo'      => 'ayuda-vecinal',
@@ -959,8 +959,8 @@ class Flavor_Dashboard_VB_Widgets {
                 'render'      => 'renderizar_widget_ayuda_vecinal',
             ],
             'colectivos' => [
-                'label'       => __('Mis Colectivos', 'flavor-chat-ia'),
-                'description' => __('Colectivos a los que pertenezco', 'flavor-chat-ia'),
+                'label'       => __('Mis Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Colectivos a los que pertenezco', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-groups',
                 'categoria'   => 'participacion',
                 'modulo'      => 'colectivos',
@@ -968,8 +968,8 @@ class Flavor_Dashboard_VB_Widgets {
                 'render'      => 'renderizar_widget_colectivos',
             ],
             'socios' => [
-                'label'       => __('Estado de Miembro', 'flavor-chat-ia'),
-                'description' => __('Mi membresía como miembro', 'flavor-chat-ia'),
+                'label'       => __('Estado de Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Mi membresía como miembro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-id-alt',
                 'categoria'   => 'participacion',
                 'modulo'      => 'socios',
@@ -981,23 +981,23 @@ class Flavor_Dashboard_VB_Widgets {
             // CATEGORÍA: MAPAS
             // =====================================================================
             'mapa-interactivo' => [
-                'label'       => __('Mapa Interactivo', 'flavor-chat-ia'),
-                'description' => __('Mapa con puntos de interés', 'flavor-chat-ia'),
+                'label'       => __('Mapa Interactivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Mapa con puntos de interés', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-location-alt',
                 'categoria'   => 'mapas',
                 'modulo'      => null,
                 'tamano'      => 'large',
                 'fields'      => [
-                    'altura'     => ['type' => 'number', 'label' => __('Altura (px)', 'flavor-chat-ia'), 'default' => 400],
-                    'capas'      => ['type' => 'multiselect', 'label' => __('Capas visibles', 'flavor-chat-ia'), 'options' => [
-                        'bicicletas' => __('Bicicletas', 'flavor-chat-ia'),
-                        'parkings'   => __('Parkings', 'flavor-chat-ia'),
-                        'huertos'    => __('Huertos', 'flavor-chat-ia'),
-                        'reciclaje'  => __('Puntos de reciclaje', 'flavor-chat-ia'),
-                        'espacios'   => __('Espacios comunes', 'flavor-chat-ia'),
-                        'eventos'    => __('Eventos', 'flavor-chat-ia'),
+                    'altura'     => ['type' => 'number', 'label' => __('Altura (px)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => 400],
+                    'capas'      => ['type' => 'multiselect', 'label' => __('Capas visibles', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => [
+                        'bicicletas' => __('Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'parkings'   => __('Parkings', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'huertos'    => __('Huertos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'reciclaje'  => __('Puntos de reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'espacios'   => __('Espacios comunes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'eventos'    => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ]],
-                    'centrar_usuario' => ['type' => 'toggle', 'label' => __('Centrar en usuario', 'flavor-chat-ia'), 'default' => true],
+                    'centrar_usuario' => ['type' => 'toggle', 'label' => __('Centrar en usuario', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => true],
                 ],
                 'render'      => 'renderizar_widget_mapa',
             ],
@@ -1006,24 +1006,24 @@ class Flavor_Dashboard_VB_Widgets {
             // CATEGORÍA: ESTADÍSTICAS
             // =====================================================================
             'estadisticas-personales' => [
-                'label'       => __('Mis Estadísticas', 'flavor-chat-ia'),
-                'description' => __('Resumen de mi actividad', 'flavor-chat-ia'),
+                'label'       => __('Mis Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Resumen de mi actividad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-chart-area',
                 'categoria'   => 'estadisticas',
                 'modulo'      => null,
                 'tamano'      => 'large',
                 'fields'      => [
-                    'periodo' => ['type' => 'select', 'label' => __('Período', 'flavor-chat-ia'), 'options' => [
-                        '7d'  => __('Últimos 7 días', 'flavor-chat-ia'),
-                        '30d' => __('Últimos 30 días', 'flavor-chat-ia'),
-                        '90d' => __('Últimos 90 días', 'flavor-chat-ia'),
+                    'periodo' => ['type' => 'select', 'label' => __('Período', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => [
+                        '7d'  => __('Últimos 7 días', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        '30d' => __('Últimos 30 días', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        '90d' => __('Últimos 90 días', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ], 'default' => '30d'],
                 ],
                 'render'      => 'renderizar_widget_estadisticas',
             ],
             'grafico-actividad' => [
-                'label'       => __('Gráfico de Actividad', 'flavor-chat-ia'),
-                'description' => __('Gráfico de mi actividad semanal', 'flavor-chat-ia'),
+                'label'       => __('Gráfico de Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Gráfico de mi actividad semanal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-chart-bar',
                 'categoria'   => 'estadisticas',
                 'modulo'      => null,
@@ -1035,8 +1035,8 @@ class Flavor_Dashboard_VB_Widgets {
             // CATEGORÍA: RED Y COMUNIDAD
             // =====================================================================
             'red-comunidades' => [
-                'label'       => __('Red de Comunidades', 'flavor-chat-ia'),
-                'description' => __('Comunidades conectadas a la red', 'flavor-chat-ia'),
+                'label'       => __('Red de Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Comunidades conectadas a la red', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-networking',
                 'categoria'   => 'red',
                 'modulo'      => 'comunidades',
@@ -1044,8 +1044,8 @@ class Flavor_Dashboard_VB_Widgets {
                 'render'      => 'renderizar_widget_red',
             ],
             'recursos-compartidos' => [
-                'label'       => __('Recursos Compartidos', 'flavor-chat-ia'),
-                'description' => __('Recursos de otras comunidades', 'flavor-chat-ia'),
+                'label'       => __('Recursos Compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Recursos de otras comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-share-alt2',
                 'categoria'   => 'red',
                 'modulo'      => 'comunidades',
@@ -1053,8 +1053,8 @@ class Flavor_Dashboard_VB_Widgets {
                 'render'      => 'renderizar_widget_recursos_compartidos',
             ],
             'red-social' => [
-                'label'       => __('Red Social', 'flavor-chat-ia'),
-                'description' => __('Actividad de mis contactos', 'flavor-chat-ia'),
+                'label'       => __('Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Actividad de mis contactos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-share',
                 'categoria'   => 'red',
                 'modulo'      => 'red-social',
@@ -1066,8 +1066,8 @@ class Flavor_Dashboard_VB_Widgets {
             // WIDGETS ESPECIALES
             // =====================================================================
             'fichaje' => [
-                'label'       => __('Fichaje', 'flavor-chat-ia'),
-                'description' => __('Control de fichaje de empleados', 'flavor-chat-ia'),
+                'label'       => __('Fichaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Control de fichaje de empleados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-clock',
                 'categoria'   => 'usuario',
                 'modulo'      => 'fichaje-empleados',
@@ -1075,8 +1075,8 @@ class Flavor_Dashboard_VB_Widgets {
                 'render'      => 'renderizar_widget_fichaje',
             ],
             'biblioteca' => [
-                'label'       => __('Biblioteca', 'flavor-chat-ia'),
-                'description' => __('Mis préstamos de biblioteca', 'flavor-chat-ia'),
+                'label'       => __('Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Mis préstamos de biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-book',
                 'categoria'   => 'comunicacion',
                 'modulo'      => 'biblioteca',
@@ -1084,8 +1084,8 @@ class Flavor_Dashboard_VB_Widgets {
                 'render'      => 'renderizar_widget_biblioteca',
             ],
             'bares' => [
-                'label'       => __('Bares y Restaurantes', 'flavor-chat-ia'),
-                'description' => __('Bares cercanos y reservas', 'flavor-chat-ia'),
+                'label'       => __('Bares y Restaurantes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Bares cercanos y reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-food',
                 'categoria'   => 'economia',
                 'modulo'      => 'bares',
@@ -1093,8 +1093,8 @@ class Flavor_Dashboard_VB_Widgets {
                 'render'      => 'renderizar_widget_bares',
             ],
             'transparencia' => [
-                'label'       => __('Transparencia', 'flavor-chat-ia'),
-                'description' => __('Datos de transparencia municipal', 'flavor-chat-ia'),
+                'label'       => __('Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Datos de transparencia municipal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'        => 'dashicons-visibility',
                 'categoria'   => 'participacion',
                 'modulo'      => 'transparencia',
@@ -1113,27 +1113,27 @@ class Flavor_Dashboard_VB_Widgets {
         return [
             'titulo_personalizado' => [
                 'type'    => 'text',
-                'label'   => __('Título personalizado', 'flavor-chat-ia'),
+                'label'   => __('Título personalizado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'default' => '',
             ],
             'mostrar_cabecera' => [
                 'type'    => 'toggle',
-                'label'   => __('Mostrar cabecera', 'flavor-chat-ia'),
+                'label'   => __('Mostrar cabecera', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'default' => true,
             ],
             'mostrar_ver_mas' => [
                 'type'    => 'toggle',
-                'label'   => __('Mostrar enlace "Ver más"', 'flavor-chat-ia'),
+                'label'   => __('Mostrar enlace "Ver más"', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'default' => true,
             ],
             'estilo' => [
                 'type'    => 'select',
-                'label'   => __('Estilo', 'flavor-chat-ia'),
+                'label'   => __('Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'options' => [
-                    'default' => __('Por defecto', 'flavor-chat-ia'),
-                    'card'    => __('Tarjeta', 'flavor-chat-ia'),
-                    'minimal' => __('Minimal', 'flavor-chat-ia'),
-                    'glass'   => __('Glassmorphism', 'flavor-chat-ia'),
+                    'default' => __('Por defecto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'card'    => __('Tarjeta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'minimal' => __('Minimal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'glass'   => __('Glassmorphism', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
                 'default' => 'default',
             ],
@@ -1149,7 +1149,7 @@ class Flavor_Dashboard_VB_Widgets {
         return [
             'columnas' => [
                 'type'    => 'select',
-                'label'   => __('Columnas', 'flavor-chat-ia'),
+                'label'   => __('Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'options' => [
                     '1' => '1 columna',
                     '2' => '2 columnas',
@@ -1160,21 +1160,21 @@ class Flavor_Dashboard_VB_Widgets {
             ],
             'gap' => [
                 'type'    => 'number',
-                'label'   => __('Espaciado (px)', 'flavor-chat-ia'),
+                'label'   => __('Espaciado (px)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'default' => 20,
             ],
             'widgets_visibles' => [
                 'type'    => 'multiselect',
-                'label'   => __('Widgets a mostrar', 'flavor-chat-ia'),
+                'label'   => __('Widgets a mostrar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'options' => [], // Se llena dinámicamente
             ],
             'ordenar_por' => [
                 'type'    => 'select',
-                'label'   => __('Ordenar por', 'flavor-chat-ia'),
+                'label'   => __('Ordenar por', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'options' => [
-                    'default'  => __('Por defecto', 'flavor-chat-ia'),
-                    'nombre'   => __('Nombre', 'flavor-chat-ia'),
-                    'categoria'=> __('Categoría', 'flavor-chat-ia'),
+                    'default'  => __('Por defecto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'nombre'   => __('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'categoria'=> __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
                 'default' => 'default',
             ],
@@ -1190,23 +1190,23 @@ class Flavor_Dashboard_VB_Widgets {
         return [
             'stats_visibles' => [
                 'type'    => 'multiselect',
-                'label'   => __('Estadísticas a mostrar', 'flavor-chat-ia'),
+                'label'   => __('Estadísticas a mostrar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'options' => [
-                    'reservas'       => __('Reservas', 'flavor-chat-ia'),
-                    'eventos'        => __('Eventos', 'flavor-chat-ia'),
-                    'puntos'         => __('Puntos', 'flavor-chat-ia'),
-                    'mensajes'       => __('Mensajes', 'flavor-chat-ia'),
-                    'participacion'  => __('Participación', 'flavor-chat-ia'),
+                    'reservas'       => __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'eventos'        => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'puntos'         => __('Puntos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'mensajes'       => __('Mensajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'participacion'  => __('Participación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
             'mostrar_iconos' => [
                 'type'    => 'toggle',
-                'label'   => __('Mostrar iconos', 'flavor-chat-ia'),
+                'label'   => __('Mostrar iconos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'default' => true,
             ],
             'mostrar_tendencia' => [
                 'type'    => 'toggle',
-                'label'   => __('Mostrar tendencia', 'flavor-chat-ia'),
+                'label'   => __('Mostrar tendencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'default' => true,
             ],
         ];
@@ -1221,17 +1221,17 @@ class Flavor_Dashboard_VB_Widgets {
         return [
             'cantidad' => [
                 'type'    => 'number',
-                'label'   => __('Cantidad de items', 'flavor-chat-ia'),
+                'label'   => __('Cantidad de items', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'default' => 10,
             ],
             'mostrar_iconos' => [
                 'type'    => 'toggle',
-                'label'   => __('Mostrar iconos', 'flavor-chat-ia'),
+                'label'   => __('Mostrar iconos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'default' => true,
             ],
             'agrupar_por_dia' => [
                 'type'    => 'toggle',
-                'label'   => __('Agrupar por día', 'flavor-chat-ia'),
+                'label'   => __('Agrupar por día', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'default' => false,
             ],
         ];
@@ -1246,18 +1246,18 @@ class Flavor_Dashboard_VB_Widgets {
         return [
             'shortcuts_visibles' => [
                 'type'    => 'multiselect',
-                'label'   => __('Accesos a mostrar', 'flavor-chat-ia'),
+                'label'   => __('Accesos a mostrar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'options' => [
-                    'nueva-reserva'    => __('Nueva Reserva', 'flavor-chat-ia'),
-                    'nueva-incidencia' => __('Nueva Incidencia', 'flavor-chat-ia'),
-                    'nuevo-mensaje'    => __('Nuevo Mensaje', 'flavor-chat-ia'),
-                    'mi-perfil'        => __('Mi Perfil', 'flavor-chat-ia'),
-                    'configuracion'    => __('Configuración', 'flavor-chat-ia'),
+                    'nueva-reserva'    => __('Nueva Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'nueva-incidencia' => __('Nueva Incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'nuevo-mensaje'    => __('Nuevo Mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'mi-perfil'        => __('Mi Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'configuracion'    => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
             'mostrar_texto' => [
                 'type'    => 'toggle',
-                'label'   => __('Mostrar texto', 'flavor-chat-ia'),
+                'label'   => __('Mostrar texto', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'default' => true,
             ],
         ];
@@ -1477,9 +1477,9 @@ class Flavor_Dashboard_VB_Widgets {
             <div class="fvb-widget__body">
                 <div class="fvb-widget__login-message">
                     <span class="dashicons dashicons-lock"></span>
-                    <p><?php esc_html_e('Inicia sesión para ver este contenido', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Inicia sesión para ver este contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="fvb-btn fvb-btn--primary">
-                        <?php esc_html_e('Iniciar Sesión', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Iniciar Sesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </div>
@@ -1516,7 +1516,7 @@ class Flavor_Dashboard_VB_Widgets {
                 <div class="fvb-widget__header">
                     <span class="fvb-widget__icon dashicons <?php echo esc_attr($config['icon']); ?>"></span>
                     <h3 class="fvb-widget__title"><?php echo esc_html($titulo); ?></h3>
-                    <button type="button" class="fvb-widget__refresh" title="<?php esc_attr_e('Actualizar', 'flavor-chat-ia'); ?>">
+                    <button type="button" class="fvb-widget__refresh" title="<?php esc_attr_e('Actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-update"></span>
                     </button>
                 </div>
@@ -1525,7 +1525,7 @@ class Flavor_Dashboard_VB_Widgets {
             <div class="fvb-widget__body">
                 <div class="fvb-widget__loading">
                     <span class="fvb-spinner"></span>
-                    <span><?php esc_html_e('Cargando...', 'flavor-chat-ia'); ?></span>
+                    <span><?php esc_html_e('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="fvb-widget__content" data-ajax-load="true" data-widget="<?php echo esc_attr($widget_id); ?>">
                     <!-- Contenido cargado via AJAX -->
@@ -1542,7 +1542,7 @@ class Flavor_Dashboard_VB_Widgets {
 
             <div class="fvb-widget__footer">
                 <a href="<?php echo esc_url($this->obtener_url_widget($widget_id)); ?>" class="fvb-widget__link">
-                    <?php esc_html_e('Ver más', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver más', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="dashicons dashicons-arrow-right-alt2"></span>
                 </a>
             </div>
@@ -1593,161 +1593,161 @@ class Flavor_Dashboard_VB_Widgets {
         $acciones = [
             // Movilidad
             'bicicletas-compartidas' => [
-                'alquilar' => ['label' => __('Alquilar', 'flavor-chat-ia'), 'icon' => 'dashicons-unlock', 'type' => 'page', 'page' => 'bicicletas'],
-                'mapa' => ['label' => __('Ver Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt', 'type' => 'page', 'page' => 'bicicletas/mapa'],
+                'alquilar' => ['label' => __('Alquilar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-unlock', 'type' => 'page', 'page' => 'bicicletas'],
+                'mapa' => ['label' => __('Ver Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-location-alt', 'type' => 'page', 'page' => 'bicicletas/mapa'],
             ],
             'parkings' => [
-                'reservar' => ['label' => __('Reservar', 'flavor-chat-ia'), 'icon' => 'dashicons-car', 'type' => 'page', 'page' => 'parkings'],
-                'mapa' => ['label' => __('Ver Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt', 'type' => 'page', 'page' => 'parkings/mapa'],
+                'reservar' => ['label' => __('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-car', 'type' => 'page', 'page' => 'parkings'],
+                'mapa' => ['label' => __('Ver Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-location-alt', 'type' => 'page', 'page' => 'parkings/mapa'],
             ],
             'carpooling' => [
-                'buscar' => ['label' => __('Buscar Viaje', 'flavor-chat-ia'), 'icon' => 'dashicons-search', 'type' => 'page', 'page' => 'carpooling'],
-                'ofrecer' => ['label' => __('Ofrecer Viaje', 'flavor-chat-ia'), 'icon' => 'dashicons-plus', 'type' => 'page', 'page' => 'carpooling/nuevo'],
+                'buscar' => ['label' => __('Buscar Viaje', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-search', 'type' => 'page', 'page' => 'carpooling'],
+                'ofrecer' => ['label' => __('Ofrecer Viaje', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-plus', 'type' => 'page', 'page' => 'carpooling/nuevo'],
             ],
 
             // Eventos y Actividades
             'eventos' => [
-                'ver' => ['label' => __('Ver Eventos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'type' => 'page', 'page' => 'eventos'],
-                'calendario' => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'type' => 'page', 'page' => 'eventos/calendario'],
+                'ver' => ['label' => __('Ver Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-calendar-alt', 'type' => 'page', 'page' => 'eventos'],
+                'calendario' => ['label' => __('Calendario', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-calendar', 'type' => 'page', 'page' => 'eventos/calendario'],
             ],
             'cursos' => [
-                'ver' => ['label' => __('Ver Cursos', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-learn-more', 'type' => 'page', 'page' => 'cursos'],
-                'mis-cursos' => ['label' => __('Mis Cursos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio', 'type' => 'page', 'page' => 'cursos/mis-cursos'],
+                'ver' => ['label' => __('Ver Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-welcome-learn-more', 'type' => 'page', 'page' => 'cursos'],
+                'mis-cursos' => ['label' => __('Mis Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-portfolio', 'type' => 'page', 'page' => 'cursos/mis-cursos'],
             ],
             'talleres' => [
-                'ver' => ['label' => __('Ver Talleres', 'flavor-chat-ia'), 'icon' => 'dashicons-hammer', 'type' => 'page', 'page' => 'talleres'],
-                'inscribirse' => ['label' => __('Inscribirse', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'type' => 'page', 'page' => 'talleres'],
+                'ver' => ['label' => __('Ver Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-hammer', 'type' => 'page', 'page' => 'talleres'],
+                'inscribirse' => ['label' => __('Inscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-plus-alt', 'type' => 'page', 'page' => 'talleres'],
             ],
 
             // Reservas y Espacios
             'espacios-comunes' => [
-                'reservar' => ['label' => __('Reservar', 'flavor-chat-ia'), 'icon' => 'dashicons-building', 'type' => 'page', 'page' => 'espacios'],
-                'mis-reservas' => ['label' => __('Mis Reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view', 'type' => 'page', 'page' => 'espacios/mis-reservas'],
+                'reservar' => ['label' => __('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-building', 'type' => 'page', 'page' => 'espacios'],
+                'mis-reservas' => ['label' => __('Mis Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-list-view', 'type' => 'page', 'page' => 'espacios/mis-reservas'],
             ],
 
             // Comunicación
             'avisos-municipales' => [
-                'ver' => ['label' => __('Ver Avisos', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone', 'type' => 'page', 'page' => 'avisos'],
-                'urgentes' => ['label' => __('Urgentes', 'flavor-chat-ia'), 'icon' => 'dashicons-warning', 'type' => 'page', 'page' => 'avisos?urgente=1'],
+                'ver' => ['label' => __('Ver Avisos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-megaphone', 'type' => 'page', 'page' => 'avisos'],
+                'urgentes' => ['label' => __('Urgentes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-warning', 'type' => 'page', 'page' => 'avisos?urgente=1'],
             ],
             'foros' => [
-                'ver' => ['label' => __('Ver Foros', 'flavor-chat-ia'), 'icon' => 'dashicons-format-status', 'type' => 'page', 'page' => 'foros'],
-                'nuevo' => ['label' => __('Nuevo Tema', 'flavor-chat-ia'), 'icon' => 'dashicons-edit', 'type' => 'page', 'page' => 'foros/nuevo'],
+                'ver' => ['label' => __('Ver Foros', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-format-status', 'type' => 'page', 'page' => 'foros'],
+                'nuevo' => ['label' => __('Nuevo Tema', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-edit', 'type' => 'page', 'page' => 'foros/nuevo'],
             ],
             'chat-grupos' => [
-                'ver' => ['label' => __('Mis Grupos', 'flavor-chat-ia'), 'icon' => 'dashicons-format-chat', 'type' => 'page', 'page' => 'chat-grupos'],
-                'crear' => ['label' => __('Crear Grupo', 'flavor-chat-ia'), 'icon' => 'dashicons-plus', 'type' => 'page', 'page' => 'chat-grupos/nuevo'],
+                'ver' => ['label' => __('Mis Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-format-chat', 'type' => 'page', 'page' => 'chat-grupos'],
+                'crear' => ['label' => __('Crear Grupo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-plus', 'type' => 'page', 'page' => 'chat-grupos/nuevo'],
             ],
             'chat-interno' => [
-                'bandeja' => ['label' => __('Bandeja', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt', 'type' => 'page', 'page' => 'mensajes'],
-                'nuevo' => ['label' => __('Nuevo Mensaje', 'flavor-chat-ia'), 'icon' => 'dashicons-plus', 'type' => 'page', 'page' => 'mensajes/nuevo'],
+                'bandeja' => ['label' => __('Bandeja', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-email-alt', 'type' => 'page', 'page' => 'mensajes'],
+                'nuevo' => ['label' => __('Nuevo Mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-plus', 'type' => 'page', 'page' => 'mensajes/nuevo'],
             ],
             'podcast' => [
-                'escuchar' => ['label' => __('Escuchar', 'flavor-chat-ia'), 'icon' => 'dashicons-controls-play', 'type' => 'page', 'page' => 'podcast'],
+                'escuchar' => ['label' => __('Escuchar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-controls-play', 'type' => 'page', 'page' => 'podcast'],
             ],
             'radio' => [
-                'escuchar' => ['label' => __('Escuchar', 'flavor-chat-ia'), 'icon' => 'dashicons-controls-volumeon', 'type' => 'page', 'page' => 'radio'],
+                'escuchar' => ['label' => __('Escuchar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-controls-volumeon', 'type' => 'page', 'page' => 'radio'],
             ],
             'multimedia' => [
-                'galeria' => ['label' => __('Ver Galería', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery', 'type' => 'page', 'page' => 'multimedia'],
-                'subir' => ['label' => __('Subir', 'flavor-chat-ia'), 'icon' => 'dashicons-upload', 'type' => 'page', 'page' => 'multimedia/subir'],
+                'galeria' => ['label' => __('Ver Galería', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-format-gallery', 'type' => 'page', 'page' => 'multimedia'],
+                'subir' => ['label' => __('Subir', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-upload', 'type' => 'page', 'page' => 'multimedia/subir'],
             ],
 
             // Sostenibilidad
             'huertos-urbanos' => [
-                'ver' => ['label' => __('Mi Huerto', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot', 'type' => 'page', 'page' => 'huertos'],
-                'solicitar' => ['label' => __('Solicitar Parcela', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-site', 'type' => 'page', 'page' => 'huertos/solicitar'],
+                'ver' => ['label' => __('Mi Huerto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-carrot', 'type' => 'page', 'page' => 'huertos'],
+                'solicitar' => ['label' => __('Solicitar Parcela', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-site', 'type' => 'page', 'page' => 'huertos/solicitar'],
             ],
             'reciclaje' => [
-                'puntos' => ['label' => __('Mis Puntos', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled', 'type' => 'page', 'page' => 'reciclaje/mis-puntos'],
-                'mapa' => ['label' => __('Puntos Cercanos', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt', 'type' => 'page', 'page' => 'reciclaje/puntos-cercanos'],
+                'puntos' => ['label' => __('Mis Puntos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-star-filled', 'type' => 'page', 'page' => 'reciclaje/mis-puntos'],
+                'mapa' => ['label' => __('Puntos Cercanos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-location-alt', 'type' => 'page', 'page' => 'reciclaje/puntos-cercanos'],
             ],
             'compostaje' => [
-                'registrar' => ['label' => __('Registrar', 'flavor-chat-ia'), 'icon' => 'dashicons-plus', 'type' => 'page', 'page' => 'compostaje/registrar'],
-                'mapa' => ['label' => __('Puntos', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt', 'type' => 'page', 'page' => 'compostaje/mapa'],
+                'registrar' => ['label' => __('Registrar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-plus', 'type' => 'page', 'page' => 'compostaje/registrar'],
+                'mapa' => ['label' => __('Puntos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-location-alt', 'type' => 'page', 'page' => 'compostaje/mapa'],
             ],
 
             // Economía Local
             'marketplace' => [
-                'publicar' => ['label' => __('Publicar', 'flavor-chat-ia'), 'icon' => 'dashicons-plus', 'type' => 'page', 'page' => 'marketplace/nuevo'],
-                'buscar' => ['label' => __('Buscar', 'flavor-chat-ia'), 'icon' => 'dashicons-search', 'type' => 'page', 'page' => 'marketplace'],
+                'publicar' => ['label' => __('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-plus', 'type' => 'page', 'page' => 'marketplace/nuevo'],
+                'buscar' => ['label' => __('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-search', 'type' => 'page', 'page' => 'marketplace'],
             ],
             'tienda-local' => [
-                'ver' => ['label' => __('Ver Tiendas', 'flavor-chat-ia'), 'icon' => 'dashicons-store', 'type' => 'page', 'page' => 'tienda'],
-                'pedidos' => ['label' => __('Mis Pedidos', 'flavor-chat-ia'), 'icon' => 'dashicons-cart', 'type' => 'page', 'page' => 'tienda/mis-pedidos'],
+                'ver' => ['label' => __('Ver Tiendas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-store', 'type' => 'page', 'page' => 'tienda'],
+                'pedidos' => ['label' => __('Mis Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-cart', 'type' => 'page', 'page' => 'tienda/mis-pedidos'],
             ],
             'banco-tiempo' => [
-                'ofrecer' => ['label' => __('Ofrecer', 'flavor-chat-ia'), 'icon' => 'dashicons-heart', 'type' => 'page', 'page' => 'banco-tiempo/ofrecer'],
-                'buscar' => ['label' => __('Buscar', 'flavor-chat-ia'), 'icon' => 'dashicons-search', 'type' => 'page', 'page' => 'banco-tiempo'],
+                'ofrecer' => ['label' => __('Ofrecer', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-heart', 'type' => 'page', 'page' => 'banco-tiempo/ofrecer'],
+                'buscar' => ['label' => __('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-search', 'type' => 'page', 'page' => 'banco-tiempo'],
             ],
             'grupos-consumo' => [
-                'ver' => ['label' => __('Ver Grupos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'type' => 'page', 'page' => 'grupos-consumo'],
-                'unirse' => ['label' => __('Unirse', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'type' => 'page', 'page' => 'grupos-consumo'],
+                'ver' => ['label' => __('Ver Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-groups', 'type' => 'page', 'page' => 'grupos-consumo'],
+                'unirse' => ['label' => __('Unirse', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-plus-alt', 'type' => 'page', 'page' => 'grupos-consumo'],
             ],
             'biblioteca' => [
-                'buscar' => ['label' => __('Buscar', 'flavor-chat-ia'), 'icon' => 'dashicons-search', 'type' => 'page', 'page' => 'biblioteca'],
-                'prestamos' => ['label' => __('Mis Préstamos', 'flavor-chat-ia'), 'icon' => 'dashicons-book', 'type' => 'page', 'page' => 'biblioteca/mis-prestamos'],
+                'buscar' => ['label' => __('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-search', 'type' => 'page', 'page' => 'biblioteca'],
+                'prestamos' => ['label' => __('Mis Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-book', 'type' => 'page', 'page' => 'biblioteca/mis-prestamos'],
             ],
             'bares' => [
-                'ver' => ['label' => __('Ver Locales', 'flavor-chat-ia'), 'icon' => 'dashicons-food', 'type' => 'page', 'page' => 'bares'],
-                'mapa' => ['label' => __('Ver Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt', 'type' => 'page', 'page' => 'bares/mapa'],
+                'ver' => ['label' => __('Ver Locales', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-food', 'type' => 'page', 'page' => 'bares'],
+                'mapa' => ['label' => __('Ver Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-location-alt', 'type' => 'page', 'page' => 'bares/mapa'],
             ],
 
             // Participación
             'incidencias' => [
-                'reportar' => ['label' => __('Reportar', 'flavor-chat-ia'), 'icon' => 'dashicons-warning', 'type' => 'page', 'page' => 'incidencias/reportar'],
-                'mis' => ['label' => __('Mis Incidencias', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view', 'type' => 'page', 'page' => 'incidencias/mis-incidencias'],
+                'reportar' => ['label' => __('Reportar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-warning', 'type' => 'page', 'page' => 'incidencias/reportar'],
+                'mis' => ['label' => __('Mis Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-list-view', 'type' => 'page', 'page' => 'incidencias/mis-incidencias'],
             ],
             'colectivos' => [
-                'ver' => ['label' => __('Mis Colectivos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'type' => 'page', 'page' => 'colectivos'],
-                'buscar' => ['label' => __('Buscar', 'flavor-chat-ia'), 'icon' => 'dashicons-search', 'type' => 'page', 'page' => 'colectivos'],
+                'ver' => ['label' => __('Mis Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-groups', 'type' => 'page', 'page' => 'colectivos'],
+                'buscar' => ['label' => __('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-search', 'type' => 'page', 'page' => 'colectivos'],
             ],
             'socios' => [
-                'estado' => ['label' => __('Mi Estado', 'flavor-chat-ia'), 'icon' => 'dashicons-id-alt', 'type' => 'page', 'page' => 'socios'],
-                'renovar' => ['label' => __('Renovar', 'flavor-chat-ia'), 'icon' => 'dashicons-update', 'type' => 'page', 'page' => 'socios/renovar'],
+                'estado' => ['label' => __('Mi Estado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-id-alt', 'type' => 'page', 'page' => 'socios'],
+                'renovar' => ['label' => __('Renovar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-update', 'type' => 'page', 'page' => 'socios/renovar'],
             ],
             'participacion' => [
-                'ver' => ['label' => __('Procesos', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone', 'type' => 'page', 'page' => 'participacion'],
-                'votar' => ['label' => __('Votar', 'flavor-chat-ia'), 'icon' => 'dashicons-yes', 'type' => 'page', 'page' => 'participacion'],
+                'ver' => ['label' => __('Procesos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-megaphone', 'type' => 'page', 'page' => 'participacion'],
+                'votar' => ['label' => __('Votar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-yes', 'type' => 'page', 'page' => 'participacion'],
             ],
             'presupuestos-participativos' => [
-                'ver' => ['label' => __('Ver Propuestas', 'flavor-chat-ia'), 'icon' => 'dashicons-money-alt', 'type' => 'page', 'page' => 'presupuestos'],
-                'proponer' => ['label' => __('Proponer', 'flavor-chat-ia'), 'icon' => 'dashicons-plus', 'type' => 'page', 'page' => 'presupuestos/nuevo'],
+                'ver' => ['label' => __('Ver Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-money-alt', 'type' => 'page', 'page' => 'presupuestos'],
+                'proponer' => ['label' => __('Proponer', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-plus', 'type' => 'page', 'page' => 'presupuestos/nuevo'],
             ],
             'tramites' => [
-                'ver' => ['label' => __('Mis Trámites', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard', 'type' => 'page', 'page' => 'tramites'],
-                'nuevo' => ['label' => __('Nuevo', 'flavor-chat-ia'), 'icon' => 'dashicons-plus', 'type' => 'page', 'page' => 'tramites/nuevo'],
+                'ver' => ['label' => __('Mis Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-clipboard', 'type' => 'page', 'page' => 'tramites'],
+                'nuevo' => ['label' => __('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-plus', 'type' => 'page', 'page' => 'tramites/nuevo'],
             ],
             'ayuda-vecinal' => [
-                'solicitar' => ['label' => __('Solicitar', 'flavor-chat-ia'), 'icon' => 'dashicons-heart', 'type' => 'page', 'page' => 'ayuda-vecinal/solicitar'],
-                'ofrecer' => ['label' => __('Ofrecer', 'flavor-chat-ia'), 'icon' => 'dashicons-smiley', 'type' => 'page', 'page' => 'ayuda-vecinal/ofrecer'],
+                'solicitar' => ['label' => __('Solicitar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-heart', 'type' => 'page', 'page' => 'ayuda-vecinal/solicitar'],
+                'ofrecer' => ['label' => __('Ofrecer', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-smiley', 'type' => 'page', 'page' => 'ayuda-vecinal/ofrecer'],
             ],
             'transparencia' => [
-                'ver' => ['label' => __('Ver Datos', 'flavor-chat-ia'), 'icon' => 'dashicons-visibility', 'type' => 'page', 'page' => 'transparencia'],
+                'ver' => ['label' => __('Ver Datos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-visibility', 'type' => 'page', 'page' => 'transparencia'],
             ],
 
             // Red Social
             'red-social' => [
-                'feed' => ['label' => __('Mi Feed', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'type' => 'page', 'page' => 'red-social'],
-                'publicar' => ['label' => __('Publicar', 'flavor-chat-ia'), 'icon' => 'dashicons-plus', 'type' => 'page', 'page' => 'red-social/publicar'],
+                'feed' => ['label' => __('Mi Feed', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-users', 'type' => 'page', 'page' => 'red-social'],
+                'publicar' => ['label' => __('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-plus', 'type' => 'page', 'page' => 'red-social/publicar'],
             ],
             'comunidades' => [
-                'explorar' => ['label' => __('Explorar', 'flavor-chat-ia'), 'icon' => 'dashicons-networking', 'type' => 'page', 'page' => 'comunidades'],
+                'explorar' => ['label' => __('Explorar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-networking', 'type' => 'page', 'page' => 'comunidades'],
             ],
 
             // Recursos
             'recursos-compartidos' => [
-                'ver' => ['label' => __('Ver Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-share', 'type' => 'page', 'page' => 'recursos'],
-                'compartir' => ['label' => __('Compartir', 'flavor-chat-ia'), 'icon' => 'dashicons-plus', 'type' => 'page', 'page' => 'recursos/nuevo'],
+                'ver' => ['label' => __('Ver Recursos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-share', 'type' => 'page', 'page' => 'recursos'],
+                'compartir' => ['label' => __('Compartir', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-plus', 'type' => 'page', 'page' => 'recursos/nuevo'],
             ],
 
             // Empleados
             'fichaje-empleados' => [
-                'fichar' => ['label' => __('Fichar', 'flavor-chat-ia'), 'icon' => 'dashicons-clock', 'type' => 'action', 'action' => 'fichar'],
-                'historial' => ['label' => __('Historial', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view', 'type' => 'page', 'page' => 'fichaje/historial'],
+                'fichar' => ['label' => __('Fichar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-clock', 'type' => 'action', 'action' => 'fichar'],
+                'historial' => ['label' => __('Historial', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-list-view', 'type' => 'page', 'page' => 'fichaje/historial'],
             ],
             'facturas' => [
-                'ver' => ['label' => __('Mis Facturas', 'flavor-chat-ia'), 'icon' => 'dashicons-media-text', 'type' => 'page', 'page' => 'facturas'],
+                'ver' => ['label' => __('Mis Facturas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-media-text', 'type' => 'page', 'page' => 'facturas'],
             ],
         ];
 
@@ -1950,27 +1950,27 @@ class Flavor_Dashboard_VB_Widgets {
 
         $definiciones = [
             'reservas' => [
-                'label'    => __('Reservas', 'flavor-chat-ia'),
+                'label'    => __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-calendar-alt',
                 'callback' => 'obtener_stat_reservas',
             ],
             'eventos' => [
-                'label'    => __('Eventos', 'flavor-chat-ia'),
+                'label'    => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-tickets-alt',
                 'callback' => 'obtener_stat_eventos',
             ],
             'puntos' => [
-                'label'    => __('Puntos', 'flavor-chat-ia'),
+                'label'    => __('Puntos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-star-filled',
                 'callback' => 'obtener_stat_puntos',
             ],
             'mensajes' => [
-                'label'    => __('Mensajes', 'flavor-chat-ia'),
+                'label'    => __('Mensajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-email-alt',
                 'callback' => 'obtener_stat_mensajes',
             ],
             'participacion' => [
-                'label'    => __('Participación', 'flavor-chat-ia'),
+                'label'    => __('Participación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-groups',
                 'callback' => 'obtener_stat_participacion',
             ],
@@ -2072,9 +2072,9 @@ class Flavor_Dashboard_VB_Widgets {
             'nonce'   => wp_create_nonce('fvb_dashboard_widgets'),
             'userId'  => get_current_user_id(),
             'i18n'    => [
-                'cargando'    => __('Cargando...', 'flavor-chat-ia'),
-                'error'       => __('Error al cargar', 'flavor-chat-ia'),
-                'actualizado' => __('Actualizado', 'flavor-chat-ia'),
+                'cargando'    => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error'       => __('Error al cargar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'actualizado' => __('Actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -2106,20 +2106,20 @@ class Flavor_Dashboard_VB_Widgets {
         $id_usuario = get_current_user_id();
 
         if (empty($widget_id)) {
-            wp_send_json_error(['message' => __('Widget no especificado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Widget no especificado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $widgets = $this->obtener_definicion_widgets();
 
         if (!isset($widgets[$widget_id])) {
-            wp_send_json_error(['message' => __('Widget no encontrado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Widget no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $config = $widgets[$widget_id];
 
         // Verificar módulo activo
         if (!empty($config['modulo']) && !$this->modulo_activo($config['modulo'])) {
-            wp_send_json_error(['message' => __('Módulo no activo', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Módulo no activo', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Obtener datos del widget
@@ -2143,7 +2143,7 @@ class Flavor_Dashboard_VB_Widgets {
         if (empty($datos)) {
             // Datos por defecto o placeholder
             $datos = [
-                'html'    => '<p class="fvb-widget__empty">' . __('Sin datos disponibles', 'flavor-chat-ia') . '</p>',
+                'html'    => '<p class="fvb-widget__empty">' . __('Sin datos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>',
                 'count'   => 0,
                 'updated' => current_time('c'),
             ];
@@ -2181,7 +2181,7 @@ class Flavor_Dashboard_VB_Widgets {
                         <?php endif; ?>
                         <?php if (!empty($data['mostrar_registro'])) : ?>
                             <span class="fvb-perfil__registro">
-                                <?php printf(__('Desde %s', 'flavor-chat-ia'), date_i18n(get_option('date_format'), strtotime($usuario->user_registered))); ?>
+                                <?php printf(__('Desde %s', FLAVOR_PLATFORM_TEXT_DOMAIN), date_i18n(get_option('date_format'), strtotime($usuario->user_registered))); ?>
                             </span>
                         <?php endif; ?>
                     </div>
@@ -2222,7 +2222,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($espacios) {
             if (empty($espacios)) {
-                $this->render_empty_state(__('No hay espacios disponibles', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No hay espacios disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
             ?>
@@ -2232,10 +2232,10 @@ class Flavor_Dashboard_VB_Widgets {
                         <span class="fvb-list__icon dashicons dashicons-building"></span>
                         <div class="fvb-list__content">
                             <strong><?php echo esc_html($espacio->nombre); ?></strong>
-                            <span class="fvb-list__meta"><?php printf(__('Capacidad: %d', 'flavor-chat-ia'), $espacio->capacidad); ?></span>
+                            <span class="fvb-list__meta"><?php printf(__('Capacidad: %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $espacio->capacidad); ?></span>
                         </div>
                         <a href="<?php echo esc_url(home_url('/espacios/?id=' . $espacio->id)); ?>" class="fvb-btn-sm">
-                            <?php esc_html_e('Reservar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </li>
                 <?php endforeach; ?>
@@ -2286,7 +2286,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($eventos) {
             if (empty($eventos)) {
-                $this->render_empty_state(__('No hay eventos próximos', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No hay eventos próximos', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
             ?>
@@ -2302,7 +2302,7 @@ class Flavor_Dashboard_VB_Widgets {
                             </span>
                         </div>
                         <a href="<?php echo esc_url(home_url('/eventos/' . $evento->id . '/')); ?>" class="fvb-btn-sm">
-                            <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </li>
                 <?php endforeach; ?>
@@ -2354,7 +2354,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($cursos, $data) {
             if (empty($cursos)) {
-                $this->render_empty_state(__('No estás inscrito en ningún curso', 'flavor-chat-ia'), home_url('/cursos/'), __('Explorar cursos', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No estás inscrito en ningún curso', FLAVOR_PLATFORM_TEXT_DOMAIN), home_url('/cursos/'), __('Explorar cursos', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
             ?>
@@ -2368,11 +2368,11 @@ class Flavor_Dashboard_VB_Widgets {
                                 <div class="fvb-progress">
                                     <div class="fvb-progress__bar" style="width: <?php echo esc_attr($curso->progreso ?? 0); ?>%"></div>
                                 </div>
-                                <span class="fvb-list__meta"><?php printf(__('%d%% completado', 'flavor-chat-ia'), $curso->progreso ?? 0); ?></span>
+                                <span class="fvb-list__meta"><?php printf(__('%d%% completado', FLAVOR_PLATFORM_TEXT_DOMAIN), $curso->progreso ?? 0); ?></span>
                             <?php endif; ?>
                         </div>
                         <a href="<?php echo esc_url(home_url('/cursos/' . $curso->id . '/')); ?>" class="fvb-btn-sm">
-                            <?php esc_html_e('Continuar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Continuar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </li>
                 <?php endforeach; ?>
@@ -2421,7 +2421,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($talleres) {
             if (empty($talleres)) {
-                $this->render_empty_state(__('No hay talleres próximos', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No hay talleres próximos', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
             ?>
@@ -2434,12 +2434,12 @@ class Flavor_Dashboard_VB_Widgets {
                             <span class="fvb-list__meta">
                                 <?php echo esc_html(date_i18n(get_option('date_format'), strtotime($taller->fecha))); ?>
                                 <?php if ($taller->plazas_disponibles > 0): ?>
-                                    - <?php printf(__('%d plazas', 'flavor-chat-ia'), $taller->plazas_disponibles); ?>
+                                    - <?php printf(__('%d plazas', FLAVOR_PLATFORM_TEXT_DOMAIN), $taller->plazas_disponibles); ?>
                                 <?php endif; ?>
                             </span>
                         </div>
                         <a href="<?php echo esc_url(home_url('/talleres/' . $taller->id . '/')); ?>" class="fvb-btn-sm">
-                            <?php esc_html_e('Inscribirse', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Inscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </li>
                 <?php endforeach; ?>
@@ -2494,7 +2494,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($avisos) {
             if (empty($avisos)) {
-                $this->render_empty_state(__('No hay avisos recientes', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No hay avisos recientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
             ?>
@@ -2509,7 +2509,7 @@ class Flavor_Dashboard_VB_Widgets {
                             </span>
                         </div>
                         <a href="<?php echo esc_url(home_url('/avisos/' . $aviso->id . '/')); ?>" class="fvb-btn-sm">
-                            <?php esc_html_e('Leer', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Leer', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </li>
                 <?php endforeach; ?>
@@ -2555,7 +2555,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($grupos) {
             if (empty($grupos)) {
-                $this->render_empty_state(__('No perteneces a ningún grupo', 'flavor-chat-ia'), home_url('/chat-grupos/'), __('Explorar grupos', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No perteneces a ningún grupo', FLAVOR_PLATFORM_TEXT_DOMAIN), home_url('/chat-grupos/'), __('Explorar grupos', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
             ?>
@@ -2565,10 +2565,10 @@ class Flavor_Dashboard_VB_Widgets {
                         <span class="fvb-list__icon dashicons dashicons-format-chat"></span>
                         <div class="fvb-list__content">
                             <strong><?php echo esc_html($grupo->nombre); ?></strong>
-                            <span class="fvb-list__meta"><?php printf(__('%d miembros', 'flavor-chat-ia'), $grupo->miembros); ?></span>
+                            <span class="fvb-list__meta"><?php printf(__('%d miembros', FLAVOR_PLATFORM_TEXT_DOMAIN), $grupo->miembros); ?></span>
                         </div>
                         <a href="<?php echo esc_url(home_url('/chat-grupos/' . $grupo->id . '/')); ?>" class="fvb-btn-sm">
-                            <?php esc_html_e('Abrir', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Abrir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </li>
                 <?php endforeach; ?>
@@ -2611,7 +2611,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($temas) {
             if (empty($temas)) {
-                $this->render_empty_state(__('No hay temas recientes', 'flavor-chat-ia'), home_url('/foros/nuevo/'), __('Crear tema', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No hay temas recientes', FLAVOR_PLATFORM_TEXT_DOMAIN), home_url('/foros/nuevo/'), __('Crear tema', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
             ?>
@@ -2622,11 +2622,11 @@ class Flavor_Dashboard_VB_Widgets {
                         <div class="fvb-list__content">
                             <strong><?php echo esc_html($tema->titulo); ?></strong>
                             <span class="fvb-list__meta">
-                                <?php printf(__('%d respuestas', 'flavor-chat-ia'), $tema->respuestas ?? 0); ?>
+                                <?php printf(__('%d respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN), $tema->respuestas ?? 0); ?>
                             </span>
                         </div>
                         <a href="<?php echo esc_url(home_url('/foros/' . $tema->id . '/')); ?>" class="fvb-btn-sm">
-                            <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </li>
                 <?php endforeach; ?>
@@ -2679,7 +2679,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($parcela, $data) {
             if (!$parcela) {
-                $this->render_empty_state(__('No tienes parcela asignada', 'flavor-chat-ia'), home_url('/huertos/solicitar/'), __('Solicitar parcela', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No tienes parcela asignada', FLAVOR_PLATFORM_TEXT_DOMAIN), home_url('/huertos/solicitar/'), __('Solicitar parcela', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
             ?>
@@ -2691,19 +2691,19 @@ class Flavor_Dashboard_VB_Widgets {
                 <div class="fvb-huerto-card__info">
                     <div class="fvb-huerto-stat">
                         <span class="fvb-huerto-stat__value"><?php echo esc_html($parcela->superficie); ?> m²</span>
-                        <span class="fvb-huerto-stat__label"><?php esc_html_e('Superficie', 'flavor-chat-ia'); ?></span>
+                        <span class="fvb-huerto-stat__label"><?php esc_html_e('Superficie', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <?php if (!empty($data['mostrar_ciclo'])): ?>
                         <div class="fvb-huerto-stat">
                             <span class="fvb-huerto-stat__value">
                                 <?php echo esc_html(date_i18n('M Y', strtotime($parcela->fecha_inicio))); ?>
                             </span>
-                            <span class="fvb-huerto-stat__label"><?php esc_html_e('Desde', 'flavor-chat-ia'); ?></span>
+                            <span class="fvb-huerto-stat__label"><?php esc_html_e('Desde', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                     <?php endif; ?>
                 </div>
                 <a href="<?php echo esc_url(home_url('/huertos/' . $parcela->id . '/')); ?>" class="fvb-btn fvb-btn--primary">
-                    <?php esc_html_e('Ver mi huerto', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver mi huerto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php
@@ -2742,17 +2742,17 @@ class Flavor_Dashboard_VB_Widgets {
                 <div class="fvb-stat-box fvb-stat-box--success">
                     <span class="fvb-stat-box__icon">♻️</span>
                     <span class="fvb-stat-box__value"><?php echo esc_html(number_format($puntos_totales)); ?></span>
-                    <span class="fvb-stat-box__label"><?php esc_html_e('Puntos', 'flavor-chat-ia'); ?></span>
+                    <span class="fvb-stat-box__label"><?php esc_html_e('Puntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
             <div class="fvb-widget__quick-actions">
                 <a href="<?php echo esc_url(home_url('/reciclaje/mis-puntos/')); ?>" class="fvb-quick-action">
                     <span class="dashicons dashicons-star-filled"></span>
-                    <?php esc_html_e('Mis puntos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Mis puntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="<?php echo esc_url(home_url('/reciclaje/puntos-cercanos/')); ?>" class="fvb-quick-action">
                     <span class="dashicons dashicons-location-alt"></span>
-                    <?php esc_html_e('Puntos cercanos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Puntos cercanos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php
@@ -2804,10 +2804,10 @@ class Flavor_Dashboard_VB_Widgets {
         $this->render_widget_wrapper($widget_id, $config, function() use ($anuncios, $mis_anuncios) {
             ?>
             <div class="fvb-marketplace-header">
-                <span class="fvb-badge"><?php printf(__('%d anuncios tuyos', 'flavor-chat-ia'), $mis_anuncios); ?></span>
+                <span class="fvb-badge"><?php printf(__('%d anuncios tuyos', FLAVOR_PLATFORM_TEXT_DOMAIN), $mis_anuncios); ?></span>
             </div>
             <?php if (empty($anuncios)): ?>
-                <?php $this->render_empty_state(__('No hay anuncios', 'flavor-chat-ia'), home_url('/marketplace/nuevo/'), __('Publicar', 'flavor-chat-ia')); ?>
+                <?php $this->render_empty_state(__('No hay anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN), home_url('/marketplace/nuevo/'), __('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
             <?php else: ?>
                 <div class="fvb-marketplace-grid">
                     <?php foreach ($anuncios as $anuncio): ?>
@@ -2862,16 +2862,16 @@ class Flavor_Dashboard_VB_Widgets {
             <div class="fvb-banco-tiempo">
                 <div class="fvb-banco-tiempo__saldo">
                     <span class="fvb-banco-tiempo__value"><?php echo esc_html(number_format(abs($saldo), 1)); ?></span>
-                    <span class="fvb-banco-tiempo__label"><?php esc_html_e('Horas disponibles', 'flavor-chat-ia'); ?></span>
+                    <span class="fvb-banco-tiempo__label"><?php esc_html_e('Horas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="fvb-widget__quick-actions">
                     <a href="<?php echo esc_url(home_url('/banco-tiempo/ofrecer/')); ?>" class="fvb-quick-action">
                         <span class="dashicons dashicons-heart"></span>
-                        <?php esc_html_e('Ofrecer', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ofrecer', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="<?php echo esc_url(home_url('/banco-tiempo/')); ?>" class="fvb-quick-action">
                         <span class="dashicons dashicons-search"></span>
-                        <?php esc_html_e('Buscar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </div>
@@ -2917,7 +2917,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($colectivos) {
             if (empty($colectivos)) {
-                $this->render_empty_state(__('No perteneces a ningún colectivo', 'flavor-chat-ia'), home_url('/colectivos/'), __('Explorar', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No perteneces a ningún colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN), home_url('/colectivos/'), __('Explorar', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
             ?>
@@ -2927,10 +2927,10 @@ class Flavor_Dashboard_VB_Widgets {
                         <span class="fvb-list__icon dashicons dashicons-groups"></span>
                         <div class="fvb-list__content">
                             <strong><?php echo esc_html($colectivo->nombre); ?></strong>
-                            <span class="fvb-list__meta"><?php printf(__('%d miembros', 'flavor-chat-ia'), $colectivo->miembros); ?></span>
+                            <span class="fvb-list__meta"><?php printf(__('%d miembros', FLAVOR_PLATFORM_TEXT_DOMAIN), $colectivo->miembros); ?></span>
                         </div>
                         <a href="<?php echo esc_url(home_url('/colectivos/' . $colectivo->id . '/')); ?>" class="fvb-btn-sm">
-                            <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </li>
                 <?php endforeach; ?>
@@ -2982,7 +2982,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($socio) {
             if (!$socio) {
-                $this->render_empty_state(__('No eres miembro', 'flavor-chat-ia'), home_url('/socios/alta/'), __('Hacerse miembro', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No eres miembro', FLAVOR_PLATFORM_TEXT_DOMAIN), home_url('/socios/alta/'), __('Hacerse miembro', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
             ?>
@@ -2993,22 +2993,22 @@ class Flavor_Dashboard_VB_Widgets {
                 </div>
                 <div class="fvb-socio-card__info">
                     <div class="fvb-socio-stat">
-                        <span class="fvb-socio-stat__label"><?php esc_html_e('Nº Miembro', 'flavor-chat-ia'); ?></span>
+                        <span class="fvb-socio-stat__label"><?php esc_html_e('Nº Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="fvb-socio-stat__value"><?php echo esc_html($socio->numero_socio); ?></span>
                     </div>
                     <div class="fvb-socio-stat">
-                        <span class="fvb-socio-stat__label"><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></span>
+                        <span class="fvb-socio-stat__label"><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="fvb-socio-stat__value"><?php echo esc_html(ucfirst($socio->tipo)); ?></span>
                     </div>
                     <?php if ($socio->fecha_renovacion): ?>
                         <div class="fvb-socio-stat">
-                            <span class="fvb-socio-stat__label"><?php esc_html_e('Renovación', 'flavor-chat-ia'); ?></span>
+                            <span class="fvb-socio-stat__label"><?php esc_html_e('Renovación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span class="fvb-socio-stat__value"><?php echo esc_html(date_i18n('d/m/Y', strtotime($socio->fecha_renovacion))); ?></span>
                         </div>
                     <?php endif; ?>
                 </div>
                 <a href="<?php echo esc_url(home_url('/socios/')); ?>" class="fvb-btn">
-                    <?php esc_html_e('Ver detalles', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php
@@ -3029,21 +3029,21 @@ class Flavor_Dashboard_VB_Widgets {
                 <div class="fvb-stat-card">
                     <span class="fvb-stat-card__icon dashicons dashicons-star-filled"></span>
                     <span class="fvb-stat-card__value"><?php echo esc_html(number_format($puntos)); ?></span>
-                    <span class="fvb-stat-card__label"><?php esc_html_e('Puntos', 'flavor-chat-ia'); ?></span>
+                    <span class="fvb-stat-card__label"><?php esc_html_e('Puntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="fvb-stat-card">
                     <span class="fvb-stat-card__icon dashicons dashicons-groups"></span>
                     <span class="fvb-stat-card__value"><?php echo esc_html($participaciones); ?></span>
-                    <span class="fvb-stat-card__label"><?php esc_html_e('Participaciones', 'flavor-chat-ia'); ?></span>
+                    <span class="fvb-stat-card__label"><?php esc_html_e('Participaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="fvb-stat-card">
                     <span class="fvb-stat-card__icon dashicons dashicons-calendar-alt"></span>
                     <span class="fvb-stat-card__value"><?php echo esc_html($reservas); ?></span>
-                    <span class="fvb-stat-card__label"><?php esc_html_e('Reservas', 'flavor-chat-ia'); ?></span>
+                    <span class="fvb-stat-card__label"><?php esc_html_e('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
             <a href="<?php echo esc_url(home_url('/mi-portal/estadisticas/')); ?>" class="fvb-btn fvb-btn--outline">
-                <?php esc_html_e('Ver estadísticas completas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver estadísticas completas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <?php
         }, 'estadisticas');
@@ -3082,17 +3082,17 @@ class Flavor_Dashboard_VB_Widgets {
                 <div class="fvb-stat-box">
                     <span class="fvb-stat-box__icon dashicons dashicons-book"></span>
                     <span class="fvb-stat-box__value"><?php echo esc_html($prestamos_activos); ?></span>
-                    <span class="fvb-stat-box__label"><?php esc_html_e('Préstamos activos', 'flavor-chat-ia'); ?></span>
+                    <span class="fvb-stat-box__label"><?php esc_html_e('Préstamos activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
             <div class="fvb-widget__quick-actions">
                 <a href="<?php echo esc_url(home_url('/biblioteca/')); ?>" class="fvb-quick-action">
                     <span class="dashicons dashicons-search"></span>
-                    <?php esc_html_e('Buscar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="<?php echo esc_url(home_url('/biblioteca/mis-prestamos/')); ?>" class="fvb-quick-action">
                     <span class="dashicons dashicons-list-view"></span>
-                    <?php esc_html_e('Mis préstamos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Mis préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php
@@ -3133,7 +3133,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($bares) {
             if (empty($bares)) {
-                $this->render_empty_state(__('No hay locales registrados', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No hay locales registrados', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
             ?>
@@ -3146,7 +3146,7 @@ class Flavor_Dashboard_VB_Widgets {
                             <span class="fvb-list__meta"><?php echo esc_html($bar->tipo); ?> - <?php echo esc_html($bar->direccion); ?></span>
                         </div>
                         <a href="<?php echo esc_url(home_url('/bares/' . $bar->id . '/')); ?>" class="fvb-btn-sm">
-                            <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </li>
                 <?php endforeach; ?>
@@ -3165,11 +3165,11 @@ class Flavor_Dashboard_VB_Widgets {
                 <div class="fvb-widget__quick-actions">
                     <a href="<?php echo esc_url(home_url('/red-social/')); ?>" class="fvb-quick-action">
                         <span class="dashicons dashicons-admin-users"></span>
-                        <?php esc_html_e('Mi feed', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Mi feed', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="<?php echo esc_url(home_url('/red-social/publicar/')); ?>" class="fvb-quick-action">
                         <span class="dashicons dashicons-plus"></span>
-                        <?php esc_html_e('Publicar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </div>
@@ -3208,7 +3208,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($recursos) {
             if (empty($recursos)) {
-                $this->render_empty_state(__('No hay recursos disponibles', 'flavor-chat-ia'), home_url('/recursos/nuevo/'), __('Compartir', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No hay recursos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN), home_url('/recursos/nuevo/'), __('Compartir', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
             ?>
@@ -3221,7 +3221,7 @@ class Flavor_Dashboard_VB_Widgets {
                             <span class="fvb-list__meta"><?php echo esc_html($recurso->tipo); ?></span>
                         </div>
                         <a href="<?php echo esc_url(home_url('/recursos/' . $recurso->id . '/')); ?>" class="fvb-btn-sm">
-                            <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </li>
                 <?php endforeach; ?>
@@ -3267,7 +3267,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($notificaciones) {
             if (empty($notificaciones)) {
-                $this->render_empty_state(__('No hay notificaciones', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No hay notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
             ?>
@@ -3317,14 +3317,14 @@ class Flavor_Dashboard_VB_Widgets {
                     <span class="fvb-stat-box__icon dashicons dashicons-star-filled"></span>
                     <div class="fvb-stat-box__info">
                         <span class="fvb-stat-box__value"><?php echo number_format($puntos); ?></span>
-                        <span class="fvb-stat-box__label"><?php esc_html_e('Puntos', 'flavor-chat-ia'); ?></span>
+                        <span class="fvb-stat-box__label"><?php esc_html_e('Puntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="fvb-stat-box fvb-stat-box--primary">
                     <span class="fvb-stat-box__icon dashicons dashicons-awards"></span>
                     <div class="fvb-stat-box__info">
                         <span class="fvb-stat-box__value"><?php echo esc_html($nivel); ?></span>
-                        <span class="fvb-stat-box__label"><?php esc_html_e('Nivel', 'flavor-chat-ia'); ?></span>
+                        <span class="fvb-stat-box__label"><?php esc_html_e('Nivel', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -3367,7 +3367,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($reservas) {
             if (empty($reservas)) {
-                $this->render_empty_state(__('No tienes reservas próximas', 'flavor-chat-ia'), home_url('/espacios/'), __('Reservar', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No tienes reservas próximas', FLAVOR_PLATFORM_TEXT_DOMAIN), home_url('/espacios/'), __('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
             ?>
@@ -3376,7 +3376,7 @@ class Flavor_Dashboard_VB_Widgets {
                     <li class="fvb-list__item">
                         <span class="fvb-list__icon dashicons dashicons-calendar-alt"></span>
                         <div class="fvb-list__content">
-                            <strong><?php echo esc_html($reserva->espacio_nombre ?? __('Espacio', 'flavor-chat-ia')); ?></strong>
+                            <strong><?php echo esc_html($reserva->espacio_nombre ?? __('Espacio', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong>
                             <span class="fvb-list__meta">
                                 <?php echo esc_html(date_i18n(get_option('date_format') . ' H:i', strtotime($reserva->fecha_inicio))); ?>
                             </span>
@@ -3421,14 +3421,14 @@ class Flavor_Dashboard_VB_Widgets {
                     <span class="fvb-stat-box__icon dashicons dashicons-image-rotate"></span>
                     <div class="fvb-stat-box__info">
                         <span class="fvb-stat-box__value"><?php echo esc_html($disponibles); ?></span>
-                        <span class="fvb-stat-box__label"><?php esc_html_e('Disponibles', 'flavor-chat-ia'); ?></span>
+                        <span class="fvb-stat-box__label"><?php esc_html_e('Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="fvb-stat-box fvb-stat-box--info">
                     <span class="fvb-stat-box__icon dashicons dashicons-unlock"></span>
                     <div class="fvb-stat-box__info">
                         <span class="fvb-stat-box__value"><?php echo esc_html($mis_alquileres); ?></span>
-                        <span class="fvb-stat-box__label"><?php esc_html_e('Mis alquileres', 'flavor-chat-ia'); ?></span>
+                        <span class="fvb-stat-box__label"><?php esc_html_e('Mis alquileres', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -3463,7 +3463,7 @@ class Flavor_Dashboard_VB_Widgets {
                 <span class="fvb-stat-box__icon dashicons dashicons-car"></span>
                 <div class="fvb-stat-box__info">
                     <span class="fvb-stat-box__value"><?php echo esc_html($plazas_libres); ?></span>
-                    <span class="fvb-stat-box__label"><?php esc_html_e('Plazas disponibles', 'flavor-chat-ia'); ?></span>
+                    <span class="fvb-stat-box__label"><?php esc_html_e('Plazas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
             <?php
@@ -3512,7 +3512,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($viajes) {
             if (empty($viajes)) {
-                $this->render_empty_state(__('No hay viajes disponibles', 'flavor-chat-ia'), home_url('/carpooling/nuevo/'), __('Ofrecer viaje', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No hay viajes disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN), home_url('/carpooling/nuevo/'), __('Ofrecer viaje', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
             ?>
@@ -3524,11 +3524,11 @@ class Flavor_Dashboard_VB_Widgets {
                             <strong><?php echo esc_html($viaje->origen . ' → ' . $viaje->destino); ?></strong>
                             <span class="fvb-list__meta">
                                 <?php echo esc_html(date_i18n('j M H:i', strtotime($viaje->fecha_salida))); ?>
-                                · <?php printf(esc_html__('%d plazas', 'flavor-chat-ia'), $viaje->plazas_disponibles); ?>
+                                · <?php printf(esc_html__('%d plazas', FLAVOR_PLATFORM_TEXT_DOMAIN), $viaje->plazas_disponibles); ?>
                             </span>
                         </div>
                         <a href="<?php echo esc_url(home_url('/carpooling/' . $viaje->id . '/')); ?>" class="fvb-btn-sm">
-                            <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </li>
                 <?php endforeach; ?>
@@ -3544,9 +3544,9 @@ class Flavor_Dashboard_VB_Widgets {
         $this->render_widget_wrapper($widget_id, $config, function() {
             ?>
             <div class="fvb-calendario-mini">
-                <p class="fvb-empty-state"><?php esc_html_e('Calendario disponible en la página completa', 'flavor-chat-ia'); ?></p>
+                <p class="fvb-empty-state"><?php esc_html_e('Calendario disponible en la página completa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <a href="<?php echo esc_url(home_url('/eventos/calendario/')); ?>" class="fvb-btn fvb-btn--primary">
-                    <?php esc_html_e('Ver calendario', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver calendario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php
@@ -3580,7 +3580,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($inscripciones) {
             if (empty($inscripciones)) {
-                $this->render_empty_state(__('No tienes inscripciones', 'flavor-chat-ia'), home_url('/eventos/'), __('Ver eventos', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No tienes inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN), home_url('/eventos/'), __('Ver eventos', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
             ?>
@@ -3655,13 +3655,13 @@ class Flavor_Dashboard_VB_Widgets {
                 ?>
                 <div class="fvb-alert fvb-alert--info">
                     <span class="dashicons dashicons-email"></span>
-                    <?php printf(esc_html__('Tienes %d mensajes sin leer', 'flavor-chat-ia'), $sin_leer); ?>
+                    <?php printf(esc_html__('Tienes %d mensajes sin leer', FLAVOR_PLATFORM_TEXT_DOMAIN), $sin_leer); ?>
                 </div>
                 <?php
             }
 
             if (empty($mensajes)) {
-                $this->render_empty_state(__('No hay mensajes', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No hay mensajes', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
             ?>
@@ -3670,7 +3670,7 @@ class Flavor_Dashboard_VB_Widgets {
                     <li class="fvb-list__item">
                         <span class="fvb-list__icon dashicons dashicons-email-alt<?php echo !$msg->leido ? ' fvb-list__icon--primary' : ''; ?>"></span>
                         <div class="fvb-list__content">
-                            <strong><?php echo esc_html($msg->asunto ?: __('(Sin asunto)', 'flavor-chat-ia')); ?></strong>
+                            <strong><?php echo esc_html($msg->asunto ?: __('(Sin asunto)', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong>
                             <span class="fvb-list__meta"><?php echo esc_html($msg->remitente); ?> · <?php echo esc_html(human_time_diff(strtotime($msg->created_at))); ?></span>
                         </div>
                     </li>
@@ -3713,7 +3713,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($episodios) {
             if (empty($episodios)) {
-                $this->render_empty_state(__('No hay episodios', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No hay episodios', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
             ?>
@@ -3746,11 +3746,11 @@ class Flavor_Dashboard_VB_Widgets {
             ?>
             <div class="fvb-radio-player">
                 <div class="fvb-radio-status">
-                    <span class="fvb-badge fvb-badge--success"><?php esc_html_e('EN VIVO', 'flavor-chat-ia'); ?></span>
+                    <span class="fvb-badge fvb-badge--success"><?php esc_html_e('EN VIVO', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <a href="<?php echo esc_url(home_url('/radio/')); ?>" class="fvb-btn fvb-btn--primary">
                     <span class="dashicons dashicons-controls-volumeon"></span>
-                    <?php esc_html_e('Escuchar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Escuchar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php
@@ -3766,11 +3766,11 @@ class Flavor_Dashboard_VB_Widgets {
             <div class="fvb-multimedia-quick">
                 <a href="<?php echo esc_url(home_url('/multimedia/')); ?>" class="fvb-quick-action">
                     <span class="dashicons dashicons-format-gallery"></span>
-                    <?php esc_html_e('Ver galería', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver galería', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="<?php echo esc_url(home_url('/multimedia/subir/')); ?>" class="fvb-quick-action">
                     <span class="dashicons dashicons-upload"></span>
-                    <?php esc_html_e('Subir', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Subir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php
@@ -3808,7 +3808,7 @@ class Flavor_Dashboard_VB_Widgets {
                 <span class="fvb-stat-box__icon dashicons dashicons-admin-site-alt3"></span>
                 <div class="fvb-stat-box__info">
                     <span class="fvb-stat-box__value"><?php echo number_format($total_kg, 1); ?> kg</span>
-                    <span class="fvb-stat-box__label"><?php esc_html_e('Aportado', 'flavor-chat-ia'); ?></span>
+                    <span class="fvb-stat-box__label"><?php esc_html_e('Aportado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
             <?php
@@ -3846,7 +3846,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($productos) {
             if (empty($productos)) {
-                $this->render_empty_state(__('No hay productos', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No hay productos', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
             ?>
@@ -3900,7 +3900,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($pedidos) {
             if (empty($pedidos)) {
-                $this->render_empty_state(__('No tienes pedidos', 'flavor-chat-ia'), home_url('/tienda/'), __('Ver tienda', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No tienes pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN), home_url('/tienda/'), __('Ver tienda', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
             ?>
@@ -3963,7 +3963,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($grupos) {
             if (empty($grupos)) {
-                $this->render_empty_state(__('No perteneces a ningún grupo', 'flavor-chat-ia'), home_url('/mi-portal/grupos-consumo/'), __('Ver grupos', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No perteneces a ningún grupo', FLAVOR_PLATFORM_TEXT_DOMAIN), home_url('/mi-portal/grupos-consumo/'), __('Ver grupos', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
             ?>
@@ -3975,7 +3975,7 @@ class Flavor_Dashboard_VB_Widgets {
                             <strong><?php echo esc_html($grupo->nombre); ?></strong>
                             <?php if ($grupo->proximo_reparto): ?>
                                 <span class="fvb-list__meta">
-                                    <?php esc_html_e('Reparto:', 'flavor-chat-ia'); ?> <?php echo esc_html(date_i18n('j M', strtotime($grupo->proximo_reparto))); ?>
+                                    <?php esc_html_e('Reparto:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html(date_i18n('j M', strtotime($grupo->proximo_reparto))); ?>
                                 </span>
                             <?php endif; ?>
                         </div>
@@ -4030,7 +4030,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($facturas) {
             if (empty($facturas)) {
-                $this->render_empty_state(__('No tienes facturas', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No tienes facturas', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
             ?>
@@ -4087,7 +4087,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($procesos) {
             if (empty($procesos)) {
-                $this->render_empty_state(__('No hay procesos activos', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No hay procesos activos', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
             ?>
@@ -4098,11 +4098,11 @@ class Flavor_Dashboard_VB_Widgets {
                         <div class="fvb-list__content">
                             <strong><?php echo esc_html($proceso->titulo); ?></strong>
                             <span class="fvb-list__meta">
-                                <?php esc_html_e('Hasta:', 'flavor-chat-ia'); ?> <?php echo esc_html(date_i18n('j M', strtotime($proceso->fecha_fin))); ?>
+                                <?php esc_html_e('Hasta:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html(date_i18n('j M', strtotime($proceso->fecha_fin))); ?>
                             </span>
                         </div>
                         <a href="<?php echo esc_url(home_url('/participacion/' . $proceso->id . '/')); ?>" class="fvb-btn-sm">
-                            <?php esc_html_e('Participar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Participar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </li>
                 <?php endforeach; ?>
@@ -4148,7 +4148,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($propuestas) {
             if (empty($propuestas)) {
-                $this->render_empty_state(__('No hay propuestas en votación', 'flavor-chat-ia'), home_url('/presupuestos/nuevo/'), __('Proponer', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No hay propuestas en votación', FLAVOR_PLATFORM_TEXT_DOMAIN), home_url('/presupuestos/nuevo/'), __('Proponer', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
             ?>
@@ -4159,11 +4159,11 @@ class Flavor_Dashboard_VB_Widgets {
                         <div class="fvb-list__content">
                             <strong><?php echo esc_html($prop->titulo); ?></strong>
                             <span class="fvb-list__meta">
-                                <?php echo esc_html(number_format($prop->presupuesto)); ?>€ · <?php echo esc_html($prop->votos); ?> <?php esc_html_e('votos', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html(number_format($prop->presupuesto)); ?>€ · <?php echo esc_html($prop->votos); ?> <?php esc_html_e('votos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         </div>
                         <a href="<?php echo esc_url(home_url('/presupuestos/' . $prop->id . '/')); ?>" class="fvb-btn-sm">
-                            <?php esc_html_e('Votar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Votar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </li>
                 <?php endforeach; ?>
@@ -4218,7 +4218,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($incidencias, $estados_colores) {
             if (empty($incidencias)) {
-                $this->render_empty_state(__('No has reportado incidencias', 'flavor-chat-ia'), home_url('/incidencias/reportar/'), __('Reportar', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No has reportado incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN), home_url('/incidencias/reportar/'), __('Reportar', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
             ?>
@@ -4280,7 +4280,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($tramites) {
             if (empty($tramites)) {
-                $this->render_empty_state(__('No tienes trámites', 'flavor-chat-ia'), home_url('/tramites/nuevo/'), __('Iniciar trámite', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No tienes trámites', FLAVOR_PLATFORM_TEXT_DOMAIN), home_url('/tramites/nuevo/'), __('Iniciar trámite', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
             ?>
@@ -4334,7 +4334,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($solicitudes) {
             if (empty($solicitudes)) {
-                $this->render_empty_state(__('No hay solicitudes de ayuda', 'flavor-chat-ia'), home_url('/ayuda-vecinal/ofrecer/'), __('Ofrecer ayuda', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No hay solicitudes de ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN), home_url('/ayuda-vecinal/ofrecer/'), __('Ofrecer ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
             ?>
@@ -4347,7 +4347,7 @@ class Flavor_Dashboard_VB_Widgets {
                             <span class="fvb-list__meta"><?php echo esc_html(ucfirst($sol->tipo)); ?></span>
                         </div>
                         <?php if ($sol->urgente): ?>
-                            <span class="fvb-badge fvb-badge--danger"><?php esc_html_e('Urgente', 'flavor-chat-ia'); ?></span>
+                            <span class="fvb-badge fvb-badge--danger"><?php esc_html_e('Urgente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <?php endif; ?>
                     </li>
                 <?php endforeach; ?>
@@ -4364,9 +4364,9 @@ class Flavor_Dashboard_VB_Widgets {
             ?>
             <div class="fvb-mapa-placeholder">
                 <span class="dashicons dashicons-location-alt"></span>
-                <p><?php esc_html_e('Mapa disponible en página completa', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('Mapa disponible en página completa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <a href="<?php echo esc_url(home_url('/mapa/')); ?>" class="fvb-btn fvb-btn--primary">
-                    <?php esc_html_e('Ver mapa', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver mapa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php
@@ -4380,11 +4380,11 @@ class Flavor_Dashboard_VB_Widgets {
         $this->render_widget_wrapper($widget_id, $config, function() {
             ?>
             <div class="fvb-grafico-placeholder">
-                <p><?php esc_html_e('Gráfico de actividad semanal', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('Gráfico de actividad semanal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <div class="fvb-progress">
                     <div class="fvb-progress__bar" style="width: 70%;"></div>
                 </div>
-                <span class="fvb-list__meta"><?php esc_html_e('70% más activo que la semana pasada', 'flavor-chat-ia'); ?></span>
+                <span class="fvb-list__meta"><?php esc_html_e('70% más activo que la semana pasada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <?php
         }, '');
@@ -4399,7 +4399,7 @@ class Flavor_Dashboard_VB_Widgets {
             <div class="fvb-red-comunidades">
                 <a href="<?php echo esc_url(home_url('/comunidades/')); ?>" class="fvb-quick-action">
                     <span class="dashicons dashicons-networking"></span>
-                    <?php esc_html_e('Explorar red', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Explorar red', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php
@@ -4463,10 +4463,10 @@ class Flavor_Dashboard_VB_Widgets {
             if ($fichaje_hoy && $fichaje_hoy->entrada && !$fichaje_hoy->salida) {
                 ?>
                 <div class="fvb-fichaje-activo">
-                    <span class="fvb-badge fvb-badge--success"><?php esc_html_e('Fichado', 'flavor-chat-ia'); ?></span>
-                    <p><?php esc_html_e('Entrada:', 'flavor-chat-ia'); ?> <?php echo esc_html(date_i18n('H:i', strtotime($fichaje_hoy->entrada))); ?></p>
+                    <span class="fvb-badge fvb-badge--success"><?php esc_html_e('Fichado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                    <p><?php esc_html_e('Entrada:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html(date_i18n('H:i', strtotime($fichaje_hoy->entrada))); ?></p>
                     <button class="fvb-btn fvb-btn--primary" data-action="fichar-salida">
-                        <?php esc_html_e('Fichar salida', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Fichar salida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
                 <?php
@@ -4475,7 +4475,7 @@ class Flavor_Dashboard_VB_Widgets {
                 <div class="fvb-fichaje">
                     <button class="fvb-btn fvb-btn--primary" data-action="fichar-entrada">
                         <span class="dashicons dashicons-clock"></span>
-                        <?php esc_html_e('Fichar entrada', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Fichar entrada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
                 <?php
@@ -4492,7 +4492,7 @@ class Flavor_Dashboard_VB_Widgets {
             <div class="fvb-transparencia">
                 <a href="<?php echo esc_url(home_url('/transparencia/')); ?>" class="fvb-quick-action">
                     <span class="dashicons dashicons-visibility"></span>
-                    <?php esc_html_e('Portal de transparencia', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Portal de transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php
@@ -4526,7 +4526,7 @@ class Flavor_Dashboard_VB_Widgets {
             <?php endif; ?>
             <div class="fvb-widget__footer">
                 <a href="<?php echo esc_url($this->obtener_url_widget($widget_id)); ?>" class="fvb-widget__link">
-                    <?php esc_html_e('Ver más', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver más', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="dashicons dashicons-arrow-right-alt2"></span>
                 </a>
             </div>

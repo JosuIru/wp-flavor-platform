@@ -82,7 +82,7 @@ $identificador_form = 'form-simple-' . wp_unique_id();
                             onfocus="this.style.borderColor='<?php echo esc_attr( $color_principal ); ?>'"
                             onblur="this.style.borderColor=''"
                         >
-                            <option value=""><?php echo esc_html__( 'Seleccionar...', 'flavor-chat-ia' ); ?></option>
+                            <option value=""><?php echo esc_html__( 'Seleccionar...', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
                         </select>
                     <?php elseif ( $tipo_campo === 'checkbox' ) : ?>
                         <div class="flex items-center gap-2">

@@ -63,7 +63,7 @@ class Flavor_Landing_Shortcode {
         $plantilla_id = sanitize_key($atts['plantilla']);
 
         if (empty($plantilla_id)) {
-            return $this->mensaje_error(__('Error: Plantilla no especificada', 'flavor-chat-ia'));
+            return $this->mensaje_error(__('Error: Plantilla no especificada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Obtener definicion de la plantilla
@@ -71,19 +71,19 @@ class Flavor_Landing_Shortcode {
 
         if (!$definicion) {
             return $this->mensaje_error(
-                sprintf(__('Error: Plantilla "%s" no encontrada', 'flavor-chat-ia'), esc_html($plantilla_id))
+                sprintf(__('Error: Plantilla "%s" no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($plantilla_id))
             );
         }
 
         // Verificar que la landing esta activa
         $config_landing = $definicion['landing'] ?? [];
         if (empty($config_landing['activa'])) {
-            return $this->mensaje_error(__('Error: Esta plantilla no tiene landing activa', 'flavor-chat-ia'));
+            return $this->mensaje_error(__('Error: Esta plantilla no tiene landing activa', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $secciones = $config_landing['secciones'] ?? [];
         if (empty($secciones)) {
-            return $this->mensaje_error(__('Error: No hay secciones definidas para esta landing', 'flavor-chat-ia'));
+            return $this->mensaje_error(__('Error: No hay secciones definidas para esta landing', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Si se especifica una seccion, renderizar solo esa
@@ -152,7 +152,7 @@ class Flavor_Landing_Shortcode {
         }
 
         return $this->mensaje_error(
-            sprintf(__('Error: Seccion "%s" no encontrada', 'flavor-chat-ia'), esc_html($identificador))
+            sprintf(__('Error: Seccion "%s" no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($identificador))
         );
     }
 

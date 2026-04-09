@@ -45,7 +45,7 @@ class Flavor_Breadcrumbs {
      */
     public static function render($args = []) {
         $defaults = [
-            'home_text' => __('Mi Portal', 'flavor-chat-ia'),
+            'home_text' => __('Mi Portal', 'flavor-platform'),
             'home_url' => Flavor_Chat_Helpers::get_action_url('', ''),
             'separator' => '›',
             'show_current' => true,
@@ -151,7 +151,7 @@ class Flavor_Breadcrumbs {
      */
     public static function render_module($module_label, $module_url, $current_title, $extra_items = []) {
         $args = [
-            'home_text' => __('Mi Portal', 'flavor-chat-ia'),
+            'home_text' => __('Mi Portal', 'flavor-platform'),
             'home_url' => Flavor_Chat_Helpers::get_action_url('', ''),
             'separator' => '›',
             'class' => 'flavor-breadcrumbs',
@@ -184,7 +184,7 @@ class Flavor_Breadcrumbs {
         }
 
         if (empty($label)) {
-            $label = __('Volver al listado', 'flavor-chat-ia');
+            $label = __('Volver al listado', 'flavor-platform');
         }
         ?>
         <div class="flavor-back-button mb-6">
@@ -215,7 +215,7 @@ class Flavor_Breadcrumbs {
      */
     private static function get_cpt_label($post_type) {
         $labels = apply_filters('flavor_breadcrumbs_cpt_labels', self::$cpt_labels);
-        return isset($labels[$post_type]) ? __($labels[$post_type], 'flavor-chat-ia') : '';
+        return isset($labels[$post_type]) ? __($labels[$post_type], 'flavor-platform') : '';
     }
 
     /**
@@ -237,7 +237,7 @@ class Flavor_Breadcrumbs {
     private static function render_html($crumbs, $args) {
         ob_start();
         ?>
-        <nav class="<?php echo esc_attr($args['class']); ?>" aria-label="<?php esc_attr_e('Breadcrumbs', 'flavor-chat-ia'); ?>">
+        <nav class="<?php echo esc_attr($args['class']); ?>" aria-label="<?php esc_attr_e('Breadcrumbs', 'flavor-platform'); ?>">
             <ol class="flavor-breadcrumbs__list">
                 <?php foreach ($crumbs as $index => $crumb) : ?>
                     <li class="flavor-breadcrumbs__item">

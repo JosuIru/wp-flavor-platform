@@ -29,8 +29,8 @@ if (!$tabla_operaciones_existe) {
         <div class="dm-alert dm-alert--info">
             <span class="dashicons dashicons-info"></span>
             <div>
-                <strong><?php esc_html_e('Módulo en preparación', 'flavor-chat-ia'); ?></strong>
-                <p><?php esc_html_e('Las tablas del módulo Trading IA aún no han sido creadas. Activa el módulo completamente para generar la estructura necesaria.', 'flavor-chat-ia'); ?></p>
+                <strong><?php esc_html_e('Módulo en preparación', 'flavor-platform'); ?></strong>
+                <p><?php esc_html_e('Las tablas del módulo Trading IA aún no han sido creadas. Activa el módulo completamente para generar la estructura necesaria.', 'flavor-platform'); ?></p>
             </div>
         </div>
     </div>
@@ -135,7 +135,7 @@ $estrategias_top = $tabla_estrategias_existe ? $wpdb->get_results(
         <span class="dashicons dashicons-chart-area dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($operaciones_hoy); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Operaciones Hoy', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Operaciones Hoy', 'flavor-platform'); ?></div>
         </div>
     </div>
 
@@ -143,7 +143,7 @@ $estrategias_top = $tabla_estrategias_existe ? $wpdb->get_results(
         <span class="dashicons dashicons-<?php echo $beneficio_mes >= 0 ? 'arrow-up-alt' : 'arrow-down-alt'; ?> dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html(($beneficio_mes >= 0 ? '+' : '') . number_format_i18n($beneficio_mes, 2)); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Resultado Mes', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Resultado Mes', 'flavor-platform'); ?></div>
         </div>
     </div>
 
@@ -151,7 +151,7 @@ $estrategias_top = $tabla_estrategias_existe ? $wpdb->get_results(
         <span class="dashicons dashicons-chart-pie dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($tasa_exito); ?>%</div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Tasa Éxito', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Tasa Éxito', 'flavor-platform'); ?></div>
         </div>
     </div>
 
@@ -159,7 +159,7 @@ $estrategias_top = $tabla_estrategias_existe ? $wpdb->get_results(
         <span class="dashicons dashicons-admin-users dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($usuarios_trading); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Traders', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Traders', 'flavor-platform'); ?></div>
         </div>
     </div>
 </div>
@@ -168,7 +168,7 @@ $estrategias_top = $tabla_estrategias_existe ? $wpdb->get_results(
 <div class="dm-alert dm-alert--warning">
     <span class="dashicons dashicons-bell"></span>
     <div>
-        <strong><?php printf(esc_html__('%s alertas pendientes', 'flavor-chat-ia'), number_format_i18n($alertas_pendientes)); ?></strong>
+        <strong><?php printf(esc_html__('%s alertas pendientes', 'flavor-platform'), number_format_i18n($alertas_pendientes)); ?></strong>
     </div>
 </div>
 <?php endif; ?>
@@ -178,23 +178,23 @@ $estrategias_top = $tabla_estrategias_existe ? $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-chart-bar"></span>
-                <?php esc_html_e('Rendimiento Semanal', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Rendimiento Semanal', 'flavor-platform'); ?>
             </h3>
-            <span class="dm-card__subtitle"><?php printf(esc_html__('%s operaciones este mes', 'flavor-chat-ia'), number_format_i18n($operaciones_mes)); ?></span>
+            <span class="dm-card__subtitle"><?php printf(esc_html__('%s operaciones este mes', 'flavor-platform'), number_format_i18n($operaciones_mes)); ?></span>
         </div>
         <div class="dm-card__body">
             <?php if (empty($actividad_semanal)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-chart-line"></span>
-                    <p><?php esc_html_e('No hay operaciones esta semana.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay operaciones esta semana.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <?php
                 $max_ops = max(array_column($actividad_semanal, 'total'));
                 $dias_semana = [
-                    __('Dom', 'flavor-chat-ia'), __('Lun', 'flavor-chat-ia'), __('Mar', 'flavor-chat-ia'),
-                    __('Mié', 'flavor-chat-ia'), __('Jue', 'flavor-chat-ia'), __('Vie', 'flavor-chat-ia'),
-                    __('Sáb', 'flavor-chat-ia')
+                    __('Dom', 'flavor-platform'), __('Lun', 'flavor-platform'), __('Mar', 'flavor-platform'),
+                    __('Mié', 'flavor-platform'), __('Jue', 'flavor-platform'), __('Vie', 'flavor-platform'),
+                    __('Sáb', 'flavor-platform')
                 ];
                 ?>
                 <div class="dm-chart-bars">
@@ -220,14 +220,14 @@ $estrategias_top = $tabla_estrategias_existe ? $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-portfolio"></span>
-                <?php esc_html_e('Por Activo', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Por Activo', 'flavor-platform'); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <?php if (empty($por_activo)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-list-view"></span>
-                    <p><?php esc_html_e('No hay operaciones registradas.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay operaciones registradas.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <div class="dm-data-list">
@@ -250,15 +250,15 @@ $estrategias_top = $tabla_estrategias_existe ? $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-awards"></span>
-                <?php esc_html_e('Top Traders', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Top Traders', 'flavor-platform'); ?>
             </h3>
-            <span class="dm-card__subtitle"><?php esc_html_e('Últimos 30 días', 'flavor-chat-ia'); ?></span>
+            <span class="dm-card__subtitle"><?php esc_html_e('Últimos 30 días', 'flavor-platform'); ?></span>
         </div>
         <div class="dm-card__body">
             <?php if (empty($traders_top)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-admin-users"></span>
-                    <p><?php esc_html_e('No hay datos de trading.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay datos de trading.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <ul class="dm-ranking">
@@ -267,10 +267,10 @@ $estrategias_top = $tabla_estrategias_existe ? $wpdb->get_results(
                         <li class="dm-ranking__item">
                             <span class="dm-ranking__position"><?php echo ($index + 1); ?></span>
                             <div class="dm-ranking__avatar" style="background: #059669;">
-                                <?php echo mb_substr($trader->display_name ?: __('T', 'flavor-chat-ia'), 0, 1); ?>
+                                <?php echo mb_substr($trader->display_name ?: __('T', 'flavor-platform'), 0, 1); ?>
                             </div>
                             <div class="dm-ranking__content">
-                                <strong class="dm-ranking__name"><?php echo esc_html($trader->display_name ?: __('Trader', 'flavor-chat-ia')); ?></strong>
+                                <strong class="dm-ranking__name"><?php echo esc_html($trader->display_name ?: __('Trader', 'flavor-platform')); ?></strong>
                                 <span class="dm-ranking__meta">
                                     <?php echo esc_html($trader->total_operaciones); ?> ops &bull; <?php echo esc_html($tasa); ?>% win
                                 </span>
@@ -289,14 +289,14 @@ $estrategias_top = $tabla_estrategias_existe ? $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-lightbulb"></span>
-                <?php esc_html_e('Estrategias IA', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Estrategias IA', 'flavor-platform'); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <?php if (empty($estrategias_top)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-admin-generic"></span>
-                    <p><?php esc_html_e('No hay estrategias activas.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay estrategias activas.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <ul class="dm-ranking">
@@ -326,14 +326,14 @@ $estrategias_top = $tabla_estrategias_existe ? $wpdb->get_results(
     <div class="dm-card__header">
         <h3 class="dm-card__title">
             <span class="dashicons dashicons-clock"></span>
-            <?php esc_html_e('Operaciones Recientes', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Operaciones Recientes', 'flavor-platform'); ?>
         </h3>
     </div>
     <div class="dm-card__body">
         <?php if (empty($operaciones_recientes)): ?>
             <div class="dm-empty">
                 <span class="dashicons dashicons-chart-area"></span>
-                <p><?php esc_html_e('No hay operaciones registradas.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No hay operaciones registradas.', 'flavor-platform'); ?></p>
             </div>
         <?php else: ?>
             <ul class="dm-list">
@@ -342,7 +342,7 @@ $estrategias_top = $tabla_estrategias_existe ? $wpdb->get_results(
                         <div class="dm-list__content">
                             <strong class="dm-list__title"><?php echo esc_html(strtoupper($op->activo)); ?> - <?php echo esc_html(ucfirst($op->tipo)); ?></strong>
                             <span class="dm-list__meta">
-                                <?php echo esc_html($op->display_name ?: __('Trader', 'flavor-chat-ia')); ?>
+                                <?php echo esc_html($op->display_name ?: __('Trader', 'flavor-platform')); ?>
                                 &bull;
                                 <?php
                                 $fecha_op = new DateTime($op->fecha);
@@ -364,24 +364,24 @@ $estrategias_top = $tabla_estrategias_existe ? $wpdb->get_results(
     <div class="dm-stat-card dm-stat-card--secondary">
         <span class="dashicons dashicons-database dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($total_operaciones)); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Total Operaciones', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Total Operaciones', 'flavor-platform'); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--success">
         <span class="dashicons dashicons-yes dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($operaciones_ganadoras)); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Ganadoras', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Ganadoras', 'flavor-platform'); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--error">
         <span class="dashicons dashicons-no dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($operaciones_perdedoras)); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Perdedoras', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Perdedoras', 'flavor-platform'); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--info">
         <span class="dashicons dashicons-admin-generic dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($estrategias_activas); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Estrategias IA', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Estrategias IA', 'flavor-platform'); ?></div>
     </div>
 </div>

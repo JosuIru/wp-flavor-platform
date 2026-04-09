@@ -17,14 +17,14 @@ $grupos = $datos_vista['grupos'] ?? [];
 
 <div class="mi-red-mensajes">
     <header class="mi-red-mensajes__header">
-        <h1><?php esc_html_e('Mensajes', 'flavor-chat-ia'); ?></h1>
-        <button class="mi-red-btn mi-red-btn--primary mi-red-btn--icon" title="<?php esc_attr_e('Nuevo mensaje', 'flavor-chat-ia'); ?>">➕</button>
+        <h1><?php esc_html_e('Mensajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
+        <button class="mi-red-btn mi-red-btn--primary mi-red-btn--icon" title="<?php esc_attr_e('Nuevo mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">➕</button>
     </header>
 
     <!-- Tabs -->
     <div class="mi-red-tabs">
-        <button class="mi-red-tab mi-red-tab--active" data-tab="directos"><?php esc_html_e('Directos', 'flavor-chat-ia'); ?></button>
-        <button class="mi-red-tab" data-tab="grupos"><?php esc_html_e('Grupos', 'flavor-chat-ia'); ?></button>
+        <button class="mi-red-tab mi-red-tab--active" data-tab="directos"><?php esc_html_e('Directos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+        <button class="mi-red-tab" data-tab="grupos"><?php esc_html_e('Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
     </div>
 
     <!-- Conversaciones directas -->
@@ -32,8 +32,8 @@ $grupos = $datos_vista['grupos'] ?? [];
         <?php if (empty($conversaciones)) : ?>
             <div class="mi-red-empty-state">
                 <div class="mi-red-empty-state__icon">💬</div>
-                <p><?php esc_html_e('No tienes conversaciones', 'flavor-chat-ia'); ?></p>
-                <button class="mi-red-btn mi-red-btn--primary"><?php esc_html_e('Iniciar conversación', 'flavor-chat-ia'); ?></button>
+                <p><?php esc_html_e('No tienes conversaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                <button class="mi-red-btn mi-red-btn--primary"><?php esc_html_e('Iniciar conversación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
             </div>
         <?php else : ?>
             <ul class="mi-red-conversaciones">
@@ -61,9 +61,9 @@ $grupos = $datos_vista['grupos'] ?? [];
         <?php if (empty($grupos)) : ?>
             <div class="mi-red-empty-state">
                 <div class="mi-red-empty-state__icon">👥</div>
-                <p><?php esc_html_e('No perteneces a ningún grupo', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No perteneces a ningún grupo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <a href="<?php echo esc_url(home_url('/chat-grupos/')); ?>" class="mi-red-btn mi-red-btn--primary">
-                    <?php esc_html_e('Explorar grupos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Explorar grupos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         <?php else : ?>
@@ -73,7 +73,7 @@ $grupos = $datos_vista['grupos'] ?? [];
                         <div class="mi-red-conversacion__avatar mi-red-conversacion__avatar--grupo">👥</div>
                         <div class="mi-red-conversacion__info">
                             <span class="mi-red-conversacion__nombre"><?php echo esc_html($grupo['nombre'] ?? ''); ?></span>
-                            <span class="mi-red-conversacion__preview"><?php echo esc_html($grupo['miembros'] ?? 0); ?> <?php esc_html_e('miembros', 'flavor-chat-ia'); ?></span>
+                            <span class="mi-red-conversacion__preview"><?php echo esc_html($grupo['miembros'] ?? 0); ?> <?php esc_html_e('miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                     </li>
                 <?php endforeach; ?>

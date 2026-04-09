@@ -53,9 +53,9 @@ $usuario_id = get_current_user_id();
 <div class="eventos-listado-wrapper">
     <div class="eventos-filtros">
         <div class="eventos-filtro-grupo">
-            <label><?php _e('Tipo', 'flavor-chat-ia'); ?></label>
+            <label><?php _e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <select name="tipo" onchange="this.form.submit()">
-                <option value=""><?php _e('Todos los tipos', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php _e('Todos los tipos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 <?php foreach ($tipos_disponibles as $tipo_opcion): ?>
                     <option value="<?php echo esc_attr($tipo_opcion); ?>" <?php selected($tipo, $tipo_opcion); ?>>
                         <?php echo esc_html(ucfirst($tipo_opcion)); ?>
@@ -65,9 +65,9 @@ $usuario_id = get_current_user_id();
         </div>
 
         <div class="eventos-filtro-grupo eventos-buscar">
-            <label><?php _e('Buscar', 'flavor-chat-ia'); ?></label>
+            <label><?php _e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <input type="text" name="buscar" value="<?php echo esc_attr($buscar); ?>"
-                   placeholder="<?php esc_attr_e('Nombre, ubicación...', 'flavor-chat-ia'); ?>">
+                   placeholder="<?php esc_attr_e('Nombre, ubicación...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
         </div>
     </div>
 
@@ -109,9 +109,9 @@ $usuario_id = get_current_user_id();
                             <span class="evento-card-tipo"><?php echo esc_html(ucfirst($tipo_evento)); ?></span>
                         <?php endif; ?>
                         <?php if ($plazas_disponibles !== null && $plazas_disponibles <= 5 && $plazas_disponibles > 0): ?>
-                            <span class="evento-card-plazas"><?php printf(__('%d plazas', 'flavor-chat-ia'), $plazas_disponibles); ?></span>
+                            <span class="evento-card-plazas"><?php printf(__('%d plazas', FLAVOR_PLATFORM_TEXT_DOMAIN), $plazas_disponibles); ?></span>
                         <?php elseif ($plazas_disponibles === 0): ?>
-                            <span class="evento-card-completo"><?php _e('Completo', 'flavor-chat-ia'); ?></span>
+                            <span class="evento-card-completo"><?php _e('Completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <?php endif; ?>
                     </div>
 
@@ -150,24 +150,24 @@ $usuario_id = get_current_user_id();
                             <?php if ($evento->precio > 0): ?>
                                 <span class="precio"><?php echo number_format($evento->precio, 2); ?>€</span>
                             <?php else: ?>
-                                <span class="gratuito"><?php _e('Gratuito', 'flavor-chat-ia'); ?></span>
+                                <span class="gratuito"><?php _e('Gratuito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <?php endif; ?>
                         </div>
                     </div>
 
                     <div class="evento-card-footer">
                         <a href="<?php echo add_query_arg('evento_id', $evento->id, get_permalink()); ?>" class="btn btn-outline btn-sm">
-                            <?php _e('Ver detalles', 'flavor-chat-ia'); ?>
+                            <?php _e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                         <?php if (is_user_logged_in()): ?>
                             <?php if ($inscrito): ?>
                                 <span class="btn btn-success btn-sm">
                                     <span class="dashicons dashicons-yes"></span>
-                                    <?php _e('Inscrito', 'flavor-chat-ia'); ?>
+                                    <?php _e('Inscrito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                             <?php elseif ($plazas_disponibles !== 0): ?>
                                 <button class="btn btn-primary btn-sm btn-inscribirse" data-evento-id="<?php echo $evento->id; ?>">
-                                    <?php _e('Inscribirse', 'flavor-chat-ia'); ?>
+                                    <?php _e('Inscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             <?php endif; ?>
                         <?php endif; ?>
@@ -178,11 +178,11 @@ $usuario_id = get_current_user_id();
     <?php else: ?>
         <div class="eventos-empty">
             <span class="dashicons dashicons-calendar-alt"></span>
-            <h3><?php _e('No hay eventos próximos', 'flavor-chat-ia'); ?></h3>
-            <p><?php _e('No se encontraron eventos con los filtros seleccionados.', 'flavor-chat-ia'); ?></p>
+            <h3><?php _e('No hay eventos próximos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php _e('No se encontraron eventos con los filtros seleccionados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php if ($tipo || $buscar): ?>
                 <a href="<?php echo remove_query_arg(['tipo', 'buscar']); ?>" class="btn btn-primary">
-                    <?php _e('Ver todos los eventos', 'flavor-chat-ia'); ?>
+                    <?php _e('Ver todos los eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             <?php endif; ?>
         </div>

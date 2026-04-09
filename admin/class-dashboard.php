@@ -313,18 +313,18 @@ class Flavor_Dashboard {
                 'accessibility' => true,
             ],
             'textos'               => [
-                'cargando'         => __('Cargando...', 'flavor-chat-ia'),
-                'error'            => __('Error al cargar datos', 'flavor-chat-ia'),
-                'ultimaActualizacion' => __('Ultima actualizacion:', 'flavor-chat-ia'),
-                'ahora'            => __('Ahora mismo', 'flavor-chat-ia'),
-                'haceMenos1Min'    => __('Hace menos de 1 minuto', 'flavor-chat-ia'),
-                'haceMinutos'      => __('Hace %d minutos', 'flavor-chat-ia'),
-                'usuariosNuevos'   => __('Usuarios nuevos', 'flavor-chat-ia'),
-                'actividadModulo'  => __('Actividad por modulo', 'flavor-chat-ia'),
-                'distribucionRoles' => __('Distribucion de roles', 'flavor-chat-ia'),
-                'dragStart'        => __('Arrastrando widget', 'flavor-chat-ia'),
-                'dragEnd'          => __('Widget soltado', 'flavor-chat-ia'),
-                'layoutSaved'      => __('Disposición guardada', 'flavor-chat-ia'),
+                'cargando'         => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error'            => __('Error al cargar datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ultimaActualizacion' => __('Ultima actualizacion:', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ahora'            => __('Ahora mismo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'haceMenos1Min'    => __('Hace menos de 1 minuto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'haceMinutos'      => __('Hace %d minutos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'usuariosNuevos'   => __('Usuarios nuevos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'actividadModulo'  => __('Actividad por modulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'distribucionRoles' => __('Distribucion de roles', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'dragStart'        => __('Arrastrando widget', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'dragEnd'          => __('Widget soltado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'layoutSaved'      => __('Disposición guardada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -380,7 +380,7 @@ class Flavor_Dashboard {
             $datos_graficos = $this->obtener_datos_graficos();
 
             // Datos Gailu
-            $configuracion_gailu = get_option('flavor_chat_ia_settings', []);
+            $configuracion_gailu = flavor_get_main_settings();
             $modulos_activos_ids = $configuracion_gailu['active_modules'] ?? [];
             if (class_exists('Flavor_Chat_Module_Loader')) {
                 $gailu_metricas = Flavor_Chat_Module_Loader::get_gailu_metricas($modulos_activos_ids);
@@ -446,7 +446,7 @@ class Flavor_Dashboard {
 
         array_unshift($acciones['generales'], [
             'id'       => 'crear_paginas',
-            'etiqueta' => __('Páginas', 'flavor-chat-ia'),
+            'etiqueta' => __('Páginas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono'    => 'dashicons-admin-page',
             'url'      => admin_url('admin.php?page=flavor-create-pages'),
             'color'    => '#2271b1',
@@ -463,8 +463,8 @@ class Flavor_Dashboard {
     private function obtener_datos_perfil_activo() {
         $datos_perfil = [
             'id'          => 'personalizado',
-            'nombre'      => __('Personalizado', 'flavor-chat-ia'),
-            'descripcion' => __('Selecciona manualmente los modulos que necesitas.', 'flavor-chat-ia'),
+            'nombre'      => __('Personalizado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'descripcion' => __('Selecciona manualmente los modulos que necesitas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono'       => 'dashicons-admin-generic',
             'color'       => '#2271b1',
         ];
@@ -493,7 +493,7 @@ class Flavor_Dashboard {
      * @return array
      */
     private function obtener_checks_onboarding() {
-        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $configuracion = flavor_get_main_settings();
         $id_perfil_activo = $configuracion['app_profile'] ?? 'personalizado';
         $modulos_activos = $configuracion['active_modules'] ?? [];
         $tiene_api_key = !empty($configuracion['claude_api_key']) || !empty($configuracion['openai_api_key']) || !empty($configuracion['deepseek_api_key']) || !empty($configuracion['mistral_api_key']);
@@ -507,11 +507,11 @@ class Flavor_Dashboard {
         $conteo_addons = count(Flavor_Addon_Manager::get_active_addons());
 
         return [
-            ['etiqueta' => __('Perfil seleccionado', 'flavor-chat-ia'), 'completado' => $id_perfil_activo !== 'personalizado'],
-            ['etiqueta' => __('Modulos activos', 'flavor-chat-ia'),     'completado' => count($modulos_activos) > 0],
-            ['etiqueta' => __('IA configurada', 'flavor-chat-ia'),      'completado' => $tiene_api_key],
-            ['etiqueta' => __('Paginas creadas', 'flavor-chat-ia'),     'completado' => $conteo_paginas_creadas > 0],
-            ['etiqueta' => __('Addons instalados', 'flavor-chat-ia'),   'completado' => $conteo_addons > 0],
+            ['etiqueta' => __('Perfil seleccionado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'completado' => $id_perfil_activo !== 'personalizado'],
+            ['etiqueta' => __('Modulos activos', FLAVOR_PLATFORM_TEXT_DOMAIN),     'completado' => count($modulos_activos) > 0],
+            ['etiqueta' => __('IA configurada', FLAVOR_PLATFORM_TEXT_DOMAIN),      'completado' => $tiene_api_key],
+            ['etiqueta' => __('Paginas creadas', FLAVOR_PLATFORM_TEXT_DOMAIN),     'completado' => $conteo_paginas_creadas > 0],
+            ['etiqueta' => __('Addons instalados', FLAVOR_PLATFORM_TEXT_DOMAIN),   'completado' => $conteo_addons > 0],
         ];
     }
 
@@ -534,16 +534,16 @@ class Flavor_Dashboard {
      * @return array
      */
     private function obtener_semaforo_salud() {
-        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $configuracion = flavor_get_main_settings();
         $tiene_api_key = !empty($configuracion['claude_api_key']) || !empty($configuracion['openai_api_key']) || !empty($configuracion['deepseek_api_key']) || !empty($configuracion['mistral_api_key']);
         $chat_habilitado = !empty($configuracion['enabled']);
 
         if ($tiene_api_key && $chat_habilitado) {
-            return ['nivel' => 'verde', 'icono' => 'dashicons-yes-alt', 'mensaje' => __('Todo funcionando correctamente', 'flavor-chat-ia')];
+            return ['nivel' => 'verde', 'icono' => 'dashicons-yes-alt', 'mensaje' => __('Todo funcionando correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         } elseif ($tiene_api_key) {
-            return ['nivel' => 'amarillo', 'icono' => 'dashicons-warning', 'mensaje' => __('Chat IA deshabilitado', 'flavor-chat-ia')];
+            return ['nivel' => 'amarillo', 'icono' => 'dashicons-warning', 'mensaje' => __('Asistente IA deshabilitado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
-        return ['nivel' => 'rojo', 'icono' => 'dashicons-dismiss', 'mensaje' => __('API key no configurada', 'flavor-chat-ia')];
+        return ['nivel' => 'rojo', 'icono' => 'dashicons-dismiss', 'mensaje' => __('API key no configurada', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     /**
@@ -559,7 +559,7 @@ class Flavor_Dashboard {
         $espacio_usado = $this->calcular_tamano_directorio($directorio_uploads['basedir']);
 
         // Estado de la API
-        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $configuracion = flavor_get_main_settings();
         $estado_api = 'sin_configurar';
         if (!empty($configuracion['claude_api_key']) || !empty($configuracion['openai_api_key'])) {
             $estado_api = 'configurada';
@@ -588,7 +588,7 @@ class Flavor_Dashboard {
             'estado_api'          => $estado_api,
             'espacio_uploads'     => $this->formatear_bytes($espacio_usado),
             'espacio_uploads_raw' => $espacio_usado,
-            'ultima_sincronizacion' => $ultima_sincronizacion ? human_time_diff(strtotime($ultima_sincronizacion)) : __('Nunca', 'flavor-chat-ia'),
+            'ultima_sincronizacion' => $ultima_sincronizacion ? human_time_diff(strtotime($ultima_sincronizacion)) : __('Nunca', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tablas_plugin'       => intval($tablas_flavor),
             'memoria_limite'      => ini_get('memory_limit'),
             'max_upload'          => ini_get('upload_max_filesize'),
@@ -653,7 +653,7 @@ class Flavor_Dashboard {
                 $alertas[] = [
                     'tipo'    => 'warning',
                     'icono'   => 'dashicons-cart',
-                    'mensaje' => sprintf(__('%d pedidos sin procesar', 'flavor-chat-ia'), $pedidos_pendientes),
+                    'mensaje' => sprintf(__('%d pedidos sin procesar', FLAVOR_PLATFORM_TEXT_DOMAIN), $pedidos_pendientes),
                     'url'     => admin_url('admin.php?page=grupos-consumo-dashboard&tab=pedidos'),
                 ];
             }
@@ -666,7 +666,7 @@ class Flavor_Dashboard {
                 $alertas[] = [
                     'tipo'    => 'info',
                     'icono'   => 'dashicons-groups',
-                    'mensaje' => sprintf(__('%d solicitudes de miembro pendientes', 'flavor-chat-ia'), $solicitudes_pendientes),
+                    'mensaje' => sprintf(__('%d solicitudes de miembro pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN), $solicitudes_pendientes),
                     'url'     => admin_url('admin.php?page=socios-dashboard&tab=solicitudes'),
                 ];
             }
@@ -679,7 +679,7 @@ class Flavor_Dashboard {
                 $alertas[] = [
                     'tipo'    => 'warning',
                     'icono'   => 'dashicons-calendar-alt',
-                    'mensaje' => sprintf(__('%d ciclos cierran en las proximas 48h', 'flavor-chat-ia'), count($ciclos_por_cerrar)),
+                    'mensaje' => sprintf(__('%d ciclos cierran en las proximas 48h', FLAVOR_PLATFORM_TEXT_DOMAIN), count($ciclos_por_cerrar)),
                     'url'     => admin_url('admin.php?page=grupos-consumo-dashboard&tab=ciclos'),
                 ];
             }
@@ -692,7 +692,7 @@ class Flavor_Dashboard {
                 $alertas[] = [
                     'tipo'    => 'info',
                     'icono'   => 'dashicons-calendar',
-                    'mensaje' => sprintf(__('%d eventos en los proximos 7 dias', 'flavor-chat-ia'), $eventos_proximos),
+                    'mensaje' => sprintf(__('%d eventos en los proximos 7 dias', FLAVOR_PLATFORM_TEXT_DOMAIN), $eventos_proximos),
                     'url'     => admin_url('admin.php?page=eventos-dashboard'),
                 ];
             }
@@ -704,7 +704,7 @@ class Flavor_Dashboard {
             $alertas[] = [
                 'tipo'    => 'success',
                 'icono'   => 'dashicons-update',
-                'mensaje' => sprintf(__('Actualizacion disponible: v%s', 'flavor-chat-ia'), $actualizacion_disponible),
+                'mensaje' => sprintf(__('Actualizacion disponible: v%s', FLAVOR_PLATFORM_TEXT_DOMAIN), $actualizacion_disponible),
                 'url'     => admin_url('plugins.php'),
             ];
         }
@@ -716,7 +716,7 @@ class Flavor_Dashboard {
                 $alertas[] = [
                     'tipo'    => 'error',
                     'icono'   => 'dashicons-warning',
-                    'mensaje' => sprintf(__('%d incidencias sin resolver', 'flavor-chat-ia'), $incidencias_abiertas),
+                    'mensaje' => sprintf(__('%d incidencias sin resolver', FLAVOR_PLATFORM_TEXT_DOMAIN), $incidencias_abiertas),
                     'url'     => admin_url('admin.php?page=incidencias-dashboard'),
                 ];
             }
@@ -874,7 +874,7 @@ class Flavor_Dashboard {
                 'tipo'    => 'info',
                 'icono'   => 'dashicons-format-chat',
                 'titulo'  => sprintf(
-                    __('Conversacion #%s (%d mensajes)', 'flavor-chat-ia'),
+                    __('Conversacion #%s (%d mensajes)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     substr($conversacion['session_id'], 0, 8),
                     $conversacion['message_count']
                 ),
@@ -926,28 +926,28 @@ class Flavor_Dashboard {
      * @return array
      */
     private function obtener_acciones_rapidas_completas($id_perfil) {
-        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $configuracion = flavor_get_main_settings();
         $modulos_activos = $configuracion['active_modules'] ?? [];
 
         $acciones = [
             'principales' => [
                 [
                     'id'       => 'configuracion',
-                    'etiqueta' => __('Configuracion', 'flavor-chat-ia'),
+                    'etiqueta' => __('Configuracion', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icono'    => 'dashicons-admin-settings',
-                    'url'      => admin_url('admin.php?page=flavor-chat-config'),
+                    'url'      => admin_url('admin.php?page=flavor-platform-settings'),
                     'color'    => '#2271b1',
                 ],
                 [
                     'id'       => 'modulos',
-                    'etiqueta' => __('Módulos', 'flavor-chat-ia'),
+                    'etiqueta' => __('Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icono'    => 'dashicons-screenoptions',
                     'url'      => admin_url('admin.php?page=flavor-module-dashboards'),
                     'color'    => '#8e44ad',
                 ],
                 [
                     'id'       => 'addons',
-                    'etiqueta' => __('Addons', 'flavor-chat-ia'),
+                    'etiqueta' => __('Addons', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icono'    => 'dashicons-admin-plugins',
                     'url'      => admin_url('admin.php?page=flavor-addons'),
                     'color'    => '#27ae60',
@@ -960,7 +960,7 @@ class Flavor_Dashboard {
         if (in_array('eventos', $modulos_activos)) {
             $acciones['contextuales'][] = [
                 'id'       => 'crear_evento',
-                'etiqueta' => __('Crear Evento', 'flavor-chat-ia'),
+                'etiqueta' => __('Crear Evento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono'    => 'dashicons-calendar-alt',
                 'url'      => admin_url('admin.php?page=eventos-dashboard&action=nuevo'),
                 'color'    => '#e74c3c',
@@ -971,7 +971,7 @@ class Flavor_Dashboard {
         if (in_array('grupos_consumo', $modulos_activos)) {
             $acciones['contextuales'][] = [
                 'id'       => 'crear_producto',
-                'etiqueta' => __('Crear Producto', 'flavor-chat-ia'),
+                'etiqueta' => __('Crear Producto', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono'    => 'dashicons-products',
                 'url'      => admin_url('admin.php?page=grupos-consumo-dashboard&action=nuevo_producto'),
                 'color'    => '#f39c12',
@@ -982,7 +982,7 @@ class Flavor_Dashboard {
         if (in_array('socios', $modulos_activos)) {
             $acciones['contextuales'][] = [
                 'id'       => 'ver_socios',
-                'etiqueta' => __('Ver Miembros', 'flavor-chat-ia'),
+                'etiqueta' => __('Ver Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono'    => 'dashicons-groups',
                 'url'      => admin_url('admin.php?page=socios-dashboard'),
                 'color'    => '#3498db',
@@ -993,7 +993,7 @@ class Flavor_Dashboard {
         $acciones['generales'] = [
             [
                 'id'       => 'enviar_notificacion',
-                'etiqueta' => __('Enviar Notificacion', 'flavor-chat-ia'),
+                'etiqueta' => __('Enviar Notificacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono'    => 'dashicons-megaphone',
                 'url'      => '#',
                 'color'    => '#9b59b6',
@@ -1002,16 +1002,16 @@ class Flavor_Dashboard {
             ],
             [
                 'id'       => 'exportar_datos',
-                'etiqueta' => __('Exportar Datos', 'flavor-chat-ia'),
+                'etiqueta' => __('Exportar Datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono'    => 'dashicons-download',
-                'url'      => admin_url('admin.php?page=flavor-export-import'),
+                'url'      => admin_url('admin.php?page=flavor-platform-export-import'),
                 'color'    => '#1abc9c',
             ],
             [
                 'id'       => 'ver_logs',
-                'etiqueta' => __('Ver Logs', 'flavor-chat-ia'),
+                'etiqueta' => __('Ver Logs', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono'    => 'dashicons-list-view',
-                'url'      => admin_url('admin.php?page=flavor-activity-log'),
+                'url'      => admin_url('admin.php?page=flavor-platform-activity-log'),
                 'color'    => '#7f8c8d',
             ],
         ];
@@ -1039,7 +1039,7 @@ class Flavor_Dashboard {
         $usuarios_activos_30d = $this->contar_usuarios_activos(30);
 
         // Modulos
-        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $configuracion = flavor_get_main_settings();
         $modulos_activos = $configuracion['active_modules'] ?? [];
         $total_modulos = 0;
         if (class_exists('Flavor_Chat_Module_Loader')) {
@@ -1273,13 +1273,13 @@ class Flavor_Dashboard {
         ];
 
         $nombres_roles = [
-            'administrator' => __('Administrador', 'flavor-chat-ia'),
-            'editor'        => __('Editor', 'flavor-chat-ia'),
-            'author'        => __('Autor', 'flavor-chat-ia'),
-            'contributor'   => __('Colaborador', 'flavor-chat-ia'),
-            'subscriber'    => __('Suscriptor', 'flavor-chat-ia'),
-            'socio'         => __('Miembro', 'flavor-chat-ia'),
-            'cliente'       => __('Cliente', 'flavor-chat-ia'),
+            'administrator' => __('Administrador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'editor'        => __('Editor', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'author'        => __('Autor', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'contributor'   => __('Colaborador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subscriber'    => __('Suscriptor', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'socio'         => __('Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cliente'       => __('Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $colores_grafico = [];
@@ -1521,15 +1521,15 @@ class Flavor_Dashboard {
         ];
 
         $etiquetas_tipo = [
-            'producto'     => __('Productos', 'flavor-chat-ia'),
-            'servicio'     => __('Servicios', 'flavor-chat-ia'),
-            'espacio'      => __('Espacios', 'flavor-chat-ia'),
-            'recurso'      => __('Recursos', 'flavor-chat-ia'),
-            'evento'       => __('Eventos', 'flavor-chat-ia'),
-            'banco_tiempo' => __('Banco de Tiempo', 'flavor-chat-ia'),
-            'saber'        => __('Saberes', 'flavor-chat-ia'),
-            'excedente'    => __('Excedentes', 'flavor-chat-ia'),
-            'necesidad'    => __('Necesidades', 'flavor-chat-ia'),
+            'producto'     => __('Productos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'servicio'     => __('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'espacio'      => __('Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'recurso'      => __('Recursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'evento'       => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'banco_tiempo' => __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'saber'        => __('Saberes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'excedente'    => __('Excedentes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'necesidad'    => __('Necesidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         foreach ($resultados as $fila) {
@@ -1673,11 +1673,11 @@ class Flavor_Dashboard {
 
         $kpis['usuarios'] = [
             'valor'           => $usuarios_actuales,
-            'etiqueta'        => __('Usuarios activos (30d)', 'flavor-chat-ia'),
+            'etiqueta'        => __('Usuarios activos (30d)', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono'           => 'dashicons-admin-users',
             'tendencia'       => $tendencia_usuarios,
             'tendencia_tipo'  => $tendencia_usuarios >= 0 ? 'positiva' : 'negativa',
-            'periodo'         => __('vs. mes anterior', 'flavor-chat-ia'),
+            'periodo'         => __('vs. mes anterior', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         // Conversaciones con tendencia
@@ -1708,32 +1708,32 @@ class Flavor_Dashboard {
 
         $kpis['conversaciones'] = [
             'valor'           => $conversaciones_mes,
-            'etiqueta'        => __('Conversaciones este mes', 'flavor-chat-ia'),
+            'etiqueta'        => __('Conversaciones este mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono'           => 'dashicons-format-chat',
             'tendencia'       => $tendencia_conversaciones,
             'tendencia_tipo'  => $tendencia_conversaciones >= 0 ? 'positiva' : 'negativa',
-            'periodo'         => __('vs. mes anterior', 'flavor-chat-ia'),
+            'periodo'         => __('vs. mes anterior', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         // Nodos de red
         $estadisticas_red = $this->obtener_estadisticas_red();
         $kpis['nodos_red'] = [
             'valor'           => $estadisticas_red['nodos_activos'],
-            'etiqueta'        => __('Nodos activos', 'flavor-chat-ia'),
+            'etiqueta'        => __('Nodos activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono'           => 'dashicons-networking',
             'tendencia'       => 0,
             'tendencia_tipo'  => 'neutral',
-            'subtitulo'       => sprintf(__('%d conexiones federadas', 'flavor-chat-ia'), $estadisticas_red['conexiones_federadas']),
+            'subtitulo'       => sprintf(__('%d conexiones federadas', FLAVOR_PLATFORM_TEXT_DOMAIN), $estadisticas_red['conexiones_federadas']),
         ];
 
         // Contenido compartido
         $kpis['contenido_compartido'] = [
             'valor'           => $estadisticas_red['contenido_compartido'],
-            'etiqueta'        => __('Items compartidos', 'flavor-chat-ia'),
+            'etiqueta'        => __('Items compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono'           => 'dashicons-share',
             'tendencia'       => 0,
             'tendencia_tipo'  => 'neutral',
-            'subtitulo'       => __('En la red', 'flavor-chat-ia'),
+            'subtitulo'       => __('En la red', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         return $kpis;
@@ -1904,14 +1904,14 @@ class Flavor_Dashboard {
 
             return [
                 'success'    => true,
-                'message'    => __('Sincronizacion completada', 'flavor-chat-ia'),
+                'message'    => __('Sincronizacion completada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'timestamp'  => current_time('c'),
             ];
         }
 
         return [
             'success' => false,
-            'message' => __('El sistema de red no esta disponible', 'flavor-chat-ia'),
+            'message' => __('El sistema de red no esta disponible', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -2171,7 +2171,7 @@ class Flavor_Dashboard {
         check_ajax_referer('flavor_dashboard_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $estadisticas = $this->get_dashboard_stats();
@@ -2195,7 +2195,7 @@ class Flavor_Dashboard {
         check_ajax_referer('flavor_dashboard_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $accion = sanitize_key($_POST['action_id'] ?? '');
@@ -2205,17 +2205,17 @@ class Flavor_Dashboard {
                 $titulo = sanitize_text_field($_POST['titulo'] ?? '');
                 $mensaje = sanitize_textarea_field($_POST['mensaje'] ?? '');
                 // Aqui iria la logica de enviar notificacion
-                wp_send_json_success(['message' => __('Notificacion enviada', 'flavor-chat-ia')]);
+                wp_send_json_success(['message' => __('Notificacion enviada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
                 break;
 
             case 'clear_cache':
                 // Limpiar cache del dashboard
                 delete_transient('flavor_dashboard_stats');
-                wp_send_json_success(['message' => __('Cache limpiada', 'flavor-chat-ia')]);
+                wp_send_json_success(['message' => __('Cache limpiada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
                 break;
 
             default:
-                wp_send_json_error(['message' => __('Accion no reconocida', 'flavor-chat-ia')]);
+                wp_send_json_error(['message' => __('Accion no reconocida', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -2228,7 +2228,7 @@ class Flavor_Dashboard {
         check_ajax_referer('flavor_panel_state', '_wpnonce');
 
         if (!$this->usuario_puede_ver_dashboard()) {
-            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $panel_id = sanitize_key($_POST['panel'] ?? '');
@@ -2237,7 +2237,7 @@ class Flavor_Dashboard {
         $paneles_validos = ['graficos', 'red', 'gailu', 'addons'];
 
         if (!in_array($panel_id, $paneles_validos, true)) {
-            wp_send_json_error(['message' => __('Panel no válido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Panel no válido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $user_id = get_current_user_id();
@@ -2281,7 +2281,7 @@ class Flavor_Dashboard {
             $tareas[] = [
                 'tipo' => 'moderacion',
                 'icono' => 'dashicons-visibility',
-                'titulo' => sprintf(__('%d publicaciones pendientes de revisión', 'flavor-chat-ia'), $pendientes_moderacion),
+                'titulo' => sprintf(__('%d publicaciones pendientes de revisión', FLAVOR_PLATFORM_TEXT_DOMAIN), $pendientes_moderacion),
                 'url' => admin_url('edit.php?post_status=pending'),
                 'cantidad' => (int) $pendientes_moderacion,
                 'prioridad' => 'media',
@@ -2294,7 +2294,7 @@ class Flavor_Dashboard {
             $tareas[] = [
                 'tipo' => 'comentarios',
                 'icono' => 'dashicons-admin-comments',
-                'titulo' => sprintf(__('%d comentarios por moderar', 'flavor-chat-ia'), $comentarios_pendientes),
+                'titulo' => sprintf(__('%d comentarios por moderar', FLAVOR_PLATFORM_TEXT_DOMAIN), $comentarios_pendientes),
                 'url' => admin_url('edit-comments.php?comment_status=moderated'),
                 'cantidad' => (int) $comentarios_pendientes,
                 'prioridad' => 'media',
@@ -2311,7 +2311,7 @@ class Flavor_Dashboard {
                 $tareas[] = [
                     'tipo' => 'socios',
                     'icono' => 'dashicons-groups',
-                    'titulo' => sprintf(__('%d solicitudes de socios', 'flavor-chat-ia'), $socios_pendientes),
+                    'titulo' => sprintf(__('%d solicitudes de socios', FLAVOR_PLATFORM_TEXT_DOMAIN), $socios_pendientes),
                     'url' => admin_url('admin.php?page=socios-dashboard&estado=pendiente'),
                     'cantidad' => (int) $socios_pendientes,
                     'prioridad' => 'alta',
@@ -2329,7 +2329,7 @@ class Flavor_Dashboard {
                 $tareas[] = [
                     'tipo' => 'incidencias',
                     'icono' => 'dashicons-warning',
-                    'titulo' => sprintf(__('%d incidencias abiertas', 'flavor-chat-ia'), $incidencias_abiertas),
+                    'titulo' => sprintf(__('%d incidencias abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN), $incidencias_abiertas),
                     'url' => admin_url('admin.php?page=incidencias-dashboard'),
                     'cantidad' => (int) $incidencias_abiertas,
                     'prioridad' => 'alta',
@@ -2347,7 +2347,7 @@ class Flavor_Dashboard {
                 $tareas[] = [
                     'tipo' => 'reservas',
                     'icono' => 'dashicons-calendar-alt',
-                    'titulo' => sprintf(__('%d reservas por confirmar', 'flavor-chat-ia'), $reservas_pendientes),
+                    'titulo' => sprintf(__('%d reservas por confirmar', FLAVOR_PLATFORM_TEXT_DOMAIN), $reservas_pendientes),
                     'url' => admin_url('admin.php?page=reservas-dashboard&estado=pendiente'),
                     'cantidad' => (int) $reservas_pendientes,
                     'prioridad' => 'media',
@@ -2365,7 +2365,7 @@ class Flavor_Dashboard {
                 $tareas[] = [
                     'tipo' => 'propuestas',
                     'icono' => 'dashicons-megaphone',
-                    'titulo' => sprintf(__('%d propuestas pendientes', 'flavor-chat-ia'), $propuestas_pendientes),
+                    'titulo' => sprintf(__('%d propuestas pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN), $propuestas_pendientes),
                     'url' => admin_url('admin.php?page=participacion-dashboard'),
                     'cantidad' => (int) $propuestas_pendientes,
                     'prioridad' => 'baja',
@@ -2388,7 +2388,7 @@ class Flavor_Dashboard {
                 $tareas[] = [
                     'tipo' => 'incidencias_urgentes',
                     'icono' => 'dashicons-sos',
-                    'titulo' => sprintf(__('⚠️ %d incidencias URGENTES', 'flavor-chat-ia'), $incidencias_urgentes),
+                    'titulo' => sprintf(__('⚠️ %d incidencias URGENTES', FLAVOR_PLATFORM_TEXT_DOMAIN), $incidencias_urgentes),
                     'url' => admin_url('admin.php?page=incidencias-dashboard&prioridad=alta'),
                     'cantidad' => (int) $incidencias_urgentes,
                     'prioridad' => 'critica',
@@ -2408,7 +2408,7 @@ class Flavor_Dashboard {
                 $tareas[] = [
                     'tipo' => 'cuotas',
                     'icono' => 'dashicons-money-alt',
-                    'titulo' => sprintf(__('%d cuotas vencidas sin cobrar', 'flavor-chat-ia'), $cuotas_vencidas),
+                    'titulo' => sprintf(__('%d cuotas vencidas sin cobrar', FLAVOR_PLATFORM_TEXT_DOMAIN), $cuotas_vencidas),
                     'url' => admin_url('admin.php?page=socios-dashboard&tab=cuotas&estado=vencida'),
                     'cantidad' => (int) $cuotas_vencidas,
                     'prioridad' => 'alta',
@@ -2427,7 +2427,7 @@ class Flavor_Dashboard {
                 $tareas[] = [
                     'tipo' => 'inscripciones',
                     'icono' => 'dashicons-tickets-alt',
-                    'titulo' => sprintf(__('%d inscripciones por confirmar', 'flavor-chat-ia'), $inscripciones_pendientes),
+                    'titulo' => sprintf(__('%d inscripciones por confirmar', FLAVOR_PLATFORM_TEXT_DOMAIN), $inscripciones_pendientes),
                     'url' => admin_url('admin.php?page=eventos-dashboard&tab=inscripciones'),
                     'cantidad' => (int) $inscripciones_pendientes,
                     'prioridad' => 'media',
@@ -2447,7 +2447,7 @@ class Flavor_Dashboard {
                 $tareas[] = [
                     'tipo' => 'ciclos_gc',
                     'icono' => 'dashicons-clock',
-                    'titulo' => sprintf(__('%d ciclo(s) cierran en 48h', 'flavor-chat-ia'), $ciclos_por_cerrar),
+                    'titulo' => sprintf(__('%d ciclo(s) cierran en 48h', FLAVOR_PLATFORM_TEXT_DOMAIN), $ciclos_por_cerrar),
                     'url' => admin_url('admin.php?page=grupos-consumo-dashboard&tab=ciclos'),
                     'cantidad' => (int) $ciclos_por_cerrar,
                     'prioridad' => 'alta',
@@ -2466,7 +2466,7 @@ class Flavor_Dashboard {
                 $tareas[] = [
                     'tipo' => 'pedidos_gc',
                     'icono' => 'dashicons-cart',
-                    'titulo' => sprintf(__('%d pedidos por procesar', 'flavor-chat-ia'), $pedidos_pendientes),
+                    'titulo' => sprintf(__('%d pedidos por procesar', FLAVOR_PLATFORM_TEXT_DOMAIN), $pedidos_pendientes),
                     'url' => admin_url('admin.php?page=grupos-consumo-dashboard&tab=pedidos'),
                     'cantidad' => (int) $pedidos_pendientes,
                     'prioridad' => 'media',
@@ -2486,7 +2486,7 @@ class Flavor_Dashboard {
                 $tareas[] = [
                     'tipo' => 'prestamos',
                     'icono' => 'dashicons-book',
-                    'titulo' => sprintf(__('%d préstamos vencidos', 'flavor-chat-ia'), $prestamos_vencidos),
+                    'titulo' => sprintf(__('%d préstamos vencidos', FLAVOR_PLATFORM_TEXT_DOMAIN), $prestamos_vencidos),
                     'url' => admin_url('admin.php?page=biblioteca-dashboard&tab=prestamos&estado=vencido'),
                     'cantidad' => (int) $prestamos_vencidos,
                     'prioridad' => 'media',
@@ -2505,7 +2505,7 @@ class Flavor_Dashboard {
                 $tareas[] = [
                     'tipo' => 'reservas_hoy',
                     'icono' => 'dashicons-calendar',
-                    'titulo' => sprintf(__('⏰ %d reservas de HOY sin confirmar', 'flavor-chat-ia'), $reservas_hoy_pendientes),
+                    'titulo' => sprintf(__('⏰ %d reservas de HOY sin confirmar', FLAVOR_PLATFORM_TEXT_DOMAIN), $reservas_hoy_pendientes),
                     'url' => admin_url('admin.php?page=reservas-dashboard&fecha=hoy&estado=pendiente'),
                     'cantidad' => (int) $reservas_hoy_pendientes,
                     'prioridad' => 'critica',
@@ -2524,7 +2524,7 @@ class Flavor_Dashboard {
                 $tareas[] = [
                     'tipo' => 'matriculas',
                     'icono' => 'dashicons-welcome-learn-more',
-                    'titulo' => sprintf(__('%d matrículas por aprobar', 'flavor-chat-ia'), $matriculas_pendientes),
+                    'titulo' => sprintf(__('%d matrículas por aprobar', FLAVOR_PLATFORM_TEXT_DOMAIN), $matriculas_pendientes),
                     'url' => admin_url('admin.php?page=cursos-dashboard&tab=matriculas'),
                     'cantidad' => (int) $matriculas_pendientes,
                     'prioridad' => 'media',
@@ -2543,7 +2543,7 @@ class Flavor_Dashboard {
                 $tareas[] = [
                     'tipo' => 'marketplace',
                     'icono' => 'dashicons-store',
-                    'titulo' => sprintf(__('%d anuncios por aprobar', 'flavor-chat-ia'), $productos_pendientes),
+                    'titulo' => sprintf(__('%d anuncios por aprobar', FLAVOR_PLATFORM_TEXT_DOMAIN), $productos_pendientes),
                     'url' => admin_url('admin.php?page=marketplace-dashboard&estado=pendiente'),
                     'cantidad' => (int) $productos_pendientes,
                     'prioridad' => 'baja',
@@ -2568,7 +2568,7 @@ class Flavor_Dashboard {
      * @return array
      */
     public function obtener_modulos_mas_usados($limite = 6) {
-        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $configuracion = flavor_get_main_settings();
         $modulos_activos = $configuracion['active_modules'] ?? [];
 
         if (empty($modulos_activos)) {
@@ -2699,7 +2699,7 @@ class Flavor_Dashboard {
                         'nombre' => $miembro->display_name,
                         'email' => $miembro->user_email,
                         'grupo' => $miembro->grupo_nombre,
-                        'fecha' => human_time_diff(strtotime($miembro->created_at), current_time('timestamp')) . ' ' . __('atrás', 'flavor-chat-ia'),
+                        'fecha' => human_time_diff(strtotime($miembro->created_at), current_time('timestamp')) . ' ' . __('atrás', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ];
                 }
             }
@@ -2725,7 +2725,7 @@ class Flavor_Dashboard {
                     'id' => $pub->id,
                     'titulo' => wp_trim_words($pub->contenido, 10, '...'),
                     'autor' => $pub->autor_nombre,
-                    'fecha' => human_time_diff(strtotime($pub->created_at), current_time('timestamp')) . ' ' . __('atrás', 'flavor-chat-ia'),
+                    'fecha' => human_time_diff(strtotime($pub->created_at), current_time('timestamp')) . ' ' . __('atrás', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => admin_url('admin.php?page=moderacion-dashboard&id=' . $pub->id),
                 ];
             }
@@ -2740,56 +2740,56 @@ class Flavor_Dashboard {
      * @return array
      */
     public function obtener_accesos_rapidos_contextuales() {
-        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $configuracion = flavor_get_main_settings();
         $modulos_activos = $configuracion['active_modules'] ?? [];
         $accesos = [];
 
         // Mapeo de módulos a accesos rápidos
         $accesos_por_modulo = [
             'marketplace' => [
-                'etiqueta' => __('Nuevo producto', 'flavor-chat-ia'),
+                'etiqueta' => __('Nuevo producto', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-plus-alt',
                 'url' => admin_url('post-new.php?post_type=marketplace_item'),
                 'color' => '#10b981',
             ],
             'eventos' => [
-                'etiqueta' => __('Crear evento', 'flavor-chat-ia'),
+                'etiqueta' => __('Crear evento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-calendar-alt',
                 'url' => admin_url('post-new.php?post_type=evento'),
                 'color' => '#8b5cf6',
             ],
             'talleres' => [
-                'etiqueta' => __('Nuevo taller', 'flavor-chat-ia'),
+                'etiqueta' => __('Nuevo taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-welcome-learn-more',
                 'url' => admin_url('post-new.php?post_type=taller'),
                 'color' => '#f59e0b',
             ],
             'reservas' => [
-                'etiqueta' => __('Ver reservas', 'flavor-chat-ia'),
+                'etiqueta' => __('Ver reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-calendar',
                 'url' => admin_url('admin.php?page=reservas-dashboard'),
                 'color' => '#3b82f6',
             ],
             'socios' => [
-                'etiqueta' => __('Gestionar miembros', 'flavor-chat-ia'),
+                'etiqueta' => __('Gestionar miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-groups',
                 'url' => admin_url('admin.php?page=socios-dashboard'),
                 'color' => '#ec4899',
             ],
             'banco_tiempo' => [
-                'etiqueta' => __('Banco de tiempo', 'flavor-chat-ia'),
+                'etiqueta' => __('Banco de tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-clock',
                 'url' => admin_url('admin.php?page=banco-tiempo-dashboard'),
                 'color' => '#06b6d4',
             ],
             'incidencias' => [
-                'etiqueta' => __('Incidencias', 'flavor-chat-ia'),
+                'etiqueta' => __('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-warning',
                 'url' => admin_url('admin.php?page=incidencias-dashboard'),
                 'color' => '#ef4444',
             ],
             'comunidades' => [
-                'etiqueta' => __('Comunidades', 'flavor-chat-ia'),
+                'etiqueta' => __('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-networking',
                 'url' => admin_url('admin.php?page=comunidades-dashboard'),
                 'color' => '#a855f7',
@@ -2814,16 +2814,16 @@ class Flavor_Dashboard {
      */
     public function obtener_alertas_configuracion() {
         $alertas = [];
-        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $configuracion = flavor_get_main_settings();
 
         // Verificar API key
         if (empty($configuracion['openai_api_key'])) {
             $alertas[] = [
                 'tipo' => 'warning',
                 'icono' => 'dashicons-admin-network',
-                'mensaje' => __('API de IA no configurada', 'flavor-chat-ia'),
-                'url' => admin_url('admin.php?page=flavor-chat-config'),
-                'accion' => __('Configurar', 'flavor-chat-ia'),
+                'mensaje' => __('API de IA no configurada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'url' => admin_url('admin.php?page=flavor-platform-settings'),
+                'accion' => __('Configurar', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2833,9 +2833,9 @@ class Flavor_Dashboard {
             $alertas[] = [
                 'tipo' => 'info',
                 'icono' => 'dashicons-screenoptions',
-                'mensaje' => __('No hay módulos activados', 'flavor-chat-ia'),
+                'mensaje' => __('No hay módulos activados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => admin_url('admin.php?page=flavor-app-composer'),
-                'accion' => __('Activar módulos', 'flavor-chat-ia'),
+                'accion' => __('Activar módulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2845,9 +2845,9 @@ class Flavor_Dashboard {
             $alertas[] = [
                 'tipo' => 'info',
                 'icono' => 'dashicons-admin-page',
-                'mensaje' => __('Páginas del portal no creadas', 'flavor-chat-ia'),
+                'mensaje' => __('Páginas del portal no creadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => admin_url('admin.php?page=flavor-create-pages'),
-                'accion' => __('Crear páginas', 'flavor-chat-ia'),
+                'accion' => __('Crear páginas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2857,9 +2857,9 @@ class Flavor_Dashboard {
             $alertas[] = [
                 'tipo' => 'error',
                 'icono' => 'dashicons-warning',
-                'mensaje' => sprintf(__('%d errores registrados', 'flavor-chat-ia'), count($errores_recientes)),
-                'url' => admin_url('admin.php?page=flavor-health-check'),
-                'accion' => __('Ver detalles', 'flavor-chat-ia'),
+                'mensaje' => sprintf(__('%d errores registrados', FLAVOR_PLATFORM_TEXT_DOMAIN), count($errores_recientes)),
+                'url' => admin_url('admin.php?page=flavor-platform-health-check'),
+                'accion' => __('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2878,28 +2878,28 @@ class Flavor_Dashboard {
             [
                 'id' => 'usuarios',
                 'valor' => $stats['usuarios_activos_30d'] ?? 0,
-                'etiqueta' => __('Usuarios activos', 'flavor-chat-ia'),
+                'etiqueta' => __('Usuarios activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-admin-users',
                 'color' => '#3b82f6',
             ],
             [
                 'id' => 'modulos',
                 'valor' => ($stats['modulos_activos'] ?? 0) . '/' . ($stats['modulos_totales'] ?? 0),
-                'etiqueta' => __('Módulos', 'flavor-chat-ia'),
+                'etiqueta' => __('Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-screenoptions',
                 'color' => '#10b981',
             ],
             [
                 'id' => 'socios',
                 'valor' => $stats['socios_activos'] ?? 0,
-                'etiqueta' => __('Miembros', 'flavor-chat-ia'),
+                'etiqueta' => __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-groups',
                 'color' => '#8b5cf6',
             ],
             [
                 'id' => 'conversaciones',
                 'valor' => $stats['conversaciones'] ?? 0,
-                'etiqueta' => __('Conversaciones IA', 'flavor-chat-ia'),
+                'etiqueta' => __('Conversaciones IA', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-format-chat',
                 'color' => '#f59e0b',
             ],

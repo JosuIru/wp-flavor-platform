@@ -13,8 +13,8 @@ if (!defined('ABSPATH')) {
 
 if (!is_user_logged_in()) {
     echo '<div class="parkings-login-required">';
-    echo '<p>' . esc_html__('Debes iniciar sesión para solicitar una plaza de parking.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="btn btn-primary">' . esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a>';
+    echo '<p>' . esc_html__('Debes iniciar sesión para solicitar una plaza de parking.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
+    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="btn btn-primary">' . esc_html__('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
     echo '</div>';
     return;
 }
@@ -27,7 +27,7 @@ $tabla_reservas = $wpdb->prefix . 'flavor_parkings_reservas';
 
 // Verificar si existe la tabla
 if (!Flavor_Chat_Helpers::tabla_existe($tabla_parkings)) {
-    echo '<div class="parkings-empty"><p>' . esc_html__('El módulo de parkings no está configurado.', 'flavor-chat-ia') . '</p></div>';
+    echo '<div class="parkings-empty"><p>' . esc_html__('El módulo de parkings no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
 
@@ -58,21 +58,21 @@ $parkings_disponibles = $wpdb->get_results("
 
 // Tipos de plaza disponibles
 $tipos_plaza = [
-    'normal' => __('Normal', 'flavor-chat-ia'),
-    'discapacitado' => __('Movilidad reducida', 'flavor-chat-ia'),
-    'moto' => __('Moto', 'flavor-chat-ia'),
-    'electrico' => __('Vehículo eléctrico', 'flavor-chat-ia'),
-    'grande' => __('Plaza grande', 'flavor-chat-ia'),
+    'normal' => __('Normal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'discapacitado' => __('Movilidad reducida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'moto' => __('Moto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'electrico' => __('Vehículo eléctrico', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'grande' => __('Plaza grande', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 // Duraciones predefinidas
 $duraciones = [
-    '1' => __('1 hora', 'flavor-chat-ia'),
-    '2' => __('2 horas', 'flavor-chat-ia'),
-    '4' => __('4 horas', 'flavor-chat-ia'),
-    '8' => __('8 horas (jornada)', 'flavor-chat-ia'),
-    '24' => __('24 horas (día completo)', 'flavor-chat-ia'),
-    'custom' => __('Personalizado', 'flavor-chat-ia'),
+    '1' => __('1 hora', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    '2' => __('2 horas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    '4' => __('4 horas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    '8' => __('8 horas (jornada)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    '24' => __('24 horas (día completo)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'custom' => __('Personalizado', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $parkings_url = Flavor_Chat_Helpers::get_action_url('parkings', '');
@@ -85,21 +85,21 @@ $nonce_reserva = wp_create_nonce('parkings_solicitar_plaza');
     <header class="solicitar-header">
         <a href="<?php echo esc_url($parkings_url); ?>" class="btn-volver">
             <span class="dashicons dashicons-arrow-left-alt2"></span>
-            <?php esc_html_e('Volver', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Volver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <div class="header-titulo">
-            <h2><?php esc_html_e('Solicitar Plaza de Parking', 'flavor-chat-ia'); ?></h2>
-            <p><?php esc_html_e('Completa el formulario para reservar tu plaza', 'flavor-chat-ia'); ?></p>
+            <h2><?php esc_html_e('Solicitar Plaza de Parking', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+            <p><?php esc_html_e('Completa el formulario para reservar tu plaza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     </header>
 
     <?php if (empty($parkings_disponibles)): ?>
         <div class="solicitar-no-disponible">
             <span class="dashicons dashicons-warning"></span>
-            <h3><?php esc_html_e('No hay plazas disponibles', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('En este momento no hay plazas libres en ningún parking. Por favor, inténtalo más tarde.', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('No hay plazas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php esc_html_e('En este momento no hay plazas libres en ningún parking. Por favor, inténtalo más tarde.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <a href="<?php echo esc_url($parkings_url . 'ocupacion/'); ?>" class="btn btn-outline">
-                <?php esc_html_e('Ver ocupación', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver ocupación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     <?php else: ?>
@@ -111,7 +111,7 @@ $nonce_reserva = wp_create_nonce('parkings_solicitar_plaza');
             <section class="form-seccion">
                 <h3 class="seccion-titulo">
                     <span class="seccion-numero">1</span>
-                    <?php esc_html_e('Selecciona el parking', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Selecciona el parking', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
 
                 <div class="parkings-selector">
@@ -134,7 +134,7 @@ $nonce_reserva = wp_create_nonce('parkings_solicitar_plaza');
                             </div>
                             <div class="opcion-plazas">
                                 <span class="plazas-numero"><?php echo esc_html($parking->plazas_libres); ?></span>
-                                <span class="plazas-label"><?php esc_html_e('libres', 'flavor-chat-ia'); ?></span>
+                                <span class="plazas-label"><?php esc_html_e('libres', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                         </label>
                     <?php endforeach; ?>
@@ -145,19 +145,19 @@ $nonce_reserva = wp_create_nonce('parkings_solicitar_plaza');
             <section class="form-seccion">
                 <h3 class="seccion-titulo">
                     <span class="seccion-numero">2</span>
-                    <?php esc_html_e('Fecha y duración', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Fecha y duración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
 
                 <div class="form-grid">
                     <div class="form-grupo">
-                        <label for="fecha_inicio"><?php esc_html_e('Fecha y hora de entrada', 'flavor-chat-ia'); ?></label>
+                        <label for="fecha_inicio"><?php esc_html_e('Fecha y hora de entrada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="datetime-local" id="fecha_inicio" name="fecha_inicio"
                                min="<?php echo date('Y-m-d\TH:i'); ?>"
                                value="<?php echo date('Y-m-d\TH:i', strtotime('+15 minutes')); ?>" required>
                     </div>
 
                     <div class="form-grupo">
-                        <label for="duracion"><?php esc_html_e('Duración', 'flavor-chat-ia'); ?></label>
+                        <label for="duracion"><?php esc_html_e('Duración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select id="duracion" name="duracion" required>
                             <?php foreach ($duraciones as $valor => $texto): ?>
                                 <option value="<?php echo esc_attr($valor); ?>" <?php selected($valor, '2'); ?>>
@@ -168,7 +168,7 @@ $nonce_reserva = wp_create_nonce('parkings_solicitar_plaza');
                     </div>
 
                     <div class="form-grupo form-grupo--custom-duracion" style="display: none;">
-                        <label for="fecha_fin"><?php esc_html_e('Fecha y hora de salida', 'flavor-chat-ia'); ?></label>
+                        <label for="fecha_fin"><?php esc_html_e('Fecha y hora de salida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="datetime-local" id="fecha_fin" name="fecha_fin">
                     </div>
                 </div>
@@ -176,7 +176,7 @@ $nonce_reserva = wp_create_nonce('parkings_solicitar_plaza');
                 <div class="duracion-preview">
                     <span class="dashicons dashicons-calendar-alt"></span>
                     <span id="preview-fechas">
-                        <?php esc_html_e('Selecciona fecha y duración', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Selecciona fecha y duración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                 </div>
             </section>
@@ -185,20 +185,20 @@ $nonce_reserva = wp_create_nonce('parkings_solicitar_plaza');
             <section class="form-seccion">
                 <h3 class="seccion-titulo">
                     <span class="seccion-numero">3</span>
-                    <?php esc_html_e('Datos del vehículo', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Datos del vehículo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
 
                 <div class="form-grid">
                     <div class="form-grupo">
-                        <label for="matricula"><?php esc_html_e('Matrícula', 'flavor-chat-ia'); ?></label>
+                        <label for="matricula"><?php esc_html_e('Matrícula', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="text" id="matricula" name="matricula"
-                               placeholder="<?php esc_attr_e('Ej: 1234 ABC', 'flavor-chat-ia'); ?>"
+                               placeholder="<?php esc_attr_e('Ej: 1234 ABC', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                                pattern="[A-Za-z0-9\s\-]+" maxlength="12" required>
-                        <small class="form-ayuda"><?php esc_html_e('Necesaria para el acceso al parking', 'flavor-chat-ia'); ?></small>
+                        <small class="form-ayuda"><?php esc_html_e('Necesaria para el acceso al parking', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                     </div>
 
                     <div class="form-grupo">
-                        <label for="tipo_plaza"><?php esc_html_e('Tipo de plaza', 'flavor-chat-ia'); ?></label>
+                        <label for="tipo_plaza"><?php esc_html_e('Tipo de plaza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select id="tipo_plaza" name="tipo_plaza">
                             <?php foreach ($tipos_plaza as $valor => $texto): ?>
                                 <option value="<?php echo esc_attr($valor); ?>">
@@ -214,19 +214,19 @@ $nonce_reserva = wp_create_nonce('parkings_solicitar_plaza');
             <section class="form-seccion">
                 <h3 class="seccion-titulo">
                     <span class="seccion-numero">4</span>
-                    <?php esc_html_e('Información adicional', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Información adicional', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
 
                 <div class="form-grupo">
-                    <label for="notas"><?php esc_html_e('Notas (opcional)', 'flavor-chat-ia'); ?></label>
+                    <label for="notas"><?php esc_html_e('Notas (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <textarea id="notas" name="notas" rows="3"
-                              placeholder="<?php esc_attr_e('Información adicional sobre tu reserva...', 'flavor-chat-ia'); ?>"></textarea>
+                              placeholder="<?php esc_attr_e('Información adicional sobre tu reserva...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                 </div>
 
                 <div class="form-grupo form-grupo--checkbox">
                     <label>
                         <input type="checkbox" name="recordatorio" value="1" checked>
-                        <?php esc_html_e('Enviarme un recordatorio 30 minutos antes de que expire mi reserva', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Enviarme un recordatorio 30 minutos antes de que expire mi reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </div>
             </section>
@@ -234,17 +234,17 @@ $nonce_reserva = wp_create_nonce('parkings_solicitar_plaza');
             <!-- Resumen y envío -->
             <section class="form-seccion form-seccion--resumen">
                 <div class="resumen-reserva" id="resumen-reserva">
-                    <h4><?php esc_html_e('Resumen de tu reserva', 'flavor-chat-ia'); ?></h4>
-                    <p class="resumen-placeholder"><?php esc_html_e('Completa el formulario para ver el resumen', 'flavor-chat-ia'); ?></p>
+                    <h4><?php esc_html_e('Resumen de tu reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                    <p class="resumen-placeholder"><?php esc_html_e('Completa el formulario para ver el resumen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
 
                 <div class="form-acciones">
                     <a href="<?php echo esc_url($parkings_url); ?>" class="btn btn-outline">
-                        <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <button type="submit" class="btn btn-primary btn-lg">
                         <span class="dashicons dashicons-yes"></span>
-                        <?php esc_html_e('Confirmar reserva', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Confirmar reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </section>
@@ -344,7 +344,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var duracion = selectDuracion.value;
 
         if (!fechaInicio) {
-            previewFechas.textContent = '<?php echo esc_js(__('Selecciona fecha y duración', 'flavor-chat-ia')); ?>';
+            previewFechas.textContent = '<?php echo esc_js(__('Selecciona fecha y duración', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
             return;
         }
 
@@ -356,7 +356,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (duracion !== 'custom') {
             fin = new Date(inicio.getTime() + parseInt(duracion) * 60 * 60 * 1000);
         } else {
-            previewFechas.textContent = '<?php echo esc_js(__('Selecciona la fecha de salida', 'flavor-chat-ia')); ?>';
+            previewFechas.textContent = '<?php echo esc_js(__('Selecciona la fecha de salida', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
             return;
         }
 

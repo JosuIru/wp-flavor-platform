@@ -252,9 +252,9 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
     public function shortcode_formulario($atts) {
         if (!is_user_logged_in()) {
             return '<div class="marketplace-login-required"><p>' .
-                   esc_html__('Debes iniciar sesión para publicar un anuncio.', 'flavor-chat-ia') .
+                   esc_html__('Debes iniciar sesión para publicar un anuncio.', FLAVOR_PLATFORM_TEXT_DOMAIN) .
                    '</p><a href="' . esc_url(wp_login_url(self::get_current_request_url())) . '" class="btn-login">' .
-                   esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a></div>';
+                   esc_html__('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></div>';
         }
 
         ob_start();
@@ -272,33 +272,33 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
         ]);
 
         $tipos = [
-            'regalo' => __('Regalo', 'flavor-chat-ia'),
-            'venta' => __('Venta', 'flavor-chat-ia'),
-            'cambio' => __('Cambio', 'flavor-chat-ia'),
-            'alquiler' => __('Alquiler', 'flavor-chat-ia'),
+            'regalo' => __('Regalo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'venta' => __('Venta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cambio' => __('Cambio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'alquiler' => __('Alquiler', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
         ?>
         <div class="marketplace-formulario">
-            <h2><?php esc_html_e('Publicar Anuncio', 'flavor-chat-ia'); ?></h2>
+            <h2><?php esc_html_e('Publicar Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <form id="marketplace-form-anuncio" class="marketplace-form">
                 <?php wp_nonce_field('marketplace_crear_anuncio', 'marketplace_nonce'); ?>
 
                 <div class="form-group">
-                    <label for="anuncio-titulo"><?php esc_html_e('Título', 'flavor-chat-ia'); ?> *</label>
+                    <label for="anuncio-titulo"><?php esc_html_e('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <input type="text" id="anuncio-titulo" name="titulo" required maxlength="100">
                 </div>
 
                 <div class="form-group">
-                    <label for="anuncio-descripcion"><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?> *</label>
+                    <label for="anuncio-descripcion"><?php esc_html_e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <textarea id="anuncio-descripcion" name="descripcion" rows="5" required></textarea>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="anuncio-tipo"><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?> *</label>
+                        <label for="anuncio-tipo"><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                         <select id="anuncio-tipo" name="tipo" required>
-                            <option value=""><?php esc_html_e('Seleccionar...', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php esc_html_e('Seleccionar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php foreach ($tipos as $value => $label): ?>
                                 <option value="<?php echo esc_attr($value); ?>"><?php echo esc_html($label); ?></option>
                             <?php endforeach; ?>
@@ -306,9 +306,9 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
                     </div>
 
                     <div class="form-group">
-                        <label for="anuncio-categoria"><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></label>
+                        <label for="anuncio-categoria"><?php esc_html_e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select id="anuncio-categoria" name="categoria">
-                            <option value=""><?php esc_html_e('Sin categoría', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php esc_html_e('Sin categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php if (!is_wp_error($categorias)): ?>
                                 <?php foreach ($categorias as $cat): ?>
                                     <option value="<?php echo esc_attr($cat->term_id); ?>"><?php echo esc_html($cat->name); ?></option>
@@ -319,18 +319,18 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
                 </div>
 
                 <div class="form-group" id="grupo-precio">
-                    <label for="anuncio-precio"><?php esc_html_e('Precio', 'flavor-chat-ia'); ?></label>
+                    <label for="anuncio-precio"><?php esc_html_e('Precio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="number" id="anuncio-precio" name="precio" min="0" step="0.01" placeholder="0.00">
-                    <small><?php esc_html_e('Dejar en 0 para regalo o negociable', 'flavor-chat-ia'); ?></small>
+                    <small><?php esc_html_e('Dejar en 0 para regalo o negociable', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                 </div>
 
                 <div class="form-group">
-                    <label><?php esc_html_e('Imágenes', 'flavor-chat-ia'); ?></label>
+                    <label><?php esc_html_e('Imágenes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <div class="marketplace-upload-area" id="upload-area">
                         <input type="file" id="anuncio-imagenes" name="imagenes[]" multiple accept="image/*" style="display:none;">
                         <button type="button" class="btn-upload" onclick="document.getElementById('anuncio-imagenes').click();">
                             <span class="dashicons dashicons-upload"></span>
-                            <?php esc_html_e('Subir imágenes', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Subir imágenes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <div id="preview-imagenes" class="preview-grid"></div>
                     </div>
@@ -338,7 +338,7 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
 
                 <div class="form-actions">
                     <button type="submit" class="btn-primary btn-publicar">
-                        <?php esc_html_e('Publicar Anuncio', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Publicar Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </form>
@@ -354,36 +354,36 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'marketplace',
-            'label' => __('Marketplace', 'flavor-chat-ia'),
+            'label' => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-store',
             'capability' => 'manage_options',
             'categoria' => 'economia',
             'paginas' => [
                 [
                     'slug' => 'marketplace-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_dashboard'],
                     'badge' => [$this, 'contar_anuncios_pendientes'],
                 ],
                 [
                     'slug' => 'marketplace-anuncios',
-                    'titulo' => __('Anuncios', 'flavor-chat-ia'),
+                    'titulo' => __('Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_productos'],
                 ],
                 [
                     'slug' => 'marketplace-moderacion',
-                    'titulo' => __('Moderación', 'flavor-chat-ia'),
+                    'titulo' => __('Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_moderacion'],
                     'badge' => [$this, 'contar_anuncios_pendientes'],
                 ],
                 [
                     'slug' => 'marketplace-categorias',
-                    'titulo' => __('Categorías', 'flavor-chat-ia'),
+                    'titulo' => __('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_categorias'],
                 ],
                 [
                     'slug' => 'marketplace-config',
-                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'titulo' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_configuracion'],
                 ],
             ],
@@ -412,9 +412,9 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_dashboard() {
         $estadisticas = $this->get_estadisticas_marketplace();
-        $this->render_page_header(__('Dashboard Marketplace', 'flavor-chat-ia'), [
+        $this->render_page_header(__('Dashboard Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN), [
             [
-                'label' => __('Nuevo Anuncio', 'flavor-chat-ia'),
+                'label' => __('Nuevo Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => admin_url('post-new.php?post_type=marketplace_item'),
                 'class' => 'button-primary',
             ],
@@ -425,28 +425,28 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
                 <span class="dashicons dashicons-megaphone"></span>
                 <div class="stat-content">
                     <h3><?php echo esc_html($estadisticas['total_anuncios']); ?></h3>
-                    <p><?php _e('Anuncios Activos', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('Anuncios Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             </div>
             <div class="stat-card">
                 <span class="dashicons dashicons-clock"></span>
                 <div class="stat-content">
                     <h3><?php echo esc_html($estadisticas['pendientes']); ?></h3>
-                    <p><?php _e('Pendientes de Moderación', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('Pendientes de Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             </div>
             <div class="stat-card">
                 <span class="dashicons dashicons-category"></span>
                 <div class="stat-content">
                     <h3><?php echo esc_html($estadisticas['categorias']); ?></h3>
-                    <p><?php _e('Categorías', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             </div>
             <div class="stat-card">
                 <span class="dashicons dashicons-groups"></span>
                 <div class="stat-content">
                     <h3><?php echo esc_html($estadisticas['usuarios_activos']); ?></h3>
-                    <p><?php _e('Usuarios con Anuncios', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('Usuarios con Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             </div>
         </div>
@@ -457,24 +457,24 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
      * Renderiza la lista de anuncios en el panel de administración
      */
     public function render_admin_anuncios() {
-        $this->render_page_header(__('Gestión de Anuncios', 'flavor-chat-ia'), [
+        $this->render_page_header(__('Gestión de Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN), [
             [
-                'label' => __('Nuevo Anuncio', 'flavor-chat-ia'),
+                'label' => __('Nuevo Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => admin_url('post-new.php?post_type=marketplace_item'),
                 'class' => 'button-primary',
             ],
             [
-                'label' => __('Ver Todos', 'flavor-chat-ia'),
+                'label' => __('Ver Todos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => admin_url('edit.php?post_type=marketplace_item'),
                 'class' => '',
             ],
         ]);
         ?>
         <div class="marketplace-admin-content">
-            <p><?php _e('Administra todos los anuncios del marketplace desde aquí.', 'flavor-chat-ia'); ?></p>
+            <p><?php _e('Administra todos los anuncios del marketplace desde aquí.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <p>
                 <a href="<?php echo esc_url(admin_url('edit.php?post_type=marketplace_item')); ?>" class="button">
-                    <?php _e('Ir al listado de anuncios', 'flavor-chat-ia'); ?>
+                    <?php _e('Ir al listado de anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </p>
         </div>
@@ -485,25 +485,25 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
      * Renderiza la gestión de categorías en el panel de administración
      */
     public function render_admin_categorias() {
-        $this->render_page_header(__('Categorías del Marketplace', 'flavor-chat-ia'), [
+        $this->render_page_header(__('Categorías del Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN), [
             [
-                'label' => __('Gestionar Categorías', 'flavor-chat-ia'),
+                'label' => __('Gestionar Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => admin_url('edit-tags.php?taxonomy=marketplace_categoria&post_type=marketplace_item'),
                 'class' => 'button-primary',
             ],
             [
-                'label' => __('Tipos de Transacción', 'flavor-chat-ia'),
+                'label' => __('Tipos de Transacción', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => admin_url('edit-tags.php?taxonomy=marketplace_tipo&post_type=marketplace_item'),
                 'class' => '',
             ],
         ]);
         ?>
         <div class="marketplace-admin-content">
-            <h3><?php _e('Categorías de Productos', 'flavor-chat-ia'); ?></h3>
-            <p><?php _e('Organiza los anuncios por tipo de producto.', 'flavor-chat-ia'); ?></p>
+            <h3><?php _e('Categorías de Productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php _e('Organiza los anuncios por tipo de producto.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
-            <h3><?php _e('Tipos de Transacción', 'flavor-chat-ia'); ?></h3>
-            <p><?php _e('Define cómo se realizan las transacciones: Regalo, Venta, Cambio o Alquiler.', 'flavor-chat-ia'); ?></p>
+            <h3><?php _e('Tipos de Transacción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php _e('Define cómo se realizan las transacciones: Regalo, Venta, Cambio o Alquiler.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
         <?php
     }
@@ -515,15 +515,15 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
         $estadisticas = $this->get_estadisticas_marketplace();
         ?>
         <div class="marketplace-widget">
-            <p><strong><?php echo esc_html($estadisticas['total_anuncios']); ?></strong> <?php _e('anuncios activos', 'flavor-chat-ia'); ?></p>
+            <p><strong><?php echo esc_html($estadisticas['total_anuncios']); ?></strong> <?php _e('anuncios activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php if ($estadisticas['pendientes'] > 0): ?>
                 <p class="warning">
                     <strong><?php echo esc_html($estadisticas['pendientes']); ?></strong>
-                    <?php _e('pendientes de moderación', 'flavor-chat-ia'); ?>
+                    <?php _e('pendientes de moderación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             <?php endif; ?>
             <a href="<?php echo esc_url($this->admin_page_url('marketplace-dashboard')); ?>" class="button">
-                <?php _e('Ver Dashboard', 'flavor-chat-ia'); ?>
+                <?php _e('Ver Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
         <?php
@@ -563,16 +563,16 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
      */
     public function registrar_custom_post_type() {
         $etiquetas = [
-            'name' => __('Anuncios Marketplace', 'flavor-chat-ia'),
-            'singular_name' => __('Anuncio', 'flavor-chat-ia'),
-            'add_new' => __('Añadir Anuncio', 'flavor-chat-ia'),
-            'add_new_item' => __('Añadir Nuevo Anuncio', 'flavor-chat-ia'),
-            'edit_item' => __('Editar Anuncio', 'flavor-chat-ia'),
-            'new_item' => __('Nuevo Anuncio', 'flavor-chat-ia'),
-            'view_item' => __('Ver Anuncio', 'flavor-chat-ia'),
-            'search_items' => __('Buscar Anuncios', 'flavor-chat-ia'),
-            'not_found' => __('No se encontraron anuncios', 'flavor-chat-ia'),
-            'not_found_in_trash' => __('No hay anuncios en la papelera', 'flavor-chat-ia'),
+            'name' => __('Anuncios Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'singular_name' => __('Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'add_new' => __('Añadir Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'add_new_item' => __('Añadir Nuevo Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'edit_item' => __('Editar Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'new_item' => __('Nuevo Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'view_item' => __('Ver Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'search_items' => __('Buscar Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'not_found' => __('No se encontraron anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'not_found_in_trash' => __('No hay anuncios en la papelera', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $argumentos = [
@@ -601,8 +601,8 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
         // Taxonomía: Tipo de transacción (regalo, venta, cambio, alquiler)
         register_taxonomy('marketplace_tipo', 'marketplace_item', [
             'labels' => [
-                'name' => __('Tipo de Transacción', 'flavor-chat-ia'),
-                'singular_name' => __('Tipo', 'flavor-chat-ia'),
+                'name' => __('Tipo de Transacción', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => true,
             'hierarchical' => false,
@@ -614,8 +614,8 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
         // Taxonomía: Categoría del producto
         register_taxonomy('marketplace_categoria', 'marketplace_item', [
             'labels' => [
-                'name' => __('Categorías', 'flavor-chat-ia'),
-                'singular_name' => __('Categoría', 'flavor-chat-ia'),
+                'name' => __('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => true,
             'hierarchical' => true,
@@ -650,7 +650,7 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
     public function registrar_meta_boxes() {
         add_meta_box(
             'marketplace_detalles',
-            __('Detalles del Anuncio', 'flavor-chat-ia'),
+            __('Detalles del Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'renderizar_meta_box_detalles'],
             'marketplace_item',
             'normal',
@@ -674,59 +674,59 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
         ?>
         <table class="form-table">
             <tr>
-                <th><label for="marketplace_precio"><?php _e('Precio', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="marketplace_precio"><?php _e('Precio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <input type="number" step="0.01" id="marketplace_precio" name="marketplace_precio"
                            value="<?php echo esc_attr($precio); ?>" class="regular-text" />
-                    <p class="description"><?php _e('Deja en blanco si es regalo o cambio', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php _e('Deja en blanco si es regalo o cambio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
             <tr>
-                <th><label for="marketplace_estado"><?php _e('Estado de Conservación', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="marketplace_estado"><?php _e('Estado de Conservación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <select id="marketplace_estado" name="marketplace_estado">
-                        <option value=""><?php _e('Selecciona...', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('nuevo', 'flavor-chat-ia'); ?>" <?php selected($estado_conservacion, 'nuevo'); ?>><?php _e('Nuevo', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('como_nuevo', 'flavor-chat-ia'); ?>" <?php selected($estado_conservacion, 'como_nuevo'); ?>><?php _e('Como nuevo', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('buen_estado', 'flavor-chat-ia'); ?>" <?php selected($estado_conservacion, 'buen_estado'); ?>><?php _e('Buen estado', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('usado', 'flavor-chat-ia'); ?>" <?php selected($estado_conservacion, 'usado'); ?>><?php _e('Usado', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('reparar', 'flavor-chat-ia'); ?>" <?php selected($estado_conservacion, 'reparar'); ?>><?php _e('Necesita reparación', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Selecciona...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($estado_conservacion, 'nuevo'); ?>><?php _e('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('como_nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($estado_conservacion, 'como_nuevo'); ?>><?php _e('Como nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('buen_estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($estado_conservacion, 'buen_estado'); ?>><?php _e('Buen estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('usado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($estado_conservacion, 'usado'); ?>><?php _e('Usado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('reparar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($estado_conservacion, 'reparar'); ?>><?php _e('Necesita reparación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </td>
             </tr>
             <tr>
-                <th><label for="marketplace_ubicacion"><?php _e('Ubicación', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="marketplace_ubicacion"><?php _e('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <input type="text" id="marketplace_ubicacion" name="marketplace_ubicacion"
                            value="<?php echo esc_attr($ubicacion); ?>" class="regular-text"
-                           placeholder="<?php _e('Ciudad o barrio', 'flavor-chat-ia'); ?>" />
+                           placeholder="<?php _e('Ciudad o barrio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" />
                 </td>
             </tr>
             <tr>
-                <th><label for="marketplace_contacto"><?php _e('Contacto Preferido', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="marketplace_contacto"><?php _e('Contacto Preferido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <select id="marketplace_contacto" name="marketplace_contacto">
-                        <option value="<?php echo esc_attr__('chat', 'flavor-chat-ia'); ?>" <?php selected($contacto_preferido, 'chat'); ?>><?php _e('Chat interno', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('email', 'flavor-chat-ia'); ?>" <?php selected($contacto_preferido, 'email'); ?>><?php _e('Email', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('whatsapp', 'flavor-chat-ia'); ?>" <?php selected($contacto_preferido, 'whatsapp'); ?>><?php _e('WhatsApp', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('telefono', 'flavor-chat-ia'); ?>" <?php selected($contacto_preferido, 'telefono'); ?>><?php _e('Teléfono', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('chat', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($contacto_preferido, 'chat'); ?>><?php _e('Chat interno', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($contacto_preferido, 'email'); ?>><?php _e('Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('whatsapp', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($contacto_preferido, 'whatsapp'); ?>><?php _e('WhatsApp', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('telefono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($contacto_preferido, 'telefono'); ?>><?php _e('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </td>
             </tr>
             <tr>
-                <th><label for="marketplace_intercambio_prefs"><?php _e('Preferencias de Intercambio', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="marketplace_intercambio_prefs"><?php _e('Preferencias de Intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <textarea id="marketplace_intercambio_prefs" name="marketplace_intercambio_prefs"
                               rows="3" class="large-text"><?php echo esc_textarea($intercambio_preferencias); ?></textarea>
-                    <p class="description"><?php _e('Si es cambio, indica qué te interesaría a cambio', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php _e('Si es cambio, indica qué te interesaría a cambio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
             <tr>
-                <th><label for="marketplace_fecha_expiracion"><?php _e('Fecha de Expiración', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="marketplace_fecha_expiracion"><?php _e('Fecha de Expiración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <input type="date" id="marketplace_fecha_expiracion" name="marketplace_fecha_expiracion"
                            value="<?php echo esc_attr($fecha_expiracion); ?>" />
-                    <p class="description"><?php _e('Fecha hasta la que estará disponible el anuncio', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php _e('Fecha hasta la que estará disponible el anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
         </table>
@@ -776,10 +776,10 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
         $nuevas_columnas = [
             'cb' => $columnas['cb'],
             'title' => $columnas['title'],
-            'marketplace_tipo' => __('Tipo', 'flavor-chat-ia'),
-            'marketplace_precio' => __('Precio', 'flavor-chat-ia'),
-            'marketplace_estado' => __('Estado', 'flavor-chat-ia'),
-            'marketplace_ubicacion' => __('Ubicación', 'flavor-chat-ia'),
+            'marketplace_tipo' => __('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'marketplace_precio' => __('Precio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'marketplace_estado' => __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'marketplace_ubicacion' => __('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'author' => $columnas['author'],
             'date' => $columnas['date'],
         ];
@@ -807,11 +807,11 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
                 $estado = get_post_meta($post_id, '_marketplace_estado', true);
                 if ($estado) {
                     $estados_etiquetas = [
-                        'nuevo' => __('Nuevo', 'flavor-chat-ia'),
-                        'como_nuevo' => __('Como nuevo', 'flavor-chat-ia'),
-                        'buen_estado' => __('Buen estado', 'flavor-chat-ia'),
-                        'usado' => __('Usado', 'flavor-chat-ia'),
-                        'reparar' => __('A reparar', 'flavor-chat-ia'),
+                        'nuevo' => __('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'como_nuevo' => __('Como nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'buen_estado' => __('Buen estado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'usado' => __('Usado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'reparar' => __('A reparar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ];
                     echo esc_html($estados_etiquetas[$estado] ?? $estado);
                 }
@@ -995,12 +995,12 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
     private function action_foro_anuncio($params) {
         $anuncio = $this->resolve_contextual_anuncio((array) $params);
         if (!$anuncio) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un anuncio para ver su foro.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un anuncio para ver su foro.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-foro">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;"><h2>'
-            . esc_html__('Foro del anuncio', 'flavor-chat-ia')
+            . esc_html__('Foro del anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</h2><p>' . esc_html($anuncio['titulo']) . '</p></div>'
             . do_shortcode('[flavor_foros_integrado entidad="marketplace_anuncio" entidad_id="' . absint($anuncio['id']) . '"]')
             . '</div>';
@@ -1009,18 +1009,18 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
     private function action_chat_anuncio($params) {
         $anuncio = $this->resolve_contextual_anuncio((array) $params);
         if (!$anuncio) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un anuncio para ver su chat.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un anuncio para ver su chat.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         if (!is_user_logged_in()) {
-            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este anuncio.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este anuncio.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-chat">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Chat del anuncio', 'flavor-chat-ia') . '</h2><p>' . esc_html($anuncio['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Chat del anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($anuncio['titulo']) . '</p></div>'
             . '<a href="' . esc_url(home_url('/mi-portal/chat-grupos/mensajes/?anuncio_id=' . absint($anuncio['id']))) . '" class="button button-secondary">'
-            . esc_html__('Abrir chat completo', 'flavor-chat-ia')
+            . esc_html__('Abrir chat completo', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>'
             . do_shortcode('[flavor_chat_grupo_integrado entidad="marketplace_anuncio" entidad_id="' . absint($anuncio['id']) . '"]')
             . '</div>';
@@ -1029,14 +1029,14 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
     private function action_multimedia_anuncio($params) {
         $anuncio = $this->resolve_contextual_anuncio((array) $params);
         if (!$anuncio) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un anuncio para ver sus archivos.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un anuncio para ver sus archivos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-multimedia">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Archivos del anuncio', 'flavor-chat-ia') . '</h2><p>' . esc_html($anuncio['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Archivos del anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($anuncio['titulo']) . '</p></div>'
             . '<a href="' . esc_url(home_url('/mi-portal/multimedia/subir/?anuncio_id=' . absint($anuncio['id']))) . '" class="button button-primary">'
-            . esc_html__('Subir archivo', 'flavor-chat-ia')
+            . esc_html__('Subir archivo', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>'
             . do_shortcode('[flavor_multimedia_galeria entidad="marketplace_anuncio" entidad_id="' . absint($anuncio['id']) . '"]')
             . '</div>';
@@ -1045,18 +1045,18 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
     private function action_red_social_anuncio($params) {
         $anuncio = $this->resolve_contextual_anuncio((array) $params);
         if (!$anuncio) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un anuncio para ver su actividad social.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un anuncio para ver su actividad social.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         if (!is_user_logged_in()) {
-            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este anuncio.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este anuncio.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-red-social">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Actividad social del anuncio', 'flavor-chat-ia') . '</h2><p>' . esc_html($anuncio['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Actividad social del anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($anuncio['titulo']) . '</p></div>'
             . '<a href="' . esc_url(home_url('/mi-portal/red-social/crear/?anuncio_id=' . absint($anuncio['id']))) . '" class="button button-primary">'
-            . esc_html__('Publicar', 'flavor-chat-ia')
+            . esc_html__('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>'
             . do_shortcode('[flavor_social_feed entidad="marketplace_anuncio" entidad_id="' . absint($anuncio['id']) . '"]')
             . '</div>';
@@ -1264,7 +1264,7 @@ KNOWLEDGE;
                         <p class="precio"><?php echo esc_html($anuncio['precio']); ?> €</p>
                     <?php endif; ?>
                     <p><?php echo esc_html($anuncio['descripcion']); ?></p>
-                    <a href="<?php echo esc_url($anuncio['url']); ?>" class="button"><?php _e('Ver detalles', 'flavor-chat-ia'); ?></a>
+                    <a href="<?php echo esc_url($anuncio['url']); ?>" class="button"><?php _e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 </div>
             <?php endforeach; ?>
         </div>
@@ -1278,99 +1278,99 @@ KNOWLEDGE;
     public function get_web_components() {
         return [
             'hero' => [
-                'label' => __('Hero Marketplace', 'flavor-chat-ia'),
-                'description' => __('Sección hero con buscador de anuncios', 'flavor-chat-ia'),
+                'label' => __('Hero Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Sección hero con buscador de anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-store',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Mercadillo Vecinal', 'flavor-chat-ia'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Mercadillo Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'subtitulo' => [
                         'type' => 'textarea',
-                        'label' => __('Subtítulo', 'flavor-chat-ia'),
-                        'default' => __('Compra, vende e intercambia con tus vecinos', 'flavor-chat-ia'),
+                        'label' => __('Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Compra, vende e intercambia con tus vecinos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'mostrar_buscador' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar buscador', 'flavor-chat-ia'),
+                        'label' => __('Mostrar buscador', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                 ],
                 'template' => 'marketplace/hero',
             ],
             'anuncios_grid' => [
-                'label' => __('Grid de Anuncios', 'flavor-chat-ia'),
-                'description' => __('Listado de anuncios en formato tarjeta', 'flavor-chat-ia'),
+                'label' => __('Grid de Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Listado de anuncios en formato tarjeta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-grid-view',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Anuncios Recientes', 'flavor-chat-ia'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Anuncios Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'tipo' => [
                         'type' => 'select',
-                        'label' => __('Tipo de anuncio', 'flavor-chat-ia'),
+                        'label' => __('Tipo de anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['todos', 'venta', 'regalo', 'intercambio', 'alquiler'],
                         'default' => 'todos',
                     ],
                     'columnas' => [
                         'type' => 'select',
-                        'label' => __('Columnas', 'flavor-chat-ia'),
+                        'label' => __('Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => [2, 3, 4],
                         'default' => 4,
                     ],
                     'limite' => [
                         'type' => 'number',
-                        'label' => __('Número máximo', 'flavor-chat-ia'),
+                        'label' => __('Número máximo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 12,
                     ],
                 ],
                 'template' => 'marketplace/anuncios-grid',
             ],
             'categorias' => [
-                'label' => __('Categorías Marketplace', 'flavor-chat-ia'),
-                'description' => __('Navegación por categorías de productos', 'flavor-chat-ia'),
+                'label' => __('Categorías Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Navegación por categorías de productos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'navigation',
                 'icon' => 'dashicons-category',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Categorías', 'flavor-chat-ia'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'mostrar_contador' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar contador', 'flavor-chat-ia'),
+                        'label' => __('Mostrar contador', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                 ],
                 'template' => 'marketplace/categorias',
             ],
             'cta_publicar' => [
-                'label' => __('CTA Publicar Anuncio', 'flavor-chat-ia'),
-                'description' => __('Llamada a acción para publicar', 'flavor-chat-ia'),
+                'label' => __('CTA Publicar Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Llamada a acción para publicar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'cta',
                 'icon' => 'dashicons-plus-alt',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('¿Tienes algo que ofrecer?', 'flavor-chat-ia'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('¿Tienes algo que ofrecer?', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'descripcion' => [
                         'type' => 'textarea',
-                        'label' => __('Descripción', 'flavor-chat-ia'),
-                        'default' => __('Publica tu anuncio gratis y llega a toda la comunidad', 'flavor-chat-ia'),
+                        'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Publica tu anuncio gratis y llega a toda la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'boton_texto' => [
                         'type' => 'text',
-                        'label' => __('Texto del botón', 'flavor-chat-ia'),
-                        'default' => __('Publicar Anuncio', 'flavor-chat-ia'),
+                        'label' => __('Texto del botón', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Publicar Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                 ],
                 'template' => 'marketplace/cta-publicar',
@@ -1417,7 +1417,7 @@ KNOWLEDGE;
         $estadisticas['productos'] = [
             'icon' => 'dashicons-cart',
             'valor' => $total_productos,
-            'label' => __('Productos', 'flavor-chat-ia'),
+            'label' => __('Productos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'green',
         ];
 
@@ -1435,7 +1435,7 @@ KNOWLEDGE;
             $estadisticas['mis_anuncios'] = [
                 'icon' => 'dashicons-megaphone',
                 'valor' => $mis_anuncios,
-                'label' => __('Mis anuncios', 'flavor-chat-ia'),
+                'label' => __('Mis anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $mis_anuncios > 0 ? 'blue' : 'gray',
             ];
         }
@@ -1451,35 +1451,35 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Marketplace', 'flavor-chat-ia'),
+                'title' => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'marketplace',
-                'content' => '<h1>' . __('Marketplace Local', 'flavor-chat-ia') . '</h1>
-<p>' . __('Compra y vende productos y servicios en tu comunidad', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Marketplace Local', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Compra y vende productos y servicios en tu comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="marketplace" action="listar_anuncios" columnas="3" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Publicar Anuncio', 'flavor-chat-ia'),
+                'title' => __('Publicar Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'publicar',
-                'content' => '<h1>' . __('Publicar Anuncio', 'flavor-chat-ia') . '</h1>
-<p>' . __('Anuncia tu producto o servicio', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Publicar Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Anuncia tu producto o servicio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_form module="marketplace" action="publicar_anuncio"]',
                 'parent' => 'marketplace',
             ],
             [
-                'title' => __('Mis Anuncios', 'flavor-chat-ia'),
+                'title' => __('Mis Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mis-anuncios',
-                'content' => '<h1>' . __('Mis Anuncios', 'flavor-chat-ia') . '</h1>
+                'content' => '<h1>' . __('Mis Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
 
 [flavor_module_dashboard module="marketplace"]',
                 'parent' => 'marketplace',
             ],
             [
-                'title' => __('Mis Compras', 'flavor-chat-ia'),
+                'title' => __('Mis Compras', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mis-compras',
-                'content' => '<h1>' . __('Mis Compras', 'flavor-chat-ia') . '</h1>
+                'content' => '<h1>' . __('Mis Compras', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
 
 [flavor_module_listing module="marketplace" action="mis_compras" user_specific="yes"]',
                 'parent' => 'marketplace',
@@ -1503,8 +1503,8 @@ KNOWLEDGE;
         // Dashboard - página oculta (slug canónico)
         add_submenu_page(
             null,
-            __('Dashboard Marketplace', 'flavor-chat-ia'),
-            __('Dashboard', 'flavor-chat-ia'),
+            __('Dashboard Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'marketplace-dashboard',
             [$this, 'render_pagina_dashboard']
@@ -1513,8 +1513,8 @@ KNOWLEDGE;
         // Alias para compatibilidad con enlaces legacy
         add_submenu_page(
             null,
-            __('Dashboard Marketplace', 'flavor-chat-ia'),
-            __('Dashboard', 'flavor-chat-ia'),
+            __('Dashboard Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'marketplace',
             [$this, 'render_pagina_dashboard']
@@ -1523,8 +1523,8 @@ KNOWLEDGE;
         // Productos - página oculta
         add_submenu_page(
             null,
-            __('Productos Marketplace', 'flavor-chat-ia'),
-            __('Productos', 'flavor-chat-ia'),
+            __('Productos Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Productos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'marketplace-productos',
             [$this, 'render_pagina_productos']
@@ -1533,8 +1533,8 @@ KNOWLEDGE;
         // Ventas - página oculta
         add_submenu_page(
             null,
-            __('Ventas Marketplace', 'flavor-chat-ia'),
-            __('Ventas', 'flavor-chat-ia'),
+            __('Ventas Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Ventas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'marketplace-ventas',
             [$this, 'render_pagina_ventas']
@@ -1543,8 +1543,8 @@ KNOWLEDGE;
         // Vendedores - página oculta
         add_submenu_page(
             null,
-            __('Vendedores Marketplace', 'flavor-chat-ia'),
-            __('Vendedores', 'flavor-chat-ia'),
+            __('Vendedores Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Vendedores', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'marketplace-vendedores',
             [$this, 'render_pagina_vendedores']
@@ -1553,8 +1553,8 @@ KNOWLEDGE;
         // Anuncios - página oculta
         add_submenu_page(
             null,
-            __('Anuncios Marketplace', 'flavor-chat-ia'),
-            __('Anuncios', 'flavor-chat-ia'),
+            __('Anuncios Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'marketplace-anuncios',
             [$this, 'render_pagina_productos']
@@ -1563,8 +1563,8 @@ KNOWLEDGE;
         // Categorías - página oculta
         add_submenu_page(
             null,
-            __('Categorías Marketplace', 'flavor-chat-ia'),
-            __('Categorías', 'flavor-chat-ia'),
+            __('Categorías Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'marketplace-categorias',
             [$this, 'render_pagina_categorias']
@@ -1573,8 +1573,8 @@ KNOWLEDGE;
         // Moderación - página oculta
         add_submenu_page(
             null,
-            __('Moderación Marketplace', 'flavor-chat-ia'),
-            __('Moderación', 'flavor-chat-ia'),
+            __('Moderación Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'marketplace-moderacion',
             [$this, 'render_pagina_moderacion']
@@ -1589,7 +1589,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Marketplace', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -1601,7 +1601,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Productos', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Productos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -1613,7 +1613,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Ventas', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Ventas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -1625,7 +1625,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Vendedores', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Vendedores', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -1637,7 +1637,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Categorías', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -1649,7 +1649,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Moderación Marketplace', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Moderación Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -1665,8 +1665,8 @@ KNOWLEDGE;
         return [
             // Identidad del módulo
             'module'   => 'marketplace',
-            'title'    => __('Marketplace Vecinal', 'flavor-chat-ia'),
-            'subtitle' => __('Compra y vende productos entre vecinos', 'flavor-chat-ia'),
+            'title'    => __('Marketplace Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Compra y vende productos entre vecinos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '🛒',
             'color'    => 'success', // Usa variable CSS --flavor-success del tema
 
@@ -1697,31 +1697,31 @@ KNOWLEDGE;
 
             // Estados con sus propiedades
             'estados' => [
-                'publicado'  => ['label' => __('Publicado', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🟢'],
-                'pendiente'  => ['label' => __('Pendiente', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '🟡'],
-                'vendido'    => ['label' => __('Vendido', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '⚫'],
-                'pausado'    => ['label' => __('Pausado', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '🔵'],
-                'expirado'   => ['label' => __('Expirado', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '🔴'],
-                'borrador'   => ['label' => __('Borrador', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '⚪'],
-                'rechazado'  => ['label' => __('Rechazado', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '❌'],
+                'publicado'  => ['label' => __('Publicado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '🟢'],
+                'pendiente'  => ['label' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '🟡'],
+                'vendido'    => ['label' => __('Vendido', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'gray', 'icon' => '⚫'],
+                'pausado'    => ['label' => __('Pausado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'blue', 'icon' => '🔵'],
+                'expirado'   => ['label' => __('Expirado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'red', 'icon' => '🔴'],
+                'borrador'   => ['label' => __('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'gray', 'icon' => '⚪'],
+                'rechazado'  => ['label' => __('Rechazado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'red', 'icon' => '❌'],
             ],
 
             // Tipos de anuncio
             'tipos' => [
-                'venta'       => ['label' => __('Venta', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🏷️'],
-                'compra'      => ['label' => __('Compra', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '🛒'],
-                'intercambio' => ['label' => __('Intercambio', 'flavor-chat-ia'), 'color' => 'purple', 'icon' => '🔄'],
-                'regalo'      => ['label' => __('Regalo', 'flavor-chat-ia'), 'color' => 'pink', 'icon' => '🎁'],
-                'alquiler'    => ['label' => __('Alquiler', 'flavor-chat-ia'), 'color' => 'orange', 'icon' => '🏠'],
-                'servicio'    => ['label' => __('Servicio', 'flavor-chat-ia'), 'color' => 'cyan', 'icon' => '🔧'],
+                'venta'       => ['label' => __('Venta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '🏷️'],
+                'compra'      => ['label' => __('Compra', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'blue', 'icon' => '🛒'],
+                'intercambio' => ['label' => __('Intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'purple', 'icon' => '🔄'],
+                'regalo'      => ['label' => __('Regalo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'pink', 'icon' => '🎁'],
+                'alquiler'    => ['label' => __('Alquiler', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'orange', 'icon' => '🏠'],
+                'servicio'    => ['label' => __('Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'cyan', 'icon' => '🔧'],
             ],
 
             // Estadísticas para stats-grid
             'stats' => [
-                ['label' => __('Publicados', 'flavor-chat-ia'), 'icon' => '🟢', 'color' => 'green', 'count_where' => "estado = 'publicado'"],
-                ['label' => __('Pendientes', 'flavor-chat-ia'), 'icon' => '🟡', 'color' => 'yellow', 'count_where' => "estado = 'pendiente'"],
-                ['label' => __('Vendidos', 'flavor-chat-ia'), 'icon' => '🏆', 'color' => 'gray', 'count_where' => "estado = 'vendido'"],
-                ['label' => __('Total', 'flavor-chat-ia'), 'icon' => '📦', 'color' => 'blue', 'count_where' => "estado NOT IN ('eliminado', 'rechazado')"],
+                ['label' => __('Publicados', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🟢', 'color' => 'green', 'count_where' => "estado = 'publicado'"],
+                ['label' => __('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🟡', 'color' => 'yellow', 'count_where' => "estado = 'pendiente'"],
+                ['label' => __('Vendidos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🏆', 'color' => 'gray', 'count_where' => "estado = 'vendido'"],
+                ['label' => __('Total', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📦', 'color' => 'blue', 'count_where' => "estado NOT IN ('eliminado', 'rechazado')"],
             ],
 
             // Configuración de la card genérica
@@ -1756,30 +1756,30 @@ KNOWLEDGE;
             // Tabs del módulo con callbacks de renderizado
             'tabs' => [
                 'anuncios' => [
-                    'label'    => __('Anuncios', 'flavor-chat-ia'),
+                    'label'    => __('Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'     => 'dashicons-megaphone',
                     'callback' => [__CLASS__, 'render_tab_anuncios'],
                     'default'  => true,
                 ],
                 'mis-anuncios' => [
-                    'label'    => __('Mis Anuncios', 'flavor-chat-ia'),
+                    'label'    => __('Mis Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'     => 'dashicons-welcome-write-blog',
                     'callback' => [__CLASS__, 'render_tab_mis_anuncios'],
                     'requires_login' => true,
                 ],
                 'publicar' => [
-                    'label'    => __('Publicar', 'flavor-chat-ia'),
+                    'label'    => __('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'     => 'dashicons-plus-alt',
                     'callback' => [__CLASS__, 'render_tab_publicar'],
                     'requires_login' => true,
                 ],
                 'categorias' => [
-                    'label'    => __('Categorías', 'flavor-chat-ia'),
+                    'label'    => __('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'     => 'dashicons-category',
                     'callback' => [__CLASS__, 'render_tab_categorias'],
                 ],
                 'detalle' => [
-                    'label'      => __('Detalle', 'flavor-chat-ia'),
+                    'label'      => __('Detalle', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-visibility',
                     'callback'   => [__CLASS__, 'render_tab_detalle'],
                     'hidden_nav' => true,
@@ -1792,20 +1792,20 @@ KNOWLEDGE;
                 'per_page'     => 12,
                 'filter_field' => 'tipo',
                 'filters' => [
-                    ['id' => 'todos', 'label' => __('Todos', 'flavor-chat-ia'), 'active' => true],
-                    ['id' => 'venta', 'label' => __('En venta', 'flavor-chat-ia'), 'icon' => '🏷️'],
-                    ['id' => 'regalo', 'label' => __('Regalos', 'flavor-chat-ia'), 'icon' => '🎁'],
-                    ['id' => 'intercambio', 'label' => __('Intercambio', 'flavor-chat-ia'), 'icon' => '🔄'],
-                    ['id' => 'alquiler', 'label' => __('Alquiler', 'flavor-chat-ia'), 'icon' => '🏠'],
+                    ['id' => 'todos', 'label' => __('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'active' => true],
+                    ['id' => 'venta', 'label' => __('En venta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🏷️'],
+                    ['id' => 'regalo', 'label' => __('Regalos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🎁'],
+                    ['id' => 'intercambio', 'label' => __('Intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🔄'],
+                    ['id' => 'alquiler', 'label' => __('Alquiler', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🏠'],
                 ],
-                'cta_text' => __('Publicar anuncio', 'flavor-chat-ia'),
+                'cta_text' => __('Publicar anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'cta_icon' => '📝',
                 'cta_url'  => home_url('/mi-portal/marketplace/?tab=publicar'),
                 'empty_state' => [
                     'icon'     => '🛒',
-                    'title'    => __('No hay anuncios', 'flavor-chat-ia'),
-                    'text'     => __('Sé el primero en publicar algo', 'flavor-chat-ia'),
-                    'cta_text' => __('Publicar un anuncio', 'flavor-chat-ia'),
+                    'title'    => __('No hay anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'text'     => __('Sé el primero en publicar algo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'cta_text' => __('Publicar un anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
 
@@ -1817,58 +1817,58 @@ KNOWLEDGE;
                     ['field' => 'fecha_publicacion', 'icon' => '📅', 'format' => 'date'],
                 ],
                 'detail_fields' => [
-                    ['field' => 'tipo', 'label' => __('Tipo', 'flavor-chat-ia')],
-                    ['field' => 'condicion', 'label' => __('Condición', 'flavor-chat-ia')],
+                    ['field' => 'tipo', 'label' => __('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    ['field' => 'condicion', 'label' => __('Condición', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'actions' => [
-                    ['label' => __('Contactar', 'flavor-chat-ia'), 'icon' => '💬', 'action' => 'flavorMarketplace.contactar({id})', 'primary' => true],
-                    ['label' => __('Compartir', 'flavor-chat-ia'), 'icon' => '📤', 'action' => 'flavorMarketplace.compartir({id})'],
-                    ['label' => __('Favorito', 'flavor-chat-ia'), 'icon' => '❤️', 'action' => 'flavorMarketplace.favorito({id})'],
+                    ['label' => __('Contactar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '💬', 'action' => 'flavorMarketplace.contactar({id})', 'primary' => true],
+                    ['label' => __('Compartir', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📤', 'action' => 'flavorMarketplace.compartir({id})'],
+                    ['label' => __('Favorito', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '❤️', 'action' => 'flavorMarketplace.favorito({id})'],
                 ],
                 'sidebar' => [
                     ['type' => 'author'],
-                    ['type' => 'related', 'title' => __('Productos similares', 'flavor-chat-ia'), 'limit' => 3],
+                    ['type' => 'related', 'title' => __('Productos similares', FLAVOR_PLATFORM_TEXT_DOMAIN), 'limit' => 3],
                 ],
             ],
 
             // Configuración del formulario
             'form' => [
-                'title' => __('Publicar anuncio', 'flavor-chat-ia'),
-                'submit_label' => __('Publicar', 'flavor-chat-ia'),
+                'title' => __('Publicar anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'submit_label' => __('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'ajax_action' => 'marketplace_crear_anuncio',
                 'fields' => [
                     [
                         'name'        => 'titulo',
                         'type'        => 'text',
-                        'label'       => __('Título del anuncio', 'flavor-chat-ia'),
-                        'placeholder' => __('¿Qué vendes o buscas?', 'flavor-chat-ia'),
+                        'label'       => __('Título del anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'placeholder' => __('¿Qué vendes o buscas?', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required'    => true,
                     ],
                     [
                         'name'        => 'descripcion',
                         'type'        => 'textarea',
-                        'label'       => __('Descripción', 'flavor-chat-ia'),
-                        'placeholder' => __('Describe el producto o servicio...', 'flavor-chat-ia'),
+                        'label'       => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'placeholder' => __('Describe el producto o servicio...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required'    => true,
                     ],
                     [
                         'name'    => 'tipo',
                         'type'    => 'select',
-                        'label'   => __('Tipo de anuncio', 'flavor-chat-ia'),
+                        'label'   => __('Tipo de anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => [
-                            'venta'       => __('En venta', 'flavor-chat-ia'),
-                            'regalo'      => __('Regalo', 'flavor-chat-ia'),
-                            'intercambio' => __('Intercambio', 'flavor-chat-ia'),
-                            'alquiler'    => __('Alquiler', 'flavor-chat-ia'),
-                            'servicio'    => __('Servicio', 'flavor-chat-ia'),
-                            'compra'      => __('Busco comprar', 'flavor-chat-ia'),
+                            'venta'       => __('En venta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'regalo'      => __('Regalo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'intercambio' => __('Intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'alquiler'    => __('Alquiler', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'servicio'    => __('Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'compra'      => __('Busco comprar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ],
                         'required' => true,
                     ],
                     [
                         'name'        => 'precio',
                         'type'        => 'number',
-                        'label'       => __('Precio (€)', 'flavor-chat-ia'),
+                        'label'       => __('Precio (€)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'placeholder' => '0.00',
                         'min'         => 0,
                         'step'        => '0.01',
@@ -1876,26 +1876,26 @@ KNOWLEDGE;
                     [
                         'name'    => 'condicion',
                         'type'    => 'select',
-                        'label'   => __('Condición', 'flavor-chat-ia'),
+                        'label'   => __('Condición', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => [
-                            'nuevo'       => __('Nuevo', 'flavor-chat-ia'),
-                            'como_nuevo'  => __('Como nuevo', 'flavor-chat-ia'),
-                            'buen_estado' => __('Buen estado', 'flavor-chat-ia'),
-                            'usado'       => __('Usado', 'flavor-chat-ia'),
-                            'para_piezas' => __('Para piezas', 'flavor-chat-ia'),
+                            'nuevo'       => __('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'como_nuevo'  => __('Como nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'buen_estado' => __('Buen estado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'usado'       => __('Usado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'para_piezas' => __('Para piezas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ],
                     ],
                     [
                         'name'  => 'imagen',
                         'type'  => 'image',
-                        'label' => __('Foto del producto', 'flavor-chat-ia'),
-                        'help'  => __('Añade una foto para atraer más compradores', 'flavor-chat-ia'),
+                        'label' => __('Foto del producto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'help'  => __('Añade una foto para atraer más compradores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     [
                         'name'        => 'ubicacion_texto',
                         'type'        => 'text',
-                        'label'       => __('Ubicación', 'flavor-chat-ia'),
-                        'placeholder' => __('Barrio o zona', 'flavor-chat-ia'),
+                        'label'       => __('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'placeholder' => __('Barrio o zona', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                 ],
             ],
@@ -1905,25 +1905,25 @@ KNOWLEDGE;
                 'show_header' => true,
                 'stats_layout' => 'horizontal',
                 'header_actions' => [
-                    ['label' => __('Publicar', 'flavor-chat-ia'), 'icon' => '📝', 'url' => home_url('/mi-portal/marketplace/?tab=publicar'), 'primary' => true],
-                    ['label' => __('Mis anuncios', 'flavor-chat-ia'), 'icon' => '📋', 'url' => home_url('/mi-portal/marketplace/?tab=mis-anuncios')],
+                    ['label' => __('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📝', 'url' => home_url('/mi-portal/marketplace/?tab=publicar'), 'primary' => true],
+                    ['label' => __('Mis anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📋', 'url' => home_url('/mi-portal/marketplace/?tab=mis-anuncios')],
                 ],
                 'quick_actions' => [
-                    ['title' => __('Publicar', 'flavor-chat-ia'), 'icon' => '📝', 'color' => 'green', 'url' => home_url('/mi-portal/marketplace/?tab=publicar')],
-                    ['title' => __('Mis anuncios', 'flavor-chat-ia'), 'icon' => '📋', 'color' => 'blue', 'url' => home_url('/mi-portal/marketplace/?tab=mis-anuncios')],
-                    ['title' => __('Categorías', 'flavor-chat-ia'), 'icon' => '📁', 'color' => 'purple', 'url' => home_url('/mi-portal/marketplace/?tab=categorias')],
-                    ['title' => __('Explorar', 'flavor-chat-ia'), 'icon' => '🔍', 'color' => 'cyan', 'url' => home_url('/mi-portal/marketplace/')],
+                    ['title' => __('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📝', 'color' => 'green', 'url' => home_url('/mi-portal/marketplace/?tab=publicar')],
+                    ['title' => __('Mis anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📋', 'color' => 'blue', 'url' => home_url('/mi-portal/marketplace/?tab=mis-anuncios')],
+                    ['title' => __('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📁', 'color' => 'purple', 'url' => home_url('/mi-portal/marketplace/?tab=categorias')],
+                    ['title' => __('Explorar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🔍', 'color' => 'cyan', 'url' => home_url('/mi-portal/marketplace/')],
                 ],
                 'widgets' => [
                     [
                         'type'  => 'list',
-                        'title' => __('Mis últimos anuncios', 'flavor-chat-ia'),
+                        'title' => __('Mis últimos anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'icon'  => '📋',
                         'limit' => 5,
                     ],
                 ],
                 'show_recent' => true,
-                'recent_title' => __('Últimos anuncios del barrio', 'flavor-chat-ia'),
+                'recent_title' => __('Últimos anuncios del barrio', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
     }
@@ -1970,9 +1970,9 @@ KNOWLEDGE;
         if (!is_user_logged_in()) {
             echo '<div class="text-center py-12 bg-yellow-50 rounded-2xl">';
             echo '<div class="text-5xl mb-4">🔐</div>';
-            echo '<h3 class="text-xl font-semibold text-gray-700 mb-2">' . esc_html__('Inicia sesión', 'flavor-chat-ia') . '</h3>';
-            echo '<p class="text-gray-500 mb-4">' . esc_html__('Necesitas iniciar sesión para publicar un anuncio', 'flavor-chat-ia') . '</p>';
-            echo '<a href="' . esc_url(wp_login_url(self::get_current_request_url())) . '" class="inline-block bg-yellow-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-yellow-600">' . esc_html__('Iniciar Sesión', 'flavor-chat-ia') . '</a>';
+            echo '<h3 class="text-xl font-semibold text-gray-700 mb-2">' . esc_html__('Inicia sesión', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
+            echo '<p class="text-gray-500 mb-4">' . esc_html__('Necesitas iniciar sesión para publicar un anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
+            echo '<a href="' . esc_url(wp_login_url(self::get_current_request_url())) . '" class="inline-block bg-yellow-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-yellow-600">' . esc_html__('Iniciar Sesión', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
             echo '</div>';
             return;
         }
@@ -1993,13 +1993,13 @@ KNOWLEDGE;
             ));
         }
 
-        $titulo_formulario = $anuncio_editar ? __('Editar Anuncio', 'flavor-chat-ia') : __('Publicar Anuncio', 'flavor-chat-ia');
+        $titulo_formulario = $anuncio_editar ? __('Editar Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Publicar Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN);
         ?>
         <div class="flavor-marketplace-publicar max-w-2xl mx-auto">
             <!-- Header -->
             <div class="bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-2xl p-6 mb-6 shadow-lg text-center">
                 <h2 class="text-2xl font-bold mb-1">📝 <?php echo esc_html($titulo_formulario); ?></h2>
-                <p class="text-green-100"><?php echo esc_html__('Completa los datos de tu producto o servicio', 'flavor-chat-ia'); ?></p>
+                <p class="text-green-100"><?php echo esc_html__('Completa los datos de tu producto o servicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <!-- Formulario -->
@@ -2013,11 +2013,11 @@ KNOWLEDGE;
                 <!-- Título -->
                 <div>
                     <label for="anuncio-titulo" class="block text-sm font-medium text-gray-700 mb-2">
-                        <?php echo esc_html__('Título del anuncio', 'flavor-chat-ia'); ?> <span class="text-red-500">*</span>
+                        <?php echo esc_html__('Título del anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="text-red-500">*</span>
                     </label>
                     <input type="text" id="anuncio-titulo" name="titulo" required maxlength="255"
                            value="<?php echo esc_attr($anuncio_editar->titulo ?? ''); ?>"
-                           placeholder="<?php echo esc_attr__('Ej: iPhone 12 Pro en perfecto estado', 'flavor-chat-ia'); ?>"
+                           placeholder="<?php echo esc_attr__('Ej: iPhone 12 Pro en perfecto estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent">
                 </div>
 
@@ -2025,27 +2025,27 @@ KNOWLEDGE;
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label for="anuncio-tipo" class="block text-sm font-medium text-gray-700 mb-2">
-                            <?php echo esc_html__('Tipo de anuncio', 'flavor-chat-ia'); ?> <span class="text-red-500">*</span>
+                            <?php echo esc_html__('Tipo de anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="text-red-500">*</span>
                         </label>
                         <select id="anuncio-tipo" name="tipo" required
                                 class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent">
-                            <option value=""><?php echo esc_html__('Seleccionar...', 'flavor-chat-ia'); ?></option>
-                            <option value="venta" <?php selected($anuncio_editar->tipo ?? '', 'venta'); ?>>🏷️ <?php echo esc_html__('Venta', 'flavor-chat-ia'); ?></option>
-                            <option value="regalo" <?php selected($anuncio_editar->tipo ?? '', 'regalo'); ?>>🎁 <?php echo esc_html__('Regalo', 'flavor-chat-ia'); ?></option>
-                            <option value="intercambio" <?php selected($anuncio_editar->tipo ?? '', 'intercambio'); ?>>🔄 <?php echo esc_html__('Intercambio', 'flavor-chat-ia'); ?></option>
-                            <option value="alquiler" <?php selected($anuncio_editar->tipo ?? '', 'alquiler'); ?>>🏠 <?php echo esc_html__('Alquiler', 'flavor-chat-ia'); ?></option>
-                            <option value="servicio" <?php selected($anuncio_editar->tipo ?? '', 'servicio'); ?>>🔧 <?php echo esc_html__('Servicio', 'flavor-chat-ia'); ?></option>
-                            <option value="compra" <?php selected($anuncio_editar->tipo ?? '', 'compra'); ?>>🔍 <?php echo esc_html__('Busco comprar', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php echo esc_html__('Seleccionar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="venta" <?php selected($anuncio_editar->tipo ?? '', 'venta'); ?>>🏷️ <?php echo esc_html__('Venta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="regalo" <?php selected($anuncio_editar->tipo ?? '', 'regalo'); ?>>🎁 <?php echo esc_html__('Regalo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="intercambio" <?php selected($anuncio_editar->tipo ?? '', 'intercambio'); ?>>🔄 <?php echo esc_html__('Intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="alquiler" <?php selected($anuncio_editar->tipo ?? '', 'alquiler'); ?>>🏠 <?php echo esc_html__('Alquiler', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="servicio" <?php selected($anuncio_editar->tipo ?? '', 'servicio'); ?>>🔧 <?php echo esc_html__('Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="compra" <?php selected($anuncio_editar->tipo ?? '', 'compra'); ?>>🔍 <?php echo esc_html__('Busco comprar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
 
                     <div>
                         <label for="anuncio-categoria" class="block text-sm font-medium text-gray-700 mb-2">
-                            <?php echo esc_html__('Categoría', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                         <select id="anuncio-categoria" name="categoria_id"
                                 class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent">
-                            <option value=""><?php echo esc_html__('Sin categoría', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php echo esc_html__('Sin categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php foreach ($categorias as $categoria): ?>
                             <option value="<?php echo esc_attr($categoria->id); ?>" <?php selected($anuncio_editar->categoria_id ?? '', $categoria->id); ?>>
                                 <?php echo esc_html($categoria->nombre); ?>
@@ -2058,10 +2058,10 @@ KNOWLEDGE;
                 <!-- Descripción -->
                 <div>
                     <label for="anuncio-descripcion" class="block text-sm font-medium text-gray-700 mb-2">
-                        <?php echo esc_html__('Descripción', 'flavor-chat-ia'); ?> <span class="text-red-500">*</span>
+                        <?php echo esc_html__('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="text-red-500">*</span>
                     </label>
                     <textarea id="anuncio-descripcion" name="descripcion" required rows="4"
-                              placeholder="<?php echo esc_attr__('Describe tu producto o servicio con detalle...', 'flavor-chat-ia'); ?>"
+                              placeholder="<?php echo esc_attr__('Describe tu producto o servicio con detalle...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                               class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"><?php echo esc_textarea($anuncio_editar->descripcion ?? ''); ?></textarea>
                 </div>
 
@@ -2069,7 +2069,7 @@ KNOWLEDGE;
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label for="anuncio-precio" class="block text-sm font-medium text-gray-700 mb-2">
-                            <?php echo esc_html__('Precio (€)', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Precio (€)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                         <input type="number" id="anuncio-precio" name="precio" min="0" step="0.01"
                                value="<?php echo esc_attr($anuncio_editar->precio ?? ''); ?>"
@@ -2078,21 +2078,21 @@ KNOWLEDGE;
                         <label class="flex items-center gap-2 mt-2 text-sm text-gray-600">
                             <input type="checkbox" name="precio_negociable" value="1" <?php checked($anuncio_editar->precio_negociable ?? 0, 1); ?>
                                    class="rounded text-green-500 focus:ring-green-500">
-                            <?php echo esc_html__('Precio negociable', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Precio negociable', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                     </div>
 
                     <div>
                         <label for="anuncio-condicion" class="block text-sm font-medium text-gray-700 mb-2">
-                            <?php echo esc_html__('Condición', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Condición', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                         <select id="anuncio-condicion" name="condicion"
                                 class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent">
-                            <option value="buen_estado" <?php selected($anuncio_editar->condicion ?? 'buen_estado', 'buen_estado'); ?>><?php echo esc_html__('Buen estado', 'flavor-chat-ia'); ?></option>
-                            <option value="nuevo" <?php selected($anuncio_editar->condicion ?? '', 'nuevo'); ?>><?php echo esc_html__('Nuevo', 'flavor-chat-ia'); ?></option>
-                            <option value="como_nuevo" <?php selected($anuncio_editar->condicion ?? '', 'como_nuevo'); ?>><?php echo esc_html__('Como nuevo', 'flavor-chat-ia'); ?></option>
-                            <option value="usado" <?php selected($anuncio_editar->condicion ?? '', 'usado'); ?>><?php echo esc_html__('Usado', 'flavor-chat-ia'); ?></option>
-                            <option value="para_piezas" <?php selected($anuncio_editar->condicion ?? '', 'para_piezas'); ?>><?php echo esc_html__('Para piezas', 'flavor-chat-ia'); ?></option>
+                            <option value="buen_estado" <?php selected($anuncio_editar->condicion ?? 'buen_estado', 'buen_estado'); ?>><?php echo esc_html__('Buen estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="nuevo" <?php selected($anuncio_editar->condicion ?? '', 'nuevo'); ?>><?php echo esc_html__('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="como_nuevo" <?php selected($anuncio_editar->condicion ?? '', 'como_nuevo'); ?>><?php echo esc_html__('Como nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="usado" <?php selected($anuncio_editar->condicion ?? '', 'usado'); ?>><?php echo esc_html__('Usado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="para_piezas" <?php selected($anuncio_editar->condicion ?? '', 'para_piezas'); ?>><?php echo esc_html__('Para piezas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
                 </div>
@@ -2100,24 +2100,24 @@ KNOWLEDGE;
                 <!-- Ubicación -->
                 <div>
                     <label for="anuncio-ubicacion" class="block text-sm font-medium text-gray-700 mb-2">
-                        <?php echo esc_html__('Ubicación', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <input type="text" id="anuncio-ubicacion" name="ubicacion_texto" maxlength="500"
                            value="<?php echo esc_attr($anuncio_editar->ubicacion_texto ?? ''); ?>"
-                           placeholder="<?php echo esc_attr__('Ej: Centro, Madrid', 'flavor-chat-ia'); ?>"
+                           placeholder="<?php echo esc_attr__('Ej: Centro, Madrid', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent">
                 </div>
 
                 <!-- Imagen -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
-                        <?php echo esc_html__('Foto del producto', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Foto del producto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <div class="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center hover:border-green-400 transition-colors cursor-pointer"
                          id="zona-upload-imagen">
                         <input type="file" id="anuncio-imagen" name="imagen" accept="image/*" class="hidden">
                         <div class="text-4xl mb-2">📷</div>
-                        <p class="text-gray-500 text-sm"><?php echo esc_html__('Haz clic o arrastra una imagen', 'flavor-chat-ia'); ?></p>
+                        <p class="text-gray-500 text-sm"><?php echo esc_html__('Haz clic o arrastra una imagen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <?php if (!empty($anuncio_editar->imagen_principal)): ?>
                         <img src="<?php echo esc_url($anuncio_editar->imagen_principal); ?>" class="mt-4 max-h-32 mx-auto rounded-lg" id="preview-imagen">
                         <?php else: ?>
@@ -2131,12 +2131,12 @@ KNOWLEDGE;
                     <label class="flex items-center gap-2 text-sm text-gray-600">
                         <input type="checkbox" name="mostrar_email" value="1" <?php checked($anuncio_editar->mostrar_email ?? 1, 1); ?>
                                class="rounded text-green-500 focus:ring-green-500">
-                        <?php echo esc_html__('Mostrar email', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Mostrar email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <label class="flex items-center gap-2 text-sm text-gray-600">
                         <input type="checkbox" name="mostrar_telefono" value="1" <?php checked($anuncio_editar->mostrar_telefono ?? 0, 1); ?>
                                class="rounded text-green-500 focus:ring-green-500">
-                        <?php echo esc_html__('Mostrar teléfono', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Mostrar teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </div>
 
@@ -2144,11 +2144,11 @@ KNOWLEDGE;
                 <div class="flex gap-4 pt-4 border-t border-gray-100">
                     <button type="submit"
                             class="flex-1 bg-green-500 text-white py-3 px-6 rounded-xl font-semibold hover:bg-green-600 transition-colors">
-                        <?php echo $anuncio_editar ? esc_html__('Guardar Cambios', 'flavor-chat-ia') : esc_html__('Publicar Anuncio', 'flavor-chat-ia'); ?>
+                        <?php echo $anuncio_editar ? esc_html__('Guardar Cambios', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Publicar Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <a href="<?php echo esc_url(remove_query_arg(['tab', 'editar'])); ?>"
                        class="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-colors">
-                        <?php echo esc_html__('Cancelar', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </form>
@@ -2199,15 +2199,15 @@ KNOWLEDGE;
         <div class="flavor-marketplace-categorias">
             <!-- Header -->
             <div class="bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-2xl p-6 mb-6 shadow-lg">
-                <h2 class="text-2xl font-bold mb-1">📁 <?php echo esc_html__('Categorías', 'flavor-chat-ia'); ?></h2>
-                <p class="text-purple-100"><?php echo esc_html__('Explora anuncios por categoría', 'flavor-chat-ia'); ?></p>
+                <h2 class="text-2xl font-bold mb-1">📁 <?php echo esc_html__('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <p class="text-purple-100"><?php echo esc_html__('Explora anuncios por categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <?php if (empty($categorias)): ?>
             <div class="text-center py-12 bg-gray-50 rounded-2xl">
                 <div class="text-5xl mb-4">📁</div>
-                <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('Sin categorías', 'flavor-chat-ia'); ?></h3>
-                <p class="text-gray-500"><?php echo esc_html__('No hay categorías configuradas todavía', 'flavor-chat-ia'); ?></p>
+                <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('Sin categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p class="text-gray-500"><?php echo esc_html__('No hay categorías configuradas todavía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <?php else: ?>
             <!-- Grid de categorías -->
@@ -2216,8 +2216,8 @@ KNOWLEDGE;
                 <a href="<?php echo esc_url($base_anuncios_url); ?>"
                    class="bg-gradient-to-br from-gray-700 to-gray-800 text-white rounded-2xl p-6 text-center hover:shadow-lg transition-all group">
                     <div class="text-4xl mb-3">🏪</div>
-                    <h3 class="font-semibold mb-1"><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></h3>
-                    <p class="text-gray-300 text-sm"><?php echo esc_html($total_anuncios); ?> <?php echo esc_html__('anuncios', 'flavor-chat-ia'); ?></p>
+                    <h3 class="font-semibold mb-1"><?php echo esc_html__('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p class="text-gray-300 text-sm"><?php echo esc_html($total_anuncios); ?> <?php echo esc_html__('anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </a>
 
                 <?php foreach ($categorias as $categoria):
@@ -2229,7 +2229,7 @@ KNOWLEDGE;
                         <span class="dashicons dashicons-category" style="font-size: 2.5rem; width: 2.5rem; height: 2.5rem;"></span>
                     </div>
                     <h3 class="font-semibold text-gray-800 mb-1"><?php echo esc_html($categoria->name); ?></h3>
-                    <p class="text-gray-500 text-sm"><?php echo esc_html((int) $categoria->count); ?> <?php echo esc_html__('anuncios', 'flavor-chat-ia'); ?></p>
+                    <p class="text-gray-500 text-sm"><?php echo esc_html((int) $categoria->count); ?> <?php echo esc_html__('anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </a>
                 <?php endforeach; ?>
             </div>
@@ -2254,7 +2254,7 @@ KNOWLEDGE;
         check_ajax_referer('marketplace_publicar_anuncio', 'marketplace_nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -2268,7 +2268,7 @@ KNOWLEDGE;
         $tipo = sanitize_text_field($_POST['tipo'] ?? 'venta');
 
         if (empty($titulo) || empty($descripcion)) {
-            wp_send_json_error(['message' => __('Título y descripción son obligatorios', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Título y descripción son obligatorios', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Preparar datos
@@ -2305,11 +2305,11 @@ KNOWLEDGE;
             ));
 
             if (!$anuncio_existente) {
-                wp_send_json_error(['message' => __('No tienes permisos para editar este anuncio', 'flavor-chat-ia')]);
+                wp_send_json_error(['message' => __('No tienes permisos para editar este anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             }
 
             $wpdb->update($tabla_anuncios, $datos_anuncio, ['id' => $anuncio_id], null, ['%d']);
-            $mensaje_exito = __('Anuncio actualizado correctamente', 'flavor-chat-ia');
+            $mensaje_exito = __('Anuncio actualizado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN);
         } else {
             // Nuevo anuncio
             $datos_anuncio['fecha_publicacion'] = current_time('mysql');
@@ -2317,11 +2317,11 @@ KNOWLEDGE;
 
             $wpdb->insert($tabla_anuncios, $datos_anuncio);
             $anuncio_id = $wpdb->insert_id;
-            $mensaje_exito = __('Anuncio publicado correctamente', 'flavor-chat-ia');
+            $mensaje_exito = __('Anuncio publicado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         if (!$anuncio_id) {
-            wp_send_json_error(['message' => __('Error al guardar el anuncio', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al guardar el anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Procesar imagen si se subió
@@ -2394,7 +2394,7 @@ KNOWLEDGE;
 
         // Obtener nombre del usuario
         $usuario = get_userdata($anuncio->usuario_id);
-        $usuario_nombre = $usuario ? $usuario->display_name : __('Usuario anónimo', 'flavor-chat-ia');
+        $usuario_nombre = $usuario ? $usuario->display_name : __('Usuario anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         // Preparar datos para sincronización
         $datos_red = [

@@ -241,7 +241,7 @@ class Flavor_Network_Federation_Shortcodes {
 
         $atts = shortcode_atts([
             'limite' => 12,
-            'titulo' => __('Eventos de la Red', 'flavor-chat-ia'),
+            'titulo' => __('Eventos de la Red', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], $atts);
 
         $eventos = $this->get_federated_content('events', [
@@ -252,7 +252,7 @@ class Flavor_Network_Federation_Shortcodes {
         ]);
 
         if (empty($eventos)) {
-            return $this->render_empty('📅', __('No hay eventos de la red disponibles', 'flavor-chat-ia'));
+            return $this->render_empty('📅', __('No hay eventos de la red disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         ob_start();
@@ -290,7 +290,7 @@ class Flavor_Network_Federation_Shortcodes {
                                 <?php if ($evento->precio > 0): ?>
                                     <span class="flavor-fed-price"><?php echo number_format($evento->precio, 2); ?> €</span>
                                 <?php else: ?>
-                                    <span class="flavor-fed-price free"><?php echo esc_html__('Gratis', 'flavor-chat-ia'); ?></span>
+                                    <span class="flavor-fed-price free"><?php echo esc_html__('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -310,7 +310,7 @@ class Flavor_Network_Federation_Shortcodes {
 
         $atts = shortcode_atts([
             'limite' => 12,
-            'titulo' => __('Cursos de la Red', 'flavor-chat-ia'),
+            'titulo' => __('Cursos de la Red', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'modalidad' => '',
         ], $atts);
 
@@ -325,7 +325,7 @@ class Flavor_Network_Federation_Shortcodes {
         ]);
 
         if (empty($cursos)) {
-            return $this->render_empty('📚', __('No hay cursos de la red disponibles', 'flavor-chat-ia'));
+            return $this->render_empty('📚', __('No hay cursos de la red disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         ob_start();
@@ -357,9 +357,9 @@ class Flavor_Network_Federation_Shortcodes {
                             </div>
                             <p class="flavor-fed-card-desc"><?php echo esc_html(wp_trim_words($curso->descripcion, 15)); ?></p>
                             <div class="flavor-fed-card-footer">
-                                <span class="flavor-fed-node">👨‍🏫 <?php echo esc_html($curso->instructor_nombre ?: __('Instructor', 'flavor-chat-ia')); ?></span>
+                                <span class="flavor-fed-node">👨‍🏫 <?php echo esc_html($curso->instructor_nombre ?: __('Instructor', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>
                                 <?php if ($curso->es_gratuito): ?>
-                                    <span class="flavor-fed-price free"><?php echo esc_html__('Gratis', 'flavor-chat-ia'); ?></span>
+                                    <span class="flavor-fed-price free"><?php echo esc_html__('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php else: ?>
                                     <span class="flavor-fed-price"><?php echo number_format($curso->precio, 2); ?> €</span>
                                 <?php endif; ?>
@@ -381,7 +381,7 @@ class Flavor_Network_Federation_Shortcodes {
 
         $atts = shortcode_atts([
             'limite' => 12,
-            'titulo' => __('Talleres de la Red', 'flavor-chat-ia'),
+            'titulo' => __('Talleres de la Red', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], $atts);
 
         $talleres = $this->get_federated_content('workshops', [
@@ -390,7 +390,7 @@ class Flavor_Network_Federation_Shortcodes {
         ]);
 
         if (empty($talleres)) {
-            return $this->render_empty('🎓', __('No hay talleres de la red disponibles', 'flavor-chat-ia'));
+            return $this->render_empty('🎓', __('No hay talleres de la red disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         ob_start();
@@ -426,7 +426,7 @@ class Flavor_Network_Federation_Shortcodes {
                             <div class="flavor-fed-card-footer">
                                 <span class="flavor-fed-node">🔗 <?php echo esc_html(substr($taller->nodo_id, 0, 8)); ?>...</span>
                                 <?php if ($taller->es_gratuito): ?>
-                                    <span class="flavor-fed-price free"><?php echo esc_html__('Gratis', 'flavor-chat-ia'); ?></span>
+                                    <span class="flavor-fed-price free"><?php echo esc_html__('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php else: ?>
                                     <span class="flavor-fed-price"><?php echo number_format($taller->precio, 2); ?> €</span>
                                 <?php endif; ?>
@@ -448,7 +448,7 @@ class Flavor_Network_Federation_Shortcodes {
 
         $atts = shortcode_atts([
             'limite' => 12,
-            'titulo' => __('Marketplace de la Red', 'flavor-chat-ia'),
+            'titulo' => __('Marketplace de la Red', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tipo' => '',
         ], $atts);
 
@@ -463,7 +463,7 @@ class Flavor_Network_Federation_Shortcodes {
         ]);
 
         if (empty($anuncios)) {
-            return $this->render_empty('🛒', __('No hay anuncios de la red disponibles', 'flavor-chat-ia'));
+            return $this->render_empty('🛒', __('No hay anuncios de la red disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $tipo_icons = [
@@ -504,9 +504,9 @@ class Flavor_Network_Federation_Shortcodes {
                             </div>
                             <p class="flavor-fed-card-desc"><?php echo esc_html(wp_trim_words($anuncio->descripcion, 15)); ?></p>
                             <div class="flavor-fed-card-footer">
-                                <span class="flavor-fed-node">👤 <?php echo esc_html($anuncio->usuario_nombre ?: __('Usuario', 'flavor-chat-ia')); ?></span>
+                                <span class="flavor-fed-node">👤 <?php echo esc_html($anuncio->usuario_nombre ?: __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>
                                 <?php if ($anuncio->es_gratuito || $anuncio->tipo === 'regalo'): ?>
-                                    <span class="flavor-fed-price free"><?php echo esc_html__('Gratis', 'flavor-chat-ia'); ?></span>
+                                    <span class="flavor-fed-price free"><?php echo esc_html__('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php elseif ($anuncio->precio): ?>
                                     <span class="flavor-fed-price"><?php echo number_format($anuncio->precio, 2); ?> €</span>
                                 <?php else: ?>
@@ -530,7 +530,7 @@ class Flavor_Network_Federation_Shortcodes {
 
         $atts = shortcode_atts([
             'limite' => 12,
-            'titulo' => __('Viajes Compartidos de la Red', 'flavor-chat-ia'),
+            'titulo' => __('Viajes Compartidos de la Red', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], $atts);
 
         $viajes = $this->get_federated_content('carpooling', [
@@ -541,7 +541,7 @@ class Flavor_Network_Federation_Shortcodes {
         ]);
 
         if (empty($viajes)) {
-            return $this->render_empty('🚗', __('No hay viajes compartidos disponibles', 'flavor-chat-ia'));
+            return $this->render_empty('🚗', __('No hay viajes compartidos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         ob_start();
@@ -578,11 +578,11 @@ class Flavor_Network_Federation_Shortcodes {
                                 <p class="flavor-fed-card-desc"><?php echo esc_html(wp_trim_words($viaje->notas, 12)); ?></p>
                             <?php endif; ?>
                             <div class="flavor-fed-card-footer">
-                                <span class="flavor-fed-node">🚘 <?php echo esc_html($viaje->conductor_nombre ?: __('Conductor', 'flavor-chat-ia')); ?></span>
+                                <span class="flavor-fed-node">🚘 <?php echo esc_html($viaje->conductor_nombre ?: __('Conductor', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>
                                 <?php if ($viaje->precio_plaza > 0): ?>
                                     <span class="flavor-fed-price"><?php echo number_format($viaje->precio_plaza, 2); ?> €/plaza</span>
                                 <?php else: ?>
-                                    <span class="flavor-fed-price free"><?php echo esc_html__('Gratis', 'flavor-chat-ia'); ?></span>
+                                    <span class="flavor-fed-price free"><?php echo esc_html__('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -602,7 +602,7 @@ class Flavor_Network_Federation_Shortcodes {
 
         $atts = shortcode_atts([
             'limite' => 12,
-            'titulo' => __('Espacios de la Red', 'flavor-chat-ia'),
+            'titulo' => __('Espacios de la Red', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], $atts);
 
         $espacios = $this->get_federated_content('spaces', [
@@ -611,7 +611,7 @@ class Flavor_Network_Federation_Shortcodes {
         ]);
 
         if (empty($espacios)) {
-            return $this->render_empty('🏠', __('No hay espacios de la red disponibles', 'flavor-chat-ia'));
+            return $this->render_empty('🏠', __('No hay espacios de la red disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         ob_start();
@@ -645,7 +645,7 @@ class Flavor_Network_Federation_Shortcodes {
                                 <?php if ($espacio->precio_hora > 0): ?>
                                     <span class="flavor-fed-price"><?php echo number_format($espacio->precio_hora, 2); ?> €/h</span>
                                 <?php else: ?>
-                                    <span class="flavor-fed-price free"><?php echo esc_html__('Gratis', 'flavor-chat-ia'); ?></span>
+                                    <span class="flavor-fed-price free"><?php echo esc_html__('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -665,7 +665,7 @@ class Flavor_Network_Federation_Shortcodes {
 
         $atts = shortcode_atts([
             'limite' => 12,
-            'titulo' => __('Banco de Tiempo de la Red', 'flavor-chat-ia'),
+            'titulo' => __('Banco de Tiempo de la Red', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tipo' => '',
         ], $atts);
 
@@ -680,7 +680,7 @@ class Flavor_Network_Federation_Shortcodes {
         ]);
 
         if (empty($servicios)) {
-            return $this->render_empty('⏰', __('No hay servicios del banco de tiempo disponibles', 'flavor-chat-ia'));
+            return $this->render_empty('⏰', __('No hay servicios del banco de tiempo disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         ob_start();
@@ -710,7 +710,7 @@ class Flavor_Network_Federation_Shortcodes {
                             </div>
                             <p class="flavor-fed-card-desc"><?php echo esc_html(wp_trim_words($servicio->descripcion, 15)); ?></p>
                             <div class="flavor-fed-card-footer">
-                                <span class="flavor-fed-node">👤 <?php echo esc_html($servicio->usuario_nombre ?: __('Usuario', 'flavor-chat-ia')); ?></span>
+                                <span class="flavor-fed-node">👤 <?php echo esc_html($servicio->usuario_nombre ?: __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>
                                 <span class="flavor-fed-price"><?php echo number_format($servicio->horas_estimadas, 1); ?> h</span>
                             </div>
                         </div>
@@ -730,7 +730,7 @@ class Flavor_Network_Federation_Shortcodes {
 
         $atts = shortcode_atts([
             'limite' => 12,
-            'titulo' => __('Productores de la Red', 'flavor-chat-ia'),
+            'titulo' => __('Productores de la Red', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], $atts);
 
         $productores = $this->get_federated_content('producers', [
@@ -739,7 +739,7 @@ class Flavor_Network_Federation_Shortcodes {
         ]);
 
         if (empty($productores)) {
-            return $this->render_empty('🌾', __('No hay productores de la red disponibles', 'flavor-chat-ia'));
+            return $this->render_empty('🌾', __('No hay productores de la red disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         ob_start();
@@ -797,7 +797,7 @@ class Flavor_Network_Federation_Shortcodes {
             return $this->$method($atts);
         }
 
-        return $this->render_empty('📦', __('Tipo de contenido no válido', 'flavor-chat-ia'));
+        return $this->render_empty('📦', __('Tipo de contenido no válido', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 }
 

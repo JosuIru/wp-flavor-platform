@@ -14,29 +14,29 @@ if (!defined('ABSPATH')) {
 }
 
 $categorias = [
-    'cuidados' => __('Cuidados', 'flavor-chat-ia'),
-    'educacion' => __('Educacion', 'flavor-chat-ia'),
-    'bricolaje' => __('Bricolaje', 'flavor-chat-ia'),
-    'tecnologia' => __('Tecnologia', 'flavor-chat-ia'),
-    'transporte' => __('Transporte', 'flavor-chat-ia'),
-    'otros' => __('Otros', 'flavor-chat-ia'),
+    'cuidados' => __('Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'educacion' => __('Educacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'bricolaje' => __('Bricolaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'tecnologia' => __('Tecnologia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'transporte' => __('Transporte', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'otros' => __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 
 <div class="bt-mis-servicios">
     <div class="bt-header-acciones">
-        <h2><?php _e('Mis Servicios', 'flavor-chat-ia'); ?></h2>
+        <h2><?php _e('Mis Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <a href="<?php echo esc_url(add_query_arg('accion', 'nuevo', home_url('/banco-tiempo/ofrecer/'))); ?>" class="bt-btn bt-btn-primary">
             <span class="dashicons dashicons-plus-alt"></span>
-            <?php _e('Ofrecer nuevo servicio', 'flavor-chat-ia'); ?>
+            <?php _e('Ofrecer nuevo servicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 
     <?php if (empty($servicios)): ?>
     <div class="bt-empty-state">
         <span class="dashicons dashicons-admin-tools"></span>
-        <p><?php _e('No tienes servicios publicados todavia.', 'flavor-chat-ia'); ?></p>
-        <p><?php _e('Comparte tus habilidades con la comunidad y gana horas.', 'flavor-chat-ia'); ?></p>
+        <p><?php _e('No tienes servicios publicados todavia.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+        <p><?php _e('Comparte tus habilidades con la comunidad y gana horas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php else: ?>
 
@@ -48,9 +48,9 @@ $categorias = [
         ?>
         <div class="bt-service-card <?php echo !$es_activo ? 'bt-service-paused' : ''; ?>">
             <div class="bt-service-header">
-                <span class="bt-service-category"><?php echo esc_html($categorias[$categoria_key] ?? __('Otros', 'flavor-chat-ia')); ?></span>
+                <span class="bt-service-category"><?php echo esc_html($categorias[$categoria_key] ?? __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>
                 <span class="bt-service-status bt-status-<?php echo esc_attr($estado); ?>">
-                    <?php echo $es_activo ? __('Activo', 'flavor-chat-ia') : __('Pausado', 'flavor-chat-ia'); ?>
+                    <?php echo $es_activo ? __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Pausado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
             </div>
 
@@ -70,19 +70,19 @@ $categorias = [
             </div>
 
             <div class="bt-service-actions">
-                <a href="<?php echo esc_url(add_query_arg(['accion' => 'editar', 'id' => $servicio->id], home_url('/banco-tiempo/ofrecer/'))); ?>" class="bt-btn-icon" title="<?php esc_attr_e('Editar', 'flavor-chat-ia'); ?>">
+                <a href="<?php echo esc_url(add_query_arg(['accion' => 'editar', 'id' => $servicio->id], home_url('/banco-tiempo/ofrecer/'))); ?>" class="bt-btn-icon" title="<?php esc_attr_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-edit"></span>
                 </a>
                 <?php if ($es_activo): ?>
-                <button class="bt-btn-icon bt-pausar-servicio" data-id="<?php echo esc_attr($servicio->id); ?>" title="<?php esc_attr_e('Pausar', 'flavor-chat-ia'); ?>">
+                <button class="bt-btn-icon bt-pausar-servicio" data-id="<?php echo esc_attr($servicio->id); ?>" title="<?php esc_attr_e('Pausar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-controls-pause"></span>
                 </button>
                 <?php else: ?>
-                <button class="bt-btn-icon bt-activar-servicio" data-id="<?php echo esc_attr($servicio->id); ?>" title="<?php esc_attr_e('Activar', 'flavor-chat-ia'); ?>">
+                <button class="bt-btn-icon bt-activar-servicio" data-id="<?php echo esc_attr($servicio->id); ?>" title="<?php esc_attr_e('Activar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-controls-play"></span>
                 </button>
                 <?php endif; ?>
-                <a href="<?php echo esc_url(add_query_arg('servicio_id', $servicio->id, home_url('/banco-tiempo/servicio/'))); ?>" class="bt-btn-icon" title="<?php esc_attr_e('Ver', 'flavor-chat-ia'); ?>">
+                <a href="<?php echo esc_url(add_query_arg('servicio_id', $servicio->id, home_url('/banco-tiempo/servicio/'))); ?>" class="bt-btn-icon" title="<?php esc_attr_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-visibility"></span>
                 </a>
             </div>

@@ -75,18 +75,18 @@ $base_url = admin_url('admin.php?page=' . $current_page);
         <div class="dm-header__content">
             <h1 class="dm-header__title">
                 <span class="dashicons dashicons-calendar-alt"></span>
-                <?php esc_html_e('Ciclos de Pedido', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ciclos de Pedido', 'flavor-platform'); ?>
             </h1>
             <p class="dm-header__description">
-                <?php esc_html_e('Seguimiento del estado de apertura, cierre y logística de cada ciclo.', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Seguimiento del estado de apertura, cierre y logística de cada ciclo.', 'flavor-platform'); ?>
             </p>
         </div>
         <div class="dm-header__actions">
             <a href="<?php echo esc_url(admin_url('post-new.php?post_type=gc_ciclo')); ?>" class="dm-btn dm-btn--primary">
-                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nuevo ciclo', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nuevo ciclo', 'flavor-platform'); ?>
             </a>
             <a href="<?php echo esc_url(admin_url('edit.php?post_type=gc_ciclo')); ?>" class="dm-btn dm-btn--secondary">
-                <?php esc_html_e('Editor nativo', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Editor nativo', 'flavor-platform'); ?>
             </a>
         </div>
     </div>
@@ -95,25 +95,25 @@ $base_url = admin_url('admin.php?page=' . $current_page);
         <div class="dm-stat-card">
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_publicados); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Publicados', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Publicados', 'flavor-platform'); ?></div>
             </div>
         </div>
         <div class="dm-stat-card dm-stat-card--success">
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_abiertos); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Abiertos / activos', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Abiertos / activos', 'flavor-platform'); ?></div>
             </div>
         </div>
         <div class="dm-stat-card dm-stat-card--warning">
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_cerrados); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Cerrados', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Cerrados', 'flavor-platform'); ?></div>
             </div>
         </div>
         <div class="dm-stat-card dm-stat-card--info">
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_borrador); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Borradores', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Borradores', 'flavor-platform'); ?></div>
             </div>
         </div>
     </div>
@@ -121,17 +121,17 @@ $base_url = admin_url('admin.php?page=' . $current_page);
     <form method="get" class="dm-card" style="padding:16px; margin-bottom:16px; display:flex; gap:10px; align-items:end;">
         <input type="hidden" name="page" value="<?php echo esc_attr($current_page); ?>" />
         <div>
-            <label for="gc-ciclos-estado"><strong><?php esc_html_e('Estado del ciclo', 'flavor-chat-ia'); ?></strong></label>
+            <label for="gc-ciclos-estado"><strong><?php esc_html_e('Estado del ciclo', 'flavor-platform'); ?></strong></label>
             <select id="gc-ciclos-estado" name="estado">
-                <option value="todos" <?php selected($filtro_estado, 'todos'); ?>><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
-                <option value="abierto" <?php selected($filtro_estado, 'abierto'); ?>><?php esc_html_e('Abierto', 'flavor-chat-ia'); ?></option>
-                <option value="activo" <?php selected($filtro_estado, 'activo'); ?>><?php esc_html_e('Activo', 'flavor-chat-ia'); ?></option>
-                <option value="cerrado" <?php selected($filtro_estado, 'cerrado'); ?>><?php esc_html_e('Cerrado', 'flavor-chat-ia'); ?></option>
-                <option value="borrador" <?php selected($filtro_estado, 'borrador'); ?>><?php esc_html_e('Borrador', 'flavor-chat-ia'); ?></option>
+                <option value="todos" <?php selected($filtro_estado, 'todos'); ?>><?php esc_html_e('Todos', 'flavor-platform'); ?></option>
+                <option value="abierto" <?php selected($filtro_estado, 'abierto'); ?>><?php esc_html_e('Abierto', 'flavor-platform'); ?></option>
+                <option value="activo" <?php selected($filtro_estado, 'activo'); ?>><?php esc_html_e('Activo', 'flavor-platform'); ?></option>
+                <option value="cerrado" <?php selected($filtro_estado, 'cerrado'); ?>><?php esc_html_e('Cerrado', 'flavor-platform'); ?></option>
+                <option value="borrador" <?php selected($filtro_estado, 'borrador'); ?>><?php esc_html_e('Borrador', 'flavor-platform'); ?></option>
             </select>
         </div>
         <div>
-            <button type="submit" class="button button-primary"><?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?></button>
+            <button type="submit" class="button button-primary"><?php esc_html_e('Filtrar', 'flavor-platform'); ?></button>
         </div>
     </form>
 
@@ -139,13 +139,13 @@ $base_url = admin_url('admin.php?page=' . $current_page);
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Ciclo', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Apertura', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Cierre', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Entrega', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Pedidos', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Ciclo', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Apertura', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Cierre', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Entrega', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Pedidos', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Acciones', 'flavor-platform'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -181,15 +181,15 @@ $base_url = admin_url('admin.php?page=' . $current_page);
                             <td><?php echo $fecha_entrega ? esc_html(date_i18n(get_option('date_format') . ' ' . get_option('time_format'), strtotime($fecha_entrega))) : '—'; ?></td>
                             <td><?php echo number_format_i18n($total_pedidos); ?></td>
                             <td>
-                                <a class="button button-small" href="<?php echo esc_url(get_edit_post_link($ciclo_id)); ?>"><?php esc_html_e('Editar', 'flavor-chat-ia'); ?></a>
-                                <a class="button button-small" href="<?php echo esc_url(admin_url('admin.php?page=gc-pedidos&ciclo=' . $ciclo_id)); ?>"><?php esc_html_e('Pedidos', 'flavor-chat-ia'); ?></a>
+                                <a class="button button-small" href="<?php echo esc_url(get_edit_post_link($ciclo_id)); ?>"><?php esc_html_e('Editar', 'flavor-platform'); ?></a>
+                                <a class="button button-small" href="<?php echo esc_url(admin_url('admin.php?page=gc-pedidos&ciclo=' . $ciclo_id)); ?>"><?php esc_html_e('Pedidos', 'flavor-platform'); ?></a>
                             </td>
                         </tr>
                     <?php endwhile; ?>
                     <?php wp_reset_postdata(); ?>
                 <?php else : ?>
                     <tr>
-                        <td colspan="7"><?php esc_html_e('No hay ciclos para los filtros seleccionados.', 'flavor-chat-ia'); ?></td>
+                        <td colspan="7"><?php esc_html_e('No hay ciclos para los filtros seleccionados.', 'flavor-platform'); ?></td>
                     </tr>
                 <?php endif; ?>
             </tbody>

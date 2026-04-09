@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
     <!-- Header del Builder -->
     <div class="flavor-vb-header">
         <div class="flavor-vb-header-left">
-            <h2><?php _e('Flavor Visual Builder', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Flavor Visual Builder', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <span class="flavor-vb-version">v<?php echo Flavor_Visual_Builder::VERSION; ?></span>
         </div>
 
@@ -29,31 +29,31 @@ if (!defined('ABSPATH')) {
                         class="flavor-vb-mode-btn <?php echo $mode === Flavor_Visual_Builder::MODE_SECTIONS ? 'active' : ''; ?>"
                         data-mode="sections">
                     <span class="dashicons dashicons-grid-view"></span>
-                    <?php _e('Secciones', 'flavor-chat-ia'); ?>
+                    <?php _e('Secciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button"
                         class="flavor-vb-mode-btn <?php echo $mode === Flavor_Visual_Builder::MODE_COMPONENTS ? 'active' : ''; ?>"
                         data-mode="components">
                     <span class="dashicons dashicons-editor-table"></span>
-                    <?php _e('Componentes', 'flavor-chat-ia'); ?>
+                    <?php _e('Componentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </div>
 
         <div class="flavor-vb-header-right">
-            <button type="button" class="button flavor-vb-btn-undo" title="<?php esc_attr_e('Deshacer', 'flavor-chat-ia'); ?>">
+            <button type="button" class="button flavor-vb-btn-undo" title="<?php esc_attr_e('Deshacer', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <span class="dashicons dashicons-undo"></span>
             </button>
-            <button type="button" class="button flavor-vb-btn-redo" title="<?php esc_attr_e('Rehacer', 'flavor-chat-ia'); ?>">
+            <button type="button" class="button flavor-vb-btn-redo" title="<?php esc_attr_e('Rehacer', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <span class="dashicons dashicons-redo"></span>
             </button>
             <button type="button" class="button flavor-vb-btn-preview">
                 <span class="dashicons dashicons-visibility"></span>
-                <?php _e('Vista Previa', 'flavor-chat-ia'); ?>
+                <?php _e('Vista Previa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <button type="button" class="button button-primary flavor-vb-btn-save">
                 <span class="dashicons dashicons-saved"></span>
-                <?php _e('Guardar', 'flavor-chat-ia'); ?>
+                <?php _e('Guardar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     </div>
@@ -66,82 +66,82 @@ if (!defined('ABSPATH')) {
 
             <!-- Modo Secciones -->
             <div class="flavor-vb-panel flavor-vb-panel-sections" style="display: <?php echo $mode === Flavor_Visual_Builder::MODE_SECTIONS ? 'block' : 'none'; ?>;">
-                <h3><?php _e('Secciones Disponibles', 'flavor-chat-ia'); ?></h3>
-                <p class="description"><?php _e('Arrastra y suelta secciones predefinidas al canvas', 'flavor-chat-ia'); ?></p>
+                <h3><?php _e('Secciones Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p class="description"><?php _e('Arrastra y suelta secciones predefinidas al canvas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                 <div class="flavor-vb-sections-list">
                     <div class="flavor-vb-section-item" data-section="hero">
                         <span class="dashicons dashicons-cover-image"></span>
-                        <span class="flavor-vb-label"><?php _e('Hero', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-vb-label"><?php _e('Hero', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="flavor-vb-section-item" data-section="features">
                         <span class="dashicons dashicons-star-filled"></span>
-                        <span class="flavor-vb-label"><?php _e('Features', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-vb-label"><?php _e('Features', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="flavor-vb-section-item" data-section="cta">
                         <span class="dashicons dashicons-megaphone"></span>
-                        <span class="flavor-vb-label"><?php _e('Call to Action', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-vb-label"><?php _e('Call to Action', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="flavor-vb-section-item" data-section="testimonials">
                         <span class="dashicons dashicons-format-quote"></span>
-                        <span class="flavor-vb-label"><?php _e('Testimonios', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-vb-label"><?php _e('Testimonios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="flavor-vb-section-item" data-section="pricing">
                         <span class="dashicons dashicons-cart"></span>
-                        <span class="flavor-vb-label"><?php _e('Pricing', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-vb-label"><?php _e('Pricing', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="flavor-vb-section-item" data-section="faq">
                         <span class="dashicons dashicons-editor-help"></span>
-                        <span class="flavor-vb-label"><?php _e('FAQ', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-vb-label"><?php _e('FAQ', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="flavor-vb-section-item" data-section="contact">
                         <span class="dashicons dashicons-email"></span>
-                        <span class="flavor-vb-label"><?php _e('Contacto', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-vb-label"><?php _e('Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="flavor-vb-section-item" data-section="team">
                         <span class="dashicons dashicons-groups"></span>
-                        <span class="flavor-vb-label"><?php _e('Equipo', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-vb-label"><?php _e('Equipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
 
             <!-- Modo Componentes -->
             <div class="flavor-vb-panel flavor-vb-panel-components" style="display: <?php echo $mode === Flavor_Visual_Builder::MODE_COMPONENTS ? 'block' : 'none'; ?>;">
-                <h3><?php _e('Componentes', 'flavor-chat-ia'); ?></h3>
-                <p class="description"><?php _e('Arrastra componentes individuales para máxima flexibilidad', 'flavor-chat-ia'); ?></p>
+                <h3><?php _e('Componentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p class="description"><?php _e('Arrastra componentes individuales para máxima flexibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                 <div class="flavor-vb-components-list">
                     <div class="flavor-vb-component-item" data-component="heading">
                         <span class="dashicons dashicons-editor-textcolor"></span>
-                        <span class="flavor-vb-label"><?php _e('Título', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-vb-label"><?php _e('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="flavor-vb-component-item" data-component="text">
                         <span class="dashicons dashicons-editor-paragraph"></span>
-                        <span class="flavor-vb-label"><?php _e('Texto', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-vb-label"><?php _e('Texto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="flavor-vb-component-item" data-component="button">
                         <span class="dashicons dashicons-admin-links"></span>
-                        <span class="flavor-vb-label"><?php _e('Botón', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-vb-label"><?php _e('Botón', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="flavor-vb-component-item" data-component="image">
                         <span class="dashicons dashicons-format-image"></span>
-                        <span class="flavor-vb-label"><?php _e('Imagen', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-vb-label"><?php _e('Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="flavor-vb-component-item" data-component="video">
                         <span class="dashicons dashicons-video-alt3"></span>
-                        <span class="flavor-vb-label"><?php _e('Video', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-vb-label"><?php _e('Video', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="flavor-vb-component-item" data-component="spacer">
                         <span class="dashicons dashicons-minus"></span>
-                        <span class="flavor-vb-label"><?php _e('Espaciador', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-vb-label"><?php _e('Espaciador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="flavor-vb-component-item" data-component="divider">
                         <span class="dashicons dashicons-leftright"></span>
-                        <span class="flavor-vb-label"><?php _e('Divisor', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-vb-label"><?php _e('Divisor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="flavor-vb-component-item" data-component="columns">
                         <span class="dashicons dashicons-columns"></span>
-                        <span class="flavor-vb-label"><?php _e('Columnas', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-vb-label"><?php _e('Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -155,8 +155,8 @@ if (!defined('ABSPATH')) {
                 <!-- Mensaje cuando está vacío -->
                 <div class="flavor-vb-empty-state" id="flavor-vb-empty-state">
                     <span class="dashicons dashicons-plus-alt"></span>
-                    <h3><?php _e('Comienza a crear', 'flavor-chat-ia'); ?></h3>
-                    <p><?php _e('Arrastra secciones o componentes desde la barra lateral', 'flavor-chat-ia'); ?></p>
+                    <h3><?php _e('Comienza a crear', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php _e('Arrastra secciones o componentes desde la barra lateral', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
 
                 <!-- Aquí se renderizan las secciones/componentes -->
@@ -167,14 +167,14 @@ if (!defined('ABSPATH')) {
         <!-- Sidebar Derecho: Propiedades -->
         <div class="flavor-vb-sidebar flavor-vb-sidebar-right">
             <div class="flavor-vb-panel flavor-vb-panel-properties">
-                <h3><?php _e('Propiedades', 'flavor-chat-ia'); ?></h3>
-                <p class="description"><?php _e('Selecciona un elemento para editar sus propiedades', 'flavor-chat-ia'); ?></p>
+                <h3><?php _e('Propiedades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p class="description"><?php _e('Selecciona un elemento para editar sus propiedades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                 <div id="flavor-vb-properties-content" class="flavor-vb-properties-content">
                     <!-- Las propiedades se cargan dinámicamente -->
                     <div class="flavor-vb-no-selection">
                         <span class="dashicons dashicons-admin-generic"></span>
-                        <p><?php _e('Ningún elemento seleccionado', 'flavor-chat-ia'); ?></p>
+                        <p><?php _e('Ningún elemento seleccionado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 </div>
             </div>
@@ -186,12 +186,12 @@ if (!defined('ABSPATH')) {
     <div class="flavor-vb-footer">
         <div class="flavor-vb-footer-left">
             <span class="flavor-vb-status" id="flavor-vb-status">
-                <?php _e('Listo', 'flavor-chat-ia'); ?>
+                <?php _e('Listo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
         </div>
         <div class="flavor-vb-footer-right">
             <span class="flavor-vb-info">
-                <?php _e('Última modificación:', 'flavor-chat-ia'); ?>
+                <?php _e('Última modificación:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <span id="flavor-vb-last-saved"><?php echo get_the_modified_date('d/m/Y H:i', $post); ?></span>
             </span>
         </div>
@@ -202,7 +202,7 @@ if (!defined('ABSPATH')) {
         <div class="flavor-vb-modal-overlay"></div>
         <div class="flavor-vb-modal-content">
             <div class="flavor-vb-modal-header">
-                <h2><?php _e('Vista Previa', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Vista Previa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <button type="button" class="flavor-vb-modal-close">
                     <span class="dashicons dashicons-no-alt"></span>
                 </button>

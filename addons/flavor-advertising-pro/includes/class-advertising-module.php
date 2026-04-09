@@ -13,8 +13,8 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
 
     public function __construct() {
         $this->id = 'advertising';
-        $this->name = __('Publicidad Ética', 'flavor-chat-ia');
-        $this->description = __('Sistema de anuncios éticos con reparto de beneficios.', 'flavor-chat-ia');
+        $this->name = __('Publicidad Ética', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Sistema de anuncios éticos con reparto de beneficios.', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         parent::__construct();
     }
@@ -109,71 +109,71 @@ KNOWLEDGE;
     public function get_web_components() {
         return [
             'banner_horizontal' => [
-                'label' => __('Banner Horizontal', 'flavor-chat-ia'),
-                'description' => __('Banner publicitario horizontal (728x90 o similar)', 'flavor-chat-ia'),
+                'label' => __('Banner Horizontal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Banner publicitario horizontal (728x90 o similar)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-slides',
                 'fields' => [
                     'ad_id' => [
                         'type' => 'select',
-                        'label' => __('Anuncio', 'flavor-chat-ia'),
+                        'label' => __('Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => $this->get_available_ads(),
                         'default' => '',
                     ],
                     'position' => [
                         'type' => 'select',
-                        'label' => __('Posición', 'flavor-chat-ia'),
+                        'label' => __('Posición', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['header', 'content_top', 'content_bottom', 'footer'],
                         'default' => 'content_top',
                     ],
                     'mostrar_etiqueta' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar etiqueta "Anuncio"', 'flavor-chat-ia'),
+                        'label' => __('Mostrar etiqueta "Anuncio"', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                 ],
                 'template' => 'advertising/banner-horizontal',
             ],
             'banner_sidebar' => [
-                'label' => __('Banner Sidebar', 'flavor-chat-ia'),
-                'description' => __('Banner vertical para barra lateral (300x250)', 'flavor-chat-ia'),
+                'label' => __('Banner Sidebar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Banner vertical para barra lateral (300x250)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-slides',
                 'fields' => [
                     'ad_id' => [
                         'type' => 'select',
-                        'label' => __('Anuncio', 'flavor-chat-ia'),
+                        'label' => __('Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => $this->get_available_ads(),
                         'default' => '',
                     ],
                     'mostrar_etiqueta' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar etiqueta "Anuncio"', 'flavor-chat-ia'),
+                        'label' => __('Mostrar etiqueta "Anuncio"', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                     'sticky' => [
                         'type' => 'toggle',
-                        'label' => __('Fijo al hacer scroll', 'flavor-chat-ia'),
+                        'label' => __('Fijo al hacer scroll', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => false,
                     ],
                 ],
                 'template' => 'advertising/banner-sidebar',
             ],
             'banner_card' => [
-                'label' => __('Anuncio Tipo Tarjeta', 'flavor-chat-ia'),
-                'description' => __('Anuncio integrado como tarjeta de contenido', 'flavor-chat-ia'),
+                'label' => __('Anuncio Tipo Tarjeta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Anuncio integrado como tarjeta de contenido', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'cards',
                 'icon' => 'dashicons-format-aside',
                 'fields' => [
                     'ad_id' => [
                         'type' => 'select',
-                        'label' => __('Anuncio', 'flavor-chat-ia'),
+                        'label' => __('Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => $this->get_available_ads(),
                         'default' => '',
                     ],
                     'estilo' => [
                         'type' => 'select',
-                        'label' => __('Estilo', 'flavor-chat-ia'),
+                        'label' => __('Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['minimal', 'card', 'featured'],
                         'default' => 'card',
                     ],
@@ -181,20 +181,20 @@ KNOWLEDGE;
                 'template' => 'advertising/banner-card',
             ],
             'banner_nativo' => [
-                'label' => __('Anuncio Nativo', 'flavor-chat-ia'),
-                'description' => __('Anuncio que se integra con el diseño del contenido', 'flavor-chat-ia'),
+                'label' => __('Anuncio Nativo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Anuncio que se integra con el diseño del contenido', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-admin-page',
                 'fields' => [
                     'ad_id' => [
                         'type' => 'select',
-                        'label' => __('Anuncio', 'flavor-chat-ia'),
+                        'label' => __('Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => $this->get_available_ads(),
                         'default' => '',
                     ],
                     'titulo_personalizado' => [
                         'type' => 'text',
-                        'label' => __('Título personalizado', 'flavor-chat-ia'),
+                        'label' => __('Título personalizado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                 ],
@@ -213,7 +213,7 @@ KNOWLEDGE;
             'post_status' => 'publish',
         ]);
 
-        $options = ['' => __('Seleccionar anuncio', 'flavor-chat-ia')];
+        $options = ['' => __('Seleccionar anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         foreach ($ads as $ad) {
             $options[$ad->ID] = $ad->post_title;
         }

@@ -18,8 +18,8 @@ $id_seccion = $id_seccion ?? '';
         <div class="flavor-map-placeholder" style="height: <?php echo intval($altura_mapa); ?>px;">
             <div class="flavor-map-overlay">
                 <span class="dashicons dashicons-location"></span>
-                <p><?php echo esc_html__('Mapa interactivo', 'flavor-chat-ia'); ?></p>
-                <small><?php echo esc_html__('Configura las coordenadas para mostrar el mapa', 'flavor-chat-ia'); ?></small>
+                <p><?php echo esc_html__('Mapa interactivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                <small><?php echo esc_html__('Configura las coordenadas para mostrar el mapa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
             </div>
         </div>
     </div>

@@ -82,10 +82,10 @@ $dias_semana = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
     <div class="flavor-container">
         <div class="text-center mb-12">
             <h2 class="text-3xl lg:text-4xl font-bold mb-4" style="color: var(--flavor-text, #111827);">
-                <?php echo esc_html__('Calendario de Eventos', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Calendario de Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <p class="text-lg" style="color: var(--flavor-text-muted, #6B7280);">
-                <?php echo esc_html__('Consulta todos los eventos del mes en un vistazo', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Consulta todos los eventos del mes en un vistazo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
 
@@ -94,13 +94,13 @@ $dias_semana = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
             <div class="flex items-center justify-between mb-6 p-4 rounded-xl bg-white shadow-sm border" style="border-color: #E5E7EB;">
                 <a href="?mes=<?php echo esc_attr($mes_anterior); ?>&anio=<?php echo esc_attr($anio_anterior); ?>" class="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors" style="color: var(--flavor-text, #111827);">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                    <span class="hidden sm:inline"><?php echo esc_html__('Anterior', 'flavor-chat-ia'); ?></span>
+                    <span class="hidden sm:inline"><?php echo esc_html__('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </a>
                 <h3 class="text-xl font-bold" style="color: var(--flavor-text, #111827);">
                     <?php echo esc_html(ucfirst($nombre_mes)); ?>
                 </h3>
                 <a href="?mes=<?php echo esc_attr($mes_siguiente); ?>&anio=<?php echo esc_attr($anio_siguiente); ?>" class="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors" style="color: var(--flavor-text, #111827);">
-                    <span class="hidden sm:inline"><?php echo esc_html__('Siguiente', 'flavor-chat-ia'); ?></span>
+                    <span class="hidden sm:inline"><?php echo esc_html__('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </a>
             </div>
@@ -148,7 +148,7 @@ $dias_semana = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
                                     <?php endforeach; ?>
                                     <?php if (count($eventos_dia) > 2) : ?>
                                         <div class="text-xs text-center font-medium" style="color: var(--flavor-primary, #3B82F6);">
-                                            +<?php echo esc_html(count($eventos_dia) - 2); ?> <?php echo esc_html__('mas', 'flavor-chat-ia'); ?>
+                                            +<?php echo esc_html(count($eventos_dia) - 2); ?> <?php echo esc_html__('mas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </div>
                                     <?php endif; ?>
                                 </div>
@@ -171,7 +171,7 @@ $dias_semana = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
             <?php if (!empty($eventos_del_mes)) : ?>
                 <div class="mt-8">
                     <h3 class="text-xl font-bold mb-4" style="color: var(--flavor-text, #111827);">
-                        <?php echo esc_html__('Eventos del Mes', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Eventos del Mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <div class="space-y-3">
                         <?php foreach (array_slice($eventos_del_mes, 0, 6) as $evento_prox) :
@@ -206,7 +206,7 @@ $dias_semana = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
                                         </span>
                                     <?php else : ?>
                                         <span class="text-sm font-bold text-green-500">
-                                            <?php echo esc_html__('Gratis', 'flavor-chat-ia'); ?>
+                                            <?php echo esc_html__('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </span>
                                     <?php endif; ?>
                                 </div>

@@ -126,7 +126,7 @@ class Flavor_Page_Access_Control {
             if (!$control->user_can_access($module_id)) {
                 // Usar mensaje de error mejorado
                 $module_name = ucfirst(str_replace(['_', '-'], ' ', $module_id));
-                $reason = __('Este módulo requiere permisos específicos que actualmente no tienes asignados.', 'flavor-chat-ia');
+                $reason = __('Este módulo requiere permisos específicos que actualmente no tienes asignados.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 Flavor_User_Messages::access_denied($module_name, $reason);
             }
         }

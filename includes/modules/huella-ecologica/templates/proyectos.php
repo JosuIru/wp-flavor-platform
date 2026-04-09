@@ -49,16 +49,16 @@ $tipos_proyecto = [
     <header class="he-header">
         <h2>
             <span class="dashicons dashicons-admin-site-alt3"></span>
-            <?php esc_html_e('Proyectos de Compensación', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Proyectos de Compensación', 'flavor-platform'); ?>
         </h2>
-        <p><?php esc_html_e('Iniciativas comunitarias para reducir y compensar nuestra huella ecológica colectiva', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('Iniciativas comunitarias para reducir y compensar nuestra huella ecológica colectiva', 'flavor-platform'); ?></p>
     </header>
 
     <?php if (is_user_logged_in()) : ?>
     <div style="text-align: right; margin-bottom: 1.5rem;">
         <button class="he-btn he-btn--primary he-btn-abrir-modal" data-modal="modal-proponer">
             <span class="dashicons dashicons-plus-alt"></span>
-            <?php esc_html_e('Proponer proyecto', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Proponer proyecto', 'flavor-platform'); ?>
         </button>
     </div>
     <?php endif; ?>
@@ -97,7 +97,7 @@ $tipos_proyecto = [
                 <?php if ($proyecto->meta_co2 > 0) : ?>
                 <div class="he-proyecto-card__progreso">
                     <div class="he-proyecto-card__progreso-header">
-                        <span><?php esc_html_e('Progreso', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Progreso', 'flavor-platform'); ?></span>
                         <span><?php echo esc_html(number_format($proyecto->co2_actual, 0)); ?> / <?php echo esc_html(number_format($proyecto->meta_co2, 0)); ?> kg CO2</span>
                     </div>
                     <div class="he-progreso-bar">
@@ -109,7 +109,7 @@ $tipos_proyecto = [
                 <div class="he-proyecto-card__meta">
                     <span>
                         <span class="dashicons dashicons-groups"></span>
-                        <span class="he-participantes-count"><?php echo esc_html($num_participantes); ?></span> <?php esc_html_e('participantes', 'flavor-chat-ia'); ?>
+                        <span class="he-participantes-count"><?php echo esc_html($num_participantes); ?></span> <?php esc_html_e('participantes', 'flavor-platform'); ?>
                     </span>
                     <?php if ($proyecto->ubicacion) : ?>
                     <span>
@@ -126,17 +126,17 @@ $tipos_proyecto = [
                     <?php if ($ya_participo) : ?>
                     <span class="he-btn he-btn--secondary" style="cursor: default;">
                         <span class="dashicons dashicons-yes"></span>
-                        <?php esc_html_e('Ya participas', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ya participas', 'flavor-platform'); ?>
                     </span>
                     <?php elseif ($proyecto->estado === 'aprobado' || $proyecto->estado === 'en_curso') : ?>
                     <button class="he-btn he-btn--primary he-btn-unirse" data-proyecto="<?php echo esc_attr($proyecto->ID); ?>">
                         <span class="dashicons dashicons-groups"></span>
-                        <?php esc_html_e('Unirme', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Unirme', 'flavor-platform'); ?>
                     </button>
                     <?php endif; ?>
                 <?php else : ?>
                 <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="he-btn he-btn--secondary">
-                    <?php esc_html_e('Inicia sesión para unirte', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Inicia sesión para unirte', 'flavor-platform'); ?>
                 </a>
                 <?php endif; ?>
             </div>
@@ -146,9 +146,9 @@ $tipos_proyecto = [
     <?php else : ?>
     <div class="he-empty-state">
         <span class="dashicons dashicons-admin-site-alt3"></span>
-        <p><?php esc_html_e('Aún no hay proyectos de compensación activos.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('Aún no hay proyectos de compensación activos.', 'flavor-platform'); ?></p>
         <?php if (is_user_logged_in()) : ?>
-        <p><?php esc_html_e('¡Sé el primero en proponer uno!', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('¡Sé el primero en proponer uno!', 'flavor-platform'); ?></p>
         <?php endif; ?>
     </div>
     <?php endif; ?>
@@ -158,18 +158,18 @@ $tipos_proyecto = [
 <div id="modal-proponer" class="he-modal">
     <div class="he-modal__contenido">
         <div class="he-modal__header">
-            <h3><?php esc_html_e('Proponer proyecto de compensación', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Proponer proyecto de compensación', 'flavor-platform'); ?></h3>
             <button class="he-modal__cerrar">&times;</button>
         </div>
         <form class="he-modal__body he-form-proyecto">
             <div class="he-form-grupo">
-                <label for="proyecto-titulo"><?php esc_html_e('Nombre del proyecto', 'flavor-chat-ia'); ?> *</label>
+                <label for="proyecto-titulo"><?php esc_html_e('Nombre del proyecto', 'flavor-platform'); ?> *</label>
                 <input type="text" name="titulo" id="proyecto-titulo" required
-                       placeholder="<?php esc_attr_e('Ej: Reforestación en el parque municipal', 'flavor-chat-ia'); ?>">
+                       placeholder="<?php esc_attr_e('Ej: Reforestación en el parque municipal', 'flavor-platform'); ?>">
             </div>
 
             <div class="he-form-grupo">
-                <label for="proyecto-tipo"><?php esc_html_e('Tipo de proyecto', 'flavor-chat-ia'); ?></label>
+                <label for="proyecto-tipo"><?php esc_html_e('Tipo de proyecto', 'flavor-platform'); ?></label>
                 <select name="tipo_proyecto" id="proyecto-tipo">
                     <?php foreach ($tipos_proyecto as $tipo_id => $tipo_data) : ?>
                     <option value="<?php echo esc_attr($tipo_id); ?>">
@@ -180,31 +180,31 @@ $tipos_proyecto = [
             </div>
 
             <div class="he-form-grupo">
-                <label for="proyecto-descripcion"><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?> *</label>
+                <label for="proyecto-descripcion"><?php esc_html_e('Descripción', 'flavor-platform'); ?> *</label>
                 <textarea name="descripcion" id="proyecto-descripcion" rows="4" required
-                          placeholder="<?php esc_attr_e('Describe el proyecto, sus objetivos y cómo se llevará a cabo...', 'flavor-chat-ia'); ?>"></textarea>
+                          placeholder="<?php esc_attr_e('Describe el proyecto, sus objetivos y cómo se llevará a cabo...', 'flavor-platform'); ?>"></textarea>
             </div>
 
             <div class="he-form-row">
                 <div class="he-form-grupo">
-                    <label for="proyecto-meta"><?php esc_html_e('Meta de compensación (kg CO2)', 'flavor-chat-ia'); ?></label>
+                    <label for="proyecto-meta"><?php esc_html_e('Meta de compensación (kg CO2)', 'flavor-platform'); ?></label>
                     <input type="number" name="meta_co2" id="proyecto-meta" min="0" step="100"
-                           placeholder="<?php esc_attr_e('Ej: 1000', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php esc_attr_e('Ej: 1000', 'flavor-platform'); ?>">
                 </div>
                 <div class="he-form-grupo">
-                    <label for="proyecto-ubicacion"><?php esc_html_e('Ubicación', 'flavor-chat-ia'); ?></label>
+                    <label for="proyecto-ubicacion"><?php esc_html_e('Ubicación', 'flavor-platform'); ?></label>
                     <input type="text" name="ubicacion" id="proyecto-ubicacion"
-                           placeholder="<?php esc_attr_e('Ej: Parque del Oeste', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php esc_attr_e('Ej: Parque del Oeste', 'flavor-platform'); ?>">
                 </div>
             </div>
 
             <div class="he-modal__footer">
                 <button type="button" class="he-btn he-btn--secondary he-modal__cerrar">
-                    <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Cancelar', 'flavor-platform'); ?>
                 </button>
                 <button type="submit" class="he-btn he-btn--primary">
                     <span class="dashicons dashicons-yes-alt"></span>
-                    <?php esc_html_e('Proponer', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Proponer', 'flavor-platform'); ?>
                 </button>
             </div>
         </form>

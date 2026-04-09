@@ -16,7 +16,7 @@
 if (!defined('ABSPATH')) exit;
 
 // Extraer variables con valores por defecto
-$titulo_grid = isset($args['titulo']) ? $args['titulo'] : __('Portal de Datos Abiertos', 'flavor-chat-ia');
+$titulo_grid = isset($args['titulo']) ? $args['titulo'] : __('Portal de Datos Abiertos', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $mostrar_buscador = isset($args['mostrar_buscador']) ? $args['mostrar_buscador'] : true;
 $mostrar_filtros = isset($args['mostrar_filtros']) ? $args['mostrar_filtros'] : true;
 $numero_columnas = isset($args['columnas']) ? intval($args['columnas']) : 3;
@@ -25,13 +25,13 @@ $items_por_pagina = isset($args['items_por_pagina']) ? intval($args['items_por_p
 // Datos de demostración de categorías y documentos
 $categorias_datos = isset($args['categorias']) ? $args['categorias'] : array(
     'contratos' => array(
-        'nombre' => __('Contratos Públicos', 'flavor-chat-ia'),
+        'nombre' => __('Contratos Públicos', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-media-text',
         'color' => '#3b82f6',
-        'descripcion' => __('Licitaciones, adjudicaciones y contratos menores', 'flavor-chat-ia'),
+        'descripcion' => __('Licitaciones, adjudicaciones y contratos menores', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'documentos' => array(
             array(
-                'titulo' => __('Contrato de mantenimiento de parques', 'flavor-chat-ia'),
+                'titulo' => __('Contrato de mantenimiento de parques', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha' => '2024-01-15',
                 'tipo' => 'PDF',
                 'tamano' => '1.2 MB',
@@ -39,7 +39,7 @@ $categorias_datos = isset($args['categorias']) ? $args['categorias'] : array(
                 'url' => '#'
             ),
             array(
-                'titulo' => __('Licitación servicio de limpieza viaria', 'flavor-chat-ia'),
+                'titulo' => __('Licitación servicio de limpieza viaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha' => '2024-01-10',
                 'tipo' => 'PDF',
                 'tamano' => '2.5 MB',
@@ -47,7 +47,7 @@ $categorias_datos = isset($args['categorias']) ? $args['categorias'] : array(
                 'url' => '#'
             ),
             array(
-                'titulo' => __('Adjudicación obras plaza central', 'flavor-chat-ia'),
+                'titulo' => __('Adjudicación obras plaza central', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha' => '2024-01-05',
                 'tipo' => 'PDF',
                 'tamano' => '850 KB',
@@ -57,13 +57,13 @@ $categorias_datos = isset($args['categorias']) ? $args['categorias'] : array(
         )
     ),
     'subvenciones' => array(
-        'nombre' => __('Subvenciones y Ayudas', 'flavor-chat-ia'),
+        'nombre' => __('Subvenciones y Ayudas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-money-alt',
         'color' => '#22c55e',
-        'descripcion' => __('Convocatorias, resoluciones y beneficiarios', 'flavor-chat-ia'),
+        'descripcion' => __('Convocatorias, resoluciones y beneficiarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'documentos' => array(
             array(
-                'titulo' => __('Subvenciones a asociaciones culturales 2024', 'flavor-chat-ia'),
+                'titulo' => __('Subvenciones a asociaciones culturales 2024', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha' => '2024-02-01',
                 'tipo' => 'PDF',
                 'tamano' => '560 KB',
@@ -71,7 +71,7 @@ $categorias_datos = isset($args['categorias']) ? $args['categorias'] : array(
                 'url' => '#'
             ),
             array(
-                'titulo' => __('Ayudas emergencia social Q1 2024', 'flavor-chat-ia'),
+                'titulo' => __('Ayudas emergencia social Q1 2024', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha' => '2024-01-28',
                 'tipo' => 'XLSX',
                 'tamano' => '320 KB',
@@ -81,13 +81,13 @@ $categorias_datos = isset($args['categorias']) ? $args['categorias'] : array(
         )
     ),
     'actas' => array(
-        'nombre' => __('Actas y Acuerdos', 'flavor-chat-ia'),
+        'nombre' => __('Actas y Acuerdos', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-clipboard',
         'color' => '#f59e0b',
-        'descripcion' => __('Plenos, juntas de gobierno y comisiones', 'flavor-chat-ia'),
+        'descripcion' => __('Plenos, juntas de gobierno y comisiones', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'documentos' => array(
             array(
-                'titulo' => __('Acta Pleno Ordinario Enero 2024', 'flavor-chat-ia'),
+                'titulo' => __('Acta Pleno Ordinario Enero 2024', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha' => '2024-01-25',
                 'tipo' => 'PDF',
                 'tamano' => '1.8 MB',
@@ -95,7 +95,7 @@ $categorias_datos = isset($args['categorias']) ? $args['categorias'] : array(
                 'url' => '#'
             ),
             array(
-                'titulo' => __('Acta Junta de Gobierno Local 15/01/2024', 'flavor-chat-ia'),
+                'titulo' => __('Acta Junta de Gobierno Local 15/01/2024', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha' => '2024-01-18',
                 'tipo' => 'PDF',
                 'tamano' => '920 KB',
@@ -103,7 +103,7 @@ $categorias_datos = isset($args['categorias']) ? $args['categorias'] : array(
                 'url' => '#'
             ),
             array(
-                'titulo' => __('Acuerdos Comisión de Urbanismo', 'flavor-chat-ia'),
+                'titulo' => __('Acuerdos Comisión de Urbanismo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha' => '2024-01-12',
                 'tipo' => 'PDF',
                 'tamano' => '650 KB',
@@ -113,13 +113,13 @@ $categorias_datos = isset($args['categorias']) ? $args['categorias'] : array(
         )
     ),
     'presupuestos' => array(
-        'nombre' => __('Presupuestos y Cuentas', 'flavor-chat-ia'),
+        'nombre' => __('Presupuestos y Cuentas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-chart-bar',
         'color' => '#8b5cf6',
-        'descripcion' => __('Presupuestos, liquidaciones y cuentas anuales', 'flavor-chat-ia'),
+        'descripcion' => __('Presupuestos, liquidaciones y cuentas anuales', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'documentos' => array(
             array(
-                'titulo' => __('Presupuesto General 2024', 'flavor-chat-ia'),
+                'titulo' => __('Presupuesto General 2024', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha' => '2023-12-20',
                 'tipo' => 'PDF',
                 'tamano' => '4.2 MB',
@@ -127,7 +127,7 @@ $categorias_datos = isset($args['categorias']) ? $args['categorias'] : array(
                 'url' => '#'
             ),
             array(
-                'titulo' => __('Liquidación Presupuesto 2023', 'flavor-chat-ia'),
+                'titulo' => __('Liquidación Presupuesto 2023', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha' => '2024-01-30',
                 'tipo' => 'PDF',
                 'tamano' => '3.1 MB',
@@ -137,13 +137,13 @@ $categorias_datos = isset($args['categorias']) ? $args['categorias'] : array(
         )
     ),
     'personal' => array(
-        'nombre' => __('Personal y Retribuciones', 'flavor-chat-ia'),
+        'nombre' => __('Personal y Retribuciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-groups',
         'color' => '#ec4899',
-        'descripcion' => __('Plantilla, retribuciones y declaraciones de bienes', 'flavor-chat-ia'),
+        'descripcion' => __('Plantilla, retribuciones y declaraciones de bienes', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'documentos' => array(
             array(
-                'titulo' => __('Relación de puestos de trabajo 2024', 'flavor-chat-ia'),
+                'titulo' => __('Relación de puestos de trabajo 2024', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha' => '2024-01-02',
                 'tipo' => 'PDF',
                 'tamano' => '780 KB',
@@ -151,7 +151,7 @@ $categorias_datos = isset($args['categorias']) ? $args['categorias'] : array(
                 'url' => '#'
             ),
             array(
-                'titulo' => __('Retribuciones altos cargos 2024', 'flavor-chat-ia'),
+                'titulo' => __('Retribuciones altos cargos 2024', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha' => '2024-01-15',
                 'tipo' => 'PDF',
                 'tamano' => '245 KB',
@@ -161,13 +161,13 @@ $categorias_datos = isset($args['categorias']) ? $args['categorias'] : array(
         )
     ),
     'urbanismo' => array(
-        'nombre' => __('Urbanismo y Obras', 'flavor-chat-ia'),
+        'nombre' => __('Urbanismo y Obras', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-building',
         'color' => '#06b6d4',
-        'descripcion' => __('Planes urbanísticos, licencias y proyectos de obra', 'flavor-chat-ia'),
+        'descripcion' => __('Planes urbanísticos, licencias y proyectos de obra', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'documentos' => array(
             array(
-                'titulo' => __('Plan General de Ordenación Urbana', 'flavor-chat-ia'),
+                'titulo' => __('Plan General de Ordenación Urbana', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha' => '2023-06-15',
                 'tipo' => 'PDF',
                 'tamano' => '25 MB',
@@ -175,7 +175,7 @@ $categorias_datos = isset($args['categorias']) ? $args['categorias'] : array(
                 'url' => '#'
             ),
             array(
-                'titulo' => __('Licencias de obra concedidas Enero 2024', 'flavor-chat-ia'),
+                'titulo' => __('Licencias de obra concedidas Enero 2024', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha' => '2024-02-01',
                 'tipo' => 'XLSX',
                 'tamano' => '180 KB',
@@ -204,7 +204,7 @@ $años_filtro = array('2024', '2023', '2022', '2021');
                 type="search"
                 class="flavor-grid-input-busqueda"
                 id="flavor-buscador-documentos"
-                placeholder="<?php esc_attr_e('Buscar documentos...', 'flavor-chat-ia'); ?>"
+                placeholder="<?php esc_attr_e('Buscar documentos...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
             >
         </div>
         <?php endif; ?>
@@ -213,9 +213,9 @@ $años_filtro = array('2024', '2023', '2022', '2021');
     <?php if ($mostrar_filtros) : ?>
     <div class="flavor-grid-filtros">
         <div class="flavor-filtros-grupo">
-            <label class="flavor-filtro-label"><?php esc_html_e('Categoría:', 'flavor-chat-ia'); ?></label>
+            <label class="flavor-filtro-label"><?php esc_html_e('Categoría:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <select class="flavor-filtro-select" id="flavor-filtro-categoria">
-                <option value=""><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 <?php foreach ($categorias_datos as $clave_categoria => $datos_categoria) : ?>
                 <option value="<?php echo esc_attr($clave_categoria); ?>"><?php echo esc_html($datos_categoria['nombre']); ?></option>
                 <?php endforeach; ?>
@@ -223,9 +223,9 @@ $años_filtro = array('2024', '2023', '2022', '2021');
         </div>
 
         <div class="flavor-filtros-grupo">
-            <label class="flavor-filtro-label"><?php esc_html_e('Tipo:', 'flavor-chat-ia'); ?></label>
+            <label class="flavor-filtro-label"><?php esc_html_e('Tipo:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <select class="flavor-filtro-select" id="flavor-filtro-tipo">
-                <option value=""><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 <?php foreach ($tipos_archivo_filtro as $tipo_archivo) : ?>
                 <option value="<?php echo esc_attr($tipo_archivo); ?>"><?php echo esc_html($tipo_archivo); ?></option>
                 <?php endforeach; ?>
@@ -233,9 +233,9 @@ $años_filtro = array('2024', '2023', '2022', '2021');
         </div>
 
         <div class="flavor-filtros-grupo">
-            <label class="flavor-filtro-label"><?php esc_html_e('Año:', 'flavor-chat-ia'); ?></label>
+            <label class="flavor-filtro-label"><?php esc_html_e('Año:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <select class="flavor-filtro-select" id="flavor-filtro-año">
-                <option value=""><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 <?php foreach ($años_filtro as $año) : ?>
                 <option value="<?php echo esc_attr($año); ?>"><?php echo esc_html($año); ?></option>
                 <?php endforeach; ?>
@@ -244,7 +244,7 @@ $años_filtro = array('2024', '2023', '2022', '2021');
 
         <button type="button" class="flavor-filtros-reset" id="flavor-reset-filtros">
             <span class="dashicons dashicons-dismiss"></span>
-            <?php esc_html_e('Limpiar filtros', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Limpiar filtros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
     </div>
     <?php endif; ?>
@@ -263,15 +263,15 @@ $años_filtro = array('2024', '2023', '2022', '2021');
         ?>
         <div class="flavor-estadistica-item">
             <span class="flavor-estadistica-numero"><?php echo esc_html(count($categorias_datos)); ?></span>
-            <span class="flavor-estadistica-texto"><?php esc_html_e('Categorías', 'flavor-chat-ia'); ?></span>
+            <span class="flavor-estadistica-texto"><?php esc_html_e('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="flavor-estadistica-item">
             <span class="flavor-estadistica-numero"><?php echo esc_html($total_documentos); ?></span>
-            <span class="flavor-estadistica-texto"><?php esc_html_e('Documentos', 'flavor-chat-ia'); ?></span>
+            <span class="flavor-estadistica-texto"><?php esc_html_e('Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="flavor-estadistica-item">
             <span class="flavor-estadistica-numero"><?php echo esc_html(number_format($total_descargas, 0, ',', '.')); ?></span>
-            <span class="flavor-estadistica-texto"><?php esc_html_e('Descargas totales', 'flavor-chat-ia'); ?></span>
+            <span class="flavor-estadistica-texto"><?php esc_html_e('Descargas totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
     </div>
 
@@ -333,7 +333,7 @@ $años_filtro = array('2024', '2023', '2022', '2021');
 
             <footer class="flavor-categoria-footer">
                 <a href="#" class="flavor-categoria-ver-todos" style="color: <?php echo esc_attr($datos_categoria['color']); ?>">
-                    <?php esc_html_e('Ver todos los documentos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver todos los documentos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="dashicons dashicons-arrow-right-alt2"></span>
                 </a>
             </footer>
@@ -345,7 +345,7 @@ $años_filtro = array('2024', '2023', '2022', '2021');
     <section class="flavor-grid-recientes">
         <h3 class="flavor-recientes-titulo">
             <span class="dashicons dashicons-clock"></span>
-            <?php esc_html_e('Documentos recientes', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Documentos recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h3>
         <div class="flavor-recientes-lista">
             <?php
@@ -381,16 +381,16 @@ $años_filtro = array('2024', '2023', '2022', '2021');
 
     <footer class="flavor-grid-footer">
         <p class="flavor-grid-nota">
-            <?php esc_html_e('Todos los datos publicados se actualizan periódicamente conforme a la normativa de transparencia vigente.', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Todos los datos publicados se actualizan periódicamente conforme a la normativa de transparencia vigente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
         <div class="flavor-grid-enlaces">
             <a href="#" class="flavor-grid-enlace">
                 <span class="dashicons dashicons-rss"></span>
-                <?php esc_html_e('Suscribirse a actualizaciones', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Suscribirse a actualizaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="#" class="flavor-grid-enlace">
                 <span class="dashicons dashicons-download"></span>
-                <?php esc_html_e('Descargar catálogo completo', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Descargar catálogo completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </footer>

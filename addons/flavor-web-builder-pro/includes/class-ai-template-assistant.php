@@ -105,11 +105,11 @@ class Flavor_AI_Template_Assistant {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_ai_template_assistant'),
             'strings' => [
-                'thinking' => __('Pensando...', 'flavor-chat-ia'),
-                'error' => __('Error al procesar la solicitud', 'flavor-chat-ia'),
-                'apply' => __('Aplicar plantilla', 'flavor-chat-ia'),
-                'refine' => __('Refinar', 'flavor-chat-ia'),
-                'placeholder' => __('Describe tu negocio o comunidad...', 'flavor-chat-ia'),
+                'thinking' => __('Pensando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al procesar la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'apply' => __('Aplicar plantilla', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'refine' => __('Refinar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'placeholder' => __('Describe tu negocio o comunidad...', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -287,20 +287,20 @@ PROMPT;
         check_ajax_referer('flavor_ai_template_assistant', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
         $user_description = sanitize_textarea_field($_POST['description'] ?? '');
 
         if (empty($user_description)) {
-            wp_send_json_error(['message' => __('Por favor, describe tu negocio o comunidad', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Por favor, describe tu negocio o comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
         $engine = $this->get_engine();
         if (!$engine) {
-            wp_send_json_error(['message' => __('Motor de IA no disponible', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Motor de IA no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -320,7 +320,7 @@ PROMPT;
             );
 
             if (!$response['success']) {
-                wp_send_json_error(['message' => $response['error'] ?? __('Error en la respuesta de IA', 'flavor-chat-ia')]);
+                wp_send_json_error(['message' => $response['error'] ?? __('Error en la respuesta de IA', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
                 return;
             }
 
@@ -350,7 +350,7 @@ PROMPT;
         check_ajax_referer('flavor_ai_template_assistant', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -359,13 +359,13 @@ PROMPT;
         $conversation_history = json_decode(stripslashes($_POST['conversation_history'] ?? '[]'), true);
 
         if (empty($refinement_request)) {
-            wp_send_json_error(['message' => __('Por favor, indica qué cambios deseas', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Por favor, indica qué cambios deseas', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
         $engine = $this->get_engine();
         if (!$engine) {
-            wp_send_json_error(['message' => __('Motor de IA no disponible', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Motor de IA no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -388,7 +388,7 @@ PROMPT;
             );
 
             if (!$response['success']) {
-                wp_send_json_error(['message' => $response['error'] ?? __('Error en la respuesta de IA', 'flavor-chat-ia')]);
+                wp_send_json_error(['message' => $response['error'] ?? __('Error en la respuesta de IA', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
                 return;
             }
 
@@ -418,7 +418,7 @@ PROMPT;
         check_ajax_referer('flavor_ai_template_assistant', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -426,13 +426,13 @@ PROMPT;
         $conversation_history = json_decode(stripslashes($_POST['conversation_history'] ?? '[]'), true);
 
         if (empty($message)) {
-            wp_send_json_error(['message' => __('Mensaje vacío', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Mensaje vacío', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
         $engine = $this->get_engine();
         if (!$engine) {
-            wp_send_json_error(['message' => __('Motor de IA no disponible', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Motor de IA no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -447,7 +447,7 @@ PROMPT;
             );
 
             if (!$response['success']) {
-                wp_send_json_error(['message' => $response['error'] ?? __('Error en la respuesta de IA', 'flavor-chat-ia')]);
+                wp_send_json_error(['message' => $response['error'] ?? __('Error en la respuesta de IA', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
                 return;
             }
 
@@ -533,7 +533,7 @@ PROMPT;
             <div class="flavor-ai-assistant-header">
                 <h3>
                     <span class="dashicons dashicons-superhero-alt"></span>
-                    <?php _e('Asistente IA de Plantillas', 'flavor-chat-ia'); ?>
+                    <?php _e('Asistente IA de Plantillas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <button type="button" class="flavor-ai-assistant-toggle" aria-expanded="true">
                     <span class="dashicons dashicons-arrow-up-alt2"></span>
@@ -545,7 +545,7 @@ PROMPT;
                     <div class="flavor-ai-chat-messages" id="flavor-ai-chat-messages">
                         <div class="flavor-ai-message flavor-ai-message-assistant">
                             <div class="flavor-ai-message-content">
-                                <?php _e('¡Hola! Soy tu asistente para crear plantillas. Describe tu negocio, comunidad u organización y te ayudaré a componer la plantilla perfecta.', 'flavor-chat-ia'); ?>
+                                <?php _e('¡Hola! Soy tu asistente para crear plantillas. Describe tu negocio, comunidad u organización y te ayudaré a componer la plantilla perfecta.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </div>
                         </div>
                     </div>
@@ -554,28 +554,28 @@ PROMPT;
                 <div class="flavor-ai-assistant-input">
                     <textarea
                         id="flavor-ai-input"
-                        placeholder="<?php esc_attr_e('Ej: Somos una cooperativa de productos ecológicos que quiere mostrar nuestros productores, productos y cómo unirse...', 'flavor-chat-ia'); ?>"
+                        placeholder="<?php esc_attr_e('Ej: Somos una cooperativa de productos ecológicos que quiere mostrar nuestros productores, productos y cómo unirse...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                         rows="3"
                     ></textarea>
                     <div class="flavor-ai-assistant-actions">
                         <button type="button" id="flavor-ai-send" class="button button-primary">
                             <span class="dashicons dashicons-arrow-right-alt"></span>
-                            <?php _e('Generar Plantilla', 'flavor-chat-ia'); ?>
+                            <?php _e('Generar Plantilla', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </div>
 
                 <div class="flavor-ai-assistant-preview" id="flavor-ai-preview" style="display: none;">
-                    <h4><?php _e('Plantilla Generada', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php _e('Plantilla Generada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <div class="flavor-ai-preview-components" id="flavor-ai-preview-components"></div>
                     <div class="flavor-ai-preview-actions">
                         <button type="button" id="flavor-ai-apply" class="button button-primary">
                             <span class="dashicons dashicons-yes"></span>
-                            <?php _e('Aplicar Plantilla', 'flavor-chat-ia'); ?>
+                            <?php _e('Aplicar Plantilla', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <button type="button" id="flavor-ai-refine" class="button">
                             <span class="dashicons dashicons-edit"></span>
-                            <?php _e('Refinar', 'flavor-chat-ia'); ?>
+                            <?php _e('Refinar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </div>

@@ -12,15 +12,15 @@ if (!defined('ABSPATH')) exit;
             <span class="dashicons dashicons-bell"></span>
         </span>
         <div>
-            <h3><?php esc_html_e('Alertas de tu Zona', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('Incidencias que afectan a tu entorno', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('Alertas de tu Zona', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php esc_html_e('Incidencias que afectan a tu entorno', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     </div>
 
     <?php if (empty($alertas)): ?>
         <div class="inc-alertas__vacio">
             <span class="dashicons dashicons-smiley"></span>
-            <p><?php esc_html_e('No hay alertas activas en tu zona. ¡Todo en orden!', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('No hay alertas activas en tu zona. ¡Todo en orden!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php else: ?>
         <div class="inc-alertas__lista">
@@ -43,9 +43,9 @@ if (!defined('ABSPATH')) exit;
                         <span class="inc-alertas__tipo-badge">
                             <?php
                             $tipos = [
-                                'urgente' => __('Urgente', 'flavor-chat-ia'),
-                                'moderada' => __('Moderada', 'flavor-chat-ia'),
-                                'informativa' => __('Info', 'flavor-chat-ia'),
+                                'urgente' => __('Urgente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'moderada' => __('Moderada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'informativa' => __('Info', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             ];
                             echo esc_html($tipos[$alerta->tipo_alerta] ?? $alerta->tipo_alerta);
                             ?>
@@ -55,7 +55,7 @@ if (!defined('ABSPATH')) exit;
                     <div class="inc-alertas__meta">
                         <span>
                             <span class="dashicons dashicons-location"></span>
-                            <?php printf(esc_html__('Radio: %d metros', 'flavor-chat-ia'), $alerta->radio_metros); ?>
+                            <?php printf(esc_html__('Radio: %d metros', FLAVOR_PLATFORM_TEXT_DOMAIN), $alerta->radio_metros); ?>
                         </span>
                         <span>
                             <span class="dashicons dashicons-clock"></span>
@@ -68,19 +68,19 @@ if (!defined('ABSPATH')) exit;
     <?php endif; ?>
 
     <div class="inc-alertas__config">
-        <h4><?php esc_html_e('Configurar notificaciones', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('Configurar notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <div class="inc-alertas__opciones">
             <label>
                 <input type="checkbox" id="inc-notif-urgentes" checked>
-                <?php esc_html_e('Alertas urgentes', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Alertas urgentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </label>
             <label>
                 <input type="checkbox" id="inc-notif-moderadas" checked>
-                <?php esc_html_e('Alertas moderadas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Alertas moderadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </label>
             <label>
                 <input type="checkbox" id="inc-notif-informativas">
-                <?php esc_html_e('Alertas informativas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Alertas informativas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </label>
         </div>
     </div>

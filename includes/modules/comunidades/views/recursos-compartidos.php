@@ -22,27 +22,27 @@ $tipos_permitidos = array_map('trim', explode(',', $atributos['tipos'] ?? 'recet
 $tipo_config = [
     'recetas' => [
         'icon'  => 'dashicons-carrot',
-        'label' => __('Receta', 'flavor-chat-ia'),
+        'label' => __('Receta', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'color' => '#f59e0b',
     ],
     'biblioteca' => [
         'icon'  => 'dashicons-book',
-        'label' => __('Documento', 'flavor-chat-ia'),
+        'label' => __('Documento', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'color' => '#3b82f6',
     ],
     'multimedia' => [
         'icon'  => 'dashicons-format-gallery',
-        'label' => __('Multimedia', 'flavor-chat-ia'),
+        'label' => __('Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'color' => '#8b5cf6',
     ],
     'podcast' => [
         'icon'  => 'dashicons-microphone',
-        'label' => __('Podcast', 'flavor-chat-ia'),
+        'label' => __('Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'color' => '#ec4899',
     ],
     'videos' => [
         'icon'  => 'dashicons-video-alt3',
-        'label' => __('Video', 'flavor-chat-ia'),
+        'label' => __('Video', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'color' => '#ef4444',
     ],
 ];
@@ -54,13 +54,13 @@ $tipo_config = [
     <header class="flavor-recursos-header">
         <h2 class="flavor-recursos-titulo">
             <span class="dashicons dashicons-share-alt2"></span>
-            <?php esc_html_e('Recursos Compartidos', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Recursos Compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
 
         <!-- Filtros por tipo -->
         <div class="flavor-recursos-filtros">
             <button type="button" class="flavor-filtro-btn activo" data-tipo="todos">
-                <?php esc_html_e('Todos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <?php foreach ($tipos_permitidos as $tipo): ?>
                 <?php if (isset($tipo_config[$tipo])): ?>
@@ -78,8 +78,8 @@ $tipo_config = [
         <?php if (empty($recursos)): ?>
             <div class="flavor-recursos-vacio">
                 <span class="dashicons dashicons-portfolio"></span>
-                <h3><?php esc_html_e('No hay recursos disponibles', 'flavor-chat-ia'); ?></h3>
-                <p><?php esc_html_e('Los recursos compartidos aparecerán aquí.', 'flavor-chat-ia'); ?></p>
+                <h3><?php esc_html_e('No hay recursos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php esc_html_e('Los recursos compartidos aparecerán aquí.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         <?php else: ?>
             <div class="flavor-recursos-grid" style="--columnas: <?php echo esc_attr($columnas); ?>;">
@@ -110,7 +110,7 @@ $tipo_config = [
 
                         <!-- Badge federado -->
                         <?php if ($es_federado): ?>
-                        <span class="flavor-recurso-federado" title="<?php esc_attr_e('De la red federada', 'flavor-chat-ia'); ?>">
+                        <span class="flavor-recurso-federado" title="<?php esc_attr_e('De la red federada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-networking"></span>
                         </span>
                         <?php endif; ?>
@@ -150,7 +150,7 @@ $tipo_config = [
                         <a href="<?php echo esc_url($url); ?>"
                            class="flavor-btn-ver"
                            <?php echo $es_federado ? 'target="_blank" rel="noopener"' : ''; ?>>
-                            <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             <?php if ($es_federado): ?>
                                 <span class="dashicons dashicons-external"></span>
                             <?php endif; ?>

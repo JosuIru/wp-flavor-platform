@@ -102,7 +102,7 @@ $categorias_tramites = ['Todos', 'Padron', 'Licencias', 'Deportes', 'Tributos', 
                                 </svg>
                             </div>
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold <?php echo ($tramite_actual['modalidad'] === 'online') ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-700'; ?>">
-                                <?php echo ($tramite_actual['modalidad'] === 'online') ? esc_html__('Online', 'flavor-chat-ia') : esc_html__('Presencial', 'flavor-chat-ia'); ?>
+                                <?php echo ($tramite_actual['modalidad'] === 'online') ? esc_html__('Online', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Presencial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         </div>
 
@@ -119,12 +119,12 @@ $categorias_tramites = ['Todos', 'Padron', 'Licencias', 'Deportes', 'Tributos', 
                             <svg class="w-4 h-4 mr-2 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <?php echo esc_html__('Tiempo estimado:', 'flavor-chat-ia'); ?> <?php echo esc_html($tramite_actual['tiempo']); ?>
+                            <?php echo esc_html__('Tiempo estimado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html($tramite_actual['tiempo']); ?>
                         </div>
 
                         <!-- Requisitos -->
                         <div class="mb-4">
-                            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide"><?php echo esc_html__('Requisitos:', 'flavor-chat-ia'); ?></span>
+                            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide"><?php echo esc_html__('Requisitos:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <ul class="mt-1 space-y-1">
                                 <?php foreach ($tramite_actual['requisitos'] as $requisito_texto): ?>
                                     <li class="flex items-center text-sm text-gray-600">
@@ -139,7 +139,7 @@ $categorias_tramites = ['Todos', 'Padron', 'Licencias', 'Deportes', 'Tributos', 
 
                         <!-- Boton iniciar -->
                         <button class="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-semibold transition duration-300">
-                            <?php echo esc_html__('Iniciar Tramite', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Iniciar Tramite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </div>

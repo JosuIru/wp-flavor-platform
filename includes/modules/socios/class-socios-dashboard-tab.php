@@ -27,14 +27,14 @@ class Flavor_Socios_Dashboard_Tab {
 
     public function registrar_tabs($tabs) {
         $tabs['socios-mi-membresia'] = [
-            'label' => __('Mi Membresía', 'flavor-chat-ia'),
+            'label' => __('Mi Membresía', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'id-alt',
             'callback' => [$this, 'render_tab_membresia'],
             'orden' => 10,
         ];
 
         $tabs['socios-cuotas'] = [
-            'label' => __('Mis Cuotas', 'flavor-chat-ia'),
+            'label' => __('Mis Cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'money-alt',
             'callback' => [$this, 'render_tab_cuotas'],
             'orden' => 11,
@@ -46,7 +46,7 @@ class Flavor_Socios_Dashboard_Tab {
     public function render_tab_membresia() {
         $user_id = get_current_user_id();
         if (!$user_id) {
-            echo '<p>' . esc_html__('Debes iniciar sesión.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -74,16 +74,16 @@ class Flavor_Socios_Dashboard_Tab {
         ?>
         <div class="flavor-panel flavor-membresia-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-id-alt"></span> <?php esc_html_e('Mi Membresía', 'flavor-chat-ia'); ?></h2>
+                <h2><span class="dashicons dashicons-id-alt"></span> <?php esc_html_e('Mi Membresía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
 
             <?php if (!$socio): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-id"></span>
-                    <h3><?php esc_html_e('¡Únete como socio!', 'flavor-chat-ia'); ?></h3>
-                    <p><?php esc_html_e('Accede a beneficios exclusivos, descuentos y participa activamente.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php esc_html_e('¡Únete como socio!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php esc_html_e('Accede a beneficios exclusivos, descuentos y participa activamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('socios', 'unirse')); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php esc_html_e('Hacerme socio', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Hacerme socio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -94,22 +94,22 @@ class Flavor_Socios_Dashboard_Tab {
                             <span><?php echo esc_html($tipo_socio->nombre ?? ucfirst($socio->tipo_socio)); ?></span>
                         </div>
                         <div class="membresia-numero">
-                            <?php esc_html_e('Socio Nº', 'flavor-chat-ia'); ?> <?php echo esc_html($socio->numero_socio); ?>
+                            <?php esc_html_e('Socio Nº', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html($socio->numero_socio); ?>
                         </div>
                     </div>
 
                     <div class="membresia-body">
                         <div class="membresia-info">
                             <div class="info-item">
-                                <span class="label"><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?></span>
+                                <span class="label"><?php esc_html_e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="valor"><?php echo esc_html($socio->nombre . ' ' . $socio->apellidos); ?></span>
                             </div>
                             <div class="info-item">
-                                <span class="label"><?php esc_html_e('Fecha de Alta', 'flavor-chat-ia'); ?></span>
+                                <span class="label"><?php esc_html_e('Fecha de Alta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="valor"><?php echo esc_html(date_i18n('d/m/Y', strtotime($socio->fecha_alta))); ?></span>
                             </div>
                             <div class="info-item">
-                                <span class="label"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></span>
+                                <span class="label"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="valor">
                                     <span class="flavor-badge flavor-badge-<?php echo $socio->estado === 'activo' ? 'success' : 'warning'; ?>">
                                         <?php echo esc_html(ucfirst($socio->estado)); ?>
@@ -117,13 +117,13 @@ class Flavor_Socios_Dashboard_Tab {
                                 </span>
                             </div>
                             <div class="info-item">
-                                <span class="label"><?php esc_html_e('Cuota', 'flavor-chat-ia'); ?></span>
+                                <span class="label"><?php esc_html_e('Cuota', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="valor">
                                     <?php
                                     if ($socio->cuota_importe > 0) {
                                         echo esc_html(number_format_i18n($socio->cuota_importe, 2) . ' €/' . $socio->cuota_tipo);
                                     } else {
-                                        esc_html_e('Gratuita', 'flavor-chat-ia');
+                                        esc_html_e('Gratuita', FLAVOR_PLATFORM_TEXT_DOMAIN);
                                     }
                                     ?>
                                 </span>
@@ -132,7 +132,7 @@ class Flavor_Socios_Dashboard_Tab {
 
                         <?php if (!empty($tipo_socio->beneficios)): ?>
                             <div class="membresia-beneficios">
-                                <h4><?php esc_html_e('Tus beneficios', 'flavor-chat-ia'); ?></h4>
+                                <h4><?php esc_html_e('Tus beneficios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                                 <ul>
                                     <?php foreach (explode(',', $tipo_socio->beneficios) as $beneficio): ?>
                                         <li><span class="dashicons dashicons-yes"></span> <?php echo esc_html(trim($beneficio)); ?></li>
@@ -144,15 +144,15 @@ class Flavor_Socios_Dashboard_Tab {
 
                     <div class="membresia-footer">
                         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('socios', 'mi-perfil')); ?>" class="flavor-btn flavor-btn-outline">
-                            <?php esc_html_e('Actualizar datos', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Actualizar datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                         <?php if (!$socio->carnet_emitido): ?>
                             <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('socios', 'carnet')); ?>" class="flavor-btn flavor-btn-primary">
-                                <?php esc_html_e('Solicitar carnet', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Solicitar carnet', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         <?php else: ?>
                             <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('socios', 'carnet')); ?>" class="flavor-btn flavor-btn-secondary">
-                                <?php esc_html_e('Ver carnet digital', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Ver carnet digital', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         <?php endif; ?>
                     </div>
@@ -165,7 +165,7 @@ class Flavor_Socios_Dashboard_Tab {
     public function render_tab_cuotas() {
         $user_id = get_current_user_id();
         if (!$user_id) {
-            echo '<p>' . esc_html__('Debes iniciar sesión.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -200,29 +200,29 @@ class Flavor_Socios_Dashboard_Tab {
         ?>
         <div class="flavor-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-money-alt"></span> <?php esc_html_e('Mis Cuotas', 'flavor-chat-ia'); ?></h2>
+                <h2><span class="dashicons dashicons-money-alt"></span> <?php esc_html_e('Mis Cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
 
             <?php if (!$socio): ?>
                 <div class="flavor-empty-state">
-                    <p><?php esc_html_e('No eres socio todavía.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No eres socio todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php elseif (empty($cuotas)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-money-alt"></span>
-                    <p><?php esc_html_e('No tienes cuotas registradas.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No tienes cuotas registradas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="flavor-table-responsive">
                     <table class="flavor-table">
                         <thead>
                             <tr>
-                                <th><?php esc_html_e('Concepto', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Período', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Importe', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Vencimiento', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Concepto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Período', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Importe', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Vencimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -240,11 +240,11 @@ class Flavor_Socios_Dashboard_Tab {
                                     <td>
                                         <?php if ($cuota->estado === 'pendiente' || $cuota->estado === 'vencida'): ?>
                                             <a href="<?php echo esc_url(add_query_arg('cuota_id', $cuota->id, Flavor_Chat_Helpers::get_action_url('socios', 'pagar-cuota'))); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
-                                                <?php esc_html_e('Pagar', 'flavor-chat-ia'); ?>
+                                                <?php esc_html_e('Pagar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </a>
                                         <?php elseif ($cuota->factura_url): ?>
                                             <a href="<?php echo esc_url($cuota->factura_url); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline" target="_blank">
-                                                <?php esc_html_e('Factura', 'flavor-chat-ia'); ?>
+                                                <?php esc_html_e('Factura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </a>
                                         <?php endif; ?>
                                     </td>

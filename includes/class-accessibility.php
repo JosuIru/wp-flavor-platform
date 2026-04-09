@@ -251,7 +251,7 @@ class Flavor_Accessibility {
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => __('Configuracion de accesibilidad guardada', 'flavor-chat-ia'),
+            'message' => __('Configuracion de accesibilidad guardada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'data' => $configuracion_sanitizada,
         ]);
     }

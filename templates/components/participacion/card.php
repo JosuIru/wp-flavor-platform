@@ -19,7 +19,7 @@ $descripcion = $propuesta['descripcion'] ?? '';
 $url = $propuesta['url'] ?? '#';
 $estado = $propuesta['estado'] ?? 'abierta';
 $fecha = $propuesta['fecha'] ?? '';
-$autor = $propuesta['autor'] ?? __('Anónimo', 'flavor-chat-ia');
+$autor = $propuesta['autor'] ?? __('Anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $autor_inicial = mb_substr($autor, 0, 1);
 $categoria = $propuesta['categoria'] ?? '';
 $comentarios = $propuesta['comentarios'] ?? 0;
@@ -72,8 +72,8 @@ $color_estado = $colores_estado[$estado] ?? $colores_estado['abierta'];
         <!-- Barra de votos -->
         <div class="mb-3">
             <div class="flex justify-between text-xs text-gray-500 mb-1">
-                <span><?php echo esc_html($votos_favor); ?> <?php echo esc_html__('a favor', 'flavor-chat-ia'); ?></span>
-                <span><?php echo esc_html($votos_contra); ?> <?php echo esc_html__('en contra', 'flavor-chat-ia'); ?></span>
+                <span><?php echo esc_html($votos_favor); ?> <?php echo esc_html__('a favor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                <span><?php echo esc_html($votos_contra); ?> <?php echo esc_html__('en contra', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="w-full bg-gray-200 rounded-full h-2">
                 <div class="bg-gradient-to-r from-amber-500 to-orange-500 h-2 rounded-full" style="width: <?php echo esc_attr($porcentaje_favor); ?>%"></div>

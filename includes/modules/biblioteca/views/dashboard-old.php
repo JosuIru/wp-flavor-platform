@@ -108,14 +108,14 @@ $estado_badge_classes = [
     <?php if (!$tablas_disponibles): ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <p><?php esc_html_e('Faltan tablas del módulo Biblioteca o aún no hay actividad registrada.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('Faltan tablas del módulo Biblioteca o aún no hay actividad registrada.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php endif; ?>
 
     <div class="dm-header">
         <div class="dm-header__title">
             <span class="dashicons dashicons-book"></span>
-            <h1><?php esc_html_e('Biblioteca Comunitaria', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Biblioteca Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
         </div>
     </div>
 
@@ -123,23 +123,23 @@ $estado_badge_classes = [
     <div class="dm-quick-links">
         <a href="<?php echo esc_url(admin_url('admin.php?page=biblioteca-catalogo')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-book"></span>
-            <span><?php esc_html_e('Catálogo', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=biblioteca-prestamos')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-book-alt"></span>
-            <span><?php esc_html_e('Préstamos', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=biblioteca-usuarios')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-groups"></span>
-            <span><?php esc_html_e('Usuarios', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=biblioteca-config')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-admin-settings"></span>
-            <span><?php esc_html_e('Configuración', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('biblioteca', '')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-external"></span>
-            <span><?php esc_html_e('Portal', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Portal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
     </div>
 
@@ -151,7 +151,7 @@ $estado_badge_classes = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_libros); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Total Libros', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Total Libros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -161,7 +161,7 @@ $estado_badge_classes = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($libros_disponibles); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Disponibles', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -171,7 +171,7 @@ $estado_badge_classes = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($libros_prestados); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Prestados', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Prestados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -181,7 +181,7 @@ $estado_badge_classes = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_lectores); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Lectores Activos', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Lectores Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -191,7 +191,7 @@ $estado_badge_classes = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($prestamos_retrasados); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Préstamos Retrasados', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Préstamos Retrasados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -201,7 +201,7 @@ $estado_badge_classes = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($reservas_pendientes); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Reservas Pendientes', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Reservas Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
     </div>
@@ -212,7 +212,7 @@ $estado_badge_classes = [
             <div class="dm-card__header">
                 <h2>
                     <span class="dashicons dashicons-chart-line"></span>
-                    <?php esc_html_e('Préstamos - Últimos 30 días', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Préstamos - Últimos 30 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
             </div>
             <div class="dm-card__chart">
@@ -224,7 +224,7 @@ $estado_badge_classes = [
             <div class="dm-card__header">
                 <h2>
                     <span class="dashicons dashicons-chart-pie"></span>
-                    <?php esc_html_e('Géneros Populares', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Géneros Populares', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
             </div>
             <div class="dm-card__chart">
@@ -239,16 +239,16 @@ $estado_badge_classes = [
             <div class="dm-card__header">
                 <h2>
                     <span class="dashicons dashicons-star-filled"></span>
-                    <?php esc_html_e('Libros Más Prestados', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Libros Más Prestados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
             </div>
             <?php if (!empty($libros_populares)) : ?>
                 <table class="dm-table">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('Libro', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Autor', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 80px;"><?php esc_html_e('Préstamos', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Libro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Autor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 80px;"><?php esc_html_e('Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -268,7 +268,7 @@ $estado_badge_classes = [
             <?php else : ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-book"></span>
-                    <p><?php esc_html_e('No hay datos disponibles', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay datos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
         </div>
@@ -277,16 +277,16 @@ $estado_badge_classes = [
             <div class="dm-card__header">
                 <h2>
                     <span class="dashicons dashicons-update"></span>
-                    <?php esc_html_e('Préstamos Recientes', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Préstamos Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
             </div>
             <?php if (!empty($prestamos_recientes)) : ?>
                 <table class="dm-table">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('Libro', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Prestatario', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 90px;"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Libro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Prestatario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 90px;"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -313,7 +313,7 @@ $estado_badge_classes = [
             <?php else : ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-book-alt"></span>
-                    <p><?php esc_html_e('No hay préstamos recientes', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay préstamos recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
         </div>
@@ -339,7 +339,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     return fecha.getDate() + '/' + (fecha.getMonth() + 1);
                 }),
                 datasets: [{
-                    label: '<?php esc_attr_e('Préstamos', 'flavor-chat-ia'); ?>',
+                    label: '<?php esc_attr_e('Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                     data: dataPrestamos.map(d => parseInt(d.total)),
                     borderColor: 'var(--dm-primary, #3b82f6)',
                     backgroundColor: 'rgba(59, 130, 246, 0.1)',

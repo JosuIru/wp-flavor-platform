@@ -283,7 +283,7 @@ class Flavor_App_CPT_Manager {
         if (!isset($config[$post_type]) || !$config[$post_type]['enabled']) {
             return new WP_REST_Response([
                 'success' => false,
-                'message' => __('Este tipo de contenido no está habilitado en la app', 'flavor-chat-ia'),
+                'message' => __('Este tipo de contenido no está habilitado en la app', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ], 403);
         }
 
@@ -344,7 +344,7 @@ class Flavor_App_CPT_Manager {
         if (!isset($config[$post_type]) || !$config[$post_type]['enabled']) {
             return new WP_REST_Response([
                 'success' => false,
-                'message' => __('Este tipo de contenido no está habilitado en la app', 'flavor-chat-ia'),
+                'message' => __('Este tipo de contenido no está habilitado en la app', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ], 403);
         }
 
@@ -353,7 +353,7 @@ class Flavor_App_CPT_Manager {
         if (!$post || $post->post_type !== $post_type || $post->post_status !== 'publish') {
             return new WP_REST_Response([
                 'success' => false,
-                'message' => __('Contenido no encontrado', 'flavor-chat-ia'),
+                'message' => __('Contenido no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ], 404);
         }
 
@@ -515,17 +515,17 @@ class Flavor_App_CPT_Manager {
         check_ajax_referer('flavor_app_cpts_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No tienes permisos', 'flavor-chat-ia'));
+            wp_send_json_error(__('No tienes permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $config = isset($_POST['config']) ? json_decode(stripslashes($_POST['config']), true) : [];
 
         if ($this->save_config($config)) {
             wp_send_json_success([
-                'message' => __('Configuración guardada correctamente', 'flavor-chat-ia'),
+                'message' => __('Configuración guardada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         } else {
-            wp_send_json_error(__('Error al guardar configuración', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al guardar configuración', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -538,13 +538,13 @@ class Flavor_App_CPT_Manager {
         check_ajax_referer('flavor_app_cpts_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No tienes permisos', 'flavor-chat-ia'));
+            wp_send_json_error(__('No tienes permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $post_type = sanitize_text_field($_POST['post_type'] ?? '');
 
         if (!post_type_exists($post_type)) {
-            wp_send_json_error(__('Tipo de contenido no existe', 'flavor-chat-ia'));
+            wp_send_json_error(__('Tipo de contenido no existe', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Obtener algunos posts de ejemplo

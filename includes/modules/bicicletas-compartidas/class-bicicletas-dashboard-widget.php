@@ -27,8 +27,8 @@ class Flavor_Bicicletas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
     public function __construct() {
         global $wpdb;
         $this->prefix_tabla = $wpdb->prefix . 'flavor_bicicletas_';
-        $this->title = __('Bicicletas', 'flavor-chat-ia');
-        $this->description = __('Sistema de bicicletas compartidas', 'flavor-chat-ia');
+        $this->title = __('Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Sistema de bicicletas compartidas', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         parent::__construct([
             'id' => $this->widget_id,
@@ -80,7 +80,7 @@ class Flavor_Bicicletas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             [
                 'icon' => 'dashicons-image-rotate',
                 'valor' => $bicicletas_disponibles,
-                'label' => __('Disponibles', 'flavor-chat-ia'),
+                'label' => __('Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $bicicletas_disponibles > 0 ? 'success' : 'warning',
                 'url' => $es_admin ? admin_url('admin.php?page=flavor-bicicletas-prestamos') : Flavor_Chat_Helpers::get_action_url('bicicletas_compartidas', ''),
             ],
@@ -91,7 +91,7 @@ class Flavor_Bicicletas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $stats[] = [
                 'icon' => 'dashicons-clock',
                 'valor' => $tiempo,
-                'label' => $prestamo_activo->bicicleta_nombre ?: __('En uso', 'flavor-chat-ia'),
+                'label' => $prestamo_activo->bicicleta_nombre ?: __('En uso', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'info',
                 'url' => $es_admin ? admin_url('admin.php?page=flavor-bicicletas-prestamos&id=' . $prestamo_activo->id) : Flavor_Chat_Helpers::get_action_url('bicicletas_compartidas', 'devolver'),
             ];
@@ -100,10 +100,10 @@ class Flavor_Bicicletas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats,
             'items' => [],
-            'empty_state' => __('Reserva una bicicleta para moverte', 'flavor-chat-ia'),
+            'empty_state' => __('Reserva una bicicleta para moverte', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => $prestamo_activo ? __('Devolver', 'flavor-chat-ia') : __('Reservar', 'flavor-chat-ia'),
+                    'label' => $prestamo_activo ? __('Devolver', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => $es_admin ? admin_url('admin.php?page=flavor-bicicletas-prestamos') : Flavor_Chat_Helpers::get_action_url('bicicletas_compartidas', ''),
                     'icon' => $prestamo_activo ? 'dashicons-undo' : 'dashicons-plus-alt2',
                 ],

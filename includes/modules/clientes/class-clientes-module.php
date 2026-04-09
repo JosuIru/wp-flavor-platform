@@ -44,7 +44,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas del modulo de Clientes no estan creadas. Se crearan automaticamente al activar.', 'flavor-chat-ia');
+            return __('Las tablas del modulo de Clientes no estan creadas. Se crearan automaticamente al activar.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         
     return '';
@@ -367,7 +367,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         if (!$resultado['success']) {
             return new WP_REST_Response([
                 'success' => false,
-                'error' => $resultado['error'] ?? __('Error al listar clientes', 'flavor-chat-ia'),
+                'error' => $resultado['error'] ?? __('Error al listar clientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ], 400);
         }
 
@@ -388,7 +388,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         if (!$resultado['success']) {
             return new WP_REST_Response([
                 'success' => false,
-                'error' => $resultado['error'] ?? __('Cliente no encontrado', 'flavor-chat-ia'),
+                'error' => $resultado['error'] ?? __('Cliente no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ], 404);
         }
 
@@ -422,7 +422,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         if (!$resultado['success']) {
             return new WP_REST_Response([
                 'success' => false,
-                'error' => $resultado['error'] ?? __('Error al crear cliente', 'flavor-chat-ia'),
+                'error' => $resultado['error'] ?? __('Error al crear cliente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ], 400);
         }
 
@@ -462,7 +462,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         if (!$resultado['success']) {
             return new WP_REST_Response([
                 'success' => false,
-                'error' => $resultado['error'] ?? __('Error al actualizar cliente', 'flavor-chat-ia'),
+                'error' => $resultado['error'] ?? __('Error al actualizar cliente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ], 400);
         }
 
@@ -486,7 +486,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         if (!$resultado['success']) {
             return new WP_REST_Response([
                 'success' => false,
-                'error' => $resultado['error'] ?? __('Error en la busqueda', 'flavor-chat-ia'),
+                'error' => $resultado['error'] ?? __('Error en la busqueda', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ], 400);
         }
 
@@ -513,7 +513,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         if (!$resultado['success']) {
             return new WP_REST_Response([
                 'success' => false,
-                'error' => $resultado['error'] ?? __('Error al agregar nota', 'flavor-chat-ia'),
+                'error' => $resultado['error'] ?? __('Error al agregar nota', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ], 400);
         }
 
@@ -532,7 +532,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         if (!$resultado['success']) {
             return new WP_REST_Response([
                 'success' => false,
-                'error' => $resultado['error'] ?? __('Error al obtener estadisticas', 'flavor-chat-ia'),
+                'error' => $resultado['error'] ?? __('Error al obtener estadisticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ], 400);
         }
 
@@ -547,35 +547,35 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'clientes',
-            'label' => __('Clientes', 'flavor-chat-ia'),
+            'label' => __('Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-businessman',
             'capability' => 'manage_options',
             'categoria' => 'personas',
             'paginas' => [
                 [
                     'slug' => 'clientes-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_dashboard'],
                 ],
                 [
                     'slug' => 'clientes-listado',
-                    'titulo' => __('Clientes', 'flavor-chat-ia'),
+                    'titulo' => __('Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_listado'],
                     'badge' => [$this, 'contar_clientes_activos'],
                 ],
                 [
                     'slug' => 'clientes-fichas',
-                    'titulo' => __('Fichas', 'flavor-chat-ia'),
+                    'titulo' => __('Fichas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_fichas'],
                 ],
                 [
                     'slug' => 'clientes-config',
-                    'titulo' => __('Configuracion', 'flavor-chat-ia'),
+                    'titulo' => __('Configuracion', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_config'],
                 ],
                 [
                     'slug' => 'clientes-nuevo',
-                    'titulo' => __('Nuevo Cliente', 'flavor-chat-ia'),
+                    'titulo' => __('Nuevo Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_nuevo_alias'],
                 ],
             ],
@@ -623,7 +623,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         $estadisticas[] = [
             'icon' => 'dashicons-businessman',
             'valor' => $total_clientes,
-            'label' => __('Total Clientes', 'flavor-chat-ia'),
+            'label' => __('Total Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => $total_clientes > 0 ? 'blue' : 'gray',
             'enlace' => admin_url('admin.php?page=clientes-listado'),
         ];
@@ -635,7 +635,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         $estadisticas[] = [
             'icon' => 'dashicons-yes-alt',
             'valor' => $clientes_activos,
-            'label' => __('Clientes Activos', 'flavor-chat-ia'),
+            'label' => __('Clientes Activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => $clientes_activos > 0 ? 'green' : 'gray',
             'enlace' => admin_url('admin.php?page=clientes-listado&estado=activo'),
         ];
@@ -647,7 +647,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         $estadisticas[] = [
             'icon' => 'dashicons-star-empty',
             'valor' => $clientes_potenciales,
-            'label' => __('Potenciales', 'flavor-chat-ia'),
+            'label' => __('Potenciales', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => $clientes_potenciales > 0 ? 'orange' : 'gray',
             'enlace' => admin_url('admin.php?page=clientes-listado&estado=potencial'),
         ];
@@ -660,7 +660,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
             $estadisticas[] = [
                 'icon' => 'dashicons-chart-line',
                 'valor' => $this->format_price($valor_pipeline),
-                'label' => __('Valor Pipeline', 'flavor-chat-ia'),
+                'label' => __('Valor Pipeline', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'purple',
                 'enlace' => admin_url('admin.php?page=clientes-dashboard'),
             ];
@@ -674,8 +674,8 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_dashboard() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Dashboard de Clientes', 'flavor-chat-ia'), [
-            ['label' => __('Nuevo Cliente', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=clientes-listado&action=nuevo'), 'class' => 'button-primary'],
+        $this->render_page_header(__('Dashboard de Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+            ['label' => __('Nuevo Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=clientes-listado&action=nuevo'), 'class' => 'button-primary'],
         ]);
 
         // Resumen de estadisticas
@@ -683,14 +683,14 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         if ($estadisticas['success'] && !empty($estadisticas['estadisticas'])) {
             $datos = $estadisticas['estadisticas'];
             echo '<div class="flavor-stats-grid">';
-            echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($datos['total_clientes']) . '</span><span class="stat-label">' . __('Total Clientes', 'flavor-chat-ia') . '</span></div>';
-            echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($datos['nuevos_este_mes']) . '</span><span class="stat-label">' . __('Nuevos este mes', 'flavor-chat-ia') . '</span></div>';
-            echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($this->format_price($datos['pipeline']['valor_total'])) . '</span><span class="stat-label">' . __('Valor Pipeline', 'flavor-chat-ia') . '</span></div>';
+            echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($datos['total_clientes']) . '</span><span class="stat-label">' . __('Total Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
+            echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($datos['nuevos_este_mes']) . '</span><span class="stat-label">' . __('Nuevos este mes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
+            echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($this->format_price($datos['pipeline']['valor_total'])) . '</span><span class="stat-label">' . __('Valor Pipeline', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
             echo '</div>';
 
             // Desglose por estado
             if (!empty($datos['por_estado'])) {
-                echo '<h3>' . __('Clientes por Estado', 'flavor-chat-ia') . '</h3>';
+                echo '<h3>' . __('Clientes por Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
                 echo '<ul class="flavor-list-inline">';
                 foreach ($datos['por_estado'] as $estado_nombre => $cantidad_estado) {
                     echo '<li><strong>' . esc_html(ucfirst($estado_nombre)) . ':</strong> ' . esc_html($cantidad_estado) . '</li>';
@@ -700,7 +700,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
 
             // Desglose por tipo
             if (!empty($datos['por_tipo'])) {
-                echo '<h3>' . __('Clientes por Tipo', 'flavor-chat-ia') . '</h3>';
+                echo '<h3>' . __('Clientes por Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
                 echo '<ul class="flavor-list-inline">';
                 foreach ($datos['por_tipo'] as $tipo_nombre => $cantidad_tipo) {
                     echo '<li><strong>' . esc_html(ucfirst($tipo_nombre)) . ':</strong> ' . esc_html($cantidad_tipo) . '</li>';
@@ -709,7 +709,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
             }
         }
 
-        echo '<p>' . __('Panel de control del CRM con metricas y accesos rapidos.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Panel de control del CRM con metricas y accesos rapidos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         echo '</div>';
     }
 
@@ -725,9 +725,9 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         }
 
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Clientes', 'flavor-chat-ia'), [
-            ['label' => __('Nuevo Cliente', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=clientes-listado&action=nuevo'), 'class' => 'button-primary'],
-            ['label' => __('Exportar', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=clientes-listado&action=exportar'), 'class' => 'button'],
+        $this->render_page_header(__('Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+            ['label' => __('Nuevo Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=clientes-listado&action=nuevo'), 'class' => 'button-primary'],
+            ['label' => __('Exportar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=clientes-listado&action=exportar'), 'class' => 'button'],
         ]);
 
         if ($admin_action === 'nuevo') {
@@ -769,13 +769,13 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         if (!empty($clientes)) {
             echo '<table class="wp-list-table widefat fixed striped">';
             echo '<thead><tr>';
-            echo '<th>' . __('Nombre', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Email', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Telefono', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Tipo', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Estado', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Valor', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Acciones', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Email', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Telefono', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Valor', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
             echo '</tr></thead>';
             echo '<tbody>';
             foreach ($clientes as $cliente) {
@@ -792,21 +792,21 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
                 echo '<td><span class="' . esc_attr($clase_estado) . '">' . esc_html(ucfirst($cliente['estado'])) . '</span></td>';
                 echo '<td>' . esc_html($this->format_price((float) $cliente['valor_estimado'])) . '</td>';
                 echo '<td>';
-                echo '<a href="' . esc_url(admin_url('admin.php?page=clientes-fichas&cliente_id=' . $cliente['id'])) . '" class="button button-small">' . __('Ver', 'flavor-chat-ia') . '</a> ';
-                echo '<a href="' . esc_url(admin_url('admin.php?page=clientes-listado&action=nuevo&editar=' . $cliente['id'])) . '" class="button button-small">' . __('Editar', 'flavor-chat-ia') . '</a>';
+                echo '<a href="' . esc_url(admin_url('admin.php?page=clientes-fichas&cliente_id=' . $cliente['id'])) . '" class="button button-small">' . __('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a> ';
+                echo '<a href="' . esc_url(admin_url('admin.php?page=clientes-listado&action=nuevo&editar=' . $cliente['id'])) . '" class="button button-small">' . __('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
                 echo ' <a href="' . esc_url(add_query_arg([
                     'page' => 'facturas-nueva',
                     'cliente_id' => absint($cliente['id']),
                     'cliente_tipo' => 'crm_cliente',
                     'cliente_nombre' => (string) $cliente['nombre'],
                     'cliente_email' => (string) $cliente['email'],
-                ], admin_url('admin.php'))) . '" class="button button-small">' . __('Facturar', 'flavor-chat-ia') . '</a>';
+                ], admin_url('admin.php'))) . '" class="button button-small">' . __('Facturar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
                 echo '</td>';
                 echo '</tr>';
             }
             echo '</tbody></table>';
         } else {
-            echo '<p>' . __('No se encontraron clientes.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('No se encontraron clientes.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         echo '</div>';
@@ -863,7 +863,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
                     'asignado_a' => (int) $cliente->asignado_a,
                 ];
             } else {
-                echo '<div class="notice notice-error"><p>' . esc_html__('Cliente no encontrado para editar.', 'flavor-chat-ia') . '</p></div>';
+                echo '<div class="notice notice-error"><p>' . esc_html__('Cliente no encontrado para editar.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
                 $modo_edicion = false;
                 $cliente_id = 0;
             }
@@ -873,7 +873,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
             $nonce = isset($_POST['flavor_cliente_nonce']) ? sanitize_text_field(wp_unslash((string) $_POST['flavor_cliente_nonce'])) : '';
 
             if (!wp_verify_nonce($nonce, 'flavor_cliente_admin_guardar')) {
-                echo '<div class="notice notice-error"><p>' . esc_html__('Error de seguridad. Recarga la página e inténtalo de nuevo.', 'flavor-chat-ia') . '</p></div>';
+                echo '<div class="notice notice-error"><p>' . esc_html__('Error de seguridad. Recarga la página e inténtalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             } else {
                 $valor_estimado_raw = isset($_POST['valor_estimado']) ? sanitize_text_field(wp_unslash((string) $_POST['valor_estimado'])) : '0';
                 $valor_estimado = str_replace(',', '.', $valor_estimado_raw);
@@ -907,16 +907,16 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
                     exit;
                 }
 
-                echo '<div class="notice notice-error"><p>' . esc_html($resultado['error'] ?? __('No se pudo guardar el cliente.', 'flavor-chat-ia')) . '</p></div>';
+                echo '<div class="notice notice-error"><p>' . esc_html($resultado['error'] ?? __('No se pudo guardar el cliente.', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '</p></div>';
                 $form_data = array_merge($form_data, $params);
             }
         }
 
         if (isset($_GET['created']) && absint($_GET['created']) === 1) {
-            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Cliente creado correctamente.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Cliente creado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
         if (isset($_GET['updated']) && absint($_GET['updated']) === 1) {
-            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Cliente actualizado correctamente.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Cliente actualizado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         $usuarios = get_users([
@@ -925,60 +925,60 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
             'number' => 200,
         ]);
 
-        echo '<h2 style="margin-top:16px;">' . esc_html($modo_edicion ? __('Editar Cliente', 'flavor-chat-ia') : __('Nuevo Cliente', 'flavor-chat-ia')) . '</h2>';
+        echo '<h2 style="margin-top:16px;">' . esc_html($modo_edicion ? __('Editar Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Nuevo Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '</h2>';
         echo '<form method="post" action="' . esc_url(admin_url('admin.php?page=clientes-listado&action=nuevo' . ($modo_edicion ? '&editar=' . $cliente_id : ''))) . '">';
         wp_nonce_field('flavor_cliente_admin_guardar', 'flavor_cliente_nonce');
         echo '<table class="form-table" role="presentation"><tbody>';
 
-        echo '<tr><th scope="row"><label for="cliente_nombre">' . esc_html__('Nombre', 'flavor-chat-ia') . ' *</label></th>';
+        echo '<tr><th scope="row"><label for="cliente_nombre">' . esc_html__('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN) . ' *</label></th>';
         echo '<td><input type="text" id="cliente_nombre" name="nombre" class="regular-text" required value="' . esc_attr((string) $form_data['nombre']) . '" /></td></tr>';
 
-        echo '<tr><th scope="row"><label for="cliente_email">' . esc_html__('Email', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="cliente_email">' . esc_html__('Email', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="email" id="cliente_email" name="email" class="regular-text" value="' . esc_attr((string) $form_data['email']) . '" /></td></tr>';
 
-        echo '<tr><th scope="row"><label for="cliente_telefono">' . esc_html__('Teléfono', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="cliente_telefono">' . esc_html__('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="text" id="cliente_telefono" name="telefono" class="regular-text" value="' . esc_attr((string) $form_data['telefono']) . '" /></td></tr>';
 
-        echo '<tr><th scope="row"><label for="cliente_empresa">' . esc_html__('Empresa', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="cliente_empresa">' . esc_html__('Empresa', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="text" id="cliente_empresa" name="empresa" class="regular-text" value="' . esc_attr((string) $form_data['empresa']) . '" /></td></tr>';
 
-        echo '<tr><th scope="row"><label for="cliente_cargo">' . esc_html__('Cargo', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="cliente_cargo">' . esc_html__('Cargo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="text" id="cliente_cargo" name="cargo" class="regular-text" value="' . esc_attr((string) $form_data['cargo']) . '" /></td></tr>';
 
-        echo '<tr><th scope="row"><label for="cliente_direccion">' . esc_html__('Dirección', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="cliente_direccion">' . esc_html__('Dirección', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><textarea id="cliente_direccion" name="direccion" class="large-text" rows="3">' . esc_textarea((string) $form_data['direccion']) . '</textarea></td></tr>';
 
-        echo '<tr><th scope="row"><label for="cliente_tipo">' . esc_html__('Tipo', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="cliente_tipo">' . esc_html__('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><select id="cliente_tipo" name="tipo">';
         foreach ((array) $settings['tipos_cliente'] as $tipo) {
             echo '<option value="' . esc_attr((string) $tipo) . '"' . selected($form_data['tipo'], $tipo, false) . '>' . esc_html(ucfirst((string) $tipo)) . '</option>';
         }
         echo '</select></td></tr>';
 
-        echo '<tr><th scope="row"><label for="cliente_estado">' . esc_html__('Estado', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="cliente_estado">' . esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><select id="cliente_estado" name="estado">';
         foreach ((array) $settings['estados_cliente'] as $estado) {
             echo '<option value="' . esc_attr((string) $estado) . '"' . selected($form_data['estado'], $estado, false) . '>' . esc_html(ucfirst((string) $estado)) . '</option>';
         }
         echo '</select></td></tr>';
 
-        echo '<tr><th scope="row"><label for="cliente_origen">' . esc_html__('Origen', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="cliente_origen">' . esc_html__('Origen', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><select id="cliente_origen" name="origen">';
         foreach ((array) $settings['origenes_cliente'] as $origen) {
             echo '<option value="' . esc_attr((string) $origen) . '"' . selected($form_data['origen'], $origen, false) . '>' . esc_html(ucfirst((string) $origen)) . '</option>';
         }
         echo '</select></td></tr>';
 
-        echo '<tr><th scope="row"><label for="cliente_valor_estimado">' . esc_html__('Valor estimado', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="cliente_valor_estimado">' . esc_html__('Valor estimado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="number" id="cliente_valor_estimado" name="valor_estimado" min="0" step="0.01" class="regular-text" value="' . esc_attr((string) $form_data['valor_estimado']) . '" /></td></tr>';
 
-        echo '<tr><th scope="row"><label for="cliente_etiquetas">' . esc_html__('Etiquetas', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="cliente_etiquetas">' . esc_html__('Etiquetas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="text" id="cliente_etiquetas" name="etiquetas" class="regular-text" value="' . esc_attr((string) $form_data['etiquetas']) . '" />';
-        echo '<p class="description">' . esc_html__('Separadas por comas. Ejemplo: vip, lead, ecommerce', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . esc_html__('Separadas por comas. Ejemplo: vip, lead, ecommerce', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="cliente_asignado_a">' . esc_html__('Asignado a', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="cliente_asignado_a">' . esc_html__('Asignado a', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><select id="cliente_asignado_a" name="asignado_a">';
-        echo '<option value="0">' . esc_html__('Sin asignar', 'flavor-chat-ia') . '</option>';
+        echo '<option value="0">' . esc_html__('Sin asignar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
         foreach ($usuarios as $usuario) {
             echo '<option value="' . esc_attr((string) $usuario->ID) . '"' . selected((int) $form_data['asignado_a'], (int) $usuario->ID, false) . '>' . esc_html($usuario->display_name) . '</option>';
         }
@@ -987,8 +987,8 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         echo '</tbody></table>';
 
         echo '<p class="submit">';
-        echo '<button type="submit" name="flavor_cliente_guardar" value="1" class="button button-primary">' . esc_html($modo_edicion ? __('Guardar cambios', 'flavor-chat-ia') : __('Crear cliente', 'flavor-chat-ia')) . '</button> ';
-        echo '<a href="' . esc_url(admin_url('admin.php?page=clientes-listado')) . '" class="button">' . esc_html__('Volver al listado', 'flavor-chat-ia') . '</a>';
+        echo '<button type="submit" name="flavor_cliente_guardar" value="1" class="button button-primary">' . esc_html($modo_edicion ? __('Guardar cambios', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Crear cliente', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '</button> ';
+        echo '<a href="' . esc_url(admin_url('admin.php?page=clientes-listado')) . '" class="button">' . esc_html__('Volver al listado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
         echo '</p>';
         echo '</form>';
     }
@@ -1000,7 +1000,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
      */
     private function exportar_clientes_csv_admin() {
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('No tienes permisos para exportar clientes.', 'flavor-chat-ia'));
+            wp_die(esc_html__('No tienes permisos para exportar clientes.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -1036,7 +1036,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
 
         $output = fopen('php://output', 'w');
         if (!$output) {
-            wp_die(esc_html__('No se pudo generar el archivo CSV.', 'flavor-chat-ia'));
+            wp_die(esc_html__('No se pudo generar el archivo CSV.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         fputcsv($output, ['id', 'nombre', 'email', 'telefono', 'empresa', 'cargo', 'tipo', 'estado', 'valor_estimado', 'origen', 'created_at', 'updated_at']);
@@ -1063,17 +1063,17 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
                 $cliente = $resultado['cliente'];
 
                 $this->render_page_header(
-                    sprintf(__('Ficha: %s', 'flavor-chat-ia'), $cliente['nombre']),
+                    sprintf(__('Ficha: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $cliente['nombre']),
                     [
-                        ['label' => __('Editar', 'flavor-chat-ia'), 'url' => '#', 'class' => 'button-primary'],
-                        ['label' => __('Nueva Factura', 'flavor-chat-ia'), 'url' => add_query_arg([
+                        ['label' => __('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '#', 'class' => 'button-primary'],
+                        ['label' => __('Nueva Factura', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => add_query_arg([
                             'page' => 'facturas-nueva',
                             'cliente_id' => absint($cliente['id']),
                             'cliente_tipo' => 'crm_cliente',
                             'cliente_nombre' => (string) $cliente['nombre'],
                             'cliente_email' => (string) $cliente['email'],
                         ], admin_url('admin.php')), 'class' => 'button'],
-                        ['label' => __('Volver al listado', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=clientes-listado'), 'class' => 'button'],
+                        ['label' => __('Volver al listado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=clientes-listado'), 'class' => 'button'],
                     ]
                 );
 
@@ -1081,38 +1081,38 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
 
                 // Informacion principal
                 echo '<div class="flavor-ficha-section">';
-                echo '<h3>' . __('Informacion de Contacto', 'flavor-chat-ia') . '</h3>';
+                echo '<h3>' . __('Informacion de Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
                 echo '<table class="form-table">';
-                echo '<tr><th>' . __('Email', 'flavor-chat-ia') . '</th><td>' . esc_html($cliente['email']) . '</td></tr>';
-                echo '<tr><th>' . __('Telefono', 'flavor-chat-ia') . '</th><td>' . esc_html($cliente['telefono']) . '</td></tr>';
-                echo '<tr><th>' . __('Empresa', 'flavor-chat-ia') . '</th><td>' . esc_html($cliente['empresa']) . '</td></tr>';
-                echo '<tr><th>' . __('Cargo', 'flavor-chat-ia') . '</th><td>' . esc_html($cliente['cargo']) . '</td></tr>';
-                echo '<tr><th>' . __('Direccion', 'flavor-chat-ia') . '</th><td>' . esc_html($cliente['direccion']) . '</td></tr>';
+                echo '<tr><th>' . __('Email', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td>' . esc_html($cliente['email']) . '</td></tr>';
+                echo '<tr><th>' . __('Telefono', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td>' . esc_html($cliente['telefono']) . '</td></tr>';
+                echo '<tr><th>' . __('Empresa', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td>' . esc_html($cliente['empresa']) . '</td></tr>';
+                echo '<tr><th>' . __('Cargo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td>' . esc_html($cliente['cargo']) . '</td></tr>';
+                echo '<tr><th>' . __('Direccion', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td>' . esc_html($cliente['direccion']) . '</td></tr>';
                 echo '</table>';
                 echo '</div>';
 
                 // Estado y clasificacion
                 echo '<div class="flavor-ficha-section">';
-                echo '<h3>' . __('Clasificacion', 'flavor-chat-ia') . '</h3>';
+                echo '<h3>' . __('Clasificacion', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
                 echo '<table class="form-table">';
-                echo '<tr><th>' . __('Tipo', 'flavor-chat-ia') . '</th><td>' . esc_html(ucfirst($cliente['tipo'])) . '</td></tr>';
-                echo '<tr><th>' . __('Estado', 'flavor-chat-ia') . '</th><td>' . esc_html(ucfirst($cliente['estado'])) . '</td></tr>';
-                echo '<tr><th>' . __('Origen', 'flavor-chat-ia') . '</th><td>' . esc_html(ucfirst($cliente['origen'])) . '</td></tr>';
-                echo '<tr><th>' . __('Valor Estimado', 'flavor-chat-ia') . '</th><td>' . esc_html($this->format_price($cliente['valor_estimado'])) . '</td></tr>';
+                echo '<tr><th>' . __('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td>' . esc_html(ucfirst($cliente['tipo'])) . '</td></tr>';
+                echo '<tr><th>' . __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td>' . esc_html(ucfirst($cliente['estado'])) . '</td></tr>';
+                echo '<tr><th>' . __('Origen', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td>' . esc_html(ucfirst($cliente['origen'])) . '</td></tr>';
+                echo '<tr><th>' . __('Valor Estimado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td>' . esc_html($this->format_price($cliente['valor_estimado'])) . '</td></tr>';
                 echo '</table>';
                 echo '</div>';
 
                 // Notas recientes
                 if (!empty($cliente['notas'])) {
                     echo '<div class="flavor-ficha-section">';
-                    echo '<h3>' . __('Notas e Interacciones', 'flavor-chat-ia') . '</h3>';
+                    echo '<h3>' . __('Notas e Interacciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
                     echo '<ul class="flavor-notas-list">';
                     foreach ($cliente['notas'] as $nota) {
                         echo '<li>';
                         echo '<strong>' . esc_html(ucfirst($nota['tipo'])) . '</strong> - ';
                         echo '<span class="fecha">' . esc_html($nota['created_at']) . '</span>';
                         echo '<p>' . esc_html($nota['contenido']) . '</p>';
-                        echo '<small>' . __('Por:', 'flavor-chat-ia') . ' ' . esc_html($nota['autor']) . '</small>';
+                        echo '<small>' . __('Por:', FLAVOR_PLATFORM_TEXT_DOMAIN) . ' ' . esc_html($nota['autor']) . '</small>';
                         echo '</li>';
                     }
                     echo '</ul>';
@@ -1121,13 +1121,13 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
 
                 echo '</div>';
             } else {
-                echo '<p>' . __('Cliente no encontrado.', 'flavor-chat-ia') . '</p>';
+                echo '<p>' . __('Cliente no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             }
         } else {
             // Listado de fichas
-            $this->render_page_header(__('Fichas de Clientes', 'flavor-chat-ia'));
-            echo '<p>' . __('Selecciona un cliente del listado para ver su ficha completa.', 'flavor-chat-ia') . '</p>';
-            echo '<p><a href="' . esc_url(admin_url('admin.php?page=clientes-listado')) . '" class="button">' . __('Ir al Listado de Clientes', 'flavor-chat-ia') . '</a></p>';
+            $this->render_page_header(__('Fichas de Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
+            echo '<p>' . __('Selecciona un cliente del listado para ver su ficha completa.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
+            echo '<p><a href="' . esc_url(admin_url('admin.php?page=clientes-listado')) . '" class="button">' . __('Ir al Listado de Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p>';
         }
 
         echo '</div>';
@@ -1138,35 +1138,35 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_config() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Configuracion de Clientes', 'flavor-chat-ia'));
+        $this->render_page_header(__('Configuracion de Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         $configuracion_actual = $this->get_default_settings();
 
         echo '<form method="post" action="">';
         echo '<table class="form-table">';
 
-        echo '<tr><th scope="row"><label for="limite_resultados_por_defecto">' . __('Limite de resultados por defecto', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="limite_resultados_por_defecto">' . __('Limite de resultados por defecto', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="number" name="limite_resultados_por_defecto" id="limite_resultados_por_defecto" value="' . esc_attr($configuracion_actual['limite_resultados_por_defecto']) . '" min="5" max="100" class="small-text" />';
-        echo '<p class="description">' . __('Numero de clientes a mostrar por pagina.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . __('Numero de clientes a mostrar por pagina.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label>' . __('Tipos de Cliente', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label>' . __('Tipos de Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><code>' . esc_html(implode(', ', $configuracion_actual['tipos_cliente'])) . '</code>';
-        echo '<p class="description">' . __('Tipos disponibles para clasificar clientes.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . __('Tipos disponibles para clasificar clientes.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label>' . __('Estados de Cliente', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label>' . __('Estados de Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><code>' . esc_html(implode(', ', $configuracion_actual['estados_cliente'])) . '</code>';
-        echo '<p class="description">' . __('Estados del pipeline de ventas.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . __('Estados del pipeline de ventas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label>' . __('Origenes de Cliente', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label>' . __('Origenes de Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><code>' . esc_html(implode(', ', $configuracion_actual['origenes_cliente'])) . '</code>';
-        echo '<p class="description">' . __('Como llegaron los clientes.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . __('Como llegaron los clientes.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label>' . __('Tipos de Nota', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label>' . __('Tipos de Nota', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><code>' . esc_html(implode(', ', $configuracion_actual['tipos_nota'])) . '</code>';
-        echo '<p class="description">' . __('Tipos de interacciones registrables.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . __('Tipos de interacciones registrables.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
         echo '</table>';
-        echo '<p class="submit"><input type="submit" name="guardar_config" class="button-primary" value="' . __('Guardar Configuracion', 'flavor-chat-ia') . '" /></p>';
+        echo '<p class="submit"><input type="submit" name="guardar_config" class="button-primary" value="' . __('Guardar Configuracion', FLAVOR_PLATFORM_TEXT_DOMAIN) . '" /></p>';
         echo '</form>';
         echo '</div>';
     }
@@ -1340,7 +1340,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error' => sprintf(__('Accion no implementada: %s', 'flavor-chat-ia'), $nombre_accion),
+            'error' => sprintf(__('Accion no implementada: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $nombre_accion),
         ];
     }
 
@@ -1410,7 +1410,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
             'total_paginas' => ceil($total_clientes / $limite),
             'clientes' => $clientes_formateados,
             'mensaje' => sprintf(
-                __('Se encontraron %d clientes.', 'flavor-chat-ia'),
+                __('Se encontraron %d clientes.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $total_clientes
             ),
         ];
@@ -1429,7 +1429,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         if (!$cliente_id) {
             return [
                 'success' => false,
-                'error' => __('ID de cliente no valido.', 'flavor-chat-ia'),
+                'error' => __('ID de cliente no valido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1441,7 +1441,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         if (!$cliente_registro) {
             return [
                 'success' => false,
-                'error' => __('Cliente no encontrado.', 'flavor-chat-ia'),
+                'error' => __('Cliente no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1463,7 +1463,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
                 'contenido' => $nota->contenido,
                 'estado' => $nota->estado,
                 'fecha_seguimiento' => $nota->fecha_seguimiento,
-                'autor' => $nota->autor_nombre ?? __('Sistema', 'flavor-chat-ia'),
+                'autor' => $nota->autor_nombre ?? __('Sistema', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'created_at' => $nota->created_at,
             ];
         }, $notas_recientes);
@@ -1484,7 +1484,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         if (!is_user_logged_in()) {
             return [
                 'success' => false,
-                'error' => __('Debes iniciar sesion para crear clientes.', 'flavor-chat-ia'),
+                'error' => __('Debes iniciar sesion para crear clientes.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1493,7 +1493,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         if (empty($nombre_cliente)) {
             return [
                 'success' => false,
-                'error' => __('El nombre del cliente es obligatorio.', 'flavor-chat-ia'),
+                'error' => __('El nombre del cliente es obligatorio.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1544,7 +1544,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         if ($resultado_insercion === false) {
             return [
                 'success' => false,
-                'error' => __('Error al crear el cliente.', 'flavor-chat-ia'),
+                'error' => __('Error al crear el cliente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1563,7 +1563,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
             'success' => true,
             'cliente_id' => $nuevo_cliente_id,
             'mensaje' => sprintf(
-                __('Cliente "%s" creado correctamente con ID %d.', 'flavor-chat-ia'),
+                __('Cliente "%s" creado correctamente con ID %d.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $nombre_cliente,
                 $nuevo_cliente_id
             ),
@@ -1577,7 +1577,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         if (!is_user_logged_in()) {
             return [
                 'success' => false,
-                'error' => __('Debes iniciar sesion para actualizar clientes.', 'flavor-chat-ia'),
+                'error' => __('Debes iniciar sesion para actualizar clientes.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1586,7 +1586,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         if (!$cliente_id) {
             return [
                 'success' => false,
-                'error' => __('ID de cliente no valido.', 'flavor-chat-ia'),
+                'error' => __('ID de cliente no valido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1602,7 +1602,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         if (!$cliente_existente) {
             return [
                 'success' => false,
-                'error' => __('Cliente no encontrado.', 'flavor-chat-ia'),
+                'error' => __('Cliente no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1649,7 +1649,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         if (empty($datos_actualizar)) {
             return [
                 'success' => false,
-                'error' => __('No se proporcionaron datos para actualizar.', 'flavor-chat-ia'),
+                'error' => __('No se proporcionaron datos para actualizar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1667,7 +1667,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         if ($resultado_actualizacion === false) {
             return [
                 'success' => false,
-                'error' => __('Error al actualizar el cliente.', 'flavor-chat-ia'),
+                'error' => __('Error al actualizar el cliente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1676,7 +1676,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
             'cliente_id' => $cliente_id,
             'campos_actualizados' => array_keys($datos_actualizar),
             'mensaje' => sprintf(
-                __('Cliente #%d actualizado correctamente.', 'flavor-chat-ia'),
+                __('Cliente #%d actualizado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $cliente_id
             ),
         ];
@@ -1689,7 +1689,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         if (!is_user_logged_in()) {
             return [
                 'success' => false,
-                'error' => __('Debes iniciar sesion para agregar notas.', 'flavor-chat-ia'),
+                'error' => __('Debes iniciar sesion para agregar notas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1699,14 +1699,14 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         if (!$cliente_id) {
             return [
                 'success' => false,
-                'error' => __('ID de cliente no valido.', 'flavor-chat-ia'),
+                'error' => __('ID de cliente no valido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
         if (empty($contenido_nota)) {
             return [
                 'success' => false,
-                'error' => __('El contenido de la nota es obligatorio.', 'flavor-chat-ia'),
+                'error' => __('El contenido de la nota es obligatorio.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1723,7 +1723,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         if (!$cliente_existente) {
             return [
                 'success' => false,
-                'error' => __('Cliente no encontrado.', 'flavor-chat-ia'),
+                'error' => __('Cliente no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1752,7 +1752,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         if ($resultado_nota === false) {
             return [
                 'success' => false,
-                'error' => __('Error al agregar la nota.', 'flavor-chat-ia'),
+                'error' => __('Error al agregar la nota.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1769,12 +1769,12 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         ));
 
         $etiquetas_tipo = [
-            'nota' => __('Nota', 'flavor-chat-ia'),
-            'llamada' => __('Llamada', 'flavor-chat-ia'),
-            'email' => __('Email', 'flavor-chat-ia'),
-            'reunion' => __('Reunion', 'flavor-chat-ia'),
-            'tarea' => __('Tarea', 'flavor-chat-ia'),
-            'seguimiento' => __('Seguimiento', 'flavor-chat-ia'),
+            'nota' => __('Nota', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'llamada' => __('Llamada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'email' => __('Email', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'reunion' => __('Reunion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'tarea' => __('Tarea', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'seguimiento' => __('Seguimiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $tipo_legible = $etiquetas_tipo[$tipo_nota] ?? $tipo_nota;
@@ -1784,7 +1784,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
             'nota_id' => $wpdb->insert_id,
             'cliente_id' => $cliente_id,
             'mensaje' => sprintf(
-                __('%s agregada al cliente #%d correctamente.', 'flavor-chat-ia'),
+                __('%s agregada al cliente #%d correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $tipo_legible,
                 $cliente_id
             ),
@@ -1804,7 +1804,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         if (empty($termino_busqueda)) {
             return [
                 'success' => false,
-                'error' => __('El termino de busqueda es obligatorio.', 'flavor-chat-ia'),
+                'error' => __('El termino de busqueda es obligatorio.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1835,7 +1835,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
             'busqueda' => $termino_busqueda,
             'clientes' => $clientes_formateados,
             'mensaje' => sprintf(
-                __('Se encontraron %d clientes para "%s".', 'flavor-chat-ia'),
+                __('Se encontraron %d clientes para "%s".', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 count($clientes_formateados),
                 $termino_busqueda
             ),
@@ -1924,7 +1924,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
                 ],
             ],
             'mensaje' => sprintf(
-                __('CRM: %d clientes totales, %d nuevos este mes, pipeline de %s.', 'flavor-chat-ia'),
+                __('CRM: %d clientes totales, %d nuevos este mes, pipeline de %s.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $total_clientes,
                 $nuevos_este_mes,
                 $this->format_price($valor_total_pipeline)
@@ -1958,7 +1958,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         return [
             'success' => true,
             'estados' => $estados_desglose,
-            'mensaje' => __('Desglose de clientes por estado obtenido correctamente.', 'flavor-chat-ia'),
+            'mensaje' => __('Desglose de clientes por estado obtenido correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -1971,7 +1971,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         if (!$usuario_actual_id) {
             return [
                 'success' => false,
-                'error' => __('Debes iniciar sesion para ver tus clientes.', 'flavor-chat-ia'),
+                'error' => __('Debes iniciar sesion para ver tus clientes.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2006,7 +2006,7 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
             'total' => count($clientes_formateados),
             'clientes' => $clientes_formateados,
             'mensaje' => sprintf(
-                __('Tienes %d clientes asignados.', 'flavor-chat-ia'),
+                __('Tienes %d clientes asignados.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 count($clientes_formateados)
             ),
         ];
@@ -2304,68 +2304,68 @@ KNOWLEDGE;
     public function get_web_components() {
         return [
             'clientes_hero' => [
-                'label' => __('Hero Clientes / CRM', 'flavor-chat-ia'),
-                'description' => __('Seccion hero para la pagina de gestion de clientes', 'flavor-chat-ia'),
+                'label' => __('Hero Clientes / CRM', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Seccion hero para la pagina de gestion de clientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-groups',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Titulo', 'flavor-chat-ia'),
-                        'default' => __('Gestion de Clientes', 'flavor-chat-ia'),
+                        'label' => __('Titulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Gestion de Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'subtitulo' => [
                         'type' => 'textarea',
-                        'label' => __('Subtitulo', 'flavor-chat-ia'),
-                        'default' => __('CRM integrado para gestionar tus contactos, notas e interacciones', 'flavor-chat-ia'),
+                        'label' => __('Subtitulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('CRM integrado para gestionar tus contactos, notas e interacciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'imagen_fondo' => [
                         'type' => 'image',
-                        'label' => __('Imagen de Fondo', 'flavor-chat-ia'),
+                        'label' => __('Imagen de Fondo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                 ],
                 'template' => 'clientes/hero',
             ],
             'clientes_grid' => [
-                'label' => __('Grid de Clientes', 'flavor-chat-ia'),
-                'description' => __('Listado de clientes del CRM en formato grid', 'flavor-chat-ia'),
+                'label' => __('Grid de Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Listado de clientes del CRM en formato grid', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-id-alt',
                 'fields' => [
                     'titulo_seccion' => [
                         'type' => 'text',
-                        'label' => __('Titulo de Seccion', 'flavor-chat-ia'),
-                        'default' => __('Nuestros Clientes', 'flavor-chat-ia'),
+                        'label' => __('Titulo de Seccion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Nuestros Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'estado_filtro' => [
                         'type' => 'select',
-                        'label' => __('Filtrar por Estado', 'flavor-chat-ia'),
+                        'label' => __('Filtrar por Estado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['todos', 'activo', 'potencial', 'inactivo', 'perdido'],
                         'default' => 'todos',
                     ],
                     'limite' => [
                         'type' => 'number',
-                        'label' => __('Numero maximo de clientes', 'flavor-chat-ia'),
+                        'label' => __('Numero maximo de clientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 12,
                     ],
                 ],
                 'template' => 'clientes/clientes-grid',
             ],
             'clientes_estadisticas' => [
-                'label' => __('Estadisticas CRM', 'flavor-chat-ia'),
-                'description' => __('Dashboard de estadisticas del CRM', 'flavor-chat-ia'),
+                'label' => __('Estadisticas CRM', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Dashboard de estadisticas del CRM', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'features',
                 'icon' => 'dashicons-chart-bar',
                 'fields' => [
                     'titulo_seccion' => [
                         'type' => 'text',
-                        'label' => __('Titulo de Seccion', 'flavor-chat-ia'),
-                        'default' => __('Dashboard CRM', 'flavor-chat-ia'),
+                        'label' => __('Titulo de Seccion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Dashboard CRM', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'estilo' => [
                         'type' => 'select',
-                        'label' => __('Estilo', 'flavor-chat-ia'),
+                        'label' => __('Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['cards', 'minimal'],
                         'default' => 'cards',
                     ],
@@ -2381,37 +2381,37 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Clientes', 'flavor-chat-ia'),
+                'title' => __('Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'clientes',
-                'content' => '<h1>' . __('Gestión de Clientes', 'flavor-chat-ia') . '</h1>
-<p>' . __('Administra tu cartera de clientes', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Gestión de Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Administra tu cartera de clientes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="clientes" action="listar_clientes" columnas="3" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Nuevo Cliente', 'flavor-chat-ia'),
+                'title' => __('Nuevo Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'nuevo-cliente',
-                'content' => '<h1>' . __('Nuevo Cliente', 'flavor-chat-ia') . '</h1>
-<p>' . __('Registra un nuevo cliente', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Nuevo Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Registra un nuevo cliente', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_form module="clientes" action="crear_cliente"]',
                 'parent' => 'clientes',
             ],
             [
-                'title' => __('Segmentos', 'flavor-chat-ia'),
+                'title' => __('Segmentos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'segmentos-clientes',
-                'content' => '<h1>' . __('Segmentos', 'flavor-chat-ia') . '</h1>
-<p>' . __('Organiza clientes por segmentos', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Segmentos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Organiza clientes por segmentos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="clientes" action="segmentos"]',
                 'parent' => 'clientes',
             ],
             [
-                'title' => __('Historial', 'flavor-chat-ia'),
+                'title' => __('Historial', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'historial-clientes',
-                'content' => '<h1>' . __('Historial', 'flavor-chat-ia') . '</h1>
-<p>' . __('Revisa el historial de interacciones', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Historial', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Revisa el historial de interacciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_dashboard module="clientes" action="historial"]',
                 'parent' => 'clientes',

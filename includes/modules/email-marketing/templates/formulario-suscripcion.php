@@ -29,12 +29,12 @@ $form_id = 'em-form-' . uniqid();
     <form id="<?php echo esc_attr($form_id); ?>" class="em-suscripcion-form" data-lista="<?php echo esc_attr($atts['lista']); ?>">
         <?php if ($atts['mostrar_nombre'] === 'true'): ?>
             <div class="em-form-campo">
-                <input type="text" name="nombre" placeholder="<?php esc_attr_e('Tu nombre', 'flavor-chat-ia'); ?>" class="em-input">
+                <input type="text" name="nombre" placeholder="<?php esc_attr_e('Tu nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" class="em-input">
             </div>
         <?php endif; ?>
 
         <div class="em-form-campo em-campo-email">
-            <input type="email" name="email" placeholder="<?php esc_attr_e('Tu email', 'flavor-chat-ia'); ?>" required class="em-input">
+            <input type="email" name="email" placeholder="<?php esc_attr_e('Tu email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" required class="em-input">
         </div>
 
         <button type="submit" class="em-btn em-btn-suscribir">
@@ -50,7 +50,7 @@ $form_id = 'em-form-' . uniqid();
             <small>
                 <?php
                 printf(
-                    __('Al suscribirte, aceptas nuestra %spolítica de privacidad%s.', 'flavor-chat-ia'),
+                    __('Al suscribirte, aceptas nuestra %spolítica de privacidad%s.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     '<a href="' . esc_url(get_privacy_policy_url()) . '" target="_blank">',
                     '</a>'
                 );

@@ -28,8 +28,8 @@ class Flavor_Module_Gap_Admin {
 
     public function register_menu() {
         add_menu_page(
-            __('Estado de módulos', 'flavor-chat-ia'),
-            __('Estado de módulos', 'flavor-chat-ia'),
+            __('Estado de módulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Estado de módulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             self::PAGE_SLUG,
             [$this, 'render_page'],
@@ -52,14 +52,14 @@ class Flavor_Module_Gap_Admin {
 
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e('Estado de los módulos', 'flavor-chat-ia'); ?></h1>
-            <p><?php esc_html_e('Esta tabla resume los módulos que todavía tienen gaps o TODOs pendientes según la matriz de auditoría.', 'flavor-chat-ia'); ?></p>
+            <h1><?php esc_html_e('Estado de los módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
+            <p><?php esc_html_e('Esta tabla resume los módulos que todavía tienen gaps o TODOs pendientes según la matriz de auditoría.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <form method="get" class="flavor-module-gap-filter">
                 <input type="hidden" name="page" value="<?php echo esc_attr(self::PAGE_SLUG); ?>">
                 <label>
-                    <?php esc_html_e('Filtrar por estado', 'flavor-chat-ia'); ?>:
+                    <?php esc_html_e('Filtrar por estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>:
                     <select name="estado">
-                        <option value=""><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($this->get_estado_options() as $option): ?>
                             <option value="<?php echo esc_attr($option); ?>" <?php selected($estado, $option); ?>>
                                 <?php echo esc_html(ucfirst($option)); ?>
@@ -67,20 +67,20 @@ class Flavor_Module_Gap_Admin {
                         <?php endforeach; ?>
                     </select>
                 </label>
-                <button type="submit" class="button"><?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="button"><?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
             </form>
             <table class="widefat striped">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('Módulo', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Evidencia / Ubicación', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Evidencia / Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($rows)): ?>
                         <tr>
-                            <td colspan="3"><?php esc_html_e('No hay resultados para ese estado.', 'flavor-chat-ia'); ?></td>
+                            <td colspan="3"><?php esc_html_e('No hay resultados para ese estado.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                         </tr>
                     <?php endif; ?>
                     <?php foreach ($rows as $row): ?>
@@ -93,9 +93,9 @@ class Flavor_Module_Gap_Admin {
                 </tbody>
             </table>
             <div class="flavor-module-gap-summary">
-                <p><?php esc_html_e('Resumen:', 'flavor-chat-ia'); ?>
+                <p><?php esc_html_e('Resumen:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <?php printf(
-                        esc_html__('Total: %d módulos · %s', 'flavor-chat-ia'),
+                        esc_html__('Total: %d módulos · %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $summary['total'],
                         esc_html($this->render_summary_by_estado($summary['by_estado']))
                     ); ?>
@@ -107,7 +107,7 @@ class Flavor_Module_Gap_Admin {
 
     private function render_state_label($estado) {
         if (!$estado) {
-            return __('Desconocido', 'flavor-chat-ia');
+            return __('Desconocido', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         switch (strtolower($estado)) {

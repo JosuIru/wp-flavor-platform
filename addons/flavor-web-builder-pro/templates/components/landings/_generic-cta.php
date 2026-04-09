@@ -20,9 +20,9 @@ if (!defined('ABSPATH')) {
 }
 
 // Valores por defecto
-$titulo = $titulo ?? __('¿Listo para empezar?', 'flavor-chat-ia');
+$titulo = $titulo ?? __('¿Listo para empezar?', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $descripcion = $descripcion ?? '';
-$btn_texto = $btn_texto ?? __('Comenzar', 'flavor-chat-ia');
+$btn_texto = $btn_texto ?? __('Comenzar', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $btn_url = $btn_url ?? '#';
 $color_primario = $color_primario ?? '#4f46e5';
 $color_fondo = $color_fondo ?? '';

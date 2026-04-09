@@ -22,8 +22,8 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$current = $current ?? ['value' => 0, 'label' => __('Actual', 'flavor-chat-ia')];
-$previous = $previous ?? ['value' => 0, 'label' => __('Anterior', 'flavor-chat-ia')];
+$current = $current ?? ['value' => 0, 'label' => __('Actual', FLAVOR_PLATFORM_TEXT_DOMAIN)];
+$previous = $previous ?? ['value' => 0, 'label' => __('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN)];
 $title = $title ?? '';
 $format = $format ?? 'number';
 $currency = $currency ?? '€';
@@ -125,7 +125,7 @@ $previous_percent = $max_val > 0 ? ($previous_val / $max_val) * 100 : 0;
 
         <!-- Diferencia -->
         <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
-            <span class="text-sm text-gray-500"><?php esc_html_e('Diferencia', 'flavor-chat-ia'); ?></span>
+            <span class="text-sm text-gray-500"><?php esc_html_e('Diferencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             <span class="font-semibold <?php echo $is_positive ? 'text-green-600' : 'text-red-600'; ?>">
                 <?php echo $is_positive ? '↑' : '↓'; ?> <?php echo esc_html($formatted_difference); ?>
             </span>
@@ -168,7 +168,7 @@ $previous_percent = $max_val > 0 ? ($previous_val / $max_val) * 100 : 0;
             <div class="flex items-baseline gap-3">
                 <span class="text-2xl font-bold text-gray-900"><?php echo esc_html($formatted_current); ?></span>
                 <span class="text-sm text-gray-400">
-                    <?php esc_html_e('vs', 'flavor-chat-ia'); ?> <?php echo esc_html($formatted_previous); ?>
+                    <?php esc_html_e('vs', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html($formatted_previous); ?>
                 </span>
             </div>
         </div>

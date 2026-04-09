@@ -36,7 +36,7 @@ class Flavor_Demo_Loader extends Flavor_Template_Component_Base {
      */
     public function __construct() {
         $this->componente_id = 'demo';
-        $this->componente_nombre = __('Cargador de Datos Demo', 'flavor-chat-ia');
+        $this->componente_nombre = __('Cargador de Datos Demo', FLAVOR_PLATFORM_TEXT_DOMAIN);
     }
 
     /**
@@ -68,7 +68,7 @@ class Flavor_Demo_Loader extends Flavor_Template_Component_Base {
 
         if (!$demo_manager) {
             return $this->respuesta_error(
-                __('El gestor de datos demo no esta disponible.', 'flavor-chat-ia'),
+                __('El gestor de datos demo no esta disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['clase_faltante' => 'Flavor_Demo_Data_Manager']
             );
         }
@@ -78,7 +78,7 @@ class Flavor_Demo_Loader extends Flavor_Template_Component_Base {
 
         if (empty($modulos_demo)) {
             return $this->respuesta_exito(
-                __('No hay modulos que requieran datos demo.', 'flavor-chat-ia'),
+                __('No hay modulos que requieran datos demo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['modulos_procesados' => []]
             );
         }
@@ -94,7 +94,7 @@ class Flavor_Demo_Loader extends Flavor_Template_Component_Base {
             if ($demo_manager->has_demo_data($modulo_normalizado)) {
                 $modulos_omitidos[] = [
                     'modulo' => $modulo_normalizado,
-                    'motivo' => __('Ya tiene datos demo cargados', 'flavor-chat-ia'),
+                    'motivo' => __('Ya tiene datos demo cargados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'count'  => $demo_manager->get_demo_data_count($modulo_normalizado),
                 ];
                 continue;
@@ -112,7 +112,7 @@ class Flavor_Demo_Loader extends Flavor_Template_Component_Base {
             } else {
                 $modulos_fallidos[] = [
                     'modulo' => $modulo_normalizado,
-                    'error'  => $resultado['error'] ?? __('Error desconocido', 'flavor-chat-ia'),
+                    'error'  => $resultado['error'] ?? __('Error desconocido', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
         }
@@ -121,20 +121,20 @@ class Flavor_Demo_Loader extends Flavor_Template_Component_Base {
         $this->guardar_meta_instalacion($plantilla_id, 'modulos_demo', array_column($modulos_cargados, 'modulo'));
 
         $mensaje = sprintf(
-            __('Se cargaron datos demo para %d modulos.', 'flavor-chat-ia'),
+            __('Se cargaron datos demo para %d modulos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             count($modulos_cargados)
         );
 
         if (!empty($modulos_omitidos)) {
             $mensaje .= ' ' . sprintf(
-                __('%d modulos ya tenian datos demo.', 'flavor-chat-ia'),
+                __('%d modulos ya tenian datos demo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 count($modulos_omitidos)
             );
         }
 
         if (!empty($modulos_fallidos)) {
             $mensaje .= ' ' . sprintf(
-                __('%d modulos con errores.', 'flavor-chat-ia'),
+                __('%d modulos con errores.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 count($modulos_fallidos)
             );
         }
@@ -161,7 +161,7 @@ class Flavor_Demo_Loader extends Flavor_Template_Component_Base {
 
         if (!$demo_manager) {
             return $this->respuesta_error(
-                __('El gestor de datos demo no esta disponible.', 'flavor-chat-ia'),
+                __('El gestor de datos demo no esta disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['clase_faltante' => 'Flavor_Demo_Data_Manager']
             );
         }
@@ -171,7 +171,7 @@ class Flavor_Demo_Loader extends Flavor_Template_Component_Base {
 
         if (empty($modulos_demo)) {
             return $this->respuesta_exito(
-                __('No hay datos demo registrados para esta plantilla.', 'flavor-chat-ia'),
+                __('No hay datos demo registrados para esta plantilla.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['modulos_limpiados' => []]
             );
         }
@@ -185,7 +185,7 @@ class Flavor_Demo_Loader extends Flavor_Template_Component_Base {
                 $this->registrar_advertencia(
                     'demo_en_uso',
                     sprintf(
-                        __('Los datos demo del modulo "%s" estan siendo usados por otra plantilla.', 'flavor-chat-ia'),
+                        __('Los datos demo del modulo "%s" estan siendo usados por otra plantilla.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $modulo_id
                     )
                 );
@@ -203,7 +203,7 @@ class Flavor_Demo_Loader extends Flavor_Template_Component_Base {
             } else {
                 $modulos_fallidos[] = [
                     'modulo' => $modulo_id,
-                    'error'  => $resultado['error'] ?? __('Error desconocido', 'flavor-chat-ia'),
+                    'error'  => $resultado['error'] ?? __('Error desconocido', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
         }
@@ -213,7 +213,7 @@ class Flavor_Demo_Loader extends Flavor_Template_Component_Base {
 
         return $this->respuesta_exito(
             sprintf(
-                __('Se limpiaron datos demo de %d modulos.', 'flavor-chat-ia'),
+                __('Se limpiaron datos demo de %d modulos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 count($modulos_limpiados)
             ),
             [
@@ -237,7 +237,7 @@ class Flavor_Demo_Loader extends Flavor_Template_Component_Base {
             return [
                 'estado'   => 'error',
                 'detalles' => [],
-                'mensaje'  => __('El gestor de datos demo no esta disponible.', 'flavor-chat-ia'),
+                'mensaje'  => __('El gestor de datos demo no esta disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -247,7 +247,7 @@ class Flavor_Demo_Loader extends Flavor_Template_Component_Base {
             return [
                 'estado'   => 'no_aplica',
                 'detalles' => [],
-                'mensaje'  => __('No hay modulos configurados para datos demo.', 'flavor-chat-ia'),
+                'mensaje'  => __('No hay modulos configurados para datos demo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -286,7 +286,7 @@ class Flavor_Demo_Loader extends Flavor_Template_Component_Base {
                 'sin_demo'  => $modulos_sin_demo,
             ],
             'mensaje'  => sprintf(
-                __('%d de %d modulos tienen datos demo.', 'flavor-chat-ia'),
+                __('%d de %d modulos tienen datos demo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $total_con_demo,
                 $total_esperados
             ),
@@ -374,19 +374,19 @@ class Flavor_Demo_Loader extends Flavor_Template_Component_Base {
                 return [
                     'success' => true,
                     'count'   => $demo_manager->get_demo_data_count($modulo_id),
-                    'message' => __('Datos demo cargados correctamente.', 'flavor-chat-ia'),
+                    'message' => __('Datos demo cargados correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
 
             return [
                 'success' => false,
-                'error'   => __('No se pudieron cargar los datos demo.', 'flavor-chat-ia'),
+                'error'   => __('No se pudieron cargar los datos demo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
 
         } catch (Exception $excepcion) {
             $this->registrar_error(
                 'demo_load_error',
-                sprintf(__('Error cargando datos demo para %s: %s', 'flavor-chat-ia'), $modulo_id, $excepcion->getMessage())
+                sprintf(__('Error cargando datos demo para %s: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $modulo_id, $excepcion->getMessage())
             );
 
             return [
@@ -417,19 +417,19 @@ class Flavor_Demo_Loader extends Flavor_Template_Component_Base {
                 return [
                     'success' => true,
                     'count'   => $count_antes,
-                    'message' => __('Datos demo eliminados correctamente.', 'flavor-chat-ia'),
+                    'message' => __('Datos demo eliminados correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
 
             return [
                 'success' => false,
-                'error'   => __('No se pudieron eliminar todos los datos demo.', 'flavor-chat-ia'),
+                'error'   => __('No se pudieron eliminar todos los datos demo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
 
         } catch (Exception $excepcion) {
             $this->registrar_error(
                 'demo_clear_error',
-                sprintf(__('Error limpiando datos demo de %s: %s', 'flavor-chat-ia'), $modulo_id, $excepcion->getMessage())
+                sprintf(__('Error limpiando datos demo de %s: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $modulo_id, $excepcion->getMessage())
             );
 
             return [
@@ -475,7 +475,7 @@ class Flavor_Demo_Loader extends Flavor_Template_Component_Base {
         $demo_manager = $this->get_demo_manager();
 
         if (!$demo_manager) {
-            return ['error' => __('Demo manager no disponible', 'flavor-chat-ia')];
+            return ['error' => __('Demo manager no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if (empty($modulos)) {

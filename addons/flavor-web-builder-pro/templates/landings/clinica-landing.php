@@ -9,31 +9,31 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$nombre = $nombre ?? __('Clínica Salud', 'flavor-chat-ia');
-$eslogan = $eslogan ?? __('Tu salud en las mejores manos', 'flavor-chat-ia');
+$nombre = $nombre ?? __('Clínica Salud', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$eslogan = $eslogan ?? __('Tu salud en las mejores manos', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $telefono = $telefono ?? '900 000 000';
 $color_primario = $color_primario ?? '#0891b2';
 
 $especialidades = $especialidades ?? [
-    ['nombre' => __('Medicina General', 'flavor-chat-ia'), 'icono' => 'heart', 'descripcion' => __('Atención primaria y preventiva', 'flavor-chat-ia')],
-    ['nombre' => __('Pediatría', 'flavor-chat-ia'), 'icono' => 'groups', 'descripcion' => __('Cuidado infantil especializado', 'flavor-chat-ia')],
-    ['nombre' => __('Cardiología', 'flavor-chat-ia'), 'icono' => 'performance', 'descripcion' => __('Salud cardiovascular', 'flavor-chat-ia')],
-    ['nombre' => __('Dermatología', 'flavor-chat-ia'), 'icono' => 'visibility', 'descripcion' => __('Cuidado de la piel', 'flavor-chat-ia')],
-    ['nombre' => __('Traumatología', 'flavor-chat-ia'), 'icono' => 'universal-access', 'descripcion' => __('Lesiones y rehabilitación', 'flavor-chat-ia')],
-    ['nombre' => __('Ginecología', 'flavor-chat-ia'), 'icono' => 'admin-users', 'descripcion' => __('Salud de la mujer', 'flavor-chat-ia')],
+    ['nombre' => __('Medicina General', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'heart', 'descripcion' => __('Atención primaria y preventiva', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['nombre' => __('Pediatría', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'groups', 'descripcion' => __('Cuidado infantil especializado', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['nombre' => __('Cardiología', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'performance', 'descripcion' => __('Salud cardiovascular', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['nombre' => __('Dermatología', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'visibility', 'descripcion' => __('Cuidado de la piel', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['nombre' => __('Traumatología', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'universal-access', 'descripcion' => __('Lesiones y rehabilitación', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['nombre' => __('Ginecología', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'admin-users', 'descripcion' => __('Salud de la mujer', FLAVOR_PLATFORM_TEXT_DOMAIN)],
 ];
 
 $doctores = $doctores ?? [
-    ['nombre' => 'Dr. Carlos Martínez', 'especialidad' => __('Director Médico', 'flavor-chat-ia'), 'imagen' => ''],
-    ['nombre' => 'Dra. Ana Rodríguez', 'especialidad' => __('Cardiología', 'flavor-chat-ia'), 'imagen' => ''],
-    ['nombre' => 'Dr. Luis García', 'especialidad' => __('Pediatría', 'flavor-chat-ia'), 'imagen' => ''],
+    ['nombre' => 'Dr. Carlos Martínez', 'especialidad' => __('Director Médico', FLAVOR_PLATFORM_TEXT_DOMAIN), 'imagen' => ''],
+    ['nombre' => 'Dra. Ana Rodríguez', 'especialidad' => __('Cardiología', FLAVOR_PLATFORM_TEXT_DOMAIN), 'imagen' => ''],
+    ['nombre' => 'Dr. Luis García', 'especialidad' => __('Pediatría', FLAVOR_PLATFORM_TEXT_DOMAIN), 'imagen' => ''],
 ];
 
 $ventajas = $ventajas ?? [
-    ['icono' => 'clock', 'titulo' => __('Cita en 24h', 'flavor-chat-ia'), 'descripcion' => __('Atención rápida y sin largas esperas', 'flavor-chat-ia')],
-    ['icono' => 'shield', 'titulo' => __('Seguros Médicos', 'flavor-chat-ia'), 'descripcion' => __('Trabajamos con las principales aseguradoras', 'flavor-chat-ia')],
-    ['icono' => 'admin-home', 'titulo' => __('Instalaciones Modernas', 'flavor-chat-ia'), 'descripcion' => __('Equipamiento de última tecnología', 'flavor-chat-ia')],
-    ['icono' => 'phone', 'titulo' => __('Telemedicina', 'flavor-chat-ia'), 'descripcion' => __('Consultas online desde casa', 'flavor-chat-ia')],
+    ['icono' => 'clock', 'titulo' => __('Cita en 24h', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Atención rápida y sin largas esperas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['icono' => 'shield', 'titulo' => __('Seguros Médicos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Trabajamos con las principales aseguradoras', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['icono' => 'admin-home', 'titulo' => __('Instalaciones Modernas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Equipamiento de última tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['icono' => 'phone', 'titulo' => __('Telemedicina', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Consultas online desde casa', FLAVOR_PLATFORM_TEXT_DOMAIN)],
 ];
 ?>
 
@@ -42,17 +42,17 @@ $ventajas = $ventajas ?? [
     <div class="flavor-container">
         <div class="flavor-hero-wrapper">
             <div class="flavor-hero-text">
-                <span class="flavor-hero-badge"><?php esc_html_e('Centro Médico', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-hero-badge"><?php esc_html_e('Centro Médico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <h1><?php echo esc_html($nombre); ?></h1>
                 <p><?php echo esc_html($eslogan); ?></p>
                 <div class="flavor-hero-actions">
                     <a href="#cita" class="flavor-btn-primary">
                         <span class="dashicons dashicons-calendar-alt"></span>
-                        <?php esc_html_e('Pedir Cita', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Pedir Cita', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="tel:<?php echo esc_attr(preg_replace('/\s+/', '', $telefono)); ?>" class="flavor-btn-secondary">
                         <span class="dashicons dashicons-phone"></span>
-                        <?php esc_html_e('Urgencias', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Urgencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </div>
@@ -87,8 +87,8 @@ $ventajas = $ventajas ?? [
 <!-- Especialidades -->
 <section class="flavor-clinica-especialidades" id="especialidades">
     <div class="flavor-container">
-        <h2 class="flavor-section-title"><?php esc_html_e('Nuestras Especialidades', 'flavor-chat-ia'); ?></h2>
-        <p class="flavor-section-subtitle"><?php esc_html_e('Atención integral para toda la familia', 'flavor-chat-ia'); ?></p>
+        <h2 class="flavor-section-title"><?php esc_html_e('Nuestras Especialidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p class="flavor-section-subtitle"><?php esc_html_e('Atención integral para toda la familia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
         <div class="flavor-especialidades-grid">
             <?php foreach ($especialidades as $esp): ?>
@@ -110,8 +110,8 @@ $ventajas = $ventajas ?? [
 <!-- Equipo Médico -->
 <section class="flavor-clinica-equipo">
     <div class="flavor-container">
-        <h2 class="flavor-section-title"><?php esc_html_e('Equipo Médico', 'flavor-chat-ia'); ?></h2>
-        <p class="flavor-section-subtitle"><?php esc_html_e('Profesionales comprometidos con tu salud', 'flavor-chat-ia'); ?></p>
+        <h2 class="flavor-section-title"><?php esc_html_e('Equipo Médico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p class="flavor-section-subtitle"><?php esc_html_e('Profesionales comprometidos con tu salud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
         <div class="flavor-equipo-grid">
             <?php foreach ($doctores as $doctor): ?>
@@ -128,7 +128,7 @@ $ventajas = $ventajas ?? [
                     <div class="flavor-doctor-info">
                         <h3><?php echo esc_html($doctor['nombre']); ?></h3>
                         <p><?php echo esc_html($doctor['especialidad']); ?></p>
-                        <a href="#cita" class="flavor-doctor-cita"><?php esc_html_e('Pedir cita', 'flavor-chat-ia'); ?></a>
+                        <a href="#cita" class="flavor-doctor-cita"><?php esc_html_e('Pedir cita', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -140,10 +140,10 @@ $ventajas = $ventajas ?? [
 <section class="flavor-clinica-cta" id="cita" style="background: <?php echo esc_attr($color_primario); ?>;">
     <div class="flavor-container">
         <div class="flavor-cta-content">
-            <h2><?php esc_html_e('Reserva tu cita online', 'flavor-chat-ia'); ?></h2>
-            <p><?php esc_html_e('Elige especialidad, día y hora que mejor te convenga', 'flavor-chat-ia'); ?></p>
+            <h2><?php esc_html_e('Reserva tu cita online', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+            <p><?php esc_html_e('Elige especialidad, día y hora que mejor te convenga', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <div class="flavor-cta-actions">
-                <a href="#reservar" class="flavor-btn-white"><?php esc_html_e('Reservar Cita', 'flavor-chat-ia'); ?></a>
+                <a href="#reservar" class="flavor-btn-white"><?php esc_html_e('Reservar Cita', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 <a href="tel:<?php echo esc_attr(preg_replace('/\s+/', '', $telefono)); ?>" class="flavor-btn-white-outline">
                     <span class="dashicons dashicons-phone"></span>
                     <?php echo esc_html($telefono); ?>

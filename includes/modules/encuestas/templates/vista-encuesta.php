@@ -20,16 +20,16 @@ if (!isset($encuesta) || !$encuesta) {
 }
 
 $estados_labels = [
-    'borrador'  => __('Borrador', 'flavor-chat-ia'),
-    'activa'    => __('Activa', 'flavor-chat-ia'),
-    'cerrada'   => __('Cerrada', 'flavor-chat-ia'),
-    'archivada' => __('Archivada', 'flavor-chat-ia'),
+    'borrador'  => __('Borrador', 'flavor-platform'),
+    'activa'    => __('Activa', 'flavor-platform'),
+    'cerrada'   => __('Cerrada', 'flavor-platform'),
+    'archivada' => __('Archivada', 'flavor-platform'),
 ];
 
 $tipos_labels = [
-    'encuesta'   => __('Encuesta', 'flavor-chat-ia'),
-    'formulario' => __('Formulario', 'flavor-chat-ia'),
-    'quiz'       => __('Quiz', 'flavor-chat-ia'),
+    'encuesta'   => __('Encuesta', 'flavor-platform'),
+    'formulario' => __('Formulario', 'flavor-platform'),
+    'quiz'       => __('Quiz', 'flavor-platform'),
 ];
 ?>
 
@@ -57,7 +57,7 @@ $tipos_labels = [
 
             <?php if ($encuesta->es_anonima): ?>
                 <span class="flavor-encuesta__badge flavor-encuesta__badge--anonima">
-                    <?php esc_html_e('Anónima', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Anónima', 'flavor-platform'); ?>
                 </span>
             <?php endif; ?>
         </div>
@@ -65,10 +65,10 @@ $tipos_labels = [
 
     <?php if ($encuesta->estado === 'cerrada'): ?>
         <div class="flavor-encuesta__notice flavor-encuesta__notice--info">
-            <strong><?php esc_html_e('Encuesta finalizada', 'flavor-chat-ia'); ?></strong>
+            <strong><?php esc_html_e('Encuesta finalizada', 'flavor-platform'); ?></strong>
             <?php if (!empty($encuesta->fecha_cierre)): ?>
                 - <?php printf(
-                    esc_html__('Cerrada el %s', 'flavor-chat-ia'),
+                    esc_html__('Cerrada el %s', 'flavor-platform'),
                     date_i18n(get_option('date_format'), strtotime($encuesta->fecha_cierre))
                 ); ?>
             <?php endif; ?>
@@ -77,7 +77,7 @@ $tipos_labels = [
 
     <?php if (!empty($ya_participo) && !$encuesta->permite_multiples): ?>
         <div class="flavor-encuesta__notice flavor-encuesta__notice--success">
-            <?php esc_html_e('Ya has participado en esta encuesta.', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Ya has participado en esta encuesta.', 'flavor-platform'); ?>
         </div>
     <?php endif; ?>
 
@@ -121,9 +121,9 @@ $tipos_labels = [
                     <button type="submit" class="flavor-encuesta__submit">
                         <?php
                         if ($encuesta->tipo === 'quiz') {
-                            esc_html_e('Enviar respuestas', 'flavor-chat-ia');
+                            esc_html_e('Enviar respuestas', 'flavor-platform');
                         } else {
-                            esc_html_e('Votar', 'flavor-chat-ia');
+                            esc_html_e('Votar', 'flavor-platform');
                         }
                         ?>
                     </button>
@@ -144,7 +144,7 @@ $tipos_labels = [
             <span class="flavor-encuesta__participantes">
                 <?php
                 printf(
-                    esc_html(_n('%d participante', '%d participantes', $encuesta->total_participantes, 'flavor-chat-ia')),
+                    esc_html(_n('%d participante', '%d participantes', $encuesta->total_participantes, 'flavor-platform')),
                     $encuesta->total_participantes
                 );
                 ?>
@@ -156,7 +156,7 @@ $tipos_labels = [
                     $tiempo_restante = strtotime($encuesta->fecha_cierre) - time();
                     if ($tiempo_restante > 0) {
                         printf(
-                            esc_html__('Cierra en %s', 'flavor-chat-ia'),
+                            esc_html__('Cierra en %s', 'flavor-platform'),
                             human_time_diff(time(), strtotime($encuesta->fecha_cierre))
                         );
                     }
@@ -171,7 +171,7 @@ $tipos_labels = [
                 <div class="flavor-encuesta__autor">
                     <?php
                     printf(
-                        esc_html__('Creada por %s', 'flavor-chat-ia'),
+                        esc_html__('Creada por %s', 'flavor-platform'),
                         esc_html($autor->display_name)
                     );
                     ?>

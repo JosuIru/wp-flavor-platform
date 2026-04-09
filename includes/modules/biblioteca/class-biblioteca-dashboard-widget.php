@@ -27,8 +27,8 @@ class Flavor_Biblioteca_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
     public function __construct() {
         global $wpdb;
         $this->prefix_tabla = $wpdb->prefix . 'flavor_biblioteca_';
-        $this->title = __('Biblioteca', 'flavor-chat-ia');
-        $this->description = __('Biblioteca comunitaria y préstamos', 'flavor-chat-ia');
+        $this->title = __('Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Biblioteca comunitaria y préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         parent::__construct([
             'id' => $this->widget_id,
@@ -82,14 +82,14 @@ class Flavor_Biblioteca_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             [
                 'icon' => 'dashicons-book',
                 'valor' => $total_libros,
-                'label' => __('Libros', 'flavor-chat-ia'),
+                'label' => __('Libros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'primary',
                 'url' => $es_admin ? admin_url('admin.php?page=biblioteca') : home_url('/mi-portal/biblioteca/'),
             ],
             [
                 'icon' => 'dashicons-yes',
                 'valor' => $libros_disponibles,
-                'label' => __('Disponibles', 'flavor-chat-ia'),
+                'label' => __('Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $libros_disponibles > 0 ? 'success' : 'gray',
                 'url' => $es_admin ? admin_url('admin.php?page=biblioteca&estado=disponible') : home_url('/mi-portal/biblioteca/?estado=disponible'),
             ],
@@ -99,7 +99,7 @@ class Flavor_Biblioteca_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $stats[] = [
                 'icon' => 'dashicons-book-alt',
                 'valor' => $mis_prestamos,
-                'label' => __('Mis préstamos', 'flavor-chat-ia'),
+                'label' => __('Mis préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'info',
                 'url' => $es_admin ? admin_url('admin.php?page=biblioteca&tab=mis-prestamos') : home_url('/mi-portal/biblioteca/mis-prestamos/'),
             ];
@@ -110,10 +110,10 @@ class Flavor_Biblioteca_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats,
             'items' => $items,
-            'empty_state' => __('No hay libros disponibles', 'flavor-chat-ia'),
+            'empty_state' => __('No hay libros disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => __('Ver catálogo', 'flavor-chat-ia'),
+                    'label' => __('Ver catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => $es_admin ? admin_url('admin.php?page=biblioteca') : home_url('/mi-portal/biblioteca/'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
@@ -146,7 +146,7 @@ class Flavor_Biblioteca_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'title' => wp_trim_words($libro->titulo, 4, '...'),
                 'meta' => $libro->autor ?: '',
                 'url' => $es_admin ? admin_url('admin.php?page=biblioteca&libro=' . $libro->id) : home_url('/mi-portal/biblioteca/libro/' . $libro->id . '/'),
-                'badge' => $libro->disponibilidad === 'disponible' ? __('Disponible', 'flavor-chat-ia') : null,
+                'badge' => $libro->disponibilidad === 'disponible' ? __('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN) : null,
             ];
         }
 

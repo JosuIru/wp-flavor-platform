@@ -18,48 +18,48 @@ $preferencias = is_array($preferencias) ? $preferencias : [];
 // Tipos de notificación con configuración
 $tipos_notificacion = [
     'nueva_publicacion' => [
-        'label' => __('Nuevas publicaciones', 'flavor-chat-ia'),
-        'desc'  => __('Cuando alguien publica en tus comunidades', 'flavor-chat-ia'),
+        'label' => __('Nuevas publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'desc'  => __('Cuando alguien publica en tus comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon'  => '📝',
     ],
     'nuevo_evento' => [
-        'label' => __('Nuevos eventos', 'flavor-chat-ia'),
-        'desc'  => __('Cuando se crea un evento en tus comunidades', 'flavor-chat-ia'),
+        'label' => __('Nuevos eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'desc'  => __('Cuando se crea un evento en tus comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon'  => '📅',
     ],
     'nuevo_miembro' => [
-        'label' => __('Nuevos miembros', 'flavor-chat-ia'),
-        'desc'  => __('Cuando alguien se une a comunidades que administras', 'flavor-chat-ia'),
+        'label' => __('Nuevos miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'desc'  => __('Cuando alguien se une a comunidades que administras', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon'  => '👋',
     ],
     'recurso_compartido' => [
-        'label' => __('Recursos compartidos', 'flavor-chat-ia'),
-        'desc'  => __('Cuando se comparte contenido entre comunidades', 'flavor-chat-ia'),
+        'label' => __('Recursos compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'desc'  => __('Cuando se comparte contenido entre comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon'  => '📦',
     ],
     'mencion' => [
-        'label' => __('Menciones', 'flavor-chat-ia'),
-        'desc'  => __('Cuando alguien te menciona', 'flavor-chat-ia'),
+        'label' => __('Menciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'desc'  => __('Cuando alguien te menciona', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon'  => '💬',
     ],
     'notificar_comunidades_relacionadas' => [
-        'label' => __('Actividad en comunidades relacionadas', 'flavor-chat-ia'),
-        'desc'  => __('Publicaciones relevantes en comunidades similares', 'flavor-chat-ia'),
+        'label' => __('Actividad en comunidades relacionadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'desc'  => __('Publicaciones relevantes en comunidades similares', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon'  => '🏘️',
     ],
     'notificar_eventos_red' => [
-        'label' => __('Eventos de la red', 'flavor-chat-ia'),
-        'desc'  => __('Eventos en comunidades de tu misma categoría', 'flavor-chat-ia'),
+        'label' => __('Eventos de la red', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'desc'  => __('Eventos en comunidades de tu misma categoría', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon'  => '🗓️',
     ],
     'contenido_federado' => [
-        'label' => __('Contenido de la red federada', 'flavor-chat-ia'),
-        'desc'  => __('Contenido relevante de otros nodos de la red', 'flavor-chat-ia'),
+        'label' => __('Contenido de la red federada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'desc'  => __('Contenido relevante de otros nodos de la red', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon'  => '🌐',
     ],
     'crosspost' => [
-        'label' => __('Cross-posting', 'flavor-chat-ia'),
-        'desc'  => __('Cuando se comparte contenido de otras comunidades', 'flavor-chat-ia'),
+        'label' => __('Cross-posting', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'desc'  => __('Cuando se comparte contenido de otras comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon'  => '🔄',
     ],
 ];
@@ -72,18 +72,18 @@ $tipos_notificacion = [
     <header class="flavor-notif-header">
         <h2 class="flavor-notif-titulo">
             <span class="dashicons dashicons-bell"></span>
-            <?php esc_html_e('Notificaciones de Comunidades', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Notificaciones de Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <span class="flavor-notif-badge" id="contador-no-leidas">0</span>
         </h2>
 
         <div class="flavor-notif-acciones">
             <button type="button" class="flavor-btn-secundario" id="marcar-todas-leidas">
                 <span class="dashicons dashicons-yes-alt"></span>
-                <?php esc_html_e('Marcar todas como leídas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Marcar todas como leídas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <button type="button" class="flavor-btn-secundario" id="abrir-preferencias">
                 <span class="dashicons dashicons-admin-generic"></span>
-                <?php esc_html_e('Preferencias', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Preferencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     </header>
@@ -92,7 +92,7 @@ $tipos_notificacion = [
     <div class="flavor-notif-lista" id="lista-notificaciones">
         <div class="flavor-notif-cargando">
             <span class="flavor-spinner"></span>
-            <?php esc_html_e('Cargando notificaciones...', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Cargando notificaciones...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </div>
     </div>
 
@@ -103,14 +103,14 @@ $tipos_notificacion = [
             <header class="flavor-modal-header">
                 <h3>
                     <span class="dashicons dashicons-admin-generic"></span>
-                    <?php esc_html_e('Preferencias de notificaciones', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Preferencias de notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <button type="button" class="flavor-modal-cerrar">&times;</button>
             </header>
 
             <div class="flavor-modal-body">
                 <p class="flavor-preferencias-intro">
-                    <?php esc_html_e('Elige qué notificaciones deseas recibir de tus comunidades.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Elige qué notificaciones deseas recibir de tus comunidades.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
 
                 <form id="form-preferencias" class="flavor-preferencias-form">
@@ -139,10 +139,10 @@ $tipos_notificacion = [
 
             <footer class="flavor-modal-footer">
                 <button type="button" class="flavor-btn-secundario" id="cancelar-preferencias">
-                    <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" class="flavor-btn-primario" id="guardar-preferencias">
-                    <?php esc_html_e('Guardar preferencias', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Guardar preferencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </footer>
         </div>
@@ -626,7 +626,7 @@ $tipos_notificacion = [
             })
             .catch(function(err) {
                 console.error('Error:', err);
-                mostrarAviso('<?php echo esc_js(__('Error al cargar notificaciones', 'flavor-chat-ia')); ?>', 'error');
+                mostrarAviso('<?php echo esc_js(__('Error al cargar notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>', 'error');
             });
         }
 
@@ -634,8 +634,8 @@ $tipos_notificacion = [
             if (!notificaciones || notificaciones.length === 0) {
                 listaNotificaciones.innerHTML = '<div class="flavor-notif-vacia">' +
                     '<span class="dashicons dashicons-bell"></span>' +
-                    '<h3><?php echo esc_js(__('No tienes notificaciones', 'flavor-chat-ia')); ?></h3>' +
-                    '<p><?php echo esc_js(__('Las notificaciones de tus comunidades aparecerán aquí.', 'flavor-chat-ia')); ?></p>' +
+                    '<h3><?php echo esc_js(__('No tienes notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></h3>' +
+                    '<p><?php echo esc_js(__('Las notificaciones de tus comunidades aparecerán aquí.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></p>' +
                     '</div>';
                 return;
             }
@@ -720,13 +720,13 @@ $tipos_notificacion = [
             .then(function(data) {
                 if (data.success) {
                     cerrarModal();
-                    mostrarAviso('<?php echo esc_js(__('Preferencias guardadas', 'flavor-chat-ia')); ?>', 'success');
+                    mostrarAviso('<?php echo esc_js(__('Preferencias guardadas', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>', 'success');
                 } else {
-                    mostrarAviso(data.data?.message || '<?php echo esc_js(__('No se pudieron guardar las preferencias', 'flavor-chat-ia')); ?>', 'error');
+                    mostrarAviso(data.data?.message || '<?php echo esc_js(__('No se pudieron guardar las preferencias', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>', 'error');
                 }
             })
             .catch(function() {
-                mostrarAviso('<?php echo esc_js(__('Error de conexión al guardar preferencias', 'flavor-chat-ia')); ?>', 'error');
+                mostrarAviso('<?php echo esc_js(__('Error de conexión al guardar preferencias', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>', 'error');
             });
         }
 
@@ -740,7 +740,7 @@ $tipos_notificacion = [
             var fechaNotif = new Date(fecha);
             var diff = Math.floor((ahora - fechaNotif) / 1000);
 
-            if (diff < 60) return '<?php echo esc_js(__('Ahora mismo', 'flavor-chat-ia')); ?>';
+            if (diff < 60) return '<?php echo esc_js(__('Ahora mismo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
             if (diff < 3600) return Math.floor(diff / 60) + ' min';
             if (diff < 86400) return Math.floor(diff / 3600) + ' h';
             if (diff < 604800) return Math.floor(diff / 86400) + ' d';

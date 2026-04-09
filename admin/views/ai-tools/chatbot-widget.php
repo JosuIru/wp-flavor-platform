@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 <!-- Chatbot Flotante -->
 <div id="flavor-ai-chatbot" class="flavor-ai-chatbot" data-module="<?php echo esc_attr($this->current_module); ?>">
     <!-- Botón Toggle -->
-    <button type="button" class="chatbot-toggle" id="chatbot-toggle" aria-label="<?php esc_attr_e('Abrir asistente IA', 'flavor-chat-ia'); ?>">
+    <button type="button" class="chatbot-toggle" id="chatbot-toggle" aria-label="<?php esc_attr_e('Abrir asistente IA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
         <span class="toggle-icon-open">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z" fill="currentColor"/>
@@ -46,17 +46,17 @@ if (!defined('ABSPATH')) {
                     </svg>
                 </div>
                 <div class="header-text">
-                    <span class="header-title"><?php esc_html_e('Asistente IA', 'flavor-chat-ia'); ?></span>
+                    <span class="header-title"><?php esc_html_e('Asistente IA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="header-module" id="chatbot-module-name">
                         <?php echo esc_html($module_context['name']); ?>
                     </span>
                 </div>
             </div>
             <div class="header-actions">
-                <button type="button" class="header-btn" id="chatbot-clear" title="<?php esc_attr_e('Limpiar chat', 'flavor-chat-ia'); ?>">
+                <button type="button" class="header-btn" id="chatbot-clear" title="<?php esc_attr_e('Limpiar chat', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-trash"></span>
                 </button>
-                <button type="button" class="header-btn" id="chatbot-minimize" title="<?php esc_attr_e('Minimizar', 'flavor-chat-ia'); ?>">
+                <button type="button" class="header-btn" id="chatbot-minimize" title="<?php esc_attr_e('Minimizar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-minus"></span>
                 </button>
             </div>
@@ -66,9 +66,9 @@ if (!defined('ABSPATH')) {
         <?php if (!$is_configured): ?>
         <div class="chatbot-not-configured">
             <span class="dashicons dashicons-warning"></span>
-            <p><?php esc_html_e('La IA no está configurada.', 'flavor-chat-ia'); ?></p>
-            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-chat-config')); ?>" class="button button-small">
-                <?php esc_html_e('Configurar', 'flavor-chat-ia'); ?>
+            <p><?php esc_html_e('La IA no está configurada.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-platform-settings')); ?>" class="button button-small">
+                <?php esc_html_e('Configurar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
         <?php endif; ?>
@@ -84,7 +84,7 @@ if (!defined('ABSPATH')) {
                     <p><?php
                         printf(
                             /* translators: %s: nombre del módulo */
-                            esc_html__('¡Hola! Soy tu asistente para %s. ¿En qué puedo ayudarte?', 'flavor-chat-ia'),
+                            esc_html__('¡Hola! Soy tu asistente para %s. ¿En qué puedo ayudarte?', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             '<strong>' . esc_html($module_context['name']) . '</strong>'
                         );
                     ?></p>
@@ -94,7 +94,7 @@ if (!defined('ABSPATH')) {
 
         <!-- Acciones rápidas -->
         <div class="chatbot-quick-actions" id="chatbot-quick-actions">
-            <div class="quick-actions-label"><?php esc_html_e('Acciones rápidas:', 'flavor-chat-ia'); ?></div>
+            <div class="quick-actions-label"><?php esc_html_e('Acciones rápidas:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <div class="quick-actions-list">
                 <!-- Se llenan dinámicamente según el módulo -->
             </div>
@@ -102,7 +102,7 @@ if (!defined('ABSPATH')) {
 
         <!-- FAQs del módulo -->
         <div class="chatbot-faqs" id="chatbot-faqs">
-            <div class="faqs-label"><?php esc_html_e('Preguntas frecuentes:', 'flavor-chat-ia'); ?></div>
+            <div class="faqs-label"><?php esc_html_e('Preguntas frecuentes:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <div class="faqs-list">
                 <!-- Se llenan dinámicamente según el módulo -->
             </div>
@@ -113,7 +113,7 @@ if (!defined('ABSPATH')) {
             <div class="input-wrapper">
                 <textarea
                     id="chatbot-input"
-                    placeholder="<?php esc_attr_e('Escribe tu pregunta...', 'flavor-chat-ia'); ?>"
+                    placeholder="<?php esc_attr_e('Escribe tu pregunta...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                     rows="1"
                     <?php echo !$is_configured ? 'disabled' : ''; ?>
                 ></textarea>
@@ -130,7 +130,7 @@ if (!defined('ABSPATH')) {
                 </button>
             </div>
             <div class="input-hint">
-                <span><?php esc_html_e('Enter para enviar', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Enter para enviar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -141,7 +141,7 @@ if (!defined('ABSPATH')) {
                 <span></span>
                 <span></span>
             </div>
-            <span class="typing-text"><?php esc_html_e('Pensando...', 'flavor-chat-ia'); ?></span>
+            <span class="typing-text"><?php esc_html_e('Pensando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
     </div>
 </div>

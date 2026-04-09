@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 
 // Verificar permisos
 if (!current_user_can('manage_options')) {
-    wp_die(__('No tienes permisos suficientes para acceder a esta página.', 'flavor-chat-ia'));
+    wp_die(__('No tienes permisos suficientes para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
 }
 
 // Obtener estadísticas del mes actual
@@ -94,7 +94,7 @@ foreach ($datos_grafica as $dato) {
 ?>
 
 <div class="wrap">
-    <h1><?php echo esc_html__('Dashboard de Publicidad', 'flavor-chat-ia'); ?></h1>
+    <h1><?php echo esc_html__('Dashboard de Publicidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
 
     <!-- Estadísticas principales -->
     <div class="flavor-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 20px 0;">
@@ -102,72 +102,72 @@ foreach ($datos_grafica as $dato) {
         <!-- Total Impresiones -->
         <div class="card" style="padding: 20px; text-align: center;">
             <h3 style="margin: 0 0 10px 0; color: #666; font-size: 14px; text-transform: uppercase;">
-                <?php esc_html_e('Total Impresiones', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Total Impresiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <p style="margin: 0; font-size: 32px; font-weight: bold; color: #2271b1;">
                 <?php echo esc_html(number_format($total_impresiones, 0, ',', '.')); ?>
             </p>
             <p class="description" style="margin: 10px 0 0 0;">
-                <?php esc_html_e('Este mes', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
 
         <!-- Total Clicks -->
         <div class="card" style="padding: 20px; text-align: center;">
             <h3 style="margin: 0 0 10px 0; color: #666; font-size: 14px; text-transform: uppercase;">
-                <?php esc_html_e('Total Clicks', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Total Clicks', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <p style="margin: 0; font-size: 32px; font-weight: bold; color: #2271b1;">
                 <?php echo esc_html(number_format($total_clicks, 0, ',', '.')); ?>
             </p>
             <p class="description" style="margin: 10px 0 0 0;">
-                <?php esc_html_e('Este mes', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
 
         <!-- CTR Promedio -->
         <div class="card" style="padding: 20px; text-align: center;">
             <h3 style="margin: 0 0 10px 0; color: #666; font-size: 14px; text-transform: uppercase;">
-                <?php esc_html_e('CTR Promedio', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('CTR Promedio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <p style="margin: 0; font-size: 32px; font-weight: bold; color: #00a32a;">
                 <?php echo esc_html(number_format($ctr_promedio, 2)); ?>%
             </p>
             <p class="description" style="margin: 10px 0 0 0;">
-                <?php esc_html_e('Este mes', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
 
         <!-- Ingresos Totales -->
         <div class="card" style="padding: 20px; text-align: center;">
             <h3 style="margin: 0 0 10px 0; color: #666; font-size: 14px; text-transform: uppercase;">
-                <?php esc_html_e('Ingresos Totales', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ingresos Totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <p style="margin: 0; font-size: 32px; font-weight: bold; color: #00a32a;">
                 €<?php echo esc_html(number_format($total_ingresos, 2, ',', '.')); ?>
             </p>
             <p class="description" style="margin: 10px 0 0 0;">
-                <?php esc_html_e('Este mes', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
 
         <!-- Ingresos Pendientes -->
         <div class="card" style="padding: 20px; text-align: center;">
             <h3 style="margin: 0 0 10px 0; color: #666; font-size: 14px; text-transform: uppercase;">
-                <?php esc_html_e('Pendientes de Pago', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Pendientes de Pago', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <p style="margin: 0; font-size: 32px; font-weight: bold; color: #d63638;">
                 €<?php echo esc_html(number_format($ingresos_pendientes, 2, ',', '.')); ?>
             </p>
             <p class="description" style="margin: 10px 0 0 0;">
-                <?php esc_html_e('Acumulado', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Acumulado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
 
         <!-- Anuncios Activos -->
         <div class="card" style="padding: 20px; text-align: center;">
             <h3 style="margin: 0 0 10px 0; color: #666; font-size: 14px; text-transform: uppercase;">
-                <?php esc_html_e('Anuncios', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <p style="margin: 0; font-size: 24px; font-weight: bold;">
                 <span style="color: #00a32a;"><?php echo esc_html($anuncios_activos); ?></span>
@@ -175,7 +175,7 @@ foreach ($datos_grafica as $dato) {
                 <span style="color: #d63638;"><?php echo esc_html($anuncios_pausados); ?></span>
             </p>
             <p class="description" style="margin: 10px 0 0 0;">
-                <?php esc_html_e('Activos / Pausados', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Activos / Pausados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
 
@@ -183,21 +183,21 @@ foreach ($datos_grafica as $dato) {
 
     <!-- Gráfica de rendimiento -->
     <div class="card" style="margin: 20px 0; padding: 20px;">
-        <h2><?php esc_html_e('Rendimiento - Últimos 30 días', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Rendimiento - Últimos 30 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <canvas id="flavor-performance-chart" style="max-height: 300px;"></canvas>
     </div>
 
     <!-- Top 5 Anuncios -->
     <div class="card" style="margin: 20px 0; padding: 20px;">
-        <h2><?php esc_html_e('Top 5 Anuncios por Rendimiento', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Top 5 Anuncios por Rendimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Anuncio', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Impresiones', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Clicks', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('CTR', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Ingresos', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Impresiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Clicks', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('CTR', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Ingresos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -214,7 +214,7 @@ foreach ($datos_grafica as $dato) {
                 <?php else : ?>
                     <tr>
                         <td colspan="5" style="text-align: center; padding: 20px;">
-                            <?php esc_html_e('No hay datos disponibles para este período.', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('No hay datos disponibles para este período.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </td>
                     </tr>
                 <?php endif; ?>
@@ -224,19 +224,19 @@ foreach ($datos_grafica as $dato) {
 
     <!-- Acciones rápidas -->
     <div class="card" style="margin: 20px 0; padding: 20px;">
-        <h2><?php esc_html_e('Acciones Rápidas', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Acciones Rápidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <p>
             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-advertising-create')); ?>" class="button button-primary button-large">
-                <?php esc_html_e('Crear Nuevo Anuncio', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Crear Nuevo Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-advertising-advertisers')); ?>" class="button button-large">
-                <?php esc_html_e('Ver Anunciantes', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver Anunciantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-advertising-payments')); ?>" class="button button-large">
-                <?php esc_html_e('Gestionar Pagos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Gestionar Pagos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-advertising-network')); ?>" class="button button-large">
-                <?php esc_html_e('Red Global', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Red Global', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </p>
     </div>
@@ -259,14 +259,14 @@ jQuery(document).ready(function($) {
                 labels: fechas,
                 datasets: [
                     {
-                        label: '<?php esc_html_e('Impresiones', 'flavor-chat-ia'); ?>',
+                        label: '<?php esc_html_e('Impresiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                         data: impresiones,
                         borderColor: '#2271b1',
                         backgroundColor: 'rgba(34, 113, 177, 0.1)',
                         tension: 0.4
                     },
                     {
-                        label: '<?php esc_html_e('Clicks', 'flavor-chat-ia'); ?>',
+                        label: '<?php esc_html_e('Clicks', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                         data: clicks,
                         borderColor: '#00a32a',
                         backgroundColor: 'rgba(0, 163, 42, 0.1)',

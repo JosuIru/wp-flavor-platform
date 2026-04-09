@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 
 $configuracion = get_option('flavor_foros_settings', []);
 $configuracion_default = [
-    'nombre_comunidad' => __('Foros de la Comunidad', 'flavor-chat-ia'),
+    'nombre_comunidad' => __('Foros de la Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
     'descripcion' => '',
     'permitir_registro' => true,
     'requiere_aprobacion_post' => false,
@@ -67,14 +67,14 @@ if (isset($_POST['guardar_config_foros']) && wp_verify_nonce($_POST['_wpnonce'],
 
     update_option('flavor_foros_settings', $nueva_config);
     $configuracion = $nueva_config;
-    $mensaje_guardado = __('Configuración guardada correctamente.', 'flavor-chat-ia');
+    $mensaje_guardado = __('Configuración guardada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
 }
 ?>
 
 <div class="wrap flavor-foros-config">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-format-chat"></span>
-        <?php esc_html_e('Configuración de Foros', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Configuración de Foros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
     <hr class="wp-header-end">
 
@@ -90,19 +90,19 @@ if (isset($_POST['guardar_config_foros']) && wp_verify_nonce($_POST['_wpnonce'],
         <div class="dm-config-grid">
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-admin-home"></span> <?php esc_html_e('Información General', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-admin-home"></span> <?php esc_html_e('Información General', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-form-group">
-                        <label for="nombre_comunidad"><?php esc_html_e('Nombre de la Comunidad', 'flavor-chat-ia'); ?></label>
+                        <label for="nombre_comunidad"><?php esc_html_e('Nombre de la Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="text" id="nombre_comunidad" name="nombre_comunidad" value="<?php echo esc_attr($configuracion['nombre_comunidad']); ?>">
                     </div>
                     <div class="dm-form-group">
-                        <label for="descripcion"><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?></label>
+                        <label for="descripcion"><?php esc_html_e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <textarea id="descripcion" name="descripcion" rows="3"><?php echo esc_textarea($configuracion['descripcion']); ?></textarea>
                     </div>
                     <div class="dm-form-group">
-                        <label for="posts_por_pagina"><?php esc_html_e('Posts por página', 'flavor-chat-ia'); ?></label>
+                        <label for="posts_por_pagina"><?php esc_html_e('Posts por página', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="number" id="posts_por_pagina" name="posts_por_pagina" value="<?php echo esc_attr($configuracion['posts_por_pagina']); ?>" min="5" max="100">
                     </div>
                 </div>
@@ -110,53 +110,53 @@ if (isset($_POST['guardar_config_foros']) && wp_verify_nonce($_POST['_wpnonce'],
 
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-admin-users"></span> <?php esc_html_e('Permisos de Usuarios', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-admin-users"></span> <?php esc_html_e('Permisos de Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-checkbox-group">
                         <label class="dm-checkbox">
                             <input type="checkbox" name="permitir_registro" value="1" <?php checked($configuracion['permitir_registro']); ?>>
-                            <span><?php esc_html_e('Permitir registro público', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Permitir registro público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="requiere_aprobacion_post" value="1" <?php checked($configuracion['requiere_aprobacion_post']); ?>>
-                            <span><?php esc_html_e('Requerir aprobación de publicaciones', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Requerir aprobación de publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="permitir_anonimos" value="1" <?php checked($configuracion['permitir_anonimos']); ?>>
-                            <span><?php esc_html_e('Permitir publicar anónimamente', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Permitir publicar anónimamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="permitir_editar" value="1" <?php checked($configuracion['permitir_editar']); ?>>
-                            <span><?php esc_html_e('Permitir editar publicaciones', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Permitir editar publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                     </div>
                     <div class="dm-form-group" style="margin-top: 15px;">
-                        <label for="minutos_edicion"><?php esc_html_e('Minutos para editar', 'flavor-chat-ia'); ?></label>
+                        <label for="minutos_edicion"><?php esc_html_e('Minutos para editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="number" id="minutos_edicion" name="minutos_edicion" value="<?php echo esc_attr($configuracion['minutos_edicion']); ?>" min="0" max="1440">
-                        <p class="description"><?php esc_html_e('0 = sin límite', 'flavor-chat-ia'); ?></p>
+                        <p class="description"><?php esc_html_e('0 = sin límite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 </div>
             </div>
 
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-paperclip"></span> <?php esc_html_e('Archivos Adjuntos', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-paperclip"></span> <?php esc_html_e('Archivos Adjuntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-checkbox-group">
                         <label class="dm-checkbox">
                             <input type="checkbox" name="permitir_adjuntos" value="1" <?php checked($configuracion['permitir_adjuntos']); ?>>
-                            <span><?php esc_html_e('Permitir archivos adjuntos', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Permitir archivos adjuntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                     </div>
                     <div class="dm-form-row" style="margin-top: 15px;">
                         <div class="dm-form-group">
-                            <label for="max_tamano_adjunto"><?php esc_html_e('Tamaño máximo (MB)', 'flavor-chat-ia'); ?></label>
+                            <label for="max_tamano_adjunto"><?php esc_html_e('Tamaño máximo (MB)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="number" id="max_tamano_adjunto" name="max_tamano_adjunto" value="<?php echo esc_attr($configuracion['max_tamano_adjunto']); ?>" min="1" max="100">
                         </div>
                         <div class="dm-form-group">
-                            <label for="tipos_adjuntos"><?php esc_html_e('Extensiones permitidas', 'flavor-chat-ia'); ?></label>
+                            <label for="tipos_adjuntos"><?php esc_html_e('Extensiones permitidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="text" id="tipos_adjuntos" name="tipos_adjuntos" value="<?php echo esc_attr($configuracion['tipos_adjuntos']); ?>" placeholder="jpg,png,pdf">
                         </div>
                     </div>
@@ -165,27 +165,27 @@ if (isset($_POST['guardar_config_foros']) && wp_verify_nonce($_POST['_wpnonce'],
 
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-star-filled"></span> <?php esc_html_e('Sistema de Reputación', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-star-filled"></span> <?php esc_html_e('Sistema de Reputación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-checkbox-group">
                         <label class="dm-checkbox">
                             <input type="checkbox" name="habilitar_reputacion" value="1" <?php checked($configuracion['habilitar_reputacion']); ?>>
-                            <span><?php esc_html_e('Habilitar sistema de puntos', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Habilitar sistema de puntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                     </div>
                     <div class="dm-form-row" style="margin-top: 15px;">
                         <div class="dm-form-group">
-                            <label for="puntos_nuevo_tema"><?php esc_html_e('Puntos por nuevo tema', 'flavor-chat-ia'); ?></label>
+                            <label for="puntos_nuevo_tema"><?php esc_html_e('Puntos por nuevo tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="number" id="puntos_nuevo_tema" name="puntos_nuevo_tema" value="<?php echo esc_attr($configuracion['puntos_nuevo_tema']); ?>" min="0">
                         </div>
                         <div class="dm-form-group">
-                            <label for="puntos_respuesta"><?php esc_html_e('Puntos por respuesta', 'flavor-chat-ia'); ?></label>
+                            <label for="puntos_respuesta"><?php esc_html_e('Puntos por respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="number" id="puntos_respuesta" name="puntos_respuesta" value="<?php echo esc_attr($configuracion['puntos_respuesta']); ?>" min="0">
                         </div>
                     </div>
                     <div class="dm-form-group">
-                        <label for="puntos_mejor_respuesta"><?php esc_html_e('Puntos por mejor respuesta', 'flavor-chat-ia'); ?></label>
+                        <label for="puntos_mejor_respuesta"><?php esc_html_e('Puntos por mejor respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="number" id="puntos_mejor_respuesta" name="puntos_mejor_respuesta" value="<?php echo esc_attr($configuracion['puntos_mejor_respuesta']); ?>" min="0">
                     </div>
                 </div>
@@ -193,21 +193,21 @@ if (isset($_POST['guardar_config_foros']) && wp_verify_nonce($_POST['_wpnonce'],
 
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-admin-users"></span> <?php esc_html_e('Perfil de Usuario', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-admin-users"></span> <?php esc_html_e('Perfil de Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-checkbox-group">
                         <label class="dm-checkbox">
                             <input type="checkbox" name="habilitar_mencion" value="1" <?php checked($configuracion['habilitar_mencion']); ?>>
-                            <span><?php esc_html_e('Habilitar menciones (@usuario)', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Habilitar menciones (@usuario)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="habilitar_firma" value="1" <?php checked($configuracion['habilitar_firma']); ?>>
-                            <span><?php esc_html_e('Permitir firma personalizada', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Permitir firma personalizada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                     </div>
                     <div class="dm-form-group" style="margin-top: 15px;">
-                        <label for="max_caracteres_firma"><?php esc_html_e('Máximo caracteres en firma', 'flavor-chat-ia'); ?></label>
+                        <label for="max_caracteres_firma"><?php esc_html_e('Máximo caracteres en firma', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="number" id="max_caracteres_firma" name="max_caracteres_firma" value="<?php echo esc_attr($configuracion['max_caracteres_firma']); ?>" min="0" max="1000">
                     </div>
                 </div>
@@ -215,36 +215,36 @@ if (isset($_POST['guardar_config_foros']) && wp_verify_nonce($_POST['_wpnonce'],
 
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-shield"></span> <?php esc_html_e('Moderación', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-shield"></span> <?php esc_html_e('Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-checkbox-group">
                         <label class="dm-checkbox">
                             <input type="checkbox" name="habilitar_moderacion" value="1" <?php checked($configuracion['habilitar_moderacion']); ?>>
-                            <span><?php esc_html_e('Habilitar cola de moderación', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Habilitar cola de moderación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                     </div>
                     <div class="dm-form-group" style="margin-top: 15px;">
-                        <label for="palabras_prohibidas"><?php esc_html_e('Palabras prohibidas (una por línea)', 'flavor-chat-ia'); ?></label>
+                        <label for="palabras_prohibidas"><?php esc_html_e('Palabras prohibidas (una por línea)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <textarea id="palabras_prohibidas" name="palabras_prohibidas" rows="4"><?php echo esc_textarea($configuracion['palabras_prohibidas']); ?></textarea>
-                        <p class="description"><?php esc_html_e('Los posts con estas palabras irán a moderación', 'flavor-chat-ia'); ?></p>
+                        <p class="description"><?php esc_html_e('Los posts con estas palabras irán a moderación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 </div>
             </div>
 
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-email"></span> <?php esc_html_e('Notificaciones', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-email"></span> <?php esc_html_e('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-checkbox-group">
                         <label class="dm-checkbox">
                             <input type="checkbox" name="notificar_respuestas" value="1" <?php checked($configuracion['notificar_respuestas']); ?>>
-                            <span><?php esc_html_e('Notificar nuevas respuestas', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Notificar nuevas respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="notificar_menciones" value="1" <?php checked($configuracion['notificar_menciones']); ?>>
-                            <span><?php esc_html_e('Notificar menciones', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Notificar menciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                     </div>
                 </div>
@@ -254,7 +254,7 @@ if (isset($_POST['guardar_config_foros']) && wp_verify_nonce($_POST['_wpnonce'],
         <div class="dm-form-actions">
             <button type="submit" name="guardar_config_foros" class="button button-primary button-hero">
                 <span class="dashicons dashicons-saved"></span>
-                <?php esc_html_e('Guardar Configuración', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Guardar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     </form>

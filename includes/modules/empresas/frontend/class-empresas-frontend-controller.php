@@ -40,13 +40,13 @@ class Flavor_Empresas_Frontend_Controller {
         $empresa = $this->module->get_empresa($empresa_id);
 
         if (!$empresa) {
-            return '<div class="flavor-alert flavor-alert-error">' . esc_html__('Empresa no encontrada.', 'flavor-chat-ia') . '</div>';
+            return '<div class="flavor-alert flavor-alert-error">' . esc_html__('Empresa no encontrada.', 'flavor-platform') . '</div>';
         }
 
         // Verificar que el usuario pertenece a esta empresa
         $miembro = $this->module->get_miembro($empresa_id, $user_id);
         if (!$miembro) {
-            return '<div class="flavor-alert flavor-alert-error">' . esc_html__('No tienes acceso a esta empresa.', 'flavor-chat-ia') . '</div>';
+            return '<div class="flavor-alert flavor-alert-error">' . esc_html__('No tienes acceso a esta empresa.', 'flavor-platform') . '</div>';
         }
 
         $data = [
@@ -219,7 +219,7 @@ class Flavor_Empresas_Frontend_Controller {
 
         if (!file_exists($view_file)) {
             return '<div class="flavor-alert flavor-alert-error">' .
-                   sprintf(esc_html__('Vista no encontrada: %s', 'flavor-chat-ia'), esc_html($view)) .
+                   sprintf(esc_html__('Vista no encontrada: %s', 'flavor-platform'), esc_html($view)) .
                    '</div>';
         }
 
@@ -236,10 +236,10 @@ class Flavor_Empresas_Frontend_Controller {
         ?>
         <div class="flavor-card" style="text-align:center;padding:40px;">
             <span class="dashicons dashicons-lock" style="font-size:48px;width:48px;height:48px;color:#94a3b8;"></span>
-            <h3><?php esc_html_e('Acceso restringido', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('Debes iniciar sesión para acceder a esta sección.', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('Acceso restringido', 'flavor-platform'); ?></h3>
+            <p><?php esc_html_e('Debes iniciar sesión para acceder a esta sección.', 'flavor-platform'); ?></p>
             <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="flavor-btn flavor-btn-primary">
-                <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Iniciar sesión', 'flavor-platform'); ?>
             </a>
         </div>
         <?php

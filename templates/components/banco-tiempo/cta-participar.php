@@ -37,25 +37,25 @@ $beneficios_participar = $beneficios_participar ?? [
                         <!-- Cabecera perfil miembro -->
                         <div class="flex items-center gap-3 mb-5 pb-4 border-b border-gray-100">
                             <div class="w-12 h-12 bg-gradient-to-br from-amber-500 to-yellow-600 rounded-full flex items-center justify-center text-white font-bold">
-                                <?php echo esc_html__('BT', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('BT', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </div>
                             <div>
-                                <p class="text-sm font-semibold text-gray-900"><?php echo esc_html__('Miembro Activo', 'flavor-chat-ia'); ?></p>
-                                <p class="text-xs text-gray-400"><?php echo esc_html__('Nivel: Colaborador', 'flavor-chat-ia'); ?></p>
+                                <p class="text-sm font-semibold text-gray-900"><?php echo esc_html__('Miembro Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                                <p class="text-xs text-gray-400"><?php echo esc_html__('Nivel: Colaborador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </div>
                         </div>
                         <!-- Estadisticas del miembro -->
                         <div class="space-y-3 mb-4">
                             <div class="flex items-center justify-between">
-                                <span class="text-xs text-gray-500"><?php echo esc_html__('Creditos disponibles', 'flavor-chat-ia'); ?></span>
-                                <span class="text-sm font-bold text-amber-600"><?php echo esc_html__('24h', 'flavor-chat-ia'); ?></span>
+                                <span class="text-xs text-gray-500"><?php echo esc_html__('Creditos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                                <span class="text-sm font-bold text-amber-600"><?php echo esc_html__('24h', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span class="text-xs text-gray-500"><?php echo esc_html__('Servicios ofrecidos', 'flavor-chat-ia'); ?></span>
+                                <span class="text-xs text-gray-500"><?php echo esc_html__('Servicios ofrecidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="text-sm font-bold text-amber-600">8</span>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span class="text-xs text-gray-500"><?php echo esc_html__('Intercambios realizados', 'flavor-chat-ia'); ?></span>
+                                <span class="text-xs text-gray-500"><?php echo esc_html__('Intercambios realizados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="text-sm font-bold text-amber-600">15</span>
                             </div>
                         </div>
@@ -65,7 +65,7 @@ $beneficios_participar = $beneficios_participar ?? [
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                 </svg>
-                                <?php echo esc_html__('Miembro verificado', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Miembro verificado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         </div>
                     </div>
@@ -100,13 +100,13 @@ $beneficios_participar = $beneficios_participar ?? [
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
                         </svg>
-                        <?php echo esc_html__('Registrarme', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Registrarme', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="<?php echo esc_url($url_crear_servicio); ?>" class="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl border-2 border-amber-300 text-amber-600 font-semibold text-lg hover:bg-amber-50 transition-all">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                         </svg>
-                        <?php echo esc_html__('Ofrecer un Servicio', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Ofrecer un Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </div>

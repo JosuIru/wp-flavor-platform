@@ -15,9 +15,9 @@ get_header();
 
 <div class="gc-archive-grupos">
     <header class="gc-archive-header">
-        <h1><?php _e('Grupos de Consumo', 'flavor-chat-ia'); ?></h1>
+        <h1><?php _e('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
         <p class="gc-archive-intro">
-            <?php _e('Descubre los grupos de consumo de tu zona y unete a uno para acceder a productos locales, ecologicos y de temporada.', 'flavor-chat-ia'); ?>
+            <?php _e('Descubre los grupos de consumo de tu zona y unete a uno para acceder a productos locales, ecologicos y de temporada.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </header>
 
@@ -63,10 +63,10 @@ get_header();
 
                 <div class="gc-grupo-card-footer">
                     <?php if ($admite_nuevos && $estado === 'activo'): ?>
-                    <span class="gc-badge gc-badge-abierto"><?php _e('Admite nuevos', 'flavor-chat-ia'); ?></span>
+                    <span class="gc-badge gc-badge-abierto"><?php _e('Admite nuevos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <?php endif; ?>
                     <a href="<?php the_permalink(); ?>" class="gc-btn gc-btn-secondary">
-                        <?php _e('Ver grupo', 'flavor-chat-ia'); ?>
+                        <?php _e('Ver grupo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </div>
@@ -77,8 +77,8 @@ get_header();
     <nav class="gc-paginacion">
         <?php
         the_posts_pagination([
-            'prev_text' => '<span class="dashicons dashicons-arrow-left-alt2"></span> ' . __('Anterior', 'flavor-chat-ia'),
-            'next_text' => __('Siguiente', 'flavor-chat-ia') . ' <span class="dashicons dashicons-arrow-right-alt2"></span>',
+            'prev_text' => '<span class="dashicons dashicons-arrow-left-alt2"></span> ' . __('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'next_text' => __('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN) . ' <span class="dashicons dashicons-arrow-right-alt2"></span>',
         ]);
         ?>
     </nav>
@@ -86,7 +86,7 @@ get_header();
     <?php else: ?>
     <div class="gc-empty-state">
         <span class="dashicons dashicons-groups"></span>
-        <p><?php _e('No hay grupos de consumo disponibles actualmente.', 'flavor-chat-ia'); ?></p>
+        <p><?php _e('No hay grupos de consumo disponibles actualmente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php endif; ?>
 </div>

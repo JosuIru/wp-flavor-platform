@@ -279,7 +279,7 @@ class Flavor_VBP_Comments {
         if ( ! get_post( $post_id ) ) {
             return new WP_Error(
                 'invalid_post',
-                __( 'El post no existe', 'flavor-chat-ia' ),
+                __( 'El post no existe', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 404 )
             );
         }
@@ -317,7 +317,7 @@ class Flavor_VBP_Comments {
             array(
                 'success' => true,
                 'comment' => $enriched_comment,
-                'message' => __( 'Comentario añadido', 'flavor-chat-ia' ),
+                'message' => __( 'Comentario añadido', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             201
         );
@@ -363,7 +363,7 @@ class Flavor_VBP_Comments {
         if ( ! $found ) {
             return new WP_Error(
                 'comment_not_found',
-                __( 'Comentario no encontrado', 'flavor-chat-ia' ),
+                __( 'Comentario no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 404 )
             );
         }
@@ -374,7 +374,7 @@ class Flavor_VBP_Comments {
             array(
                 'success' => true,
                 'comment' => $this->enrich_comment( $updated_comment ),
-                'message' => __( 'Comentario actualizado', 'flavor-chat-ia' ),
+                'message' => __( 'Comentario actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             200
         );
@@ -404,7 +404,7 @@ class Flavor_VBP_Comments {
         if ( count( $comments ) === $original_count ) {
             return new WP_Error(
                 'comment_not_found',
-                __( 'Comentario no encontrado', 'flavor-chat-ia' ),
+                __( 'Comentario no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 404 )
             );
         }
@@ -416,7 +416,7 @@ class Flavor_VBP_Comments {
         return new WP_REST_Response(
             array(
                 'success' => true,
-                'message' => __( 'Comentario eliminado', 'flavor-chat-ia' ),
+                'message' => __( 'Comentario eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             200
         );
@@ -498,7 +498,7 @@ class Flavor_VBP_Comments {
 
         $comment['author'] = array(
             'id'           => $comment['user_id'],
-            'name'         => $user ? $user->display_name : __( 'Usuario eliminado', 'flavor-chat-ia' ),
+            'name'         => $user ? $user->display_name : __( 'Usuario eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'avatar'       => get_avatar_url( $comment['user_id'], array( 'size' => 48 ) ),
             'initials'     => $user ? strtoupper( substr( $user->display_name, 0, 2 ) ) : '??',
         );

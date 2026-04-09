@@ -75,8 +75,8 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
      */
     public function __construct() {
         $this->id = 'justicia_restaurativa';
-        $this->name = __('Justicia Restaurativa', 'flavor-chat-ia');
-        $this->description = __('Resolución de conflictos comunitaria basada en reparación y diálogo.', 'flavor-chat-ia');
+        $this->name = __('Justicia Restaurativa', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Resolución de conflictos comunitaria basada en reparación y diálogo.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $this->icon = 'dashicons-shield';
         $this->color = '#9b59b6';
 
@@ -311,24 +311,24 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
     public function get_admin_config(): array {
         return [
             'id' => 'justicia_restaurativa',
-            'label' => __('Justicia Restaurativa', 'flavor-chat-ia'),
+            'label' => __('Justicia Restaurativa', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-shield',
             'capability' => 'manage_options',
             'categoria' => 'comunidad',
             'paginas' => [
                 [
                     'slug' => 'justicia-restaurativa',
-                    'titulo' => __('Justicia Restaurativa', 'flavor-chat-ia'),
+                    'titulo' => __('Justicia Restaurativa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_dashboard'],
                 ],
                 [
                     'slug' => 'jr-procesos',
-                    'titulo' => __('Procesos', 'flavor-chat-ia'),
+                    'titulo' => __('Procesos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_procesos'],
                 ],
                 [
                     'slug' => 'jr-mediadores',
-                    'titulo' => __('Mediadores', 'flavor-chat-ia'),
+                    'titulo' => __('Mediadores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_mediadores'],
                 ],
             ],
@@ -344,22 +344,22 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
         $mediadores = $this->get_mediadores();
         ?>
         <div class="wrap flavor-admin-justicia">
-            <h1><?php esc_html_e('Justicia Restaurativa', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Justicia Restaurativa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
             <div class="flavor-stats-grid">
                 <div class="flavor-stat-card">
                     <span class="dashicons dashicons-shield"></span>
                     <h3><?php echo esc_html($procesos->private ?? 0); ?></h3>
-                    <p><?php esc_html_e('Procesos totales', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Procesos totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="dashicons dashicons-clock"></span>
                     <h3><?php echo count($pendientes); ?></h3>
-                    <p><?php esc_html_e('Pendientes asignar', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Pendientes asignar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="dashicons dashicons-groups"></span>
                     <h3><?php echo count($mediadores); ?></h3>
-                    <p><?php esc_html_e('Mediadores activos', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Mediadores activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             </div>
         </div>
@@ -373,9 +373,9 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
         $procesos = get_posts(['post_type' => 'jr_proceso', 'posts_per_page' => 50, 'post_status' => 'private']);
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e('Procesos Restaurativos', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Procesos Restaurativos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
             <table class="wp-list-table widefat fixed striped">
-                <thead><tr><th><?php esc_html_e('Título', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Mediador', 'flavor-chat-ia'); ?></th></tr></thead>
+                <thead><tr><th><?php esc_html_e('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Mediador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th></tr></thead>
                 <tbody>
                 <?php foreach ($procesos as $proc): $tipo = get_post_meta($proc->ID, '_jr_tipo', true); $estado = get_post_meta($proc->ID, '_jr_estado', true); $mediador_id = get_post_meta($proc->ID, '_jr_mediador_id', true); ?>
                     <tr>
@@ -398,9 +398,9 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
         $mediadores = $this->get_mediadores();
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e('Mediadores', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Mediadores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
             <table class="wp-list-table widefat fixed striped">
-                <thead><tr><th><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Email', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Procesos', 'flavor-chat-ia'); ?></th></tr></thead>
+                <thead><tr><th><?php esc_html_e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Procesos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th></tr></thead>
                 <tbody>
                 <?php foreach ($mediadores as $med): $procesos = get_posts(['post_type' => 'jr_proceso', 'meta_query' => [['key' => '_jr_mediador_id', 'value' => $med->ID]], 'posts_per_page' => -1]); ?>
                     <tr>
@@ -439,9 +439,9 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
         // CPT: Procesos restaurativos
         register_post_type('jr_proceso', [
             'labels' => [
-                'name' => __('Procesos Restaurativos', 'flavor-chat-ia'),
-                'singular_name' => __('Proceso', 'flavor-chat-ia'),
-                'add_new' => __('Nuevo Proceso', 'flavor-chat-ia'),
+                'name' => __('Procesos Restaurativos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'add_new' => __('Nuevo Proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => false,
             'show_ui' => true,
@@ -458,8 +458,8 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
         // CPT: Sesiones
         register_post_type('jr_sesion', [
             'labels' => [
-                'name' => __('Sesiones', 'flavor-chat-ia'),
-                'singular_name' => __('Sesión', 'flavor-chat-ia'),
+                'name' => __('Sesiones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Sesión', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => false,
             'show_ui' => true,
@@ -470,8 +470,8 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
         // CPT: Acuerdos
         register_post_type('jr_acuerdo', [
             'labels' => [
-                'name' => __('Acuerdos', 'flavor-chat-ia'),
-                'singular_name' => __('Acuerdo', 'flavor-chat-ia'),
+                'name' => __('Acuerdos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Acuerdo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => false,
             'show_ui' => true,
@@ -486,7 +486,7 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
     public function registrar_meta_boxes() {
         add_meta_box(
             'jr_proceso_datos',
-            __('Datos del Proceso', 'flavor-chat-ia'),
+            __('Datos del Proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_meta_box_proceso'],
             'jr_proceso',
             'normal',
@@ -495,7 +495,7 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
 
         add_meta_box(
             'jr_proceso_partes',
-            __('Partes Involucradas', 'flavor-chat-ia'),
+            __('Partes Involucradas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_meta_box_partes'],
             'jr_proceso',
             'side',
@@ -517,7 +517,7 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
         ?>
         <table class="form-table">
             <tr>
-                <th><label for="jr_tipo"><?php esc_html_e('Tipo de proceso', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="jr_tipo"><?php esc_html_e('Tipo de proceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <select name="jr_tipo" id="jr_tipo">
                         <?php foreach (self::TIPOS_PROCESO as $id => $data) : ?>
@@ -529,7 +529,7 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
                 </td>
             </tr>
             <tr>
-                <th><label for="jr_estado"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="jr_estado"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <select name="jr_estado" id="jr_estado">
                         <?php foreach (self::ESTADOS_PROCESO as $id => $data) : ?>
@@ -541,13 +541,13 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
                 </td>
             </tr>
             <tr>
-                <th><label for="jr_mediador"><?php esc_html_e('Mediador/a', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="jr_mediador"><?php esc_html_e('Mediador/a', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <?php
                     $mediadores = $this->get_mediadores();
                     ?>
                     <select name="jr_mediador_id" id="jr_mediador">
-                        <option value=""><?php esc_html_e('Sin asignar', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Sin asignar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($mediadores as $mediador) : ?>
                         <option value="<?php echo esc_attr($mediador->ID); ?>" <?php selected($mediador_id, $mediador->ID); ?>>
                             <?php echo esc_html($mediador->display_name); ?>
@@ -557,17 +557,17 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
                 </td>
             </tr>
             <tr>
-                <th><label for="jr_fecha_inicio"><?php esc_html_e('Fecha inicio', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="jr_fecha_inicio"><?php esc_html_e('Fecha inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <input type="date" name="jr_fecha_inicio" id="jr_fecha_inicio"
                            value="<?php echo esc_attr($fecha_inicio); ?>">
                 </td>
             </tr>
             <tr>
-                <th><label for="jr_descripcion"><?php esc_html_e('Descripción (confidencial)', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="jr_descripcion"><?php esc_html_e('Descripción (confidencial)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <textarea name="jr_descripcion" id="jr_descripcion" rows="4" class="large-text"><?php echo esc_textarea($descripcion); ?></textarea>
-                    <p class="description"><?php esc_html_e('Esta información es confidencial y solo visible para administradores y el mediador.', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Esta información es confidencial y solo visible para administradores y el mediador.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
         </table>
@@ -585,12 +585,12 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
         $otra_parte = $otra_parte_id ? get_userdata($otra_parte_id) : null;
         ?>
         <p>
-            <strong><?php esc_html_e('Solicitante:', 'flavor-chat-ia'); ?></strong><br>
-            <?php echo $solicitante ? esc_html($solicitante->display_name) : __('No asignado', 'flavor-chat-ia'); ?>
+            <strong><?php esc_html_e('Solicitante:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong><br>
+            <?php echo $solicitante ? esc_html($solicitante->display_name) : __('No asignado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
         <p>
-            <strong><?php esc_html_e('Otra parte:', 'flavor-chat-ia'); ?></strong><br>
-            <?php echo $otra_parte ? esc_html($otra_parte->display_name) : __('No asignado', 'flavor-chat-ia'); ?>
+            <strong><?php esc_html_e('Otra parte:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong><br>
+            <?php echo $otra_parte ? esc_html($otra_parte->display_name) : __('No asignado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
         <?php
     }
@@ -647,7 +647,7 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
                      $user_id == $mediador_id;
 
         if (!$puede_ver) {
-            wp_die(__('No tienes permiso para ver este proceso. La información es confidencial.', 'flavor-chat-ia'));
+            wp_die(__('No tienes permiso para ver este proceso. La información es confidencial.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -658,7 +658,7 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('jr_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $tipo = sanitize_text_field($_POST['tipo'] ?? 'mediacion');
@@ -667,7 +667,7 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
         $user_id = get_current_user_id();
 
         if (!$descripcion) {
-            wp_send_json_error(['message' => __('Por favor, describe la situación', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Por favor, describe la situación', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Buscar la otra parte por email
@@ -677,7 +677,7 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
         $proceso_id = wp_insert_post([
             'post_type' => 'jr_proceso',
             'post_title' => sprintf(
-                __('Proceso %s - %s', 'flavor-chat-ia'),
+                __('Proceso %s - %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 self::TIPOS_PROCESO[$tipo]['nombre'],
                 date_i18n('d/m/Y')
             ),
@@ -702,14 +702,14 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
             $this->notificar_nueva_solicitud($proceso_id);
 
             wp_send_json_success([
-                'message' => __('Solicitud enviada. Un mediador se pondrá en contacto contigo.', 'flavor-chat-ia'),
+                'message' => __('Solicitud enviada. Un mediador se pondrá en contacto contigo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'proceso_id' => $proceso_id,
             ]);
         }
 
         $error_message = is_wp_error($proceso_id)
             ? $proceso_id->get_error_message()
-            : __('Error al crear la solicitud', 'flavor-chat-ia');
+            : __('Error al crear la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN);
         wp_send_json_error(['message' => $error_message]);
     }
 
@@ -724,13 +724,13 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
         $user_id = get_current_user_id();
 
         if (!$proceso_id) {
-            wp_send_json_error(['message' => __('Datos inválidos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos inválidos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar que es la otra parte
         $otra_parte_id = get_post_meta($proceso_id, '_jr_otra_parte_id', true);
         if ($otra_parte_id != $user_id) {
-            wp_send_json_error(['message' => __('No tienes permiso', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes permiso', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if ($respuesta === 'acepto') {
@@ -740,14 +740,14 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
             $this->notificar_aceptacion($proceso_id);
 
             wp_send_json_success([
-                'message' => __('Has aceptado participar. El mediador coordinará las sesiones.', 'flavor-chat-ia'),
+                'message' => __('Has aceptado participar. El mediador coordinará las sesiones.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         } else {
             update_post_meta($proceso_id, '_jr_estado', 'cancelado');
             update_post_meta($proceso_id, '_jr_motivo_cancelacion', 'otra_parte_rechazó');
 
             wp_send_json_success([
-                'message' => __('Proceso cancelado. Esperamos poder ayudarte en el futuro.', 'flavor-chat-ia'),
+                'message' => __('Proceso cancelado. Esperamos poder ayudarte en el futuro.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
     }
@@ -759,7 +759,7 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('jr_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $user_id = get_current_user_id();
@@ -778,7 +778,7 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
         $this->notificar_solicitud_mediador($user_id);
 
         wp_send_json_success([
-            'message' => __('Solicitud enviada. Nos pondremos en contacto contigo.', 'flavor-chat-ia'),
+            'message' => __('Solicitud enviada. Nos pondremos en contacto contigo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -795,9 +795,9 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
 
         $nc->send(
             $otra_parte_id,
-            __('Invitación a proceso restaurativo', 'flavor-chat-ia'),
+            __('Invitación a proceso restaurativo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             sprintf(
-                __('%s te invita a participar en un proceso de diálogo y mediación.', 'flavor-chat-ia'),
+                __('%s te invita a participar en un proceso de diálogo y mediación.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $solicitante->display_name
             ),
             [
@@ -823,8 +823,8 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
         foreach ($mediadores as $mediador) {
             $nc->send(
                 $mediador->ID,
-                __('Nueva solicitud de mediación', 'flavor-chat-ia'),
-                __('Se ha solicitado un nuevo proceso restaurativo.', 'flavor-chat-ia'),
+                __('Nueva solicitud de mediación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Se ha solicitado un nuevo proceso restaurativo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 [
                     'module_id' => $this->id,
                     'type' => 'info',
@@ -847,8 +847,8 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
 
         $nc->send(
             $solicitante_id,
-            __('¡Proceso aceptado!', 'flavor-chat-ia'),
-            __('La otra parte ha aceptado participar en el proceso restaurativo.', 'flavor-chat-ia'),
+            __('¡Proceso aceptado!', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('La otra parte ha aceptado participar en el proceso restaurativo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [
                 'module_id' => $this->id,
                 'type' => 'success',
@@ -872,8 +872,8 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
         foreach ($admins as $admin) {
             $nc->send(
                 $admin->ID,
-                __('Solicitud de mediador', 'flavor-chat-ia'),
-                sprintf(__('%s quiere ser mediador voluntario.', 'flavor-chat-ia'), $user->display_name),
+                __('Solicitud de mediador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                sprintf(__('%s quiere ser mediador voluntario.', FLAVOR_PLATFORM_TEXT_DOMAIN), $user->display_name),
                 [
                     'module_id' => $this->id,
                     'type' => 'info',
@@ -896,7 +896,7 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_solicitar($atts) {
         if (!is_user_logged_in()) {
-            return '<p>' . __('Inicia sesión para solicitar mediación.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('Inicia sesión para solicitar mediación.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -909,7 +909,7 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_mis_procesos($atts) {
         if (!is_user_logged_in()) {
-            return '<p>' . __('Inicia sesión para ver tus procesos.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('Inicia sesión para ver tus procesos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -1004,8 +1004,8 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('jr_nonce'),
             'i18n' => [
-                'confirmSolicitud' => __('¿Deseas iniciar este proceso de mediación?', 'flavor-chat-ia'),
-                'enviando' => __('Enviando...', 'flavor-chat-ia'),
+                'confirmSolicitud' => __('¿Deseas iniciar este proceso de mediación?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'enviando' => __('Enviando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -1158,7 +1158,7 @@ KNOWLEDGE;
 
         return [
             'success' => false,
-            'error' => __('Acción no implementada', 'flavor-chat-ia'),
+            'error' => __('Acción no implementada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -1210,12 +1210,12 @@ KNOWLEDGE;
         if (!$proceso) {
             return [
                 'success' => false,
-                'error' => __('No se ha encontrado el proceso contextual.', 'flavor-chat-ia'),
+                'error' => __('No se ha encontrado el proceso contextual.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
         $html  = '<div class="flavor-context-header">';
-        $html .= '<h3>' . esc_html__('Foro del proceso', 'flavor-chat-ia') . '</h3>';
+        $html .= '<h3>' . esc_html__('Foro del proceso', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         $html .= '<p>' . esc_html(get_the_title($proceso)) . '</p>';
         $html .= '</div>';
         $html .= do_shortcode('[flavor_foros_integrado entidad="jr_proceso" entidad_id="' . absint($proceso->ID) . '"]');
@@ -1225,19 +1225,19 @@ KNOWLEDGE;
 
     private function action_chat_proceso($params) {
         if (!is_user_logged_in()) {
-            return '<div class="notice notice-info"><p>' . esc_html__('Debes iniciar sesión para acceder al chat del proceso.', 'flavor-chat-ia') . '</p></div>';
+            return '<div class="notice notice-info"><p>' . esc_html__('Debes iniciar sesión para acceder al chat del proceso.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         $proceso = $this->resolve_contextual_proceso($params);
         if (!$proceso) {
             return [
                 'success' => false,
-                'error' => __('No se ha encontrado el proceso contextual.', 'flavor-chat-ia'),
+                'error' => __('No se ha encontrado el proceso contextual.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
         $html  = '<div class="flavor-context-header">';
-        $html .= '<h3>' . esc_html__('Chat del proceso', 'flavor-chat-ia') . '</h3>';
+        $html .= '<h3>' . esc_html__('Chat del proceso', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         $html .= '<p>' . esc_html(get_the_title($proceso)) . '</p>';
         $html .= '</div>';
         $html .= do_shortcode('[flavor_chat_grupo_integrado entidad="jr_proceso" entidad_id="' . absint($proceso->ID) . '"]');
@@ -1250,14 +1250,14 @@ KNOWLEDGE;
         if (!$proceso) {
             return [
                 'success' => false,
-                'error' => __('No se ha encontrado el proceso contextual.', 'flavor-chat-ia'),
+                'error' => __('No se ha encontrado el proceso contextual.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
         $html  = '<div class="flavor-context-header">';
-        $html .= '<h3>' . esc_html__('Multimedia del proceso', 'flavor-chat-ia') . '</h3>';
+        $html .= '<h3>' . esc_html__('Multimedia del proceso', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         $html .= '<p>' . esc_html(get_the_title($proceso)) . '</p>';
-        $html .= '<p><a class="button button-primary" href="' . esc_url(home_url('/mi-portal/multimedia/subir/?proceso_id=' . absint($proceso->ID))) . '">' . esc_html__('Subir archivo', 'flavor-chat-ia') . '</a></p>';
+        $html .= '<p><a class="button button-primary" href="' . esc_url(home_url('/mi-portal/multimedia/subir/?proceso_id=' . absint($proceso->ID))) . '">' . esc_html__('Subir archivo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p>';
         $html .= '</div>';
         $html .= do_shortcode('[flavor_multimedia_galeria entidad="jr_proceso" entidad_id="' . absint($proceso->ID) . '"]');
 
@@ -1266,21 +1266,21 @@ KNOWLEDGE;
 
     private function action_red_social_proceso($params) {
         if (!is_user_logged_in()) {
-            return '<div class="notice notice-info"><p>' . esc_html__('Debes iniciar sesión para ver la actividad social del proceso.', 'flavor-chat-ia') . '</p></div>';
+            return '<div class="notice notice-info"><p>' . esc_html__('Debes iniciar sesión para ver la actividad social del proceso.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         $proceso = $this->resolve_contextual_proceso($params);
         if (!$proceso) {
             return [
                 'success' => false,
-                'error' => __('No se ha encontrado el proceso contextual.', 'flavor-chat-ia'),
+                'error' => __('No se ha encontrado el proceso contextual.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
         $html  = '<div class="flavor-context-header">';
-        $html .= '<h3>' . esc_html__('Actividad social del proceso', 'flavor-chat-ia') . '</h3>';
+        $html .= '<h3>' . esc_html__('Actividad social del proceso', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         $html .= '<p>' . esc_html(get_the_title($proceso)) . '</p>';
-        $html .= '<p><a class="button button-primary" href="' . esc_url(home_url('/mi-portal/red-social/crear/?proceso_id=' . absint($proceso->ID))) . '">' . esc_html__('Publicar', 'flavor-chat-ia') . '</a></p>';
+        $html .= '<p><a class="button button-primary" href="' . esc_url(home_url('/mi-portal/red-social/crear/?proceso_id=' . absint($proceso->ID))) . '">' . esc_html__('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p>';
         $html .= '</div>';
         $html .= do_shortcode('[flavor_social_feed entidad="jr_proceso" entidad_id="' . absint($proceso->ID) . '"]');
 
@@ -1302,8 +1302,8 @@ KNOWLEDGE;
     public static function get_renderer_config(): array {
         return [
             'module'   => 'justicia-restaurativa',
-            'title'    => __('Justicia Restaurativa', 'flavor-chat-ia'),
-            'subtitle' => __('Resolución de conflictos y reparación del daño', 'flavor-chat-ia'),
+            'title'    => __('Justicia Restaurativa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Resolución de conflictos y reparación del daño', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '⚖️',
             'color'    => 'accent', // Usa variable CSS --flavor-primary del tema
 
@@ -1313,28 +1313,28 @@ KNOWLEDGE;
             ],
 
             'fields' => [
-                'tipo_proceso' => ['type' => 'select', 'label' => __('Tipo de proceso', 'flavor-chat-ia'), 'options' => ['mediacion', 'conferencia', 'circulo_paz']],
-                'descripcion'  => ['type' => 'textarea', 'label' => __('Descripción del conflicto', 'flavor-chat-ia')],
-                'partes'       => ['type' => 'text', 'label' => __('Partes implicadas', 'flavor-chat-ia')],
-                'mediador_id'  => ['type' => 'select', 'label' => __('Mediador asignado', 'flavor-chat-ia')],
-                'fecha_sesion' => ['type' => 'datetime', 'label' => __('Fecha de sesión', 'flavor-chat-ia')],
-                'acuerdo'      => ['type' => 'textarea', 'label' => __('Acuerdo reparador', 'flavor-chat-ia')],
+                'tipo_proceso' => ['type' => 'select', 'label' => __('Tipo de proceso', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['mediacion', 'conferencia', 'circulo_paz']],
+                'descripcion'  => ['type' => 'textarea', 'label' => __('Descripción del conflicto', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'partes'       => ['type' => 'text', 'label' => __('Partes implicadas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'mediador_id'  => ['type' => 'select', 'label' => __('Mediador asignado', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'fecha_sesion' => ['type' => 'datetime', 'label' => __('Fecha de sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'acuerdo'      => ['type' => 'textarea', 'label' => __('Acuerdo reparador', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ],
 
             'estados' => [
-                'solicitado'  => ['label' => __('Solicitado', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '📋'],
-                'aceptado'    => ['label' => __('Aceptado', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '✓'],
-                'en_proceso'  => ['label' => __('En proceso', 'flavor-chat-ia'), 'color' => 'indigo', 'icon' => '🔄'],
-                'acordado'    => ['label' => __('Acordado', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🤝'],
-                'cumplido'    => ['label' => __('Cumplido', 'flavor-chat-ia'), 'color' => 'emerald', 'icon' => '✅'],
-                'no_acuerdo'  => ['label' => __('Sin acuerdo', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '❌'],
+                'solicitado'  => ['label' => __('Solicitado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'blue', 'icon' => '📋'],
+                'aceptado'    => ['label' => __('Aceptado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '✓'],
+                'en_proceso'  => ['label' => __('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'indigo', 'icon' => '🔄'],
+                'acordado'    => ['label' => __('Acordado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '🤝'],
+                'cumplido'    => ['label' => __('Cumplido', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'emerald', 'icon' => '✅'],
+                'no_acuerdo'  => ['label' => __('Sin acuerdo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'red', 'icon' => '❌'],
             ],
 
             'stats' => [
-                'procesos_activos' => ['label' => __('Procesos activos', 'flavor-chat-ia'), 'icon' => '⚖️', 'color' => 'violet'],
-                'acuerdos_logrados' => ['label' => __('Acuerdos logrados', 'flavor-chat-ia'), 'icon' => '🤝', 'color' => 'green'],
-                'mediadores'       => ['label' => __('Mediadores', 'flavor-chat-ia'), 'icon' => '👤', 'color' => 'blue'],
-                'tasa_exito'       => ['label' => __('Tasa de éxito', 'flavor-chat-ia'), 'icon' => '📊', 'color' => 'emerald'],
+                'procesos_activos' => ['label' => __('Procesos activos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '⚖️', 'color' => 'violet'],
+                'acuerdos_logrados' => ['label' => __('Acuerdos logrados', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🤝', 'color' => 'green'],
+                'mediadores'       => ['label' => __('Mediadores', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👤', 'color' => 'blue'],
+                'tasa_exito'       => ['label' => __('Tasa de éxito', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📊', 'color' => 'emerald'],
             ],
 
             'card' => [
@@ -1348,52 +1348,52 @@ KNOWLEDGE;
 
             'tabs' => [
                 'informacion' => [
-                    'label'   => __('Información', 'flavor-chat-ia'),
+                    'label'   => __('Información', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-info',
                     'content' => 'shortcode:justicia_restaurativa',
                     'public'  => true,
                 ],
                 'mediadores' => [
-                    'label'   => __('Mediadores', 'flavor-chat-ia'),
+                    'label'   => __('Mediadores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-groups',
                     'content' => 'shortcode:mediadores',
                     'public'  => true,
                 ],
                 'solicitar' => [
-                    'label'      => __('Solicitar proceso', 'flavor-chat-ia'),
+                    'label'      => __('Solicitar proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-plus-alt',
                     'content'    => 'shortcode:solicitar_mediacion',
                     'requires_login' => true,
                 ],
                 'mis-procesos' => [
-                    'label'      => __('Mis procesos', 'flavor-chat-ia'),
+                    'label'      => __('Mis procesos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-admin-users',
                     'content'    => 'shortcode:mis_procesos',
                     'requires_login' => true,
                 ],
                 'foro' => [
-                    'label'      => __('Foro', 'flavor-chat-ia'),
+                    'label'      => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-format-chat',
                     'content'    => 'callback:action_foro_proceso',
                     'requires_login' => false,
                     'hidden_nav' => true,
                 ],
                 'chat' => [
-                    'label'      => __('Chat', 'flavor-chat-ia'),
+                    'label'      => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-format-status',
                     'content'    => 'callback:action_chat_proceso',
                     'requires_login' => true,
                     'hidden_nav' => true,
                 ],
                 'multimedia' => [
-                    'label'      => __('Multimedia', 'flavor-chat-ia'),
+                    'label'      => __('Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-format-gallery',
                     'content'    => 'callback:action_multimedia_proceso',
                     'requires_login' => false,
                     'hidden_nav' => true,
                 ],
                 'red-social' => [
-                    'label'      => __('Red social', 'flavor-chat-ia'),
+                    'label'      => __('Red social', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-share',
                     'content'    => 'callback:action_red_social_proceso',
                     'requires_login' => true,
@@ -1413,8 +1413,8 @@ KNOWLEDGE;
             'dashboard' => [
                 'widgets' => ['stats', 'mis_procesos', 'proximas_sesiones', 'recursos'],
                 'actions' => [
-                    'solicitar' => ['label' => __('Solicitar mediación', 'flavor-chat-ia'), 'icon' => '⚖️', 'color' => 'violet'],
-                    'informar'  => ['label' => __('Más información', 'flavor-chat-ia'), 'icon' => 'ℹ️', 'color' => 'blue'],
+                    'solicitar' => ['label' => __('Solicitar mediación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '⚖️', 'color' => 'violet'],
+                    'informar'  => ['label' => __('Más información', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'ℹ️', 'color' => 'blue'],
                 ],
             ],
 

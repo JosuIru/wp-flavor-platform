@@ -23,7 +23,7 @@ if (!defined('ABSPATH')) {
 }
 
 $url = $url ?? '#';
-$filename = $filename ?? __('Archivo', 'flavor-chat-ia');
+$filename = $filename ?? __('Archivo', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $size = $size ?? '';
 $type = $type ?? 'file';
 $description = $description ?? '';
@@ -147,7 +147,7 @@ $download_id = 'flavor-download-' . wp_rand(1000, 9999);
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                 </svg>
-                <?php esc_html_e('Descargar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Descargar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>
@@ -179,7 +179,7 @@ $download_id = 'flavor-download-' . wp_rand(1000, 9999);
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                             </svg>
-                            <?php echo number_format_i18n($downloads); ?> <?php esc_html_e('descargas', 'flavor-chat-ia'); ?>
+                            <?php echo number_format_i18n($downloads); ?> <?php esc_html_e('descargas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
                     <?php endif; ?>
                 </div>
@@ -192,7 +192,7 @@ $download_id = 'flavor-download-' . wp_rand(1000, 9999);
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                 </svg>
-                <span class="hidden sm:inline"><?php esc_html_e('Descargar', 'flavor-chat-ia'); ?></span>
+                <span class="hidden sm:inline"><?php esc_html_e('Descargar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
         </div>
     </div>

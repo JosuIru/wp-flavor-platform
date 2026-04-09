@@ -21,18 +21,18 @@ $total_estimado = $args['total'] ?? 0;
     <?php if (!is_user_logged_in()): ?>
         <div class="gc-carrito-login-requerido">
             <span class="dashicons dashicons-lock"></span>
-            <p><?php _e('Inicia sesión para ver tu lista de compra.', 'flavor-chat-ia'); ?></p>
+            <p><?php _e('Inicia sesión para ver tu lista de compra.', 'flavor-platform'); ?></p>
             <a href="<?php echo esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mi-pedido'))); ?>" class="gc-btn gc-btn-primary">
-                <?php _e('Iniciar sesión', 'flavor-chat-ia'); ?>
+                <?php _e('Iniciar sesión', 'flavor-platform'); ?>
             </a>
         </div>
     <?php elseif (empty($items_lista)): ?>
         <div class="gc-carrito-vacio">
             <span class="gc-carrito-icono-vacio">🛒</span>
-            <h3><?php _e('Tu lista está vacía', 'flavor-chat-ia'); ?></h3>
-            <p><?php _e('Añade productos desde el catálogo para empezar tu pedido.', 'flavor-chat-ia'); ?></p>
+            <h3><?php _e('Tu lista está vacía', 'flavor-platform'); ?></h3>
+            <p><?php _e('Añade productos desde el catálogo para empezar tu pedido.', 'flavor-platform'); ?></p>
             <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-primary">
-                <?php _e('Ver productos', 'flavor-chat-ia'); ?>
+                <?php _e('Ver productos', 'flavor-platform'); ?>
             </a>
         </div>
     <?php else: ?>
@@ -42,7 +42,7 @@ $total_estimado = $args['total'] ?? 0;
                 <span class="dashicons dashicons-calendar-alt"></span>
                 <div class="gc-carrito-ciclo-texto">
                     <strong><?php echo esc_html($ciclo_actual['titulo']); ?></strong>
-                    <span><?php printf(__('Cierre: %s', 'flavor-chat-ia'), esc_html($ciclo_actual['fecha_cierre'])); ?></span>
+                    <span><?php printf(__('Cierre: %s', 'flavor-platform'), esc_html($ciclo_actual['fecha_cierre'])); ?></span>
                 </div>
             </div>
         <?php endif; ?>
@@ -51,10 +51,10 @@ $total_estimado = $args['total'] ?? 0;
             <table class="gc-carrito-tabla">
                 <thead>
                     <tr>
-                        <th class="gc-col-producto"><?php _e('Producto', 'flavor-chat-ia'); ?></th>
-                        <th class="gc-col-precio"><?php _e('Precio', 'flavor-chat-ia'); ?></th>
-                        <th class="gc-col-cantidad"><?php _e('Cantidad', 'flavor-chat-ia'); ?></th>
-                        <th class="gc-col-subtotal"><?php _e('Subtotal', 'flavor-chat-ia'); ?></th>
+                        <th class="gc-col-producto"><?php _e('Producto', 'flavor-platform'); ?></th>
+                        <th class="gc-col-precio"><?php _e('Precio', 'flavor-platform'); ?></th>
+                        <th class="gc-col-cantidad"><?php _e('Cantidad', 'flavor-platform'); ?></th>
+                        <th class="gc-col-subtotal"><?php _e('Subtotal', 'flavor-platform'); ?></th>
                         <th class="gc-col-acciones"></th>
                     </tr>
                 </thead>
@@ -99,7 +99,7 @@ $total_estimado = $args['total'] ?? 0;
                                 <span class="gc-subtotal"><?php echo number_format($item['precio'] * $item['cantidad'], 2, ',', '.'); ?> €</span>
                             </td>
                             <td class="gc-col-acciones">
-                                <button type="button" class="gc-btn-eliminar" data-action="eliminar" title="<?php esc_attr_e('Eliminar', 'flavor-chat-ia'); ?>">
+                                <button type="button" class="gc-btn-eliminar" data-action="eliminar" title="<?php esc_attr_e('Eliminar', 'flavor-platform'); ?>">
                                     <span class="dashicons dashicons-trash"></span>
                                 </button>
                             </td>
@@ -108,7 +108,7 @@ $total_estimado = $args['total'] ?? 0;
                 </tbody>
                 <tfoot>
                     <tr class="gc-carrito-total">
-                        <td colspan="3" class="gc-total-label"><?php _e('Total estimado:', 'flavor-chat-ia'); ?></td>
+                        <td colspan="3" class="gc-total-label"><?php _e('Total estimado:', 'flavor-platform'); ?></td>
                         <td colspan="2" class="gc-total-valor">
                             <strong class="gc-total-amount"><?php echo number_format($total_estimado, 2, ',', '.'); ?> €</strong>
                         </td>
@@ -120,25 +120,25 @@ $total_estimado = $args['total'] ?? 0;
         <div class="gc-carrito-acciones">
             <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-secondary">
                 <span class="dashicons dashicons-arrow-left-alt"></span>
-                <?php _e('Seguir comprando', 'flavor-chat-ia'); ?>
+                <?php _e('Seguir comprando', 'flavor-platform'); ?>
             </a>
 
             <?php if ($ciclo_actual && $ciclo_actual['estado'] === 'abierto'): ?>
                 <button type="button" class="gc-btn gc-btn-primary gc-btn-confirmar-pedido" id="gc-confirmar-pedido">
                     <span class="dashicons dashicons-yes-alt"></span>
-                    <?php _e('Confirmar pedido', 'flavor-chat-ia'); ?>
+                    <?php _e('Confirmar pedido', 'flavor-platform'); ?>
                 </button>
             <?php else: ?>
                 <div class="gc-carrito-aviso">
                     <span class="dashicons dashicons-info"></span>
-                    <?php _e('No hay ciclo de pedidos abierto actualmente.', 'flavor-chat-ia'); ?>
+                    <?php _e('No hay ciclo de pedidos abierto actualmente.', 'flavor-platform'); ?>
                 </div>
             <?php endif; ?>
         </div>
 
         <?php if (!empty($args['notas_ciclo'])): ?>
             <div class="gc-carrito-notas">
-                <h4><?php _e('Notas del ciclo:', 'flavor-chat-ia'); ?></h4>
+                <h4><?php _e('Notas del ciclo:', 'flavor-platform'); ?></h4>
                 <p><?php echo wp_kses_post($args['notas_ciclo']); ?></p>
             </div>
         <?php endif; ?>

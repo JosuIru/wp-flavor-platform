@@ -22,8 +22,8 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
      */
     public function __construct() {
         $this->id = 'espacios_comunes';
-        $this->name = __('Espacios Comunes', 'flavor-chat-ia');
-        $this->description = __('Sistema de reserva y gestión de espacios comunes y equipamientos de la comunidad.', 'flavor-chat-ia');
+        $this->name = __('Espacios Comunes', 'flavor-platform');
+        $this->description = __('Sistema de reserva y gestión de espacios comunes y equipamientos de la comunidad.', 'flavor-platform');
 
         // Principios Gailu que implementa este modulo
         $this->gailu_principios = ['economia_local', 'cuidados'];
@@ -88,8 +88,8 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
 
         $nc->send(
             $user_id,
-            __('Reserva solicitada', 'flavor-chat-ia'),
-            sprintf(__('Tu solicitud de reserva #%d ha sido enviada. Recibirás una notificación cuando sea revisada.', 'flavor-chat-ia'), $reservation_id),
+            __('Reserva solicitada', 'flavor-platform'),
+            sprintf(__('Tu solicitud de reserva #%d ha sido enviada. Recibirás una notificación cuando sea revisada.', 'flavor-platform'), $reservation_id),
             [
                 'module_id' => $this->id,
                 'type' => 'info',
@@ -114,8 +114,8 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
 
         $nc->send(
             $user_id,
-            __('Reserva aprobada', 'flavor-chat-ia'),
-            sprintf(__('¡Tu reserva #%d ha sido aprobada! Ya puedes usar el espacio en la fecha solicitada.', 'flavor-chat-ia'), $reservation_id),
+            __('Reserva aprobada', 'flavor-platform'),
+            sprintf(__('¡Tu reserva #%d ha sido aprobada! Ya puedes usar el espacio en la fecha solicitada.', 'flavor-platform'), $reservation_id),
             [
                 'module_id' => $this->id,
                 'type' => 'success',
@@ -138,14 +138,14 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
 
         $nc = Flavor_Notification_Center::get_instance();
 
-        $message = sprintf(__('Tu reserva #%d no ha sido aprobada.', 'flavor-chat-ia'), $reservation_id);
+        $message = sprintf(__('Tu reserva #%d no ha sido aprobada.', 'flavor-platform'), $reservation_id);
         if (!empty($reason)) {
-            $message .= ' ' . sprintf(__('Motivo: %s', 'flavor-chat-ia'), $reason);
+            $message .= ' ' . sprintf(__('Motivo: %s', 'flavor-platform'), $reason);
         }
 
         $nc->send(
             $user_id,
-            __('Reserva no aprobada', 'flavor-chat-ia'),
+            __('Reserva no aprobada', 'flavor-platform'),
             $message,
             [
                 'module_id' => $this->id,
@@ -172,8 +172,8 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
 
         $nc->send(
             $user_id,
-            __('Recordatorio de reserva', 'flavor-chat-ia'),
-            sprintf(__('Tu reserva #%d es mañana. No olvides recoger las llaves en recepción.', 'flavor-chat-ia'), $reservation_id),
+            __('Recordatorio de reserva', 'flavor-platform'),
+            sprintf(__('Tu reserva #%d es mañana. No olvides recoger las llaves en recepción.', 'flavor-platform'), $reservation_id),
             [
                 'module_id' => $this->id,
                 'type' => 'info',
@@ -198,8 +198,8 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
 
         $nc->send(
             $user_id,
-            __('Reserva cancelada', 'flavor-chat-ia'),
-            sprintf(__('Tu reserva #%d ha sido cancelada.', 'flavor-chat-ia'), $reservation_id),
+            __('Reserva cancelada', 'flavor-platform'),
+            sprintf(__('Tu reserva #%d ha sido cancelada.', 'flavor-platform'), $reservation_id),
             [
                 'module_id' => $this->id,
                 'type' => 'warning',
@@ -227,7 +227,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Espacios Comunes no están creadas. Se crearán automáticamente al activar.', 'flavor-chat-ia');
+            return __('Las tablas de Espacios Comunes no están creadas. Se crearán automáticamente al activar.', 'flavor-platform');
         }
         return '';
     }
@@ -315,34 +315,34 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'espacios_comunes',
-            'label' => __('Espacios Comunes', 'flavor-chat-ia'),
+            'label' => __('Espacios Comunes', 'flavor-platform'),
             'icon' => 'dashicons-admin-home',
             'capability' => 'manage_options',
             'categoria' => 'servicios',
             'paginas' => [
                 [
                     'slug' => 'espacios-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', 'flavor-platform'),
                     'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'espacios-listado',
-                    'titulo' => __('Espacios', 'flavor-chat-ia'),
+                    'titulo' => __('Espacios', 'flavor-platform'),
                     'callback' => [$this, 'render_pagina_espacios'],
                 ],
                 [
                     'slug' => 'espacios-reservas',
-                    'titulo' => __('Reservas', 'flavor-chat-ia'),
+                    'titulo' => __('Reservas', 'flavor-platform'),
                     'callback' => [$this, 'render_pagina_reservas'],
                 ],
                 [
                     'slug' => 'espacios-calendario',
-                    'titulo' => __('Calendario', 'flavor-chat-ia'),
+                    'titulo' => __('Calendario', 'flavor-platform'),
                     'callback' => [$this, 'render_pagina_calendario'],
                 ],
                 [
                     'slug' => 'espacios-normas',
-                    'titulo' => __('Normas', 'flavor-chat-ia'),
+                    'titulo' => __('Normas', 'flavor-platform'),
                     'callback' => [$this, 'render_pagina_normas'],
                 ],
             ],
@@ -353,35 +353,35 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
      * Renderiza la página dashboard.
      */
     public function render_pagina_dashboard() {
-        $this->render_admin_view('dashboard.php', __('Espacios Comunes - Dashboard', 'flavor-chat-ia'));
+        $this->render_admin_view('dashboard.php', __('Espacios Comunes - Dashboard', 'flavor-platform'));
     }
 
     /**
      * Renderiza la página de espacios.
      */
     public function render_pagina_espacios() {
-        $this->render_admin_view('espacios.php', __('Gestión de Espacios', 'flavor-chat-ia'));
+        $this->render_admin_view('espacios.php', __('Gestión de Espacios', 'flavor-platform'));
     }
 
     /**
      * Renderiza la página de reservas.
      */
     public function render_pagina_reservas() {
-        $this->render_admin_view('reservas.php', __('Gestión de Reservas', 'flavor-chat-ia'));
+        $this->render_admin_view('reservas.php', __('Gestión de Reservas', 'flavor-platform'));
     }
 
     /**
      * Renderiza la página de calendario.
      */
     public function render_pagina_calendario() {
-        $this->render_admin_view('calendario.php', __('Calendario de Espacios', 'flavor-chat-ia'));
+        $this->render_admin_view('calendario.php', __('Calendario de Espacios', 'flavor-platform'));
     }
 
     /**
      * Renderiza la página de normas.
      */
     public function render_pagina_normas() {
-        $this->render_admin_view('normas.php', __('Normas y Políticas', 'flavor-chat-ia'));
+        $this->render_admin_view('normas.php', __('Normas y Políticas', 'flavor-platform'));
     }
 
     /**
@@ -750,7 +750,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
      */
     private function action_detalle_espacio($params) {
         if (empty($params['espacio_id'])) {
-            return ['success' => false, 'error' => __('ID de espacio requerido.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('ID de espacio requerido.', 'flavor-platform')];
         }
 
         global $wpdb;
@@ -762,7 +762,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$espacio) {
-            return ['success' => false, 'error' => __('Espacio no encontrado.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Espacio no encontrado.', 'flavor-platform')];
         }
 
         $espacio_formateado = $this->formatear_espacio($espacio, true);
@@ -778,7 +778,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
      */
     private function action_disponibilidad($params) {
         if (empty($params['espacio_id'])) {
-            return ['success' => false, 'error' => __('ID de espacio requerido.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('ID de espacio requerido.', 'flavor-platform')];
         }
 
         global $wpdb;
@@ -796,7 +796,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$espacio) {
-            return ['success' => false, 'error' => __('Espacio no encontrado.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Espacio no encontrado.', 'flavor-platform')];
         }
 
         // Obtener reservas en el rango
@@ -838,11 +838,11 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
      */
     private function action_crear_reserva($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión para reservar.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión para reservar.', 'flavor-platform')];
         }
 
         if (empty($params['espacio_id']) || empty($params['fecha_inicio']) || empty($params['fecha_fin'])) {
-            return ['success' => false, 'error' => __('Espacio, fecha de inicio y fecha de fin son requeridos.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Espacio, fecha de inicio y fecha de fin son requeridos.', 'flavor-platform')];
         }
 
         global $wpdb;
@@ -861,7 +861,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$espacio) {
-            return ['success' => false, 'error' => __('Espacio no disponible.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Espacio no disponible.', 'flavor-platform')];
         }
 
         // Validar fechas
@@ -871,23 +871,23 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         $fin_timestamp = strtotime($fecha_fin);
 
         if ($inicio_timestamp <= $ahora) {
-            return ['success' => false, 'error' => __('La fecha de inicio debe ser futura.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('La fecha de inicio debe ser futura.', 'flavor-platform')];
         }
 
         if ($fin_timestamp <= $inicio_timestamp) {
-            return ['success' => false, 'error' => __('La fecha de fin debe ser posterior al inicio.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('La fecha de fin debe ser posterior al inicio.', 'flavor-platform')];
         }
 
         // Validar anticipación mínima
         $horas_anticipacion = ($inicio_timestamp - $ahora) / 3600;
         if ($horas_anticipacion < $settings['horas_anticipacion_minima']) {
-            return ['success' => false, 'error' => sprintf(__('Debes reservar con al menos %d horas de anticipación', 'flavor-chat-ia'), $settings['horas_anticipacion_minima'])];
+            return ['success' => false, 'error' => sprintf(__('Debes reservar con al menos %d horas de anticipación', 'flavor-platform'), $settings['horas_anticipacion_minima'])];
         }
 
         // Validar duración máxima
         $duracion_horas = ($fin_timestamp - $inicio_timestamp) / 3600;
         if ($duracion_horas > $settings['duracion_maxima_horas']) {
-            return ['success' => false, 'error' => sprintf(__('La duración máxima es %d horas', 'flavor-chat-ia'), $settings['duracion_maxima_horas'])];
+            return ['success' => false, 'error' => sprintf(__('La duración máxima es %d horas', 'flavor-platform'), $settings['duracion_maxima_horas'])];
         }
 
         // Verificar disponibilidad (no solapamiento)
@@ -952,8 +952,8 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         return [
             'success' => true,
             'mensaje' => $estado_inicial === 'confirmada'
-                ? __('Reserva confirmada', 'flavor-chat-ia')
-                : __('Solicitud de reserva enviada. Recibirás confirmación pronto.', 'flavor-chat-ia'),
+                ? __('Reserva confirmada', 'flavor-platform')
+                : __('Solicitud de reserva enviada. Recibirás confirmación pronto.', 'flavor-platform'),
             'reserva_id' => $reserva_id,
             'estado' => $estado_inicial,
             'precio_total' => $precio_total,
@@ -1050,8 +1050,8 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         return [
             'success' => true,
             'mensaje' => $pierde_fianza
-                ? __('Reserva cancelada. La fianza no será devuelta por cancelación tardía.', 'flavor-chat-ia')
-                : __('Reserva cancelada correctamente.', 'flavor-chat-ia'),
+                ? __('Reserva cancelada. La fianza no será devuelta por cancelación tardía.', 'flavor-platform')
+                : __('Reserva cancelada correctamente.', 'flavor-platform'),
             'fianza_devuelta' => !$pierde_fianza,
         ];
     }
@@ -1112,7 +1112,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => true,
-            'mensaje' => __('Gracias por tu valoración', 'flavor-chat-ia'),
+            'mensaje' => __('Gracias por tu valoración', 'flavor-platform'),
         ];
     }
 
@@ -1176,7 +1176,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
             'espacio_id' => intval($params['espacio_id']),
             'usuario_id' => get_current_user_id(),
             'reserva_id' => isset($params['reserva_id']) ? intval($params['reserva_id']) : null,
-            'titulo' => isset($params['titulo']) ? sanitize_text_field($params['titulo']) : __('Incidencia', 'flavor-chat-ia'),
+            'titulo' => isset($params['titulo']) ? sanitize_text_field($params['titulo']) : __('Incidencia', 'flavor-platform'),
             'descripcion' => sanitize_textarea_field($params['descripcion']),
             'tipo' => isset($params['tipo']) ? sanitize_text_field($params['tipo']) : 'otro',
             'urgencia' => isset($params['urgencia']) ? sanitize_text_field($params['urgencia']) : 'media',
@@ -1194,7 +1194,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => true,
-            'mensaje' => __('Incidencia reportada. La revisaremos pronto.', 'flavor-chat-ia'),
+            'mensaje' => __('Incidencia reportada. La revisaremos pronto.', 'flavor-platform'),
             'incidencia_id' => $wpdb->insert_id,
         ];
     }
@@ -1320,17 +1320,17 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
 
     public function api_tipos_espacios($request) {
         $tipos = [
-            'salon_eventos' => __('Salón de eventos', 'flavor-chat-ia'),
-            'sala_reuniones' => __('Sala de reuniones', 'flavor-chat-ia'),
-            'cocina' => __('Cocina comunitaria', 'flavor-chat-ia'),
-            'taller' => __('Taller', 'flavor-chat-ia'),
-            'terraza' => __('Terraza', 'flavor-chat-ia'),
-            'jardin' => __('Jardín', 'flavor-chat-ia'),
-            'gimnasio' => __('Gimnasio', 'flavor-chat-ia'),
-            'ludoteca' => __('Ludoteca', 'flavor-chat-ia'),
-            'piscina' => __('Piscina', 'flavor-chat-ia'),
-            'parking' => __('Parking', 'flavor-chat-ia'),
-            'otro' => __('Otro', 'flavor-chat-ia'),
+            'salon_eventos' => __('Salón de eventos', 'flavor-platform'),
+            'sala_reuniones' => __('Sala de reuniones', 'flavor-platform'),
+            'cocina' => __('Cocina comunitaria', 'flavor-platform'),
+            'taller' => __('Taller', 'flavor-platform'),
+            'terraza' => __('Terraza', 'flavor-platform'),
+            'jardin' => __('Jardín', 'flavor-platform'),
+            'gimnasio' => __('Gimnasio', 'flavor-platform'),
+            'ludoteca' => __('Ludoteca', 'flavor-platform'),
+            'piscina' => __('Piscina', 'flavor-platform'),
+            'parking' => __('Parking', 'flavor-platform'),
+            'otro' => __('Otro', 'flavor-platform'),
         ];
 
         return new WP_REST_Response(['success' => true, 'tipos' => $tipos], 200);
@@ -1526,7 +1526,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         $espacio_id = $atts['id'] ?: (isset($_GET['espacio_id']) ? intval($_GET['espacio_id']) : 0);
 
         if (!$espacio_id) {
-            return '<p>' . __('Espacio no especificado.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('Espacio no especificado.', 'flavor-platform') . '</p>';
         }
 
         wp_enqueue_style('espacios-frontend', $base_url . 'css/espacios-frontend.css', [], $version);
@@ -1549,7 +1549,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
 
         if (!is_user_logged_in()) {
-            return '<p>' . __('Debes iniciar sesión para ver tus reservas.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('Debes iniciar sesión para ver tus reservas.', 'flavor-platform') . '</p>';
         }
 
         wp_enqueue_style('espacios-frontend', $base_url . 'css/espacios-frontend.css', [], $version);
@@ -1724,29 +1724,29 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
 
     private function get_tipo_label($tipo) {
         $tipos = [
-            'salon_eventos' => __('Salón de eventos', 'flavor-chat-ia'),
-            'sala_reuniones' => __('Sala de reuniones', 'flavor-chat-ia'),
-            'cocina' => __('Cocina comunitaria', 'flavor-chat-ia'),
-            'taller' => __('Taller', 'flavor-chat-ia'),
-            'terraza' => __('Terraza', 'flavor-chat-ia'),
-            'jardin' => __('Jardín', 'flavor-chat-ia'),
-            'gimnasio' => __('Gimnasio', 'flavor-chat-ia'),
-            'ludoteca' => __('Ludoteca', 'flavor-chat-ia'),
-            'piscina' => __('Piscina', 'flavor-chat-ia'),
-            'parking' => __('Parking', 'flavor-chat-ia'),
-            'otro' => __('Otro', 'flavor-chat-ia'),
+            'salon_eventos' => __('Salón de eventos', 'flavor-platform'),
+            'sala_reuniones' => __('Sala de reuniones', 'flavor-platform'),
+            'cocina' => __('Cocina comunitaria', 'flavor-platform'),
+            'taller' => __('Taller', 'flavor-platform'),
+            'terraza' => __('Terraza', 'flavor-platform'),
+            'jardin' => __('Jardín', 'flavor-platform'),
+            'gimnasio' => __('Gimnasio', 'flavor-platform'),
+            'ludoteca' => __('Ludoteca', 'flavor-platform'),
+            'piscina' => __('Piscina', 'flavor-platform'),
+            'parking' => __('Parking', 'flavor-platform'),
+            'otro' => __('Otro', 'flavor-platform'),
         ];
         return $tipos[$tipo] ?? $tipo;
     }
 
     private function get_estado_label($estado) {
         $estados = [
-            'solicitada' => __('Pendiente de confirmación', 'flavor-chat-ia'),
-            'confirmada' => __('Confirmada', 'flavor-chat-ia'),
-            'en_curso' => __('En curso', 'flavor-chat-ia'),
-            'finalizada' => __('Finalizada', 'flavor-chat-ia'),
-            'cancelada' => __('Cancelada', 'flavor-chat-ia'),
-            'rechazada' => __('Rechazada', 'flavor-chat-ia'),
+            'solicitada' => __('Pendiente de confirmación', 'flavor-platform'),
+            'confirmada' => __('Confirmada', 'flavor-platform'),
+            'en_curso' => __('En curso', 'flavor-platform'),
+            'finalizada' => __('Finalizada', 'flavor-platform'),
+            'cancelada' => __('Cancelada', 'flavor-platform'),
+            'rechazada' => __('Rechazada', 'flavor-platform'),
         ];
         return $estados[$estado] ?? $estado;
     }
@@ -1767,9 +1767,9 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
 
     private function notificar_nueva_reserva($reserva_id, $espacio, $usuario_id) {
         $usuario = get_userdata($usuario_id);
-        $asunto = sprintf(__('Nueva solicitud de reserva: %s', 'flavor-chat-ia'), $espacio->nombre);
+        $asunto = sprintf(__('Nueva solicitud de reserva: %s', 'flavor-platform'), $espacio->nombre);
         $mensaje = sprintf(
-            __('%s ha solicitado reservar el espacio "%s".', 'flavor-chat-ia'),
+            __('%s ha solicitado reservar el espacio "%s".', 'flavor-platform'),
             $usuario->display_name,
             $espacio->nombre
         );
@@ -1796,9 +1796,9 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
 
         if (!$reserva) return;
 
-        $asunto = sprintf(__('Reserva confirmada: %s', 'flavor-chat-ia'), $reserva->espacio_nombre);
+        $asunto = sprintf(__('Reserva confirmada: %s', 'flavor-platform'), $reserva->espacio_nombre);
         $mensaje = sprintf(
-            __('Tu reserva de "%s" para el %s ha sido confirmada.', 'flavor-chat-ia'),
+            __('Tu reserva de "%s" para el %s ha sido confirmada.', 'flavor-platform'),
             $reserva->espacio_nombre,
             date_i18n(get_option('date_format') . ' H:i', strtotime($reserva->fecha_inicio))
         );
@@ -1821,20 +1821,20 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
 
         if (!$reserva) return;
 
-        $asunto = sprintf(__('Reserva no disponible: %s', 'flavor-chat-ia'), $reserva->espacio_nombre);
+        $asunto = sprintf(__('Reserva no disponible: %s', 'flavor-platform'), $reserva->espacio_nombre);
         $mensaje = sprintf(
-            __('Tu solicitud de reserva para "%s" no ha podido ser aprobada. %s', 'flavor-chat-ia'),
+            __('Tu solicitud de reserva para "%s" no ha podido ser aprobada. %s', 'flavor-platform'),
             $reserva->espacio_nombre,
-            $motivo ? __('Motivo: ', 'flavor-chat-ia') . $motivo : ''
+            $motivo ? __('Motivo: ', 'flavor-platform') . $motivo : ''
         );
 
         do_action('flavor_notificacion_enviar', $reserva->usuario_id, $asunto, $mensaje, 'espacios_rechazada');
     }
 
     private function notificar_recordatorio($reserva) {
-        $asunto = sprintf(__('Recordatorio: Reserva mañana - %s', 'flavor-chat-ia'), $reserva->espacio_nombre);
+        $asunto = sprintf(__('Recordatorio: Reserva mañana - %s', 'flavor-platform'), $reserva->espacio_nombre);
         $mensaje = sprintf(
-            __('Recuerda que mañana tienes reservado "%s" a las %s.', 'flavor-chat-ia'),
+            __('Recuerda que mañana tienes reservado "%s" a las %s.', 'flavor-platform'),
             $reserva->espacio_nombre,
             date_i18n('H:i', strtotime($reserva->fecha_inicio))
         );
@@ -1858,9 +1858,9 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         if (!$incidencia) return;
 
         $usuario = get_userdata($incidencia->usuario_id);
-        $asunto = sprintf(__('Nueva incidencia: %s', 'flavor-chat-ia'), $incidencia->espacio_nombre);
+        $asunto = sprintf(__('Nueva incidencia: %s', 'flavor-platform'), $incidencia->espacio_nombre);
         $mensaje = sprintf(
-            __('%s ha reportado una incidencia en "%s": %s', 'flavor-chat-ia'),
+            __('%s ha reportado una incidencia en "%s": %s', 'flavor-platform'),
             $usuario->display_name,
             $incidencia->espacio_nombre,
             wp_trim_words($incidencia->descripcion, 20)
@@ -1879,22 +1879,22 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
     public function get_web_components() {
         return [
             'hero_espacios' => [
-                'label' => __('Hero Espacios', 'flavor-chat-ia'),
+                'label' => __('Hero Espacios', 'flavor-platform'),
                 'category' => 'hero',
                 'icon' => 'dashicons-building',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Espacios Comunes', 'flavor-chat-ia')],
-                    'subtitulo' => ['type' => 'textarea', 'default' => __('Reserva espacios para tus eventos y actividades', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Espacios Comunes', 'flavor-platform')],
+                    'subtitulo' => ['type' => 'textarea', 'default' => __('Reserva espacios para tus eventos y actividades', 'flavor-platform')],
                     'imagen_fondo' => ['type' => 'image', 'default' => ''],
                 ],
                 'template' => 'espacios/hero',
             ],
             'espacios_grid' => [
-                'label' => __('Grid de Espacios', 'flavor-chat-ia'),
+                'label' => __('Grid de Espacios', 'flavor-platform'),
                 'category' => 'listings',
                 'icon' => 'dashicons-grid-view',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Nuestros Espacios', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Nuestros Espacios', 'flavor-platform')],
                     'columnas' => ['type' => 'select', 'options' => [2, 3, 4], 'default' => 3],
                     'tipo_filtro' => ['type' => 'text', 'default' => ''],
                     'mostrar_disponibilidad' => ['type' => 'toggle', 'default' => true],
@@ -1902,7 +1902,7 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
                 'template' => 'espacios/grid',
             ],
             'calendario_disponibilidad' => [
-                'label' => __('Calendario Disponibilidad', 'flavor-chat-ia'),
+                'label' => __('Calendario Disponibilidad', 'flavor-platform'),
                 'category' => 'content',
                 'icon' => 'dashicons-calendar-alt',
                 'fields' => [
@@ -1912,11 +1912,11 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
                 'template' => 'espacios/calendario',
             ],
             'proceso_reserva' => [
-                'label' => __('Proceso de Reserva', 'flavor-chat-ia'),
+                'label' => __('Proceso de Reserva', 'flavor-platform'),
                 'category' => 'content',
                 'icon' => 'dashicons-yes',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Cómo Reservar', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Cómo Reservar', 'flavor-platform')],
                 ],
                 'template' => 'espacios/proceso',
             ],
@@ -2075,7 +2075,7 @@ KNOWLEDGE;
         $estadisticas['espacios_disponibles'] = [
             'icon' => 'dashicons-building',
             'valor' => $total_espacios,
-            'label' => __('Espacios', 'flavor-chat-ia'),
+            'label' => __('Espacios', 'flavor-platform'),
             'color' => 'blue',
         ];
 
@@ -2094,7 +2094,7 @@ KNOWLEDGE;
             $estadisticas['mis_reservas'] = [
                 'icon' => 'dashicons-calendar-alt',
                 'valor' => $reservas_activas,
-                'label' => __('Reservas activas', 'flavor-chat-ia'),
+                'label' => __('Reservas activas', 'flavor-platform'),
                 'color' => $reservas_activas > 0 ? 'green' : 'gray',
             ];
 
@@ -2134,7 +2134,7 @@ KNOWLEDGE;
                 $estadisticas['pendientes'] = [
                     'icon' => 'dashicons-hourglass',
                     'valor' => $reservas_pendientes,
-                    'label' => __('Pendientes', 'flavor-chat-ia'),
+                    'label' => __('Pendientes', 'flavor-platform'),
                     'color' => 'orange',
                 ];
             }
@@ -2156,11 +2156,11 @@ KNOWLEDGE;
         return [
             // Página principal
             [
-                'title' => __('Espacios Comunes', 'flavor-chat-ia'),
+                'title' => __('Espacios Comunes', 'flavor-platform'),
                 'slug' => 'espacios-comunes',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Reserva de Espacios', 'flavor-chat-ia'),
-                    'subtitle' => __('Salas de reuniones, zonas deportivas y más', 'flavor-chat-ia'),
+                    'title' => __('Reserva de Espacios', 'flavor-platform'),
+                    'subtitle' => __('Salas de reuniones, zonas deportivas y más', 'flavor-platform'),
                     'background' => 'white',
                     'module' => 'espacios_comunes',
                     'current' => 'listado',
@@ -2171,11 +2171,11 @@ KNOWLEDGE;
 
             // Hacer reserva
             [
-                'title' => __('Hacer Reserva', 'flavor-chat-ia'),
+                'title' => __('Hacer Reserva', 'flavor-platform'),
                 'slug' => 'reservar',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Reservar Espacio', 'flavor-chat-ia'),
-                    'subtitle' => __('Completa el formulario para solicitar tu reserva', 'flavor-chat-ia'),
+                    'title' => __('Reservar Espacio', 'flavor-platform'),
+                    'subtitle' => __('Completa el formulario para solicitar tu reserva', 'flavor-platform'),
                     'module' => 'espacios_comunes',
                     'current' => 'reservar',
                     'content_after' => '[flavor_module_form module="espacios_comunes" action="crear_reserva"]',
@@ -2185,11 +2185,11 @@ KNOWLEDGE;
 
             // Mis reservas
             [
-                'title' => __('Mis Reservas', 'flavor-chat-ia'),
+                'title' => __('Mis Reservas', 'flavor-platform'),
                 'slug' => 'mis-reservas',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Mis Reservas', 'flavor-chat-ia'),
-                    'subtitle' => __('Consulta y gestiona tus reservas', 'flavor-chat-ia'),
+                    'title' => __('Mis Reservas', 'flavor-platform'),
+                    'subtitle' => __('Consulta y gestiona tus reservas', 'flavor-platform'),
                     'module' => 'espacios_comunes',
                     'current' => 'mis_reservas',
                     'content_after' => '[flavor_module_listing module="espacios_comunes" action="mis_reservas" user_specific="yes"]',
@@ -2199,11 +2199,11 @@ KNOWLEDGE;
 
             // Calendario
             [
-                'title' => __('Calendario', 'flavor-chat-ia'),
+                'title' => __('Calendario', 'flavor-platform'),
                 'slug' => 'calendario',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Calendario de Reservas', 'flavor-chat-ia'),
-                    'subtitle' => __('Consulta la disponibilidad de los espacios', 'flavor-chat-ia'),
+                    'title' => __('Calendario de Reservas', 'flavor-platform'),
+                    'subtitle' => __('Consulta la disponibilidad de los espacios', 'flavor-platform'),
                     'module' => 'espacios_comunes',
                     'current' => 'calendario',
                     'content_after' => '[flavor_module_calendar module="espacios_comunes"]',
@@ -2213,11 +2213,11 @@ KNOWLEDGE;
 
             // Normas de uso
             [
-                'title' => __('Normas de Uso', 'flavor-chat-ia'),
+                'title' => __('Normas de Uso', 'flavor-platform'),
                 'slug' => 'normas',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Normas de Uso', 'flavor-chat-ia'),
-                    'subtitle' => __('Reglas para el uso responsable de los espacios', 'flavor-chat-ia'),
+                    'title' => __('Normas de Uso', 'flavor-platform'),
+                    'subtitle' => __('Reglas para el uso responsable de los espacios', 'flavor-platform'),
                     'module' => 'espacios_comunes',
                     'current' => 'normas',
                     'content_after' => '[flavor_module_content module="espacios_comunes" action="mostrar_normas"]',
@@ -2242,8 +2242,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Calendario Espacios', 'flavor-chat-ia'),
-            __('Calendario', 'flavor-chat-ia'),
+            __('Calendario Espacios', 'flavor-platform'),
+            __('Calendario', 'flavor-platform'),
             $capability,
             'espacios-calendario',
             [$this, 'render_espacios_calendario']
@@ -2251,8 +2251,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Reservas de Espacios Comunes', 'flavor-chat-ia'),
-            __('Reservas', 'flavor-chat-ia'),
+            __('Reservas de Espacios Comunes', 'flavor-platform'),
+            __('Reservas', 'flavor-platform'),
             $capability,
             'espacios-comunes-reservas',
             [$this, 'render_espacios_comunes_reservas']
@@ -2260,8 +2260,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Listado de Espacios', 'flavor-chat-ia'),
-            __('Espacios', 'flavor-chat-ia'),
+            __('Listado de Espacios', 'flavor-platform'),
+            __('Espacios', 'flavor-platform'),
             $capability,
             'espacios-listado',
             [$this, 'render_espacios_listado']
@@ -2269,8 +2269,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Normas de Uso', 'flavor-chat-ia'),
-            __('Normas', 'flavor-chat-ia'),
+            __('Normas de Uso', 'flavor-platform'),
+            __('Normas', 'flavor-platform'),
             $capability,
             'espacios-normas',
             [$this, 'render_espacios_normas']
@@ -2278,8 +2278,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Reservas', 'flavor-chat-ia'),
-            __('Reservas', 'flavor-chat-ia'),
+            __('Reservas', 'flavor-platform'),
+            __('Reservas', 'flavor-platform'),
             $capability,
             'espacios-reservas',
             [$this, 'render_espacios_reservas']
@@ -2294,8 +2294,8 @@ KNOWLEDGE;
         if (file_exists($vista)) {
             include $vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Calendario Espacios', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Calendario Espacios', 'flavor-platform') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-platform') . '</p></div>';
         }
     }
 
@@ -2307,8 +2307,8 @@ KNOWLEDGE;
         if (file_exists($vista)) {
             include $vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Reservas de Espacios Comunes', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Reservas de Espacios Comunes', 'flavor-platform') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-platform') . '</p></div>';
         }
     }
 
@@ -2320,8 +2320,8 @@ KNOWLEDGE;
         if (file_exists($vista)) {
             include $vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Listado de Espacios', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Listado de Espacios', 'flavor-platform') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-platform') . '</p></div>';
         }
     }
 
@@ -2333,8 +2333,8 @@ KNOWLEDGE;
         if (file_exists($vista)) {
             include $vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Normas de Uso', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Normas de Uso', 'flavor-platform') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-platform') . '</p></div>';
         }
     }
 
@@ -2346,8 +2346,8 @@ KNOWLEDGE;
         if (file_exists($vista)) {
             include $vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Reservas', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Reservas', 'flavor-platform') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-platform') . '</p></div>';
         }
     }
 

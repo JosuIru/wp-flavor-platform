@@ -169,13 +169,13 @@ $iconos_svg = [
                                     <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                     </svg>
-                                    <span class="font-semibold text-gray-900"><?php echo number_format($genero['libros']); ?> <?php echo esc_html__('libros', 'flavor-chat-ia'); ?></span>
+                                    <span class="font-semibold text-gray-900"><?php echo number_format($genero['libros']); ?> <?php echo esc_html__('libros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
 
                                 <!-- Destacado -->
                                 <div class="bg-gradient-to-r from-slate-50 to-gray-50 rounded-lg p-3 border border-gray-200">
                                     <p class="text-xs text-gray-600 mb-1 font-semibold">
-                                        <?php echo esc_html__('Destacado', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Destacado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </p>
                                     <p class="text-sm font-semibold text-gray-900">
                                         <?php echo esc_html($genero['destacado']); ?>
@@ -184,7 +184,7 @@ $iconos_svg = [
 
                                 <!-- Botón de explorar -->
                                 <button class="w-full bg-gradient-to-r <?php echo $genero['color']; ?> hover:shadow-lg text-white font-semibold py-3 rounded-xl transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center gap-2">
-                                    <span><?php echo esc_html__('Explorar', 'flavor-chat-ia'); ?></span>
+                                    <span><?php echo esc_html__('Explorar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                                     </svg>
@@ -211,13 +211,13 @@ $iconos_svg = [
                         </svg>
                     </div>
                     <h3 class="text-lg font-bold text-gray-900 mb-2">
-                        <?php echo esc_html__('Novedades', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Novedades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <p class="text-gray-600 mb-4">
-                        <?php echo esc_html__('Descubre los libros agregados recientemente a nuestra colección', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Descubre los libros agregados recientemente a nuestra colección', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                     <a href="#" class="inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold gap-2">
-                        <span><?php echo esc_html__('Ver Novedades', 'flavor-chat-ia'); ?></span>
+                        <span><?php echo esc_html__('Ver Novedades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>
@@ -232,13 +232,13 @@ $iconos_svg = [
                         </svg>
                     </div>
                     <h3 class="text-lg font-bold text-gray-900 mb-2">
-                        <?php echo esc_html__('Más Prestados', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Más Prestados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <p class="text-gray-600 mb-4">
-                        <?php echo esc_html__('Los libros favoritos de la comunidad durante este mes', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Los libros favoritos de la comunidad durante este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                     <a href="#" class="inline-flex items-center text-purple-600 hover:text-purple-700 font-semibold gap-2">
-                        <span><?php echo esc_html__('Ver Ranking', 'flavor-chat-ia'); ?></span>
+                        <span><?php echo esc_html__('Ver Ranking', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>
@@ -253,13 +253,13 @@ $iconos_svg = [
                         </svg>
                     </div>
                     <h3 class="text-lg font-bold text-gray-900 mb-2">
-                        <?php echo esc_html__('Para Ti', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Para Ti', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <p class="text-gray-600 mb-4">
-                        <?php echo esc_html__('Recomendaciones personalizadas según tus preferencias', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Recomendaciones personalizadas según tus preferencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                     <a href="#" class="inline-flex items-center text-rose-600 hover:text-rose-700 font-semibold gap-2">
-                        <span><?php echo esc_html__('Ver Recomendaciones', 'flavor-chat-ia'); ?></span>
+                        <span><?php echo esc_html__('Ver Recomendaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>

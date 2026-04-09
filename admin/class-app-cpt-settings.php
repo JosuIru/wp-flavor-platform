@@ -72,9 +72,9 @@ class Flavor_App_CPT_Settings {
      */
     public function add_menu_page() {
         add_submenu_page(
-            'flavor-chat-ia',
-            __('Contenido de Apps', 'flavor-chat-ia'),
-            __('Contenido Apps', 'flavor-chat-ia'),
+            FLAVOR_PLATFORM_TEXT_DOMAIN,
+            __('Contenido de Apps', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Contenido Apps', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-app-cpts',
             [$this, 'render_page']
@@ -529,15 +529,15 @@ class Flavor_App_CPT_Settings {
         ?>
         <div class="wrap flavor-cpt-settings-wrapper">
             <div class="flavor-cpt-header">
-                <h1><?php echo esc_html__('Contenido de Apps Móviles', 'flavor-chat-ia'); ?></h1>
-                <p><?php echo esc_html__('Configura qué tipos de contenido se mostrarán en tus apps móviles como secciones navegables.', 'flavor-chat-ia'); ?></p>
+                <h1><?php echo esc_html__('Contenido de Apps Móviles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
+                <p><?php echo esc_html__('Configura qué tipos de contenido se mostrarán en tus apps móviles como secciones navegables.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <?php if (empty($available_cpts)): ?>
                 <div class="flavor-cpt-empty">
                     <span class="material-icons">inbox</span>
-                    <h2><?php echo esc_html__('No hay tipos de contenido disponibles', 'flavor-chat-ia'); ?></h2>
-                    <p><?php echo esc_html__('Crea Custom Post Types para poder mostrarlos en las apps.', 'flavor-chat-ia'); ?></p>
+                    <h2><?php echo esc_html__('No hay tipos de contenido disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                    <p><?php echo esc_html__('Crea Custom Post Types para poder mostrarlos en las apps.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="flavor-cpt-grid">
@@ -574,19 +574,19 @@ class Flavor_App_CPT_Settings {
                             <div class="flavor-cpt-config">
                                 <!-- Nombre en la app -->
                                 <div class="flavor-cpt-field">
-                                    <label><?php echo esc_html__('Nombre en la App', 'flavor-chat-ia'); ?></label>
+                                    <label><?php echo esc_html__('Nombre en la App', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                     <input type="text" class="cpt-app-name" value="<?php echo esc_attr($cpt_config['app_name'] ?: $cpt['label']); ?>" placeholder="<?php echo esc_attr($cpt['label']); ?>">
                                 </div>
 
                                 <!-- Descripción -->
                                 <div class="flavor-cpt-field">
-                                    <label><?php echo esc_html__('Descripción', 'flavor-chat-ia'); ?></label>
+                                    <label><?php echo esc_html__('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                     <textarea class="cpt-description" placeholder="Descripción visible en la app"><?php echo esc_textarea($cpt_config['description'] ?: $cpt['description']); ?></textarea>
                                 </div>
 
                                 <!-- Icono -->
                                 <div class="flavor-cpt-field">
-                                    <label><?php echo esc_html__('Icono (Material Icons)', 'flavor-chat-ia'); ?></label>
+                                    <label><?php echo esc_html__('Icono (Material Icons)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                     <input type="hidden" class="cpt-icon" value="<?php echo esc_attr($cpt_config['icon']); ?>">
                                     <div class="flavor-cpt-icon-picker">
                                         <?php foreach ($icons as $icon): ?>
@@ -599,7 +599,7 @@ class Flavor_App_CPT_Settings {
 
                                 <!-- Color -->
                                 <div class="flavor-cpt-field">
-                                    <label><?php echo esc_html__('Color', 'flavor-chat-ia'); ?></label>
+                                    <label><?php echo esc_html__('Color', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                     <input type="hidden" class="cpt-color" value="<?php echo esc_attr($cpt_config['color']); ?>">
                                     <div class="flavor-cpt-color-picker">
                                         <?php foreach ($colors as $color): ?>
@@ -610,13 +610,13 @@ class Flavor_App_CPT_Settings {
 
                                 <!-- Orden -->
                                 <div class="flavor-cpt-field">
-                                    <label><?php echo esc_html__('Orden (menor = primero)', 'flavor-chat-ia'); ?></label>
+                                    <label><?php echo esc_html__('Orden (menor = primero)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                     <input type="number" class="cpt-order" value="<?php echo esc_attr($cpt_config['order']); ?>" min="0" step="10">
                                 </div>
 
                                 <!-- Opciones de visualización -->
                                 <div class="flavor-cpt-field">
-                                    <label><?php echo esc_html__('Opciones de Visualización', 'flavor-chat-ia'); ?></label>
+                                    <label><?php echo esc_html__('Opciones de Visualización', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                     <div class="flavor-cpt-checkboxes">
                                         <div class="flavor-cpt-checkbox">
                                             <input type="checkbox" class="cpt-show-nav" id="nav-<?php echo esc_attr($cpt_name); ?>" <?php checked($cpt_config['show_in_navigation']); ?>>

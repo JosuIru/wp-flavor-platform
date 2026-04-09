@@ -70,25 +70,25 @@ $generos = $wpdb->get_col("SELECT DISTINCT genero FROM $tabla_libros WHERE gener
 ?>
 
 <div class="wrap">
-    <h1 class="wp-heading-inline"><?php echo esc_html__('Catálogo de Libros', 'flavor-chat-ia'); ?></h1>
-    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-chat-biblioteca&tab=nuevo')); ?>" class="page-title-action" id="btn-nuevo-libro"><?php echo esc_html__('Añadir Libro', 'flavor-chat-ia'); ?></a>
+    <h1 class="wp-heading-inline"><?php echo esc_html__('Catálogo de Libros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
+    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-chat-biblioteca&tab=nuevo')); ?>" class="page-title-action" id="btn-nuevo-libro"><?php echo esc_html__('Añadir Libro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
     <hr class="wp-header-end">
 
     <!-- Filtros -->
     <div class="flavor-filters">
         <form method="get" action="">
-            <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-chat-biblioteca', 'flavor-chat-ia'); ?>">
-            <input type="hidden" name="tab" value="<?php echo esc_attr__('libros', 'flavor-chat-ia'); ?>">
+            <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-chat-biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+            <input type="hidden" name="tab" value="<?php echo esc_attr__('libros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
 
             <div class="flavor-filters-row">
                 <input type="search"
                        name="s"
                        value="<?php echo esc_attr($search); ?>"
-                       placeholder="<?php echo esc_attr__('Buscar por título, autor o ISBN...', 'flavor-chat-ia'); ?>"
+                       placeholder="<?php echo esc_attr__('Buscar por título, autor o ISBN...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                        class="flavor-filter-search">
 
                 <select name="genero" class="flavor-filter-select">
-                    <option value=""><?php echo esc_html__('Todos los géneros', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php echo esc_html__('Todos los géneros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($generos as $genero): ?>
                         <option value="<?php echo esc_attr($genero); ?>" <?php selected($filtro_genero, $genero); ?>>
                             <?php echo esc_html($genero); ?>
@@ -97,16 +97,16 @@ $generos = $wpdb->get_col("SELECT DISTINCT genero FROM $tabla_libros WHERE gener
                 </select>
 
                 <select name="disponibilidad" class="flavor-filter-select">
-                    <option value=""><?php echo esc_html__('Todas las disponibilidades', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('disponible', 'flavor-chat-ia'); ?>" <?php selected($filtro_disponibilidad, 'disponible'); ?>><?php echo esc_html__('Disponible', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('prestado', 'flavor-chat-ia'); ?>" <?php selected($filtro_disponibilidad, 'prestado'); ?>><?php echo esc_html__('Prestado', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('reservado', 'flavor-chat-ia'); ?>" <?php selected($filtro_disponibilidad, 'reservado'); ?>><?php echo esc_html__('Reservado', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('no_disponible', 'flavor-chat-ia'); ?>" <?php selected($filtro_disponibilidad, 'no_disponible'); ?>><?php echo esc_html__('No disponible', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php echo esc_html__('Todas las disponibilidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="<?php echo esc_attr__('disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($filtro_disponibilidad, 'disponible'); ?>><?php echo esc_html__('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="<?php echo esc_attr__('prestado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($filtro_disponibilidad, 'prestado'); ?>><?php echo esc_html__('Prestado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="<?php echo esc_attr__('reservado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($filtro_disponibilidad, 'reservado'); ?>><?php echo esc_html__('Reservado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="<?php echo esc_attr__('no_disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($filtro_disponibilidad, 'no_disponible'); ?>><?php echo esc_html__('No disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
 
-                <button type="submit" class="button"><?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="button"><?php echo esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                 <?php if ($search || $filtro_genero || $filtro_disponibilidad): ?>
-                    <a href="?page=flavor-chat-biblioteca&tab=libros" class="button"><?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?></a>
+                    <a href="?page=flavor-chat-biblioteca&tab=libros" class="button"><?php echo esc_html__('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 <?php endif; ?>
             </div>
         </form>
@@ -118,15 +118,15 @@ $generos = $wpdb->get_col("SELECT DISTINCT genero FROM $tabla_libros WHERE gener
             <table class="wp-list-table widefat striped">
                 <thead>
                     <tr>
-                        <th style="width: 50px;"><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
-                        <th><?php echo esc_html__('Libro', 'flavor-chat-ia'); ?></th>
-                        <th><?php echo esc_html__('Autor', 'flavor-chat-ia'); ?></th>
-                        <th><?php echo esc_html__('Género', 'flavor-chat-ia'); ?></th>
-                        <th><?php echo esc_html__('Propietario', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 80px;"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 100px;"><?php echo esc_html__('Disponibilidad', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 80px;"><?php echo esc_html__('Préstamos', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 150px;"><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 50px;"><?php echo esc_html__('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php echo esc_html__('Libro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php echo esc_html__('Autor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php echo esc_html__('Género', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php echo esc_html__('Propietario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width: 80px;"><?php echo esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width: 100px;"><?php echo esc_html__('Disponibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width: 80px;"><?php echo esc_html__('Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width: 150px;"><?php echo esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -173,17 +173,17 @@ $generos = $wpdb->get_col("SELECT DISTINCT genero FROM $tabla_libros WHERE gener
                                 </td>
                                 <td>
                                     <button class="button button-small btn-editar-libro" data-id="<?php echo $libro->id; ?>">
-                                        <?php echo esc_html__('Editar', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                     <button class="button button-small btn-historial-libro" data-id="<?php echo $libro->id; ?>">
-                                        <?php echo esc_html__('Historial', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Historial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="9" class="flavor-no-data"><?php echo esc_html__('No se encontraron libros', 'flavor-chat-ia'); ?></td>
+                            <td colspan="9" class="flavor-no-data"><?php echo esc_html__('No se encontraron libros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
@@ -250,7 +250,7 @@ jQuery(document).ready(function($) {
     $('.btn-historial-libro').on('click', function(e) {
         e.preventDefault();
         var id = $(this).data('id');
-        $('#modal-libro-contenido').html('<p><?php echo esc_js(__('Cargando historial...', 'flavor-chat-ia')); ?></p>');
+        $('#modal-libro-contenido').html('<p><?php echo esc_js(__('Cargando historial...', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></p>');
         $('#modal-libro').show();
 
         $.get(ajaxurl, {
@@ -259,11 +259,11 @@ jQuery(document).ready(function($) {
             nonce: '<?php echo wp_create_nonce('biblioteca_nonce'); ?>'
         }, function(response) {
             if (response.success) {
-                var html = '<h3><?php echo esc_js(__('Historial de Préstamos', 'flavor-chat-ia')); ?></h3>';
+                var html = '<h3><?php echo esc_js(__('Historial de Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></h3>';
                 if (response.data.length === 0) {
-                    html += '<p><?php echo esc_js(__('No hay préstamos registrados', 'flavor-chat-ia')); ?></p>';
+                    html += '<p><?php echo esc_js(__('No hay préstamos registrados', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></p>';
                 } else {
-                    html += '<table class="wp-list-table widefat striped"><thead><tr><th><?php echo esc_js(__('Usuario', 'flavor-chat-ia')); ?></th><th><?php echo esc_js(__('Fecha préstamo', 'flavor-chat-ia')); ?></th><th><?php echo esc_js(__('Fecha devolución', 'flavor-chat-ia')); ?></th></tr></thead><tbody>';
+                    html += '<table class="wp-list-table widefat striped"><thead><tr><th><?php echo esc_js(__('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></th><th><?php echo esc_js(__('Fecha préstamo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></th><th><?php echo esc_js(__('Fecha devolución', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></th></tr></thead><tbody>';
                     response.data.forEach(function(p) {
                         html += '<tr><td>' + p.usuario + '</td><td>' + p.fecha_prestamo + '</td><td>' + (p.fecha_devolucion || '-') + '</td></tr>';
                     });
@@ -271,7 +271,7 @@ jQuery(document).ready(function($) {
                 }
                 $('#modal-libro-contenido').html(html);
             } else {
-                $('#modal-libro-contenido').html('<p><?php echo esc_js(__('Error al cargar', 'flavor-chat-ia')); ?></p>');
+                $('#modal-libro-contenido').html('<p><?php echo esc_js(__('Error al cargar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></p>');
             }
         });
     });

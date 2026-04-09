@@ -103,14 +103,14 @@ $categoria_data = array_column($distribucion_categoria, 'total_presupuesto');
     <?php if (!$tablas_disponibles): ?>
         <div class="dm-alert dm-alert--info">
             <span class="dashicons dashicons-info"></span>
-            <p><?php esc_html_e('Faltan tablas del módulo Presupuestos Participativos o aún no hay proyectos/votos.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('Faltan tablas del módulo Presupuestos Participativos o aún no hay proyectos/votos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php endif; ?>
 
     <div class="dm-header">
         <h1 class="dm-header__title">
             <span class="dashicons dashicons-money-alt"></span>
-            <?php esc_html_e('Dashboard de Presupuestos Participativos', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Dashboard de Presupuestos Participativos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h1>
     </div>
 
@@ -118,23 +118,23 @@ $categoria_data = array_column($distribucion_categoria, 'total_presupuesto');
     <div class="dm-action-grid dm-action-grid--4">
         <a href="<?php echo esc_url(admin_url('admin.php?page=pp-proyectos')); ?>" class="dm-action-card">
             <span class="dashicons dashicons-portfolio dm-text-primary"></span>
-            <span><?php esc_html_e('Proyectos', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=pp-presupuesto')); ?>" class="dm-action-card">
             <span class="dashicons dashicons-money-alt dm-text-success"></span>
-            <span><?php esc_html_e('Presupuesto', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Presupuesto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=pp-votos')); ?>" class="dm-action-card">
             <span class="dashicons dashicons-chart-pie dm-text-purple"></span>
-            <span><?php esc_html_e('Votos', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Votos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=pp-resultados')); ?>" class="dm-action-card">
             <span class="dashicons dashicons-chart-bar dm-text-warning"></span>
-            <span><?php esc_html_e('Resultados', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Resultados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('presupuestos_participativos', '')); ?>" class="dm-action-card" target="_blank">
             <span class="dashicons dashicons-external"></span>
-            <span><?php esc_html_e('Portal público', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Portal público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
     </div>
 
@@ -142,29 +142,29 @@ $categoria_data = array_column($distribucion_categoria, 'total_presupuesto');
     <div class="dm-stats-grid dm-stats-grid--4">
         <div class="dm-stat-card dm-stat-card--success">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($presupuesto_total); ?> €</div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Presupuesto Total', 'flavor-chat-ia'); ?></div>
-            <div class="dm-stat-card__meta"><?php esc_html_e('para el ejercicio actual', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Presupuesto Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+            <div class="dm-stat-card__meta"><?php esc_html_e('para el ejercicio actual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <span class="dashicons dashicons-money-alt dm-stat-card__icon"></span>
         </div>
 
         <div class="dm-stat-card dm-stat-card--primary">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($presupuesto_asignado); ?> €</div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Presupuesto Asignado', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Presupuesto Asignado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <div class="dm-stat-card__meta"><?php echo esc_html($porcentaje_asignado); ?>% del total</div>
             <span class="dashicons dashicons-chart-pie dm-stat-card__icon"></span>
         </div>
 
         <div class="dm-stat-card dm-stat-card--warning">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($proyectos_votacion); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Proyectos en Votación', 'flavor-chat-ia'); ?></div>
-            <div class="dm-stat-card__meta"><?php printf(esc_html__('de %s totales', 'flavor-chat-ia'), number_format_i18n($total_proyectos)); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Proyectos en Votación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+            <div class="dm-stat-card__meta"><?php printf(esc_html__('de %s totales', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($total_proyectos)); ?></div>
             <span class="dashicons dashicons-portfolio dm-stat-card__icon"></span>
         </div>
 
         <div class="dm-stat-card dm-stat-card--error">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($votantes_unicos_pp); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Participación', 'flavor-chat-ia'); ?></div>
-            <div class="dm-stat-card__meta"><?php esc_html_e('ciudadanos han votado', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Participación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+            <div class="dm-stat-card__meta"><?php esc_html_e('ciudadanos han votado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <span class="dashicons dashicons-groups dm-stat-card__icon"></span>
         </div>
     </div>
@@ -174,21 +174,21 @@ $categoria_data = array_column($distribucion_categoria, 'total_presupuesto');
         <div class="dm-card__header">
             <h3>
                 <span class="dashicons dashicons-money-alt"></span>
-                <?php esc_html_e('Estado del Presupuesto', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Estado del Presupuesto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <div class="dm-budget-indicator">
             <div class="dm-budget-indicator__values">
                 <div class="dm-budget-indicator__item">
-                    <span class="dm-budget-indicator__label"><?php esc_html_e('Total Disponible', 'flavor-chat-ia'); ?></span>
+                    <span class="dm-budget-indicator__label"><?php esc_html_e('Total Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="dm-budget-indicator__value dm-text-success"><?php echo number_format_i18n($presupuesto_total); ?> €</span>
                 </div>
                 <div class="dm-budget-indicator__item">
-                    <span class="dm-budget-indicator__label"><?php esc_html_e('Asignado', 'flavor-chat-ia'); ?></span>
+                    <span class="dm-budget-indicator__label"><?php esc_html_e('Asignado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="dm-budget-indicator__value dm-text-primary"><?php echo number_format_i18n($presupuesto_asignado); ?> €</span>
                 </div>
                 <div class="dm-budget-indicator__item">
-                    <span class="dm-budget-indicator__label"><?php esc_html_e('Disponible', 'flavor-chat-ia'); ?></span>
+                    <span class="dm-budget-indicator__label"><?php esc_html_e('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="dm-budget-indicator__value dm-text-warning"><?php echo number_format_i18n($presupuesto_disponible); ?> €</span>
                 </div>
             </div>
@@ -206,7 +206,7 @@ $categoria_data = array_column($distribucion_categoria, 'total_presupuesto');
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-chart-line"></span>
-                    <?php esc_html_e('Tendencia de Votación (14 días)', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Tendencia de Votación (14 días)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <div class="dm-card__chart">
@@ -218,7 +218,7 @@ $categoria_data = array_column($distribucion_categoria, 'total_presupuesto');
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-chart-pie"></span>
-                    <?php esc_html_e('Proyectos por Estado', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Proyectos por Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <div class="dm-card__chart">
@@ -233,7 +233,7 @@ $categoria_data = array_column($distribucion_categoria, 'total_presupuesto');
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-chart-bar"></span>
-                    <?php esc_html_e('Distribución Presupuestaria por Categoría', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Distribución Presupuestaria por Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <div class="dm-card__chart">
@@ -245,7 +245,7 @@ $categoria_data = array_column($distribucion_categoria, 'total_presupuesto');
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-star-filled"></span>
-                    <?php esc_html_e('Proyectos Más Votados', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Proyectos Más Votados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <?php if (!empty($proyectos_mas_votados)): ?>
@@ -259,7 +259,7 @@ $categoria_data = array_column($distribucion_categoria, 'total_presupuesto');
                             </div>
                             <div class="dm-ranking__votes">
                                 <span class="dm-text-primary"><?php echo number_format_i18n($proyecto->total_votos); ?></span>
-                                <small class="dm-text-muted"><?php esc_html_e('votos', 'flavor-chat-ia'); ?></small>
+                                <small class="dm-text-muted"><?php esc_html_e('votos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -267,7 +267,7 @@ $categoria_data = array_column($distribucion_categoria, 'total_presupuesto');
             <?php else: ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-portfolio"></span>
-                    <p><?php esc_html_e('No hay proyectos en votación', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay proyectos en votación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
         </div>
@@ -297,7 +297,7 @@ jQuery(document).ready(function($) {
             data: {
                 labels: <?php echo wp_json_encode($tendencia_labels); ?>,
                 datasets: [{
-                    label: '<?php esc_attr_e('Votos', 'flavor-chat-ia'); ?>',
+                    label: '<?php esc_attr_e('Votos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                     data: <?php echo wp_json_encode($tendencia_data); ?>,
                     borderColor: successColor,
                     backgroundColor: 'rgba(34, 197, 94, 0.1)',
@@ -357,7 +357,7 @@ jQuery(document).ready(function($) {
             data: {
                 labels: <?php echo wp_json_encode($categoria_labels); ?>,
                 datasets: [{
-                    label: '<?php esc_attr_e('Presupuesto (€)', 'flavor-chat-ia'); ?>',
+                    label: '<?php esc_attr_e('Presupuesto (€)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                     data: <?php echo wp_json_encode($categoria_data); ?>,
                     backgroundColor: successColor,
                     borderRadius: 4

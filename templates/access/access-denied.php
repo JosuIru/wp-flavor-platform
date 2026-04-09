@@ -39,7 +39,7 @@ $email_soporte = apply_filters('flavor_support_email', get_option('admin_email')
         </div>
 
         <h2 class="flavor-access-title">
-            <?php esc_html_e('Acceso restringido', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Acceso restringido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
 
         <p class="flavor-access-description">
@@ -47,12 +47,12 @@ $email_soporte = apply_filters('flavor_support_email', get_option('admin_email')
                 <?php
                 printf(
                     /* translators: %s: nombre de usuario */
-                    esc_html__('Lo sentimos, %s. Tu cuenta no tiene los permisos necesarios para acceder a este contenido. Este area esta reservada para usuarios con autorizacion especifica.', 'flavor-chat-ia'),
+                    esc_html__('Lo sentimos, %s. Tu cuenta no tiene los permisos necesarios para acceder a este contenido. Este area esta reservada para usuarios con autorizacion especifica.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     '<strong>' . esc_html($usuario_actual->display_name) . '</strong>'
                 );
                 ?>
             <?php else : ?>
-                <?php esc_html_e('Este contenido esta restringido y requiere permisos especiales. Por favor, inicia sesion con una cuenta autorizada o contacta con el administrador.', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Este contenido esta restringido y requiere permisos especiales. Por favor, inicia sesion con una cuenta autorizada o contacta con el administrador.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <?php endif; ?>
         </p>
 
@@ -66,12 +66,12 @@ $email_soporte = apply_filters('flavor_support_email', get_option('admin_email')
                     </svg>
                 </div>
                 <div class="flavor-info-content">
-                    <p class="flavor-info-title"><?php esc_html_e('Necesitas acceso?', 'flavor-chat-ia'); ?></p>
+                    <p class="flavor-info-title"><?php esc_html_e('Necesitas acceso?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <p class="flavor-info-text">
                         <?php
                         printf(
                             /* translators: %s: email de soporte */
-                            esc_html__('Si crees que deberias tener acceso a este contenido, puedes contactar con el administrador en %s o usar el formulario de contacto.', 'flavor-chat-ia'),
+                            esc_html__('Si crees que deberias tener acceso a este contenido, puedes contactar con el administrador en %s o usar el formulario de contacto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             '<a href="mailto:' . esc_attr($email_soporte) . '">' . esc_html($email_soporte) . '</a>'
                         );
                         ?>
@@ -84,18 +84,18 @@ $email_soporte = apply_filters('flavor_support_email', get_option('admin_email')
             <?php if (!$esta_logueado) : ?>
                 <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="flavor-btn flavor-btn-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
-                    <?php esc_html_e('Iniciar sesion', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             <?php endif; ?>
 
             <a href="<?php echo esc_url($url_contacto); ?>" class="flavor-btn <?php echo $esta_logueado ? 'flavor-btn-primary' : 'flavor-btn-secondary'; ?>">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-                <?php esc_html_e('Contactar administrador', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Contactar administrador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
 
             <a href="<?php echo esc_url($url_inicio); ?>" class="flavor-btn flavor-btn-text">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                <?php esc_html_e('Volver al inicio', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Volver al inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
 
@@ -104,13 +104,13 @@ $email_soporte = apply_filters('flavor_support_email', get_option('admin_email')
                 <?php
                 printf(
                     /* translators: %s: nombre de usuario con enlace a perfil */
-                    esc_html__('Has iniciado sesion como %s', 'flavor-chat-ia'),
+                    esc_html__('Has iniciado sesion como %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     '<a href="' . esc_url(get_edit_profile_url()) . '">' . esc_html($usuario_actual->display_name) . '</a>'
                 );
                 ?>
                 &bull;
                 <a href="<?php echo esc_url(wp_logout_url(get_permalink())); ?>">
-                    <?php esc_html_e('Cerrar sesion', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Cerrar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </p>
         <?php endif; ?>

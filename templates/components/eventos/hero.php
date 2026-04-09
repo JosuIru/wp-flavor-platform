@@ -44,7 +44,7 @@ $tipos_evento = [
 ?>
 <section class="flavor-component flavor-section relative overflow-hidden" style="background: linear-gradient(135deg, var(--flavor-primary, #3B82F6) 0%, var(--flavor-secondary, #1E40AF) 100%); min-height: 500px;">
     <div class="absolute inset-0 opacity-10">
-        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><rect width="80" height="80" fill="none"/><circle cx="40" cy="40" r="2" fill="white"/></svg><?php echo esc_html__('\'); background-size: 80px 80px;">', 'flavor-chat-ia'); ?></div>
+        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><rect width="80" height="80" fill="none"/><circle cx="40" cy="40" r="2" fill="white"/></svg><?php echo esc_html__('\'); background-size: 80px 80px;">', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
     <div class="flavor-container relative z-10 py-16 lg:py-24">
         <div class="max-w-4xl mx-auto text-center mb-12">
@@ -53,10 +53,10 @@ $tipos_evento = [
                 <span class="text-white text-sm font-medium"><?php echo esc_html($eventos_proximos); ?> eventos proximos</span>
             </div>
             <h1 class="text-4xl lg:text-5xl font-bold text-white mb-4">
-                <?php echo esc_html__('Eventos y Actividades', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Eventos y Actividades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h1>
             <p class="text-xl text-white/80 mb-8">
-                <?php echo esc_html__('Descubre conferencias, talleres, festivales y mucho mas. Inscribete y no te pierdas nada.', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Descubre conferencias, talleres, festivales y mucho mas. Inscribete y no te pierdas nada.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
         <!-- Search & Filters -->
@@ -64,17 +64,17 @@ $tipos_evento = [
             <form class="flex flex-col sm:flex-row gap-3" method="get">
                 <div class="flex-1 relative">
                     <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                    <input type="text" name="buscar" placeholder="<?php echo esc_attr__('Buscar eventos...', 'flavor-chat-ia'); ?>" class="w-full pl-12 pr-4 py-3 rounded-xl bg-white/10 backdrop-blur text-white placeholder-white/60 border border-white/20 focus:outline-none focus:ring-2 focus:ring-white/30" />
+                    <input type="text" name="buscar" placeholder="<?php echo esc_attr__('Buscar eventos...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" class="w-full pl-12 pr-4 py-3 rounded-xl bg-white/10 backdrop-blur text-white placeholder-white/60 border border-white/20 focus:outline-none focus:ring-2 focus:ring-white/30" />
                 </div>
                 <input type="date" name="desde" class="px-4 py-3 rounded-xl bg-white/10 backdrop-blur text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-white/30" />
                 <select name="tipo" class="px-4 py-3 rounded-xl bg-white/10 backdrop-blur text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-white/30">
-                    <option value=""><?php echo esc_html__('Todos los tipos', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php echo esc_html__('Todos los tipos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($tipos_evento as $tipo_key => $tipo_info) : ?>
                         <option value="<?php echo esc_attr($tipo_key); ?>"><?php echo esc_html($tipo_info['label']); ?></option>
                     <?php endforeach; ?>
                 </select>
                 <button type="submit" class="flavor-button flavor-button-primary px-6 py-3 rounded-xl bg-white text-blue-600 font-semibold hover:bg-white/90 transition-colors">
-                    <?php echo esc_html__('Buscar', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </form>
         </div>
@@ -83,16 +83,16 @@ $tipos_evento = [
         <div class="flex flex-wrap justify-center gap-3 mb-10">
             <a href="?filtro=hoy" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur border border-white/20 text-white text-sm font-medium hover:bg-white/20 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <?php echo esc_html__('Hoy', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="?filtro=semana" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur border border-white/20 text-white text-sm font-medium hover:bg-white/20 transition-colors">
-                <?php echo esc_html__('Esta Semana', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Esta Semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="?filtro=mes" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur border border-white/20 text-white text-sm font-medium hover:bg-white/20 transition-colors">
-                <?php echo esc_html__('Este Mes', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Este Mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="?filtro=gratuitos" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur border border-white/20 text-white text-sm font-medium hover:bg-white/20 transition-colors">
-                <?php echo esc_html__('Gratuitos', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Gratuitos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
 
@@ -111,15 +111,15 @@ $tipos_evento = [
         <div class="grid grid-cols-3 gap-4 max-w-2xl mx-auto">
             <div class="text-center p-4 rounded-xl bg-white/10 backdrop-blur border border-white/20">
                 <div class="text-3xl font-bold text-white"><?php echo esc_html($total_eventos); ?></div>
-                <div class="text-sm text-white/70"><?php echo esc_html__('Eventos', 'flavor-chat-ia'); ?></div>
+                <div class="text-sm text-white/70"><?php echo esc_html__('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
             <div class="text-center p-4 rounded-xl bg-white/10 backdrop-blur border border-white/20">
                 <div class="text-3xl font-bold text-white"><?php echo esc_html($eventos_proximos); ?></div>
-                <div class="text-sm text-white/70"><?php echo esc_html__('Proximos', 'flavor-chat-ia'); ?></div>
+                <div class="text-sm text-white/70"><?php echo esc_html__('Proximos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
             <div class="text-center p-4 rounded-xl bg-white/10 backdrop-blur border border-white/20">
                 <div class="text-3xl font-bold text-white"><?php echo esc_html($total_tipos); ?></div>
-                <div class="text-sm text-white/70"><?php echo esc_html__('Categorias', 'flavor-chat-ia'); ?></div>
+                <div class="text-sm text-white/70"><?php echo esc_html__('Categorias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
     </div>

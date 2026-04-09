@@ -8,8 +8,8 @@ $variante = $variante ?? 'inline';
 $titulo = $titulo ?? '';
 $subtitulo = $subtitulo ?? '';
 $color_primario = $color_primario ?? '#3b82f6';
-$texto_boton = $texto_boton ?? __('Suscribirse', 'flavor-chat-ia');
-$placeholder = $placeholder ?? __('Tu email', 'flavor-chat-ia');
+$texto_boton = $texto_boton ?? __('Suscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$placeholder = $placeholder ?? __('Tu email', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $beneficios = $beneficios ?? [];
 
 $variantes_permitidas = ['inline', 'card_centrada', 'con_beneficios'];

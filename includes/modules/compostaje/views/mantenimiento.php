@@ -120,10 +120,10 @@ $total_paginas = ceil($total_registros / $por_pagina);
 
 // Estados para badges
 $estados_tarea = [
-    'pendiente' => ['label' => __('Pendiente', 'flavor-chat-ia'), 'color' => '#ffc107'],
-    'completada' => ['label' => __('Completada', 'flavor-chat-ia'), 'color' => '#28a745'],
-    'vencida' => ['label' => __('Vencida', 'flavor-chat-ia'), 'color' => '#dc3545'],
-    'cancelada' => ['label' => __('Cancelada', 'flavor-chat-ia'), 'color' => '#6c757d'],
+    'pendiente' => ['label' => __('Pendiente', 'flavor-platform'), 'color' => '#ffc107'],
+    'completada' => ['label' => __('Completada', 'flavor-platform'), 'color' => '#28a745'],
+    'vencida' => ['label' => __('Vencida', 'flavor-platform'), 'color' => '#dc3545'],
+    'cancelada' => ['label' => __('Cancelada', 'flavor-platform'), 'color' => '#6c757d'],
 ];
 
 // Tipos con iconos
@@ -140,18 +140,18 @@ $tipos_iconos = [
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-admin-tools" style="color: #795548;"></span>
-        <?php echo esc_html__('Mantenimiento - Compostaje', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Mantenimiento - Compostaje', 'flavor-platform'); ?>
     </h1>
 
     <?php if ($usar_demo): ?>
         <div class="notice notice-info" style="margin: 15px 0;">
-            <p><span class="dashicons dashicons-info"></span> <?php echo esc_html__('Mostrando datos de demostración.', 'flavor-chat-ia'); ?></p>
+            <p><span class="dashicons dashicons-info"></span> <?php echo esc_html__('Mostrando datos de demostración.', 'flavor-platform'); ?></p>
         </div>
     <?php endif; ?>
 
     <?php if ($tareas_vencidas > 0 && !$usar_demo): ?>
         <div class="notice notice-warning" style="margin: 15px 0;">
-            <p><span class="dashicons dashicons-warning"></span> <?php printf(esc_html__('Hay %d tareas de mantenimiento vencidas que requieren atención.', 'flavor-chat-ia'), $tareas_vencidas); ?></p>
+            <p><span class="dashicons dashicons-warning"></span> <?php printf(esc_html__('Hay %d tareas de mantenimiento vencidas que requieren atención.', 'flavor-platform'), $tareas_vencidas); ?></p>
         </div>
     <?php endif; ?>
 
@@ -163,7 +163,7 @@ $tipos_iconos = [
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div style="font-size: 28px; font-weight: bold; color: #795548;"><?php echo number_format($total_tareas); ?></div>
-                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Total Tareas', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Total Tareas', 'flavor-platform'); ?></div>
                 </div>
                 <span class="dashicons dashicons-clipboard" style="font-size: 32px; color: #795548; opacity: 0.3;"></span>
             </div>
@@ -173,7 +173,7 @@ $tipos_iconos = [
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div style="font-size: 28px; font-weight: bold; color: #ffc107;"><?php echo number_format($tareas_pendientes); ?></div>
-                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Pendientes', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Pendientes', 'flavor-platform'); ?></div>
                 </div>
                 <span class="dashicons dashicons-clock" style="font-size: 32px; color: #ffc107; opacity: 0.3;"></span>
             </div>
@@ -183,7 +183,7 @@ $tipos_iconos = [
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div style="font-size: 28px; font-weight: bold; color: #28a745;"><?php echo number_format($tareas_completadas_mes); ?></div>
-                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Completadas (mes)', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Completadas (mes)', 'flavor-platform'); ?></div>
                 </div>
                 <span class="dashicons dashicons-yes-alt" style="font-size: 32px; color: #28a745; opacity: 0.3;"></span>
             </div>
@@ -193,7 +193,7 @@ $tipos_iconos = [
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div style="font-size: 28px; font-weight: bold; color: #dc3545;"><?php echo number_format($tareas_vencidas); ?></div>
-                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Vencidas', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Vencidas', 'flavor-platform'); ?></div>
                 </div>
                 <span class="dashicons dashicons-warning" style="font-size: 32px; color: #dc3545; opacity: 0.3;"></span>
             </div>
@@ -206,9 +206,9 @@ $tipos_iconos = [
             <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page'] ?? 'compostaje-mantenimiento'); ?>">
 
             <div>
-                <label style="display: block; font-weight: 500; margin-bottom: 4px; font-size: 12px;"><?php echo esc_html__('Tipo', 'flavor-chat-ia'); ?></label>
+                <label style="display: block; font-weight: 500; margin-bottom: 4px; font-size: 12px;"><?php echo esc_html__('Tipo', 'flavor-platform'); ?></label>
                 <select name="tipo" style="min-width: 150px;">
-                    <option value=""><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php echo esc_html__('Todos', 'flavor-platform'); ?></option>
                     <?php foreach ($tipos_disponibles as $tipo): ?>
                         <option value="<?php echo esc_attr($tipo); ?>" <?php selected($filtro_tipo, $tipo); ?>>
                             <?php echo esc_html($tipo); ?>
@@ -218,9 +218,9 @@ $tipos_iconos = [
             </div>
 
             <div>
-                <label style="display: block; font-weight: 500; margin-bottom: 4px; font-size: 12px;"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></label>
+                <label style="display: block; font-weight: 500; margin-bottom: 4px; font-size: 12px;"><?php echo esc_html__('Estado', 'flavor-platform'); ?></label>
                 <select name="estado" style="min-width: 130px;">
-                    <option value=""><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php echo esc_html__('Todos', 'flavor-platform'); ?></option>
                     <?php foreach ($estados_tarea as $estado_key => $estado_data): ?>
                         <option value="<?php echo esc_attr($estado_key); ?>" <?php selected($filtro_estado, $estado_key); ?>>
                             <?php echo esc_html($estado_data['label']); ?>
@@ -230,9 +230,9 @@ $tipos_iconos = [
             </div>
 
             <div>
-                <label style="display: block; font-weight: 500; margin-bottom: 4px; font-size: 12px;"><?php echo esc_html__('Compostera', 'flavor-chat-ia'); ?></label>
+                <label style="display: block; font-weight: 500; margin-bottom: 4px; font-size: 12px;"><?php echo esc_html__('Compostera', 'flavor-platform'); ?></label>
                 <select name="compostera_id" style="min-width: 150px;">
-                    <option value="0"><?php echo esc_html__('Todas', 'flavor-chat-ia'); ?></option>
+                    <option value="0"><?php echo esc_html__('Todas', 'flavor-platform'); ?></option>
                     <?php foreach ($composteras_disponibles as $compostera): ?>
                         <option value="<?php echo esc_attr($compostera->id); ?>" <?php selected($filtro_compostera, $compostera->id); ?>>
                             <?php echo esc_html($compostera->nombre); ?>
@@ -241,11 +241,11 @@ $tipos_iconos = [
                 </select>
             </div>
 
-            <button type="submit" class="button button-primary"><?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?></button>
+            <button type="submit" class="button button-primary"><?php echo esc_html__('Filtrar', 'flavor-platform'); ?></button>
 
             <?php if (!empty($filtro_tipo) || !empty($filtro_estado) || $filtro_compostera > 0): ?>
                 <a href="<?php echo admin_url('admin.php?page=' . esc_attr($_GET['page'] ?? 'compostaje-mantenimiento')); ?>" class="button">
-                    <?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Limpiar', 'flavor-platform'); ?>
                 </a>
             <?php endif; ?>
         </form>
@@ -256,14 +256,14 @@ $tipos_iconos = [
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th style="width: 50px;"><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Tipo', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Compostera', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Responsable', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 110px;"><?php echo esc_html__('Programada', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 110px;"><?php echo esc_html__('Realizada', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 100px;"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 80px;"><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 50px;"><?php echo esc_html__('ID', 'flavor-platform'); ?></th>
+                    <th><?php echo esc_html__('Tipo', 'flavor-platform'); ?></th>
+                    <th><?php echo esc_html__('Compostera', 'flavor-platform'); ?></th>
+                    <th><?php echo esc_html__('Responsable', 'flavor-platform'); ?></th>
+                    <th style="width: 110px;"><?php echo esc_html__('Programada', 'flavor-platform'); ?></th>
+                    <th style="width: 110px;"><?php echo esc_html__('Realizada', 'flavor-platform'); ?></th>
+                    <th style="width: 100px;"><?php echo esc_html__('Estado', 'flavor-platform'); ?></th>
+                    <th style="width: 80px;"><?php echo esc_html__('Acciones', 'flavor-platform'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -271,7 +271,7 @@ $tipos_iconos = [
                     <tr>
                         <td colspan="8" style="text-align: center; padding: 40px;">
                             <span class="dashicons dashicons-admin-tools" style="font-size: 48px; color: #ddd;"></span>
-                            <p style="color: #666; margin-top: 10px;"><?php echo esc_html__('No hay tareas de mantenimiento.', 'flavor-chat-ia'); ?></p>
+                            <p style="color: #666; margin-top: 10px;"><?php echo esc_html__('No hay tareas de mantenimiento.', 'flavor-platform'); ?></p>
                         </td>
                     </tr>
                 <?php else: ?>
@@ -309,7 +309,7 @@ $tipos_iconos = [
                             </td>
                             <td>
                                 <?php if ($tarea->estado === 'pendiente'): ?>
-                                    <button class="button button-small button-primary" title="<?php echo esc_attr__('Marcar completada', 'flavor-chat-ia'); ?>">
+                                    <button class="button button-small button-primary" title="<?php echo esc_attr__('Marcar completada', 'flavor-platform'); ?>">
                                         <span class="dashicons dashicons-yes" style="vertical-align: text-bottom;"></span>
                                     </button>
                                 <?php endif; ?>
@@ -325,7 +325,7 @@ $tipos_iconos = [
     <?php if ($total_paginas > 1): ?>
         <div class="tablenav bottom" style="margin-top: 20px;">
             <div class="tablenav-pages">
-                <span class="displaying-num"><?php printf(esc_html__('%s tareas', 'flavor-chat-ia'), number_format($total_registros)); ?></span>
+                <span class="displaying-num"><?php printf(esc_html__('%s tareas', 'flavor-platform'), number_format($total_registros)); ?></span>
                 <span class="pagination-links">
                     <?php
                     $url_base = admin_url('admin.php?page=' . esc_attr($_GET['page'] ?? 'compostaje-mantenimiento'));

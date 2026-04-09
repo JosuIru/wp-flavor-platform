@@ -96,14 +96,14 @@ $estado_badge_classes = [
     <?php if (!$tablas_disponibles): ?>
         <div class="dm-alert dm-alert--info">
             <span class="dashicons dashicons-info"></span>
-            <p><?php esc_html_e('Faltan tablas del módulo Radio o aún no hay emisiones registradas.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('Faltan tablas del módulo Radio o aún no hay emisiones registradas.', 'flavor-platform'); ?></p>
         </div>
     <?php endif; ?>
 
     <div class="dm-header">
         <h1 class="dm-header__title">
             <span class="dashicons dashicons-controls-volumeon"></span>
-            <?php esc_html_e('Dashboard de Radio', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Dashboard de Radio', 'flavor-platform'); ?>
         </h1>
     </div>
 
@@ -111,15 +111,15 @@ $estado_badge_classes = [
     <div class="dm-action-grid dm-action-grid--3">
         <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-radio-programas')); ?>" class="dm-action-card">
             <span class="dashicons dashicons-microphone dm-text-primary"></span>
-            <span><?php esc_html_e('Programas', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Programas', 'flavor-platform'); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-radio-emisiones')); ?>" class="dm-action-card">
             <span class="dashicons dashicons-controls-volumeon dm-text-success"></span>
-            <span><?php esc_html_e('Emisiones', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Emisiones', 'flavor-platform'); ?></span>
         </a>
         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('radio', '')); ?>" class="dm-action-card">
             <span class="dashicons dashicons-external dm-text-purple"></span>
-            <span><?php esc_html_e('Portal', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Portal', 'flavor-platform'); ?></span>
         </a>
     </div>
 
@@ -128,25 +128,25 @@ $estado_badge_classes = [
         <div class="dm-alert dm-alert--success dm-live-broadcast">
             <span class="dashicons dashicons-controls-play dm-live-broadcast__icon"></span>
             <div class="dm-live-broadcast__content">
-                <h2 class="dm-text-success"><?php esc_html_e('EN VIVO AHORA', 'flavor-chat-ia'); ?></h2>
+                <h2 class="dm-text-success"><?php esc_html_e('EN VIVO AHORA', 'flavor-platform'); ?></h2>
                 <h3><?php echo esc_html($emision_actual->programa_nombre); ?></h3>
                 <p class="dm-text-muted"><?php echo esc_html($emision_actual->programa_descripcion); ?></p>
                 <p class="dm-text-sm dm-text-muted">
                     <strong><?php echo number_format_i18n($emision_actual->oyentes_actual ?? 0); ?></strong>
-                    <?php esc_html_e('oyentes conectados', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('oyentes conectados', 'flavor-platform'); ?>
                 </p>
             </div>
             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-radio-emisiones&ver=' . $emision_actual->id)); ?>" class="dm-btn dm-btn--primary dm-btn--lg">
                 <span class="dashicons dashicons-admin-settings"></span>
-                <?php esc_html_e('Gestionar Emisión', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Gestionar Emisión', 'flavor-platform'); ?>
             </a>
         </div>
     <?php else: ?>
         <div class="dm-alert dm-alert--info">
             <span class="dashicons dashicons-info"></span>
             <div>
-                <strong><?php esc_html_e('No hay emisiones en vivo en este momento', 'flavor-chat-ia'); ?></strong>
-                <p class="dm-text-muted dm-text-sm"><?php esc_html_e('La próxima emisión programada comenzará pronto.', 'flavor-chat-ia'); ?></p>
+                <strong><?php esc_html_e('No hay emisiones en vivo en este momento', 'flavor-platform'); ?></strong>
+                <p class="dm-text-muted dm-text-sm"><?php esc_html_e('La próxima emisión programada comenzará pronto.', 'flavor-platform'); ?></p>
             </div>
         </div>
     <?php endif; ?>
@@ -155,25 +155,25 @@ $estado_badge_classes = [
     <div class="dm-stats-grid dm-stats-grid--4">
         <div class="dm-stat-card dm-stat-card--primary">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($total_programas); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Programas Activos', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Programas Activos', 'flavor-platform'); ?></div>
             <span class="dashicons dashicons-microphone dm-stat-card__icon"></span>
         </div>
 
         <div class="dm-stat-card dm-stat-card--success">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($total_emisiones); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Total Emisiones', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Total Emisiones', 'flavor-platform'); ?></div>
             <span class="dashicons dashicons-album dm-stat-card__icon"></span>
         </div>
 
         <div class="dm-stat-card dm-stat-card--purple">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($total_locutores); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Locutores', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Locutores', 'flavor-platform'); ?></div>
             <span class="dashicons dashicons-admin-users dm-stat-card__icon"></span>
         </div>
 
         <div class="dm-stat-card dm-stat-card--error">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($total_oyentes); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Oyentes (30d)', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Oyentes (30d)', 'flavor-platform'); ?></div>
             <span class="dashicons dashicons-groups dm-stat-card__icon"></span>
         </div>
     </div>
@@ -184,7 +184,7 @@ $estado_badge_classes = [
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-chart-bar"></span>
-                    <?php esc_html_e('Audiencia por Día de la Semana', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Audiencia por Día de la Semana', 'flavor-platform'); ?>
                 </h3>
             </div>
             <div class="dm-card__chart">
@@ -197,13 +197,13 @@ $estado_badge_classes = [
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-star-filled"></span>
-                    <?php esc_html_e('Top Programas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Top Programas', 'flavor-platform'); ?>
                 </h3>
             </div>
             <?php if (empty($programas_populares)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-microphone"></span>
-                    <p><?php esc_html_e('No hay datos disponibles', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay datos disponibles', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <div class="dm-ranking">
@@ -226,20 +226,20 @@ $estado_badge_classes = [
         <div class="dm-card__header">
             <h3>
                 <span class="dashicons dashicons-clock"></span>
-                <?php esc_html_e('Emisiones Recientes', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Emisiones Recientes', 'flavor-platform'); ?>
             </h3>
         </div>
 
         <table class="dm-table">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('ID', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Programa', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Duración', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Oyentes Pico', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('ID', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Programa', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Duración', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Oyentes Pico', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Fecha', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Acciones', 'flavor-platform'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -248,7 +248,7 @@ $estado_badge_classes = [
                         <td colspan="7">
                             <div class="dm-empty">
                                 <span class="dashicons dashicons-album"></span>
-                                <p><?php esc_html_e('No hay emisiones registradas', 'flavor-chat-ia'); ?></p>
+                                <p><?php esc_html_e('No hay emisiones registradas', 'flavor-platform'); ?></p>
                             </div>
                         </td>
                     </tr>
@@ -312,7 +312,7 @@ jQuery(document).ready(function($) {
                     return $item->dia;
                 }, $audiencia_por_dia)); ?>,
                 datasets: [{
-                    label: '<?php esc_attr_e('Oyentes Promedio', 'flavor-chat-ia'); ?>',
+                    label: '<?php esc_attr_e('Oyentes Promedio', 'flavor-platform'); ?>',
                     data: <?php echo wp_json_encode(array_map(function($item) {
                         return round($item->promedio_oyentes);
                     }, $audiencia_por_dia)); ?>,

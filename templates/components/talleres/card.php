@@ -20,12 +20,12 @@ $url = $taller['url'] ?? '#';
 $imagen = $taller['imagen'] ?? '';
 $fecha = $taller['fecha'] ?? '';
 $duracion = $taller['duracion'] ?? '';
-$categoria = $taller['categoria'] ?? __('General', 'flavor-chat-ia');
-$instructor_nombre = $taller['instructor_nombre'] ?? __('Instructor', 'flavor-chat-ia');
+$categoria = $taller['categoria'] ?? __('General', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$instructor_nombre = $taller['instructor_nombre'] ?? __('Instructor', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $instructor_inicial = mb_substr($instructor_nombre, 0, 1);
 $precio = $taller['precio'] ?? 0;
 $plazas_disponibles = $taller['plazas_disponibles'] ?? 0;
-$nivel = $taller['nivel'] ?? __('Todos', 'flavor-chat-ia');
+$nivel = $taller['nivel'] ?? __('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
 $nivel_class = 'bg-gray-500';
 if ($nivel === 'Principiante') {
@@ -79,17 +79,17 @@ if ($nivel === 'Principiante') {
             </span>
             <?php endif; ?>
             <span class="bg-gray-100 px-2 py-1 rounded-full flex items-center gap-1">
-                💺 <?php echo esc_html($plazas_disponibles); ?> <?php echo esc_html__('plazas', 'flavor-chat-ia'); ?>
+                💺 <?php echo esc_html($plazas_disponibles); ?> <?php echo esc_html__('plazas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
         </div>
 
         <div class="flex items-center justify-between pt-3 border-t border-gray-100">
             <span class="text-lg font-bold <?php echo $precio == 0 ? 'text-green-600' : 'text-violet-600'; ?>">
-                <?php echo $precio == 0 ? __('Gratis', 'flavor-chat-ia') : esc_html($precio) . ' €'; ?>
+                <?php echo $precio == 0 ? __('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html($precio) . ' €'; ?>
             </span>
             <a href="<?php echo esc_url($url); ?>"
                class="bg-purple-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-600 transition-colors">
-                <?php echo esc_html__('Inscribirse', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Inscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>

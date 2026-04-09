@@ -20,11 +20,11 @@ $composteras = $wpdb->get_results("SELECT * FROM $tabla_composteras ORDER BY nom
 <div class="wrap flavor-compostaje-composteras">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-admin-site"></span>
-        <?php echo esc_html__('Gestión de Composteras', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Gestión de Composteras', 'flavor-platform'); ?>
     </h1>
 
     <a href="#" class="page-title-action" onclick="abrirModalCompostera(); return false;">
-        <?php echo esc_html__('Añadir Nueva', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Añadir Nueva', 'flavor-platform'); ?>
     </a>
 
     <hr class="wp-header-end">
@@ -38,12 +38,12 @@ $composteras = $wpdb->get_results("SELECT * FROM $tabla_composteras ORDER BY nom
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th><?php echo esc_html__('Nombre', 'flavor-chat-ia'); ?></th>
-                        <th><?php echo esc_html__('Tipo', 'flavor-chat-ia'); ?></th>
-                        <th><?php echo esc_html__('Capacidad', 'flavor-chat-ia'); ?></th>
-                        <th><?php echo esc_html__('Nivel', 'flavor-chat-ia'); ?></th>
-                        <th><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
-                        <th><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
+                        <th><?php echo esc_html__('Nombre', 'flavor-platform'); ?></th>
+                        <th><?php echo esc_html__('Tipo', 'flavor-platform'); ?></th>
+                        <th><?php echo esc_html__('Capacidad', 'flavor-platform'); ?></th>
+                        <th><?php echo esc_html__('Nivel', 'flavor-platform'); ?></th>
+                        <th><?php echo esc_html__('Estado', 'flavor-platform'); ?></th>
+                        <th><?php echo esc_html__('Acciones', 'flavor-platform'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -73,9 +73,9 @@ $composteras = $wpdb->get_results("SELECT * FROM $tabla_composteras ORDER BY nom
                                 </span>
                             </td>
                             <td>
-                                <a href="<?php echo esc_url(admin_url('admin.php?page=compostaje&tab=composteras&action=editar&id=' . $compostera->id)); ?>" class="button button-small"><?php echo esc_html__('Editar', 'flavor-chat-ia'); ?></a>
+                                <a href="<?php echo esc_url(admin_url('admin.php?page=compostaje&tab=composteras&action=editar&id=' . $compostera->id)); ?>" class="button button-small"><?php echo esc_html__('Editar', 'flavor-platform'); ?></a>
                                 <button class="button button-small ver-en-mapa" data-lat="<?php echo esc_attr($compostera->latitud); ?>" data-lng="<?php echo esc_attr($compostera->longitud); ?>">
-                                    <?php echo esc_html__('Ver en Mapa', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Ver en Mapa', 'flavor-platform'); ?>
                                 </button>
                             </td>
                         </tr>
@@ -212,43 +212,43 @@ jQuery(document).ready(function($) {
 <div id="modal-nueva-compostera" style="display:none;">
     <div class="flavor-modal-overlay" onclick="cerrarModalCompostera()"></div>
     <div class="flavor-modal-content">
-        <h3><?php echo esc_html__('Nueva Compostera', 'flavor-chat-ia'); ?></h3>
+        <h3><?php echo esc_html__('Nueva Compostera', 'flavor-platform'); ?></h3>
         <form id="form-nueva-compostera" method="post">
             <?php wp_nonce_field('nueva_compostera', 'compostera_nonce'); ?>
             <input type="hidden" name="accion" value="crear_compostera">
 
             <div class="form-row">
-                <label><?php echo esc_html__('Nombre', 'flavor-chat-ia'); ?></label>
+                <label><?php echo esc_html__('Nombre', 'flavor-platform'); ?></label>
                 <input type="text" name="nombre" required>
             </div>
 
             <div class="form-row">
-                <label><?php echo esc_html__('Tipo', 'flavor-chat-ia'); ?></label>
+                <label><?php echo esc_html__('Tipo', 'flavor-platform'); ?></label>
                 <select name="tipo">
-                    <option value="comunitaria"><?php echo esc_html__('Comunitaria', 'flavor-chat-ia'); ?></option>
-                    <option value="individual"><?php echo esc_html__('Individual', 'flavor-chat-ia'); ?></option>
-                    <option value="escolar"><?php echo esc_html__('Escolar', 'flavor-chat-ia'); ?></option>
+                    <option value="comunitaria"><?php echo esc_html__('Comunitaria', 'flavor-platform'); ?></option>
+                    <option value="individual"><?php echo esc_html__('Individual', 'flavor-platform'); ?></option>
+                    <option value="escolar"><?php echo esc_html__('Escolar', 'flavor-platform'); ?></option>
                 </select>
             </div>
 
             <div class="form-row">
-                <label><?php echo esc_html__('Capacidad (litros)', 'flavor-chat-ia'); ?></label>
+                <label><?php echo esc_html__('Capacidad (litros)', 'flavor-platform'); ?></label>
                 <input type="number" name="capacidad_litros" value="500" min="100">
             </div>
 
             <div class="form-row">
-                <label><?php echo esc_html__('Latitud', 'flavor-chat-ia'); ?></label>
+                <label><?php echo esc_html__('Latitud', 'flavor-platform'); ?></label>
                 <input type="text" name="latitud" placeholder="43.3183">
             </div>
 
             <div class="form-row">
-                <label><?php echo esc_html__('Longitud', 'flavor-chat-ia'); ?></label>
+                <label><?php echo esc_html__('Longitud', 'flavor-platform'); ?></label>
                 <input type="text" name="longitud" placeholder="-1.9812">
             </div>
 
             <div class="flavor-modal-actions">
-                <button type="button" class="button" onclick="cerrarModalCompostera()"><?php echo esc_html__('Cancelar', 'flavor-chat-ia'); ?></button>
-                <button type="submit" class="button button-primary"><?php echo esc_html__('Crear Compostera', 'flavor-chat-ia'); ?></button>
+                <button type="button" class="button" onclick="cerrarModalCompostera()"><?php echo esc_html__('Cancelar', 'flavor-platform'); ?></button>
+                <button type="submit" class="button button-primary"><?php echo esc_html__('Crear Compostera', 'flavor-platform'); ?></button>
             </div>
         </form>
     </div>

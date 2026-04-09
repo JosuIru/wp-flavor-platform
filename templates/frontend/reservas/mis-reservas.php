@@ -16,10 +16,10 @@ if (!defined('ABSPATH')) {
 if (!is_user_logged_in()) {
     echo '<div class="flavor-login-required">';
     echo '<span class="dashicons dashicons-lock"></span>';
-    echo '<h3>' . esc_html__('Inicia sesión', 'flavor-chat-ia') . '</h3>';
-    echo '<p>' . esc_html__('Debes iniciar sesión para ver tus reservas.', 'flavor-chat-ia') . '</p>';
+    echo '<h3>' . esc_html__('Inicia sesión', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
+    echo '<p>' . esc_html__('Debes iniciar sesión para ver tus reservas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
     echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="flavor-btn flavor-btn-primary">';
-    echo esc_html__('Iniciar Sesión', 'flavor-chat-ia');
+    echo esc_html__('Iniciar Sesión', FLAVOR_PLATFORM_TEXT_DOMAIN);
     echo '</a>';
     echo '</div>';
     return;
@@ -70,10 +70,10 @@ $sql_stats = "SELECT estado, COUNT(*) as total FROM $tabla_reservas WHERE user_i
 $estadisticas = $wpdb->get_results($wpdb->prepare($sql_stats, $usuario_actual_id), OBJECT_K);
 
 $estados_config = [
-    'pendiente' => ['label' => __('Pendiente', 'flavor-chat-ia'), 'color' => 'warning', 'icono' => 'clock'],
-    'confirmada' => ['label' => __('Confirmada', 'flavor-chat-ia'), 'color' => 'success', 'icono' => 'yes-alt'],
-    'cancelada' => ['label' => __('Cancelada', 'flavor-chat-ia'), 'color' => 'danger', 'icono' => 'dismiss'],
-    'completada' => ['label' => __('Completada', 'flavor-chat-ia'), 'color' => 'info', 'icono' => 'saved'],
+    'pendiente' => ['label' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'warning', 'icono' => 'clock'],
+    'confirmada' => ['label' => __('Confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'success', 'icono' => 'yes-alt'],
+    'cancelada' => ['label' => __('Cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'danger', 'icono' => 'dismiss'],
+    'completada' => ['label' => __('Completada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'info', 'icono' => 'saved'],
 ];
 
 // Enqueue assets
@@ -85,10 +85,10 @@ wp_enqueue_script('flavor-reservas');
     <!-- Header -->
     <header class="mis-reservas-header">
         <div class="header-content">
-            <h1><?php esc_html_e('Mis Reservas', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Mis Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
             <a href="<?php echo esc_url(home_url('/reservas/')); ?>" class="flavor-btn flavor-btn-primary">
                 <span class="dashicons dashicons-plus-alt2"></span>
-                <?php esc_html_e('Nueva Reserva', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Nueva Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </header>
@@ -112,9 +112,9 @@ wp_enqueue_script('flavor-reservas');
         <form method="get" class="filtros-form">
             <div class="filtros-row">
                 <div class="filtro-item">
-                    <label><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></label>
+                    <label><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="estado" onchange="this.form.submit()">
-                        <option value=""><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($estados_config as $estado_key => $estado_info) : ?>
                             <option value="<?php echo esc_attr($estado_key); ?>" <?php selected($filtro_estado, $estado_key); ?>>
                                 <?php echo esc_html($estado_info['label']); ?>
@@ -124,7 +124,7 @@ wp_enqueue_script('flavor-reservas');
                 </div>
 
                 <div class="filtro-item">
-                    <label><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></label>
+                    <label><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="date" name="fecha"
                            value="<?php echo esc_attr($filtro_fecha); ?>"
                            onchange="this.form.submit()">
@@ -133,7 +133,7 @@ wp_enqueue_script('flavor-reservas');
                 <?php if (!empty($filtro_estado) || !empty($filtro_fecha)) : ?>
                     <a href="<?php echo esc_url(remove_query_arg(['estado', 'fecha', 'paged'])); ?>" class="filtro-limpiar">
                         <span class="dashicons dashicons-dismiss"></span>
-                        <?php esc_html_e('Limpiar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 <?php endif; ?>
             </div>
@@ -158,7 +158,7 @@ wp_enqueue_script('flavor-reservas');
                             <span class="fecha-anio"><?php echo esc_html(date_i18n('Y', $fecha_reserva)); ?></span>
                         </div>
                         <?php if ($es_hoy) : ?>
-                            <span class="badge-hoy"><?php esc_html_e('HOY', 'flavor-chat-ia'); ?></span>
+                            <span class="badge-hoy"><?php esc_html_e('HOY', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <?php endif; ?>
                     </div>
 
@@ -177,7 +177,7 @@ wp_enqueue_script('flavor-reservas');
 
                         <div class="reserva-personas">
                             <span class="dashicons dashicons-groups"></span>
-                            <?php printf(esc_html(_n('%d persona', '%d personas', $reserva->num_personas, 'flavor-chat-ia')), $reserva->num_personas); ?>
+                            <?php printf(esc_html(_n('%d persona', '%d personas', $reserva->num_personas, FLAVOR_PLATFORM_TEXT_DOMAIN)), $reserva->num_personas); ?>
                         </div>
 
                         <?php if (!empty($reserva->notas)) : ?>
@@ -204,14 +204,14 @@ wp_enqueue_script('flavor-reservas');
                                     data-id="<?php echo esc_attr($reserva->id); ?>"
                                     data-nonce="<?php echo wp_create_nonce('reservas_cancelar_' . $reserva->id); ?>">
                                 <span class="dashicons dashicons-dismiss"></span>
-                                <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         <?php endif; ?>
 
                         <a href="<?php echo esc_url(home_url('/reservas/detalle/' . $reserva->id . '/')); ?>"
                            class="flavor-btn flavor-btn-outline flavor-btn-sm">
                             <span class="dashicons dashicons-visibility"></span>
-                            <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </article>
@@ -227,8 +227,8 @@ wp_enqueue_script('flavor-reservas');
                     'format' => '',
                     'current' => $pagina_actual,
                     'total' => $total_paginas,
-                    'prev_text' => '&laquo; ' . __('Anterior', 'flavor-chat-ia'),
-                    'next_text' => __('Siguiente', 'flavor-chat-ia') . ' &raquo;',
+                    'prev_text' => '&laquo; ' . __('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'next_text' => __('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN) . ' &raquo;',
                     'type' => 'list',
                 ]);
                 ?>
@@ -238,16 +238,16 @@ wp_enqueue_script('flavor-reservas');
     <?php else : ?>
         <div class="reservas-vacio">
             <span class="dashicons dashicons-calendar-alt"></span>
-            <h3><?php esc_html_e('No tienes reservas', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('No tienes reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <?php if (!empty($filtro_estado) || !empty($filtro_fecha)) : ?>
-                <p><?php esc_html_e('No se encontraron reservas con los filtros aplicados.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No se encontraron reservas con los filtros aplicados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <a href="<?php echo esc_url(remove_query_arg(['estado', 'fecha', 'paged'])); ?>" class="flavor-btn flavor-btn-outline">
-                    <?php esc_html_e('Ver todas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             <?php else : ?>
-                <p><?php esc_html_e('Aún no has realizado ninguna reserva.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('Aún no has realizado ninguna reserva.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <a href="<?php echo esc_url(home_url('/reservas/')); ?>" class="flavor-btn flavor-btn-primary">
-                    <?php esc_html_e('Hacer una reserva', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Hacer una reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             <?php endif; ?>
         </div>
@@ -258,14 +258,14 @@ wp_enqueue_script('flavor-reservas');
 <div id="modal-cancelar-reserva" class="flavor-modal" style="display: none;">
     <div class="flavor-modal-overlay"></div>
     <div class="flavor-modal-content">
-        <h3><?php esc_html_e('Cancelar Reserva', 'flavor-chat-ia'); ?></h3>
-        <p><?php esc_html_e('¿Estás seguro de que deseas cancelar esta reserva? Esta acción no se puede deshacer.', 'flavor-chat-ia'); ?></p>
+        <h3><?php esc_html_e('Cancelar Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+        <p><?php esc_html_e('¿Estás seguro de que deseas cancelar esta reserva? Esta acción no se puede deshacer.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         <div class="modal-acciones">
             <button type="button" class="flavor-btn flavor-btn-outline btn-modal-cerrar">
-                <?php esc_html_e('No, mantener', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('No, mantener', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <button type="button" class="flavor-btn flavor-btn-danger btn-modal-confirmar">
-                <?php esc_html_e('Sí, cancelar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Sí, cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     </div>
@@ -734,7 +734,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const btn = this;
         btn.disabled = true;
-        btn.textContent = '<?php echo esc_js(__('Cancelando...', 'flavor-chat-ia')); ?>';
+        btn.textContent = '<?php echo esc_js(__('Cancelando...', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
 
         fetch('<?php echo admin_url('admin-ajax.php'); ?>', {
             method: 'POST',
@@ -752,15 +752,15 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.success) {
                 location.reload();
             } else {
-                alert(data.data || '<?php echo esc_js(__('Error al cancelar', 'flavor-chat-ia')); ?>');
+                alert(data.data || '<?php echo esc_js(__('Error al cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                 btn.disabled = false;
-                btn.textContent = '<?php echo esc_js(__('Sí, cancelar', 'flavor-chat-ia')); ?>';
+                btn.textContent = '<?php echo esc_js(__('Sí, cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
             }
         })
         .catch(function() {
-            alert('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>');
+            alert('<?php echo esc_js(__('Error de conexión', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
             btn.disabled = false;
-            btn.textContent = '<?php echo esc_js(__('Sí, cancelar', 'flavor-chat-ia')); ?>';
+            btn.textContent = '<?php echo esc_js(__('Sí, cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
         });
     });
 

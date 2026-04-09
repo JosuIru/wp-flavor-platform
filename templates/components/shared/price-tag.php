@@ -38,11 +38,11 @@ $discount_percent = $has_discount ? round((($original - $price) / $original) * 1
 
 // Período labels
 $period_labels = [
-    'hour'  => __('/hora', 'flavor-chat-ia'),
-    'day'   => __('/día', 'flavor-chat-ia'),
-    'week'  => __('/semana', 'flavor-chat-ia'),
-    'month' => __('/mes', 'flavor-chat-ia'),
-    'year'  => __('/año', 'flavor-chat-ia'),
+    'hour'  => __('/hora', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'day'   => __('/día', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'week'  => __('/semana', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'month' => __('/mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'year'  => __('/año', FLAVOR_PLATFORM_TEXT_DOMAIN),
     'once'  => '',
 ];
 $period_text = $period_labels[$period] ?? '';
@@ -69,7 +69,7 @@ $sz = $size_config[$size] ?? $size_config['md'];
     <!-- Variante Badge -->
     <span class="flavor-price-tag inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-100 text-green-800 rounded-full font-semibold <?php echo esc_attr($sz['price']); ?>">
         <?php if ($price == 0 && $free): ?>
-            <?php esc_html_e('Gratis', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         <?php else: ?>
             <?php echo flavor_format_price($price, $currency); ?>
             <?php if ($period_text): ?>
@@ -88,7 +88,7 @@ $sz = $size_config[$size] ?? $size_config['md'];
         <?php endif; ?>
         <span class="font-bold text-gray-900 <?php echo esc_attr($sz['price']); ?>">
             <?php if ($price == 0 && $free): ?>
-                <span class="text-green-600"><?php esc_html_e('Gratis', 'flavor-chat-ia'); ?></span>
+                <span class="text-green-600"><?php esc_html_e('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             <?php else: ?>
                 <?php echo flavor_format_price($price, $currency); ?>
             <?php endif; ?>
@@ -124,7 +124,7 @@ $sz = $size_config[$size] ?? $size_config['md'];
 
         <p class="font-bold <?php echo esc_attr($sz['price']); ?> <?php echo ($price == 0 && $free) ? 'text-green-600' : 'text-gray-900'; ?>">
             <?php if ($price == 0 && $free): ?>
-                <?php esc_html_e('Gratis', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <?php else: ?>
                 <?php echo flavor_format_price($price, $currency); ?>
             <?php endif; ?>
@@ -145,7 +145,7 @@ $sz = $size_config[$size] ?? $size_config['md'];
         <div class="flex items-baseline gap-2 flex-wrap">
             <?php if ($price == 0 && $free): ?>
                 <span class="font-bold text-green-600 <?php echo esc_attr($sz['price']); ?>">
-                    <?php esc_html_e('Gratis', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
             <?php else: ?>
                 <span class="font-bold text-gray-900 <?php echo esc_attr($sz['price']); ?>">

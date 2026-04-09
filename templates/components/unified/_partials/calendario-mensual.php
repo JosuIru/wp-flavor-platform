@@ -24,13 +24,13 @@ $dias_en_mes         = intval( date( 't', $marca_tiempo_actual ) );
 $primer_dia_semana   = intval( date( 'w', mktime( 0, 0, 0, $mes_actual, 1, $anio_actual ) ) );
 
 $nombres_dias_semana = [
-    __( 'Dom', 'flavor-chat-ia' ),
-    __( 'Lun', 'flavor-chat-ia' ),
-    __( 'Mar', 'flavor-chat-ia' ),
-    __( 'Mie', 'flavor-chat-ia' ),
-    __( 'Jue', 'flavor-chat-ia' ),
-    __( 'Vie', 'flavor-chat-ia' ),
-    __( 'Sab', 'flavor-chat-ia' ),
+    __( 'Dom', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+    __( 'Lun', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+    __( 'Mar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+    __( 'Mie', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+    __( 'Jue', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+    __( 'Vie', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+    __( 'Sab', FLAVOR_PLATFORM_TEXT_DOMAIN ),
 ];
 
 $nombre_mes_actual = date_i18n( 'F Y', $marca_tiempo_actual );

@@ -48,10 +48,10 @@ $component_classes  = $component_classes ?? '';
         <!-- Encabezado -->
         <div class="max-w-3xl mx-auto text-center mb-12">
             <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-                <?php echo esc_html__('Nuestros Grupos de Consumo', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Nuestros Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <p class="text-lg text-gray-600">
-                <?php echo esc_html__('Encuentra el grupo que mejor se adapte a tus necesidades y comienza a disfrutar de productos locales', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Encuentra el grupo que mejor se adapte a tus necesidades y comienza a disfrutar de productos locales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
 
@@ -97,7 +97,7 @@ $component_classes  = $component_classes ?? '';
                                 <svg class="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                 </svg>
-                                <span><?php echo esc_html($grupo_item['productos_activos']); ?> <?php echo esc_html__('productos activos', 'flavor-chat-ia'); ?></span>
+                                <span><?php echo esc_html($grupo_item['productos_activos']); ?> <?php echo esc_html__('productos activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
 
                             <!-- Próximo pedido -->
@@ -105,7 +105,7 @@ $component_classes  = $component_classes ?? '';
                                 <svg class="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                 </svg>
-                                <span><?php echo esc_html__('Próximo pedido: ', 'flavor-chat-ia'); ?><?php echo esc_html(date_i18n(get_option('date_format'), strtotime($grupo_item['proximo_pedido']))); ?></span>
+                                <span><?php echo esc_html__('Próximo pedido: ', FLAVOR_PLATFORM_TEXT_DOMAIN); ?><?php echo esc_html(date_i18n(get_option('date_format'), strtotime($grupo_item['proximo_pedido']))); ?></span>
                             </div>
                         </div>
 
@@ -114,7 +114,7 @@ $component_classes  = $component_classes ?? '';
                             href="<?php echo esc_url($url_detalles_grupo . $grupo_item['id'] . '/'); ?>"
                             class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-green-600 text-white font-semibold hover:bg-green-700 transition-colors"
                         >
-                            <?php echo esc_html__('Ver Detalles', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Ver Detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                             </svg>

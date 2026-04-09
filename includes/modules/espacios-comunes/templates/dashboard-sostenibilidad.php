@@ -24,7 +24,7 @@ $periodo_texto = date_i18n('F Y', strtotime($metricas['periodo'] . '-01'));
             <span class="dashicons dashicons-analytics"></span>
         </span>
         <div>
-            <h3 class="ec-dashboard-sost__titulo"><?php esc_html_e('Sostenibilidad de Espacios', 'flavor-chat-ia'); ?></h3>
+            <h3 class="ec-dashboard-sost__titulo"><?php esc_html_e('Sostenibilidad de Espacios', 'flavor-platform'); ?></h3>
             <span class="ec-dashboard-sost__periodo"><?php echo esc_html($periodo_texto); ?></span>
         </div>
     </div>
@@ -51,7 +51,7 @@ $periodo_texto = date_i18n('F Y', strtotime($metricas['periodo'] . '-01'));
                 <span class="dashicons dashicons-calendar-alt"></span>
             </span>
             <span class="ec-dashboard-sost__metrica-valor"><?php echo esc_html($metricas['total_reservas']); ?></span>
-            <span class="ec-dashboard-sost__metrica-label"><?php esc_html_e('Reservas', 'flavor-chat-ia'); ?></span>
+            <span class="ec-dashboard-sost__metrica-label"><?php esc_html_e('Reservas', 'flavor-platform'); ?></span>
         </div>
 
         <div class="ec-dashboard-sost__metrica">
@@ -59,7 +59,7 @@ $periodo_texto = date_i18n('F Y', strtotime($metricas['periodo'] . '-01'));
                 <span class="dashicons dashicons-groups"></span>
             </span>
             <span class="ec-dashboard-sost__metrica-valor"><?php echo esc_html($metricas['usuarios_unicos']); ?></span>
-            <span class="ec-dashboard-sost__metrica-label"><?php esc_html_e('Usuarios', 'flavor-chat-ia'); ?></span>
+            <span class="ec-dashboard-sost__metrica-label"><?php esc_html_e('Usuarios', 'flavor-platform'); ?></span>
         </div>
 
         <div class="ec-dashboard-sost__metrica">
@@ -67,7 +67,7 @@ $periodo_texto = date_i18n('F Y', strtotime($metricas['periodo'] . '-01'));
                 <span class="dashicons dashicons-heart"></span>
             </span>
             <span class="ec-dashboard-sost__metrica-valor"><?php echo esc_html($metricas['cesiones_solidarias']); ?></span>
-            <span class="ec-dashboard-sost__metrica-label"><?php esc_html_e('Cesiones', 'flavor-chat-ia'); ?></span>
+            <span class="ec-dashboard-sost__metrica-label"><?php esc_html_e('Cesiones', 'flavor-platform'); ?></span>
         </div>
 
         <div class="ec-dashboard-sost__metrica">
@@ -75,7 +75,7 @@ $periodo_texto = date_i18n('F Y', strtotime($metricas['periodo'] . '-01'));
                 <span class="dashicons dashicons-hammer"></span>
             </span>
             <span class="ec-dashboard-sost__metrica-valor"><?php echo esc_html($metricas['horas_voluntariado']); ?>h</span>
-            <span class="ec-dashboard-sost__metrica-label"><?php esc_html_e('Voluntariado', 'flavor-chat-ia'); ?></span>
+            <span class="ec-dashboard-sost__metrica-label"><?php esc_html_e('Voluntariado', 'flavor-platform'); ?></span>
         </div>
     </div>
 
@@ -85,7 +85,7 @@ $periodo_texto = date_i18n('F Y', strtotime($metricas['periodo'] . '-01'));
         <div class="ec-dashboard-sost__indice">
             <div class="ec-dashboard-sost__indice-header">
                 <span class="dashicons dashicons-universal-access-alt"></span>
-                <span><?php esc_html_e('Índice de Equidad', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Índice de Equidad', 'flavor-platform'); ?></span>
             </div>
             <div class="ec-dashboard-sost__gauge">
                 <?php
@@ -99,11 +99,11 @@ $periodo_texto = date_i18n('F Y', strtotime($metricas['periodo'] . '-01'));
             </div>
             <p class="ec-dashboard-sost__indice-desc">
                 <?php if ($equidad >= 70): ?>
-                    <?php esc_html_e('Excelente distribución del uso entre vecinos.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Excelente distribución del uso entre vecinos.', 'flavor-platform'); ?>
                 <?php elseif ($equidad >= 40): ?>
-                    <?php esc_html_e('Distribución moderada. Algunos usuarios usan más que otros.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Distribución moderada. Algunos usuarios usan más que otros.', 'flavor-platform'); ?>
                 <?php else: ?>
-                    <?php esc_html_e('Distribución desigual. Pocos usuarios concentran el uso.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Distribución desigual. Pocos usuarios concentran el uso.', 'flavor-platform'); ?>
                 <?php endif; ?>
             </p>
         </div>
@@ -112,14 +112,14 @@ $periodo_texto = date_i18n('F Y', strtotime($metricas['periodo'] . '-01'));
         <div class="ec-dashboard-sost__indice">
             <div class="ec-dashboard-sost__indice-header">
                 <span class="dashicons dashicons-update"></span>
-                <span><?php esc_html_e('Índice de Rotación', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Índice de Rotación', 'flavor-platform'); ?></span>
             </div>
             <div class="ec-dashboard-sost__rotacion">
                 <span class="ec-dashboard-sost__rotacion-valor"><?php echo esc_html($metricas['indice_rotacion']); ?></span>
-                <span class="ec-dashboard-sost__rotacion-label"><?php esc_html_e('reservas/usuario', 'flavor-chat-ia'); ?></span>
+                <span class="ec-dashboard-sost__rotacion-label"><?php esc_html_e('reservas/usuario', 'flavor-platform'); ?></span>
             </div>
             <p class="ec-dashboard-sost__indice-desc">
-                <?php esc_html_e('Promedio de reservas por usuario este mes.', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Promedio de reservas por usuario este mes.', 'flavor-platform'); ?>
             </p>
         </div>
     </div>
@@ -128,7 +128,7 @@ $periodo_texto = date_i18n('F Y', strtotime($metricas['periodo'] . '-01'));
     <div class="ec-dashboard-sost__co2">
         <div class="ec-dashboard-sost__co2-header">
             <span class="dashicons dashicons-cloud"></span>
-            <span><?php esc_html_e('Huella de Carbono', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Huella de Carbono', 'flavor-platform'); ?></span>
         </div>
         <div class="ec-dashboard-sost__co2-valor">
             <span class="ec-dashboard-sost__co2-numero"><?php echo esc_html(number_format($metricas['co2_total_kg'], 1)); ?></span>
@@ -140,7 +140,7 @@ $periodo_texto = date_i18n('F Y', strtotime($metricas['periodo'] . '-01'));
             ?>
             <span class="dashicons dashicons-palmtree"></span>
             <?php printf(
-                esc_html__('Equivale a %.1f árboles necesarios para absorber', 'flavor-chat-ia'),
+                esc_html__('Equivale a %.1f árboles necesarios para absorber', 'flavor-platform'),
                 $arboles
             ); ?>
         </div>
@@ -148,19 +148,19 @@ $periodo_texto = date_i18n('F Y', strtotime($metricas['periodo'] . '-01'));
 
     <!-- Llamada a la acción -->
     <div class="ec-dashboard-sost__cta">
-        <h4><?php esc_html_e('¿Cómo mejorar estos índices?', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('¿Cómo mejorar estos índices?', 'flavor-platform'); ?></h4>
         <ul>
             <li>
                 <span class="dashicons dashicons-share-alt"></span>
-                <?php esc_html_e('Cede tus reservas cuando no puedas usarlas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Cede tus reservas cuando no puedas usarlas', 'flavor-platform'); ?>
             </li>
             <li>
                 <span class="dashicons dashicons-heart"></span>
-                <?php esc_html_e('Participa en tareas de voluntariado', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Participa en tareas de voluntariado', 'flavor-platform'); ?>
             </li>
             <li>
                 <span class="dashicons dashicons-lightbulb"></span>
-                <?php esc_html_e('Apaga luces y climatización al salir', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Apaga luces y climatización al salir', 'flavor-platform'); ?>
             </li>
         </ul>
     </div>

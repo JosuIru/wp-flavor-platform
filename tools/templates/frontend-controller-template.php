@@ -79,8 +79,8 @@ class Flavor_Module_Frontend_Controller_Template {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('{{MODULE_SLUG}}_nonce'),
             'i18n' => [
-                'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
+                'error' => __('Ha ocurrido un error', 'flavor-platform'),
+                'cargando' => __('Cargando...', 'flavor-platform'),
             ],
         ]);
     }
@@ -114,7 +114,7 @@ class Flavor_Module_Frontend_Controller_Template {
 
         ob_start();
         echo '<div class="flavor-{{MODULE_SLUG}}-listado">';
-        echo '<p>' . __('Módulo {{MODULE_NAME}} - Listado', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Módulo {{MODULE_NAME}} - Listado', 'flavor-platform') . '</p>';
         echo '</div>';
         return ob_get_clean();
     }
@@ -124,7 +124,7 @@ class Flavor_Module_Frontend_Controller_Template {
      */
     public function registrar_tabs($tabs) {
         $tabs['{{MODULE_SLUG}}'] = [
-            'titulo' => __('{{MODULE_NAME}}', 'flavor-chat-ia'),
+            'titulo' => __('{{MODULE_NAME}}', 'flavor-platform'),
             'icono' => 'dashicons-admin-generic',
             'callback' => [$this, 'render_tab_principal'],
             'orden' => 50,
@@ -140,8 +140,8 @@ class Flavor_Module_Frontend_Controller_Template {
     public function render_tab_principal() {
         $this->encolar_assets();
         echo '<div class="flavor-{{MODULE_SLUG}}-tab">';
-        echo '<h3>' . esc_html__('{{MODULE_NAME}}', 'flavor-chat-ia') . '</h3>';
-        echo '<p>' . esc_html__('Contenido del tab de {{MODULE_NAME}}.', 'flavor-chat-ia') . '</p>';
+        echo '<h3>' . esc_html__('{{MODULE_NAME}}', 'flavor-platform') . '</h3>';
+        echo '<p>' . esc_html__('Contenido del tab de {{MODULE_NAME}}.', 'flavor-platform') . '</p>';
         echo '</div>';
     }
 }

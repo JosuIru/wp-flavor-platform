@@ -39,7 +39,7 @@ class Flavor_Chat_Assets {
      * Encola los assets
      */
     public function enqueue_assets() {
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
 
         if (empty($settings['enabled'])) {
             return;
@@ -49,7 +49,7 @@ class Flavor_Chat_Assets {
 
         // CSS
         wp_enqueue_style(
-            'flavor-chat-ia',
+            'flavor-platform',
             FLAVOR_CHAT_IA_URL . "assets/css/modules/chat-widget{$sufijo_asset}.css",
             [],
             FLAVOR_CHAT_IA_VERSION
@@ -57,7 +57,7 @@ class Flavor_Chat_Assets {
 
         // JS
         wp_enqueue_script(
-            'flavor-chat-ia',
+            'flavor-platform',
             FLAVOR_CHAT_IA_URL . "assets/js/chat-widget{$sufijo_asset}.js",
             ['jquery'],
             FLAVOR_CHAT_IA_VERSION,
@@ -71,7 +71,7 @@ class Flavor_Chat_Assets {
         $quick_actions_js = $this->get_quick_actions_for_js($settings);
 
         // Variables para JS
-        wp_localize_script('flavor-chat-ia', 'flavorChatConfig', [
+        wp_localize_script('flavor-platform', 'flavorChatConfig', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_chat_nonce'),
             'language' => $this->get_current_language(),
@@ -81,8 +81,8 @@ class Flavor_Chat_Assets {
                 'headerBg' => $appearance['header_bg'] ?? '#1e3a5f',
                 'userBubble' => $appearance['user_bubble'] ?? '#0073aa',
                 'assistantBubble' => $appearance['assistant_bubble'] ?? '#f0f0f0',
-                'welcomeMessage' => $appearance['welcome_message'] ?? __('¡Hola! ¿En qué puedo ayudarte?', 'flavor-chat-ia'),
-                'placeholder' => $appearance['placeholder'] ?? __('Escribe tu mensaje...', 'flavor-chat-ia'),
+                'welcomeMessage' => $appearance['welcome_message'] ?? __('¡Hola! ¿En qué puedo ayudarte?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'placeholder' => $appearance['placeholder'] ?? __('Escribe tu mensaje...', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'quickActions' => $quick_actions_js,
             'streamingEnabled' => true,
@@ -128,11 +128,11 @@ class Flavor_Chat_Assets {
      */
     private function get_translated_strings() {
         return [
-            'sending' => __('Enviando...', 'flavor-chat-ia'),
-            'error' => __('Error al enviar mensaje', 'flavor-chat-ia'),
-            'placeholder' => __('Escribe tu mensaje...', 'flavor-chat-ia'),
-            'connecting' => __('Conectando...', 'flavor-chat-ia'),
-            'typing' => __('Escribiendo...', 'flavor-chat-ia'),
+            'sending' => __('Enviando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'error' => __('Error al enviar mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'placeholder' => __('Escribe tu mensaje...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'connecting' => __('Conectando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'typing' => __('Escribiendo...', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 

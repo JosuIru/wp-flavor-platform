@@ -65,28 +65,28 @@ class Flavor_App_Menu_Configurator {
             // Core
             'home' => array(
                 'id'       => 'home',
-                'label'    => __( 'Inicio', 'flavor-chat-ia' ),
+                'label'    => __( 'Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'home',
                 'route'    => '/',
                 'category' => 'core',
             ),
             'profile' => array(
                 'id'       => 'profile',
-                'label'    => __( 'Perfil', 'flavor-chat-ia' ),
+                'label'    => __( 'Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'person',
                 'route'    => '/profile',
                 'category' => 'core',
             ),
             'settings' => array(
                 'id'       => 'settings',
-                'label'    => __( 'Ajustes', 'flavor-chat-ia' ),
+                'label'    => __( 'Ajustes', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'settings',
                 'route'    => '/settings',
                 'category' => 'core',
             ),
             'notifications' => array(
                 'id'       => 'notifications',
-                'label'    => __( 'Notificaciones', 'flavor-chat-ia' ),
+                'label'    => __( 'Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'notifications',
                 'route'    => '/notifications',
                 'category' => 'core',
@@ -94,14 +94,14 @@ class Flavor_App_Menu_Configurator {
             ),
             'search' => array(
                 'id'       => 'search',
-                'label'    => __( 'Buscar', 'flavor-chat-ia' ),
+                'label'    => __( 'Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'search',
                 'route'    => '/search',
                 'category' => 'core',
             ),
             'info' => array(
                 'id'       => 'info',
-                'label'    => __( 'Información', 'flavor-chat-ia' ),
+                'label'    => __( 'Información', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'info',
                 'route'    => '/info',
                 'category' => 'core',
@@ -110,7 +110,7 @@ class Flavor_App_Menu_Configurator {
             // Comunidad
             'eventos' => array(
                 'id'       => 'eventos',
-                'label'    => __( 'Eventos', 'flavor-chat-ia' ),
+                'label'    => __( 'Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'event',
                 'route'    => '/eventos',
                 'category' => 'comunidad',
@@ -118,7 +118,7 @@ class Flavor_App_Menu_Configurator {
             ),
             'foros' => array(
                 'id'       => 'foros',
-                'label'    => __( 'Foros', 'flavor-chat-ia' ),
+                'label'    => __( 'Foros', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'forum',
                 'route'    => '/foros',
                 'category' => 'comunidad',
@@ -126,7 +126,7 @@ class Flavor_App_Menu_Configurator {
             ),
             'socios' => array(
                 'id'       => 'socios',
-                'label'    => __( 'Socios', 'flavor-chat-ia' ),
+                'label'    => __( 'Socios', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'group',
                 'route'    => '/socios',
                 'category' => 'comunidad',
@@ -134,7 +134,7 @@ class Flavor_App_Menu_Configurator {
             ),
             'comunidades' => array(
                 'id'       => 'comunidades',
-                'label'    => __( 'Comunidades', 'flavor-chat-ia' ),
+                'label'    => __( 'Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'people',
                 'route'    => '/comunidades',
                 'category' => 'comunidad',
@@ -144,7 +144,7 @@ class Flavor_App_Menu_Configurator {
             // Economía
             'marketplace' => array(
                 'id'       => 'marketplace',
-                'label'    => __( 'Tienda', 'flavor-chat-ia' ),
+                'label'    => __( 'Tienda', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'shopping_bag',
                 'route'    => '/marketplace',
                 'category' => 'economia',
@@ -152,7 +152,7 @@ class Flavor_App_Menu_Configurator {
             ),
             'grupos_consumo' => array(
                 'id'       => 'grupos_consumo',
-                'label'    => __( 'Grupos Consumo', 'flavor-chat-ia' ),
+                'label'    => __( 'Grupos Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'storefront',
                 'route'    => '/grupos-consumo',
                 'category' => 'economia',
@@ -160,7 +160,7 @@ class Flavor_App_Menu_Configurator {
             ),
             'banco_tiempo' => array(
                 'id'       => 'banco_tiempo',
-                'label'    => __( 'Banco Tiempo', 'flavor-chat-ia' ),
+                'label'    => __( 'Banco Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'schedule',
                 'route'    => '/banco-tiempo',
                 'category' => 'economia',
@@ -170,7 +170,7 @@ class Flavor_App_Menu_Configurator {
             // Reservas
             'reservas' => array(
                 'id'       => 'reservas',
-                'label'    => __( 'Reservas', 'flavor-chat-ia' ),
+                'label'    => __( 'Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'calendar_today',
                 'route'    => '/reservas',
                 'category' => 'reservas',
@@ -178,7 +178,7 @@ class Flavor_App_Menu_Configurator {
             ),
             'espacios' => array(
                 'id'       => 'espacios',
-                'label'    => __( 'Espacios', 'flavor-chat-ia' ),
+                'label'    => __( 'Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'meeting_room',
                 'route'    => '/espacios',
                 'category' => 'reservas',
@@ -186,7 +186,7 @@ class Flavor_App_Menu_Configurator {
             ),
             'bicicletas' => array(
                 'id'       => 'bicicletas',
-                'label'    => __( 'Bicicletas', 'flavor-chat-ia' ),
+                'label'    => __( 'Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'directions_bike',
                 'route'    => '/bicicletas',
                 'category' => 'reservas',
@@ -194,7 +194,7 @@ class Flavor_App_Menu_Configurator {
             ),
             'parkings' => array(
                 'id'       => 'parkings',
-                'label'    => __( 'Parkings', 'flavor-chat-ia' ),
+                'label'    => __( 'Parkings', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'local_parking',
                 'route'    => '/parkings',
                 'category' => 'reservas',
@@ -204,7 +204,7 @@ class Flavor_App_Menu_Configurator {
             // Formación
             'cursos' => array(
                 'id'       => 'cursos',
-                'label'    => __( 'Cursos', 'flavor-chat-ia' ),
+                'label'    => __( 'Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'school',
                 'route'    => '/cursos',
                 'category' => 'formacion',
@@ -212,7 +212,7 @@ class Flavor_App_Menu_Configurator {
             ),
             'talleres' => array(
                 'id'       => 'talleres',
-                'label'    => __( 'Talleres', 'flavor-chat-ia' ),
+                'label'    => __( 'Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'construction',
                 'route'    => '/talleres',
                 'category' => 'formacion',
@@ -220,7 +220,7 @@ class Flavor_App_Menu_Configurator {
             ),
             'biblioteca' => array(
                 'id'       => 'biblioteca',
-                'label'    => __( 'Biblioteca', 'flavor-chat-ia' ),
+                'label'    => __( 'Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'local_library',
                 'route'    => '/biblioteca',
                 'category' => 'formacion',
@@ -230,7 +230,7 @@ class Flavor_App_Menu_Configurator {
             // Participación
             'encuestas' => array(
                 'id'       => 'encuestas',
-                'label'    => __( 'Encuestas', 'flavor-chat-ia' ),
+                'label'    => __( 'Encuestas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'poll',
                 'route'    => '/encuestas',
                 'category' => 'participacion',
@@ -238,7 +238,7 @@ class Flavor_App_Menu_Configurator {
             ),
             'presupuestos' => array(
                 'id'       => 'presupuestos',
-                'label'    => __( 'Presupuestos', 'flavor-chat-ia' ),
+                'label'    => __( 'Presupuestos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'account_balance',
                 'route'    => '/presupuestos-participativos',
                 'category' => 'participacion',
@@ -246,7 +246,7 @@ class Flavor_App_Menu_Configurator {
             ),
             'campanias' => array(
                 'id'       => 'campanias',
-                'label'    => __( 'Campañas', 'flavor-chat-ia' ),
+                'label'    => __( 'Campañas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'campaign',
                 'route'    => '/campanias',
                 'category' => 'participacion',
@@ -256,7 +256,7 @@ class Flavor_App_Menu_Configurator {
             // Social
             'red_social' => array(
                 'id'       => 'red_social',
-                'label'    => __( 'Red Social', 'flavor-chat-ia' ),
+                'label'    => __( 'Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'public',
                 'route'    => '/red-social',
                 'category' => 'social',
@@ -264,7 +264,7 @@ class Flavor_App_Menu_Configurator {
             ),
             'chat' => array(
                 'id'       => 'chat',
-                'label'    => __( 'Chat', 'flavor-chat-ia' ),
+                'label'    => __( 'Chat', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'chat',
                 'route'    => '/chat',
                 'category' => 'social',
@@ -275,7 +275,7 @@ class Flavor_App_Menu_Configurator {
             // Movilidad
             'carpooling' => array(
                 'id'       => 'carpooling',
-                'label'    => __( 'Carpooling', 'flavor-chat-ia' ),
+                'label'    => __( 'Carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'directions_car',
                 'route'    => '/carpooling',
                 'category' => 'movilidad',
@@ -285,7 +285,7 @@ class Flavor_App_Menu_Configurator {
             // Gestión
             'incidencias' => array(
                 'id'       => 'incidencias',
-                'label'    => __( 'Incidencias', 'flavor-chat-ia' ),
+                'label'    => __( 'Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'report_problem',
                 'route'    => '/incidencias',
                 'category' => 'gestion',
@@ -293,7 +293,7 @@ class Flavor_App_Menu_Configurator {
             ),
             'tramites' => array(
                 'id'       => 'tramites',
-                'label'    => __( 'Trámites', 'flavor-chat-ia' ),
+                'label'    => __( 'Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'description',
                 'route'    => '/tramites',
                 'category' => 'gestion',
@@ -301,7 +301,7 @@ class Flavor_App_Menu_Configurator {
             ),
             'transparencia' => array(
                 'id'       => 'transparencia',
-                'label'    => __( 'Transparencia', 'flavor-chat-ia' ),
+                'label'    => __( 'Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'visibility',
                 'route'    => '/transparencia',
                 'category' => 'gestion',
@@ -311,7 +311,7 @@ class Flavor_App_Menu_Configurator {
             // Cultura
             'multimedia' => array(
                 'id'       => 'multimedia',
-                'label'    => __( 'Multimedia', 'flavor-chat-ia' ),
+                'label'    => __( 'Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'perm_media',
                 'route'    => '/multimedia',
                 'category' => 'cultura',
@@ -319,7 +319,7 @@ class Flavor_App_Menu_Configurator {
             ),
             'radio' => array(
                 'id'       => 'radio',
-                'label'    => __( 'Radio', 'flavor-chat-ia' ),
+                'label'    => __( 'Radio', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'radio',
                 'route'    => '/radio',
                 'category' => 'cultura',
@@ -327,7 +327,7 @@ class Flavor_App_Menu_Configurator {
             ),
             'podcast' => array(
                 'id'       => 'podcast',
-                'label'    => __( 'Podcast', 'flavor-chat-ia' ),
+                'label'    => __( 'Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'icon'     => 'podcasts',
                 'route'    => '/podcast',
                 'category' => 'cultura',
@@ -345,10 +345,10 @@ class Flavor_App_Menu_Configurator {
     public function add_admin_menu() {
         add_submenu_page(
             'flavor-dashboard',
-            __( 'Menú App', 'flavor-chat-ia' ),
-            __( 'Menú App', 'flavor-chat-ia' ),
+            __( 'Menú App', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            __( 'Menú App', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'manage_options',
-            'flavor-app-menu',
+            'flavor-platform-app-menu',
             array( $this, 'render_page' )
         );
     }
@@ -357,7 +357,7 @@ class Flavor_App_Menu_Configurator {
      * Cargar assets
      */
     public function enqueue_assets( $hook ) {
-        if ( 'flavor_page_flavor-app-menu' !== $hook ) {
+        if ( 'flavor_page_flavor-platform-app-menu' !== $hook && 'flavor_page_flavor-app-menu' !== $hook ) {
             return;
         }
 
@@ -387,11 +387,11 @@ class Flavor_App_Menu_Configurator {
             'availableItems' => $this->get_filtered_available_items(),
             'categories'     => $this->get_categories(),
             'i18n'           => array(
-                'confirm_reset'  => __( '¿Restablecer la navegación a los valores por defecto?', 'flavor-chat-ia' ),
-                'saved'          => __( 'Configuración guardada', 'flavor-chat-ia' ),
-                'error'          => __( 'Error al guardar', 'flavor-chat-ia' ),
-                'max_tabs'       => __( 'Máximo 5 elementos en la barra inferior', 'flavor-chat-ia' ),
-                'min_tabs'       => __( 'La barra inferior necesita al menos 2 elementos', 'flavor-chat-ia' ),
+                'confirm_reset'  => __( '¿Restablecer la navegación a los valores por defecto?', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'saved'          => __( 'Configuración guardada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'error'          => __( 'Error al guardar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'max_tabs'       => __( 'Máximo 5 elementos en la barra inferior', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'min_tabs'       => __( 'La barra inferior necesita al menos 2 elementos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
         ) );
     }
@@ -447,7 +447,7 @@ class Flavor_App_Menu_Configurator {
 
         return new WP_Error(
             'rest_forbidden',
-            __( 'Autenticación de app requerida.', 'flavor-chat-ia' ),
+            __( 'Autenticación de app requerida.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             array( 'status' => 401 )
         );
     }
@@ -481,16 +481,16 @@ class Flavor_App_Menu_Configurator {
      */
     private function get_categories() {
         return array(
-            'core'         => __( 'Principal', 'flavor-chat-ia' ),
-            'comunidad'    => __( 'Comunidad', 'flavor-chat-ia' ),
-            'economia'     => __( 'Economía', 'flavor-chat-ia' ),
-            'reservas'     => __( 'Reservas', 'flavor-chat-ia' ),
-            'formacion'    => __( 'Formación', 'flavor-chat-ia' ),
-            'participacion' => __( 'Participación', 'flavor-chat-ia' ),
-            'social'       => __( 'Social', 'flavor-chat-ia' ),
-            'movilidad'    => __( 'Movilidad', 'flavor-chat-ia' ),
-            'gestion'      => __( 'Gestión', 'flavor-chat-ia' ),
-            'cultura'      => __( 'Cultura', 'flavor-chat-ia' ),
+            'core'         => __( 'Principal', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'comunidad'    => __( 'Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'economia'     => __( 'Economía', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'reservas'     => __( 'Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'formacion'    => __( 'Formación', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'participacion' => __( 'Participación', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'social'       => __( 'Social', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'movilidad'    => __( 'Movilidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'gestion'      => __( 'Gestión', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            'cultura'      => __( 'Cultura', FLAVOR_PLATFORM_TEXT_DOMAIN ),
         );
     }
 
@@ -550,16 +550,16 @@ class Flavor_App_Menu_Configurator {
             <div class="page-header">
                 <h1>
                     <span class="dashicons dashicons-menu"></span>
-                    <?php esc_html_e( 'Configurador de Menú de la App', 'flavor-chat-ia' ); ?>
+                    <?php esc_html_e( 'Configurador de Menú de la App', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                 </h1>
                 <div class="header-actions">
                     <button type="button" class="button" id="reset-navigation">
                         <span class="dashicons dashicons-image-rotate"></span>
-                        <?php esc_html_e( 'Restablecer', 'flavor-chat-ia' ); ?>
+                        <?php esc_html_e( 'Restablecer', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                     </button>
                     <button type="button" class="button button-primary" id="save-navigation">
                         <span class="dashicons dashicons-saved"></span>
-                        <?php esc_html_e( 'Guardar Cambios', 'flavor-chat-ia' ); ?>
+                        <?php esc_html_e( 'Guardar Cambios', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                     </button>
                 </div>
             </div>
@@ -581,7 +581,7 @@ class Flavor_App_Menu_Configurator {
                             <div class="phone-content">
                                 <div class="preview-placeholder">
                                     <span class="dashicons dashicons-smartphone"></span>
-                                    <p><?php esc_html_e( 'Vista previa de la app', 'flavor-chat-ia' ); ?></p>
+                                    <p><?php esc_html_e( 'Vista previa de la app', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
                                 </div>
                             </div>
 
@@ -596,28 +596,28 @@ class Flavor_App_Menu_Configurator {
                 <div class="config-panel">
                     <!-- Navigation Style -->
                     <div class="config-section">
-                        <h3><?php esc_html_e( 'Estilo de Navegación', 'flavor-chat-ia' ); ?></h3>
+                        <h3><?php esc_html_e( 'Estilo de Navegación', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h3>
                         <div class="style-options">
                             <label class="style-option <?php echo $config['style'] === 'bottom_tabs' ? 'selected' : ''; ?>">
                                 <input type="radio" name="nav_style" value="bottom_tabs" <?php checked( $config['style'], 'bottom_tabs' ); ?>>
                                 <span class="style-icon">
                                     <span class="dashicons dashicons-menu-alt3"></span>
                                 </span>
-                                <span class="style-label"><?php esc_html_e( 'Barra Inferior', 'flavor-chat-ia' ); ?></span>
+                                <span class="style-label"><?php esc_html_e( 'Barra Inferior', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
                             </label>
                             <label class="style-option <?php echo $config['style'] === 'drawer' ? 'selected' : ''; ?>">
                                 <input type="radio" name="nav_style" value="drawer" <?php checked( $config['style'], 'drawer' ); ?>>
                                 <span class="style-icon">
                                     <span class="dashicons dashicons-menu"></span>
                                 </span>
-                                <span class="style-label"><?php esc_html_e( 'Menú Lateral', 'flavor-chat-ia' ); ?></span>
+                                <span class="style-label"><?php esc_html_e( 'Menú Lateral', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
                             </label>
                             <label class="style-option <?php echo $config['style'] === 'both' ? 'selected' : ''; ?>">
                                 <input type="radio" name="nav_style" value="both" <?php checked( $config['style'], 'both' ); ?>>
                                 <span class="style-icon">
                                     <span class="dashicons dashicons-layout"></span>
                                 </span>
-                                <span class="style-label"><?php esc_html_e( 'Ambos', 'flavor-chat-ia' ); ?></span>
+                                <span class="style-label"><?php esc_html_e( 'Ambos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
                             </label>
                         </div>
                     </div>
@@ -625,10 +625,10 @@ class Flavor_App_Menu_Configurator {
                     <!-- Bottom Tabs -->
                     <div class="config-section" id="bottom-tabs-section">
                         <h3>
-                            <?php esc_html_e( 'Barra Inferior', 'flavor-chat-ia' ); ?>
+                            <?php esc_html_e( 'Barra Inferior', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                             <span class="tab-count">(<span id="tab-count">0</span>/5)</span>
                         </h3>
-                        <p class="section-desc"><?php esc_html_e( 'Arrastra elementos aquí (máximo 5)', 'flavor-chat-ia' ); ?></p>
+                        <p class="section-desc"><?php esc_html_e( 'Arrastra elementos aquí (máximo 5)', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
                         <div class="sortable-zone" id="bottom-tabs-zone" data-max="5">
                             <!-- Items rendered by JS -->
                         </div>
@@ -636,8 +636,8 @@ class Flavor_App_Menu_Configurator {
 
                     <!-- Drawer Items -->
                     <div class="config-section" id="drawer-section">
-                        <h3><?php esc_html_e( 'Menú Lateral', 'flavor-chat-ia' ); ?></h3>
-                        <p class="section-desc"><?php esc_html_e( 'Arrastra elementos aquí', 'flavor-chat-ia' ); ?></p>
+                        <h3><?php esc_html_e( 'Menú Lateral', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h3>
+                        <p class="section-desc"><?php esc_html_e( 'Arrastra elementos aquí', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
                         <div class="sortable-zone" id="drawer-zone">
                             <!-- Items rendered by JS -->
                         </div>
@@ -645,19 +645,19 @@ class Flavor_App_Menu_Configurator {
 
                     <!-- Options -->
                     <div class="config-section">
-                        <h3><?php esc_html_e( 'Opciones', 'flavor-chat-ia' ); ?></h3>
+                        <h3><?php esc_html_e( 'Opciones', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h3>
                         <label class="option-toggle">
                             <input type="checkbox" id="show-labels" <?php checked( $config['show_labels'] ); ?>>
-                            <span><?php esc_html_e( 'Mostrar etiquetas en barra inferior', 'flavor-chat-ia' ); ?></span>
+                            <span><?php esc_html_e( 'Mostrar etiquetas en barra inferior', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
                         </label>
                     </div>
                 </div>
 
                 <!-- Available Items -->
                 <div class="available-items-panel">
-                    <h3><?php esc_html_e( 'Elementos Disponibles', 'flavor-chat-ia' ); ?></h3>
+                    <h3><?php esc_html_e( 'Elementos Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h3>
                     <div class="items-search">
-                        <input type="search" id="search-items" placeholder="<?php esc_attr_e( 'Buscar...', 'flavor-chat-ia' ); ?>">
+                        <input type="search" id="search-items" placeholder="<?php esc_attr_e( 'Buscar...', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
                     </div>
 
                     <div class="items-categories">
@@ -680,31 +680,31 @@ class Flavor_App_Menu_Configurator {
             <div class="item-modal-overlay" id="item-modal">
                 <div class="item-modal">
                     <div class="item-modal-header">
-                        <h3><?php esc_html_e( 'Editar Elemento', 'flavor-chat-ia' ); ?></h3>
+                        <h3><?php esc_html_e( 'Editar Elemento', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h3>
                         <button type="button" class="item-modal-close">&times;</button>
                     </div>
                     <div class="item-modal-body">
                         <input type="hidden" id="edit-item-id">
                         <div class="form-group">
-                            <label for="edit-label"><?php esc_html_e( 'Etiqueta', 'flavor-chat-ia' ); ?></label>
+                            <label for="edit-label"><?php esc_html_e( 'Etiqueta', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
                             <input type="text" id="edit-label" maxlength="12">
                         </div>
                         <div class="form-group">
-                            <label for="edit-icon"><?php esc_html_e( 'Icono', 'flavor-chat-ia' ); ?></label>
+                            <label for="edit-icon"><?php esc_html_e( 'Icono', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
                             <div class="icon-selector" id="icon-selector">
                                 <!-- Icons rendered by JS -->
                             </div>
                             <input type="hidden" id="edit-icon">
                         </div>
                         <div class="form-group">
-                            <label for="edit-route"><?php esc_html_e( 'Ruta', 'flavor-chat-ia' ); ?></label>
+                            <label for="edit-route"><?php esc_html_e( 'Ruta', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
                             <input type="text" id="edit-route" placeholder="/ruta">
                         </div>
                     </div>
                     <div class="item-modal-footer">
-                        <button type="button" class="button btn-cancel"><?php esc_html_e( 'Cancelar', 'flavor-chat-ia' ); ?></button>
+                        <button type="button" class="button btn-cancel"><?php esc_html_e( 'Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></button>
                         <button type="button" class="button button-primary" id="save-item-btn">
-                            <?php esc_html_e( 'Guardar', 'flavor-chat-ia' ); ?>
+                            <?php esc_html_e( 'Guardar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                         </button>
                     </div>
                 </div>

@@ -73,9 +73,9 @@ class Flavor_AI_Tools_Admin {
     public function register_menu() {
         // Submenú bajo Flavor
         add_submenu_page(
-            'flavor-chat-ia',
-            __('Herramientas IA', 'flavor-chat-ia'),
-            __('Herramientas IA', 'flavor-chat-ia'),
+            FLAVOR_PLATFORM_TEXT_DOMAIN,
+            __('Herramientas IA', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Herramientas IA', FLAVOR_PLATFORM_TEXT_DOMAIN),
             self::REQUIRED_CAP,
             self::MENU_SLUG,
             [$this, 'render_hub_page']
@@ -84,8 +84,8 @@ class Flavor_AI_Tools_Admin {
         // Página de Reportes Semanales
         add_submenu_page(
             self::MENU_SLUG,
-            __('Reportes Semanales', 'flavor-chat-ia'),
-            __('Reportes', 'flavor-chat-ia'),
+            __('Reportes Semanales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Reportes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-ai-weekly-reports',
             [$this, 'render_weekly_reports_page']
@@ -94,8 +94,8 @@ class Flavor_AI_Tools_Admin {
         // Página de Analizador de Datos
         add_submenu_page(
             self::MENU_SLUG,
-            __('Analizador de Datos', 'flavor-chat-ia'),
-            __('Analizador', 'flavor-chat-ia'),
+            __('Analizador de Datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Analizador', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-ai-data-analyzer',
             [$this, 'render_data_analyzer_page']
@@ -105,8 +105,8 @@ class Flavor_AI_Tools_Admin {
         if (defined('WP_DEBUG') && WP_DEBUG) {
             add_submenu_page(
                 self::MENU_SLUG,
-                __('Generador Demo', 'flavor-chat-ia'),
-                __('Datos Demo', 'flavor-chat-ia'),
+                __('Generador Demo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Datos Demo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'manage_options',
                 'flavor-ai-demo-generator',
                 [$this, 'render_demo_generator_page']
@@ -216,20 +216,20 @@ class Flavor_AI_Tools_Admin {
             'moduleContext' => $this->get_module_context(),
             'isConfigured' => $this->is_ai_configured(),
             'i18n' => [
-                'chatTitle' => __('Asistente IA', 'flavor-chat-ia'),
-                'chatPlaceholder' => __('Escribe tu pregunta...', 'flavor-chat-ia'),
-                'sendMessage' => __('Enviar', 'flavor-chat-ia'),
-                'generating' => __('Generando...', 'flavor-chat-ia'),
-                'error' => __('Error al procesar', 'flavor-chat-ia'),
-                'copySuccess' => __('Copiado al portapapeles', 'flavor-chat-ia'),
-                'insertContent' => __('Insertar contenido', 'flavor-chat-ia'),
-                'regenerate' => __('Regenerar', 'flavor-chat-ia'),
-                'close' => __('Cerrar', 'flavor-chat-ia'),
-                'generateWithAI' => __('Generar con IA', 'flavor-chat-ia'),
-                'translateTo' => __('Traducir a', 'flavor-chat-ia'),
-                'suggestReply' => __('Sugerir respuesta', 'flavor-chat-ia'),
-                'useSuggestion' => __('Usar esta sugerencia', 'flavor-chat-ia'),
-                'aiNotConfigured' => __('La IA no está configurada. Ve a Flavor > Chat IA > Configuración para activarla.', 'flavor-chat-ia'),
+                'chatTitle' => __('Asistente IA', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'chatPlaceholder' => __('Escribe tu pregunta...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sendMessage' => __('Enviar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'generating' => __('Generando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al procesar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'copySuccess' => __('Copiado al portapapeles', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'insertContent' => __('Insertar contenido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'regenerate' => __('Regenerar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'close' => __('Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'generateWithAI' => __('Generar con IA', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'translateTo' => __('Traducir a', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'suggestReply' => __('Sugerir respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'useSuggestion' => __('Usar esta sugerencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'aiNotConfigured' => __('La IA no está configurada. Ve a Flavor Platform > Asistente IA > Configuración para activarla.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
     }
@@ -286,8 +286,8 @@ class Flavor_AI_Tools_Admin {
     private function get_module_context() {
         if (empty($this->current_module) || $this->current_module === 'general') {
             return [
-                'name' => __('Flavor Platform', 'flavor-chat-ia'),
-                'description' => __('Plataforma de gestión comunitaria', 'flavor-chat-ia'),
+                'name' => __('Flavor Platform', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Plataforma de gestión comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -389,7 +389,7 @@ class Flavor_AI_Tools_Admin {
      */
     public function render_hub_page() {
         if (!current_user_can(self::REQUIRED_CAP)) {
-            wp_die(__('No tienes permisos para acceder a esta página.', 'flavor-chat-ia'));
+            wp_die(__('No tienes permisos para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         include FLAVOR_CHAT_IA_PATH . 'admin/views/ai-tools/ai-tools-hub.php';
@@ -400,7 +400,7 @@ class Flavor_AI_Tools_Admin {
      */
     public function render_weekly_reports_page() {
         if (!current_user_can('manage_options')) {
-            wp_die(__('No tienes permisos para acceder a esta página.', 'flavor-chat-ia'));
+            wp_die(__('No tienes permisos para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         include FLAVOR_CHAT_IA_PATH . 'admin/views/ai-tools/weekly-reports.php';
@@ -411,7 +411,7 @@ class Flavor_AI_Tools_Admin {
      */
     public function render_data_analyzer_page() {
         if (!current_user_can('manage_options')) {
-            wp_die(__('No tienes permisos para acceder a esta página.', 'flavor-chat-ia'));
+            wp_die(__('No tienes permisos para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         include FLAVOR_CHAT_IA_PATH . 'admin/views/ai-tools/data-analyzer.php';
@@ -422,7 +422,7 @@ class Flavor_AI_Tools_Admin {
      */
     public function render_demo_generator_page() {
         if (!current_user_can('manage_options') || !WP_DEBUG) {
-            wp_die(__('No tienes permisos para acceder a esta página.', 'flavor-chat-ia'));
+            wp_die(__('No tienes permisos para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         include FLAVOR_CHAT_IA_PATH . 'admin/views/ai-tools/demo-generator.php';
@@ -437,40 +437,40 @@ class Flavor_AI_Tools_Admin {
         $tools = [
             'chatbot' => [
                 'id' => 'chatbot',
-                'name' => __('Asistente de Módulos', 'flavor-chat-ia'),
-                'description' => __('Chatbot contextual que te ayuda con cada módulo. Aparece como widget flotante en todas las páginas.', 'flavor-chat-ia'),
+                'name' => __('Asistente de Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Chatbot contextual que te ayuda con cada módulo. Aparece como widget flotante en todas las páginas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-format-chat',
                 'status' => $is_configured ? 'active' : 'disabled',
                 'type' => 'widget',
             ],
             'content_generator' => [
                 'id' => 'content_generator',
-                'name' => __('Generador de Contenido', 'flavor-chat-ia'),
-                'description' => __('Genera descripciones, emails, posts y más con IA. Disponible en editores de texto.', 'flavor-chat-ia'),
+                'name' => __('Generador de Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Genera descripciones, emails, posts y más con IA. Disponible en editores de texto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-edit',
                 'status' => $is_configured ? 'active' : 'disabled',
                 'type' => 'inline',
             ],
             'reply_suggester' => [
                 'id' => 'reply_suggester',
-                'name' => __('Sugeridor de Respuestas', 'flavor-chat-ia'),
-                'description' => __('Sugiere respuestas automáticas para incidencias y tickets basándose en el contexto.', 'flavor-chat-ia'),
+                'name' => __('Sugeridor de Respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Sugiere respuestas automáticas para incidencias y tickets basándose en el contexto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-testimonial',
                 'status' => $is_configured ? 'active' : 'disabled',
                 'type' => 'inline',
             ],
             'translator' => [
                 'id' => 'translator',
-                'name' => __('Traductor de Contenido', 'flavor-chat-ia'),
-                'description' => __('Traduce contenido entre idiomas directamente en los campos de texto.', 'flavor-chat-ia'),
+                'name' => __('Traductor de Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Traduce contenido entre idiomas directamente en los campos de texto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-translation',
                 'status' => $is_configured ? 'active' : 'disabled',
                 'type' => 'inline',
             ],
             'weekly_reports' => [
                 'id' => 'weekly_reports',
-                'name' => __('Reportes Semanales', 'flavor-chat-ia'),
-                'description' => __('Genera resúmenes ejecutivos semanales con métricas, tendencias y recomendaciones.', 'flavor-chat-ia'),
+                'name' => __('Reportes Semanales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Genera resúmenes ejecutivos semanales con métricas, tendencias y recomendaciones.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-chart-area',
                 'status' => $is_configured ? 'active' : 'disabled',
                 'type' => 'page',
@@ -478,8 +478,8 @@ class Flavor_AI_Tools_Admin {
             ],
             'data_analyzer' => [
                 'id' => 'data_analyzer',
-                'name' => __('Analizador de Datos', 'flavor-chat-ia'),
-                'description' => __('Analiza datos de módulos y genera insights con IA.', 'flavor-chat-ia'),
+                'name' => __('Analizador de Datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Analiza datos de módulos y genera insights con IA.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-chart-pie',
                 'status' => $is_configured ? 'active' : 'disabled',
                 'type' => 'page',
@@ -487,8 +487,8 @@ class Flavor_AI_Tools_Admin {
             ],
             'setup_assistant' => [
                 'id' => 'setup_assistant',
-                'name' => __('Asistente de Configuración', 'flavor-chat-ia'),
-                'description' => __('Ayuda a configurar módulos nuevos con guías paso a paso.', 'flavor-chat-ia'),
+                'name' => __('Asistente de Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Ayuda a configurar módulos nuevos con guías paso a paso.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-generic',
                 'status' => $is_configured ? 'active' : 'disabled',
                 'type' => 'widget',
@@ -499,8 +499,8 @@ class Flavor_AI_Tools_Admin {
         if (defined('WP_DEBUG') && WP_DEBUG) {
             $tools['demo_generator'] = [
                 'id' => 'demo_generator',
-                'name' => __('Generador de Datos Demo', 'flavor-chat-ia'),
-                'description' => __('Genera datos de prueba para módulos. Solo disponible en modo desarrollo.', 'flavor-chat-ia'),
+                'name' => __('Generador de Datos Demo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Genera datos de prueba para módulos. Solo disponible en modo desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-database-import',
                 'status' => 'active',
                 'type' => 'page',

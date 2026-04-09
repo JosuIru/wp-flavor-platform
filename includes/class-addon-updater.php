@@ -363,7 +363,7 @@ class Flavor_Addon_Updater {
         check_ajax_referer('flavor_updates_nonce', 'nonce');
 
         if (!current_user_can('update_plugins')) {
-            wp_send_json_error(__('No tienes permisos', 'flavor-chat-ia'));
+            wp_send_json_error(__('No tienes permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $this->check_for_updates();

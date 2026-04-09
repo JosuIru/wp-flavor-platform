@@ -246,20 +246,20 @@ class Flavor_Client_Dashboard {
             'refreshInterval'   => 120000,
             'preferences'       => $preferencias_usuario,
             'i18n'              => [
-                'cargando'                => __('Cargando...', 'flavor-chat-ia'),
-                'error_conexion'          => __('Error de conexion. Intentalo de nuevo.', 'flavor-chat-ia'),
-                'actualizado'             => __('Datos actualizados', 'flavor-chat-ia'),
-                'sin_actividad'           => __('No hay actividad reciente', 'flavor-chat-ia'),
-                'sin_notificaciones'      => __('No tienes notificaciones pendientes', 'flavor-chat-ia'),
-                'notificacion_descartada' => __('Notificacion descartada', 'flavor-chat-ia'),
-                'preferencias_guardadas'  => __('Preferencias guardadas', 'flavor-chat-ia'),
-                'ver_todo'                => __('Ver todo', 'flavor-chat-ia'),
-                'hace_momentos'           => __('Hace unos momentos', 'flavor-chat-ia'),
-                'hace_minutos'            => __('Hace %d minutos', 'flavor-chat-ia'),
-                'hace_horas'              => __('Hace %d horas', 'flavor-chat-ia'),
-                'hace_dias'               => __('Hace %d dias', 'flavor-chat-ia'),
-                'atajo_actualizar'        => __('Ctrl+R para actualizar', 'flavor-chat-ia'),
-                'atajo_buscar'            => __('Ctrl+K para buscar', 'flavor-chat-ia'),
+                'cargando'                => __('Cargando...', 'flavor-platform'),
+                'error_conexion'          => __('Error de conexion. Intentalo de nuevo.', 'flavor-platform'),
+                'actualizado'             => __('Datos actualizados', 'flavor-platform'),
+                'sin_actividad'           => __('No hay actividad reciente', 'flavor-platform'),
+                'sin_notificaciones'      => __('No tienes notificaciones pendientes', 'flavor-platform'),
+                'notificacion_descartada' => __('Notificacion descartada', 'flavor-platform'),
+                'preferencias_guardadas'  => __('Preferencias guardadas', 'flavor-platform'),
+                'ver_todo'                => __('Ver todo', 'flavor-platform'),
+                'hace_momentos'           => __('Hace unos momentos', 'flavor-platform'),
+                'hace_minutos'            => __('Hace %d minutos', 'flavor-platform'),
+                'hace_horas'              => __('Hace %d horas', 'flavor-platform'),
+                'hace_dias'               => __('Hace %d dias', 'flavor-platform'),
+                'atajo_actualizar'        => __('Ctrl+R para actualizar', 'flavor-platform'),
+                'atajo_buscar'            => __('Ctrl+K para buscar', 'flavor-platform'),
             ],
         ];
 
@@ -272,7 +272,7 @@ class Flavor_Client_Dashboard {
     public function registrar_elementos_por_defecto() {
         // Estadistica: Reservas del usuario
         $this->registrar_estadistica('reservas', [
-            'label'    => __('Mis Reservas', 'flavor-chat-ia'),
+            'label'    => __('Mis Reservas', 'flavor-platform'),
             'icon'     => 'calendar',
             'color'    => 'primary',
             'callback' => [$this, 'obtener_estadistica_reservas'],
@@ -282,7 +282,7 @@ class Flavor_Client_Dashboard {
 
         // Estadistica: Participaciones
         $this->registrar_estadistica('participaciones', [
-            'label'    => __('Participaciones', 'flavor-chat-ia'),
+            'label'    => __('Participaciones', 'flavor-platform'),
             'icon'     => 'users',
             'color'    => 'success',
             'callback' => [$this, 'obtener_estadistica_participaciones'],
@@ -292,7 +292,7 @@ class Flavor_Client_Dashboard {
 
         // Estadistica: Puntos
         $this->registrar_estadistica('puntos', [
-            'label'    => __('Mis Puntos', 'flavor-chat-ia'),
+            'label'    => __('Mis Puntos', 'flavor-platform'),
             'icon'     => 'star',
             'color'    => 'warning',
             'callback' => [$this, 'obtener_estadistica_puntos'],
@@ -302,7 +302,7 @@ class Flavor_Client_Dashboard {
 
         // Estadistica: Mensajes sin leer
         $this->registrar_estadistica('mensajes', [
-            'label'    => __('Mensajes', 'flavor-chat-ia'),
+            'label'    => __('Mensajes', 'flavor-platform'),
             'icon'     => 'message',
             'color'    => 'info',
             'callback' => [$this, 'obtener_estadistica_mensajes'],
@@ -312,7 +312,7 @@ class Flavor_Client_Dashboard {
 
         // Atajos rapidos por defecto
         $this->registrar_atajo('nueva-reserva', [
-            'label'  => __('Nueva Reserva', 'flavor-chat-ia'),
+            'label'  => __('Nueva Reserva', 'flavor-platform'),
             'icon'   => 'plus-circle',
             'url'    => home_url('/reservas/nueva/'),
             'color'  => 'primary',
@@ -320,7 +320,7 @@ class Flavor_Client_Dashboard {
         ]);
 
         $this->registrar_atajo('mi-perfil', [
-            'label'  => __('Mi Perfil', 'flavor-chat-ia'),
+            'label'  => __('Mi Perfil', 'flavor-platform'),
             'icon'   => 'user',
             'url'    => home_url('/mi-cuenta/?tab=perfil'),
             'color'  => 'secondary',
@@ -328,7 +328,7 @@ class Flavor_Client_Dashboard {
         ]);
 
         $this->registrar_atajo('soporte', [
-            'label'  => __('Soporte', 'flavor-chat-ia'),
+            'label'  => __('Soporte', 'flavor-platform'),
             'icon'   => 'help-circle',
             'url'    => home_url('/soporte/'),
             'color'  => 'info',
@@ -337,7 +337,7 @@ class Flavor_Client_Dashboard {
 
         // Widget: Proximas reservas
         $this->registrar_widget('proximas-reservas', [
-            'title'    => __('Proximas Reservas', 'flavor-chat-ia'),
+            'title'    => __('Proximas Reservas', 'flavor-platform'),
             'icon'     => 'calendar',
             'callback' => [$this, 'render_widget_proximas_reservas'],
             'size'     => 'medium',
@@ -346,7 +346,7 @@ class Flavor_Client_Dashboard {
 
         // Widget: Mensajes recientes
         $this->registrar_widget('mensajes-recientes', [
-            'title'    => __('Mensajes Recientes', 'flavor-chat-ia'),
+            'title'    => __('Mensajes Recientes', 'flavor-platform'),
             'icon'     => 'message',
             'callback' => [$this, 'render_widget_mensajes_recientes'],
             'size'     => 'medium',
@@ -355,7 +355,7 @@ class Flavor_Client_Dashboard {
 
         // Widget: Red de Comunidades
         $this->registrar_widget('widget-network', [
-            'title'    => __('Red de Comunidades', 'flavor-chat-ia'),
+            'title'    => __('Red de Comunidades', 'flavor-platform'),
             'icon'     => 'globe',
             'callback' => [$this, 'render_widget_red_comunidades'],
             'size'     => 'medium',
@@ -364,7 +364,7 @@ class Flavor_Client_Dashboard {
 
         // Widget: Recursos Compartidos
         $this->registrar_widget('widget-shared', [
-            'title'    => __('Recursos Compartidos', 'flavor-chat-ia'),
+            'title'    => __('Recursos Compartidos', 'flavor-platform'),
             'icon'     => 'share',
             'callback' => [$this, 'render_widget_recursos_compartidos'],
             'size'     => 'medium',
@@ -373,7 +373,7 @@ class Flavor_Client_Dashboard {
 
         // Widget: Mapa Interactivo
         $this->registrar_widget('widget-map', [
-            'title'    => __('Mapa Interactivo', 'flavor-chat-ia'),
+            'title'    => __('Mapa Interactivo', 'flavor-platform'),
             'icon'     => 'map',
             'callback' => [$this, 'render_widget_mapa_interactivo'],
             'size'     => 'large',
@@ -382,7 +382,7 @@ class Flavor_Client_Dashboard {
 
         // Widget: Panel de Estadisticas Avanzadas
         $this->registrar_widget('widget-stats-panel', [
-            'title'    => __('Estadisticas Avanzadas', 'flavor-chat-ia'),
+            'title'    => __('Estadisticas Avanzadas', 'flavor-platform'),
             'icon'     => 'trending-up',
             'callback' => [$this, 'render_widget_estadisticas_avanzadas'],
             'size'     => 'large',
@@ -637,7 +637,7 @@ class Flavor_Client_Dashboard {
             </div>
             <div class="fcd-modulo-actions">
                 <a href="<?php echo esc_url($url_modulo); ?>" class="fcd-btn fcd-btn-sm fcd-btn-outline">
-                    <?php esc_html_e('Ver más', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver más', 'flavor-platform'); ?>
                     <span data-feather="arrow-right"></span>
                 </a>
             </div>
@@ -995,17 +995,17 @@ class Flavor_Client_Dashboard {
         $signal_modules = ['avisos_municipales', 'anuncios', 'incidencias', 'notificaciones', 'energia_comunitaria'];
         $action_modules = ['eventos', 'reservas', 'participacion', 'grupos_consumo', 'banco_tiempo', 'ayuda_vecinal', 'tramites', 'socios'];
         $context_labels = [
-            'energia_comunitaria' => __('Energia', 'flavor-chat-ia'),
-            'eventos' => __('Encuentros', 'flavor-chat-ia'),
-            'reservas' => __('Agenda', 'flavor-chat-ia'),
-            'participacion' => __('Decisiones', 'flavor-chat-ia'),
-            'grupos_consumo' => __('Consumo local', 'flavor-chat-ia'),
-            'banco_tiempo' => __('Cuidados', 'flavor-chat-ia'),
-            'ayuda_vecinal' => __('Cuidados', 'flavor-chat-ia'),
-            'incidencias' => __('Atencion', 'flavor-chat-ia'),
-            'avisos_municipales' => __('Avisos', 'flavor-chat-ia'),
-            'socios' => __('Membresia', 'flavor-chat-ia'),
-            'tramites' => __('Gestiones', 'flavor-chat-ia'),
+            'energia_comunitaria' => __('Energia', 'flavor-platform'),
+            'eventos' => __('Encuentros', 'flavor-platform'),
+            'reservas' => __('Agenda', 'flavor-platform'),
+            'participacion' => __('Decisiones', 'flavor-platform'),
+            'grupos_consumo' => __('Consumo local', 'flavor-platform'),
+            'banco_tiempo' => __('Cuidados', 'flavor-platform'),
+            'ayuda_vecinal' => __('Cuidados', 'flavor-platform'),
+            'incidencias' => __('Atencion', 'flavor-platform'),
+            'avisos_municipales' => __('Avisos', 'flavor-platform'),
+            'socios' => __('Membresia', 'flavor-platform'),
+            'tramites' => __('Gestiones', 'flavor-platform'),
         ];
 
         $layers = [
@@ -1041,13 +1041,13 @@ class Flavor_Client_Dashboard {
         foreach ((array) $notificaciones as $notification) {
             $severity = class_exists('Flavor_Dashboard_Severity')
                 ? Flavor_Dashboard_Severity::get_payload(Flavor_Dashboard_Severity::from_notification_type($notification['type'] ?? 'info'))
-                : ['slug' => 'followup', 'label' => __('Seguimiento', 'flavor-chat-ia')];
+                : ['slug' => 'followup', 'label' => __('Seguimiento', 'flavor-platform')];
             $layers['signals'][] = [
-                'label' => $notification['title'] ?? __('Notificacion', 'flavor-chat-ia'),
+                'label' => $notification['title'] ?? __('Notificacion', 'flavor-platform'),
                 'meta' => $notification['message'] ?? '',
                 'url' => home_url('/mi-cuenta/?tab=notificaciones'),
-                'kind' => __('Notificacion', 'flavor-chat-ia'),
-                'context' => __('Nodo', 'flavor-chat-ia'),
+                'kind' => __('Notificacion', 'flavor-platform'),
+                'context' => __('Nodo', 'flavor-platform'),
                 'severity' => $severity,
                 'color' => 'secondary',
                 'target' => '_self',
@@ -1060,7 +1060,7 @@ class Flavor_Client_Dashboard {
                 'id' => $shortcut_id,
                 'label' => $shortcut['label'] ?? $shortcut_id,
                 'url' => $shortcut['url'] ?? '',
-                'kind' => __('Herramienta', 'flavor-chat-ia'),
+                'kind' => __('Herramienta', 'flavor-platform'),
                 'context' => $context_labels[$module_id] ?? '',
                 'icon' => $shortcut['icon'] ?? 'link',
                 'color' => $shortcut['color'] ?? 'secondary',
@@ -1072,10 +1072,10 @@ class Flavor_Client_Dashboard {
                     continue;
                 }
 
-                $item['kind'] = __('Senal', 'flavor-chat-ia');
+                $item['kind'] = __('Senal', 'flavor-platform');
                 $item['severity'] = class_exists('Flavor_Dashboard_Severity')
                     ? Flavor_Dashboard_Severity::get_payload('attention')
-                    : ['slug' => 'attention', 'label' => __('Atención', 'flavor-chat-ia')];
+                    : ['slug' => 'attention', 'label' => __('Atención', 'flavor-platform')];
                 $layers['signals'][] = $item;
                 continue;
             }
@@ -1085,10 +1085,10 @@ class Flavor_Client_Dashboard {
                     continue;
                 }
 
-                $item['kind'] = __('Accion', 'flavor-chat-ia');
+                $item['kind'] = __('Accion', 'flavor-platform');
                 $item['severity'] = class_exists('Flavor_Dashboard_Severity')
                     ? Flavor_Dashboard_Severity::get_payload(in_array($module_id, ['eventos', 'reservas', 'participacion'], true) ? 'attention' : 'followup')
-                    : ['slug' => 'followup', 'label' => __('Seguimiento', 'flavor-chat-ia')];
+                    : ['slug' => 'followup', 'label' => __('Seguimiento', 'flavor-platform')];
                 $layers['actions'][] = $item;
                 continue;
             }
@@ -1228,14 +1228,14 @@ class Flavor_Client_Dashboard {
             $acciones[] = [
                 'id' => 'evento-' . sanitize_key((string) ($evento['id'] ?? wp_generate_uuid4())),
                 'module_id' => 'eventos',
-                'label' => $evento['titulo'] ?? $evento['nombre'] ?? __('Evento cercano', 'flavor-chat-ia'),
+                'label' => $evento['titulo'] ?? $evento['nombre'] ?? __('Evento cercano', 'flavor-platform'),
                 'meta' => implode(' · ', array_filter($meta_parts)),
                 'url' => $evento['url'] ?? home_url('/mi-portal/eventos/'),
-                'kind' => __('Evento cercano', 'flavor-chat-ia'),
-                'context' => __('Encuentros', 'flavor-chat-ia'),
+                'kind' => __('Evento cercano', 'flavor-platform'),
+                'context' => __('Encuentros', 'flavor-platform'),
                 'severity' => class_exists('Flavor_Dashboard_Severity')
                     ? Flavor_Dashboard_Severity::get_payload($severity_slug)
-                    : ['slug' => $severity_slug, 'label' => __('Seguimiento', 'flavor-chat-ia')],
+                    : ['slug' => $severity_slug, 'label' => __('Seguimiento', 'flavor-platform')],
                 'date_ts' => $date_ts,
                 'target' => '_self',
             ];
@@ -1297,7 +1297,7 @@ class Flavor_Client_Dashboard {
                 }
             }
 
-            $espacio = $reserva['nombre_espacio'] ?? $reserva['servicio'] ?? $reserva['titulo'] ?? __('Reserva', 'flavor-chat-ia');
+            $espacio = $reserva['nombre_espacio'] ?? $reserva['servicio'] ?? $reserva['titulo'] ?? __('Reserva', 'flavor-platform');
             $estado = $reserva['status'] ?? '';
             if ($estado !== '') {
                 $meta_parts[] = ucfirst((string) $estado);
@@ -1309,11 +1309,11 @@ class Flavor_Client_Dashboard {
                 'label' => (string) $espacio,
                 'meta' => implode(' · ', array_filter($meta_parts)),
                 'url' => $reserva['url'] ?? home_url('/mi-portal/reservas/'),
-                'kind' => __('Reserva cercana', 'flavor-chat-ia'),
-                'context' => __('Agenda', 'flavor-chat-ia'),
+                'kind' => __('Reserva cercana', 'flavor-platform'),
+                'context' => __('Agenda', 'flavor-platform'),
                 'severity' => class_exists('Flavor_Dashboard_Severity')
                     ? Flavor_Dashboard_Severity::get_payload($severity_slug)
-                    : ['slug' => $severity_slug, 'label' => __('Seguimiento', 'flavor-chat-ia')],
+                    : ['slug' => $severity_slug, 'label' => __('Seguimiento', 'flavor-platform')],
                 'date_ts' => $date_ts,
                 'target' => '_self',
             ];
@@ -1358,17 +1358,17 @@ class Flavor_Client_Dashboard {
             $acciones[] = [
                 'id' => 'participacion-' . sanitize_key((string) ($votacion['id'] ?? wp_generate_uuid4())),
                 'module_id' => 'participacion',
-                'label' => $votacion['titulo'] ?? __('Decision activa', 'flavor-chat-ia'),
+                'label' => $votacion['titulo'] ?? __('Decision activa', 'flavor-platform'),
                 'meta' => sprintf(
-                    __('Cierra %s', 'flavor-chat-ia'),
+                    __('Cierra %s', 'flavor-platform'),
                     date_i18n(get_option('date_format') . ' · ' . get_option('time_format'), $date_ts)
                 ),
                 'url' => home_url('/mi-portal/participacion/votaciones/'),
-                'kind' => __('Decision activa', 'flavor-chat-ia'),
-                'context' => __('Decisiones', 'flavor-chat-ia'),
+                'kind' => __('Decision activa', 'flavor-platform'),
+                'context' => __('Decisiones', 'flavor-platform'),
                 'severity' => class_exists('Flavor_Dashboard_Severity')
                     ? Flavor_Dashboard_Severity::get_payload($severity_slug)
-                    : ['slug' => $severity_slug, 'label' => __('Seguimiento', 'flavor-chat-ia')],
+                    : ['slug' => $severity_slug, 'label' => __('Seguimiento', 'flavor-platform')],
                 'date_ts' => $date_ts,
                 'target' => '_self',
             ];
@@ -1412,7 +1412,7 @@ class Flavor_Client_Dashboard {
             }
             if ($date_ts) {
                 $meta_parts[] = sprintf(
-                    __('Iniciado %s', 'flavor-chat-ia'),
+                    __('Iniciado %s', 'flavor-platform'),
                     date_i18n(get_option('date_format'), $date_ts)
                 );
             }
@@ -1420,14 +1420,14 @@ class Flavor_Client_Dashboard {
             $acciones[] = [
                 'id' => 'tramite-' . sanitize_key((string) ($tramite['id'] ?? wp_generate_uuid4())),
                 'module_id' => 'tramites',
-                'label' => $tramite['titulo'] ?? __('Tramite pendiente', 'flavor-chat-ia'),
+                'label' => $tramite['titulo'] ?? __('Tramite pendiente', 'flavor-platform'),
                 'meta' => implode(' · ', array_filter($meta_parts)),
                 'url' => home_url('/mi-portal/tramites/mis-tramites/'),
-                'kind' => __('Tramite pendiente', 'flavor-chat-ia'),
-                'context' => __('Gestiones', 'flavor-chat-ia'),
+                'kind' => __('Tramite pendiente', 'flavor-platform'),
+                'context' => __('Gestiones', 'flavor-platform'),
                 'severity' => class_exists('Flavor_Dashboard_Severity')
                     ? Flavor_Dashboard_Severity::get_payload($severity_slug)
-                    : ['slug' => $severity_slug, 'label' => __('Seguimiento', 'flavor-chat-ia')],
+                    : ['slug' => $severity_slug, 'label' => __('Seguimiento', 'flavor-platform')],
                 'date_ts' => $date_ts,
                 'target' => '_self',
             ];
@@ -1461,18 +1461,18 @@ class Flavor_Client_Dashboard {
 
                 $signals[] = [
                     'module_id' => 'participacion',
-                    'label' => __('Hay decisiones activas en marcha', 'flavor-chat-ia'),
+                    'label' => __('Hay decisiones activas en marcha', 'flavor-platform'),
                     'meta' => sprintf(
-                        __('%s · cierra %s', 'flavor-chat-ia'),
-                        $votacion['titulo'] ?? __('Votacion activa', 'flavor-chat-ia'),
+                        __('%s · cierra %s', 'flavor-platform'),
+                        $votacion['titulo'] ?? __('Votacion activa', 'flavor-platform'),
                         date_i18n(get_option('date_format') . ' · ' . get_option('time_format'), strtotime($fecha_fin))
                     ),
                     'url' => home_url('/mi-portal/participacion/votaciones/'),
-                    'kind' => __('Senal', 'flavor-chat-ia'),
-                    'context' => __('Decisiones', 'flavor-chat-ia'),
+                    'kind' => __('Senal', 'flavor-platform'),
+                    'context' => __('Decisiones', 'flavor-platform'),
                     'severity' => class_exists('Flavor_Dashboard_Severity')
                         ? Flavor_Dashboard_Severity::get_payload($severity_slug)
-                        : ['slug' => $severity_slug, 'label' => __('Seguimiento', 'flavor-chat-ia')],
+                        : ['slug' => $severity_slug, 'label' => __('Seguimiento', 'flavor-platform')],
                 ];
 
                 return $signals;
@@ -1489,16 +1489,16 @@ class Flavor_Client_Dashboard {
                 $signals[] = [
                     'module_id' => 'participacion',
                     'label' => sprintf(
-                        _n('%d propuesta abierta', '%d propuestas abiertas', $propuestas_abiertas, 'flavor-chat-ia'),
+                        _n('%d propuesta abierta', '%d propuestas abiertas', $propuestas_abiertas, 'flavor-platform'),
                         $propuestas_abiertas
                     ),
-                    'meta' => __('Hay actividad participativa que conviene revisar.', 'flavor-chat-ia'),
+                    'meta' => __('Hay actividad participativa que conviene revisar.', 'flavor-platform'),
                     'url' => home_url('/mi-portal/participacion/propuestas/'),
-                    'kind' => __('Senal', 'flavor-chat-ia'),
-                    'context' => __('Participacion', 'flavor-chat-ia'),
+                    'kind' => __('Senal', 'flavor-platform'),
+                    'context' => __('Participacion', 'flavor-platform'),
                     'severity' => class_exists('Flavor_Dashboard_Severity')
                         ? Flavor_Dashboard_Severity::get_payload('followup')
-                        : ['slug' => 'followup', 'label' => __('Seguimiento', 'flavor-chat-ia')],
+                        : ['slug' => 'followup', 'label' => __('Seguimiento', 'flavor-platform')],
                 ];
             }
         }
@@ -1541,27 +1541,27 @@ class Flavor_Client_Dashboard {
             $meta = [];
             if ($mis_abiertas > 0) {
                 $meta[] = sprintf(
-                    _n('%d incidencia abierta', '%d incidencias abiertas', $mis_abiertas, 'flavor-chat-ia'),
+                    _n('%d incidencia abierta', '%d incidencias abiertas', $mis_abiertas, 'flavor-platform'),
                     $mis_abiertas
                 );
             }
             if ($actualizaciones_nuevas > 0) {
                 $meta[] = sprintf(
-                    _n('%d actualizacion reciente', '%d actualizaciones recientes', $actualizaciones_nuevas, 'flavor-chat-ia'),
+                    _n('%d actualizacion reciente', '%d actualizaciones recientes', $actualizaciones_nuevas, 'flavor-platform'),
                     $actualizaciones_nuevas
                 );
             }
 
             $signals[] = [
                 'module_id' => 'incidencias',
-                'label' => __('Hay incidencias que requieren atención', 'flavor-chat-ia'),
+                'label' => __('Hay incidencias que requieren atención', 'flavor-platform'),
                 'meta' => implode(' · ', $meta),
                 'url' => home_url('/mi-portal/incidencias/mis-incidencias/'),
-                'kind' => __('Senal', 'flavor-chat-ia'),
-                'context' => __('Atencion', 'flavor-chat-ia'),
+                'kind' => __('Senal', 'flavor-platform'),
+                'context' => __('Atencion', 'flavor-platform'),
                 'severity' => class_exists('Flavor_Dashboard_Severity')
                     ? Flavor_Dashboard_Severity::get_payload('attention')
-                    : ['slug' => 'attention', 'label' => __('Atención', 'flavor-chat-ia')],
+                    : ['slug' => 'attention', 'label' => __('Atención', 'flavor-platform')],
             ];
 
             return $signals;
@@ -1576,16 +1576,16 @@ class Flavor_Client_Dashboard {
             $signals[] = [
                 'module_id' => 'incidencias',
                 'label' => sprintf(
-                    _n('%d incidencia en la comunidad', '%d incidencias en la comunidad', $total_abiertas, 'flavor-chat-ia'),
+                    _n('%d incidencia en la comunidad', '%d incidencias en la comunidad', $total_abiertas, 'flavor-platform'),
                     $total_abiertas
                 ),
-                'meta' => __('Hay actividad comunitaria de seguimiento en incidencias.', 'flavor-chat-ia'),
+                'meta' => __('Hay actividad comunitaria de seguimiento en incidencias.', 'flavor-platform'),
                 'url' => home_url('/mi-portal/incidencias/'),
-                'kind' => __('Senal', 'flavor-chat-ia'),
-                'context' => __('Nodo', 'flavor-chat-ia'),
+                'kind' => __('Senal', 'flavor-platform'),
+                'context' => __('Nodo', 'flavor-platform'),
                 'severity' => class_exists('Flavor_Dashboard_Severity')
                     ? Flavor_Dashboard_Severity::get_payload('followup')
-                    : ['slug' => 'followup', 'label' => __('Seguimiento', 'flavor-chat-ia')],
+                    : ['slug' => 'followup', 'label' => __('Seguimiento', 'flavor-platform')],
             ];
         }
 
@@ -1629,25 +1629,25 @@ class Flavor_Client_Dashboard {
         if ($estado === 'suspendido' || $cuotas_pendientes > 0) {
             $meta_parts = [];
             if ($estado === 'suspendido') {
-                $meta_parts[] = __('Tu membresía está suspendida.', 'flavor-chat-ia');
+                $meta_parts[] = __('Tu membresía está suspendida.', 'flavor-platform');
             }
             if ($cuotas_pendientes > 0) {
                 $meta_parts[] = sprintf(
-                    _n('%d cuota pendiente', '%d cuotas pendientes', $cuotas_pendientes, 'flavor-chat-ia'),
+                    _n('%d cuota pendiente', '%d cuotas pendientes', $cuotas_pendientes, 'flavor-platform'),
                     $cuotas_pendientes
                 );
             }
 
             $signals[] = [
                 'module_id' => 'socios',
-                'label' => __('Tu vínculo de miembro requiere atención', 'flavor-chat-ia'),
+                'label' => __('Tu vínculo de miembro requiere atención', 'flavor-platform'),
                 'meta' => implode(' · ', $meta_parts),
                 'url' => home_url('/mi-portal/socios/cuotas/'),
-                'kind' => __('Senal', 'flavor-chat-ia'),
-                'context' => __('Membresia', 'flavor-chat-ia'),
+                'kind' => __('Senal', 'flavor-platform'),
+                'context' => __('Membresia', 'flavor-platform'),
                 'severity' => class_exists('Flavor_Dashboard_Severity')
                     ? Flavor_Dashboard_Severity::get_payload('attention')
-                    : ['slug' => 'attention', 'label' => __('Atención', 'flavor-chat-ia')],
+                    : ['slug' => 'attention', 'label' => __('Atención', 'flavor-platform')],
             ];
 
             return $signals;
@@ -1656,14 +1656,14 @@ class Flavor_Client_Dashboard {
         if ($estado === 'pendiente') {
             $signals[] = [
                 'module_id' => 'socios',
-                'label' => __('Tu membresía sigue pendiente de revisión', 'flavor-chat-ia'),
-                'meta' => __('Conviene revisar tu estado y completar lo que falte.', 'flavor-chat-ia'),
+                'label' => __('Tu membresía sigue pendiente de revisión', 'flavor-platform'),
+                'meta' => __('Conviene revisar tu estado y completar lo que falte.', 'flavor-platform'),
                 'url' => home_url('/mi-portal/socios/mi-perfil/'),
-                'kind' => __('Senal', 'flavor-chat-ia'),
-                'context' => __('Membresia', 'flavor-chat-ia'),
+                'kind' => __('Senal', 'flavor-platform'),
+                'context' => __('Membresia', 'flavor-platform'),
                 'severity' => class_exists('Flavor_Dashboard_Severity')
                     ? Flavor_Dashboard_Severity::get_payload('followup')
-                    : ['slug' => 'followup', 'label' => __('Seguimiento', 'flavor-chat-ia')],
+                    : ['slug' => 'followup', 'label' => __('Seguimiento', 'flavor-platform')],
             ];
         }
 
@@ -1709,7 +1709,7 @@ class Flavor_Client_Dashboard {
         $ciclo_id = (int) $ciclos[0];
         $fecha_cierre = (string) get_post_meta($ciclo_id, '_gc_fecha_cierre', true);
         $fecha_entrega = (string) get_post_meta($ciclo_id, '_gc_fecha_entrega', true);
-        $titulo_ciclo = get_the_title($ciclo_id) ?: __('Ciclo activo', 'flavor-chat-ia');
+        $titulo_ciclo = get_the_title($ciclo_id) ?: __('Ciclo activo', 'flavor-platform');
 
         $tiene_pedido = (int) $wpdb->get_var($wpdb->prepare(
             "SELECT COUNT(*) FROM {$tabla_pedidos} WHERE usuario_id = %d AND ciclo_id = %d",
@@ -1721,15 +1721,15 @@ class Flavor_Client_Dashboard {
         if ($fecha_cierre) {
             $candidatas[] = [
                 'date' => $fecha_cierre,
-                'kind' => __('Cierre de ciclo', 'flavor-chat-ia'),
-                'meta_prefix' => __('Cierra', 'flavor-chat-ia'),
+                'kind' => __('Cierre de ciclo', 'flavor-platform'),
+                'meta_prefix' => __('Cierra', 'flavor-platform'),
             ];
         }
         if ($fecha_entrega && $tiene_pedido) {
             $candidatas[] = [
                 'date' => $fecha_entrega,
-                'kind' => __('Entrega cercana', 'flavor-chat-ia'),
-                'meta_prefix' => __('Entrega', 'flavor-chat-ia'),
+                'kind' => __('Entrega cercana', 'flavor-platform'),
+                'meta_prefix' => __('Entrega', 'flavor-platform'),
             ];
         }
 
@@ -1752,16 +1752,16 @@ class Flavor_Client_Dashboard {
                 'module_id' => 'grupos_consumo',
                 'label' => $titulo_ciclo,
                 'meta' => sprintf(
-                    __('%s %s', 'flavor-chat-ia'),
+                    __('%s %s', 'flavor-platform'),
                     $candidata['meta_prefix'],
                     date_i18n(get_option('date_format'), $date_ts)
                 ),
                 'url' => home_url('/mi-portal/grupos-consumo/'),
                 'kind' => $candidata['kind'],
-                'context' => __('Consumo local', 'flavor-chat-ia'),
+                'context' => __('Consumo local', 'flavor-platform'),
                 'severity' => class_exists('Flavor_Dashboard_Severity')
                     ? Flavor_Dashboard_Severity::get_payload($severity_slug)
-                    : ['slug' => $severity_slug, 'label' => __('Seguimiento', 'flavor-chat-ia')],
+                    : ['slug' => $severity_slug, 'label' => __('Seguimiento', 'flavor-platform')],
                 'date_ts' => $date_ts,
                 'target' => '_self',
             ];
@@ -1812,18 +1812,18 @@ class Flavor_Client_Dashboard {
         if ($module_key !== '' && !empty($registered_modules[$module_key]['ecosystem']['display_role_label'])) {
             $display_role = sanitize_key((string) ($registered_modules[$module_key]['ecosystem']['display_role'] ?? $role));
             if ($display_role === 'base-standalone') {
-                return __('Base local', 'flavor-chat-ia');
+                return __('Base local', 'flavor-platform');
             }
         }
 
         switch ($role) {
             case 'base':
-                return __('Base', 'flavor-chat-ia');
+                return __('Base', 'flavor-platform');
             case 'transversal':
-                return __('Transversal', 'flavor-chat-ia');
+                return __('Transversal', 'flavor-platform');
             case 'vertical':
             default:
-                return __('Vertical', 'flavor-chat-ia');
+                return __('Vertical', 'flavor-platform');
         }
     }
 
@@ -1928,10 +1928,10 @@ class Flavor_Client_Dashboard {
             'dashboard_instance'    => $this,
             'portal_url'            => home_url('/mi-portal/'),
             'legacy_notice'         => [
-                'eyebrow' => __('Vista heredada', 'flavor-chat-ia'),
-                'title'   => __('Mi Portal es ahora el dashboard principal', 'flavor-chat-ia'),
-                'text'    => __('Este panel se mantiene por compatibilidad con paginas que usan el shortcode [flavor_client_dashboard]. Usa Mi Portal para la experiencia principal del nodo.', 'flavor-chat-ia'),
-                'cta'     => __('Abrir Mi Portal', 'flavor-chat-ia'),
+                'eyebrow' => __('Vista heredada', 'flavor-platform'),
+                'title'   => __('Mi Portal es ahora el dashboard principal', 'flavor-platform'),
+                'text'    => __('Este panel se mantiene por compatibilidad con paginas que usan el shortcode [flavor_client_dashboard]. Usa Mi Portal para la experiencia principal del nodo.', 'flavor-platform'),
+                'cta'     => __('Abrir Mi Portal', 'flavor-platform'),
             ],
         ];
 
@@ -1961,15 +1961,15 @@ class Flavor_Client_Dashboard {
                         <line x1="15" y1="12" x2="3" y2="12"/>
                     </svg>
                 </div>
-                <h2><?php esc_html_e('Acceso Requerido', 'flavor-chat-ia'); ?></h2>
-                <p><?php esc_html_e('Necesitas iniciar sesion para acceder a tu panel personal.', 'flavor-chat-ia'); ?></p>
+                <h2><?php esc_html_e('Acceso Requerido', 'flavor-platform'); ?></h2>
+                <p><?php esc_html_e('Necesitas iniciar sesion para acceder a tu panel personal.', 'flavor-platform'); ?></p>
                 <div class="flavor-client-dashboard__login-actions">
                     <a href="<?php echo esc_url(wp_login_url($this->get_current_request_url())); ?>" class="flavor-btn flavor-btn--primary">
-                        <?php esc_html_e('Iniciar Sesion', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Iniciar Sesion', 'flavor-platform'); ?>
                     </a>
                     <?php if (get_option('users_can_register')) : ?>
                         <a href="<?php echo esc_url(wp_registration_url()); ?>" class="flavor-btn flavor-btn--outline">
-                            <?php esc_html_e('Crear Cuenta', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Crear Cuenta', 'flavor-platform'); ?>
                         </a>
                     <?php endif; ?>
                 </div>
@@ -2004,11 +2004,11 @@ class Flavor_Client_Dashboard {
         $hora_actual = (int) current_time('G');
 
         if ($hora_actual >= 5 && $hora_actual < 12) {
-            return __('Buenos dias', 'flavor-chat-ia');
+            return __('Buenos dias', 'flavor-platform');
         } elseif ($hora_actual >= 12 && $hora_actual < 20) {
-            return __('Buenas tardes', 'flavor-chat-ia');
+            return __('Buenas tardes', 'flavor-platform');
         } else {
-            return __('Buenas noches', 'flavor-chat-ia');
+            return __('Buenas noches', 'flavor-platform');
         }
     }
 
@@ -2170,7 +2170,7 @@ class Flavor_Client_Dashboard {
 
         return [
             'valor' => $total_reservas,
-            'texto' => sprintf(__('%d proximas', 'flavor-chat-ia'), $proximas_reservas),
+            'texto' => sprintf(__('%d proximas', 'flavor-platform'), $proximas_reservas),
         ];
     }
 
@@ -2188,7 +2188,7 @@ class Flavor_Client_Dashboard {
 
         return [
             'valor' => $participaciones,
-            'texto' => __('Este mes', 'flavor-chat-ia'),
+            'texto' => __('Este mes', 'flavor-platform'),
         ];
     }
 
@@ -2204,7 +2204,7 @@ class Flavor_Client_Dashboard {
 
         return [
             'valor' => $puntos,
-            'texto' => sprintf(__('Nivel %s', 'flavor-chat-ia'), $nivel),
+            'texto' => sprintf(__('Nivel %s', 'flavor-platform'), $nivel),
         ];
     }
 
@@ -2224,7 +2224,7 @@ class Flavor_Client_Dashboard {
 
         return [
             'valor' => $mensajes_sin_leer,
-            'texto' => __('Sin leer', 'flavor-chat-ia'),
+            'texto' => __('Sin leer', 'flavor-platform'),
         ];
     }
 
@@ -2236,16 +2236,16 @@ class Flavor_Client_Dashboard {
      */
     private function calcular_nivel_usuario($puntos) {
         if ($puntos >= 10000) {
-            return __('Experto', 'flavor-chat-ia');
+            return __('Experto', 'flavor-platform');
         } elseif ($puntos >= 5000) {
-            return __('Avanzado', 'flavor-chat-ia');
+            return __('Avanzado', 'flavor-platform');
         } elseif ($puntos >= 1000) {
-            return __('Intermedio', 'flavor-chat-ia');
+            return __('Intermedio', 'flavor-platform');
         } elseif ($puntos >= 100) {
-            return __('Basico', 'flavor-chat-ia');
+            return __('Basico', 'flavor-platform');
         }
 
-        return __('Nuevo', 'flavor-chat-ia');
+        return __('Nuevo', 'flavor-platform');
     }
 
     // =========================================================================
@@ -2275,8 +2275,8 @@ class Flavor_Client_Dashboard {
 
         if (empty($reservas)) {
             echo '<div class="flavor-widget-empty">';
-            echo '<p>' . esc_html__('No tienes reservas proximas', 'flavor-chat-ia') . '</p>';
-            echo '<a href="' . esc_url(home_url('/reservas/')) . '" class="flavor-btn flavor-btn--sm flavor-btn--outline">' . esc_html__('Hacer una reserva', 'flavor-chat-ia') . '</a>';
+            echo '<p>' . esc_html__('No tienes reservas proximas', 'flavor-platform') . '</p>';
+            echo '<a href="' . esc_url(home_url('/reservas/')) . '" class="flavor-btn flavor-btn--sm flavor-btn--outline">' . esc_html__('Hacer una reserva', 'flavor-platform') . '</a>';
             echo '</div>';
             return;
         }
@@ -2289,7 +2289,7 @@ class Flavor_Client_Dashboard {
 
             echo '<li class="flavor-widget-list__item">';
             echo '<div class="flavor-widget-list__content">';
-            echo '<span class="flavor-widget-list__title">' . esc_html($reserva['servicio'] ?? __('Reserva', 'flavor-chat-ia')) . '</span>';
+            echo '<span class="flavor-widget-list__title">' . esc_html($reserva['servicio'] ?? __('Reserva', 'flavor-platform')) . '</span>';
             echo '<span class="flavor-widget-list__meta">' . esc_html($fecha_formateada);
             if ($hora_formateada) {
                 echo ' - ' . esc_html($hora_formateada);
@@ -2312,21 +2312,21 @@ class Flavor_Client_Dashboard {
 
         if (empty($notificaciones)) {
             echo '<div class="flavor-widget-empty">';
-            echo '<p>' . esc_html__('No tienes mensajes nuevos', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('No tienes mensajes nuevos', 'flavor-platform') . '</p>';
             echo '</div>';
             return;
         }
 
         echo '<ul class="flavor-widget-list">';
         foreach ($notificaciones as $notificacion) {
-            $titulo = $notificacion['title'] ?? __('Notificacion', 'flavor-chat-ia');
+            $titulo = $notificacion['title'] ?? __('Notificacion', 'flavor-platform');
             $fecha = isset($notificacion['created_at']) ? human_time_diff(strtotime($notificacion['created_at'])) : '';
 
             echo '<li class="flavor-widget-list__item">';
             echo '<div class="flavor-widget-list__content">';
             echo '<span class="flavor-widget-list__title">' . esc_html($titulo) . '</span>';
             if ($fecha) {
-                echo '<span class="flavor-widget-list__meta">' . sprintf(esc_html__('Hace %s', 'flavor-chat-ia'), esc_html($fecha)) . '</span>';
+                echo '<span class="flavor-widget-list__meta">' . sprintf(esc_html__('Hace %s', 'flavor-platform'), esc_html($fecha)) . '</span>';
             }
             echo '</div>';
             if (!empty($notificacion['is_read']) && !$notificacion['is_read']) {
@@ -2411,16 +2411,16 @@ class Flavor_Client_Dashboard {
         $diferencia = time() - $timestamp;
 
         if ($diferencia < 60) {
-            return __('Hace unos momentos', 'flavor-chat-ia');
+            return __('Hace unos momentos', 'flavor-platform');
         } elseif ($diferencia < 3600) {
             $minutos = floor($diferencia / 60);
-            return sprintf(__('Hace %d minutos', 'flavor-chat-ia'), $minutos);
+            return sprintf(__('Hace %d minutos', 'flavor-platform'), $minutos);
         } elseif ($diferencia < 86400) {
             $horas = floor($diferencia / 3600);
-            return sprintf(__('Hace %d horas', 'flavor-chat-ia'), $horas);
+            return sprintf(__('Hace %d horas', 'flavor-platform'), $horas);
         } elseif ($diferencia < 604800) {
             $dias = floor($diferencia / 86400);
-            return sprintf(__('Hace %d dias', 'flavor-chat-ia'), $dias);
+            return sprintf(__('Hace %d dias', 'flavor-platform'), $dias);
         }
 
         return date_i18n(get_option('date_format'), $timestamp);
@@ -2437,7 +2437,7 @@ class Flavor_Client_Dashboard {
         check_ajax_referer('flavor_client_dashboard', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No autorizado', 'flavor-platform')]);
         }
 
         $id_usuario = get_current_user_id();
@@ -2455,7 +2455,7 @@ class Flavor_Client_Dashboard {
         check_ajax_referer('flavor_client_dashboard', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No autorizado', 'flavor-platform')]);
         }
 
         $id_usuario = get_current_user_id();
@@ -2475,7 +2475,7 @@ class Flavor_Client_Dashboard {
             ]);
         }
 
-        wp_send_json_error(['message' => __('Widget no encontrado', 'flavor-chat-ia')]);
+        wp_send_json_error(['message' => __('Widget no encontrado', 'flavor-platform')]);
     }
 
     /**
@@ -2485,7 +2485,7 @@ class Flavor_Client_Dashboard {
         check_ajax_referer('flavor_client_dashboard', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No autorizado', 'flavor-platform')]);
         }
 
         $id_usuario = get_current_user_id();
@@ -2504,7 +2504,7 @@ class Flavor_Client_Dashboard {
         check_ajax_referer('flavor_client_dashboard', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No autorizado', 'flavor-platform')]);
         }
 
         $id_usuario = get_current_user_id();
@@ -2524,13 +2524,13 @@ class Flavor_Client_Dashboard {
         check_ajax_referer('flavor_client_dashboard', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No autorizado', 'flavor-platform')]);
         }
 
         $id_notificacion = isset($_POST['notification_id']) ? absint($_POST['notification_id']) : 0;
 
         if (!$id_notificacion) {
-            wp_send_json_error(['message' => __('ID de notificacion no valido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID de notificacion no valido', 'flavor-platform')]);
         }
 
         if (class_exists('Flavor_Notification_Manager')) {
@@ -2539,7 +2539,7 @@ class Flavor_Client_Dashboard {
         }
 
         wp_send_json_success([
-            'message' => __('Notificacion descartada', 'flavor-chat-ia'),
+            'message' => __('Notificacion descartada', 'flavor-platform'),
         ]);
     }
 
@@ -2550,7 +2550,7 @@ class Flavor_Client_Dashboard {
         check_ajax_referer('flavor_client_dashboard', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No autorizado', 'flavor-platform')]);
         }
 
         $id_usuario = get_current_user_id();
@@ -2572,12 +2572,12 @@ class Flavor_Client_Dashboard {
 
         if ($guardado_exitoso) {
             wp_send_json_success([
-                'message'      => __('Preferencias guardadas', 'flavor-chat-ia'),
+                'message'      => __('Preferencias guardadas', 'flavor-platform'),
                 'preferencias' => $this->obtener_preferencias_usuario($id_usuario),
             ]);
         }
 
-        wp_send_json_error(['message' => __('Error al guardar preferencias', 'flavor-chat-ia')]);
+        wp_send_json_error(['message' => __('Error al guardar preferencias', 'flavor-platform')]);
     }
 
     // =========================================================================
@@ -2604,7 +2604,7 @@ class Flavor_Client_Dashboard {
                         <?php echo esc_html(number_format_i18n($estadisticas_red['total_nodos'] ?? 0)); ?>
                     </span>
                     <span class="flavor-widget-network__stat-label">
-                        <?php esc_html_e('Comunidades', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Comunidades', 'flavor-platform'); ?>
                     </span>
                 </div>
                 <div class="flavor-widget-network__stat">
@@ -2612,7 +2612,7 @@ class Flavor_Client_Dashboard {
                         <?php echo esc_html(number_format_i18n($estadisticas_red['total_usuarios'] ?? 0)); ?>
                     </span>
                     <span class="flavor-widget-network__stat-label">
-                        <?php esc_html_e('Usuarios', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Usuarios', 'flavor-platform'); ?>
                     </span>
                 </div>
                 <div class="flavor-widget-network__stat">
@@ -2620,7 +2620,7 @@ class Flavor_Client_Dashboard {
                         <?php echo esc_html(number_format_i18n($estadisticas_red['contenido_compartido'] ?? 0)); ?>
                     </span>
                     <span class="flavor-widget-network__stat-label">
-                        <?php esc_html_e('Contenidos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Contenidos', 'flavor-platform'); ?>
                     </span>
                 </div>
             </div>
@@ -2629,7 +2629,7 @@ class Flavor_Client_Dashboard {
             <?php if (!empty($nodos_conectados)) : ?>
                 <div class="flavor-widget-network__nodes">
                     <h4 class="flavor-widget-network__subtitle">
-                        <?php esc_html_e('Comunidades Conectadas', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Comunidades Conectadas', 'flavor-platform'); ?>
                     </h4>
                     <ul class="flavor-widget-network__nodes-list">
                         <?php foreach (array_slice($nodos_conectados, 0, 5) as $nodo) : ?>
@@ -2648,12 +2648,12 @@ class Flavor_Client_Dashboard {
                                         <?php echo esc_html($nodo['nombre']); ?>
                                     </span>
                                     <span class="flavor-widget-network__node-type">
-                                        <?php echo esc_html($nodo['tipo'] ?? __('Comunidad', 'flavor-chat-ia')); ?>
+                                        <?php echo esc_html($nodo['tipo'] ?? __('Comunidad', 'flavor-platform')); ?>
                                     </span>
                                 </div>
                                 <?php if (!empty($nodo['estado']) && $nodo['estado'] === 'activo') : ?>
                                     <span class="flavor-indicator flavor-indicator--online"
-                                          title="<?php esc_attr_e('Activo', 'flavor-chat-ia'); ?>"></span>
+                                          title="<?php esc_attr_e('Activo', 'flavor-platform'); ?>"></span>
                                 <?php endif; ?>
                             </li>
                         <?php endforeach; ?>
@@ -2665,7 +2665,7 @@ class Flavor_Client_Dashboard {
             <?php if (!empty($actualizaciones_recientes)) : ?>
                 <div class="flavor-widget-network__updates">
                     <h4 class="flavor-widget-network__subtitle">
-                        <?php esc_html_e('Ultimas Actualizaciones', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ultimas Actualizaciones', 'flavor-platform'); ?>
                     </h4>
                     <ul class="flavor-widget-network__updates-list">
                         <?php foreach (array_slice($actualizaciones_recientes, 0, 3) as $actualizacion) : ?>
@@ -2687,7 +2687,7 @@ class Flavor_Client_Dashboard {
 
             <?php if (empty($nodos_conectados) && empty($actualizaciones_recientes)) : ?>
                 <div class="flavor-widget-empty">
-                    <p><?php esc_html_e('Aun no estas conectado a ninguna red', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Aun no estas conectado a ninguna red', 'flavor-platform'); ?></p>
                 </div>
             <?php endif; ?>
 
@@ -2695,7 +2695,7 @@ class Flavor_Client_Dashboard {
             <a href="<?php echo esc_url(home_url('/red-comunidades/')); ?>"
                class="flavor-widget-network__explore-link">
                 <?php echo $this->obtener_icono_svg('external', 14); ?>
-                <?php esc_html_e('Explorar la Red', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Explorar la Red', 'flavor-platform'); ?>
             </a>
         </div>
         <?php
@@ -2711,10 +2711,10 @@ class Flavor_Client_Dashboard {
         $filtro_activo = isset($_GET['tipo_recurso']) ? sanitize_key($_GET['tipo_recurso']) : 'todos';
 
         $tipos_recursos = [
-            'todos'     => __('Todos', 'flavor-chat-ia'),
-            'eventos'   => __('Eventos', 'flavor-chat-ia'),
-            'ofertas'   => __('Ofertas', 'flavor-chat-ia'),
-            'servicios' => __('Servicios', 'flavor-chat-ia'),
+            'todos'     => __('Todos', 'flavor-platform'),
+            'eventos'   => __('Eventos', 'flavor-platform'),
+            'ofertas'   => __('Ofertas', 'flavor-platform'),
+            'servicios' => __('Servicios', 'flavor-platform'),
         ];
 
         ?>
@@ -2753,9 +2753,9 @@ class Flavor_Client_Dashboard {
                                 </span>
                                 <div class="flavor-widget-shared__item-meta">
                                     <span class="flavor-widget-shared__item-origin"
-                                          title="<?php esc_attr_e('Origen', 'flavor-chat-ia'); ?>">
+                                          title="<?php esc_attr_e('Origen', 'flavor-platform'); ?>">
                                         <?php echo $this->obtener_icono_svg('globe', 12); ?>
-                                        <?php echo esc_html($recurso['origen'] ?? __('Local', 'flavor-chat-ia')); ?>
+                                        <?php echo esc_html($recurso['origen'] ?? __('Local', 'flavor-platform')); ?>
                                     </span>
                                     <?php if (!empty($recurso['fecha'])) : ?>
                                         <time class="flavor-widget-shared__item-date">
@@ -2767,7 +2767,7 @@ class Flavor_Client_Dashboard {
                             <?php if (!empty($recurso['url'])) : ?>
                                 <a href="<?php echo esc_url($recurso['url']); ?>"
                                    class="flavor-widget-shared__item-link"
-                                   aria-label="<?php esc_attr_e('Ver mas', 'flavor-chat-ia'); ?>">
+                                   aria-label="<?php esc_attr_e('Ver mas', 'flavor-platform'); ?>">
                                     <?php echo $this->obtener_icono_svg('external', 14); ?>
                                 </a>
                             <?php endif; ?>
@@ -2777,7 +2777,7 @@ class Flavor_Client_Dashboard {
 
                 <a href="<?php echo esc_url(home_url('/recursos-compartidos/')); ?>"
                    class="flavor-widget-shared__view-more">
-                    <?php esc_html_e('Ver mas recursos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver mas recursos', 'flavor-platform'); ?>
                     <?php echo $this->obtener_icono_svg('external', 14); ?>
                 </a>
             <?php else : ?>
@@ -2785,7 +2785,7 @@ class Flavor_Client_Dashboard {
                     <div class="flavor-widget-empty__icon">
                         <?php echo $this->obtener_icono_svg('share', 32); ?>
                     </div>
-                    <p><?php esc_html_e('No hay recursos compartidos disponibles', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay recursos compartidos disponibles', 'flavor-platform'); ?></p>
                 </div>
             <?php endif; ?>
         </div>
@@ -2811,12 +2811,12 @@ class Flavor_Client_Dashboard {
                 <div class="flavor-widget-map__filters">
                     <?php
                     $categorias_mapa = [
-                        'todos'      => ['label' => __('Todos', 'flavor-chat-ia'), 'icon' => 'layers'],
-                        'bicicletas' => ['label' => __('Bicicletas', 'flavor-chat-ia'), 'icon' => 'bike'],
-                        'parkings'   => ['label' => __('Parkings', 'flavor-chat-ia'), 'icon' => 'parking'],
-                        'huertos'    => ['label' => __('Huertos', 'flavor-chat-ia'), 'icon' => 'leaf'],
-                        'reciclaje'  => ['label' => __('Reciclaje', 'flavor-chat-ia'), 'icon' => 'recycle'],
-                        'espacios'   => ['label' => __('Espacios', 'flavor-chat-ia'), 'icon' => 'home'],
+                        'todos'      => ['label' => __('Todos', 'flavor-platform'), 'icon' => 'layers'],
+                        'bicicletas' => ['label' => __('Bicicletas', 'flavor-platform'), 'icon' => 'bike'],
+                        'parkings'   => ['label' => __('Parkings', 'flavor-platform'), 'icon' => 'parking'],
+                        'huertos'    => ['label' => __('Huertos', 'flavor-platform'), 'icon' => 'leaf'],
+                        'reciclaje'  => ['label' => __('Reciclaje', 'flavor-platform'), 'icon' => 'recycle'],
+                        'espacios'   => ['label' => __('Espacios', 'flavor-platform'), 'icon' => 'home'],
                     ];
 
                     foreach ($categorias_mapa as $cat_clave => $cat_config) :
@@ -2834,7 +2834,7 @@ class Flavor_Client_Dashboard {
                 <button type="button"
                         class="flavor-widget-map__locate-btn"
                         id="flavor-map-locate"
-                        title="<?php esc_attr_e('Mi ubicacion', 'flavor-chat-ia'); ?>">
+                        title="<?php esc_attr_e('Mi ubicacion', 'flavor-platform'); ?>">
                     <?php echo $this->obtener_icono_svg('map-pin', 18); ?>
                 </button>
             </div>
@@ -2848,7 +2848,7 @@ class Flavor_Client_Dashboard {
                  data-markers="<?php echo esc_attr(wp_json_encode($marcadores)); ?>">
                 <div class="flavor-widget-map__loading">
                     <div class="flavor-widget-map__loading-spinner"></div>
-                    <span><?php esc_html_e('Cargando mapa...', 'flavor-chat-ia'); ?></span>
+                    <span><?php esc_html_e('Cargando mapa...', 'flavor-platform'); ?></span>
                 </div>
             </div>
 
@@ -2856,19 +2856,19 @@ class Flavor_Client_Dashboard {
             <div class="flavor-widget-map__legend">
                 <span class="flavor-widget-map__legend-item flavor-widget-map__legend-item--bicicletas">
                     <?php echo $this->obtener_icono_svg('bike', 12); ?>
-                    <?php esc_html_e('Bicicletas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Bicicletas', 'flavor-platform'); ?>
                 </span>
                 <span class="flavor-widget-map__legend-item flavor-widget-map__legend-item--parkings">
                     <?php echo $this->obtener_icono_svg('parking', 12); ?>
-                    <?php esc_html_e('Parkings', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Parkings', 'flavor-platform'); ?>
                 </span>
                 <span class="flavor-widget-map__legend-item flavor-widget-map__legend-item--huertos">
                     <?php echo $this->obtener_icono_svg('leaf', 12); ?>
-                    <?php esc_html_e('Huertos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Huertos', 'flavor-platform'); ?>
                 </span>
                 <span class="flavor-widget-map__legend-item flavor-widget-map__legend-item--reciclaje">
                     <?php echo $this->obtener_icono_svg('recycle', 12); ?>
-                    <?php esc_html_e('Reciclaje', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Reciclaje', 'flavor-platform'); ?>
                 </span>
             </div>
 
@@ -2876,7 +2876,7 @@ class Flavor_Client_Dashboard {
             <a href="<?php echo esc_url(home_url('/mapa/')); ?>"
                class="flavor-widget-map__expand-link">
                 <?php echo $this->obtener_icono_svg('external', 14); ?>
-                <?php esc_html_e('Ver mapa completo', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver mapa completo', 'flavor-platform'); ?>
             </a>
         </div>
         <?php
@@ -2901,17 +2901,17 @@ class Flavor_Client_Dashboard {
                     <button type="button"
                             class="flavor-widget-stats-panel__period-btn flavor-widget-stats-panel__period-btn--active"
                             data-period="7d">
-                        <?php esc_html_e('7 dias', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('7 dias', 'flavor-platform'); ?>
                     </button>
                     <button type="button"
                             class="flavor-widget-stats-panel__period-btn"
                             data-period="30d">
-                        <?php esc_html_e('30 dias', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('30 dias', 'flavor-platform'); ?>
                     </button>
                     <button type="button"
                             class="flavor-widget-stats-panel__period-btn"
                             data-period="90d">
-                        <?php esc_html_e('90 dias', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('90 dias', 'flavor-platform'); ?>
                     </button>
                 </div>
             </div>
@@ -2919,7 +2919,7 @@ class Flavor_Client_Dashboard {
             <!-- Grafico de actividad -->
             <div class="flavor-widget-stats-panel__chart">
                 <h4 class="flavor-widget-stats-panel__chart-title">
-                    <?php esc_html_e('Tu Actividad', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Tu Actividad', 'flavor-platform'); ?>
                 </h4>
                 <div class="flavor-widget-stats-panel__chart-container"
                      id="flavor-activity-chart"
@@ -2928,13 +2928,13 @@ class Flavor_Client_Dashboard {
                     <div class="flavor-widget-stats-panel__bars">
                         <?php
                         $dias_semana = [
-                            __('Lun', 'flavor-chat-ia'),
-                            __('Mar', 'flavor-chat-ia'),
-                            __('Mie', 'flavor-chat-ia'),
-                            __('Jue', 'flavor-chat-ia'),
-                            __('Vie', 'flavor-chat-ia'),
-                            __('Sab', 'flavor-chat-ia'),
-                            __('Dom', 'flavor-chat-ia'),
+                            __('Lun', 'flavor-platform'),
+                            __('Mar', 'flavor-platform'),
+                            __('Mie', 'flavor-platform'),
+                            __('Jue', 'flavor-platform'),
+                            __('Vie', 'flavor-platform'),
+                            __('Sab', 'flavor-platform'),
+                            __('Dom', 'flavor-platform'),
                         ];
 
                         $valor_maximo = !empty($actividad_semanal) ? max(array_column($actividad_semanal, 'valor')) : 1;
@@ -2951,7 +2951,7 @@ class Flavor_Client_Dashboard {
                                 <div class="flavor-widget-stats-panel__bar <?php echo $es_hoy ? 'flavor-widget-stats-panel__bar--today' : ''; ?>"
                                      style="height: <?php echo esc_attr(max(5, $porcentaje_altura)); ?>%;"
                                      data-value="<?php echo esc_attr($valor_dia); ?>"
-                                     title="<?php echo esc_attr(sprintf(__('%d acciones', 'flavor-chat-ia'), $valor_dia)); ?>">
+                                     title="<?php echo esc_attr(sprintf(__('%d acciones', 'flavor-platform'), $valor_dia)); ?>">
                                 </div>
                                 <span class="flavor-widget-stats-panel__bar-label"><?php echo esc_html($dia_nombre); ?></span>
                             </div>
@@ -2963,14 +2963,14 @@ class Flavor_Client_Dashboard {
             <!-- Comparativa con periodo anterior -->
             <div class="flavor-widget-stats-panel__comparison">
                 <h4 class="flavor-widget-stats-panel__section-title">
-                    <?php esc_html_e('vs. Semana Anterior', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('vs. Semana Anterior', 'flavor-platform'); ?>
                 </h4>
                 <div class="flavor-widget-stats-panel__comparison-grid">
                     <?php
                     $metricas_comparativa = [
-                        'participaciones' => ['label' => __('Participaciones', 'flavor-chat-ia'), 'icon' => 'users'],
-                        'reservas'        => ['label' => __('Reservas', 'flavor-chat-ia'), 'icon' => 'calendar'],
-                        'interacciones'   => ['label' => __('Interacciones', 'flavor-chat-ia'), 'icon' => 'activity'],
+                        'participaciones' => ['label' => __('Participaciones', 'flavor-platform'), 'icon' => 'users'],
+                        'reservas'        => ['label' => __('Reservas', 'flavor-platform'), 'icon' => 'calendar'],
+                        'interacciones'   => ['label' => __('Interacciones', 'flavor-platform'), 'icon' => 'activity'],
                     ];
 
                     foreach ($metricas_comparativa as $metrica_clave => $metrica_config) :
@@ -3015,7 +3015,7 @@ class Flavor_Client_Dashboard {
             <?php if (!empty($tendencias)) : ?>
                 <div class="flavor-widget-stats-panel__trends">
                     <h4 class="flavor-widget-stats-panel__section-title">
-                        <?php esc_html_e('Tus Tendencias', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Tus Tendencias', 'flavor-platform'); ?>
                     </h4>
                     <ul class="flavor-widget-stats-panel__trends-list">
                         <?php foreach (array_slice($tendencias, 0, 3) as $tendencia) : ?>
@@ -3112,13 +3112,13 @@ class Flavor_Client_Dashboard {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce'   => wp_create_nonce('flavor_client_dashboard'),
             'i18n'    => [
-                'cargando'        => __('Cargando...', 'flavor-chat-ia'),
-                'error_ubicacion' => __('No se pudo obtener tu ubicacion', 'flavor-chat-ia'),
-                'ver_detalle'     => __('Ver detalle', 'flavor-chat-ia'),
-                'disponible'      => __('Disponible', 'flavor-chat-ia'),
-                'ocupado'         => __('Ocupado', 'flavor-chat-ia'),
-                'abierto'         => __('Abierto', 'flavor-chat-ia'),
-                'cerrado'         => __('Cerrado', 'flavor-chat-ia'),
+                'cargando'        => __('Cargando...', 'flavor-platform'),
+                'error_ubicacion' => __('No se pudo obtener tu ubicacion', 'flavor-platform'),
+                'ver_detalle'     => __('Ver detalle', 'flavor-platform'),
+                'disponible'      => __('Disponible', 'flavor-platform'),
+                'ocupado'         => __('Ocupado', 'flavor-platform'),
+                'abierto'         => __('Abierto', 'flavor-platform'),
+                'cerrado'         => __('Cerrado', 'flavor-platform'),
             ],
         ]);
     }
@@ -3238,7 +3238,7 @@ class Flavor_Client_Dashboard {
                     'id'     => $evento['id'],
                     'titulo' => $evento['titulo'],
                     'tipo'   => 'eventos',
-                    'origen' => $evento['nodo_origen_nombre'] ?? __('Red', 'flavor-chat-ia'),
+                    'origen' => $evento['nodo_origen_nombre'] ?? __('Red', 'flavor-platform'),
                     'fecha'  => $evento['fecha_inicio'],
                     'url'    => home_url('/eventos/' . $evento['id']),
                 ];
@@ -3269,7 +3269,7 @@ class Flavor_Client_Dashboard {
                     'id'     => $contenido['id'],
                     'titulo' => $contenido['titulo'],
                     'tipo'   => $tipo_mapeado,
-                    'origen' => $contenido['nodo_origen_nombre'] ?? __('Red', 'flavor-chat-ia'),
+                    'origen' => $contenido['nodo_origen_nombre'] ?? __('Red', 'flavor-platform'),
                     'fecha'  => $contenido['created_at'],
                     'url'    => home_url('/recursos/' . $contenido['id']),
                 ];
@@ -3315,7 +3315,7 @@ class Flavor_Client_Dashboard {
                     'categoria' => 'bicicletas',
                     'icono'     => 'bike',
                     'info'      => sprintf(
-                        __('%d/%d disponibles', 'flavor-chat-ia'),
+                        __('%d/%d disponibles', 'flavor-platform'),
                         $estacion['bicicletas_disponibles'],
                         $estacion['capacidad']
                     ),
@@ -3344,7 +3344,7 @@ class Flavor_Client_Dashboard {
                     'categoria' => 'parkings',
                     'icono'     => 'parking',
                     'info'      => sprintf(
-                        __('%d plazas libres', 'flavor-chat-ia'),
+                        __('%d plazas libres', 'flavor-platform'),
                         $parking['plazas_libres'] ?? 0
                     ),
                     'url'       => home_url('/parkings/' . $parking['id']),
@@ -3372,7 +3372,7 @@ class Flavor_Client_Dashboard {
                     'categoria' => 'huertos',
                     'icono'     => 'leaf',
                     'info'      => sprintf(
-                        __('%d parcelas', 'flavor-chat-ia'),
+                        __('%d parcelas', 'flavor-platform'),
                         $huerto['parcelas_disponibles'] ?? 0
                     ),
                     'url'       => home_url('/huertos/' . $huerto['id']),
@@ -3425,7 +3425,7 @@ class Flavor_Client_Dashboard {
                     'categoria' => 'espacios',
                     'icono'     => 'home',
                     'info'      => sprintf(
-                        __('Capacidad: %d', 'flavor-chat-ia'),
+                        __('Capacidad: %d', 'flavor-platform'),
                         $espacio['capacidad'] ?? 0
                     ),
                     'url'       => home_url('/espacios/' . $espacio['id']),
@@ -3576,19 +3576,19 @@ class Flavor_Client_Dashboard {
 
         if ($total_actividad_semana > 10) {
             $datos['tendencias'][] = [
-                'texto' => __('Semana muy activa! Sigue asi.', 'flavor-chat-ia'),
+                'texto' => __('Semana muy activa! Sigue asi.', 'flavor-platform'),
                 'icono' => 'trending-up',
                 'tipo'  => 'positivo',
             ];
         } elseif ($total_actividad_semana > 5) {
             $datos['tendencias'][] = [
-                'texto' => __('Buena actividad esta semana.', 'flavor-chat-ia'),
+                'texto' => __('Buena actividad esta semana.', 'flavor-platform'),
                 'icono' => 'activity',
                 'tipo'  => 'neutral',
             ];
         } else {
             $datos['tendencias'][] = [
-                'texto' => __('Podrias participar mas en la comunidad.', 'flavor-chat-ia'),
+                'texto' => __('Podrias participar mas en la comunidad.', 'flavor-platform'),
                 'icono' => 'activity',
                 'tipo'  => 'sugerencia',
             ];
@@ -3596,7 +3596,7 @@ class Flavor_Client_Dashboard {
 
         if ($datos['comparativa']['reservas']['actual'] > $datos['comparativa']['reservas']['anterior']) {
             $datos['tendencias'][] = [
-                'texto' => __('Mas reservas que la semana pasada.', 'flavor-chat-ia'),
+                'texto' => __('Mas reservas que la semana pasada.', 'flavor-platform'),
                 'icono' => 'calendar',
                 'tipo'  => 'positivo',
             ];
@@ -3636,7 +3636,7 @@ class Flavor_Client_Dashboard {
         check_ajax_referer('flavor_client_dashboard', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No autorizado', 'flavor-platform')]);
         }
 
         $datos_red = $this->obtener_datos_red();
@@ -3651,7 +3651,7 @@ class Flavor_Client_Dashboard {
         check_ajax_referer('flavor_client_dashboard', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No autorizado', 'flavor-platform')]);
         }
 
         $id_usuario = get_current_user_id();
@@ -3679,7 +3679,7 @@ class Flavor_Client_Dashboard {
         check_ajax_referer('flavor_client_dashboard', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No autorizado', 'flavor-platform')]);
         }
 
         $id_usuario = get_current_user_id();
@@ -3708,7 +3708,7 @@ class Flavor_Client_Dashboard {
         check_ajax_referer('flavor_client_dashboard', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No autorizado', 'flavor-platform')]);
         }
 
         $id_usuario = get_current_user_id();
@@ -3876,74 +3876,74 @@ class Flavor_Client_Dashboard {
     private function obtener_definicion_categorias() {
         return [
             'operaciones' => [
-                'label'       => __('Operaciones', 'flavor-chat-ia'),
+                'label'       => __('Operaciones', 'flavor-platform'),
                 'icon'        => 'dashicons-admin-tools',
                 'color'       => '#f97316',
                 'order'       => 10,
-                'description' => __('Reservas, fichaje e incidencias', 'flavor-chat-ia'),
+                'description' => __('Reservas, fichaje e incidencias', 'flavor-platform'),
             ],
             'recursos' => [
-                'label'       => __('Recursos', 'flavor-chat-ia'),
+                'label'       => __('Recursos', 'flavor-platform'),
                 'icon'        => 'dashicons-archive',
                 'color'       => '#14b8a6',
                 'order'       => 20,
-                'description' => __('Espacios, equipamiento y biblioteca', 'flavor-chat-ia'),
+                'description' => __('Espacios, equipamiento y biblioteca', 'flavor-platform'),
             ],
             'economia' => [
-                'label'       => __('Economia', 'flavor-chat-ia'),
+                'label'       => __('Economia', 'flavor-platform'),
                 'icon'        => 'dashicons-chart-line',
                 'color'       => '#10b981',
                 'order'       => 30,
-                'description' => __('Finanzas y transacciones', 'flavor-chat-ia'),
+                'description' => __('Finanzas y transacciones', 'flavor-platform'),
             ],
             'comunicacion' => [
-                'label'       => __('Comunicacion', 'flavor-chat-ia'),
+                'label'       => __('Comunicacion', 'flavor-platform'),
                 'icon'        => 'dashicons-megaphone',
                 'color'       => '#8b5cf6',
                 'order'       => 40,
-                'description' => __('Mensajeria y avisos', 'flavor-chat-ia'),
+                'description' => __('Mensajeria y avisos', 'flavor-platform'),
             ],
             'actividades' => [
-                'label'       => __('Actividades', 'flavor-chat-ia'),
+                'label'       => __('Actividades', 'flavor-platform'),
                 'icon'        => 'dashicons-calendar-alt',
                 'color'       => '#a855f7',
                 'order'       => 50,
-                'description' => __('Eventos y formacion', 'flavor-chat-ia'),
+                'description' => __('Eventos y formacion', 'flavor-platform'),
             ],
             'sostenibilidad' => [
-                'label'       => __('Sostenibilidad', 'flavor-chat-ia'),
+                'label'       => __('Sostenibilidad', 'flavor-platform'),
                 'icon'        => 'dashicons-palmtree',
                 'color'       => '#84cc16',
                 'order'       => 60,
-                'description' => __('Medio ambiente', 'flavor-chat-ia'),
+                'description' => __('Medio ambiente', 'flavor-platform'),
             ],
             'comunidad' => [
-                'label'       => __('Comunidad', 'flavor-chat-ia'),
+                'label'       => __('Comunidad', 'flavor-platform'),
                 'icon'        => 'dashicons-groups',
                 'color'       => '#f59e0b',
                 'order'       => 70,
-                'description' => __('Participacion y vida social', 'flavor-chat-ia'),
+                'description' => __('Participacion y vida social', 'flavor-platform'),
             ],
             'servicios' => [
-                'label'       => __('Servicios', 'flavor-chat-ia'),
+                'label'       => __('Servicios', 'flavor-platform'),
                 'icon'        => 'dashicons-admin-site',
                 'color'       => '#0ea5e9',
                 'order'       => 80,
-                'description' => __('Tramites y soporte', 'flavor-chat-ia'),
+                'description' => __('Tramites y soporte', 'flavor-platform'),
             ],
             'red' => [
-                'label'       => __('Red de Nodos', 'flavor-chat-ia'),
+                'label'       => __('Red de Nodos', 'flavor-platform'),
                 'icon'        => 'dashicons-networking',
                 'color'       => '#06b6d4',
                 'order'       => 90,
-                'description' => __('Red federada', 'flavor-chat-ia'),
+                'description' => __('Red federada', 'flavor-platform'),
             ],
             'gestion' => [
-                'label'       => __('Gestion', 'flavor-chat-ia'),
+                'label'       => __('Gestion', 'flavor-platform'),
                 'icon'        => 'dashicons-clipboard',
                 'color'       => '#3b82f6',
                 'order'       => 5,
-                'description' => __('Panel general', 'flavor-chat-ia'),
+                'description' => __('Panel general', 'flavor-platform'),
             ],
         ];
     }

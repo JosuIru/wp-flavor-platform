@@ -50,14 +50,14 @@ $mostrar_lista_elementos = $mostrar_lista ?? true;
 $mostrar_leyenda_colores = $mostrar_leyenda ?? true;
 $mostrar_boton_ubicacion = $mostrar_buscar ?? true;
 $color_principal = $color_primario ?? '#4f46e5';
-$texto_btn_accion = $texto_boton ?? __('Cómo llegar', 'flavor-chat-ia');
+$texto_btn_accion = $texto_boton ?? __('Cómo llegar', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $id_modulo = $modulo_id ?? 'generico';
 
 // Etiquetas de estado personalizables
 $etiquetas_estado = wp_parse_args($etiquetas ?? [], [
-    'disponible' => __('Disponible', 'flavor-chat-ia'),
-    'limitado' => __('Limitado', 'flavor-chat-ia'),
-    'vacio' => __('Sin disponibilidad', 'flavor-chat-ia'),
+    'disponible' => __('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'limitado' => __('Limitado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'vacio' => __('Sin disponibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ]);
 
 // Calcular centro del mapa si no se proporciona
@@ -126,12 +126,12 @@ $id_mapa = 'flavor-mapa-' . $id_modulo . '-' . uniqid();
         <?php if (empty($lista_marcadores)): ?>
         <div class="fmu-mapa-overlay">
             <span class="dashicons dashicons-location"></span>
-            <p><?php esc_html_e('No hay ubicaciones disponibles', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('No hay ubicaciones disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
         <?php endif; ?>
 
         <?php if ($mostrar_boton_ubicacion): ?>
-        <button class="fmu-btn-ubicacion" id="<?php echo esc_attr($id_mapa); ?>-ubicacion" title="<?php esc_attr_e('Usar mi ubicación', 'flavor-chat-ia'); ?>">
+        <button class="fmu-btn-ubicacion" id="<?php echo esc_attr($id_mapa); ?>-ubicacion" title="<?php esc_attr_e('Usar mi ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <span class="dashicons dashicons-location"></span>
         </button>
         <?php endif; ?>

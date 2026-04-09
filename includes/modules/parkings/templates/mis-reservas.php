@@ -13,8 +13,8 @@ if (!defined('ABSPATH')) {
 
 if (!is_user_logged_in()) {
     echo '<div class="parkings-login-required">';
-    echo '<p>' . esc_html__('Debes iniciar sesión para ver tus reservas.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="btn btn-primary">' . esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a>';
+    echo '<p>' . esc_html__('Debes iniciar sesión para ver tus reservas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
+    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="btn btn-primary">' . esc_html__('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
     echo '</div>';
     return;
 }
@@ -27,7 +27,7 @@ $tabla_parkings = $wpdb->prefix . 'flavor_parkings';
 
 // Verificar si existe la tabla
 if (!Flavor_Chat_Helpers::tabla_existe($tabla_reservas)) {
-    echo '<div class="parkings-empty"><p>' . esc_html__('El módulo de parkings no está configurado.', 'flavor-chat-ia') . '</p></div>';
+    echo '<div class="parkings-empty"><p>' . esc_html__('El módulo de parkings no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
 
@@ -78,12 +78,12 @@ $estados_count = $wpdb->get_results($wpdb->prepare("
 ", $usuario_actual_id), OBJECT_K);
 
 $estados_labels = [
-    'activa' => __('Activa', 'flavor-chat-ia'),
-    'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-    'confirmada' => __('Confirmada', 'flavor-chat-ia'),
-    'completada' => __('Completada', 'flavor-chat-ia'),
-    'cancelada' => __('Cancelada', 'flavor-chat-ia'),
-    'expirada' => __('Expirada', 'flavor-chat-ia'),
+    'activa' => __('Activa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'confirmada' => __('Confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'completada' => __('Completada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cancelada' => __('Cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'expirada' => __('Expirada', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $estados_colores = [
@@ -101,12 +101,12 @@ $parkings_base_url = Flavor_Chat_Helpers::get_action_url('parkings', '');
 <div class="parkings-mis-reservas">
     <header class="reservas-header">
         <div class="reservas-header__titulo">
-            <h2><?php esc_html_e('Mis Reservas', 'flavor-chat-ia'); ?></h2>
-            <p><?php esc_html_e('Gestiona tus reservas de parking', 'flavor-chat-ia'); ?></p>
+            <h2><?php esc_html_e('Mis Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+            <p><?php esc_html_e('Gestiona tus reservas de parking', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
         <a href="<?php echo esc_url($parkings_base_url . 'disponibilidad/'); ?>" class="btn btn-primary">
             <span class="dashicons dashicons-plus-alt2"></span>
-            <?php esc_html_e('Nueva reserva', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Nueva reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </header>
 
@@ -114,7 +114,7 @@ $parkings_base_url = Flavor_Chat_Helpers::get_action_url('parkings', '');
     <div class="reservas-tabs">
         <a href="<?php echo esc_url(remove_query_arg('estado')); ?>"
            class="reservas-tab <?php echo empty($estado_filtro) ? 'activo' : ''; ?>">
-            <?php esc_html_e('Todas', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <span class="tab-count"><?php echo esc_html(array_sum(array_column((array)$estados_count, 'total'))); ?></span>
         </a>
         <?php foreach ($estados_labels as $estado_key => $estado_label):
@@ -147,7 +147,7 @@ $parkings_base_url = Flavor_Chat_Helpers::get_action_url('parkings', '');
                     $diferencia = $fecha_fin - $ahora;
                     $horas = floor($diferencia / 3600);
                     $minutos = floor(($diferencia % 3600) / 60);
-                    $tiempo_restante = sprintf(__('%dh %dm restantes', 'flavor-chat-ia'), $horas, $minutos);
+                    $tiempo_restante = sprintf(__('%dh %dm restantes', FLAVOR_PLATFORM_TEXT_DOMAIN), $horas, $minutos);
                 }
 
                 $estado_color = $estados_colores[$reserva->estado] ?? '#6b7280';
@@ -172,7 +172,7 @@ $parkings_base_url = Flavor_Chat_Helpers::get_action_url('parkings', '');
                             <div class="reserva-detalles">
                                 <span class="detalle-item">
                                     <span class="dashicons dashicons-car"></span>
-                                    <?php printf(esc_html__('Plaza %s', 'flavor-chat-ia'), $reserva->plaza_numero); ?>
+                                    <?php printf(esc_html__('Plaza %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $reserva->plaza_numero); ?>
                                 </span>
                                 <?php if ($reserva->matricula): ?>
                                     <span class="detalle-item">
@@ -185,14 +185,14 @@ $parkings_base_url = Flavor_Chat_Helpers::get_action_url('parkings', '');
 
                         <div class="reserva-fechas">
                             <div class="fecha-grupo">
-                                <span class="fecha-label"><?php esc_html_e('Entrada', 'flavor-chat-ia'); ?></span>
+                                <span class="fecha-label"><?php esc_html_e('Entrada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="fecha-valor"><?php echo date_i18n('d M, H:i', $fecha_inicio); ?></span>
                             </div>
                             <div class="fecha-separador">
                                 <span class="dashicons dashicons-arrow-right-alt"></span>
                             </div>
                             <div class="fecha-grupo">
-                                <span class="fecha-label"><?php esc_html_e('Salida', 'flavor-chat-ia'); ?></span>
+                                <span class="fecha-label"><?php esc_html_e('Salida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="fecha-valor"><?php echo date_i18n('d M, H:i', $fecha_fin); ?></span>
                             </div>
                         </div>
@@ -202,11 +202,11 @@ $parkings_base_url = Flavor_Chat_Helpers::get_action_url('parkings', '');
                         <footer class="reserva-card__acciones">
                             <?php if ($reserva->estado === 'pendiente'): ?>
                                 <button class="btn btn-outline btn-sm" data-action="cancelar" data-reserva="<?php echo esc_attr($reserva->id); ?>">
-                                    <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             <?php endif; ?>
                             <a href="<?php echo esc_url(add_query_arg('reserva', $reserva->id, $parkings_base_url . 'detalle/')); ?>" class="btn btn-primary btn-sm">
-                                <?php esc_html_e('Ver detalles', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </footer>
                     <?php endif; ?>
@@ -216,10 +216,10 @@ $parkings_base_url = Flavor_Chat_Helpers::get_action_url('parkings', '');
     <?php else: ?>
         <div class="reservas-empty-state">
             <span class="dashicons dashicons-calendar-alt"></span>
-            <h3><?php esc_html_e('No tienes reservas', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('Cuando reserves una plaza de parking, aparecerá aquí.', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('No tienes reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php esc_html_e('Cuando reserves una plaza de parking, aparecerá aquí.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <a href="<?php echo esc_url($parkings_base_url . 'disponibilidad/'); ?>" class="btn btn-primary">
-                <?php esc_html_e('Buscar parking', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Buscar parking', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     <?php endif; ?>

@@ -107,7 +107,7 @@ class Flavor_Encuestas_API {
                 'respuestas' => [
                     'required'    => true,
                     'type'        => 'object',
-                    'description' => __('Respuestas en formato {campo_id: valor}', 'flavor-chat-ia'),
+                    'description' => __('Respuestas en formato {campo_id: valor}', 'flavor-platform'),
                 ],
             ],
         ]);
@@ -195,7 +195,7 @@ class Flavor_Encuestas_API {
         return rest_ensure_response([
             'success' => true,
             'data'    => $this->preparar_encuesta_response($encuesta),
-            'message' => __('Encuesta creada correctamente', 'flavor-chat-ia'),
+            'message' => __('Encuesta creada correctamente', 'flavor-platform'),
         ]);
     }
 
@@ -212,7 +212,7 @@ class Flavor_Encuestas_API {
         if (!$encuesta) {
             return new WP_Error(
                 'not_found',
-                __('Encuesta no encontrada', 'flavor-chat-ia'),
+                __('Encuesta no encontrada', 'flavor-platform'),
                 ['status' => 404]
             );
         }
@@ -222,7 +222,7 @@ class Flavor_Encuestas_API {
             if (!$this->module->puede_editar_encuesta($encuesta_id)) {
                 return new WP_Error(
                     'forbidden',
-                    __('No tienes acceso a esta encuesta', 'flavor-chat-ia'),
+                    __('No tienes acceso a esta encuesta', 'flavor-platform'),
                     ['status' => 403]
                 );
             }
@@ -267,7 +267,7 @@ class Flavor_Encuestas_API {
         return rest_ensure_response([
             'success' => true,
             'data'    => $this->preparar_encuesta_response($encuesta),
-            'message' => __('Encuesta actualizada', 'flavor-chat-ia'),
+            'message' => __('Encuesta actualizada', 'flavor-platform'),
         ]);
     }
 
@@ -287,7 +287,7 @@ class Flavor_Encuestas_API {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => __('Encuesta eliminada', 'flavor-chat-ia'),
+            'message' => __('Encuesta eliminada', 'flavor-platform'),
         ]);
     }
 
@@ -319,7 +319,7 @@ class Flavor_Encuestas_API {
         return rest_ensure_response([
             'success'  => true,
             'campo_id' => $resultado,
-            'message'  => __('Campo agregado', 'flavor-chat-ia'),
+            'message'  => __('Campo agregado', 'flavor-platform'),
         ]);
     }
 
@@ -341,7 +341,7 @@ class Flavor_Encuestas_API {
 
         $response = [
             'success' => true,
-            'message' => __('Gracias por tu respuesta', 'flavor-chat-ia'),
+            'message' => __('Gracias por tu respuesta', 'flavor-platform'),
         ];
 
         // Incluir resultados si el usuario puede verlos
@@ -384,7 +384,7 @@ class Flavor_Encuestas_API {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => __('Encuesta cerrada', 'flavor-chat-ia'),
+            'message' => __('Encuesta cerrada', 'flavor-platform'),
         ]);
     }
 

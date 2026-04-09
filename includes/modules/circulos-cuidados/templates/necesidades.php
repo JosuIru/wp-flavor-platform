@@ -58,8 +58,8 @@ $urgencias_orden = ['urgente' => 1, 'alta' => 2, 'normal' => 3, 'baja' => 4];
 
 <div class="cc-necesidades">
     <header class="cc-listado__header">
-        <h2><?php esc_html_e('Necesidades de Cuidado', 'flavor-chat-ia'); ?></h2>
-        <p><?php esc_html_e('Personas de tu comunidad que necesitan ayuda', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Necesidades de Cuidado', 'flavor-platform'); ?></h2>
+        <p><?php esc_html_e('Personas de tu comunidad que necesitan ayuda', 'flavor-platform'); ?></p>
     </header>
 
     <!-- Filtros -->
@@ -67,18 +67,18 @@ $urgencias_orden = ['urgente' => 1, 'alta' => 2, 'normal' => 3, 'baja' => 4];
         <?php $urgencia_filtro = isset($_GET['urgencia']) ? sanitize_key($_GET['urgencia']) : ''; ?>
         <form class="cc-filtros__form" method="get">
             <select name="urgencia" onchange="this.form.submit()">
-                <option value=""><?php esc_html_e('Todas las urgencias', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php esc_html_e('Todas las urgencias', 'flavor-platform'); ?></option>
                 <option value="urgente" <?php selected($urgencia_filtro, 'urgente'); ?>>
-                    <?php esc_html_e('Urgente', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Urgente', 'flavor-platform'); ?>
                 </option>
                 <option value="alta" <?php selected($urgencia_filtro, 'alta'); ?>>
-                    <?php esc_html_e('Alta', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Alta', 'flavor-platform'); ?>
                 </option>
                 <option value="normal" <?php selected($urgencia_filtro, 'normal'); ?>>
-                    <?php esc_html_e('Normal', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Normal', 'flavor-platform'); ?>
                 </option>
                 <option value="baja" <?php selected($urgencia_filtro, 'baja'); ?>>
-                    <?php esc_html_e('Baja', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Baja', 'flavor-platform'); ?>
                 </option>
             </select>
         </form>
@@ -111,7 +111,7 @@ $urgencias_orden = ['urgente' => 1, 'alta' => 2, 'normal' => 3, 'baja' => 4];
             $puede_ayudar = $user_id && in_array($circulo_id, $mis_circulos_ids);
 
             // Nombre del solicitante
-            $autor_nombre = $anonimo ? __('Anónimo', 'flavor-chat-ia') : get_the_author();
+            $autor_nombre = $anonimo ? __('Anónimo', 'flavor-platform') : get_the_author();
         ?>
         <article class="cc-necesidad-card cc-necesidad-card--<?php echo esc_attr($urgencia); ?>">
             <header class="cc-necesidad-card__header">
@@ -138,7 +138,7 @@ $urgencias_orden = ['urgente' => 1, 'alta' => 2, 'normal' => 3, 'baja' => 4];
                 <span>
                     <span class="dashicons dashicons-clock"></span>
                     <?php printf(
-                        esc_html__('%s horas (%s ofrecidas)', 'flavor-chat-ia'),
+                        esc_html__('%s horas (%s ofrecidas)', 'flavor-platform'),
                         $horas_necesarias,
                         $horas_ofrecidas
                     ); ?>
@@ -168,7 +168,7 @@ $urgencias_orden = ['urgente' => 1, 'alta' => 2, 'normal' => 3, 'baja' => 4];
                 </div>
                 <span class="cc-progreso-texto">
                     <?php printf(
-                        esc_html__('%d%% cubierto', 'flavor-chat-ia'),
+                        esc_html__('%d%% cubierto', 'flavor-platform'),
                         min(100, round(($horas_ofrecidas / $horas_necesarias) * 100))
                     ); ?>
                 </span>
@@ -180,7 +180,7 @@ $urgencias_orden = ['urgente' => 1, 'alta' => 2, 'normal' => 3, 'baja' => 4];
                     <?php if (count($ayudantes) > 0) : ?>
                     <span class="dashicons dashicons-groups"></span>
                     <?php printf(
-                        esc_html(_n('%d persona ayudando', '%d personas ayudando', count($ayudantes), 'flavor-chat-ia')),
+                        esc_html(_n('%d persona ayudando', '%d personas ayudando', count($ayudantes), 'flavor-platform')),
                         count($ayudantes)
                     ); ?>
                     <?php endif; ?>
@@ -189,30 +189,30 @@ $urgencias_orden = ['urgente' => 1, 'alta' => 2, 'normal' => 3, 'baja' => 4];
                 <?php if (!is_user_logged_in()) : ?>
                 <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="cc-btn-ayudar">
                     <span class="dashicons dashicons-heart"></span>
-                    <?php esc_html_e('Inicia sesión para ayudar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Inicia sesión para ayudar', 'flavor-platform'); ?>
                 </a>
                 <?php elseif ($ya_ofrecio) : ?>
                 <span class="cc-badge-miembro">
                     <span class="dashicons dashicons-yes"></span>
-                    <?php esc_html_e('Ya has ofrecido ayuda', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ya has ofrecido ayuda', 'flavor-platform'); ?>
                 </span>
                 <?php elseif ($estado === 'cubierta') : ?>
                 <span class="cc-badge-cubierta">
                     <span class="dashicons dashicons-yes-alt"></span>
-                    <?php esc_html_e('Necesidad cubierta', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Necesidad cubierta', 'flavor-platform'); ?>
                 </span>
                 <?php elseif (get_current_user_id() == get_the_author_meta('ID')) : ?>
                 <span class="cc-badge-mia">
-                    <?php esc_html_e('Tu solicitud', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Tu solicitud', 'flavor-platform'); ?>
                 </span>
                 <?php elseif ($puede_ayudar) : ?>
                 <button class="cc-btn-ayudar" data-necesidad="<?php echo esc_attr(get_the_ID()); ?>">
                     <span class="dashicons dashicons-heart"></span>
-                    <?php esc_html_e('Quiero ayudar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Quiero ayudar', 'flavor-platform'); ?>
                 </button>
                 <?php else : ?>
                 <span class="cc-info-unirse">
-                    <?php esc_html_e('Únete al círculo para ayudar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Únete al círculo para ayudar', 'flavor-platform'); ?>
                 </span>
                 <?php endif; ?>
             </footer>
@@ -222,7 +222,7 @@ $urgencias_orden = ['urgente' => 1, 'alta' => 2, 'normal' => 3, 'baja' => 4];
     <?php else : ?>
     <div class="cc-empty-state">
         <span class="dashicons dashicons-smiley"></span>
-        <p><?php esc_html_e('¡Genial! No hay necesidades de cuidado pendientes.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('¡Genial! No hay necesidades de cuidado pendientes.', 'flavor-platform'); ?></p>
     </div>
     <?php endif; ?>
 </div>

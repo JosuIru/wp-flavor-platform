@@ -9,8 +9,8 @@
 if (!defined('ABSPATH')) exit;
 
 // Valores por defecto
-$titulo = $args['titulo'] ?? __('Cómo Usar Nuestras Bicicletas', 'flavor-chat-ia');
-$subtitulo = $args['subtitulo'] ?? __('Pasos sencillos para comenzar tu viaje', 'flavor-chat-ia');
+$titulo = $args['titulo'] ?? __('Cómo Usar Nuestras Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$subtitulo = $args['subtitulo'] ?? __('Pasos sencillos para comenzar tu viaje', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $pasos = $args['pasos'] ?? [];
 $mostrar_preguntas_frecuentes = $args['mostrar_preguntas_frecuentes'] ?? true;
 
@@ -19,43 +19,43 @@ if (empty($pasos)) {
     $pasos = [
         [
             'numero' => 1,
-            'titulo' => __('Descarga la App', 'flavor-chat-ia'),
-            'descripcion' => __('Descarga nuestra aplicación móvil en Android o iOS e instálala en tu teléfono.', 'flavor-chat-ia'),
+            'titulo' => __('Descarga la App', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'descripcion' => __('Descarga nuestra aplicación móvil en Android o iOS e instálala en tu teléfono.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => '📱',
             'color' => '#3b82f6',
         ],
         [
             'numero' => 2,
-            'titulo' => __('Regístrate', 'flavor-chat-ia'),
-            'descripcion' => __('Crea tu cuenta con tu email, teléfono o redes sociales. El proceso toma solo 2 minutos.', 'flavor-chat-ia'),
+            'titulo' => __('Regístrate', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'descripcion' => __('Crea tu cuenta con tu email, teléfono o redes sociales. El proceso toma solo 2 minutos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => '📝',
             'color' => '#06b6d4',
         ],
         [
             'numero' => 3,
-            'titulo' => __('Localiza una Estación', 'flavor-chat-ia'),
-            'descripcion' => __('Usa el mapa para encontrar la estación más cercana con bicicletas disponibles.', 'flavor-chat-ia'),
+            'titulo' => __('Localiza una Estación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'descripcion' => __('Usa el mapa para encontrar la estación más cercana con bicicletas disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => '📍',
             'color' => '#10b981',
         ],
         [
             'numero' => 4,
-            'titulo' => __('Desbloquea la Bicicleta', 'flavor-chat-ia'),
-            'descripcion' => __('Escanea el código QR en la bicicleta o introduce el número de serie en la app.', 'flavor-chat-ia'),
+            'titulo' => __('Desbloquea la Bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'descripcion' => __('Escanea el código QR en la bicicleta o introduce el número de serie en la app.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => '🔓',
             'color' => '#f59e0b',
         ],
         [
             'numero' => 5,
-            'titulo' => __('Disfruta tu Viaje', 'flavor-chat-ia'),
-            'descripcion' => __('¡Monta y disfruta! La app registrará automáticamente el tiempo y distancia.', 'flavor-chat-ia'),
+            'titulo' => __('Disfruta tu Viaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'descripcion' => __('¡Monta y disfruta! La app registrará automáticamente el tiempo y distancia.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => '🚴',
             'color' => '#ec4899',
         ],
         [
             'numero' => 6,
-            'titulo' => __('Devuelve la Bicicleta', 'flavor-chat-ia'),
-            'descripcion' => __('Regresa a cualquier estación, introduce la bicicleta en el soporte y ciérrala.', 'flavor-chat-ia'),
+            'titulo' => __('Devuelve la Bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'descripcion' => __('Regresa a cualquier estación, introduce la bicicleta en el soporte y ciérrala.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => '🏁',
             'color' => '#8b5cf6',
         ],
@@ -113,35 +113,35 @@ if (empty($pasos)) {
         <!-- Requisitos -->
         <div class="bg-blue-50 rounded-2xl p-8 mb-16">
             <h3 class="text-2xl font-bold text-gray-900 mb-6">
-                ✅ <?php echo esc_html__('Requisitos Previos', 'flavor-chat-ia'); ?>
+                ✅ <?php echo esc_html__('Requisitos Previos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="flex items-start gap-3">
                     <span class="text-2xl">📱</span>
                     <div>
-                        <p class="font-semibold text-gray-900"><?php echo esc_html__('Teléfono Inteligente', 'flavor-chat-ia'); ?></p>
-                        <p class="text-sm text-gray-600"><?php echo esc_html__('Android 6.0+ o iOS 11.0+', 'flavor-chat-ia'); ?></p>
+                        <p class="font-semibold text-gray-900"><?php echo esc_html__('Teléfono Inteligente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                        <p class="text-sm text-gray-600"><?php echo esc_html__('Android 6.0+ o iOS 11.0+', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 </div>
                 <div class="flex items-start gap-3">
                     <span class="text-2xl">💳</span>
                     <div>
-                        <p class="font-semibold text-gray-900"><?php echo esc_html__('Tarjeta de Pago', 'flavor-chat-ia'); ?></p>
-                        <p class="text-sm text-gray-600"><?php echo esc_html__('Para registrar datos de pago', 'flavor-chat-ia'); ?></p>
+                        <p class="font-semibold text-gray-900"><?php echo esc_html__('Tarjeta de Pago', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                        <p class="text-sm text-gray-600"><?php echo esc_html__('Para registrar datos de pago', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 </div>
                 <div class="flex items-start gap-3">
                     <span class="text-2xl">🆔</span>
                     <div>
-                        <p class="font-semibold text-gray-900"><?php echo esc_html__('Documento de Identidad', 'flavor-chat-ia'); ?></p>
-                        <p class="text-sm text-gray-600"><?php echo esc_html__('Mayor de 14 años', 'flavor-chat-ia'); ?></p>
+                        <p class="font-semibold text-gray-900"><?php echo esc_html__('Documento de Identidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                        <p class="text-sm text-gray-600"><?php echo esc_html__('Mayor de 14 años', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 </div>
                 <div class="flex items-start gap-3">
                     <span class="text-2xl">📍</span>
                     <div>
-                        <p class="font-semibold text-gray-900"><?php echo esc_html__('Localización GPS', 'flavor-chat-ia'); ?></p>
-                        <p class="text-sm text-gray-600"><?php echo esc_html__('Permisos de ubicación activos', 'flavor-chat-ia'); ?></p>
+                        <p class="font-semibold text-gray-900"><?php echo esc_html__('Localización GPS', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                        <p class="text-sm text-gray-600"><?php echo esc_html__('Permisos de ubicación activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 </div>
             </div>
@@ -151,51 +151,51 @@ if (empty($pasos)) {
         <?php if ($mostrar_preguntas_frecuentes): ?>
         <div class="max-w-3xl mx-auto">
             <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center">
-                ❓ <?php echo esc_html__('Preguntas Frecuentes', 'flavor-chat-ia'); ?>
+                ❓ <?php echo esc_html__('Preguntas Frecuentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
 
             <div class="space-y-4">
                 <!-- FAQ Item 1 -->
                 <details class="flavor-faq-item bg-white rounded-lg border border-gray-200 overflow-hidden cursor-pointer">
                     <summary class="p-6 font-semibold text-gray-900 hover:bg-gray-50 flex items-center justify-between">
-                        <span><?php echo esc_html__('¿Cuál es el coste por usar la bicicleta?', 'flavor-chat-ia'); ?></span>
+                        <span><?php echo esc_html__('¿Cuál es el coste por usar la bicicleta?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="text-gray-500">▼</span>
                     </summary>
                     <div class="px-6 pb-6 text-gray-600 border-t border-gray-200">
-                        <?php echo esc_html__('El coste depende del tipo de bicicleta. Las urbanas cuestan €0.50/hora, las eléctricas €1.50/hora y las infantiles €0.30/hora. Hay también planes de suscripción mensuales con descuentos.', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('El coste depende del tipo de bicicleta. Las urbanas cuestan €0.50/hora, las eléctricas €1.50/hora y las infantiles €0.30/hora. Hay también planes de suscripción mensuales con descuentos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </div>
                 </details>
 
                 <!-- FAQ Item 2 -->
                 <details class="flavor-faq-item bg-white rounded-lg border border-gray-200 overflow-hidden cursor-pointer">
                     <summary class="p-6 font-semibold text-gray-900 hover:bg-gray-50 flex items-center justify-between">
-                        <span><?php echo esc_html__('¿Dónde puedo dejar la bicicleta?', 'flavor-chat-ia'); ?></span>
+                        <span><?php echo esc_html__('¿Dónde puedo dejar la bicicleta?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="text-gray-500">▼</span>
                     </summary>
                     <div class="px-6 pb-6 text-gray-600 border-t border-gray-200">
-                        <?php echo esc_html__('Puedes devolver la bicicleta en cualquiera de nuestras 52 estaciones repartidas por la ciudad. Simplemente colócala en el soporte y ciérrala.', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Puedes devolver la bicicleta en cualquiera de nuestras 52 estaciones repartidas por la ciudad. Simplemente colócala en el soporte y ciérrala.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </div>
                 </details>
 
                 <!-- FAQ Item 3 -->
                 <details class="flavor-faq-item bg-white rounded-lg border border-gray-200 overflow-hidden cursor-pointer">
                     <summary class="p-6 font-semibold text-gray-900 hover:bg-gray-50 flex items-center justify-between">
-                        <span><?php echo esc_html__('¿Qué pasa si daño la bicicleta?', 'flavor-chat-ia'); ?></span>
+                        <span><?php echo esc_html__('¿Qué pasa si daño la bicicleta?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="text-gray-500">▼</span>
                     </summary>
                     <div class="px-6 pb-6 text-gray-600 border-t border-gray-200">
-                        <?php echo esc_html__('Los daños accidentales menores están cubiertos. Para daños graves, se puede aplicar una tarifa de reparación. Los robos están cubiertos por seguro si se reportan en 24 horas.', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Los daños accidentales menores están cubiertos. Para daños graves, se puede aplicar una tarifa de reparación. Los robos están cubiertos por seguro si se reportan en 24 horas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </div>
                 </details>
 
                 <!-- FAQ Item 4 -->
                 <details class="flavor-faq-item bg-white rounded-lg border border-gray-200 overflow-hidden cursor-pointer">
                     <summary class="p-6 font-semibold text-gray-900 hover:bg-gray-50 flex items-center justify-between">
-                        <span><?php echo esc_html__('¿Es seguro usar la bicicleta?', 'flavor-chat-ia'); ?></span>
+                        <span><?php echo esc_html__('¿Es seguro usar la bicicleta?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="text-gray-500">▼</span>
                     </summary>
                     <div class="px-6 pb-6 text-gray-600 border-t border-gray-200">
-                        <?php echo esc_html__('Todas nuestras bicicletas se revisan diariamente y cumplen estándares de seguridad. Recomendamos usar casco (disponible en estaciones) y respetar las normas de tráfico.', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Todas nuestras bicicletas se revisan diariamente y cumplen estándares de seguridad. Recomendamos usar casco (disponible en estaciones) y respetar las normas de tráfico.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </div>
                 </details>
             </div>

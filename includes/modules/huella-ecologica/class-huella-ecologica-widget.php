@@ -30,7 +30,7 @@ class Flavor_Huella_Ecologica_Widget extends Flavor_Dashboard_Widget_Base {
         $this->module = $module;
 
         $this->widget_id = 'huella-ecologica';
-        $this->title = __('Huella Ecológica', 'flavor-chat-ia');
+        $this->title = __('Huella Ecológica', 'flavor-platform');
         $this->icon = 'dashicons-palmtree';
         $this->size = 'medium';
         $this->category = 'ecologia';
@@ -49,7 +49,7 @@ class Flavor_Huella_Ecologica_Widget extends Flavor_Dashboard_Widget_Base {
             return [
                 'stats' => [],
                 'items' => [],
-                'empty_state' => __('Inicia sesión para ver tu huella ecológica', 'flavor-chat-ia'),
+                'empty_state' => __('Inicia sesión para ver tu huella ecológica', 'flavor-platform'),
             ];
         }
 
@@ -64,19 +64,19 @@ class Flavor_Huella_Ecologica_Widget extends Flavor_Dashboard_Widget_Base {
             [
                 'icon' => 'dashicons-cloud',
                 'valor' => $stats['huella_total'] . ' kg',
-                'label' => __('Emitido', 'flavor-chat-ia'),
+                'label' => __('Emitido', 'flavor-platform'),
                 'color' => 'red',
             ],
             [
                 'icon' => 'dashicons-yes-alt',
                 'valor' => $stats['reduccion_total'] . ' kg',
-                'label' => __('Compensado', 'flavor-chat-ia'),
+                'label' => __('Compensado', 'flavor-platform'),
                 'color' => 'green',
             ],
             [
                 'icon' => 'dashicons-performance',
                 'valor' => $stats['huella_neta'] . ' kg',
-                'label' => __('Neta', 'flavor-chat-ia'),
+                'label' => __('Neta', 'flavor-platform'),
                 'color' => $huella_neta <= 0 ? 'green' : ($huella_neta < 5 ? 'orange' : 'red'),
             ],
         ];
@@ -89,9 +89,9 @@ class Flavor_Huella_Ecologica_Widget extends Flavor_Dashboard_Widget_Base {
             $ultimo_logro = end($logros_obtenidos);
             $items[] = [
                 'icon' => 'dashicons-awards',
-                'title' => sprintf(__('Logro: %s', 'flavor-chat-ia'), $ultimo_logro['nombre']),
+                'title' => sprintf(__('Logro: %s', 'flavor-platform'), $ultimo_logro['nombre']),
                 'meta' => $ultimo_logro['icono'],
-                'badge' => sprintf(__('%d pts', 'flavor-chat-ia'), $ultimo_logro['puntos']),
+                'badge' => sprintf(__('%d pts', 'flavor-platform'), $ultimo_logro['puntos']),
                 'badge_color' => 'green',
             ];
         }
@@ -101,7 +101,7 @@ class Flavor_Huella_Ecologica_Widget extends Flavor_Dashboard_Widget_Base {
             $items[] = [
                 'icon' => 'dashicons-groups',
                 'title' => sprintf(
-                    _n('Participas en %d proyecto', 'Participas en %d proyectos', $stats['proyectos'], 'flavor-chat-ia'),
+                    _n('Participas en %d proyecto', 'Participas en %d proyectos', $stats['proyectos'], 'flavor-platform'),
                     $stats['proyectos']
                 ),
                 'url' => $this->get_context_url('/mi-portal/huella-ecologica/proyectos/', 'flavor-huella-ecologica'),
@@ -112,7 +112,7 @@ class Flavor_Huella_Ecologica_Widget extends Flavor_Dashboard_Widget_Base {
         if ($tendencia === 'positiva') {
             $items[] = [
                 'icon' => 'dashicons-thumbs-up',
-                'title' => __('¡Eres carbono neutro este mes!', 'flavor-chat-ia'),
+                'title' => __('¡Eres carbono neutro este mes!', 'flavor-platform'),
                 'badge' => '🌍',
                 'badge_color' => 'green',
             ];
@@ -121,10 +121,10 @@ class Flavor_Huella_Ecologica_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats_array,
             'items' => $items,
-            'empty_state' => __('Calcula tu huella ecológica', 'flavor-chat-ia'),
+            'empty_state' => __('Calcula tu huella ecológica', 'flavor-platform'),
             'footer' => [
                 [
-                    'label' => $this->is_admin_context() ? __('Ver panel', 'flavor-chat-ia') : __('Calculadora', 'flavor-chat-ia'),
+                    'label' => $this->is_admin_context() ? __('Ver panel', 'flavor-platform') : __('Calculadora', 'flavor-platform'),
                     'url' => $this->get_context_url('/mi-portal/huella-ecologica/calculadora/', 'flavor-huella-ecologica'),
                     'icon' => 'dashicons-chart-bar',
                 ],

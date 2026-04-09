@@ -146,11 +146,11 @@ class Flavor_Payment_Gateway_Manager {
         $gateway = $this->get_gateway($gateway_id);
 
         if (!$gateway) {
-            return new WP_Error('gateway_no_encontrado', __('Gateway de pago no encontrado', 'flavor-chat-ia'));
+            return new WP_Error('gateway_no_encontrado', __('Gateway de pago no encontrado', 'flavor-platform'));
         }
 
         if (!$gateway->is_available()) {
-            return new WP_Error('gateway_no_disponible', __('Gateway de pago no disponible', 'flavor-chat-ia'));
+            return new WP_Error('gateway_no_disponible', __('Gateway de pago no disponible', 'flavor-platform'));
         }
 
         return $gateway->process_payment($payment_data);
@@ -169,14 +169,14 @@ class Flavor_Payment_Gateway_Manager {
 
         if (empty($gateways_disponibles)) {
             return '<div class="facturas-mensaje facturas-mensaje-warning">' .
-                   esc_html__('No hay métodos de pago online disponibles en este momento.', 'flavor-chat-ia') .
+                   esc_html__('No hay métodos de pago online disponibles en este momento.', 'flavor-platform') .
                    '</div>';
         }
 
         ob_start();
         ?>
         <div class="flavor-payment-gateways">
-            <h4><?php esc_html_e('Selecciona método de pago', 'flavor-chat-ia'); ?></h4>
+            <h4><?php esc_html_e('Selecciona método de pago', 'flavor-platform'); ?></h4>
 
             <div class="payment-gateways-grid">
                 <?php foreach ($gateways_disponibles as $id => $gateway) : ?>
@@ -186,7 +186,7 @@ class Flavor_Payment_Gateway_Manager {
                             <span class="gateway-name"><?php echo esc_html($gateway->get_name()); ?></span>
                             <span class="gateway-description"><?php echo esc_html($gateway->get_description()); ?></span>
                             <?php if ($gateway->is_test_mode()) : ?>
-                                <span class="gateway-test-badge"><?php esc_html_e('Modo Test', 'flavor-chat-ia'); ?></span>
+                                <span class="gateway-test-badge"><?php esc_html_e('Modo Test', 'flavor-platform'); ?></span>
                             <?php endif; ?>
                         </label>
                     </div>
@@ -196,18 +196,18 @@ class Flavor_Payment_Gateway_Manager {
             <div class="payment-gateway-actions">
                 <button type="button" id="btn-pagar-online" class="facturas-btn facturas-btn-primary" disabled>
                     <span class="btn-icon">💳</span>
-                    <?php esc_html_e('Pagar Ahora', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Pagar Ahora', 'flavor-platform'); ?>
                     <span class="btn-amount"><?php echo esc_html(number_format($importe, 2, ',', '.')); ?> €</span>
                 </button>
                 <span class="payment-secure-badge">
                     <span class="secure-icon">🔒</span>
-                    <?php esc_html_e('Pago seguro', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Pago seguro', 'flavor-platform'); ?>
                 </span>
             </div>
 
             <div id="payment-loading" class="payment-loading" style="display:none;">
                 <div class="loading-spinner"></div>
-                <p><?php esc_html_e('Procesando pago...', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('Procesando pago...', 'flavor-platform'); ?></p>
             </div>
 
             <div id="payment-error" class="facturas-mensaje facturas-mensaje-error" style="display:none;"></div>
@@ -228,7 +228,7 @@ class Flavor_Payment_Gateway_Manager {
                     var gateway_id = $('input[name="payment_gateway"]:checked').val();
 
                     if (!gateway_id) {
-                        alert('<?php esc_html_e('Selecciona un método de pago', 'flavor-chat-ia'); ?>');
+                        alert('<?php esc_html_e('Selecciona un método de pago', 'flavor-platform'); ?>');
                         return;
                     }
 
@@ -279,7 +279,7 @@ class Flavor_Payment_Gateway_Manager {
                         },
                         error: function() {
                             $('#payment-loading').hide();
-                            $('#payment-error').text('<?php esc_html_e('Error al procesar el pago', 'flavor-chat-ia'); ?>').show();
+                            $('#payment-error').text('<?php esc_html_e('Error al procesar el pago', 'flavor-platform'); ?>').show();
                             $('#btn-pagar-online').prop('disabled', false);
                         }
                     });

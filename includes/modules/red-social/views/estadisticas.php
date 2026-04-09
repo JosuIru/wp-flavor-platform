@@ -127,27 +127,27 @@ $colores_tipo = [
     <nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">
         <a href="<?php echo admin_url('admin.php?page=flavor-red-social-dashboard'); ?>" style="color: #2271b1; text-decoration: none;">
             <span class="dashicons dashicons-share" style="font-size: 14px; vertical-align: middle;"></span>
-            <?php _e('Red Social', 'flavor-chat-ia'); ?>
+            <?php _e('Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <span style="color: #646970; margin: 0 5px;">›</span>
-        <span style="color: #1d2327;"><?php _e('Estadísticas', 'flavor-chat-ia'); ?></span>
+        <span style="color: #1d2327;"><?php _e('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
     </nav>
 
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-chart-bar"></span>
-        <?php _e('Estadísticas de Red Social', 'flavor-chat-ia'); ?>
+        <?php _e('Estadísticas de Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <!-- Selector de periodo -->
     <div style="margin: 20px 0;">
         <form method="get" action="" style="display: inline-flex; gap: 10px; align-items: center;">
             <input type="hidden" name="page" value="flavor-red-social-estadisticas">
-            <label for="periodo"><?php _e('Periodo:', 'flavor-chat-ia'); ?></label>
+            <label for="periodo"><?php _e('Periodo:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <select name="periodo" id="periodo" onchange="this.form.submit()">
-                <option value="7" <?php selected($periodo, '7'); ?>><?php _e('Últimos 7 días', 'flavor-chat-ia'); ?></option>
-                <option value="30" <?php selected($periodo, '30'); ?>><?php _e('Últimos 30 días', 'flavor-chat-ia'); ?></option>
-                <option value="90" <?php selected($periodo, '90'); ?>><?php _e('Últimos 90 días', 'flavor-chat-ia'); ?></option>
-                <option value="365" <?php selected($periodo, '365'); ?>><?php _e('Último año', 'flavor-chat-ia'); ?></option>
+                <option value="7" <?php selected($periodo, '7'); ?>><?php _e('Últimos 7 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="30" <?php selected($periodo, '30'); ?>><?php _e('Últimos 30 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="90" <?php selected($periodo, '90'); ?>><?php _e('Últimos 90 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="365" <?php selected($periodo, '365'); ?>><?php _e('Último año', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             </select>
         </form>
     </div>
@@ -158,33 +158,33 @@ $colores_tipo = [
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0;">
         <div style="background: #fff; padding: 20px; border-left: 4px solid #3b82f6; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="font-size: 32px; font-weight: bold; color: #1d2327;"><?php echo number_format($stats['total_publicaciones']); ?></div>
-            <div style="color: #646970;"><?php _e('Total publicaciones', 'flavor-chat-ia'); ?></div>
+            <div style="color: #646970;"><?php _e('Total publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <div style="font-size: 13px; color: #10b981; margin-top: 5px;">
-                +<?php echo number_format($stats['publicaciones_periodo']); ?> <?php _e('en el periodo', 'flavor-chat-ia'); ?>
+                +<?php echo number_format($stats['publicaciones_periodo']); ?> <?php _e('en el periodo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
         </div>
 
         <div style="background: #fff; padding: 20px; border-left: 4px solid #10b981; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="font-size: 32px; font-weight: bold; color: #1d2327;"><?php echo number_format($stats['usuarios_activos']); ?></div>
-            <div style="color: #646970;"><?php _e('Usuarios activos', 'flavor-chat-ia'); ?></div>
+            <div style="color: #646970;"><?php _e('Usuarios activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <div style="font-size: 13px; color: #646970; margin-top: 5px;">
-                <?php printf(__('de %s totales', 'flavor-chat-ia'), number_format($stats['total_usuarios'])); ?>
+                <?php printf(__('de %s totales', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($stats['total_usuarios'])); ?>
             </div>
         </div>
 
         <div style="background: #fff; padding: 20px; border-left: 4px solid #f59e0b; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="font-size: 32px; font-weight: bold; color: #1d2327;"><?php echo number_format($stats['total_interacciones']); ?></div>
-            <div style="color: #646970;"><?php _e('Interacciones', 'flavor-chat-ia'); ?></div>
+            <div style="color: #646970;"><?php _e('Interacciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <div style="font-size: 13px; color: #10b981; margin-top: 5px;">
-                +<?php echo number_format($stats['interacciones_periodo']); ?> <?php _e('en el periodo', 'flavor-chat-ia'); ?>
+                +<?php echo number_format($stats['interacciones_periodo']); ?> <?php _e('en el periodo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
         </div>
 
         <div style="background: #fff; padding: 20px; border-left: 4px solid #8b5cf6; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="font-size: 32px; font-weight: bold; color: #1d2327;"><?php echo number_format($stats['total_comentarios']); ?></div>
-            <div style="color: #646970;"><?php _e('Comentarios', 'flavor-chat-ia'); ?></div>
+            <div style="color: #646970;"><?php _e('Comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <div style="font-size: 13px; color: #10b981; margin-top: 5px;">
-                +<?php echo number_format($stats['comentarios_periodo']); ?> <?php _e('en el periodo', 'flavor-chat-ia'); ?>
+                +<?php echo number_format($stats['comentarios_periodo']); ?> <?php _e('en el periodo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
         </div>
     </div>
@@ -194,17 +194,17 @@ $colores_tipo = [
         <div class="postbox">
             <h2 class="hndle" style="padding: 12px; margin: 0; border-bottom: 1px solid #c3c4c7;">
                 <span class="dashicons dashicons-groups"></span>
-                <?php _e('Usuarios más activos', 'flavor-chat-ia'); ?>
+                <?php _e('Usuarios más activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <div class="inside" style="padding: 0;">
                 <?php if (empty($usuarios_activos_lista)): ?>
-                <p style="padding: 20px; text-align: center; color: #646970;"><?php _e('No hay datos disponibles.', 'flavor-chat-ia'); ?></p>
+                <p style="padding: 20px; text-align: center; color: #646970;"><?php _e('No hay datos disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php else: ?>
                 <table class="wp-list-table widefat fixed striped" style="border: none;">
                     <thead>
                         <tr>
-                            <th><?php _e('Usuario', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 100px; text-align: right;"><?php _e('Publicaciones', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 100px; text-align: right;"><?php _e('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -213,7 +213,7 @@ $colores_tipo = [
                             <td>
                                 <div style="display: flex; align-items: center; gap: 10px;">
                                     <?php echo get_avatar($usuario->usuario_id, 32); ?>
-                                    <?php echo esc_html($usuario->display_name ?: __('Usuario eliminado', 'flavor-chat-ia')); ?>
+                                    <?php echo esc_html($usuario->display_name ?: __('Usuario eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                                 </div>
                             </td>
                             <td style="text-align: right;">
@@ -231,11 +231,11 @@ $colores_tipo = [
         <div class="postbox">
             <h2 class="hndle" style="padding: 12px; margin: 0; border-bottom: 1px solid #c3c4c7;">
                 <span class="dashicons dashicons-chart-pie"></span>
-                <?php _e('Distribución por tipo', 'flavor-chat-ia'); ?>
+                <?php _e('Distribución por tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <div class="inside">
                 <?php if (empty($distribucion_tipo)): ?>
-                <p style="text-align: center; color: #646970;"><?php _e('No hay datos disponibles.', 'flavor-chat-ia'); ?></p>
+                <p style="text-align: center; color: #646970;"><?php _e('No hay datos disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php else: ?>
                 <?php
                 $total_tipos = array_sum(array_column($distribucion_tipo, 'total'));
@@ -262,11 +262,11 @@ $colores_tipo = [
     <div class="postbox">
         <h2 class="hndle" style="padding: 12px; margin: 0; border-bottom: 1px solid #c3c4c7;">
             <span class="dashicons dashicons-chart-line"></span>
-            <?php _e('Actividad diaria', 'flavor-chat-ia'); ?>
+            <?php _e('Actividad diaria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
         <div class="inside">
             <?php if (empty($actividad_diaria)): ?>
-            <p style="text-align: center; color: #646970;"><?php _e('No hay datos disponibles.', 'flavor-chat-ia'); ?></p>
+            <p style="text-align: center; color: #646970;"><?php _e('No hay datos disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php else: ?>
             <div style="display: flex; align-items: flex-end; gap: 4px; height: 150px; padding: 10px 0;">
                 <?php

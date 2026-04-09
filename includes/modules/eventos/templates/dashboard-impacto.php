@@ -15,7 +15,7 @@ $periodo_texto = date_i18n('F Y', strtotime($periodo . '-01'));
             <span class="dashicons dashicons-chart-area"></span>
         </span>
         <div>
-            <h3><?php esc_html_e('Impacto Social de Eventos', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Impacto Social de Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <span class="ev-impacto-dash__periodo"><?php echo esc_html($periodo_texto); ?></span>
         </div>
     </div>
@@ -27,28 +27,28 @@ $periodo_texto = date_i18n('F Y', strtotime($periodo . '-01'));
                 <span class="dashicons dashicons-calendar-alt"></span>
             </span>
             <span class="ev-impacto-dash__metrica-valor"><?php echo esc_html($metricas['total_eventos'] ?? 0); ?></span>
-            <span class="ev-impacto-dash__metrica-label"><?php esc_html_e('Eventos', 'flavor-chat-ia'); ?></span>
+            <span class="ev-impacto-dash__metrica-label"><?php esc_html_e('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="ev-impacto-dash__metrica">
             <span class="ev-impacto-dash__metrica-icono" style="background: #4caf50;">
                 <span class="dashicons dashicons-groups"></span>
             </span>
             <span class="ev-impacto-dash__metrica-valor"><?php echo esc_html($metricas['total_asistentes'] ?? 0); ?></span>
-            <span class="ev-impacto-dash__metrica-label"><?php esc_html_e('Asistentes', 'flavor-chat-ia'); ?></span>
+            <span class="ev-impacto-dash__metrica-label"><?php esc_html_e('Asistentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="ev-impacto-dash__metrica">
             <span class="ev-impacto-dash__metrica-icono" style="background: #e91e63;">
                 <span class="dashicons dashicons-heart"></span>
             </span>
             <span class="ev-impacto-dash__metrica-valor"><?php echo esc_html($metricas['horas_voluntariado'] ?? 0); ?>h</span>
-            <span class="ev-impacto-dash__metrica-label"><?php esc_html_e('Voluntariado', 'flavor-chat-ia'); ?></span>
+            <span class="ev-impacto-dash__metrica-label"><?php esc_html_e('Voluntariado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="ev-impacto-dash__metrica">
             <span class="ev-impacto-dash__metrica-icono" style="background: #ff9800;">
                 <span class="dashicons dashicons-universal-access-alt"></span>
             </span>
             <span class="ev-impacto-dash__metrica-valor"><?php echo esc_html($metricas['plazas_solidarias'] ?? 0); ?></span>
-            <span class="ev-impacto-dash__metrica-label"><?php esc_html_e('P. Solidarias', 'flavor-chat-ia'); ?></span>
+            <span class="ev-impacto-dash__metrica-label"><?php esc_html_e('P. Solidarias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
     </div>
 
@@ -56,7 +56,7 @@ $periodo_texto = date_i18n('F Y', strtotime($periodo . '-01'));
     <div class="ev-impacto-dash__inclusividad">
         <h4>
             <span class="dashicons dashicons-universal-access"></span>
-            <?php esc_html_e('Inclusividad', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Inclusividad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h4>
         <div class="ev-impacto-dash__inclu-grid">
             <?php
@@ -65,21 +65,21 @@ $periodo_texto = date_i18n('F Y', strtotime($periodo . '-01'));
                     'valor' => $metricas['eventos_accesibles'] ?? 0,
                     'total' => $metricas['total_eventos'] ?? 1,
                     'icono' => 'dashicons-universal-access',
-                    'label' => __('Accesibles', 'flavor-chat-ia'),
+                    'label' => __('Accesibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => '#9c27b0',
                 ],
                 'lse' => [
                     'valor' => $metricas['eventos_lse'] ?? 0,
                     'total' => $metricas['total_eventos'] ?? 1,
                     'icono' => 'dashicons-format-status',
-                    'label' => __('Con LSE', 'flavor-chat-ia'),
+                    'label' => __('Con LSE', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => '#3f51b5',
                 ],
                 'cuidado_infantil' => [
                     'valor' => $metricas['eventos_cuidado'] ?? 0,
                     'total' => $metricas['total_eventos'] ?? 1,
                     'icono' => 'dashicons-smiley',
-                    'label' => __('Con guardería', 'flavor-chat-ia'),
+                    'label' => __('Con guardería', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => '#00bcd4',
                 ],
             ];
@@ -100,7 +100,7 @@ $periodo_texto = date_i18n('F Y', strtotime($periodo . '-01'));
     <div class="ev-impacto-dash__co2">
         <div class="ev-impacto-dash__co2-header">
             <span class="dashicons dashicons-cloud"></span>
-            <span><?php esc_html_e('Huella de Carbono Total', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Huella de Carbono Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="ev-impacto-dash__co2-body">
             <div class="ev-impacto-dash__co2-emitido">
@@ -123,7 +123,7 @@ $periodo_texto = date_i18n('F Y', strtotime($periodo . '-01'));
                 <div class="ev-impacto-dash__co2-fill" style="width: <?php echo esc_attr($porcentaje_compensado); ?>%"></div>
             </div>
             <span class="ev-impacto-dash__co2-text">
-                <?php printf(esc_html__('%d%% compensado', 'flavor-chat-ia'), round($porcentaje_compensado)); ?>
+                <?php printf(esc_html__('%d%% compensado', FLAVOR_PLATFORM_TEXT_DOMAIN), round($porcentaje_compensado)); ?>
             </span>
         </div>
     </div>
@@ -131,7 +131,7 @@ $periodo_texto = date_i18n('F Y', strtotime($periodo . '-01'));
     <!-- Eventos destacados -->
     <?php if (!empty($eventos_destacados)): ?>
         <div class="ev-impacto-dash__destacados">
-            <h4><?php esc_html_e('Eventos con mayor impacto', 'flavor-chat-ia'); ?></h4>
+            <h4><?php esc_html_e('Eventos con mayor impacto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
             <div class="ev-impacto-dash__destacados-lista">
                 <?php foreach ($eventos_destacados as $evento): ?>
                     <div class="ev-impacto-dash__destacado">
@@ -142,16 +142,16 @@ $periodo_texto = date_i18n('F Y', strtotime($periodo . '-01'));
                             </span>
                         </div>
                         <div class="ev-impacto-dash__destacado-stats">
-                            <span title="<?php esc_attr_e('Asistentes', 'flavor-chat-ia'); ?>">
+                            <span title="<?php esc_attr_e('Asistentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <span class="dashicons dashicons-groups"></span>
                                 <?php echo esc_html($evento->asistentes); ?>
                             </span>
-                            <span title="<?php esc_attr_e('Voluntarios', 'flavor-chat-ia'); ?>">
+                            <span title="<?php esc_attr_e('Voluntarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <span class="dashicons dashicons-heart"></span>
                                 <?php echo esc_html($evento->voluntarios); ?>
                             </span>
                             <?php if ($evento->plazas_solidarias > 0): ?>
-                                <span title="<?php esc_attr_e('Plazas solidarias', 'flavor-chat-ia'); ?>" class="ev-impacto-dash__destacado-solidario">
+                                <span title="<?php esc_attr_e('Plazas solidarias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" class="ev-impacto-dash__destacado-solidario">
                                     <span class="dashicons dashicons-awards"></span>
                                     <?php echo esc_html($evento->plazas_solidarias); ?>
                                 </span>
@@ -168,16 +168,16 @@ $periodo_texto = date_i18n('F Y', strtotime($periodo . '-01'));
         <div class="ev-impacto-dash__colaboraciones">
             <h4>
                 <span class="dashicons dashicons-networking"></span>
-                <?php esc_html_e('Colaboraciones entre comunidades', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Colaboraciones entre comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h4>
             <div class="ev-impacto-dash__colab-stats">
                 <div class="ev-impacto-dash__colab-stat">
                     <span class="ev-impacto-dash__colab-valor"><?php echo esc_html($metricas['colaboraciones']['total'] ?? 0); ?></span>
-                    <span class="ev-impacto-dash__colab-label"><?php esc_html_e('Eventos colaborativos', 'flavor-chat-ia'); ?></span>
+                    <span class="ev-impacto-dash__colab-label"><?php esc_html_e('Eventos colaborativos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="ev-impacto-dash__colab-stat">
                     <span class="ev-impacto-dash__colab-valor"><?php echo esc_html($metricas['colaboraciones']['comunidades'] ?? 0); ?></span>
-                    <span class="ev-impacto-dash__colab-label"><?php esc_html_e('Comunidades participantes', 'flavor-chat-ia'); ?></span>
+                    <span class="ev-impacto-dash__colab-label"><?php esc_html_e('Comunidades participantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
         </div>
@@ -185,23 +185,23 @@ $periodo_texto = date_i18n('F Y', strtotime($periodo . '-01'));
 
     <!-- Llamada a la acción -->
     <div class="ev-impacto-dash__cta">
-        <h4><?php esc_html_e('¿Cómo aumentar el impacto?', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('¿Cómo aumentar el impacto?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <ul>
             <li>
                 <span class="dashicons dashicons-universal-access"></span>
-                <?php esc_html_e('Organiza eventos accesibles para todos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Organiza eventos accesibles para todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </li>
             <li>
                 <span class="dashicons dashicons-heart"></span>
-                <?php esc_html_e('Reserva plazas solidarias', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Reserva plazas solidarias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </li>
             <li>
                 <span class="dashicons dashicons-palmtree"></span>
-                <?php esc_html_e('Compensa la huella de carbono', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Compensa la huella de carbono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </li>
             <li>
                 <span class="dashicons dashicons-networking"></span>
-                <?php esc_html_e('Colabora con otras comunidades', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Colabora con otras comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </li>
         </ul>
     </div>

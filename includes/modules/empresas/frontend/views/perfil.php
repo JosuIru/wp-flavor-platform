@@ -10,21 +10,21 @@ if (!defined('ABSPATH')) {
 }
 
 $tipos_labels = [
-    'sl' => __('Sociedad Limitada', 'flavor-chat-ia'),
-    'sa' => __('Sociedad Anónima', 'flavor-chat-ia'),
-    'autonomo' => __('Autónomo', 'flavor-chat-ia'),
-    'cooperativa' => __('Cooperativa', 'flavor-chat-ia'),
-    'asociacion' => __('Asociación', 'flavor-chat-ia'),
-    'comunidad_bienes' => __('Comunidad de Bienes', 'flavor-chat-ia'),
-    'sociedad_civil' => __('Sociedad Civil', 'flavor-chat-ia'),
-    'otro' => __('Otro', 'flavor-chat-ia'),
+    'sl' => __('Sociedad Limitada', 'flavor-platform'),
+    'sa' => __('Sociedad Anónima', 'flavor-platform'),
+    'autonomo' => __('Autónomo', 'flavor-platform'),
+    'cooperativa' => __('Cooperativa', 'flavor-platform'),
+    'asociacion' => __('Asociación', 'flavor-platform'),
+    'comunidad_bienes' => __('Comunidad de Bienes', 'flavor-platform'),
+    'sociedad_civil' => __('Sociedad Civil', 'flavor-platform'),
+    'otro' => __('Otro', 'flavor-platform'),
 ];
 ?>
 <div class="flavor-empresa-perfil">
     <!-- Navegación -->
     <div style="margin-bottom:20px;">
         <a href="<?php echo esc_url(remove_query_arg('vista')); ?>" class="flavor-btn flavor-btn-link">
-            ← <?php esc_html_e('Volver al dashboard', 'flavor-chat-ia'); ?>
+            ← <?php esc_html_e('Volver al dashboard', 'flavor-platform'); ?>
         </a>
     </div>
 
@@ -74,7 +74,7 @@ $tipos_labels = [
             <?php if ($es_admin): ?>
             <button type="button" class="flavor-btn flavor-btn-primary" onclick="document.getElementById('modal-editar').style.display='flex';">
                 <span class="dashicons dashicons-edit"></span>
-                <?php esc_html_e('Editar perfil', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Editar perfil', 'flavor-platform'); ?>
             </button>
             <?php endif; ?>
         </div>
@@ -85,27 +85,27 @@ $tipos_labels = [
         <div class="flavor-card">
             <h3 style="margin:0 0 20px;font-size:16px;">
                 <span class="dashicons dashicons-phone" style="color:#3b82f6;"></span>
-                <?php esc_html_e('Información de contacto', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Información de contacto', 'flavor-platform'); ?>
             </h3>
 
             <div class="flavor-info-list">
                 <?php if ($empresa->email): ?>
                 <div class="flavor-info-item">
-                    <span class="flavor-info-label"><?php esc_html_e('Email', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-info-label"><?php esc_html_e('Email', 'flavor-platform'); ?></span>
                     <a href="mailto:<?php echo esc_attr($empresa->email); ?>"><?php echo esc_html($empresa->email); ?></a>
                 </div>
                 <?php endif; ?>
 
                 <?php if ($empresa->telefono): ?>
                 <div class="flavor-info-item">
-                    <span class="flavor-info-label"><?php esc_html_e('Teléfono', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-info-label"><?php esc_html_e('Teléfono', 'flavor-platform'); ?></span>
                     <a href="tel:<?php echo esc_attr($empresa->telefono); ?>"><?php echo esc_html($empresa->telefono); ?></a>
                 </div>
                 <?php endif; ?>
 
                 <?php if ($empresa->web): ?>
                 <div class="flavor-info-item">
-                    <span class="flavor-info-label"><?php esc_html_e('Sitio web', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-info-label"><?php esc_html_e('Sitio web', 'flavor-platform'); ?></span>
                     <a href="<?php echo esc_url($empresa->web); ?>" target="_blank"><?php echo esc_html($empresa->web); ?></a>
                 </div>
                 <?php endif; ?>
@@ -116,7 +116,7 @@ $tipos_labels = [
         <div class="flavor-card">
             <h3 style="margin:0 0 20px;font-size:16px;">
                 <span class="dashicons dashicons-location" style="color:#10b981;"></span>
-                <?php esc_html_e('Dirección', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Dirección', 'flavor-platform'); ?>
             </h3>
 
             <?php if ($empresa->direccion || $empresa->ciudad): ?>
@@ -137,7 +137,7 @@ $tipos_labels = [
                 </p>
             </div>
             <?php else: ?>
-            <p style="color:#666;"><?php esc_html_e('Sin dirección registrada.', 'flavor-chat-ia'); ?></p>
+            <p style="color:#666;"><?php esc_html_e('Sin dirección registrada.', 'flavor-platform'); ?></p>
             <?php endif; ?>
         </div>
     </div>
@@ -147,7 +147,7 @@ $tipos_labels = [
     <div class="flavor-card" style="margin-top:20px;">
         <h3 style="margin:0 0 16px;font-size:16px;">
             <span class="dashicons dashicons-text" style="color:#8b5cf6;"></span>
-            <?php esc_html_e('Acerca de', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Acerca de', 'flavor-platform'); ?>
         </h3>
         <div class="flavor-descripcion">
             <?php echo nl2br(esc_html($empresa->descripcion)); ?>
@@ -159,19 +159,19 @@ $tipos_labels = [
     <div class="flavor-card" style="margin-top:20px;">
         <h3 style="margin:0 0 16px;font-size:16px;">
             <span class="dashicons dashicons-info" style="color:#f59e0b;"></span>
-            <?php esc_html_e('Información adicional', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Información adicional', 'flavor-platform'); ?>
         </h3>
         <div class="flavor-info-list">
             <div class="flavor-info-item">
-                <span class="flavor-info-label"><?php esc_html_e('Registrada el', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-info-label"><?php esc_html_e('Registrada el', 'flavor-platform'); ?></span>
                 <span><?php echo esc_html(date_i18n('d/m/Y', strtotime($empresa->created_at))); ?></span>
             </div>
             <div class="flavor-info-item">
-                <span class="flavor-info-label"><?php esc_html_e('Tu rol', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-info-label"><?php esc_html_e('Tu rol', 'flavor-platform'); ?></span>
                 <span><?php echo esc_html(ucfirst($miembro->rol)); ?></span>
             </div>
             <div class="flavor-info-item">
-                <span class="flavor-info-label"><?php esc_html_e('Fecha de alta', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-info-label"><?php esc_html_e('Fecha de alta', 'flavor-platform'); ?></span>
                 <span><?php echo esc_html(date_i18n('d/m/Y', strtotime($miembro->fecha_alta))); ?></span>
             </div>
         </div>
@@ -183,7 +183,7 @@ $tipos_labels = [
 <div id="modal-editar" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;z-index:100000;overflow-y:auto;padding:20px;">
     <div style="background:#fff;padding:32px;border-radius:16px;max-width:600px;width:100%;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
-            <h3 style="margin:0;font-size:18px;"><?php esc_html_e('Editar información', 'flavor-chat-ia'); ?></h3>
+            <h3 style="margin:0;font-size:18px;"><?php esc_html_e('Editar información', 'flavor-platform'); ?></h3>
             <button type="button" onclick="document.getElementById('modal-editar').style.display='none';" style="background:none;border:none;cursor:pointer;">
                 <span class="dashicons dashicons-no-alt" style="font-size:24px;"></span>
             </button>
@@ -195,58 +195,58 @@ $tipos_labels = [
 
             <div class="flavor-form-row">
                 <div class="flavor-form-group">
-                    <label><?php esc_html_e('Nombre comercial', 'flavor-chat-ia'); ?> *</label>
+                    <label><?php esc_html_e('Nombre comercial', 'flavor-platform'); ?> *</label>
                     <input type="text" name="nombre" value="<?php echo esc_attr($empresa->nombre); ?>" required class="flavor-input" />
                 </div>
                 <div class="flavor-form-group">
-                    <label><?php esc_html_e('Razón social', 'flavor-chat-ia'); ?></label>
+                    <label><?php esc_html_e('Razón social', 'flavor-platform'); ?></label>
                     <input type="text" name="razon_social" value="<?php echo esc_attr($empresa->razon_social); ?>" class="flavor-input" />
                 </div>
             </div>
 
             <div class="flavor-form-row">
                 <div class="flavor-form-group">
-                    <label><?php esc_html_e('Email', 'flavor-chat-ia'); ?></label>
+                    <label><?php esc_html_e('Email', 'flavor-platform'); ?></label>
                     <input type="email" name="email" value="<?php echo esc_attr($empresa->email); ?>" class="flavor-input" />
                 </div>
                 <div class="flavor-form-group">
-                    <label><?php esc_html_e('Teléfono', 'flavor-chat-ia'); ?></label>
+                    <label><?php esc_html_e('Teléfono', 'flavor-platform'); ?></label>
                     <input type="tel" name="telefono" value="<?php echo esc_attr($empresa->telefono); ?>" class="flavor-input" />
                 </div>
             </div>
 
             <div class="flavor-form-group">
-                <label><?php esc_html_e('Sitio web', 'flavor-chat-ia'); ?></label>
+                <label><?php esc_html_e('Sitio web', 'flavor-platform'); ?></label>
                 <input type="url" name="web" value="<?php echo esc_attr($empresa->web); ?>" class="flavor-input" placeholder="https://" />
             </div>
 
             <div class="flavor-form-group">
-                <label><?php esc_html_e('Dirección', 'flavor-chat-ia'); ?></label>
+                <label><?php esc_html_e('Dirección', 'flavor-platform'); ?></label>
                 <input type="text" name="direccion" value="<?php echo esc_attr($empresa->direccion); ?>" class="flavor-input" />
             </div>
 
             <div class="flavor-form-row">
                 <div class="flavor-form-group">
-                    <label><?php esc_html_e('Ciudad', 'flavor-chat-ia'); ?></label>
+                    <label><?php esc_html_e('Ciudad', 'flavor-platform'); ?></label>
                     <input type="text" name="ciudad" value="<?php echo esc_attr($empresa->ciudad); ?>" class="flavor-input" />
                 </div>
                 <div class="flavor-form-group">
-                    <label><?php esc_html_e('Código postal', 'flavor-chat-ia'); ?></label>
+                    <label><?php esc_html_e('Código postal', 'flavor-platform'); ?></label>
                     <input type="text" name="codigo_postal" value="<?php echo esc_attr($empresa->codigo_postal); ?>" class="flavor-input" />
                 </div>
             </div>
 
             <div class="flavor-form-group">
-                <label><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?></label>
+                <label><?php esc_html_e('Descripción', 'flavor-platform'); ?></label>
                 <textarea name="descripcion" rows="4" class="flavor-textarea"><?php echo esc_textarea($empresa->descripcion); ?></textarea>
             </div>
 
             <div style="margin-top:24px;display:flex;gap:12px;justify-content:flex-end;">
                 <button type="button" class="flavor-btn flavor-btn-secondary" onclick="document.getElementById('modal-editar').style.display='none';">
-                    <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Cancelar', 'flavor-platform'); ?>
                 </button>
                 <button type="submit" name="actualizar_empresa" class="flavor-btn flavor-btn-primary">
-                    <?php esc_html_e('Guardar cambios', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Guardar cambios', 'flavor-platform'); ?>
                 </button>
             </div>
         </form>

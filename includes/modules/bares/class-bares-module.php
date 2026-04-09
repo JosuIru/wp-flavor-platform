@@ -74,7 +74,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Bares no estan creadas. Activa el modulo para crearlas automaticamente.', 'flavor-chat-ia');
+            return __('Las tablas de Bares no estan creadas. Activa el modulo para crearlas automaticamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         
     return '';
@@ -97,24 +97,24 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
             'requiere_login_reserva'  => true,
             'limite_resultados'       => 12,
             'tipos_establecimiento'   => [
-                'bar'         => __('Bar', 'flavor-chat-ia'),
-                'restaurante' => __('Restaurante', 'flavor-chat-ia'),
-                'cafeteria'   => __('Cafeteria', 'flavor-chat-ia'),
-                'pub'         => __('Pub', 'flavor-chat-ia'),
-                'terraza'     => __('Terraza', 'flavor-chat-ia'),
-                'cocteleria'  => __('Cocteleria', 'flavor-chat-ia'),
+                'bar'         => __('Bar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'restaurante' => __('Restaurante', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cafeteria'   => __('Cafeteria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'pub'         => __('Pub', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'terraza'     => __('Terraza', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cocteleria'  => __('Cocteleria', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'categorias_carta' => [
-                'tapas'    => __('Tapas', 'flavor-chat-ia'),
-                'raciones' => __('Raciones', 'flavor-chat-ia'),
-                'entrantes'=> __('Entrantes', 'flavor-chat-ia'),
-                'carnes'   => __('Carnes', 'flavor-chat-ia'),
-                'pescados' => __('Pescados', 'flavor-chat-ia'),
-                'bebidas'  => __('Bebidas', 'flavor-chat-ia'),
-                'postres'  => __('Postres', 'flavor-chat-ia'),
-                'cocktails'=> __('Cocktails', 'flavor-chat-ia'),
-                'vinos'    => __('Vinos', 'flavor-chat-ia'),
-                'cafes'    => __('Cafes', 'flavor-chat-ia'),
+                'tapas'    => __('Tapas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'raciones' => __('Raciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'entrantes'=> __('Entrantes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'carnes'   => __('Carnes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'pescados' => __('Pescados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'bebidas'  => __('Bebidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'postres'  => __('Postres', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cocktails'=> __('Cocktails', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'vinos'    => __('Vinos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cafes'    => __('Cafes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
     }
@@ -338,7 +338,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         if (!$this->get_setting('permitir_reservas', true)) {
             return new WP_Error(
                 'reservas_deshabilitadas',
-                __('Las reservas no están habilitadas en este momento.', 'flavor-chat-ia'),
+                __('Las reservas no están habilitadas en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 403]
             );
         }
@@ -347,7 +347,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         if ($this->get_setting('requiere_login_reserva', true) && !is_user_logged_in()) {
             return new WP_Error(
                 'login_requerido',
-                __('Debes iniciar sesión para realizar una reserva.', 'flavor-chat-ia'),
+                __('Debes iniciar sesión para realizar una reserva.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 401]
             );
         }
@@ -384,7 +384,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         if (!$resultado['success']) {
             return new WP_Error(
                 'error_listado',
-                $resultado['error'] ?? __('Error al obtener el listado de bares.', 'flavor-chat-ia'),
+                $resultado['error'] ?? __('Error al obtener el listado de bares.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 400]
             );
         }
@@ -406,7 +406,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         if (!$resultado['success']) {
             return new WP_Error(
                 'bar_no_encontrado',
-                $resultado['error'] ?? __('Bar no encontrado.', 'flavor-chat-ia'),
+                $resultado['error'] ?? __('Bar no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 404]
             );
         }
@@ -434,7 +434,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         if (!$resultado['success']) {
             return new WP_Error(
                 'carta_no_encontrada',
-                $resultado['error'] ?? __('Carta no encontrada.', 'flavor-chat-ia'),
+                $resultado['error'] ?? __('Carta no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 404]
             );
         }
@@ -466,7 +466,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         if (!$nombre_bar) {
             return new WP_Error(
                 'bar_no_encontrado',
-                __('Bar no encontrado.', 'flavor-chat-ia'),
+                __('Bar no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 404]
             );
         }
@@ -499,7 +499,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
                     'hora_inicio'   => substr($evento['hora_inicio'], 0, 5),
                     'hora_fin'      => $evento['hora_fin'] ? substr($evento['hora_fin'], 0, 5) : null,
                     'imagen'        => $evento['imagen'],
-                    'precio'        => $evento['precio'] ? $this->format_price(floatval($evento['precio'])) : __('Gratis', 'flavor-chat-ia'),
+                    'precio'        => $evento['precio'] ? $this->format_price(floatval($evento['precio'])) : __('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'aforo_maximo'  => (int) $evento['aforo_maximo'],
                     'inscritos'     => (int) $evento['inscritos_count'],
                     'plazas_disponibles' => max(0, (int) $evento['aforo_maximo'] - (int) $evento['inscritos_count']),
@@ -538,7 +538,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         if (!$resultado['success']) {
             return new WP_Error(
                 'error_reserva',
-                $resultado['error'] ?? __('Error al realizar la reserva.', 'flavor-chat-ia'),
+                $resultado['error'] ?? __('Error al realizar la reserva.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 400]
             );
         }
@@ -558,31 +558,31 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'bares',
-            'label' => __('Bares y Hostelería', 'flavor-chat-ia'),
+            'label' => __('Bares y Hostelería', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-food',
             'capability' => 'manage_options',
             'categoria' => 'servicios',
             'paginas' => [
                 [
                     'slug' => 'bares-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_dashboard'],
                 ],
                 [
                     'slug' => 'bares-locales',
-                    'titulo' => __('Locales', 'flavor-chat-ia'),
+                    'titulo' => __('Locales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_locales'],
                     'badge' => [$this, 'contar_locales_activos'],
                 ],
                 [
                     'slug' => 'bares-reservas',
-                    'titulo' => __('Reservas', 'flavor-chat-ia'),
+                    'titulo' => __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_reservas'],
                     'badge' => [$this, 'contar_reservas_pendientes'],
                 ],
                 [
                     'slug' => 'bares-config',
-                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'titulo' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_config'],
                 ],
             ],
@@ -654,7 +654,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         $estadisticas[] = [
             'icon' => 'dashicons-food',
             'valor' => $locales_activos,
-            'label' => __('Locales activos', 'flavor-chat-ia'),
+            'label' => __('Locales activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => $locales_activos > 0 ? 'orange' : 'gray',
             'enlace' => admin_url('admin.php?page=bares-locales'),
         ];
@@ -667,7 +667,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
             $estadisticas[] = [
                 'icon' => 'dashicons-calendar-alt',
                 'valor' => $reservas_pendientes,
-                'label' => __('Reservas pendientes', 'flavor-chat-ia'),
+                'label' => __('Reservas pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $reservas_pendientes > 0 ? 'red' : 'gray',
                 'enlace' => admin_url('admin.php?page=bares-reservas'),
             ];
@@ -686,15 +686,15 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
             include $dashboard_view_path;
         } else {
             echo '<div class="wrap flavor-modulo-page">';
-            $this->render_page_header(__('Dashboard de Bares', 'flavor-chat-ia'));
-            echo '<p>' . __('Panel de control del módulo de bares.', 'flavor-chat-ia') . '</p>';
+            $this->render_page_header(__('Dashboard de Bares', FLAVOR_PLATFORM_TEXT_DOMAIN));
+            echo '<p>' . __('Panel de control del módulo de bares.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
         }
     }
     public function render_admin_locales() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Gestión de Locales', 'flavor-chat-ia'), [
-            ['label' => __('Nuevo Local', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=bares-locales&action=nuevo'), 'class' => 'button-primary'],
+        $this->render_page_header(__('Gestión de Locales', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+            ['label' => __('Nuevo Local', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=bares-locales&action=nuevo'), 'class' => 'button-primary'],
         ]);
 
         // Listado de bares
@@ -707,7 +707,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
 
         if (!empty($bares)) {
             echo '<table class="wp-list-table widefat fixed striped">';
-            echo '<thead><tr><th>' . __('Nombre', 'flavor-chat-ia') . '</th><th>' . __('Tipo', 'flavor-chat-ia') . '</th><th>' . __('Dirección', 'flavor-chat-ia') . '</th><th>' . __('Valoración', 'flavor-chat-ia') . '</th><th>' . __('Estado', 'flavor-chat-ia') . '</th><th>' . __('Acciones', 'flavor-chat-ia') . '</th></tr></thead>';
+            echo '<thead><tr><th>' . __('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . __('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . __('Dirección', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . __('Valoración', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . __('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th></tr></thead>';
             echo '<tbody>';
             foreach ($bares as $bar) {
                 $clase_estado = $bar['estado'] === 'activo' ? 'status-active' : 'status-inactive';
@@ -717,12 +717,12 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
                 echo '<td>' . esc_html($bar['direccion'] ?: '-') . '</td>';
                 echo '<td>' . esc_html(number_format(floatval($bar['valoracion_media']), 1)) . ' (' . esc_html($bar['valoraciones_count']) . ')</td>';
                 echo '<td><span class="' . esc_attr($clase_estado) . '">' . esc_html(ucfirst($bar['estado'])) . '</span></td>';
-                echo '<td><a href="' . esc_url(admin_url('admin.php?page=bares-nuevo&editar=' . $bar['id'])) . '" class="button button-small">' . __('Editar', 'flavor-chat-ia') . '</a> <a href="' . esc_url(admin_url('admin.php?page=bares-carta&bar_id=' . $bar['id'])) . '" class="button button-small">' . __('Ver Carta', 'flavor-chat-ia') . '</a></td>';
+                echo '<td><a href="' . esc_url(admin_url('admin.php?page=bares-nuevo&editar=' . $bar['id'])) . '" class="button button-small">' . __('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a> <a href="' . esc_url(admin_url('admin.php?page=bares-carta&bar_id=' . $bar['id'])) . '" class="button button-small">' . __('Ver Carta', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></td>';
                 echo '</tr>';
             }
             echo '</tbody></table>';
         } else {
-            echo '<p>' . __('No hay locales registrados.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('No hay locales registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         echo '</div>';
@@ -733,14 +733,14 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_reservas() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Gestión de Reservas', 'flavor-chat-ia'));
+        $this->render_page_header(__('Gestión de Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         // Tabs de estado
         $tab_actual = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'pendiente';
         $this->render_page_tabs([
-            ['slug' => 'pendiente', 'label' => __('Pendientes', 'flavor-chat-ia'), 'badge' => $this->contar_reservas_pendientes()],
-            ['slug' => 'confirmada', 'label' => __('Confirmadas', 'flavor-chat-ia')],
-            ['slug' => 'todas', 'label' => __('Todas', 'flavor-chat-ia')],
+            ['slug' => 'pendiente', 'label' => __('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'badge' => $this->contar_reservas_pendientes()],
+            ['slug' => 'confirmada', 'label' => __('Confirmadas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            ['slug' => 'todas', 'label' => __('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
         ], $tab_actual);
 
         // Listado de reservas
@@ -765,12 +765,12 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
 
         if (!empty($reservas)) {
             echo '<table class="wp-list-table widefat fixed striped">';
-            echo '<thead><tr><th>' . __('Local', 'flavor-chat-ia') . '</th><th>' . __('Nombre', 'flavor-chat-ia') . '</th><th>' . __('Fecha', 'flavor-chat-ia') . '</th><th>' . __('Hora', 'flavor-chat-ia') . '</th><th>' . __('Comensales', 'flavor-chat-ia') . '</th><th>' . __('Estado', 'flavor-chat-ia') . '</th><th>' . __('Acciones', 'flavor-chat-ia') . '</th></tr></thead>';
+            echo '<thead><tr><th>' . __('Local', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . __('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . __('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . __('Hora', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . __('Comensales', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . __('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th></tr></thead>';
             echo '<tbody>';
             foreach ($reservas as $reserva) {
                 $clase_estado = 'status-' . $reserva['estado'];
                 echo '<tr>';
-                echo '<td>' . esc_html($reserva['bar_nombre'] ?? __('Local eliminado', 'flavor-chat-ia')) . '</td>';
+                echo '<td>' . esc_html($reserva['bar_nombre'] ?? __('Local eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '</td>';
                 echo '<td><strong>' . esc_html($reserva['nombre_reserva']) . '</strong><br><small>' . esc_html($reserva['telefono']) . '</small></td>';
                 echo '<td>' . esc_html(date_i18n('d/m/Y', strtotime($reserva['fecha']))) . '</td>';
                 echo '<td>' . esc_html(substr($reserva['hora'], 0, 5)) . '</td>';
@@ -782,10 +782,10 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
                     echo wp_nonce_field('confirmar_reserva_bar', '_wpnonce', true, false);
                     echo '<input type="hidden" name="accion" value="confirmar_reserva">';
                     echo '<input type="hidden" name="reserva_id" value="' . esc_attr($reserva['id']) . '">';
-                    echo '<button type="submit" class="button button-small button-primary">' . __('Confirmar', 'flavor-chat-ia') . '</button>';
+                    echo '<button type="submit" class="button button-small button-primary">' . __('Confirmar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</button>';
                     echo '</form> ';
                 }
-                echo '<a href="#" class="button button-small bar-ver-reserva" data-id="' . esc_attr($reserva['id']) . '" data-nombre="' . esc_attr($reserva['nombre_reserva']) . '" data-telefono="' . esc_attr($reserva['telefono']) . '" data-fecha="' . esc_attr(date_i18n('d/m/Y', strtotime($reserva['fecha']))) . '" data-hora="' . esc_attr(substr($reserva['hora'], 0, 5)) . '" data-comensales="' . esc_attr($reserva['comensales']) . '">' . __('Ver', 'flavor-chat-ia') . '</a>';
+                echo '<a href="#" class="button button-small bar-ver-reserva" data-id="' . esc_attr($reserva['id']) . '" data-nombre="' . esc_attr($reserva['nombre_reserva']) . '" data-telefono="' . esc_attr($reserva['telefono']) . '" data-fecha="' . esc_attr(date_i18n('d/m/Y', strtotime($reserva['fecha']))) . '" data-hora="' . esc_attr(substr($reserva['hora'], 0, 5)) . '" data-comensales="' . esc_attr($reserva['comensales']) . '">' . __('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
                 echo '</td>';
                 echo '</tr>';
             }
@@ -795,9 +795,9 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
             echo '<div id="modal-ver-reserva" style="display:none;">
                 <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:100000;">
                     <div class="modal-content" style="position:relative;max-width:500px;margin:50px auto;background:#fff;padding:20px;border-radius:4px;">
-                        <h2>' . __('Detalle de Reserva', 'flavor-chat-ia') . '</h2>
+                        <h2>' . __('Detalle de Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2>
                         <div id="contenido-reserva"></div>
-                        <p><button type="button" class="button" id="cerrar-modal-reserva">' . __('Cerrar', 'flavor-chat-ia') . '</button></p>
+                        <p><button type="button" class="button" id="cerrar-modal-reserva">' . __('Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</button></p>
                     </div>
                 </div>
             </div>';
@@ -823,7 +823,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
             });
             </script>';
         } else {
-            echo '<p>' . __('No hay reservas en esta categoría.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('No hay reservas en esta categoría.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         echo '</div>';
@@ -834,30 +834,30 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_config() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Configuración de Bares y Hostelería', 'flavor-chat-ia'));
+        $this->render_page_header(__('Configuración de Bares y Hostelería', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         $configuracion_actual = $this->get_default_settings();
         echo '<form method="post" action="">';
         echo '<table class="form-table">';
 
-        echo '<tr><th scope="row"><label for="permitir_reservas">' . __('Permitir reservas', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="permitir_reservas">' . __('Permitir reservas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="checkbox" name="permitir_reservas" id="permitir_reservas" ' . checked($configuracion_actual['permitir_reservas'], true, false) . ' />';
-        echo '<p class="description">' . __('Habilita el sistema de reservas online.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . __('Habilita el sistema de reservas online.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="permitir_valoraciones">' . __('Permitir valoraciones', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="permitir_valoraciones">' . __('Permitir valoraciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="checkbox" name="permitir_valoraciones" id="permitir_valoraciones" ' . checked($configuracion_actual['permitir_valoraciones'], true, false) . ' />';
-        echo '<p class="description">' . __('Permite a los usuarios valorar los locales.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . __('Permite a los usuarios valorar los locales.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="requiere_login_reserva">' . __('Login para reservar', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="requiere_login_reserva">' . __('Login para reservar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="checkbox" name="requiere_login_reserva" id="requiere_login_reserva" ' . checked($configuracion_actual['requiere_login_reserva'], true, false) . ' />';
-        echo '<p class="description">' . __('Requiere iniciar sesión para hacer reservas.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . __('Requiere iniciar sesión para hacer reservas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="limite_resultados">' . __('Límite de resultados', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="limite_resultados">' . __('Límite de resultados', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="number" name="limite_resultados" id="limite_resultados" value="' . esc_attr($configuracion_actual['limite_resultados']) . '" min="1" max="100" class="small-text" />';
-        echo '<p class="description">' . __('Número máximo de locales a mostrar por página.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . __('Número máximo de locales a mostrar por página.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
         echo '</table>';
-        echo '<p class="submit"><input type="submit" name="guardar_config" class="button-primary" value="' . __('Guardar Configuración', 'flavor-chat-ia') . '" /></p>';
+        echo '<p class="submit"><input type="submit" name="guardar_config" class="button-primary" value="' . __('Guardar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN) . '" /></p>';
         echo '</form>';
         echo '</div>';
     }
@@ -1052,7 +1052,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error'   => sprintf(__('Accion no implementada: %s', 'flavor-chat-ia'), $nombre_accion),
+            'error'   => sprintf(__('Accion no implementada: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $nombre_accion),
         ];
     }
 
@@ -1150,7 +1150,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         if (!$bar_id) {
             return [
                 'success' => false,
-                'error'   => __('ID de bar no valido.', 'flavor-chat-ia'),
+                'error'   => __('ID de bar no valido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1162,7 +1162,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         if (!$registro_bar) {
             return [
                 'success' => false,
-                'error'   => __('Bar no encontrado o no disponible.', 'flavor-chat-ia'),
+                'error'   => __('Bar no encontrado o no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1175,7 +1175,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         // Agrupar carta por categoria
         $carta_agrupada = [];
         foreach ($items_carta as $item_carta) {
-            $nombre_categoria = $item_carta->categoria ?: __('Otros', 'flavor-chat-ia');
+            $nombre_categoria = $item_carta->categoria ?: __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN);
             if (!isset($carta_agrupada[$nombre_categoria])) {
                 $carta_agrupada[$nombre_categoria] = [];
             }
@@ -1206,7 +1206,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
             return [
                 'puntuacion'     => (int) $valoracion->puntuacion,
                 'comentario'     => $valoracion->comentario,
-                'nombre_usuario' => $valoracion->nombre_usuario ?: __('Anonimo', 'flavor-chat-ia'),
+                'nombre_usuario' => $valoracion->nombre_usuario ?: __('Anonimo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha'          => date_i18n('d/m/Y', strtotime($valoracion->created_at)),
             ];
         }, $valoraciones_recientes);
@@ -1253,7 +1253,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         if (empty($termino_busqueda)) {
             return [
                 'success' => false,
-                'error'   => __('Debes indicar un termino de busqueda.', 'flavor-chat-ia'),
+                'error'   => __('Debes indicar un termino de busqueda.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1302,7 +1302,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         if (!$bar_id) {
             return [
                 'success' => false,
-                'error'   => __('ID de bar no valido.', 'flavor-chat-ia'),
+                'error'   => __('ID de bar no valido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1315,7 +1315,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         if (!$nombre_bar) {
             return [
                 'success' => false,
-                'error'   => __('Bar no encontrado.', 'flavor-chat-ia'),
+                'error'   => __('Bar no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1336,7 +1336,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         // Agrupar por categoria
         $carta_agrupada = [];
         foreach ($items_carta as $item_carta) {
-            $nombre_categoria = $item_carta->categoria ?: __('Otros', 'flavor-chat-ia');
+            $nombre_categoria = $item_carta->categoria ?: __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN);
             if (!isset($carta_agrupada[$nombre_categoria])) {
                 $carta_agrupada[$nombre_categoria] = [];
             }
@@ -1374,7 +1374,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         if (!$this->get_setting('permitir_reservas', true)) {
             return [
                 'success' => false,
-                'error'   => __('Las reservas no estan habilitadas.', 'flavor-chat-ia'),
+                'error'   => __('Las reservas no estan habilitadas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1383,7 +1383,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         if ($this->get_setting('requiere_login_reserva', true) && !$usuario_id) {
             return [
                 'success' => false,
-                'error'   => __('Debes iniciar sesion para realizar una reserva.', 'flavor-chat-ia'),
+                'error'   => __('Debes iniciar sesion para realizar una reserva.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1401,19 +1401,19 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
 
         // Validaciones
         if (!$bar_id) {
-            return ['success' => false, 'error' => __('Debes indicar el bar.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes indicar el bar.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
         if (empty($nombre_reserva)) {
-            return ['success' => false, 'error' => __('El nombre de la reserva es obligatorio.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('El nombre de la reserva es obligatorio.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
         if (empty($fecha_reserva)) {
-            return ['success' => false, 'error' => __('La fecha es obligatoria.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('La fecha es obligatoria.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
         if (empty($hora_reserva)) {
-            return ['success' => false, 'error' => __('La hora es obligatoria.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('La hora es obligatoria.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
         if ($comensales < 1) {
-            return ['success' => false, 'error' => __('El numero de comensales debe ser al menos 1.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('El numero de comensales debe ser al menos 1.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Validar fecha futura
@@ -1421,7 +1421,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         if ($timestamp_reserva <= time()) {
             return [
                 'success' => false,
-                'error'   => __('La fecha y hora de la reserva deben ser futuras.', 'flavor-chat-ia'),
+                'error'   => __('La fecha y hora de la reserva deben ser futuras.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1434,7 +1434,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         if (!$registro_bar) {
             return [
                 'success' => false,
-                'error'   => __('Bar no encontrado o no disponible.', 'flavor-chat-ia'),
+                'error'   => __('Bar no encontrado o no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1458,7 +1458,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         if ($resultado_insercion === false) {
             return [
                 'success' => false,
-                'error'   => __('Error al crear la reserva. Intentalo de nuevo.', 'flavor-chat-ia'),
+                'error'   => __('Error al crear la reserva. Intentalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1468,7 +1468,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
             'success'    => true,
             'reserva_id' => $reserva_id,
             'mensaje'    => sprintf(
-                __('Reserva creada correctamente en "%s" para %d persona(s) el %s a las %s. Estado: pendiente de confirmacion.', 'flavor-chat-ia'),
+                __('Reserva creada correctamente en "%s" para %d persona(s) el %s a las %s. Estado: pendiente de confirmacion.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $registro_bar->nombre,
                 $comensales,
                 date_i18n('d/m/Y', strtotime($fecha_reserva)),
@@ -1486,7 +1486,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         if (!$usuario_id) {
             return [
                 'success' => false,
-                'error'   => __('Debes iniciar sesion para ver tus reservas.', 'flavor-chat-ia'),
+                'error'   => __('Debes iniciar sesion para ver tus reservas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1546,7 +1546,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         if (!$usuario_id) {
             return [
                 'success' => false,
-                'error'   => __('Debes iniciar sesion para cancelar una reserva.', 'flavor-chat-ia'),
+                'error'   => __('Debes iniciar sesion para cancelar una reserva.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1558,7 +1558,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         if (!$reserva_id) {
             return [
                 'success' => false,
-                'error'   => __('ID de reserva no valido.', 'flavor-chat-ia'),
+                'error'   => __('ID de reserva no valido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1572,7 +1572,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         if (!$reserva_existente) {
             return [
                 'success' => false,
-                'error'   => __('Reserva no encontrada o no te pertenece.', 'flavor-chat-ia'),
+                'error'   => __('Reserva no encontrada o no te pertenece.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1580,7 +1580,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
             return [
                 'success' => false,
                 'error'   => sprintf(
-                    __('No se puede cancelar una reserva con estado "%s".', 'flavor-chat-ia'),
+                    __('No se puede cancelar una reserva con estado "%s".', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $this->obtener_etiqueta_estado_reserva($reserva_existente->estado)
                 ),
             ];
@@ -1597,13 +1597,13 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         if ($resultado_actualizacion === false) {
             return [
                 'success' => false,
-                'error'   => __('Error al cancelar la reserva.', 'flavor-chat-ia'),
+                'error'   => __('Error al cancelar la reserva.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
         return [
             'success' => true,
-            'mensaje' => __('Reserva cancelada correctamente.', 'flavor-chat-ia'),
+            'mensaje' => __('Reserva cancelada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -1614,7 +1614,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         if (!$this->get_setting('permitir_valoraciones', true)) {
             return [
                 'success' => false,
-                'error'   => __('Las valoraciones no estan habilitadas.', 'flavor-chat-ia'),
+                'error'   => __('Las valoraciones no estan habilitadas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1623,7 +1623,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         if (!$usuario_id) {
             return [
                 'success' => false,
-                'error'   => __('Debes iniciar sesion para valorar un bar.', 'flavor-chat-ia'),
+                'error'   => __('Debes iniciar sesion para valorar un bar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1636,10 +1636,10 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         $comentario_usuario = sanitize_textarea_field($parametros['comentario'] ?? '');
 
         if (!$bar_id) {
-            return ['success' => false, 'error' => __('ID de bar no valido.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('ID de bar no valido.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
         if ($puntuacion_dada < 1 || $puntuacion_dada > 5) {
-            return ['success' => false, 'error' => __('La puntuacion debe estar entre 1 y 5.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('La puntuacion debe estar entre 1 y 5.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Verificar que el bar existe
@@ -1651,7 +1651,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         if (!$existe_bar) {
             return [
                 'success' => false,
-                'error'   => __('Bar no encontrado.', 'flavor-chat-ia'),
+                'error'   => __('Bar no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1678,7 +1678,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
                 ['%d', '%s', '%s'],
                 ['%d', '%d']
             );
-            $mensaje_resultado = __('Valoracion actualizada correctamente.', 'flavor-chat-ia');
+            $mensaje_resultado = __('Valoracion actualizada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         } else {
             // Insertar nueva valoracion
             $wpdb->insert(
@@ -1691,7 +1691,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
                 ],
                 ['%d', '%d', '%d', '%s']
             );
-            $mensaje_resultado = __('Valoracion enviada correctamente.', 'flavor-chat-ia');
+            $mensaje_resultado = __('Valoracion enviada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         // Recalcular media del bar
@@ -1907,8 +1907,8 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
     public static function get_renderer_config(): array {
         return [
             'module'   => 'bares',
-            'title'    => __('Bares', 'flavor-chat-ia'),
-            'subtitle' => __('Explora locales, cartas y reservas', 'flavor-chat-ia'),
+            'title'    => __('Bares', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Explora locales, cartas y reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '🍽️',
             'color'    => 'amber',
 
@@ -1930,30 +1930,30 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
 
             'tabs' => [
                 'bares' => [
-                    'label'   => __('Bares', 'flavor-chat-ia'),
+                    'label'   => __('Bares', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-food',
                     'content' => 'template:_archive.php',
                 ],
                 'mapa' => [
-                    'label'   => __('Mapa', 'flavor-chat-ia'),
+                    'label'   => __('Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-location',
                     'content' => '[flavor_module_listing module="bares" action="mapa"]',
                     'public'  => true,
                 ],
                 'reservar' => [
-                    'label'   => __('Reservar', 'flavor-chat-ia'),
+                    'label'   => __('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-calendar-alt',
                     'content' => '[flavor_module_form module="bares" action="reservar"]',
                     'public'  => true,
                 ],
                 'mis-reservas' => [
-                    'label'          => __('Mis reservas', 'flavor-chat-ia'),
+                    'label'          => __('Mis reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'           => 'dashicons-tickets-alt',
                     'content'        => 'callback:render_tab_mis_reservas',
                     'requires_login' => true,
                 ],
                 'mis-valoraciones' => [
-                    'label'          => __('Mis reseñas', 'flavor-chat-ia'),
+                    'label'          => __('Mis reseñas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'           => 'dashicons-star-filled',
                     'content'        => 'callback:render_tab_mis_valoraciones',
                     'requires_login' => true,
@@ -1972,78 +1972,78 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
     public function get_web_components() {
         return [
             'bares_hero' => [
-                'label'       => __('Hero Bares', 'flavor-chat-ia'),
-                'description' => __('Seccion hero con titulo y buscador de bares y restaurantes', 'flavor-chat-ia'),
+                'label'       => __('Hero Bares', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Seccion hero con titulo y buscador de bares y restaurantes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category'    => 'hero',
                 'icon'        => 'dashicons-food',
                 'fields'      => [
                     'titulo' => [
                         'type'    => 'text',
-                        'label'   => __('Titulo', 'flavor-chat-ia'),
-                        'default' => __('Bares y Restaurantes', 'flavor-chat-ia'),
+                        'label'   => __('Titulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Bares y Restaurantes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'subtitulo' => [
                         'type'    => 'textarea',
-                        'label'   => __('Subtitulo', 'flavor-chat-ia'),
-                        'default' => __('Descubre los mejores locales de hosteleria de tu zona', 'flavor-chat-ia'),
+                        'label'   => __('Subtitulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Descubre los mejores locales de hosteleria de tu zona', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'imagen_fondo' => [
                         'type'  => 'image',
-                        'label' => __('Imagen de fondo', 'flavor-chat-ia'),
+                        'label' => __('Imagen de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                 ],
                 'template' => 'bares/hero',
             ],
             'bares_grid' => [
-                'label'       => __('Grid de Bares', 'flavor-chat-ia'),
-                'description' => __('Listado de bares en tarjetas con filtros', 'flavor-chat-ia'),
+                'label'       => __('Grid de Bares', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Listado de bares en tarjetas con filtros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category'    => 'listings',
                 'icon'        => 'dashicons-grid-view',
                 'fields'      => [
                     'titulo_seccion' => [
                         'type'    => 'text',
-                        'label'   => __('Titulo de seccion', 'flavor-chat-ia'),
-                        'default' => __('Establecimientos Destacados', 'flavor-chat-ia'),
+                        'label'   => __('Titulo de seccion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Establecimientos Destacados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'columnas' => [
                         'type'    => 'select',
-                        'label'   => __('Columnas', 'flavor-chat-ia'),
+                        'label'   => __('Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => [2, 3, 4],
                         'default' => 3,
                     ],
                     'tipo_filtro' => [
                         'type'    => 'select',
-                        'label'   => __('Filtrar por tipo', 'flavor-chat-ia'),
+                        'label'   => __('Filtrar por tipo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['todos', 'bar', 'restaurante', 'cafeteria', 'pub', 'terraza', 'cocteleria'],
                         'default' => 'todos',
                     ],
                     'mostrar_valoracion' => [
                         'type'    => 'toggle',
-                        'label'   => __('Mostrar valoraciones', 'flavor-chat-ia'),
+                        'label'   => __('Mostrar valoraciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                 ],
                 'template' => 'bares/bares-grid',
             ],
             'bares_carta' => [
-                'label'       => __('Carta / Menu', 'flavor-chat-ia'),
-                'description' => __('Carta completa de un establecimiento con categorias y precios', 'flavor-chat-ia'),
+                'label'       => __('Carta / Menu', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Carta completa de un establecimiento con categorias y precios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category'    => 'content',
                 'icon'        => 'dashicons-list-view',
                 'fields'      => [
                     'titulo_seccion' => [
                         'type'    => 'text',
-                        'label'   => __('Titulo de seccion', 'flavor-chat-ia'),
-                        'default' => __('Nuestra Carta', 'flavor-chat-ia'),
+                        'label'   => __('Titulo de seccion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Nuestra Carta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'mostrar_precios' => [
                         'type'    => 'toggle',
-                        'label'   => __('Mostrar precios', 'flavor-chat-ia'),
+                        'label'   => __('Mostrar precios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                     'mostrar_alergenos' => [
                         'type'    => 'toggle',
-                        'label'   => __('Mostrar alergenos', 'flavor-chat-ia'),
+                        'label'   => __('Mostrar alergenos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                 ],
@@ -2170,11 +2170,11 @@ KNOWLEDGE;
      */
     private function obtener_etiqueta_estado_reserva($estado_reserva) {
         $mapa_estados = [
-            'pendiente'  => __('Pendiente', 'flavor-chat-ia'),
-            'confirmada' => __('Confirmada', 'flavor-chat-ia'),
-            'cancelada'  => __('Cancelada', 'flavor-chat-ia'),
-            'completada' => __('Completada', 'flavor-chat-ia'),
-            'no_show'    => __('No presentado', 'flavor-chat-ia'),
+            'pendiente'  => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'confirmada' => __('Confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cancelada'  => __('Cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'completada' => __('Completada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'no_show'    => __('No presentado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
         return $mapa_estados[$estado_reserva] ?? ucfirst($estado_reserva);
     }
@@ -2224,7 +2224,7 @@ KNOWLEDGE;
         $dashboard_tab = $this->get_dashboard_tab_instance();
 
         if (!$dashboard_tab || !method_exists($dashboard_tab, 'render_tab_mis_reservas')) {
-            return '<p class="fmd-empty">' . esc_html__('No hay contenido disponible', 'flavor-chat-ia') . '</p>';
+            return '<p class="fmd-empty">' . esc_html__('No hay contenido disponible', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -2241,7 +2241,7 @@ KNOWLEDGE;
         $dashboard_tab = $this->get_dashboard_tab_instance();
 
         if (!$dashboard_tab || !method_exists($dashboard_tab, 'render_tab_mis_valoraciones')) {
-            return '<p class="fmd-empty">' . esc_html__('No hay contenido disponible', 'flavor-chat-ia') . '</p>';
+            return '<p class="fmd-empty">' . esc_html__('No hay contenido disponible', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -2274,37 +2274,37 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Bares', 'flavor-chat-ia'),
+                'title' => __('Bares', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'bares',
-                'content' => '<h1>' . __('Bares', 'flavor-chat-ia') . '</h1>
-<p>' . __('Descubre los mejores bares de tu zona', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Bares', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Descubre los mejores bares de tu zona', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="bares" action="listar_bares" columnas="3" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Mapa', 'flavor-chat-ia'),
+                'title' => __('Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mapa-bares',
-                'content' => '<h1>' . __('Mapa de Bares', 'flavor-chat-ia') . '</h1>
-<p>' . __('Encuentra bares cerca de ti', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Mapa de Bares', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Encuentra bares cerca de ti', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="bares" action="mapa"]',
                 'parent' => 'bares',
             ],
             [
-                'title' => __('Reservar', 'flavor-chat-ia'),
+                'title' => __('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'reservar-bar',
-                'content' => '<h1>' . __('Reservar Mesa', 'flavor-chat-ia') . '</h1>
-<p>' . __('Haz una reserva en tu bar favorito', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Reservar Mesa', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Haz una reserva en tu bar favorito', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_form module="bares" action="reservar"]',
                 'parent' => 'bares',
             ],
             [
-                'title' => __('Mis Reservas', 'flavor-chat-ia'),
+                'title' => __('Mis Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mis-reservas-bares',
-                'content' => '<h1>' . __('Mis Reservas', 'flavor-chat-ia') . '</h1>
-<p>' . __('Consulta tus reservas de bares', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Mis Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Consulta tus reservas de bares', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_dashboard module="bares" action="mis_reservas"]',
                 'parent' => 'bares',

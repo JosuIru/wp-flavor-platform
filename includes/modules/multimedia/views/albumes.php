@@ -25,13 +25,13 @@ function obtener_badge_visibilidad_album($publico) {
     if ($publico) {
         return [
             'clase' => 'success',
-            'texto' => __('Público', 'flavor-chat-ia'),
+            'texto' => __('Público', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'visibility'
         ];
     }
     return [
         'clase' => 'secondary',
-        'texto' => __('Privado', 'flavor-chat-ia'),
+        'texto' => __('Privado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'hidden'
     ];
 }
@@ -41,10 +41,10 @@ function obtener_badge_visibilidad_album($publico) {
  */
 function obtener_tipo_contenido_album($fotos, $videos, $audios, $documentos) {
     $tipos = [
-        'fotos' => ['cantidad' => $fotos, 'icono' => 'format-image', 'texto' => __('Fotos', 'flavor-chat-ia'), 'color' => '#3b82f6'],
-        'videos' => ['cantidad' => $videos, 'icono' => 'video-alt3', 'texto' => __('Videos', 'flavor-chat-ia'), 'color' => '#ef4444'],
-        'audios' => ['cantidad' => $audios, 'icono' => 'format-audio', 'texto' => __('Audios', 'flavor-chat-ia'), 'color' => '#8b5cf6'],
-        'documentos' => ['cantidad' => $documentos, 'icono' => 'media-document', 'texto' => __('Documentos', 'flavor-chat-ia'), 'color' => '#f59e0b']
+        'fotos' => ['cantidad' => $fotos, 'icono' => 'format-image', 'texto' => __('Fotos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#3b82f6'],
+        'videos' => ['cantidad' => $videos, 'icono' => 'video-alt3', 'texto' => __('Videos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#ef4444'],
+        'audios' => ['cantidad' => $audios, 'icono' => 'format-audio', 'texto' => __('Audios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#8b5cf6'],
+        'documentos' => ['cantidad' => $documentos, 'icono' => 'media-document', 'texto' => __('Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#f59e0b']
     ];
 
     $tipo_predominante = 'mixto';
@@ -61,7 +61,7 @@ function obtener_tipo_contenido_album($fotos, $videos, $audios, $documentos) {
         return [
             'tipo' => 'vacio',
             'icono' => 'images-alt2',
-            'texto' => __('Vacío', 'flavor-chat-ia'),
+            'texto' => __('Vacío', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => '#9ca3af'
         ];
     }
@@ -79,15 +79,15 @@ function obtener_tipo_contenido_album($fotos, $videos, $audios, $documentos) {
  */
 function calcular_nivel_contenido_album($total_items) {
     if ($total_items === 0) {
-        return ['nivel' => 'vacio', 'texto' => __('Vacío', 'flavor-chat-ia'), 'color' => '#9ca3af'];
+        return ['nivel' => 'vacio', 'texto' => __('Vacío', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#9ca3af'];
     } elseif ($total_items <= 10) {
-        return ['nivel' => 'bajo', 'texto' => __('Pocos archivos', 'flavor-chat-ia'), 'color' => '#f59e0b'];
+        return ['nivel' => 'bajo', 'texto' => __('Pocos archivos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#f59e0b'];
     } elseif ($total_items <= 50) {
-        return ['nivel' => 'medio', 'texto' => __('Moderado', 'flavor-chat-ia'), 'color' => '#3b82f6'];
+        return ['nivel' => 'medio', 'texto' => __('Moderado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#3b82f6'];
     } elseif ($total_items <= 100) {
-        return ['nivel' => 'alto', 'texto' => __('Abundante', 'flavor-chat-ia'), 'color' => '#10b981'];
+        return ['nivel' => 'alto', 'texto' => __('Abundante', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#10b981'];
     }
-    return ['nivel' => 'muy_alto', 'texto' => __('Muy completo', 'flavor-chat-ia'), 'color' => '#8b5cf6'];
+    return ['nivel' => 'muy_alto', 'texto' => __('Muy completo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#8b5cf6'];
 }
 
 /**
@@ -434,16 +434,16 @@ if ($usar_datos_demo) {
         <div class="flavor-header-content">
             <h1>
                 <span class="dashicons dashicons-images-alt2"></span>
-                <?php echo esc_html__('Gestión de Álbumes', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Gestión de Álbumes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h1>
             <p class="flavor-header-descripcion">
-                <?php echo esc_html__('Organiza y gestiona tu biblioteca multimedia en álbumes.', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Organiza y gestiona tu biblioteca multimedia en álbumes.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
         <div class="flavor-header-acciones">
             <button type="button" class="button button-primary button-hero" onclick="abrirModalNuevoAlbum();">
                 <span class="dashicons dashicons-plus-alt2"></span>
-                <?php echo esc_html__('Nuevo Álbum', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Nuevo Álbum', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     </div>
@@ -452,8 +452,8 @@ if ($usar_datos_demo) {
     <div class="notice notice-info" style="margin: 20px 0;">
         <p>
             <span class="dashicons dashicons-info" style="color: #2271b1;"></span>
-            <strong><?php echo esc_html__('Modo demostración:', 'flavor-chat-ia'); ?></strong>
-            <?php echo esc_html__('Las tablas de multimedia no existen. Se muestran datos de ejemplo.', 'flavor-chat-ia'); ?>
+            <strong><?php echo esc_html__('Modo demostración:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+            <?php echo esc_html__('Las tablas de multimedia no existen. Se muestran datos de ejemplo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </div>
     <?php endif; ?>
@@ -466,7 +466,7 @@ if ($usar_datos_demo) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-numero"><?php echo number_format($total_albumes); ?></span>
-                <span class="flavor-stat-label"><?php echo esc_html__('Total Álbumes', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php echo esc_html__('Total Álbumes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -476,7 +476,7 @@ if ($usar_datos_demo) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-numero"><?php echo number_format($albumes_publicos); ?></span>
-                <span class="flavor-stat-label"><?php echo esc_html__('Álbumes Públicos', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php echo esc_html__('Álbumes Públicos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -486,7 +486,7 @@ if ($usar_datos_demo) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-numero"><?php echo number_format($total_archivos); ?></span>
-                <span class="flavor-stat-label"><?php echo esc_html__('Total Archivos', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php echo esc_html__('Total Archivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -496,7 +496,7 @@ if ($usar_datos_demo) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-numero"><?php echo formatear_tamano_archivo($almacenamiento_total); ?></span>
-                <span class="flavor-stat-label"><?php echo esc_html__('Almacenamiento', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php echo esc_html__('Almacenamiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
@@ -515,64 +515,64 @@ if ($usar_datos_demo) {
                     <div class="flavor-filtro-grupo">
                         <label for="busqueda">
                             <span class="dashicons dashicons-search"></span>
-                            <?php echo esc_html__('Buscar', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                         <input type="text" id="busqueda" name="busqueda"
                                value="<?php echo esc_attr($busqueda); ?>"
-                               placeholder="<?php echo esc_attr__('Nombre o descripción...', 'flavor-chat-ia'); ?>">
+                               placeholder="<?php echo esc_attr__('Nombre o descripción...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     </div>
 
                     <div class="flavor-filtro-grupo">
                         <label for="visibilidad">
                             <span class="dashicons dashicons-visibility"></span>
-                            <?php echo esc_html__('Visibilidad', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Visibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                         <select id="visibilidad" name="visibilidad">
-                            <option value=""><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></option>
-                            <option value="publico" <?php selected($visibilidad_filtro, 'publico'); ?>><?php echo esc_html__('Públicos', 'flavor-chat-ia'); ?></option>
-                            <option value="privado" <?php selected($visibilidad_filtro, 'privado'); ?>><?php echo esc_html__('Privados', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php echo esc_html__('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="publico" <?php selected($visibilidad_filtro, 'publico'); ?>><?php echo esc_html__('Públicos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="privado" <?php selected($visibilidad_filtro, 'privado'); ?>><?php echo esc_html__('Privados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
 
                     <div class="flavor-filtro-grupo">
                         <label for="tipo_contenido">
                             <span class="dashicons dashicons-category"></span>
-                            <?php echo esc_html__('Tipo Contenido', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Tipo Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                         <select id="tipo_contenido" name="tipo_contenido">
-                            <option value=""><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></option>
-                            <option value="fotos" <?php selected($tipo_contenido_filtro, 'fotos'); ?>><?php echo esc_html__('Con fotos', 'flavor-chat-ia'); ?></option>
-                            <option value="videos" <?php selected($tipo_contenido_filtro, 'videos'); ?>><?php echo esc_html__('Con videos', 'flavor-chat-ia'); ?></option>
-                            <option value="audios" <?php selected($tipo_contenido_filtro, 'audios'); ?>><?php echo esc_html__('Con audios', 'flavor-chat-ia'); ?></option>
-                            <option value="documentos" <?php selected($tipo_contenido_filtro, 'documentos'); ?>><?php echo esc_html__('Con documentos', 'flavor-chat-ia'); ?></option>
-                            <option value="vacio" <?php selected($tipo_contenido_filtro, 'vacio'); ?>><?php echo esc_html__('Vacíos', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php echo esc_html__('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="fotos" <?php selected($tipo_contenido_filtro, 'fotos'); ?>><?php echo esc_html__('Con fotos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="videos" <?php selected($tipo_contenido_filtro, 'videos'); ?>><?php echo esc_html__('Con videos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="audios" <?php selected($tipo_contenido_filtro, 'audios'); ?>><?php echo esc_html__('Con audios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="documentos" <?php selected($tipo_contenido_filtro, 'documentos'); ?>><?php echo esc_html__('Con documentos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="vacio" <?php selected($tipo_contenido_filtro, 'vacio'); ?>><?php echo esc_html__('Vacíos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
 
                     <div class="flavor-filtro-grupo">
                         <label for="orden">
                             <span class="dashicons dashicons-sort"></span>
-                            <?php echo esc_html__('Ordenar por', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Ordenar por', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                         <select id="orden" name="orden">
-                            <option value="fecha_desc" <?php selected($orden, 'fecha_desc'); ?>><?php echo esc_html__('Más recientes', 'flavor-chat-ia'); ?></option>
-                            <option value="fecha_asc" <?php selected($orden, 'fecha_asc'); ?>><?php echo esc_html__('Más antiguos', 'flavor-chat-ia'); ?></option>
-                            <option value="nombre_asc" <?php selected($orden, 'nombre_asc'); ?>><?php echo esc_html__('Nombre A-Z', 'flavor-chat-ia'); ?></option>
-                            <option value="nombre_desc" <?php selected($orden, 'nombre_desc'); ?>><?php echo esc_html__('Nombre Z-A', 'flavor-chat-ia'); ?></option>
-                            <option value="items_desc" <?php selected($orden, 'items_desc'); ?>><?php echo esc_html__('Más archivos', 'flavor-chat-ia'); ?></option>
-                            <option value="items_asc" <?php selected($orden, 'items_asc'); ?>><?php echo esc_html__('Menos archivos', 'flavor-chat-ia'); ?></option>
-                            <option value="vistas_desc" <?php selected($orden, 'vistas_desc'); ?>><?php echo esc_html__('Más vistas', 'flavor-chat-ia'); ?></option>
+                            <option value="fecha_desc" <?php selected($orden, 'fecha_desc'); ?>><?php echo esc_html__('Más recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="fecha_asc" <?php selected($orden, 'fecha_asc'); ?>><?php echo esc_html__('Más antiguos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="nombre_asc" <?php selected($orden, 'nombre_asc'); ?>><?php echo esc_html__('Nombre A-Z', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="nombre_desc" <?php selected($orden, 'nombre_desc'); ?>><?php echo esc_html__('Nombre Z-A', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="items_desc" <?php selected($orden, 'items_desc'); ?>><?php echo esc_html__('Más archivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="items_asc" <?php selected($orden, 'items_asc'); ?>><?php echo esc_html__('Menos archivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="vistas_desc" <?php selected($orden, 'vistas_desc'); ?>><?php echo esc_html__('Más vistas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
 
                     <div class="flavor-filtro-acciones">
                         <button type="submit" class="button button-primary">
                             <span class="dashicons dashicons-filter"></span>
-                            <?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <a href="<?php echo esc_url(admin_url('admin.php?page=' . ($_GET['page'] ?? 'multimedia-albumes'))); ?>" class="button">
                             <span class="dashicons dashicons-dismiss"></span>
-                            <?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </form>
@@ -583,7 +583,7 @@ if ($usar_datos_demo) {
                 <span class="flavor-resultados-contador">
                     <?php
                     printf(
-                        esc_html__('Mostrando %1$d-%2$d de %3$d álbumes', 'flavor-chat-ia'),
+                        esc_html__('Mostrando %1$d-%2$d de %3$d álbumes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         min($offset + 1, $total_albumes_filtrados),
                         min($offset + $items_por_pagina, $total_albumes_filtrados),
                         $total_albumes_filtrados
@@ -593,7 +593,7 @@ if ($usar_datos_demo) {
                 <?php if (!empty($busqueda) || !empty($visibilidad_filtro) || !empty($tipo_contenido_filtro)): ?>
                     <span class="flavor-filtros-activos">
                         <span class="dashicons dashicons-filter"></span>
-                        <?php echo esc_html__('Filtros activos', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Filtros activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                 <?php endif; ?>
             </div>
@@ -602,11 +602,11 @@ if ($usar_datos_demo) {
             <?php if (empty($albumes)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-images-alt2"></span>
-                    <h3><?php echo esc_html__('No hay álbumes', 'flavor-chat-ia'); ?></h3>
-                    <p><?php echo esc_html__('No se encontraron álbumes con los filtros seleccionados.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php echo esc_html__('No hay álbumes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php echo esc_html__('No se encontraron álbumes con los filtros seleccionados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <button onclick="abrirModalNuevoAlbum()" class="button button-primary button-large">
                         <span class="dashicons dashicons-plus-alt2"></span>
-                        <?php echo esc_html__('Crear Primer Álbum', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Crear Primer Álbum', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             <?php else: ?>
@@ -660,25 +660,25 @@ if ($usar_datos_demo) {
                                 <!-- Desglose de contenido -->
                                 <div class="flavor-album-desglose">
                                     <?php if ($fotos > 0): ?>
-                                        <span class="flavor-desglose-item" title="<?php echo esc_attr__('Fotos', 'flavor-chat-ia'); ?>">
+                                        <span class="flavor-desglose-item" title="<?php echo esc_attr__('Fotos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <span class="dashicons dashicons-format-image" style="color: #3b82f6;"></span>
                                             <?php echo $fotos; ?>
                                         </span>
                                     <?php endif; ?>
                                     <?php if ($videos > 0): ?>
-                                        <span class="flavor-desglose-item" title="<?php echo esc_attr__('Videos', 'flavor-chat-ia'); ?>">
+                                        <span class="flavor-desglose-item" title="<?php echo esc_attr__('Videos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <span class="dashicons dashicons-video-alt3" style="color: #ef4444;"></span>
                                             <?php echo $videos; ?>
                                         </span>
                                     <?php endif; ?>
                                     <?php if ($audios > 0): ?>
-                                        <span class="flavor-desglose-item" title="<?php echo esc_attr__('Audios', 'flavor-chat-ia'); ?>">
+                                        <span class="flavor-desglose-item" title="<?php echo esc_attr__('Audios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <span class="dashicons dashicons-format-audio" style="color: #8b5cf6;"></span>
                                             <?php echo $audios; ?>
                                         </span>
                                     <?php endif; ?>
                                     <?php if ($documentos > 0): ?>
-                                        <span class="flavor-desglose-item" title="<?php echo esc_attr__('Documentos', 'flavor-chat-ia'); ?>">
+                                        <span class="flavor-desglose-item" title="<?php echo esc_attr__('Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <span class="dashicons dashicons-media-document" style="color: #f59e0b;"></span>
                                             <?php echo $documentos; ?>
                                         </span>
@@ -709,13 +709,13 @@ if ($usar_datos_demo) {
 
                                 <!-- Acciones -->
                                 <div class="flavor-album-acciones">
-                                    <button onclick="event.stopPropagation(); editarAlbum(<?php echo $album->id; ?>)" class="button" title="<?php echo esc_attr__('Editar álbum', 'flavor-chat-ia'); ?>">
+                                    <button onclick="event.stopPropagation(); editarAlbum(<?php echo $album->id; ?>)" class="button" title="<?php echo esc_attr__('Editar álbum', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                         <span class="dashicons dashicons-edit"></span>
-                                        <?php echo esc_html__('Editar', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
-                                    <button onclick="event.stopPropagation(); verAlbum(<?php echo $album->id; ?>)" class="button button-primary" title="<?php echo esc_attr__('Ver contenido', 'flavor-chat-ia'); ?>">
+                                    <button onclick="event.stopPropagation(); verAlbum(<?php echo $album->id; ?>)" class="button button-primary" title="<?php echo esc_attr__('Ver contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                         <span class="dashicons dashicons-visibility"></span>
-                                        <?php echo esc_html__('Ver', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 </div>
                             </div>
@@ -732,8 +732,8 @@ if ($usar_datos_demo) {
                             'format' => '',
                             'current' => $pagina_actual,
                             'total' => $total_paginas,
-                            'prev_text' => '<span class="dashicons dashicons-arrow-left-alt2"></span> ' . __('Anterior', 'flavor-chat-ia'),
-                            'next_text' => __('Siguiente', 'flavor-chat-ia') . ' <span class="dashicons dashicons-arrow-right-alt2"></span>',
+                            'prev_text' => '<span class="dashicons dashicons-arrow-left-alt2"></span> ' . __('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'next_text' => __('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN) . ' <span class="dashicons dashicons-arrow-right-alt2"></span>',
                             'type' => 'list',
                             'end_size' => 1,
                             'mid_size' => 2,
@@ -767,7 +767,7 @@ if ($usar_datos_demo) {
             <div class="flavor-sidebar-card">
                 <h3 class="flavor-sidebar-titulo">
                     <span class="dashicons dashicons-star-filled"></span>
-                    <?php echo esc_html__('Álbumes Populares', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Álbumes Populares', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <div class="flavor-top-lista">
                     <?php
@@ -789,7 +789,7 @@ if ($usar_datos_demo) {
                             </div>
                             <span class="flavor-top-items">
                                 <?php echo number_format($top_album->total_items ?? 0); ?>
-                                <small><?php echo esc_html__('items', 'flavor-chat-ia'); ?></small>
+                                <small><?php echo esc_html__('items', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                             </span>
                         </div>
                     <?php endforeach; ?>
@@ -800,7 +800,7 @@ if ($usar_datos_demo) {
             <div class="flavor-sidebar-card">
                 <h3 class="flavor-sidebar-titulo">
                     <span class="dashicons dashicons-chart-pie"></span>
-                    <?php echo esc_html__('Por Tipo de Contenido', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Por Tipo de Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <div class="flavor-chart-container">
                     <canvas id="chartTipoContenido" width="200" height="200"></canvas>
@@ -808,22 +808,22 @@ if ($usar_datos_demo) {
                 <div class="flavor-chart-leyenda">
                     <div class="flavor-leyenda-item">
                         <span class="flavor-leyenda-color" style="background: #3b82f6;"></span>
-                        <span class="flavor-leyenda-texto"><?php echo esc_html__('Fotos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-leyenda-texto"><?php echo esc_html__('Fotos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="flavor-leyenda-valor"><?php echo number_format($total_fotos); ?></span>
                     </div>
                     <div class="flavor-leyenda-item">
                         <span class="flavor-leyenda-color" style="background: #ef4444;"></span>
-                        <span class="flavor-leyenda-texto"><?php echo esc_html__('Videos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-leyenda-texto"><?php echo esc_html__('Videos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="flavor-leyenda-valor"><?php echo number_format($total_videos); ?></span>
                     </div>
                     <div class="flavor-leyenda-item">
                         <span class="flavor-leyenda-color" style="background: #8b5cf6;"></span>
-                        <span class="flavor-leyenda-texto"><?php echo esc_html__('Audios', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-leyenda-texto"><?php echo esc_html__('Audios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="flavor-leyenda-valor"><?php echo number_format($total_audios); ?></span>
                     </div>
                     <div class="flavor-leyenda-item">
                         <span class="flavor-leyenda-color" style="background: #f59e0b;"></span>
-                        <span class="flavor-leyenda-texto"><?php echo esc_html__('Documentos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-leyenda-texto"><?php echo esc_html__('Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="flavor-leyenda-valor"><?php echo number_format($total_documentos); ?></span>
                     </div>
                 </div>
@@ -833,7 +833,7 @@ if ($usar_datos_demo) {
             <div class="flavor-sidebar-card">
                 <h3 class="flavor-sidebar-titulo">
                     <span class="dashicons dashicons-info-outline"></span>
-                    <?php echo esc_html__('Visibilidad', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Visibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <div class="flavor-visibilidad-stats">
                     <div class="flavor-vis-stat">
@@ -842,7 +842,7 @@ if ($usar_datos_demo) {
                         </div>
                         <div class="flavor-vis-info">
                             <span class="flavor-vis-numero"><?php echo number_format($albumes_publicos); ?></span>
-                            <span class="flavor-vis-label"><?php echo esc_html__('Públicos', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-vis-label"><?php echo esc_html__('Públicos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                     </div>
                     <div class="flavor-vis-stat">
@@ -851,7 +851,7 @@ if ($usar_datos_demo) {
                         </div>
                         <div class="flavor-vis-info">
                             <span class="flavor-vis-numero"><?php echo number_format($albumes_privados); ?></span>
-                            <span class="flavor-vis-label"><?php echo esc_html__('Privados', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-vis-label"><?php echo esc_html__('Privados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                     </div>
                 </div>
@@ -861,24 +861,24 @@ if ($usar_datos_demo) {
             <div class="flavor-sidebar-card">
                 <h3 class="flavor-sidebar-titulo">
                     <span class="dashicons dashicons-admin-tools"></span>
-                    <?php echo esc_html__('Acciones Rápidas', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Acciones Rápidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <div class="flavor-acciones-rapidas">
                     <button onclick="abrirModalNuevoAlbum()" class="flavor-accion-btn">
                         <span class="dashicons dashicons-plus-alt2"></span>
-                        <?php echo esc_html__('Crear Álbum', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Crear Álbum', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=multimedia-galeria')); ?>" class="flavor-accion-btn">
                         <span class="dashicons dashicons-format-gallery"></span>
-                        <?php echo esc_html__('Ver Galería', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Ver Galería', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=multimedia-subir')); ?>" class="flavor-accion-btn">
                         <span class="dashicons dashicons-upload"></span>
-                        <?php echo esc_html__('Subir Archivos', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Subir Archivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=multimedia-configuracion')); ?>" class="flavor-accion-btn">
                         <span class="dashicons dashicons-admin-generic"></span>
-                        <?php echo esc_html__('Configuración', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </div>
@@ -894,7 +894,7 @@ if ($usar_datos_demo) {
         <button class="flavor-modal-close" onclick="cerrarModalAlbum()">&times;</button>
         <div class="flavor-modal-header">
             <span class="dashicons dashicons-images-alt2"></span>
-            <h3><?php echo esc_html__('Crear Nuevo Álbum', 'flavor-chat-ia'); ?></h3>
+            <h3><?php echo esc_html__('Crear Nuevo Álbum', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         </div>
         <form id="form-nuevo-album" method="post">
             <?php wp_nonce_field('nuevo_album', 'album_nonce'); ?>
@@ -903,54 +903,54 @@ if ($usar_datos_demo) {
             <div class="flavor-form-group">
                 <label for="album_nombre">
                     <span class="dashicons dashicons-edit"></span>
-                    <?php echo esc_html__('Nombre del álbum', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Nombre del álbum', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="required">*</span>
                 </label>
                 <input type="text" id="album_nombre" name="nombre" required
-                       placeholder="<?php echo esc_attr__('Ej: Fotos del evento 2024', 'flavor-chat-ia'); ?>">
+                       placeholder="<?php echo esc_attr__('Ej: Fotos del evento 2024', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             </div>
 
             <div class="flavor-form-group">
                 <label for="album_descripcion">
                     <span class="dashicons dashicons-text"></span>
-                    <?php echo esc_html__('Descripción', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </label>
                 <textarea id="album_descripcion" name="descripcion" rows="3"
-                          placeholder="<?php echo esc_attr__('Describe el contenido del álbum...', 'flavor-chat-ia'); ?>"></textarea>
+                          placeholder="<?php echo esc_attr__('Describe el contenido del álbum...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
             </div>
 
             <div class="flavor-form-group">
                 <label>
                     <span class="dashicons dashicons-visibility"></span>
-                    <?php echo esc_html__('Visibilidad', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Visibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </label>
                 <div class="flavor-radio-group">
                     <label class="flavor-radio-option">
                         <input type="radio" name="publico" value="1" checked>
                         <span class="flavor-radio-label">
                             <span class="dashicons dashicons-visibility"></span>
-                            <?php echo esc_html__('Público', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
-                        <small><?php echo esc_html__('Visible para todos los usuarios', 'flavor-chat-ia'); ?></small>
+                        <small><?php echo esc_html__('Visible para todos los usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                     </label>
                     <label class="flavor-radio-option">
                         <input type="radio" name="publico" value="0">
                         <span class="flavor-radio-label">
                             <span class="dashicons dashicons-hidden"></span>
-                            <?php echo esc_html__('Privado', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Privado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
-                        <small><?php echo esc_html__('Solo visible para administradores', 'flavor-chat-ia'); ?></small>
+                        <small><?php echo esc_html__('Solo visible para administradores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                     </label>
                 </div>
             </div>
 
             <div class="flavor-modal-acciones">
                 <button type="button" class="button" onclick="cerrarModalAlbum()">
-                    <?php echo esc_html__('Cancelar', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="submit" class="button button-primary">
                     <span class="dashicons dashicons-plus-alt2"></span>
-                    <?php echo esc_html__('Crear Álbum', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Crear Álbum', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </form>

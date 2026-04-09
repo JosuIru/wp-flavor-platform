@@ -493,7 +493,7 @@ class Flavor_Design_Tokens_Exporter {
         check_ajax_referer( 'flavor_admin_nonce', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( array( 'message' => __( 'Sin permisos', 'flavor-chat-ia' ) ) );
+            wp_send_json_error( array( 'message' => __( 'Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) );
         }
 
         $tokens = $this->export_w3c();
@@ -512,7 +512,7 @@ class Flavor_Design_Tokens_Exporter {
         check_ajax_referer( 'flavor_admin_nonce', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( array( 'message' => __( 'Sin permisos', 'flavor-chat-ia' ) ) );
+            wp_send_json_error( array( 'message' => __( 'Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) );
         }
 
         $css = $this->export_css();
@@ -531,7 +531,7 @@ class Flavor_Design_Tokens_Exporter {
         check_ajax_referer( 'flavor_admin_nonce', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( array( 'message' => __( 'Sin permisos', 'flavor-chat-ia' ) ) );
+            wp_send_json_error( array( 'message' => __( 'Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) );
         }
 
         $js = $this->export_js();
@@ -550,7 +550,7 @@ class Flavor_Design_Tokens_Exporter {
         check_ajax_referer( 'flavor_admin_nonce', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( array( 'message' => __( 'Sin permisos', 'flavor-chat-ia' ) ) );
+            wp_send_json_error( array( 'message' => __( 'Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) );
         }
 
         $tailwind = $this->export_tailwind();
@@ -571,29 +571,29 @@ class Flavor_Design_Tokens_Exporter {
         return array(
             'w3c'      => array(
                 'id'          => 'w3c',
-                'name'        => __( 'W3C Design Tokens (JSON)', 'flavor-chat-ia' ),
-                'description' => __( 'Formato estándar compatible con Figma Tokens y otras herramientas', 'flavor-chat-ia' ),
+                'name'        => __( 'W3C Design Tokens (JSON)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'description' => __( 'Formato estándar compatible con Figma Tokens y otras herramientas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'extension'   => 'json',
                 'action'      => 'flavor_export_tokens_w3c',
             ),
             'css'      => array(
                 'id'          => 'css',
-                'name'        => __( 'CSS Custom Properties', 'flavor-chat-ia' ),
-                'description' => __( 'Variables CSS nativas para usar directamente en tu proyecto', 'flavor-chat-ia' ),
+                'name'        => __( 'CSS Custom Properties', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'description' => __( 'Variables CSS nativas para usar directamente en tu proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'extension'   => 'css',
                 'action'      => 'flavor_export_tokens_css',
             ),
             'js'       => array(
                 'id'          => 'js',
-                'name'        => __( 'JavaScript/TypeScript', 'flavor-chat-ia' ),
-                'description' => __( 'Módulo ES6 con tipado TypeScript incluido', 'flavor-chat-ia' ),
+                'name'        => __( 'JavaScript/TypeScript', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'description' => __( 'Módulo ES6 con tipado TypeScript incluido', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'extension'   => 'ts',
                 'action'      => 'flavor_export_tokens_js',
             ),
             'tailwind' => array(
                 'id'          => 'tailwind',
-                'name'        => __( 'Tailwind CSS Config', 'flavor-chat-ia' ),
-                'description' => __( 'Configuración para integrar en tu archivo tailwind.config.js', 'flavor-chat-ia' ),
+                'name'        => __( 'Tailwind CSS Config', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'description' => __( 'Configuración para integrar en tu archivo tailwind.config.js', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'extension'   => 'js',
                 'action'      => 'flavor_export_tokens_tailwind',
             ),

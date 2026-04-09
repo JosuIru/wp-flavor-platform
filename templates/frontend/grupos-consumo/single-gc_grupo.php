@@ -45,7 +45,7 @@ while (have_posts()) :
                     </span>
                     <span class="gc-miembros">
                         <span class="dashicons dashicons-groups"></span>
-                        <?php printf(_n('%d miembro', '%d miembros', $miembros_count, 'flavor-chat-ia'), $miembros_count); ?>
+                        <?php printf(_n('%d miembro', '%d miembros', $miembros_count, FLAVOR_PLATFORM_TEXT_DOMAIN), $miembros_count); ?>
                     </span>
                     <?php if (!empty($ubicacion)): ?>
                     <span class="gc-ubicacion">
@@ -59,13 +59,13 @@ while (have_posts()) :
 
         <div class="gc-grupo-body">
             <div class="gc-grupo-contenido">
-                <h2><?php _e('Sobre este grupo', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Sobre este grupo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <div class="gc-grupo-descripcion">
                     <?php the_content(); ?>
                 </div>
 
                 <?php if (!empty($punto_recogida)): ?>
-                <h3><?php _e('Punto de recogida', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Punto de recogida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <p><?php echo esc_html($punto_recogida); ?></p>
                 <?php endif; ?>
             </div>
@@ -73,31 +73,31 @@ while (have_posts()) :
             <aside class="gc-grupo-sidebar">
                 <?php if ($admite_nuevos && $estado === 'activo'): ?>
                 <div class="gc-card gc-card-unirse">
-                    <h3><?php _e('Unirse al grupo', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Unirse al grupo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <?php if (is_user_logged_in()): ?>
-                    <p><?php _e('Forma parte de este grupo de consumo y accede a productos locales de calidad.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('Forma parte de este grupo de consumo y accede a productos locales de calidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <form method="post" class="gc-unirse-form">
                         <?php wp_nonce_field('gc_unirse_' . $grupo_id); ?>
                         <input type="hidden" name="grupo_id" value="<?php echo esc_attr($grupo_id); ?>">
                         <button type="submit" name="gc_solicitar_union" class="gc-btn gc-btn-primary gc-btn-block">
-                            <?php _e('Solicitar union', 'flavor-chat-ia'); ?>
+                            <?php _e('Solicitar union', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </form>
                     <?php else: ?>
-                    <p><?php _e('Inicia sesion para unirte a este grupo.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('Inicia sesion para unirte a este grupo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="gc-btn gc-btn-primary gc-btn-block">
-                        <?php _e('Iniciar sesion', 'flavor-chat-ia'); ?>
+                        <?php _e('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <?php endif; ?>
                 </div>
                 <?php else: ?>
                 <div class="gc-card">
-                    <p><?php _e('Este grupo no admite nuevos miembros en este momento.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('Este grupo no admite nuevos miembros en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <?php endif; ?>
 
                 <div class="gc-card">
-                    <h3><?php _e('Ciclo actual', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Ciclo actual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <?php
                     $ciclo_actual = get_posts([
                         'post_type' => 'gc_ciclo',
@@ -113,13 +113,13 @@ while (have_posts()) :
                     ?>
                     <p><strong><?php echo esc_html($ciclo->post_title); ?></strong></p>
                     <?php if ($fecha_cierre): ?>
-                    <p><?php printf(__('Cierra: %s', 'flavor-chat-ia'), date_i18n('d/m/Y H:i', strtotime($fecha_cierre))); ?></p>
+                    <p><?php printf(__('Cierra: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), date_i18n('d/m/Y H:i', strtotime($fecha_cierre))); ?></p>
                     <?php endif; ?>
                     <a href="<?php echo get_permalink($ciclo->ID); ?>" class="gc-btn gc-btn-secondary gc-btn-block">
-                        <?php _e('Ver ciclo', 'flavor-chat-ia'); ?>
+                        <?php _e('Ver ciclo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <?php else: ?>
-                    <p><?php _e('No hay ciclo abierto actualmente.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No hay ciclo abierto actualmente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php endif; ?>
                 </div>
             </aside>
@@ -128,7 +128,7 @@ while (have_posts()) :
         <nav class="gc-grupo-nav">
             <a href="<?php echo esc_url(get_post_type_archive_link('gc_grupo')); ?>" class="gc-btn gc-btn-link">
                 <span class="dashicons dashicons-arrow-left-alt"></span>
-                <?php _e('Volver a grupos', 'flavor-chat-ia'); ?>
+                <?php _e('Volver a grupos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </nav>
     </article>

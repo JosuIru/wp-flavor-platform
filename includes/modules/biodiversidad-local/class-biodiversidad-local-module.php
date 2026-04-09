@@ -90,8 +90,8 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
      */
     public function __construct() {
         $this->id = 'biodiversidad_local';
-        $this->name = __('Biodiversidad Local', 'flavor-chat-ia');
-        $this->description = __('Catálogo comunitario de especies locales, proyectos de conservación y ciencia ciudadana.', 'flavor-chat-ia');
+        $this->name = __('Biodiversidad Local', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Catálogo comunitario de especies locales, proyectos de conservación y ciencia ciudadana.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $this->icon = 'dashicons-admin-site-alt3';
         $this->category = 'medioambiente';
         $this->visibility = 'registered';
@@ -120,33 +120,33 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
             'premisas' => [
                 'conciencia_fundamental' => [
                     'puntuacion' => 19,
-                    'descripcion' => __('Reconoce el valor intrínseco de cada especie y su derecho a existir, más allá de su utilidad para los humanos.', 'flavor-chat-ia'),
+                    'descripcion' => __('Reconoce el valor intrínseco de cada especie y su derecho a existir, más allá de su utilidad para los humanos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
                 'abundancia_organizable' => [
                     'puntuacion' => 18,
-                    'descripcion' => __('Cataloga y organiza el conocimiento colectivo sobre la riqueza natural del territorio como patrimonio común.', 'flavor-chat-ia'),
+                    'descripcion' => __('Cataloga y organiza el conocimiento colectivo sobre la riqueza natural del territorio como patrimonio común.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
                 'interdependencia_radical' => [
                     'puntuacion' => 20,
-                    'descripcion' => __('Visualiza las conexiones ecosistémicas y cómo cada especie depende de otras en la trama de la vida.', 'flavor-chat-ia'),
+                    'descripcion' => __('Visualiza las conexiones ecosistémicas y cómo cada especie depende de otras en la trama de la vida.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
                 'madurez_ciclica' => [
                     'puntuacion' => 15,
-                    'descripcion' => __('Respeta los ciclos naturales y las temporadas de reproducción, migración y descanso de las especies.', 'flavor-chat-ia'),
+                    'descripcion' => __('Respeta los ciclos naturales y las temporadas de reproducción, migración y descanso de las especies.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
                 'valor_intrinseco' => [
                     'puntuacion' => 15,
-                    'descripcion' => __('Documenta especies sin criterios de utilidad, valorando por igual a las consideradas "humildes" o "insignificantes".', 'flavor-chat-ia'),
+                    'descripcion' => __('Documenta especies sin criterios de utilidad, valorando por igual a las consideradas "humildes" o "insignificantes".', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
             'fortalezas' => [
-                __('Excelente reconocimiento de la interdependencia ecosistémica', 'flavor-chat-ia'),
-                __('Fuerte valoración de la conciencia en todas las formas de vida', 'flavor-chat-ia'),
-                __('Promueve la ciencia ciudadana como forma de conexión con la naturaleza', 'flavor-chat-ia'),
+                __('Excelente reconocimiento de la interdependencia ecosistémica', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Fuerte valoración de la conciencia en todas las formas de vida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Promueve la ciencia ciudadana como forma de conexión con la naturaleza', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'areas_mejora' => [
-                __('Podría incorporar más elementos de sabiduría indígena sobre biodiversidad', 'flavor-chat-ia'),
-                __('Integrar perspectivas de derechos de la naturaleza', 'flavor-chat-ia'),
+                __('Podría incorporar más elementos de sabiduría indígena sobre biodiversidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Integrar perspectivas de derechos de la naturaleza', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
     }
@@ -523,29 +523,29 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
     public function get_admin_config(): array {
         return [
             'id' => 'biodiversidad_local',
-            'label' => __('Biodiversidad Local', 'flavor-chat-ia'),
+            'label' => __('Biodiversidad Local', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-admin-site-alt3',
             'capability' => 'manage_options',
             'categoria' => 'sostenibilidad',
             'paginas' => [
                 [
                     'slug' => 'biodiversidad',
-                    'titulo' => __('Biodiversidad', 'flavor-chat-ia'),
+                    'titulo' => __('Biodiversidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_dashboard'],
                 ],
                 [
                     'slug' => 'biodiversidad-especies',
-                    'titulo' => __('Especies', 'flavor-chat-ia'),
+                    'titulo' => __('Especies', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_especies'],
                 ],
                 [
                     'slug' => 'biodiversidad-avistamientos',
-                    'titulo' => __('Avistamientos', 'flavor-chat-ia'),
+                    'titulo' => __('Avistamientos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_avistamientos'],
                 ],
                 [
                     'slug' => 'biodiversidad-proyectos',
-                    'titulo' => __('Proyectos', 'flavor-chat-ia'),
+                    'titulo' => __('Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_proyectos'],
                 ],
             ],
@@ -559,27 +559,27 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
         $stats = $this->get_estadisticas();
         ?>
         <div class="wrap flavor-admin-biodiversidad">
-            <h1><?php esc_html_e('Biodiversidad Local', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Biodiversidad Local', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
             <div class="flavor-stats-grid">
                 <div class="flavor-stat-card">
                     <span class="dashicons dashicons-admin-site-alt3"></span>
                     <h3><?php echo esc_html($stats['especies_catalogadas']); ?></h3>
-                    <p><?php esc_html_e('Especies catalogadas', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Especies catalogadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="dashicons dashicons-visibility"></span>
                     <h3><?php echo esc_html($stats['avistamientos_total']); ?></h3>
-                    <p><?php esc_html_e('Avistamientos', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Avistamientos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="dashicons dashicons-clock"></span>
                     <h3><?php echo esc_html($stats['avistamientos_pendientes']); ?></h3>
-                    <p><?php esc_html_e('Pendientes validar', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Pendientes validar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="dashicons dashicons-groups"></span>
                     <h3><?php echo esc_html($stats['proyectos_activos']); ?></h3>
-                    <p><?php esc_html_e('Proyectos activos', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Proyectos activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             </div>
         </div>
@@ -593,11 +593,11 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
         $especies = get_posts(['post_type' => 'bl_especie', 'posts_per_page' => 50, 'post_status' => ['publish', 'pending']]);
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e('Especies', 'flavor-chat-ia'); ?>
-                <a href="<?php echo admin_url('post-new.php?post_type=bl_especie'); ?>" class="page-title-action"><?php esc_html_e('Añadir', 'flavor-chat-ia'); ?></a>
+            <h1><?php esc_html_e('Especies', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
+                <a href="<?php echo admin_url('post-new.php?post_type=bl_especie'); ?>" class="page-title-action"><?php esc_html_e('Añadir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
             </h1>
             <table class="wp-list-table widefat fixed striped">
-                <thead><tr><th><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Nombre científico', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Estado conservación', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th></tr></thead>
+                <thead><tr><th><?php esc_html_e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Nombre científico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Estado conservación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th></tr></thead>
                 <tbody>
                 <?php foreach ($especies as $especie): $estado = get_post_meta($especie->ID, '_bl_estado_conservacion', true); ?>
                     <tr>
@@ -620,9 +620,9 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
         $avistamientos = get_posts(['post_type' => 'bl_avistamiento', 'posts_per_page' => 50, 'post_status' => ['publish', 'pending']]);
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e('Avistamientos', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Avistamientos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
             <table class="wp-list-table widefat fixed striped">
-                <thead><tr><th><?php esc_html_e('Título', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Autor', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th></tr></thead>
+                <thead><tr><th><?php esc_html_e('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Autor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th></tr></thead>
                 <tbody>
                 <?php foreach ($avistamientos as $avist): ?>
                     <tr>
@@ -645,11 +645,11 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
         $proyectos = get_posts(['post_type' => 'bl_proyecto', 'posts_per_page' => 50, 'post_status' => ['publish', 'pending']]);
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e('Proyectos de Conservación', 'flavor-chat-ia'); ?>
-                <a href="<?php echo admin_url('post-new.php?post_type=bl_proyecto'); ?>" class="page-title-action"><?php esc_html_e('Añadir', 'flavor-chat-ia'); ?></a>
+            <h1><?php esc_html_e('Proyectos de Conservación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
+                <a href="<?php echo admin_url('post-new.php?post_type=bl_proyecto'); ?>" class="page-title-action"><?php esc_html_e('Añadir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
             </h1>
             <table class="wp-list-table widefat fixed striped">
-                <thead><tr><th><?php esc_html_e('Título', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Participantes', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th></tr></thead>
+                <thead><tr><th><?php esc_html_e('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Participantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th></tr></thead>
                 <tbody>
                 <?php foreach ($proyectos as $proy): $tipo = get_post_meta($proy->ID, '_bl_tipo', true); $participantes = get_post_meta($proy->ID, '_bl_participantes', true) ?: []; ?>
                     <tr>
@@ -671,14 +671,14 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
     private function register_cpt_especie() {
         register_post_type('bl_especie', [
             'labels' => [
-                'name' => __('Especies', 'flavor-chat-ia'),
-                'singular_name' => __('Especie', 'flavor-chat-ia'),
-                'add_new' => __('Añadir Especie', 'flavor-chat-ia'),
-                'add_new_item' => __('Añadir Nueva Especie', 'flavor-chat-ia'),
-                'edit_item' => __('Editar Especie', 'flavor-chat-ia'),
-                'new_item' => __('Nueva Especie', 'flavor-chat-ia'),
-                'view_item' => __('Ver Especie', 'flavor-chat-ia'),
-                'search_items' => __('Buscar Especies', 'flavor-chat-ia'),
+                'name' => __('Especies', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Especie', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'add_new' => __('Añadir Especie', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'add_new_item' => __('Añadir Nueva Especie', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'edit_item' => __('Editar Especie', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'new_item' => __('Nueva Especie', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'view_item' => __('Ver Especie', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'search_items' => __('Buscar Especies', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => true,
             'show_ui' => true,
@@ -696,10 +696,10 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
     private function register_cpt_avistamiento() {
         register_post_type('bl_avistamiento', [
             'labels' => [
-                'name' => __('Avistamientos', 'flavor-chat-ia'),
-                'singular_name' => __('Avistamiento', 'flavor-chat-ia'),
-                'add_new' => __('Registrar Avistamiento', 'flavor-chat-ia'),
-                'add_new_item' => __('Registrar Nuevo Avistamiento', 'flavor-chat-ia'),
+                'name' => __('Avistamientos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Avistamiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'add_new' => __('Registrar Avistamiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'add_new_item' => __('Registrar Nuevo Avistamiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => true,
             'show_ui' => true,
@@ -716,10 +716,10 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
     private function register_cpt_proyecto_conservacion() {
         register_post_type('bl_proyecto', [
             'labels' => [
-                'name' => __('Proyectos Conservación', 'flavor-chat-ia'),
-                'singular_name' => __('Proyecto', 'flavor-chat-ia'),
-                'add_new' => __('Crear Proyecto', 'flavor-chat-ia'),
-                'add_new_item' => __('Crear Nuevo Proyecto', 'flavor-chat-ia'),
+                'name' => __('Proyectos Conservación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'add_new' => __('Crear Proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'add_new_item' => __('Crear Nuevo Proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => true,
             'show_ui' => true,
@@ -742,8 +742,8 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
         // Categoría de especie
         register_taxonomy('bl_categoria', 'bl_especie', [
             'labels' => [
-                'name' => __('Categorías', 'flavor-chat-ia'),
-                'singular_name' => __('Categoría', 'flavor-chat-ia'),
+                'name' => __('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'hierarchical' => true,
             'show_admin_column' => true,
@@ -753,8 +753,8 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
         // Hábitat
         register_taxonomy('bl_habitat', ['bl_especie', 'bl_avistamiento'], [
             'labels' => [
-                'name' => __('Hábitats', 'flavor-chat-ia'),
-                'singular_name' => __('Hábitat', 'flavor-chat-ia'),
+                'name' => __('Hábitats', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Hábitat', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'hierarchical' => false,
             'show_admin_column' => true,
@@ -812,9 +812,9 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
             'estados' => self::ESTADOS_CONSERVACION,
             'habitats' => self::TIPOS_HABITAT,
             'i18n' => [
-                'error' => __('Error al procesar la solicitud', 'flavor-chat-ia'),
-                'success' => __('Operación completada', 'flavor-chat-ia'),
-                'confirm_avistamiento' => __('¿Registrar este avistamiento?', 'flavor-chat-ia'),
+                'error' => __('Error al procesar la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'success' => __('Operación completada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirm_avistamiento' => __('¿Registrar este avistamiento?', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -876,7 +876,7 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('biodiversidad_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $especie_id = intval($_POST['especie_id'] ?? 0);
@@ -889,8 +889,8 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
 
         $especie = get_post($especie_id);
         $titulo = sprintf(
-            __('Avistamiento: %s - %s', 'flavor-chat-ia'),
-            $especie ? $especie->post_title : __('Especie desconocida', 'flavor-chat-ia'),
+            __('Avistamiento: %s - %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            $especie ? $especie->post_title : __('Especie desconocida', FLAVOR_PLATFORM_TEXT_DOMAIN),
             date_i18n('j M Y', strtotime($fecha))
         );
 
@@ -918,7 +918,7 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
         }
 
         wp_send_json_success([
-            'message' => __('Avistamiento registrado. Será revisado por la comunidad.', 'flavor-chat-ia'),
+            'message' => __('Avistamiento registrado. Será revisado por la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'avistamiento_id' => $avistamiento_id,
         ]);
     }
@@ -930,7 +930,7 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('biodiversidad_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $nombre_comun = sanitize_text_field($_POST['nombre_comun'] ?? '');
@@ -941,7 +941,7 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
         $habitats = array_map('sanitize_text_field', $_POST['habitats'] ?? []);
 
         if (empty($nombre_comun)) {
-            wp_send_json_error(['message' => __('El nombre común es requerido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('El nombre común es requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $especie_id = wp_insert_post([
@@ -968,7 +968,7 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
         }
 
         wp_send_json_success([
-            'message' => __('Especie propuesta. Será revisada por la comunidad.', 'flavor-chat-ia'),
+            'message' => __('Especie propuesta. Será revisada por la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'especie_id' => $especie_id,
         ]);
     }
@@ -980,7 +980,7 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('biodiversidad_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $titulo = sanitize_text_field($_POST['titulo'] ?? '');
@@ -991,7 +991,7 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
         $participantes_max = intval($_POST['participantes_max'] ?? 0);
 
         if (empty($titulo) || empty($descripcion)) {
-            wp_send_json_error(['message' => __('Título y descripción son requeridos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Título y descripción son requeridos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $proyecto_id = wp_insert_post([
@@ -1005,7 +1005,7 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
         if (is_wp_error($proyecto_id) || empty($proyecto_id)) {
             $error_message = is_wp_error($proyecto_id)
                 ? $proyecto_id->get_error_message()
-                : __('No se pudo crear el proyecto.', 'flavor-chat-ia');
+                : __('No se pudo crear el proyecto.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             wp_send_json_error(['message' => $error_message]);
         }
 
@@ -1016,7 +1016,7 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
         update_post_meta($proyecto_id, '_bl_participantes', [get_current_user_id()]);
 
         wp_send_json_success([
-            'message' => __('Proyecto creado. Será revisado para su publicación.', 'flavor-chat-ia'),
+            'message' => __('Proyecto creado. Será revisado para su publicación.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'proyecto_id' => $proyecto_id,
         ]);
     }
@@ -1028,7 +1028,7 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('biodiversidad_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $proyecto_id = intval($_POST['proyecto_id'] ?? 0);
@@ -1038,18 +1038,18 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
         $max_participantes = intval(get_post_meta($proyecto_id, '_bl_participantes_max', true));
 
         if (in_array($user_id, $participantes)) {
-            wp_send_json_error(['message' => __('Ya estás participando en este proyecto', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Ya estás participando en este proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if ($max_participantes > 0 && count($participantes) >= $max_participantes) {
-            wp_send_json_error(['message' => __('El proyecto ha alcanzado el máximo de participantes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('El proyecto ha alcanzado el máximo de participantes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $participantes[] = $user_id;
         update_post_meta($proyecto_id, '_bl_participantes', $participantes);
 
         wp_send_json_success([
-            'message' => __('Te has unido al proyecto de conservación', 'flavor-chat-ia'),
+            'message' => __('Te has unido al proyecto de conservación', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'participantes' => count($participantes),
         ]);
     }
@@ -1061,7 +1061,7 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('biodiversidad_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $avistamiento_id = intval($_POST['avistamiento_id'] ?? 0);
@@ -1073,7 +1073,7 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
         // Evitar doble validación
         foreach ($validaciones as $val) {
             if ($val['user_id'] === $user_id) {
-                wp_send_json_error(['message' => __('Ya has validado este avistamiento', 'flavor-chat-ia')]);
+                wp_send_json_error(['message' => __('Ya has validado este avistamiento', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             }
         }
 
@@ -1095,7 +1095,7 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
         }
 
         wp_send_json_success([
-            'message' => __('Gracias por tu validación', 'flavor-chat-ia'),
+            'message' => __('Gracias por tu validación', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'validaciones_positivas' => count($positivas),
             'validaciones_total' => count($validaciones),
         ]);
@@ -1136,31 +1136,31 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
     public function get_frontend_pages(): array {
         return [
             'catalogo' => [
-                'titulo' => __('Catálogo de Especies', 'flavor-chat-ia'),
+                'titulo' => __('Catálogo de Especies', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'biodiversidad',
                 'shortcode' => '[biodiversidad_catalogo]',
                 'icono' => 'dashicons-admin-site-alt3',
             ],
             'mapa' => [
-                'titulo' => __('Mapa de Avistamientos', 'flavor-chat-ia'),
+                'titulo' => __('Mapa de Avistamientos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'biodiversidad/mapa',
                 'shortcode' => '[biodiversidad_mapa]',
                 'icono' => 'dashicons-location-alt',
             ],
             'registrar' => [
-                'titulo' => __('Registrar Avistamiento', 'flavor-chat-ia'),
+                'titulo' => __('Registrar Avistamiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'biodiversidad/registrar',
                 'shortcode' => '[biodiversidad_registrar]',
                 'icono' => 'dashicons-camera',
             ],
             'proyectos' => [
-                'titulo' => __('Proyectos de Conservación', 'flavor-chat-ia'),
+                'titulo' => __('Proyectos de Conservación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'biodiversidad/proyectos',
                 'shortcode' => '[biodiversidad_proyectos]',
                 'icono' => 'dashicons-groups',
             ],
             'mis_avistamientos' => [
-                'titulo' => __('Mis Avistamientos', 'flavor-chat-ia'),
+                'titulo' => __('Mis Avistamientos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mi-portal/biodiversidad',
                 'shortcode' => '[biodiversidad_mis_avistamientos]',
                 'icono' => 'dashicons-portfolio',
@@ -1176,18 +1176,18 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
     public function get_actions(): array {
         return [
             'registrar_avistamiento' => [
-                'name' => __('Registrar Avistamiento', 'flavor-chat-ia'),
-                'description' => __('Registra un avistamiento de fauna o flora', 'flavor-chat-ia'),
+                'name' => __('Registrar Avistamiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Registra un avistamiento de fauna o flora', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'callback' => [$this, 'action_registrar_avistamiento'],
             ],
             'buscar_especie' => [
-                'name' => __('Buscar Especie', 'flavor-chat-ia'),
-                'description' => __('Busca información sobre una especie local', 'flavor-chat-ia'),
+                'name' => __('Buscar Especie', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Busca información sobre una especie local', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'callback' => [$this, 'action_buscar_especie'],
             ],
             'listar_proyectos' => [
-                'name' => __('Ver Proyectos', 'flavor-chat-ia'),
-                'description' => __('Lista los proyectos de conservación activos', 'flavor-chat-ia'),
+                'name' => __('Ver Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Lista los proyectos de conservación activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'callback' => [$this, 'action_listar_proyectos'],
             ],
         ];
@@ -1199,7 +1199,7 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
     public function action_registrar_avistamiento($params) {
         return [
             'success' => true,
-            'message' => __('Para registrar un avistamiento, visita la sección de Biodiversidad.', 'flavor-chat-ia'),
+            'message' => __('Para registrar un avistamiento, visita la sección de Biodiversidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'url' => home_url('/biodiversidad/registrar/'),
         ];
     }
@@ -1213,7 +1213,7 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
         if (empty($termino)) {
             return [
                 'success' => false,
-                'message' => __('Indica el nombre de la especie que buscas', 'flavor-chat-ia'),
+                'message' => __('Indica el nombre de la especie que buscas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1227,7 +1227,7 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
         if (!$especies->have_posts()) {
             return [
                 'success' => true,
-                'message' => sprintf(__('No encontré especies con el nombre "%s"', 'flavor-chat-ia'), $termino),
+                'message' => sprintf(__('No encontré especies con el nombre "%s"', FLAVOR_PLATFORM_TEXT_DOMAIN), $termino),
                 'especies' => [],
             ];
         }
@@ -1244,7 +1244,7 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => true,
-            'message' => sprintf(__('Encontré %d especie(s)', 'flavor-chat-ia'), count($resultados)),
+            'message' => sprintf(__('Encontré %d especie(s)', FLAVOR_PLATFORM_TEXT_DOMAIN), count($resultados)),
             'especies' => $resultados,
         ];
     }
@@ -1277,7 +1277,7 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => true,
-            'message' => sprintf(__('Hay %d proyecto(s) de conservación activos', 'flavor-chat-ia'), count($lista)),
+            'message' => sprintf(__('Hay %d proyecto(s) de conservación activos', FLAVOR_PLATFORM_TEXT_DOMAIN), count($lista)),
             'proyectos' => $lista,
         ];
     }
@@ -1300,7 +1300,7 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
             "- Mapa interactivo de avistamientos\n" .
             "- Sistema de ciencia ciudadana con validación comunitaria\n" .
             "- Proyectos de conservación y voluntariado\n" .
-            "- Estados de conservación basados en IUCN", 'flavor-chat-ia'),
+            "- Estados de conservación basados en IUCN", FLAVOR_PLATFORM_TEXT_DOMAIN),
             $stats['especies_catalogadas'],
             $stats['avistamientos_total'],
             $stats['proyectos_activos']
@@ -1315,20 +1315,20 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
     public function get_faqs(): array {
         return [
             [
-                'pregunta' => __('¿Cómo registro un avistamiento de fauna o flora?', 'flavor-chat-ia'),
-                'respuesta' => __('Ve a Biodiversidad > Registrar Avistamiento. Necesitas indicar la especie, ubicación y fecha. Puedes añadir fotos y descripción.', 'flavor-chat-ia'),
+                'pregunta' => __('¿Cómo registro un avistamiento de fauna o flora?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'respuesta' => __('Ve a Biodiversidad > Registrar Avistamiento. Necesitas indicar la especie, ubicación y fecha. Puedes añadir fotos y descripción.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             [
-                'pregunta' => __('¿Cómo se validan los avistamientos?', 'flavor-chat-ia'),
-                'respuesta' => __('Los avistamientos son validados por la comunidad. Con 3 validaciones positivas, se publican automáticamente.', 'flavor-chat-ia'),
+                'pregunta' => __('¿Cómo se validan los avistamientos?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'respuesta' => __('Los avistamientos son validados por la comunidad. Con 3 validaciones positivas, se publican automáticamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             [
-                'pregunta' => __('¿Puedo proponer una especie que no está en el catálogo?', 'flavor-chat-ia'),
-                'respuesta' => __('Sí, puedes proponer nuevas especies desde la sección de registro. Será revisada antes de añadirse al catálogo.', 'flavor-chat-ia'),
+                'pregunta' => __('¿Puedo proponer una especie que no está en el catálogo?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'respuesta' => __('Sí, puedes proponer nuevas especies desde la sección de registro. Será revisada antes de añadirse al catálogo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             [
-                'pregunta' => __('¿Cómo puedo participar en proyectos de conservación?', 'flavor-chat-ia'),
-                'respuesta' => __('Explora los proyectos activos en Biodiversidad > Proyectos y únete a los que te interesen.', 'flavor-chat-ia'),
+                'pregunta' => __('¿Cómo puedo participar en proyectos de conservación?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'respuesta' => __('Explora los proyectos activos en Biodiversidad > Proyectos y únete a los que te interesen.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
     }
@@ -1367,7 +1367,7 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'message' => __('Acción no implementada', 'flavor-chat-ia'),
+            'message' => __('Acción no implementada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -1395,8 +1395,8 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
     public static function get_renderer_config(): array {
         return [
             'module'   => 'biodiversidad-local',
-            'title'    => __('Biodiversidad Local', 'flavor-chat-ia'),
-            'subtitle' => __('Catálogo de fauna y flora de tu comunidad', 'flavor-chat-ia'),
+            'title'    => __('Biodiversidad Local', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Catálogo de fauna y flora de tu comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '🦋',
             'color'    => 'info', // Usa variable CSS --flavor-info del tema
 
@@ -1406,27 +1406,27 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
             ],
 
             'fields' => [
-                'nombre_comun'     => ['type' => 'text', 'label' => __('Nombre común', 'flavor-chat-ia'), 'required' => true],
-                'nombre_cientifico' => ['type' => 'text', 'label' => __('Nombre científico', 'flavor-chat-ia')],
-                'tipo'             => ['type' => 'select', 'label' => __('Tipo', 'flavor-chat-ia'), 'options' => ['fauna', 'flora', 'hongo']],
-                'estado_conservacion' => ['type' => 'select', 'label' => __('Estado conservación', 'flavor-chat-ia')],
-                'habitat'          => ['type' => 'text', 'label' => __('Hábitat', 'flavor-chat-ia')],
-                'descripcion'      => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
-                'imagen'           => ['type' => 'image', 'label' => __('Imagen', 'flavor-chat-ia')],
+                'nombre_comun'     => ['type' => 'text', 'label' => __('Nombre común', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'nombre_cientifico' => ['type' => 'text', 'label' => __('Nombre científico', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'tipo'             => ['type' => 'select', 'label' => __('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['fauna', 'flora', 'hongo']],
+                'estado_conservacion' => ['type' => 'select', 'label' => __('Estado conservación', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'habitat'          => ['type' => 'text', 'label' => __('Hábitat', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'descripcion'      => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'imagen'           => ['type' => 'image', 'label' => __('Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ],
 
             'estados' => [
-                'borrador'   => ['label' => __('Borrador', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '📝'],
-                'pendiente'  => ['label' => __('Pendiente validación', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏳'],
-                'validado'   => ['label' => __('Validado', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
-                'rechazado'  => ['label' => __('Rechazado', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '❌'],
+                'borrador'   => ['label' => __('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'gray', 'icon' => '📝'],
+                'pendiente'  => ['label' => __('Pendiente validación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '⏳'],
+                'validado'   => ['label' => __('Validado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '✅'],
+                'rechazado'  => ['label' => __('Rechazado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'red', 'icon' => '❌'],
             ],
 
             'stats' => [
-                'especies_catalogadas' => ['label' => __('Especies', 'flavor-chat-ia'), 'icon' => '🦋', 'color' => 'lime'],
-                'avistamientos_total'  => ['label' => __('Avistamientos', 'flavor-chat-ia'), 'icon' => '👁️', 'color' => 'blue'],
-                'proyectos_activos'    => ['label' => __('Proyectos', 'flavor-chat-ia'), 'icon' => '🌱', 'color' => 'green'],
-                'contribuidores'       => ['label' => __('Contribuidores', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'purple'],
+                'especies_catalogadas' => ['label' => __('Especies', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🦋', 'color' => 'lime'],
+                'avistamientos_total'  => ['label' => __('Avistamientos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👁️', 'color' => 'blue'],
+                'proyectos_activos'    => ['label' => __('Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🌱', 'color' => 'green'],
+                'contribuidores'       => ['label' => __('Contribuidores', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👥', 'color' => 'purple'],
             ],
 
             'card' => [
@@ -1440,31 +1440,31 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
 
             'tabs' => [
                 'catalogo' => [
-                    'label'   => __('Catálogo', 'flavor-chat-ia'),
+                    'label'   => __('Catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-portfolio',
                     'content' => 'template:_archive.php',
                     'public'  => true,
                 ],
                 'mapa' => [
-                    'label'   => __('Mapa', 'flavor-chat-ia'),
+                    'label'   => __('Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-location',
                     'content' => 'shortcode:biodiversidad_mapa',
                     'public'  => true,
                 ],
                 'avistamientos' => [
-                    'label'   => __('Avistamientos', 'flavor-chat-ia'),
+                    'label'   => __('Avistamientos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-visibility',
                     'content' => 'shortcode:biodiversidad_mis_avistamientos',
                     'public'  => true,
                 ],
                 'registrar' => [
-                    'label'      => __('Registrar', 'flavor-chat-ia'),
+                    'label'      => __('Registrar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-plus-alt',
                     'content'    => 'shortcode:biodiversidad_registrar',
                     'requires_login' => true,
                 ],
                 'proyectos' => [
-                    'label'   => __('Proyectos', 'flavor-chat-ia'),
+                    'label'   => __('Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-clipboard',
                     'content' => 'shortcode:biodiversidad_proyectos',
                     'public'  => true,
@@ -1482,8 +1482,8 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
             'dashboard' => [
                 'widgets' => ['stats', 'especies_recientes', 'avistamientos_mapa', 'proyectos_activos'],
                 'actions' => [
-                    'avistamiento' => ['label' => __('Registrar avistamiento', 'flavor-chat-ia'), 'icon' => '👁️', 'color' => 'lime'],
-                    'especie'      => ['label' => __('Proponer especie', 'flavor-chat-ia'), 'icon' => '🦋', 'color' => 'green'],
+                    'avistamiento' => ['label' => __('Registrar avistamiento', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👁️', 'color' => 'lime'],
+                    'especie'      => ['label' => __('Proponer especie', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🦋', 'color' => 'green'],
                 ],
             ],
 

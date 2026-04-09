@@ -15,25 +15,25 @@ $modulo_seleccionado = isset($_GET['modulo']) ? sanitize_key($_GET['modulo']) : 
 ?>
 
 <div class="modulos-tab">
-    <h2><?php esc_html_e('Permisos por Modulo', 'flavor-chat-ia'); ?></h2>
+    <h2><?php esc_html_e('Permisos por Modulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
     <p class="description">
-        <?php esc_html_e('Selecciona un modulo para ver sus capabilities y roles especificos.', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Selecciona un modulo para ver sus capabilities y roles especificos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </p>
 
     <!-- Selector de modulo -->
     <div class="flavor-card" style="margin-bottom: 20px;">
         <div class="inline-form">
             <label for="selector-modulo" style="font-weight: 600;">
-                <?php esc_html_e('Modulo:', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Modulo:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </label>
             <select id="selector-modulo" onchange="location.href='?page=flavor-permissions&tab=modulos&modulo=' + this.value;">
-                <option value=""><?php esc_html_e('-- Seleccionar modulo --', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php esc_html_e('-- Seleccionar modulo --', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 <?php foreach ($modulos as $slug => $modulo_info): ?>
                     <option value="<?php echo esc_attr($slug); ?>"
                             <?php selected($modulo_seleccionado, $slug); ?>>
                         <?php echo esc_html($modulo_info['label']); ?>
                         (<?php echo count($modulo_info['capabilities']); ?> <?php esc_html_e('caps)
-', 'flavor-chat-ia'); ?>                    </option>
+', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>                    </option>
                 <?php endforeach; ?>
             </select>
         </div>
@@ -55,13 +55,13 @@ $modulo_seleccionado = isset($_GET['modulo']) ? sanitize_key($_GET['modulo']) : 
                         <!-- Capabilities del modulo -->
                         <div>
                             <h4 style="margin-top: 0;">
-                                <?php esc_html_e('Capabilities Disponibles', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Capabilities Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </h4>
                             <table class="wp-list-table widefat fixed striped">
                                 <thead>
                                     <tr>
-                                        <th><?php esc_html_e('Capability', 'flavor-chat-ia'); ?></th>
-                                        <th><?php esc_html_e('Descripcion', 'flavor-chat-ia'); ?></th>
+                                        <th><?php esc_html_e('Capability', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                        <th><?php esc_html_e('Descripcion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -78,7 +78,7 @@ $modulo_seleccionado = isset($_GET['modulo']) ? sanitize_key($_GET['modulo']) : 
                         <!-- Roles del modulo -->
                         <div>
                             <h4 style="margin-top: 0;">
-                                <?php esc_html_e('Roles del Modulo', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Roles del Modulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </h4>
 
                             <?php if (!empty($roles_modulo)): ?>
@@ -98,7 +98,7 @@ $modulo_seleccionado = isset($_GET['modulo']) ? sanitize_key($_GET['modulo']) : 
 
                                         <div style="background: #f9f9f9; padding: 10px; border-radius: 4px;">
                                             <strong style="font-size: 12px;">
-                                                <?php esc_html_e('Capabilities incluidas:', 'flavor-chat-ia'); ?>
+                                                <?php esc_html_e('Capabilities incluidas:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </strong>
                                             <div style="margin-top: 5px;">
                                                 <?php
@@ -115,7 +115,7 @@ $modulo_seleccionado = isset($_GET['modulo']) ? sanitize_key($_GET['modulo']) : 
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <p style="color: #666;">
-                                    <?php esc_html_e('Este modulo no tiene roles especificos definidos.', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Este modulo no tiene roles especificos definidos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </p>
                             <?php endif; ?>
                         </div>
@@ -123,7 +123,7 @@ $modulo_seleccionado = isset($_GET['modulo']) ? sanitize_key($_GET['modulo']) : 
 
                     <!-- Usuarios con roles en este modulo -->
                     <div style="margin-top: 30px;">
-                        <h4><?php esc_html_e('Usuarios con Roles en este Modulo', 'flavor-chat-ia'); ?></h4>
+                        <h4><?php esc_html_e('Usuarios con Roles en este Modulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
 
                         <?php
                         $usuarios_con_roles = [];
@@ -145,10 +145,10 @@ $modulo_seleccionado = isset($_GET['modulo']) ? sanitize_key($_GET['modulo']) : 
                                 <thead>
                                     <tr>
                                         <th style="width: 50px;"></th>
-                                        <th><?php esc_html_e('Usuario', 'flavor-chat-ia'); ?></th>
-                                        <th><?php esc_html_e('Email', 'flavor-chat-ia'); ?></th>
-                                        <th><?php esc_html_e('Rol en Modulo', 'flavor-chat-ia'); ?></th>
-                                        <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                                        <th><?php esc_html_e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                        <th><?php esc_html_e('Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                        <th><?php esc_html_e('Rol en Modulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                        <th><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -179,7 +179,7 @@ $modulo_seleccionado = isset($_GET['modulo']) ? sanitize_key($_GET['modulo']) : 
                                                         <input type="hidden" name="user_id" value="<?php echo esc_attr($user_id); ?>">
                                                         <input type="hidden" name="modulo" value="<?php echo esc_attr($modulo_seleccionado); ?>">
                                                         <button type="submit" class="button button-small">
-                                                            <?php esc_html_e('Revocar', 'flavor-chat-ia'); ?>
+                                                            <?php esc_html_e('Revocar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                                         </button>
                                                     </form>
                                                 </td>
@@ -190,14 +190,14 @@ $modulo_seleccionado = isset($_GET['modulo']) ? sanitize_key($_GET['modulo']) : 
                             </table>
                         <?php else: ?>
                             <p style="color: #666;">
-                                <?php esc_html_e('No hay usuarios con roles asignados en este modulo.', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('No hay usuarios con roles asignados en este modulo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </p>
                         <?php endif; ?>
 
                         <!-- Formulario para asignar rol -->
                         <div class="flavor-card" style="margin-top: 15px;">
                             <h4 style="margin-top: 0;">
-                                <?php esc_html_e('Asignar Rol a Usuario', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Asignar Rol a Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </h4>
                             <form method="post" class="inline-form">
                                 <?php wp_nonce_field('flavor_manage_permissions', 'flavor_permissions_nonce'); ?>
@@ -205,9 +205,9 @@ $modulo_seleccionado = isset($_GET['modulo']) ? sanitize_key($_GET['modulo']) : 
                                 <input type="hidden" name="modulo" value="<?php echo esc_attr($modulo_seleccionado); ?>">
 
                                 <label>
-                                    <?php esc_html_e('Usuario:', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Usuario:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     <select name="user_id" required style="min-width: 200px;">
-                                        <option value=""><?php esc_html_e('-- Seleccionar --', 'flavor-chat-ia'); ?></option>
+                                        <option value=""><?php esc_html_e('-- Seleccionar --', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                         <?php
                                         $todos_usuarios = get_users(['orderby' => 'display_name', 'number' => 100]);
                                         foreach ($todos_usuarios as $usr):
@@ -221,9 +221,9 @@ $modulo_seleccionado = isset($_GET['modulo']) ? sanitize_key($_GET['modulo']) : 
                                 </label>
 
                                 <label>
-                                    <?php esc_html_e('Rol:', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Rol:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     <select name="rol" required>
-                                        <option value=""><?php esc_html_e('-- Seleccionar --', 'flavor-chat-ia'); ?></option>
+                                        <option value=""><?php esc_html_e('-- Seleccionar --', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                         <?php if (!empty($roles_modulo)): ?>
                                             <?php foreach ($roles_modulo as $rol_slug => $rol_info): ?>
                                                 <option value="<?php echo esc_attr($rol_slug); ?>">
@@ -235,7 +235,7 @@ $modulo_seleccionado = isset($_GET['modulo']) ? sanitize_key($_GET['modulo']) : 
                                 </label>
 
                                 <button type="submit" class="button button-primary">
-                                    <?php esc_html_e('Asignar', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Asignar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             </form>
                         </div>
@@ -252,19 +252,19 @@ $modulo_seleccionado = isset($_GET['modulo']) ? sanitize_key($_GET['modulo']) : 
                     <h3>
                         <?php echo esc_html($modulo_info['label']); ?>
                         <a href="?page=flavor-permissions&tab=modulos&modulo=<?php echo esc_attr($slug); ?>" class="button button-small" style="float: right; margin-top: -2px;">
-                            <?php esc_html_e('Gestionar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Gestionar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </h3>
                     <div class="module-capabilities">
                         <div style="display: flex; gap: 20px;">
                             <div>
-                                <strong><?php esc_html_e('Capabilities:', 'flavor-chat-ia'); ?></strong>
+                                <strong><?php esc_html_e('Capabilities:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                                 <span style="background: #e7e7e7; padding: 2px 8px; border-radius: 10px;">
                                     <?php echo count($modulo_info['capabilities']); ?>
                                 </span>
                             </div>
                             <div>
-                                <strong><?php esc_html_e('Roles:', 'flavor-chat-ia'); ?></strong>
+                                <strong><?php esc_html_e('Roles:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                                 <span style="background: #e7e7e7; padding: 2px 8px; border-radius: 10px;">
                                     <?php echo count($modulo_info['roles']); ?>
                                 </span>

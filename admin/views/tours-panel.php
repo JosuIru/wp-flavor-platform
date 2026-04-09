@@ -22,23 +22,23 @@ $tour_stats = $tours_manager->get_tour_stats();
 // Organizar tours por categoría
 $tours_categorias = [
     'basicos' => [
-        'titulo' => __('Tours Básicos', 'flavor-chat-ia'),
-        'descripcion' => __('Aprende los conceptos fundamentales de Flavor Platform', 'flavor-chat-ia'),
+        'titulo' => __('Tours Básicos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Aprende los conceptos fundamentales de Flavor Platform', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'tours' => ['tour_dashboard', 'tour_modulos', 'tour_chat_ia'],
     ],
     'personalizacion' => [
-        'titulo' => __('Personalización', 'flavor-chat-ia'),
-        'descripcion' => __('Configura la apariencia y comportamiento', 'flavor-chat-ia'),
+        'titulo' => __('Personalización', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Configura la apariencia y comportamiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'tours' => ['tour_diseno', 'tour_landing'],
     ],
     'emprendimiento' => [
-        'titulo' => __('Emprendimiento y Tejido Empresarial', 'flavor-chat-ia'),
-        'descripcion' => __('Herramientas para crear y gestionar el ecosistema empresarial local', 'flavor-chat-ia'),
+        'titulo' => __('Emprendimiento y Tejido Empresarial', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Herramientas para crear y gestionar el ecosistema empresarial local', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'tours' => ['tour_tejido_empresarial'],
     ],
     'avanzados' => [
-        'titulo' => __('Funciones Avanzadas', 'flavor-chat-ia'),
-        'descripcion' => __('Características avanzadas y red distribuida', 'flavor-chat-ia'),
+        'titulo' => __('Funciones Avanzadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Características avanzadas y red distribuida', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'tours' => ['tour_red_nodos', 'tour_app_profiles'],
     ],
 ];
@@ -48,18 +48,18 @@ $tours_categorias = [
     <!-- Header -->
     <div class="flavor-tours-header">
         <div class="flavor-tours-header-content">
-            <h1><?php esc_html_e('Centro de Tours y Ayuda', 'flavor-chat-ia'); ?></h1>
-            <p><?php esc_html_e('Aprende a usar Flavor Platform con tours interactivos paso a paso', 'flavor-chat-ia'); ?></p>
+            <h1><?php esc_html_e('Centro de Tours y Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
+            <p><?php esc_html_e('Aprende a usar Flavor Platform con tours interactivos paso a paso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
 
         <div class="flavor-tours-stats">
             <div class="flavor-tours-stat">
                 <div class="flavor-tours-stat-value"><?php echo esc_html($tour_stats['completed']); ?></div>
-                <div class="flavor-tours-stat-label"><?php esc_html_e('Completados', 'flavor-chat-ia'); ?></div>
+                <div class="flavor-tours-stat-label"><?php esc_html_e('Completados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
             <div class="flavor-tours-stat">
                 <div class="flavor-tours-stat-value"><?php echo esc_html($tour_stats['total']); ?></div>
-                <div class="flavor-tours-stat-label"><?php esc_html_e('Totales', 'flavor-chat-ia'); ?></div>
+                <div class="flavor-tours-stat-label"><?php esc_html_e('Totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
             <div class="flavor-tours-progress">
                 <div class="flavor-tours-progress-bar">
@@ -74,7 +74,7 @@ $tours_categorias = [
     <div class="flavor-tours-actions" style="margin-bottom: 30px;">
         <button type="button" class="button" id="flavor-reset-all-tours">
             <span class="dashicons dashicons-image-rotate" style="vertical-align: middle;"></span>
-            <?php esc_html_e('Reiniciar Todos los Tours', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Reiniciar Todos los Tours', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
     </div>
 
@@ -83,9 +83,9 @@ $tours_categorias = [
     <div class="notice notice-success" style="padding: 20px; display: flex; align-items: center; gap: 15px;">
         <span class="dashicons dashicons-awards" style="font-size: 40px; width: 40px; height: 40px; color: #00a32a;"></span>
         <div>
-            <h3 style="margin: 0 0 5px 0;"><?php esc_html_e('Has completado todos los tours!', 'flavor-chat-ia'); ?></h3>
+            <h3 style="margin: 0 0 5px 0;"><?php esc_html_e('Has completado todos los tours!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <p style="margin: 0; color: #646970;">
-                <?php esc_html_e('Ahora conoces todas las funcionalidades de Flavor Platform. Si necesitas repasar algún tema, puedes reiniciar cualquier tour.', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ahora conoces todas las funcionalidades de Flavor Platform. Si necesitas repasar algún tema, puedes reiniciar cualquier tour.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
     </div>
@@ -126,7 +126,7 @@ $tours_categorias = [
                                 <span><?php echo esc_html($tour['duracion'] ?? ''); ?></span>
                             </div>
                             <span class="flavor-tour-card-status">
-                                <?php echo $is_completed ? esc_html__('Completado', 'flavor-chat-ia') : esc_html__('Pendiente', 'flavor-chat-ia'); ?>
+                                <?php echo $is_completed ? esc_html__('Completado', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         </div>
 
@@ -140,7 +140,7 @@ $tours_categorias = [
                                     <span class="dashicons dashicons-editor-ol"></span>
                                     <?php
                                     printf(
-                                        esc_html(_n('%d paso', '%d pasos', $pasos_count, 'flavor-chat-ia')),
+                                        esc_html(_n('%d paso', '%d pasos', $pasos_count, FLAVOR_PLATFORM_TEXT_DOMAIN)),
                                         $pasos_count
                                     );
                                     ?>
@@ -148,7 +148,7 @@ $tours_categorias = [
                                 <?php if (!empty($tour['video_url'])): ?>
                                 <span>
                                     <span class="dashicons dashicons-video-alt3"></span>
-                                    <?php esc_html_e('Con video', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Con video', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                                 <?php endif; ?>
                             </div>
@@ -158,10 +158,10 @@ $tours_categorias = [
                                     <a href="<?php echo esc_url($pagina_destino . '&start_tour=' . $tour_id); ?>" class="button button-primary">
                                         <?php if ($is_completed): ?>
                                             <span class="dashicons dashicons-controls-repeat" style="vertical-align: middle; margin-right: 4px;"></span>
-                                            <?php esc_html_e('Repetir', 'flavor-chat-ia'); ?>
+                                            <?php esc_html_e('Repetir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         <?php else: ?>
                                             <span class="dashicons dashicons-controls-play" style="vertical-align: middle; margin-right: 4px;"></span>
-                                            <?php esc_html_e('Iniciar', 'flavor-chat-ia'); ?>
+                                            <?php esc_html_e('Iniciar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         <?php endif; ?>
                                     </a>
                                 <?php endif; ?>
@@ -169,7 +169,7 @@ $tours_categorias = [
                                 <?php if ($is_completed): ?>
                                     <button type="button" class="button flavor-reset-tour-btn" data-tour-id="<?php echo esc_attr($tour_id); ?>">
                                         <span class="dashicons dashicons-image-rotate" style="vertical-align: middle; margin-right: 4px;"></span>
-                                        <?php esc_html_e('Reiniciar', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Reiniciar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 <?php endif; ?>
 
@@ -190,10 +190,10 @@ $tours_categorias = [
     <div class="flavor-tours-videos" style="margin-top: 40px;">
         <h2 style="margin: 0 0 10px 0; font-size: 18px; font-weight: 600;">
             <span class="dashicons dashicons-video-alt3" style="vertical-align: middle; margin-right: 8px;"></span>
-            <?php esc_html_e('Videos Tutoriales', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Videos Tutoriales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
         <p style="margin: 0 0 20px 0; color: #646970;">
-            <?php esc_html_e('Videos explicativos sobre las principales funcionalidades', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Videos explicativos sobre las principales funcionalidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
 
         <div class="flavor-videos-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
@@ -205,8 +205,8 @@ $tours_categorias = [
                     </div>
                 </div>
                 <div style="padding: 16px;">
-                    <h4 style="margin: 0 0 8px 0; font-size: 14px;"><?php esc_html_e('Introducción a Flavor Platform', 'flavor-chat-ia'); ?></h4>
-                    <p style="margin: 0; font-size: 12px; color: #646970;"><?php esc_html_e('Visión general de la plataforma', 'flavor-chat-ia'); ?></p>
+                    <h4 style="margin: 0 0 8px 0; font-size: 14px;"><?php esc_html_e('Introducción a Flavor Platform', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                    <p style="margin: 0; font-size: 12px; color: #646970;"><?php esc_html_e('Visión general de la plataforma', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             </div>
 
@@ -217,8 +217,8 @@ $tours_categorias = [
                     </div>
                 </div>
                 <div style="padding: 16px;">
-                    <h4 style="margin: 0 0 8px 0; font-size: 14px;"><?php esc_html_e('Configuración del Motor IA', 'flavor-chat-ia'); ?></h4>
-                    <p style="margin: 0; font-size: 12px; color: #646970;"><?php esc_html_e('Cómo configurar tu API key y modelo', 'flavor-chat-ia'); ?></p>
+                    <h4 style="margin: 0 0 8px 0; font-size: 14px;"><?php esc_html_e('Configuración del Motor IA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                    <p style="margin: 0; font-size: 12px; color: #646970;"><?php esc_html_e('Cómo configurar tu API key y modelo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             </div>
 
@@ -229,14 +229,14 @@ $tours_categorias = [
                     </div>
                 </div>
                 <div style="padding: 16px;">
-                    <h4 style="margin: 0 0 8px 0; font-size: 14px;"><?php esc_html_e('Crear Landing Pages', 'flavor-chat-ia'); ?></h4>
-                    <p style="margin: 0; font-size: 12px; color: #646970;"><?php esc_html_e('Diseña páginas para tus apps', 'flavor-chat-ia'); ?></p>
+                    <h4 style="margin: 0 0 8px 0; font-size: 14px;"><?php esc_html_e('Crear Landing Pages', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                    <p style="margin: 0; font-size: 12px; color: #646970;"><?php esc_html_e('Diseña páginas para tus apps', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             </div>
         </div>
 
         <p style="margin-top: 20px; text-align: center; color: #646970; font-style: italic;">
-            <?php esc_html_e('Más videos próximamente...', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Más videos próximamente...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </div>
 
@@ -244,39 +244,39 @@ $tours_categorias = [
     <div class="flavor-tours-resources" style="margin-top: 40px; padding: 30px; background: #f6f7f7; border-radius: 8px;">
         <h2 style="margin: 0 0 20px 0; font-size: 18px; font-weight: 600;">
             <span class="dashicons dashicons-welcome-learn-more" style="vertical-align: middle; margin-right: 8px;"></span>
-            <?php esc_html_e('Recursos Adicionales', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Recursos Adicionales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
-            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-docs')); ?>" class="flavor-resource-card" style="display: flex; align-items: center; gap: 12px; padding: 16px; background: #fff; border-radius: 6px; text-decoration: none; color: inherit; transition: all 0.2s;">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-platform-docs')); ?>" class="flavor-resource-card" style="display: flex; align-items: center; gap: 12px; padding: 16px; background: #fff; border-radius: 6px; text-decoration: none; color: inherit; transition: all 0.2s;">
                 <span class="dashicons dashicons-book" style="font-size: 24px; width: 24px; height: 24px; color: #2271b1;"></span>
                 <div>
-                    <strong style="display: block; margin-bottom: 2px;"><?php esc_html_e('Documentación', 'flavor-chat-ia'); ?></strong>
-                    <span style="font-size: 12px; color: #646970;"><?php esc_html_e('Guías completas', 'flavor-chat-ia'); ?></span>
+                    <strong style="display: block; margin-bottom: 2px;"><?php esc_html_e('Documentación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                    <span style="font-size: 12px; color: #646970;"><?php esc_html_e('Guías completas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </a>
 
             <a href="https://support.flavor-platform.com" target="_blank" rel="noopener" class="flavor-resource-card" style="display: flex; align-items: center; gap: 12px; padding: 16px; background: #fff; border-radius: 6px; text-decoration: none; color: inherit; transition: all 0.2s;">
                 <span class="dashicons dashicons-sos" style="font-size: 24px; width: 24px; height: 24px; color: #2271b1;"></span>
                 <div>
-                    <strong style="display: block; margin-bottom: 2px;"><?php esc_html_e('Soporte', 'flavor-chat-ia'); ?></strong>
-                    <span style="font-size: 12px; color: #646970;"><?php esc_html_e('Ayuda técnica', 'flavor-chat-ia'); ?></span>
+                    <strong style="display: block; margin-bottom: 2px;"><?php esc_html_e('Soporte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                    <span style="font-size: 12px; color: #646970;"><?php esc_html_e('Ayuda técnica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </a>
 
             <a href="https://community.flavor-platform.com" target="_blank" rel="noopener" class="flavor-resource-card" style="display: flex; align-items: center; gap: 12px; padding: 16px; background: #fff; border-radius: 6px; text-decoration: none; color: inherit; transition: all 0.2s;">
                 <span class="dashicons dashicons-groups" style="font-size: 24px; width: 24px; height: 24px; color: #2271b1;"></span>
                 <div>
-                    <strong style="display: block; margin-bottom: 2px;"><?php esc_html_e('Comunidad', 'flavor-chat-ia'); ?></strong>
-                    <span style="font-size: 12px; color: #646970;"><?php esc_html_e('Foro de usuarios', 'flavor-chat-ia'); ?></span>
+                    <strong style="display: block; margin-bottom: 2px;"><?php esc_html_e('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                    <span style="font-size: 12px; color: #646970;"><?php esc_html_e('Foro de usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </a>
 
             <a href="https://changelog.flavor-platform.com" target="_blank" rel="noopener" class="flavor-resource-card" style="display: flex; align-items: center; gap: 12px; padding: 16px; background: #fff; border-radius: 6px; text-decoration: none; color: inherit; transition: all 0.2s;">
                 <span class="dashicons dashicons-backup" style="font-size: 24px; width: 24px; height: 24px; color: #2271b1;"></span>
                 <div>
-                    <strong style="display: block; margin-bottom: 2px;"><?php esc_html_e('Changelog', 'flavor-chat-ia'); ?></strong>
-                    <span style="font-size: 12px; color: #646970;"><?php esc_html_e('Novedades', 'flavor-chat-ia'); ?></span>
+                    <strong style="display: block; margin-bottom: 2px;"><?php esc_html_e('Changelog', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                    <span style="font-size: 12px; color: #646970;"><?php esc_html_e('Novedades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </a>
         </div>
@@ -310,7 +310,7 @@ jQuery(document).ready(function($) {
         var tourId = $(this).data('tour-id');
         var $card = $(this).closest('.flavor-tour-card');
 
-        if (confirm('<?php echo esc_js(__('¿Seguro que quieres reiniciar este tour?', 'flavor-chat-ia')); ?>')) {
+        if (confirm('<?php echo esc_js(__('¿Seguro que quieres reiniciar este tour?', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>')) {
             $.ajax({
                 url: ajaxurl,
                 type: 'POST',
@@ -322,7 +322,7 @@ jQuery(document).ready(function($) {
                 success: function(response) {
                     if (response.success) {
                         $card.removeClass('completed');
-                        $card.find('.flavor-tour-card-status').text('<?php echo esc_js(__('Pendiente', 'flavor-chat-ia')); ?>');
+                        $card.find('.flavor-tour-card-status').text('<?php echo esc_js(__('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                         location.reload();
                     }
                 }
@@ -332,7 +332,7 @@ jQuery(document).ready(function($) {
 
     // Reiniciar todos los tours
     $('#flavor-reset-all-tours').on('click', function() {
-        if (confirm('<?php echo esc_js(__('¿Seguro que quieres reiniciar TODOS los tours? Perderás todo el progreso.', 'flavor-chat-ia')); ?>')) {
+        if (confirm('<?php echo esc_js(__('¿Seguro que quieres reiniciar TODOS los tours? Perderás todo el progreso.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>')) {
             $.ajax({
                 url: ajaxurl,
                 type: 'POST',

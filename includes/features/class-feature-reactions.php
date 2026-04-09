@@ -34,8 +34,8 @@ class Flavor_Feature_Reactions extends Flavor_Feature_Base {
     }
 
     public function register_action($entity_type, $entity_id, $user_id, $value = null) {
-        if (!$user_id) return new WP_Error('auth', __('Debes iniciar sesión', 'flavor-chat-ia'));
-        if (!array_key_exists($value, self::REACTIONS)) return new WP_Error('invalid', __('Reacción inválida', 'flavor-chat-ia'));
+        if (!$user_id) return new WP_Error('auth', __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        if (!array_key_exists($value, self::REACTIONS)) return new WP_Error('invalid', __('Reacción inválida', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         global $wpdb;
         $table = $wpdb->prefix . 'flavor_reactions';

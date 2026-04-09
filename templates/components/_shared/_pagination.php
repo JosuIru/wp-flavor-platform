@@ -22,15 +22,15 @@ $inicio_rango = max(1, $pagina_actual - $rango_visible);
 $fin_rango = min($total_paginas, $pagina_actual + $rango_visible);
 ?>
 
-<nav class="flex items-center justify-center gap-2 mt-8" aria-label="<?php echo esc_attr__('Paginación', 'flavor-chat-ia'); ?>">
+<nav class="flex items-center justify-center gap-2 mt-8" aria-label="<?php echo esc_attr__('Paginación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
     <?php if ($pagina_actual > 1): ?>
         <a href="<?php echo esc_url(add_query_arg('pag', $pagina_actual - 1, $base_url)); ?>"
            class="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
-           aria-label="<?php echo esc_attr__('Página anterior', 'flavor-chat-ia'); ?>">
-            <?php echo esc_html__('← Anterior', 'flavor-chat-ia'); ?>
+           aria-label="<?php echo esc_attr__('Página anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+            <?php echo esc_html__('← Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     <?php else: ?>
-        <span class="px-4 py-2 rounded-lg bg-gray-50 text-gray-300 cursor-not-allowed"><?php echo esc_html__('← Anterior', 'flavor-chat-ia'); ?></span>
+        <span class="px-4 py-2 rounded-lg bg-gray-50 text-gray-300 cursor-not-allowed"><?php echo esc_html__('← Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
     <?php endif; ?>
 
     <?php if ($inicio_rango > 1): ?>
@@ -70,11 +70,11 @@ $fin_rango = min($total_paginas, $pagina_actual + $rango_visible);
     <?php if ($pagina_actual < $total_paginas): ?>
         <a href="<?php echo esc_url(add_query_arg('pag', $pagina_actual + 1, $base_url)); ?>"
            class="px-4 py-2 rounded-lg bg-<?php echo esc_attr($color_primario); ?>-500 text-white hover:bg-<?php echo esc_attr($color_primario); ?>-600 transition-colors"
-           aria-label="<?php echo esc_attr__('Página siguiente', 'flavor-chat-ia'); ?>">
-            <?php echo esc_html__('Siguiente →', 'flavor-chat-ia'); ?>
+           aria-label="<?php echo esc_attr__('Página siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+            <?php echo esc_html__('Siguiente →', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     <?php else: ?>
-        <span class="px-4 py-2 rounded-lg bg-gray-50 text-gray-300 cursor-not-allowed"><?php echo esc_html__('Siguiente →', 'flavor-chat-ia'); ?></span>
+        <span class="px-4 py-2 rounded-lg bg-gray-50 text-gray-300 cursor-not-allowed"><?php echo esc_html__('Siguiente →', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
     <?php endif; ?>
 </nav>
 

@@ -45,11 +45,11 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
     <!-- Header del Catalogo -->
     <header class="flavor-gc-catalogo-header">
         <div class="flavor-gc-catalogo-titulo">
-            <h2><?php _e('Productos disponibles', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Productos disponibles', 'flavor-platform'); ?></h2>
             <?php if (!empty($productos)): ?>
                 <span class="flavor-gc-total-productos">
                     <?php printf(
-                        _n('%d producto', '%d productos', count($productos), 'flavor-chat-ia'),
+                        _n('%d producto', '%d productos', count($productos), 'flavor-platform'),
                         count($productos)
                     ); ?>
                 </span>
@@ -61,7 +61,7 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
                 <div class="flavor-gc-ciclo-estado">
                     <span class="flavor-gc-estado-badge flavor-gc-estado-abierto">
                         <span class="dashicons dashicons-yes-alt"></span>
-                        <?php _e('Ciclo abierto', 'flavor-chat-ia'); ?>
+                        <?php _e('Ciclo abierto', 'flavor-platform'); ?>
                     </span>
                 </div>
                 <div class="flavor-gc-ciclo-info">
@@ -69,7 +69,7 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
                         <div class="flavor-gc-fecha-item">
                             <span class="dashicons dashicons-clock"></span>
                             <div>
-                                <span class="flavor-gc-fecha-label"><?php _e('Cierre de pedidos', 'flavor-chat-ia'); ?></span>
+                                <span class="flavor-gc-fecha-label"><?php _e('Cierre de pedidos', 'flavor-platform'); ?></span>
                                 <strong class="flavor-gc-fecha-valor">
                                     <?php echo date_i18n('l j \d\e F, H:i', strtotime($ciclo_activo['fecha_cierre'])); ?>
                                 </strong>
@@ -78,7 +78,7 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
                         <div class="flavor-gc-fecha-item">
                             <span class="dashicons dashicons-location"></span>
                             <div>
-                                <span class="flavor-gc-fecha-label"><?php _e('Entrega', 'flavor-chat-ia'); ?></span>
+                                <span class="flavor-gc-fecha-label"><?php _e('Entrega', 'flavor-platform'); ?></span>
                                 <strong class="flavor-gc-fecha-valor">
                                     <?php echo date_i18n('l j \d\e F', strtotime($ciclo_activo['fecha_entrega'])); ?>
                                     <?php if (!empty($ciclo_activo['hora_entrega'])): ?>
@@ -91,14 +91,14 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
                             <div class="flavor-gc-fecha-item">
                                 <span class="dashicons dashicons-admin-home"></span>
                                 <div>
-                                    <span class="flavor-gc-fecha-label"><?php _e('Lugar de entrega', 'flavor-chat-ia'); ?></span>
+                                    <span class="flavor-gc-fecha-label"><?php _e('Lugar de entrega', 'flavor-platform'); ?></span>
                                     <strong class="flavor-gc-fecha-valor"><?php echo esc_html($ciclo_activo['lugar_entrega']); ?></strong>
                                 </div>
                             </div>
                         <?php endif; ?>
                     </div>
                     <div class="flavor-gc-tiempo-restante" data-cierre="<?php echo esc_attr($ciclo_activo['fecha_cierre']); ?>">
-                        <span class="flavor-gc-countdown-label"><?php _e('Tiempo restante:', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-gc-countdown-label"><?php _e('Tiempo restante:', 'flavor-platform'); ?></span>
                         <span class="flavor-gc-countdown-valor" id="gc-countdown"></span>
                     </div>
                 </div>
@@ -106,7 +106,7 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
         <?php else: ?>
             <div class="flavor-gc-ciclo-banner flavor-gc-ciclo-cerrado">
                 <span class="dashicons dashicons-calendar-alt"></span>
-                <p><?php _e('No hay ciclo de pedidos abierto actualmente. Los productos mostrados son a modo informativo.', 'flavor-chat-ia'); ?></p>
+                <p><?php _e('No hay ciclo de pedidos abierto actualmente. Los productos mostrados son a modo informativo.', 'flavor-platform'); ?></p>
             </div>
         <?php endif; ?>
 
@@ -115,7 +115,7 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
             <span class="dashicons dashicons-search"></span>
             <input type="search"
                    id="gc-buscar-producto"
-                   placeholder="<?php esc_attr_e('Buscar productos...', 'flavor-chat-ia'); ?>"
+                   placeholder="<?php esc_attr_e('Buscar productos...', 'flavor-platform'); ?>"
                    autocomplete="off">
             <button type="button" class="flavor-gc-buscar-limpiar" id="gc-limpiar-busqueda" style="display:none;">
                 <span class="dashicons dashicons-no-alt"></span>
@@ -130,10 +130,10 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
             <div class="flavor-gc-filtros-header">
                 <h3>
                     <span class="dashicons dashicons-filter"></span>
-                    <?php _e('Filtros', 'flavor-chat-ia'); ?>
+                    <?php _e('Filtros', 'flavor-platform'); ?>
                 </h3>
                 <button type="button" class="flavor-gc-filtros-limpiar" id="gc-limpiar-filtros">
-                    <?php _e('Limpiar', 'flavor-chat-ia'); ?>
+                    <?php _e('Limpiar', 'flavor-platform'); ?>
                 </button>
             </div>
 
@@ -141,7 +141,7 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
             <?php if (!empty($categorias)): ?>
             <div class="flavor-gc-filtro-grupo">
                 <h4 class="flavor-gc-filtro-titulo">
-                    <?php _e('Categorias', 'flavor-chat-ia'); ?>
+                    <?php _e('Categorias', 'flavor-platform'); ?>
                     <span class="dashicons dashicons-arrow-down-alt2"></span>
                 </h4>
                 <div class="flavor-gc-filtro-opciones">
@@ -164,7 +164,7 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
             <?php if (!empty($productores)): ?>
             <div class="flavor-gc-filtro-grupo">
                 <h4 class="flavor-gc-filtro-titulo">
-                    <?php _e('Productores', 'flavor-chat-ia'); ?>
+                    <?php _e('Productores', 'flavor-platform'); ?>
                     <span class="dashicons dashicons-arrow-down-alt2"></span>
                 </h4>
                 <div class="flavor-gc-filtro-opciones">
@@ -181,7 +181,7 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
                             <span class="flavor-gc-opcion-texto">
                                 <?php echo esc_html($productor->post_title); ?>
                                 <?php if ($es_ecologico): ?>
-                                    <span class="flavor-gc-badge-eco-mini" title="<?php esc_attr_e('Productor ecologico', 'flavor-chat-ia'); ?>"><?php echo esc_html__('ECO', 'flavor-chat-ia'); ?></span>
+                                    <span class="flavor-gc-badge-eco-mini" title="<?php esc_attr_e('Productor ecologico', 'flavor-platform'); ?>"><?php echo esc_html__('ECO', 'flavor-platform'); ?></span>
                                 <?php endif; ?>
                             </span>
                         </label>
@@ -193,7 +193,7 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
             <!-- Filtro por Precio -->
             <div class="flavor-gc-filtro-grupo">
                 <h4 class="flavor-gc-filtro-titulo">
-                    <?php _e('Rango de precio', 'flavor-chat-ia'); ?>
+                    <?php _e('Rango de precio', 'flavor-platform'); ?>
                     <span class="dashicons dashicons-arrow-down-alt2"></span>
                 </h4>
                 <div class="flavor-gc-filtro-precio">
@@ -224,7 +224,7 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
                 <label class="flavor-gc-filtro-toggle">
                     <input type="checkbox" id="gc-solo-disponibles" class="gc-filtro-disponibles">
                     <span class="flavor-gc-toggle"></span>
-                    <span class="flavor-gc-toggle-texto"><?php _e('Solo productos con stock', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-gc-toggle-texto"><?php _e('Solo productos con stock', 'flavor-platform'); ?></span>
                 </label>
             </div>
 
@@ -233,7 +233,7 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
                 <label class="flavor-gc-filtro-toggle">
                     <input type="checkbox" id="gc-solo-ecologicos" class="gc-filtro-ecologicos">
                     <span class="flavor-gc-toggle"></span>
-                    <span class="flavor-gc-toggle-texto"><?php _e('Solo productos ecologicos', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-gc-toggle-texto"><?php _e('Solo productos ecologicos', 'flavor-platform'); ?></span>
                 </label>
             </div>
 
@@ -246,7 +246,7 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
         <!-- Boton para mostrar filtros en movil -->
         <button type="button" class="flavor-gc-filtros-toggle-movil" id="gc-toggle-filtros">
             <span class="dashicons dashicons-filter"></span>
-            <?php _e('Filtros', 'flavor-chat-ia'); ?>
+            <?php _e('Filtros', 'flavor-platform'); ?>
             <span class="flavor-gc-filtros-count" id="gc-filtros-count" style="display:none;">0</span>
         </button>
         <?php endif; ?>
@@ -256,21 +256,21 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
             <!-- Barra de ordenacion -->
             <div class="flavor-gc-ordenar-barra">
                 <div class="flavor-gc-vista-opciones">
-                    <button type="button" class="flavor-gc-vista-btn active" data-vista="grid" title="<?php esc_attr_e('Vista cuadricula', 'flavor-chat-ia'); ?>">
+                    <button type="button" class="flavor-gc-vista-btn active" data-vista="grid" title="<?php esc_attr_e('Vista cuadricula', 'flavor-platform'); ?>">
                         <span class="dashicons dashicons-grid-view"></span>
                     </button>
-                    <button type="button" class="flavor-gc-vista-btn" data-vista="lista" title="<?php esc_attr_e('Vista lista', 'flavor-chat-ia'); ?>">
+                    <button type="button" class="flavor-gc-vista-btn" data-vista="lista" title="<?php esc_attr_e('Vista lista', 'flavor-platform'); ?>">
                         <span class="dashicons dashicons-list-view"></span>
                     </button>
                 </div>
                 <div class="flavor-gc-ordenar">
-                    <label for="gc-ordenar"><?php _e('Ordenar por:', 'flavor-chat-ia'); ?></label>
+                    <label for="gc-ordenar"><?php _e('Ordenar por:', 'flavor-platform'); ?></label>
                     <select id="gc-ordenar" class="flavor-gc-select">
-                        <option value="nombre-asc"><?php _e('Nombre A-Z', 'flavor-chat-ia'); ?></option>
-                        <option value="nombre-desc"><?php _e('Nombre Z-A', 'flavor-chat-ia'); ?></option>
-                        <option value="precio-asc"><?php _e('Precio: menor a mayor', 'flavor-chat-ia'); ?></option>
-                        <option value="precio-desc"><?php _e('Precio: mayor a menor', 'flavor-chat-ia'); ?></option>
-                        <option value="productor"><?php _e('Por productor', 'flavor-chat-ia'); ?></option>
+                        <option value="nombre-asc"><?php _e('Nombre A-Z', 'flavor-platform'); ?></option>
+                        <option value="nombre-desc"><?php _e('Nombre Z-A', 'flavor-platform'); ?></option>
+                        <option value="precio-asc"><?php _e('Precio: menor a mayor', 'flavor-platform'); ?></option>
+                        <option value="precio-desc"><?php _e('Precio: mayor a menor', 'flavor-platform'); ?></option>
+                        <option value="productor"><?php _e('Por productor', 'flavor-platform'); ?></option>
                     </select>
                 </div>
             </div>
@@ -280,7 +280,7 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
                 <?php if (empty($productos)): ?>
                     <div class="flavor-gc-sin-productos">
                         <span class="dashicons dashicons-carrot"></span>
-                        <p><?php _e('No hay productos disponibles en este momento.', 'flavor-chat-ia'); ?></p>
+                        <p><?php _e('No hay productos disponibles en este momento.', 'flavor-platform'); ?></p>
                     </div>
                 <?php else: ?>
                     <?php foreach ($productos as $producto): ?>
@@ -322,9 +322,9 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
                                 <?php endif; ?>
 
                                 <?php if ($es_ecologico): ?>
-                                    <span class="flavor-gc-badge-eco" title="<?php esc_attr_e('Producto ecologico certificado', 'flavor-chat-ia'); ?>">
+                                    <span class="flavor-gc-badge-eco" title="<?php esc_attr_e('Producto ecologico certificado', 'flavor-platform'); ?>">
                                         <span class="dashicons dashicons-awards"></span>
-                                        <?php _e('ECO', 'flavor-chat-ia'); ?>
+                                        <?php _e('ECO', 'flavor-platform'); ?>
                                     </span>
                                 <?php endif; ?>
 
@@ -336,7 +336,7 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
 
                                 <?php if (!$tiene_stock): ?>
                                     <div class="flavor-gc-overlay-agotado">
-                                        <span><?php _e('Agotado', 'flavor-chat-ia'); ?></span>
+                                        <span><?php _e('Agotado', 'flavor-platform'); ?></span>
                                     </div>
                                 <?php endif; ?>
                             </div>
@@ -360,7 +360,7 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
                                 <div class="flavor-gc-producto-precio-stock">
                                     <div class="flavor-gc-producto-precio">
                                         <span class="flavor-gc-precio-valor"><?php echo number_format($precio, 2, ',', '.'); ?></span>
-                                        <span class="flavor-gc-precio-moneda"><?php echo esc_html__('EUR', 'flavor-chat-ia'); ?></span>
+                                        <span class="flavor-gc-precio-moneda"><?php echo esc_html__('EUR', 'flavor-platform'); ?></span>
                                         <span class="flavor-gc-precio-unidad">/ <?php echo esc_html($unidad); ?></span>
                                     </div>
 
@@ -368,10 +368,10 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
                                         <div class="flavor-gc-producto-stock <?php echo $stock_bajo ? 'stock-bajo' : ''; ?>">
                                             <?php if ($stock_bajo): ?>
                                                 <span class="dashicons dashicons-warning"></span>
-                                                <?php printf(__('Quedan %s', 'flavor-chat-ia'), number_format($stock, 0, ',', '.')); ?>
+                                                <?php printf(__('Quedan %s', 'flavor-platform'), number_format($stock, 0, ',', '.')); ?>
                                             <?php else: ?>
                                                 <span class="dashicons dashicons-yes"></span>
-                                                <?php _e('En stock', 'flavor-chat-ia'); ?>
+                                                <?php _e('En stock', 'flavor-platform'); ?>
                                             <?php endif; ?>
                                         </div>
                                     <?php endif; ?>
@@ -398,20 +398,20 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
                                             <button type="button" class="flavor-gc-btn-agregar <?php echo $en_lista ? 'en-lista' : ''; ?>">
                                                 <span class="dashicons <?php echo $en_lista ? 'dashicons-yes' : 'dashicons-cart'; ?>"></span>
                                                 <span class="flavor-gc-btn-texto">
-                                                    <?php echo $en_lista ? __('En pedido', 'flavor-chat-ia') : __('Anadir', 'flavor-chat-ia'); ?>
+                                                    <?php echo $en_lista ? __('En pedido', 'flavor-platform') : __('Anadir', 'flavor-platform'); ?>
                                                 </span>
                                             </button>
                                         <?php else: ?>
                                             <a href="<?php echo esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos'))); ?>" class="flavor-gc-btn-login">
                                                 <span class="dashicons dashicons-lock"></span>
-                                                <?php _e('Inicia sesion para pedir', 'flavor-chat-ia'); ?>
+                                                <?php _e('Inicia sesion para pedir', 'flavor-platform'); ?>
                                             </a>
                                         <?php endif; ?>
                                     </div>
                                 <?php elseif (!$ciclo_activo): ?>
                                     <div class="flavor-gc-producto-sin-ciclo">
                                         <span class="dashicons dashicons-info"></span>
-                                        <?php _e('Pedidos cerrados', 'flavor-chat-ia'); ?>
+                                        <?php _e('Pedidos cerrados', 'flavor-platform'); ?>
                                     </div>
                                 <?php endif; ?>
                             </div>
@@ -423,10 +423,10 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
             <!-- Mensaje cuando no hay resultados de filtro -->
             <div class="flavor-gc-sin-resultados" id="gc-sin-resultados" style="display:none;">
                 <span class="dashicons dashicons-search"></span>
-                <h3><?php _e('No se encontraron productos', 'flavor-chat-ia'); ?></h3>
-                <p><?php _e('Prueba a cambiar los filtros o el termino de busqueda.', 'flavor-chat-ia'); ?></p>
+                <h3><?php _e('No se encontraron productos', 'flavor-platform'); ?></h3>
+                <p><?php _e('Prueba a cambiar los filtros o el termino de busqueda.', 'flavor-platform'); ?></p>
                 <button type="button" class="flavor-gc-btn flavor-gc-btn-secondary" id="gc-reiniciar-filtros">
-                    <?php _e('Limpiar filtros', 'flavor-chat-ia'); ?>
+                    <?php _e('Limpiar filtros', 'flavor-platform'); ?>
                 </button>
             </div>
 
@@ -434,10 +434,10 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
             <?php if (count($productos) >= 12): ?>
             <div class="flavor-gc-cargar-mas" id="gc-cargar-mas">
                 <button type="button" class="flavor-gc-btn flavor-gc-btn-secondary" id="gc-btn-cargar-mas" data-pagina="1">
-                    <span class="flavor-gc-btn-texto"><?php _e('Cargar mas productos', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-gc-btn-texto"><?php _e('Cargar mas productos', 'flavor-platform'); ?></span>
                     <span class="flavor-gc-btn-loading" style="display:none;">
                         <span class="dashicons dashicons-update-alt flavor-spin"></span>
-                        <?php _e('Cargando...', 'flavor-chat-ia'); ?>
+                        <?php _e('Cargando...', 'flavor-platform'); ?>
                     </span>
                 </button>
             </div>

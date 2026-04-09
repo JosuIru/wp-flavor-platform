@@ -57,8 +57,8 @@ $total_paginas = ceil($total / $por_pagina);
 ?>
 
 <div class="wrap flavor-chat-grupos-admin">
-    <h1 class="wp-heading-inline"><?php _e('Grupos de Chat', 'flavor-chat-ia'); ?></h1>
-    <a href="<?php echo admin_url('admin.php?page=chat-grupos-nuevo'); ?>" class="page-title-action"><?php _e('Crear grupo', 'flavor-chat-ia'); ?></a>
+    <h1 class="wp-heading-inline"><?php _e('Grupos de Chat', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
+    <a href="<?php echo admin_url('admin.php?page=chat-grupos-nuevo'); ?>" class="page-title-action"><?php _e('Crear grupo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
     <hr class="wp-header-end">
 
     <div class="tablenav top">
@@ -66,19 +66,19 @@ $total_paginas = ceil($total / $por_pagina);
             <input type="hidden" name="page" value="chat-grupos">
 
             <select name="estado">
-                <option value=""><?php _e('Todos los estados', 'flavor-chat-ia'); ?></option>
-                <option value="activo" <?php selected($filtro_estado, 'activo'); ?>><?php _e('Activos', 'flavor-chat-ia'); ?></option>
-                <option value="inactivo" <?php selected($filtro_estado, 'inactivo'); ?>><?php _e('Inactivos', 'flavor-chat-ia'); ?></option>
-                <option value="archivado" <?php selected($filtro_estado, 'archivado'); ?>><?php _e('Archivados', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php _e('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="activo" <?php selected($filtro_estado, 'activo'); ?>><?php _e('Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="inactivo" <?php selected($filtro_estado, 'inactivo'); ?>><?php _e('Inactivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="archivado" <?php selected($filtro_estado, 'archivado'); ?>><?php _e('Archivados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             </select>
 
-            <input type="search" name="s" value="<?php echo esc_attr($busqueda); ?>" placeholder="<?php esc_attr_e('Buscar grupos...', 'flavor-chat-ia'); ?>">
-            <input type="submit" class="button" value="<?php esc_attr_e('Filtrar', 'flavor-chat-ia'); ?>">
+            <input type="search" name="s" value="<?php echo esc_attr($busqueda); ?>" placeholder="<?php esc_attr_e('Buscar grupos...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+            <input type="submit" class="button" value="<?php esc_attr_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
         </form>
 
         <div class="tablenav-pages">
             <span class="displaying-num">
-                <?php printf(_n('%s grupo', '%s grupos', $total, 'flavor-chat-ia'), number_format_i18n($total)); ?>
+                <?php printf(_n('%s grupo', '%s grupos', $total, FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($total)); ?>
             </span>
         </div>
     </div>
@@ -86,18 +86,18 @@ $total_paginas = ceil($total / $por_pagina);
     <table class="wp-list-table widefat fixed striped">
         <thead>
             <tr>
-                <th scope="col" class="column-primary"><?php _e('Nombre', 'flavor-chat-ia'); ?></th>
-                <th scope="col"><?php _e('Tipo', 'flavor-chat-ia'); ?></th>
-                <th scope="col"><?php _e('Miembros', 'flavor-chat-ia'); ?></th>
-                <th scope="col"><?php _e('Mensajes', 'flavor-chat-ia'); ?></th>
-                <th scope="col"><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                <th scope="col"><?php _e('Creado', 'flavor-chat-ia'); ?></th>
+                <th scope="col" class="column-primary"><?php _e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col"><?php _e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col"><?php _e('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col"><?php _e('Mensajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col"><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col"><?php _e('Creado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
             </tr>
         </thead>
         <tbody>
             <?php if (empty($grupos)): ?>
             <tr>
-                <td colspan="6"><?php _e('No se encontraron grupos.', 'flavor-chat-ia'); ?></td>
+                <td colspan="6"><?php _e('No se encontraron grupos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
             </tr>
             <?php else: ?>
             <?php foreach ($grupos as $grupo): ?>
@@ -110,13 +110,13 @@ $total_paginas = ceil($total / $por_pagina);
                     </strong>
                     <div class="row-actions">
                         <span class="edit">
-                            <a href="<?php echo admin_url('admin.php?page=chat-grupos-editar&id=' . $grupo->id); ?>"><?php _e('Editar', 'flavor-chat-ia'); ?></a> |
+                            <a href="<?php echo admin_url('admin.php?page=chat-grupos-editar&id=' . $grupo->id); ?>"><?php _e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a> |
                         </span>
                         <span class="view">
-                            <a href="<?php echo admin_url('admin.php?page=chat-grupos-miembros&id=' . $grupo->id); ?>"><?php _e('Miembros', 'flavor-chat-ia'); ?></a> |
+                            <a href="<?php echo admin_url('admin.php?page=chat-grupos-miembros&id=' . $grupo->id); ?>"><?php _e('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a> |
                         </span>
                         <span class="trash">
-                            <a href="<?php echo wp_nonce_url(admin_url('admin.php?page=chat-grupos&action=archivar&id=' . $grupo->id), 'archivar_grupo_' . $grupo->id); ?>" class="submitdelete"><?php _e('Archivar', 'flavor-chat-ia'); ?></a>
+                            <a href="<?php echo wp_nonce_url(admin_url('admin.php?page=chat-grupos&action=archivar&id=' . $grupo->id), 'archivar_grupo_' . $grupo->id); ?>" class="submitdelete"><?php _e('Archivar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                         </span>
                     </div>
                 </td>

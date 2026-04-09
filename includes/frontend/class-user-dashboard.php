@@ -99,19 +99,19 @@ class Flavor_User_Dashboard {
             'userName'        => $usuario_actual->exists() ? $usuario_actual->display_name : '',
             'pollingInterval' => 60000,
             'i18n'            => [
-                'guardando'            => __('Guardando...', 'flavor-chat-ia'),
-                'guardado'             => __('Cambios guardados correctamente', 'flavor-chat-ia'),
-                'error_guardar'        => __('Error al guardar los cambios', 'flavor-chat-ia'),
-                'cargando'             => __('Cargando...', 'flavor-chat-ia'),
-                'error_conexion'       => __('Error de conexion. Intentalo de nuevo.', 'flavor-chat-ia'),
-                'confirmar_password'   => __('Las contrasenas no coinciden', 'flavor-chat-ia'),
-                'password_corto'       => __('La contrasena debe tener al menos 8 caracteres', 'flavor-chat-ia'),
-                'sin_notificaciones'   => __('No tienes notificaciones', 'flavor-chat-ia'),
-                'marcar_leida'         => __('Marcar como leida', 'flavor-chat-ia'),
-                'marcar_todas_leidas'  => __('Marcar todas como leidas', 'flavor-chat-ia'),
-                'perfil_actualizado'   => __('Perfil actualizado correctamente', 'flavor-chat-ia'),
-                'password_actualizado' => __('Contrasena actualizada correctamente', 'flavor-chat-ia'),
-                'error_email'          => __('El email introducido no es valido', 'flavor-chat-ia'),
+                'guardando'            => __('Guardando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'guardado'             => __('Cambios guardados correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error_guardar'        => __('Error al guardar los cambios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cargando'             => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error_conexion'       => __('Error de conexion. Intentalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmar_password'   => __('Las contrasenas no coinciden', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'password_corto'       => __('La contrasena debe tener al menos 8 caracteres', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sin_notificaciones'   => __('No tienes notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'marcar_leida'         => __('Marcar como leida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'marcar_todas_leidas'  => __('Marcar todas como leidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'perfil_actualizado'   => __('Perfil actualizado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'password_actualizado' => __('Contrasena actualizada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error_email'          => __('El email introducido no es valido', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
 
@@ -130,13 +130,13 @@ class Flavor_User_Dashboard {
 
         $tabs_del_sistema = [
             'perfil' => [
-                'label'    => __('Mi Perfil', 'flavor-chat-ia'),
+                'label'    => __('Mi Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'user',
                 'callback' => [$this, 'render_tab_perfil'],
                 'orden'    => 10,
             ],
             'notificaciones' => [
-                'label'    => __('Notificaciones', 'flavor-chat-ia'),
+                'label'    => __('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'bell',
                 'callback' => [$this, 'render_tab_notificaciones'],
                 'orden'    => 90,
@@ -247,8 +247,8 @@ class Flavor_User_Dashboard {
                             <circle cx="12" cy="7" r="4"/>
                         </svg>
                     </div>
-                    <h2><?php esc_html_e('Accede a tu cuenta', 'flavor-chat-ia'); ?></h2>
-                    <p><?php esc_html_e('Inicia sesion para acceder a tu panel personal', 'flavor-chat-ia'); ?></p>
+                    <h2><?php esc_html_e('Accede a tu cuenta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                    <p><?php esc_html_e('Inicia sesion para acceder a tu panel personal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
 
                 <div class="flavor-dashboard-login-form">
@@ -257,10 +257,10 @@ class Flavor_User_Dashboard {
                         'echo'           => true,
                         'redirect'       => get_permalink(),
                         'form_id'        => 'flavor-login-form',
-                        'label_username' => __('Usuario o email', 'flavor-chat-ia'),
-                        'label_password' => __('Contrasena', 'flavor-chat-ia'),
-                        'label_remember' => __('Recuerdame', 'flavor-chat-ia'),
-                        'label_log_in'   => __('Iniciar sesion', 'flavor-chat-ia'),
+                        'label_username' => __('Usuario o email', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'label_password' => __('Contrasena', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'label_remember' => __('Recuerdame', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'label_log_in'   => __('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'remember'       => true,
                     ];
                     wp_login_form($argumentos_login);
@@ -269,13 +269,13 @@ class Flavor_User_Dashboard {
 
                 <div class="flavor-dashboard-login-footer">
                     <a href="<?php echo esc_url(wp_lostpassword_url(get_permalink())); ?>" class="flavor-dashboard-link">
-                        <?php esc_html_e('Olvidaste tu contrasena?', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Olvidaste tu contrasena?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
 
                     <?php if (get_option('users_can_register')) : ?>
                         <span class="flavor-dashboard-separator">|</span>
                         <a href="<?php echo esc_url(wp_registration_url()); ?>" class="flavor-dashboard-link">
-                            <?php esc_html_e('Crear una cuenta', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Crear una cuenta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     <?php endif; ?>
                 </div>
@@ -297,7 +297,7 @@ class Flavor_User_Dashboard {
 
         if (!isset($todos_los_tabs[$identificador_tab])) {
             echo '<div class="flavor-dashboard-tab-vacio">';
-            esc_html_e('Seccion no encontrada', 'flavor-chat-ia');
+            esc_html_e('Seccion no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN);
             echo '</div>';
             return;
         }
@@ -417,14 +417,14 @@ class Flavor_User_Dashboard {
         check_ajax_referer('flavor_user_dashboard', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $identificador_tab = isset($_POST['tab']) ? sanitize_key($_POST['tab']) : 'perfil';
         $todos_los_tabs    = $this->obtener_tabs();
 
         if (!isset($todos_los_tabs[$identificador_tab])) {
-            wp_send_json_error(['message' => __('Seccion no encontrada', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Seccion no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         ob_start();

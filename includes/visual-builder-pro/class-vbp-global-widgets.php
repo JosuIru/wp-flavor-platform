@@ -62,16 +62,16 @@ class Flavor_VBP_Global_Widgets {
             self::POST_TYPE,
             array(
                 'labels'              => array(
-                    'name'               => __( 'Widgets Globales', 'flavor-chat-ia' ),
-                    'singular_name'      => __( 'Widget Global', 'flavor-chat-ia' ),
-                    'add_new'            => __( 'Añadir nuevo', 'flavor-chat-ia' ),
-                    'add_new_item'       => __( 'Añadir nuevo Widget Global', 'flavor-chat-ia' ),
-                    'edit_item'          => __( 'Editar Widget Global', 'flavor-chat-ia' ),
-                    'new_item'           => __( 'Nuevo Widget Global', 'flavor-chat-ia' ),
-                    'view_item'          => __( 'Ver Widget Global', 'flavor-chat-ia' ),
-                    'search_items'       => __( 'Buscar Widgets Globales', 'flavor-chat-ia' ),
-                    'not_found'          => __( 'No se encontraron widgets globales', 'flavor-chat-ia' ),
-                    'not_found_in_trash' => __( 'No hay widgets globales en la papelera', 'flavor-chat-ia' ),
+                    'name'               => __( 'Widgets Globales', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'singular_name'      => __( 'Widget Global', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'add_new'            => __( 'Añadir nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'add_new_item'       => __( 'Añadir nuevo Widget Global', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'edit_item'          => __( 'Editar Widget Global', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'new_item'           => __( 'Nuevo Widget Global', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'view_item'          => __( 'Ver Widget Global', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'search_items'       => __( 'Buscar Widgets Globales', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'not_found'          => __( 'No se encontraron widgets globales', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                    'not_found_in_trash' => __( 'No hay widgets globales en la papelera', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 'public'              => false,
                 'publicly_queryable'  => false,
@@ -211,7 +211,7 @@ class Flavor_VBP_Global_Widgets {
 
         if ( empty( $titulo ) || empty( $elemento ) ) {
             return new WP_REST_Response(
-                array( 'error' => __( 'Título y elemento son requeridos', 'flavor-chat-ia' ) ),
+                array( 'error' => __( 'Título y elemento son requeridos', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                 400
             );
         }
@@ -241,7 +241,7 @@ class Flavor_VBP_Global_Widgets {
                 'id'      => $widget_id,
                 'title'   => $titulo,
                 'type'    => isset( $elemento['type'] ) ? $elemento['type'] : 'unknown',
-                'message' => __( 'Widget global creado correctamente', 'flavor-chat-ia' ),
+                'message' => __( 'Widget global creado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             201
         );
@@ -259,7 +259,7 @@ class Flavor_VBP_Global_Widgets {
 
         if ( ! $widget || self::POST_TYPE !== $widget->post_type ) {
             return new WP_REST_Response(
-                array( 'error' => __( 'Widget no encontrado', 'flavor-chat-ia' ) ),
+                array( 'error' => __( 'Widget no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                 404
             );
         }
@@ -290,7 +290,7 @@ class Flavor_VBP_Global_Widgets {
 
         if ( ! $widget || self::POST_TYPE !== $widget->post_type ) {
             return new WP_REST_Response(
-                array( 'error' => __( 'Widget no encontrado', 'flavor-chat-ia' ) ),
+                array( 'error' => __( 'Widget no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                 404
             );
         }
@@ -321,7 +321,7 @@ class Flavor_VBP_Global_Widgets {
         return new WP_REST_Response(
             array(
                 'id'      => $widget_id,
-                'message' => __( 'Widget global actualizado', 'flavor-chat-ia' ),
+                'message' => __( 'Widget global actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             200
         );
@@ -339,7 +339,7 @@ class Flavor_VBP_Global_Widgets {
 
         if ( ! $widget || self::POST_TYPE !== $widget->post_type ) {
             return new WP_REST_Response(
-                array( 'error' => __( 'Widget no encontrado', 'flavor-chat-ia' ) ),
+                array( 'error' => __( 'Widget no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
                 404
             );
         }
@@ -349,7 +349,7 @@ class Flavor_VBP_Global_Widgets {
         if ( $uso_count > 0 ) {
             return new WP_REST_Response(
                 array(
-                    'error'      => __( 'No se puede eliminar un widget en uso', 'flavor-chat-ia' ),
+                    'error'      => __( 'No se puede eliminar un widget en uso', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'usageCount' => $uso_count,
                 ),
                 400
@@ -359,7 +359,7 @@ class Flavor_VBP_Global_Widgets {
         wp_delete_post( $widget_id, true );
 
         return new WP_REST_Response(
-            array( 'message' => __( 'Widget global eliminado', 'flavor-chat-ia' ) ),
+            array( 'message' => __( 'Widget global eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ),
             200
         );
     }

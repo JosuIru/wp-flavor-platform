@@ -22,33 +22,33 @@ if (empty($servicios_guardados)) {
     $servicios_guardados = [
         [
             'icono'       => 'dashicons-admin-tools',
-            'titulo'      => __('Consultoría', 'flavor-chat-ia'),
-            'descripcion' => __('Asesoramiento profesional para optimizar tus procesos de negocio.', 'flavor-chat-ia'),
+            'titulo'      => __('Consultoría', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'descripcion' => __('Asesoramiento profesional para optimizar tus procesos de negocio.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ],
         [
             'icono'       => 'dashicons-chart-line',
-            'titulo'      => __('Desarrollo', 'flavor-chat-ia'),
-            'descripcion' => __('Soluciones tecnológicas a medida para impulsar tu crecimiento.', 'flavor-chat-ia'),
+            'titulo'      => __('Desarrollo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'descripcion' => __('Soluciones tecnológicas a medida para impulsar tu crecimiento.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ],
         [
             'icono'       => 'dashicons-megaphone',
-            'titulo'      => __('Marketing', 'flavor-chat-ia'),
-            'descripcion' => __('Estrategias de marketing digital para aumentar tu visibilidad.', 'flavor-chat-ia'),
+            'titulo'      => __('Marketing', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'descripcion' => __('Estrategias de marketing digital para aumentar tu visibilidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ],
         [
             'icono'       => 'dashicons-groups',
-            'titulo'      => __('Formación', 'flavor-chat-ia'),
-            'descripcion' => __('Programas de capacitación para tu equipo de trabajo.', 'flavor-chat-ia'),
+            'titulo'      => __('Formación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'descripcion' => __('Programas de capacitación para tu equipo de trabajo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ],
         [
             'icono'       => 'dashicons-admin-network',
-            'titulo'      => __('Soporte', 'flavor-chat-ia'),
-            'descripcion' => __('Asistencia técnica continua para mantener tu operación.', 'flavor-chat-ia'),
+            'titulo'      => __('Soporte', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'descripcion' => __('Asistencia técnica continua para mantener tu operación.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ],
         [
             'icono'       => 'dashicons-analytics',
-            'titulo'      => __('Análisis', 'flavor-chat-ia'),
-            'descripcion' => __('Análisis de datos para tomar decisiones informadas.', 'flavor-chat-ia'),
+            'titulo'      => __('Análisis', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'descripcion' => __('Análisis de datos para tomar decisiones informadas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ],
     ];
 }
@@ -81,7 +81,7 @@ if (empty($servicios_guardados)) {
 
                 <?php if (!empty($servicio['enlace'])): ?>
                     <a href="<?php echo esc_url($servicio['enlace']); ?>" class="servicio-enlace">
-                        <?php esc_html_e('Saber más', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Saber más', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <span class="dashicons dashicons-arrow-right-alt"></span>
                     </a>
                 <?php endif; ?>

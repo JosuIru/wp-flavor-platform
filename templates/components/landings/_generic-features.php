@@ -17,7 +17,7 @@ $id_seccion = $id_seccion ?? '';
 $columnas = count($items) > 4 ? 4 : count($items);
 ?>
 
-<section<?php if ($id_seccion): ?> <?php esc_html_e('id="', 'flavor-chat-ia'); ?><?php echo esc_attr($id_seccion); ?>"<?php endif; ?> <?php esc_html_e('class="flavor-features-section" style="--color-primario:', 'flavor-chat-ia'); ?> <?php echo esc_attr($color_primario); ?>;">
+<section<?php if ($id_seccion): ?> <?php esc_html_e('id="', FLAVOR_PLATFORM_TEXT_DOMAIN); ?><?php echo esc_attr($id_seccion); ?>"<?php endif; ?> <?php esc_html_e('class="flavor-features-section" style="--color-primario:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_attr($color_primario); ?>;">
     <div class="flavor-container">
         <header class="flavor-features-header">
             <h2 class="flavor-features-title"><?php echo esc_html($titulo); ?></h2>

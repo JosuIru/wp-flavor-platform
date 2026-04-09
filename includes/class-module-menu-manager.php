@@ -115,7 +115,7 @@ class Flavor_Module_Menu_Manager {
      */
     public function register_menu_location() {
         register_nav_menus([
-            self::MAIN_MENU_LOCATION => __('Menú Principal', 'flavor-chat-ia'),
+            self::MAIN_MENU_LOCATION => __('Menú Principal', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -220,20 +220,20 @@ class Flavor_Module_Menu_Manager {
     private function add_static_menu_items($menu_id) {
         $static_items = [
             [
-                'title' => __('Inicio', 'flavor-chat-ia'),
+                'title' => __('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => home_url('/'),
                 'order' => 1,
                 'icon' => '🏠',
             ],
             [
-                'title' => __('Mi Portal', 'flavor-chat-ia'),
+                'title' => __('Mi Portal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => Flavor_Chat_Helpers::get_action_url('', ''),
                 'order' => 2,
                 'icon' => '👤',
                 'require_login' => true,
             ],
             [
-                'title' => __('Servicios', 'flavor-chat-ia'),
+                'title' => __('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => home_url('/servicios/'),
                 'order' => 3,
                 'icon' => '📋',

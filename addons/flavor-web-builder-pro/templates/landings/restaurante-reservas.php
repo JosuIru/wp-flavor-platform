@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$titulo = $titulo ?? __('Reserva tu mesa', 'flavor-chat-ia');
+$titulo = $titulo ?? __('Reserva tu mesa', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $color_primario = $color_primario ?? '#f56e28';
 
 $horarios = $horarios ?? [
@@ -24,17 +24,17 @@ $horarios = $horarios ?? [
             <div class="flavor-reservas-info">
                 <h2 class="flavor-section-title"><?php echo esc_html($titulo); ?></h2>
                 <p class="flavor-reservas-descripcion">
-                    <?php esc_html_e('Reserva con antelación para asegurar tu mesa. Para grupos de más de 8 personas, contáctanos por teléfono.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Reserva con antelación para asegurar tu mesa. Para grupos de más de 8 personas, contáctanos por teléfono.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
 
                 <div class="flavor-horarios">
-                    <h3><?php esc_html_e('Horarios', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Horarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <div class="flavor-horario-item">
-                        <span class="flavor-horario-turno"><?php esc_html_e('Comidas', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-horario-turno"><?php esc_html_e('Comidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="flavor-horario-horas"><?php echo esc_html($horarios['comida']['inicio'] . ' - ' . $horarios['comida']['fin']); ?></span>
                     </div>
                     <div class="flavor-horario-item">
-                        <span class="flavor-horario-turno"><?php esc_html_e('Cenas', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-horario-turno"><?php esc_html_e('Cenas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="flavor-horario-horas"><?php echo esc_html($horarios['cena']['inicio'] . ' - ' . $horarios['cena']['fin']); ?></span>
                     </div>
                 </div>
@@ -55,21 +55,21 @@ $horarios = $horarios ?? [
                 <form class="flavor-form-reserva" action="" method="post" data-source="landing">
                     <div class="flavor-form-row">
                         <div class="flavor-form-group">
-                            <label for="reserva-fecha"><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></label>
+                            <label for="reserva-fecha"><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="date" id="reserva-fecha" name="fecha" min="<?php echo date('Y-m-d'); ?>" required>
                         </div>
                         <div class="flavor-form-group">
-                            <label for="reserva-hora"><?php esc_html_e('Hora', 'flavor-chat-ia'); ?></label>
+                            <label for="reserva-hora"><?php esc_html_e('Hora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <select id="reserva-hora" name="hora" required>
-                                <option value=""><?php esc_html_e('Seleccionar', 'flavor-chat-ia'); ?></option>
-                                <optgroup label="<?php esc_attr_e('Comidas', 'flavor-chat-ia'); ?>">
+                                <option value=""><?php esc_html_e('Seleccionar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <optgroup label="<?php esc_attr_e('Comidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <option value="13:00">13:00</option>
                                     <option value="13:30">13:30</option>
                                     <option value="14:00">14:00</option>
                                     <option value="14:30">14:30</option>
                                     <option value="15:00">15:00</option>
                                 </optgroup>
-                                <optgroup label="<?php esc_attr_e('Cenas', 'flavor-chat-ia'); ?>">
+                                <optgroup label="<?php esc_attr_e('Cenas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <option value="20:00">20:00</option>
                                     <option value="20:30">20:30</option>
                                     <option value="21:00">21:00</option>
@@ -81,7 +81,7 @@ $horarios = $horarios ?? [
                     </div>
 
                     <div class="flavor-form-group">
-                        <label for="reserva-personas"><?php esc_html_e('Número de personas', 'flavor-chat-ia'); ?></label>
+                        <label for="reserva-personas"><?php esc_html_e('Número de personas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <div class="flavor-personas-selector">
                             <?php for ($i = 1; $i <= 8; $i++): ?>
                                 <label class="flavor-persona-option">
@@ -94,32 +94,32 @@ $horarios = $horarios ?? [
 
                     <div class="flavor-form-row">
                         <div class="flavor-form-group">
-                            <label for="reserva-nombre"><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?></label>
+                            <label for="reserva-nombre"><?php esc_html_e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="text" id="reserva-nombre" name="nombre" required>
                         </div>
                         <div class="flavor-form-group">
-                            <label for="reserva-telefono"><?php esc_html_e('Teléfono', 'flavor-chat-ia'); ?></label>
+                            <label for="reserva-telefono"><?php esc_html_e('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="tel" id="reserva-telefono" name="telefono" required>
                         </div>
                     </div>
 
                     <div class="flavor-form-group">
-                        <label for="reserva-email"><?php esc_html_e('Email', 'flavor-chat-ia'); ?></label>
+                        <label for="reserva-email"><?php esc_html_e('Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="email" id="reserva-email" name="email" required>
                     </div>
 
                     <div class="flavor-form-group">
-                        <label for="reserva-notas"><?php esc_html_e('Notas especiales (alergias, celebraciones...)', 'flavor-chat-ia'); ?></label>
+                        <label for="reserva-notas"><?php esc_html_e('Notas especiales (alergias, celebraciones...)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <textarea id="reserva-notas" name="notas" rows="2"></textarea>
                     </div>
 
                     <button type="submit" class="flavor-submit-reserva">
                         <span class="dashicons dashicons-calendar-alt"></span>
-                        <?php esc_html_e('Confirmar Reserva', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Confirmar Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
 
                     <p class="flavor-form-nota">
-                        <?php esc_html_e('Recibirás un email de confirmación. Si no puedes asistir, cancela con al menos 2 horas de antelación.', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Recibirás un email de confirmación. Si no puedes asistir, cancela con al menos 2 horas de antelación.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
 
                     <div class="flavor-form-message" style="display:none;"></div>

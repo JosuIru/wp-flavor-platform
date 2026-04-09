@@ -68,18 +68,18 @@ $porcentaje_en_proceso = $total > 0 ? round(($en_proceso / $total) * 100, 1) : 0
 $metricas_principales = [
     [
         'id' => 'total',
-        'titulo' => __('Total Incidencias', 'flavor-chat-ia'),
+        'titulo' => __('Total Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'valor' => $total,
-        'unidad' => __('reportes', 'flavor-chat-ia'),
+        'unidad' => __('reportes', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => '📊',
         'color' => 'gray',
         'tendencia' => 'up',
     ],
     [
         'id' => 'resueltas',
-        'titulo' => __('Incidencias Resueltas', 'flavor-chat-ia'),
+        'titulo' => __('Incidencias Resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'valor' => $resueltas,
-        'unidad' => __('completadas', 'flavor-chat-ia'),
+        'unidad' => __('completadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => '✅',
         'color' => 'green',
         'tendencia' => 'up',
@@ -87,9 +87,9 @@ $metricas_principales = [
     ],
     [
         'id' => 'pendientes',
-        'titulo' => __('Incidencias Pendientes', 'flavor-chat-ia'),
+        'titulo' => __('Incidencias Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'valor' => $pendientes,
-        'unidad' => __('sin resolver', 'flavor-chat-ia'),
+        'unidad' => __('sin resolver', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => '⏳',
         'color' => 'yellow',
         'tendencia' => 'down',
@@ -97,9 +97,9 @@ $metricas_principales = [
     ],
     [
         'id' => 'en_proceso',
-        'titulo' => __('En Proceso', 'flavor-chat-ia'),
+        'titulo' => __('En Proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'valor' => $en_proceso,
-        'unidad' => __('en curso', 'flavor-chat-ia'),
+        'unidad' => __('en curso', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => '🔧',
         'color' => 'blue',
         'tendencia' => 'up',
@@ -110,30 +110,30 @@ $metricas_principales = [
 // Métricas temporales (simplificadas sin datos históricos)
 $metricas_temporales = [
     [
-        'titulo' => __('Tasa de Resolución', 'flavor-chat-ia'),
+        'titulo' => __('Tasa de Resolución', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'valor' => $porcentaje_resueltas . '%',
         'subtitulo' => '',
-        'comparativa' => sprintf(__('%d de %d incidencias', 'flavor-chat-ia'), $resueltas, $total),
+        'comparativa' => sprintf(__('%d de %d incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN), $resueltas, $total),
         'icono' => '📈',
         'color' => 'purple',
         'mejora' => $porcentaje_resueltas >= 50,
         'porcentaje_mejora' => $porcentaje_resueltas,
     ],
     [
-        'titulo' => __('En Gestión', 'flavor-chat-ia'),
+        'titulo' => __('En Gestión', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'valor' => $en_proceso,
-        'subtitulo' => __('incidencias', 'flavor-chat-ia'),
-        'comparativa' => __('Actualmente en proceso', 'flavor-chat-ia'),
+        'subtitulo' => __('incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'comparativa' => __('Actualmente en proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => '⚡',
         'color' => 'orange',
         'mejora' => true,
         'porcentaje_mejora' => $porcentaje_en_proceso,
     ],
     [
-        'titulo' => __('Pendientes', 'flavor-chat-ia'),
+        'titulo' => __('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'valor' => $pendientes,
-        'subtitulo' => __('incidencias', 'flavor-chat-ia'),
-        'comparativa' => __('Esperando atención', 'flavor-chat-ia'),
+        'subtitulo' => __('incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'comparativa' => __('Esperando atención', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => '⏳',
         'color' => 'amber',
         'mejora' => $pendientes == 0,
@@ -161,7 +161,7 @@ if ($tabla_existe) {
         )));
 
         $tendencias_ultimas_semanas[] = [
-            'semana' => sprintf(__('Semana %d', 'flavor-chat-ia'), 4 - $i),
+            'semana' => sprintf(__('Semana %d', FLAVOR_PLATFORM_TEXT_DOMAIN), 4 - $i),
             'reportadas' => $reportadas,
             'resueltas' => $resueltas_semana,
         ];
@@ -177,7 +177,7 @@ if ($tabla_existe) {
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                 </svg>
-                <?php echo esc_html__('Estadísticas', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
             <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4"><?php echo esc_html($titulo_estadisticas); ?></h2>
             <p class="text-xl text-gray-600"><?php echo esc_html($descripcion_estadisticas); ?></p>
@@ -201,7 +201,7 @@ if ($tabla_existe) {
                     <?php if (isset($metrica['porcentaje_total'])): ?>
                         <div class="mb-3">
                             <div class="flex items-center justify-between text-xs mb-1">
-                                <span class="text-gray-600"><?php echo esc_html__('Del total', 'flavor-chat-ia'); ?></span>
+                                <span class="text-gray-600"><?php echo esc_html__('Del total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="font-semibold text-gray-700"><?php echo number_format($metrica['porcentaje_total'], 1); ?>%</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
@@ -226,7 +226,7 @@ if ($tabla_existe) {
                                 -<?php echo esc_html($metrica['cambio_porcentaje']); ?>%
                             </span>
                         <?php endif; ?>
-                        <span class="text-xs text-gray-500"><?php echo esc_html__('vs mes anterior', 'flavor-chat-ia'); ?></span>
+                        <span class="text-xs text-gray-500"><?php echo esc_html__('vs mes anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -266,7 +266,7 @@ if ($tabla_existe) {
         <!-- Incidencias por Categoría -->
         <?php if (!empty($incidencias_por_categoria)): ?>
         <div class="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-8 shadow-lg border border-gray-200 mb-12">
-            <h3 class="text-2xl font-bold text-gray-900 mb-6"><?php echo esc_html__('Incidencias por Categoría', 'flavor-chat-ia'); ?></h3>
+            <h3 class="text-2xl font-bold text-gray-900 mb-6"><?php echo esc_html__('Incidencias por Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <div class="space-y-4">
                 <?php foreach ($incidencias_por_categoria as $categoria): ?>
@@ -287,7 +287,7 @@ if ($tabla_existe) {
                         </div>
 
                         <div class="flex items-center gap-2 mt-2 text-xs text-gray-600">
-                            <span><?php echo esc_html__('Resueltas:', 'flavor-chat-ia'); ?></span>
+                            <span><?php echo esc_html__('Resueltas:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span class="font-semibold text-green-600"><?php echo esc_html($categoria['resueltas']); ?>/<?php echo esc_html($categoria['cantidad']); ?></span>
                             <span class="text-gray-500">(<?php echo $categoria['cantidad'] > 0 ? number_format(($categoria['resueltas'] / $categoria['cantidad']) * 100, 0) : 0; ?>%)</span>
                         </div>
@@ -300,16 +300,16 @@ if ($tabla_existe) {
         <!-- Tendencias de Últimas Semanas -->
         <?php if ($mostrar_tendencias && !empty($tendencias_ultimas_semanas)): ?>
             <div class="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-8 shadow-lg border border-gray-200 mb-12">
-                <h3 class="text-2xl font-bold text-gray-900 mb-6"><?php echo esc_html__('Últimas 4 Semanas', 'flavor-chat-ia'); ?></h3>
+                <h3 class="text-2xl font-bold text-gray-900 mb-6"><?php echo esc_html__('Últimas 4 Semanas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
                         <thead>
                             <tr class="border-b border-gray-200">
-                                <th class="text-left py-3 px-4 font-semibold text-gray-900"><?php echo esc_html__('Período', 'flavor-chat-ia'); ?></th>
-                                <th class="text-center py-3 px-4 font-semibold text-gray-900"><?php echo esc_html__('Reportadas', 'flavor-chat-ia'); ?></th>
-                                <th class="text-center py-3 px-4 font-semibold text-gray-900"><?php echo esc_html__('Resueltas', 'flavor-chat-ia'); ?></th>
-                                <th class="text-center py-3 px-4 font-semibold text-gray-900"><?php echo esc_html__('Tasa Resolución', 'flavor-chat-ia'); ?></th>
+                                <th class="text-left py-3 px-4 font-semibold text-gray-900"><?php echo esc_html__('Período', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th class="text-center py-3 px-4 font-semibold text-gray-900"><?php echo esc_html__('Reportadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th class="text-center py-3 px-4 font-semibold text-gray-900"><?php echo esc_html__('Resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th class="text-center py-3 px-4 font-semibold text-gray-900"><?php echo esc_html__('Tasa Resolución', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -346,13 +346,13 @@ if ($tabla_existe) {
 
         <!-- Llamada a la Acción -->
         <div class="bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl p-8 text-white text-center">
-            <h3 class="text-2xl font-bold mb-2"><?php echo esc_html__('¿Encontraste un Problema?', 'flavor-chat-ia'); ?></h3>
-            <p class="mb-6 opacity-90"><?php echo esc_html__('Ayuda a tu comunidad reportando incidencias en tu zona', 'flavor-chat-ia'); ?></p>
+            <h3 class="text-2xl font-bold mb-2"><?php echo esc_html__('¿Encontraste un Problema?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p class="mb-6 opacity-90"><?php echo esc_html__('Ayuda a tu comunidad reportando incidencias en tu zona', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <a href="#reportar" class="inline-flex items-center gap-2 px-8 py-3 bg-white text-red-600 rounded-xl font-semibold hover:bg-gray-100 transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                 </svg>
-                <?php echo esc_html__('Reportar Incidencia', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Reportar Incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>

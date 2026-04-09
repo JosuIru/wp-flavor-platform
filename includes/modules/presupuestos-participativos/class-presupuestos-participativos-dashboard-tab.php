@@ -27,14 +27,14 @@ class Flavor_Presupuestos_Participativos_Dashboard_Tab {
 
     public function registrar_tabs($tabs) {
         $tabs['presupuestos-activos'] = [
-            'label' => __('Presupuestos', 'flavor-chat-ia'),
+            'label' => __('Presupuestos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'chart-pie',
             'callback' => [$this, 'render_tab_presupuestos'],
             'orden' => 62,
         ];
 
         $tabs['presupuestos-mis-propuestas'] = [
-            'label' => __('Mis Proyectos', 'flavor-chat-ia'),
+            'label' => __('Mis Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'admin-post',
             'callback' => [$this, 'render_tab_mis_propuestas'],
             'orden' => 63,
@@ -95,8 +95,8 @@ class Flavor_Presupuestos_Participativos_Dashboard_Tab {
         ?>
         <div class="flavor-panel flavor-presupuestos-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-chart-pie"></span> <?php esc_html_e('Presupuestos Participativos', 'flavor-chat-ia'); ?></h2>
-                <p class="flavor-panel-subtitle"><?php esc_html_e('Decide cómo se invierte el presupuesto de tu barrio', 'flavor-chat-ia'); ?></p>
+                <h2><span class="dashicons dashicons-chart-pie"></span> <?php esc_html_e('Presupuestos Participativos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <p class="flavor-panel-subtitle"><?php esc_html_e('Decide cómo se invierte el presupuesto de tu barrio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <?php if ($proceso_activo): ?>
@@ -104,7 +104,7 @@ class Flavor_Presupuestos_Participativos_Dashboard_Tab {
                     <h3><?php echo esc_html($proceso_activo->titulo); ?></h3>
                     <p class="proceso-fase">
                         <span class="flavor-badge flavor-badge-<?php echo $proceso_activo->estado === 'votacion' ? 'success' : 'primary'; ?>">
-                            <?php echo $proceso_activo->estado === 'votacion' ? esc_html__('Fase de Votación', 'flavor-chat-ia') : esc_html__('Fase de Propuestas', 'flavor-chat-ia'); ?>
+                            <?php echo $proceso_activo->estado === 'votacion' ? esc_html__('Fase de Votación', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Fase de Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
                     </p>
                 </div>
@@ -114,28 +114,28 @@ class Flavor_Presupuestos_Participativos_Dashboard_Tab {
                         <span class="flavor-kpi-icon dashicons dashicons-money-alt"></span>
                         <div class="flavor-kpi-content">
                             <span class="flavor-kpi-value"><?php echo number_format_i18n($presupuesto_total, 0); ?> €</span>
-                            <span class="flavor-kpi-label"><?php esc_html_e('Presupuesto Total', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-kpi-label"><?php esc_html_e('Presupuesto Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                     </div>
                     <div class="flavor-kpi-card">
                         <span class="flavor-kpi-icon dashicons dashicons-lightbulb"></span>
                         <div class="flavor-kpi-content">
                             <span class="flavor-kpi-value"><?php echo number_format_i18n($total_propuestas); ?></span>
-                            <span class="flavor-kpi-label"><?php esc_html_e('Proyectos', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-kpi-label"><?php esc_html_e('Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                     </div>
                     <div class="flavor-kpi-card">
                         <span class="flavor-kpi-icon dashicons dashicons-yes-alt"></span>
                         <div class="flavor-kpi-content">
                             <span class="flavor-kpi-value"><?php echo number_format_i18n($mis_votos); ?></span>
-                            <span class="flavor-kpi-label"><?php esc_html_e('Mis Votos', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-kpi-label"><?php esc_html_e('Mis Votos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                     </div>
                 </div>
 
                 <?php if (!empty($propuestas_destacadas) && $proceso_activo->estado === 'votacion'): ?>
                     <div class="flavor-panel-section">
-                        <h3><?php esc_html_e('Proyectos más votados', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php esc_html_e('Proyectos más votados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="flavor-propuestas-ranking">
                             <?php foreach ($propuestas_destacadas as $indice => $propuesta): ?>
                                 <div class="flavor-propuesta-ranking-item">
@@ -148,10 +148,10 @@ class Flavor_Presupuestos_Participativos_Dashboard_Tab {
                                     </div>
                                     <div class="propuesta-votos">
                                         <span class="votos-count"><?php echo number_format_i18n($propuesta->votos_total); ?></span>
-                                        <span class="votos-label"><?php esc_html_e('votos', 'flavor-chat-ia'); ?></span>
+                                        <span class="votos-label"><?php esc_html_e('votos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </div>
                                     <a href="<?php echo esc_url(home_url('/presupuestos/' . $proceso_activo->slug . '/proyecto/' . $propuesta->slug)); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
-                                        <?php esc_html_e('Votar', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Votar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 </div>
                             <?php endforeach; ?>
@@ -163,19 +163,19 @@ class Flavor_Presupuestos_Participativos_Dashboard_Tab {
                     <?php if ($proceso_activo->estado === 'propuestas'): ?>
                         <a href="<?php echo esc_url(home_url('/presupuestos/' . $proceso_activo->slug . '/nueva-propuesta')); ?>" class="flavor-btn flavor-btn-primary">
                             <span class="dashicons dashicons-plus-alt2"></span>
-                            <?php esc_html_e('Presentar Proyecto', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Presentar Proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     <?php endif; ?>
                     <a href="<?php echo esc_url(home_url('/presupuestos/' . $proceso_activo->slug)); ?>" class="flavor-btn flavor-btn-secondary">
-                        <?php esc_html_e('Ver todos los proyectos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver todos los proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-chart-pie"></span>
-                    <p><?php esc_html_e('No hay procesos de presupuestos participativos activos en este momento.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay procesos de presupuestos participativos activos en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(home_url('/presupuestos-participativos/')); ?>" class="flavor-btn flavor-btn-secondary">
-                        <?php esc_html_e('Ver procesos anteriores', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver procesos anteriores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php endif; ?>
@@ -186,7 +186,7 @@ class Flavor_Presupuestos_Participativos_Dashboard_Tab {
     public function render_tab_mis_propuestas() {
         $user_id = get_current_user_id();
         if (!$user_id) {
-            echo '<p>' . esc_html__('Debes iniciar sesión.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -220,15 +220,15 @@ class Flavor_Presupuestos_Participativos_Dashboard_Tab {
         ?>
         <div class="flavor-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-admin-post"></span> <?php esc_html_e('Mis Proyectos', 'flavor-chat-ia'); ?></h2>
+                <h2><span class="dashicons dashicons-admin-post"></span> <?php esc_html_e('Mis Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
 
             <?php if (empty($propuestas)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-lightbulb"></span>
-                    <p><?php esc_html_e('No has presentado ningún proyecto todavía.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No has presentado ningún proyecto todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(home_url('/presupuestos-participativos/')); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php esc_html_e('Ver procesos activos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver procesos activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -236,12 +236,12 @@ class Flavor_Presupuestos_Participativos_Dashboard_Tab {
                     <table class="flavor-table">
                         <thead>
                             <tr>
-                                <th><?php esc_html_e('Proyecto', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Proceso', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Presupuesto', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Votos', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Proceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Presupuesto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Votos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -258,11 +258,11 @@ class Flavor_Presupuestos_Participativos_Dashboard_Tab {
                                     </td>
                                     <td>
                                         <a href="<?php echo esc_url(home_url('/presupuestos/' . $propuesta->proceso_slug . '/proyecto/' . $propuesta->slug)); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
-                                            <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                                            <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </a>
                                         <?php if ($propuesta->estado === 'borrador'): ?>
                                             <a href="<?php echo esc_url(home_url('/presupuestos/' . $propuesta->proceso_slug . '/editar/' . $propuesta->id)); ?>" class="flavor-btn flavor-btn-sm flavor-btn-secondary">
-                                                <?php esc_html_e('Editar', 'flavor-chat-ia'); ?>
+                                                <?php esc_html_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </a>
                                         <?php endif; ?>
                                     </td>

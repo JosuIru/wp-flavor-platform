@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 
 $configuracion = get_option('flavor_colectivos_settings', []);
 $configuracion_default = [
-    'nombre_red' => __('Red de Colectivos', 'flavor-chat-ia'),
+    'nombre_red' => __('Red de Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
     'descripcion' => '',
     'permitir_crear_colectivos' => true,
     'requiere_aprobacion' => true,
@@ -57,14 +57,14 @@ if (isset($_POST['guardar_config_colectivos']) && wp_verify_nonce($_POST['_wpnon
 
     update_option('flavor_colectivos_settings', $nueva_config);
     $configuracion = $nueva_config;
-    $mensaje_guardado = __('Configuración guardada correctamente.', 'flavor-chat-ia');
+    $mensaje_guardado = __('Configuración guardada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
 }
 ?>
 
 <div class="wrap flavor-colectivos-config">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-groups"></span>
-        <?php esc_html_e('Configuración de Colectivos', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Configuración de Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
     <hr class="wp-header-end">
 
@@ -80,19 +80,19 @@ if (isset($_POST['guardar_config_colectivos']) && wp_verify_nonce($_POST['_wpnon
         <div class="dm-config-grid">
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-networking"></span> <?php esc_html_e('Información de la Red', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-networking"></span> <?php esc_html_e('Información de la Red', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-form-group">
-                        <label for="nombre_red"><?php esc_html_e('Nombre de la Red', 'flavor-chat-ia'); ?></label>
+                        <label for="nombre_red"><?php esc_html_e('Nombre de la Red', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="text" id="nombre_red" name="nombre_red" value="<?php echo esc_attr($configuracion['nombre_red']); ?>">
                     </div>
                     <div class="dm-form-group">
-                        <label for="descripcion"><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?></label>
+                        <label for="descripcion"><?php esc_html_e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <textarea id="descripcion" name="descripcion" rows="3"><?php echo esc_textarea($configuracion['descripcion']); ?></textarea>
                     </div>
                     <div class="dm-form-group">
-                        <label for="categorias_colectivos"><?php esc_html_e('Categorías (una por línea)', 'flavor-chat-ia'); ?></label>
+                        <label for="categorias_colectivos"><?php esc_html_e('Categorías (una por línea)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <textarea id="categorias_colectivos" name="categorias_colectivos" rows="5"><?php echo esc_textarea($configuracion['categorias_colectivos']); ?></textarea>
                     </div>
                 </div>
@@ -100,29 +100,29 @@ if (isset($_POST['guardar_config_colectivos']) && wp_verify_nonce($_POST['_wpnon
 
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-admin-users"></span> <?php esc_html_e('Gestión de Colectivos', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-admin-users"></span> <?php esc_html_e('Gestión de Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-checkbox-group">
                         <label class="dm-checkbox">
                             <input type="checkbox" name="permitir_crear_colectivos" value="1" <?php checked($configuracion['permitir_crear_colectivos']); ?>>
-                            <span><?php esc_html_e('Permitir crear nuevos colectivos', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Permitir crear nuevos colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="requiere_aprobacion" value="1" <?php checked($configuracion['requiere_aprobacion']); ?>>
-                            <span><?php esc_html_e('Requerir aprobación de administrador', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Requerir aprobación de administrador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="mostrar_directorio_publico" value="1" <?php checked($configuracion['mostrar_directorio_publico']); ?>>
-                            <span><?php esc_html_e('Mostrar directorio público de colectivos', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Mostrar directorio público de colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="permitir_proyectos" value="1" <?php checked($configuracion['permitir_proyectos']); ?>>
-                            <span><?php esc_html_e('Permitir proyectos colaborativos', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Permitir proyectos colaborativos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="permitir_recursos_compartidos" value="1" <?php checked($configuracion['permitir_recursos_compartidos']); ?>>
-                            <span><?php esc_html_e('Permitir compartir recursos', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Permitir compartir recursos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                     </div>
                 </div>
@@ -130,27 +130,27 @@ if (isset($_POST['guardar_config_colectivos']) && wp_verify_nonce($_POST['_wpnon
 
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-megaphone"></span> <?php esc_html_e('Asambleas', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-megaphone"></span> <?php esc_html_e('Asambleas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-checkbox-group">
                         <label class="dm-checkbox">
                             <input type="checkbox" name="permitir_asambleas_virtuales" value="1" <?php checked($configuracion['permitir_asambleas_virtuales']); ?>>
-                            <span><?php esc_html_e('Permitir asambleas virtuales', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Permitir asambleas virtuales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                     </div>
                     <div class="dm-form-row" style="margin-top: 15px;">
                         <div class="dm-form-group">
-                            <label for="minimo_miembros_asamblea"><?php esc_html_e('Mínimo miembros para convocar', 'flavor-chat-ia'); ?></label>
+                            <label for="minimo_miembros_asamblea"><?php esc_html_e('Mínimo miembros para convocar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="number" id="minimo_miembros_asamblea" name="minimo_miembros_asamblea" value="<?php echo esc_attr($configuracion['minimo_miembros_asamblea']); ?>" min="1" max="100">
                         </div>
                         <div class="dm-form-group">
-                            <label for="dias_anticipacion_asamblea"><?php esc_html_e('Días de anticipación', 'flavor-chat-ia'); ?></label>
+                            <label for="dias_anticipacion_asamblea"><?php esc_html_e('Días de anticipación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="number" id="dias_anticipacion_asamblea" name="dias_anticipacion_asamblea" value="<?php echo esc_attr($configuracion['dias_anticipacion_asamblea']); ?>" min="1" max="60">
                         </div>
                     </div>
                     <div class="dm-form-group">
-                        <label for="quorum_porcentaje"><?php esc_html_e('Quórum necesario (%)', 'flavor-chat-ia'); ?></label>
+                        <label for="quorum_porcentaje"><?php esc_html_e('Quórum necesario (%)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="number" id="quorum_porcentaje" name="quorum_porcentaje" value="<?php echo esc_attr($configuracion['quorum_porcentaje']); ?>" min="0" max="100">
                     </div>
                 </div>
@@ -158,22 +158,22 @@ if (isset($_POST['guardar_config_colectivos']) && wp_verify_nonce($_POST['_wpnon
 
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Votaciones', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Votaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-checkbox-group">
                         <label class="dm-checkbox">
                             <input type="checkbox" name="habilitar_votaciones" value="1" <?php checked($configuracion['habilitar_votaciones']); ?>>
-                            <span><?php esc_html_e('Habilitar sistema de votaciones', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Habilitar sistema de votaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                     </div>
                     <div class="dm-form-group" style="margin-top: 15px;">
-                        <label for="tipo_votacion_default"><?php esc_html_e('Tipo de votación por defecto', 'flavor-chat-ia'); ?></label>
+                        <label for="tipo_votacion_default"><?php esc_html_e('Tipo de votación por defecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select id="tipo_votacion_default" name="tipo_votacion_default">
-                            <option value="mayoria_simple" <?php selected($configuracion['tipo_votacion_default'], 'mayoria_simple'); ?>><?php esc_html_e('Mayoría simple', 'flavor-chat-ia'); ?></option>
-                            <option value="mayoria_absoluta" <?php selected($configuracion['tipo_votacion_default'], 'mayoria_absoluta'); ?>><?php esc_html_e('Mayoría absoluta', 'flavor-chat-ia'); ?></option>
-                            <option value="unanimidad" <?php selected($configuracion['tipo_votacion_default'], 'unanimidad'); ?>><?php esc_html_e('Unanimidad', 'flavor-chat-ia'); ?></option>
-                            <option value="consenso" <?php selected($configuracion['tipo_votacion_default'], 'consenso'); ?>><?php esc_html_e('Consenso', 'flavor-chat-ia'); ?></option>
+                            <option value="mayoria_simple" <?php selected($configuracion['tipo_votacion_default'], 'mayoria_simple'); ?>><?php esc_html_e('Mayoría simple', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="mayoria_absoluta" <?php selected($configuracion['tipo_votacion_default'], 'mayoria_absoluta'); ?>><?php esc_html_e('Mayoría absoluta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="unanimidad" <?php selected($configuracion['tipo_votacion_default'], 'unanimidad'); ?>><?php esc_html_e('Unanimidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="consenso" <?php selected($configuracion['tipo_votacion_default'], 'consenso'); ?>><?php esc_html_e('Consenso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
                 </div>
@@ -181,21 +181,21 @@ if (isset($_POST['guardar_config_colectivos']) && wp_verify_nonce($_POST['_wpnon
 
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-email"></span> <?php esc_html_e('Notificaciones', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-email"></span> <?php esc_html_e('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-checkbox-group">
                         <label class="dm-checkbox">
                             <input type="checkbox" name="notificar_nuevos_miembros" value="1" <?php checked($configuracion['notificar_nuevos_miembros']); ?>>
-                            <span><?php esc_html_e('Notificar nuevos miembros', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Notificar nuevos miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="notificar_asambleas" value="1" <?php checked($configuracion['notificar_asambleas']); ?>>
-                            <span><?php esc_html_e('Notificar convocatorias de asambleas', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Notificar convocatorias de asambleas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="notificar_votaciones" value="1" <?php checked($configuracion['notificar_votaciones']); ?>>
-                            <span><?php esc_html_e('Notificar nuevas votaciones', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Notificar nuevas votaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                     </div>
                 </div>
@@ -205,7 +205,7 @@ if (isset($_POST['guardar_config_colectivos']) && wp_verify_nonce($_POST['_wpnon
         <div class="dm-form-actions">
             <button type="submit" name="guardar_config_colectivos" class="button button-primary button-hero">
                 <span class="dashicons dashicons-saved"></span>
-                <?php esc_html_e('Guardar Configuración', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Guardar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     </form>

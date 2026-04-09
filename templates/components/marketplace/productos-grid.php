@@ -75,7 +75,7 @@ $opciones_ordenar = $opciones_ordenar ?? [
                             <?php echo esc_html($producto_item['precio']); ?>&euro;
                         </div>
                         <!-- Boton favorito -->
-                        <button class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur flex items-center justify-center shadow-sm hover:bg-white transition-colors group/fav" aria-label="<?php echo esc_attr__('Anadir a favoritos', 'flavor-chat-ia'); ?>">
+                        <button class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur flex items-center justify-center shadow-sm hover:bg-white transition-colors group/fav" aria-label="<?php echo esc_attr__('Anadir a favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <svg class="w-5 h-5 text-gray-400 group-hover/fav:text-red-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                             </svg>

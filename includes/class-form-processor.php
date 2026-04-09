@@ -50,13 +50,13 @@ class Flavor_Form_Processor {
                     <button type="submit"
                             class="flavor-btn flavor-btn-primary"
                             :disabled="loading">
-                        <span x-show="!loading"><?php echo esc_html($config['submit_text'] ?? __('Enviar', 'flavor-chat-ia')); ?></span>
+                        <span x-show="!loading"><?php echo esc_html($config['submit_text'] ?? __('Enviar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>
                         <span x-show="loading" x-cloak>
                             <svg class="flavor-spinner" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
-                            <?php _e('Enviando...', 'flavor-chat-ia'); ?>
+                            <?php _e('Enviando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
                     </button>
                 </div>
@@ -127,7 +127,7 @@ class Flavor_Form_Processor {
                         class="flavor-input flavor-select"
                         <?php echo $requerido ? 'required' : ''; ?>>
                         <?php if (empty($requerido)): ?>
-                            <option value=""><?php _e('Selecciona una opción', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php _e('Selecciona una opción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php endif; ?>
                         <?php foreach ($config['options'] as $valor => $etiqueta): ?>
                             <option value="<?php echo esc_attr($valor); ?>"
@@ -247,7 +247,7 @@ class Flavor_Form_Processor {
         }
 
         if (empty($items)) {
-            return '<p class="flavor-no-items">' . __('No hay elementos disponibles', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-no-items">' . __('No hay elementos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $grid_class = 'flavor-grid flavor-grid-cols-' . intval($columnas);
@@ -294,7 +294,7 @@ class Flavor_Form_Processor {
                             <?php if (!empty($item['id'])): ?>
                                 <a href="?<?php echo esc_attr($module_id); ?>_id=<?php echo intval($item['id']); ?>"
                                    class="flavor-btn flavor-btn-secondary flavor-btn-sm">
-                                    <?php _e('Ver más', 'flavor-chat-ia'); ?>
+                                    <?php _e('Ver más', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             <?php endif; ?>
                         </div>
@@ -367,7 +367,7 @@ class Flavor_Form_Processor {
         ?>
         <div class="flavor-dashboard flavor-module-<?php echo esc_attr($module_id); ?>">
             <h2 class="flavor-dashboard-title">
-                <?php printf(__('Mi %s', 'flavor-chat-ia'), ucfirst($module_id)); ?>
+                <?php printf(__('Mi %s', FLAVOR_PLATFORM_TEXT_DOMAIN), ucfirst($module_id)); ?>
             </h2>
 
             <?php

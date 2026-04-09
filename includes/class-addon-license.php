@@ -112,7 +112,7 @@ class Flavor_Addon_License {
     public function activate_license($addon_slug, $license_key) {
         // Validar formato de licencia
         if (!$this->is_valid_license_format($license_key)) {
-            return new WP_Error('invalid_format', __('Formato de licencia inválido.', 'flavor-chat-ia'));
+            return new WP_Error('invalid_format', __('Formato de licencia inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Hacer request al servidor
@@ -155,7 +155,7 @@ class Flavor_Addon_License {
      */
     public function deactivate_license($addon_slug) {
         if (!isset($this->licencias_activas[$addon_slug])) {
-            return new WP_Error('no_license', __('No hay licencia activa para este addon.', 'flavor-chat-ia'));
+            return new WP_Error('no_license', __('No hay licencia activa para este addon.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $license_key = $this->licencias_activas[$addon_slug]['key'];
@@ -191,7 +191,7 @@ class Flavor_Addon_License {
      */
     public function verify_license($addon_slug) {
         if (!isset($this->licencias_activas[$addon_slug])) {
-            return new WP_Error('no_license', __('No hay licencia para verificar.', 'flavor-chat-ia'));
+            return new WP_Error('no_license', __('No hay licencia para verificar.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $license_key = $this->licencias_activas[$addon_slug]['key'];
@@ -261,7 +261,7 @@ class Flavor_Addon_License {
         if ($code !== 200) {
             return new WP_Error(
                 'license_error',
-                $result['message'] ?? __('Error en servidor de licencias.', 'flavor-chat-ia')
+                $result['message'] ?? __('Error en servidor de licencias.', FLAVOR_PLATFORM_TEXT_DOMAIN)
             );
         }
 
@@ -354,14 +354,14 @@ class Flavor_Addon_License {
         check_ajax_referer('flavor_license_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No tienes permisos', 'flavor-chat-ia'));
+            wp_send_json_error(__('No tienes permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $addon_slug = sanitize_text_field($_POST['addon_slug'] ?? '');
         $license_key = sanitize_text_field($_POST['license_key'] ?? '');
 
         if (empty($addon_slug) || empty($license_key)) {
-            wp_send_json_error(__('Datos incompletos', 'flavor-chat-ia'));
+            wp_send_json_error(__('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $result = $this->activate_license($addon_slug, $license_key);
@@ -371,7 +371,7 @@ class Flavor_Addon_License {
         }
 
         wp_send_json_success([
-            'message' => __('Licencia activada correctamente.', 'flavor-chat-ia'),
+            'message' => __('Licencia activada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'license' => $this->get_license_info($addon_slug),
         ]);
     }
@@ -385,13 +385,13 @@ class Flavor_Addon_License {
         check_ajax_referer('flavor_license_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No tienes permisos', 'flavor-chat-ia'));
+            wp_send_json_error(__('No tienes permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $addon_slug = sanitize_text_field($_POST['addon_slug'] ?? '');
 
         if (empty($addon_slug)) {
-            wp_send_json_error(__('Datos incompletos', 'flavor-chat-ia'));
+            wp_send_json_error(__('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $result = $this->deactivate_license($addon_slug);
@@ -401,7 +401,7 @@ class Flavor_Addon_License {
         }
 
         wp_send_json_success([
-            'message' => __('Licencia desactivada correctamente.', 'flavor-chat-ia'),
+            'message' => __('Licencia desactivada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -414,13 +414,13 @@ class Flavor_Addon_License {
         check_ajax_referer('flavor_license_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No tienes permisos', 'flavor-chat-ia'));
+            wp_send_json_error(__('No tienes permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $addon_slug = sanitize_text_field($_POST['addon_slug'] ?? '');
 
         if (empty($addon_slug)) {
-            wp_send_json_error(__('Datos incompletos', 'flavor-chat-ia'));
+            wp_send_json_error(__('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $result = $this->verify_license($addon_slug);
@@ -458,9 +458,9 @@ class Flavor_Addon_License {
                 $addon_name = $addon_info['name'] ?? $addon_slug;
 
                 echo '<div class="notice notice-warning is-dismissible">';
-                echo '<p><strong>' . esc_html__('Licencia por expirar:', 'flavor-chat-ia') . '</strong> ';
+                echo '<p><strong>' . esc_html__('Licencia por expirar:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ';
                 echo sprintf(
-                    esc_html__('La licencia de "%s" expira en %d días. Renuévala para seguir recibiendo actualizaciones.', 'flavor-chat-ia'),
+                    esc_html__('La licencia de "%s" expira en %d días. Renuévala para seguir recibiendo actualizaciones.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     esc_html($addon_name),
                     $days_remaining
                 );
@@ -473,9 +473,9 @@ class Flavor_Addon_License {
                 $addon_name = $addon_info['name'] ?? $addon_slug;
 
                 echo '<div class="notice notice-error is-dismissible">';
-                echo '<p><strong>' . esc_html__('Licencia expirada:', 'flavor-chat-ia') . '</strong> ';
+                echo '<p><strong>' . esc_html__('Licencia expirada:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ';
                 echo sprintf(
-                    esc_html__('La licencia de "%s" ha expirado. Renuévala para seguir recibiendo actualizaciones y soporte.', 'flavor-chat-ia'),
+                    esc_html__('La licencia de "%s" ha expirado. Renuévala para seguir recibiendo actualizaciones y soporte.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     esc_html($addon_name)
                 );
                 echo '</p></div>';

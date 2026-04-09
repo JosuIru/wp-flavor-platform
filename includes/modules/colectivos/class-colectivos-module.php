@@ -64,7 +64,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Colectivos no están creadas. Activa el módulo para crearlas automáticamente.', 'flavor-chat-ia');
+            return __('Las tablas de Colectivos no están creadas. Activa el módulo para crearlas automáticamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         
     return '';
@@ -88,11 +88,11 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
             'permitir_asambleas'           => true,
             'tipos_permitidos'             => ['asociacion', 'cooperativa', 'ong', 'colectivo', 'plataforma'],
             'roles_miembro'                => [
-                'presidente' => __('Presidente/a', 'flavor-chat-ia'),
-                'secretario' => __('Secretario/a', 'flavor-chat-ia'),
-                'tesorero'   => __('Tesorero/a', 'flavor-chat-ia'),
-                'vocal'      => __('Vocal', 'flavor-chat-ia'),
-                'miembro'    => __('Miembro', 'flavor-chat-ia'),
+                'presidente' => __('Presidente/a', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'secretario' => __('Secretario/a', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'tesorero'   => __('Tesorero/a', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'vocal'      => __('Vocal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'miembro'    => __('Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
     }
@@ -241,7 +241,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         $colectivo_id = absint($atributos['id']) ?: absint($_GET['colectivo'] ?? 0);
 
         if (!$colectivo_id) {
-            return '<p class="flavor-col-error">' . esc_html__('Colectivo no especificado.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-col-error">' . esc_html__('Colectivo no especificado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $resultado = $this->action_ver_colectivo(['colectivo_id' => $colectivo_id]);
@@ -281,7 +281,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if (!$identificador_usuario) {
             return '<p class="flavor-col-login-required">' .
                 sprintf(
-                    esc_html__('Debes %siniciar sesión%s para ver tus colectivos.', 'flavor-chat-ia'),
+                    esc_html__('Debes %siniciar sesión%s para ver tus colectivos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '">',
                     '</a>'
                 ) . '</p>';
@@ -309,7 +309,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         $colectivo_id = absint($atributos['colectivo_id']) ?: absint($_GET['colectivo'] ?? 0);
 
         if (!$colectivo_id) {
-            return '<p class="flavor-col-error">' . esc_html__('Colectivo no especificado.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-col-error">' . esc_html__('Colectivo no especificado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $resultado = $this->action_listar_proyectos([
@@ -339,7 +339,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         $colectivo_id = absint($atributos['colectivo_id']) ?: absint($_GET['colectivo'] ?? 0);
 
         if (!$colectivo_id) {
-            return '<p class="flavor-col-error">' . esc_html__('Colectivo no especificado.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-col-error">' . esc_html__('Colectivo no especificado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $resultado = $this->action_ver_asambleas([
@@ -370,7 +370,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
 
         if (!$identificador_usuario) {
             return '<p class="flavor-col-login-required">' .
-                esc_html__('Inicia sesión para ver tu actividad.', 'flavor-chat-ia') . '</p>';
+                esc_html__('Inicia sesión para ver tu actividad.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         global $wpdb;
@@ -430,12 +430,12 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         ?>
         <div class="flavor-colectivos-mi-actividad">
             <?php if (empty($mis_colectivos)) : ?>
-                <p class="flavor-col-empty"><?php esc_html_e('No perteneces a ningún colectivo todavía.', 'flavor-chat-ia'); ?></p>
+                <p class="flavor-col-empty"><?php esc_html_e('No perteneces a ningún colectivo todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php else : ?>
                 <div class="flavor-col-actividad-grid">
                     <!-- Mis colectivos -->
                     <div class="flavor-col-actividad-seccion">
-                        <h4><?php esc_html_e('Mis Colectivos', 'flavor-chat-ia'); ?></h4>
+                        <h4><?php esc_html_e('Mis Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                         <ul class="flavor-col-lista-compacta">
                             <?php foreach ($mis_colectivos as $colectivo) : ?>
                                 <li>
@@ -450,7 +450,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
 
                     <?php if (!empty($proximas_asambleas)) : ?>
                     <div class="flavor-col-actividad-seccion">
-                        <h4><?php esc_html_e('Próximas Asambleas', 'flavor-chat-ia'); ?></h4>
+                        <h4><?php esc_html_e('Próximas Asambleas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                         <ul class="flavor-col-lista-compacta">
                             <?php foreach ($proximas_asambleas as $asamblea) : ?>
                                 <li>
@@ -465,7 +465,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
 
                     <?php if (!empty($proyectos_activos)) : ?>
                     <div class="flavor-col-actividad-seccion">
-                        <h4><?php esc_html_e('Proyectos Activos', 'flavor-chat-ia'); ?></h4>
+                        <h4><?php esc_html_e('Proyectos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                         <ul class="flavor-col-lista-compacta">
                             <?php foreach ($proyectos_activos as $proyecto) : ?>
                                 <li>
@@ -551,7 +551,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         $colectivo_id = absint($_POST['colectivo_id'] ?? 0);
 
         if (!$identificador_usuario || !$colectivo_id) {
-            wp_send_json(['success' => false, 'error' => __('Datos inválidos.', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Datos inválidos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -562,7 +562,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if ($rol_actual === 'presidente') {
             wp_send_json([
                 'success' => false,
-                'error'   => __('El presidente no puede abandonar el colectivo. Primero transfiere el rol a otro miembro.', 'flavor-chat-ia'),
+                'error'   => __('El presidente no puede abandonar el colectivo. Primero transfiere el rol a otro miembro.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
 
@@ -589,7 +589,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
 
         wp_send_json([
             'success' => true,
-            'mensaje' => __('Has abandonado el colectivo.', 'flavor-chat-ia'),
+            'mensaje' => __('Has abandonado el colectivo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -622,12 +622,12 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         $identificador_usuario = get_current_user_id();
 
         if (!$proyecto_id || !$colectivo_id) {
-            wp_send_json(['success' => false, 'error' => __('Datos inválidos.', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Datos inválidos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar permisos
         if (!$this->es_miembro_activo($colectivo_id, $identificador_usuario)) {
-            wp_send_json(['success' => false, 'error' => __('No tienes permisos.', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('No tienes permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -651,7 +651,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         }
 
         if (empty($campos_actualizar)) {
-            wp_send_json(['success' => false, 'error' => __('No hay campos para actualizar.', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('No hay campos para actualizar.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $wpdb->update(
@@ -664,7 +664,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
 
         wp_send_json([
             'success' => true,
-            'mensaje' => __('Proyecto actualizado.', 'flavor-chat-ia'),
+            'mensaje' => __('Proyecto actualizado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -697,7 +697,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         $identificador_usuario = get_current_user_id();
 
         if (!$asamblea_id || !$identificador_usuario) {
-            wp_send_json(['success' => false, 'error' => __('Datos inválidos.', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Datos inválidos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -709,18 +709,18 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$asamblea || $asamblea->estado !== 'convocada') {
-            wp_send_json(['success' => false, 'error' => __('Asamblea no disponible.', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Asamblea no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar membresía
         if (!$this->es_miembro_activo($asamblea->colectivo_id, $identificador_usuario)) {
-            wp_send_json(['success' => false, 'error' => __('No eres miembro de este colectivo.', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('No eres miembro de este colectivo.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $asistentes = json_decode($asamblea->asistentes, true) ?: [];
 
         if (in_array($identificador_usuario, $asistentes, true)) {
-            wp_send_json(['success' => false, 'error' => __('Ya confirmaste tu asistencia.', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Ya confirmaste tu asistencia.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $asistentes[] = $identificador_usuario;
@@ -735,7 +735,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
 
         wp_send_json([
             'success'        => true,
-            'mensaje'        => __('Asistencia confirmada.', 'flavor-chat-ia'),
+            'mensaje'        => __('Asistencia confirmada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'total_asistentes' => count($asistentes),
         ]);
     }
@@ -752,13 +752,13 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         $identificador_usuario = get_current_user_id();
 
         if (!$membresia_id || !$colectivo_id) {
-            wp_send_json(['success' => false, 'error' => __('Datos inválidos.', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Datos inválidos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Solo presidente o secretario pueden aprobar
         $rol_actual = $this->obtener_rol_miembro($colectivo_id, $identificador_usuario);
         if (!in_array($rol_actual, ['presidente', 'secretario'], true)) {
-            wp_send_json(['success' => false, 'error' => __('No tienes permisos para aprobar miembros.', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('No tienes permisos para aprobar miembros.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -780,7 +780,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
                 $colectivo_id
             ));
 
-            wp_send_json(['success' => true, 'mensaje' => __('Miembro aprobado.', 'flavor-chat-ia')]);
+            wp_send_json(['success' => true, 'mensaje' => __('Miembro aprobado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
             $wpdb->delete(
                 $tabla_colectivos_miembros,
@@ -788,7 +788,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
                 ['%d', '%d', '%s']
             );
 
-            wp_send_json(['success' => true, 'mensaje' => __('Solicitud rechazada.', 'flavor-chat-ia')]);
+            wp_send_json(['success' => true, 'mensaje' => __('Solicitud rechazada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -850,10 +850,10 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce'   => wp_create_nonce('flavor_colectivos_nonce'),
             'strings' => [
-                'confirmUnirse'    => __('¿Deseas unirte a este colectivo?', 'flavor-chat-ia'),
-                'confirmAbandonar' => __('¿Estás seguro de que quieres abandonar este colectivo?', 'flavor-chat-ia'),
-                'confirmAsistencia'=> __('¿Confirmas tu asistencia a esta asamblea?', 'flavor-chat-ia'),
-                'errorConexion'    => __('Error de conexión. Inténtalo de nuevo.', 'flavor-chat-ia'),
+                'confirmUnirse'    => __('¿Deseas unirte a este colectivo?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmAbandonar' => __('¿Estás seguro de que quieres abandonar este colectivo?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmAsistencia'=> __('¿Confirmas tu asistencia a esta asamblea?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'errorConexion'    => __('Error de conexión. Inténtalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -889,16 +889,16 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
      */
     private function get_sectores_disponibles() {
         return [
-            'cultura'         => __('Cultura y Arte', 'flavor-chat-ia'),
-            'medioambiente'   => __('Medio Ambiente', 'flavor-chat-ia'),
-            'educacion'       => __('Educación', 'flavor-chat-ia'),
-            'salud'           => __('Salud', 'flavor-chat-ia'),
-            'derechos'        => __('Derechos Humanos', 'flavor-chat-ia'),
-            'economia_social' => __('Economía Social', 'flavor-chat-ia'),
-            'tecnologia'      => __('Tecnología', 'flavor-chat-ia'),
-            'deportes'        => __('Deportes', 'flavor-chat-ia'),
-            'vecinal'         => __('Vecinal', 'flavor-chat-ia'),
-            'otro'            => __('Otro', 'flavor-chat-ia'),
+            'cultura'         => __('Cultura y Arte', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'medioambiente'   => __('Medio Ambiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'educacion'       => __('Educación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'salud'           => __('Salud', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'derechos'        => __('Derechos Humanos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'economia_social' => __('Economía Social', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'tecnologia'      => __('Tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'deportes'        => __('Deportes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'vecinal'         => __('Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'otro'            => __('Otro', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -1020,7 +1020,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if (!is_user_logged_in()) {
             return new \WP_Error(
                 'rest_not_logged_in',
-                __('Debes iniciar sesion para realizar esta accion.', 'flavor-chat-ia'),
+                __('Debes iniciar sesion para realizar esta accion.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 401]
             );
         }
@@ -1045,7 +1045,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if (!is_user_logged_in()) {
             return new \WP_Error(
                 'rest_not_logged_in',
-                __('Debes iniciar sesión para ver los miembros del colectivo.', 'flavor-chat-ia'),
+                __('Debes iniciar sesión para ver los miembros del colectivo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 401]
             );
         }
@@ -1217,30 +1217,30 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
     protected function get_admin_config() {
         return [
             'id'         => 'colectivos',
-            'label'      => __('Colectivos', 'flavor-chat-ia'),
+            'label'      => __('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'       => 'dashicons-networking',
             'capability' => 'manage_options',
             'categoria'  => 'comunidad',
             'paginas'    => [
                 [
                     'slug'     => 'flavor-colectivos-dashboard',
-                    'titulo'   => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo'   => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug'     => 'flavor-colectivos-listado',
-                    'titulo'   => __('Colectivos', 'flavor-chat-ia'),
+                    'titulo'   => __('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_colectivos'],
                 ],
                 [
                     'slug'     => 'flavor-colectivos-miembros',
-                    'titulo'   => __('Miembros', 'flavor-chat-ia'),
+                    'titulo'   => __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_miembros'],
                     'badge'    => [$this, 'contar_solicitudes_pendientes'],
                 ],
                 [
                     'slug'     => 'colectivos-config',
-                    'titulo'   => __('Configuración', 'flavor-chat-ia'),
+                    'titulo'   => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_configuracion'],
                 ],
             ],
@@ -1254,10 +1254,10 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_dashboard() {
         $this->render_page_header(
-            __('Dashboard de Colectivos', 'flavor-chat-ia'),
+            __('Dashboard de Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [
                 [
-                    'label' => __('Nuevo Colectivo', 'flavor-chat-ia'),
+                    'label' => __('Nuevo Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url'   => $this->admin_page_url('flavor-colectivos-listado') . '&action=new',
                     'class' => 'button-primary',
                 ],
@@ -1278,8 +1278,8 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
             return;
         }
 
-        echo '<div class="wrap"><h1>' . esc_html__('Dashboard de Colectivos', 'flavor-chat-ia') . '</h1>';
-        echo '<p>' . esc_html__('No se encontró la vista de dashboard.', 'flavor-chat-ia') . '</p></div>';
+        echo '<div class="wrap"><h1>' . esc_html__('Dashboard de Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+        echo '<p>' . esc_html__('No se encontró la vista de dashboard.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     }
 
     /**
@@ -1287,10 +1287,10 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_colectivos() {
         $this->render_page_header(
-            __('Gestión de Colectivos', 'flavor-chat-ia'),
+            __('Gestión de Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [
                 [
-                    'label' => __('Nuevo Colectivo', 'flavor-chat-ia'),
+                    'label' => __('Nuevo Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url'   => $this->admin_page_url('flavor-colectivos-listado') . '&action=new',
                     'class' => 'button-primary',
                 ],
@@ -1307,18 +1307,18 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         $solicitudes_pendientes = $this->contar_solicitudes_pendientes();
 
         $this->render_page_header(
-            __('Gestión de Miembros', 'flavor-chat-ia'),
+            __('Gestión de Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
             []
         );
 
         $tabs = [
             [
                 'slug'  => 'activos',
-                'label' => __('Activos', 'flavor-chat-ia'),
+                'label' => __('Activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             [
                 'slug'  => 'pendientes',
-                'label' => __('Pendientes', 'flavor-chat-ia'),
+                'label' => __('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'badge' => $solicitudes_pendientes,
             ],
         ];
@@ -1339,19 +1339,19 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
             <div class="widget-stats">
                 <div class="stat-item">
                     <span class="stat-value"><?php echo esc_html($estadisticas['total_colectivos']); ?></span>
-                    <span class="stat-label"><?php esc_html_e('Colectivos', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-value"><?php echo esc_html($estadisticas['total_miembros']); ?></span>
-                    <span class="stat-label"><?php esc_html_e('Miembros', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-value"><?php echo esc_html($estadisticas['proyectos_activos']); ?></span>
-                    <span class="stat-label"><?php esc_html_e('Proyectos activos', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Proyectos activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
             <a href="<?php echo esc_url($this->admin_page_url('flavor-colectivos-dashboard')); ?>" class="button">
-                <?php esc_html_e('Ver todo', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver todo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
         <?php
@@ -1596,7 +1596,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error'   => sprintf(__('Acción no implementada: %s', 'flavor-chat-ia'), $nombre_accion),
+            'error'   => sprintf(__('Acción no implementada: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $nombre_accion),
         ];
     }
 
@@ -1685,7 +1685,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if (!$identificador_colectivo) {
             return [
                 'success' => false,
-                'error'   => __('ID de colectivo no válido.', 'flavor-chat-ia'),
+                'error'   => __('ID de colectivo no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1697,7 +1697,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if (!$colectivo) {
             return [
                 'success' => false,
-                'error'   => __('Colectivo no encontrado.', 'flavor-chat-ia'),
+                'error'   => __('Colectivo no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1769,7 +1769,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if (!$identificador_usuario) {
             return [
                 'success' => false,
-                'error'   => __('Debes iniciar sesión para crear un colectivo.', 'flavor-chat-ia'),
+                'error'   => __('Debes iniciar sesión para crear un colectivo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1778,7 +1778,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if (empty($nombre_colectivo)) {
             return [
                 'success' => false,
-                'error'   => __('El nombre del colectivo es obligatorio.', 'flavor-chat-ia'),
+                'error'   => __('El nombre del colectivo es obligatorio.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1796,7 +1796,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
             return [
                 'success' => false,
                 'error'   => sprintf(
-                    __('Has alcanzado el límite máximo de %d colectivos creados.', 'flavor-chat-ia'),
+                    __('Has alcanzado el límite máximo de %d colectivos creados.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $maximo_colectivos
                 ),
             ];
@@ -1840,7 +1840,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if ($resultado_insercion === false) {
             return [
                 'success' => false,
-                'error'   => __('Error al crear el colectivo.', 'flavor-chat-ia'),
+                'error'   => __('Error al crear el colectivo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1863,7 +1863,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
             'success'       => true,
             'colectivo_id'  => $identificador_nuevo_colectivo,
             'mensaje'       => sprintf(
-                __('Colectivo "%s" creado correctamente. Has sido registrado como presidente.', 'flavor-chat-ia'),
+                __('Colectivo "%s" creado correctamente. Has sido registrado como presidente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $nombre_colectivo
             ),
         ];
@@ -1878,7 +1878,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if (!$identificador_usuario) {
             return [
                 'success' => false,
-                'error'   => __('Debes iniciar sesión para unirte a un colectivo.', 'flavor-chat-ia'),
+                'error'   => __('Debes iniciar sesión para unirte a un colectivo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1887,7 +1887,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if (!$identificador_colectivo) {
             return [
                 'success' => false,
-                'error'   => __('ID de colectivo no válido.', 'flavor-chat-ia'),
+                'error'   => __('ID de colectivo no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1904,7 +1904,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if (!$colectivo) {
             return [
                 'success' => false,
-                'error'   => __('Colectivo no encontrado o no está activo.', 'flavor-chat-ia'),
+                'error'   => __('Colectivo no encontrado o no está activo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1919,13 +1919,13 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
             if ($membresia_existente->estado === 'activo') {
                 return [
                     'success' => false,
-                    'error'   => __('Ya eres miembro de este colectivo.', 'flavor-chat-ia'),
+                    'error'   => __('Ya eres miembro de este colectivo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
             if ($membresia_existente->estado === 'pendiente') {
                 return [
                     'success' => false,
-                    'error'   => __('Ya tienes una solicitud pendiente para este colectivo.', 'flavor-chat-ia'),
+                    'error'   => __('Ya tienes una solicitud pendiente para este colectivo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
             // Si estaba de baja, reactivar solicitud
@@ -1959,7 +1959,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         return [
             'success' => true,
             'mensaje' => sprintf(
-                __('Tu solicitud para unirte a "%s" ha sido enviada. Un administrador del colectivo la revisará.', 'flavor-chat-ia'),
+                __('Tu solicitud para unirte a "%s" ha sido enviada. Un administrador del colectivo la revisará.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $colectivo->nombre
             ),
         ];
@@ -1974,7 +1974,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if (!$identificador_usuario) {
             return [
                 'success' => false,
-                'error'   => __('Debes iniciar sesión para ver tus colectivos.', 'flavor-chat-ia'),
+                'error'   => __('Debes iniciar sesión para ver tus colectivos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2025,7 +2025,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if (!$identificador_colectivo) {
             return [
                 'success' => false,
-                'error'   => __('ID de colectivo no válido.', 'flavor-chat-ia'),
+                'error'   => __('ID de colectivo no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2087,7 +2087,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if (!$identificador_usuario) {
             return [
                 'success' => false,
-                'error'   => __('Debes iniciar sesión para crear un proyecto.', 'flavor-chat-ia'),
+                'error'   => __('Debes iniciar sesión para crear un proyecto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2096,7 +2096,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if (!$identificador_colectivo) {
             return [
                 'success' => false,
-                'error'   => __('ID de colectivo no válido.', 'flavor-chat-ia'),
+                'error'   => __('ID de colectivo no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2104,7 +2104,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if (!$this->es_miembro_activo($identificador_colectivo, $identificador_usuario)) {
             return [
                 'success' => false,
-                'error'   => __('Debes ser miembro activo del colectivo para crear proyectos.', 'flavor-chat-ia'),
+                'error'   => __('Debes ser miembro activo del colectivo para crear proyectos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2113,7 +2113,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if (empty($titulo_proyecto)) {
             return [
                 'success' => false,
-                'error'   => __('El título del proyecto es obligatorio.', 'flavor-chat-ia'),
+                'error'   => __('El título del proyecto es obligatorio.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2145,7 +2145,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if ($resultado_insercion === false) {
             return [
                 'success' => false,
-                'error'   => __('Error al crear el proyecto.', 'flavor-chat-ia'),
+                'error'   => __('Error al crear el proyecto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2160,7 +2160,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
             'success'      => true,
             'proyecto_id'  => $wpdb->insert_id,
             'mensaje'      => sprintf(
-                __('Proyecto "%s" creado correctamente.', 'flavor-chat-ia'),
+                __('Proyecto "%s" creado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $titulo_proyecto
             ),
         ];
@@ -2175,7 +2175,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if (!$identificador_usuario) {
             return [
                 'success' => false,
-                'error'   => __('Debes iniciar sesión para convocar una asamblea.', 'flavor-chat-ia'),
+                'error'   => __('Debes iniciar sesión para convocar una asamblea.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2184,7 +2184,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if (!$identificador_colectivo) {
             return [
                 'success' => false,
-                'error'   => __('ID de colectivo no válido.', 'flavor-chat-ia'),
+                'error'   => __('ID de colectivo no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2195,7 +2195,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if (!in_array($rol_usuario, $roles_permitidos_convocatoria, true)) {
             return [
                 'success' => false,
-                'error'   => __('Solo el presidente o secretario pueden convocar asambleas.', 'flavor-chat-ia'),
+                'error'   => __('Solo el presidente o secretario pueden convocar asambleas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2205,7 +2205,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if (empty($titulo_asamblea) || empty($fecha_asamblea)) {
             return [
                 'success' => false,
-                'error'   => __('El título y la fecha de la asamblea son obligatorios.', 'flavor-chat-ia'),
+                'error'   => __('El título y la fecha de la asamblea son obligatorios.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2238,7 +2238,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if ($resultado_insercion === false) {
             return [
                 'success' => false,
-                'error'   => __('Error al convocar la asamblea.', 'flavor-chat-ia'),
+                'error'   => __('Error al convocar la asamblea.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2246,7 +2246,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
             'success'      => true,
             'asamblea_id'  => $wpdb->insert_id,
             'mensaje'      => sprintf(
-                __('Asamblea "%s" convocada para el %s.', 'flavor-chat-ia'),
+                __('Asamblea "%s" convocada para el %s.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $titulo_asamblea,
                 date_i18n('j F Y, H:i', strtotime($fecha_asamblea))
             ),
@@ -2262,7 +2262,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if (!$identificador_colectivo) {
             return [
                 'success' => false,
-                'error'   => __('ID de colectivo no válido.', 'flavor-chat-ia'),
+                'error'   => __('ID de colectivo no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2298,8 +2298,8 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
                     'descripcion'     => $asamblea->descripcion,
                     'tipo'            => $asamblea->tipo,
                     'tipo_label'      => $asamblea->tipo === 'ordinaria'
-                        ? __('Ordinaria', 'flavor-chat-ia')
-                        : __('Extraordinaria', 'flavor-chat-ia'),
+                        ? __('Ordinaria', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                        : __('Extraordinaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'fecha'           => $asamblea->fecha,
                     'fecha_formateada'=> date_i18n('l j F Y, H:i', strtotime($asamblea->fecha)),
                     'lugar'           => $asamblea->lugar,
@@ -2322,7 +2322,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if (!$identificador_colectivo) {
             return [
                 'success' => false,
-                'error'   => __('ID de colectivo no válido.', 'flavor-chat-ia'),
+                'error'   => __('ID de colectivo no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2341,7 +2341,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         if (!$colectivo) {
             return [
                 'success' => false,
-                'error'   => __('Colectivo no encontrado.', 'flavor-chat-ia'),
+                'error'   => __('Colectivo no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2582,44 +2582,44 @@ KNOWLEDGE;
     public function get_web_components() {
         return [
             'colectivos_hero' => [
-                'label'       => __('Hero Colectivos', 'flavor-chat-ia'),
-                'description' => __('Sección hero para la página de colectivos y asociaciones', 'flavor-chat-ia'),
+                'label'       => __('Hero Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Sección hero para la página de colectivos y asociaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category'    => 'hero',
                 'icon'        => 'dashicons-groups',
                 'fields'      => [
                     'titulo' => [
                         'type'    => 'text',
-                        'label'   => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Colectivos y Asociaciones', 'flavor-chat-ia'),
+                        'label'   => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Colectivos y Asociaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'subtitulo' => [
                         'type'    => 'textarea',
-                        'label'   => __('Subtítulo', 'flavor-chat-ia'),
-                        'default' => __('Descubre y participa en los colectivos de tu comunidad', 'flavor-chat-ia'),
+                        'label'   => __('Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Descubre y participa en los colectivos de tu comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                 ],
                 'template' => 'colectivos/hero',
             ],
             'colectivos_grid' => [
-                'label'       => __('Grid de Colectivos', 'flavor-chat-ia'),
-                'description' => __('Listado de colectivos en tarjetas con filtros', 'flavor-chat-ia'),
+                'label'       => __('Grid de Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Listado de colectivos en tarjetas con filtros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category'    => 'listings',
                 'icon'        => 'dashicons-grid-view',
                 'fields'      => [
                     'titulo_seccion' => [
                         'type'    => 'text',
-                        'label'   => __('Título de sección', 'flavor-chat-ia'),
-                        'default' => __('Nuestros Colectivos', 'flavor-chat-ia'),
+                        'label'   => __('Título de sección', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Nuestros Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'columnas' => [
                         'type'    => 'select',
-                        'label'   => __('Columnas', 'flavor-chat-ia'),
+                        'label'   => __('Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => [2, 3, 4],
                         'default' => 3,
                     ],
                     'tipo_filtro' => [
                         'type'    => 'select',
-                        'label'   => __('Filtrar por tipo', 'flavor-chat-ia'),
+                        'label'   => __('Filtrar por tipo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['todos', 'asociacion', 'cooperativa', 'ong', 'colectivo', 'plataforma'],
                         'default' => 'todos',
                     ],
@@ -2627,19 +2627,19 @@ KNOWLEDGE;
                 'template' => 'colectivos/colectivos-grid',
             ],
             'colectivos_proyectos' => [
-                'label'       => __('Proyectos de Colectivos', 'flavor-chat-ia'),
-                'description' => __('Muestra los proyectos activos de los colectivos', 'flavor-chat-ia'),
+                'label'       => __('Proyectos de Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Muestra los proyectos activos de los colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category'    => 'content',
                 'icon'        => 'dashicons-portfolio',
                 'fields'      => [
                     'titulo_seccion' => [
                         'type'    => 'text',
-                        'label'   => __('Título de sección', 'flavor-chat-ia'),
-                        'default' => __('Proyectos en Marcha', 'flavor-chat-ia'),
+                        'label'   => __('Título de sección', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Proyectos en Marcha', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'mostrar_progreso' => [
                         'type'    => 'toggle',
-                        'label'   => __('Mostrar barra de progreso', 'flavor-chat-ia'),
+                        'label'   => __('Mostrar barra de progreso', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                 ],
@@ -2695,11 +2695,11 @@ KNOWLEDGE;
      */
     private function get_etiquetas_tipo() {
         return [
-            'asociacion'  => __('Asociación', 'flavor-chat-ia'),
-            'cooperativa' => __('Cooperativa', 'flavor-chat-ia'),
-            'ong'         => __('ONG', 'flavor-chat-ia'),
-            'colectivo'   => __('Colectivo', 'flavor-chat-ia'),
-            'plataforma'  => __('Plataforma', 'flavor-chat-ia'),
+            'asociacion'  => __('Asociación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cooperativa' => __('Cooperativa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'ong'         => __('ONG', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'colectivo'   => __('Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'plataforma'  => __('Plataforma', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -2711,10 +2711,10 @@ KNOWLEDGE;
      */
     private function get_etiqueta_estado_proyecto($estado_proyecto) {
         $etiquetas_estado_proyecto = [
-            'planificado' => __('Planificado', 'flavor-chat-ia'),
-            'en_curso'    => __('En curso', 'flavor-chat-ia'),
-            'completado'  => __('Completado', 'flavor-chat-ia'),
-            'cancelado'   => __('Cancelado', 'flavor-chat-ia'),
+            'planificado' => __('Planificado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'en_curso'    => __('En curso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'completado'  => __('Completado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cancelado'   => __('Cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         return $etiquetas_estado_proyecto[$estado_proyecto] ?? ucfirst($estado_proyecto);
@@ -2728,10 +2728,10 @@ KNOWLEDGE;
      */
     private function get_etiqueta_estado_asamblea($estado_asamblea) {
         $etiquetas_estado_asamblea = [
-            'convocada'  => __('Convocada', 'flavor-chat-ia'),
-            'en_curso'   => __('En curso', 'flavor-chat-ia'),
-            'finalizada' => __('Finalizada', 'flavor-chat-ia'),
-            'cancelada'  => __('Cancelada', 'flavor-chat-ia'),
+            'convocada'  => __('Convocada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'en_curso'   => __('En curso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'finalizada' => __('Finalizada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cancelada'  => __('Cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         return $etiquetas_estado_asamblea[$estado_asamblea] ?? ucfirst($estado_asamblea);
@@ -2784,7 +2784,7 @@ KNOWLEDGE;
         $estadisticas['colectivos_activos'] = [
             'icon' => 'dashicons-groups',
             'valor' => $total_colectivos,
-            'label' => __('Colectivos', 'flavor-chat-ia'),
+            'label' => __('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'purple',
         ];
 
@@ -2800,7 +2800,7 @@ KNOWLEDGE;
             $estadisticas['mis_colectivos'] = [
                 'icon' => 'dashicons-admin-users',
                 'valor' => $mis_colectivos,
-                'label' => __('Mis colectivos', 'flavor-chat-ia'),
+                'label' => __('Mis colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $mis_colectivos > 0 ? 'green' : 'gray',
             ];
         }
@@ -2816,7 +2816,7 @@ KNOWLEDGE;
                 $estadisticas['proximas_asambleas'] = [
                     'icon' => 'dashicons-calendar-alt',
                     'valor' => $proximas_asambleas,
-                    'label' => __('Asambleas próximas', 'flavor-chat-ia'),
+                    'label' => __('Asambleas próximas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'blue',
                 ];
             }
@@ -2833,28 +2833,28 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Colectivos', 'flavor-chat-ia'),
+                'title' => __('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'colectivos',
-                'content' => '<h1>' . __('Colectivos y Asociaciones', 'flavor-chat-ia') . '</h1>
-<p>' . __('Descubre colectivos, asociaciones, cooperativas y ONGs de tu comunidad. Únete y participa en proyectos colectivos.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Colectivos y Asociaciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Descubre colectivos, asociaciones, cooperativas y ONGs de tu comunidad. Únete y participa en proyectos colectivos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="colectivos" action="listar" columnas="3" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Crear Colectivo', 'flavor-chat-ia'),
+                'title' => __('Crear Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'crear',
-                'content' => '<h1>' . __('Crear Colectivo', 'flavor-chat-ia') . '</h1>
-<p>' . __('Crea tu propio colectivo, asociación o cooperativa y organiza proyectos y asambleas.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Crear Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Crea tu propio colectivo, asociación o cooperativa y organiza proyectos y asambleas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="colectivos" action="crear"]',
                 'parent' => 'colectivos',
             ],
             [
-                'title' => __('Mis Colectivos', 'flavor-chat-ia'),
+                'title' => __('Mis Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mis-colectivos',
-                'content' => '<h1>' . __('Mis Colectivos', 'flavor-chat-ia') . '</h1>
-<p>' . __('Gestiona los colectivos de los que eres miembro y los que has creado.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Mis Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Gestiona los colectivos de los que eres miembro y los que has creado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="colectivos" action="mis_colectivos" columnas="3" limite="12"]',
                 'parent' => 'colectivos',
@@ -2882,8 +2882,8 @@ KNOWLEDGE;
         // Página principal (oculta)
         add_submenu_page(
             null,
-            __('Colectivos', 'flavor-chat-ia'),
-            __('Colectivos', 'flavor-chat-ia'),
+            __('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'colectivos',
             [$this, 'render_pagina_dashboard']
@@ -2892,8 +2892,8 @@ KNOWLEDGE;
         // Dashboard - página para panel unificado
         add_submenu_page(
             null,
-            __('Dashboard Colectivos', 'flavor-chat-ia'),
-            __('Dashboard', 'flavor-chat-ia'),
+            __('Dashboard Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-colectivos-dashboard',
             [$this, 'render_pagina_dashboard']
@@ -2902,8 +2902,8 @@ KNOWLEDGE;
         // Página: Listado (oculta)
         add_submenu_page(
             null,
-            __('Todos los Colectivos', 'flavor-chat-ia'),
-            __('Listado', 'flavor-chat-ia'),
+            __('Todos los Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Listado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'colectivos-listado',
             [$this, 'render_pagina_listado']
@@ -2912,8 +2912,8 @@ KNOWLEDGE;
         // Página: Proyectos (oculta)
         add_submenu_page(
             null,
-            __('Proyectos', 'flavor-chat-ia'),
-            __('Proyectos', 'flavor-chat-ia'),
+            __('Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'colectivos-proyectos',
             [$this, 'render_pagina_proyectos']
@@ -2922,8 +2922,8 @@ KNOWLEDGE;
         // Página: Asambleas (oculta)
         add_submenu_page(
             null,
-            __('Asambleas', 'flavor-chat-ia'),
-            __('Asambleas', 'flavor-chat-ia'),
+            __('Asambleas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Asambleas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'colectivos-asambleas',
             [$this, 'render_pagina_asambleas']
@@ -2932,8 +2932,8 @@ KNOWLEDGE;
         // Página: Miembros (oculta)
         add_submenu_page(
             null,
-            __('Miembros de Colectivos', 'flavor-chat-ia'),
-            __('Miembros', 'flavor-chat-ia'),
+            __('Miembros de Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'colectivos-miembros',
             [$this, 'render_pagina_miembros']
@@ -2942,8 +2942,8 @@ KNOWLEDGE;
         // Página: Nuevo (oculta)
         add_submenu_page(
             null,
-            __('Nuevo Colectivo', 'flavor-chat-ia'),
-            __('Nuevo', 'flavor-chat-ia'),
+            __('Nuevo Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'colectivos-nuevo',
             [$this, 'render_pagina_nuevo']
@@ -2952,8 +2952,8 @@ KNOWLEDGE;
         // Página: Solicitudes de unión (oculta)
         add_submenu_page(
             null,
-            __('Solicitudes de Unión', 'flavor-chat-ia'),
-            __('Solicitudes', 'flavor-chat-ia'),
+            __('Solicitudes de Unión', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'colectivos-solicitudes',
             [$this, 'render_pagina_solicitudes']
@@ -2970,7 +2970,7 @@ KNOWLEDGE;
         } else {
             // Fallback si no existe dashboard.php
             echo '<div class="wrap">';
-            echo '<h1>' . esc_html__('Dashboard Colectivos', 'flavor-chat-ia') . '</h1>';
+            echo '<h1>' . esc_html__('Dashboard Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
             $views_path = dirname(__FILE__) . '/views/listado-colectivos.php';
             if (file_exists($views_path)) {
                 include $views_path;
@@ -2984,7 +2984,7 @@ KNOWLEDGE;
      */
     public function render_pagina_listado() {
         echo '<div class="wrap">';
-        echo '<h1>' . esc_html__('Todos los Colectivos', 'flavor-chat-ia') . '</h1>';
+        echo '<h1>' . esc_html__('Todos los Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
         $views_path = dirname(__FILE__) . '/views/listado-colectivos.php';
         if (file_exists($views_path)) {
             include $views_path;
@@ -2997,7 +2997,7 @@ KNOWLEDGE;
      */
     public function render_pagina_proyectos() {
         echo '<div class="wrap">';
-        echo '<h1>' . esc_html__('Proyectos', 'flavor-chat-ia') . '</h1>';
+        echo '<h1>' . esc_html__('Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
         $views_path = dirname(__FILE__) . '/views/proyectos.php';
         if (file_exists($views_path)) {
             include $views_path;
@@ -3010,7 +3010,7 @@ KNOWLEDGE;
      */
     public function render_pagina_asambleas() {
         echo '<div class="wrap">';
-        echo '<h1>' . esc_html__('Asambleas', 'flavor-chat-ia') . '</h1>';
+        echo '<h1>' . esc_html__('Asambleas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
         $views_path = dirname(__FILE__) . '/views/asambleas.php';
         if (file_exists($views_path)) {
             include $views_path;
@@ -3026,8 +3026,8 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Miembros de Colectivos', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Miembros de Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -3039,8 +3039,8 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Nuevo Colectivo', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Nuevo Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -3052,8 +3052,8 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Solicitudes de Unión', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Solicitudes de Unión', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -3081,30 +3081,30 @@ KNOWLEDGE;
     public function render_tab_foro($usuario_id): string {
         $colectivo = $this->resolve_contextual_colectivo();
         if (!$colectivo) {
-            return '<p class="flavor-col-error">' . esc_html__('Selecciona un colectivo para ver su foro.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-col-error">' . esc_html__('Selecciona un colectivo para ver su foro.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-block">'
-            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Foro del colectivo', 'flavor-chat-ia') . '</h3><p>' . esc_html($colectivo['nombre']) . '</p></div>'
+            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Foro del colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3><p>' . esc_html($colectivo['nombre']) . '</p></div>'
             . do_shortcode('[flavor_foros_integrado entidad="colectivo" entidad_id="' . absint($colectivo['id']) . '"]')
             . '</div>';
     }
 
     public function render_tab_chat($usuario_id): string {
         if (!$usuario_id) {
-            return '<p class="flavor-col-error">' . esc_html__('Inicia sesión para acceder al chat del colectivo.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-col-error">' . esc_html__('Inicia sesión para acceder al chat del colectivo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $colectivo = $this->resolve_contextual_colectivo();
         if (!$colectivo) {
-            return '<p class="flavor-col-error">' . esc_html__('Selecciona un colectivo para ver su chat.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-col-error">' . esc_html__('Selecciona un colectivo para ver su chat.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $cta = home_url('/mi-portal/chat-grupos/mensajes/?colectivo_id=' . absint($colectivo['id']));
 
         return '<div class="flavor-contextual-block">'
-            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Chat del colectivo', 'flavor-chat-ia') . '</h3><p>' . esc_html($colectivo['nombre']) . '</p>'
-            . '<p><a class="button button-primary" href="' . esc_url($cta) . '">' . esc_html__('Abrir chat completo', 'flavor-chat-ia') . '</a></p></div>'
+            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Chat del colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3><p>' . esc_html($colectivo['nombre']) . '</p>'
+            . '<p><a class="button button-primary" href="' . esc_url($cta) . '">' . esc_html__('Abrir chat completo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p></div>'
             . do_shortcode('[flavor_chat_grupo_integrado entidad="colectivo" entidad_id="' . absint($colectivo['id']) . '"]')
             . '</div>';
     }
@@ -3112,33 +3112,33 @@ KNOWLEDGE;
     public function render_tab_multimedia($usuario_id): string {
         $colectivo = $this->resolve_contextual_colectivo();
         if (!$colectivo) {
-            return '<p class="flavor-col-error">' . esc_html__('Selecciona un colectivo para ver sus documentos.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-col-error">' . esc_html__('Selecciona un colectivo para ver sus documentos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $cta = home_url('/mi-portal/multimedia/subir/?colectivo_id=' . absint($colectivo['id']));
 
         return '<div class="flavor-contextual-block">'
-            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Documentos y multimedia', 'flavor-chat-ia') . '</h3><p>' . esc_html($colectivo['nombre']) . '</p>'
-            . '<p><a class="button" href="' . esc_url($cta) . '">' . esc_html__('Subir archivo', 'flavor-chat-ia') . '</a></p></div>'
+            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Documentos y multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3><p>' . esc_html($colectivo['nombre']) . '</p>'
+            . '<p><a class="button" href="' . esc_url($cta) . '">' . esc_html__('Subir archivo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p></div>'
             . do_shortcode('[flavor_multimedia_galeria entidad="colectivo" entidad_id="' . absint($colectivo['id']) . '"]')
             . '</div>';
     }
 
     public function render_tab_red_social($usuario_id): string {
         if (!$usuario_id) {
-            return '<p class="flavor-col-error">' . esc_html__('Inicia sesión para ver la actividad social del colectivo.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-col-error">' . esc_html__('Inicia sesión para ver la actividad social del colectivo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $colectivo = $this->resolve_contextual_colectivo();
         if (!$colectivo) {
-            return '<p class="flavor-col-error">' . esc_html__('Selecciona un colectivo para ver su actividad social.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-col-error">' . esc_html__('Selecciona un colectivo para ver su actividad social.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $cta = home_url('/mi-portal/red-social/crear/?colectivo_id=' . absint($colectivo['id']));
 
         return '<div class="flavor-contextual-block">'
-            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Actividad social del colectivo', 'flavor-chat-ia') . '</h3><p>' . esc_html($colectivo['nombre']) . '</p>'
-            . '<p><a class="button" href="' . esc_url($cta) . '">' . esc_html__('Publicar', 'flavor-chat-ia') . '</a></p></div>'
+            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Actividad social del colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3><p>' . esc_html($colectivo['nombre']) . '</p>'
+            . '<p><a class="button" href="' . esc_url($cta) . '">' . esc_html__('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p></div>'
             . do_shortcode('[flavor_social_feed entidad="colectivo" entidad_id="' . absint($colectivo['id']) . '"]')
             . '</div>';
     }
@@ -3151,8 +3151,8 @@ KNOWLEDGE;
     public static function get_renderer_config(): array {
         return [
             'module'   => 'colectivos',
-            'title'    => __('Colectivos', 'flavor-chat-ia'),
-            'subtitle' => __('Grupos organizados del barrio', 'flavor-chat-ia'),
+            'title'    => __('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Grupos organizados del barrio', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '✊',
             'color'    => 'secondary', // Usa variable CSS --flavor-secondary del tema
 
@@ -3176,15 +3176,15 @@ KNOWLEDGE;
             ],
 
             'estados' => [
-                'activo'   => ['label' => __('Activo', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🟢'],
-                'inactivo' => ['label' => __('Inactivo', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '⚫'],
+                'activo'   => ['label' => __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '🟢'],
+                'inactivo' => ['label' => __('Inactivo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'gray', 'icon' => '⚫'],
             ],
 
             'stats' => [
-                ['label' => __('Colectivos', 'flavor-chat-ia'), 'icon' => '✊', 'color' => 'rose', 'count_where' => "estado = 'activo'"],
-                ['label' => __('Miembros', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'blue', 'query' => "SELECT COALESCE(SUM(num_miembros), 0) FROM {table} WHERE estado = 'activo'"],
-                ['label' => __('Proyectos', 'flavor-chat-ia'), 'icon' => '📋', 'color' => 'green', 'query' => "SELECT COUNT(*) FROM {table}_proyectos WHERE estado = 'activo'"],
-                ['label' => __('Asambleas', 'flavor-chat-ia'), 'icon' => '🗣️', 'color' => 'purple', 'query' => "SELECT COUNT(*) FROM {table}_asambleas WHERE fecha > NOW()"],
+                ['label' => __('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '✊', 'color' => 'rose', 'count_where' => "estado = 'activo'"],
+                ['label' => __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👥', 'color' => 'blue', 'query' => "SELECT COALESCE(SUM(num_miembros), 0) FROM {table} WHERE estado = 'activo'"],
+                ['label' => __('Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📋', 'color' => 'green', 'query' => "SELECT COUNT(*) FROM {table}_proyectos WHERE estado = 'activo'"],
+                ['label' => __('Asambleas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🗣️', 'color' => 'purple', 'query' => "SELECT COUNT(*) FROM {table}_asambleas WHERE fecha > NOW()"],
             ],
 
             'card' => [
@@ -3209,44 +3209,44 @@ KNOWLEDGE;
 
             'tabs' => [
                 'listado' => [
-                    'label'   => __('Colectivos', 'flavor-chat-ia'),
+                    'label'   => __('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-groups',
                     'content' => 'template:archive.php',
                 ],
                 'mis-colectivos' => [
-                    'label'   => __('Mis Colectivos', 'flavor-chat-ia'),
+                    'label'   => __('Mis Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-admin-users',
                     'content' => 'template:mis-colectivos.php',
                 ],
                 'proyectos' => [
-                    'label'   => __('Proyectos', 'flavor-chat-ia'),
+                    'label'   => __('Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-portfolio',
                     'content' => 'template:proyectos.php',
                 ],
                 'asambleas' => [
-                    'label'   => __('Asambleas', 'flavor-chat-ia'),
+                    'label'   => __('Asambleas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-megaphone',
                     'content' => 'template:asambleas.php',
                 ],
                 'foro' => [
-                    'label'          => __('Foro', 'flavor-chat-ia'),
+                    'label'          => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'           => 'dashicons-format-chat',
                     'content'        => 'callback:render_tab_foro',
                     'requires_login' => true,
                 ],
                 'chat' => [
-                    'label'          => __('Chat', 'flavor-chat-ia'),
+                    'label'          => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'           => 'dashicons-format-status',
                     'content'        => 'callback:render_tab_chat',
                     'requires_login' => true,
                 ],
                 'documentos' => [
-                    'label'   => __('Documentos', 'flavor-chat-ia'),
+                    'label'   => __('Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-media-document',
                     'content' => 'callback:render_tab_multimedia',
                 ],
                 'red-social' => [
-                    'label'          => __('Red social', 'flavor-chat-ia'),
+                    'label'          => __('Red social', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'           => 'dashicons-share',
                     'content'        => 'callback:render_tab_red_social',
                     'requires_login' => true,
@@ -3258,36 +3258,36 @@ KNOWLEDGE;
                 'per_page'    => 12,
                 'filter_field'=> 'categoria',
                 'filters' => [
-                    ['id' => 'todos', 'label' => __('Todos', 'flavor-chat-ia'), 'active' => true],
-                    ['id' => 'social', 'label' => __('Social', 'flavor-chat-ia'), 'icon' => '🤝'],
-                    ['id' => 'cultural', 'label' => __('Cultural', 'flavor-chat-ia'), 'icon' => '🎭'],
-                    ['id' => 'ecologista', 'label' => __('Ecologista', 'flavor-chat-ia'), 'icon' => '🌿'],
-                    ['id' => 'vecinal', 'label' => __('Vecinal', 'flavor-chat-ia'), 'icon' => '🏘️'],
+                    ['id' => 'todos', 'label' => __('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'active' => true],
+                    ['id' => 'social', 'label' => __('Social', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🤝'],
+                    ['id' => 'cultural', 'label' => __('Cultural', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🎭'],
+                    ['id' => 'ecologista', 'label' => __('Ecologista', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🌿'],
+                    ['id' => 'vecinal', 'label' => __('Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🏘️'],
                 ],
-                'cta_text' => __('Crear colectivo', 'flavor-chat-ia'),
+                'cta_text' => __('Crear colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'cta_icon' => '➕',
                 'cta_url'  => home_url('/mi-portal/colectivos/nuevo/'),
                 'empty_state' => [
                     'icon'     => '✊',
-                    'title'    => __('No hay colectivos', 'flavor-chat-ia'),
-                    'text'     => __('Organiza el primer colectivo del barrio', 'flavor-chat-ia'),
+                    'title'    => __('No hay colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'text'     => __('Organiza el primer colectivo del barrio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
 
             'dashboard' => [
                 'show_header' => true,
                 'header_actions' => [
-                    ['label' => __('Crear', 'flavor-chat-ia'), 'icon' => '➕', 'url' => home_url('/mi-portal/colectivos/nuevo/'), 'primary' => true],
-                    ['label' => __('Explorar', 'flavor-chat-ia'), 'icon' => '🔍', 'url' => home_url('/mi-portal/colectivos/')],
+                    ['label' => __('Crear', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '➕', 'url' => home_url('/mi-portal/colectivos/nuevo/'), 'primary' => true],
+                    ['label' => __('Explorar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🔍', 'url' => home_url('/mi-portal/colectivos/')],
                 ],
                 'quick_actions' => [
-                    ['title' => __('Explorar', 'flavor-chat-ia'), 'icon' => '🔍', 'color' => 'rose', 'url' => home_url('/mi-portal/colectivos/')],
-                    ['title' => __('Mis colectivos', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'blue', 'url' => home_url('/mi-portal/colectivos/?tab=mis-colectivos')],
-                    ['title' => __('Proyectos', 'flavor-chat-ia'), 'icon' => '📋', 'color' => 'green', 'url' => home_url('/mi-portal/colectivos/?tab=proyectos')],
-                    ['title' => __('Asambleas', 'flavor-chat-ia'), 'icon' => '🗣️', 'color' => 'purple', 'url' => home_url('/mi-portal/colectivos/?tab=asambleas')],
+                    ['title' => __('Explorar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🔍', 'color' => 'rose', 'url' => home_url('/mi-portal/colectivos/')],
+                    ['title' => __('Mis colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👥', 'color' => 'blue', 'url' => home_url('/mi-portal/colectivos/?tab=mis-colectivos')],
+                    ['title' => __('Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📋', 'color' => 'green', 'url' => home_url('/mi-portal/colectivos/?tab=proyectos')],
+                    ['title' => __('Asambleas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🗣️', 'color' => 'purple', 'url' => home_url('/mi-portal/colectivos/?tab=asambleas')],
                 ],
                 'show_recent' => true,
-                'recent_title' => __('Colectivos activos', 'flavor-chat-ia'),
+                'recent_title' => __('Colectivos activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
     }

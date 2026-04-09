@@ -65,19 +65,19 @@ class Flavor_VBP_AI_Suggestions {
             'hero'        => array(
                 array(
                     'id'          => 'generate_title',
-                    'label'       => __( 'Generar título impactante', 'flavor-chat-ia' ),
+                    'label'       => __( 'Generar título impactante', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'type'        => 'hero_title',
                     'icon'        => 'sparkles',
                 ),
                 array(
                     'id'          => 'generate_subtitle',
-                    'label'       => __( 'Generar subtítulo', 'flavor-chat-ia' ),
+                    'label'       => __( 'Generar subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'type'        => 'hero_subtitle',
                     'icon'        => 'document-text',
                 ),
                 array(
                     'id'          => 'generate_cta',
-                    'label'       => __( 'Sugerir textos CTA', 'flavor-chat-ia' ),
+                    'label'       => __( 'Sugerir textos CTA', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'type'        => 'cta_button',
                     'icon'        => 'cursor-click',
                 ),
@@ -85,13 +85,13 @@ class Flavor_VBP_AI_Suggestions {
             'features'    => array(
                 array(
                     'id'          => 'generate_features',
-                    'label'       => __( 'Generar características', 'flavor-chat-ia' ),
+                    'label'       => __( 'Generar características', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'type'        => 'features_list',
                     'icon'        => 'view-grid',
                 ),
                 array(
                     'id'          => 'improve_descriptions',
-                    'label'       => __( 'Mejorar descripciones', 'flavor-chat-ia' ),
+                    'label'       => __( 'Mejorar descripciones', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'action'      => 'rewrite',
                     'icon'        => 'pencil',
                 ),
@@ -99,7 +99,7 @@ class Flavor_VBP_AI_Suggestions {
             'testimonials' => array(
                 array(
                     'id'          => 'generate_testimonial',
-                    'label'       => __( 'Generar testimonio', 'flavor-chat-ia' ),
+                    'label'       => __( 'Generar testimonio', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'type'        => 'testimonial',
                     'icon'        => 'chat',
                 ),
@@ -107,13 +107,13 @@ class Flavor_VBP_AI_Suggestions {
             'cta'         => array(
                 array(
                     'id'          => 'generate_cta_text',
-                    'label'       => __( 'Generar texto CTA', 'flavor-chat-ia' ),
+                    'label'       => __( 'Generar texto CTA', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'type'        => 'cta_button',
                     'icon'        => 'cursor-click',
                 ),
                 array(
                     'id'          => 'make_persuasive',
-                    'label'       => __( 'Hacer más persuasivo', 'flavor-chat-ia' ),
+                    'label'       => __( 'Hacer más persuasivo', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'action'      => 'persuasive',
                     'icon'        => 'fire',
                 ),
@@ -121,7 +121,7 @@ class Flavor_VBP_AI_Suggestions {
             'stats'       => array(
                 array(
                     'id'          => 'generate_stats',
-                    'label'       => __( 'Generar estadísticas', 'flavor-chat-ia' ),
+                    'label'       => __( 'Generar estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'type'        => 'stats',
                     'icon'        => 'chart-bar',
                 ),
@@ -129,7 +129,7 @@ class Flavor_VBP_AI_Suggestions {
             'faq'         => array(
                 array(
                     'id'          => 'generate_faq',
-                    'label'       => __( 'Generar FAQs', 'flavor-chat-ia' ),
+                    'label'       => __( 'Generar FAQs', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'type'        => 'faq',
                     'icon'        => 'question-mark-circle',
                 ),
@@ -137,19 +137,19 @@ class Flavor_VBP_AI_Suggestions {
             'text'        => array(
                 array(
                     'id'          => 'improve_text',
-                    'label'       => __( 'Mejorar texto', 'flavor-chat-ia' ),
+                    'label'       => __( 'Mejorar texto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'action'      => 'rewrite',
                     'icon'        => 'pencil',
                 ),
                 array(
                     'id'          => 'shorten_text',
-                    'label'       => __( 'Acortar texto', 'flavor-chat-ia' ),
+                    'label'       => __( 'Acortar texto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'action'      => 'shorten',
                     'icon'        => 'scissors',
                 ),
                 array(
                     'id'          => 'expand_text',
-                    'label'       => __( 'Expandir texto', 'flavor-chat-ia' ),
+                    'label'       => __( 'Expandir texto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'action'      => 'expand',
                     'icon'        => 'document-add',
                 ),
@@ -157,7 +157,7 @@ class Flavor_VBP_AI_Suggestions {
             'button'      => array(
                 array(
                     'id'          => 'suggest_cta',
-                    'label'       => __( 'Sugerir texto', 'flavor-chat-ia' ),
+                    'label'       => __( 'Sugerir texto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'type'        => 'cta_button',
                     'icon'        => 'sparkles',
                 ),
@@ -165,13 +165,13 @@ class Flavor_VBP_AI_Suggestions {
             'heading'     => array(
                 array(
                     'id'          => 'generate_heading',
-                    'label'       => __( 'Generar título', 'flavor-chat-ia' ),
+                    'label'       => __( 'Generar título', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'type'        => 'hero_title',
                     'icon'        => 'sparkles',
                 ),
                 array(
                     'id'          => 'improve_heading',
-                    'label'       => __( 'Mejorar título', 'flavor-chat-ia' ),
+                    'label'       => __( 'Mejorar título', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'action'      => 'rewrite',
                     'icon'        => 'pencil',
                 ),
@@ -182,13 +182,13 @@ class Flavor_VBP_AI_Suggestions {
         $default_actions = array(
             array(
                 'id'          => 'generate_description',
-                'label'       => __( 'Generar descripción', 'flavor-chat-ia' ),
+                'label'       => __( 'Generar descripción', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'type'        => 'description',
                 'icon'        => 'document-text',
             ),
             array(
                 'id'          => 'translate',
-                'label'       => __( 'Traducir contenido', 'flavor-chat-ia' ),
+                'label'       => __( 'Traducir contenido', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'action'      => 'translate',
                 'icon'        => 'translate',
             ),
@@ -213,7 +213,7 @@ class Flavor_VBP_AI_Suggestions {
             'hero' => array(
                 array(
                     'id'       => 'hero_startup',
-                    'name'     => __( 'Startup Tech', 'flavor-chat-ia' ),
+                    'name'     => __( 'Startup Tech', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'content'  => array(
                         'titulo'       => 'El futuro de la productividad',
                         'subtitulo'    => 'La herramienta que tu equipo necesita para trabajar mejor',
@@ -222,7 +222,7 @@ class Flavor_VBP_AI_Suggestions {
                 ),
                 array(
                     'id'       => 'hero_community',
-                    'name'     => __( 'Comunidad', 'flavor-chat-ia' ),
+                    'name'     => __( 'Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'content'  => array(
                         'titulo'       => 'Juntos somos más fuertes',
                         'subtitulo'    => 'Únete a una comunidad que transforma el mundo',
@@ -231,7 +231,7 @@ class Flavor_VBP_AI_Suggestions {
                 ),
                 array(
                     'id'       => 'hero_ecommerce',
-                    'name'     => __( 'E-commerce', 'flavor-chat-ia' ),
+                    'name'     => __( 'E-commerce', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'content'  => array(
                         'titulo'       => 'Descubre productos únicos',
                         'subtitulo'    => 'Calidad garantizada con envío rápido y devolución fácil',
@@ -242,7 +242,7 @@ class Flavor_VBP_AI_Suggestions {
             'features' => array(
                 array(
                     'id'      => 'features_saas',
-                    'name'    => __( 'SaaS / Tecnología', 'flavor-chat-ia' ),
+                    'name'    => __( 'SaaS / Tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'content' => array(
                         array( 'icono' => '⚡', 'titulo' => 'Rápido', 'descripcion' => 'Implementación en minutos, no días' ),
                         array( 'icono' => '🔒', 'titulo' => 'Seguro', 'descripcion' => 'Protección de datos de nivel empresarial' ),
@@ -251,7 +251,7 @@ class Flavor_VBP_AI_Suggestions {
                 ),
                 array(
                     'id'      => 'features_eco',
-                    'name'    => __( 'Sostenibilidad', 'flavor-chat-ia' ),
+                    'name'    => __( 'Sostenibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'content' => array(
                         array( 'icono' => '🌱', 'titulo' => 'Ecológico', 'descripcion' => 'Materiales 100% reciclables' ),
                         array( 'icono' => '♻️', 'titulo' => 'Circular', 'descripcion' => 'Economía circular integrada' ),
@@ -262,7 +262,7 @@ class Flavor_VBP_AI_Suggestions {
             'cta' => array(
                 array(
                     'id'       => 'cta_trial',
-                    'name'     => __( 'Prueba Gratuita', 'flavor-chat-ia' ),
+                    'name'     => __( 'Prueba Gratuita', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'content'  => array(
                         'titulo'      => '¿Listo para empezar?',
                         'subtitulo'   => 'Prueba gratis durante 14 días, sin compromiso',
@@ -271,7 +271,7 @@ class Flavor_VBP_AI_Suggestions {
                 ),
                 array(
                     'id'       => 'cta_contact',
-                    'name'     => __( 'Contacto', 'flavor-chat-ia' ),
+                    'name'     => __( 'Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'content'  => array(
                         'titulo'      => '¿Tienes preguntas?',
                         'subtitulo'   => 'Nuestro equipo está aquí para ayudarte',
@@ -280,7 +280,7 @@ class Flavor_VBP_AI_Suggestions {
                 ),
                 array(
                     'id'       => 'cta_newsletter',
-                    'name'     => __( 'Newsletter', 'flavor-chat-ia' ),
+                    'name'     => __( 'Newsletter', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'content'  => array(
                         'titulo'      => 'No te pierdas nada',
                         'subtitulo'   => 'Recibe las últimas novedades en tu email',
@@ -302,33 +302,33 @@ class Flavor_VBP_AI_Suggestions {
     private function get_tips( $element_type ) {
         $tips = array(
             'hero' => array(
-                __( 'Un buen título hero tiene máximo 8 palabras y comunica el beneficio principal.', 'flavor-chat-ia' ),
-                __( 'El subtítulo debe complementar el título, no repetirlo.', 'flavor-chat-ia' ),
-                __( 'Los CTA con verbos de acción ("Empezar", "Descubrir") funcionan mejor.', 'flavor-chat-ia' ),
+                __( 'Un buen título hero tiene máximo 8 palabras y comunica el beneficio principal.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                __( 'El subtítulo debe complementar el título, no repetirlo.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                __( 'Los CTA con verbos de acción ("Empezar", "Descubrir") funcionan mejor.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'features' => array(
-                __( 'Usa 3-6 características principales, no más.', 'flavor-chat-ia' ),
-                __( 'Cada característica debe destacar un beneficio, no solo una función.', 'flavor-chat-ia' ),
-                __( 'Los iconos ayudan a escanear rápidamente el contenido.', 'flavor-chat-ia' ),
+                __( 'Usa 3-6 características principales, no más.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                __( 'Cada característica debe destacar un beneficio, no solo una función.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                __( 'Los iconos ayudan a escanear rápidamente el contenido.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'testimonials' => array(
-                __( 'Los testimonios con nombre, foto y cargo generan más confianza.', 'flavor-chat-ia' ),
-                __( 'Los números y resultados específicos son más creíbles.', 'flavor-chat-ia' ),
+                __( 'Los testimonios con nombre, foto y cargo generan más confianza.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                __( 'Los números y resultados específicos son más creíbles.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'cta' => array(
-                __( 'Un CTA efectivo crea urgencia sin ser agresivo.', 'flavor-chat-ia' ),
-                __( 'Evita textos genéricos como "Enviar" o "Click aquí".', 'flavor-chat-ia' ),
-                __( 'El texto del botón debe decir qué pasará al hacer clic.', 'flavor-chat-ia' ),
+                __( 'Un CTA efectivo crea urgencia sin ser agresivo.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                __( 'Evita textos genéricos como "Enviar" o "Click aquí".', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                __( 'El texto del botón debe decir qué pasará al hacer clic.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             'text' => array(
-                __( 'Los párrafos cortos (3-4 líneas) son más fáciles de leer.', 'flavor-chat-ia' ),
-                __( 'Usa negritas para destacar ideas clave.', 'flavor-chat-ia' ),
+                __( 'Los párrafos cortos (3-4 líneas) son más fáciles de leer.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                __( 'Usa negritas para destacar ideas clave.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
         );
 
         $default_tips = array(
-            __( 'Mantén el contenido enfocado en los beneficios para el usuario.', 'flavor-chat-ia' ),
-            __( 'Usa un tono consistente en toda la página.', 'flavor-chat-ia' ),
+            __( 'Mantén el contenido enfocado en los beneficios para el usuario.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            __( 'Usa un tono consistente en toda la página.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
         );
 
         return $tips[ $element_type ] ?? $default_tips;
@@ -354,7 +354,7 @@ class Flavor_VBP_AI_Suggestions {
             $suggestions[] = array(
                 'type'        => 'add_element',
                 'element'     => 'hero',
-                'reason'      => __( 'Añade una sección hero para captar la atención', 'flavor-chat-ia' ),
+                'reason'      => __( 'Añade una sección hero para captar la atención', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'priority'    => 'high',
             );
         }
@@ -363,7 +363,7 @@ class Flavor_VBP_AI_Suggestions {
             $suggestions[] = array(
                 'type'        => 'add_element',
                 'element'     => 'features',
-                'reason'      => __( 'Destaca los beneficios principales con una sección de características', 'flavor-chat-ia' ),
+                'reason'      => __( 'Destaca los beneficios principales con una sección de características', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'priority'    => 'medium',
             );
         }
@@ -372,7 +372,7 @@ class Flavor_VBP_AI_Suggestions {
             $suggestions[] = array(
                 'type'        => 'add_element',
                 'element'     => 'cta',
-                'reason'      => __( 'Añade un Call-to-Action para guiar a los visitantes', 'flavor-chat-ia' ),
+                'reason'      => __( 'Añade un Call-to-Action para guiar a los visitantes', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'priority'    => 'high',
             );
         }
@@ -381,7 +381,7 @@ class Flavor_VBP_AI_Suggestions {
             $suggestions[] = array(
                 'type'        => 'add_element',
                 'element'     => 'testimonials',
-                'reason'      => __( 'Los testimonios aumentan la confianza y conversión', 'flavor-chat-ia' ),
+                'reason'      => __( 'Los testimonios aumentan la confianza y conversión', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'priority'    => 'medium',
             );
         }

@@ -128,9 +128,9 @@ class Flavor_Feature_Flags {
      */
     public function add_admin_menu() {
         add_submenu_page(
-            'flavor-chat-ia',
-            __('Feature Flags', 'flavor-chat-ia'),
-            __('Feature Flags', 'flavor-chat-ia'),
+            FLAVOR_PLATFORM_TEXT_DOMAIN,
+            __('Feature Flags', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Feature Flags', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-feature-flags',
             [$this, 'render_admin_page']
@@ -176,15 +176,15 @@ class Flavor_Feature_Flags {
         <div class="wrap flavor-feature-flags-wrap">
             <h1>
                 <span class="dashicons dashicons-flag"></span>
-                <?php _e('Feature Flags', 'flavor-chat-ia'); ?>
+                <?php _e('Feature Flags', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <button type="button" class="page-title-action" id="add-flag-btn">
                     <span class="dashicons dashicons-plus-alt2"></span>
-                    <?php _e('Nuevo Flag', 'flavor-chat-ia'); ?>
+                    <?php _e('Nuevo Flag', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </h1>
 
             <p class="description">
-                <?php _e('Controla qué funcionalidades están disponibles en las aplicaciones móviles.', 'flavor-chat-ia'); ?>
+                <?php _e('Controla qué funcionalidades están disponibles en las aplicaciones móviles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
 
             <div class="flags-grid" id="flags-grid">
@@ -218,11 +218,11 @@ class Flavor_Feature_Flags {
 
                         <div class="flag-meta">
                             <div class="meta-item">
-                                <span class="label"><?php _e('Rollout:', 'flavor-chat-ia'); ?></span>
+                                <span class="label"><?php _e('Rollout:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="value"><?php echo esc_html($flag['rollout_percentage']); ?>%</span>
                             </div>
                             <div class="meta-item">
-                                <span class="label"><?php _e('Plataformas:', 'flavor-chat-ia'); ?></span>
+                                <span class="label"><?php _e('Plataformas:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="value">
                                     <?php
                                     $platforms = $flag['platforms'] ?? ['android', 'ios'];
@@ -232,7 +232,7 @@ class Flavor_Feature_Flags {
                             </div>
                             <?php if (!empty($flag['min_version'])): ?>
                             <div class="meta-item">
-                                <span class="label"><?php _e('Versión mín:', 'flavor-chat-ia'); ?></span>
+                                <span class="label"><?php _e('Versión mín:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="value">v<?php echo esc_html($flag['min_version']); ?></span>
                             </div>
                             <?php endif; ?>
@@ -252,43 +252,43 @@ class Flavor_Feature_Flags {
         <div id="flag-modal" class="flavor-modal" style="display: none;">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2 id="modal-title"><?php _e('Nuevo Feature Flag', 'flavor-chat-ia'); ?></h2>
+                    <h2 id="modal-title"><?php _e('Nuevo Feature Flag', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                     <button type="button" class="modal-close">&times;</button>
                 </div>
                 <form id="flag-form">
                     <div class="modal-body">
                         <div class="form-row">
-                            <label for="flag_key"><?php _e('Identificador', 'flavor-chat-ia'); ?></label>
+                            <label for="flag_key"><?php _e('Identificador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="text" id="flag_key" name="key" required
                                    pattern="[a-z_]+" placeholder="mi_feature_flag">
-                            <p class="description"><?php _e('Solo letras minúsculas y guiones bajos', 'flavor-chat-ia'); ?></p>
+                            <p class="description"><?php _e('Solo letras minúsculas y guiones bajos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
 
                         <div class="form-row">
-                            <label for="flag_name"><?php _e('Nombre', 'flavor-chat-ia'); ?></label>
+                            <label for="flag_name"><?php _e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="text" id="flag_name" name="name" required>
                         </div>
 
                         <div class="form-row">
-                            <label for="flag_description"><?php _e('Descripción', 'flavor-chat-ia'); ?></label>
+                            <label for="flag_description"><?php _e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <textarea id="flag_description" name="description" rows="2"></textarea>
                         </div>
 
                         <div class="form-row two-cols">
                             <div>
-                                <label for="flag_rollout"><?php _e('Porcentaje de rollout', 'flavor-chat-ia'); ?></label>
+                                <label for="flag_rollout"><?php _e('Porcentaje de rollout', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <input type="number" id="flag_rollout" name="rollout_percentage"
                                        min="0" max="100" value="0">
                             </div>
                             <div>
-                                <label for="flag_min_version"><?php _e('Versión mínima', 'flavor-chat-ia'); ?></label>
+                                <label for="flag_min_version"><?php _e('Versión mínima', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <input type="text" id="flag_min_version" name="min_version"
                                        placeholder="1.0.0">
                             </div>
                         </div>
 
                         <div class="form-row">
-                            <label><?php _e('Plataformas', 'flavor-chat-ia'); ?></label>
+                            <label><?php _e('Plataformas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <div class="checkbox-group">
                                 <label>
                                     <input type="checkbox" name="platforms[]" value="android" checked>
@@ -303,10 +303,10 @@ class Flavor_Feature_Flags {
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="button" onclick="closeModal()">
-                            <?php _e('Cancelar', 'flavor-chat-ia'); ?>
+                            <?php _e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <button type="submit" class="button button-primary">
-                            <?php _e('Guardar', 'flavor-chat-ia'); ?>
+                            <?php _e('Guardar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </form>
@@ -366,7 +366,7 @@ class Flavor_Feature_Flags {
 
         return new WP_Error(
             'rest_forbidden',
-            __('Autenticación de app requerida.', 'flavor-chat-ia'),
+            __('Autenticación de app requerida.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ['status' => 401]
         );
     }
@@ -482,7 +482,7 @@ class Flavor_Feature_Flags {
         check_ajax_referer('flavor_feature_flags', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No autorizado', 'flavor-chat-ia'));
+            wp_send_json_error(__('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $key = sanitize_key($_POST['flag_key'] ?? '');
@@ -512,19 +512,19 @@ class Flavor_Feature_Flags {
         check_ajax_referer('flavor_feature_flags', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No autorizado', 'flavor-chat-ia'));
+            wp_send_json_error(__('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $key = sanitize_key($_POST['key'] ?? '');
 
         if (empty($key)) {
-            wp_send_json_error(__('Identificador requerido', 'flavor-chat-ia'));
+            wp_send_json_error(__('Identificador requerido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $flags = get_option(self::OPTION_NAME, []);
 
         if (isset($flags[$key]) || isset($this->default_flags[$key])) {
-            wp_send_json_error(__('Ya existe un flag con ese identificador', 'flavor-chat-ia'));
+            wp_send_json_error(__('Ya existe un flag con ese identificador', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $platforms = isset($_POST['platforms']) ? (array) $_POST['platforms'] : ['android', 'ios'];
@@ -550,14 +550,14 @@ class Flavor_Feature_Flags {
         check_ajax_referer('flavor_feature_flags', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No autorizado', 'flavor-chat-ia'));
+            wp_send_json_error(__('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $key = sanitize_key($_POST['flag_key'] ?? '');
 
         // No permitir eliminar flags por defecto
         if (isset($this->default_flags[$key])) {
-            wp_send_json_error(__('No se puede eliminar un flag del sistema', 'flavor-chat-ia'));
+            wp_send_json_error(__('No se puede eliminar un flag del sistema', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $flags = get_option(self::OPTION_NAME, []);

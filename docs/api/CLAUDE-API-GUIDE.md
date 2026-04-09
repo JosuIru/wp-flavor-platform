@@ -1,6 +1,6 @@
 # Guía de APIs para Claude Code
 
-Esta guía documenta todas las APIs REST disponibles en Flavor Chat IA para que Claude Code pueda crear y configurar sitios de forma automática.
+Esta guía documenta todas las APIs REST disponibles en Flavor Platform para que Claude Code pueda crear y configurar sitios de forma automática.
 
 ## Autenticación
 

@@ -40,9 +40,9 @@ class Flavor_App_Generator_Admin {
      */
     public function add_admin_menu() {
         add_submenu_page(
-            'flavor-chat-ia',
-            __( 'Generador de Apps', 'flavor-chat-ia' ),
-            __( '🚀 Generador Apps', 'flavor-chat-ia' ),
+            'flavor-platform',
+            __( 'Generador de Apps', 'flavor-platform' ),
+            __( '🚀 Generador Apps', 'flavor-platform' ),
             'manage_options',
             'flavor-app-generator',
             [ $this, 'render_page' ]
@@ -76,10 +76,10 @@ class Flavor_App_Generator_Admin {
             'ajaxUrl' => admin_url( 'admin-ajax.php' ),
             'nonce' => wp_create_nonce( 'flavor_app_generator' ),
             'strings' => [
-                'analyzing' => __( 'Analizando con IA...', 'flavor-chat-ia' ),
-                'generating' => __( 'Generando estructura...', 'flavor-chat-ia' ),
-                'success' => __( 'Sitio generado correctamente', 'flavor-chat-ia' ),
-                'error' => __( 'Error en la generación', 'flavor-chat-ia' ),
+                'analyzing' => __( 'Analizando con IA...', 'flavor-platform' ),
+                'generating' => __( 'Generando estructura...', 'flavor-platform' ),
+                'success' => __( 'Sitio generado correctamente', 'flavor-platform' ),
+                'error' => __( 'Error en la generación', 'flavor-platform' ),
             ],
         ] );
     }
@@ -94,11 +94,11 @@ class Flavor_App_Generator_Admin {
         <div class="wrap flavor-app-generator">
             <h1>
                 <span class="dashicons dashicons-admin-multisite"></span>
-                <?php esc_html_e( 'Generador de Apps/Webs', 'flavor-chat-ia' ); ?>
+                <?php esc_html_e( 'Generador de Apps/Webs', 'flavor-platform' ); ?>
             </h1>
 
             <p class="description">
-                <?php esc_html_e( 'Describe tu proyecto y la IA generará una estructura completa con páginas, módulos y configuración.', 'flavor-chat-ia' ); ?>
+                <?php esc_html_e( 'Describe tu proyecto y la IA generará una estructura completa con páginas, módulos y configuración.', 'flavor-platform' ); ?>
             </p>
 
             <!-- Wizard Steps -->
@@ -106,114 +106,114 @@ class Flavor_App_Generator_Admin {
                 <div class="wizard-steps">
                     <div class="wizard-step active" data-step="1">
                         <span class="step-number">1</span>
-                        <span class="step-label"><?php esc_html_e( 'Descripción', 'flavor-chat-ia' ); ?></span>
+                        <span class="step-label"><?php esc_html_e( 'Descripción', 'flavor-platform' ); ?></span>
                     </div>
                     <div class="wizard-step" data-step="2">
                         <span class="step-number">2</span>
-                        <span class="step-label"><?php esc_html_e( 'Propuesta', 'flavor-chat-ia' ); ?></span>
+                        <span class="step-label"><?php esc_html_e( 'Propuesta', 'flavor-platform' ); ?></span>
                     </div>
                     <div class="wizard-step" data-step="3">
                         <span class="step-number">3</span>
-                        <span class="step-label"><?php esc_html_e( 'Generación', 'flavor-chat-ia' ); ?></span>
+                        <span class="step-label"><?php esc_html_e( 'Generación', 'flavor-platform' ); ?></span>
                     </div>
                 </div>
 
                 <!-- Step 1: Descripción -->
                 <div class="wizard-content" id="step-1">
                     <div class="step-card">
-                        <h2><?php esc_html_e( 'Describe tu proyecto', 'flavor-chat-ia' ); ?></h2>
+                        <h2><?php esc_html_e( 'Describe tu proyecto', 'flavor-platform' ); ?></h2>
 
                         <div class="form-field">
                             <label for="proyecto-descripcion">
-                                <?php esc_html_e( 'Cuéntanos sobre tu comunidad o proyecto', 'flavor-chat-ia' ); ?>
+                                <?php esc_html_e( 'Cuéntanos sobre tu comunidad o proyecto', 'flavor-platform' ); ?>
                             </label>
                             <textarea
                                 id="proyecto-descripcion"
                                 rows="8"
-                                placeholder="<?php esc_attr_e( 'Ejemplo: Somos una asociación vecinal del barrio de San Juan. Necesitamos gestionar nuestros 250 miembros, organizar eventos culturales mensuales, tener un tablón de anuncios para compraventa entre vecinos, y permitir reservas de las salas del local social. También queremos que los vecinos puedan reportar incidencias del barrio y participar en votaciones sobre mejoras.', 'flavor-chat-ia' ); ?>"
+                                placeholder="<?php esc_attr_e( 'Ejemplo: Somos una asociación vecinal del barrio de San Juan. Necesitamos gestionar nuestros 250 miembros, organizar eventos culturales mensuales, tener un tablón de anuncios para compraventa entre vecinos, y permitir reservas de las salas del local social. También queremos que los vecinos puedan reportar incidencias del barrio y participar en votaciones sobre mejoras.', 'flavor-platform' ); ?>"
                             ></textarea>
                         </div>
 
                         <div class="quick-templates">
-                            <h4><?php esc_html_e( 'O elige un tipo de comunidad:', 'flavor-chat-ia' ); ?></h4>
+                            <h4><?php esc_html_e( 'O elige un tipo de comunidad:', 'flavor-platform' ); ?></h4>
 
                             <!-- Comunitario -->
-                            <h5 style="margin: 15px 0 8px; color: #666; font-size: 12px; text-transform: uppercase;"><?php esc_html_e( 'Comunitario', 'flavor-chat-ia' ); ?></h5>
+                            <h5 style="margin: 15px 0 8px; color: #666; font-size: 12px; text-transform: uppercase;"><?php esc_html_e( 'Comunitario', 'flavor-platform' ); ?></h5>
                             <div class="template-buttons">
                                 <button type="button" class="template-btn" data-template="vecinal">
                                     <span class="dashicons dashicons-admin-home"></span>
-                                    <?php esc_html_e( 'Comunidad Vecinal', 'flavor-chat-ia' ); ?>
+                                    <?php esc_html_e( 'Comunidad Vecinal', 'flavor-platform' ); ?>
                                 </button>
                                 <button type="button" class="template-btn" data-template="deportiva">
                                     <span class="dashicons dashicons-awards"></span>
-                                    <?php esc_html_e( 'Club Deportivo', 'flavor-chat-ia' ); ?>
+                                    <?php esc_html_e( 'Club Deportivo', 'flavor-platform' ); ?>
                                 </button>
                                 <button type="button" class="template-btn" data-template="cultural">
                                     <span class="dashicons dashicons-art"></span>
-                                    <?php esc_html_e( 'Asociación Cultural', 'flavor-chat-ia' ); ?>
+                                    <?php esc_html_e( 'Asociación Cultural', 'flavor-platform' ); ?>
                                 </button>
                                 <button type="button" class="template-btn" data-template="colectivo-social">
                                     <span class="dashicons dashicons-groups"></span>
-                                    <?php esc_html_e( 'Colectivo Social', 'flavor-chat-ia' ); ?>
+                                    <?php esc_html_e( 'Colectivo Social', 'flavor-platform' ); ?>
                                 </button>
                                 <button type="button" class="template-btn" data-template="ecologica">
                                     <span class="dashicons dashicons-palmtree"></span>
-                                    <?php esc_html_e( 'Iniciativa Ecológica', 'flavor-chat-ia' ); ?>
+                                    <?php esc_html_e( 'Iniciativa Ecológica', 'flavor-platform' ); ?>
                                 </button>
                                 <button type="button" class="template-btn" data-template="cuidados">
                                     <span class="dashicons dashicons-heart"></span>
-                                    <?php esc_html_e( 'Red de Cuidados', 'flavor-chat-ia' ); ?>
+                                    <?php esc_html_e( 'Red de Cuidados', 'flavor-platform' ); ?>
                                 </button>
                             </div>
 
                             <!-- Empresarial -->
-                            <h5 style="margin: 20px 0 8px; color: #666; font-size: 12px; text-transform: uppercase;"><?php esc_html_e( 'Empresarial', 'flavor-chat-ia' ); ?></h5>
+                            <h5 style="margin: 20px 0 8px; color: #666; font-size: 12px; text-transform: uppercase;"><?php esc_html_e( 'Empresarial', 'flavor-platform' ); ?></h5>
                             <div class="template-buttons">
                                 <button type="button" class="template-btn" data-template="empresarial">
                                     <span class="dashicons dashicons-building"></span>
-                                    <?php esc_html_e( 'Empresa / PYME', 'flavor-chat-ia' ); ?>
+                                    <?php esc_html_e( 'Empresa / PYME', 'flavor-platform' ); ?>
                                 </button>
                                 <button type="button" class="template-btn" data-template="startup">
                                     <span class="dashicons dashicons-lightbulb"></span>
-                                    <?php esc_html_e( 'Startup', 'flavor-chat-ia' ); ?>
+                                    <?php esc_html_e( 'Startup', 'flavor-platform' ); ?>
                                 </button>
                                 <button type="button" class="template-btn" data-template="coworking">
                                     <span class="dashicons dashicons-networking"></span>
-                                    <?php esc_html_e( 'Espacio Coworking', 'flavor-chat-ia' ); ?>
+                                    <?php esc_html_e( 'Espacio Coworking', 'flavor-platform' ); ?>
                                 </button>
                                 <button type="button" class="template-btn" data-template="consultoria">
                                     <span class="dashicons dashicons-chart-line"></span>
-                                    <?php esc_html_e( 'Consultoría', 'flavor-chat-ia' ); ?>
+                                    <?php esc_html_e( 'Consultoría', 'flavor-platform' ); ?>
                                 </button>
                                 <button type="button" class="template-btn" data-template="finanzas">
                                     <span class="dashicons dashicons-money-alt"></span>
-                                    <?php esc_html_e( 'Finanzas / Banca', 'flavor-chat-ia' ); ?>
+                                    <?php esc_html_e( 'Finanzas / Banca', 'flavor-platform' ); ?>
                                 </button>
                             </div>
 
                             <!-- Educación y Cultura -->
-                            <h5 style="margin: 20px 0 8px; color: #666; font-size: 12px; text-transform: uppercase;"><?php esc_html_e( 'Educación y Cultura', 'flavor-chat-ia' ); ?></h5>
+                            <h5 style="margin: 20px 0 8px; color: #666; font-size: 12px; text-transform: uppercase;"><?php esc_html_e( 'Educación y Cultura', 'flavor-platform' ); ?></h5>
                             <div class="template-buttons">
                                 <button type="button" class="template-btn" data-template="educativa">
                                     <span class="dashicons dashicons-welcome-learn-more"></span>
-                                    <?php esc_html_e( 'Centro Educativo', 'flavor-chat-ia' ); ?>
+                                    <?php esc_html_e( 'Centro Educativo', 'flavor-platform' ); ?>
                                 </button>
                                 <button type="button" class="template-btn" data-template="medios">
                                     <span class="dashicons dashicons-video-alt3"></span>
-                                    <?php esc_html_e( 'Medios / Podcast', 'flavor-chat-ia' ); ?>
+                                    <?php esc_html_e( 'Medios / Podcast', 'flavor-platform' ); ?>
                                 </button>
                             </div>
 
                             <!-- Consumo y Economía -->
-                            <h5 style="margin: 20px 0 8px; color: #666; font-size: 12px; text-transform: uppercase;"><?php esc_html_e( 'Consumo y Economía', 'flavor-chat-ia' ); ?></h5>
+                            <h5 style="margin: 20px 0 8px; color: #666; font-size: 12px; text-transform: uppercase;"><?php esc_html_e( 'Consumo y Economía', 'flavor-platform' ); ?></h5>
                             <div class="template-buttons">
                                 <button type="button" class="template-btn" data-template="consumo">
                                     <span class="dashicons dashicons-carrot"></span>
-                                    <?php esc_html_e( 'Grupo de Consumo', 'flavor-chat-ia' ); ?>
+                                    <?php esc_html_e( 'Grupo de Consumo', 'flavor-platform' ); ?>
                                 </button>
                                 <button type="button" class="template-btn" data-template="gastronomia">
                                     <span class="dashicons dashicons-food"></span>
-                                    <?php esc_html_e( 'Gastronomía', 'flavor-chat-ia' ); ?>
+                                    <?php esc_html_e( 'Gastronomía', 'flavor-platform' ); ?>
                                 </button>
                             </div>
                         </div>
@@ -221,7 +221,7 @@ class Flavor_App_Generator_Admin {
                         <div class="step-actions">
                             <button type="button" id="btn-analyze" class="button button-primary button-hero">
                                 <span class="dashicons dashicons-search"></span>
-                                <?php esc_html_e( 'Analizar y Proponer', 'flavor-chat-ia' ); ?>
+                                <?php esc_html_e( 'Analizar y Proponer', 'flavor-platform' ); ?>
                             </button>
                         </div>
                     </div>
@@ -230,7 +230,7 @@ class Flavor_App_Generator_Admin {
                 <!-- Step 2: Propuesta -->
                 <div class="wizard-content hidden" id="step-2">
                     <div class="step-card">
-                        <h2><?php esc_html_e( 'Propuesta de Estructura', 'flavor-chat-ia' ); ?></h2>
+                        <h2><?php esc_html_e( 'Propuesta de Estructura', 'flavor-platform' ); ?></h2>
 
                         <div class="propuesta-container">
                             <!-- Se llenará dinámicamente -->
@@ -240,11 +240,11 @@ class Flavor_App_Generator_Admin {
                         <div class="step-actions">
                             <button type="button" id="btn-back-1" class="button">
                                 <span class="dashicons dashicons-arrow-left-alt"></span>
-                                <?php esc_html_e( 'Volver', 'flavor-chat-ia' ); ?>
+                                <?php esc_html_e( 'Volver', 'flavor-platform' ); ?>
                             </button>
                             <button type="button" id="btn-generate" class="button button-primary button-hero">
                                 <span class="dashicons dashicons-admin-site"></span>
-                                <?php esc_html_e( 'Generar Sitio', 'flavor-chat-ia' ); ?>
+                                <?php esc_html_e( 'Generar Sitio', 'flavor-platform' ); ?>
                             </button>
                         </div>
                     </div>
@@ -253,7 +253,7 @@ class Flavor_App_Generator_Admin {
                 <!-- Step 3: Resultado -->
                 <div class="wizard-content hidden" id="step-3">
                     <div class="step-card">
-                        <h2><?php esc_html_e( 'Sitio Generado', 'flavor-chat-ia' ); ?></h2>
+                        <h2><?php esc_html_e( 'Sitio Generado', 'flavor-platform' ); ?></h2>
 
                         <div id="resultado-content">
                             <!-- Se llenará dinámicamente -->
@@ -262,11 +262,11 @@ class Flavor_App_Generator_Admin {
                         <div class="step-actions">
                             <button type="button" id="btn-new" class="button">
                                 <span class="dashicons dashicons-plus-alt"></span>
-                                <?php esc_html_e( 'Crear otro sitio', 'flavor-chat-ia' ); ?>
+                                <?php esc_html_e( 'Crear otro sitio', 'flavor-platform' ); ?>
                             </button>
                             <a href="<?php echo esc_url( home_url() ); ?>" target="_blank" class="button button-primary">
                                 <span class="dashicons dashicons-external"></span>
-                                <?php esc_html_e( 'Ver sitio', 'flavor-chat-ia' ); ?>
+                                <?php esc_html_e( 'Ver sitio', 'flavor-platform' ); ?>
                             </a>
                         </div>
                     </div>
@@ -277,7 +277,7 @@ class Flavor_App_Generator_Admin {
             <div class="generator-loader hidden">
                 <div class="loader-content">
                     <div class="loader-spinner"></div>
-                    <p class="loader-text"><?php esc_html_e( 'Procesando...', 'flavor-chat-ia' ); ?></p>
+                    <p class="loader-text"><?php esc_html_e( 'Procesando...', 'flavor-platform' ); ?></p>
                 </div>
             </div>
         </div>

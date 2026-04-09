@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!current_user_can('manage_options')) {
-    wp_die(__('No tienes permisos suficientes para acceder a esta página.', 'flavor-chat-ia'));
+    wp_die(__('No tienes permisos suficientes para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
 }
 
 // =============================================================================
@@ -27,10 +27,10 @@ if (!current_user_can('manage_options')) {
  */
 function obtener_badge_estado_propietario($estado) {
     $estados = [
-        'activo' => ['clase' => 'success', 'texto' => __('Activo', 'flavor-chat-ia'), 'icono' => 'yes-alt'],
-        'inactivo' => ['clase' => 'secondary', 'texto' => __('Inactivo', 'flavor-chat-ia'), 'icono' => 'dismiss'],
-        'pendiente' => ['clase' => 'warning', 'texto' => __('Pendiente', 'flavor-chat-ia'), 'icono' => 'clock'],
-        'suspendido' => ['clase' => 'danger', 'texto' => __('Suspendido', 'flavor-chat-ia'), 'icono' => 'warning'],
+        'activo' => ['clase' => 'success', 'texto' => __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'yes-alt'],
+        'inactivo' => ['clase' => 'secondary', 'texto' => __('Inactivo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dismiss'],
+        'pendiente' => ['clase' => 'warning', 'texto' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'clock'],
+        'suspendido' => ['clase' => 'danger', 'texto' => __('Suspendido', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'warning'],
     ];
 
     if (isset($estados[$estado])) {
@@ -45,13 +45,13 @@ function obtener_badge_estado_propietario($estado) {
  */
 function calcular_nivel_propietario($total_plazas, $plazas_ocupadas) {
     if ($total_plazas >= 10) {
-        return ['nivel' => __('Premium', 'flavor-chat-ia'), 'clase' => 'premium'];
+        return ['nivel' => __('Premium', FLAVOR_PLATFORM_TEXT_DOMAIN), 'clase' => 'premium'];
     } elseif ($total_plazas >= 5) {
-        return ['nivel' => __('Avanzado', 'flavor-chat-ia'), 'clase' => 'avanzado'];
+        return ['nivel' => __('Avanzado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'clase' => 'avanzado'];
     } elseif ($total_plazas >= 2) {
-        return ['nivel' => __('Estándar', 'flavor-chat-ia'), 'clase' => 'estandar'];
+        return ['nivel' => __('Estándar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'clase' => 'estandar'];
     } else {
-        return ['nivel' => __('Básico', 'flavor-chat-ia'), 'clase' => 'basico'];
+        return ['nivel' => __('Básico', FLAVOR_PLATFORM_TEXT_DOMAIN), 'clase' => 'basico'];
     }
 }
 
@@ -719,7 +719,7 @@ if ($tablas_parkings_disponibles) {
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-businessman" style="margin-right: 8px;"></span>
-        <?php echo esc_html__('Gestión de Propietarios', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Gestión de Propietarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
     <hr class="wp-header-end">
 
@@ -727,7 +727,7 @@ if ($tablas_parkings_disponibles) {
         <?php if (!$tablas_parkings_disponibles): ?>
             <div class="flavor-propietarios-demo-notice">
                 <span class="dashicons dashicons-info"></span>
-                <span><?php echo esc_html__('No hay datos disponibles: faltan tablas del módulo Parkings.', 'flavor-chat-ia'); ?></span>
+                <span><?php echo esc_html__('No hay datos disponibles: faltan tablas del módulo Parkings.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         <?php endif; ?>
 
@@ -739,8 +739,8 @@ if ($tablas_parkings_disponibles) {
                 </div>
                 <div class="flavor-propietarios-stat-content">
                     <h3><?php echo number_format($total_propietarios); ?></h3>
-                    <span><?php echo esc_html__('Total Propietarios', 'flavor-chat-ia'); ?></span>
-                    <small><?php printf(esc_html__('%d nuevos este mes', 'flavor-chat-ia'), $nuevos_este_mes); ?></small>
+                    <span><?php echo esc_html__('Total Propietarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                    <small><?php printf(esc_html__('%d nuevos este mes', FLAVOR_PLATFORM_TEXT_DOMAIN), $nuevos_este_mes); ?></small>
                 </div>
             </div>
 
@@ -750,8 +750,8 @@ if ($tablas_parkings_disponibles) {
                 </div>
                 <div class="flavor-propietarios-stat-content">
                     <h3><?php echo number_format($propietarios_activos); ?></h3>
-                    <span><?php echo esc_html__('Propietarios Activos', 'flavor-chat-ia'); ?></span>
-                    <small><?php printf(esc_html__('%d%% del total', 'flavor-chat-ia'), $total_propietarios > 0 ? round(($propietarios_activos / $total_propietarios) * 100) : 0); ?></small>
+                    <span><?php echo esc_html__('Propietarios Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                    <small><?php printf(esc_html__('%d%% del total', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_propietarios > 0 ? round(($propietarios_activos / $total_propietarios) * 100) : 0); ?></small>
                 </div>
             </div>
 
@@ -761,8 +761,8 @@ if ($tablas_parkings_disponibles) {
                 </div>
                 <div class="flavor-propietarios-stat-content">
                     <h3><?php echo number_format($total_plazas_sistema); ?></h3>
-                    <span><?php echo esc_html__('Plazas Totales', 'flavor-chat-ia'); ?></span>
-                    <small><?php printf(esc_html__('%d ocupadas', 'flavor-chat-ia'), $plazas_ocupadas_sistema); ?></small>
+                    <span><?php echo esc_html__('Plazas Totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                    <small><?php printf(esc_html__('%d ocupadas', FLAVOR_PLATFORM_TEXT_DOMAIN), $plazas_ocupadas_sistema); ?></small>
                 </div>
             </div>
 
@@ -772,7 +772,7 @@ if ($tablas_parkings_disponibles) {
                 </div>
                 <div class="flavor-propietarios-stat-content">
                     <h3><?php echo $tasa_ocupacion; ?>%</h3>
-                    <span><?php echo esc_html__('Tasa de Ocupación', 'flavor-chat-ia'); ?></span>
+                    <span><?php echo esc_html__('Tasa de Ocupación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
         </div>
@@ -790,51 +790,51 @@ if ($tablas_parkings_disponibles) {
 
                     <div class="flavor-propietarios-filters-grid">
                         <div class="flavor-propietarios-filter-group">
-                            <label><?php echo esc_html__('Buscar', 'flavor-chat-ia'); ?></label>
-                            <input type="text" name="s" value="<?php echo esc_attr($filtro_busqueda); ?>" placeholder="<?php echo esc_attr__('Nombre, email, teléfono...', 'flavor-chat-ia'); ?>">
+                            <label><?php echo esc_html__('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                            <input type="text" name="s" value="<?php echo esc_attr($filtro_busqueda); ?>" placeholder="<?php echo esc_attr__('Nombre, email, teléfono...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         </div>
 
                         <div class="flavor-propietarios-filter-group">
-                            <label><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></label>
+                            <label><?php echo esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <select name="estado">
-                                <option value=""><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></option>
-                                <option value="activo" <?php selected($filtro_estado, 'activo'); ?>><?php echo esc_html__('Activo', 'flavor-chat-ia'); ?></option>
-                                <option value="inactivo" <?php selected($filtro_estado, 'inactivo'); ?>><?php echo esc_html__('Inactivo', 'flavor-chat-ia'); ?></option>
-                                <option value="pendiente" <?php selected($filtro_estado, 'pendiente'); ?>><?php echo esc_html__('Pendiente', 'flavor-chat-ia'); ?></option>
-                                <option value="suspendido" <?php selected($filtro_estado, 'suspendido'); ?>><?php echo esc_html__('Suspendido', 'flavor-chat-ia'); ?></option>
+                                <option value=""><?php echo esc_html__('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="activo" <?php selected($filtro_estado, 'activo'); ?>><?php echo esc_html__('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="inactivo" <?php selected($filtro_estado, 'inactivo'); ?>><?php echo esc_html__('Inactivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="pendiente" <?php selected($filtro_estado, 'pendiente'); ?>><?php echo esc_html__('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="suspendido" <?php selected($filtro_estado, 'suspendido'); ?>><?php echo esc_html__('Suspendido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             </select>
                         </div>
 
                         <div class="flavor-propietarios-filter-group">
-                            <label><?php echo esc_html__('Mín. plazas', 'flavor-chat-ia'); ?></label>
+                            <label><?php echo esc_html__('Mín. plazas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="number" name="plazas_min" value="<?php echo esc_attr($filtro_plazas_min); ?>" min="0" placeholder="0">
                         </div>
 
                         <div class="flavor-propietarios-filter-group">
-                            <label><?php echo esc_html__('Ordenar por', 'flavor-chat-ia'); ?></label>
+                            <label><?php echo esc_html__('Ordenar por', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <select name="orderby">
-                                <option value="total_plazas" <?php selected($filtro_orden, 'total_plazas'); ?>><?php echo esc_html__('Nº Plazas', 'flavor-chat-ia'); ?></option>
-                                <option value="display_name" <?php selected($filtro_orden, 'display_name'); ?>><?php echo esc_html__('Nombre', 'flavor-chat-ia'); ?></option>
-                                <option value="fecha_registro" <?php selected($filtro_orden, 'fecha_registro'); ?>><?php echo esc_html__('Fecha registro', 'flavor-chat-ia'); ?></option>
-                                <option value="plazas_ocupadas" <?php selected($filtro_orden, 'plazas_ocupadas'); ?>><?php echo esc_html__('Ocupación', 'flavor-chat-ia'); ?></option>
+                                <option value="total_plazas" <?php selected($filtro_orden, 'total_plazas'); ?>><?php echo esc_html__('Nº Plazas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="display_name" <?php selected($filtro_orden, 'display_name'); ?>><?php echo esc_html__('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="fecha_registro" <?php selected($filtro_orden, 'fecha_registro'); ?>><?php echo esc_html__('Fecha registro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="plazas_ocupadas" <?php selected($filtro_orden, 'plazas_ocupadas'); ?>><?php echo esc_html__('Ocupación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             </select>
                         </div>
 
                         <div class="flavor-propietarios-filter-group">
-                            <label><?php echo esc_html__('Orden', 'flavor-chat-ia'); ?></label>
+                            <label><?php echo esc_html__('Orden', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <select name="order">
-                                <option value="DESC" <?php selected($filtro_orden_dir, 'DESC'); ?>><?php echo esc_html__('Descendente', 'flavor-chat-ia'); ?></option>
-                                <option value="ASC" <?php selected($filtro_orden_dir, 'ASC'); ?>><?php echo esc_html__('Ascendente', 'flavor-chat-ia'); ?></option>
+                                <option value="DESC" <?php selected($filtro_orden_dir, 'DESC'); ?>><?php echo esc_html__('Descendente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="ASC" <?php selected($filtro_orden_dir, 'ASC'); ?>><?php echo esc_html__('Ascendente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             </select>
                         </div>
 
                         <div class="flavor-propietarios-filters-actions">
                             <button type="submit" class="button button-primary">
                                 <span class="dashicons dashicons-search" style="vertical-align: middle;"></span>
-                                <?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                             <a href="<?php echo esc_url(remove_query_arg(['s', 'estado', 'plazas_min', 'orderby', 'order', 'paged'])); ?>" class="button">
-                                <?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </div>
                     </div>
@@ -845,13 +845,13 @@ if ($tablas_parkings_disponibles) {
                     <table class="flavor-propietarios-table">
                         <thead>
                             <tr>
-                                <th style="width: 50px;"><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
-                                <th><?php echo esc_html__('Propietario', 'flavor-chat-ia'); ?></th>
-                                <th><?php echo esc_html__('Contacto', 'flavor-chat-ia'); ?></th>
-                                <th><?php echo esc_html__('Plazas', 'flavor-chat-ia'); ?></th>
-                                <th><?php echo esc_html__('Nivel', 'flavor-chat-ia'); ?></th>
-                                <th><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
-                                <th><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
+                                <th style="width: 50px;"><?php echo esc_html__('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php echo esc_html__('Propietario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php echo esc_html__('Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php echo esc_html__('Plazas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php echo esc_html__('Nivel', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php echo esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php echo esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -868,7 +868,7 @@ if ($tablas_parkings_disponibles) {
                                             <?php echo get_avatar($propietario->usuario_id ?? 0, 44); ?>
                                             <div class="flavor-propietarios-user-info">
                                                 <h4><?php echo esc_html($propietario->display_name); ?></h4>
-                                                <span><?php echo esc_html__('Desde', 'flavor-chat-ia'); ?> <?php echo date_i18n('M Y', strtotime($propietario->fecha_registro ?? 'now')); ?></span>
+                                                <span><?php echo esc_html__('Desde', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo date_i18n('M Y', strtotime($propietario->fecha_registro ?? 'now')); ?></span>
                                             </div>
                                         </div>
                                     </td>
@@ -887,9 +887,9 @@ if ($tablas_parkings_disponibles) {
                                         <div class="flavor-propietarios-plazas">
                                             <span class="flavor-propietarios-plazas-total"><?php echo esc_html($propietario->total_plazas); ?></span>
                                             <span class="flavor-propietarios-plazas-detalle">
-                                                <span class="ocupadas"><?php echo esc_html($propietario->plazas_ocupadas ?? 0); ?> <?php echo esc_html__('ocupadas', 'flavor-chat-ia'); ?></span>
+                                                <span class="ocupadas"><?php echo esc_html($propietario->plazas_ocupadas ?? 0); ?> <?php echo esc_html__('ocupadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                                 /
-                                                <span class="disponibles"><?php echo esc_html($propietario->plazas_disponibles ?? 0); ?> <?php echo esc_html__('libres', 'flavor-chat-ia'); ?></span>
+                                                <span class="disponibles"><?php echo esc_html($propietario->plazas_disponibles ?? 0); ?> <?php echo esc_html__('libres', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                             </span>
                                             <div class="flavor-propietarios-ocupacion-bar">
                                                 <div class="flavor-propietarios-ocupacion-fill" style="width: <?php echo $ocupacion_pct; ?>%;"></div>
@@ -909,10 +909,10 @@ if ($tablas_parkings_disponibles) {
                                     </td>
                                     <td>
                                         <div class="flavor-propietarios-acciones">
-                                            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-parkings-propietarios&action=ver&propietario_id=' . $propietario->id)); ?>" class="button button-small" title="<?php echo esc_attr__('Ver', 'flavor-chat-ia'); ?>">
+                                            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-parkings-propietarios&action=ver&propietario_id=' . $propietario->id)); ?>" class="button button-small" title="<?php echo esc_attr__('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                                 <span class="dashicons dashicons-visibility" style="font-size: 14px; line-height: 1.4;"></span>
                                             </a>
-                                            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-parkings-plazas&propietario_id=' . $propietario->id)); ?>" class="button button-small" title="<?php echo esc_attr__('Ver plazas', 'flavor-chat-ia'); ?>">
+                                            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-parkings-plazas&propietario_id=' . $propietario->id)); ?>" class="button button-small" title="<?php echo esc_attr__('Ver plazas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                                 <span class="dashicons dashicons-car" style="font-size: 14px; line-height: 1.4;"></span>
                                             </a>
                                         </div>
@@ -927,7 +927,7 @@ if ($tablas_parkings_disponibles) {
                         <div class="flavor-propietarios-pagination">
                             <span class="flavor-propietarios-pagination-info">
                                 <?php printf(
-                                    esc_html__('Mostrando %d-%d de %d propietarios', 'flavor-chat-ia'),
+                                    esc_html__('Mostrando %d-%d de %d propietarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                     $offset + 1,
                                     min($offset + $elementos_por_pagina, $total_filtrado),
                                     $total_filtrado
@@ -951,9 +951,9 @@ if ($tablas_parkings_disponibles) {
                 <?php else: ?>
                     <div class="flavor-propietarios-empty">
                         <span class="dashicons dashicons-businessman"></span>
-                        <p><?php echo esc_html__('No se encontraron propietarios con los filtros aplicados.', 'flavor-chat-ia'); ?></p>
+                        <p><?php echo esc_html__('No se encontraron propietarios con los filtros aplicados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <a href="<?php echo esc_url(remove_query_arg(['s', 'estado', 'plazas_min', 'orderby', 'order', 'paged'])); ?>" class="button">
-                            <?php echo esc_html__('Ver todos los propietarios', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Ver todos los propietarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 <?php endif; ?>
@@ -965,7 +965,7 @@ if ($tablas_parkings_disponibles) {
                 <div class="flavor-propietarios-sidebar-card">
                     <h3>
                         <span class="dashicons dashicons-star-filled"></span>
-                        <?php echo esc_html__('Top Propietarios', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Top Propietarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <?php if (!empty($top_propietarios)): ?>
                         <ul class="flavor-propietarios-top-list">
@@ -979,7 +979,7 @@ if ($tablas_parkings_disponibles) {
                                     <span class="flavor-propietarios-top-rank <?php echo esc_attr($rank_class); ?>"><?php echo $posicion; ?></span>
                                     <div class="flavor-propietarios-top-info">
                                         <h4><?php echo esc_html($top->display_name); ?></h4>
-                                        <span><?php printf(esc_html__('%d%% ocupación', 'flavor-chat-ia'), $ocupacion); ?></span>
+                                        <span><?php printf(esc_html__('%d%% ocupación', FLAVOR_PLATFORM_TEXT_DOMAIN), $ocupacion); ?></span>
                                     </div>
                                     <span class="flavor-propietarios-top-count"><?php echo esc_html($top->total_plazas); ?></span>
                                 </li>
@@ -988,7 +988,7 @@ if ($tablas_parkings_disponibles) {
                         </ul>
                     <?php else: ?>
                         <div style="padding: 20px; text-align: center; color: #64748b;">
-                            <?php echo esc_html__('Sin datos disponibles', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Sin datos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -998,7 +998,7 @@ if ($tablas_parkings_disponibles) {
                 <div class="flavor-propietarios-sidebar-card">
                     <h3>
                         <span class="dashicons dashicons-chart-pie"></span>
-                        <?php echo esc_html__('Por Estado', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Por Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <div class="flavor-propietarios-chart-container">
                         <canvas id="flavor-propietarios-estados-chart" height="200"></canvas>

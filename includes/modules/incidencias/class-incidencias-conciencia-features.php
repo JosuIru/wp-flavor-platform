@@ -206,7 +206,7 @@ class Flavor_Incidencias_Conciencia_Features {
      */
     public function shortcode_mapa_impacto($atts): string {
         if (!is_user_logged_in()) {
-            return '<p>' . esc_html__('Inicia sesión para ver el mapa de impacto ambiental.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Inicia sesión para ver el mapa de impacto ambiental.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         global $wpdb;
@@ -265,7 +265,7 @@ class Flavor_Incidencias_Conciencia_Features {
      */
     public function shortcode_voluntariado($atts): string {
         if (!is_user_logged_in()) {
-            return '<p>' . esc_html__('Inicia sesión para ver oportunidades de voluntariado.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Inicia sesión para ver oportunidades de voluntariado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         global $wpdb;
@@ -310,7 +310,7 @@ class Flavor_Incidencias_Conciencia_Features {
      */
     public function shortcode_mi_participacion($atts): string {
         if (!is_user_logged_in()) {
-            return '<p>' . esc_html__('Inicia sesión para ver tu participación.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Inicia sesión para ver tu participación.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         global $wpdb;
@@ -657,7 +657,7 @@ class Flavor_Incidencias_Conciencia_Features {
         check_ajax_referer('inc_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $incidencia_id = intval($_POST['incidencia_id'] ?? 0);
@@ -665,7 +665,7 @@ class Flavor_Incidencias_Conciencia_Features {
         $descripcion = sanitize_textarea_field($_POST['descripcion'] ?? '');
 
         if (!$incidencia_id) {
-            wp_send_json_error(['message' => __('Incidencia no válida.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Incidencia no válida.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -679,7 +679,7 @@ class Flavor_Incidencias_Conciencia_Features {
         ));
 
         if ($existe) {
-            wp_send_json_error(['message' => __('Ya te has ofrecido para esta incidencia.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Ya te has ofrecido para esta incidencia.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $wpdb->insert($tabla_vol, [
@@ -691,7 +691,7 @@ class Flavor_Incidencias_Conciencia_Features {
             'fecha_oferta' => current_time('mysql'),
         ]);
 
-        wp_send_json_success(['message' => __('Tu oferta de ayuda ha sido registrada.', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Tu oferta de ayuda ha sido registrada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -701,7 +701,7 @@ class Flavor_Incidencias_Conciencia_Features {
         check_ajax_referer('inc_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $voluntariado_id = intval($_POST['voluntariado_id'] ?? 0);
@@ -718,7 +718,7 @@ class Flavor_Incidencias_Conciencia_Features {
         ));
 
         if (!$voluntariado) {
-            wp_send_json_error(['message' => __('Voluntariado no encontrado.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Voluntariado no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Calcular puntos
@@ -750,7 +750,7 @@ class Flavor_Incidencias_Conciencia_Features {
         $this->actualizar_nivel($user_id);
 
         wp_send_json_success([
-            'message' => sprintf(__('¡Gracias! Has ganado %d puntos.', 'flavor-chat-ia'), $puntos),
+            'message' => sprintf(__('¡Gracias! Has ganado %d puntos.', FLAVOR_PLATFORM_TEXT_DOMAIN), $puntos),
             'puntos' => $puntos,
         ]);
     }
@@ -790,7 +790,7 @@ class Flavor_Incidencias_Conciencia_Features {
         check_ajax_referer('inc_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $incidencia_id = intval($_POST['incidencia_id'] ?? 0);
@@ -800,7 +800,7 @@ class Flavor_Incidencias_Conciencia_Features {
         $afecta_salud = intval($_POST['afecta_salud'] ?? 0);
 
         if (!$incidencia_id) {
-            wp_send_json_error(['message' => __('Incidencia no válida.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Incidencia no válida.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -815,7 +815,7 @@ class Flavor_Incidencias_Conciencia_Features {
             'fecha_registro' => current_time('mysql'),
         ]);
 
-        wp_send_json_success(['message' => __('Información de impacto ambiental registrada.', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Información de impacto ambiental registrada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -825,7 +825,7 @@ class Flavor_Incidencias_Conciencia_Features {
         check_ajax_referer('inc_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $incidencia_id = intval($_POST['incidencia_id'] ?? 0);
@@ -845,7 +845,7 @@ class Flavor_Incidencias_Conciencia_Features {
         ));
 
         if ($existe) {
-            wp_send_json_error(['message' => __('Ya has valorado esta resolución.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Ya has valorado esta resolución.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $wpdb->insert($tabla_val, [
@@ -858,6 +858,6 @@ class Flavor_Incidencias_Conciencia_Features {
             'fecha_valoracion' => current_time('mysql'),
         ]);
 
-        wp_send_json_success(['message' => __('Gracias por tu valoración.', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Gracias por tu valoración.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 }

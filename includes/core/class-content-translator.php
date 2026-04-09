@@ -92,7 +92,7 @@ class Flavor_Content_Translator {
         check_ajax_referer('flavor_translate', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['error' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $content = wp_kses_post($_POST['content'] ?? '');
@@ -116,7 +116,7 @@ class Flavor_Content_Translator {
         check_ajax_referer('flavor_translate', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['error' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $post_id = intval($_POST['post_id'] ?? 0);
@@ -124,7 +124,7 @@ class Flavor_Content_Translator {
         $target_lang = sanitize_text_field($_POST['target_lang'] ?? 'en');
 
         if (!$post_id || !$field_name) {
-            wp_send_json_error(['error' => __('Parámetros inválidos', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Parámetros inválidos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $content = get_post_meta($post_id, $field_name, true);
@@ -140,7 +140,7 @@ class Flavor_Content_Translator {
         }
 
         if (empty($content)) {
-            wp_send_json_error(['error' => __('Campo vacío', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Campo vacío', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $result = $this->translate($content, 'auto', $target_lang, true);
@@ -164,7 +164,7 @@ class Flavor_Content_Translator {
         $text = sanitize_textarea_field($_POST['text'] ?? '');
 
         if (empty($text)) {
-            wp_send_json_error(['error' => __('Texto vacío', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Texto vacío', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $detected = $this->detect_language($text);
@@ -184,14 +184,14 @@ class Flavor_Content_Translator {
         if (!$this->is_available()) {
             return [
                 'success' => false,
-                'error' => __('El motor de IA no está disponible', 'flavor-chat-ia'),
+                'error' => __('El motor de IA no está disponible', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
         if (empty(trim($content))) {
             return [
                 'success' => false,
-                'error' => __('Contenido vacío', 'flavor-chat-ia'),
+                'error' => __('Contenido vacío', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -199,7 +199,7 @@ class Flavor_Content_Translator {
         if (!isset($this->supported_languages[$target_lang])) {
             return [
                 'success' => false,
-                'error' => __('Idioma no soportado', 'flavor-chat-ia'),
+                'error' => __('Idioma no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -258,7 +258,7 @@ class Flavor_Content_Translator {
             if (!$response['success']) {
                 return [
                     'success' => false,
-                    'error' => $response['error'] ?? __('Error en la traducción', 'flavor-chat-ia'),
+                    'error' => $response['error'] ?? __('Error en la traducción', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
 
@@ -418,7 +418,7 @@ class Flavor_Content_Translator {
     public function translate_post($post_id, $target_lang) {
         $post = get_post($post_id);
         if (!$post) {
-            return ['success' => false, 'error' => __('Post no encontrado', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Post no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $results = [];

@@ -137,17 +137,17 @@ class Flavor_App_Profile_Admin {
                 'activar' => wp_create_nonce('flavor_activar_plantilla'),
             ],
             'i18n' => [
-                'pasoModulos' => __('Instalando modulos', 'flavor-chat-ia'),
-                'pasoTablas' => __('Creando tablas de base de datos', 'flavor-chat-ia'),
-                'pasoPaginas' => __('Creando paginas', 'flavor-chat-ia'),
-                'pasoLanding' => __('Configurando landing page', 'flavor-chat-ia'),
-                'pasoConfiguracion' => __('Aplicando configuracion', 'flavor-chat-ia'),
-                'pasoDemo' => __('Cargando datos de demostracion', 'flavor-chat-ia'),
-                'tituloInstalando' => __('Instalando plantilla...', 'flavor-chat-ia'),
-                'tituloCompletado' => __('Instalacion completada', 'flavor-chat-ia'),
-                'tituloError' => __('Error en la instalacion', 'flavor-chat-ia'),
-                'errorCarga' => __('Error de conexion al cargar la plantilla', 'flavor-chat-ia'),
-                'errorGeneral' => __('Error de conexion durante la instalacion', 'flavor-chat-ia'),
+                'pasoModulos' => __('Instalando modulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'pasoTablas' => __('Creando tablas de base de datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'pasoPaginas' => __('Creando paginas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'pasoLanding' => __('Configurando landing page', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'pasoConfiguracion' => __('Aplicando configuracion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'pasoDemo' => __('Cargando datos de demostracion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'tituloInstalando' => __('Instalando plantilla...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'tituloCompletado' => __('Instalacion completada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'tituloError' => __('Error en la instalacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'errorCarga' => __('Error de conexion al cargar la plantilla', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'errorGeneral' => __('Error de conexion durante la instalacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
         wp_localize_script('flavor-template-orchestrator', 'flavorOrchestratorData', $datos_orquestador);
@@ -194,7 +194,7 @@ class Flavor_App_Profile_Admin {
      */
     public function renderizar_pagina_perfil() {
         if (!current_user_can('manage_options')) {
-            wp_die(__('No tienes permisos para acceder a esta pagina.', 'flavor-chat-ia'));
+            wp_die(__('No tienes permisos para acceder a esta pagina.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Forzar carga de scripts/estilos del compositor y pintarlos en la página
@@ -257,8 +257,8 @@ class Flavor_App_Profile_Admin {
                 'toggleModulo'  => wp_create_nonce('toggle_modulo'),
             ],
             'i18n' => [
-                'confirmarCambioPerfil' => __('Deseas cambiar de plantilla? Esto activara los modulos correspondientes.', 'flavor-chat-ia'),
-                'confirmarPerfilesMultiples' => __('Se activaran los modulos de todos los perfiles seleccionados. ¿Continuar?', 'flavor-chat-ia'),
+                'confirmarCambioPerfil' => __('Deseas cambiar de plantilla? Esto activara los modulos correspondientes.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmarPerfilesMultiples' => __('Se activaran los modulos de todos los perfiles seleccionados. ¿Continuar?', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
 
@@ -271,26 +271,26 @@ class Flavor_App_Profile_Admin {
         <div class="wrap flavor-composer-wrapper"
              x-data="window.flavorComposerState ? flavorComposerState() : { pasoActual: 'plantillas', modoMultiSeleccion: false, perfilesSeleccionados: [] }"
              x-init="pasoActual = pasoActual || 'plantillas'">
-            <h1><?php _e('Compositor de Aplicación', 'flavor-chat-ia'); ?></h1>
-            <p class="description"><?php _e('Elige una plantilla predefinida o personaliza los módulos activos en tu plataforma (web y móvil).', 'flavor-chat-ia'); ?></p>
+            <h1><?php _e('Compositor de Aplicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
+            <p class="description"><?php _e('Elige una plantilla predefinida o personaliza los módulos activos en tu plataforma (web y móvil).', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
             <?php if ($mensaje === 'perfil_cambiado'): ?>
-                <div class="notice notice-success is-dismissible"><p><?php _e('Plantilla cambiada correctamente.', 'flavor-chat-ia'); ?></p></div>
+                <div class="notice notice-success is-dismissible"><p><?php _e('Plantilla cambiada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p></div>
             <?php elseif ($mensaje === 'modulo_actualizado'): ?>
-                <div class="notice notice-success is-dismissible"><p><?php _e('Modulo actualizado correctamente.', 'flavor-chat-ia'); ?></p></div>
+                <div class="notice notice-success is-dismissible"><p><?php _e('Modulo actualizado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p></div>
             <?php elseif ($mensaje === 'plantilla_activada'): ?>
-                <div class="notice notice-success is-dismissible"><p><?php _e('Plantilla activada correctamente.', 'flavor-chat-ia'); ?></p></div>
+                <div class="notice notice-success is-dismissible"><p><?php _e('Plantilla activada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p></div>
             <?php elseif ($mensaje === 'plantilla_error'): ?>
-                <div class="notice notice-error is-dismissible"><p><?php _e('Error al activar la plantilla.', 'flavor-chat-ia'); ?></p></div>
+                <div class="notice notice-error is-dismissible"><p><?php _e('Error al activar la plantilla.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p></div>
             <?php endif; ?>
 
             <!-- Navegación de pasos -->
             <div class="flavor-composer-steps">
                 <div class="flavor-composer-step" :class="{ 'activo': pasoActual === 'plantillas' }" @click="irAPaso('plantillas')">
-                    <span class="step-numero">1</span> <?php _e('Plantillas', 'flavor-chat-ia'); ?>
+                    <span class="step-numero">1</span> <?php _e('Plantillas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </div>
                 <div class="flavor-composer-step" :class="{ 'activo': pasoActual === 'modulos' }" @click="irAPaso('modulos')">
-                    <span class="step-numero">2</span> <?php _e('Módulos App', 'flavor-chat-ia'); ?>
+                    <span class="step-numero">2</span> <?php _e('Módulos App', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </div>
             </div>
 
@@ -298,8 +298,8 @@ class Flavor_App_Profile_Admin {
             <div x-show="pasoActual === 'plantillas'" x-transition>
                 <div class="flavor-template-suggestions" x-show="obtenerPerfilesSugeridos().length > 0">
                     <div class="flavor-template-suggestions__header">
-                        <h2><?php esc_html_e('Sugerencias automáticas', 'flavor-chat-ia'); ?></h2>
-                        <p><?php esc_html_e('Perfiles que completan o amplían mejor el ecosistema que ya tienes activo.', 'flavor-chat-ia'); ?></p>
+                        <h2><?php esc_html_e('Sugerencias automáticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                        <p><?php esc_html_e('Perfiles que completan o amplían mejor el ecosistema que ya tienes activo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                     <div class="flavor-template-suggestions__grid">
                         <template x-for="sugerencia in obtenerPerfilesSugeridos()" :key="sugerencia.id">
@@ -311,7 +311,7 @@ class Flavor_App_Profile_Admin {
                                 <p class="flavor-template-suggestion-card__desc" x-text="sugerencia.descripcion"></p>
                                 <template x-if="sugerencia.contextosCompartidos.length > 0">
                                     <div class="flavor-template-suggestion-card__block">
-                                        <div class="flavor-template-suggestion-card__label"><?php esc_html_e('Contextos compartidos', 'flavor-chat-ia'); ?></div>
+                                        <div class="flavor-template-suggestion-card__label"><?php esc_html_e('Contextos compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                                         <div class="flavor-template-suggestion-card__tags">
                                             <template x-for="contexto in sugerencia.contextosCompartidos" :key="contexto">
                                                 <span class="flavor-modulo-tag opcional" x-text="contexto"></span>
@@ -321,7 +321,7 @@ class Flavor_App_Profile_Admin {
                                 </template>
                                 <template x-if="sugerencia.capacidadesCompartidas.length > 0">
                                     <div class="flavor-template-suggestion-card__block">
-                                        <div class="flavor-template-suggestion-card__label"><?php esc_html_e('Capacidades alineadas', 'flavor-chat-ia'); ?></div>
+                                        <div class="flavor-template-suggestion-card__label"><?php esc_html_e('Capacidades alineadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                                         <div class="flavor-template-suggestion-card__tags">
                                             <template x-for="capacidad in sugerencia.capacidadesCompartidas" :key="capacidad">
                                                 <span class="flavor-modulo-tag opcional" style="background:#ecfeff;color:#155e75;" x-text="capacidad"></span>
@@ -332,14 +332,14 @@ class Flavor_App_Profile_Admin {
                                 <div class="flavor-template-suggestion-card__footer">
                                     <span class="flavor-template-suggestion-card__meta">
                                         <span x-text="sugerencia.modulosFaltantes"></span>
-                                        <?php esc_html_e('módulos por activar', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('módulos por activar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </span>
                                     <div class="flavor-template-suggestion-card__actions">
                                         <button type="button" class="button button-secondary" @click="abrirPreviewPlantilla(sugerencia.id, 'sugerencia')">
-                                        <?php esc_html_e('Ver sugerencia', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Ver sugerencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </button>
                                         <button type="button" class="button button-primary" @click="activarSugerenciaPlantilla(sugerencia.id)">
-                                            <?php esc_html_e('Activar ahora', 'flavor-chat-ia'); ?>
+                                            <?php esc_html_e('Activar ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </button>
                                     </div>
                                 </div>
@@ -351,29 +351,29 @@ class Flavor_App_Profile_Admin {
                 <div class="flavor-composer-filters" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 10px 0 20px;">
                     <input type="search"
                            class="regular-text"
-                           placeholder="<?php esc_attr_e('Buscar perfiles o módulos...', 'flavor-chat-ia'); ?>"
+                           placeholder="<?php esc_attr_e('Buscar perfiles o módulos...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                            style="min-width: 260px;"
                            x-model="filtroPerfilTexto">
                     <select class="regular-text" style="min-width: 220px;" x-model="filtroPerfilTipo">
-                        <option value="todos"><?php esc_html_e('Tipo de organización', 'flavor-chat-ia'); ?></option>
+                        <option value="todos"><?php esc_html_e('Tipo de organización', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($tipos_organizacion as $tipo_id => $tipo_label): ?>
                             <option value="<?php echo esc_attr($tipo_id); ?>"><?php echo esc_html($tipo_label); ?></option>
                         <?php endforeach; ?>
                     </select>
                     <select class="regular-text" style="min-width: 220px;" x-model="filtroPerfilImpacto">
-                        <option value="todos"><?php esc_html_e('Impacto social', 'flavor-chat-ia'); ?></option>
+                        <option value="todos"><?php esc_html_e('Impacto social', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($impactos_sociales as $impacto_id => $impacto_label): ?>
                             <option value="<?php echo esc_attr($impacto_id); ?>"><?php echo esc_html($impacto_label); ?></option>
                         <?php endforeach; ?>
                     </select>
                     <select class="regular-text" style="min-width: 220px;" x-model="filtroPerfilCapacidad">
-                        <option value="todos"><?php esc_html_e('Capacidad del ecosistema', 'flavor-chat-ia'); ?></option>
+                        <option value="todos"><?php esc_html_e('Capacidad del ecosistema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($capacidades_perfiles as $capacidad): ?>
                             <option value="<?php echo esc_attr($capacidad); ?>"><?php echo esc_html($capacidad); ?></option>
                         <?php endforeach; ?>
                     </select>
                     <select class="regular-text" style="min-width: 220px;" x-model="filtroPerfilContexto">
-                        <option value="todos"><?php esc_html_e('Contexto prioritario', 'flavor-chat-ia'); ?></option>
+                        <option value="todos"><?php esc_html_e('Contexto prioritario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($contextos_perfiles as $contexto): ?>
                             <option value="<?php echo esc_attr($contexto); ?>"><?php echo esc_html($contexto); ?></option>
                         <?php endforeach; ?>
@@ -382,7 +382,7 @@ class Flavor_App_Profile_Admin {
                         <span class="flavor-category-tab"
                               :class="{ 'activo': filtroPerfilCategoria === 'todos' }"
                               @click="filtroPerfilCategoria = 'todos'">
-                            <?php _e('Todos los sectores', 'flavor-chat-ia'); ?>
+                            <?php _e('Todos los sectores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
                         <?php foreach ($categorias_modulos as $id_categoria => $datos_categoria): ?>
                             <span class="flavor-category-tab"
@@ -393,7 +393,7 @@ class Flavor_App_Profile_Admin {
                         <?php endforeach; ?>
                     </div>
                     <button type="button" class="button" @click="filtroPerfilTexto = ''; filtroPerfilCategoria = 'todos'; filtroPerfilTipo = 'todos'; filtroPerfilImpacto = 'todos'; filtroPerfilCapacidad = 'todos'; filtroPerfilContexto = 'todos'">
-                        <?php _e('Limpiar filtros', 'flavor-chat-ia'); ?>
+                        <?php _e('Limpiar filtros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
 
@@ -401,16 +401,16 @@ class Flavor_App_Profile_Admin {
                 <div class="flavor-multi-select-toolbar" style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #fff; border: 1px solid #ddd; border-radius: 8px;">
                     <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
                         <input type="checkbox" x-model="modoMultiSeleccion" @change="actualizarModoMulti()">
-                        <span style="font-weight: 500;"><?php _e('Activar varios perfiles a la vez', 'flavor-chat-ia'); ?></span>
+                        <span style="font-weight: 500;"><?php _e('Activar varios perfiles a la vez', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </label>
 
                     <div x-show="modoMultiSeleccion && perfilesSeleccionados.length > 0" x-transition style="display: flex; gap: 10px; align-items: center;">
                         <span style="color: #666; font-size: 13px;">
-                            <span x-text="perfilesSeleccionados.length"></span> <?php _e('perfiles seleccionados', 'flavor-chat-ia'); ?>
+                            <span x-text="perfilesSeleccionados.length"></span> <?php _e('perfiles seleccionados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
                         <button @click="aplicarPerfilesMultiples()" class="button button-primary" type="button">
                             <span class="dashicons dashicons-yes-alt" style="margin-top: 3px;"></span>
-                            <?php _e('Aplicar selección', 'flavor-chat-ia'); ?>
+                            <?php _e('Aplicar selección', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </div>
@@ -446,7 +446,7 @@ class Flavor_App_Profile_Admin {
                             <?php if ($id_perfil !== 'personalizado'): ?>
                                 <span class="flavor-template-modulos-badge">
                                     <?php printf(
-                                        esc_html__('%d modulos', 'flavor-chat-ia'),
+                                        esc_html__('%d modulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                         count($datos_perfil['modulos_requeridos']) + count($datos_perfil['modulos_opcionales'])
                                     ); ?>
                                 </span>
@@ -464,7 +464,7 @@ class Flavor_App_Profile_Admin {
                                 <?php if (!empty($perfil_ecosistema['capacidades'])) : ?>
                                     <div style="margin-bottom: 12px;">
                                         <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; color: #6b7280; margin-bottom: 6px;">
-                                            <?php esc_html_e('Capacidades', 'flavor-chat-ia'); ?>
+                                            <?php esc_html_e('Capacidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </div>
                                         <div style="display: flex; flex-wrap: wrap; gap: 6px;">
                                             <?php foreach ($perfil_ecosistema['capacidades'] as $capacidad): ?>
@@ -479,7 +479,7 @@ class Flavor_App_Profile_Admin {
                                 <?php if (!empty($perfil_ecosistema['contextos'])) : ?>
                                     <div style="margin-bottom: 12px;">
                                         <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; color: #6b7280; margin-bottom: 6px;">
-                                            <?php esc_html_e('Contextos', 'flavor-chat-ia'); ?>
+                                            <?php esc_html_e('Contextos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </div>
                                         <div style="display: flex; flex-wrap: wrap; gap: 6px;">
                                             <?php foreach ($perfil_ecosistema['contextos'] as $contexto): ?>
@@ -502,7 +502,7 @@ class Flavor_App_Profile_Admin {
                                 <?php if (!empty($perfil_ecosistema['recomendados'])) : ?>
                                     <div style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed #e5e7eb;">
                                         <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; color: #6b7280; margin-bottom: 6px;">
-                                            <?php esc_html_e('Capas recomendadas', 'flavor-chat-ia'); ?>
+                                            <?php esc_html_e('Capas recomendadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </div>
                                         <div style="display: flex; flex-wrap: wrap; gap: 6px;">
                                             <?php foreach ($perfil_ecosistema['recomendados'] as $recomendado): ?>
@@ -517,7 +517,7 @@ class Flavor_App_Profile_Admin {
                                 <?php if (!empty($perfil_ecosistema['recomendados_contexto'])) : ?>
                                     <div style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed #e5e7eb;">
                                         <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; color: #6b7280; margin-bottom: 6px;">
-                                            <?php esc_html_e('Siguientes capas por contexto', 'flavor-chat-ia'); ?>
+                                            <?php esc_html_e('Siguientes capas por contexto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </div>
                                         <div style="display: flex; flex-wrap: wrap; gap: 6px;">
                                             <?php foreach ($perfil_ecosistema['recomendados_contexto'] as $recomendado_contexto): ?>
@@ -537,7 +537,7 @@ class Flavor_App_Profile_Admin {
                                             type="button"
                                             class="button button-small"
                                             @click.stop="abrirPreviewPlantilla('<?php echo esc_js($id_perfil); ?>')">
-                                            <?php _e('Ver preview', 'flavor-chat-ia'); ?>
+                                            <?php _e('Ver preview', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </button>
                                     </template>
                                     <template x-if="!perfilEstaActivoEnSistema('<?php echo esc_js($id_perfil); ?>')">
@@ -546,14 +546,14 @@ class Flavor_App_Profile_Admin {
                                             class="button button-small button-primary"
                                             @click.stop="activarPlantillaDirecto('<?php echo esc_js($id_perfil); ?>')"
                                             :disabled="cargando">
-                                            <span x-show="!cargando"><?php _e('Activar', 'flavor-chat-ia'); ?></span>
+                                            <span x-show="!cargando"><?php _e('Activar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                             <span x-show="cargando" class="spinner is-active" style="margin: 0;"></span>
                                         </button>
                                     </template>
                                     <template x-if="perfilEstaActivoEnSistema('<?php echo esc_js($id_perfil); ?>')">
                                         <span class="flavor-template-active-badge" style="background: #00a32a; color: #fff; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 500;">
                                             <span class="dashicons dashicons-yes" style="font-size: 14px; width: 14px; height: 14px; margin-right: 4px;"></span>
-                                            <?php _e('Activo', 'flavor-chat-ia'); ?>
+                                            <?php _e('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </span>
                                     </template>
                                 <?php else: ?>
@@ -562,7 +562,7 @@ class Flavor_App_Profile_Admin {
                                         class="button button-small"
                                         :class="{ 'button-primary': perfilSeleccionado !== 'personalizado' }"
                                         @click.stop="cambiarPerfil('personalizado')">
-                                        <?php _e('Usar personalizado', 'flavor-chat-ia'); ?>
+                                        <?php _e('Usar personalizado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 <?php endif; ?>
                             </div>
@@ -684,9 +684,9 @@ class Flavor_App_Profile_Admin {
 
     private function format_profile_roles($role_counts) {
         $labels = [
-            'base' => __('Base', 'flavor-chat-ia'),
-            'vertical' => __('Vertical', 'flavor-chat-ia'),
-            'transversal' => __('Transversal', 'flavor-chat-ia'),
+            'base' => __('Base', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'vertical' => __('Vertical', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'transversal' => __('Transversal', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $result = [];
@@ -705,37 +705,37 @@ class Flavor_App_Profile_Admin {
         $impactos = (array) ($profile_data['impacto_social'] ?? []);
         $rules = [
             [
-                'label' => __('Base comunitaria', 'flavor-chat-ia'),
+                'label' => __('Base comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'modules' => ['comunidades', 'socios', 'colectivos', 'red_social'],
                 'impacts' => ['cohesion_social', 'intercooperacion'],
             ],
             [
-                'label' => __('Red de cuidados', 'flavor-chat-ia'),
+                'label' => __('Red de cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'modules' => ['ayuda_vecinal', 'banco_tiempo', 'circulos_cuidados', 'eventos'],
                 'impacts' => ['solidaridad'],
             ],
             [
-                'label' => __('Gobernanza', 'flavor-chat-ia'),
+                'label' => __('Gobernanza', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'modules' => ['participacion', 'transparencia', 'presupuestos_participativos', 'comunidades'],
                 'impacts' => ['participacion', 'gobernanza', 'transparencia'],
             ],
             [
-                'label' => __('Autosuficiencia local', 'flavor-chat-ia'),
+                'label' => __('Autosuficiencia local', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'modules' => ['energia_comunitaria', 'grupos_consumo', 'huella_ecologica', 'compostaje', 'reciclaje', 'huertos_urbanos', 'carpooling', 'bicicletas_compartidas'],
                 'impacts' => ['sostenibilidad', 'economia_circular', 'consumo_local', 'movilidad'],
             ],
             [
-                'label' => __('Aprendizaje compartido', 'flavor-chat-ia'),
+                'label' => __('Aprendizaje compartido', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'modules' => ['cursos', 'talleres', 'saberes_ancestrales', 'biblioteca', 'radio', 'podcast'],
                 'impacts' => ['educacion', 'cultura'],
             ],
             [
-                'label' => __('Economia local', 'flavor-chat-ia'),
+                'label' => __('Economia local', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'modules' => ['marketplace', 'woocommerce', 'grupos_consumo', 'clientes', 'facturas', 'empresarial', 'trabajo_digno'],
                 'impacts' => ['economia_colaborativa', 'economia_circular', 'consumo_local', 'intercooperacion'],
             ],
             [
-                'label' => __('Coordinacion territorial', 'flavor-chat-ia'),
+                'label' => __('Coordinacion territorial', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'modules' => ['avisos_municipales', 'incidencias', 'campanias', 'mapa_actores', 'comunidades', 'colectivos'],
                 'impacts' => ['cohesion_social', 'participacion'],
             ],
@@ -793,34 +793,34 @@ class Flavor_App_Profile_Admin {
         $context = sanitize_key(str_replace('-', '_', (string) $context));
 
         $labels = [
-            'portal' => __('Portal', 'flavor-chat-ia'),
-            'mi_panel' => __('Mi panel', 'flavor-chat-ia'),
-            'cuenta' => __('Cuenta', 'flavor-chat-ia'),
-            'comunidad' => __('Comunidad', 'flavor-chat-ia'),
-            'socios' => __('Miembros', 'flavor-chat-ia'),
-            'membresia' => __('Membresia', 'flavor-chat-ia'),
-            'colectivos' => __('Colectivos', 'flavor-chat-ia'),
-            'asociacion' => __('Asociacion', 'flavor-chat-ia'),
-            'energia' => __('Energia', 'flavor-chat-ia'),
-            'consumo' => __('Consumo', 'flavor-chat-ia'),
-            'cuidados' => __('Cuidados', 'flavor-chat-ia'),
-            'eventos' => __('Eventos', 'flavor-chat-ia'),
-            'agenda' => __('Agenda', 'flavor-chat-ia'),
-            'actividad' => __('Actividad', 'flavor-chat-ia'),
-            'gobernanza' => __('Gobernanza', 'flavor-chat-ia'),
-            'transparencia' => __('Transparencia', 'flavor-chat-ia'),
-            'impacto' => __('Impacto', 'flavor-chat-ia'),
-            'sostenibilidad' => __('Sostenibilidad', 'flavor-chat-ia'),
-            'aprendizaje' => __('Aprendizaje', 'flavor-chat-ia'),
-            'cultura' => __('Cultura', 'flavor-chat-ia'),
-            'saberes' => __('Saberes', 'flavor-chat-ia'),
-            'suficiencia' => __('Suficiencia', 'flavor-chat-ia'),
-            'solidaridad' => __('Solidaridad', 'flavor-chat-ia'),
-            'coordinacion' => __('Coordinacion', 'flavor-chat-ia'),
-            'participacion' => __('Participacion', 'flavor-chat-ia'),
-            'gestion' => __('Gestion', 'flavor-chat-ia'),
-            'intercambio' => __('Intercambio', 'flavor-chat-ia'),
-            'rendicion_cuentas' => __('Rendicion de cuentas', 'flavor-chat-ia'),
+            'portal' => __('Portal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'mi_panel' => __('Mi panel', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cuenta' => __('Cuenta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'comunidad' => __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'socios' => __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'membresia' => __('Membresia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'colectivos' => __('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'asociacion' => __('Asociacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'energia' => __('Energia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'consumo' => __('Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cuidados' => __('Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'eventos' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'agenda' => __('Agenda', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'actividad' => __('Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'gobernanza' => __('Gobernanza', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'transparencia' => __('Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'impacto' => __('Impacto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'sostenibilidad' => __('Sostenibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'aprendizaje' => __('Aprendizaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cultura' => __('Cultura', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'saberes' => __('Saberes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'suficiencia' => __('Suficiencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'solidaridad' => __('Solidaridad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'coordinacion' => __('Coordinacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'participacion' => __('Participacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'gestion' => __('Gestion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'intercambio' => __('Intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'rendicion_cuentas' => __('Rendicion de cuentas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         if (isset($labels[$context])) {
@@ -1091,7 +1091,7 @@ class Flavor_App_Profile_Admin {
         check_admin_referer('cambiar_perfil');
 
         if (!current_user_can('manage_options')) {
-            wp_die(__('No tienes permisos para realizar esta acción.', 'flavor-chat-ia'));
+            wp_die(__('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $regenerar_paginas = isset($_POST['regenerar_paginas']) && $_POST['regenerar_paginas'] === '1';
@@ -1102,7 +1102,7 @@ class Flavor_App_Profile_Admin {
             $perfiles_ids = array_map('sanitize_text_field', $_POST['perfiles']);
 
             if ($this->gestor_perfiles->establecer_perfiles($perfiles_ids)) {
-                $configuracion = get_option('flavor_chat_ia_settings', []);
+                $configuracion = flavor_get_main_settings();
                 $modulos_activos = $this->normalizar_ids_modulos($configuracion['active_modules'] ?? []);
                 if ($regenerar_paginas && !empty($modulos_activos)) {
                     Flavor_Page_Creator::create_pages_for_modules($modulos_activos);
@@ -1127,7 +1127,7 @@ class Flavor_App_Profile_Admin {
             $perfil_id = sanitize_text_field($_POST['perfil_id'] ?? '');
 
             if ($this->gestor_perfiles->establecer_perfil($perfil_id)) {
-                $configuracion = get_option('flavor_chat_ia_settings', []);
+                $configuracion = flavor_get_main_settings();
                 $modulos_activos = $this->normalizar_ids_modulos($configuracion['active_modules'] ?? []);
                 if ($regenerar_paginas && !empty($modulos_activos)) {
                     Flavor_Page_Creator::create_pages_for_modules($modulos_activos);
@@ -1157,7 +1157,7 @@ class Flavor_App_Profile_Admin {
         check_admin_referer('toggle_modulo');
 
         if (!current_user_can('manage_options')) {
-            wp_die(__('No tienes permisos para realizar esta acción.', 'flavor-chat-ia'));
+            wp_die(__('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $modulo_id = sanitize_text_field($_POST['modulo_id'] ?? '');
@@ -1186,14 +1186,14 @@ class Flavor_App_Profile_Admin {
         // Verificar nonce
         if (!check_ajax_referer('toggle_modulo', '_ajax_nonce', false)) {
             wp_send_json_error([
-                'message' => __('Nonce de seguridad inválido.', 'flavor-chat-ia')
+                'message' => __('Nonce de seguridad inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN)
             ]);
             return;
         }
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error([
-                'message' => __('No tienes permisos para realizar esta acción.', 'flavor-chat-ia')
+                'message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)
             ]);
             return;
         }
@@ -1203,7 +1203,7 @@ class Flavor_App_Profile_Admin {
 
         if (empty($modulo_id)) {
             wp_send_json_error([
-                'message' => __('ID de módulo no válido.', 'flavor-chat-ia')
+                'message' => __('ID de módulo no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN)
             ]);
             return;
         }
@@ -1222,7 +1222,7 @@ class Flavor_App_Profile_Admin {
                 if (in_array($modulo_id, $modulos_requeridos)) {
                     wp_send_json_error([
                         'message' => sprintf(
-                            __('No se puede desactivar "%s" porque es un módulo requerido por el perfil actual.', 'flavor-chat-ia'),
+                            __('No se puede desactivar "%s" porque es un módulo requerido por el perfil actual.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             $modulo_id
                         ),
                         'modulo_requerido' => true
@@ -1246,8 +1246,8 @@ class Flavor_App_Profile_Admin {
             if ($resultado === false) {
                 wp_send_json_error([
                     'message' => $activar
-                        ? __('No se pudo activar el módulo. Verifica que exista y cumpla los requisitos.', 'flavor-chat-ia')
-                        : __('No se pudo desactivar el módulo. Puede ser un módulo requerido.', 'flavor-chat-ia')
+                        ? __('No se pudo activar el módulo. Verifica que exista y cumpla los requisitos.', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                        : __('No se pudo desactivar el módulo. Puede ser un módulo requerido.', FLAVOR_PLATFORM_TEXT_DOMAIN)
                 ]);
                 return;
             }
@@ -1257,7 +1257,10 @@ class Flavor_App_Profile_Admin {
 
             // Leer DIRECTAMENTE de la base de datos para evitar cualquier caché
             global $wpdb;
-            $configuracion_raw = $wpdb->get_var("SELECT option_value FROM {$wpdb->options} WHERE option_name = 'flavor_chat_ia_settings'");
+            $configuracion_raw = $wpdb->get_var($wpdb->prepare(
+                "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s",
+                FLAVOR_CHAT_IA_SETTINGS_OPTION
+            ));
             $configuracion = maybe_unserialize($configuracion_raw);
             $modulos_activos = $configuracion['active_modules'] ?? [];
 
@@ -1269,13 +1272,13 @@ class Flavor_App_Profile_Admin {
             $modulo_esta_activo = in_array($modulo_id, $modulos_activos);
             if ($activar && !$modulo_esta_activo) {
                 wp_send_json_error([
-                    'message' => __('El módulo no se activó correctamente. Verifica los logs del servidor.', 'flavor-chat-ia')
+                    'message' => __('El módulo no se activó correctamente. Verifica los logs del servidor.', FLAVOR_PLATFORM_TEXT_DOMAIN)
                 ]);
                 return;
             }
             if (!$activar && $modulo_esta_activo) {
                 wp_send_json_error([
-                    'message' => __('El módulo no se desactivó correctamente. Puede ser un módulo requerido.', 'flavor-chat-ia')
+                    'message' => __('El módulo no se desactivó correctamente. Puede ser un módulo requerido.', FLAVOR_PLATFORM_TEXT_DOMAIN)
                 ]);
                 return;
             }
@@ -1285,8 +1288,8 @@ class Flavor_App_Profile_Admin {
 
             wp_send_json_success([
                 'message' => $activar
-                    ? __('Módulo activado correctamente.', 'flavor-chat-ia')
-                    : __('Módulo desactivado correctamente.', 'flavor-chat-ia'),
+                    ? __('Módulo activado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                    : __('Módulo desactivado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'modulo_id' => $modulo_id,
                 'activado' => $activar,
                 'modulos_activos' => array_values($modulos_activos)
@@ -1306,13 +1309,13 @@ class Flavor_App_Profile_Admin {
         check_admin_referer('toggle_modulo_frontend');
 
         if (!current_user_can('manage_options')) {
-            wp_die(__('No tienes permisos para realizar esta acción.', 'flavor-chat-ia'));
+            wp_die(__('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $modulo_id = sanitize_text_field($_POST['modulo_id'] ?? '');
         $activar = isset($_POST['activar']) && $_POST['activar'] === '1';
 
-        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $configuracion = flavor_get_main_settings();
         $modulos_activos = $configuracion['active_frontend_modules'] ?? [];
 
         // Si no hay módulos configurados, inicializar con todos
@@ -1333,7 +1336,7 @@ class Flavor_App_Profile_Admin {
         }
 
         $configuracion['active_frontend_modules'] = $modulos_activos;
-        update_option('flavor_chat_ia_settings', $configuracion);
+        flavor_update_main_settings($configuracion);
 
         // Programar flush de rewrite rules
         if (class_exists('Flavor_Frontend_Loader')) {
@@ -1354,7 +1357,7 @@ class Flavor_App_Profile_Admin {
         check_admin_referer('crear_landing_frontend');
 
         if (!current_user_can('manage_options')) {
-            wp_die(__('No tienes permisos para realizar esta acción.', 'flavor-chat-ia'));
+            wp_die(__('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $modulo_slug = sanitize_title($_POST['modulo_slug'] ?? '');
@@ -1413,7 +1416,7 @@ class Flavor_App_Profile_Admin {
         check_admin_referer('crear_landing_frontend');
 
         if (!current_user_can('manage_options')) {
-            wp_die(__('No tienes permisos para realizar esta acción.', 'flavor-chat-ia'));
+            wp_die(__('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $modulos_frontend = $this->obtener_modulos_frontend();
@@ -1454,120 +1457,120 @@ class Flavor_App_Profile_Admin {
     private function obtener_modulos_frontend() {
         $modulos_frontend = [
             'grupos-consumo' => [
-                'name' => __('Grupos de Consumo', 'flavor-chat-ia'),
-                'description' => __('Pedidos colectivos de productos locales y ecológicos', 'flavor-chat-ia'),
+                'name' => __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Pedidos colectivos de productos locales y ecológicos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-carrot',
                 'color' => '#84cc16',
                 'url' => home_url('/mi-portal/grupos-consumo/'),
             ],
             'banco-tiempo' => [
-                'name' => __('Banco de Tiempo', 'flavor-chat-ia'),
-                'description' => __('Intercambio de servicios y habilidades por horas', 'flavor-chat-ia'),
+                'name' => __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Intercambio de servicios y habilidades por horas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-clock',
                 'color' => '#8b5cf6',
                 'url' => home_url('/banco-tiempo/'),
             ],
             'ayuntamiento' => [
-                'name' => __('Ayuntamiento', 'flavor-chat-ia'),
-                'description' => __('Portal ciudadano con trámites, noticias y servicios municipales', 'flavor-chat-ia'),
+                'name' => __('Ayuntamiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Portal ciudadano con trámites, noticias y servicios municipales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-building',
                 'color' => '#1d4ed8',
                 'url' => home_url('/ayuntamiento/'),
             ],
             'comunidades' => [
-                'name' => __('Comunidades', 'flavor-chat-ia'),
-                'description' => __('Redes vecinales y grupos de interés común', 'flavor-chat-ia'),
+                'name' => __('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Redes vecinales y grupos de interés común', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-groups',
                 'color' => '#f43f5e',
                 'url' => home_url('/comunidades/'),
             ],
             'espacios-comunes' => [
-                'name' => __('Espacios Comunes', 'flavor-chat-ia'),
-                'description' => __('Reserva de salas, locales y espacios compartidos', 'flavor-chat-ia'),
+                'name' => __('Espacios Comunes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Reserva de salas, locales y espacios compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-multisite',
                 'color' => '#06b6d4',
                 'url' => home_url('/espacios-comunes/'),
             ],
             'ayuda-vecinal' => [
-                'name' => __('Ayuda Vecinal', 'flavor-chat-ia'),
-                'description' => __('Red de apoyo mutuo entre vecinos', 'flavor-chat-ia'),
+                'name' => __('Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Red de apoyo mutuo entre vecinos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-heart',
                 'color' => '#f97316',
                 'url' => home_url('/ayuda-vecinal/'),
             ],
             'huertos-urbanos' => [
-                'name' => __('Huertos Urbanos', 'flavor-chat-ia'),
-                'description' => __('Gestión de parcelas y huertos comunitarios', 'flavor-chat-ia'),
+                'name' => __('Huertos Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Gestión de parcelas y huertos comunitarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-palmtree',
                 'color' => '#22c55e',
                 'url' => home_url('/huertos-urbanos/'),
             ],
             'biblioteca' => [
-                'name' => __('Biblioteca', 'flavor-chat-ia'),
-                'description' => __('Catálogo y préstamo de libros comunitarios', 'flavor-chat-ia'),
+                'name' => __('Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Catálogo y préstamo de libros comunitarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-book',
                 'color' => '#6366f1',
                 'url' => home_url('/biblioteca/'),
             ],
             'cursos' => [
-                'name' => __('Cursos y Talleres', 'flavor-chat-ia'),
-                'description' => __('Formación y actividades educativas', 'flavor-chat-ia'),
+                'name' => __('Cursos y Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Formación y actividades educativas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-welcome-learn-more',
                 'color' => '#a855f7',
                 'url' => home_url('/cursos/'),
             ],
             'podcast' => [
-                'name' => __('Podcast', 'flavor-chat-ia'),
-                'description' => __('Contenido de audio y episodios', 'flavor-chat-ia'),
+                'name' => __('Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Contenido de audio y episodios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-microphone',
                 'color' => '#14b8a6',
                 'url' => home_url('/podcast/'),
             ],
             'radio' => [
-                'name' => __('Radio', 'flavor-chat-ia'),
-                'description' => __('Emisora de radio comunitaria', 'flavor-chat-ia'),
+                'name' => __('Radio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Emisora de radio comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-controls-volumeon',
                 'color' => '#ef4444',
                 'url' => home_url('/radio/'),
             ],
             'bicicletas' => [
-                'name' => __('Bicicletas', 'flavor-chat-ia'),
-                'description' => __('Préstamo y reparación de bicicletas', 'flavor-chat-ia'),
+                'name' => __('Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Préstamo y reparación de bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-location-alt',
                 'color' => '#a3e635',
                 'url' => home_url('/bicicletas/'),
             ],
             'reciclaje' => [
-                'name' => __('Reciclaje', 'flavor-chat-ia'),
-                'description' => __('Puntos de reciclaje y economía circular', 'flavor-chat-ia'),
+                'name' => __('Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Puntos de reciclaje y economía circular', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-update',
                 'color' => '#10b981',
                 'url' => home_url('/reciclaje/'),
             ],
             'tienda-local' => [
-                'name' => __('Tienda Local', 'flavor-chat-ia'),
-                'description' => __('Directorio de comercios y productos locales', 'flavor-chat-ia'),
+                'name' => __('Tienda Local', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Directorio de comercios y productos locales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-store',
                 'color' => '#f59e0b',
                 'url' => home_url('/tienda-local/'),
             ],
             'empresarial' => [
-                'name' => __('Empresarial', 'flavor-chat-ia'),
-                'description' => __('Landing corporativa y herramientas de gestion empresarial', 'flavor-chat-ia'),
+                'name' => __('Empresarial', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Landing corporativa y herramientas de gestion empresarial', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-briefcase',
                 'color' => '#1f2937',
                 'url' => home_url('/empresarial/'),
             ],
             'clientes' => [
-                'name' => __('Clientes (CRM)', 'flavor-chat-ia'),
-                'description' => __('Gestion de clientes, pipeline y contactos comerciales', 'flavor-chat-ia'),
+                'name' => __('Clientes (CRM)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Gestion de clientes, pipeline y contactos comerciales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-id',
                 'color' => '#0ea5e9',
                 'url' => home_url('/clientes/'),
             ],
             'incidencias' => [
-                'name' => __('Incidencias', 'flavor-chat-ia'),
-                'description' => __('Reporte y seguimiento de problemas urbanos', 'flavor-chat-ia'),
+                'name' => __('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Reporte y seguimiento de problemas urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-warning',
                 'color' => '#e11d48',
                 'url' => home_url('/incidencias/'),
@@ -1575,7 +1578,7 @@ class Flavor_App_Profile_Admin {
         ];
 
         // Marcar módulos activos (verificar si el controlador existe)
-        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $configuracion = flavor_get_main_settings();
         $modulos_activos = $configuracion['active_frontend_modules'] ?? array_keys($modulos_frontend);
 
         foreach ($modulos_frontend as $modulo_id => &$modulo) {
@@ -1594,21 +1597,21 @@ class Flavor_App_Profile_Admin {
     public function renderizar_modulos_frontend($modulos_frontend) {
         ?>
         <div class="flavor-modulos-lista" style="margin-top: 40px;">
-            <h2><?php _e('Landings y Páginas de Demostración', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Landings y Páginas de Demostración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <p class="description">
-                <?php _e('Gestiona qué landings están públicas y crea páginas demo para pruebas o presentaciones.', 'flavor-chat-ia'); ?>
+                <?php _e('Gestiona qué landings están públicas y crea páginas demo para pruebas o presentaciones.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
 
-            <h3 style="margin-top: 25px;"><?php _e('Landings / Módulos Frontend', 'flavor-chat-ia'); ?></h3>
+            <h3 style="margin-top: 25px;"><?php _e('Landings / Módulos Frontend', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <p class="description">
-                <?php _e('Activa o desactiva las páginas públicas (landings) disponibles para tu sitio.', 'flavor-chat-ia'); ?>
+                <?php _e('Activa o desactiva las páginas públicas (landings) disponibles para tu sitio.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
             <div style="display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 15px;">
                 <form method="post" action="<?php echo admin_url('admin-post.php'); ?>" style="display:inline;">
                     <?php wp_nonce_field('crear_landing_frontend'); ?>
                     <input type="hidden" name="action" value="flavor_chat_ia_crear_todas_landings_frontend">
-                    <button type="submit" class="button button-primary" onclick="return confirm('<?php esc_attr_e('¿Crear todas las landings faltantes? Las existentes no se sobrescribirán.', 'flavor-chat-ia'); ?>');">
-                        <?php _e('Crear todas las landings faltantes', 'flavor-chat-ia'); ?>
+                    <button type="submit" class="button button-primary" onclick="return confirm('<?php esc_attr_e('¿Crear todas las landings faltantes? Las existentes no se sobrescribirán.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');">
+                        <?php _e('Crear todas las landings faltantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </form>
             </div>
@@ -1643,7 +1646,7 @@ class Flavor_App_Profile_Admin {
                             <?php if ($pagina_landing): ?>
                                 <a href="<?php echo esc_url($landing_url); ?>" target="_blank"
                                    class="button button-secondary" style="flex: 1; text-align: center;">
-                                    <?php _e('Ver Landing', 'flavor-chat-ia'); ?> ↗
+                                    <?php _e('Ver Landing', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> ↗
                                 </a>
                             <?php else: ?>
                                 <form method="post" action="<?php echo admin_url('admin-post.php'); ?>" style="flex: 1;">
@@ -1651,14 +1654,14 @@ class Flavor_App_Profile_Admin {
                                     <input type="hidden" name="action" value="flavor_chat_ia_crear_landing_frontend">
                                     <input type="hidden" name="modulo_slug" value="<?php echo esc_attr($modulo_id); ?>">
                                     <button type="submit" class="button button-secondary" style="width: 100%;">
-                                        <?php _e('Crear Landing', 'flavor-chat-ia'); ?>
+                                        <?php _e('Crear Landing', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 </form>
                             <?php endif; ?>
                             <button class="button <?php echo $modulo['activo'] ? '' : 'button-primary'; ?>"
                                     onclick="toggleModuloFrontend('<?php echo esc_js($modulo_id); ?>', <?php echo $modulo['activo'] ? 'false' : 'true'; ?>)"
                                     style="flex: 1;">
-                                <?php echo $modulo['activo'] ? __('Desactivar', 'flavor-chat-ia') : __('Activar', 'flavor-chat-ia'); ?>
+                                <?php echo $modulo['activo'] ? __('Desactivar', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Activar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </div>
                     </div>
@@ -1730,35 +1733,35 @@ class Flavor_App_Profile_Admin {
         ?>
         <div class="flavor-demo-pages-section" style="<?php echo $embedded ? 'margin-top: 35px;' : 'margin-top: 40px;'; ?>">
             <?php if ($embedded): ?>
-                <h3><?php _e('Páginas de Demostración', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Páginas de Demostración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <?php else: ?>
-                <h2><?php _e('Páginas de Demostración', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Páginas de Demostración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <?php endif; ?>
             <p class="description">
-                <?php _e('Crea páginas de WordPress con las landings de cada módulo. Útil para probar y mostrar a clientes.', 'flavor-chat-ia'); ?>
+                <?php _e('Crea páginas de WordPress con las landings de cada módulo. Útil para probar y mostrar a clientes.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
             <div style="display: flex; gap: 8px; margin: 10px 0 15px; flex-wrap: wrap;">
                 <a class="button <?php echo $demo_scope === 'active' ? 'button-primary' : ''; ?>"
                    href="<?php echo esc_url(add_query_arg(['page' => 'flavor-module-dashboards', 'demo_scope' => 'active'], admin_url('admin.php'))); ?>">
-                    <?php _e('Solo módulos activos', 'flavor-chat-ia'); ?>
+                    <?php _e('Solo módulos activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a class="button <?php echo $demo_scope === 'all' ? 'button-primary' : ''; ?>"
                    href="<?php echo esc_url(add_query_arg(['page' => 'flavor-module-dashboards', 'demo_scope' => 'all'], admin_url('admin.php'))); ?>">
-                    <?php _e('Todos los módulos', 'flavor-chat-ia'); ?>
+                    <?php _e('Todos los módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
             <?php if ($mensaje === 'demo_pages_created'): ?>
                 <div class="notice notice-success" style="margin: 15px 0;">
-                    <p><strong><?php _e('¡Páginas de demostración creadas correctamente!', 'flavor-chat-ia'); ?></strong></p>
+                    <p><strong><?php _e('¡Páginas de demostración creadas correctamente!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></p>
                 </div>
             <?php elseif ($mensaje === 'demo_pages_deleted'): ?>
                 <div class="notice notice-success" style="margin: 15px 0;">
-                    <p><strong><?php _e('Páginas de demostración eliminadas correctamente.', 'flavor-chat-ia'); ?></strong></p>
+                    <p><strong><?php _e('Páginas de demostración eliminadas correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></p>
                 </div>
             <?php elseif ($mensaje === 'demo_pages_error'): ?>
                 <div class="notice notice-error" style="margin: 15px 0;">
-                    <p><strong><?php _e('Error al crear las páginas de demostración.', 'flavor-chat-ia'); ?></strong></p>
+                    <p><strong><?php _e('Error al crear las páginas de demostración.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></p>
                 </div>
             <?php endif; ?>
 
@@ -1766,27 +1769,27 @@ class Flavor_App_Profile_Admin {
             <div class="flavor-demo-global-actions" style="display: flex; gap: 15px; margin: 20px 0; padding: 20px; background: #f0f0f1; border-radius: 8px;">
                 <div style="flex: 1;">
                     <h4 style="margin: 0 0 10px 0;">
-                        <?php _e('Gestión de páginas', 'flavor-chat-ia'); ?>
+                        <?php _e('Gestión de páginas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <?php if ($tiene_paginas_demo): ?>
                             <span style="background: #22c55e; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px;">
                                 <?php printf(
-                                    esc_html(_n('%d página creada', '%d páginas creadas', $count_paginas_demo, 'flavor-chat-ia')),
+                                    esc_html(_n('%d página creada', '%d páginas creadas', $count_paginas_demo, FLAVOR_PLATFORM_TEXT_DOMAIN)),
                                     $count_paginas_demo
                                 ); ?>
                             </span>
                         <?php endif; ?>
                     </h4>
                     <p class="description" style="margin: 0 0 15px 0;">
-                        <?php _e('Crea todas las páginas de una vez o elimínalas cuando ya no las necesites.', 'flavor-chat-ia'); ?>
+                        <?php _e('Crea todas las páginas de una vez o elimínalas cuando ya no las necesites.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                         <form method="post" action="<?php echo admin_url('admin-post.php'); ?>" style="display: inline;">
                             <?php wp_nonce_field('flavor_demo_pages_action'); ?>
                             <input type="hidden" name="action" value="flavor_create_demo_pages">
                             <input type="hidden" name="demo_scope" value="<?php echo esc_attr($demo_scope); ?>">
-                            <button type="submit" class="button button-primary" onclick="return confirm('<?php esc_attr_e('¿Crear todas las páginas de demostración? Las páginas existentes con el mismo slug no se sobrescribirán.', 'flavor-chat-ia'); ?>');">
+                            <button type="submit" class="button button-primary" onclick="return confirm('<?php esc_attr_e('¿Crear todas las páginas de demostración? Las páginas existentes con el mismo slug no se sobrescribirán.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');">
                                 <span class="dashicons dashicons-welcome-add-page" style="margin-right: 5px;"></span>
-                                <?php _e('Crear todas las páginas', 'flavor-chat-ia'); ?>
+                                <?php _e('Crear todas las páginas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </form>
 
@@ -1794,9 +1797,9 @@ class Flavor_App_Profile_Admin {
                             <form method="post" action="<?php echo admin_url('admin-post.php'); ?>" style="display: inline;">
                                 <?php wp_nonce_field('flavor_demo_pages_action'); ?>
                                 <input type="hidden" name="action" value="flavor_delete_demo_pages">
-                                <button type="submit" class="button" style="color: #d63638;" onclick="return confirm('<?php esc_attr_e('¿Eliminar TODAS las páginas de demostración? Esta acción no se puede deshacer.', 'flavor-chat-ia'); ?>');">
+                                <button type="submit" class="button" style="color: #d63638;" onclick="return confirm('<?php esc_attr_e('¿Eliminar TODAS las páginas de demostración? Esta acción no se puede deshacer.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');">
                                     <span class="dashicons dashicons-trash" style="margin-right: 5px;"></span>
-                                    <?php _e('Eliminar todas las páginas demo', 'flavor-chat-ia'); ?>
+                                    <?php _e('Eliminar todas las páginas demo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             </form>
                         <?php endif; ?>
@@ -1838,17 +1841,17 @@ class Flavor_App_Profile_Admin {
                             <?php if ($pagina['exists']): ?>
                                 <a href="<?php echo esc_url($pagina['url']); ?>" target="_blank" class="button button-small" style="flex: 1; text-align: center; font-size: 12px;">
                                     <span class="dashicons dashicons-external" style="font-size: 14px; vertical-align: middle;"></span>
-                                    <?php _e('Ver', 'flavor-chat-ia'); ?>
+                                    <?php _e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                                 <?php if ($pagina['edit_url']): ?>
                                     <a href="<?php echo esc_url($pagina['edit_url']); ?>" class="button button-small" style="flex: 1; text-align: center; font-size: 12px;">
                                         <span class="dashicons dashicons-edit" style="font-size: 14px; vertical-align: middle;"></span>
-                                        <?php _e('Editar', 'flavor-chat-ia'); ?>
+                                        <?php _e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 <?php endif; ?>
                             <?php else: ?>
                                 <span style="flex: 1; text-align: center; color: #9ca3af; font-size: 12px; padding: 6px;">
-                                    <?php _e('No creada', 'flavor-chat-ia'); ?>
+                                    <?php _e('No creada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                             <?php endif; ?>
                         </div>
@@ -1858,7 +1861,7 @@ class Flavor_App_Profile_Admin {
 
             <p class="description" style="margin-top: 15px; color: #6b7280;">
                 <span class="dashicons dashicons-info" style="font-size: 16px; vertical-align: middle;"></span>
-                <?php _e('Las páginas marcadas como "EXISTE" ya existían antes y no se eliminarán. Solo se eliminan las páginas creadas con el botón "Crear todas".', 'flavor-chat-ia'); ?>
+                <?php _e('Las páginas marcadas como "EXISTE" ya existían antes y no se eliminarán. Solo se eliminan las páginas creadas con el botón "Crear todas".', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
         <?php
@@ -1878,72 +1881,72 @@ class Flavor_App_Profile_Admin {
         // TODOS los módulos soportados para datos demo con sus configuraciones visuales
         $todos_modulos_demo = [
             'banco_tiempo' => [
-                'nombre' => __('Banco de Tiempo', 'flavor-chat-ia'),
+                'nombre' => __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-clock',
                 'color' => '#8b5cf6',
             ],
             'eventos' => [
-                'nombre' => __('Eventos', 'flavor-chat-ia'),
+                'nombre' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-calendar',
                 'color' => '#3b82f6',
             ],
             'marketplace' => [
-                'nombre' => __('Marketplace', 'flavor-chat-ia'),
+                'nombre' => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-megaphone',
                 'color' => '#f59e0b',
             ],
             'grupos_consumo' => [
-                'nombre' => __('Grupos de Consumo', 'flavor-chat-ia'),
+                'nombre' => __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-carrot',
                 'color' => '#22c55e',
             ],
             'ayuda_vecinal' => [
-                'nombre' => __('Ayuda Vecinal', 'flavor-chat-ia'),
+                'nombre' => __('Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-heart',
                 'color' => '#ef4444',
             ],
             'reservas' => [
-                'nombre' => __('Reservas', 'flavor-chat-ia'),
+                'nombre' => __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-book',
                 'color' => '#0891b2',
             ],
             'socios' => [
-                'nombre' => __('Miembros', 'flavor-chat-ia'),
+                'nombre' => __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-groups',
                 'color' => '#7c3aed',
             ],
             'facturas' => [
-                'nombre' => __('Facturas', 'flavor-chat-ia'),
+                'nombre' => __('Facturas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-media-spreadsheet',
                 'color' => '#dc2626',
             ],
             'incidencias' => [
-                'nombre' => __('Incidencias', 'flavor-chat-ia'),
+                'nombre' => __('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-warning',
                 'color' => '#f97316',
             ],
             'talleres' => [
-                'nombre' => __('Talleres', 'flavor-chat-ia'),
+                'nombre' => __('Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-welcome-learn-more',
                 'color' => '#8b5cf6',
             ],
             'tramites' => [
-                'nombre' => __('Trámites', 'flavor-chat-ia'),
+                'nombre' => __('Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-forms',
                 'color' => '#0891b2',
             ],
             'avisos_municipales' => [
-                'nombre' => __('Avisos Municipales', 'flavor-chat-ia'),
+                'nombre' => __('Avisos Municipales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-megaphone',
                 'color' => '#dc2626',
             ],
             'red_social' => [
-                'nombre' => __('Red Social', 'flavor-chat-ia'),
+                'nombre' => __('Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-share',
                 'color' => '#3b82f6',
             ],
             'network' => [
-                'nombre' => __('Red de Comunidades', 'flavor-chat-ia'),
+                'nombre' => __('Red de Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-networking',
                 'color' => '#10b981',
             ],
@@ -1958,7 +1961,7 @@ class Flavor_App_Profile_Admin {
         $modulos_realmente_activos = [];
 
         // 1. Obtener módulos activos de la configuración del plugin
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         if (!empty($settings['active_modules']) && is_array($settings['active_modules'])) {
             $modulos_realmente_activos = $settings['active_modules'];
         }
@@ -2029,13 +2032,13 @@ class Flavor_App_Profile_Admin {
         $mensaje = isset($_GET['mensaje']) ? sanitize_text_field($_GET['mensaje']) : '';
         ?>
         <div class="flavor-demo-data-section" style="margin-top: 40px;">
-            <h2><?php _e('Datos de Demostración', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Datos de Demostración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <p class="description">
-                <?php _e('Carga datos de ejemplo para probar los módulos o elimínalos cuando ya no los necesites.', 'flavor-chat-ia'); ?>
+                <?php _e('Carga datos de ejemplo para probar los módulos o elimínalos cuando ya no los necesites.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <?php if (!empty($modulos_demo)): ?>
                     <br>
                     <strong><?php printf(
-                        esc_html__('Mostrando %d módulo(s) activo(s) con datos demo disponibles en el perfil "%s".', 'flavor-chat-ia'),
+                        esc_html__('Mostrando %d módulo(s) activo(s) con datos demo disponibles en el perfil "%s".', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         count($modulos_demo),
                         esc_html($perfiles[$perfil_actual]['nombre'] ?? $perfil_actual)
                     ); ?></strong>
@@ -2044,24 +2047,24 @@ class Flavor_App_Profile_Admin {
 
             <?php if ($mensaje === 'demo_data_populated'): ?>
                 <div class="notice notice-success" style="margin: 15px 0;">
-                    <p><strong><?php _e('¡Datos de demostración cargados correctamente!', 'flavor-chat-ia'); ?></strong></p>
+                    <p><strong><?php _e('¡Datos de demostración cargados correctamente!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></p>
                 </div>
             <?php elseif ($mensaje === 'demo_data_cleared'): ?>
                 <div class="notice notice-success" style="margin: 15px 0;">
-                    <p><strong><?php _e('Datos de demostración eliminados correctamente.', 'flavor-chat-ia'); ?></strong></p>
+                    <p><strong><?php _e('Datos de demostración eliminados correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></p>
                 </div>
             <?php elseif ($mensaje === 'demo_data_error'): ?>
                 <div class="notice notice-error" style="margin: 15px 0;">
-                    <p><strong><?php _e('Error al cargar los datos de demostración.', 'flavor-chat-ia'); ?></strong></p>
+                    <p><strong><?php _e('Error al cargar los datos de demostración.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></p>
                 </div>
             <?php endif; ?>
 
             <!-- Acciones globales -->
             <div class="flavor-demo-global-actions" style="display: flex; gap: 15px; margin: 20px 0; padding: 20px; background: #f0f0f1; border-radius: 8px;">
                 <div style="flex: 1;">
-                    <h4 style="margin: 0 0 10px 0;"><?php _e('Acciones rápidas', 'flavor-chat-ia'); ?></h4>
+                    <h4 style="margin: 0 0 10px 0;"><?php _e('Acciones rápidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <p class="description" style="margin: 0 0 15px 0;">
-                        <?php _e('Carga o elimina datos demo de todos los módulos a la vez.', 'flavor-chat-ia'); ?>
+                        <?php _e('Carga o elimina datos demo de todos los módulos a la vez.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                     <div style="display: flex; gap: 10px;">
                         <?php if (!empty($modulos_demo)): ?>
@@ -2072,10 +2075,10 @@ class Flavor_App_Profile_Admin {
                                 <?php foreach (array_keys($modulos_demo) as $modulo_id): ?>
                                     <input type="hidden" name="modulos_activos[]" value="<?php echo esc_attr($modulo_id); ?>">
                                 <?php endforeach; ?>
-                                <button type="submit" class="button button-primary" onclick="return confirm('<?php esc_attr_e('¿Cargar datos de ejemplo en todos los módulos activos?', 'flavor-chat-ia'); ?>');">
+                                <button type="submit" class="button button-primary" onclick="return confirm('<?php esc_attr_e('¿Cargar datos de ejemplo en todos los módulos activos?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');">
                                     <span class="dashicons dashicons-database-add" style="margin-right: 5px;"></span>
                                     <?php printf(
-                                        esc_html__('Cargar todos (%d módulos)', 'flavor-chat-ia'),
+                                        esc_html__('Cargar todos (%d módulos)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                         count($modulos_demo)
                                     ); ?>
                                 </button>
@@ -2089,16 +2092,16 @@ class Flavor_App_Profile_Admin {
                                     <?php foreach (array_keys($modulos_demo) as $modulo_id): ?>
                                         <input type="hidden" name="modulos_activos[]" value="<?php echo esc_attr($modulo_id); ?>">
                                     <?php endforeach; ?>
-                                    <button type="submit" class="button" style="color: #d63638;" onclick="return confirm('<?php esc_attr_e('¿Eliminar TODOS los datos de demostración? Esta acción no se puede deshacer.', 'flavor-chat-ia'); ?>');">
+                                    <button type="submit" class="button" style="color: #d63638;" onclick="return confirm('<?php esc_attr_e('¿Eliminar TODOS los datos de demostración? Esta acción no se puede deshacer.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');">
                                         <span class="dashicons dashicons-trash" style="margin-right: 5px;"></span>
-                                        <?php _e('Eliminar todos los datos demo', 'flavor-chat-ia'); ?>
+                                        <?php _e('Eliminar todos los datos demo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 </form>
                             <?php endif; ?>
                         <?php else: ?>
                             <p class="description" style="margin: 0;">
                                 <span class="dashicons dashicons-info" style="font-size: 16px; vertical-align: middle;"></span>
-                                <?php _e('No hay módulos activos que soporten datos de demostración en el perfil actual.', 'flavor-chat-ia'); ?>
+                                <?php _e('No hay módulos activos que soporten datos de demostración en el perfil actual.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </p>
                         <?php endif; ?>
                     </div>
@@ -2122,13 +2125,13 @@ class Flavor_App_Profile_Admin {
                                         <span style="font-size: 12px; color: #22c55e; display: flex; align-items: center; gap: 4px;">
                                             <span class="dashicons dashicons-yes-alt" style="font-size: 14px;"></span>
                                             <?php printf(
-                                                esc_html(_n('%d registro demo', '%d registros demo', $modulo['count'], 'flavor-chat-ia')),
+                                                esc_html(_n('%d registro demo', '%d registros demo', $modulo['count'], FLAVOR_PLATFORM_TEXT_DOMAIN)),
                                                 $modulo['count']
                                             ); ?>
                                         </span>
                                     <?php else: ?>
                                         <span style="font-size: 12px; color: #6b7280;">
-                                            <?php _e('Sin datos demo', 'flavor-chat-ia'); ?>
+                                            <?php _e('Sin datos demo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </span>
                                     <?php endif; ?>
                                 </div>
@@ -2142,7 +2145,7 @@ class Flavor_App_Profile_Admin {
                                         <input type="hidden" name="modulo_id" value="<?php echo esc_attr($modulo_id); ?>">
                                         <button type="submit" class="button button-primary" style="width: 100%;">
                                             <span class="dashicons dashicons-plus-alt" style="margin-right: 5px;"></span>
-                                            <?php _e('Cargar datos', 'flavor-chat-ia'); ?>
+                                            <?php _e('Cargar datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </button>
                                     </form>
                                 <?php else: ?>
@@ -2150,9 +2153,9 @@ class Flavor_App_Profile_Admin {
                                         <?php wp_nonce_field('flavor_demo_data_action'); ?>
                                         <input type="hidden" name="action" value="flavor_clear_demo_data">
                                         <input type="hidden" name="modulo_id" value="<?php echo esc_attr($modulo_id); ?>">
-                                        <button type="submit" class="button" style="width: 100%;" onclick="return confirm('<?php esc_attr_e('¿Eliminar los datos de demostración de este módulo?', 'flavor-chat-ia'); ?>');">
+                                        <button type="submit" class="button" style="width: 100%;" onclick="return confirm('<?php esc_attr_e('¿Eliminar los datos de demostración de este módulo?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');">
                                             <span class="dashicons dashicons-trash" style="margin-right: 5px;"></span>
-                                            <?php _e('Eliminar datos', 'flavor-chat-ia'); ?>
+                                            <?php _e('Eliminar datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </button>
                                     </form>
                                 <?php endif; ?>
@@ -2164,17 +2167,17 @@ class Flavor_App_Profile_Admin {
                 <div style="padding: 40px; text-align: center; background: #f9fafb; border: 2px dashed #e5e7eb; border-radius: 8px; margin-top: 20px;">
                     <span class="dashicons dashicons-info" style="font-size: 48px; color: #9ca3af; margin-bottom: 10px;"></span>
                     <p style="margin: 0; font-size: 16px; color: #6b7280;">
-                        <?php _e('No hay módulos con datos demo disponibles en el perfil actual.', 'flavor-chat-ia'); ?>
+                        <?php _e('No hay módulos con datos demo disponibles en el perfil actual.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                     <p style="margin: 10px 0 0 0; font-size: 14px; color: #9ca3af;">
-                        <?php _e('Cambia a un perfil diferente o activa más módulos para ver opciones de datos demo.', 'flavor-chat-ia'); ?>
+                        <?php _e('Cambia a un perfil diferente o activa más módulos para ver opciones de datos demo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
             <?php endif; ?>
 
             <p class="description" style="margin-top: 20px; color: #6b7280;">
                 <span class="dashicons dashicons-info" style="font-size: 16px; vertical-align: middle;"></span>
-                <?php _e('Los datos de demostracion se marcan internamente para poder eliminarlos sin afectar a los datos reales.', 'flavor-chat-ia'); ?>
+                <?php _e('Los datos de demostracion se marcan internamente para poder eliminarlos sin afectar a los datos reales.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
         <?php
@@ -2191,7 +2194,7 @@ class Flavor_App_Profile_Admin {
         check_admin_referer('flavor_activar_plantilla');
 
         if (!current_user_can('manage_options')) {
-            wp_die(__('No tienes permisos para realizar esta accion.', 'flavor-chat-ia'));
+            wp_die(__('No tienes permisos para realizar esta accion.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $plantilla_id = sanitize_text_field($_POST['plantilla_id'] ?? '');
@@ -2228,14 +2231,14 @@ class Flavor_App_Profile_Admin {
         check_ajax_referer('flavor_template_preview', '_wpnonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['mensaje' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
         $plantilla_id = sanitize_text_field($_POST['plantilla_id'] ?? '');
 
         if (empty($plantilla_id)) {
-            wp_send_json_error(['mensaje' => __('ID de plantilla no especificado', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('ID de plantilla no especificado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -2243,7 +2246,7 @@ class Flavor_App_Profile_Admin {
         $perfil = $this->gestor_perfiles->obtener_perfil($plantilla_id);
 
         if (!$perfil) {
-            wp_send_json_error(['mensaje' => __('Plantilla no encontrada', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Plantilla no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -2278,7 +2281,7 @@ class Flavor_App_Profile_Admin {
         check_ajax_referer('flavor_activar_plantilla', '_wpnonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['mensaje' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -2290,7 +2293,7 @@ class Flavor_App_Profile_Admin {
         flavor_log_debug( 'Paso: ' . $paso . ', Plantilla: ' . $plantilla_id, 'AppProfile' );
 
         if (empty($paso) || empty($plantilla_id)) {
-            wp_send_json_error(['mensaje' => __('Parametros invalidos', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Parametros invalidos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             return;
         }
 
@@ -2326,7 +2329,7 @@ class Flavor_App_Profile_Admin {
         if (!$perfil) {
             return [
                 'success' => false,
-                'mensaje' => __('Plantilla no encontrada', 'flavor-chat-ia'),
+                'mensaje' => __('Plantilla no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2352,7 +2355,7 @@ class Flavor_App_Profile_Admin {
             default:
                 return [
                     'success' => false,
-                    'mensaje' => __('Paso desconocido', 'flavor-chat-ia'),
+                    'mensaje' => __('Paso desconocido', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
         }
     }
@@ -2377,7 +2380,7 @@ class Flavor_App_Profile_Admin {
 
             // Actualizar modulos activos
             flavor_log_debug( 'Actualizando active_modules...', 'InstalarModulos' );
-            $configuracion = get_option('flavor_chat_ia_settings', []);
+            $configuracion = flavor_get_main_settings();
             $modulos_actuales = $configuracion['active_modules'] ?? [];
             flavor_log_debug( 'Módulos actuales antes: ' . json_encode($modulos_actuales), 'InstalarModulos' );
 
@@ -2387,7 +2390,7 @@ class Flavor_App_Profile_Admin {
             $configuracion['active_modules'] = $modulos_combinados;
 
             // Intentar guardar con update_option primero
-            $update_result = update_option('flavor_chat_ia_settings', $configuracion);
+            $update_result = flavor_update_main_settings($configuracion);
             flavor_log_debug( 'update_option result: ' . ($update_result ? 'true' : 'false'), 'InstalarModulos' );
 
             // Si update_option devuelve false, forzar guardado directo en BD
@@ -2395,22 +2398,35 @@ class Flavor_App_Profile_Admin {
                 flavor_log_debug( 'update_option falló, usando WPDB directo...', 'InstalarModulos' );
                 global $wpdb;
                 $serialized = maybe_serialize($configuracion);
-                $wpdb_result = $wpdb->update(
+                $wpdb_result_legacy = $wpdb->replace(
                     $wpdb->options,
-                    ['option_value' => $serialized],
-                    ['option_name' => 'flavor_chat_ia_settings'],
-                    ['%s'],
-                    ['%s']
+                    [
+                        'option_name' => FLAVOR_CHAT_IA_SETTINGS_OPTION,
+                        'option_value' => $serialized,
+                        'autoload' => 'yes',
+                    ],
+                    ['%s', '%s', '%s']
                 );
-                flavor_log_debug( 'WPDB update result: ' . $wpdb_result, 'InstalarModulos' );
+                $wpdb_result_platform = $wpdb->replace(
+                    $wpdb->options,
+                    [
+                        'option_name' => FLAVOR_PLATFORM_SETTINGS_OPTION,
+                        'option_value' => $serialized,
+                        'autoload' => 'yes',
+                    ],
+                    ['%s', '%s', '%s']
+                );
+                flavor_log_debug( 'WPDB replace legacy result: ' . $wpdb_result_legacy, 'InstalarModulos' );
+                flavor_log_debug( 'WPDB replace platform result: ' . $wpdb_result_platform, 'InstalarModulos' );
 
                 // Limpiar caché de opciones
-                wp_cache_delete('flavor_chat_ia_settings', 'options');
+                wp_cache_delete(FLAVOR_CHAT_IA_SETTINGS_OPTION, 'options');
+                wp_cache_delete(FLAVOR_PLATFORM_SETTINGS_OPTION, 'options');
                 wp_cache_delete('alloptions', 'options');
             }
 
             // Verificar que se guardó correctamente
-            $configuracion_verificacion = get_option('flavor_chat_ia_settings', []);
+            $configuracion_verificacion = flavor_get_main_settings();
             $modulos_guardados = $configuracion_verificacion['active_modules'] ?? [];
             flavor_log_debug( 'Módulos guardados después: ' . json_encode($modulos_guardados), 'InstalarModulos' );
 
@@ -2472,13 +2488,13 @@ class Flavor_App_Profile_Admin {
             $total_modulos = count($modulos_a_activar);
 
             $descripcion = sprintf(
-                _n('%d modulo activado', '%d modulos activados', $total_modulos, 'flavor-chat-ia'),
+                _n('%d modulo activado', '%d modulos activados', $total_modulos, FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $total_modulos
             );
 
             if ($modulos_inicializados > 0) {
                 $descripcion .= sprintf(
-                    ' (' . _n('%d inicializado', '%d inicializados', $modulos_inicializados, 'flavor-chat-ia') . ')',
+                    ' (' . _n('%d inicializado', '%d inicializados', $modulos_inicializados, FLAVOR_PLATFORM_TEXT_DOMAIN) . ')',
                     $modulos_inicializados
                 );
             }
@@ -2539,7 +2555,7 @@ class Flavor_App_Profile_Admin {
 
             return [
                 'success' => true,
-                'descripcion' => __('Tablas verificadas', 'flavor-chat-ia'),
+                'descripcion' => __('Tablas verificadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         } catch (Exception $excepcion) {
             return [
@@ -2597,7 +2613,7 @@ class Flavor_App_Profile_Admin {
             return [
                 'success' => true,
                 'descripcion' => sprintf(
-                    _n('%d pagina creada', '%d paginas creadas', $paginas_creadas, 'flavor-chat-ia'),
+                    _n('%d pagina creada', '%d paginas creadas', $paginas_creadas, FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $paginas_creadas
                 ),
             ];
@@ -2619,7 +2635,7 @@ class Flavor_App_Profile_Admin {
             if (empty($landing)) {
                 return [
                     'success' => true,
-                    'descripcion' => __('Sin landing configurada', 'flavor-chat-ia'),
+                    'descripcion' => __('Sin landing configurada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
 
@@ -2631,7 +2647,7 @@ class Flavor_App_Profile_Admin {
             return [
                 'success' => true,
                 'descripcion' => sprintf(
-                    _n('%d seccion configurada', '%d secciones configuradas', $total_secciones, 'flavor-chat-ia'),
+                    _n('%d seccion configurada', '%d secciones configuradas', $total_secciones, FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $total_secciones
                 ),
             ];
@@ -2660,12 +2676,12 @@ class Flavor_App_Profile_Admin {
             $this->configurar_apps_moviles($perfil, $opciones);
 
             // Verificar app_profile ANTES de terminar este paso
-            $config_check = get_option('flavor_chat_ia_settings', []);
+            $config_check = flavor_get_main_settings();
             $app_profile_actual = $config_check['app_profile'] ?? 'NO_EXISTE';
 
             return [
                 'success' => true,
-                'descripcion' => __('Configuracion aplicada', 'flavor-chat-ia'),
+                'descripcion' => __('Configuracion aplicada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'debug_app_profile_final' => $app_profile_actual,
                 'transformacion' => $resultado_transformacion,
             ];
@@ -2711,7 +2727,7 @@ class Flavor_App_Profile_Admin {
             $tabs = [];
             $tabs[] = [
                 'id' => 'home',
-                'label' => __('Inicio', 'flavor-chat-ia'),
+                'label' => __('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'home',
                 'type' => 'web',
                 'url' => home_url('/'),
@@ -2720,9 +2736,9 @@ class Flavor_App_Profile_Admin {
             ];
 
             $tab_map = [
-                'grupos_consumo' => ['slug' => 'grupos-consumo', 'label' => __('Grupos de Consumo', 'flavor-chat-ia'), 'icon' => 'groups', 'order' => 1],
-                'marketplace' => ['slug' => 'marketplace', 'label' => __('Marketplace', 'flavor-chat-ia'), 'icon' => 'store', 'order' => 2],
-                'eventos' => ['slug' => 'eventos', 'label' => __('Eventos', 'flavor-chat-ia'), 'icon' => 'event', 'order' => 3],
+                'grupos_consumo' => ['slug' => 'grupos-consumo', 'label' => __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'groups', 'order' => 1],
+                'marketplace' => ['slug' => 'marketplace', 'label' => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'store', 'order' => 2],
+                'eventos' => ['slug' => 'eventos', 'label' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'event', 'order' => 3],
             ];
 
             foreach ($tab_map as $module_id => $tab) {
@@ -2745,7 +2761,7 @@ class Flavor_App_Profile_Admin {
             $perfil_page = get_page_by_path('mi-cuenta');
             $tabs[] = [
                 'id' => 'perfil',
-                'label' => __('Perfil', 'flavor-chat-ia'),
+                'label' => __('Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'person',
                 'type' => 'web',
                 'url' => $perfil_page ? get_permalink($perfil_page->ID) : home_url('/mi-cuenta/'),
@@ -2817,7 +2833,7 @@ class Flavor_App_Profile_Admin {
         $archivo_transformer = FLAVOR_CHAT_IA_PATH . 'includes/orchestrator/components/class-site-transformer.php';
 
         if (!file_exists($archivo_transformer)) {
-            return ['success' => false, 'error' => __('Site Transformer no encontrado', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Site Transformer no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Cargar interface si no esta cargada
@@ -2831,7 +2847,7 @@ class Flavor_App_Profile_Admin {
         // Obtener definicion completa de la plantilla
         $archivo_definiciones = FLAVOR_CHAT_IA_PATH . 'includes/orchestrator/class-template-definitions.php';
         if (!file_exists($archivo_definiciones)) {
-            return ['success' => false, 'error' => __('Definiciones no encontradas', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Definiciones no encontradas', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         require_once $archivo_definiciones;
@@ -2840,7 +2856,7 @@ class Flavor_App_Profile_Admin {
         $definicion = $definiciones->obtener_definicion($plantilla_id);
 
         if (!$definicion) {
-            return ['success' => false, 'error' => sprintf(__('Definicion de plantilla no encontrada: %s', 'flavor-chat-ia'), $plantilla_id)];
+            return ['success' => false, 'error' => sprintf(__('Definicion de plantilla no encontrada: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $plantilla_id)];
         }
 
         // Ejecutar transformacion
@@ -2855,7 +2871,7 @@ class Flavor_App_Profile_Admin {
         if (!$opciones['cargar_demo']) {
             return [
                 'success' => true,
-                'descripcion' => __('Omitido', 'flavor-chat-ia'),
+                'descripcion' => __('Omitido', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2864,7 +2880,7 @@ class Flavor_App_Profile_Admin {
             if (!class_exists('Flavor_Demo_Data_Manager')) {
                 return [
                     'success' => true,
-                    'descripcion' => __('Gestor de demo no disponible', 'flavor-chat-ia'),
+                    'descripcion' => __('Gestor de demo no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
 
@@ -2887,7 +2903,7 @@ class Flavor_App_Profile_Admin {
             return [
                 'success' => true,
                 'descripcion' => sprintf(
-                    _n('%d registro de demo creado', '%d registros de demo creados', $registros_creados, 'flavor-chat-ia'),
+                    _n('%d registro de demo creado', '%d registros de demo creados', $registros_creados, FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $registros_creados
                 ),
             ];
@@ -3104,7 +3120,7 @@ class Flavor_App_Profile_Admin {
         if (!$perfil) {
             return [
                 'success' => false,
-                'mensaje' => __('Plantilla no encontrada', 'flavor-chat-ia'),
+                'mensaje' => __('Plantilla no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -3124,7 +3140,7 @@ class Flavor_App_Profile_Admin {
 
         return [
             'success' => true,
-            'mensaje' => __('Plantilla activada correctamente', 'flavor-chat-ia'),
+            'mensaje' => __('Plantilla activada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -3139,13 +3155,13 @@ class Flavor_App_Profile_Admin {
         $paginas_por_plantilla = [
             'tienda' => [
                 'tienda' => [
-                    'titulo' => __('Tienda', 'flavor-chat-ia'),
+                    'titulo' => __('Tienda', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'slug' => 'tienda',
                     'icono' => 'dashicons-store',
                     'contenido' => '[flavor_tienda]',
                 ],
                 'carrito' => [
-                    'titulo' => __('Carrito', 'flavor-chat-ia'),
+                    'titulo' => __('Carrito', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'slug' => 'carrito',
                     'icono' => 'dashicons-cart',
                     'contenido' => '[flavor_carrito]',
@@ -3153,13 +3169,13 @@ class Flavor_App_Profile_Admin {
             ],
             'grupo_consumo' => [
                 'grupos-consumo' => [
-                    'titulo' => __('Grupos de Consumo', 'flavor-chat-ia'),
+                    'titulo' => __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'slug' => 'grupos-consumo',
                     'icono' => 'dashicons-carrot',
                     'contenido' => '[flavor_grupos_consumo]',
                 ],
                 'productores' => [
-                    'titulo' => __('Productores', 'flavor-chat-ia'),
+                    'titulo' => __('Productores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'slug' => 'productores',
                     'icono' => 'dashicons-businessman',
                     'contenido' => '[flavor_productores]',
@@ -3167,13 +3183,13 @@ class Flavor_App_Profile_Admin {
             ],
             'banco_tiempo' => [
                 'banco-tiempo' => [
-                    'titulo' => __('Banco de Tiempo', 'flavor-chat-ia'),
+                    'titulo' => __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'slug' => 'banco-tiempo',
                     'icono' => 'dashicons-clock',
                     'contenido' => '[flavor_banco_tiempo]',
                 ],
                 'servicios' => [
-                    'titulo' => __('Servicios', 'flavor-chat-ia'),
+                    'titulo' => __('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'slug' => 'servicios',
                     'icono' => 'dashicons-hammer',
                     'contenido' => '[flavor_servicios]',
@@ -3181,19 +3197,19 @@ class Flavor_App_Profile_Admin {
             ],
             'comunidad' => [
                 'comunidad' => [
-                    'titulo' => __('Comunidad', 'flavor-chat-ia'),
+                    'titulo' => __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'slug' => 'comunidad',
                     'icono' => 'dashicons-groups',
                     'contenido' => '[flavor_comunidad]',
                 ],
                 'eventos' => [
-                    'titulo' => __('Eventos', 'flavor-chat-ia'),
+                    'titulo' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'slug' => 'eventos',
                     'icono' => 'dashicons-calendar',
                     'contenido' => '[flavor_eventos]',
                 ],
                 'socios' => [
-                    'titulo' => __('Miembros', 'flavor-chat-ia'),
+                    'titulo' => __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'slug' => 'socios',
                     'icono' => 'dashicons-id-alt',
                     'contenido' => '[flavor_socios]',
@@ -3201,19 +3217,19 @@ class Flavor_App_Profile_Admin {
             ],
             'ayuntamiento' => [
                 'ayuntamiento' => [
-                    'titulo' => __('Ayuntamiento', 'flavor-chat-ia'),
+                    'titulo' => __('Ayuntamiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'slug' => 'ayuntamiento',
                     'icono' => 'dashicons-building',
                     'contenido' => '[flavor_ayuntamiento]',
                 ],
                 'tramites' => [
-                    'titulo' => __('Tramites', 'flavor-chat-ia'),
+                    'titulo' => __('Tramites', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'slug' => 'tramites',
                     'icono' => 'dashicons-clipboard',
                     'contenido' => '[flavor_tramites]',
                 ],
                 'incidencias' => [
-                    'titulo' => __('Incidencias', 'flavor-chat-ia'),
+                    'titulo' => __('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'slug' => 'incidencias',
                     'icono' => 'dashicons-warning',
                     'contenido' => '[flavor_incidencias]',
@@ -3221,19 +3237,19 @@ class Flavor_App_Profile_Admin {
             ],
             'barrio' => [
                 'barrio' => [
-                    'titulo' => __('Mi Barrio', 'flavor-chat-ia'),
+                    'titulo' => __('Mi Barrio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'slug' => 'barrio',
                     'icono' => 'dashicons-location',
                     'contenido' => '[flavor_barrio]',
                 ],
                 'ayuda-vecinal' => [
-                    'titulo' => __('Ayuda Vecinal', 'flavor-chat-ia'),
+                    'titulo' => __('Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'slug' => 'ayuda-vecinal',
                     'icono' => 'dashicons-heart',
                     'contenido' => '[flavor_ayuda_vecinal]',
                 ],
                 'huertos' => [
-                    'titulo' => __('Huertos Urbanos', 'flavor-chat-ia'),
+                    'titulo' => __('Huertos Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'slug' => 'huertos',
                     'icono' => 'dashicons-palmtree',
                     'contenido' => '[flavor_huertos]',
@@ -3255,56 +3271,56 @@ class Flavor_App_Profile_Admin {
         $landings_por_plantilla = [
             'tienda' => [
                 'secciones' => [
-                    'hero' => ['titulo' => __('Hero', 'flavor-chat-ia')],
-                    'productos' => ['titulo' => __('Productos Destacados', 'flavor-chat-ia')],
-                    'categorias' => ['titulo' => __('Categorias', 'flavor-chat-ia')],
-                    'testimonios' => ['titulo' => __('Testimonios', 'flavor-chat-ia')],
-                    'newsletter' => ['titulo' => __('Newsletter', 'flavor-chat-ia')],
+                    'hero' => ['titulo' => __('Hero', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'productos' => ['titulo' => __('Productos Destacados', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'categorias' => ['titulo' => __('Categorias', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'testimonios' => ['titulo' => __('Testimonios', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'newsletter' => ['titulo' => __('Newsletter', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
             ],
             'grupo_consumo' => [
                 'secciones' => [
-                    'hero' => ['titulo' => __('Hero', 'flavor-chat-ia')],
-                    'como_funciona' => ['titulo' => __('Como Funciona', 'flavor-chat-ia')],
-                    'productores' => ['titulo' => __('Productores', 'flavor-chat-ia')],
-                    'beneficios' => ['titulo' => __('Beneficios', 'flavor-chat-ia')],
-                    'cta' => ['titulo' => __('Llamada a la Accion', 'flavor-chat-ia')],
+                    'hero' => ['titulo' => __('Hero', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'como_funciona' => ['titulo' => __('Como Funciona', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'productores' => ['titulo' => __('Productores', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'beneficios' => ['titulo' => __('Beneficios', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'cta' => ['titulo' => __('Llamada a la Accion', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
             ],
             'banco_tiempo' => [
                 'secciones' => [
-                    'hero' => ['titulo' => __('Hero', 'flavor-chat-ia')],
-                    'servicios' => ['titulo' => __('Servicios Disponibles', 'flavor-chat-ia')],
-                    'como_funciona' => ['titulo' => __('Como Funciona', 'flavor-chat-ia')],
-                    'estadisticas' => ['titulo' => __('Estadisticas', 'flavor-chat-ia')],
-                    'cta' => ['titulo' => __('Unete', 'flavor-chat-ia')],
+                    'hero' => ['titulo' => __('Hero', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'servicios' => ['titulo' => __('Servicios Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'como_funciona' => ['titulo' => __('Como Funciona', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'estadisticas' => ['titulo' => __('Estadisticas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'cta' => ['titulo' => __('Unete', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
             ],
             'comunidad' => [
                 'secciones' => [
-                    'hero' => ['titulo' => __('Hero', 'flavor-chat-ia')],
-                    'eventos' => ['titulo' => __('Proximos Eventos', 'flavor-chat-ia')],
-                    'grupos' => ['titulo' => __('Grupos', 'flavor-chat-ia')],
-                    'miembros' => ['titulo' => __('Miembros Destacados', 'flavor-chat-ia')],
-                    'contacto' => ['titulo' => __('Contacto', 'flavor-chat-ia')],
+                    'hero' => ['titulo' => __('Hero', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'eventos' => ['titulo' => __('Proximos Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'grupos' => ['titulo' => __('Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'miembros' => ['titulo' => __('Miembros Destacados', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'contacto' => ['titulo' => __('Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
             ],
             'ayuntamiento' => [
                 'secciones' => [
-                    'hero' => ['titulo' => __('Hero', 'flavor-chat-ia')],
-                    'servicios' => ['titulo' => __('Servicios', 'flavor-chat-ia')],
-                    'noticias' => ['titulo' => __('Noticias', 'flavor-chat-ia')],
-                    'tramites' => ['titulo' => __('Tramites Online', 'flavor-chat-ia')],
-                    'contacto' => ['titulo' => __('Contacto', 'flavor-chat-ia')],
+                    'hero' => ['titulo' => __('Hero', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'servicios' => ['titulo' => __('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'noticias' => ['titulo' => __('Noticias', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'tramites' => ['titulo' => __('Tramites Online', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'contacto' => ['titulo' => __('Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
             ],
             'barrio' => [
                 'secciones' => [
-                    'hero' => ['titulo' => __('Hero', 'flavor-chat-ia')],
-                    'servicios' => ['titulo' => __('Servicios del Barrio', 'flavor-chat-ia')],
-                    'ayuda' => ['titulo' => __('Ayuda Vecinal', 'flavor-chat-ia')],
-                    'actividades' => ['titulo' => __('Actividades', 'flavor-chat-ia')],
-                    'mapa' => ['titulo' => __('Mapa', 'flavor-chat-ia')],
+                    'hero' => ['titulo' => __('Hero', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'servicios' => ['titulo' => __('Servicios del Barrio', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'ayuda' => ['titulo' => __('Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'actividades' => ['titulo' => __('Actividades', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'mapa' => ['titulo' => __('Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
             ],
         ];

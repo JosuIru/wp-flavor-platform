@@ -360,7 +360,7 @@ function flavor_render_form(array $config): void {
         'method'      => 'POST',
         'ajax'        => false,
         'ajax_action' => '',
-        'submit_text' => __('Guardar', 'flavor-chat-ia'),
+        'submit_text' => __('Guardar', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'color'       => 'blue',
         'layout'      => 'vertical',
     ];
@@ -384,7 +384,7 @@ function flavor_render_table(array $columns, array $rows, array $config = []): v
         'hoverable'   => true,
         'selectable'  => false,
         'row_actions' => [],
-        'empty_text'  => __('No hay datos disponibles', 'flavor-chat-ia'),
+        'empty_text'  => __('No hay datos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ];
     $config = wp_parse_args($config, $defaults);
 
@@ -497,7 +497,7 @@ function flavor_render_accordion(array $items, array $config = []): void {
  */
 function flavor_render_search(array $config = []): void {
     $defaults = [
-        'placeholder'  => __('Buscar...', 'flavor-chat-ia'),
+        'placeholder'  => __('Buscar...', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'color'        => 'blue',
         'filters'      => [],
         'live_search'  => false,
@@ -705,7 +705,7 @@ function flavor_render_chart(array $data, array $config = []): void {
  */
 function flavor_render_activity_feed(array $items, array $config = []): void {
     $defaults = [
-        'title'   => __('Actividad Reciente', 'flavor-chat-ia'),
+        'title'   => __('Actividad Reciente', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'color'   => 'blue',
         'limit'   => 10,
         'compact' => false,
@@ -727,7 +727,7 @@ function flavor_render_activity_feed(array $items, array $config = []): void {
  */
 function flavor_render_todo_list(array $items, array $config = []): void {
     $defaults = [
-        'title'       => __('Tareas Pendientes', 'flavor-chat-ia'),
+        'title'       => __('Tareas Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'color'       => 'blue',
         'interactive' => true,
     ];
@@ -817,10 +817,10 @@ function flavor_render_progress($value, array $config = []): void {
  */
 function flavor_render_settings(array $sections, array $config = []): void {
     $defaults = [
-        'title'       => __('Configuración', 'flavor-chat-ia'),
+        'title'       => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'color'       => 'blue',
         'ajax'        => true,
-        'save_label'  => __('Guardar cambios', 'flavor-chat-ia'),
+        'save_label'  => __('Guardar cambios', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ];
     $config = wp_parse_args($config, $defaults);
 
@@ -882,7 +882,7 @@ function flavor_render_stat_comparison(array $current, array $previous, array $c
  */
 function flavor_render_user_list(array $users, array $config = []): void {
     $defaults = [
-        'title'      => __('Usuarios', 'flavor-chat-ia'),
+        'title'      => __('Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'columns'    => ['avatar', 'name', 'email', 'role', 'status', 'actions'],
         'actions'    => [],
         'color'      => 'blue',
@@ -931,7 +931,7 @@ function flavor_render_wizard(array $steps, array $config = []): void {
     $defaults = [
         'title'        => '',
         'color'        => 'blue',
-        'submit_label' => __('Finalizar', 'flavor-chat-ia'),
+        'submit_label' => __('Finalizar', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'show_progress'=> true,
         'allow_skip'   => false,
     ];

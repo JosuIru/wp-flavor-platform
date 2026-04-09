@@ -16,11 +16,11 @@ $ciclo_actual = $args['ciclo'] ?? null;
 
 <div class="gc-dashboard-lista-compra">
     <div class="gc-dashboard-header">
-        <h2><?php _e('Mi Lista de la Compra', 'flavor-chat-ia'); ?></h2>
+        <h2><?php _e('Mi Lista de la Compra', 'flavor-platform'); ?></h2>
         <?php if ($ciclo_actual): ?>
             <div class="gc-ciclo-badge">
                 <span class="dashicons dashicons-calendar-alt"></span>
-                <span><?php printf(__('Ciclo activo hasta %s', 'flavor-chat-ia'), date_i18n('d M', strtotime($ciclo_actual['fecha_cierre']))); ?></span>
+                <span><?php printf(__('Ciclo activo hasta %s', 'flavor-platform'), date_i18n('d M', strtotime($ciclo_actual['fecha_cierre']))); ?></span>
             </div>
         <?php endif; ?>
     </div>
@@ -28,11 +28,11 @@ $ciclo_actual = $args['ciclo'] ?? null;
     <?php if (empty($items)): ?>
         <div class="gc-dashboard-empty">
             <div class="gc-empty-icon">🛒</div>
-            <h3><?php _e('Tu lista está vacía', 'flavor-chat-ia'); ?></h3>
-            <p><?php _e('Añade productos para preparar tu próximo pedido.', 'flavor-chat-ia'); ?></p>
+            <h3><?php _e('Tu lista está vacía', 'flavor-platform'); ?></h3>
+            <p><?php _e('Añade productos para preparar tu próximo pedido.', 'flavor-platform'); ?></p>
             <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-primary">
                 <span class="dashicons dashicons-cart"></span>
-                <?php _e('Explorar productos', 'flavor-chat-ia'); ?>
+                <?php _e('Explorar productos', 'flavor-platform'); ?>
             </a>
         </div>
     <?php else: ?>
@@ -76,7 +76,7 @@ $ciclo_actual = $args['ciclo'] ?? null;
 
         <div class="gc-lista-footer">
             <div class="gc-lista-total">
-                <span class="gc-total-label"><?php _e('Total estimado:', 'flavor-chat-ia'); ?></span>
+                <span class="gc-total-label"><?php _e('Total estimado:', 'flavor-platform'); ?></span>
                 <span class="gc-total-valor">
                     <?php
                     $total = array_sum(array_map(function($item) {
@@ -91,12 +91,12 @@ $ciclo_actual = $args['ciclo'] ?? null;
                 <?php if ($ciclo_actual && $ciclo_actual['estado'] === 'abierto'): ?>
                     <button type="button" class="gc-btn gc-btn-primary gc-btn-convertir-pedido" id="gc-convertir-pedido">
                         <span class="dashicons dashicons-yes-alt"></span>
-                        <?php _e('Convertir en pedido', 'flavor-chat-ia'); ?>
+                        <?php _e('Convertir en pedido', 'flavor-platform'); ?>
                     </button>
                 <?php else: ?>
                     <p class="gc-aviso-ciclo">
                         <span class="dashicons dashicons-info"></span>
-                        <?php _e('Guarda tu lista para el próximo ciclo de pedidos.', 'flavor-chat-ia'); ?>
+                        <?php _e('Guarda tu lista para el próximo ciclo de pedidos.', 'flavor-platform'); ?>
                     </p>
                 <?php endif; ?>
             </div>

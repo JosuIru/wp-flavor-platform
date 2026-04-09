@@ -111,7 +111,7 @@ class Flavor_Dashboard_Components {
             'icon' => 'dashicons-list-view',
             'columns' => [], // ['key' => 'Label']
             'data' => [],
-            'empty_message' => __('No hay datos disponibles', 'flavor-chat-ia'),
+            'empty_message' => __('No hay datos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'striped' => true,
             'hoverable' => true,
             'compact' => false,
@@ -210,7 +210,7 @@ class Flavor_Dashboard_Components {
             <span class="dashicons <?php echo esc_attr($icons[$type] ?? $icons['info']); ?> dm-alert__icon"></span>
             <div class="dm-alert__message"><?php echo wp_kses_post($message); ?></div>
             <?php if ($dismissible): ?>
-                <button type="button" class="dm-alert__close" aria-label="<?php esc_attr_e('Cerrar', 'flavor-chat-ia'); ?>">
+                <button type="button" class="dm-alert__close" aria-label="<?php esc_attr_e('Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-no-alt"></span>
                 </button>
             <?php endif; ?>
@@ -295,7 +295,7 @@ class Flavor_Dashboard_Components {
                     <div class="dm-section__header-right">
                         <?php echo $args['actions']; ?>
                         <?php if ($args['collapsible']): ?>
-                            <button type="button" class="dm-section__toggle" aria-label="<?php esc_attr_e('Expandir/Contraer', 'flavor-chat-ia'); ?>">
+                            <button type="button" class="dm-section__toggle" aria-label="<?php esc_attr_e('Expandir/Contraer', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <span class="dashicons dashicons-arrow-down-alt2"></span>
                             </button>
                         <?php endif; ?>

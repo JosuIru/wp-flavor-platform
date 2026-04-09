@@ -203,13 +203,13 @@ class Flavor_Notification_Manager {
     private function register_default_channels() {
         $this->channels = [
             'email' => [
-                'label' => __('Email', 'flavor-chat-ia'),
+                'label' => __('Email', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-email',
                 'handler' => [$this, 'send_email'],
                 'enabled' => true,
             ],
             'push' => [
-                'label' => __('Push Notification', 'flavor-chat-ia'),
+                'label' => __('Push Notification', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-smartphone',
                 'handler' => class_exists('Flavor_Push_Notification_Channel')
                     ? [new Flavor_Push_Notification_Channel(), 'handle_push_from_queue']
@@ -217,13 +217,13 @@ class Flavor_Notification_Manager {
                 'enabled' => class_exists('Flavor_Push_Notification_Channel'),
             ],
             'inapp' => [
-                'label' => __('In-App', 'flavor-chat-ia'),
+                'label' => __('In-App', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-bell',
                 'handler' => [$this, 'send_inapp'],
                 'enabled' => true,
             ],
             'sms' => [
-                'label' => __('SMS', 'flavor-chat-ia'),
+                'label' => __('SMS', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-phone',
                 'handler' => [$this, 'send_sms'],
                 'enabled' => false, // Requiere configuración
@@ -241,13 +241,13 @@ class Flavor_Notification_Manager {
         $this->event_types = [
             // Sistema
             'system_update' => [
-                'label' => __('Actualizaciones del sistema', 'flavor-chat-ia'),
+                'label' => __('Actualizaciones del sistema', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'system',
                 'default_channels' => ['email', 'inapp'],
                 'icon' => 'dashicons-update',
             ],
             'security_alert' => [
-                'label' => __('Alertas de seguridad', 'flavor-chat-ia'),
+                'label' => __('Alertas de seguridad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'system',
                 'default_channels' => ['email', 'push', 'inapp'],
                 'icon' => 'dashicons-shield',
@@ -256,13 +256,13 @@ class Flavor_Notification_Manager {
 
             // Usuarios
             'user_welcome' => [
-                'label' => __('Bienvenida a nuevos usuarios', 'flavor-chat-ia'),
+                'label' => __('Bienvenida a nuevos usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'users',
                 'default_channels' => ['email', 'inapp'],
                 'icon' => 'dashicons-admin-users',
             ],
             'user_mention' => [
-                'label' => __('Menciones', 'flavor-chat-ia'),
+                'label' => __('Menciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'users',
                 'default_channels' => ['push', 'inapp'],
                 'icon' => 'dashicons-format-chat',
@@ -270,14 +270,14 @@ class Flavor_Notification_Manager {
 
             // Chat IA
             'chat_escalation' => [
-                'label' => __('Escalación de chat', 'flavor-chat-ia'),
+                'label' => __('Escalación de chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'chat',
                 'default_channels' => ['email', 'push'],
                 'icon' => 'dashicons-sos',
                 'priority' => 'high',
             ],
             'chat_response' => [
-                'label' => __('Respuesta del asistente', 'flavor-chat-ia'),
+                'label' => __('Respuesta del asistente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'chat',
                 'default_channels' => ['inapp'],
                 'icon' => 'dashicons-format-chat',
@@ -285,13 +285,13 @@ class Flavor_Notification_Manager {
 
             // Módulos
             'module_event' => [
-                'label' => __('Eventos de módulos', 'flavor-chat-ia'),
+                'label' => __('Eventos de módulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'modules',
                 'default_channels' => ['inapp'],
                 'icon' => 'dashicons-admin-generic',
             ],
             'new_content' => [
-                'label' => __('Nuevo contenido', 'flavor-chat-ia'),
+                'label' => __('Nuevo contenido', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'modules',
                 'default_channels' => ['email', 'inapp'],
                 'icon' => 'dashicons-admin-post',
@@ -299,13 +299,13 @@ class Flavor_Notification_Manager {
 
             // Marketplace
             'order_status' => [
-                'label' => __('Estado de pedidos', 'flavor-chat-ia'),
+                'label' => __('Estado de pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'commerce',
                 'default_channels' => ['email', 'push', 'inapp'],
                 'icon' => 'dashicons-cart',
             ],
             'new_message' => [
-                'label' => __('Nuevos mensajes', 'flavor-chat-ia'),
+                'label' => __('Nuevos mensajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'commerce',
                 'default_channels' => ['push', 'inapp'],
                 'icon' => 'dashicons-email-alt',
@@ -313,13 +313,13 @@ class Flavor_Notification_Manager {
 
             // Eventos
             'event_reminder' => [
-                'label' => __('Recordatorios de eventos', 'flavor-chat-ia'),
+                'label' => __('Recordatorios de eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'events',
                 'default_channels' => ['email', 'push'],
                 'icon' => 'dashicons-calendar-alt',
             ],
             'event_update' => [
-                'label' => __('Actualizaciones de eventos', 'flavor-chat-ia'),
+                'label' => __('Actualizaciones de eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'events',
                 'default_channels' => ['email', 'inapp'],
                 'icon' => 'dashicons-calendar',
@@ -327,13 +327,13 @@ class Flavor_Notification_Manager {
 
             // Comunidad
             'community_activity' => [
-                'label' => __('Actividad de comunidad', 'flavor-chat-ia'),
+                'label' => __('Actividad de comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'community',
                 'default_channels' => ['inapp'],
                 'icon' => 'dashicons-groups',
             ],
             'group_invite' => [
-                'label' => __('Invitaciones a grupos', 'flavor-chat-ia'),
+                'label' => __('Invitaciones a grupos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'community',
                 'default_channels' => ['email', 'push', 'inapp'],
                 'icon' => 'dashicons-buddicons-groups',
@@ -869,7 +869,7 @@ class Flavor_Notification_Manager {
         $user_id = get_current_user_id();
 
         if (!$user_id) {
-            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if ($notification_id === 0) {
@@ -891,7 +891,7 @@ class Flavor_Notification_Manager {
 
         $user_id = get_current_user_id();
         if (!$user_id) {
-            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $args = [
@@ -917,19 +917,19 @@ class Flavor_Notification_Manager {
 
         $user_id = get_current_user_id();
         if (!$user_id) {
-            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $event_type = sanitize_text_field($_POST['event_type'] ?? '');
         $preferences = $_POST['preferences'] ?? [];
 
         if (empty($event_type)) {
-            wp_send_json_error(['message' => __('Tipo de evento requerido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Tipo de evento requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $this->update_user_preferences($user_id, $event_type, $preferences);
 
-        wp_send_json_success(['message' => __('Preferencias actualizadas', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Preferencias actualizadas', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -942,7 +942,7 @@ class Flavor_Notification_Manager {
         $user_id = get_current_user_id();
 
         if (!$user_id || !$notification_id) {
-            wp_send_json_error(['message' => __('Datos inválidos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos inválidos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $this->dismiss($notification_id, $user_id);
@@ -1188,7 +1188,7 @@ class Flavor_Notification_Manager {
 add_filter('cron_schedules', function($schedules) {
     $schedules['every_minute'] = [
         'interval' => 60,
-        'display' => __('Cada minuto', 'flavor-chat-ia'),
+        'display' => __('Cada minuto', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ];
     return $schedules;
 });

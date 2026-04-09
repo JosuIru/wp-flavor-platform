@@ -316,7 +316,7 @@ class Flavor_Integration_Registry {
 
         $registry->register(new Flavor_Module_Widget([
             'id' => 'integrations-summary',
-            'title' => __('Integraciones Activas', 'flavor-chat-ia'),
+            'title' => __('Integraciones Activas', 'flavor-platform'),
             'icon' => 'dashicons-networking',
             'size' => 'medium',
             'category' => 'sistema',
@@ -343,8 +343,8 @@ class Flavor_Integration_Registry {
             $items[] = [
                 'icon' => 'dashicons-randomize',
                 'title' => ($provider['name'] ?? $integration['provider']) . ' -> ' . ($consumer['name'] ?? $integration['consumer']),
-                'meta' => !empty($integration['targets']) ? implode(', ', (array) $integration['targets']) : __('Sin targets', 'flavor-chat-ia'),
-                'badge' => __('Activa', 'flavor-chat-ia'),
+                'meta' => !empty($integration['targets']) ? implode(', ', (array) $integration['targets']) : __('Sin targets', 'flavor-platform'),
+                'badge' => __('Activa', 'flavor-platform'),
                 'badge_color' => 'success',
             ];
         }
@@ -354,27 +354,27 @@ class Flavor_Integration_Registry {
                 [
                     'icon' => 'dashicons-admin-plugins',
                     'valor' => count($this->providers),
-                    'label' => __('Providers', 'flavor-chat-ia'),
+                    'label' => __('Providers', 'flavor-platform'),
                     'color' => 'info',
                 ],
                 [
                     'icon' => 'dashicons-screenoptions',
                     'valor' => count($this->consumers),
-                    'label' => __('Consumers', 'flavor-chat-ia'),
+                    'label' => __('Consumers', 'flavor-platform'),
                     'color' => 'primary',
                 ],
                 [
                     'icon' => 'dashicons-networking',
                     'valor' => count($this->active_integrations),
-                    'label' => __('Integraciones', 'flavor-chat-ia'),
+                    'label' => __('Integraciones', 'flavor-platform'),
                     'color' => 'success',
                 ],
             ],
             'items' => $items,
-            'empty_state' => __('No hay integraciones activas.', 'flavor-chat-ia'),
+            'empty_state' => __('No hay integraciones activas.', 'flavor-platform'),
             'footer' => [
                 [
-                    'label' => __('Ver integraciones', 'flavor-chat-ia'),
+                    'label' => __('Ver integraciones', 'flavor-platform'),
                     'url' => admin_url('admin.php?page=flavor-chat-ia'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
@@ -389,7 +389,7 @@ class Flavor_Integration_Registry {
         ?>
         <div class="flavor-integrations-widget">
             <p><?php printf(
-                __('%d modulos de contenido disponibles para vincular', 'flavor-chat-ia'),
+                __('%d modulos de contenido disponibles para vincular', 'flavor-platform'),
                 count($this->providers)
             ); ?></p>
 
@@ -414,7 +414,7 @@ class Flavor_Integration_Registry {
      */
     public function render_related_content($object_id, $object_type = 'post', $options = []) {
         $options = wp_parse_args($options, [
-            'title' => __('Contenido Relacionado', 'flavor-chat-ia'),
+            'title' => __('Contenido Relacionado', 'flavor-platform'),
             'providers' => null, // null = todos
             'layout' => 'grid', // grid, list, tabs
             'columns' => 3,

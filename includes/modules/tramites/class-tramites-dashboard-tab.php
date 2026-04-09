@@ -85,7 +85,7 @@ class Flavor_Tramites_Dashboard_Tab {
         // Tab principal: Mis Expedientes
         $tabs['tramites-mis-expedientes'] = [
             'id' => 'tramites-mis-expedientes',
-            'label' => __('Mis Expedientes', 'flavor-chat-ia'),
+            'label' => __('Mis Expedientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-clipboard',
             'orden' => 30,
             'callback' => [$this, 'render_tab_mis_expedientes'],
@@ -95,7 +95,7 @@ class Flavor_Tramites_Dashboard_Tab {
         // Sub-tab: Pendientes de accion
         $tabs['tramites-pendientes'] = [
             'id' => 'tramites-pendientes',
-            'label' => __('Pendientes', 'flavor-chat-ia'),
+            'label' => __('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-warning',
             'orden' => 31,
             'parent' => 'tramites-mis-expedientes',
@@ -106,7 +106,7 @@ class Flavor_Tramites_Dashboard_Tab {
         // Sub-tab: Historial
         $tabs['tramites-historial'] = [
             'id' => 'tramites-historial',
-            'label' => __('Historial', 'flavor-chat-ia'),
+            'label' => __('Historial', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-backup',
             'orden' => 32,
             'parent' => 'tramites-mis-expedientes',
@@ -142,10 +142,10 @@ class Flavor_Tramites_Dashboard_Tab {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_tramites_dashboard_nonce'),
             'strings' => [
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
-                'error' => __('Error al cargar los datos', 'flavor-chat-ia'),
-                'sinExpedientes' => __('No tienes expedientes registrados', 'flavor-chat-ia'),
-                'verDetalles' => __('Ver detalles', 'flavor-chat-ia'),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al cargar los datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sinExpedientes' => __('No tienes expedientes registrados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'verDetalles' => __('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
 
@@ -157,14 +157,14 @@ class Flavor_Tramites_Dashboard_Tab {
             'allowedTypes' => ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
             'maxFiles' => 20,
             'i18n' => [
-                'uploading' => __('Subiendo...', 'flavor-chat-ia'),
-                'uploadError' => __('Error al subir el archivo', 'flavor-chat-ia'),
-                'fileTooBig' => __('El archivo es demasiado grande', 'flavor-chat-ia'),
-                'invalidType' => __('Tipo de archivo no permitido', 'flavor-chat-ia'),
-                'confirmDelete' => __('¿Estas seguro de eliminar este documento?', 'flavor-chat-ia'),
-                'confirmSubmit' => __('¿Deseas enviar el tramite?', 'flavor-chat-ia'),
-                'required' => __('Este campo es obligatorio', 'flavor-chat-ia'),
-                'invalidEmail' => __('Email no valido', 'flavor-chat-ia'),
+                'uploading' => __('Subiendo...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'uploadError' => __('Error al subir el archivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'fileTooBig' => __('El archivo es demasiado grande', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'invalidType' => __('Tipo de archivo no permitido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmDelete' => __('¿Estas seguro de eliminar este documento?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmSubmit' => __('¿Deseas enviar el tramite?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'required' => __('Este campo es obligatorio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'invalidEmail' => __('Email no valido', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -267,7 +267,7 @@ class Flavor_Tramites_Dashboard_Tab {
                     </div>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo absint($estadisticas['total']); ?></span>
-                        <span class="flavor-kpi-label"><?php _e('Total expedientes', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Total expedientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -277,7 +277,7 @@ class Flavor_Tramites_Dashboard_Tab {
                     </div>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo absint($estadisticas['en_proceso']); ?></span>
-                        <span class="flavor-kpi-label"><?php _e('En proceso', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -287,7 +287,7 @@ class Flavor_Tramites_Dashboard_Tab {
                     </div>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo absint($estadisticas['requiere_accion']); ?></span>
-                        <span class="flavor-kpi-label"><?php _e('Requieren accion', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Requieren accion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -297,7 +297,7 @@ class Flavor_Tramites_Dashboard_Tab {
                     </div>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo absint($estadisticas['completados']); ?></span>
-                        <span class="flavor-kpi-label"><?php _e('Completados', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Completados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -307,11 +307,11 @@ class Flavor_Tramites_Dashboard_Tab {
                 <div class="flavor-panel-header">
                     <h3>
                         <span class="dashicons dashicons-portfolio"></span>
-                        <?php _e('Expedientes en curso', 'flavor-chat-ia'); ?>
+                        <?php _e('Expedientes en curso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <?php if (!empty($expedientes_activos)) : ?>
                         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('tramites', '') . '?tab=tramites-pendientes'); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
-                            <?php _e('Ver todos', 'flavor-chat-ia'); ?>
+                            <?php _e('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     <?php endif; ?>
                 </div>
@@ -320,9 +320,9 @@ class Flavor_Tramites_Dashboard_Tab {
                     <?php if (empty($expedientes_activos)) : ?>
                         <div class="flavor-empty-state">
                             <span class="dashicons dashicons-portfolio"></span>
-                            <p><?php _e('No tienes expedientes activos en este momento.', 'flavor-chat-ia'); ?></p>
+                            <p><?php _e('No tienes expedientes activos en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('tramites', '')); ?>" class="flavor-btn flavor-btn-primary">
-                                <?php _e('Iniciar un tramite', 'flavor-chat-ia'); ?>
+                                <?php _e('Iniciar un tramite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </div>
                     <?php else : ?>
@@ -340,26 +340,26 @@ class Flavor_Tramites_Dashboard_Tab {
                 <div class="flavor-panel-header">
                     <h3>
                         <span class="dashicons dashicons-admin-tools"></span>
-                        <?php _e('Acciones rapidas', 'flavor-chat-ia'); ?>
+                        <?php _e('Acciones rapidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                 </div>
                 <div class="flavor-panel-body">
                     <div class="flavor-acciones-grid">
                         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('tramites', '')); ?>" class="flavor-accion-card">
                             <span class="dashicons dashicons-plus-alt2"></span>
-                            <span><?php _e('Nuevo tramite', 'flavor-chat-ia'); ?></span>
+                            <span><?php _e('Nuevo tramite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </a>
                         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('tramites', '') . '?tab=tramites-pendientes'); ?>" class="flavor-accion-card">
                             <span class="dashicons dashicons-warning"></span>
-                            <span><?php _e('Pendientes', 'flavor-chat-ia'); ?></span>
+                            <span><?php _e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </a>
                         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('tramites', '') . '?tab=tramites-historial'); ?>" class="flavor-accion-card">
                             <span class="dashicons dashicons-backup"></span>
-                            <span><?php _e('Historial', 'flavor-chat-ia'); ?></span>
+                            <span><?php _e('Historial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </a>
                         <a href="<?php echo esc_url(home_url('/tramites/citas/')); ?>" class="flavor-accion-card">
                             <span class="dashicons dashicons-calendar-alt"></span>
-                            <span><?php _e('Mis citas', 'flavor-chat-ia'); ?></span>
+                            <span><?php _e('Mis citas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </a>
                     </div>
                 </div>
@@ -392,7 +392,7 @@ class Flavor_Tramites_Dashboard_Tab {
                 <div class="flavor-panel-header">
                     <h3>
                         <span class="dashicons dashicons-warning"></span>
-                        <?php _e('Tramites que requieren tu atencion', 'flavor-chat-ia'); ?>
+                        <?php _e('Tramites que requieren tu atencion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                 </div>
 
@@ -400,7 +400,7 @@ class Flavor_Tramites_Dashboard_Tab {
                     <?php if (empty($expedientes_pendientes)) : ?>
                         <div class="flavor-empty-state flavor-empty-success">
                             <span class="dashicons dashicons-yes-alt"></span>
-                            <p><?php _e('No tienes tramites pendientes de accion. ¡Todo al dia!', 'flavor-chat-ia'); ?></p>
+                            <p><?php _e('No tienes tramites pendientes de accion. ¡Todo al dia!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                     <?php else : ?>
                         <div class="flavor-alert flavor-alert-warning">
@@ -410,7 +410,7 @@ class Flavor_Tramites_Dashboard_Tab {
                                     'Tienes %d tramite que requiere tu atencion.',
                                     'Tienes %d tramites que requieren tu atencion.',
                                     count($expedientes_pendientes),
-                                    'flavor-chat-ia'
+                                    FLAVOR_PLATFORM_TEXT_DOMAIN
                                 ),
                                 count($expedientes_pendientes)
                             ); ?>
@@ -456,10 +456,10 @@ class Flavor_Tramites_Dashboard_Tab {
                 <div class="flavor-panel-header">
                     <h3>
                         <span class="dashicons dashicons-backup"></span>
-                        <?php _e('Historial de tramites', 'flavor-chat-ia'); ?>
+                        <?php _e('Historial de tramites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <span class="flavor-badge flavor-badge-muted">
-                        <?php printf(__('%d tramites', 'flavor-chat-ia'), $total_historial); ?>
+                        <?php printf(__('%d tramites', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_historial); ?>
                     </span>
                 </div>
 
@@ -467,7 +467,7 @@ class Flavor_Tramites_Dashboard_Tab {
                     <?php if (empty($expedientes_historial)) : ?>
                         <div class="flavor-empty-state">
                             <span class="dashicons dashicons-backup"></span>
-                            <p><?php _e('Aun no tienes tramites completados en tu historial.', 'flavor-chat-ia'); ?></p>
+                            <p><?php _e('Aun no tienes tramites completados en tu historial.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                     <?php else : ?>
                         <div class="flavor-expedientes-lista flavor-expedientes-historial">
@@ -516,7 +516,7 @@ class Flavor_Tramites_Dashboard_Tab {
                         <?php echo esc_html($expediente->numero_expediente); ?>
                     </span>
                     <h4 class="flavor-expediente-titulo">
-                        <?php echo esc_html($expediente->tipo_nombre ?: __('Tramite', 'flavor-chat-ia')); ?>
+                        <?php echo esc_html($expediente->tipo_nombre ?: __('Tramite', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                     </h4>
                 </div>
                 <span class="flavor-badge flavor-badge-<?php echo esc_attr($estado_info['clase']); ?>">
@@ -532,7 +532,7 @@ class Flavor_Tramites_Dashboard_Tab {
                 </span>
                 <span class="flavor-expediente-meta-item">
                     <span class="dashicons dashicons-media-document"></span>
-                    <?php printf(__('%d docs', 'flavor-chat-ia'), $documentos); ?>
+                    <?php printf(__('%d docs', FLAVOR_PLATFORM_TEXT_DOMAIN), $documentos); ?>
                 </span>
                 <?php if ($expediente->prioridad && $expediente->prioridad !== 'media') : ?>
                     <span class="flavor-expediente-meta-item flavor-prioridad-<?php echo esc_attr($expediente->prioridad); ?>">
@@ -574,7 +574,7 @@ class Flavor_Tramites_Dashboard_Tab {
             <?php if ($destacar_accion && $expediente->estado_actual === 'requiere_documentacion') : ?>
                 <div class="flavor-expediente-alerta">
                     <span class="dashicons dashicons-warning"></span>
-                    <?php _e('Se requiere documentacion adicional', 'flavor-chat-ia'); ?>
+                    <?php _e('Se requiere documentacion adicional', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </div>
             <?php endif; ?>
 
@@ -582,13 +582,13 @@ class Flavor_Tramites_Dashboard_Tab {
                 <a href="<?php echo esc_url($this->get_expediente_url($expediente->id)); ?>"
                    class="flavor-btn flavor-btn-sm flavor-btn-primary">
                     <span class="dashicons dashicons-visibility"></span>
-                    <?php _e('Ver detalles', 'flavor-chat-ia'); ?>
+                    <?php _e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <?php if ($expediente->estado_actual === 'requiere_documentacion') : ?>
                     <a href="<?php echo esc_url($this->get_subir_documentos_url($expediente->id)); ?>"
                        class="flavor-btn flavor-btn-sm flavor-btn-warning">
                         <span class="dashicons dashicons-upload"></span>
-                        <?php _e('Subir documentos', 'flavor-chat-ia'); ?>
+                        <?php _e('Subir documentos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 <?php endif; ?>
             </div>
@@ -611,7 +611,7 @@ class Flavor_Tramites_Dashboard_Tab {
                         <?php echo esc_html($expediente->numero_expediente); ?>
                     </span>
                     <h4 class="flavor-expediente-titulo">
-                        <?php echo esc_html($expediente->tipo_nombre ?: __('Tramite', 'flavor-chat-ia')); ?>
+                        <?php echo esc_html($expediente->tipo_nombre ?: __('Tramite', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                     </h4>
                 </div>
                 <span class="flavor-badge flavor-badge-<?php echo esc_attr($estado_info['clase']); ?>">
@@ -621,14 +621,14 @@ class Flavor_Tramites_Dashboard_Tab {
 
             <div class="flavor-expediente-fechas">
                 <div class="flavor-fecha-item">
-                    <span class="flavor-fecha-label"><?php _e('Iniciado:', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-fecha-label"><?php _e('Iniciado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="flavor-fecha-valor">
                         <?php echo esc_html(date_i18n(get_option('date_format'), strtotime($expediente->fecha_solicitud))); ?>
                     </span>
                 </div>
                 <?php if ($expediente->fecha_resolucion) : ?>
                     <div class="flavor-fecha-item">
-                        <span class="flavor-fecha-label"><?php _e('Resuelto:', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-fecha-label"><?php _e('Resuelto:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="flavor-fecha-valor">
                             <?php echo esc_html(date_i18n(get_option('date_format'), strtotime($expediente->fecha_resolucion))); ?>
                         </span>
@@ -640,7 +640,7 @@ class Flavor_Tramites_Dashboard_Tab {
                 <a href="<?php echo esc_url($this->get_expediente_url($expediente->id)); ?>"
                    class="flavor-btn flavor-btn-sm flavor-btn-outline">
                     <span class="dashicons dashicons-visibility"></span>
-                    <?php _e('Ver detalles', 'flavor-chat-ia'); ?>
+                    <?php _e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -871,47 +871,47 @@ class Flavor_Tramites_Dashboard_Tab {
     private function get_estado_info($estado) {
         $estados = [
             'pendiente' => [
-                'texto' => __('Pendiente', 'flavor-chat-ia'),
+                'texto' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'clase' => 'warning',
                 'icono' => 'dashicons-clock',
             ],
             'en_revision' => [
-                'texto' => __('En revision', 'flavor-chat-ia'),
+                'texto' => __('En revision', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'clase' => 'info',
                 'icono' => 'dashicons-visibility',
             ],
             'requiere_documentacion' => [
-                'texto' => __('Requiere documentacion', 'flavor-chat-ia'),
+                'texto' => __('Requiere documentacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'clase' => 'danger',
                 'icono' => 'dashicons-warning',
             ],
             'en_proceso' => [
-                'texto' => __('En proceso', 'flavor-chat-ia'),
+                'texto' => __('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'clase' => 'primary',
                 'icono' => 'dashicons-admin-tools',
             ],
             'aprobado' => [
-                'texto' => __('Aprobado', 'flavor-chat-ia'),
+                'texto' => __('Aprobado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'clase' => 'success',
                 'icono' => 'dashicons-yes-alt',
             ],
             'resuelto' => [
-                'texto' => __('Resuelto', 'flavor-chat-ia'),
+                'texto' => __('Resuelto', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'clase' => 'success',
                 'icono' => 'dashicons-yes-alt',
             ],
             'rechazado' => [
-                'texto' => __('Rechazado', 'flavor-chat-ia'),
+                'texto' => __('Rechazado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'clase' => 'danger',
                 'icono' => 'dashicons-dismiss',
             ],
             'cancelado' => [
-                'texto' => __('Cancelado', 'flavor-chat-ia'),
+                'texto' => __('Cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'clase' => 'muted',
                 'icono' => 'dashicons-no',
             ],
             'archivado' => [
-                'texto' => __('Archivado', 'flavor-chat-ia'),
+                'texto' => __('Archivado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'clase' => 'muted',
                 'icono' => 'dashicons-archive',
             ],
@@ -967,9 +967,9 @@ class Flavor_Tramites_Dashboard_Tab {
         ?>
         <div class="flavor-alert flavor-alert-warning">
             <span class="dashicons dashicons-lock"></span>
-            <?php _e('Debes iniciar sesion para ver tus tramites.', 'flavor-chat-ia'); ?>
+            <?php _e('Debes iniciar sesion para ver tus tramites.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="flavor-btn flavor-btn-sm">
-                <?php _e('Iniciar sesion', 'flavor-chat-ia'); ?>
+                <?php _e('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
         <?php
@@ -982,7 +982,7 @@ class Flavor_Tramites_Dashboard_Tab {
         ?>
         <div class="flavor-alert flavor-alert-info">
             <span class="dashicons dashicons-info"></span>
-            <?php _e('El sistema de tramites no esta disponible en este momento.', 'flavor-chat-ia'); ?>
+            <?php _e('El sistema de tramites no esta disponible en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </div>
         <?php
     }

@@ -18,8 +18,8 @@ if (!defined('ABSPATH')) {
     <?php if (empty($actividades)): ?>
         <div class="flavor-com-feed-vacio">
             <span class="dashicons dashicons-admin-comments"></span>
-            <p><?php esc_html_e('Aun no hay actividad en esta comunidad.', 'flavor-chat-ia'); ?></p>
-            <p><?php esc_html_e('Se el primero en publicar algo!', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('Aun no hay actividad en esta comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+            <p><?php esc_html_e('Se el primero en publicar algo!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php else: ?>
         <?php foreach ($actividades as $actividad): ?>
@@ -30,7 +30,7 @@ if (!defined('ABSPATH')) {
             <div class="flavor-com-actividad-contenido">
                 <div class="flavor-com-actividad-header">
                     <span class="flavor-com-actividad-autor">
-                        <?php echo esc_html($actividad->autor_nombre ?? __('Usuario', 'flavor-chat-ia')); ?>
+                        <?php echo esc_html($actividad->autor_nombre ?? __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                     </span>
                     <span class="flavor-com-actividad-fecha">
                         <?php
@@ -38,11 +38,11 @@ if (!defined('ABSPATH')) {
                         $diferencia = time() - $fecha;
 
                         if ($diferencia < 60) {
-                            esc_html_e('Hace un momento', 'flavor-chat-ia');
+                            esc_html_e('Hace un momento', FLAVOR_PLATFORM_TEXT_DOMAIN);
                         } elseif ($diferencia < 3600) {
-                            printf(esc_html__('Hace %d minutos', 'flavor-chat-ia'), floor($diferencia / 60));
+                            printf(esc_html__('Hace %d minutos', FLAVOR_PLATFORM_TEXT_DOMAIN), floor($diferencia / 60));
                         } elseif ($diferencia < 86400) {
-                            printf(esc_html__('Hace %d horas', 'flavor-chat-ia'), floor($diferencia / 3600));
+                            printf(esc_html__('Hace %d horas', FLAVOR_PLATFORM_TEXT_DOMAIN), floor($diferencia / 3600));
                         } else {
                             echo esc_html(date_i18n(get_option('date_format'), $fecha));
                         }
@@ -80,7 +80,7 @@ if (!defined('ABSPATH')) {
 
         <div class="flavor-com-feed-cargar-mas" style="display: none;">
             <button type="button" class="flavor-com-boton flavor-com-boton-secundario">
-                <?php esc_html_e('Cargar mas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Cargar mas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     <?php endif; ?>

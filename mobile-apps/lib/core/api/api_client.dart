@@ -122,7 +122,7 @@ class ApiClient {
       // Continuar con siguiente fallback.
     }
 
-    // Fallback legado: basabere camps
+    // Fallback legado: camps API
     try {
       final response = await Dio().get(
         '$cleanUrl/wp-json/camps/v1/camps',
@@ -141,7 +141,7 @@ class ApiClient {
           'legacy_detection': true,
           'active_systems': const [
             {
-              'id': 'basabere-campamentos',
+              'id': 'campamentos',
               'api_namespace': 'camps/v1',
             }
           ],

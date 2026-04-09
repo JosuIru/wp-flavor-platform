@@ -24,7 +24,7 @@ $variant = $variant ?? 'icons';
 $max_visible = intval($max_visible ?? 0);
 $show_dates = $show_dates ?? false;
 $show_verified = $show_verified ?? true;
-$empty_text = $empty_text ?? __('Sin certificaciones', 'flavor-chat-ia');
+$empty_text = $empty_text ?? __('Sin certificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
 // Limitar badges visibles
 $visible_badges = $max_visible > 0 ? array_slice($badges, 0, $max_visible) : $badges;
@@ -115,7 +115,7 @@ $color_classes = [
         <?php endforeach; ?>
         <?php if ($remaining > 0): ?>
             <p class="text-sm text-gray-500 pl-2">
-                <?php printf(__('+ %d más', 'flavor-chat-ia'), $remaining); ?>
+                <?php printf(__('+ %d más', FLAVOR_PLATFORM_TEXT_DOMAIN), $remaining); ?>
             </p>
         <?php endif; ?>
     </div>
@@ -144,7 +144,7 @@ $color_classes = [
                         <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                         </svg>
-                        <?php esc_html_e('Verificado', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Verificado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                 <?php endif; ?>
             </div>

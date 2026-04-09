@@ -113,7 +113,7 @@ class Flavor_GC_Subscriptions {
         }
 
         wp_send_json_error(
-            ['mensaje' => __('Token de seguridad invalido. Recarga la pagina e intentalo de nuevo.', 'flavor-chat-ia')],
+            ['mensaje' => __('Token de seguridad invalido. Recarga la pagina e intentalo de nuevo.', 'flavor-platform')],
             403
         );
     }
@@ -198,7 +198,7 @@ class Flavor_GC_Subscriptions {
         if (!$consumidor || $consumidor->estado !== 'activo') {
             return [
                 'success' => false,
-                'error' => __('El consumidor no está activo o no existe.', 'flavor-chat-ia'),
+                'error' => __('El consumidor no está activo o no existe.', 'flavor-platform'),
             ];
         }
 
@@ -207,7 +207,7 @@ class Flavor_GC_Subscriptions {
         if (!$cesta || !$cesta->activa) {
             return [
                 'success' => false,
-                'error' => __('El tipo de cesta no existe o no está disponible.', 'flavor-chat-ia'),
+                'error' => __('El tipo de cesta no existe o no está disponible.', 'flavor-platform'),
             ];
         }
 
@@ -227,7 +227,7 @@ class Flavor_GC_Subscriptions {
         if ($existente) {
             return [
                 'success' => false,
-                'error' => __('Ya tienes una suscripción activa a esta cesta.', 'flavor-chat-ia'),
+                'error' => __('Ya tienes una suscripción activa a esta cesta.', 'flavor-platform'),
             ];
         }
 
@@ -262,7 +262,7 @@ class Flavor_GC_Subscriptions {
         if ($resultado === false) {
             return [
                 'success' => false,
-                'error' => __('Error al crear la suscripción.', 'flavor-chat-ia'),
+                'error' => __('Error al crear la suscripción.', 'flavor-platform'),
             ];
         }
 
@@ -275,7 +275,7 @@ class Flavor_GC_Subscriptions {
             'success' => true,
             'suscripcion_id' => $suscripcion_id,
             'mensaje' => sprintf(
-                __('Suscripción creada correctamente. Próxima cesta: %s', 'flavor-chat-ia'),
+                __('Suscripción creada correctamente. Próxima cesta: %s', 'flavor-platform'),
                 date_i18n(get_option('date_format'), strtotime($fecha_proximo_cargo))
             ),
         ];
@@ -342,14 +342,14 @@ class Flavor_GC_Subscriptions {
         if (!$suscripcion) {
             return [
                 'success' => false,
-                'error' => __('Suscripción no encontrada.', 'flavor-chat-ia'),
+                'error' => __('Suscripción no encontrada.', 'flavor-platform'),
             ];
         }
 
         if ($suscripcion->estado !== 'activa') {
             return [
                 'success' => false,
-                'error' => __('Solo se pueden pausar suscripciones activas.', 'flavor-chat-ia'),
+                'error' => __('Solo se pueden pausar suscripciones activas.', 'flavor-platform'),
             ];
         }
 
@@ -367,7 +367,7 @@ class Flavor_GC_Subscriptions {
         if ($resultado === false) {
             return [
                 'success' => false,
-                'error' => __('Error al pausar la suscripción.', 'flavor-chat-ia'),
+                'error' => __('Error al pausar la suscripción.', 'flavor-platform'),
             ];
         }
 
@@ -375,7 +375,7 @@ class Flavor_GC_Subscriptions {
 
         return [
             'success' => true,
-            'mensaje' => __('Suscripción pausada correctamente.', 'flavor-chat-ia'),
+            'mensaje' => __('Suscripción pausada correctamente.', 'flavor-platform'),
         ];
     }
 
@@ -392,14 +392,14 @@ class Flavor_GC_Subscriptions {
         if (!$suscripcion) {
             return [
                 'success' => false,
-                'error' => __('Suscripción no encontrada.', 'flavor-chat-ia'),
+                'error' => __('Suscripción no encontrada.', 'flavor-platform'),
             ];
         }
 
         if ($suscripcion->estado !== 'pausada') {
             return [
                 'success' => false,
-                'error' => __('Solo se pueden reanudar suscripciones pausadas.', 'flavor-chat-ia'),
+                'error' => __('Solo se pueden reanudar suscripciones pausadas.', 'flavor-platform'),
             ];
         }
 
@@ -422,7 +422,7 @@ class Flavor_GC_Subscriptions {
         if ($resultado === false) {
             return [
                 'success' => false,
-                'error' => __('Error al reanudar la suscripción.', 'flavor-chat-ia'),
+                'error' => __('Error al reanudar la suscripción.', 'flavor-platform'),
             ];
         }
 
@@ -431,7 +431,7 @@ class Flavor_GC_Subscriptions {
         return [
             'success' => true,
             'mensaje' => sprintf(
-                __('Suscripción reanudada. Próxima cesta: %s', 'flavor-chat-ia'),
+                __('Suscripción reanudada. Próxima cesta: %s', 'flavor-platform'),
                 date_i18n(get_option('date_format'), strtotime($fecha_proximo_cargo))
             ),
         ];
@@ -451,14 +451,14 @@ class Flavor_GC_Subscriptions {
         if (!$suscripcion) {
             return [
                 'success' => false,
-                'error' => __('Suscripción no encontrada.', 'flavor-chat-ia'),
+                'error' => __('Suscripción no encontrada.', 'flavor-platform'),
             ];
         }
 
         if ($suscripcion->estado === 'cancelada') {
             return [
                 'success' => false,
-                'error' => __('La suscripción ya está cancelada.', 'flavor-chat-ia'),
+                'error' => __('La suscripción ya está cancelada.', 'flavor-platform'),
             ];
         }
 
@@ -482,7 +482,7 @@ class Flavor_GC_Subscriptions {
         if ($resultado === false) {
             return [
                 'success' => false,
-                'error' => __('Error al cancelar la suscripción.', 'flavor-chat-ia'),
+                'error' => __('Error al cancelar la suscripción.', 'flavor-platform'),
             ];
         }
 
@@ -490,7 +490,7 @@ class Flavor_GC_Subscriptions {
 
         return [
             'success' => true,
-            'mensaje' => __('Suscripción cancelada correctamente.', 'flavor-chat-ia'),
+            'mensaje' => __('Suscripción cancelada correctamente.', 'flavor-platform'),
         ];
     }
 
@@ -507,7 +507,7 @@ class Flavor_GC_Subscriptions {
         if (!isset(self::FRECUENCIAS[$nueva_frecuencia])) {
             return [
                 'success' => false,
-                'error' => __('Frecuencia no válida.', 'flavor-chat-ia'),
+                'error' => __('Frecuencia no válida.', 'flavor-platform'),
             ];
         }
 
@@ -515,7 +515,7 @@ class Flavor_GC_Subscriptions {
         if (!$suscripcion || $suscripcion->estado === 'cancelada') {
             return [
                 'success' => false,
-                'error' => __('Suscripción no encontrada o cancelada.', 'flavor-chat-ia'),
+                'error' => __('Suscripción no encontrada o cancelada.', 'flavor-platform'),
             ];
         }
 
@@ -537,14 +537,14 @@ class Flavor_GC_Subscriptions {
         if ($resultado === false) {
             return [
                 'success' => false,
-                'error' => __('Error al cambiar la frecuencia.', 'flavor-chat-ia'),
+                'error' => __('Error al cambiar la frecuencia.', 'flavor-platform'),
             ];
         }
 
         return [
             'success' => true,
             'mensaje' => sprintf(
-                __('Frecuencia cambiada a %s. Próxima cesta: %s', 'flavor-chat-ia'),
+                __('Frecuencia cambiada a %s. Próxima cesta: %s', 'flavor-platform'),
                 $this->obtener_etiqueta_frecuencia($nueva_frecuencia),
                 date_i18n(get_option('date_format'), strtotime($fecha_proximo_cargo))
             ),
@@ -701,7 +701,7 @@ class Flavor_GC_Subscriptions {
                     'precio_unitario' => $precio,
                     'estado' => 'pendiente',
                     'fecha_pedido' => current_time('mysql'),
-                    'notas' => sprintf(__('Pedido automático - Suscripción %s', 'flavor-chat-ia'), $cesta->nombre),
+                    'notas' => sprintf(__('Pedido automático - Suscripción %s', 'flavor-platform'), $cesta->nombre),
                 ],
                 ['%d', '%d', '%d', '%f', '%f', '%s', '%s', '%s']
             );
@@ -768,7 +768,7 @@ class Flavor_GC_Subscriptions {
         if (empty($nombre)) {
             return [
                 'success' => false,
-                'error' => __('El nombre es obligatorio.', 'flavor-chat-ia'),
+                'error' => __('El nombre es obligatorio.', 'flavor-platform'),
             ];
         }
 
@@ -801,14 +801,14 @@ class Flavor_GC_Subscriptions {
         if ($resultado === false) {
             return [
                 'success' => false,
-                'error' => __('Error al crear el tipo de cesta.', 'flavor-chat-ia'),
+                'error' => __('Error al crear el tipo de cesta.', 'flavor-platform'),
             ];
         }
 
         return [
             'success' => true,
             'cesta_id' => $wpdb->insert_id,
-            'mensaje' => __('Tipo de cesta creado correctamente.', 'flavor-chat-ia'),
+            'mensaje' => __('Tipo de cesta creado correctamente.', 'flavor-platform'),
         ];
     }
 
@@ -826,7 +826,7 @@ class Flavor_GC_Subscriptions {
         if (!$cesta) {
             return [
                 'success' => false,
-                'error' => __('Tipo de cesta no encontrado.', 'flavor-chat-ia'),
+                'error' => __('Tipo de cesta no encontrado.', 'flavor-platform'),
             ];
         }
 
@@ -871,7 +871,7 @@ class Flavor_GC_Subscriptions {
         if (empty($datos_actualizar)) {
             return [
                 'success' => false,
-                'error' => __('No hay datos para actualizar.', 'flavor-chat-ia'),
+                'error' => __('No hay datos para actualizar.', 'flavor-platform'),
             ];
         }
 
@@ -886,13 +886,13 @@ class Flavor_GC_Subscriptions {
         if ($resultado === false) {
             return [
                 'success' => false,
-                'error' => __('Error al actualizar.', 'flavor-chat-ia'),
+                'error' => __('Error al actualizar.', 'flavor-platform'),
             ];
         }
 
         return [
             'success' => true,
-            'mensaje' => __('Tipo de cesta actualizado.', 'flavor-chat-ia'),
+            'mensaje' => __('Tipo de cesta actualizado.', 'flavor-platform'),
         ];
     }
 
@@ -908,9 +908,9 @@ class Flavor_GC_Subscriptions {
      */
     public function obtener_etiqueta_frecuencia($frecuencia) {
         $etiquetas = [
-            'semanal' => __('Semanal', 'flavor-chat-ia'),
-            'quincenal' => __('Quincenal', 'flavor-chat-ia'),
-            'mensual' => __('Mensual', 'flavor-chat-ia'),
+            'semanal' => __('Semanal', 'flavor-platform'),
+            'quincenal' => __('Quincenal', 'flavor-platform'),
+            'mensual' => __('Mensual', 'flavor-platform'),
         ];
         return $etiquetas[$frecuencia] ?? $frecuencia;
     }
@@ -923,9 +923,9 @@ class Flavor_GC_Subscriptions {
      */
     public function obtener_etiqueta_estado($estado) {
         $etiquetas = [
-            'activa' => __('Activa', 'flavor-chat-ia'),
-            'pausada' => __('Pausada', 'flavor-chat-ia'),
-            'cancelada' => __('Cancelada', 'flavor-chat-ia'),
+            'activa' => __('Activa', 'flavor-platform'),
+            'pausada' => __('Pausada', 'flavor-platform'),
+            'cancelada' => __('Cancelada', 'flavor-platform'),
         ];
         return $etiquetas[$estado] ?? $estado;
     }
@@ -1000,7 +1000,7 @@ class Flavor_GC_Subscriptions {
         $this->verificar_nonce_ajax();
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', 'flavor-platform')]);
         }
 
         $consumidor_id = isset($_POST['consumidor_id']) ? absint($_POST['consumidor_id']) : 0;
@@ -1011,7 +1011,7 @@ class Flavor_GC_Subscriptions {
         $consumidor = $this->resolver_consumidor_ajax($consumidor_id);
 
         if (!$consumidor || ($consumidor->usuario_id !== get_current_user_id() && !current_user_can('gc_gestionar_suscripciones'))) {
-            wp_send_json_error(['mensaje' => __('No tienes permisos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('No tienes permisos.', 'flavor-platform')]);
         }
 
         $resultado = $this->crear_suscripcion((int) $consumidor->id, $tipo_cesta_id, $frecuencia);
@@ -1030,7 +1030,7 @@ class Flavor_GC_Subscriptions {
         $this->verificar_nonce_ajax();
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', 'flavor-platform')]);
         }
 
         $suscripcion_id = isset($_POST['suscripcion_id']) ? absint($_POST['suscripcion_id']) : 0;
@@ -1039,11 +1039,11 @@ class Flavor_GC_Subscriptions {
         $consumidor = $contexto['consumidor'];
 
         if (!$suscripcion) {
-            wp_send_json_error(['mensaje' => __('Suscripción no encontrada.', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Suscripción no encontrada.', 'flavor-platform')]);
         }
 
         if (!$consumidor || ($consumidor->usuario_id !== get_current_user_id() && !current_user_can('gc_gestionar_suscripciones'))) {
-            wp_send_json_error(['mensaje' => __('No tienes permisos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('No tienes permisos.', 'flavor-platform')]);
         }
 
         $resultado = $this->pausar_suscripcion($suscripcion_id);
@@ -1062,7 +1062,7 @@ class Flavor_GC_Subscriptions {
         $this->verificar_nonce_ajax();
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', 'flavor-platform')]);
         }
 
         $suscripcion_id = isset($_POST['suscripcion_id']) ? absint($_POST['suscripcion_id']) : 0;
@@ -1071,11 +1071,11 @@ class Flavor_GC_Subscriptions {
         $consumidor = $contexto['consumidor'];
 
         if (!$suscripcion) {
-            wp_send_json_error(['mensaje' => __('Suscripción no encontrada.', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Suscripción no encontrada.', 'flavor-platform')]);
         }
 
         if (!$consumidor || ($consumidor->usuario_id !== get_current_user_id() && !current_user_can('gc_gestionar_suscripciones'))) {
-            wp_send_json_error(['mensaje' => __('No tienes permisos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('No tienes permisos.', 'flavor-platform')]);
         }
 
         $resultado = $this->reanudar_suscripcion($suscripcion_id);
@@ -1094,7 +1094,7 @@ class Flavor_GC_Subscriptions {
         $this->verificar_nonce_ajax();
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', 'flavor-platform')]);
         }
 
         $suscripcion_id = isset($_POST['suscripcion_id']) ? absint($_POST['suscripcion_id']) : 0;
@@ -1104,11 +1104,11 @@ class Flavor_GC_Subscriptions {
         $consumidor = $contexto['consumidor'];
 
         if (!$suscripcion) {
-            wp_send_json_error(['mensaje' => __('Suscripción no encontrada.', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Suscripción no encontrada.', 'flavor-platform')]);
         }
 
         if (!$consumidor || ($consumidor->usuario_id !== get_current_user_id() && !current_user_can('gc_gestionar_suscripciones'))) {
-            wp_send_json_error(['mensaje' => __('No tienes permisos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('No tienes permisos.', 'flavor-platform')]);
         }
 
         $resultado = $this->cancelar_suscripcion($suscripcion_id, $motivo);
@@ -1127,7 +1127,7 @@ class Flavor_GC_Subscriptions {
         $this->verificar_nonce_ajax();
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', 'flavor-platform')]);
         }
 
         $suscripcion_id = isset($_POST['suscripcion_id']) ? absint($_POST['suscripcion_id']) : 0;
@@ -1137,11 +1137,11 @@ class Flavor_GC_Subscriptions {
         $consumidor = $contexto['consumidor'];
 
         if (!$suscripcion) {
-            wp_send_json_error(['mensaje' => __('Suscripción no encontrada.', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Suscripción no encontrada.', 'flavor-platform')]);
         }
 
         if (!$consumidor || ($consumidor->usuario_id !== get_current_user_id() && !current_user_can('gc_gestionar_suscripciones'))) {
-            wp_send_json_error(['mensaje' => __('No tienes permisos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('No tienes permisos.', 'flavor-platform')]);
         }
 
         $resultado = $this->cambiar_frecuencia($suscripcion_id, $frecuencia);

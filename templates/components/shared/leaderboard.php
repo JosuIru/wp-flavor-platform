@@ -23,8 +23,8 @@ if (!defined('ABSPATH')) {
 }
 
 $users = $users ?? [];
-$title = $title ?? __('Clasificación', 'flavor-chat-ia');
-$metric = $metric ?? __('puntos', 'flavor-chat-ia');
+$title = $title ?? __('Clasificación', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$metric = $metric ?? __('puntos', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $highlight = intval($highlight ?? get_current_user_id());
 $show_medals = $show_medals ?? true;
 $show_change = $show_change ?? true;
@@ -40,10 +40,10 @@ $medals = ['🥇', '🥈', '🥉'];
 
 // Períodos disponibles
 $periods = [
-    'all'   => __('Todo el tiempo', 'flavor-chat-ia'),
-    'year'  => __('Este año', 'flavor-chat-ia'),
-    'month' => __('Este mes', 'flavor-chat-ia'),
-    'week'  => __('Esta semana', 'flavor-chat-ia'),
+    'all'   => __('Todo el tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'year'  => __('Este año', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'month' => __('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'week'  => __('Esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 
@@ -163,7 +163,7 @@ $periods = [
                     <p class="font-medium text-gray-900 truncate <?php echo $is_current ? 'text-blue-700' : ''; ?>">
                         <?php echo esc_html($user['name'] ?? ''); ?>
                         <?php if ($is_current): ?>
-                            <span class="text-xs text-blue-500 ml-1">(<?php esc_html_e('tú', 'flavor-chat-ia'); ?>)</span>
+                            <span class="text-xs text-blue-500 ml-1">(<?php esc_html_e('tú', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>)</span>
                         <?php endif; ?>
                     </p>
                     <?php if (!empty($user['badges'])): ?>
@@ -216,8 +216,8 @@ $periods = [
     <?php if (empty($users)): ?>
         <div class="px-6 py-12 text-center">
             <span class="text-4xl">🏆</span>
-            <p class="mt-3 text-gray-500"><?php esc_html_e('No hay participantes aún', 'flavor-chat-ia'); ?></p>
-            <p class="text-sm text-gray-400"><?php esc_html_e('¡Sé el primero en participar!', 'flavor-chat-ia'); ?></p>
+            <p class="mt-3 text-gray-500"><?php esc_html_e('No hay participantes aún', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+            <p class="text-sm text-gray-400"><?php esc_html_e('¡Sé el primero en participar!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php endif; ?>
 
@@ -246,11 +246,11 @@ $periods = [
                         $current_user = get_userdata($highlight);
                         echo esc_html($current_user ? $current_user->display_name : '');
                         ?>
-                        <span class="text-xs text-blue-500 ml-1">(<?php esc_html_e('tú', 'flavor-chat-ia'); ?>)</span>
+                        <span class="text-xs text-blue-500 ml-1">(<?php esc_html_e('tú', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>)</span>
                     </p>
                 </div>
                 <div class="text-right">
-                    <p class="text-sm text-gray-500"><?php esc_html_e('Participa para aparecer', 'flavor-chat-ia'); ?></p>
+                    <p class="text-sm text-gray-500"><?php esc_html_e('Participa para aparecer', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             </div>
         </div>

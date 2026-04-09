@@ -12,7 +12,7 @@ $tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
 
 // Verificar si existe la tabla
 if (!Flavor_Chat_Helpers::tabla_existe($tabla_incidencias)) {
-    echo '<div class="incidencias-empty"><p>' . esc_html__('El módulo de incidencias no está configurado.', 'flavor-chat-ia') . '</p></div>';
+    echo '<div class="incidencias-empty"><p>' . esc_html__('El módulo de incidencias no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
 
@@ -58,15 +58,15 @@ $tipos_disponibles = $wpdb->get_col("SELECT DISTINCT tipo FROM $tabla_incidencia
 // Labels para estados (español e inglés)
 $estados_labels = [
     // Estados en español
-    'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-    'en_proceso' => __('En proceso', 'flavor-chat-ia'),
-    'resuelta' => __('Resuelta', 'flavor-chat-ia'),
-    'cerrada' => __('Cerrada', 'flavor-chat-ia'),
+    'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'en_proceso' => __('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'resuelta' => __('Resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cerrada' => __('Cerrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
     // Estados en inglés (para datos existentes)
-    'pending' => __('Pendiente', 'flavor-chat-ia'),
-    'in_progress' => __('En proceso', 'flavor-chat-ia'),
-    'resolved' => __('Resuelta', 'flavor-chat-ia'),
-    'closed' => __('Cerrada', 'flavor-chat-ia'),
+    'pending' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'in_progress' => __('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'resolved' => __('Resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'closed' => __('Cerrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $estados_colors = [
@@ -88,11 +88,11 @@ $incidencias_base_url = Flavor_Chat_Helpers::get_action_url('incidencias', '');
 
 <div class="incidencias-listado-wrapper">
     <div class="incidencias-header">
-        <h2><?php esc_html_e('Incidencias de la Comunidad', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Incidencias de la Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <?php if (is_user_logged_in()): ?>
             <a href="<?php echo esc_url($incidencias_base_url . 'reportar/'); ?>" class="btn btn-primary">
                 <span class="dashicons dashicons-plus-alt2"></span>
-                <?php esc_html_e('Reportar incidencia', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Reportar incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         <?php endif; ?>
     </div>
@@ -103,7 +103,7 @@ $incidencias_base_url = Flavor_Chat_Helpers::get_action_url('incidencias', '');
     <form class="incidencias-filtros" method="get">
         <div class="filtro-grupo">
             <select name="estado">
-                <option value=""><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php esc_html_e('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 <?php foreach ($estados_disponibles as $estado): ?>
                     <option value="<?php echo esc_attr($estado); ?>" <?php selected($estado_filtro, $estado); ?>>
                         <?php echo esc_html($estados_labels[$estado] ?? ucfirst($estado)); ?>
@@ -114,7 +114,7 @@ $incidencias_base_url = Flavor_Chat_Helpers::get_action_url('incidencias', '');
         <?php if ($tipos_disponibles): ?>
             <div class="filtro-grupo">
                 <select name="tipo">
-                    <option value=""><?php esc_html_e('Todos los tipos', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todos los tipos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($tipos_disponibles as $tipo): ?>
                         <option value="<?php echo esc_attr($tipo); ?>" <?php selected($tipo_filtro, $tipo); ?>>
                             <?php echo esc_html(ucfirst($tipo)); ?>
@@ -125,9 +125,9 @@ $incidencias_base_url = Flavor_Chat_Helpers::get_action_url('incidencias', '');
         <?php endif; ?>
         <div class="filtro-grupo filtro-buscar">
             <input type="text" name="buscar" value="<?php echo esc_attr($buscar); ?>"
-                   placeholder="<?php esc_attr_e('Buscar...', 'flavor-chat-ia'); ?>">
+                   placeholder="<?php esc_attr_e('Buscar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
         </div>
-        <button type="submit" class="btn btn-outline"><?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?></button>
+        <button type="submit" class="btn btn-outline"><?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
     </form>
     <?php endif; ?>
 
@@ -160,7 +160,7 @@ $incidencias_base_url = Flavor_Chat_Helpers::get_action_url('incidencias', '');
                     </div>
                     <div class="incidencia-footer">
                         <a href="<?php echo esc_url($incidencias_base_url . $incidencia->id . '/'); ?>" class="btn btn-sm btn-outline">
-                            <?php esc_html_e('Ver detalles', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </div>
@@ -169,8 +169,8 @@ $incidencias_base_url = Flavor_Chat_Helpers::get_action_url('incidencias', '');
     <?php else: ?>
         <div class="incidencias-empty">
             <span class="dashicons dashicons-flag"></span>
-            <h3><?php esc_html_e('No hay incidencias', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('No se encontraron incidencias con los filtros seleccionados.', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('No hay incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php esc_html_e('No se encontraron incidencias con los filtros seleccionados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php endif; ?>
 </div>

@@ -30,7 +30,7 @@ class Flavor_Economia_Don_Widget extends Flavor_Dashboard_Widget_Base {
         $this->module = $module;
 
         $this->widget_id = 'economia-don';
-        $this->title = __('Economía del Don', 'flavor-chat-ia');
+        $this->title = __('Economía del Don', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $this->icon = 'dashicons-heart';
         $this->size = 'medium';
         $this->category = 'economia';
@@ -53,19 +53,19 @@ class Flavor_Economia_Don_Widget extends Flavor_Dashboard_Widget_Base {
                 [
                     'icon' => 'dashicons-upload',
                     'valor' => $user_stats['dones_dados'],
-                    'label' => __('Dados', 'flavor-chat-ia'),
+                    'label' => __('Dados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'red',
                 ],
                 [
                     'icon' => 'dashicons-download',
                     'valor' => $user_stats['dones_recibidos'],
-                    'label' => __('Recibidos', 'flavor-chat-ia'),
+                    'label' => __('Recibidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'purple',
                 ],
                 [
                     'icon' => 'dashicons-marker',
                     'valor' => $user_stats['dones_activos'],
-                    'label' => __('Activos', 'flavor-chat-ia'),
+                    'label' => __('Activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'green',
                 ],
             ];
@@ -103,15 +103,15 @@ class Flavor_Economia_Don_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats,
             'items' => $items,
-            'empty_state' => __('No hay dones disponibles', 'flavor-chat-ia'),
+            'empty_state' => __('No hay dones disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => __('Ver todos', 'flavor-chat-ia'),
+                    'label' => __('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => $this->get_context_url('/mi-portal/economia-don/', 'flavor-economia-don'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
                 [
-                    'label' => __('Ofrecer don', 'flavor-chat-ia'),
+                    'label' => __('Ofrecer don', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => $this->get_context_url('/mi-portal/economia-don/ofrecer/', 'flavor-economia-don'),
                     'icon' => 'dashicons-heart',
                 ],

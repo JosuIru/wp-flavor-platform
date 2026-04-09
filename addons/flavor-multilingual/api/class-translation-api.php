@@ -495,7 +495,8 @@ class Flavor_Translation_API {
         global $wpdb;
 
         $lang = sanitize_key($request->get_param('lang'));
-        $domain = sanitize_key($request->get_param('domain')) ?: 'flavor-chat-ia';
+        $default_domain = defined('FLAVOR_PLATFORM_TEXT_DOMAIN') ? FLAVOR_PLATFORM_TEXT_DOMAIN : 'flavor-platform';
+        $domain = sanitize_key($request->get_param('domain')) ?: $default_domain;
         $page = (int) ($request->get_param('page') ?: 1);
         $per_page = (int) ($request->get_param('per_page') ?: 50);
 
@@ -536,7 +537,8 @@ class Flavor_Translation_API {
         $original = $request->get_param('original');
         $lang = sanitize_key($request->get_param('lang'));
         $translation = $request->get_param('translation');
-        $domain = sanitize_key($request->get_param('domain')) ?: 'flavor-chat-ia';
+        $default_domain = defined('FLAVOR_PLATFORM_TEXT_DOMAIN') ? FLAVOR_PLATFORM_TEXT_DOMAIN : 'flavor-platform';
+        $domain = sanitize_key($request->get_param('domain')) ?: $default_domain;
 
         if (empty($original) || empty($lang) || empty($translation)) {
             return new WP_Error(

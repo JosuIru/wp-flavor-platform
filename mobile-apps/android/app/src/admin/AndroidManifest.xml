@@ -18,6 +18,6 @@
     <!-- Permite consultar si la app cliente está instalada -->
     <!-- PERSONALIZAR: Cambiar al package name de tu app cliente -->
     <queries>
-        <package android:name="com.basabere.chatia.client"/>
+        <package android:name="com.flavorplatform.chatia.client"/>
     </queries>
 </manifest>

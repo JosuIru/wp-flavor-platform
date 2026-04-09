@@ -3,16 +3,16 @@
 if (!defined('ABSPATH')) exit;
 ?>
 <div class="wrap flavor-entradas-management">
-    <h1><?php _e('Gestión de Entradas', 'flavor-chat-ia'); ?></h1>
+    <h1><?php _e('Gestión de Entradas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
     <hr class="wp-header-end">
     <div class="flavor-stats-bar">
-        <div class="flavor-stat-item"><span class="flavor-stat-label"><?php _e('Entradas vendidas', 'flavor-chat-ia'); ?></span><span class="flavor-stat-value" id="stat-vendidas">0</span></div>
-        <div class="flavor-stat-item"><span class="flavor-stat-label"><?php _e('Entradas disponibles', 'flavor-chat-ia'); ?></span><span class="flavor-stat-value" id="stat-disponibles">0</span></div>
-        <div class="flavor-stat-item"><span class="flavor-stat-label"><?php _e('Ingresos totales', 'flavor-chat-ia'); ?></span><span class="flavor-stat-value" id="stat-ingresos">0€</span></div>
+        <div class="flavor-stat-item"><span class="flavor-stat-label"><?php _e('Entradas vendidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span><span class="flavor-stat-value" id="stat-vendidas">0</span></div>
+        <div class="flavor-stat-item"><span class="flavor-stat-label"><?php _e('Entradas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span><span class="flavor-stat-value" id="stat-disponibles">0</span></div>
+        <div class="flavor-stat-item"><span class="flavor-stat-label"><?php _e('Ingresos totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span><span class="flavor-stat-value" id="stat-ingresos">0€</span></div>
     </div>
     <div class="flavor-grid-two-columns">
-        <div class="flavor-card"><div class="flavor-card-header"><h2><?php _e('Tipos de Entrada', 'flavor-chat-ia'); ?></h2><button class="button button-small" id="btn-nuevo-tipo"><?php _e('Nuevo Tipo', 'flavor-chat-ia'); ?></button></div><div class="flavor-card-body" id="tipos-entrada-list"></div></div>
-        <div class="flavor-card"><div class="flavor-card-header"><h2><?php _e('Ventas por Evento', 'flavor-chat-ia'); ?></h2></div><div class="flavor-card-body"><canvas id="grafico-ventas" width="400" height="300"></canvas></div></div>
+        <div class="flavor-card"><div class="flavor-card-header"><h2><?php _e('Tipos de Entrada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2><button class="button button-small" id="btn-nuevo-tipo"><?php _e('Nuevo Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button></div><div class="flavor-card-body" id="tipos-entrada-list"></div></div>
+        <div class="flavor-card"><div class="flavor-card-header"><h2><?php _e('Ventas por Evento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2></div><div class="flavor-card-body"><canvas id="grafico-ventas" width="400" height="300"></canvas></div></div>
     </div>
 </div>
 <style>
@@ -34,7 +34,7 @@ jQuery(document).ready(function($) {
                     $('#stat-ingresos').text(response.data.ingresos + '€');
                     new Chart(document.getElementById('grafico-ventas').getContext('2d'), {
                         type: 'bar',
-                        data: { labels: response.data.ventas.labels, datasets: [{ label: '<?php _e('Entradas vendidas', 'flavor-chat-ia'); ?>', data: response.data.ventas.values, backgroundColor: '#2271b1' }] }
+                        data: { labels: response.data.ventas.labels, datasets: [{ label: '<?php _e('Entradas vendidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', data: response.data.ventas.values, backgroundColor: '#2271b1' }] }
                     });
                 }
             }
@@ -51,7 +51,7 @@ jQuery(document).ready(function($) {
                     response.data.forEach(tipo => {
                         html += `<div class="flavor-tipo-entrada"><h4>${tipo.nombre}</h4><div class="flavor-tipo-precio">${tipo.precio}€</div><p style="font-size:12px;color:#666;margin:8px 0 0 0;">${tipo.descripcion}</p></div>`;
                     });
-                    $('#tipos-entrada-list').html(html || '<p><?php _e('No hay tipos de entrada configurados', 'flavor-chat-ia'); ?></p>');
+                    $('#tipos-entrada-list').html(html || '<p><?php _e('No hay tipos de entrada configurados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>');
                 }
             }
         });

@@ -9,26 +9,26 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$nombre = $nombre ?? __('Hotel Boutique', 'flavor-chat-ia');
-$eslogan = $eslogan ?? __('Tu hogar lejos de casa', 'flavor-chat-ia');
+$nombre = $nombre ?? __('Hotel Boutique', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$eslogan = $eslogan ?? __('Tu hogar lejos de casa', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $telefono = $telefono ?? '900 000 000';
-$direccion = $direccion ?? __('Calle Principal, 123', 'flavor-chat-ia');
+$direccion = $direccion ?? __('Calle Principal, 123', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $color_primario = $color_primario ?? '#7c3aed';
 $estrellas = $estrellas ?? 4;
 
 $habitaciones = $habitaciones ?? [
-    ['nombre' => __('Individual', 'flavor-chat-ia'), 'descripcion' => __('Perfecta para viajeros', 'flavor-chat-ia'), 'precio' => '59€', 'capacidad' => 1, 'imagen' => ''],
-    ['nombre' => __('Doble', 'flavor-chat-ia'), 'descripcion' => __('Ideal para parejas', 'flavor-chat-ia'), 'precio' => '89€', 'capacidad' => 2, 'imagen' => ''],
-    ['nombre' => __('Suite', 'flavor-chat-ia'), 'descripcion' => __('Máximo confort y espacio', 'flavor-chat-ia'), 'precio' => '149€', 'capacidad' => 2, 'imagen' => ''],
+    ['nombre' => __('Individual', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Perfecta para viajeros', FLAVOR_PLATFORM_TEXT_DOMAIN), 'precio' => '59€', 'capacidad' => 1, 'imagen' => ''],
+    ['nombre' => __('Doble', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Ideal para parejas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'precio' => '89€', 'capacidad' => 2, 'imagen' => ''],
+    ['nombre' => __('Suite', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Máximo confort y espacio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'precio' => '149€', 'capacidad' => 2, 'imagen' => ''],
 ];
 
 $servicios = $servicios ?? [
-    ['icono' => 'food', 'nombre' => __('Restaurante', 'flavor-chat-ia')],
-    ['icono' => 'car', 'nombre' => __('Parking', 'flavor-chat-ia')],
-    ['icono' => 'tide', 'nombre' => __('Piscina', 'flavor-chat-ia')],
-    ['icono' => 'desktop', 'nombre' => __('WiFi Gratis', 'flavor-chat-ia')],
-    ['icono' => 'superhero', 'nombre' => __('Gimnasio', 'flavor-chat-ia')],
-    ['icono' => 'coffee', 'nombre' => __('Desayuno', 'flavor-chat-ia')],
+    ['icono' => 'food', 'nombre' => __('Restaurante', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['icono' => 'car', 'nombre' => __('Parking', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['icono' => 'tide', 'nombre' => __('Piscina', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['icono' => 'desktop', 'nombre' => __('WiFi Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['icono' => 'superhero', 'nombre' => __('Gimnasio', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['icono' => 'coffee', 'nombre' => __('Desayuno', FLAVOR_PLATFORM_TEXT_DOMAIN)],
 ];
 ?>
 
@@ -47,7 +47,7 @@ $servicios = $servicios ?? [
                 <span class="dashicons dashicons-location"></span>
                 <?php echo esc_html($direccion); ?>
             </div>
-            <a href="#reservar" class="flavor-btn-primary"><?php esc_html_e('Reservar Ahora', 'flavor-chat-ia'); ?></a>
+            <a href="#reservar" class="flavor-btn-primary"><?php esc_html_e('Reservar Ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
         </div>
     </div>
 </section>
@@ -69,8 +69,8 @@ $servicios = $servicios ?? [
 <!-- Habitaciones -->
 <section class="flavor-hotel-habitaciones" id="habitaciones">
     <div class="flavor-container">
-        <h2 class="flavor-section-title"><?php esc_html_e('Nuestras Habitaciones', 'flavor-chat-ia'); ?></h2>
-        <p class="flavor-section-subtitle"><?php esc_html_e('Diseñadas para tu descanso y comodidad', 'flavor-chat-ia'); ?></p>
+        <h2 class="flavor-section-title"><?php esc_html_e('Nuestras Habitaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p class="flavor-section-subtitle"><?php esc_html_e('Diseñadas para tu descanso y comodidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
         <div class="flavor-habitaciones-grid">
             <?php foreach ($habitaciones as $hab): ?>
@@ -93,9 +93,9 @@ $servicios = $servicios ?? [
                         <p><?php echo esc_html($hab['descripcion']); ?></p>
                         <div class="flavor-habitacion-precio">
                             <span class="precio"><?php echo esc_html($hab['precio']); ?></span>
-                            <span class="noche"><?php esc_html_e('/noche', 'flavor-chat-ia'); ?></span>
+                            <span class="noche"><?php esc_html_e('/noche', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
-                        <a href="#reservar" class="flavor-habitacion-btn"><?php esc_html_e('Reservar', 'flavor-chat-ia'); ?></a>
+                        <a href="#reservar" class="flavor-habitacion-btn"><?php esc_html_e('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -106,26 +106,26 @@ $servicios = $servicios ?? [
 <!-- Buscador -->
 <section class="flavor-hotel-buscador" id="reservar" style="background: <?php echo esc_attr($color_primario); ?>;">
     <div class="flavor-container">
-        <h2><?php esc_html_e('Comprueba disponibilidad', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Comprueba disponibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <div class="flavor-buscador-form">
             <div class="flavor-form-group">
-                <label><?php esc_html_e('Entrada', 'flavor-chat-ia'); ?></label>
+                <label><?php esc_html_e('Entrada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <input type="date" min="<?php echo date('Y-m-d'); ?>">
             </div>
             <div class="flavor-form-group">
-                <label><?php esc_html_e('Salida', 'flavor-chat-ia'); ?></label>
+                <label><?php esc_html_e('Salida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <input type="date" min="<?php echo date('Y-m-d'); ?>">
             </div>
             <div class="flavor-form-group">
-                <label><?php esc_html_e('Huéspedes', 'flavor-chat-ia'); ?></label>
+                <label><?php esc_html_e('Huéspedes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select>
-                    <option>1 <?php esc_html_e('adulto', 'flavor-chat-ia'); ?></option>
-                    <option selected>2 <?php esc_html_e('adultos', 'flavor-chat-ia'); ?></option>
-                    <option>3 <?php esc_html_e('adultos', 'flavor-chat-ia'); ?></option>
-                    <option>4 <?php esc_html_e('adultos', 'flavor-chat-ia'); ?></option>
+                    <option>1 <?php esc_html_e('adulto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option selected>2 <?php esc_html_e('adultos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option>3 <?php esc_html_e('adultos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option>4 <?php esc_html_e('adultos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
             </div>
-            <button type="submit" class="flavor-btn-buscar"><?php esc_html_e('Buscar', 'flavor-chat-ia'); ?></button>
+            <button type="submit" class="flavor-btn-buscar"><?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
         </div>
     </div>
 </section>
@@ -133,7 +133,7 @@ $servicios = $servicios ?? [
 <!-- Galería -->
 <section class="flavor-hotel-galeria">
     <div class="flavor-container">
-        <h2 class="flavor-section-title"><?php esc_html_e('Descubre el Hotel', 'flavor-chat-ia'); ?></h2>
+        <h2 class="flavor-section-title"><?php esc_html_e('Descubre el Hotel', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <div class="flavor-galeria-grid">
             <?php for ($i = 0; $i < 4; $i++): ?>
                 <div class="flavor-galeria-item">
@@ -151,7 +151,7 @@ $servicios = $servicios ?? [
     <div class="flavor-container">
         <div class="flavor-ubicacion-wrapper">
             <div class="flavor-ubicacion-info">
-                <h2><?php esc_html_e('Cómo llegar', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Cómo llegar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <p class="flavor-direccion">
                     <span class="dashicons dashicons-location"></span>
                     <?php echo esc_html($direccion); ?>

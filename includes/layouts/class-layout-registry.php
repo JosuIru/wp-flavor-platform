@@ -72,8 +72,8 @@ class Flavor_Layout_Registry {
         // 1. Classic - Logo izquierda + menú horizontal + CTA
         $this->menus['classic'] = [
             'id' => 'classic',
-            'name' => __('Classic', 'flavor-chat-ia'),
-            'description' => __('Logo a la izquierda con menú horizontal y botón de acción', 'flavor-chat-ia'),
+            'name' => __('Classic', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Logo a la izquierda con menú horizontal y botón de acción', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-menu-alt3',
             'preview_image' => 'menu-classic.svg',
             'recommended_for' => ['tienda', 'marketplace', 'coworking'],
@@ -91,8 +91,8 @@ class Flavor_Layout_Registry {
         // 2. Centered - Logo centrado + menú debajo
         $this->menus['centered'] = [
             'id' => 'centered',
-            'name' => __('Centered', 'flavor-chat-ia'),
-            'description' => __('Logo centrado con menú horizontal debajo', 'flavor-chat-ia'),
+            'name' => __('Centered', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Logo centrado con menú horizontal debajo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-align-center',
             'preview_image' => 'menu-centered.svg',
             'recommended_for' => ['restaurante', 'comunidad', 'grupo-consumo'],
@@ -110,8 +110,8 @@ class Flavor_Layout_Registry {
         // 3. Sidebar - Menú hamburguesa + drawer lateral
         $this->menus['sidebar'] = [
             'id' => 'sidebar',
-            'name' => __('Sidebar', 'flavor-chat-ia'),
-            'description' => __('Menú lateral deslizable tipo app móvil', 'flavor-chat-ia'),
+            'name' => __('Sidebar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Menú lateral deslizable tipo app móvil', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-menu',
             'preview_image' => 'menu-sidebar.svg',
             'recommended_for' => ['barrio', 'ayuntamiento', 'banco-tiempo'],
@@ -129,8 +129,8 @@ class Flavor_Layout_Registry {
         // 4. Bottom Nav - Navegación inferior tipo app
         $this->menus['bottom-nav'] = [
             'id' => 'bottom-nav',
-            'name' => __('Bottom Navigation', 'flavor-chat-ia'),
-            'description' => __('Navegación inferior estilo aplicación móvil', 'flavor-chat-ia'),
+            'name' => __('Bottom Navigation', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Navegación inferior estilo aplicación móvil', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-smartphone',
             'preview_image' => 'menu-bottom-nav.svg',
             'recommended_for' => ['barrio', 'comunidad', 'marketplace'],
@@ -148,8 +148,8 @@ class Flavor_Layout_Registry {
         // 5. Mega Menu - Menú expandible con categorías
         $this->menus['mega-menu'] = [
             'id' => 'mega-menu',
-            'name' => __('Mega Menu', 'flavor-chat-ia'),
-            'description' => __('Menú desplegable con múltiples columnas y categorías', 'flavor-chat-ia'),
+            'name' => __('Mega Menu', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Menú desplegable con múltiples columnas y categorías', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-grid-view',
             'preview_image' => 'menu-mega.svg',
             'recommended_for' => ['marketplace', 'ayuntamiento', 'tienda'],
@@ -166,8 +166,8 @@ class Flavor_Layout_Registry {
         // 6. Minimal - Solo logo + hamburguesa
         $this->menus['minimal'] = [
             'id' => 'minimal',
-            'name' => __('Minimal', 'flavor-chat-ia'),
-            'description' => __('Diseño minimalista con solo logo y menú hamburguesa', 'flavor-chat-ia'),
+            'name' => __('Minimal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Diseño minimalista con solo logo y menú hamburguesa', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-minus',
             'preview_image' => 'menu-minimal.svg',
             'recommended_for' => ['restaurante', 'coworking'],
@@ -189,8 +189,8 @@ class Flavor_Layout_Registry {
         // 1. Multi-column - 4 columnas con enlaces + redes sociales
         $this->footers['multi-column'] = [
             'id' => 'multi-column',
-            'name' => __('Multi-Column', 'flavor-chat-ia'),
-            'description' => __('Footer con múltiples columnas de enlaces y redes sociales', 'flavor-chat-ia'),
+            'name' => __('Multi-Column', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Footer con múltiples columnas de enlaces y redes sociales', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-columns',
             'preview_image' => 'footer-multi-column.svg',
             'recommended_for' => ['tienda', 'marketplace', 'ayuntamiento'],
@@ -207,8 +207,8 @@ class Flavor_Layout_Registry {
         // 2. Compact - Una línea con copyright + enlaces básicos
         $this->footers['compact'] = [
             'id' => 'compact',
-            'name' => __('Compact', 'flavor-chat-ia'),
-            'description' => __('Footer compacto de una línea con lo esencial', 'flavor-chat-ia'),
+            'name' => __('Compact', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Footer compacto de una línea con lo esencial', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-minus',
             'preview_image' => 'footer-compact.svg',
             'recommended_for' => ['barrio', 'comunidad', 'grupo-consumo'],
@@ -223,8 +223,8 @@ class Flavor_Layout_Registry {
         // 3. Newsletter - Footer con suscripción destacada
         $this->footers['newsletter'] = [
             'id' => 'newsletter',
-            'name' => __('Newsletter', 'flavor-chat-ia'),
-            'description' => __('Footer centrado en capturar suscriptores', 'flavor-chat-ia'),
+            'name' => __('Newsletter', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Footer centrado en capturar suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-email-alt',
             'preview_image' => 'footer-newsletter.svg',
             'recommended_for' => ['comunidad', 'grupo-consumo', 'tienda'],
@@ -239,8 +239,8 @@ class Flavor_Layout_Registry {
         // 4. Contact - Mapa + datos de contacto prominentes
         $this->footers['contact'] = [
             'id' => 'contact',
-            'name' => __('Contact', 'flavor-chat-ia'),
-            'description' => __('Footer con información de contacto y mapa', 'flavor-chat-ia'),
+            'name' => __('Contact', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Footer con información de contacto y mapa', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-location',
             'preview_image' => 'footer-contact.svg',
             'recommended_for' => ['restaurante', 'coworking', 'tienda'],
@@ -256,8 +256,8 @@ class Flavor_Layout_Registry {
         // 5. App Download - Botones de descarga de APKs
         $this->footers['app-download'] = [
             'id' => 'app-download',
-            'name' => __('App Download', 'flavor-chat-ia'),
-            'description' => __('Footer destacando la descarga de aplicaciones móviles', 'flavor-chat-ia'),
+            'name' => __('App Download', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Footer destacando la descarga de aplicaciones móviles', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-smartphone',
             'preview_image' => 'footer-app-download.svg',
             'recommended_for' => ['marketplace', 'comunidad', 'barrio'],
@@ -278,47 +278,47 @@ class Flavor_Layout_Registry {
     private function register_default_layouts() {
         $this->layouts = [
             'tienda' => [
-                'name' => __('Tienda Online', 'flavor-chat-ia'),
+                'name' => __('Tienda Online', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'menu' => 'classic',
                 'footer' => 'multi-column',
             ],
             'restaurante' => [
-                'name' => __('Restaurante', 'flavor-chat-ia'),
+                'name' => __('Restaurante', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'menu' => 'centered',
                 'footer' => 'contact',
             ],
             'comunidad' => [
-                'name' => __('Comunidad', 'flavor-chat-ia'),
+                'name' => __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'menu' => 'sidebar',
                 'footer' => 'newsletter',
             ],
             'barrio' => [
-                'name' => __('Barrio', 'flavor-chat-ia'),
+                'name' => __('Barrio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'menu' => 'bottom-nav',
                 'footer' => 'compact',
             ],
             'marketplace' => [
-                'name' => __('Marketplace', 'flavor-chat-ia'),
+                'name' => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'menu' => 'mega-menu',
                 'footer' => 'app-download',
             ],
             'ayuntamiento' => [
-                'name' => __('Ayuntamiento', 'flavor-chat-ia'),
+                'name' => __('Ayuntamiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'menu' => 'mega-menu',
                 'footer' => 'multi-column',
             ],
             'coworking' => [
-                'name' => __('Coworking', 'flavor-chat-ia'),
+                'name' => __('Coworking', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'menu' => 'minimal',
                 'footer' => 'contact',
             ],
             'banco-tiempo' => [
-                'name' => __('Banco de Tiempo', 'flavor-chat-ia'),
+                'name' => __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'menu' => 'sidebar',
                 'footer' => 'compact',
             ],
             'grupo-consumo' => [
-                'name' => __('Grupo de Consumo', 'flavor-chat-ia'),
+                'name' => __('Grupo de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'menu' => 'centered',
                 'footer' => 'newsletter',
             ],
@@ -667,7 +667,7 @@ class Flavor_Layout_Registry {
     private function get_default_drawer_items() {
         return [
             [
-                'title' => __('Inicio', 'flavor-chat-ia'),
+                'title' => __('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => home_url(),
                 'icon' => 'home',
                 'type' => 'native',
@@ -676,7 +676,7 @@ class Flavor_Layout_Registry {
                 'depth' => 0,
             ],
             [
-                'title' => __('Chat', 'flavor-chat-ia'),
+                'title' => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => home_url('/chat'),
                 'icon' => 'chat',
                 'type' => 'native',
@@ -685,7 +685,7 @@ class Flavor_Layout_Registry {
                 'depth' => 0,
             ],
             [
-                'title' => __('Reservar', 'flavor-chat-ia'),
+                'title' => __('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => home_url('/reservar'),
                 'icon' => 'calendar',
                 'type' => 'native',
@@ -694,7 +694,7 @@ class Flavor_Layout_Registry {
                 'depth' => 0,
             ],
             [
-                'title' => __('Mis Tickets', 'flavor-chat-ia'),
+                'title' => __('Mis Tickets', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => home_url('/mis-tickets'),
                 'icon' => 'confirmation_number',
                 'type' => 'native',

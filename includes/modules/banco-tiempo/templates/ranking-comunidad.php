@@ -17,9 +17,9 @@ if (!defined('ABSPATH')) {
 
 $tipo = $atts['tipo'] ?? 'puntos';
 $titulo_tipo = match ($tipo) {
-    'intercambios' => __('Por intercambios', 'flavor-chat-ia'),
-    'rating'       => __('Por valoración', 'flavor-chat-ia'),
-    default        => __('Por puntos de confianza', 'flavor-chat-ia'),
+    'intercambios' => __('Por intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'rating'       => __('Por valoración', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    default        => __('Por puntos de confianza', FLAVOR_PLATFORM_TEXT_DOMAIN),
 };
 ?>
 
@@ -27,13 +27,13 @@ $titulo_tipo = match ($tipo) {
     <div class="bt-ranking__header">
         <h3 class="bt-ranking__titulo">
             <span class="dashicons dashicons-awards"></span>
-            <?php esc_html_e('Ranking de la Comunidad', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Ranking de la Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h3>
         <span class="bt-ranking__tipo"><?php echo esc_html($titulo_tipo); ?></span>
     </div>
 
     <?php if (empty($ranking)): ?>
-        <p class="bt-ranking__vacio"><?php esc_html_e('Aún no hay suficientes datos para mostrar el ranking.', 'flavor-chat-ia'); ?></p>
+        <p class="bt-ranking__vacio"><?php esc_html_e('Aún no hay suficientes datos para mostrar el ranking.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     <?php else: ?>
         <ol class="bt-ranking__lista">
             <?php foreach ($ranking as $posicion => $usuario): ?>
@@ -72,10 +72,10 @@ $titulo_tipo = match ($tipo) {
                         </span>
                         <span class="bt-ranking__stats">
                             <?php if ($tipo === 'puntos'): ?>
-                                <?php printf(esc_html__('%d pts', 'flavor-chat-ia'), intval($usuario['puntos_confianza'])); ?>
+                                <?php printf(esc_html__('%d pts', FLAVOR_PLATFORM_TEXT_DOMAIN), intval($usuario['puntos_confianza'])); ?>
                             <?php elseif ($tipo === 'intercambios'): ?>
                                 <?php printf(
-                                    esc_html(_n('%d intercambio', '%d intercambios', intval($usuario['total_intercambios_completados']), 'flavor-chat-ia')),
+                                    esc_html(_n('%d intercambio', '%d intercambios', intval($usuario['total_intercambios_completados']), FLAVOR_PLATFORM_TEXT_DOMAIN)),
                                     intval($usuario['total_intercambios_completados'])
                                 ); ?>
                             <?php else: ?>

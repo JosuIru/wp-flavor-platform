@@ -32,8 +32,8 @@ class Flavor_GC_Gateway_WooCommerce extends Flavor_GC_Payment_Gateway {
      * Constructor
      */
     public function __construct() {
-        $this->name = __('Checkout WooCommerce', 'flavor-chat-ia');
-        $this->description = __('Usa tu método de pago favorito a través de WooCommerce.', 'flavor-chat-ia');
+        $this->name = __('Checkout WooCommerce', 'flavor-platform');
+        $this->description = __('Usa tu método de pago favorito a través de WooCommerce.', 'flavor-platform');
         $this->icon = 'dashicons-cart';
 
         parent::__construct();
@@ -112,7 +112,7 @@ class Flavor_GC_Gateway_WooCommerce extends Flavor_GC_Payment_Gateway {
         if (!class_exists('WooCommerce')) {
             return [
                 'success' => false,
-                'error' => __('WooCommerce no está instalado.', 'flavor-chat-ia'),
+                'error' => __('WooCommerce no está instalado.', 'flavor-platform'),
             ];
         }
 
@@ -122,7 +122,7 @@ class Flavor_GC_Gateway_WooCommerce extends Flavor_GC_Payment_Gateway {
         if (!$product_id) {
             return [
                 'success' => false,
-                'error' => __('Error al configurar el producto de pago.', 'flavor-chat-ia'),
+                'error' => __('Error al configurar el producto de pago.', 'flavor-platform'),
             ];
         }
 
@@ -141,7 +141,7 @@ class Flavor_GC_Gateway_WooCommerce extends Flavor_GC_Payment_Gateway {
         if (!$entrega) {
             return [
                 'success' => false,
-                'error' => __('Entrega no encontrada.', 'flavor-chat-ia'),
+                'error' => __('Entrega no encontrada.', 'flavor-platform'),
             ];
         }
 
@@ -157,7 +157,7 @@ class Flavor_GC_Gateway_WooCommerce extends Flavor_GC_Payment_Gateway {
         if (!$cart_item_key) {
             return [
                 'success' => false,
-                'error' => __('Error al agregar al carrito.', 'flavor-chat-ia'),
+                'error' => __('Error al agregar al carrito.', 'flavor-platform'),
             ];
         }
 
@@ -199,7 +199,7 @@ class Flavor_GC_Gateway_WooCommerce extends Flavor_GC_Payment_Gateway {
 
         // Crear producto virtual
         $product = new WC_Product_Simple();
-        $product->set_name(__('Pedido Grupos de Consumo', 'flavor-chat-ia'));
+        $product->set_name(__('Pedido Grupos de Consumo', 'flavor-platform'));
         $product->set_status('private');
         $product->set_catalog_visibility('hidden');
         $product->set_virtual(true);
@@ -356,7 +356,7 @@ class Flavor_GC_Gateway_WooCommerce extends Flavor_GC_Payment_Gateway {
      */
     public function render_checkout_fields(): void {
         if (!class_exists('WooCommerce')) {
-            echo '<p class="gc-wc-error">' . esc_html__('WooCommerce no está disponible.', 'flavor-chat-ia') . '</p>';
+            echo '<p class="gc-wc-error">' . esc_html__('WooCommerce no está disponible.', 'flavor-platform') . '</p>';
             return;
         }
 
@@ -364,7 +364,7 @@ class Flavor_GC_Gateway_WooCommerce extends Flavor_GC_Payment_Gateway {
         $available_gateways = WC()->payment_gateways->get_available_payment_gateways();
 
         if (empty($available_gateways)) {
-            echo '<p class="gc-wc-error">' . esc_html__('No hay métodos de pago configurados en WooCommerce.', 'flavor-chat-ia') . '</p>';
+            echo '<p class="gc-wc-error">' . esc_html__('No hay métodos de pago configurados en WooCommerce.', 'flavor-platform') . '</p>';
             return;
         }
 
@@ -372,11 +372,11 @@ class Flavor_GC_Gateway_WooCommerce extends Flavor_GC_Payment_Gateway {
         <div class="gc-gateway-wc-wrapper">
             <p class="gc-wc-message">
                 <span class="dashicons dashicons-cart" aria-hidden="true"></span>
-                <?php esc_html_e('Serás redirigido al checkout de WooCommerce donde podrás elegir tu método de pago preferido.', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Serás redirigido al checkout de WooCommerce donde podrás elegir tu método de pago preferido.', 'flavor-platform'); ?>
             </p>
 
             <div class="gc-wc-available-methods">
-                <strong><?php esc_html_e('Métodos de pago disponibles:', 'flavor-chat-ia'); ?></strong>
+                <strong><?php esc_html_e('Métodos de pago disponibles:', 'flavor-platform'); ?></strong>
                 <ul>
                     <?php foreach ($available_gateways as $gateway) : ?>
                     <li>
@@ -430,7 +430,7 @@ class Flavor_GC_Gateway_WooCommerce extends Flavor_GC_Payment_Gateway {
             [
                 'id' => 'enabled',
                 'type' => 'checkbox',
-                'label' => __('Habilitar pago por WooCommerce', 'flavor-chat-ia'),
+                'label' => __('Habilitar pago por WooCommerce', 'flavor-platform'),
                 'default' => false,
             ],
         ];
@@ -439,7 +439,7 @@ class Flavor_GC_Gateway_WooCommerce extends Flavor_GC_Payment_Gateway {
             $fields[] = [
                 'id' => 'wc_notice',
                 'type' => 'notice',
-                'content' => __('WooCommerce no está instalado. Esta pasarela requiere WooCommerce activo.', 'flavor-chat-ia'),
+                'content' => __('WooCommerce no está instalado. Esta pasarela requiere WooCommerce activo.', 'flavor-platform'),
                 'level' => 'warning',
             ];
         }
@@ -459,7 +459,7 @@ class Flavor_GC_Gateway_WooCommerce extends Flavor_GC_Payment_Gateway {
         if (!class_exists('WooCommerce')) {
             return [
                 'success' => false,
-                'error' => __('WooCommerce no está disponible.', 'flavor-chat-ia'),
+                'error' => __('WooCommerce no está disponible.', 'flavor-platform'),
             ];
         }
 
@@ -474,7 +474,7 @@ class Flavor_GC_Gateway_WooCommerce extends Flavor_GC_Payment_Gateway {
         if (!$transaccion) {
             return [
                 'success' => false,
-                'error' => __('Transacción no encontrada.', 'flavor-chat-ia'),
+                'error' => __('Transacción no encontrada.', 'flavor-platform'),
             ];
         }
 
@@ -484,7 +484,7 @@ class Flavor_GC_Gateway_WooCommerce extends Flavor_GC_Payment_Gateway {
         if (!$wc_order_id) {
             return [
                 'success' => false,
-                'error' => __('No se encontró el pedido de WooCommerce asociado.', 'flavor-chat-ia'),
+                'error' => __('No se encontró el pedido de WooCommerce asociado.', 'flavor-platform'),
             ];
         }
 
@@ -493,7 +493,7 @@ class Flavor_GC_Gateway_WooCommerce extends Flavor_GC_Payment_Gateway {
         if (!$order) {
             return [
                 'success' => false,
-                'error' => __('Pedido de WooCommerce no encontrado.', 'flavor-chat-ia'),
+                'error' => __('Pedido de WooCommerce no encontrado.', 'flavor-platform'),
             ];
         }
 
@@ -515,7 +515,7 @@ class Flavor_GC_Gateway_WooCommerce extends Flavor_GC_Payment_Gateway {
         return [
             'success' => true,
             'refund_id' => $refund->get_id(),
-            'message' => __('Reembolso procesado a través de WooCommerce.', 'flavor-chat-ia'),
+            'message' => __('Reembolso procesado a través de WooCommerce.', 'flavor-platform'),
         ];
     }
 }

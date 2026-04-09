@@ -15,8 +15,8 @@ if (!defined('ABSPATH')) {
 $usuario_id = get_current_user_id();
 if (!$usuario_id) {
     echo '<div class="rs-login-required">';
-    echo '<p>' . esc_html__('Debes iniciar sesion para ver tu actividad.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('red_social', 'mi-actividad'))) . '" class="rs-btn-primary">' . esc_html__('Iniciar sesion', 'flavor-chat-ia') . '</a>';
+    echo '<p>' . esc_html__('Debes iniciar sesion para ver tu actividad.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
+    echo '<a href="' . esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('red_social', 'mi-actividad'))) . '" class="rs-btn-primary">' . esc_html__('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
     echo '</div>';
     return;
 }
@@ -169,8 +169,8 @@ $historial_puntos = $wpdb->get_results($wpdb->prepare(
                      src="<?php echo esc_url(get_avatar_url($usuario_id, ['size' => 80])); ?>"
                      alt="">
                 <div class="rs-actividad-info">
-                    <h1><?php echo esc_html__('Tu actividad', 'flavor-chat-ia'); ?></h1>
-                    <p><?php echo esc_html__('Historial de tu participacion en la comunidad', 'flavor-chat-ia'); ?></p>
+                    <h1><?php echo esc_html__('Tu actividad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
+                    <p><?php echo esc_html__('Historial de tu participacion en la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             </div>
 
@@ -178,19 +178,19 @@ $historial_puntos = $wpdb->get_results($wpdb->prepare(
             <div class="rs-actividad-stats">
                 <div class="rs-actividad-stat">
                     <span class="rs-stat-numero"><?php echo number_format($total_publicaciones); ?></span>
-                    <span class="rs-stat-label"><?php echo esc_html__('Publicaciones', 'flavor-chat-ia'); ?></span>
+                    <span class="rs-stat-label"><?php echo esc_html__('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="rs-actividad-stat">
                     <span class="rs-stat-numero"><?php echo number_format($total_comentarios); ?></span>
-                    <span class="rs-stat-label"><?php echo esc_html__('Comentarios', 'flavor-chat-ia'); ?></span>
+                    <span class="rs-stat-label"><?php echo esc_html__('Comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="rs-actividad-stat">
                     <span class="rs-stat-numero"><?php echo number_format($total_likes_recibidos); ?></span>
-                    <span class="rs-stat-label"><?php echo esc_html__('Likes recibidos', 'flavor-chat-ia'); ?></span>
+                    <span class="rs-stat-label"><?php echo esc_html__('Likes recibidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="rs-actividad-stat">
                     <span class="rs-stat-numero"><?php echo number_format($total_guardados); ?></span>
-                    <span class="rs-stat-label"><?php echo esc_html__('Guardados', 'flavor-chat-ia'); ?></span>
+                    <span class="rs-stat-label"><?php echo esc_html__('Guardados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
         </div>
@@ -205,31 +205,31 @@ $historial_puntos = $wpdb->get_results($wpdb->prepare(
                             <circle cx="12" cy="12" r="10"/>
                             <polyline points="12 6 12 12 16 14"/>
                         </svg>
-                        <?php echo esc_html__('Todo', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Todo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="?tipo=publicaciones" class="rs-filtro-btn <?php echo $filtro_tipo === 'publicaciones' ? 'active' : ''; ?>">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                         </svg>
-                        <?php echo esc_html__('Publicaciones', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="?tipo=comentarios" class="rs-filtro-btn <?php echo $filtro_tipo === 'comentarios' ? 'active' : ''; ?>">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
                         </svg>
-                        <?php echo esc_html__('Comentarios', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="?tipo=likes" class="rs-filtro-btn <?php echo $filtro_tipo === 'likes' ? 'active' : ''; ?>">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                         </svg>
-                        <?php echo esc_html__('Me gusta', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Me gusta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="?tipo=guardados" class="rs-filtro-btn <?php echo $filtro_tipo === 'guardados' ? 'active' : ''; ?>">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
                         </svg>
-                        <?php echo esc_html__('Guardados', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Guardados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
 
@@ -241,8 +241,8 @@ $historial_puntos = $wpdb->get_results($wpdb->prepare(
                                 <circle cx="12" cy="12" r="10"/>
                                 <polyline points="12 6 12 12 16 14"/>
                             </svg>
-                            <p><?php echo esc_html__('No hay actividad en esta categoria.', 'flavor-chat-ia'); ?></p>
-                            <span><?php echo esc_html__('Tu actividad en la red social aparecera aqui.', 'flavor-chat-ia'); ?></span>
+                            <p><?php echo esc_html__('No hay actividad en esta categoria.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                            <span><?php echo esc_html__('Tu actividad en la red social aparecera aqui.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                     <?php else: ?>
                         <?php foreach ($actividades as $actividad): ?>
@@ -273,19 +273,19 @@ $historial_puntos = $wpdb->get_results($wpdb->prepare(
                                         <?php
                                         switch ($actividad->tipo_actividad) {
                                             case 'publicacion':
-                                                echo esc_html__('Publicaste', 'flavor-chat-ia');
+                                                echo esc_html__('Publicaste', FLAVOR_PLATFORM_TEXT_DOMAIN);
                                                 break;
                                             case 'comentario':
-                                                echo esc_html__('Comentaste en una publicacion', 'flavor-chat-ia');
+                                                echo esc_html__('Comentaste en una publicacion', FLAVOR_PLATFORM_TEXT_DOMAIN);
                                                 break;
                                             case 'like':
-                                                printf(esc_html__('Te gusto una publicacion de %s', 'flavor-chat-ia'), '<strong>' . esc_html($actividad->extra_nombre) . '</strong>');
+                                                printf(esc_html__('Te gusto una publicacion de %s', FLAVOR_PLATFORM_TEXT_DOMAIN), '<strong>' . esc_html($actividad->extra_nombre) . '</strong>');
                                                 break;
                                             case 'seguir':
-                                                printf(esc_html__('Empezaste a seguir a %s', 'flavor-chat-ia'), '<strong>' . esc_html($actividad->extra_nombre) . '</strong>');
+                                                printf(esc_html__('Empezaste a seguir a %s', FLAVOR_PLATFORM_TEXT_DOMAIN), '<strong>' . esc_html($actividad->extra_nombre) . '</strong>');
                                                 break;
                                             case 'guardado':
-                                                printf(esc_html__('Guardaste una publicacion de %s', 'flavor-chat-ia'), '<strong>' . esc_html($actividad->autor_nombre) . '</strong>');
+                                                printf(esc_html__('Guardaste una publicacion de %s', FLAVOR_PLATFORM_TEXT_DOMAIN), '<strong>' . esc_html($actividad->autor_nombre) . '</strong>');
                                                 break;
                                         }
                                         ?>
@@ -297,11 +297,11 @@ $historial_puntos = $wpdb->get_results($wpdb->prepare(
                                 </div>
                                 <?php if ($actividad->tipo_actividad !== 'seguir'): ?>
                                     <a href="<?php echo esc_url(add_query_arg('publicacion_id', intval($actividad->referencia_id), Flavor_Chat_Helpers::get_action_url('red_social', ''))); ?>" class="rs-actividad-ver">
-                                        <?php echo esc_html__('Ver', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 <?php else: ?>
                                     <a href="<?php echo esc_url(add_query_arg('usuario_id', intval($actividad->referencia_id), Flavor_Chat_Helpers::get_action_url('red_social', 'perfil'))); ?>" class="rs-actividad-ver">
-                                        <?php echo esc_html__('Ver perfil', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Ver perfil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 <?php endif; ?>
                             </div>
@@ -335,13 +335,13 @@ $historial_puntos = $wpdb->get_results($wpdb->prepare(
                     <div class="rs-paginacion">
                         <?php if ($pagina_actual > 1): ?>
                             <a href="?tipo=<?php echo esc_attr($filtro_tipo); ?>&pag=<?php echo $pagina_actual - 1; ?>" class="rs-paginacion-btn">
-                                <?php echo esc_html__('Anterior', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         <?php endif; ?>
-                        <span class="rs-paginacion-info"><?php printf(esc_html__('Pagina %d de %d', 'flavor-chat-ia'), $pagina_actual, $total_paginas); ?></span>
+                        <span class="rs-paginacion-info"><?php printf(esc_html__('Pagina %d de %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $pagina_actual, $total_paginas); ?></span>
                         <?php if ($pagina_actual < $total_paginas): ?>
                             <a href="?tipo=<?php echo esc_attr($filtro_tipo); ?>&pag=<?php echo $pagina_actual + 1; ?>" class="rs-paginacion-btn">
-                                <?php echo esc_html__('Siguiente', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         <?php endif; ?>
                     </div>
@@ -353,7 +353,7 @@ $historial_puntos = $wpdb->get_results($wpdb->prepare(
                 <!-- Widget de reputacion -->
                 <?php if ($reputacion): ?>
                     <div class="rs-widget rs-widget-reputacion">
-                        <h3 class="rs-widget-titulo"><?php echo esc_html__('Tu reputacion', 'flavor-chat-ia'); ?></h3>
+                        <h3 class="rs-widget-titulo"><?php echo esc_html__('Tu reputacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="rs-reputacion-nivel">
                             <?php
                             $niveles = [
@@ -379,7 +379,7 @@ $historial_puntos = $wpdb->get_results($wpdb->prepare(
                             </div>
                             <div class="rs-nivel-info">
                                 <span class="rs-nivel-nombre"><?php echo esc_html($nivel_actual['label']); ?></span>
-                                <span class="rs-nivel-puntos"><?php echo number_format($reputacion->puntos_totales); ?> <?php echo esc_html__('puntos', 'flavor-chat-ia'); ?></span>
+                                <span class="rs-nivel-puntos"><?php echo number_format($reputacion->puntos_totales); ?> <?php echo esc_html__('puntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                         </div>
                         <?php if ($siguiente_nivel): ?>
@@ -392,7 +392,7 @@ $historial_puntos = $wpdb->get_results($wpdb->prepare(
                                     <div class="rs-progreso-fill" style="width: <?php echo esc_attr($progreso); ?>%;"></div>
                                 </div>
                                 <span class="rs-progreso-texto">
-                                    <?php printf(esc_html__('%s puntos para %s', 'flavor-chat-ia'), number_format($puntos_para_siguiente), $siguiente_nivel['label']); ?>
+                                    <?php printf(esc_html__('%s puntos para %s', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($puntos_para_siguiente), $siguiente_nivel['label']); ?>
                                 </span>
                             </div>
                         <?php endif; ?>
@@ -400,11 +400,11 @@ $historial_puntos = $wpdb->get_results($wpdb->prepare(
                         <div class="rs-reputacion-stats">
                             <div class="rs-rep-stat">
                                 <span class="rs-rep-stat-valor"><?php echo number_format($reputacion->puntos_semana); ?></span>
-                                <span class="rs-rep-stat-label"><?php echo esc_html__('Esta semana', 'flavor-chat-ia'); ?></span>
+                                <span class="rs-rep-stat-label"><?php echo esc_html__('Esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                             <div class="rs-rep-stat">
                                 <span class="rs-rep-stat-valor"><?php echo number_format($reputacion->racha_dias); ?></span>
-                                <span class="rs-rep-stat-label"><?php echo esc_html__('Dias de racha', 'flavor-chat-ia'); ?></span>
+                                <span class="rs-rep-stat-label"><?php echo esc_html__('Dias de racha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                         </div>
                     </div>
@@ -413,7 +413,7 @@ $historial_puntos = $wpdb->get_results($wpdb->prepare(
                 <!-- Historial de puntos -->
                 <?php if (!empty($historial_puntos)): ?>
                     <div class="rs-widget">
-                        <h3 class="rs-widget-titulo"><?php echo esc_html__('Puntos recientes', 'flavor-chat-ia'); ?></h3>
+                        <h3 class="rs-widget-titulo"><?php echo esc_html__('Puntos recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="rs-puntos-lista">
                             <?php foreach ($historial_puntos as $punto): ?>
                                 <div class="rs-punto-item">

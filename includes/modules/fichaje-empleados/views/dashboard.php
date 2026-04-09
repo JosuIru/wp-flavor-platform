@@ -27,8 +27,8 @@ if (!$tabla_fichajes_existe) {
         <div class="dm-alert dm-alert--info">
             <span class="dashicons dashicons-info"></span>
             <div>
-                <strong><?php esc_html_e('Módulo en preparación', 'flavor-chat-ia'); ?></strong>
-                <p><?php esc_html_e('Las tablas del módulo Fichaje de Empleados aún no han sido creadas. Activa el módulo completamente para generar la estructura necesaria.', 'flavor-chat-ia'); ?></p>
+                <strong><?php esc_html_e('Módulo en preparación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                <p><?php esc_html_e('Las tablas del módulo Fichaje de Empleados aún no han sido creadas. Activa el módulo completamente para generar la estructura necesaria.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
     </div>
@@ -119,7 +119,7 @@ $por_hora = $wpdb->get_results(
         <span class="dashicons dashicons-clock dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($fichajes_hoy); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Fichajes Hoy', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Fichajes Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -127,7 +127,7 @@ $por_hora = $wpdb->get_results(
         <span class="dashicons dashicons-admin-users dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($trabajando_ahora); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Trabajando Ahora', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Trabajando Ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -135,7 +135,7 @@ $por_hora = $wpdb->get_results(
         <span class="dashicons dashicons-groups dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($empleados_activos); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Empleados', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Empleados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -143,7 +143,7 @@ $por_hora = $wpdb->get_results(
         <span class="dashicons dashicons-backup dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($horas_mes, 1)); ?>h</div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Horas (Mes)', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Horas (Mes)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 </div>
@@ -152,8 +152,8 @@ $por_hora = $wpdb->get_results(
 <div class="dm-alert dm-alert--warning">
     <span class="dashicons dashicons-warning"></span>
     <div>
-        <strong><?php printf(esc_html__('%s fichajes sin salida registrada', 'flavor-chat-ia'), number_format_i18n($sin_salida)); ?></strong>
-        <span><?php esc_html_e('Pueden ser olvidos de fichaje de salida.', 'flavor-chat-ia'); ?></span>
+        <strong><?php printf(esc_html__('%s fichajes sin salida registrada', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($sin_salida)); ?></strong>
+        <span><?php esc_html_e('Pueden ser olvidos de fichaje de salida.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
     </div>
 </div>
 <?php endif; ?>
@@ -163,23 +163,23 @@ $por_hora = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-chart-bar"></span>
-                <?php esc_html_e('Fichajes Esta Semana', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Fichajes Esta Semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
-            <span class="dm-card__subtitle"><?php printf(esc_html__('%s este mes', 'flavor-chat-ia'), number_format_i18n($fichajes_mes)); ?></span>
+            <span class="dm-card__subtitle"><?php printf(esc_html__('%s este mes', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($fichajes_mes)); ?></span>
         </div>
         <div class="dm-card__body">
             <?php if (empty($actividad_semanal)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-chart-line"></span>
-                    <p><?php esc_html_e('No hay fichajes esta semana.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay fichajes esta semana.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <?php
                 $max_fichajes = max(array_column($actividad_semanal, 'total'));
                 $dias_semana = [
-                    __('Dom', 'flavor-chat-ia'), __('Lun', 'flavor-chat-ia'), __('Mar', 'flavor-chat-ia'),
-                    __('Mié', 'flavor-chat-ia'), __('Jue', 'flavor-chat-ia'), __('Vie', 'flavor-chat-ia'),
-                    __('Sáb', 'flavor-chat-ia')
+                    __('Dom', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Lun', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Mar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Mié', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Jue', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Vie', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Sáb', FLAVOR_PLATFORM_TEXT_DOMAIN)
                 ];
                 ?>
                 <div class="dm-chart-bars">
@@ -204,15 +204,15 @@ $por_hora = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-awards"></span>
-                <?php esc_html_e('Empleados Más Activos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Empleados Más Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
-            <span class="dm-card__subtitle"><?php esc_html_e('Últimos 30 días', 'flavor-chat-ia'); ?></span>
+            <span class="dm-card__subtitle"><?php esc_html_e('Últimos 30 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="dm-card__body">
             <?php if (empty($empleados_top)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-admin-users"></span>
-                    <p><?php esc_html_e('No hay datos de fichaje todavía.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay datos de fichaje todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <ul class="dm-ranking">
@@ -220,12 +220,12 @@ $por_hora = $wpdb->get_results(
                         <li class="dm-ranking__item">
                             <span class="dm-ranking__position"><?php echo ($index + 1); ?></span>
                             <div class="dm-ranking__avatar">
-                                <?php echo mb_substr($empleado->display_name ?: __('E', 'flavor-chat-ia'), 0, 1); ?>
+                                <?php echo mb_substr($empleado->display_name ?: __('E', FLAVOR_PLATFORM_TEXT_DOMAIN), 0, 1); ?>
                             </div>
                             <div class="dm-ranking__content">
-                                <strong class="dm-ranking__name"><?php echo esc_html($empleado->display_name ?: __('Empleado', 'flavor-chat-ia')); ?></strong>
+                                <strong class="dm-ranking__name"><?php echo esc_html($empleado->display_name ?: __('Empleado', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong>
                                 <span class="dm-ranking__meta">
-                                    <?php printf(esc_html__('~%sh por fichaje', 'flavor-chat-ia'), $empleado->promedio_horas); ?>
+                                    <?php printf(esc_html__('~%sh por fichaje', FLAVOR_PLATFORM_TEXT_DOMAIN), $empleado->promedio_horas); ?>
                                 </span>
                             </div>
                             <span class="dm-badge dm-badge--info">
@@ -244,21 +244,21 @@ $por_hora = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-clock"></span>
-                <?php esc_html_e('Fichajes Recientes', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Fichajes Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <?php if (empty($fichajes_recientes)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-clock"></span>
-                    <p><?php esc_html_e('No hay fichajes registrados.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay fichajes registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <ul class="dm-list">
                     <?php foreach ($fichajes_recientes as $fichaje): ?>
                         <li class="dm-list__item">
                             <div class="dm-list__content">
-                                <strong class="dm-list__title"><?php echo esc_html($fichaje->display_name ?: __('Empleado', 'flavor-chat-ia')); ?></strong>
+                                <strong class="dm-list__title"><?php echo esc_html($fichaje->display_name ?: __('Empleado', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong>
                                 <span class="dm-list__meta">
                                     <?php
                                     $entrada = new DateTime($fichaje->fecha_entrada);
@@ -271,7 +271,7 @@ $por_hora = $wpdb->get_results(
                                 </span>
                             </div>
                             <span class="dm-badge dm-badge--<?php echo $fichaje->fecha_salida ? 'success' : 'warning'; ?>">
-                                <?php echo $fichaje->fecha_salida ? esc_html__('Completado', 'flavor-chat-ia') : esc_html__('Trabajando', 'flavor-chat-ia'); ?>
+                                <?php echo $fichaje->fecha_salida ? esc_html__('Completado', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Trabajando', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         </li>
                     <?php endforeach; ?>
@@ -284,15 +284,15 @@ $por_hora = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-schedule"></span>
-                <?php esc_html_e('Distribución Horaria', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Distribución Horaria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
-            <span class="dm-card__subtitle"><?php esc_html_e('Hora de entrada', 'flavor-chat-ia'); ?></span>
+            <span class="dm-card__subtitle"><?php esc_html_e('Hora de entrada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="dm-card__body">
             <?php if (empty($por_hora)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-schedule"></span>
-                    <p><?php esc_html_e('No hay datos suficientes.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay datos suficientes.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="dm-data-list">
@@ -302,7 +302,7 @@ $por_hora = $wpdb->get_results(
                     ?>
                         <div class="dm-data-list__item">
                             <span class="dm-data-list__label"><?php echo esc_html(sprintf('%02d:00 - %02d:59', $hora->hora, $hora->hora)); ?></span>
-                            <span class="dm-data-list__value"><?php echo esc_html($hora->total); ?> <?php esc_html_e('fichajes', 'flavor-chat-ia'); ?></span>
+                            <span class="dm-data-list__value"><?php echo esc_html($hora->total); ?> <?php esc_html_e('fichajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -315,18 +315,18 @@ $por_hora = $wpdb->get_results(
     <div class="dm-stat-card dm-stat-card--secondary">
         <span class="dashicons dashicons-database dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($total_fichajes)); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Total Fichajes', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Total Fichajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--warning">
         <span class="dashicons dashicons-warning dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($sin_salida); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Sin Salida', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Sin Salida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--info">
         <span class="dashicons dashicons-performance dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($promedio_diario); ?>min</div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Promedio/Fichaje', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Promedio/Fichaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 </div>

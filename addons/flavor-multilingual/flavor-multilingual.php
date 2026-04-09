@@ -778,7 +778,7 @@ class Flavor_Multilingual {
             id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             string_key VARCHAR(32) NOT NULL,
             original_string TEXT NOT NULL,
-            domain VARCHAR(100) DEFAULT 'flavor-chat-ia',
+            domain VARCHAR(100) DEFAULT FLAVOR_PLATFORM_TEXT_DOMAIN,
             context VARCHAR(255) DEFAULT NULL,
             language_code VARCHAR(10) NOT NULL,
             translation TEXT,

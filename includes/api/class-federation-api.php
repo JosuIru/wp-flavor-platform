@@ -727,7 +727,7 @@ class Flavor_Federation_API {
 
         // Enviar notificación por email
         $asunto = sprintf(
-            __('[%s] Contacto desde la red federada', 'flavor-chat-ia'),
+            __('[%s] Contacto desde la red federada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             get_bloginfo('name')
         );
 
@@ -736,9 +736,9 @@ class Flavor_Federation_API {
                "De: %s <%s>\n\n" .
                "Mensaje:\n%s\n\n" .
                "---\n" .
-               "Este mensaje fue enviado a través de la red federada de Flavor.", 'flavor-chat-ia'),
-            $nombre_contacto ?: __('Usuario anónimo', 'flavor-chat-ia'),
-            $email_contacto ?: __('Sin email', 'flavor-chat-ia'),
+               "Este mensaje fue enviado a través de la red federada de Flavor.", FLAVOR_PLATFORM_TEXT_DOMAIN),
+            $nombre_contacto ?: __('Usuario anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            $email_contacto ?: __('Sin email', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $mensaje
         );
 
@@ -750,8 +750,8 @@ class Flavor_Federation_API {
         return [
             'success' => $enviado,
             'message' => $enviado
-                ? __('Mensaje enviado al productor', 'flavor-chat-ia')
-                : __('Error al enviar el mensaje', 'flavor-chat-ia'),
+                ? __('Mensaje enviado al productor', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                : __('Error al enviar el mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 

@@ -9,8 +9,8 @@
 if (!defined('ABSPATH')) exit;
 
 // Extraer variables del array $args con valores por defecto
-$titulo_formulario = isset($args['titulo']) ? $args['titulo'] : __('Subir Contenido Multimedia', 'flavor-chat-ia');
-$descripcion_formulario = isset($args['descripcion']) ? $args['descripcion'] : __('Comparte tus fotos y videos con la comunidad', 'flavor-chat-ia');
+$titulo_formulario = isset($args['titulo']) ? $args['titulo'] : __('Subir Contenido Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$descripcion_formulario = isset($args['descripcion']) ? $args['descripcion'] : __('Comparte tus fotos y videos con la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $tipos_permitidos = isset($args['tipos_permitidos']) ? $args['tipos_permitidos'] : array('image/jpeg', 'image/png', 'image/gif', 'image/webp', 'video/mp4', 'video/webm');
 $tamano_maximo = isset($args['tamano_maximo']) ? intval($args['tamano_maximo']) : 50; // MB
 $archivos_multiples = isset($args['multiples']) ? $args['multiples'] : true;
@@ -24,14 +24,14 @@ $nonce = wp_create_nonce('flavor_upload_multimedia');
 
 // Categorías de demostración
 $categorias_disponibles = isset($args['categorias']) ? $args['categorias'] : array(
-    'eventos' => __('Eventos', 'flavor-chat-ia'),
-    'cultura' => __('Cultura', 'flavor-chat-ia'),
-    'comunidad' => __('Comunidad', 'flavor-chat-ia'),
-    'naturaleza' => __('Naturaleza', 'flavor-chat-ia'),
-    'deportes' => __('Deportes', 'flavor-chat-ia'),
-    'arte' => __('Arte', 'flavor-chat-ia'),
-    'musica' => __('Música', 'flavor-chat-ia'),
-    'otros' => __('Otros', 'flavor-chat-ia')
+    'eventos' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cultura' => __('Cultura', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'comunidad' => __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'naturaleza' => __('Naturaleza', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'deportes' => __('Deportes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'arte' => __('Arte', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'musica' => __('Música', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'otros' => __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN)
 );
 
 // ID único para el formulario
@@ -67,14 +67,14 @@ $usuario_actual = $usuario_logueado ? wp_get_current_user() : null;
                     <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                 </svg>
             </div>
-            <h3><?php esc_html_e('Inicia sesión para continuar', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('Necesitas tener una cuenta para subir contenido multimedia.', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('Inicia sesión para continuar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php esc_html_e('Necesitas tener una cuenta para subir contenido multimedia.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <div class="flavor-upload-login-acciones">
                 <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="flavor-btn flavor-btn--primario">
-                    <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="<?php echo esc_url(wp_registration_url()); ?>" class="flavor-btn flavor-btn--secundario">
-                    <?php esc_html_e('Crear cuenta', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Crear cuenta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -107,12 +107,12 @@ $usuario_actual = $usuario_logueado ? wp_get_current_user() : null;
                         </svg>
                     </div>
                     <h3 class="flavor-upload-dropzone-titulo">
-                        <?php esc_html_e('Arrastra tus archivos aquí', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Arrastra tus archivos aquí', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <p class="flavor-upload-dropzone-texto">
-                        <?php esc_html_e('o', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('o', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <button type="button" class="flavor-upload-dropzone-btn">
-                            <?php esc_html_e('selecciona archivos', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('selecciona archivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </p>
                     <div class="flavor-upload-dropzone-info">
@@ -122,21 +122,21 @@ $usuario_actual = $usuario_logueado ? wp_get_current_user() : null;
                                 <circle cx="8.5" cy="8.5" r="1.5"></circle>
                                 <polyline points="21 15 16 10 5 21"></polyline>
                             </svg>
-                            <?php esc_html_e('Imágenes', 'flavor-chat-ia'); ?>: JPG, PNG, GIF, WebP
+                            <?php esc_html_e('Imágenes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>: JPG, PNG, GIF, WebP
                         </span>
                         <span class="flavor-upload-info-item">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <polygon points="23 7 16 12 23 17 23 7"></polygon>
                                 <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
                             </svg>
-                            <?php esc_html_e('Videos', 'flavor-chat-ia'); ?>: MP4, WebM
+                            <?php esc_html_e('Videos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>: MP4, WebM
                         </span>
                         <span class="flavor-upload-info-item">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
                                 <polyline points="13 2 13 9 20 9"></polyline>
                             </svg>
-                            <?php printf(esc_html__('Máximo %d MB por archivo', 'flavor-chat-ia'), $tamano_maximo); ?>
+                            <?php printf(esc_html__('Máximo %d MB por archivo', FLAVOR_PLATFORM_TEXT_DOMAIN), $tamano_maximo); ?>
                         </span>
                     </div>
                 </div>
@@ -148,7 +148,7 @@ $usuario_actual = $usuario_logueado ? wp_get_current_user() : null;
                         <polyline points="17 8 12 3 7 8"></polyline>
                         <line x1="12" y1="3" x2="12" y2="15"></line>
                     </svg>
-                    <p><?php esc_html_e('Suelta los archivos para subirlos', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Suelta los archivos para subirlos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             </div>
 
@@ -156,7 +156,7 @@ $usuario_actual = $usuario_logueado ? wp_get_current_user() : null;
             <div class="flavor-upload-archivos" style="display: none;">
                 <div class="flavor-upload-archivos-header">
                     <h3 class="flavor-upload-archivos-titulo">
-                        <?php esc_html_e('Archivos seleccionados', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Archivos seleccionados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         (<span class="flavor-upload-archivos-count">0</span>)
                     </h3>
                     <button type="button" class="flavor-upload-archivos-limpiar">
@@ -164,7 +164,7 @@ $usuario_actual = $usuario_logueado ? wp_get_current_user() : null;
                             <polyline points="3 6 5 6 21 6"></polyline>
                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                         </svg>
-                        <?php esc_html_e('Limpiar todo', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Limpiar todo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
                 <ul class="flavor-upload-archivos-lista"></ul>
@@ -177,20 +177,20 @@ $usuario_actual = $usuario_logueado ? wp_get_current_user() : null;
                         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                         <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                     </svg>
-                    <?php esc_html_e('Información del contenido', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Información del contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
 
                 <!-- Título -->
                 <div class="flavor-upload-campo">
                     <label for="<?php echo esc_attr($form_id); ?>-titulo" class="flavor-upload-label">
-                        <?php esc_html_e('Título', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <span class="flavor-upload-requerido">*</span>
                     </label>
                     <input type="text"
                            id="<?php echo esc_attr($form_id); ?>-titulo"
                            name="titulo"
                            class="flavor-upload-text-input"
-                           placeholder="<?php esc_attr_e('Escribe un título descriptivo...', 'flavor-chat-ia'); ?>"
+                           placeholder="<?php esc_attr_e('Escribe un título descriptivo...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                            required
                            maxlength="100">
                     <span class="flavor-upload-campo-contador">
@@ -201,12 +201,12 @@ $usuario_actual = $usuario_logueado ? wp_get_current_user() : null;
                 <!-- Descripción -->
                 <div class="flavor-upload-campo">
                     <label for="<?php echo esc_attr($form_id); ?>-descripcion" class="flavor-upload-label">
-                        <?php esc_html_e('Descripción', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <textarea id="<?php echo esc_attr($form_id); ?>-descripcion"
                               name="descripcion"
                               class="flavor-upload-textarea"
-                              placeholder="<?php esc_attr_e('Cuéntanos más sobre este contenido...', 'flavor-chat-ia'); ?>"
+                              placeholder="<?php esc_attr_e('Cuéntanos más sobre este contenido...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                               rows="3"
                               maxlength="500"></textarea>
                     <span class="flavor-upload-campo-contador">
@@ -218,7 +218,7 @@ $usuario_actual = $usuario_logueado ? wp_get_current_user() : null;
                 <!-- Categoría -->
                 <div class="flavor-upload-campo">
                     <label for="<?php echo esc_attr($form_id); ?>-categoria" class="flavor-upload-label">
-                        <?php esc_html_e('Categoría', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <span class="flavor-upload-requerido">*</span>
                     </label>
                     <div class="flavor-upload-select-wrapper">
@@ -226,7 +226,7 @@ $usuario_actual = $usuario_logueado ? wp_get_current_user() : null;
                                 name="categoria"
                                 class="flavor-upload-select"
                                 required>
-                            <option value=""><?php esc_html_e('Selecciona una categoría', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php esc_html_e('Selecciona una categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php foreach ($categorias_disponibles as $categoria_valor => $categoria_nombre): ?>
                                 <option value="<?php echo esc_attr($categoria_valor); ?>">
                                     <?php echo esc_html($categoria_nombre); ?>
@@ -244,19 +244,19 @@ $usuario_actual = $usuario_logueado ? wp_get_current_user() : null;
                 <!-- Etiquetas -->
                 <div class="flavor-upload-campo">
                     <label for="<?php echo esc_attr($form_id); ?>-etiquetas" class="flavor-upload-label">
-                        <?php esc_html_e('Etiquetas', 'flavor-chat-ia'); ?>
-                        <span class="flavor-upload-label-hint"><?php esc_html_e('(separadas por comas)', 'flavor-chat-ia'); ?></span>
+                        <?php esc_html_e('Etiquetas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
+                        <span class="flavor-upload-label-hint"><?php esc_html_e('(separadas por comas)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </label>
                     <div class="flavor-upload-tags-container">
                         <div class="flavor-upload-tags-list"></div>
                         <input type="text"
                                id="<?php echo esc_attr($form_id); ?>-etiquetas"
                                class="flavor-upload-tags-input"
-                               placeholder="<?php esc_attr_e('Añade etiquetas...', 'flavor-chat-ia'); ?>">
+                               placeholder="<?php esc_attr_e('Añade etiquetas...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <input type="hidden" name="etiquetas" class="flavor-upload-tags-hidden">
                     </div>
                     <p class="flavor-upload-campo-ayuda">
-                        <?php esc_html_e('Presiona Enter o coma para agregar una etiqueta', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Presiona Enter o coma para agregar una etiqueta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
                 <?php endif; ?>
@@ -265,7 +265,7 @@ $usuario_actual = $usuario_logueado ? wp_get_current_user() : null;
                 <!-- Privacidad -->
                 <div class="flavor-upload-campo">
                     <label class="flavor-upload-label">
-                        <?php esc_html_e('Privacidad', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Privacidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <div class="flavor-upload-privacidad-opciones">
                         <label class="flavor-upload-privacidad-opcion">
@@ -278,8 +278,8 @@ $usuario_actual = $usuario_logueado ? wp_get_current_user() : null;
                                     <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
                                 </svg>
                                 <span>
-                                    <strong><?php esc_html_e('Público', 'flavor-chat-ia'); ?></strong>
-                                    <small><?php esc_html_e('Visible para todos', 'flavor-chat-ia'); ?></small>
+                                    <strong><?php esc_html_e('Público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                                    <small><?php esc_html_e('Visible para todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                                 </span>
                             </span>
                         </label>
@@ -294,8 +294,8 @@ $usuario_actual = $usuario_logueado ? wp_get_current_user() : null;
                                     <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                                 </svg>
                                 <span>
-                                    <strong><?php esc_html_e('Solo comunidad', 'flavor-chat-ia'); ?></strong>
-                                    <small><?php esc_html_e('Solo miembros registrados', 'flavor-chat-ia'); ?></small>
+                                    <strong><?php esc_html_e('Solo comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                                    <small><?php esc_html_e('Solo miembros registrados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                                 </span>
                             </span>
                         </label>
@@ -308,8 +308,8 @@ $usuario_actual = $usuario_logueado ? wp_get_current_user() : null;
                                     <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                                 </svg>
                                 <span>
-                                    <strong><?php esc_html_e('Privado', 'flavor-chat-ia'); ?></strong>
-                                    <small><?php esc_html_e('Solo tú puedes verlo', 'flavor-chat-ia'); ?></small>
+                                    <strong><?php esc_html_e('Privado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                                    <small><?php esc_html_e('Solo tú puedes verlo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                                 </span>
                             </span>
                         </label>
@@ -324,7 +324,7 @@ $usuario_actual = $usuario_logueado ? wp_get_current_user() : null;
                         <span class="flavor-upload-checkbox-mark"></span>
                         <span class="flavor-upload-checkbox-texto">
                             <?php printf(
-                                esc_html__('Acepto los %stérminos y condiciones%s y confirmo que tengo los derechos necesarios para compartir este contenido.', 'flavor-chat-ia'),
+                                esc_html__('Acepto los %stérminos y condiciones%s y confirmo que tengo los derechos necesarios para compartir este contenido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 '<a href="#" target="_blank">',
                                 '</a>'
                             ); ?>
@@ -336,19 +336,19 @@ $usuario_actual = $usuario_logueado ? wp_get_current_user() : null;
             <!-- Barra de progreso -->
             <div class="flavor-upload-progreso" style="display: none;">
                 <div class="flavor-upload-progreso-header">
-                    <span class="flavor-upload-progreso-texto"><?php esc_html_e('Subiendo archivos...', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-upload-progreso-texto"><?php esc_html_e('Subiendo archivos...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="flavor-upload-progreso-porcentaje">0%</span>
                 </div>
                 <div class="flavor-upload-progreso-barra">
                     <div class="flavor-upload-progreso-fill"></div>
                 </div>
-                <p class="flavor-upload-progreso-archivo"><?php esc_html_e('Preparando...', 'flavor-chat-ia'); ?></p>
+                <p class="flavor-upload-progreso-archivo"><?php esc_html_e('Preparando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <!-- Botones de acción -->
             <div class="flavor-upload-acciones">
                 <button type="button" class="flavor-btn flavor-btn--secundario flavor-upload-cancelar">
-                    <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="submit" class="flavor-btn flavor-btn--primario flavor-upload-enviar" disabled>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -356,7 +356,7 @@ $usuario_actual = $usuario_logueado ? wp_get_current_user() : null;
                         <polyline points="17 8 12 3 7 8"></polyline>
                         <line x1="12" y1="3" x2="12" y2="15"></line>
                     </svg>
-                    <?php esc_html_e('Subir contenido', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Subir contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </form>
@@ -369,14 +369,14 @@ $usuario_actual = $usuario_logueado ? wp_get_current_user() : null;
                     <polyline points="22 4 12 14.01 9 11.01"></polyline>
                 </svg>
             </div>
-            <h3><?php esc_html_e('Contenido subido exitosamente', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('Tu contenido ha sido enviado y está pendiente de revisión.', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('Contenido subido exitosamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php esc_html_e('Tu contenido ha sido enviado y está pendiente de revisión.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <div class="flavor-upload-exito-acciones">
                 <button type="button" class="flavor-btn flavor-btn--primario flavor-upload-nuevo">
-                    <?php esc_html_e('Subir más contenido', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Subir más contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <a href="#" class="flavor-btn flavor-btn--secundario">
-                    <?php esc_html_e('Ver mi contenido', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver mi contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>

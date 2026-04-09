@@ -84,7 +84,7 @@ document.addEventListener('alpine:init', function() {
              */
             loadShortcuts: function() {
                 var self = this;
-                var basePath = typeof VBP_Config !== 'undefined' ? VBP_Config.assetsUrl : '/wp-content/plugins/flavor-chat-ia/assets/vbp/';
+                var basePath = typeof VBP_Config !== 'undefined' ? VBP_Config.assetsUrl : '/wp-content/plugins/flavor-platform/assets/vbp/';
 
                 fetch(basePath + 'js/vbp-keyboard-shortcuts.json')
                     .then(function(response) { return response.json(); })
@@ -135,7 +135,7 @@ document.addEventListener('alpine:init', function() {
                 if (this.modulesLoaded[moduleName]) return Promise.resolve();
 
                 var self = this;
-                var basePath = typeof VBP_Config !== 'undefined' ? VBP_Config.assetsUrl : '/wp-content/plugins/flavor-chat-ia/assets/vbp/';
+                var basePath = typeof VBP_Config !== 'undefined' ? VBP_Config.assetsUrl : '/wp-content/plugins/flavor-platform/assets/vbp/';
                 var moduleNames = {
                     clipboard: 'vbp-keyboard-clipboard.js',
                     selection: 'vbp-keyboard-selection.js',

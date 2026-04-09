@@ -54,32 +54,32 @@ $url_imagen_fondo = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div class="md:col-span-2">
                             <label class="block text-sm font-medium mb-2" style="color: var(--flavor-text);">
-                                <?php _e('Buscar establecimiento', 'flavor-chat-ia'); ?>
+                                <?php _e('Buscar establecimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
                             <div class="relative">
                                 <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                                 </svg>
-                                <input type="text" placeholder="<?php esc_attr_e('Nombre, tipo de cocina, zona...', 'flavor-chat-ia'); ?>" class="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:outline-none" style="border-color: #e5e7eb; focus: ring-color: var(--flavor-primary);">
+                                <input type="text" placeholder="<?php esc_attr_e('Nombre, tipo de cocina, zona...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" class="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:outline-none" style="border-color: #e5e7eb; focus: ring-color: var(--flavor-primary);">
                             </div>
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-2" style="color: var(--flavor-text);">
-                                <?php _e('Tipo', 'flavor-chat-ia'); ?>
+                                <?php _e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
                             <select class="w-full px-4 py-3 border rounded-lg" style="border-color: #e5e7eb;">
-                                <option value=""><?php _e('Todos los tipos', 'flavor-chat-ia'); ?></option>
-                                <option value="<?php echo esc_attr__('bar', 'flavor-chat-ia'); ?>"><?php _e('Bar', 'flavor-chat-ia'); ?></option>
-                                <option value="<?php echo esc_attr__('restaurante', 'flavor-chat-ia'); ?>"><?php _e('Restaurante', 'flavor-chat-ia'); ?></option>
-                                <option value="<?php echo esc_attr__('cafeteria', 'flavor-chat-ia'); ?>"><?php _e('Cafeteria', 'flavor-chat-ia'); ?></option>
-                                <option value="<?php echo esc_attr__('pub', 'flavor-chat-ia'); ?>"><?php _e('Pub', 'flavor-chat-ia'); ?></option>
-                                <option value="<?php echo esc_attr__('terraza', 'flavor-chat-ia'); ?>"><?php _e('Terraza', 'flavor-chat-ia'); ?></option>
-                                <option value="<?php echo esc_attr__('cocteleria', 'flavor-chat-ia'); ?>"><?php _e('Cocteleria', 'flavor-chat-ia'); ?></option>
+                                <option value=""><?php _e('Todos los tipos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="<?php echo esc_attr__('bar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Bar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="<?php echo esc_attr__('restaurante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Restaurante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="<?php echo esc_attr__('cafeteria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Cafeteria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="<?php echo esc_attr__('pub', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Pub', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="<?php echo esc_attr__('terraza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Terraza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="<?php echo esc_attr__('cocteleria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Cocteleria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             </select>
                         </div>
                     </div>
                     <button type="submit" class="flavor-button flavor-button-primary w-full md:w-auto px-12">
-                        <?php _e('Buscar', 'flavor-chat-ia'); ?>
+                        <?php _e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </form>
 
@@ -87,15 +87,15 @@ $url_imagen_fondo = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_
                 <div class="grid grid-cols-3 gap-6 mt-8 pt-8 border-t" style="border-color: #e5e7eb;">
                     <div class="text-center">
                         <div class="text-3xl font-bold" style="color: var(--flavor-primary);">85+</div>
-                        <div class="text-sm" style="color: var(--flavor-text-muted);"><?php _e('Establecimientos', 'flavor-chat-ia'); ?></div>
+                        <div class="text-sm" style="color: var(--flavor-text-muted);"><?php _e('Establecimientos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     </div>
                     <div class="text-center">
-                        <div class="text-3xl font-bold" style="color: var(--flavor-primary);"><?php echo esc_html__('1.2K+', 'flavor-chat-ia'); ?></div>
-                        <div class="text-sm" style="color: var(--flavor-text-muted);"><?php _e('Reservas', 'flavor-chat-ia'); ?></div>
+                        <div class="text-3xl font-bold" style="color: var(--flavor-primary);"><?php echo esc_html__('1.2K+', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                        <div class="text-sm" style="color: var(--flavor-text-muted);"><?php _e('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     </div>
                     <div class="text-center">
                         <div class="text-3xl font-bold" style="color: var(--flavor-primary);">4.6</div>
-                        <div class="text-sm" style="color: var(--flavor-text-muted);"><?php _e('Valoracion media', 'flavor-chat-ia'); ?></div>
+                        <div class="text-sm" style="color: var(--flavor-text-muted);"><?php _e('Valoracion media', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     </div>
                 </div>
             </div>
@@ -104,12 +104,12 @@ $url_imagen_fondo = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_
             <div class="flex flex-wrap justify-center gap-3 mt-8">
                 <?php
                 $tipos_rapidos = [
-                    'bar'         => ['label' => __('Bares', 'flavor-chat-ia'), 'emoji' => '🍺'],
-                    'restaurante' => ['label' => __('Restaurantes', 'flavor-chat-ia'), 'emoji' => '🍽️'],
-                    'cafeteria'   => ['label' => __('Cafeterias', 'flavor-chat-ia'), 'emoji' => '☕'],
-                    'pub'         => ['label' => __('Pubs', 'flavor-chat-ia'), 'emoji' => '🎵'],
-                    'terraza'     => ['label' => __('Terrazas', 'flavor-chat-ia'), 'emoji' => '☀️'],
-                    'cocteleria'  => ['label' => __('Coctelerias', 'flavor-chat-ia'), 'emoji' => '🍸'],
+                    'bar'         => ['label' => __('Bares', FLAVOR_PLATFORM_TEXT_DOMAIN), 'emoji' => '🍺'],
+                    'restaurante' => ['label' => __('Restaurantes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'emoji' => '🍽️'],
+                    'cafeteria'   => ['label' => __('Cafeterias', FLAVOR_PLATFORM_TEXT_DOMAIN), 'emoji' => '☕'],
+                    'pub'         => ['label' => __('Pubs', FLAVOR_PLATFORM_TEXT_DOMAIN), 'emoji' => '🎵'],
+                    'terraza'     => ['label' => __('Terrazas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'emoji' => '☀️'],
+                    'cocteleria'  => ['label' => __('Coctelerias', FLAVOR_PLATFORM_TEXT_DOMAIN), 'emoji' => '🍸'],
                 ];
                 foreach ($tipos_rapidos as $clave_tipo => $datos_tipo): ?>
                     <a href="#<?php echo esc_attr($clave_tipo); ?>"

@@ -59,8 +59,8 @@ class Flavor_VBP_Migration_Tool {
     public function registrar_menu() {
         add_submenu_page(
             null, // Oculto del menú
-            __( 'Migración VBP', 'flavor-chat-ia' ),
-            __( 'Migración VBP', 'flavor-chat-ia' ),
+            __( 'Migración VBP', 'flavor-platform' ),
+            __( 'Migración VBP', 'flavor-platform' ),
             'manage_options',
             'vbp-migration',
             array( $this, 'renderizar_pagina' )
@@ -491,34 +491,34 @@ class Flavor_VBP_Migration_Tool {
     public function renderizar_pagina() {
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e( 'Migración a Visual Builder Pro', 'flavor-chat-ia' ); ?></h1>
+            <h1><?php esc_html_e( 'Migración a Visual Builder Pro', 'flavor-platform' ); ?></h1>
 
             <div class="notice notice-info">
-                <p><?php esc_html_e( 'Esta herramienta migra contenido creado con editores legacy al formato VBP.', 'flavor-chat-ia' ); ?></p>
+                <p><?php esc_html_e( 'Esta herramienta migra contenido creado con editores legacy al formato VBP.', 'flavor-platform' ); ?></p>
             </div>
 
             <div id="vbp-migration-app">
                 <div class="vbp-migration-actions" style="margin: 20px 0;">
                     <button type="button" class="button button-primary" id="vbp-scan-btn">
-                        <?php esc_html_e( 'Escanear contenido legacy', 'flavor-chat-ia' ); ?>
+                        <?php esc_html_e( 'Escanear contenido legacy', 'flavor-platform' ); ?>
                     </button>
                     <button type="button" class="button" id="vbp-migrate-all-btn" disabled>
-                        <?php esc_html_e( 'Migrar todo', 'flavor-chat-ia' ); ?>
+                        <?php esc_html_e( 'Migrar todo', 'flavor-platform' ); ?>
                     </button>
                 </div>
 
                 <div id="vbp-migration-results" style="display: none;">
-                    <h2><?php esc_html_e( 'Resultados del escaneo', 'flavor-chat-ia' ); ?></h2>
+                    <h2><?php esc_html_e( 'Resultados del escaneo', 'flavor-platform' ); ?></h2>
                     <div id="vbp-migration-summary"></div>
                     <table class="wp-list-table widefat fixed striped" id="vbp-migration-table">
                         <thead>
                             <tr>
-                                <th><?php esc_html_e( 'ID', 'flavor-chat-ia' ); ?></th>
-                                <th><?php esc_html_e( 'Título', 'flavor-chat-ia' ); ?></th>
-                                <th><?php esc_html_e( 'Tipo', 'flavor-chat-ia' ); ?></th>
-                                <th><?php esc_html_e( 'Editor Legacy', 'flavor-chat-ia' ); ?></th>
-                                <th><?php esc_html_e( 'VBP', 'flavor-chat-ia' ); ?></th>
-                                <th><?php esc_html_e( 'Acciones', 'flavor-chat-ia' ); ?></th>
+                                <th><?php esc_html_e( 'ID', 'flavor-platform' ); ?></th>
+                                <th><?php esc_html_e( 'Título', 'flavor-platform' ); ?></th>
+                                <th><?php esc_html_e( 'Tipo', 'flavor-platform' ); ?></th>
+                                <th><?php esc_html_e( 'Editor Legacy', 'flavor-platform' ); ?></th>
+                                <th><?php esc_html_e( 'VBP', 'flavor-platform' ); ?></th>
+                                <th><?php esc_html_e( 'Acciones', 'flavor-platform' ); ?></th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -526,7 +526,7 @@ class Flavor_VBP_Migration_Tool {
                 </div>
 
                 <div id="vbp-migration-log" style="display: none; margin-top: 20px;">
-                    <h3><?php esc_html_e( 'Log de migración', 'flavor-chat-ia' ); ?></h3>
+                    <h3><?php esc_html_e( 'Log de migración', 'flavor-platform' ); ?></h3>
                     <pre style="background: #f1f1f1; padding: 15px; max-height: 300px; overflow: auto;"></pre>
                 </div>
             </div>

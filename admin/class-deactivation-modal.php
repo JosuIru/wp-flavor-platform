@@ -70,15 +70,15 @@ class Flavor_Deactivation_Modal {
             'nonce' => wp_create_nonce('flavor_deactivation_nonce'),
             'pluginSlug' => 'flavor-chat-ia/flavor-chat-ia.php',
             'i18n' => [
-                'title' => __('Desactivar Flavor Platform', 'flavor-chat-ia'),
-                'subtitle' => __('¿Qué deseas hacer con los datos del plugin?', 'flavor-chat-ia'),
-                'keepData' => __('Conservar datos', 'flavor-chat-ia'),
-                'keepDataDesc' => __('Los datos se mantendrán para cuando vuelvas a activar el plugin.', 'flavor-chat-ia'),
-                'deleteData' => __('Eliminar datos', 'flavor-chat-ia'),
-                'deleteDataDesc' => __('Todos los datos serán eliminados permanentemente al desinstalar.', 'flavor-chat-ia'),
-                'cancel' => __('Cancelar', 'flavor-chat-ia'),
-                'deactivate' => __('Desactivar', 'flavor-chat-ia'),
-                'warning' => __('Esta acción no se puede deshacer si eliges eliminar los datos.', 'flavor-chat-ia'),
+                'title' => __('Desactivar Flavor Platform', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle' => __('¿Qué deseas hacer con los datos del plugin?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'keepData' => __('Conservar datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'keepDataDesc' => __('Los datos se mantendrán para cuando vuelvas a activar el plugin.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'deleteData' => __('Eliminar datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'deleteDataDesc' => __('Todos los datos serán eliminados permanentemente al desinstalar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cancel' => __('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'deactivate' => __('Desactivar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'warning' => __('Esta acción no se puede deshacer si eliges eliminar los datos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
 
@@ -250,34 +250,34 @@ class Flavor_Deactivation_Modal {
         <div id="flavor-deactivation-overlay" class="flavor-deactivation-overlay">
             <div class="flavor-deactivation-modal" role="dialog" aria-modal="true" aria-labelledby="flavor-deactivation-title">
                 <div class="flavor-deactivation-modal__header">
-                    <h2 id="flavor-deactivation-title"><?php esc_html_e('Desactivar Flavor Platform', 'flavor-chat-ia'); ?></h2>
-                    <p><?php esc_html_e('¿Qué deseas hacer con los datos del plugin?', 'flavor-chat-ia'); ?></p>
+                    <h2 id="flavor-deactivation-title"><?php esc_html_e('Desactivar Flavor Platform', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                    <p><?php esc_html_e('¿Qué deseas hacer con los datos del plugin?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <div class="flavor-deactivation-modal__body">
                     <label class="flavor-deactivation-option selected" data-value="keep">
                         <input type="radio" name="flavor_uninstall_data" value="keep" checked>
                         <div class="flavor-deactivation-option__content">
-                            <h4><?php esc_html_e('Conservar datos', 'flavor-chat-ia'); ?></h4>
-                            <p><?php esc_html_e('Los datos se mantendrán para cuando vuelvas a activar el plugin.', 'flavor-chat-ia'); ?></p>
+                            <h4><?php esc_html_e('Conservar datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                            <p><?php esc_html_e('Los datos se mantendrán para cuando vuelvas a activar el plugin.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                     </label>
                     <label class="flavor-deactivation-option delete-option" data-value="delete">
                         <input type="radio" name="flavor_uninstall_data" value="delete">
                         <div class="flavor-deactivation-option__content">
-                            <h4><?php esc_html_e('Eliminar datos al desinstalar', 'flavor-chat-ia'); ?></h4>
-                            <p><?php esc_html_e('Todos los datos serán eliminados permanentemente al desinstalar el plugin.', 'flavor-chat-ia'); ?></p>
+                            <h4><?php esc_html_e('Eliminar datos al desinstalar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                            <p><?php esc_html_e('Todos los datos serán eliminados permanentemente al desinstalar el plugin.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                     </label>
                     <div id="flavor-deactivation-warning" class="flavor-deactivation-warning">
-                        <?php esc_html_e('Esta acción no se puede deshacer. Todas las tablas, opciones y datos personalizados serán eliminados permanentemente.', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Esta acción no se puede deshacer. Todas las tablas, opciones y datos personalizados serán eliminados permanentemente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </div>
                 </div>
                 <div class="flavor-deactivation-modal__footer">
                     <button type="button" class="button" id="flavor-deactivation-cancel">
-                        <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button" class="button button-primary" id="flavor-deactivation-confirm">
-                        <?php esc_html_e('Desactivar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Desactivar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </div>
@@ -292,19 +292,19 @@ class Flavor_Deactivation_Modal {
         check_ajax_referer('flavor_deactivation_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $delete_data = isset($_POST['delete_data']) && $_POST['delete_data'] === 'true';
 
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $settings['limpiar_al_desinstalar'] = $delete_data;
-        update_option('flavor_chat_ia_settings', $settings);
+        flavor_update_main_settings($settings);
 
         wp_send_json_success([
             'message' => $delete_data
-                ? __('Los datos serán eliminados al desinstalar el plugin.', 'flavor-chat-ia')
-                : __('Los datos serán conservados.', 'flavor-chat-ia'),
+                ? __('Los datos serán eliminados al desinstalar el plugin.', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                : __('Los datos serán conservados.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'delete_data' => $delete_data,
         ]);
     }

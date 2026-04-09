@@ -53,7 +53,7 @@ foreach ( $lista_planes as $plan ) {
                     <tr>
                         <th class="text-left p-4 bg-gray-50 border-b border-gray-200 min-w-[200px]">
                             <span class="text-sm font-semibold text-gray-500 uppercase tracking-wider">
-                                <?php echo esc_html__( 'Caracteristicas', 'flavor-chat-ia' ); ?>
+                                <?php echo esc_html__( 'Caracteristicas', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                             </span>
                         </th>
                         <?php foreach ( $lista_planes as $plan ) :

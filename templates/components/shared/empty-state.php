@@ -39,7 +39,7 @@ if (!defined('ABSPATH')) {
 function flavor_render_empty_state($args = []) {
     $defaults = [
         'icon' => 'dashicons-info',
-        'title' => __('No hay contenido disponible', 'flavor-chat-ia'),
+        'title' => __('No hay contenido disponible', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'message' => '',
         'actions' => [],
         'image' => '',

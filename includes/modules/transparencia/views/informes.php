@@ -31,20 +31,20 @@ $year = isset($_GET['year']) ? absint($_GET['year']) : (int) date('Y');
 switch ($periodo) {
     case 'semana':
         $fecha_inicio = date('Y-m-d', strtotime('-7 days'));
-        $periodo_label = __('Última semana', 'flavor-chat-ia');
+        $periodo_label = __('Última semana', FLAVOR_PLATFORM_TEXT_DOMAIN);
         break;
     case 'trimestre':
         $fecha_inicio = date('Y-m-d', strtotime('-3 months'));
-        $periodo_label = __('Último trimestre', 'flavor-chat-ia');
+        $periodo_label = __('Último trimestre', FLAVOR_PLATFORM_TEXT_DOMAIN);
         break;
     case 'year':
         $fecha_inicio = $year . '-01-01';
-        $periodo_label = sprintf(__('Año %d', 'flavor-chat-ia'), $year);
+        $periodo_label = sprintf(__('Año %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $year);
         break;
     case 'mes':
     default:
         $fecha_inicio = date('Y-m-d', strtotime('-30 days'));
-        $periodo_label = __('Último mes', 'flavor-chat-ia');
+        $periodo_label = __('Último mes', FLAVOR_PLATFORM_TEXT_DOMAIN);
         break;
 }
 
@@ -169,7 +169,7 @@ $cat_data = array_map(function($c) { return (int) $c['total']; }, $stats_docs['p
 <div class="wrap flavor-transparencia-informes">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-chart-bar"></span>
-        <?php esc_html_e('Informes de Transparencia', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Informes de Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
     <hr class="wp-header-end">
 
@@ -178,12 +178,12 @@ $cat_data = array_map(function($c) { return (int) $c['total']; }, $stats_docs['p
         <form method="get" class="dm-filters" style="padding: 15px 20px;">
             <input type="hidden" name="page" value="transparencia-informes">
             <div class="dm-filters__row" style="display: flex; gap: 15px; align-items: center;">
-                <label><?php esc_html_e('Período:', 'flavor-chat-ia'); ?></label>
+                <label><?php esc_html_e('Período:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="periodo" onchange="this.form.submit()">
-                    <option value="semana" <?php selected($periodo, 'semana'); ?>><?php esc_html_e('Última semana', 'flavor-chat-ia'); ?></option>
-                    <option value="mes" <?php selected($periodo, 'mes'); ?>><?php esc_html_e('Último mes', 'flavor-chat-ia'); ?></option>
-                    <option value="trimestre" <?php selected($periodo, 'trimestre'); ?>><?php esc_html_e('Último trimestre', 'flavor-chat-ia'); ?></option>
-                    <option value="year" <?php selected($periodo, 'year'); ?>><?php esc_html_e('Año completo', 'flavor-chat-ia'); ?></option>
+                    <option value="semana" <?php selected($periodo, 'semana'); ?>><?php esc_html_e('Última semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="mes" <?php selected($periodo, 'mes'); ?>><?php esc_html_e('Último mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="trimestre" <?php selected($periodo, 'trimestre'); ?>><?php esc_html_e('Último trimestre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="year" <?php selected($periodo, 'year'); ?>><?php esc_html_e('Año completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
 
                 <?php if ($periodo === 'year'): ?>
@@ -198,7 +198,7 @@ $cat_data = array_map(function($c) { return (int) $c['total']; }, $stats_docs['p
 
                 <button type="button" class="button" onclick="window.print();">
                     <span class="dashicons dashicons-printer"></span>
-                    <?php esc_html_e('Imprimir', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Imprimir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </form>
@@ -209,26 +209,26 @@ $cat_data = array_map(function($c) { return (int) $c['total']; }, $stats_docs['p
         <div class="dm-stat-card dm-stat-card--primary">
             <span class="dashicons dashicons-media-spreadsheet dm-stat-card__icon"></span>
             <div class="dm-stat-card__value"><?php echo number_format_i18n($stats_docs['publicados']); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Documentos Publicados', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Documentos Publicados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
 
         <div class="dm-stat-card dm-stat-card--success">
             <span class="dashicons dashicons-yes-alt dm-stat-card__icon"></span>
             <div class="dm-stat-card__value"><?php echo number_format_i18n($stats_solicitudes['resueltas']); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Solicitudes Resueltas', 'flavor-chat-ia'); ?></div>
-            <div class="dm-stat-card__meta"><?php printf(esc_html__('Tasa: %s%%', 'flavor-chat-ia'), $stats_solicitudes['tasa_resolucion']); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Solicitudes Resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+            <div class="dm-stat-card__meta"><?php printf(esc_html__('Tasa: %s%%', FLAVOR_PLATFORM_TEXT_DOMAIN), $stats_solicitudes['tasa_resolucion']); ?></div>
         </div>
 
         <div class="dm-stat-card dm-stat-card--info">
             <span class="dashicons dashicons-visibility dm-stat-card__icon"></span>
             <div class="dm-stat-card__value"><?php echo number_format_i18n($stats_docs['visitas_total']); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Visitas Totales', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Visitas Totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
 
         <div class="dm-stat-card dm-stat-card--warning">
             <span class="dashicons dashicons-download dm-stat-card__icon"></span>
             <div class="dm-stat-card__value"><?php echo number_format_i18n($stats_docs['descargas_total']); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Descargas', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Descargas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -236,7 +236,7 @@ $cat_data = array_map(function($c) { return (int) $c['total']; }, $stats_docs['p
     <div class="dm-grid dm-grid--2" style="margin-bottom: 20px;">
         <div class="dm-card dm-card--chart">
             <div class="dm-card__header">
-                <h3><span class="dashicons dashicons-chart-line"></span> <?php esc_html_e('Publicaciones', 'flavor-chat-ia'); ?></h3>
+                <h3><span class="dashicons dashicons-chart-line"></span> <?php esc_html_e('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             </div>
             <div class="dm-card__chart" style="height: 250px; padding: 15px;">
                 <canvas id="chart-publicaciones"></canvas>
@@ -245,7 +245,7 @@ $cat_data = array_map(function($c) { return (int) $c['total']; }, $stats_docs['p
 
         <div class="dm-card dm-card--chart">
             <div class="dm-card__header">
-                <h3><span class="dashicons dashicons-chart-pie"></span> <?php esc_html_e('Por Categoría', 'flavor-chat-ia'); ?></h3>
+                <h3><span class="dashicons dashicons-chart-pie"></span> <?php esc_html_e('Por Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             </div>
             <div class="dm-card__chart" style="height: 250px; padding: 15px;">
                 <canvas id="chart-categorias"></canvas>
@@ -258,19 +258,19 @@ $cat_data = array_map(function($c) { return (int) $c['total']; }, $stats_docs['p
         <!-- Top documentos -->
         <div class="dm-card">
             <div class="dm-card__header">
-                <h3><span class="dashicons dashicons-star-filled"></span> <?php esc_html_e('Top 10 Documentos', 'flavor-chat-ia'); ?></h3>
+                <h3><span class="dashicons dashicons-star-filled"></span> <?php esc_html_e('Top 10 Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             </div>
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('Documento', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 80px;"><?php esc_html_e('Visitas', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 80px;"><?php esc_html_e('Descargas', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Documento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width: 80px;"><?php esc_html_e('Visitas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width: 80px;"><?php esc_html_e('Descargas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($top_documentos)): ?>
-                        <tr><td colspan="3" class="description"><?php esc_html_e('Sin datos', 'flavor-chat-ia'); ?></td></tr>
+                        <tr><td colspan="3" class="description"><?php esc_html_e('Sin datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td></tr>
                     <?php else: ?>
                         <?php foreach ($top_documentos as $doc): ?>
                             <tr>
@@ -290,20 +290,20 @@ $cat_data = array_map(function($c) { return (int) $c['total']; }, $stats_docs['p
         <!-- Resumen por categoría -->
         <div class="dm-card">
             <div class="dm-card__header">
-                <h3><span class="dashicons dashicons-category"></span> <?php esc_html_e('Resumen por Categoría', 'flavor-chat-ia'); ?></h3>
+                <h3><span class="dashicons dashicons-category"></span> <?php esc_html_e('Resumen por Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             </div>
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 80px;"><?php esc_html_e('Docs', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 80px;"><?php esc_html_e('Visitas', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 80px;"><?php esc_html_e('Descargas', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width: 80px;"><?php esc_html_e('Docs', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width: 80px;"><?php esc_html_e('Visitas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width: 80px;"><?php esc_html_e('Descargas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($stats_docs['por_categoria'])): ?>
-                        <tr><td colspan="4" class="description"><?php esc_html_e('Sin datos', 'flavor-chat-ia'); ?></td></tr>
+                        <tr><td colspan="4" class="description"><?php esc_html_e('Sin datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td></tr>
                     <?php else: ?>
                         <?php foreach ($stats_docs['por_categoria'] as $cat): ?>
                             <tr>
@@ -322,32 +322,32 @@ $cat_data = array_map(function($c) { return (int) $c['total']; }, $stats_docs['p
     <!-- Indicadores de rendimiento -->
     <div class="dm-card" style="margin-top: 20px;">
         <div class="dm-card__header">
-            <h3><span class="dashicons dashicons-performance"></span> <?php esc_html_e('Indicadores de Rendimiento', 'flavor-chat-ia'); ?></h3>
+            <h3><span class="dashicons dashicons-performance"></span> <?php esc_html_e('Indicadores de Rendimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         </div>
         <div class="dm-card__body">
             <div class="dm-stats-grid dm-stats-grid--4">
                 <div class="dm-kpi">
                     <div class="dm-kpi__value"><?php echo number_format_i18n(round($stats_solicitudes['tiempo_promedio'], 1)); ?></div>
-                    <div class="dm-kpi__label"><?php esc_html_e('Días promedio de resolución', 'flavor-chat-ia'); ?></div>
-                    <div class="dm-kpi__target"><?php esc_html_e('Objetivo: < 30 días', 'flavor-chat-ia'); ?></div>
+                    <div class="dm-kpi__label"><?php esc_html_e('Días promedio de resolución', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                    <div class="dm-kpi__target"><?php esc_html_e('Objetivo: < 30 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
 
                 <div class="dm-kpi">
                     <div class="dm-kpi__value"><?php echo $stats_solicitudes['tasa_resolucion']; ?>%</div>
-                    <div class="dm-kpi__label"><?php esc_html_e('Tasa de resolución positiva', 'flavor-chat-ia'); ?></div>
-                    <div class="dm-kpi__target"><?php esc_html_e('Objetivo: > 90%', 'flavor-chat-ia'); ?></div>
+                    <div class="dm-kpi__label"><?php esc_html_e('Tasa de resolución positiva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                    <div class="dm-kpi__target"><?php esc_html_e('Objetivo: > 90%', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
 
                 <div class="dm-kpi">
                     <div class="dm-kpi__value"><?php echo number_format_i18n($stats_solicitudes['pendientes']); ?></div>
-                    <div class="dm-kpi__label"><?php esc_html_e('Solicitudes pendientes', 'flavor-chat-ia'); ?></div>
-                    <div class="dm-kpi__target"><?php esc_html_e('Objetivo: < 10', 'flavor-chat-ia'); ?></div>
+                    <div class="dm-kpi__label"><?php esc_html_e('Solicitudes pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                    <div class="dm-kpi__target"><?php esc_html_e('Objetivo: < 10', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
 
                 <div class="dm-kpi">
                     <div class="dm-kpi__value"><?php echo number_format_i18n($stats_docs['publicados']); ?></div>
-                    <div class="dm-kpi__label"><?php esc_html_e('Documentos publicados', 'flavor-chat-ia'); ?></div>
-                    <div class="dm-kpi__target"><?php esc_html_e('Actualización continua', 'flavor-chat-ia'); ?></div>
+                    <div class="dm-kpi__label"><?php esc_html_e('Documentos publicados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                    <div class="dm-kpi__target"><?php esc_html_e('Actualización continua', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
         </div>
@@ -402,7 +402,7 @@ jQuery(document).ready(function($) {
             data: {
                 labels: <?php echo wp_json_encode($tendencia_pub_labels); ?>,
                 datasets: [{
-                    label: '<?php esc_attr_e('Publicaciones', 'flavor-chat-ia'); ?>',
+                    label: '<?php esc_attr_e('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                     data: <?php echo wp_json_encode($tendencia_pub_data); ?>,
                     borderColor: primaryColor,
                     backgroundColor: 'rgba(59, 130, 246, 0.1)',

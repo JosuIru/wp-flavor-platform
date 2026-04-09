@@ -68,19 +68,19 @@ $proyectos_aprobados = [
                 <div class="text-4xl font-bold text-amber-600 mb-2">
                     <?php echo esc_html($total_presupuesto ?? '2.500.000'); ?>&euro;
                 </div>
-                <div class="text-gray-600"><?php echo esc_html__('Presupuesto total asignado', 'flavor-chat-ia'); ?></div>
+                <div class="text-gray-600"><?php echo esc_html__('Presupuesto total asignado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
             <div class="bg-white rounded-xl shadow-md p-6 text-center border-t-4 border-green-500">
                 <div class="text-4xl font-bold text-green-600 mb-2">
                     <?php echo esc_html($total_completados ?? '23'); ?>
                 </div>
-                <div class="text-gray-600"><?php echo esc_html__('Proyectos completados', 'flavor-chat-ia'); ?></div>
+                <div class="text-gray-600"><?php echo esc_html__('Proyectos completados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
             <div class="bg-white rounded-xl shadow-md p-6 text-center border-t-4 border-blue-500">
                 <div class="text-4xl font-bold text-blue-600 mb-2">
                     <?php echo esc_html($participacion_porcentaje ?? '78%'); ?>
                 </div>
-                <div class="text-gray-600"><?php echo esc_html__('Participacion ciudadana', 'flavor-chat-ia'); ?></div>
+                <div class="text-gray-600"><?php echo esc_html__('Participacion ciudadana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -88,16 +88,16 @@ $proyectos_aprobados = [
         <div class="bg-white rounded-xl shadow-md overflow-hidden">
             <div class="p-6 border-b border-gray-100">
                 <h3 class="text-xl font-bold text-gray-900">
-                    <?php echo esc_html__('Proyectos Aprobados', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Proyectos Aprobados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
 
             <!-- Cabecera tabla (desktop) -->
             <div class="hidden md:grid grid-cols-12 gap-4 px-6 py-3 bg-gray-50 text-sm font-semibold text-gray-500">
-                <div class="col-span-4"><?php echo esc_html__('Proyecto', 'flavor-chat-ia'); ?></div>
-                <div class="col-span-2 text-right"><?php echo esc_html__('Presupuesto', 'flavor-chat-ia'); ?></div>
-                <div class="col-span-2 text-center"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></div>
-                <div class="col-span-4"><?php echo esc_html__('Avance', 'flavor-chat-ia'); ?></div>
+                <div class="col-span-4"><?php echo esc_html__('Proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="col-span-2 text-right"><?php echo esc_html__('Presupuesto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="col-span-2 text-center"><?php echo esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="col-span-4"><?php echo esc_html__('Avance', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
 
             <!-- Filas de proyectos -->

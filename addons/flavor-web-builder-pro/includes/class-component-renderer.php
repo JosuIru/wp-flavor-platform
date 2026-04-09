@@ -55,7 +55,7 @@ class Flavor_Component_Renderer {
         if (!$component) {
             if (current_user_can('edit_posts')) {
                 echo '<div class="flavor-component-error">';
-                echo '<p>' . esc_html__('Componente no encontrado:', 'flavor-chat-ia') . ' ' . esc_html($component_id) . '</p>';
+                echo '<p>' . esc_html__('Componente no encontrado:', FLAVOR_PLATFORM_TEXT_DOMAIN) . ' ' . esc_html($component_id) . '</p>';
                 echo '</div>';
             }
             return;
@@ -83,7 +83,7 @@ class Flavor_Component_Renderer {
         if (!$template_path) {
             if (current_user_can('edit_posts')) {
                 echo '<div class="flavor-component-error">';
-                echo '<p>' . esc_html__('Template no encontrado:', 'flavor-chat-ia') . ' ' . esc_html($component['template']) . '</p>';
+                echo '<p>' . esc_html__('Template no encontrado:', FLAVOR_PLATFORM_TEXT_DOMAIN) . ' ' . esc_html($component['template']) . '</p>';
                 echo '</div>';
             }
             return;

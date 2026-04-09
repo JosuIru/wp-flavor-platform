@@ -98,7 +98,7 @@ $width_style = $width ? "max-width: {$width}px;" : '';
                     <?php echo $controls ? 'controls' : ''; ?>
                     playsinline>
                     <source src="<?php echo esc_url($src); ?>" type="video/mp4">
-                    <?php esc_html_e('Tu navegador no soporta vídeos HTML5.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Tu navegador no soporta vídeos HTML5.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </video>
             <?php endif; ?>
         </div>
@@ -201,7 +201,7 @@ $width_style = $width ? "max-width: {$width}px;" : '';
                     <?php echo $controls ? 'controls' : ''; ?>
                     playsinline>
                     <source src="<?php echo esc_url($src); ?>" type="video/mp4">
-                    <?php esc_html_e('Tu navegador no soporta vídeos HTML5.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Tu navegador no soporta vídeos HTML5.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </video>
 
                 <?php if (!$controls): ?>

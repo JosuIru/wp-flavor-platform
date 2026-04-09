@@ -60,7 +60,7 @@ $color = $colores_modalidad[$modalidad] ?? $colores_modalidad['online'];
             <?php endif; ?>
             <?php if ($requisitos_count > 0): ?>
             <span class="flex items-center gap-1">
-                📝 <?php echo esc_html($requisitos_count); ?> <?php echo esc_html__('requisitos', 'flavor-chat-ia'); ?>
+                📝 <?php echo esc_html($requisitos_count); ?> <?php echo esc_html__('requisitos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
             <?php endif; ?>
         </div>
@@ -69,7 +69,7 @@ $color = $colores_modalidad[$modalidad] ?? $colores_modalidad['online'];
     <div class="px-5 py-3 bg-gray-50 border-t border-gray-100">
         <a href="<?php echo esc_url($url); ?>"
            class="w-full inline-flex items-center justify-center gap-2 bg-orange-500 text-white py-2 px-4 rounded-lg font-medium hover:bg-orange-600 transition-colors text-sm">
-            <?php echo esc_html__('Iniciar tramite', 'flavor-chat-ia'); ?> →
+            <?php echo esc_html__('Iniciar tramite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> →
         </a>
     </div>
 </article>

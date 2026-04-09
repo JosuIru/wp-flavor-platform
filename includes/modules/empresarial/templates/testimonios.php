@@ -20,25 +20,25 @@ if (empty($lista_testimonios)) {
     $lista_testimonios = [
         [
             'nombre'     => 'Laura Fernández',
-            'puesto'     => __('CEO', 'flavor-chat-ia'),
+            'puesto'     => __('CEO', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'empresa'    => 'Tech Solutions',
-            'testimonio' => __('Excelente servicio. Han transformado completamente nuestros procesos digitales y los resultados han superado nuestras expectativas.', 'flavor-chat-ia'),
+            'testimonio' => __('Excelente servicio. Han transformado completamente nuestros procesos digitales y los resultados han superado nuestras expectativas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'rating'     => 5,
             'foto'       => '',
         ],
         [
             'nombre'     => 'Miguel Rodríguez',
-            'puesto'     => __('Director de Operaciones', 'flavor-chat-ia'),
+            'puesto'     => __('Director de Operaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'empresa'    => 'Grupo Industrial',
-            'testimonio' => __('Profesionales comprometidos y resultados tangibles. La colaboración con este equipo ha sido clave para nuestro crecimiento.', 'flavor-chat-ia'),
+            'testimonio' => __('Profesionales comprometidos y resultados tangibles. La colaboración con este equipo ha sido clave para nuestro crecimiento.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'rating'     => 5,
             'foto'       => '',
         ],
         [
             'nombre'     => 'Carmen Díaz',
-            'puesto'     => __('Fundadora', 'flavor-chat-ia'),
+            'puesto'     => __('Fundadora', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'empresa'    => 'Startup Innovation',
-            'testimonio' => __('Desde el primer día demostraron un profundo conocimiento de nuestras necesidades. El ROI ha sido impresionante.', 'flavor-chat-ia'),
+            'testimonio' => __('Desde el primer día demostraron un profundo conocimiento de nuestras necesidades. El ROI ha sido impresionante.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'rating'     => 5,
             'foto'       => '',
         ],
@@ -107,7 +107,7 @@ if (empty($lista_testimonios)) {
         <?php if ($tipo_layout === 'carousel'): ?>
                 </div>
                 <div class="testimonios-controles">
-                    <button type="button" class="control-prev" aria-label="<?php esc_attr_e('Anterior', 'flavor-chat-ia'); ?>">
+                    <button type="button" class="control-prev" aria-label="<?php esc_attr_e('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-arrow-left-alt2"></span>
                     </button>
                     <div class="testimonios-dots">
@@ -115,7 +115,7 @@ if (empty($lista_testimonios)) {
                             <button type="button" class="dot <?php echo $indice === 0 ? 'active' : ''; ?>" data-slide="<?php echo esc_attr($indice); ?>"></button>
                         <?php endforeach; ?>
                     </div>
-                    <button type="button" class="control-next" aria-label="<?php esc_attr_e('Siguiente', 'flavor-chat-ia'); ?>">
+                    <button type="button" class="control-next" aria-label="<?php esc_attr_e('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-arrow-right-alt2"></span>
                     </button>
                 </div>

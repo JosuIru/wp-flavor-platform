@@ -63,18 +63,18 @@ if (Flavor_Chat_Helpers::tabla_existe($tabla_incidencias)) {
 }
 
 $prioridades = [
-    'critica' => ['label' => __('Crítica', 'flavor-chat-ia'), 'color' => '#ef4444', 'icon' => '🔴'],
-    'alta' => ['label' => __('Alta', 'flavor-chat-ia'), 'color' => '#f59e0b', 'icon' => '🟠'],
-    'media' => ['label' => __('Media', 'flavor-chat-ia'), 'color' => '#3b82f6', 'icon' => '🔵'],
-    'baja' => ['label' => __('Baja', 'flavor-chat-ia'), 'color' => '#10b981', 'icon' => '🟢'],
+    'critica' => ['label' => __('Crítica', 'flavor-platform'), 'color' => '#ef4444', 'icon' => '🔴'],
+    'alta' => ['label' => __('Alta', 'flavor-platform'), 'color' => '#f59e0b', 'icon' => '🟠'],
+    'media' => ['label' => __('Media', 'flavor-platform'), 'color' => '#3b82f6', 'icon' => '🔵'],
+    'baja' => ['label' => __('Baja', 'flavor-platform'), 'color' => '#10b981', 'icon' => '🟢'],
 ];
 
 $estados = [
-    'abierta' => ['label' => __('Abierta', 'flavor-chat-ia'), 'color' => '#ef4444'],
-    'en_progreso' => ['label' => __('En progreso', 'flavor-chat-ia'), 'color' => '#f59e0b'],
-    'pendiente_piezas' => ['label' => __('Pendiente piezas', 'flavor-chat-ia'), 'color' => '#8b5cf6'],
-    'resuelta' => ['label' => __('Resuelta', 'flavor-chat-ia'), 'color' => '#10b981'],
-    'cerrada' => ['label' => __('Cerrada', 'flavor-chat-ia'), 'color' => '#6b7280'],
+    'abierta' => ['label' => __('Abierta', 'flavor-platform'), 'color' => '#ef4444'],
+    'en_progreso' => ['label' => __('En progreso', 'flavor-platform'), 'color' => '#f59e0b'],
+    'pendiente_piezas' => ['label' => __('Pendiente piezas', 'flavor-platform'), 'color' => '#8b5cf6'],
+    'resuelta' => ['label' => __('Resuelta', 'flavor-platform'), 'color' => '#10b981'],
+    'cerrada' => ['label' => __('Cerrada', 'flavor-platform'), 'color' => '#6b7280'],
 ];
 ?>
 
@@ -83,20 +83,20 @@ $estados = [
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px;">
         <div style="background: #fee2e2; padding: 16px; border-radius: 8px; text-align: center;">
             <div style="font-size: 28px; font-weight: bold; color: #dc2626;"><?php echo $stats['abiertas']; ?></div>
-            <div style="font-size: 12px; color: #991b1b;"><?php esc_html_e('Abiertas', 'flavor-chat-ia'); ?></div>
+            <div style="font-size: 12px; color: #991b1b;"><?php esc_html_e('Abiertas', 'flavor-platform'); ?></div>
         </div>
         <div style="background: #fef3c7; padding: 16px; border-radius: 8px; text-align: center;">
             <div style="font-size: 28px; font-weight: bold; color: #d97706;"><?php echo $stats['en_progreso']; ?></div>
-            <div style="font-size: 12px; color: #92400e;"><?php esc_html_e('En progreso', 'flavor-chat-ia'); ?></div>
+            <div style="font-size: 12px; color: #92400e;"><?php esc_html_e('En progreso', 'flavor-platform'); ?></div>
         </div>
         <div style="background: #dcfce7; padding: 16px; border-radius: 8px; text-align: center;">
             <div style="font-size: 28px; font-weight: bold; color: #16a34a;"><?php echo $stats['resueltas_mes']; ?></div>
-            <div style="font-size: 12px; color: #166534;"><?php esc_html_e('Resueltas (mes)', 'flavor-chat-ia'); ?></div>
+            <div style="font-size: 12px; color: #166534;"><?php esc_html_e('Resueltas (mes)', 'flavor-platform'); ?></div>
         </div>
         <?php if ($stats['criticas'] > 0): ?>
         <div style="background: #fecaca; padding: 16px; border-radius: 8px; text-align: center; animation: pulse 2s infinite;">
             <div style="font-size: 28px; font-weight: bold; color: #b91c1c;"><?php echo $stats['criticas']; ?></div>
-            <div style="font-size: 12px; color: #7f1d1d;"><?php esc_html_e('Críticas', 'flavor-chat-ia'); ?></div>
+            <div style="font-size: 12px; color: #7f1d1d;"><?php esc_html_e('Críticas', 'flavor-platform'); ?></div>
         </div>
         <?php endif; ?>
     </div>
@@ -104,14 +104,14 @@ $estados = [
     <!-- Filtros -->
     <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;">
         <select x-model="filtroEstado" @change="filtrar()" style="padding: 8px 12px;">
-            <option value=""><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
+            <option value=""><?php esc_html_e('Todos los estados', 'flavor-platform'); ?></option>
             <?php foreach ($estados as $key => $est): ?>
                 <option value="<?php echo esc_attr($key); ?>"><?php echo esc_html($est['label']); ?></option>
             <?php endforeach; ?>
         </select>
 
         <select x-model="filtroPrioridad" @change="filtrar()" style="padding: 8px 12px;">
-            <option value=""><?php esc_html_e('Todas las prioridades', 'flavor-chat-ia'); ?></option>
+            <option value=""><?php esc_html_e('Todas las prioridades', 'flavor-platform'); ?></option>
             <?php foreach ($prioridades as $key => $pri): ?>
                 <option value="<?php echo esc_attr($key); ?>"><?php echo esc_html($pri['icon'] . ' ' . $pri['label']); ?></option>
             <?php endforeach; ?>
@@ -121,7 +121,7 @@ $estados = [
 
         <button class="button button-primary" @click="showModalIncidencia = true">
             <span class="dashicons dashicons-warning"></span>
-            <?php esc_html_e('Reportar Incidencia', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Reportar Incidencia', 'flavor-platform'); ?>
         </button>
     </div>
 
@@ -169,8 +169,8 @@ $estados = [
 
             <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid #f3f4f6;">
                 <div style="font-size: 12px; color: #9ca3af;">
-                    <?php esc_html_e('Reportado por', 'flavor-chat-ia'); ?>
-                    <strong><?php echo esc_html($inc->reportado_por_nombre ?: __('Anónimo', 'flavor-chat-ia')); ?></strong>
+                    <?php esc_html_e('Reportado por', 'flavor-platform'); ?>
+                    <strong><?php echo esc_html($inc->reportado_por_nombre ?: __('Anónimo', 'flavor-platform')); ?></strong>
                     •
                     <?php echo esc_html(human_time_diff(strtotime($inc->created_at), current_time('timestamp'))); ?>
                 </div>
@@ -178,14 +178,14 @@ $estados = [
                 <div style="display: flex; gap: 8px;">
                     <?php if ($inc->estado !== 'resuelta' && $inc->estado !== 'cerrada'): ?>
                     <button class="button button-small" @click="cambiarEstado(<?php echo $inc->id; ?>, 'en_progreso')">
-                        <?php esc_html_e('En progreso', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('En progreso', 'flavor-platform'); ?>
                     </button>
                     <button class="button button-small button-primary" @click="cambiarEstado(<?php echo $inc->id; ?>, 'resuelta')">
-                        <?php esc_html_e('Resolver', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Resolver', 'flavor-platform'); ?>
                     </button>
                     <?php endif; ?>
                     <button class="button button-small" @click="verDetalle(<?php echo $inc->id; ?>)">
-                        <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver', 'flavor-platform'); ?>
                     </button>
                 </div>
             </div>
@@ -195,8 +195,8 @@ $estados = [
     <?php else: ?>
     <div style="text-align: center; padding: 60px 20px; background: #f0fdf4; border-radius: 12px;">
         <span style="font-size: 48px;">✅</span>
-        <h3 style="color: #166534;"><?php esc_html_e('Sin incidencias pendientes', 'flavor-chat-ia'); ?></h3>
-        <p style="color: #15803d;"><?php esc_html_e('Todas las instalaciones funcionan correctamente.', 'flavor-chat-ia'); ?></p>
+        <h3 style="color: #166534;"><?php esc_html_e('Sin incidencias pendientes', 'flavor-platform'); ?></h3>
+        <p style="color: #15803d;"><?php esc_html_e('Todas las instalaciones funcionan correctamente.', 'flavor-platform'); ?></p>
     </div>
     <?php endif; ?>
 
@@ -205,7 +205,7 @@ $estados = [
          style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center;"
          @click.self="showModalIncidencia = false">
         <div style="background: #fff; border-radius: 12px; padding: 24px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto;">
-            <h2 style="margin: 0 0 20px;"><?php esc_html_e('Reportar Incidencia', 'flavor-chat-ia'); ?></h2>
+            <h2 style="margin: 0 0 20px;"><?php esc_html_e('Reportar Incidencia', 'flavor-platform'); ?></h2>
             <?php echo do_shortcode('[flavor_energia_form_incidencia]'); ?>
         </div>
     </div>

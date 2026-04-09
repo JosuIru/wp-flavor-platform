@@ -43,7 +43,7 @@ $identificador_form   = 'contacto-simple-' . wp_unique_id();
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                     <label for="<?php echo esc_attr( $identificador_form ); ?>-nombre" class="block text-sm font-medium text-gray-700 mb-2">
-                        <?php echo esc_html__( 'Nombre', 'flavor-chat-ia' ); ?>
+                        <?php echo esc_html__( 'Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                     </label>
                     <input
                         type="text"
@@ -54,12 +54,12 @@ $identificador_form   = 'contacto-simple-' . wp_unique_id();
                         style="--tw-ring-color: <?php echo esc_attr( $color_principal ); ?>;"
                         onfocus="this.style.borderColor='<?php echo esc_attr( $color_principal ); ?>'"
                         onblur="this.style.borderColor=''"
-                        placeholder="<?php echo esc_attr__( 'Tu nombre', 'flavor-chat-ia' ); ?>"
+                        placeholder="<?php echo esc_attr__( 'Tu nombre', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
                     />
                 </div>
                 <div>
                     <label for="<?php echo esc_attr( $identificador_form ); ?>-email" class="block text-sm font-medium text-gray-700 mb-2">
-                        <?php echo esc_html__( 'Email', 'flavor-chat-ia' ); ?>
+                        <?php echo esc_html__( 'Email', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                     </label>
                     <input
                         type="email"
@@ -70,14 +70,14 @@ $identificador_form   = 'contacto-simple-' . wp_unique_id();
                         style="--tw-ring-color: <?php echo esc_attr( $color_principal ); ?>;"
                         onfocus="this.style.borderColor='<?php echo esc_attr( $color_principal ); ?>'"
                         onblur="this.style.borderColor=''"
-                        placeholder="<?php echo esc_attr__( 'tu@email.com', 'flavor-chat-ia' ); ?>"
+                        placeholder="<?php echo esc_attr__( 'tu@email.com', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
                     />
                 </div>
             </div>
 
             <div>
                 <label for="<?php echo esc_attr( $identificador_form ); ?>-asunto" class="block text-sm font-medium text-gray-700 mb-2">
-                    <?php echo esc_html__( 'Asunto', 'flavor-chat-ia' ); ?>
+                    <?php echo esc_html__( 'Asunto', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                 </label>
                 <input
                     type="text"
@@ -87,13 +87,13 @@ $identificador_form   = 'contacto-simple-' . wp_unique_id();
                     style="--tw-ring-color: <?php echo esc_attr( $color_principal ); ?>;"
                     onfocus="this.style.borderColor='<?php echo esc_attr( $color_principal ); ?>'"
                     onblur="this.style.borderColor=''"
-                    placeholder="<?php echo esc_attr__( 'Asunto del mensaje', 'flavor-chat-ia' ); ?>"
+                    placeholder="<?php echo esc_attr__( 'Asunto del mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
                 />
             </div>
 
             <div>
                 <label for="<?php echo esc_attr( $identificador_form ); ?>-mensaje" class="block text-sm font-medium text-gray-700 mb-2">
-                    <?php echo esc_html__( 'Mensaje', 'flavor-chat-ia' ); ?>
+                    <?php echo esc_html__( 'Mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                 </label>
                 <textarea
                     id="<?php echo esc_attr( $identificador_form ); ?>-mensaje"
@@ -104,7 +104,7 @@ $identificador_form   = 'contacto-simple-' . wp_unique_id();
                     style="--tw-ring-color: <?php echo esc_attr( $color_principal ); ?>;"
                     onfocus="this.style.borderColor='<?php echo esc_attr( $color_principal ); ?>'"
                     onblur="this.style.borderColor=''"
-                    placeholder="<?php echo esc_attr__( 'Escribe tu mensaje aqui...', 'flavor-chat-ia' ); ?>"
+                    placeholder="<?php echo esc_attr__( 'Escribe tu mensaje aqui...', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
                 ></textarea>
             </div>
 
@@ -114,7 +114,7 @@ $identificador_form   = 'contacto-simple-' . wp_unique_id();
                     class="inline-flex items-center justify-center px-8 py-3 rounded-lg text-white font-semibold transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2"
                     style="background-color: <?php echo esc_attr( $color_principal ); ?>; --tw-ring-color: <?php echo esc_attr( $color_principal ); ?>;"
                 >
-                    <?php echo esc_html__( 'Enviar mensaje', 'flavor-chat-ia' ); ?>
+                    <?php echo esc_html__( 'Enviar mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                 </button>
             </div>
         </form>

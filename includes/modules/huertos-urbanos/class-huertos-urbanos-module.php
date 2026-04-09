@@ -81,7 +81,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Huertos Urbanos no están creadas. Se crearán automáticamente al activar.', 'flavor-chat-ia');
+            return __('Las tablas de Huertos Urbanos no están creadas. Se crearán automáticamente al activar.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         
     return '';
@@ -204,41 +204,41 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'huertos_urbanos',
-            'label' => __('Huertos', 'flavor-chat-ia'),
+            'label' => __('Huertos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-carrot',
             'capability' => 'manage_options',
             'categoria' => 'sostenibilidad',
             'paginas' => [
                 [
                     'slug' => 'huertos-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'huertos-parcelas',
-                    'titulo' => __('Parcelas', 'flavor-chat-ia'),
+                    'titulo' => __('Parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_parcelas'],
                     'badge' => [$this, 'contar_parcelas_ocupadas'],
                 ],
                 [
                     'slug' => 'huertos-hortelanos',
-                    'titulo' => __('Hortelanos', 'flavor-chat-ia'),
+                    'titulo' => __('Hortelanos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_hortelanos'],
                 ],
                 [
                     'slug' => 'huertos-lista-espera',
-                    'titulo' => __('Lista de Espera', 'flavor-chat-ia'),
+                    'titulo' => __('Lista de Espera', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_lista_espera'],
                     'badge' => [$this, 'contar_lista_espera'],
                 ],
                 [
                     'slug' => 'huertos-recursos',
-                    'titulo' => __('Recursos', 'flavor-chat-ia'),
+                    'titulo' => __('Recursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_recursos'],
                 ],
                 [
                     'slug' => 'huertos-config',
-                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'titulo' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_config'],
                 ],
             ],
@@ -302,7 +302,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
             $estadisticas[] = [
                 'icon' => 'dashicons-carrot',
                 'valor' => $parcelas_ocupadas . '/' . $total_parcelas,
-                'label' => __('Parcelas ocupadas', 'flavor-chat-ia'),
+                'label' => __('Parcelas ocupadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $parcelas_ocupadas > 0 ? 'green' : 'gray',
                 'enlace' => admin_url('admin.php?page=huertos-parcelas'),
             ];
@@ -314,7 +314,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
             $estadisticas[] = [
                 'icon' => 'dashicons-clock',
                 'valor' => $en_lista_espera,
-                'label' => __('Lista de espera', 'flavor-chat-ia'),
+                'label' => __('Lista de espera', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $en_lista_espera > 0 ? 'orange' : 'gray',
                 'enlace' => admin_url('admin.php?page=huertos-lista-espera'),
             ];
@@ -328,8 +328,8 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_dashboard() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Dashboard de Huertos Urbanos', 'flavor-chat-ia'), [
-            ['label' => __('Nueva Parcela', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=huertos-parcelas&action=nueva'), 'class' => 'button-primary'],
+        $this->render_page_header(__('Dashboard de Huertos Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+            ['label' => __('Nueva Parcela', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=huertos-parcelas&action=nueva'), 'class' => 'button-primary'],
         ]);
 
         // Resumen de estadísticas
@@ -352,14 +352,14 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         }
 
         echo '<div class="flavor-stats-grid">';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($total_parcelas) . '</span><span class="stat-label">' . __('Total Parcelas', 'flavor-chat-ia') . '</span></div>';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($parcelas_ocupadas) . '</span><span class="stat-label">' . __('Ocupadas', 'flavor-chat-ia') . '</span></div>';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($parcelas_disponibles) . '</span><span class="stat-label">' . __('Disponibles', 'flavor-chat-ia') . '</span></div>';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($total_hortelanos) . '</span><span class="stat-label">' . __('Hortelanos', 'flavor-chat-ia') . '</span></div>';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($en_lista_espera) . '</span><span class="stat-label">' . __('En espera', 'flavor-chat-ia') . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($total_parcelas) . '</span><span class="stat-label">' . __('Total Parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($parcelas_ocupadas) . '</span><span class="stat-label">' . __('Ocupadas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($parcelas_disponibles) . '</span><span class="stat-label">' . __('Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($total_hortelanos) . '</span><span class="stat-label">' . __('Hortelanos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($en_lista_espera) . '</span><span class="stat-label">' . __('En espera', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
         echo '</div>';
 
-        echo '<p>' . __('Panel de control del módulo de huertos urbanos con métricas y accesos rápidos.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Panel de control del módulo de huertos urbanos con métricas y accesos rápidos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         echo '</div>';
     }
 
@@ -368,13 +368,13 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_parcelas() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Gestión de Parcelas', 'flavor-chat-ia'), [
-            ['label' => __('Nueva Parcela', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=huertos-parcelas&action=nueva'), 'class' => 'button-primary'],
+        $this->render_page_header(__('Gestión de Parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+            ['label' => __('Nueva Parcela', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=huertos-parcelas&action=nueva'), 'class' => 'button-primary'],
         ]);
 
         global $wpdb;
         if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_parcelas)) {
-            echo '<p>' . __('Las tablas del módulo no están creadas.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('Las tablas del módulo no están creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
             return;
         }
@@ -384,12 +384,12 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         if (!empty($parcelas)) {
             echo '<table class="wp-list-table widefat fixed striped">';
             echo '<thead><tr>';
-            echo '<th>' . __('Código', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Huerto', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Tamaño (m²)', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Estado', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Hortelano', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Acciones', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Código', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Huerto', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Tamaño (m²)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Hortelano', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
             echo '</tr></thead>';
             echo '<tbody>';
             foreach ($parcelas as $parcela) {
@@ -400,38 +400,38 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
                 echo '<td>' . esc_html($parcela['tamano_m2'] ?? '-') . '</td>';
                 echo '<td><span class="' . esc_attr($clase_estado) . '">' . esc_html(ucfirst($parcela['estado'])) . '</span></td>';
                 echo '<td>' . esc_html($parcela['user_id'] ? get_userdata($parcela['user_id'])->display_name ?? '-' : '-') . '</td>';
-                echo '<td><a href="#" class="button button-small hu-editar-parcela" data-id="' . esc_attr($parcela['id']) . '" data-codigo="' . esc_attr($parcela['codigo']) . '" data-estado="' . esc_attr($parcela['estado']) . '" data-tamano="' . esc_attr($parcela['tamano_m2'] ?? '') . '">' . __('Editar', 'flavor-chat-ia') . '</a></td>';
+                echo '<td><a href="#" class="button button-small hu-editar-parcela" data-id="' . esc_attr($parcela['id']) . '" data-codigo="' . esc_attr($parcela['codigo']) . '" data-estado="' . esc_attr($parcela['estado']) . '" data-tamano="' . esc_attr($parcela['tamano_m2'] ?? '') . '">' . __('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></td>';
                 echo '</tr>';
             }
             echo '</tbody></table>';
         } else {
-            echo '<p>' . __('No hay parcelas registradas.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('No hay parcelas registradas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         // Modal editar parcela
         echo '<div id="modal-editar-parcela" style="display:none;">
             <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:100000;">
                 <div class="modal-content" style="position:relative;max-width:500px;margin:50px auto;background:#fff;padding:20px;border-radius:4px;">
-                    <h2>' . __('Editar Parcela', 'flavor-chat-ia') . '</h2>
+                    <h2>' . __('Editar Parcela', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2>
                     <form method="post">
                         ' . wp_nonce_field('editar_parcela_huerto', '_wpnonce', true, false) . '
                         <input type="hidden" name="accion" value="editar_parcela">
                         <input type="hidden" name="parcela_id" id="edit-parcela-id">
                         <table class="form-table">
-                            <tr><th><label for="edit-parcela-codigo">' . __('Código', 'flavor-chat-ia') . '</label></th>
+                            <tr><th><label for="edit-parcela-codigo">' . __('Código', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>
                             <td><input type="text" id="edit-parcela-codigo" name="codigo" class="regular-text"></td></tr>
-                            <tr><th><label for="edit-parcela-tamano">' . __('Tamaño (m²)', 'flavor-chat-ia') . '</label></th>
+                            <tr><th><label for="edit-parcela-tamano">' . __('Tamaño (m²)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>
                             <td><input type="number" id="edit-parcela-tamano" name="tamano_m2" step="0.1" min="0" class="small-text"></td></tr>
-                            <tr><th><label for="edit-parcela-estado">' . __('Estado', 'flavor-chat-ia') . '</label></th>
+                            <tr><th><label for="edit-parcela-estado">' . __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>
                             <td><select id="edit-parcela-estado" name="estado">
-                                <option value="disponible">' . __('Disponible', 'flavor-chat-ia') . '</option>
-                                <option value="ocupada">' . __('Ocupada', 'flavor-chat-ia') . '</option>
-                                <option value="reservada">' . __('Reservada', 'flavor-chat-ia') . '</option>
+                                <option value="disponible">' . __('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>
+                                <option value="ocupada">' . __('Ocupada', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>
+                                <option value="reservada">' . __('Reservada', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>
                             </select></td></tr>
                         </table>
                         <p class="submit">
-                            <button type="submit" class="button button-primary">' . __('Guardar', 'flavor-chat-ia') . '</button>
-                            <button type="button" class="button" id="cerrar-modal-parcela">' . __('Cancelar', 'flavor-chat-ia') . '</button>
+                            <button type="submit" class="button button-primary">' . __('Guardar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</button>
+                            <button type="button" class="button" id="cerrar-modal-parcela">' . __('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</button>
                         </p>
                     </form>
                 </div>
@@ -462,11 +462,11 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_hortelanos() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Gestión de Hortelanos', 'flavor-chat-ia'));
+        $this->render_page_header(__('Gestión de Hortelanos', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         global $wpdb;
         if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_asignaciones)) {
-            echo '<p>' . __('Las tablas del módulo no están creadas.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('Las tablas del módulo no están creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
             return;
         }
@@ -483,26 +483,26 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         if (!empty($hortelanos)) {
             echo '<table class="wp-list-table widefat fixed striped">';
             echo '<thead><tr>';
-            echo '<th>' . __('Hortelano', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Email', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Parcela', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Desde', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Acciones', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Hortelano', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Email', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Parcela', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Desde', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
             echo '</tr></thead>';
             echo '<tbody>';
             foreach ($hortelanos as $hortelano) {
                 $usuario = get_userdata($hortelano['user_id']);
                 echo '<tr>';
-                echo '<td><strong>' . esc_html($usuario ? $usuario->display_name : __('Usuario eliminado', 'flavor-chat-ia')) . '</strong></td>';
+                echo '<td><strong>' . esc_html($usuario ? $usuario->display_name : __('Usuario eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '</strong></td>';
                 echo '<td>' . esc_html($usuario ? $usuario->user_email : '-') . '</td>';
                 echo '<td>' . esc_html($hortelano['parcela_codigo'] ?? '-') . '</td>';
                 echo '<td>' . esc_html(date_i18n('d/m/Y', strtotime($hortelano['created_at']))) . '</td>';
-                echo '<td><a href="' . esc_url(admin_url('user-edit.php?user_id=' . $hortelano['user_id'])) . '" class="button button-small">' . __('Ver', 'flavor-chat-ia') . '</a></td>';
+                echo '<td><a href="' . esc_url(admin_url('user-edit.php?user_id=' . $hortelano['user_id'])) . '" class="button button-small">' . __('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></td>';
                 echo '</tr>';
             }
             echo '</tbody></table>';
         } else {
-            echo '<p>' . __('No hay hortelanos activos.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('No hay hortelanos activos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         echo '</div>';
@@ -513,11 +513,11 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_lista_espera() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Lista de Espera', 'flavor-chat-ia'));
+        $this->render_page_header(__('Lista de Espera', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         global $wpdb;
         if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_asignaciones)) {
-            echo '<p>' . __('Las tablas del módulo no están creadas.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('Las tablas del módulo no están creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
             return;
         }
@@ -532,11 +532,11 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         if (!empty($solicitudes)) {
             echo '<table class="wp-list-table widefat fixed striped">';
             echo '<thead><tr>';
-            echo '<th>' . __('Posición', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Solicitante', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Email', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Fecha solicitud', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Acciones', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Posición', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Solicitante', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Email', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Fecha solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
             echo '</tr></thead>';
             echo '<tbody>';
             $posicion = 1;
@@ -544,7 +544,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
                 $usuario = get_userdata($solicitud['user_id']);
                 echo '<tr>';
                 echo '<td><strong>#' . esc_html($posicion) . '</strong></td>';
-                echo '<td>' . esc_html($usuario ? $usuario->display_name : __('Usuario eliminado', 'flavor-chat-ia')) . '</td>';
+                echo '<td>' . esc_html($usuario ? $usuario->display_name : __('Usuario eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '</td>';
                 echo '<td>' . esc_html($usuario ? $usuario->user_email : '-') . '</td>';
                 echo '<td>' . esc_html(date_i18n('d/m/Y H:i', strtotime($solicitud['created_at']))) . '</td>';
                 echo '<td>';
@@ -552,13 +552,13 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
                 echo wp_nonce_field('asignar_parcela_huerto', '_wpnonce', true, false);
                 echo '<input type="hidden" name="accion" value="asignar_parcela">';
                 echo '<input type="hidden" name="solicitud_id" value="' . esc_attr($solicitud['id']) . '">';
-                echo '<button type="submit" class="button button-small button-primary" onclick="return confirm(\'' . esc_js(__('¿Asignar parcela a este usuario?', 'flavor-chat-ia')) . '\');">' . __('Asignar', 'flavor-chat-ia') . '</button>';
+                echo '<button type="submit" class="button button-small button-primary" onclick="return confirm(\'' . esc_js(__('¿Asignar parcela a este usuario?', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '\');">' . __('Asignar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</button>';
                 echo '</form> ';
                 echo '<form method="post" style="display:inline;">';
                 echo wp_nonce_field('rechazar_solicitud_huerto', '_wpnonce', true, false);
                 echo '<input type="hidden" name="accion" value="rechazar_solicitud">';
                 echo '<input type="hidden" name="solicitud_id" value="' . esc_attr($solicitud['id']) . '">';
-                echo '<button type="submit" class="button button-small" onclick="return confirm(\'' . esc_js(__('¿Rechazar esta solicitud?', 'flavor-chat-ia')) . '\');">' . __('Rechazar', 'flavor-chat-ia') . '</button>';
+                echo '<button type="submit" class="button button-small" onclick="return confirm(\'' . esc_js(__('¿Rechazar esta solicitud?', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '\');">' . __('Rechazar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</button>';
                 echo '</form>';
                 echo '</td>';
                 echo '</tr>';
@@ -566,7 +566,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
             }
             echo '</tbody></table>';
         } else {
-            echo '<p>' . __('No hay solicitudes en lista de espera.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('No hay solicitudes en lista de espera.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         echo '</div>';
@@ -583,45 +583,45 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         <nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">
             <a href="<?php echo admin_url('admin.php?page=huertos-dashboard'); ?>" style="color: #2271b1; text-decoration: none;">
                 <span class="dashicons dashicons-carrot" style="font-size: 14px; vertical-align: middle;"></span>
-                <?php _e('Huertos Urbanos', 'flavor-chat-ia'); ?>
+                <?php _e('Huertos Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <span style="color: #646970; margin: 0 5px;">›</span>
-            <span style="color: #1d2327;"><?php _e('Configuración', 'flavor-chat-ia'); ?></span>
+            <span style="color: #1d2327;"><?php _e('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </nav>
         <?php
 
-        $this->render_page_header(__('Configuración de Huertos Urbanos', 'flavor-chat-ia'));
+        $this->render_page_header(__('Configuración de Huertos Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         $configuracion_actual = $this->get_default_settings();
         echo '<form method="post" action="">';
         wp_nonce_field('guardar_config_huertos', 'huertos_config_nonce');
         echo '<table class="form-table">';
 
-        echo '<tr><th scope="row"><label for="max_parcelas_por_usuario">' . __('Máximo parcelas por usuario', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="max_parcelas_por_usuario">' . __('Máximo parcelas por usuario', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="number" name="max_parcelas_por_usuario" id="max_parcelas_por_usuario" value="' . esc_attr($configuracion_actual['max_parcelas_por_usuario']) . '" min="1" max="10" class="small-text" />';
-        echo '<p class="description">' . __('Número máximo de parcelas que puede tener un usuario.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . __('Número máximo de parcelas que puede tener un usuario.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="precio_parcela_anual">' . __('Precio anual parcela', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="precio_parcela_anual">' . __('Precio anual parcela', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="number" name="precio_parcela_anual" id="precio_parcela_anual" value="' . esc_attr($configuracion_actual['precio_parcela_anual']) . '" min="0" step="0.01" class="small-text" /> EUR';
-        echo '<p class="description">' . __('0 = gratuito.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . __('0 = gratuito.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="horas_minimas_mes">' . __('Horas mínimas mensuales', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="horas_minimas_mes">' . __('Horas mínimas mensuales', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="number" name="horas_minimas_mes" id="horas_minimas_mes" value="' . esc_attr($configuracion_actual['horas_minimas_mes']) . '" min="0" class="small-text" />';
-        echo '<p class="description">' . __('Horas mínimas de trabajo comunitario al mes.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . __('Horas mínimas de trabajo comunitario al mes.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="sistema_turnos_riego">' . __('Sistema de turnos de riego', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="sistema_turnos_riego">' . __('Sistema de turnos de riego', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="checkbox" name="sistema_turnos_riego" id="sistema_turnos_riego" ' . checked($configuracion_actual['sistema_turnos_riego'], true, false) . ' />';
-        echo '<p class="description">' . __('Habilitar gestión de turnos de riego.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . __('Habilitar gestión de turnos de riego.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="permite_intercambio_cosechas">' . __('Intercambio de cosechas', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="permite_intercambio_cosechas">' . __('Intercambio de cosechas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="checkbox" name="permite_intercambio_cosechas" id="permite_intercambio_cosechas" ' . checked($configuracion_actual['permite_intercambio_cosechas'], true, false) . ' />';
-        echo '<p class="description">' . __('Permitir intercambio de cosechas entre hortelanos.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . __('Permitir intercambio de cosechas entre hortelanos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="notificaciones_email">' . __('Notificaciones por email', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="notificaciones_email">' . __('Notificaciones por email', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="checkbox" name="notificaciones_email" id="notificaciones_email" ' . checked($configuracion_actual['notificaciones_email'], true, false) . ' /></td></tr>';
 
         echo '</table>';
-        echo '<p class="submit"><input type="submit" name="guardar_config" class="button-primary" value="' . __('Guardar Configuración', 'flavor-chat-ia') . '" /></p>';
+        echo '<p class="submit"><input type="submit" name="guardar_config" class="button-primary" value="' . __('Guardar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN) . '" /></p>';
         echo '</form>';
         echo '</div>';
     }
@@ -719,9 +719,9 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
             'isLoggedIn' => is_user_logged_in(),
             'settings' => $this->get_settings(),
             'i18n' => [
-                'error_conexion' => __('Error de conexión', 'flavor-chat-ia'),
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
-                'sin_resultados' => __('No se encontraron resultados', 'flavor-chat-ia'),
+                'error_conexion' => __('Error de conexión', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sin_resultados' => __('No se encontraron resultados', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -1081,13 +1081,13 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         $huerto_id = intval($_POST['huerto_id'] ?? 0);
 
         if (!$huerto_id) {
-            wp_send_json_error(['message' => __('ID de huerto no válido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID de huerto no válido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $huerto = $this->obtener_huerto_detalle($huerto_id);
 
         if (!$huerto) {
-            wp_send_json_error(['message' => __('Huerto no encontrado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Huerto no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         wp_send_json_success(['huerto' => $huerto]);
@@ -1106,7 +1106,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         if ($parcela) {
             wp_send_json_success(['parcela' => $parcela]);
         } else {
-            wp_send_json_success(['parcela' => null, 'message' => __('No tienes parcela asignada', 'flavor-chat-ia')]);
+            wp_send_json_success(['parcela' => null, 'message' => __('No tienes parcela asignada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -1119,7 +1119,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         $parcela_id = intval($_POST['parcela_id'] ?? 0);
 
         if (!$parcela_id) {
-            wp_send_json_error(['message' => __('ID de parcela no válido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID de parcela no válido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $cultivos = $this->obtener_cultivos_parcela($parcela_id);
@@ -1163,7 +1163,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         $experiencia = sanitize_text_field($_POST['experiencia'] ?? '');
 
         if (!$huerto_id || !$motivacion) {
-            wp_send_json_error(['message' => __('Datos incompletos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $resultado = $this->procesar_solicitud_parcela($huerto_id, $motivacion, $experiencia);
@@ -1192,7 +1192,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         ];
 
         if (!$datos_cultivo['parcela_id'] || !$datos_cultivo['nombre'] || !$datos_cultivo['fecha_siembra']) {
-            wp_send_json_error(['message' => __('Datos incompletos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $resultado = $this->crear_cultivo($datos_cultivo);
@@ -1214,7 +1214,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         $tarea_id = intval($_POST['tarea_id'] ?? 0);
 
         if (!$tarea_id) {
-            wp_send_json_error(['message' => __('ID de tarea no válido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID de tarea no válido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $resultado = $this->apuntar_usuario_tarea($tarea_id);
@@ -1242,7 +1242,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         ];
 
         if (!$datos_intercambio['tipo'] || !$datos_intercambio['titulo'] || !$datos_intercambio['descripcion']) {
-            wp_send_json_error(['message' => __('Datos incompletos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $resultado = $this->crear_intercambio($datos_intercambio);
@@ -1615,7 +1615,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if ($tiene_parcela) {
-            return ['success' => false, 'message' => __('Ya tienes una solicitud o parcela activa', 'flavor-chat-ia')];
+            return ['success' => false, 'message' => __('Ya tienes una solicitud o parcela activa', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Obtener parcela disponible
@@ -1627,7 +1627,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$parcela_disponible) {
-            return ['success' => false, 'message' => __('No hay parcelas disponibles en este huerto', 'flavor-chat-ia')];
+            return ['success' => false, 'message' => __('No hay parcelas disponibles en este huerto', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Crear solicitud
@@ -1656,11 +1656,11 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
 
             return [
                 'success' => true,
-                'message' => __('Solicitud enviada correctamente. Te notificaremos cuando sea revisada.', 'flavor-chat-ia'),
+                'message' => __('Solicitud enviada correctamente. Te notificaremos cuando sea revisada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
-        return ['success' => false, 'message' => __('Error al procesar la solicitud', 'flavor-chat-ia')];
+        return ['success' => false, 'message' => __('Error al procesar la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     /**
@@ -1679,7 +1679,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$tiene_acceso) {
-            return ['success' => false, 'message' => __('No tienes acceso a esta parcela', 'flavor-chat-ia')];
+            return ['success' => false, 'message' => __('No tienes acceso a esta parcela', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $insertado = $wpdb->insert($this->tabla_cultivos, [
@@ -1696,12 +1696,12 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         if ($insertado) {
             return [
                 'success' => true,
-                'message' => __('Cultivo registrado correctamente', 'flavor-chat-ia'),
+                'message' => __('Cultivo registrado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'cultivo_id' => $wpdb->insert_id,
             ];
         }
 
-        return ['success' => false, 'message' => __('Error al registrar el cultivo', 'flavor-chat-ia')];
+        return ['success' => false, 'message' => __('Error al registrar el cultivo', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     /**
@@ -1722,11 +1722,11 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$tarea) {
-            return ['success' => false, 'message' => __('Tarea no encontrada', 'flavor-chat-ia')];
+            return ['success' => false, 'message' => __('Tarea no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if ($tarea->max_participantes && $tarea->participantes >= $tarea->max_participantes) {
-            return ['success' => false, 'message' => __('No hay plazas disponibles', 'flavor-chat-ia')];
+            return ['success' => false, 'message' => __('No hay plazas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Verificar si ya está apuntado
@@ -1737,7 +1737,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if ($ya_apuntado) {
-            return ['success' => false, 'message' => __('Ya estás apuntado a esta tarea', 'flavor-chat-ia')];
+            return ['success' => false, 'message' => __('Ya estás apuntado a esta tarea', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $insertado = $wpdb->insert($this->tabla_participantes_tareas, [
@@ -1746,10 +1746,10 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         ]);
 
         if ($insertado) {
-            return ['success' => true, 'message' => __('Te has apuntado correctamente', 'flavor-chat-ia')];
+            return ['success' => true, 'message' => __('Te has apuntado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
-        return ['success' => false, 'message' => __('Error al apuntarse', 'flavor-chat-ia')];
+        return ['success' => false, 'message' => __('Error al apuntarse', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     /**
@@ -1783,12 +1783,12 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         if ($insertado) {
             return [
                 'success' => true,
-                'message' => __('Intercambio publicado correctamente', 'flavor-chat-ia'),
+                'message' => __('Intercambio publicado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'intercambio_id' => $wpdb->insert_id,
             ];
         }
 
-        return ['success' => false, 'message' => __('Error al publicar el intercambio', 'flavor-chat-ia')];
+        return ['success' => false, 'message' => __('Error al publicar el intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     /**
@@ -1807,10 +1807,10 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         );
 
         if ($actualizado !== false) {
-            return ['success' => true, 'message' => __('Tarea marcada como completada', 'flavor-chat-ia')];
+            return ['success' => true, 'message' => __('Tarea marcada como completada', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
-        return ['success' => false, 'message' => __('Error al actualizar la tarea', 'flavor-chat-ia')];
+        return ['success' => false, 'message' => __('Error al actualizar la tarea', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     /**
@@ -1841,10 +1841,10 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         ]);
 
         if ($insertado) {
-            return ['success' => true, 'message' => __('Actividad registrada', 'flavor-chat-ia')];
+            return ['success' => true, 'message' => __('Actividad registrada', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
-        return ['success' => false, 'message' => __('Error al registrar la actividad', 'flavor-chat-ia')];
+        return ['success' => false, 'message' => __('Error al registrar la actividad', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     /**
@@ -1896,7 +1896,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$turno) {
-            return ['success' => false, 'message' => __('Turno no encontrado o no te pertenece', 'flavor-chat-ia')];
+            return ['success' => false, 'message' => __('Turno no encontrado o no te pertenece', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $actualizado = $wpdb->update(
@@ -1910,10 +1910,10 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         );
 
         if ($actualizado !== false) {
-            return ['success' => true, 'message' => __('Turno de riego marcado como completado', 'flavor-chat-ia')];
+            return ['success' => true, 'message' => __('Turno de riego marcado como completado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
-        return ['success' => false, 'message' => __('Error al actualizar el turno', 'flavor-chat-ia')];
+        return ['success' => false, 'message' => __('Error al actualizar el turno', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     /**
@@ -2061,7 +2061,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         $huerto = $this->obtener_huerto_detalle($huerto_id);
 
         if (!$huerto) {
-            return new WP_Error('not_found', __('Huerto no encontrado', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Huerto no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         return rest_ensure_response($this->sanitize_public_huertos_response($huerto));
@@ -2095,7 +2095,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
     public function rest_get_mi_parcela($request) {
         $parcela = $this->obtener_parcela_usuario(get_current_user_id());
 
-        return rest_ensure_response($parcela ?: ['message' => __('No tienes parcela asignada', 'flavor-chat-ia')]);
+        return rest_ensure_response($parcela ?: ['message' => __('No tienes parcela asignada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -2105,7 +2105,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         $parcela_id = $request->get_param('parcela_id');
 
         if (!$parcela_id) {
-            return new WP_Error('missing_param', __('Se requiere parcela_id', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('missing_param', __('Se requiere parcela_id', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $cultivos = $this->obtener_cultivos_parcela($parcela_id);
@@ -2265,18 +2265,18 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
             <div class="huertos-seccion">
                 <h2 class="huertos-titulo-seccion">
                     <span class="icono">🗺️</span>
-                    <?php _e('Mapa de Huertos Urbanos', 'flavor-chat-ia'); ?>
+                    <?php _e('Mapa de Huertos Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
 
                 <div class="huertos-mapa-contenedor">
                     <?php if ($atts['mostrar_filtros'] === 'true'): ?>
                     <div class="huertos-mapa-controles">
                         <div class="huertos-mapa-filtro">
-                            <label><?php _e('Filtrar:', 'flavor-chat-ia'); ?></label>
+                            <label><?php _e('Filtrar:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <select>
-                                <option value="<?php echo esc_attr__('todos', 'flavor-chat-ia'); ?>"><?php _e('Todos', 'flavor-chat-ia'); ?></option>
-                                <option value="<?php echo esc_attr__('disponibles', 'flavor-chat-ia'); ?>"><?php _e('Con parcelas disponibles', 'flavor-chat-ia'); ?></option>
-                                <option value="<?php echo esc_attr__('completos', 'flavor-chat-ia'); ?>"><?php _e('Completos', 'flavor-chat-ia'); ?></option>
+                                <option value="<?php echo esc_attr__('todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="<?php echo esc_attr__('disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Con parcelas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="<?php echo esc_attr__('completos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Completos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             </select>
                         </div>
                     </div>
@@ -2289,7 +2289,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
             <div class="huertos-seccion">
                 <h3 class="huertos-titulo-seccion">
                     <span class="icono">🌱</span>
-                    <?php _e('Huertos Disponibles', 'flavor-chat-ia'); ?>
+                    <?php _e('Huertos Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <div class="huertos-grid"></div>
             </div>
@@ -2304,7 +2304,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
     public function shortcode_mi_parcela($atts) {
         if (!is_user_logged_in()) {
             return '<div class="huertos-alerta huertos-alerta-advertencia">' .
-                   __('Debes iniciar sesión para ver tu parcela.', 'flavor-chat-ia') .
+                   __('Debes iniciar sesión para ver tu parcela.', FLAVOR_PLATFORM_TEXT_DOMAIN) .
                    '</div>';
         }
 
@@ -2314,12 +2314,12 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
             <div class="huertos-seccion">
                 <h2 class="huertos-titulo-seccion">
                     <span class="icono">🏡</span>
-                    <?php _e('Mi Parcela', 'flavor-chat-ia'); ?>
+                    <?php _e('Mi Parcela', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <div class="mi-parcela-contenedor">
                     <div class="huertos-cargando">
                         <div class="huertos-cargando-spinner"></div>
-                        <?php _e('Cargando información de tu parcela...', 'flavor-chat-ia'); ?>
+                        <?php _e('Cargando información de tu parcela...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </div>
                 </div>
             </div>
@@ -2343,7 +2343,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
                 <div class="calendario-cultivos-contenedor">
                     <div class="huertos-cargando">
                         <div class="huertos-cargando-spinner"></div>
-                        <?php _e('Cargando calendario...', 'flavor-chat-ia'); ?>
+                        <?php _e('Cargando calendario...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </div>
                 </div>
             </div>
@@ -2368,12 +2368,12 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                     <h2 class="huertos-titulo-seccion" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">
                         <span class="icono">🔄</span>
-                        <?php _e('Intercambios de la Comunidad', 'flavor-chat-ia'); ?>
+                        <?php _e('Intercambios de la Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h2>
                     <?php if (is_user_logged_in()): ?>
                     <button class="huertos-boton huertos-boton-primario"
                             data-huertos-accion="publicar-intercambio">
-                        <?php _e('+ Publicar intercambio', 'flavor-chat-ia'); ?>
+                        <?php _e('+ Publicar intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <?php endif; ?>
                 </div>
@@ -2381,7 +2381,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
                 <div class="intercambios-contenedor">
                     <div class="huertos-cargando" style="grid-column: 1 / -1;">
                         <div class="huertos-cargando-spinner"></div>
-                        <?php _e('Cargando intercambios...', 'flavor-chat-ia'); ?>
+                        <?php _e('Cargando intercambios...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </div>
                 </div>
             </div>
@@ -2405,14 +2405,14 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
             <div class="huertos-seccion">
                 <h2 class="huertos-titulo-seccion">
                     <span class="icono">📋</span>
-                    <?php _e('Próximas Tareas Comunitarias', 'flavor-chat-ia'); ?>
+                    <?php _e('Próximas Tareas Comunitarias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
 
                 <div class="tareas-huerto-contenedor">
                     <div class="tareas-lista">
                         <div class="huertos-cargando">
                             <div class="huertos-cargando-spinner"></div>
-                            <?php _e('Cargando tareas...', 'flavor-chat-ia'); ?>
+                            <?php _e('Cargando tareas...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     </div>
                 </div>
@@ -2441,10 +2441,10 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
                 <?php
                 $estadisticas = $this->obtener_estadisticas();
                 $items_estadisticas = [
-                    ['icono' => '🌿', 'valor' => $estadisticas['total_huertos'], 'etiqueta' => __('Huertos Activos', 'flavor-chat-ia')],
-                    ['icono' => '🏡', 'valor' => $estadisticas['total_parcelas'], 'etiqueta' => __('Parcelas Totales', 'flavor-chat-ia')],
-                    ['icono' => '👩‍🌾', 'valor' => $estadisticas['total_hortelanos'], 'etiqueta' => __('Hortelanos', 'flavor-chat-ia')],
-                    ['icono' => '🌱', 'valor' => $estadisticas['cultivos_activos'], 'etiqueta' => __('Cultivos Activos', 'flavor-chat-ia')],
+                    ['icono' => '🌿', 'valor' => $estadisticas['total_huertos'], 'etiqueta' => __('Huertos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    ['icono' => '🏡', 'valor' => $estadisticas['total_parcelas'], 'etiqueta' => __('Parcelas Totales', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    ['icono' => '👩‍🌾', 'valor' => $estadisticas['total_hortelanos'], 'etiqueta' => __('Hortelanos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    ['icono' => '🌱', 'valor' => $estadisticas['cultivos_activos'], 'etiqueta' => __('Cultivos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ];
                 foreach ($items_estadisticas as $item):
                 ?>
@@ -2460,7 +2460,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
             <div class="huertos-seccion">
                 <h2 class="huertos-titulo-seccion">
                     <span class="icono">🌻</span>
-                    <?php _e('Nuestros Huertos', 'flavor-chat-ia'); ?>
+                    <?php _e('Nuestros Huertos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
 
                 <div class="huertos-grid" style="grid-template-columns: repeat(<?php echo intval($atts['columnas']); ?>, 1fr);">
@@ -2482,31 +2482,31 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
                             <div class="huertos-tarjeta-estadisticas">
                                 <div class="huertos-tarjeta-estadistica">
                                     <span class="huertos-tarjeta-estadistica-valor"><?php echo $huerto['superficie_m2']; ?></span>
-                                    <span class="huertos-tarjeta-estadistica-etiqueta"><?php echo esc_html__('m2', 'flavor-chat-ia'); ?></span>
+                                    <span class="huertos-tarjeta-estadistica-etiqueta"><?php echo esc_html__('m2', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                                 <div class="huertos-tarjeta-estadistica">
                                     <span class="huertos-tarjeta-estadistica-valor"><?php echo $huerto['parcelas_totales']; ?></span>
-                                    <span class="huertos-tarjeta-estadistica-etiqueta"><?php _e('parcelas', 'flavor-chat-ia'); ?></span>
+                                    <span class="huertos-tarjeta-estadistica-etiqueta"><?php _e('parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                             </div>
 
                             <span class="huertos-badge huertos-badge-<?php echo $huerto['parcelas_disponibles'] > 0 ? 'disponible' : 'ocupada'; ?>">
                                 <?php echo $huerto['parcelas_disponibles'] > 0
-                                    ? sprintf(__('%d disponibles', 'flavor-chat-ia'), $huerto['parcelas_disponibles'])
-                                    : __('Completo', 'flavor-chat-ia'); ?>
+                                    ? sprintf(__('%d disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN), $huerto['parcelas_disponibles'])
+                                    : __('Completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
 
                             <div class="huertos-tarjeta-acciones">
                                 <button class="huertos-boton huertos-boton-primario huertos-boton-pequeno"
                                         data-huertos-accion="ver-detalle-huerto"
                                         data-huertos-params='{"id": <?php echo $huerto['id']; ?>}'>
-                                    <?php _e('Ver detalles', 'flavor-chat-ia'); ?>
+                                    <?php _e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                                 <?php if ($huerto['parcelas_disponibles'] > 0): ?>
                                 <button class="huertos-boton huertos-boton-secundario huertos-boton-pequeno"
                                         data-huertos-accion="solicitar-parcela"
                                         data-huertos-params='{"huerto_id": <?php echo $huerto['id']; ?>}'>
-                                    <?php _e('Solicitar', 'flavor-chat-ia'); ?>
+                                    <?php _e('Solicitar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                                 <?php endif; ?>
                             </div>
@@ -2529,7 +2529,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
      */
     private function verificar_nonce() {
         if (!wp_verify_nonce($_POST['nonce'] ?? '', 'flavor_huertos_nonce')) {
-            wp_send_json_error(['message' => __('Token de seguridad inválido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Token de seguridad inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -2538,7 +2538,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
      */
     private function verificar_usuario_logueado() {
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -2571,9 +2571,9 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         ));
 
         foreach ($turnos as $turno) {
-            $asunto = sprintf(__('Recordatorio: Turno de riego mañana en %s', 'flavor-chat-ia'), $turno->huerto_nombre);
+            $asunto = sprintf(__('Recordatorio: Turno de riego mañana en %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $turno->huerto_nombre);
             $mensaje = sprintf(
-                __("Hola %s,\n\nTe recordamos que mañana tienes turno de riego en el huerto %s.\n\nFecha: %s\nHora: %s - %s\n\n¡Gracias por tu colaboración!", 'flavor-chat-ia'),
+                __("Hola %s,\n\nTe recordamos que mañana tienes turno de riego en el huerto %s.\n\nFecha: %s\nHora: %s - %s\n\n¡Gracias por tu colaboración!", FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $turno->display_name,
                 $turno->huerto_nombre,
                 date_i18n('l j F', strtotime($turno->fecha_turno)),
@@ -2605,9 +2605,9 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         ));
 
         foreach ($participantes as $participante) {
-            $asunto = sprintf(__('Recordatorio: Tarea mañana - %s', 'flavor-chat-ia'), $participante->titulo);
+            $asunto = sprintf(__('Recordatorio: Tarea mañana - %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $participante->titulo);
             $mensaje = sprintf(
-                __("Hola %s,\n\nTe recordamos que mañana participas en la tarea:\n\n%s\nHuerto: %s\nFecha: %s\nHora: %s\n\n¡Te esperamos!", 'flavor-chat-ia'),
+                __("Hola %s,\n\nTe recordamos que mañana participas en la tarea:\n\n%s\nHuerto: %s\nFecha: %s\nHora: %s\n\n¡Te esperamos!", FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $participante->display_name,
                 $participante->titulo,
                 $participante->huerto_nombre,
@@ -2718,7 +2718,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error' => sprintf(__('Acción no implementada: %s', 'flavor-chat-ia'), $action_name),
+            'error' => sprintf(__('Acción no implementada: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $action_name),
         ];
     }
 
@@ -2760,7 +2760,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
             return ['success' => true, 'huerto' => $huerto];
         }
 
-        return ['success' => false, 'error' => __('Huerto no encontrado', 'flavor-chat-ia')];
+        return ['success' => false, 'error' => __('Huerto no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     /**
@@ -2770,7 +2770,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         $usuario_id = get_current_user_id();
 
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Usuario no autenticado', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Usuario no autenticado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $parcela = $this->obtener_parcela_usuario($usuario_id);
@@ -2818,13 +2818,13 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
     private function action_foro_huerto($params) {
         $huerto = $this->resolve_contextual_huerto((array) $params);
         if (!$huerto) {
-            return ['success' => false, 'message' => __('Selecciona un huerto para abrir su foro.', 'flavor-chat-ia')];
+            return ['success' => false, 'message' => __('Selecciona un huerto para abrir su foro.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         return [
             'success' => true,
             'html' => '<div class="huertos-contexto huertos-contexto-foro"><div class="huertos-contexto-header"><h3>' .
-                esc_html__('Foro del huerto', 'flavor-chat-ia') .
+                esc_html__('Foro del huerto', FLAVOR_PLATFORM_TEXT_DOMAIN) .
                 '</h3><p>' . esc_html($huerto['nombre']) . '</p></div>' .
                 do_shortcode('[flavor_foros_integrado entidad="huerto" entidad_id="' . intval($huerto['id']) . '"]') .
                 '</div>',
@@ -2834,16 +2834,16 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
     private function action_chat_huerto($params) {
         $huerto = $this->resolve_contextual_huerto((array) $params);
         if (!$huerto) {
-            return ['success' => false, 'message' => __('Selecciona un huerto para abrir su chat.', 'flavor-chat-ia')];
+            return ['success' => false, 'message' => __('Selecciona un huerto para abrir su chat.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         return [
             'success' => true,
             'html' => '<div class="huertos-contexto huertos-contexto-chat"><div class="huertos-contexto-header"><h3>' .
-                esc_html__('Chat del huerto', 'flavor-chat-ia') .
+                esc_html__('Chat del huerto', FLAVOR_PLATFORM_TEXT_DOMAIN) .
                 '</h3><p>' . esc_html($huerto['nombre']) . '</p></div><p><a class="button button-secondary" href="' .
                 esc_url(home_url('/mi-portal/chat-grupos/')) .
-                '">' . esc_html__('Abrir chat completo', 'flavor-chat-ia') . '</a></p>' .
+                '">' . esc_html__('Abrir chat completo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p>' .
                 do_shortcode('[flavor_chat_grupo_integrado entidad="huerto" entidad_id="' . intval($huerto['id']) . '"]') .
                 '</div>',
         ];
@@ -2852,16 +2852,16 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
     private function action_multimedia_huerto($params) {
         $huerto = $this->resolve_contextual_huerto((array) $params);
         if (!$huerto) {
-            return ['success' => false, 'message' => __('Selecciona un huerto para ver su galería.', 'flavor-chat-ia')];
+            return ['success' => false, 'message' => __('Selecciona un huerto para ver su galería.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         return [
             'success' => true,
             'html' => '<div class="huertos-contexto huertos-contexto-multimedia"><div class="huertos-contexto-header"><h3>' .
-                esc_html__('Galería del huerto', 'flavor-chat-ia') .
+                esc_html__('Galería del huerto', FLAVOR_PLATFORM_TEXT_DOMAIN) .
                 '</h3><p>' . esc_html($huerto['nombre']) . '</p></div><p><a class="button button-secondary" href="' .
                 esc_url(home_url('/mi-portal/multimedia/subir/?huerto_id=' . intval($huerto['id']))) .
-                '">' . esc_html__('Subir archivo', 'flavor-chat-ia') . '</a></p>' .
+                '">' . esc_html__('Subir archivo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p>' .
                 do_shortcode('[flavor_multimedia_galeria entidad="huerto" entidad_id="' . intval($huerto['id']) . '"]') .
                 '</div>',
         ];
@@ -2870,16 +2870,16 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
     private function action_red_social_huerto($params) {
         $huerto = $this->resolve_contextual_huerto((array) $params);
         if (!$huerto) {
-            return ['success' => false, 'message' => __('Selecciona un huerto para ver su actividad.', 'flavor-chat-ia')];
+            return ['success' => false, 'message' => __('Selecciona un huerto para ver su actividad.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         return [
             'success' => true,
             'html' => '<div class="huertos-contexto huertos-contexto-red-social"><div class="huertos-contexto-header"><h3>' .
-                esc_html__('Actividad del huerto', 'flavor-chat-ia') .
+                esc_html__('Actividad del huerto', FLAVOR_PLATFORM_TEXT_DOMAIN) .
                 '</h3><p>' . esc_html($huerto['nombre']) . '</p></div><p><a class="button button-secondary" href="' .
                 esc_url(home_url('/mi-portal/red-social/crear/?huerto_id=' . intval($huerto['id']))) .
-                '">' . esc_html__('Publicar', 'flavor-chat-ia') . '</a></p>' .
+                '">' . esc_html__('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p>' .
                 do_shortcode('[flavor_social_feed entidad="huerto" entidad_id="' . intval($huerto['id']) . '"]') .
                 '</div>',
         ];
@@ -2891,23 +2891,23 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
     public function get_web_components() {
         return [
             'hero_huertos' => [
-                'label' => __('Hero Huertos', 'flavor-chat-ia'),
+                'label' => __('Hero Huertos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-carrot',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Huertos Urbanos', 'flavor-chat-ia')],
-                    'subtitulo' => ['type' => 'textarea', 'default' => __('Cultiva tus propios alimentos en comunidad', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Huertos Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'subtitulo' => ['type' => 'textarea', 'default' => __('Cultiva tus propios alimentos en comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'imagen_fondo' => ['type' => 'image', 'default' => ''],
                     'mostrar_estadisticas' => ['type' => 'toggle', 'default' => true],
                 ],
                 'template' => 'huertos-urbanos/hero',
             ],
             'mapa_huertos' => [
-                'label' => __('Mapa de Huertos', 'flavor-chat-ia'),
+                'label' => __('Mapa de Huertos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-location',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Encuentra tu Huerto', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Encuentra tu Huerto', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'altura_mapa' => ['type' => 'number', 'default' => 500],
                     'zoom_inicial' => ['type' => 'number', 'default' => 12],
                     'mostrar_disponibilidad' => ['type' => 'toggle', 'default' => true],
@@ -2915,43 +2915,43 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
                 'template' => 'huertos-urbanos/mapa',
             ],
             'parcelas_disponibles' => [
-                'label' => __('Parcelas Disponibles', 'flavor-chat-ia'),
+                'label' => __('Parcelas Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-grid-view',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Parcelas Disponibles', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Parcelas Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'huerto_id' => ['type' => 'number', 'default' => 0],
                     'columnas' => ['type' => 'select', 'options' => [2, 3, 4], 'default' => 3],
                 ],
                 'template' => 'huertos-urbanos/parcelas',
             ],
             'calendario_cultivos' => [
-                'label' => __('Calendario de Cultivos', 'flavor-chat-ia'),
+                'label' => __('Calendario de Cultivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-calendar-alt',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Qué Plantar Este Mes', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Qué Plantar Este Mes', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'vista_tipo' => ['type' => 'select', 'options' => ['mensual', 'anual'], 'default' => 'anual'],
                 ],
                 'template' => 'huertos-urbanos/calendario',
             ],
             'intercambios_widget' => [
-                'label' => __('Intercambios', 'flavor-chat-ia'),
+                'label' => __('Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-randomize',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Intercambios Recientes', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Intercambios Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'tipo' => ['type' => 'select', 'options' => ['', 'semillas', 'cosecha', 'plantulas'], 'default' => ''],
                     'limite' => ['type' => 'number', 'default' => 6],
                 ],
                 'template' => 'huertos-urbanos/intercambios',
             ],
             'tareas_comunidad' => [
-                'label' => __('Tareas Comunidad', 'flavor-chat-ia'),
+                'label' => __('Tareas Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-clipboard',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Próximas Tareas', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Próximas Tareas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'limite' => ['type' => 'number', 'default' => 5],
                 ],
                 'template' => 'huertos-urbanos/tareas',
@@ -3161,36 +3161,36 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Huertos Urbanos', 'flavor-chat-ia'),
+                'title' => __('Huertos Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'huertos-urbanos',
-                'content' => '<h1>' . __('Huertos Urbanos Comunitarios', 'flavor-chat-ia') . '</h1>
-<p>' . __('Cultiva tus propios alimentos en la ciudad', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Huertos Urbanos Comunitarios', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Cultiva tus propios alimentos en la ciudad', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="huertos_urbanos" action="listar_huertos" columnas="2" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Solicitar Parcela', 'flavor-chat-ia'),
+                'title' => __('Solicitar Parcela', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'solicitar',
-                'content' => '<h1>' . __('Solicitar Parcela', 'flavor-chat-ia') . '</h1>
-<p>' . __('Solicita tu parcela en el huerto comunitario', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Solicitar Parcela', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Solicita tu parcela en el huerto comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_form module="huertos_urbanos" action="solicitar_parcela"]',
                 'parent' => 'huertos-urbanos',
             ],
             [
-                'title' => __('Mi Parcela', 'flavor-chat-ia'),
+                'title' => __('Mi Parcela', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mi-parcela',
-                'content' => '<h1>' . __('Mi Parcela', 'flavor-chat-ia') . '</h1>
+                'content' => '<h1>' . __('Mi Parcela', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
 
 [flavor_module_dashboard module="huertos_urbanos"]',
                 'parent' => 'huertos-urbanos',
             ],
             [
-                'title' => __('Intercambios', 'flavor-chat-ia'),
+                'title' => __('Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'intercambios',
-                'content' => '<h1>' . __('Intercambios de Productos', 'flavor-chat-ia') . '</h1>
-<p>' . __('Intercambia semillas, plantones y cosecha con otros hortelanos', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Intercambios de Productos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Intercambia semillas, plantones y cosecha con otros hortelanos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="huertos_urbanos" action="listar_intercambios" columnas="3"]',
                 'parent' => 'huertos-urbanos',
@@ -3212,60 +3212,60 @@ KNOWLEDGE;
         $capability = 'manage_options';
 
         // Páginas ocultas (sin menú visible en el sidebar)
-        add_submenu_page(null, __('Dashboard Huertos Urbanos', 'flavor-chat-ia'), __('Dashboard', 'flavor-chat-ia'), $capability, 'huertos-urbanos', [$this, 'render_pagina_dashboard']);
-        add_submenu_page(null, __('Parcelas', 'flavor-chat-ia'), __('Parcelas', 'flavor-chat-ia'), $capability, 'hu-parcelas', [$this, 'render_pagina_parcelas']);
-        add_submenu_page(null, __('Huertanos', 'flavor-chat-ia'), __('Huertanos', 'flavor-chat-ia'), $capability, 'hu-huertanos', [$this, 'render_pagina_huertanos']);
-        add_submenu_page(null, __('Cosechas', 'flavor-chat-ia'), __('Cosechas', 'flavor-chat-ia'), $capability, 'hu-cosechas', [$this, 'render_pagina_cosechas']);
-        add_submenu_page(null, __('Recursos', 'flavor-chat-ia'), __('Recursos', 'flavor-chat-ia'), $capability, 'hu-recursos', [$this, 'render_pagina_recursos']);
+        add_submenu_page(null, __('Dashboard Huertos Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN), $capability, 'huertos-urbanos', [$this, 'render_pagina_dashboard']);
+        add_submenu_page(null, __('Parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN), $capability, 'hu-parcelas', [$this, 'render_pagina_parcelas']);
+        add_submenu_page(null, __('Huertanos', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Huertanos', FLAVOR_PLATFORM_TEXT_DOMAIN), $capability, 'hu-huertanos', [$this, 'render_pagina_huertanos']);
+        add_submenu_page(null, __('Cosechas', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Cosechas', FLAVOR_PLATFORM_TEXT_DOMAIN), $capability, 'hu-cosechas', [$this, 'render_pagina_cosechas']);
+        add_submenu_page(null, __('Recursos', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Recursos', FLAVOR_PLATFORM_TEXT_DOMAIN), $capability, 'hu-recursos', [$this, 'render_pagina_recursos']);
 
         // Alias con prefijo huertos- para compatibilidad con dashboard
-        add_submenu_page(null, __('Listado Huertos', 'flavor-chat-ia'), __('Listado', 'flavor-chat-ia'), $capability, 'huertos-listado', [$this, 'render_pagina_dashboard']);
-        add_submenu_page(null, __('Parcelas', 'flavor-chat-ia'), __('Parcelas', 'flavor-chat-ia'), $capability, 'huertos-parcelas', [$this, 'render_pagina_parcelas']);
-        add_submenu_page(null, __('Huertanos', 'flavor-chat-ia'), __('Huertanos', 'flavor-chat-ia'), $capability, 'huertos-huertanos', [$this, 'render_pagina_huertanos']);
-        add_submenu_page(null, __('Cosechas', 'flavor-chat-ia'), __('Cosechas', 'flavor-chat-ia'), $capability, 'huertos-cosechas', [$this, 'render_pagina_cosechas']);
-        add_submenu_page(null, __('Actividades', 'flavor-chat-ia'), __('Actividades', 'flavor-chat-ia'), $capability, 'huertos-actividades', [$this, 'render_pagina_actividades']);
-        add_submenu_page(null, __('Configuración Huertos', 'flavor-chat-ia'), __('Configuración', 'flavor-chat-ia'), $capability, 'huertos-config', [$this, 'render_pagina_config']);
-        add_submenu_page(null, __('Nuevo Huerto', 'flavor-chat-ia'), __('Nuevo', 'flavor-chat-ia'), $capability, 'huertos-nuevo', [$this, 'render_pagina_nuevo']);
-        add_submenu_page(null, __('Editar Huerto', 'flavor-chat-ia'), __('Editar', 'flavor-chat-ia'), $capability, 'huertos-editar', [$this, 'render_pagina_editar']);
+        add_submenu_page(null, __('Listado Huertos', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Listado', FLAVOR_PLATFORM_TEXT_DOMAIN), $capability, 'huertos-listado', [$this, 'render_pagina_dashboard']);
+        add_submenu_page(null, __('Parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN), $capability, 'huertos-parcelas', [$this, 'render_pagina_parcelas']);
+        add_submenu_page(null, __('Huertanos', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Huertanos', FLAVOR_PLATFORM_TEXT_DOMAIN), $capability, 'huertos-huertanos', [$this, 'render_pagina_huertanos']);
+        add_submenu_page(null, __('Cosechas', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Cosechas', FLAVOR_PLATFORM_TEXT_DOMAIN), $capability, 'huertos-cosechas', [$this, 'render_pagina_cosechas']);
+        add_submenu_page(null, __('Actividades', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Actividades', FLAVOR_PLATFORM_TEXT_DOMAIN), $capability, 'huertos-actividades', [$this, 'render_pagina_actividades']);
+        add_submenu_page(null, __('Configuración Huertos', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN), $capability, 'huertos-config', [$this, 'render_pagina_config']);
+        add_submenu_page(null, __('Nuevo Huerto', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN), $capability, 'huertos-nuevo', [$this, 'render_pagina_nuevo']);
+        add_submenu_page(null, __('Editar Huerto', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN), $capability, 'huertos-editar', [$this, 'render_pagina_editar']);
     }
 
     public function render_pagina_dashboard() {
         $views_path = dirname(__FILE__) . '/views/dashboard.php';
         if (file_exists($views_path)) { include $views_path; }
-        else { echo '<div class="wrap"><h1>' . esc_html__('Dashboard Huertos Urbanos', 'flavor-chat-ia') . '</h1></div>'; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Dashboard Huertos Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>'; }
     }
 
     public function render_pagina_parcelas() {
         $views_path = dirname(__FILE__) . '/views/parcelas.php';
         if (file_exists($views_path)) { include $views_path; }
-        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Parcelas', 'flavor-chat-ia') . '</h1></div>'; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>'; }
     }
 
     public function render_pagina_huertanos() {
         $views_path = dirname(__FILE__) . '/views/huertanos.php';
         if (file_exists($views_path)) { include $views_path; }
-        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Huertanos', 'flavor-chat-ia') . '</h1></div>'; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Huertanos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>'; }
     }
 
     public function render_pagina_cosechas() {
         $views_path = dirname(__FILE__) . '/views/cosechas.php';
         if (file_exists($views_path)) { include $views_path; }
-        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Cosechas', 'flavor-chat-ia') . '</h1></div>'; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Cosechas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>'; }
     }
 
     public function render_pagina_recursos() {
         $views_path = dirname(__FILE__) . '/views/recursos.php';
         if (file_exists($views_path)) { include $views_path; }
-        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Recursos', 'flavor-chat-ia') . '</h1></div>'; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Recursos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>'; }
     }
 
     public function render_pagina_actividades() {
         $views_path = dirname(__FILE__) . '/views/actividades.php';
         if (file_exists($views_path)) { include $views_path; }
         else {
-            echo '<div class="wrap"><h1>' . esc_html__('Actividades del Huerto', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Registro de actividades y tareas del huerto comunitario.', 'flavor-chat-ia') . '</p>';
-            echo '<p><a href="' . esc_url(admin_url('admin.php?page=huertos-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', 'flavor-chat-ia') . '</a></p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Actividades del Huerto', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Registro de actividades y tareas del huerto comunitario.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
+            echo '<p><a href="' . esc_url(admin_url('admin.php?page=huertos-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p></div>';
         }
     }
 
@@ -3273,9 +3273,9 @@ KNOWLEDGE;
         $views_path = dirname(__FILE__) . '/views/config.php';
         if (file_exists($views_path)) { include $views_path; }
         else {
-            echo '<div class="wrap"><h1>' . esc_html__('Configuración de Huertos', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Ajustes del módulo de huertos urbanos.', 'flavor-chat-ia') . '</p>';
-            echo '<p><a href="' . esc_url(admin_url('admin.php?page=huertos-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', 'flavor-chat-ia') . '</a></p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Configuración de Huertos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Ajustes del módulo de huertos urbanos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
+            echo '<p><a href="' . esc_url(admin_url('admin.php?page=huertos-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p></div>';
         }
     }
 
@@ -3283,9 +3283,9 @@ KNOWLEDGE;
         $views_path = dirname(__FILE__) . '/views/nuevo.php';
         if (file_exists($views_path)) { include $views_path; }
         else {
-            echo '<div class="wrap"><h1>' . esc_html__('Nuevo Huerto', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Crear un nuevo huerto comunitario.', 'flavor-chat-ia') . '</p>';
-            echo '<p><a href="' . esc_url(admin_url('admin.php?page=huertos-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', 'flavor-chat-ia') . '</a></p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Nuevo Huerto', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Crear un nuevo huerto comunitario.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
+            echo '<p><a href="' . esc_url(admin_url('admin.php?page=huertos-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p></div>';
         }
     }
 
@@ -3293,9 +3293,9 @@ KNOWLEDGE;
         $views_path = dirname(__FILE__) . '/views/editar.php';
         if (file_exists($views_path)) { include $views_path; }
         else {
-            echo '<div class="wrap"><h1>' . esc_html__('Editar Huerto', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Editar datos del huerto seleccionado.', 'flavor-chat-ia') . '</p>';
-            echo '<p><a href="' . esc_url(admin_url('admin.php?page=huertos-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', 'flavor-chat-ia') . '</a></p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Editar Huerto', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Editar datos del huerto seleccionado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
+            echo '<p><a href="' . esc_url(admin_url('admin.php?page=huertos-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p></div>';
         }
     }
 
@@ -3305,8 +3305,8 @@ KNOWLEDGE;
     public static function get_renderer_config(): array {
         return [
             'module'   => 'huertos-urbanos',
-            'title'    => __('Huertos Urbanos', 'flavor-chat-ia'),
-            'subtitle' => __('Cultiva en comunidad', 'flavor-chat-ia'),
+            'title'    => __('Huertos Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Cultiva en comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '🌱',
             'color'    => 'success', // Usa variable CSS --flavor-success del tema
 
@@ -3329,38 +3329,38 @@ KNOWLEDGE;
             ],
 
             'estados' => [
-                'activo'      => ['label' => __('Activo', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🟢'],
-                'en_obras'    => ['label' => __('En obras', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '🟡'],
-                'inactivo'    => ['label' => __('Inactivo', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '⚫'],
+                'activo'      => ['label' => __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '🟢'],
+                'en_obras'    => ['label' => __('En obras', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '🟡'],
+                'inactivo'    => ['label' => __('Inactivo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'gray', 'icon' => '⚫'],
             ],
 
             'stats' => [
-                ['label' => __('Huertos', 'flavor-chat-ia'), 'icon' => '🌱', 'color' => 'lime', 'count_where' => "estado = 'activo'"],
-                ['label' => __('Parcelas', 'flavor-chat-ia'), 'icon' => '🟫', 'color' => 'amber', 'query' => "SELECT COUNT(*) FROM {table}_parcelas WHERE estado = 'activa'"],
-                ['label' => __('Huertanos', 'flavor-chat-ia'), 'icon' => '👨‍🌾', 'color' => 'green', 'query' => "SELECT COUNT(DISTINCT user_id) FROM {table}_parcelas WHERE user_id IS NOT NULL"],
-                ['label' => __('Cosechas (kg)', 'flavor-chat-ia'), 'icon' => '🥕', 'color' => 'orange', 'query' => "SELECT COALESCE(SUM(cantidad), 0) FROM {table}_cosechas"],
+                ['label' => __('Huertos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🌱', 'color' => 'lime', 'count_where' => "estado = 'activo'"],
+                ['label' => __('Parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🟫', 'color' => 'amber', 'query' => "SELECT COUNT(*) FROM {table}_parcelas WHERE estado = 'activa'"],
+                ['label' => __('Huertanos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👨‍🌾', 'color' => 'green', 'query' => "SELECT COUNT(DISTINCT user_id) FROM {table}_parcelas WHERE user_id IS NOT NULL"],
+                ['label' => __('Cosechas (kg)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🥕', 'color' => 'orange', 'query' => "SELECT COALESCE(SUM(cantidad), 0) FROM {table}_cosechas"],
             ],
 
             'tabs' => [
-                'listado' => ['label' => __('Huertos', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-site-alt3', 'content' => 'template:archive.php'],
-                'mi-parcela' => ['label' => __('Mi Parcela', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-home', 'content' => 'template:mi-parcela.php'],
-                'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location', 'content' => 'template:mapa.php'],
-                'calendario' => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'content' => 'template:calendario.php'],
-                'banco-semillas' => ['label' => __('Banco Semillas', 'flavor-chat-ia'), 'icon' => 'dashicons-archive', 'is_integration' => true, 'content' => '[huertos_banco_semillas]'],
-                'recetas' => ['label' => __('Recetas', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot', 'is_integration' => true, 'source_module' => 'recetas'],
-                'foro' => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-format-chat', 'content' => 'callback:render_tab_foro', 'hidden_nav' => true],
-                'chat' => ['label' => __('Chat', 'flavor-chat-ia'), 'icon' => 'dashicons-format-status', 'content' => 'callback:render_tab_chat', 'hidden_nav' => true],
-                'multimedia' => ['label' => __('Multimedia', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery', 'content' => 'callback:render_tab_multimedia', 'hidden_nav' => true],
-                'red-social' => ['label' => __('Red social', 'flavor-chat-ia'), 'icon' => 'dashicons-share', 'content' => 'callback:render_tab_red_social', 'hidden_nav' => true],
+                'listado' => ['label' => __('Huertos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-site-alt3', 'content' => 'template:archive.php'],
+                'mi-parcela' => ['label' => __('Mi Parcela', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-home', 'content' => 'template:mi-parcela.php'],
+                'mapa' => ['label' => __('Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-location', 'content' => 'template:mapa.php'],
+                'calendario' => ['label' => __('Calendario', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-calendar', 'content' => 'template:calendario.php'],
+                'banco-semillas' => ['label' => __('Banco Semillas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-archive', 'is_integration' => true, 'content' => '[huertos_banco_semillas]'],
+                'recetas' => ['label' => __('Recetas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-carrot', 'is_integration' => true, 'source_module' => 'recetas'],
+                'foro' => ['label' => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-format-chat', 'content' => 'callback:render_tab_foro', 'hidden_nav' => true],
+                'chat' => ['label' => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-format-status', 'content' => 'callback:render_tab_chat', 'hidden_nav' => true],
+                'multimedia' => ['label' => __('Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-format-gallery', 'content' => 'callback:render_tab_multimedia', 'hidden_nav' => true],
+                'red-social' => ['label' => __('Red social', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-share', 'content' => 'callback:render_tab_red_social', 'hidden_nav' => true],
             ],
 
             'dashboard' => [
                 'show_header' => true,
                 'quick_actions' => [
-                    ['title' => __('Mi parcela', 'flavor-chat-ia'), 'icon' => '🏡', 'color' => 'lime', 'url' => home_url('/mi-portal/huertos-urbanos/?tab=mi-parcela')],
-                    ['title' => __('Huertos', 'flavor-chat-ia'), 'icon' => '🌱', 'color' => 'green', 'url' => home_url('/mi-portal/huertos-urbanos/')],
-                    ['title' => __('Calendario', 'flavor-chat-ia'), 'icon' => '📅', 'color' => 'blue', 'url' => home_url('/mi-portal/huertos-urbanos/?tab=calendario')],
-                    ['title' => __('Semillas', 'flavor-chat-ia'), 'icon' => '🌰', 'color' => 'amber', 'url' => home_url('/mi-portal/huertos-urbanos/?tab=banco-semillas')],
+                    ['title' => __('Mi parcela', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🏡', 'color' => 'lime', 'url' => home_url('/mi-portal/huertos-urbanos/?tab=mi-parcela')],
+                    ['title' => __('Huertos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🌱', 'color' => 'green', 'url' => home_url('/mi-portal/huertos-urbanos/')],
+                    ['title' => __('Calendario', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📅', 'color' => 'blue', 'url' => home_url('/mi-portal/huertos-urbanos/?tab=calendario')],
+                    ['title' => __('Semillas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🌰', 'color' => 'amber', 'url' => home_url('/mi-portal/huertos-urbanos/?tab=banco-semillas')],
                 ],
             ],
         ];
@@ -3374,8 +3374,8 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Recursos del Huerto', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Gestión de herramientas, semillas y otros recursos compartidos.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Recursos del Huerto', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Gestión de herramientas, semillas y otros recursos compartidos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 

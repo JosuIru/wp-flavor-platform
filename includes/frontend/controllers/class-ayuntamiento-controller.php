@@ -282,7 +282,7 @@ class Flavor_Ayuntamiento_Controller extends Flavor_Frontend_Controller_Base {
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => __('Cita solicitada correctamente', 'flavor-chat-ia'),
+            'message' => __('Cita solicitada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'codigo' => 'CITA-' . wp_rand(10000, 99999),
         ], 200);
     }

@@ -37,35 +37,35 @@ $beneficios_unirse = $beneficios_unirse ?? [
                         <!-- Cabecera grupo -->
                         <div class="flex items-center gap-3 mb-5 pb-4 border-b border-gray-100">
                             <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center text-white font-bold">
-                                <?php echo esc_html__('GC', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('GC', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </div>
                             <div>
-                                <p class="text-sm font-semibold text-gray-900"><?php echo esc_html__('Grupo Activo', 'flavor-chat-ia'); ?></p>
-                                <p class="text-xs text-gray-400"><?php echo esc_html__('Barrio Centro', 'flavor-chat-ia'); ?></p>
+                                <p class="text-sm font-semibold text-gray-900"><?php echo esc_html__('Grupo Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                                <p class="text-xs text-gray-400"><?php echo esc_html__('Barrio Centro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </div>
                         </div>
                         <!-- Estadisticas del grupo -->
                         <div class="space-y-3 mb-4">
                             <div class="flex items-center justify-between">
-                                <span class="text-xs text-gray-500"><?php echo esc_html__('Miembros', 'flavor-chat-ia'); ?></span>
+                                <span class="text-xs text-gray-500"><?php echo esc_html__('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="text-sm font-bold text-green-600">32</span>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span class="text-xs text-gray-500"><?php echo esc_html__('Pedidos mensuales', 'flavor-chat-ia'); ?></span>
+                                <span class="text-xs text-gray-500"><?php echo esc_html__('Pedidos mensuales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="text-sm font-bold text-green-600">4</span>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span class="text-xs text-gray-500"><?php echo esc_html__('Ahorro medio', 'flavor-chat-ia'); ?></span>
+                                <span class="text-xs text-gray-500"><?php echo esc_html__('Ahorro medio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="text-sm font-bold text-green-600">25%</span>
                             </div>
                         </div>
                         <!-- Productores -->
                         <div class="mt-4">
-                            <p class="text-xs text-gray-500 mb-2"><?php echo esc_html__('Productores asociados', 'flavor-chat-ia'); ?></p>
+                            <p class="text-xs text-gray-500 mb-2"><?php echo esc_html__('Productores asociados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             <div class="flex -space-x-2">
-                                <div class="w-8 h-8 bg-gradient-to-br from-green-400 to-green-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold"><?php echo esc_html__('FN', 'flavor-chat-ia'); ?></div>
-                                <div class="w-8 h-8 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold"><?php echo esc_html__('QL', 'flavor-chat-ia'); ?></div>
-                                <div class="w-8 h-8 bg-gradient-to-br from-teal-400 to-teal-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold"><?php echo esc_html__('OA', 'flavor-chat-ia'); ?></div>
+                                <div class="w-8 h-8 bg-gradient-to-br from-green-400 to-green-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold"><?php echo esc_html__('FN', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                                <div class="w-8 h-8 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold"><?php echo esc_html__('QL', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                                <div class="w-8 h-8 bg-gradient-to-br from-teal-400 to-teal-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold"><?php echo esc_html__('OA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                                 <div class="w-8 h-8 bg-gray-200 rounded-full border-2 border-white flex items-center justify-center text-gray-500 text-xs font-bold">+5</div>
                             </div>
                         </div>
@@ -101,13 +101,13 @@ $beneficios_unirse = $beneficios_unirse ?? [
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
                         </svg>
-                        <?php echo esc_html__('Unirme a un Grupo', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Unirme a un Grupo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="<?php echo esc_url($url_crear_grupo); ?>" class="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl border-2 border-green-300 text-green-600 font-semibold text-lg hover:bg-green-50 transition-all">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                         </svg>
-                        <?php echo esc_html__('Crear un Grupo', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Crear un Grupo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </div>

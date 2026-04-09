@@ -77,19 +77,19 @@ class Flavor_Dynamic_CRUD {
         $this->module_config = [
             'eventos' => [
                 'tabla' => 'flavor_eventos',
-                'titulo_singular' => __('Evento', 'flavor-chat-ia'),
-                'titulo_plural' => __('Eventos', 'flavor-chat-ia'),
+                'titulo_singular' => __('Evento', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'titulo_plural' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-calendar-alt',
                 'color' => '#4f46e5',
                 'campos' => [
-                    'titulo' => ['tipo' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'required' => true],
-                    'descripcion' => ['tipo' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
-                    'fecha_inicio' => ['tipo' => 'datetime', 'label' => __('Fecha inicio', 'flavor-chat-ia'), 'required' => true],
-                    'fecha_fin' => ['tipo' => 'datetime', 'label' => __('Fecha fin', 'flavor-chat-ia')],
-                    'ubicacion' => ['tipo' => 'text', 'label' => __('Ubicación', 'flavor-chat-ia')],
-                    'capacidad' => ['tipo' => 'number', 'label' => __('Capacidad', 'flavor-chat-ia')],
-                    'precio' => ['tipo' => 'price', 'label' => __('Precio', 'flavor-chat-ia')],
-                    'imagen' => ['tipo' => 'image', 'label' => __('Imagen', 'flavor-chat-ia')],
+                    'titulo' => ['tipo' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'descripcion' => ['tipo' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'fecha_inicio' => ['tipo' => 'datetime', 'label' => __('Fecha inicio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'fecha_fin' => ['tipo' => 'datetime', 'label' => __('Fecha fin', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'ubicacion' => ['tipo' => 'text', 'label' => __('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'capacidad' => ['tipo' => 'number', 'label' => __('Capacidad', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'precio' => ['tipo' => 'price', 'label' => __('Precio', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'imagen' => ['tipo' => 'image', 'label' => __('Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'campos_listado' => ['titulo', 'fecha_inicio', 'ubicacion', 'estado'],
                 'filtros' => ['estado', 'fecha_inicio'],
@@ -98,16 +98,16 @@ class Flavor_Dynamic_CRUD {
 
             'reservas' => [
                 'tabla' => 'flavor_reservas',
-                'titulo_singular' => __('Reserva', 'flavor-chat-ia'),
-                'titulo_plural' => __('Reservas', 'flavor-chat-ia'),
+                'titulo_singular' => __('Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'titulo_plural' => __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-calendar',
                 'color' => '#0891b2',
                 'campos' => [
-                    'recurso_id' => ['tipo' => 'select_recurso', 'label' => __('Recurso', 'flavor-chat-ia'), 'required' => true],
-                    'fecha' => ['tipo' => 'date', 'label' => __('Fecha', 'flavor-chat-ia'), 'required' => true],
-                    'hora_inicio' => ['tipo' => 'time', 'label' => __('Hora inicio', 'flavor-chat-ia'), 'required' => true],
-                    'hora_fin' => ['tipo' => 'time', 'label' => __('Hora fin', 'flavor-chat-ia'), 'required' => true],
-                    'notas' => ['tipo' => 'textarea', 'label' => __('Notas', 'flavor-chat-ia')],
+                    'recurso_id' => ['tipo' => 'select_recurso', 'label' => __('Recurso', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'fecha' => ['tipo' => 'date', 'label' => __('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'hora_inicio' => ['tipo' => 'time', 'label' => __('Hora inicio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'hora_fin' => ['tipo' => 'time', 'label' => __('Hora fin', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'notas' => ['tipo' => 'textarea', 'label' => __('Notas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'campos_listado' => ['recurso_id', 'fecha', 'hora_inicio', 'estado'],
                 'filtros' => ['estado', 'fecha'],
@@ -116,17 +116,17 @@ class Flavor_Dynamic_CRUD {
 
             'incidencias' => [
                 'tabla' => 'flavor_incidencias',
-                'titulo_singular' => __('Incidencia', 'flavor-chat-ia'),
-                'titulo_plural' => __('Incidencias', 'flavor-chat-ia'),
+                'titulo_singular' => __('Incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'titulo_plural' => __('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-warning',
                 'color' => '#dc2626',
                 'campos' => [
-                    'titulo' => ['tipo' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'required' => true],
-                    'descripcion' => ['tipo' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia'), 'required' => true],
-                    'categoria' => ['tipo' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'options' => ['via_publica' => 'Vía pública', 'alumbrado' => 'Alumbrado', 'limpieza' => 'Limpieza', 'otros' => 'Otros']],
-                    'ubicacion' => ['tipo' => 'location', 'label' => __('Ubicación', 'flavor-chat-ia')],
-                    'imagen' => ['tipo' => 'image', 'label' => __('Foto', 'flavor-chat-ia')],
-                    'prioridad' => ['tipo' => 'select', 'label' => __('Prioridad', 'flavor-chat-ia'), 'options' => ['baja' => 'Baja', 'media' => 'Media', 'alta' => 'Alta', 'urgente' => 'Urgente']],
+                    'titulo' => ['tipo' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'descripcion' => ['tipo' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'categoria' => ['tipo' => 'select', 'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['via_publica' => 'Vía pública', 'alumbrado' => 'Alumbrado', 'limpieza' => 'Limpieza', 'otros' => 'Otros']],
+                    'ubicacion' => ['tipo' => 'location', 'label' => __('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'imagen' => ['tipo' => 'image', 'label' => __('Foto', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'prioridad' => ['tipo' => 'select', 'label' => __('Prioridad', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['baja' => 'Baja', 'media' => 'Media', 'alta' => 'Alta', 'urgente' => 'Urgente']],
                 ],
                 'campos_listado' => ['titulo', 'categoria', 'estado', 'fecha_creacion'],
                 'filtros' => ['estado', 'categoria', 'prioridad'],
@@ -134,18 +134,18 @@ class Flavor_Dynamic_CRUD {
 
             'marketplace' => [
                 'tabla' => 'flavor_marketplace',
-                'titulo_singular' => __('Anuncio', 'flavor-chat-ia'),
-                'titulo_plural' => __('Anuncios', 'flavor-chat-ia'),
+                'titulo_singular' => __('Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'titulo_plural' => __('Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-cart',
                 'color' => '#ea580c',
                 'campos' => [
-                    'titulo' => ['tipo' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'required' => true],
-                    'descripcion' => ['tipo' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia'), 'required' => true],
-                    'precio' => ['tipo' => 'price', 'label' => __('Precio', 'flavor-chat-ia')],
-                    'tipo' => ['tipo' => 'select', 'label' => __('Tipo', 'flavor-chat-ia'), 'options' => ['venta' => 'Venta', 'alquiler' => 'Alquiler', 'regalo' => 'Regalo', 'intercambio' => 'Intercambio']],
-                    'categoria' => ['tipo' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'options' => ['electronica' => 'Electrónica', 'hogar' => 'Hogar', 'ropa' => 'Ropa', 'vehiculos' => 'Vehículos', 'otros' => 'Otros']],
-                    'imagenes' => ['tipo' => 'gallery', 'label' => __('Fotos', 'flavor-chat-ia')],
-                    'contacto' => ['tipo' => 'text', 'label' => __('Contacto', 'flavor-chat-ia')],
+                    'titulo' => ['tipo' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'descripcion' => ['tipo' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'precio' => ['tipo' => 'price', 'label' => __('Precio', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'tipo' => ['tipo' => 'select', 'label' => __('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['venta' => 'Venta', 'alquiler' => 'Alquiler', 'regalo' => 'Regalo', 'intercambio' => 'Intercambio']],
+                    'categoria' => ['tipo' => 'select', 'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['electronica' => 'Electrónica', 'hogar' => 'Hogar', 'ropa' => 'Ropa', 'vehiculos' => 'Vehículos', 'otros' => 'Otros']],
+                    'imagenes' => ['tipo' => 'gallery', 'label' => __('Fotos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'contacto' => ['tipo' => 'text', 'label' => __('Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'campos_listado' => ['titulo', 'precio', 'tipo', 'estado'],
                 'filtros' => ['tipo', 'categoria', 'precio_min', 'precio_max'],
@@ -153,15 +153,15 @@ class Flavor_Dynamic_CRUD {
 
             'banco_tiempo' => [
                 'tabla' => 'flavor_banco_tiempo_servicios',
-                'titulo_singular' => __('Servicio', 'flavor-chat-ia'),
-                'titulo_plural' => __('Servicios', 'flavor-chat-ia'),
+                'titulo_singular' => __('Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'titulo_plural' => __('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-clock',
                 'color' => '#f59e0b',
                 'campos' => [
-                    'titulo' => ['tipo' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'required' => true],
-                    'descripcion' => ['tipo' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia'), 'required' => true],
-                    'categoria' => ['tipo' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'options' => ['cuidados' => 'Cuidados', 'educacion' => 'Educación', 'bricolaje' => 'Bricolaje', 'tecnologia' => 'Tecnología', 'transporte' => 'Transporte', 'otros' => 'Otros']],
-                    'horas_estimadas' => ['tipo' => 'number', 'label' => __('Horas estimadas', 'flavor-chat-ia'), 'step' => '0.5', 'min' => '0.5', 'max' => '8'],
+                    'titulo' => ['tipo' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'descripcion' => ['tipo' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'categoria' => ['tipo' => 'select', 'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['cuidados' => 'Cuidados', 'educacion' => 'Educación', 'bricolaje' => 'Bricolaje', 'tecnologia' => 'Tecnología', 'transporte' => 'Transporte', 'otros' => 'Otros']],
+                    'horas_estimadas' => ['tipo' => 'number', 'label' => __('Horas estimadas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'step' => '0.5', 'min' => '0.5', 'max' => '8'],
                 ],
                 'campos_listado' => ['titulo', 'categoria', 'horas_estimadas', 'estado'],
                 'filtros' => ['categoria', 'estado'],
@@ -169,17 +169,17 @@ class Flavor_Dynamic_CRUD {
 
             'bicicletas_compartidas' => [
                 'tabla' => 'flavor_bicicletas_prestamos',
-                'titulo_singular' => __('Préstamo de bici', 'flavor-chat-ia'),
-                'titulo_plural' => __('Préstamos de bicis', 'flavor-chat-ia'),
+                'titulo_singular' => __('Préstamo de bici', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'titulo_plural' => __('Préstamos de bicis', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-dashboard',
                 'color' => '#0284c7',
                 'campos' => [
-                    'bicicleta_id' => ['tipo' => 'select_bicicleta', 'label' => __('Bicicleta', 'flavor-chat-ia'), 'required' => true],
-                    'fecha_inicio' => ['tipo' => 'datetime', 'label' => __('Fecha recogida', 'flavor-chat-ia'), 'required' => true],
-                    'fecha_fin' => ['tipo' => 'datetime', 'label' => __('Fecha devolución', 'flavor-chat-ia')],
-                    'punto_recogida' => ['tipo' => 'select_punto', 'label' => __('Punto de recogida', 'flavor-chat-ia')],
-                    'punto_devolucion' => ['tipo' => 'select_punto', 'label' => __('Punto de devolución', 'flavor-chat-ia')],
-                    'notas' => ['tipo' => 'textarea', 'label' => __('Notas', 'flavor-chat-ia')],
+                    'bicicleta_id' => ['tipo' => 'select_bicicleta', 'label' => __('Bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'fecha_inicio' => ['tipo' => 'datetime', 'label' => __('Fecha recogida', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'fecha_fin' => ['tipo' => 'datetime', 'label' => __('Fecha devolución', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'punto_recogida' => ['tipo' => 'select_punto', 'label' => __('Punto de recogida', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'punto_devolucion' => ['tipo' => 'select_punto', 'label' => __('Punto de devolución', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'notas' => ['tipo' => 'textarea', 'label' => __('Notas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'campos_listado' => ['bicicleta_id', 'fecha_inicio', 'fecha_fin', 'estado'],
                 'filtros' => ['estado'],
@@ -187,19 +187,19 @@ class Flavor_Dynamic_CRUD {
 
             'carpooling' => [
                 'tabla' => 'flavor_carpooling',
-                'titulo_singular' => __('Viaje compartido', 'flavor-chat-ia'),
-                'titulo_plural' => __('Viajes compartidos', 'flavor-chat-ia'),
+                'titulo_singular' => __('Viaje compartido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'titulo_plural' => __('Viajes compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-car',
                 'color' => '#7c3aed',
                 'campos' => [
-                    'origen' => ['tipo' => 'location', 'label' => __('Origen', 'flavor-chat-ia'), 'required' => true],
-                    'destino' => ['tipo' => 'location', 'label' => __('Destino', 'flavor-chat-ia'), 'required' => true],
-                    'fecha' => ['tipo' => 'date', 'label' => __('Fecha', 'flavor-chat-ia'), 'required' => true],
-                    'hora' => ['tipo' => 'time', 'label' => __('Hora salida', 'flavor-chat-ia'), 'required' => true],
-                    'plazas' => ['tipo' => 'number', 'label' => __('Plazas disponibles', 'flavor-chat-ia'), 'required' => true, 'min' => 1, 'max' => 8],
-                    'precio_plaza' => ['tipo' => 'price', 'label' => __('Precio por plaza', 'flavor-chat-ia')],
-                    'tipo' => ['tipo' => 'select', 'label' => __('Tipo', 'flavor-chat-ia'), 'options' => ['conductor' => 'Ofrezco viaje', 'pasajero' => 'Busco viaje']],
-                    'descripcion' => ['tipo' => 'textarea', 'label' => __('Detalles', 'flavor-chat-ia')],
+                    'origen' => ['tipo' => 'location', 'label' => __('Origen', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'destino' => ['tipo' => 'location', 'label' => __('Destino', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'fecha' => ['tipo' => 'date', 'label' => __('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'hora' => ['tipo' => 'time', 'label' => __('Hora salida', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'plazas' => ['tipo' => 'number', 'label' => __('Plazas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'min' => 1, 'max' => 8],
+                    'precio_plaza' => ['tipo' => 'price', 'label' => __('Precio por plaza', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'tipo' => ['tipo' => 'select', 'label' => __('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['conductor' => 'Ofrezco viaje', 'pasajero' => 'Busco viaje']],
+                    'descripcion' => ['tipo' => 'textarea', 'label' => __('Detalles', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'campos_listado' => ['origen', 'destino', 'fecha', 'hora', 'plazas'],
                 'filtros' => ['tipo', 'fecha'],
@@ -207,15 +207,15 @@ class Flavor_Dynamic_CRUD {
 
             'huertos_urbanos' => [
                 'tabla' => 'flavor_huertos',
-                'titulo_singular' => __('Parcela', 'flavor-chat-ia'),
-                'titulo_plural' => __('Parcelas', 'flavor-chat-ia'),
+                'titulo_singular' => __('Parcela', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'titulo_plural' => __('Parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-carrot',
                 'color' => '#16a34a',
                 'campos' => [
-                    'parcela_id' => ['tipo' => 'select_parcela', 'label' => __('Parcela', 'flavor-chat-ia'), 'required' => true],
-                    'fecha_inicio' => ['tipo' => 'date', 'label' => __('Fecha inicio', 'flavor-chat-ia'), 'required' => true],
-                    'duracion_meses' => ['tipo' => 'number', 'label' => __('Duración (meses)', 'flavor-chat-ia'), 'min' => 1],
-                    'notas' => ['tipo' => 'textarea', 'label' => __('Notas', 'flavor-chat-ia')],
+                    'parcela_id' => ['tipo' => 'select_parcela', 'label' => __('Parcela', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'fecha_inicio' => ['tipo' => 'date', 'label' => __('Fecha inicio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'duracion_meses' => ['tipo' => 'number', 'label' => __('Duración (meses)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'min' => 1],
+                    'notas' => ['tipo' => 'textarea', 'label' => __('Notas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'campos_listado' => ['parcela_id', 'fecha_inicio', 'estado'],
                 'filtros' => ['estado'],
@@ -223,15 +223,15 @@ class Flavor_Dynamic_CRUD {
 
             'biblioteca' => [
                 'tabla' => 'flavor_biblioteca_prestamos',
-                'titulo_singular' => __('Préstamo', 'flavor-chat-ia'),
-                'titulo_plural' => __('Préstamos', 'flavor-chat-ia'),
+                'titulo_singular' => __('Préstamo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'titulo_plural' => __('Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-book',
                 'color' => '#65a30d',
                 'campos' => [
-                    'libro_id' => ['tipo' => 'select_libro', 'label' => __('Libro', 'flavor-chat-ia'), 'required' => true],
-                    'fecha_prestamo' => ['tipo' => 'date', 'label' => __('Fecha préstamo', 'flavor-chat-ia')],
-                    'fecha_devolucion' => ['tipo' => 'date', 'label' => __('Fecha devolución prevista', 'flavor-chat-ia')],
-                    'notas' => ['tipo' => 'textarea', 'label' => __('Notas', 'flavor-chat-ia')],
+                    'libro_id' => ['tipo' => 'select_libro', 'label' => __('Libro', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'fecha_prestamo' => ['tipo' => 'date', 'label' => __('Fecha préstamo', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'fecha_devolucion' => ['tipo' => 'date', 'label' => __('Fecha devolución prevista', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'notas' => ['tipo' => 'textarea', 'label' => __('Notas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'campos_listado' => ['libro_id', 'fecha_prestamo', 'fecha_devolucion', 'estado'],
                 'filtros' => ['estado'],
@@ -239,17 +239,17 @@ class Flavor_Dynamic_CRUD {
 
             'participacion' => [
                 'tabla' => 'flavor_participacion',
-                'titulo_singular' => __('Propuesta', 'flavor-chat-ia'),
-                'titulo_plural' => __('Propuestas', 'flavor-chat-ia'),
+                'titulo_singular' => __('Propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'titulo_plural' => __('Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-megaphone',
                 'color' => '#8b5cf6',
                 'campos' => [
-                    'titulo' => ['tipo' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'required' => true],
-                    'descripcion' => ['tipo' => 'wysiwyg', 'label' => __('Descripción', 'flavor-chat-ia'), 'required' => true],
-                    'categoria' => ['tipo' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'options' => ['urbanismo' => 'Urbanismo', 'cultura' => 'Cultura', 'medio_ambiente' => 'Medio ambiente', 'movilidad' => 'Movilidad', 'servicios' => 'Servicios', 'otros' => 'Otros']],
-                    'presupuesto_estimado' => ['tipo' => 'price', 'label' => __('Presupuesto estimado', 'flavor-chat-ia')],
-                    'imagen' => ['tipo' => 'image', 'label' => __('Imagen', 'flavor-chat-ia')],
-                    'ubicacion' => ['tipo' => 'location', 'label' => __('Ubicación', 'flavor-chat-ia')],
+                    'titulo' => ['tipo' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'descripcion' => ['tipo' => 'wysiwyg', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'categoria' => ['tipo' => 'select', 'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['urbanismo' => 'Urbanismo', 'cultura' => 'Cultura', 'medio_ambiente' => 'Medio ambiente', 'movilidad' => 'Movilidad', 'servicios' => 'Servicios', 'otros' => 'Otros']],
+                    'presupuesto_estimado' => ['tipo' => 'price', 'label' => __('Presupuesto estimado', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'imagen' => ['tipo' => 'image', 'label' => __('Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'ubicacion' => ['tipo' => 'location', 'label' => __('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'campos_listado' => ['titulo', 'categoria', 'votos', 'estado'],
                 'filtros' => ['categoria', 'estado'],
@@ -258,13 +258,13 @@ class Flavor_Dynamic_CRUD {
 
             'cursos' => [
                 'tabla' => 'flavor_cursos_inscripciones',
-                'titulo_singular' => __('Inscripción', 'flavor-chat-ia'),
-                'titulo_plural' => __('Inscripciones', 'flavor-chat-ia'),
+                'titulo_singular' => __('Inscripción', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'titulo_plural' => __('Inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-welcome-learn-more',
                 'color' => '#2563eb',
                 'campos' => [
-                    'curso_id' => ['tipo' => 'select_curso', 'label' => __('Curso', 'flavor-chat-ia'), 'required' => true],
-                    'notas' => ['tipo' => 'textarea', 'label' => __('Comentarios', 'flavor-chat-ia')],
+                    'curso_id' => ['tipo' => 'select_curso', 'label' => __('Curso', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'notas' => ['tipo' => 'textarea', 'label' => __('Comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'campos_listado' => ['curso_id', 'fecha_inscripcion', 'estado'],
                 'filtros' => ['estado'],
@@ -272,13 +272,13 @@ class Flavor_Dynamic_CRUD {
 
             'talleres' => [
                 'tabla' => 'flavor_talleres_inscripciones',
-                'titulo_singular' => __('Inscripción a taller', 'flavor-chat-ia'),
-                'titulo_plural' => __('Inscripciones a talleres', 'flavor-chat-ia'),
+                'titulo_singular' => __('Inscripción a taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'titulo_plural' => __('Inscripciones a talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-hammer',
                 'color' => '#7c3aed',
                 'campos' => [
-                    'taller_id' => ['tipo' => 'select_taller', 'label' => __('Taller', 'flavor-chat-ia'), 'required' => true],
-                    'notas' => ['tipo' => 'textarea', 'label' => __('Comentarios', 'flavor-chat-ia')],
+                    'taller_id' => ['tipo' => 'select_taller', 'label' => __('Taller', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'notas' => ['tipo' => 'textarea', 'label' => __('Comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'campos_listado' => ['taller_id', 'fecha_inscripcion', 'estado'],
                 'filtros' => ['estado'],
@@ -286,14 +286,14 @@ class Flavor_Dynamic_CRUD {
 
             'grupos_consumo' => [
                 'tabla' => 'flavor_grupos_consumo_pedidos',
-                'titulo_singular' => __('Pedido', 'flavor-chat-ia'),
-                'titulo_plural' => __('Pedidos', 'flavor-chat-ia'),
+                'titulo_singular' => __('Pedido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'titulo_plural' => __('Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-store',
                 'color' => '#22c55e',
                 'campos' => [
-                    'grupo_id' => ['tipo' => 'select_grupo', 'label' => __('Grupo', 'flavor-chat-ia'), 'required' => true],
-                    'productos' => ['tipo' => 'productos_pedido', 'label' => __('Productos', 'flavor-chat-ia'), 'required' => true],
-                    'notas' => ['tipo' => 'textarea', 'label' => __('Notas para el pedido', 'flavor-chat-ia')],
+                    'grupo_id' => ['tipo' => 'select_grupo', 'label' => __('Grupo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'productos' => ['tipo' => 'productos_pedido', 'label' => __('Productos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'notas' => ['tipo' => 'textarea', 'label' => __('Notas para el pedido', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'campos_listado' => ['grupo_id', 'total', 'fecha_pedido', 'estado'],
                 'filtros' => ['estado', 'grupo_id'],
@@ -301,18 +301,18 @@ class Flavor_Dynamic_CRUD {
 
             'espacios_comunes' => [
                 'tabla' => 'flavor_espacios_reservas',
-                'titulo_singular' => __('Reserva de espacio', 'flavor-chat-ia'),
-                'titulo_plural' => __('Reservas de espacios', 'flavor-chat-ia'),
+                'titulo_singular' => __('Reserva de espacio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'titulo_plural' => __('Reservas de espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-building',
                 'color' => '#6366f1',
                 'campos' => [
-                    'espacio_id' => ['tipo' => 'select_espacio', 'label' => __('Espacio', 'flavor-chat-ia'), 'required' => true],
-                    'fecha' => ['tipo' => 'date', 'label' => __('Fecha', 'flavor-chat-ia'), 'required' => true],
-                    'hora_inicio' => ['tipo' => 'time', 'label' => __('Hora inicio', 'flavor-chat-ia'), 'required' => true],
-                    'hora_fin' => ['tipo' => 'time', 'label' => __('Hora fin', 'flavor-chat-ia'), 'required' => true],
-                    'motivo' => ['tipo' => 'text', 'label' => __('Motivo', 'flavor-chat-ia'), 'required' => true],
-                    'asistentes' => ['tipo' => 'number', 'label' => __('Número de asistentes', 'flavor-chat-ia')],
-                    'notas' => ['tipo' => 'textarea', 'label' => __('Notas adicionales', 'flavor-chat-ia')],
+                    'espacio_id' => ['tipo' => 'select_espacio', 'label' => __('Espacio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'fecha' => ['tipo' => 'date', 'label' => __('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'hora_inicio' => ['tipo' => 'time', 'label' => __('Hora inicio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'hora_fin' => ['tipo' => 'time', 'label' => __('Hora fin', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'motivo' => ['tipo' => 'text', 'label' => __('Motivo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'asistentes' => ['tipo' => 'number', 'label' => __('Número de asistentes', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'notas' => ['tipo' => 'textarea', 'label' => __('Notas adicionales', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'campos_listado' => ['espacio_id', 'fecha', 'hora_inicio', 'estado'],
                 'filtros' => ['estado', 'espacio_id'],
@@ -320,14 +320,14 @@ class Flavor_Dynamic_CRUD {
 
             'comunidades' => [
                 'tabla' => 'flavor_comunidades_miembros',
-                'titulo_singular' => __('Membresía', 'flavor-chat-ia'),
-                'titulo_plural' => __('Mis comunidades', 'flavor-chat-ia'),
+                'titulo_singular' => __('Membresía', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'titulo_plural' => __('Mis comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-groups',
                 'color' => '#0d9488',
                 'campos' => [
-                    'comunidad_id' => ['tipo' => 'select_comunidad', 'label' => __('Comunidad', 'flavor-chat-ia'), 'required' => true],
-                    'rol' => ['tipo' => 'select', 'label' => __('Rol', 'flavor-chat-ia'), 'options' => ['miembro' => 'Miembro', 'moderador' => 'Moderador', 'admin' => 'Administrador']],
-                    'notas' => ['tipo' => 'textarea', 'label' => __('Presentación', 'flavor-chat-ia')],
+                    'comunidad_id' => ['tipo' => 'select_comunidad', 'label' => __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'rol' => ['tipo' => 'select', 'label' => __('Rol', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['miembro' => 'Miembro', 'moderador' => 'Moderador', 'admin' => 'Administrador']],
+                    'notas' => ['tipo' => 'textarea', 'label' => __('Presentación', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'campos_listado' => ['comunidad_id', 'rol', 'fecha_union', 'estado'],
                 'filtros' => ['estado', 'rol'],
@@ -335,13 +335,13 @@ class Flavor_Dynamic_CRUD {
 
             'podcast' => [
                 'tabla' => 'flavor_podcast_suscripciones',
-                'titulo_singular' => __('Suscripción', 'flavor-chat-ia'),
-                'titulo_plural' => __('Mis podcasts', 'flavor-chat-ia'),
+                'titulo_singular' => __('Suscripción', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'titulo_plural' => __('Mis podcasts', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-microphone',
                 'color' => '#db2777',
                 'campos' => [
-                    'podcast_id' => ['tipo' => 'select_podcast', 'label' => __('Podcast', 'flavor-chat-ia'), 'required' => true],
-                    'notificaciones' => ['tipo' => 'checkbox', 'label' => __('Notificaciones', 'flavor-chat-ia'), 'checkbox_label' => __('Recibir notificaciones de nuevos episodios', 'flavor-chat-ia')],
+                    'podcast_id' => ['tipo' => 'select_podcast', 'label' => __('Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'notificaciones' => ['tipo' => 'checkbox', 'label' => __('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN), 'checkbox_label' => __('Recibir notificaciones de nuevos episodios', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'campos_listado' => ['podcast_id', 'fecha_suscripcion'],
                 'filtros' => [],
@@ -349,12 +349,12 @@ class Flavor_Dynamic_CRUD {
 
             'radio' => [
                 'tabla' => 'flavor_radio_favoritos',
-                'titulo_singular' => __('Favorito', 'flavor-chat-ia'),
-                'titulo_plural' => __('Mis programas favoritos', 'flavor-chat-ia'),
+                'titulo_singular' => __('Favorito', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'titulo_plural' => __('Mis programas favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-format-audio',
                 'color' => '#e11d48',
                 'campos' => [
-                    'programa_id' => ['tipo' => 'select_programa', 'label' => __('Programa', 'flavor-chat-ia'), 'required' => true],
+                    'programa_id' => ['tipo' => 'select_programa', 'label' => __('Programa', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
                 ],
                 'campos_listado' => ['programa_id', 'fecha_agregado'],
                 'filtros' => [],
@@ -362,16 +362,16 @@ class Flavor_Dynamic_CRUD {
 
             'reciclaje' => [
                 'tabla' => 'flavor_reciclaje_depositos',
-                'titulo_singular' => __('Depósito de reciclaje', 'flavor-chat-ia'),
-                'titulo_plural' => __('Mis depósitos de reciclaje', 'flavor-chat-ia'),
+                'titulo_singular' => __('Depósito de reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'titulo_plural' => __('Mis depósitos de reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-update',
                 'color' => '#22c55e',
                 'campos' => [
-                    'tipo_material' => ['tipo' => 'select', 'label' => __('Tipo de material', 'flavor-chat-ia'), 'options' => ['papel' => 'Papel/Cartón', 'plastico' => 'Plástico', 'vidrio' => 'Vidrio', 'organico' => 'Orgánico', 'electronico' => 'Electrónico', 'aceite' => 'Aceite', 'textil' => 'Textil', 'otros' => 'Otros'], 'required' => true],
-                    'cantidad_kg' => ['tipo' => 'number', 'label' => __('Cantidad (kg)', 'flavor-chat-ia'), 'step' => '0.1'],
-                    'punto_reciclaje_id' => ['tipo' => 'number', 'label' => __('Punto de reciclaje', 'flavor-chat-ia')],
-                    'fecha_deposito' => ['tipo' => 'date', 'label' => __('Fecha', 'flavor-chat-ia')],
-                    'foto_url' => ['tipo' => 'text', 'label' => __('Foto', 'flavor-chat-ia')],
+                    'tipo_material' => ['tipo' => 'select', 'label' => __('Tipo de material', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['papel' => 'Papel/Cartón', 'plastico' => 'Plástico', 'vidrio' => 'Vidrio', 'organico' => 'Orgánico', 'electronico' => 'Electrónico', 'aceite' => 'Aceite', 'textil' => 'Textil', 'otros' => 'Otros'], 'required' => true],
+                    'cantidad_kg' => ['tipo' => 'number', 'label' => __('Cantidad (kg)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'step' => '0.1'],
+                    'punto_reciclaje_id' => ['tipo' => 'number', 'label' => __('Punto de reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'fecha_deposito' => ['tipo' => 'date', 'label' => __('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'foto_url' => ['tipo' => 'text', 'label' => __('Foto', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'campos_listado' => ['tipo_material', 'cantidad_kg', 'fecha_deposito'],
                 'filtros' => ['tipo_material'],
@@ -379,15 +379,15 @@ class Flavor_Dynamic_CRUD {
 
             'tramites' => [
                 'tabla' => 'flavor_tramites_solicitudes',
-                'titulo_singular' => __('Solicitud', 'flavor-chat-ia'),
-                'titulo_plural' => __('Mis trámites', 'flavor-chat-ia'),
+                'titulo_singular' => __('Solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'titulo_plural' => __('Mis trámites', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-clipboard',
                 'color' => '#3b82f6',
                 'campos' => [
-                    'tipo_tramite' => ['tipo' => 'select', 'label' => __('Tipo de trámite', 'flavor-chat-ia'), 'options' => ['certificado' => 'Certificado', 'licencia' => 'Licencia', 'permiso' => 'Permiso', 'solicitud' => 'Solicitud general', 'queja' => 'Queja/Reclamación'], 'required' => true],
-                    'titulo' => ['tipo' => 'text', 'label' => __('Asunto', 'flavor-chat-ia'), 'required' => true],
-                    'descripcion' => ['tipo' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia'), 'required' => true],
-                    'documentos' => ['tipo' => 'gallery', 'label' => __('Documentos adjuntos', 'flavor-chat-ia')],
+                    'tipo_tramite' => ['tipo' => 'select', 'label' => __('Tipo de trámite', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['certificado' => 'Certificado', 'licencia' => 'Licencia', 'permiso' => 'Permiso', 'solicitud' => 'Solicitud general', 'queja' => 'Queja/Reclamación'], 'required' => true],
+                    'titulo' => ['tipo' => 'text', 'label' => __('Asunto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'descripcion' => ['tipo' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'documentos' => ['tipo' => 'gallery', 'label' => __('Documentos adjuntos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'campos_listado' => ['titulo', 'tipo_tramite', 'fecha_solicitud', 'estado'],
                 'filtros' => ['tipo_tramite', 'estado'],
@@ -395,15 +395,15 @@ class Flavor_Dynamic_CRUD {
 
             'avisos_municipales' => [
                 'tabla' => 'flavor_avisos_suscripciones',
-                'titulo_singular' => __('Suscripción a avisos', 'flavor-chat-ia'),
-                'titulo_plural' => __('Mis suscripciones a avisos', 'flavor-chat-ia'),
+                'titulo_singular' => __('Suscripción a avisos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'titulo_plural' => __('Mis suscripciones a avisos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-bell',
                 'color' => '#f59e0b',
                 'campos' => [
-                    'categoria' => ['tipo' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'options' => ['general' => 'General', 'trafico' => 'Tráfico', 'obras' => 'Obras', 'eventos' => 'Eventos', 'emergencias' => 'Emergencias'], 'required' => true],
-                    'zona' => ['tipo' => 'text', 'label' => __('Zona/Barrio', 'flavor-chat-ia')],
-                    'email' => ['tipo' => 'checkbox', 'label' => __('Email', 'flavor-chat-ia'), 'checkbox_label' => __('Recibir por email', 'flavor-chat-ia')],
-                    'push' => ['tipo' => 'checkbox', 'label' => __('Push', 'flavor-chat-ia'), 'checkbox_label' => __('Recibir notificaciones push', 'flavor-chat-ia')],
+                    'categoria' => ['tipo' => 'select', 'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['general' => 'General', 'trafico' => 'Tráfico', 'obras' => 'Obras', 'eventos' => 'Eventos', 'emergencias' => 'Emergencias'], 'required' => true],
+                    'zona' => ['tipo' => 'text', 'label' => __('Zona/Barrio', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'email' => ['tipo' => 'checkbox', 'label' => __('Email', FLAVOR_PLATFORM_TEXT_DOMAIN), 'checkbox_label' => __('Recibir por email', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'push' => ['tipo' => 'checkbox', 'label' => __('Push', FLAVOR_PLATFORM_TEXT_DOMAIN), 'checkbox_label' => __('Recibir notificaciones push', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'campos_listado' => ['categoria', 'zona', 'fecha_suscripcion'],
                 'filtros' => ['categoria'],
@@ -411,15 +411,15 @@ class Flavor_Dynamic_CRUD {
 
             'fichaje_empleados' => [
                 'tabla' => 'flavor_fichajes',
-                'titulo_singular' => __('Fichaje', 'flavor-chat-ia'),
-                'titulo_plural' => __('Mis fichajes', 'flavor-chat-ia'),
+                'titulo_singular' => __('Fichaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'titulo_plural' => __('Mis fichajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-clock',
                 'color' => '#059669',
                 'campos' => [
-                    'tipo' => ['tipo' => 'select', 'label' => __('Tipo', 'flavor-chat-ia'), 'options' => ['entrada' => 'Entrada', 'salida' => 'Salida', 'pausa_inicio' => 'Inicio pausa', 'pausa_fin' => 'Fin pausa'], 'required' => true],
-                    'fecha_hora' => ['tipo' => 'datetime', 'label' => __('Fecha y hora', 'flavor-chat-ia'), 'required' => true],
-                    'ubicacion' => ['tipo' => 'location', 'label' => __('Ubicación', 'flavor-chat-ia')],
-                    'notas' => ['tipo' => 'textarea', 'label' => __('Notas', 'flavor-chat-ia')],
+                    'tipo' => ['tipo' => 'select', 'label' => __('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['entrada' => 'Entrada', 'salida' => 'Salida', 'pausa_inicio' => 'Inicio pausa', 'pausa_fin' => 'Fin pausa'], 'required' => true],
+                    'fecha_hora' => ['tipo' => 'datetime', 'label' => __('Fecha y hora', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'ubicacion' => ['tipo' => 'location', 'label' => __('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'notas' => ['tipo' => 'textarea', 'label' => __('Notas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'campos_listado' => ['tipo', 'fecha_hora', 'ubicacion'],
                 'filtros' => ['tipo'],
@@ -427,14 +427,14 @@ class Flavor_Dynamic_CRUD {
 
             'presupuestos_participativos' => [
                 'tabla' => 'flavor_pp_proyectos',
-                'titulo_singular' => __('Propuesta', 'flavor-chat-ia'),
-                'titulo_plural' => __('Propuestas', 'flavor-chat-ia'),
+                'titulo_singular' => __('Propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'titulo_plural' => __('Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-portfolio',
                 'color' => '#7c3aed',
                 'campos' => [
-                    'titulo' => ['tipo' => 'text', 'label' => __('Título del proyecto', 'flavor-chat-ia'), 'required' => true, 'placeholder' => 'Nombre descriptivo de tu propuesta'],
-                    'descripcion' => ['tipo' => 'textarea', 'label' => __('Descripción detallada', 'flavor-chat-ia'), 'required' => true, 'rows' => 6],
-                    'categoria' => ['tipo' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'required' => true, 'options' => [
+                    'titulo' => ['tipo' => 'text', 'label' => __('Título del proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'placeholder' => 'Nombre descriptivo de tu propuesta'],
+                    'descripcion' => ['tipo' => 'textarea', 'label' => __('Descripción detallada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'rows' => 6],
+                    'categoria' => ['tipo' => 'select', 'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'options' => [
                         'infraestructura' => 'Infraestructura',
                         'medio_ambiente' => 'Medio Ambiente',
                         'cultura' => 'Cultura y Ocio',
@@ -443,9 +443,9 @@ class Flavor_Dynamic_CRUD {
                         'educacion' => 'Educación',
                         'accesibilidad' => 'Accesibilidad',
                     ]],
-                    'presupuesto_solicitado' => ['tipo' => 'price', 'label' => __('Presupuesto estimado (€)', 'flavor-chat-ia'), 'required' => true],
-                    'ubicacion' => ['tipo' => 'location', 'label' => __('Ubicación', 'flavor-chat-ia')],
-                    'imagen' => ['tipo' => 'image', 'label' => __('Imagen', 'flavor-chat-ia')],
+                    'presupuesto_solicitado' => ['tipo' => 'price', 'label' => __('Presupuesto estimado (€)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                    'ubicacion' => ['tipo' => 'location', 'label' => __('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'imagen' => ['tipo' => 'image', 'label' => __('Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'campos_listado' => ['titulo', 'categoria', 'presupuesto_solicitado', 'votos_recibidos', 'estado'],
                 'filtros' => ['categoria', 'estado'],
@@ -474,7 +474,7 @@ class Flavor_Dynamic_CRUD {
         $config = $this->get_module_config($module_id);
 
         if (!$config) {
-            return '<div class="fcrud-error">' . __('Módulo no configurado', 'flavor-chat-ia') . '</div>';
+            return '<div class="fcrud-error">' . __('Módulo no configurado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         if (!is_user_logged_in()) {
@@ -486,7 +486,7 @@ class Flavor_Dynamic_CRUD {
 
         // Verificar permisos de edición
         if ($is_edit && !$this->can_edit($module_id, $item)) {
-            return '<div class="fcrud-error">' . __('No tienes permiso para editar este elemento', 'flavor-chat-ia') . '</div>';
+            return '<div class="fcrud-error">' . __('No tienes permiso para editar este elemento', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         $form_id = 'fcrud-form-' . wp_unique_id();
@@ -503,9 +503,9 @@ class Flavor_Dynamic_CRUD {
                         <span class="dashicons <?php echo esc_attr($config['icono']); ?>"></span>
                         <?php
                         if ($is_edit) {
-                            printf(__('Editar %s', 'flavor-chat-ia'), $config['titulo_singular']);
+                            printf(__('Editar %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $config['titulo_singular']);
                         } else {
-                            printf(__('Nuevo/a %s', 'flavor-chat-ia'), $config['titulo_singular']);
+                            printf(__('Nuevo/a %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $config['titulo_singular']);
                         }
                         ?>
                     </h3>
@@ -519,15 +519,15 @@ class Flavor_Dynamic_CRUD {
 
                 <div class="fcrud-form-actions">
                     <button type="button" class="fcrud-btn fcrud-btn-secondary fcrud-cancel">
-                        <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="submit" class="fcrud-btn fcrud-btn-primary">
                         <span class="fcrud-btn-text">
-                            <?php echo $is_edit ? esc_html__('Guardar cambios', 'flavor-chat-ia') : esc_html__('Crear', 'flavor-chat-ia'); ?>
+                            <?php echo $is_edit ? esc_html__('Guardar cambios', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Crear', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
                         <span class="fcrud-btn-loading" style="display:none;">
                             <span class="fcrud-spinner"></span>
-                            <?php esc_html_e('Guardando...', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Guardando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
                     </button>
                 </div>
@@ -636,7 +636,7 @@ class Flavor_Dynamic_CRUD {
                     <select id="fcrud-<?php echo esc_attr($field_id); ?>"
                             name="<?php echo esc_attr($field_id); ?>"
                             <?php echo $required ? 'required' : ''; ?>>
-                        <option value=""><?php esc_html_e('Seleccionar...', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Seleccionar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($options as $opt_value => $opt_label): ?>
                             <option value="<?php echo esc_attr($opt_value); ?>" <?php selected($value, $opt_value); ?>>
                                 <?php echo esc_html($opt_label); ?>
@@ -688,7 +688,7 @@ class Flavor_Dynamic_CRUD {
                         </div>
                         <button type="button" class="fcrud-image-select fcrud-btn fcrud-btn-secondary">
                             <span class="dashicons dashicons-upload"></span>
-                            <?php esc_html_e('Subir imagen', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Subir imagen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                     <?php
@@ -710,7 +710,7 @@ class Flavor_Dynamic_CRUD {
                         </div>
                         <button type="button" class="fcrud-gallery-add fcrud-btn fcrud-btn-secondary">
                             <span class="dashicons dashicons-images-alt2"></span>
-                            <?php esc_html_e('Añadir fotos', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Añadir fotos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                     <?php
@@ -723,10 +723,10 @@ class Flavor_Dynamic_CRUD {
                                id="fcrud-<?php echo esc_attr($field_id); ?>"
                                name="<?php echo esc_attr($field_id); ?>"
                                value="<?php echo esc_attr($value); ?>"
-                               placeholder="<?php esc_attr_e('Dirección o coordenadas', 'flavor-chat-ia'); ?>"
+                               placeholder="<?php esc_attr_e('Dirección o coordenadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                                class="fcrud-location-input"
                                <?php echo $required ? 'required' : ''; ?>>
-                        <button type="button" class="fcrud-location-detect" title="<?php esc_attr_e('Usar mi ubicación', 'flavor-chat-ia'); ?>">
+                        <button type="button" class="fcrud-location-detect" title="<?php esc_attr_e('Usar mi ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-location"></span>
                         </button>
                     </div>
@@ -764,7 +764,7 @@ class Flavor_Dynamic_CRUD {
                             class="fcrud-select-resource"
                             data-resource="<?php echo esc_attr($resource_type); ?>"
                             <?php echo $required ? 'required' : ''; ?>>
-                        <option value=""><?php esc_html_e('Seleccionar...', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Seleccionar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($options as $opt): ?>
                             <option value="<?php echo esc_attr($opt['id']); ?>" <?php selected($value, $opt['id']); ?>>
                                 <?php echo esc_html($opt['label']); ?>
@@ -799,7 +799,7 @@ class Flavor_Dynamic_CRUD {
         $config = $this->get_module_config($module_id);
 
         if (!$config) {
-            return '<div class="fcrud-error">' . __('Módulo no configurado para CRUD', 'flavor-chat-ia') . '</div>';
+            return '<div class="fcrud-error">' . __('Módulo no configurado para CRUD', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         if (!is_user_logged_in()) {
@@ -814,8 +814,8 @@ class Flavor_Dynamic_CRUD {
         if (!$info_tabla['existe']) {
             return '<div class="fcrud-empty">
                 <span class="dashicons ' . esc_attr($config['icono']) . '"></span>
-                <p>' . sprintf(__('El módulo %s no tiene datos configurados todavía.', 'flavor-chat-ia'), $config['titulo_plural']) . '</p>
-                <p class="fcrud-help">' . __('Contacta con el administrador para activar este módulo.', 'flavor-chat-ia') . '</p>
+                <p>' . sprintf(__('El módulo %s no tiene datos configurados todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN), $config['titulo_plural']) . '</p>
+                <p class="fcrud-help">' . __('Contacta con el administrador para activar este módulo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
             </div>';
         }
 
@@ -843,14 +843,14 @@ class Flavor_Dynamic_CRUD {
             <div class="fcrud-list-header">
                 <div class="fcrud-list-title">
                     <span class="dashicons <?php echo esc_attr($config['icono']); ?>"></span>
-                    <h3><?php printf(__('Mis %s', 'flavor-chat-ia'), $config['titulo_plural']); ?></h3>
+                    <h3><?php printf(__('Mis %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $config['titulo_plural']); ?></h3>
                     <span class="fcrud-list-count">(<?php echo number_format_i18n($total); ?>)</span>
                 </div>
 
                 <?php if ($args['mostrar_crear']): ?>
                 <button type="button" class="fcrud-btn fcrud-btn-primary fcrud-create-new">
                     <span class="dashicons dashicons-plus-alt"></span>
-                    <?php printf(__('Nuevo/a %s', 'flavor-chat-ia'), $config['titulo_singular']); ?>
+                    <?php printf(__('Nuevo/a %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $config['titulo_singular']); ?>
                 </button>
                 <?php endif; ?>
             </div>
@@ -862,7 +862,7 @@ class Flavor_Dynamic_CRUD {
                     <?php $this->render_filter($filtro, $module_id); ?>
                 <?php endforeach; ?>
                 <button type="button" class="fcrud-btn fcrud-btn-secondary fcrud-filter-apply">
-                    <?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
             <?php endif; ?>
@@ -872,10 +872,10 @@ class Flavor_Dynamic_CRUD {
                 <?php if (empty($items)): ?>
                     <div class="fcrud-empty">
                         <span class="dashicons <?php echo esc_attr($config['icono']); ?>"></span>
-                        <p><?php printf(__('No tienes %s todavía', 'flavor-chat-ia'), strtolower($config['titulo_plural'])); ?></p>
+                        <p><?php printf(__('No tienes %s todavía', FLAVOR_PLATFORM_TEXT_DOMAIN), strtolower($config['titulo_plural'])); ?></p>
                         <?php if ($args['mostrar_crear']): ?>
                         <button type="button" class="fcrud-btn fcrud-btn-primary fcrud-create-new">
-                            <?php printf(__('Crear mi primer %s', 'flavor-chat-ia'), strtolower($config['titulo_singular'])); ?>
+                            <?php printf(__('Crear mi primer %s', FLAVOR_PLATFORM_TEXT_DOMAIN), strtolower($config['titulo_singular'])); ?>
                         </button>
                         <?php endif; ?>
                     </div>
@@ -938,7 +938,7 @@ class Flavor_Dynamic_CRUD {
                             <?php echo esc_html(ucfirst($valor)); ?>
                         </span>
                     <?php elseif ($first): ?>
-                        <h4 class="fcrud-item-title"><?php echo esc_html($valor ?: __('Sin título', 'flavor-chat-ia')); ?></h4>
+                        <h4 class="fcrud-item-title"><?php echo esc_html($valor ?: __('Sin título', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></h4>
                         <?php $first = false; ?>
                     <?php else: ?>
                         <div class="fcrud-item-field">
@@ -950,16 +950,16 @@ class Flavor_Dynamic_CRUD {
             </div>
 
             <div class="fcrud-item-actions">
-                <button type="button" class="fcrud-action-view" title="<?php esc_attr_e('Ver', 'flavor-chat-ia'); ?>">
+                <button type="button" class="fcrud-action-view" title="<?php esc_attr_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-visibility"></span>
                 </button>
                 <?php if ($this->can_edit($module_id, $item)): ?>
-                <button type="button" class="fcrud-action-edit" title="<?php esc_attr_e('Editar', 'flavor-chat-ia'); ?>">
+                <button type="button" class="fcrud-action-edit" title="<?php esc_attr_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-edit"></span>
                 </button>
                 <?php endif; ?>
                 <?php if ($this->can_delete($module_id, $item)): ?>
-                <button type="button" class="fcrud-action-delete" title="<?php esc_attr_e('Eliminar', 'flavor-chat-ia'); ?>">
+                <button type="button" class="fcrud-action-delete" title="<?php esc_attr_e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-trash"></span>
                 </button>
                 <?php endif; ?>
@@ -979,7 +979,7 @@ class Flavor_Dynamic_CRUD {
             $estados = $config['estados'] ?? ['pendiente', 'confirmado', 'completado', 'cancelado'];
             ?>
             <select name="filter_estado" class="fcrud-filter-select">
-                <option value=""><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php esc_html_e('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 <?php foreach ($estados as $estado): ?>
                     <option value="<?php echo esc_attr($estado); ?>"><?php echo esc_html(ucfirst($estado)); ?></option>
                 <?php endforeach; ?>
@@ -988,7 +988,7 @@ class Flavor_Dynamic_CRUD {
         } elseif ($campo && $campo['tipo'] === 'select') {
             ?>
             <select name="filter_<?php echo esc_attr($filtro); ?>" class="fcrud-filter-select">
-                <option value=""><?php printf(__('Todos: %s', 'flavor-chat-ia'), $campo['label']); ?></option>
+                <option value=""><?php printf(__('Todos: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $campo['label']); ?></option>
                 <?php foreach ($campo['options'] as $val => $label): ?>
                     <option value="<?php echo esc_attr($val); ?>"><?php echo esc_html($label); ?></option>
                 <?php endforeach; ?>
@@ -996,8 +996,8 @@ class Flavor_Dynamic_CRUD {
             <?php
         } elseif ($filtro === 'fecha' || ($campo && $campo['tipo'] === 'date')) {
             ?>
-            <input type="date" name="filter_fecha_desde" class="fcrud-filter-date" placeholder="<?php esc_attr_e('Desde', 'flavor-chat-ia'); ?>">
-            <input type="date" name="filter_fecha_hasta" class="fcrud-filter-date" placeholder="<?php esc_attr_e('Hasta', 'flavor-chat-ia'); ?>">
+            <input type="date" name="filter_fecha_desde" class="fcrud-filter-date" placeholder="<?php esc_attr_e('Desde', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+            <input type="date" name="filter_fecha_hasta" class="fcrud-filter-date" placeholder="<?php esc_attr_e('Hasta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <?php
         }
     }
@@ -1013,14 +1013,14 @@ class Flavor_Dynamic_CRUD {
         check_ajax_referer('flavor_crud_' . sanitize_key($_POST['module']), 'fcrud_nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $module_id = sanitize_key($_POST['module']);
         $config = $this->get_module_config($module_id);
 
         if (!$config) {
-            wp_send_json_error(['message' => __('Módulo no válido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Módulo no válido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Validar y sanitizar campos
@@ -1041,7 +1041,7 @@ class Flavor_Dynamic_CRUD {
             if ($edicion) {
                 $data['edicion_id'] = $edicion->id;
             } else {
-                wp_send_json_error(['message' => __('No hay una edición activa de presupuestos participativos', 'flavor-chat-ia')]);
+                wp_send_json_error(['message' => __('No hay una edición activa de presupuestos participativos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             }
         }
 
@@ -1054,7 +1054,7 @@ class Flavor_Dynamic_CRUD {
         $result = $wpdb->insert($tabla, $data);
 
         if ($result === false) {
-            wp_send_json_error(['message' => __('Error al guardar', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al guardar', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $new_id = $wpdb->insert_id;
@@ -1063,7 +1063,7 @@ class Flavor_Dynamic_CRUD {
         do_action('flavor_crud_after_create', $module_id, $new_id, $data);
 
         wp_send_json_success([
-            'message' => sprintf(__('%s creado/a correctamente', 'flavor-chat-ia'), $config['titulo_singular']),
+            'message' => sprintf(__('%s creado/a correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN), $config['titulo_singular']),
             'id' => $new_id,
         ]);
     }
@@ -1075,7 +1075,7 @@ class Flavor_Dynamic_CRUD {
         check_ajax_referer('flavor_crud_' . sanitize_key($_POST['module']), 'fcrud_nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $module_id = sanitize_key($_POST['module']);
@@ -1083,13 +1083,13 @@ class Flavor_Dynamic_CRUD {
         $config = $this->get_module_config($module_id);
 
         if (!$config || !$item_id) {
-            wp_send_json_error(['message' => __('Datos no válidos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos no válidos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar permisos
         $item = $this->get_item($module_id, $item_id);
         if (!$this->can_edit($module_id, $item)) {
-            wp_send_json_error(['message' => __('No tienes permiso', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes permiso', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Sanitizar datos
@@ -1103,13 +1103,13 @@ class Flavor_Dynamic_CRUD {
         $result = $wpdb->update($tabla, $data, ['id' => $item_id]);
 
         if ($result === false) {
-            wp_send_json_error(['message' => __('Error al actualizar', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         do_action('flavor_crud_after_update', $module_id, $item_id, $data);
 
         wp_send_json_success([
-            'message' => sprintf(__('%s actualizado/a correctamente', 'flavor-chat-ia'), $config['titulo_singular']),
+            'message' => sprintf(__('%s actualizado/a correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN), $config['titulo_singular']),
         ]);
     }
 
@@ -1120,7 +1120,7 @@ class Flavor_Dynamic_CRUD {
         check_ajax_referer('flavor_crud_action', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $module_id = sanitize_key($_POST['module']);
@@ -1128,13 +1128,13 @@ class Flavor_Dynamic_CRUD {
         $config = $this->get_module_config($module_id);
 
         if (!$config || !$item_id) {
-            wp_send_json_error(['message' => __('Datos no válidos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos no válidos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar permisos
         $item = $this->get_item($module_id, $item_id);
         if (!$this->can_delete($module_id, $item)) {
-            wp_send_json_error(['message' => __('No tienes permiso', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes permiso', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1148,13 +1148,13 @@ class Flavor_Dynamic_CRUD {
         }
 
         if ($result === false) {
-            wp_send_json_error(['message' => __('Error al eliminar', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         do_action('flavor_crud_after_delete', $module_id, $item_id);
 
         wp_send_json_success([
-            'message' => sprintf(__('%s eliminado/a correctamente', 'flavor-chat-ia'), $config['titulo_singular']),
+            'message' => sprintf(__('%s eliminado/a correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN), $config['titulo_singular']),
         ]);
     }
 
@@ -1170,12 +1170,12 @@ class Flavor_Dynamic_CRUD {
         $item = $this->get_item($module_id, $item_id);
 
         if (!$item) {
-            wp_send_json_error(['message' => __('No encontrado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar permisos de lectura
         if (!$this->can_view($module_id, $item)) {
-            wp_send_json_error(['message' => __('No tienes permiso', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes permiso', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         wp_send_json_success(['item' => $item]);
@@ -1188,7 +1188,7 @@ class Flavor_Dynamic_CRUD {
         check_ajax_referer('flavor_crud_action', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $module_id = sanitize_key($_POST['module']);
@@ -1225,7 +1225,7 @@ class Flavor_Dynamic_CRUD {
         // Verificar si la tabla existe
         $existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla));
         if (!$existe) {
-            return ['existe' => false, 'mensaje' => __('La tabla no existe. El módulo necesita ser configurado.', 'flavor-chat-ia')];
+            return ['existe' => false, 'mensaje' => __('La tabla no existe. El módulo necesita ser configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Obtener columnas
@@ -1526,10 +1526,10 @@ class Flavor_Dynamic_CRUD {
         ?>
         <div class="fcrud-login-required">
             <span class="dashicons dashicons-lock"></span>
-            <h3><?php esc_html_e('Acceso restringido', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('Debes iniciar sesión para acceder a esta sección.', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('Acceso restringido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php esc_html_e('Debes iniciar sesión para acceder a esta sección.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <a href="<?php echo esc_url(wp_login_url($this->get_current_request_url())); ?>" class="fcrud-btn fcrud-btn-primary">
-                <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
         <?php
@@ -1602,9 +1602,9 @@ class Flavor_Dynamic_CRUD {
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_crud_action'),
             'strings' => [
-                'confirm_delete' => __('¿Estás seguro de que quieres eliminar este elemento?', 'flavor-chat-ia'),
-                'loading' => __('Cargando...', 'flavor-chat-ia'),
-                'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
+                'confirm_delete' => __('¿Estás seguro de que quieres eliminar este elemento?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'loading' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }

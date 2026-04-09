@@ -32,9 +32,9 @@ $descripcion = $producto['descripcion'] ?? $producto['excerpt'] ?? '';
 $precio = $producto['precio'] ?? $producto['price'] ?? '0';
 $imagen = $producto['imagen'] ?? $producto['image'] ?? '';
 $url = $producto['url'] ?? $producto['permalink'] ?? '#';
-$condicion = $producto['condicion'] ?? $producto['condition'] ?? __('Usado', 'flavor-chat-ia');
-$ubicacion = $producto['ubicacion'] ?? $producto['location'] ?? __('Cerca', 'flavor-chat-ia');
-$vendedor_nombre = $producto['vendedor_nombre'] ?? $producto['author'] ?? __('Vendedor', 'flavor-chat-ia');
+$condicion = $producto['condicion'] ?? $producto['condition'] ?? __('Usado', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$ubicacion = $producto['ubicacion'] ?? $producto['location'] ?? __('Cerca', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$vendedor_nombre = $producto['vendedor_nombre'] ?? $producto['author'] ?? __('Vendedor', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $vendedor_id = $producto['vendedor_id'] ?? 0;
 $categoria = $producto['categoria'] ?? $producto['category'] ?? '';
 
@@ -107,7 +107,7 @@ $vendedor_inicial = mb_substr($vendedor_nombre, 0, 1);
             </div>
             <a href="<?php echo esc_url($url); ?>"
                class="text-green-600 hover:text-green-700 font-medium text-sm">
-                <?php echo esc_html__('Ver más →', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Ver más →', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>

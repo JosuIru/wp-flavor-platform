@@ -5923,11 +5923,11 @@ class Flavor_Database_Installer {
     public static function install_legal_pages() {
         $legal_pages = [
             'politica-de-cookies' => [
-                'title'   => __('Política de Cookies', 'flavor-chat-ia'),
+                'title'   => __('Política de Cookies', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'content' => self::get_cookies_policy_content(),
             ],
             'terminos-de-uso' => [
-                'title'   => __('Términos de Uso', 'flavor-chat-ia'),
+                'title'   => __('Términos de Uso', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'content' => self::get_terms_content(),
             ],
         ];
@@ -5953,27 +5953,27 @@ class Flavor_Database_Installer {
      */
     private static function get_cookies_policy_content() {
         return '<!-- wp:heading -->
-<h2>' . __('¿Qué son las cookies?', 'flavor-chat-ia') . '</h2>
+<h2>' . __('¿Qué son las cookies?', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>' . __('Las cookies son pequeños archivos de texto que los sitios web almacenan en su dispositivo cuando los visita. Se utilizan ampliamente para hacer que los sitios web funcionen de manera más eficiente y proporcionar información a los propietarios del sitio.', 'flavor-chat-ia') . '</p>
+<p>' . __('Las cookies son pequeños archivos de texto que los sitios web almacenan en su dispositivo cuando los visita. Se utilizan ampliamente para hacer que los sitios web funcionen de manera más eficiente y proporcionar información a los propietarios del sitio.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading -->
-<h2>' . __('Cookies que utilizamos', 'flavor-chat-ia') . '</h2>
+<h2>' . __('Cookies que utilizamos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>' . __('Utilizamos cookies técnicas necesarias para el funcionamiento del sitio, cookies de análisis para entender cómo se usa el sitio, y cookies de preferencias para recordar su configuración.', 'flavor-chat-ia') . '</p>
+<p>' . __('Utilizamos cookies técnicas necesarias para el funcionamiento del sitio, cookies de análisis para entender cómo se usa el sitio, y cookies de preferencias para recordar su configuración.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading -->
-<h2>' . __('Gestión de cookies', 'flavor-chat-ia') . '</h2>
+<h2>' . __('Gestión de cookies', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>' . __('Puede configurar su navegador para rechazar cookies o alertarle cuando se envían cookies. Sin embargo, algunas partes del sitio pueden no funcionar correctamente sin cookies.', 'flavor-chat-ia') . '</p>
+<p>' . __('Puede configurar su navegador para rechazar cookies o alertarle cuando se envían cookies. Sin embargo, algunas partes del sitio pueden no funcionar correctamente sin cookies.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 <!-- /wp:paragraph -->';
     }
 
@@ -5982,27 +5982,27 @@ class Flavor_Database_Installer {
      */
     private static function get_terms_content() {
         return '<!-- wp:heading -->
-<h2>' . __('Aceptación de los términos', 'flavor-chat-ia') . '</h2>
+<h2>' . __('Aceptación de los términos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>' . __('Al acceder y utilizar este sitio web, usted acepta cumplir con estos términos de uso. Si no está de acuerdo con alguna parte de estos términos, no debe utilizar nuestro sitio.', 'flavor-chat-ia') . '</p>
+<p>' . __('Al acceder y utilizar este sitio web, usted acepta cumplir con estos términos de uso. Si no está de acuerdo con alguna parte de estos términos, no debe utilizar nuestro sitio.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading -->
-<h2>' . __('Uso del sitio', 'flavor-chat-ia') . '</h2>
+<h2>' . __('Uso del sitio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>' . __('Este sitio está destinado a usuarios mayores de edad. El contenido es solo para fines informativos y no constituye asesoramiento profesional.', 'flavor-chat-ia') . '</p>
+<p>' . __('Este sitio está destinado a usuarios mayores de edad. El contenido es solo para fines informativos y no constituye asesoramiento profesional.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading -->
-<h2>' . __('Propiedad intelectual', 'flavor-chat-ia') . '</h2>
+<h2>' . __('Propiedad intelectual', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>' . __('Todo el contenido de este sitio, incluyendo textos, gráficos, logos e imágenes, es propiedad del sitio o sus licenciantes y está protegido por las leyes de propiedad intelectual.', 'flavor-chat-ia') . '</p>
+<p>' . __('Todo el contenido de este sitio, incluyendo textos, gráficos, logos e imágenes, es propiedad del sitio o sus licenciantes y está protegido por las leyes de propiedad intelectual.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 <!-- /wp:paragraph -->';
     }
 

@@ -165,7 +165,7 @@ class Flavor_Socios_Artista_Profile {
         $usuario_id = $datos['usuario_id'] ?? get_current_user_id();
 
         if (!$usuario_id) {
-            return new WP_Error('sin_usuario', __('Se requiere un usuario para crear el perfil de artista.', 'flavor-chat-ia'));
+            return new WP_Error('sin_usuario', __('Se requiere un usuario para crear el perfil de artista.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Verificar que no existe ya un perfil
@@ -175,7 +175,7 @@ class Flavor_Socios_Artista_Profile {
         ));
 
         if ($existe) {
-            return new WP_Error('artista_existe', __('Ya existe un perfil de artista para este usuario.', 'flavor-chat-ia'));
+            return new WP_Error('artista_existe', __('Ya existe un perfil de artista para este usuario.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Obtener o crear socio
@@ -210,7 +210,7 @@ class Flavor_Socios_Artista_Profile {
         $insertado = $wpdb->insert($tabla, $datos_insertar);
 
         if (!$insertado) {
-            return new WP_Error('error_insertar', __('Error al crear el perfil de artista.', 'flavor-chat-ia'));
+            return new WP_Error('error_insertar', __('Error al crear el perfil de artista.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $artista_id = $wpdb->insert_id;
@@ -297,7 +297,7 @@ class Flavor_Socios_Artista_Profile {
         }
 
         if (empty($datos_actualizar)) {
-            return new WP_Error('sin_cambios', __('No hay datos para actualizar.', 'flavor-chat-ia'));
+            return new WP_Error('sin_cambios', __('No hay datos para actualizar.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $actualizado = $wpdb->update(
@@ -307,7 +307,7 @@ class Flavor_Socios_Artista_Profile {
         );
 
         if (false === $actualizado) {
-            return new WP_Error('error_actualizar', __('Error al actualizar el perfil.', 'flavor-chat-ia'));
+            return new WP_Error('error_actualizar', __('Error al actualizar el perfil.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         /**
@@ -439,13 +439,13 @@ class Flavor_Socios_Artista_Profile {
         $seguidor_id = $seguidor_id ?: get_current_user_id();
 
         if (!$seguidor_id) {
-            return new WP_Error('sin_usuario', __('Debes iniciar sesión.', 'flavor-chat-ia'));
+            return new WP_Error('sin_usuario', __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Verificar que no se sigue a sí mismo
         $artista = $this->get_artista($artista_id);
         if ($artista && $artista->usuario_id == $seguidor_id) {
-            return new WP_Error('auto_seguimiento', __('No puedes seguirte a ti mismo.', 'flavor-chat-ia'));
+            return new WP_Error('auto_seguimiento', __('No puedes seguirte a ti mismo.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $insertado = $wpdb->insert($tabla, [
@@ -556,12 +556,12 @@ class Flavor_Socios_Artista_Profile {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return new WP_Error('sin_usuario', __('Debes iniciar sesión para valorar.', 'flavor-chat-ia'));
+            return new WP_Error('sin_usuario', __('Debes iniciar sesión para valorar.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $puntuacion = absint($datos['puntuacion'] ?? 0);
         if ($puntuacion < 1 || $puntuacion > 5) {
-            return new WP_Error('puntuacion_invalida', __('La puntuación debe estar entre 1 y 5.', 'flavor-chat-ia'));
+            return new WP_Error('puntuacion_invalida', __('La puntuación debe estar entre 1 y 5.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $datos_insertar = [
@@ -598,7 +598,7 @@ class Flavor_Socios_Artista_Profile {
             ], ['id' => $artista_id]);
         }
 
-        return $insertado ? $wpdb->insert_id : new WP_Error('error_valorar', __('Error al guardar la valoración.', 'flavor-chat-ia'));
+        return $insertado ? $wpdb->insert_id : new WP_Error('error_valorar', __('Error al guardar la valoración.', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     // =========================================================
@@ -683,10 +683,10 @@ class Flavor_Socios_Artista_Profile {
      */
     private function get_nivel_label($nivel) {
         $niveles = [
-            'emergente' => __('Emergente', 'flavor-chat-ia'),
-            'establecido' => __('Establecido', 'flavor-chat-ia'),
-            'profesional' => __('Profesional', 'flavor-chat-ia'),
-            'consagrado' => __('Consagrado', 'flavor-chat-ia'),
+            'emergente' => __('Emergente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'establecido' => __('Establecido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'profesional' => __('Profesional', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'consagrado' => __('Consagrado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         return $niveles[$nivel] ?? $nivel;
@@ -777,7 +777,7 @@ class Flavor_Socios_Artista_Profile {
         $artista = $this->get_artista($request->get_param('id'));
 
         if (!$artista) {
-            return new WP_Error('no_encontrado', __('Artista no encontrado.', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('no_encontrado', __('Artista no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         return rest_ensure_response($artista);
@@ -828,13 +828,13 @@ class Flavor_Socios_Artista_Profile {
         }
 
         if (empty($identificador)) {
-            return '<p class="flavor-error">' . __('No se especificó ningún artista.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-error">' . __('No se especificó ningún artista.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $artista = $this->get_artista($identificador);
 
         if (!$artista) {
-            return '<p class="flavor-error">' . __('Artista no encontrado.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-error">' . __('Artista no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $esta_siguiendo = is_user_logged_in() ? $this->esta_siguiendo($artista->id) : false;

@@ -125,7 +125,7 @@ class Flavor_Plugin_Detector {
         $active_modules = array_keys($loader->get_loaded_modules());
 
         return [
-            'id' => 'flavor-chat-ia',
+            'id' => FLAVOR_PLATFORM_TEXT_DOMAIN,
             'name' => 'Flavor Chat IA',
             'active' => true,
             'version' => $version,

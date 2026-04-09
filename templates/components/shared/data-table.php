@@ -29,7 +29,7 @@ $striped = $striped ?? true;
 $hoverable = $hoverable ?? true;
 $selectable = $selectable ?? false;
 $row_actions = $row_actions ?? [];
-$empty_text = $empty_text ?? __('No hay datos disponibles', 'flavor-chat-ia');
+$empty_text = $empty_text ?? __('No hay datos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $table_id = $id ?? 'table-' . wp_rand(1000, 9999);
 
 // Clases de color
@@ -66,7 +66,7 @@ if (function_exists('flavor_get_color_classes')) {
 
                 <?php if (!empty($row_actions)): ?>
                     <th class="p-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider w-32">
-                        <?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </th>
                 <?php endif; ?>
             </tr>

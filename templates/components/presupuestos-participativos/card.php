@@ -64,8 +64,8 @@ $color = $colores_fase[$fase] ?? $colores_fase['propuestas'];
         <!-- Barra de progreso de votos -->
         <div>
             <div class="flex justify-between text-xs text-gray-500 mb-1">
-                <span><?php echo esc_html($votos); ?> <?php echo esc_html__('votos', 'flavor-chat-ia'); ?></span>
-                <span><?php echo esc_html__('Umbral:', 'flavor-chat-ia'); ?> <?php echo esc_html($umbral); ?></span>
+                <span><?php echo esc_html($votos); ?> <?php echo esc_html__('votos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                <span><?php echo esc_html__('Umbral:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html($umbral); ?></span>
             </div>
             <div class="w-full bg-gray-200 rounded-full h-2">
                 <div class="bg-gradient-to-r from-amber-500 to-yellow-500 h-2 rounded-full" style="width: <?php echo esc_attr($porcentaje); ?>%"></div>
@@ -80,7 +80,7 @@ $color = $colores_fase[$fase] ?? $colores_fase['propuestas'];
         <span></span>
         <?php endif; ?>
         <a href="<?php echo esc_url($url); ?>" class="text-amber-600 text-sm font-medium hover:text-amber-700 transition-colors">
-            <?php echo esc_html__('Ver proyecto', 'flavor-chat-ia'); ?> →
+            <?php echo esc_html__('Ver proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> →
         </a>
     </div>
 </article>

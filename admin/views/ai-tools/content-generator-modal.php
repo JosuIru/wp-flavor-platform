@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
         <div class="flavor-modal-header">
             <div class="modal-title">
                 <span class="dashicons dashicons-edit"></span>
-                <h2><?php esc_html_e('Generar Contenido con IA', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Generar Contenido con IA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
             <button type="button" class="modal-close" id="content-modal-close">
                 <span class="dashicons dashicons-no-alt"></span>
@@ -30,63 +30,63 @@ if (!defined('ABSPATH')) {
         <div class="flavor-modal-body">
             <!-- Tipo de contenido -->
             <div class="form-group">
-                <label for="ai-content-type"><?php esc_html_e('Tipo de contenido', 'flavor-chat-ia'); ?></label>
+                <label for="ai-content-type"><?php esc_html_e('Tipo de contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select id="ai-content-type" class="regular-text">
-                    <option value="evento_descripcion"><?php esc_html_e('Descripción de evento', 'flavor-chat-ia'); ?></option>
-                    <option value="evento_titulo"><?php esc_html_e('Títulos de evento', 'flavor-chat-ia'); ?></option>
-                    <option value="post_blog"><?php esc_html_e('Artículo de blog', 'flavor-chat-ia'); ?></option>
-                    <option value="pagina_bienvenida"><?php esc_html_e('Página de bienvenida', 'flavor-chat-ia'); ?></option>
-                    <option value="email_notificacion"><?php esc_html_e('Email de notificación', 'flavor-chat-ia'); ?></option>
-                    <option value="descripcion_modulo"><?php esc_html_e('Descripción de módulo', 'flavor-chat-ia'); ?></option>
-                    <option value="faq"><?php esc_html_e('Preguntas frecuentes', 'flavor-chat-ia'); ?></option>
-                    <option value="slogan"><?php esc_html_e('Slogans creativos', 'flavor-chat-ia'); ?></option>
-                    <option value="bio"><?php esc_html_e('Biografía/Descripción', 'flavor-chat-ia'); ?></option>
-                    <option value="general"><?php esc_html_e('Contenido general', 'flavor-chat-ia'); ?></option>
+                    <option value="evento_descripcion"><?php esc_html_e('Descripción de evento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="evento_titulo"><?php esc_html_e('Títulos de evento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="post_blog"><?php esc_html_e('Artículo de blog', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="pagina_bienvenida"><?php esc_html_e('Página de bienvenida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="email_notificacion"><?php esc_html_e('Email de notificación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="descripcion_modulo"><?php esc_html_e('Descripción de módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="faq"><?php esc_html_e('Preguntas frecuentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="slogan"><?php esc_html_e('Slogans creativos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="bio"><?php esc_html_e('Biografía/Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="general"><?php esc_html_e('Contenido general', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
             </div>
 
             <!-- Contexto / Descripción -->
             <div class="form-group">
-                <label for="ai-content-context"><?php esc_html_e('Describe qué quieres generar', 'flavor-chat-ia'); ?></label>
-                <textarea id="ai-content-context" rows="4" class="large-text" placeholder="<?php esc_attr_e('Ejemplo: Un evento de cocina saludable para familias el próximo sábado en el centro cívico...', 'flavor-chat-ia'); ?>"></textarea>
+                <label for="ai-content-context"><?php esc_html_e('Describe qué quieres generar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                <textarea id="ai-content-context" rows="4" class="large-text" placeholder="<?php esc_attr_e('Ejemplo: Un evento de cocina saludable para familias el próximo sábado en el centro cívico...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
             </div>
 
             <!-- Opciones avanzadas (colapsable) -->
             <details class="advanced-options">
-                <summary><?php esc_html_e('Opciones avanzadas', 'flavor-chat-ia'); ?></summary>
+                <summary><?php esc_html_e('Opciones avanzadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></summary>
 
                 <div class="options-grid">
                     <!-- Tono -->
                     <div class="form-group">
-                        <label for="ai-content-tone"><?php esc_html_e('Tono', 'flavor-chat-ia'); ?></label>
+                        <label for="ai-content-tone"><?php esc_html_e('Tono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select id="ai-content-tone">
-                            <option value="profesional"><?php esc_html_e('Profesional', 'flavor-chat-ia'); ?></option>
-                            <option value="cercano"><?php esc_html_e('Cercano y amigable', 'flavor-chat-ia'); ?></option>
-                            <option value="formal"><?php esc_html_e('Formal', 'flavor-chat-ia'); ?></option>
-                            <option value="entusiasta"><?php esc_html_e('Entusiasta', 'flavor-chat-ia'); ?></option>
-                            <option value="informativo"><?php esc_html_e('Informativo', 'flavor-chat-ia'); ?></option>
+                            <option value="profesional"><?php esc_html_e('Profesional', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="cercano"><?php esc_html_e('Cercano y amigable', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="formal"><?php esc_html_e('Formal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="entusiasta"><?php esc_html_e('Entusiasta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="informativo"><?php esc_html_e('Informativo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
 
                     <!-- Longitud -->
                     <div class="form-group">
-                        <label for="ai-content-length"><?php esc_html_e('Longitud', 'flavor-chat-ia'); ?></label>
+                        <label for="ai-content-length"><?php esc_html_e('Longitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select id="ai-content-length">
-                            <option value="corto"><?php esc_html_e('Corto (50-100 palabras)', 'flavor-chat-ia'); ?></option>
-                            <option value="medio" selected><?php esc_html_e('Medio (150-250 palabras)', 'flavor-chat-ia'); ?></option>
-                            <option value="largo"><?php esc_html_e('Largo (300-500 palabras)', 'flavor-chat-ia'); ?></option>
+                            <option value="corto"><?php esc_html_e('Corto (50-100 palabras)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="medio" selected><?php esc_html_e('Medio (150-250 palabras)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="largo"><?php esc_html_e('Largo (300-500 palabras)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
 
                     <!-- Idioma -->
                     <div class="form-group">
-                        <label for="ai-content-language"><?php esc_html_e('Idioma', 'flavor-chat-ia'); ?></label>
+                        <label for="ai-content-language"><?php esc_html_e('Idioma', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select id="ai-content-language">
-                            <option value="es" selected><?php esc_html_e('Español', 'flavor-chat-ia'); ?></option>
-                            <option value="eu"><?php esc_html_e('Euskera', 'flavor-chat-ia'); ?></option>
-                            <option value="ca"><?php esc_html_e('Catalán', 'flavor-chat-ia'); ?></option>
-                            <option value="gl"><?php esc_html_e('Gallego', 'flavor-chat-ia'); ?></option>
-                            <option value="en"><?php esc_html_e('Inglés', 'flavor-chat-ia'); ?></option>
+                            <option value="es" selected><?php esc_html_e('Español', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="eu"><?php esc_html_e('Euskera', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="ca"><?php esc_html_e('Catalán', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="gl"><?php esc_html_e('Gallego', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="en"><?php esc_html_e('Inglés', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
                 </div>
@@ -94,21 +94,21 @@ if (!defined('ABSPATH')) {
 
             <!-- Resultado -->
             <div class="form-group result-area" id="ai-content-result-area" style="display: none;">
-                <label><?php esc_html_e('Contenido generado', 'flavor-chat-ia'); ?></label>
+                <label><?php esc_html_e('Contenido generado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <div class="result-container">
                     <div class="result-content" id="ai-content-result"></div>
                     <div class="result-actions">
                         <button type="button" class="button" id="ai-content-copy">
                             <span class="dashicons dashicons-admin-page"></span>
-                            <?php esc_html_e('Copiar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Copiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <button type="button" class="button button-primary" id="ai-content-insert">
                             <span class="dashicons dashicons-yes"></span>
-                            <?php esc_html_e('Insertar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Insertar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <button type="button" class="button" id="ai-content-regenerate">
                             <span class="dashicons dashicons-update"></span>
-                            <?php esc_html_e('Regenerar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Regenerar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </div>
@@ -117,7 +117,7 @@ if (!defined('ABSPATH')) {
             <!-- Estado de generación -->
             <div class="generation-status" id="ai-generation-status" style="display: none;">
                 <div class="spinner is-active"></div>
-                <span><?php esc_html_e('Generando contenido...', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Generando contenido...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
 
             <!-- Error -->
@@ -129,11 +129,11 @@ if (!defined('ABSPATH')) {
 
         <div class="flavor-modal-footer">
             <button type="button" class="button" id="content-modal-cancel">
-                <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <button type="button" class="button button-primary" id="ai-content-generate">
                 <span class="dashicons dashicons-admin-generic"></span>
-                <?php esc_html_e('Generar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Generar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     </div>

@@ -130,13 +130,13 @@ class Flavor_Layout_Forms {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_forms_nonce'),
             'i18n' => [
-                'subscribing' => __('Suscribiendo...', 'flavor-chat-ia'),
-                'subscribed' => __('¡Suscrito correctamente!', 'flavor-chat-ia'),
-                'sending' => __('Enviando...', 'flavor-chat-ia'),
-                'sent' => __('¡Mensaje enviado!', 'flavor-chat-ia'),
-                'error' => __('Ha ocurrido un error. Por favor, inténtalo de nuevo.', 'flavor-chat-ia'),
-                'invalid_email' => __('Por favor, introduce un email válido.', 'flavor-chat-ia'),
-                'required_fields' => __('Por favor, completa todos los campos requeridos.', 'flavor-chat-ia'),
+                'subscribing' => __('Suscribiendo...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subscribed' => __('¡Suscrito correctamente!', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sending' => __('Enviando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sent' => __('¡Mensaje enviado!', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Ha ocurrido un error. Por favor, inténtalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'invalid_email' => __('Por favor, introduce un email válido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'required_fields' => __('Por favor, completa todos los campos requeridos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -148,7 +148,7 @@ class Flavor_Layout_Forms {
         // Verificar nonce
         if (!check_ajax_referer('flavor_forms_nonce', 'nonce', false)) {
             wp_send_json_error([
-                'message' => __('Verificación de seguridad fallida. Recarga la página e inténtalo de nuevo.', 'flavor-chat-ia'),
+                'message' => __('Verificación de seguridad fallida. Recarga la página e inténtalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
 
@@ -157,7 +157,7 @@ class Flavor_Layout_Forms {
 
         if (!is_email($email)) {
             wp_send_json_error([
-                'message' => __('Por favor, introduce un email válido.', 'flavor-chat-ia'),
+                'message' => __('Por favor, introduce un email válido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
 
@@ -187,12 +187,12 @@ class Flavor_Layout_Forms {
                 );
 
                 wp_send_json_success([
-                    'message' => __('¡Bienvenido de nuevo! Has sido resuscrito a nuestra newsletter.', 'flavor-chat-ia'),
+                    'message' => __('¡Bienvenido de nuevo! Has sido resuscrito a nuestra newsletter.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ]);
             }
 
             wp_send_json_success([
-                'message' => __('Este email ya está suscrito a nuestra newsletter.', 'flavor-chat-ia'),
+                'message' => __('Este email ya está suscrito a nuestra newsletter.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
 
@@ -218,7 +218,7 @@ class Flavor_Layout_Forms {
 
         if ($result === false) {
             wp_send_json_error([
-                'message' => __('Error al guardar la suscripción. Por favor, inténtalo más tarde.', 'flavor-chat-ia'),
+                'message' => __('Error al guardar la suscripción. Por favor, inténtalo más tarde.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
 
@@ -229,7 +229,7 @@ class Flavor_Layout_Forms {
         $this->send_welcome_email($email, $name);
 
         wp_send_json_success([
-            'message' => __('¡Gracias por suscribirte! Recibirás nuestras novedades en tu email.', 'flavor-chat-ia'),
+            'message' => __('¡Gracias por suscribirte! Recibirás nuestras novedades en tu email.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -240,7 +240,7 @@ class Flavor_Layout_Forms {
         // Verificar nonce
         if (!check_ajax_referer('flavor_forms_nonce', 'nonce', false)) {
             wp_send_json_error([
-                'message' => __('Verificación de seguridad fallida. Recarga la página e inténtalo de nuevo.', 'flavor-chat-ia'),
+                'message' => __('Verificación de seguridad fallida. Recarga la página e inténtalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
 
@@ -254,13 +254,13 @@ class Flavor_Layout_Forms {
         // Validar campos requeridos
         if (empty($name) || empty($email) || empty($message)) {
             wp_send_json_error([
-                'message' => __('Por favor, completa todos los campos requeridos (nombre, email y mensaje).', 'flavor-chat-ia'),
+                'message' => __('Por favor, completa todos los campos requeridos (nombre, email y mensaje).', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
 
         if (!is_email($email)) {
             wp_send_json_error([
-                'message' => __('Por favor, introduce un email válido.', 'flavor-chat-ia'),
+                'message' => __('Por favor, introduce un email válido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
 
@@ -270,7 +270,7 @@ class Flavor_Layout_Forms {
 
         if ($rate_count && $rate_count >= 5) {
             wp_send_json_error([
-                'message' => __('Has enviado demasiados mensajes. Por favor, espera unos minutos.', 'flavor-chat-ia'),
+                'message' => __('Has enviado demasiados mensajes. Por favor, espera unos minutos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
 
@@ -295,7 +295,7 @@ class Flavor_Layout_Forms {
 
         if ($result === false) {
             wp_send_json_error([
-                'message' => __('Error al enviar el mensaje. Por favor, inténtalo más tarde.', 'flavor-chat-ia'),
+                'message' => __('Error al enviar el mensaje. Por favor, inténtalo más tarde.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
 
@@ -317,7 +317,7 @@ class Flavor_Layout_Forms {
         $this->send_contact_confirmation($email, $name);
 
         wp_send_json_success([
-            'message' => __('¡Gracias por tu mensaje! Te responderemos lo antes posible.', 'flavor-chat-ia'),
+            'message' => __('¡Gracias por tu mensaje! Te responderemos lo antes posible.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'message_id' => $message_id,
         ]);
     }
@@ -330,19 +330,19 @@ class Flavor_Layout_Forms {
         $site_name = get_bloginfo('name');
 
         $subject = sprintf(
-            __('¡Bienvenido a %s!', 'flavor-chat-ia'),
+            __('¡Bienvenido a %s!', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $site_name
         );
 
-        $greeting = $name ? sprintf(__('Hola %s', 'flavor-chat-ia'), $name) : __('Hola', 'flavor-chat-ia');
+        $greeting = $name ? sprintf(__('Hola %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $name) : __('Hola', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         $message = sprintf(
             "%s,\n\n" .
-            __('Gracias por suscribirte a nuestra newsletter. A partir de ahora recibirás nuestras últimas novedades y ofertas exclusivas.', 'flavor-chat-ia') .
+            __('Gracias por suscribirte a nuestra newsletter. A partir de ahora recibirás nuestras últimas novedades y ofertas exclusivas.', FLAVOR_PLATFORM_TEXT_DOMAIN) .
             "\n\n" .
-            __('Si no te suscribiste, puedes ignorar este mensaje.', 'flavor-chat-ia') .
+            __('Si no te suscribiste, puedes ignorar este mensaje.', FLAVOR_PLATFORM_TEXT_DOMAIN) .
             "\n\n" .
-            __('Saludos,', 'flavor-chat-ia') .
+            __('Saludos,', FLAVOR_PLATFORM_TEXT_DOMAIN) .
             "\n" .
             $site_name,
             $greeting
@@ -359,21 +359,21 @@ class Flavor_Layout_Forms {
         $site_name = get_bloginfo('name');
 
         $email_subject = sprintf(
-            __('[%s] Nuevo mensaje de contacto de %s', 'flavor-chat-ia'),
+            __('[%s] Nuevo mensaje de contacto de %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $site_name,
             $name
         );
 
         $body = sprintf(
-            __('Has recibido un nuevo mensaje de contacto:', 'flavor-chat-ia') . "\n\n" .
-            __('Nombre: %s', 'flavor-chat-ia') . "\n" .
-            __('Email: %s', 'flavor-chat-ia') . "\n" .
-            __('Asunto: %s', 'flavor-chat-ia') . "\n\n" .
-            __('Mensaje:', 'flavor-chat-ia') . "\n%s\n\n" .
-            __('Responder a este mensaje: %s', 'flavor-chat-ia'),
+            __('Has recibido un nuevo mensaje de contacto:', FLAVOR_PLATFORM_TEXT_DOMAIN) . "\n\n" .
+            __('Nombre: %s', FLAVOR_PLATFORM_TEXT_DOMAIN) . "\n" .
+            __('Email: %s', FLAVOR_PLATFORM_TEXT_DOMAIN) . "\n" .
+            __('Asunto: %s', FLAVOR_PLATFORM_TEXT_DOMAIN) . "\n\n" .
+            __('Mensaje:', FLAVOR_PLATFORM_TEXT_DOMAIN) . "\n%s\n\n" .
+            __('Responder a este mensaje: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $name,
             $email,
-            $subject ?: __('(Sin asunto)', 'flavor-chat-ia'),
+            $subject ?: __('(Sin asunto)', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $message,
             admin_url('admin.php?page=flavor-contact-messages&id=' . $message_id)
         );
@@ -390,19 +390,19 @@ class Flavor_Layout_Forms {
         $site_name = get_bloginfo('name');
 
         $subject = sprintf(
-            __('Hemos recibido tu mensaje - %s', 'flavor-chat-ia'),
+            __('Hemos recibido tu mensaje - %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $site_name
         );
 
-        $greeting = $name ? sprintf(__('Hola %s', 'flavor-chat-ia'), $name) : __('Hola', 'flavor-chat-ia');
+        $greeting = $name ? sprintf(__('Hola %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $name) : __('Hola', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         $message = sprintf(
             "%s,\n\n" .
-            __('Gracias por ponerte en contacto con nosotros. Hemos recibido tu mensaje y te responderemos lo antes posible.', 'flavor-chat-ia') .
+            __('Gracias por ponerte en contacto con nosotros. Hemos recibido tu mensaje y te responderemos lo antes posible.', FLAVOR_PLATFORM_TEXT_DOMAIN) .
             "\n\n" .
-            __('Saludos,', 'flavor-chat-ia') .
+            __('Saludos,', FLAVOR_PLATFORM_TEXT_DOMAIN) .
             "\n" .
-            __('El equipo de %s', 'flavor-chat-ia'),
+            __('El equipo de %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $greeting,
             $site_name
         );
@@ -485,7 +485,7 @@ class Flavor_Layout_Forms {
         $name = sanitize_text_field($request->get_param('name') ?? '');
 
         if (!is_email($email)) {
-            return new WP_Error('invalid_email', __('Email inválido', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('invalid_email', __('Email inválido', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         // Simular POST para reutilizar lógica

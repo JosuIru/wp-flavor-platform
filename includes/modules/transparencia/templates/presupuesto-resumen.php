@@ -64,7 +64,7 @@ $mostrar_enlace = isset($atts['enlace']) ? filter_var($atts['enlace'], FILTER_VA
     <header class="transparencia-presupuesto-resumen__header">
         <h3>
             <span class="dashicons dashicons-chart-pie"></span>
-            <?php printf(esc_html__('Presupuesto %d', 'flavor-chat-ia'), $ejercicio); ?>
+            <?php printf(esc_html__('Presupuesto %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $ejercicio); ?>
         </h3>
     </header>
 
@@ -72,7 +72,7 @@ $mostrar_enlace = isset($atts['enlace']) ? filter_var($atts['enlace'], FILTER_VA
         <!-- Ingresos -->
         <div class="transparencia-presupuesto-resumen__item transparencia-presupuesto-resumen__item--ingresos">
             <div class="transparencia-presupuesto-resumen__item-header">
-                <span class="transparencia-presupuesto-resumen__label"><?php esc_html_e('Ingresos', 'flavor-chat-ia'); ?></span>
+                <span class="transparencia-presupuesto-resumen__label"><?php esc_html_e('Ingresos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="transparencia-presupuesto-resumen__porcentaje"><?php echo esc_html($porcentaje_ingresos); ?>%</span>
             </div>
             <div class="transparencia-presupuesto-resumen__barra">
@@ -91,7 +91,7 @@ $mostrar_enlace = isset($atts['enlace']) ? filter_var($atts['enlace'], FILTER_VA
         <!-- Gastos -->
         <div class="transparencia-presupuesto-resumen__item transparencia-presupuesto-resumen__item--gastos">
             <div class="transparencia-presupuesto-resumen__item-header">
-                <span class="transparencia-presupuesto-resumen__label"><?php esc_html_e('Gastos', 'flavor-chat-ia'); ?></span>
+                <span class="transparencia-presupuesto-resumen__label"><?php esc_html_e('Gastos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="transparencia-presupuesto-resumen__porcentaje"><?php echo esc_html($porcentaje_gastos); ?>%</span>
             </div>
             <div class="transparencia-presupuesto-resumen__barra">
@@ -111,7 +111,7 @@ $mostrar_enlace = isset($atts['enlace']) ? filter_var($atts['enlace'], FILTER_VA
         <?php if ($estilo !== 'mini') : ?>
         <div class="transparencia-presupuesto-resumen__resultado <?php echo $resultado_actual >= 0 ? 'positivo' : 'negativo'; ?>">
             <span class="transparencia-presupuesto-resumen__resultado-label">
-                <?php echo $resultado_actual >= 0 ? esc_html__('Superavit actual', 'flavor-chat-ia') : esc_html__('Deficit actual', 'flavor-chat-ia'); ?>
+                <?php echo $resultado_actual >= 0 ? esc_html__('Superavit actual', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Deficit actual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
             <span class="transparencia-presupuesto-resumen__resultado-valor">
                 <?php echo $resultado_actual >= 0 ? '+' : ''; ?><?php echo esc_html(number_format($resultado_actual, 0, ',', '.')); ?> &euro;
@@ -123,7 +123,7 @@ $mostrar_enlace = isset($atts['enlace']) ? filter_var($atts['enlace'], FILTER_VA
     <?php if ($mostrar_enlace) : ?>
     <footer class="transparencia-presupuesto-resumen__footer">
         <a href="<?php echo esc_url(home_url('/mi-portal/transparencia/presupuestos/')); ?>" class="transparencia-presupuesto-resumen__enlace">
-            <?php esc_html_e('Ver presupuesto completo', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Ver presupuesto completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <span class="dashicons dashicons-arrow-right-alt2"></span>
         </a>
     </footer>

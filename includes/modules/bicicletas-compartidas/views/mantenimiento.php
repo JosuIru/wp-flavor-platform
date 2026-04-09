@@ -7,7 +7,7 @@
  */
 
 if (!defined('ABSPATH')) exit;
-if (!current_user_can('manage_options')) wp_die(__('No tienes permisos suficientes.', 'flavor-chat-ia'));
+if (!current_user_can('manage_options')) wp_die(__('No tienes permisos suficientes.', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
 global $wpdb;
 $tabla_mantenimiento = $wpdb->prefix . 'flavor_bicicletas_mantenimiento';
@@ -59,40 +59,40 @@ $stats = $wpdb->get_row(
 ?>
 
 <div class="wrap">
-    <h1 class="wp-heading-inline"><?php esc_html_e('Gestión de Mantenimiento', 'flavor-chat-ia'); ?></h1>
+    <h1 class="wp-heading-inline"><?php esc_html_e('Gestión de Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-mantenimiento&action=nuevo')); ?>" class="page-title-action">
-        <?php esc_html_e('Registrar Mantenimiento', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Registrar Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </a>
     <hr class="wp-header-end">
 
     <div class="flavor-stats-mini" style="display: flex; gap: 15px; margin: 20px 0; flex-wrap: wrap;">
         <div class="card" style="padding: 15px; text-align: center; min-width: 150px;">
             <div style="font-size: 24px; font-weight: bold; color: #2271b1;"><?php echo esc_html($stats->total ?? 0); ?></div>
-            <div style="color: #666; font-size: 12px; text-transform: uppercase;"><?php esc_html_e('Último mes', 'flavor-chat-ia'); ?></div>
+            <div style="color: #666; font-size: 12px; text-transform: uppercase;"><?php esc_html_e('Último mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
         <div class="card" style="padding: 15px; text-align: center; min-width: 150px;">
             <div style="font-size: 24px; font-weight: bold; color: #dba617;"><?php echo esc_html($stats->en_curso ?? 0); ?></div>
-            <div style="color: #666; font-size: 12px; text-transform: uppercase;"><?php esc_html_e('En curso', 'flavor-chat-ia'); ?></div>
+            <div style="color: #666; font-size: 12px; text-transform: uppercase;"><?php esc_html_e('En curso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
         <div class="card" style="padding: 15px; text-align: center; min-width: 150px;">
             <div style="font-size: 24px; font-weight: bold; color: #d63638;"><?php echo esc_html(count($bicicletas_necesitan_mantenimiento)); ?></div>
-            <div style="color: #666; font-size: 12px; text-transform: uppercase;"><?php esc_html_e('Necesitan revisión', 'flavor-chat-ia'); ?></div>
+            <div style="color: #666; font-size: 12px; text-transform: uppercase;"><?php esc_html_e('Necesitan revisión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
     <!-- Bicicletas que necesitan mantenimiento -->
     <?php if (!empty($bicicletas_necesitan_mantenimiento)) : ?>
         <div class="card" style="padding: 20px; margin: 20px 0; border-left: 4px solid #d63638;">
-            <h2><?php esc_html_e('⚠️ Bicicletas que Requieren Mantenimiento', 'flavor-chat-ia'); ?></h2>
+            <h2><?php esc_html_e('⚠️ Bicicletas que Requieren Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('Código', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Modelo', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Km Totales', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Último Mantenimiento', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Días sin Revisión', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Código', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Modelo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Km Totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Último Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Días sin Revisión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -106,7 +106,7 @@ $stats = $wpdb->get_row(
                                 if ($bici->fecha_ultimo_mantenimiento) {
                                     echo date('d/m/Y', strtotime($bici->fecha_ultimo_mantenimiento));
                                 } else {
-                                    echo '<strong style="color: #d63638;">' . esc_html__('Nunca', 'flavor-chat-ia') . '</strong>';
+                                    echo '<strong style="color: #d63638;">' . esc_html__('Nunca', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong>';
                                 }
                                 ?>
                             </td>
@@ -117,7 +117,7 @@ $stats = $wpdb->get_row(
                             </td>
                             <td>
                                 <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-mantenimiento&action=nuevo&bicicleta_id=' . $bici->id)); ?>" class="button button-small button-primary">
-                                    <?php esc_html_e('Programar', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Programar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </td>
                         </tr>
@@ -130,20 +130,20 @@ $stats = $wpdb->get_row(
     <!-- Filtros -->
     <div class="card" style="padding: 15px; margin: 20px 0;">
         <form method="get" action="">
-            <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-bicicletas-mantenimiento', 'flavor-chat-ia'); ?>">
+            <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-bicicletas-mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <div style="display: flex; gap: 15px; align-items: end; flex-wrap: wrap;">
                 <div>
-                    <label for="tipo"><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></label>
+                    <label for="tipo"><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="tipo" id="tipo" class="regular-text">
-                        <option value="<?php echo esc_attr__('todos', 'flavor-chat-ia'); ?>" <?php selected($filtro_tipo, 'todos'); ?>><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('preventivo', 'flavor-chat-ia'); ?>" <?php selected($filtro_tipo, 'preventivo'); ?>><?php esc_html_e('Preventivo', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('correctivo', 'flavor-chat-ia'); ?>" <?php selected($filtro_tipo, 'correctivo'); ?>><?php esc_html_e('Correctivo', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('reparacion', 'flavor-chat-ia'); ?>" <?php selected($filtro_tipo, 'reparacion'); ?>><?php esc_html_e('Reparación', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($filtro_tipo, 'todos'); ?>><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('preventivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($filtro_tipo, 'preventivo'); ?>><?php esc_html_e('Preventivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('correctivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($filtro_tipo, 'correctivo'); ?>><?php esc_html_e('Correctivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('reparacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($filtro_tipo, 'reparacion'); ?>><?php esc_html_e('Reparación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
                 <div>
-                    <button type="submit" class="button button-primary"><?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?></button>
-                    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-mantenimiento')); ?>" class="button"><?php esc_html_e('Limpiar', 'flavor-chat-ia'); ?></a>
+                    <button type="submit" class="button button-primary"><?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-mantenimiento')); ?>" class="button"><?php esc_html_e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 </div>
             </div>
         </form>
@@ -154,14 +154,14 @@ $stats = $wpdb->get_row(
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th style="width: 50px;"><?php esc_html_e('ID', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Bicicleta', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Fecha Inicio', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Fecha Fin', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 50px;"><?php esc_html_e('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Fecha Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Fecha Fin', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -197,7 +197,7 @@ $stats = $wpdb->get_row(
                             </td>
                             <td>
                                 <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-mantenimiento&action=ver&mantenimiento_id=' . $mant->id)); ?>" class="button button-small">
-                                    <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </td>
                         </tr>
@@ -205,7 +205,7 @@ $stats = $wpdb->get_row(
                 <?php else : ?>
                     <tr>
                         <td colspan="8" style="text-align: center; padding: 40px;">
-                            <p><?php esc_html_e('No hay registros de mantenimiento.', 'flavor-chat-ia'); ?></p>
+                            <p><?php esc_html_e('No hay registros de mantenimiento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </td>
                     </tr>
                 <?php endif; ?>

@@ -75,9 +75,9 @@ class Flavor_APK_Builder {
      */
     public function add_menu_page() {
         add_submenu_page(
-            'flavor-chat-ia',
-            __('Compilar APK', 'flavor-chat-ia'),
-            __('Compilar APK', 'flavor-chat-ia'),
+            FLAVOR_PLATFORM_TEXT_DOMAIN,
+            __('Compilar APK', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Compilar APK', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             self::MENU_SLUG,
             array($this, 'render_page')
@@ -114,12 +114,12 @@ class Flavor_APK_Builder {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_apk_builder'),
             'i18n' => array(
-                'checking' => __('Verificando...', 'flavor-chat-ia'),
-                'building' => __('Compilando...', 'flavor-chat-ia'),
-                'success' => __('Completado', 'flavor-chat-ia'),
-                'error' => __('Error', 'flavor-chat-ia'),
-                'selectIcon' => __('Seleccionar icono', 'flavor-chat-ia'),
-                'confirmBuild' => __('¿Iniciar compilación? Este proceso puede tardar varios minutos.', 'flavor-chat-ia'),
+                'checking' => __('Verificando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'building' => __('Compilando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'success' => __('Completado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'selectIcon' => __('Seleccionar icono', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmBuild' => __('¿Iniciar compilación? Este proceso puede tardar varios minutos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             )
         ));
     }
@@ -134,7 +134,7 @@ class Flavor_APK_Builder {
         <div class="wrap flavor-apk-builder-wrap">
             <h1>
                 <span class="dashicons dashicons-smartphone"></span>
-                <?php _e('Compilador de APKs', 'flavor-chat-ia'); ?>
+                <?php _e('Compilador de APKs', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h1>
 
             <div class="apk-builder-layout">
@@ -142,7 +142,7 @@ class Flavor_APK_Builder {
                 <div class="config-panel">
                     <!-- Estado del entorno -->
                     <div class="config-section environment-check">
-                        <h2><?php _e('Estado del Entorno', 'flavor-chat-ia'); ?></h2>
+                        <h2><?php _e('Estado del Entorno', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                         <div id="environment-status">
                             <div class="env-item" data-check="flutter">
                                 <span class="status-icon pending"></span>
@@ -167,31 +167,31 @@ class Flavor_APK_Builder {
                         </div>
                         <button type="button" id="check-environment" class="button">
                             <span class="dashicons dashicons-update"></span>
-                            <?php _e('Verificar Entorno', 'flavor-chat-ia'); ?>
+                            <?php _e('Verificar Entorno', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
 
                     <!-- Branding -->
                     <div class="config-section">
-                        <h2><?php _e('Branding', 'flavor-chat-ia'); ?></h2>
+                        <h2><?php _e('Branding', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                         <form id="branding-form">
                             <div class="form-row">
-                                <label for="app_name"><?php _e('Nombre de la App', 'flavor-chat-ia'); ?></label>
+                                <label for="app_name"><?php _e('Nombre de la App', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <input type="text" id="app_name" name="app_name"
                                        value="<?php echo esc_attr($config['app_name']); ?>"
                                        placeholder="Mi App">
                             </div>
 
                             <div class="form-row">
-                                <label for="app_id"><?php _e('ID de la App (Package Name)', 'flavor-chat-ia'); ?></label>
+                                <label for="app_id"><?php _e('ID de la App (Package Name)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <input type="text" id="app_id" name="app_id"
                                        value="<?php echo esc_attr($config['app_id']); ?>"
                                        placeholder="com.ejemplo.miapp">
-                                <p class="description"><?php _e('Formato: com.empresa.app (solo minúsculas y puntos)', 'flavor-chat-ia'); ?></p>
+                                <p class="description"><?php _e('Formato: com.empresa.app (solo minúsculas y puntos)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </div>
 
                             <div class="form-row">
-                                <label for="app_version"><?php _e('Versión', 'flavor-chat-ia'); ?></label>
+                                <label for="app_version"><?php _e('Versión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <div class="version-inputs">
                                     <input type="text" id="app_version" name="app_version"
                                            value="<?php echo esc_attr($config['app_version']); ?>"
@@ -204,7 +204,7 @@ class Flavor_APK_Builder {
                             </div>
 
                             <div class="form-row">
-                                <label><?php _e('Icono de la App', 'flavor-chat-ia'); ?></label>
+                                <label><?php _e('Icono de la App', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <div class="icon-selector">
                                     <div class="icon-preview" id="icon-preview">
                                         <?php if ($config['app_icon']): ?>
@@ -216,27 +216,27 @@ class Flavor_APK_Builder {
                                     <input type="hidden" id="app_icon" name="app_icon"
                                            value="<?php echo esc_attr($config['app_icon']); ?>">
                                     <button type="button" id="select-icon" class="button">
-                                        <?php _e('Seleccionar Icono', 'flavor-chat-ia'); ?>
+                                        <?php _e('Seleccionar Icono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
-                                    <p class="description"><?php _e('Recomendado: 1024x1024px PNG', 'flavor-chat-ia'); ?></p>
+                                    <p class="description"><?php _e('Recomendado: 1024x1024px PNG', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                 </div>
                             </div>
 
                             <div class="form-row colors-row">
                                 <div class="color-field">
-                                    <label for="color_primary"><?php _e('Color Primario', 'flavor-chat-ia'); ?></label>
+                                    <label for="color_primary"><?php _e('Color Primario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                     <input type="text" id="color_primary" name="color_primary"
                                            class="color-picker"
                                            value="<?php echo esc_attr($config['color_primary']); ?>">
                                 </div>
                                 <div class="color-field">
-                                    <label for="color_secondary"><?php _e('Color Secundario', 'flavor-chat-ia'); ?></label>
+                                    <label for="color_secondary"><?php _e('Color Secundario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                     <input type="text" id="color_secondary" name="color_secondary"
                                            class="color-picker"
                                            value="<?php echo esc_attr($config['color_secondary']); ?>">
                                 </div>
                                 <div class="color-field">
-                                    <label for="color_accent"><?php _e('Color Acento', 'flavor-chat-ia'); ?></label>
+                                    <label for="color_accent"><?php _e('Color Acento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                     <input type="text" id="color_accent" name="color_accent"
                                            class="color-picker"
                                            value="<?php echo esc_attr($config['color_accent']); ?>">
@@ -247,20 +247,20 @@ class Flavor_APK_Builder {
 
                     <!-- Conexión -->
                     <div class="config-section">
-                        <h2><?php _e('Conexión', 'flavor-chat-ia'); ?></h2>
+                        <h2><?php _e('Conexión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                         <div class="form-row">
-                            <label for="site_url"><?php _e('URL del Sitio', 'flavor-chat-ia'); ?></label>
+                            <label for="site_url"><?php _e('URL del Sitio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="url" id="site_url" name="site_url"
                                    value="<?php echo esc_attr($config['site_url'] ?: home_url()); ?>">
                         </div>
                         <div class="form-row">
-                            <label for="api_key"><?php _e('API Key', 'flavor-chat-ia'); ?></label>
+                            <label for="api_key"><?php _e('API Key', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <div class="api-key-field">
                                 <input type="text" id="api_key" name="api_key"
                                        value="<?php echo esc_attr($config['api_key']); ?>"
                                        readonly>
                                 <button type="button" id="generate-api-key" class="button">
-                                    <?php _e('Generar', 'flavor-chat-ia'); ?>
+                                    <?php _e('Generar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             </div>
                         </div>
@@ -268,8 +268,8 @@ class Flavor_APK_Builder {
 
                     <!-- Módulos -->
                     <div class="config-section">
-                        <h2><?php _e('Módulos a Incluir', 'flavor-chat-ia'); ?></h2>
-                        <p class="description"><?php _e('Selecciona los módulos que estarán disponibles en la app.', 'flavor-chat-ia'); ?></p>
+                        <h2><?php _e('Módulos a Incluir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                        <p class="description"><?php _e('Selecciona los módulos que estarán disponibles en la app.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <div class="modules-grid" id="modules-grid">
                             <?php foreach ($modules as $module_id => $module): ?>
                                 <label class="module-item">
@@ -287,7 +287,7 @@ class Flavor_APK_Builder {
                     <!-- Opciones avanzadas -->
                     <div class="config-section collapsible">
                         <h2 class="collapsible-header">
-                            <?php _e('Opciones Avanzadas', 'flavor-chat-ia'); ?>
+                            <?php _e('Opciones Avanzadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             <span class="dashicons dashicons-arrow-down-alt2"></span>
                         </h2>
                         <div class="collapsible-content">
@@ -295,25 +295,25 @@ class Flavor_APK_Builder {
                                 <label>
                                     <input type="checkbox" id="enable_offline" name="enable_offline"
                                            <?php checked($config['enable_offline']); ?>>
-                                    <?php _e('Habilitar modo offline', 'flavor-chat-ia'); ?>
+                                    <?php _e('Habilitar modo offline', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </label>
                             </div>
                             <div class="form-row">
                                 <label>
                                     <input type="checkbox" id="enable_push" name="enable_push"
                                            <?php checked($config['enable_push']); ?>>
-                                    <?php _e('Habilitar notificaciones push', 'flavor-chat-ia'); ?>
+                                    <?php _e('Habilitar notificaciones push', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </label>
                             </div>
                             <div class="form-row">
                                 <label>
                                     <input type="checkbox" id="enable_biometric" name="enable_biometric"
                                            <?php checked($config['enable_biometric']); ?>>
-                                    <?php _e('Habilitar autenticación biométrica', 'flavor-chat-ia'); ?>
+                                    <?php _e('Habilitar autenticación biométrica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </label>
                             </div>
                             <div class="form-row">
-                                <label for="min_android_version"><?php _e('Versión mínima Android', 'flavor-chat-ia'); ?></label>
+                                <label for="min_android_version"><?php _e('Versión mínima Android', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <select id="min_android_version" name="min_android_version">
                                     <option value="21" <?php selected($config['min_android_version'], 21); ?>>Android 5.0 (API 21)</option>
                                     <option value="23" <?php selected($config['min_android_version'], 23); ?>>Android 6.0 (API 23)</option>
@@ -322,14 +322,14 @@ class Flavor_APK_Builder {
                                 </select>
                             </div>
                             <div class="form-row">
-                                <label for="build_type"><?php _e('Tipo de Build', 'flavor-chat-ia'); ?></label>
+                                <label for="build_type"><?php _e('Tipo de Build', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <select id="build_type" name="build_type">
                                     <option value="apk" <?php selected($config['build_type'], 'apk'); ?>>APK (Debug/Test)</option>
                                     <option value="appbundle" <?php selected($config['build_type'], 'appbundle'); ?>>App Bundle (Play Store)</option>
                                 </select>
                             </div>
                             <div class="form-row">
-                                <label for="flavor"><?php _e('Variante de App', 'flavor-chat-ia'); ?></label>
+                                <label for="flavor"><?php _e('Variante de App', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <select id="flavor" name="flavor">
                                     <option value="client" <?php selected($config['flavor'], 'client'); ?>>Cliente</option>
                                     <option value="admin" <?php selected($config['flavor'], 'admin'); ?>>Administrador</option>
@@ -342,15 +342,15 @@ class Flavor_APK_Builder {
                     <div class="config-actions">
                         <button type="button" id="save-config" class="button button-secondary">
                             <span class="dashicons dashicons-saved"></span>
-                            <?php _e('Guardar Configuración', 'flavor-chat-ia'); ?>
+                            <?php _e('Guardar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <button type="button" id="download-config" class="button button-secondary">
                             <span class="dashicons dashicons-download"></span>
-                            <?php _e('Descargar Config', 'flavor-chat-ia'); ?>
+                            <?php _e('Descargar Config', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <button type="button" id="start-build" class="button button-primary button-hero">
                             <span class="dashicons dashicons-hammer"></span>
-                            <?php _e('Compilar APK', 'flavor-chat-ia'); ?>
+                            <?php _e('Compilar APK', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </div>
@@ -359,7 +359,7 @@ class Flavor_APK_Builder {
                 <div class="preview-panel">
                     <!-- Preview -->
                     <div class="preview-section">
-                        <h2><?php _e('Vista Previa', 'flavor-chat-ia'); ?></h2>
+                        <h2><?php _e('Vista Previa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                         <div class="phone-preview">
                             <div class="phone-frame">
                                 <div class="phone-notch"></div>
@@ -393,16 +393,16 @@ class Flavor_APK_Builder {
 
                     <!-- Builds recientes -->
                     <div class="builds-section">
-                        <h2><?php _e('Builds Recientes', 'flavor-chat-ia'); ?></h2>
+                        <h2><?php _e('Builds Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                         <div id="builds-list" class="builds-list">
-                            <div class="loading"><?php _e('Cargando...', 'flavor-chat-ia'); ?></div>
+                            <div class="loading"><?php _e('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                         </div>
                     </div>
 
                     <!-- Log de compilación -->
                     <div class="build-log-section" id="build-log-section" style="display: none;">
                         <h2>
-                            <?php _e('Log de Compilación', 'flavor-chat-ia'); ?>
+                            <?php _e('Log de Compilación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             <span class="build-status" id="build-status"></span>
                         </h2>
                         <div class="build-progress">

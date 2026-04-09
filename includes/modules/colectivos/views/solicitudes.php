@@ -31,9 +31,9 @@ $colectivos = $wpdb->get_results("SELECT id, nombre FROM {$tabla_colectivos} WHE
 
 // Estados de solicitud
 $estados = [
-    'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-    'aprobada'  => __('Aprobada', 'flavor-chat-ia'),
-    'rechazada' => __('Rechazada', 'flavor-chat-ia'),
+    'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'aprobada'  => __('Aprobada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'rechazada' => __('Rechazada', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $colores_estado = [
@@ -94,10 +94,10 @@ if (isset($_POST['accion']) && isset($_POST['solicitud_id']) && wp_verify_nonce(
 
     if ($accion === 'aprobar') {
         $wpdb->update($tabla_miembros, ['estado' => 'activo', 'updated_at' => current_time('mysql')], ['id' => $solicitud_id]);
-        echo '<div class="notice notice-success is-dismissible"><p>' . __('Solicitud aprobada.', 'flavor-chat-ia') . '</p></div>';
+        echo '<div class="notice notice-success is-dismissible"><p>' . __('Solicitud aprobada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     } elseif ($accion === 'rechazar') {
         $wpdb->update($tabla_miembros, ['estado' => 'rechazada', 'updated_at' => current_time('mysql')], ['id' => $solicitud_id]);
-        echo '<div class="notice notice-warning is-dismissible"><p>' . __('Solicitud rechazada.', 'flavor-chat-ia') . '</p></div>';
+        echo '<div class="notice notice-warning is-dismissible"><p>' . __('Solicitud rechazada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     }
 
     // Recargar datos
@@ -110,15 +110,15 @@ if (isset($_POST['accion']) && isset($_POST['solicitud_id']) && wp_verify_nonce(
     <nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">
         <a href="<?php echo admin_url('admin.php?page=flavor-colectivos-dashboard'); ?>" style="color: #2271b1; text-decoration: none;">
             <span class="dashicons dashicons-groups" style="font-size: 14px; vertical-align: middle;"></span>
-            <?php _e('Colectivos', 'flavor-chat-ia'); ?>
+            <?php _e('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <span style="color: #646970; margin: 0 5px;">›</span>
-        <span style="color: #1d2327;"><?php _e('Solicitudes de Unión', 'flavor-chat-ia'); ?></span>
+        <span style="color: #1d2327;"><?php _e('Solicitudes de Unión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
     </nav>
 
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-businesswoman"></span>
-        <?php _e('Solicitudes de Unión', 'flavor-chat-ia'); ?>
+        <?php _e('Solicitudes de Unión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <hr class="wp-header-end">
@@ -127,15 +127,15 @@ if (isset($_POST['accion']) && isset($_POST['solicitud_id']) && wp_verify_nonce(
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 20px 0;">
         <div style="background: #fff; padding: 15px 20px; border-left: 4px solid #dba617; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="font-size: 28px; font-weight: bold; color: #1d2327;"><?php echo number_format($stats['pendientes']); ?></div>
-            <div style="color: #646970; font-size: 13px;"><?php _e('Pendientes', 'flavor-chat-ia'); ?></div>
+            <div style="color: #646970; font-size: 13px;"><?php _e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
         <div style="background: #fff; padding: 15px 20px; border-left: 4px solid #00a32a; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="font-size: 28px; font-weight: bold; color: #1d2327;"><?php echo number_format($stats['aprobadas_hoy']); ?></div>
-            <div style="color: #646970; font-size: 13px;"><?php _e('Aprobadas hoy', 'flavor-chat-ia'); ?></div>
+            <div style="color: #646970; font-size: 13px;"><?php _e('Aprobadas hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
         <div style="background: #fff; padding: 15px 20px; border-left: 4px solid #d63638; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="font-size: 28px; font-weight: bold; color: #1d2327;"><?php echo number_format($stats['rechazadas_hoy']); ?></div>
-            <div style="color: #646970; font-size: 13px;"><?php _e('Rechazadas hoy', 'flavor-chat-ia'); ?></div>
+            <div style="color: #646970; font-size: 13px;"><?php _e('Rechazadas hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -143,7 +143,7 @@ if (isset($_POST['accion']) && isset($_POST['solicitud_id']) && wp_verify_nonce(
     <div style="margin: 20px 0;">
         <a href="<?php echo admin_url('admin.php?page=colectivos-solicitudes&estado=pendiente'); ?>"
            class="button <?php echo $estado_filtro === 'pendiente' ? 'button-primary' : ''; ?>">
-            <?php _e('Pendientes', 'flavor-chat-ia'); ?>
+            <?php _e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <?php if ($stats['pendientes'] > 0): ?>
             <span style="background: #d63638; color: #fff; padding: 0 6px; border-radius: 10px; font-size: 11px; margin-left: 5px;">
                 <?php echo number_format($stats['pendientes']); ?>
@@ -152,11 +152,11 @@ if (isset($_POST['accion']) && isset($_POST['solicitud_id']) && wp_verify_nonce(
         </a>
         <a href="<?php echo admin_url('admin.php?page=colectivos-solicitudes&estado=activo'); ?>"
            class="button <?php echo $estado_filtro === 'activo' ? 'button-primary' : ''; ?>">
-            <?php _e('Aprobadas', 'flavor-chat-ia'); ?>
+            <?php _e('Aprobadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <a href="<?php echo admin_url('admin.php?page=colectivos-solicitudes&estado=rechazada'); ?>"
            class="button <?php echo $estado_filtro === 'rechazada' ? 'button-primary' : ''; ?>">
-            <?php _e('Rechazadas', 'flavor-chat-ia'); ?>
+            <?php _e('Rechazadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 
@@ -168,20 +168,20 @@ if (isset($_POST['accion']) && isset($_POST['solicitud_id']) && wp_verify_nonce(
 
             <div class="alignleft actions" style="display: flex; gap: 8px;">
                 <select name="colectivo">
-                    <option value=""><?php _e('Todos los colectivos', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todos los colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($colectivos as $col): ?>
                     <option value="<?php echo esc_attr($col->id); ?>" <?php selected($colectivo_filtro, $col->id); ?>>
                         <?php echo esc_html($col->nombre); ?>
                     </option>
                     <?php endforeach; ?>
                 </select>
-                <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="button"><?php _e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
             </div>
         </form>
 
         <div class="tablenav-pages">
             <span class="displaying-num">
-                <?php printf(_n('%s solicitud', '%s solicitudes', $total_items, 'flavor-chat-ia'), number_format($total_items)); ?>
+                <?php printf(_n('%s solicitud', '%s solicitudes', $total_items, FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($total_items)); ?>
             </span>
         </div>
     </div>
@@ -190,12 +190,12 @@ if (isset($_POST['accion']) && isset($_POST['solicitud_id']) && wp_verify_nonce(
     <table class="wp-list-table widefat fixed striped">
         <thead>
             <tr>
-                <th scope="col" style="width: 50px;"><?php _e('ID', 'flavor-chat-ia'); ?></th>
-                <th scope="col"><?php _e('Usuario', 'flavor-chat-ia'); ?></th>
-                <th scope="col"><?php _e('Colectivo', 'flavor-chat-ia'); ?></th>
-                <th scope="col" style="width: 100px;"><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                <th scope="col" style="width: 140px;"><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
-                <th scope="col" style="width: 150px;"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                <th scope="col" style="width: 50px;"><?php _e('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col"><?php _e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col"><?php _e('Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col" style="width: 100px;"><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col" style="width: 140px;"><?php _e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col" style="width: 150px;"><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -203,7 +203,7 @@ if (isset($_POST['accion']) && isset($_POST['solicitud_id']) && wp_verify_nonce(
             <tr>
                 <td colspan="6" style="text-align: center; padding: 40px;">
                     <span class="dashicons dashicons-yes-alt" style="font-size: 48px; color: #00a32a;"></span>
-                    <p style="color: #646970;"><?php _e('No hay solicitudes en este estado.', 'flavor-chat-ia'); ?></p>
+                    <p style="color: #646970;"><?php _e('No hay solicitudes en este estado.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
             <?php else: ?>
@@ -214,14 +214,14 @@ if (isset($_POST['accion']) && isset($_POST['solicitud_id']) && wp_verify_nonce(
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <?php echo get_avatar($sol->user_id, 36); ?>
                             <div>
-                                <strong><?php echo esc_html($sol->display_name ?: __('Usuario eliminado', 'flavor-chat-ia')); ?></strong>
+                                <strong><?php echo esc_html($sol->display_name ?: __('Usuario eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong>
                                 <br><small style="color: #646970;"><?php echo esc_html($sol->user_email); ?></small>
                             </div>
                         </div>
                     </td>
                     <td>
                         <a href="<?php echo admin_url('admin.php?page=colectivos-editar&id=' . $sol->colectivo_id); ?>">
-                            <?php echo esc_html($sol->colectivo_nombre ?: __('Colectivo eliminado', 'flavor-chat-ia')); ?>
+                            <?php echo esc_html($sol->colectivo_nombre ?: __('Colectivo eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                         </a>
                     </td>
                     <td>

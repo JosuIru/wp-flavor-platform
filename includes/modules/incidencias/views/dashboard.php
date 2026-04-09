@@ -54,11 +54,11 @@ $estado_badge_classes = [
 ];
 
 $estado_labels = [
-    'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-    'en_proceso' => __('En proceso', 'flavor-chat-ia'),
-    'resuelta' => __('Resuelta', 'flavor-chat-ia'),
-    'cerrada' => __('Cerrada', 'flavor-chat-ia'),
-    'rechazada' => __('Rechazada', 'flavor-chat-ia'),
+    'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'en_proceso' => __('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'resuelta' => __('Resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cerrada' => __('Cerrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'rechazada' => __('Rechazada', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 
@@ -72,14 +72,14 @@ $estado_labels = [
     <?php if (!$tablas_disponibles): ?>
         <div class="dm-alert dm-alert--info">
             <span class="dashicons dashicons-info"></span>
-            <p><?php esc_html_e('Falta la tabla del módulo Incidencias o aún no hay reportes registrados.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('Falta la tabla del módulo Incidencias o aún no hay reportes registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php endif; ?>
 
     <div class="dm-header">
         <div class="dm-header__title">
             <span class="dashicons dashicons-warning"></span>
-            <h1><?php esc_html_e('Dashboard de Incidencias Urbanas', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Dashboard de Incidencias Urbanas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
         </div>
     </div>
 
@@ -87,26 +87,26 @@ $estado_labels = [
     <div class="dm-quick-links">
         <a href="<?php echo esc_url(admin_url('admin.php?page=incidencias-abiertas')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-warning"></span>
-            <span><?php esc_html_e('Abiertas', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             <?php if ($incidencias_abiertas > 0): ?>
                 <span class="dm-badge dm-badge--error"><?php echo number_format_i18n($incidencias_abiertas); ?></span>
             <?php endif; ?>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=incidencias-todas')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-list-view"></span>
-            <span><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=incidencias-mapa')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-location-alt"></span>
-            <span><?php esc_html_e('Mapa', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=incidencias-config')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-admin-settings"></span>
-            <span><?php esc_html_e('Configuración', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(home_url('/mi-portal/incidencias/')); ?>" class="dm-quick-links__item" target="_blank">
             <span class="dashicons dashicons-external"></span>
-            <span><?php esc_html_e('Portal público', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Portal público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
     </div>
 
@@ -114,27 +114,27 @@ $estado_labels = [
     <div class="dm-stats-grid dm-stats-grid--4">
         <div class="dm-stat-card dm-stat-card--primary">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($total_incidencias); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Total Incidencias', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Total Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <div class="dm-stat-card__icon"><span class="dashicons dashicons-analytics"></span></div>
         </div>
 
         <div class="dm-stat-card dm-stat-card--error">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($incidencias_abiertas); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Abiertas', 'flavor-chat-ia'); ?></div>
-            <div class="dm-stat-card__meta"><?php printf(esc_html__('%s sin asignar', 'flavor-chat-ia'), number_format_i18n($incidencias_sin_asignar)); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+            <div class="dm-stat-card__meta"><?php printf(esc_html__('%s sin asignar', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($incidencias_sin_asignar)); ?></div>
             <div class="dm-stat-card__icon"><span class="dashicons dashicons-warning"></span></div>
         </div>
 
         <div class="dm-stat-card dm-stat-card--success">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($incidencias_resueltas_mes); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Resueltas (mes)', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Resueltas (mes)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <div class="dm-stat-card__icon"><span class="dashicons dashicons-yes-alt"></span></div>
         </div>
 
         <div class="dm-stat-card dm-stat-card--warning">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($tiempo_promedio_resolucion ? round($tiempo_promedio_resolucion) : 0); ?>h</div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Tiempo Promedio', 'flavor-chat-ia'); ?></div>
-            <div class="dm-stat-card__meta"><?php esc_html_e('de resolución', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Tiempo Promedio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+            <div class="dm-stat-card__meta"><?php esc_html_e('de resolución', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <div class="dm-stat-card__icon"><span class="dashicons dashicons-clock"></span></div>
         </div>
     </div>
@@ -143,7 +143,7 @@ $estado_labels = [
     <div class="dm-grid dm-grid--2">
         <div class="dm-card dm-card--chart">
             <div class="dm-card__header">
-                <h3><span class="dashicons dashicons-chart-bar"></span> <?php esc_html_e('Distribución por Estado', 'flavor-chat-ia'); ?></h3>
+                <h3><span class="dashicons dashicons-chart-bar"></span> <?php esc_html_e('Distribución por Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             </div>
             <div class="dm-card__chart">
                 <canvas id="chart-estado"></canvas>
@@ -152,7 +152,7 @@ $estado_labels = [
 
         <div class="dm-card dm-card--chart">
             <div class="dm-card__header">
-                <h3><span class="dashicons dashicons-chart-pie"></span> <?php esc_html_e('Por Prioridad', 'flavor-chat-ia'); ?></h3>
+                <h3><span class="dashicons dashicons-chart-pie"></span> <?php esc_html_e('Por Prioridad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             </div>
             <div class="dm-card__chart">
                 <canvas id="chart-prioridad"></canvas>
@@ -164,7 +164,7 @@ $estado_labels = [
     <div class="dm-grid dm-grid--2">
         <div class="dm-card dm-card--chart">
             <div class="dm-card__header">
-                <h3><span class="dashicons dashicons-category"></span> <?php esc_html_e('Categorías Más Reportadas', 'flavor-chat-ia'); ?></h3>
+                <h3><span class="dashicons dashicons-category"></span> <?php esc_html_e('Categorías Más Reportadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             </div>
             <div class="dm-card__chart">
                 <canvas id="chart-categorias"></canvas>
@@ -173,15 +173,15 @@ $estado_labels = [
 
         <div class="dm-card">
             <div class="dm-card__header">
-                <h3><span class="dashicons dashicons-thumbs-up"></span> <?php esc_html_e('Incidencias Más Votadas', 'flavor-chat-ia'); ?></h3>
+                <h3><span class="dashicons dashicons-thumbs-up"></span> <?php esc_html_e('Incidencias Más Votadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             </div>
             <?php if (!empty($incidencias_votadas)): ?>
                 <table class="dm-table">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('Número', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Título', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Votos', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Número', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Votos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -205,7 +205,7 @@ $estado_labels = [
             <?php else: ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-thumbs-up"></span>
-                    <p><?php esc_html_e('No hay incidencias con votos', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay incidencias con votos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
         </div>
@@ -214,7 +214,7 @@ $estado_labels = [
     <!-- Tendencia de resolución -->
     <div class="dm-card dm-card--chart">
         <div class="dm-card__header">
-            <h3><span class="dashicons dashicons-chart-line"></span> <?php esc_html_e('Tendencia de Resolución (Últimos 7 Días)', 'flavor-chat-ia'); ?></h3>
+            <h3><span class="dashicons dashicons-chart-line"></span> <?php esc_html_e('Tendencia de Resolución (Últimos 7 Días)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         </div>
         <div class="dm-card__chart">
             <canvas id="chart-tendencia"></canvas>
@@ -224,7 +224,7 @@ $estado_labels = [
     <!-- Distribución por estado en lista -->
     <div class="dm-card">
         <div class="dm-card__header">
-            <h3><?php esc_html_e('Resumen por Estado', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Resumen por Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         </div>
         <?php if (!empty($stats_estado)): ?>
             <div class="dm-badge-list">
@@ -259,7 +259,7 @@ jQuery(document).ready(function($) {
             data: {
                 labels: <?php echo wp_json_encode(array_map(function($s) use ($estado_labels) { return $estado_labels[$s->estado] ?? ucfirst($s->estado); }, $stats_estado)); ?>,
                 datasets: [{
-                    label: '<?php esc_html_e('Incidencias', 'flavor-chat-ia'); ?>',
+                    label: '<?php esc_html_e('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                     data: <?php echo wp_json_encode(array_column($stats_estado, 'total')); ?>,
                     backgroundColor: [warningColor + 'cc', primaryColor + 'cc', successColor + 'cc', '#6b7280cc', errorColor + 'cc'],
                     borderColor: [warningColor, primaryColor, successColor, '#6b7280', errorColor],
@@ -305,7 +305,7 @@ jQuery(document).ready(function($) {
             data: {
                 labels: <?php echo wp_json_encode(array_map(function($s) { return ucfirst($s->categoria); }, $stats_categoria)); ?>,
                 datasets: [{
-                    label: '<?php esc_html_e('Incidencias', 'flavor-chat-ia'); ?>',
+                    label: '<?php esc_html_e('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                     data: <?php echo wp_json_encode(array_column($stats_categoria, 'total')); ?>,
                     backgroundColor: primaryColor + 'cc',
                     borderColor: primaryColor,
@@ -330,7 +330,7 @@ jQuery(document).ready(function($) {
             data: {
                 labels: <?php echo wp_json_encode(array_map(function($r) { return date_i18n('d/m', strtotime($r->fecha)); }, $resueltas_semana)); ?>,
                 datasets: [{
-                    label: '<?php esc_html_e('Incidencias Resueltas', 'flavor-chat-ia'); ?>',
+                    label: '<?php esc_html_e('Incidencias Resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                     data: <?php echo wp_json_encode(array_column($resueltas_semana, 'total')); ?>,
                     borderColor: successColor,
                     backgroundColor: successColor + '20',

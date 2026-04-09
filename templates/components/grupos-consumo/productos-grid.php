@@ -122,7 +122,7 @@ $opciones_ordenar = $opciones_ordenar ?? [
 
                         <!-- Boton anadir al pedido -->
                         <a href="<?php echo esc_url('/grupos-consumo/pedido/'); ?>" class="block w-full text-center px-5 py-2.5 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold rounded-lg transition-all">
-                            <?php echo esc_html__('Anadir al Pedido', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Anadir al Pedido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </div>
@@ -132,7 +132,7 @@ $opciones_ordenar = $opciones_ordenar ?? [
         <!-- Boton ver mas -->
         <div class="text-center mt-10">
             <a href="<?php echo esc_url('/grupos-consumo/productos/'); ?>" class="inline-flex items-center gap-2 px-8 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-full shadow-lg hover:shadow-xl transition-all">
-                <?php echo esc_html__('Ver Todos los Productos', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Ver Todos los Productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                 </svg>

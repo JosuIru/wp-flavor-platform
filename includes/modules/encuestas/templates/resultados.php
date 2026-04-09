@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 if (!isset($resultados) || empty($resultados)) {
     ?>
     <div class="flavor-encuesta-resultados__empty">
-        <?php esc_html_e('No hay resultados disponibles', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('No hay resultados disponibles', 'flavor-platform'); ?>
     </div>
     <?php
     return;
@@ -27,12 +27,12 @@ $formato = $formato ?? 'barras';
 
 <div class="flavor-encuesta-resultados" data-formato="<?php echo esc_attr($formato); ?>">
     <header class="flavor-encuesta-resultados__header">
-        <h3><?php esc_html_e('Resultados', 'flavor-chat-ia'); ?></h3>
+        <h3><?php esc_html_e('Resultados', 'flavor-platform'); ?></h3>
         <div class="flavor-encuesta-resultados__meta">
             <span class="flavor-encuesta-resultados__total">
                 <?php
                 printf(
-                    esc_html(_n('%d participante', '%d participantes', $resultados['total_participantes'], 'flavor-chat-ia')),
+                    esc_html(_n('%d participante', '%d participantes', $resultados['total_participantes'], 'flavor-platform')),
                     $resultados['total_participantes']
                 );
                 ?>
@@ -40,7 +40,7 @@ $formato = $formato ?? 'barras';
 
             <?php if ($resultados['estado'] === 'activa'): ?>
                 <span class="flavor-encuesta-resultados__live">
-                    <?php esc_html_e('En vivo', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('En vivo', 'flavor-platform'); ?>
                 </span>
             <?php endif; ?>
         </div>
@@ -92,7 +92,7 @@ $formato = $formato ?? 'barras';
                         else:
                             ?>
                             <p class="flavor-encuesta-resultados__no-data">
-                                <?php esc_html_e('Sin respuestas aún', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Sin respuestas aún', 'flavor-platform'); ?>
                             </p>
                             <?php
                         endif;
@@ -108,12 +108,12 @@ $formato = $formato ?? 'barras';
                             ?>
                             <div class="flavor-encuesta-resultados__binary">
                                 <div class="flavor-encuesta-resultados__binary-option flavor-encuesta-resultados__binary-option--si">
-                                    <span class="flavor-encuesta-resultados__binary-label"><?php esc_html_e('Sí', 'flavor-chat-ia'); ?></span>
+                                    <span class="flavor-encuesta-resultados__binary-label"><?php esc_html_e('Sí', 'flavor-platform'); ?></span>
                                     <span class="flavor-encuesta-resultados__binary-value"><?php echo esc_html($si); ?></span>
                                     <span class="flavor-encuesta-resultados__binary-percent"><?php echo esc_html($porcentaje_si); ?>%</span>
                                 </div>
                                 <div class="flavor-encuesta-resultados__binary-option flavor-encuesta-resultados__binary-option--no">
-                                    <span class="flavor-encuesta-resultados__binary-label"><?php esc_html_e('No', 'flavor-chat-ia'); ?></span>
+                                    <span class="flavor-encuesta-resultados__binary-label"><?php esc_html_e('No', 'flavor-platform'); ?></span>
                                     <span class="flavor-encuesta-resultados__binary-value"><?php echo esc_html($no); ?></span>
                                     <span class="flavor-encuesta-resultados__binary-percent"><?php echo esc_html($porcentaje_no); ?>%</span>
                                 </div>
@@ -152,7 +152,7 @@ $formato = $formato ?? 'barras';
                                 <div class="flavor-encuesta-resultados__rating-count">
                                     <?php
                                     printf(
-                                        esc_html(_n('%d voto', '%d votos', $total_votos, 'flavor-chat-ia')),
+                                        esc_html(_n('%d voto', '%d votos', $total_votos, 'flavor-platform')),
                                         $total_votos
                                     );
                                     ?>
@@ -172,7 +172,7 @@ $formato = $formato ?? 'barras';
                                         <?php echo esc_html(number_format($stats['promedio'], 2)); ?>
                                     </span>
                                     <span class="flavor-encuesta-resultados__stat-label">
-                                        <?php esc_html_e('Promedio', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Promedio', 'flavor-platform'); ?>
                                     </span>
                                 </div>
                                 <div class="flavor-encuesta-resultados__stat">
@@ -180,7 +180,7 @@ $formato = $formato ?? 'barras';
                                         <?php echo esc_html($stats['minimo']); ?>
                                     </span>
                                     <span class="flavor-encuesta-resultados__stat-label">
-                                        <?php esc_html_e('Mínimo', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Mínimo', 'flavor-platform'); ?>
                                     </span>
                                 </div>
                                 <div class="flavor-encuesta-resultados__stat">
@@ -188,7 +188,7 @@ $formato = $formato ?? 'barras';
                                         <?php echo esc_html($stats['maximo']); ?>
                                     </span>
                                     <span class="flavor-encuesta-resultados__stat-label">
-                                        <?php esc_html_e('Máximo', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Máximo', 'flavor-platform'); ?>
                                     </span>
                                 </div>
                                 <div class="flavor-encuesta-resultados__stat">
@@ -196,7 +196,7 @@ $formato = $formato ?? 'barras';
                                         <?php echo esc_html($stats['total']); ?>
                                     </span>
                                     <span class="flavor-encuesta-resultados__stat-label">
-                                        <?php esc_html_e('Respuestas', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Respuestas', 'flavor-platform'); ?>
                                     </span>
                                 </div>
                             </div>
@@ -212,7 +212,7 @@ $formato = $formato ?? 'barras';
                                 <p class="flavor-encuesta-resultados__text-count">
                                     <?php
                                     printf(
-                                        esc_html__('%d respuestas de texto', 'flavor-chat-ia'),
+                                        esc_html__('%d respuestas de texto', 'flavor-platform'),
                                         count($campo['respuestas_texto'])
                                     );
                                     ?>
@@ -228,7 +228,7 @@ $formato = $formato ?? 'barras';
                                         <p class="flavor-encuesta-resultados__text-more">
                                             <?php
                                             printf(
-                                                esc_html__('Y %d respuestas más...', 'flavor-chat-ia'),
+                                                esc_html__('Y %d respuestas más...', 'flavor-platform'),
                                                 count($campo['respuestas_texto']) - 10
                                             );
                                             ?>
@@ -240,7 +240,7 @@ $formato = $formato ?? 'barras';
                         else:
                             ?>
                             <p class="flavor-encuesta-resultados__no-data">
-                                <?php esc_html_e('Sin respuestas de texto', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Sin respuestas de texto', 'flavor-platform'); ?>
                             </p>
                             <?php
                         endif;
@@ -249,7 +249,7 @@ $formato = $formato ?? 'barras';
                     default:
                         ?>
                         <p class="flavor-encuesta-resultados__no-data">
-                            <?php esc_html_e('Tipo de campo no soportado', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Tipo de campo no soportado', 'flavor-platform'); ?>
                         </p>
                         <?php
                 endswitch;
@@ -261,7 +261,7 @@ $formato = $formato ?? 'barras';
     <?php if (current_user_can('manage_options')): ?>
         <footer class="flavor-encuesta-resultados__footer">
             <a href="#" class="flavor-encuesta-resultados__export" data-encuesta-id="<?php echo esc_attr($resultados['encuesta_id']); ?>">
-                <?php esc_html_e('Exportar resultados', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Exportar resultados', 'flavor-platform'); ?>
             </a>
         </footer>
     <?php endif; ?>

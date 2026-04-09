@@ -90,7 +90,7 @@ $total_pasos       = count( $pasos_formulario );
                     data-step="<?php echo intval( $numero_paso_actual ); ?>"
                 >
                     <p class="text-sm text-gray-500 mb-4">
-                        <?php echo esc_html( sprintf( __( 'Paso %1$d de %2$d', 'flavor-chat-ia' ), $numero_paso_actual, $total_pasos ) ); ?>
+                        <?php echo esc_html( sprintf( __( 'Paso %1$d de %2$d', FLAVOR_PLATFORM_TEXT_DOMAIN ), $numero_paso_actual, $total_pasos ) ); ?>
                     </p>
 
                     <?php foreach ( $campos_del_paso as $campo ) :
@@ -158,7 +158,7 @@ $total_pasos       = count( $pasos_formulario );
                                     barras.forEach(function(b){b.style.width=parseInt(b.dataset.step)< <?php echo intval( $numero_paso_actual - 1 ); ?> ? '100%':'0%';});
                                 })()"
                             >
-                                <?php echo esc_html__( 'Anterior', 'flavor-chat-ia' ); ?>
+                                <?php echo esc_html__( 'Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                             </button>
                         <?php else : ?>
                             <div></div>
@@ -186,7 +186,7 @@ $total_pasos       = count( $pasos_formulario );
                                     barras.forEach(function(b){b.style.width=parseInt(b.dataset.step)<= <?php echo intval( $numero_paso_actual ); ?> ? '100%':'0%';});
                                 })()"
                             >
-                                <?php echo esc_html__( 'Siguiente', 'flavor-chat-ia' ); ?>
+                                <?php echo esc_html__( 'Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                             </button>
                         <?php else : ?>
                             <button

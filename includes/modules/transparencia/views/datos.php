@@ -83,10 +83,10 @@ $total_paginas = ceil($total_items / $por_pagina);
 // Estados disponibles
 $estados = ['borrador', 'pendiente', 'publicado', 'archivado'];
 $estado_labels = [
-    'borrador' => __('Borrador', 'flavor-chat-ia'),
-    'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-    'publicado' => __('Publicado', 'flavor-chat-ia'),
-    'archivado' => __('Archivado', 'flavor-chat-ia'),
+    'borrador' => __('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'publicado' => __('Publicado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'archivado' => __('Archivado', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 $estado_badges = [
     'borrador' => 'dm-badge--secondary',
@@ -99,11 +99,11 @@ $estado_badges = [
 <div class="wrap flavor-transparencia-datos">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-media-spreadsheet"></span>
-        <?php esc_html_e('Datos Públicos', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Datos Públicos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
     <a href="<?php echo esc_url(admin_url('admin.php?page=transparencia-publicar')); ?>" class="page-title-action">
         <span class="dashicons dashicons-plus-alt2"></span>
-        <?php esc_html_e('Publicar Nuevo', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Publicar Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </a>
     <hr class="wp-header-end">
 
@@ -111,8 +111,8 @@ $estado_badges = [
         <div class="dm-alert dm-alert--warning">
             <span class="dashicons dashicons-warning"></span>
             <div>
-                <strong><?php esc_html_e('Tablas no encontradas', 'flavor-chat-ia'); ?></strong>
-                <p><?php esc_html_e('Las tablas del módulo Transparencia no están creadas. Activa el módulo para crearlas automáticamente.', 'flavor-chat-ia'); ?></p>
+                <strong><?php esc_html_e('Tablas no encontradas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                <p><?php esc_html_e('Las tablas del módulo Transparencia no están creadas. Activa el módulo para crearlas automáticamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
     <?php else: ?>
@@ -124,14 +124,14 @@ $estado_badges = [
 
             <div class="dm-filters__row">
                 <div class="dm-filters__field">
-                    <label><?php esc_html_e('Buscar', 'flavor-chat-ia'); ?></label>
-                    <input type="text" name="s" value="<?php echo esc_attr($filtro_busqueda); ?>" placeholder="<?php esc_attr_e('Título o descripción...', 'flavor-chat-ia'); ?>">
+                    <label><?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                    <input type="text" name="s" value="<?php echo esc_attr($filtro_busqueda); ?>" placeholder="<?php esc_attr_e('Título o descripción...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
 
                 <div class="dm-filters__field">
-                    <label><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></label>
+                    <label><?php esc_html_e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="categoria">
-                        <option value=""><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($categorias as $cat): ?>
                             <option value="<?php echo esc_attr($cat); ?>" <?php selected($filtro_categoria, $cat); ?>>
                                 <?php echo esc_html(ucfirst($cat)); ?>
@@ -141,9 +141,9 @@ $estado_badges = [
                 </div>
 
                 <div class="dm-filters__field">
-                    <label><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></label>
+                    <label><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="estado">
-                        <option value=""><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($estados as $estado): ?>
                             <option value="<?php echo esc_attr($estado); ?>" <?php selected($filtro_estado, $estado); ?>>
                                 <?php echo esc_html($estado_labels[$estado]); ?>
@@ -155,10 +155,10 @@ $estado_badges = [
                 <div class="dm-filters__actions">
                     <button type="submit" class="button button-primary">
                         <span class="dashicons dashicons-search"></span>
-                        <?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=transparencia-datos')); ?>" class="button">
-                        <?php esc_html_e('Limpiar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </div>
@@ -170,12 +170,12 @@ $estado_badges = [
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th style="width: 40%;"><?php esc_html_e('Documento', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 15%;"><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 10%;"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 10%;"><?php esc_html_e('Visitas', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 15%;"><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 10%;"><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 40%;"><?php esc_html_e('Documento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 15%;"><?php esc_html_e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 10%;"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 10%;"><?php esc_html_e('Visitas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 15%;"><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 10%;"><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -184,9 +184,9 @@ $estado_badges = [
                         <td colspan="6">
                             <div class="dm-empty" style="padding: 40px;">
                                 <span class="dashicons dashicons-media-spreadsheet"></span>
-                                <p><?php esc_html_e('No hay datos publicados.', 'flavor-chat-ia'); ?></p>
+                                <p><?php esc_html_e('No hay datos publicados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                 <a href="<?php echo esc_url(admin_url('admin.php?page=transparencia-publicar')); ?>" class="button button-primary">
-                                    <?php esc_html_e('Publicar primer documento', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Publicar primer documento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </div>
                         </td>
@@ -206,7 +206,7 @@ $estado_badges = [
                             </td>
                             <td>
                                 <span class="dm-badge dm-badge--info">
-                                    <?php echo esc_html(ucfirst($dato->categoria ?: __('Sin categoría', 'flavor-chat-ia'))); ?>
+                                    <?php echo esc_html(ucfirst($dato->categoria ?: __('Sin categoría', FLAVOR_PLATFORM_TEXT_DOMAIN))); ?>
                                 </span>
                             </td>
                             <td>
@@ -232,11 +232,11 @@ $estado_badges = [
                             </td>
                             <td>
                                 <div class="row-actions visible">
-                                    <a href="<?php echo esc_url(admin_url('admin.php?page=transparencia-publicar&id=' . $dato->id)); ?>" title="<?php esc_attr_e('Editar', 'flavor-chat-ia'); ?>">
+                                    <a href="<?php echo esc_url(admin_url('admin.php?page=transparencia-publicar&id=' . $dato->id)); ?>" title="<?php esc_attr_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                         <span class="dashicons dashicons-edit"></span>
                                     </a>
                                     <?php if ($dato->archivo_url): ?>
-                                        <a href="<?php echo esc_url($dato->archivo_url); ?>" target="_blank" title="<?php esc_attr_e('Ver archivo', 'flavor-chat-ia'); ?>">
+                                        <a href="<?php echo esc_url($dato->archivo_url); ?>" target="_blank" title="<?php esc_attr_e('Ver archivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <span class="dashicons dashicons-external"></span>
                                         </a>
                                     <?php endif; ?>
@@ -253,7 +253,7 @@ $estado_badges = [
                 <div class="tablenav-pages">
                     <span class="displaying-num">
                         <?php printf(
-                            esc_html(_n('%s elemento', '%s elementos', $total_items, 'flavor-chat-ia')),
+                            esc_html(_n('%s elemento', '%s elementos', $total_items, FLAVOR_PLATFORM_TEXT_DOMAIN)),
                             number_format_i18n($total_items)
                         ); ?>
                     </span>

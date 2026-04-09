@@ -141,10 +141,10 @@ class Flavor_User_Portal {
             'nonce' => wp_create_nonce('flavor_portal_nonce'),
             'user_id' => get_current_user_id(),
             'strings' => [
-                'loading' => __('Cargando...', 'flavor-chat-ia'),
-                'error' => __('Error al cargar datos', 'flavor-chat-ia'),
-                'no_results' => __('No se encontraron resultados', 'flavor-chat-ia'),
-                'search_placeholder' => __('Buscar en todos los módulos...', 'flavor-chat-ia'),
+                'loading' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al cargar datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'no_results' => __('No se encontraron resultados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'search_placeholder' => __('Buscar en todos los módulos...', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -158,103 +158,103 @@ class Flavor_User_Portal {
         // el patrón canónico /mi-portal/MODULO/ACCION/
         $this->personal_modules = apply_filters('flavor_portal_personal_modules', [
             'socios' => [
-                'label' => __('Socios', 'flavor-chat-ia'),
+                'label' => __('Socios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'groups',
                 'stats_callback' => [$this, 'get_socios_stats'],
                 'widget_callback' => [$this, 'get_socios_widget'],
                 'actions' => [
-                    ['label' => __('Mi Cuota', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('socios', 'mi-cuota')],
-                    ['label' => __('Renovar', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('socios', 'renovar')],
+                    ['label' => __('Mi Cuota', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('socios', 'mi-cuota')],
+                    ['label' => __('Renovar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('socios', 'renovar')],
                 ],
             ],
             'eventos' => [
-                'label' => __('Eventos', 'flavor-chat-ia'),
+                'label' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'calendar',
                 'stats_callback' => [$this, 'get_eventos_stats'],
                 'widget_callback' => [$this, 'get_eventos_widget'],
                 'actions' => [
-                    ['label' => __('Mis Inscripciones', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('eventos', 'mis-inscripciones')],
-                    ['label' => __('Explorar Eventos', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('eventos', 'listado')],
+                    ['label' => __('Mis Inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('eventos', 'mis-inscripciones')],
+                    ['label' => __('Explorar Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('eventos', 'listado')],
                 ],
             ],
             'grupos-consumo' => [
-                'label' => __('Grupos de Consumo', 'flavor-chat-ia'),
+                'label' => __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'shopping_cart',
                 'stats_callback' => [$this, 'get_grupos_consumo_stats'],
                 'widget_callback' => [$this, 'get_grupos_consumo_widget'],
                 'actions' => [
-                    ['label' => __('Mis Pedidos', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'mis-pedidos')],
-                    ['label' => __('Hacer Pedido', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'nuevo-pedido')],
+                    ['label' => __('Mis Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'mis-pedidos')],
+                    ['label' => __('Hacer Pedido', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'nuevo-pedido')],
                 ],
             ],
             'marketplace' => [
-                'label' => __('Marketplace', 'flavor-chat-ia'),
+                'label' => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'store',
                 'stats_callback' => [$this, 'get_marketplace_stats'],
                 'widget_callback' => [$this, 'get_marketplace_widget'],
                 'actions' => [
-                    ['label' => __('Mis Compras', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('marketplace', 'mis-compras')],
-                    ['label' => __('Favoritos', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('marketplace', 'favoritos')],
+                    ['label' => __('Mis Compras', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('marketplace', 'mis-compras')],
+                    ['label' => __('Favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('marketplace', 'favoritos')],
                 ],
             ],
             'reservas' => [
-                'label' => __('Reservas', 'flavor-chat-ia'),
+                'label' => __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'event_available',
                 'stats_callback' => [$this, 'get_reservas_stats'],
                 'widget_callback' => [$this, 'get_reservas_widget'],
                 'actions' => [
-                    ['label' => __('Mis Reservas', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('reservas', 'mis-reservas')],
-                    ['label' => __('Nueva Reserva', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('reservas', 'nueva')],
+                    ['label' => __('Mis Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('reservas', 'mis-reservas')],
+                    ['label' => __('Nueva Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('reservas', 'nueva')],
                 ],
             ],
             'cursos' => [
-                'label' => __('Cursos', 'flavor-chat-ia'),
+                'label' => __('Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'school',
                 'stats_callback' => [$this, 'get_cursos_stats'],
                 'widget_callback' => [$this, 'get_cursos_widget'],
                 'actions' => [
-                    ['label' => __('Mis Cursos', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('cursos', 'mis-cursos')],
-                    ['label' => __('Certificados', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('cursos', 'certificados')],
+                    ['label' => __('Mis Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('cursos', 'mis-cursos')],
+                    ['label' => __('Certificados', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('cursos', 'certificados')],
                 ],
             ],
             'biblioteca' => [
-                'label' => __('Biblioteca', 'flavor-chat-ia'),
+                'label' => __('Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'local_library',
                 'stats_callback' => [$this, 'get_biblioteca_stats'],
                 'widget_callback' => [$this, 'get_biblioteca_widget'],
                 'actions' => [
-                    ['label' => __('Mis Préstamos', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('biblioteca', 'mis-prestamos')],
-                    ['label' => __('Reservas', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('biblioteca', 'mis-reservas')],
+                    ['label' => __('Mis Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('biblioteca', 'mis-prestamos')],
+                    ['label' => __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('biblioteca', 'mis-reservas')],
                 ],
             ],
             'banco-tiempo' => [
-                'label' => __('Banco de Tiempo', 'flavor-chat-ia'),
+                'label' => __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'schedule',
                 'stats_callback' => [$this, 'get_banco_tiempo_stats'],
                 'widget_callback' => [$this, 'get_banco_tiempo_widget'],
                 'actions' => [
-                    ['label' => __('Mi Saldo', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('banco-tiempo', 'mi-saldo')],
-                    ['label' => __('Intercambios', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('banco-tiempo', 'mis-intercambios')],
+                    ['label' => __('Mi Saldo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('banco-tiempo', 'mi-saldo')],
+                    ['label' => __('Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('banco-tiempo', 'mis-intercambios')],
                 ],
             ],
             'incidencias' => [
-                'label' => __('Incidencias', 'flavor-chat-ia'),
+                'label' => __('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'report_problem',
                 'stats_callback' => [$this, 'get_incidencias_stats'],
                 'widget_callback' => [$this, 'get_incidencias_widget'],
                 'actions' => [
-                    ['label' => __('Mis Incidencias', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('incidencias', 'mis-incidencias')],
-                    ['label' => __('Reportar', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('incidencias', 'nueva')],
+                    ['label' => __('Mis Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('incidencias', 'mis-incidencias')],
+                    ['label' => __('Reportar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('incidencias', 'nueva')],
                 ],
             ],
             'foros' => [
-                'label' => __('Foros', 'flavor-chat-ia'),
+                'label' => __('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'forum',
                 'stats_callback' => [$this, 'get_foros_stats'],
                 'widget_callback' => [$this, 'get_foros_widget'],
                 'actions' => [
-                    ['label' => __('Mis Temas', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('foros', 'mis-temas')],
-                    ['label' => __('Nuevo Tema', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('foros', 'nuevo')],
+                    ['label' => __('Mis Temas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('foros', 'mis-temas')],
+                    ['label' => __('Nuevo Tema', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => Flavor_Chat_Helpers::get_action_url('foros', 'nuevo')],
                 ],
             ],
         ]);
@@ -327,7 +327,7 @@ class Flavor_User_Portal {
                     <input
                         type="text"
                         id="portal-search-input"
-                        placeholder="<?php _e('Buscar...', 'flavor-chat-ia'); ?>"
+                        placeholder="<?php _e('Buscar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                         autocomplete="off"
                     >
                     <div id="portal-search-results" class="portal-search-results" style="display:none;"></div>
@@ -371,15 +371,15 @@ class Flavor_User_Portal {
         <div class="flavor-login-required">
             <div class="login-box">
                 <span class="dashicons dashicons-lock"></span>
-                <h3><?php _e('Acceso Restringido', 'flavor-chat-ia'); ?></h3>
-                <p><?php _e('Debes iniciar sesión para acceder a tu portal personal', 'flavor-chat-ia'); ?></p>
+                <h3><?php _e('Acceso Restringido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php _e('Debes iniciar sesión para acceder a tu portal personal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <div class="login-actions">
                     <a href="<?php echo esc_url($login_url); ?>" class="button button-primary">
-                        <?php _e('Iniciar Sesión', 'flavor-chat-ia'); ?>
+                        <?php _e('Iniciar Sesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <?php if (get_option('users_can_register')): ?>
                     <a href="<?php echo esc_url($register_url); ?>" class="button button-secondary">
-                        <?php _e('Registrarse', 'flavor-chat-ia'); ?>
+                        <?php _e('Registrarse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <?php endif; ?>
                 </div>
@@ -612,12 +612,12 @@ class Flavor_User_Portal {
         }
 
         return $DC::data_table([
-            'title' => __('Actividad Reciente', 'flavor-chat-ia'),
+            'title' => __('Actividad Reciente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-clock',
             'columns' => [
-                'module' => __('Módulo', 'flavor-chat-ia'),
-                'action' => __('Acción', 'flavor-chat-ia'),
-                'date' => __('Fecha', 'flavor-chat-ia'),
+                'module' => __('Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'action' => __('Acción', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'date' => __('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'data' => $table_data,
             'compact' => true,
@@ -685,7 +685,7 @@ class Flavor_User_Portal {
 
         return [[
             'value' => ucfirst($socio->estado),
-            'label' => __('Estado Socio', 'flavor-chat-ia'),
+            'label' => __('Estado Socio', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-id',
             'color' => $socio->estado === 'activo' ? 'success' : 'warning',
         ]];
@@ -704,7 +704,7 @@ class Flavor_User_Portal {
         ));
 
         if (!$socio) {
-            return '<p>' . __('No eres socio aún', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('No eres socio aún', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return sprintf(
@@ -713,11 +713,11 @@ class Flavor_User_Portal {
                 <p><strong>%s:</strong> %s</p>
                 <p><strong>%s:</strong> %s</p>
             </div>',
-            __('Número', 'flavor-chat-ia'),
+            __('Número', FLAVOR_PLATFORM_TEXT_DOMAIN),
             esc_html($socio->numero_socio),
-            __('Tipo', 'flavor-chat-ia'),
+            __('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             esc_html($socio->tipo_socio),
-            __('Fecha alta', 'flavor-chat-ia'),
+            __('Fecha alta', FLAVOR_PLATFORM_TEXT_DOMAIN),
             date_i18n('d/m/Y', strtotime($socio->fecha_alta))
         );
     }
@@ -748,13 +748,13 @@ class Flavor_User_Portal {
         return [
             [
                 'value' => number_format_i18n($total),
-                'label' => __('Eventos Inscritos', 'flavor-chat-ia'),
+                'label' => __('Eventos Inscritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-calendar',
                 'color' => 'info',
             ],
             [
                 'value' => number_format_i18n($proximos),
-                'label' => __('Próximos', 'flavor-chat-ia'),
+                'label' => __('Próximos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-arrow-right',
                 'color' => 'warning',
             ],
@@ -777,7 +777,7 @@ class Flavor_User_Portal {
         ));
 
         if (empty($proximos)) {
-            return '<p>' . __('No tienes eventos próximos', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('No tienes eventos próximos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $html = '<ul class="portal-widget-list">';
@@ -818,13 +818,13 @@ class Flavor_User_Portal {
         return [
             [
                 'value' => number_format_i18n($total_pedidos),
-                'label' => __('Pedidos', 'flavor-chat-ia'),
+                'label' => __('Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-cart',
                 'color' => 'eco',
             ],
             [
                 'value' => number_format_i18n($total_gastado, 2) . ' €',
-                'label' => __('Total Gastado', 'flavor-chat-ia'),
+                'label' => __('Total Gastado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-money',
                 'color' => 'success',
             ],
@@ -846,7 +846,7 @@ class Flavor_User_Portal {
         ));
 
         if (empty($ultimos_pedidos)) {
-            return '<p>' . __('No has realizado pedidos', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('No has realizado pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/class-dashboard-components.php';
@@ -898,7 +898,7 @@ class Flavor_User_Portal {
 
         return [[
             'value' => number_format_i18n($activas),
-            'label' => __('Reservas Activas', 'flavor-chat-ia'),
+            'label' => __('Reservas Activas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-calendar-alt',
             'color' => 'purple',
         ]];
@@ -919,7 +919,7 @@ class Flavor_User_Portal {
         ));
 
         if (empty($proximas)) {
-            return '<p>' . __('No tienes reservas próximas', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('No tienes reservas próximas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $html = '<ul class="portal-widget-list">';
@@ -956,13 +956,13 @@ class Flavor_User_Portal {
         return [
             [
                 'value' => number_format_i18n($mis_anuncios),
-                'label' => __('Mis Anuncios', 'flavor-chat-ia'),
+                'label' => __('Mis Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-megaphone',
                 'color' => 'info',
             ],
             [
                 'value' => number_format_i18n($publicados),
-                'label' => __('Publicados', 'flavor-chat-ia'),
+                'label' => __('Publicados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-yes',
                 'color' => 'success',
             ],
@@ -983,7 +983,7 @@ class Flavor_User_Portal {
         ]);
 
         if (empty($anuncios)) {
-            return '<p>' . __('No tienes anuncios publicados', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('No tienes anuncios publicados', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/class-dashboard-components.php';
@@ -1039,13 +1039,13 @@ class Flavor_User_Portal {
         return [
             [
                 'value' => number_format_i18n($activos),
-                'label' => __('Cursos Activos', 'flavor-chat-ia'),
+                'label' => __('Cursos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-book',
                 'color' => 'info',
             ],
             [
                 'value' => number_format_i18n($completados),
-                'label' => __('Completados', 'flavor-chat-ia'),
+                'label' => __('Completados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-awards',
                 'color' => 'success',
             ],
@@ -1069,7 +1069,7 @@ class Flavor_User_Portal {
         ));
 
         if (empty($cursos_activos)) {
-            return '<p>' . __('No estás matriculado en ningún curso', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('No estás matriculado en ningún curso', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/class-dashboard-components.php';
@@ -1080,7 +1080,7 @@ class Flavor_User_Portal {
             $progreso = isset($curso->progreso) ? intval($curso->progreso) : 0;
             $html .= '<div style="margin-bottom: 15px;">';
             $html .= '<strong>' . esc_html($curso->titulo) . '</strong><br>';
-            $html .= $DC::progress_bar($progreso, 100, sprintf(__('%d%% completado', 'flavor-chat-ia'), $progreso), 'info');
+            $html .= $DC::progress_bar($progreso, 100, sprintf(__('%d%% completado', FLAVOR_PLATFORM_TEXT_DOMAIN), $progreso), 'info');
             $html .= '</div>';
         }
         $html .= '</div>';
@@ -1120,19 +1120,19 @@ class Flavor_User_Portal {
         return [
             [
                 'value' => number_format_i18n($total),
-                'label' => __('Mis Incidencias', 'flavor-chat-ia'),
+                'label' => __('Mis Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-warning',
                 'color' => 'info',
             ],
             [
                 'value' => number_format_i18n($abiertas),
-                'label' => __('Abiertas', 'flavor-chat-ia'),
+                'label' => __('Abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-flag',
                 'color' => 'warning',
             ],
             [
                 'value' => number_format_i18n($resueltas),
-                'label' => __('Resueltas', 'flavor-chat-ia'),
+                'label' => __('Resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-yes-alt',
                 'color' => 'success',
             ],
@@ -1154,17 +1154,17 @@ class Flavor_User_Portal {
         ));
 
         if (empty($incidencias_recientes)) {
-            return '<p>' . __('No has reportado incidencias', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('No has reportado incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/class-dashboard-components.php';
         $DC = 'Flavor_Dashboard_Components';
 
         $estado_labels = [
-            'abierta' => __('Abierta', 'flavor-chat-ia'),
-            'en_progreso' => __('En Progreso', 'flavor-chat-ia'),
-            'resuelta' => __('Resuelta', 'flavor-chat-ia'),
-            'cerrada' => __('Cerrada', 'flavor-chat-ia'),
+            'abierta' => __('Abierta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'en_progreso' => __('En Progreso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'resuelta' => __('Resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cerrada' => __('Cerrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $estado_colors = [
@@ -1218,7 +1218,7 @@ class Flavor_User_Portal {
         $user_id = get_current_user_id();
 
         if (empty($module_slug) || !$user_id) {
-            wp_send_json_error(['message' => __('Parámetros inválidos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Parámetros inválidos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Obtener datos del módulo
@@ -1237,7 +1237,7 @@ class Flavor_User_Portal {
         $user_id = get_current_user_id();
 
         if (empty($search_term) || !$user_id) {
-            wp_send_json_error(['message' => __('Término de búsqueda requerido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Término de búsqueda requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $results = [];
@@ -1263,7 +1263,7 @@ class Flavor_User_Portal {
         if ($result) {
             wp_send_json_success($result);
         } else {
-            wp_send_json_error(['message' => __('Acción no disponible', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Acción no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 

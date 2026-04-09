@@ -34,7 +34,7 @@ $editable = $editable ?? false;
 
 // Extraer datos del usuario
 $user_id = $user['id'] ?? 0;
-$user_name = $user['name'] ?? $user['display_name'] ?? __('Usuario', 'flavor-chat-ia');
+$user_name = $user['name'] ?? $user['display_name'] ?? __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $user_email = $user['email'] ?? '';
 $user_avatar = $user['avatar'] ?? '';
 $user_bio = $user['bio'] ?? $user['description'] ?? '';
@@ -64,7 +64,7 @@ if (function_exists('flavor_get_color_classes')) {
 
             <?php if ($editable): ?>
                 <button class="absolute top-4 right-4 p-2 bg-white/20 backdrop-blur-sm rounded-lg text-white hover:bg-white/30 transition-colors">
-                    📷 <?php esc_html_e('Cambiar portada', 'flavor-chat-ia'); ?>
+                    📷 <?php esc_html_e('Cambiar portada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             <?php endif; ?>
         </div>
@@ -87,7 +87,7 @@ if (function_exists('flavor_get_color_classes')) {
 
                 <?php if ($user_verified): ?>
                     <span class="absolute bottom-0 right-0 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center border-2 border-white"
-                          title="<?php esc_attr_e('Verificado', 'flavor-chat-ia'); ?>">
+                          title="<?php esc_attr_e('Verificado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="text-white text-sm">✓</span>
                     </span>
                 <?php endif; ?>
@@ -125,7 +125,7 @@ if (function_exists('flavor_get_color_classes')) {
 
                             <?php if ($user_member_since): ?>
                                 <span class="flex items-center gap-1">
-                                    📅 <?php echo esc_html__('Desde', 'flavor-chat-ia'); ?> <?php echo esc_html($user_member_since); ?>
+                                    📅 <?php echo esc_html__('Desde', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html($user_member_since); ?>
                                 </span>
                             <?php endif; ?>
 

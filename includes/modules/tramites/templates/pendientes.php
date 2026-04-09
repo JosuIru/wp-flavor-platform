@@ -15,8 +15,8 @@ if (!defined('ABSPATH')) {
 if (!is_user_logged_in()) {
     echo '<div class="tramites-login-required">';
     echo '<span class="dashicons dashicons-lock"></span>';
-    echo '<h3>' . esc_html__('Inicia sesion para ver tus tramites pendientes', 'flavor-chat-ia') . '</h3>';
-    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="btn btn-primary">' . esc_html__('Iniciar sesion', 'flavor-chat-ia') . '</a>';
+    echo '<h3>' . esc_html__('Inicia sesion para ver tus tramites pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
+    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="btn btn-primary">' . esc_html__('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
     echo '</div>';
     return;
 }
@@ -29,7 +29,7 @@ $usuario_id = get_current_user_id();
 
 // Verificar si existe la tabla
 if (!Flavor_Chat_Helpers::tabla_existe($tabla_expedientes)) {
-    echo '<div class="tramites-empty"><p>' . esc_html__('El modulo de tramites no esta configurado.', 'flavor-chat-ia') . '</p></div>';
+    echo '<div class="tramites-empty"><p>' . esc_html__('El modulo de tramites no esta configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
 
@@ -86,10 +86,10 @@ foreach ($tramites_pendientes as $tramite) {
 
 // Labels y colores para estados
 $estados_labels = [
-    'pendiente' => __('Pendiente de inicio', 'flavor-chat-ia'),
-    'en_proceso' => __('En proceso', 'flavor-chat-ia'),
-    'en_revision' => __('En revision', 'flavor-chat-ia'),
-    'requiere_documentacion' => __('Requiere documentacion', 'flavor-chat-ia'),
+    'pendiente' => __('Pendiente de inicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'en_proceso' => __('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'en_revision' => __('En revision', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'requiere_documentacion' => __('Requiere documentacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $estados_colores = [
@@ -107,10 +107,10 @@ $estados_iconos = [
 ];
 
 $prioridad_labels = [
-    'urgente' => __('Urgente', 'flavor-chat-ia'),
-    'alta' => __('Alta', 'flavor-chat-ia'),
-    'media' => __('Media', 'flavor-chat-ia'),
-    'baja' => __('Baja', 'flavor-chat-ia'),
+    'urgente' => __('Urgente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'alta' => __('Alta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'media' => __('Media', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'baja' => __('Baja', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $prioridad_colores = [
@@ -127,31 +127,31 @@ $current_url = $tramites_base_url . 'pendientes/';
 <div class="tramites-pendientes-wrapper">
     <div class="pendientes-header">
         <nav class="tramites-breadcrumb">
-            <a href="<?php echo esc_url($tramites_base_url . 'mis-tramites/'); ?>"><?php esc_html_e('Mis tramites', 'flavor-chat-ia'); ?></a>
+            <a href="<?php echo esc_url($tramites_base_url . 'mis-tramites/'); ?>"><?php esc_html_e('Mis tramites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
             <span class="separator">&rsaquo;</span>
-            <span><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </nav>
-        <h2><?php esc_html_e('Tramites Pendientes', 'flavor-chat-ia'); ?></h2>
-        <p class="header-intro"><?php esc_html_e('Tramites que requieren tu atencion o estan en proceso.', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Tramites Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p class="header-intro"><?php esc_html_e('Tramites que requieren tu atencion o estan en proceso.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
 
     <!-- Filtros por tipo de pendiente -->
     <div class="pendientes-filtros-tabs">
         <a href="<?php echo esc_url($current_url); ?>" class="filtro-tab <?php echo empty($tipo_pendiente) ? 'activo' : ''; ?>">
             <span class="filtro-count"><?php echo intval($count_total); ?></span>
-            <span class="filtro-label"><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></span>
+            <span class="filtro-label"><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(add_query_arg('tipo', 'documentacion', $current_url)); ?>" class="filtro-tab warning <?php echo $tipo_pendiente === 'documentacion' ? 'activo' : ''; ?>">
             <span class="filtro-count"><?php echo intval($count_documentacion); ?></span>
-            <span class="filtro-label"><?php esc_html_e('Requieren documentos', 'flavor-chat-ia'); ?></span>
+            <span class="filtro-label"><?php esc_html_e('Requieren documentos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(add_query_arg('tipo', 'revision', $current_url)); ?>" class="filtro-tab info <?php echo $tipo_pendiente === 'revision' ? 'activo' : ''; ?>">
             <span class="filtro-count"><?php echo intval($count_revision); ?></span>
-            <span class="filtro-label"><?php esc_html_e('En revision', 'flavor-chat-ia'); ?></span>
+            <span class="filtro-label"><?php esc_html_e('En revision', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(add_query_arg('tipo', 'inicio', $current_url)); ?>" class="filtro-tab <?php echo $tipo_pendiente === 'inicio' ? 'activo' : ''; ?>">
             <span class="filtro-count"><?php echo intval($count_inicio); ?></span>
-            <span class="filtro-label"><?php esc_html_e('Pendiente inicio', 'flavor-chat-ia'); ?></span>
+            <span class="filtro-label"><?php esc_html_e('Pendiente inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
     </div>
 
@@ -160,11 +160,11 @@ $current_url = $tramites_base_url . 'pendientes/';
     <div class="pendientes-alerta-global">
         <span class="dashicons dashicons-warning"></span>
         <div class="alerta-content">
-            <strong><?php echo sprintf(esc_html__('%d tramite(s) requieren documentacion', 'flavor-chat-ia'), $count_documentacion); ?></strong>
-            <p><?php esc_html_e('Completa la documentacion solicitada para que puedan continuar siendo procesados.', 'flavor-chat-ia'); ?></p>
+            <strong><?php echo sprintf(esc_html__('%d tramite(s) requieren documentacion', FLAVOR_PLATFORM_TEXT_DOMAIN), $count_documentacion); ?></strong>
+            <p><?php esc_html_e('Completa la documentacion solicitada para que puedan continuar siendo procesados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
         <a href="<?php echo esc_url(add_query_arg('tipo', 'documentacion', $current_url)); ?>" class="btn btn-sm btn-outline">
-            <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
     <?php endif; ?>
@@ -196,7 +196,7 @@ $current_url = $tramites_base_url . 'pendientes/';
                                     <span class="dashicons <?php echo esc_attr($tramite->tipo_icono ?: 'dashicons-clipboard'); ?>"></span>
                                 </span>
                                 <div class="tipo-info">
-                                    <h4><?php echo esc_html($tramite->tipo_nombre ?: __('Tramite', 'flavor-chat-ia')); ?></h4>
+                                    <h4><?php echo esc_html($tramite->tipo_nombre ?: __('Tramite', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></h4>
                                     <span class="expediente-numero"><?php echo esc_html($tramite->numero_expediente); ?></span>
                                 </div>
                             </div>
@@ -216,15 +216,15 @@ $current_url = $tramites_base_url . 'pendientes/';
                         <div class="pendiente-timeline">
                             <span class="timeline-item">
                                 <span class="dashicons dashicons-calendar-alt"></span>
-                                <?php echo sprintf(esc_html__('Iniciado hace %d dias', 'flavor-chat-ia'), $dias_transcurridos); ?>
+                                <?php echo sprintf(esc_html__('Iniciado hace %d dias', FLAVOR_PLATFORM_TEXT_DOMAIN), $dias_transcurridos); ?>
                             </span>
                             <?php if ($dias_restantes !== null): ?>
                                 <span class="timeline-item <?php echo $vencido ? 'vencido' : ($dias_restantes <= 3 ? 'urgente' : ''); ?>">
                                     <span class="dashicons dashicons-clock"></span>
                                     <?php if ($vencido): ?>
-                                        <?php echo sprintf(esc_html__('Vencido hace %d dias', 'flavor-chat-ia'), abs($dias_restantes)); ?>
+                                        <?php echo sprintf(esc_html__('Vencido hace %d dias', FLAVOR_PLATFORM_TEXT_DOMAIN), abs($dias_restantes)); ?>
                                     <?php else: ?>
-                                        <?php echo sprintf(esc_html__('%d dias restantes', 'flavor-chat-ia'), $dias_restantes); ?>
+                                        <?php echo sprintf(esc_html__('%d dias restantes', FLAVOR_PLATFORM_TEXT_DOMAIN), $dias_restantes); ?>
                                     <?php endif; ?>
                                 </span>
                             <?php endif; ?>
@@ -233,19 +233,19 @@ $current_url = $tramites_base_url . 'pendientes/';
                         <?php if ($tramite->estado_actual === 'requiere_documentacion'): ?>
                             <div class="pendiente-accion-requerida">
                                 <span class="dashicons dashicons-warning"></span>
-                                <span><?php esc_html_e('Se requiere que subas documentacion adicional para continuar.', 'flavor-chat-ia'); ?></span>
+                                <span><?php esc_html_e('Se requiere que subas documentacion adicional para continuar.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                         <?php endif; ?>
                     </div>
 
                     <div class="pendiente-actions">
                         <a href="<?php echo esc_url($tramites_base_url . 'expediente/?id=' . $tramite->id); ?>" class="btn btn-primary btn-sm">
-                            <?php esc_html_e('Ver detalle', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Ver detalle', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                         <?php if ($tramite->estado_actual === 'requiere_documentacion'): ?>
                             <a href="<?php echo esc_url($tramites_base_url . 'expediente/?id=' . $tramite->id . '#documentos'); ?>" class="btn btn-outline btn-sm">
                                 <span class="dashicons dashicons-upload"></span>
-                                <?php esc_html_e('Subir docs', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Subir docs', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         <?php endif; ?>
                     </div>
@@ -255,14 +255,14 @@ $current_url = $tramites_base_url . 'pendientes/';
     <?php else: ?>
         <div class="pendientes-empty">
             <span class="dashicons dashicons-yes-alt"></span>
-            <h3><?php esc_html_e('No tienes tramites pendientes', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('Todos tus tramites estan al dia. Puedes iniciar un nuevo tramite cuando lo necesites.', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('No tienes tramites pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php esc_html_e('Todos tus tramites estan al dia. Puedes iniciar un nuevo tramite cuando lo necesites.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <div class="empty-actions">
                 <a href="<?php echo esc_url($tramites_base_url . 'mis-tramites/'); ?>" class="btn btn-outline">
-                    <?php esc_html_e('Ver mis tramites', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver mis tramites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="<?php echo esc_url($tramites_base_url . 'nuevo/'); ?>" class="btn btn-primary">
-                    <?php esc_html_e('Nuevo tramite', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Nuevo tramite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>

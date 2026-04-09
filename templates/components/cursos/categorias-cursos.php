@@ -29,7 +29,7 @@ $categorias = [
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
                 </svg>
-                <?php echo esc_html__('Categorias', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Categorias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
             <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4"><?php echo esc_html($titulo); ?></h2>
             <p class="text-xl text-gray-600"><?php echo esc_html($descripcion); ?></p>
@@ -49,7 +49,7 @@ $categorias = [
                         </div>
                         <p class="text-sm text-gray-600 mb-4"><?php echo esc_html($cat['descripcion']); ?></p>
                         <div class="flex items-center gap-2 text-sm font-semibold text-cyan-600">
-                            <span><?php echo esc_html__('Ver cursos', 'flavor-chat-ia'); ?></span>
+                            <span><?php echo esc_html__('Ver cursos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                             </svg>
@@ -60,9 +60,9 @@ $categorias = [
         </div>
 
         <div class="mt-12 text-center">
-            <p class="text-lg text-gray-600 mb-6"><?php echo esc_html__('Total:', 'flavor-chat-ia'); ?> <span class="font-bold text-cyan-600"><?php echo esc_html__('219 cursos', 'flavor-chat-ia'); ?></span> <?php echo esc_html__('disponibles en 8 categorias', 'flavor-chat-ia'); ?></p>
+            <p class="text-lg text-gray-600 mb-6"><?php echo esc_html__('Total:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="font-bold text-cyan-600"><?php echo esc_html__('219 cursos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span> <?php echo esc_html__('disponibles en 8 categorias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <a href="#todos-cursos" class="inline-flex items-center gap-2 px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300 hover:shadow-lg hover:scale-105" style="background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%); color: white;">
-                <span><?php echo esc_html__('Ver Todos los Cursos', 'flavor-chat-ia'); ?></span>
+                <span><?php echo esc_html__('Ver Todos los Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                 </svg>

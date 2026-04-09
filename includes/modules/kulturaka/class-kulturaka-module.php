@@ -27,8 +27,8 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
      */
     public function __construct() {
         $this->id = 'kulturaka';
-        $this->name = __('Kulturaka', 'flavor-chat-ia');
-        $this->description = __('Red cultural descentralizada que conecta artistas, espacios y comunidades. Integra eventos, crowdfunding, banco de tiempo y economía solidaria.', 'flavor-chat-ia');
+        $this->name = __('Kulturaka', 'flavor-platform');
+        $this->description = __('Red cultural descentralizada que conecta artistas, espacios y comunidades. Integra eventos, crowdfunding, banco de tiempo y economía solidaria.', 'flavor-platform');
         $this->module_role = 'ecosystem';
         $this->ecosystem_requires_modules = ['eventos', 'espacios-comunes', 'socios'];
         $this->ecosystem_supports_modules = ['crowdfunding', 'banco-tiempo', 'comunidades', 'colectivos'];
@@ -60,7 +60,7 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Kulturaka requiere los módulos Eventos, Espacios Comunes y Miembros activos.', 'flavor-chat-ia');
+            return __('Kulturaka requiere los módulos Eventos, Espacios Comunes y Miembros activos.', 'flavor-platform');
         }
         return '';
     }
@@ -81,25 +81,25 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
 
             // Tipos de espacio cultural
             'tipos_espacio' => [
-                'gaztetxe' => __('Gaztetxe', 'flavor-chat-ia'),
-                'sala_conciertos' => __('Sala de conciertos', 'flavor-chat-ia'),
-                'teatro' => __('Teatro', 'flavor-chat-ia'),
-                'galeria' => __('Galería', 'flavor-chat-ia'),
-                'centro_cultural' => __('Centro cultural', 'flavor-chat-ia'),
-                'espacio_publico' => __('Espacio público', 'flavor-chat-ia'),
-                'online' => __('Online', 'flavor-chat-ia'),
+                'gaztetxe' => __('Gaztetxe', 'flavor-platform'),
+                'sala_conciertos' => __('Sala de conciertos', 'flavor-platform'),
+                'teatro' => __('Teatro', 'flavor-platform'),
+                'galeria' => __('Galería', 'flavor-platform'),
+                'centro_cultural' => __('Centro cultural', 'flavor-platform'),
+                'espacio_publico' => __('Espacio público', 'flavor-platform'),
+                'online' => __('Online', 'flavor-platform'),
             ],
 
             // Tipos de evento cultural
             'tipos_evento' => [
-                'concierto' => __('Concierto', 'flavor-chat-ia'),
-                'teatro' => __('Teatro', 'flavor-chat-ia'),
-                'danza' => __('Danza', 'flavor-chat-ia'),
-                'exposicion' => __('Exposición', 'flavor-chat-ia'),
-                'cine' => __('Cine', 'flavor-chat-ia'),
-                'poesia' => __('Poesía', 'flavor-chat-ia'),
-                'taller' => __('Taller', 'flavor-chat-ia'),
-                'festival' => __('Festival', 'flavor-chat-ia'),
+                'concierto' => __('Concierto', 'flavor-platform'),
+                'teatro' => __('Teatro', 'flavor-platform'),
+                'danza' => __('Danza', 'flavor-platform'),
+                'exposicion' => __('Exposición', 'flavor-platform'),
+                'cine' => __('Cine', 'flavor-platform'),
+                'poesia' => __('Poesía', 'flavor-platform'),
+                'taller' => __('Taller', 'flavor-platform'),
+                'festival' => __('Festival', 'flavor-platform'),
             ],
 
             // Nodos geográficos iniciales
@@ -559,7 +559,7 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
         $artista = $artista_manager->get_artista_by_usuario($artista_id);
 
         if (!$artista) {
-            return new WP_Error('sin_perfil_artista', __('Necesitas un perfil de artista para enviar propuestas.', 'flavor-chat-ia'));
+            return new WP_Error('sin_perfil_artista', __('Necesitas un perfil de artista para enviar propuestas.', 'flavor-platform'));
         }
 
         // Crear evento en estado borrador con metadata de propuesta
@@ -587,7 +587,7 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
         $insertado = $wpdb->insert($tabla_eventos, $datos_evento);
 
         if (!$insertado) {
-            return new WP_Error('error_crear', __('Error al crear la propuesta.', 'flavor-chat-ia'));
+            return new WP_Error('error_crear', __('Error al crear la propuesta.', 'flavor-platform'));
         }
 
         $propuesta_id = $wpdb->insert_id;
@@ -608,7 +608,7 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
         $propuesta = $wpdb->get_row($wpdb->prepare("SELECT * FROM $tabla WHERE id = %d", $propuesta_id));
 
         if (!$propuesta) {
-            return new WP_Error('no_existe', __('Propuesta no encontrada.', 'flavor-chat-ia'));
+            return new WP_Error('no_existe', __('Propuesta no encontrada.', 'flavor-platform'));
         }
 
         $metadata = json_decode($propuesta->metadata, true) ?: [];
@@ -731,12 +731,12 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
         $tabla = $wpdb->prefix . 'flavor_kulturaka_agradecimientos';
 
         if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_kulturaka_agradecimientos')) {
-            return new WP_Error('tabla_no_existe', __('El sistema de agradecimientos no está configurado.', 'flavor-chat-ia'));
+            return new WP_Error('tabla_no_existe', __('El sistema de agradecimientos no está configurado.', 'flavor-platform'));
         }
 
         $de_usuario_id = get_current_user_id();
         if (!$de_usuario_id) {
-            return new WP_Error('sin_usuario', __('Debes iniciar sesión.', 'flavor-chat-ia'));
+            return new WP_Error('sin_usuario', __('Debes iniciar sesión.', 'flavor-platform'));
         }
 
         $datos_insertar = [
@@ -754,7 +754,7 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
             do_action('flavor_kulturaka_agradecimiento_enviado', $wpdb->insert_id, $datos_insertar);
         }
 
-        return $insertado ? $wpdb->insert_id : new WP_Error('error', __('Error al enviar agradecimiento.', 'flavor-chat-ia'));
+        return $insertado ? $wpdb->insert_id : new WP_Error('error', __('Error al enviar agradecimiento.', 'flavor-platform'));
     }
 
     // =========================================================
@@ -934,8 +934,8 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
 
 
         add_menu_page(
-            __('Kulturaka', 'flavor-chat-ia'),
-            __('Kulturaka', 'flavor-chat-ia'),
+            __('Kulturaka', 'flavor-platform'),
+            __('Kulturaka', 'flavor-platform'),
             'manage_options',
             'flavor-kulturaka',
             [$this, 'render_pagina_admin'],
@@ -945,8 +945,8 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
 
         add_submenu_page(
             'flavor-kulturaka',
-            __('Dashboard', 'flavor-chat-ia'),
-            __('Dashboard', 'flavor-chat-ia'),
+            __('Dashboard', 'flavor-platform'),
+            __('Dashboard', 'flavor-platform'),
             'manage_options',
             'flavor-kulturaka',
             [$this, 'render_pagina_admin']
@@ -954,8 +954,8 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
 
         add_submenu_page(
             'flavor-kulturaka',
-            __('Nodos de la Red', 'flavor-chat-ia'),
-            __('Nodos', 'flavor-chat-ia'),
+            __('Nodos de la Red', 'flavor-platform'),
+            __('Nodos', 'flavor-platform'),
             'manage_options',
             'flavor-kulturaka-nodos',
             [$this, 'render_pagina_nodos']
@@ -963,8 +963,8 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
 
         add_submenu_page(
             'flavor-kulturaka',
-            __('Propuestas', 'flavor-chat-ia'),
-            __('Propuestas', 'flavor-chat-ia'),
+            __('Propuestas', 'flavor-platform'),
+            __('Propuestas', 'flavor-platform'),
             'manage_options',
             'flavor-kulturaka-propuestas',
             [$this, 'render_pagina_propuestas']
@@ -972,8 +972,8 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
 
         add_submenu_page(
             'flavor-kulturaka',
-            __('Métricas', 'flavor-chat-ia'),
-            __('Métricas', 'flavor-chat-ia'),
+            __('Métricas', 'flavor-platform'),
+            __('Métricas', 'flavor-platform'),
             'manage_options',
             'flavor-kulturaka-metricas',
             [$this, 'render_pagina_metricas']
@@ -1013,7 +1013,7 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
             LIMIT 50
         ");
 
-        echo '<div class="wrap"><h1>' . esc_html__('Propuestas Kulturaka', 'flavor-chat-ia') . '</h1>';
+        echo '<div class="wrap"><h1>' . esc_html__('Propuestas Kulturaka', 'flavor-platform') . '</h1>';
         echo '<table class="wp-list-table widefat fixed striped">';
         echo '<thead><tr><th>Artista</th><th>Espacio</th><th>Título</th><th>Estado</th><th>Fecha</th></tr></thead><tbody>';
 
@@ -1051,7 +1051,7 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
         ];
 
         echo '<div class="wrap">';
-        echo '<h1>' . esc_html__('Métricas de la Red Kulturaka', 'flavor-chat-ia') . '</h1>';
+        echo '<h1>' . esc_html__('Métricas de la Red Kulturaka', 'flavor-platform') . '</h1>';
 
         echo '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin:20px 0;">';
         foreach ([

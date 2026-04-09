@@ -26,24 +26,24 @@ $anio_actual = date('Y');
     <header class="flavor-calendario-header">
         <h2 class="flavor-calendario-titulo">
             <span class="dashicons dashicons-calendar-alt"></span>
-            <?php esc_html_e('Calendario de Comunidades', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Calendario de Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
 
         <div class="flavor-calendario-leyenda">
             <span class="flavor-leyenda-item local">
                 <span class="flavor-leyenda-dot"></span>
-                <?php esc_html_e('Eventos locales', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Eventos locales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
             <span class="flavor-leyenda-item federado">
                 <span class="flavor-leyenda-dot"></span>
-                <?php esc_html_e('Red federada', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Red federada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
         </div>
     </header>
 
     <!-- Navegación del mes -->
     <nav class="flavor-calendario-nav">
-        <button type="button" class="flavor-cal-nav-btn" id="mes-anterior" aria-label="<?php esc_attr_e('Mes anterior', 'flavor-chat-ia'); ?>">
+        <button type="button" class="flavor-cal-nav-btn" id="mes-anterior" aria-label="<?php esc_attr_e('Mes anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <span class="dashicons dashicons-arrow-left-alt2"></span>
         </button>
 
@@ -51,12 +51,12 @@ $anio_actual = date('Y');
             <?php echo esc_html(date_i18n('F Y')); ?>
         </span>
 
-        <button type="button" class="flavor-cal-nav-btn" id="mes-siguiente" aria-label="<?php esc_attr_e('Mes siguiente', 'flavor-chat-ia'); ?>">
+        <button type="button" class="flavor-cal-nav-btn" id="mes-siguiente" aria-label="<?php esc_attr_e('Mes siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <span class="dashicons dashicons-arrow-right-alt2"></span>
         </button>
 
         <button type="button" class="flavor-cal-nav-btn flavor-cal-hoy" id="ir-hoy">
-            <?php esc_html_e('Hoy', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
     </nav>
 
@@ -66,8 +66,8 @@ $anio_actual = date('Y');
             <?php if (empty($todos_eventos)): ?>
                 <div class="flavor-eventos-vacio">
                     <span class="dashicons dashicons-calendar"></span>
-                    <h3><?php esc_html_e('No hay eventos próximos', 'flavor-chat-ia'); ?></h3>
-                    <p><?php esc_html_e('Los eventos de tus comunidades aparecerán aquí.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php esc_html_e('No hay eventos próximos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php esc_html_e('Los eventos de tus comunidades aparecerán aquí.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <?php
@@ -99,7 +99,7 @@ $anio_actual = date('Y');
                                     <div class="flavor-evento-hora">
                                         <?php
                                         $hora = date('H:i', strtotime($evento['fecha_inicio']));
-                                        echo $hora !== '00:00' ? esc_html($hora) : esc_html__('Todo el día', 'flavor-chat-ia');
+                                        echo $hora !== '00:00' ? esc_html($hora) : esc_html__('Todo el día', FLAVOR_PLATFORM_TEXT_DOMAIN);
                                         ?>
                                     </div>
 
@@ -417,18 +417,18 @@ $anio_actual = date('Y');
         var tituloMes = document.getElementById('titulo-mes');
 
         var meses = [
-            '<?php echo esc_js(__('Enero', 'flavor-chat-ia')); ?>',
-            '<?php echo esc_js(__('Febrero', 'flavor-chat-ia')); ?>',
-            '<?php echo esc_js(__('Marzo', 'flavor-chat-ia')); ?>',
-            '<?php echo esc_js(__('Abril', 'flavor-chat-ia')); ?>',
-            '<?php echo esc_js(__('Mayo', 'flavor-chat-ia')); ?>',
-            '<?php echo esc_js(__('Junio', 'flavor-chat-ia')); ?>',
-            '<?php echo esc_js(__('Julio', 'flavor-chat-ia')); ?>',
-            '<?php echo esc_js(__('Agosto', 'flavor-chat-ia')); ?>',
-            '<?php echo esc_js(__('Septiembre', 'flavor-chat-ia')); ?>',
-            '<?php echo esc_js(__('Octubre', 'flavor-chat-ia')); ?>',
-            '<?php echo esc_js(__('Noviembre', 'flavor-chat-ia')); ?>',
-            '<?php echo esc_js(__('Diciembre', 'flavor-chat-ia')); ?>'
+            '<?php echo esc_js(__('Enero', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
+            '<?php echo esc_js(__('Febrero', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
+            '<?php echo esc_js(__('Marzo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
+            '<?php echo esc_js(__('Abril', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
+            '<?php echo esc_js(__('Mayo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
+            '<?php echo esc_js(__('Junio', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
+            '<?php echo esc_js(__('Julio', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
+            '<?php echo esc_js(__('Agosto', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
+            '<?php echo esc_js(__('Septiembre', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
+            '<?php echo esc_js(__('Octubre', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
+            '<?php echo esc_js(__('Noviembre', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
+            '<?php echo esc_js(__('Diciembre', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>'
         ];
 
         function actualizarTitulo() {

@@ -22,24 +22,24 @@ $tipos_material = [
             <span class="dashicons dashicons-update-alt"></span>
         </span>
         <div>
-            <h3><?php esc_html_e('Economía Circular', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('Da una segunda vida a objetos que ya no usas', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('Economía Circular', 'flavor-platform'); ?></h3>
+            <p><?php esc_html_e('Da una segunda vida a objetos que ya no usas', 'flavor-platform'); ?></p>
         </div>
     </div>
 
     <!-- Tabs -->
     <div class="rec-circular__tabs">
         <button class="rec-circular__tab rec-circular__tab--active" data-tab="disponibles">
-            <?php esc_html_e('Disponibles', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Disponibles', 'flavor-platform'); ?>
             <span class="rec-circular__tab-count"><?php echo count($materiales_disponibles); ?></span>
         </button>
         <button class="rec-circular__tab" data-tab="mis-ofertas">
-            <?php esc_html_e('Mis ofertas', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Mis ofertas', 'flavor-platform'); ?>
             <span class="rec-circular__tab-count"><?php echo count($mis_ofertas); ?></span>
         </button>
         <button class="rec-circular__tab" data-tab="publicar">
             <span class="dashicons dashicons-plus-alt"></span>
-            <?php esc_html_e('Publicar', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Publicar', 'flavor-platform'); ?>
         </button>
     </div>
 
@@ -48,7 +48,7 @@ $tipos_material = [
         <?php if (empty($materiales_disponibles)): ?>
             <div class="rec-circular__vacio">
                 <span class="dashicons dashicons-search"></span>
-                <p><?php esc_html_e('No hay materiales disponibles en este momento.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No hay materiales disponibles en este momento.', 'flavor-platform'); ?></p>
             </div>
         <?php else: ?>
             <div class="rec-circular__grid">
@@ -85,7 +85,7 @@ $tipos_material = [
                                 <?php echo esc_html(human_time_diff(strtotime($mat->fecha_creacion), current_time('timestamp'))); ?>
                             </span>
                             <button type="button" class="rec-btn rec-btn--primary rec-solicitar-material" data-id="<?php echo esc_attr($mat->id); ?>">
-                                <?php esc_html_e('Me interesa', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Me interesa', 'flavor-platform'); ?>
                             </button>
                         </div>
                     </div>
@@ -99,7 +99,7 @@ $tipos_material = [
         <?php if (empty($mis_ofertas)): ?>
             <div class="rec-circular__vacio">
                 <span class="dashicons dashicons-archive"></span>
-                <p><?php esc_html_e('No tienes materiales publicados.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No tienes materiales publicados.', 'flavor-platform'); ?></p>
             </div>
         <?php else: ?>
             <div class="rec-circular__lista">
@@ -115,8 +115,8 @@ $tipos_material = [
                             <span class="rec-circular__estado rec-circular__estado--<?php echo esc_attr($oferta->estado); ?>">
                                 <?php
                                 $estados = [
-                                    'disponible' => __('Disponible', 'flavor-chat-ia'),
-                                    'reservado' => __('Reservado', 'flavor-chat-ia'),
+                                    'disponible' => __('Disponible', 'flavor-platform'),
+                                    'reservado' => __('Reservado', 'flavor-platform'),
                                 ];
                                 echo esc_html($estados[$oferta->estado] ?? $oferta->estado);
                                 ?>
@@ -132,47 +132,47 @@ $tipos_material = [
     <div class="rec-circular__panel" id="tab-publicar">
         <form class="rec-circular__form" id="form-publicar-material">
             <div class="rec-circular__field">
-                <label><?php esc_html_e('Tipo de material', 'flavor-chat-ia'); ?></label>
+                <label><?php esc_html_e('Tipo de material', 'flavor-platform'); ?></label>
                 <select name="material_tipo" required>
-                    <option value=""><?php esc_html_e('Selecciona...', 'flavor-chat-ia'); ?></option>
-                    <option value="electronico"><?php esc_html_e('Electrónico', 'flavor-chat-ia'); ?></option>
-                    <option value="ropa"><?php esc_html_e('Ropa/Textil', 'flavor-chat-ia'); ?></option>
-                    <option value="mueble"><?php esc_html_e('Mueble', 'flavor-chat-ia'); ?></option>
-                    <option value="plastico"><?php esc_html_e('Plástico', 'flavor-chat-ia'); ?></option>
-                    <option value="papel"><?php esc_html_e('Papel/Cartón', 'flavor-chat-ia'); ?></option>
-                    <option value="otro"><?php esc_html_e('Otro', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Selecciona...', 'flavor-platform'); ?></option>
+                    <option value="electronico"><?php esc_html_e('Electrónico', 'flavor-platform'); ?></option>
+                    <option value="ropa"><?php esc_html_e('Ropa/Textil', 'flavor-platform'); ?></option>
+                    <option value="mueble"><?php esc_html_e('Mueble', 'flavor-platform'); ?></option>
+                    <option value="plastico"><?php esc_html_e('Plástico', 'flavor-platform'); ?></option>
+                    <option value="papel"><?php esc_html_e('Papel/Cartón', 'flavor-platform'); ?></option>
+                    <option value="otro"><?php esc_html_e('Otro', 'flavor-platform'); ?></option>
                 </select>
             </div>
             <div class="rec-circular__field">
-                <label><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?></label>
-                <textarea name="descripcion" rows="3" required placeholder="<?php esc_attr_e('Describe el objeto...', 'flavor-chat-ia'); ?>"></textarea>
+                <label><?php esc_html_e('Descripción', 'flavor-platform'); ?></label>
+                <textarea name="descripcion" rows="3" required placeholder="<?php esc_attr_e('Describe el objeto...', 'flavor-platform'); ?>"></textarea>
             </div>
             <div class="rec-circular__field">
-                <label><?php esc_html_e('Ubicación aproximada', 'flavor-chat-ia'); ?></label>
-                <input type="text" name="ubicacion" placeholder="<?php esc_attr_e('Ej: Centro, Barrio Norte...', 'flavor-chat-ia'); ?>">
+                <label><?php esc_html_e('Ubicación aproximada', 'flavor-platform'); ?></label>
+                <input type="text" name="ubicacion" placeholder="<?php esc_attr_e('Ej: Centro, Barrio Norte...', 'flavor-platform'); ?>">
             </div>
             <button type="submit" class="rec-btn rec-btn--primary rec-btn--full">
                 <span class="dashicons dashicons-yes"></span>
-                <?php esc_html_e('Publicar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Publicar', 'flavor-platform'); ?>
             </button>
         </form>
     </div>
 
     <!-- Impacto -->
     <div class="rec-circular__impacto">
-        <h4><?php esc_html_e('Impacto de la economía circular', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('Impacto de la economía circular', 'flavor-platform'); ?></h4>
         <div class="rec-circular__impacto-grid">
             <div class="rec-circular__impacto-item">
                 <span class="dashicons dashicons-cloud"></span>
-                <span><?php esc_html_e('Reduce emisiones CO₂', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Reduce emisiones CO₂', 'flavor-platform'); ?></span>
             </div>
             <div class="rec-circular__impacto-item">
                 <span class="dashicons dashicons-trash"></span>
-                <span><?php esc_html_e('Menos residuos', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Menos residuos', 'flavor-platform'); ?></span>
             </div>
             <div class="rec-circular__impacto-item">
                 <span class="dashicons dashicons-groups"></span>
-                <span><?php esc_html_e('Fortalece comunidad', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Fortalece comunidad', 'flavor-platform'); ?></span>
             </div>
         </div>
     </div>

@@ -56,14 +56,14 @@ if (isset($_POST['guardar_config_podcast']) && wp_verify_nonce($_POST['_wpnonce'
 
     update_option('flavor_podcast_settings', $nueva_config);
     $configuracion = $nueva_config;
-    $mensaje_guardado = __('Configuración guardada correctamente.', 'flavor-chat-ia');
+    $mensaje_guardado = __('Configuración guardada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
 }
 ?>
 
 <div class="wrap flavor-podcast-config">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-admin-settings"></span>
-        <?php esc_html_e('Configuración de Podcast', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Configuración de Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
     <hr class="wp-header-end">
 
@@ -79,24 +79,24 @@ if (isset($_POST['guardar_config_podcast']) && wp_verify_nonce($_POST['_wpnonce'
         <div class="dm-config-grid">
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-microphone"></span> <?php esc_html_e('Información General', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-microphone"></span> <?php esc_html_e('Información General', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-form-group">
-                        <label for="nombre_podcast"><?php esc_html_e('Nombre del Podcast', 'flavor-chat-ia'); ?></label>
+                        <label for="nombre_podcast"><?php esc_html_e('Nombre del Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="text" id="nombre_podcast" name="nombre_podcast" value="<?php echo esc_attr($configuracion['nombre_podcast']); ?>">
                     </div>
                     <div class="dm-form-group">
-                        <label for="descripcion"><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?></label>
+                        <label for="descripcion"><?php esc_html_e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <textarea id="descripcion" name="descripcion" rows="3"><?php echo esc_textarea($configuracion['descripcion']); ?></textarea>
                     </div>
                     <div class="dm-form-row">
                         <div class="dm-form-group">
-                            <label for="autor"><?php esc_html_e('Autor', 'flavor-chat-ia'); ?></label>
+                            <label for="autor"><?php esc_html_e('Autor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="text" id="autor" name="autor" value="<?php echo esc_attr($configuracion['autor']); ?>">
                         </div>
                         <div class="dm-form-group">
-                            <label for="idioma"><?php esc_html_e('Idioma', 'flavor-chat-ia'); ?></label>
+                            <label for="idioma"><?php esc_html_e('Idioma', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <select id="idioma" name="idioma">
                                 <option value="es" <?php selected($configuracion['idioma'], 'es'); ?>>Español</option>
                                 <option value="en" <?php selected($configuracion['idioma'], 'en'); ?>>English</option>
@@ -110,12 +110,12 @@ if (isset($_POST['guardar_config_podcast']) && wp_verify_nonce($_POST['_wpnonce'
 
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-admin-settings"></span> <?php esc_html_e('Opciones de Audio', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-admin-settings"></span> <?php esc_html_e('Opciones de Audio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-form-row">
                         <div class="dm-form-group">
-                            <label for="formato_audio_preferido"><?php esc_html_e('Formato de Audio', 'flavor-chat-ia'); ?></label>
+                            <label for="formato_audio_preferido"><?php esc_html_e('Formato de Audio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <select id="formato_audio_preferido" name="formato_audio_preferido">
                                 <option value="mp3" <?php selected($configuracion['formato_audio_preferido'], 'mp3'); ?>>MP3</option>
                                 <option value="aac" <?php selected($configuracion['formato_audio_preferido'], 'aac'); ?>>AAC</option>
@@ -123,7 +123,7 @@ if (isset($_POST['guardar_config_podcast']) && wp_verify_nonce($_POST['_wpnonce'
                             </select>
                         </div>
                         <div class="dm-form-group">
-                            <label for="calidad_audio"><?php esc_html_e('Calidad de Audio', 'flavor-chat-ia'); ?></label>
+                            <label for="calidad_audio"><?php esc_html_e('Calidad de Audio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <select id="calidad_audio" name="calidad_audio">
                                 <option value="128" <?php selected($configuracion['calidad_audio'], '128'); ?>>128 kbps</option>
                                 <option value="192" <?php selected($configuracion['calidad_audio'], '192'); ?>>192 kbps</option>
@@ -135,11 +135,11 @@ if (isset($_POST['guardar_config_podcast']) && wp_verify_nonce($_POST['_wpnonce'
                     <div class="dm-checkbox-group">
                         <label class="dm-checkbox">
                             <input type="checkbox" name="permitir_descargas" value="1" <?php checked($configuracion['permitir_descargas']); ?>>
-                            <span><?php esc_html_e('Permitir descarga de episodios', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Permitir descarga de episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="mostrar_transcripciones" value="1" <?php checked($configuracion['mostrar_transcripciones']); ?>>
-                            <span><?php esc_html_e('Mostrar transcripciones de episodios', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Mostrar transcripciones de episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                     </div>
                 </div>
@@ -147,7 +147,7 @@ if (isset($_POST['guardar_config_podcast']) && wp_verify_nonce($_POST['_wpnonce'
 
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-share"></span> <?php esc_html_e('Plataformas de Distribución', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-share"></span> <?php esc_html_e('Plataformas de Distribución', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-form-group">
@@ -167,21 +167,21 @@ if (isset($_POST['guardar_config_podcast']) && wp_verify_nonce($_POST['_wpnonce'
 
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-visibility"></span> <?php esc_html_e('Opciones de Visualización', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-visibility"></span> <?php esc_html_e('Opciones de Visualización', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-checkbox-group">
                         <label class="dm-checkbox">
                             <input type="checkbox" name="permitir_comentarios" value="1" <?php checked($configuracion['permitir_comentarios']); ?>>
-                            <span><?php esc_html_e('Permitir comentarios en episodios', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Permitir comentarios en episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="notificar_nuevos_episodios" value="1" <?php checked($configuracion['notificar_nuevos_episodios']); ?>>
-                            <span><?php esc_html_e('Notificar a suscriptores de nuevos episodios', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Notificar a suscriptores de nuevos episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="explicito" value="1" <?php checked($configuracion['explicito']); ?>>
-                            <span><?php esc_html_e('Contenido explícito (para iTunes)', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Contenido explícito (para iTunes)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                     </div>
                 </div>
@@ -191,7 +191,7 @@ if (isset($_POST['guardar_config_podcast']) && wp_verify_nonce($_POST['_wpnonce'
         <div class="dm-form-actions">
             <button type="submit" name="guardar_config_podcast" class="button button-primary button-hero">
                 <span class="dashicons dashicons-saved"></span>
-                <?php esc_html_e('Guardar Configuración', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Guardar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     </form>

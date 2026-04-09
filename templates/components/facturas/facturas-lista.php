@@ -54,9 +54,9 @@ $mapa_estilos_estado = [
 ];
 
 $mapa_etiquetas_estado = [
-    'pagada'    => __('Pagada', 'flavor-chat-ia'),
-    'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-    'vencida'   => __('Vencida', 'flavor-chat-ia'),
+    'pagada'    => __('Pagada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'vencida'   => __('Vencida', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 <section class="flavor-component flavor-section py-12 lg:py-20 bg-white">
@@ -69,7 +69,7 @@ $mapa_etiquetas_estado = [
                         <?php echo esc_html($titulo_lista); ?>
                     </h2>
                     <p class="text-gray-500 text-sm">
-                        <?php echo esc_html__('Listado de tus ultimas facturas emitidas', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Listado de tus ultimas facturas emitidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
                 <div class="flex items-center gap-3">
@@ -77,13 +77,13 @@ $mapa_etiquetas_estado = [
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
-                        <?php echo esc_html__('Buscar', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="<?php echo esc_url($url_crear_factura); ?>" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-600 text-white font-semibold text-sm hover:from-teal-600 hover:to-emerald-700 transition-all shadow-md">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                         </svg>
-                        <?php echo esc_html__('Nueva Factura', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Nueva Factura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </div>
@@ -94,19 +94,19 @@ $mapa_etiquetas_estado = [
                     <thead>
                         <tr class="border-b border-gray-100" style="background: #F9FAFB;">
                             <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                <?php echo esc_html__('Numero', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Numero', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </th>
                             <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                <?php echo esc_html__('Cliente', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </th>
                             <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                <?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </th>
                             <th class="text-right px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                <?php echo esc_html__('Importe', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Importe', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </th>
                             <th class="text-center px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                <?php echo esc_html__('Estado', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </th>
                         </tr>
                     </thead>

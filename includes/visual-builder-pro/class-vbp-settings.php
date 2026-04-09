@@ -62,9 +62,9 @@ class VBP_Settings {
      */
     public function agregar_pagina_settings() {
         add_submenu_page(
-            'flavor-chat-ia',
-            __( 'Configuración VBP', 'flavor-chat-ia' ),
-            __( 'Config. VBP', 'flavor-chat-ia' ),
+            FLAVOR_PLATFORM_TEXT_DOMAIN,
+            __( 'Configuración VBP', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            __( 'Config. VBP', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'manage_options',
             self::MENU_SLUG,
             array( $this, 'renderizar_pagina' )
@@ -88,14 +88,14 @@ class VBP_Settings {
         // Sección: API Key
         add_settings_section(
             'vbp_api_section',
-            __( 'Configuración de API', 'flavor-chat-ia' ),
+            __( 'Configuración de API', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             array( $this, 'render_seccion_api' ),
             self::MENU_SLUG
         );
 
         add_settings_field(
             'api_key_display',
-            __( 'API Key', 'flavor-chat-ia' ),
+            __( 'API Key', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             array( $this, 'render_campo_api_key' ),
             self::MENU_SLUG,
             'vbp_api_section'
@@ -104,14 +104,14 @@ class VBP_Settings {
         // Sección: Editor
         add_settings_section(
             'vbp_editor_section',
-            __( 'Configuración del Editor', 'flavor-chat-ia' ),
+            __( 'Configuración del Editor', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             array( $this, 'render_seccion_editor' ),
             self::MENU_SLUG
         );
 
         add_settings_field(
             'replace_gutenberg',
-            __( 'Reemplazar Gutenberg', 'flavor-chat-ia' ),
+            __( 'Reemplazar Gutenberg', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             array( $this, 'render_campo_replace_gutenberg' ),
             self::MENU_SLUG,
             'vbp_editor_section'
@@ -119,7 +119,7 @@ class VBP_Settings {
 
         add_settings_field(
             'enable_versioning',
-            __( 'Historial de versiones', 'flavor-chat-ia' ),
+            __( 'Historial de versiones', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             array( $this, 'render_campo_versioning' ),
             self::MENU_SLUG,
             'vbp_editor_section'
@@ -172,7 +172,7 @@ class VBP_Settings {
     public function render_seccion_api() {
         echo '<p>' . esc_html__(
             'La API Key permite que herramientas externas (como Claude Code) accedan a VBP de forma segura.',
-            'flavor-chat-ia'
+            FLAVOR_PLATFORM_TEXT_DOMAIN
         ) . '</p>';
     }
 
@@ -182,7 +182,7 @@ class VBP_Settings {
     public function render_seccion_editor() {
         echo '<p>' . esc_html__(
             'Configura el comportamiento del editor Visual Builder Pro.',
-            'flavor-chat-ia'
+            FLAVOR_PLATFORM_TEXT_DOMAIN
         ) . '</p>';
     }
 
@@ -200,26 +200,26 @@ class VBP_Settings {
             <div class="vbp-api-key-actions">
                 <button type="button" id="vbp-toggle-key" class="button button-secondary">
                     <span class="dashicons dashicons-visibility"></span>
-                    <?php esc_html_e( 'Mostrar', 'flavor-chat-ia' ); ?>
+                    <?php esc_html_e( 'Mostrar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                 </button>
 
                 <button type="button" id="vbp-copy-key" class="button button-secondary">
                     <span class="dashicons dashicons-clipboard"></span>
-                    <?php esc_html_e( 'Copiar', 'flavor-chat-ia' ); ?>
+                    <?php esc_html_e( 'Copiar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                 </button>
 
                 <button type="button" id="vbp-regenerate-key" class="button button-secondary vbp-btn-danger">
                     <span class="dashicons dashicons-update"></span>
-                    <?php esc_html_e( 'Regenerar', 'flavor-chat-ia' ); ?>
+                    <?php esc_html_e( 'Regenerar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                 </button>
             </div>
 
             <p class="description">
-                <?php esc_html_e( 'Usa esta key en el header X-VBP-Key para autenticar peticiones a la API.', 'flavor-chat-ia' ); ?>
+                <?php esc_html_e( 'Usa esta key en el header X-VBP-Key para autenticar peticiones a la API.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
             </p>
 
             <div class="vbp-api-usage-example">
-                <strong><?php esc_html_e( 'Ejemplo de uso:', 'flavor-chat-ia' ); ?></strong>
+                <strong><?php esc_html_e( 'Ejemplo de uso:', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></strong>
                 <pre>curl -H "X-VBP-Key: <?php echo esc_html( $masked ); ?>" \
      <?php echo esc_url( rest_url( 'flavor-vbp/v1/claude/status' ) ); ?></pre>
             </div>
@@ -239,13 +239,13 @@ class VBP_Settings {
                    name="<?php echo esc_attr( self::OPTION_NAME ); ?>[replace_gutenberg]"
                    value="1"
                    <?php checked( $checked ); ?>>
-            <?php esc_html_e( 'Usar VBP en lugar de Gutenberg para páginas y posts', 'flavor-chat-ia' ); ?>
+            <?php esc_html_e( 'Usar VBP en lugar de Gutenberg para páginas y posts', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
         </label>
         <p class="description">
             <?php esc_html_e(
                 'Si está desactivado, VBP solo se usará para el tipo de post "flavor_landing". ' .
                 'Gutenberg seguirá disponible para páginas y posts normales.',
-                'flavor-chat-ia'
+                FLAVOR_PLATFORM_TEXT_DOMAIN
             ); ?>
         </p>
         <?php
@@ -264,11 +264,11 @@ class VBP_Settings {
                    name="<?php echo esc_attr( self::OPTION_NAME ); ?>[enable_versioning]"
                    value="1"
                    <?php checked( $checked ); ?>>
-            <?php esc_html_e( 'Guardar historial de versiones', 'flavor-chat-ia' ); ?>
+            <?php esc_html_e( 'Guardar historial de versiones', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
         </label>
         <br><br>
         <label>
-            <?php esc_html_e( 'Máximo de versiones por página:', 'flavor-chat-ia' ); ?>
+            <?php esc_html_e( 'Máximo de versiones por página:', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
             <input type="number"
                    name="<?php echo esc_attr( self::OPTION_NAME ); ?>[max_versions]"
                    value="<?php echo esc_attr( $max ); ?>"
@@ -277,7 +277,7 @@ class VBP_Settings {
                    style="width: 60px;">
         </label>
         <p class="description">
-            <?php esc_html_e( 'Permite restaurar versiones anteriores de las páginas editadas con VBP.', 'flavor-chat-ia' ); ?>
+            <?php esc_html_e( 'Permite restaurar versiones anteriores de las páginas editadas con VBP.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
         </p>
         <?php
     }
@@ -287,13 +287,13 @@ class VBP_Settings {
      */
     public function renderizar_pagina() {
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_die( esc_html__( 'No tienes permisos para acceder a esta página.', 'flavor-chat-ia' ) );
+            wp_die( esc_html__( 'No tienes permisos para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN ) );
         }
         ?>
         <div class="wrap vbp-settings-wrap">
             <h1>
                 <span class="dashicons dashicons-admin-generic"></span>
-                <?php esc_html_e( 'Configuración de Visual Builder Pro', 'flavor-chat-ia' ); ?>
+                <?php esc_html_e( 'Configuración de Visual Builder Pro', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
             </h1>
 
             <form method="post" action="options.php">
@@ -306,26 +306,26 @@ class VBP_Settings {
 
             <hr>
 
-            <h2><?php esc_html_e( 'Información del Sistema', 'flavor-chat-ia' ); ?></h2>
+            <h2><?php esc_html_e( 'Información del Sistema', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h2>
             <table class="widefat fixed" style="max-width: 600px;">
                 <tbody>
                     <tr>
-                        <td><strong><?php esc_html_e( 'Versión VBP', 'flavor-chat-ia' ); ?></strong></td>
+                        <td><strong><?php esc_html_e( 'Versión VBP', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></strong></td>
                         <td><?php echo esc_html( defined( 'FLAVOR_VBP_VERSION' ) ? FLAVOR_VBP_VERSION : '3.5.0' ); ?></td>
                     </tr>
                     <tr>
-                        <td><strong><?php esc_html_e( 'Páginas con VBP', 'flavor-chat-ia' ); ?></strong></td>
+                        <td><strong><?php esc_html_e( 'Páginas con VBP', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></strong></td>
                         <td><?php echo esc_html( $this->contar_paginas_vbp() ); ?></td>
                     </tr>
                     <tr>
-                        <td><strong><?php esc_html_e( 'API Endpoint', 'flavor-chat-ia' ); ?></strong></td>
+                        <td><strong><?php esc_html_e( 'API Endpoint', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></strong></td>
                         <td><code><?php echo esc_url( rest_url( 'flavor-vbp/v1/' ) ); ?></code></td>
                     </tr>
                     <tr>
-                        <td><strong><?php esc_html_e( 'Documentación', 'flavor-chat-ia' ); ?></strong></td>
+                        <td><strong><?php esc_html_e( 'Documentación', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></strong></td>
                         <td>
-                            <a href="<?php echo esc_url( admin_url( 'admin.php?page=flavor-documentation' ) ); ?>">
-                                <?php esc_html_e( 'Ver guía de uso', 'flavor-chat-ia' ); ?>
+                            <a href="<?php echo esc_url( admin_url( 'admin.php?page=flavor-platform-docs' ) ); ?>">
+                                <?php esc_html_e( 'Ver guía de uso', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                             </a>
                         </td>
                     </tr>
@@ -356,7 +356,7 @@ class VBP_Settings {
         check_ajax_referer( 'vbp_settings_nonce', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( array( 'message' => __( 'Permisos insuficientes.', 'flavor-chat-ia' ) ) );
+            wp_send_json_error( array( 'message' => __( 'Permisos insuficientes.', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) );
         }
 
         $nueva_key = flavor_regenerate_vbp_api_key();
@@ -365,7 +365,7 @@ class VBP_Settings {
         wp_send_json_success( array(
             'key'    => $nueva_key,
             'masked' => $masked,
-            'message' => __( 'API Key regenerada correctamente.', 'flavor-chat-ia' ),
+            'message' => __( 'API Key regenerada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
         ) );
     }
 
@@ -474,12 +474,12 @@ class VBP_Settings {
                         $('#vbp-api-key-display').hide();
                         $('#vbp-api-key-full').show();
                         $(this).find('span').removeClass('dashicons-visibility').addClass('dashicons-hidden');
-                        $(this).contents().last().replaceWith(' " . esc_js( __( 'Ocultar', 'flavor-chat-ia' ) ) . "');
+                        $(this).contents().last().replaceWith(' " . esc_js( __( 'Ocultar', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) . "');
                     } else {
                         $('#vbp-api-key-display').show();
                         $('#vbp-api-key-full').hide();
                         $(this).find('span').removeClass('dashicons-hidden').addClass('dashicons-visibility');
-                        $(this).contents().last().replaceWith(' " . esc_js( __( 'Mostrar', 'flavor-chat-ia' ) ) . "');
+                        $(this).contents().last().replaceWith(' " . esc_js( __( 'Mostrar', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) . "');
                     }
                 });
 
@@ -487,13 +487,13 @@ class VBP_Settings {
                 $('#vbp-copy-key').on('click', function() {
                     var key = $('#vbp-api-key-full').text();
                     navigator.clipboard.writeText(key).then(function() {
-                        alert('" . esc_js( __( 'API Key copiada al portapapeles', 'flavor-chat-ia' ) ) . "');
+                        alert('" . esc_js( __( 'API Key copiada al portapapeles', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) . "');
                     });
                 });
 
                 // Regenerate key
                 $('#vbp-regenerate-key').on('click', function() {
-                    if (!confirm('" . esc_js( __( '¿Seguro que quieres regenerar la API Key? Las herramientas que usen la key actual dejarán de funcionar.', 'flavor-chat-ia' ) ) . "')) {
+                    if (!confirm('" . esc_js( __( '¿Seguro que quieres regenerar la API Key? Las herramientas que usen la key actual dejarán de funcionar.', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) . "')) {
                         return;
                     }
 

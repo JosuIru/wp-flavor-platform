@@ -52,7 +52,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Cursos no están creadas. Se crearán automáticamente al activar.', 'flavor-chat-ia');
+            return __('Las tablas de Cursos no están creadas. Se crearán automáticamente al activar.', 'flavor-platform');
         }
         
     return '';
@@ -183,31 +183,31 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'cursos',
-            'label' => __('Cursos', 'flavor-chat-ia'),
+            'label' => __('Cursos', 'flavor-platform'),
             'icon' => 'dashicons-welcome-learn-more',
             'capability' => 'manage_options',
             'categoria' => 'actividades',
             'paginas' => [
                 [
                     'slug' => 'cursos-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', 'flavor-platform'),
                     'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'cursos-listado',
-                    'titulo' => __('Cursos', 'flavor-chat-ia'),
+                    'titulo' => __('Cursos', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_cursos'],
                     'badge' => [$this, 'contar_cursos_activos'],
                 ],
                 [
                     'slug' => 'cursos-inscripciones',
-                    'titulo' => __('Inscripciones', 'flavor-chat-ia'),
+                    'titulo' => __('Inscripciones', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_inscripciones'],
                     'badge' => [$this, 'contar_inscripciones_pendientes'],
                 ],
                 [
                     'slug' => 'cursos-config',
-                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'titulo' => __('Configuración', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_configuracion'],
                 ],
             ],
@@ -320,8 +320,8 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
             return;
         }
 
-        echo '<div class="wrap"><h1>' . esc_html__('Dashboard de Cursos', 'flavor-chat-ia') . '</h1>';
-        echo '<p>' . esc_html__('No se encontró la vista de dashboard.', 'flavor-chat-ia') . '</p></div>';
+        echo '<div class="wrap"><h1>' . esc_html__('Dashboard de Cursos', 'flavor-platform') . '</h1>';
+        echo '<p>' . esc_html__('No se encontró la vista de dashboard.', 'flavor-platform') . '</p></div>';
     }
 
     /**
@@ -782,14 +782,14 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         if (!$curso) {
             return [
                 'success' => false,
-                'error' => __('ID de curso requerido', 'flavor-chat-ia'),
+                'error' => __('ID de curso requerido', 'flavor-platform'),
             ];
         }
 
         $cta = home_url('/mi-portal/multimedia/subir/?curso_id=' . absint($curso['id']));
         $html = '<div class="flavor-contextual-block">'
-            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Archivos del curso', 'flavor-chat-ia') . '</h3><p>' . esc_html($curso['titulo']) . '</p>'
-            . '<p><a class="button" href="' . esc_url($cta) . '">' . esc_html__('Subir archivo', 'flavor-chat-ia') . '</a></p></div>'
+            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Archivos del curso', 'flavor-platform') . '</h3><p>' . esc_html($curso['titulo']) . '</p>'
+            . '<p><a class="button" href="' . esc_url($cta) . '">' . esc_html__('Subir archivo', 'flavor-platform') . '</a></p></div>'
             . do_shortcode('[flavor_multimedia_galeria entidad="curso" entidad_id="' . absint($curso['id']) . '"]')
             . '</div>';
 
@@ -801,14 +801,14 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         if (!$curso) {
             return [
                 'success' => false,
-                'error' => __('ID de curso requerido', 'flavor-chat-ia'),
+                'error' => __('ID de curso requerido', 'flavor-platform'),
             ];
         }
 
         $cta = home_url('/mi-portal/biblioteca/');
         $html = '<div class="flavor-contextual-block">'
-            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Biblioteca recomendada', 'flavor-chat-ia') . '</h3><p>' . esc_html($curso['titulo']) . '</p>'
-            . '<p><a class="button" href="' . esc_url($cta) . '">' . esc_html__('Abrir biblioteca', 'flavor-chat-ia') . '</a></p></div>'
+            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Biblioteca recomendada', 'flavor-platform') . '</h3><p>' . esc_html($curso['titulo']) . '</p>'
+            . '<p><a class="button" href="' . esc_url($cta) . '">' . esc_html__('Abrir biblioteca', 'flavor-platform') . '</a></p></div>'
             . do_shortcode('[biblioteca_catalogo limite="12"]')
             . '</div>';
 
@@ -820,14 +820,14 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         if (!$curso) {
             return [
                 'success' => false,
-                'error' => __('ID de curso requerido', 'flavor-chat-ia'),
+                'error' => __('ID de curso requerido', 'flavor-platform'),
             ];
         }
 
         $cta = home_url('/mi-portal/podcast/');
         $html = '<div class="flavor-contextual-block">'
-            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Podcast recomendado', 'flavor-chat-ia') . '</h3><p>' . esc_html($curso['titulo']) . '</p>'
-            . '<p><a class="button" href="' . esc_url($cta) . '">' . esc_html__('Abrir podcast', 'flavor-chat-ia') . '</a></p></div>'
+            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Podcast recomendado', 'flavor-platform') . '</h3><p>' . esc_html($curso['titulo']) . '</p>'
+            . '<p><a class="button" href="' . esc_url($cta) . '">' . esc_html__('Abrir podcast', 'flavor-platform') . '</a></p></div>'
             . do_shortcode('[podcast_series limit="6"]')
             . '</div>';
 
@@ -887,7 +887,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
      */
     private function action_detalle_curso($params) {
         if (empty($params['curso_id'])) {
-            return ['success' => false, 'error' => __('flavor_cursos', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('flavor_cursos', 'flavor-platform')];
         }
 
         global $wpdb;
@@ -902,7 +902,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$curso) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
         }
 
         // Obtener lecciones (solo títulos públicamente)
@@ -986,11 +986,11 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
      */
     private function action_inscribirse($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('fecha_inicio', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('fecha_inicio', 'flavor-platform')];
         }
 
         if (empty($params['curso_id'])) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
         }
 
         global $wpdb;
@@ -1008,12 +1008,12 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$curso) {
-            return ['success' => false, 'error' => __('progreso', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('progreso', 'flavor-platform')];
         }
 
         // Verificar plazas
         if ($curso->alumnos_inscritos >= $curso->max_alumnos) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
         }
 
         // Verificar que no esté ya inscrito
@@ -1024,7 +1024,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if ($ya_inscrito) {
-            return ['success' => false, 'error' => __('leccion_id', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('leccion_id', 'flavor-platform')];
         }
 
         // Si es de pago, verificar pago (simplificado - integrar con pasarela)
@@ -1045,7 +1045,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         ]);
 
         if (!$resultado) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
         }
 
         // Actualizar contador
@@ -1072,7 +1072,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
      */
     private function action_mis_cursos($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('fecha_completado', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('fecha_completado', 'flavor-platform')];
         }
 
         global $wpdb;
@@ -1121,11 +1121,11 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
      */
     private function action_ver_leccion($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
         }
 
         if (empty($params['leccion_id'])) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
         }
 
         global $wpdb;
@@ -1144,7 +1144,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$leccion) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
         }
 
         // Verificar inscripción (a menos que sea gratuita)
@@ -1157,7 +1157,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$inscripcion && !$leccion->es_gratuita) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
         }
 
         // Obtener o crear progreso
@@ -1208,11 +1208,11 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
      */
     private function action_marcar_completada($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
         }
 
         if (empty($params['leccion_id'])) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
         }
 
         global $wpdb;
@@ -1232,7 +1232,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$leccion) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-platform')];
         }
 
         // Verificar inscripción
@@ -1245,7 +1245,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$inscripcion) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
         }
 
         // Actualizar o crear progreso
@@ -1285,7 +1285,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => true,
-            'mensaje' => __('¡Lección completada!', 'flavor-chat-ia'),
+            'mensaje' => __('¡Lección completada!', 'flavor-platform'),
             'puntos' => $leccion->puntos,
         ];
     }
@@ -1353,11 +1353,11 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
      */
     private function action_valorar_curso($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('flavor_cursos_inscripciones', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('flavor_cursos_inscripciones', 'flavor-platform')];
         }
 
         if (empty($params['curso_id']) || !isset($params['valoracion'])) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
         }
 
         global $wpdb;
@@ -1378,7 +1378,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$inscripcion) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
         }
 
         // Guardar valoración
@@ -1410,7 +1410,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => true,
-            'mensaje' => __('¡Gracias por tu valoración!', 'flavor-chat-ia'),
+            'mensaje' => __('¡Gracias por tu valoración!', 'flavor-platform'),
         ];
     }
 
@@ -1419,11 +1419,11 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
      */
     private function action_solicitar_certificado($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
         }
 
         if (empty($params['curso_id'])) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
         }
 
         global $wpdb;
@@ -1442,7 +1442,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$inscripcion) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
         }
 
         // Verificar si ya tiene certificado
@@ -1486,7 +1486,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => true,
-            'mensaje' => __('¡Certificado generado!', 'flavor-chat-ia'),
+            'mensaje' => __('¡Certificado generado!', 'flavor-platform'),
             'certificado' => [
                 'codigo' => $codigo,
                 'fecha' => current_time('mysql'),
@@ -1499,7 +1499,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
      */
     private function action_mis_cursos_instructor($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
         }
 
         global $wpdb;
@@ -1534,11 +1534,11 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
      */
     private function action_estadisticas_curso($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
         }
 
         if (empty($params['curso_id'])) {
-            return ['success' => false, 'error' => __('curso_id', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('curso_id', 'flavor-platform')];
         }
 
         global $wpdb;
@@ -1557,7 +1557,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$curso && !current_user_can('manage_options')) {
-            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('ID de curso requerido', 'flavor-platform')];
         }
 
         // Estadísticas
@@ -1672,7 +1672,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         if (!$inscripcion) {
             return rest_ensure_response([
                 'success' => false,
-                'error' => __('No estás inscrito en este curso.', 'flavor-chat-ia'),
+                'error' => __('No estás inscrito en este curso.', 'flavor-platform'),
             ]);
         }
 
@@ -1821,7 +1821,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('cursos_admin_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json(['success' => false, 'error' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Sin permisos', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -1831,7 +1831,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         $titulo = sanitize_text_field($_POST['titulo'] ?? '');
 
         if (empty($titulo)) {
-            wp_send_json(['success' => false, 'error' => __('modalidad', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('modalidad', 'flavor-platform')]);
         }
 
         $datos = [
@@ -1883,7 +1883,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('cursos_admin_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json(['success' => false, 'error' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Sin permisos', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -1894,7 +1894,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         $titulo = sanitize_text_field($_POST['titulo'] ?? '');
 
         if (empty($curso_id) || empty($titulo)) {
-            wp_send_json(['success' => false, 'error' => __('assets/js/cursos-frontend.js', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('assets/js/cursos-frontend.js', 'flavor-platform')]);
         }
 
         $datos = [
@@ -1926,7 +1926,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
 
         wp_send_json([
             'success' => true,
-            'mensaje' => __('Lección guardada', 'flavor-chat-ia'),
+            'mensaje' => __('Lección guardada', 'flavor-platform'),
             'leccion_id' => $leccion_id,
         ]);
     }
@@ -1938,7 +1938,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('cursos_admin_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json(['success' => false, 'error' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Sin permisos', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -1950,14 +1950,14 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         $estados_validos = ['borrador', 'pendiente', 'publicado', 'en_curso', 'finalizado', 'cancelado'];
 
         if (!in_array($estado, $estados_validos)) {
-            wp_send_json(['success' => false, 'error' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Sin permisos', 'flavor-platform')]);
         }
 
         $wpdb->update($tabla_cursos, ['estado' => $estado], ['id' => $curso_id]);
 
         wp_send_json([
             'success' => true,
-            'mensaje' => __('Estado actualizado', 'flavor-chat-ia'),
+            'mensaje' => __('Estado actualizado', 'flavor-platform'),
         ]);
     }
 
@@ -1968,7 +1968,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('cursos_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json(['success' => false, 'error' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Sin permisos', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -2200,7 +2200,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         $usuario = get_userdata($usuario_id);
         if (!$usuario) return;
 
-        $asunto = sprintf(__('¡Bienvenido al curso "%s"!', 'flavor-chat-ia'), $curso->titulo);
+        $asunto = sprintf(__('¡Bienvenido al curso "%s"!', 'flavor-platform'), $curso->titulo);
         $mensaje = sprintf(
             __('Hola %s,
 
@@ -2208,7 +2208,7 @@ Te has inscrito correctamente en el curso "%s".
 
 Puedes acceder al contenido del curso desde tu panel de usuario.
 
-¡Mucho éxito en tu aprendizaje!', 'flavor-chat-ia'),
+¡Mucho éxito en tu aprendizaje!', 'flavor-platform'),
             $usuario->display_name,
             $curso->titulo
         );
@@ -2237,7 +2237,7 @@ Puedes acceder al contenido del curso desde tu panel de usuario.
         );
 
         foreach ($inactivos as $inscripcion) {
-            $asunto = sprintf(__('¿Continúas con "%s"?', 'flavor-chat-ia'), $inscripcion->titulo);
+            $asunto = sprintf(__('¿Continúas con "%s"?', 'flavor-platform'), $inscripcion->titulo);
             $mensaje = sprintf(
                 __('Hola %s,
 
@@ -2245,7 +2245,7 @@ Hace tiempo que no te vemos por el curso "%s".
 
 Tu progreso actual es del %d%%. ¡Ánimo, puedes completarlo!
 
-Accede ahora y continúa aprendiendo.', 'flavor-chat-ia'),
+Accede ahora y continúa aprendiendo.', 'flavor-platform'),
                 $inscripcion->display_name,
                 $inscripcion->titulo,
                 $inscripcion->progreso_porcentaje
@@ -2279,69 +2279,69 @@ Accede ahora y continúa aprendiendo.', 'flavor-chat-ia'),
     public function get_web_components() {
         return [
             'hero_cursos' => [
-                'label' => __('Hero Cursos', 'flavor-chat-ia'),
-                'description' => __('Sección hero para plataforma de cursos', 'flavor-chat-ia'),
+                'label' => __('Hero Cursos', 'flavor-platform'),
+                'description' => __('Sección hero para plataforma de cursos', 'flavor-platform'),
                 'category' => 'hero',
                 'icon' => 'dashicons-welcome-learn-more',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'default' => __('Aprende con Tu Comunidad', 'flavor-chat-ia')],
-                    'subtitulo' => ['type' => 'textarea', 'label' => __('Subtítulo', 'flavor-chat-ia'), 'default' => __('Cursos impartidos por vecinos expertos', 'flavor-chat-ia')],
-                    'imagen_fondo' => ['type' => 'image', 'label' => __('Imagen de fondo', 'flavor-chat-ia'), 'default' => ''],
-                    'mostrar_buscador' => ['type' => 'toggle', 'label' => __('Mostrar buscador', 'flavor-chat-ia'), 'default' => true],
-                    'mostrar_estadisticas' => ['type' => 'toggle', 'label' => __('Mostrar estadísticas', 'flavor-chat-ia'), 'default' => true],
+                    'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-platform'), 'default' => __('Aprende con Tu Comunidad', 'flavor-platform')],
+                    'subtitulo' => ['type' => 'textarea', 'label' => __('Subtítulo', 'flavor-platform'), 'default' => __('Cursos impartidos por vecinos expertos', 'flavor-platform')],
+                    'imagen_fondo' => ['type' => 'image', 'label' => __('Imagen de fondo', 'flavor-platform'), 'default' => ''],
+                    'mostrar_buscador' => ['type' => 'toggle', 'label' => __('Mostrar buscador', 'flavor-platform'), 'default' => true],
+                    'mostrar_estadisticas' => ['type' => 'toggle', 'label' => __('Mostrar estadísticas', 'flavor-platform'), 'default' => true],
                 ],
                 'template' => 'cursos/hero',
             ],
             'cursos_grid' => [
-                'label' => __('Grid de Cursos', 'flavor-chat-ia'),
-                'description' => __('Catálogo de cursos disponibles', 'flavor-chat-ia'),
+                'label' => __('Grid de Cursos', 'flavor-platform'),
+                'description' => __('Catálogo de cursos disponibles', 'flavor-platform'),
                 'category' => 'listings',
                 'icon' => 'dashicons-grid-view',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'default' => __('Cursos Disponibles', 'flavor-chat-ia')],
-                    'columnas' => ['type' => 'select', 'label' => __('Columnas', 'flavor-chat-ia'), 'options' => [2, 3, 4], 'default' => 3],
-                    'limite' => ['type' => 'number', 'label' => __('Cantidad', 'flavor-chat-ia'), 'default' => 9],
-                    'filtro_categoria' => ['type' => 'text', 'label' => __('Categoría', 'flavor-chat-ia'), 'default' => ''],
-                    'filtro_nivel' => ['type' => 'select', 'label' => __('Nivel', 'flavor-chat-ia'), 'options' => ['', 'principiante', 'intermedio', 'avanzado'], 'default' => ''],
-                    'mostrar_filtros' => ['type' => 'toggle', 'label' => __('Mostrar filtros', 'flavor-chat-ia'), 'default' => true],
+                    'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-platform'), 'default' => __('Cursos Disponibles', 'flavor-platform')],
+                    'columnas' => ['type' => 'select', 'label' => __('Columnas', 'flavor-platform'), 'options' => [2, 3, 4], 'default' => 3],
+                    'limite' => ['type' => 'number', 'label' => __('Cantidad', 'flavor-platform'), 'default' => 9],
+                    'filtro_categoria' => ['type' => 'text', 'label' => __('Categoría', 'flavor-platform'), 'default' => ''],
+                    'filtro_nivel' => ['type' => 'select', 'label' => __('Nivel', 'flavor-platform'), 'options' => ['', 'principiante', 'intermedio', 'avanzado'], 'default' => ''],
+                    'mostrar_filtros' => ['type' => 'toggle', 'label' => __('Mostrar filtros', 'flavor-platform'), 'default' => true],
                 ],
                 'template' => 'cursos/grid',
             ],
             'categorias_cursos' => [
-                'label' => __('Categorías de Cursos', 'flavor-chat-ia'),
-                'description' => __('Navegación por categorías', 'flavor-chat-ia'),
+                'label' => __('Categorías de Cursos', 'flavor-platform'),
+                'description' => __('Navegación por categorías', 'flavor-platform'),
                 'category' => 'navigation',
                 'icon' => 'dashicons-category',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'default' => __('Explora por Categoría', 'flavor-chat-ia')],
-                    'estilo' => ['type' => 'select', 'label' => __('Estilo', 'flavor-chat-ia'), 'options' => ['tarjetas', 'iconos', 'lista'], 'default' => 'tarjetas'],
-                    'mostrar_contador' => ['type' => 'toggle', 'label' => __('Mostrar contador', 'flavor-chat-ia'), 'default' => true],
+                    'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-platform'), 'default' => __('Explora por Categoría', 'flavor-platform')],
+                    'estilo' => ['type' => 'select', 'label' => __('Estilo', 'flavor-platform'), 'options' => ['tarjetas', 'iconos', 'lista'], 'default' => 'tarjetas'],
+                    'mostrar_contador' => ['type' => 'toggle', 'label' => __('Mostrar contador', 'flavor-platform'), 'default' => true],
                 ],
                 'template' => 'cursos/categorias',
             ],
             'cta_instructor' => [
-                'label' => __('CTA Instructor', 'flavor-chat-ia'),
-                'description' => __('Llamada a la acción para instructores', 'flavor-chat-ia'),
+                'label' => __('CTA Instructor', 'flavor-platform'),
+                'description' => __('Llamada a la acción para instructores', 'flavor-platform'),
                 'category' => 'cta',
                 'icon' => 'dashicons-welcome-learn-more',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'default' => __('Comparte tu Conocimiento', 'flavor-chat-ia')],
-                    'texto' => ['type' => 'textarea', 'label' => __('Texto', 'flavor-chat-ia'), 'default' => __('Conviértete en instructor y enseña a tu comunidad', 'flavor-chat-ia')],
-                    'boton_texto' => ['type' => 'text', 'label' => __('Texto botón', 'flavor-chat-ia'), 'default' => __('Crear Curso', 'flavor-chat-ia')],
-                    'boton_url' => ['type' => 'url', 'label' => __('URL botón', 'flavor-chat-ia'), 'default' => '#'],
-                    'color_fondo' => ['type' => 'color', 'label' => __('Color de fondo', 'flavor-chat-ia'), 'default' => '#10b981'],
+                    'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-platform'), 'default' => __('Comparte tu Conocimiento', 'flavor-platform')],
+                    'texto' => ['type' => 'textarea', 'label' => __('Texto', 'flavor-platform'), 'default' => __('Conviértete en instructor y enseña a tu comunidad', 'flavor-platform')],
+                    'boton_texto' => ['type' => 'text', 'label' => __('Texto botón', 'flavor-platform'), 'default' => __('Crear Curso', 'flavor-platform')],
+                    'boton_url' => ['type' => 'url', 'label' => __('URL botón', 'flavor-platform'), 'default' => '#'],
+                    'color_fondo' => ['type' => 'color', 'label' => __('Color de fondo', 'flavor-platform'), 'default' => '#10b981'],
                 ],
                 'template' => 'cursos/cta-instructor',
             ],
             'curso_destacado' => [
-                'label' => __('Curso Destacado', 'flavor-chat-ia'),
-                'description' => __('Mostrar un curso destacado', 'flavor-chat-ia'),
+                'label' => __('Curso Destacado', 'flavor-platform'),
+                'description' => __('Mostrar un curso destacado', 'flavor-platform'),
                 'category' => 'content',
                 'icon' => 'dashicons-star-filled',
                 'fields' => [
-                    'curso_id' => ['type' => 'number', 'label' => __('ID del curso', 'flavor-chat-ia'), 'default' => 0],
-                    'mostrar_video' => ['type' => 'toggle', 'label' => __('Mostrar video', 'flavor-chat-ia'), 'default' => true],
-                    'estilo' => ['type' => 'select', 'label' => __('Estilo', 'flavor-chat-ia'), 'options' => ['horizontal', 'vertical'], 'default' => 'horizontal'],
+                    'curso_id' => ['type' => 'number', 'label' => __('ID del curso', 'flavor-platform'), 'default' => 0],
+                    'mostrar_video' => ['type' => 'toggle', 'label' => __('Mostrar video', 'flavor-platform'), 'default' => true],
+                    'estilo' => ['type' => 'select', 'label' => __('Estilo', 'flavor-platform'), 'options' => ['horizontal', 'vertical'], 'default' => 'horizontal'],
                 ],
                 'template' => 'cursos/destacado',
             ],
@@ -2513,11 +2513,11 @@ KNOWLEDGE;
         return [
             // Página principal
             [
-                'title' => __('Cursos', 'flavor-chat-ia'),
+                'title' => __('Cursos', 'flavor-platform'),
                 'slug' => 'cursos',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Cursos y Formación', 'flavor-chat-ia'),
-                    'subtitle' => __('Programas educativos para todos los niveles', 'flavor-chat-ia'),
+                    'title' => __('Cursos y Formación', 'flavor-platform'),
+                    'subtitle' => __('Programas educativos para todos los niveles', 'flavor-platform'),
                     'background' => 'gradient',
                     'module' => 'cursos',
                     'current' => 'listado',
@@ -2528,11 +2528,11 @@ KNOWLEDGE;
 
             // Categorías
             [
-                'title' => __('Categorías', 'flavor-chat-ia'),
+                'title' => __('Categorías', 'flavor-platform'),
                 'slug' => 'categorias',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Categorías de Cursos', 'flavor-chat-ia'),
-                    'subtitle' => __('Explora cursos por categoría', 'flavor-chat-ia'),
+                    'title' => __('Categorías de Cursos', 'flavor-platform'),
+                    'subtitle' => __('Explora cursos por categoría', 'flavor-platform'),
                     'module' => 'cursos',
                     'current' => 'categorias',
                     'content_after' => '[flavor_module_listing module="cursos" action="categorias"]',
@@ -2542,11 +2542,11 @@ KNOWLEDGE;
 
             // Mis cursos
             [
-                'title' => __('Mis Cursos', 'flavor-chat-ia'),
+                'title' => __('Mis Cursos', 'flavor-platform'),
                 'slug' => 'mis-cursos',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Mis Cursos', 'flavor-chat-ia'),
-                    'subtitle' => __('Cursos en los que estás matriculado', 'flavor-chat-ia'),
+                    'title' => __('Mis Cursos', 'flavor-platform'),
+                    'subtitle' => __('Cursos en los que estás matriculado', 'flavor-platform'),
                     'module' => 'cursos',
                     'current' => 'mis_cursos',
                     'content_after' => '[flavor_module_listing module="cursos" action="mis_cursos" user_specific="yes"]',
@@ -2556,11 +2556,11 @@ KNOWLEDGE;
 
             // Crear curso
             [
-                'title' => __('Crear Curso', 'flavor-chat-ia'),
+                'title' => __('Crear Curso', 'flavor-platform'),
                 'slug' => 'crear',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Crear un Curso', 'flavor-chat-ia'),
-                    'subtitle' => __('Comparte tu conocimiento como instructor', 'flavor-chat-ia'),
+                    'title' => __('Crear un Curso', 'flavor-platform'),
+                    'subtitle' => __('Comparte tu conocimiento como instructor', 'flavor-platform'),
                     'module' => 'cursos',
                     'current' => 'crear',
                     'content_after' => '[flavor_module_form module="cursos" action="crear_curso"]',
@@ -2570,11 +2570,11 @@ KNOWLEDGE;
 
             // Matricularse
             [
-                'title' => __('Matricularse', 'flavor-chat-ia'),
+                'title' => __('Matricularse', 'flavor-platform'),
                 'slug' => 'matricularse',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Matricularse en Curso', 'flavor-chat-ia'),
-                    'subtitle' => __('Completa tu inscripción', 'flavor-chat-ia'),
+                    'title' => __('Matricularse en Curso', 'flavor-platform'),
+                    'subtitle' => __('Completa tu inscripción', 'flavor-platform'),
                     'module' => 'cursos',
                     'current' => 'matricularse',
                     'content_after' => '[flavor_module_form module="cursos" action="matricularse"]',
@@ -2584,11 +2584,11 @@ KNOWLEDGE;
 
             // Instructores
             [
-                'title' => __('Instructores', 'flavor-chat-ia'),
+                'title' => __('Instructores', 'flavor-platform'),
                 'slug' => 'instructores',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Nuestros Instructores', 'flavor-chat-ia'),
-                    'subtitle' => __('Conoce a los profesionales que imparten los cursos', 'flavor-chat-ia'),
+                    'title' => __('Nuestros Instructores', 'flavor-platform'),
+                    'subtitle' => __('Conoce a los profesionales que imparten los cursos', 'flavor-platform'),
                     'module' => 'cursos',
                     'current' => 'instructores',
                     'content_after' => '[flavor_module_listing module="cursos" action="instructores" columnas="4"]',
@@ -2614,8 +2614,8 @@ KNOWLEDGE;
         // Páginas ocultas del sidebar (primer parámetro null)
         add_submenu_page(
             null,
-            __('Cursos - Dashboard', 'flavor-chat-ia'),
-            __('Dashboard', 'flavor-chat-ia'),
+            __('Cursos - Dashboard', 'flavor-platform'),
+            __('Dashboard', 'flavor-platform'),
             $capability,
             'cursos',
             [$this, 'render_pagina_dashboard']
@@ -2623,8 +2623,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Cursos', 'flavor-chat-ia'),
-            __('Cursos', 'flavor-chat-ia'),
+            __('Cursos', 'flavor-platform'),
+            __('Cursos', 'flavor-platform'),
             $capability,
             'cursos-listado',
             [$this, 'render_pagina_cursos']
@@ -2632,8 +2632,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Alumnos', 'flavor-chat-ia'),
-            __('Alumnos', 'flavor-chat-ia'),
+            __('Alumnos', 'flavor-platform'),
+            __('Alumnos', 'flavor-platform'),
             $capability,
             'cursos-alumnos',
             [$this, 'render_pagina_alumnos']
@@ -2641,8 +2641,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Instructores', 'flavor-chat-ia'),
-            __('Instructores', 'flavor-chat-ia'),
+            __('Instructores', 'flavor-platform'),
+            __('Instructores', 'flavor-platform'),
             $capability,
             'cursos-instructores',
             [$this, 'render_pagina_instructores']
@@ -2650,8 +2650,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Matrículas', 'flavor-chat-ia'),
-            __('Matrículas', 'flavor-chat-ia'),
+            __('Matrículas', 'flavor-platform'),
+            __('Matrículas', 'flavor-platform'),
             $capability,
             'cursos-matriculas',
             [$this, 'render_pagina_matriculas']
@@ -2666,7 +2666,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Cursos', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Cursos', 'flavor-platform') . '</h1></div>';
         }
     }
 
@@ -2678,7 +2678,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Cursos', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Cursos', 'flavor-platform') . '</h1></div>';
         }
     }
 
@@ -2690,7 +2690,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Alumnos', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Alumnos', 'flavor-platform') . '</h1></div>';
         }
     }
 
@@ -2702,7 +2702,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Instructores', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Instructores', 'flavor-platform') . '</h1></div>';
         }
     }
 
@@ -2714,7 +2714,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Matrículas', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Matrículas', 'flavor-platform') . '</h1></div>';
         }
     }
 

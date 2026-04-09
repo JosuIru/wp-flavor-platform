@@ -70,7 +70,7 @@ if ($interactive && is_user_logged_in() && $item_id) {
     <!-- Estrellas -->
     <div class="flavor-stars-container flex items-center gap-0.5 <?php echo esc_attr($size_class); ?>"
          role="<?php echo $interactive ? 'radiogroup' : 'img'; ?>"
-         aria-label="<?php printf(esc_attr__('Valoración: %s de 5 estrellas', 'flavor-chat-ia'), number_format($rating, 1)); ?>">
+         aria-label="<?php printf(esc_attr__('Valoración: %s de 5 estrellas', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($rating, 1)); ?>">
 
         <?php for ($i = 1; $i <= 5; $i++):
             $fill_percent = 0;
@@ -86,7 +86,7 @@ if ($interactive && is_user_logged_in() && $item_id) {
                 <button type="button"
                         class="flavor-star-btn relative cursor-pointer transition-transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-yellow-300 rounded <?php echo $is_active ? 'scale-110' : ''; ?>"
                         data-value="<?php echo $i; ?>"
-                        aria-label="<?php printf(esc_attr__('%d estrellas', 'flavor-chat-ia'), $i); ?>">
+                        aria-label="<?php printf(esc_attr__('%d estrellas', FLAVOR_PLATFORM_TEXT_DOMAIN), $i); ?>">
             <?php else: ?>
                 <span class="flavor-star relative">
             <?php endif; ?>
@@ -125,7 +125,7 @@ if ($interactive && is_user_logged_in() && $item_id) {
     <!-- Mensaje de feedback -->
     <?php if ($interactive): ?>
         <div class="flavor-rating-feedback hidden ml-2 text-sm text-green-600 animate-fade-in">
-            <?php esc_html_e('¡Gracias por tu valoración!', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('¡Gracias por tu valoración!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </div>
     <?php endif; ?>
 </div>

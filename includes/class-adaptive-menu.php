@@ -85,7 +85,7 @@ class Flavor_Adaptive_Menu {
                 </div>
 
                 <!-- Mobile Toggle -->
-                <button class="flavor-adaptive-menu__toggle" aria-label="<?php esc_attr_e('Toggle menu', 'flavor-chat-ia'); ?>">
+                <button class="flavor-adaptive-menu__toggle" aria-label="<?php esc_attr_e('Toggle menu', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span></span>
                     <span></span>
                     <span></span>
@@ -108,13 +108,13 @@ class Flavor_Adaptive_Menu {
                 <li class="flavor-adaptive-menu__item">
                     <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('', '')); ?>" class="flavor-adaptive-menu__link">
                         <span class="flavor-adaptive-menu__icon">🏠</span>
-                        <?php _e('Mi Portal', 'flavor-chat-ia'); ?>
+                        <?php _e('Mi Portal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </li>
                 <li class="flavor-adaptive-menu__item">
                     <a href="<?php echo esc_url(home_url('/servicios/')); ?>" class="flavor-adaptive-menu__link">
                         <span class="flavor-adaptive-menu__icon">🎯</span>
-                        <?php _e('Servicios', 'flavor-chat-ia'); ?>
+                        <?php _e('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </li>
                 <?php
@@ -134,19 +134,19 @@ class Flavor_Adaptive_Menu {
                 <li class="flavor-adaptive-menu__item">
                     <a href="<?php echo esc_url(home_url('/')); ?>" class="flavor-adaptive-menu__link">
                         <span class="flavor-adaptive-menu__icon">🏠</span>
-                        <?php _e('Inicio', 'flavor-chat-ia'); ?>
+                        <?php _e('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </li>
                 <li class="flavor-adaptive-menu__item">
                     <a href="<?php echo esc_url(home_url('/servicios/')); ?>" class="flavor-adaptive-menu__link">
                         <span class="flavor-adaptive-menu__icon">🎯</span>
-                        <?php _e('Servicios', 'flavor-chat-ia'); ?>
+                        <?php _e('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </li>
                 <li class="flavor-adaptive-menu__item">
                     <a href="<?php echo esc_url(home_url('/sobre-nosotros/')); ?>" class="flavor-adaptive-menu__link">
                         <span class="flavor-adaptive-menu__icon">ℹ️</span>
-                        <?php _e('Sobre Nosotros', 'flavor-chat-ia'); ?>
+                        <?php _e('Sobre Nosotros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </li>
             <?php endif; ?>
@@ -189,26 +189,26 @@ class Flavor_Adaptive_Menu {
                         <li>
                             <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('', '')); ?>" class="flavor-user-dropdown__link">
                                 <span class="flavor-user-dropdown__icon">🏠</span>
-                                <?php _e('Mi Portal', 'flavor-chat-ia'); ?>
+                                <?php _e('Mi Portal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </li>
                         <li>
                             <a href="<?php echo esc_url(home_url('/mi-perfil/')); ?>" class="flavor-user-dropdown__link">
                                 <span class="flavor-user-dropdown__icon">👤</span>
-                                <?php _e('Mi Perfil', 'flavor-chat-ia'); ?>
+                                <?php _e('Mi Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </li>
                         <li>
                             <a href="<?php echo esc_url(home_url('/configuracion/')); ?>" class="flavor-user-dropdown__link">
                                 <span class="flavor-user-dropdown__icon">⚙️</span>
-                                <?php _e('Configuración', 'flavor-chat-ia'); ?>
+                                <?php _e('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </li>
                         <?php if (current_user_can('manage_options')) : ?>
                         <li>
                             <a href="<?php echo esc_url(admin_url()); ?>" class="flavor-user-dropdown__link">
                                 <span class="flavor-user-dropdown__icon">🔧</span>
-                                <?php _e('Panel Admin', 'flavor-chat-ia'); ?>
+                                <?php _e('Panel Admin', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </li>
                         <?php endif; ?>
@@ -216,7 +216,7 @@ class Flavor_Adaptive_Menu {
                         <li>
                             <a href="<?php echo esc_url(wp_logout_url(home_url())); ?>" class="flavor-user-dropdown__link flavor-user-dropdown__link--logout">
                                 <span class="flavor-user-dropdown__icon">🚪</span>
-                                <?php _e('Cerrar Sesión', 'flavor-chat-ia'); ?>
+                                <?php _e('Cerrar Sesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </li>
                     </ul>
@@ -227,10 +227,10 @@ class Flavor_Adaptive_Menu {
             ?>
             <div class="flavor-auth-buttons">
                 <a href="<?php echo esc_url(wp_login_url($this->get_current_request_url())); ?>" class="flavor-button flavor-button--secondary flavor-button--small">
-                    <?php _e('Acceder', 'flavor-chat-ia'); ?>
+                    <?php _e('Acceder', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="<?php echo esc_url(wp_registration_url()); ?>" class="flavor-button flavor-button--primary flavor-button--small">
-                    <?php _e('Registrarse', 'flavor-chat-ia'); ?>
+                    <?php _e('Registrarse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php

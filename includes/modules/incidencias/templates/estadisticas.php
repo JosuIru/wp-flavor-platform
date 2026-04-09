@@ -14,12 +14,12 @@ $tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
 
 // Verificar si existe la tabla
 if (!Flavor_Chat_Helpers::tabla_existe($tabla_incidencias)) {
-    echo '<div class="incidencias-empty"><p>' . esc_html__('El módulo de incidencias no está configurado.', 'flavor-chat-ia') . '</p></div>';
+    echo '<div class="incidencias-empty"><p>' . esc_html__('El módulo de incidencias no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
 
 // Usar variables pasadas desde el shortcode si existen
-$titulo_seccion = isset($atributos['titulo']) ? $atributos['titulo'] : __('Estadísticas de Incidencias', 'flavor-chat-ia');
+$titulo_seccion = isset($atributos['titulo']) ? $atributos['titulo'] : __('Estadísticas de Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
 // Estadísticas generales
 $total_incidencias = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_incidencias WHERE estado != 'eliminada'");
@@ -76,7 +76,7 @@ $cambio_porcentual = $incidencias_mes_anterior > 0
 <div class="incidencias-estadisticas-wrapper">
     <div class="estadisticas-header">
         <h2><?php echo esc_html($titulo_seccion); ?></h2>
-        <p class="estadisticas-descripcion"><?php esc_html_e('Resumen del estado actual de las incidencias en la comunidad', 'flavor-chat-ia'); ?></p>
+        <p class="estadisticas-descripcion"><?php esc_html_e('Resumen del estado actual de las incidencias en la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
 
     <!-- KPIs principales -->
@@ -84,25 +84,25 @@ $cambio_porcentual = $incidencias_mes_anterior > 0
         <div class="kpi-card">
             <span class="kpi-icon">📊</span>
             <span class="kpi-value"><?php echo number_format_i18n($total_incidencias); ?></span>
-            <span class="kpi-label"><?php esc_html_e('Total Incidencias', 'flavor-chat-ia'); ?></span>
+            <span class="kpi-label"><?php esc_html_e('Total Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
 
         <div class="kpi-card kpi-warning">
             <span class="kpi-icon">🔴</span>
             <span class="kpi-value"><?php echo number_format_i18n($total_pendientes); ?></span>
-            <span class="kpi-label"><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></span>
+            <span class="kpi-label"><?php esc_html_e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
 
         <div class="kpi-card kpi-info">
             <span class="kpi-icon">🟡</span>
             <span class="kpi-value"><?php echo number_format_i18n($total_en_proceso); ?></span>
-            <span class="kpi-label"><?php esc_html_e('En Proceso', 'flavor-chat-ia'); ?></span>
+            <span class="kpi-label"><?php esc_html_e('En Proceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
 
         <div class="kpi-card kpi-success">
             <span class="kpi-icon">🟢</span>
             <span class="kpi-value"><?php echo number_format_i18n($total_resueltas); ?></span>
-            <span class="kpi-label"><?php esc_html_e('Resueltas', 'flavor-chat-ia'); ?></span>
+            <span class="kpi-label"><?php esc_html_e('Resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
     </div>
 
@@ -110,7 +110,7 @@ $cambio_porcentual = $incidencias_mes_anterior > 0
     <div class="estadisticas-metricas">
         <div class="metrica-card">
             <div class="metrica-header">
-                <span class="metrica-titulo"><?php esc_html_e('Tasa de Resolución', 'flavor-chat-ia'); ?></span>
+                <span class="metrica-titulo"><?php esc_html_e('Tasa de Resolución', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="metrica-valor"><?php echo esc_html($tasa_resolucion); ?>%</span>
             </div>
             <div class="metrica-barra">
@@ -120,14 +120,14 @@ $cambio_porcentual = $incidencias_mes_anterior > 0
 
         <div class="metrica-card">
             <div class="metrica-header">
-                <span class="metrica-titulo"><?php esc_html_e('Tiempo Promedio de Resolución', 'flavor-chat-ia'); ?></span>
-                <span class="metrica-valor"><?php echo esc_html($tiempo_promedio); ?> <?php esc_html_e('días', 'flavor-chat-ia'); ?></span>
+                <span class="metrica-titulo"><?php esc_html_e('Tiempo Promedio de Resolución', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                <span class="metrica-valor"><?php echo esc_html($tiempo_promedio); ?> <?php esc_html_e('días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
         <div class="metrica-card">
             <div class="metrica-header">
-                <span class="metrica-titulo"><?php esc_html_e('Incidencias Este Mes', 'flavor-chat-ia'); ?></span>
+                <span class="metrica-titulo"><?php esc_html_e('Incidencias Este Mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="metrica-valor">
                     <?php echo number_format_i18n($incidencias_este_mes); ?>
                     <?php if ($cambio_porcentual != 0): ?>
@@ -137,14 +137,14 @@ $cambio_porcentual = $incidencias_mes_anterior > 0
                     <?php endif; ?>
                 </span>
             </div>
-            <span class="metrica-subtitulo"><?php printf(esc_html__('vs %d el mes anterior', 'flavor-chat-ia'), $incidencias_mes_anterior); ?></span>
+            <span class="metrica-subtitulo"><?php printf(esc_html__('vs %d el mes anterior', FLAVOR_PLATFORM_TEXT_DOMAIN), $incidencias_mes_anterior); ?></span>
         </div>
     </div>
 
     <!-- Top Categorías -->
     <?php if ($top_categorias): ?>
     <div class="estadisticas-categorias">
-        <h3><?php esc_html_e('Categorías Más Reportadas', 'flavor-chat-ia'); ?></h3>
+        <h3><?php esc_html_e('Categorías Más Reportadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         <div class="categorias-lista">
             <?php foreach ($top_categorias as $index => $categoria): ?>
                 <?php
@@ -161,7 +161,7 @@ $cambio_porcentual = $incidencias_mes_anterior > 0
                     </div>
                     <div class="categoria-stats">
                         <span class="categoria-total"><?php echo number_format_i18n($categoria->total); ?></span>
-                        <span class="categoria-tasa"><?php echo esc_html($tasa_resolucion_cat); ?>% <?php esc_html_e('resueltas', 'flavor-chat-ia'); ?></span>
+                        <span class="categoria-tasa"><?php echo esc_html($tasa_resolucion_cat); ?>% <?php esc_html_e('resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -173,15 +173,15 @@ $cambio_porcentual = $incidencias_mes_anterior > 0
     <div class="estadisticas-leyenda">
         <span class="leyenda-item">
             <span class="leyenda-color leyenda-pendiente"></span>
-            <?php esc_html_e('Pendiente: Esperando revisión', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Pendiente: Esperando revisión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </span>
         <span class="leyenda-item">
             <span class="leyenda-color leyenda-proceso"></span>
-            <?php esc_html_e('En Proceso: Siendo atendida', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('En Proceso: Siendo atendida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </span>
         <span class="leyenda-item">
             <span class="leyenda-color leyenda-resuelta"></span>
-            <?php esc_html_e('Resuelta: Solucionada', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Resuelta: Solucionada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </span>
     </div>
 </div>

@@ -63,20 +63,20 @@ $tipos_disponibles = $wpdb->get_col("SELECT DISTINCT tipo FROM $tabla_espacios W
 
 <div class="espacios-wrapper">
     <div class="espacios-header">
-        <h2 class="espacios-titulo"><?php _e('Espacios Comunes', 'flavor-chat-ia'); ?></h2>
+        <h2 class="espacios-titulo"><?php _e('Espacios Comunes', 'flavor-platform'); ?></h2>
         <?php if (is_user_logged_in()): ?>
             <a href="<?php echo add_query_arg('vista', 'mis-reservas', get_permalink()); ?>" class="btn btn-outline">
                 <span class="dashicons dashicons-calendar-alt"></span>
-                <?php _e('Mis Reservas', 'flavor-chat-ia'); ?>
+                <?php _e('Mis Reservas', 'flavor-platform'); ?>
             </a>
         <?php endif; ?>
     </div>
 
     <div class="espacios-filtros">
         <div class="espacios-filtro-grupo">
-            <label><?php _e('Tipo', 'flavor-chat-ia'); ?></label>
+            <label><?php _e('Tipo', 'flavor-platform'); ?></label>
             <select name="tipo" onchange="this.form.submit()">
-                <option value=""><?php _e('Todos los tipos', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php _e('Todos los tipos', 'flavor-platform'); ?></option>
                 <?php foreach ($tipos_disponibles as $tipo_opcion): ?>
                     <option value="<?php echo esc_attr($tipo_opcion); ?>" <?php selected($tipo, $tipo_opcion); ?>>
                         <?php echo esc_html(ucfirst($tipo_opcion)); ?>
@@ -86,9 +86,9 @@ $tipos_disponibles = $wpdb->get_col("SELECT DISTINCT tipo FROM $tabla_espacios W
         </div>
 
         <div class="espacios-filtro-grupo">
-            <label><?php _e('Capacidad mínima', 'flavor-chat-ia'); ?></label>
+            <label><?php _e('Capacidad mínima', 'flavor-platform'); ?></label>
             <select name="capacidad" onchange="this.form.submit()">
-                <option value=""><?php _e('Cualquiera', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php _e('Cualquiera', 'flavor-platform'); ?></option>
                 <option value="5" <?php selected($capacidad_min, 5); ?>>5+ personas</option>
                 <option value="10" <?php selected($capacidad_min, 10); ?>>10+ personas</option>
                 <option value="20" <?php selected($capacidad_min, 20); ?>>20+ personas</option>
@@ -97,9 +97,9 @@ $tipos_disponibles = $wpdb->get_col("SELECT DISTINCT tipo FROM $tabla_espacios W
         </div>
 
         <div class="espacios-filtro-grupo espacios-buscar">
-            <label><?php _e('Buscar', 'flavor-chat-ia'); ?></label>
+            <label><?php _e('Buscar', 'flavor-platform'); ?></label>
             <input type="text" name="buscar" value="<?php echo esc_attr($buscar); ?>"
-                   placeholder="<?php esc_attr_e('Nombre, ubicación...', 'flavor-chat-ia'); ?>">
+                   placeholder="<?php esc_attr_e('Nombre, ubicación...', 'flavor-platform'); ?>">
         </div>
     </div>
 
@@ -138,7 +138,7 @@ $tipos_disponibles = $wpdb->get_col("SELECT DISTINCT tipo FROM $tabla_espacios W
                             </div>
                         <?php endif; ?>
                         <span class="espacio-card-estado <?php echo esc_attr($disponibilidad); ?>">
-                            <?php echo $disponibilidad === 'disponible' ? __('Disponible', 'flavor-chat-ia') : __('Ocupado', 'flavor-chat-ia'); ?>
+                            <?php echo $disponibilidad === 'disponible' ? __('Disponible', 'flavor-platform') : __('Ocupado', 'flavor-platform'); ?>
                         </span>
                     </div>
 
@@ -152,7 +152,7 @@ $tipos_disponibles = $wpdb->get_col("SELECT DISTINCT tipo FROM $tabla_espacios W
                         <div class="espacio-card-meta">
                             <div class="espacio-card-meta-item">
                                 <span class="dashicons dashicons-groups"></span>
-                                <?php printf(__('%d personas', 'flavor-chat-ia'), $espacio->capacidad_personas); ?>
+                                <?php printf(__('%d personas', 'flavor-platform'), $espacio->capacidad_personas); ?>
                             </div>
                             <?php if ($espacio->precio_hora > 0): ?>
                                 <div class="espacio-card-meta-item espacio-card-precio">
@@ -160,7 +160,7 @@ $tipos_disponibles = $wpdb->get_col("SELECT DISTINCT tipo FROM $tabla_espacios W
                                 </div>
                             <?php else: ?>
                                 <div class="espacio-card-meta-item" style="color: #10b981;">
-                                    <?php _e('Gratuito', 'flavor-chat-ia'); ?>
+                                    <?php _e('Gratuito', 'flavor-platform'); ?>
                                 </div>
                             <?php endif; ?>
                         </div>
@@ -178,7 +178,7 @@ $tipos_disponibles = $wpdb->get_col("SELECT DISTINCT tipo FROM $tabla_espacios W
 
                     <div class="espacio-card-footer">
                         <a href="<?php echo add_query_arg('espacio_id', $espacio->id, get_permalink()); ?>" class="btn btn-primary btn-sm" style="flex: 1;">
-                            <?php _e('Ver detalles', 'flavor-chat-ia'); ?>
+                            <?php _e('Ver detalles', 'flavor-platform'); ?>
                         </a>
                         <?php if (is_user_logged_in() && $disponibilidad === 'disponible'): ?>
                             <button class="btn btn-outline btn-sm btn-reservar-espacio" data-espacio-id="<?php echo $espacio->id; ?>">
@@ -192,11 +192,11 @@ $tipos_disponibles = $wpdb->get_col("SELECT DISTINCT tipo FROM $tabla_espacios W
     <?php else: ?>
         <div class="espacios-empty">
             <span class="dashicons dashicons-building"></span>
-            <h3><?php _e('No se encontraron espacios', 'flavor-chat-ia'); ?></h3>
-            <p><?php _e('No hay espacios disponibles con los filtros seleccionados.', 'flavor-chat-ia'); ?></p>
+            <h3><?php _e('No se encontraron espacios', 'flavor-platform'); ?></h3>
+            <p><?php _e('No hay espacios disponibles con los filtros seleccionados.', 'flavor-platform'); ?></p>
             <?php if ($tipo || $capacidad_min || $buscar): ?>
                 <a href="<?php echo remove_query_arg(['tipo', 'capacidad', 'buscar']); ?>" class="btn btn-primary">
-                    <?php _e('Ver todos los espacios', 'flavor-chat-ia'); ?>
+                    <?php _e('Ver todos los espacios', 'flavor-platform'); ?>
                 </a>
             <?php endif; ?>
         </div>

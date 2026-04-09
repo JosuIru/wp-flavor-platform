@@ -22,7 +22,7 @@ if (!function_exists('flavor_get_color_classes')) {
 }
 
 $steps = $steps ?? [];
-$title = $title ?? __('¿Cómo funciona?', 'flavor-chat-ia');
+$title = $title ?? __('¿Cómo funciona?', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $color = $color ?? 'lime';
 
 // No renderizar si no hay pasos

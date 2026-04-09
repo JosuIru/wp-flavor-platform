@@ -19,22 +19,22 @@ $titulo = $titulo ?? 'Sección de Contenido';
                     <div class="flavor-content-icon">
                         <span class="dashicons dashicons-yes-alt"></span>
                     </div>
-                    <h3><?php echo esc_html__('Paso 1', 'flavor-chat-ia'); ?></h3>
-                    <p><?php echo esc_html__('Descripción del primer paso', 'flavor-chat-ia'); ?></p>
+                    <h3><?php echo esc_html__('Paso 1', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php echo esc_html__('Descripción del primer paso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <div class="flavor-content-item">
                     <div class="flavor-content-icon">
                         <span class="dashicons dashicons-yes-alt"></span>
                     </div>
-                    <h3><?php echo esc_html__('Paso 2', 'flavor-chat-ia'); ?></h3>
-                    <p><?php echo esc_html__('Descripción del segundo paso', 'flavor-chat-ia'); ?></p>
+                    <h3><?php echo esc_html__('Paso 2', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php echo esc_html__('Descripción del segundo paso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <div class="flavor-content-item">
                     <div class="flavor-content-icon">
                         <span class="dashicons dashicons-yes-alt"></span>
                     </div>
-                    <h3><?php echo esc_html__('Paso 3', 'flavor-chat-ia'); ?></h3>
-                    <p><?php echo esc_html__('Descripción del tercer paso', 'flavor-chat-ia'); ?></p>
+                    <h3><?php echo esc_html__('Paso 3', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php echo esc_html__('Descripción del tercer paso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             </div>
         </div>

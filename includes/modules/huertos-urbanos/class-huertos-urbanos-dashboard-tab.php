@@ -62,28 +62,28 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
      */
     public function registrar_tabs($tabs) {
         $tabs['huertos'] = [
-            'label' => __('Huertos', 'flavor-chat-ia'),
+            'label' => __('Huertos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'carrot',
             'callback' => [$this, 'render_tab_huertos'],
             'orden' => 55,
         ];
 
         $tabs['mi-parcela'] = [
-            'label' => __('Mi Parcela', 'flavor-chat-ia'),
+            'label' => __('Mi Parcela', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'admin-site-alt3',
             'callback' => [$this, 'render_tab_mi_parcela'],
             'orden' => 56,
         ];
 
         $tabs['calendario-huertos'] = [
-            'label' => __('Calendario', 'flavor-chat-ia'),
+            'label' => __('Calendario', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'calendar',
             'callback' => [$this, 'render_tab_calendario'],
             'orden' => 57,
         ];
 
         $tabs['mapa-huertos'] = [
-            'label' => __('Mapa', 'flavor-chat-ia'),
+            'label' => __('Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'map',
             'callback' => [$this, 'render_tab_mapa'],
             'orden' => 58,
@@ -132,8 +132,8 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
         ?>
         <div class="flavor-panel flavor-huertos-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-carrot"></span> <?php esc_html_e('Huertos Urbanos', 'flavor-chat-ia'); ?></h2>
-                <p class="flavor-panel-subtitle"><?php esc_html_e('Cultiva tu propia comida en espacios comunitarios', 'flavor-chat-ia'); ?></p>
+                <h2><span class="dashicons dashicons-carrot"></span> <?php esc_html_e('Huertos Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <p class="flavor-panel-subtitle"><?php esc_html_e('Cultiva tu propia comida en espacios comunitarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <div class="flavor-panel-kpis">
@@ -141,14 +141,14 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
                     <span class="flavor-kpi-icon dashicons dashicons-admin-site-alt3"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($total_huertos); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Huertos Activos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Huertos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-success">
                     <span class="flavor-kpi-icon dashicons dashicons-yes-alt"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($parcelas_disponibles); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Parcelas Disponibles', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Parcelas Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -177,7 +177,7 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
                                 <div class="flavor-card-meta">
                                     <span class="flavor-badge <?php echo ($huerto->parcelas_libres > 0) ? 'flavor-badge-success' : 'flavor-badge-warning'; ?>">
                                         <?php printf(
-                                            esc_html__('%d/%d parcelas libres', 'flavor-chat-ia'),
+                                            esc_html__('%d/%d parcelas libres', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                             $huerto->parcelas_libres,
                                             $huerto->total_parcelas
                                         ); ?>
@@ -192,11 +192,11 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
                             </div>
                             <div class="flavor-card-footer">
                                 <a href="<?php echo esc_url(add_query_arg('huerto_id', $huerto->id, home_url('/huertos/'))); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
-                                    <?php esc_html_e('Ver detalles', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                                 <?php if ($huerto->parcelas_libres > 0): ?>
                                     <a href="<?php echo esc_url(add_query_arg('huerto_id', $huerto->id, home_url('/huertos/solicitar/'))); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
-                                        <?php esc_html_e('Solicitar', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Solicitar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 <?php endif; ?>
                             </div>
@@ -206,14 +206,14 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
             <?php else: ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-carrot"></span>
-                    <h3><?php esc_html_e('No hay huertos disponibles', 'flavor-chat-ia'); ?></h3>
-                    <p><?php esc_html_e('Pronto tendras huertos urbanos cerca de ti.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php esc_html_e('No hay huertos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php esc_html_e('Pronto tendras huertos urbanos cerca de ti.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
 
             <div class="flavor-panel-actions">
                 <a href="<?php echo esc_url(home_url('/huertos/')); ?>" class="flavor-btn flavor-btn-secondary">
-                    <?php esc_html_e('Ver todos los huertos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver todos los huertos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -293,16 +293,16 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
         ?>
         <div class="flavor-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-admin-site-alt3"></span> <?php esc_html_e('Mi Parcela', 'flavor-chat-ia'); ?></h2>
+                <h2><span class="dashicons dashicons-admin-site-alt3"></span> <?php esc_html_e('Mi Parcela', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
 
             <?php if (empty($mis_parcelas)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-carrot"></span>
-                    <h3><?php esc_html_e('No tienes parcela asignada', 'flavor-chat-ia'); ?></h3>
-                    <p><?php esc_html_e('Solicita una parcela en uno de nuestros huertos urbanos y comienza a cultivar.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php esc_html_e('No tienes parcela asignada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php esc_html_e('Solicita una parcela en uno de nuestros huertos urbanos y comienza a cultivar.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(home_url('/huertos/')); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php esc_html_e('Ver huertos disponibles', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver huertos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -311,10 +311,10 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
                         <div class="flavor-card-body">
                             <div class="parcela-header">
                                 <h3>
-                                    <?php printf(esc_html__('Parcela %s', 'flavor-chat-ia'), esc_html($parcela->numero_parcela)); ?>
+                                    <?php printf(esc_html__('Parcela %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($parcela->numero_parcela)); ?>
                                 </h3>
                                 <span class="flavor-badge flavor-badge-success">
-                                    <?php esc_html_e('Activa', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Activa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                             </div>
 
@@ -343,7 +343,7 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
                                     <span class="dashicons dashicons-calendar"></span>
                                     <span>
                                         <?php printf(
-                                            esc_html__('Desde %s', 'flavor-chat-ia'),
+                                            esc_html__('Desde %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                             date_i18n('d/m/Y', strtotime($parcela->fecha_asignacion))
                                         ); ?>
                                     </span>
@@ -360,13 +360,13 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
                                 <?php if ($parcela->tiene_riego): ?>
                                     <span class="flavor-feature-badge">
                                         <span class="dashicons dashicons-water"></span>
-                                        <?php esc_html_e('Riego', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Riego', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </span>
                                 <?php endif; ?>
                                 <?php if ($parcela->tiene_sombra): ?>
                                     <span class="flavor-feature-badge">
                                         <span class="dashicons dashicons-palmtree"></span>
-                                        <?php esc_html_e('Sombra', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Sombra', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </span>
                                 <?php endif; ?>
                             </div>
@@ -376,7 +376,7 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
 
                 <?php if (!empty($cultivos_activos)): ?>
                     <div class="flavor-section">
-                        <h3><?php esc_html_e('Mis Cultivos Activos', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php esc_html_e('Mis Cultivos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="flavor-cards-grid flavor-cards-grid-3">
                             <?php foreach ($cultivos_activos as $cultivo): ?>
                                 <div class="flavor-card flavor-cultivo-card">
@@ -393,7 +393,7 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
                                         <p class="flavor-text-muted">
                                             <span class="dashicons dashicons-calendar-alt"></span>
                                             <?php printf(
-                                                esc_html__('Sembrado: %s', 'flavor-chat-ia'),
+                                                esc_html__('Sembrado: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                                 date_i18n('d/m/Y', strtotime($cultivo->fecha_siembra))
                                             ); ?>
                                         </p>
@@ -401,7 +401,7 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
                                             <p class="flavor-text-muted">
                                                 <span class="dashicons dashicons-carrot"></span>
                                                 <?php printf(
-                                                    esc_html__('Cosecha: %s', 'flavor-chat-ia'),
+                                                    esc_html__('Cosecha: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                                     date_i18n('d/m/Y', strtotime($cultivo->fecha_cosecha_estimada))
                                                 ); ?>
                                             </p>
@@ -415,7 +415,7 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
 
                 <?php if (!empty($actividades_recientes)): ?>
                     <div class="flavor-section">
-                        <h3><?php esc_html_e('Actividad Reciente', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php esc_html_e('Actividad Reciente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="flavor-activity-list">
                             <?php foreach ($actividades_recientes as $actividad): ?>
                                 <div class="flavor-activity-item">
@@ -435,10 +435,10 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
 
                 <div class="flavor-panel-actions">
                     <a href="<?php echo esc_url(home_url('/huertos/registrar-cultivo/')); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php esc_html_e('Registrar cultivo', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Registrar cultivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="<?php echo esc_url(home_url('/huertos/registrar-actividad/')); ?>" class="flavor-btn flavor-btn-secondary">
-                        <?php esc_html_e('Registrar actividad', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Registrar actividad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php endif; ?>
@@ -529,7 +529,7 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
         ?>
         <div class="flavor-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-calendar"></span> <?php esc_html_e('Calendario del Huerto', 'flavor-chat-ia'); ?></h2>
+                <h2><span class="dashicons dashicons-calendar"></span> <?php esc_html_e('Calendario del Huerto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
 
             <div class="flavor-calendar-nav">
@@ -560,7 +560,7 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
             <div class="flavor-calendar-sections">
                 <?php if (!empty($tareas_proximas)): ?>
                     <div class="flavor-section">
-                        <h3><span class="dashicons dashicons-hammer"></span> <?php esc_html_e('Tareas y Actividades', 'flavor-chat-ia'); ?></h3>
+                        <h3><span class="dashicons dashicons-hammer"></span> <?php esc_html_e('Tareas y Actividades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="flavor-event-list">
                             <?php foreach ($tareas_proximas as $tarea): ?>
                                 <div class="flavor-event-item <?php echo $tarea->estoy_inscrito ? 'flavor-event-inscrito' : ''; ?>">
@@ -585,7 +585,7 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
                                             <?php if ($tarea->max_participantes): ?>
                                                 <span class="flavor-event-capacity">
                                                     <?php printf(
-                                                        esc_html__('%d/%d inscritos', 'flavor-chat-ia'),
+                                                        esc_html__('%d/%d inscritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                                         $tarea->inscritos,
                                                         $tarea->max_participantes
                                                     ); ?>
@@ -595,11 +595,11 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
                                     </div>
                                     <div class="flavor-event-actions">
                                         <?php if ($tarea->estoy_inscrito): ?>
-                                            <span class="flavor-badge flavor-badge-success"><?php esc_html_e('Inscrito', 'flavor-chat-ia'); ?></span>
+                                            <span class="flavor-badge flavor-badge-success"><?php esc_html_e('Inscrito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         <?php else: ?>
                                             <button class="flavor-btn flavor-btn-sm flavor-btn-primary flavor-inscribirse-tarea"
                                                     data-tarea-id="<?php echo esc_attr($tarea->id); ?>">
-                                                <?php esc_html_e('Inscribirse', 'flavor-chat-ia'); ?>
+                                                <?php esc_html_e('Inscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </button>
                                         <?php endif; ?>
                                     </div>
@@ -611,7 +611,7 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
 
                 <?php if (!empty($mis_turnos_riego)): ?>
                     <div class="flavor-section">
-                        <h3><span class="dashicons dashicons-water"></span> <?php esc_html_e('Mis Turnos de Riego', 'flavor-chat-ia'); ?></h3>
+                        <h3><span class="dashicons dashicons-water"></span> <?php esc_html_e('Mis Turnos de Riego', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="flavor-event-list">
                             <?php foreach ($mis_turnos_riego as $turno): ?>
                                 <div class="flavor-event-item <?php echo $turno->completado ? 'flavor-event-completado' : ''; ?>">
@@ -620,7 +620,7 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
                                         <span class="flavor-event-month"><?php echo date_i18n('M', strtotime($turno->fecha_turno)); ?></span>
                                     </div>
                                     <div class="flavor-event-content">
-                                        <h4><?php esc_html_e('Turno de Riego', 'flavor-chat-ia'); ?></h4>
+                                        <h4><?php esc_html_e('Turno de Riego', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                                         <p class="flavor-text-muted">
                                             <span class="dashicons dashicons-location"></span>
                                             <?php echo esc_html($turno->huerto_nombre); ?>
@@ -638,12 +638,12 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
                                         <?php if ($turno->completado): ?>
                                             <span class="flavor-badge flavor-badge-success">
                                                 <span class="dashicons dashicons-yes"></span>
-                                                <?php esc_html_e('Completado', 'flavor-chat-ia'); ?>
+                                                <?php esc_html_e('Completado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </span>
                                         <?php else: ?>
                                             <button class="flavor-btn flavor-btn-sm flavor-btn-outline flavor-marcar-riego"
                                                     data-turno-id="<?php echo esc_attr($turno->id); ?>">
-                                                <?php esc_html_e('Marcar completado', 'flavor-chat-ia'); ?>
+                                                <?php esc_html_e('Marcar completado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </button>
                                         <?php endif; ?>
                                     </div>
@@ -655,7 +655,7 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
 
                 <?php if (!empty($cosechas_proximas)): ?>
                     <div class="flavor-section">
-                        <h3><span class="dashicons dashicons-carrot"></span> <?php esc_html_e('Cosechas Proximas', 'flavor-chat-ia'); ?></h3>
+                        <h3><span class="dashicons dashicons-carrot"></span> <?php esc_html_e('Cosechas Proximas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="flavor-event-list">
                             <?php foreach ($cosechas_proximas as $cultivo): ?>
                                 <div class="flavor-event-item">
@@ -669,7 +669,7 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
                                             <p class="flavor-text-muted"><?php echo esc_html($cultivo->variedad); ?></p>
                                         <?php endif; ?>
                                         <span class="flavor-badge flavor-badge-warning">
-                                            <?php esc_html_e('Listo para cosechar', 'flavor-chat-ia'); ?>
+                                            <?php esc_html_e('Listo para cosechar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </span>
                                     </div>
                                 </div>
@@ -681,8 +681,8 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
                 <?php if (empty($tareas_proximas) && empty($mis_turnos_riego) && empty($cosechas_proximas)): ?>
                     <div class="flavor-empty-state">
                         <span class="dashicons dashicons-calendar"></span>
-                        <h3><?php esc_html_e('No hay eventos este mes', 'flavor-chat-ia'); ?></h3>
-                        <p><?php esc_html_e('Tu calendario esta libre. Explora las tareas disponibles o registra nuevos cultivos.', 'flavor-chat-ia'); ?></p>
+                        <h3><?php esc_html_e('No hay eventos este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                        <p><?php esc_html_e('Tu calendario esta libre. Explora las tareas disponibles o registra nuevos cultivos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 <?php endif; ?>
             </div>
@@ -739,8 +739,8 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
         ?>
         <div class="flavor-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-location"></span> <?php esc_html_e('Mapa de Huertos', 'flavor-chat-ia'); ?></h2>
-                <p class="flavor-panel-subtitle"><?php esc_html_e('Encuentra huertos urbanos cerca de ti', 'flavor-chat-ia'); ?></p>
+                <h2><span class="dashicons dashicons-location"></span> <?php esc_html_e('Mapa de Huertos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <p class="flavor-panel-subtitle"><?php esc_html_e('Encuentra huertos urbanos cerca de ti', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <div class="flavor-mapa-container">
@@ -750,17 +750,17 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
             <div class="flavor-mapa-leyenda">
                 <div class="flavor-leyenda-item">
                     <span class="flavor-leyenda-marker flavor-leyenda-disponible"></span>
-                    <span><?php esc_html_e('Parcelas disponibles', 'flavor-chat-ia'); ?></span>
+                    <span><?php esc_html_e('Parcelas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="flavor-leyenda-item">
                     <span class="flavor-leyenda-marker flavor-leyenda-completo"></span>
-                    <span><?php esc_html_e('Sin disponibilidad', 'flavor-chat-ia'); ?></span>
+                    <span><?php esc_html_e('Sin disponibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
             <?php if (!empty($huertos)): ?>
                 <div class="flavor-section">
-                    <h3><?php esc_html_e('Listado de Huertos', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Listado de Huertos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <div class="flavor-huertos-lista">
                         <?php foreach ($huertos as $huerto): ?>
                             <div class="flavor-huerto-item" data-lat="<?php echo esc_attr($huerto->latitud); ?>" data-lng="<?php echo esc_attr($huerto->longitud); ?>">
@@ -771,7 +771,7 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
                                 <div class="flavor-huerto-stats">
                                     <span class="flavor-badge <?php echo $huerto->parcelas_disponibles > 0 ? 'flavor-badge-success' : 'flavor-badge-warning'; ?>">
                                         <?php printf(
-                                            esc_html__('%d/%d libres', 'flavor-chat-ia'),
+                                            esc_html__('%d/%d libres', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                             $huerto->parcelas_disponibles,
                                             $huerto->total_parcelas
                                         ); ?>
@@ -869,10 +869,10 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
         ?>
         <div class="flavor-empty-state">
             <span class="dashicons dashicons-lock"></span>
-            <h3><?php esc_html_e('Acceso restringido', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('Debes iniciar sesion para acceder a esta seccion.', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('Acceso restringido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php esc_html_e('Debes iniciar sesion para acceder a esta seccion.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="flavor-btn flavor-btn-primary">
-                <?php esc_html_e('Iniciar sesion', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
         <?php
@@ -907,15 +907,15 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
      */
     private function obtener_texto_estado_cultivo($estado) {
         $textos = [
-            'planificado' => __('Planificado', 'flavor-chat-ia'),
-            'sembrado' => __('Sembrado', 'flavor-chat-ia'),
-            'germinando' => __('Germinando', 'flavor-chat-ia'),
-            'crecimiento' => __('Crecimiento', 'flavor-chat-ia'),
-            'floracion' => __('Floracion', 'flavor-chat-ia'),
-            'maduracion' => __('Maduracion', 'flavor-chat-ia'),
-            'cosecha' => __('Cosecha', 'flavor-chat-ia'),
-            'finalizado' => __('Finalizado', 'flavor-chat-ia'),
-            'fallido' => __('Fallido', 'flavor-chat-ia'),
+            'planificado' => __('Planificado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'sembrado' => __('Sembrado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'germinando' => __('Germinando', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'crecimiento' => __('Crecimiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'floracion' => __('Floracion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'maduracion' => __('Maduracion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cosecha' => __('Cosecha', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'finalizado' => __('Finalizado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'fallido' => __('Fallido', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
         return $textos[$estado] ?? ucfirst($estado);
     }
@@ -950,16 +950,16 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
      */
     private function obtener_texto_tipo_actividad($tipo) {
         $textos = [
-            'riego' => __('Riego', 'flavor-chat-ia'),
-            'abonado' => __('Abonado', 'flavor-chat-ia'),
-            'poda' => __('Poda', 'flavor-chat-ia'),
-            'cosecha' => __('Cosecha', 'flavor-chat-ia'),
-            'tratamiento' => __('Tratamiento', 'flavor-chat-ia'),
-            'limpieza' => __('Limpieza', 'flavor-chat-ia'),
-            'siembra' => __('Siembra', 'flavor-chat-ia'),
-            'transplante' => __('Transplante', 'flavor-chat-ia'),
-            'observacion' => __('Observacion', 'flavor-chat-ia'),
-            'otro' => __('Otro', 'flavor-chat-ia'),
+            'riego' => __('Riego', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'abonado' => __('Abonado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'poda' => __('Poda', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cosecha' => __('Cosecha', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'tratamiento' => __('Tratamiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'limpieza' => __('Limpieza', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'siembra' => __('Siembra', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'transplante' => __('Transplante', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'observacion' => __('Observacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'otro' => __('Otro', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
         return $textos[$tipo] ?? ucfirst($tipo);
     }
@@ -993,15 +993,15 @@ class Flavor_Huertos_Urbanos_Dashboard_Tab {
      */
     private function obtener_texto_tipo_tarea($tipo) {
         $textos = [
-            'riego' => __('Riego', 'flavor-chat-ia'),
-            'limpieza' => __('Limpieza', 'flavor-chat-ia'),
-            'mantenimiento' => __('Mantenimiento', 'flavor-chat-ia'),
-            'taller' => __('Taller', 'flavor-chat-ia'),
-            'reunion' => __('Reunion', 'flavor-chat-ia'),
-            'siembra_comunitaria' => __('Siembra comunitaria', 'flavor-chat-ia'),
-            'cosecha_comunitaria' => __('Cosecha comunitaria', 'flavor-chat-ia'),
-            'compostaje' => __('Compostaje', 'flavor-chat-ia'),
-            'otro' => __('Otro', 'flavor-chat-ia'),
+            'riego' => __('Riego', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'limpieza' => __('Limpieza', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'mantenimiento' => __('Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'taller' => __('Taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'reunion' => __('Reunion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'siembra_comunitaria' => __('Siembra comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cosecha_comunitaria' => __('Cosecha comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'compostaje' => __('Compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'otro' => __('Otro', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
         return $textos[$tipo] ?? ucfirst(str_replace('_', ' ', $tipo));
     }

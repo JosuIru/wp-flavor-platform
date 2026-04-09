@@ -30,15 +30,15 @@ $prioridad_classes = [
         <div class="dm-header__content">
             <h1 class="dm-header__title">
                 <span class="dashicons dashicons-archive"></span>
-                <?php esc_html_e('Archivo de Avisos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Archivo de Avisos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h1>
             <p class="dm-header__description">
-                <?php esc_html_e('Historial de avisos expirados y archivados', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Historial de avisos expirados y archivados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
         <div class="dm-header__actions">
             <a href="<?php echo esc_url(admin_url('admin.php?page=avisos-dashboard')); ?>" class="dm-btn dm-btn--secondary">
-                <span class="dashicons dashicons-arrow-left-alt"></span> <?php esc_html_e('Volver', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-arrow-left-alt"></span> <?php esc_html_e('Volver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>
@@ -51,7 +51,7 @@ $prioridad_classes = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($stats['total_archivados']); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Total archivados', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Total archivados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -61,7 +61,7 @@ $prioridad_classes = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($stats['este_mes']); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Expirados este mes', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Expirados este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -71,7 +71,7 @@ $prioridad_classes = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($stats['total_visualizaciones']); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Visualizaciones', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Visualizaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -81,7 +81,7 @@ $prioridad_classes = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($stats['total_confirmaciones']); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Confirmaciones', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Confirmaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
     </div>
@@ -93,9 +93,9 @@ $prioridad_classes = [
                 <input type="hidden" name="page" value="avisos-archivo" />
 
                 <div class="dm-filters__group">
-                    <label for="filtro_categoria"><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></label>
+                    <label for="filtro_categoria"><?php esc_html_e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="categoria" id="filtro_categoria">
-                        <option value=""><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($categorias as $cat): ?>
                         <option value="<?php echo esc_attr($cat->nombre); ?>" <?php selected($filtros['categoria'], $cat->nombre); ?>>
                             <?php echo esc_html($cat->nombre); ?>
@@ -105,9 +105,9 @@ $prioridad_classes = [
                 </div>
 
                 <div class="dm-filters__group">
-                    <label for="filtro_anio"><?php esc_html_e('Año', 'flavor-chat-ia'); ?></label>
+                    <label for="filtro_anio"><?php esc_html_e('Año', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="anio" id="filtro_anio">
-                        <option value=""><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php
                         $anio_actual = (int) date('Y');
                         for ($a = $anio_actual; $a >= $anio_actual - 5; $a--): ?>
@@ -117,16 +117,16 @@ $prioridad_classes = [
                 </div>
 
                 <div class="dm-filters__group">
-                    <label for="filtro_buscar"><?php esc_html_e('Buscar', 'flavor-chat-ia'); ?></label>
-                    <input type="text" name="buscar" id="filtro_buscar" value="<?php echo esc_attr($filtros['buscar']); ?>" placeholder="<?php esc_attr_e('Título...', 'flavor-chat-ia'); ?>" />
+                    <label for="filtro_buscar"><?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                    <input type="text" name="buscar" id="filtro_buscar" value="<?php echo esc_attr($filtros['buscar']); ?>" placeholder="<?php esc_attr_e('Título...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" />
                 </div>
 
                 <div class="dm-filters__actions">
                     <button type="submit" class="dm-btn dm-btn--primary dm-btn--sm">
-                        <span class="dashicons dashicons-search"></span> <?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?>
+                        <span class="dashicons dashicons-search"></span> <?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=avisos-archivo')); ?>" class="dm-btn dm-btn--ghost dm-btn--sm">
-                        <?php esc_html_e('Limpiar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </form>
@@ -137,7 +137,7 @@ $prioridad_classes = [
     <div class="dm-card">
         <div class="dm-card__header">
             <h2 class="dm-card__title">
-                <?php esc_html_e('Avisos Archivados', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Avisos Archivados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <?php if ($paginacion['total'] > 0): ?>
                 <span class="dm-badge dm-badge--muted"><?php echo number_format_i18n($paginacion['total']); ?></span>
                 <?php endif; ?>
@@ -148,13 +148,13 @@ $prioridad_classes = [
             <table class="dm-table">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('Título', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Prioridad', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Publicado', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Expirado', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Vistas', 'flavor-chat-ia'); ?></th>
-                        <th class="dm-table__actions"><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Prioridad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Publicado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Expirado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Vistas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th class="dm-table__actions"><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -200,7 +200,7 @@ $prioridad_classes = [
                             </button>
                             <a href="<?php echo esc_url(admin_url('admin.php?page=avisos-nuevo&republicar=' . $aviso->id)); ?>"
                                class="dm-btn dm-btn--primary dm-btn--sm"
-                               title="<?php esc_attr_e('Republicar', 'flavor-chat-ia'); ?>">
+                               title="<?php esc_attr_e('Republicar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <span class="dashicons dashicons-controls-repeat"></span>
                             </a>
                         </td>
@@ -220,7 +220,7 @@ $prioridad_classes = [
 
                 <span class="dm-pagination__info">
                     <?php printf(
-                        __('Página %1$d de %2$d', 'flavor-chat-ia'),
+                        __('Página %1$d de %2$d', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $paginacion['pagina'],
                         $paginacion['total_paginas']
                     ); ?>
@@ -237,10 +237,10 @@ $prioridad_classes = [
             <?php else: ?>
             <div class="dm-empty-state">
                 <span class="dashicons dashicons-archive"></span>
-                <p><?php esc_html_e('No hay avisos archivados', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No hay avisos archivados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php if (!empty($filtros['categoria']) || !empty($filtros['anio']) || !empty($filtros['buscar'])): ?>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=avisos-archivo')); ?>" class="dm-btn dm-btn--secondary dm-btn--sm">
-                    <?php esc_html_e('Quitar filtros', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Quitar filtros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <?php endif; ?>
             </div>
@@ -255,7 +255,7 @@ $prioridad_classes = [
     <div class="dm-modal__overlay"></div>
     <div class="dm-modal__content">
         <div class="dm-modal__header">
-            <h3 class="dm-modal__title"><?php esc_html_e('Detalle del Aviso', 'flavor-chat-ia'); ?></h3>
+            <h3 class="dm-modal__title"><?php esc_html_e('Detalle del Aviso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <button type="button" class="dm-modal__close" id="cerrar-modal-aviso">
                 <span class="dashicons dashicons-no-alt"></span>
             </button>
@@ -264,9 +264,9 @@ $prioridad_classes = [
             <div id="contenido-aviso"></div>
         </div>
         <div class="dm-modal__footer">
-            <button type="button" class="dm-btn dm-btn--secondary" id="btn-cerrar-modal"><?php esc_html_e('Cerrar', 'flavor-chat-ia'); ?></button>
+            <button type="button" class="dm-btn dm-btn--secondary" id="btn-cerrar-modal"><?php esc_html_e('Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
             <a href="#" id="btn-republicar-aviso" class="dm-btn dm-btn--primary">
-                <span class="dashicons dashicons-controls-repeat"></span> <?php esc_html_e('Republicar', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-controls-repeat"></span> <?php esc_html_e('Republicar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>

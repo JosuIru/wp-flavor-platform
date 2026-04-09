@@ -108,7 +108,7 @@ class Flavor_Module_Visibility_Admin {
         check_ajax_referer('flavor_module_visibility_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos suficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos suficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $module_id = sanitize_key($_POST['module_id'] ?? '');
@@ -116,7 +116,7 @@ class Flavor_Module_Visibility_Admin {
         $capacidad = sanitize_key($_POST['capability'] ?? 'read');
 
         if (empty($module_id)) {
-            wp_send_json_error(['message' => __('ID de modulo invalido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID de modulo invalido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Validar visibilidad
@@ -141,7 +141,7 @@ class Flavor_Module_Visibility_Admin {
         }
 
         wp_send_json_success([
-            'message' => __('Visibilidad actualizada correctamente', 'flavor-chat-ia'),
+            'message' => __('Visibilidad actualizada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'module_id' => $module_id,
             'visibility' => $visibilidad,
             'capability' => $capacidad,
@@ -155,7 +155,7 @@ class Flavor_Module_Visibility_Admin {
         check_ajax_referer('flavor_module_visibility_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos suficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos suficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Eliminar opciones personalizadas
@@ -168,7 +168,7 @@ class Flavor_Module_Visibility_Admin {
         }
 
         wp_send_json_success([
-            'message' => __('Se han restaurado los valores por defecto', 'flavor-chat-ia'),
+            'message' => __('Se han restaurado los valores por defecto', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -197,16 +197,16 @@ class Flavor_Module_Visibility_Admin {
         ?>
         <div class="flavor-visibility-section">
             <div class="flavor-visibility-header">
-                <h2><?php esc_html_e('Control de Acceso a Modulos', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Control de Acceso a Modulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <p class="description">
-                    <?php esc_html_e('Configura quien puede acceder a cada modulo. Los cambios se aplican inmediatamente.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Configura quien puede acceder a cada modulo. Los cambios se aplican inmediatamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
             <div class="flavor-visibility-actions">
                 <button type="button" id="flavor-reset-visibility" class="button button-secondary">
                     <span class="dashicons dashicons-image-rotate"></span>
-                    <?php esc_html_e('Restaurar valores por defecto', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Restaurar valores por defecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
 
@@ -391,7 +391,7 @@ class Flavor_Module_Visibility_Admin {
 
             function guardarVisibilidad(moduleId, visibility, capability, $card) {
                 var $indicator = $card.find('.flavor-saving-indicator');
-                $indicator.addClass('active').text('<?php esc_html_e('Guardando...', 'flavor-chat-ia'); ?>');
+                $indicator.addClass('active').text('<?php esc_html_e('Guardando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
 
                 $.ajax({
                     url: ajaxurl,
@@ -405,7 +405,7 @@ class Flavor_Module_Visibility_Admin {
                     },
                     success: function(response) {
                         if (response.success) {
-                            $indicator.text('<?php esc_html_e('Guardado', 'flavor-chat-ia'); ?>');
+                            $indicator.text('<?php esc_html_e('Guardado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                             // Actualizar badge
                             var $badge = $card.find('.flavor-visibility-badge');
                             $badge.removeClass('public members_only private').addClass(visibility);
@@ -414,14 +414,14 @@ class Flavor_Module_Visibility_Admin {
                             $card.removeClass('visibility-public visibility-members_only visibility-private')
                                  .addClass('visibility-' + visibility);
                         } else {
-                            $indicator.text('<?php esc_html_e('Error', 'flavor-chat-ia'); ?>');
+                            $indicator.text('<?php esc_html_e('Error', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                         }
                         setTimeout(function() {
                             $indicator.removeClass('active');
                         }, 2000);
                     },
                     error: function() {
-                        $indicator.text('<?php esc_html_e('Error de conexion', 'flavor-chat-ia'); ?>');
+                        $indicator.text('<?php esc_html_e('Error de conexion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                         setTimeout(function() {
                             $indicator.removeClass('active');
                         }, 2000);
@@ -431,21 +431,21 @@ class Flavor_Module_Visibility_Admin {
 
             function getVisibilityLabel(visibility) {
                 var labels = {
-                    'public': '<?php esc_html_e('Publico', 'flavor-chat-ia'); ?>',
-                    'members_only': '<?php esc_html_e('Miembros', 'flavor-chat-ia'); ?>',
-                    'private': '<?php esc_html_e('Privado', 'flavor-chat-ia'); ?>'
+                    'public': '<?php esc_html_e('Publico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
+                    'members_only': '<?php esc_html_e('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
+                    'private': '<?php esc_html_e('Privado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>'
                 };
                 return labels[visibility] || visibility;
             }
 
             // Resetear visibilidades
             $('#flavor-reset-visibility').on('click', function() {
-                if (!confirm('<?php esc_html_e('Esto restaurara todos los modulos a su visibilidad por defecto. Continuar?', 'flavor-chat-ia'); ?>')) {
+                if (!confirm('<?php esc_html_e('Esto restaurara todos los modulos a su visibilidad por defecto. Continuar?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>')) {
                     return;
                 }
 
                 var $btn = $(this);
-                $btn.prop('disabled', true).text('<?php esc_html_e('Restaurando...', 'flavor-chat-ia'); ?>');
+                $btn.prop('disabled', true).text('<?php esc_html_e('Restaurando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
 
                 $.ajax({
                     url: ajaxurl,
@@ -459,12 +459,12 @@ class Flavor_Module_Visibility_Admin {
                             location.reload();
                         } else {
                             alert(response.data.message);
-                            $btn.prop('disabled', false).html('<span class="dashicons dashicons-image-rotate"></span> <?php esc_html_e('Restaurar valores por defecto', 'flavor-chat-ia'); ?>');
+                            $btn.prop('disabled', false).html('<span class="dashicons dashicons-image-rotate"></span> <?php esc_html_e('Restaurar valores por defecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                         }
                     },
                     error: function() {
-                        alert('<?php esc_html_e('Error de conexion', 'flavor-chat-ia'); ?>');
-                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-image-rotate"></span> <?php esc_html_e('Restaurar valores por defecto', 'flavor-chat-ia'); ?>');
+                        alert('<?php esc_html_e('Error de conexion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-image-rotate"></span> <?php esc_html_e('Restaurar valores por defecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                     }
                 });
             });
@@ -505,7 +505,7 @@ class Flavor_Module_Visibility_Admin {
             <div class="flavor-module-controls">
                 <div class="flavor-control-group">
                     <label for="visibility-<?php echo esc_attr($module_id); ?>">
-                        <?php esc_html_e('Visibilidad', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Visibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <select id="visibility-<?php echo esc_attr($module_id); ?>"
                             class="flavor-visibility-select">
@@ -520,7 +520,7 @@ class Flavor_Module_Visibility_Admin {
 
                 <div class="flavor-control-group">
                     <label for="capability-<?php echo esc_attr($module_id); ?>">
-                        <?php esc_html_e('Permiso requerido', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Permiso requerido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <select id="capability-<?php echo esc_attr($module_id); ?>"
                             class="flavor-capability-select">
@@ -541,7 +541,7 @@ class Flavor_Module_Visibility_Admin {
                         <?php
                         printf(
                             /* translators: %s: visibilidad por defecto */
-                            esc_html__('Por defecto: %s', 'flavor-chat-ia'),
+                            esc_html__('Por defecto: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             esc_html($this->obtener_etiqueta_visibilidad($visibilidad_por_defecto))
                         );
                         ?>
@@ -560,9 +560,9 @@ class Flavor_Module_Visibility_Admin {
      */
     private function obtener_etiqueta_visibilidad($visibilidad) {
         $etiquetas = [
-            'public' => __('Publico', 'flavor-chat-ia'),
-            'private' => __('Privado', 'flavor-chat-ia'),
-            'members_only' => __('Miembros', 'flavor-chat-ia'),
+            'public' => __('Publico', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'private' => __('Privado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'members_only' => __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         return $etiquetas[$visibilidad] ?? $visibilidad;

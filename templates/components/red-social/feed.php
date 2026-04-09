@@ -112,31 +112,31 @@ $publicaciones_mostradas = array_slice($publicaciones_feed, 0, $limite_publicaci
                             <div class="flex-1 w-full">
                                 <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all">
                                     <textarea
-                                        placeholder="<?php echo esc_attr__('Comparte tu experiencia con la comunidad...', 'flavor-chat-ia'); ?>"
+                                        placeholder="<?php echo esc_attr__('Comparte tu experiencia con la comunidad...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                                         class="w-full bg-transparent resize-none focus:outline-none text-gray-900 placeholder-gray-500"
                                         rows="3"
                                     ></textarea>
                                 </div>
                                 <div class="flex items-center justify-between mt-4">
                                     <div class="flex items-center gap-2">
-                                        <button class="p-2 rounded-lg text-gray-500 hover:bg-blue-50 hover:text-blue-600 transition-colors" title="<?php echo esc_attr__('Agregar imagen', 'flavor-chat-ia'); ?>">
+                                        <button class="p-2 rounded-lg text-gray-500 hover:bg-blue-50 hover:text-blue-600 transition-colors" title="<?php echo esc_attr__('Agregar imagen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                             </svg>
                                         </button>
-                                        <button class="p-2 rounded-lg text-gray-500 hover:bg-blue-50 hover:text-blue-600 transition-colors" title="<?php echo esc_attr__('Agregar ubicación', 'flavor-chat-ia'); ?>">
+                                        <button class="p-2 rounded-lg text-gray-500 hover:bg-blue-50 hover:text-blue-600 transition-colors" title="<?php echo esc_attr__('Agregar ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                                             </svg>
                                         </button>
-                                        <button class="p-2 rounded-lg text-gray-500 hover:bg-blue-50 hover:text-blue-600 transition-colors" title="<?php echo esc_attr__('Agregar etiqueta', 'flavor-chat-ia'); ?>">
+                                        <button class="p-2 rounded-lg text-gray-500 hover:bg-blue-50 hover:text-blue-600 transition-colors" title="<?php echo esc_attr__('Agregar etiqueta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
                                             </svg>
                                         </button>
                                     </div>
                                     <button class="px-6 py-2 rounded-lg text-white font-semibold transition-all hover:shadow-lg" style="background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);">
-                                        <?php echo esc_html__('Publicar', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 </div>
                             </div>
@@ -156,7 +156,7 @@ $publicaciones_mostradas = array_slice($publicaciones_feed, 0, $limite_publicaci
                                                 <?php echo esc_html($publicacion['autor']); ?>
                                             </a>
                                             <?php if ($publicacion['verificado']): ?>
-                                                <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20" title="<?php echo esc_attr__('Verificado', 'flavor-chat-ia'); ?>">
+                                                <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20" title="<?php echo esc_attr__('Verificado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                                     <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                                                 </svg>
                                             <?php endif; ?>
@@ -164,7 +164,7 @@ $publicaciones_mostradas = array_slice($publicaciones_feed, 0, $limite_publicaci
                                         <span class="text-sm text-gray-500"><?php echo esc_html($publicacion['tiempo']); ?></span>
                                     </div>
                                 </div>
-                                <button class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors" title="<?php echo esc_attr__('Más opciones', 'flavor-chat-ia'); ?>">
+                                <button class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors" title="<?php echo esc_attr__('Más opciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M10.5 1.5H9.5V3h1V1.5zM10.5 17v1.5H9.5V17h1zM17 10.5V9.5H15.5v1H17zM3 10.5V9.5H1.5v1H3z"/>
                                         <path d="M5.5 5.5a1 1 0 11-2 0 1 1 0 012 0zM16.5 5.5a1 1 0 11-2 0 1 1 0 012 0zM5.5 16.5a1 1 0 11-2 0 1 1 0 012 0zM16.5 16.5a1 1 0 11-2 0 1 1 0 012 0z"/>
@@ -201,26 +201,26 @@ $publicaciones_mostradas = array_slice($publicaciones_feed, 0, $limite_publicaci
                             <!-- Acciones -->
                             <div class="flex items-center justify-between pt-4 border-t border-gray-100 text-sm text-gray-600">
                                 <div class="flex items-center gap-6">
-                                    <button class="flavor-like-btn flex items-center gap-2 hover:text-red-500 transition-colors group" title="<?php echo esc_attr__('Me gusta', 'flavor-chat-ia'); ?>">
+                                    <button class="flavor-like-btn flex items-center gap-2 hover:text-red-500 transition-colors group" title="<?php echo esc_attr__('Me gusta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                         <svg class="w-5 h-5 group-hover:fill-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                                         </svg>
                                         <span class="font-medium"><?php echo esc_html($publicacion['likes']); ?></span>
                                     </button>
-                                    <button class="flavor-comment-btn flex items-center gap-2 hover:text-blue-500 transition-colors" title="<?php echo esc_attr__('Comentar', 'flavor-chat-ia'); ?>">
+                                    <button class="flavor-comment-btn flex items-center gap-2 hover:text-blue-500 transition-colors" title="<?php echo esc_attr__('Comentar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                                         </svg>
                                         <span class="font-medium"><?php echo esc_html($publicacion['comentarios']); ?></span>
                                     </button>
-                                    <button class="flavor-share-btn flex items-center gap-2 hover:text-green-500 transition-colors" title="<?php echo esc_attr__('Compartir', 'flavor-chat-ia'); ?>">
+                                    <button class="flavor-share-btn flex items-center gap-2 hover:text-green-500 transition-colors" title="<?php echo esc_attr__('Compartir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
                                         </svg>
                                         <span class="font-medium"><?php echo esc_html($publicacion['comparticiones']); ?></span>
                                     </button>
                                 </div>
-                                <button class="hover:text-blue-500 transition-colors" title="<?php echo esc_attr__('Guardar', 'flavor-chat-ia'); ?>">
+                                <button class="hover:text-blue-500 transition-colors" title="<?php echo esc_attr__('Guardar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h6a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
                                     </svg>
@@ -232,7 +232,7 @@ $publicaciones_mostradas = array_slice($publicaciones_feed, 0, $limite_publicaci
                     <!-- Botón cargar más -->
                     <div class="text-center pt-6">
                         <button class="px-8 py-3 rounded-lg font-semibold transition-all hover:shadow-lg" style="background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); color: white;">
-                            <?php echo esc_html__('Cargar más publicaciones', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Cargar más publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </div>
@@ -244,10 +244,10 @@ $publicaciones_mostradas = array_slice($publicaciones_feed, 0, $limite_publicaci
                         <div class="flavor-welcome-card bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
                             <div class="text-center mb-4">
                                 <h3 class="text-lg font-bold text-gray-900 mb-2">
-                                    <?php echo esc_html__('Bienvenido a la Comunidad', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Bienvenido a la Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </h3>
                                 <p class="text-sm text-gray-600">
-                                    <?php echo esc_html__('Conecta, comparte y aprende con tus vecinos', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Conecta, comparte y aprende con tus vecinos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </p>
                             </div>
                         </div>
@@ -255,19 +255,19 @@ $publicaciones_mostradas = array_slice($publicaciones_feed, 0, $limite_publicaci
                         <!-- Estadísticas rápidas -->
                         <div class="flavor-stats-card bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
                             <h3 class="text-lg font-bold text-gray-900 mb-4">
-                                <?php echo esc_html__('Estadísticas', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </h3>
                             <div class="space-y-3">
                                 <div class="flex items-center justify-between pb-3 border-b border-gray-100">
-                                    <span class="text-gray-600"><?php echo esc_html__('Miembros activos', 'flavor-chat-ia'); ?></span>
+                                    <span class="text-gray-600"><?php echo esc_html__('Miembros activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     <span class="font-bold text-blue-600">1,234</span>
                                 </div>
                                 <div class="flex items-center justify-between pb-3 border-b border-gray-100">
-                                    <span class="text-gray-600"><?php echo esc_html__('Publicaciones hoy', 'flavor-chat-ia'); ?></span>
+                                    <span class="text-gray-600"><?php echo esc_html__('Publicaciones hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     <span class="font-bold text-green-600">48</span>
                                 </div>
                                 <div class="flex items-center justify-between">
-                                    <span class="text-gray-600"><?php echo esc_html__('Interacciones', 'flavor-chat-ia'); ?></span>
+                                    <span class="text-gray-600"><?php echo esc_html__('Interacciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     <span class="font-bold text-purple-600">892</span>
                                 </div>
                             </div>
@@ -276,7 +276,7 @@ $publicaciones_mostradas = array_slice($publicaciones_feed, 0, $limite_publicaci
                         <!-- Temas populares -->
                         <div class="flavor-topics-card bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
                             <h3 class="text-lg font-bold text-gray-900 mb-4">
-                                <?php echo esc_html__('Temas Populares', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Temas Populares', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </h3>
                             <div class="space-y-3">
                                 <a href="#" class="block p-3 rounded-lg hover:bg-blue-50 transition-colors">

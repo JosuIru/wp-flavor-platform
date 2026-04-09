@@ -15,44 +15,44 @@ if (!defined('ABSPATH') || !defined('WP_DEBUG') || !WP_DEBUG) {
 // Módulos disponibles para generación de datos
 $available_modules = [
     'socios' => [
-        'name' => __('Miembros', 'flavor-chat-ia'),
+        'name' => __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon' => 'dashicons-id-alt',
-        'description' => __('Genera socios con datos realistas: nombres, emails, cuotas, fechas de alta.', 'flavor-chat-ia'),
+        'description' => __('Genera socios con datos realistas: nombres, emails, cuotas, fechas de alta.', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ],
     'eventos' => [
-        'name' => __('Eventos', 'flavor-chat-ia'),
+        'name' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon' => 'dashicons-calendar',
-        'description' => __('Crea eventos pasados y futuros con inscripciones y asistencia.', 'flavor-chat-ia'),
+        'description' => __('Crea eventos pasados y futuros con inscripciones y asistencia.', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ],
     'reservas' => [
-        'name' => __('Reservas', 'flavor-chat-ia'),
+        'name' => __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon' => 'dashicons-tickets-alt',
-        'description' => __('Genera reservas de espacios con diferentes estados.', 'flavor-chat-ia'),
+        'description' => __('Genera reservas de espacios con diferentes estados.', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ],
     'cursos' => [
-        'name' => __('Cursos', 'flavor-chat-ia'),
+        'name' => __('Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon' => 'dashicons-welcome-learn-more',
-        'description' => __('Crea cursos con módulos, lecciones y matrículas.', 'flavor-chat-ia'),
+        'description' => __('Crea cursos con módulos, lecciones y matrículas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ],
     'grupos_consumo' => [
-        'name' => __('Grupos de Consumo', 'flavor-chat-ia'),
+        'name' => __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon' => 'dashicons-cart',
-        'description' => __('Genera productores, productos, ciclos y pedidos.', 'flavor-chat-ia'),
+        'description' => __('Genera productores, productos, ciclos y pedidos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ],
     'incidencias' => [
-        'name' => __('Incidencias', 'flavor-chat-ia'),
+        'name' => __('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon' => 'dashicons-warning',
-        'description' => __('Crea tickets con diferentes prioridades y estados.', 'flavor-chat-ia'),
+        'description' => __('Crea tickets con diferentes prioridades y estados.', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ],
     'marketplace' => [
-        'name' => __('Marketplace', 'flavor-chat-ia'),
+        'name' => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon' => 'dashicons-store',
-        'description' => __('Genera productos, vendedores y transacciones.', 'flavor-chat-ia'),
+        'description' => __('Genera productos, vendedores y transacciones.', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ],
     'foros' => [
-        'name' => __('Foros', 'flavor-chat-ia'),
+        'name' => __('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon' => 'dashicons-format-chat',
-        'description' => __('Crea categorías, temas y respuestas con contenido realista.', 'flavor-chat-ia'),
+        'description' => __('Crea categorías, temas y respuestas con contenido realista.', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ],
 ];
 ?>
@@ -60,15 +60,15 @@ $available_modules = [
 <div class="wrap flavor-ai-page flavor-demo-generator">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-database-import"></span>
-        <?php esc_html_e('Generador de Datos Demo', 'flavor-chat-ia'); ?>
-        <span class="debug-badge"><?php esc_html_e('Solo Desarrollo', 'flavor-chat-ia'); ?></span>
+        <?php esc_html_e('Generador de Datos Demo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
+        <span class="debug-badge"><?php esc_html_e('Solo Desarrollo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
     </h1>
 
     <div class="notice notice-warning">
         <p>
             <span class="dashicons dashicons-warning"></span>
-            <strong><?php esc_html_e('Atención:', 'flavor-chat-ia'); ?></strong>
-            <?php esc_html_e('Esta herramienta genera datos ficticios. Los datos existentes NO se eliminan, pero asegúrate de estar en un entorno de desarrollo.', 'flavor-chat-ia'); ?>
+            <strong><?php esc_html_e('Atención:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+            <?php esc_html_e('Esta herramienta genera datos ficticios. Los datos existentes NO se eliminan, pero asegúrate de estar en un entorno de desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </div>
 
@@ -77,13 +77,13 @@ $available_modules = [
         <div class="generator-panel card">
             <h2>
                 <span class="dashicons dashicons-plus-alt2"></span>
-                <?php esc_html_e('Generar Datos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Generar Datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
 
             <form id="demo-generator-form" class="generator-form">
                 <!-- Selección de Módulos -->
                 <div class="form-group">
-                    <label><?php esc_html_e('Selecciona módulos', 'flavor-chat-ia'); ?></label>
+                    <label><?php esc_html_e('Selecciona módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <div class="modules-grid">
                         <?php foreach ($available_modules as $module_key => $module): ?>
                             <label class="module-option">
@@ -101,56 +101,56 @@ $available_modules = [
                 <!-- Cantidad de registros -->
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="records-count"><?php esc_html_e('Cantidad de registros', 'flavor-chat-ia'); ?></label>
+                        <label for="records-count"><?php esc_html_e('Cantidad de registros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select id="records-count" name="count">
-                            <option value="10"><?php esc_html_e('Pequeño (10 registros)', 'flavor-chat-ia'); ?></option>
-                            <option value="25" selected><?php esc_html_e('Medio (25 registros)', 'flavor-chat-ia'); ?></option>
-                            <option value="50"><?php esc_html_e('Grande (50 registros)', 'flavor-chat-ia'); ?></option>
-                            <option value="100"><?php esc_html_e('Muy grande (100 registros)', 'flavor-chat-ia'); ?></option>
+                            <option value="10"><?php esc_html_e('Pequeño (10 registros)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="25" selected><?php esc_html_e('Medio (25 registros)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="50"><?php esc_html_e('Grande (50 registros)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="100"><?php esc_html_e('Muy grande (100 registros)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="date-range"><?php esc_html_e('Rango de fechas', 'flavor-chat-ia'); ?></label>
+                        <label for="date-range"><?php esc_html_e('Rango de fechas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select id="date-range" name="date_range">
-                            <option value="1"><?php esc_html_e('Último mes', 'flavor-chat-ia'); ?></option>
-                            <option value="3" selected><?php esc_html_e('Últimos 3 meses', 'flavor-chat-ia'); ?></option>
-                            <option value="6"><?php esc_html_e('Últimos 6 meses', 'flavor-chat-ia'); ?></option>
-                            <option value="12"><?php esc_html_e('Último año', 'flavor-chat-ia'); ?></option>
+                            <option value="1"><?php esc_html_e('Último mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="3" selected><?php esc_html_e('Últimos 3 meses', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="6"><?php esc_html_e('Últimos 6 meses', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="12"><?php esc_html_e('Último año', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
                 </div>
 
                 <!-- Opciones adicionales -->
                 <div class="form-group">
-                    <label><?php esc_html_e('Opciones', 'flavor-chat-ia'); ?></label>
+                    <label><?php esc_html_e('Opciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <div class="options-list">
                         <label class="option-checkbox">
                             <input type="checkbox" name="options[]" value="realistic_names" checked>
-                            <span><?php esc_html_e('Usar nombres realistas (español)', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Usar nombres realistas (español)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="option-checkbox">
                             <input type="checkbox" name="options[]" value="include_images" checked>
-                            <span><?php esc_html_e('Incluir imágenes placeholder', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Incluir imágenes placeholder', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="option-checkbox">
                             <input type="checkbox" name="options[]" value="varied_status" checked>
-                            <span><?php esc_html_e('Variar estados (activo, pendiente, etc.)', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Variar estados (activo, pendiente, etc.)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="option-checkbox">
                             <input type="checkbox" name="options[]" value="create_relations">
-                            <span><?php esc_html_e('Crear relaciones entre datos', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Crear relaciones entre datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                     </div>
                 </div>
 
                 <div class="form-actions">
                     <button type="button" id="select-all-modules" class="button">
-                        <?php esc_html_e('Seleccionar todos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Seleccionar todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="submit" class="button button-primary button-hero">
                         <span class="dashicons dashicons-database-add"></span>
-                        <?php esc_html_e('Generar Datos Demo', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Generar Datos Demo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </form>
@@ -160,7 +160,7 @@ $available_modules = [
         <div class="generation-status card" id="generation-status" style="display: none;">
             <h2>
                 <span class="dashicons dashicons-update"></span>
-                <?php esc_html_e('Generando datos...', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Generando datos...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
 
             <div class="progress-container">
@@ -181,7 +181,7 @@ $available_modules = [
         <div class="generation-results card" id="generation-results" style="display: none;">
             <h2>
                 <span class="dashicons dashicons-yes-alt"></span>
-                <?php esc_html_e('Datos generados correctamente', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Datos generados correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
 
             <div class="results-summary" id="results-summary">
@@ -191,15 +191,15 @@ $available_modules = [
             <div class="results-actions">
                 <button type="button" class="button" id="view-generated-data">
                     <span class="dashicons dashicons-visibility"></span>
-                    <?php esc_html_e('Ver datos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" class="button button-link-delete" id="clear-demo-data">
                     <span class="dashicons dashicons-trash"></span>
-                    <?php esc_html_e('Eliminar datos demo', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Eliminar datos demo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" class="button button-primary" id="generate-more">
                     <span class="dashicons dashicons-plus"></span>
-                    <?php esc_html_e('Generar más', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Generar más', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </div>
@@ -208,20 +208,20 @@ $available_modules = [
         <div class="existing-data card">
             <h2>
                 <span class="dashicons dashicons-database"></span>
-                <?php esc_html_e('Datos Demo Existentes', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Datos Demo Existentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
 
             <div class="existing-data-list" id="existing-data-list">
                 <p class="loading">
                     <span class="spinner is-active"></span>
-                    <?php esc_html_e('Cargando información...', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Cargando información...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
             <div class="cleanup-actions">
                 <button type="button" class="button button-link-delete" id="cleanup-all-demo">
                     <span class="dashicons dashicons-trash"></span>
-                    <?php esc_html_e('Limpiar todos los datos demo', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Limpiar todos los datos demo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </div>

@@ -10,11 +10,11 @@ if (!defined('ABSPATH')) {
 }
 
 $roles_labels = [
-    'admin' => __('Administrador', 'flavor-chat-ia'),
-    'contable' => __('Contable', 'flavor-chat-ia'),
-    'empleado' => __('Empleado', 'flavor-chat-ia'),
-    'colaborador' => __('Colaborador', 'flavor-chat-ia'),
-    'observador' => __('Observador', 'flavor-chat-ia'),
+    'admin' => __('Administrador', 'flavor-platform'),
+    'contable' => __('Contable', 'flavor-platform'),
+    'empleado' => __('Empleado', 'flavor-platform'),
+    'colaborador' => __('Colaborador', 'flavor-platform'),
+    'observador' => __('Observador', 'flavor-platform'),
 ];
 ?>
 <div class="flavor-empresas-dashboard">
@@ -55,7 +55,7 @@ $roles_labels = [
             <?php if ($es_admin): ?>
             <a href="<?php echo esc_url(add_query_arg('vista', 'perfil')); ?>" class="flavor-btn flavor-btn-secondary">
                 <span class="dashicons dashicons-edit"></span>
-                <?php esc_html_e('Editar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Editar', 'flavor-platform'); ?>
             </a>
             <?php endif; ?>
         </div>
@@ -69,7 +69,7 @@ $roles_labels = [
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo esc_html($stats['miembros_activos']); ?></div>
-                <div class="flavor-stat-label"><?php esc_html_e('Miembros', 'flavor-chat-ia'); ?></div>
+                <div class="flavor-stat-label"><?php esc_html_e('Miembros', 'flavor-platform'); ?></div>
             </div>
         </div>
 
@@ -79,31 +79,31 @@ $roles_labels = [
             </div>
             <div class="flavor-stat-content">
                 <div class="flavor-stat-value"><?php echo esc_html($stats['documentos']); ?></div>
-                <div class="flavor-stat-label"><?php esc_html_e('Documentos', 'flavor-chat-ia'); ?></div>
+                <div class="flavor-stat-label"><?php esc_html_e('Documentos', 'flavor-platform'); ?></div>
             </div>
         </div>
     </div>
 
     <!-- Accesos rápidos -->
     <div class="flavor-card" style="margin-bottom:20px;">
-        <h3 style="margin:0 0 16px;font-size:16px;"><?php esc_html_e('Accesos rápidos', 'flavor-chat-ia'); ?></h3>
+        <h3 style="margin:0 0 16px;font-size:16px;"><?php esc_html_e('Accesos rápidos', 'flavor-platform'); ?></h3>
         <div class="flavor-quick-actions">
             <a href="<?php echo esc_url(add_query_arg('vista', 'miembros')); ?>" class="flavor-quick-action">
                 <span class="dashicons dashicons-groups"></span>
-                <?php esc_html_e('Ver miembros', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver miembros', 'flavor-platform'); ?>
             </a>
             <a href="<?php echo esc_url(add_query_arg('vista', 'documentos')); ?>" class="flavor-quick-action">
                 <span class="dashicons dashicons-portfolio"></span>
-                <?php esc_html_e('Documentos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Documentos', 'flavor-platform'); ?>
             </a>
             <a href="<?php echo esc_url(add_query_arg('vista', 'perfil')); ?>" class="flavor-quick-action">
                 <span class="dashicons dashicons-id-alt"></span>
-                <?php esc_html_e('Perfil empresa', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Perfil empresa', 'flavor-platform'); ?>
             </a>
             <?php if ($es_admin || $miembro->rol === 'contable'): ?>
             <a href="#contabilidad" class="flavor-quick-action">
                 <span class="dashicons dashicons-chart-area"></span>
-                <?php esc_html_e('Contabilidad', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Contabilidad', 'flavor-platform'); ?>
             </a>
             <?php endif; ?>
         </div>
@@ -113,9 +113,9 @@ $roles_labels = [
         <!-- Miembros recientes -->
         <div class="flavor-card">
             <h3 style="margin:0 0 16px;font-size:16px;display:flex;justify-content:space-between;align-items:center;">
-                <?php esc_html_e('Equipo', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Equipo', 'flavor-platform'); ?>
                 <a href="<?php echo esc_url(add_query_arg('vista', 'miembros')); ?>" style="font-size:13px;font-weight:400;">
-                    <?php esc_html_e('Ver todos →', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver todos →', 'flavor-platform'); ?>
                 </a>
             </h3>
 
@@ -132,16 +132,16 @@ $roles_labels = [
                 <?php endforeach; ?>
             </div>
             <?php else: ?>
-            <p style="color:#666;text-align:center;padding:20px;"><?php esc_html_e('Sin miembros aún.', 'flavor-chat-ia'); ?></p>
+            <p style="color:#666;text-align:center;padding:20px;"><?php esc_html_e('Sin miembros aún.', 'flavor-platform'); ?></p>
             <?php endif; ?>
         </div>
 
         <!-- Actividad reciente -->
         <div class="flavor-card">
             <h3 style="margin:0 0 16px;font-size:16px;display:flex;justify-content:space-between;align-items:center;">
-                <?php esc_html_e('Actividad reciente', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Actividad reciente', 'flavor-platform'); ?>
                 <a href="<?php echo esc_url(add_query_arg('vista', 'actividad')); ?>" style="font-size:13px;font-weight:400;">
-                    <?php esc_html_e('Ver toda →', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver toda →', 'flavor-platform'); ?>
                 </a>
             </h3>
 
@@ -151,14 +151,14 @@ $roles_labels = [
                 <li>
                     <div class="flavor-activity-content"><?php echo esc_html($act->descripcion); ?></div>
                     <div class="flavor-activity-meta">
-                        <?php echo esc_html($act->display_name ?? __('Sistema', 'flavor-chat-ia')); ?>
+                        <?php echo esc_html($act->display_name ?? __('Sistema', 'flavor-platform')); ?>
                         · <?php echo esc_html(human_time_diff(strtotime($act->created_at), current_time('timestamp'))); ?>
                     </div>
                 </li>
                 <?php endforeach; ?>
             </ul>
             <?php else: ?>
-            <p style="color:#666;text-align:center;padding:20px;"><?php esc_html_e('Sin actividad reciente.', 'flavor-chat-ia'); ?></p>
+            <p style="color:#666;text-align:center;padding:20px;"><?php esc_html_e('Sin actividad reciente.', 'flavor-platform'); ?></p>
             <?php endif; ?>
         </div>
     </div>

@@ -172,7 +172,7 @@ class Flavor_API_Rate_Limiter_V2 {
         if ($this->is_banned($client_ip)) {
             return new WP_Error(
                 'ip_banned',
-                __('Tu IP ha sido bloqueada temporalmente por exceder los límites repetidamente.', 'flavor-chat-ia'),
+                __('Tu IP ha sido bloqueada temporalmente por exceder los límites repetidamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 429]
             );
         }
@@ -316,7 +316,7 @@ class Flavor_API_Rate_Limiter_V2 {
             return new WP_Error(
                 'rate_limit_exceeded',
                 sprintf(
-                    __('Límite de peticiones excedido. Espera %d segundos.', 'flavor-chat-ia'),
+                    __('Límite de peticiones excedido. Espera %d segundos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $retry_after
                 ),
                 [

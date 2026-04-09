@@ -54,20 +54,20 @@ class Flavor_Bares_Dashboard_Tab {
         $this->tabla_favoritos = $wpdb->prefix . 'flavor_bares_favoritos';
 
         $this->etiquetas_tipos = [
-            'bar'         => __('Bar', 'flavor-chat-ia'),
-            'restaurante' => __('Restaurante', 'flavor-chat-ia'),
-            'cafeteria'   => __('Cafetería', 'flavor-chat-ia'),
-            'pub'         => __('Pub', 'flavor-chat-ia'),
-            'terraza'     => __('Terraza', 'flavor-chat-ia'),
-            'cocteleria'  => __('Coctelería', 'flavor-chat-ia'),
+            'bar'         => __('Bar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'restaurante' => __('Restaurante', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cafeteria'   => __('Cafetería', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'pub'         => __('Pub', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'terraza'     => __('Terraza', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cocteleria'  => __('Coctelería', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $this->etiquetas_estados_reserva = [
-            'pendiente'  => __('Pendiente', 'flavor-chat-ia'),
-            'confirmada' => __('Confirmada', 'flavor-chat-ia'),
-            'cancelada'  => __('Cancelada', 'flavor-chat-ia'),
-            'completada' => __('Completada', 'flavor-chat-ia'),
-            'no_show'    => __('No presentado', 'flavor-chat-ia'),
+            'pendiente'  => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'confirmada' => __('Confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cancelada'  => __('Cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'completada' => __('Completada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'no_show'    => __('No presentado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $this->init_hooks();
@@ -104,7 +104,7 @@ class Flavor_Bares_Dashboard_Tab {
     public function registrar_tabs($tabs) {
         // Tab principal: Resumen de Bares
         $tabs['bares-resumen'] = [
-            'label'    => __('Bares y Restaurantes', 'flavor-chat-ia'),
+            'label'    => __('Bares y Restaurantes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => 'food',
             'callback' => [$this, 'render_tab_resumen'],
             'orden'    => 70,
@@ -112,7 +112,7 @@ class Flavor_Bares_Dashboard_Tab {
 
         // Tab: Mis Reservas
         $tabs['bares-mis-reservas'] = [
-            'label'    => __('Mis Reservas', 'flavor-chat-ia'),
+            'label'    => __('Mis Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => 'calendar-alt',
             'callback' => [$this, 'render_tab_mis_reservas'],
             'orden'    => 71,
@@ -120,7 +120,7 @@ class Flavor_Bares_Dashboard_Tab {
 
         // Tab: Mis Valoraciones
         $tabs['bares-mis-valoraciones'] = [
-            'label'    => __('Mis Reseñas', 'flavor-chat-ia'),
+            'label'    => __('Mis Reseñas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => 'star-filled',
             'callback' => [$this, 'render_tab_mis_valoraciones'],
             'orden'    => 72,
@@ -136,7 +136,7 @@ class Flavor_Bares_Dashboard_Tab {
         $identificador_usuario = get_current_user_id();
         if (!$identificador_usuario) {
             echo '<p class="flavor-alert flavor-alert-warning">' .
-                 esc_html__('Debes iniciar sesión para ver este contenido.', 'flavor-chat-ia') . '</p>';
+                 esc_html__('Debes iniciar sesión para ver este contenido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -145,7 +145,7 @@ class Flavor_Bares_Dashboard_Tab {
         // Verificar que las tablas existen
         if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_bares)) {
             echo '<div class="flavor-alert flavor-alert-info">' .
-                 esc_html__('El módulo de bares no está configurado.', 'flavor-chat-ia') . '</div>';
+                 esc_html__('El módulo de bares no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
             return;
         }
 
@@ -206,10 +206,10 @@ class Flavor_Bares_Dashboard_Tab {
             <div class="flavor-panel-header">
                 <h2>
                     <span class="dashicons dashicons-food"></span>
-                    <?php esc_html_e('Bares y Restaurantes', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Bares y Restaurantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <p class="flavor-panel-subtitle">
-                    <?php esc_html_e('Descubre, reserva y valora los mejores locales de hostelería.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Descubre, reserva y valora los mejores locales de hostelería.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
@@ -219,28 +219,28 @@ class Flavor_Bares_Dashboard_Tab {
                     <span class="flavor-kpi-icon dashicons dashicons-store"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($total_bares_disponibles); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Locales Disponibles', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Locales Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-highlight">
                     <span class="flavor-kpi-icon dashicons dashicons-calendar-alt"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($reservas_proximas); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Reservas Próximas', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Reservas Próximas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icon dashicons dashicons-star-filled"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($bares_valorados); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Bares Valorados', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Bares Valorados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icon dashicons dashicons-heart"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($total_favoritos); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Favoritos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -249,11 +249,11 @@ class Flavor_Bares_Dashboard_Tab {
             <div class="flavor-panel-actions">
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('bares', '')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-search"></span>
-                    <?php esc_html_e('Explorar Bares', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Explorar Bares', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('bares', 'mapa')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-location"></span>
-                    <?php esc_html_e('Ver en Mapa', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver en Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
@@ -262,7 +262,7 @@ class Flavor_Bares_Dashboard_Tab {
                 <div class="flavor-panel-section">
                     <h3>
                         <span class="dashicons dashicons-calendar-alt"></span>
-                        <?php esc_html_e('Próximas Reservas', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Próximas Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <div class="flavor-cards-list">
                         <?php foreach ($proximas_reservas_listado as $reserva): ?>
@@ -274,9 +274,9 @@ class Flavor_Bares_Dashboard_Tab {
                                     <strong><?php echo esc_html($reserva->bar_nombre); ?></strong>
                                     <span class="flavor-meta">
                                         <?php echo esc_html(date_i18n('d M Y', strtotime($reserva->fecha))); ?>
-                                        <?php esc_html_e('a las', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('a las', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         <?php echo esc_html(substr($reserva->hora, 0, 5)); ?>
-                                        - <?php echo esc_html($reserva->comensales); ?> <?php esc_html_e('personas', 'flavor-chat-ia'); ?>
+                                        - <?php echo esc_html($reserva->comensales); ?> <?php esc_html_e('personas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </span>
                                 </div>
                                 <div class="flavor-list-item-badge">
@@ -288,7 +288,7 @@ class Flavor_Bares_Dashboard_Tab {
                         <?php endforeach; ?>
                     </div>
                     <a href="#" class="flavor-link-ver-mas" data-tab="bares-mis-reservas">
-                        <?php esc_html_e('Ver todas las reservas', 'flavor-chat-ia'); ?> &rarr;
+                        <?php esc_html_e('Ver todas las reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> &rarr;
                     </a>
                 </div>
             <?php endif; ?>
@@ -298,7 +298,7 @@ class Flavor_Bares_Dashboard_Tab {
                 <div class="flavor-panel-section">
                     <h3>
                         <span class="dashicons dashicons-heart"></span>
-                        <?php esc_html_e('Mis Favoritos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Mis Favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <div class="flavor-cards-grid flavor-grid-4">
                         <?php foreach ($bares_favoritos as $bar): ?>
@@ -313,7 +313,7 @@ class Flavor_Bares_Dashboard_Tab {
                 <div class="flavor-panel-section">
                     <h3>
                         <span class="dashicons dashicons-star-filled"></span>
-                        <?php esc_html_e('Mejor Valorados', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Mejor Valorados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <div class="flavor-cards-grid flavor-grid-4">
                         <?php foreach ($bares_destacados as $bar): ?>
@@ -333,7 +333,7 @@ class Flavor_Bares_Dashboard_Tab {
         $identificador_usuario = get_current_user_id();
         if (!$identificador_usuario) {
             echo '<p class="flavor-alert flavor-alert-warning">' .
-                 esc_html__('Debes iniciar sesión para ver este contenido.', 'flavor-chat-ia') . '</p>';
+                 esc_html__('Debes iniciar sesión para ver este contenido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -341,7 +341,7 @@ class Flavor_Bares_Dashboard_Tab {
 
         if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_reservas)) {
             echo '<div class="flavor-alert flavor-alert-info">' .
-                 esc_html__('El sistema de reservas no está configurado.', 'flavor-chat-ia') . '</div>';
+                 esc_html__('El sistema de reservas no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
             return;
         }
 
@@ -398,11 +398,11 @@ class Flavor_Bares_Dashboard_Tab {
             <div class="flavor-panel-header">
                 <h2>
                     <span class="dashicons dashicons-calendar-alt"></span>
-                    <?php esc_html_e('Mis Reservas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Mis Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('bares', '')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt"></span>
-                    <?php esc_html_e('Nueva Reserva', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Nueva Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
@@ -410,22 +410,22 @@ class Flavor_Bares_Dashboard_Tab {
             <div class="flavor-filter-tabs">
                 <a href="?tab=bares-mis-reservas&filtro_reservas=proximas"
                    class="flavor-filter-tab <?php echo ($filtro_actual === 'proximas') ? 'active' : ''; ?>">
-                    <?php esc_html_e('Próximas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Próximas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="flavor-badge-count"><?php echo $contador_proximas; ?></span>
                 </a>
                 <a href="?tab=bares-mis-reservas&filtro_reservas=pasadas"
                    class="flavor-filter-tab <?php echo ($filtro_actual === 'pasadas') ? 'active' : ''; ?>">
-                    <?php esc_html_e('Pasadas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Pasadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="flavor-badge-count"><?php echo $contador_pasadas; ?></span>
                 </a>
                 <a href="?tab=bares-mis-reservas&filtro_reservas=canceladas"
                    class="flavor-filter-tab <?php echo ($filtro_actual === 'canceladas') ? 'active' : ''; ?>">
-                    <?php esc_html_e('Canceladas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Canceladas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="flavor-badge-count"><?php echo $contador_canceladas; ?></span>
                 </a>
                 <a href="?tab=bares-mis-reservas&filtro_reservas=todas"
                    class="flavor-filter-tab <?php echo ($filtro_actual === 'todas') ? 'active' : ''; ?>">
-                    <?php esc_html_e('Todas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
@@ -433,10 +433,10 @@ class Flavor_Bares_Dashboard_Tab {
             <?php if (empty($reservas_usuario)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-calendar-alt"></span>
-                    <h3><?php esc_html_e('No tienes reservas', 'flavor-chat-ia'); ?></h3>
-                    <p><?php esc_html_e('Explora los bares y restaurantes disponibles para hacer tu primera reserva.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php esc_html_e('No tienes reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php esc_html_e('Explora los bares y restaurantes disponibles para hacer tu primera reserva.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('bares', '')); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php esc_html_e('Explorar Bares', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Explorar Bares', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -457,7 +457,7 @@ class Flavor_Bares_Dashboard_Tab {
         $identificador_usuario = get_current_user_id();
         if (!$identificador_usuario) {
             echo '<p class="flavor-alert flavor-alert-warning">' .
-                 esc_html__('Debes iniciar sesión para ver este contenido.', 'flavor-chat-ia') . '</p>';
+                 esc_html__('Debes iniciar sesión para ver este contenido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -465,7 +465,7 @@ class Flavor_Bares_Dashboard_Tab {
 
         if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_valoraciones)) {
             echo '<div class="flavor-alert flavor-alert-info">' .
-                 esc_html__('El sistema de valoraciones no está configurado.', 'flavor-chat-ia') . '</div>';
+                 esc_html__('El sistema de valoraciones no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
             return;
         }
 
@@ -496,10 +496,10 @@ class Flavor_Bares_Dashboard_Tab {
             <div class="flavor-panel-header">
                 <h2>
                     <span class="dashicons dashicons-star-filled"></span>
-                    <?php esc_html_e('Mis Reseñas y Valoraciones', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Mis Reseñas y Valoraciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <p class="flavor-panel-subtitle">
-                    <?php esc_html_e('Historial de locales que has valorado.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Historial de locales que has valorado.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
@@ -509,14 +509,14 @@ class Flavor_Bares_Dashboard_Tab {
                     <span class="flavor-kpi-icon dashicons dashicons-edit"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($total_valoraciones); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Reseñas Escritas', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Reseñas Escritas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icon dashicons dashicons-star-filled"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo $media_puntuacion_dada; ?>/5</span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Puntuación Media', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Puntuación Media', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -525,10 +525,10 @@ class Flavor_Bares_Dashboard_Tab {
             <?php if (empty($valoraciones_usuario)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-star-empty"></span>
-                    <h3><?php esc_html_e('Aún no has valorado ningún local', 'flavor-chat-ia'); ?></h3>
-                    <p><?php esc_html_e('Visita bares y restaurantes y comparte tu experiencia con la comunidad.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php esc_html_e('Aún no has valorado ningún local', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php esc_html_e('Visita bares y restaurantes y comparte tu experiencia con la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('bares', '')); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php esc_html_e('Explorar Bares', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Explorar Bares', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -601,7 +601,7 @@ class Flavor_Bares_Dashboard_Tab {
                     </div>
                 <?php endif; ?>
                 <div class="flavor-card-header-content">
-                    <h4><?php echo esc_html($reserva->bar_nombre ?: __('Local eliminado', 'flavor-chat-ia')); ?></h4>
+                    <h4><?php echo esc_html($reserva->bar_nombre ?: __('Local eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></h4>
                     <span class="flavor-badge <?php echo esc_attr($clase_estado); ?>">
                         <?php echo esc_html($estado_etiqueta); ?>
                     </span>
@@ -619,7 +619,7 @@ class Flavor_Bares_Dashboard_Tab {
                     </div>
                     <div class="flavor-detalle">
                         <span class="dashicons dashicons-groups"></span>
-                        <span><?php echo esc_html($reserva->comensales); ?> <?php esc_html_e('personas', 'flavor-chat-ia'); ?></span>
+                        <span><?php echo esc_html($reserva->comensales); ?> <?php esc_html_e('personas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <?php if (!empty($reserva->bar_direccion)): ?>
                         <div class="flavor-detalle">
@@ -630,7 +630,7 @@ class Flavor_Bares_Dashboard_Tab {
                 </div>
                 <?php if (!empty($reserva->notas)): ?>
                     <div class="flavor-reserva-notas">
-                        <small><strong><?php esc_html_e('Notas:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($reserva->notas); ?></small>
+                        <small><strong><?php esc_html_e('Notas:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html($reserva->notas); ?></small>
                     </div>
                 <?php endif; ?>
             </div>
@@ -640,7 +640,7 @@ class Flavor_Bares_Dashboard_Tab {
                             data-reserva-id="<?php echo esc_attr($reserva->id); ?>"
                             data-bar-nombre="<?php echo esc_attr($reserva->bar_nombre); ?>">
                         <span class="dashicons dashicons-no-alt"></span>
-                        <?php esc_html_e('Cancelar Reserva', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Cancelar Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             <?php endif; ?>
@@ -672,7 +672,7 @@ class Flavor_Bares_Dashboard_Tab {
                 <div class="flavor-card-header-content">
                     <h4>
                         <a href="<?php echo esc_url($url_bar); ?>">
-                            <?php echo esc_html($valoracion->bar_nombre ?: __('Local eliminado', 'flavor-chat-ia')); ?>
+                            <?php echo esc_html($valoracion->bar_nombre ?: __('Local eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                         </a>
                     </h4>
                     <span class="flavor-text-muted"><?php echo esc_html($tipo_etiqueta); ?></span>
@@ -680,7 +680,7 @@ class Flavor_Bares_Dashboard_Tab {
             </div>
             <div class="flavor-card-body">
                 <div class="flavor-valoracion-puntuacion">
-                    <span class="flavor-puntuacion-texto"><?php esc_html_e('Mi puntuación:', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-puntuacion-texto"><?php esc_html_e('Mi puntuación:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <div class="flavor-puntuacion-estrellas">
                         <?php echo $this->generar_estrellas_html($valoracion->puntuacion); ?>
                         <strong><?php echo esc_html($valoracion->puntuacion); ?>/5</strong>
@@ -804,18 +804,18 @@ class Flavor_Bares_Dashboard_Tab {
 
         $user_id = get_current_user_id();
         if (!$user_id) {
-            wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $bar_id = absint($_POST['bar_id'] ?? 0);
         if (!$bar_id) {
-            wp_send_json_error(['mensaje' => __('ID de bar no válido.', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('ID de bar no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
 
         if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_favoritos)) {
-            wp_send_json_error(['mensaje' => __('Sistema de favoritos no disponible.', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Sistema de favoritos no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar si ya es favorito
@@ -830,7 +830,7 @@ class Flavor_Bares_Dashboard_Tab {
             $wpdb->delete($this->tabla_favoritos, ['user_id' => $user_id, 'bar_id' => $bar_id], ['%d', '%d']);
             wp_send_json_success([
                 'es_favorito' => false,
-                'mensaje' => __('Bar eliminado de favoritos.', 'flavor-chat-ia'),
+                'mensaje' => __('Bar eliminado de favoritos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         } else {
             // Añadir a favoritos
@@ -841,7 +841,7 @@ class Flavor_Bares_Dashboard_Tab {
             );
             wp_send_json_success([
                 'es_favorito' => true,
-                'mensaje' => __('Bar añadido a favoritos.', 'flavor-chat-ia'),
+                'mensaje' => __('Bar añadido a favoritos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
     }
@@ -854,12 +854,12 @@ class Flavor_Bares_Dashboard_Tab {
 
         $user_id = get_current_user_id();
         if (!$user_id) {
-            wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $reserva_id = absint($_POST['reserva_id'] ?? 0);
         if (!$reserva_id) {
-            wp_send_json_error(['mensaje' => __('ID de reserva no válido.', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('ID de reserva no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -872,11 +872,11 @@ class Flavor_Bares_Dashboard_Tab {
         ));
 
         if (!$reserva) {
-            wp_send_json_error(['mensaje' => __('Reserva no encontrada.', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Reserva no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (!in_array($reserva->estado, ['pendiente', 'confirmada'])) {
-            wp_send_json_error(['mensaje' => __('Esta reserva no puede ser cancelada.', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Esta reserva no puede ser cancelada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Cancelar la reserva
@@ -889,9 +889,9 @@ class Flavor_Bares_Dashboard_Tab {
         );
 
         if ($resultado !== false) {
-            wp_send_json_success(['mensaje' => __('Reserva cancelada correctamente.', 'flavor-chat-ia')]);
+            wp_send_json_success(['mensaje' => __('Reserva cancelada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
-            wp_send_json_error(['mensaje' => __('Error al cancelar la reserva.', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Error al cancelar la reserva.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 

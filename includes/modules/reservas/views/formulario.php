@@ -18,9 +18,9 @@ $hora_apertura = $settings['hora_apertura'] ?? '09:00';
 $hora_cierre = $settings['hora_cierre'] ?? '22:00';
 $dias_antelacion = $settings['dias_antelacion'] ?? 30;
 $tipos_servicio = $settings['tipos_servicio'] ?? [
-    'mesa_restaurante' => __('Mesa de Restaurante', 'flavor-chat-ia'),
-    'espacio_coworking' => __('Espacio Coworking', 'flavor-chat-ia'),
-    'clase_deportiva' => __('Clase Deportiva', 'flavor-chat-ia'),
+    'mesa_restaurante' => __('Mesa de Restaurante', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'espacio_coworking' => __('Espacio Coworking', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'clase_deportiva' => __('Clase Deportiva', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 // Usuario actual
@@ -38,9 +38,9 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_antelacion} days"));
 
 <div class="flavor-reservas-formulario">
     <header class="flavor-form-header">
-        <h2><?php _e('Nueva Reserva', 'flavor-chat-ia'); ?></h2>
+        <h2><?php _e('Nueva Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <p class="flavor-form-subtitle">
-            <?php _e('Completa el formulario para solicitar tu reserva', 'flavor-chat-ia'); ?>
+            <?php _e('Completa el formulario para solicitar tu reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </header>
 
@@ -50,7 +50,7 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_antelacion} days"));
 
         <!-- Tipo de servicio -->
         <section class="flavor-form-section">
-            <h3><?php _e('Tipo de Reserva', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Tipo de Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <div class="flavor-service-grid">
                 <?php foreach ($tipos_servicio as $key => $label): ?>
@@ -75,22 +75,22 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_antelacion} days"));
 
         <!-- Fecha y hora -->
         <section class="flavor-form-section">
-            <h3><?php _e('Fecha y Hora', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Fecha y Hora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <div class="flavor-form-row">
                 <div class="flavor-form-group">
-                    <label for="fecha_reserva" class="required"><?php _e('Fecha', 'flavor-chat-ia'); ?></label>
+                    <label for="fecha_reserva" class="required"><?php _e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="date" id="fecha_reserva" name="fecha_reserva"
                            min="<?php echo esc_attr($fecha_minima); ?>"
                            max="<?php echo esc_attr($fecha_maxima); ?>"
                            required class="flavor-input">
                     <small class="flavor-form-hint">
-                        <?php printf(__('Puedes reservar hasta %d días de antelación', 'flavor-chat-ia'), $dias_antelacion); ?>
+                        <?php printf(__('Puedes reservar hasta %d días de antelación', FLAVOR_PLATFORM_TEXT_DOMAIN), $dias_antelacion); ?>
                     </small>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="hora_inicio" class="required"><?php _e('Hora de inicio', 'flavor-chat-ia'); ?></label>
+                    <label for="hora_inicio" class="required"><?php _e('Hora de inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="time" id="hora_inicio" name="hora_inicio"
                            min="<?php echo esc_attr($hora_apertura); ?>"
                            max="<?php echo esc_attr($hora_cierre); ?>"
@@ -98,7 +98,7 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_antelacion} days"));
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="hora_fin" class="required"><?php _e('Hora de fin', 'flavor-chat-ia'); ?></label>
+                    <label for="hora_fin" class="required"><?php _e('Hora de fin', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="time" id="hora_fin" name="hora_fin"
                            min="<?php echo esc_attr($hora_apertura); ?>"
                            max="<?php echo esc_attr($hora_cierre); ?>"
@@ -107,7 +107,7 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_antelacion} days"));
             </div>
 
             <div class="flavor-form-group">
-                <label for="num_personas" class="required"><?php _e('Número de personas', 'flavor-chat-ia'); ?></label>
+                <label for="num_personas" class="required"><?php _e('Número de personas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <input type="number" id="num_personas" name="num_personas"
                        min="1" max="50" value="1" required class="flavor-input"
                        style="max-width: 120px;">
@@ -116,68 +116,68 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_antelacion} days"));
 
         <!-- Datos de contacto -->
         <section class="flavor-form-section">
-            <h3><?php _e('Datos de contacto', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Datos de contacto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <div class="flavor-form-row">
                 <div class="flavor-form-group">
-                    <label for="nombre_cliente" class="required"><?php _e('Nombre completo', 'flavor-chat-ia'); ?></label>
+                    <label for="nombre_cliente" class="required"><?php _e('Nombre completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="text" id="nombre_cliente" name="nombre_cliente"
                            value="<?php echo esc_attr($user_name); ?>"
                            required maxlength="200" class="flavor-input"
-                           placeholder="<?php esc_attr_e('Tu nombre', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php esc_attr_e('Tu nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="email_cliente" class="required"><?php _e('Email', 'flavor-chat-ia'); ?></label>
+                    <label for="email_cliente" class="required"><?php _e('Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="email" id="email_cliente" name="email_cliente"
                            value="<?php echo esc_attr($user_email); ?>"
                            required maxlength="200" class="flavor-input"
-                           placeholder="<?php esc_attr_e('tu@email.com', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php esc_attr_e('tu@email.com', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
             </div>
 
             <div class="flavor-form-group">
-                <label for="telefono_cliente"><?php _e('Teléfono', 'flavor-chat-ia'); ?></label>
+                <label for="telefono_cliente"><?php _e('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <input type="tel" id="telefono_cliente" name="telefono_cliente"
                        maxlength="50" class="flavor-input"
-                       placeholder="<?php esc_attr_e('+34 600 000 000', 'flavor-chat-ia'); ?>">
+                       placeholder="<?php esc_attr_e('+34 600 000 000', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             </div>
         </section>
 
         <!-- Notas -->
         <section class="flavor-form-section">
-            <h3><?php _e('Información adicional', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Información adicional', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <div class="flavor-form-group">
-                <label for="notas"><?php _e('Notas o peticiones especiales', 'flavor-chat-ia'); ?></label>
+                <label for="notas"><?php _e('Notas o peticiones especiales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <textarea id="notas" name="notas" rows="3" class="flavor-textarea"
-                          placeholder="<?php esc_attr_e('Alergias, necesidades especiales, etc.', 'flavor-chat-ia'); ?>"></textarea>
+                          placeholder="<?php esc_attr_e('Alergias, necesidades especiales, etc.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
             </div>
         </section>
 
         <!-- Resumen -->
         <section class="flavor-form-section flavor-reserva-resumen" id="resumen-reserva" style="display: none;">
-            <h3><?php _e('Resumen de tu reserva', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Resumen de tu reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <div class="resumen-content">
-                <p><strong><?php _e('Tipo:', 'flavor-chat-ia'); ?></strong> <span id="resumen-tipo"></span></p>
-                <p><strong><?php _e('Fecha:', 'flavor-chat-ia'); ?></strong> <span id="resumen-fecha"></span></p>
-                <p><strong><?php _e('Horario:', 'flavor-chat-ia'); ?></strong> <span id="resumen-horario"></span></p>
-                <p><strong><?php _e('Personas:', 'flavor-chat-ia'); ?></strong> <span id="resumen-personas"></span></p>
+                <p><strong><?php _e('Tipo:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <span id="resumen-tipo"></span></p>
+                <p><strong><?php _e('Fecha:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <span id="resumen-fecha"></span></p>
+                <p><strong><?php _e('Horario:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <span id="resumen-horario"></span></p>
+                <p><strong><?php _e('Personas:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <span id="resumen-personas"></span></p>
             </div>
         </section>
 
         <!-- Botones -->
         <div class="flavor-form-actions">
             <button type="submit" class="flavor-btn flavor-btn-primary flavor-btn-lg">
-                <?php _e('Solicitar Reserva', 'flavor-chat-ia'); ?>
+                <?php _e('Solicitar Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('reservas', '')); ?>" class="flavor-btn flavor-btn-secondary flavor-btn-lg">
-                <?php _e('Cancelar', 'flavor-chat-ia'); ?>
+                <?php _e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
 
         <p class="flavor-form-disclaimer">
-            <?php _e('Al solicitar la reserva, recibirás un email de confirmación. La reserva queda pendiente hasta que sea confirmada.', 'flavor-chat-ia'); ?>
+            <?php _e('Al solicitar la reserva, recibirás un email de confirmación. La reserva queda pendiente hasta que sea confirmada.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </form>
 </div>
@@ -424,7 +424,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const originalText = submitBtn.textContent;
 
         submitBtn.disabled = true;
-        submitBtn.textContent = '<?php _e("Procesando...", "flavor-chat-ia"); ?>';
+        submitBtn.textContent = '<?php _e("Procesando...", FLAVOR_PLATFORM_TEXT_DOMAIN); ?>';
 
         fetch('<?php echo admin_url("admin-ajax.php"); ?>', {
             method: 'POST',
@@ -433,19 +433,19 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert(data.data.message || '<?php _e("Reserva solicitada correctamente", "flavor-chat-ia"); ?>');
+                alert(data.data.message || '<?php _e("Reserva solicitada correctamente", FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                 if (data.data.redirect) {
                     window.location.href = data.data.redirect;
                 }
             } else {
-                alert(data.data.message || '<?php _e("Error al procesar la reserva", "flavor-chat-ia"); ?>');
+                alert(data.data.message || '<?php _e("Error al procesar la reserva", FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                 submitBtn.disabled = false;
                 submitBtn.textContent = originalText;
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('<?php _e("Error de conexión", "flavor-chat-ia"); ?>');
+            alert('<?php _e("Error de conexión", FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
             submitBtn.disabled = false;
             submitBtn.textContent = originalText;
         });

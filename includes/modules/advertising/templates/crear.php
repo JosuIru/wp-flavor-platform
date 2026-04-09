@@ -22,113 +22,113 @@ $reparto_default = $configuracion['reparto_comunidad_default'] ?? 30;
     <div class="ads-crear-header">
         <a href="<?php echo esc_url($base_url); ?>" class="ads-back-link">
             <span class="dashicons dashicons-arrow-left-alt"></span>
-            <?php esc_html_e('Volver al dashboard', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Volver al dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
-        <h2><?php esc_html_e('Crear nuevo anuncio', 'flavor-chat-ia'); ?></h2>
-        <p class="ads-crear-desc"><?php esc_html_e('Tu anuncio será revisado antes de publicarse. Una vez aprobado, comenzará a mostrarse automáticamente.', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Crear nuevo anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p class="ads-crear-desc"><?php esc_html_e('Tu anuncio será revisado antes de publicarse. Una vez aprobado, comenzará a mostrarse automáticamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
 
     <form class="ads-form" id="crear-anuncio-form">
         <?php wp_nonce_field('flavor_ads_nonce', 'nonce'); ?>
 
         <div class="ads-form-section">
-            <h3><?php esc_html_e('Información básica', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Información básica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <div class="form-grupo">
                 <label for="anuncio-titulo">
-                    <?php esc_html_e('Título del anuncio', 'flavor-chat-ia'); ?> <span class="required">*</span>
+                    <?php esc_html_e('Título del anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="required">*</span>
                 </label>
                 <input type="text" id="anuncio-titulo" name="titulo" required
-                       placeholder="<?php esc_attr_e('Ej: Promoción de verano', 'flavor-chat-ia'); ?>">
-                <p class="form-help"><?php esc_html_e('Este título se usará para identificar tu anuncio internamente.', 'flavor-chat-ia'); ?></p>
+                       placeholder="<?php esc_attr_e('Ej: Promoción de verano', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                <p class="form-help"><?php esc_html_e('Este título se usará para identificar tu anuncio internamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <div class="form-row">
                 <div class="form-grupo">
-                    <label for="anuncio-tipo"><?php esc_html_e('Tipo de anuncio', 'flavor-chat-ia'); ?></label>
+                    <label for="anuncio-tipo"><?php esc_html_e('Tipo de anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="anuncio-tipo" name="tipo">
-                        <option value="banner_horizontal"><?php esc_html_e('Banner Horizontal (728x90)', 'flavor-chat-ia'); ?></option>
-                        <option value="banner_sidebar"><?php esc_html_e('Banner Sidebar (300x250)', 'flavor-chat-ia'); ?></option>
-                        <option value="banner_card"><?php esc_html_e('Tarjeta con imagen', 'flavor-chat-ia'); ?></option>
-                        <option value="banner_nativo"><?php esc_html_e('Anuncio nativo', 'flavor-chat-ia'); ?></option>
+                        <option value="banner_horizontal"><?php esc_html_e('Banner Horizontal (728x90)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="banner_sidebar"><?php esc_html_e('Banner Sidebar (300x250)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="banner_card"><?php esc_html_e('Tarjeta con imagen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="banner_nativo"><?php esc_html_e('Anuncio nativo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
             </div>
         </div>
 
         <div class="ads-form-section">
-            <h3><?php esc_html_e('Contenido del anuncio', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Contenido del anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <div class="form-grupo">
                 <label for="anuncio-url">
-                    <?php esc_html_e('URL de destino', 'flavor-chat-ia'); ?> <span class="required">*</span>
+                    <?php esc_html_e('URL de destino', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="required">*</span>
                 </label>
                 <input type="url" id="anuncio-url" name="url_destino" required
                        placeholder="https://tu-sitio.com/landing-page">
-                <p class="form-help"><?php esc_html_e('La página donde llegarán los usuarios al hacer clic.', 'flavor-chat-ia'); ?></p>
+                <p class="form-help"><?php esc_html_e('La página donde llegarán los usuarios al hacer clic.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <div class="form-grupo">
-                <label for="anuncio-imagen"><?php esc_html_e('Imagen del anuncio', 'flavor-chat-ia'); ?></label>
+                <label for="anuncio-imagen"><?php esc_html_e('Imagen del anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <div class="ads-upload-wrapper">
                     <input type="url" id="anuncio-imagen" name="imagen"
-                           placeholder="<?php esc_attr_e('URL de la imagen', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php esc_attr_e('URL de la imagen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <button type="button" class="btn btn-sm btn-outline ads-upload-btn" id="upload-imagen-btn">
                         <span class="dashicons dashicons-upload"></span>
-                        <?php esc_html_e('Subir', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Subir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
-                <p class="form-help"><?php esc_html_e('Tamaños recomendados: 728x90 (horizontal), 300x250 (sidebar), 350x200 (tarjeta).', 'flavor-chat-ia'); ?></p>
+                <p class="form-help"><?php esc_html_e('Tamaños recomendados: 728x90 (horizontal), 300x250 (sidebar), 350x200 (tarjeta).', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <div id="imagen-preview" class="ads-imagen-preview" style="display: none;">
                     <img src="" alt="Preview">
                 </div>
             </div>
 
             <div class="form-grupo">
-                <label for="anuncio-cta"><?php esc_html_e('Texto del botón (CTA)', 'flavor-chat-ia'); ?></label>
+                <label for="anuncio-cta"><?php esc_html_e('Texto del botón (CTA)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <input type="text" id="anuncio-cta" name="texto_cta"
-                       placeholder="<?php esc_attr_e('Ej: Descubrir más', 'flavor-chat-ia'); ?>"
-                       value="<?php esc_attr_e('Saber más', 'flavor-chat-ia'); ?>">
+                       placeholder="<?php esc_attr_e('Ej: Descubrir más', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
+                       value="<?php esc_attr_e('Saber más', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             </div>
         </div>
 
         <div class="ads-form-section">
-            <h3><?php esc_html_e('Presupuesto y duración', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Presupuesto y duración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <div class="form-row">
                 <div class="form-grupo">
-                    <label for="anuncio-presupuesto"><?php esc_html_e('Presupuesto total (€)', 'flavor-chat-ia'); ?></label>
+                    <label for="anuncio-presupuesto"><?php esc_html_e('Presupuesto total (€)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="number" id="anuncio-presupuesto" name="presupuesto"
                            min="5" step="0.01" value="50">
-                    <p class="form-help"><?php esc_html_e('Tu anuncio se pausará al agotar el presupuesto.', 'flavor-chat-ia'); ?></p>
+                    <p class="form-help"><?php esc_html_e('Tu anuncio se pausará al agotar el presupuesto.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
 
                 <div class="form-grupo">
-                    <label for="anuncio-fecha-inicio"><?php esc_html_e('Fecha de inicio', 'flavor-chat-ia'); ?></label>
+                    <label for="anuncio-fecha-inicio"><?php esc_html_e('Fecha de inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="date" id="anuncio-fecha-inicio" name="fecha_inicio"
                            value="<?php echo esc_attr(date('Y-m-d')); ?>">
                 </div>
 
                 <div class="form-grupo">
-                    <label for="anuncio-fecha-fin"><?php esc_html_e('Fecha de fin (opcional)', 'flavor-chat-ia'); ?></label>
+                    <label for="anuncio-fecha-fin"><?php esc_html_e('Fecha de fin (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="date" id="anuncio-fecha-fin" name="fecha_fin">
                 </div>
             </div>
         </div>
 
         <div class="ads-form-section ads-section-info">
-            <h3><?php esc_html_e('Reparto comunitario', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Reparto comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <div class="ads-reparto-info">
                 <span class="dashicons dashicons-groups"></span>
                 <div>
                     <p>
                         <?php printf(
-                            esc_html__('El %d%% de los ingresos de este anuncio se repartirán con la comunidad.', 'flavor-chat-ia'),
+                            esc_html__('El %d%% de los ingresos de este anuncio se repartirán con la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             $reparto_default
                         ); ?>
                     </p>
                     <p class="ads-reparto-desc">
-                        <?php esc_html_e('Este sistema permite que los miembros activos de la comunidad reciban parte de los beneficios publicitarios.', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Este sistema permite que los miembros activos de la comunidad reciban parte de los beneficios publicitarios.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
             </div>
@@ -136,11 +136,11 @@ $reparto_default = $configuracion['reparto_comunidad_default'] ?? 30;
 
         <div class="ads-form-actions">
             <a href="<?php echo esc_url($base_url); ?>" class="btn btn-outline">
-                <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <button type="submit" class="btn btn-primary">
                 <span class="dashicons dashicons-upload"></span>
-                <?php esc_html_e('Enviar para revisión', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Enviar para revisión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     </form>
@@ -316,7 +316,7 @@ jQuery(document).ready(function($) {
 
         if (typeof wp !== 'undefined' && wp.media) {
             const frame = wp.media({
-                title: '<?php esc_html_e('Seleccionar imagen', 'flavor-chat-ia'); ?>',
+                title: '<?php esc_html_e('Seleccionar imagen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                 multiple: false,
                 library: { type: 'image' }
             });
@@ -328,7 +328,7 @@ jQuery(document).ready(function($) {
 
             frame.open();
         } else {
-            alert('<?php esc_html_e('Por favor, introduce la URL de la imagen manualmente.', 'flavor-chat-ia'); ?>');
+            alert('<?php esc_html_e('Por favor, introduce la URL de la imagen manualmente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
         }
     });
 });

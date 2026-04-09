@@ -114,12 +114,12 @@ if ($ciclo_activo) {
                 <div class="gc-ciclo-titulo">
                     <span class="gc-status-badge gc-status-success">
                         <span class="dashicons dashicons-yes-alt"></span>
-                        <?php esc_html_e('Ciclo Abierto', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ciclo Abierto', 'flavor-platform'); ?>
                     </span>
                     <h2><?php echo esc_html($ciclo_activo->post_title); ?></h2>
                 </div>
                 <div class="gc-ciclo-countdown" id="gc-countdown-container">
-                    <span class="gc-countdown-label"><?php esc_html_e('Cierra en:', 'flavor-chat-ia'); ?></span>
+                    <span class="gc-countdown-label"><?php esc_html_e('Cierra en:', 'flavor-platform'); ?></span>
                     <span class="gc-countdown-value" id="gc-countdown" data-cierre="<?php echo esc_attr($meta_ciclo['fecha_cierre']); ?>">
                         --
                     </span>
@@ -132,7 +132,7 @@ if ($ciclo_activo) {
                     <div class="gc-fecha-item">
                         <span class="dashicons dashicons-calendar"></span>
                         <div class="gc-fecha-content">
-                            <span class="gc-fecha-label"><?php esc_html_e('Inicio de pedidos', 'flavor-chat-ia'); ?></span>
+                            <span class="gc-fecha-label"><?php esc_html_e('Inicio de pedidos', 'flavor-platform'); ?></span>
                             <strong>
                                 <?php
                                 if ($meta_ciclo['fecha_inicio']) {
@@ -146,7 +146,7 @@ if ($ciclo_activo) {
                     <div class="gc-fecha-item gc-fecha-destacada">
                         <span class="dashicons dashicons-clock"></span>
                         <div class="gc-fecha-content">
-                            <span class="gc-fecha-label"><?php esc_html_e('Cierre de pedidos', 'flavor-chat-ia'); ?></span>
+                            <span class="gc-fecha-label"><?php esc_html_e('Cierre de pedidos', 'flavor-platform'); ?></span>
                             <strong>
                                 <?php
                                 if ($meta_ciclo['fecha_cierre']) {
@@ -160,7 +160,7 @@ if ($ciclo_activo) {
                     <div class="gc-fecha-item">
                         <span class="dashicons dashicons-location"></span>
                         <div class="gc-fecha-content">
-                            <span class="gc-fecha-label"><?php esc_html_e('Entrega', 'flavor-chat-ia'); ?></span>
+                            <span class="gc-fecha-label"><?php esc_html_e('Entrega', 'flavor-platform'); ?></span>
                             <strong>
                                 <?php
                                 if ($meta_ciclo['fecha_entrega']) {
@@ -178,7 +178,7 @@ if ($ciclo_activo) {
                     <div class="gc-fecha-item">
                         <span class="dashicons dashicons-admin-home"></span>
                         <div class="gc-fecha-content">
-                            <span class="gc-fecha-label"><?php esc_html_e('Lugar de recogida', 'flavor-chat-ia'); ?></span>
+                            <span class="gc-fecha-label"><?php esc_html_e('Lugar de recogida', 'flavor-platform'); ?></span>
                             <strong><?php echo esc_html($meta_ciclo['lugar_entrega']); ?></strong>
                         </div>
                     </div>
@@ -188,25 +188,25 @@ if ($ciclo_activo) {
                 <!-- Estadisticas del ciclo -->
                 <?php if (!empty($estadisticas_ciclo)) : ?>
                 <div class="gc-ciclo-stats">
-                    <h3><?php esc_html_e('Estado del ciclo', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Estado del ciclo', 'flavor-platform'); ?></h3>
                     <div class="gc-stats-grid">
                         <div class="gc-stat-item">
                             <span class="gc-stat-value"><?php echo esc_html($estadisticas_ciclo['total_pedidos']); ?></span>
-                            <span class="gc-stat-label"><?php esc_html_e('Participantes', 'flavor-chat-ia'); ?></span>
+                            <span class="gc-stat-label"><?php esc_html_e('Participantes', 'flavor-platform'); ?></span>
                         </div>
                         <div class="gc-stat-item">
                             <span class="gc-stat-value"><?php echo esc_html($estadisticas_ciclo['total_productos']); ?></span>
-                            <span class="gc-stat-label"><?php esc_html_e('Productos', 'flavor-chat-ia'); ?></span>
+                            <span class="gc-stat-label"><?php esc_html_e('Productos', 'flavor-platform'); ?></span>
                         </div>
                         <div class="gc-stat-item">
                             <span class="gc-stat-value"><?php echo number_format($estadisticas_ciclo['importe_total'], 2, ',', '.'); ?> &euro;</span>
-                            <span class="gc-stat-label"><?php esc_html_e('Total acumulado', 'flavor-chat-ia'); ?></span>
+                            <span class="gc-stat-label"><?php esc_html_e('Total acumulado', 'flavor-platform'); ?></span>
                         </div>
                     </div>
 
                     <?php if (!empty($estadisticas_ciclo['productos_populares'])) : ?>
                     <div class="gc-productos-populares">
-                        <h4><?php esc_html_e('Productos mas pedidos', 'flavor-chat-ia'); ?></h4>
+                        <h4><?php esc_html_e('Productos mas pedidos', 'flavor-platform'); ?></h4>
                         <ul class="gc-populares-lista">
                             <?php foreach ($estadisticas_ciclo['productos_populares'] as $producto) : ?>
                             <li>
@@ -232,12 +232,12 @@ if ($ciclo_activo) {
             <div class="gc-ciclo-footer">
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-primary">
                     <span class="dashicons dashicons-products"></span>
-                    <?php esc_html_e('Ver catalogo', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver catalogo', 'flavor-platform'); ?>
                 </a>
                 <?php if (is_user_logged_in()) : ?>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mi-pedido')); ?>" class="gc-btn gc-btn-secondary">
                     <span class="dashicons dashicons-cart"></span>
-                    <?php esc_html_e('Pedido actual', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Pedido actual', 'flavor-platform'); ?>
                 </a>
                 <?php endif; ?>
             </div>
@@ -259,7 +259,7 @@ if ($ciclo_activo) {
                 <div class="gc-ciclo-titulo">
                     <span class="gc-status-badge gc-status-info">
                         <span class="dashicons dashicons-calendar-alt"></span>
-                        <?php esc_html_e('Proximo Ciclo', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Proximo Ciclo', 'flavor-platform'); ?>
                     </span>
                     <h2><?php echo esc_html($ciclo_proximo->post_title); ?></h2>
                 </div>
@@ -271,7 +271,7 @@ if ($ciclo_activo) {
                     <p>
                         <?php
                         printf(
-                            esc_html__('El proximo ciclo de pedidos comenzara el %s.', 'flavor-chat-ia'),
+                            esc_html__('El proximo ciclo de pedidos comenzara el %s.', 'flavor-platform'),
                             '<strong>' . esc_html(date_i18n('l j \d\e F', strtotime($meta_proximo['fecha_inicio']))) . '</strong>'
                         );
                         ?>
@@ -280,15 +280,15 @@ if ($ciclo_activo) {
 
                 <div class="gc-ciclo-fechas gc-fechas-compactas">
                     <div class="gc-fecha-item">
-                        <span class="gc-fecha-label"><?php esc_html_e('Apertura:', 'flavor-chat-ia'); ?></span>
+                        <span class="gc-fecha-label"><?php esc_html_e('Apertura:', 'flavor-platform'); ?></span>
                         <strong><?php echo esc_html(date_i18n('j M, H:i', strtotime($meta_proximo['fecha_inicio']))); ?></strong>
                     </div>
                     <div class="gc-fecha-item">
-                        <span class="gc-fecha-label"><?php esc_html_e('Cierre:', 'flavor-chat-ia'); ?></span>
+                        <span class="gc-fecha-label"><?php esc_html_e('Cierre:', 'flavor-platform'); ?></span>
                         <strong><?php echo esc_html(date_i18n('j M, H:i', strtotime($meta_proximo['fecha_cierre']))); ?></strong>
                     </div>
                     <div class="gc-fecha-item">
-                        <span class="gc-fecha-label"><?php esc_html_e('Entrega:', 'flavor-chat-ia'); ?></span>
+                        <span class="gc-fecha-label"><?php esc_html_e('Entrega:', 'flavor-platform'); ?></span>
                         <strong><?php echo esc_html(date_i18n('j M', strtotime($meta_proximo['fecha_entrega']))); ?></strong>
                     </div>
                 </div>
@@ -297,7 +297,7 @@ if ($ciclo_activo) {
             <div class="gc-ciclo-footer">
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-secondary">
                     <span class="dashicons dashicons-visibility"></span>
-                    <?php esc_html_e('Ver productos disponibles', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver productos disponibles', 'flavor-platform'); ?>
                 </a>
             </div>
         </div>
@@ -307,10 +307,10 @@ if ($ciclo_activo) {
         <div class="gc-ciclo-card gc-ciclo-vacio">
             <div class="gc-ciclo-empty">
                 <span class="dashicons dashicons-calendar-alt"></span>
-                <h3><?php esc_html_e('No hay ciclos programados', 'flavor-chat-ia'); ?></h3>
-                <p><?php esc_html_e('Actualmente no hay ciclos de pedidos activos ni programados. Vuelve pronto para ver las novedades.', 'flavor-chat-ia'); ?></p>
+                <h3><?php esc_html_e('No hay ciclos programados', 'flavor-platform'); ?></h3>
+                <p><?php esc_html_e('Actualmente no hay ciclos de pedidos activos ni programados. Vuelve pronto para ver las novedades.', 'flavor-platform'); ?></p>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', '')); ?>" class="gc-btn gc-btn-secondary">
-                    <?php esc_html_e('Volver al inicio', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Volver al inicio', 'flavor-platform'); ?>
                 </a>
             </div>
         </div>
@@ -334,7 +334,7 @@ if ($ciclo_activo) {
         var diferencia = fechaCierreTimestamp - ahora;
 
         if (diferencia <= 0) {
-            countdownElement.textContent = '<?php echo esc_js(__('Ciclo cerrado', 'flavor-chat-ia')); ?>';
+            countdownElement.textContent = '<?php echo esc_js(__('Ciclo cerrado', 'flavor-platform')); ?>';
             countdownElement.classList.add('gc-countdown-cerrado');
             return;
         }

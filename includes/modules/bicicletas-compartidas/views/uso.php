@@ -7,7 +7,7 @@
  */
 
 if (!defined('ABSPATH')) exit;
-if (!current_user_can('manage_options')) wp_die(__('No tienes permisos suficientes.', 'flavor-chat-ia'));
+if (!current_user_can('manage_options')) wp_die(__('No tienes permisos suficientes.', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
 global $wpdb;
 $tabla_prestamos = $wpdb->prefix . 'flavor_bicicletas_prestamos';
@@ -86,54 +86,54 @@ $co2_ahorrado = ($stats->distancia_total ?? 0) * 0.12;
 ?>
 
 <div class="wrap">
-    <h1><?php esc_html_e('Estadísticas de Uso', 'flavor-chat-ia'); ?></h1>
+    <h1><?php esc_html_e('Estadísticas de Uso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
 
     <!-- Estadísticas principales -->
     <div class="flavor-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0;">
         <div class="card" style="padding: 20px; text-align: center;">
-            <h3 style="margin: 0 0 10px 0; color: #666; font-size: 14px; text-transform: uppercase;"><?php esc_html_e('Total Usos', 'flavor-chat-ia'); ?></h3>
+            <h3 style="margin: 0 0 10px 0; color: #666; font-size: 14px; text-transform: uppercase;"><?php esc_html_e('Total Usos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <p style="margin: 0; font-size: 32px; font-weight: bold; color: #2271b1;">
                 <?php echo esc_html(number_format($stats->total_usos ?? 0, 0, ',', '.')); ?>
             </p>
-            <p class="description" style="margin: 10px 0 0 0;"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></p>
+            <p class="description" style="margin: 10px 0 0 0;"><?php esc_html_e('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
 
         <div class="card" style="padding: 20px; text-align: center;">
-            <h3 style="margin: 0 0 10px 0; color: #666; font-size: 14px; text-transform: uppercase;"><?php esc_html_e('Distancia Total', 'flavor-chat-ia'); ?></h3>
+            <h3 style="margin: 0 0 10px 0; color: #666; font-size: 14px; text-transform: uppercase;"><?php esc_html_e('Distancia Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <p style="margin: 0; font-size: 32px; font-weight: bold; color: #00a32a;">
                 <?php echo esc_html(number_format($stats->distancia_total ?? 0, 1, ',', '.')); ?> km
             </p>
-            <p class="description" style="margin: 10px 0 0 0;"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></p>
+            <p class="description" style="margin: 10px 0 0 0;"><?php esc_html_e('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
 
         <div class="card" style="padding: 20px; text-align: center; background: linear-gradient(135deg, #00a32a 0%, #008a24 100%); color: white;">
-            <h3 style="margin: 0 0 10px 0; color: rgba(255,255,255,0.9); font-size: 14px; text-transform: uppercase;"><?php esc_html_e('CO₂ Ahorrado', 'flavor-chat-ia'); ?></h3>
+            <h3 style="margin: 0 0 10px 0; color: rgba(255,255,255,0.9); font-size: 14px; text-transform: uppercase;"><?php esc_html_e('CO₂ Ahorrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <p style="margin: 0; font-size: 32px; font-weight: bold; color: white;">
                 <?php echo esc_html(number_format($co2_ahorrado, 1, ',', '.')); ?> kg
             </p>
-            <p style="margin: 10px 0 0 0; color: rgba(255,255,255,0.9);"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></p>
+            <p style="margin: 10px 0 0 0; color: rgba(255,255,255,0.9);"><?php esc_html_e('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
 
         <div class="card" style="padding: 20px; text-align: center;">
-            <h3 style="margin: 0 0 10px 0; color: #666; font-size: 14px; text-transform: uppercase;"><?php esc_html_e('Duración Promedio', 'flavor-chat-ia'); ?></h3>
+            <h3 style="margin: 0 0 10px 0; color: #666; font-size: 14px; text-transform: uppercase;"><?php esc_html_e('Duración Promedio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <p style="margin: 0; font-size: 32px; font-weight: bold; color: #2271b1;">
                 <?php echo esc_html(number_format($stats->duracion_promedio ?? 0, 0)); ?> min
             </p>
-            <p class="description" style="margin: 10px 0 0 0;"><?php esc_html_e('Por viaje', 'flavor-chat-ia'); ?></p>
+            <p class="description" style="margin: 10px 0 0 0;"><?php esc_html_e('Por viaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
 
         <div class="card" style="padding: 20px; text-align: center;">
-            <h3 style="margin: 0 0 10px 0; color: #666; font-size: 14px; text-transform: uppercase;"><?php esc_html_e('Usuarios Únicos', 'flavor-chat-ia'); ?></h3>
+            <h3 style="margin: 0 0 10px 0; color: #666; font-size: 14px; text-transform: uppercase;"><?php esc_html_e('Usuarios Únicos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <p style="margin: 0; font-size: 32px; font-weight: bold; color: #2271b1;">
                 <?php echo esc_html(number_format($stats->usuarios_unicos ?? 0, 0, ',', '.')); ?>
             </p>
-            <p class="description" style="margin: 10px 0 0 0;"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></p>
+            <p class="description" style="margin: 10px 0 0 0;"><?php esc_html_e('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     </div>
 
     <!-- Gráfica de uso por hora -->
     <div class="card" style="padding: 20px; margin: 20px 0;">
-        <h2><?php esc_html_e('Distribución de Uso por Hora del Día', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Distribución de Uso por Hora del Día', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <canvas id="flavor-uso-hora-chart" style="max-height: 300px;"></canvas>
     </div>
 
@@ -141,13 +141,13 @@ $co2_ahorrado = ($stats->distancia_total ?? 0) * 0.12;
 
         <!-- Top Usuarios -->
         <div class="card" style="padding: 20px;">
-            <h2><?php esc_html_e('Top 10 Usuarios', 'flavor-chat-ia'); ?></h2>
+            <h2><?php esc_html_e('Top 10 Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('Usuario', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Usos', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Distancia', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Usos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Distancia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -160,7 +160,7 @@ $co2_ahorrado = ($stats->distancia_total ?? 0) * 0.12;
                             </tr>
                         <?php endforeach; ?>
                     <?php else : ?>
-                        <tr><td colspan="3" style="text-align: center; padding: 20px;"><?php esc_html_e('No hay datos.', 'flavor-chat-ia'); ?></td></tr>
+                        <tr><td colspan="3" style="text-align: center; padding: 20px;"><?php esc_html_e('No hay datos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td></tr>
                     <?php endif; ?>
                 </tbody>
             </table>
@@ -168,13 +168,13 @@ $co2_ahorrado = ($stats->distancia_total ?? 0) * 0.12;
 
         <!-- Top Bicicletas -->
         <div class="card" style="padding: 20px;">
-            <h2><?php esc_html_e('Top 10 Bicicletas', 'flavor-chat-ia'); ?></h2>
+            <h2><?php esc_html_e('Top 10 Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('Bicicleta', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Usos', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Distancia', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Usos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Distancia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -187,7 +187,7 @@ $co2_ahorrado = ($stats->distancia_total ?? 0) * 0.12;
                             </tr>
                         <?php endforeach; ?>
                     <?php else : ?>
-                        <tr><td colspan="3" style="text-align: center; padding: 20px;"><?php esc_html_e('No hay datos.', 'flavor-chat-ia'); ?></td></tr>
+                        <tr><td colspan="3" style="text-align: center; padding: 20px;"><?php esc_html_e('No hay datos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td></tr>
                     <?php endif; ?>
                 </tbody>
             </table>
@@ -206,7 +206,7 @@ jQuery(document).ready(function($) {
             data: {
                 labels: <?php echo json_encode($horas_grafica); ?>,
                 datasets: [{
-                    label: '<?php esc_html_e('Usos', 'flavor-chat-ia'); ?>',
+                    label: '<?php esc_html_e('Usos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                     data: <?php echo json_encode(array_values($usos_hora_grafica)); ?>,
                     backgroundColor: 'rgba(34, 113, 177, 0.8)',
                     borderColor: '#2271b1',

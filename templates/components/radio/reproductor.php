@@ -9,7 +9,7 @@
 if (!defined('ABSPATH')) exit;
 
 // Extraer variables del array $args con valores por defecto
-$nombre_radio = isset($args['nombre_radio']) ? $args['nombre_radio'] : __('Radio Comunitaria', 'flavor-chat-ia');
+$nombre_radio = isset($args['nombre_radio']) ? $args['nombre_radio'] : __('Radio Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $frecuencia = isset($args['frecuencia']) ? $args['frecuencia'] : '98.5 FM';
 $stream_url = isset($args['stream_url']) ? $args['stream_url'] : '';
 $mostrar_programa = isset($args['mostrar_programa']) ? $args['mostrar_programa'] : true;
@@ -74,7 +74,7 @@ $reproductor_id = 'flavor-radio-' . uniqid();
             <div class="flavor-radio-estado">
                 <span class="flavor-radio-en-vivo">
                     <span class="flavor-radio-en-vivo-punto"></span>
-                    <?php esc_html_e('EN VIVO', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('EN VIVO', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
                 <?php if ($mostrar_oyentes): ?>
                 <span class="flavor-radio-oyentes">
@@ -85,7 +85,7 @@ $reproductor_id = 'flavor-radio-' . uniqid();
                         <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                     </svg>
                     <span class="flavor-radio-oyentes-numero"><?php echo esc_html($oyentes_actuales); ?></span>
-                    <?php esc_html_e('escuchando', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('escuchando', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
                 <?php endif; ?>
             </div>
@@ -108,7 +108,7 @@ $reproductor_id = 'flavor-radio-' . uniqid();
                 </div>
             </div>
             <div class="flavor-radio-programa-info">
-                <span class="flavor-radio-programa-etiqueta"><?php esc_html_e('Ahora sonando', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-radio-programa-etiqueta"><?php esc_html_e('Ahora sonando', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <h3 class="flavor-radio-programa-nombre"><?php echo esc_html($programa_actual['nombre']); ?></h3>
                 <p class="flavor-radio-programa-conductor">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -136,8 +136,8 @@ $reproductor_id = 'flavor-radio-' . uniqid();
             <div class="flavor-radio-controles-principales">
                 <!-- Botón de retroceder -->
                 <button type="button" class="flavor-radio-btn flavor-radio-btn-retroceder"
-                        aria-label="<?php esc_attr_e('Retroceder 10 segundos', 'flavor-chat-ia'); ?>"
-                        title="<?php esc_attr_e('Retroceder 10 segundos', 'flavor-chat-ia'); ?>">
+                        aria-label="<?php esc_attr_e('Retroceder 10 segundos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
+                        title="<?php esc_attr_e('Retroceder 10 segundos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polygon points="11 19 2 12 11 5 11 19"></polygon>
                         <polygon points="22 19 13 12 22 5 22 19"></polygon>
@@ -146,7 +146,7 @@ $reproductor_id = 'flavor-radio-' . uniqid();
 
                 <!-- Botón principal play/pause -->
                 <button type="button" class="flavor-radio-btn flavor-radio-btn-play"
-                        aria-label="<?php esc_attr_e('Reproducir', 'flavor-chat-ia'); ?>">
+                        aria-label="<?php esc_attr_e('Reproducir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <svg class="flavor-icono-play" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
                         <polygon points="5 3 19 12 5 21 5 3"></polygon>
                     </svg>
@@ -158,8 +158,8 @@ $reproductor_id = 'flavor-radio-' . uniqid();
 
                 <!-- Botón de adelantar -->
                 <button type="button" class="flavor-radio-btn flavor-radio-btn-adelantar"
-                        aria-label="<?php esc_attr_e('Adelantar 10 segundos', 'flavor-chat-ia'); ?>"
-                        title="<?php esc_attr_e('Adelantar 10 segundos', 'flavor-chat-ia'); ?>">
+                        aria-label="<?php esc_attr_e('Adelantar 10 segundos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
+                        title="<?php esc_attr_e('Adelantar 10 segundos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polygon points="13 19 22 12 13 5 13 19"></polygon>
                         <polygon points="2 19 11 12 2 5 2 19"></polygon>
@@ -170,7 +170,7 @@ $reproductor_id = 'flavor-radio-' . uniqid();
             <!-- Control de volumen -->
             <div class="flavor-radio-volumen">
                 <button type="button" class="flavor-radio-btn flavor-radio-btn-volumen"
-                        aria-label="<?php esc_attr_e('Silenciar', 'flavor-chat-ia'); ?>">
+                        aria-label="<?php esc_attr_e('Silenciar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <svg class="flavor-icono-volumen-alto" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                         <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
@@ -191,7 +191,7 @@ $reproductor_id = 'flavor-radio-' . uniqid();
                            min="0"
                            max="100"
                            value="<?php echo esc_attr($volumen_inicial); ?>"
-                           aria-label="<?php esc_attr_e('Volumen', 'flavor-chat-ia'); ?>">
+                           aria-label="<?php esc_attr_e('Volumen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <div class="flavor-radio-volumen-track">
                         <div class="flavor-radio-volumen-fill" style="width: <?php echo esc_attr($volumen_inicial); ?>%;"></div>
                     </div>
@@ -207,7 +207,7 @@ $reproductor_id = 'flavor-radio-' . uniqid();
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="9 18 15 12 9 6"></polyline>
                 </svg>
-                <?php esc_html_e('A continuación', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('A continuación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
             <div class="flavor-radio-proximo-info">
                 <span class="flavor-radio-proximo-nombre"><?php echo esc_html($proximo_programa['nombre']); ?></span>
@@ -218,7 +218,7 @@ $reproductor_id = 'flavor-radio-' . uniqid();
 
         <!-- Acciones adicionales -->
         <footer class="flavor-radio-footer">
-            <button type="button" class="flavor-radio-accion" aria-label="<?php esc_attr_e('Compartir', 'flavor-chat-ia'); ?>">
+            <button type="button" class="flavor-radio-accion" aria-label="<?php esc_attr_e('Compartir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="18" cy="5" r="3"></circle>
                     <circle cx="6" cy="12" r="3"></circle>
@@ -226,22 +226,22 @@ $reproductor_id = 'flavor-radio-' . uniqid();
                     <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
                     <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
                 </svg>
-                <?php esc_html_e('Compartir', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Compartir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
-            <button type="button" class="flavor-radio-accion" aria-label="<?php esc_attr_e('Ver programación', 'flavor-chat-ia'); ?>">
+            <button type="button" class="flavor-radio-accion" aria-label="<?php esc_attr_e('Ver programación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                     <line x1="16" y1="2" x2="16" y2="6"></line>
                     <line x1="8" y1="2" x2="8" y2="6"></line>
                     <line x1="3" y1="10" x2="21" y2="10"></line>
                 </svg>
-                <?php esc_html_e('Programación', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Programación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
-            <button type="button" class="flavor-radio-accion flavor-radio-accion--favorito" aria-label="<?php esc_attr_e('Agregar a favoritos', 'flavor-chat-ia'); ?>">
+            <button type="button" class="flavor-radio-accion flavor-radio-accion--favorito" aria-label="<?php esc_attr_e('Agregar a favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                 </svg>
-                <?php esc_html_e('Favorito', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Favorito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </footer>
     </div>
@@ -266,7 +266,7 @@ $reproductor_id = 'flavor-radio-' . uniqid();
 
         <div class="flavor-radio-compacto-controles">
             <button type="button" class="flavor-radio-btn flavor-radio-btn-play flavor-radio-btn-play--sm"
-                    aria-label="<?php esc_attr_e('Reproducir', 'flavor-chat-ia'); ?>">
+                    aria-label="<?php esc_attr_e('Reproducir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <svg class="flavor-icono-play" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                     <polygon points="5 3 19 12 5 21 5 3"></polygon>
                 </svg>
@@ -278,7 +278,7 @@ $reproductor_id = 'flavor-radio-' . uniqid();
 
             <div class="flavor-radio-volumen flavor-radio-volumen--sm">
                 <button type="button" class="flavor-radio-btn flavor-radio-btn-volumen flavor-radio-btn--sm"
-                        aria-label="<?php esc_attr_e('Silenciar', 'flavor-chat-ia'); ?>">
+                        aria-label="<?php esc_attr_e('Silenciar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <svg class="flavor-icono-volumen-alto" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                         <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
@@ -294,7 +294,7 @@ $reproductor_id = 'flavor-radio-' . uniqid();
                        min="0"
                        max="100"
                        value="<?php echo esc_attr($volumen_inicial); ?>"
-                       aria-label="<?php esc_attr_e('Volumen', 'flavor-chat-ia'); ?>">
+                       aria-label="<?php esc_attr_e('Volumen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             </div>
         </div>
     </div>
@@ -309,7 +309,7 @@ $reproductor_id = 'flavor-radio-' . uniqid();
         <?php endif; ?>
 
         <button type="button" class="flavor-radio-btn flavor-radio-btn-play flavor-radio-btn-play--xs"
-                aria-label="<?php esc_attr_e('Reproducir', 'flavor-chat-ia'); ?>">
+                aria-label="<?php esc_attr_e('Reproducir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <svg class="flavor-icono-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                 <polygon points="5 3 19 12 5 21 5 3"></polygon>
             </svg>
@@ -330,7 +330,7 @@ $reproductor_id = 'flavor-radio-' . uniqid();
         <?php if ($stream_url): ?>
         <source src="<?php echo esc_url($stream_url); ?>" type="audio/mpeg">
         <?php endif; ?>
-        <?php esc_html_e('Tu navegador no soporta el elemento de audio.', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Tu navegador no soporta el elemento de audio.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </audio>
 </div>
 

@@ -134,23 +134,23 @@ if ($tablas_existen) {
 
 // Función para obtener clase de urgencia
 function obtener_urgencia_reserva($dias_restantes, $estado) {
-    if ($dias_restantes < 0) return ['clase' => 'expirada', 'texto' => __('Expirada', 'flavor-chat-ia'), 'icono' => 'warning'];
-    if ($dias_restantes == 0) return ['clase' => 'hoy', 'texto' => __('Expira hoy', 'flavor-chat-ia'), 'icono' => 'clock'];
-    if ($dias_restantes <= 2) return ['clase' => 'urgente', 'texto' => sprintf(__('%d días', 'flavor-chat-ia'), $dias_restantes), 'icono' => 'clock'];
-    return ['clase' => 'normal', 'texto' => sprintf(__('%d días', 'flavor-chat-ia'), $dias_restantes), 'icono' => 'calendar-alt'];
+    if ($dias_restantes < 0) return ['clase' => 'expirada', 'texto' => __('Expirada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'warning'];
+    if ($dias_restantes == 0) return ['clase' => 'hoy', 'texto' => __('Expira hoy', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'clock'];
+    if ($dias_restantes <= 2) return ['clase' => 'urgente', 'texto' => sprintf(__('%d días', FLAVOR_PLATFORM_TEXT_DOMAIN), $dias_restantes), 'icono' => 'clock'];
+    return ['clase' => 'normal', 'texto' => sprintf(__('%d días', FLAVOR_PLATFORM_TEXT_DOMAIN), $dias_restantes), 'icono' => 'calendar-alt'];
 }
 ?>
 
 <div class="wrap flavor-biblioteca-reservas">
     <h1>
         <span class="dashicons dashicons-book"></span>
-        <?php echo esc_html__('Gestión de Reservas', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Gestión de Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
     <hr class="wp-header-end">
 
     <?php if (!$tablas_existen): ?>
     <div class="notice notice-info">
-        <p><span class="dashicons dashicons-info"></span> <?php _e('No se han encontrado las tablas requeridas de biblioteca. Mostrando únicamente datos reales disponibles.', 'flavor-chat-ia'); ?></p>
+        <p><span class="dashicons dashicons-info"></span> <?php _e('No se han encontrado las tablas requeridas de biblioteca. Mostrando únicamente datos reales disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php endif; ?>
 
@@ -162,7 +162,7 @@ function obtener_urgencia_reserva($dias_restantes, $estado) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value"><?php echo number_format($total_reservas); ?></span>
-                <span class="flavor-stat-label"><?php _e('Total Reservas', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php _e('Total Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -172,7 +172,7 @@ function obtener_urgencia_reserva($dias_restantes, $estado) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value"><?php echo number_format($reservas_pendientes); ?></span>
-                <span class="flavor-stat-label"><?php _e('Pendientes', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php _e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -182,7 +182,7 @@ function obtener_urgencia_reserva($dias_restantes, $estado) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value"><?php echo number_format($reservas_confirmadas); ?></span>
-                <span class="flavor-stat-label"><?php _e('Confirmadas', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php _e('Confirmadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -192,7 +192,7 @@ function obtener_urgencia_reserva($dias_restantes, $estado) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value"><?php echo number_format($reservas_expiradas); ?></span>
-                <span class="flavor-stat-label"><?php _e('Expiradas', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php _e('Expiradas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
@@ -204,33 +204,33 @@ function obtener_urgencia_reserva($dias_restantes, $estado) {
             <input type="hidden" name="tab" value="<?php echo esc_attr($_GET['tab'] ?? ''); ?>">
 
             <div class="flavor-filter-group">
-                <input type="text" name="busqueda" placeholder="<?php esc_attr_e('Buscar libro o usuario...', 'flavor-chat-ia'); ?>" value="<?php echo esc_attr($busqueda); ?>" class="flavor-search-input">
+                <input type="text" name="busqueda" placeholder="<?php esc_attr_e('Buscar libro o usuario...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" value="<?php echo esc_attr($busqueda); ?>" class="flavor-search-input">
             </div>
 
             <div class="flavor-filter-group">
                 <select name="estado" class="flavor-select">
-                    <option value=""><?php _e('Activas (Pendientes y Confirmadas)', 'flavor-chat-ia'); ?></option>
-                    <option value="pendiente" <?php selected($filtro_estado, 'pendiente'); ?>><?php _e('Solo pendientes', 'flavor-chat-ia'); ?></option>
-                    <option value="confirmada" <?php selected($filtro_estado, 'confirmada'); ?>><?php _e('Solo confirmadas', 'flavor-chat-ia'); ?></option>
-                    <option value="expirada" <?php selected($filtro_estado, 'expirada'); ?>><?php _e('Expiradas', 'flavor-chat-ia'); ?></option>
-                    <option value="cancelada" <?php selected($filtro_estado, 'cancelada'); ?>><?php _e('Canceladas', 'flavor-chat-ia'); ?></option>
-                    <option value="completada" <?php selected($filtro_estado, 'completada'); ?>><?php _e('Completadas', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Activas (Pendientes y Confirmadas)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="pendiente" <?php selected($filtro_estado, 'pendiente'); ?>><?php _e('Solo pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="confirmada" <?php selected($filtro_estado, 'confirmada'); ?>><?php _e('Solo confirmadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="expirada" <?php selected($filtro_estado, 'expirada'); ?>><?php _e('Expiradas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="cancelada" <?php selected($filtro_estado, 'cancelada'); ?>><?php _e('Canceladas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="completada" <?php selected($filtro_estado, 'completada'); ?>><?php _e('Completadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
             </div>
 
             <div class="flavor-filter-group">
                 <select name="orden" class="flavor-select">
-                    <option value="reciente" <?php selected($orden, 'reciente'); ?>><?php _e('Más recientes', 'flavor-chat-ia'); ?></option>
-                    <option value="expiracion" <?php selected($orden, 'expiracion'); ?>><?php _e('Próximas a expirar', 'flavor-chat-ia'); ?></option>
-                    <option value="libro" <?php selected($orden, 'libro'); ?>><?php _e('Por libro', 'flavor-chat-ia'); ?></option>
-                    <option value="usuario" <?php selected($orden, 'usuario'); ?>><?php _e('Por usuario', 'flavor-chat-ia'); ?></option>
+                    <option value="reciente" <?php selected($orden, 'reciente'); ?>><?php _e('Más recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="expiracion" <?php selected($orden, 'expiracion'); ?>><?php _e('Próximas a expirar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="libro" <?php selected($orden, 'libro'); ?>><?php _e('Por libro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="usuario" <?php selected($orden, 'usuario'); ?>><?php _e('Por usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
             </div>
 
-            <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
+            <button type="submit" class="button"><?php _e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
 
             <?php if (!empty($busqueda) || !empty($filtro_estado)): ?>
-                <a href="?page=<?php echo esc_attr($_GET['page'] ?? ''); ?>&tab=<?php echo esc_attr($_GET['tab'] ?? ''); ?>" class="button"><?php _e('Limpiar', 'flavor-chat-ia'); ?></a>
+                <a href="?page=<?php echo esc_attr($_GET['page'] ?? ''); ?>&tab=<?php echo esc_attr($_GET['tab'] ?? ''); ?>" class="button"><?php _e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
             <?php endif; ?>
         </form>
     </div>
@@ -240,13 +240,13 @@ function obtener_urgencia_reserva($dias_restantes, $estado) {
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th style="width: 50px;"><?php _e('ID', 'flavor-chat-ia'); ?></th>
-                    <th><?php _e('Libro', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 180px;"><?php _e('Usuario', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 130px;"><?php _e('Fecha Solicitud', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 120px;"><?php _e('Expira en', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 100px;"><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 150px;"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 50px;"><?php _e('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php _e('Libro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 180px;"><?php _e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 130px;"><?php _e('Fecha Solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 120px;"><?php _e('Expira en', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 100px;"><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 150px;"><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -297,21 +297,21 @@ function obtener_urgencia_reserva($dias_restantes, $estado) {
                         </td>
                         <td>
                             <?php if ($reserva->estado === 'pendiente'): ?>
-                                <button type="button" class="button button-small button-primary btn-confirmar" data-id="<?php echo esc_attr($reserva->id); ?>" title="<?php esc_attr_e('Confirmar reserva', 'flavor-chat-ia'); ?>">
+                                <button type="button" class="button button-small button-primary btn-confirmar" data-id="<?php echo esc_attr($reserva->id); ?>" title="<?php esc_attr_e('Confirmar reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-yes"></span>
                                 </button>
                             <?php endif; ?>
                             <?php if (in_array($reserva->estado, ['pendiente', 'confirmada'])): ?>
-                                <button type="button" class="button button-small btn-cancelar" data-id="<?php echo esc_attr($reserva->id); ?>" title="<?php esc_attr_e('Cancelar reserva', 'flavor-chat-ia'); ?>">
+                                <button type="button" class="button button-small btn-cancelar" data-id="<?php echo esc_attr($reserva->id); ?>" title="<?php esc_attr_e('Cancelar reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-no"></span>
                                 </button>
                             <?php endif; ?>
                             <?php if ($reserva->estado === 'confirmada'): ?>
-                                <button type="button" class="button button-small btn-completar" data-id="<?php echo esc_attr($reserva->id); ?>" title="<?php esc_attr_e('Marcar como recogido', 'flavor-chat-ia'); ?>">
+                                <button type="button" class="button button-small btn-completar" data-id="<?php echo esc_attr($reserva->id); ?>" title="<?php esc_attr_e('Marcar como recogido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-book-alt"></span>
                                 </button>
                             <?php endif; ?>
-                            <a href="mailto:<?php echo esc_attr($reserva->usuario_email); ?>" class="button button-small" title="<?php esc_attr_e('Contactar usuario', 'flavor-chat-ia'); ?>">
+                            <a href="mailto:<?php echo esc_attr($reserva->usuario_email); ?>" class="button button-small" title="<?php esc_attr_e('Contactar usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <span class="dashicons dashicons-email"></span>
                             </a>
                         </td>
@@ -321,7 +321,7 @@ function obtener_urgencia_reserva($dias_restantes, $estado) {
                     <tr>
                         <td colspan="7" style="text-align: center; padding: 40px;">
                             <span class="dashicons dashicons-book" style="font-size: 48px; color: #ccc;"></span>
-                            <p style="margin-top: 10px; color: #666;"><?php _e('No hay reservas con los filtros seleccionados', 'flavor-chat-ia'); ?></p>
+                            <p style="margin-top: 10px; color: #666;"><?php _e('No hay reservas con los filtros seleccionados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </td>
                     </tr>
                 <?php endif; ?>
@@ -332,7 +332,7 @@ function obtener_urgencia_reserva($dias_restantes, $estado) {
         <?php if (isset($total_paginas) && $total_paginas > 1): ?>
         <div class="flavor-pagination">
             <span class="flavor-pagination-info">
-                <?php printf(__('Mostrando %d-%d de %d reservas', 'flavor-chat-ia'),
+                <?php printf(__('Mostrando %d-%d de %d reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $offset + 1,
                     min($offset + $por_pagina, $total_registros),
                     $total_registros
@@ -349,7 +349,7 @@ function obtener_urgencia_reserva($dias_restantes, $estado) {
                 ], admin_url('admin.php'));
 
                 if ($pagina_actual > 1): ?>
-                    <a href="<?php echo esc_url(add_query_arg('paged', $pagina_actual - 1, $url_base)); ?>" class="button">&laquo; <?php _e('Anterior', 'flavor-chat-ia'); ?></a>
+                    <a href="<?php echo esc_url(add_query_arg('paged', $pagina_actual - 1, $url_base)); ?>" class="button">&laquo; <?php _e('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 <?php endif;
 
                 for ($i = max(1, $pagina_actual - 2); $i <= min($total_paginas, $pagina_actual + 2); $i++): ?>
@@ -361,7 +361,7 @@ function obtener_urgencia_reserva($dias_restantes, $estado) {
                 endfor;
 
                 if ($pagina_actual < $total_paginas): ?>
-                    <a href="<?php echo esc_url(add_query_arg('paged', $pagina_actual + 1, $url_base)); ?>" class="button"><?php _e('Siguiente', 'flavor-chat-ia'); ?> &raquo;</a>
+                    <a href="<?php echo esc_url(add_query_arg('paged', $pagina_actual + 1, $url_base)); ?>" class="button"><?php _e('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> &raquo;</a>
                 <?php endif; ?>
             </div>
         </div>
@@ -523,7 +523,7 @@ jQuery(document).ready(function($) {
     // Confirmar reserva
     $('.btn-confirmar').on('click', function() {
         const id = $(this).data('id');
-        if (confirm('<?php _e('¿Confirmar esta reserva?', 'flavor-chat-ia'); ?>')) {
+        if (confirm('<?php _e('¿Confirmar esta reserva?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>')) {
             $.post(ajaxurl, {
                 action: 'biblioteca_confirmar_reserva',
                 reserva_id: id,
@@ -532,7 +532,7 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     location.reload();
                 } else {
-                    alert(response.data || '<?php _e('Error al confirmar', 'flavor-chat-ia'); ?>');
+                    alert(response.data || '<?php _e('Error al confirmar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                 }
             });
         }
@@ -541,7 +541,7 @@ jQuery(document).ready(function($) {
     // Cancelar reserva
     $('.btn-cancelar').on('click', function() {
         const id = $(this).data('id');
-        if (confirm('<?php _e('¿Cancelar esta reserva?', 'flavor-chat-ia'); ?>')) {
+        if (confirm('<?php _e('¿Cancelar esta reserva?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>')) {
             $.post(ajaxurl, {
                 action: 'biblioteca_cancelar_reserva',
                 reserva_id: id,
@@ -550,7 +550,7 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     location.reload();
                 } else {
-                    alert(response.data || '<?php _e('Error al cancelar', 'flavor-chat-ia'); ?>');
+                    alert(response.data || '<?php _e('Error al cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                 }
             });
         }
@@ -559,7 +559,7 @@ jQuery(document).ready(function($) {
     // Completar reserva
     $('.btn-completar').on('click', function() {
         const id = $(this).data('id');
-        if (confirm('<?php _e('¿Marcar como recogido/completado?', 'flavor-chat-ia'); ?>')) {
+        if (confirm('<?php _e('¿Marcar como recogido/completado?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>')) {
             $.post(ajaxurl, {
                 action: 'biblioteca_completar_reserva',
                 reserva_id: id,
@@ -568,7 +568,7 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     location.reload();
                 } else {
-                    alert(response.data || '<?php _e('Error al completar', 'flavor-chat-ia'); ?>');
+                    alert(response.data || '<?php _e('Error al completar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                 }
             });
         }

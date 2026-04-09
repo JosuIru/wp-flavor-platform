@@ -59,7 +59,7 @@ class Flavor_Native_Content_API {
         if ($request_count >= $rate_limit) {
             return new WP_Error(
                 'rate_limit_exceeded',
-                __('Demasiadas peticiones. Intente de nuevo en un minuto.', 'flavor-chat-ia'),
+                __('Demasiadas peticiones. Intente de nuevo en un minuto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 429]
             );
         }
@@ -206,7 +206,7 @@ class Flavor_Native_Content_API {
         $page = get_page_by_path($slug);
 
         if (!$page || $page->post_status !== 'publish') {
-            return new WP_Error('not_found', __('Página no encontrada', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Página no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         return new WP_REST_Response([
@@ -229,7 +229,7 @@ class Flavor_Native_Content_API {
         ]);
 
         if (empty($posts)) {
-            return new WP_Error('not_found', __('Post no encontrado', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Post no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         return new WP_REST_Response([
@@ -246,7 +246,7 @@ class Flavor_Native_Content_API {
         $slug = sanitize_title($request->get_param('slug'));
 
         if (!post_type_exists($type) || !$this->is_public_post_type($type)) {
-            return new WP_Error('invalid_type', __('Tipo de contenido no válido', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('invalid_type', __('Tipo de contenido no válido', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $posts = get_posts([
@@ -257,7 +257,7 @@ class Flavor_Native_Content_API {
         ]);
 
         if (empty($posts)) {
-            return new WP_Error('not_found', __('Contenido no encontrado', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Contenido no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         return new WP_REST_Response([
@@ -274,7 +274,7 @@ class Flavor_Native_Content_API {
         $post = get_post($id);
 
         if (!$post || $post->post_status !== 'publish') {
-            return new WP_Error('not_found', __('Contenido no encontrado', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Contenido no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         return new WP_REST_Response([
@@ -300,7 +300,7 @@ class Flavor_Native_Content_API {
         }
 
         if (!post_type_exists($type) || !$this->is_public_post_type($type)) {
-            return new WP_Error('invalid_type', __('Tipo de contenido no válido', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('invalid_type', __('Tipo de contenido no válido', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $args = [
@@ -352,7 +352,7 @@ class Flavor_Native_Content_API {
         $data = $this->get_info_section_data($section);
 
         if (!$data) {
-            return new WP_Error('not_found', __('Sección no encontrada', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Sección no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         return new WP_REST_Response([
@@ -409,7 +409,7 @@ class Flavor_Native_Content_API {
 
         $menu_id = $locations[$location] ?? null;
         if (!$menu_id) {
-            return new WP_Error('not_found', __('Menú no encontrado', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Menú no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         $menu_items = wp_get_nav_menu_items($menu_id);
@@ -826,7 +826,7 @@ class Flavor_Native_Content_API {
             case 'about':
                 return [
                     'type' => 'about',
-                    'title' => __('Sobre nosotros', 'flavor-chat-ia'),
+                    'title' => __('Sobre nosotros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'content' => $site_info['about'] ?? $app_config['app_description'] ?? get_bloginfo('description'),
                     'features' => $site_info['features'] ?? [],
                 ];
@@ -834,7 +834,7 @@ class Flavor_Native_Content_API {
             case 'hours':
                 return [
                     'type' => 'hours',
-                    'title' => __('Horarios', 'flavor-chat-ia'),
+                    'title' => __('Horarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'schedule' => $site_info['hours'] ?? $this->get_default_hours(),
                     'timezone' => wp_timezone_string(),
                     'special_hours' => $site_info['special_hours'] ?? [],
@@ -843,7 +843,7 @@ class Flavor_Native_Content_API {
             case 'contact':
                 return [
                     'type' => 'contact',
-                    'title' => __('Contacto', 'flavor-chat-ia'),
+                    'title' => __('Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'phone' => $contact_info['phone'] ?? '',
                     'email' => $contact_info['email'] ?? get_bloginfo('admin_email'),
                     'whatsapp' => $contact_info['whatsapp'] ?? '',
@@ -853,7 +853,7 @@ class Flavor_Native_Content_API {
             case 'location':
                 return [
                     'type' => 'location',
-                    'title' => __('Ubicación', 'flavor-chat-ia'),
+                    'title' => __('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'address' => $app_config['business_address'] ?? '',
                     'city' => $app_config['business_city'] ?? '',
                     'country' => $app_config['business_country'] ?? '',
@@ -868,21 +868,21 @@ class Flavor_Native_Content_API {
             case 'social':
                 return [
                     'type' => 'social',
-                    'title' => __('Redes sociales', 'flavor-chat-ia'),
+                    'title' => __('Redes sociales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'networks' => $this->get_social_networks(),
                 ];
 
             case 'gallery':
                 return [
                     'type' => 'gallery',
-                    'title' => __('Galería', 'flavor-chat-ia'),
+                    'title' => __('Galería', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'images' => $this->get_gallery_images(),
                 ];
 
             case 'services':
                 return [
                     'type' => 'services',
-                    'title' => __('Servicios', 'flavor-chat-ia'),
+                    'title' => __('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'items' => $site_info['services'] ?? [],
                 ];
 
@@ -896,14 +896,14 @@ class Flavor_Native_Content_API {
      */
     private function get_section_default_label($section_id) {
         $labels = [
-            'header' => __('Cabecera', 'flavor-chat-ia'),
-            'about' => __('Sobre nosotros', 'flavor-chat-ia'),
-            'hours' => __('Horarios', 'flavor-chat-ia'),
-            'contact' => __('Contacto', 'flavor-chat-ia'),
-            'location' => __('Ubicación', 'flavor-chat-ia'),
-            'social' => __('Redes sociales', 'flavor-chat-ia'),
-            'gallery' => __('Galería', 'flavor-chat-ia'),
-            'services' => __('Servicios', 'flavor-chat-ia'),
+            'header' => __('Cabecera', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'about' => __('Sobre nosotros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'hours' => __('Horarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'contact' => __('Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'location' => __('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'social' => __('Redes sociales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'gallery' => __('Galería', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'services' => __('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
         return $labels[$section_id] ?? $section_id;
     }
@@ -1062,7 +1062,7 @@ class Flavor_Native_Content_API {
         $screen_data = $this->get_native_screen_data($screen_id);
 
         if (!$screen_data) {
-            return new WP_Error('not_found', __('Pantalla no encontrada', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Pantalla no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         if (!$this->can_access_extended_content() && isset($screen_data['config']['api_endpoint'])) {
@@ -1094,11 +1094,11 @@ class Flavor_Native_Content_API {
                 // Pantalla de chat con IA
                 return [
                     'screen_type' => 'chat',
-                    'title' => __('Chat', 'flavor-chat-ia'),
+                    'title' => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'config' => [
                         'api_endpoint' => rest_url('flavor-chat-ia/v1/chat'),
-                        'welcome_message' => __('¡Hola! ¿En qué puedo ayudarte?', 'flavor-chat-ia'),
-                        'placeholder' => __('Escribe tu mensaje...', 'flavor-chat-ia'),
+                        'welcome_message' => __('¡Hola! ¿En qué puedo ayudarte?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'placeholder' => __('Escribe tu mensaje...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                 ];
 
@@ -1106,7 +1106,7 @@ class Flavor_Native_Content_API {
                 // Pantalla de reservas
                 return [
                     'screen_type' => 'reservations',
-                    'title' => __('Reservar', 'flavor-chat-ia'),
+                    'title' => __('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'config' => [
                         'api_endpoint' => rest_url('chat-ia-mobile/v1/reservations'),
                         'booking_enabled' => true,
@@ -1117,7 +1117,7 @@ class Flavor_Native_Content_API {
                 // Pantalla de tickets del usuario
                 return [
                     'screen_type' => 'my_tickets',
-                    'title' => __('Mis Tickets', 'flavor-chat-ia'),
+                    'title' => __('Mis Tickets', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'config' => [
                         'api_endpoint' => rest_url('chat-ia-mobile/v1/tickets'),
                     ],
@@ -1127,7 +1127,7 @@ class Flavor_Native_Content_API {
                 // Pantalla de perfil de usuario
                 return [
                     'screen_type' => 'profile',
-                    'title' => __('Mi Perfil', 'flavor-chat-ia'),
+                    'title' => __('Mi Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'config' => [
                         'api_endpoint' => rest_url('chat-ia-mobile/v1/profile'),
                         'editable' => true,
@@ -1138,7 +1138,7 @@ class Flavor_Native_Content_API {
                 // Pantalla de notificaciones
                 return [
                     'screen_type' => 'notifications',
-                    'title' => __('Notificaciones', 'flavor-chat-ia'),
+                    'title' => __('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'config' => [
                         'api_endpoint' => rest_url('flavor-chat-ia/v1/notifications'),
                     ],
@@ -1148,11 +1148,11 @@ class Flavor_Native_Content_API {
                 // Pantalla de configuración
                 return [
                     'screen_type' => 'settings',
-                    'title' => __('Configuración', 'flavor-chat-ia'),
+                    'title' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'options' => [
-                        ['id' => 'notifications', 'label' => __('Notificaciones', 'flavor-chat-ia'), 'type' => 'toggle'],
-                        ['id' => 'dark_mode', 'label' => __('Modo oscuro', 'flavor-chat-ia'), 'type' => 'toggle'],
-                        ['id' => 'language', 'label' => __('Idioma', 'flavor-chat-ia'), 'type' => 'select'],
+                        ['id' => 'notifications', 'label' => __('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'toggle'],
+                        ['id' => 'dark_mode', 'label' => __('Modo oscuro', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'toggle'],
+                        ['id' => 'language', 'label' => __('Idioma', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'select'],
                     ],
                 ];
 
@@ -1160,7 +1160,7 @@ class Flavor_Native_Content_API {
                 // Pantalla de lista de módulos
                 return [
                     'screen_type' => 'modules',
-                    'title' => __('Módulos', 'flavor-chat-ia'),
+                    'title' => __('Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'config' => [
                         'api_endpoint' => rest_url('app-discovery/v1/modules'),
                     ],
@@ -1216,7 +1216,7 @@ class Flavor_Native_Content_API {
         $module_data = $this->get_module_screen_data($module_id);
 
         if (!$module_data) {
-            return new WP_Error('not_found', __('Módulo no encontrado', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Módulo no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         if (!$this->can_access_extended_content()) {
@@ -1266,56 +1266,56 @@ class Flavor_Native_Content_API {
         // Catálogo de módulos conocidos
         $module_catalog = [
             'grupos_consumo' => [
-                'name' => __('Grupos de Consumo', 'flavor-chat-ia'),
-                'description' => __('Gestión de grupos de consumo colaborativo', 'flavor-chat-ia'),
+                'name' => __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Gestión de grupos de consumo colaborativo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'groups',
                 'color' => '#4CAF50',
             ],
             'banco_tiempo' => [
-                'name' => __('Banco de Tiempo', 'flavor-chat-ia'),
-                'description' => __('Intercambio de servicios por tiempo', 'flavor-chat-ia'),
+                'name' => __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Intercambio de servicios por tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'schedule',
                 'color' => '#2196F3',
             ],
             'marketplace' => [
-                'name' => __('Marketplace', 'flavor-chat-ia'),
-                'description' => __('Compra y venta entre usuarios', 'flavor-chat-ia'),
+                'name' => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Compra y venta entre usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'store',
                 'color' => '#FF9800',
             ],
             'eventos' => [
-                'name' => __('Eventos', 'flavor-chat-ia'),
-                'description' => __('Calendario de eventos', 'flavor-chat-ia'),
+                'name' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Calendario de eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'event',
                 'color' => '#9C27B0',
             ],
             'talleres' => [
-                'name' => __('Talleres', 'flavor-chat-ia'),
-                'description' => __('Inscripción a talleres y cursos', 'flavor-chat-ia'),
+                'name' => __('Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Inscripción a talleres y cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'school',
                 'color' => '#3F51B5',
             ],
             'incidencias' => [
-                'name' => __('Incidencias', 'flavor-chat-ia'),
-                'description' => __('Reporte de incidencias', 'flavor-chat-ia'),
+                'name' => __('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Reporte de incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'report_problem',
                 'color' => '#F44336',
             ],
             'participacion' => [
-                'name' => __('Participación', 'flavor-chat-ia'),
-                'description' => __('Participación ciudadana', 'flavor-chat-ia'),
+                'name' => __('Participación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Participación ciudadana', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'how_to_vote',
                 'color' => '#00BCD4',
             ],
             'podcast' => [
-                'name' => __('Podcast', 'flavor-chat-ia'),
-                'description' => __('Series y episodios de podcast', 'flavor-chat-ia'),
+                'name' => __('Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Series y episodios de podcast', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'mic',
                 'color' => '#E91E63',
             ],
             'red_social' => [
-                'name' => __('Red Social', 'flavor-chat-ia'),
-                'description' => __('Red social de la comunidad', 'flavor-chat-ia'),
+                'name' => __('Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Red social de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'people',
                 'color' => '#673AB7',
             ],

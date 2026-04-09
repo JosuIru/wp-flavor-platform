@@ -73,7 +73,7 @@ $icono_categoria = $iconos_categoria[strtolower(str_replace(' ', '-', $categoria
     <div class="px-5 py-3 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
         <span class="text-xs text-gray-500"><?php echo esc_html($categoria); ?></span>
         <a href="<?php echo esc_url($url); ?>" class="text-sky-600 text-sm font-medium hover:text-sky-700 transition-colors">
-            <?php echo esc_html__('Leer mas', 'flavor-chat-ia'); ?> →
+            <?php echo esc_html__('Leer mas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> →
         </a>
     </div>
 </article>

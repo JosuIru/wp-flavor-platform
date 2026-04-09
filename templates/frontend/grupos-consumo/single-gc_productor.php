@@ -45,7 +45,7 @@ while (have_posts()) :
                     <?php if (!empty($km_aproximado)): ?>
                     <span class="gc-distancia">
                         <span class="dashicons dashicons-car"></span>
-                        <?php printf(__('%s km', 'flavor-chat-ia'), esc_html($km_aproximado)); ?>
+                        <?php printf(__('%s km', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($km_aproximado)); ?>
                     </span>
                     <?php endif; ?>
                 </div>
@@ -70,12 +70,12 @@ while (have_posts()) :
 
         <div class="gc-productor-body">
             <div class="gc-productor-contenido">
-                <h2><?php _e('Sobre el productor', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Sobre el productor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <div class="gc-productor-descripcion">
                     <?php the_content(); ?>
                 </div>
 
-                <h2><?php _e('Productos', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <?php
                 $productos = get_posts([
                     'post_type' => 'gc_producto',
@@ -103,19 +103,19 @@ while (have_posts()) :
                             <?php echo esc_html(number_format((float)$precio, 2)); ?> / <?php echo esc_html($unidad); ?>
                         </p>
                         <a href="<?php echo get_permalink($producto->ID); ?>" class="gc-btn gc-btn-small">
-                            <?php _e('Ver', 'flavor-chat-ia'); ?>
+                            <?php _e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                     <?php endforeach; ?>
                 </div>
                 <?php else: ?>
-                <p><?php _e('Este productor no tiene productos listados actualmente.', 'flavor-chat-ia'); ?></p>
+                <p><?php _e('Este productor no tiene productos listados actualmente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php endif; ?>
             </div>
 
             <aside class="gc-productor-sidebar">
                 <div class="gc-card">
-                    <h3><?php _e('Contacto', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <ul class="gc-contacto-lista">
                         <?php if (!empty($telefono)): ?>
                         <li>
@@ -143,7 +143,7 @@ while (have_posts()) :
         <nav class="gc-productor-nav">
             <a href="<?php echo esc_url(home_url('/grupos-consumo/')); ?>" class="gc-btn gc-btn-link">
                 <span class="dashicons dashicons-arrow-left-alt"></span>
-                <?php _e('Volver', 'flavor-chat-ia'); ?>
+                <?php _e('Volver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </nav>
     </article>

@@ -47,6 +47,9 @@ if (class_exists('Flavor_Demo_Data_Admin', false)) {
  * Para nuevas implementaciones, usar Flavor_Demo_Data_Manager directamente.
  */
 class Flavor_Demo_Data_Admin {
+    const PAGE_SLUG = 'flavor-platform-demo-data';
+    const PAGE_SLUG_OLD = 'flavor-demo-data';
+    const PAGE_SLUG_LEGACY = 'flavor-demo-data-legacy';
 
     /**
      * Instancia única
@@ -247,8 +250,8 @@ class Flavor_Demo_Data_Admin {
         global $submenu;
         $menu_exists = false;
 
-        if (isset($submenu['flavor-chat-ia'])) {
-            foreach ($submenu['flavor-chat-ia'] as $item) {
+        if (isset($submenu[FLAVOR_PLATFORM_TEXT_DOMAIN])) {
+            foreach ($submenu[FLAVOR_PLATFORM_TEXT_DOMAIN] as $item) {
                 if (strpos($item[2] ?? '', 'demo') !== false) {
                     $menu_exists = true;
                     break;
@@ -258,12 +261,30 @@ class Flavor_Demo_Data_Admin {
 
         if (!$menu_exists) {
             add_submenu_page(
-                'flavor-chat-ia',
+                FLAVOR_PLATFORM_TEXT_DOMAIN,
                 'Demo Tejido Empresarial',
                 '🎯 Demo Local',
                 'manage_options',
-                'flavor-demo-data-legacy',
+                self::PAGE_SLUG,
                 [$this, 'render_admin_page']
+            );
+
+            add_submenu_page(
+                null,
+                'Demo Tejido Empresarial',
+                '',
+                'manage_options',
+                self::PAGE_SLUG_OLD,
+                [$this, 'redirect_old_page']
+            );
+
+            add_submenu_page(
+                null,
+                'Demo Tejido Empresarial',
+                '',
+                'manage_options',
+                self::PAGE_SLUG_LEGACY,
+                [$this, 'redirect_old_page']
             );
         }
     }
@@ -281,7 +302,7 @@ class Flavor_Demo_Data_Admin {
                 <p>
                     <strong>Nota:</strong> Esta es la interfaz legacy para el preset "Tejido Empresarial".
                     Para gestión completa de datos demo, usa
-                    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-demo-data')); ?>">
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=' . self::PAGE_SLUG)); ?>">
                         Flavor Platform → Datos Demo
                     </a>
                 </p>
@@ -380,7 +401,7 @@ class Flavor_Demo_Data_Admin {
      */
     public function handle_generate_demo() {
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('No autorizado', 'flavor-chat-ia'));
+            wp_die(esc_html__('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         check_admin_referer('flavor_demo_data', 'demo_nonce');
@@ -426,7 +447,7 @@ class Flavor_Demo_Data_Admin {
         // Guardar log
         update_option('flavor_demo_data_log', $results);
 
-        Flavor_Chat_Helpers::safe_redirect(admin_url('admin.php?page=flavor-demo-data-legacy&generated=1'));
+        Flavor_Chat_Helpers::safe_redirect(admin_url('admin.php?page=' . self::PAGE_SLUG . '&generated=1'));
         exit;
     }
 
@@ -643,7 +664,7 @@ class Flavor_Demo_Data_Admin {
      */
     public function handle_cleanup_demo() {
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('No autorizado', 'flavor-chat-ia'));
+            wp_die(esc_html__('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         check_admin_referer('flavor_demo_data', 'demo_nonce');
@@ -689,7 +710,12 @@ class Flavor_Demo_Data_Admin {
         delete_option('flavor_demo_grupo_consumo');
         delete_option('flavor_demo_data_log');
 
-        Flavor_Chat_Helpers::safe_redirect(admin_url('admin.php?page=flavor-demo-data-legacy&cleaned=1'));
+        Flavor_Chat_Helpers::safe_redirect(admin_url('admin.php?page=' . self::PAGE_SLUG . '&cleaned=1'));
+        exit;
+    }
+
+    public function redirect_old_page() {
+        Flavor_Chat_Helpers::safe_redirect(admin_url('admin.php?page=' . self::PAGE_SLUG));
         exit;
     }
 }

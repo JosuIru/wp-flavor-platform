@@ -51,7 +51,7 @@ class Flavor_Feature_Favorites extends Flavor_Feature_Base {
 
     public function register_action($entity_type, $entity_id, $user_id, $value = null) {
         if (!$user_id) {
-            return new WP_Error('not_logged_in', __('Debes iniciar sesión', 'flavor-chat-ia'));
+            return new WP_Error('not_logged_in', __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;

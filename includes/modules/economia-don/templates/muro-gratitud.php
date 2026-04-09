@@ -20,8 +20,8 @@ $gratitudes = new WP_Query([
 
 <div class="ed-muro-gratitud">
     <header class="ed-muro-gratitud__header">
-        <h2><?php esc_html_e('Muro de Gratitud', 'flavor-chat-ia'); ?></h2>
-        <p><?php esc_html_e('Agradecimientos de quienes han recibido dones', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Muro de Gratitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p><?php esc_html_e('Agradecimientos de quienes han recibido dones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </header>
 
     <?php if ($gratitudes->have_posts()) : ?>
@@ -52,7 +52,7 @@ $gratitudes = new WP_Query([
     <?php else : ?>
     <div class="ed-empty-state">
         <span class="dashicons dashicons-smiley"></span>
-        <p><?php esc_html_e('El muro de gratitud está esperando sus primeros agradecimientos.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('El muro de gratitud está esperando sus primeros agradecimientos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php endif; ?>
 </div>

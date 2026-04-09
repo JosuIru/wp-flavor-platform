@@ -18,7 +18,7 @@ $tabla_zonas = $wpdb->prefix . 'flavor_avisos_zonas';
 
 // Verificar si existe la tabla
 if (!Flavor_Chat_Helpers::tabla_existe($tabla_avisos)) {
-    echo '<div class="avisos-empty"><p>' . esc_html__('El modulo de avisos municipales no esta configurado.', 'flavor-chat-ia') . '</p></div>';
+    echo '<div class="avisos-empty"><p>' . esc_html__('El modulo de avisos municipales no esta configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
 
@@ -79,10 +79,10 @@ $zonas_disponibles = $wpdb->get_results("SELECT * FROM $tabla_zonas WHERE activa
 
 // Labels de prioridades
 $prioridades_config = [
-    'urgente' => ['label' => __('Urgente', 'flavor-chat-ia'), 'color' => '#dc2626', 'icon' => 'warning'],
-    'alta'    => ['label' => __('Alta', 'flavor-chat-ia'), 'color' => '#f97316', 'icon' => 'flag'],
-    'media'   => ['label' => __('Media', 'flavor-chat-ia'), 'color' => '#eab308', 'icon' => 'info'],
-    'baja'    => ['label' => __('Baja', 'flavor-chat-ia'), 'color' => '#22c55e', 'icon' => 'yes-alt'],
+    'urgente' => ['label' => __('Urgente', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#dc2626', 'icon' => 'warning'],
+    'alta'    => ['label' => __('Alta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#f97316', 'icon' => 'flag'],
+    'media'   => ['label' => __('Media', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#eab308', 'icon' => 'info'],
+    'baja'    => ['label' => __('Baja', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#22c55e', 'icon' => 'yes-alt'],
 ];
 
 // URL base para los detalles
@@ -93,12 +93,12 @@ $usuario_id = get_current_user_id();
 <div class="avisos-activos-wrapper">
     <header class="avisos-activos-header">
         <div>
-            <h2><?php esc_html_e('Avisos Municipales', 'flavor-chat-ia'); ?></h2>
-            <p><?php esc_html_e('Informacion oficial y comunicados del ayuntamiento', 'flavor-chat-ia'); ?></p>
+            <h2><?php esc_html_e('Avisos Municipales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+            <p><?php esc_html_e('Informacion oficial y comunicados del ayuntamiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
         <?php if ($avisos_activos): ?>
         <span class="avisos-activos-total">
-            <?php printf(esc_html__('%d avisos activos', 'flavor-chat-ia'), count($avisos_activos)); ?>
+            <?php printf(esc_html__('%d avisos activos', FLAVOR_PLATFORM_TEXT_DOMAIN), count($avisos_activos)); ?>
         </span>
         <?php endif; ?>
     </header>
@@ -107,9 +107,9 @@ $usuario_id = get_current_user_id();
     <form class="avisos-filtros" method="get">
         <div class="avisos-filtros-row">
             <div class="filtro-grupo">
-                <label for="categoria"><?php esc_html_e('Categoria', 'flavor-chat-ia'); ?></label>
+                <label for="categoria"><?php esc_html_e('Categoria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="categoria" id="categoria">
-                    <option value=""><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($categorias_disponibles as $categoria): ?>
                     <option value="<?php echo esc_attr($categoria->id); ?>" <?php selected($categoria_filtro, $categoria->id); ?>>
                         <?php echo esc_html($categoria->nombre); ?>
@@ -118,9 +118,9 @@ $usuario_id = get_current_user_id();
                 </select>
             </div>
             <div class="filtro-grupo">
-                <label for="zona"><?php esc_html_e('Zona', 'flavor-chat-ia'); ?></label>
+                <label for="zona"><?php esc_html_e('Zona', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="zona" id="zona">
-                    <option value=""><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($zonas_disponibles as $zona): ?>
                     <option value="<?php echo esc_attr($zona->id); ?>" <?php selected($zona_filtro, $zona->id); ?>>
                         <?php echo esc_html($zona->nombre); ?>
@@ -129,9 +129,9 @@ $usuario_id = get_current_user_id();
                 </select>
             </div>
             <div class="filtro-grupo">
-                <label for="prioridad"><?php esc_html_e('Prioridad', 'flavor-chat-ia'); ?></label>
+                <label for="prioridad"><?php esc_html_e('Prioridad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="prioridad" id="prioridad">
-                    <option value=""><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($prioridades_config as $prioridad_key => $prioridad_data): ?>
                     <option value="<?php echo esc_attr($prioridad_key); ?>" <?php selected($prioridad_filtro, $prioridad_key); ?>>
                         <?php echo esc_html($prioridad_data['label']); ?>
@@ -140,18 +140,18 @@ $usuario_id = get_current_user_id();
                 </select>
             </div>
             <div class="filtro-grupo filtro-buscar">
-                <label for="buscar"><?php esc_html_e('Buscar', 'flavor-chat-ia'); ?></label>
+                <label for="buscar"><?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <input type="text" name="buscar" id="buscar" value="<?php echo esc_attr($buscar); ?>"
-                       placeholder="<?php esc_attr_e('Buscar avisos...', 'flavor-chat-ia'); ?>">
+                       placeholder="<?php esc_attr_e('Buscar avisos...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             </div>
             <div class="filtro-grupo filtro-acciones">
                 <button type="submit" class="btn btn-primary">
                     <span class="dashicons dashicons-search"></span>
-                    <?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <?php if ($categoria_filtro || $zona_filtro || $prioridad_filtro || $buscar): ?>
                 <a href="<?php echo esc_url(strtok($_SERVER['REQUEST_URI'], '?')); ?>" class="btn btn-outline">
-                    <?php esc_html_e('Limpiar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <?php endif; ?>
             </div>
@@ -170,7 +170,7 @@ $usuario_id = get_current_user_id();
             <?php if ($es_destacado): ?>
             <div class="aviso-destacado-ribbon">
                 <span class="dashicons dashicons-star-filled"></span>
-                <?php esc_html_e('Destacado', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Destacado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
             <?php endif; ?>
 
@@ -178,7 +178,7 @@ $usuario_id = get_current_user_id();
                 <div class="aviso-badges">
                     <?php if ($es_nuevo): ?>
                     <span class="aviso-badge aviso-badge--nuevo">
-                        <?php esc_html_e('Nuevo', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                     <?php endif; ?>
                     <span class="aviso-badge aviso-badge--prioridad" style="background: <?php echo esc_attr($prioridad_config['color']); ?>">
@@ -218,7 +218,7 @@ $usuario_id = get_current_user_id();
                     <?php endif; ?>
                 </div>
                 <a href="<?php echo esc_url($avisos_base_url . '?aviso=' . $aviso->id); ?>" class="aviso-ver-mas">
-                    <?php esc_html_e('Ver mas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver mas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="dashicons dashicons-arrow-right-alt2"></span>
                 </a>
             </footer>
@@ -228,11 +228,11 @@ $usuario_id = get_current_user_id();
     <?php else: ?>
     <div class="avisos-empty">
         <span class="dashicons dashicons-megaphone"></span>
-        <h3><?php esc_html_e('No hay avisos activos', 'flavor-chat-ia'); ?></h3>
-        <p><?php esc_html_e('No se encontraron avisos con los criterios seleccionados.', 'flavor-chat-ia'); ?></p>
+        <h3><?php esc_html_e('No hay avisos activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+        <p><?php esc_html_e('No se encontraron avisos con los criterios seleccionados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         <?php if ($categoria_filtro || $zona_filtro || $prioridad_filtro || $buscar): ?>
         <a href="<?php echo esc_url(strtok($_SERVER['REQUEST_URI'], '?')); ?>" class="btn btn-outline">
-            <?php esc_html_e('Ver todos los avisos', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Ver todos los avisos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <?php endif; ?>
     </div>

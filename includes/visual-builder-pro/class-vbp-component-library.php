@@ -140,7 +140,7 @@ class Flavor_VBP_Component_Library {
         global $wpdb;
 
         if ( empty( $name ) || empty( $blocks ) ) {
-            return new WP_Error( 'invalid_data', __( 'Nombre y bloques son requeridos', 'flavor-chat-ia' ) );
+            return new WP_Error( 'invalid_data', __( 'Nombre y bloques son requeridos', FLAVOR_PLATFORM_TEXT_DOMAIN ) );
         }
 
         $slug = sanitize_title( $name );
@@ -170,7 +170,7 @@ class Flavor_VBP_Component_Library {
         );
 
         if ( false === $resultado ) {
-            return new WP_Error( 'db_error', __( 'Error al guardar el componente', 'flavor-chat-ia' ) );
+            return new WP_Error( 'db_error', __( 'Error al guardar el componente', FLAVOR_PLATFORM_TEXT_DOMAIN ) );
         }
 
         return $wpdb->insert_id;
@@ -261,11 +261,11 @@ class Flavor_VBP_Component_Library {
 
         $componente_actual = $this->get_component( $component_id );
         if ( ! $componente_actual ) {
-            return new WP_Error( 'not_found', __( 'Componente no encontrado', 'flavor-chat-ia' ) );
+            return new WP_Error( 'not_found', __( 'Componente no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ) );
         }
 
         if ( $componente_actual['author_id'] != get_current_user_id() && ! current_user_can( 'manage_options' ) ) {
-            return new WP_Error( 'forbidden', __( 'No tienes permisos para editar este componente', 'flavor-chat-ia' ) );
+            return new WP_Error( 'forbidden', __( 'No tienes permisos para editar este componente', FLAVOR_PLATFORM_TEXT_DOMAIN ) );
         }
 
         $campos = array();
@@ -310,7 +310,7 @@ class Flavor_VBP_Component_Library {
         }
 
         if ( empty( $campos ) ) {
-            return new WP_Error( 'no_data', __( 'No hay datos para actualizar', 'flavor-chat-ia' ) );
+            return new WP_Error( 'no_data', __( 'No hay datos para actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN ) );
         }
 
         $resultado = $wpdb->update( $this->tabla_componentes, $campos, array( 'id' => $component_id ), $tipos, array( '%d' ) );
@@ -322,11 +322,11 @@ class Flavor_VBP_Component_Library {
 
         $componente = $this->get_component( $component_id );
         if ( ! $componente ) {
-            return new WP_Error( 'not_found', __( 'Componente no encontrado', 'flavor-chat-ia' ) );
+            return new WP_Error( 'not_found', __( 'Componente no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ) );
         }
 
         if ( $componente['author_id'] != get_current_user_id() && ! current_user_can( 'manage_options' ) ) {
-            return new WP_Error( 'forbidden', __( 'No tienes permisos para eliminar este componente', 'flavor-chat-ia' ) );
+            return new WP_Error( 'forbidden', __( 'No tienes permisos para eliminar este componente', FLAVOR_PLATFORM_TEXT_DOMAIN ) );
         }
 
         $resultado = $wpdb->delete( $this->tabla_componentes, array( 'id' => $component_id ), array( '%d' ) );
@@ -342,7 +342,7 @@ class Flavor_VBP_Component_Library {
     public function export_component( $component_id ) {
         $componente = $this->get_component( $component_id );
         if ( ! $componente ) {
-            return new WP_Error( 'not_found', __( 'Componente no encontrado', 'flavor-chat-ia' ) );
+            return new WP_Error( 'not_found', __( 'Componente no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ) );
         }
 
         return array(
@@ -359,11 +359,11 @@ class Flavor_VBP_Component_Library {
 
     public function import_component( $data ) {
         if ( ! isset( $data['type'] ) || $data['type'] !== 'vbp-component' ) {
-            return new WP_Error( 'invalid_format', __( 'Formato de archivo inválido', 'flavor-chat-ia' ) );
+            return new WP_Error( 'invalid_format', __( 'Formato de archivo inválido', FLAVOR_PLATFORM_TEXT_DOMAIN ) );
         }
 
         if ( ! isset( $data['name'] ) || ! isset( $data['blocks'] ) ) {
-            return new WP_Error( 'missing_data', __( 'Faltan datos requeridos', 'flavor-chat-ia' ) );
+            return new WP_Error( 'missing_data', __( 'Faltan datos requeridos', FLAVOR_PLATFORM_TEXT_DOMAIN ) );
         }
 
         return $this->save_component(
@@ -417,7 +417,7 @@ class Flavor_VBP_Component_Library {
         $componente = $this->get_component( $id );
 
         if ( ! $componente ) {
-            return new WP_Error( 'not_found', __( 'Componente no encontrado', 'flavor-chat-ia' ), array( 'status' => 404 ) );
+            return new WP_Error( 'not_found', __( 'Componente no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ), array( 'status' => 404 ) );
         }
 
         $this->incrementar_uso( $id );
@@ -441,7 +441,7 @@ class Flavor_VBP_Component_Library {
             return $resultado;
         }
 
-        return rest_ensure_response( array( 'success' => true, 'id' => $resultado, 'message' => __( 'Componente guardado', 'flavor-chat-ia' ) ) );
+        return rest_ensure_response( array( 'success' => true, 'id' => $resultado, 'message' => __( 'Componente guardado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) );
     }
 
     public function api_update_component( $request ) {
@@ -449,7 +449,7 @@ class Flavor_VBP_Component_Library {
         if ( is_wp_error( $resultado ) ) {
             return $resultado;
         }
-        return rest_ensure_response( array( 'success' => true, 'message' => __( 'Componente actualizado', 'flavor-chat-ia' ) ) );
+        return rest_ensure_response( array( 'success' => true, 'message' => __( 'Componente actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) );
     }
 
     public function api_delete_component( $request ) {
@@ -457,7 +457,7 @@ class Flavor_VBP_Component_Library {
         if ( is_wp_error( $resultado ) ) {
             return $resultado;
         }
-        return rest_ensure_response( array( 'success' => true, 'message' => __( 'Componente eliminado', 'flavor-chat-ia' ) ) );
+        return rest_ensure_response( array( 'success' => true, 'message' => __( 'Componente eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) );
     }
 
     public function api_get_categories( $request ) {
@@ -477,7 +477,7 @@ class Flavor_VBP_Component_Library {
         if ( is_wp_error( $resultado ) ) {
             return $resultado;
         }
-        return rest_ensure_response( array( 'success' => true, 'id' => $resultado, 'message' => __( 'Componente importado', 'flavor-chat-ia' ) ) );
+        return rest_ensure_response( array( 'success' => true, 'id' => $resultado, 'message' => __( 'Componente importado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) );
     }
 }
 

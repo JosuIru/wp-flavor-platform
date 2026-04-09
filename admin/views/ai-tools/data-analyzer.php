@@ -21,32 +21,32 @@ if (class_exists('Flavor_Engine_Manager')) {
 
 // Módulos disponibles para análisis
 $available_modules = [
-    'socios' => __('Miembros', 'flavor-chat-ia'),
-    'eventos' => __('Eventos', 'flavor-chat-ia'),
-    'reservas' => __('Reservas', 'flavor-chat-ia'),
-    'cursos' => __('Cursos', 'flavor-chat-ia'),
-    'grupos_consumo' => __('Grupos de Consumo', 'flavor-chat-ia'),
-    'incidencias' => __('Incidencias', 'flavor-chat-ia'),
-    'marketplace' => __('Marketplace', 'flavor-chat-ia'),
-    'foros' => __('Foros', 'flavor-chat-ia'),
-    'participacion' => __('Participación', 'flavor-chat-ia'),
-    'biblioteca' => __('Biblioteca', 'flavor-chat-ia'),
+    'socios' => __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'eventos' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'reservas' => __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cursos' => __('Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'grupos_consumo' => __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'incidencias' => __('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'marketplace' => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'foros' => __('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'participacion' => __('Participación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'biblioteca' => __('Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 
 <div class="wrap flavor-ai-page flavor-data-analyzer">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-chart-pie"></span>
-        <?php esc_html_e('Analizador de Datos IA', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Analizador de Datos IA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <?php if (!$is_ai_configured): ?>
     <div class="notice notice-warning">
         <p>
             <span class="dashicons dashicons-warning"></span>
-            <?php esc_html_e('Configura el motor de IA para obtener análisis inteligentes.', 'flavor-chat-ia'); ?>
-            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-chat-config')); ?>">
-                <?php esc_html_e('Ir a configuración', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Configura el motor de IA para obtener análisis inteligentes.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-platform-settings')); ?>">
+                <?php esc_html_e('Ir a configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </p>
     </div>
@@ -57,13 +57,13 @@ $available_modules = [
         <div class="analyzer-config card">
             <h2>
                 <span class="dashicons dashicons-admin-settings"></span>
-                <?php esc_html_e('Configurar Análisis', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Configurar Análisis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
 
             <form id="analyzer-form" class="analyzer-form">
                 <!-- Selección de Módulo -->
                 <div class="form-group">
-                    <label><?php esc_html_e('Módulo a analizar', 'flavor-chat-ia'); ?></label>
+                    <label><?php esc_html_e('Módulo a analizar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <div class="modules-grid">
                         <?php foreach ($available_modules as $module_key => $module_name): ?>
                             <label class="module-option">
@@ -80,45 +80,45 @@ $available_modules = [
                 <!-- Rango de Fechas -->
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="date-from"><?php esc_html_e('Desde', 'flavor-chat-ia'); ?></label>
+                        <label for="date-from"><?php esc_html_e('Desde', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="date" id="date-from" value="<?php echo esc_attr(date('Y-m-d', strtotime('-30 days'))); ?>">
                     </div>
                     <div class="form-group">
-                        <label for="date-to"><?php esc_html_e('Hasta', 'flavor-chat-ia'); ?></label>
+                        <label for="date-to"><?php esc_html_e('Hasta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="date" id="date-to" value="<?php echo esc_attr(date('Y-m-d')); ?>">
                     </div>
                 </div>
 
                 <!-- Tipo de Análisis -->
                 <div class="form-group">
-                    <label><?php esc_html_e('Tipo de análisis', 'flavor-chat-ia'); ?></label>
+                    <label><?php esc_html_e('Tipo de análisis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <div class="analysis-types">
                         <label class="analysis-type">
                             <input type="checkbox" name="analysis_types[]" value="trends" checked>
                             <span class="type-card">
                                 <span class="dashicons dashicons-chart-line"></span>
-                                <span class="type-name"><?php esc_html_e('Tendencias', 'flavor-chat-ia'); ?></span>
+                                <span class="type-name"><?php esc_html_e('Tendencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </span>
                         </label>
                         <label class="analysis-type">
                             <input type="checkbox" name="analysis_types[]" value="patterns" checked>
                             <span class="type-card">
                                 <span class="dashicons dashicons-visibility"></span>
-                                <span class="type-name"><?php esc_html_e('Patrones', 'flavor-chat-ia'); ?></span>
+                                <span class="type-name"><?php esc_html_e('Patrones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </span>
                         </label>
                         <label class="analysis-type">
                             <input type="checkbox" name="analysis_types[]" value="anomalies">
                             <span class="type-card">
                                 <span class="dashicons dashicons-warning"></span>
-                                <span class="type-name"><?php esc_html_e('Anomalías', 'flavor-chat-ia'); ?></span>
+                                <span class="type-name"><?php esc_html_e('Anomalías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </span>
                         </label>
                         <label class="analysis-type">
                             <input type="checkbox" name="analysis_types[]" value="predictions">
                             <span class="type-card">
                                 <span class="dashicons dashicons-pressthis"></span>
-                                <span class="type-name"><?php esc_html_e('Predicciones', 'flavor-chat-ia'); ?></span>
+                                <span class="type-name"><?php esc_html_e('Predicciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </span>
                         </label>
                     </div>
@@ -126,14 +126,14 @@ $available_modules = [
 
                 <!-- Pregunta personalizada -->
                 <div class="form-group">
-                    <label for="custom-question"><?php esc_html_e('Pregunta personalizada (opcional)', 'flavor-chat-ia'); ?></label>
-                    <textarea id="custom-question" rows="3" placeholder="<?php esc_attr_e('Ejemplo: ¿Cuáles son los eventos más populares y por qué?', 'flavor-chat-ia'); ?>"></textarea>
+                    <label for="custom-question"><?php esc_html_e('Pregunta personalizada (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                    <textarea id="custom-question" rows="3" placeholder="<?php esc_attr_e('Ejemplo: ¿Cuáles son los eventos más populares y por qué?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                 </div>
 
                 <div class="form-actions">
                     <button type="submit" class="button button-primary button-hero" <?php echo !$is_ai_configured ? 'disabled' : ''; ?>>
                         <span class="dashicons dashicons-chart-pie"></span>
-                        <?php esc_html_e('Analizar Datos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Analizar Datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </form>
@@ -145,7 +145,7 @@ $available_modules = [
             <div class="quick-stats card">
                 <h2>
                     <span class="dashicons dashicons-dashboard"></span>
-                    <?php esc_html_e('Resumen Rápido', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Resumen Rápido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <div class="stats-grid" id="quick-stats-grid">
                     <!-- Se llena dinámicamente -->
@@ -156,17 +156,17 @@ $available_modules = [
             <div class="charts-section card">
                 <h2>
                     <span class="dashicons dashicons-chart-area"></span>
-                    <?php esc_html_e('Visualización', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Visualización', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <div class="charts-tabs">
                     <button type="button" class="chart-tab active" data-chart="timeline">
-                        <?php esc_html_e('Línea temporal', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Línea temporal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button" class="chart-tab" data-chart="distribution">
-                        <?php esc_html_e('Distribución', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Distribución', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button" class="chart-tab" data-chart="comparison">
-                        <?php esc_html_e('Comparativa', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Comparativa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
                 <div class="chart-container">
@@ -178,7 +178,7 @@ $available_modules = [
             <div class="insights-section card">
                 <h2>
                     <span class="dashicons dashicons-lightbulb"></span>
-                    <?php esc_html_e('Insights IA', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Insights IA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <div class="insights-list" id="insights-list">
                     <!-- Lista de insights generados por IA -->
@@ -189,7 +189,7 @@ $available_modules = [
             <div class="custom-answer card" id="custom-answer-section" style="display: none;">
                 <h2>
                     <span class="dashicons dashicons-format-chat"></span>
-                    <?php esc_html_e('Respuesta a tu pregunta', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Respuesta a tu pregunta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <div class="answer-content" id="custom-answer">
                     <!-- Respuesta del IA -->
@@ -200,7 +200,7 @@ $available_modules = [
             <div class="recommendations-section card">
                 <h2>
                     <span class="dashicons dashicons-yes-alt"></span>
-                    <?php esc_html_e('Acciones Recomendadas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Acciones Recomendadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <div class="recommendations-grid" id="recommendations-grid">
                     <!-- Tarjetas de recomendaciones -->
@@ -211,15 +211,15 @@ $available_modules = [
             <div class="export-section">
                 <button type="button" class="button" id="export-analysis-pdf">
                     <span class="dashicons dashicons-pdf"></span>
-                    <?php esc_html_e('Exportar PDF', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Exportar PDF', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" class="button" id="export-analysis-csv">
                     <span class="dashicons dashicons-media-spreadsheet"></span>
-                    <?php esc_html_e('Exportar CSV', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Exportar CSV', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" class="button" id="new-analysis">
                     <span class="dashicons dashicons-plus"></span>
-                    <?php esc_html_e('Nuevo Análisis', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Nuevo Análisis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </div>
@@ -231,8 +231,8 @@ $available_modules = [
                 <span class="dashicons dashicons-chart-pie"></span>
             </div>
             <div class="status-text">
-                <h3><?php esc_html_e('Analizando datos...', 'flavor-chat-ia'); ?></h3>
-                <p id="analysis-step"><?php esc_html_e('Recopilando información del módulo...', 'flavor-chat-ia'); ?></p>
+                <h3><?php esc_html_e('Analizando datos...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p id="analysis-step"><?php esc_html_e('Recopilando información del módulo...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <div class="progress-bar">
                 <div class="progress-fill" id="analysis-progress" style="width: 0%"></div>

@@ -25,7 +25,7 @@ if (!empty($_GET['socio_action']) && !empty($_GET['socio_id']) && isset($_GET['_
             $datos_actualizacion['fecha_baja'] = date('Y-m-d');
         }
         $wpdb->update($tabla_socios, $datos_actualizacion, ['id' => $identificador_socio]);
-        echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Estado del miembro actualizado.', 'flavor-chat-ia') . '</p></div>';
+        echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Estado del miembro actualizado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     }
 }
 
@@ -97,9 +97,9 @@ $bajas_mes = $wpdb->get_var($wpdb->prepare(
 ?>
 
 <div class="wrap">
-    <h1 class="wp-heading-inline"><?php echo esc_html__('Gestión de Miembros', 'flavor-chat-ia'); ?></h1>
+    <h1 class="wp-heading-inline"><?php echo esc_html__('Gestión de Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
     <a href="<?php echo admin_url('admin.php?page=socios-altas-bajas'); ?>" class="page-title-action">
-        <?php echo esc_html__('Nuevo Socio', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Nuevo Socio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </a>
     <hr class="wp-header-end">
 
@@ -107,23 +107,23 @@ $bajas_mes = $wpdb->get_var($wpdb->prepare(
     <div class="flavor-stats-row" style="display: flex; gap: 15px; margin: 20px 0; flex-wrap: wrap;">
         <div class="flavor-mini-stat" style="background: #fff; padding: 15px 20px; border: 1px solid #c3c4c7; border-left: 4px solid #10b981; flex: 1; min-width: 150px;">
             <span style="font-size: 24px; font-weight: bold; color: #10b981;"><?php echo number_format($total_activos); ?></span>
-            <span style="display: block; color: #64748b; font-size: 12px;"><?php echo esc_html__('Activos', 'flavor-chat-ia'); ?></span>
+            <span style="display: block; color: #64748b; font-size: 12px;"><?php echo esc_html__('Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="flavor-mini-stat" style="background: #fff; padding: 15px 20px; border: 1px solid #c3c4c7; border-left: 4px solid #f59e0b; flex: 1; min-width: 150px;">
             <span style="font-size: 24px; font-weight: bold; color: #f59e0b;"><?php echo number_format($total_suspendidos); ?></span>
-            <span style="display: block; color: #64748b; font-size: 12px;"><?php echo esc_html__('Suspendidos', 'flavor-chat-ia'); ?></span>
+            <span style="display: block; color: #64748b; font-size: 12px;"><?php echo esc_html__('Suspendidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="flavor-mini-stat" style="background: #fff; padding: 15px 20px; border: 1px solid #c3c4c7; border-left: 4px solid #94a3b8; flex: 1; min-width: 150px;">
             <span style="font-size: 24px; font-weight: bold; color: #94a3b8;"><?php echo number_format($total_bajas); ?></span>
-            <span style="display: block; color: #64748b; font-size: 12px;"><?php echo esc_html__('Bajas', 'flavor-chat-ia'); ?></span>
+            <span style="display: block; color: #64748b; font-size: 12px;"><?php echo esc_html__('Bajas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="flavor-mini-stat" style="background: #fff; padding: 15px 20px; border: 1px solid #c3c4c7; border-left: 4px solid #3b82f6; flex: 1; min-width: 150px;">
             <span style="font-size: 24px; font-weight: bold; color: #3b82f6;">+<?php echo number_format($altas_mes); ?></span>
-            <span style="display: block; color: #64748b; font-size: 12px;"><?php echo esc_html__('Altas este mes', 'flavor-chat-ia'); ?></span>
+            <span style="display: block; color: #64748b; font-size: 12px;"><?php echo esc_html__('Altas este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="flavor-mini-stat" style="background: #fff; padding: 15px 20px; border: 1px solid #c3c4c7; border-left: 4px solid #ef4444; flex: 1; min-width: 150px;">
             <span style="font-size: 24px; font-weight: bold; color: #ef4444;">-<?php echo number_format($bajas_mes); ?></span>
-            <span style="display: block; color: #64748b; font-size: 12px;"><?php echo esc_html__('Bajas este mes', 'flavor-chat-ia'); ?></span>
+            <span style="display: block; color: #64748b; font-size: 12px;"><?php echo esc_html__('Bajas este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
     </div>
 
@@ -132,14 +132,14 @@ $bajas_mes = $wpdb->get_var($wpdb->prepare(
         <input type="hidden" name="page" value="socios-listado">
 
         <select name="estado" style="min-width: 150px;">
-            <option value=""><?php echo esc_html__('Todos los estados', 'flavor-chat-ia'); ?></option>
-            <option value="activo" <?php selected($estado_filtro, 'activo'); ?>><?php echo esc_html__('Activo', 'flavor-chat-ia'); ?></option>
-            <option value="suspendido" <?php selected($estado_filtro, 'suspendido'); ?>><?php echo esc_html__('Suspendido', 'flavor-chat-ia'); ?></option>
-            <option value="baja" <?php selected($estado_filtro, 'baja'); ?>><?php echo esc_html__('Baja', 'flavor-chat-ia'); ?></option>
+            <option value=""><?php echo esc_html__('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+            <option value="activo" <?php selected($estado_filtro, 'activo'); ?>><?php echo esc_html__('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+            <option value="suspendido" <?php selected($estado_filtro, 'suspendido'); ?>><?php echo esc_html__('Suspendido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+            <option value="baja" <?php selected($estado_filtro, 'baja'); ?>><?php echo esc_html__('Baja', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
         </select>
 
         <select name="tipo" style="min-width: 150px;">
-            <option value=""><?php echo esc_html__('Todos los tipos', 'flavor-chat-ia'); ?></option>
+            <option value=""><?php echo esc_html__('Todos los tipos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             <?php foreach ($tipos_socio as $clave_tipo => $etiqueta_tipo): ?>
                 <option value="<?php echo esc_attr($clave_tipo); ?>" <?php selected($tipo_filtro, $clave_tipo); ?>>
                     <?php echo esc_html($etiqueta_tipo); ?>
@@ -147,14 +147,14 @@ $bajas_mes = $wpdb->get_var($wpdb->prepare(
             <?php endforeach; ?>
         </select>
 
-        <input type="search" name="s" placeholder="<?php esc_attr_e('Buscar por nombre, email o número...', 'flavor-chat-ia'); ?>"
+        <input type="search" name="s" placeholder="<?php esc_attr_e('Buscar por nombre, email o número...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                value="<?php echo esc_attr($busqueda_texto); ?>" style="min-width: 250px;">
 
-        <button type="submit" class="button"><?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?></button>
+        <button type="submit" class="button"><?php echo esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
 
         <?php if ($estado_filtro || $tipo_filtro || $busqueda_texto): ?>
             <a href="<?php echo admin_url('admin.php?page=socios-listado'); ?>" class="button">
-                <?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         <?php endif; ?>
     </form>
@@ -162,7 +162,7 @@ $bajas_mes = $wpdb->get_var($wpdb->prepare(
     <!-- Resultados -->
     <p class="socios-resultados-info" style="color: #646970; margin-bottom: 10px;">
         <?php printf(
-            esc_html__('Mostrando %d de %d miembros', 'flavor-chat-ia'),
+            esc_html__('Mostrando %d de %d miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
             count($lista_socios),
             $total_registros
         ); ?>
@@ -170,20 +170,20 @@ $bajas_mes = $wpdb->get_var($wpdb->prepare(
 
     <?php if (empty($lista_socios)): ?>
         <div class="notice notice-info">
-            <p><?php echo esc_html__('No se encontraron miembros con los filtros aplicados.', 'flavor-chat-ia'); ?></p>
+            <p><?php echo esc_html__('No se encontraron miembros con los filtros aplicados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php else: ?>
         <table class="widefat striped">
             <thead>
                 <tr>
-                    <th><?php echo esc_html__('Número', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Nombre', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Email', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Tipo', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Cuota', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Fecha Alta', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('Número', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php echo esc_html__('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php echo esc_html__('Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php echo esc_html__('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php echo esc_html__('Cuota', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php echo esc_html__('Fecha Alta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php echo esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php echo esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -192,7 +192,7 @@ $bajas_mes = $wpdb->get_var($wpdb->prepare(
                         <td><strong><?php echo esc_html($socio->numero_socio); ?></strong></td>
                         <td>
                             <?php echo get_avatar($socio->usuario_id, 32, '', '', ['style' => 'vertical-align: middle; margin-right: 8px; border-radius: 50%;']); ?>
-                            <?php echo esc_html($socio->display_name ?: __('Sin nombre', 'flavor-chat-ia')); ?>
+                            <?php echo esc_html($socio->display_name ?: __('Sin nombre', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                         </td>
                         <td><?php echo esc_html($socio->user_email ?: '-'); ?></td>
                         <td>
@@ -205,7 +205,7 @@ $bajas_mes = $wpdb->get_var($wpdb->prepare(
                             <?php echo esc_html(number_format((float)$socio->cuota_mensual, 2, ',', '.')); ?> €/mes
                             <?php if ($socio->cuota_reducida): ?>
                                 <span style="background: #dbeafe; color: #1e40af; padding: 2px 6px; border-radius: 3px; font-size: 10px; margin-left: 5px;">
-                                    <?php echo esc_html__('Reducida', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Reducida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                             <?php endif; ?>
                         </td>
@@ -226,7 +226,7 @@ $bajas_mes = $wpdb->get_var($wpdb->prepare(
                         <td>
                             <?php
                             $acciones_estado = [];
-                            $estados_disponibles = ['activo' => __('Activar', 'flavor-chat-ia'), 'suspendido' => __('Suspender', 'flavor-chat-ia'), 'baja' => __('Dar baja', 'flavor-chat-ia')];
+                            $estados_disponibles = ['activo' => __('Activar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'suspendido' => __('Suspender', FLAVOR_PLATFORM_TEXT_DOMAIN), 'baja' => __('Dar baja', FLAVOR_PLATFORM_TEXT_DOMAIN)];
                             foreach ($estados_disponibles as $estado_clave => $estado_etiqueta) {
                                 if ($estado_clave !== $socio->estado) {
                                     $url_accion = wp_nonce_url(

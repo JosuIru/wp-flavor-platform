@@ -44,7 +44,7 @@ $identificador_faq = 'faq-buscador-' . wp_unique_id();
                     </svg>
                     <input
                         type="text"
-                        placeholder="<?php echo esc_attr__( 'Buscar en las preguntas frecuentes...', 'flavor-chat-ia' ); ?>"
+                        placeholder="<?php echo esc_attr__( 'Buscar en las preguntas frecuentes...', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
                         class="w-full pl-12 pr-4 py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 text-gray-900 placeholder-gray-400"
                         style="--tw-ring-color: <?php echo esc_attr( $color_principal ); ?>;"
                         onfocus="this.style.borderColor='<?php echo esc_attr( $color_principal ); ?>'"

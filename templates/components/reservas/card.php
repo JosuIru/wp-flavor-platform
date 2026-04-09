@@ -17,7 +17,7 @@ if (empty($recurso)) return;
 $id = is_object($recurso) ? ($recurso->id ?? 0) : ($recurso['id'] ?? 0);
 $nombre = is_object($recurso) ? ($recurso->nombre ?? '') : ($recurso['nombre'] ?? $recurso['title'] ?? '');
 $descripcion = is_object($recurso) ? ($recurso->descripcion ?? '') : ($recurso['descripcion'] ?? '');
-$tipo = is_object($recurso) ? ($recurso->tipo ?? '') : ($recurso['tipo'] ?? __('General', 'flavor-chat-ia'));
+$tipo = is_object($recurso) ? ($recurso->tipo ?? '') : ($recurso['tipo'] ?? __('General', FLAVOR_PLATFORM_TEXT_DOMAIN));
 $imagen = is_object($recurso) ? ($recurso->imagen ?? '') : ($recurso['imagen'] ?? '');
 $ubicacion = is_object($recurso) ? ($recurso->ubicacion ?? '') : ($recurso['ubicacion'] ?? '');
 $capacidad = is_object($recurso) ? ($recurso->capacidad ?? 0) : ($recurso['capacidad'] ?? 0);
@@ -67,18 +67,18 @@ $url = is_array($recurso) ? ($recurso['url'] ?? home_url('/reservas/' . $id . '/
 
         <?php if ($capacidad): ?>
         <div class="text-sm text-gray-500 mb-4">
-            👥 <?php printf(esc_html__('%d personas', 'flavor-chat-ia'), $capacidad); ?>
+            👥 <?php printf(esc_html__('%d personas', FLAVOR_PLATFORM_TEXT_DOMAIN), $capacidad); ?>
         </div>
         <?php endif; ?>
 
         <div class="flex gap-2">
             <a href="<?php echo esc_url($url); ?>"
                class="flex-1 py-2 rounded-lg text-center text-blue-600 font-medium text-sm bg-blue-50 hover:bg-blue-100 transition-colors">
-                <?php echo esc_html__('Ver Detalles', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Ver Detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="<?php echo esc_url(home_url('/reservas/nueva/?recurso_id=' . $id)); ?>"
                class="flex-1 py-2 rounded-lg text-center text-white font-medium text-sm bg-blue-500 hover:bg-blue-600 transition-colors">
-                <?php echo esc_html__('Reservar', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>

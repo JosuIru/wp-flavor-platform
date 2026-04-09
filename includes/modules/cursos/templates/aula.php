@@ -24,7 +24,7 @@ $inscripcion = $wpdb->get_row($wpdb->prepare(
 ));
 
 if (!$inscripcion) {
-    echo '<div class="cursos-error">' . __('No tienes acceso a este curso.', 'flavor-chat-ia') . '</div>';
+    echo '<div class="cursos-error">' . __('No tienes acceso a este curso.', 'flavor-platform') . '</div>';
     return;
 }
 ?>
@@ -49,22 +49,22 @@ if (!$inscripcion) {
             <!-- Se cargan vía JavaScript -->
             <li class="aula-loading" style="padding: 2rem; text-align: center; color: #6b7280;">
                 <span class="cursos-spinner"></span>
-                <?php _e('Cargando lecciones...', 'flavor-chat-ia'); ?>
+                <?php _e('Cargando lecciones...', 'flavor-platform'); ?>
             </li>
         </ul>
     </aside>
 
     <main class="aula-contenido">
         <header class="aula-header">
-            <h2><?php _e('Selecciona una lección', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Selecciona una lección', 'flavor-platform'); ?></h2>
 
             <div class="aula-navegacion">
                 <button type="button" class="aula-nav-btn anterior" disabled>
                     <span class="dashicons dashicons-arrow-left-alt2"></span>
-                    <?php _e('Anterior', 'flavor-chat-ia'); ?>
+                    <?php _e('Anterior', 'flavor-platform'); ?>
                 </button>
                 <button type="button" class="aula-nav-btn siguiente" disabled>
-                    <?php _e('Siguiente', 'flavor-chat-ia'); ?>
+                    <?php _e('Siguiente', 'flavor-platform'); ?>
                     <span class="dashicons dashicons-arrow-right-alt2"></span>
                 </button>
             </div>
@@ -73,7 +73,7 @@ if (!$inscripcion) {
         <div class="aula-leccion-contenido">
             <div style="padding: 4rem 2rem; text-align: center; color: #6b7280;">
                 <span class="dashicons dashicons-welcome-learn-more" style="font-size: 48px; width: 48px; height: 48px; margin-bottom: 1rem;"></span>
-                <p><?php _e('Selecciona una lección del menú lateral para comenzar.', 'flavor-chat-ia'); ?></p>
+                <p><?php _e('Selecciona una lección del menú lateral para comenzar.', 'flavor-platform'); ?></p>
             </div>
         </div>
 
@@ -83,7 +83,7 @@ if (!$inscripcion) {
                 <span class="tiempo-texto"></span>
             </div>
             <button type="button" class="btn-completar" disabled>
-                <?php _e('Marcar como completada', 'flavor-chat-ia'); ?>
+                <?php _e('Marcar como completada', 'flavor-platform'); ?>
             </button>
         </footer>
     </main>

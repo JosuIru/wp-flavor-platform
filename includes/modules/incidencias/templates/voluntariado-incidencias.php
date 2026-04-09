@@ -13,8 +13,8 @@ if (!defined('ABSPATH')) exit;
             <span class="dashicons dashicons-heart"></span>
         </span>
         <div>
-            <h3><?php esc_html_e('Voluntariado Vecinal', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('Ayuda a resolver incidencias menores en tu barrio', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('Voluntariado Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php esc_html_e('Ayuda a resolver incidencias menores en tu barrio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     </div>
 
@@ -22,7 +22,7 @@ if (!defined('ABSPATH')) exit;
         <div class="inc-voluntariado__mis-compromisos">
             <h4>
                 <span class="dashicons dashicons-yes-alt"></span>
-                <?php esc_html_e('Mis compromisos activos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Mis compromisos activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h4>
             <div class="inc-voluntariado__compromisos-lista">
                 <?php foreach ($mis_voluntariados as $vol): ?>
@@ -32,11 +32,11 @@ if (!defined('ABSPATH')) exit;
                             <span class="inc-voluntariado__tipo-ayuda">
                                 <?php
                                 $tipos = [
-                                    'reparar' => __('Reparación', 'flavor-chat-ia'),
-                                    'limpiar' => __('Limpieza', 'flavor-chat-ia'),
-                                    'vigilar' => __('Vigilancia', 'flavor-chat-ia'),
-                                    'coordinar' => __('Coordinación', 'flavor-chat-ia'),
-                                    'otro' => __('Otro', 'flavor-chat-ia'),
+                                    'reparar' => __('Reparación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    'limpiar' => __('Limpieza', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    'vigilar' => __('Vigilancia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    'coordinar' => __('Coordinación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    'otro' => __('Otro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 ];
                                 echo esc_html($tipos[$vol->tipo_ayuda] ?? $vol->tipo_ayuda);
                                 ?>
@@ -50,9 +50,9 @@ if (!defined('ABSPATH')) exit;
                             <span class="inc-voluntariado__estado inc-voluntariado__estado--<?php echo esc_attr($vol->estado); ?>">
                                 <?php
                                 $estados = [
-                                    'ofrecida' => __('Ofrecida', 'flavor-chat-ia'),
-                                    'aceptada' => __('Aceptada', 'flavor-chat-ia'),
-                                    'en_proceso' => __('En proceso', 'flavor-chat-ia'),
+                                    'ofrecida' => __('Ofrecida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    'aceptada' => __('Aceptada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    'en_proceso' => __('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 ];
                                 echo esc_html($estados[$vol->estado] ?? $vol->estado);
                                 ?>
@@ -60,7 +60,7 @@ if (!defined('ABSPATH')) exit;
                             <?php if ($vol->estado === 'en_proceso'): ?>
                                 <button type="button" class="inc-btn inc-btn--sm inc-btn--success inc-marcar-completado" data-id="<?php echo esc_attr($vol->id); ?>">
                                     <span class="dashicons dashicons-yes"></span>
-                                    <?php esc_html_e('Completado', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Completado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             <?php endif; ?>
                         </div>
@@ -73,11 +73,11 @@ if (!defined('ABSPATH')) exit;
     <?php if (empty($incidencias)): ?>
         <div class="inc-voluntariado__vacio">
             <span class="dashicons dashicons-smiley"></span>
-            <p><?php esc_html_e('No hay incidencias disponibles para voluntariado en este momento.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('No hay incidencias disponibles para voluntariado en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php else: ?>
         <div class="inc-voluntariado__disponibles">
-            <h4><?php esc_html_e('Incidencias donde puedes ayudar', 'flavor-chat-ia'); ?></h4>
+            <h4><?php esc_html_e('Incidencias donde puedes ayudar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
             <div class="inc-voluntariado__lista">
                 <?php foreach ($incidencias as $inc): ?>
                     <?php
@@ -113,7 +113,7 @@ if (!defined('ABSPATH')) exit;
                         <div class="inc-voluntariado__meta">
                             <span>
                                 <span class="dashicons dashicons-location"></span>
-                                <?php echo esc_html($inc->direccion ?: __('Sin ubicación', 'flavor-chat-ia')); ?>
+                                <?php echo esc_html($inc->direccion ?: __('Sin ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                             </span>
                             <span>
                                 <span class="dashicons dashicons-clock"></span>
@@ -122,22 +122,22 @@ if (!defined('ABSPATH')) exit;
                             <?php if ($inc->voluntarios_activos > 0): ?>
                                 <span class="inc-voluntariado__ya-ayudando">
                                     <span class="dashicons dashicons-groups"></span>
-                                    <?php printf(esc_html__('%d ayudando', 'flavor-chat-ia'), $inc->voluntarios_activos); ?>
+                                    <?php printf(esc_html__('%d ayudando', FLAVOR_PLATFORM_TEXT_DOMAIN), $inc->voluntarios_activos); ?>
                                 </span>
                             <?php endif; ?>
                         </div>
 
                         <div class="inc-voluntariado__acciones">
                             <select class="inc-voluntariado__tipo-select">
-                                <option value="reparar"><?php esc_html_e('Puedo reparar', 'flavor-chat-ia'); ?></option>
-                                <option value="limpiar"><?php esc_html_e('Puedo limpiar', 'flavor-chat-ia'); ?></option>
-                                <option value="vigilar"><?php esc_html_e('Puedo vigilar', 'flavor-chat-ia'); ?></option>
-                                <option value="coordinar"><?php esc_html_e('Puedo coordinar', 'flavor-chat-ia'); ?></option>
-                                <option value="otro"><?php esc_html_e('Otra ayuda', 'flavor-chat-ia'); ?></option>
+                                <option value="reparar"><?php esc_html_e('Puedo reparar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="limpiar"><?php esc_html_e('Puedo limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="vigilar"><?php esc_html_e('Puedo vigilar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="coordinar"><?php esc_html_e('Puedo coordinar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="otro"><?php esc_html_e('Otra ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             </select>
                             <button type="button" class="inc-btn inc-btn--primary inc-ofrecer-ayuda" data-incidencia="<?php echo esc_attr($inc->id); ?>">
                                 <span class="dashicons dashicons-heart"></span>
-                                <?php esc_html_e('Ofrecer ayuda', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Ofrecer ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </div>
                     </div>
@@ -147,23 +147,23 @@ if (!defined('ABSPATH')) exit;
     <?php endif; ?>
 
     <div class="inc-voluntariado__beneficios">
-        <h4><?php esc_html_e('Beneficios del voluntariado', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('Beneficios del voluntariado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <div class="inc-voluntariado__beneficios-grid">
             <div class="inc-voluntariado__beneficio">
                 <span class="dashicons dashicons-star-filled"></span>
-                <span><?php esc_html_e('15 puntos por hora', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('15 puntos por hora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="inc-voluntariado__beneficio">
                 <span class="dashicons dashicons-awards"></span>
-                <span><?php esc_html_e('Logros especiales', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Logros especiales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="inc-voluntariado__beneficio">
                 <span class="dashicons dashicons-groups"></span>
-                <span><?php esc_html_e('Mejora tu barrio', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Mejora tu barrio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="inc-voluntariado__beneficio">
                 <span class="dashicons dashicons-heart"></span>
-                <span><?php esc_html_e('Reconocimiento vecinal', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Reconocimiento vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>

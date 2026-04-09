@@ -35,7 +35,7 @@ $puntos_cercanos = [
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                 </svg>
-                <?php echo esc_html__('Puntos de Reciclaje', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Puntos de Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
             <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4"><?php echo esc_html($titulo); ?></h2>
             <p class="text-xl text-gray-600"><?php echo esc_html($descripcion); ?></p>
@@ -44,7 +44,7 @@ $puntos_cercanos = [
         <!-- Filtros por tipo -->
         <div class="flex flex-wrap justify-center gap-3 mb-10">
             <button class="px-4 py-2 rounded-full text-sm font-medium transition-all" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white;">
-                <?php echo esc_html__('Todos', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <?php foreach ($tipos_contenedor as $tipo): ?>
                 <button class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-700 border border-gray-200 hover:bg-emerald-50 hover:border-emerald-300 transition-colors">
@@ -65,8 +65,8 @@ $puntos_cercanos = [
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
                             </svg>
                         </div>
-                        <p class="text-emerald-800 font-medium"><?php echo esc_html__('Mapa interactivo', 'flavor-chat-ia'); ?></p>
-                        <p class="text-emerald-600 text-sm"><?php echo esc_html__('de puntos de reciclaje', 'flavor-chat-ia'); ?></p>
+                        <p class="text-emerald-800 font-medium"><?php echo esc_html__('Mapa interactivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                        <p class="text-emerald-600 text-sm"><?php echo esc_html__('de puntos de reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 </div>
                 <!-- Marcadores simulados -->
@@ -78,12 +78,12 @@ $puntos_cercanos = [
             <!-- Lista de puntos -->
             <div class="space-y-4">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-bold text-gray-900"><?php echo esc_html__('Puntos mas cercanos', 'flavor-chat-ia'); ?></h3>
+                    <h3 class="text-lg font-bold text-gray-900"><?php echo esc_html__('Puntos mas cercanos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <button class="text-sm text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                         </svg>
-                        <?php echo esc_html__('Usar mi ubicacion', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Usar mi ubicacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
 
@@ -124,7 +124,7 @@ $puntos_cercanos = [
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
                 </svg>
-                <span><?php echo esc_html__('Ver Mapa Completo', 'flavor-chat-ia'); ?></span>
+                <span><?php echo esc_html__('Ver Mapa Completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
         </div>
     </div>

@@ -167,11 +167,11 @@ class Flavor_EM_Automation_Manager {
 
         // Validaciones
         if (empty($data['nombre'])) {
-            return new WP_Error('missing_name', __('El nombre es obligatorio', 'flavor-chat-ia'));
+            return new WP_Error('missing_name', __('El nombre es obligatorio', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         if (empty($data['trigger_tipo']) || !in_array($data['trigger_tipo'], self::VALID_TRIGGERS)) {
-            return new WP_Error('invalid_trigger', __('Trigger inválido', 'flavor-chat-ia'));
+            return new WP_Error('invalid_trigger', __('Trigger inválido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $table = $wpdb->prefix . self::TABLE_PREFIX . 'automatizaciones';
@@ -191,7 +191,7 @@ class Flavor_EM_Automation_Manager {
         $result = $wpdb->insert($table, $insert_data);
 
         if ($result === false) {
-            return new WP_Error('db_error', __('Error al crear automatización', 'flavor-chat-ia'));
+            return new WP_Error('db_error', __('Error al crear automatización', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $automation_id = $wpdb->insert_id;
@@ -218,7 +218,7 @@ class Flavor_EM_Automation_Manager {
 
         $automation = $this->get_automation($id);
         if (!$automation) {
-            return new WP_Error('not_found', __('Automatización no encontrada', 'flavor-chat-ia'));
+            return new WP_Error('not_found', __('Automatización no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $table = $wpdb->prefix . self::TABLE_PREFIX . 'automatizaciones';
@@ -254,7 +254,7 @@ class Flavor_EM_Automation_Manager {
         }
 
         if (empty($update_data)) {
-            return new WP_Error('no_data', __('No hay datos para actualizar', 'flavor-chat-ia'));
+            return new WP_Error('no_data', __('No hay datos para actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $update_data['updated_at'] = current_time('mysql');
@@ -262,7 +262,7 @@ class Flavor_EM_Automation_Manager {
         $result = $wpdb->update($table, $update_data, ['id' => $id]);
 
         if ($result === false) {
-            return new WP_Error('db_error', __('Error al actualizar automatización', 'flavor-chat-ia'));
+            return new WP_Error('db_error', __('Error al actualizar automatización', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         do_action('flavor_em_automation_updated', $id, $data);
@@ -281,7 +281,7 @@ class Flavor_EM_Automation_Manager {
 
         $automation = $this->get_automation($id);
         if (!$automation) {
-            return new WP_Error('not_found', __('Automatización no encontrada', 'flavor-chat-ia'));
+            return new WP_Error('not_found', __('Automatización no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $table = $wpdb->prefix . self::TABLE_PREFIX . 'automatizaciones';
@@ -289,7 +289,7 @@ class Flavor_EM_Automation_Manager {
         $result = $wpdb->delete($table, ['id' => $id]);
 
         if ($result === false) {
-            return new WP_Error('db_error', __('Error al eliminar automatización', 'flavor-chat-ia'));
+            return new WP_Error('db_error', __('Error al eliminar automatización', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         do_action('flavor_em_automation_deleted', $id);
@@ -454,7 +454,7 @@ class Flavor_EM_Automation_Manager {
                 return true;
 
             default:
-                return new WP_Error('invalid_action', __('Acción inválida', 'flavor-chat-ia'));
+                return new WP_Error('invalid_action', __('Acción inválida', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -507,7 +507,7 @@ class Flavor_EM_Automation_Manager {
         $url = $action['url'] ?? '';
 
         if (empty($url) || !filter_var($url, FILTER_VALIDATE_URL)) {
-            return new WP_Error('invalid_url', __('URL de webhook inválida', 'flavor-chat-ia'));
+            return new WP_Error('invalid_url', __('URL de webhook inválida', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $subscriber_manager = Flavor_EM_Subscriber_Manager::get_instance();

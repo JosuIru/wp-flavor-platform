@@ -180,13 +180,13 @@ foreach ($usuarios as $usuario_item) {
 <div class="wrap flavor-biblioteca-usuarios">
     <h1>
         <span class="dashicons dashicons-groups"></span>
-        <?php echo esc_html__('Usuarios de la Biblioteca', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Usuarios de la Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
     <hr class="wp-header-end">
 
     <?php if (!$tablas_existen): ?>
     <div class="notice notice-info">
-        <p><span class="dashicons dashicons-info"></span> <?php _e('No se han encontrado las tablas requeridas de biblioteca. Mostrando únicamente datos reales disponibles.', 'flavor-chat-ia'); ?></p>
+        <p><span class="dashicons dashicons-info"></span> <?php _e('No se han encontrado las tablas requeridas de biblioteca. Mostrando únicamente datos reales disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php endif; ?>
 
@@ -198,7 +198,7 @@ foreach ($usuarios as $usuario_item) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value"><?php echo number_format($total_usuarios); ?></span>
-                <span class="flavor-stat-label"><?php _e('Usuarios Activos', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php _e('Usuarios Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -208,7 +208,7 @@ foreach ($usuarios as $usuario_item) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value"><?php echo number_format($total_libros_compartidos); ?></span>
-                <span class="flavor-stat-label"><?php _e('Libros Compartidos', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php _e('Libros Compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -218,7 +218,7 @@ foreach ($usuarios as $usuario_item) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value"><?php echo number_format($total_prestamos_activos); ?></span>
-                <span class="flavor-stat-label"><?php _e('Préstamos Activos', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php _e('Préstamos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -228,7 +228,7 @@ foreach ($usuarios as $usuario_item) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value"><?php echo $promedio_libros_usuario; ?></span>
-                <span class="flavor-stat-label"><?php _e('Promedio Libros/Usuario', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php _e('Promedio Libros/Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
@@ -243,32 +243,32 @@ foreach ($usuarios as $usuario_item) {
                     <input type="hidden" name="tab" value="<?php echo esc_attr($_GET['tab'] ?? ''); ?>">
 
                     <div class="flavor-filter-group">
-                        <input type="text" name="busqueda" placeholder="<?php esc_attr_e('Buscar usuario...', 'flavor-chat-ia'); ?>" value="<?php echo esc_attr($busqueda); ?>" class="flavor-search-input">
+                        <input type="text" name="busqueda" placeholder="<?php esc_attr_e('Buscar usuario...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" value="<?php echo esc_attr($busqueda); ?>" class="flavor-search-input">
                     </div>
 
                     <div class="flavor-filter-group">
                         <select name="actividad" class="flavor-select">
-                            <option value=""><?php _e('Toda actividad', 'flavor-chat-ia'); ?></option>
-                            <option value="activo" <?php selected($filtro_actividad, 'activo'); ?>><?php _e('Usuarios activos', 'flavor-chat-ia'); ?></option>
-                            <option value="inactivo" <?php selected($filtro_actividad, 'inactivo'); ?>><?php _e('Usuarios inactivos', 'flavor-chat-ia'); ?></option>
-                            <option value="prestadores" <?php selected($filtro_actividad, 'prestadores'); ?>><?php _e('Han prestado libros', 'flavor-chat-ia'); ?></option>
-                            <option value="lectores" <?php selected($filtro_actividad, 'lectores'); ?>><?php _e('Han tomado libros', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php _e('Toda actividad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="activo" <?php selected($filtro_actividad, 'activo'); ?>><?php _e('Usuarios activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="inactivo" <?php selected($filtro_actividad, 'inactivo'); ?>><?php _e('Usuarios inactivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="prestadores" <?php selected($filtro_actividad, 'prestadores'); ?>><?php _e('Han prestado libros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="lectores" <?php selected($filtro_actividad, 'lectores'); ?>><?php _e('Han tomado libros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
 
                     <div class="flavor-filter-group">
                         <select name="orden" class="flavor-select">
-                            <option value="compartidos" <?php selected($orden, 'compartidos'); ?>><?php _e('Más libros compartidos', 'flavor-chat-ia'); ?></option>
-                            <option value="prestados" <?php selected($orden, 'prestados'); ?>><?php _e('Más préstamos realizados', 'flavor-chat-ia'); ?></option>
-                            <option value="tomados" <?php selected($orden, 'tomados'); ?>><?php _e('Más libros leídos', 'flavor-chat-ia'); ?></option>
-                            <option value="nombre" <?php selected($orden, 'nombre'); ?>><?php _e('Nombre A-Z', 'flavor-chat-ia'); ?></option>
+                            <option value="compartidos" <?php selected($orden, 'compartidos'); ?>><?php _e('Más libros compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="prestados" <?php selected($orden, 'prestados'); ?>><?php _e('Más préstamos realizados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="tomados" <?php selected($orden, 'tomados'); ?>><?php _e('Más libros leídos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="nombre" <?php selected($orden, 'nombre'); ?>><?php _e('Nombre A-Z', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
 
-                    <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
+                    <button type="submit" class="button"><?php _e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
 
                     <?php if (!empty($busqueda) || !empty($filtro_actividad)): ?>
-                        <a href="?page=<?php echo esc_attr($_GET['page'] ?? ''); ?>&tab=<?php echo esc_attr($_GET['tab'] ?? ''); ?>" class="button"><?php _e('Limpiar', 'flavor-chat-ia'); ?></a>
+                        <a href="?page=<?php echo esc_attr($_GET['page'] ?? ''); ?>&tab=<?php echo esc_attr($_GET['tab'] ?? ''); ?>" class="button"><?php _e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                     <?php endif; ?>
                 </form>
             </div>
@@ -278,14 +278,14 @@ foreach ($usuarios as $usuario_item) {
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
-                            <th style="width: 50px;"><?php _e('Foto', 'flavor-chat-ia'); ?></th>
-                            <th><?php _e('Usuario', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 100px; text-align: center;"><?php _e('Compartidos', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 100px; text-align: center;"><?php _e('Prestados', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 100px; text-align: center;"><?php _e('Leídos', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 110px;"><?php _e('Nivel', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 100px;"><?php _e('Última Act.', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 100px;"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                            <th style="width: 50px;"><?php _e('Foto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php _e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 100px; text-align: center;"><?php _e('Compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 100px; text-align: center;"><?php _e('Prestados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 100px; text-align: center;"><?php _e('Leídos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 110px;"><?php _e('Nivel', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 100px;"><?php _e('Última Act.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 100px;"><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -325,23 +325,23 @@ foreach ($usuarios as $usuario_item) {
                                     $fecha_actividad = strtotime($usuario->ultima_actividad);
                                     $dias_desde = floor((time() - $fecha_actividad) / 86400);
                                     if ($dias_desde == 0) {
-                                        echo '<span style="color: #10b981;">' . __('Hoy', 'flavor-chat-ia') . '</span>';
+                                        echo '<span style="color: #10b981;">' . __('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span>';
                                     } elseif ($dias_desde == 1) {
-                                        echo __('Ayer', 'flavor-chat-ia');
+                                        echo __('Ayer', FLAVOR_PLATFORM_TEXT_DOMAIN);
                                     } elseif ($dias_desde < 7) {
-                                        printf(__('Hace %d días', 'flavor-chat-ia'), $dias_desde);
+                                        printf(__('Hace %d días', FLAVOR_PLATFORM_TEXT_DOMAIN), $dias_desde);
                                     } elseif ($dias_desde < 30) {
-                                        printf(__('Hace %d sem.', 'flavor-chat-ia'), floor($dias_desde / 7));
+                                        printf(__('Hace %d sem.', FLAVOR_PLATFORM_TEXT_DOMAIN), floor($dias_desde / 7));
                                     } else {
                                         echo date_i18n('d M Y', $fecha_actividad);
                                     }
                                     ?>
                                 </td>
                                 <td>
-                                    <a href="<?php echo admin_url('user-edit.php?user_id=' . $usuario->ID); ?>" class="button button-small" title="<?php esc_attr_e('Ver perfil', 'flavor-chat-ia'); ?>">
+                                    <a href="<?php echo admin_url('user-edit.php?user_id=' . $usuario->ID); ?>" class="button button-small" title="<?php esc_attr_e('Ver perfil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                         <span class="dashicons dashicons-admin-users"></span>
                                     </a>
-                                    <button type="button" class="button button-small btn-ver-historial" data-user="<?php echo esc_attr($usuario->ID); ?>" title="<?php esc_attr_e('Ver historial', 'flavor-chat-ia'); ?>">
+                                    <button type="button" class="button button-small btn-ver-historial" data-user="<?php echo esc_attr($usuario->ID); ?>" title="<?php esc_attr_e('Ver historial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                         <span class="dashicons dashicons-list-view"></span>
                                     </button>
                                 </td>
@@ -351,7 +351,7 @@ foreach ($usuarios as $usuario_item) {
                             <tr>
                                 <td colspan="8" style="text-align: center; padding: 40px;">
                                     <span class="dashicons dashicons-info" style="font-size: 48px; color: #ccc;"></span>
-                                    <p style="margin-top: 10px; color: #666;"><?php _e('No se encontraron usuarios con los filtros seleccionados', 'flavor-chat-ia'); ?></p>
+                                    <p style="margin-top: 10px; color: #666;"><?php _e('No se encontraron usuarios con los filtros seleccionados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                 </td>
                             </tr>
                         <?php endif; ?>
@@ -362,7 +362,7 @@ foreach ($usuarios as $usuario_item) {
                 <?php if (isset($total_paginas) && $total_paginas > 1): ?>
                 <div class="flavor-pagination">
                     <span class="flavor-pagination-info">
-                        <?php printf(__('Mostrando %d-%d de %d usuarios', 'flavor-chat-ia'),
+                        <?php printf(__('Mostrando %d-%d de %d usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             $offset + 1,
                             min($offset + $por_pagina, $total_registros),
                             $total_registros
@@ -379,7 +379,7 @@ foreach ($usuarios as $usuario_item) {
                         ], admin_url('admin.php'));
 
                         if ($pagina_actual > 1): ?>
-                            <a href="<?php echo esc_url(add_query_arg('paged', $pagina_actual - 1, $url_base)); ?>" class="button">&laquo; <?php _e('Anterior', 'flavor-chat-ia'); ?></a>
+                            <a href="<?php echo esc_url(add_query_arg('paged', $pagina_actual - 1, $url_base)); ?>" class="button">&laquo; <?php _e('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                         <?php endif;
 
                         for ($i = max(1, $pagina_actual - 2); $i <= min($total_paginas, $pagina_actual + 2); $i++): ?>
@@ -391,7 +391,7 @@ foreach ($usuarios as $usuario_item) {
                         endfor;
 
                         if ($pagina_actual < $total_paginas): ?>
-                            <a href="<?php echo esc_url(add_query_arg('paged', $pagina_actual + 1, $url_base)); ?>" class="button"><?php _e('Siguiente', 'flavor-chat-ia'); ?> &raquo;</a>
+                            <a href="<?php echo esc_url(add_query_arg('paged', $pagina_actual + 1, $url_base)); ?>" class="button"><?php _e('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> &raquo;</a>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -404,7 +404,7 @@ foreach ($usuarios as $usuario_item) {
             <!-- Top Prestadores -->
             <div class="flavor-card">
                 <div class="flavor-card-header">
-                    <h3><span class="dashicons dashicons-awards"></span> <?php _e('Top 5 Prestadores', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-awards"></span> <?php _e('Top 5 Prestadores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="flavor-card-body">
                     <?php if (!empty($top_prestadores)): ?>
@@ -421,13 +421,13 @@ foreach ($usuarios as $usuario_item) {
                                 <span class="flavor-ranking-position"><?php echo $medalla; ?></span>
                                 <div class="flavor-ranking-info">
                                     <strong><?php echo esc_html($prestador->display_name); ?></strong>
-                                    <small><?php printf(__('%d préstamos', 'flavor-chat-ia'), $prestador->total_prestamos); ?></small>
+                                    <small><?php printf(__('%d préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN), $prestador->total_prestamos); ?></small>
                                 </div>
                             </li>
                             <?php endforeach; ?>
                         </ul>
                     <?php else: ?>
-                        <p style="text-align: center; color: #666; padding: 20px;"><?php _e('Sin datos disponibles', 'flavor-chat-ia'); ?></p>
+                        <p style="text-align: center; color: #666; padding: 20px;"><?php _e('Sin datos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php endif; ?>
                 </div>
             </div>
@@ -435,7 +435,7 @@ foreach ($usuarios as $usuario_item) {
             <!-- Distribución por Nivel -->
             <div class="flavor-card">
                 <div class="flavor-card-header">
-                    <h3><span class="dashicons dashicons-chart-pie"></span> <?php _e('Distribución por Nivel', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-chart-pie"></span> <?php _e('Distribución por Nivel', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="flavor-card-body">
                     <canvas id="grafico-niveles" height="200"></canvas>
@@ -622,7 +622,7 @@ jQuery(document).ready(function($) {
         new Chart(ctxNiveles.getContext('2d'), {
             type: 'doughnut',
             data: {
-                labels: ['<?php _e('Muy Activo', 'flavor-chat-ia'); ?>', '<?php _e('Activo', 'flavor-chat-ia'); ?>', '<?php _e('Moderado', 'flavor-chat-ia'); ?>', '<?php _e('Nuevo', 'flavor-chat-ia'); ?>'],
+                labels: ['<?php _e('Muy Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', '<?php _e('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', '<?php _e('Moderado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', '<?php _e('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>'],
                 datasets: [{
                     data: [<?php echo esc_js(implode(', ', array_map('intval', $niveles_distribucion))); ?>],
                     backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#9ca3af']
@@ -644,7 +644,7 @@ jQuery(document).ready(function($) {
     // Botón ver historial
     $('.btn-ver-historial').on('click', function() {
         const userId = $(this).data('user');
-        alert('<?php _e('Función de historial en desarrollo para usuario #', 'flavor-chat-ia'); ?>' + userId);
+        alert('<?php _e('Función de historial en desarrollo para usuario #', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>' + userId);
     });
 });
 </script>

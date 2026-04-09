@@ -31,9 +31,9 @@ if (function_exists('flavor_get_color_classes')) {
 }
 
 // Añadir inicio si está habilitado
-if ($show_home && (empty($items) || $items[0]['label'] !== __('Inicio', 'flavor-chat-ia'))) {
+if ($show_home && (empty($items) || $items[0]['label'] !== __('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN))) {
     array_unshift($items, [
-        'label' => __('Inicio', 'flavor-chat-ia'),
+        'label' => __('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'url'   => home_url('/'),
     ]);
 }
@@ -41,7 +41,7 @@ if ($show_home && (empty($items) || $items[0]['label'] !== __('Inicio', 'flavor-
 
 <nav class="flex items-center flex-wrap gap-2 text-sm text-gray-500 mb-6"
      role="navigation"
-     aria-label="<?php esc_attr_e('Migas de pan', 'flavor-chat-ia'); ?>">
+     aria-label="<?php esc_attr_e('Migas de pan', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
     <?php foreach ($items as $index => $item):
         $is_last = $index === count($items) - 1;
         $label = $item['label'] ?? '';

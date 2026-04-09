@@ -91,12 +91,12 @@ class Flavor_Portal_Shortcodes {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_portal_tools'),
             'strings' => [
-                'saving' => __('Guardando...', 'flavor-chat-ia'),
-                'saveError' => __('No se pudo actualizar la herramienta favorita.', 'flavor-chat-ia'),
-                'addFavorite' => __('Añadir a favoritos', 'flavor-chat-ia'),
-                'removeFavorite' => __('Quitar de favoritos', 'flavor-chat-ia'),
-                'addedToFavorites' => __('Añadido a favoritos', 'flavor-chat-ia'),
-                'removedFromFavorites' => __('Quitado de favoritos', 'flavor-chat-ia'),
+                'saving' => __('Guardando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'saveError' => __('No se pudo actualizar la herramienta favorita.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'addFavorite' => __('Añadir a favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'removeFavorite' => __('Quitar de favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'addedToFavorites' => __('Añadido a favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'removedFromFavorites' => __('Quitado de favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -116,8 +116,8 @@ class Flavor_Portal_Shortcodes {
      */
     public function render_servicios($atts) {
         $atts = shortcode_atts([
-            'titulo' => __('Servicios de la Comunidad', 'flavor-chat-ia'),
-            'subtitulo' => __('Descubre todo lo que tu comunidad tiene para ofrecer', 'flavor-chat-ia'),
+            'titulo' => __('Servicios de la Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitulo' => __('Descubre todo lo que tu comunidad tiene para ofrecer', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'mostrar_stats' => 'yes',
             'columnas' => '3',
         ], $atts);
@@ -146,13 +146,13 @@ class Flavor_Portal_Shortcodes {
                 <!-- CTA de Registro -->
                 <div class="flavor-servicios__cta">
                     <div class="flavor-cta-box">
-                        <h2><?php _e('¿Quieres acceder a más servicios?', 'flavor-chat-ia'); ?></h2>
-                        <p><?php _e('Regístrate para participar activamente en tu comunidad', 'flavor-chat-ia'); ?></p>
+                        <h2><?php _e('¿Quieres acceder a más servicios?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                        <p><?php _e('Regístrate para participar activamente en tu comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <a href="<?php echo wp_registration_url(); ?>" class="flavor-button flavor-button--primary">
-                            <?php _e('Crear Cuenta', 'flavor-chat-ia'); ?>
+                            <?php _e('Crear Cuenta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                         <a href="<?php echo wp_login_url(); ?>" class="flavor-button flavor-button--secondary">
-                            <?php _e('Iniciar Sesión', 'flavor-chat-ia'); ?>
+                            <?php _e('Iniciar Sesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </div>
@@ -211,22 +211,22 @@ class Flavor_Portal_Shortcodes {
                 <div class="flavor-portal__hero-content">
                     <div class="flavor-portal__greeting">
                         <div class="flavor-portal__eyebrow">
-                            <?php _e('Nodo activo', 'flavor-chat-ia'); ?>
+                            <?php _e('Nodo activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                         <h1 class="flavor-portal__title">
                             <?php
                             $hora = (int) current_time('H');
                             if ($hora < 12) {
-                                printf(__('Buenos días, %s', 'flavor-chat-ia'), esc_html($current_user->display_name));
+                                printf(__('Buenos días, %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($current_user->display_name));
                             } elseif ($hora < 20) {
-                                printf(__('Buenas tardes, %s', 'flavor-chat-ia'), esc_html($current_user->display_name));
+                                printf(__('Buenas tardes, %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($current_user->display_name));
                             } else {
-                                printf(__('Buenas noches, %s', 'flavor-chat-ia'), esc_html($current_user->display_name));
+                                printf(__('Buenas noches, %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($current_user->display_name));
                             }
                             ?>
                         </h1>
                         <p class="flavor-portal__subtitle">
-                            <?php _e('Tu ecosistema activo y espacio de coordinación comunitaria', 'flavor-chat-ia'); ?>
+                            <?php _e('Tu ecosistema activo y espacio de coordinación comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                     </div>
 
@@ -242,8 +242,8 @@ class Flavor_Portal_Shortcodes {
                 <?php if (!empty($notifications_bar)) : ?>
                     <div class="flavor-portal__notifications-bar">
                         <div class="flavor-portal__notifications-head">
-                            <h2 class="flavor-portal__notifications-title"><?php _e('Señales del nodo', 'flavor-chat-ia'); ?></h2>
-                            <p class="flavor-portal__notifications-subtitle"><?php _e('Alertas, avisos y movimientos relevantes que conviene atender antes de seguir.', 'flavor-chat-ia'); ?></p>
+                            <h2 class="flavor-portal__notifications-title"><?php _e('Señales del nodo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                            <p class="flavor-portal__notifications-subtitle"><?php _e('Alertas, avisos y movimientos relevantes que conviene atender antes de seguir.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                         <?php echo $notifications_bar; ?>
                     </div>
@@ -254,9 +254,9 @@ class Flavor_Portal_Shortcodes {
                 <div class="flavor-portal__section flavor-portal__section--ecosystems">
                     <div class="flavor-section-header">
                         <div>
-                            <h2 class="flavor-section-title"><?php _e('Ecosistemas activos', 'flavor-chat-ia'); ?></h2>
+                            <h2 class="flavor-section-title"><?php _e('Ecosistemas activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                             <p class="flavor-portal__section-subtitle">
-                                <?php _e('Organizados por base comunitaria, satélites operativos y capas transversales.', 'flavor-chat-ia'); ?>
+                                <?php _e('Organizados por base comunitaria, satélites operativos y capas transversales.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </p>
                         </div>
                     </div>
@@ -268,13 +268,13 @@ class Flavor_Portal_Shortcodes {
             <div class="flavor-portal__section">
                 <div class="flavor-section-header">
                     <div>
-                        <h2 class="flavor-section-title"><?php _e('Resumen del nodo', 'flavor-chat-ia'); ?></h2>
+                        <h2 class="flavor-section-title"><?php _e('Resumen del nodo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                         <p class="flavor-portal__section-subtitle">
-                            <?php _e('Una vista rápida de tu actividad y participación reciente en el portal.', 'flavor-chat-ia'); ?>
+                            <?php _e('Una vista rápida de tu actividad y participación reciente en el portal.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                     </div>
                     <a href="<?php echo Flavor_Chat_Helpers::get_action_url('servicios', ''); ?>" class="flavor-link-all">
-                        <?php _e('Explorar servicios', 'flavor-chat-ia'); ?> →
+                        <?php _e('Explorar servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> →
                     </a>
                 </div>
                 <?php echo $this->render_dashboard_stats(['columnas' => $atts['columnas'], 'mostrar_titulo' => 'no']); ?>
@@ -287,10 +287,10 @@ class Flavor_Portal_Shortcodes {
                     <div class="flavor-portal__section">
                         <h2 class="flavor-portal__section-title">
                             <span class="flavor-title-icon">⚡</span>
-                            <?php esc_html_e('Herramientas de hoy', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Herramientas de hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h2>
                         <p class="flavor-portal__section-subtitle">
-                            <?php esc_html_e('Operar, coordinar y entender tu nodo desde un conjunto corto de herramientas priorizadas.', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Operar, coordinar y entender tu nodo desde un conjunto corto de herramientas priorizadas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                         <?php echo $this->render_tool_severity_legend(); ?>
                         <?php echo $this->render_portal_priority_filter(); ?>
@@ -303,10 +303,10 @@ class Flavor_Portal_Shortcodes {
                         <div class="flavor-portal__section">
                             <h2 class="flavor-portal__section-title">
                                 <span class="flavor-title-icon">📋</span>
-                                <?php _e('Actividad reciente', 'flavor-chat-ia'); ?>
+                                <?php _e('Actividad reciente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </h2>
                             <p class="flavor-portal__section-subtitle">
-                                <?php _e('Movimiento reciente en tus espacios, servicios y relaciones comunitarias.', 'flavor-chat-ia'); ?>
+                                <?php _e('Movimiento reciente en tus espacios, servicios y relaciones comunitarias.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </p>
                             <?php echo $this->render_activity_feed(); ?>
                         </div>
@@ -319,10 +319,10 @@ class Flavor_Portal_Shortcodes {
                     <div class="flavor-portal__widget flavor-portal__widget--profile">
                         <div class="flavor-portal__widget-header">
                             <h3 class="flavor-portal__widget-title">
-                                <?php _e('Tu base personal', 'flavor-chat-ia'); ?>
+                                <?php _e('Tu base personal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </h3>
                             <p class="flavor-portal__widget-subtitle">
-                                <?php _e('Tu identidad, acceso y punto de partida dentro del portal.', 'flavor-chat-ia'); ?>
+                                <?php _e('Tu identidad, acceso y punto de partida dentro del portal.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </p>
                         </div>
                         <?php echo $this->render_profile_widget($current_user); ?>
@@ -332,10 +332,10 @@ class Flavor_Portal_Shortcodes {
                     <div class="flavor-portal__widget">
                         <div class="flavor-portal__widget-header">
                             <h3 class="flavor-portal__widget-title">
-                                <?php _e('Siguiente foco', 'flavor-chat-ia'); ?>
+                                <?php _e('Siguiente foco', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </h3>
                             <p class="flavor-portal__widget-subtitle">
-                                <?php _e('Eventos, reservas y compromisos cercanos que requieren atención.', 'flavor-chat-ia'); ?>
+                                <?php _e('Eventos, reservas y compromisos cercanos que requieren atención.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </p>
                         </div>
                         <?php echo $this->render_upcoming_actions(); ?>
@@ -345,10 +345,10 @@ class Flavor_Portal_Shortcodes {
                     <div class="flavor-portal__widget">
                         <div class="flavor-portal__widget-header">
                             <h3 class="flavor-portal__widget-title">
-                                <?php _e('Navegación útil', 'flavor-chat-ia'); ?>
+                                <?php _e('Navegación útil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </h3>
                             <p class="flavor-portal__widget-subtitle">
-                                <?php _e('Accesos estables para orientarte y volver a los puntos clave del nodo.', 'flavor-chat-ia'); ?>
+                                <?php _e('Accesos estables para orientarte y volver a los puntos clave del nodo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </p>
                         </div>
                         <?php echo $this->render_useful_links(); ?>
@@ -370,18 +370,18 @@ class Flavor_Portal_Shortcodes {
             <div class="flavor-login-gate__card">
                 <div class="flavor-login-gate__icon">🔐</div>
                 <h2 class="flavor-login-gate__title">
-                    <?php _e('Acceso a Mi Portal', 'flavor-chat-ia'); ?>
+                    <?php _e('Acceso a Mi Portal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <p class="flavor-login-gate__text">
-                    <?php _e('Inicia sesión para acceder a tu panel de control personalizado y gestionar todos tus servicios comunitarios.', 'flavor-chat-ia'); ?>
+                    <?php _e('Inicia sesión para acceder a tu panel de control personalizado y gestionar todos tus servicios comunitarios.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
                 <div class="flavor-login-gate__actions">
                     <a href="<?php echo esc_url(wp_login_url($this->get_current_request_url())); ?>" class="flavor-button flavor-button--primary">
-                        <?php _e('Iniciar Sesión', 'flavor-chat-ia'); ?>
+                        <?php _e('Iniciar Sesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <?php if (get_option('users_can_register')) : ?>
                         <a href="<?php echo wp_registration_url(); ?>" class="flavor-button flavor-button--secondary">
-                            <?php _e('Crear Cuenta', 'flavor-chat-ia'); ?>
+                            <?php _e('Crear Cuenta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     <?php endif; ?>
                 </div>
@@ -440,15 +440,15 @@ class Flavor_Portal_Shortcodes {
         <div class="flavor-header-actions">
             <a href="<?php echo Flavor_Chat_Helpers::get_action_url('', ''); ?>" class="flavor-header-action">
                 <span class="flavor-header-action__icon">🧭</span>
-                <span class="flavor-header-action__text"><?php _e('Ver ecosistema', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-header-action__text"><?php _e('Ver ecosistema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
             <a href="<?php echo home_url('/servicios/'); ?>" class="flavor-header-action">
                 <span class="flavor-header-action__icon">🔍</span>
-                <span class="flavor-header-action__text"><?php _e('Explorar servicios', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-header-action__text"><?php _e('Explorar servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
             <a href="<?php echo admin_url('profile.php'); ?>" class="flavor-header-action">
                 <span class="flavor-header-action__icon">👤</span>
-                <span class="flavor-header-action__text"><?php _e('Abrir perfil', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-header-action__text"><?php _e('Abrir perfil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
         </div>
         <?php
@@ -475,14 +475,14 @@ class Flavor_Portal_Shortcodes {
                     <div class="flavor-notification-item__content">
                         <div class="flavor-notification-item__meta">
                             <span class="flavor-notification-item__severity flavor-notification-item__severity--<?php echo esc_attr($notification['severity_slug'] ?? 'stable'); ?>" <?php if (!empty($notification['severity_reason'])) : ?>title="<?php echo esc_attr($notification['severity_reason']); ?>"<?php endif; ?>>
-                                <?php echo esc_html($notification['severity_label'] ?? __('Estable', 'flavor-chat-ia')); ?>
+                                <?php echo esc_html($notification['severity_label'] ?? __('Estable', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                             </span>
                         </div>
                         <span class="flavor-notification-item__text"><?php echo esc_html($notification['text']); ?></span>
                     </div>
                     <?php if (!empty($notification['link'])) : ?>
                         <a href="<?php echo esc_url($notification['link']); ?>" class="flavor-notification-item__action">
-                            <?php _e('Abrir señal', 'flavor-chat-ia'); ?> →
+                            <?php _e('Abrir señal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> →
                         </a>
                     <?php endif; ?>
                 </div>
@@ -644,7 +644,7 @@ class Flavor_Portal_Shortcodes {
         $accesos = $this->get_quick_actions_smart();
 
         if (empty($accesos)) {
-            return '<p class="flavor-no-content">' . __('Todavía no hay herramientas priorizadas para este nodo.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-no-content">' . __('Todavía no hay herramientas priorizadas para este nodo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -704,10 +704,10 @@ class Flavor_Portal_Shortcodes {
                 class="flavor-tool-favorite-toggle <?php echo !empty($tool['is_favorite']) ? 'is-active' : ''; ?>"
                 data-tool-id="<?php echo esc_attr($tool['id']); ?>"
                 aria-pressed="<?php echo !empty($tool['is_favorite']) ? 'true' : 'false'; ?>"
-                title="<?php echo esc_attr(!empty($tool['is_favorite']) ? __('Quitar de favoritas', 'flavor-chat-ia') : __('Guardar en favoritas', 'flavor-chat-ia')); ?>">
+                title="<?php echo esc_attr(!empty($tool['is_favorite']) ? __('Quitar de favoritas', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Guardar en favoritas', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>">
             <span class="flavor-tool-favorite-toggle__icon" aria-hidden="true">★</span>
             <span class="screen-reader-text">
-                <?php echo esc_html(!empty($tool['is_favorite']) ? __('Quitar de favoritas', 'flavor-chat-ia') : __('Guardar en favoritas', 'flavor-chat-ia')); ?>
+                <?php echo esc_html(!empty($tool['is_favorite']) ? __('Quitar de favoritas', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Guardar en favoritas', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
             </span>
         </button>
         <?php
@@ -733,8 +733,8 @@ class Flavor_Portal_Shortcodes {
         ?>
         <div class="flavor-tool-focus">
             <div class="flavor-tool-focus__header">
-                <h3 class="flavor-tool-focus__title"><?php esc_html_e('Favoritas', 'flavor-chat-ia'); ?></h3>
-                <p class="flavor-tool-focus__subtitle"><?php esc_html_e('Herramientas con más retorno inmediato para moverte por tu ecosistema activo.', 'flavor-chat-ia'); ?></p>
+                <h3 class="flavor-tool-focus__title"><?php esc_html_e('Favoritas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p class="flavor-tool-focus__subtitle"><?php esc_html_e('Herramientas con más retorno inmediato para moverte por tu ecosistema activo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <div class="flavor-tool-focus__grid">
                 <?php foreach ($favoritas as $herramienta) : ?>
@@ -762,19 +762,19 @@ class Flavor_Portal_Shortcodes {
     private function render_tool_severity_legend() {
         ob_start();
         ?>
-        <div class="flavor-tool-severity-legend" aria-label="<?php esc_attr_e('Leyenda de prioridad', 'flavor-chat-ia'); ?>">
-            <span class="flavor-tool-severity-legend__label"><?php esc_html_e('Prioridad', 'flavor-chat-ia'); ?></span>
+        <div class="flavor-tool-severity-legend" aria-label="<?php esc_attr_e('Leyenda de prioridad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+            <span class="flavor-tool-severity-legend__label"><?php esc_html_e('Prioridad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             <span class="flavor-tool-severity-legend__item">
                 <span class="flavor-tool-severity-legend__dot flavor-tool-severity-legend__dot--attention" aria-hidden="true"></span>
-                <?php esc_html_e('Atención', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Atención', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
             <span class="flavor-tool-severity-legend__item">
                 <span class="flavor-tool-severity-legend__dot flavor-tool-severity-legend__dot--followup" aria-hidden="true"></span>
-                <?php esc_html_e('Seguimiento', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Seguimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
             <span class="flavor-tool-severity-legend__item">
                 <span class="flavor-tool-severity-legend__dot flavor-tool-severity-legend__dot--stable" aria-hidden="true"></span>
-                <?php esc_html_e('Estable', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Estable', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
         </div>
         <?php
@@ -789,12 +789,12 @@ class Flavor_Portal_Shortcodes {
     private function render_portal_priority_filter() {
         ob_start();
         ?>
-        <div class="flavor-priority-filter" role="group" aria-label="<?php esc_attr_e('Filtrar por prioridad', 'flavor-chat-ia'); ?>">
-            <span class="flavor-priority-filter__label"><?php esc_html_e('Prioridad', 'flavor-chat-ia'); ?></span>
-            <button type="button" class="flavor-priority-filter__btn is-active" data-priority="all" aria-pressed="true"><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></button>
-            <button type="button" class="flavor-priority-filter__btn" data-priority="attention" aria-pressed="false"><?php esc_html_e('Atención', 'flavor-chat-ia'); ?></button>
-            <button type="button" class="flavor-priority-filter__btn" data-priority="followup" aria-pressed="false"><?php esc_html_e('Seguimiento', 'flavor-chat-ia'); ?></button>
-            <button type="button" class="flavor-priority-filter__btn" data-priority="stable" aria-pressed="false"><?php esc_html_e('Estable', 'flavor-chat-ia'); ?></button>
+        <div class="flavor-priority-filter" role="group" aria-label="<?php esc_attr_e('Filtrar por prioridad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+            <span class="flavor-priority-filter__label"><?php esc_html_e('Prioridad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+            <button type="button" class="flavor-priority-filter__btn is-active" data-priority="all" aria-pressed="true"><?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+            <button type="button" class="flavor-priority-filter__btn" data-priority="attention" aria-pressed="false"><?php esc_html_e('Atención', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+            <button type="button" class="flavor-priority-filter__btn" data-priority="followup" aria-pressed="false"><?php esc_html_e('Seguimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+            <button type="button" class="flavor-priority-filter__btn" data-priority="stable" aria-pressed="false"><?php esc_html_e('Estable', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
         </div>
         <?php
         return ob_get_clean();
@@ -948,14 +948,14 @@ class Flavor_Portal_Shortcodes {
                             </div>
                         </div>
                         <div class="flavor-portal-ecosystem-card__stats">
-                            <span><?php echo esc_html($node['satellite_count']); ?> <?php esc_html_e('satélites', 'flavor-chat-ia'); ?></span>
-                            <span><?php echo esc_html($node['transversal_count']); ?> <?php esc_html_e('capas', 'flavor-chat-ia'); ?></span>
+                            <span><?php echo esc_html($node['satellite_count']); ?> <?php esc_html_e('satélites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                            <span><?php echo esc_html($node['transversal_count']); ?> <?php esc_html_e('capas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                     </div>
 
                     <?php if (!empty($node['satellites'])) : ?>
                         <div class="flavor-portal-ecosystem-card__block">
-                            <div class="flavor-portal-ecosystem-card__label"><?php esc_html_e('Satélites operativos', 'flavor-chat-ia'); ?></div>
+                            <div class="flavor-portal-ecosystem-card__label"><?php esc_html_e('Satélites operativos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                             <div class="flavor-portal-ecosystem-card__tags">
                                 <?php foreach ($node['satellites'] as $satellite) : ?>
                                     <a href="<?php echo esc_url($satellite['url']); ?>" class="flavor-portal-ecosystem-card__tag">
@@ -968,7 +968,7 @@ class Flavor_Portal_Shortcodes {
 
                     <?php if (!empty($node['transversals'])) : ?>
                         <div class="flavor-portal-ecosystem-card__block">
-                            <div class="flavor-portal-ecosystem-card__label"><?php esc_html_e('Capas transversales', 'flavor-chat-ia'); ?></div>
+                            <div class="flavor-portal-ecosystem-card__label"><?php esc_html_e('Capas transversales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                             <div class="flavor-portal-ecosystem-card__tags">
                                 <?php foreach ($node['transversals'] as $transversal) : ?>
                                     <a href="<?php echo esc_url($transversal['url']); ?>" class="flavor-portal-ecosystem-card__tag flavor-portal-ecosystem-card__tag--transversal">
@@ -981,7 +981,7 @@ class Flavor_Portal_Shortcodes {
 
                     <div class="flavor-portal-ecosystem-card__actions">
                         <a href="<?php echo esc_url($node['url']); ?>" class="flavor-button flavor-button--secondary">
-                            <?php esc_html_e('Abrir ecosistema', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Abrir ecosistema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </article>
@@ -1006,8 +1006,8 @@ class Flavor_Portal_Shortcodes {
         $configuraciones_especiales = [
             'eventos' => [
                 'icon' => '📅',
-                'title' => __('Activar encuentro', 'flavor-chat-ia'),
-                'description' => __('Convoca un evento y mueve la agenda compartida del nodo.', 'flavor-chat-ia'),
+                'title' => __('Activar encuentro', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Convoca un evento y mueve la agenda compartida del nodo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => Flavor_Chat_Helpers::get_action_url('eventos', 'crear'),
                 'kind' => 'coordinar',
                 'contexts' => ['eventos', 'agenda', 'comunidad'],
@@ -1015,8 +1015,8 @@ class Flavor_Portal_Shortcodes {
             ],
             'talleres' => [
                 'icon' => '🎓',
-                'title' => __('Proponer taller', 'flavor-chat-ia'),
-                'description' => __('Abre un espacio de aprendizaje y circulación de saberes.', 'flavor-chat-ia'),
+                'title' => __('Proponer taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Abre un espacio de aprendizaje y circulación de saberes.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => Flavor_Chat_Helpers::get_action_url('talleres', 'crear'),
                 'kind' => 'coordinar',
                 'contexts' => ['aprendizaje', 'saberes', 'comunidad'],
@@ -1024,8 +1024,8 @@ class Flavor_Portal_Shortcodes {
             ],
             'ayuda_vecinal' => [
                 'icon' => '🤝',
-                'title' => __('Pedir ayuda', 'flavor-chat-ia'),
-                'description' => __('Activa la red de cuidados cercana cuando hace falta apoyo.', 'flavor-chat-ia'),
+                'title' => __('Pedir ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Activa la red de cuidados cercana cuando hace falta apoyo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => Flavor_Chat_Helpers::get_action_url('ayuda_vecinal', 'solicitar'),
                 'kind' => 'operar',
                 'contexts' => ['cuidados', 'solidaridad', 'comunidad'],
@@ -1033,8 +1033,8 @@ class Flavor_Portal_Shortcodes {
             ],
             'banco_tiempo' => [
                 'icon' => '⏰',
-                'title' => __('Ofrecer tiempo', 'flavor-chat-ia'),
-                'description' => __('Comparte una capacidad concreta dentro de la red de intercambio.', 'flavor-chat-ia'),
+                'title' => __('Ofrecer tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Comparte una capacidad concreta dentro de la red de intercambio.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'ofrecer'),
                 'kind' => 'operar',
                 'contexts' => ['comunidad', 'intercambio', 'cuidados'],
@@ -1042,8 +1042,8 @@ class Flavor_Portal_Shortcodes {
             ],
             'grupos_consumo' => [
                 'icon' => '🥬',
-                'title' => __('Explorar catálogo', 'flavor-chat-ia'),
-                'description' => __('Revisa consumo local y ciclos activos de compra compartida.', 'flavor-chat-ia'),
+                'title' => __('Explorar catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Revisa consumo local y ciclos activos de compra compartida.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos'),
                 'kind' => 'entender',
                 'contexts' => ['consumo', 'comunidad', 'sostenibilidad'],
@@ -1051,8 +1051,8 @@ class Flavor_Portal_Shortcodes {
             ],
             'incidencias' => [
                 'icon' => '🔧',
-                'title' => __('Reportar incidencia', 'flavor-chat-ia'),
-                'description' => __('Lanza una señal útil para resolver un problema del entorno.', 'flavor-chat-ia'),
+                'title' => __('Reportar incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Lanza una señal útil para resolver un problema del entorno.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => Flavor_Chat_Helpers::get_action_url('incidencias', 'crear'),
                 'kind' => 'operar',
                 'contexts' => ['comunidad', 'actividad'],
@@ -1060,8 +1060,8 @@ class Flavor_Portal_Shortcodes {
             ],
             'energia_comunitaria' => [
                 'icon' => '⚡',
-                'title' => __('Registrar producción', 'flavor-chat-ia'),
-                'description' => __('Actualiza lecturas y sigue el pulso energético de la comunidad.', 'flavor-chat-ia'),
+                'title' => __('Registrar producción', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Actualiza lecturas y sigue el pulso energético de la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => Flavor_Chat_Helpers::get_action_url('energia_comunitaria', 'registrar-lectura'),
                 'kind' => 'operar',
                 'contexts' => ['energia', 'sostenibilidad', 'comunidad'],
@@ -1069,8 +1069,8 @@ class Flavor_Portal_Shortcodes {
             ],
             'participacion' => [
                 'icon' => '🗳️',
-                'title' => __('Entrar en decisiones', 'flavor-chat-ia'),
-                'description' => __('Revisa propuestas y votaciones activas del nodo.', 'flavor-chat-ia'),
+                'title' => __('Entrar en decisiones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Revisa propuestas y votaciones activas del nodo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => Flavor_Chat_Helpers::get_action_url('participacion', 'votaciones'),
                 'kind' => 'coordinar',
                 'contexts' => ['participacion', 'gobernanza', 'comunidad'],
@@ -1078,8 +1078,8 @@ class Flavor_Portal_Shortcodes {
             ],
             'transparencia' => [
                 'icon' => '📘',
-                'title' => __('Abrir recursos comunes', 'flavor-chat-ia'),
-                'description' => __('Consulta memoria, actas e indicadores clave del ecosistema.', 'flavor-chat-ia'),
+                'title' => __('Abrir recursos comunes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Consulta memoria, actas e indicadores clave del ecosistema.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => Flavor_Chat_Helpers::get_action_url('transparencia', 'presupuesto'),
                 'kind' => 'entender',
                 'contexts' => ['transparencia', 'gobernanza', 'impacto'],
@@ -1121,7 +1121,7 @@ class Flavor_Portal_Shortcodes {
             'title' => $nombre_modulo,
             'description' => $descripcion_modulo ?: sprintf(
                 /* translators: %s: module name */
-                __('Accede a las funcionalidades de %s.', 'flavor-chat-ia'),
+                __('Accede a las funcionalidades de %s.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $nombre_modulo
             ),
             'url' => Flavor_Chat_Helpers::get_action_url(str_replace('-', '_', $module_slug), ''),
@@ -1276,7 +1276,7 @@ class Flavor_Portal_Shortcodes {
      */
     public function ajax_toggle_portal_tool_favorite() {
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')], 401);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)], 401);
         }
 
         check_ajax_referer('flavor_portal_tools', 'nonce');
@@ -1284,7 +1284,7 @@ class Flavor_Portal_Shortcodes {
         $tool_id = sanitize_text_field(wp_unslash($_POST['tool_id'] ?? ''));
 
         if ($tool_id === '') {
-            wp_send_json_error(['message' => __('Herramienta no válida.', 'flavor-chat-ia')], 400);
+            wp_send_json_error(['message' => __('Herramienta no válida.', FLAVOR_PLATFORM_TEXT_DOMAIN)], 400);
         }
 
         $favorites = $this->get_user_tool_favorites();
@@ -1355,9 +1355,9 @@ class Flavor_Portal_Shortcodes {
      */
     private function get_tool_kind_label($kind) {
         $labels = [
-            'operar' => __('Operar', 'flavor-chat-ia'),
-            'coordinar' => __('Coordinar', 'flavor-chat-ia'),
-            'entender' => __('Entender', 'flavor-chat-ia'),
+            'operar' => __('Operar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'coordinar' => __('Coordinar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'entender' => __('Entender', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         return $labels[$kind] ?? '';
@@ -1377,19 +1377,19 @@ class Flavor_Portal_Shortcodes {
         }
 
         $labels = [
-            'comunidad' => __('Comunidad', 'flavor-chat-ia'),
-            'cuidados' => __('Cuidados', 'flavor-chat-ia'),
-            'energia' => __('Energía', 'flavor-chat-ia'),
-            'gobernanza' => __('Gobernanza', 'flavor-chat-ia'),
-            'participacion' => __('Participación', 'flavor-chat-ia'),
-            'transparencia' => __('Transparencia', 'flavor-chat-ia'),
-            'consumo' => __('Consumo local', 'flavor-chat-ia'),
-            'sostenibilidad' => __('Sostenibilidad', 'flavor-chat-ia'),
-            'aprendizaje' => __('Aprendizaje', 'flavor-chat-ia'),
-            'saberes' => __('Saberes', 'flavor-chat-ia'),
-            'agenda' => __('Agenda', 'flavor-chat-ia'),
-            'eventos' => __('Encuentros', 'flavor-chat-ia'),
-            'impacto' => __('Impacto', 'flavor-chat-ia'),
+            'comunidad' => __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cuidados' => __('Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'energia' => __('Energía', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'gobernanza' => __('Gobernanza', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'participacion' => __('Participación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'transparencia' => __('Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'consumo' => __('Consumo local', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'sostenibilidad' => __('Sostenibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'aprendizaje' => __('Aprendizaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'saberes' => __('Saberes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'agenda' => __('Agenda', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'eventos' => __('Encuentros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'impacto' => __('Impacto', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $primary = (string) $contexts[0];
@@ -1585,7 +1585,7 @@ class Flavor_Portal_Shortcodes {
         if (empty($activities)) {
             return '<div class="flavor-empty-state">
                 <span class="flavor-empty-state__icon">📝</span>
-                <p>' . __('No hay actividad reciente', 'flavor-chat-ia') . '</p>
+                <p>' . __('No hay actividad reciente', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
             </div>';
         }
 
@@ -1649,7 +1649,7 @@ class Flavor_Portal_Shortcodes {
             $tiempo_relativo = '';
             if ( $fecha ) {
                 $timestamp = strtotime( $fecha );
-                $tiempo_relativo = human_time_diff( $timestamp, current_time( 'timestamp' ) ) . ' ' . __( 'ago', 'flavor-chat-ia' );
+                $tiempo_relativo = human_time_diff( $timestamp, current_time( 'timestamp' ) ) . ' ' . __( 'ago', FLAVOR_PLATFORM_TEXT_DOMAIN );
             }
 
             $activities[] = [
@@ -1677,10 +1677,10 @@ class Flavor_Portal_Shortcodes {
             <div class="flavor-profile-widget__info">
                 <h4 class="flavor-profile-widget__name"><?php echo esc_html($user->display_name); ?></h4>
                 <p class="flavor-profile-widget__email"><?php echo esc_html($user->user_email); ?></p>
-                <p class="flavor-profile-widget__context"><?php _e('Desde aquí gestionas tu cuenta y tu presencia en la comunidad.', 'flavor-chat-ia'); ?></p>
+                <p class="flavor-profile-widget__context"><?php _e('Desde aquí gestionas tu cuenta y tu presencia en la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <a href="<?php echo admin_url('profile.php'); ?>" class="flavor-profile-widget__link">
-                <?php _e('Abrir perfil', 'flavor-chat-ia'); ?> →
+                <?php _e('Abrir perfil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> →
             </a>
         </div>
         <?php
@@ -1703,7 +1703,7 @@ class Flavor_Portal_Shortcodes {
                     $acciones[] = [
                         'tipo'   => 'evento',
                         'icono'  => '📅',
-                        'titulo' => $evento['titulo'] ?? $evento['nombre'] ?? __('Evento', 'flavor-chat-ia'),
+                        'titulo' => $evento['titulo'] ?? $evento['nombre'] ?? __('Evento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'fecha'  => $evento['fecha_inicio'] ?? '',
                         'url'    => $evento['url'] ?? '',
                         'severity_slug' => $severity_slug,
@@ -1721,7 +1721,7 @@ class Flavor_Portal_Shortcodes {
                     $acciones[] = [
                         'tipo'   => 'reserva',
                         'icono'  => '🏠',
-                        'titulo' => $reserva['nombre_espacio'] ?? __('Reserva', 'flavor-chat-ia'),
+                        'titulo' => $reserva['nombre_espacio'] ?? __('Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'fecha'  => $reserva['fecha'] ?? '',
                         'url'    => $reserva['url'] ?? '',
                         'severity_slug' => $severity_slug,
@@ -1756,7 +1756,7 @@ class Flavor_Portal_Shortcodes {
         ?>
         <div class="flavor-upcoming-actions">
             <?php if (empty($acciones)): ?>
-                <p class="flavor-no-content"><?php _e('No hay acciones inmediatas. Tu nodo está al día por ahora.', 'flavor-chat-ia'); ?></p>
+                <p class="flavor-no-content"><?php _e('No hay acciones inmediatas. Tu nodo está al día por ahora.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php else: ?>
                 <?php foreach (array_slice($acciones, 0, 5) as $accion): ?>
                     <div class="flavor-action-item flavor-action-item--<?php echo esc_attr($accion['severity_slug'] ?? 'stable'); ?>" data-severity="<?php echo esc_attr($accion['severity_slug'] ?? 'stable'); ?>">
@@ -1764,7 +1764,7 @@ class Flavor_Portal_Shortcodes {
                         <div class="flavor-action-content">
                             <div class="flavor-action-meta">
                                 <span class="flavor-action-severity flavor-action-severity--<?php echo esc_attr($accion['severity_slug'] ?? 'stable'); ?>">
-                                    <?php echo esc_html($accion['severity_label'] ?? __('Estable', 'flavor-chat-ia')); ?>
+                                    <?php echo esc_html($accion['severity_label'] ?? __('Estable', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                                 </span>
                             </div>
                             <?php if (!empty($accion['url'])): ?>
@@ -1886,11 +1886,11 @@ class Flavor_Portal_Shortcodes {
             );
 
             $reason = sprintf(
-                _n('%d aviso urgente activo.', '%d avisos urgentes activos.', $urgentes, 'flavor-chat-ia'),
+                _n('%d aviso urgente activo.', '%d avisos urgentes activos.', $urgentes, FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $urgentes
             );
             if (!empty($aviso['titulo'])) {
-                $reason .= ' ' . sprintf(__('Último: %s.', 'flavor-chat-ia'), $aviso['titulo']);
+                $reason .= ' ' . sprintf(__('Último: %s.', FLAVOR_PLATFORM_TEXT_DOMAIN), $aviso['titulo']);
             }
 
             $notifications[] = [
@@ -1898,7 +1898,7 @@ class Flavor_Portal_Shortcodes {
                 'type' => 'warning',
                 'icon' => '📢',
                 'text' => sprintf(
-                    _n('%d aviso urgente', '%d avisos urgentes', $urgentes, 'flavor-chat-ia'),
+                    _n('%d aviso urgente', '%d avisos urgentes', $urgentes, FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $urgentes
                 ),
                 'link' => Flavor_Chat_Helpers::get_action_url('avisos_municipales', '') . '?urgente=1',
@@ -1921,13 +1921,13 @@ class Flavor_Portal_Shortcodes {
                 'type' => 'info',
                 'icon' => '📢',
                 'text' => sprintf(
-                    _n('%d aviso activo', '%d avisos activos', $activos, 'flavor-chat-ia'),
+                    _n('%d aviso activo', '%d avisos activos', $activos, FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $activos
                 ),
                 'link' => Flavor_Chat_Helpers::get_action_url('avisos_municipales', ''),
                 'severity_slug' => 'followup',
                 'severity_label' => $this->get_tool_severity_label('followup'),
-                'severity_reason' => __('Hay avisos activos que conviene revisar.', 'flavor-chat-ia'),
+                'severity_reason' => __('Hay avisos activos que conviene revisar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1970,15 +1970,15 @@ class Flavor_Portal_Shortcodes {
                 'type' => 'warning',
                 'icon' => '📌',
                 'text' => sprintf(
-                    _n('%d anuncio prioritario', '%d anuncios prioritarios', $prioridad_alta, 'flavor-chat-ia'),
+                    _n('%d anuncio prioritario', '%d anuncios prioritarios', $prioridad_alta, FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $prioridad_alta
                 ),
                 'link' => Flavor_Chat_Helpers::get_action_url('comunidades', 'anuncios'),
                 'severity_slug' => 'attention',
                 'severity_label' => $this->get_tool_severity_label('attention'),
                 'severity_reason' => !empty($ultimo['titulo'])
-                    ? sprintf(__('Hay anuncios destacados en el tablón. Último: %s.', 'flavor-chat-ia'), $ultimo['titulo'])
-                    : __('Hay anuncios destacados en el tablón de red.', 'flavor-chat-ia'),
+                    ? sprintf(__('Hay anuncios destacados en el tablón. Último: %s.', FLAVOR_PLATFORM_TEXT_DOMAIN), $ultimo['titulo'])
+                    : __('Hay anuncios destacados en el tablón de red.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
 
             return $notifications;
@@ -1997,13 +1997,13 @@ class Flavor_Portal_Shortcodes {
                 'type' => 'info',
                 'icon' => '📌',
                 'text' => sprintf(
-                    _n('%d anuncio activo en el tablón', '%d anuncios activos en el tablón', $anuncios_activos, 'flavor-chat-ia'),
+                    _n('%d anuncio activo en el tablón', '%d anuncios activos en el tablón', $anuncios_activos, FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $anuncios_activos
                 ),
                 'link' => Flavor_Chat_Helpers::get_action_url('comunidades', 'anuncios'),
                 'severity_slug' => 'followup',
                 'severity_label' => $this->get_tool_severity_label('followup'),
-                'severity_reason' => __('Hay publicaciones activas en el tablón de red.', 'flavor-chat-ia'),
+                'severity_reason' => __('Hay publicaciones activas en el tablón de red.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2062,15 +2062,15 @@ class Flavor_Portal_Shortcodes {
             'type' => $severity_slug === 'attention' ? 'warning' : 'info',
             'icon' => '🔔',
             'text' => sprintf(
-                _n('%d notificación pendiente', '%d notificaciones pendientes', $unread_count, 'flavor-chat-ia'),
+                _n('%d notificación pendiente', '%d notificaciones pendientes', $unread_count, FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $unread_count
             ),
             'link' => !empty($latest['enlace']) ? $latest['enlace'] : Flavor_Chat_Helpers::get_action_url('notificaciones', ''),
             'severity_slug' => $severity_slug,
             'severity_label' => $this->get_tool_severity_label($severity_slug),
             'severity_reason' => !empty($latest['titulo'])
-                ? sprintf(__('Última pendiente: %s.', 'flavor-chat-ia'), $latest['titulo'])
-                : __('Tienes notificaciones pendientes de revisar.', 'flavor-chat-ia'),
+                ? sprintf(__('Última pendiente: %s.', FLAVOR_PLATFORM_TEXT_DOMAIN), $latest['titulo'])
+                : __('Tienes notificaciones pendientes de revisar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         return $notifications;
@@ -2099,13 +2099,13 @@ class Flavor_Portal_Shortcodes {
             'module_id' => 'eventos',
             'type' => $severity_slug === 'attention' ? 'warning' : 'info',
             'icon' => '📅',
-            'text' => __('Tienes un evento cercano', 'flavor-chat-ia'),
+            'text' => __('Tienes un evento cercano', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'link' => $evento['url'] ?? Flavor_Chat_Helpers::get_action_url('eventos', ''),
             'severity_slug' => $severity_slug,
             'severity_label' => $this->get_tool_severity_label($severity_slug),
             'severity_reason' => sprintf(
-                __('%s empieza el %s.', 'flavor-chat-ia'),
-                $evento['titulo'] ?? $evento['nombre'] ?? __('Tu próximo evento', 'flavor-chat-ia'),
+                __('%s empieza el %s.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                $evento['titulo'] ?? $evento['nombre'] ?? __('Tu próximo evento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 date_i18n(get_option('date_format') . ' · ' . get_option('time_format'), strtotime($fecha))
             ),
         ]];
@@ -2134,13 +2134,13 @@ class Flavor_Portal_Shortcodes {
             'module_id' => 'reservas',
             'type' => $severity_slug === 'attention' ? 'warning' : 'info',
             'icon' => '🏠',
-            'text' => __('Tienes una reserva próxima', 'flavor-chat-ia'),
+            'text' => __('Tienes una reserva próxima', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'link' => $reserva['url'] ?? Flavor_Chat_Helpers::get_action_url('reservas', ''),
             'severity_slug' => $severity_slug,
             'severity_label' => $this->get_tool_severity_label($severity_slug),
             'severity_reason' => sprintf(
-                __('%s está prevista para el %s.', 'flavor-chat-ia'),
-                $reserva['nombre_espacio'] ?? __('Tu próxima reserva', 'flavor-chat-ia'),
+                __('%s está prevista para el %s.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                $reserva['nombre_espacio'] ?? __('Tu próxima reserva', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 date_i18n(get_option('date_format') . ' · ' . get_option('time_format'), strtotime($fecha))
             ),
         ]];
@@ -2171,13 +2171,13 @@ class Flavor_Portal_Shortcodes {
                     'module_id' => 'participacion',
                     'type' => $severity_slug === 'attention' ? 'warning' : 'info',
                     'icon' => '🗳️',
-                    'text' => __('Hay decisiones activas en marcha', 'flavor-chat-ia'),
+                    'text' => __('Hay decisiones activas en marcha', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'link' => Flavor_Chat_Helpers::get_action_url('participacion', 'votaciones'),
                     'severity_slug' => $severity_slug,
                     'severity_label' => $this->get_tool_severity_label($severity_slug),
                     'severity_reason' => sprintf(
-                        __('%s cierra el %s.', 'flavor-chat-ia'),
-                        $votacion['titulo'] ?? __('La votación activa', 'flavor-chat-ia'),
+                        __('%s cierra el %s.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        $votacion['titulo'] ?? __('La votación activa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         date_i18n(get_option('date_format') . ' · ' . get_option('time_format'), strtotime($fecha_fin))
                     ),
                 ];
@@ -2198,13 +2198,13 @@ class Flavor_Portal_Shortcodes {
                     'type' => 'info',
                     'icon' => '💬',
                     'text' => sprintf(
-                        _n('%d propuesta abierta', '%d propuestas abiertas', $propuestas_abiertas, 'flavor-chat-ia'),
+                        _n('%d propuesta abierta', '%d propuestas abiertas', $propuestas_abiertas, FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $propuestas_abiertas
                     ),
                     'link' => Flavor_Chat_Helpers::get_action_url('participacion', 'propuestas'),
                     'severity_slug' => 'followup',
                     'severity_label' => $this->get_tool_severity_label('followup'),
-                    'severity_reason' => __('Hay actividad participativa que conviene revisar.', 'flavor-chat-ia'),
+                    'severity_reason' => __('Hay actividad participativa que conviene revisar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
         }
@@ -2247,13 +2247,13 @@ class Flavor_Portal_Shortcodes {
             $reason_parts = [];
             if ($mis_abiertas > 0) {
                 $reason_parts[] = sprintf(
-                    _n('%d incidencia abierta', '%d incidencias abiertas', $mis_abiertas, 'flavor-chat-ia'),
+                    _n('%d incidencia abierta', '%d incidencias abiertas', $mis_abiertas, FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $mis_abiertas
                 );
             }
             if ($actualizaciones_nuevas > 0) {
                 $reason_parts[] = sprintf(
-                    _n('%d actualización reciente', '%d actualizaciones recientes', $actualizaciones_nuevas, 'flavor-chat-ia'),
+                    _n('%d actualización reciente', '%d actualizaciones recientes', $actualizaciones_nuevas, FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $actualizaciones_nuevas
                 );
             }
@@ -2262,7 +2262,7 @@ class Flavor_Portal_Shortcodes {
                 'module_id' => 'incidencias',
                 'type' => 'warning',
                 'icon' => '⚠️',
-                'text' => __('Hay incidencias que requieren atención', 'flavor-chat-ia'),
+                'text' => __('Hay incidencias que requieren atención', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'link' => Flavor_Chat_Helpers::get_action_url('incidencias', 'mis-incidencias'),
                 'severity_slug' => 'attention',
                 'severity_label' => $this->get_tool_severity_label('attention'),
@@ -2283,13 +2283,13 @@ class Flavor_Portal_Shortcodes {
                 'type' => 'info',
                 'icon' => '📍',
                 'text' => sprintf(
-                    _n('%d incidencia en la comunidad', '%d incidencias en la comunidad', $total_abiertas, 'flavor-chat-ia'),
+                    _n('%d incidencia en la comunidad', '%d incidencias en la comunidad', $total_abiertas, FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $total_abiertas
                 ),
                 'link' => Flavor_Chat_Helpers::get_action_url('incidencias', ''),
                 'severity_slug' => 'followup',
                 'severity_label' => $this->get_tool_severity_label('followup'),
-                'severity_reason' => __('Hay actividad comunitaria de seguimiento en incidencias.', 'flavor-chat-ia'),
+                'severity_reason' => __('Hay actividad comunitaria de seguimiento en incidencias.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2334,13 +2334,13 @@ class Flavor_Portal_Shortcodes {
                 'module_id' => 'socios',
                 'type' => 'warning',
                 'icon' => '🪪',
-                'text' => __('Tu vínculo de socio requiere atención', 'flavor-chat-ia'),
+                'text' => __('Tu vínculo de socio requiere atención', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'link' => Flavor_Chat_Helpers::get_action_url('socios', 'cuotas'),
                 'severity_slug' => 'attention',
                 'severity_label' => $this->get_tool_severity_label('attention'),
                 'severity_reason' => $cuotas_pendientes > 0
-                    ? sprintf(_n('%d cuota pendiente.', '%d cuotas pendientes.', $cuotas_pendientes, 'flavor-chat-ia'), $cuotas_pendientes)
-                    : __('Tu membresía está suspendida.', 'flavor-chat-ia'),
+                    ? sprintf(_n('%d cuota pendiente.', '%d cuotas pendientes.', $cuotas_pendientes, FLAVOR_PLATFORM_TEXT_DOMAIN), $cuotas_pendientes)
+                    : __('Tu membresía está suspendida.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
 
             return $notifications;
@@ -2351,11 +2351,11 @@ class Flavor_Portal_Shortcodes {
                 'module_id' => 'socios',
                 'type' => 'info',
                 'icon' => '🪪',
-                'text' => __('Tu membresía sigue pendiente de revisión', 'flavor-chat-ia'),
+                'text' => __('Tu membresía sigue pendiente de revisión', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'link' => Flavor_Chat_Helpers::get_action_url('socios', 'mi-perfil'),
                 'severity_slug' => 'followup',
                 'severity_label' => $this->get_tool_severity_label('followup'),
-                'severity_reason' => __('Conviene revisar tu estado y completar lo que falte.', 'flavor-chat-ia'),
+                'severity_reason' => __('Conviene revisar tu estado y completar lo que falte.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2383,13 +2383,13 @@ class Flavor_Portal_Shortcodes {
                 'type' => 'warning',
                 'icon' => '⚡',
                 'text' => sprintf(
-                    _n('%d incidencia energética abierta', '%d incidencias energéticas abiertas', $incidencias_abiertas, 'flavor-chat-ia'),
+                    _n('%d incidencia energética abierta', '%d incidencias energéticas abiertas', $incidencias_abiertas, FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $incidencias_abiertas
                 ),
                 'link' => Flavor_Chat_Helpers::get_action_url('energia_comunitaria', 'mantenimiento'),
                 'severity_slug' => 'attention',
                 'severity_label' => $this->get_tool_severity_label('attention'),
-                'severity_reason' => __('Hay incidencias energéticas abiertas que requieren seguimiento operativo.', 'flavor-chat-ia'),
+                'severity_reason' => __('Hay incidencias energéticas abiertas que requieren seguimiento operativo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
 
             return $notifications;
@@ -2407,13 +2407,13 @@ class Flavor_Portal_Shortcodes {
                     'type' => 'info',
                     'icon' => '💡',
                     'text' => sprintf(
-                        _n('%d liquidación pendiente', '%d liquidaciones pendientes', $liquidaciones_pendientes, 'flavor-chat-ia'),
+                        _n('%d liquidación pendiente', '%d liquidaciones pendientes', $liquidaciones_pendientes, FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $liquidaciones_pendientes
                     ),
                     'link' => Flavor_Chat_Helpers::get_action_url('energia_comunitaria', 'liquidaciones'),
                     'severity_slug' => 'followup',
                     'severity_label' => $this->get_tool_severity_label('followup'),
-                    'severity_reason' => __('Hay liquidaciones energéticas pendientes de revisión o aceptación.', 'flavor-chat-ia'),
+                    'severity_reason' => __('Hay liquidaciones energéticas pendientes de revisión o aceptación.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
         }
@@ -2449,13 +2449,13 @@ class Flavor_Portal_Shortcodes {
                 'type' => 'warning',
                 'icon' => '📚',
                 'text' => sprintf(
-                    _n('%d préstamo vencido', '%d préstamos vencidos', $prestamos_vencidos, 'flavor-chat-ia'),
+                    _n('%d préstamo vencido', '%d préstamos vencidos', $prestamos_vencidos, FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $prestamos_vencidos
                 ),
                 'link' => Flavor_Chat_Helpers::get_action_url('biblioteca', 'mis-prestamos'),
                 'severity_slug' => 'attention',
                 'severity_label' => $this->get_tool_severity_label('attention'),
-                'severity_reason' => __('Tienes préstamos que deberías devolver.', 'flavor-chat-ia'),
+                'severity_reason' => __('Tienes préstamos que deberías devolver.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
             return $notifications;
         }
@@ -2474,13 +2474,13 @@ class Flavor_Portal_Shortcodes {
                 'type' => 'info',
                 'icon' => '📖',
                 'text' => sprintf(
-                    _n('%d préstamo por vencer', '%d préstamos por vencer', $prestamos_por_vencer, 'flavor-chat-ia'),
+                    _n('%d préstamo por vencer', '%d préstamos por vencer', $prestamos_por_vencer, FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $prestamos_por_vencer
                 ),
                 'link' => Flavor_Chat_Helpers::get_action_url('biblioteca', 'mis-prestamos'),
                 'severity_slug' => 'followup',
                 'severity_label' => $this->get_tool_severity_label('followup'),
-                'severity_reason' => __('Conviene revisar tus préstamos activos.', 'flavor-chat-ia'),
+                'severity_reason' => __('Conviene revisar tus préstamos activos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2498,13 +2498,13 @@ class Flavor_Portal_Shortcodes {
                     'type' => 'info',
                     'icon' => '📗',
                     'text' => sprintf(
-                        _n('%d libro nuevo disponible', '%d libros nuevos disponibles', $nuevos_libros, 'flavor-chat-ia'),
+                        _n('%d libro nuevo disponible', '%d libros nuevos disponibles', $nuevos_libros, FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $nuevos_libros
                     ),
                     'link' => Flavor_Chat_Helpers::get_action_url('biblioteca', 'catalogo'),
                     'severity_slug' => 'stable',
                     'severity_label' => $this->get_tool_severity_label('stable'),
-                    'severity_reason' => __('Hay novedades en la biblioteca.', 'flavor-chat-ia'),
+                    'severity_reason' => __('Hay novedades en la biblioteca.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
         }
@@ -2546,12 +2546,12 @@ class Flavor_Portal_Shortcodes {
                 'type' => $horas_restantes <= 2 ? 'warning' : 'info',
                 'icon' => '🚲',
                 'text' => $horas_restantes <= 2
-                    ? sprintf(__('Bici a devolver en %d hora(s)', 'flavor-chat-ia'), $horas_restantes)
-                    : __('Tienes una bicicleta reservada', 'flavor-chat-ia'),
+                    ? sprintf(__('Bici a devolver en %d hora(s)', FLAVOR_PLATFORM_TEXT_DOMAIN), $horas_restantes)
+                    : __('Tienes una bicicleta reservada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'link' => Flavor_Chat_Helpers::get_action_url('bicicletas_compartidas', 'mis-reservas'),
                 'severity_slug' => $horas_restantes <= 2 ? 'attention' : 'followup',
                 'severity_label' => $this->get_tool_severity_label($horas_restantes <= 2 ? 'attention' : 'followup'),
-                'severity_reason' => sprintf(__('Devolver antes de las %s.', 'flavor-chat-ia'),
+                'severity_reason' => sprintf(__('Devolver antes de las %s.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     date_i18n(get_option('time_format'), $fecha_fin)),
             ];
             return $notifications;
@@ -2569,13 +2569,13 @@ class Flavor_Portal_Shortcodes {
                     'type' => 'info',
                     'icon' => '🚴',
                     'text' => sprintf(
-                        _n('%d bicicleta disponible', '%d bicicletas disponibles', $bicis_disponibles, 'flavor-chat-ia'),
+                        _n('%d bicicleta disponible', '%d bicicletas disponibles', $bicis_disponibles, FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $bicis_disponibles
                     ),
                     'link' => Flavor_Chat_Helpers::get_action_url('bicicletas_compartidas', ''),
                     'severity_slug' => 'stable',
                     'severity_label' => $this->get_tool_severity_label('stable'),
-                    'severity_reason' => __('Puedes reservar una bici cuando quieras.', 'flavor-chat-ia'),
+                    'severity_reason' => __('Puedes reservar una bici cuando quieras.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
         }
@@ -2615,13 +2615,13 @@ class Flavor_Portal_Shortcodes {
                     'type' => 'info',
                     'icon' => '💬',
                     'text' => sprintf(
-                        _n('%d respuesta nueva en tus temas', '%d respuestas nuevas en tus temas', $respuestas_nuevas, 'flavor-chat-ia'),
+                        _n('%d respuesta nueva en tus temas', '%d respuestas nuevas en tus temas', $respuestas_nuevas, FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $respuestas_nuevas
                     ),
                     'link' => Flavor_Chat_Helpers::get_action_url('foros', 'mis-temas'),
                     'severity_slug' => 'followup',
                     'severity_label' => $this->get_tool_severity_label('followup'),
-                    'severity_reason' => __('Han respondido a tus publicaciones.', 'flavor-chat-ia'),
+                    'severity_reason' => __('Han respondido a tus publicaciones.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
                 return $notifications;
             }
@@ -2639,11 +2639,11 @@ class Flavor_Portal_Shortcodes {
                 'module_id' => 'foros',
                 'type' => 'info',
                 'icon' => '📢',
-                'text' => sprintf(__('%d hilos nuevos esta semana', 'flavor-chat-ia'), $hilos_nuevos),
+                'text' => sprintf(__('%d hilos nuevos esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN), $hilos_nuevos),
                 'link' => Flavor_Chat_Helpers::get_action_url('foros', ''),
                 'severity_slug' => 'stable',
                 'severity_label' => $this->get_tool_severity_label('stable'),
-                'severity_reason' => __('Hay debate activo en los foros.', 'flavor-chat-ia'),
+                'severity_reason' => __('Hay debate activo en los foros.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2682,15 +2682,15 @@ class Flavor_Portal_Shortcodes {
                     'type' => 'info',
                     'icon' => '🎙️',
                     'text' => sprintf(
-                        _n('%d episodio nuevo', '%d episodios nuevos', $episodios_nuevos, 'flavor-chat-ia'),
+                        _n('%d episodio nuevo', '%d episodios nuevos', $episodios_nuevos, FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $episodios_nuevos
                     ),
                     'link' => Flavor_Chat_Helpers::get_action_url('podcast', ''),
                     'severity_slug' => 'stable',
                     'severity_label' => $this->get_tool_severity_label('stable'),
                     'severity_reason' => !empty($ultimo['titulo'])
-                        ? sprintf(__('Último: %s', 'flavor-chat-ia'), $ultimo['titulo'])
-                        : __('Hay contenido nuevo para escuchar.', 'flavor-chat-ia'),
+                        ? sprintf(__('Último: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $ultimo['titulo'])
+                        : __('Hay contenido nuevo para escuchar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
         }
@@ -2718,11 +2718,11 @@ class Flavor_Portal_Shortcodes {
                     'module_id' => 'radio',
                     'type' => 'info',
                     'icon' => '📻',
-                    'text' => sprintf(__('En directo: %s', 'flavor-chat-ia'), $programa_hoy['nombre']),
+                    'text' => sprintf(__('En directo: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $programa_hoy['nombre']),
                     'link' => Flavor_Chat_Helpers::get_action_url('radio', ''),
                     'severity_slug' => 'followup',
                     'severity_label' => $this->get_tool_severity_label('followup'),
-                    'severity_reason' => __('Hay programación en vivo ahora.', 'flavor-chat-ia'),
+                    'severity_reason' => __('Hay programación en vivo ahora.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
         }
@@ -2757,13 +2757,13 @@ class Flavor_Portal_Shortcodes {
                     'type' => 'info',
                     'icon' => '@',
                     'text' => sprintf(
-                        _n('%d mención nueva', '%d menciones nuevas', $menciones, 'flavor-chat-ia'),
+                        _n('%d mención nueva', '%d menciones nuevas', $menciones, FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $menciones
                     ),
                     'link' => Flavor_Chat_Helpers::get_action_url('red_social', 'menciones'),
                     'severity_slug' => 'followup',
                     'severity_label' => $this->get_tool_severity_label('followup'),
-                    'severity_reason' => __('Te han mencionado en publicaciones.', 'flavor-chat-ia'),
+                    'severity_reason' => __('Te han mencionado en publicaciones.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
                 return $notifications;
             }
@@ -2788,13 +2788,13 @@ class Flavor_Portal_Shortcodes {
                     'type' => 'info',
                     'icon' => '📰',
                     'text' => sprintf(
-                        _n('%d publicación nueva de tus seguidos', '%d publicaciones nuevas de tus seguidos', $posts_seguidos, 'flavor-chat-ia'),
+                        _n('%d publicación nueva de tus seguidos', '%d publicaciones nuevas de tus seguidos', $posts_seguidos, FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $posts_seguidos
                     ),
                     'link' => Flavor_Chat_Helpers::get_action_url('red_social', ''),
                     'severity_slug' => 'stable',
                     'severity_label' => $this->get_tool_severity_label('stable'),
-                    'severity_reason' => __('Hay actividad reciente en tu red.', 'flavor-chat-ia'),
+                    'severity_reason' => __('Hay actividad reciente en tu red.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
         }
@@ -2835,13 +2835,13 @@ class Flavor_Portal_Shortcodes {
                 'type' => $mensajes_sin_leer >= 10 ? 'warning' : 'info',
                 'icon' => '💬',
                 'text' => sprintf(
-                    _n('%d mensaje sin leer', '%d mensajes sin leer', $mensajes_sin_leer, 'flavor-chat-ia'),
+                    _n('%d mensaje sin leer', '%d mensajes sin leer', $mensajes_sin_leer, FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $mensajes_sin_leer
                 ),
                 'link' => Flavor_Chat_Helpers::get_action_url('chat_grupos', ''),
                 'severity_slug' => $mensajes_sin_leer >= 10 ? 'attention' : 'followup',
                 'severity_label' => $this->get_tool_severity_label($mensajes_sin_leer >= 10 ? 'attention' : 'followup'),
-                'severity_reason' => __('Tienes conversaciones pendientes.', 'flavor-chat-ia'),
+                'severity_reason' => __('Tienes conversaciones pendientes.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2887,7 +2887,7 @@ class Flavor_Portal_Shortcodes {
 
         $ciclo_id = (int) $ciclos[0];
         $fecha_cierre = (string) get_post_meta($ciclo_id, '_gc_fecha_cierre', true);
-        $titulo_ciclo = get_the_title($ciclo_id) ?: __('Ciclo activo', 'flavor-chat-ia');
+        $titulo_ciclo = get_the_title($ciclo_id) ?: __('Ciclo activo', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         // Verificar si ya tiene pedido
         if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_pedidos'") === $tabla_pedidos) {
@@ -2906,12 +2906,12 @@ class Flavor_Portal_Shortcodes {
                     'type' => $dias_restantes <= 2 ? 'warning' : 'info',
                     'icon' => '🧺',
                     'text' => $dias_restantes <= 2
-                        ? sprintf(__('Ciclo cierra en %d día(s)', 'flavor-chat-ia'), $dias_restantes)
-                        : sprintf(__('%s abierto para pedidos', 'flavor-chat-ia'), $titulo_ciclo),
+                        ? sprintf(__('Ciclo cierra en %d día(s)', FLAVOR_PLATFORM_TEXT_DOMAIN), $dias_restantes)
+                        : sprintf(__('%s abierto para pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN), $titulo_ciclo),
                     'link' => Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'hacer-pedido'),
                     'severity_slug' => $severity_slug,
                     'severity_label' => $this->get_tool_severity_label($severity_slug),
-                    'severity_reason' => sprintf(__('Cierra el %s.', 'flavor-chat-ia'),
+                    'severity_reason' => sprintf(__('Cierra el %s.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         date_i18n(get_option('date_format'), strtotime($fecha_cierre))),
                 ];
             }
@@ -2948,13 +2948,13 @@ class Flavor_Portal_Shortcodes {
                     'type' => 'info',
                     'icon' => '🛒',
                     'text' => sprintf(
-                        _n('%d mensaje en tus anuncios', '%d mensajes en tus anuncios', $mensajes, 'flavor-chat-ia'),
+                        _n('%d mensaje en tus anuncios', '%d mensajes en tus anuncios', $mensajes, FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $mensajes
                     ),
                     'link' => Flavor_Chat_Helpers::get_action_url('marketplace', 'mis-anuncios'),
                     'severity_slug' => 'followup',
                     'severity_label' => $this->get_tool_severity_label('followup'),
-                    'severity_reason' => __('Personas interesadas en lo que ofreces.', 'flavor-chat-ia'),
+                    'severity_reason' => __('Personas interesadas en lo que ofreces.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
         }
@@ -2990,7 +2990,7 @@ class Flavor_Portal_Shortcodes {
             $acciones[] = [
                 'tipo'   => 'participacion',
                 'icono'  => '🗳️',
-                'titulo' => $votacion['titulo'] ?? __('Decisión activa', 'flavor-chat-ia'),
+                'titulo' => $votacion['titulo'] ?? __('Decisión activa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha'  => $fecha,
                 'url'    => Flavor_Chat_Helpers::get_action_url('participacion', 'votaciones'),
                 'severity_slug' => $severity_slug,
@@ -3029,7 +3029,7 @@ class Flavor_Portal_Shortcodes {
             $acciones[] = [
                 'tipo'   => 'tramite',
                 'icono'  => '📋',
-                'titulo' => $tramite['titulo'] ?? __('Trámite pendiente', 'flavor-chat-ia'),
+                'titulo' => $tramite['titulo'] ?? __('Trámite pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha'  => $tramite['created_at'] ?? '',
                 'url'    => Flavor_Chat_Helpers::get_action_url('tramites', 'mis-tramites'),
                 'severity_slug' => $severity_slug,
@@ -3079,7 +3079,7 @@ class Flavor_Portal_Shortcodes {
         $ciclo_id = (int) $ciclos[0];
         $fecha_cierre = (string) get_post_meta($ciclo_id, '_gc_fecha_cierre', true);
         $fecha_entrega = (string) get_post_meta($ciclo_id, '_gc_fecha_entrega', true);
-        $titulo_ciclo = get_the_title($ciclo_id) ?: __('Ciclo activo', 'flavor-chat-ia');
+        $titulo_ciclo = get_the_title($ciclo_id) ?: __('Ciclo activo', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $tiene_pedido = (int) $wpdb->get_var($wpdb->prepare(
             "SELECT COUNT(*) FROM {$tabla_pedidos} WHERE usuario_id = %d AND ciclo_id = %d",
             $user_id,
@@ -3139,7 +3139,7 @@ class Flavor_Portal_Shortcodes {
                 $acciones[] = [
                     'tipo'   => 'energia-lectura',
                     'icono'  => '📈',
-                    'titulo' => __('Registrar lectura energética', 'flavor-chat-ia'),
+                    'titulo' => __('Registrar lectura energética', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'fecha'  => current_time('mysql'),
                     'url'    => Flavor_Chat_Helpers::get_action_url('energia_comunitaria', 'registrar-lectura'),
                     'severity_slug' => 'attention',
@@ -3164,7 +3164,7 @@ class Flavor_Portal_Shortcodes {
                 $acciones[] = [
                     'tipo'   => 'energia-liquidacion',
                     'icono'  => '💶',
-                    'titulo' => $liquidacion['referencia'] ?: __('Liquidación energética', 'flavor-chat-ia'),
+                    'titulo' => $liquidacion['referencia'] ?: __('Liquidación energética', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'fecha'  => $fecha_base,
                     'url'    => Flavor_Chat_Helpers::get_action_url('energia_comunitaria', 'liquidaciones'),
                     'severity_slug' => $severity_slug,
@@ -3212,7 +3212,7 @@ class Flavor_Portal_Shortcodes {
             $acciones[] = [
                 'tipo'   => 'taller',
                 'icono'  => '🎨',
-                'titulo' => $inscripcion['titulo'] ?? __('Taller', 'flavor-chat-ia'),
+                'titulo' => $inscripcion['titulo'] ?? __('Taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha'  => $fecha,
                 'url'    => Flavor_Chat_Helpers::get_action_url('talleres', 'mis-inscripciones'),
                 'severity_slug' => $severity_slug,
@@ -3256,7 +3256,7 @@ class Flavor_Portal_Shortcodes {
             $acciones[] = [
                 'tipo'   => 'biblioteca',
                 'icono'  => '📚',
-                'titulo' => sprintf(__('Devolver: %s', 'flavor-chat-ia'), $prestamo['titulo'] ?? __('Libro', 'flavor-chat-ia')),
+                'titulo' => sprintf(__('Devolver: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $prestamo['titulo'] ?? __('Libro', FLAVOR_PLATFORM_TEXT_DOMAIN)),
                 'fecha'  => $fecha,
                 'url'    => Flavor_Chat_Helpers::get_action_url('biblioteca', 'mis-prestamos'),
                 'severity_slug' => $severity_slug,
@@ -3305,7 +3305,7 @@ class Flavor_Portal_Shortcodes {
             $acciones[] = [
                 'tipo'   => 'curso',
                 'icono'  => '📖',
-                'titulo' => $sesion['titulo'] ?? $sesion['curso_nombre'] ?? __('Clase', 'flavor-chat-ia'),
+                'titulo' => $sesion['titulo'] ?? $sesion['curso_nombre'] ?? __('Clase', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha'  => $fecha,
                 'url'    => Flavor_Chat_Helpers::get_action_url('cursos', 'mis-cursos'),
                 'severity_slug' => $severity_slug,
@@ -3357,7 +3357,7 @@ class Flavor_Portal_Shortcodes {
                 $acciones[] = [
                     'tipo'   => 'cuota',
                     'icono'  => '💳',
-                    'titulo' => $cuota['concepto'] ?? __('Cuota pendiente', 'flavor-chat-ia'),
+                    'titulo' => $cuota['concepto'] ?? __('Cuota pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'fecha'  => $fecha,
                     'url'    => Flavor_Chat_Helpers::get_action_url('socios', 'cuotas'),
                     'severity_slug' => $severity_slug,
@@ -3399,7 +3399,7 @@ class Flavor_Portal_Shortcodes {
             $acciones[] = [
                 'tipo'   => 'ayuda-vecinal',
                 'icono'  => '🤝',
-                'titulo' => $solicitud['titulo'] ?? __('Ayuda comprometida', 'flavor-chat-ia'),
+                'titulo' => $solicitud['titulo'] ?? __('Ayuda comprometida', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha'  => $fecha,
                 'url'    => Flavor_Chat_Helpers::get_action_url('ayuda_vecinal', 'mis-compromisos'),
                 'severity_slug' => $severity_slug,
@@ -3415,9 +3415,9 @@ class Flavor_Portal_Shortcodes {
      */
     private function render_useful_links() {
         $links = [
-            ['url' => home_url('/servicios/'), 'text' => __('Explorar servicios', 'flavor-chat-ia'), 'icon' => '🔍'],
-            ['url' => Flavor_Chat_Helpers::get_action_url('', ''), 'text' => __('Volver al portal', 'flavor-chat-ia'), 'icon' => '🧭'],
-            ['url' => admin_url('profile.php'), 'text' => __('Abrir perfil', 'flavor-chat-ia'), 'icon' => '👤'],
+            ['url' => home_url('/servicios/'), 'text' => __('Explorar servicios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🔍'],
+            ['url' => Flavor_Chat_Helpers::get_action_url('', ''), 'text' => __('Volver al portal', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🧭'],
+            ['url' => admin_url('profile.php'), 'text' => __('Abrir perfil', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👤'],
         ];
 
         ob_start();
@@ -3443,8 +3443,8 @@ class Flavor_Portal_Shortcodes {
         // Requerir login
         if (!is_user_logged_in()) {
             return '<div class="flavor-login-required">
-                <p>' . __('Debes iniciar sesión para ver tus estadísticas.', 'flavor-chat-ia') . '</p>
-                <a href="' . esc_url(wp_login_url($this->get_current_request_url())) . '" class="flavor-button flavor-button--primary">' . __('Iniciar Sesión', 'flavor-chat-ia') . '</a>
+                <p>' . __('Debes iniciar sesión para ver tus estadísticas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
+                <a href="' . esc_url(wp_login_url($this->get_current_request_url())) . '" class="flavor-button flavor-button--primary">' . __('Iniciar Sesión', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>
             </div>';
         }
 
@@ -3459,7 +3459,7 @@ class Flavor_Portal_Shortcodes {
         $modulos = $this->get_modulos_con_stats();
 
         if (empty($modulos)) {
-            return '<p class="flavor-no-stats">' . __('No hay estadísticas disponibles en este momento.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-no-stats">' . __('No hay estadísticas disponibles en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -3467,8 +3467,8 @@ class Flavor_Portal_Shortcodes {
         <div class="flavor-dashboard-stats">
             <?php if ($atts['mostrar_titulo'] === 'yes') : ?>
                 <div class="flavor-dashboard-stats__header">
-                    <h2 class="flavor-dashboard-stats__title"><?php _e('Tus Estadísticas', 'flavor-chat-ia'); ?></h2>
-                    <p class="flavor-dashboard-stats__subtitle"><?php _e('Resumen de tu actividad en la comunidad', 'flavor-chat-ia'); ?></p>
+                    <h2 class="flavor-dashboard-stats__title"><?php _e('Tus Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                    <p class="flavor-dashboard-stats__subtitle"><?php _e('Resumen de tu actividad en la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
 
@@ -3528,7 +3528,7 @@ class Flavor_Portal_Shortcodes {
 
             <div class="flavor-stat-card__footer">
                 <a href="<?php echo esc_url($modulo['url']); ?>" class="flavor-stat-card__link">
-                    <?php echo esc_html(($modulo['role_slug'] ?? 'vertical') === 'base' ? __('Abrir ecosistema', 'flavor-chat-ia') : __('Abrir módulo', 'flavor-chat-ia')); ?> <span class="flavor-stat-card__arrow">→</span>
+                    <?php echo esc_html(($modulo['role_slug'] ?? 'vertical') === 'base' ? __('Abrir ecosistema', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Abrir módulo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?> <span class="flavor-stat-card__arrow">→</span>
                 </a>
             </div>
         </div>
@@ -3604,9 +3604,9 @@ class Flavor_Portal_Shortcodes {
                 if ($saldo !== null) {
                     return [
                         'stat_value' => number_format($saldo, 1),
-                        'stat_label' => __('Horas Disponibles', 'flavor-chat-ia'),
+                        'stat_label' => __('Horas Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'secondary_stats' => [
-                            ['value' => $ofrecidos, 'label' => __('Servicios ofrecidos', 'flavor-chat-ia')],
+                            ['value' => $ofrecidos, 'label' => __('Servicios ofrecidos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                         ],
                     ];
                 }
@@ -3627,9 +3627,9 @@ class Flavor_Portal_Shortcodes {
 
                 return [
                     'stat_value' => $inscritos,
-                    'stat_label' => __('Talleres Inscritos', 'flavor-chat-ia'),
+                    'stat_label' => __('Talleres Inscritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'secondary_stats' => [
-                        ['value' => $organizados, 'label' => __('Talleres organizados', 'flavor-chat-ia')],
+                        ['value' => $organizados, 'label' => __('Talleres organizados', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     ],
                 ];
 
@@ -3648,9 +3648,9 @@ class Flavor_Portal_Shortcodes {
 
                 return [
                     'stat_value' => $grupos,
-                    'stat_label' => __('Grupos Activos', 'flavor-chat-ia'),
+                    'stat_label' => __('Grupos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'secondary_stats' => [
-                        ['value' => $pedidos, 'label' => __('Pedidos realizados', 'flavor-chat-ia')],
+                        ['value' => $pedidos, 'label' => __('Pedidos realizados', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     ],
                 ];
 
@@ -3668,9 +3668,9 @@ class Flavor_Portal_Shortcodes {
 
                 return [
                     'stat_value' => $solicitudes,
-                    'stat_label' => __('Solicitudes Activas', 'flavor-chat-ia'),
+                    'stat_label' => __('Solicitudes Activas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'secondary_stats' => [
-                        ['value' => $ayudas, 'label' => __('Ayudas prestadas', 'flavor-chat-ia')],
+                        ['value' => $ayudas, 'label' => __('Ayudas prestadas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     ],
                 ];
 
@@ -3692,9 +3692,9 @@ class Flavor_Portal_Shortcodes {
 
                 return [
                     'stat_value' => $proximos,
-                    'stat_label' => __('Próximos Eventos', 'flavor-chat-ia'),
+                    'stat_label' => __('Próximos Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'secondary_stats' => [
-                        ['value' => $asistidos, 'label' => __('Eventos asistidos', 'flavor-chat-ia')],
+                        ['value' => $asistidos, 'label' => __('Eventos asistidos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     ],
                 ];
 
@@ -3712,9 +3712,9 @@ class Flavor_Portal_Shortcodes {
 
                 return [
                     'stat_value' => $prestados,
-                    'stat_label' => __('Libros Prestados', 'flavor-chat-ia'),
+                    'stat_label' => __('Libros Prestados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'secondary_stats' => [
-                        ['value' => $historial, 'label' => __('Libros leídos', 'flavor-chat-ia')],
+                        ['value' => $historial, 'label' => __('Libros leídos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     ],
                 ];
 
@@ -3732,9 +3732,9 @@ class Flavor_Portal_Shortcodes {
 
                 return [
                     'stat_value' => $activas,
-                    'stat_label' => __('Reservas Activas', 'flavor-chat-ia'),
+                    'stat_label' => __('Reservas Activas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'secondary_stats' => [
-                        ['value' => $totales, 'label' => __('Total reservas', 'flavor-chat-ia')],
+                        ['value' => $totales, 'label' => __('Total reservas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     ],
                 ];
 
@@ -3753,9 +3753,9 @@ class Flavor_Portal_Shortcodes {
 
                 return [
                     'stat_value' => $parcelas,
-                    'stat_label' => __('Parcelas Asignadas', 'flavor-chat-ia'),
+                    'stat_label' => __('Parcelas Asignadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'secondary_stats' => [
-                        ['value' => $cosechas, 'label' => __('Cosechas registradas', 'flavor-chat-ia')],
+                        ['value' => $cosechas, 'label' => __('Cosechas registradas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     ],
                 ];
 
@@ -3773,9 +3773,9 @@ class Flavor_Portal_Shortcodes {
 
                 return [
                     'stat_value' => $abiertas,
-                    'stat_label' => __('Incidencias Abiertas', 'flavor-chat-ia'),
+                    'stat_label' => __('Incidencias Abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'secondary_stats' => [
-                        ['value' => $resueltas, 'label' => __('Resueltas', 'flavor-chat-ia')],
+                        ['value' => $resueltas, 'label' => __('Resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     ],
                 ];
 
@@ -3792,10 +3792,10 @@ class Flavor_Portal_Shortcodes {
                 ));
 
                 return [
-                    'stat_value' => $activo ? __('En uso', 'flavor-chat-ia') : __('Disponible', 'flavor-chat-ia'),
-                    'stat_label' => __('Estado Actual', 'flavor-chat-ia'),
+                    'stat_value' => $activo ? __('En uso', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'stat_label' => __('Estado Actual', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'secondary_stats' => [
-                        ['value' => $total_uso, 'label' => __('Usos totales', 'flavor-chat-ia')],
+                        ['value' => $total_uso, 'label' => __('Usos totales', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     ],
                 ];
 
@@ -3813,9 +3813,9 @@ class Flavor_Portal_Shortcodes {
 
                 return [
                     'stat_value' => $proximos,
-                    'stat_label' => __('Viajes Próximos', 'flavor-chat-ia'),
+                    'stat_label' => __('Viajes Próximos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'secondary_stats' => [
-                        ['value' => $completados, 'label' => __('Viajes completados', 'flavor-chat-ia')],
+                        ['value' => $completados, 'label' => __('Viajes completados', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     ],
                 ];
 
@@ -3834,9 +3834,9 @@ class Flavor_Portal_Shortcodes {
 
                 return [
                     'stat_value' => $temas,
-                    'stat_label' => __('Temas Creados', 'flavor-chat-ia'),
+                    'stat_label' => __('Temas Creados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'secondary_stats' => [
-                        ['value' => $respuestas, 'label' => __('Respuestas', 'flavor-chat-ia')],
+                        ['value' => $respuestas, 'label' => __('Respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     ],
                 ];
 
@@ -3854,9 +3854,9 @@ class Flavor_Portal_Shortcodes {
 
                 return [
                     'stat_value' => $activos,
-                    'stat_label' => __('Anuncios Activos', 'flavor-chat-ia'),
+                    'stat_label' => __('Anuncios Activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'secondary_stats' => [
-                        ['value' => $ventas, 'label' => __('Vendidos', 'flavor-chat-ia')],
+                        ['value' => $ventas, 'label' => __('Vendidos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     ],
                 ];
 
@@ -3874,9 +3874,9 @@ class Flavor_Portal_Shortcodes {
 
                 return [
                     'stat_value' => $puntos ?? 0,
-                    'stat_label' => __('Puntos Verdes', 'flavor-chat-ia'),
+                    'stat_label' => __('Puntos Verdes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'secondary_stats' => [
-                        ['value' => $registros, 'label' => __('Registros', 'flavor-chat-ia')],
+                        ['value' => $registros, 'label' => __('Registros', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     ],
                 ];
 
@@ -3894,9 +3894,9 @@ class Flavor_Portal_Shortcodes {
 
                 return [
                     'stat_value' => $activos,
-                    'stat_label' => __('Cursos Activos', 'flavor-chat-ia'),
+                    'stat_label' => __('Cursos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'secondary_stats' => [
-                        ['value' => $completados, 'label' => __('Completados', 'flavor-chat-ia')],
+                        ['value' => $completados, 'label' => __('Completados', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     ],
                 ];
 
@@ -3909,7 +3909,7 @@ class Flavor_Portal_Shortcodes {
 
                 return [
                     'stat_value' => $activas,
-                    'stat_label' => __('Comunidades Activas', 'flavor-chat-ia'),
+                    'stat_label' => __('Comunidades Activas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'secondary_stats' => [],
                 ];
 
@@ -3923,9 +3923,9 @@ class Flavor_Portal_Shortcodes {
                 if ($socio && $socio->estado === 'activo') {
                     return [
                         'stat_value' => '#' . $socio->numero_socio,
-                        'stat_label' => __('Número de Socio', 'flavor-chat-ia'),
+                        'stat_label' => __('Número de Socio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'secondary_stats' => [
-                            ['value' => '✅', 'label' => __('Activo', 'flavor-chat-ia')],
+                            ['value' => '✅', 'label' => __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                         ],
                     ];
                 }
@@ -3944,10 +3944,10 @@ class Flavor_Portal_Shortcodes {
                 ));
 
                 return [
-                    'stat_value' => $activa ? __('Reservada', 'flavor-chat-ia') : __('Sin reserva', 'flavor-chat-ia'),
-                    'stat_label' => __('Plaza de Parking', 'flavor-chat-ia'),
+                    'stat_value' => $activa ? __('Reservada', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Sin reserva', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'stat_label' => __('Plaza de Parking', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'secondary_stats' => [
-                        ['value' => $total, 'label' => __('Reservas totales', 'flavor-chat-ia')],
+                        ['value' => $total, 'label' => __('Reservas totales', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     ],
                 ];
         }
@@ -3967,7 +3967,7 @@ class Flavor_Portal_Shortcodes {
         $modulos = $this->get_modulos_disponibles($atts['tipo']);
 
         if (empty($modulos)) {
-            return '<p class="flavor-no-modulos">' . __('No hay módulos disponibles en este momento.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-no-modulos">' . __('No hay módulos disponibles en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -3993,11 +3993,11 @@ class Flavor_Portal_Shortcodes {
                     <div class="flavor-modulo-card__actions">
                         <?php if ($modulo['tiene_acceso']) : ?>
                             <a href="<?php echo esc_url($modulo['url']); ?>" class="flavor-button flavor-button--primary">
-                                <?php echo esc_html($modulo['action_text'] ?? __('Acceder', 'flavor-chat-ia')); ?>
+                                <?php echo esc_html($modulo['action_text'] ?? __('Acceder', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                             </a>
                         <?php else : ?>
                             <span class="flavor-modulo-card__locked">
-                                🔒 <?php _e('Requiere registro', 'flavor-chat-ia'); ?>
+                                🔒 <?php _e('Requiere registro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         <?php endif; ?>
                     </div>
@@ -4082,21 +4082,21 @@ class Flavor_Portal_Shortcodes {
      */
     private function get_portal_module_role_badge($instance) {
         if (!is_object($instance) || !method_exists($instance, 'get_ecosystem_metadata')) {
-            return __('Módulo', 'flavor-chat-ia');
+            return __('Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         $role = $this->get_portal_module_role_slug($instance);
 
         switch ($role) {
             case 'base':
-                return __('Base', 'flavor-chat-ia');
+                return __('Base', FLAVOR_PLATFORM_TEXT_DOMAIN);
             case 'base-standalone':
-                return __('Base local', 'flavor-chat-ia');
+                return __('Base local', FLAVOR_PLATFORM_TEXT_DOMAIN);
             case 'transversal':
-                return __('Transversal', 'flavor-chat-ia');
+                return __('Transversal', FLAVOR_PLATFORM_TEXT_DOMAIN);
             case 'vertical':
             default:
-                return __('Operativo', 'flavor-chat-ia');
+                return __('Operativo', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
     }
 
@@ -4135,10 +4135,10 @@ class Flavor_Portal_Shortcodes {
         $role = $ecosystem['display_role'] ?? $ecosystem['module_role'] ?? 'vertical';
 
         $role_labels = [
-            'base' => __('Base comunitaria', 'flavor-chat-ia'),
-            'base-standalone' => __('Base local', 'flavor-chat-ia'),
-            'vertical' => __('Servicio activo', 'flavor-chat-ia'),
-            'transversal' => __('Capa de soporte', 'flavor-chat-ia'),
+            'base' => __('Base comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'base-standalone' => __('Base local', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'vertical' => __('Servicio activo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'transversal' => __('Capa de soporte', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $contexts = [];
@@ -4153,10 +4153,10 @@ class Flavor_Portal_Shortcodes {
                 ? mb_convert_case($context, MB_CASE_TITLE, 'UTF-8')
                 : ucwords($context);
 
-            return sprintf('%s · %s', $role_labels[$role] ?? __('Módulo', 'flavor-chat-ia'), $context);
+            return sprintf('%s · %s', $role_labels[$role] ?? __('Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN), $context);
         }
 
-        return sprintf('%s · %s', $role_labels[$role] ?? __('Módulo', 'flavor-chat-ia'), $default_name);
+        return sprintf('%s · %s', $role_labels[$role] ?? __('Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN), $default_name);
     }
 
     /**
@@ -4225,7 +4225,7 @@ class Flavor_Portal_Shortcodes {
                     $user_id
                 ));
                 if ($saldo !== null) {
-                    $stats[] = sprintf(__('%s horas disponibles', 'flavor-chat-ia'), number_format($saldo, 1));
+                    $stats[] = sprintf(__('%s horas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($saldo, 1));
                 }
                 break;
 
@@ -4236,7 +4236,7 @@ class Flavor_Portal_Shortcodes {
                     $user_id
                 ));
                 if ($count > 0) {
-                    $stats[] = sprintf(__('%d talleres inscritos', 'flavor-chat-ia'), $count);
+                    $stats[] = sprintf(__('%d talleres inscritos', FLAVOR_PLATFORM_TEXT_DOMAIN), $count);
                 }
                 break;
 
@@ -4248,7 +4248,7 @@ class Flavor_Portal_Shortcodes {
                     $user_id
                 ));
                 if ($count > 0) {
-                    $stats[] = sprintf(__('Miembro de %d grupo(s)', 'flavor-chat-ia'), $count);
+                    $stats[] = sprintf(__('Miembro de %d grupo(s)', FLAVOR_PLATFORM_TEXT_DOMAIN), $count);
                 }
                 break;
 
@@ -4259,7 +4259,7 @@ class Flavor_Portal_Shortcodes {
                     $user_id
                 ));
                 if ($count > 0) {
-                    $stats[] = sprintf(__('%d solicitudes activas', 'flavor-chat-ia'), $count);
+                    $stats[] = sprintf(__('%d solicitudes activas', FLAVOR_PLATFORM_TEXT_DOMAIN), $count);
                 }
                 break;
 
@@ -4270,7 +4270,7 @@ class Flavor_Portal_Shortcodes {
                     $user_id
                 ));
                 if ($count > 0) {
-                    $stats[] = sprintf(__('%d eventos próximos', 'flavor-chat-ia'), $count);
+                    $stats[] = sprintf(__('%d eventos próximos', FLAVOR_PLATFORM_TEXT_DOMAIN), $count);
                 }
                 break;
 
@@ -4282,9 +4282,9 @@ class Flavor_Portal_Shortcodes {
                 ));
                 if ($socio) {
                     $estados = [
-                        'activo' => '✅ ' . __('Socio Activo', 'flavor-chat-ia'),
-                        'pendiente' => '⏳ ' . __('Pendiente de aprobación', 'flavor-chat-ia'),
-                        'baja' => '❌ ' . __('De baja', 'flavor-chat-ia'),
+                        'activo' => '✅ ' . __('Socio Activo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'pendiente' => '⏳ ' . __('Pendiente de aprobación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'baja' => '❌ ' . __('De baja', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ];
                     $stats[] = $estados[$socio->estado] ?? $socio->estado;
                 }
@@ -4297,7 +4297,7 @@ class Flavor_Portal_Shortcodes {
                     $user_id
                 ));
                 if ($count > 0) {
-                    $stats[] = sprintf(__('%d libros prestados', 'flavor-chat-ia'), $count);
+                    $stats[] = sprintf(__('%d libros prestados', FLAVOR_PLATFORM_TEXT_DOMAIN), $count);
                 }
                 break;
 
@@ -4308,7 +4308,7 @@ class Flavor_Portal_Shortcodes {
                     $user_id
                 ));
                 if ($count > 0) {
-                    $stats[] = sprintf(__('%d reservas activas', 'flavor-chat-ia'), $count);
+                    $stats[] = sprintf(__('%d reservas activas', FLAVOR_PLATFORM_TEXT_DOMAIN), $count);
                 }
                 break;
 
@@ -4319,7 +4319,7 @@ class Flavor_Portal_Shortcodes {
                     $user_id
                 ));
                 if ($parcela > 0) {
-                    $stats[] = '🌱 ' . sprintf(__('%d parcela(s) asignadas', 'flavor-chat-ia'), $parcela);
+                    $stats[] = '🌱 ' . sprintf(__('%d parcela(s) asignadas', FLAVOR_PLATFORM_TEXT_DOMAIN), $parcela);
                 }
                 break;
 
@@ -4330,7 +4330,7 @@ class Flavor_Portal_Shortcodes {
                     $user_id
                 ));
                 if ($count > 0) {
-                    $stats[] = sprintf(__('%d incidencias abiertas', 'flavor-chat-ia'), $count);
+                    $stats[] = sprintf(__('%d incidencias abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN), $count);
                 }
                 break;
 
@@ -4341,7 +4341,7 @@ class Flavor_Portal_Shortcodes {
                     $user_id
                 ));
                 if ($activo > 0) {
-                    $stats[] = '🚲 ' . __('Bicicleta en uso', 'flavor-chat-ia');
+                    $stats[] = '🚲 ' . __('Bicicleta en uso', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 }
                 break;
 
@@ -4352,7 +4352,7 @@ class Flavor_Portal_Shortcodes {
                     $user_id
                 ));
                 if ($count > 0) {
-                    $stats[] = sprintf(__('%d viajes reservados', 'flavor-chat-ia'), $count);
+                    $stats[] = sprintf(__('%d viajes reservados', FLAVOR_PLATFORM_TEXT_DOMAIN), $count);
                 }
                 break;
 
@@ -4363,7 +4363,7 @@ class Flavor_Portal_Shortcodes {
                     $user_id
                 ));
                 if ($count > 0) {
-                    $stats[] = sprintf(__('%d temas creados', 'flavor-chat-ia'), $count);
+                    $stats[] = sprintf(__('%d temas creados', FLAVOR_PLATFORM_TEXT_DOMAIN), $count);
                 }
                 break;
 
@@ -4374,7 +4374,7 @@ class Flavor_Portal_Shortcodes {
                     $user_id
                 ));
                 if ($count > 0) {
-                    $stats[] = sprintf(__('%d anuncios activos', 'flavor-chat-ia'), $count);
+                    $stats[] = sprintf(__('%d anuncios activos', FLAVOR_PLATFORM_TEXT_DOMAIN), $count);
                 }
                 break;
 
@@ -4385,7 +4385,7 @@ class Flavor_Portal_Shortcodes {
                     $user_id
                 ));
                 if ($puntos > 0) {
-                    $stats[] = '♻️ ' . sprintf(__('%d puntos verdes', 'flavor-chat-ia'), $puntos);
+                    $stats[] = '♻️ ' . sprintf(__('%d puntos verdes', FLAVOR_PLATFORM_TEXT_DOMAIN), $puntos);
                 }
                 break;
 
@@ -4396,7 +4396,7 @@ class Flavor_Portal_Shortcodes {
                     $user_id
                 ));
                 if ($count > 0) {
-                    $stats[] = sprintf(__('%d cursos activos', 'flavor-chat-ia'), $count);
+                    $stats[] = sprintf(__('%d cursos activos', FLAVOR_PLATFORM_TEXT_DOMAIN), $count);
                 }
                 break;
 
@@ -4407,7 +4407,7 @@ class Flavor_Portal_Shortcodes {
                     $user_id
                 ));
                 if ($count > 0) {
-                    $stats[] = sprintf(__('Miembro de %d comunidad(es)', 'flavor-chat-ia'), $count);
+                    $stats[] = sprintf(__('Miembro de %d comunidad(es)', FLAVOR_PLATFORM_TEXT_DOMAIN), $count);
                 }
                 break;
 
@@ -4419,7 +4419,7 @@ class Flavor_Portal_Shortcodes {
                     $user_id
                 ));
                 if ($count > 0) {
-                    $stats[] = sprintf(__('%d suscripciones', 'flavor-chat-ia'), $count);
+                    $stats[] = sprintf(__('%d suscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN), $count);
                 }
                 break;
 
@@ -4430,7 +4430,7 @@ class Flavor_Portal_Shortcodes {
                     $user_id
                 ));
                 if ($reserva > 0) {
-                    $stats[] = '🅿️ ' . __('Plaza reservada', 'flavor-chat-ia');
+                    $stats[] = '🅿️ ' . __('Plaza reservada', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 }
                 break;
         }
@@ -4443,14 +4443,14 @@ class Flavor_Portal_Shortcodes {
      */
     private function get_modulo_action_text($modulo_id) {
         $texts = [
-            'talleres' => __('Ver Talleres', 'flavor-chat-ia'),
-            'ayuda_vecinal' => __('Pedir/Ofrecer Ayuda', 'flavor-chat-ia'),
-            'eventos' => __('Ver Eventos', 'flavor-chat-ia'),
-            'grupos_consumo' => __('Ver Grupos', 'flavor-chat-ia'),
-            'banco_tiempo' => __('Ver Servicios', 'flavor-chat-ia'),
+            'talleres' => __('Ver Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'ayuda_vecinal' => __('Pedir/Ofrecer Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'eventos' => __('Ver Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'grupos_consumo' => __('Ver Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'banco_tiempo' => __('Ver Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
-        return $texts[$modulo_id] ?? __('Acceder', 'flavor-chat-ia');
+        return $texts[$modulo_id] ?? __('Acceder', FLAVOR_PLATFORM_TEXT_DOMAIN);
     }
 
     /**
@@ -4468,15 +4468,15 @@ class Flavor_Portal_Shortcodes {
         <div class="flavor-stats-bar">
             <div class="flavor-stat-item">
                 <span class="flavor-stat-item__value"><?php echo esc_html($stats['modulos_activos']); ?></span>
-                <span class="flavor-stat-item__label"><?php _e('Servicios Activos', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-item__label"><?php _e('Servicios Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="flavor-stat-item">
                 <span class="flavor-stat-item__value"><?php echo esc_html($stats['usuarios_activos']); ?></span>
-                <span class="flavor-stat-item__label"><?php _e('Usuarios Activos', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-item__label"><?php _e('Usuarios Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="flavor-stat-item">
                 <span class="flavor-stat-item__value"><?php echo esc_html($stats['actividad_reciente']); ?></span>
-                <span class="flavor-stat-item__label"><?php _e('Actividades este mes', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-item__label"><?php _e('Actividades este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
         <?php
@@ -4494,7 +4494,7 @@ class Flavor_Portal_Shortcodes {
             <div class="flavor-notificacion flavor-notificacion--info">
                 <span class="flavor-notificacion__icon">ℹ️</span>
                 <div class="flavor-notificacion__content">
-                    <p><?php _e('Bienvenido a tu portal. Explora los servicios disponibles.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('Bienvenido a tu portal. Explora los servicios disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             </div>
         </div>
@@ -4539,7 +4539,7 @@ class Flavor_Portal_Shortcodes {
         if (isset($modulos['talleres'])) {
             $accesos[] = [
                 'icon' => '➕',
-                'text' => __('Crear Taller', 'flavor-chat-ia'),
+                'text' => __('Crear Taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => home_url('/talleres/crear/'),
             ];
         }
@@ -4547,7 +4547,7 @@ class Flavor_Portal_Shortcodes {
         if (isset($modulos['ayuda_vecinal'])) {
             $accesos[] = [
                 'icon' => '🆘',
-                'text' => __('Solicitar Ayuda', 'flavor-chat-ia'),
+                'text' => __('Solicitar Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => home_url('/ayuda-vecinal/solicitar/'),
             ];
         }
@@ -4555,7 +4555,7 @@ class Flavor_Portal_Shortcodes {
         if (isset($modulos['eventos'])) {
             $accesos[] = [
                 'icon' => '📅',
-                'text' => __('Crear Evento', 'flavor-chat-ia'),
+                'text' => __('Crear Evento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => home_url('/eventos/crear/'),
             ];
         }
@@ -4570,7 +4570,7 @@ class Flavor_Portal_Shortcodes {
         ob_start();
         ?>
         <div class="flavor-actividad-reciente">
-            <p class="flavor-actividad-reciente__empty"><?php _e('No hay actividad reciente', 'flavor-chat-ia'); ?></p>
+            <p class="flavor-actividad-reciente__empty"><?php _e('No hay actividad reciente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
         <?php
         return ob_get_clean();
@@ -4584,11 +4584,11 @@ class Flavor_Portal_Shortcodes {
         ?>
         <div class="flavor-mis-stats">
             <div class="flavor-stat-personal">
-                <span class="flavor-stat-personal__label"><?php _e('Participaciones', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-personal__label"><?php _e('Participaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="flavor-stat-personal__value">0</span>
             </div>
             <div class="flavor-stat-personal">
-                <span class="flavor-stat-personal__label"><?php _e('Contribuciones', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-personal__label"><?php _e('Contribuciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="flavor-stat-personal__value">0</span>
             </div>
         </div>

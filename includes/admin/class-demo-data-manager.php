@@ -57,7 +57,7 @@ class Flavor_Demo_Data_Manager {
         check_admin_referer('flavor_demo_data_action');
 
         if (!current_user_can('manage_options')) {
-            wp_die(__('No tienes permisos para realizar esta acción.', 'flavor-chat-ia'));
+            wp_die(__('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $modulo_id = sanitize_text_field($_POST['modulo_id'] ?? 'all');
@@ -102,7 +102,7 @@ class Flavor_Demo_Data_Manager {
         check_admin_referer('flavor_demo_data_action');
 
         if (!current_user_can('manage_options')) {
-            wp_die(__('No tienes permisos para realizar esta acción.', 'flavor-chat-ia'));
+            wp_die(__('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $modulo_id = sanitize_text_field($_POST['modulo_id'] ?? 'all');
@@ -339,7 +339,7 @@ class Flavor_Demo_Data_Manager {
             }
         }
 
-        return ['success' => false, 'error' => __('Módulo no soportado', 'flavor-chat-ia')];
+        return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     /**
@@ -359,7 +359,7 @@ class Flavor_Demo_Data_Manager {
             }
         }
 
-        return ['success' => false, 'error' => __('Módulo no soportado', 'flavor-chat-ia')];
+        return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     /**
@@ -586,7 +586,7 @@ class Flavor_Demo_Data_Manager {
 
         // Verificar que las tablas existen
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_servicios)) {
-            return ['success' => false, 'error' => __('Módulo no soportado', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $usuarios_compartidos = $this->get_or_create_demo_users();
@@ -683,7 +683,7 @@ class Flavor_Demo_Data_Manager {
         $ids = $this->get_demo_ids('banco_tiempo');
 
         if (empty($ids)) {
-            return ['success' => true, 'count' => 0, 'message' => __('No hay datos demo que limpiar', 'flavor-chat-ia')];
+            return ['success' => true, 'count' => 0, 'message' => __('No hay datos demo que limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $placeholders = implode(',', array_fill(0, count($ids), '%d'));
@@ -714,7 +714,7 @@ class Flavor_Demo_Data_Manager {
 
         // Verificar que la tabla existe
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
-            return ['success' => false, 'error' => __('categoria', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('categoria', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $usuarios_compartidos = $this->get_or_create_demo_users();
@@ -828,7 +828,7 @@ class Flavor_Demo_Data_Manager {
         $ids = $this->get_demo_ids('eventos');
 
         if (empty($ids)) {
-            return ['success' => true, 'count' => 0, 'message' => __('No hay datos demo que limpiar', 'flavor-chat-ia')];
+            return ['success' => true, 'count' => 0, 'message' => __('No hay datos demo que limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Primero eliminar asistentes de esos eventos
@@ -987,7 +987,7 @@ class Flavor_Demo_Data_Manager {
         $ids = $this->get_demo_ids('marketplace');
 
         if (empty($ids)) {
-            return ['success' => true, 'count' => 0, 'message' => __('_flavor_demo_data', 'flavor-chat-ia')];
+            return ['success' => true, 'count' => 0, 'message' => __('_flavor_demo_data', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $eliminados = 0;
@@ -1335,7 +1335,7 @@ class Flavor_Demo_Data_Manager {
             ]);
 
             if (empty($posts_demo)) {
-                return ['success' => true, 'count' => 0, 'message' => __('manage_options', 'flavor-chat-ia')];
+                return ['success' => true, 'count' => 0, 'message' => __('manage_options', FLAVOR_PLATFORM_TEXT_DOMAIN)];
             }
 
             $ids = [
@@ -1459,10 +1459,10 @@ class Flavor_Demo_Data_Manager {
 
                 // Verificar de nuevo
                 if (!Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
-                    return ['success' => false, 'error' => __('Módulo no soportado', 'flavor-chat-ia')];
+                    return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
                 }
             } else {
-                return ['success' => false, 'error' => __('cursos', 'flavor-chat-ia')];
+                return ['success' => false, 'error' => __('cursos', FLAVOR_PLATFORM_TEXT_DOMAIN)];
             }
         }
 
@@ -1543,7 +1543,7 @@ class Flavor_Demo_Data_Manager {
         $ids = $this->get_demo_ids('ayuda_vecinal');
 
         if (empty($ids)) {
-            return ['success' => true, 'count' => 0, 'message' => __('Hotel Demo', 'flavor-chat-ia')];
+            return ['success' => true, 'count' => 0, 'message' => __('Hotel Demo', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $placeholders = implode(',', array_fill(0, count($ids), '%d'));
@@ -1606,7 +1606,7 @@ class Flavor_Demo_Data_Manager {
 
         // Verificar que la tabla existe
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_reservas)) {
-            return ['success' => false, 'error' => __('Módulo no soportado', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Usar usuarios demo compartidos
@@ -1786,7 +1786,7 @@ class Flavor_Demo_Data_Manager {
 
                 // Verificar de nuevo
                 if (!Flavor_Chat_Helpers::tabla_existe($tabla_fichajes)) {
-                    return ['success' => false, 'error' => __('Módulo no soportado', 'flavor-chat-ia')];
+                    return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
                 }
             }
         }
@@ -2329,10 +2329,10 @@ class Flavor_Demo_Data_Manager {
 
                 // Verificar de nuevo
                 if (!Flavor_Chat_Helpers::tabla_existe($tabla_perfiles)) {
-                    return ['success' => false, 'error' => __('Módulo no soportado', 'flavor-chat-ia')];
+                    return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
                 }
             } else {
-                return ['success' => false, 'error' => __('Módulo no soportado', 'flavor-chat-ia')];
+                return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
             }
         }
 
@@ -2820,7 +2820,7 @@ class Flavor_Demo_Data_Manager {
 
         // Verificar que las tablas existen
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_nodos)) {
-            return ['success' => false, 'error' => __('Módulo no soportado', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $usuarios_compartidos = $this->get_or_create_demo_users();
@@ -3432,7 +3432,7 @@ class Flavor_Demo_Data_Manager {
         check_admin_referer('flavor_demo_pages_action');
 
         if (!current_user_can('manage_options')) {
-            wp_die(__('No tienes permisos para realizar esta acción.', 'flavor-chat-ia'));
+            wp_die(__('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $scope = sanitize_text_field($_POST['demo_scope'] ?? 'all');
@@ -3459,7 +3459,7 @@ class Flavor_Demo_Data_Manager {
         check_admin_referer('flavor_demo_pages_action');
 
         if (!current_user_can('manage_options')) {
-            wp_die(__('No tienes permisos para realizar esta acción.', 'flavor-chat-ia'));
+            wp_die(__('No tienes permisos para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $resultado = $this->delete_demo_pages();
@@ -3481,7 +3481,7 @@ class Flavor_Demo_Data_Manager {
     private function get_demo_pages_definition() {
         return [
             'grupos-consumo' => [
-                'title' => __('Grupos de Consumo', 'flavor-chat-ia'),
+                'title' => __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'grupos-consumo',
                 'template' => 'flavor-landing',
                 'content' => '[flavor_landing module="grupos-consumo"]',
@@ -3489,7 +3489,7 @@ class Flavor_Demo_Data_Manager {
                 'color' => '#84cc16',
             ],
             'banco-tiempo' => [
-                'title' => __('Banco de Tiempo', 'flavor-chat-ia'),
+                'title' => __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'banco-tiempo',
                 'template' => 'flavor-landing',
                 'content' => '[flavor_landing module="banco-tiempo"]',
@@ -3497,7 +3497,7 @@ class Flavor_Demo_Data_Manager {
                 'color' => '#8b5cf6',
             ],
             'ayuntamiento' => [
-                'title' => __('Ayuntamiento', 'flavor-chat-ia'),
+                'title' => __('Ayuntamiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'ayuntamiento',
                 'template' => 'flavor-landing',
                 'content' => '[flavor_landing module="ayuntamiento"]',
@@ -3505,7 +3505,7 @@ class Flavor_Demo_Data_Manager {
                 'color' => '#1d4ed8',
             ],
             'comunidades' => [
-                'title' => __('Comunidades', 'flavor-chat-ia'),
+                'title' => __('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'comunidades',
                 'template' => 'flavor-landing',
                 'content' => '[flavor_landing module="comunidades"]',
@@ -3513,7 +3513,7 @@ class Flavor_Demo_Data_Manager {
                 'color' => '#f43f5e',
             ],
             'espacios-comunes' => [
-                'title' => __('Espacios Comunes', 'flavor-chat-ia'),
+                'title' => __('Espacios Comunes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'espacios-comunes',
                 'template' => 'flavor-landing',
                 'content' => '[flavor_landing module="espacios-comunes"]',
@@ -3521,7 +3521,7 @@ class Flavor_Demo_Data_Manager {
                 'color' => '#06b6d4',
             ],
             'ayuda-vecinal' => [
-                'title' => __('Ayuda Vecinal', 'flavor-chat-ia'),
+                'title' => __('Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'ayuda-vecinal',
                 'template' => 'flavor-landing',
                 'content' => '[flavor_landing module="ayuda-vecinal"]',
@@ -3529,7 +3529,7 @@ class Flavor_Demo_Data_Manager {
                 'color' => '#f97316',
             ],
             'huertos-urbanos' => [
-                'title' => __('Huertos Urbanos', 'flavor-chat-ia'),
+                'title' => __('Huertos Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'huertos-urbanos',
                 'template' => 'flavor-landing',
                 'content' => '[flavor_landing module="huertos-urbanos"]',
@@ -3537,7 +3537,7 @@ class Flavor_Demo_Data_Manager {
                 'color' => '#22c55e',
             ],
             'biblioteca' => [
-                'title' => __('Biblioteca', 'flavor-chat-ia'),
+                'title' => __('Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'biblioteca',
                 'template' => 'flavor-landing',
                 'content' => '[flavor_landing module="biblioteca"]',
@@ -3545,7 +3545,7 @@ class Flavor_Demo_Data_Manager {
                 'color' => '#6366f1',
             ],
             'cursos' => [
-                'title' => __('Cursos y Talleres', 'flavor-chat-ia'),
+                'title' => __('Cursos y Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'cursos',
                 'template' => 'flavor-landing',
                 'content' => '[flavor_landing module="cursos"]',
@@ -3553,7 +3553,7 @@ class Flavor_Demo_Data_Manager {
                 'color' => '#a855f7',
             ],
             'eventos' => [
-                'title' => __('Eventos', 'flavor-chat-ia'),
+                'title' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'eventos',
                 'template' => 'flavor-landing',
                 'content' => '[flavor_landing module="eventos"]',
@@ -3561,7 +3561,7 @@ class Flavor_Demo_Data_Manager {
                 'color' => '#3b82f6',
             ],
             'marketplace' => [
-                'title' => __('Marketplace', 'flavor-chat-ia'),
+                'title' => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mercadillo',
                 'template' => 'flavor-landing',
                 'content' => '[flavor_landing module="marketplace"]',
@@ -3569,7 +3569,7 @@ class Flavor_Demo_Data_Manager {
                 'color' => '#f59e0b',
             ],
             'incidencias' => [
-                'title' => __('Incidencias', 'flavor-chat-ia'),
+                'title' => __('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'incidencias',
                 'template' => 'flavor-landing',
                 'content' => '[flavor_landing module="incidencias"]',
@@ -3577,7 +3577,7 @@ class Flavor_Demo_Data_Manager {
                 'color' => '#e11d48',
             ],
             'bicicletas' => [
-                'title' => __('Bicicletas Compartidas', 'flavor-chat-ia'),
+                'title' => __('Bicicletas Compartidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'bicicletas',
                 'template' => 'flavor-landing',
                 'content' => '[flavor_landing module="bicicletas"]',
@@ -3585,7 +3585,7 @@ class Flavor_Demo_Data_Manager {
                 'color' => '#a3e635',
             ],
             'reciclaje' => [
-                'title' => __('Reciclaje', 'flavor-chat-ia'),
+                'title' => __('Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'reciclaje',
                 'template' => 'flavor-landing',
                 'content' => '[flavor_landing module="reciclaje"]',
@@ -3595,7 +3595,7 @@ class Flavor_Demo_Data_Manager {
 
             // Sectores Empresariales
             'restaurante' => [
-                'title' => __('Restaurante Demo', 'flavor-chat-ia'),
+                'title' => __('Restaurante Demo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'restaurante-demo',
                 'template' => 'flavor-landing',
                 'content' => '[flavor_landing module="restaurante"]',
@@ -3603,7 +3603,7 @@ class Flavor_Demo_Data_Manager {
                 'color' => '#b91c1c',
             ],
             'peluqueria' => [
-                'title' => __('Peluquería Demo', 'flavor-chat-ia'),
+                'title' => __('Peluquería Demo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'peluqueria-demo',
                 'template' => 'flavor-landing',
                 'content' => '[flavor_landing module="peluqueria"]',
@@ -3611,7 +3611,7 @@ class Flavor_Demo_Data_Manager {
                 'color' => '#be185d',
             ],
             'gimnasio' => [
-                'title' => __('Gimnasio Demo', 'flavor-chat-ia'),
+                'title' => __('Gimnasio Demo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'gimnasio-demo',
                 'template' => 'flavor-landing',
                 'content' => '[flavor_landing module="gimnasio"]',
@@ -3619,7 +3619,7 @@ class Flavor_Demo_Data_Manager {
                 'color' => '#ea580c',
             ],
             'clinica' => [
-                'title' => __('Clínica Demo', 'flavor-chat-ia'),
+                'title' => __('Clínica Demo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'clinica-demo',
                 'template' => 'flavor-landing',
                 'content' => '[flavor_landing module="clinica"]',
@@ -3627,7 +3627,7 @@ class Flavor_Demo_Data_Manager {
                 'color' => '#0891b2',
             ],
             'hotel' => [
-                'title' => __('Hotel Demo', 'flavor-chat-ia'),
+                'title' => __('Hotel Demo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'hotel-demo',
                 'template' => 'flavor-landing',
                 'content' => '[flavor_landing module="hotel"]',
@@ -3635,7 +3635,7 @@ class Flavor_Demo_Data_Manager {
                 'color' => '#7c3aed',
             ],
             'inmobiliaria' => [
-                'title' => __('Inmobiliaria Demo', 'flavor-chat-ia'),
+                'title' => __('Inmobiliaria Demo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'inmobiliaria-demo',
                 'template' => 'flavor-landing',
                 'content' => '[flavor_landing module="inmobiliaria"]',
@@ -3709,7 +3709,7 @@ class Flavor_Demo_Data_Manager {
         return [
             'success' => true,
             'count' => count($paginas_creadas),
-            'message' => sprintf(__('Se crearon %d páginas de demostración', 'flavor-chat-ia'), count($paginas_creadas)),
+            'message' => sprintf(__('Se crearon %d páginas de demostración', FLAVOR_PLATFORM_TEXT_DOMAIN), count($paginas_creadas)),
             'pages' => $paginas_creadas,
         ];
     }
@@ -3752,7 +3752,7 @@ class Flavor_Demo_Data_Manager {
         return [
             'success' => true,
             'count' => $eliminadas,
-            'message' => sprintf(__('Se eliminaron %d páginas de demostración', 'flavor-chat-ia'), $eliminadas),
+            'message' => sprintf(__('Se eliminaron %d páginas de demostración', FLAVOR_PLATFORM_TEXT_DOMAIN), $eliminadas),
         ];
     }
 
@@ -3907,7 +3907,7 @@ private function populate_participacion() {
     $tabla_propuestas = $wpdb->prefix . 'flavor_propuestas';
 
     if (!Flavor_Chat_Helpers::tabla_existe($tabla_propuestas)) {
-        return ['success' => false, 'error' => __('Módulo no soportado', 'flavor-chat-ia')];
+        return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     $usuarios_compartidos = $this->get_or_create_demo_users();
@@ -3986,7 +3986,7 @@ private function populate_biblioteca() {
     $tabla_libros = $wpdb->prefix . 'flavor_biblioteca_libros';
 
     if (!Flavor_Chat_Helpers::tabla_existe($tabla_libros)) {
-        return ['success' => false, 'error' => __('Módulo no soportado', 'flavor-chat-ia')];
+        return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     $usuarios_compartidos = $this->get_or_create_demo_users();
@@ -4068,7 +4068,7 @@ private function populate_bicicletas_compartidas() {
     $tabla_estaciones = $wpdb->prefix . 'flavor_bicicletas_estaciones';
 
     if (!Flavor_Chat_Helpers::tabla_existe($tabla_bicicletas)) {
-        return ['success' => false, 'error' => __('Módulo no soportado', 'flavor-chat-ia')];
+        return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     $ids_insertados = ['bicicletas' => [], 'estaciones' => []];
@@ -4103,7 +4103,7 @@ private function populate_bicicletas_compartidas() {
         return [
             'success' => true,
             'count' => 0,
-            'message' => __('No se pudieron crear estaciones (columnas de tabla no coinciden)', 'flavor-chat-ia'),
+            'message' => __('No se pudieron crear estaciones (columnas de tabla no coinciden)', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -4171,7 +4171,7 @@ private function populate_carpooling() {
     $tabla_viajes = $wpdb->prefix . 'flavor_carpooling_viajes';
 
     if (!Flavor_Chat_Helpers::tabla_existe($tabla_viajes)) {
-        return ['success' => false, 'error' => __('Módulo no soportado', 'flavor-chat-ia')];
+        return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     $usuarios_compartidos = $this->get_or_create_demo_users();
@@ -4248,7 +4248,7 @@ private function populate_compostaje() {
     $tabla_puntos = $wpdb->prefix . 'flavor_puntos_compostaje';
 
     if (!Flavor_Chat_Helpers::tabla_existe($tabla_puntos)) {
-        return ['success' => false, 'error' => __('Módulo no soportado', 'flavor-chat-ia')];
+        return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     $ids_insertados = [];
@@ -4321,7 +4321,7 @@ private function populate_huertos_urbanos() {
     $tabla_parcelas = $wpdb->prefix . 'flavor_huertos_parcelas';
 
     if (!Flavor_Chat_Helpers::tabla_existe($tabla_huertos)) {
-        return ['success' => false, 'error' => __('Módulo no soportado', 'flavor-chat-ia')];
+        return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     $usuarios_compartidos = $this->get_or_create_demo_users();
@@ -4421,7 +4421,7 @@ private function populate_parkings() {
     $tabla_plazas = $wpdb->prefix . 'flavor_parkings_plazas';
 
     if (!Flavor_Chat_Helpers::tabla_existe($tabla_parkings)) {
-        return ['success' => false, 'error' => __('Módulo no soportado', 'flavor-chat-ia')];
+        return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     $usuarios_compartidos = $this->get_or_create_demo_users();
@@ -4522,7 +4522,7 @@ private function populate_podcast() {
     $tabla_episodios = $wpdb->prefix . 'flavor_podcast_episodios';
 
     if (!Flavor_Chat_Helpers::tabla_existe($tabla_series)) {
-        return ['success' => false, 'error' => __('Módulo no soportado', 'flavor-chat-ia')];
+        return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     $usuarios_compartidos = $this->get_or_create_demo_users();
@@ -4622,7 +4622,7 @@ private function populate_reciclaje() {
     $tabla_puntos = $wpdb->prefix . 'flavor_reciclaje_puntos';
 
     if (!Flavor_Chat_Helpers::tabla_existe($tabla_puntos)) {
-        return ['success' => false, 'error' => __('Módulo no soportado', 'flavor-chat-ia')];
+        return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     $ids_insertados = [];
@@ -4691,7 +4691,7 @@ private function populate_transparencia() {
     $tabla_documentos = $wpdb->prefix . 'flavor_transparencia_documentos_publicos';
 
     if (!Flavor_Chat_Helpers::tabla_existe($tabla_documentos)) {
-        return ['success' => false, 'error' => __('Módulo no soportado', 'flavor-chat-ia')];
+        return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     $ids_insertados = [];
@@ -4823,7 +4823,7 @@ private function populate_chat_grupos() {
     $tabla_grupos = $wpdb->prefix . 'flavor_chat_grupos';
 
     if (!Flavor_Chat_Helpers::tabla_existe($tabla_grupos)) {
-        return ['success' => false, 'error' => __('Módulo no soportado', 'flavor-chat-ia')];
+        return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     $usuarios_compartidos = $this->get_or_create_demo_users();
@@ -4900,7 +4900,7 @@ private function populate_cursos() {
     $tabla_cursos = $wpdb->prefix . 'flavor_cursos';
 
     if (!Flavor_Chat_Helpers::tabla_existe($tabla_cursos)) {
-        return ['success' => false, 'error' => __('Módulo no soportado', 'flavor-chat-ia')];
+        return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     $usuarios_compartidos = $this->get_or_create_demo_users();
@@ -4983,7 +4983,7 @@ private function populate_espacios_comunes() {
     $tabla_espacios = $wpdb->prefix . 'flavor_espacios_comunes';
 
     if (!Flavor_Chat_Helpers::tabla_existe($tabla_espacios)) {
-        return ['success' => false, 'error' => __('Módulo no soportado', 'flavor-chat-ia')];
+        return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     $ids_insertados = [];
@@ -5054,7 +5054,7 @@ private function populate_foros() {
     $tabla_foros = $wpdb->prefix . 'flavor_foros';
 
     if (!Flavor_Chat_Helpers::tabla_existe($tabla_foros)) {
-        return ['success' => false, 'error' => __('Módulo no soportado', 'flavor-chat-ia')];
+        return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     $usuarios_compartidos = $this->get_or_create_demo_users();
@@ -5182,7 +5182,7 @@ private function clear_colectivos() {
 // =========================================================
 
 private function populate_advertising() {
-    return ['success' => true, 'count' => 0, 'message' => __('No hay datos demo que limpiar', 'flavor-chat-ia')];
+    return ['success' => true, 'count' => 0, 'message' => __('No hay datos demo que limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN)];
 }
 
 private function clear_advertising() {
@@ -5190,7 +5190,7 @@ private function clear_advertising() {
 }
 
 private function populate_chat_interno() {
-    return ['success' => true, 'count' => 0, 'message' => __('No hay datos demo que limpiar', 'flavor-chat-ia')];
+    return ['success' => true, 'count' => 0, 'message' => __('No hay datos demo que limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN)];
 }
 
 private function clear_chat_interno() {
@@ -5198,7 +5198,7 @@ private function clear_chat_interno() {
 }
 
 private function populate_empresarial() {
-    return ['success' => true, 'count' => 0, 'message' => __('No hay datos demo que limpiar', 'flavor-chat-ia')];
+    return ['success' => true, 'count' => 0, 'message' => __('No hay datos demo que limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN)];
 }
 
 private function clear_empresarial() {
@@ -5206,7 +5206,7 @@ private function clear_empresarial() {
 }
 
 private function populate_multimedia() {
-    return ['success' => true, 'count' => 0, 'message' => __('No hay datos demo que limpiar', 'flavor-chat-ia')];
+    return ['success' => true, 'count' => 0, 'message' => __('No hay datos demo que limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN)];
 }
 
 private function clear_multimedia() {
@@ -5214,7 +5214,7 @@ private function clear_multimedia() {
 }
 
 private function populate_radio() {
-    return ['success' => true, 'count' => 0, 'message' => __('No hay datos demo que limpiar', 'flavor-chat-ia')];
+    return ['success' => true, 'count' => 0, 'message' => __('No hay datos demo que limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN)];
 }
 
 private function clear_radio() {
@@ -5222,7 +5222,7 @@ private function clear_radio() {
 }
 
 private function populate_clientes() {
-    return ['success' => true, 'count' => 0, 'message' => __('No hay datos demo que limpiar', 'flavor-chat-ia')];
+    return ['success' => true, 'count' => 0, 'message' => __('No hay datos demo que limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN)];
 }
 
 private function clear_clientes() {
@@ -5230,7 +5230,7 @@ private function clear_clientes() {
 }
 
 private function populate_comunidades() {
-    return ['success' => true, 'count' => 0, 'message' => __('No hay datos demo que limpiar', 'flavor-chat-ia')];
+    return ['success' => true, 'count' => 0, 'message' => __('No hay datos demo que limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN)];
 }
 
 private function clear_comunidades() {
@@ -5260,7 +5260,7 @@ private function populate_energia_comunitaria() {
         !Flavor_Chat_Helpers::tabla_existe($tabla_cierres_detalle) ||
         !Flavor_Chat_Helpers::tabla_existe($tabla_liquidaciones)
     ) {
-        return ['success' => false, 'error' => __('Módulo no soportado', 'flavor-chat-ia')];
+        return ['success' => false, 'error' => __('Módulo no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     $usuarios_demo = $this->get_or_create_demo_users();
@@ -5724,7 +5724,7 @@ private function clear_energia_comunitaria() {
 }
 
 private function populate_bares() {
-    return ['success' => true, 'count' => 0, 'message' => __('No hay datos demo que limpiar', 'flavor-chat-ia')];
+    return ['success' => true, 'count' => 0, 'message' => __('No hay datos demo que limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN)];
 }
 
 private function clear_bares() {

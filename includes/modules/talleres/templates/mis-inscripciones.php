@@ -17,21 +17,21 @@ $talleres = $resultado['talleres'] ?? [];
 ?>
 
 <div class="talleres-mis-inscripciones">
-    <h2><?php _e('Mis Talleres', 'flavor-chat-ia'); ?></h2>
+    <h2><?php _e('Mis Talleres', 'flavor-platform'); ?></h2>
 
     <?php if (empty($talleres)): ?>
     <div class="talleres-empty">
         <span class="dashicons dashicons-welcome-learn-more"></span>
-        <p><?php _e('No estas inscrito en ningun taller.', 'flavor-chat-ia'); ?></p>
+        <p><?php _e('No estas inscrito en ningun taller.', 'flavor-platform'); ?></p>
         <a href="<?php echo esc_url(home_url('/talleres/')); ?>" class="talleres-btn talleres-btn-primary">
-            <?php _e('Explorar talleres', 'flavor-chat-ia'); ?>
+            <?php _e('Explorar talleres', 'flavor-platform'); ?>
         </a>
     </div>
     <?php else: ?>
 
     <div class="talleres-tabs">
-        <button class="talleres-tab active" data-tab="proximos"><?php _e('Proximos', 'flavor-chat-ia'); ?></button>
-        <button class="talleres-tab" data-tab="pasados"><?php _e('Pasados', 'flavor-chat-ia'); ?></button>
+        <button class="talleres-tab active" data-tab="proximos"><?php _e('Proximos', 'flavor-platform'); ?></button>
+        <button class="talleres-tab" data-tab="pasados"><?php _e('Pasados', 'flavor-platform'); ?></button>
     </div>
 
     <div class="talleres-tab-content active" id="tab-proximos">
@@ -41,7 +41,7 @@ $talleres = $resultado['talleres'] ?? [];
         });
         ?>
         <?php if (empty($proximos)): ?>
-        <p class="talleres-no-items"><?php _e('No tienes talleres proximos.', 'flavor-chat-ia'); ?></p>
+        <p class="talleres-no-items"><?php _e('No tienes talleres proximos.', 'flavor-platform'); ?></p>
         <?php else: ?>
         <div class="talleres-lista">
             <?php foreach ($proximos as $taller): ?>
@@ -52,15 +52,15 @@ $talleres = $resultado['talleres'] ?? [];
                 </div>
                 <div class="talleres-card-body">
                     <?php if (!empty($taller->fecha_inicio)): ?>
-                    <p><strong><?php _e('Fecha:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html(date_i18n('d/m/Y H:i', strtotime($taller->fecha_inicio))); ?></p>
+                    <p><strong><?php _e('Fecha:', 'flavor-platform'); ?></strong> <?php echo esc_html(date_i18n('d/m/Y H:i', strtotime($taller->fecha_inicio))); ?></p>
                     <?php endif; ?>
                     <?php if (!empty($taller->ubicacion)): ?>
-                    <p><strong><?php _e('Lugar:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($taller->ubicacion); ?></p>
+                    <p><strong><?php _e('Lugar:', 'flavor-platform'); ?></strong> <?php echo esc_html($taller->ubicacion); ?></p>
                     <?php endif; ?>
                 </div>
                 <div class="talleres-card-footer">
                     <a href="<?php echo esc_url(add_query_arg('taller_id', $taller->id, home_url('/taller/'))); ?>" class="talleres-btn talleres-btn-secondary">
-                        <?php _e('Ver detalles', 'flavor-chat-ia'); ?>
+                        <?php _e('Ver detalles', 'flavor-platform'); ?>
                     </a>
                 </div>
             </div>
@@ -76,7 +76,7 @@ $talleres = $resultado['talleres'] ?? [];
         });
         ?>
         <?php if (empty($pasados)): ?>
-        <p class="talleres-no-items"><?php _e('No tienes talleres pasados.', 'flavor-chat-ia'); ?></p>
+        <p class="talleres-no-items"><?php _e('No tienes talleres pasados.', 'flavor-platform'); ?></p>
         <?php else: ?>
         <div class="talleres-lista">
             <?php foreach ($pasados as $taller): ?>
@@ -86,16 +86,16 @@ $talleres = $resultado['talleres'] ?? [];
                 </div>
                 <div class="talleres-card-body">
                     <?php if (!empty($taller->fecha_inicio)): ?>
-                    <p><strong><?php _e('Fecha:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html(date_i18n('d/m/Y', strtotime($taller->fecha_inicio))); ?></p>
+                    <p><strong><?php _e('Fecha:', 'flavor-platform'); ?></strong> <?php echo esc_html(date_i18n('d/m/Y', strtotime($taller->fecha_inicio))); ?></p>
                     <?php endif; ?>
                 </div>
                 <div class="talleres-card-footer">
                     <?php if (empty($taller->valorado)): ?>
                     <button class="talleres-btn talleres-btn-primary talleres-valorar-btn" data-taller="<?php echo esc_attr($taller->id); ?>">
-                        <?php _e('Valorar', 'flavor-chat-ia'); ?>
+                        <?php _e('Valorar', 'flavor-platform'); ?>
                     </button>
                     <?php else: ?>
-                    <span class="talleres-valorado"><?php _e('Valorado', 'flavor-chat-ia'); ?> ★</span>
+                    <span class="talleres-valorado"><?php _e('Valorado', 'flavor-platform'); ?> ★</span>
                     <?php endif; ?>
                 </div>
             </div>

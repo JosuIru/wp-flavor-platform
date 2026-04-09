@@ -9,29 +9,29 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$nombre = $nombre ?? __('Fitness Center', 'flavor-chat-ia');
-$eslogan = $eslogan ?? __('Transforma tu cuerpo, cambia tu vida', 'flavor-chat-ia');
+$nombre = $nombre ?? __('Fitness Center', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$eslogan = $eslogan ?? __('Transforma tu cuerpo, cambia tu vida', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $telefono = $telefono ?? '900 000 000';
 $color_primario = $color_primario ?? '#ea580c';
 
 $planes = $planes ?? [
-    ['nombre' => __('Básico', 'flavor-chat-ia'), 'precio' => '29€', 'periodo' => __('/mes', 'flavor-chat-ia'), 'caracteristicas' => [__('Acceso a sala de musculación', 'flavor-chat-ia'), __('Horario de mañanas', 'flavor-chat-ia'), __('Casillero incluido', 'flavor-chat-ia')], 'destacado' => false],
-    ['nombre' => __('Premium', 'flavor-chat-ia'), 'precio' => '49€', 'periodo' => __('/mes', 'flavor-chat-ia'), 'caracteristicas' => [__('Acceso ilimitado 24/7', 'flavor-chat-ia'), __('Clases grupales incluidas', 'flavor-chat-ia'), __('Zona de spa', 'flavor-chat-ia'), __('App de seguimiento', 'flavor-chat-ia')], 'destacado' => true],
-    ['nombre' => __('VIP', 'flavor-chat-ia'), 'precio' => '79€', 'periodo' => __('/mes', 'flavor-chat-ia'), 'caracteristicas' => [__('Todo lo de Premium', 'flavor-chat-ia'), __('Entrenador personal', 'flavor-chat-ia'), __('Plan nutricional', 'flavor-chat-ia'), __('Invitados gratis', 'flavor-chat-ia')], 'destacado' => false],
+    ['nombre' => __('Básico', FLAVOR_PLATFORM_TEXT_DOMAIN), 'precio' => '29€', 'periodo' => __('/mes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'caracteristicas' => [__('Acceso a sala de musculación', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Horario de mañanas', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Casillero incluido', FLAVOR_PLATFORM_TEXT_DOMAIN)], 'destacado' => false],
+    ['nombre' => __('Premium', FLAVOR_PLATFORM_TEXT_DOMAIN), 'precio' => '49€', 'periodo' => __('/mes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'caracteristicas' => [__('Acceso ilimitado 24/7', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Clases grupales incluidas', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Zona de spa', FLAVOR_PLATFORM_TEXT_DOMAIN), __('App de seguimiento', FLAVOR_PLATFORM_TEXT_DOMAIN)], 'destacado' => true],
+    ['nombre' => __('VIP', FLAVOR_PLATFORM_TEXT_DOMAIN), 'precio' => '79€', 'periodo' => __('/mes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'caracteristicas' => [__('Todo lo de Premium', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Entrenador personal', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Plan nutricional', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Invitados gratis', FLAVOR_PLATFORM_TEXT_DOMAIN)], 'destacado' => false],
 ];
 
 $clases = $clases ?? [
-    ['nombre' => 'Spinning', 'icono' => 'performance', 'horario' => __('Lun-Vie 7:00, 19:00', 'flavor-chat-ia')],
-    ['nombre' => 'Yoga', 'icono' => 'heart', 'horario' => __('Mar-Jue 10:00, 18:00', 'flavor-chat-ia')],
-    ['nombre' => 'CrossFit', 'icono' => 'superhero', 'horario' => __('Lun-Vie 8:00, 20:00', 'flavor-chat-ia')],
-    ['nombre' => 'Pilates', 'icono' => 'universal-access', 'horario' => __('Mié-Vie 9:00, 17:00', 'flavor-chat-ia')],
+    ['nombre' => 'Spinning', 'icono' => 'performance', 'horario' => __('Lun-Vie 7:00, 19:00', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['nombre' => 'Yoga', 'icono' => 'heart', 'horario' => __('Mar-Jue 10:00, 18:00', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['nombre' => 'CrossFit', 'icono' => 'superhero', 'horario' => __('Lun-Vie 8:00, 20:00', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['nombre' => 'Pilates', 'icono' => 'universal-access', 'horario' => __('Mié-Vie 9:00, 17:00', FLAVOR_PLATFORM_TEXT_DOMAIN)],
 ];
 
 $stats = $stats ?? [
-    ['numero' => '500+', 'texto' => __('Miembros activos', 'flavor-chat-ia')],
-    ['numero' => '50+', 'texto' => __('Clases semanales', 'flavor-chat-ia')],
-    ['numero' => '15', 'texto' => __('Entrenadores', 'flavor-chat-ia')],
-    ['numero' => '24/7', 'texto' => __('Horario', 'flavor-chat-ia')],
+    ['numero' => '500+', 'texto' => __('Miembros activos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['numero' => '50+', 'texto' => __('Clases semanales', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['numero' => '15', 'texto' => __('Entrenadores', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['numero' => '24/7', 'texto' => __('Horario', FLAVOR_PLATFORM_TEXT_DOMAIN)],
 ];
 ?>
 
@@ -42,8 +42,8 @@ $stats = $stats ?? [
             <h1><?php echo esc_html($nombre); ?></h1>
             <p><?php echo esc_html($eslogan); ?></p>
             <div class="flavor-hero-actions">
-                <a href="#planes" class="flavor-btn-primary"><?php esc_html_e('Ver Planes', 'flavor-chat-ia'); ?></a>
-                <a href="#tour" class="flavor-btn-ghost"><?php esc_html_e('Tour Virtual', 'flavor-chat-ia'); ?></a>
+                <a href="#planes" class="flavor-btn-primary"><?php esc_html_e('Ver Planes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
+                <a href="#tour" class="flavor-btn-ghost"><?php esc_html_e('Tour Virtual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
             </div>
         </div>
     </div>
@@ -66,14 +66,14 @@ $stats = $stats ?? [
 <!-- Planes -->
 <section class="flavor-gym-planes" id="planes">
     <div class="flavor-container">
-        <h2 class="flavor-section-title"><?php esc_html_e('Elige tu Plan', 'flavor-chat-ia'); ?></h2>
-        <p class="flavor-section-subtitle"><?php esc_html_e('Sin permanencia, cancela cuando quieras', 'flavor-chat-ia'); ?></p>
+        <h2 class="flavor-section-title"><?php esc_html_e('Elige tu Plan', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p class="flavor-section-subtitle"><?php esc_html_e('Sin permanencia, cancela cuando quieras', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
         <div class="flavor-planes-grid">
             <?php foreach ($planes as $plan): ?>
                 <div class="flavor-plan-card <?php echo $plan['destacado'] ? 'is-destacado' : ''; ?>">
                     <?php if ($plan['destacado']): ?>
-                        <span class="flavor-plan-badge"><?php esc_html_e('Más Popular', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-plan-badge"><?php esc_html_e('Más Popular', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <?php endif; ?>
                     <h3><?php echo esc_html($plan['nombre']); ?></h3>
                     <div class="flavor-plan-precio">
@@ -86,7 +86,7 @@ $stats = $stats ?? [
                         <?php endforeach; ?>
                     </ul>
                     <a href="#inscribirse" class="flavor-plan-btn <?php echo $plan['destacado'] ? 'is-primary' : ''; ?>">
-                        <?php esc_html_e('Empezar Ahora', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Empezar Ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php endforeach; ?>
@@ -97,8 +97,8 @@ $stats = $stats ?? [
 <!-- Clases -->
 <section class="flavor-gym-clases" id="clases">
     <div class="flavor-container">
-        <h2 class="flavor-section-title"><?php esc_html_e('Clases Grupales', 'flavor-chat-ia'); ?></h2>
-        <p class="flavor-section-subtitle"><?php esc_html_e('Entrena en grupo con nuestros instructores certificados', 'flavor-chat-ia'); ?></p>
+        <h2 class="flavor-section-title"><?php esc_html_e('Clases Grupales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p class="flavor-section-subtitle"><?php esc_html_e('Entrena en grupo con nuestros instructores certificados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
         <div class="flavor-clases-grid">
             <?php foreach ($clases as $clase): ?>
@@ -113,7 +113,7 @@ $stats = $stats ?? [
         </div>
 
         <div class="flavor-clases-cta">
-            <a href="#horarios" class="flavor-btn-outline"><?php esc_html_e('Ver Horario Completo', 'flavor-chat-ia'); ?></a>
+            <a href="#horarios" class="flavor-btn-outline"><?php esc_html_e('Ver Horario Completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
         </div>
     </div>
 </section>
@@ -121,9 +121,9 @@ $stats = $stats ?? [
 <!-- CTA Final -->
 <section class="flavor-gym-cta" style="background: <?php echo esc_attr($color_primario); ?>;">
     <div class="flavor-container">
-        <h2><?php esc_html_e('¡Tu primera semana GRATIS!', 'flavor-chat-ia'); ?></h2>
-        <p><?php esc_html_e('Prueba nuestras instalaciones sin compromiso', 'flavor-chat-ia'); ?></p>
-        <a href="#prueba" class="flavor-btn-white"><?php esc_html_e('Solicitar Prueba Gratuita', 'flavor-chat-ia'); ?></a>
+        <h2><?php esc_html_e('¡Tu primera semana GRATIS!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p><?php esc_html_e('Prueba nuestras instalaciones sin compromiso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+        <a href="#prueba" class="flavor-btn-white"><?php esc_html_e('Solicitar Prueba Gratuita', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
     </div>
 </section>
 

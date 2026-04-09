@@ -9,8 +9,8 @@
 if (!defined('ABSPATH')) exit;
 
 // Extraer variables del array $args con valores por defecto
-$titulo_seccion = isset($args['titulo_seccion']) ? $args['titulo_seccion'] : __('Podcasts de la Radio Comunitaria', 'flavor-chat-ia');
-$descripcion_seccion = isset($args['descripcion_seccion']) ? $args['descripcion_seccion'] : __('Escucha nuestros programas cuando quieras', 'flavor-chat-ia');
+$titulo_seccion = isset($args['titulo_seccion']) ? $args['titulo_seccion'] : __('Podcasts de la Radio Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$descripcion_seccion = isset($args['descripcion_seccion']) ? $args['descripcion_seccion'] : __('Escucha nuestros programas cuando quieras', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $mostrar_filtros = isset($args['mostrar_filtros']) ? $args['mostrar_filtros'] : true;
 $columnas = isset($args['columnas']) ? intval($args['columnas']) : 3;
 $mostrar_suscriptores = isset($args['mostrar_suscriptores']) ? $args['mostrar_suscriptores'] : true;
@@ -107,13 +107,13 @@ $podcasts_demo = isset($args['podcasts']) ? $args['podcasts'] : array(
 
 // Categorías disponibles para filtros
 $categorias_disponibles = array(
-    'todos' => __('Todos', 'flavor-chat-ia'),
-    'comunidad' => __('Comunidad', 'flavor-chat-ia'),
-    'cultura' => __('Cultura', 'flavor-chat-ia'),
-    'noticias' => __('Noticias', 'flavor-chat-ia'),
-    'salud' => __('Salud', 'flavor-chat-ia'),
-    'musica' => __('Música', 'flavor-chat-ia'),
-    'juventud' => __('Juventud', 'flavor-chat-ia')
+    'todos' => __('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'comunidad' => __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cultura' => __('Cultura', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'noticias' => __('Noticias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'salud' => __('Salud', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'musica' => __('Música', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'juventud' => __('Juventud', FLAVOR_PLATFORM_TEXT_DOMAIN)
 );
 
 // Función auxiliar para formatear números grandes
@@ -143,7 +143,7 @@ function flavor_formatear_numero($numero) {
                     <button type="button"
                             class="flavor-vista-btn <?php echo $vista_inicial === 'grid' ? 'flavor-vista-btn--activo' : ''; ?>"
                             data-vista="grid"
-                            aria-label="<?php esc_attr_e('Vista de cuadrícula', 'flavor-chat-ia'); ?>">
+                            aria-label="<?php esc_attr_e('Vista de cuadrícula', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="3" y="3" width="7" height="7"></rect>
                             <rect x="14" y="3" width="7" height="7"></rect>
@@ -154,7 +154,7 @@ function flavor_formatear_numero($numero) {
                     <button type="button"
                             class="flavor-vista-btn <?php echo $vista_inicial === 'lista' ? 'flavor-vista-btn--activo' : ''; ?>"
                             data-vista="lista"
-                            aria-label="<?php esc_attr_e('Vista de lista', 'flavor-chat-ia'); ?>">
+                            aria-label="<?php esc_attr_e('Vista de lista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="8" y1="6" x2="21" y2="6"></line>
                             <line x1="8" y1="12" x2="21" y2="12"></line>
@@ -170,7 +170,7 @@ function flavor_formatear_numero($numero) {
 
         <?php if ($mostrar_filtros): ?>
         <!-- Filtros por categoría -->
-        <nav class="flavor-podcasts-filtros" aria-label="<?php esc_attr_e('Filtrar podcasts por categoría', 'flavor-chat-ia'); ?>">
+        <nav class="flavor-podcasts-filtros" aria-label="<?php esc_attr_e('Filtrar podcasts por categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <ul class="flavor-filtros-lista">
                 <?php foreach ($categorias_disponibles as $categoria_slug => $categoria_nombre): ?>
                     <li class="flavor-filtros-item">
@@ -204,12 +204,12 @@ function flavor_formatear_numero($numero) {
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                                 </svg>
-                                <?php esc_html_e('Destacado', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Destacado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         <?php endif; ?>
 
                         <!-- Botón de reproducción overlay -->
-                        <button type="button" class="flavor-podcast-play-overlay" aria-label="<?php esc_attr_e('Reproducir último episodio', 'flavor-chat-ia'); ?>">
+                        <button type="button" class="flavor-podcast-play-overlay" aria-label="<?php esc_attr_e('Reproducir último episodio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
                                 <polygon points="5 3 19 12 5 21 5 3"></polygon>
                             </svg>
@@ -241,18 +241,18 @@ function flavor_formatear_numero($numero) {
                         <!-- Metadatos -->
                         <div class="flavor-podcast-meta">
                             <?php if ($mostrar_episodios): ?>
-                                <span class="flavor-podcast-meta-item" title="<?php esc_attr_e('Episodios', 'flavor-chat-ia'); ?>">
+                                <span class="flavor-podcast-meta-item" title="<?php esc_attr_e('Episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
                                         <line x1="8" y1="21" x2="16" y2="21"></line>
                                         <line x1="12" y1="17" x2="12" y2="21"></line>
                                     </svg>
-                                    <?php echo esc_html($podcast['episodios']); ?> <?php esc_html_e('episodios', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html($podcast['episodios']); ?> <?php esc_html_e('episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                             <?php endif; ?>
 
                             <?php if ($mostrar_suscriptores): ?>
-                                <span class="flavor-podcast-meta-item" title="<?php esc_attr_e('Suscriptores', 'flavor-chat-ia'); ?>">
+                                <span class="flavor-podcast-meta-item" title="<?php esc_attr_e('Suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                                         <circle cx="9" cy="7" r="4"></circle>
@@ -263,7 +263,7 @@ function flavor_formatear_numero($numero) {
                                 </span>
                             <?php endif; ?>
 
-                            <span class="flavor-podcast-meta-item" title="<?php esc_attr_e('Duración promedio', 'flavor-chat-ia'); ?>">
+                            <span class="flavor-podcast-meta-item" title="<?php esc_attr_e('Duración promedio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <circle cx="12" cy="12" r="10"></circle>
                                     <polyline points="12 6 12 12 16 14"></polyline>
@@ -291,10 +291,10 @@ function flavor_formatear_numero($numero) {
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
                                 </svg>
-                                <?php esc_html_e('Suscribirse', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Suscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                             <button type="button" class="flavor-btn flavor-btn--secundario flavor-btn--sm flavor-podcast-ver-episodios">
-                                <?php esc_html_e('Ver episodios', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Ver episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </footer>
                     </div>
@@ -308,7 +308,7 @@ function flavor_formatear_numero($numero) {
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
-            <p><?php esc_html_e('No se encontraron podcasts en esta categoría.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('No se encontraron podcasts en esta categoría.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
 
         <!-- Cargar más -->
@@ -318,7 +318,7 @@ function flavor_formatear_numero($numero) {
                     <polyline points="23 4 23 10 17 10"></polyline>
                     <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
                 </svg>
-                <?php esc_html_e('Cargar más podcasts', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Cargar más podcasts', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
 

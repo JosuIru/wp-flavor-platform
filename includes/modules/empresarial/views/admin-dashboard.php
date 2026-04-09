@@ -25,10 +25,10 @@ $datos_financiero = $datos_estadisticas['financiero'] ?? [];
             </div>
             <div class="stat-content">
                 <span class="stat-number"><?php echo esc_html($datos_contactos['nuevos'] ?? 0); ?></span>
-                <span class="stat-label"><?php esc_html_e('Contactos Nuevos', 'flavor-chat-ia'); ?></span>
+                <span class="stat-label"><?php esc_html_e('Contactos Nuevos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <?php if (($datos_contactos['nuevos'] ?? 0) > 0): ?>
-                <span class="stat-badge stat-badge-warning"><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></span>
+                <span class="stat-badge stat-badge-warning"><?php esc_html_e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             <?php endif; ?>
         </div>
 
@@ -38,11 +38,11 @@ $datos_financiero = $datos_estadisticas['financiero'] ?? [];
             </div>
             <div class="stat-content">
                 <span class="stat-number"><?php echo esc_html($datos_proyectos['activos'] ?? 0); ?></span>
-                <span class="stat-label"><?php esc_html_e('Proyectos Activos', 'flavor-chat-ia'); ?></span>
+                <span class="stat-label"><?php esc_html_e('Proyectos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <?php if (($datos_proyectos['vencidos'] ?? 0) > 0): ?>
                 <span class="stat-badge stat-badge-danger">
-                    <?php printf(esc_html__('%d vencidos', 'flavor-chat-ia'), $datos_proyectos['vencidos']); ?>
+                    <?php printf(esc_html__('%d vencidos', FLAVOR_PLATFORM_TEXT_DOMAIN), $datos_proyectos['vencidos']); ?>
                 </span>
             <?php endif; ?>
         </div>
@@ -53,7 +53,7 @@ $datos_financiero = $datos_estadisticas['financiero'] ?? [];
             </div>
             <div class="stat-content">
                 <span class="stat-number"><?php echo esc_html($datos_financiero['presupuesto_activo_fmt'] ?? '0,00 €'); ?></span>
-                <span class="stat-label"><?php esc_html_e('Presupuesto Activo', 'flavor-chat-ia'); ?></span>
+                <span class="stat-label"><?php esc_html_e('Presupuesto Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -63,7 +63,7 @@ $datos_financiero = $datos_estadisticas['financiero'] ?? [];
             </div>
             <div class="stat-content">
                 <span class="stat-number"><?php echo esc_html($datos_proyectos['completados'] ?? 0); ?></span>
-                <span class="stat-label"><?php esc_html_e('Proyectos Completados', 'flavor-chat-ia'); ?></span>
+                <span class="stat-label"><?php esc_html_e('Proyectos Completados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
@@ -74,9 +74,9 @@ $datos_financiero = $datos_estadisticas['financiero'] ?? [];
         <div class="flavor-dashboard-column">
             <div class="flavor-card">
                 <div class="flavor-card-header">
-                    <h3><?php esc_html_e('Últimos Contactos', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Últimos Contactos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-empresarial-empresas')); ?>" class="button">
-                        <?php esc_html_e('Ver todos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
                 <div class="flavor-card-body">
@@ -104,7 +104,7 @@ $datos_financiero = $datos_estadisticas['financiero'] ?? [];
                                         <?php if (!empty($contacto['empresa'])): ?>
                                             <span class="contacto-empresa"><?php echo esc_html($contacto['empresa']); ?></span>
                                         <?php endif; ?>
-                                        <span class="contacto-asunto"><?php echo esc_html($contacto['asunto'] ?: __('Sin asunto', 'flavor-chat-ia')); ?></span>
+                                        <span class="contacto-asunto"><?php echo esc_html($contacto['asunto'] ?: __('Sin asunto', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>
                                     </div>
                                     <div class="contacto-meta">
                                         <span class="contacto-estado estado-<?php echo esc_attr($contacto['estado']); ?>">
@@ -119,7 +119,7 @@ $datos_financiero = $datos_estadisticas['financiero'] ?? [];
                         </ul>
                     <?php else: ?>
                         <p class="flavor-empty-message">
-                            <?php esc_html_e('No hay contactos recientes.', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('No hay contactos recientes.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                     <?php endif; ?>
                 </div>
@@ -128,7 +128,7 @@ $datos_financiero = $datos_estadisticas['financiero'] ?? [];
             <!-- Distribución de orígenes -->
             <div class="flavor-card">
                 <div class="flavor-card-header">
-                    <h3><?php esc_html_e('Orígenes de Contacto', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Orígenes de Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="flavor-card-body">
                     <?php if (!empty($datos_contactos['origenes'])): ?>
@@ -157,7 +157,7 @@ $datos_financiero = $datos_estadisticas['financiero'] ?? [];
                         </div>
                     <?php else: ?>
                         <p class="flavor-empty-message">
-                            <?php esc_html_e('Sin datos de orígenes.', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Sin datos de orígenes.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                     <?php endif; ?>
                 </div>
@@ -168,9 +168,9 @@ $datos_financiero = $datos_estadisticas['financiero'] ?? [];
         <div class="flavor-dashboard-column">
             <div class="flavor-card">
                 <div class="flavor-card-header">
-                    <h3><?php esc_html_e('Proyectos Activos', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Proyectos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-empresarial-contratos')); ?>" class="button">
-                        <?php esc_html_e('Ver todos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
                 <div class="flavor-card-body">
@@ -225,7 +225,7 @@ $datos_financiero = $datos_estadisticas['financiero'] ?? [];
                         </ul>
                     <?php else: ?>
                         <p class="flavor-empty-message">
-                            <?php esc_html_e('No hay proyectos activos.', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('No hay proyectos activos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                     <?php endif; ?>
                 </div>
@@ -234,27 +234,27 @@ $datos_financiero = $datos_estadisticas['financiero'] ?? [];
             <!-- Resumen financiero -->
             <div class="flavor-card">
                 <div class="flavor-card-header">
-                    <h3><?php esc_html_e('Resumen Financiero', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Resumen Financiero', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="flavor-card-body">
                     <div class="flavor-financiero-resumen">
                         <div class="financiero-item">
-                            <span class="financiero-label"><?php esc_html_e('Presupuesto Total', 'flavor-chat-ia'); ?></span>
+                            <span class="financiero-label"><?php esc_html_e('Presupuesto Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span class="financiero-valor"><?php echo esc_html($datos_financiero['presupuesto_total_fmt'] ?? '0,00 €'); ?></span>
                         </div>
                         <div class="financiero-item financiero-activo">
-                            <span class="financiero-label"><?php esc_html_e('En Curso', 'flavor-chat-ia'); ?></span>
+                            <span class="financiero-label"><?php esc_html_e('En Curso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span class="financiero-valor"><?php echo esc_html($datos_financiero['presupuesto_activo_fmt'] ?? '0,00 €'); ?></span>
                         </div>
                         <div class="financiero-item financiero-completado">
-                            <span class="financiero-label"><?php esc_html_e('Completado', 'flavor-chat-ia'); ?></span>
+                            <span class="financiero-label"><?php esc_html_e('Completado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span class="financiero-valor"><?php echo esc_html($datos_financiero['presupuesto_completado_fmt'] ?? '0,00 €'); ?></span>
                         </div>
                     </div>
 
                     <?php if (($datos_proyectos['progreso_promedio'] ?? 0) > 0): ?>
                         <div class="flavor-progreso-promedio">
-                            <span class="progreso-label"><?php esc_html_e('Progreso Promedio', 'flavor-chat-ia'); ?></span>
+                            <span class="progreso-label"><?php esc_html_e('Progreso Promedio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <div class="progreso-bar grande">
                                 <div class="progreso-fill" style="width: <?php echo esc_attr($datos_proyectos['progreso_promedio']); ?>%;"></div>
                             </div>
@@ -267,7 +267,7 @@ $datos_financiero = $datos_estadisticas['financiero'] ?? [];
             <!-- Actividad reciente -->
             <div class="flavor-card">
                 <div class="flavor-card-header">
-                    <h3><?php esc_html_e('Estadísticas del Periodo', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Estadísticas del Periodo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="flavor-card-body">
                     <div class="flavor-periodo-stats">
@@ -275,21 +275,21 @@ $datos_financiero = $datos_estadisticas['financiero'] ?? [];
                             <span class="dashicons dashicons-calendar-alt"></span>
                             <div>
                                 <strong><?php echo esc_html($datos_contactos['ultima_semana'] ?? 0); ?></strong>
-                                <span><?php esc_html_e('Contactos esta semana', 'flavor-chat-ia'); ?></span>
+                                <span><?php esc_html_e('Contactos esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                         </div>
                         <div class="periodo-stat">
                             <span class="dashicons dashicons-calendar"></span>
                             <div>
                                 <strong><?php echo esc_html($datos_contactos['ultimo_mes'] ?? 0); ?></strong>
-                                <span><?php esc_html_e('Contactos este mes', 'flavor-chat-ia'); ?></span>
+                                <span><?php esc_html_e('Contactos este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                         </div>
                         <div class="periodo-stat">
                             <span class="dashicons dashicons-clipboard"></span>
                             <div>
                                 <strong><?php echo esc_html($datos_proyectos['propuestas'] ?? 0); ?></strong>
-                                <span><?php esc_html_e('Propuestas pendientes', 'flavor-chat-ia'); ?></span>
+                                <span><?php esc_html_e('Propuestas pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                         </div>
                     </div>

@@ -33,7 +33,7 @@ $mostrar_vista = $mostrar_vista ?? true;
 
     <div class="flex items-center gap-4">
         <div class="flex items-center gap-2">
-            <label for="flavor-sort" class="text-sm text-gray-500"><?php echo esc_html__('Ordenar:', 'flavor-chat-ia'); ?></label>
+            <label for="flavor-sort" class="text-sm text-gray-500"><?php echo esc_html__('Ordenar:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <select id="flavor-sort" name="orden"
                     class="px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent bg-white">
                 <?php foreach ($opciones_orden as $opcion): ?>
@@ -48,13 +48,13 @@ $mostrar_vista = $mostrar_vista ?? true;
         <?php if ($mostrar_vista): ?>
         <div class="flex items-center gap-1 border border-gray-200 rounded-lg p-1">
             <button class="p-2 rounded <?php echo $vista_actual === 'grid' ? 'bg-gray-100 text-gray-800' : 'text-gray-400 hover:text-gray-600'; ?> transition-colors"
-                    data-vista="grid" aria-label="<?php echo esc_attr__('Vista cuadrícula', 'flavor-chat-ia'); ?>" title="<?php echo esc_attr__('Cuadrícula', 'flavor-chat-ia'); ?>">
+                    data-vista="grid" aria-label="<?php echo esc_attr__('Vista cuadrícula', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" title="<?php echo esc_attr__('Cuadrícula', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
                 </svg>
             </button>
             <button class="p-2 rounded <?php echo $vista_actual === 'list' ? 'bg-gray-100 text-gray-800' : 'text-gray-400 hover:text-gray-600'; ?> transition-colors"
-                    data-vista="list" aria-label="<?php echo esc_attr__('Vista lista', 'flavor-chat-ia'); ?>" title="<?php echo esc_attr__('Lista', 'flavor-chat-ia'); ?>">
+                    data-vista="list" aria-label="<?php echo esc_attr__('Vista lista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" title="<?php echo esc_attr__('Lista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
                 </svg>

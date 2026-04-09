@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 
 // Verificar permisos
 if (!current_user_can('flavor_manage_permissions') && !current_user_can('administrator')) {
-    wp_die(__('No tienes permisos para acceder a esta pagina.', 'flavor-chat-ia'));
+    wp_die(__('No tienes permisos para acceder a esta pagina.', FLAVOR_PLATFORM_TEXT_DOMAIN));
 }
 
 $role_manager = Flavor_Role_Manager::get_instance();
@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['flavor_permissions_no
                     $mensaje = $resultado->get_error_message();
                     $tipo_mensaje = 'error';
                 } else {
-                    $mensaje = __('Rol creado correctamente.', 'flavor-chat-ia');
+                    $mensaje = __('Rol creado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                     $tipo_mensaje = 'success';
                     $roles_personalizados = $role_manager->obtener_roles_personalizados();
                 }
@@ -58,11 +58,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['flavor_permissions_no
             case 'eliminar_rol':
                 $slug = sanitize_key($_POST['rol_slug']);
                 if ($role_manager->eliminar_rol_personalizado($slug)) {
-                    $mensaje = __('Rol eliminado correctamente.', 'flavor-chat-ia');
+                    $mensaje = __('Rol eliminado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                     $tipo_mensaje = 'success';
                     $roles_personalizados = $role_manager->obtener_roles_personalizados();
                 } else {
-                    $mensaje = __('No se pudo eliminar el rol.', 'flavor-chat-ia');
+                    $mensaje = __('No se pudo eliminar el rol.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                     $tipo_mensaje = 'error';
                 }
                 break;
@@ -72,10 +72,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['flavor_permissions_no
                 $nuevas_caps = isset($_POST['capabilities']) ? array_map('sanitize_key', $_POST['capabilities']) : [];
 
                 if ($role_manager->actualizar_capabilities_rol($slug, $nuevas_caps)) {
-                    $mensaje = __('Permisos actualizados correctamente.', 'flavor-chat-ia');
+                    $mensaje = __('Permisos actualizados correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                     $tipo_mensaje = 'success';
                 } else {
-                    $mensaje = __('No se pudieron actualizar los permisos.', 'flavor-chat-ia');
+                    $mensaje = __('No se pudieron actualizar los permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                     $tipo_mensaje = 'error';
                 }
                 break;
@@ -86,10 +86,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['flavor_permissions_no
                 $rol = sanitize_key($_POST['rol']);
 
                 if (Flavor_Permission_Helper::assign_module_role($user_id, $modulo, $rol)) {
-                    $mensaje = __('Rol asignado correctamente.', 'flavor-chat-ia');
+                    $mensaje = __('Rol asignado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                     $tipo_mensaje = 'success';
                 } else {
-                    $mensaje = __('No se pudo asignar el rol.', 'flavor-chat-ia');
+                    $mensaje = __('No se pudo asignar el rol.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                     $tipo_mensaje = 'error';
                 }
                 break;
@@ -99,10 +99,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['flavor_permissions_no
                 $modulo = sanitize_key($_POST['modulo']);
 
                 if (Flavor_Permission_Helper::revoke_module_role($user_id, $modulo)) {
-                    $mensaje = __('Rol revocado correctamente.', 'flavor-chat-ia');
+                    $mensaje = __('Rol revocado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                     $tipo_mensaje = 'success';
                 } else {
-                    $mensaje = __('No se pudo revocar el rol.', 'flavor-chat-ia');
+                    $mensaje = __('No se pudo revocar el rol.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                     $tipo_mensaje = 'error';
                 }
                 break;
@@ -114,12 +114,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['flavor_permissions_no
 <div class="wrap flavor-permissions-admin">
     <h1>
         <span class="dashicons dashicons-shield-alt"></span>
-        <?php esc_html_e('Gestion de Permisos', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Gestion de Permisos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <?php if ($mensaje): ?>
         <div class="notice notice-<?php echo esc_attr($tipo_mensaje); ?> <?php esc_html_e('is-dismissible">
-', 'flavor-chat-ia'); ?>            <p><?php echo esc_html($mensaje); ?></p>
+', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>            <p><?php echo esc_html($mensaje); ?></p>
         </div>
     <?php endif; ?>
 
@@ -127,22 +127,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['flavor_permissions_no
         <a href="?page=flavor-permissions&tab=roles"
            class="nav-tab <?php echo $tabs_activa === 'roles' ? 'nav-tab-active' : ''; ?>">
             <span class="dashicons dashicons-groups"></span>
-            <?php esc_html_e('Roles', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Roles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <a href="?page=flavor-permissions&tab=capabilities"
            class="nav-tab <?php echo $tabs_activa === 'capabilities' ? 'nav-tab-active' : ''; ?>">
             <span class="dashicons dashicons-admin-network"></span>
-            <?php esc_html_e('Capabilities', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Capabilities', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <a href="?page=flavor-permissions&tab=usuarios"
            class="nav-tab <?php echo $tabs_activa === 'usuarios' ? 'nav-tab-active' : ''; ?>">
             <span class="dashicons dashicons-admin-users"></span>
-            <?php esc_html_e('Usuarios', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <a href="?page=flavor-permissions&tab=modulos"
            class="nav-tab <?php echo $tabs_activa === 'modulos' ? 'nav-tab-active' : ''; ?>">
             <span class="dashicons dashicons-screenoptions"></span>
-            <?php esc_html_e('Por Modulo', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Por Modulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </nav>
 
@@ -421,7 +421,7 @@ jQuery(document).ready(function($) {
 
     // Confirmacion para eliminar rol
     $('.delete-role-btn').on('click', function(e) {
-        if (!confirm('<?php echo esc_js(__('¿Estas seguro de que deseas eliminar este rol?', 'flavor-chat-ia')); ?>')) {
+        if (!confirm('<?php echo esc_js(__('¿Estas seguro de que deseas eliminar este rol?', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>')) {
             e.preventDefault();
         }
     });

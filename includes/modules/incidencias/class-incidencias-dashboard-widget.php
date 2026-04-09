@@ -82,8 +82,8 @@ class Flavor_Incidencias_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
     public function __construct() {
         global $wpdb;
         $this->prefix_tabla = $wpdb->prefix . 'flavor_incidencias_';
-        $this->title = __('Incidencias', 'flavor-chat-ia');
-        $this->description = __('Reporta y sigue problemas en tu comunidad', 'flavor-chat-ia');
+        $this->title = __('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Reporta y sigue problemas en tu comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         parent::__construct([
             'id' => $this->widget_id,
@@ -191,7 +191,7 @@ class Flavor_Incidencias_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $stats[] = [
                 'icon' => 'dashicons-flag',
                 'valor' => $mis_abiertas,
-                'label' => __('Mis incidencias', 'flavor-chat-ia'),
+                'label' => __('Mis incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $mis_abiertas > 0 ? 'warning' : 'success',
                 'url' => $es_admin ? admin_url('admin.php?page=incidencias&filter=mias') : Flavor_Chat_Helpers::get_action_url('incidencias', 'mis-incidencias'),
             ];
@@ -202,7 +202,7 @@ class Flavor_Incidencias_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $stats[] = [
                 'icon' => 'dashicons-bell',
                 'valor' => $actualizaciones_nuevas,
-                'label' => __('Actualizaciones', 'flavor-chat-ia'),
+                'label' => __('Actualizaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'info',
                 'url' => $es_admin ? admin_url('admin.php?page=incidencias') : Flavor_Chat_Helpers::get_action_url('incidencias', 'mis-incidencias'),
             ];
@@ -212,7 +212,7 @@ class Flavor_Incidencias_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         $stats[] = [
             'icon' => 'dashicons-location',
             'valor' => $total_abiertas,
-            'label' => __('En la comunidad', 'flavor-chat-ia'),
+            'label' => __('En la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'primary',
             'url' => $es_admin ? admin_url('admin.php?page=incidencias') : Flavor_Chat_Helpers::get_action_url('incidencias', ''),
         ];
@@ -221,8 +221,8 @@ class Flavor_Incidencias_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         if ($user_id) {
             $stats[] = [
                 'icon' => 'dashicons-plus-alt2',
-                'valor' => __('Nueva', 'flavor-chat-ia'),
-                'label' => __('Reportar', 'flavor-chat-ia'),
+                'valor' => __('Nueva', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'label' => __('Reportar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'danger',
                 'url' => $es_admin ? admin_url('admin.php?page=incidencias&action=nueva') : Flavor_Chat_Helpers::get_action_url('incidencias', 'reportar'),
             ];
@@ -240,10 +240,10 @@ class Flavor_Incidencias_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'total_abiertas' => $total_abiertas,
                 'actualizaciones_nuevas' => $actualizaciones_nuevas,
             ],
-            'empty_state' => __('No hay incidencias reportadas recientemente', 'flavor-chat-ia'),
+            'empty_state' => __('No hay incidencias reportadas recientemente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => __('Ver mapa de incidencias', 'flavor-chat-ia'),
+                    'label' => __('Ver mapa de incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => $es_admin ? admin_url('admin.php?page=incidencias&view=mapa') : Flavor_Chat_Helpers::get_action_url('incidencias', 'mapa'),
                     'icon' => 'dashicons-location-alt',
                 ],
@@ -294,10 +294,10 @@ class Flavor_Incidencias_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             // Estado para badge
             $badge = '';
             $estado_map = [
-                'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-                'en_revision' => __('En revisión', 'flavor-chat-ia'),
-                'en_proceso' => __('En proceso', 'flavor-chat-ia'),
-                'resuelta' => __('Resuelta', 'flavor-chat-ia'),
+                'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'en_revision' => __('En revisión', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'en_proceso' => __('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'resuelta' => __('Resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
             $badge = $estado_map[$incidencia->estado] ?? ucfirst($incidencia->estado);
 
@@ -350,18 +350,18 @@ class Flavor_Incidencias_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
 
         if ($mis_abiertas > 0 || $actualizaciones_nuevas > 0) {
             $severity = Flavor_Dashboard_Severity::get_payload('attention');
-            $severity['reason'] = __('Tienes incidencias abiertas o actualizaciones recientes que requieren atención.', 'flavor-chat-ia');
+            $severity['reason'] = __('Tienes incidencias abiertas o actualizaciones recientes que requieren atención.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             return $severity;
         }
 
         if ($total_abiertas > 0) {
             $severity = Flavor_Dashboard_Severity::get_payload('followup');
-            $severity['reason'] = __('Hay incidencias comunitarias activas que conviene seguir aunque no te afecten directamente.', 'flavor-chat-ia');
+            $severity['reason'] = __('Hay incidencias comunitarias activas que conviene seguir aunque no te afecten directamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             return $severity;
         }
 
         $severity = Flavor_Dashboard_Severity::get_payload('stable');
-        $severity['reason'] = __('No hay incidencias activas relevantes en este momento.', 'flavor-chat-ia');
+        $severity['reason'] = __('No hay incidencias activas relevantes en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         return $severity;
     }
 

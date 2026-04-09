@@ -37,9 +37,9 @@ wp_localize_script('flavor-biodiversidad', 'flavorBiodiversidad', [
     'estados' => Flavor_Chat_Biodiversidad_Local_Module::ESTADOS_CONSERVACION,
     'habitats' => Flavor_Chat_Biodiversidad_Local_Module::TIPOS_HABITAT,
     'i18n' => [
-        'error' => __('Error al procesar la solicitud', 'flavor-chat-ia'),
-        'success' => __('Operación completada', 'flavor-chat-ia'),
-        'confirm_avistamiento' => __('¿Registrar este avistamiento?', 'flavor-chat-ia'),
+        'error' => __('Error al procesar la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'success' => __('Operación completada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'confirm_avistamiento' => __('¿Registrar este avistamiento?', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ],
 ]);
 
@@ -57,20 +57,20 @@ $proyectos = get_posts([
 
 <div class="bl-container">
     <header class="bl-header">
-        <h2><?php esc_html_e('Proyectos de Conservación', 'flavor-chat-ia'); ?></h2>
-        <p><?php esc_html_e('Únete a iniciativas para proteger nuestra biodiversidad local', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Proyectos de Conservación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p><?php esc_html_e('Únete a iniciativas para proteger nuestra biodiversidad local', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </header>
 
     <!-- Tabs -->
     <div class="bl-tabs">
         <button class="bl-tab activo" data-tab="tab-proyectos">
             <span class="dashicons dashicons-groups"></span>
-            <?php esc_html_e('Proyectos Activos', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Proyectos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
         <?php if (is_user_logged_in()) : ?>
         <button class="bl-tab" data-tab="tab-crear">
             <span class="dashicons dashicons-plus-alt"></span>
-            <?php esc_html_e('Crear Proyecto', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Crear Proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
         <?php endif; ?>
     </div>
@@ -125,18 +125,18 @@ $proyectos = get_posts([
                         <?php if ($max_participantes > 0) : ?>
                         / <?php echo esc_html($max_participantes); ?>
                         <?php endif; ?>
-                        <?php esc_html_e('participantes', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('participantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
 
                     <?php if (is_user_logged_in()) : ?>
                         <?php if ($ya_participa) : ?>
-                        <span class="bl-btn bl-btn--secondary bl-btn--small"><?php esc_html_e('Participando', 'flavor-chat-ia'); ?></span>
+                        <span class="bl-btn bl-btn--secondary bl-btn--small"><?php esc_html_e('Participando', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <?php elseif ($max_participantes === 0 || count($participantes) < $max_participantes) : ?>
                         <button class="bl-btn bl-btn--primary bl-btn--small bl-btn-participar" data-proyecto="<?php echo esc_attr($proyecto->ID); ?>">
-                            <?php esc_html_e('Unirme', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Unirme', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <?php else : ?>
-                        <span class="bl-btn bl-btn--secondary bl-btn--small"><?php esc_html_e('Completo', 'flavor-chat-ia'); ?></span>
+                        <span class="bl-btn bl-btn--secondary bl-btn--small"><?php esc_html_e('Completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <?php endif; ?>
                     <?php endif; ?>
                 </div>
@@ -146,10 +146,10 @@ $proyectos = get_posts([
         <?php else : ?>
         <div class="bl-empty-state">
             <span class="dashicons dashicons-shield"></span>
-            <p><?php esc_html_e('No hay proyectos de conservación activos.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('No hay proyectos de conservación activos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php if (is_user_logged_in()) : ?>
             <button class="bl-btn bl-btn--primary bl-tab" data-tab="tab-crear">
-                <?php esc_html_e('Crear el primero', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Crear el primero', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <?php endif; ?>
         </div>
@@ -162,15 +162,15 @@ $proyectos = get_posts([
         <form class="bl-form bl-form-proyecto" method="post">
             <input type="hidden" name="bl_nonce" value="<?php echo esc_attr(wp_create_nonce('biodiversidad_nonce')); ?>">
             <div class="bl-form-grupo">
-                <label for="bl-proyecto-titulo"><?php esc_html_e('Nombre del proyecto', 'flavor-chat-ia'); ?> *</label>
+                <label for="bl-proyecto-titulo"><?php esc_html_e('Nombre del proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                 <input type="text" name="titulo" id="bl-proyecto-titulo" required
-                       placeholder="<?php esc_attr_e('Ej: Reforestación del parque municipal', 'flavor-chat-ia'); ?>">
+                       placeholder="<?php esc_attr_e('Ej: Reforestación del parque municipal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             </div>
 
             <div class="bl-form-grupo">
-                <label for="bl-proyecto-tipo"><?php esc_html_e('Tipo de proyecto', 'flavor-chat-ia'); ?> *</label>
+                <label for="bl-proyecto-tipo"><?php esc_html_e('Tipo de proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                 <select name="tipo" id="bl-proyecto-tipo" required>
-                    <option value=""><?php esc_html_e('Selecciona...', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Selecciona...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($tipos_proyecto as $tipo_id => $tipo_data) : ?>
                     <option value="<?php echo esc_attr($tipo_id); ?>"><?php echo esc_html($tipo_data['nombre']); ?></option>
                     <?php endforeach; ?>
@@ -179,32 +179,32 @@ $proyectos = get_posts([
 
             <div class="bl-form-row">
                 <div class="bl-form-grupo">
-                    <label for="bl-proyecto-fecha"><?php esc_html_e('Fecha de inicio', 'flavor-chat-ia'); ?></label>
+                    <label for="bl-proyecto-fecha"><?php esc_html_e('Fecha de inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="date" name="fecha_inicio" id="bl-proyecto-fecha">
                 </div>
                 <div class="bl-form-grupo">
-                    <label for="bl-proyecto-max"><?php esc_html_e('Máximo participantes', 'flavor-chat-ia'); ?></label>
+                    <label for="bl-proyecto-max"><?php esc_html_e('Máximo participantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="number" name="participantes_max" id="bl-proyecto-max" min="0" value="0"
-                           placeholder="<?php esc_attr_e('0 = sin límite', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php esc_attr_e('0 = sin límite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
             </div>
 
             <div class="bl-form-grupo">
-                <label for="bl-proyecto-ubicacion"><?php esc_html_e('Ubicación', 'flavor-chat-ia'); ?></label>
+                <label for="bl-proyecto-ubicacion"><?php esc_html_e('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <input type="text" name="ubicacion" id="bl-proyecto-ubicacion"
-                       placeholder="<?php esc_attr_e('Ej: Parque municipal, zona norte', 'flavor-chat-ia'); ?>">
+                       placeholder="<?php esc_attr_e('Ej: Parque municipal, zona norte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             </div>
 
             <div class="bl-form-grupo">
-                <label for="bl-proyecto-descripcion"><?php esc_html_e('Descripción del proyecto', 'flavor-chat-ia'); ?> *</label>
+                <label for="bl-proyecto-descripcion"><?php esc_html_e('Descripción del proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                 <textarea name="descripcion" id="bl-proyecto-descripcion" rows="6" required
-                          placeholder="<?php esc_attr_e('Describe los objetivos, actividades previstas, materiales necesarios, etc.', 'flavor-chat-ia'); ?>"></textarea>
+                          placeholder="<?php esc_attr_e('Describe los objetivos, actividades previstas, materiales necesarios, etc.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
             </div>
 
             <div style="text-align: center;">
                 <button type="submit" class="bl-btn bl-btn--primary">
                     <span class="dashicons dashicons-shield-alt"></span>
-                    <?php esc_html_e('Crear Proyecto', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Crear Proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </form>

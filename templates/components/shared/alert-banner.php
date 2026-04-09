@@ -137,7 +137,7 @@ if ($position === 'top') {
             <button type="button"
                     onclick="flavorAlert.dismiss('<?php echo esc_js($alert_id); ?>')"
                     class="flex-shrink-0 p-1 rounded-lg <?php echo esc_attr($config['text']); ?> opacity-50 hover:opacity-100 hover:<?php echo esc_attr($config['icon_bg']); ?> transition-all"
-                    aria-label="<?php esc_attr_e('Cerrar', 'flavor-chat-ia'); ?>">
+                    aria-label="<?php esc_attr_e('Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <span class="text-lg">×</span>
             </button>
         <?php endif; ?>

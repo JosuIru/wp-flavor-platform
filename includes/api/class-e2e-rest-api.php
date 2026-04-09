@@ -258,7 +258,7 @@ class Flavor_E2E_REST_API {
         if (!$usuario_id) {
             return new WP_Error(
                 'rest_unauthorized',
-                __('Debes iniciar sesión para usar E2E.', 'flavor-chat-ia'),
+                __('Debes iniciar sesión para usar E2E.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 401]
             );
         }
@@ -330,7 +330,7 @@ class Flavor_E2E_REST_API {
         if (count($dispositivos_actuales) >= 5) {
             return new WP_Error(
                 'limite_dispositivos',
-                __('Has alcanzado el límite de 5 dispositivos. Revoca alguno para añadir otro.', 'flavor-chat-ia'),
+                __('Has alcanzado el límite de 5 dispositivos. Revoca alguno para añadir otro.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 400]
             );
         }
@@ -376,7 +376,7 @@ class Flavor_E2E_REST_API {
         if ($usuario_id_objetivo == $usuario_id_solicitante) {
             return new WP_Error(
                 'bundle_propio',
-                __('No puedes solicitar tu propio PreKey Bundle.', 'flavor-chat-ia'),
+                __('No puedes solicitar tu propio PreKey Bundle.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 400]
             );
         }
@@ -398,7 +398,7 @@ class Flavor_E2E_REST_API {
         if (empty($dispositivos)) {
             return new WP_Error(
                 'sin_claves',
-                __('El usuario no tiene claves E2E configuradas.', 'flavor-chat-ia'),
+                __('El usuario no tiene claves E2E configuradas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 404]
             );
         }
@@ -525,7 +525,7 @@ class Flavor_E2E_REST_API {
         if (!$dispositivo_encontrado) {
             return new WP_Error(
                 'dispositivo_no_encontrado',
-                __('Dispositivo no encontrado.', 'flavor-chat-ia'),
+                __('Dispositivo no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 404]
             );
         }
@@ -536,7 +536,7 @@ class Flavor_E2E_REST_API {
         if (!$eliminado) {
             return new WP_Error(
                 'error_revocacion',
-                __('Error al revocar el dispositivo.', 'flavor-chat-ia'),
+                __('Error al revocar el dispositivo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 500]
             );
         }
@@ -559,7 +559,7 @@ class Flavor_E2E_REST_API {
 
         return rest_ensure_response([
             'success' => true,
-            'mensaje' => __('Dispositivo revocado correctamente.', 'flavor-chat-ia'),
+            'mensaje' => __('Dispositivo revocado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -585,7 +585,7 @@ class Flavor_E2E_REST_API {
         if (!$identity_key) {
             return new WP_Error(
                 'usuario_sin_claves',
-                __('El usuario no tiene claves E2E para este dispositivo.', 'flavor-chat-ia'),
+                __('El usuario no tiene claves E2E para este dispositivo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 404]
             );
         }
@@ -597,7 +597,7 @@ class Flavor_E2E_REST_API {
         if ($fingerprint_real !== $fingerprint_normalizado) {
             return new WP_Error(
                 'fingerprint_no_coincide',
-                __('El código de seguridad no coincide. Verifica que estés comparando con el dispositivo correcto.', 'flavor-chat-ia'),
+                __('El código de seguridad no coincide. Verifica que estés comparando con el dispositivo correcto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 400]
             );
         }
@@ -631,7 +631,7 @@ class Flavor_E2E_REST_API {
         return rest_ensure_response([
             'success' => true,
             'verificado' => true,
-            'mensaje' => __('Identidad verificada correctamente.', 'flavor-chat-ia'),
+            'mensaje' => __('Identidad verificada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -689,7 +689,7 @@ class Flavor_E2E_REST_API {
         if (!$this->key_manager->usuario_tiene_claves($usuario_id)) {
             return new WP_Error(
                 'sin_claves',
-                __('No tienes claves E2E para respaldar.', 'flavor-chat-ia'),
+                __('No tienes claves E2E para respaldar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 400]
             );
         }
@@ -772,7 +772,7 @@ class Flavor_E2E_REST_API {
         return rest_ensure_response([
             'success' => true,
             'codigo_recuperacion' => $codigo_recuperacion,
-            'mensaje' => __('Guarda este código en un lugar seguro. Lo necesitarás para recuperar tus claves.', 'flavor-chat-ia'),
+            'mensaje' => __('Guarda este código en un lugar seguro. Lo necesitarás para recuperar tus claves.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -806,7 +806,7 @@ class Flavor_E2E_REST_API {
         if (!$backup) {
             return new WP_Error(
                 'backup_no_encontrado',
-                __('Código de recuperación inválido o no existe backup para este usuario.', 'flavor-chat-ia'),
+                __('Código de recuperación inválido o no existe backup para este usuario.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 404]
             );
         }
@@ -842,7 +842,7 @@ class Flavor_E2E_REST_API {
         if ($datos_json === false) {
             return new WP_Error(
                 'descifrado_fallido',
-                __('No se pudo descifrar el backup. Verifica el código de recuperación.', 'flavor-chat-ia'),
+                __('No se pudo descifrar el backup. Verifica el código de recuperación.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 400]
             );
         }
@@ -852,7 +852,7 @@ class Flavor_E2E_REST_API {
         return rest_ensure_response([
             'success' => true,
             'dispositivos_recuperados' => count($datos['dispositivos'] ?? []),
-            'mensaje' => __('Backup restaurado correctamente.', 'flavor-chat-ia'),
+            'mensaje' => __('Backup restaurado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -874,7 +874,7 @@ class Flavor_E2E_REST_API {
         if (!$identity_key) {
             return new WP_Error(
                 'dispositivo_no_encontrado',
-                __('Dispositivo no encontrado.', 'flavor-chat-ia'),
+                __('Dispositivo no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 404]
             );
         }

@@ -29,7 +29,7 @@ class Flavor_Page_Generator extends Flavor_Template_Component_Base {
      */
     public function __construct() {
         $this->componente_id = 'paginas';
-        $this->componente_nombre = __('Generador de Paginas', 'flavor-chat-ia');
+        $this->componente_nombre = __('Generador de Paginas', FLAVOR_PLATFORM_TEXT_DOMAIN);
     }
 
     /**
@@ -44,7 +44,7 @@ class Flavor_Page_Generator extends Flavor_Template_Component_Base {
         // Verificar si la creación de páginas está deshabilitada
         if (get_option('flavor_pages_creation_disabled')) {
             return $this->respuesta_exito(
-                __('Creación de páginas deshabilitada.', 'flavor-chat-ia'),
+                __('Creación de páginas deshabilitada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['paginas_creadas' => []]
             );
         }
@@ -55,7 +55,7 @@ class Flavor_Page_Generator extends Flavor_Template_Component_Base {
 
         if (empty($paginas_definidas)) {
             return $this->respuesta_exito(
-                __('No hay paginas definidas para esta plantilla.', 'flavor-chat-ia'),
+                __('No hay paginas definidas para esta plantilla.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['paginas_creadas' => []]
             );
         }
@@ -138,13 +138,13 @@ class Flavor_Page_Generator extends Flavor_Template_Component_Base {
         flush_rewrite_rules();
 
         $mensaje = sprintf(
-            __('Se crearon %d paginas correctamente.', 'flavor-chat-ia'),
+            __('Se crearon %d paginas correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             count($paginas_creadas)
         );
 
         if (!empty($paginas_existentes)) {
             $mensaje .= ' ' . sprintf(
-                __('%d paginas ya existian.', 'flavor-chat-ia'),
+                __('%d paginas ya existian.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 count($paginas_existentes)
             );
         }
@@ -186,7 +186,7 @@ class Flavor_Page_Generator extends Flavor_Template_Component_Base {
 
         if (empty($ids_paginas)) {
             return $this->respuesta_exito(
-                __('No hay paginas registradas para esta plantilla.', 'flavor-chat-ia'),
+                __('No hay paginas registradas para esta plantilla.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['paginas_eliminadas' => []]
             );
         }
@@ -219,7 +219,7 @@ class Flavor_Page_Generator extends Flavor_Template_Component_Base {
             if ($template_id_meta !== $plantilla_id) {
                 $this->registrar_advertencia(
                     'pagina_sin_meta',
-                    sprintf(__('La pagina %d no pertenece a esta plantilla.', 'flavor-chat-ia'), $id_pagina)
+                    sprintf(__('La pagina %d no pertenece a esta plantilla.', FLAVOR_PLATFORM_TEXT_DOMAIN), $id_pagina)
                 );
                 continue;
             }
@@ -250,7 +250,7 @@ class Flavor_Page_Generator extends Flavor_Template_Component_Base {
 
         return $this->respuesta_exito(
             sprintf(
-                __('Se movieron %d paginas a la papelera.', 'flavor-chat-ia'),
+                __('Se movieron %d paginas a la papelera.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 count($paginas_eliminadas)
             ),
             [
@@ -274,7 +274,7 @@ class Flavor_Page_Generator extends Flavor_Template_Component_Base {
             return [
                 'estado'   => 'no_aplica',
                 'detalles' => [],
-                'mensaje'  => __('No hay paginas definidas para esta plantilla.', 'flavor-chat-ia'),
+                'mensaje'  => __('No hay paginas definidas para esta plantilla.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -319,7 +319,7 @@ class Flavor_Page_Generator extends Flavor_Template_Component_Base {
                 'faltantes'  => $paginas_faltantes,
             ],
             'mensaje'  => sprintf(
-                __('%d de %d paginas existen.', 'flavor-chat-ia'),
+                __('%d de %d paginas existen.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $total_existentes,
                 $total_esperadas
             ),
@@ -373,7 +373,7 @@ class Flavor_Page_Generator extends Flavor_Template_Component_Base {
         if (is_wp_error($id_pagina)) {
             $this->registrar_error(
                 'crear_pagina_error',
-                sprintf(__('Error al crear pagina "%s": %s', 'flavor-chat-ia'), $pagina_data['title'], $id_pagina->get_error_message())
+                sprintf(__('Error al crear pagina "%s": %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $pagina_data['title'], $id_pagina->get_error_message())
             );
 
             return [

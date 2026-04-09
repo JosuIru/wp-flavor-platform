@@ -93,15 +93,15 @@ class Flavor_Reservas_Frontend_Controller {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('reservas_nonce'),
             'i18n' => [
-                'reserva_creada' => __('Reserva creada correctamente', 'flavor-chat-ia'),
-                'reserva_cancelada' => __('Reserva cancelada', 'flavor-chat-ia'),
-                'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'confirmacion' => __('¿Estás seguro?', 'flavor-chat-ia'),
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
-                'no_disponible' => __('Horario no disponible', 'flavor-chat-ia'),
-                'disponible' => __('Disponible', 'flavor-chat-ia'),
-                'selecciona_fecha' => __('Selecciona una fecha', 'flavor-chat-ia'),
-                'selecciona_hora' => __('Selecciona una hora', 'flavor-chat-ia'),
+                'reserva_creada' => __('Reserva creada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'reserva_cancelada' => __('Reserva cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmacion' => __('¿Estás seguro?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'no_disponible' => __('Horario no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'disponible' => __('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'selecciona_fecha' => __('Selecciona una fecha', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'selecciona_hora' => __('Selecciona una hora', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -145,7 +145,7 @@ class Flavor_Reservas_Frontend_Controller {
         return '<div class="flavor-empty-state">' .
             '<p>' . esc_html($mensaje) . '</p>' .
             '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="flavor-btn flavor-btn-primary">' .
-            esc_html__('Iniciar sesión', 'flavor-chat-ia') .
+            esc_html__('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN) .
             '</a></div>';
     }
 
@@ -196,7 +196,7 @@ class Flavor_Reservas_Frontend_Controller {
      */
     public function shortcode_mis_reservas($atts) {
         if (!is_user_logged_in()) {
-            return $this->render_login_required(__('Inicia sesión para ver tus reservas.', 'flavor-chat-ia'));
+            return $this->render_login_required(__('Inicia sesión para ver tus reservas.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $this->encolar_assets();
@@ -233,7 +233,7 @@ class Flavor_Reservas_Frontend_Controller {
      */
     public function shortcode_formulario($atts) {
         if (!is_user_logged_in()) {
-            return $this->render_login_required(__('Inicia sesión para hacer una reserva.', 'flavor-chat-ia'));
+            return $this->render_login_required(__('Inicia sesión para hacer una reserva.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $this->encolar_assets();
@@ -263,9 +263,9 @@ class Flavor_Reservas_Frontend_Controller {
 
         if (!$recurso_id) {
             return '<div class="flavor-empty-state">' .
-                '<p>' . esc_html__('Recurso no especificado.', 'flavor-chat-ia') . '</p>' .
+                '<p>' . esc_html__('Recurso no especificado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>' .
                 '<a href="' . esc_url(home_url('/mi-portal/reservas/')) . '" class="flavor-btn flavor-btn-primary">' .
-                esc_html__('Ver recursos', 'flavor-chat-ia') .
+                esc_html__('Ver recursos', FLAVOR_PLATFORM_TEXT_DOMAIN) .
                 '</a></div>';
         }
 
@@ -282,7 +282,7 @@ class Flavor_Reservas_Frontend_Controller {
         $tabla_recursos = $wpdb->prefix . 'flavor_reservas_recursos';
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_recursos)) {
-            echo '<p class="flavor-error">' . __('El módulo de reservas no está configurado.', 'flavor-chat-ia') . '</p>';
+            echo '<p class="flavor-error">' . __('El módulo de reservas no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -309,13 +309,13 @@ class Flavor_Reservas_Frontend_Controller {
             <?php if ($atts['mostrar_filtros'] === 'true') : ?>
                 <div class="flavor-filtros">
                     <select id="filtro-tipo" class="filtro-reservas">
-                        <option value=""><?php _e('Todos los tipos', 'flavor-chat-ia'); ?></option>
-                        <option value="sala"><?php _e('Sala', 'flavor-chat-ia'); ?></option>
-                        <option value="equipo"><?php _e('Equipo', 'flavor-chat-ia'); ?></option>
-                        <option value="vehiculo"><?php _e('Vehículo', 'flavor-chat-ia'); ?></option>
-                        <option value="espacio"><?php _e('Espacio', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Todos los tipos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="sala"><?php _e('Sala', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="equipo"><?php _e('Equipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="vehiculo"><?php _e('Vehículo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="espacio"><?php _e('Espacio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
-                    <input type="text" id="filtro-busqueda" placeholder="<?php _e('Buscar...', 'flavor-chat-ia'); ?>" class="filtro-reservas">
+                    <input type="text" id="filtro-busqueda" placeholder="<?php _e('Buscar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" class="filtro-reservas">
                 </div>
             <?php endif; ?>
 
@@ -359,9 +359,9 @@ class Flavor_Reservas_Frontend_Controller {
         <div class="flavor-mis-reservas">
             <?php if (empty($reservas)) : ?>
                 <div class="flavor-empty-state">
-                    <p><?php _e('No tienes reservas.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No tienes reservas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(add_query_arg('tab', 'recursos', home_url('/mi-portal/reservas/'))); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php _e('Ver recursos disponibles', 'flavor-chat-ia'); ?>
+                        <?php _e('Ver recursos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else : ?>
@@ -379,11 +379,11 @@ class Flavor_Reservas_Frontend_Controller {
                             </div>
                             <div class="reserva-fechas">
                                 <div class="fecha-inicio">
-                                    <span class="label"><?php _e('Desde', 'flavor-chat-ia'); ?></span>
+                                    <span class="label"><?php _e('Desde', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     <span class="valor"><?php echo esc_html(date_i18n('d/m/Y H:i', strtotime($reserva->fecha_inicio))); ?></span>
                                 </div>
                                 <div class="fecha-fin">
-                                    <span class="label"><?php _e('Hasta', 'flavor-chat-ia'); ?></span>
+                                    <span class="label"><?php _e('Hasta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     <span class="valor"><?php echo esc_html(date_i18n('d/m/Y H:i', strtotime($reserva->fecha_fin))); ?></span>
                                 </div>
                             </div>
@@ -392,7 +392,7 @@ class Flavor_Reservas_Frontend_Controller {
                                 <?php if ($reserva->estado === 'confirmada' && strtotime($reserva->fecha_inicio) > time()) : ?>
                                     <button class="flavor-btn flavor-btn-sm flavor-btn-danger btn-cancelar-reserva"
                                             data-id="<?php echo esc_attr($reserva->id); ?>">
-                                        <?php _e('Cancelar', 'flavor-chat-ia'); ?>
+                                        <?php _e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 <?php endif; ?>
                             </div>
@@ -421,9 +421,9 @@ class Flavor_Reservas_Frontend_Controller {
                 <!-- Se carga via JS -->
             </div>
             <div class="calendario-leyenda">
-                <span class="leyenda-item disponible"><?php _e('Disponible', 'flavor-chat-ia'); ?></span>
-                <span class="leyenda-item ocupado"><?php _e('Ocupado', 'flavor-chat-ia'); ?></span>
-                <span class="leyenda-item parcial"><?php _e('Parcialmente ocupado', 'flavor-chat-ia'); ?></span>
+                <span class="leyenda-item disponible"><?php _e('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                <span class="leyenda-item ocupado"><?php _e('Ocupado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                <span class="leyenda-item parcial"><?php _e('Parcialmente ocupado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
         <?php
@@ -434,7 +434,7 @@ class Flavor_Reservas_Frontend_Controller {
      */
     private function render_formulario_reserva($recurso_id) {
         if (!$recurso_id) {
-            echo '<div class="flavor-empty-state"><p>' . esc_html__('Selecciona un recurso para reservar.', 'flavor-chat-ia') . '</p><a href="' . esc_url(add_query_arg('tab', 'recursos', home_url('/mi-portal/reservas/'))) . '" class="flavor-btn flavor-btn-primary">' . esc_html__('Ver recursos', 'flavor-chat-ia') . '</a></div>';
+            echo '<div class="flavor-empty-state"><p>' . esc_html__('Selecciona un recurso para reservar.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p><a href="' . esc_url(add_query_arg('tab', 'recursos', home_url('/mi-portal/reservas/'))) . '" class="flavor-btn flavor-btn-primary">' . esc_html__('Ver recursos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></div>';
             return;
         }
 
@@ -447,13 +447,13 @@ class Flavor_Reservas_Frontend_Controller {
         ));
 
         if (!$recurso) {
-            echo '<div class="flavor-empty-state"><p>' . esc_html__('Recurso no encontrado.', 'flavor-chat-ia') . '</p><a href="' . esc_url(add_query_arg('tab', 'recursos', home_url('/mi-portal/reservas/'))) . '" class="flavor-btn flavor-btn-primary">' . esc_html__('Volver a recursos', 'flavor-chat-ia') . '</a></div>';
+            echo '<div class="flavor-empty-state"><p>' . esc_html__('Recurso no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p><a href="' . esc_url(add_query_arg('tab', 'recursos', home_url('/mi-portal/reservas/'))) . '" class="flavor-btn flavor-btn-primary">' . esc_html__('Volver a recursos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></div>';
             return;
         }
 
         ?>
         <div class="flavor-reservas-form">
-            <h3><?php printf(__('Reservar: %s', 'flavor-chat-ia'), esc_html($recurso->nombre)); ?></h3>
+            <h3><?php printf(__('Reservar: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($recurso->nombre)); ?></h3>
 
             <form id="form-crear-reserva" class="flavor-form">
                 <?php wp_nonce_field('reservas_nonce', 'reservas_nonce_field'); ?>
@@ -461,29 +461,29 @@ class Flavor_Reservas_Frontend_Controller {
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label><?php _e('Fecha de inicio', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Fecha de inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="date" name="fecha_inicio" required min="<?php echo date('Y-m-d'); ?>">
                     </div>
                     <div class="form-group">
-                        <label><?php _e('Hora de inicio', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Hora de inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="time" name="hora_inicio" required>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label><?php _e('Fecha de fin', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Fecha de fin', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="date" name="fecha_fin" required min="<?php echo date('Y-m-d'); ?>">
                     </div>
                     <div class="form-group">
-                        <label><?php _e('Hora de fin', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Hora de fin', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="time" name="hora_fin" required>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label><?php _e('Motivo de la reserva', 'flavor-chat-ia'); ?></label>
-                    <textarea name="motivo" rows="3" placeholder="<?php _e('Describe brevemente para qué necesitas este recurso...', 'flavor-chat-ia'); ?>"></textarea>
+                    <label><?php _e('Motivo de la reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                    <textarea name="motivo" rows="3" placeholder="<?php _e('Describe brevemente para qué necesitas este recurso...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                 </div>
 
                 <div id="verificacion-disponibilidad" class="verificacion-box" style="display:none;">
@@ -493,10 +493,10 @@ class Flavor_Reservas_Frontend_Controller {
 
                 <div class="form-actions">
                     <button type="button" class="flavor-btn flavor-btn-secondary" id="btn-verificar-disponibilidad">
-                        <?php _e('Verificar Disponibilidad', 'flavor-chat-ia'); ?>
+                        <?php _e('Verificar Disponibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="submit" class="flavor-btn flavor-btn-primary" disabled id="btn-confirmar-reserva">
-                        <?php _e('Confirmar Reserva', 'flavor-chat-ia'); ?>
+                        <?php _e('Confirmar Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </form>
@@ -517,7 +517,7 @@ class Flavor_Reservas_Frontend_Controller {
         ));
 
         if (!$recurso) {
-            echo '<div class="flavor-empty-state"><p>' . esc_html__('Recurso no encontrado.', 'flavor-chat-ia') . '</p><a href="' . esc_url(add_query_arg('tab', 'recursos', home_url('/mi-portal/reservas/'))) . '" class="flavor-btn flavor-btn-primary">' . esc_html__('Volver a recursos', 'flavor-chat-ia') . '</a></div>';
+            echo '<div class="flavor-empty-state"><p>' . esc_html__('Recurso no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p><a href="' . esc_url(add_query_arg('tab', 'recursos', home_url('/mi-portal/reservas/'))) . '" class="flavor-btn flavor-btn-primary">' . esc_html__('Volver a recursos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></div>';
             return;
         }
 
@@ -545,20 +545,20 @@ class Flavor_Reservas_Frontend_Controller {
             <?php if (!empty($recurso->capacidad)) : ?>
                 <div class="recurso-meta">
                     <span class="capacidad">
-                        <strong><?php _e('Capacidad:', 'flavor-chat-ia'); ?></strong>
-                        <?php echo esc_html($recurso->capacidad); ?> <?php _e('personas', 'flavor-chat-ia'); ?>
+                        <strong><?php _e('Capacidad:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                        <?php echo esc_html($recurso->capacidad); ?> <?php _e('personas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                 </div>
             <?php endif; ?>
 
             <div class="recurso-acciones">
                 <a href="<?php echo esc_url(add_query_arg(['tab' => 'nueva-reserva', 'recurso_id' => $recurso->id], home_url('/mi-portal/reservas/'))); ?>" class="flavor-btn flavor-btn-primary">
-                    <?php _e('Reservar', 'flavor-chat-ia'); ?>
+                    <?php _e('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
             <div class="recurso-calendario">
-                <h3><?php _e('Disponibilidad', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Disponibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <?php $this->render_calendario(['recurso_id' => $recurso_id, 'mes' => date('m'), 'anio' => date('Y')]); ?>
             </div>
         </div>
@@ -570,7 +570,7 @@ class Flavor_Reservas_Frontend_Controller {
      */
     public function registrar_tabs($tabs) {
         $tabs['reservas-mis-reservas'] = [
-            'titulo' => __('Mis Reservas', 'flavor-chat-ia'),
+            'titulo' => __('Mis Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'dashicons-calendar',
             'callback' => [$this, 'render_tab_mis_reservas'],
             'orden' => 45,
@@ -602,7 +602,7 @@ class Flavor_Reservas_Frontend_Controller {
         check_ajax_referer('reservas_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $recurso_id = isset($_POST['recurso_id']) ? absint($_POST['recurso_id']) : 0;
@@ -618,7 +618,7 @@ class Flavor_Reservas_Frontend_Controller {
         $usuario_id = get_current_user_id();
 
         if (!$recurso_id || empty($fecha_inicio) || empty($hora_inicio) || empty($fecha_fin) || empty($hora_fin)) {
-            wp_send_json_error(__('Todos los campos son obligatorios', 'flavor-chat-ia'));
+            wp_send_json_error(__('Todos los campos son obligatorios', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $fecha_inicio_completa = $fecha_inicio . ' ' . $hora_inicio . ':00';
@@ -647,7 +647,7 @@ class Flavor_Reservas_Frontend_Controller {
         ));
 
         if ($conflicto > 0) {
-            wp_send_json_error(__('El horario seleccionado no está disponible', 'flavor-chat-ia'));
+            wp_send_json_error(__('El horario seleccionado no está disponible', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Crear reserva
@@ -673,11 +673,11 @@ class Flavor_Reservas_Frontend_Controller {
                 'importe' => isset($_POST['importe']) ? (float) $_POST['importe'] : 0.0,
             ]);
             wp_send_json_success([
-                'mensaje' => __('Reserva creada correctamente', 'flavor-chat-ia'),
+                'mensaje' => __('Reserva creada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'reserva_id' => $wpdb->insert_id,
             ]);
         } else {
-            wp_send_json_error(__('Error al crear la reserva', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al crear la reserva', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -688,7 +688,7 @@ class Flavor_Reservas_Frontend_Controller {
         check_ajax_referer('reservas_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $reserva_id = isset($_POST['reserva_id']) ? absint($_POST['reserva_id']) : 0;
@@ -709,9 +709,9 @@ class Flavor_Reservas_Frontend_Controller {
                 'usuario_id' => (int) $usuario_id,
                 'devolucion' => isset($_POST['devolucion']) ? (float) $_POST['devolucion'] : 0.0,
             ]);
-            wp_send_json_success(['mensaje' => __('Reserva cancelada', 'flavor-chat-ia')]);
+            wp_send_json_success(['mensaje' => __('Reserva cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
-            wp_send_json_error(__('Error al cancelar', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -733,7 +733,7 @@ class Flavor_Reservas_Frontend_Controller {
         }
 
         if (!$recurso_id || empty($fecha_inicio) || empty($hora_inicio) || empty($fecha_fin) || empty($hora_fin)) {
-            wp_send_json_error(__('Datos incompletos', 'flavor-chat-ia'));
+            wp_send_json_error(__('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $fecha_inicio_completa = $fecha_inicio . ' ' . $hora_inicio . ':00';
@@ -763,12 +763,12 @@ class Flavor_Reservas_Frontend_Controller {
         if ($conflicto > 0) {
             wp_send_json_success([
                 'disponible' => false,
-                'mensaje' => __('Horario no disponible', 'flavor-chat-ia'),
+                'mensaje' => __('Horario no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         } else {
             wp_send_json_success([
                 'disponible' => true,
-                'mensaje' => __('Disponible', 'flavor-chat-ia'),
+                'mensaje' => __('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
     }
@@ -835,7 +835,7 @@ class Flavor_Reservas_Frontend_Controller {
                 $this->render_recurso_card($recurso);
             }
         } else {
-            echo '<p class="no-resultados">' . __('No se encontraron recursos', 'flavor-chat-ia') . '</p>';
+            echo '<p class="no-resultados">' . __('No se encontraron recursos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
         $html = ob_get_clean();
 
@@ -861,10 +861,10 @@ class Flavor_Reservas_Frontend_Controller {
                 <?php endif; ?>
                 <div class="recurso-acciones">
                     <a href="<?php echo esc_url(add_query_arg(['tab' => 'recursos', 'recurso_id' => $recurso->id], home_url('/mi-portal/reservas/'))); ?>" class="flavor-btn flavor-btn-sm">
-                        <?php _e('Ver Detalles', 'flavor-chat-ia'); ?>
+                        <?php _e('Ver Detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="<?php echo esc_url(add_query_arg(['tab' => 'nueva-reserva', 'recurso_id' => $recurso->id], home_url('/mi-portal/reservas/'))); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
-                        <?php _e('Reservar', 'flavor-chat-ia'); ?>
+                        <?php _e('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </div>
@@ -880,7 +880,7 @@ class Flavor_Reservas_Frontend_Controller {
         $dias_mes = (int) date('t', $primer_dia);
         $inicio_semana = (int) date('N', $primer_dia);
         $hoy = current_time('Y-m-d');
-        $dias = [__('Lun', 'flavor-chat-ia'), __('Mar', 'flavor-chat-ia'), __('Mie', 'flavor-chat-ia'), __('Jue', 'flavor-chat-ia'), __('Vie', 'flavor-chat-ia'), __('Sab', 'flavor-chat-ia'), __('Dom', 'flavor-chat-ia')];
+        $dias = [__('Lun', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Mar', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Mie', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Jue', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Vie', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Sab', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Dom', FLAVOR_PLATFORM_TEXT_DOMAIN)];
 
         ob_start();
         echo '<div class="reservas-calendario__grid">';

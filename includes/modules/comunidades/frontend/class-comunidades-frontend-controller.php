@@ -84,12 +84,12 @@ class Flavor_Comunidades_Frontend_Controller {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('comunidades_nonce'),
             'i18n' => [
-                'unido' => __('Te has unido a la comunidad', 'flavor-chat-ia'),
-                'salido' => __('Has abandonado la comunidad', 'flavor-chat-ia'),
-                'publicado' => __('Publicación creada', 'flavor-chat-ia'),
-                'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
-                'confirmar_salir' => __('¿Confirmas que quieres abandonar esta comunidad?', 'flavor-chat-ia'),
+                'unido' => __('Te has unido a la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'salido' => __('Has abandonado la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'publicado' => __('Publicación creada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmar_salir' => __('¿Confirmas que quieres abandonar esta comunidad?', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -170,14 +170,14 @@ class Flavor_Comunidades_Frontend_Controller {
      */
     public function registrar_tabs($tabs) {
         $tabs['comunidades-explorar'] = [
-            'label' => __('Comunidades', 'flavor-chat-ia'),
+            'label' => __('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'groups',
             'callback' => [$this, 'render_tab_explorar'],
             'orden' => 25,
         ];
 
         $tabs['comunidades-mis'] = [
-            'label' => __('Mis Comunidades', 'flavor-chat-ia'),
+            'label' => __('Mis Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'networking',
             'callback' => [$this, 'render_tab_mis_comunidades'],
             'orden' => 26,
@@ -243,7 +243,7 @@ class Flavor_Comunidades_Frontend_Controller {
         $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_comunidades)) {
-            return '<p class="flavor-error">' . __('El módulo no está configurado.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-error">' . __('El módulo no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $where = "estado = 'activa' AND tipo IN ('abierta', 'cerrada')";
@@ -286,7 +286,7 @@ class Flavor_Comunidades_Frontend_Controller {
                 <div class="comunidades-header">
                     <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/crear/')); ?>" class="flavor-btn flavor-btn-primary">
                         <span class="dashicons dashicons-plus-alt2"></span>
-                        <?php esc_html_e('Crear Comunidad', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Crear Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php endif; ?>
@@ -294,24 +294,24 @@ class Flavor_Comunidades_Frontend_Controller {
             <?php if ($atts['mostrar_filtros'] === 'true' && !empty($categorias)): ?>
                 <div class="comunidades-filtros">
                     <select id="filtro-categoria-comunidades" class="filtro-select">
-                        <option value=""><?php esc_html_e('Todas las categorías', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todas las categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($categorias as $cat): ?>
                             <option value="<?php echo esc_attr($cat); ?>" <?php selected($atts['categoria'], $cat); ?>>
                                 <?php echo esc_html($cat); ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
-                    <input type="search" id="buscar-comunidades" placeholder="<?php esc_attr_e('Buscar...', 'flavor-chat-ia'); ?>" class="filtro-input">
+                    <input type="search" id="buscar-comunidades" placeholder="<?php esc_attr_e('Buscar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" class="filtro-input">
                 </div>
             <?php endif; ?>
 
             <?php if (empty($comunidades)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-groups"></span>
-                    <p><?php esc_html_e('No hay comunidades disponibles.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay comunidades disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php if (is_user_logged_in()): ?>
                         <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/crear/')); ?>" class="flavor-btn flavor-btn-primary">
-                            <?php esc_html_e('Crear la primera', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Crear la primera', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     <?php endif; ?>
                 </div>
@@ -368,7 +368,7 @@ class Flavor_Comunidades_Frontend_Controller {
                 <div class="comunidad-stats">
                     <span class="stat">
                         <span class="dashicons dashicons-admin-users"></span>
-                        <?php echo number_format_i18n($comunidad->miembros_count); ?> <?php esc_html_e('miembros', 'flavor-chat-ia'); ?>
+                        <?php echo number_format_i18n($comunidad->miembros_count); ?> <?php esc_html_e('miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                     <?php if ($comunidad->publicaciones_count > 0): ?>
                         <span class="stat">
@@ -380,33 +380,33 @@ class Flavor_Comunidades_Frontend_Controller {
 
                 <div class="comunidad-badges">
                     <?php if ($comunidad->privacidad === 'publica'): ?>
-                        <span class="flavor-badge flavor-badge-success"><?php esc_html_e('Pública', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-badge flavor-badge-success"><?php esc_html_e('Pública', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <?php elseif ($comunidad->privacidad === 'privada'): ?>
-                        <span class="flavor-badge flavor-badge-warning"><?php esc_html_e('Privada', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-badge flavor-badge-warning"><?php esc_html_e('Privada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <?php endif; ?>
                     <?php if ($comunidad->verificada): ?>
-                        <span class="flavor-badge flavor-badge-primary"><?php esc_html_e('Verificada', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-badge flavor-badge-primary"><?php esc_html_e('Verificada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <?php endif; ?>
                 </div>
             </div>
 
             <div class="flavor-card-footer">
                 <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/' . $comunidad->id . '/')); ?>" class="flavor-btn flavor-btn-outline">
-                    <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <?php if (is_user_logged_in()): ?>
                     <?php if ($usuario_es_miembro): ?>
                         <span class="miembro-badge">
                             <span class="dashicons dashicons-yes-alt"></span>
-                            <?php esc_html_e('Miembro', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
                     <?php elseif ($comunidad->privacidad === 'publica'): ?>
                         <button type="button" class="flavor-btn flavor-btn-primary btn-unirse" data-comunidad="<?php echo esc_attr($comunidad->id); ?>">
-                            <?php esc_html_e('Unirse', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Unirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     <?php else: ?>
                         <button type="button" class="flavor-btn flavor-btn-secondary btn-solicitar" data-comunidad="<?php echo esc_attr($comunidad->id); ?>">
-                            <?php esc_html_e('Solicitar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Solicitar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     <?php endif; ?>
                 <?php endif; ?>
@@ -443,7 +443,7 @@ class Flavor_Comunidades_Frontend_Controller {
         }
 
         if (!$comunidad) {
-            return '<p class="flavor-error">' . __('Comunidad no encontrada.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-error">' . __('Comunidad no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         // Verificar si el usuario es miembro
@@ -477,18 +477,18 @@ class Flavor_Comunidades_Frontend_Controller {
                     <h1><?php echo esc_html($comunidad->nombre); ?></h1>
                     <p class="comunidad-privada-aviso">
                         <span class="dashicons dashicons-lock"></span>
-                        <?php esc_html_e('Esta es una comunidad privada', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Esta es una comunidad privada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                     <?php if ($comunidad->descripcion_corta): ?>
                         <p><?php echo esc_html($comunidad->descripcion_corta); ?></p>
                     <?php endif; ?>
-                    <p><?php echo number_format_i18n($comunidad->miembros_count); ?> <?php esc_html_e('miembros', 'flavor-chat-ia'); ?></p>
+                    <p><?php echo number_format_i18n($comunidad->miembros_count); ?> <?php esc_html_e('miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php if (is_user_logged_in()): ?>
                         <button type="button" class="flavor-btn flavor-btn-primary btn-solicitar-acceso" data-comunidad="<?php echo esc_attr($comunidad->id); ?>">
-                            <?php esc_html_e('Solicitar Acceso', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Solicitar Acceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     <?php else: ?>
-                        <p><?php esc_html_e('Inicia sesión para solicitar acceso.', 'flavor-chat-ia'); ?></p>
+                        <p><?php esc_html_e('Inicia sesión para solicitar acceso.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php endif; ?>
                 </div>
             </div>
@@ -550,7 +550,7 @@ class Flavor_Comunidades_Frontend_Controller {
                     <h1>
                         <?php echo esc_html($comunidad->nombre); ?>
                         <?php if ($comunidad->verificada): ?>
-                            <span class="verificado-badge" title="<?php esc_attr_e('Comunidad verificada', 'flavor-chat-ia'); ?>">
+                            <span class="verificado-badge" title="<?php esc_attr_e('Comunidad verificada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <span class="dashicons dashicons-yes-alt"></span>
                             </span>
                         <?php endif; ?>
@@ -565,20 +565,20 @@ class Flavor_Comunidades_Frontend_Controller {
                         <?php if ($es_admin): ?>
                             <a href="<?php echo esc_url(add_query_arg(['comunidad_id' => intval($comunidad->id), 'tab' => 'miembros'], home_url('/mi-portal/comunidades/'))); ?>" class="flavor-btn flavor-btn-secondary">
                                 <span class="dashicons dashicons-admin-generic"></span>
-                                <?php esc_html_e('Administrar', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Administrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         <?php endif; ?>
                         <button type="button" class="flavor-btn flavor-btn-outline btn-salir" data-comunidad="<?php echo esc_attr($comunidad->id); ?>">
-                            <?php esc_html_e('Abandonar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Abandonar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     <?php elseif (is_user_logged_in()): ?>
                         <?php if ($comunidad->privacidad === 'publica'): ?>
                             <button type="button" class="flavor-btn flavor-btn-primary btn-unirse" data-comunidad="<?php echo esc_attr($comunidad->id); ?>">
-                                <?php esc_html_e('Unirse', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Unirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         <?php else: ?>
                             <button type="button" class="flavor-btn flavor-btn-primary btn-solicitar" data-comunidad="<?php echo esc_attr($comunidad->id); ?>">
-                                <?php esc_html_e('Solicitar Acceso', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Solicitar Acceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         <?php endif; ?>
                     <?php endif; ?>
@@ -588,15 +588,15 @@ class Flavor_Comunidades_Frontend_Controller {
             <div class="comunidad-stats-bar">
                 <div class="stat">
                     <span class="stat-valor"><?php echo number_format_i18n($comunidad->miembros_count); ?></span>
-                    <span class="stat-label"><?php esc_html_e('Miembros', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="stat">
                     <span class="stat-valor"><?php echo number_format_i18n($comunidad->publicaciones_count); ?></span>
-                    <span class="stat-label"><?php esc_html_e('Publicaciones', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="stat">
                     <span class="stat-valor"><?php echo date_i18n('M Y', strtotime($comunidad->created_at)); ?></span>
-                    <span class="stat-label"><?php esc_html_e('Creada', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Creada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
@@ -604,7 +604,7 @@ class Flavor_Comunidades_Frontend_Controller {
                 <div class="comunidad-main">
                     <?php if ($comunidad->descripcion): ?>
                         <div class="comunidad-descripcion-completa">
-                            <h3><?php esc_html_e('Acerca de', 'flavor-chat-ia'); ?></h3>
+                            <h3><?php esc_html_e('Acerca de', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                             <?php echo wp_kses_post($comunidad->descripcion); ?>
                         </div>
                     <?php endif; ?>
@@ -614,10 +614,10 @@ class Flavor_Comunidades_Frontend_Controller {
                             <form id="flavor-com-form-publicar" class="form-publicar">
                                 <?php wp_nonce_field('comunidades_nonce', 'comunidades_nonce_field'); ?>
                                 <input type="hidden" name="comunidad_id" value="<?php echo esc_attr($comunidad->id); ?>">
-                                <textarea name="contenido" placeholder="<?php esc_attr_e('¿Qué quieres compartir con la comunidad?', 'flavor-chat-ia'); ?>" rows="3"></textarea>
+                                <textarea name="contenido" placeholder="<?php esc_attr_e('¿Qué quieres compartir con la comunidad?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" rows="3"></textarea>
                                 <div class="publicar-opciones">
                                     <button type="submit" class="flavor-btn flavor-btn-primary">
-                                        <?php esc_html_e('Publicar', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 </div>
                             </form>
@@ -635,10 +635,10 @@ class Flavor_Comunidades_Frontend_Controller {
                     <?php endif; ?>
 
                     <div class="comunidad-feed">
-                        <h3><?php esc_html_e('Publicaciones', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php esc_html_e('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <?php if (empty($publicaciones)): ?>
                             <div class="flavor-empty-state">
-                                <p><?php esc_html_e('Aún no hay publicaciones.', 'flavor-chat-ia'); ?></p>
+                                <p><?php esc_html_e('Aún no hay publicaciones.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </div>
                         <?php else: ?>
                             <div class="publicaciones-lista">
@@ -647,7 +647,7 @@ class Flavor_Comunidades_Frontend_Controller {
                                         <?php if ($pub->fijado): ?>
                                             <span class="publicacion-fijada-badge">
                                                 <span class="dashicons dashicons-admin-post"></span>
-                                                <?php esc_html_e('Fijado', 'flavor-chat-ia'); ?>
+                                                <?php esc_html_e('Fijado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </span>
                                         <?php endif; ?>
                                         <div class="publicacion-header">
@@ -681,7 +681,7 @@ class Flavor_Comunidades_Frontend_Controller {
 
                 <div class="comunidad-sidebar">
                     <div class="sidebar-seccion">
-                        <h4><?php esc_html_e('Miembros', 'flavor-chat-ia'); ?></h4>
+                        <h4><?php esc_html_e('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                         <div class="miembros-grid">
                             <?php foreach ($miembros_destacados as $miembro): ?>
                                 <div class="miembro-mini" title="<?php echo esc_attr($miembro->display_name); ?>">
@@ -695,13 +695,13 @@ class Flavor_Comunidades_Frontend_Controller {
                             <?php endforeach; ?>
                         </div>
                 <a href="<?php echo esc_url(add_query_arg(['comunidad_id' => intval($comunidad->id), 'tab' => 'miembros'], home_url('/mi-portal/comunidades/'))); ?>" class="ver-todos">
-                            <?php esc_html_e('Ver todos', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
 
                     <?php if ($comunidad->reglas): ?>
                         <div class="sidebar-seccion">
-                            <h4><?php esc_html_e('Reglas', 'flavor-chat-ia'); ?></h4>
+                            <h4><?php esc_html_e('Reglas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                             <div class="comunidad-reglas">
                                 <?php echo wp_kses_post($comunidad->reglas); ?>
                             </div>
@@ -719,7 +719,7 @@ class Flavor_Comunidades_Frontend_Controller {
      */
     public function shortcode_crear($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . __('Debes iniciar sesión para crear una comunidad.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-login-required">' . __('Debes iniciar sesión para crear una comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $this->encolar_assets();
@@ -732,60 +732,60 @@ class Flavor_Comunidades_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-comunidades-crear">
-            <h2><?php esc_html_e('Crear Nueva Comunidad', 'flavor-chat-ia'); ?></h2>
+            <h2><?php esc_html_e('Crear Nueva Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <form id="flavor-com-form-crear" class="flavor-form" enctype="multipart/form-data">
                 <?php wp_nonce_field('comunidades_nonce', 'comunidades_nonce_field'); ?>
 
                 <div class="flavor-form-group">
-                    <label for="nombre"><?php esc_html_e('Nombre de la comunidad', 'flavor-chat-ia'); ?> *</label>
+                    <label for="nombre"><?php esc_html_e('Nombre de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <input type="text" name="nombre" id="nombre" required maxlength="100">
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="descripcion_corta"><?php esc_html_e('Descripción breve', 'flavor-chat-ia'); ?></label>
-                    <input type="text" name="descripcion_corta" id="descripcion_corta" maxlength="200" placeholder="<?php esc_attr_e('Una línea que describa tu comunidad', 'flavor-chat-ia'); ?>">
+                    <label for="descripcion_corta"><?php esc_html_e('Descripción breve', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                    <input type="text" name="descripcion_corta" id="descripcion_corta" maxlength="200" placeholder="<?php esc_attr_e('Una línea que describa tu comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="descripcion"><?php esc_html_e('Descripción completa', 'flavor-chat-ia'); ?></label>
+                    <label for="descripcion"><?php esc_html_e('Descripción completa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <textarea name="descripcion" id="descripcion" rows="4"></textarea>
                 </div>
 
                 <div class="flavor-form-row">
                     <div class="flavor-form-group flavor-form-col-6">
-                        <label for="categoria"><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></label>
+                        <label for="categoria"><?php esc_html_e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select name="categoria" id="categoria">
-                            <option value=""><?php esc_html_e('Selecciona...', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php esc_html_e('Selecciona...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php foreach ($categorias_disponibles as $cat): ?>
                                 <option value="<?php echo esc_attr($cat); ?>"><?php echo esc_html($cat); ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="flavor-form-group flavor-form-col-6">
-                        <label for="privacidad"><?php esc_html_e('Privacidad', 'flavor-chat-ia'); ?> *</label>
+                        <label for="privacidad"><?php esc_html_e('Privacidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                         <select name="privacidad" id="privacidad" required>
-                            <option value="publica"><?php esc_html_e('Pública - Cualquiera puede unirse', 'flavor-chat-ia'); ?></option>
-                            <option value="visible"><?php esc_html_e('Visible - Requiere aprobación', 'flavor-chat-ia'); ?></option>
-                            <option value="privada"><?php esc_html_e('Privada - Solo por invitación', 'flavor-chat-ia'); ?></option>
+                            <option value="publica"><?php esc_html_e('Pública - Cualquiera puede unirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="visible"><?php esc_html_e('Visible - Requiere aprobación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="privada"><?php esc_html_e('Privada - Solo por invitación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="imagen_portada"><?php esc_html_e('Imagen de portada', 'flavor-chat-ia'); ?></label>
+                    <label for="imagen_portada"><?php esc_html_e('Imagen de portada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="file" name="imagen_portada" id="imagen_portada" accept="image/*">
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="reglas"><?php esc_html_e('Reglas de la comunidad', 'flavor-chat-ia'); ?></label>
-                    <textarea name="reglas" id="reglas" rows="3" placeholder="<?php esc_attr_e('Opcional: Define las normas de convivencia', 'flavor-chat-ia'); ?>"></textarea>
+                    <label for="reglas"><?php esc_html_e('Reglas de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                    <textarea name="reglas" id="reglas" rows="3" placeholder="<?php esc_attr_e('Opcional: Define las normas de convivencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                 </div>
 
                 <div class="flavor-form-actions">
                     <button type="submit" class="flavor-btn flavor-btn-primary">
                         <span class="dashicons dashicons-plus-alt2"></span>
-                        <?php esc_html_e('Crear Comunidad', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Crear Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </form>
@@ -799,7 +799,7 @@ class Flavor_Comunidades_Frontend_Controller {
      */
     public function shortcode_mis_comunidades($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . __('Debes iniciar sesión.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-login-required">' . __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $this->encolar_assets();
@@ -825,19 +825,19 @@ class Flavor_Comunidades_Frontend_Controller {
         ?>
         <div class="flavor-mis-comunidades">
             <div class="mis-comunidades-header">
-                <h2><?php esc_html_e('Mis Comunidades', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Mis Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/crear/')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt2"></span>
-                    <?php esc_html_e('Crear', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Crear', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
             <?php if (empty($comunidades)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-groups"></span>
-                    <p><?php esc_html_e('No perteneces a ninguna comunidad.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No perteneces a ninguna comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/')); ?>" class="flavor-btn flavor-btn-secondary">
-                        <?php esc_html_e('Explorar Comunidades', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Explorar Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -858,14 +858,14 @@ class Flavor_Comunidades_Frontend_Controller {
                                     </a>
                                 </h4>
                                 <p class="comunidad-meta">
-                                    <?php echo number_format_i18n($comunidad->miembros_count); ?> <?php esc_html_e('miembros', 'flavor-chat-ia'); ?>
+                                    <?php echo number_format_i18n($comunidad->miembros_count); ?> <?php esc_html_e('miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     <?php if ($comunidad->rol !== 'miembro'): ?>
                                         · <span class="rol-label"><?php echo esc_html(ucfirst($comunidad->rol)); ?></span>
                                     <?php endif; ?>
                                 </p>
                             </div>
                             <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/' . $comunidad->id . '/')); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
-                                <?php esc_html_e('Ir', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Ir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </div>
                     <?php endforeach; ?>
@@ -881,7 +881,7 @@ class Flavor_Comunidades_Frontend_Controller {
      */
     public function shortcode_feed($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . __('Debes iniciar sesión.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-login-required">' . __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $this->encolar_assets();
@@ -911,11 +911,11 @@ class Flavor_Comunidades_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-comunidades-feed">
-            <h2><?php esc_html_e('Feed de Actividad', 'flavor-chat-ia'); ?></h2>
+            <h2><?php esc_html_e('Feed de Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <?php if (empty($publicaciones)): ?>
                 <div class="flavor-empty-state">
-                    <p><?php esc_html_e('No hay actividad reciente en tus comunidades.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay actividad reciente en tus comunidades.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="feed-lista">
@@ -968,7 +968,7 @@ class Flavor_Comunidades_Frontend_Controller {
         }
 
         if (!$comunidad) {
-            return '<p class="flavor-error">' . __('Comunidad no encontrada.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-error">' . __('Comunidad no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $miembros = $wpdb->get_results($wpdb->prepare(
@@ -985,8 +985,8 @@ class Flavor_Comunidades_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-comunidad-miembros">
-            <h2><?php printf(esc_html__('Miembros de %s', 'flavor-chat-ia'), esc_html($comunidad->nombre)); ?></h2>
-            <p><?php echo number_format_i18n(count($miembros)); ?> <?php esc_html_e('miembros', 'flavor-chat-ia'); ?></p>
+            <h2><?php printf(esc_html__('Miembros de %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($comunidad->nombre)); ?></h2>
+            <p><?php echo number_format_i18n(count($miembros)); ?> <?php esc_html_e('miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
             <div class="miembros-grid-full">
                 <?php foreach ($miembros as $miembro): ?>
@@ -998,7 +998,7 @@ class Flavor_Comunidades_Frontend_Controller {
                                 <?php echo esc_html(ucfirst($miembro->rol)); ?>
                             </span>
                             <p class="miembro-desde">
-                                <?php printf(esc_html__('Desde %s', 'flavor-chat-ia'), date_i18n('M Y', strtotime($miembro->created_at))); ?>
+                                <?php printf(esc_html__('Desde %s', FLAVOR_PLATFORM_TEXT_DOMAIN), date_i18n('M Y', strtotime($miembro->created_at))); ?>
                             </p>
                         </div>
                     </div>
@@ -1024,7 +1024,7 @@ class Flavor_Comunidades_Frontend_Controller {
         $comunidad_id = absint($atts['comunidad_id']);
 
         if (!$comunidad_id) {
-            return '<p class="flavor-error">' . __('Comunidad no especificada.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-error">' . __('Comunidad no especificada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         global $wpdb;
@@ -1036,7 +1036,7 @@ class Flavor_Comunidades_Frontend_Controller {
         ));
 
         if (!$comunidad) {
-            return '<p class="flavor-error">' . __('Comunidad no encontrada.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-error">' . __('Comunidad no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         // Verificar si el usuario es miembro
@@ -1078,13 +1078,13 @@ class Flavor_Comunidades_Frontend_Controller {
             <div class="marketplace-header">
                 <h3>
                     <span class="dashicons dashicons-store"></span>
-                    <?php printf(esc_html__('Marketplace de %s', 'flavor-chat-ia'), esc_html($comunidad->nombre)); ?>
+                    <?php printf(esc_html__('Marketplace de %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($comunidad->nombre)); ?>
                 </h3>
                 <?php if ($es_miembro && $atts['mostrar_formulario'] === 'true'): ?>
                     <a href="<?php echo esc_url(add_query_arg('comunidad_id', $comunidad_id, home_url('/mi-portal/marketplace/publicar/'))); ?>"
                        class="flavor-btn flavor-btn-primary flavor-btn-sm">
                         <span class="dashicons dashicons-plus-alt2"></span>
-                        <?php esc_html_e('Publicar anuncio', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Publicar anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 <?php endif; ?>
             </div>
@@ -1092,9 +1092,9 @@ class Flavor_Comunidades_Frontend_Controller {
             <?php if (empty($anuncios)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-store"></span>
-                    <p><?php esc_html_e('No hay anuncios en esta comunidad.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay anuncios en esta comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php if ($es_miembro): ?>
-                        <p class="text-muted"><?php esc_html_e('¡Sé el primero en publicar algo!', 'flavor-chat-ia'); ?></p>
+                        <p class="text-muted"><?php esc_html_e('¡Sé el primero en publicar algo!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php endif; ?>
                 </div>
             <?php else: ?>
@@ -1109,10 +1109,10 @@ class Flavor_Comunidades_Frontend_Controller {
                         $autor = get_userdata($anuncio->post_author);
 
                         $tipos_label = [
-                            'regalo' => __('Regalo', 'flavor-chat-ia'),
-                            'venta' => __('Venta', 'flavor-chat-ia'),
-                            'cambio' => __('Cambio', 'flavor-chat-ia'),
-                            'alquiler' => __('Alquiler', 'flavor-chat-ia'),
+                            'regalo' => __('Regalo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'venta' => __('Venta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'cambio' => __('Cambio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'alquiler' => __('Alquiler', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ];
                         ?>
                         <div class="flavor-card marketplace-card estado-<?php echo esc_attr($estado); ?>">
@@ -1130,7 +1130,7 @@ class Flavor_Comunidades_Frontend_Controller {
                                     <?php echo esc_html($tipos_label[$tipo] ?? ucfirst($tipo)); ?>
                                 </span>
                                 <?php if ($estado === 'vendido'): ?>
-                                    <span class="vendido-badge"><?php esc_html_e('Vendido', 'flavor-chat-ia'); ?></span>
+                                    <span class="vendido-badge"><?php esc_html_e('Vendido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php endif; ?>
                             </div>
                             <div class="flavor-card-body">
@@ -1142,17 +1142,17 @@ class Flavor_Comunidades_Frontend_Controller {
                                 <?php if (in_array($tipo, ['venta', 'alquiler']) && $precio): ?>
                                     <p class="precio"><?php echo number_format($precio, 2, ',', '.'); ?>€</p>
                                 <?php elseif ($tipo === 'regalo'): ?>
-                                    <p class="precio gratis"><?php esc_html_e('Gratis', 'flavor-chat-ia'); ?></p>
+                                    <p class="precio gratis"><?php esc_html_e('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                 <?php endif; ?>
                                 <p class="autor">
                                     <span class="dashicons dashicons-admin-users"></span>
-                                    <?php echo esc_html($autor ? $autor->display_name : __('Usuario', 'flavor-chat-ia')); ?>
+                                    <?php echo esc_html($autor ? $autor->display_name : __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                                 </p>
                             </div>
                             <div class="flavor-card-footer">
                                 <a href="<?php echo esc_url(home_url('/mi-portal/marketplace/detalle/?anuncio_id=' . $anuncio->ID)); ?>"
                                    class="flavor-btn flavor-btn-outline flavor-btn-sm">
-                                    <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </div>
                         </div>
@@ -1163,7 +1163,7 @@ class Flavor_Comunidades_Frontend_Controller {
                     <div class="marketplace-ver-mas">
                         <a href="<?php echo esc_url(add_query_arg('comunidad', $comunidad_id, home_url('/mi-portal/marketplace/'))); ?>"
                            class="flavor-btn flavor-btn-secondary">
-                            <?php esc_html_e('Ver todos los anuncios', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Ver todos los anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 <?php endif; ?>
@@ -1184,7 +1184,7 @@ class Flavor_Comunidades_Frontend_Controller {
         check_ajax_referer('comunidades_nonce', 'comunidades_nonce_field');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $nombre = isset($_POST['nombre']) ? sanitize_text_field($_POST['nombre']) : '';
@@ -1195,7 +1195,7 @@ class Flavor_Comunidades_Frontend_Controller {
         $reglas = isset($_POST['reglas']) ? wp_kses_post($_POST['reglas']) : '';
 
         if (empty($nombre)) {
-            wp_send_json_error(__('El nombre es obligatorio', 'flavor-chat-ia'));
+            wp_send_json_error(__('El nombre es obligatorio', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -1241,12 +1241,12 @@ class Flavor_Comunidades_Frontend_Controller {
             do_action('comunidad_created', $comunidad_id, $usuario_id);
 
             wp_send_json_success([
-                'mensaje' => __('Comunidad creada correctamente', 'flavor-chat-ia'),
+                'mensaje' => __('Comunidad creada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'comunidad_id' => $comunidad_id,
                 'redirect' => home_url('/mi-portal/comunidades/' . $comunidad_id . '/'),
             ]);
         } else {
-            wp_send_json_error(__('Error al crear la comunidad', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al crear la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -1257,14 +1257,14 @@ class Flavor_Comunidades_Frontend_Controller {
         check_ajax_referer('comunidades_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $comunidad_id = isset($_POST['comunidad_id']) ? absint($_POST['comunidad_id']) : 0;
         $usuario_id = get_current_user_id();
 
         if (!$comunidad_id) {
-            wp_send_json_error(__('Comunidad no válida', 'flavor-chat-ia'));
+            wp_send_json_error(__('Comunidad no válida', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -1278,7 +1278,7 @@ class Flavor_Comunidades_Frontend_Controller {
         ));
 
         if (!$comunidad) {
-            wp_send_json_error(__('Comunidad no encontrada', 'flavor-chat-ia'));
+            wp_send_json_error(__('Comunidad no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Verificar si ya es miembro
@@ -1289,7 +1289,7 @@ class Flavor_Comunidades_Frontend_Controller {
         ));
 
         if ($existe) {
-            wp_send_json_error(__('Ya eres miembro de esta comunidad', 'flavor-chat-ia'));
+            wp_send_json_error(__('Ya eres miembro de esta comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Determinar estado según privacidad
@@ -1310,12 +1310,12 @@ class Flavor_Comunidades_Frontend_Controller {
                     "UPDATE {$tabla_comunidades} SET miembros_count = miembros_count + 1 WHERE id = %d",
                     $comunidad_id
                 ));
-                wp_send_json_success(['mensaje' => __('Te has unido a la comunidad', 'flavor-chat-ia')]);
+                wp_send_json_success(['mensaje' => __('Te has unido a la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             } else {
-                wp_send_json_success(['mensaje' => __('Solicitud enviada. Espera aprobación.', 'flavor-chat-ia')]);
+                wp_send_json_success(['mensaje' => __('Solicitud enviada. Espera aprobación.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             }
         } else {
-            wp_send_json_error(__('Error al unirse', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al unirse', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -1326,14 +1326,14 @@ class Flavor_Comunidades_Frontend_Controller {
         check_ajax_referer('comunidades_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $comunidad_id = isset($_POST['comunidad_id']) ? absint($_POST['comunidad_id']) : 0;
         $usuario_id = get_current_user_id();
 
         if (!$comunidad_id) {
-            wp_send_json_error(__('Comunidad no válida', 'flavor-chat-ia'));
+            wp_send_json_error(__('Comunidad no válida', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -1356,7 +1356,7 @@ class Flavor_Comunidades_Frontend_Controller {
             ));
 
             if ($otros_admins == 0) {
-                wp_send_json_error(__('Debes designar otro admin antes de abandonar la comunidad', 'flavor-chat-ia'));
+                wp_send_json_error(__('Debes designar otro admin antes de abandonar la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN));
             }
         }
 
@@ -1372,9 +1372,9 @@ class Flavor_Comunidades_Frontend_Controller {
                 $comunidad_id
             ));
 
-            wp_send_json_success(['mensaje' => __('Has abandonado la comunidad', 'flavor-chat-ia')]);
+            wp_send_json_success(['mensaje' => __('Has abandonado la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
-            wp_send_json_error(__('Error al abandonar', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al abandonar', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -1385,7 +1385,7 @@ class Flavor_Comunidades_Frontend_Controller {
         check_ajax_referer('comunidades_nonce', 'comunidades_nonce_field');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $comunidad_id = isset($_POST['comunidad_id']) ? absint($_POST['comunidad_id']) : 0;
@@ -1393,7 +1393,7 @@ class Flavor_Comunidades_Frontend_Controller {
         $usuario_id = get_current_user_id();
 
         if (!$comunidad_id || empty(trim($contenido))) {
-            wp_send_json_error(__('Contenido no válido', 'flavor-chat-ia'));
+            wp_send_json_error(__('Contenido no válido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -1409,7 +1409,7 @@ class Flavor_Comunidades_Frontend_Controller {
         ));
 
         if (!$es_miembro) {
-            wp_send_json_error(__('No eres miembro de esta comunidad', 'flavor-chat-ia'));
+            wp_send_json_error(__('No eres miembro de esta comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $resultado = $wpdb->insert($tabla_publicaciones, [
@@ -1421,9 +1421,9 @@ class Flavor_Comunidades_Frontend_Controller {
         ]);
 
         if ($resultado) {
-            wp_send_json_success(['mensaje' => __('Publicación creada', 'flavor-chat-ia')]);
+            wp_send_json_success(['mensaje' => __('Publicación creada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
-            wp_send_json_error(__('Error al publicar', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al publicar', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -1434,20 +1434,20 @@ class Flavor_Comunidades_Frontend_Controller {
         check_ajax_referer('comunidades_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $publicacion_id = isset($_POST['publicacion_id']) ? absint($_POST['publicacion_id']) : 0;
         $contenido = isset($_POST['contenido']) ? sanitize_textarea_field($_POST['contenido']) : '';
 
         if (!$publicacion_id || empty($contenido)) {
-            wp_send_json_error(__('Datos no válidos', 'flavor-chat-ia'));
+            wp_send_json_error(__('Datos no válidos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
         $tabla_comentarios = $wpdb->prefix . 'flavor_comunidades_comentarios';
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_comentarios)) {
-            wp_send_json_error(__('Los comentarios no están disponibles en este flujo legacy.', 'flavor-chat-ia'));
+            wp_send_json_error(__('Los comentarios no están disponibles en este flujo legacy.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $resultado = $wpdb->insert($tabla_comentarios, [
@@ -1459,9 +1459,9 @@ class Flavor_Comunidades_Frontend_Controller {
         ]);
 
         if ($resultado) {
-            wp_send_json_success(['mensaje' => __('Comentario publicado', 'flavor-chat-ia')]);
+            wp_send_json_success(['mensaje' => __('Comentario publicado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
-            wp_send_json_error(__('Error al comentar', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al comentar', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -1498,7 +1498,7 @@ class Flavor_Comunidades_Frontend_Controller {
 
         ob_start();
         if (empty($comunidades)) {
-            echo '<div class="flavor-empty-state"><p>' . __('No se encontraron comunidades.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="flavor-empty-state"><p>' . __('No se encontraron comunidades.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         } else {
             foreach ($comunidades as $comunidad) {
                 $this->render_comunidad_card($comunidad);
@@ -1514,7 +1514,7 @@ class Flavor_Comunidades_Frontend_Controller {
      */
     public function ajax_obtener_feed() {
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $pagina = isset($_POST['pagina']) ? absint($_POST['pagina']) : 1;

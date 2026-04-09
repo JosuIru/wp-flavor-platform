@@ -10,22 +10,22 @@ if (!defined('ABSPATH')) {
 }
 
 $periodo_labels = [
-    'hoy' => __('Hoy', 'flavor-chat-ia'),
-    'semana' => __('Esta semana', 'flavor-chat-ia'),
-    'mes' => __('Este mes', 'flavor-chat-ia'),
+    'hoy' => __('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'semana' => __('Esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'mes' => __('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $tipo_labels = [
-    'entrada' => __('Entrada', 'flavor-chat-ia'),
-    'salida' => __('Salida', 'flavor-chat-ia'),
-    'pausa_inicio' => __('Inicio pausa', 'flavor-chat-ia'),
-    'pausa_fin' => __('Fin pausa', 'flavor-chat-ia'),
+    'entrada' => __('Entrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'salida' => __('Salida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'pausa_inicio' => __('Inicio pausa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'pausa_fin' => __('Fin pausa', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 
 <div class="fichaje-historial">
     <div class="fichaje-historial-header">
-        <h3><?php esc_html_e('Mis Fichajes', 'flavor-chat-ia'); ?></h3>
+        <h3><?php esc_html_e('Mis Fichajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
         <div class="fichaje-filtros">
             <select id="fichaje-filtro-periodo" class="fichaje-select">
@@ -41,7 +41,7 @@ $tipo_labels = [
     <?php if (empty($fichajes)): ?>
     <div class="fichaje-historial-vacio">
         <span class="dashicons dashicons-clock"></span>
-        <p><?php esc_html_e('No hay fichajes en este periodo.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('No hay fichajes en este periodo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php else: ?>
 
@@ -74,7 +74,7 @@ $tipo_labels = [
                         <?php echo esc_html($tipo_labels[$fichaje['tipo']] ?? $fichaje['tipo']); ?>
                     </span>
                     <?php if (!$fichaje['validado']): ?>
-                    <span class="registro-pendiente" title="<?php esc_attr_e('Pendiente de validación', 'flavor-chat-ia'); ?>">
+                    <span class="registro-pendiente" title="<?php esc_attr_e('Pendiente de validación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-warning"></span>
                     </span>
                     <?php endif; ?>
@@ -93,37 +93,37 @@ $tipo_labels = [
         <table class="fichaje-tabla">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Hora', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Notas', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Hora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Notas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($fichajes as $fichaje): ?>
                 <tr class="tipo-<?php echo esc_attr($fichaje['tipo']); ?>">
-                    <td data-label="<?php esc_attr_e('Fecha', 'flavor-chat-ia'); ?>">
+                    <td data-label="<?php esc_attr_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <?php echo esc_html(date_i18n('d/m/Y', strtotime($fichaje['fecha']))); ?>
                     </td>
-                    <td data-label="<?php esc_attr_e('Hora', 'flavor-chat-ia'); ?>">
+                    <td data-label="<?php esc_attr_e('Hora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <?php echo esc_html($fichaje['hora']); ?>
                     </td>
-                    <td data-label="<?php esc_attr_e('Tipo', 'flavor-chat-ia'); ?>">
+                    <td data-label="<?php esc_attr_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="tipo-badge tipo-<?php echo esc_attr($fichaje['tipo']); ?>">
                             <?php echo esc_html($tipo_labels[$fichaje['tipo']] ?? $fichaje['tipo']); ?>
                         </span>
                     </td>
-                    <td data-label="<?php esc_attr_e('Notas', 'flavor-chat-ia'); ?>">
+                    <td data-label="<?php esc_attr_e('Notas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <?php echo esc_html($fichaje['notas'] ?: '-'); ?>
                     </td>
-                    <td data-label="<?php esc_attr_e('Estado', 'flavor-chat-ia'); ?>">
+                    <td data-label="<?php esc_attr_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <?php if ($fichaje['validado']): ?>
-                        <span class="estado-validado" title="<?php esc_attr_e('Validado', 'flavor-chat-ia'); ?>">
+                        <span class="estado-validado" title="<?php esc_attr_e('Validado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-yes-alt"></span>
                         </span>
                         <?php else: ?>
-                        <span class="estado-pendiente" title="<?php esc_attr_e('Pendiente', 'flavor-chat-ia'); ?>">
+                        <span class="estado-pendiente" title="<?php esc_attr_e('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-clock"></span>
                         </span>
                         <?php endif; ?>
@@ -139,7 +139,7 @@ $tipo_labels = [
     <div class="fichaje-historial-acciones">
         <a href="<?php echo esc_url(home_url('/fichaje-empleados/')); ?>" class="fichaje-btn fichaje-btn-secundario">
             <span class="dashicons dashicons-arrow-left-alt"></span>
-            <?php esc_html_e('Volver al panel', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Volver al panel', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 </div>

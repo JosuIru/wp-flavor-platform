@@ -79,8 +79,8 @@ class Flavor_Facturas_Frontend_Controller {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('facturas_nonce'),
             'i18n' => [
-                'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
+                'error' => __('Ha ocurrido un error', 'flavor-platform'),
+                'cargando' => __('Cargando...', 'flavor-platform'),
             ],
         ]);
     }
@@ -114,7 +114,7 @@ class Flavor_Facturas_Frontend_Controller {
 
         ob_start();
         echo '<div class="flavor-facturas-listado">';
-        echo '<p>' . __('Módulo Facturas - Listado', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Módulo Facturas - Listado', 'flavor-platform') . '</p>';
         echo '</div>';
         return ob_get_clean();
     }
@@ -124,7 +124,7 @@ class Flavor_Facturas_Frontend_Controller {
      */
     public function registrar_tabs($tabs) {
         $tabs['facturas'] = [
-            'titulo' => __('Facturas', 'flavor-chat-ia'),
+            'titulo' => __('Facturas', 'flavor-platform'),
             'icono' => 'dashicons-admin-generic',
             'callback' => [$this, 'render_tab_principal'],
             'orden' => 50,
@@ -140,8 +140,8 @@ class Flavor_Facturas_Frontend_Controller {
     public function render_tab_principal() {
         $this->encolar_assets();
         echo '<div class="flavor-facturas-tab">';
-        echo '<h3>' . esc_html__('Facturas', 'flavor-chat-ia') . '</h3>';
-        echo '<p>' . esc_html__('Contenido del tab de Facturas.', 'flavor-chat-ia') . '</p>';
+        echo '<h3>' . esc_html__('Facturas', 'flavor-platform') . '</h3>';
+        echo '<p>' . esc_html__('Contenido del tab de Facturas.', 'flavor-platform') . '</p>';
         echo '</div>';
     }
 }

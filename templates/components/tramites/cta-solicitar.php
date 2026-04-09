@@ -43,7 +43,7 @@ if (!defined('ABSPATH')) exit;
                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                                 </svg>
                             </div>
-                            <span class="text-lg"><?php echo esc_html__('Sin colas ni esperas', 'flavor-chat-ia'); ?></span>
+                            <span class="text-lg"><?php echo esc_html__('Sin colas ni esperas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                         <div class="flex items-center text-white">
                             <div class="flex-shrink-0 w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center mr-4">
@@ -51,7 +51,7 @@ if (!defined('ABSPATH')) exit;
                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                                 </svg>
                             </div>
-                            <span class="text-lg"><?php echo esc_html__('Disponible 24 horas, 7 dias', 'flavor-chat-ia'); ?></span>
+                            <span class="text-lg"><?php echo esc_html__('Disponible 24 horas, 7 dias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                         <div class="flex items-center text-white">
                             <div class="flex-shrink-0 w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center mr-4">
@@ -59,7 +59,7 @@ if (!defined('ABSPATH')) exit;
                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                                 </svg>
                             </div>
-                            <span class="text-lg"><?php echo esc_html__('Seguimiento en tiempo real', 'flavor-chat-ia'); ?></span>
+                            <span class="text-lg"><?php echo esc_html__('Seguimiento en tiempo real', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                     </div>
                 </div>
@@ -75,7 +75,7 @@ if (!defined('ABSPATH')) exit;
                         </div>
 
                         <p class="text-white text-opacity-80 mb-6">
-                            <?php echo esc_html__('Mas de 150 tramites disponibles para gestionar online', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Mas de 150 tramites disponibles para gestionar online', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
 
                         <!-- Boton principal -->
@@ -88,7 +88,7 @@ if (!defined('ABSPATH')) exit;
                         </a>
 
                         <p class="mt-4 text-sm text-white text-opacity-70">
-                            <?php echo esc_html__('Necesitaras tu DNI electronico o Cl@ve', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Necesitaras tu DNI electronico o Cl@ve', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                     </div>
                 </div>

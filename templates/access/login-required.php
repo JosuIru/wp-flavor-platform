@@ -29,11 +29,11 @@ $redirect_url = isset($redirect_url) ? $redirect_url : home_url();
         </div>
 
         <h2 class="flavor-access-title">
-            <?php esc_html_e('Inicia sesion para continuar', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Inicia sesion para continuar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
 
         <p class="flavor-access-description">
-            <?php esc_html_e('Este contenido requiere que inicies sesion con tu cuenta. Si aun no tienes una, puedes registrarte de forma gratuita.', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Este contenido requiere que inicies sesion con tu cuenta. Si aun no tienes una, puedes registrarte de forma gratuita.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
 
         <div class="flavor-login-form-container">
@@ -41,10 +41,10 @@ $redirect_url = isset($redirect_url) ? $redirect_url : home_url();
             wp_login_form([
                 'redirect'       => $redirect_url,
                 'form_id'        => 'flavor-login-form',
-                'label_username' => __('Usuario o correo electronico', 'flavor-chat-ia'),
-                'label_password' => __('Contrasena', 'flavor-chat-ia'),
-                'label_remember' => __('Mantener sesion iniciada', 'flavor-chat-ia'),
-                'label_log_in'   => __('Iniciar sesion', 'flavor-chat-ia'),
+                'label_username' => __('Usuario o correo electronico', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'label_password' => __('Contrasena', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'label_remember' => __('Mantener sesion iniciada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'label_log_in'   => __('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'remember'       => true,
             ]);
             ?>
@@ -52,13 +52,13 @@ $redirect_url = isset($redirect_url) ? $redirect_url : home_url();
 
         <div class="flavor-access-links">
             <a href="<?php echo esc_url(wp_lostpassword_url($redirect_url)); ?>" class="flavor-link-password">
-                <?php esc_html_e('Olvidaste tu contrasena?', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Olvidaste tu contrasena?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
 
             <?php if (get_option('users_can_register')) : ?>
                 <span class="flavor-link-separator">|</span>
                 <a href="<?php echo esc_url(wp_registration_url()); ?>" class="flavor-link-register">
-                    <?php esc_html_e('Crear una cuenta', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Crear una cuenta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             <?php endif; ?>
         </div>

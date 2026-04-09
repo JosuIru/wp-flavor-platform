@@ -8,7 +8,7 @@
  */
 
 if (!defined('ABSPATH')) exit;
-if (!current_user_can('manage_options')) wp_die(__('No tienes permisos suficientes.', 'flavor-chat-ia'));
+if (!current_user_can('manage_options')) wp_die(__('No tienes permisos suficientes.', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
 global $wpdb;
 $tabla_bicicletas = $wpdb->prefix . 'flavor_bicicletas_bicicletas';
@@ -25,11 +25,11 @@ $tabla_prestamos = $wpdb->prefix . 'flavor_bicicletas_prestamos';
  */
 function obtener_badge_estado_bicicleta($estado) {
     $estados = [
-        'disponible' => ['clase' => 'success', 'texto' => __('Disponible', 'flavor-chat-ia'), 'icono' => 'yes-alt'],
-        'en_uso' => ['clase' => 'info', 'texto' => __('En Uso', 'flavor-chat-ia'), 'icono' => 'businessman'],
-        'mantenimiento' => ['clase' => 'warning', 'texto' => __('Mantenimiento', 'flavor-chat-ia'), 'icono' => 'admin-tools'],
-        'fuera_servicio' => ['clase' => 'danger', 'texto' => __('Fuera de Servicio', 'flavor-chat-ia'), 'icono' => 'dismiss'],
-        'reservada' => ['clase' => 'secondary', 'texto' => __('Reservada', 'flavor-chat-ia'), 'icono' => 'clock']
+        'disponible' => ['clase' => 'success', 'texto' => __('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'yes-alt'],
+        'en_uso' => ['clase' => 'info', 'texto' => __('En Uso', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'businessman'],
+        'mantenimiento' => ['clase' => 'warning', 'texto' => __('Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'admin-tools'],
+        'fuera_servicio' => ['clase' => 'danger', 'texto' => __('Fuera de Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dismiss'],
+        'reservada' => ['clase' => 'secondary', 'texto' => __('Reservada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'clock']
     ];
 
     $estado_key = strtolower($estado);
@@ -41,19 +41,19 @@ function obtener_badge_estado_bicicleta($estado) {
  */
 function calcular_estado_mantenimiento($fecha_ultimo_mantenimiento, $km_totales) {
     if (!$fecha_ultimo_mantenimiento) {
-        return ['nivel' => 'urgente', 'texto' => __('Sin registro', 'flavor-chat-ia'), 'color' => '#ef4444'];
+        return ['nivel' => 'urgente', 'texto' => __('Sin registro', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#ef4444'];
     }
 
     $dias_desde_mantenimiento = floor((time() - strtotime($fecha_ultimo_mantenimiento)) / 86400);
 
     if ($dias_desde_mantenimiento > 90 || $km_totales > 1000) {
-        return ['nivel' => 'urgente', 'texto' => __('Urgente', 'flavor-chat-ia'), 'color' => '#ef4444'];
+        return ['nivel' => 'urgente', 'texto' => __('Urgente', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#ef4444'];
     } elseif ($dias_desde_mantenimiento > 60 || $km_totales > 500) {
-        return ['nivel' => 'proximo', 'texto' => __('Próximo', 'flavor-chat-ia'), 'color' => '#f59e0b'];
+        return ['nivel' => 'proximo', 'texto' => __('Próximo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#f59e0b'];
     } elseif ($dias_desde_mantenimiento > 30) {
-        return ['nivel' => 'normal', 'texto' => __('Normal', 'flavor-chat-ia'), 'color' => '#3b82f6'];
+        return ['nivel' => 'normal', 'texto' => __('Normal', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#3b82f6'];
     }
-    return ['nivel' => 'optimo', 'texto' => __('Óptimo', 'flavor-chat-ia'), 'color' => '#10b981'];
+    return ['nivel' => 'optimo', 'texto' => __('Óptimo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#10b981'];
 }
 
 /**
@@ -61,11 +61,11 @@ function calcular_estado_mantenimiento($fecha_ultimo_mantenimiento, $km_totales)
  */
 function obtener_tipo_bicicleta($tipo) {
     $tipos = [
-        'urbana' => ['icono' => '🚲', 'texto' => __('Urbana', 'flavor-chat-ia'), 'color' => '#3b82f6'],
-        'electrica' => ['icono' => '⚡', 'texto' => __('Eléctrica', 'flavor-chat-ia'), 'color' => '#10b981'],
-        'montana' => ['icono' => '🏔️', 'texto' => __('Montaña', 'flavor-chat-ia'), 'color' => '#8b5cf6'],
-        'plegable' => ['icono' => '📦', 'texto' => __('Plegable', 'flavor-chat-ia'), 'color' => '#f59e0b'],
-        'cargo' => ['icono' => '📦', 'texto' => __('Cargo', 'flavor-chat-ia'), 'color' => '#6b7280']
+        'urbana' => ['icono' => '🚲', 'texto' => __('Urbana', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#3b82f6'],
+        'electrica' => ['icono' => '⚡', 'texto' => __('Eléctrica', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#10b981'],
+        'montana' => ['icono' => '🏔️', 'texto' => __('Montaña', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#8b5cf6'],
+        'plegable' => ['icono' => '📦', 'texto' => __('Plegable', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#f59e0b'],
+        'cargo' => ['icono' => '📦', 'texto' => __('Cargo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#6b7280']
     ];
 
     $tipo_key = strtolower($tipo ?? 'urbana');
@@ -263,16 +263,16 @@ if ($tablas_bicicletas_disponibles) {
         <div class="flavor-header-content">
             <h1>
                 <span class="dashicons dashicons-location-alt"></span>
-                <?php echo esc_html__('Gestión de Bicicletas', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Gestión de Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h1>
             <p class="flavor-header-descripcion">
-                <?php echo esc_html__('Administra la flota de bicicletas compartidas del sistema.', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Administra la flota de bicicletas compartidas del sistema.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
         <div class="flavor-header-acciones">
             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-bicicletas&action=nueva')); ?>" class="button button-primary button-hero">
                 <span class="dashicons dashicons-plus-alt2"></span>
-                <?php echo esc_html__('Nueva Bicicleta', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Nueva Bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>
@@ -281,8 +281,8 @@ if ($tablas_bicicletas_disponibles) {
     <div class="notice notice-info" style="margin: 20px 0;">
         <p>
             <span class="dashicons dashicons-info" style="color: #2271b1;"></span>
-            <strong><?php echo esc_html__('Sin datos:', 'flavor-chat-ia'); ?></strong>
-            <?php echo esc_html__('No hay tablas de bicicletas disponibles todavía.', 'flavor-chat-ia'); ?>
+            <strong><?php echo esc_html__('Sin datos:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+            <?php echo esc_html__('No hay tablas de bicicletas disponibles todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </div>
     <?php endif; ?>
@@ -295,7 +295,7 @@ if ($tablas_bicicletas_disponibles) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-numero"><?php echo number_format($total_bicicletas); ?></span>
-                <span class="flavor-stat-label"><?php echo esc_html__('Total Flota', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php echo esc_html__('Total Flota', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -305,7 +305,7 @@ if ($tablas_bicicletas_disponibles) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-numero"><?php echo number_format($disponibles); ?></span>
-                <span class="flavor-stat-label"><?php echo esc_html__('Disponibles', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php echo esc_html__('Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -315,7 +315,7 @@ if ($tablas_bicicletas_disponibles) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-numero"><?php echo number_format($en_uso); ?></span>
-                <span class="flavor-stat-label"><?php echo esc_html__('En Uso', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php echo esc_html__('En Uso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -325,7 +325,7 @@ if ($tablas_bicicletas_disponibles) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-numero"><?php echo number_format($mantenimiento_count); ?></span>
-                <span class="flavor-stat-label"><?php echo esc_html__('Mantenimiento', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php echo esc_html__('Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
@@ -344,49 +344,49 @@ if ($tablas_bicicletas_disponibles) {
                     <div class="flavor-filtro-grupo">
                         <label for="busqueda">
                             <span class="dashicons dashicons-search"></span>
-                            <?php echo esc_html__('Buscar', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                         <input type="text" id="busqueda" name="busqueda"
                                value="<?php echo esc_attr($busqueda); ?>"
-                               placeholder="<?php echo esc_attr__('Código o modelo...', 'flavor-chat-ia'); ?>">
+                               placeholder="<?php echo esc_attr__('Código o modelo...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     </div>
 
                     <div class="flavor-filtro-grupo">
                         <label for="estado">
                             <span class="dashicons dashicons-flag"></span>
-                            <?php echo esc_html__('Estado', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                         <select id="estado" name="estado">
-                            <option value=""><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></option>
-                            <option value="disponible" <?php selected($filtro_estado, 'disponible'); ?>><?php echo esc_html__('Disponible', 'flavor-chat-ia'); ?></option>
-                            <option value="en_uso" <?php selected($filtro_estado, 'en_uso'); ?>><?php echo esc_html__('En Uso', 'flavor-chat-ia'); ?></option>
-                            <option value="mantenimiento" <?php selected($filtro_estado, 'mantenimiento'); ?>><?php echo esc_html__('Mantenimiento', 'flavor-chat-ia'); ?></option>
-                            <option value="fuera_servicio" <?php selected($filtro_estado, 'fuera_servicio'); ?>><?php echo esc_html__('Fuera Servicio', 'flavor-chat-ia'); ?></option>
-                            <option value="reservada" <?php selected($filtro_estado, 'reservada'); ?>><?php echo esc_html__('Reservada', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php echo esc_html__('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="disponible" <?php selected($filtro_estado, 'disponible'); ?>><?php echo esc_html__('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="en_uso" <?php selected($filtro_estado, 'en_uso'); ?>><?php echo esc_html__('En Uso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="mantenimiento" <?php selected($filtro_estado, 'mantenimiento'); ?>><?php echo esc_html__('Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="fuera_servicio" <?php selected($filtro_estado, 'fuera_servicio'); ?>><?php echo esc_html__('Fuera Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="reservada" <?php selected($filtro_estado, 'reservada'); ?>><?php echo esc_html__('Reservada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
 
                     <div class="flavor-filtro-grupo">
                         <label for="tipo">
                             <span class="dashicons dashicons-category"></span>
-                            <?php echo esc_html__('Tipo', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                         <select id="tipo" name="tipo">
-                            <option value=""><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></option>
-                            <option value="urbana" <?php selected($filtro_tipo, 'urbana'); ?>><?php echo esc_html__('Urbana', 'flavor-chat-ia'); ?></option>
-                            <option value="electrica" <?php selected($filtro_tipo, 'electrica'); ?>><?php echo esc_html__('Eléctrica', 'flavor-chat-ia'); ?></option>
-                            <option value="montana" <?php selected($filtro_tipo, 'montana'); ?>><?php echo esc_html__('Montaña', 'flavor-chat-ia'); ?></option>
-                            <option value="plegable" <?php selected($filtro_tipo, 'plegable'); ?>><?php echo esc_html__('Plegable', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php echo esc_html__('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="urbana" <?php selected($filtro_tipo, 'urbana'); ?>><?php echo esc_html__('Urbana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="electrica" <?php selected($filtro_tipo, 'electrica'); ?>><?php echo esc_html__('Eléctrica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="montana" <?php selected($filtro_tipo, 'montana'); ?>><?php echo esc_html__('Montaña', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="plegable" <?php selected($filtro_tipo, 'plegable'); ?>><?php echo esc_html__('Plegable', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
 
                     <div class="flavor-filtro-grupo">
                         <label for="estacion">
                             <span class="dashicons dashicons-location"></span>
-                            <?php echo esc_html__('Estación', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Estación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                         <select id="estacion" name="estacion">
-                            <option value=""><?php echo esc_html__('Todas', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php echo esc_html__('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php foreach ($estaciones as $est): ?>
                                 <option value="<?php echo esc_attr($est->id); ?>" <?php selected($filtro_estacion, $est->id); ?>>
                                     <?php echo esc_html($est->nombre); ?>
@@ -398,26 +398,26 @@ if ($tablas_bicicletas_disponibles) {
                     <div class="flavor-filtro-grupo">
                         <label for="orden">
                             <span class="dashicons dashicons-sort"></span>
-                            <?php echo esc_html__('Ordenar', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Ordenar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                         <select id="orden" name="orden">
-                            <option value="codigo_asc" <?php selected($orden, 'codigo_asc'); ?>><?php echo esc_html__('Código A-Z', 'flavor-chat-ia'); ?></option>
-                            <option value="codigo_desc" <?php selected($orden, 'codigo_desc'); ?>><?php echo esc_html__('Código Z-A', 'flavor-chat-ia'); ?></option>
-                            <option value="km_desc" <?php selected($orden, 'km_desc'); ?>><?php echo esc_html__('Más km', 'flavor-chat-ia'); ?></option>
-                            <option value="km_asc" <?php selected($orden, 'km_asc'); ?>><?php echo esc_html__('Menos km', 'flavor-chat-ia'); ?></option>
-                            <option value="prestamos_desc" <?php selected($orden, 'prestamos_desc'); ?>><?php echo esc_html__('Más usadas', 'flavor-chat-ia'); ?></option>
-                            <option value="modelo_asc" <?php selected($orden, 'modelo_asc'); ?>><?php echo esc_html__('Modelo A-Z', 'flavor-chat-ia'); ?></option>
+                            <option value="codigo_asc" <?php selected($orden, 'codigo_asc'); ?>><?php echo esc_html__('Código A-Z', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="codigo_desc" <?php selected($orden, 'codigo_desc'); ?>><?php echo esc_html__('Código Z-A', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="km_desc" <?php selected($orden, 'km_desc'); ?>><?php echo esc_html__('Más km', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="km_asc" <?php selected($orden, 'km_asc'); ?>><?php echo esc_html__('Menos km', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="prestamos_desc" <?php selected($orden, 'prestamos_desc'); ?>><?php echo esc_html__('Más usadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="modelo_asc" <?php selected($orden, 'modelo_asc'); ?>><?php echo esc_html__('Modelo A-Z', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
 
                     <div class="flavor-filtro-acciones">
                         <button type="submit" class="button button-primary">
                             <span class="dashicons dashicons-filter"></span>
-                            <?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <a href="<?php echo esc_url(admin_url('admin.php?page=' . ($_GET['page'] ?? 'flavor-bicicletas-bicicletas'))); ?>" class="button">
                             <span class="dashicons dashicons-dismiss"></span>
-                            <?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </form>
@@ -428,7 +428,7 @@ if ($tablas_bicicletas_disponibles) {
                 <span class="flavor-resultados-contador">
                     <?php
                     printf(
-                        esc_html__('Mostrando %1$d-%2$d de %3$d bicicletas', 'flavor-chat-ia'),
+                        esc_html__('Mostrando %1$d-%2$d de %3$d bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         min($offset + 1, $total_bicicletas_filtradas),
                         min($offset + $items_por_pagina, $total_bicicletas_filtradas),
                         $total_bicicletas_filtradas
@@ -437,7 +437,7 @@ if ($tablas_bicicletas_disponibles) {
                 </span>
                 <span class="flavor-km-totales">
                     <span class="dashicons dashicons-performance"></span>
-                    <?php printf(esc_html__('%s km recorridos', 'flavor-chat-ia'), number_format($km_totales_flota, 1)); ?>
+                    <?php printf(esc_html__('%s km recorridos', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($km_totales_flota, 1)); ?>
                 </span>
             </div>
 
@@ -445,11 +445,11 @@ if ($tablas_bicicletas_disponibles) {
             <?php if (empty($bicicletas)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-location-alt"></span>
-                    <h3><?php echo esc_html__('No hay bicicletas', 'flavor-chat-ia'); ?></h3>
-                    <p><?php echo esc_html__('No se encontraron bicicletas con los filtros seleccionados.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php echo esc_html__('No hay bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php echo esc_html__('No se encontraron bicicletas con los filtros seleccionados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-bicicletas&action=nueva')); ?>" class="button button-primary button-large">
                         <span class="dashicons dashicons-plus-alt2"></span>
-                        <?php echo esc_html__('Añadir Primera Bicicleta', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Añadir Primera Bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -475,7 +475,7 @@ if ($tablas_bicicletas_disponibles) {
                             <!-- Contenido -->
                             <div class="flavor-bicicleta-content">
                                 <h3 class="flavor-bicicleta-modelo">
-                                    <?php echo esc_html($bicicleta->modelo ?? __('Sin modelo', 'flavor-chat-ia')); ?>
+                                    <?php echo esc_html($bicicleta->modelo ?? __('Sin modelo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                                 </h3>
 
                                 <div class="flavor-bicicleta-tipo">
@@ -490,7 +490,7 @@ if ($tablas_bicicletas_disponibles) {
                                     <?php if ($bicicleta->nombre_estacion): ?>
                                         <span><?php echo esc_html($bicicleta->nombre_estacion); ?></span>
                                     <?php else: ?>
-                                        <span class="flavor-sin-estacion"><?php echo esc_html__('En circulación', 'flavor-chat-ia'); ?></span>
+                                        <span class="flavor-sin-estacion"><?php echo esc_html__('En circulación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     <?php endif; ?>
                                 </div>
 
@@ -514,7 +514,7 @@ if ($tablas_bicicletas_disponibles) {
 
                                 <!-- Estado de mantenimiento -->
                                 <div class="flavor-mantenimiento-estado">
-                                    <span class="flavor-mantenimiento-label"><?php echo esc_html__('Mantenimiento:', 'flavor-chat-ia'); ?></span>
+                                    <span class="flavor-mantenimiento-label"><?php echo esc_html__('Mantenimiento:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     <span class="flavor-mantenimiento-valor" style="color: <?php echo esc_attr($mantenimiento_info['color']); ?>;">
                                         <?php echo esc_html($mantenimiento_info['texto']); ?>
                                     </span>
@@ -530,21 +530,21 @@ if ($tablas_bicicletas_disponibles) {
                                     <?php else: ?>
                                         <span class="flavor-sin-mantenimiento">
                                             <span class="dashicons dashicons-warning"></span>
-                                            <?php echo esc_html__('Sin registro', 'flavor-chat-ia'); ?>
+                                            <?php echo esc_html__('Sin registro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </span>
                                     <?php endif; ?>
                                 </div>
 
                                 <!-- Acciones -->
                                 <div class="flavor-bicicleta-acciones">
-                                    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-bicicletas&action=ver&bicicleta_id=' . $bicicleta->id)); ?>" class="button" title="<?php echo esc_attr__('Ver detalles', 'flavor-chat-ia'); ?>">
+                                    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-bicicletas&action=ver&bicicleta_id=' . $bicicleta->id)); ?>" class="button" title="<?php echo esc_attr__('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                         <span class="dashicons dashicons-visibility"></span>
-                                        <?php echo esc_html__('Ver', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                     <?php if ($bicicleta->estado !== 'en_uso'): ?>
-                                        <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-mantenimiento&bicicleta_id=' . $bicicleta->id)); ?>" class="button button-primary" title="<?php echo esc_attr__('Mantenimiento', 'flavor-chat-ia'); ?>">
+                                        <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-mantenimiento&bicicleta_id=' . $bicicleta->id)); ?>" class="button button-primary" title="<?php echo esc_attr__('Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <span class="dashicons dashicons-admin-tools"></span>
-                                            <?php echo esc_html__('Mant.', 'flavor-chat-ia'); ?>
+                                            <?php echo esc_html__('Mant.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </a>
                                     <?php endif; ?>
                                 </div>
@@ -562,8 +562,8 @@ if ($tablas_bicicletas_disponibles) {
                             'format' => '',
                             'current' => $pagina_actual,
                             'total' => $total_paginas,
-                            'prev_text' => '<span class="dashicons dashicons-arrow-left-alt2"></span> ' . __('Anterior', 'flavor-chat-ia'),
-                            'next_text' => __('Siguiente', 'flavor-chat-ia') . ' <span class="dashicons dashicons-arrow-right-alt2"></span>',
+                            'prev_text' => '<span class="dashicons dashicons-arrow-left-alt2"></span> ' . __('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'next_text' => __('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN) . ' <span class="dashicons dashicons-arrow-right-alt2"></span>',
                             'type' => 'list',
                             'end_size' => 1,
                             'mid_size' => 2,
@@ -590,7 +590,7 @@ if ($tablas_bicicletas_disponibles) {
             <div class="flavor-sidebar-card">
                 <h3 class="flavor-sidebar-titulo">
                     <span class="dashicons dashicons-star-filled"></span>
-                    <?php echo esc_html__('Más Utilizadas', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Más Utilizadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <div class="flavor-top-lista">
                     <?php
@@ -614,7 +614,7 @@ if ($tablas_bicicletas_disponibles) {
                             </div>
                             <span class="flavor-top-items">
                                 <?php echo number_format($top_bici->total_prestamos ?? 0); ?>
-                                <small><?php echo esc_html__('usos', 'flavor-chat-ia'); ?></small>
+                                <small><?php echo esc_html__('usos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                             </span>
                         </div>
                     <?php endforeach; ?>
@@ -625,7 +625,7 @@ if ($tablas_bicicletas_disponibles) {
             <div class="flavor-sidebar-card">
                 <h3 class="flavor-sidebar-titulo">
                     <span class="dashicons dashicons-chart-pie"></span>
-                    <?php echo esc_html__('Por Tipo', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Por Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <div class="flavor-chart-container">
                     <canvas id="chartTipoBicicleta" width="200" height="200"></canvas>
@@ -633,22 +633,22 @@ if ($tablas_bicicletas_disponibles) {
                 <div class="flavor-chart-leyenda">
                     <div class="flavor-leyenda-item">
                         <span class="flavor-leyenda-color" style="background: #3b82f6;"></span>
-                        <span class="flavor-leyenda-texto">🚲 <?php echo esc_html__('Urbana', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-leyenda-texto">🚲 <?php echo esc_html__('Urbana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="flavor-leyenda-valor"><?php echo number_format($por_tipo['urbana']); ?></span>
                     </div>
                     <div class="flavor-leyenda-item">
                         <span class="flavor-leyenda-color" style="background: #10b981;"></span>
-                        <span class="flavor-leyenda-texto">⚡ <?php echo esc_html__('Eléctrica', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-leyenda-texto">⚡ <?php echo esc_html__('Eléctrica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="flavor-leyenda-valor"><?php echo number_format($por_tipo['electrica']); ?></span>
                     </div>
                     <div class="flavor-leyenda-item">
                         <span class="flavor-leyenda-color" style="background: #8b5cf6;"></span>
-                        <span class="flavor-leyenda-texto">🏔️ <?php echo esc_html__('Montaña', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-leyenda-texto">🏔️ <?php echo esc_html__('Montaña', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="flavor-leyenda-valor"><?php echo number_format($por_tipo['montana']); ?></span>
                     </div>
                     <div class="flavor-leyenda-item">
                         <span class="flavor-leyenda-color" style="background: #f59e0b;"></span>
-                        <span class="flavor-leyenda-texto">📦 <?php echo esc_html__('Plegable', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-leyenda-texto">📦 <?php echo esc_html__('Plegable', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="flavor-leyenda-valor"><?php echo number_format($por_tipo['plegable']); ?></span>
                     </div>
                 </div>
@@ -658,24 +658,24 @@ if ($tablas_bicicletas_disponibles) {
             <div class="flavor-sidebar-card">
                 <h3 class="flavor-sidebar-titulo">
                     <span class="dashicons dashicons-info-outline"></span>
-                    <?php echo esc_html__('Estados', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <div class="flavor-estados-lista">
                     <div class="flavor-estado-item">
                         <span class="flavor-badge flavor-badge-success"><span class="dashicons dashicons-yes-alt"></span></span>
-                        <span><?php echo esc_html__('Disponible - Lista para usar', 'flavor-chat-ia'); ?></span>
+                        <span><?php echo esc_html__('Disponible - Lista para usar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="flavor-estado-item">
                         <span class="flavor-badge flavor-badge-info"><span class="dashicons dashicons-businessman"></span></span>
-                        <span><?php echo esc_html__('En uso - Actualmente prestada', 'flavor-chat-ia'); ?></span>
+                        <span><?php echo esc_html__('En uso - Actualmente prestada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="flavor-estado-item">
                         <span class="flavor-badge flavor-badge-warning"><span class="dashicons dashicons-admin-tools"></span></span>
-                        <span><?php echo esc_html__('Mantenimiento - En revisión', 'flavor-chat-ia'); ?></span>
+                        <span><?php echo esc_html__('Mantenimiento - En revisión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="flavor-estado-item">
                         <span class="flavor-badge flavor-badge-danger"><span class="dashicons dashicons-dismiss"></span></span>
-                        <span><?php echo esc_html__('Fuera servicio - No operativa', 'flavor-chat-ia'); ?></span>
+                        <span><?php echo esc_html__('Fuera servicio - No operativa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -684,24 +684,24 @@ if ($tablas_bicicletas_disponibles) {
             <div class="flavor-sidebar-card">
                 <h3 class="flavor-sidebar-titulo">
                     <span class="dashicons dashicons-admin-tools"></span>
-                    <?php echo esc_html__('Acciones Rápidas', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Acciones Rápidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <div class="flavor-acciones-rapidas">
                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-bicicletas&action=nueva')); ?>" class="flavor-accion-btn">
                         <span class="dashicons dashicons-plus-alt2"></span>
-                        <?php echo esc_html__('Añadir Bicicleta', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Añadir Bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-estaciones')); ?>" class="flavor-accion-btn">
                         <span class="dashicons dashicons-location"></span>
-                        <?php echo esc_html__('Ver Estaciones', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Ver Estaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-prestamos')); ?>" class="flavor-accion-btn">
                         <span class="dashicons dashicons-list-view"></span>
-                        <?php echo esc_html__('Ver Préstamos', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Ver Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-mantenimiento')); ?>" class="flavor-accion-btn">
                         <span class="dashicons dashicons-hammer"></span>
-                        <?php echo esc_html__('Mantenimiento', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </div>

@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 
 // Verificar permisos
 if (!current_user_can('manage_options') && !current_user_can('flavor_ver_dashboard')) {
-    wp_die(__('No tienes permisos suficientes para acceder a esta página.', 'flavor-chat-ia'));
+    wp_die(__('No tienes permisos suficientes para acceder a esta página.', 'flavor-platform'));
 }
 
 // Obtener estadísticas
@@ -124,14 +124,14 @@ if ($tabla_espacios_existe && $tabla_reservas_existe) {
         <div class="dm-header__title">
             <span class="dashicons dashicons-building" style="font-size: 28px;"></span>
             <div>
-                <h1><?php esc_html_e('Dashboard de Espacios Comunes', 'flavor-chat-ia'); ?></h1>
-                <p><?php esc_html_e('Gestión y reservas de espacios compartidos', 'flavor-chat-ia'); ?></p>
+                <h1><?php esc_html_e('Dashboard de Espacios Comunes', 'flavor-platform'); ?></h1>
+                <p><?php esc_html_e('Gestión y reservas de espacios compartidos', 'flavor-platform'); ?></p>
             </div>
         </div>
         <div class="dm-header__actions">
             <a href="<?php echo esc_url(admin_url('admin.php?page=espacios-nuevo')); ?>" class="dm-btn dm-btn--primary">
                 <span class="dashicons dashicons-plus-alt2"></span>
-                <?php esc_html_e('Nuevo Espacio', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Nuevo Espacio', 'flavor-platform'); ?>
             </a>
         </div>
     </div>
@@ -139,33 +139,33 @@ if ($tabla_espacios_existe && $tabla_reservas_existe) {
     <?php if (!$tablas_disponibles) : ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <?php esc_html_e('Faltan tablas del módulo Espacios Comunes o aún no hay reservas registradas.', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Faltan tablas del módulo Espacios Comunes o aún no hay reservas registradas.', 'flavor-platform'); ?>
     </div>
     <?php endif; ?>
 
     <!-- Quick Links -->
     <div class="dm-quick-links">
-        <h3 class="dm-quick-links__title"><?php esc_html_e('Acceso Rápido', 'flavor-chat-ia'); ?></h3>
+        <h3 class="dm-quick-links__title"><?php esc_html_e('Acceso Rápido', 'flavor-platform'); ?></h3>
         <div class="dm-quick-links__grid">
             <a href="<?php echo esc_url(admin_url('admin.php?page=espacios-listado')); ?>" class="dm-quick-links__item dm-quick-links__item--primary">
                 <span class="dashicons dashicons-building"></span>
-                <?php esc_html_e('Espacios', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Espacios', 'flavor-platform'); ?>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=espacios-reservas')); ?>" class="dm-quick-links__item dm-quick-links__item--success">
                 <span class="dashicons dashicons-calendar-alt"></span>
-                <?php esc_html_e('Reservas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Reservas', 'flavor-platform'); ?>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=espacios-calendario')); ?>" class="dm-quick-links__item dm-quick-links__item--purple">
                 <span class="dashicons dashicons-calendar"></span>
-                <?php esc_html_e('Calendario', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Calendario', 'flavor-platform'); ?>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=espacios-normas')); ?>" class="dm-quick-links__item dm-quick-links__item--warning">
                 <span class="dashicons dashicons-clipboard"></span>
-                <?php esc_html_e('Normas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Normas', 'flavor-platform'); ?>
             </a>
             <a href="<?php echo esc_url(home_url('/mi-portal/espacios-comunes/')); ?>" class="dm-quick-links__item" target="_blank">
                 <span class="dashicons dashicons-external"></span>
-                <?php esc_html_e('Portal público', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Portal público', 'flavor-platform'); ?>
             </a>
         </div>
     </div>
@@ -178,8 +178,8 @@ if ($tabla_espacios_existe && $tabla_reservas_existe) {
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($total_espacios)); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Total Espacios', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php esc_html_e('disponibles', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Total Espacios', 'flavor-platform'); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('disponibles', 'flavor-platform'); ?></div>
             </div>
         </div>
 
@@ -189,8 +189,8 @@ if ($tabla_espacios_existe && $tabla_reservas_existe) {
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($reservas_activas)); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Reservas Activas', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php esc_html_e('en curso o próximas', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Reservas Activas', 'flavor-platform'); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('en curso o próximas', 'flavor-platform'); ?></div>
             </div>
         </div>
 
@@ -200,8 +200,8 @@ if ($tabla_espacios_existe && $tabla_reservas_existe) {
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($usuarios_activos)); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Usuarios Activos', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php esc_html_e('este mes', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Usuarios Activos', 'flavor-platform'); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('este mes', 'flavor-platform'); ?></div>
             </div>
         </div>
 
@@ -211,8 +211,8 @@ if ($tabla_espacios_existe && $tabla_reservas_existe) {
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($tasa_ocupacion, 1)); ?>%</div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Tasa de Ocupación', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php esc_html_e('promedio mensual', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Tasa de Ocupación', 'flavor-platform'); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('promedio mensual', 'flavor-platform'); ?></div>
             </div>
         </div>
     </div>
@@ -222,21 +222,21 @@ if ($tabla_espacios_existe && $tabla_reservas_existe) {
         <!-- Espacios más populares -->
         <div class="dm-card">
             <div class="dm-card__header">
-                <h3><?php esc_html_e('Espacios Más Populares', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Espacios Más Populares', 'flavor-platform'); ?></h3>
             </div>
             <?php if (!empty($ranking_espacios)) : ?>
             <ol class="dm-ranking">
                 <?php foreach ($ranking_espacios as $espacio) : ?>
                 <li>
                     <span><?php echo esc_html($espacio->nombre); ?></span>
-                    <strong><?php echo esc_html(number_format_i18n($espacio->total_reservas)); ?> <?php esc_html_e('reservas', 'flavor-chat-ia'); ?></strong>
+                    <strong><?php echo esc_html(number_format_i18n($espacio->total_reservas)); ?> <?php esc_html_e('reservas', 'flavor-platform'); ?></strong>
                 </li>
                 <?php endforeach; ?>
             </ol>
             <?php else : ?>
             <div class="dm-empty">
                 <span class="dashicons dashicons-building"></span>
-                <p><?php esc_html_e('No hay datos de uso disponibles.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No hay datos de uso disponibles.', 'flavor-platform'); ?></p>
             </div>
             <?php endif; ?>
         </div>
@@ -244,9 +244,9 @@ if ($tabla_espacios_existe && $tabla_reservas_existe) {
         <!-- Próximas reservas -->
         <div class="dm-card">
             <div class="dm-card__header">
-                <h3><?php esc_html_e('Próximas Reservas', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Próximas Reservas', 'flavor-platform'); ?></h3>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=espacios-reservas')); ?>" class="dm-btn dm-btn--ghost dm-btn--sm">
-                    <?php esc_html_e('Ver todas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver todas', 'flavor-platform'); ?>
                 </a>
             </div>
             <?php if (!empty($proximas_reservas)) : ?>
@@ -271,7 +271,7 @@ if ($tabla_espacios_existe && $tabla_reservas_existe) {
             <?php else : ?>
             <div class="dm-empty">
                 <span class="dashicons dashicons-calendar"></span>
-                <p><?php esc_html_e('No hay reservas próximas.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No hay reservas próximas.', 'flavor-platform'); ?></p>
             </div>
             <?php endif; ?>
         </div>
@@ -280,10 +280,10 @@ if ($tabla_espacios_existe && $tabla_reservas_existe) {
     <!-- Estado actual de espacios -->
     <div class="dm-card">
         <div class="dm-card__header">
-            <h3><?php esc_html_e('Estado Actual de Espacios', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Estado Actual de Espacios', 'flavor-platform'); ?></h3>
             <span class="dm-live-indicator">
                 <span class="dm-live-indicator__dot"></span>
-                <?php esc_html_e('En vivo', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('En vivo', 'flavor-platform'); ?>
             </span>
         </div>
         <?php if (!empty($estado_espacios)) : ?>
@@ -294,7 +294,7 @@ if ($tabla_espacios_existe && $tabla_reservas_existe) {
             <div class="dm-space-status dm-space-status--<?php echo $disponible ? 'available' : 'occupied'; ?>">
                 <h4><?php echo esc_html($espacio->nombre); ?></h4>
                 <span class="dm-badge dm-badge--<?php echo $disponible ? 'success' : 'error'; ?>">
-                    <?php echo $disponible ? esc_html__('Disponible', 'flavor-chat-ia') : esc_html__('Ocupado', 'flavor-chat-ia'); ?>
+                    <?php echo $disponible ? esc_html__('Disponible', 'flavor-platform') : esc_html__('Ocupado', 'flavor-platform'); ?>
                 </span>
             </div>
             <?php endforeach; ?>
@@ -302,7 +302,7 @@ if ($tabla_espacios_existe && $tabla_reservas_existe) {
         <?php else : ?>
         <div class="dm-empty">
             <span class="dashicons dashicons-building"></span>
-            <p><?php esc_html_e('No hay espacios registrados.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('No hay espacios registrados.', 'flavor-platform'); ?></p>
         </div>
         <?php endif; ?>
     </div>
@@ -311,7 +311,7 @@ if ($tabla_espacios_existe && $tabla_reservas_existe) {
     <div class="dm-grid dm-grid--2">
         <div class="dm-card dm-card--chart">
             <div class="dm-card__header">
-                <h3><?php esc_html_e('Uso por Espacio', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Uso por Espacio', 'flavor-platform'); ?></h3>
             </div>
             <div class="dm-card__chart">
                 <canvas id="grafico-uso-espacios"></canvas>
@@ -320,7 +320,7 @@ if ($tabla_espacios_existe && $tabla_reservas_existe) {
 
         <div class="dm-card dm-card--chart">
             <div class="dm-card__header">
-                <h3><?php esc_html_e('Reservas por Día de la Semana', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Reservas por Día de la Semana', 'flavor-platform'); ?></h3>
             </div>
             <div class="dm-card__chart">
                 <canvas id="grafico-dias-semana"></canvas>
@@ -340,7 +340,7 @@ jQuery(document).ready(function($) {
     var espaciosReservas = <?php echo wp_json_encode(array_map(function($e) { return (int) $e->total_reservas; }, $ranking_espacios)); ?>;
 
     // Datos reales de reservas por día de la semana (últimos 30 días)
-    var diasSemana = ['<?php echo esc_js(__('Lun', 'flavor-chat-ia')); ?>', '<?php echo esc_js(__('Mar', 'flavor-chat-ia')); ?>', '<?php echo esc_js(__('Mié', 'flavor-chat-ia')); ?>', '<?php echo esc_js(__('Jue', 'flavor-chat-ia')); ?>', '<?php echo esc_js(__('Vie', 'flavor-chat-ia')); ?>', '<?php echo esc_js(__('Sáb', 'flavor-chat-ia')); ?>', '<?php echo esc_js(__('Dom', 'flavor-chat-ia')); ?>'];
+    var diasSemana = ['<?php echo esc_js(__('Lun', 'flavor-platform')); ?>', '<?php echo esc_js(__('Mar', 'flavor-platform')); ?>', '<?php echo esc_js(__('Mié', 'flavor-platform')); ?>', '<?php echo esc_js(__('Jue', 'flavor-platform')); ?>', '<?php echo esc_js(__('Vie', 'flavor-platform')); ?>', '<?php echo esc_js(__('Sáb', 'flavor-platform')); ?>', '<?php echo esc_js(__('Dom', 'flavor-platform')); ?>'];
     var reservasDias = <?php echo wp_json_encode(array_values($reservas_por_dia_semana)); ?>;
 
     // Gráfico de barras - Uso por espacio
@@ -351,7 +351,7 @@ jQuery(document).ready(function($) {
             data: {
                 labels: espaciosNombres,
                 datasets: [{
-                    label: '<?php echo esc_js(__('Reservas', 'flavor-chat-ia')); ?>',
+                    label: '<?php echo esc_js(__('Reservas', 'flavor-platform')); ?>',
                     data: espaciosReservas,
                     backgroundColor: primaryColor,
                     borderRadius: 4
@@ -390,7 +390,7 @@ jQuery(document).ready(function($) {
             data: {
                 labels: diasSemana,
                 datasets: [{
-                    label: '<?php echo esc_js(__('Reservas', 'flavor-chat-ia')); ?>',
+                    label: '<?php echo esc_js(__('Reservas', 'flavor-platform')); ?>',
                     data: reservasDias,
                     borderColor: successColor,
                     backgroundColor: successColor + '1a',

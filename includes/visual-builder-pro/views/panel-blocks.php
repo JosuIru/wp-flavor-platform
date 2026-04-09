@@ -12,10 +12,10 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 ?>
-<div class="vbp-blocks-container" x-data="vbpBlocksPanel()" role="region" aria-label="<?php esc_attr_e( 'Panel de bloques disponibles', 'flavor-chat-ia' ); ?>">
+<div class="vbp-blocks-container" x-data="vbpBlocksPanel()" role="region" aria-label="<?php esc_attr_e( 'Panel de bloques disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
     <div class="vbp-basic-panel-hint" x-show="$store.vbp.inspectorMode === 'basic'">
-        <span class="vbp-basic-panel-hint__eyebrow"><?php esc_html_e( 'Modo básico', 'flavor-chat-ia' ); ?></span>
-        <p><?php esc_html_e( 'Empieza arrastrando bloques de contenido. Las capas, componentes y herramientas avanzadas aparecen al cambiar de modo.', 'flavor-chat-ia' ); ?></p>
+        <span class="vbp-basic-panel-hint__eyebrow"><?php esc_html_e( 'Modo básico', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
+        <p><?php esc_html_e( 'Empieza arrastrando bloques de contenido. Las capas, componentes y herramientas avanzadas aparecen al cambiar de modo.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
     </div>
 
     <!-- Buscador -->
@@ -23,9 +23,9 @@ if ( ! defined( 'ABSPATH' ) ) {
         <input
             type="search"
             x-model.debounce.200ms="searchQuery"
-            placeholder="<?php esc_attr_e( 'Buscar bloques...', 'flavor-chat-ia' ); ?>"
+            placeholder="<?php esc_attr_e( 'Buscar bloques...', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
             class="vbp-search-input"
-            aria-label="<?php esc_attr_e( 'Buscar bloques', 'flavor-chat-ia' ); ?>"
+            aria-label="<?php esc_attr_e( 'Buscar bloques', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
             aria-describedby="vbp-search-results"
             @keydown.escape="searchQuery = ''"
         >
@@ -33,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             <circle cx="11" cy="11" r="8"/>
             <path d="M21 21l-4.35-4.35"/>
         </svg>
-        <button type="button" class="vbp-search-clear" x-show="searchQuery" @click="searchQuery = ''" aria-label="<?php esc_attr_e( 'Limpiar búsqueda', 'flavor-chat-ia' ); ?>">
+        <button type="button" class="vbp-search-clear" x-show="searchQuery" @click="searchQuery = ''" aria-label="<?php esc_attr_e( 'Limpiar búsqueda', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
         </button>
     </div>
@@ -47,8 +47,8 @@ if ( ! defined( 'ABSPATH' ) ) {
                 class="vbp-view-mode-btn"
                 :class="{ 'active': viewMode === 'list' }"
                 @click="setViewMode('list')"
-                data-tooltip="<?php esc_attr_e( 'Vista lista', 'flavor-chat-ia' ); ?>"
-                aria-label="<?php esc_attr_e( 'Vista lista', 'flavor-chat-ia' ); ?>"
+                data-tooltip="<?php esc_attr_e( 'Vista lista', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
+                aria-label="<?php esc_attr_e( 'Vista lista', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
             >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
@@ -59,8 +59,8 @@ if ( ! defined( 'ABSPATH' ) ) {
                 class="vbp-view-mode-btn"
                 :class="{ 'active': viewMode === 'grid' }"
                 @click="setViewMode('grid')"
-                data-tooltip="<?php esc_attr_e( 'Vista cuadrícula', 'flavor-chat-ia' ); ?>"
-                aria-label="<?php esc_attr_e( 'Vista cuadrícula', 'flavor-chat-ia' ); ?>"
+                data-tooltip="<?php esc_attr_e( 'Vista cuadrícula', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
+                aria-label="<?php esc_attr_e( 'Vista cuadrícula', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
             >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
@@ -71,8 +71,8 @@ if ( ! defined( 'ABSPATH' ) ) {
                 class="vbp-view-mode-btn"
                 :class="{ 'active': viewMode === 'compact' }"
                 @click="setViewMode('compact')"
-                data-tooltip="<?php esc_attr_e( 'Vista compacta', 'flavor-chat-ia' ); ?>"
-                aria-label="<?php esc_attr_e( 'Vista compacta', 'flavor-chat-ia' ); ?>"
+                data-tooltip="<?php esc_attr_e( 'Vista compacta', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
+                aria-label="<?php esc_attr_e( 'Vista compacta', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
             >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
@@ -84,10 +84,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
         <!-- Expandir/Colapsar -->
         <div class="vbp-blocks-toolbar-group">
-            <button type="button" class="vbp-toggle-all-btn" @click="expandAllCategories()" data-tooltip="<?php esc_attr_e( 'Expandir todo', 'flavor-chat-ia' ); ?>">
+            <button type="button" class="vbp-toggle-all-btn" @click="expandAllCategories()" data-tooltip="<?php esc_attr_e( 'Expandir todo', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg>
             </button>
-            <button type="button" class="vbp-toggle-all-btn" @click="collapseAllCategories()" data-tooltip="<?php esc_attr_e( 'Colapsar todo', 'flavor-chat-ia' ); ?>">
+            <button type="button" class="vbp-toggle-all-btn" @click="collapseAllCategories()" data-tooltip="<?php esc_attr_e( 'Colapsar todo', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18,15 12,9 6,15"/></svg>
             </button>
         </div>
@@ -100,7 +100,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             :class="{ 'active': activeFilter === 'all' }"
             @click="setFilter('all')"
         >
-            <?php esc_html_e( 'Todos', 'flavor-chat-ia' ); ?>
+            <?php esc_html_e( 'Todos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
             <span class="vbp-filter-chip-count" x-text="totalBlocks"></span>
         </button>
         <button type="button"
@@ -114,7 +114,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                 </svg>
             </span>
-            <?php esc_html_e( 'Favoritos', 'flavor-chat-ia' ); ?>
+            <?php esc_html_e( 'Favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
             <span class="vbp-filter-chip-count" x-text="favoriteBlocks.length"></span>
         </button>
         <template x-for="cat in mainFilterCategories" :key="cat.id">
@@ -137,8 +137,8 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <rect x="3" y="3" width="18" height="18" rx="2"/>
                 <path d="M12 8v8M8 12h8"/>
             </svg>
-            <p style="margin: 0;"><?php esc_html_e( 'No hay bloques disponibles', 'flavor-chat-ia' ); ?></p>
-            <small style="opacity: 0.7;"><?php esc_html_e( 'Verifica la consola para más información', 'flavor-chat-ia' ); ?></small>
+            <p style="margin: 0;"><?php esc_html_e( 'No hay bloques disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
+            <small style="opacity: 0.7;"><?php esc_html_e( 'Verifica la consola para más información', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></small>
         </div>
     </template>
 
@@ -147,14 +147,14 @@ if ( ! defined( 'ABSPATH' ) ) {
         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
         </svg>
-        <div class="vbp-blocks-empty-search-title"><?php esc_html_e( 'Sin resultados', 'flavor-chat-ia' ); ?></div>
+        <div class="vbp-blocks-empty-search-title"><?php esc_html_e( 'Sin resultados', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></div>
         <div class="vbp-blocks-empty-search-hint">
-            <?php esc_html_e( 'No se encontraron bloques para', 'flavor-chat-ia' ); ?> "<span x-text="searchQuery"></span>"
+            <?php esc_html_e( 'No se encontraron bloques para', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?> "<span x-text="searchQuery"></span>"
         </div>
     </div>
 
     <!-- Lista de categorías y bloques -->
-    <div class="vbp-blocks-list" :class="'view-' + viewMode" role="tree" aria-label="<?php esc_attr_e( 'Categorías de bloques', 'flavor-chat-ia' ); ?>" x-show="categories.length > 0 && (totalFilteredBlocks > 0 || !searchQuery)">
+    <div class="vbp-blocks-list" :class="'view-' + viewMode" role="tree" aria-label="<?php esc_attr_e( 'Categorías de bloques', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>" x-show="categories.length > 0 && (totalFilteredBlocks > 0 || !searchQuery)">
 
         <!-- Bloques Favoritos -->
         <div class="vbp-block-category vbp-favorites-category" role="treeitem" :aria-expanded="openCategories.includes('favorites')" x-show="activeFilter === 'all' && favoriteBlocks.length > 0 && !searchQuery">
@@ -170,7 +170,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                     </svg>
                 </span>
-                <span class="vbp-category-name"><?php esc_html_e( 'Favoritos', 'flavor-chat-ia' ); ?></span>
+                <span class="vbp-category-name"><?php esc_html_e( 'Favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
                 <span class="vbp-category-count" x-text="favoriteBlocks.length"></span>
                 <svg class="vbp-category-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                     <polyline points="6,9 12,15 18,9"/>
@@ -194,7 +194,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                         @keydown.space.prevent="addBlock(block)"
                         style="position: relative;"
                     >
-                        <button type="button" class="vbp-favorite-btn is-favorite" @click.stop="toggleFavorite(block)" aria-label="<?php esc_attr_e( 'Quitar de favoritos', 'flavor-chat-ia' ); ?>">
+                        <button type="button" class="vbp-favorite-btn is-favorite" @click.stop="toggleFavorite(block)" aria-label="<?php esc_attr_e( 'Quitar de favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1">
                                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                             </svg>
@@ -221,7 +221,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                         <polyline points="12 6 12 12 16 14"/>
                     </svg>
                 </span>
-                <span class="vbp-category-name"><?php esc_html_e( 'Usados recientemente', 'flavor-chat-ia' ); ?></span>
+                <span class="vbp-category-name"><?php esc_html_e( 'Usados recientemente', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
                 <span class="vbp-category-count" x-text="recentBlocks.length"></span>
                 <svg class="vbp-category-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                     <polyline points="6,9 12,15 18,9"/>
@@ -245,7 +245,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                         @keydown.space.prevent="addBlock(block)"
                         style="position: relative;"
                     >
-                        <button type="button" class="vbp-favorite-btn" :class="{ 'is-favorite': isFavorite(block.type) }" @click.stop="toggleFavorite(block)" :aria-label="isFavorite(block.type) ? '<?php esc_attr_e( 'Quitar de favoritos', 'flavor-chat-ia' ); ?>' : '<?php esc_attr_e( 'Añadir a favoritos', 'flavor-chat-ia' ); ?>'">
+                        <button type="button" class="vbp-favorite-btn" :class="{ 'is-favorite': isFavorite(block.type) }" @click.stop="toggleFavorite(block)" :aria-label="isFavorite(block.type) ? '<?php esc_attr_e( 'Quitar de favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>' : '<?php esc_attr_e( 'Añadir a favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>'">
                             <svg width="12" height="12" viewBox="0 0 24 24" :fill="isFavorite(block.type) ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2">
                                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                             </svg>
@@ -292,10 +292,10 @@ if ( ! defined( 'ABSPATH' ) ) {
                             tabindex="0"
                             @keydown.enter="addBlock(block)"
                             @keydown.space.prevent="addBlock(block)"
-                            :aria-label="block.name + ' - ' + '<?php esc_attr_e( 'Clic o arrastra para añadir', 'flavor-chat-ia' ); ?>'"
+                            :aria-label="block.name + ' - ' + '<?php esc_attr_e( 'Clic o arrastra para añadir', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>'"
                             style="position: relative;"
                         >
-                            <button type="button" class="vbp-favorite-btn" :class="{ 'is-favorite': isFavorite(block.type) }" @click.stop="toggleFavorite(block)" :aria-label="isFavorite(block.type) ? '<?php esc_attr_e( 'Quitar de favoritos', 'flavor-chat-ia' ); ?>' : '<?php esc_attr_e( 'Añadir a favoritos', 'flavor-chat-ia' ); ?>'">
+                            <button type="button" class="vbp-favorite-btn" :class="{ 'is-favorite': isFavorite(block.type) }" @click.stop="toggleFavorite(block)" :aria-label="isFavorite(block.type) ? '<?php esc_attr_e( 'Quitar de favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>' : '<?php esc_attr_e( 'Añadir a favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>'">
                                 <svg width="12" height="12" viewBox="0 0 24 24" :fill="isFavorite(block.type) ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2">
                                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                                 </svg>
@@ -325,7 +325,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                         <path d="M12 8v8M8 12h8"/>
                     </svg>
                 </span>
-                <span class="vbp-category-name"><?php esc_html_e( 'Widgets Globales', 'flavor-chat-ia' ); ?></span>
+                <span class="vbp-category-name"><?php esc_html_e( 'Widgets Globales', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
                 <span class="vbp-category-count" x-text="globalWidgets.length" x-show="globalWidgets.length > 0"></span>
                 <svg class="vbp-category-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                     <polyline points="6,9 12,15 18,9"/>
@@ -336,13 +336,13 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <!-- Loading state -->
                 <div x-show="!globalWidgetsLoaded" class="vbp-global-widgets-loading">
                     <span class="vbp-loading-spinner"></span>
-                    <span><?php esc_html_e( 'Cargando...', 'flavor-chat-ia' ); ?></span>
+                    <span><?php esc_html_e( 'Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
                 </div>
 
                 <!-- Empty state -->
                 <div x-show="globalWidgetsLoaded && globalWidgets.length === 0" class="vbp-global-widgets-empty">
-                    <p><?php esc_html_e( 'No hay widgets globales', 'flavor-chat-ia' ); ?></p>
-                    <small><?php esc_html_e( 'Selecciona un elemento y usa Ctrl+Shift+G para guardarlo', 'flavor-chat-ia' ); ?></small>
+                    <p><?php esc_html_e( 'No hay widgets globales', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></p>
+                    <small><?php esc_html_e( 'Selecciona un elemento y usa Ctrl+Shift+G para guardarlo', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></small>
                 </div>
 
                 <!-- Lista de widgets globales -->
@@ -374,8 +374,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
     <!-- Contador de bloques -->
     <div class="vbp-blocks-count" x-show="!searchQuery">
-        <strong x-text="totalBlocks"></strong> <?php esc_html_e( 'bloques en', 'flavor-chat-ia' ); ?>
-        <strong x-text="categories.length"></strong> <?php esc_html_e( 'categorías', 'flavor-chat-ia' ); ?>
+        <strong x-text="totalBlocks"></strong> <?php esc_html_e( 'bloques en', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
+        <strong x-text="categories.length"></strong> <?php esc_html_e( 'categorías', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
     </div>
 </div>
 
@@ -390,7 +390,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     </div>
     <div class="vbp-block-preview-tooltip-description" id="preview-description"></div>
     <div class="vbp-block-preview-tooltip-hint">
-        <kbd>Clic</kbd> <?php esc_html_e( 'para añadir', 'flavor-chat-ia' ); ?> · <kbd>Arrastra</kbd> <?php esc_html_e( 'al canvas', 'flavor-chat-ia' ); ?>
+        <kbd>Clic</kbd> <?php esc_html_e( 'para añadir', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?> · <kbd>Arrastra</kbd> <?php esc_html_e( 'al canvas', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
     </div>
 </div>
 
@@ -431,31 +431,31 @@ document.addEventListener('alpine:init', () => {
 
         // Descripciones de bloques
         blockDescriptions: {
-            'hero': '<?php echo esc_js( __( 'Sección principal con imagen de fondo, título y llamada a la acción', 'flavor-chat-ia' ) ); ?>',
-            'features': '<?php echo esc_js( __( 'Grid de características o servicios con iconos', 'flavor-chat-ia' ) ); ?>',
-            'cta': '<?php echo esc_js( __( 'Llamada a la acción con botón destacado', 'flavor-chat-ia' ) ); ?>',
-            'heading': '<?php echo esc_js( __( 'Encabezado de texto H1-H6', 'flavor-chat-ia' ) ); ?>',
-            'text': '<?php echo esc_js( __( 'Bloque de párrafo con texto enriquecido', 'flavor-chat-ia' ) ); ?>',
-            'image': '<?php echo esc_js( __( 'Imagen con opciones de tamaño y alineación', 'flavor-chat-ia' ) ); ?>',
-            'button': '<?php echo esc_js( __( 'Botón personalizable con enlace', 'flavor-chat-ia' ) ); ?>',
-            'video': '<?php echo esc_js( __( 'Reproductor de vídeo embebido', 'flavor-chat-ia' ) ); ?>',
-            'gallery': '<?php echo esc_js( __( 'Galería de imágenes con lightbox', 'flavor-chat-ia' ) ); ?>',
-            'columns': '<?php echo esc_js( __( 'Layout de columnas flexible', 'flavor-chat-ia' ) ); ?>',
-            'container': '<?php echo esc_js( __( 'Contenedor con ancho máximo centrado', 'flavor-chat-ia' ) ); ?>',
-            'spacer': '<?php echo esc_js( __( 'Espaciador vertical ajustable', 'flavor-chat-ia' ) ); ?>',
-            'divider': '<?php echo esc_js( __( 'Línea divisoria horizontal', 'flavor-chat-ia' ) ); ?>',
-            'accordion': '<?php echo esc_js( __( 'Panel colapsable tipo FAQ', 'flavor-chat-ia' ) ); ?>',
-            'tabs': '<?php echo esc_js( __( 'Contenido en pestañas', 'flavor-chat-ia' ) ); ?>',
-            'form': '<?php echo esc_js( __( 'Formulario de contacto', 'flavor-chat-ia' ) ); ?>',
-            'map': '<?php echo esc_js( __( 'Mapa de Google embebido', 'flavor-chat-ia' ) ); ?>',
-            'testimonials': '<?php echo esc_js( __( 'Carrusel de testimonios', 'flavor-chat-ia' ) ); ?>',
-            'pricing': '<?php echo esc_js( __( 'Tabla de precios', 'flavor-chat-ia' ) ); ?>',
-            'team': '<?php echo esc_js( __( 'Grid de miembros del equipo', 'flavor-chat-ia' ) ); ?>',
-            'countdown': '<?php echo esc_js( __( 'Contador regresivo animado', 'flavor-chat-ia' ) ); ?>',
-            'icon': '<?php echo esc_js( __( 'Icono decorativo o funcional', 'flavor-chat-ia' ) ); ?>',
-            'social': '<?php echo esc_js( __( 'Enlaces a redes sociales', 'flavor-chat-ia' ) ); ?>',
-            'slider': '<?php echo esc_js( __( 'Carrusel de imágenes o contenido', 'flavor-chat-ia' ) ); ?>',
-            'module_shortcode': '<?php echo esc_js( __( 'Shortcode de módulo Flavor', 'flavor-chat-ia' ) ); ?>'
+            'hero': '<?php echo esc_js( __( 'Sección principal con imagen de fondo, título y llamada a la acción', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>',
+            'features': '<?php echo esc_js( __( 'Grid de características o servicios con iconos', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>',
+            'cta': '<?php echo esc_js( __( 'Llamada a la acción con botón destacado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>',
+            'heading': '<?php echo esc_js( __( 'Encabezado de texto H1-H6', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>',
+            'text': '<?php echo esc_js( __( 'Bloque de párrafo con texto enriquecido', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>',
+            'image': '<?php echo esc_js( __( 'Imagen con opciones de tamaño y alineación', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>',
+            'button': '<?php echo esc_js( __( 'Botón personalizable con enlace', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>',
+            'video': '<?php echo esc_js( __( 'Reproductor de vídeo embebido', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>',
+            'gallery': '<?php echo esc_js( __( 'Galería de imágenes con lightbox', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>',
+            'columns': '<?php echo esc_js( __( 'Layout de columnas flexible', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>',
+            'container': '<?php echo esc_js( __( 'Contenedor con ancho máximo centrado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>',
+            'spacer': '<?php echo esc_js( __( 'Espaciador vertical ajustable', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>',
+            'divider': '<?php echo esc_js( __( 'Línea divisoria horizontal', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>',
+            'accordion': '<?php echo esc_js( __( 'Panel colapsable tipo FAQ', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>',
+            'tabs': '<?php echo esc_js( __( 'Contenido en pestañas', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>',
+            'form': '<?php echo esc_js( __( 'Formulario de contacto', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>',
+            'map': '<?php echo esc_js( __( 'Mapa de Google embebido', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>',
+            'testimonials': '<?php echo esc_js( __( 'Carrusel de testimonios', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>',
+            'pricing': '<?php echo esc_js( __( 'Tabla de precios', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>',
+            'team': '<?php echo esc_js( __( 'Grid de miembros del equipo', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>',
+            'countdown': '<?php echo esc_js( __( 'Contador regresivo animado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>',
+            'icon': '<?php echo esc_js( __( 'Icono decorativo o funcional', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>',
+            'social': '<?php echo esc_js( __( 'Enlaces a redes sociales', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>',
+            'slider': '<?php echo esc_js( __( 'Carrusel de imágenes o contenido', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>',
+            'module_shortcode': '<?php echo esc_js( __( 'Shortcode de módulo Flavor', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>'
         },
 
         // Cargar categorías desde VBP_Config si están disponibles, con fallback
@@ -481,7 +481,7 @@ document.addEventListener('alpine:init', () => {
                 // Fallback a categorías básicas
                 {
                     id: 'sections',
-                    name: '<?php echo esc_js( __( 'Secciones', 'flavor-chat-ia' ) ); ?>',
+                    name: '<?php echo esc_js( __( 'Secciones', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>',
                     icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>',
                     blocks: [
                         { type: 'hero', name: 'Hero', category: 'sections', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>' },
@@ -491,7 +491,7 @@ document.addEventListener('alpine:init', () => {
                 },
                 {
                     id: 'basic',
-                    name: '<?php echo esc_js( __( 'Básicos', 'flavor-chat-ia' ) ); ?>',
+                    name: '<?php echo esc_js( __( 'Básicos', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>',
                     icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>',
                     blocks: [
                         { type: 'heading', name: 'Encabezado', category: 'basic', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4v16M18 4v16M6 12h12"/></svg>' },
@@ -646,7 +646,7 @@ document.addEventListener('alpine:init', () => {
                 if (iconEl) iconEl.innerHTML = block.icon;
                 if (nameEl) nameEl.textContent = block.name;
                 if (typeEl) typeEl.textContent = block.type;
-                if (descEl) descEl.textContent = self.blockDescriptions[block.type] || '<?php echo esc_js( __( 'Bloque de contenido', 'flavor-chat-ia' ) ); ?>';
+                if (descEl) descEl.textContent = self.blockDescriptions[block.type] || '<?php echo esc_js( __( 'Bloque de contenido', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>';
 
                 // Posicionar
                 const rect = event.target.closest('.vbp-block-item').getBoundingClientRect();
@@ -831,7 +831,7 @@ document.addEventListener('alpine:init', () => {
             store.addElement(newElement);
 
             if (window.vbpApp && window.vbpApp.showNotification) {
-                window.vbpApp.showNotification('<?php echo esc_js( __( 'Widget global insertado', 'flavor-chat-ia' ) ); ?>', 'success');
+                window.vbpApp.showNotification('<?php echo esc_js( __( 'Widget global insertado', FLAVOR_PLATFORM_TEXT_DOMAIN ) ); ?>', 'success');
             }
         }
     }));

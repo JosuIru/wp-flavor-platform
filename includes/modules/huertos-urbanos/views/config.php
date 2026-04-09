@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 
 $configuracion = get_option('flavor_huertos_settings', []);
 $configuracion_default = [
-    'nombre_proyecto' => __('Huertos Comunitarios', 'flavor-chat-ia'),
+    'nombre_proyecto' => __('Huertos Comunitarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
     'descripcion' => '',
     'email_contacto' => get_option('admin_email'),
     'max_parcelas_por_usuario' => 1,
@@ -65,14 +65,14 @@ if (isset($_POST['guardar_config_huertos']) && wp_verify_nonce($_POST['_wpnonce'
 
     update_option('flavor_huertos_settings', $nueva_config);
     $configuracion = $nueva_config;
-    $mensaje_guardado = __('Configuración guardada correctamente.', 'flavor-chat-ia');
+    $mensaje_guardado = __('Configuración guardada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
 }
 ?>
 
 <div class="wrap flavor-huertos-config">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-carrot"></span>
-        <?php esc_html_e('Configuración de Huertos', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Configuración de Huertos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
     <hr class="wp-header-end">
 
@@ -88,19 +88,19 @@ if (isset($_POST['guardar_config_huertos']) && wp_verify_nonce($_POST['_wpnonce'
         <div class="dm-config-grid">
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-admin-home"></span> <?php esc_html_e('Información General', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-admin-home"></span> <?php esc_html_e('Información General', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-form-group">
-                        <label for="nombre_proyecto"><?php esc_html_e('Nombre del Proyecto', 'flavor-chat-ia'); ?></label>
+                        <label for="nombre_proyecto"><?php esc_html_e('Nombre del Proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="text" id="nombre_proyecto" name="nombre_proyecto" value="<?php echo esc_attr($configuracion['nombre_proyecto']); ?>">
                     </div>
                     <div class="dm-form-group">
-                        <label for="descripcion"><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?></label>
+                        <label for="descripcion"><?php esc_html_e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <textarea id="descripcion" name="descripcion" rows="3"><?php echo esc_textarea($configuracion['descripcion']); ?></textarea>
                     </div>
                     <div class="dm-form-group">
-                        <label for="email_contacto"><?php esc_html_e('Email de Contacto', 'flavor-chat-ia'); ?></label>
+                        <label for="email_contacto"><?php esc_html_e('Email de Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="email" id="email_contacto" name="email_contacto" value="<?php echo esc_attr($configuracion['email_contacto']); ?>">
                     </div>
                 </div>
@@ -108,57 +108,57 @@ if (isset($_POST['guardar_config_huertos']) && wp_verify_nonce($_POST['_wpnonce'
 
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-layout"></span> <?php esc_html_e('Parcelas', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-layout"></span> <?php esc_html_e('Parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-form-row">
                         <div class="dm-form-group">
-                            <label for="max_parcelas_por_usuario"><?php esc_html_e('Máx. parcelas por usuario', 'flavor-chat-ia'); ?></label>
+                            <label for="max_parcelas_por_usuario"><?php esc_html_e('Máx. parcelas por usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="number" id="max_parcelas_por_usuario" name="max_parcelas_por_usuario" value="<?php echo esc_attr($configuracion['max_parcelas_por_usuario']); ?>" min="1" max="10">
                         </div>
                         <div class="dm-form-group">
-                            <label for="tamano_parcela_default"><?php esc_html_e('Tamaño por defecto', 'flavor-chat-ia'); ?></label>
+                            <label for="tamano_parcela_default"><?php esc_html_e('Tamaño por defecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="number" id="tamano_parcela_default" name="tamano_parcela_default" value="<?php echo esc_attr($configuracion['tamano_parcela_default']); ?>" min="1">
                         </div>
                     </div>
                     <div class="dm-form-row">
                         <div class="dm-form-group">
-                            <label for="unidad_medida"><?php esc_html_e('Unidad de medida', 'flavor-chat-ia'); ?></label>
+                            <label for="unidad_medida"><?php esc_html_e('Unidad de medida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <select id="unidad_medida" name="unidad_medida">
                                 <option value="m2" <?php selected($configuracion['unidad_medida'], 'm2'); ?>>m²</option>
                                 <option value="ha" <?php selected($configuracion['unidad_medida'], 'ha'); ?>>Hectáreas</option>
                             </select>
                         </div>
                         <div class="dm-form-group">
-                            <label for="duracion_asignacion_meses"><?php esc_html_e('Duración asignación (meses)', 'flavor-chat-ia'); ?></label>
+                            <label for="duracion_asignacion_meses"><?php esc_html_e('Duración asignación (meses)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="number" id="duracion_asignacion_meses" name="duracion_asignacion_meses" value="<?php echo esc_attr($configuracion['duracion_asignacion_meses']); ?>" min="1" max="120">
                         </div>
                     </div>
                     <div class="dm-form-group">
-                        <label for="precio_mensual"><?php esc_html_e('Precio mensual (€)', 'flavor-chat-ia'); ?></label>
+                        <label for="precio_mensual"><?php esc_html_e('Precio mensual (€)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="number" id="precio_mensual" name="precio_mensual" value="<?php echo esc_attr($configuracion['precio_mensual']); ?>" min="0" step="0.01">
-                        <p class="description"><?php esc_html_e('0 = gratuito', 'flavor-chat-ia'); ?></p>
+                        <p class="description"><?php esc_html_e('0 = gratuito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 </div>
             </div>
 
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-admin-users"></span> <?php esc_html_e('Solicitudes', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-admin-users"></span> <?php esc_html_e('Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-checkbox-group">
                         <label class="dm-checkbox">
                             <input type="checkbox" name="permitir_solicitudes" value="1" <?php checked($configuracion['permitir_solicitudes']); ?>>
-                            <span><?php esc_html_e('Permitir solicitudes de parcela', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Permitir solicitudes de parcela', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="requiere_aprobacion" value="1" <?php checked($configuracion['requiere_aprobacion']); ?>>
-                            <span><?php esc_html_e('Requerir aprobación de solicitudes', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Requerir aprobación de solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="mostrar_mapa" value="1" <?php checked($configuracion['mostrar_mapa']); ?>>
-                            <span><?php esc_html_e('Mostrar mapa de huertos', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Mostrar mapa de huertos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                     </div>
                 </div>
@@ -166,21 +166,21 @@ if (isset($_POST['guardar_config_huertos']) && wp_verify_nonce($_POST['_wpnonce'
 
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-randomize"></span> <?php esc_html_e('Intercambios', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-randomize"></span> <?php esc_html_e('Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-checkbox-group">
                         <label class="dm-checkbox">
                             <input type="checkbox" name="permitir_intercambio_semillas" value="1" <?php checked($configuracion['permitir_intercambio_semillas']); ?>>
-                            <span><?php esc_html_e('Permitir intercambio de semillas', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Permitir intercambio de semillas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="permitir_intercambio_cosecha" value="1" <?php checked($configuracion['permitir_intercambio_cosecha']); ?>>
-                            <span><?php esc_html_e('Permitir intercambio de cosecha', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Permitir intercambio de cosecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="habilitar_banco_semillas" value="1" <?php checked($configuracion['habilitar_banco_semillas']); ?>>
-                            <span><?php esc_html_e('Habilitar banco de semillas', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Habilitar banco de semillas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                     </div>
                 </div>
@@ -188,17 +188,17 @@ if (isset($_POST['guardar_config_huertos']) && wp_verify_nonce($_POST['_wpnonce'
 
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-calendar-alt"></span> <?php esc_html_e('Funcionalidades', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-calendar-alt"></span> <?php esc_html_e('Funcionalidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-checkbox-group">
                         <label class="dm-checkbox">
                             <input type="checkbox" name="habilitar_calendario_riego" value="1" <?php checked($configuracion['habilitar_calendario_riego']); ?>>
-                            <span><?php esc_html_e('Habilitar calendario de riego', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Habilitar calendario de riego', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="habilitar_tareas_comunitarias" value="1" <?php checked($configuracion['habilitar_tareas_comunitarias']); ?>>
-                            <span><?php esc_html_e('Habilitar tareas comunitarias', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Habilitar tareas comunitarias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                     </div>
                 </div>
@@ -206,25 +206,25 @@ if (isset($_POST['guardar_config_huertos']) && wp_verify_nonce($_POST['_wpnonce'
 
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-email"></span> <?php esc_html_e('Notificaciones', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-email"></span> <?php esc_html_e('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-checkbox-group">
                         <label class="dm-checkbox">
                             <input type="checkbox" name="notificar_nueva_solicitud" value="1" <?php checked($configuracion['notificar_nueva_solicitud']); ?>>
-                            <span><?php esc_html_e('Notificar nuevas solicitudes', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Notificar nuevas solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="notificar_asignacion" value="1" <?php checked($configuracion['notificar_asignacion']); ?>>
-                            <span><?php esc_html_e('Notificar asignaciones de parcela', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Notificar asignaciones de parcela', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="notificar_vencimiento" value="1" <?php checked($configuracion['notificar_vencimiento']); ?>>
-                            <span><?php esc_html_e('Notificar próximos vencimientos', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Notificar próximos vencimientos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                     </div>
                     <div class="dm-form-group" style="margin-top: 15px;">
-                        <label for="dias_aviso_vencimiento"><?php esc_html_e('Días de aviso antes de vencimiento', 'flavor-chat-ia'); ?></label>
+                        <label for="dias_aviso_vencimiento"><?php esc_html_e('Días de aviso antes de vencimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="number" id="dias_aviso_vencimiento" name="dias_aviso_vencimiento" value="<?php echo esc_attr($configuracion['dias_aviso_vencimiento']); ?>" min="1" max="90">
                     </div>
                 </div>
@@ -232,7 +232,7 @@ if (isset($_POST['guardar_config_huertos']) && wp_verify_nonce($_POST['_wpnonce'
 
             <div class="dm-card dm-card--full">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-media-document"></span> <?php esc_html_e('Normas del Huerto', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-media-document"></span> <?php esc_html_e('Normas del Huerto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-form-group">
@@ -256,7 +256,7 @@ if (isset($_POST['guardar_config_huertos']) && wp_verify_nonce($_POST['_wpnonce'
         <div class="dm-form-actions">
             <button type="submit" name="guardar_config_huertos" class="button button-primary button-hero">
                 <span class="dashicons dashicons-saved"></span>
-                <?php esc_html_e('Guardar Configuración', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Guardar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     </form>

@@ -58,13 +58,13 @@ $mes_hoy = intval(date('n'));
 $anio_hoy = intval(date('Y'));
 
 $dias_semana = [
-    __('Lun', 'flavor-chat-ia'),
-    __('Mar', 'flavor-chat-ia'),
-    __('Mié', 'flavor-chat-ia'),
-    __('Jue', 'flavor-chat-ia'),
-    __('Vie', 'flavor-chat-ia'),
-    __('Sáb', 'flavor-chat-ia'),
-    __('Dom', 'flavor-chat-ia'),
+    __('Lun', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    __('Mar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    __('Mié', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    __('Jue', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    __('Vie', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    __('Sáb', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    __('Dom', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 // URLs para navegación
@@ -123,7 +123,7 @@ $url_siguiente = add_query_arg(['mes' => $mes_siguiente, 'anio' => $anio_siguien
                         <?php endforeach; ?>
                         <?php if (count($eventos_dia) > 3): ?>
                             <span class="calendario-mas-eventos">
-                                +<?php echo count($eventos_dia) - 3; ?> <?php _e('más', 'flavor-chat-ia'); ?>
+                                +<?php echo count($eventos_dia) - 3; ?> <?php _e('más', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         <?php endif; ?>
                     </div>
@@ -135,7 +135,7 @@ $url_siguiente = add_query_arg(['mes' => $mes_siguiente, 'anio' => $anio_siguien
     <!-- Lista de eventos del mes -->
     <?php if ($eventos): ?>
         <div class="eventos-lista-mes">
-            <h3><?php _e('Eventos este mes', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Eventos este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <div class="eventos-lista">
                 <?php foreach ($eventos as $evento): ?>
                     <a href="<?php echo add_query_arg('evento_id', $evento->id, get_permalink()); ?>" class="evento-item">

@@ -7,12 +7,12 @@
 if (!defined('ABSPATH')) exit;
 
 $tipos_impacto = [
-    'ruido' => ['label' => __('Ruido', 'flavor-chat-ia'), 'color' => '#ff5722', 'icono' => 'dashicons-megaphone'],
-    'contaminacion_aire' => ['label' => __('Aire', 'flavor-chat-ia'), 'color' => '#9c27b0', 'icono' => 'dashicons-cloud'],
-    'contaminacion_agua' => ['label' => __('Agua', 'flavor-chat-ia'), 'color' => '#2196f3', 'icono' => 'dashicons-admin-site-alt3'],
-    'residuos' => ['label' => __('Residuos', 'flavor-chat-ia'), 'color' => '#795548', 'icono' => 'dashicons-trash'],
-    'visual' => ['label' => __('Visual', 'flavor-chat-ia'), 'color' => '#607d8b', 'icono' => 'dashicons-visibility'],
-    'otro' => ['label' => __('Otro', 'flavor-chat-ia'), 'color' => '#9e9e9e', 'icono' => 'dashicons-warning'],
+    'ruido' => ['label' => __('Ruido', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#ff5722', 'icono' => 'dashicons-megaphone'],
+    'contaminacion_aire' => ['label' => __('Aire', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#9c27b0', 'icono' => 'dashicons-cloud'],
+    'contaminacion_agua' => ['label' => __('Agua', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#2196f3', 'icono' => 'dashicons-admin-site-alt3'],
+    'residuos' => ['label' => __('Residuos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#795548', 'icono' => 'dashicons-trash'],
+    'visual' => ['label' => __('Visual', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#607d8b', 'icono' => 'dashicons-visibility'],
+    'otro' => ['label' => __('Otro', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#9e9e9e', 'icono' => 'dashicons-warning'],
 ];
 ?>
 <div class="inc-mapa-ambiental" data-nonce="<?php echo esc_attr($nonce); ?>">
@@ -21,8 +21,8 @@ $tipos_impacto = [
             <span class="dashicons dashicons-location-alt"></span>
         </span>
         <div>
-            <h3><?php esc_html_e('Mapa de Impacto Ambiental', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('Incidencias que afectan al medio ambiente', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('Mapa de Impacto Ambiental', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php esc_html_e('Incidencias que afectan al medio ambiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     </div>
 
@@ -43,13 +43,13 @@ $tipos_impacto = [
     <div class="inc-mapa-ambiental__mapa" id="mapa-impacto-container">
         <div class="inc-mapa-ambiental__mapa-placeholder">
             <span class="dashicons dashicons-location-alt"></span>
-            <p><?php esc_html_e('Cargando mapa...', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('Cargando mapa...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     </div>
 
     <!-- Resumen -->
     <div class="inc-mapa-ambiental__resumen">
-        <h4><?php esc_html_e('Resumen de impactos', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('Resumen de impactos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <div class="inc-mapa-ambiental__resumen-grid">
             <?php
             $conteo_tipos = [];
@@ -77,7 +77,7 @@ $tipos_impacto = [
     <!-- Lista de incidencias -->
     <?php if (!empty($incidencias)): ?>
         <div class="inc-mapa-ambiental__lista">
-            <h4><?php esc_html_e('Incidencias con impacto ambiental', 'flavor-chat-ia'); ?></h4>
+            <h4><?php esc_html_e('Incidencias con impacto ambiental', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
             <?php foreach (array_slice($incidencias, 0, 10) as $inc):
                 $tipo_info = $tipos_impacto[$inc->tipo_impacto] ?? $tipos_impacto['otro'];
             ?>
@@ -89,7 +89,7 @@ $tipos_impacto = [
                         <div class="inc-mapa-ambiental__inc-info">
                             <strong><?php echo esc_html($inc->titulo); ?></strong>
                             <span class="inc-mapa-ambiental__direccion">
-                                <?php echo esc_html($inc->direccion ?: __('Sin ubicación', 'flavor-chat-ia')); ?>
+                                <?php echo esc_html($inc->direccion ?: __('Sin ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                             </span>
                         </div>
                         <div class="inc-mapa-ambiental__severidad">
@@ -101,7 +101,7 @@ $tipos_impacto = [
                     <?php if ($inc->afecta_salud): ?>
                         <div class="inc-mapa-ambiental__alerta-salud">
                             <span class="dashicons dashicons-heart"></span>
-                            <?php esc_html_e('Puede afectar a la salud', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Puede afectar a la salud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -110,17 +110,17 @@ $tipos_impacto = [
     <?php else: ?>
         <div class="inc-mapa-ambiental__vacio">
             <span class="dashicons dashicons-smiley"></span>
-            <p><?php esc_html_e('No hay incidencias con impacto ambiental registradas.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('No hay incidencias con impacto ambiental registradas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php endif; ?>
 
     <!-- Reportar impacto -->
     <div class="inc-mapa-ambiental__reportar">
-        <h4><?php esc_html_e('¿Ves un problema ambiental?', 'flavor-chat-ia'); ?></h4>
-        <p><?php esc_html_e('Reporta incidencias que afecten al medio ambiente o la salud.', 'flavor-chat-ia'); ?></p>
+        <h4><?php esc_html_e('¿Ves un problema ambiental?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+        <p><?php esc_html_e('Reporta incidencias que afecten al medio ambiente o la salud.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         <a href="<?php echo esc_url(home_url('/incidencias/reportar/')); ?>" class="inc-btn inc-btn--primary">
             <span class="dashicons dashicons-plus-alt"></span>
-            <?php esc_html_e('Reportar incidencia', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Reportar incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 </div>

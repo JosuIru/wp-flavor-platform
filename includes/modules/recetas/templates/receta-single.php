@@ -24,9 +24,9 @@ $categorias = wp_get_post_terms($receta->ID, 'receta_categoria', ['fields' => 'n
 $dietas = wp_get_post_terms($receta->ID, 'receta_dieta', ['fields' => 'names']);
 
 $dificultad_labels = [
-    'facil' => __('Facil', 'flavor-chat-ia'),
-    'media' => __('Media', 'flavor-chat-ia'),
-    'dificil' => __('Dificil', 'flavor-chat-ia'),
+    'facil' => __('Facil', 'flavor-platform'),
+    'media' => __('Media', 'flavor-platform'),
+    'dificil' => __('Dificil', 'flavor-platform'),
 ];
 ?>
 
@@ -59,7 +59,7 @@ $dificultad_labels = [
             <?php if ($tiempo_total > 0): ?>
             <div class="meta-item">
                 <span class="dashicons dashicons-clock" style="color: #0073aa;"></span>
-                <strong><?php _e('Tiempo total:', 'flavor-chat-ia'); ?></strong>
+                <strong><?php _e('Tiempo total:', 'flavor-platform'); ?></strong>
                 <?php echo $tiempo_total; ?> min
                 <?php if ($tiempo_preparacion && $tiempo_coccion): ?>
                     <small style="color: #666;">(<?php echo $tiempo_preparacion; ?> prep + <?php echo $tiempo_coccion; ?> coccion)</small>
@@ -70,7 +70,7 @@ $dificultad_labels = [
             <?php if ($porciones): ?>
             <div class="meta-item">
                 <span class="dashicons dashicons-groups" style="color: #0073aa;"></span>
-                <strong><?php _e('Porciones:', 'flavor-chat-ia'); ?></strong>
+                <strong><?php _e('Porciones:', 'flavor-platform'); ?></strong>
                 <?php echo esc_html($porciones); ?>
             </div>
             <?php endif; ?>
@@ -78,7 +78,7 @@ $dificultad_labels = [
             <?php if ($dificultad && isset($dificultad_labels[$dificultad])): ?>
             <div class="meta-item">
                 <span class="dashicons dashicons-chart-bar" style="color: #0073aa;"></span>
-                <strong><?php _e('Dificultad:', 'flavor-chat-ia'); ?></strong>
+                <strong><?php _e('Dificultad:', 'flavor-platform'); ?></strong>
                 <?php echo esc_html($dificultad_labels[$dificultad]); ?>
             </div>
             <?php endif; ?>
@@ -86,7 +86,7 @@ $dificultad_labels = [
             <?php if ($calorias): ?>
             <div class="meta-item">
                 <span class="dashicons dashicons-heart" style="color: #0073aa;"></span>
-                <strong><?php _e('Calorias:', 'flavor-chat-ia'); ?></strong>
+                <strong><?php _e('Calorias:', 'flavor-platform'); ?></strong>
                 <?php echo esc_html($calorias); ?> kcal/porcion
             </div>
             <?php endif; ?>
@@ -105,7 +105,7 @@ $dificultad_labels = [
         <aside class="receta-ingredientes" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <h2 style="margin: 0 0 15px; font-size: 20px; border-bottom: 2px solid #0073aa; padding-bottom: 10px;">
                 <span class="dashicons dashicons-carrot" style="color: #0073aa;"></span>
-                <?php _e('Ingredientes', 'flavor-chat-ia'); ?>
+                <?php _e('Ingredientes', 'flavor-platform'); ?>
             </h2>
             <ul style="list-style: none; margin: 0; padding: 0;">
                 <?php foreach ($ingredientes as $ingrediente): ?>
@@ -133,7 +133,7 @@ $dificultad_labels = [
         <div class="receta-pasos" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <h2 style="margin: 0 0 15px; font-size: 20px; border-bottom: 2px solid #0073aa; padding-bottom: 10px;">
                 <span class="dashicons dashicons-editor-ol" style="color: #0073aa;"></span>
-                <?php _e('Preparacion', 'flavor-chat-ia'); ?>
+                <?php _e('Preparacion', 'flavor-platform'); ?>
             </h2>
             <ol style="margin: 0; padding: 0; list-style: none; counter-reset: paso;">
                 <?php foreach ($pasos as $indice => $paso): ?>
@@ -162,7 +162,7 @@ $dificultad_labels = [
     <div class="receta-productos" style="margin-top: 30px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
         <h2 style="margin: 0 0 15px; font-size: 20px; border-bottom: 2px solid #00a32a; padding-bottom: 10px;">
             <span class="dashicons dashicons-cart" style="color: #00a32a;"></span>
-            <?php _e('Comprar Ingredientes', 'flavor-chat-ia'); ?>
+            <?php _e('Comprar Ingredientes', 'flavor-platform'); ?>
         </h2>
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px;">
             <?php foreach ($productos as $producto):

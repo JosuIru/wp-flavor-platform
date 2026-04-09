@@ -96,12 +96,12 @@ class Flavor_Notifications_Widget {
             'nonce'    => wp_create_nonce('flavor_notifications'),
             'restNonce' => wp_create_nonce('wp_rest'),
             'strings'  => [
-                'marcarLeida'       => __('Marcar como leída', 'flavor-chat-ia'),
-                'marcarTodas'       => __('Marcar todas como leídas', 'flavor-chat-ia'),
-                'sinNotificaciones' => __('No tienes notificaciones', 'flavor-chat-ia'),
-                'verTodas'          => __('Ver todas', 'flavor-chat-ia'),
-                'hace'              => __('hace', 'flavor-chat-ia'),
-                'cargando'          => __('Cargando...', 'flavor-chat-ia'),
+                'marcarLeida'       => __('Marcar como leída', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'marcarTodas'       => __('Marcar todas como leídas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sinNotificaciones' => __('No tienes notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'verTodas'          => __('Ver todas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'hace'              => __('hace', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cargando'          => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'pollInterval' => 60000, // 60 segundos
         ]);
@@ -136,13 +136,13 @@ class Flavor_Notifications_Widget {
         <div class="flavor-notificaciones-widget" data-limite="<?php echo esc_attr($atts['limite']); ?>">
             <div class="flavor-notificaciones-header">
                 <h3>
-                    <?php esc_html_e('Notificaciones', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <?php if ($no_leidas > 0): ?>
                         <span class="flavor-badge"><?php echo esc_html($no_leidas); ?></span>
                     <?php endif; ?>
                 </h3>
                 <?php if ($no_leidas > 0): ?>
-                    <button type="button" class="flavor-btn-marcar-todas" title="<?php esc_attr_e('Marcar todas como leídas', 'flavor-chat-ia'); ?>">
+                    <button type="button" class="flavor-btn-marcar-todas" title="<?php esc_attr_e('Marcar todas como leídas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-yes-alt"></span>
                     </button>
                 <?php endif; ?>
@@ -152,7 +152,7 @@ class Flavor_Notifications_Widget {
                 <?php if (empty($notificaciones)): ?>
                     <div class="flavor-notificaciones-vacio">
                         <span class="dashicons dashicons-bell"></span>
-                        <p><?php esc_html_e('No tienes notificaciones', 'flavor-chat-ia'); ?></p>
+                        <p><?php esc_html_e('No tienes notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 <?php else: ?>
                     <?php foreach ($notificaciones as $notificacion): ?>
@@ -164,7 +164,7 @@ class Flavor_Notifications_Widget {
             <?php if (count($notificaciones) >= $atts['limite']): ?>
                 <div class="flavor-notificaciones-footer">
                     <a href="<?php echo esc_url(home_url('/mi-cuenta/notificaciones/')); ?>" class="flavor-btn-ver-todas">
-                        <?php esc_html_e('Ver todas las notificaciones', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver todas las notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php endif; ?>
@@ -192,7 +192,7 @@ class Flavor_Notifications_Widget {
         ob_start();
         ?>
         <span class="flavor-notificaciones-badge-wrapper">
-            <button type="button" class="flavor-notificaciones-trigger" aria-label="<?php esc_attr_e('Notificaciones', 'flavor-chat-ia'); ?>">
+            <button type="button" class="flavor-notificaciones-trigger" aria-label="<?php esc_attr_e('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <span class="dashicons dashicons-bell"></span>
                 <?php if ($no_leidas > 0): ?>
                     <span class="flavor-notificaciones-count"><?php echo esc_html($no_leidas); ?></span>
@@ -256,7 +256,7 @@ class Flavor_Notifications_Widget {
             <?php if (empty($notificacion->is_read)): ?>
                 <button type="button" class="flavor-btn-marcar-leida"
                         data-id="<?php echo esc_attr($notificacion->id); ?>"
-                        title="<?php esc_attr_e('Marcar como leída', 'flavor-chat-ia'); ?>">
+                        title="<?php esc_attr_e('Marcar como leída', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-dismiss"></span>
                 </button>
             <?php endif; ?>
@@ -276,7 +276,7 @@ class Flavor_Notifications_Widget {
         $diff = time() - $timestamp;
 
         if ($diff < 60) {
-            return __('hace un momento', 'flavor-chat-ia');
+            return __('hace un momento', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         $intervalos = [
@@ -294,14 +294,14 @@ class Flavor_Notifications_Widget {
                 $nombre = $cantidad === 1 ? $nombres[0] : $nombres[1];
                 return sprintf(
                     /* translators: %1$d: quantity, %2$s: time unit */
-                    __('hace %1$d %2$s', 'flavor-chat-ia'),
+                    __('hace %1$d %2$s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $cantidad,
                     $nombre
                 );
             }
         }
 
-        return __('hace un momento', 'flavor-chat-ia');
+        return __('hace un momento', FLAVOR_PLATFORM_TEXT_DOMAIN);
     }
 
     /**

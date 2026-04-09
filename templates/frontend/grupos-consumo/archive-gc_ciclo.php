@@ -15,19 +15,19 @@ get_header();
 
 <div class="gc-archive-ciclos">
     <header class="gc-archive-header">
-        <h1><?php _e('Ciclos de Compra', 'flavor-chat-ia'); ?></h1>
+        <h1><?php _e('Ciclos de Compra', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
         <p class="gc-archive-intro">
-            <?php _e('Consulta los ciclos de compra activos y realiza tus pedidos antes de la fecha de cierre.', 'flavor-chat-ia'); ?>
+            <?php _e('Consulta los ciclos de compra activos y realiza tus pedidos antes de la fecha de cierre.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </header>
 
     <div class="gc-filtros">
         <div class="gc-filtro-grupo">
-            <label for="filtro-estado"><?php _e('Estado:', 'flavor-chat-ia'); ?></label>
+            <label for="filtro-estado"><?php _e('Estado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <select id="filtro-estado" class="gc-filtro-select">
-                <option value=""><?php _e('Todos', 'flavor-chat-ia'); ?></option>
-                <option value="abierto"><?php _e('Abiertos', 'flavor-chat-ia'); ?></option>
-                <option value="cerrado"><?php _e('Cerrados', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php _e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="abierto"><?php _e('Abiertos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="cerrado"><?php _e('Cerrados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             </select>
         </div>
     </div>
@@ -59,10 +59,10 @@ get_header();
                 <span class="gc-badge gc-estado-<?php echo esc_attr($estado); ?>">
                     <?php
                     $estados_label = [
-                        'abierto' => __('Abierto', 'flavor-chat-ia'),
-                        'cerrado' => __('Cerrado', 'flavor-chat-ia'),
-                        'procesando' => __('Procesando', 'flavor-chat-ia'),
-                        'entregado' => __('Entregado', 'flavor-chat-ia'),
+                        'abierto' => __('Abierto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'cerrado' => __('Cerrado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'procesando' => __('Procesando', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'entregado' => __('Entregado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ];
                     echo esc_html($estados_label[$estado] ?? ucfirst($estado));
                     ?>
@@ -73,13 +73,13 @@ get_header();
                 <div class="gc-ciclo-card-fechas">
                     <?php if ($fecha_cierre): ?>
                     <div class="gc-fecha-item">
-                        <span class="gc-fecha-label"><?php _e('Cierre', 'flavor-chat-ia'); ?></span>
+                        <span class="gc-fecha-label"><?php _e('Cierre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="gc-fecha-valor"><?php echo esc_html(date_i18n('d/m/Y H:i', strtotime($fecha_cierre))); ?></span>
                     </div>
                     <?php endif; ?>
                     <?php if ($fecha_recogida): ?>
                     <div class="gc-fecha-item">
-                        <span class="gc-fecha-label"><?php _e('Recogida', 'flavor-chat-ia'); ?></span>
+                        <span class="gc-fecha-label"><?php _e('Recogida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="gc-fecha-valor"><?php echo esc_html(date_i18n('d/m/Y', strtotime($fecha_recogida))); ?></span>
                     </div>
                     <?php endif; ?>
@@ -88,14 +88,14 @@ get_header();
                 <div class="gc-ciclo-card-stats">
                     <span class="gc-pedidos">
                         <span class="dashicons dashicons-cart"></span>
-                        <?php printf(_n('%d pedido', '%d pedidos', $pedidos_count, 'flavor-chat-ia'), $pedidos_count); ?>
+                        <?php printf(_n('%d pedido', '%d pedidos', $pedidos_count, FLAVOR_PLATFORM_TEXT_DOMAIN), $pedidos_count); ?>
                     </span>
                 </div>
             </div>
 
             <div class="gc-ciclo-card-footer">
                 <a href="<?php the_permalink(); ?>" class="gc-btn gc-btn-primary">
-                    <?php echo $estado === 'abierto' ? __('Ver y pedir', 'flavor-chat-ia') : __('Ver ciclo', 'flavor-chat-ia'); ?>
+                    <?php echo $estado === 'abierto' ? __('Ver y pedir', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Ver ciclo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </article>
@@ -105,8 +105,8 @@ get_header();
     <nav class="gc-paginacion">
         <?php
         the_posts_pagination([
-            'prev_text' => '<span class="dashicons dashicons-arrow-left-alt2"></span> ' . __('Anterior', 'flavor-chat-ia'),
-            'next_text' => __('Siguiente', 'flavor-chat-ia') . ' <span class="dashicons dashicons-arrow-right-alt2"></span>',
+            'prev_text' => '<span class="dashicons dashicons-arrow-left-alt2"></span> ' . __('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'next_text' => __('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN) . ' <span class="dashicons dashicons-arrow-right-alt2"></span>',
         ]);
         ?>
     </nav>
@@ -114,7 +114,7 @@ get_header();
     <?php else: ?>
     <div class="gc-empty-state">
         <span class="dashicons dashicons-calendar-alt"></span>
-        <p><?php _e('No hay ciclos de compra disponibles actualmente.', 'flavor-chat-ia'); ?></p>
+        <p><?php _e('No hay ciclos de compra disponibles actualmente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php endif; ?>
 </div>

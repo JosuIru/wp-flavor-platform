@@ -19,4 +19,4 @@
 
 # Keep models
 -keep class com.gailuwz.chat_ia_reservas.** { *; }
--keep class com.basabere.chatia.** { *; }
+-keep class com.flavorplatform.chatia.** { *; }

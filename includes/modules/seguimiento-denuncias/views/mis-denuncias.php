@@ -23,13 +23,13 @@ $denuncias = $wpdb->get_results($wpdb->prepare(
 ?>
 
 <section class="flavor-mis-denuncias">
-    <h2><?php esc_html_e('Mis denuncias', 'flavor-chat-ia'); ?></h2>
+    <h2><?php esc_html_e('Mis denuncias', 'flavor-platform'); ?></h2>
 
     <?php if (empty($denuncias)): ?>
-        <p><?php esc_html_e('Aun no has registrado denuncias.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('Aun no has registrado denuncias.', 'flavor-platform'); ?></p>
     <?php else: ?>
         <table class="widefat striped">
-            <thead><tr><th><?php esc_html_e('Titulo', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Prioridad', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Organismo', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Fechas', 'flavor-chat-ia'); ?></th></tr></thead>
+            <thead><tr><th><?php esc_html_e('Titulo', 'flavor-platform'); ?></th><th><?php esc_html_e('Tipo', 'flavor-platform'); ?></th><th><?php esc_html_e('Estado', 'flavor-platform'); ?></th><th><?php esc_html_e('Prioridad', 'flavor-platform'); ?></th><th><?php esc_html_e('Organismo', 'flavor-platform'); ?></th><th><?php esc_html_e('Fechas', 'flavor-platform'); ?></th></tr></thead>
             <tbody>
                 <?php foreach ($denuncias as $denuncia): ?>
                     <tr>

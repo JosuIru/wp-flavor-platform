@@ -35,7 +35,7 @@ $garantias_compra = $garantias_compra ?? [
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/>
                 </svg>
-                <?php echo esc_html__('Tienda online', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Tienda online', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
 
             <h2 class="text-3xl lg:text-4xl font-bold text-gray-800 mb-4">
@@ -62,10 +62,10 @@ $garantias_compra = $garantias_compra ?? [
 
             <!-- Metodos de pago -->
             <div class="flex items-center justify-center gap-4 mb-8">
-                <div class="px-4 py-2 rounded-lg bg-white border border-gray-200 text-sm font-medium text-gray-600"><?php echo esc_html__('Visa', 'flavor-chat-ia'); ?></div>
-                <div class="px-4 py-2 rounded-lg bg-white border border-gray-200 text-sm font-medium text-gray-600"><?php echo esc_html__('MasterCard', 'flavor-chat-ia'); ?></div>
-                <div class="px-4 py-2 rounded-lg bg-white border border-gray-200 text-sm font-medium text-gray-600"><?php echo esc_html__('PayPal', 'flavor-chat-ia'); ?></div>
-                <div class="px-4 py-2 rounded-lg bg-white border border-gray-200 text-sm font-medium text-gray-600"><?php echo esc_html__('Bizum', 'flavor-chat-ia'); ?></div>
+                <div class="px-4 py-2 rounded-lg bg-white border border-gray-200 text-sm font-medium text-gray-600"><?php echo esc_html__('Visa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="px-4 py-2 rounded-lg bg-white border border-gray-200 text-sm font-medium text-gray-600"><?php echo esc_html__('MasterCard', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="px-4 py-2 rounded-lg bg-white border border-gray-200 text-sm font-medium text-gray-600"><?php echo esc_html__('PayPal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="px-4 py-2 rounded-lg bg-white border border-gray-200 text-sm font-medium text-gray-600"><?php echo esc_html__('Bizum', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
 
             <!-- Boton CTA -->
@@ -73,7 +73,7 @@ $garantias_compra = $garantias_compra ?? [
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                 </svg>
-                <?php echo esc_html__('Ver Todos los Productos', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Ver Todos los Productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>

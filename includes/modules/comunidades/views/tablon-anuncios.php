@@ -19,12 +19,12 @@ $limite = intval($atributos['limite'] ?? 20);
 
 // Categorías de anuncios
 $categorias = [
-    'general'     => ['label' => __('General', 'flavor-chat-ia'), 'icon' => '📢', 'color' => '#3b82f6'],
-    'urgente'     => ['label' => __('Urgente', 'flavor-chat-ia'), 'icon' => '🚨', 'color' => '#ef4444'],
-    'evento'      => ['label' => __('Evento', 'flavor-chat-ia'), 'icon' => '📅', 'color' => '#8b5cf6'],
-    'convocatoria' => ['label' => __('Convocatoria', 'flavor-chat-ia'), 'icon' => '📋', 'color' => '#f59e0b'],
-    'recurso'     => ['label' => __('Recurso', 'flavor-chat-ia'), 'icon' => '📦', 'color' => '#10b981'],
-    'colaboracion' => ['label' => __('Colaboración', 'flavor-chat-ia'), 'icon' => '🤝', 'color' => '#ec4899'],
+    'general'     => ['label' => __('General', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📢', 'color' => '#3b82f6'],
+    'urgente'     => ['label' => __('Urgente', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🚨', 'color' => '#ef4444'],
+    'evento'      => ['label' => __('Evento', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📅', 'color' => '#8b5cf6'],
+    'convocatoria' => ['label' => __('Convocatoria', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📋', 'color' => '#f59e0b'],
+    'recurso'     => ['label' => __('Recurso', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📦', 'color' => '#10b981'],
+    'colaboracion' => ['label' => __('Colaboración', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🤝', 'color' => '#ec4899'],
 ];
 ?>
 
@@ -36,17 +36,17 @@ $categorias = [
         <div class="flavor-tablon-titulo-wrapper">
             <h2 class="flavor-tablon-titulo">
                 <span class="dashicons dashicons-megaphone"></span>
-                <?php esc_html_e('Tablón de Anuncios', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Tablón de Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <span class="flavor-tablon-subtitle">
-                <?php esc_html_e('Anuncios de tus comunidades y la red', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Anuncios de tus comunidades y la red', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
         </div>
 
         <?php if ($puede_crear): ?>
         <button type="button" class="flavor-btn-nuevo-anuncio" id="btn-nuevo-anuncio">
             <span class="dashicons dashicons-plus-alt2"></span>
-            <?php esc_html_e('Nuevo anuncio', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Nuevo anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
         <?php endif; ?>
     </header>
@@ -54,7 +54,7 @@ $categorias = [
     <!-- Filtros por categoría -->
     <nav class="flavor-tablon-filtros">
         <button type="button" class="flavor-filtro-cat activo" data-categoria="todos">
-            <?php esc_html_e('Todos', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
         <?php foreach ($categorias as $key => $config): ?>
         <button type="button" class="flavor-filtro-cat" data-categoria="<?php echo esc_attr($key); ?>">
@@ -68,7 +68,7 @@ $categorias = [
     <div class="flavor-tablon-contenido" id="lista-anuncios">
         <div class="flavor-tablon-cargando">
             <span class="flavor-spinner"></span>
-            <?php esc_html_e('Cargando anuncios...', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Cargando anuncios...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </div>
     </div>
 
@@ -80,7 +80,7 @@ $categorias = [
             <header class="flavor-modal-header">
                 <h3>
                     <span class="dashicons dashicons-megaphone"></span>
-                    <?php esc_html_e('Crear nuevo anuncio', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Crear nuevo anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <button type="button" class="flavor-modal-cerrar">&times;</button>
             </header>
@@ -88,29 +88,29 @@ $categorias = [
             <form id="form-nuevo-anuncio" class="flavor-modal-body">
                 <!-- Selección de comunidad -->
                 <div class="flavor-form-grupo">
-                    <label for="anuncio-comunidad"><?php esc_html_e('Publicar en comunidad:', 'flavor-chat-ia'); ?></label>
+                    <label for="anuncio-comunidad"><?php esc_html_e('Publicar en comunidad:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="anuncio-comunidad" name="comunidad_id" required>
-                        <option value=""><?php esc_html_e('Selecciona una comunidad', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Selecciona una comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <!-- Título -->
                 <div class="flavor-form-grupo">
-                    <label for="anuncio-titulo"><?php esc_html_e('Título del anuncio:', 'flavor-chat-ia'); ?></label>
+                    <label for="anuncio-titulo"><?php esc_html_e('Título del anuncio:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="text" id="anuncio-titulo" name="titulo" maxlength="200" required
-                           placeholder="<?php esc_attr_e('Escribe un título claro y conciso', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php esc_attr_e('Escribe un título claro y conciso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
 
                 <!-- Contenido -->
                 <div class="flavor-form-grupo">
-                    <label for="anuncio-contenido"><?php esc_html_e('Contenido:', 'flavor-chat-ia'); ?></label>
+                    <label for="anuncio-contenido"><?php esc_html_e('Contenido:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <textarea id="anuncio-contenido" name="contenido" rows="4" required
-                              placeholder="<?php esc_attr_e('Describe el anuncio con todo el detalle necesario', 'flavor-chat-ia'); ?>"></textarea>
+                              placeholder="<?php esc_attr_e('Describe el anuncio con todo el detalle necesario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                 </div>
 
                 <!-- Categoría -->
                 <div class="flavor-form-grupo">
-                    <label><?php esc_html_e('Categoría:', 'flavor-chat-ia'); ?></label>
+                    <label><?php esc_html_e('Categoría:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <div class="flavor-categorias-grid">
                         <?php foreach ($categorias as $key => $config): ?>
                         <label class="flavor-categoria-opcion">
@@ -130,8 +130,8 @@ $categorias = [
                         <input type="checkbox" name="destacado" value="1">
                         <span class="flavor-checkbox-custom"></span>
                         <span>
-                            <strong><?php esc_html_e('Marcar como destacado', 'flavor-chat-ia'); ?></strong>
-                            <small><?php esc_html_e('El anuncio aparecerá primero', 'flavor-chat-ia'); ?></small>
+                            <strong><?php esc_html_e('Marcar como destacado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                            <small><?php esc_html_e('El anuncio aparecerá primero', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                         </span>
                     </label>
 
@@ -139,28 +139,28 @@ $categorias = [
                         <input type="checkbox" name="compartir_red" value="1">
                         <span class="flavor-checkbox-custom"></span>
                         <span>
-                            <strong><?php esc_html_e('Compartir en la red federada', 'flavor-chat-ia'); ?></strong>
-                            <small><?php esc_html_e('Visible para otras comunidades de la red', 'flavor-chat-ia'); ?></small>
+                            <strong><?php esc_html_e('Compartir en la red federada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                            <small><?php esc_html_e('Visible para otras comunidades de la red', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                         </span>
                     </label>
                 </div>
 
                 <!-- Fecha de expiración opcional -->
                 <div class="flavor-form-grupo">
-                    <label for="anuncio-expiracion"><?php esc_html_e('Fecha de expiración (opcional):', 'flavor-chat-ia'); ?></label>
+                    <label for="anuncio-expiracion"><?php esc_html_e('Fecha de expiración (opcional):', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="date" id="anuncio-expiracion" name="fecha_expiracion"
                            min="<?php echo esc_attr(date('Y-m-d')); ?>">
-                    <small><?php esc_html_e('El anuncio se ocultará automáticamente después de esta fecha', 'flavor-chat-ia'); ?></small>
+                    <small><?php esc_html_e('El anuncio se ocultará automáticamente después de esta fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                 </div>
             </form>
 
             <footer class="flavor-modal-footer">
                 <button type="button" class="flavor-btn-secundario" id="cancelar-anuncio">
-                    <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" class="flavor-btn-primario" id="publicar-anuncio">
                     <span class="dashicons dashicons-megaphone"></span>
-                    <?php esc_html_e('Publicar anuncio', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Publicar anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </footer>
         </div>
@@ -812,7 +812,7 @@ $categorias = [
         }
 
         function cargarAnuncios() {
-            listaAnuncios.innerHTML = '<div class="flavor-tablon-cargando"><span class="flavor-spinner"></span><?php echo esc_js(__('Cargando anuncios...', 'flavor-chat-ia')); ?></div>';
+            listaAnuncios.innerHTML = '<div class="flavor-tablon-cargando"><span class="flavor-spinner"></span><?php echo esc_js(__('Cargando anuncios...', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></div>';
 
             var formData = new FormData();
             formData.append('action', 'comunidades_obtener_anuncios');
@@ -832,7 +832,7 @@ $categorias = [
                     listaAnuncios.innerHTML = '<div class="flavor-tablon-vacio">' +
                         '<span class="dashicons dashicons-warning"></span>' +
                         '<h3>Error</h3>' +
-                        '<p>' + (data.data?.message || '<?php echo esc_js(__('Error al cargar anuncios', 'flavor-chat-ia')); ?>') + '</p>' +
+                        '<p>' + (data.data?.message || '<?php echo esc_js(__('Error al cargar anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>') + '</p>' +
                         '</div>';
                 }
             });
@@ -842,8 +842,8 @@ $categorias = [
             if (!anuncios || anuncios.length === 0) {
                 listaAnuncios.innerHTML = '<div class="flavor-tablon-vacio">' +
                     '<span class="dashicons dashicons-megaphone"></span>' +
-                    '<h3><?php echo esc_js(__('No hay anuncios', 'flavor-chat-ia')); ?></h3>' +
-                    '<p><?php echo esc_js(__('Los anuncios de tus comunidades aparecerán aquí.', 'flavor-chat-ia')); ?></p>' +
+                    '<h3><?php echo esc_js(__('No hay anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></h3>' +
+                    '<p><?php echo esc_js(__('Los anuncios de tus comunidades aparecerán aquí.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></p>' +
                     '</div>';
                 return;
             }
@@ -863,10 +863,10 @@ $categorias = [
                             '</span>';
 
                 if (anuncio.destacado) {
-                    html += '<span class="flavor-anuncio-badge destacado">⭐ <?php echo esc_js(__('Destacado', 'flavor-chat-ia')); ?></span>';
+                    html += '<span class="flavor-anuncio-badge destacado">⭐ <?php echo esc_js(__('Destacado', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>';
                 }
                 if (anuncio.origen === 'federado') {
-                    html += '<span class="flavor-anuncio-badge federado">🌐 <?php echo esc_js(__('Red federada', 'flavor-chat-ia')); ?></span>';
+                    html += '<span class="flavor-anuncio-badge federado">🌐 <?php echo esc_js(__('Red federada', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>';
                 }
 
                 html += '</div>' +
@@ -889,7 +889,7 @@ $categorias = [
                 if (anuncio.url) {
                     html += '<a href="' + anuncio.url + '" class="flavor-anuncio-btn"' +
                             (anuncio.origen === 'federado' ? ' target="_blank" rel="noopener"' : '') + '>' +
-                            '<span class="dashicons dashicons-visibility"></span><?php echo esc_js(__('Ver más', 'flavor-chat-ia')); ?>' +
+                            '<span class="dashicons dashicons-visibility"></span><?php echo esc_js(__('Ver más', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>' +
                             '</a>';
                 }
 
@@ -901,7 +901,7 @@ $categorias = [
 
         function cargarComunidadesUsuario() {
             var select = document.getElementById('anuncio-comunidad');
-            select.innerHTML = '<option value=""><?php echo esc_js(__('Cargando...', 'flavor-chat-ia')); ?></option>';
+            select.innerHTML = '<option value=""><?php echo esc_js(__('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></option>';
 
             var formData = new FormData();
             formData.append('action', 'comunidades_mis_comunidades_admin');
@@ -913,7 +913,7 @@ $categorias = [
             })
             .then(function(res) { return res.json(); })
             .then(function(data) {
-                select.innerHTML = '<option value=""><?php echo esc_js(__('Selecciona una comunidad', 'flavor-chat-ia')); ?></option>';
+                select.innerHTML = '<option value=""><?php echo esc_js(__('Selecciona una comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></option>';
                 if (data.success && data.data.comunidades) {
                     data.data.comunidades.forEach(function(comunidad) {
                         select.innerHTML += '<option value="' + comunidad.id + '">' + escapeHtml(comunidad.nombre) + '</option>';
@@ -929,13 +929,13 @@ $categorias = [
 
             // Validación básica
             if (!formData.get('comunidad_id') || !formData.get('titulo') || !formData.get('contenido')) {
-                mostrarAviso('<?php echo esc_js(__('Por favor completa todos los campos obligatorios', 'flavor-chat-ia')); ?>', 'error');
+                mostrarAviso('<?php echo esc_js(__('Por favor completa todos los campos obligatorios', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>', 'error');
                 return;
             }
 
             var btnPublicar = document.getElementById('publicar-anuncio');
             btnPublicar.disabled = true;
-            btnPublicar.innerHTML = '<span class="flavor-spinner" style="width:16px;height:16px;border-width:2px;"></span><?php echo esc_js(__('Publicando...', 'flavor-chat-ia')); ?>';
+            btnPublicar.innerHTML = '<span class="flavor-spinner" style="width:16px;height:16px;border-width:2px;"></span><?php echo esc_js(__('Publicando...', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
 
             fetch(flavorComunidadesConfig?.ajaxUrl || '/wp-admin/admin-ajax.php', {
                 method: 'POST',
@@ -944,18 +944,18 @@ $categorias = [
             .then(function(res) { return res.json(); })
             .then(function(data) {
                 btnPublicar.disabled = false;
-                btnPublicar.innerHTML = '<span class="dashicons dashicons-megaphone"></span><?php echo esc_js(__('Publicar anuncio', 'flavor-chat-ia')); ?>';
+                btnPublicar.innerHTML = '<span class="dashicons dashicons-megaphone"></span><?php echo esc_js(__('Publicar anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
 
                 if (data.success) {
                     cerrarModal();
-                    mostrarAviso('<?php echo esc_js(__('Anuncio publicado correctamente', 'flavor-chat-ia')); ?>', 'success');
+                    mostrarAviso('<?php echo esc_js(__('Anuncio publicado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>', 'success');
                     cargarAnuncios();
                 } else {
-                    mostrarAviso(data.data?.message || '<?php echo esc_js(__('Error al publicar', 'flavor-chat-ia')); ?>', 'error');
+                    mostrarAviso(data.data?.message || '<?php echo esc_js(__('Error al publicar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>', 'error');
                 }
             })
             .catch(function() {
-                mostrarAviso('<?php echo esc_js(__('Error de conexión al publicar', 'flavor-chat-ia')); ?>', 'error');
+                mostrarAviso('<?php echo esc_js(__('Error de conexión al publicar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>', 'error');
             });
         }
 

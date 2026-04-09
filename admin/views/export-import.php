@@ -13,27 +13,27 @@ if (!defined('ABSPATH')) {
 <div class="wrap flavor-export-import-wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-download" style="margin-right: 8px;"></span>
-        <?php esc_html_e('Exportar / Importar Configuración', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Exportar / Importar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <p class="description" style="margin-bottom: 20px;">
-        <?php esc_html_e('Gestiona la configuración de Flavor Platform: exporta para hacer backups, importa desde otro sitio, o aplica presets predefinidos.', 'flavor-chat-ia'); ?>
-        <strong><?php esc_html_e('Las claves API y datos sensibles nunca se incluyen en las exportaciones.', 'flavor-chat-ia'); ?></strong>
+        <?php esc_html_e('Gestiona la configuración de Flavor Platform: exporta para hacer backups, importa desde otro sitio, o aplica presets predefinidos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
+        <strong><?php esc_html_e('Las claves API y datos sensibles nunca se incluyen en las exportaciones.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
     </p>
 
     <!-- Tabs de navegación -->
     <nav class="nav-tab-wrapper flavor-export-import-tabs">
         <a href="#tab-exportar" class="nav-tab nav-tab-active" data-tab="exportar">
             <span class="dashicons dashicons-download"></span>
-            <?php esc_html_e('Exportar', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Exportar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <a href="#tab-importar" class="nav-tab" data-tab="importar">
             <span class="dashicons dashicons-upload"></span>
-            <?php esc_html_e('Importar', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Importar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <a href="#tab-presets" class="nav-tab" data-tab="presets">
             <span class="dashicons dashicons-admin-appearance"></span>
-            <?php esc_html_e('Presets', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Presets', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </nav>
 
@@ -43,24 +43,24 @@ if (!defined('ABSPATH')) {
             <div class="flavor-card-header">
                 <h2>
                     <span class="dashicons dashicons-download"></span>
-                    <?php esc_html_e('Exportar Configuración', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Exportar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <p class="description">
-                    <?php esc_html_e('Selecciona qué datos deseas exportar. Se generará un archivo JSON que podrás descargar.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Selecciona qué datos deseas exportar. Se generará un archivo JSON que podrás descargar.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
             <form id="flavor-export-form" method="post">
                 <div class="flavor-export-sections">
-                    <h3><?php esc_html_e('Secciones a exportar', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Secciones a exportar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
                     <div class="flavor-checkbox-grid">
                         <label class="flavor-checkbox-card">
                             <input type="checkbox" name="export_sections[]" value="config" checked>
                             <div class="flavor-checkbox-card-content">
                                 <span class="dashicons dashicons-admin-settings"></span>
-                                <strong><?php esc_html_e('Configuración General', 'flavor-chat-ia'); ?></strong>
-                                <span class="flavor-checkbox-desc"><?php esc_html_e('Ajustes del plugin, módulos activos, perfil de aplicación', 'flavor-chat-ia'); ?></span>
+                                <strong><?php esc_html_e('Configuración General', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                                <span class="flavor-checkbox-desc"><?php esc_html_e('Ajustes del plugin, módulos activos, perfil de aplicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                         </label>
 
@@ -68,8 +68,8 @@ if (!defined('ABSPATH')) {
                             <input type="checkbox" name="export_sections[]" value="design" checked>
                             <div class="flavor-checkbox-card-content">
                                 <span class="dashicons dashicons-art"></span>
-                                <strong><?php esc_html_e('Diseño', 'flavor-chat-ia'); ?></strong>
-                                <span class="flavor-checkbox-desc"><?php esc_html_e('Tema, colores, tipografía, espaciados, CSS personalizado', 'flavor-chat-ia'); ?></span>
+                                <strong><?php esc_html_e('Diseño', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                                <span class="flavor-checkbox-desc"><?php esc_html_e('Tema, colores, tipografía, espaciados, CSS personalizado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                         </label>
 
@@ -77,8 +77,8 @@ if (!defined('ABSPATH')) {
                             <input type="checkbox" name="export_sections[]" value="pages">
                             <div class="flavor-checkbox-card-content">
                                 <span class="dashicons dashicons-admin-page"></span>
-                                <strong><?php esc_html_e('Páginas', 'flavor-chat-ia'); ?></strong>
-                                <span class="flavor-checkbox-desc"><?php esc_html_e('Páginas creadas con el Page Builder', 'flavor-chat-ia'); ?></span>
+                                <strong><?php esc_html_e('Páginas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                                <span class="flavor-checkbox-desc"><?php esc_html_e('Páginas creadas con el Page Builder', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                         </label>
 
@@ -86,8 +86,8 @@ if (!defined('ABSPATH')) {
                             <input type="checkbox" name="export_sections[]" value="landings">
                             <div class="flavor-checkbox-card-content">
                                 <span class="dashicons dashicons-welcome-widgets-menus"></span>
-                                <strong><?php esc_html_e('Landings', 'flavor-chat-ia'); ?></strong>
-                                <span class="flavor-checkbox-desc"><?php esc_html_e('Landing pages con estructura del builder', 'flavor-chat-ia'); ?></span>
+                                <strong><?php esc_html_e('Landings', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                                <span class="flavor-checkbox-desc"><?php esc_html_e('Landing pages con estructura del builder', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                         </label>
 
@@ -95,8 +95,8 @@ if (!defined('ABSPATH')) {
                             <input type="checkbox" name="export_sections[]" value="roles">
                             <div class="flavor-checkbox-card-content">
                                 <span class="dashicons dashicons-groups"></span>
-                                <strong><?php esc_html_e('Roles', 'flavor-chat-ia'); ?></strong>
-                                <span class="flavor-checkbox-desc"><?php esc_html_e('Roles personalizados creados para el sitio', 'flavor-chat-ia'); ?></span>
+                                <strong><?php esc_html_e('Roles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                                <span class="flavor-checkbox-desc"><?php esc_html_e('Roles personalizados creados para el sitio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                         </label>
 
@@ -104,8 +104,8 @@ if (!defined('ABSPATH')) {
                             <input type="checkbox" name="export_sections[]" value="permissions">
                             <div class="flavor-checkbox-card-content">
                                 <span class="dashicons dashicons-lock"></span>
-                                <strong><?php esc_html_e('Permisos', 'flavor-chat-ia'); ?></strong>
-                                <span class="flavor-checkbox-desc"><?php esc_html_e('Configuración de acceso y capabilities', 'flavor-chat-ia'); ?></span>
+                                <strong><?php esc_html_e('Permisos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                                <span class="flavor-checkbox-desc"><?php esc_html_e('Configuración de acceso y capabilities', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                         </label>
                     </div>
@@ -114,35 +114,35 @@ if (!defined('ABSPATH')) {
                 <div class="flavor-export-actions">
                     <button type="button" id="flavor-select-all-export" class="button">
                         <span class="dashicons dashicons-yes-alt"></span>
-                        <?php esc_html_e('Seleccionar todo', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Seleccionar todo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button" id="flavor-deselect-all-export" class="button">
                         <span class="dashicons dashicons-dismiss"></span>
-                        <?php esc_html_e('Deseleccionar todo', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Deseleccionar todo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
 
                 <div class="flavor-export-submit">
                     <button type="submit" id="flavor-export-btn" class="button button-primary button-hero">
                         <span class="dashicons dashicons-download"></span>
-                        <?php esc_html_e('Generar y Descargar JSON', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Generar y Descargar JSON', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </form>
 
             <div id="flavor-export-result" class="flavor-result-area hidden">
-                <h4><?php esc_html_e('Exportación generada', 'flavor-chat-ia'); ?></h4>
+                <h4><?php esc_html_e('Exportación generada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                 <div class="flavor-export-preview">
                     <textarea id="flavor-export-json" readonly rows="10"></textarea>
                 </div>
                 <div class="flavor-export-result-actions">
                     <button type="button" id="flavor-copy-export" class="button">
                         <span class="dashicons dashicons-clipboard"></span>
-                        <?php esc_html_e('Copiar al portapapeles', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Copiar al portapapeles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button" id="flavor-download-export" class="button button-primary">
                         <span class="dashicons dashicons-download"></span>
-                        <?php esc_html_e('Descargar archivo', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Descargar archivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </div>
@@ -155,10 +155,10 @@ if (!defined('ABSPATH')) {
             <div class="flavor-card-header">
                 <h2>
                     <span class="dashicons dashicons-upload"></span>
-                    <?php esc_html_e('Importar Configuración', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Importar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <p class="description">
-                    <?php esc_html_e('Sube un archivo JSON de exportación o pega el contenido directamente. Se mostrará una previsualización antes de aplicar.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Sube un archivo JSON de exportación o pega el contenido directamente. Se mostrará una previsualización antes de aplicar.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
@@ -166,7 +166,7 @@ if (!defined('ABSPATH')) {
             <div id="flavor-import-step-1" class="flavor-import-step active">
                 <div class="flavor-step-header">
                     <span class="flavor-step-number">1</span>
-                    <h3><?php esc_html_e('Seleccionar origen', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Seleccionar origen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
 
                 <div class="flavor-import-methods">
@@ -175,13 +175,13 @@ if (!defined('ABSPATH')) {
                             <input type="file" id="flavor-import-file" accept=".json" class="flavor-file-input">
                             <div class="flavor-dropzone-content">
                                 <span class="dashicons dashicons-upload"></span>
-                                <p class="flavor-dropzone-text"><?php esc_html_e('Arrastra un archivo JSON aquí', 'flavor-chat-ia'); ?></p>
-                                <p class="flavor-dropzone-subtext"><?php esc_html_e('o haz clic para seleccionar', 'flavor-chat-ia'); ?></p>
+                                <p class="flavor-dropzone-text"><?php esc_html_e('Arrastra un archivo JSON aquí', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                                <p class="flavor-dropzone-subtext"><?php esc_html_e('o haz clic para seleccionar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </div>
                             <div class="flavor-dropzone-file hidden">
                                 <span class="dashicons dashicons-media-code"></span>
                                 <span class="flavor-filename"></span>
-                                <button type="button" class="flavor-remove-file" title="<?php esc_attr_e('Quitar archivo', 'flavor-chat-ia'); ?>">
+                                <button type="button" class="flavor-remove-file" title="<?php esc_attr_e('Quitar archivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-no-alt"></span>
                                 </button>
                             </div>
@@ -189,13 +189,13 @@ if (!defined('ABSPATH')) {
                     </div>
 
                     <div class="flavor-import-separator">
-                        <span><?php esc_html_e('o', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('o', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
 
                     <div class="flavor-import-method" id="flavor-import-paste-method">
                         <label for="flavor-import-json-paste">
                             <span class="dashicons dashicons-editor-paste-text"></span>
-                            <?php esc_html_e('Pegar JSON directamente', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Pegar JSON directamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                         <textarea id="flavor-import-json-paste" rows="6" placeholder='{"version": "3.1.0", ...}'></textarea>
                     </div>
@@ -204,7 +204,7 @@ if (!defined('ABSPATH')) {
                 <div class="flavor-import-step-actions">
                     <button type="button" id="flavor-preview-import-btn" class="button button-primary" disabled>
                         <span class="dashicons dashicons-visibility"></span>
-                        <?php esc_html_e('Analizar y Previsualizar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Analizar y Previsualizar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </div>
@@ -213,7 +213,7 @@ if (!defined('ABSPATH')) {
             <div id="flavor-import-step-2" class="flavor-import-step">
                 <div class="flavor-step-header">
                     <span class="flavor-step-number">2</span>
-                    <h3><?php esc_html_e('Previsualización', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Previsualización', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
 
                 <div id="flavor-import-warnings" class="flavor-import-warnings hidden"></div>
@@ -229,10 +229,10 @@ if (!defined('ABSPATH')) {
                 <div class="flavor-import-step-actions">
                     <button type="button" id="flavor-back-step-1" class="button">
                         <span class="dashicons dashicons-arrow-left-alt"></span>
-                        <?php esc_html_e('Volver', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Volver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button" id="flavor-continue-step-3" class="button button-primary">
-                        <?php esc_html_e('Continuar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Continuar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <span class="dashicons dashicons-arrow-right-alt"></span>
                     </button>
                 </div>
@@ -242,19 +242,19 @@ if (!defined('ABSPATH')) {
             <div id="flavor-import-step-3" class="flavor-import-step">
                 <div class="flavor-step-header">
                     <span class="flavor-step-number">3</span>
-                    <h3><?php esc_html_e('Opciones de importación', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Opciones de importación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
 
                 <form id="flavor-import-form">
                     <div class="flavor-import-mode">
-                        <h4><?php esc_html_e('Modo de importación', 'flavor-chat-ia'); ?></h4>
+                        <h4><?php esc_html_e('Modo de importación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                         <div class="flavor-radio-cards">
                             <label class="flavor-radio-card">
                                 <input type="radio" name="import_mode" value="merge" checked>
                                 <div class="flavor-radio-card-content">
                                     <span class="dashicons dashicons-randomize"></span>
-                                    <strong><?php esc_html_e('Combinar (merge)', 'flavor-chat-ia'); ?></strong>
-                                    <span class="flavor-radio-desc"><?php esc_html_e('Fusiona con la configuración existente. Los valores nuevos sobrescriben los antiguos.', 'flavor-chat-ia'); ?></span>
+                                    <strong><?php esc_html_e('Combinar (merge)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                                    <span class="flavor-radio-desc"><?php esc_html_e('Fusiona con la configuración existente. Los valores nuevos sobrescriben los antiguos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                             </label>
 
@@ -262,8 +262,8 @@ if (!defined('ABSPATH')) {
                                 <input type="radio" name="import_mode" value="overwrite">
                                 <div class="flavor-radio-card-content">
                                     <span class="dashicons dashicons-update"></span>
-                                    <strong><?php esc_html_e('Sobrescribir todo', 'flavor-chat-ia'); ?></strong>
-                                    <span class="flavor-radio-desc"><?php esc_html_e('Reemplaza completamente la configuración actual.', 'flavor-chat-ia'); ?></span>
+                                    <strong><?php esc_html_e('Sobrescribir todo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                                    <span class="flavor-radio-desc"><?php esc_html_e('Reemplaza completamente la configuración actual.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                             </label>
 
@@ -271,15 +271,15 @@ if (!defined('ABSPATH')) {
                                 <input type="radio" name="import_mode" value="only_missing">
                                 <div class="flavor-radio-card-content">
                                     <span class="dashicons dashicons-plus-alt2"></span>
-                                    <strong><?php esc_html_e('Solo lo que falta', 'flavor-chat-ia'); ?></strong>
-                                    <span class="flavor-radio-desc"><?php esc_html_e('Solo importa ajustes que no existan actualmente.', 'flavor-chat-ia'); ?></span>
+                                    <strong><?php esc_html_e('Solo lo que falta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                                    <span class="flavor-radio-desc"><?php esc_html_e('Solo importa ajustes que no existan actualmente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                             </label>
                         </div>
                     </div>
 
                     <div class="flavor-import-sections-select">
-                        <h4><?php esc_html_e('Secciones a importar', 'flavor-chat-ia'); ?></h4>
+                        <h4><?php esc_html_e('Secciones a importar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                         <div id="flavor-import-sections-checkboxes" class="flavor-checkbox-list">
                             <!-- Se llena con JS basado en el preview -->
                         </div>
@@ -288,11 +288,11 @@ if (!defined('ABSPATH')) {
                     <div class="flavor-import-step-actions">
                         <button type="button" id="flavor-back-step-2" class="button">
                             <span class="dashicons dashicons-arrow-left-alt"></span>
-                            <?php esc_html_e('Volver', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Volver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <button type="submit" id="flavor-apply-import-btn" class="button button-primary button-hero">
                             <span class="dashicons dashicons-yes-alt"></span>
-                            <?php esc_html_e('Aplicar Importación', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Aplicar Importación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </form>
@@ -303,7 +303,7 @@ if (!defined('ABSPATH')) {
                 <div class="flavor-progress-bar">
                     <div class="flavor-progress-fill"></div>
                 </div>
-                <p class="flavor-progress-text"><?php esc_html_e('Importando configuración...', 'flavor-chat-ia'); ?></p>
+                <p class="flavor-progress-text"><?php esc_html_e('Importando configuración...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <div id="flavor-import-result" class="flavor-result-area hidden"></div>
@@ -316,10 +316,10 @@ if (!defined('ABSPATH')) {
             <div class="flavor-card-header">
                 <h2>
                     <span class="dashicons dashicons-admin-appearance"></span>
-                    <?php esc_html_e('Presets de Configuración', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Presets de Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <p class="description">
-                    <?php esc_html_e('Aplica una configuración predefinida según el tipo de proyecto. Esto modificará los módulos activos y ajustes de diseño.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Aplica una configuración predefinida según el tipo de proyecto. Esto modificará los módulos activos y ajustes de diseño.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 

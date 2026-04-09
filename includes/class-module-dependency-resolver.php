@@ -93,7 +93,7 @@ class Flavor_Module_Dependency_Resolver {
             return new WP_Error(
                 'missing_dependencies',
                 sprintf(
-                    __('No se puede activar "%s" porque requiere los siguientes módulos: %s', 'flavor-chat-ia'),
+                    __('No se puede activar "%s" porque requiere los siguientes módulos: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $module_name,
                     implode(', ', $missing_names)
                 ),
@@ -143,7 +143,7 @@ class Flavor_Module_Dependency_Resolver {
         return new WP_Error(
             'has_dependents',
             sprintf(
-                __('No se puede desactivar "%s" porque los siguientes módulos lo requieren: %s', 'flavor-chat-ia'),
+                __('No se puede desactivar "%s" porque los siguientes módulos lo requieren: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $module_name,
                 implode(', ', $dependent_names)
             ),
@@ -216,7 +216,7 @@ class Flavor_Module_Dependency_Resolver {
      */
     private function auto_activate_dependencies($dependencies) {
         if (!class_exists('Flavor_App_Profiles')) {
-            return new WP_Error('no_profiles_class', __('Sistema de perfiles no disponible', 'flavor-chat-ia'));
+            return new WP_Error('no_profiles_class', __('Sistema de perfiles no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $gestor = Flavor_App_Profiles::get_instance();
@@ -249,7 +249,7 @@ class Flavor_Module_Dependency_Resolver {
             return new WP_Error(
                 'activation_failed',
                 sprintf(
-                    __('No se pudieron activar las siguientes dependencias: %s', 'flavor-chat-ia'),
+                    __('No se pudieron activar las siguientes dependencias: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     implode(', ', $failed_names)
                 )
             );

@@ -168,7 +168,7 @@ usort($sugerencias_mostradas, function($a, $b) {
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m0 0l-2-1m2 1v2.5M14 4l-2 1m0 0l-2-1m2 1v2.5"/>
                     </svg>
-                    <?php echo esc_html__('Red de Conexiones', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Red de Conexiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
                 <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
                     <?php echo esc_html($titulo); ?>
@@ -222,7 +222,7 @@ usort($sugerencias_mostradas, function($a, $b) {
                             <!-- Amigos en Común -->
                             <div class="bg-purple-50 rounded-lg p-3 mb-4 text-center">
                                 <p class="text-xs text-gray-600 mb-1">
-                                    <?php echo esc_html__('Amigos en común', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Amigos en común', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </p>
                                 <div class="flex items-center justify-center gap-2">
                                     <div class="flex -space-x-2">
@@ -240,7 +240,7 @@ usort($sugerencias_mostradas, function($a, $b) {
                             <?php if ($mostrar_intereses && !empty($sugerencia['intereses'])): ?>
                                 <div class="mb-4">
                                     <p class="text-xs text-gray-600 font-medium mb-2">
-                                        <?php echo esc_html__('Intereses', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Intereses', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </p>
                                     <div class="flex flex-wrap gap-2">
                                         <?php foreach ($sugerencia['intereses'] as $interes): ?>
@@ -256,18 +256,18 @@ usort($sugerencias_mostradas, function($a, $b) {
                             <div class="pt-4 border-t border-gray-100">
                                 <?php if ($sugerencia['estado_conexion'] === 'sugerir'): ?>
                                     <button class="w-full py-2 px-4 rounded-lg font-semibold transition-all duration-300 text-white hover:shadow-lg" style="background: linear-gradient(135deg, #a855f7 0%, #d946ef 100%);">
-                                        <?php echo esc_html__('Conectar', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Conectar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                     <button class="w-full mt-2 py-2 px-4 rounded-lg font-semibold text-gray-600 border border-gray-200 hover:bg-gray-50 transition-colors">
-                                        <?php echo esc_html__('Descartar', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Descartar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 <?php elseif ($sugerencia['estado_conexion'] === 'seguido'): ?>
                                     <button class="w-full py-2 px-4 rounded-lg font-semibold text-gray-600 border border-purple-300 bg-purple-50 hover:bg-purple-100 transition-colors" disabled>
-                                        <?php echo esc_html__('Siguiendo', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Siguiendo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 <?php else: ?>
                                     <button class="w-full py-2 px-4 rounded-lg font-semibold text-gray-600 border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-colors" disabled>
-                                        <?php echo esc_html__('Conectado', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Conectado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 <?php endif; ?>
                             </div>
@@ -285,7 +285,7 @@ usort($sugerencias_mostradas, function($a, $b) {
                             <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
                             </svg>
-                            <?php echo esc_html__('Filtrar por Intereses', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Filtrar por Intereses', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
                         <div class="space-y-2">
                             <?php $intereses_principales = ['Ecología', 'Deporte', 'Cocina', 'Tecnología', 'Arte']; ?>
@@ -304,19 +304,19 @@ usort($sugerencias_mostradas, function($a, $b) {
                             <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                             </svg>
-                            <?php echo esc_html__('Tu Red', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Tu Red', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
                         <div class="space-y-3">
                             <div class="flex justify-between items-center pb-2 border-b border-gray-100">
-                                <span class="text-gray-600"><?php echo esc_html__('Conexiones', 'flavor-chat-ia'); ?></span>
+                                <span class="text-gray-600"><?php echo esc_html__('Conexiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="font-bold text-lg text-blue-600">247</span>
                             </div>
                             <div class="flex justify-between items-center pb-2 border-b border-gray-100">
-                                <span class="text-gray-600"><?php echo esc_html__('Siguiendo', 'flavor-chat-ia'); ?></span>
+                                <span class="text-gray-600"><?php echo esc_html__('Siguiendo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="font-bold text-lg text-purple-600">89</span>
                             </div>
                             <div class="flex justify-between items-center">
-                                <span class="text-gray-600"><?php echo esc_html__('Seguidores', 'flavor-chat-ia'); ?></span>
+                                <span class="text-gray-600"><?php echo esc_html__('Seguidores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="font-bold text-lg text-green-600">312</span>
                             </div>
                         </div>
@@ -328,20 +328,20 @@ usort($sugerencias_mostradas, function($a, $b) {
                             <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                             </svg>
-                            <?php echo esc_html__('Consejos', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Consejos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
                         <ul class="space-y-2 text-sm text-gray-600">
                             <li class="flex gap-2">
                                 <span class="text-purple-600 font-bold">•</span>
-                                <span><?php echo esc_html__('Completa tu perfil para mejores sugerencias', 'flavor-chat-ia'); ?></span>
+                                <span><?php echo esc_html__('Completa tu perfil para mejores sugerencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </li>
                             <li class="flex gap-2">
                                 <span class="text-purple-600 font-bold">•</span>
-                                <span><?php echo esc_html__('Indica tus intereses para conexiones afines', 'flavor-chat-ia'); ?></span>
+                                <span><?php echo esc_html__('Indica tus intereses para conexiones afines', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </li>
                             <li class="flex gap-2">
                                 <span class="text-purple-600 font-bold">•</span>
-                                <span><?php echo esc_html__('Participa en grupos de tu interés', 'flavor-chat-ia'); ?></span>
+                                <span><?php echo esc_html__('Participa en grupos de tu interés', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </li>
                         </ul>
                     </div>

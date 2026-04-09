@@ -27,8 +27,8 @@ if (!$tabla_ofertas_existe) {
         <div class="dm-alert dm-alert--info">
             <span class="dashicons dashicons-info"></span>
             <div>
-                <strong><?php esc_html_e('Módulo en preparación', 'flavor-chat-ia'); ?></strong>
-                <p><?php esc_html_e('Las tablas del módulo Trabajo Digno aún no han sido creadas. Activa el módulo completamente para generar la estructura necesaria.', 'flavor-chat-ia'); ?></p>
+                <strong><?php esc_html_e('Módulo en preparación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                <p><?php esc_html_e('Las tablas del módulo Trabajo Digno aún no han sido creadas. Activa el módulo completamente para generar la estructura necesaria.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
     </div>
@@ -103,7 +103,7 @@ $por_tipo = $wpdb->get_results(
         <span class="dashicons dashicons-megaphone dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($ofertas_activas); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Ofertas Activas', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Ofertas Activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -111,7 +111,7 @@ $por_tipo = $wpdb->get_results(
         <span class="dashicons dashicons-groups dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($total_candidaturas)); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Candidaturas', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Candidaturas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -119,7 +119,7 @@ $por_tipo = $wpdb->get_results(
         <span class="dashicons dashicons-admin-users dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($candidatos_unicos); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Candidatos', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Candidatos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -127,7 +127,7 @@ $por_tipo = $wpdb->get_results(
         <span class="dashicons dashicons-building dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($total_empresas); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Empresas', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Empresas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 </div>
@@ -136,7 +136,7 @@ $por_tipo = $wpdb->get_results(
 <div class="dm-alert dm-alert--warning">
     <span class="dashicons dashicons-clipboard"></span>
     <div>
-        <strong><?php printf(esc_html__('%s candidaturas pendientes de revisión', 'flavor-chat-ia'), number_format_i18n($candidaturas_pendientes)); ?></strong>
+        <strong><?php printf(esc_html__('%s candidaturas pendientes de revisión', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($candidaturas_pendientes)); ?></strong>
     </div>
 </div>
 <?php endif; ?>
@@ -146,23 +146,23 @@ $por_tipo = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-chart-bar"></span>
-                <?php esc_html_e('Candidaturas Esta Semana', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Candidaturas Esta Semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
-            <span class="dm-card__subtitle"><?php printf(esc_html__('%s este mes', 'flavor-chat-ia'), number_format_i18n($candidaturas_mes)); ?></span>
+            <span class="dm-card__subtitle"><?php printf(esc_html__('%s este mes', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($candidaturas_mes)); ?></span>
         </div>
         <div class="dm-card__body">
             <?php if (empty($actividad_semanal)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-chart-line"></span>
-                    <p><?php esc_html_e('No hay candidaturas esta semana.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay candidaturas esta semana.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <?php
                 $max_candidaturas = max(array_column($actividad_semanal, 'total'));
                 $dias_semana = [
-                    __('Dom', 'flavor-chat-ia'), __('Lun', 'flavor-chat-ia'), __('Mar', 'flavor-chat-ia'),
-                    __('Mié', 'flavor-chat-ia'), __('Jue', 'flavor-chat-ia'), __('Vie', 'flavor-chat-ia'),
-                    __('Sáb', 'flavor-chat-ia')
+                    __('Dom', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Lun', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Mar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Mié', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Jue', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Vie', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Sáb', FLAVOR_PLATFORM_TEXT_DOMAIN)
                 ];
                 ?>
                 <div class="dm-chart-bars">
@@ -187,14 +187,14 @@ $por_tipo = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-clipboard"></span>
-                <?php esc_html_e('Por Tipo de Contrato', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Por Tipo de Contrato', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <?php if (empty($por_tipo)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-businessman"></span>
-                    <p><?php esc_html_e('No hay ofertas activas.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay ofertas activas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="dm-data-list">
@@ -215,14 +215,14 @@ $por_tipo = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-star-filled"></span>
-                <?php esc_html_e('Ofertas Más Solicitadas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ofertas Más Solicitadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <?php if (empty($ofertas_populares)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-megaphone"></span>
-                    <p><?php esc_html_e('No hay candidaturas todavía.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay candidaturas todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <ul class="dm-ranking">
@@ -252,14 +252,14 @@ $por_tipo = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-clock"></span>
-                <?php esc_html_e('Ofertas Recientes', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ofertas Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <?php if (empty($ofertas_recientes)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-megaphone"></span>
-                    <p><?php esc_html_e('No hay ofertas publicadas.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay ofertas publicadas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <ul class="dm-list">
@@ -268,7 +268,7 @@ $por_tipo = $wpdb->get_results(
                             <div class="dm-list__content">
                                 <strong class="dm-list__title"><?php echo esc_html($oferta->titulo); ?></strong>
                                 <span class="dm-list__meta">
-                                    <?php echo esc_html($oferta->num_candidaturas); ?> <?php esc_html_e('candidaturas', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html($oferta->num_candidaturas); ?> <?php esc_html_e('candidaturas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     &bull;
                                     <?php echo esc_html(human_time_diff(strtotime($oferta->fecha_creacion), current_time('timestamp'))); ?>
                                 </span>
@@ -288,24 +288,24 @@ $por_tipo = $wpdb->get_results(
     <div class="dm-stat-card dm-stat-card--secondary">
         <span class="dashicons dashicons-archive dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($total_ofertas); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Total Ofertas', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Total Ofertas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--warning">
         <span class="dashicons dashicons-clock dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($ofertas_mes); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Nuevas Este Mes', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Nuevas Este Mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--error">
         <span class="dashicons dashicons-no dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($ofertas_cerradas); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Ofertas Cerradas', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Ofertas Cerradas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--success">
         <span class="dashicons dashicons-yes-alt dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($empresas_verificadas); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Empresas Verificadas', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Empresas Verificadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 </div>

@@ -44,14 +44,14 @@ $get_comunidad_nombre = static function ($comunidad) {
     <div class="flavor-feed-header">
         <h2 class="flavor-feed-titulo">
             <span class="dashicons dashicons-networking"></span>
-            <?php esc_html_e('Actividad de mis Comunidades', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Actividad de mis Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
 
         <div class="flavor-feed-filtros">
             <!-- Filtro por comunidad -->
             <?php if (!empty($comunidades_usuario)): ?>
             <select class="flavor-feed-filtro-comunidad" id="filtro-comunidad">
-                <option value=""><?php esc_html_e('Todas las comunidades', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php esc_html_e('Todas las comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 <?php foreach ($comunidades_usuario as $comunidad): ?>
                 <option value="<?php echo esc_attr($get_comunidad_id($comunidad)); ?>">
                     <?php echo esc_html($get_comunidad_nombre($comunidad)); ?>
@@ -65,12 +65,12 @@ $get_comunidad_nombre = static function ($comunidad) {
                 <label class="flavor-filtro-checkbox">
                     <input type="checkbox" name="origen_local" value="local" checked>
                     <span class="dashicons dashicons-admin-home"></span>
-                    <?php esc_html_e('Local', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Local', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </label>
                 <label class="flavor-filtro-checkbox">
                     <input type="checkbox" name="origen_federado" value="federado" checked>
                     <span class="dashicons dashicons-networking"></span>
-                    <?php esc_html_e('Red', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Red', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </label>
             </div>
         </div>
@@ -81,10 +81,10 @@ $get_comunidad_nombre = static function ($comunidad) {
         <?php if (empty($feed_combinado)): ?>
             <div class="flavor-feed-vacio">
                 <span class="dashicons dashicons-groups"></span>
-                <h3><?php esc_html_e('No hay actividad todavía', 'flavor-chat-ia'); ?></h3>
-                <p><?php esc_html_e('Únete a comunidades para ver su actividad aquí.', 'flavor-chat-ia'); ?></p>
+                <h3><?php esc_html_e('No hay actividad todavía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php esc_html_e('Únete a comunidades para ver su actividad aquí.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/')); ?>" class="flavor-btn-primary">
-                    <?php esc_html_e('Explorar comunidades', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Explorar comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         <?php else: ?>
@@ -113,7 +113,7 @@ $get_comunidad_nombre = static function ($comunidad) {
                                 </span>
 
                                 <?php if ($mostrar_origen && $item->origen_tipo === 'federado'): ?>
-                                    <span class="flavor-feed-origen-badge federado" title="<?php esc_attr_e('Contenido de la red federada', 'flavor-chat-ia'); ?>">
+                                    <span class="flavor-feed-origen-badge federado" title="<?php esc_attr_e('Contenido de la red federada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                         <span class="dashicons dashicons-networking"></span>
                                         <?php echo esc_html($item->nodo_nombre); ?>
                                     </span>
@@ -122,8 +122,8 @@ $get_comunidad_nombre = static function ($comunidad) {
                                 <span class="flavor-feed-autor">
                                     <?php
                                     printf(
-                                        esc_html__('por %s', 'flavor-chat-ia'),
-                                        esc_html($item->autor_nombre ?: __('Usuario', 'flavor-chat-ia'))
+                                        esc_html__('por %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                        esc_html($item->autor_nombre ?: __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN))
                                     );
                                     ?>
                                 </span>
@@ -136,13 +136,13 @@ $get_comunidad_nombre = static function ($comunidad) {
 
                         <?php if ($item->origen_tipo === 'local'): ?>
                         <div class="flavor-feed-item-acciones-menu">
-                            <button type="button" class="flavor-btn-icon" aria-label="<?php esc_attr_e('Más opciones', 'flavor-chat-ia'); ?>">
+                            <button type="button" class="flavor-btn-icon" aria-label="<?php esc_attr_e('Más opciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <span class="dashicons dashicons-ellipsis"></span>
                             </button>
                             <div class="flavor-dropdown-menu">
                                 <button type="button" class="flavor-compartir-btn" data-actividad="<?php echo esc_attr($item->id); ?>">
                                     <span class="dashicons dashicons-share"></span>
-                                    <?php esc_html_e('Compartir en otra comunidad', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Compartir en otra comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             </div>
                         </div>
@@ -179,7 +179,7 @@ $get_comunidad_nombre = static function ($comunidad) {
                             <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/' . $item->comunidad_id . '/')); ?>"
                                class="flavor-feed-btn">
                                 <span class="dashicons dashicons-admin-comments"></span>
-                                <?php esc_html_e('Comentar', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Comentar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         <?php else: ?>
                             <a href="<?php echo esc_url($item->url_externa); ?>"
@@ -187,7 +187,7 @@ $get_comunidad_nombre = static function ($comunidad) {
                                rel="noopener"
                                class="flavor-feed-btn flavor-feed-btn-external">
                                 <span class="dashicons dashicons-external"></span>
-                                <?php esc_html_e('Ver en el nodo', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Ver en el nodo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         <?php endif; ?>
                     </footer>
@@ -199,7 +199,7 @@ $get_comunidad_nombre = static function ($comunidad) {
             <div class="flavor-feed-cargar-mas">
                 <button type="button" class="flavor-btn-secondary" id="cargar-mas-feed">
                     <span class="dashicons dashicons-update"></span>
-                    <?php esc_html_e('Cargar más', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Cargar más', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         <?php endif; ?>
@@ -210,8 +210,8 @@ $get_comunidad_nombre = static function ($comunidad) {
         <div class="flavor-modal-overlay"></div>
         <div class="flavor-modal-contenido">
             <header class="flavor-modal-header">
-                <h3><?php esc_html_e('Compartir en otra comunidad', 'flavor-chat-ia'); ?></h3>
-                <button type="button" class="flavor-modal-cerrar" aria-label="<?php esc_attr_e('Cerrar', 'flavor-chat-ia'); ?>">
+                <h3><?php esc_html_e('Compartir en otra comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <button type="button" class="flavor-modal-cerrar" aria-label="<?php esc_attr_e('Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-no-alt"></span>
                 </button>
             </header>
@@ -219,9 +219,9 @@ $get_comunidad_nombre = static function ($comunidad) {
                 <input type="hidden" name="actividad_id" id="compartir-actividad-id">
 
                 <div class="flavor-form-group">
-                    <label for="comunidad-destino"><?php esc_html_e('Comunidad destino', 'flavor-chat-ia'); ?></label>
+                    <label for="comunidad-destino"><?php esc_html_e('Comunidad destino', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="comunidad_destino" id="comunidad-destino" required>
-                        <option value=""><?php esc_html_e('Selecciona una comunidad', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Selecciona una comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($comunidades_usuario as $comunidad): ?>
                         <option value="<?php echo esc_attr($get_comunidad_id($comunidad)); ?>">
                             <?php echo esc_html($get_comunidad_nombre($comunidad)); ?>
@@ -231,18 +231,18 @@ $get_comunidad_nombre = static function ($comunidad) {
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="comentario-compartir"><?php esc_html_e('Añadir comentario (opcional)', 'flavor-chat-ia'); ?></label>
+                    <label for="comentario-compartir"><?php esc_html_e('Añadir comentario (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <textarea name="comentario" id="comentario-compartir" rows="3"
-                              placeholder="<?php esc_attr_e('Escribe algo sobre esta publicación...', 'flavor-chat-ia'); ?>"></textarea>
+                              placeholder="<?php esc_attr_e('Escribe algo sobre esta publicación...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                 </div>
 
                 <div class="flavor-modal-acciones">
                     <button type="button" class="flavor-btn-secondary flavor-modal-cerrar">
-                        <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="submit" class="flavor-btn-primary">
                         <span class="dashicons dashicons-share"></span>
-                        <?php esc_html_e('Compartir', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Compartir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </form>
@@ -834,15 +834,15 @@ $get_comunidad_nombre = static function ($comunidad) {
                 .then(function(res) { return res.json(); })
                 .then(function(data) {
                     if (data.success) {
-                        mostrarAviso(data.data.message || '<?php echo esc_js(__('Publicación compartida', 'flavor-chat-ia')); ?>', 'success');
+                        mostrarAviso(data.data.message || '<?php echo esc_js(__('Publicación compartida', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>', 'success');
                         modal.setAttribute('aria-hidden', 'true');
                         formCompartir.reset();
                     } else {
-                        mostrarAviso(data.data.message || '<?php echo esc_js(__('Error al compartir', 'flavor-chat-ia')); ?>', 'error');
+                        mostrarAviso(data.data.message || '<?php echo esc_js(__('Error al compartir', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>', 'error');
                     }
                 })
                 .catch(function() {
-                    mostrarAviso('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>', 'error');
+                    mostrarAviso('<?php echo esc_js(__('Error de conexión', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>', 'error');
                 });
             });
         }

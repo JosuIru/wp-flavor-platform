@@ -91,7 +91,7 @@ $estados_icono = [
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.553-.894L9 7m0 0l6-4m0 0l6 4m0 0v11.382a1 1 0 01-1.553.894L15 13m0 0l-6 4m0 0l-6-4"/>
                 </svg>
-                <?php echo esc_html__('Mapa de Incidencias', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Mapa de Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
             <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4"><?php echo esc_html($titulo_mapa); ?></h2>
             <p class="text-xl text-gray-600"><?php echo esc_html($descripcion_mapa); ?></p>
@@ -101,7 +101,7 @@ $estados_icono = [
         <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
             <!-- Leyenda de categorías -->
             <div class="p-6 border-b border-gray-200 bg-gray-50">
-                <h3 class="text-sm font-semibold text-gray-900 mb-4"><?php echo esc_html__('Categorías', 'flavor-chat-ia'); ?></h3>
+                <h3 class="text-sm font-semibold text-gray-900 mb-4"><?php echo esc_html__('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
                     <?php foreach ($categorias_colores as $categoria_nombre => $color): ?>
                         <?php if ($categoria_nombre !== 'default'): ?>
@@ -121,14 +121,14 @@ $estados_icono = [
                         <svg class="w-12 h-12 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.553-.894L9 7m0 0l6-4m0 0l6 4m0 0v11.382a1 1 0 01-1.553.894L15 13m0 0l-6 4m0 0l-6-4"/>
                         </svg>
-                        <p><?php echo esc_html__('Cargando mapa...', 'flavor-chat-ia'); ?></p>
+                        <p><?php echo esc_html__('Cargando mapa...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 </div>
             </div>
 
             <!-- Panel de información de incidencias -->
             <div class="p-6 bg-white border-t border-gray-200">
-                <h3 class="text-lg font-bold text-gray-900 mb-4"><?php echo esc_html__('Incidencias Cercanas', 'flavor-chat-ia'); ?></h3>
+                <h3 class="text-lg font-bold text-gray-900 mb-4"><?php echo esc_html__('Incidencias Cercanas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <?php if ($tiene_incidencias): ?>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <?php foreach ($incidencias_geolocalizadas as $incidencia): ?>
@@ -162,7 +162,7 @@ $estados_icono = [
                 <?php else: ?>
                 <div class="text-center py-8 text-gray-500">
                     <div class="text-4xl mb-2">📍</div>
-                    <p><?php echo esc_html__('No hay incidencias geolocalizadas en este momento.', 'flavor-chat-ia'); ?></p>
+                    <p><?php echo esc_html__('No hay incidencias geolocalizadas en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <?php endif; ?>
             </div>
@@ -174,13 +174,13 @@ $estados_icono = [
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                 </svg>
-                <?php echo esc_html__('Reportar Nueva Incidencia', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Reportar Nueva Incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <button class="px-6 py-2 rounded-lg bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
                 </svg>
-                <?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     </div>

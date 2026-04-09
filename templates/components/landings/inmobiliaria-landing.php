@@ -9,29 +9,29 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$nombre = $nombre ?? __('Inmobiliaria', 'flavor-chat-ia');
-$eslogan = $eslogan ?? __('Encuentra tu hogar perfecto', 'flavor-chat-ia');
+$nombre = $nombre ?? __('Inmobiliaria', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$eslogan = $eslogan ?? __('Encuentra tu hogar perfecto', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $telefono = $telefono ?? '900 000 000';
 $color_primario = $color_primario ?? '#059669';
 
 $propiedades = $propiedades ?? [
-    ['titulo' => __('Piso en el Centro', 'flavor-chat-ia'), 'tipo' => __('Venta', 'flavor-chat-ia'), 'precio' => '185.000€', 'habitaciones' => 3, 'metros' => 95, 'ubicacion' => __('Centro', 'flavor-chat-ia'), 'imagen' => ''],
-    ['titulo' => __('Chalet con Jardín', 'flavor-chat-ia'), 'tipo' => __('Venta', 'flavor-chat-ia'), 'precio' => '320.000€', 'habitaciones' => 4, 'metros' => 180, 'ubicacion' => __('Urbanización', 'flavor-chat-ia'), 'imagen' => ''],
-    ['titulo' => __('Apartamento con Terraza', 'flavor-chat-ia'), 'tipo' => __('Alquiler', 'flavor-chat-ia'), 'precio' => '850€/mes', 'habitaciones' => 2, 'metros' => 70, 'ubicacion' => __('Ensanche', 'flavor-chat-ia'), 'imagen' => ''],
+    ['titulo' => __('Piso en el Centro', FLAVOR_PLATFORM_TEXT_DOMAIN), 'tipo' => __('Venta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'precio' => '185.000€', 'habitaciones' => 3, 'metros' => 95, 'ubicacion' => __('Centro', FLAVOR_PLATFORM_TEXT_DOMAIN), 'imagen' => ''],
+    ['titulo' => __('Chalet con Jardín', FLAVOR_PLATFORM_TEXT_DOMAIN), 'tipo' => __('Venta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'precio' => '320.000€', 'habitaciones' => 4, 'metros' => 180, 'ubicacion' => __('Urbanización', FLAVOR_PLATFORM_TEXT_DOMAIN), 'imagen' => ''],
+    ['titulo' => __('Apartamento con Terraza', FLAVOR_PLATFORM_TEXT_DOMAIN), 'tipo' => __('Alquiler', FLAVOR_PLATFORM_TEXT_DOMAIN), 'precio' => '850€/mes', 'habitaciones' => 2, 'metros' => 70, 'ubicacion' => __('Ensanche', FLAVOR_PLATFORM_TEXT_DOMAIN), 'imagen' => ''],
 ];
 
 $stats = $stats ?? [
-    ['numero' => '500+', 'texto' => __('Propiedades', 'flavor-chat-ia')],
-    ['numero' => '15', 'texto' => __('Años de experiencia', 'flavor-chat-ia')],
-    ['numero' => '2.000+', 'texto' => __('Clientes satisfechos', 'flavor-chat-ia')],
-    ['numero' => '98%', 'texto' => __('Éxito en ventas', 'flavor-chat-ia')],
+    ['numero' => '500+', 'texto' => __('Propiedades', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['numero' => '15', 'texto' => __('Años de experiencia', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['numero' => '2.000+', 'texto' => __('Clientes satisfechos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['numero' => '98%', 'texto' => __('Éxito en ventas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
 ];
 
 $servicios = $servicios ?? [
-    ['icono' => 'admin-home', 'titulo' => __('Compra-Venta', 'flavor-chat-ia'), 'descripcion' => __('Asesoramiento completo en la compra o venta de tu inmueble', 'flavor-chat-ia')],
-    ['icono' => 'admin-multisite', 'titulo' => __('Alquileres', 'flavor-chat-ia'), 'descripcion' => __('Gestión integral de alquileres para propietarios e inquilinos', 'flavor-chat-ia')],
-    ['icono' => 'clipboard', 'titulo' => __('Valoraciones', 'flavor-chat-ia'), 'descripcion' => __('Tasación profesional y gratuita de tu propiedad', 'flavor-chat-ia')],
-    ['icono' => 'money-alt', 'titulo' => __('Hipotecas', 'flavor-chat-ia'), 'descripcion' => __('Te ayudamos a conseguir la mejor financiación', 'flavor-chat-ia')],
+    ['icono' => 'admin-home', 'titulo' => __('Compra-Venta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Asesoramiento completo en la compra o venta de tu inmueble', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['icono' => 'admin-multisite', 'titulo' => __('Alquileres', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Gestión integral de alquileres para propietarios e inquilinos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['icono' => 'clipboard', 'titulo' => __('Valoraciones', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Tasación profesional y gratuita de tu propiedad', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['icono' => 'money-alt', 'titulo' => __('Hipotecas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Te ayudamos a conseguir la mejor financiación', FLAVOR_PLATFORM_TEXT_DOMAIN)],
 ];
 ?>
 
@@ -41,31 +41,31 @@ $servicios = $servicios ?? [
         <div class="flavor-container">
             <div class="flavor-hero-content">
                 <h1><?php echo esc_html($eslogan); ?></h1>
-                <p><?php esc_html_e('Miles de propiedades te esperan', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('Miles de propiedades te esperan', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <!-- Buscador -->
             <div class="flavor-inmo-buscador">
                 <div class="flavor-buscador-tabs">
-                    <button class="is-active"><?php esc_html_e('Comprar', 'flavor-chat-ia'); ?></button>
-                    <button><?php esc_html_e('Alquilar', 'flavor-chat-ia'); ?></button>
+                    <button class="is-active"><?php esc_html_e('Comprar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                    <button><?php esc_html_e('Alquilar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                 </div>
                 <div class="flavor-buscador-form">
                     <div class="flavor-form-group flavor-form-ubicacion">
                         <span class="dashicons dashicons-location"></span>
-                        <input type="text" placeholder="<?php esc_attr_e('Ciudad, zona o código postal', 'flavor-chat-ia'); ?>">
+                        <input type="text" placeholder="<?php esc_attr_e('Ciudad, zona o código postal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     </div>
                     <div class="flavor-form-group">
                         <select>
-                            <option value=""><?php esc_html_e('Tipo de inmueble', 'flavor-chat-ia'); ?></option>
-                            <option><?php esc_html_e('Piso', 'flavor-chat-ia'); ?></option>
-                            <option><?php esc_html_e('Casa/Chalet', 'flavor-chat-ia'); ?></option>
-                            <option><?php esc_html_e('Local', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php esc_html_e('Tipo de inmueble', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option><?php esc_html_e('Piso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option><?php esc_html_e('Casa/Chalet', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option><?php esc_html_e('Local', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
                     <div class="flavor-form-group">
                         <select>
-                            <option value=""><?php esc_html_e('Precio máximo', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php esc_html_e('Precio máximo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <option>100.000€</option>
                             <option>200.000€</option>
                             <option>300.000€</option>
@@ -74,7 +74,7 @@ $servicios = $servicios ?? [
                     </div>
                     <button type="submit" class="flavor-btn-buscar">
                         <span class="dashicons dashicons-search"></span>
-                        <?php esc_html_e('Buscar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </div>
@@ -99,8 +99,8 @@ $servicios = $servicios ?? [
 <!-- Propiedades Destacadas -->
 <section class="flavor-inmo-propiedades" id="propiedades">
     <div class="flavor-container">
-        <h2 class="flavor-section-title"><?php esc_html_e('Propiedades Destacadas', 'flavor-chat-ia'); ?></h2>
-        <p class="flavor-section-subtitle"><?php esc_html_e('Las mejores oportunidades del mercado', 'flavor-chat-ia'); ?></p>
+        <h2 class="flavor-section-title"><?php esc_html_e('Propiedades Destacadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p class="flavor-section-subtitle"><?php esc_html_e('Las mejores oportunidades del mercado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
         <div class="flavor-propiedades-grid">
             <?php foreach ($propiedades as $prop): ?>
@@ -125,7 +125,7 @@ $servicios = $servicios ?? [
                         <div class="flavor-propiedad-detalles">
                             <span>
                                 <span class="dashicons dashicons-admin-home"></span>
-                                <?php echo esc_html($prop['habitaciones']); ?> <?php esc_html_e('hab.', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html($prop['habitaciones']); ?> <?php esc_html_e('hab.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                             <span>
                                 <span class="dashicons dashicons-editor-expand"></span>
@@ -140,7 +140,7 @@ $servicios = $servicios ?? [
 
         <div class="flavor-ver-todas">
             <a href="#propiedades" class="flavor-btn-outline">
-                <?php esc_html_e('Ver todas las propiedades', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver todas las propiedades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <span class="dashicons dashicons-arrow-right-alt2"></span>
             </a>
         </div>
@@ -150,8 +150,8 @@ $servicios = $servicios ?? [
 <!-- Servicios -->
 <section class="flavor-inmo-servicios" id="servicios">
     <div class="flavor-container">
-        <h2 class="flavor-section-title"><?php esc_html_e('Nuestros Servicios', 'flavor-chat-ia'); ?></h2>
-        <p class="flavor-section-subtitle"><?php esc_html_e('Todo lo que necesitas para tu operación inmobiliaria', 'flavor-chat-ia'); ?></p>
+        <h2 class="flavor-section-title"><?php esc_html_e('Nuestros Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p class="flavor-section-subtitle"><?php esc_html_e('Todo lo que necesitas para tu operación inmobiliaria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
         <div class="flavor-servicios-grid">
             <?php foreach ($servicios as $servicio): ?>
@@ -172,11 +172,11 @@ $servicios = $servicios ?? [
     <div class="flavor-container">
         <div class="flavor-cta-wrapper">
             <div class="flavor-cta-text">
-                <h2><?php esc_html_e('¿Quieres vender tu propiedad?', 'flavor-chat-ia'); ?></h2>
-                <p><?php esc_html_e('Solicita una valoración gratuita y sin compromiso', 'flavor-chat-ia'); ?></p>
+                <h2><?php esc_html_e('¿Quieres vender tu propiedad?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <p><?php esc_html_e('Solicita una valoración gratuita y sin compromiso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <div class="flavor-cta-actions">
-                <a href="#servicios" class="flavor-btn-white"><?php esc_html_e('Valoración Gratuita', 'flavor-chat-ia'); ?></a>
+                <a href="#servicios" class="flavor-btn-white"><?php esc_html_e('Valoración Gratuita', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 <a href="tel:<?php echo esc_attr(preg_replace('/\s+/', '', $telefono)); ?>" class="flavor-btn-white-outline">
                     <span class="dashicons dashicons-phone"></span>
                     <?php echo esc_html($telefono); ?>

@@ -12,7 +12,7 @@ class Flavor_Feature_Report extends Flavor_Feature_Base {
     public function render($entity_type, $entity_id, $args = []) {
         return sprintf(
             '<button class="flavor-report" data-entity="%s" data-id="%d">%s</button>',
-            esc_attr($entity_type), $entity_id, __('Reportar', 'flavor-chat-ia')
+            esc_attr($entity_type), $entity_id, __('Reportar', FLAVOR_PLATFORM_TEXT_DOMAIN)
         );
     }
 
@@ -26,7 +26,7 @@ class Flavor_Feature_Report extends Flavor_Feature_Base {
     }
 
     public function register_action($entity_type, $entity_id, $user_id, $value = null) {
-        if (!$user_id) return new WP_Error('auth', __('Debes iniciar sesión', 'flavor-chat-ia'));
+        if (!$user_id) return new WP_Error('auth', __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         global $wpdb;
         $wpdb->insert($wpdb->prefix . 'flavor_reports', [
             'entity_type' => $entity_type, 'entity_id' => $entity_id, 'user_id' => $user_id,

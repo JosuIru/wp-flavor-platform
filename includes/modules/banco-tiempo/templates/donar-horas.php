@@ -21,20 +21,20 @@ if (!defined('ABSPATH')) {
         <span class="bt-donar__icono">
             <span class="dashicons dashicons-heart"></span>
         </span>
-        <h3 class="bt-donar__titulo"><?php esc_html_e('Donar Horas', 'flavor-chat-ia'); ?></h3>
+        <h3 class="bt-donar__titulo"><?php esc_html_e('Donar Horas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
     </div>
 
     <div class="bt-donar__saldo">
-        <span class="bt-donar__saldo-label"><?php esc_html_e('Tu saldo actual:', 'flavor-chat-ia'); ?></span>
+        <span class="bt-donar__saldo-label"><?php esc_html_e('Tu saldo actual:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         <span class="bt-donar__saldo-valor <?php echo $saldo < 0 ? 'negativo' : ''; ?>">
-            <?php echo esc_html(number_format($saldo, 1)); ?> <?php esc_html_e('horas', 'flavor-chat-ia'); ?>
+            <?php echo esc_html(number_format($saldo, 1)); ?> <?php esc_html_e('horas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </span>
     </div>
 
     <?php if ($saldo <= 0): ?>
         <div class="bt-donar__aviso">
             <span class="dashicons dashicons-info"></span>
-            <p><?php esc_html_e('No tienes horas disponibles para donar. Ofrece tus servicios para acumular horas.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('No tienes horas disponibles para donar. Ofrece tus servicios para acumular horas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php else: ?>
         <form class="bt-donar__form" id="bt-form-donar">
@@ -43,22 +43,22 @@ if (!defined('ABSPATH')) {
                     <input type="radio" name="tipo" value="fondo_comunitario" checked>
                     <span class="bt-donar__tipo-card">
                         <span class="dashicons dashicons-groups"></span>
-                        <strong><?php esc_html_e('Fondo Solidario', 'flavor-chat-ia'); ?></strong>
-                        <small><?php esc_html_e('Para quienes más lo necesiten', 'flavor-chat-ia'); ?></small>
+                        <strong><?php esc_html_e('Fondo Solidario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                        <small><?php esc_html_e('Para quienes más lo necesiten', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                     </span>
                 </label>
                 <label class="bt-donar__tipo-opcion">
                     <input type="radio" name="tipo" value="regalo_directo">
                     <span class="bt-donar__tipo-card">
                         <span class="dashicons dashicons-businessman"></span>
-                        <strong><?php esc_html_e('Regalo Directo', 'flavor-chat-ia'); ?></strong>
-                        <small><?php esc_html_e('A una persona específica', 'flavor-chat-ia'); ?></small>
+                        <strong><?php esc_html_e('Regalo Directo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                        <small><?php esc_html_e('A una persona específica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                     </span>
                 </label>
             </div>
 
             <div class="bt-donar__campo">
-                <label for="bt-donar-horas"><?php esc_html_e('Horas a donar', 'flavor-chat-ia'); ?></label>
+                <label for="bt-donar-horas"><?php esc_html_e('Horas a donar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <div class="bt-donar__input-group">
                     <button type="button" class="bt-donar__btn-menos">-</button>
                     <input type="number" id="bt-donar-horas" name="horas" min="0.5" max="<?php echo esc_attr($saldo); ?>" step="0.5" value="1">
@@ -68,14 +68,14 @@ if (!defined('ABSPATH')) {
                     <button type="button" data-valor="1">1h</button>
                     <button type="button" data-valor="2">2h</button>
                     <button type="button" data-valor="5">5h</button>
-                    <button type="button" data-valor="<?php echo esc_attr(floor($saldo)); ?>"><?php esc_html_e('Todo', 'flavor-chat-ia'); ?></button>
+                    <button type="button" data-valor="<?php echo esc_attr(floor($saldo)); ?>"><?php esc_html_e('Todo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                 </div>
             </div>
 
             <div class="bt-donar__campo bt-donar__campo-beneficiario" style="display: none;">
-                <label for="bt-donar-beneficiario"><?php esc_html_e('Beneficiario', 'flavor-chat-ia'); ?></label>
+                <label for="bt-donar-beneficiario"><?php esc_html_e('Beneficiario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select id="bt-donar-beneficiario" name="beneficiario_id">
-                    <option value=""><?php esc_html_e('Selecciona una persona...', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Selecciona una persona...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php
                     $usuarios = get_users(['role__not_in' => ['administrator'], 'number' => 100]);
                     foreach ($usuarios as $usuario):
@@ -89,21 +89,21 @@ if (!defined('ABSPATH')) {
             </div>
 
             <div class="bt-donar__campo">
-                <label for="bt-donar-mensaje"><?php esc_html_e('Mensaje (opcional)', 'flavor-chat-ia'); ?></label>
-                <textarea id="bt-donar-mensaje" name="mensaje" rows="2" placeholder="<?php esc_attr_e('Un mensaje para acompañar tu donación...', 'flavor-chat-ia'); ?>"></textarea>
+                <label for="bt-donar-mensaje"><?php esc_html_e('Mensaje (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                <textarea id="bt-donar-mensaje" name="mensaje" rows="2" placeholder="<?php esc_attr_e('Un mensaje para acompañar tu donación...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
             </div>
 
             <div class="bt-donar__resumen">
                 <span class="bt-donar__resumen-texto">
-                    <?php esc_html_e('Vas a donar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Vas a donar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <strong class="bt-donar__resumen-horas">1</strong>
-                    <?php esc_html_e('hora(s)', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('hora(s)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
             </div>
 
             <button type="submit" class="bt-btn bt-btn--primary bt-btn--full">
                 <span class="dashicons dashicons-heart"></span>
-                <?php esc_html_e('Donar ahora', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Donar ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </form>
     <?php endif; ?>
@@ -429,7 +429,7 @@ if (!defined('ABSPATH')) {
             };
 
             btn.disabled = true;
-            btn.innerHTML = '<span class="dashicons dashicons-update"></span> <?php echo esc_js(__('Procesando...', 'flavor-chat-ia')); ?>';
+            btn.innerHTML = '<span class="dashicons dashicons-update"></span> <?php echo esc_js(__('Procesando...', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
 
             fetch('<?php echo esc_url(admin_url('admin-ajax.php')); ?>', {
                 method: 'POST',
@@ -449,15 +449,15 @@ if (!defined('ABSPATH')) {
                     showNotice(data.data.message, 'success');
                     location.reload();
                 } else {
-                    showNotice(data.data.message || '<?php echo esc_js(__('Error al procesar', 'flavor-chat-ia')); ?>', 'error');
+                    showNotice(data.data.message || '<?php echo esc_js(__('Error al procesar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>', 'error');
                     btn.disabled = false;
-                    btn.innerHTML = '<span class="dashicons dashicons-heart"></span> <?php echo esc_js(__('Donar ahora', 'flavor-chat-ia')); ?>';
+                    btn.innerHTML = '<span class="dashicons dashicons-heart"></span> <?php echo esc_js(__('Donar ahora', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
                 }
             })
             .catch(() => {
-                showNotice('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>', 'error');
+                showNotice('<?php echo esc_js(__('Error de conexión', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>', 'error');
                 btn.disabled = false;
-                btn.innerHTML = '<span class="dashicons dashicons-heart"></span> <?php echo esc_js(__('Donar ahora', 'flavor-chat-ia')); ?>';
+                btn.innerHTML = '<span class="dashicons dashicons-heart"></span> <?php echo esc_js(__('Donar ahora', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
             });
         });
     });

@@ -76,15 +76,15 @@ class Flavor_Unified_Modules_View {
             'nonce' => wp_create_nonce('fum_nonce'),
             'restNonce' => wp_create_nonce('wp_rest'),
             'i18n' => [
-                'saving' => __('Guardando...', 'flavor-chat-ia'),
-                'saved' => __('Guardado', 'flavor-chat-ia'),
-                'error' => __('Error al guardar', 'flavor-chat-ia'),
-                'confirmActivate' => __('¿Activar este módulo?', 'flavor-chat-ia'),
-                'confirmDeactivate' => __('¿Desactivar este módulo?', 'flavor-chat-ia'),
-                'creatingLanding' => __('Creando landing...', 'flavor-chat-ia'),
-                'landingCreated' => __('Landing creada', 'flavor-chat-ia'),
-                'docsError' => __('Error al cargar la documentación', 'flavor-chat-ia'),
-                'docsNotFound' => __('Documentación no disponible para este módulo', 'flavor-chat-ia'),
+                'saving' => __('Guardando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'saved' => __('Guardado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al guardar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmActivate' => __('¿Activar este módulo?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmDeactivate' => __('¿Desactivar este módulo?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'creatingLanding' => __('Creando landing...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'landingCreated' => __('Landing creada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'docsError' => __('Error al cargar la documentación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'docsNotFound' => __('Documentación no disponible para este módulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -110,15 +110,15 @@ class Flavor_Unified_Modules_View {
             'nonce' => wp_create_nonce('fum_nonce'),
             'restNonce' => wp_create_nonce('wp_rest'),
             'i18n' => [
-                'saving' => __('Guardando...', 'flavor-chat-ia'),
-                'saved' => __('Guardado', 'flavor-chat-ia'),
-                'error' => __('Error al guardar', 'flavor-chat-ia'),
-                'confirmActivate' => __('¿Activar este módulo?', 'flavor-chat-ia'),
-                'confirmDeactivate' => __('¿Desactivar este módulo?', 'flavor-chat-ia'),
-                'creatingLanding' => __('Creando landing...', 'flavor-chat-ia'),
-                'landingCreated' => __('Landing creada', 'flavor-chat-ia'),
-                'docsError' => __('Error al cargar la documentación', 'flavor-chat-ia'),
-                'docsNotFound' => __('Documentación no disponible para este módulo', 'flavor-chat-ia'),
+                'saving' => __('Guardando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'saved' => __('Guardado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al guardar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmActivate' => __('¿Activar este módulo?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmDeactivate' => __('¿Desactivar este módulo?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'creatingLanding' => __('Creando landing...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'landingCreated' => __('Landing creada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'docsError' => __('Error al cargar la documentación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'docsNotFound' => __('Documentación no disponible para este módulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
 
@@ -379,21 +379,22 @@ class Flavor_Unified_Modules_View {
         $modulos_sin_categoria = array_diff(array_keys($modulos_registrados), array_keys($modulos_categorizados));
         if (!empty($modulos_sin_categoria)) {
             $categorias_modulos['otros'] = [
-                'nombre' => __('Otros', 'flavor-chat-ia'),
+                'nombre' => __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-screenoptions',
                 'modulos' => array_values($modulos_sin_categoria),
             ];
         }
 
         // CRÍTICO: Limpiar caché y leer directamente de BD
-        wp_cache_delete('flavor_chat_ia_settings', 'options');
+        wp_cache_delete(FLAVOR_CHAT_IA_SETTINGS_OPTION, 'options');
+        wp_cache_delete(FLAVOR_PLATFORM_SETTINGS_OPTION, 'options');
         wp_cache_delete('alloptions', 'options');
 
         global $wpdb;
         $configuracion_raw = $wpdb->get_var(
             $wpdb->prepare(
                 "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s",
-                'flavor_chat_ia_settings'
+                FLAVOR_CHAT_IA_SETTINGS_OPTION
             )
         );
         $configuracion = $configuracion_raw ? maybe_unserialize($configuracion_raw) : [];
@@ -441,19 +442,19 @@ class Flavor_Unified_Modules_View {
             <!-- Header -->
             <div class="fum-header">
                 <div>
-                    <h2 class="fum-header__title"><?php esc_html_e('Gestión de Módulos Web', 'flavor-chat-ia'); ?></h2>
+                    <h2 class="fum-header__title"><?php esc_html_e('Gestión de Módulos Web', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                     <p class="fum-header__description">
-                        <?php esc_html_e('Activa módulos del portal web, configura permisos de acceso y gestiona landings desde una sola vista.', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Activa módulos del portal web, configura permisos de acceso y gestiona landings desde una sola vista.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
                 <div class="fum-header__stats">
                     <div class="fum-stat-badge fum-stat-badge--success">
                         <span class="fum-stat-badge__value"><?php echo esc_html($modulos_activos_count); ?></span>
-                        <span class="fum-stat-badge__label"><?php esc_html_e('Activos', 'flavor-chat-ia'); ?></span>
+                        <span class="fum-stat-badge__label"><?php esc_html_e('Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="fum-stat-badge">
                         <span class="fum-stat-badge__value"><?php echo esc_html($total_modulos); ?></span>
-                        <span class="fum-stat-badge__label"><?php esc_html_e('Total', 'flavor-chat-ia'); ?></span>
+                        <span class="fum-stat-badge__label"><?php esc_html_e('Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -491,10 +492,10 @@ class Flavor_Unified_Modules_View {
                         <button type="button"
                                 class="fum-btn fum-btn--primary fum-btn--small"
                                 @click='activatePack(<?php echo wp_json_encode(array_values($pack['missing_modules'])); ?>)'>
-                            <?php esc_html_e('Activar faltantes', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Activar faltantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <?php else : ?>
-                        <span class="fum-pack-card__ready"><?php esc_html_e('Pack completo', 'flavor-chat-ia'); ?></span>
+                        <span class="fum-pack-card__ready"><?php esc_html_e('Pack completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -541,7 +542,7 @@ class Flavor_Unified_Modules_View {
                         <button type="button"
                                 class="fum-btn fum-btn--secondary fum-btn--small"
                                 @click='activatePack(<?php echo wp_json_encode(array_values($gap['missing_ids'])); ?>)'>
-                            <?php esc_html_e('Activar sugeridos', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Activar sugeridos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                     <?php endif; ?>
@@ -553,9 +554,9 @@ class Flavor_Unified_Modules_View {
             <?php if (!empty($ecosystem_map)) : ?>
             <div class="fum-ecosystem-map">
                 <div class="fum-ecosystem-map__header">
-                    <h3 class="fum-ecosystem-map__title"><?php esc_html_e('Mapa del ecosistema activo', 'flavor-chat-ia'); ?></h3>
+                    <h3 class="fum-ecosystem-map__title"><?php esc_html_e('Mapa del ecosistema activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <p class="fum-ecosystem-map__description">
-                        <?php esc_html_e('Muestra como se conectan los modulos activos con otras piezas ya activas o sugeridas del ecosistema.', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Muestra como se conectan los modulos activos con otras piezas ya activas o sugeridas del ecosistema.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
                 <div class="fum-ecosystem-map__grid">
@@ -592,26 +593,26 @@ class Flavor_Unified_Modules_View {
                     <span class="dashicons dashicons-search fum-search__icon"></span>
                     <input type="text"
                            class="fum-search__input"
-                           placeholder="<?php esc_attr_e('Buscar módulos...', 'flavor-chat-ia'); ?>"
+                           placeholder="<?php esc_attr_e('Buscar módulos...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                            x-model="searchQuery"
                            @input="filterModules()">
                 </div>
                 <select class="fum-filter-select" x-model="filterStatus" @change="filterModules()">
-                    <option value="all"><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
-                    <option value="active"><?php esc_html_e('Solo activos', 'flavor-chat-ia'); ?></option>
-                    <option value="inactive"><?php esc_html_e('Solo inactivos', 'flavor-chat-ia'); ?></option>
+                    <option value="all"><?php esc_html_e('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="active"><?php esc_html_e('Solo activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="inactive"><?php esc_html_e('Solo inactivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
                 <select class="fum-filter-select" x-model="filterVisibility" @change="filterModules()">
-                    <option value="all"><?php esc_html_e('Toda visibilidad', 'flavor-chat-ia'); ?></option>
-                    <option value="public"><?php esc_html_e('Públicos', 'flavor-chat-ia'); ?></option>
-                    <option value="members_only"><?php esc_html_e('Solo miembros', 'flavor-chat-ia'); ?></option>
-                    <option value="private"><?php esc_html_e('Privados', 'flavor-chat-ia'); ?></option>
+                    <option value="all"><?php esc_html_e('Toda visibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="public"><?php esc_html_e('Públicos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="members_only"><?php esc_html_e('Solo miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="private"><?php esc_html_e('Privados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
                 <select class="fum-filter-select" x-model="filterRole" @change="filterModules()">
-                    <option value="all"><?php esc_html_e('Todos los roles', 'flavor-chat-ia'); ?></option>
-                    <option value="base"><?php esc_html_e('Base', 'flavor-chat-ia'); ?></option>
-                    <option value="vertical"><?php esc_html_e('Vertical', 'flavor-chat-ia'); ?></option>
-                    <option value="transversal"><?php esc_html_e('Transversal', 'flavor-chat-ia'); ?></option>
+                    <option value="all"><?php esc_html_e('Todos los roles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="base"><?php esc_html_e('Base', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="vertical"><?php esc_html_e('Vertical', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="transversal"><?php esc_html_e('Transversal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
             </div>
 
@@ -621,7 +622,7 @@ class Flavor_Unified_Modules_View {
                         class="fum-category-tab"
                         :class="{ 'active': activeCategory === 'all' }"
                         @click="setCategory('all')">
-                    <?php esc_html_e('Todos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="fum-category-tab__count"><?php echo esc_html($total_modulos); ?></span>
                 </button>
                 <?php foreach ($categorias_modulos as $categoria_id => $categoria_datos) : ?>
@@ -654,7 +655,7 @@ class Flavor_Unified_Modules_View {
                         $descripcion_modulo = trim((string) ($info_modulo['description'] ?? ''));
                         if ($descripcion_modulo === '') {
                             $descripcion_modulo = sprintf(
-                                __('Módulo de %s disponible para activar y configurar.', 'flavor-chat-ia'),
+                                __('Módulo de %s disponible para activar y configurar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 $categoria_datos['nombre']
                             );
                         }
@@ -704,7 +705,7 @@ class Flavor_Unified_Modules_View {
                                 <h4 class="fum-card__name">
                                     <?php echo esc_html($nombre_modulo); ?>
                                     <?php if ($is_required) : ?>
-                                        <span class="fum-badge fum-badge--required"><?php esc_html_e('Requerido', 'flavor-chat-ia'); ?></span>
+                                        <span class="fum-badge fum-badge--required"><?php esc_html_e('Requerido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     <?php endif; ?>
                                     <span class="fum-badge fum-badge--role fum-badge--role-<?php echo esc_attr($display_module_role); ?>">
                                         <?php echo esc_html($this->get_ecosystem_role_label($display_module_role)); ?>
@@ -715,7 +716,7 @@ class Flavor_Unified_Modules_View {
                                 </h4>
                                 <p class="fum-card__desc"><?php echo esc_html($descripcion_modulo); ?></p>
                                 <?php if ($display_module_role === 'base-standalone') : ?>
-                                    <p class="fum-card__role-note"><?php esc_html_e('Espacio base útil para gestión propia, pero sin satélites ecosistémicos declarados.', 'flavor-chat-ia'); ?></p>
+                                    <p class="fum-card__role-note"><?php esc_html_e('Espacio base útil para gestión propia, pero sin satélites ecosistémicos declarados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                 <?php endif; ?>
                             </div>
                             <div class="fum-card__toggle">
@@ -737,7 +738,7 @@ class Flavor_Unified_Modules_View {
                                 <span>
                                     <?php
                                     printf(
-                                        esc_html__('Faltan dependencias activas: %s', 'flavor-chat-ia'),
+                                        esc_html__('Faltan dependencias activas: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                         esc_html(implode(', ', array_map([$this, 'format_module_label'], $missing_dependencies)))
                                     );
                                     ?>
@@ -767,7 +768,7 @@ class Flavor_Unified_Modules_View {
                             <?php endif; ?>
                             <div class="fum-control-row">
                                 <div class="fum-control-group">
-                                    <label class="fum-control-group__label"><?php esc_html_e('Visibilidad', 'flavor-chat-ia'); ?></label>
+                                    <label class="fum-control-group__label"><?php esc_html_e('Visibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                     <select @change="saveVisibility('<?php echo esc_js($modulo_id); ?>', $event.target.value, null)">
                                         <?php foreach ($tipos_visibilidad as $valor => $etiqueta) : ?>
                                             <option value="<?php echo esc_attr($valor); ?>" <?php selected($visibility, $valor); ?>>
@@ -777,7 +778,7 @@ class Flavor_Unified_Modules_View {
                                     </select>
                                 </div>
                                 <div class="fum-control-group">
-                                    <label class="fum-control-group__label"><?php esc_html_e('Permiso requerido', 'flavor-chat-ia'); ?></label>
+                                    <label class="fum-control-group__label"><?php esc_html_e('Permiso requerido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                     <select @change="saveVisibility('<?php echo esc_js($modulo_id); ?>', null, $event.target.value)">
                                         <?php foreach ($capacidades_disponibles as $valor => $etiqueta) : ?>
                                             <option value="<?php echo esc_attr($valor); ?>" <?php selected($capability, $valor); ?>>
@@ -789,7 +790,7 @@ class Flavor_Unified_Modules_View {
                             </div>
                             <span class="fum-saving" :class="{ 'is-visible': savingModules.includes('<?php echo esc_js($modulo_id); ?>') }">
                                 <span class="dashicons dashicons-update fum-saving__icon"></span>
-                                <?php esc_html_e('Guardando...', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Guardando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         </div>
 
@@ -806,7 +807,7 @@ class Flavor_Unified_Modules_View {
                                     <a href="<?php echo esc_url($dashboard_url); ?>"
                                        class="fum-btn fum-btn--primary fum-btn--flex">
                                         <span class="dashicons dashicons-dashboard"></span>
-                                        <?php esc_html_e('Administrar', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Administrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                     <?php if (count($admin_pages) > 1) : ?>
                                     <button type="button"
@@ -830,7 +831,7 @@ class Flavor_Unified_Modules_View {
                                    target="_blank"
                                    class="fum-btn fum-btn--primary fum-btn--flex">
                                     <span class="dashicons dashicons-external"></span>
-                                    <?php esc_html_e('Abrir portal', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Abrir portal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             <?php endif; endif; ?>
 
@@ -838,18 +839,18 @@ class Flavor_Unified_Modules_View {
                                 <a href="<?php echo esc_url($landing_url); ?>"
                                    target="_blank"
                                    class="fum-btn fum-btn--secondary fum-btn--small"
-                                   title="<?php esc_attr_e('Ver Landing', 'flavor-chat-ia'); ?>">
+                                   title="<?php esc_attr_e('Ver Landing', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-external"></span>
                                 </a>
                                 <a href="<?php echo esc_url(get_edit_post_link($pagina_landing->ID)); ?>"
                                    class="fum-btn fum-btn--secondary fum-btn--small"
-                                   title="<?php esc_attr_e('Editar Landing', 'flavor-chat-ia'); ?>">
+                                   title="<?php esc_attr_e('Editar Landing', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-edit"></span>
                                 </a>
                             <?php else : ?>
                                 <button type="button"
                                         class="fum-btn fum-btn--secondary fum-btn--small"
-                                        title="<?php esc_attr_e('Crear Landing', 'flavor-chat-ia'); ?>"
+                                        title="<?php esc_attr_e('Crear Landing', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                                         @click="createLanding('<?php echo esc_js($modulo_id); ?>')">
                                     <span class="dashicons dashicons-plus-alt"></span>
                                 </button>
@@ -858,7 +859,7 @@ class Flavor_Unified_Modules_View {
                             <!-- Botón de documentación -->
                             <button type="button"
                                     class="fum-btn fum-btn--secondary fum-btn--small"
-                                    title="<?php esc_attr_e('Ver documentación', 'flavor-chat-ia'); ?>"
+                                    title="<?php esc_attr_e('Ver documentación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                                     @click="openDocs('<?php echo esc_js($modulo_id); ?>', '<?php echo esc_js($nombre_modulo); ?>')">
                                 <span class="dashicons dashicons-info-outline"></span>
                             </button>
@@ -871,8 +872,8 @@ class Flavor_Unified_Modules_View {
             <!-- Empty State -->
             <div class="fum-empty-state" x-show="!hasVisibleModules" x-cloak>
                 <span class="dashicons dashicons-admin-plugins fum-empty-state__icon"></span>
-                <h3 class="fum-empty-state__title"><?php esc_html_e('No se encontraron módulos', 'flavor-chat-ia'); ?></h3>
-                <p class="fum-empty-state__text"><?php esc_html_e('Prueba a cambiar los filtros de búsqueda.', 'flavor-chat-ia'); ?></p>
+                <h3 class="fum-empty-state__title"><?php esc_html_e('No se encontraron módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p class="fum-empty-state__text"><?php esc_html_e('Prueba a cambiar los filtros de búsqueda.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <!-- Modal de Documentación -->
@@ -889,7 +890,7 @@ class Flavor_Unified_Modules_View {
                         <!-- Estado de carga -->
                         <div class="fum-docs-loading" x-show="docsLoading">
                             <span class="dashicons dashicons-update fum-docs-loading__spinner"></span>
-                            <span><?php esc_html_e('Cargando documentación...', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Cargando documentación...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
 
                         <!-- Contenido de documentación -->
@@ -898,7 +899,7 @@ class Flavor_Unified_Modules_View {
                             <div class="fum-docs-section">
                                 <h4 class="fum-docs-section__title">
                                     <span class="dashicons dashicons-info"></span>
-                                    <?php esc_html_e('Descripción', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </h4>
                                 <p class="fum-docs-section__text" x-text="docsData?.descripcion"></p>
                             </div>
@@ -907,7 +908,7 @@ class Flavor_Unified_Modules_View {
                             <div class="fum-docs-section" x-show="docsData?.caracteristicas?.length > 0">
                                 <h4 class="fum-docs-section__title">
                                     <span class="dashicons dashicons-star-filled"></span>
-                                    <?php esc_html_e('Características', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Características', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </h4>
                                 <ul class="fum-docs-list">
                                     <template x-for="item in docsData?.caracteristicas || []" :key="item">
@@ -920,7 +921,7 @@ class Flavor_Unified_Modules_View {
                             <div class="fum-docs-section" x-show="docsData?.casos_uso?.length > 0">
                                 <h4 class="fum-docs-section__title">
                                     <span class="dashicons dashicons-lightbulb"></span>
-                                    <?php esc_html_e('Casos de uso', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Casos de uso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </h4>
                                 <ul class="fum-docs-list fum-docs-list--cases">
                                     <template x-for="item in docsData?.casos_uso || []" :key="item">
@@ -933,7 +934,7 @@ class Flavor_Unified_Modules_View {
                             <div class="fum-docs-section" x-show="docsData?.modulos_relacionados?.length > 0">
                                 <h4 class="fum-docs-section__title">
                                     <span class="dashicons dashicons-networking"></span>
-                                    <?php esc_html_e('Módulos relacionados', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Módulos relacionados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </h4>
                                 <div class="fum-docs-tags">
                                     <template x-for="modulo in docsData?.modulos_relacionados || []" :key="modulo">
@@ -946,7 +947,7 @@ class Flavor_Unified_Modules_View {
                             <div class="fum-docs-section" x-show="docsData?.requisitos?.length > 0">
                                 <h4 class="fum-docs-section__title">
                                     <span class="dashicons dashicons-yes-alt"></span>
-                                    <?php esc_html_e('Requisitos', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Requisitos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </h4>
                                 <ul class="fum-docs-list fum-docs-list--requirements">
                                     <template x-for="req in docsData?.requisitos || []" :key="req">
@@ -959,10 +960,10 @@ class Flavor_Unified_Modules_View {
                             <div class="fum-docs-section" x-show="docsData?.tablas?.length > 0">
                                 <h4 class="fum-docs-section__title">
                                     <span class="dashicons dashicons-database"></span>
-                                    <?php esc_html_e('Base de datos', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Base de datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </h4>
                                 <p class="fum-docs-section__subtitle" x-show="docsData?.tabla_principal">
-                                    <?php esc_html_e('Tabla principal:', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Tabla principal:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     <code x-text="docsData?.tabla_principal"></code>
                                 </p>
                                 <div class="fum-docs-tables" x-show="docsData?.tablas?.length > 1">
@@ -990,9 +991,9 @@ class Flavor_Unified_Modules_View {
      */
     private function get_visibility_types() {
         return [
-            'public' => __('Público', 'flavor-chat-ia'),
-            'members_only' => __('Solo miembros', 'flavor-chat-ia'),
-            'private' => __('Privado', 'flavor-chat-ia'),
+            'public' => __('Público', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'members_only' => __('Solo miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'private' => __('Privado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -1001,11 +1002,11 @@ class Flavor_Unified_Modules_View {
      */
     private function get_available_capabilities() {
         return [
-            'read' => __('Cualquier usuario', 'flavor-chat-ia'),
-            'edit_posts' => __('Colaboradores+', 'flavor-chat-ia'),
-            'publish_posts' => __('Autores+', 'flavor-chat-ia'),
-            'edit_others_posts' => __('Editores+', 'flavor-chat-ia'),
-            'manage_options' => __('Solo administradores', 'flavor-chat-ia'),
+            'read' => __('Cualquier usuario', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'edit_posts' => __('Colaboradores+', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'publish_posts' => __('Autores+', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'edit_others_posts' => __('Editores+', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'manage_options' => __('Solo administradores', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -1014,19 +1015,19 @@ class Flavor_Unified_Modules_View {
      */
     private function get_visibility_label($visibility) {
         $labels = [
-            'public' => __('Público', 'flavor-chat-ia'),
-            'members_only' => __('Miembros', 'flavor-chat-ia'),
-            'private' => __('Privado', 'flavor-chat-ia'),
+            'public' => __('Público', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'members_only' => __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'private' => __('Privado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
         return $labels[$visibility] ?? $visibility;
     }
 
     private function get_ecosystem_role_label($role) {
         $labels = [
-            'base' => __('Base', 'flavor-chat-ia'),
-            'base-standalone' => __('Base local', 'flavor-chat-ia'),
-            'vertical' => __('Vertical', 'flavor-chat-ia'),
-            'transversal' => __('Transversal', 'flavor-chat-ia'),
+            'base' => __('Base', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'base-standalone' => __('Base local', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'vertical' => __('Vertical', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'transversal' => __('Transversal', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         return $labels[$role] ?? ucfirst((string) $role);
@@ -1038,12 +1039,12 @@ class Flavor_Unified_Modules_View {
 
     private function get_ecosystem_relation_groups($relations) {
         $labels = [
-            'depends_on' => __('Depende de', 'flavor-chat-ia'),
-            'supports_modules' => __('Soporta', 'flavor-chat-ia'),
-            'measures_modules' => __('Mide', 'flavor-chat-ia'),
-            'governs_modules' => __('Gobierna', 'flavor-chat-ia'),
-            'teaches_modules' => __('Enseña', 'flavor-chat-ia'),
-            'base_for_modules' => __('Base de', 'flavor-chat-ia'),
+            'depends_on' => __('Depende de', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'supports_modules' => __('Soporta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'measures_modules' => __('Mide', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'governs_modules' => __('Gobierna', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'teaches_modules' => __('Enseña', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'base_for_modules' => __('Base de', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $groups = [];
@@ -1069,18 +1070,18 @@ class Flavor_Unified_Modules_View {
     private function get_recommended_ecosystem_packs($active_modules, $registered_modules = []) {
         $packs = [
             [
-                'title' => __('Autosuficiencia local', 'flavor-chat-ia'),
-                'description' => __('Combina comunidad, energía, impacto y consumo local para construir resiliencia territorial.', 'flavor-chat-ia'),
+                'title' => __('Autosuficiencia local', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Combina comunidad, energía, impacto y consumo local para construir resiliencia territorial.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'modules' => ['comunidades', 'energia_comunitaria', 'huella_ecologica', 'grupos_consumo'],
             ],
             [
-                'title' => __('Red de cuidados', 'flavor-chat-ia'),
-                'description' => __('Activa ayuda mutua, tiempo compartido y tejido social de proximidad.', 'flavor-chat-ia'),
+                'title' => __('Red de cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Activa ayuda mutua, tiempo compartido y tejido social de proximidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'modules' => ['comunidades', 'ayuda_vecinal', 'banco_tiempo', 'eventos'],
             ],
             [
-                'title' => __('Mercado regenerativo', 'flavor-chat-ia'),
-                'description' => __('Articula consumo local, transparencia e impacto para economía circular y cooperativa.', 'flavor-chat-ia'),
+                'title' => __('Mercado regenerativo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Articula consumo local, transparencia e impacto para economía circular y cooperativa.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'modules' => ['grupos_consumo', 'marketplace', 'transparencia', 'economia_suficiencia'],
             ],
         ];
@@ -1178,7 +1179,7 @@ class Flavor_Unified_Modules_View {
 
             $packs[] = [
                 'title' => sprintf(
-                    __('Expandir %s', 'flavor-chat-ia'),
+                    __('Expandir %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $module_name
                 ),
                 'description' => $this->build_dynamic_pack_description($module_name, $ecosystem, $used_relations),
@@ -1215,12 +1216,12 @@ class Flavor_Unified_Modules_View {
     private function build_dynamic_pack_description($module_name, $ecosystem, $used_relations) {
         $role = $ecosystem['module_role'] ?? 'vertical';
         $relation_labels = [
-            'depends_on' => __('dependencias', 'flavor-chat-ia'),
-            'supports_modules' => __('soportes', 'flavor-chat-ia'),
-            'measures_modules' => __('metricas', 'flavor-chat-ia'),
-            'governs_modules' => __('gobernanza', 'flavor-chat-ia'),
-            'teaches_modules' => __('aprendizaje', 'flavor-chat-ia'),
-            'base_for_modules' => __('extensiones base', 'flavor-chat-ia'),
+            'depends_on' => __('dependencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'supports_modules' => __('soportes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'measures_modules' => __('metricas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'governs_modules' => __('gobernanza', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'teaches_modules' => __('aprendizaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'base_for_modules' => __('extensiones base', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $used_labels = array_values(array_unique(array_filter(array_map(function ($relation_key) use ($relation_labels) {
@@ -1232,22 +1233,22 @@ class Flavor_Unified_Modules_View {
         switch ($role) {
             case 'base':
                 return sprintf(
-                    __('Despliega capacidades alrededor de %1$s conectando %2$s.', 'flavor-chat-ia'),
+                    __('Despliega capacidades alrededor de %1$s conectando %2$s.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $module_name,
-                    $relations_text !== '' ? $relations_text : __('modulos relacionados', 'flavor-chat-ia')
+                    $relations_text !== '' ? $relations_text : __('modulos relacionados', FLAVOR_PLATFORM_TEXT_DOMAIN)
                 );
             case 'transversal':
                 return sprintf(
-                    __('Amplia %1$s como capa transversal para reforzar %2$s.', 'flavor-chat-ia'),
+                    __('Amplia %1$s como capa transversal para reforzar %2$s.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $module_name,
-                    $relations_text !== '' ? $relations_text : __('otros modulos del ecosistema', 'flavor-chat-ia')
+                    $relations_text !== '' ? $relations_text : __('otros modulos del ecosistema', FLAVOR_PLATFORM_TEXT_DOMAIN)
                 );
             case 'vertical':
             default:
                 return sprintf(
-                    __('Extiende %1$s con %2$s para cerrar mejor el flujo operativo.', 'flavor-chat-ia'),
+                    __('Extiende %1$s con %2$s para cerrar mejor el flujo operativo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $module_name,
-                    $relations_text !== '' ? $relations_text : __('modulos complementarios', 'flavor-chat-ia')
+                    $relations_text !== '' ? $relations_text : __('modulos complementarios', FLAVOR_PLATFORM_TEXT_DOMAIN)
                 );
         }
     }
@@ -1281,12 +1282,12 @@ class Flavor_Unified_Modules_View {
     private function get_pack_badge_label($pack) {
         switch ($pack['pack_state']) {
             case 'complete':
-                return __('Activo', 'flavor-chat-ia');
+                return __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN);
             case 'suggested':
-                return __('Siguiente paso', 'flavor-chat-ia');
+                return __('Siguiente paso', FLAVOR_PLATFORM_TEXT_DOMAIN);
             case 'starter':
             default:
-                return __('Pack base', 'flavor-chat-ia');
+                return __('Pack base', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
     }
 
@@ -1306,7 +1307,7 @@ class Flavor_Unified_Modules_View {
         if ($pack['pack_state'] === 'suggested' && !empty($pack['overlap_modules'])) {
             $names = array_map([$this, 'format_module_label'], array_slice($pack['overlap_modules'], 0, 2));
             return sprintf(
-                __('Ya tienes %1$d/%2$d modulos activos. Encaja con: %3$s', 'flavor-chat-ia'),
+                __('Ya tienes %1$d/%2$d modulos activos. Encaja con: %3$s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $pack['active_count'],
                 $pack['total_count'],
                 implode(', ', $names)
@@ -1314,24 +1315,24 @@ class Flavor_Unified_Modules_View {
         }
 
         if ($pack['pack_state'] === 'complete') {
-            return __('Ya tienes este pack completo y operativo.', 'flavor-chat-ia');
+            return __('Ya tienes este pack completo y operativo.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
-        return __('Buen punto de partida si quieres activar esta capacidad del ecosistema desde cero.', 'flavor-chat-ia');
+        return __('Buen punto de partida si quieres activar esta capacidad del ecosistema desde cero.', FLAVOR_PLATFORM_TEXT_DOMAIN);
     }
 
     private function get_active_ecosystem_summary($registered_modules, $active_modules) {
         $summary = [
             'base' => [
-                'title' => __('Bases activas', 'flavor-chat-ia'),
+                'title' => __('Bases activas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'modules' => [],
             ],
             'vertical' => [
-                'title' => __('Verticales activos', 'flavor-chat-ia'),
+                'title' => __('Verticales activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'modules' => [],
             ],
             'transversal' => [
-                'title' => __('Transversales activos', 'flavor-chat-ia'),
+                'title' => __('Transversales activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'modules' => [],
             ],
         ];
@@ -1368,18 +1369,18 @@ class Flavor_Unified_Modules_View {
     private function get_ecosystem_gap_summary($registered_modules, $active_modules) {
         $groups = [
             'dependencies' => [
-                'title' => __('Dependencias faltantes', 'flavor-chat-ia'),
-                'description' => __('Modulos necesarios para que algunas piezas activas funcionen con mejor coherencia.', 'flavor-chat-ia'),
+                'title' => __('Dependencias faltantes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Modulos necesarios para que algunas piezas activas funcionen con mejor coherencia.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'modules' => [],
             ],
             'extensions' => [
-                'title' => __('Extensiones relacionadas', 'flavor-chat-ia'),
-                'description' => __('Modulos conectados a lo que ya tienes activo y que ampliarían el ecosistema.', 'flavor-chat-ia'),
+                'title' => __('Extensiones relacionadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Modulos conectados a lo que ya tienes activo y que ampliarían el ecosistema.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'modules' => [],
             ],
             'transversal' => [
-                'title' => __('Capas transversales ausentes', 'flavor-chat-ia'),
-                'description' => __('Gobernanza, metricas o aprendizaje que completarían mejor las capacidades actuales.', 'flavor-chat-ia'),
+                'title' => __('Capas transversales ausentes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Gobernanza, metricas o aprendizaje que completarían mejor las capacidades actuales.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'modules' => [],
             ],
         ];
@@ -1461,12 +1462,12 @@ class Flavor_Unified_Modules_View {
 
     private function get_ecosystem_map($registered_modules, $active_modules) {
         $relation_labels = [
-            'depends_on' => __('Depende de', 'flavor-chat-ia'),
-            'supports_modules' => __('Soporta', 'flavor-chat-ia'),
-            'measures_modules' => __('Mide', 'flavor-chat-ia'),
-            'governs_modules' => __('Gobierna', 'flavor-chat-ia'),
-            'teaches_modules' => __('Enseña', 'flavor-chat-ia'),
-            'base_for_modules' => __('Base de', 'flavor-chat-ia'),
+            'depends_on' => __('Depende de', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'supports_modules' => __('Soporta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'measures_modules' => __('Mide', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'governs_modules' => __('Gobierna', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'teaches_modules' => __('Enseña', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'base_for_modules' => __('Base de', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $nodes = [];
@@ -1666,7 +1667,7 @@ class Flavor_Unified_Modules_View {
         } else {
             array_unshift($paginas, [
                 'slug' => $mapped_slug,
-                'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => $mapped_url,
                 'icon' => 'dashicons-dashboard',
             ]);
@@ -1692,142 +1693,142 @@ class Flavor_Unified_Modules_View {
     private function get_known_admin_pages($modulo_id) {
         $paginas_por_modulo = [
             'grupos_consumo' => [
-                ['slug' => 'grupos-consumo', 'titulo' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashicons-dashboard'],
-                ['slug' => 'gc-consumidores', 'titulo' => __('Consumidores', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
-                ['slug' => 'gc-pedidos', 'titulo' => __('Pedidos', 'flavor-chat-ia'), 'icon' => 'dashicons-cart'],
-                ['slug' => 'gc-consolidado', 'titulo' => __('Consolidado', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
-                ['slug' => 'gc-reportes', 'titulo' => __('Reportes', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
-                ['slug' => 'gc-configuracion', 'titulo' => __('Configuración', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-generic'],
+                ['slug' => 'grupos-consumo', 'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-dashboard'],
+                ['slug' => 'gc-consumidores', 'titulo' => __('Consumidores', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-groups'],
+                ['slug' => 'gc-pedidos', 'titulo' => __('Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-cart'],
+                ['slug' => 'gc-consolidado', 'titulo' => __('Consolidado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-list-view'],
+                ['slug' => 'gc-reportes', 'titulo' => __('Reportes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-chart-bar'],
+                ['slug' => 'gc-configuracion', 'titulo' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-generic'],
             ],
             'email_marketing' => [
-                ['slug' => 'flavor-email-marketing', 'titulo' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashicons-dashboard'],
-                ['slug' => 'flavor-email-campaigns', 'titulo' => __('Campañas', 'flavor-chat-ia'), 'icon' => 'dashicons-email'],
-                ['slug' => 'flavor-email-lists', 'titulo' => __('Listas', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
-                ['slug' => 'flavor-email-templates', 'titulo' => __('Plantillas', 'flavor-chat-ia'), 'icon' => 'dashicons-media-text'],
+                ['slug' => 'flavor-email-marketing', 'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-dashboard'],
+                ['slug' => 'flavor-email-campaigns', 'titulo' => __('Campañas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-email'],
+                ['slug' => 'flavor-email-lists', 'titulo' => __('Listas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-groups'],
+                ['slug' => 'flavor-email-templates', 'titulo' => __('Plantillas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-media-text'],
             ],
             'banco_tiempo' => [
-                ['slug' => 'banco-tiempo', 'titulo' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashicons-dashboard'],
-                ['slug' => 'bt-servicios', 'titulo' => __('Servicios', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard'],
-                ['slug' => 'bt-intercambios', 'titulo' => __('Intercambios', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize'],
-                ['slug' => 'bt-usuarios', 'titulo' => __('Usuarios', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                ['slug' => 'banco-tiempo', 'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-dashboard'],
+                ['slug' => 'bt-servicios', 'titulo' => __('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-clipboard'],
+                ['slug' => 'bt-intercambios', 'titulo' => __('Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-randomize'],
+                ['slug' => 'bt-usuarios', 'titulo' => __('Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-groups'],
             ],
             'comunidades' => [
-                ['slug' => 'comunidades', 'titulo' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashicons-dashboard'],
-                ['slug' => 'comunidades-listado', 'titulo' => __('Listado', 'flavor-chat-ia'), 'icon' => 'dashicons-networking'],
-                ['slug' => 'comunidades-actividad', 'titulo' => __('Actividad', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line'],
-                ['slug' => 'comunidades-metricas', 'titulo' => __('Métricas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
+                ['slug' => 'comunidades', 'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-dashboard'],
+                ['slug' => 'comunidades-listado', 'titulo' => __('Listado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-networking'],
+                ['slug' => 'comunidades-actividad', 'titulo' => __('Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-chart-line'],
+                ['slug' => 'comunidades-metricas', 'titulo' => __('Métricas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-chart-bar'],
             ],
             'colectivos' => [
-                ['slug' => 'colectivos', 'titulo' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashicons-dashboard'],
-                ['slug' => 'colectivos-listado', 'titulo' => __('Listado', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
-                ['slug' => 'colectivos-proyectos', 'titulo' => __('Proyectos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio'],
-                ['slug' => 'colectivos-asambleas', 'titulo' => __('Asambleas', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone'],
+                ['slug' => 'colectivos', 'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-dashboard'],
+                ['slug' => 'colectivos-listado', 'titulo' => __('Listado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-groups'],
+                ['slug' => 'colectivos-proyectos', 'titulo' => __('Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-portfolio'],
+                ['slug' => 'colectivos-asambleas', 'titulo' => __('Asambleas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-megaphone'],
             ],
             'eventos' => [
-                ['slug' => 'eventos', 'titulo' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashicons-dashboard'],
-                ['slug' => 'eventos-listado', 'titulo' => __('Eventos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
-                ['slug' => 'eventos-calendario', 'titulo' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
-                ['slug' => 'eventos-asistentes', 'titulo' => __('Asistentes', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
-                ['slug' => 'eventos-entradas', 'titulo' => __('Entradas', 'flavor-chat-ia'), 'icon' => 'dashicons-tickets-alt'],
+                ['slug' => 'eventos', 'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-dashboard'],
+                ['slug' => 'eventos-listado', 'titulo' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-calendar'],
+                ['slug' => 'eventos-calendario', 'titulo' => __('Calendario', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-calendar-alt'],
+                ['slug' => 'eventos-asistentes', 'titulo' => __('Asistentes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-groups'],
+                ['slug' => 'eventos-entradas', 'titulo' => __('Entradas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-tickets-alt'],
             ],
             'cursos' => [
-                ['slug' => 'cursos', 'titulo' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashicons-dashboard'],
-                ['slug' => 'cursos-listado', 'titulo' => __('Cursos', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-learn-more'],
-                ['slug' => 'cursos-alumnos', 'titulo' => __('Alumnos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
-                ['slug' => 'cursos-instructores', 'titulo' => __('Instructores', 'flavor-chat-ia'), 'icon' => 'dashicons-businessman'],
-                ['slug' => 'cursos-matriculas', 'titulo' => __('Matrículas', 'flavor-chat-ia'), 'icon' => 'dashicons-id-alt'],
+                ['slug' => 'cursos', 'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-dashboard'],
+                ['slug' => 'cursos-listado', 'titulo' => __('Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-welcome-learn-more'],
+                ['slug' => 'cursos-alumnos', 'titulo' => __('Alumnos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-groups'],
+                ['slug' => 'cursos-instructores', 'titulo' => __('Instructores', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-businessman'],
+                ['slug' => 'cursos-matriculas', 'titulo' => __('Matrículas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-id-alt'],
             ],
             'marketplace' => [
-                ['slug' => 'marketplace', 'titulo' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashicons-dashboard'],
-                ['slug' => 'marketplace-productos', 'titulo' => __('Productos', 'flavor-chat-ia'), 'icon' => 'dashicons-products'],
-                ['slug' => 'marketplace-ventas', 'titulo' => __('Ventas', 'flavor-chat-ia'), 'icon' => 'dashicons-cart'],
-                ['slug' => 'marketplace-vendedores', 'titulo' => __('Vendedores', 'flavor-chat-ia'), 'icon' => 'dashicons-store'],
-                ['slug' => 'marketplace-categorias', 'titulo' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
+                ['slug' => 'marketplace', 'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-dashboard'],
+                ['slug' => 'marketplace-productos', 'titulo' => __('Productos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-products'],
+                ['slug' => 'marketplace-ventas', 'titulo' => __('Ventas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-cart'],
+                ['slug' => 'marketplace-vendedores', 'titulo' => __('Vendedores', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-store'],
+                ['slug' => 'marketplace-categorias', 'titulo' => __('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-category'],
             ],
             'talleres' => [
-                ['slug' => 'talleres', 'titulo' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashicons-dashboard'],
-                ['slug' => 'talleres-listado', 'titulo' => __('Talleres', 'flavor-chat-ia'), 'icon' => 'dashicons-hammer'],
-                ['slug' => 'talleres-inscripciones', 'titulo' => __('Inscripciones', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard'],
-                ['slug' => 'talleres-materiales', 'titulo' => __('Materiales', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
+                ['slug' => 'talleres', 'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-dashboard'],
+                ['slug' => 'talleres-listado', 'titulo' => __('Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-hammer'],
+                ['slug' => 'talleres-inscripciones', 'titulo' => __('Inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-clipboard'],
+                ['slug' => 'talleres-materiales', 'titulo' => __('Materiales', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-media-document'],
             ],
             'reservas' => [
-                ['slug' => 'reservas', 'titulo' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashicons-dashboard'],
-                ['slug' => 'reservas-listado', 'titulo' => __('Reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
-                ['slug' => 'reservas-recursos', 'titulo' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-home'],
-                ['slug' => 'reservas-calendario', 'titulo' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
+                ['slug' => 'reservas', 'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-dashboard'],
+                ['slug' => 'reservas-listado', 'titulo' => __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-calendar-alt'],
+                ['slug' => 'reservas-recursos', 'titulo' => __('Recursos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-home'],
+                ['slug' => 'reservas-calendario', 'titulo' => __('Calendario', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-calendar'],
             ],
             'socios' => [
-                ['slug' => 'socios', 'titulo' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashicons-dashboard'],
-                ['slug' => 'socios-listado', 'titulo' => __('Listado', 'flavor-chat-ia'), 'icon' => 'dashicons-id-alt'],
-                ['slug' => 'socios-cuotas', 'titulo' => __('Cuotas', 'flavor-chat-ia'), 'icon' => 'dashicons-money'],
-                ['slug' => 'socios-pagos', 'titulo' => __('Pagos', 'flavor-chat-ia'), 'icon' => 'dashicons-money-alt'],
+                ['slug' => 'socios', 'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-dashboard'],
+                ['slug' => 'socios-listado', 'titulo' => __('Listado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-id-alt'],
+                ['slug' => 'socios-cuotas', 'titulo' => __('Cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-money'],
+                ['slug' => 'socios-pagos', 'titulo' => __('Pagos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-money-alt'],
             ],
             'incidencias' => [
-                ['slug' => 'incidencias', 'titulo' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashicons-dashboard'],
-                ['slug' => 'incidencias-tickets', 'titulo' => __('Tickets', 'flavor-chat-ia'), 'icon' => 'dashicons-warning'],
-                ['slug' => 'incidencias-categorias', 'titulo' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
-                ['slug' => 'incidencias-estadisticas', 'titulo' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
+                ['slug' => 'incidencias', 'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-dashboard'],
+                ['slug' => 'incidencias-tickets', 'titulo' => __('Tickets', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-warning'],
+                ['slug' => 'incidencias-categorias', 'titulo' => __('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-category'],
+                ['slug' => 'incidencias-estadisticas', 'titulo' => __('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-chart-bar'],
             ],
             'foros' => [
-                ['slug' => 'foros', 'titulo' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashicons-dashboard'],
-                ['slug' => 'foros-listado', 'titulo' => __('Foros', 'flavor-chat-ia'), 'icon' => 'dashicons-format-chat'],
-                ['slug' => 'foros-hilos', 'titulo' => __('Hilos', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments'],
-                ['slug' => 'foros-moderacion', 'titulo' => __('Moderación', 'flavor-chat-ia'), 'icon' => 'dashicons-shield'],
+                ['slug' => 'foros', 'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-dashboard'],
+                ['slug' => 'foros-listado', 'titulo' => __('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-format-chat'],
+                ['slug' => 'foros-hilos', 'titulo' => __('Hilos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-comments'],
+                ['slug' => 'foros-moderacion', 'titulo' => __('Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-shield'],
             ],
             'podcast' => [
-                ['slug' => 'podcast', 'titulo' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashicons-dashboard'],
-                ['slug' => 'podcast-series', 'titulo' => __('Series', 'flavor-chat-ia'), 'icon' => 'dashicons-playlist-audio'],
-                ['slug' => 'podcast-episodios', 'titulo' => __('Episodios', 'flavor-chat-ia'), 'icon' => 'dashicons-microphone'],
-                ['slug' => 'podcast-suscriptores', 'titulo' => __('Suscriptores', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
-                ['slug' => 'podcast-estadisticas', 'titulo' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
+                ['slug' => 'podcast', 'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-dashboard'],
+                ['slug' => 'podcast-series', 'titulo' => __('Series', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-playlist-audio'],
+                ['slug' => 'podcast-episodios', 'titulo' => __('Episodios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-microphone'],
+                ['slug' => 'podcast-suscriptores', 'titulo' => __('Suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-groups'],
+                ['slug' => 'podcast-estadisticas', 'titulo' => __('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-chart-bar'],
             ],
             'multimedia' => [
-                ['slug' => 'multimedia', 'titulo' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashicons-dashboard'],
-                ['slug' => 'multimedia-galeria', 'titulo' => __('Galería', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery'],
-                ['slug' => 'multimedia-albumes', 'titulo' => __('Álbumes', 'flavor-chat-ia'), 'icon' => 'dashicons-images-alt2'],
-                ['slug' => 'multimedia-categorias', 'titulo' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
-                ['slug' => 'multimedia-moderacion', 'titulo' => __('Moderación', 'flavor-chat-ia'), 'icon' => 'dashicons-shield'],
+                ['slug' => 'multimedia', 'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-dashboard'],
+                ['slug' => 'multimedia-galeria', 'titulo' => __('Galería', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-format-gallery'],
+                ['slug' => 'multimedia-albumes', 'titulo' => __('Álbumes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-images-alt2'],
+                ['slug' => 'multimedia-categorias', 'titulo' => __('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-category'],
+                ['slug' => 'multimedia-moderacion', 'titulo' => __('Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-shield'],
             ],
             'red_social' => [
-                ['slug' => 'red-social', 'titulo' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashicons-dashboard'],
-                ['slug' => 'red-social-publicaciones', 'titulo' => __('Publicaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-format-status'],
-                ['slug' => 'red-social-usuarios', 'titulo' => __('Usuarios', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
-                ['slug' => 'red-social-moderacion', 'titulo' => __('Moderación', 'flavor-chat-ia'), 'icon' => 'dashicons-shield'],
+                ['slug' => 'red-social', 'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-dashboard'],
+                ['slug' => 'red-social-publicaciones', 'titulo' => __('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-format-status'],
+                ['slug' => 'red-social-usuarios', 'titulo' => __('Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-groups'],
+                ['slug' => 'red-social-moderacion', 'titulo' => __('Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-shield'],
             ],
             'ayuda_vecinal' => [
-                ['slug' => 'ayuda-vecinal', 'titulo' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashicons-dashboard'],
-                ['slug' => 'ayuda-solicitudes', 'titulo' => __('Solicitudes', 'flavor-chat-ia'), 'icon' => 'dashicons-heart'],
-                ['slug' => 'ayuda-voluntarios', 'titulo' => __('Voluntarios', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
-                ['slug' => 'ayuda-matches', 'titulo' => __('Matches', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize'],
-                ['slug' => 'ayuda-estadisticas', 'titulo' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
+                ['slug' => 'ayuda-vecinal', 'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-dashboard'],
+                ['slug' => 'ayuda-solicitudes', 'titulo' => __('Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-heart'],
+                ['slug' => 'ayuda-voluntarios', 'titulo' => __('Voluntarios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-groups'],
+                ['slug' => 'ayuda-matches', 'titulo' => __('Matches', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-randomize'],
+                ['slug' => 'ayuda-estadisticas', 'titulo' => __('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-chart-bar'],
             ],
             'espacios_comunes' => [
-                ['slug' => 'espacios-comunes', 'titulo' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashicons-dashboard'],
-                ['slug' => 'ec-espacios', 'titulo' => __('Espacios', 'flavor-chat-ia'), 'icon' => 'dashicons-building'],
-                ['slug' => 'ec-reservas', 'titulo' => __('Reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
-                ['slug' => 'ec-calendario', 'titulo' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
-                ['slug' => 'ec-normas', 'titulo' => __('Normas', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard'],
+                ['slug' => 'espacios-comunes', 'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-dashboard'],
+                ['slug' => 'ec-espacios', 'titulo' => __('Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-building'],
+                ['slug' => 'ec-reservas', 'titulo' => __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-calendar-alt'],
+                ['slug' => 'ec-calendario', 'titulo' => __('Calendario', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-calendar'],
+                ['slug' => 'ec-normas', 'titulo' => __('Normas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-clipboard'],
             ],
             'huertos_urbanos' => [
-                ['slug' => 'huertos-urbanos', 'titulo' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashicons-dashboard'],
-                ['slug' => 'hu-parcelas', 'titulo' => __('Parcelas', 'flavor-chat-ia'), 'icon' => 'dashicons-grid-view'],
-                ['slug' => 'hu-huertanos', 'titulo' => __('Huertanos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
-                ['slug' => 'hu-cosechas', 'titulo' => __('Cosechas', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot'],
-                ['slug' => 'hu-recursos', 'titulo' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-tools'],
+                ['slug' => 'huertos-urbanos', 'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-dashboard'],
+                ['slug' => 'hu-parcelas', 'titulo' => __('Parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-grid-view'],
+                ['slug' => 'hu-huertanos', 'titulo' => __('Huertanos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-groups'],
+                ['slug' => 'hu-cosechas', 'titulo' => __('Cosechas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-carrot'],
+                ['slug' => 'hu-recursos', 'titulo' => __('Recursos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-admin-tools'],
             ],
             'participacion' => [
-                ['slug' => 'participacion', 'titulo' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashicons-dashboard'],
-                ['slug' => 'part-propuestas', 'titulo' => __('Propuestas', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb'],
-                ['slug' => 'part-votaciones', 'titulo' => __('Votaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-yes'],
-                ['slug' => 'part-debates', 'titulo' => __('Debates', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone'],
-                ['slug' => 'part-resultados', 'titulo' => __('Resultados', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie'],
+                ['slug' => 'participacion', 'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-dashboard'],
+                ['slug' => 'part-propuestas', 'titulo' => __('Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-lightbulb'],
+                ['slug' => 'part-votaciones', 'titulo' => __('Votaciones', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-yes'],
+                ['slug' => 'part-debates', 'titulo' => __('Debates', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-megaphone'],
+                ['slug' => 'part-resultados', 'titulo' => __('Resultados', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-chart-pie'],
             ],
             'presupuestos_participativos' => [
-                ['slug' => 'presupuestos-participativos', 'titulo' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashicons-dashboard'],
-                ['slug' => 'pp-proyectos', 'titulo' => __('Proyectos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio'],
-                ['slug' => 'pp-presupuesto', 'titulo' => __('Presupuesto', 'flavor-chat-ia'), 'icon' => 'dashicons-money-alt'],
-                ['slug' => 'pp-votos', 'titulo' => __('Votos', 'flavor-chat-ia'), 'icon' => 'dashicons-yes-alt'],
-                ['slug' => 'pp-resultados', 'titulo' => __('Resultados', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
+                ['slug' => 'presupuestos-participativos', 'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-dashboard'],
+                ['slug' => 'pp-proyectos', 'titulo' => __('Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-portfolio'],
+                ['slug' => 'pp-presupuesto', 'titulo' => __('Presupuesto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-money-alt'],
+                ['slug' => 'pp-votos', 'titulo' => __('Votos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-yes-alt'],
+                ['slug' => 'pp-resultados', 'titulo' => __('Resultados', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-chart-bar'],
             ],
         ];
 
@@ -1900,7 +1901,7 @@ class Flavor_Unified_Modules_View {
         check_ajax_referer('fum_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos suficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos suficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $modulo_id = sanitize_key($_POST['module_id'] ?? '');
@@ -1910,11 +1911,12 @@ class Flavor_Unified_Modules_View {
         error_log("FUM Toggle Module: module_id={$modulo_id}, activate=" . ($activate ? 'true' : 'false'));
 
         if (empty($modulo_id)) {
-            wp_send_json_error(['message' => __('ID de módulo inválido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID de módulo inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // CRÍTICO: Limpiar caché de opciones antes de leer
-        wp_cache_delete('flavor_chat_ia_settings', 'options');
+        wp_cache_delete(FLAVOR_CHAT_IA_SETTINGS_OPTION, 'options');
+        wp_cache_delete(FLAVOR_PLATFORM_SETTINGS_OPTION, 'options');
         wp_cache_delete('alloptions', 'options');
 
         // Leer directamente de BD para evitar problemas de caché
@@ -1922,7 +1924,7 @@ class Flavor_Unified_Modules_View {
         $configuracion_raw = $wpdb->get_var(
             $wpdb->prepare(
                 "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s",
-                'flavor_chat_ia_settings'
+                FLAVOR_CHAT_IA_SETTINGS_OPTION
             )
         );
         $configuracion = $configuracion_raw ? maybe_unserialize($configuracion_raw) : [];
@@ -1955,7 +1957,7 @@ class Flavor_Unified_Modules_View {
         } else {
             // No permitir desactivar módulos requeridos
             if (in_array($modulo_id, $modulos_requeridos)) {
-                wp_send_json_error(['message' => __('No se puede desactivar un módulo requerido por el perfil activo', 'flavor-chat-ia')]);
+                wp_send_json_error(['message' => __('No se puede desactivar un módulo requerido por el perfil activo', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             }
             // Desactivar módulo
             $modulos_activos = array_values(array_diff($modulos_activos, [$modulo_id]));
@@ -1976,25 +1978,38 @@ class Flavor_Unified_Modules_View {
         $resultado_guardado = $wpdb->update(
             $wpdb->options,
             ['option_value' => $valor_serializado],
-            ['option_name' => 'flavor_chat_ia_settings'],
+            ['option_name' => FLAVOR_CHAT_IA_SETTINGS_OPTION],
             ['%s'],
             ['%s']
         );
 
+        if ($resultado_guardado !== false) {
+            $wpdb->replace(
+                $wpdb->options,
+                [
+                    'option_name'  => FLAVOR_PLATFORM_SETTINGS_OPTION,
+                    'option_value' => $valor_serializado,
+                    'autoload'     => 'yes',
+                ],
+                ['%s', '%s', '%s']
+            );
+        }
+
         if ($resultado_guardado === false) {
             error_log("FUM ERROR: Fallo al guardar en BD - " . $wpdb->last_error);
-            wp_send_json_error(['message' => __('Error al guardar configuración', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al guardar configuración', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Limpiar caché después de guardar
-        wp_cache_delete('flavor_chat_ia_settings', 'options');
+        wp_cache_delete(FLAVOR_CHAT_IA_SETTINGS_OPTION, 'options');
+        wp_cache_delete(FLAVOR_PLATFORM_SETTINGS_OPTION, 'options');
         wp_cache_delete('alloptions', 'options');
 
         // Verificar lectura directa
         $verificacion_raw = $wpdb->get_var(
             $wpdb->prepare(
                 "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s",
-                'flavor_chat_ia_settings'
+                FLAVOR_CHAT_IA_SETTINGS_OPTION
             )
         );
         $verificacion = maybe_unserialize($verificacion_raw);
@@ -2020,8 +2035,8 @@ class Flavor_Unified_Modules_View {
 
         wp_send_json_success([
             'message' => $activate
-                ? __('Módulo activado', 'flavor-chat-ia')
-                : __('Módulo desactivado', 'flavor-chat-ia'),
+                ? __('Módulo activado', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                : __('Módulo desactivado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'module_id' => $modulo_id,
             'is_active' => $activate,
         ]);
@@ -2034,7 +2049,7 @@ class Flavor_Unified_Modules_View {
         check_ajax_referer('fum_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos suficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos suficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $modulo_id = sanitize_key($_POST['module_id'] ?? '');
@@ -2042,7 +2057,7 @@ class Flavor_Unified_Modules_View {
         $capability = isset($_POST['capability']) ? sanitize_key($_POST['capability']) : null;
 
         if (empty($modulo_id)) {
-            wp_send_json_error(['message' => __('ID de módulo inválido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID de módulo inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Guardar visibilidad si se proporciona
@@ -2068,7 +2083,7 @@ class Flavor_Unified_Modules_View {
         }
 
         wp_send_json_success([
-            'message' => __('Configuración guardada', 'flavor-chat-ia'),
+            'message' => __('Configuración guardada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'module_id' => $modulo_id,
         ]);
     }
@@ -2080,13 +2095,13 @@ class Flavor_Unified_Modules_View {
         check_ajax_referer('fum_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos suficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos suficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $modulo_id = sanitize_key($_POST['module_id'] ?? '');
 
         if (empty($modulo_id)) {
-            wp_send_json_error(['message' => __('ID de módulo inválido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID de módulo inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $modulo_slug = str_replace('_', '-', $modulo_id);
@@ -2095,7 +2110,7 @@ class Flavor_Unified_Modules_View {
         $pagina_existente = get_page_by_path($modulo_slug);
         if ($pagina_existente) {
             wp_send_json_success([
-                'message' => __('La landing ya existe', 'flavor-chat-ia'),
+                'message' => __('La landing ya existe', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => get_permalink($pagina_existente->ID),
                 'edit_url' => get_edit_post_link($pagina_existente->ID),
             ]);
@@ -2123,7 +2138,7 @@ class Flavor_Unified_Modules_View {
         }
 
         wp_send_json_success([
-            'message' => __('Landing creada correctamente', 'flavor-chat-ia'),
+            'message' => __('Landing creada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'page_id' => $page_id,
             'url' => get_permalink($page_id),
             'edit_url' => get_edit_post_link($page_id),

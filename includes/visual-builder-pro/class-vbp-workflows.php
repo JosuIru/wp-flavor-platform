@@ -79,7 +79,7 @@ class Flavor_VBP_Workflows {
      */
     public function register_post_statuses() {
         register_post_status( 'pending_review', array(
-            'label'                     => _x( 'Pending Review', 'post status', 'flavor-chat-ia' ),
+            'label'                     => _x( 'Pending Review', 'post status', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'public'                    => false,
             'exclude_from_search'       => true,
             'show_in_admin_all_list'    => true,
@@ -87,12 +87,12 @@ class Flavor_VBP_Workflows {
             'label_count'               => _n_noop(
                 'Pending Review <span class="count">(%s)</span>',
                 'Pending Review <span class="count">(%s)</span>',
-                'flavor-chat-ia'
+                FLAVOR_PLATFORM_TEXT_DOMAIN
             ),
         ) );
 
         register_post_status( 'changes_requested', array(
-            'label'                     => _x( 'Changes Requested', 'post status', 'flavor-chat-ia' ),
+            'label'                     => _x( 'Changes Requested', 'post status', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'public'                    => false,
             'exclude_from_search'       => true,
             'show_in_admin_all_list'    => true,
@@ -100,12 +100,12 @@ class Flavor_VBP_Workflows {
             'label_count'               => _n_noop(
                 'Changes Requested <span class="count">(%s)</span>',
                 'Changes Requested <span class="count">(%s)</span>',
-                'flavor-chat-ia'
+                FLAVOR_PLATFORM_TEXT_DOMAIN
             ),
         ) );
 
         register_post_status( 'approved', array(
-            'label'                     => _x( 'Approved', 'post status', 'flavor-chat-ia' ),
+            'label'                     => _x( 'Approved', 'post status', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'public'                    => false,
             'exclude_from_search'       => true,
             'show_in_admin_all_list'    => true,
@@ -113,12 +113,12 @@ class Flavor_VBP_Workflows {
             'label_count'               => _n_noop(
                 'Approved <span class="count">(%s)</span>',
                 'Approved <span class="count">(%s)</span>',
-                'flavor-chat-ia'
+                FLAVOR_PLATFORM_TEXT_DOMAIN
             ),
         ) );
 
         register_post_status( 'scheduled', array(
-            'label'                     => _x( 'Scheduled', 'post status', 'flavor-chat-ia' ),
+            'label'                     => _x( 'Scheduled', 'post status', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'public'                    => false,
             'exclude_from_search'       => true,
             'show_in_admin_all_list'    => true,
@@ -126,7 +126,7 @@ class Flavor_VBP_Workflows {
             'label_count'               => _n_noop(
                 'Scheduled <span class="count">(%s)</span>',
                 'Scheduled <span class="count">(%s)</span>',
-                'flavor-chat-ia'
+                FLAVOR_PLATFORM_TEXT_DOMAIN
             ),
         ) );
     }

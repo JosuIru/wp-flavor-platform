@@ -98,7 +98,7 @@ class Flavor_Module_Shortcodes {
         $view = sanitize_title($atts['view']);
 
         if (empty($module_slug)) {
-            return '<div class="flavor-error">' . __('Error: Especifica un módulo [flavor module="X"]', 'flavor-chat-ia') . '</div>';
+            return '<div class="flavor-error">' . __('Error: Especifica un módulo [flavor module="X"]', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         // Verificar login para vistas personales
@@ -153,7 +153,7 @@ class Flavor_Module_Shortcodes {
             case 'user':
                 $config['user_id'] = !empty($atts['user']) ? intval($atts['user']) : get_current_user_id();
                 $config['show_header'] = false;
-                $config['empty_title'] = __('No tienes registros aún', 'flavor-chat-ia');
+                $config['empty_title'] = __('No tienes registros aún', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 return $renderer->render_auto($module_slug, $config);
 
             // === CALENDARIO ===
@@ -228,7 +228,7 @@ class Flavor_Module_Shortcodes {
             <div class="<?php echo esc_attr($gradient_classes); ?> rounded-t-xl p-4 text-white">
                 <div class="flex items-center gap-3">
                     <span class="text-2xl"><?php echo esc_html($icon); ?></span>
-                    <h3 class="text-lg font-bold"><?php echo esc_html($title); ?> - <?php esc_html_e('Calendario', 'flavor-chat-ia'); ?></h3>
+                    <h3 class="text-lg font-bold"><?php echo esc_html($title); ?> - <?php esc_html_e('Calendario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
             </div>
             <div class="bg-white rounded-b-xl shadow-lg p-4">
@@ -276,7 +276,7 @@ class Flavor_Module_Shortcodes {
             <div class="<?php echo esc_attr($gradient_classes); ?> rounded-t-xl p-4 text-white">
                 <div class="flex items-center gap-3">
                     <span class="text-2xl"><?php echo esc_html($icon); ?></span>
-                    <h3 class="text-lg font-bold"><?php echo esc_html($title); ?> - <?php esc_html_e('Mapa', 'flavor-chat-ia'); ?></h3>
+                    <h3 class="text-lg font-bold"><?php echo esc_html($title); ?> - <?php esc_html_e('Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
             </div>
             <div class="bg-white rounded-b-xl shadow-lg">
@@ -336,7 +336,7 @@ class Flavor_Module_Shortcodes {
             <div class="<?php echo esc_attr($gradient_classes); ?> rounded-t-xl p-4 text-white">
                 <div class="flex items-center gap-3">
                     <span class="text-2xl"><?php echo esc_html($icon); ?></span>
-                    <h3 class="text-lg font-bold"><?php echo esc_html($title); ?> - <?php esc_html_e('Estadísticas', 'flavor-chat-ia'); ?></h3>
+                    <h3 class="text-lg font-bold"><?php echo esc_html($title); ?> - <?php esc_html_e('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
             </div>
             <div class="bg-white rounded-b-xl shadow-lg p-6">
@@ -350,7 +350,7 @@ class Flavor_Module_Shortcodes {
                     <?php endforeach; ?>
                 </div>
                 <?php else: ?>
-                <p class="text-center text-gray-500"><?php esc_html_e('No hay estadísticas disponibles', 'flavor-chat-ia'); ?></p>
+                <p class="text-center text-gray-500"><?php esc_html_e('No hay estadísticas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php endif; ?>
             </div>
         </div>
@@ -1228,13 +1228,13 @@ class Flavor_Module_Shortcodes {
 
                         // Categorías
                         $data['categorias'] = [
-                            'infraestructura' => __('Infraestructura', 'flavor-chat-ia'),
-                            'medio_ambiente' => __('Medio Ambiente', 'flavor-chat-ia'),
-                            'cultura' => __('Cultura y Ocio', 'flavor-chat-ia'),
-                            'deporte' => __('Deporte', 'flavor-chat-ia'),
-                            'social' => __('Social', 'flavor-chat-ia'),
-                            'educacion' => __('Educación', 'flavor-chat-ia'),
-                            'accesibilidad' => __('Accesibilidad', 'flavor-chat-ia'),
+                            'infraestructura' => __('Infraestructura', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'medio_ambiente' => __('Medio Ambiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'cultura' => __('Cultura y Ocio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'deporte' => __('Deporte', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'social' => __('Social', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'educacion' => __('Educación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'accesibilidad' => __('Accesibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ];
                         break;
 
@@ -1320,8 +1320,8 @@ class Flavor_Module_Shortcodes {
         if ($type === 'user_items' && !empty($atts['user_filter'])) {
             $config['user_id'] = get_current_user_id();
             $config['show_header'] = false; // Sin header grande para vistas personales
-            $config['empty_title'] = __('No tienes registros aún', 'flavor-chat-ia');
-            $config['empty_text'] = __('Cuando tengas actividad, aparecerá aquí.', 'flavor-chat-ia');
+            $config['empty_title'] = __('No tienes registros aún', FLAVOR_PLATFORM_TEXT_DOMAIN);
+            $config['empty_text'] = __('Cuando tengas actividad, aparecerá aquí.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         if ($type === 'single' && !empty($atts['id'])) {
@@ -1374,13 +1374,13 @@ class Flavor_Module_Shortcodes {
     private function generate_basic_form_config($module_slug, $action) {
         $module_name = ucwords(str_replace('-', ' ', $module_slug));
         $action_labels = [
-            'crear' => __('Crear nuevo', 'flavor-chat-ia'),
-            'formulario' => __('Nuevo registro', 'flavor-chat-ia'),
-            'registrar' => __('Registrar', 'flavor-chat-ia'),
-            'proponer' => __('Nueva propuesta', 'flavor-chat-ia'),
-            'reportar' => __('Reportar', 'flavor-chat-ia'),
-            'crear-tema' => __('Nuevo tema', 'flavor-chat-ia'),
-            'formulario-suscripcion' => __('Suscribirse', 'flavor-chat-ia'),
+            'crear' => __('Crear nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'formulario' => __('Nuevo registro', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'registrar' => __('Registrar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'proponer' => __('Nueva propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'reportar' => __('Reportar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'crear-tema' => __('Nuevo tema', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'formulario-suscripcion' => __('Suscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $icons = [
@@ -1398,7 +1398,7 @@ class Flavor_Module_Shortcodes {
         ];
 
         return [
-            'title' => $action_labels[$action] ?? __('Nuevo registro', 'flavor-chat-ia'),
+            'title' => $action_labels[$action] ?? __('Nuevo registro', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'subtitle' => $module_name,
             'icon' => $icons[$module_slug] ?? '📝',
             'color' => 'primary',
@@ -1406,20 +1406,20 @@ class Flavor_Module_Shortcodes {
                 [
                     'name' => 'titulo',
                     'type' => 'text',
-                    'label' => __('Título', 'flavor-chat-ia'),
-                    'placeholder' => __('Escribe un título descriptivo', 'flavor-chat-ia'),
+                    'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'placeholder' => __('Escribe un título descriptivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'required' => true,
                 ],
                 [
                     'name' => 'descripcion',
                     'type' => 'textarea',
-                    'label' => __('Descripción', 'flavor-chat-ia'),
-                    'placeholder' => __('Describe con detalle...', 'flavor-chat-ia'),
+                    'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'placeholder' => __('Describe con detalle...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'required' => true,
                     'rows' => 5,
                 ],
             ],
-            'submit_text' => __('Enviar', 'flavor-chat-ia'),
+            'submit_text' => __('Enviar', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'cancel_url' => home_url('/' . $module_slug . '/'),
         ];
     }
@@ -1431,333 +1431,333 @@ class Flavor_Module_Shortcodes {
         return [
             'incidencias' => [
                 'reportar' => [
-                    'title' => __('Reportar Incidencia', 'flavor-chat-ia'),
-                    'subtitle' => __('Informa de un problema en tu barrio', 'flavor-chat-ia'),
+                    'title' => __('Reportar Incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Informa de un problema en tu barrio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon' => '⚠️',
                     'color' => 'error',
                     'fields' => [
-                        ['name' => 'titulo', 'type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'required' => true, 'placeholder' => __('Ej: Farola rota en Calle Mayor', 'flavor-chat-ia')],
-                        ['name' => 'categoria', 'type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'required' => true, 'options' => [
-                            'alumbrado' => __('Alumbrado', 'flavor-chat-ia'),
-                            'limpieza' => __('Limpieza', 'flavor-chat-ia'),
-                            'vias' => __('Vías y aceras', 'flavor-chat-ia'),
-                            'mobiliario' => __('Mobiliario urbano', 'flavor-chat-ia'),
-                            'zonas_verdes' => __('Zonas verdes', 'flavor-chat-ia'),
-                            'otro' => __('Otro', 'flavor-chat-ia'),
+                        ['name' => 'titulo', 'type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'placeholder' => __('Ej: Farola rota en Calle Mayor', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                        ['name' => 'categoria', 'type' => 'select', 'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'options' => [
+                            'alumbrado' => __('Alumbrado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'limpieza' => __('Limpieza', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'vias' => __('Vías y aceras', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'mobiliario' => __('Mobiliario urbano', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'zonas_verdes' => __('Zonas verdes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'otro' => __('Otro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ]],
-                        ['name' => 'descripcion', 'type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia'), 'required' => true, 'rows' => 4],
-                        ['name' => 'ubicacion', 'type' => 'text', 'label' => __('Ubicación', 'flavor-chat-ia'), 'required' => true, 'placeholder' => __('Calle, número, referencias...', 'flavor-chat-ia')],
-                        ['name' => 'imagen', 'type' => 'file', 'label' => __('Foto (opcional)', 'flavor-chat-ia'), 'accept' => 'image/*'],
-                        ['name' => 'urgencia', 'type' => 'select', 'label' => __('Urgencia', 'flavor-chat-ia'), 'options' => [
-                            'baja' => __('Baja', 'flavor-chat-ia'),
-                            'media' => __('Media', 'flavor-chat-ia'),
-                            'alta' => __('Alta', 'flavor-chat-ia'),
+                        ['name' => 'descripcion', 'type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'rows' => 4],
+                        ['name' => 'ubicacion', 'type' => 'text', 'label' => __('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'placeholder' => __('Calle, número, referencias...', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                        ['name' => 'imagen', 'type' => 'file', 'label' => __('Foto (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'accept' => 'image/*'],
+                        ['name' => 'urgencia', 'type' => 'select', 'label' => __('Urgencia', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => [
+                            'baja' => __('Baja', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'media' => __('Media', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'alta' => __('Alta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ]],
                     ],
-                    'submit_text' => __('Enviar reporte', 'flavor-chat-ia'),
+                    'submit_text' => __('Enviar reporte', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
             'marketplace' => [
                 'formulario' => [
-                    'title' => __('Publicar Anuncio', 'flavor-chat-ia'),
-                    'subtitle' => __('Vende o intercambia productos localmente', 'flavor-chat-ia'),
+                    'title' => __('Publicar Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Vende o intercambia productos localmente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon' => '🛒',
                     'color' => 'success',
                     'fields' => [
-                        ['name' => 'titulo', 'type' => 'text', 'label' => __('Título del anuncio', 'flavor-chat-ia'), 'required' => true],
-                        ['name' => 'categoria', 'type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'required' => true, 'options' => [
-                            'electronica' => __('Electrónica', 'flavor-chat-ia'),
-                            'hogar' => __('Hogar y jardín', 'flavor-chat-ia'),
-                            'moda' => __('Moda y accesorios', 'flavor-chat-ia'),
-                            'deportes' => __('Deportes', 'flavor-chat-ia'),
-                            'libros' => __('Libros y cultura', 'flavor-chat-ia'),
-                            'infantil' => __('Infantil', 'flavor-chat-ia'),
-                            'servicios' => __('Servicios', 'flavor-chat-ia'),
-                            'otro' => __('Otros', 'flavor-chat-ia'),
+                        ['name' => 'titulo', 'type' => 'text', 'label' => __('Título del anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                        ['name' => 'categoria', 'type' => 'select', 'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'options' => [
+                            'electronica' => __('Electrónica', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'hogar' => __('Hogar y jardín', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'moda' => __('Moda y accesorios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'deportes' => __('Deportes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'libros' => __('Libros y cultura', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'infantil' => __('Infantil', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'servicios' => __('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'otro' => __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ]],
-                        ['name' => 'descripcion', 'type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia'), 'required' => true, 'rows' => 4],
-                        ['name' => 'precio', 'type' => 'number', 'label' => __('Precio (€)', 'flavor-chat-ia'), 'min' => '0', 'step' => '0.01', 'placeholder' => '0 = Gratis'],
-                        ['name' => 'condicion', 'type' => 'select', 'label' => __('Estado', 'flavor-chat-ia'), 'options' => [
-                            'nuevo' => __('Nuevo', 'flavor-chat-ia'),
-                            'como_nuevo' => __('Como nuevo', 'flavor-chat-ia'),
-                            'buen_estado' => __('Buen estado', 'flavor-chat-ia'),
-                            'usado' => __('Usado', 'flavor-chat-ia'),
+                        ['name' => 'descripcion', 'type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'rows' => 4],
+                        ['name' => 'precio', 'type' => 'number', 'label' => __('Precio (€)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'min' => '0', 'step' => '0.01', 'placeholder' => '0 = Gratis'],
+                        ['name' => 'condicion', 'type' => 'select', 'label' => __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => [
+                            'nuevo' => __('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'como_nuevo' => __('Como nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'buen_estado' => __('Buen estado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'usado' => __('Usado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ]],
-                        ['name' => 'imagenes', 'type' => 'file', 'label' => __('Fotos', 'flavor-chat-ia'), 'accept' => 'image/*'],
-                        ['name' => 'contacto', 'type' => 'text', 'label' => __('Forma de contacto', 'flavor-chat-ia'), 'placeholder' => __('Teléfono, email, etc.', 'flavor-chat-ia')],
+                        ['name' => 'imagenes', 'type' => 'file', 'label' => __('Fotos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'accept' => 'image/*'],
+                        ['name' => 'contacto', 'type' => 'text', 'label' => __('Forma de contacto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'placeholder' => __('Teléfono, email, etc.', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     ],
-                    'submit_text' => __('Publicar anuncio', 'flavor-chat-ia'),
+                    'submit_text' => __('Publicar anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
             'participacion' => [
                 'crear' => [
-                    'title' => __('Nueva Propuesta', 'flavor-chat-ia'),
-                    'subtitle' => __('Propón mejoras para tu comunidad', 'flavor-chat-ia'),
+                    'title' => __('Nueva Propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Propón mejoras para tu comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon' => '🗳️',
                     'color' => 'primary',
                     'fields' => [
-                        ['name' => 'titulo', 'type' => 'text', 'label' => __('Título de la propuesta', 'flavor-chat-ia'), 'required' => true],
-                        ['name' => 'categoria', 'type' => 'select', 'label' => __('Área', 'flavor-chat-ia'), 'required' => true, 'options' => [
-                            'urbanismo' => __('Urbanismo', 'flavor-chat-ia'),
-                            'medio_ambiente' => __('Medio ambiente', 'flavor-chat-ia'),
-                            'cultura' => __('Cultura y ocio', 'flavor-chat-ia'),
-                            'servicios' => __('Servicios públicos', 'flavor-chat-ia'),
-                            'movilidad' => __('Movilidad', 'flavor-chat-ia'),
-                            'social' => __('Bienestar social', 'flavor-chat-ia'),
+                        ['name' => 'titulo', 'type' => 'text', 'label' => __('Título de la propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                        ['name' => 'categoria', 'type' => 'select', 'label' => __('Área', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'options' => [
+                            'urbanismo' => __('Urbanismo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'medio_ambiente' => __('Medio ambiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'cultura' => __('Cultura y ocio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'servicios' => __('Servicios públicos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'movilidad' => __('Movilidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'social' => __('Bienestar social', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ]],
-                        ['name' => 'descripcion', 'type' => 'textarea', 'label' => __('Descripción detallada', 'flavor-chat-ia'), 'required' => true, 'rows' => 6],
-                        ['name' => 'beneficios', 'type' => 'textarea', 'label' => __('Beneficios esperados', 'flavor-chat-ia'), 'rows' => 3],
-                        ['name' => 'presupuesto_estimado', 'type' => 'number', 'label' => __('Presupuesto estimado (€)', 'flavor-chat-ia'), 'min' => '0'],
-                        ['name' => 'ubicacion', 'type' => 'text', 'label' => __('Ubicación (si aplica)', 'flavor-chat-ia')],
+                        ['name' => 'descripcion', 'type' => 'textarea', 'label' => __('Descripción detallada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'rows' => 6],
+                        ['name' => 'beneficios', 'type' => 'textarea', 'label' => __('Beneficios esperados', FLAVOR_PLATFORM_TEXT_DOMAIN), 'rows' => 3],
+                        ['name' => 'presupuesto_estimado', 'type' => 'number', 'label' => __('Presupuesto estimado (€)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'min' => '0'],
+                        ['name' => 'ubicacion', 'type' => 'text', 'label' => __('Ubicación (si aplica)', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     ],
-                    'submit_text' => __('Enviar propuesta', 'flavor-chat-ia'),
+                    'submit_text' => __('Enviar propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
             'talleres' => [
                 'proponer' => [
-                    'title' => __('Proponer Taller', 'flavor-chat-ia'),
-                    'subtitle' => __('Comparte tus conocimientos', 'flavor-chat-ia'),
+                    'title' => __('Proponer Taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Comparte tus conocimientos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon' => '🎓',
                     'color' => 'primary',
                     'fields' => [
-                        ['name' => 'titulo', 'type' => 'text', 'label' => __('Nombre del taller', 'flavor-chat-ia'), 'required' => true],
-                        ['name' => 'categoria', 'type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'required' => true, 'options' => [
-                            'manualidades' => __('Manualidades', 'flavor-chat-ia'),
-                            'cocina' => __('Cocina', 'flavor-chat-ia'),
-                            'tecnologia' => __('Tecnología', 'flavor-chat-ia'),
-                            'idiomas' => __('Idiomas', 'flavor-chat-ia'),
-                            'arte' => __('Arte', 'flavor-chat-ia'),
-                            'bienestar' => __('Bienestar', 'flavor-chat-ia'),
-                            'otro' => __('Otro', 'flavor-chat-ia'),
+                        ['name' => 'titulo', 'type' => 'text', 'label' => __('Nombre del taller', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                        ['name' => 'categoria', 'type' => 'select', 'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'options' => [
+                            'manualidades' => __('Manualidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'cocina' => __('Cocina', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'tecnologia' => __('Tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'idiomas' => __('Idiomas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'arte' => __('Arte', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'bienestar' => __('Bienestar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'otro' => __('Otro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ]],
-                        ['name' => 'descripcion', 'type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia'), 'required' => true, 'rows' => 4],
-                        ['name' => 'duracion', 'type' => 'text', 'label' => __('Duración estimada', 'flavor-chat-ia'), 'placeholder' => __('Ej: 2 horas', 'flavor-chat-ia')],
-                        ['name' => 'materiales', 'type' => 'textarea', 'label' => __('Materiales necesarios', 'flavor-chat-ia'), 'rows' => 2],
-                        ['name' => 'nivel', 'type' => 'select', 'label' => __('Nivel', 'flavor-chat-ia'), 'options' => [
-                            'principiante' => __('Principiante', 'flavor-chat-ia'),
-                            'intermedio' => __('Intermedio', 'flavor-chat-ia'),
-                            'avanzado' => __('Avanzado', 'flavor-chat-ia'),
+                        ['name' => 'descripcion', 'type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'rows' => 4],
+                        ['name' => 'duracion', 'type' => 'text', 'label' => __('Duración estimada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'placeholder' => __('Ej: 2 horas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                        ['name' => 'materiales', 'type' => 'textarea', 'label' => __('Materiales necesarios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'rows' => 2],
+                        ['name' => 'nivel', 'type' => 'select', 'label' => __('Nivel', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => [
+                            'principiante' => __('Principiante', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'intermedio' => __('Intermedio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'avanzado' => __('Avanzado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ]],
-                        ['name' => 'plazas', 'type' => 'number', 'label' => __('Plazas máximas', 'flavor-chat-ia'), 'min' => '1', 'max' => '50'],
+                        ['name' => 'plazas', 'type' => 'number', 'label' => __('Plazas máximas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'min' => '1', 'max' => '50'],
                     ],
-                    'submit_text' => __('Proponer taller', 'flavor-chat-ia'),
+                    'submit_text' => __('Proponer taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
             'compostaje' => [
                 'registrar' => [
-                    'title' => __('Registrar Aportación', 'flavor-chat-ia'),
-                    'subtitle' => __('Suma tu contribución al compostaje comunitario', 'flavor-chat-ia'),
+                    'title' => __('Registrar Aportación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Suma tu contribución al compostaje comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon' => '🌱',
                     'color' => 'success',
                     'fields' => [
-                        ['name' => 'compostera_id', 'type' => 'select', 'label' => __('Compostera', 'flavor-chat-ia'), 'required' => true, 'options' => []],
-                        ['name' => 'tipo_residuo', 'type' => 'select', 'label' => __('Tipo de residuo', 'flavor-chat-ia'), 'required' => true, 'options' => [
-                            'verde' => __('Verde (restos vegetales frescos)', 'flavor-chat-ia'),
-                            'marron' => __('Marrón (hojas secas, cartón)', 'flavor-chat-ia'),
-                            'mixto' => __('Mixto', 'flavor-chat-ia'),
+                        ['name' => 'compostera_id', 'type' => 'select', 'label' => __('Compostera', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'options' => []],
+                        ['name' => 'tipo_residuo', 'type' => 'select', 'label' => __('Tipo de residuo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'options' => [
+                            'verde' => __('Verde (restos vegetales frescos)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'marron' => __('Marrón (hojas secas, cartón)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'mixto' => __('Mixto', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ]],
-                        ['name' => 'cantidad', 'type' => 'number', 'label' => __('Cantidad (kg aprox)', 'flavor-chat-ia'), 'required' => true, 'min' => '0.1', 'step' => '0.1'],
-                        ['name' => 'notas', 'type' => 'textarea', 'label' => __('Notas (opcional)', 'flavor-chat-ia'), 'rows' => 2],
+                        ['name' => 'cantidad', 'type' => 'number', 'label' => __('Cantidad (kg aprox)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'min' => '0.1', 'step' => '0.1'],
+                        ['name' => 'notas', 'type' => 'textarea', 'label' => __('Notas (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'rows' => 2],
                     ],
-                    'submit_text' => __('Registrar', 'flavor-chat-ia'),
+                    'submit_text' => __('Registrar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
             'foros' => [
                 'crear-tema' => [
-                    'title' => __('Nuevo Tema', 'flavor-chat-ia'),
-                    'subtitle' => __('Inicia una conversación', 'flavor-chat-ia'),
+                    'title' => __('Nuevo Tema', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Inicia una conversación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon' => '💬',
                     'color' => 'primary',
                     'fields' => [
-                        ['name' => 'titulo', 'type' => 'text', 'label' => __('Título del tema', 'flavor-chat-ia'), 'required' => true],
-                        ['name' => 'categoria', 'type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'required' => true, 'options' => [
-                            'general' => __('General', 'flavor-chat-ia'),
-                            'anuncios' => __('Anuncios', 'flavor-chat-ia'),
-                            'ayuda' => __('Ayuda', 'flavor-chat-ia'),
-                            'propuestas' => __('Propuestas', 'flavor-chat-ia'),
-                            'off_topic' => __('Off-topic', 'flavor-chat-ia'),
+                        ['name' => 'titulo', 'type' => 'text', 'label' => __('Título del tema', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                        ['name' => 'categoria', 'type' => 'select', 'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'options' => [
+                            'general' => __('General', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'anuncios' => __('Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'ayuda' => __('Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'propuestas' => __('Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'off_topic' => __('Off-topic', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ]],
-                        ['name' => 'contenido', 'type' => 'textarea', 'label' => __('Mensaje', 'flavor-chat-ia'), 'required' => true, 'rows' => 8],
-                        ['name' => 'etiquetas', 'type' => 'text', 'label' => __('Etiquetas', 'flavor-chat-ia'), 'placeholder' => __('Separadas por comas', 'flavor-chat-ia')],
+                        ['name' => 'contenido', 'type' => 'textarea', 'label' => __('Mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'rows' => 8],
+                        ['name' => 'etiquetas', 'type' => 'text', 'label' => __('Etiquetas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'placeholder' => __('Separadas por comas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     ],
-                    'submit_text' => __('Publicar tema', 'flavor-chat-ia'),
+                    'submit_text' => __('Publicar tema', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
             'encuestas' => [
                 'crear' => [
-                    'title' => __('Crear Encuesta', 'flavor-chat-ia'),
-                    'subtitle' => __('Pregunta a tu comunidad', 'flavor-chat-ia'),
+                    'title' => __('Crear Encuesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Pregunta a tu comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon' => '📊',
                     'color' => 'accent',
                     'fields' => [
-                        ['name' => 'titulo', 'type' => 'text', 'label' => __('Pregunta principal', 'flavor-chat-ia'), 'required' => true],
-                        ['name' => 'descripcion', 'type' => 'textarea', 'label' => __('Descripción (opcional)', 'flavor-chat-ia'), 'rows' => 2],
-                        ['name' => 'tipo', 'type' => 'select', 'label' => __('Tipo de respuesta', 'flavor-chat-ia'), 'options' => [
-                            'simple' => __('Opción única', 'flavor-chat-ia'),
-                            'multiple' => __('Opción múltiple', 'flavor-chat-ia'),
-                            'escala' => __('Escala 1-5', 'flavor-chat-ia'),
+                        ['name' => 'titulo', 'type' => 'text', 'label' => __('Pregunta principal', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                        ['name' => 'descripcion', 'type' => 'textarea', 'label' => __('Descripción (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'rows' => 2],
+                        ['name' => 'tipo', 'type' => 'select', 'label' => __('Tipo de respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => [
+                            'simple' => __('Opción única', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'multiple' => __('Opción múltiple', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'escala' => __('Escala 1-5', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ]],
-                        ['name' => 'opciones', 'type' => 'textarea', 'label' => __('Opciones (una por línea)', 'flavor-chat-ia'), 'required' => true, 'rows' => 4, 'placeholder' => __("Opción 1\nOpción 2\nOpción 3", 'flavor-chat-ia')],
-                        ['name' => 'fecha_fin', 'type' => 'date', 'label' => __('Fecha límite', 'flavor-chat-ia'), 'min' => date('Y-m-d')],
-                        ['name' => 'anonima', 'type' => 'checkbox', 'label' => '', 'placeholder' => __('Respuestas anónimas', 'flavor-chat-ia')],
+                        ['name' => 'opciones', 'type' => 'textarea', 'label' => __('Opciones (una por línea)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'rows' => 4, 'placeholder' => __("Opción 1\nOpción 2\nOpción 3", FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                        ['name' => 'fecha_fin', 'type' => 'date', 'label' => __('Fecha límite', FLAVOR_PLATFORM_TEXT_DOMAIN), 'min' => date('Y-m-d')],
+                        ['name' => 'anonima', 'type' => 'checkbox', 'label' => '', 'placeholder' => __('Respuestas anónimas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     ],
-                    'submit_text' => __('Crear encuesta', 'flavor-chat-ia'),
+                    'submit_text' => __('Crear encuesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
             'email-marketing' => [
                 'formulario-suscripcion' => [
-                    'title' => __('Suscríbete', 'flavor-chat-ia'),
-                    'subtitle' => __('Recibe las últimas novedades', 'flavor-chat-ia'),
+                    'title' => __('Suscríbete', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Recibe las últimas novedades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon' => '📧',
                     'color' => 'primary',
                     'require_login' => false,
                     'fields' => [
-                        ['name' => 'email', 'type' => 'email', 'label' => __('Email', 'flavor-chat-ia'), 'required' => true, 'placeholder' => __('tu@email.com', 'flavor-chat-ia')],
-                        ['name' => 'nombre', 'type' => 'text', 'label' => __('Nombre', 'flavor-chat-ia'), 'placeholder' => __('Tu nombre', 'flavor-chat-ia')],
-                        ['name' => 'acepto', 'type' => 'checkbox', 'label' => '', 'placeholder' => __('Acepto recibir comunicaciones', 'flavor-chat-ia'), 'required' => true],
+                        ['name' => 'email', 'type' => 'email', 'label' => __('Email', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'placeholder' => __('tu@email.com', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                        ['name' => 'nombre', 'type' => 'text', 'label' => __('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN), 'placeholder' => __('Tu nombre', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                        ['name' => 'acepto', 'type' => 'checkbox', 'label' => '', 'placeholder' => __('Acepto recibir comunicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
                     ],
-                    'submit_text' => __('Suscribirme', 'flavor-chat-ia'),
+                    'submit_text' => __('Suscribirme', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
             'recetas' => [
                 'formulario' => [
-                    'title' => __('Compartir Receta', 'flavor-chat-ia'),
-                    'subtitle' => __('Comparte tus recetas favoritas', 'flavor-chat-ia'),
+                    'title' => __('Compartir Receta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Comparte tus recetas favoritas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon' => '🍳',
                     'color' => 'warning',
                     'fields' => [
-                        ['name' => 'titulo', 'type' => 'text', 'label' => __('Nombre de la receta', 'flavor-chat-ia'), 'required' => true],
-                        ['name' => 'categoria', 'type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'options' => [
-                            'entrantes' => __('Entrantes', 'flavor-chat-ia'),
-                            'principales' => __('Platos principales', 'flavor-chat-ia'),
-                            'postres' => __('Postres', 'flavor-chat-ia'),
-                            'bebidas' => __('Bebidas', 'flavor-chat-ia'),
+                        ['name' => 'titulo', 'type' => 'text', 'label' => __('Nombre de la receta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                        ['name' => 'categoria', 'type' => 'select', 'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => [
+                            'entrantes' => __('Entrantes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'principales' => __('Platos principales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'postres' => __('Postres', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'bebidas' => __('Bebidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ]],
-                        ['name' => 'ingredientes', 'type' => 'textarea', 'label' => __('Ingredientes', 'flavor-chat-ia'), 'required' => true, 'rows' => 4, 'placeholder' => __('Un ingrediente por línea', 'flavor-chat-ia')],
-                        ['name' => 'preparacion', 'type' => 'textarea', 'label' => __('Preparación', 'flavor-chat-ia'), 'required' => true, 'rows' => 6],
-                        ['name' => 'tiempo', 'type' => 'text', 'label' => __('Tiempo de preparación', 'flavor-chat-ia'), 'placeholder' => __('Ej: 30 minutos', 'flavor-chat-ia')],
-                        ['name' => 'porciones', 'type' => 'number', 'label' => __('Porciones', 'flavor-chat-ia'), 'min' => '1'],
-                        ['name' => 'imagen', 'type' => 'file', 'label' => __('Foto', 'flavor-chat-ia'), 'accept' => 'image/*'],
+                        ['name' => 'ingredientes', 'type' => 'textarea', 'label' => __('Ingredientes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'rows' => 4, 'placeholder' => __('Un ingrediente por línea', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                        ['name' => 'preparacion', 'type' => 'textarea', 'label' => __('Preparación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'rows' => 6],
+                        ['name' => 'tiempo', 'type' => 'text', 'label' => __('Tiempo de preparación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'placeholder' => __('Ej: 30 minutos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                        ['name' => 'porciones', 'type' => 'number', 'label' => __('Porciones', FLAVOR_PLATFORM_TEXT_DOMAIN), 'min' => '1'],
+                        ['name' => 'imagen', 'type' => 'file', 'label' => __('Foto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'accept' => 'image/*'],
                     ],
-                    'submit_text' => __('Publicar receta', 'flavor-chat-ia'),
+                    'submit_text' => __('Publicar receta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
             'comunidades' => [
                 'crear' => [
-                    'title' => __('Crear Comunidad', 'flavor-chat-ia'),
-                    'subtitle' => __('Crea un espacio para tu grupo', 'flavor-chat-ia'),
+                    'title' => __('Crear Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Crea un espacio para tu grupo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon' => '👥',
                     'color' => 'primary',
                     'fields' => [
-                        ['name' => 'nombre', 'type' => 'text', 'label' => __('Nombre de la comunidad', 'flavor-chat-ia'), 'required' => true],
-                        ['name' => 'descripcion', 'type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia'), 'required' => true, 'rows' => 4],
-                        ['name' => 'tipo', 'type' => 'select', 'label' => __('Tipo', 'flavor-chat-ia'), 'options' => [
-                            'publica' => __('Pública', 'flavor-chat-ia'),
-                            'privada' => __('Privada', 'flavor-chat-ia'),
+                        ['name' => 'nombre', 'type' => 'text', 'label' => __('Nombre de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                        ['name' => 'descripcion', 'type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'rows' => 4],
+                        ['name' => 'tipo', 'type' => 'select', 'label' => __('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => [
+                            'publica' => __('Pública', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'privada' => __('Privada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ]],
-                        ['name' => 'imagen', 'type' => 'file', 'label' => __('Imagen de portada', 'flavor-chat-ia'), 'accept' => 'image/*'],
+                        ['name' => 'imagen', 'type' => 'file', 'label' => __('Imagen de portada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'accept' => 'image/*'],
                     ],
-                    'submit_text' => __('Crear comunidad', 'flavor-chat-ia'),
+                    'submit_text' => __('Crear comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
             'facturas' => [
                 'crear' => [
-                    'title' => __('Nueva Factura', 'flavor-chat-ia'),
-                    'subtitle' => __('Genera una factura', 'flavor-chat-ia'),
+                    'title' => __('Nueva Factura', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Genera una factura', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon' => '📄',
                     'color' => 'secondary',
                     'fields' => [
-                        ['name' => 'cliente', 'type' => 'text', 'label' => __('Cliente', 'flavor-chat-ia'), 'required' => true],
-                        ['name' => 'concepto', 'type' => 'text', 'label' => __('Concepto', 'flavor-chat-ia'), 'required' => true],
-                        ['name' => 'cantidad', 'type' => 'number', 'label' => __('Importe (€)', 'flavor-chat-ia'), 'required' => true, 'min' => '0', 'step' => '0.01'],
-                        ['name' => 'fecha', 'type' => 'date', 'label' => __('Fecha', 'flavor-chat-ia'), 'required' => true],
-                        ['name' => 'notas', 'type' => 'textarea', 'label' => __('Notas', 'flavor-chat-ia'), 'rows' => 2],
+                        ['name' => 'cliente', 'type' => 'text', 'label' => __('Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                        ['name' => 'concepto', 'type' => 'text', 'label' => __('Concepto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                        ['name' => 'cantidad', 'type' => 'number', 'label' => __('Importe (€)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'min' => '0', 'step' => '0.01'],
+                        ['name' => 'fecha', 'type' => 'date', 'label' => __('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                        ['name' => 'notas', 'type' => 'textarea', 'label' => __('Notas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'rows' => 2],
                     ],
-                    'submit_text' => __('Generar factura', 'flavor-chat-ia'),
+                    'submit_text' => __('Generar factura', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
             'seguimiento-denuncias' => [
                 'formulario' => [
-                    'title' => __('Nueva Denuncia', 'flavor-chat-ia'),
-                    'subtitle' => __('Reporta una situación', 'flavor-chat-ia'),
+                    'title' => __('Nueva Denuncia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Reporta una situación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon' => '🚨',
                     'color' => 'error',
                     'fields' => [
-                        ['name' => 'tipo', 'type' => 'select', 'label' => __('Tipo de denuncia', 'flavor-chat-ia'), 'required' => true, 'options' => [
-                            'ruido' => __('Ruido', 'flavor-chat-ia'),
-                            'suciedad' => __('Suciedad', 'flavor-chat-ia'),
-                            'vandalismo' => __('Vandalismo', 'flavor-chat-ia'),
-                            'otro' => __('Otro', 'flavor-chat-ia'),
+                        ['name' => 'tipo', 'type' => 'select', 'label' => __('Tipo de denuncia', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'options' => [
+                            'ruido' => __('Ruido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'suciedad' => __('Suciedad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'vandalismo' => __('Vandalismo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'otro' => __('Otro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ]],
-                        ['name' => 'descripcion', 'type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia'), 'required' => true, 'rows' => 4],
-                        ['name' => 'ubicacion', 'type' => 'text', 'label' => __('Ubicación', 'flavor-chat-ia'), 'required' => true],
-                        ['name' => 'fecha_incidente', 'type' => 'datetime', 'label' => __('Fecha y hora del incidente', 'flavor-chat-ia')],
-                        ['name' => 'evidencia', 'type' => 'file', 'label' => __('Evidencia (foto/video)', 'flavor-chat-ia'), 'accept' => 'image/*,video/*'],
-                        ['name' => 'anonimo', 'type' => 'checkbox', 'label' => '', 'placeholder' => __('Denuncia anónima', 'flavor-chat-ia')],
+                        ['name' => 'descripcion', 'type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'rows' => 4],
+                        ['name' => 'ubicacion', 'type' => 'text', 'label' => __('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                        ['name' => 'fecha_incidente', 'type' => 'datetime', 'label' => __('Fecha y hora del incidente', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                        ['name' => 'evidencia', 'type' => 'file', 'label' => __('Evidencia (foto/video)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'accept' => 'image/*,video/*'],
+                        ['name' => 'anonimo', 'type' => 'checkbox', 'label' => '', 'placeholder' => __('Denuncia anónima', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     ],
-                    'submit_text' => __('Enviar denuncia', 'flavor-chat-ia'),
+                    'submit_text' => __('Enviar denuncia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
             'chat-estados' => [
                 'crear' => [
-                    'title' => __('Crear Estado', 'flavor-chat-ia'),
-                    'subtitle' => __('Comparte un momento', 'flavor-chat-ia'),
+                    'title' => __('Crear Estado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Comparte un momento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon' => '📷',
                     'color' => 'accent',
                     'fields' => [
-                        ['name' => 'media', 'type' => 'file', 'label' => __('Foto o video', 'flavor-chat-ia'), 'required' => true, 'accept' => 'image/*,video/*'],
-                        ['name' => 'texto', 'type' => 'textarea', 'label' => __('Texto (opcional)', 'flavor-chat-ia'), 'rows' => 2, 'placeholder' => __('Añade un mensaje...', 'flavor-chat-ia')],
-                        ['name' => 'privacidad', 'type' => 'select', 'label' => __('Quién puede ver', 'flavor-chat-ia'), 'options' => [
-                            'todos' => __('Todos', 'flavor-chat-ia'),
-                            'contactos' => __('Solo contactos', 'flavor-chat-ia'),
+                        ['name' => 'media', 'type' => 'file', 'label' => __('Foto o video', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'accept' => 'image/*,video/*'],
+                        ['name' => 'texto', 'type' => 'textarea', 'label' => __('Texto (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'rows' => 2, 'placeholder' => __('Añade un mensaje...', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                        ['name' => 'privacidad', 'type' => 'select', 'label' => __('Quién puede ver', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => [
+                            'todos' => __('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'contactos' => __('Solo contactos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ]],
                     ],
-                    'submit_text' => __('Publicar estado', 'flavor-chat-ia'),
+                    'submit_text' => __('Publicar estado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
             'fichaje-empleados' => [
                 'fichar' => [
-                    'title' => __('Fichar', 'flavor-chat-ia'),
-                    'subtitle' => __('Registra tu entrada o salida', 'flavor-chat-ia'),
+                    'title' => __('Fichar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Registra tu entrada o salida', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon' => '⏱️',
                     'color' => 'primary',
                     'fields' => [
-                        ['name' => 'tipo', 'type' => 'select', 'label' => __('Tipo de fichaje', 'flavor-chat-ia'), 'required' => true, 'options' => [
-                            'entrada' => __('Entrada', 'flavor-chat-ia'),
-                            'salida' => __('Salida', 'flavor-chat-ia'),
-                            'pausa_inicio' => __('Inicio de pausa', 'flavor-chat-ia'),
-                            'pausa_fin' => __('Fin de pausa', 'flavor-chat-ia'),
+                        ['name' => 'tipo', 'type' => 'select', 'label' => __('Tipo de fichaje', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true, 'options' => [
+                            'entrada' => __('Entrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'salida' => __('Salida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'pausa_inicio' => __('Inicio de pausa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'pausa_fin' => __('Fin de pausa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ]],
-                        ['name' => 'notas', 'type' => 'textarea', 'label' => __('Notas (opcional)', 'flavor-chat-ia'), 'rows' => 2, 'placeholder' => __('Comentarios adicionales...', 'flavor-chat-ia')],
+                        ['name' => 'notas', 'type' => 'textarea', 'label' => __('Notas (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'rows' => 2, 'placeholder' => __('Comentarios adicionales...', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     ],
-                    'submit_text' => __('Registrar fichaje', 'flavor-chat-ia'),
+                    'submit_text' => __('Registrar fichaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
                 'boton' => [
-                    'title' => __('Fichar ahora', 'flavor-chat-ia'),
+                    'title' => __('Fichar ahora', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'subtitle' => '',
                     'icon' => '⏱️',
                     'color' => 'primary',
                     'fields' => [],
-                    'submit_text' => __('Fichar', 'flavor-chat-ia'),
+                    'submit_text' => __('Fichar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
             'themacle' => [
                 'formulario' => [
-                    'title' => __('Configurar Tema', 'flavor-chat-ia'),
-                    'subtitle' => __('Personaliza la apariencia', 'flavor-chat-ia'),
+                    'title' => __('Configurar Tema', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Personaliza la apariencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon' => '🎨',
                     'color' => 'primary',
                     'fields' => [
-                        ['name' => 'primary_color', 'type' => 'text', 'label' => __('Color primario', 'flavor-chat-ia'), 'placeholder' => '#3B82F6'],
-                        ['name' => 'secondary_color', 'type' => 'text', 'label' => __('Color secundario', 'flavor-chat-ia'), 'placeholder' => '#6366F1'],
-                        ['name' => 'font_family', 'type' => 'select', 'label' => __('Tipografía', 'flavor-chat-ia'), 'options' => [
+                        ['name' => 'primary_color', 'type' => 'text', 'label' => __('Color primario', FLAVOR_PLATFORM_TEXT_DOMAIN), 'placeholder' => '#3B82F6'],
+                        ['name' => 'secondary_color', 'type' => 'text', 'label' => __('Color secundario', FLAVOR_PLATFORM_TEXT_DOMAIN), 'placeholder' => '#6366F1'],
+                        ['name' => 'font_family', 'type' => 'select', 'label' => __('Tipografía', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => [
                             'inter' => 'Inter',
                             'roboto' => 'Roboto',
                             'poppins' => 'Poppins',
                             'montserrat' => 'Montserrat',
                         ]],
                     ],
-                    'submit_text' => __('Guardar tema', 'flavor-chat-ia'),
+                    'submit_text' => __('Guardar tema', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
         ];
@@ -1795,11 +1795,11 @@ class Flavor_Module_Shortcodes {
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <span class="text-3xl"><?php echo esc_html($icon); ?></span>
-                        <h2 class="text-2xl font-bold"><?php echo esc_html($title); ?> - <?php esc_html_e('Calendario', 'flavor-chat-ia'); ?></h2>
+                        <h2 class="text-2xl font-bold"><?php echo esc_html($title); ?> - <?php esc_html_e('Calendario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                     </div>
                     <div class="flex gap-2">
                         <button class="flavor-cal-prev px-3 py-1 bg-white/20 rounded-lg hover:bg-white/30 transition-colors">&larr;</button>
-                        <button class="flavor-cal-today px-3 py-1 bg-white/20 rounded-lg hover:bg-white/30 transition-colors"><?php esc_html_e('Hoy', 'flavor-chat-ia'); ?></button>
+                        <button class="flavor-cal-today px-3 py-1 bg-white/20 rounded-lg hover:bg-white/30 transition-colors"><?php esc_html_e('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                         <button class="flavor-cal-next px-3 py-1 bg-white/20 rounded-lg hover:bg-white/30 transition-colors">&rarr;</button>
                     </div>
                 </div>
@@ -1820,13 +1820,13 @@ class Flavor_Module_Shortcodes {
                 <div class="flavor-calendar-grid">
                     <!-- Días de la semana -->
                     <div class="grid grid-cols-7 gap-1 mb-2 text-center text-sm text-gray-500 font-medium">
-                        <span><?php esc_html_e('Lun', 'flavor-chat-ia'); ?></span>
-                        <span><?php esc_html_e('Mar', 'flavor-chat-ia'); ?></span>
-                        <span><?php esc_html_e('Mié', 'flavor-chat-ia'); ?></span>
-                        <span><?php esc_html_e('Jue', 'flavor-chat-ia'); ?></span>
-                        <span><?php esc_html_e('Vie', 'flavor-chat-ia'); ?></span>
-                        <span><?php esc_html_e('Sáb', 'flavor-chat-ia'); ?></span>
-                        <span><?php esc_html_e('Dom', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Lun', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                        <span><?php esc_html_e('Mar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                        <span><?php esc_html_e('Mié', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                        <span><?php esc_html_e('Jue', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                        <span><?php esc_html_e('Vie', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                        <span><?php esc_html_e('Sáb', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                        <span><?php esc_html_e('Dom', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
 
                     <!-- Grid de días -->
@@ -1875,7 +1875,7 @@ class Flavor_Module_Shortcodes {
                 <?php if (!$is_mini && !empty($data['items'])): ?>
                 <!-- Lista de próximos eventos -->
                 <div class="mt-6 border-t pt-4">
-                    <h4 class="font-semibold mb-3"><?php esc_html_e('Próximos eventos', 'flavor-chat-ia'); ?></h4>
+                    <h4 class="font-semibold mb-3"><?php esc_html_e('Próximos eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <div class="space-y-2 max-h-48 overflow-y-auto">
                         <?php
                         $upcoming = array_slice($data['items'], 0, 5);
@@ -1975,14 +1975,14 @@ class Flavor_Module_Shortcodes {
                         <span class="text-3xl"><?php echo esc_html($icon); ?></span>
                         <div>
                             <h2 class="text-2xl font-bold"><?php echo esc_html($title); ?></h2>
-                            <p class="text-white/80"><?php echo sprintf(__('%d ubicaciones', 'flavor-chat-ia'), count($markers)); ?></p>
+                            <p class="text-white/80"><?php echo sprintf(__('%d ubicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN), count($markers)); ?></p>
                         </div>
                     </div>
                     <div class="flex gap-2">
                         <button onclick="flavorMapLocateMe('<?php echo esc_js($map_id); ?>')"
                                 class="px-4 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors flex items-center gap-2">
                             <span>📍</span>
-                            <span><?php esc_html_e('Mi ubicación', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Mi ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </button>
                     </div>
                 </div>
@@ -1995,7 +1995,7 @@ class Flavor_Module_Shortcodes {
                 <?php if (!empty($markers)): ?>
                 <!-- Lista de ubicaciones -->
                 <div class="p-4 border-t max-h-64 overflow-y-auto">
-                    <h4 class="font-semibold mb-3"><?php esc_html_e('Ubicaciones', 'flavor-chat-ia'); ?></h4>
+                    <h4 class="font-semibold mb-3"><?php esc_html_e('Ubicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <div class="space-y-2">
                         <?php foreach (array_slice($markers, 0, 10) as $marker): ?>
                         <div class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer"
@@ -2009,7 +2009,7 @@ class Flavor_Module_Shortcodes {
                             </div>
                             <?php if ($marker['url']): ?>
                             <a href="<?php echo esc_url($marker['url']); ?>" class="text-blue-600 hover:underline text-sm">
-                                <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                             <?php endif; ?>
                         </div>
@@ -2061,7 +2061,7 @@ class Flavor_Module_Shortcodes {
                         map.setView([pos.coords.latitude, pos.coords.longitude], 15);
                         L.marker([pos.coords.latitude, pos.coords.longitude])
                             .addTo(map)
-                            .bindPopup('<?php echo esc_js(__('Tu ubicación', 'flavor-chat-ia')); ?>')
+                            .bindPopup('<?php echo esc_js(__('Tu ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>')
                             .openPopup();
                     });
                 }
@@ -2103,14 +2103,14 @@ class Flavor_Module_Shortcodes {
 
         // Configuraciones específicas por tipo de reporte
         $report_titles = [
-            'informe' => __('Informe', 'flavor-chat-ia'),
-            'resumen' => __('Resumen', 'flavor-chat-ia'),
-            'estadisticas' => __('Estadísticas', 'flavor-chat-ia'),
-            'ranking' => __('Ranking', 'flavor-chat-ia'),
-            'dashboard' => __('Panel', 'flavor-chat-ia'),
+            'informe' => __('Informe', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'resumen' => __('Resumen', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'estadisticas' => __('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'ranking' => __('Ranking', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'dashboard' => __('Panel', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
-        $report_title = ($report_titles[$template_name] ?? __('Informe', 'flavor-chat-ia')) . ' - ' . $title;
+        $report_title = ($report_titles[$template_name] ?? __('Informe', FLAVOR_PLATFORM_TEXT_DOMAIN)) . ' - ' . $title;
 
         // Obtener clases de gradiente
         $gradient = function_exists('flavor_get_gradient_classes') ? flavor_get_gradient_classes($color) : ['from' => 'from-blue-500', 'to' => 'to-blue-600'];
@@ -2125,7 +2125,7 @@ class Flavor_Module_Shortcodes {
                     <span class="text-3xl"><?php echo esc_html($icon); ?></span>
                     <div>
                         <h2 class="text-2xl font-bold"><?php echo esc_html($report_title); ?></h2>
-                        <p class="text-white/80"><?php echo sprintf(__('Datos actualizados al %s', 'flavor-chat-ia'), date_i18n(get_option('date_format'))); ?></p>
+                        <p class="text-white/80"><?php echo sprintf(__('Datos actualizados al %s', FLAVOR_PLATFORM_TEXT_DOMAIN), date_i18n(get_option('date_format'))); ?></p>
                     </div>
                 </div>
             </div>
@@ -2171,9 +2171,9 @@ class Flavor_Module_Shortcodes {
                     <table class="w-full">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600"><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600"><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?></th>
-                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600"><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600"><?php esc_html_e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
@@ -2217,8 +2217,8 @@ class Flavor_Module_Shortcodes {
                 <!-- Empty State -->
                 <div class="text-center py-12">
                     <span class="text-6xl block mb-4">📭</span>
-                    <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php esc_html_e('Sin datos', 'flavor-chat-ia'); ?></h3>
-                    <p class="text-gray-500"><?php esc_html_e('No hay registros para mostrar en este período.', 'flavor-chat-ia'); ?></p>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php esc_html_e('Sin datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p class="text-gray-500"><?php esc_html_e('No hay registros para mostrar en este período.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <?php endif; ?>
 
@@ -2226,7 +2226,7 @@ class Flavor_Module_Shortcodes {
                 <div class="mt-6 pt-4 border-t flex justify-end gap-2">
                     <button onclick="window.print()" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors flex items-center gap-2">
                         <span>🖨️</span>
-                        <?php esc_html_e('Imprimir', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Imprimir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </div>
@@ -2284,7 +2284,7 @@ class Flavor_Module_Shortcodes {
         ], $atts);
 
         if (empty($atts['module'])) {
-            return '<div class="flavor-error">' . __('Error: Especifica el módulo', 'flavor-chat-ia') . '</div>';
+            return '<div class="flavor-error">' . __('Error: Especifica el módulo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         // Delegar al sistema unificado
@@ -2510,36 +2510,36 @@ class Flavor_Module_Shortcodes {
 
         $acciones_por_modulo = [
             'eventos' => [
-                'inscribirse' => ['label' => __('Inscribirse', 'flavor-chat-ia'), 'icon' => 'dashicons-yes-alt', 'url' => '#inscribirse'],
-                'ver_calendario' => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'url' => '/mi-portal/eventos/calendario'],
-                'mis_inscripciones' => ['label' => __('Mis Inscripciones', 'flavor-chat-ia'), 'icon' => 'dashicons-tickets-alt', 'url' => '/mi-portal/eventos/mis-inscripciones'],
+                'inscribirse' => ['label' => __('Inscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-yes-alt', 'url' => '#inscribirse'],
+                'ver_calendario' => ['label' => __('Calendario', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-calendar-alt', 'url' => '/mi-portal/eventos/calendario'],
+                'mis_inscripciones' => ['label' => __('Mis Inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-tickets-alt', 'url' => '/mi-portal/eventos/mis-inscripciones'],
             ],
             'espacios-comunes' => [
-                'reservar' => ['label' => __('Reservar', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'url' => '#reservar'],
-                'mis_reservas' => ['label' => __('Mis Reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view', 'url' => '/mi-portal/espacios-comunes/mis-reservas'],
-                'ver_disponibilidad' => ['label' => __('Disponibilidad', 'flavor-chat-ia'), 'icon' => 'dashicons-visibility', 'url' => '/mi-portal/espacios-comunes/calendario'],
+                'reservar' => ['label' => __('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-calendar', 'url' => '#reservar'],
+                'mis_reservas' => ['label' => __('Mis Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-list-view', 'url' => '/mi-portal/espacios-comunes/mis-reservas'],
+                'ver_disponibilidad' => ['label' => __('Disponibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-visibility', 'url' => '/mi-portal/espacios-comunes/calendario'],
             ],
             'biblioteca' => [
-                'buscar' => ['label' => __('Buscar Libro', 'flavor-chat-ia'), 'icon' => 'dashicons-search', 'url' => '/mi-portal/biblioteca'],
-                'mis_prestamos' => ['label' => __('Mis Préstamos', 'flavor-chat-ia'), 'icon' => 'dashicons-book', 'url' => '/mi-portal/biblioteca/mis-prestamos'],
+                'buscar' => ['label' => __('Buscar Libro', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-search', 'url' => '/mi-portal/biblioteca'],
+                'mis_prestamos' => ['label' => __('Mis Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-book', 'url' => '/mi-portal/biblioteca/mis-prestamos'],
             ],
             'bicicletas-compartidas' => [
-                'alquilar' => ['label' => __('Alquilar Bici', 'flavor-chat-ia'), 'icon' => 'dashicons-unlock', 'url' => '/mi-portal/bicicletas-compartidas'],
-                'devolver' => ['label' => __('Devolver', 'flavor-chat-ia'), 'icon' => 'dashicons-lock', 'url' => '#devolver'],
-                'mis_prestamos' => ['label' => __('Mis Préstamos', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view', 'url' => '/mi-portal/bicicletas-compartidas/mis-prestamos'],
+                'alquilar' => ['label' => __('Alquilar Bici', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-unlock', 'url' => '/mi-portal/bicicletas-compartidas'],
+                'devolver' => ['label' => __('Devolver', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-lock', 'url' => '#devolver'],
+                'mis_prestamos' => ['label' => __('Mis Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-list-view', 'url' => '/mi-portal/bicicletas-compartidas/mis-prestamos'],
             ],
             'incidencias' => [
-                'reportar' => ['label' => __('Reportar Incidencia', 'flavor-chat-ia'), 'icon' => 'dashicons-flag', 'url' => '/mi-portal/incidencias/reportar'],
-                'mis_reportes' => ['label' => __('Mis Reportes', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view', 'url' => '/mi-portal/incidencias/mis-incidencias'],
+                'reportar' => ['label' => __('Reportar Incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-flag', 'url' => '/mi-portal/incidencias/reportar'],
+                'mis_reportes' => ['label' => __('Mis Reportes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-list-view', 'url' => '/mi-portal/incidencias/mis-incidencias'],
             ],
             'marketplace' => [
-                'publicar' => ['label' => __('Publicar Anuncio', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'url' => '/mi-portal/marketplace/publicar'],
-                'mis_anuncios' => ['label' => __('Mis Anuncios', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone', 'url' => '/mi-portal/marketplace/mis-anuncios'],
+                'publicar' => ['label' => __('Publicar Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-plus-alt', 'url' => '/mi-portal/marketplace/publicar'],
+                'mis_anuncios' => ['label' => __('Mis Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-megaphone', 'url' => '/mi-portal/marketplace/mis-anuncios'],
             ],
             'banco-tiempo' => [
-                'ofrecer' => ['label' => __('Ofrecer Servicio', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'url' => '/mi-portal/banco-tiempo/ofrecer'],
-                'buscar' => ['label' => __('Buscar Servicio', 'flavor-chat-ia'), 'icon' => 'dashicons-search', 'url' => '/mi-portal/banco-tiempo'],
-                'mis_intercambios' => ['label' => __('Mis Intercambios', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize', 'url' => '/mi-portal/banco-tiempo/mis-intercambios'],
+                'ofrecer' => ['label' => __('Ofrecer Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-plus-alt', 'url' => '/mi-portal/banco-tiempo/ofrecer'],
+                'buscar' => ['label' => __('Buscar Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-search', 'url' => '/mi-portal/banco-tiempo'],
+                'mis_intercambios' => ['label' => __('Mis Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'dashicons-randomize', 'url' => '/mi-portal/banco-tiempo/mis-intercambios'],
             ],
         ];
 
@@ -2588,9 +2588,9 @@ class Flavor_Module_Shortcodes {
             .flavor-login-required p { color: #6b7280; margin-bottom: 1rem; }
             .flavor-login-required .flavor-button { display: inline-block; padding: 0.75rem 1.5rem; background: #4f46e5; color: white; border-radius: 8px; text-decoration: none; }
             </style>',
-            __('Inicia sesión para ver tu contenido personal', 'flavor-chat-ia'),
+            __('Inicia sesión para ver tu contenido personal', FLAVOR_PLATFORM_TEXT_DOMAIN),
             esc_url($login_url),
-            __('Iniciar sesión', 'flavor-chat-ia')
+            __('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)
         );
     }
 
@@ -2602,20 +2602,20 @@ class Flavor_Module_Shortcodes {
         $module_id = sanitize_text_field($_POST['flavor_module'] ?? '');
 
         if (!check_ajax_referer('flavor_module_action_' . $module_id, 'flavor_nonce', false)) {
-            wp_send_json_error(__('Token de seguridad inválido', 'flavor-chat-ia'));
+            wp_send_json_error(__('Token de seguridad inválido', FLAVOR_PLATFORM_TEXT_DOMAIN));
             return;
         }
 
         $action = sanitize_text_field($_POST['flavor_action'] ?? '');
 
         if (empty($module_id) || empty($action)) {
-            wp_send_json_error(__('Datos incompletos', 'flavor-chat-ia'));
+            wp_send_json_error(__('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN));
             return;
         }
 
         // Obtener módulo
         if (!class_exists('Flavor_Chat_Module_Loader')) {
-            wp_send_json_error(__('Sistema no disponible', 'flavor-chat-ia'));
+            wp_send_json_error(__('Sistema no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN));
             return;
         }
 
@@ -2623,7 +2623,7 @@ class Flavor_Module_Shortcodes {
         $instance = $loader->get_module($module_id);
 
         if (!$instance) {
-            wp_send_json_error(__('Módulo no encontrado', 'flavor-chat-ia'));
+            wp_send_json_error(__('Módulo no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN));
             return;
         }
 
@@ -2631,7 +2631,7 @@ class Flavor_Module_Shortcodes {
         if (class_exists('Flavor_Module_Access_Control')) {
             $control = Flavor_Module_Access_Control::get_instance();
             if (!$control->user_can_access($module_id)) {
-                wp_send_json_error(__('No tienes permisos para esta acción', 'flavor-chat-ia'));
+                wp_send_json_error(__('No tienes permisos para esta acción', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 return;
             }
         }
@@ -2649,21 +2649,21 @@ class Flavor_Module_Shortcodes {
             if (method_exists($instance, 'execute_action')) {
                 $result = $instance->execute_action($action, $params);
             } else {
-                $result = ['success' => false, 'message' => __('Módulo no soporta acciones', 'flavor-chat-ia')];
+                $result = ['success' => false, 'message' => __('Módulo no soporta acciones', FLAVOR_PLATFORM_TEXT_DOMAIN)];
             }
 
             if (is_array($result)) {
                 if ($result['success'] ?? false) {
                     wp_send_json_success([
-                        'message' => $result['message'] ?? __('Operación completada', 'flavor-chat-ia'),
+                        'message' => $result['message'] ?? __('Operación completada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'data' => $result['data'] ?? [],
                         'redirect' => $result['redirect'] ?? '',
                     ]);
                 } else {
-                    wp_send_json_error($result['message'] ?? __('Error al procesar', 'flavor-chat-ia'));
+                    wp_send_json_error($result['message'] ?? __('Error al procesar', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 }
             } else {
-                wp_send_json_error(__('Respuesta inválida del módulo', 'flavor-chat-ia'));
+                wp_send_json_error(__('Respuesta inválida del módulo', FLAVOR_PLATFORM_TEXT_DOMAIN));
             }
         } catch (Exception $e) {
             wp_send_json_error($e->getMessage());
@@ -2685,7 +2685,7 @@ class Flavor_Module_Shortcodes {
         ], $atts);
 
         if (empty($atts['module'])) {
-            return '<div class="flavor-error">' . __('Error: Especifica el módulo', 'flavor-chat-ia') . '</div>';
+            return '<div class="flavor-error">' . __('Error: Especifica el módulo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         // Delegar al sistema unificado
@@ -2880,7 +2880,7 @@ class Flavor_Module_Shortcodes {
                         formData.append('action', 'flavor_module_action');
 
                         button.disabled = true;
-                        button.textContent = '<?php _e('Enviando...', 'flavor-chat-ia'); ?>';
+                        button.textContent = '<?php _e('Enviando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>';
                         messages.innerHTML = '';
 
                         fetch('<?php echo admin_url('admin-ajax.php'); ?>', {
@@ -2891,7 +2891,7 @@ class Flavor_Module_Shortcodes {
                         .then(data => {
                             if (data.success) {
                                 messages.innerHTML = '<div class="flavor-message flavor-message--success">' +
-                                    (data.data.message || '<?php _e('Operación completada con éxito', 'flavor-chat-ia'); ?>') +
+                                    (data.data.message || '<?php _e('Operación completada con éxito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>') +
                                     '</div>';
                                 form.reset();
 
@@ -2903,18 +2903,18 @@ class Flavor_Module_Shortcodes {
                                 }
                             } else {
                                 messages.innerHTML = '<div class="flavor-message flavor-message--error">' +
-                                    (data.data || '<?php _e('Error al procesar el formulario', 'flavor-chat-ia'); ?>') +
+                                    (data.data || '<?php _e('Error al procesar el formulario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>') +
                                     '</div>';
                             }
                         })
                         .catch(error => {
                             messages.innerHTML = '<div class="flavor-message flavor-message--error">' +
-                                '<?php _e('Error de conexión', 'flavor-chat-ia'); ?>' +
+                                '<?php _e('Error de conexión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>' +
                                 '</div>';
                         })
                         .finally(function() {
                             button.disabled = false;
-                            button.textContent = '<?php echo esc_js($form_data['submit_text'] ?? __('Enviar', 'flavor-chat-ia')); ?>';
+                            button.textContent = '<?php echo esc_js($form_data['submit_text'] ?? __('Enviar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
                         });
                     });
                 });
@@ -2960,7 +2960,7 @@ class Flavor_Module_Shortcodes {
                     class="flavor-form-select"
                     <?php echo $required ? 'required' : ''; ?>>
                     <?php if (!$required || $placeholder) : ?>
-                        <option value=""><?php echo esc_html($placeholder ?: __('Selecciona una opción', 'flavor-chat-ia')); ?></option>
+                        <option value=""><?php echo esc_html($placeholder ?: __('Selecciona una opción', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></option>
                     <?php endif; ?>
                     <?php foreach ($options as $opt_value => $opt_label) : ?>
                         <option value="<?php echo esc_attr($opt_value); ?>" <?php selected($value, $opt_value); ?>>
@@ -3378,9 +3378,9 @@ class Flavor_Module_Shortcodes {
             default:
                 // Datos genéricos para módulos sin datos específicos
                 return [
-                    ['id'=>1, 'titulo'=>__('Elemento de ejemplo 1', 'flavor-chat-ia'), 'descripcion'=>__('Descripción del primer elemento de ejemplo', 'flavor-chat-ia'), 'icon'=>'dashicons-admin-generic'],
-                    ['id'=>2, 'titulo'=>__('Elemento de ejemplo 2', 'flavor-chat-ia'), 'descripcion'=>__('Descripción del segundo elemento de ejemplo', 'flavor-chat-ia'), 'icon'=>'dashicons-admin-generic'],
-                    ['id'=>3, 'titulo'=>__('Elemento de ejemplo 3', 'flavor-chat-ia'), 'descripcion'=>__('Descripción del tercer elemento de ejemplo', 'flavor-chat-ia'), 'icon'=>'dashicons-admin-generic'],
+                    ['id'=>1, 'titulo'=>__('Elemento de ejemplo 1', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion'=>__('Descripción del primer elemento de ejemplo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon'=>'dashicons-admin-generic'],
+                    ['id'=>2, 'titulo'=>__('Elemento de ejemplo 2', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion'=>__('Descripción del segundo elemento de ejemplo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon'=>'dashicons-admin-generic'],
+                    ['id'=>3, 'titulo'=>__('Elemento de ejemplo 3', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion'=>__('Descripción del tercer elemento de ejemplo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon'=>'dashicons-admin-generic'],
                 ];
         }
     }
@@ -3472,7 +3472,7 @@ class Flavor_Module_Shortcodes {
         $config = $this->get_module_renderer_config($module_slug);
 
         $color = $atts['color'] ?: ($config['color'] ?? 'primary');
-        $title = $atts['title'] ?: sprintf(__('Últimos %s', 'flavor-chat-ia'), $config['title'] ?? ucfirst($module_slug));
+        $title = $atts['title'] ?: sprintf(__('Últimos %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $config['title'] ?? ucfirst($module_slug));
         $icon = $config['icon'] ?? '📋';
 
         // Obtener datos
@@ -3495,12 +3495,12 @@ class Flavor_Module_Shortcodes {
         // Acciones
         $actions = [];
         if (!empty($atts['link'])) {
-            $actions[] = ['label' => __('Ver todos', 'flavor-chat-ia'), 'url' => $atts['link']];
+            $actions[] = ['label' => __('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => $atts['link']];
         }
 
         ob_start();
         $items = $list_items;
-        $empty_text = __('No hay registros recientes', 'flavor-chat-ia');
+        $empty_text = __('No hay registros recientes', FLAVOR_PLATFORM_TEXT_DOMAIN);
         include FLAVOR_CHAT_IA_PATH . 'templates/components/shared/quick-list.php';
         return ob_get_clean();
     }
@@ -3531,7 +3531,7 @@ class Flavor_Module_Shortcodes {
         $config = $this->get_module_renderer_config($module_slug);
 
         $color = $atts['color'] ?: ($config['color'] ?? 'primary');
-        $title = $atts['title'] ?: sprintf(__('%s destacados', 'flavor-chat-ia'), $config['title'] ?? ucfirst($module_slug));
+        $title = $atts['title'] ?: sprintf(__('%s destacados', FLAVOR_PLATFORM_TEXT_DOMAIN), $config['title'] ?? ucfirst($module_slug));
 
         // Obtener datos destacados
         $items = $this->get_module_featured_items($module_slug, intval($atts['limit']));
@@ -3584,7 +3584,7 @@ class Flavor_Module_Shortcodes {
         $config = $this->get_module_renderer_config($module_slug);
 
         $color = $atts['color'] ?: ($config['color'] ?? 'primary');
-        $title = $atts['title'] ?: sprintf(__('Próximo %s', 'flavor-chat-ia'), $config['title_singular'] ?? $config['title'] ?? ucfirst($module_slug));
+        $title = $atts['title'] ?: sprintf(__('Próximo %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $config['title_singular'] ?? $config['title'] ?? ucfirst($module_slug));
         $icon = $config['icon'] ?? '📅';
 
         // Obtener próximo item
@@ -3595,8 +3595,8 @@ class Flavor_Module_Shortcodes {
             $cta = [
                 'icon' => $icon,
                 'title' => $title,
-                'description' => __('No hay próximos eventos programados', 'flavor-chat-ia'),
-                'label' => __('Ver calendario', 'flavor-chat-ia'),
+                'description' => __('No hay próximos eventos programados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'label' => __('Ver calendario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => home_url('/' . $module_slug . '/'),
             ];
 
@@ -3608,12 +3608,12 @@ class Flavor_Module_Shortcodes {
 
         // Preparar datos del item
         $items = [
-            ['icon' => '📅', 'label' => __('Fecha', 'flavor-chat-ia'), 'value' => date_i18n('j M Y, H:i', strtotime($item['date'] ?? ''))],
-            ['icon' => '📍', 'label' => __('Lugar', 'flavor-chat-ia'), 'value' => $item['location'] ?? $item['ubicacion'] ?? '-'],
+            ['icon' => '📅', 'label' => __('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN), 'value' => date_i18n('j M Y, H:i', strtotime($item['date'] ?? ''))],
+            ['icon' => '📍', 'label' => __('Lugar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'value' => $item['location'] ?? $item['ubicacion'] ?? '-'],
         ];
 
         $cta = [
-            'label' => __('Ver detalles', 'flavor-chat-ia'),
+            'label' => __('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'url' => $item['url'] ?? '#',
         ];
 
@@ -3651,7 +3651,7 @@ class Flavor_Module_Shortcodes {
         $config = $this->get_module_renderer_config($module_slug);
 
         $color = $atts['color'] ?: ($config['color'] ?? 'primary');
-        $title = $atts['title'] ?: sprintf(__('Mi %s', 'flavor-chat-ia'), $config['title'] ?? ucfirst($module_slug));
+        $title = $atts['title'] ?: sprintf(__('Mi %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $config['title'] ?? ucfirst($module_slug));
         $icon = $config['icon'] ?? '👤';
 
         // Obtener stats del usuario para este módulo
@@ -3660,13 +3660,13 @@ class Flavor_Module_Shortcodes {
         if (empty($user_stats)) {
             // Stats genéricos
             $user_stats = [
-                ['icon' => '📊', 'label' => __('Total', 'flavor-chat-ia'), 'value' => 0],
-                ['icon' => '⏳', 'label' => __('Pendientes', 'flavor-chat-ia'), 'value' => 0],
+                ['icon' => '📊', 'label' => __('Total', FLAVOR_PLATFORM_TEXT_DOMAIN), 'value' => 0],
+                ['icon' => '⏳', 'label' => __('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'value' => 0],
             ];
         }
 
         $cta = [
-            'label' => __('Ver todo', 'flavor-chat-ia'),
+            'label' => __('Ver todo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'url' => home_url('/mi-portal/' . $module_slug . '/'),
         ];
 
@@ -3833,21 +3833,21 @@ class Flavor_Module_Shortcodes {
         // Stats genéricos basados en tipo de módulo
         $stats_config = [
             'banco-tiempo' => [
-                ['icon' => '⏰', 'label' => __('Horas ofrecidas', 'flavor-chat-ia'), 'value' => 0],
-                ['icon' => '🤝', 'label' => __('Intercambios', 'flavor-chat-ia'), 'value' => 0],
-                ['icon' => '💰', 'label' => __('Saldo', 'flavor-chat-ia'), 'value' => '0h'],
+                ['icon' => '⏰', 'label' => __('Horas ofrecidas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'value' => 0],
+                ['icon' => '🤝', 'label' => __('Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'value' => 0],
+                ['icon' => '💰', 'label' => __('Saldo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'value' => '0h'],
             ],
             'marketplace' => [
-                ['icon' => '📦', 'label' => __('Anuncios activos', 'flavor-chat-ia'), 'value' => 0],
-                ['icon' => '💬', 'label' => __('Mensajes', 'flavor-chat-ia'), 'value' => 0],
+                ['icon' => '📦', 'label' => __('Anuncios activos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'value' => 0],
+                ['icon' => '💬', 'label' => __('Mensajes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'value' => 0],
             ],
             'eventos' => [
-                ['icon' => '🎫', 'label' => __('Inscritos', 'flavor-chat-ia'), 'value' => 0],
-                ['icon' => '📅', 'label' => __('Próximos', 'flavor-chat-ia'), 'value' => 0],
+                ['icon' => '🎫', 'label' => __('Inscritos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'value' => 0],
+                ['icon' => '📅', 'label' => __('Próximos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'value' => 0],
             ],
             'incidencias' => [
-                ['icon' => '📝', 'label' => __('Reportadas', 'flavor-chat-ia'), 'value' => 0],
-                ['icon' => '✅', 'label' => __('Resueltas', 'flavor-chat-ia'), 'value' => 0],
+                ['icon' => '📝', 'label' => __('Reportadas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'value' => 0],
+                ['icon' => '✅', 'label' => __('Resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'value' => 0],
             ],
         ];
 

@@ -621,10 +621,10 @@ abstract class Flavor_Chat_Module_Base implements Flavor_Chat_Module_Interface {
      */
     public function get_display_ecosystem_role_label() {
         $labels = [
-            'base' => __('Base', 'flavor-chat-ia'),
-            'base-standalone' => __('Base local', 'flavor-chat-ia'),
-            'vertical' => __('Vertical', 'flavor-chat-ia'),
-            'transversal' => __('Transversal', 'flavor-chat-ia'),
+            'base' => __('Base', 'flavor-platform'),
+            'base-standalone' => __('Base local', 'flavor-platform'),
+            'vertical' => __('Vertical', 'flavor-platform'),
+            'transversal' => __('Transversal', 'flavor-platform'),
         ];
 
         $role = $this->get_display_ecosystem_role();

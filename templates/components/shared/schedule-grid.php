@@ -32,13 +32,13 @@ $empty_text = $empty_text ?? '-';
 
 // Días de la semana
 $all_days = [
-    'lunes'     => __('Lunes', 'flavor-chat-ia'),
-    'martes'    => __('Martes', 'flavor-chat-ia'),
-    'miercoles' => __('Miércoles', 'flavor-chat-ia'),
-    'jueves'    => __('Jueves', 'flavor-chat-ia'),
-    'viernes'   => __('Viernes', 'flavor-chat-ia'),
-    'sabado'    => __('Sábado', 'flavor-chat-ia'),
-    'domingo'   => __('Domingo', 'flavor-chat-ia'),
+    'lunes'     => __('Lunes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'martes'    => __('Martes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'miercoles' => __('Miércoles', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'jueves'    => __('Jueves', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'viernes'   => __('Viernes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'sabado'    => __('Sábado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'domingo'   => __('Domingo', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 // Días cortos para móvil
@@ -108,12 +108,12 @@ function slot_in_range($slot, $start, $end) {
                 <h4 class="font-medium text-gray-900 <?php echo $is_today ? 'text-blue-700' : ''; ?>">
                     <?php echo esc_html($all_days[$day] ?? ucfirst($day)); ?>
                     <?php if ($is_today): ?>
-                        <span class="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded ml-1"><?php esc_html_e('Hoy', 'flavor-chat-ia'); ?></span>
+                        <span class="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded ml-1"><?php esc_html_e('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <?php endif; ?>
                 </h4>
 
                 <?php if (empty($day_schedule)): ?>
-                    <p class="text-sm text-gray-400 mt-1"><?php esc_html_e('Sin horario', 'flavor-chat-ia'); ?></p>
+                    <p class="text-sm text-gray-400 mt-1"><?php esc_html_e('Sin horario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php else: ?>
                     <div class="mt-2 flex flex-wrap gap-2">
                         <?php foreach ($day_schedule as $i => $block): ?>
@@ -152,7 +152,7 @@ function slot_in_range($slot, $start, $end) {
                 </span>
                 <div class="flex-1 text-sm">
                     <?php if (empty($day_schedule)): ?>
-                        <span class="text-gray-400"><?php esc_html_e('Cerrado', 'flavor-chat-ia'); ?></span>
+                        <span class="text-gray-400"><?php esc_html_e('Cerrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <?php else: ?>
                         <?php
                         $ranges = array_map(function($b) {
@@ -173,7 +173,7 @@ function slot_in_range($slot, $start, $end) {
                     }
                     ?>
                     <span class="text-xs font-medium px-2 py-0.5 rounded-full <?php echo $is_open ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'; ?>">
-                        <?php echo $is_open ? esc_html__('Abierto', 'flavor-chat-ia') : esc_html__('Cerrado', 'flavor-chat-ia'); ?>
+                        <?php echo $is_open ? esc_html__('Abierto', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Cerrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                 <?php endif; ?>
             </div>
@@ -187,7 +187,7 @@ function slot_in_range($slot, $start, $end) {
             <thead>
                 <tr>
                     <th class="p-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b w-16">
-                        <?php esc_html_e('Hora', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Hora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </th>
                     <?php foreach ($days as $day): ?>
                         <?php $is_today = ($day === $current_day_es); ?>
@@ -195,7 +195,7 @@ function slot_in_range($slot, $start, $end) {
                             <span class="hidden sm:inline"><?php echo esc_html($all_days[$day] ?? ucfirst($day)); ?></span>
                             <span class="sm:hidden"><?php echo esc_html($days_short[$day] ?? substr($day, 0, 1)); ?></span>
                             <?php if ($is_today && $show_current): ?>
-                                <span class="block text-[10px] text-blue-500"><?php esc_html_e('Hoy', 'flavor-chat-ia'); ?></span>
+                                <span class="block text-[10px] text-blue-500"><?php esc_html_e('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <?php endif; ?>
                         </th>
                     <?php endforeach; ?>

@@ -70,8 +70,8 @@ class Flavor_Socios_Payment_Manager {
         // Gateway manual (siempre disponible)
         $this->gateways['manual'] = [
             'id'          => 'manual',
-            'nombre'      => __('Transferencia/Efectivo', 'flavor-chat-ia'),
-            'descripcion' => __('Pago manual por transferencia o efectivo', 'flavor-chat-ia'),
+            'nombre'      => __('Transferencia/Efectivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'descripcion' => __('Pago manual por transferencia o efectivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'activo'      => true,
             'clase'       => null,
         ];
@@ -84,8 +84,8 @@ class Flavor_Socios_Payment_Manager {
                 $stripe = new Flavor_Socios_Gateway_Stripe();
                 $this->gateways['stripe'] = [
                     'id'          => 'stripe',
-                    'nombre'      => __('Tarjeta de crédito/débito', 'flavor-chat-ia'),
-                    'descripcion' => __('Pago seguro con tarjeta vía Stripe', 'flavor-chat-ia'),
+                    'nombre'      => __('Tarjeta de crédito/débito', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'descripcion' => __('Pago seguro con tarjeta vía Stripe', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'activo'      => $stripe->is_configured(),
                     'clase'       => $stripe,
                 ];
@@ -100,8 +100,8 @@ class Flavor_Socios_Payment_Manager {
                 $woo = new Flavor_Socios_Gateway_WooCommerce();
                 $this->gateways['woocommerce'] = [
                     'id'          => 'woocommerce',
-                    'nombre'      => __('WooCommerce', 'flavor-chat-ia'),
-                    'descripcion' => __('Pagar usando métodos de WooCommerce', 'flavor-chat-ia'),
+                    'nombre'      => __('WooCommerce', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'descripcion' => __('Pagar usando métodos de WooCommerce', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'activo'      => $woo->is_configured(),
                     'clase'       => $woo,
                 ];
@@ -160,14 +160,14 @@ class Flavor_Socios_Payment_Manager {
         if (!$cuota) {
             return [
                 'success' => false,
-                'error'   => __('Cuota no encontrada.', 'flavor-chat-ia'),
+                'error'   => __('Cuota no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
         if ($cuota->estado === 'pagada') {
             return [
                 'success' => false,
-                'error'   => __('Esta cuota ya está pagada.', 'flavor-chat-ia'),
+                'error'   => __('Esta cuota ya está pagada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -176,7 +176,7 @@ class Flavor_Socios_Payment_Manager {
         if (!$gateway || !$gateway['activo']) {
             return [
                 'success' => false,
-                'error'   => __('Método de pago no disponible.', 'flavor-chat-ia'),
+                'error'   => __('Método de pago no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -192,7 +192,7 @@ class Flavor_Socios_Payment_Manager {
         if (!$transaccion_id) {
             return [
                 'success' => false,
-                'error'   => __('Error al crear la transacción.', 'flavor-chat-ia'),
+                'error'   => __('Error al crear la transacción.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -203,7 +203,7 @@ class Flavor_Socios_Payment_Manager {
                 'success'        => true,
                 'tipo'           => 'manual',
                 'transaccion_id' => $transaccion_id,
-                'mensaje'        => __('Registra tu pago con la referencia proporcionada.', 'flavor-chat-ia'),
+                'mensaje'        => __('Registra tu pago con la referencia proporcionada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'referencia'     => 'CUOTA-' . $cuota_id . '-' . $transaccion_id,
                 'datos_pago'     => $this->get_datos_pago_manual(),
             ];
@@ -223,7 +223,7 @@ class Flavor_Socios_Payment_Manager {
 
         return [
             'success' => false,
-            'error'   => __('Gateway no implementado.', 'flavor-chat-ia'),
+            'error'   => __('Gateway no implementado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -248,14 +248,14 @@ class Flavor_Socios_Payment_Manager {
         if (!$transaccion) {
             return [
                 'success' => false,
-                'error'   => __('Transacción no encontrada.', 'flavor-chat-ia'),
+                'error'   => __('Transacción no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
         if ($transaccion->estado === 'completada') {
             return [
                 'success' => false,
-                'error'   => __('Esta transacción ya está completada.', 'flavor-chat-ia'),
+                'error'   => __('Esta transacción ya está completada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -292,7 +292,7 @@ class Flavor_Socios_Payment_Manager {
 
         return [
             'success' => true,
-            'mensaje' => __('Pago confirmado correctamente.', 'flavor-chat-ia'),
+            'mensaje' => __('Pago confirmado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -352,7 +352,7 @@ class Flavor_Socios_Payment_Manager {
             'banco'      => $opciones['banco'] ?? '',
             'iban'       => $opciones['iban_cooperativa'] ?? '',
             'titular'    => $opciones['titular_cuenta'] ?? get_bloginfo('name'),
-            'concepto'   => __('Cuota de socio', 'flavor-chat-ia'),
+            'concepto'   => __('Cuota de socio', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'bizum'      => $opciones['telefono_bizum'] ?? '',
         ];
     }
@@ -407,7 +407,7 @@ class Flavor_Socios_Payment_Manager {
         ));
 
         if (!$transaccion) {
-            wp_send_json(['success' => false, 'error' => __('Transacción no encontrada.', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Transacción no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         wp_send_json([

@@ -115,11 +115,11 @@ class Flavor_Biblioteca_Dashboard_Tab {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('biblioteca_dashboard_nonce'),
             'i18n' => [
-                'confirmarEliminarFavorito' => __('¿Eliminar este libro de favoritos?', 'flavor-chat-ia'),
-                'agregadoFavoritos' => __('Libro agregado a favoritos', 'flavor-chat-ia'),
-                'eliminadoFavoritos' => __('Libro eliminado de favoritos', 'flavor-chat-ia'),
-                'errorGeneral' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
+                'confirmarEliminarFavorito' => __('¿Eliminar este libro de favoritos?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'agregadoFavoritos' => __('Libro agregado a favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'eliminadoFavoritos' => __('Libro eliminado de favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'errorGeneral' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -192,7 +192,7 @@ class Flavor_Biblioteca_Dashboard_Tab {
 
         // Tab: Mis Préstamos Activos
         $tabs['biblioteca-mis-prestamos'] = [
-            'label' => __('Mis Préstamos', 'flavor-chat-ia'),
+            'label' => __('Mis Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'book',
             'callback' => [$this, 'render_tab_mis_prestamos'],
             'orden' => 40,
@@ -202,7 +202,7 @@ class Flavor_Biblioteca_Dashboard_Tab {
 
         // Tab: Mis Reservas
         $tabs['biblioteca-mis-reservas'] = [
-            'label' => __('Mis Reservas', 'flavor-chat-ia'),
+            'label' => __('Mis Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'calendar',
             'callback' => [$this, 'render_tab_mis_reservas'],
             'orden' => 41,
@@ -211,7 +211,7 @@ class Flavor_Biblioteca_Dashboard_Tab {
 
         // Tab: Historial de Préstamos
         $tabs['biblioteca-historial'] = [
-            'label' => __('Historial', 'flavor-chat-ia'),
+            'label' => __('Historial', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'clock',
             'callback' => [$this, 'render_tab_historial'],
             'orden' => 42,
@@ -219,7 +219,7 @@ class Flavor_Biblioteca_Dashboard_Tab {
 
         // Tab: Libros Favoritos
         $tabs['biblioteca-favoritos'] = [
-            'label' => __('Favoritos', 'flavor-chat-ia'),
+            'label' => __('Favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'heart',
             'callback' => [$this, 'render_tab_favoritos'],
             'orden' => 43,
@@ -365,10 +365,10 @@ class Flavor_Biblioteca_Dashboard_Tab {
             <div class="tab-header">
                 <h2>
                     <span class="dashicons dashicons-book"></span>
-                    <?php esc_html_e('Mis Préstamos Activos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Mis Préstamos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <p class="tab-description">
-                    <?php esc_html_e('Libros que tienes actualmente en préstamo. Recuerda devolverlos antes de la fecha límite.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Libros que tienes actualmente en préstamo. Recuerda devolverlos antes de la fecha límite.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
@@ -387,17 +387,17 @@ class Flavor_Biblioteca_Dashboard_Tab {
                                 <?php if ($esta_vencido): ?>
                                     <span class="alerta-texto">
                                         <?php printf(
-                                            esc_html__('Vencido hace %d días. Por favor, devuélvelo cuanto antes.', 'flavor-chat-ia'),
+                                            esc_html__('Vencido hace %d días. Por favor, devuélvelo cuanto antes.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                             abs($dias_restantes)
                                         ); ?>
                                     </span>
                                 <?php elseif ($dias_restantes === 0): ?>
-                                    <span class="alerta-texto"><?php esc_html_e('Vence hoy', 'flavor-chat-ia'); ?></span>
+                                    <span class="alerta-texto"><?php esc_html_e('Vence hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php elseif ($dias_restantes === 1): ?>
-                                    <span class="alerta-texto"><?php esc_html_e('Vence mañana', 'flavor-chat-ia'); ?></span>
+                                    <span class="alerta-texto"><?php esc_html_e('Vence mañana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php else: ?>
                                     <span class="alerta-texto">
-                                        <?php printf(esc_html__('Vence en %d días', 'flavor-chat-ia'), $dias_restantes); ?>
+                                        <?php printf(esc_html__('Vence en %d días', FLAVOR_PLATFORM_TEXT_DOMAIN), $dias_restantes); ?>
                                     </span>
                                 <?php endif; ?>
                             </div>
@@ -409,10 +409,10 @@ class Flavor_Biblioteca_Dashboard_Tab {
             <?php if (empty($prestamos_activos)): ?>
                 <div class="empty-state">
                     <span class="empty-icon dashicons dashicons-book-alt"></span>
-                    <h3><?php esc_html_e('No tienes préstamos activos', 'flavor-chat-ia'); ?></h3>
-                    <p><?php esc_html_e('Explora el catálogo y encuentra tu próxima lectura.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php esc_html_e('No tienes préstamos activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php esc_html_e('Explora el catálogo y encuentra tu próxima lectura.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(home_url('/biblioteca/')); ?>" class="btn btn-primary">
-                        <?php esc_html_e('Explorar catálogo', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Explorar catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -436,9 +436,9 @@ class Flavor_Biblioteca_Dashboard_Tab {
                                 <?php endif; ?>
 
                                 <?php if ($esta_vencido): ?>
-                                    <span class="badge-estado badge-vencido"><?php esc_html_e('Vencido', 'flavor-chat-ia'); ?></span>
+                                    <span class="badge-estado badge-vencido"><?php esc_html_e('Vencido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php elseif ($proximo_vencer): ?>
-                                    <span class="badge-estado badge-proximo"><?php esc_html_e('Por vencer', 'flavor-chat-ia'); ?></span>
+                                    <span class="badge-estado badge-proximo"><?php esc_html_e('Por vencer', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php endif; ?>
                             </div>
 
@@ -454,14 +454,14 @@ class Flavor_Biblioteca_Dashboard_Tab {
 
                                 <div class="prestamo-fechas">
                                     <p class="fecha-prestamo">
-                                        <strong><?php esc_html_e('Prestado:', 'flavor-chat-ia'); ?></strong>
+                                        <strong><?php esc_html_e('Prestado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                                         <?php echo date_i18n(get_option('date_format'), strtotime($prestamo->fecha_prestamo)); ?>
                                     </p>
                                     <p class="fecha-devolucion <?php echo $esta_vencido ? 'fecha-vencida' : ''; ?>">
-                                        <strong><?php esc_html_e('Devolver antes de:', 'flavor-chat-ia'); ?></strong>
+                                        <strong><?php esc_html_e('Devolver antes de:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                                         <?php echo date_i18n(get_option('date_format'), $fecha_vencimiento); ?>
                                         <?php if ($dias_restantes >= 0): ?>
-                                            <span class="dias-restantes">(<?php printf(esc_html__('%d días', 'flavor-chat-ia'), $dias_restantes); ?>)</span>
+                                            <span class="dias-restantes">(<?php printf(esc_html__('%d días', FLAVOR_PLATFORM_TEXT_DOMAIN), $dias_restantes); ?>)</span>
                                         <?php endif; ?>
                                     </p>
                                 </div>
@@ -469,14 +469,14 @@ class Flavor_Biblioteca_Dashboard_Tab {
                                 <?php if (!empty($prestamo->prestamista_nombre)): ?>
                                     <p class="prestamista">
                                         <span class="dashicons dashicons-businessman"></span>
-                                        <?php printf(esc_html__('Prestado por: %s', 'flavor-chat-ia'), esc_html($prestamo->prestamista_nombre)); ?>
+                                        <?php printf(esc_html__('Prestado por: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($prestamo->prestamista_nombre)); ?>
                                     </p>
                                 <?php endif; ?>
 
                                 <p class="renovaciones">
                                     <span class="dashicons dashicons-update"></span>
                                     <?php printf(
-                                        esc_html__('Renovaciones: %d', 'flavor-chat-ia'),
+                                        esc_html__('Renovaciones: %d', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                         intval($prestamo->renovaciones)
                                     ); ?>
                                 </p>
@@ -487,14 +487,14 @@ class Flavor_Biblioteca_Dashboard_Tab {
                                     <button type="button" class="btn btn-secondary btn-renovar"
                                             data-prestamo-id="<?php echo esc_attr($prestamo->id); ?>">
                                         <span class="dashicons dashicons-update"></span>
-                                        <?php esc_html_e('Renovar', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Renovar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 <?php endif; ?>
 
                                 <button type="button" class="btn btn-outline btn-contactar"
                                         data-usuario-id="<?php echo esc_attr($prestamo->prestamista_id); ?>">
                                     <span class="dashicons dashicons-email"></span>
-                                    <?php esc_html_e('Contactar', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Contactar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             </div>
                         </div>
@@ -540,20 +540,20 @@ class Flavor_Biblioteca_Dashboard_Tab {
             <div class="tab-header">
                 <h2>
                     <span class="dashicons dashicons-calendar"></span>
-                    <?php esc_html_e('Mis Reservas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Mis Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <p class="tab-description">
-                    <?php esc_html_e('Libros que has reservado y están pendientes de disponibilidad.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Libros que has reservado y están pendientes de disponibilidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
             <?php if (empty($reservas)): ?>
                 <div class="empty-state">
                     <span class="empty-icon dashicons dashicons-calendar-alt"></span>
-                    <h3><?php esc_html_e('No tienes reservas pendientes', 'flavor-chat-ia'); ?></h3>
-                    <p><?php esc_html_e('Puedes reservar libros que actualmente están prestados.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php esc_html_e('No tienes reservas pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php esc_html_e('Puedes reservar libros que actualmente están prestados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(home_url('/biblioteca/')); ?>" class="btn btn-primary">
-                        <?php esc_html_e('Explorar catálogo', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Explorar catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -585,7 +585,7 @@ class Flavor_Biblioteca_Dashboard_Tab {
                                 <div class="reserva-detalles">
                                     <p class="fecha-reserva">
                                         <span class="dashicons dashicons-calendar"></span>
-                                        <strong><?php esc_html_e('Reservado:', 'flavor-chat-ia'); ?></strong>
+                                        <strong><?php esc_html_e('Reservado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                                         <?php echo date_i18n(get_option('date_format'), strtotime($reserva->fecha_solicitud)); ?>
                                     </p>
 
@@ -593,7 +593,7 @@ class Flavor_Biblioteca_Dashboard_Tab {
                                         <p class="fecha-expiracion">
                                             <span class="dashicons dashicons-clock"></span>
                                             <?php printf(
-                                                esc_html__('Expira en %d días', 'flavor-chat-ia'),
+                                                esc_html__('Expira en %d días', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                                 $dias_para_expirar
                                             ); ?>
                                         </p>
@@ -610,13 +610,13 @@ class Flavor_Biblioteca_Dashboard_Tab {
                                     <button type="button" class="btn btn-danger btn-cancelar-reserva"
                                             data-reserva-id="<?php echo esc_attr($reserva->id); ?>">
                                         <span class="dashicons dashicons-no-alt"></span>
-                                        <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 <?php elseif ($reserva->estado === 'confirmada'): ?>
                                     <a href="<?php echo esc_url(home_url('/biblioteca/libro/' . $reserva->libro_id)); ?>"
                                        class="btn btn-primary">
                                         <span class="dashicons dashicons-visibility"></span>
-                                        <?php esc_html_e('Recoger', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Recoger', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 <?php endif; ?>
                             </div>
@@ -636,11 +636,11 @@ class Flavor_Biblioteca_Dashboard_Tab {
      */
     private function obtener_label_estado_reserva($estado) {
         $estados = [
-            'pendiente' => __('En espera', 'flavor-chat-ia'),
-            'confirmada' => __('Disponible para recoger', 'flavor-chat-ia'),
-            'cancelada' => __('Cancelada', 'flavor-chat-ia'),
-            'expirada' => __('Expirada', 'flavor-chat-ia'),
-            'convertida' => __('Convertida en préstamo', 'flavor-chat-ia'),
+            'pendiente' => __('En espera', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'confirmada' => __('Disponible para recoger', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cancelada' => __('Cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'expirada' => __('Expirada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'convertida' => __('Convertida en préstamo', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
         return $estados[$estado] ?? $estado;
     }
@@ -705,10 +705,10 @@ class Flavor_Biblioteca_Dashboard_Tab {
             <div class="tab-header">
                 <h2>
                     <span class="dashicons dashicons-clock"></span>
-                    <?php esc_html_e('Historial de Préstamos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Historial de Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <p class="tab-description">
-                    <?php esc_html_e('Todos los libros que has leído a través de la biblioteca.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Todos los libros que has leído a través de la biblioteca.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
@@ -716,15 +716,15 @@ class Flavor_Biblioteca_Dashboard_Tab {
                 <div class="estadisticas-lectura">
                     <div class="stat-card">
                         <span class="stat-valor"><?php echo esc_html($estadisticas['total_prestamos']); ?></span>
-                        <span class="stat-label"><?php esc_html_e('Préstamos totales', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php esc_html_e('Préstamos totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="stat-card">
                         <span class="stat-valor"><?php echo esc_html($estadisticas['libros_leidos']); ?></span>
-                        <span class="stat-label"><?php esc_html_e('Libros diferentes', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php esc_html_e('Libros diferentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="stat-card">
                         <span class="stat-valor"><?php echo esc_html($estadisticas['dias_promedio']); ?></span>
-                        <span class="stat-label"><?php esc_html_e('Días promedio/libro', 'flavor-chat-ia'); ?></span>
+                        <span class="stat-label"><?php esc_html_e('Días promedio/libro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             <?php endif; ?>
@@ -732,8 +732,8 @@ class Flavor_Biblioteca_Dashboard_Tab {
             <?php if (empty($historial)): ?>
                 <div class="empty-state">
                     <span class="empty-icon dashicons dashicons-book-alt"></span>
-                    <h3><?php esc_html_e('Sin historial de préstamos', 'flavor-chat-ia'); ?></h3>
-                    <p><?php esc_html_e('Cuando devuelvas libros, aparecerán aquí.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php esc_html_e('Sin historial de préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php esc_html_e('Cuando devuelvas libros, aparecerán aquí.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="historial-timeline">
@@ -783,7 +783,7 @@ class Flavor_Biblioteca_Dashboard_Tab {
                                     $dias_prestamo = floor(($fecha_devolucion - strtotime($item->fecha_prestamo)) / DAY_IN_SECONDS);
                                     ?>
                                     <span class="duracion">
-                                        <?php printf(esc_html__('%d días', 'flavor-chat-ia'), $dias_prestamo); ?>
+                                        <?php printf(esc_html__('%d días', FLAVOR_PLATFORM_TEXT_DOMAIN), $dias_prestamo); ?>
                                     </span>
                                 </div>
 
@@ -795,7 +795,7 @@ class Flavor_Biblioteca_Dashboard_Tab {
                             <div class="historial-acciones">
                                 <button type="button" class="btn btn-icon btn-agregar-favorito"
                                         data-libro-id="<?php echo esc_attr($item->libro_id); ?>"
-                                        title="<?php esc_attr_e('Agregar a favoritos', 'flavor-chat-ia'); ?>">
+                                        title="<?php esc_attr_e('Agregar a favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-heart"></span>
                                 </button>
 
@@ -808,7 +808,7 @@ class Flavor_Biblioteca_Dashboard_Tab {
                                 <?php else: ?>
                                     <button type="button" class="btn btn-outline btn-valorar"
                                             data-libro-id="<?php echo esc_attr($item->libro_id); ?>">
-                                        <?php esc_html_e('Valorar', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Valorar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 <?php endif; ?>
                             </div>
@@ -854,20 +854,20 @@ class Flavor_Biblioteca_Dashboard_Tab {
             <div class="tab-header">
                 <h2>
                     <span class="dashicons dashicons-heart"></span>
-                    <?php esc_html_e('Mis Libros Favoritos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Mis Libros Favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <p class="tab-description">
-                    <?php esc_html_e('Libros que has marcado como favoritos para leer más adelante.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Libros que has marcado como favoritos para leer más adelante.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
             <?php if (empty($favoritos)): ?>
                 <div class="empty-state">
                     <span class="empty-icon dashicons dashicons-heart"></span>
-                    <h3><?php esc_html_e('Sin libros favoritos', 'flavor-chat-ia'); ?></h3>
-                    <p><?php esc_html_e('Marca libros como favoritos para encontrarlos fácilmente.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php esc_html_e('Sin libros favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php esc_html_e('Marca libros como favoritos para encontrarlos fácilmente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(home_url('/biblioteca/')); ?>" class="btn btn-primary">
-                        <?php esc_html_e('Explorar catálogo', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Explorar catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -887,13 +887,13 @@ class Flavor_Biblioteca_Dashboard_Tab {
                                 <?php endif; ?>
 
                                 <span class="disponibilidad-badge <?php echo $disponible ? 'disponible' : 'no-disponible'; ?>">
-                                    <?php echo $disponible ? esc_html__('Disponible', 'flavor-chat-ia') : esc_html__('Prestado', 'flavor-chat-ia'); ?>
+                                    <?php echo $disponible ? esc_html__('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Prestado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
 
                                 <button type="button" class="btn-quitar-favorito"
                                         data-favorito-id="<?php echo esc_attr($favorito->id); ?>"
                                         data-libro-id="<?php echo esc_attr($favorito->libro_id); ?>"
-                                        title="<?php esc_attr_e('Quitar de favoritos', 'flavor-chat-ia'); ?>">
+                                        title="<?php esc_attr_e('Quitar de favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-heart"></span>
                                 </button>
                             </div>
@@ -925,7 +925,7 @@ class Flavor_Biblioteca_Dashboard_Tab {
                                 <p class="fecha-agregado">
                                     <span class="dashicons dashicons-calendar-alt"></span>
                                     <?php printf(
-                                        esc_html__('Agregado el %s', 'flavor-chat-ia'),
+                                        esc_html__('Agregado el %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                         date_i18n(get_option('date_format'), strtotime($favorito->fecha_agregado))
                                     ); ?>
                                 </p>
@@ -942,18 +942,18 @@ class Flavor_Biblioteca_Dashboard_Tab {
                                 <?php if ($disponible): ?>
                                     <button type="button" class="btn btn-primary btn-reservar"
                                             data-libro-id="<?php echo esc_attr($favorito->libro_id); ?>">
-                                        <?php esc_html_e('Reservar', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 <?php else: ?>
                                     <button type="button" class="btn btn-outline btn-lista-espera"
                                             data-libro-id="<?php echo esc_attr($favorito->libro_id); ?>">
-                                        <?php esc_html_e('Lista de espera', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Lista de espera', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 <?php endif; ?>
 
                                 <a href="<?php echo esc_url(home_url('/biblioteca/libro/' . $favorito->libro_id)); ?>"
                                    class="btn btn-secondary">
-                                    <?php esc_html_e('Ver detalles', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </div>
                         </div>
@@ -975,7 +975,7 @@ class Flavor_Biblioteca_Dashboard_Tab {
         check_ajax_referer('biblioteca_dashboard_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['mensaje' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $libro_id = intval($_POST['libro_id'] ?? 0);
@@ -983,7 +983,7 @@ class Flavor_Biblioteca_Dashboard_Tab {
         $accion = sanitize_text_field($_POST['accion'] ?? 'toggle');
 
         if (!$libro_id) {
-            wp_send_json_error(['mensaje' => __('ID de libro inválido', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('ID de libro inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1006,7 +1006,7 @@ class Flavor_Biblioteca_Dashboard_Tab {
 
             wp_send_json_success([
                 'accion' => 'eliminado',
-                'mensaje' => __('Libro eliminado de favoritos', 'flavor-chat-ia'),
+                'mensaje' => __('Libro eliminado de favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         } else {
             // Agregar a favoritos
@@ -1021,10 +1021,10 @@ class Flavor_Biblioteca_Dashboard_Tab {
                 wp_send_json_success([
                     'accion' => 'agregado',
                     'favorito_id' => $wpdb->insert_id,
-                    'mensaje' => __('Libro agregado a favoritos', 'flavor-chat-ia'),
+                    'mensaje' => __('Libro agregado a favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ]);
             } else {
-                wp_send_json_error(['mensaje' => __('Error al agregar a favoritos', 'flavor-chat-ia')]);
+                wp_send_json_error(['mensaje' => __('Error al agregar a favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             }
         }
     }
@@ -1036,7 +1036,7 @@ class Flavor_Biblioteca_Dashboard_Tab {
         check_ajax_referer('biblioteca_dashboard_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['mensaje' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;

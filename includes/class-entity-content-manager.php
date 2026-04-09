@@ -238,12 +238,12 @@ class Flavor_Entity_Content_Manager {
         }
 
         $titulo = $args['titulo'] ?? sprintf(
-            __('Foro de %s', 'flavor-chat-ia'),
+            __('Foro de %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $entity_name
         );
 
         $descripcion = $args['descripcion'] ?? sprintf(
-            __('Espacio de discusión para %s', 'flavor-chat-ia'),
+            __('Espacio de discusión para %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $entity_name
         );
 
@@ -280,7 +280,7 @@ class Flavor_Entity_Content_Manager {
         }
 
         $nombre = $args['nombre'] ?? sprintf(
-            __('Chat de %s', 'flavor-chat-ia'),
+            __('Chat de %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $entity_name
         );
 
@@ -309,7 +309,7 @@ class Flavor_Entity_Content_Manager {
      */
     protected function create_galeria($entity_type, $entity_id, $entity_name, $args = []) {
         $titulo = $args['titulo'] ?? sprintf(
-            __('Galería de %s', 'flavor-chat-ia'),
+            __('Galería de %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $entity_name
         );
 
@@ -478,7 +478,7 @@ class Flavor_Entity_Content_Manager {
         }
 
         // Fallback
-        return sprintf(__('Entidad #%d', 'flavor-chat-ia'), $entity_id);
+        return sprintf(__('Entidad #%d', FLAVOR_PLATFORM_TEXT_DOMAIN), $entity_id);
     }
 
     /**

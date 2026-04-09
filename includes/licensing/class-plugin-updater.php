@@ -32,7 +32,7 @@ class Flavor_Plugin_Updater {
      *
      * @var string
      */
-    private $plugin_slug = 'flavor-chat-ia';
+    private $plugin_slug = FLAVOR_PLATFORM_TEXT_DOMAIN;
 
     /**
      * Archivo principal del plugin
@@ -229,7 +229,7 @@ class Flavor_Plugin_Updater {
             'author'            => '<a href="https://gailu.net">Gailu Labs</a>',
             'author_profile'    => 'https://gailu.net',
             'homepage'          => 'https://gailu.net/flavor-platform/',
-            'short_description' => __('Plataforma modular para comunidades y organizaciones.', 'flavor-chat-ia'),
+            'short_description' => __('Plataforma modular para comunidades y organizaciones.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'sections'          => [
                 'description'   => $this->get_plugin_description(),
                 'changelog'     => $this->format_changelog($update_info['changelog'] ?? ''),
@@ -337,7 +337,7 @@ class Flavor_Plugin_Updater {
      */
     public function add_action_links($links) {
         $check_link = '<a href="#" class="flavor-check-updates" data-nonce="' . wp_create_nonce('flavor_check_updates') . '">'
-                    . __('Verificar actualizaciones', 'flavor-chat-ia')
+                    . __('Verificar actualizaciones', FLAVOR_PLATFORM_TEXT_DOMAIN)
                     . '</a>';
 
         $links['check_updates'] = $check_link;
@@ -354,7 +354,7 @@ class Flavor_Plugin_Updater {
         check_ajax_referer('flavor_check_updates', 'nonce');
 
         if (!current_user_can('update_plugins')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Limpiar caché para forzar verificación
@@ -374,7 +374,7 @@ class Flavor_Plugin_Updater {
                 'has_update'    => true,
                 'new_version'   => $update->new_version,
                 'message'       => sprintf(
-                    __('Nueva versión disponible: %s', 'flavor-chat-ia'),
+                    __('Nueva versión disponible: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $update->new_version
                 ),
                 'update_url'    => admin_url('update-core.php'),
@@ -382,7 +382,7 @@ class Flavor_Plugin_Updater {
         } else {
             wp_send_json_success([
                 'has_update' => false,
-                'message'    => __('Tu plugin está actualizado.', 'flavor-chat-ia'),
+                'message'    => __('Tu plugin está actualizado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
     }
@@ -393,14 +393,14 @@ class Flavor_Plugin_Updater {
      * @return string
      */
     private function get_plugin_description() {
-        return '<p>' . __('Flavor Platform es una plataforma modular para comunidades, cooperativas y organizaciones.', 'flavor-chat-ia') . '</p>'
-             . '<h4>' . __('Características principales:', 'flavor-chat-ia') . '</h4>'
+        return '<p>' . __('Flavor Platform es una plataforma modular para comunidades, cooperativas y organizaciones.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>'
+             . '<h4>' . __('Características principales:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h4>'
              . '<ul>'
-             . '<li>' . __('Más de 60 módulos integrados', 'flavor-chat-ia') . '</li>'
-             . '<li>' . __('Sistema de roles y permisos', 'flavor-chat-ia') . '</li>'
-             . '<li>' . __('Dashboard unificado', 'flavor-chat-ia') . '</li>'
-             . '<li>' . __('Soporte multiidioma', 'flavor-chat-ia') . '</li>'
-             . '<li>' . __('API REST completa', 'flavor-chat-ia') . '</li>'
+             . '<li>' . __('Más de 60 módulos integrados', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</li>'
+             . '<li>' . __('Sistema de roles y permisos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</li>'
+             . '<li>' . __('Dashboard unificado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</li>'
+             . '<li>' . __('Soporte multiidioma', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</li>'
+             . '<li>' . __('API REST completa', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</li>'
              . '</ul>';
     }
 
@@ -412,7 +412,7 @@ class Flavor_Plugin_Updater {
      */
     private function format_changelog($changelog) {
         if (empty($changelog)) {
-            return '<p>' . __('No hay información de cambios disponible.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('No hay información de cambios disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         // Si ya es HTML, devolverlo

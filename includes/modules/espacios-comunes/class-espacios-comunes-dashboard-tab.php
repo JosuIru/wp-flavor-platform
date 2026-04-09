@@ -27,14 +27,14 @@ class Flavor_Espacios_Comunes_Dashboard_Tab {
 
     public function registrar_tabs($tabs) {
         $tabs['espacios-disponibles'] = [
-            'label' => __('Espacios', 'flavor-chat-ia'),
+            'label' => __('Espacios', 'flavor-platform'),
             'icon' => 'building',
             'callback' => [$this, 'render_tab_espacios'],
             'orden' => 45,
         ];
 
         $tabs['espacios-mis-reservas'] = [
-            'label' => __('Mis Reservas', 'flavor-chat-ia'),
+            'label' => __('Mis Reservas', 'flavor-platform'),
             'icon' => 'calendar-alt',
             'callback' => [$this, 'render_tab_mis_reservas'],
             'orden' => 46,
@@ -65,8 +65,8 @@ class Flavor_Espacios_Comunes_Dashboard_Tab {
         ?>
         <div class="flavor-panel flavor-espacios-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-building"></span> <?php esc_html_e('Espacios Comunes', 'flavor-chat-ia'); ?></h2>
-                <p class="flavor-panel-subtitle"><?php esc_html_e('Reserva salas, locales y espacios para tus actividades', 'flavor-chat-ia'); ?></p>
+                <h2><span class="dashicons dashicons-building"></span> <?php esc_html_e('Espacios Comunes', 'flavor-platform'); ?></h2>
+                <p class="flavor-panel-subtitle"><?php esc_html_e('Reserva salas, locales y espacios para tus actividades', 'flavor-platform'); ?></p>
             </div>
 
             <div class="flavor-panel-kpis">
@@ -74,7 +74,7 @@ class Flavor_Espacios_Comunes_Dashboard_Tab {
                     <span class="flavor-kpi-icon dashicons dashicons-building"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($total_espacios); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Espacios Disponibles', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Espacios Disponibles', 'flavor-platform'); ?></span>
                     </div>
                 </div>
             </div>
@@ -93,7 +93,7 @@ class Flavor_Espacios_Comunes_Dashboard_Tab {
                                 <?php if (!empty($espacio->capacidad)): ?>
                                     <p class="flavor-text-muted">
                                         <span class="dashicons dashicons-groups"></span>
-                                        <?php printf(esc_html__('Hasta %d personas', 'flavor-chat-ia'), $espacio->capacidad); ?>
+                                        <?php printf(esc_html__('Hasta %d personas', 'flavor-platform'), $espacio->capacidad); ?>
                                     </p>
                                 <?php endif; ?>
                                 <?php if (!empty($espacio->equipamiento)): ?>
@@ -106,10 +106,10 @@ class Flavor_Espacios_Comunes_Dashboard_Tab {
                                 <?php if ($espacio->precio_hora > 0): ?>
                                     <span class="flavor-precio"><?php echo number_format_i18n($espacio->precio_hora, 2); ?> €/h</span>
                                 <?php else: ?>
-                                    <span class="flavor-badge flavor-badge-success"><?php esc_html_e('Gratis', 'flavor-chat-ia'); ?></span>
+                                    <span class="flavor-badge flavor-badge-success"><?php esc_html_e('Gratis', 'flavor-platform'); ?></span>
                                 <?php endif; ?>
                                 <a href="<?php echo esc_url(home_url('/espacios/' . $espacio->slug)); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
-                                    <?php esc_html_e('Reservar', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Reservar', 'flavor-platform'); ?>
                                 </a>
                             </div>
                         </div>
@@ -118,13 +118,13 @@ class Flavor_Espacios_Comunes_Dashboard_Tab {
             <?php else: ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-building"></span>
-                    <p><?php esc_html_e('No hay espacios disponibles en este momento.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay espacios disponibles en este momento.', 'flavor-platform'); ?></p>
                 </div>
             <?php endif; ?>
 
             <div class="flavor-panel-actions">
                 <a href="<?php echo esc_url(home_url('/espacios-comunes/')); ?>" class="flavor-btn flavor-btn-secondary">
-                    <?php esc_html_e('Ver todos los espacios', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver todos los espacios', 'flavor-platform'); ?>
                 </a>
             </div>
         </div>
@@ -134,7 +134,7 @@ class Flavor_Espacios_Comunes_Dashboard_Tab {
     public function render_tab_mis_reservas() {
         $user_id = get_current_user_id();
         if (!$user_id) {
-            echo '<p>' . esc_html__('Debes iniciar sesión.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Debes iniciar sesión.', 'flavor-platform') . '</p>';
             return;
         }
 
@@ -164,19 +164,19 @@ class Flavor_Espacios_Comunes_Dashboard_Tab {
         ?>
         <div class="flavor-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-calendar-alt"></span> <?php esc_html_e('Mis Reservas', 'flavor-chat-ia'); ?></h2>
+                <h2><span class="dashicons dashicons-calendar-alt"></span> <?php esc_html_e('Mis Reservas', 'flavor-platform'); ?></h2>
                 <a href="<?php echo esc_url(home_url('/espacios-comunes/')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt2"></span>
-                    <?php esc_html_e('Nueva Reserva', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Nueva Reserva', 'flavor-platform'); ?>
                 </a>
             </div>
 
             <?php if (empty($reservas)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-calendar-alt"></span>
-                    <p><?php esc_html_e('No tienes reservas de espacios.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No tienes reservas de espacios.', 'flavor-platform'); ?></p>
                     <a href="<?php echo esc_url(home_url('/espacios-comunes/')); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php esc_html_e('Reservar un espacio', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Reservar un espacio', 'flavor-platform'); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -184,11 +184,11 @@ class Flavor_Espacios_Comunes_Dashboard_Tab {
                     <table class="flavor-table">
                         <thead>
                             <tr>
-                                <th><?php esc_html_e('Espacio', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Horario', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Espacio', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Fecha', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Horario', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Acciones', 'flavor-platform'); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -208,12 +208,12 @@ class Flavor_Espacios_Comunes_Dashboard_Tab {
                                     </td>
                                     <td>
                                         <a href="<?php echo esc_url(home_url('/espacios/' . $reserva->espacio_slug)); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
-                                            <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                                            <?php esc_html_e('Ver', 'flavor-platform'); ?>
                                         </a>
                                         <?php if ($reserva->estado === 'pendiente' || $reserva->estado === 'confirmada'): ?>
                                             <?php if (strtotime($reserva->fecha_inicio) > current_time('timestamp')): ?>
                                                 <button type="button" class="flavor-btn flavor-btn-sm flavor-btn-danger" data-cancelar-reserva="<?php echo esc_attr($reserva->id); ?>">
-                                                    <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                                                    <?php esc_html_e('Cancelar', 'flavor-platform'); ?>
                                                 </button>
                                             <?php endif; ?>
                                         <?php endif; ?>

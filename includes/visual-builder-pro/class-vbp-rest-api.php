@@ -321,12 +321,12 @@ class Flavor_VBP_REST_API {
                     'type'     => array(
                         'required'          => true,
                         'sanitize_callback' => 'sanitize_text_field',
-                        'description'       => __( 'Tipo de sección: hero, features, faq, testimonials, cta, etc.', 'flavor-chat-ia' ),
+                        'description'       => __( 'Tipo de sección: hero, features, faq, testimonials, cta, etc.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                     'context'  => array(
                         'required'          => false,
                         'sanitize_callback' => 'sanitize_textarea_field',
-                        'description'       => __( 'Contexto adicional: industria, tono, público objetivo.', 'flavor-chat-ia' ),
+                        'description'       => __( 'Contexto adicional: industria, tono, público objetivo.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                     'language' => array(
                         'default'           => 'es',
@@ -335,7 +335,7 @@ class Flavor_VBP_REST_API {
                     'style'    => array(
                         'default'           => 'professional',
                         'sanitize_callback' => 'sanitize_text_field',
-                        'description'       => __( 'Estilo: professional, casual, creative, formal.', 'flavor-chat-ia' ),
+                        'description'       => __( 'Estilo: professional, casual, creative, formal.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                 ),
             )
@@ -357,7 +357,7 @@ class Flavor_VBP_REST_API {
                     'action' => array(
                         'required'          => true,
                         'sanitize_callback' => 'sanitize_text_field',
-                        'description'       => __( 'Acción: expand, shorten, rephrase, formal, casual, seo.', 'flavor-chat-ia' ),
+                        'description'       => __( 'Acción: expand, shorten, rephrase, formal, casual, seo.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                 ),
             )
@@ -408,7 +408,7 @@ class Flavor_VBP_REST_API {
                     'type'  => array(
                         'default'           => 'headlines',
                         'sanitize_callback' => 'sanitize_text_field',
-                        'description'       => __( 'Tipo: headlines, descriptions, cta, taglines.', 'flavor-chat-ia' ),
+                        'description'       => __( 'Tipo: headlines, descriptions, cta, taglines.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                 ),
             )
@@ -426,12 +426,12 @@ class Flavor_VBP_REST_API {
                     'operations' => array(
                         'required'    => true,
                         'type'        => 'array',
-                        'description' => __( 'Array de operaciones a ejecutar', 'flavor-chat-ia' ),
+                        'description' => __( 'Array de operaciones a ejecutar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                     'stop_on_error' => array(
                         'default'     => false,
                         'type'        => 'boolean',
-                        'description' => __( 'Detener si hay error en alguna operación', 'flavor-chat-ia' ),
+                        'description' => __( 'Detener si hay error en alguna operación', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                 ),
             )
@@ -449,7 +449,7 @@ class Flavor_VBP_REST_API {
                     'pages' => array(
                         'required'    => true,
                         'type'        => 'array',
-                        'description' => __( 'Array de páginas a crear', 'flavor-chat-ia' ),
+                        'description' => __( 'Array de páginas a crear', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                 ),
             )
@@ -522,7 +522,7 @@ class Flavor_VBP_REST_API {
         if ( ! $post ) {
             return new WP_Error(
                 'documento_no_encontrado',
-                __( 'Documento no encontrado', 'flavor-chat-ia' ),
+                __( 'Documento no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 404 )
             );
         }
@@ -555,7 +555,7 @@ class Flavor_VBP_REST_API {
         if ( empty( $datos ) ) {
             return new WP_Error(
                 'datos_vacios',
-                __( 'No se recibieron datos para guardar', 'flavor-chat-ia' ),
+                __( 'No se recibieron datos para guardar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 400 )
             );
         }
@@ -589,7 +589,7 @@ class Flavor_VBP_REST_API {
             return new WP_REST_Response(
                 array(
                     'success'   => true,
-                    'message'   => __( 'Documento guardado', 'flavor-chat-ia' ),
+                    'message'   => __( 'Documento guardado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'updatedAt' => current_time( 'mysql' ),
                 ),
                 200
@@ -598,7 +598,7 @@ class Flavor_VBP_REST_API {
 
         return new WP_Error(
             'error_guardado',
-            __( 'Error al guardar el documento', 'flavor-chat-ia' ),
+            __( 'Error al guardar el documento', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             array( 'status' => 500 )
         );
     }
@@ -652,7 +652,7 @@ class Flavor_VBP_REST_API {
             return new WP_REST_Response(
                 array(
                     'success' => true,
-                    'message' => __( 'Revisión restaurada', 'flavor-chat-ia' ),
+                    'message' => __( 'Revisión restaurada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 200
             );
@@ -660,7 +660,7 @@ class Flavor_VBP_REST_API {
 
         return new WP_Error(
             'error_restaurar',
-            __( 'Error al restaurar la revisión', 'flavor-chat-ia' ),
+            __( 'Error al restaurar la revisión', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             array( 'status' => 500 )
         );
     }
@@ -1090,7 +1090,7 @@ class Flavor_VBP_REST_API {
         if ( ! $post_id || ! $nombre ) {
             return new WP_Error(
                 'datos_invalidos',
-                __( 'Datos inválidos', 'flavor-chat-ia' ),
+                __( 'Datos inválidos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 400 )
             );
         }
@@ -1111,7 +1111,7 @@ class Flavor_VBP_REST_API {
         if ( is_wp_error( $template_id ) ) {
             return new WP_Error(
                 'error_crear',
-                __( 'Error al crear el template', 'flavor-chat-ia' ),
+                __( 'Error al crear el template', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 500 )
             );
         }
@@ -1123,7 +1123,7 @@ class Flavor_VBP_REST_API {
             array(
                 'success'     => true,
                 'template_id' => $template_id,
-                'message'     => __( 'Template creado', 'flavor-chat-ia' ),
+                'message'     => __( 'Template creado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             200
         );
@@ -1143,7 +1143,7 @@ class Flavor_VBP_REST_API {
         if ( empty( $template_id ) ) {
             return new WP_Error(
                 'template_invalido',
-                __( 'Template inválido', 'flavor-chat-ia' ),
+                __( 'Template inválido', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 400 )
             );
         }
@@ -1171,7 +1171,7 @@ class Flavor_VBP_REST_API {
         if ( empty( $datos_template ) ) {
             return new WP_Error(
                 'template_vacio',
-                __( 'El template está vacío o no existe', 'flavor-chat-ia' ),
+                __( 'El template está vacío o no existe', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 400 )
             );
         }
@@ -1184,7 +1184,7 @@ class Flavor_VBP_REST_API {
             return new WP_REST_Response(
                 array(
                     'success'  => true,
-                    'message'  => __( 'Template aplicado', 'flavor-chat-ia' ),
+                    'message'  => __( 'Template aplicado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'document' => $datos_template,
                 ),
                 200
@@ -1193,7 +1193,7 @@ class Flavor_VBP_REST_API {
 
         return new WP_Error(
             'error_aplicar',
-            __( 'Error al aplicar el template', 'flavor-chat-ia' ),
+            __( 'Error al aplicar el template', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             array( 'status' => 500 )
         );
     }
@@ -1211,7 +1211,7 @@ class Flavor_VBP_REST_API {
         if ( ! $template || 'vbp_template' !== $template->post_type ) {
             return new WP_Error(
                 'template_no_encontrado',
-                __( 'Template no encontrado', 'flavor-chat-ia' ),
+                __( 'Template no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 404 )
             );
         }
@@ -1220,7 +1220,7 @@ class Flavor_VBP_REST_API {
         if ( $template->post_author !== get_current_user_id() && ! current_user_can( 'delete_others_posts' ) ) {
             return new WP_Error(
                 'sin_permisos',
-                __( 'No tienes permisos para eliminar este template', 'flavor-chat-ia' ),
+                __( 'No tienes permisos para eliminar este template', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 403 )
             );
         }
@@ -1231,7 +1231,7 @@ class Flavor_VBP_REST_API {
             return new WP_REST_Response(
                 array(
                     'success' => true,
-                    'message' => __( 'Template eliminado', 'flavor-chat-ia' ),
+                    'message' => __( 'Template eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 200
             );
@@ -1239,7 +1239,7 @@ class Flavor_VBP_REST_API {
 
         return new WP_Error(
             'error_eliminar',
-            __( 'Error al eliminar el template', 'flavor-chat-ia' ),
+            __( 'Error al eliminar el template', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             array( 'status' => 500 )
         );
     }
@@ -1257,7 +1257,7 @@ class Flavor_VBP_REST_API {
         if ( ! $post ) {
             return new WP_Error(
                 'documento_no_encontrado',
-                __( 'Documento no encontrado', 'flavor-chat-ia' ),
+                __( 'Documento no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 404 )
             );
         }
@@ -1658,74 +1658,74 @@ class Flavor_VBP_REST_API {
     private function get_seccion_plantilla( $tipo, $contexto = '' ) {
         $plantillas = array(
             'hero' => array(
-                'titulo'       => __( 'Bienvenido a nuestra plataforma', 'flavor-chat-ia' ),
-                'subtitulo'    => __( 'La solución que estabas buscando para potenciar tu negocio', 'flavor-chat-ia' ),
-                'boton_texto'  => __( 'Comenzar ahora', 'flavor-chat-ia' ),
+                'titulo'       => __( 'Bienvenido a nuestra plataforma', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'subtitulo'    => __( 'La solución que estabas buscando para potenciar tu negocio', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'boton_texto'  => __( 'Comenzar ahora', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'boton_url'    => '#contacto',
             ),
             'features' => array(
-                'titulo' => __( 'Nuestras características', 'flavor-chat-ia' ),
+                'titulo' => __( 'Nuestras características', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'items'  => array(
                     array(
                         'icono'       => '⚡',
-                        'titulo'      => __( 'Rápido y eficiente', 'flavor-chat-ia' ),
-                        'descripcion' => __( 'Implementación en minutos con resultados inmediatos.', 'flavor-chat-ia' ),
+                        'titulo'      => __( 'Rápido y eficiente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'descripcion' => __( 'Implementación en minutos con resultados inmediatos.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                     array(
                         'icono'       => '🔒',
-                        'titulo'      => __( 'Seguro y confiable', 'flavor-chat-ia' ),
-                        'descripcion' => __( 'Protección de datos con los más altos estándares.', 'flavor-chat-ia' ),
+                        'titulo'      => __( 'Seguro y confiable', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'descripcion' => __( 'Protección de datos con los más altos estándares.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                     array(
                         'icono'       => '📱',
-                        'titulo'      => __( '100% responsive', 'flavor-chat-ia' ),
-                        'descripcion' => __( 'Funciona perfectamente en todos los dispositivos.', 'flavor-chat-ia' ),
+                        'titulo'      => __( '100% responsive', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'descripcion' => __( 'Funciona perfectamente en todos los dispositivos.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                 ),
             ),
             'faq' => array(
-                'titulo' => __( 'Preguntas frecuentes', 'flavor-chat-ia' ),
+                'titulo' => __( 'Preguntas frecuentes', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'items'  => array(
                     array(
-                        'pregunta'  => __( '¿Cómo funciona el servicio?', 'flavor-chat-ia' ),
-                        'respuesta' => __( 'Nuestro servicio es muy sencillo de usar. Solo tienes que registrarte y empezar a disfrutar de todas las funcionalidades.', 'flavor-chat-ia' ),
+                        'pregunta'  => __( '¿Cómo funciona el servicio?', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'respuesta' => __( 'Nuestro servicio es muy sencillo de usar. Solo tienes que registrarte y empezar a disfrutar de todas las funcionalidades.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                     array(
-                        'pregunta'  => __( '¿Puedo cancelar en cualquier momento?', 'flavor-chat-ia' ),
-                        'respuesta' => __( 'Sí, puedes cancelar tu suscripción cuando quieras sin penalizaciones ni compromisos.', 'flavor-chat-ia' ),
+                        'pregunta'  => __( '¿Puedo cancelar en cualquier momento?', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'respuesta' => __( 'Sí, puedes cancelar tu suscripción cuando quieras sin penalizaciones ni compromisos.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                     array(
-                        'pregunta'  => __( '¿Ofrecen soporte técnico?', 'flavor-chat-ia' ),
-                        'respuesta' => __( 'Contamos con un equipo de soporte disponible 24/7 para ayudarte con cualquier duda o incidencia.', 'flavor-chat-ia' ),
+                        'pregunta'  => __( '¿Ofrecen soporte técnico?', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                        'respuesta' => __( 'Contamos con un equipo de soporte disponible 24/7 para ayudarte con cualquier duda o incidencia.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     ),
                 ),
             ),
             'testimonials' => array(
-                'titulo' => __( 'Lo que dicen nuestros clientes', 'flavor-chat-ia' ),
+                'titulo' => __( 'Lo que dicen nuestros clientes', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'items'  => array(
                     array(
-                        'texto' => __( 'Excelente servicio, ha superado todas nuestras expectativas. Lo recomendamos sin duda.', 'flavor-chat-ia' ),
+                        'texto' => __( 'Excelente servicio, ha superado todas nuestras expectativas. Lo recomendamos sin duda.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'autor' => 'María García',
                         'cargo' => 'CEO, Empresa ABC',
                     ),
                     array(
-                        'texto' => __( 'La mejor inversión que hemos hecho. El ROI fue inmediato y el soporte es increíble.', 'flavor-chat-ia' ),
+                        'texto' => __( 'La mejor inversión que hemos hecho. El ROI fue inmediato y el soporte es increíble.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                         'autor' => 'Carlos López',
                         'cargo' => 'Director de Marketing',
                     ),
                 ),
             ),
             'cta' => array(
-                'titulo'      => __( '¿Listo para empezar?', 'flavor-chat-ia' ),
-                'subtitulo'   => __( 'Únete a miles de usuarios que ya confían en nosotros', 'flavor-chat-ia' ),
-                'boton_texto' => __( 'Empezar gratis', 'flavor-chat-ia' ),
+                'titulo'      => __( '¿Listo para empezar?', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'subtitulo'   => __( 'Únete a miles de usuarios que ya confían en nosotros', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'boton_texto' => __( 'Empezar gratis', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'boton_url'   => '#',
             ),
         );
 
         return isset( $plantillas[ $tipo ] )
             ? array( 'success' => true, 'data' => $plantillas[ $tipo ], 'source' => 'template' )
-            : array( 'success' => false, 'error' => __( 'Tipo de sección no reconocido', 'flavor-chat-ia' ) );
+            : array( 'success' => false, 'error' => __( 'Tipo de sección no reconocido', FLAVOR_PLATFORM_TEXT_DOMAIN ) );
     }
 
     /**
@@ -1741,7 +1741,7 @@ class Flavor_VBP_REST_API {
         if ( empty( $texto ) ) {
             return new WP_Error(
                 'texto_vacio',
-                __( 'El texto no puede estar vacío', 'flavor-chat-ia' ),
+                __( 'El texto no puede estar vacío', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 400 )
             );
         }
@@ -1753,7 +1753,7 @@ class Flavor_VBP_REST_API {
                 array(
                     'success'  => false,
                     'original' => $texto,
-                    'message'  => __( 'La función de IA no está disponible. Por favor, configure la API de IA.', 'flavor-chat-ia' ),
+                    'message'  => __( 'La función de IA no está disponible. Por favor, configure la API de IA.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 200
             );
@@ -1796,7 +1796,7 @@ class Flavor_VBP_REST_API {
         if ( empty( $texto ) ) {
             return new WP_Error(
                 'texto_vacio',
-                __( 'El texto no puede estar vacío', 'flavor-chat-ia' ),
+                __( 'El texto no puede estar vacío', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 400 )
             );
         }
@@ -1853,7 +1853,7 @@ class Flavor_VBP_REST_API {
 
         return new WP_Error(
             'service_unavailable',
-            __( 'El servicio de traducción no está disponible.', 'flavor-chat-ia' ),
+            __( 'El servicio de traducción no está disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             array( 'status' => 503 )
         );
     }
@@ -1872,7 +1872,7 @@ class Flavor_VBP_REST_API {
         if ( empty( $texto ) ) {
             return new WP_Error(
                 'texto_vacio',
-                __( 'El texto no puede estar vacío', 'flavor-chat-ia' ),
+                __( 'El texto no puede estar vacío', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 400 )
             );
         }
@@ -1932,19 +1932,19 @@ class Flavor_VBP_REST_API {
         $variaciones = array();
 
         $prefijos_titulo = array(
-            __( 'Descubre', 'flavor-chat-ia' ),
-            __( 'Conoce', 'flavor-chat-ia' ),
-            __( 'Explora', 'flavor-chat-ia' ),
-            __( 'Aprende sobre', 'flavor-chat-ia' ),
-            __( 'Todo sobre', 'flavor-chat-ia' ),
+            __( 'Descubre', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            __( 'Conoce', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            __( 'Explora', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            __( 'Aprende sobre', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            __( 'Todo sobre', FLAVOR_PLATFORM_TEXT_DOMAIN ),
         );
 
         $sufijos_cta = array(
-            __( 'ahora', 'flavor-chat-ia' ),
-            __( 'hoy', 'flavor-chat-ia' ),
-            __( 'ya', 'flavor-chat-ia' ),
-            __( 'gratis', 'flavor-chat-ia' ),
-            __( 'sin compromiso', 'flavor-chat-ia' ),
+            __( 'ahora', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            __( 'hoy', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            __( 'ya', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            __( 'gratis', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            __( 'sin compromiso', FLAVOR_PLATFORM_TEXT_DOMAIN ),
         );
 
         for ( $i = 0; $i < $cantidad; $i++ ) {
@@ -2150,7 +2150,7 @@ class Flavor_VBP_REST_API {
         if ( ! is_array( $operations ) || empty( $operations ) ) {
             return new WP_Error(
                 'operaciones_invalidas',
-                __( 'Se requiere un array de operaciones', 'flavor-chat-ia' ),
+                __( 'Se requiere un array de operaciones', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 400 )
             );
         }
@@ -2206,7 +2206,7 @@ class Flavor_VBP_REST_API {
                         break;
 
                     default:
-                        $resultado['error'] = __( 'Tipo de operación no soportado', 'flavor-chat-ia' );
+                        $resultado['error'] = __( 'Tipo de operación no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN );
                 }
 
                 if ( $resultado['success'] ) {
@@ -2264,7 +2264,7 @@ class Flavor_VBP_REST_API {
                 'id'      => $op_id,
                 'type'    => 'create_page',
                 'success' => false,
-                'error'   => __( 'Se requiere un título', 'flavor-chat-ia' ),
+                'error'   => __( 'Se requiere un título', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             );
         }
 
@@ -2313,7 +2313,7 @@ class Flavor_VBP_REST_API {
                 'id'      => $op_id,
                 'type'    => 'update_page',
                 'success' => false,
-                'error'   => __( 'Página no encontrada', 'flavor-chat-ia' ),
+                'error'   => __( 'Página no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             );
         }
 
@@ -2357,7 +2357,7 @@ class Flavor_VBP_REST_API {
                 'id'      => $op_id,
                 'type'    => 'delete_page',
                 'success' => false,
-                'error'   => __( 'Página no encontrada', 'flavor-chat-ia' ),
+                'error'   => __( 'Página no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             );
         }
 
@@ -2385,7 +2385,7 @@ class Flavor_VBP_REST_API {
                 'id'      => $op_id,
                 'type'    => 'add_element',
                 'success' => false,
-                'error'   => __( 'Página no encontrada', 'flavor-chat-ia' ),
+                'error'   => __( 'Página no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             );
         }
 
@@ -2429,7 +2429,7 @@ class Flavor_VBP_REST_API {
                 'id'      => $op_id,
                 'type'    => 'update_element',
                 'success' => false,
-                'error'   => __( 'Se requiere page_id y element_id', 'flavor-chat-ia' ),
+                'error'   => __( 'Se requiere page_id y element_id', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             );
         }
 
@@ -2443,7 +2443,7 @@ class Flavor_VBP_REST_API {
                 'id'      => $op_id,
                 'type'    => 'update_element',
                 'success' => false,
-                'error'   => __( 'Elemento no encontrado', 'flavor-chat-ia' ),
+                'error'   => __( 'Elemento no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             );
         }
 
@@ -2488,7 +2488,7 @@ class Flavor_VBP_REST_API {
                 'id'      => $op_id,
                 'type'    => 'delete_element',
                 'success' => false,
-                'error'   => __( 'Se requiere page_id y element_id', 'flavor-chat-ia' ),
+                'error'   => __( 'Se requiere page_id y element_id', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             );
         }
 
@@ -2502,7 +2502,7 @@ class Flavor_VBP_REST_API {
                 'id'      => $op_id,
                 'type'    => 'delete_element',
                 'success' => false,
-                'error'   => __( 'Elemento no encontrado', 'flavor-chat-ia' ),
+                'error'   => __( 'Elemento no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             );
         }
 
@@ -2548,7 +2548,7 @@ class Flavor_VBP_REST_API {
                 'id'      => $op_id,
                 'type'    => 'apply_styles',
                 'success' => false,
-                'error'   => __( 'Se requiere page_id y element_id', 'flavor-chat-ia' ),
+                'error'   => __( 'Se requiere page_id y element_id', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             );
         }
 
@@ -2564,7 +2564,7 @@ class Flavor_VBP_REST_API {
                 'id'      => $op_id,
                 'type'    => 'apply_styles',
                 'success' => false,
-                'error'   => __( 'Elemento no encontrado', 'flavor-chat-ia' ),
+                'error'   => __( 'Elemento no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             );
         }
 
@@ -2590,7 +2590,7 @@ class Flavor_VBP_REST_API {
                 'id'      => $op_id,
                 'type'    => 'publish_page',
                 'success' => false,
-                'error'   => __( 'Página no encontrada', 'flavor-chat-ia' ),
+                'error'   => __( 'Página no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             );
         }
 
@@ -2622,7 +2622,7 @@ class Flavor_VBP_REST_API {
         if ( ! is_array( $paginas ) || empty( $paginas ) ) {
             return new WP_Error(
                 'paginas_invalidas',
-                __( 'Se requiere un array de páginas', 'flavor-chat-ia' ),
+                __( 'Se requiere un array de páginas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 400 )
             );
         }
@@ -2666,7 +2666,7 @@ class Flavor_VBP_REST_API {
         if ( ! $page_id || ! get_post( $page_id ) ) {
             return new WP_Error(
                 'pagina_no_encontrada',
-                __( 'Página no encontrada', 'flavor-chat-ia' ),
+                __( 'Página no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 404 )
             );
         }
@@ -2674,7 +2674,7 @@ class Flavor_VBP_REST_API {
         if ( ! is_array( $elementos ) || empty( $elementos ) ) {
             return new WP_Error(
                 'elementos_invalidos',
-                __( 'Se requiere un array de elementos', 'flavor-chat-ia' ),
+                __( 'Se requiere un array de elementos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 400 )
             );
         }
@@ -2695,7 +2695,7 @@ class Flavor_VBP_REST_API {
                 $resultados[] = array(
                     'element_id' => null,
                     'success'    => false,
-                    'error'      => __( 'Se requiere id de elemento', 'flavor-chat-ia' ),
+                    'error'      => __( 'Se requiere id de elemento', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 );
                 continue;
             }
@@ -2713,7 +2713,7 @@ class Flavor_VBP_REST_API {
                 $resultados[] = array(
                     'element_id' => $element_id,
                     'success'    => false,
-                    'error'      => __( 'Elemento no encontrado', 'flavor-chat-ia' ),
+                    'error'      => __( 'Elemento no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 );
             }
         }

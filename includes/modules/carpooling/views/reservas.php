@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 
 // Verificar permisos
 if (!current_user_can('manage_options')) {
-    wp_die(__('No tienes permisos suficientes para acceder a esta página.', 'flavor-chat-ia'));
+    wp_die(__('No tienes permisos suficientes para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
 }
 
 global $wpdb;
@@ -101,7 +101,7 @@ $stats = $wpdb->get_row(
 ?>
 
 <div class="wrap">
-    <h1 class="wp-heading-inline"><?php echo esc_html__('Gestión de Reservas', 'flavor-chat-ia'); ?></h1>
+    <h1 class="wp-heading-inline"><?php echo esc_html__('Gestión de Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
     <hr class="wp-header-end">
 
     <!-- Estadísticas rápidas -->
@@ -111,7 +111,7 @@ $stats = $wpdb->get_row(
                 <?php echo esc_html(number_format($stats->pendientes, 0, ',', '.')); ?>
             </div>
             <div style="color: #666; font-size: 12px; text-transform: uppercase;">
-                <?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
         </div>
         <div class="card" style="padding: 15px; text-align: center; min-width: 150px;">
@@ -119,7 +119,7 @@ $stats = $wpdb->get_row(
                 <?php echo esc_html(number_format($stats->confirmadas, 0, ',', '.')); ?>
             </div>
             <div style="color: #666; font-size: 12px; text-transform: uppercase;">
-                <?php esc_html_e('Confirmadas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Confirmadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
         </div>
         <div class="card" style="padding: 15px; text-align: center; min-width: 150px;">
@@ -127,7 +127,7 @@ $stats = $wpdb->get_row(
                 <?php echo esc_html(number_format($stats->completadas, 0, ',', '.')); ?>
             </div>
             <div style="color: #666; font-size: 12px; text-transform: uppercase;">
-                <?php esc_html_e('Completadas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Completadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
         </div>
         <div class="card" style="padding: 15px; text-align: center; min-width: 150px;">
@@ -135,7 +135,7 @@ $stats = $wpdb->get_row(
                 <?php echo esc_html(number_format($stats->canceladas, 0, ',', '.')); ?>
             </div>
             <div style="color: #666; font-size: 12px; text-transform: uppercase;">
-                <?php esc_html_e('Canceladas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Canceladas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
         </div>
         <div class="card" style="padding: 15px; text-align: center; min-width: 150px;">
@@ -143,7 +143,7 @@ $stats = $wpdb->get_row(
                 €<?php echo esc_html(number_format($stats->ingresos_totales, 2, ',', '.')); ?>
             </div>
             <div style="color: #666; font-size: 12px; text-transform: uppercase;">
-                <?php esc_html_e('Ingresos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ingresos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
         </div>
     </div>
@@ -151,42 +151,42 @@ $stats = $wpdb->get_row(
     <!-- Filtros -->
     <div class="card" style="padding: 15px; margin: 20px 0;">
         <form method="get" action="">
-            <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-carpooling-reservas', 'flavor-chat-ia'); ?>">
+            <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-carpooling-reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; align-items: end;">
 
                 <div>
-                    <label for="estado"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></label>
+                    <label for="estado"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="estado" id="estado" class="regular-text">
-                        <option value="<?php echo esc_attr__('todos', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'todos'); ?>><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('pendiente', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'pendiente'); ?>><?php esc_html_e('Pendiente', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('confirmada', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'confirmada'); ?>><?php esc_html_e('Confirmada', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('completada', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'completada'); ?>><?php esc_html_e('Completada', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('cancelada', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'cancelada'); ?>><?php esc_html_e('Cancelada', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($filtro_estado, 'todos'); ?>><?php esc_html_e('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($filtro_estado, 'pendiente'); ?>><?php esc_html_e('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($filtro_estado, 'confirmada'); ?>><?php esc_html_e('Confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('completada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($filtro_estado, 'completada'); ?>><?php esc_html_e('Completada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($filtro_estado, 'cancelada'); ?>><?php esc_html_e('Cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div>
-                    <label for="fecha_desde"><?php esc_html_e('Desde', 'flavor-chat-ia'); ?></label>
+                    <label for="fecha_desde"><?php esc_html_e('Desde', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="date" name="fecha_desde" id="fecha_desde" class="regular-text" value="<?php echo esc_attr($filtro_fecha_desde); ?>">
                 </div>
 
                 <div>
-                    <label for="fecha_hasta"><?php esc_html_e('Hasta', 'flavor-chat-ia'); ?></label>
+                    <label for="fecha_hasta"><?php esc_html_e('Hasta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="date" name="fecha_hasta" id="fecha_hasta" class="regular-text" value="<?php echo esc_attr($filtro_fecha_hasta); ?>">
                 </div>
 
                 <div>
-                    <label for="busqueda"><?php esc_html_e('Buscar usuario', 'flavor-chat-ia'); ?></label>
-                    <input type="text" name="s" id="busqueda" class="regular-text" placeholder="<?php esc_attr_e('Nombre o email', 'flavor-chat-ia'); ?>" value="<?php echo esc_attr($filtro_busqueda); ?>">
+                    <label for="busqueda"><?php esc_html_e('Buscar usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                    <input type="text" name="s" id="busqueda" class="regular-text" placeholder="<?php esc_attr_e('Nombre o email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" value="<?php echo esc_attr($filtro_busqueda); ?>">
                 </div>
 
                 <div>
                     <button type="submit" class="button button-primary">
-                        <?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-reservas')); ?>" class="button">
-                        <?php esc_html_e('Limpiar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
 
@@ -199,15 +199,15 @@ $stats = $wpdb->get_row(
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th style="width: 50px;"><?php esc_html_e('ID', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Usuario', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Viaje', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Conductor', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Fecha Viaje', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Plazas', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Importe', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 50px;"><?php esc_html_e('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Viaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Conductor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Fecha Viaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Plazas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Importe', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -227,7 +227,7 @@ $stats = $wpdb->get_row(
                                 <br>
                                 <small>
                                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-viajes&action=ver&viaje_id=' . $reserva->viaje_id)); ?>">
-                                        <?php esc_html_e('Ver viaje', 'flavor-chat-ia'); ?> #<?php echo esc_html($reserva->viaje_id); ?>
+                                        <?php esc_html_e('Ver viaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> #<?php echo esc_html($reserva->viaje_id); ?>
                                     </a>
                                 </small>
                             </td>
@@ -242,9 +242,9 @@ $stats = $wpdb->get_row(
                             <td>
                                 <strong><?php echo esc_html($reserva->plazas_reservadas); ?></strong>
                                 <?php if ($reserva->plazas_reservadas > 1) : ?>
-                                    <span style="color: #666;"><?php echo esc_html__('plazas', 'flavor-chat-ia'); ?></span>
+                                    <span style="color: #666;"><?php echo esc_html__('plazas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php else : ?>
-                                    <span style="color: #666;"><?php echo esc_html__('plaza', 'flavor-chat-ia'); ?></span>
+                                    <span style="color: #666;"><?php echo esc_html__('plaza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php endif; ?>
                             </td>
                             <td>
@@ -273,12 +273,12 @@ $stats = $wpdb->get_row(
                             </td>
                             <td>
                                 <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-reservas&action=ver&reserva_id=' . $reserva->id)); ?>" class="button button-small">
-                                    <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                                 <?php if ($reserva->estado === 'pendiente') : ?>
                                     <br><br>
                                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-reservas&action=confirmar&reserva_id=' . $reserva->id)); ?>" class="button button-small button-primary">
-                                        <?php esc_html_e('Confirmar', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Confirmar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 <?php endif; ?>
                             </td>
@@ -289,7 +289,7 @@ $stats = $wpdb->get_row(
                         <td colspan="9" style="text-align: center; padding: 40px;">
                             <div style="color: #666;">
                                 <span class="dashicons dashicons-tickets-alt" style="font-size: 48px; opacity: 0.3;"></span>
-                                <p><?php esc_html_e('No se encontraron reservas con los filtros seleccionados.', 'flavor-chat-ia'); ?></p>
+                                <p><?php esc_html_e('No se encontraron reservas con los filtros seleccionados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </div>
                         </td>
                     </tr>
@@ -304,7 +304,7 @@ $stats = $wpdb->get_row(
             <div class="tablenav-pages">
                 <span class="displaying-num">
                     <?php printf(
-                        esc_html__('%s reservas', 'flavor-chat-ia'),
+                        esc_html__('%s reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         number_format_i18n($total_reservas)
                     ); ?>
                 </span>

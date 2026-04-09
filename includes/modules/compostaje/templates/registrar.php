@@ -10,9 +10,9 @@ if (!defined('ABSPATH')) {
 if (!is_user_logged_in()) {
     echo '<div class="compostaje-login-required">';
     echo '<span class="dashicons dashicons-lock"></span>';
-    echo '<h3>' . esc_html__('Inicia sesión para registrar aportaciones', 'flavor-chat-ia') . '</h3>';
-    echo '<p>' . esc_html__('Necesitas estar conectado para registrar tus aportaciones de compostaje.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="btn btn-primary">' . esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a>';
+    echo '<h3>' . esc_html__('Inicia sesión para registrar aportaciones', 'flavor-platform') . '</h3>';
+    echo '<p>' . esc_html__('Necesitas estar conectado para registrar tus aportaciones de compostaje.', 'flavor-platform') . '</p>';
+    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="btn btn-primary">' . esc_html__('Iniciar sesión', 'flavor-platform') . '</a>';
     echo '</div>';
     return;
 }
@@ -49,9 +49,9 @@ if (empty($materiales)) {
 $punto_id = isset($_GET['punto_id']) ? absint($_GET['punto_id']) : '';
 
 $categoria_labels = [
-    'verde' => __('Material verde (rico en nitrógeno)', 'flavor-chat-ia'),
-    'marron' => __('Material marrón (rico en carbono)', 'flavor-chat-ia'),
-    'especial' => __('Material especial', 'flavor-chat-ia'),
+    'verde' => __('Material verde (rico en nitrógeno)', 'flavor-platform'),
+    'marron' => __('Material marrón (rico en carbono)', 'flavor-platform'),
+    'especial' => __('Material especial', 'flavor-platform'),
 ];
 
 $categoria_colors = [
@@ -63,8 +63,8 @@ $categoria_colors = [
 
 <div class="compostaje-registrar-wrapper">
     <div class="registrar-header">
-        <h2><?php esc_html_e('Registrar Aportación', 'flavor-chat-ia'); ?></h2>
-        <p><?php esc_html_e('Registra tu aportación al compostaje comunitario y gana puntos', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Registrar Aportación', 'flavor-platform'); ?></h2>
+        <p><?php esc_html_e('Registra tu aportación al compostaje comunitario y gana puntos', 'flavor-platform'); ?></p>
     </div>
 
     <form id="form-registrar-aportacion" class="registrar-form" method="post">
@@ -72,7 +72,7 @@ $categoria_colors = [
 
         <!-- Paso 1: Seleccionar punto -->
         <div class="form-section">
-            <h3><span class="step-number">1</span> <?php esc_html_e('Punto de compostaje', 'flavor-chat-ia'); ?></h3>
+            <h3><span class="step-number">1</span> <?php esc_html_e('Punto de compostaje', 'flavor-platform'); ?></h3>
 
             <?php if ($puntos): ?>
                 <div class="puntos-selector">
@@ -91,14 +91,14 @@ $categoria_colors = [
             <?php else: ?>
                 <div class="form-notice warning">
                     <span class="dashicons dashicons-warning"></span>
-                    <?php esc_html_e('No hay puntos de compostaje disponibles actualmente.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('No hay puntos de compostaje disponibles actualmente.', 'flavor-platform'); ?>
                 </div>
             <?php endif; ?>
         </div>
 
         <!-- Paso 2: Tipo de material -->
         <div class="form-section">
-            <h3><span class="step-number">2</span> <?php esc_html_e('Tipo de material', 'flavor-chat-ia'); ?></h3>
+            <h3><span class="step-number">2</span> <?php esc_html_e('Tipo de material', 'flavor-platform'); ?></h3>
 
             <div class="materiales-grid">
                 <?php
@@ -133,7 +133,7 @@ $categoria_colors = [
 
         <!-- Paso 3: Cantidad -->
         <div class="form-section">
-            <h3><span class="step-number">3</span> <?php esc_html_e('Cantidad', 'flavor-chat-ia'); ?></h3>
+            <h3><span class="step-number">3</span> <?php esc_html_e('Cantidad', 'flavor-platform'); ?></h3>
 
             <div class="cantidad-input-wrapper">
                 <button type="button" class="cantidad-btn minus" onclick="ajustarCantidad(-0.5)">−</button>
@@ -152,29 +152,29 @@ $categoria_colors = [
             </div>
 
             <div class="puntos-preview">
-                <span class="preview-label"><?php esc_html_e('Puntos estimados:', 'flavor-chat-ia'); ?></span>
+                <span class="preview-label"><?php esc_html_e('Puntos estimados:', 'flavor-platform'); ?></span>
                 <span class="preview-puntos" id="puntos-estimados">0</span>
             </div>
         </div>
 
         <!-- Paso 4: Notas (opcional) -->
         <div class="form-section">
-            <h3><span class="step-number">4</span> <?php esc_html_e('Notas (opcional)', 'flavor-chat-ia'); ?></h3>
+            <h3><span class="step-number">4</span> <?php esc_html_e('Notas (opcional)', 'flavor-platform'); ?></h3>
 
             <textarea id="notas" name="notas" rows="3"
-                      placeholder="<?php esc_attr_e('Añade información adicional sobre tu aportación...', 'flavor-chat-ia'); ?>"></textarea>
+                      placeholder="<?php esc_attr_e('Añade información adicional sobre tu aportación...', 'flavor-platform'); ?>"></textarea>
         </div>
 
         <!-- Resumen y envío -->
         <div class="form-actions">
             <div class="form-notice info">
                 <span class="dashicons dashicons-info"></span>
-                <?php esc_html_e('Tu aportación se registrará automáticamente. Recuerda depositar el material correctamente.', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Tu aportación se registrará automáticamente. Recuerda depositar el material correctamente.', 'flavor-platform'); ?>
             </div>
 
             <button type="submit" class="btn btn-primary btn-lg">
                 <span class="dashicons dashicons-yes-alt"></span>
-                <?php esc_html_e('Registrar aportación', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Registrar aportación', 'flavor-platform'); ?>
             </button>
         </div>
     </form>

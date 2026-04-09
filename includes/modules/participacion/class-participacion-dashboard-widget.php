@@ -27,8 +27,8 @@ class Flavor_Participacion_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
     public function __construct() {
         global $wpdb;
         $this->prefix_tabla = $wpdb->prefix . 'flavor_participacion_';
-        $this->title = __('Participación', 'flavor-chat-ia');
-        $this->description = __('Votaciones y debates de la comunidad', 'flavor-chat-ia');
+        $this->title = __('Participación', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Votaciones y debates de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         parent::__construct([
             'id' => $this->widget_id,
@@ -100,14 +100,14 @@ class Flavor_Participacion_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
             [
                 'icon' => 'dashicons-chart-bar',
                 'valor' => $votaciones_activas,
-                'label' => __('Votaciones', 'flavor-chat-ia'),
+                'label' => __('Votaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $votaciones_activas > 0 ? 'warning' : 'gray',
                 'url' => $es_admin ? admin_url('admin.php?page=participacion') : Flavor_Chat_Helpers::get_action_url('participacion', 'votaciones'),
             ],
             [
                 'icon' => 'dashicons-lightbulb',
                 'valor' => $propuestas_abiertas,
-                'label' => __('Propuestas', 'flavor-chat-ia'),
+                'label' => __('Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $propuestas_abiertas > 0 ? 'info' : 'gray',
                 'url' => $es_admin ? admin_url('admin.php?page=participacion&tab=propuestas') : Flavor_Chat_Helpers::get_action_url('participacion', 'propuestas'),
             ],
@@ -117,7 +117,7 @@ class Flavor_Participacion_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
             $stats[] = [
                 'icon' => 'dashicons-thumbs-up',
                 'valor' => $mis_votos,
-                'label' => __('Mis votos', 'flavor-chat-ia'),
+                'label' => __('Mis votos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $mis_votos > 0 ? 'success' : 'gray',
                 'url' => $es_admin ? admin_url('admin.php?page=participacion&tab=mis-votos') : Flavor_Chat_Helpers::get_action_url('participacion', 'votaciones'),
             ];
@@ -133,10 +133,10 @@ class Flavor_Participacion_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
                 'propuestas_abiertas' => $propuestas_abiertas,
                 'mis_votos' => $mis_votos,
             ],
-            'empty_state' => __('No hay votaciones activas en este momento', 'flavor-chat-ia'),
+            'empty_state' => __('No hay votaciones activas en este momento', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => __('Participar', 'flavor-chat-ia'),
+                    'label' => __('Participar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => $es_admin ? admin_url('admin.php?page=participacion') : Flavor_Chat_Helpers::get_action_url('participacion', 'votaciones'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
@@ -169,7 +169,7 @@ class Flavor_Participacion_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
             $items[] = [
                 'icon' => 'dashicons-chart-bar',
                 'title' => wp_trim_words($votacion->titulo, 5, '...'),
-                'meta' => sprintf(__('Cierra en %s', 'flavor-chat-ia'), $tiempo_restante),
+                'meta' => sprintf(__('Cierra en %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $tiempo_restante),
                 'url' => $es_admin ? admin_url('admin.php?page=participacion&votacion=' . $votacion->id) : add_query_arg('encuesta_id', $votacion->id, Flavor_Chat_Helpers::get_action_url('participacion', 'encuesta')),
                 'badge' => $votacion->total_votos > 0 ? $votacion->total_votos . ' votos' : null,
             ];
@@ -203,18 +203,18 @@ class Flavor_Participacion_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
 
         if ($votaciones_activas > 0) {
             $severity = Flavor_Dashboard_Severity::get_payload('attention');
-            $severity['reason'] = __('Hay votaciones activas abiertas y conviene atenderlas antes de que cierren.', 'flavor-chat-ia');
+            $severity['reason'] = __('Hay votaciones activas abiertas y conviene atenderlas antes de que cierren.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             return $severity;
         }
 
         if ($propuestas_abiertas > 0 || $mis_votos > 0) {
             $severity = Flavor_Dashboard_Severity::get_payload('followup');
-            $severity['reason'] = __('Hay propuestas o actividad participativa reciente que conviene revisar.', 'flavor-chat-ia');
+            $severity['reason'] = __('Hay propuestas o actividad participativa reciente que conviene revisar.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             return $severity;
         }
 
         $severity = Flavor_Dashboard_Severity::get_payload('stable');
-        $severity['reason'] = __('No hay procesos participativos urgentes abiertos en este momento.', 'flavor-chat-ia');
+        $severity['reason'] = __('No hay procesos participativos urgentes abiertos en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         return $severity;
     }
 

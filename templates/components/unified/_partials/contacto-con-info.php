@@ -56,7 +56,7 @@ $identificador_form = 'contacto-info-' . wp_unique_id();
                             <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
                         </svg>
                     </div>
-                    <h3 class="font-semibold text-gray-900 mb-1"><?php echo esc_html__( 'Email', 'flavor-chat-ia' ); ?></h3>
+                    <h3 class="font-semibold text-gray-900 mb-1"><?php echo esc_html__( 'Email', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h3>
                     <p class="text-sm text-gray-600"><?php echo esc_html( $correo_destino ); ?></p>
                 </div>
             <?php endif; ?>
@@ -71,7 +71,7 @@ $identificador_form = 'contacto-info-' . wp_unique_id();
                             <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>
                         </svg>
                     </div>
-                    <h3 class="font-semibold text-gray-900 mb-1"><?php echo esc_html__( 'Telefono', 'flavor-chat-ia' ); ?></h3>
+                    <h3 class="font-semibold text-gray-900 mb-1"><?php echo esc_html__( 'Telefono', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h3>
                     <p class="text-sm text-gray-600"><?php echo esc_html( $numero_telefono ); ?></p>
                 </div>
             <?php endif; ?>
@@ -86,7 +86,7 @@ $identificador_form = 'contacto-info-' . wp_unique_id();
                             <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
                         </svg>
                     </div>
-                    <h3 class="font-semibold text-gray-900 mb-1"><?php echo esc_html__( 'Direccion', 'flavor-chat-ia' ); ?></h3>
+                    <h3 class="font-semibold text-gray-900 mb-1"><?php echo esc_html__( 'Direccion', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h3>
                     <p class="text-sm text-gray-600"><?php echo esc_html( $texto_direccion ); ?></p>
                 </div>
             <?php endif; ?>
@@ -98,7 +98,7 @@ $identificador_form = 'contacto-info-' . wp_unique_id();
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                         <label for="<?php echo esc_attr( $identificador_form ); ?>-nombre" class="block text-sm font-medium text-gray-700 mb-1">
-                            <?php echo esc_html__( 'Nombre', 'flavor-chat-ia' ); ?>
+                            <?php echo esc_html__( 'Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                         </label>
                         <input
                             type="text"
@@ -113,7 +113,7 @@ $identificador_form = 'contacto-info-' . wp_unique_id();
                     </div>
                     <div>
                         <label for="<?php echo esc_attr( $identificador_form ); ?>-email" class="block text-sm font-medium text-gray-700 mb-1">
-                            <?php echo esc_html__( 'Email', 'flavor-chat-ia' ); ?>
+                            <?php echo esc_html__( 'Email', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                         </label>
                         <input
                             type="email"
@@ -130,7 +130,7 @@ $identificador_form = 'contacto-info-' . wp_unique_id();
 
                 <div>
                     <label for="<?php echo esc_attr( $identificador_form ); ?>-asunto" class="block text-sm font-medium text-gray-700 mb-1">
-                        <?php echo esc_html__( 'Asunto', 'flavor-chat-ia' ); ?>
+                        <?php echo esc_html__( 'Asunto', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                     </label>
                     <input
                         type="text"
@@ -145,7 +145,7 @@ $identificador_form = 'contacto-info-' . wp_unique_id();
 
                 <div>
                     <label for="<?php echo esc_attr( $identificador_form ); ?>-mensaje" class="block text-sm font-medium text-gray-700 mb-1">
-                        <?php echo esc_html__( 'Mensaje', 'flavor-chat-ia' ); ?>
+                        <?php echo esc_html__( 'Mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                     </label>
                     <textarea
                         id="<?php echo esc_attr( $identificador_form ); ?>-mensaje"
@@ -165,7 +165,7 @@ $identificador_form = 'contacto-info-' . wp_unique_id();
                         class="inline-flex items-center px-8 py-3 rounded-lg text-white font-semibold transition-opacity hover:opacity-90"
                         style="background-color: <?php echo esc_attr( $color_principal ); ?>;"
                     >
-                        <?php echo esc_html__( 'Enviar mensaje', 'flavor-chat-ia' ); ?>
+                        <?php echo esc_html__( 'Enviar mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                     </button>
                 </div>
             </form>

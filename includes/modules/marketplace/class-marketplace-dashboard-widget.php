@@ -82,8 +82,8 @@ class Flavor_Marketplace_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
     public function __construct() {
         global $wpdb;
         $this->prefix_tabla = $wpdb->prefix . 'flavor_mk_';
-        $this->title = __('Marketplace', 'flavor-chat-ia');
-        $this->description = __('Compra, vende e intercambia en tu comunidad', 'flavor-chat-ia');
+        $this->title = __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Compra, vende e intercambia en tu comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         parent::__construct([
             'id' => $this->widget_id,
@@ -172,7 +172,7 @@ class Flavor_Marketplace_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $stats[] = [
                 'icon' => 'dashicons-megaphone',
                 'valor' => $mis_anuncios,
-                'label' => __('Mis anuncios', 'flavor-chat-ia'),
+                'label' => __('Mis anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $mis_anuncios > 0 ? 'success' : 'gray',
                 'url' => $es_admin ? admin_url('admin.php?page=marketplace-anuncios') : Flavor_Chat_Helpers::get_action_url('marketplace', '') . '?tab=mis-anuncios',
             ];
@@ -183,7 +183,7 @@ class Flavor_Marketplace_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $stats[] = [
                 'icon' => 'dashicons-email',
                 'valor' => $mensajes_sin_leer,
-                'label' => __('Mensajes nuevos', 'flavor-chat-ia'),
+                'label' => __('Mensajes nuevos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $mensajes_sin_leer > 0 ? 'warning' : 'gray',
                 'url' => $es_admin ? admin_url('admin.php?page=marketplace-moderacion') : Flavor_Chat_Helpers::get_action_url('marketplace', ''),
             ];
@@ -193,7 +193,7 @@ class Flavor_Marketplace_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         $stats[] = [
             'icon' => 'dashicons-tag',
             'valor' => $total_anuncios,
-            'label' => __('Anuncios activos', 'flavor-chat-ia'),
+            'label' => __('Anuncios activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'primary',
             'url' => $es_admin ? admin_url('admin.php?page=marketplace-dashboard') : Flavor_Chat_Helpers::get_action_url('marketplace', ''),
         ];
@@ -203,7 +203,7 @@ class Flavor_Marketplace_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $stats[] = [
                 'icon' => 'dashicons-heart',
                 'valor' => $mis_favoritos,
-                'label' => __('Favoritos', 'flavor-chat-ia'),
+                'label' => __('Favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $mis_favoritos > 0 ? 'danger' : 'gray',
                 'url' => $es_admin ? admin_url('admin.php?page=marketplace-anuncios') : Flavor_Chat_Helpers::get_action_url('marketplace', ''),
             ];
@@ -215,10 +215,10 @@ class Flavor_Marketplace_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats,
             'items' => $items,
-            'empty_state' => __('No hay anuncios disponibles', 'flavor-chat-ia'),
+            'empty_state' => __('No hay anuncios disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => $user_id ? __('Publicar anuncio', 'flavor-chat-ia') : __('Ver anuncios', 'flavor-chat-ia'),
+                    'label' => $user_id ? __('Publicar anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Ver anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => $es_admin ? admin_url('post-new.php?post_type=marketplace_item') : Flavor_Chat_Helpers::get_action_url('marketplace', $user_id ? 'publicar' : ''),
                     'icon' => $user_id ? 'dashicons-plus-alt' : 'dashicons-arrow-right-alt2',
                 ],
@@ -258,9 +258,9 @@ class Flavor_Marketplace_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             if ($anuncio->precio > 0) {
                 $precio_texto = number_format($anuncio->precio, 2, ',', '.') . ' €';
             } elseif ($anuncio->tipo === 'regalo') {
-                $precio_texto = __('Gratis', 'flavor-chat-ia');
+                $precio_texto = __('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN);
             } elseif ($anuncio->tipo === 'intercambio') {
-                $precio_texto = __('Intercambio', 'flavor-chat-ia');
+                $precio_texto = __('Intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN);
             }
 
             $icono = 'dashicons-tag';

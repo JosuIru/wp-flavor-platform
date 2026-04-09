@@ -58,7 +58,7 @@ class Flavor_Chat_Core {
      * @return string
      */
     public function render_chat_shortcode($atts) {
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
 
         if (empty($settings['enabled'])) {
             return '';
@@ -78,7 +78,7 @@ class Flavor_Chat_Core {
      * Renderiza el widget flotante en el footer
      */
     public function render_floating_widget() {
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
 
         if (empty($settings['enabled'])) {
             return;
@@ -109,10 +109,10 @@ class Flavor_Chat_Core {
         }
         self::$widget_rendered = true;
 
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $appearance = $settings['appearance'] ?? [];
 
-        $assistant_name = $settings['assistant_name'] ?? __('Asistente Virtual', 'flavor-chat-ia');
+        $assistant_name = $settings['assistant_name'] ?? __('Asistente Virtual', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $position = $appearance['position'] ?? 'bottom-right';
         $primary_color = $appearance['primary_color'] ?? '#0073aa';
         $header_bg = $appearance['header_bg'] ?? '#1e3a5f';
@@ -125,8 +125,8 @@ class Flavor_Chat_Core {
         $side_offset = $appearance['side_offset'] ?? 20;
         $trigger_size = $appearance['trigger_size'] ?? 'medium';
         $trigger_animation = $appearance['trigger_animation'] ?? 'pulse';
-        $welcome_message = $appearance['welcome_message'] ?? __('¡Hola! ¿En qué puedo ayudarte?', 'flavor-chat-ia');
-        $placeholder = $appearance['placeholder'] ?? __('Escribe tu mensaje...', 'flavor-chat-ia');
+        $welcome_message = $appearance['welcome_message'] ?? __('¡Hola! ¿En qué puedo ayudarte?', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $placeholder = $appearance['placeholder'] ?? __('Escribe tu mensaje...', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $avatar_url = $appearance['avatar_url'] ?? '';
 
         // Generar ID de sesión
@@ -155,7 +155,7 @@ class Flavor_Chat_Core {
 
             <?php if ($style === 'floating'): ?>
             <!-- Botón flotante -->
-            <button type="button" id="chat-ia-trigger" class="chat-ia-trigger" aria-label="<?php echo esc_attr__('Abrir chat', 'flavor-chat-ia'); ?>">
+            <button type="button" id="chat-ia-trigger" class="chat-ia-trigger" aria-label="<?php echo esc_attr__('Abrir chat', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <?php if ($avatar_url): ?>
                 <img src="<?php echo esc_url($avatar_url); ?>" alt="" class="chat-ia-trigger-avatar">
                 <?php else: ?>
@@ -186,11 +186,11 @@ class Flavor_Chat_Core {
                         </div>
                         <div class="chat-ia-header-text">
                             <span class="chat-ia-name"><?php echo esc_html($assistant_name); ?></span>
-                            <span class="chat-ia-status"><?php esc_html_e('En línea', 'flavor-chat-ia'); ?></span>
+                            <span class="chat-ia-status"><?php esc_html_e('En línea', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                     </div>
                     <?php if ($style === 'floating'): ?>
-                    <button type="button" id="chat-ia-minimize" class="chat-ia-minimize" aria-label="<?php echo esc_attr__('Minimizar', 'flavor-chat-ia'); ?>">
+                    <button type="button" id="chat-ia-minimize" class="chat-ia-minimize" aria-label="<?php echo esc_attr__('Minimizar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                         </svg>
@@ -215,7 +215,7 @@ class Flavor_Chat_Core {
                     <div class="chat-ia-typing-indicator">
                         <span></span><span></span><span></span>
                     </div>
-                    <span class="chat-ia-typing-label"><?php esc_html_e('Escribiendo...', 'flavor-chat-ia'); ?></span>
+                    <span class="chat-ia-typing-label"><?php esc_html_e('Escribiendo...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
 
                 <!-- Input -->
@@ -224,7 +224,7 @@ class Flavor_Chat_Core {
                         <!-- Honeypot antispam - campo oculto que los bots rellenan -->
                         <input type="text" name="website_url" id="chat-ia-honeypot" value="" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;" tabindex="-1" autocomplete="off" aria-hidden="true">
                         <!-- Botón micrófono para voz -->
-                        <button type="button" id="chat-ia-mic" class="chat-ia-mic" aria-label="<?php echo esc_attr__('Hablar', 'flavor-chat-ia'); ?>" title="<?php echo esc_attr__('Pulsa para hablar', 'flavor-chat-ia'); ?>">
+                        <button type="button" id="chat-ia-mic" class="chat-ia-mic" aria-label="<?php echo esc_attr__('Hablar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" title="<?php echo esc_attr__('Pulsa para hablar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <svg class="chat-ia-mic-icon" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
                                 <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
@@ -239,14 +239,14 @@ class Flavor_Chat_Core {
                                placeholder="<?php echo esc_attr($placeholder); ?>"
                                autocomplete="off"
                                required>
-                        <button type="submit" id="chat-ia-send" class="chat-ia-send" aria-label="<?php echo esc_attr__('Enviar', 'flavor-chat-ia'); ?>">
+                        <button type="submit" id="chat-ia-send" class="chat-ia-send" aria-label="<?php echo esc_attr__('Enviar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" style="display:block;fill:#fff;">
                                 <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                             </svg>
                         </button>
                     </form>
                     <!-- Toggle para voz del asistente -->
-                    <button type="button" id="chat-ia-tts-toggle" class="chat-ia-tts-toggle" aria-label="<?php echo esc_attr__('Activar/desactivar voz', 'flavor-chat-ia'); ?>" title="<?php echo esc_attr__('Leer respuestas en voz alta', 'flavor-chat-ia'); ?>">
+                    <button type="button" id="chat-ia-tts-toggle" class="chat-ia-tts-toggle" aria-label="<?php echo esc_attr__('Activar/desactivar voz', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" title="<?php echo esc_attr__('Leer respuestas en voz alta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <svg class="chat-ia-tts-on" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
                         </svg>
@@ -258,7 +258,7 @@ class Flavor_Chat_Core {
 
                 <!-- Footer con powered by -->
                 <div class="chat-ia-footer">
-                    <small><?php esc_html_e('Powered by', 'flavor-chat-ia'); ?> <a href="https://flavor.dev" target="_blank" rel="noopener">Flavor Chat IA</a></small>
+                    <small><?php esc_html_e('Powered by', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <a href="https://flavor.dev" target="_blank" rel="noopener">Flavor Chat IA</a></small>
                 </div>
             </div>
         </div>
@@ -324,7 +324,7 @@ class Flavor_Chat_Core {
      * @return bool
      */
     public static function is_enabled() {
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
 
         if (empty($settings['enabled'])) {
             return false;

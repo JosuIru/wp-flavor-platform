@@ -17,12 +17,12 @@ $id = $solicitud['id'] ?? 0;
 $titulo = $solicitud['titulo'] ?? $solicitud['title'] ?? '';
 $descripcion = $solicitud['descripcion'] ?? '';
 $url = $solicitud['url'] ?? '#';
-$autor = $solicitud['autor'] ?? __('Anónimo', 'flavor-chat-ia');
+$autor = $solicitud['autor'] ?? __('Anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $avatar = $solicitud['avatar'] ?? 'https://i.pravatar.cc/150?img=' . ($id % 70 + 1);
-$tiempo = $solicitud['tiempo'] ?? __('Hace 1 hora', 'flavor-chat-ia');
+$tiempo = $solicitud['tiempo'] ?? __('Hace 1 hora', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $urgente = !empty($solicitud['urgente']);
-$categoria = $solicitud['categoria'] ?? __('General', 'flavor-chat-ia');
-$ubicacion = $solicitud['ubicacion'] ?? __('Sin ubicación', 'flavor-chat-ia');
+$categoria = $solicitud['categoria'] ?? __('General', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$ubicacion = $solicitud['ubicacion'] ?? __('Sin ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $respuestas = $solicitud['respuestas'] ?? 0;
 $tipo = $solicitud['tipo'] ?? 'necesito'; // 'necesito' o 'ofrezco'
 ?>
@@ -40,7 +40,7 @@ $tipo = $solicitud['tipo'] ?? 'necesito'; // 'necesito' o 'ofrezco'
                 <span class="font-bold text-gray-900"><?php echo esc_html($autor); ?></span>
                 <?php if ($urgente): ?>
                     <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-700">
-                        <?php echo esc_html__('Urgente', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Urgente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                 <?php endif; ?>
                 <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-orange-100 text-orange-700">
@@ -66,14 +66,14 @@ $tipo = $solicitud['tipo'] ?? 'necesito'; // 'necesito' o 'ofrezco'
                     📍 <?php echo esc_html($ubicacion); ?>
                 </span>
                 <span class="flex items-center gap-1">
-                    💬 <?php echo esc_html($respuestas); ?> <?php echo esc_html__('respuestas', 'flavor-chat-ia'); ?>
+                    💬 <?php echo esc_html($respuestas); ?> <?php echo esc_html__('respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
             </div>
         </div>
 
         <a href="<?php echo esc_url($url); ?>"
            class="px-4 py-2 rounded-xl text-white font-semibold text-sm transition-all hover:scale-105 flex-shrink-0 bg-gradient-to-r from-orange-500 to-amber-500">
-            <?php echo esc_html__('Responder', 'flavor-chat-ia'); ?>
+            <?php echo esc_html__('Responder', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 </article>

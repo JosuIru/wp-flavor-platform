@@ -67,52 +67,52 @@ class Flavor_Transparencia_Dashboard_Tab {
     private function inicializar_estados() {
         $this->estados_solicitud = [
             'recibida' => [
-                'label' => __('Recibida', 'flavor-chat-ia'),
+                'label' => __('Recibida', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'blue',
                 'icon' => 'dashicons-email-alt',
-                'descripcion' => __('Solicitud registrada en el sistema', 'flavor-chat-ia'),
+                'descripcion' => __('Solicitud registrada en el sistema', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'admitida' => [
-                'label' => __('Admitida', 'flavor-chat-ia'),
+                'label' => __('Admitida', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'cyan',
                 'icon' => 'dashicons-yes-alt',
-                'descripcion' => __('Solicitud admitida a tramite', 'flavor-chat-ia'),
+                'descripcion' => __('Solicitud admitida a tramite', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'en_tramite' => [
-                'label' => __('En Tramite', 'flavor-chat-ia'),
+                'label' => __('En Tramite', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'yellow',
                 'icon' => 'dashicons-admin-generic',
-                'descripcion' => __('Solicitud en proceso de gestion', 'flavor-chat-ia'),
+                'descripcion' => __('Solicitud en proceso de gestion', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'ampliacion' => [
-                'label' => __('Ampliacion', 'flavor-chat-ia'),
+                'label' => __('Ampliacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'orange',
                 'icon' => 'dashicons-edit',
-                'descripcion' => __('Se requiere informacion adicional', 'flavor-chat-ia'),
+                'descripcion' => __('Se requiere informacion adicional', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'resuelta' => [
-                'label' => __('Resuelta', 'flavor-chat-ia'),
+                'label' => __('Resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'green',
                 'icon' => 'dashicons-yes',
-                'descripcion' => __('Solicitud resuelta favorablemente', 'flavor-chat-ia'),
+                'descripcion' => __('Solicitud resuelta favorablemente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'denegada' => [
-                'label' => __('Denegada', 'flavor-chat-ia'),
+                'label' => __('Denegada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'red',
                 'icon' => 'dashicons-dismiss',
-                'descripcion' => __('Solicitud denegada', 'flavor-chat-ia'),
+                'descripcion' => __('Solicitud denegada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'desistida' => [
-                'label' => __('Desistida', 'flavor-chat-ia'),
+                'label' => __('Desistida', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'gray',
                 'icon' => 'dashicons-minus',
-                'descripcion' => __('Solicitante desistio de la solicitud', 'flavor-chat-ia'),
+                'descripcion' => __('Solicitante desistio de la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'archivada' => [
-                'label' => __('Archivada', 'flavor-chat-ia'),
+                'label' => __('Archivada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'gray',
                 'icon' => 'dashicons-archive',
-                'descripcion' => __('Solicitud archivada', 'flavor-chat-ia'),
+                'descripcion' => __('Solicitud archivada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
     }
@@ -137,7 +137,7 @@ class Flavor_Transparencia_Dashboard_Tab {
      */
     public function registrar_tabs($tabs) {
         $tabs['transparencia-mis-solicitudes'] = [
-            'label' => __('Mis Solicitudes', 'flavor-chat-ia'),
+            'label' => __('Mis Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'clipboard-list',
             'callback' => [$this, 'render_tab_mis_solicitudes'],
             'orden' => 80,
@@ -145,7 +145,7 @@ class Flavor_Transparencia_Dashboard_Tab {
         ];
 
         $tabs['transparencia-seguimiento'] = [
-            'label' => __('Seguimiento', 'flavor-chat-ia'),
+            'label' => __('Seguimiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'search',
             'callback' => [$this, 'render_tab_seguimiento'],
             'orden' => 81,
@@ -153,7 +153,7 @@ class Flavor_Transparencia_Dashboard_Tab {
         ];
 
         $tabs['transparencia-documentos-guardados'] = [
-            'label' => __('Docs. Guardados', 'flavor-chat-ia'),
+            'label' => __('Docs. Guardados', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'bookmark',
             'callback' => [$this, 'render_tab_documentos_guardados'],
             'orden' => 82,
@@ -202,16 +202,16 @@ class Flavor_Transparencia_Dashboard_Tab {
                 <div class="flavor-panel-header-content">
                     <h2>
                         <span class="dashicons dashicons-visibility"></span>
-                        <?php esc_html_e('Mis Solicitudes de Informacion', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Mis Solicitudes de Informacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h2>
                     <p class="flavor-panel-subtitle">
-                        <?php esc_html_e('Historial de solicitudes de acceso a informacion publica', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Historial de solicitudes de acceso a informacion publica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('transparencia', 'nueva-solicitud')); ?>"
                    class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt2"></span>
-                    <?php esc_html_e('Nueva Solicitud', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Nueva Solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
@@ -221,28 +221,28 @@ class Flavor_Transparencia_Dashboard_Tab {
                     <span class="flavor-kpi-icon dashicons dashicons-clipboard"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas['total']); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Total Solicitudes', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Total Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-warning">
                     <span class="flavor-kpi-icon dashicons dashicons-clock"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas['pendientes']); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('En Tramite', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('En Tramite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-success">
                     <span class="flavor-kpi-icon dashicons dashicons-yes-alt"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas['resueltas']); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Resueltas', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icon dashicons dashicons-calendar-alt"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas['promedio_dias']); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Dias Promedio', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Dias Promedio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -252,13 +252,13 @@ class Flavor_Transparencia_Dashboard_Tab {
                 <?php if (empty($solicitudes)): ?>
                     <div class="flavor-empty-state">
                         <span class="dashicons dashicons-format-aside"></span>
-                        <h3><?php esc_html_e('No tienes solicitudes', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php esc_html_e('No tienes solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <p class="flavor-text-muted">
-                            <?php esc_html_e('Puedes solicitar acceso a informacion publica como presupuestos, contratos, actas y mas.', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Puedes solicitar acceso a informacion publica como presupuestos, contratos, actas y mas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('transparencia', 'nueva-solicitud')); ?>"
                            class="flavor-btn flavor-btn-primary">
-                            <?php esc_html_e('Crear mi primera solicitud', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Crear mi primera solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 <?php else: ?>
@@ -266,12 +266,12 @@ class Flavor_Transparencia_Dashboard_Tab {
                         <table class="flavor-table flavor-table-hover">
                             <thead>
                                 <tr>
-                                    <th><?php esc_html_e('Expediente', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Titulo', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Categoria', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                                    <th><?php esc_html_e('Expediente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php esc_html_e('Titulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php esc_html_e('Categoria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -292,7 +292,7 @@ class Flavor_Transparencia_Dashboard_Tab {
                                         </td>
                                         <td>
                                             <span class="flavor-categoria-badge">
-                                                <?php echo esc_html(ucfirst($solicitud->categoria ?: __('General', 'flavor-chat-ia'))); ?>
+                                                <?php echo esc_html(ucfirst($solicitud->categoria ?: __('General', FLAVOR_PLATFORM_TEXT_DOMAIN))); ?>
                                             </span>
                                         </td>
                                         <td>
@@ -313,7 +313,7 @@ class Flavor_Transparencia_Dashboard_Tab {
                                                 <br>
                                                 <small class="<?php echo esc_attr($clase_urgencia); ?>">
                                                     <?php printf(
-                                                        esc_html__('Limite: %s', 'flavor-chat-ia'),
+                                                        esc_html__('Limite: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                                         date_i18n('d/m/Y', strtotime($solicitud->fecha_limite))
                                                     ); ?>
                                                 </small>
@@ -322,7 +322,7 @@ class Flavor_Transparencia_Dashboard_Tab {
                                         <td>
                                             <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('transparencia', 'solicitud') . '/' . $solicitud->id . '/'); ?>"
                                                class="flavor-btn flavor-btn-sm flavor-btn-outline"
-                                               title="<?php esc_attr_e('Ver detalle', 'flavor-chat-ia'); ?>">
+                                               title="<?php esc_attr_e('Ver detalle', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                                 <span class="dashicons dashicons-visibility"></span>
                                             </a>
                                         </td>
@@ -384,28 +384,28 @@ class Flavor_Transparencia_Dashboard_Tab {
             <div class="flavor-panel-header">
                 <h2>
                     <span class="dashicons dashicons-search"></span>
-                    <?php esc_html_e('Seguimiento de Solicitudes', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Seguimiento de Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <p class="flavor-panel-subtitle">
-                    <?php esc_html_e('Estado actualizado de tus solicitudes en tramite', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Estado actualizado de tus solicitudes en tramite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
             <?php if (empty($solicitudes_pendientes)): ?>
                 <div class="flavor-empty-state flavor-empty-success">
                     <span class="dashicons dashicons-yes-alt"></span>
-                    <h3><?php esc_html_e('Sin solicitudes pendientes', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Sin solicitudes pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <p class="flavor-text-muted">
-                        <?php esc_html_e('No tienes solicitudes en tramite actualmente.', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('No tienes solicitudes en tramite actualmente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                     <div class="flavor-empty-actions">
                         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('transparencia', 'nueva-solicitud')); ?>"
                            class="flavor-btn flavor-btn-primary">
-                            <?php esc_html_e('Nueva solicitud', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Nueva solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                         <a href="#" onclick="document.querySelector('[data-tab=transparencia-mis-solicitudes]').click(); return false;"
                            class="flavor-btn flavor-btn-outline">
-                            <?php esc_html_e('Ver historial', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Ver historial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </div>
@@ -450,7 +450,7 @@ class Flavor_Transparencia_Dashboard_Tab {
                             <div class="flavor-timeline-container">
                                 <h5 class="flavor-timeline-titulo">
                                     <span class="dashicons dashicons-backup"></span>
-                                    <?php esc_html_e('Historial', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Historial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </h5>
                                 <?php $this->render_timeline_solicitud($solicitud, $historial); ?>
                             </div>
@@ -461,7 +461,7 @@ class Flavor_Transparencia_Dashboard_Tab {
                                     <span class="dashicons dashicons-calendar-alt"></span>
                                     <span>
                                         <?php printf(
-                                            esc_html__('Iniciada hace %d dias', 'flavor-chat-ia'),
+                                            esc_html__('Iniciada hace %d dias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                             $dias_transcurridos
                                         ); ?>
                                     </span>
@@ -472,14 +472,14 @@ class Flavor_Transparencia_Dashboard_Tab {
                                         <span>
                                             <?php if ($dias_limite > 0): ?>
                                                 <?php printf(
-                                                    esc_html__('%d dias para respuesta', 'flavor-chat-ia'),
+                                                    esc_html__('%d dias para respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                                     $dias_limite
                                                 ); ?>
                                             <?php elseif ($dias_limite == 0): ?>
-                                                <?php esc_html_e('Vence hoy', 'flavor-chat-ia'); ?>
+                                                <?php esc_html_e('Vence hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             <?php else: ?>
                                                 <?php printf(
-                                                    esc_html__('Vencida hace %d dias', 'flavor-chat-ia'),
+                                                    esc_html__('Vencida hace %d dias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                                     abs($dias_limite)
                                                 ); ?>
                                             <?php endif; ?>
@@ -492,7 +492,7 @@ class Flavor_Transparencia_Dashboard_Tab {
                                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('transparencia', 'solicitud') . '/' . $solicitud->id . '/'); ?>"
                                    class="flavor-btn flavor-btn-sm flavor-btn-outline">
                                     <span class="dashicons dashicons-visibility"></span>
-                                    <?php esc_html_e('Ver detalle', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Ver detalle', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </div>
                         </div>
@@ -516,7 +516,7 @@ class Flavor_Transparencia_Dashboard_Tab {
                 [
                     'estado' => 'recibida',
                     'fecha' => $solicitud->fecha_solicitud,
-                    'comentario' => __('Solicitud registrada', 'flavor-chat-ia'),
+                    'comentario' => __('Solicitud registrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ];
 
@@ -524,7 +524,7 @@ class Flavor_Transparencia_Dashboard_Tab {
                 $historial[] = [
                     'estado' => 'admitida',
                     'fecha' => $solicitud->fecha_admision,
-                    'comentario' => __('Solicitud admitida a tramite', 'flavor-chat-ia'),
+                    'comentario' => __('Solicitud admitida a tramite', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
 
@@ -621,24 +621,24 @@ class Flavor_Transparencia_Dashboard_Tab {
             <div class="flavor-panel-header">
                 <h2>
                     <span class="dashicons dashicons-star-filled"></span>
-                    <?php esc_html_e('Documentos Guardados', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Documentos Guardados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <p class="flavor-panel-subtitle">
-                    <?php esc_html_e('Documentos publicos que has marcado como favoritos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Documentos publicos que has marcado como favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
             <?php if (empty($documentos)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-star-empty"></span>
-                    <h3><?php esc_html_e('No tienes documentos guardados', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('No tienes documentos guardados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <p class="flavor-text-muted">
-                        <?php esc_html_e('Explora el portal de transparencia y guarda los documentos que te interesen para acceder a ellos rapidamente.', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Explora el portal de transparencia y guarda los documentos que te interesen para acceder a ellos rapidamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                     <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('transparencia', '')); ?>"
                        class="flavor-btn flavor-btn-primary">
                         <span class="dashicons dashicons-visibility"></span>
-                        <?php esc_html_e('Explorar portal', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Explorar portal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -646,7 +646,7 @@ class Flavor_Transparencia_Dashboard_Tab {
                 <div class="flavor-docs-stats">
                     <span class="flavor-stat">
                         <strong><?php echo count($documentos); ?></strong>
-                        <?php esc_html_e('documentos guardados', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('documentos guardados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                 </div>
 
@@ -664,7 +664,7 @@ class Flavor_Transparencia_Dashboard_Tab {
                                 <button type="button"
                                         class="flavor-btn-icon flavor-btn-quitar-doc"
                                         data-documento-id="<?php echo esc_attr($documento->id); ?>"
-                                        title="<?php esc_attr_e('Quitar de guardados', 'flavor-chat-ia'); ?>">
+                                        title="<?php esc_attr_e('Quitar de guardados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-star-filled"></span>
                                 </button>
                             </div>
@@ -702,7 +702,7 @@ class Flavor_Transparencia_Dashboard_Tab {
                             <div class="flavor-card-footer">
                                 <span class="flavor-fecha-publicacion">
                                     <?php printf(
-                                        esc_html__('Publicado: %s', 'flavor-chat-ia'),
+                                        esc_html__('Publicado: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                         date_i18n('d/m/Y', strtotime($documento->fecha_publicacion))
                                     ); ?>
                                 </span>
@@ -710,7 +710,7 @@ class Flavor_Transparencia_Dashboard_Tab {
                                     <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('transparencia', 'documento') . '/' . $documento->id . '/'); ?>"
                                        class="flavor-btn flavor-btn-sm flavor-btn-outline">
                                         <span class="dashicons dashicons-visibility"></span>
-                                        <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                     <?php if (!empty($documento->archivo_url)): ?>
                                         <a href="<?php echo esc_url($documento->archivo_url); ?>"
@@ -737,7 +737,7 @@ class Flavor_Transparencia_Dashboard_Tab {
                 var documentoId = $boton.data('documento-id');
                 var $tarjeta = $boton.closest('.flavor-doc-card');
 
-                if (!confirm('<?php echo esc_js(__('Quitar este documento de guardados?', 'flavor-chat-ia')); ?>')) {
+                if (!confirm('<?php echo esc_js(__('Quitar este documento de guardados?', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>')) {
                     return;
                 }
 
@@ -759,11 +759,11 @@ class Flavor_Transparencia_Dashboard_Tab {
                                 }
                             });
                         } else {
-                            alert(respuesta.data.message || '<?php echo esc_js(__('Error al quitar documento', 'flavor-chat-ia')); ?>');
+                            alert(respuesta.data.message || '<?php echo esc_js(__('Error al quitar documento', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                         }
                     },
                     error: function() {
-                        alert('<?php echo esc_js(__('Error de conexion', 'flavor-chat-ia')); ?>');
+                        alert('<?php echo esc_js(__('Error de conexion', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                     }
                 });
             });
@@ -831,12 +831,12 @@ class Flavor_Transparencia_Dashboard_Tab {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $documento_id = absint($_POST['documento_id'] ?? 0);
         if (!$documento_id) {
-            wp_send_json_error(['message' => __('ID de documento invalido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID de documento invalido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar que el documento existe
@@ -848,7 +848,7 @@ class Flavor_Transparencia_Dashboard_Tab {
         ));
 
         if (!$existe) {
-            wp_send_json_error(['message' => __('Documento no encontrado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Documento no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Obtener documentos guardados actuales
@@ -861,7 +861,7 @@ class Flavor_Transparencia_Dashboard_Tab {
             update_user_meta($usuario_id, 'transparencia_documentos_guardados', $documentos_guardados);
         }
 
-        wp_send_json_success(['message' => __('Documento guardado', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Documento guardado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -872,12 +872,12 @@ class Flavor_Transparencia_Dashboard_Tab {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $documento_id = absint($_POST['documento_id'] ?? 0);
         if (!$documento_id) {
-            wp_send_json_error(['message' => __('ID de documento invalido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID de documento invalido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Obtener documentos guardados actuales
@@ -890,7 +890,7 @@ class Flavor_Transparencia_Dashboard_Tab {
 
         update_user_meta($usuario_id, 'transparencia_documentos_guardados', $documentos_guardados);
 
-        wp_send_json_success(['message' => __('Documento quitado de guardados', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Documento quitado de guardados', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -1182,10 +1182,10 @@ class Flavor_Transparencia_Dashboard_Tab {
         <div class="flavor-panel flavor-panel-login">
             <div class="flavor-empty-state">
                 <span class="dashicons dashicons-lock"></span>
-                <h3><?php esc_html_e('Acceso restringido', 'flavor-chat-ia'); ?></h3>
-                <p><?php esc_html_e('Debes iniciar sesion para ver este contenido.', 'flavor-chat-ia'); ?></p>
+                <h3><?php esc_html_e('Acceso restringido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php esc_html_e('Debes iniciar sesion para ver este contenido.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="flavor-btn flavor-btn-primary">
-                    <?php esc_html_e('Iniciar sesion', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -1200,8 +1200,8 @@ class Flavor_Transparencia_Dashboard_Tab {
         <div class="flavor-panel flavor-panel-error">
             <div class="flavor-empty-state">
                 <span class="dashicons dashicons-warning"></span>
-                <h3><?php esc_html_e('Modulo no disponible', 'flavor-chat-ia'); ?></h3>
-                <p><?php esc_html_e('El modulo de transparencia no esta configurado correctamente.', 'flavor-chat-ia'); ?></p>
+                <h3><?php esc_html_e('Modulo no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php esc_html_e('El modulo de transparencia no esta configurado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
         <?php

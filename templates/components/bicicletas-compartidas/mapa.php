@@ -9,8 +9,8 @@
 if (!defined('ABSPATH')) exit;
 
 // Valores por defecto
-$titulo = $args['titulo'] ?? __('Estaciones de Bicicletas', 'flavor-chat-ia');
-$subtitulo = $args['subtitulo'] ?? __('Encuentra la estación más cercana', 'flavor-chat-ia');
+$titulo = $args['titulo'] ?? __('Estaciones de Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$subtitulo = $args['subtitulo'] ?? __('Encuentra la estación más cercana', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $estaciones = $args['estaciones'] ?? [];
 $altura_mapa = $args['altura_mapa'] ?? '500px';
 $mostrar_filtros = $args['mostrar_filtros'] ?? true;
@@ -69,13 +69,13 @@ if (empty($estaciones)) {
         <?php if ($mostrar_filtros): ?>
         <div class="flavor-bicicletas-filtros mb-8 flex flex-wrap gap-3 justify-center">
             <button class="flavor-filtro-btn active px-4 py-2 rounded-full bg-blue-500 text-white font-medium" data-filtro="todas">
-                <?php echo esc_html__('Todas las estaciones', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Todas las estaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <button class="flavor-filtro-btn px-4 py-2 rounded-full bg-white text-gray-700 font-medium border border-gray-300" data-filtro="disponibles">
-                <?php echo esc_html__('Con bicicletas disponibles', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Con bicicletas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <button class="flavor-filtro-btn px-4 py-2 rounded-full bg-white text-gray-700 font-medium border border-gray-300" data-filtro="cercanas">
-                <?php echo esc_html__('Cerca de mí', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Cerca de mí', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
         <?php endif; ?>
@@ -90,14 +90,14 @@ if (empty($estaciones)) {
                     </div>
                 </div>
                 <p class="text-sm text-gray-500 mt-2">
-                    💡 <?php echo esc_html__('Haz clic en cualquier marcador para ver los detalles de la estación', 'flavor-chat-ia'); ?>
+                    💡 <?php echo esc_html__('Haz clic en cualquier marcador para ver los detalles de la estación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
             <!-- Panel lateral de estaciones -->
             <div class="bg-white rounded-2xl shadow-lg p-6 overflow-y-auto" style="max-height: 600px;">
                 <h3 class="text-xl font-bold text-gray-900 mb-4">
-                    <?php echo esc_html__('Estaciones Cercanas', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Estaciones Cercanas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
 
                 <div class="space-y-4 flavor-estaciones-lista">
@@ -112,11 +112,11 @@ if (empty($estaciones)) {
                             </h4>
                             <?php if ($estacion['abierta']): ?>
                             <span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">
-                                <?php echo esc_html__('Abierta', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Abierta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                             <?php else: ?>
                             <span class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full">
-                                <?php echo esc_html__('Cerrada', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Cerrada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                             <?php endif; ?>
                         </div>
@@ -131,7 +131,7 @@ if (empty($estaciones)) {
                                     <?php echo (int)$estacion['bicicletas_disponibles']; ?>
                                 </div>
                                 <div class="text-xs text-gray-600">
-                                    <?php echo esc_html__('de', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('de', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     <br>
                                     <?php echo (int)$estacion['total_bicicletas']; ?>
                                 </div>
@@ -153,15 +153,15 @@ if (empty($estaciones)) {
         <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-blue-50 rounded-xl p-6 text-center">
                 <div class="text-4xl font-bold text-blue-600 mb-2"><?php echo count($estaciones); ?></div>
-                <p class="text-gray-700"><?php echo esc_html__('Estaciones disponibles', 'flavor-chat-ia'); ?></p>
+                <p class="text-gray-700"><?php echo esc_html__('Estaciones disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <div class="bg-green-50 rounded-xl p-6 text-center">
                 <div class="text-4xl font-bold text-green-600 mb-2">487</div>
-                <p class="text-gray-700"><?php echo esc_html__('Bicicletas en servicio', 'flavor-chat-ia'); ?></p>
+                <p class="text-gray-700"><?php echo esc_html__('Bicicletas en servicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <div class="bg-purple-50 rounded-xl p-6 text-center">
                 <div class="text-4xl font-bold text-purple-600 mb-2">24/7</div>
-                <p class="text-gray-700"><?php echo esc_html__('Servicio disponible', 'flavor-chat-ia'); ?></p>
+                <p class="text-gray-700"><?php echo esc_html__('Servicio disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
     </div>

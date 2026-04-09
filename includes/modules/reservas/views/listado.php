@@ -28,10 +28,10 @@ $offset = ($pagina_actual - 1) * $por_pagina;
 
 // Estados
 $estados = [
-    'pendiente'  => __('Pendiente', 'flavor-chat-ia'),
-    'confirmada' => __('Confirmada', 'flavor-chat-ia'),
-    'cancelada'  => __('Cancelada', 'flavor-chat-ia'),
-    'completada' => __('Completada', 'flavor-chat-ia'),
+    'pendiente'  => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'confirmada' => __('Confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cancelada'  => __('Cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'completada' => __('Completada', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $colores_estado = [
@@ -105,15 +105,15 @@ if ($tabla_existe) {
     <nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">
         <a href="<?php echo admin_url('admin.php?page=reservas-dashboard'); ?>" style="color: #2271b1; text-decoration: none;">
             <span class="dashicons dashicons-calendar-alt" style="font-size: 14px; vertical-align: middle;"></span>
-            <?php _e('Reservas', 'flavor-chat-ia'); ?>
+            <?php _e('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <span style="color: #646970; margin: 0 5px;">›</span>
-        <span style="color: #1d2327;"><?php _e('Listado', 'flavor-chat-ia'); ?></span>
+        <span style="color: #1d2327;"><?php _e('Listado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
     </nav>
 
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-list-view"></span>
-        <?php _e('Listado de Reservas', 'flavor-chat-ia'); ?>
+        <?php _e('Listado de Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <hr class="wp-header-end">
@@ -122,15 +122,15 @@ if ($tabla_existe) {
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 20px 0;">
         <div style="background: #fff; padding: 15px; border-left: 4px solid #2271b1; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="font-size: 24px; font-weight: bold;"><?php echo number_format($stats['hoy']); ?></div>
-            <div style="color: #646970; font-size: 13px;"><?php _e('Hoy', 'flavor-chat-ia'); ?></div>
+            <div style="color: #646970; font-size: 13px;"><?php _e('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
         <div style="background: #fff; padding: 15px; border-left: 4px solid #dba617; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="font-size: 24px; font-weight: bold;"><?php echo number_format($stats['pendientes']); ?></div>
-            <div style="color: #646970; font-size: 13px;"><?php _e('Pendientes', 'flavor-chat-ia'); ?></div>
+            <div style="color: #646970; font-size: 13px;"><?php _e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
         <div style="background: #fff; padding: 15px; border-left: 4px solid #00a32a; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="font-size: 24px; font-weight: bold;"><?php echo number_format($stats['semana']); ?></div>
-            <div style="color: #646970; font-size: 13px;"><?php _e('Esta semana', 'flavor-chat-ia'); ?></div>
+            <div style="color: #646970; font-size: 13px;"><?php _e('Esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -140,26 +140,26 @@ if ($tabla_existe) {
             <input type="hidden" name="page" value="reservas-listado">
             <div class="alignleft actions" style="display: flex; gap: 8px; flex-wrap: wrap;">
                 <select name="estado">
-                    <option value=""><?php _e('Todos los estados', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($estados as $slug => $label): ?>
                     <option value="<?php echo esc_attr($slug); ?>" <?php selected($estado_filtro, $slug); ?>><?php echo esc_html($label); ?></option>
                     <?php endforeach; ?>
                 </select>
                 <select name="recurso">
-                    <option value=""><?php _e('Todos los recursos', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todos los recursos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($recursos as $rec): ?>
                     <option value="<?php echo esc_attr($rec->id); ?>" <?php selected($recurso_filtro, $rec->id); ?>><?php echo esc_html($rec->nombre); ?></option>
                     <?php endforeach; ?>
                 </select>
                 <input type="date" name="fecha" value="<?php echo esc_attr($fecha_filtro); ?>">
-                <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="button"><?php _e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                 <?php if ($estado_filtro || $recurso_filtro || $fecha_filtro): ?>
-                <a href="<?php echo admin_url('admin.php?page=reservas-listado'); ?>" class="button"><?php _e('Limpiar', 'flavor-chat-ia'); ?></a>
+                <a href="<?php echo admin_url('admin.php?page=reservas-listado'); ?>" class="button"><?php _e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 <?php endif; ?>
             </div>
         </form>
         <div class="tablenav-pages">
-            <span class="displaying-num"><?php printf(_n('%s reserva', '%s reservas', $total_items, 'flavor-chat-ia'), number_format($total_items)); ?></span>
+            <span class="displaying-num"><?php printf(_n('%s reserva', '%s reservas', $total_items, FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($total_items)); ?></span>
         </div>
     </div>
 
@@ -167,29 +167,29 @@ if ($tabla_existe) {
     <table class="wp-list-table widefat fixed striped">
         <thead>
             <tr>
-                <th style="width: 50px;"><?php _e('ID', 'flavor-chat-ia'); ?></th>
-                <th><?php _e('Recurso', 'flavor-chat-ia'); ?></th>
-                <th><?php _e('Usuario', 'flavor-chat-ia'); ?></th>
-                <th style="width: 150px;"><?php _e('Fecha/Hora', 'flavor-chat-ia'); ?></th>
-                <th style="width: 100px;"><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                <th style="width: 100px;"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                <th style="width: 50px;"><?php _e('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th><?php _e('Recurso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th><?php _e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="width: 150px;"><?php _e('Fecha/Hora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="width: 100px;"><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="width: 100px;"><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
             </tr>
         </thead>
         <tbody>
             <?php if (empty($reservas)): ?>
             <tr><td colspan="6" style="text-align: center; padding: 40px;">
                 <span class="dashicons dashicons-calendar-alt" style="font-size: 48px; color: #c3c4c7;"></span>
-                <p style="color: #646970;"><?php _e('No se encontraron reservas.', 'flavor-chat-ia'); ?></p>
+                <p style="color: #646970;"><?php _e('No se encontraron reservas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </td></tr>
             <?php else: ?>
                 <?php foreach ($reservas as $r): ?>
                 <tr>
                     <td><code><?php echo esc_html($r->id); ?></code></td>
-                    <td><strong><?php echo esc_html($r->recurso_nombre ?: __('Recurso eliminado', 'flavor-chat-ia')); ?></strong></td>
+                    <td><strong><?php echo esc_html($r->recurso_nombre ?: __('Recurso eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong></td>
                     <td>
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <?php echo get_avatar($r->user_id, 28); ?>
-                            <?php echo esc_html($r->display_name ?: __('Usuario', 'flavor-chat-ia')); ?>
+                            <?php echo esc_html($r->display_name ?: __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                         </div>
                     </td>
                     <td><?php echo esc_html(date_i18n('d/m/Y H:i', strtotime($r->fecha_inicio))); ?></td>

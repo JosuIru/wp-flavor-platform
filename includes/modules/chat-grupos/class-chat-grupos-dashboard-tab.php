@@ -27,7 +27,7 @@ class Flavor_Chat_Grupos_Dashboard_Tab {
 
     public function registrar_tabs($tabs) {
         $tabs['chat-grupos'] = [
-            'label' => __('Grupos', 'flavor-chat-ia'),
+            'label' => __('Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-groups',
             'callback' => [$this, 'render_tab'],
             'priority' => 18,

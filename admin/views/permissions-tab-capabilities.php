@@ -38,18 +38,18 @@ foreach ($roles_personalizados as $slug => $info) {
             <h3>
                 <?php
                 printf(
-                    esc_html__('Editar Capabilities de: %s', 'flavor-chat-ia'),
+                    esc_html__('Editar Capabilities de: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     '<strong>' . esc_html($roles_wp[$rol_editar] ?? $rol_editar) . '</strong>'
                 );
                 ?>
                 <a href="?page=flavor-permissions&tab=capabilities" class="button button-small" style="float: right;">
-                    <?php esc_html_e('Volver a Matriz', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Volver a Matriz', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </h3>
 
             <form method="post">
                 <?php wp_nonce_field('flavor_manage_permissions', 'flavor_permissions_nonce'); ?>
-                <input type="hidden" name="accion" value="<?php echo esc_attr__('actualizar_capabilities', 'flavor-chat-ia'); ?>">
+                <input type="hidden" name="accion" value="<?php echo esc_attr__('actualizar_capabilities', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <input type="hidden" name="rol_slug" value="<?php echo esc_attr($rol_editar); ?>">
 
                 <?php
@@ -100,10 +100,10 @@ foreach ($roles_personalizados as $slug => $info) {
 
                 <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd;">
                     <button type="submit" class="button button-primary button-large">
-                        <?php esc_html_e('Guardar Cambios', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Guardar Cambios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <a href="?page=flavor-permissions&tab=capabilities" class="button button-large">
-                        <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </form>
@@ -111,9 +111,9 @@ foreach ($roles_personalizados as $slug => $info) {
 
     <?php else: ?>
         <!-- Matriz de roles vs capabilities -->
-        <h2><?php esc_html_e('Matriz de Permisos', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Matriz de Permisos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <p class="description">
-            <?php esc_html_e('Vista general de capabilities asignadas a cada rol. Haz clic en "Editar" para modificar los permisos de un rol.', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Vista general de capabilities asignadas a cada rol. Haz clic en "Editar" para modificar los permisos de un rol.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
 
         <?php foreach ($capabilities_agrupadas as $grupo => $caps): ?>
@@ -121,7 +121,7 @@ foreach ($roles_personalizados as $slug => $info) {
                 <h3 style="margin: -15px -15px 15px; padding: 12px 15px; background: #f5f5f5; border-bottom: 1px solid #ddd;">
                     <?php echo esc_html(ucfirst(str_replace('_', ' ', $grupo))); ?>
                     <span style="font-weight: normal; color: #666;">
-                        (<?php echo count($caps); ?> <?php esc_html_e('capabilities', 'flavor-chat-ia'); ?>)
+                        (<?php echo count($caps); ?> <?php esc_html_e('capabilities', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>)
                     </span>
                 </h3>
 
@@ -129,13 +129,13 @@ foreach ($roles_personalizados as $slug => $info) {
                     <table>
                         <thead>
                             <tr>
-                                <th class="capability-name"><?php esc_html_e('Capability', 'flavor-chat-ia'); ?></th>
+                                <th class="capability-name"><?php esc_html_e('Capability', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                 <?php foreach ($roles_wp as $rol_slug => $rol_nombre): ?>
                                     <th style="min-width: 80px;">
                                         <?php echo esc_html($rol_nombre); ?>
                                         <br>
                                         <a href="?page=flavor-permissions&tab=capabilities&role=<?php echo esc_attr($rol_slug); ?>" style="font-size: 11px; font-weight: normal;">
-                                            <?php esc_html_e('Editar', 'flavor-chat-ia'); ?>
+                                            <?php esc_html_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </a>
                                     </th>
                                 <?php endforeach; ?>
@@ -159,10 +159,10 @@ foreach ($roles_personalizados as $slug => $info) {
                                         <td>
                                             <?php if ($tiene_cap): ?>
                                                 <span class="dashicons dashicons-yes cap-granted"
-                                                      title="<?php esc_attr_e('Concedido', 'flavor-chat-ia'); ?>"></span>
+                                                      title="<?php esc_attr_e('Concedido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></span>
                                             <?php else: ?>
                                                 <span class="dashicons dashicons-minus cap-denied"
-                                                      title="<?php esc_attr_e('No concedido', 'flavor-chat-ia'); ?>"></span>
+                                                      title="<?php esc_attr_e('No concedido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></span>
                                             <?php endif; ?>
                                         </td>
                                     <?php endforeach; ?>

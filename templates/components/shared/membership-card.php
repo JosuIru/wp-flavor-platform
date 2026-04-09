@@ -31,7 +31,7 @@ $cta_text = $cta_text ?? '';
 $cta_url = $cta_url ?? '';
 
 // Datos por defecto
-$plan_name = $membership['plan'] ?? __('Básico', 'flavor-chat-ia');
+$plan_name = $membership['plan'] ?? __('Básico', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $status = $membership['status'] ?? 'active';
 $start_date = $membership['start_date'] ?? '';
 $end_date = $membership['end_date'] ?? '';
@@ -56,11 +56,11 @@ if (!$member_number && $user_id) {
 
 // Estados
 $status_config = [
-    'active'    => ['label' => __('Activo', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✓'],
-    'pending'   => ['label' => __('Pendiente', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏳'],
-    'expired'   => ['label' => __('Expirado', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '⚠'],
-    'cancelled' => ['label' => __('Cancelado', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '✕'],
-    'trial'     => ['label' => __('Prueba', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '🎁'],
+    'active'    => ['label' => __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '✓'],
+    'pending'   => ['label' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '⏳'],
+    'expired'   => ['label' => __('Expirado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'red', 'icon' => '⚠'],
+    'cancelled' => ['label' => __('Cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'gray', 'icon' => '✕'],
+    'trial'     => ['label' => __('Prueba', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'blue', 'icon' => '🎁'],
 ];
 $status_info = $status_config[$status] ?? $status_config['active'];
 
@@ -76,10 +76,10 @@ $theme = $color_themes[$color] ?? $color_themes['blue'];
 
 // Períodos de facturación
 $billing_labels = [
-    'month' => __('/mes', 'flavor-chat-ia'),
-    'year'  => __('/año', 'flavor-chat-ia'),
+    'month' => __('/mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'year'  => __('/año', FLAVOR_PLATFORM_TEXT_DOMAIN),
     'once'  => '',
-    'week'  => __('/semana', 'flavor-chat-ia'),
+    'week'  => __('/semana', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 $billing_label = $billing_labels[$billing_period] ?? '';
 
@@ -109,7 +109,7 @@ if ($end_date && $status === 'active') {
                 </span>
                 <?php if ($days_remaining !== null && $days_remaining <= 30): ?>
                     <p class="text-xs text-white/60 mt-1">
-                        <?php printf(__('%d días restantes', 'flavor-chat-ia'), $days_remaining); ?>
+                        <?php printf(__('%d días restantes', FLAVOR_PLATFORM_TEXT_DOMAIN), $days_remaining); ?>
                     </p>
                 <?php endif; ?>
             </div>
@@ -136,7 +136,7 @@ if ($end_date && $status === 'active') {
             <!-- Header -->
             <div class="relative flex items-start justify-between mb-6">
                 <div>
-                    <p class="text-xs text-white/60 uppercase tracking-wider"><?php esc_html_e('Tarjeta de miembro', 'flavor-chat-ia'); ?></p>
+                    <p class="text-xs text-white/60 uppercase tracking-wider"><?php esc_html_e('Tarjeta de miembro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <h3 class="text-2xl font-bold mt-1"><?php echo esc_html($plan_name); ?></h3>
                 </div>
                 <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-<?php echo esc_attr($status_info['color']); ?>-500/30 backdrop-blur-sm">
@@ -153,7 +153,7 @@ if ($end_date && $status === 'active') {
                 <div>
                     <p class="font-bold text-lg"><?php echo esc_html($user_name); ?></p>
                     <p class="text-sm text-white/70">
-                        <?php esc_html_e('Nº Miembro:', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Nº Miembro:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <span class="font-mono"><?php echo esc_html($member_number); ?></span>
                     </p>
                 </div>
@@ -163,21 +163,21 @@ if ($end_date && $status === 'active') {
             <div class="relative grid grid-cols-3 gap-4 text-sm">
                 <?php if ($start_date): ?>
                     <div>
-                        <p class="text-white/50 text-xs"><?php esc_html_e('Desde', 'flavor-chat-ia'); ?></p>
+                        <p class="text-white/50 text-xs"><?php esc_html_e('Desde', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <p class="font-medium"><?php echo esc_html(date_i18n('d/m/Y', strtotime($start_date))); ?></p>
                     </div>
                 <?php endif; ?>
 
                 <?php if ($end_date): ?>
                     <div>
-                        <p class="text-white/50 text-xs"><?php esc_html_e('Válido hasta', 'flavor-chat-ia'); ?></p>
+                        <p class="text-white/50 text-xs"><?php esc_html_e('Válido hasta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <p class="font-medium"><?php echo esc_html(date_i18n('d/m/Y', strtotime($end_date))); ?></p>
                     </div>
                 <?php endif; ?>
 
                 <?php if ($price > 0): ?>
                     <div class="text-right">
-                        <p class="text-white/50 text-xs"><?php esc_html_e('Cuota', 'flavor-chat-ia'); ?></p>
+                        <p class="text-white/50 text-xs"><?php esc_html_e('Cuota', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <p class="font-bold"><?php echo esc_html(number_format_i18n($price, 2) . '€' . $billing_label); ?></p>
                     </div>
                 <?php endif; ?>
@@ -186,7 +186,7 @@ if ($end_date && $status === 'active') {
             <!-- Días restantes (advertencia) -->
             <?php if ($days_remaining !== null && $days_remaining <= 30): ?>
                 <div class="relative mt-4 bg-white/10 rounded-lg px-3 py-2 text-sm">
-                    ⏰ <?php printf(__('%d días restantes para renovar', 'flavor-chat-ia'), $days_remaining); ?>
+                    ⏰ <?php printf(__('%d días restantes para renovar', FLAVOR_PLATFORM_TEXT_DOMAIN), $days_remaining); ?>
                 </div>
             <?php endif; ?>
         </div>
@@ -198,7 +198,7 @@ if ($end_date && $status === 'active') {
                 <?php if (!empty($benefits)): ?>
                     <div class="flex-1">
                         <p class="text-xs text-gray-500 uppercase tracking-wider mb-2">
-                            <?php esc_html_e('Incluye', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Incluye', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                         <ul class="space-y-1.5">
                             <?php foreach (array_slice($benefits, 0, 4) as $benefit): ?>
@@ -209,7 +209,7 @@ if ($end_date && $status === 'active') {
                             <?php endforeach; ?>
                             <?php if (count($benefits) > 4): ?>
                                 <li class="text-xs text-gray-400">
-                                    +<?php echo count($benefits) - 4; ?> <?php esc_html_e('más', 'flavor-chat-ia'); ?>
+                                    +<?php echo count($benefits) - 4; ?> <?php esc_html_e('más', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </li>
                             <?php endif; ?>
                         </ul>
@@ -224,7 +224,7 @@ if ($end_date && $status === 'active') {
                                  alt="QR Code"
                                  class="w-16 h-16">
                         </div>
-                        <p class="text-xs text-gray-400 mt-1"><?php esc_html_e('Escanear', 'flavor-chat-ia'); ?></p>
+                        <p class="text-xs text-gray-400 mt-1"><?php esc_html_e('Escanear', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 <?php endif; ?>
             </div>
@@ -241,7 +241,7 @@ if ($end_date && $status === 'active') {
                 <div class="mt-4 pt-4 border-t border-gray-100">
                     <a href="<?php echo esc_url(home_url('/mi-cuenta/renovar/')); ?>"
                        class="block w-full text-center py-2.5 px-4 bg-gradient-to-r from-green-500 to-green-600 text-white font-medium rounded-lg hover:opacity-90 transition-opacity">
-                        🔄 <?php esc_html_e('Renovar membresía', 'flavor-chat-ia'); ?>
+                        🔄 <?php esc_html_e('Renovar membresía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php endif; ?>

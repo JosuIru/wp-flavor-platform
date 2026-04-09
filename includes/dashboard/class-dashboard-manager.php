@@ -202,12 +202,12 @@ class Flavor_Dashboard_Manager {
 
         ?>
         <div class="wrap flavor-dashboard-wrap">
-            <h1><?php esc_html_e('Inicio', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
             <div class="notice notice-info">
-                <p><?php esc_html_e('Esta pantalla legacy de dashboard ha sido absorbida por la portada principal del admin.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('Esta pantalla legacy de dashboard ha sido absorbida por la portada principal del admin.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <p>
                     <a href="<?php echo esc_url($target_url); ?>" class="button button-primary">
-                        <?php esc_html_e('Ir a Inicio', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ir a Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </p>
             </div>
@@ -263,7 +263,7 @@ class Flavor_Dashboard_Manager {
         check_ajax_referer('flavor_dashboard_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $user_id = get_current_user_id();
@@ -332,7 +332,7 @@ class Flavor_Dashboard_Manager {
         check_ajax_referer('flavor_dashboard_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $layout = array_map('sanitize_text_field', $_POST['layout'] ?? []);
@@ -352,7 +352,7 @@ class Flavor_Dashboard_Manager {
         $cache_key = 'flavor_dash_' . $user_id . '_' . md5(wp_json_encode($valid_layout));
         delete_transient($cache_key);
 
-        wp_send_json_success(['message' => __('Layout guardado', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Layout guardado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -362,13 +362,13 @@ class Flavor_Dashboard_Manager {
         check_ajax_referer('flavor_dashboard_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $widget_id = sanitize_text_field($_POST['widget_id'] ?? '');
 
         if (!isset($this->widgets[$widget_id])) {
-            wp_send_json_error(['message' => __('Widget no encontrado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Widget no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         ob_start();
@@ -590,11 +590,11 @@ class Flavor_Dashboard_Manager {
     public function render_quick_actions_widget() {
         ?>
         <div class="flavor-quick-actions">
-            <a href="<?php echo admin_url('admin.php?page=flavor-chat-config'); ?>" class="flavor-quick-action">
+            <a href="<?php echo admin_url('admin.php?page=flavor-platform-settings'); ?>" class="flavor-quick-action">
                 <span class="dashicons dashicons-admin-settings"></span>
                 <span>Configuración</span>
             </a>
-            <a href="<?php echo admin_url('admin.php?page=flavor-chat-config'); ?>" class="flavor-quick-action">
+            <a href="<?php echo admin_url('admin.php?page=flavor-platform-settings'); ?>" class="flavor-quick-action">
                 <span class="dashicons dashicons-chart-area"></span>
                 <span>Analíticas</span>
             </a>
@@ -602,7 +602,7 @@ class Flavor_Dashboard_Manager {
                 <span class="dashicons dashicons-plus"></span>
                 <span>Nueva Página</span>
             </a>
-            <a href="<?php echo admin_url('admin.php?page=flavor-chat-ia-escalations'); ?>" class="flavor-quick-action">
+            <a href="<?php echo admin_url('admin.php?page=flavor-platform-escalations'); ?>" class="flavor-quick-action">
                 <span class="dashicons dashicons-phone"></span>
                 <span>Escalaciones</span>
             </a>

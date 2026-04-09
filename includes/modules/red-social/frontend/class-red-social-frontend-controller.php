@@ -79,8 +79,8 @@ class Flavor_Red_Social_Frontend_Controller {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('red-social_nonce'),
             'i18n' => [
-                'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
+                'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -114,7 +114,7 @@ class Flavor_Red_Social_Frontend_Controller {
 
         ob_start();
         echo '<div class="flavor-red-social-listado">';
-        echo '<p>' . __('Módulo Red Social - Listado', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Módulo Red Social - Listado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         echo '</div>';
         return ob_get_clean();
     }
@@ -124,7 +124,7 @@ class Flavor_Red_Social_Frontend_Controller {
      */
     public function registrar_tabs($tabs) {
         $tabs['red-social'] = [
-            'titulo' => __('Red Social', 'flavor-chat-ia'),
+            'titulo' => __('Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'dashicons-admin-generic',
             'callback' => [$this, 'render_tab_principal'],
             'orden' => 50,
@@ -140,8 +140,8 @@ class Flavor_Red_Social_Frontend_Controller {
     public function render_tab_principal() {
         $this->encolar_assets();
         echo '<div class="flavor-red-social-tab">';
-        echo '<h3>' . esc_html__('Red Social', 'flavor-chat-ia') . '</h3>';
-        echo '<p>' . esc_html__('Contenido del tab de Red Social.', 'flavor-chat-ia') . '</p>';
+        echo '<h3>' . esc_html__('Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
+        echo '<p>' . esc_html__('Contenido del tab de Red Social.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         echo '</div>';
     }
 }

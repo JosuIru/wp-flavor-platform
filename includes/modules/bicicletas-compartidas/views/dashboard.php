@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!current_user_can('manage_options') && !current_user_can('flavor_ver_dashboard')) {
-    wp_die(__('No tienes permisos suficientes para acceder a esta página.', 'flavor-chat-ia'));
+    wp_die(__('No tienes permisos suficientes para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
 }
 
 global $wpdb;
@@ -113,8 +113,8 @@ $porcentaje_disponibles = $total_bicicletas > 0 ? round(($bicicletas_disponibles
     <?php if (!$tabla_bicicletas_existe): ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <strong><?php esc_html_e('Sin datos:', 'flavor-chat-ia'); ?></strong>
-        <?php esc_html_e('No hay tablas de bicicletas disponibles todavía.', 'flavor-chat-ia'); ?>
+        <strong><?php esc_html_e('Sin datos:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+        <?php esc_html_e('No hay tablas de bicicletas disponibles todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </div>
     <?php endif; ?>
 
@@ -123,13 +123,13 @@ $porcentaje_disponibles = $total_bicicletas > 0 ? round(($bicicletas_disponibles
         <div class="dm-header__title">
             <span class="dashicons dashicons-location-alt"></span>
             <div>
-                <h1><?php esc_html_e('Dashboard de Bicicletas Compartidas', 'flavor-chat-ia'); ?></h1>
-                <p><?php esc_html_e('Gestiona la flota de bicicletas y estaciones', 'flavor-chat-ia'); ?></p>
+                <h1><?php esc_html_e('Dashboard de Bicicletas Compartidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
+                <p><?php esc_html_e('Gestiona la flota de bicicletas y estaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
         <div class="dm-header__actions">
             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-nueva')); ?>" class="dm-btn dm-btn--primary">
-                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nueva Bicicleta', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nueva Bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>
@@ -138,28 +138,28 @@ $porcentaje_disponibles = $total_bicicletas > 0 ? round(($bicicletas_disponibles
     <div class="dm-quick-links">
         <h2 class="dm-quick-links__title">
             <span class="dashicons dashicons-admin-links"></span>
-            <?php esc_html_e('Accesos Rápidos', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Accesos Rápidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
         <div class="dm-quick-links__grid">
             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-flota')); ?>" class="dm-quick-links__item">
                 <span class="dashicons dashicons-location-alt"></span>
-                <span><?php esc_html_e('Flota', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Flota', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-estaciones')); ?>" class="dm-quick-links__item dm-quick-links__item--success">
                 <span class="dashicons dashicons-location"></span>
-                <span><?php esc_html_e('Estaciones', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Estaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-prestamos')); ?>" class="dm-quick-links__item dm-quick-links__item--warning">
                 <span class="dashicons dashicons-update"></span>
-                <span><?php esc_html_e('Préstamos', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-configuracion')); ?>" class="dm-quick-links__item">
                 <span class="dashicons dashicons-admin-settings"></span>
-                <span><?php esc_html_e('Configuración', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
             <a href="<?php echo esc_url(home_url('/mi-portal/bicicletas-compartidas/')); ?>" class="dm-quick-links__item dm-quick-links__item--purple">
                 <span class="dashicons dashicons-external"></span>
-                <span><?php esc_html_e('Portal', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Portal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
         </div>
     </div>
@@ -170,7 +170,7 @@ $porcentaje_disponibles = $total_bicicletas > 0 ? round(($bicicletas_disponibles
             <span class="dashicons dashicons-location-alt dm-stat-card__icon"></span>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_bicicletas); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Total Bicicletas', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Total Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -178,7 +178,7 @@ $porcentaje_disponibles = $total_bicicletas > 0 ? round(($bicicletas_disponibles
             <span class="dashicons dashicons-yes-alt dm-stat-card__icon"></span>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($bicicletas_disponibles); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Disponibles', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 <div class="dm-stat-card__meta"><?php echo $porcentaje_disponibles; ?>%</div>
             </div>
         </div>
@@ -187,8 +187,8 @@ $porcentaje_disponibles = $total_bicicletas > 0 ? round(($bicicletas_disponibles
             <span class="dashicons dashicons-update dm-stat-card__icon"></span>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($bicicletas_en_uso); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('En Uso', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php esc_html_e('Ahora mismo', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('En Uso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('Ahora mismo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -196,8 +196,8 @@ $porcentaje_disponibles = $total_bicicletas > 0 ? round(($bicicletas_disponibles
             <span class="dashicons dashicons-location dm-stat-card__icon"></span>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($estaciones_activas); ?>/<?php echo number_format_i18n($total_estaciones); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Estaciones', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php esc_html_e('Activas / Total', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Estaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('Activas / Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -205,8 +205,8 @@ $porcentaje_disponibles = $total_bicicletas > 0 ? round(($bicicletas_disponibles
             <span class="dashicons dashicons-palmtree dm-stat-card__icon"></span>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($co2_ahorrado_kg, 1); ?> kg</div>
-                <div class="dm-stat-card__label"><?php esc_html_e('CO₂ Ahorrado', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('CO₂ Ahorrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -214,7 +214,7 @@ $porcentaje_disponibles = $total_bicicletas > 0 ? round(($bicicletas_disponibles
             <span class="dashicons dashicons-chart-bar dm-stat-card__icon"></span>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($usos_mes); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Usos del Mes', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Usos del Mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 <div class="dm-stat-card__meta"><?php echo number_format_i18n($duracion_promedio, 0); ?> min prom.</div>
             </div>
         </div>
@@ -226,7 +226,7 @@ $porcentaje_disponibles = $total_bicicletas > 0 ? round(($bicicletas_disponibles
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-chart-line"></span>
-                    <?php esc_html_e('Actividad - Últimos 30 días', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Actividad - Últimos 30 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <div class="dm-card__chart">
@@ -238,7 +238,7 @@ $porcentaje_disponibles = $total_bicicletas > 0 ? round(($bicicletas_disponibles
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-chart-pie"></span>
-                    <?php esc_html_e('Estado de la Flota', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Estado de la Flota', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <div class="dm-card__chart">
@@ -252,17 +252,17 @@ $porcentaje_disponibles = $total_bicicletas > 0 ? round(($bicicletas_disponibles
         <div class="dm-card__header">
             <h3>
                 <span class="dashicons dashicons-location"></span>
-                <?php esc_html_e('Top 5 Estaciones por Uso', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Top 5 Estaciones por Uso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <table class="dm-table">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Estación', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Dirección', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Total Usos', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Bicicletas', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Estación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Dirección', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Total Usos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -283,7 +283,7 @@ $porcentaje_disponibles = $total_bicicletas > 0 ? round(($bicicletas_disponibles
                         </td>
                         <td>
                             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-estaciones&action=ver&estacion_id=' . $estacion->id)); ?>" class="dm-btn dm-btn--sm dm-btn--ghost">
-                                <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </td>
                     </tr>
@@ -292,7 +292,7 @@ $porcentaje_disponibles = $total_bicicletas > 0 ? round(($bicicletas_disponibles
                     <tr>
                         <td colspan="5" class="dm-table__empty">
                             <span class="dashicons dashicons-location"></span>
-                            <?php esc_html_e('No hay datos disponibles', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('No hay datos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </td>
                     </tr>
                 <?php endif; ?>
@@ -304,19 +304,19 @@ $porcentaje_disponibles = $total_bicicletas > 0 ? round(($bicicletas_disponibles
     <div class="dm-action-grid dm-action-grid--4">
         <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-estaciones')); ?>" class="dm-action-card dm-action-card--primary">
             <span class="dashicons dashicons-location"></span>
-            <span><?php esc_html_e('Gestionar Estaciones', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Gestionar Estaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-bicicletas')); ?>" class="dm-action-card">
             <span class="dashicons dashicons-location-alt"></span>
-            <span><?php esc_html_e('Gestionar Bicicletas', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Gestionar Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-uso')); ?>" class="dm-action-card">
             <span class="dashicons dashicons-chart-bar"></span>
-            <span><?php esc_html_e('Ver Estadísticas', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Ver Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bicicletas-mantenimiento')); ?>" class="dm-action-card dm-action-card--warning">
             <span class="dashicons dashicons-admin-tools"></span>
-            <span><?php esc_html_e('Mantenimiento', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
     </div>
 </div>
@@ -342,7 +342,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 labels: fechas,
                 datasets: [
                     {
-                        label: '<?php echo esc_js(__('Usos', 'flavor-chat-ia')); ?>',
+                        label: '<?php echo esc_js(__('Usos', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
                         data: usos,
                         borderColor: primaryColor,
                         backgroundColor: primaryColor + '1A',
@@ -351,7 +351,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         fill: true
                     },
                     {
-                        label: '<?php echo esc_js(__('Distancia (km)', 'flavor-chat-ia')); ?>',
+                        label: '<?php echo esc_js(__('Distancia (km)', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
                         data: distancia,
                         borderColor: successColor,
                         backgroundColor: successColor + '1A',
@@ -379,7 +379,7 @@ document.addEventListener('DOMContentLoaded', function() {
         new Chart(ctx2, {
             type: 'doughnut',
             data: {
-                labels: ['<?php echo esc_js(__('Disponibles', 'flavor-chat-ia')); ?>', '<?php echo esc_js(__('En Uso', 'flavor-chat-ia')); ?>', '<?php echo esc_js(__('Mantenimiento', 'flavor-chat-ia')); ?>'],
+                labels: ['<?php echo esc_js(__('Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>', '<?php echo esc_js(__('En Uso', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>', '<?php echo esc_js(__('Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>'],
                 datasets: [{
                     data: [<?php echo (int) $bicicletas_disponibles; ?>, <?php echo (int) $bicicletas_en_uso; ?>, <?php echo (int) $bicicletas_mantenimiento; ?>],
                     backgroundColor: [successColor, primaryColor, warningColor],

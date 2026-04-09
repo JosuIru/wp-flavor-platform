@@ -50,7 +50,7 @@ $funcionalidades_fichaje = $funcionalidades_fichaje ?? [
     <div class="flavor-container">
         <div class="text-center mb-12">
             <h2 class="text-3xl lg:text-4xl font-bold text-gray-800 mb-3"><?php echo esc_html($titulo_features); ?></h2>
-            <p class="text-gray-500 text-lg max-w-2xl mx-auto"><?php echo esc_html__('Todas las herramientas para gestionar la asistencia de tu equipo', 'flavor-chat-ia'); ?></p>
+            <p class="text-gray-500 text-lg max-w-2xl mx-auto"><?php echo esc_html__('Todas las herramientas para gestionar la asistencia de tu equipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">

@@ -295,10 +295,10 @@ for ($i = 6; $i >= 0; $i--) {
     <div class="dm-dashboard-header">
         <h1 class="dm-dashboard-title">
             <span class="dashicons dashicons-megaphone"></span>
-            <?php _e('Marketplace Comunitario', 'flavor-chat-ia'); ?>
+            <?php _e('Marketplace Comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h1>
         <p class="dm-dashboard-subtitle">
-            <?php _e('Compra, vende, regala e intercambia en tu comunidad', 'flavor-chat-ia'); ?>
+            <?php _e('Compra, vende, regala e intercambia en tu comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </div>
 
@@ -309,7 +309,7 @@ for ($i = 6; $i >= 0; $i--) {
         <div class="dm-section__header">
             <h3 class="dm-section__title">
                 <span class="dashicons dashicons-filter"></span>
-                <?php _e('Filtros Avanzados', 'flavor-chat-ia'); ?>
+                <?php _e('Filtros Avanzados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <div class="dm-section__content">
@@ -318,9 +318,9 @@ for ($i = 6; $i >= 0; $i--) {
 
                 <div class="dm-filters-grid">
                     <div class="dm-filter-group">
-                        <label><?php _e('Categoría', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select name="filtro_categoria">
-                            <option value=""><?php _e('Todas', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php _e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php foreach ($categorias_stats as $cat): ?>
                                 <option value="<?php echo esc_attr($cat['slug']); ?>" <?php selected($filtro_categoria, $cat['slug']); ?>>
                                     <?php echo esc_html($cat['nombre']) . ' (' . $cat['total'] . ')'; ?>
@@ -330,9 +330,9 @@ for ($i = 6; $i >= 0; $i--) {
                     </div>
 
                     <div class="dm-filter-group">
-                        <label><?php _e('Tipo', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select name="filtro_tipo">
-                            <option value=""><?php _e('Todos', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php _e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php foreach ($tipos_stats as $tipo): ?>
                                 <option value="<?php echo esc_attr($tipo['slug']); ?>" <?php selected($filtro_tipo, $tipo['slug']); ?>>
                                     <?php echo esc_html($tipo['nombre']) . ' (' . $tipo['total'] . ')'; ?>
@@ -342,42 +342,42 @@ for ($i = 6; $i >= 0; $i--) {
                     </div>
 
                     <div class="dm-filter-group">
-                        <label><?php _e('Estado', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select name="filtro_estado">
-                            <option value=""><?php _e('Todos', 'flavor-chat-ia'); ?></option>
-                            <option value="publish" <?php selected($filtro_estado, 'publish'); ?>><?php _e('Publicado', 'flavor-chat-ia'); ?></option>
-                            <option value="pending" <?php selected($filtro_estado, 'pending'); ?>><?php _e('Pendiente', 'flavor-chat-ia'); ?></option>
-                            <option value="draft" <?php selected($filtro_estado, 'draft'); ?>><?php _e('Borrador', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php _e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="publish" <?php selected($filtro_estado, 'publish'); ?>><?php _e('Publicado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="pending" <?php selected($filtro_estado, 'pending'); ?>><?php _e('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="draft" <?php selected($filtro_estado, 'draft'); ?>><?php _e('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
 
                     <div class="dm-filter-group">
-                        <label><?php _e('Precio Mínimo (€)', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Precio Mínimo (€)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="number" name="filtro_precio_min" value="<?php echo esc_attr($filtro_precio_min); ?>" min="0" step="1">
                     </div>
 
                     <div class="dm-filter-group">
-                        <label><?php _e('Precio Máximo (€)', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Precio Máximo (€)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="number" name="filtro_precio_max" value="<?php echo esc_attr($filtro_precio_max); ?>" min="0" step="1">
                     </div>
 
                     <div class="dm-filter-group">
-                        <label><?php _e('Desde', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Desde', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="date" name="filtro_fecha_desde" value="<?php echo esc_attr($filtro_fecha_desde); ?>">
                     </div>
 
                     <div class="dm-filter-group">
-                        <label><?php _e('Hasta', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Hasta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="date" name="filtro_fecha_hasta" value="<?php echo esc_attr($filtro_fecha_hasta); ?>">
                     </div>
 
                     <div class="dm-filter-actions">
                         <button type="submit" class="button button-primary">
                             <span class="dashicons dashicons-search"></span>
-                            <?php _e('Filtrar', 'flavor-chat-ia'); ?>
+                            <?php _e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <a href="<?php echo admin_url('admin.php?page=flavor-marketplace'); ?>" class="button button-secondary">
-                            <?php _e('Limpiar', 'flavor-chat-ia'); ?>
+                            <?php _e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </div>
@@ -391,11 +391,11 @@ for ($i = 6; $i >= 0; $i--) {
     <div class="dm-export-buttons">
         <button class="button button-secondary" onclick="alert('Exportar CSV - En desarrollo')">
             <span class="dashicons dashicons-media-spreadsheet"></span>
-            <?php _e('Exportar CSV', 'flavor-chat-ia'); ?>
+            <?php _e('Exportar CSV', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
         <button class="button button-secondary" onclick="alert('Exportar PDF - En desarrollo')">
             <span class="dashicons dashicons-pdf"></span>
-            <?php _e('Exportar PDF', 'flavor-chat-ia'); ?>
+            <?php _e('Exportar PDF', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
     </div>
 
@@ -406,71 +406,71 @@ for ($i = 6; $i >= 0; $i--) {
     echo $DC::stats_grid([
         [
             'value' => number_format_i18n($total_anuncios),
-            'label' => __('Total Anuncios', 'flavor-chat-ia'),
+            'label' => __('Total Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-megaphone',
             'color' => 'primary',
-            'meta' => __('Histórico completo', 'flavor-chat-ia'),
+            'meta' => __('Histórico completo', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ],
         [
             'value' => number_format_i18n($anuncios_publicados),
-            'label' => __('Publicados', 'flavor-chat-ia'),
+            'label' => __('Publicados', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-yes-alt',
             'color' => 'success',
-            'meta' => __('Visibles actualmente', 'flavor-chat-ia'),
+            'meta' => __('Visibles actualmente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'highlight' => true,
         ],
         [
             'value' => number_format_i18n($anuncios_mes),
-            'label' => __('Anuncios del Mes', 'flavor-chat-ia'),
+            'label' => __('Anuncios del Mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-chart-line',
             'color' => 'eco',
             'trend' => $trend_anuncios,
             'trend_value' => $trend_value_anuncios,
-            'meta' => __('vs mes anterior', 'flavor-chat-ia'),
+            'meta' => __('vs mes anterior', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ],
         [
             'value' => number_format_i18n($vistas_totales),
-            'label' => __('Vistas Totales', 'flavor-chat-ia'),
+            'label' => __('Vistas Totales', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-visibility',
             'color' => 'info',
-            'meta' => __('Acumulado histórico', 'flavor-chat-ia'),
+            'meta' => __('Acumulado histórico', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ],
         [
             'value' => number_format_i18n($vistas_mes),
-            'label' => __('Vistas del Mes', 'flavor-chat-ia'),
+            'label' => __('Vistas del Mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-visibility',
             'color' => 'info',
             'trend' => $trend_vistas,
             'trend_value' => $trend_value_vistas,
-            'meta' => __('vs mes anterior', 'flavor-chat-ia'),
+            'meta' => __('vs mes anterior', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ],
         [
             'value' => round($tasa_conversion, 1) . '%',
-            'label' => __('Tasa de Conversión', 'flavor-chat-ia'),
+            'label' => __('Tasa de Conversión', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-thumbs-up',
             'color' => 'success',
-            'meta' => __('Anuncios con contactos', 'flavor-chat-ia'),
+            'meta' => __('Anuncios con contactos', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ],
         [
             'value' => number_format_i18n($precio_promedio, 2) . ' €',
-            'label' => __('Precio Promedio', 'flavor-chat-ia'),
+            'label' => __('Precio Promedio', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-money-alt',
             'color' => 'warning',
-            'meta' => __('De productos en venta', 'flavor-chat-ia'),
+            'meta' => __('De productos en venta', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ],
         [
             'value' => number_format_i18n($categorias_activas),
-            'label' => __('Categorías Activas', 'flavor-chat-ia'),
+            'label' => __('Categorías Activas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-category',
             'color' => 'eco',
-            'meta' => sprintf(__('de %d totales', 'flavor-chat-ia'), count($categorias_stats)),
+            'meta' => sprintf(__('de %d totales', FLAVOR_PLATFORM_TEXT_DOMAIN), count($categorias_stats)),
         ],
         [
             'value' => number_format_i18n($anuncios_pendientes),
-            'label' => __('Pendientes Moderación', 'flavor-chat-ia'),
+            'label' => __('Pendientes Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-clock',
             'color' => 'warning',
-            'meta' => __('Requieren revisión', 'flavor-chat-ia'),
+            'meta' => __('Requieren revisión', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ],
     ], 3);
     ?>
@@ -482,7 +482,7 @@ for ($i = 6; $i >= 0; $i--) {
         <div class="dm-section__header">
             <h3 class="dm-section__title">
                 <span class="dashicons dashicons-chart-area"></span>
-                <?php _e('Análisis Visual', 'flavor-chat-ia'); ?>
+                <?php _e('Análisis Visual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <div class="dm-section__content">
@@ -490,7 +490,7 @@ for ($i = 6; $i >= 0; $i--) {
 
                 <!-- Gráfico 1: Evolución Anuncios 12 Meses -->
                 <div class="dm-chart-container">
-                    <h4><?php _e('Evolución de Anuncios Publicados (12 meses)', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php _e('Evolución de Anuncios Publicados (12 meses)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <div class="dm-chart-wrapper">
                         <canvas id="chartAnunciosMes"></canvas>
                     </div>
@@ -498,7 +498,7 @@ for ($i = 6; $i >= 0; $i--) {
 
                 <!-- Gráfico 2: Distribución por Categoría -->
                 <div class="dm-chart-container">
-                    <h4><?php _e('Distribución por Categoría', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php _e('Distribución por Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <div class="dm-chart-wrapper">
                         <canvas id="chartCategorias"></canvas>
                     </div>
@@ -506,7 +506,7 @@ for ($i = 6; $i >= 0; $i--) {
 
                 <!-- Gráfico 3: Tipos de Anuncio -->
                 <div class="dm-chart-container">
-                    <h4><?php _e('Tipos de Anuncio', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php _e('Tipos de Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <div class="dm-chart-wrapper">
                         <canvas id="chartTipos"></canvas>
                     </div>
@@ -529,7 +529,7 @@ for ($i = 6; $i >= 0; $i--) {
                 <div class="dm-section__header">
                     <h3 class="dm-section__title">
                         <span class="dashicons dashicons-visibility"></span>
-                        <?php _e('Top 10 Productos Más Vistos', 'flavor-chat-ia'); ?>
+                        <?php _e('Top 10 Productos Más Vistos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                 </div>
                 <div class="dm-section__content">
@@ -544,7 +544,7 @@ for ($i = 6; $i >= 0; $i--) {
                             <span class="dm-ranking-pos"><?php echo $medalla; ?></span>
                             <div class="dm-ranking-info">
                                 <strong><?php echo esc_html($producto->post_title); ?></strong>
-                                <span class="dm-ranking-meta"><?php echo number_format_i18n($producto->vistas); ?> <?php _e('vistas', 'flavor-chat-ia'); ?></span>
+                                <span class="dm-ranking-meta"><?php echo number_format_i18n($producto->vistas); ?> <?php _e('vistas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                             <span class="dm-ranking-badge">#<?php echo $posicion; ?></span>
                         </div>
@@ -573,9 +573,9 @@ for ($i = 6; $i >= 0; $i--) {
                     'draft' => 'secondary',
                 ];
                 $estado_labels = [
-                    'publish' => __('Publicado', 'flavor-chat-ia'),
-                    'pending' => __('Pendiente', 'flavor-chat-ia'),
-                    'draft' => __('Borrador', 'flavor-chat-ia'),
+                    'publish' => __('Publicado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'pending' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'draft' => __('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
 
                 $anuncios_table[] = [
@@ -591,17 +591,17 @@ for ($i = 6; $i >= 0; $i--) {
             }
 
             echo $DC::data_table([
-                'title' => __('Anuncios Recientes', 'flavor-chat-ia'),
+                'title' => __('Anuncios Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-list-view',
                 'columns' => [
-                    'titulo' => __('Título', 'flavor-chat-ia'),
-                    'tipo' => __('Tipo', 'flavor-chat-ia'),
-                    'categoria' => __('Categoría', 'flavor-chat-ia'),
-                    'fecha' => __('Fecha', 'flavor-chat-ia'),
-                    'estado' => __('Estado', 'flavor-chat-ia'),
+                    'titulo' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'tipo' => __('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'categoria' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'fecha' => __('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'estado' => __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
                 'data' => $anuncios_table,
-                'empty_message' => __('No hay anuncios aún', 'flavor-chat-ia'),
+                'empty_message' => __('No hay anuncios aún', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'striped' => true,
                 'hoverable' => true,
             ]);
@@ -613,7 +613,7 @@ for ($i = 6; $i >= 0; $i--) {
                 <div class="dm-section__header">
                     <h3 class="dm-section__title">
                         <span class="dashicons dashicons-money-alt"></span>
-                        <?php _e('Análisis de Precios por Categoría', 'flavor-chat-ia'); ?>
+                        <?php _e('Análisis de Precios por Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                 </div>
                 <div class="dm-section__content">
@@ -625,7 +625,7 @@ for ($i = 6; $i >= 0; $i--) {
                                 <span class="dm-precio-valor"><?php echo number_format_i18n($cat_precio['precio_promedio'], 2); ?> €</span>
                             </div>
                             <div class="dm-precio-meta">
-                                <?php echo number_format_i18n($cat_precio['total']); ?> <?php _e('anuncios', 'flavor-chat-ia'); ?>
+                                <?php echo number_format_i18n($cat_precio['total']); ?> <?php _e('anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </div>
                         </div>
                         <?php endforeach; ?>
@@ -647,7 +647,7 @@ for ($i = 6; $i >= 0; $i--) {
                 <div class="dm-section__header">
                     <h3 class="dm-section__title">
                         <span class="dashicons dashicons-businessman"></span>
-                        <?php _e('Top 5 Vendedores', 'flavor-chat-ia'); ?>
+                        <?php _e('Top 5 Vendedores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                 </div>
                 <div class="dm-section__content">
@@ -663,7 +663,7 @@ for ($i = 6; $i >= 0; $i--) {
                             <div class="dm-vendedor-info">
                                 <strong><?php echo esc_html($vendedor->display_name); ?></strong>
                                 <div class="dm-vendedor-stats">
-                                    <span><?php echo number_format_i18n($vendedor->total_anuncios); ?> <?php _e('anuncios', 'flavor-chat-ia'); ?></span>
+                                    <span><?php echo number_format_i18n($vendedor->total_anuncios); ?> <?php _e('anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     <?php if ($vendedor->rating_promedio > 0): ?>
                                     <span>⭐ <?php echo number_format_i18n($vendedor->rating_promedio, 1); ?>/5</span>
                                     <?php endif; ?>
@@ -685,7 +685,7 @@ for ($i = 6; $i >= 0; $i--) {
                 <div class="dm-section__header">
                     <h3 class="dm-section__title">
                         <span class="dashicons dashicons-thumbs-up"></span>
-                        <?php _e('Productos Trending (7 días)', 'flavor-chat-ia'); ?>
+                        <?php _e('Productos Trending (7 días)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                 </div>
                 <div class="dm-section__content">
@@ -695,7 +695,7 @@ for ($i = 6; $i >= 0; $i--) {
                             <span class="dm-trending-icon">🔥</span>
                             <div class="dm-trending-info">
                                 <strong><?php echo esc_html($trending->post_title); ?></strong>
-                                <span class="dm-trending-meta"><?php echo number_format_i18n($trending->vistas_recientes); ?> <?php _e('vistas', 'flavor-chat-ia'); ?></span>
+                                <span class="dm-trending-meta"><?php echo number_format_i18n($trending->vistas_recientes); ?> <?php _e('vistas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                         </div>
                         <?php endforeach; ?>
@@ -708,13 +708,13 @@ for ($i = 6; $i >= 0; $i--) {
             <?php
             $chart_html = '<div class="dm-mb-2">';
             $chart_html .= '<p style="font-size: 13px; color: var(--dm-text-secondary); margin-bottom: 12px;">';
-            $chart_html .= __('Anuncios publicados en los últimos 7 días', 'flavor-chat-ia');
+            $chart_html .= __('Anuncios publicados en los últimos 7 días', FLAVOR_PLATFORM_TEXT_DOMAIN);
             $chart_html .= '</p>';
             $chart_html .= $DC::mini_chart($actividad_7_dias, 'primary');
             $chart_html .= '</div>';
 
             echo $DC::section(
-                __('Actividad Reciente', 'flavor-chat-ia'),
+                __('Actividad Reciente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $chart_html,
                 [
                     'icon' => 'dashicons-chart-line',
@@ -728,13 +728,13 @@ for ($i = 6; $i >= 0; $i--) {
             $total_items = $anuncios_publicados + $anuncios_pendientes + $anuncios_borrador;
             if ($total_items > 0) {
                 $dist_html = '<div style="display: grid; gap: 12px;">';
-                $dist_html .= $DC::progress_bar($anuncios_publicados, $total_items, __('Publicados', 'flavor-chat-ia'), 'success');
-                $dist_html .= $DC::progress_bar($anuncios_pendientes, $total_items, __('Pendientes', 'flavor-chat-ia'), 'warning');
-                $dist_html .= $DC::progress_bar($anuncios_borrador, $total_items, __('Borradores', 'flavor-chat-ia'), 'secondary');
+                $dist_html .= $DC::progress_bar($anuncios_publicados, $total_items, __('Publicados', FLAVOR_PLATFORM_TEXT_DOMAIN), 'success');
+                $dist_html .= $DC::progress_bar($anuncios_pendientes, $total_items, __('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'warning');
+                $dist_html .= $DC::progress_bar($anuncios_borrador, $total_items, __('Borradores', FLAVOR_PLATFORM_TEXT_DOMAIN), 'secondary');
                 $dist_html .= '</div>';
 
                 echo $DC::section(
-                    __('Distribución por Estado', 'flavor-chat-ia'),
+                    __('Distribución por Estado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $dist_html,
                     [
                         'icon' => 'dashicons-chart-pie',
@@ -759,7 +759,7 @@ for ($i = 6; $i >= 0; $i--) {
                 $cat_html .= '</div>';
 
                 echo $DC::section(
-                    __('Categorías Más Activas', 'flavor-chat-ia'),
+                    __('Categorías Más Activas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $cat_html,
                     [
                         'icon' => 'dashicons-category',
@@ -792,7 +792,7 @@ for ($i = 6; $i >= 0; $i--) {
                 $tipos_html .= '</div>';
 
                 echo $DC::section(
-                    __('Tipos de Anuncio', 'flavor-chat-ia'),
+                    __('Tipos de Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $tipos_html,
                     [
                         'icon' => 'dashicons-tag',
@@ -809,21 +809,21 @@ for ($i = 6; $i >= 0; $i--) {
             <div style="display: grid; gap: 8px;">
                 <a href="' . admin_url('edit.php?post_type=marketplace_item') . '" class="button button-primary">
                     <span class="dashicons dashicons-list-view"></span>
-                    ' . __('Ver Todos los Anuncios', 'flavor-chat-ia') . '
+                    ' . __('Ver Todos los Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN) . '
                 </a>
                 <a href="' . admin_url('post-new.php?post_type=marketplace_item') . '" class="button button-secondary">
                     <span class="dashicons dashicons-plus-alt"></span>
-                    ' . __('Crear Anuncio', 'flavor-chat-ia') . '
+                    ' . __('Crear Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '
                 </a>
                 <a href="' . admin_url('edit-tags.php?taxonomy=marketplace_categoria&post_type=marketplace_item') . '" class="button button-secondary">
                     <span class="dashicons dashicons-category"></span>
-                    ' . __('Gestionar Categorías', 'flavor-chat-ia') . '
+                    ' . __('Gestionar Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN) . '
                 </a>
             </div>
             ';
 
             echo $DC::section(
-                __('Acciones Rápidas', 'flavor-chat-ia'),
+                __('Acciones Rápidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $actions_html,
                 [
                     'icon' => 'dashicons-admin-links',
@@ -870,8 +870,8 @@ for ($i = 6; $i >= 0; $i--) {
                 $datos_html .= '</div>';
 
                 $modulos_relacionados['grupos-consumo'] = [
-                    'titulo' => sprintf(__('Productos en Grupos de Consumo (%d)', 'flavor-chat-ia'), count($productos_gc)),
-                    'descripcion' => __('Productos también disponibles en pedidos colectivos', 'flavor-chat-ia'),
+                    'titulo' => sprintf(__('Productos en Grupos de Consumo (%d)', FLAVOR_PLATFORM_TEXT_DOMAIN), count($productos_gc)),
+                    'descripcion' => __('Productos también disponibles en pedidos colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icono' => 'dashicons-cart',
                     'url' => admin_url('admin.php?page=flavor-grupos-consumo'),
                     'datos' => $datos_html,
@@ -907,8 +907,8 @@ for ($i = 6; $i >= 0; $i--) {
                 $datos_html .= '</div>';
 
                 $modulos_relacionados['eventos'] = [
-                    'titulo' => sprintf(__('Próximas Ferias y Mercados (%d)', 'flavor-chat-ia'), count($eventos_comercio)),
-                    'descripcion' => __('Eventos donde promocionar tus productos', 'flavor-chat-ia'),
+                    'titulo' => sprintf(__('Próximas Ferias y Mercados (%d)', FLAVOR_PLATFORM_TEXT_DOMAIN), count($eventos_comercio)),
+                    'descripcion' => __('Eventos donde promocionar tus productos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icono' => 'dashicons-calendar',
                     'url' => admin_url('admin.php?page=flavor-eventos'),
                     'datos' => $datos_html,
@@ -949,8 +949,8 @@ for ($i = 6; $i >= 0; $i--) {
                 $datos_html .= '</div>';
 
                 $modulos_relacionados['socios'] = [
-                    'titulo' => sprintf(__('Vendedores Socios (%d)', 'flavor-chat-ia'), count($vendedores_socios)),
-                    'descripcion' => __('Top vendedores que son socios de la comunidad', 'flavor-chat-ia'),
+                    'titulo' => sprintf(__('Vendedores Socios (%d)', FLAVOR_PLATFORM_TEXT_DOMAIN), count($vendedores_socios)),
+                    'descripcion' => __('Top vendedores que son socios de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icono' => 'dashicons-groups',
                     'url' => admin_url('admin.php?page=flavor-socios'),
                     'datos' => $datos_html,
@@ -969,12 +969,12 @@ for ($i = 6; $i >= 0; $i--) {
 
             if ($comunidades_activas > 0) {
                 $datos_html = '<p style="font-size: 14px; color: var(--dm-text-secondary);">';
-                $datos_html .= sprintf(__('%d comunidades donde se publican anuncios', 'flavor-chat-ia'), $comunidades_activas);
+                $datos_html .= sprintf(__('%d comunidades donde se publican anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN), $comunidades_activas);
                 $datos_html .= '</p>';
 
                 $modulos_relacionados['comunidades'] = [
-                    'titulo' => __('Anuncios en Comunidades', 'flavor-chat-ia'),
-                    'descripcion' => __('Alcance multi-comunidad del marketplace', 'flavor-chat-ia'),
+                    'titulo' => __('Anuncios en Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'descripcion' => __('Alcance multi-comunidad del marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icono' => 'dashicons-groups',
                     'url' => admin_url('admin.php?page=flavor-comunidades'),
                     'datos' => $datos_html,
@@ -989,7 +989,7 @@ for ($i = 6; $i >= 0; $i--) {
         <div class="dm-section__header">
             <h3 class="dm-section__title">
                 <span class="dashicons dashicons-networking"></span>
-                <?php _e('Módulos Relacionados', 'flavor-chat-ia'); ?>
+                <?php _e('Módulos Relacionados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <div class="dm-section__content">
@@ -1009,7 +1009,7 @@ for ($i = 6; $i >= 0; $i--) {
                     <?php endif; ?>
 
                     <a href="<?php echo esc_url($modulo['url']); ?>" class="button button-small" style="margin-top: 12px;">
-                        <?php _e('Ver todos', 'flavor-chat-ia'); ?> →
+                        <?php _e('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> →
                     </a>
                 </div>
                 <?php endforeach; ?>
@@ -1034,7 +1034,7 @@ jQuery(document).ready(function($) {
             data: {
                 labels: <?php echo json_encode($labels_meses); ?>,
                 datasets: [{
-                    label: '<?php _e('Anuncios Publicados', 'flavor-chat-ia'); ?>',
+                    label: '<?php _e('Anuncios Publicados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                     data: <?php echo json_encode($data_anuncios_mes); ?>,
                     backgroundColor: '#f59e0b',
                     borderRadius: 6,

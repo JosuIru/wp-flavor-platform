@@ -106,7 +106,7 @@ $indicadores_lista = [
                                         </span>
                                     <?php endif; ?>
                                     <span class="text-xs text-gray-400 ml-2">
-                                        <?php echo esc_html__('vs. periodo anterior', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('vs. periodo anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </span>
                                 </div>
                             </div>

@@ -118,7 +118,7 @@ $max_prestamos = max(array_column($tendencias_mensuales, 'prestamos'));
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
-                <?php echo esc_html__('Panel de Estadísticas', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Panel de Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
             <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
                 <?php echo esc_html($titulo); ?>
@@ -162,7 +162,7 @@ $max_prestamos = max(array_column($tendencias_mensuales, 'prestamos'));
                         <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                         </svg>
-                        <?php echo esc_html__('Tendencia de Préstamos (Últimos 6 Meses)', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Tendencia de Préstamos (Últimos 6 Meses)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                 </div>
 
@@ -172,7 +172,7 @@ $max_prestamos = max(array_column($tendencias_mensuales, 'prestamos'));
                         <div>
                             <div class="flex items-center justify-between mb-2">
                                 <span class="text-sm font-semibold text-gray-700"><?php echo esc_html($dato['mes']); ?></span>
-                                <span class="text-sm font-bold text-indigo-600"><?php echo number_format($dato['prestamos']); ?> <?php echo esc_html__('préstamos', 'flavor-chat-ia'); ?></span>
+                                <span class="text-sm font-bold text-indigo-600"><?php echo number_format($dato['prestamos']); ?> <?php echo esc_html__('préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                             <div class="relative h-3 bg-gray-200 rounded-full overflow-hidden">
                                 <div class="absolute inset-y-0 left-0 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-full transition-all duration-500" style="width: <?php echo $porcentaje; ?>%"></div>
@@ -193,13 +193,13 @@ $max_prestamos = max(array_column($tendencias_mensuales, 'prestamos'));
                         <div class="text-3xl font-bold text-indigo-600 mb-1">
                             <?php echo number_format($total_prestamos_semestre); ?>
                         </div>
-                        <p class="text-xs text-gray-600"><?php echo esc_html__('Total Préstamos', 'flavor-chat-ia'); ?></p>
+                        <p class="text-xs text-gray-600"><?php echo esc_html__('Total Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                     <div class="text-center">
                         <div class="text-3xl font-bold text-green-600 mb-1">
                             <?php echo round($tasa_devolucion, 1); ?>%
                         </div>
-                        <p class="text-xs text-gray-600"><?php echo esc_html__('Tasa Devolución', 'flavor-chat-ia'); ?></p>
+                        <p class="text-xs text-gray-600"><?php echo esc_html__('Tasa Devolución', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 </div>
             </div>
@@ -211,7 +211,7 @@ $max_prestamos = max(array_column($tendencias_mensuales, 'prestamos'));
                         <svg class="w-5 h-5 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v2a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
                         </svg>
-                        <?php echo esc_html__('Top Géneros', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Top Géneros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
 
                     <div class="space-y-4">
@@ -252,10 +252,10 @@ $max_prestamos = max(array_column($tendencias_mensuales, 'prestamos'));
                         <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
-                        <?php echo esc_html__('Nuestro Compromiso', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Nuestro Compromiso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <p class="text-indigo-100 leading-relaxed">
-                        <?php echo esc_html__('Nos comprometemos a proporcionar acceso equitativo a la información y la lectura, promoviendo la educación y el crecimiento personal de nuestra comunidad a través de un sistema de préstamos eficiente y accesible.', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Nos comprometemos a proporcionar acceso equitativo a la información y la lectura, promoviendo la educación y el crecimiento personal de nuestra comunidad a través de un sistema de préstamos eficiente y accesible.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
 
@@ -264,26 +264,26 @@ $max_prestamos = max(array_column($tendencias_mensuales, 'prestamos'));
                         <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m7 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <?php echo esc_html__('Logros Este Año', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Logros Este Año', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <ul class="space-y-2 text-indigo-100">
                         <li class="flex items-center gap-2">
                             <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                             </svg>
-                            <span><?php echo esc_html__('1,245 nuevos libros adquiridos', 'flavor-chat-ia'); ?></span>
+                            <span><?php echo esc_html__('1,245 nuevos libros adquiridos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </li>
                         <li class="flex items-center gap-2">
                             <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                             </svg>
-                            <span><?php echo esc_html__('3,450 nuevos usuarios registrados', 'flavor-chat-ia'); ?></span>
+                            <span><?php echo esc_html__('3,450 nuevos usuarios registrados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </li>
                         <li class="flex items-center gap-2">
                             <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                             </svg>
-                            <span><?php echo esc_html__('99.8% tasa de satisfacción', 'flavor-chat-ia'); ?></span>
+                            <span><?php echo esc_html__('99.8% tasa de satisfacción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </li>
                     </ul>
                 </div>

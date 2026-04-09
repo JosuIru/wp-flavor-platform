@@ -135,7 +135,7 @@ class Flavor_Trading_IA_Gestor_Riesgo {
             return array(
                 'aprobado'          => false,
                 'cantidad_ajustada' => 0,
-                'razon'             => $estado['razon_bloqueo'] ?: __('Trading bloqueado por riesgo', 'flavor-chat-ia'),
+                'razon'             => $estado['razon_bloqueo'] ?: __('Trading bloqueado por riesgo', 'flavor-platform'),
                 'advertencias'      => array(),
             );
         }
@@ -146,7 +146,7 @@ class Flavor_Trading_IA_Gestor_Riesgo {
         if ($porcentaje_trade > $this->riesgo_maximo_por_trade) {
             $cantidad_ajustada = $balance_total * ($this->riesgo_maximo_por_trade / 100);
             $advertencias[] = sprintf(
-                __('Cantidad reducida de $%.2f a $%.2f (max %.0f%% por trade)', 'flavor-chat-ia'),
+                __('Cantidad reducida de $%.2f a $%.2f (max %.0f%% por trade)', 'flavor-platform'),
                 $cantidad_usd,
                 $cantidad_ajustada,
                 $this->riesgo_maximo_por_trade
@@ -156,7 +156,7 @@ class Flavor_Trading_IA_Gestor_Riesgo {
         // Reducir posicion si riesgo alto
         if ('alto' === $estado['nivel']) {
             $cantidad_ajustada *= 0.5;
-            $advertencias[] = __('Posicion reducida 50% por nivel de riesgo ALTO', 'flavor-chat-ia');
+            $advertencias[] = __('Posicion reducida 50% por nivel de riesgo ALTO', 'flavor-platform');
         }
 
         // Cantidad minima viable
@@ -165,7 +165,7 @@ class Flavor_Trading_IA_Gestor_Riesgo {
                 'aprobado'          => false,
                 'cantidad_ajustada' => 0,
                 'razon'             => sprintf(
-                    __('Cantidad muy pequena ($%.2f). Minimo: $1.00', 'flavor-chat-ia'),
+                    __('Cantidad muy pequena ($%.2f). Minimo: $1.00', 'flavor-platform'),
                     $cantidad_ajustada
                 ),
                 'advertencias'      => $advertencias,
@@ -175,7 +175,7 @@ class Flavor_Trading_IA_Gestor_Riesgo {
         return array(
             'aprobado'          => true,
             'cantidad_ajustada' => $cantidad_ajustada,
-            'razon'             => __('Trade aprobado', 'flavor-chat-ia'),
+            'razon'             => __('Trade aprobado', 'flavor-platform'),
             'advertencias'      => $advertencias,
         );
     }

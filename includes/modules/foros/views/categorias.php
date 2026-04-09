@@ -39,10 +39,10 @@ if (isset($_POST['crear_categoria']) && wp_verify_nonce($_POST['_wpnonce'], 'cre
         ]);
 
         if ($resultado) {
-            $mensaje = __('Categoría creada correctamente.', 'flavor-chat-ia');
+            $mensaje = __('Categoría creada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             $mensaje_tipo = 'success';
         } else {
-            $mensaje = __('Error al crear la categoría.', 'flavor-chat-ia');
+            $mensaje = __('Error al crear la categoría.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             $mensaje_tipo = 'error';
         }
     }
@@ -52,7 +52,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'eliminar' && isset($_GET['id'
     if (wp_verify_nonce($_GET['_wpnonce'], 'eliminar_categoria_' . $_GET['id'])) {
         $id = absint($_GET['id']);
         $wpdb->delete($tabla_categorias, ['id' => $id]);
-        $mensaje = __('Categoría eliminada.', 'flavor-chat-ia');
+        $mensaje = __('Categoría eliminada.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $mensaje_tipo = 'success';
     }
 }
@@ -73,11 +73,11 @@ $categorias_padre = $wpdb->get_results("SELECT id, nombre FROM {$tabla_categoria
 <div class="wrap flavor-foros-categorias">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-category"></span>
-        <?php esc_html_e('Categorías del Foro', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Categorías del Foro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
     <button type="button" class="page-title-action" id="btn-nueva-categoria">
         <span class="dashicons dashicons-plus-alt2"></span>
-        <?php esc_html_e('Nueva Categoría', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Nueva Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </button>
     <hr class="wp-header-end">
 
@@ -91,7 +91,7 @@ $categorias_padre = $wpdb->get_results("SELECT id, nombre FROM {$tabla_categoria
         <!-- Listado de categorías -->
         <div class="dm-card dm-card--categorias">
             <div class="dm-card__header">
-                <h3><?php esc_html_e('Categorías', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <span class="dm-badge"><?php echo count($categorias); ?></span>
             </div>
             <div class="dm-card__body">
@@ -99,11 +99,11 @@ $categorias_padre = $wpdb->get_results("SELECT id, nombre FROM {$tabla_categoria
                     <table class="widefat striped dm-table">
                         <thead>
                             <tr>
-                                <th style="width: 40px;"><?php esc_html_e('Orden', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Padre', 'flavor-chat-ia'); ?></th>
-                                <th class="num"><?php esc_html_e('Temas', 'flavor-chat-ia'); ?></th>
-                                <th style="width: 100px;"><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                                <th style="width: 40px;"><?php esc_html_e('Orden', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Padre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th class="num"><?php esc_html_e('Temas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th style="width: 100px;"><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -125,7 +125,7 @@ $categorias_padre = $wpdb->get_results("SELECT id, nombre FROM {$tabla_categoria
                                         <?php if ($categoria->padre_nombre): ?>
                                             <span class="dm-padre-badge"><?php echo esc_html($categoria->padre_nombre); ?></span>
                                         <?php else: ?>
-                                            <span class="dm-raiz"><?php esc_html_e('Raíz', 'flavor-chat-ia'); ?></span>
+                                            <span class="dm-raiz"><?php esc_html_e('Raíz', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         <?php endif; ?>
                                     </td>
                                     <td class="num">
@@ -137,7 +137,7 @@ $categorias_padre = $wpdb->get_results("SELECT id, nombre FROM {$tabla_categoria
                                                 <span class="dashicons dashicons-edit"></span>
                                             </button>
                                             <?php if ($categoria->total_temas == 0): ?>
-                                                <a href="<?php echo wp_nonce_url(add_query_arg(['accion' => 'eliminar', 'id' => $categoria->id]), 'eliminar_categoria_' . $categoria->id); ?>" class="button button-small button-link-delete" onclick="return confirm('<?php esc_attr_e('¿Eliminar esta categoría?', 'flavor-chat-ia'); ?>')">
+                                                <a href="<?php echo wp_nonce_url(add_query_arg(['accion' => 'eliminar', 'id' => $categoria->id]), 'eliminar_categoria_' . $categoria->id); ?>" class="button button-small button-link-delete" onclick="return confirm('<?php esc_attr_e('¿Eliminar esta categoría?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>')">
                                                     <span class="dashicons dashicons-trash"></span>
                                                 </a>
                                             <?php endif; ?>
@@ -150,9 +150,9 @@ $categorias_padre = $wpdb->get_results("SELECT id, nombre FROM {$tabla_categoria
                 <?php else: ?>
                     <div class="dm-empty-state">
                         <span class="dashicons dashicons-category"></span>
-                        <p><?php esc_html_e('No hay categorías creadas.', 'flavor-chat-ia'); ?></p>
+                        <p><?php esc_html_e('No hay categorías creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <button type="button" class="button button-primary" id="btn-crear-primera">
-                            <?php esc_html_e('Crear primera categoría', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Crear primera categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 <?php endif; ?>
@@ -162,7 +162,7 @@ $categorias_padre = $wpdb->get_results("SELECT id, nombre FROM {$tabla_categoria
         <!-- Formulario de nueva categoría -->
         <div class="dm-card dm-card--form" id="form-categoria" style="display: none;">
             <div class="dm-card__header">
-                <h3 id="form-titulo"><?php esc_html_e('Nueva Categoría', 'flavor-chat-ia'); ?></h3>
+                <h3 id="form-titulo"><?php esc_html_e('Nueva Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <button type="button" class="dm-close-btn" id="btn-cerrar-form">&times;</button>
             </div>
             <div class="dm-card__body">
@@ -171,18 +171,18 @@ $categorias_padre = $wpdb->get_results("SELECT id, nombre FROM {$tabla_categoria
                     <input type="hidden" name="categoria_id" id="categoria_id" value="">
 
                     <div class="dm-form-group">
-                        <label for="nombre"><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?> *</label>
+                        <label for="nombre"><?php esc_html_e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                         <input type="text" id="nombre" name="nombre" required>
                     </div>
 
                     <div class="dm-form-group">
-                        <label for="descripcion"><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?></label>
+                        <label for="descripcion"><?php esc_html_e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <textarea id="descripcion" name="descripcion" rows="2"></textarea>
                     </div>
 
                     <div class="dm-form-row">
                         <div class="dm-form-group">
-                            <label for="icono"><?php esc_html_e('Icono', 'flavor-chat-ia'); ?></label>
+                            <label for="icono"><?php esc_html_e('Icono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <select id="icono" name="icono">
                                 <option value="dashicons-category">Categoría</option>
                                 <option value="dashicons-admin-comments">Comentarios</option>
@@ -195,33 +195,33 @@ $categorias_padre = $wpdb->get_results("SELECT id, nombre FROM {$tabla_categoria
                             </select>
                         </div>
                         <div class="dm-form-group">
-                            <label for="color"><?php esc_html_e('Color', 'flavor-chat-ia'); ?></label>
+                            <label for="color"><?php esc_html_e('Color', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="color" id="color" name="color" value="#2271b1">
                         </div>
                     </div>
 
                     <div class="dm-form-row">
                         <div class="dm-form-group">
-                            <label for="padre_id"><?php esc_html_e('Categoría Padre', 'flavor-chat-ia'); ?></label>
+                            <label for="padre_id"><?php esc_html_e('Categoría Padre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <select id="padre_id" name="padre_id">
-                                <option value="0"><?php esc_html_e('Ninguna (Raíz)', 'flavor-chat-ia'); ?></option>
+                                <option value="0"><?php esc_html_e('Ninguna (Raíz)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                 <?php foreach ($categorias_padre as $padre): ?>
                                     <option value="<?php echo esc_attr($padre->id); ?>"><?php echo esc_html($padre->nombre); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="dm-form-group">
-                            <label for="orden"><?php esc_html_e('Orden', 'flavor-chat-ia'); ?></label>
+                            <label for="orden"><?php esc_html_e('Orden', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="number" id="orden" name="orden" value="0" min="0">
                         </div>
                     </div>
 
                     <div class="dm-form-actions">
                         <button type="submit" name="crear_categoria" class="button button-primary">
-                            <?php esc_html_e('Guardar Categoría', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Guardar Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <button type="button" class="button" id="btn-cancelar">
-                            <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </form>

@@ -19,14 +19,14 @@ $descripcion = $servicio['descripcion'] ?? '';
 $url = $servicio['url'] ?? '#';
 $tipo = $servicio['tipo'] ?? 'oferta';
 $horas = $servicio['horas'] ?? 1;
-$categoria = $servicio['categoria'] ?? __('General', 'flavor-chat-ia');
-$usuario_nombre = $servicio['usuario_nombre'] ?? __('Usuario', 'flavor-chat-ia');
+$categoria = $servicio['categoria'] ?? __('General', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$usuario_nombre = $servicio['usuario_nombre'] ?? __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $usuario_valoracion = $servicio['usuario_valoracion'] ?? '5.0';
 $usuario_intercambios = $servicio['usuario_intercambios'] ?? 0;
 $usuario_inicial = mb_substr($usuario_nombre, 0, 1);
 
 $tipo_class = $tipo === 'oferta' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700';
-$tipo_label = $tipo === 'oferta' ? '🎁 ' . __('Ofrezco', 'flavor-chat-ia') : '🙋 ' . __('Busco', 'flavor-chat-ia');
+$tipo_label = $tipo === 'oferta' ? '🎁 ' . __('Ofrezco', FLAVOR_PLATFORM_TEXT_DOMAIN) : '🙋 ' . __('Busco', FLAVOR_PLATFORM_TEXT_DOMAIN);
 ?>
 
 <article class="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all overflow-hidden border border-gray-100 group"
@@ -68,7 +68,7 @@ $tipo_label = $tipo === 'oferta' ? '🎁 ' . __('Ofrezco', 'flavor-chat-ia') : '
         <div class="flex items-center justify-between pt-4 border-t border-gray-100">
             <span class="text-xs text-gray-500 flex items-center gap-1">🏷️ <?php echo esc_html($categoria); ?></span>
             <a href="<?php echo esc_url($url); ?>" class="text-violet-600 hover:text-violet-700 font-medium text-sm">
-                <?php echo esc_html__('Ver más →', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Ver más →', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>

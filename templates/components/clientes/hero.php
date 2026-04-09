@@ -9,8 +9,8 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$titulo_hero = $titulo ?? __('Gestion de Clientes', 'flavor-chat-ia');
-$subtitulo_hero = $subtitulo ?? __('CRM integrado para gestionar tus contactos, notas e interacciones', 'flavor-chat-ia');
+$titulo_hero = $titulo ?? __('Gestion de Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$subtitulo_hero = $subtitulo ?? __('CRM integrado para gestionar tus contactos, notas e interacciones', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $imagen_fondo_url = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_fondo, 'full') : '';
 
 // Estadisticas rapidas (fallback si no hay datos reales)
@@ -109,7 +109,7 @@ if ($valor_pipeline_stat >= 1000000) {
                             <?php echo esc_html(number_format($total_clientes_stat, 0, ',', '.')); ?>
                         </div>
                         <div class="text-sm mt-1" style="color: rgba(255,255,255,0.75);">
-                            <?php esc_html_e('Total Clientes', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Total Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     </div>
                     <div class="text-center">
@@ -117,7 +117,7 @@ if ($valor_pipeline_stat >= 1000000) {
                             <?php echo esc_html(number_format($clientes_activos_stat, 0, ',', '.')); ?>
                         </div>
                         <div class="text-sm mt-1" style="color: rgba(255,255,255,0.75);">
-                            <?php esc_html_e('Activos', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     </div>
                     <div class="text-center">
@@ -125,7 +125,7 @@ if ($valor_pipeline_stat >= 1000000) {
                             <?php echo esc_html($nuevos_mes_stat); ?>
                         </div>
                         <div class="text-sm mt-1" style="color: rgba(255,255,255,0.75);">
-                            <?php esc_html_e('Nuevos este mes', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Nuevos este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     </div>
                     <div class="text-center">
@@ -133,7 +133,7 @@ if ($valor_pipeline_stat >= 1000000) {
                             <?php echo esc_html($valor_pipeline_formateado); ?>&euro;
                         </div>
                         <div class="text-sm mt-1" style="color: rgba(255,255,255,0.75);">
-                            <?php esc_html_e('Pipeline', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Pipeline', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     </div>
                 </div>

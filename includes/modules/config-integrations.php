@@ -29,7 +29,7 @@ function flavor_register_integration_config() {
     $providers = [
         'recetas' => [
             'id'         => 'recetas',
-            'label'      => __('Recetas', 'flavor-chat-ia'),
+            'label'      => __('Recetas', 'flavor-platform'),
             'icon'       => 'dashicons-carrot',
             'post_type'  => 'flavor_receta',
             'capability' => 'edit_posts',
@@ -37,7 +37,7 @@ function flavor_register_integration_config() {
         ],
         'multimedia' => [
             'id'         => 'multimedia',
-            'label'      => __('Multimedia', 'flavor-chat-ia'),
+            'label'      => __('Multimedia', 'flavor-platform'),
             'icon'       => 'dashicons-format-gallery',
             'table'      => 'flavor_multimedia', // Usa tabla, no CPT
             'capability' => 'upload_files',
@@ -45,7 +45,7 @@ function flavor_register_integration_config() {
         ],
         'podcast' => [
             'id'         => 'podcast',
-            'label'      => __('Episodios de Podcast', 'flavor-chat-ia'),
+            'label'      => __('Episodios de Podcast', 'flavor-platform'),
             'icon'       => 'dashicons-microphone',
             'table'      => 'flavor_podcast_episodios',
             'capability' => 'edit_posts',
@@ -53,7 +53,7 @@ function flavor_register_integration_config() {
         ],
         'biblioteca' => [
             'id'         => 'biblioteca',
-            'label'      => __('Recursos de Biblioteca', 'flavor-chat-ia'),
+            'label'      => __('Recursos de Biblioteca', 'flavor-platform'),
             'icon'       => 'dashicons-book',
             'table'      => 'flavor_biblioteca_libros',
             'capability' => 'edit_posts',
@@ -61,7 +61,7 @@ function flavor_register_integration_config() {
         ],
         'videos' => [
             'id'         => 'videos',
-            'label'      => __('Videos', 'flavor-chat-ia'),
+            'label'      => __('Videos', 'flavor-platform'),
             'icon'       => 'dashicons-video-alt3',
             'post_type'  => 'flavor_video',
             'capability' => 'upload_files',
@@ -69,7 +69,7 @@ function flavor_register_integration_config() {
         ],
         'articulos_social' => [
             'id'         => 'articulos_social',
-            'label'      => __('Publicaciones', 'flavor-chat-ia'),
+            'label'      => __('Publicaciones', 'flavor-platform'),
             'icon'       => 'dashicons-share',
             'table'      => 'flavor_social_publicaciones',
             'capability' => 'edit_posts',
@@ -77,7 +77,7 @@ function flavor_register_integration_config() {
         ],
         'radio' => [
             'id'         => 'radio',
-            'label'      => __('Programas de Radio', 'flavor-chat-ia'),
+            'label'      => __('Programas de Radio', 'flavor-platform'),
             'icon'       => 'dashicons-controls-volumeon',
             'table'      => 'flavor_radio_programas',
             'capability' => 'edit_posts',
@@ -85,7 +85,7 @@ function flavor_register_integration_config() {
         ],
         'eventos' => [
             'id'         => 'eventos',
-            'label'      => __('Eventos', 'flavor-chat-ia'),
+            'label'      => __('Eventos', 'flavor-platform'),
             'icon'       => 'dashicons-calendar-alt',
             'post_type'  => 'flavor_evento',
             'capability' => 'edit_posts',
@@ -93,7 +93,7 @@ function flavor_register_integration_config() {
         ],
         'cursos' => [
             'id'         => 'cursos',
-            'label'      => __('Cursos', 'flavor-chat-ia'),
+            'label'      => __('Cursos', 'flavor-platform'),
             'icon'       => 'dashicons-welcome-learn-more',
             'post_type'  => 'flavor_curso',
             'capability' => 'edit_posts',
@@ -101,7 +101,7 @@ function flavor_register_integration_config() {
         ],
         'talleres' => [
             'id'         => 'talleres',
-            'label'      => __('Talleres', 'flavor-chat-ia'),
+            'label'      => __('Talleres', 'flavor-platform'),
             'icon'       => 'dashicons-hammer',
             'post_type'  => 'flavor_taller',
             'capability' => 'edit_posts',
@@ -109,7 +109,7 @@ function flavor_register_integration_config() {
         ],
         'foros' => [
             'id'         => 'foros',
-            'label'      => __('Temas de Foro', 'flavor-chat-ia'),
+            'label'      => __('Temas de Foro', 'flavor-platform'),
             'icon'       => 'dashicons-format-chat',
             'table'      => 'flavor_foros_temas',
             'capability' => 'edit_posts',

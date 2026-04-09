@@ -68,8 +68,8 @@ class Flavor_Social_Analytics_Admin {
     public function add_admin_menu() {
         add_submenu_page(
             'flavor-settings',
-            __('Analytics Social', 'flavor-chat-ia'),
-            __('Analytics', 'flavor-chat-ia'),
+            __('Analytics Social', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Analytics', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-social-analytics',
             [$this, 'render_admin_page']
@@ -114,12 +114,12 @@ class Flavor_Social_Analytics_Admin {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_analytics_nonce'),
             'strings' => [
-                'loading' => __('Cargando...', 'flavor-chat-ia'),
-                'error' => __('Error al cargar datos', 'flavor-chat-ia'),
-                'usuarios' => __('Usuarios', 'flavor-chat-ia'),
-                'publicaciones' => __('Publicaciones', 'flavor-chat-ia'),
-                'comentarios' => __('Comentarios', 'flavor-chat-ia'),
-                'likes' => __('Likes', 'flavor-chat-ia'),
+                'loading' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al cargar datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'usuarios' => __('Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'publicaciones' => __('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'comentarios' => __('Comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'likes' => __('Likes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]
         ]);
     }
@@ -129,7 +129,7 @@ class Flavor_Social_Analytics_Admin {
      */
     public function render_admin_page() {
         if (!current_user_can('manage_options')) {
-            wp_die(__('No tienes permisos para acceder a esta página.', 'flavor-chat-ia'));
+            wp_die(__('No tienes permisos para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $periodo = isset($_GET['periodo']) ? sanitize_text_field($_GET['periodo']) : 'semana';

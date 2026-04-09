@@ -737,7 +737,7 @@ class Flavor_App_Layouts_API {
         // Fallback: templates básicos
         return [
             'general' => [
-                'label' => __('General', 'flavor-chat-ia'),
+                'label' => __('General', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'templates' => [],
             ],
         ];

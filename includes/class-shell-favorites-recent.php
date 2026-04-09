@@ -399,8 +399,8 @@ class Flavor_Shell_Favorites_Recent {
             'action' => $result['action'],
             'is_favorite' => $result['is_favorite'],
             'message' => $result['action'] === 'added'
-                ? __('Añadido a favoritos', 'flavor-chat-ia')
-                : __('Eliminado de favoritos', 'flavor-chat-ia'),
+                ? __('Añadido a favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                : __('Eliminado de favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -456,7 +456,7 @@ class Flavor_Shell_Favorites_Recent {
         $this->clear_recent();
 
         wp_send_json_success([
-            'message' => __('Historial limpiado', 'flavor-chat-ia'),
+            'message' => __('Historial limpiado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -479,7 +479,7 @@ class Flavor_Shell_Favorites_Recent {
         $this->reorder_favorites($order);
 
         wp_send_json_success([
-            'message' => __('Orden guardado', 'flavor-chat-ia'),
+            'message' => __('Orden guardado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 }

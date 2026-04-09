@@ -16,10 +16,10 @@ if (!defined('ABSPATH')) {
 if (!is_user_logged_in()) {
     echo '<div class="gc-cesta-login-required">';
     echo '<span class="dashicons dashicons-lock"></span>';
-    echo '<h3>' . esc_html__('Acceso restringido', 'flavor-chat-ia') . '</h3>';
-    echo '<p>' . esc_html__('Inicia sesión para ver y gestionar tu pedido.', 'flavor-chat-ia') . '</p>';
+    echo '<h3>' . esc_html__('Acceso restringido', 'flavor-platform') . '</h3>';
+    echo '<p>' . esc_html__('Inicia sesión para ver y gestionar tu pedido.', 'flavor-platform') . '</p>';
     echo '<a href="' . esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mi-pedido'))) . '" class="gc-btn gc-btn-primary">';
-    echo esc_html__('Iniciar sesión', 'flavor-chat-ia');
+    echo esc_html__('Iniciar sesión', 'flavor-platform');
     echo '</a></div>';
     return;
 }
@@ -90,10 +90,10 @@ $total_final = $subtotal + $gastos_gestion;
         <div class="gc-cesta-titulo">
             <h2>
                 <span class="dashicons dashicons-cart"></span>
-                <?php esc_html_e('Pedido actual', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Pedido actual', 'flavor-platform'); ?>
             </h2>
             <?php if ($total_items > 0) : ?>
-            <span class="gc-cesta-count"><?php printf(_n('%d producto', '%d productos', $total_items, 'flavor-chat-ia'), $total_items); ?></span>
+            <span class="gc-cesta-count"><?php printf(_n('%d producto', '%d productos', $total_items, 'flavor-platform'), $total_items); ?></span>
             <?php endif; ?>
         </div>
 
@@ -101,18 +101,18 @@ $total_final = $subtotal + $gastos_gestion;
         <div class="gc-cesta-ciclo-info">
             <span class="gc-ciclo-badge gc-ciclo-abierto">
                 <span class="dashicons dashicons-yes-alt"></span>
-                <?php esc_html_e('Ciclo abierto', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ciclo abierto', 'flavor-platform'); ?>
             </span>
             <div class="gc-ciclo-cierre">
-                <span class="gc-cierre-label"><?php esc_html_e('Cierra en:', 'flavor-chat-ia'); ?></span>
+                <span class="gc-cierre-label"><?php esc_html_e('Cierra en:', 'flavor-platform'); ?></span>
                 <strong class="gc-cierre-tiempo" id="gc-countdown" data-cierre="<?php echo esc_attr($fecha_cierre); ?>">
                     <?php
                     if ($tiempo_restante < 3600) {
-                        printf(__('%d min', 'flavor-chat-ia'), ceil($tiempo_restante / 60));
+                        printf(__('%d min', 'flavor-platform'), ceil($tiempo_restante / 60));
                     } elseif ($tiempo_restante < 86400) {
-                        printf(__('%d horas', 'flavor-chat-ia'), ceil($tiempo_restante / 3600));
+                        printf(__('%d horas', 'flavor-platform'), ceil($tiempo_restante / 3600));
                     } else {
-                        printf(_n('%d dia', '%d dias', ceil($tiempo_restante / 86400), 'flavor-chat-ia'), ceil($tiempo_restante / 86400));
+                        printf(_n('%d dia', '%d dias', ceil($tiempo_restante / 86400), 'flavor-platform'), ceil($tiempo_restante / 86400));
                     }
                     ?>
                 </strong>
@@ -122,9 +122,9 @@ $total_final = $subtotal + $gastos_gestion;
         <div class="gc-cesta-ciclo-info gc-ciclo-cerrado-info">
             <span class="gc-ciclo-badge gc-ciclo-cerrado">
                 <span class="dashicons dashicons-calendar-alt"></span>
-                <?php esc_html_e('Sin ciclo activo', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Sin ciclo activo', 'flavor-platform'); ?>
             </span>
-            <p class="gc-sin-ciclo-msg"><?php esc_html_e('Los productos se guardarán para el próximo ciclo.', 'flavor-chat-ia'); ?></p>
+            <p class="gc-sin-ciclo-msg"><?php esc_html_e('Los productos se guardarán para el próximo ciclo.', 'flavor-platform'); ?></p>
         </div>
         <?php endif; ?>
     </header>
@@ -132,11 +132,11 @@ $total_final = $subtotal + $gastos_gestion;
     <?php if (empty($items_cesta)) : ?>
     <div class="gc-cesta-empty">
         <span class="dashicons dashicons-products"></span>
-        <h3><?php esc_html_e('Tu pedido está vacío', 'flavor-chat-ia'); ?></h3>
-        <p><?php esc_html_e('Explora los productos disponibles y añade artículos a tu pedido actual.', 'flavor-chat-ia'); ?></p>
+        <h3><?php esc_html_e('Tu pedido está vacío', 'flavor-platform'); ?></h3>
+        <p><?php esc_html_e('Explora los productos disponibles y añade artículos a tu pedido actual.', 'flavor-platform'); ?></p>
         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-primary">
             <span class="dashicons dashicons-products"></span>
-            <?php esc_html_e('Ver productos', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Ver productos', 'flavor-platform'); ?>
         </a>
     </div>
 
@@ -173,12 +173,12 @@ $total_final = $subtotal + $gastos_gestion;
                         <h4 class="gc-item-nombre">
                             <?php if ($producto_disponible) : ?>
                             <a href="<?php echo esc_url(add_query_arg('product', intval($item->producto_id), Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos'))); ?>">
-                                <?php echo esc_html($item->producto_nombre ?: __('Producto', 'flavor-chat-ia')); ?>
+                                <?php echo esc_html($item->producto_nombre ?: __('Producto', 'flavor-platform')); ?>
                             </a>
                             <?php else : ?>
                             <span class="gc-producto-no-disponible">
-                                <?php echo esc_html($item->producto_nombre ?: __('Producto', 'flavor-chat-ia')); ?>
-                                <small>(<?php esc_html_e('No disponible', 'flavor-chat-ia'); ?>)</small>
+                                <?php echo esc_html($item->producto_nombre ?: __('Producto', 'flavor-platform')); ?>
+                                <small>(<?php esc_html_e('No disponible', 'flavor-platform'); ?>)</small>
                             </span>
                             <?php endif; ?>
                         </h4>
@@ -203,9 +203,9 @@ $total_final = $subtotal + $gastos_gestion;
                     </div>
 
                     <div class="gc-item-cantidad">
-                        <label class="gc-cantidad-label"><?php esc_html_e('Cantidad', 'flavor-chat-ia'); ?></label>
+                        <label class="gc-cantidad-label"><?php esc_html_e('Cantidad', 'flavor-platform'); ?></label>
                         <div class="gc-cantidad-control">
-                            <button type="button" class="gc-btn-cantidad gc-btn-menos" aria-label="<?php esc_attr_e('Reducir', 'flavor-chat-ia'); ?>">
+                            <button type="button" class="gc-btn-cantidad gc-btn-menos" aria-label="<?php esc_attr_e('Reducir', 'flavor-platform'); ?>">
                                 <span class="dashicons dashicons-minus"></span>
                             </button>
                             <input type="number"
@@ -215,22 +215,22 @@ $total_final = $subtotal + $gastos_gestion;
                                    step="0.5"
                                    class="gc-input-cantidad"
                                    data-precio="<?php echo esc_attr($precio); ?>"
-                                   aria-label="<?php esc_attr_e('Cantidad', 'flavor-chat-ia'); ?>">
-                            <button type="button" class="gc-btn-cantidad gc-btn-mas" aria-label="<?php esc_attr_e('Aumentar', 'flavor-chat-ia'); ?>">
+                                   aria-label="<?php esc_attr_e('Cantidad', 'flavor-platform'); ?>">
+                            <button type="button" class="gc-btn-cantidad gc-btn-mas" aria-label="<?php esc_attr_e('Aumentar', 'flavor-platform'); ?>">
                                 <span class="dashicons dashicons-plus-alt2"></span>
                             </button>
                         </div>
                     </div>
 
                     <div class="gc-item-subtotal">
-                        <span class="gc-subtotal-label"><?php esc_html_e('Subtotal', 'flavor-chat-ia'); ?></span>
+                        <span class="gc-subtotal-label"><?php esc_html_e('Subtotal', 'flavor-platform'); ?></span>
                         <span class="gc-subtotal-valor">
                             <span class="gc-item-subtotal-valor"><?php echo number_format($item_subtotal, 2, ',', '.'); ?></span> &euro;
                         </span>
                     </div>
 
                     <div class="gc-item-acciones">
-                        <button type="button" class="gc-btn-eliminar" title="<?php esc_attr_e('Eliminar producto', 'flavor-chat-ia'); ?>">
+                        <button type="button" class="gc-btn-eliminar" title="<?php esc_attr_e('Eliminar producto', 'flavor-platform'); ?>">
                             <span class="dashicons dashicons-trash"></span>
                         </button>
                     </div>
@@ -241,18 +241,18 @@ $total_final = $subtotal + $gastos_gestion;
             <!-- Resumen -->
             <div class="gc-cesta-resumen">
                 <div class="gc-resumen-card">
-                    <h3><?php esc_html_e('Resumen del pedido', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Resumen del pedido', 'flavor-platform'); ?></h3>
 
                     <div class="gc-resumen-lineas">
                         <div class="gc-resumen-linea">
-                            <span><?php esc_html_e('Subtotal productos', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Subtotal productos', 'flavor-platform'); ?></span>
                             <span id="gc-resumen-subtotal"><?php echo number_format($subtotal, 2, ',', '.'); ?> &euro;</span>
                         </div>
 
                         <?php if ($porcentaje_gestion > 0) : ?>
                         <div class="gc-resumen-linea gc-linea-gestion">
                             <span>
-                                <?php esc_html_e('Gastos de gestion', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Gastos de gestion', 'flavor-platform'); ?>
                                 <small>(<?php echo esc_html($porcentaje_gestion); ?>%)</small>
                             </span>
                             <span id="gc-resumen-gestion"><?php echo number_format($gastos_gestion, 2, ',', '.'); ?> &euro;</span>
@@ -260,7 +260,7 @@ $total_final = $subtotal + $gastos_gestion;
                         <?php endif; ?>
 
                         <div class="gc-resumen-linea gc-linea-total">
-                            <strong><?php esc_html_e('Total', 'flavor-chat-ia'); ?></strong>
+                            <strong><?php esc_html_e('Total', 'flavor-platform'); ?></strong>
                             <strong id="gc-resumen-total"><?php echo number_format($total_final, 2, ',', '.'); ?> &euro;</strong>
                         </div>
                     </div>
@@ -268,18 +268,18 @@ $total_final = $subtotal + $gastos_gestion;
                     <div class="gc-resumen-acciones">
                         <button type="button" id="gc-btn-actualizar" class="gc-btn gc-btn-secondary gc-btn-block">
                             <span class="dashicons dashicons-update"></span>
-                            <?php esc_html_e('Guardar cambios', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Guardar cambios', 'flavor-platform'); ?>
                         </button>
 
                         <?php if ($ciclo_activo && $tiempo_restante > 0) : ?>
                         <button type="submit" id="gc-btn-confirmar" class="gc-btn gc-btn-primary gc-btn-block gc-btn-lg">
                             <span class="dashicons dashicons-yes"></span>
-                            <?php esc_html_e('Confirmar pedido', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Confirmar pedido', 'flavor-platform'); ?>
                         </button>
                         <?php else : ?>
                         <div class="gc-sin-ciclo-aviso">
                             <span class="dashicons dashicons-info"></span>
-                            <p><?php esc_html_e('Podrás confirmar tu pedido cuando se abra el próximo ciclo.', 'flavor-chat-ia'); ?></p>
+                            <p><?php esc_html_e('Podrás confirmar tu pedido cuando se abra el próximo ciclo.', 'flavor-platform'); ?></p>
                         </div>
                         <?php endif; ?>
                     </div>
@@ -293,12 +293,12 @@ $total_final = $subtotal + $gastos_gestion;
                                 $fecha_entrega = get_post_meta($ciclo_activo->ID, '_gc_fecha_entrega', true);
                                 if ($lugar_entrega) {
                                     printf(
-                                        esc_html__('Entrega: %s', 'flavor-chat-ia'),
+                                        esc_html__('Entrega: %s', 'flavor-platform'),
                                         esc_html($lugar_entrega)
                                     );
                                 }
                             } else {
-                                esc_html_e('La entrega se confirmará al abrir el ciclo.', 'flavor-chat-ia');
+                                esc_html_e('La entrega se confirmará al abrir el ciclo.', 'flavor-platform');
                             }
                             ?>
                         </p>
@@ -307,7 +307,7 @@ $total_final = $subtotal + $gastos_gestion;
 
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-text gc-btn-block">
                     <span class="dashicons dashicons-arrow-left-alt"></span>
-                    <?php esc_html_e('Seguir añadiendo productos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Seguir añadiendo productos', 'flavor-platform'); ?>
                 </a>
             </div>
         </div>
@@ -352,7 +352,7 @@ $total_final = $subtotal + $gastos_gestion;
 
     function gcCestaConfirmar(mensaje, onConfirm) {
         $('.gc-cesta-inline-confirm').remove();
-        var $confirm = $('<div class="gc-cesta-inline-confirm"><p></p><div class="gc-cesta-inline-confirm-actions"><button type="button" class="button button-primary gc-cesta-inline-confirm-ok"><?php echo esc_js(__('Confirmar', 'flavor-chat-ia')); ?></button><button type="button" class="button gc-cesta-inline-confirm-cancel"><?php echo esc_js(__('Cancelar', 'flavor-chat-ia')); ?></button></div></div>');
+        var $confirm = $('<div class="gc-cesta-inline-confirm"><p></p><div class="gc-cesta-inline-confirm-actions"><button type="button" class="button button-primary gc-cesta-inline-confirm-ok"><?php echo esc_js(__('Confirmar', 'flavor-platform')); ?></button><button type="button" class="button gc-cesta-inline-confirm-cancel"><?php echo esc_js(__('Cancelar', 'flavor-platform')); ?></button></div></div>');
         $confirm.find('p').text(mensaje);
         $confirm.insertBefore('#gc-form-confirmar').hide().fadeIn(150);
 
@@ -396,7 +396,7 @@ $total_final = $subtotal + $gastos_gestion;
         var $item = $(this).closest('.gc-cesta-item');
         var itemId = $item.data('item-id');
 
-        gcCestaConfirmar('<?php echo esc_js(__('¿Eliminar este producto del pedido actual?', 'flavor-chat-ia')); ?>', function() {
+        gcCestaConfirmar('<?php echo esc_js(__('¿Eliminar este producto del pedido actual?', 'flavor-platform')); ?>', function() {
             $.ajax({
                 url: '<?php echo esc_url(admin_url('admin-ajax.php')); ?>',
                 type: 'POST',
@@ -424,7 +424,7 @@ $total_final = $subtotal + $gastos_gestion;
     $('#gc-btn-actualizar').on('click', function() {
         var $btn = $(this);
         var textoOriginal = $btn.html();
-        $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> <?php echo esc_js(__('Guardando...', 'flavor-chat-ia')); ?>');
+        $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> <?php echo esc_js(__('Guardando...', 'flavor-platform')); ?>');
 
         var items = {};
         $('.gc-cesta-item').each(function() {
@@ -445,7 +445,7 @@ $total_final = $subtotal + $gastos_gestion;
                 $btn.prop('disabled', false).html(textoOriginal);
                 if (response.success) {
                     // Mostrar mensaje de exito
-                    $('<div class="gc-toast gc-toast-success"><?php echo esc_js(__('Pedido actualizado', 'flavor-chat-ia')); ?></div>')
+                    $('<div class="gc-toast gc-toast-success"><?php echo esc_js(__('Pedido actualizado', 'flavor-platform')); ?></div>')
                         .appendTo('body')
                         .fadeIn()
                         .delay(2000)
@@ -463,7 +463,7 @@ $total_final = $subtotal + $gastos_gestion;
         e.preventDefault();
 
         var $btn = $('#gc-btn-confirmar');
-        $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> <?php echo esc_js(__('Procesando...', 'flavor-chat-ia')); ?>');
+        $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> <?php echo esc_js(__('Procesando...', 'flavor-platform')); ?>');
 
         $.ajax({
             url: '<?php echo esc_url(admin_url('admin-ajax.php')); ?>',
@@ -473,13 +473,13 @@ $total_final = $subtotal + $gastos_gestion;
                 if (response.success && response.data.entrega_id) {
                     window.location.href = '<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'checkout')); ?>?entrega_id=' + response.data.entrega_id;
                 } else {
-                    gcCestaAviso(response.data.error || '<?php echo esc_js(__('Error al confirmar el pedido.', 'flavor-chat-ia')); ?>', 'error');
-                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-yes"></span> <?php echo esc_js(__('Confirmar pedido', 'flavor-chat-ia')); ?>');
+                    gcCestaAviso(response.data.error || '<?php echo esc_js(__('Error al confirmar el pedido.', 'flavor-platform')); ?>', 'error');
+                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-yes"></span> <?php echo esc_js(__('Confirmar pedido', 'flavor-platform')); ?>');
                 }
             },
             error: function() {
-                gcCestaAviso('<?php echo esc_js(__('Error de conexion.', 'flavor-chat-ia')); ?>', 'error');
-                $btn.prop('disabled', false).html('<span class="dashicons dashicons-yes"></span> <?php echo esc_js(__('Confirmar pedido', 'flavor-chat-ia')); ?>');
+                gcCestaAviso('<?php echo esc_js(__('Error de conexion.', 'flavor-platform')); ?>', 'error');
+                $btn.prop('disabled', false).html('<span class="dashicons dashicons-yes"></span> <?php echo esc_js(__('Confirmar pedido', 'flavor-platform')); ?>');
             }
         });
     });

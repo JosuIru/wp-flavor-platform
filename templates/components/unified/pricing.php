@@ -10,8 +10,8 @@ $subtitulo = $subtitulo ?? '';
 $color_primario = $color_primario ?? '#3b82f6';
 $items = $items ?? [];
 $mostrar_toggle = $mostrar_toggle ?? false;
-$texto_mensual = $texto_mensual ?? __('Mensual', 'flavor-chat-ia');
-$texto_anual = $texto_anual ?? __('Anual', 'flavor-chat-ia');
+$texto_mensual = $texto_mensual ?? __('Mensual', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$texto_anual = $texto_anual ?? __('Anual', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
 $variantes_permitidas = ['columnas', 'toggle_plan', 'comparativa'];
 if (!in_array($variante, $variantes_permitidas)) {

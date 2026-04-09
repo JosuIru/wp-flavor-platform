@@ -1,6 +1,6 @@
 <?php
 /**
- * Página de configuración del Chat IA
+ * Página de configuración del Asistente IA
  *
  * @package FlavorChatIA
  */
@@ -19,7 +19,7 @@ class Flavor_Chat_Settings {
     /**
      * Slug del menú
      */
-    const MENU_SLUG = 'flavor-chat-ia';
+    const MENU_SLUG = FLAVOR_PLATFORM_TEXT_DOMAIN;
 
     /**
      * Obtiene la instancia singleton
@@ -53,29 +53,30 @@ class Flavor_Chat_Settings {
      * Maneja el envío del formulario de settings
      */
     public function handle_form_submission() {
-        if (empty($_POST['flavor_chat_ia_action']) || $_POST['flavor_chat_ia_action'] !== 'save_settings') {
+        $action = $_POST['flavor_chat_ia_action'] ?? $_POST['flavor_platform_action'] ?? '';
+        if ($action !== 'save_settings') {
             return;
         }
 
         if (!wp_verify_nonce($_POST['flavor_chat_ia_nonce'] ?? '', 'flavor_chat_ia_settings_save')) {
-            wp_die(__('Nonce inválido', 'flavor-chat-ia'));
+            wp_die(__('Nonce inválido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         if (!current_user_can('manage_options')) {
-            wp_die(__('Sin permisos', 'flavor-chat-ia'));
+            wp_die(__('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Sanitizar y guardar
-        $input = $_POST['flavor_chat_ia_settings'] ?? [];
+        $input = $_POST['flavor_chat_ia_settings'] ?? $_POST['flavor_platform_settings'] ?? [];
         if (empty($input['_tab']) && !empty($_POST['current_tab'])) {
             $input['_tab'] = sanitize_text_field($_POST['current_tab']);
         }
         $sanitized = $this->sanitize_settings($input);
-        update_option('flavor_chat_ia_settings', $sanitized);
+        flavor_update_main_settings($sanitized);
 
         // Redirigir de vuelta
         $tab = sanitize_text_field($_POST['current_tab'] ?? 'general');
-        $redirect_url = admin_url('admin.php?page=flavor-chat-config&tab=' . $tab . '&settings-updated=true');
+        $redirect_url = admin_url('admin.php?page=flavor-platform-settings&tab=' . $tab . '&settings-updated=true');
 
         if (!headers_sent()) {
             wp_safe_redirect($redirect_url);
@@ -93,8 +94,8 @@ class Flavor_Chat_Settings {
      */
     public function add_menu() {
         add_menu_page(
-            __('Flavor Platform', 'flavor-chat-ia'),
-            __('Flavor Platform', 'flavor-chat-ia'),
+            __('Flavor Platform', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Flavor Platform', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             self::MENU_SLUG,
             [$this, 'render_settings_page'],
@@ -104,8 +105,8 @@ class Flavor_Chat_Settings {
 
         add_submenu_page(
             self::MENU_SLUG,
-            __('Configuración', 'flavor-chat-ia'),
-            __('Configuración', 'flavor-chat-ia'),
+            __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             self::MENU_SLUG,
             [$this, 'render_settings_page']
@@ -113,10 +114,10 @@ class Flavor_Chat_Settings {
 
         add_submenu_page(
             self::MENU_SLUG,
-            __('Escalados', 'flavor-chat-ia'),
-            __('Escalados', 'flavor-chat-ia'),
+            __('Escalados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Escalados', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
-            'flavor-chat-ia-escalations',
+            'flavor-platform-escalations',
             [$this, 'render_escalations_page']
         );
     }
@@ -126,6 +127,10 @@ class Flavor_Chat_Settings {
      */
     public function register_settings() {
         register_setting('flavor_chat_ia_settings', 'flavor_chat_ia_settings', [
+            'sanitize_callback' => [$this, 'sanitize_settings'],
+        ]);
+
+        register_setting('flavor_platform_settings', 'flavor_platform_settings', [
             'sanitize_callback' => [$this, 'sanitize_settings'],
         ]);
     }
@@ -138,13 +143,14 @@ class Flavor_Chat_Settings {
      * @return void
      */
     private function save_settings_reliably($sanitized) {
-        update_option('flavor_chat_ia_settings', $sanitized);
+        flavor_update_main_settings($sanitized);
 
         // Limpiar caché de opciones antes de verificar
-        wp_cache_delete('flavor_chat_ia_settings', 'options');
+        wp_cache_delete(FLAVOR_CHAT_IA_SETTINGS_OPTION, 'options');
+        wp_cache_delete(FLAVOR_PLATFORM_SETTINGS_OPTION, 'options');
         wp_cache_delete('alloptions', 'options');
 
-        $stored = get_option('flavor_chat_ia_settings', []);
+        $stored = flavor_get_main_settings();
         if ($stored === $sanitized) {
             return;
         }
@@ -155,12 +161,23 @@ class Flavor_Chat_Settings {
         $wpdb->update(
             $wpdb->options,
             ['option_value' => $serialized],
-            ['option_name' => 'flavor_chat_ia_settings'],
+            ['option_name' => FLAVOR_CHAT_IA_SETTINGS_OPTION],
             ['%s'],
             ['%s']
         );
 
-        wp_cache_delete('flavor_chat_ia_settings', 'options');
+        $wpdb->replace(
+            $wpdb->options,
+            [
+                'option_name'  => FLAVOR_PLATFORM_SETTINGS_OPTION,
+                'option_value' => $serialized,
+                'autoload'     => 'yes',
+            ],
+            ['%s', '%s', '%s']
+        );
+
+        wp_cache_delete(FLAVOR_CHAT_IA_SETTINGS_OPTION, 'options');
+        wp_cache_delete(FLAVOR_PLATFORM_SETTINGS_OPTION, 'options');
         wp_cache_delete('alloptions', 'options');
     }
 
@@ -171,7 +188,7 @@ class Flavor_Chat_Settings {
      * @return array
      */
     public function sanitize_settings($input) {
-        $existing = get_option('flavor_chat_ia_settings', []);
+        $existing = flavor_get_main_settings();
         $sanitized = $existing;
 
         $current_tab = $input['_tab'] ?? '';
@@ -608,7 +625,12 @@ class Flavor_Chat_Settings {
      */
     public function enqueue_admin_assets($hook) {
         // Cargar en páginas de configuración del chat
-        if (strpos($hook, 'flavor-chat-ia') === false && strpos($hook, 'flavor-chat-config') === false) {
+        if (
+            strpos($hook, FLAVOR_PLATFORM_TEXT_DOMAIN) === false &&
+            strpos($hook, 'flavor-chat-config') === false &&
+            strpos($hook, 'flavor-platform-settings') === false &&
+            strpos($hook, 'flavor-platform-escalations') === false
+        ) {
             return;
         }
 
@@ -638,10 +660,10 @@ class Flavor_Chat_Settings {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_chat_admin_nonce'),
             'strings' => [
-                'confirmDelete' => __('¿Eliminar este elemento?', 'flavor-chat-ia'),
-                'analyzing' => __('Analizando sitio...', 'flavor-chat-ia'),
-                'success' => __('Configuración generada', 'flavor-chat-ia'),
-                'error' => __('Error al analizar', 'flavor-chat-ia'),
+                'confirmDelete' => __('¿Eliminar este elemento?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'analyzing' => __('Analizando sitio...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'success' => __('Configuración generada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al analizar', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -650,56 +672,56 @@ class Flavor_Chat_Settings {
      * Renderiza la página de configuración
      */
     public function render_settings_page() {
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $active_tab = $_GET['tab'] ?? 'general';
         // Usar el slug de página actual para que las pestañas funcionen correctamente
-        $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : 'flavor-chat-config';
+        $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : 'flavor-platform-settings';
         ?>
         <div class="wrap flavor-chat-settings">
-            <h1><?php esc_html_e('Flavor Chat IA', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Flavor Platform', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
 
             <?php settings_errors('flavor_chat_ia_settings'); ?>
 
             <nav class="nav-tab-wrapper">
                 <a href="?page=<?php echo esc_attr($current_page); ?>&tab=general"
                    class="nav-tab <?php echo $active_tab === 'general' ? 'nav-tab-active' : ''; ?>">
-                    <?php esc_html_e('General', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('General', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="?page=<?php echo esc_attr($current_page); ?>&tab=providers"
                    class="nav-tab <?php echo $active_tab === 'providers' ? 'nav-tab-active' : ''; ?>">
-                    <?php esc_html_e('Proveedores IA', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Proveedores IA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="?page=<?php echo esc_attr($current_page); ?>&tab=appearance"
                    class="nav-tab <?php echo $active_tab === 'appearance' ? 'nav-tab-active' : ''; ?>">
-                    <?php esc_html_e('Apariencia', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Apariencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="?page=<?php echo esc_attr($current_page); ?>&tab=quick_actions"
                    class="nav-tab <?php echo $active_tab === 'quick_actions' ? 'nav-tab-active' : ''; ?>">
-                    <?php esc_html_e('Acciones Rápidas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Acciones Rápidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="?page=<?php echo esc_attr($current_page); ?>&tab=knowledge"
                    class="nav-tab <?php echo $active_tab === 'knowledge' ? 'nav-tab-active' : ''; ?>">
-                    <?php esc_html_e('Base de Conocimiento', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Base de Conocimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="?page=<?php echo esc_attr($current_page); ?>&tab=escalation"
                    class="nav-tab <?php echo $active_tab === 'escalation' ? 'nav-tab-active' : ''; ?>">
-                    <?php esc_html_e('Escalado', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Escalado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="?page=<?php echo esc_attr($current_page); ?>&tab=modules"
                    class="nav-tab <?php echo $active_tab === 'modules' ? 'nav-tab-active' : ''; ?>">
-                    <?php esc_html_e('Módulos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="?page=<?php echo esc_attr($current_page); ?>&tab=firebase_push"
                    class="nav-tab <?php echo $active_tab === 'firebase_push' ? 'nav-tab-active' : ''; ?>">
-                    <?php esc_html_e('Push Notifications', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Push Notifications', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="?page=<?php echo esc_attr($current_page); ?>&tab=analytics"
                    class="nav-tab <?php echo $active_tab === 'analytics' ? 'nav-tab-active' : ''; ?>">
-                    <?php esc_html_e('Analíticas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Analíticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="?page=<?php echo esc_attr($current_page); ?>&tab=advanced"
                    class="nav-tab <?php echo $active_tab === 'advanced' ? 'nav-tab-active' : ''; ?>">
-                    <?php esc_html_e('Avanzado', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Avanzado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </nav>
 
@@ -744,7 +766,7 @@ class Flavor_Chat_Settings {
                 ?>
 
                 <?php if ($active_tab !== 'analytics'): ?>
-                    <?php submit_button(__('Guardar cambios', 'flavor-chat-ia')); ?>
+                    <?php submit_button(__('Guardar cambios', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                 <?php endif; ?>
             </form>
         </div>
@@ -759,37 +781,37 @@ class Flavor_Chat_Settings {
         <input type="hidden" name="flavor_chat_ia_settings[_tab]" value="general">
         <table class="form-table">
             <tr>
-                <th scope="row"><?php esc_html_e('Habilitar Chat', 'flavor-chat-ia'); ?></th>
+                <th scope="row"><?php esc_html_e('Habilitar Chat', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox" name="flavor_chat_ia_settings[enabled]" value="1"
                                <?php checked(!empty($settings['enabled'])); ?>>
-                        <?php esc_html_e('Activar el chat IA en el sitio', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Activar el chat IA en el sitio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
             <tr>
-                <th scope="row"><?php esc_html_e('Modo Test', 'flavor-chat-ia'); ?></th>
+                <th scope="row"><?php esc_html_e('Modo Test', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox" name="flavor_chat_ia_settings[admin_only]" value="1"
                                <?php checked(!empty($settings['admin_only'])); ?>>
-                        <?php esc_html_e('Solo visible para administradores', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Solo visible para administradores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
             <tr>
-                <th scope="row"><?php esc_html_e('Widget Flotante', 'flavor-chat-ia'); ?></th>
+                <th scope="row"><?php esc_html_e('Widget Flotante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox" name="flavor_chat_ia_settings[show_floating_widget]" value="1"
                                <?php checked($settings['show_floating_widget'] ?? true); ?>>
-                        <?php esc_html_e('Mostrar botón flotante en todas las páginas', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Mostrar botón flotante en todas las páginas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
             <tr>
-                <th scope="row"><?php esc_html_e('Nombre del Asistente', 'flavor-chat-ia'); ?></th>
+                <th scope="row"><?php esc_html_e('Nombre del Asistente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="text" name="flavor_chat_ia_settings[assistant_name]"
                            value="<?php echo esc_attr($settings['assistant_name'] ?? 'Asistente Virtual'); ?>"
@@ -797,27 +819,27 @@ class Flavor_Chat_Settings {
                 </td>
             </tr>
             <tr>
-                <th scope="row"><?php esc_html_e('Rol/Descripción', 'flavor-chat-ia'); ?></th>
+                <th scope="row"><?php esc_html_e('Rol/Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <textarea name="flavor_chat_ia_settings[assistant_role]" rows="3" class="large-text"><?php
                         echo esc_textarea($settings['assistant_role'] ?? '');
                     ?></textarea>
-                    <p class="description"><?php esc_html_e('Describe el rol del asistente para que sepa cómo comportarse.', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Describe el rol del asistente para que sepa cómo comportarse.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
             <tr>
-                <th scope="row"><?php esc_html_e('Tono', 'flavor-chat-ia'); ?></th>
+                <th scope="row"><?php esc_html_e('Tono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <select name="flavor_chat_ia_settings[tone]">
-                        <option value="friendly" <?php selected($settings['tone'] ?? 'friendly', 'friendly'); ?>><?php esc_html_e('Amable y cercano', 'flavor-chat-ia'); ?></option>
-                        <option value="formal" <?php selected($settings['tone'] ?? '', 'formal'); ?>><?php esc_html_e('Profesional y formal', 'flavor-chat-ia'); ?></option>
-                        <option value="casual" <?php selected($settings['tone'] ?? '', 'casual'); ?>><?php esc_html_e('Informal y relajado', 'flavor-chat-ia'); ?></option>
-                        <option value="enthusiastic" <?php selected($settings['tone'] ?? '', 'enthusiastic'); ?>><?php esc_html_e('Entusiasta y positivo', 'flavor-chat-ia'); ?></option>
+                        <option value="friendly" <?php selected($settings['tone'] ?? 'friendly', 'friendly'); ?>><?php esc_html_e('Amable y cercano', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="formal" <?php selected($settings['tone'] ?? '', 'formal'); ?>><?php esc_html_e('Profesional y formal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="casual" <?php selected($settings['tone'] ?? '', 'casual'); ?>><?php esc_html_e('Informal y relajado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="enthusiastic" <?php selected($settings['tone'] ?? '', 'enthusiastic'); ?>><?php esc_html_e('Entusiasta y positivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </td>
             </tr>
             <tr>
-                <th scope="row"><?php esc_html_e('Idiomas', 'flavor-chat-ia'); ?></th>
+                <th scope="row"><?php esc_html_e('Idiomas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <?php
                     $languages = $settings['languages'] ?? ['es'];
@@ -831,23 +853,23 @@ class Flavor_Chat_Settings {
                         <?php echo esc_html($name); ?>
                     </label>
                     <?php endforeach; ?>
-                    <p class="description"><?php esc_html_e('Compatible con WPML y Polylang.', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Compatible con WPML y Polylang.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
             <tr>
-                <th scope="row"><?php esc_html_e('Límite de mensajes', 'flavor-chat-ia'); ?></th>
+                <th scope="row"><?php esc_html_e('Límite de mensajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number" name="flavor_chat_ia_settings[max_messages_per_session]"
                            value="<?php echo esc_attr($settings['max_messages_per_session'] ?? 50); ?>"
                            min="10" max="200" class="small-text">
-                    <span><?php esc_html_e('mensajes por sesión', 'flavor-chat-ia'); ?></span>
+                    <span><?php esc_html_e('mensajes por sesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </td>
             </tr>
             <tr>
-                <th scope="row"><?php esc_html_e('Shortcode', 'flavor-chat-ia'); ?></th>
+                <th scope="row"><?php esc_html_e('Shortcode', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <code>[flavor_chat]</code>
-                    <p class="description"><?php esc_html_e('Usa este shortcode para insertar el chat en cualquier página.', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Usa este shortcode para insertar el chat en cualquier página.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
         </table>
@@ -886,12 +908,12 @@ class Flavor_Chat_Settings {
         ?>
         <input type="hidden" name="flavor_chat_ia_settings[_tab]" value="providers">
 
-        <h2><?php esc_html_e('Proveedor de IA', 'flavor-chat-ia'); ?></h2>
-        <p class="description"><?php esc_html_e('Selecciona el proveedor activo. Puedes configurar varios y cambiar entre ellos.', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Proveedor de IA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p class="description"><?php esc_html_e('Selecciona el proveedor activo. Puedes configurar varios y cambiar entre ellos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
         <table class="form-table">
             <tr>
-                <th scope="row"><?php esc_html_e('Proveedor activo', 'flavor-chat-ia'); ?></th>
+                <th scope="row"><?php esc_html_e('Proveedor activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <select name="flavor_chat_ia_settings[active_provider]" id="active_provider">
                         <option value="claude" <?php selected($settings['active_provider'] ?? 'claude', 'claude'); ?>>Claude (Anthropic)</option>
@@ -901,7 +923,7 @@ class Flavor_Chat_Settings {
                     </select>
                     <button type="button" id="flavor-test-connection" class="button" style="margin-left: 10px;">
                         <span class="dashicons dashicons-yes-alt" style="vertical-align: middle;"></span>
-                        <?php esc_html_e('Verificar Conexión', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Verificar Conexión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <span id="flavor-connection-status" style="margin-left: 10px;"></span>
                 </td>
@@ -913,22 +935,22 @@ class Flavor_Chat_Settings {
             <h3 style="margin-top: 0;">🟣 Claude (Anthropic)</h3>
             <table class="form-table">
                 <tr>
-                    <th><?php esc_html_e('API Key', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('API Key', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <input type="password" name="flavor_chat_ia_settings[claude_api_key]"
                                value="" autocomplete="new-password" class="regular-text">
                         <p class="description">
                             <a href="https://console.anthropic.com/" target="_blank">console.anthropic.com</a>
-                            · <?php esc_html_e('Deja vacío para mantener la clave actual.', 'flavor-chat-ia'); ?>
+                            · <?php esc_html_e('Deja vacío para mantener la clave actual.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             <?php if (!empty($provider_key_status['claude'])) : ?>
-                                <br><strong><?php esc_html_e('Clave guardada:', 'flavor-chat-ia'); ?></strong>
+                                <br><strong><?php esc_html_e('Clave guardada:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                                 <code><?php echo esc_html($mask_or_empty($provider_key_status['claude'])); ?></code>
                             <?php endif; ?>
                         </p>
                     </td>
                 </tr>
                 <tr>
-                    <th><?php esc_html_e('Modelo', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Modelo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <select name="flavor_chat_ia_settings[claude_model]">
                             <option value="claude-sonnet-4-20250514" <?php selected($settings['claude_model'] ?? '', 'claude-sonnet-4-20250514'); ?>>Claude Sonnet 4</option>
@@ -945,22 +967,22 @@ class Flavor_Chat_Settings {
             <h3 style="margin-top: 0;">🟢 OpenAI (GPT)</h3>
             <table class="form-table">
                 <tr>
-                    <th><?php esc_html_e('API Key', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('API Key', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <input type="password" name="flavor_chat_ia_settings[openai_api_key]"
                                value="" autocomplete="new-password" class="regular-text">
                         <p class="description">
                             <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a>
-                            · <?php esc_html_e('Deja vacío para mantener la clave actual.', 'flavor-chat-ia'); ?>
+                            · <?php esc_html_e('Deja vacío para mantener la clave actual.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             <?php if (!empty($provider_key_status['openai'])) : ?>
-                                <br><strong><?php esc_html_e('Clave guardada:', 'flavor-chat-ia'); ?></strong>
+                                <br><strong><?php esc_html_e('Clave guardada:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                                 <code><?php echo esc_html($mask_or_empty($provider_key_status['openai'])); ?></code>
                             <?php endif; ?>
                         </p>
                     </td>
                 </tr>
                 <tr>
-                    <th><?php esc_html_e('Modelo', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Modelo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <select name="flavor_chat_ia_settings[openai_model]">
                             <option value="gpt-4o" <?php selected($settings['openai_model'] ?? '', 'gpt-4o'); ?>>GPT-4o</option>
@@ -975,25 +997,25 @@ class Flavor_Chat_Settings {
         <!-- DeepSeek -->
         <div class="provider-settings provider-deepseek" style="border: 1px solid #10b981; padding: 15px; margin: 20px 0; border-radius: 4px; background: #ecfdf5;">
             <h3 style="margin-top: 0;">🔵 DeepSeek <span style="background: #10b981; color: white; padding: 2px 8px; border-radius: 3px; font-size: 12px;">GRATUITO</span></h3>
-            <p class="description"><?php esc_html_e('~500K tokens/día gratis', 'flavor-chat-ia'); ?></p>
+            <p class="description"><?php esc_html_e('~500K tokens/día gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <table class="form-table">
                 <tr>
-                    <th><?php esc_html_e('API Key', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('API Key', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <input type="password" name="flavor_chat_ia_settings[deepseek_api_key]"
                                value="" autocomplete="new-password" class="regular-text">
                         <p class="description">
                             <a href="https://platform.deepseek.com/" target="_blank">platform.deepseek.com</a>
-                            · <?php esc_html_e('Deja vacío para mantener la clave actual.', 'flavor-chat-ia'); ?>
+                            · <?php esc_html_e('Deja vacío para mantener la clave actual.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             <?php if (!empty($provider_key_status['deepseek'])) : ?>
-                                <br><strong><?php esc_html_e('Clave guardada:', 'flavor-chat-ia'); ?></strong>
+                                <br><strong><?php esc_html_e('Clave guardada:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                                 <code><?php echo esc_html($mask_or_empty($provider_key_status['deepseek'])); ?></code>
                             <?php endif; ?>
                         </p>
                     </td>
                 </tr>
                 <tr>
-                    <th><?php esc_html_e('Modelo', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Modelo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <select name="flavor_chat_ia_settings[deepseek_model]">
                             <option value="deepseek-chat" <?php selected($settings['deepseek_model'] ?? 'deepseek-chat', 'deepseek-chat'); ?>>DeepSeek Chat</option>
@@ -1007,25 +1029,25 @@ class Flavor_Chat_Settings {
         <!-- Mistral -->
         <div class="provider-settings provider-mistral" style="border: 1px solid #f97316; padding: 15px; margin: 20px 0; border-radius: 4px; background: #fff7ed;">
             <h3 style="margin-top: 0;">🟠 Mistral AI <span style="background: #f97316; color: white; padding: 2px 8px; border-radius: 3px; font-size: 12px;">GRATUITO</span></h3>
-            <p class="description"><?php esc_html_e('1M tokens/mes gratis', 'flavor-chat-ia'); ?></p>
+            <p class="description"><?php esc_html_e('1M tokens/mes gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <table class="form-table">
                 <tr>
-                    <th><?php esc_html_e('API Key', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('API Key', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <input type="password" name="flavor_chat_ia_settings[mistral_api_key]"
                                value="" autocomplete="new-password" class="regular-text">
                         <p class="description">
                             <a href="https://console.mistral.ai/" target="_blank">console.mistral.ai</a>
-                            · <?php esc_html_e('Deja vacío para mantener la clave actual.', 'flavor-chat-ia'); ?>
+                            · <?php esc_html_e('Deja vacío para mantener la clave actual.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             <?php if (!empty($provider_key_status['mistral'])) : ?>
-                                <br><strong><?php esc_html_e('Clave guardada:', 'flavor-chat-ia'); ?></strong>
+                                <br><strong><?php esc_html_e('Clave guardada:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                                 <code><?php echo esc_html($mask_or_empty($provider_key_status['mistral'])); ?></code>
                             <?php endif; ?>
                         </p>
                     </td>
                 </tr>
                 <tr>
-                    <th><?php esc_html_e('Modelo', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Modelo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <select name="flavor_chat_ia_settings[mistral_model]">
                             <option value="mistral-small-latest" <?php selected($settings['mistral_model'] ?? 'mistral-small-latest', 'mistral-small-latest'); ?>>Mistral Small (Gratis)</option>
@@ -1036,10 +1058,10 @@ class Flavor_Chat_Settings {
             </table>
         </div>
 
-        <h2><?php esc_html_e('Límites', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Límites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('Máx. tokens por mensaje', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Máx. tokens por mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number" name="flavor_chat_ia_settings[max_tokens_per_message]"
                            value="<?php echo esc_attr($settings['max_tokens_per_message'] ?? 1000); ?>"
@@ -1050,12 +1072,12 @@ class Flavor_Chat_Settings {
 
         <!-- Configuración por contexto -->
         <hr style="margin: 30px 0;">
-        <h2><?php esc_html_e('IA por contexto', 'flavor-chat-ia'); ?></h2>
-        <p class="description"><?php esc_html_e('Puedes usar un proveedor y modelo diferente para el chat público (frontend) y para el asistente de administración (backend). Si seleccionas "Usar proveedor por defecto", se usará el proveedor activo configurado arriba.', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('IA por contexto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p class="description"><?php esc_html_e('Puedes usar un proveedor y modelo diferente para el chat público (frontend) y para el asistente de administración (backend). Si seleccionas "Usar proveedor por defecto", se usará el proveedor activo configurado arriba.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
         <?php
         $provider_context_options = [
-            'default' => __('Usar proveedor por defecto', 'flavor-chat-ia'),
+            'default' => __('Usar proveedor por defecto', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'claude'  => 'Claude (Anthropic)',
             'openai'  => 'OpenAI (GPT)',
             'deepseek' => 'DeepSeek',
@@ -1085,13 +1107,13 @@ class Flavor_Chat_Settings {
 
         $context_configs = [
             'frontend' => [
-                'label' => __('Chat Público (Frontend)', 'flavor-chat-ia'),
-                'description' => __('Widget de chat para visitantes del sitio', 'flavor-chat-ia'),
+                'label' => __('Chat Público (Frontend)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Widget de chat para visitantes del sitio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-format-chat',
             ],
             'backend' => [
-                'label' => __('Admin Assistant (Backend)', 'flavor-chat-ia'),
-                'description' => __('Asistente de IA para administradores en el panel de WordPress', 'flavor-chat-ia'),
+                'label' => __('Admin Assistant (Backend)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Asistente de IA para administradores en el panel de WordPress', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-tools',
             ],
         ];
@@ -1109,7 +1131,7 @@ class Flavor_Chat_Settings {
 
             <table class="form-table" style="margin-top: 0;">
                 <tr>
-                    <th><?php esc_html_e('Proveedor', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Proveedor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <select name="flavor_chat_ia_settings[ia_provider_<?php echo esc_attr($context_key); ?>]"
                                 class="context-provider-select"
@@ -1125,12 +1147,12 @@ class Flavor_Chat_Settings {
                 </tr>
                 <tr class="context-model-row context-model-<?php echo esc_attr($context_key); ?>"
                     style="<?php echo ($selected_provider === 'default') ? 'display:none;' : ''; ?>">
-                    <th><?php esc_html_e('Modelo', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Modelo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <select name="flavor_chat_ia_settings[ia_model_<?php echo esc_attr($context_key); ?>]"
                                 class="context-model-select"
                                 data-context="<?php echo esc_attr($context_key); ?>">
-                            <option value=""><?php esc_html_e('Modelo por defecto del proveedor', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php esc_html_e('Modelo por defecto del proveedor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php foreach ($models_by_provider as $provider_id => $provider_models): ?>
                                 <?php foreach ($provider_models as $model_value => $model_label): ?>
                                     <option value="<?php echo esc_attr($model_value); ?>"
@@ -1150,8 +1172,8 @@ class Flavor_Chat_Settings {
 
         <!-- Orden de Fallback -->
         <hr style="margin: 30px 0;">
-        <h2><?php esc_html_e('Orden de Fallback', 'flavor-chat-ia'); ?></h2>
-        <p class="description"><?php esc_html_e('Si el proveedor principal falla (error de red, límite de API, etc.), se usará automáticamente el siguiente proveedor configurado. Arrastra para cambiar el orden de prioridad.', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Orden de Fallback', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p class="description"><?php esc_html_e('Si el proveedor principal falla (error de red, límite de API, etc.), se usará automáticamente el siguiente proveedor configurado. Arrastra para cambiar el orden de prioridad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
         <?php
         // Obtener engines configurados
@@ -1229,7 +1251,7 @@ class Flavor_Chat_Settings {
 
             <p style="margin-top: 15px; margin-bottom: 0; color: #6b7280; font-size: 13px;">
                 <span class="dashicons dashicons-info" style="font-size: 16px; vertical-align: middle;"></span>
-                <?php esc_html_e('Solo los proveedores con API key configurada pueden usarse como fallback.', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Solo los proveedores con API key configurada pueden usarse como fallback.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
 
@@ -1294,8 +1316,8 @@ class Flavor_Chat_Settings {
 
         <!-- Figma Integration -->
         <hr style="margin: 30px 0;">
-        <h2><?php esc_html_e('Integración Figma', 'flavor-chat-ia'); ?></h2>
-        <p class="description"><?php esc_html_e('Conecta con Figma para importar diseños directamente al Visual Builder Pro.', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Integración Figma', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p class="description"><?php esc_html_e('Conecta con Figma para importar diseños directamente al Visual Builder Pro.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
         <div style="border: 1px solid #a855f7; padding: 15px; margin: 20px 0; border-radius: 4px; background: #faf5ff;">
             <h3 style="margin-top: 0;">
@@ -1304,20 +1326,20 @@ class Flavor_Chat_Settings {
             </h3>
             <table class="form-table" style="margin-top:0;">
                 <tr>
-                    <th><?php esc_html_e('Personal Access Token', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Personal Access Token', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <input type="password" name="flavor_chat_ia_settings[figma_personal_token]"
                                id="figma_personal_token"
                                value="<?php echo esc_attr($settings['figma_personal_token'] ?? ''); ?>"
                                class="regular-text">
                         <button type="button" class="button" id="verify-figma-token" style="margin-left:8px;">
-                            <?php esc_html_e('Verificar conexión', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Verificar conexión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <span id="figma-token-status" style="margin-left:10px;"></span>
                         <p class="description">
                             <?php
                             printf(
-                                esc_html__('Obtén tu token en %s → Settings → Personal Access Tokens', 'flavor-chat-ia'),
+                                esc_html__('Obtén tu token en %s → Settings → Personal Access Tokens', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 '<a href="https://www.figma.com/settings" target="_blank">figma.com/settings</a>'
                             );
                             ?>
@@ -1335,12 +1357,12 @@ class Flavor_Chat_Settings {
                 var token = $('#figma_personal_token').val();
 
                 if (!token) {
-                    $status.html('<span style="color:#dc2626;">❌ <?php echo esc_js(__('Ingresa un token primero', 'flavor-chat-ia')); ?></span>');
+                    $status.html('<span style="color:#dc2626;">❌ <?php echo esc_js(__('Ingresa un token primero', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>');
                     return;
                 }
 
                 $btn.prop('disabled', true);
-                $status.html('<span style="color:#6b7280;">⏳ <?php echo esc_js(__('Verificando...', 'flavor-chat-ia')); ?></span>');
+                $status.html('<span style="color:#6b7280;">⏳ <?php echo esc_js(__('Verificando...', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>');
 
                 $.post(ajaxurl, {
                     action: 'flavor_vbp_verify_figma_token',
@@ -1349,13 +1371,13 @@ class Flavor_Chat_Settings {
                 }, function(response) {
                     $btn.prop('disabled', false);
                     if (response.success) {
-                        $status.html('<span style="color:#16a34a;">✓ <?php echo esc_js(__('Conectado como', 'flavor-chat-ia')); ?> ' + response.data.user.handle + '</span>');
+                        $status.html('<span style="color:#16a34a;">✓ <?php echo esc_js(__('Conectado como', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?> ' + response.data.user.handle + '</span>');
                     } else {
-                        $status.html('<span style="color:#dc2626;">❌ ' + (response.data.message || '<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>') + '</span>');
+                        $status.html('<span style="color:#dc2626;">❌ ' + (response.data.message || '<?php echo esc_js(__('Error de conexión', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>') + '</span>');
                     }
                 }).fail(function() {
                     $btn.prop('disabled', false);
-                    $status.html('<span style="color:#dc2626;">❌ <?php echo esc_js(__('Error de red', 'flavor-chat-ia')); ?></span>');
+                    $status.html('<span style="color:#dc2626;">❌ <?php echo esc_js(__('Error de red', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>');
                 });
             });
 
@@ -1380,7 +1402,7 @@ class Flavor_Chat_Settings {
                 var inputModel = providerModelInputs[provider] || '';
 
                 $btn.prop('disabled', true);
-                $status.html('<span style="color:#666;"><span class="spinner is-active" style="float:none;margin:0 5px 0 0;"></span><?php echo esc_js(__('Verificando...', 'flavor-chat-ia')); ?></span>');
+                $status.html('<span style="color:#666;"><span class="spinner is-active" style="float:none;margin:0 5px 0 0;"></span><?php echo esc_js(__('Verificando...', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>');
 
                 $.post(ajaxurl, {
                     action: 'flavor_test_ia_connection',
@@ -1397,7 +1419,7 @@ class Flavor_Chat_Settings {
                     }
                 }).fail(function() {
                     $btn.prop('disabled', false);
-                    $status.html('<span style="color:#dc2626;">❌ <?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?></span>');
+                    $status.html('<span style="color:#dc2626;">❌ <?php echo esc_js(__('Error de conexión', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>');
                 });
             });
         });
@@ -1418,40 +1440,40 @@ class Flavor_Chat_Settings {
         <div style="background:#f0f6fc;border:1px solid #c3daf5;border-radius:8px;padding:16px 20px;margin-bottom:20px;">
             <h3 style="margin:0 0 8px 0;">
                 <span class="dashicons dashicons-admin-appearance"></span>
-                <?php esc_html_e('Autoconfiguración desde el tema', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Autoconfiguración desde el tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
-            <p style="margin:0 0 12px 0;"><?php esc_html_e('Aplica automáticamente los colores de tu tema de WordPress al chat.', 'flavor-chat-ia'); ?></p>
+            <p style="margin:0 0 12px 0;"><?php esc_html_e('Aplica automáticamente los colores de tu tema de WordPress al chat.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <button type="button" id="apply-theme-colors" class="button button-primary">
-                <?php esc_html_e('Aplicar colores del tema', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Aplicar colores del tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <span id="theme-colors-status" style="margin-left:12px;"></span>
         </div>
 
-        <h2><?php esc_html_e('Colores', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Colores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('Color principal', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Color principal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="color" name="flavor_chat_ia_settings[appearance][primary_color]" id="primary_color"
                            value="<?php echo esc_attr($appearance['primary_color'] ?? $theme_colors['primary'] ?? '#0073aa'); ?>">
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Fondo de cabecera', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Fondo de cabecera', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="color" name="flavor_chat_ia_settings[appearance][header_bg]" id="header_bg"
                            value="<?php echo esc_attr($appearance['header_bg'] ?? $theme_colors['secondary'] ?? '#1e3a5f'); ?>">
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Burbuja del usuario', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Burbuja del usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="color" name="flavor_chat_ia_settings[appearance][user_bubble]" id="user_bubble"
                            value="<?php echo esc_attr($appearance['user_bubble'] ?? $theme_colors['primary'] ?? '#0073aa'); ?>">
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Burbuja del asistente', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Burbuja del asistente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="color" name="flavor_chat_ia_settings[appearance][assistant_bubble]" id="assistant_bubble"
                            value="<?php echo esc_attr($appearance['assistant_bubble'] ?? '#f0f0f0'); ?>">
@@ -1459,10 +1481,10 @@ class Flavor_Chat_Settings {
             </tr>
         </table>
 
-        <h2><?php esc_html_e('Avatar', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Avatar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('Imagen del avatar', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Imagen del avatar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <div id="avatar-preview" style="margin-bottom:10px;">
                         <?php if (!empty($appearance['avatar_url'])): ?>
@@ -1473,73 +1495,73 @@ class Flavor_Chat_Settings {
                     </div>
                     <input type="hidden" name="flavor_chat_ia_settings[appearance][avatar_url]" id="avatar_url"
                            value="<?php echo esc_attr($appearance['avatar_url'] ?? ''); ?>">
-                    <button type="button" class="button" id="upload-avatar"><?php esc_html_e('Seleccionar imagen', 'flavor-chat-ia'); ?></button>
-                    <button type="button" class="button" id="remove-avatar" <?php echo empty($appearance['avatar_url']) ? 'style="display:none;"' : ''; ?>><?php esc_html_e('Eliminar', 'flavor-chat-ia'); ?></button>
+                    <button type="button" class="button" id="upload-avatar"><?php esc_html_e('Seleccionar imagen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                    <button type="button" class="button" id="remove-avatar" <?php echo empty($appearance['avatar_url']) ? 'style="display:none;"' : ''; ?>><?php esc_html_e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                 </td>
             </tr>
         </table>
 
-        <h2><?php esc_html_e('Posición y tamaño', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Posición y tamaño', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('Posición', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Posición', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <select name="flavor_chat_ia_settings[appearance][position]">
-                        <option value="bottom-right" <?php selected($appearance['position'] ?? 'bottom-right', 'bottom-right'); ?>><?php esc_html_e('Abajo derecha', 'flavor-chat-ia'); ?></option>
-                        <option value="bottom-left" <?php selected($appearance['position'] ?? '', 'bottom-left'); ?>><?php esc_html_e('Abajo izquierda', 'flavor-chat-ia'); ?></option>
+                        <option value="bottom-right" <?php selected($appearance['position'] ?? 'bottom-right', 'bottom-right'); ?>><?php esc_html_e('Abajo derecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="bottom-left" <?php selected($appearance['position'] ?? '', 'bottom-left'); ?>><?php esc_html_e('Abajo izquierda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Distancia desde abajo', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Distancia desde abajo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number" name="flavor_chat_ia_settings[appearance][bottom_offset]"
                            value="<?php echo esc_attr($appearance['bottom_offset'] ?? 20); ?>" min="10" max="200" class="small-text"> px
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Distancia desde el lado', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Distancia desde el lado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number" name="flavor_chat_ia_settings[appearance][side_offset]"
                            value="<?php echo esc_attr($appearance['side_offset'] ?? 20); ?>" min="10" max="200" class="small-text"> px
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Tamaño del botón', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Tamaño del botón', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <select name="flavor_chat_ia_settings[appearance][trigger_size]">
-                        <option value="small" <?php selected($appearance['trigger_size'] ?? '', 'small'); ?>><?php esc_html_e('Pequeño (50px)', 'flavor-chat-ia'); ?></option>
-                        <option value="medium" <?php selected($appearance['trigger_size'] ?? 'medium', 'medium'); ?>><?php esc_html_e('Mediano (60px)', 'flavor-chat-ia'); ?></option>
-                        <option value="large" <?php selected($appearance['trigger_size'] ?? '', 'large'); ?>><?php esc_html_e('Grande (70px)', 'flavor-chat-ia'); ?></option>
+                        <option value="small" <?php selected($appearance['trigger_size'] ?? '', 'small'); ?>><?php esc_html_e('Pequeño (50px)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="medium" <?php selected($appearance['trigger_size'] ?? 'medium', 'medium'); ?>><?php esc_html_e('Mediano (60px)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="large" <?php selected($appearance['trigger_size'] ?? '', 'large'); ?>><?php esc_html_e('Grande (70px)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Animación', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Animación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <select name="flavor_chat_ia_settings[appearance][trigger_animation]">
-                        <option value="none" <?php selected($appearance['trigger_animation'] ?? '', 'none'); ?>><?php esc_html_e('Sin animación', 'flavor-chat-ia'); ?></option>
-                        <option value="pulse" <?php selected($appearance['trigger_animation'] ?? 'pulse', 'pulse'); ?>><?php esc_html_e('Pulso', 'flavor-chat-ia'); ?></option>
-                        <option value="bounce" <?php selected($appearance['trigger_animation'] ?? '', 'bounce'); ?>><?php esc_html_e('Rebote', 'flavor-chat-ia'); ?></option>
+                        <option value="none" <?php selected($appearance['trigger_animation'] ?? '', 'none'); ?>><?php esc_html_e('Sin animación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="pulse" <?php selected($appearance['trigger_animation'] ?? 'pulse', 'pulse'); ?>><?php esc_html_e('Pulso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="bounce" <?php selected($appearance['trigger_animation'] ?? '', 'bounce'); ?>><?php esc_html_e('Rebote', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Ancho del widget', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Ancho del widget', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number" name="flavor_chat_ia_settings[appearance][widget_width]"
                            value="<?php echo esc_attr($appearance['widget_width'] ?? 380); ?>" min="300" max="500" class="small-text"> px
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Alto del widget', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Alto del widget', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number" name="flavor_chat_ia_settings[appearance][widget_height]"
                            value="<?php echo esc_attr($appearance['widget_height'] ?? 500); ?>" min="400" max="700" class="small-text"> px
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Bordes redondeados', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Bordes redondeados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number" name="flavor_chat_ia_settings[appearance][border_radius]"
                            value="<?php echo esc_attr($appearance['border_radius'] ?? 16); ?>" min="0" max="30" class="small-text"> px
@@ -1547,10 +1569,10 @@ class Flavor_Chat_Settings {
             </tr>
         </table>
 
-        <h2><?php esc_html_e('Mensajes', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Mensajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('Mensaje de bienvenida', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Mensaje de bienvenida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <textarea name="flavor_chat_ia_settings[appearance][welcome_message]" rows="3" class="large-text"><?php
                         echo esc_textarea($appearance['welcome_message'] ?? '¡Hola! Soy tu asistente virtual. ¿En qué puedo ayudarte?');
@@ -1558,7 +1580,7 @@ class Flavor_Chat_Settings {
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Placeholder del input', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Placeholder del input', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="text" name="flavor_chat_ia_settings[appearance][placeholder]"
                            value="<?php echo esc_attr($appearance['placeholder'] ?? 'Escribe tu mensaje...'); ?>" class="regular-text">
@@ -1652,24 +1674,24 @@ class Flavor_Chat_Settings {
         <div style="background:#f0f6fc;border:1px solid #c3daf5;border-radius:8px;padding:16px 20px;margin-bottom:20px;">
             <h3 style="margin:0 0 8px 0;">
                 <span class="dashicons dashicons-admin-site-alt3"></span>
-                <?php esc_html_e('Autoconfiguración con IA', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Autoconfiguración con IA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
-            <p style="margin:0 0 12px 0;"><?php esc_html_e('Analiza tu sitio y genera acciones rápidas relevantes automáticamente.', 'flavor-chat-ia'); ?></p>
+            <p style="margin:0 0 12px 0;"><?php esc_html_e('Analiza tu sitio y genera acciones rápidas relevantes automáticamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <button type="button" id="autoconfig-quick-actions" class="button button-primary" data-section="quick_actions">
-                <?php esc_html_e('Generar acciones con IA', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Generar acciones con IA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <span class="autoconfig-status" style="margin-left:12px;"></span>
         </div>
 
-        <p class="description"><?php esc_html_e('Botones que aparecen debajo del mensaje de bienvenida.', 'flavor-chat-ia'); ?></p>
+        <p class="description"><?php esc_html_e('Botones que aparecen debajo del mensaje de bienvenida.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th style="width:50px;"><?php esc_html_e('Activo', 'flavor-chat-ia'); ?></th>
-                    <th style="width:60px;"><?php esc_html_e('Icono', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Texto del botón', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Mensaje que envía', 'flavor-chat-ia'); ?></th>
+                    <th style="width:50px;"><?php esc_html_e('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width:60px;"><?php esc_html_e('Icono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Texto del botón', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Mensaje que envía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -1704,7 +1726,7 @@ class Flavor_Chat_Settings {
             </tbody>
         </table>
 
-        <h3 style="margin-top:30px;"><?php esc_html_e('Acciones personalizadas', 'flavor-chat-ia'); ?></h3>
+        <h3 style="margin-top:30px;"><?php esc_html_e('Acciones personalizadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         <div id="custom-actions-container">
             <?php
             $custom_actions = $settings['custom_quick_actions'] ?? [];
@@ -1712,14 +1734,14 @@ class Flavor_Chat_Settings {
             ?>
             <div class="custom-action-item" style="background:#fff;padding:10px;border:1px solid #ccd0d4;margin-bottom:10px;">
                 <input type="text" name="flavor_chat_ia_settings[custom_quick_actions][<?php echo $index; ?>][label]"
-                       value="<?php echo esc_attr($custom['label'] ?? ''); ?>" placeholder="<?php esc_attr_e('Texto del botón', 'flavor-chat-ia'); ?>" class="regular-text">
+                       value="<?php echo esc_attr($custom['label'] ?? ''); ?>" placeholder="<?php esc_attr_e('Texto del botón', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" class="regular-text">
                 <input type="text" name="flavor_chat_ia_settings[custom_quick_actions][<?php echo $index; ?>][prompt]"
-                       value="<?php echo esc_attr($custom['prompt'] ?? ''); ?>" placeholder="<?php esc_attr_e('Mensaje que envía', 'flavor-chat-ia'); ?>" class="large-text">
-                <button type="button" class="button remove-custom-action"><?php esc_html_e('Eliminar', 'flavor-chat-ia'); ?></button>
+                       value="<?php echo esc_attr($custom['prompt'] ?? ''); ?>" placeholder="<?php esc_attr_e('Mensaje que envía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" class="large-text">
+                <button type="button" class="button remove-custom-action"><?php esc_html_e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
             </div>
             <?php endforeach; ?>
         </div>
-        <button type="button" id="add-custom-action" class="button"><?php esc_html_e('+ Añadir acción', 'flavor-chat-ia'); ?></button>
+        <button type="button" id="add-custom-action" class="button"><?php esc_html_e('+ Añadir acción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
 
         <script>
         jQuery(function($) {
@@ -1756,26 +1778,26 @@ class Flavor_Chat_Settings {
         <div style="background:#f0f6fc;border:1px solid #c3daf5;border-radius:8px;padding:16px 20px;margin-bottom:20px;">
             <h3 style="margin:0 0 8px 0;">
                 <span class="dashicons dashicons-admin-site-alt3"></span>
-                <?php esc_html_e('Autoconfiguración con IA', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Autoconfiguración con IA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
-            <p style="margin:0 0 12px 0;"><?php esc_html_e('Analiza tu sitio web (páginas, productos, etc.) y genera automáticamente la información del negocio, FAQs y políticas.', 'flavor-chat-ia'); ?></p>
+            <p style="margin:0 0 12px 0;"><?php esc_html_e('Analiza tu sitio web (páginas, productos, etc.) y genera automáticamente la información del negocio, FAQs y políticas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <button type="button" id="autoconfig-knowledge" class="button button-primary" data-section="knowledge">
-                <?php esc_html_e('Analizar sitio y autoconfigurar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Analizar sitio y autoconfigurar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <span class="autoconfig-status" style="margin-left:12px;"></span>
         </div>
 
-        <h2><?php esc_html_e('Información del Negocio', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Información del Negocio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('Nombre del negocio', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Nombre del negocio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="text" name="flavor_chat_ia_settings[business_info][name]"
                            value="<?php echo esc_attr($business_info['name'] ?? get_bloginfo('name')); ?>" class="large-text">
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <textarea name="flavor_chat_ia_settings[business_info][description]" rows="4" class="large-text"><?php
                         echo esc_textarea($business_info['description'] ?? '');
@@ -1783,41 +1805,41 @@ class Flavor_Chat_Settings {
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Dirección', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Dirección', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td><input type="text" name="flavor_chat_ia_settings[business_info][address]" value="<?php echo esc_attr($business_info['address'] ?? ''); ?>" class="large-text"></td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Teléfono', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td><input type="text" name="flavor_chat_ia_settings[business_info][phone]" value="<?php echo esc_attr($business_info['phone'] ?? ''); ?>" class="regular-text"></td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Email', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td><input type="email" name="flavor_chat_ia_settings[business_info][email]" value="<?php echo esc_attr($business_info['email'] ?? ''); ?>" class="regular-text"></td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Horario', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Horario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td><input type="text" name="flavor_chat_ia_settings[business_info][schedule]" value="<?php echo esc_attr($business_info['schedule'] ?? ''); ?>" class="large-text" placeholder="L-V 9:00-18:00"></td>
             </tr>
         </table>
 
         <hr>
 
-        <h2><?php esc_html_e('Temas del negocio (Antispam)', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Temas del negocio (Antispam)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('Temas permitidos', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Temas permitidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="text" name="flavor_chat_ia_settings[business_topics]"
                            value="<?php echo esc_attr(implode(', ', $settings['business_topics'] ?? [])); ?>" class="large-text"
                            placeholder="productos, pedidos, envíos, devoluciones">
-                    <p class="description"><?php esc_html_e('Lista de temas separados por comas. El chat solo responderá sobre estos temas.', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Lista de temas separados por comas. El chat solo responderá sobre estos temas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
         </table>
 
         <hr>
 
-        <h2><?php esc_html_e('Preguntas Frecuentes (FAQs)', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Preguntas Frecuentes (FAQs)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <div id="faqs-container">
             <?php
             if (empty($faqs)) $faqs = [['question' => '', 'answer' => '']];
@@ -1825,16 +1847,16 @@ class Flavor_Chat_Settings {
             ?>
             <div class="faq-item" style="background:#fff;padding:15px;border:1px solid #ccd0d4;margin-bottom:10px;">
                 <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
-                    <strong><?php printf(__('FAQ #%d', 'flavor-chat-ia'), $index + 1); ?></strong>
-                    <button type="button" class="button remove-faq"><?php esc_html_e('Eliminar', 'flavor-chat-ia'); ?></button>
+                    <strong><?php printf(__('FAQ #%d', FLAVOR_PLATFORM_TEXT_DOMAIN), $index + 1); ?></strong>
+                    <button type="button" class="button remove-faq"><?php esc_html_e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                 </div>
                 <p>
-                    <label><?php esc_html_e('Pregunta:', 'flavor-chat-ia'); ?></label>
+                    <label><?php esc_html_e('Pregunta:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="text" name="flavor_chat_ia_settings[faqs][<?php echo $index; ?>][question]"
                            value="<?php echo esc_attr($faq['question'] ?? ''); ?>" class="large-text">
                 </p>
                 <p>
-                    <label><?php esc_html_e('Respuesta:', 'flavor-chat-ia'); ?></label>
+                    <label><?php esc_html_e('Respuesta:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <textarea name="flavor_chat_ia_settings[faqs][<?php echo $index; ?>][answer]" rows="3" class="large-text"><?php
                         echo esc_textarea($faq['answer'] ?? '');
                     ?></textarea>
@@ -1842,22 +1864,22 @@ class Flavor_Chat_Settings {
             </div>
             <?php endforeach; ?>
         </div>
-        <button type="button" id="add-faq" class="button"><?php esc_html_e('+ Añadir FAQ', 'flavor-chat-ia'); ?></button>
+        <button type="button" id="add-faq" class="button"><?php esc_html_e('+ Añadir FAQ', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
 
         <hr>
 
-        <h2><?php esc_html_e('Políticas', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Políticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('Política de envíos', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Política de envíos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td><textarea name="flavor_chat_ia_settings[policies][shipping]" rows="3" class="large-text"><?php echo esc_textarea($policies['shipping'] ?? ''); ?></textarea></td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Política de devoluciones', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Política de devoluciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td><textarea name="flavor_chat_ia_settings[policies][returns]" rows="3" class="large-text"><?php echo esc_textarea($policies['returns'] ?? ''); ?></textarea></td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Política de privacidad', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Política de privacidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td><textarea name="flavor_chat_ia_settings[policies][privacy]" rows="3" class="large-text"><?php echo esc_textarea($policies['privacy'] ?? ''); ?></textarea></td>
             </tr>
         </table>
@@ -1894,21 +1916,21 @@ class Flavor_Chat_Settings {
         <div style="background:#f0f6fc;border:1px solid #c3daf5;border-radius:8px;padding:16px 20px;margin-bottom:20px;">
             <h3 style="margin:0 0 8px 0;">
                 <span class="dashicons dashicons-admin-site-alt3"></span>
-                <?php esc_html_e('Autoconfiguración con IA', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Autoconfiguración con IA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
-            <p style="margin:0 0 12px 0;"><?php esc_html_e('Detecta automáticamente la información de contacto de tu sitio.', 'flavor-chat-ia'); ?></p>
+            <p style="margin:0 0 12px 0;"><?php esc_html_e('Detecta automáticamente la información de contacto de tu sitio.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <button type="button" id="autoconfig-escalation" class="button button-primary" data-section="escalation">
-                <?php esc_html_e('Detectar datos de contacto', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Detectar datos de contacto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <span class="autoconfig-status" style="margin-left:12px;"></span>
         </div>
 
-        <h2><?php esc_html_e('Opciones de Contacto', 'flavor-chat-ia'); ?></h2>
-        <p class="description"><?php esc_html_e('Se mostrarán cuando el chat escale a atención humana.', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Opciones de Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p class="description"><?php esc_html_e('Se mostrarán cuando el chat escale a atención humana.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('WhatsApp', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('WhatsApp', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="text" name="flavor_chat_ia_settings[escalation_whatsapp]"
                            value="<?php echo esc_attr($settings['escalation_whatsapp'] ?? ''); ?>"
@@ -1916,7 +1938,7 @@ class Flavor_Chat_Settings {
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Teléfono', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="text" name="flavor_chat_ia_settings[escalation_phone]"
                            value="<?php echo esc_attr($settings['escalation_phone'] ?? ''); ?>"
@@ -1924,7 +1946,7 @@ class Flavor_Chat_Settings {
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Email', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="email" name="flavor_chat_ia_settings[escalation_email]"
                            value="<?php echo esc_attr($settings['escalation_email'] ?? ''); ?>"
@@ -1932,7 +1954,7 @@ class Flavor_Chat_Settings {
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Horario de atención', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Horario de atención', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="text" name="flavor_chat_ia_settings[escalation_hours]"
                            value="<?php echo esc_attr($settings['escalation_hours'] ?? ''); ?>"
@@ -1959,213 +1981,213 @@ class Flavor_Chat_Settings {
         // Módulos conocidos (hardcoded para cuando no hay loader)
         $known_modules = [
             'woocommerce' => [
-                'name' => __('WooCommerce', 'flavor-chat-ia'),
-                'description' => __('Integración con tienda WooCommerce - permite consultar productos, pedidos, etc.', 'flavor-chat-ia'),
+                'name' => __('WooCommerce', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Integración con tienda WooCommerce - permite consultar productos, pedidos, etc.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => 'WooCommerce',
             ],
             'banco_tiempo' => [
-                'name' => __('Banco de Tiempo', 'flavor-chat-ia'),
-                'description' => __('Sistema de intercambio de servicios y tiempo entre miembros.', 'flavor-chat-ia'),
+                'name' => __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Sistema de intercambio de servicios y tiempo entre miembros.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'grupos_consumo' => [
-                'name' => __('Grupos de Consumo', 'flavor-chat-ia'),
-                'description' => __('Gestión de pedidos colectivos y grupos de consumo.', 'flavor-chat-ia'),
+                'name' => __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Gestión de pedidos colectivos y grupos de consumo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'marketplace' => [
-                'name' => __('Marketplace', 'flavor-chat-ia'),
-                'description' => __('Anuncios de regalo, venta e intercambio entre usuarios.', 'flavor-chat-ia'),
+                'name' => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Anuncios de regalo, venta e intercambio entre usuarios.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'facturas' => [
-                'name' => __('Facturas', 'flavor-chat-ia'),
-                'description' => __('Gestión de facturas y facturación para administradores desde la app móvil.', 'flavor-chat-ia'),
+                'name' => __('Facturas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Gestión de facturas y facturación para administradores desde la app móvil.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'fichaje_empleados' => [
-                'name' => __('Fichaje de Empleados', 'flavor-chat-ia'),
-                'description' => __('Control de horarios, asistencia y fichaje de empleados desde la app móvil.', 'flavor-chat-ia'),
+                'name' => __('Fichaje de Empleados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Control de horarios, asistencia y fichaje de empleados desde la app móvil.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'eventos' => [
-                'name' => __('Eventos', 'flavor-chat-ia'),
-                'description' => __('Gestión de eventos comunitarios, actividades y encuentros desde la app móvil.', 'flavor-chat-ia'),
+                'name' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Gestión de eventos comunitarios, actividades y encuentros desde la app móvil.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'socios' => [
-                'name' => __('Gestión de Miembros', 'flavor-chat-ia'),
-                'description' => __('Gestión de miembros, cuotas y membresías desde la app móvil.', 'flavor-chat-ia'),
+                'name' => __('Gestión de Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Gestión de miembros, cuotas y membresías desde la app móvil.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'incidencias' => [
-                'name' => __('Incidencias Urbanas', 'flavor-chat-ia'),
-                'description' => __('Reporte y seguimiento de incidencias en el barrio (baches, farolas, etc.).', 'flavor-chat-ia'),
+                'name' => __('Incidencias Urbanas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Reporte y seguimiento de incidencias en el barrio (baches, farolas, etc.).', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'participacion' => [
-                'name' => __('Participación Ciudadana', 'flavor-chat-ia'),
-                'description' => __('Propuestas, votaciones y consultas ciudadanas.', 'flavor-chat-ia'),
+                'name' => __('Participación Ciudadana', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Propuestas, votaciones y consultas ciudadanas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'presupuestos_participativos' => [
-                'name' => __('Presupuestos Participativos', 'flavor-chat-ia'),
-                'description' => __('Sistema de presupuestos participativos - los vecinos deciden cómo gastar el presupuesto municipal.', 'flavor-chat-ia'),
+                'name' => __('Presupuestos Participativos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Sistema de presupuestos participativos - los vecinos deciden cómo gastar el presupuesto municipal.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'avisos_municipales' => [
-                'name' => __('Avisos Municipales', 'flavor-chat-ia'),
-                'description' => __('Canal oficial de comunicación del ayuntamiento con los vecinos.', 'flavor-chat-ia'),
+                'name' => __('Avisos Municipales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Canal oficial de comunicación del ayuntamiento con los vecinos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'advertising' => [
-                'name' => __('Publicidad', 'flavor-chat-ia'),
-                'description' => __('Gestión de anuncios y campañas publicitarias en la plataforma.', 'flavor-chat-ia'),
+                'name' => __('Publicidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Gestión de anuncios y campañas publicitarias en la plataforma.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'ayuda_vecinal' => [
-                'name' => __('Ayuda Vecinal', 'flavor-chat-ia'),
-                'description' => __('Red de ayuda mutua entre vecinos - ofrece y solicita ayuda en tu comunidad.', 'flavor-chat-ia'),
+                'name' => __('Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Red de ayuda mutua entre vecinos - ofrece y solicita ayuda en tu comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'biblioteca' => [
-                'name' => __('Biblioteca Comunitaria', 'flavor-chat-ia'),
-                'description' => __('Sistema de préstamo e intercambio de libros entre vecinos.', 'flavor-chat-ia'),
+                'name' => __('Biblioteca Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Sistema de préstamo e intercambio de libros entre vecinos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'bicicletas_compartidas' => [
-                'name' => __('Bicicletas Compartidas', 'flavor-chat-ia'),
-                'description' => __('Sistema de préstamo y uso compartido de bicicletas comunitarias.', 'flavor-chat-ia'),
+                'name' => __('Bicicletas Compartidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Sistema de préstamo y uso compartido de bicicletas comunitarias.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'carpooling' => [
-                'name' => __('Carpooling', 'flavor-chat-ia'),
-                'description' => __('Sistema de viajes compartidos para reducir costes y emisiones.', 'flavor-chat-ia'),
+                'name' => __('Carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Sistema de viajes compartidos para reducir costes y emisiones.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'chat_grupos' => [
-                'name' => __('Chat de Grupos', 'flavor-chat-ia'),
-                'description' => __('Canales de chat grupales para comunicación comunitaria.', 'flavor-chat-ia'),
+                'name' => __('Chat de Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Canales de chat grupales para comunicación comunitaria.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'chat_interno' => [
-                'name' => __('Chat Interno', 'flavor-chat-ia'),
-                'description' => __('Mensajería directa entre usuarios de la comunidad.', 'flavor-chat-ia'),
+                'name' => __('Chat Interno', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Mensajería directa entre usuarios de la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'compostaje' => [
-                'name' => __('Compostaje Comunitario', 'flavor-chat-ia'),
-                'description' => __('Gestión de composteras comunitarias y recogida de residuos orgánicos.', 'flavor-chat-ia'),
+                'name' => __('Compostaje Comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Gestión de composteras comunitarias y recogida de residuos orgánicos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'energia_comunitaria' => [
-                'name' => __('Energia Comunitaria', 'flavor-chat-ia'),
-                'description' => __('Gestión de comunidades energéticas, instalaciones, reparto, cierres y liquidaciones.', 'flavor-chat-ia'),
+                'name' => __('Energia Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Gestión de comunidades energéticas, instalaciones, reparto, cierres y liquidaciones.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'cursos' => [
-                'name' => __('Cursos y Formación', 'flavor-chat-ia'),
-                'description' => __('Plataforma de cursos y formación continua comunitaria.', 'flavor-chat-ia'),
+                'name' => __('Cursos y Formación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Plataforma de cursos y formación continua comunitaria.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'empresarial' => [
-                'name' => __('Gestión Empresarial', 'flavor-chat-ia'),
-                'description' => __('Herramientas de gestión empresarial: CRM, proyectos, tareas.', 'flavor-chat-ia'),
+                'name' => __('Gestión Empresarial', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Herramientas de gestión empresarial: CRM, proyectos, tareas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'espacios_comunes' => [
-                'name' => __('Espacios Comunes', 'flavor-chat-ia'),
-                'description' => __('Reserva y gestión de espacios comunitarios compartidos.', 'flavor-chat-ia'),
+                'name' => __('Espacios Comunes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Reserva y gestión de espacios comunitarios compartidos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'huertos_urbanos' => [
-                'name' => __('Huertos Urbanos', 'flavor-chat-ia'),
-                'description' => __('Gestión de parcelas, riego y cosechas en huertos urbanos comunitarios.', 'flavor-chat-ia'),
+                'name' => __('Huertos Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Gestión de parcelas, riego y cosechas en huertos urbanos comunitarios.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'multimedia' => [
-                'name' => __('Multimedia', 'flavor-chat-ia'),
-                'description' => __('Galería multimedia compartida: fotos, vídeos y documentos de la comunidad.', 'flavor-chat-ia'),
+                'name' => __('Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Galería multimedia compartida: fotos, vídeos y documentos de la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'parkings' => [
-                'name' => __('Parkings Compartidos', 'flavor-chat-ia'),
-                'description' => __('Sistema de plazas de aparcamiento compartidas entre vecinos.', 'flavor-chat-ia'),
+                'name' => __('Parkings Compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Sistema de plazas de aparcamiento compartidas entre vecinos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'podcast' => [
-                'name' => __('Podcast', 'flavor-chat-ia'),
-                'description' => __('Plataforma de podcast comunitario con episodios y suscripciones.', 'flavor-chat-ia'),
+                'name' => __('Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Plataforma de podcast comunitario con episodios y suscripciones.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'radio' => [
-                'name' => __('Radio Comunitaria', 'flavor-chat-ia'),
-                'description' => __('Emisora de radio comunitaria con programación y emisión en directo.', 'flavor-chat-ia'),
+                'name' => __('Radio Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Emisora de radio comunitaria con programación y emisión en directo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'reciclaje' => [
-                'name' => __('Reciclaje', 'flavor-chat-ia'),
-                'description' => __('Puntos de reciclaje, recogida selectiva y estadísticas ambientales.', 'flavor-chat-ia'),
+                'name' => __('Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Puntos de reciclaje, recogida selectiva y estadísticas ambientales.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'red_social' => [
-                'name' => __('Red Social', 'flavor-chat-ia'),
-                'description' => __('Red social interna con publicaciones, perfiles y seguidores.', 'flavor-chat-ia'),
+                'name' => __('Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Red social interna con publicaciones, perfiles y seguidores.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'talleres' => [
-                'name' => __('Talleres Prácticos', 'flavor-chat-ia'),
-                'description' => __('Talleres prácticos y workshops organizados por y para la comunidad.', 'flavor-chat-ia'),
+                'name' => __('Talleres Prácticos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Talleres prácticos y workshops organizados por y para la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'tramites' => [
-                'name' => __('Trámites y Gestiones', 'flavor-chat-ia'),
-                'description' => __('Sistema de gestión de trámites administrativos y solicitudes ciudadanas.', 'flavor-chat-ia'),
+                'name' => __('Trámites y Gestiones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Sistema de gestión de trámites administrativos y solicitudes ciudadanas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'transparencia' => [
-                'name' => __('Portal de Transparencia', 'flavor-chat-ia'),
-                'description' => __('Portal de transparencia con datos públicos, presupuestos y rendición de cuentas.', 'flavor-chat-ia'),
+                'name' => __('Portal de Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Portal de transparencia con datos públicos, presupuestos y rendición de cuentas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'colectivos' => [
-                'name' => __('Colectivos', 'flavor-chat-ia'),
-                'description' => __('Gestión de colectivos y asociaciones locales.', 'flavor-chat-ia'),
+                'name' => __('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Gestión de colectivos y asociaciones locales.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'foros' => [
-                'name' => __('Foros', 'flavor-chat-ia'),
-                'description' => __('Foros de discusión comunitarios por temáticas.', 'flavor-chat-ia'),
+                'name' => __('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Foros de discusión comunitarios por temáticas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'clientes' => [
-                'name' => __('Clientes', 'flavor-chat-ia'),
-                'description' => __('Gestión de clientes y CRM integrado.', 'flavor-chat-ia'),
+                'name' => __('Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Gestión de clientes y CRM integrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'comunidades' => [
-                'name' => __('Comunidades', 'flavor-chat-ia'),
-                'description' => __('Gestión de comunidades y sub-comunidades.', 'flavor-chat-ia'),
+                'name' => __('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Gestión de comunidades y sub-comunidades.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'bares' => [
-                'name' => __('Bares y Hostelería', 'flavor-chat-ia'),
-                'description' => __('Gestión de bares, restaurantes y hostelería local.', 'flavor-chat-ia'),
+                'name' => __('Bares y Hostelería', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Gestión de bares, restaurantes y hostelería local.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'trading_ia' => [
-                'name' => __('Trading IA', 'flavor-chat-ia'),
-                'description' => __('Herramientas de trading asistidas por inteligencia artificial.', 'flavor-chat-ia'),
+                'name' => __('Trading IA', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Herramientas de trading asistidas por inteligencia artificial.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'dex_solana' => [
-                'name' => __('DEX Solana', 'flavor-chat-ia'),
-                'description' => __('Exchange descentralizado en la blockchain de Solana.', 'flavor-chat-ia'),
+                'name' => __('DEX Solana', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Exchange descentralizado en la blockchain de Solana.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
             'themacle' => [
-                'name' => __('Themacle Web Components', 'flavor-chat-ia'),
-                'description' => __('Componentes web universales reutilizables para el constructor de páginas: heros, grids, galerías, CTAs y más.', 'flavor-chat-ia'),
+                'name' => __('Themacle Web Components', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Componentes web universales reutilizables para el constructor de páginas: heros, grids, galerías, CTAs y más.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'requires' => null,
             ],
         ];
@@ -2186,7 +2208,7 @@ class Flavor_Chat_Settings {
                 $module['name'] = ucwords(str_replace(['_', '-'], ' ', $id));
             }
             if (!isset($module['description']) || $module['description'] === '') {
-                $module['description'] = $available_modules[$id]['description'] ?? __('Módulo disponible para activar.', 'flavor-chat-ia');
+                $module['description'] = $available_modules[$id]['description'] ?? __('Módulo disponible para activar.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             }
 
             if (isset($available_modules[$id])) {
@@ -2194,7 +2216,7 @@ class Flavor_Chat_Settings {
                 // permitir activarlo de todas formas si no tiene dependencias externas
                 if (!$available_modules[$id]['can_activate'] && !$module['requires']) {
                     $module['can_activate'] = true;
-                    $module['activation_error'] = __('Las tablas se crearán automáticamente al activar', 'flavor-chat-ia');
+                    $module['activation_error'] = __('Las tablas se crearán automáticamente al activar', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 } else {
                     $module['can_activate'] = $available_modules[$id]['can_activate'];
                     $module['activation_error'] = $available_modules[$id]['activation_error'];
@@ -2204,7 +2226,7 @@ class Flavor_Chat_Settings {
                 // Si no está en available_modules, verificar solo dependencias externas
                 $module['can_activate'] = !$module['requires'] || class_exists($module['requires']);
                 $module['activation_error'] = $module['requires'] && !class_exists($module['requires'])
-                    ? sprintf(__('Requiere %s instalado', 'flavor-chat-ia'), $module['requires'])
+                    ? sprintf(__('Requiere %s instalado', FLAVOR_PLATFORM_TEXT_DOMAIN), $module['requires'])
                     : '';
                 $module['is_loaded'] = false;
             }
@@ -2212,23 +2234,23 @@ class Flavor_Chat_Settings {
         ?>
         <input type="hidden" name="flavor_chat_ia_settings[_tab]" value="modules">
 
-        <h2><?php esc_html_e('Módulos Web del Portal', 'flavor-chat-ia'); ?></h2>
-        <p><?php esc_html_e('Selecciona qué módulos se cargan en WordPress, en el portal web y en las integraciones base del plugin.', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Módulos Web del Portal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p><?php esc_html_e('Selecciona qué módulos se cargan en WordPress, en el portal web y en las integraciones base del plugin.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
         <div class="notice notice-info inline" style="margin: 20px 0;">
             <p>
-                <strong><?php esc_html_e('Importante:', 'flavor-chat-ia'); ?></strong>
-                <?php esc_html_e('Los módulos activos se mostrarán en las apps móviles y sus funcionalidades estarán disponibles vía API.', 'flavor-chat-ia'); ?>
+                <strong><?php esc_html_e('Importante:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                <?php esc_html_e('Los módulos activos se mostrarán en las apps móviles y sus funcionalidades estarán disponibles vía API.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
 
         <table class="widefat striped">
             <thead>
                 <tr>
-                    <th style="width: 50px;"><?php esc_html_e('Activo', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Módulo', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 120px;"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 50px;"><?php esc_html_e('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 120px;"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -2254,7 +2276,7 @@ class Flavor_Chat_Settings {
                             <button type="button"
                                     class="button button-small"
                                     onclick="document.getElementById('module-config-<?php echo esc_attr($module_id); ?>').style.display='block';">
-                                ⚙️ <?php esc_html_e('Configurar', 'flavor-chat-ia'); ?>
+                                ⚙️ <?php esc_html_e('Configurar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         <?php endif; ?>
                     </td>
@@ -2264,14 +2286,14 @@ class Flavor_Chat_Settings {
                     <td>
                         <?php if ($can_activate): ?>
                             <?php if ($module_data['is_loaded']): ?>
-                                <span style="color: #46b450;">✓ <?php esc_html_e('Cargado', 'flavor-chat-ia'); ?></span>
+                                <span style="color: #46b450;">✓ <?php esc_html_e('Cargado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <?php elseif ($is_active): ?>
-                                <span style="color: #0073aa;">○ <?php esc_html_e('Activo', 'flavor-chat-ia'); ?></span>
+                                <span style="color: #0073aa;">○ <?php esc_html_e('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <?php else: ?>
-                                <span style="color: #999;">○ <?php esc_html_e('Disponible', 'flavor-chat-ia'); ?></span>
+                                <span style="color: #999;">○ <?php esc_html_e('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <?php endif; ?>
                         <?php else: ?>
-                            <span style="color: #dc3232;">✗ <?php esc_html_e('No disponible', 'flavor-chat-ia'); ?></span>
+                            <span style="color: #dc3232;">✗ <?php esc_html_e('No disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <?php if ($module_data['activation_error']): ?>
                                 <br><small><?php echo esc_html($module_data['activation_error']); ?></small>
                             <?php endif; ?>
@@ -2292,32 +2314,32 @@ class Flavor_Chat_Settings {
 
         <div class="notice notice-warning inline" style="margin-top: 20px;">
             <p>
-                <strong><?php esc_html_e('Nota:', 'flavor-chat-ia'); ?></strong>
-                <?php esc_html_e('Los módulos marcados como "No disponible" requieren que instales primero el plugin o extensión correspondiente.', 'flavor-chat-ia'); ?>
+                <strong><?php esc_html_e('Nota:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                <?php esc_html_e('Los módulos marcados como "No disponible" requieren que instales primero el plugin o extensión correspondiente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
 
-        <h3 style="margin-top: 30px;"><?php esc_html_e('Endpoints de API', 'flavor-chat-ia'); ?></h3>
-        <p><?php esc_html_e('Las apps móviles acceden a estos endpoints para consumir los módulos activos:', 'flavor-chat-ia'); ?></p>
+        <h3 style="margin-top: 30px;"><?php esc_html_e('Endpoints de API', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+        <p><?php esc_html_e('Las apps móviles acceden a estos endpoints para consumir los módulos activos:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
         <table class="widefat">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Módulo', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Endpoint', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Endpoint', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td><?php esc_html_e('Información del sitio', 'flavor-chat-ia'); ?></td>
+                    <td><?php esc_html_e('Información del sitio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                     <td><code><?php echo esc_url(rest_url('app-discovery/v1/info')); ?></code></td>
                 </tr>
                 <tr>
-                    <td><?php esc_html_e('Lista de módulos', 'flavor-chat-ia'); ?></td>
+                    <td><?php esc_html_e('Lista de módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                     <td><code><?php echo esc_url(rest_url('app-discovery/v1/modules')); ?></code></td>
                 </tr>
                 <tr>
-                    <td><?php esc_html_e('Tema y colores', 'flavor-chat-ia'); ?></td>
+                    <td><?php esc_html_e('Tema y colores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                     <td><code><?php echo esc_url(rest_url('app-discovery/v1/theme')); ?></code></td>
                 </tr>
                 <?php foreach ($known_modules as $module_id => $module_data):
@@ -2346,11 +2368,11 @@ class Flavor_Chat_Settings {
         <div style="background: white; border: 1px solid #ddd; border-radius: 4px; padding: 15px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                 <h3 style="margin: 0;">
-                    <?php printf(__('Configuración de %s', 'flavor-chat-ia'), $module_data['name']); ?>
+                    <?php printf(__('Configuración de %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $module_data['name']); ?>
                 </h3>
                 <button type="button" class="button"
                         onclick="document.getElementById('module-config-<?php echo esc_attr($module_id); ?>').style.display='none';">
-                    <?php esc_html_e('Cerrar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
 
@@ -2416,15 +2438,15 @@ class Flavor_Chat_Settings {
         <div class="info-box info">
             <span class="dashicons dashicons-info info-box-icon"></span>
             <div class="info-box-content">
-                <p><strong><?php esc_html_e('Banco de Tiempo', 'flavor-chat-ia'); ?></strong></p>
-                <p><?php esc_html_e('Sistema de intercambio de servicios donde el tiempo es la moneda. Cada hora de servicio ofrecido = 1 hora de tiempo que puedes recibir.', 'flavor-chat-ia'); ?></p>
+                <p><strong><?php esc_html_e('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></p>
+                <p><?php esc_html_e('Sistema de intercambio de servicios donde el tiempo es la moneda. Cada hora de servicio ofrecido = 1 hora de tiempo que puedes recibir.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
 
-        <h4><?php esc_html_e('⏱️ Configuración de Intercambios', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('⏱️ Configuración de Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('Horas mínimas por intercambio', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Horas mínimas por intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number"
                            name="flavor_chat_ia_module_banco_tiempo[hora_minima_intercambio]"
@@ -2433,11 +2455,11 @@ class Flavor_Chat_Settings {
                            min="0.5"
                            max="24"
                            class="small-text"> horas
-                    <p class="description"><?php esc_html_e('Duración mínima de un intercambio de servicios', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Duración mínima de un intercambio de servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Horas máximas por intercambio', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Horas máximas por intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number"
                            name="flavor_chat_ia_module_banco_tiempo[hora_maxima_intercambio]"
@@ -2446,27 +2468,27 @@ class Flavor_Chat_Settings {
                            min="1"
                            max="24"
                            class="small-text"> horas
-                    <p class="description"><?php esc_html_e('Duración máxima de un intercambio de servicios', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Duración máxima de un intercambio de servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Validación de intercambios', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Validación de intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox"
                                name="flavor_chat_ia_module_banco_tiempo[requiere_validacion]"
                                value="1"
                                <?php checked($requiere_validacion); ?>>
-                        <?php esc_html_e('Requiere que ambas partes confirmen el intercambio realizado', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Requiere que ambas partes confirmen el intercambio realizado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
         </table>
 
-        <h4 style="margin-top: 30px;"><?php esc_html_e('💰 Gestión de Saldos', 'flavor-chat-ia'); ?></h4>
+        <h4 style="margin-top: 30px;"><?php esc_html_e('💰 Gestión de Saldos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('Saldo inicial (horas)', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Saldo inicial (horas)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number"
                            name="flavor_chat_ia_module_banco_tiempo[saldo_inicial_horas]"
@@ -2475,11 +2497,11 @@ class Flavor_Chat_Settings {
                            min="0"
                            max="50"
                            class="small-text"> horas
-                    <p class="description"><?php esc_html_e('Horas que reciben los nuevos miembros al unirse al banco de tiempo', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Horas que reciben los nuevos miembros al unirse al banco de tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Permitir saldo negativo', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Permitir saldo negativo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox"
@@ -2487,12 +2509,12 @@ class Flavor_Chat_Settings {
                                value="1"
                                <?php checked($permite_negativos); ?>
                                id="permite_saldo_negativo">
-                        <?php esc_html_e('Los usuarios pueden recibir servicios aunque no tengan horas disponibles', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Los usuarios pueden recibir servicios aunque no tengan horas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Límite de saldo negativo', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Límite de saldo negativo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number"
                            name="flavor_chat_ia_module_banco_tiempo[limite_saldo_negativo]"
@@ -2501,27 +2523,27 @@ class Flavor_Chat_Settings {
                            min="-50"
                            max="0"
                            class="small-text"> horas
-                    <p class="description"><?php esc_html_e('Máximo de horas negativas permitidas (ej: -10 significa que pueden deber hasta 10 horas)', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Máximo de horas negativas permitidas (ej: -10 significa que pueden deber hasta 10 horas)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
         </table>
 
-        <h4 style="margin-top: 30px;"><?php esc_html_e('🔔 Notificaciones', 'flavor-chat-ia'); ?></h4>
+        <h4 style="margin-top: 30px;"><?php esc_html_e('🔔 Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('Notificar saldo bajo', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Notificar saldo bajo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox"
                                name="flavor_chat_ia_module_banco_tiempo[notificar_saldo_bajo]"
                                value="1"
                                <?php checked($notificar_saldo_bajo); ?>>
-                        <?php esc_html_e('Avisar a los usuarios cuando su saldo sea bajo', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Avisar a los usuarios cuando su saldo sea bajo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Umbral de notificación', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Umbral de notificación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number"
                            name="flavor_chat_ia_module_banco_tiempo[umbral_notificacion_saldo]"
@@ -2530,7 +2552,7 @@ class Flavor_Chat_Settings {
                            min="0"
                            max="10"
                            class="small-text"> horas
-                    <p class="description"><?php esc_html_e('Notificar cuando el saldo esté por debajo de este número de horas', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Notificar cuando el saldo esté por debajo de este número de horas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
         </table>
@@ -2552,15 +2574,15 @@ class Flavor_Chat_Settings {
         <div class="info-box success">
             <span class="dashicons dashicons-groups info-box-icon"></span>
             <div class="info-box-content">
-                <p><strong><?php esc_html_e('Grupos de Consumo', 'flavor-chat-ia'); ?></strong></p>
-                <p><?php esc_html_e('Organiza pedidos colectivos a productores locales. Los miembros se unen a pedidos, comparten gastos de transporte y reciben productos frescos.', 'flavor-chat-ia'); ?></p>
+                <p><strong><?php esc_html_e('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></p>
+                <p><?php esc_html_e('Organiza pedidos colectivos a productores locales. Los miembros se unen a pedidos, comparten gastos de transporte y reciben productos frescos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
 
-        <h4><?php esc_html_e('📦 Configuración de Pedidos', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('📦 Configuración de Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('Días para realizar pedido', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Días para realizar pedido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number"
                            name="flavor_chat_ia_module_grupos_consumo[dias_para_pedido]"
@@ -2568,11 +2590,11 @@ class Flavor_Chat_Settings {
                            min="1"
                            max="30"
                            class="small-text"> días
-                    <p class="description"><?php esc_html_e('Plazo para que los miembros se unan a un pedido colectivo antes de cerrarlo', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Plazo para que los miembros se unan a un pedido colectivo antes de cerrarlo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Pedido mínimo por persona (€)', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Pedido mínimo por persona (€)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number"
                            name="flavor_chat_ia_module_grupos_consumo[pedido_minimo]"
@@ -2580,11 +2602,11 @@ class Flavor_Chat_Settings {
                            step="0.01"
                            min="0"
                            class="small-text"> €
-                    <p class="description"><?php esc_html_e('Importe mínimo que debe pedir cada participante', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Importe mínimo que debe pedir cada participante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Participantes mínimos', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Participantes mínimos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number"
                            name="flavor_chat_ia_module_grupos_consumo[participantes_minimos]"
@@ -2592,39 +2614,39 @@ class Flavor_Chat_Settings {
                            min="2"
                            max="50"
                            class="small-text"> personas
-                    <p class="description"><?php esc_html_e('Número mínimo de participantes para confirmar un pedido colectivo', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Número mínimo de participantes para confirmar un pedido colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Múltiples pedidos', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Múltiples pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox"
                                name="flavor_chat_ia_module_grupos_consumo[permite_multiples_pedidos]"
                                value="1"
                                <?php checked($permite_multiples); ?>>
-                        <?php esc_html_e('Permitir varios pedidos abiertos al mismo tiempo', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Permitir varios pedidos abiertos al mismo tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
         </table>
 
-        <h4 style="margin-top: 30px;"><?php esc_html_e('🚚 Logística y Reparto', 'flavor-chat-ia'); ?></h4>
+        <h4 style="margin-top: 30px;"><?php esc_html_e('🚚 Logística y Reparto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('Coordinar reparto', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Coordinar reparto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox"
                                name="flavor_chat_ia_module_grupos_consumo[coordina_reparto]"
                                value="1"
                                <?php checked($coordina_reparto); ?>>
-                        <?php esc_html_e('Gestionar puntos de recogida y horarios desde la app', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Gestionar puntos de recogida y horarios desde la app', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Gastos de gestión (%)', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Gastos de gestión (%)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number"
                            name="flavor_chat_ia_module_grupos_consumo[porcentaje_gastos_gestion]"
@@ -2633,22 +2655,22 @@ class Flavor_Chat_Settings {
                            min="0"
                            max="20"
                            class="small-text"> %
-                    <p class="description"><?php esc_html_e('Porcentaje añadido para cubrir gastos de gestión y transporte', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Porcentaje añadido para cubrir gastos de gestión y transporte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
         </table>
 
-        <h4 style="margin-top: 30px;"><?php esc_html_e('💳 Pagos', 'flavor-chat-ia'); ?></h4>
+        <h4 style="margin-top: 30px;"><?php esc_html_e('💳 Pagos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('Pago anticipado', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Pago anticipado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox"
                                name="flavor_chat_ia_module_grupos_consumo[requiere_pago_anticipado]"
                                value="1"
                                <?php checked($requiere_pago); ?>>
-                        <?php esc_html_e('Requerir pago antes de confirmar participación', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Requerir pago antes de confirmar participación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
@@ -2671,64 +2693,64 @@ class Flavor_Chat_Settings {
         <div class="info-box warning">
             <span class="dashicons dashicons-store info-box-icon"></span>
             <div class="info-box-content">
-                <p><strong><?php esc_html_e('Marketplace Comunitario', 'flavor-chat-ia'); ?></strong></p>
-                <p><?php esc_html_e('Plataforma para compartir, intercambiar y vender objetos entre vecinos. Fomenta la economía circular y reduce el desperdicio.', 'flavor-chat-ia'); ?></p>
+                <p><strong><?php esc_html_e('Marketplace Comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></p>
+                <p><?php esc_html_e('Plataforma para compartir, intercambiar y vender objetos entre vecinos. Fomenta la economía circular y reduce el desperdicio.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
 
-        <h4><?php esc_html_e('🏷️ Tipos de Anuncios', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('🏷️ Tipos de Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('Tipos permitidos', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Tipos permitidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label style="display: block; margin-bottom: 8px;">
                         <input type="checkbox" name="flavor_chat_ia_module_marketplace[permite_venta]" value="1" <?php checked($permite_venta); ?>>
-                        <?php esc_html_e('Venta - Objetos en venta con precio', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Venta - Objetos en venta con precio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <label style="display: block; margin-bottom: 8px;">
                         <input type="checkbox" name="flavor_chat_ia_module_marketplace[permite_intercambio]" value="1" <?php checked($permite_intercambio); ?>>
-                        <?php esc_html_e('Intercambio - Trueque de objetos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Intercambio - Trueque de objetos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <label>
                         <input type="checkbox" name="flavor_chat_ia_module_marketplace[permite_regalo]" value="1" <?php checked($permite_regalo); ?>>
-                        <?php esc_html_e('Regalo - Objetos gratuitos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Regalo - Objetos gratuitos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
         </table>
 
-        <h4 style="margin-top: 30px;"><?php esc_html_e('📋 Gestión de Anuncios', 'flavor-chat-ia'); ?></h4>
+        <h4 style="margin-top: 30px;"><?php esc_html_e('📋 Gestión de Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('Moderación', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox" name="flavor_chat_ia_module_marketplace[requiere_moderacion]" value="1" <?php checked($requiere_moderacion); ?>>
-                        <?php esc_html_e('Los anuncios requieren aprobación antes de publicarse', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Los anuncios requieren aprobación antes de publicarse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Días de vigencia', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Días de vigencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number" name="flavor_chat_ia_module_marketplace[dias_vigencia_anuncio]"
                            value="<?php echo esc_attr($dias_vigencia); ?>" min="7" max="90" class="small-text"> días
-                    <p class="description"><?php esc_html_e('Los anuncios se archivarán automáticamente después de este tiempo', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Los anuncios se archivarán automáticamente después de este tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Máximo de fotos', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Máximo de fotos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number" name="flavor_chat_ia_module_marketplace[max_fotos_por_anuncio]"
                            value="<?php echo esc_attr($max_fotos); ?>" min="1" max="10" class="small-text"> fotos
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Sistema de reservas', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Sistema de reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox" name="flavor_chat_ia_module_marketplace[permite_reservas]" value="1" <?php checked($permite_reservas); ?>>
-                        <?php esc_html_e('Permitir reservar objetos temporalmente', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Permitir reservar objetos temporalmente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
@@ -2745,19 +2767,19 @@ class Flavor_Chat_Settings {
         ?>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('Mostrar stock disponible', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Mostrar stock disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox"
                                name="flavor_chat_ia_module_woocommerce[mostrar_stock]"
                                value="1"
                                <?php checked($mostrar_stock); ?>>
-                        <?php esc_html_e('Mostrar información de stock en búsquedas', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Mostrar información de stock en búsquedas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Productos por búsqueda', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Productos por búsqueda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number"
                            name="flavor_chat_ia_module_woocommerce[limite_productos_busqueda]"
@@ -2765,7 +2787,7 @@ class Flavor_Chat_Settings {
                            min="5"
                            max="50"
                            class="small-text">
-                    <p class="description"><?php esc_html_e('Número máximo de productos a mostrar en cada búsqueda', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Número máximo de productos a mostrar en cada búsqueda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
         </table>
@@ -2787,24 +2809,24 @@ class Flavor_Chat_Settings {
         <div class="info-box info">
             <span class="dashicons dashicons-media-spreadsheet info-box-icon"></span>
             <div class="info-box-content">
-                <p><strong><?php esc_html_e('Gestión de Facturas', 'flavor-chat-ia'); ?></strong></p>
-                <p><?php esc_html_e('Sistema completo de facturación para administradores. Crea, envía y gestiona facturas directamente desde la app móvil.', 'flavor-chat-ia'); ?></p>
+                <p><strong><?php esc_html_e('Gestión de Facturas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></p>
+                <p><?php esc_html_e('Sistema completo de facturación para administradores. Crea, envía y gestiona facturas directamente desde la app móvil.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
 
-        <h4><?php esc_html_e('📄 Configuración de Facturas', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('📄 Configuración de Facturas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('Serie predeterminada', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Serie predeterminada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="text" name="flavor_chat_ia_module_facturas[serie_predeterminada]"
                            value="<?php echo esc_attr($serie); ?>"
                            maxlength="3" class="small-text" style="text-transform: uppercase;">
-                    <p class="description"><?php esc_html_e('Letra(s) para identificar la serie (ej: F, A, B)', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Letra(s) para identificar la serie (ej: F, A, B)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Formato de numeración', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Formato de numeración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <select name="flavor_chat_ia_module_facturas[formato_numero_factura]">
                         <option value="SERIE-YYYY-NNNN" <?php selected($formato_numero, 'SERIE-YYYY-NNNN'); ?>>F-2025-0001</option>
@@ -2814,7 +2836,7 @@ class Flavor_Chat_Settings {
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('IVA predeterminado (%)', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('IVA predeterminado (%)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <select name="flavor_chat_ia_module_facturas[iva_predeterminado]">
                         <option value="0" <?php selected($iva, 0); ?>>0% (Exento)</option>
@@ -2825,45 +2847,45 @@ class Flavor_Chat_Settings {
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Días de vencimiento', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Días de vencimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number" name="flavor_chat_ia_module_facturas[dias_vencimiento_predeterminado]"
                            value="<?php echo esc_attr($dias_vencimiento); ?>" min="0" max="180" class="small-text"> días
-                    <p class="description"><?php esc_html_e('Plazo de pago predeterminado desde la emisión', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Plazo de pago predeterminado desde la emisión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
         </table>
 
-        <h4 style="margin-top: 30px;"><?php esc_html_e('📧 Envío de Facturas', 'flavor-chat-ia'); ?></h4>
+        <h4 style="margin-top: 30px;"><?php esc_html_e('📧 Envío de Facturas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('Envío automático por email', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Envío automático por email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox" name="flavor_chat_ia_module_facturas[enviar_email_automatico]" value="1" <?php checked($enviar_email); ?>>
-                        <?php esc_html_e('Enviar factura por email automáticamente al crearla', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Enviar factura por email automáticamente al crearla', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
         </table>
 
-        <h4 style="margin-top: 30px;"><?php esc_html_e('⚙️ Opciones Avanzadas', 'flavor-chat-ia'); ?></h4>
+        <h4 style="margin-top: 30px;"><?php esc_html_e('⚙️ Opciones Avanzadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('Prefijo facturas rectificativas', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Prefijo facturas rectificativas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="text" name="flavor_chat_ia_module_facturas[prefijo_rectificativa]"
                            value="<?php echo esc_attr($prefijo_rectificativa); ?>"
                            maxlength="3" class="small-text" style="text-transform: uppercase;">
-                    <p class="description"><?php esc_html_e('Letra para identificar facturas rectificativas (ej: R)', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Letra para identificar facturas rectificativas (ej: R)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Texto pie de factura', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Texto pie de factura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <textarea name="flavor_chat_ia_module_facturas[texto_pie_factura]"
                               rows="3" class="large-text"><?php echo esc_textarea($texto_pie); ?></textarea>
-                    <p class="description"><?php esc_html_e('Texto adicional en el pie de todas las facturas', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Texto adicional en el pie de todas las facturas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
         </table>
@@ -2881,7 +2903,7 @@ class Flavor_Chat_Settings {
         ?>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('Horario de entrada', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Horario de entrada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="time"
                            name="flavor_chat_ia_module_fichaje_empleados[horario_entrada]"
@@ -2890,7 +2912,7 @@ class Flavor_Chat_Settings {
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Horario de salida', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Horario de salida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="time"
                            name="flavor_chat_ia_module_fichaje_empleados[horario_salida]"
@@ -2899,7 +2921,7 @@ class Flavor_Chat_Settings {
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Tiempo de gracia (minutos)', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Tiempo de gracia (minutos)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number"
                            name="flavor_chat_ia_module_fichaje_empleados[tiempo_gracia]"
@@ -2907,18 +2929,18 @@ class Flavor_Chat_Settings {
                            min="0"
                            max="60"
                            class="small-text"> minutos
-                    <p class="description"><?php esc_html_e('Minutos de margen antes de marcar retraso', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Minutos de margen antes de marcar retraso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Requiere geolocalización', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Requiere geolocalización', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox"
                                name="flavor_chat_ia_module_fichaje_empleados[requiere_geolocalizacion]"
                                value="1"
                                <?php checked($requiere_gps); ?>>
-                        <?php esc_html_e('Obligar a activar GPS para fichar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Obligar a activar GPS para fichar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
@@ -2936,31 +2958,31 @@ class Flavor_Chat_Settings {
         ?>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('Eventos requieren aprobación', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Eventos requieren aprobación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox"
                                name="flavor_chat_ia_module_eventos[requiere_aprobacion]"
                                value="1"
                                <?php checked($requiere_aprobacion); ?>>
-                        <?php esc_html_e('Los eventos creados por usuarios deben ser aprobados por administrador', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Los eventos creados por usuarios deben ser aprobados por administrador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Permitir acompañantes', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Permitir acompañantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox"
                                name="flavor_chat_ia_module_eventos[permite_invitados]"
                                value="1"
                                <?php checked($permite_invitados); ?>>
-                        <?php esc_html_e('Los asistentes pueden registrar acompañantes', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Los asistentes pueden registrar acompañantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Días de recordatorio', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Días de recordatorio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number"
                            name="flavor_chat_ia_module_eventos[dias_recordatorio]"
@@ -2968,7 +2990,7 @@ class Flavor_Chat_Settings {
                            min="0"
                            max="7"
                            class="small-text"> días
-                    <p class="description"><?php esc_html_e('Días antes del evento para enviar recordatorio (0 = desactivado)', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Días antes del evento para enviar recordatorio (0 = desactivado)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
         </table>
@@ -2986,7 +3008,7 @@ class Flavor_Chat_Settings {
         ?>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('Cuota mensual (€)', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Cuota mensual (€)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number"
                            name="flavor_chat_ia_module_socios[cuota_mensual]"
@@ -2997,7 +3019,7 @@ class Flavor_Chat_Settings {
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Cuota anual (€)', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Cuota anual (€)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number"
                            name="flavor_chat_ia_module_socios[cuota_anual]"
@@ -3008,7 +3030,7 @@ class Flavor_Chat_Settings {
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Día de cargo mensual', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Día de cargo mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number"
                            name="flavor_chat_ia_module_socios[dia_cargo]"
@@ -3016,18 +3038,18 @@ class Flavor_Chat_Settings {
                            min="1"
                            max="28"
                            class="small-text">
-                    <p class="description"><?php esc_html_e('Día del mes para cargo automático de cuotas', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Día del mes para cargo automático de cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Permitir cuota reducida', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Permitir cuota reducida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox"
                                name="flavor_chat_ia_module_socios[permite_cuota_reducida]"
                                value="1"
                                <?php checked($permite_reducida); ?>>
-                        <?php esc_html_e('Permitir cuotas reducidas para casos especiales', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Permitir cuotas reducidas para casos especiales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
@@ -3046,43 +3068,43 @@ class Flavor_Chat_Settings {
         ?>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('Requiere ubicación GPS', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Requiere ubicación GPS', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox"
                                name="flavor_chat_ia_module_incidencias[requiere_ubicacion_gps]"
                                value="1"
                                <?php checked($requiere_gps); ?>>
-                        <?php esc_html_e('Las incidencias deben incluir ubicación GPS', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Las incidencias deben incluir ubicación GPS', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Requiere fotografía', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Requiere fotografía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox"
                                name="flavor_chat_ia_module_incidencias[requiere_foto]"
                                value="1"
                                <?php checked($requiere_foto); ?>>
-                        <?php esc_html_e('Las incidencias deben incluir al menos una foto', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Las incidencias deben incluir al menos una foto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Visibilidad pública', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Visibilidad pública', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox"
                                name="flavor_chat_ia_module_incidencias[visibilidad_publica]"
                                value="1"
                                <?php checked($visibilidad); ?>>
-                        <?php esc_html_e('Las incidencias son visibles públicamente para todos los vecinos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Las incidencias son visibles públicamente para todos los vecinos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Votos para marcar como urgente', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Votos para marcar como urgente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number"
                            name="flavor_chat_ia_module_incidencias[votos_para_urgencia]"
@@ -3090,7 +3112,7 @@ class Flavor_Chat_Settings {
                            min="1"
                            max="50"
                            class="small-text">
-                    <p class="description"><?php esc_html_e('Número de votos necesarios para cambiar prioridad a urgente', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Número de votos necesarios para cambiar prioridad a urgente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
         </table>
@@ -3108,31 +3130,31 @@ class Flavor_Chat_Settings {
         ?>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('Verificación de vecinos', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Verificación de vecinos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox"
                                name="flavor_chat_ia_module_participacion[requiere_verificacion]"
                                value="1"
                                <?php checked($requiere_verificacion); ?>>
-                        <?php esc_html_e('Solo vecinos verificados pueden votar y crear propuestas', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Solo vecinos verificados pueden votar y crear propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Moderación de propuestas', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Moderación de propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox"
                                name="flavor_chat_ia_module_participacion[moderacion_propuestas]"
                                value="1"
                                <?php checked($moderacion); ?>>
-                        <?php esc_html_e('Las propuestas requieren aprobación del ayuntamiento antes de publicarse', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Las propuestas requieren aprobación del ayuntamiento antes de publicarse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Votos necesarios para propuesta', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Votos necesarios para propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number"
                            name="flavor_chat_ia_module_participacion[votos_necesarios_propuesta]"
@@ -3140,11 +3162,11 @@ class Flavor_Chat_Settings {
                            min="5"
                            max="500"
                            class="small-text">
-                    <p class="description"><?php esc_html_e('Apoyos mínimos para que una propuesta sea evaluada', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Apoyos mínimos para que una propuesta sea evaluada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Duración de votaciones (días)', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Duración de votaciones (días)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number"
                            name="flavor_chat_ia_module_participacion[duracion_votacion_dias]"
@@ -3152,7 +3174,7 @@ class Flavor_Chat_Settings {
                            min="1"
                            max="30"
                            class="small-text"> días
-                    <p class="description"><?php esc_html_e('Tiempo por defecto para las votaciones', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Tiempo por defecto para las votaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
         </table>
@@ -3170,7 +3192,7 @@ class Flavor_Chat_Settings {
         ?>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('Presupuesto anual (€)', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Presupuesto anual (€)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number"
                            name="flavor_chat_ia_module_presupuestos_participativos[presupuesto_anual]"
@@ -3178,11 +3200,11 @@ class Flavor_Chat_Settings {
                            step="1000"
                            min="0"
                            class="regular-text"> €
-                    <p class="description"><?php esc_html_e('Presupuesto total disponible para proyectos ciudadanos', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Presupuesto total disponible para proyectos ciudadanos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Votos máximos por persona', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Votos máximos por persona', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number"
                            name="flavor_chat_ia_module_presupuestos_participativos[votos_maximos_por_persona]"
@@ -3190,11 +3212,11 @@ class Flavor_Chat_Settings {
                            min="1"
                            max="10"
                            class="small-text">
-                    <p class="description"><?php esc_html_e('Número máximo de proyectos que puede votar cada persona', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php esc_html_e('Número máximo de proyectos que puede votar cada persona', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Monto mínimo de proyecto (€)', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Monto mínimo de proyecto (€)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number"
                            name="flavor_chat_ia_module_presupuestos_participativos[proyecto_monto_minimo]"
@@ -3205,7 +3227,7 @@ class Flavor_Chat_Settings {
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Monto máximo de proyecto (€)', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Monto máximo de proyecto (€)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <input type="number"
                            name="flavor_chat_ia_module_presupuestos_participativos[proyecto_monto_maximo]"
@@ -3228,33 +3250,33 @@ class Flavor_Chat_Settings {
         ?>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e('Notificaciones push', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Notificaciones push', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox"
                                name="flavor_chat_ia_module_avisos_municipales[enviar_push_notifications]"
                                value="1"
                                <?php checked($enviar_push); ?>>
-                        <?php esc_html_e('Enviar notificaciones push para avisos urgentes', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Enviar notificaciones push para avisos urgentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('Confirmación de lectura', 'flavor-chat-ia'); ?></th>
+                <th><?php esc_html_e('Confirmación de lectura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 <td>
                     <label>
                         <input type="checkbox"
                                name="flavor_chat_ia_module_avisos_municipales[requiere_confirmacion_lectura]"
                                value="1"
                                <?php checked($requiere_confirmacion); ?>>
-                        <?php esc_html_e('Requerir confirmación de lectura en avisos importantes', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Requerir confirmación de lectura en avisos importantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                 </td>
             </tr>
             <tr>
                 <td colspan="2">
                     <p class="description">
-                        <?php esc_html_e('Categorías disponibles: Urgente, Corte de servicio, Evento, Informativo, Tráfico, Obras, Convocatoria', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Categorías disponibles: Urgente, Corte de servicio, Evento, Informativo, Tráfico, Obras, Convocatoria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </td>
             </tr>
@@ -3286,112 +3308,112 @@ class Flavor_Chat_Settings {
 
         if (empty($settings)) {
             ?>
-            <p><?php esc_html_e('Este módulo no tiene configuraciones adicionales.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('Este módulo no tiene configuraciones adicionales.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php
             return;
         }
 
         // Mapeo de nombres legibles para las claves de configuración
         $etiquetas = [
-            'disponible_app' => __('Disponible en', 'flavor-chat-ia'),
-            'requiere_verificacion_usuarios' => __('Requiere verificación de usuarios', 'flavor-chat-ia'),
-            'requiere_verificacion_usuario' => __('Requiere verificación de usuario', 'flavor-chat-ia'),
-            'requiere_verificacion_conductor' => __('Requiere verificación de conductor', 'flavor-chat-ia'),
-            'permite_valoraciones' => __('Permite valoraciones', 'flavor-chat-ia'),
-            'sistema_puntos_solidaridad' => __('Sistema de puntos solidarios', 'flavor-chat-ia'),
-            'sistema_puntos' => __('Sistema de puntos', 'flavor-chat-ia'),
-            'puntos_por_ayuda' => __('Puntos por ayuda', 'flavor-chat-ia'),
-            'puntos_por_prestamo' => __('Puntos por préstamo', 'flavor-chat-ia'),
-            'puntos_por_kg' => __('Puntos por Kg', 'flavor-chat-ia'),
-            'puntos_por_kg_depositado' => __('Puntos por Kg depositado', 'flavor-chat-ia'),
-            'permite_donaciones' => __('Permite donaciones', 'flavor-chat-ia'),
-            'permite_intercambios' => __('Permite intercambios', 'flavor-chat-ia'),
-            'permite_prestamos' => __('Permite préstamos', 'flavor-chat-ia'),
-            'duracion_prestamo_dias' => __('Duración del préstamo (días)', 'flavor-chat-ia'),
-            'renovaciones_maximas' => __('Renovaciones máximas', 'flavor-chat-ia'),
-            'permite_reservas' => __('Permite reservas', 'flavor-chat-ia'),
-            'permite_reservas_anticipadas' => __('Permite reservas anticipadas', 'flavor-chat-ia'),
-            'permite_reservas_recurrentes' => __('Permite reservas recurrentes', 'flavor-chat-ia'),
-            'requiere_verificacion_isbn' => __('Requiere verificación ISBN', 'flavor-chat-ia'),
-            'requiere_fianza' => __('Requiere fianza', 'flavor-chat-ia'),
-            'importe_fianza' => __('Importe de fianza (€)', 'flavor-chat-ia'),
-            'importe_fianza_predeterminado' => __('Fianza predeterminada (€)', 'flavor-chat-ia'),
-            'precio_hora' => __('Precio por hora (€)', 'flavor-chat-ia'),
-            'precio_dia' => __('Precio por día (€)', 'flavor-chat-ia'),
-            'precio_mes' => __('Precio por mes (€)', 'flavor-chat-ia'),
-            'precio_medio_hora' => __('Precio medio/hora (€)', 'flavor-chat-ia'),
-            'precio_medio_dia' => __('Precio medio/día (€)', 'flavor-chat-ia'),
-            'precio_medio_mes' => __('Precio medio/mes (€)', 'flavor-chat-ia'),
-            'precio_por_km' => __('Precio por Km (€)', 'flavor-chat-ia'),
-            'precio_parcela_anual' => __('Precio parcela anual (€)', 'flavor-chat-ia'),
-            'duracion_maxima_prestamo_dias' => __('Duración máxima préstamo (días)', 'flavor-chat-ia'),
-            'duracion_maxima_horas' => __('Duración máxima (horas)', 'flavor-chat-ia'),
-            'duracion_maxima_programa' => __('Duración máxima programa (min)', 'flavor-chat-ia'),
-            'duracion_maxima_minutos' => __('Duración máxima (min)', 'flavor-chat-ia'),
-            'horas_anticipacion_reserva' => __('Horas anticipación reserva', 'flavor-chat-ia'),
-            'horas_anticipacion_minima' => __('Horas anticipación mínima', 'flavor-chat-ia'),
-            'horas_anticipacion_cancelacion' => __('Horas anticipación cancelación', 'flavor-chat-ia'),
-            'dias_anticipacion_maxima' => __('Días anticipación máxima', 'flavor-chat-ia'),
-            'dias_anticipacion_cancelacion' => __('Días anticipación cancelación', 'flavor-chat-ia'),
-            'requiere_aprobacion_organizadores' => __('Requiere aprobación de organizadores', 'flavor-chat-ia'),
-            'requiere_aprobacion_instructores' => __('Requiere aprobación de instructores', 'flavor-chat-ia'),
-            'requiere_aprobacion_programas' => __('Requiere aprobación de programas', 'flavor-chat-ia'),
-            'permite_talleres_gratuitos' => __('Permite talleres gratuitos', 'flavor-chat-ia'),
-            'permite_talleres_pago' => __('Permite talleres de pago', 'flavor-chat-ia'),
-            'permite_cursos_gratuitos' => __('Permite cursos gratuitos', 'flavor-chat-ia'),
-            'permite_cursos_pago' => __('Permite cursos de pago', 'flavor-chat-ia'),
-            'permite_cursos_online' => __('Permite cursos online', 'flavor-chat-ia'),
-            'permite_cursos_presenciales' => __('Permite cursos presenciales', 'flavor-chat-ia'),
-            'permite_certificados' => __('Permite certificados', 'flavor-chat-ia'),
-            'requiere_evaluacion' => __('Requiere evaluación', 'flavor-chat-ia'),
-            'comision_talleres_pago' => __('Comisión talleres de pago (%)', 'flavor-chat-ia'),
-            'comision_cursos_pago' => __('Comisión cursos de pago (%)', 'flavor-chat-ia'),
-            'comision_plataforma_porcentaje' => __('Comisión plataforma (%)', 'flavor-chat-ia'),
-            'max_participantes_por_taller' => __('Máx. participantes por taller', 'flavor-chat-ia'),
-            'max_alumnos_por_curso' => __('Máx. alumnos por curso', 'flavor-chat-ia'),
-            'max_pasajeros_por_viaje' => __('Máx. pasajeros por viaje', 'flavor-chat-ia'),
-            'min_participantes_para_confirmar' => __('Mín. participantes para confirmar', 'flavor-chat-ia'),
-            'permite_lista_espera' => __('Permite lista de espera', 'flavor-chat-ia'),
-            'permite_mascotas' => __('Permite mascotas', 'flavor-chat-ia'),
-            'permite_equipaje_grande' => __('Permite equipaje grande', 'flavor-chat-ia'),
-            'radio_busqueda_km' => __('Radio de búsqueda (Km)', 'flavor-chat-ia'),
-            'calculo_coste_automatico' => __('Cálculo de coste automático', 'flavor-chat-ia'),
-            'permite_subir' => __('Permite subir contenido', 'flavor-chat-ia'),
-            'permite_subir_episodios' => __('Permite subir episodios', 'flavor-chat-ia'),
-            'requiere_moderacion' => __('Requiere moderación', 'flavor-chat-ia'),
-            'permite_comentarios' => __('Permite comentarios', 'flavor-chat-ia'),
-            'permite_albumes' => __('Permite álbumes', 'flavor-chat-ia'),
-            'permite_geolocalizacion' => __('Permite geolocalización', 'flavor-chat-ia'),
-            'genera_thumbnails' => __('Genera miniaturas', 'flavor-chat-ia'),
-            'genera_rss' => __('Genera feed RSS', 'flavor-chat-ia'),
-            'transcripcion_automatica' => __('Transcripción automática', 'flavor-chat-ia'),
-            'max_tamano_imagen_mb' => __('Tamaño máx. imagen (MB)', 'flavor-chat-ia'),
-            'max_tamano_video_mb' => __('Tamaño máx. vídeo (MB)', 'flavor-chat-ia'),
-            'tamano_maximo_mb' => __('Tamaño máximo (MB)', 'flavor-chat-ia'),
-            'requiere_fotos' => __('Requiere fotos', 'flavor-chat-ia'),
-            'notificar_liberacion' => __('Notificar liberación', 'flavor-chat-ia'),
-            'notificar_mantenimiento' => __('Notificar mantenimiento', 'flavor-chat-ia'),
-            'notificar_recogidas' => __('Notificar recogidas', 'flavor-chat-ia'),
-            'notificar_compost_listo' => __('Notificar compost listo', 'flavor-chat-ia'),
-            'permite_alquiler_temporal' => __('Permite alquiler temporal', 'flavor-chat-ia'),
-            'permite_alquiler_permanente' => __('Permite alquiler permanente', 'flavor-chat-ia'),
-            'permite_reportar_problemas' => __('Permite reportar problemas', 'flavor-chat-ia'),
-            'permite_reportar_contenedores' => __('Permite reportar contenedores', 'flavor-chat-ia'),
-            'permite_canje_puntos' => __('Permite canje de puntos', 'flavor-chat-ia'),
-            'permite_recoger_compost' => __('Permite recoger compost', 'flavor-chat-ia'),
-            'permite_solicitar_parcela' => __('Permite solicitar parcela', 'flavor-chat-ia'),
-            'permite_intercambio_cosechas' => __('Permite intercambio de cosechas', 'flavor-chat-ia'),
-            'permite_locutores_comunidad' => __('Permite locutores de la comunidad', 'flavor-chat-ia'),
-            'permite_dedicatorias' => __('Permite dedicatorias', 'flavor-chat-ia'),
-            'chat_en_vivo' => __('Chat en vivo', 'flavor-chat-ia'),
-            'grabacion_automatica' => __('Grabación automática', 'flavor-chat-ia'),
-            'url_stream' => __('URL del stream', 'flavor-chat-ia'),
-            'frecuencia_fm' => __('Frecuencia FM', 'flavor-chat-ia'),
-            'kg_minimos_recogida' => __('Kg mínimos para recogida', 'flavor-chat-ia'),
-            'sistema_turnos_volteo' => __('Sistema de turnos de volteo', 'flavor-chat-ia'),
-            'sistema_turnos_riego' => __('Sistema de turnos de riego', 'flavor-chat-ia'),
-            'requiere_compromiso_asistencia' => __('Requiere compromiso de asistencia', 'flavor-chat-ia'),
-            'horas_minimas_mes' => __('Horas mínimas al mes', 'flavor-chat-ia'),
+            'disponible_app' => __('Disponible en', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'requiere_verificacion_usuarios' => __('Requiere verificación de usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'requiere_verificacion_usuario' => __('Requiere verificación de usuario', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'requiere_verificacion_conductor' => __('Requiere verificación de conductor', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_valoraciones' => __('Permite valoraciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'sistema_puntos_solidaridad' => __('Sistema de puntos solidarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'sistema_puntos' => __('Sistema de puntos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'puntos_por_ayuda' => __('Puntos por ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'puntos_por_prestamo' => __('Puntos por préstamo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'puntos_por_kg' => __('Puntos por Kg', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'puntos_por_kg_depositado' => __('Puntos por Kg depositado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_donaciones' => __('Permite donaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_intercambios' => __('Permite intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_prestamos' => __('Permite préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'duracion_prestamo_dias' => __('Duración del préstamo (días)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'renovaciones_maximas' => __('Renovaciones máximas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_reservas' => __('Permite reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_reservas_anticipadas' => __('Permite reservas anticipadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_reservas_recurrentes' => __('Permite reservas recurrentes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'requiere_verificacion_isbn' => __('Requiere verificación ISBN', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'requiere_fianza' => __('Requiere fianza', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'importe_fianza' => __('Importe de fianza (€)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'importe_fianza_predeterminado' => __('Fianza predeterminada (€)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'precio_hora' => __('Precio por hora (€)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'precio_dia' => __('Precio por día (€)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'precio_mes' => __('Precio por mes (€)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'precio_medio_hora' => __('Precio medio/hora (€)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'precio_medio_dia' => __('Precio medio/día (€)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'precio_medio_mes' => __('Precio medio/mes (€)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'precio_por_km' => __('Precio por Km (€)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'precio_parcela_anual' => __('Precio parcela anual (€)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'duracion_maxima_prestamo_dias' => __('Duración máxima préstamo (días)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'duracion_maxima_horas' => __('Duración máxima (horas)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'duracion_maxima_programa' => __('Duración máxima programa (min)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'duracion_maxima_minutos' => __('Duración máxima (min)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'horas_anticipacion_reserva' => __('Horas anticipación reserva', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'horas_anticipacion_minima' => __('Horas anticipación mínima', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'horas_anticipacion_cancelacion' => __('Horas anticipación cancelación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'dias_anticipacion_maxima' => __('Días anticipación máxima', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'dias_anticipacion_cancelacion' => __('Días anticipación cancelación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'requiere_aprobacion_organizadores' => __('Requiere aprobación de organizadores', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'requiere_aprobacion_instructores' => __('Requiere aprobación de instructores', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'requiere_aprobacion_programas' => __('Requiere aprobación de programas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_talleres_gratuitos' => __('Permite talleres gratuitos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_talleres_pago' => __('Permite talleres de pago', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_cursos_gratuitos' => __('Permite cursos gratuitos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_cursos_pago' => __('Permite cursos de pago', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_cursos_online' => __('Permite cursos online', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_cursos_presenciales' => __('Permite cursos presenciales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_certificados' => __('Permite certificados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'requiere_evaluacion' => __('Requiere evaluación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'comision_talleres_pago' => __('Comisión talleres de pago (%)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'comision_cursos_pago' => __('Comisión cursos de pago (%)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'comision_plataforma_porcentaje' => __('Comisión plataforma (%)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'max_participantes_por_taller' => __('Máx. participantes por taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'max_alumnos_por_curso' => __('Máx. alumnos por curso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'max_pasajeros_por_viaje' => __('Máx. pasajeros por viaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'min_participantes_para_confirmar' => __('Mín. participantes para confirmar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_lista_espera' => __('Permite lista de espera', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_mascotas' => __('Permite mascotas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_equipaje_grande' => __('Permite equipaje grande', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'radio_busqueda_km' => __('Radio de búsqueda (Km)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'calculo_coste_automatico' => __('Cálculo de coste automático', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_subir' => __('Permite subir contenido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_subir_episodios' => __('Permite subir episodios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'requiere_moderacion' => __('Requiere moderación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_comentarios' => __('Permite comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_albumes' => __('Permite álbumes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_geolocalizacion' => __('Permite geolocalización', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'genera_thumbnails' => __('Genera miniaturas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'genera_rss' => __('Genera feed RSS', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'transcripcion_automatica' => __('Transcripción automática', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'max_tamano_imagen_mb' => __('Tamaño máx. imagen (MB)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'max_tamano_video_mb' => __('Tamaño máx. vídeo (MB)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'tamano_maximo_mb' => __('Tamaño máximo (MB)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'requiere_fotos' => __('Requiere fotos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'notificar_liberacion' => __('Notificar liberación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'notificar_mantenimiento' => __('Notificar mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'notificar_recogidas' => __('Notificar recogidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'notificar_compost_listo' => __('Notificar compost listo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_alquiler_temporal' => __('Permite alquiler temporal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_alquiler_permanente' => __('Permite alquiler permanente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_reportar_problemas' => __('Permite reportar problemas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_reportar_contenedores' => __('Permite reportar contenedores', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_canje_puntos' => __('Permite canje de puntos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_recoger_compost' => __('Permite recoger compost', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_solicitar_parcela' => __('Permite solicitar parcela', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_intercambio_cosechas' => __('Permite intercambio de cosechas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_locutores_comunidad' => __('Permite locutores de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'permite_dedicatorias' => __('Permite dedicatorias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'chat_en_vivo' => __('Chat en vivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'grabacion_automatica' => __('Grabación automática', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'url_stream' => __('URL del stream', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'frecuencia_fm' => __('Frecuencia FM', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'kg_minimos_recogida' => __('Kg mínimos para recogida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'sistema_turnos_volteo' => __('Sistema de turnos de volteo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'sistema_turnos_riego' => __('Sistema de turnos de riego', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'requiere_compromiso_asistencia' => __('Requiere compromiso de asistencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'horas_minimas_mes' => __('Horas mínimas al mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         ?>
@@ -3409,9 +3431,9 @@ class Flavor_Chat_Settings {
                 <td>
                     <?php if ($clave_ajuste === 'disponible_app'): ?>
                         <select name="<?php echo esc_attr($nombre_campo); ?>">
-                            <option value="cliente" <?php selected($valor_ajuste, 'cliente'); ?>><?php esc_html_e('App cliente', 'flavor-chat-ia'); ?></option>
-                            <option value="admin" <?php selected($valor_ajuste, 'admin'); ?>><?php esc_html_e('App admin', 'flavor-chat-ia'); ?></option>
-                            <option value="ambas" <?php selected($valor_ajuste, 'ambas'); ?>><?php esc_html_e('Ambas apps', 'flavor-chat-ia'); ?></option>
+                            <option value="cliente" <?php selected($valor_ajuste, 'cliente'); ?>><?php esc_html_e('App cliente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="admin" <?php selected($valor_ajuste, 'admin'); ?>><?php esc_html_e('App admin', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="ambas" <?php selected($valor_ajuste, 'ambas'); ?>><?php esc_html_e('Ambas apps', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     <?php elseif (is_bool($valor_ajuste) || ($valor_ajuste === 1 || $valor_ajuste === 0 || $valor_ajuste === '1' || $valor_ajuste === '0') && !is_numeric($clave_ajuste) && strpos($clave_ajuste, 'precio') === false && strpos($clave_ajuste, 'importe') === false && strpos($clave_ajuste, 'puntos') === false && strpos($clave_ajuste, 'max') === false && strpos($clave_ajuste, 'min') === false && strpos($clave_ajuste, 'horas') === false && strpos($clave_ajuste, 'dias') === false && strpos($clave_ajuste, 'kg') === false && strpos($clave_ajuste, 'comision') === false && strpos($clave_ajuste, 'radio') === false && strpos($clave_ajuste, 'tamano') === false && strpos($clave_ajuste, 'duracion') === false): ?>
                         <label>
@@ -3419,7 +3441,7 @@ class Flavor_Chat_Settings {
                                    name="<?php echo esc_attr($nombre_campo); ?>"
                                    value="1"
                                    <?php checked($valor_ajuste); ?>>
-                            <?php esc_html_e('Activado', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Activado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                     <?php elseif (is_numeric($valor_ajuste) && !is_string($valor_ajuste)): ?>
                         <input type="number"
@@ -3432,7 +3454,7 @@ class Flavor_Chat_Settings {
                                name="<?php echo esc_attr($nombre_campo); ?>"
                                value="<?php echo esc_attr(implode(', ', $valor_ajuste)); ?>"
                                class="regular-text">
-                        <p class="description"><?php esc_html_e('Separar con comas', 'flavor-chat-ia'); ?></p>
+                        <p class="description"><?php esc_html_e('Separar con comas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php else: ?>
                         <input type="text"
                                name="<?php echo esc_attr($nombre_campo); ?>"
@@ -3461,13 +3483,13 @@ class Flavor_Chat_Settings {
         <input type="hidden" name="flavor_chat_ia_settings[_tab]" value="firebase_push" />
 
         <div class="flavor-settings-section">
-            <h2><?php esc_html_e('Firebase Push Notifications', 'flavor-chat-ia'); ?></h2>
-            <p class="description"><?php esc_html_e('Configura Firebase Cloud Messaging para enviar notificaciones push a la app Flutter.', 'flavor-chat-ia'); ?></p>
+            <h2><?php esc_html_e('Firebase Push Notifications', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+            <p class="description"><?php esc_html_e('Configura Firebase Cloud Messaging para enviar notificaciones push a la app Flutter.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
             <table class="form-table">
                 <tr>
                     <th scope="row">
-                        <label for="flavor_firebase_project_id"><?php esc_html_e('Project ID de Firebase', 'flavor-chat-ia'); ?></label>
+                        <label for="flavor_firebase_project_id"><?php esc_html_e('Project ID de Firebase', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     </th>
                     <td>
                         <input type="text" id="flavor_firebase_project_id"
@@ -3475,12 +3497,12 @@ class Flavor_Chat_Settings {
                                value="<?php echo esc_attr($project_id); ?>"
                                class="regular-text"
                                placeholder="mi-proyecto-firebase" />
-                        <p class="description"><?php esc_html_e('El ID del proyecto en Firebase Console (Settings > General).', 'flavor-chat-ia'); ?></p>
+                        <p class="description"><?php esc_html_e('El ID del proyecto en Firebase Console (Settings > General).', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row">
-                        <label for="flavor_firebase_service_account"><?php esc_html_e('Service Account JSON', 'flavor-chat-ia'); ?></label>
+                        <label for="flavor_firebase_service_account"><?php esc_html_e('Service Account JSON', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     </th>
                     <td>
                         <textarea id="flavor_firebase_service_account"
@@ -3488,27 +3510,27 @@ class Flavor_Chat_Settings {
                                   rows="10" cols="60"
                                   class="large-text code"
                                   placeholder='{"type": "service_account", "project_id": "...", ...}'><?php echo esc_textarea($service_account_json); ?></textarea>
-                        <p class="description"><?php esc_html_e('Pega aqui el contenido completo del archivo JSON de la Service Account de Firebase. Obtenlo en Firebase Console > Settings > Service Accounts > Generate New Private Key.', 'flavor-chat-ia'); ?></p>
+                        <p class="description"><?php esc_html_e('Pega aqui el contenido completo del archivo JSON de la Service Account de Firebase. Obtenlo en Firebase Console > Settings > Service Accounts > Generate New Private Key.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </td>
                 </tr>
             </table>
 
-            <h3><?php esc_html_e('Estado de la configuracion', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Estado de la configuracion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <table class="form-table">
                 <tr>
-                    <th scope="row"><?php esc_html_e('Project ID', 'flavor-chat-ia'); ?></th>
+                    <th scope="row"><?php esc_html_e('Project ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <?php if (!empty($project_id)): ?>
                             <span class="dashicons dashicons-yes-alt" style="color: #00a32a;"></span>
                             <code><?php echo esc_html($project_id); ?></code>
                         <?php else: ?>
                             <span class="dashicons dashicons-warning" style="color: #dba617;"></span>
-                            <?php esc_html_e('No configurado', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('No configurado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <?php endif; ?>
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row"><?php esc_html_e('Service Account', 'flavor-chat-ia'); ?></th>
+                    <th scope="row"><?php esc_html_e('Service Account', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <?php
                         if (!empty($service_account_json)) {
@@ -3518,33 +3540,33 @@ class Flavor_Chat_Settings {
                                 echo esc_html($sa_data['client_email']);
                             } else {
                                 echo '<span class="dashicons dashicons-dismiss" style="color: #d63638;"></span> ';
-                                esc_html_e('JSON invalido', 'flavor-chat-ia');
+                                esc_html_e('JSON invalido', FLAVOR_PLATFORM_TEXT_DOMAIN);
                             }
                         } else {
                             echo '<span class="dashicons dashicons-warning" style="color: #dba617;"></span> ';
-                            esc_html_e('No configurado', 'flavor-chat-ia');
+                            esc_html_e('No configurado', FLAVOR_PLATFORM_TEXT_DOMAIN);
                         }
                         ?>
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row"><?php esc_html_e('Extension OpenSSL', 'flavor-chat-ia'); ?></th>
+                    <th scope="row"><?php esc_html_e('Extension OpenSSL', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <?php if (extension_loaded('openssl')): ?>
                             <span class="dashicons dashicons-yes-alt" style="color: #00a32a;"></span>
-                            <?php esc_html_e('Disponible', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <?php else: ?>
                             <span class="dashicons dashicons-dismiss" style="color: #d63638;"></span>
-                            <?php esc_html_e('No disponible - Requerida para firmar JWT', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('No disponible - Requerida para firmar JWT', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <?php endif; ?>
                     </td>
                 </tr>
             </table>
 
-            <h3><?php esc_html_e('Prueba de envio', 'flavor-chat-ia'); ?></h3>
-            <p class="description"><?php esc_html_e('Envia una notificacion de prueba a tu usuario actual (debes tener un token FCM registrado).', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('Prueba de envio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p class="description"><?php esc_html_e('Envia una notificacion de prueba a tu usuario actual (debes tener un token FCM registrado).', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <button type="button" id="flavor-test-push-notification" class="button button-secondary">
-                <?php esc_html_e('Enviar notificacion de prueba', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Enviar notificacion de prueba', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <span id="flavor-push-test-result" style="margin-left: 10px;"></span>
 
@@ -3586,38 +3608,38 @@ class Flavor_Chat_Settings {
     private function render_analytics_tab() {
         ?>
         <div class="analytics-period" style="margin-bottom:20px;">
-            <label for="analytics-period"><?php esc_html_e('Período:', 'flavor-chat-ia'); ?></label>
+            <label for="analytics-period"><?php esc_html_e('Período:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <select id="analytics-period">
-                <option value="day"><?php esc_html_e('Hoy', 'flavor-chat-ia'); ?></option>
-                <option value="week" selected><?php esc_html_e('Últimos 7 días', 'flavor-chat-ia'); ?></option>
-                <option value="month"><?php esc_html_e('Últimos 30 días', 'flavor-chat-ia'); ?></option>
+                <option value="day"><?php esc_html_e('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="week" selected><?php esc_html_e('Últimos 7 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="month"><?php esc_html_e('Últimos 30 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             </select>
-            <button type="button" id="refresh-analytics" class="button"><?php esc_html_e('Actualizar', 'flavor-chat-ia'); ?></button>
+            <button type="button" id="refresh-analytics" class="button"><?php esc_html_e('Actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
         </div>
 
         <div class="analytics-grid" id="analytics-container" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px;">
             <div class="analytics-card" style="background:#fff;padding:20px;border:1px solid #ccd0d4;border-radius:4px;">
-                <h3 style="margin:0 0 10px;font-size:14px;color:#666;"><?php esc_html_e('Conversaciones', 'flavor-chat-ia'); ?></h3>
+                <h3 style="margin:0 0 10px;font-size:14px;color:#666;"><?php esc_html_e('Conversaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div class="analytics-value" id="stat-conversations" style="font-size:28px;font-weight:bold;">-</div>
             </div>
             <div class="analytics-card" style="background:#fff;padding:20px;border:1px solid #ccd0d4;border-radius:4px;">
-                <h3 style="margin:0 0 10px;font-size:14px;color:#666;"><?php esc_html_e('Mensajes Totales', 'flavor-chat-ia'); ?></h3>
+                <h3 style="margin:0 0 10px;font-size:14px;color:#666;"><?php esc_html_e('Mensajes Totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div class="analytics-value" id="stat-messages" style="font-size:28px;font-weight:bold;">-</div>
             </div>
             <div class="analytics-card" style="background:#fff;padding:20px;border:1px solid #ccd0d4;border-radius:4px;">
-                <h3 style="margin:0 0 10px;font-size:14px;color:#666;"><?php esc_html_e('Promedio msgs/conv', 'flavor-chat-ia'); ?></h3>
+                <h3 style="margin:0 0 10px;font-size:14px;color:#666;"><?php esc_html_e('Promedio msgs/conv', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div class="analytics-value" id="stat-avg-messages" style="font-size:28px;font-weight:bold;">-</div>
             </div>
             <div class="analytics-card" style="background:#fff;padding:20px;border:1px solid #ccd0d4;border-radius:4px;">
-                <h3 style="margin:0 0 10px;font-size:14px;color:#666;"><?php esc_html_e('Escaladas', 'flavor-chat-ia'); ?></h3>
+                <h3 style="margin:0 0 10px;font-size:14px;color:#666;"><?php esc_html_e('Escaladas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div class="analytics-value" id="stat-escalated" style="font-size:28px;font-weight:bold;">-</div>
             </div>
             <div class="analytics-card" style="background:#fff;padding:20px;border:1px solid #ccd0d4;border-radius:4px;">
-                <h3 style="margin:0 0 10px;font-size:14px;color:#666;"><?php esc_html_e('Conversiones', 'flavor-chat-ia'); ?></h3>
+                <h3 style="margin:0 0 10px;font-size:14px;color:#666;"><?php esc_html_e('Conversiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div class="analytics-value" id="stat-conversions" style="font-size:28px;font-weight:bold;">-</div>
             </div>
             <div class="analytics-card" style="background:#fff;padding:20px;border:1px solid #ccd0d4;border-radius:4px;">
-                <h3 style="margin:0 0 10px;font-size:14px;color:#666;"><?php esc_html_e('Tokens Usados', 'flavor-chat-ia'); ?></h3>
+                <h3 style="margin:0 0 10px;font-size:14px;color:#666;"><?php esc_html_e('Tokens Usados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div class="analytics-value" id="stat-tokens" style="font-size:28px;font-weight:bold;">-</div>
             </div>
         </div>
@@ -3660,19 +3682,19 @@ class Flavor_Chat_Settings {
         $escalations = $escalation->get_pending_escalations();
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e('Solicitudes de atención', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Solicitudes de atención', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
 
             <?php if (empty($escalations)): ?>
-                <p><?php esc_html_e('No hay solicitudes pendientes.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No hay solicitudes pendientes.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php else: ?>
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('ID', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Motivo', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Motivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -3684,7 +3706,7 @@ class Flavor_Chat_Settings {
                             <td><?php echo esc_html(ucfirst($esc['status'])); ?></td>
                             <td>
                                 <button type="button" class="button resolve-escalation" data-id="<?php echo esc_attr($esc['id']); ?>">
-                                    <?php esc_html_e('Resolver', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Resolver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             </td>
                         </tr>
@@ -3703,7 +3725,7 @@ class Flavor_Chat_Settings {
         check_ajax_referer('flavor_chat_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['error' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $section = sanitize_text_field($_POST['section'] ?? 'all');
@@ -3713,14 +3735,14 @@ class Flavor_Chat_Settings {
 
         // Obtener el motor de IA activo
         if (!class_exists('Flavor_Engine_Manager')) {
-            wp_send_json_error(['error' => __('Motor de IA no disponible', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Motor de IA no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $engine_manager = Flavor_Engine_Manager::get_instance();
         $engine = $engine_manager->get_active_engine();
 
         if (!$engine || !$engine->is_configured()) {
-            wp_send_json_error(['error' => __('Configura primero un proveedor de IA en la pestaña Proveedores', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Configura primero un proveedor de IA en la pestaña Proveedores', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Construir el prompt según la sección
@@ -3732,7 +3754,7 @@ class Flavor_Chat_Settings {
         $response = $engine->send_message($messages, $system_prompt, []);
 
         if (!$response['success']) {
-            wp_send_json_error(['error' => $response['error'] ?? __('Error al generar configuración', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => $response['error'] ?? __('Error al generar configuración', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Parsear la respuesta JSON
@@ -3744,7 +3766,7 @@ class Flavor_Chat_Settings {
         $config = json_decode(trim($json_response), true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            wp_send_json_error(['error' => __('Error al parsear respuesta de IA', 'flavor-chat-ia'), 'raw' => $json_response]);
+            wp_send_json_error(['error' => __('Error al parsear respuesta de IA', FLAVOR_PLATFORM_TEXT_DOMAIN), 'raw' => $json_response]);
         }
 
         wp_send_json_success($config);
@@ -3899,31 +3921,31 @@ Usa colores profesionales que combinen con el tipo de negocio.",
         check_ajax_referer('flavor_chat_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (!class_exists('Flavor_Push_Notification_Channel')) {
-            wp_send_json_error(['message' => __('El canal de push no esta disponible.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('El canal de push no esta disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $usuario_id_actual = get_current_user_id();
         $canal_push = new Flavor_Push_Notification_Channel();
         $resultado = $canal_push->send(
             $usuario_id_actual,
-            __('Prueba Push Flavor', 'flavor-chat-ia'),
-            __('Esta es una notificacion de prueba desde Flavor Platform.', 'flavor-chat-ia'),
+            __('Prueba Push Flavor', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Esta es una notificacion de prueba desde Flavor Platform.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ['type' => 'test']
         );
 
         if ($resultado['enviados'] > 0) {
             wp_send_json_success(['message' => sprintf(
-                __('Notificacion enviada a %d dispositivo(s).', 'flavor-chat-ia'),
+                __('Notificacion enviada a %d dispositivo(s).', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $resultado['enviados']
             )]);
         } elseif (!empty($resultado['sin_token'])) {
-            wp_send_json_error(['message' => __('No tienes tokens FCM registrados. Abre la app en tu dispositivo primero.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes tokens FCM registrados. Abre la app en tu dispositivo primero.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
-            $error_msg = $resultado['error'] ?? __('Error desconocido al enviar push.', 'flavor-chat-ia');
+            $error_msg = $resultado['error'] ?? __('Error desconocido al enviar push.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             wp_send_json_error(['message' => $error_msg]);
         }
     }
@@ -3936,18 +3958,18 @@ Usa colores profesionales que combinen con el tipo de negocio.",
             check_ajax_referer('flavor_chat_admin_nonce', 'nonce');
 
             if (!current_user_can('manage_options')) {
-                wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+                wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             }
 
             // Verificar que el Engine Manager esté disponible
             if (!class_exists('Flavor_Engine_Manager')) {
                 wp_send_json_error([
-                    'message' => __('❌ Flavor_Engine_Manager no existe. Verifica que el plugin esté correctamente instalado.', 'flavor-chat-ia'),
+                    'message' => __('❌ Flavor_Engine_Manager no existe. Verifica que el plugin esté correctamente instalado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ]);
             }
 
             $engine_manager = Flavor_Engine_Manager::get_instance();
-            $settings = get_option('flavor_chat_ia_settings', []);
+            $settings = flavor_get_main_settings();
             $active_provider = $settings['active_provider'] ?? 'claude';
             $requested_provider = sanitize_key($_POST['provider'] ?? $active_provider);
             $valid_providers = ['claude', 'openai', 'deepseek', 'mistral'];
@@ -3961,7 +3983,7 @@ Usa colores profesionales que combinen con el tipo de negocio.",
                 $engines_disponibles = array_keys($engine_manager->get_engines());
                 wp_send_json_error([
                     'message' => sprintf(
-                        __('❌ No hay motor disponible para el proveedor %1$s. Proveedor activo guardado: %2$s. Motores disponibles: %3$s', 'flavor-chat-ia'),
+                        __('❌ No hay motor disponible para el proveedor %1$s. Proveedor activo guardado: %2$s. Motores disponibles: %3$s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $requested_provider,
                         $active_provider,
                         implode(', ', $engines_disponibles) ?: 'ninguno'
@@ -3975,7 +3997,7 @@ Usa colores profesionales que combinen con el tipo de negocio.",
                 if (!empty($verification['valid'])) {
                     wp_send_json_success([
                         'message' => sprintf(
-                            __('✅ Conexión exitosa con %s', 'flavor-chat-ia'),
+                            __('✅ Conexión exitosa con %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             $engine->get_name()
                         ),
                         'provider' => $engine->get_id(),
@@ -3985,9 +4007,9 @@ Usa colores profesionales que combinen con el tipo de negocio.",
 
                 wp_send_json_error([
                     'message' => sprintf(
-                        __('❌ Error de conexión con %1$s: %2$s', 'flavor-chat-ia'),
+                        __('❌ Error de conexión con %1$s: %2$s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $engine->get_name(),
-                        $verification['error'] ?? __('API key inválida o sin saldo.', 'flavor-chat-ia')
+                        $verification['error'] ?? __('API key inválida o sin saldo.', FLAVOR_PLATFORM_TEXT_DOMAIN)
                     ),
                 ]);
             }
@@ -3996,7 +4018,7 @@ Usa colores profesionales que combinen con el tipo de negocio.",
             if (!$engine->is_configured()) {
                 wp_send_json_error([
                     'message' => sprintf(
-                        __('❌ %1$s no tiene API key guardada. Guarda la configuración o pega una clave temporal para verificar.', 'flavor-chat-ia'),
+                        __('❌ %1$s no tiene API key guardada. Guarda la configuración o pega una clave temporal para verificar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $engine->get_name()
                     ),
                 ]);
@@ -4012,7 +4034,7 @@ Usa colores profesionales que combinen con el tipo de negocio.",
         if ($response['success']) {
             wp_send_json_success([
                 'message' => sprintf(
-                    __('✅ Conexión exitosa con %s', 'flavor-chat-ia'),
+                    __('✅ Conexión exitosa con %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $engine->get_name()
                 ),
                 'provider' => $engine->get_id(),
@@ -4021,7 +4043,7 @@ Usa colores profesionales que combinen con el tipo de negocio.",
         } else {
             wp_send_json_error([
                 'message' => sprintf(
-                    __('❌ Error de conexión con %s: %s', 'flavor-chat-ia'),
+                    __('❌ Error de conexión con %s: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $engine->get_name(),
                     $response['error'] ?? 'Error desconocido'
                 ),
@@ -4042,7 +4064,7 @@ Usa colores profesionales que combinen con el tipo de negocio.",
         check_ajax_referer('flavor_chat_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['error' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $period = sanitize_text_field($_POST['period'] ?? 'week');
@@ -4131,19 +4153,19 @@ Usa colores profesionales que combinen con el tipo de negocio.",
         <input type="hidden" name="flavor_chat_ia_settings[_tab]" value="advanced">
 
         <div class="flavor-settings-section">
-            <h2><?php esc_html_e('Datos del Plugin', 'flavor-chat-ia'); ?></h2>
+            <h2><?php esc_html_e('Datos del Plugin', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <p class="description">
-                <?php esc_html_e('Información sobre los datos almacenados por Flavor Platform.', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Información sobre los datos almacenados por Flavor Platform.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
 
             <table class="form-table" style="max-width: 600px;">
                 <tr>
-                    <th><?php esc_html_e('Tablas en base de datos', 'flavor-chat-ia'); ?></th>
-                    <td><code><?php echo esc_html($num_tablas); ?></code> <?php esc_html_e('tablas con prefijo flavor_', 'flavor-chat-ia'); ?></td>
+                    <th><?php esc_html_e('Tablas en base de datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <td><code><?php echo esc_html($num_tablas); ?></code> <?php esc_html_e('tablas con prefijo flavor_', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                 </tr>
                 <tr>
-                    <th><?php esc_html_e('Opciones guardadas', 'flavor-chat-ia'); ?></th>
-                    <td><code><?php echo esc_html($num_opciones); ?></code> <?php esc_html_e('registros en wp_options', 'flavor-chat-ia'); ?></td>
+                    <th><?php esc_html_e('Opciones guardadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <td><code><?php echo esc_html($num_opciones); ?></code> <?php esc_html_e('registros en wp_options', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                 </tr>
             </table>
         </div>
@@ -4151,31 +4173,31 @@ Usa colores profesionales que combinen con el tipo de negocio.",
         <div class="flavor-settings-section" style="margin-top: 30px; padding: 20px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px;">
             <h2 style="color: #856404; margin-top: 0;">
                 <span class="dashicons dashicons-warning" style="margin-right: 8px;"></span>
-                <?php esc_html_e('Limpieza al Desinstalar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Limpieza al Desinstalar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
 
             <p class="description" style="color: #856404; font-size: 14px;">
-                <?php esc_html_e('Si activas esta opcion, al desinstalar el plugin desde WordPress se eliminaran TODOS los datos:', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Si activas esta opcion, al desinstalar el plugin desde WordPress se eliminaran TODOS los datos:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
 
             <ul style="color: #856404; margin-left: 20px; list-style: disc;">
-                <li><?php esc_html_e('Todas las tablas de la base de datos (eventos, reservas, foros, mensajes, etc.)', 'flavor-chat-ia'); ?></li>
-                <li><?php esc_html_e('Todas las opciones y configuraciones', 'flavor-chat-ia'); ?></li>
-                <li><?php esc_html_e('Metadatos de usuarios y posts', 'flavor-chat-ia'); ?></li>
-                <li><?php esc_html_e('Custom Post Types y sus contenidos', 'flavor-chat-ia'); ?></li>
-                <li><?php esc_html_e('Roles y capacidades personalizadas', 'flavor-chat-ia'); ?></li>
+                <li><?php esc_html_e('Todas las tablas de la base de datos (eventos, reservas, foros, mensajes, etc.)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                <li><?php esc_html_e('Todas las opciones y configuraciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                <li><?php esc_html_e('Metadatos de usuarios y posts', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                <li><?php esc_html_e('Custom Post Types y sus contenidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                <li><?php esc_html_e('Roles y capacidades personalizadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
             </ul>
 
             <p style="color: #721c24; font-weight: bold; background: #f8d7da; padding: 10px; border-radius: 4px; margin-top: 15px;">
                 <span class="dashicons dashicons-no" style="margin-right: 5px;"></span>
-                <?php esc_html_e('ESTA ACCION ES IRREVERSIBLE. Solo activa esta opcion si estas seguro de que quieres eliminar todos los datos del plugin.', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('ESTA ACCION ES IRREVERSIBLE. Solo activa esta opcion si estas seguro de que quieres eliminar todos los datos del plugin.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
 
             <table class="form-table">
                 <tr>
                     <th scope="row">
                         <label for="limpiar_al_desinstalar">
-                            <?php esc_html_e('Eliminar datos al desinstalar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Eliminar datos al desinstalar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                     </th>
                     <td>
@@ -4188,7 +4210,7 @@ Usa colores profesionales que combinen con el tipo de negocio.",
                             <span class="slider round"></span>
                         </label>
                         <p class="description" style="color: #856404;">
-                            <?php esc_html_e('Si esta desactivado (por defecto), los datos se conservaran aunque desinstales el plugin.', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Si esta desactivado (por defecto), los datos se conservaran aunque desinstales el plugin.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                     </td>
                 </tr>
@@ -4196,13 +4218,13 @@ Usa colores profesionales que combinen con el tipo de negocio.",
         </div>
 
         <div class="flavor-settings-section" style="margin-top: 30px;">
-            <h2><?php esc_html_e('Modo Debug', 'flavor-chat-ia'); ?></h2>
+            <h2><?php esc_html_e('Modo Debug', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <table class="form-table">
                 <tr>
                     <th scope="row">
                         <label for="debug_mode">
-                            <?php esc_html_e('Activar modo debug', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Activar modo debug', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                     </th>
                     <td>
@@ -4215,7 +4237,7 @@ Usa colores profesionales que combinen con el tipo de negocio.",
                             <span class="slider round"></span>
                         </label>
                         <p class="description">
-                            <?php esc_html_e('Registra informacion adicional en el log de errores de WordPress. Util para depuracion.', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Registra informacion adicional en el log de errores de WordPress. Util para depuracion.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                     </td>
                 </tr>
@@ -4224,9 +4246,9 @@ Usa colores profesionales que combinen con el tipo de negocio.",
 
         <?php if (!empty($tablas_flavor)): ?>
         <div class="flavor-settings-section" style="margin-top: 30px;">
-            <h3><?php esc_html_e('Tablas del Plugin', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Tablas del Plugin', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <details>
-                <summary style="cursor: pointer; color: #0073aa;"><?php esc_html_e('Ver listado de tablas', 'flavor-chat-ia'); ?></summary>
+                <summary style="cursor: pointer; color: #0073aa;"><?php esc_html_e('Ver listado de tablas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></summary>
                 <ul style="margin-top: 10px; font-family: monospace; font-size: 12px;">
                     <?php foreach ($tablas_flavor as $tabla): ?>
                         <li><?php echo esc_html($tabla[0]); ?></li>

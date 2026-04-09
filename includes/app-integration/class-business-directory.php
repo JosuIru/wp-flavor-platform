@@ -185,7 +185,7 @@ class Flavor_Business_Directory {
         if (!isset($config['public_in_directory']) || !$config['public_in_directory']) {
             return new WP_REST_Response([
                 'success' => false,
-                'message' => __('Este negocio no está configurado como público en el directorio', 'flavor-chat-ia'),
+                'message' => __('Este negocio no está configurado como público en el directorio', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ], 400);
         }
 
@@ -200,13 +200,13 @@ class Flavor_Business_Directory {
 
             return new WP_REST_Response([
                 'success' => true,
-                'message' => __('Negocio registrado exitosamente en el directorio', 'flavor-chat-ia'),
+                'message' => __('Negocio registrado exitosamente en el directorio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'business' => $business_data,
             ], 200);
         } else {
             return new WP_REST_Response([
                 'success' => false,
-                'message' => __('Error al registrar en el servidor central', 'flavor-chat-ia'),
+                'message' => __('Error al registrar en el servidor central', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ], 500);
         }
     }
@@ -232,7 +232,7 @@ class Flavor_Business_Directory {
         if (is_wp_error($response)) {
             return new WP_REST_Response([
                 'success' => false,
-                'message' => __('No se pudo conectar con el negocio', 'flavor-chat-ia'),
+                'message' => __('No se pudo conectar con el negocio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'error' => $response->get_error_message(),
             ], 400);
         }
@@ -243,13 +243,13 @@ class Flavor_Business_Directory {
         if (!$data || !isset($data['active_systems'])) {
             return new WP_REST_Response([
                 'success' => false,
-                'message' => __('El sitio no tiene el plugin instalado', 'flavor-chat-ia'),
+                'message' => __('El sitio no tiene el plugin instalado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ], 404);
         }
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => __('Negocio verificado correctamente', 'flavor-chat-ia'),
+            'message' => __('Negocio verificado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'business' => [
                 'url' => $url,
                 'name' => $data['app_name'] ?? $data['site_name'] ?? '',
@@ -430,12 +430,12 @@ class Flavor_Business_Directory {
      */
     private function get_available_regions() {
         return [
-            'euskal_herria' => __('Euskal Herria', 'flavor-chat-ia'),
-            'cataluna' => __('Cataluña', 'flavor-chat-ia'),
-            'madrid' => __('Madrid', 'flavor-chat-ia'),
-            'andalucia' => __('Andalucía', 'flavor-chat-ia'),
-            'other_spain' => __('Otras regiones de España', 'flavor-chat-ia'),
-            'international' => __('Internacional', 'flavor-chat-ia'),
+            'euskal_herria' => __('Euskal Herria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cataluna' => __('Cataluña', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'madrid' => __('Madrid', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'andalucia' => __('Andalucía', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'other_spain' => __('Otras regiones de España', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'international' => __('Internacional', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -444,13 +444,13 @@ class Flavor_Business_Directory {
      */
     private function get_available_categories() {
         return [
-            'cooperativa' => __('Cooperativa', 'flavor-chat-ia'),
-            'asociacion' => __('Asociación', 'flavor-chat-ia'),
-            'comunidad' => __('Comunidad', 'flavor-chat-ia'),
-            'grupo_consumo' => __('Grupo de Consumo', 'flavor-chat-ia'),
-            'economia_social' => __('Economía Social', 'flavor-chat-ia'),
-            'comercio_local' => __('Comercio Local', 'flavor-chat-ia'),
-            'other' => __('Otra', 'flavor-chat-ia'),
+            'cooperativa' => __('Cooperativa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'asociacion' => __('Asociación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'comunidad' => __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'grupo_consumo' => __('Grupo de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'economia_social' => __('Economía Social', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'comercio_local' => __('Comercio Local', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'other' => __('Otra', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 

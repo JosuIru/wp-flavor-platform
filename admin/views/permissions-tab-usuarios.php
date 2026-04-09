@@ -36,22 +36,22 @@ $total_paginas = ceil($total_usuarios / $usuarios_por_pagina);
 ?>
 
 <div class="usuarios-tab">
-    <h2><?php esc_html_e('Permisos por Usuario', 'flavor-chat-ia'); ?></h2>
+    <h2><?php esc_html_e('Permisos por Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
     <!-- Buscador -->
     <form method="get" style="margin-bottom: 20px;">
-        <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-permissions', 'flavor-chat-ia'); ?>">
-        <input type="hidden" name="tab" value="<?php echo esc_attr__('usuarios', 'flavor-chat-ia'); ?>">
+        <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-permissions', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+        <input type="hidden" name="tab" value="<?php echo esc_attr__('usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
         <div class="inline-form">
             <input type="search" name="s" value="<?php echo esc_attr($busqueda); ?>"
-                   placeholder="<?php esc_attr_e('Buscar usuario...', 'flavor-chat-ia'); ?>"
+                   placeholder="<?php esc_attr_e('Buscar usuario...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                    style="min-width: 250px;">
             <button type="submit" class="button">
-                <?php esc_html_e('Buscar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <?php if ($busqueda): ?>
                 <a href="?page=flavor-permissions&tab=usuarios" class="button">
-                    <?php esc_html_e('Limpiar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             <?php endif; ?>
         </div>
@@ -60,7 +60,7 @@ $total_paginas = ceil($total_usuarios / $usuarios_por_pagina);
     <!-- Listado de usuarios -->
     <?php if (empty($usuarios)): ?>
         <div class="flavor-card">
-            <p><?php esc_html_e('No se encontraron usuarios.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('No se encontraron usuarios.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php else: ?>
         <?php foreach ($usuarios as $usuario): ?>
@@ -78,7 +78,7 @@ $total_paginas = ceil($total_usuarios / $usuarios_por_pagina);
                         <?php echo esc_html($usuario->user_email); ?>
                     </p>
                     <p style="margin: 5px 0 0;">
-                        <strong><?php esc_html_e('Rol WP:', 'flavor-chat-ia'); ?></strong>
+                        <strong><?php esc_html_e('Rol WP:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                         <?php
                         $roles_usuario = $usuario->roles;
                         echo esc_html(implode(', ', $roles_usuario));
@@ -87,14 +87,14 @@ $total_paginas = ceil($total_usuarios / $usuarios_por_pagina);
                     <p style="margin: 5px 0;">
                         <a href="<?php echo esc_url(get_edit_user_link($usuario->ID)); ?>"
                            class="button button-small">
-                            <?php esc_html_e('Editar Usuario', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Editar Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </p>
                 </div>
 
                 <div class="user-roles-modules">
                     <h4 style="margin-top: 0;">
-                        <?php esc_html_e('Roles por Modulo', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Roles por Modulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h4>
 
                     <div class="user-modules">
@@ -118,24 +118,24 @@ $total_paginas = ceil($total_usuarios / $usuarios_por_pagina);
                                     </span>
                                     <form method="post" style="display: inline;">
                                         <?php wp_nonce_field('flavor_manage_permissions', 'flavor_permissions_nonce'); ?>
-                                        <input type="hidden" name="accion" value="<?php echo esc_attr__('revocar_rol_usuario', 'flavor-chat-ia'); ?>">
+                                        <input type="hidden" name="accion" value="<?php echo esc_attr__('revocar_rol_usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                         <input type="hidden" name="user_id" value="<?php echo esc_attr($usuario->ID); ?>">
                                         <input type="hidden" name="modulo" value="<?php echo esc_attr($modulo_slug); ?>">
                                         <button type="submit" class="button button-small"
                                                 style="padding: 0 5px; min-height: 20px; line-height: 18px; font-size: 11px;"
-                                                title="<?php esc_attr_e('Revocar rol', 'flavor-chat-ia'); ?>">
+                                                title="<?php esc_attr_e('Revocar rol', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <span class="dashicons dashicons-no" style="font-size: 14px; width: 14px; height: 14px;"></span>
                                         </button>
                                     </form>
                                 <?php else: ?>
                                     <form method="post" class="inline-form" style="gap: 5px;">
                                         <?php wp_nonce_field('flavor_manage_permissions', 'flavor_permissions_nonce'); ?>
-                                        <input type="hidden" name="accion" value="<?php echo esc_attr__('asignar_rol_usuario', 'flavor-chat-ia'); ?>">
+                                        <input type="hidden" name="accion" value="<?php echo esc_attr__('asignar_rol_usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                         <input type="hidden" name="user_id" value="<?php echo esc_attr($usuario->ID); ?>">
                                         <input type="hidden" name="modulo" value="<?php echo esc_attr($modulo_slug); ?>">
 
                                         <select name="rol" class="module-role-select" style="min-width: 100px; font-size: 11px;">
-                                            <option value=""><?php esc_html_e('-- Asignar --', 'flavor-chat-ia'); ?></option>
+                                            <option value=""><?php esc_html_e('-- Asignar --', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                             <?php if (!empty($modulo_info['roles'])): ?>
                                                 <?php foreach ($modulo_info['roles'] as $rol_slug => $rol_info): ?>
                                                     <option value="<?php echo esc_attr($rol_slug); ?>">
@@ -159,7 +159,7 @@ $total_paginas = ceil($total_usuarios / $usuarios_por_pagina);
                     <!-- Resumen de capabilities -->
                     <details style="margin-top: 15px;">
                         <summary style="cursor: pointer; font-weight: 600;">
-                            <?php esc_html_e('Ver resumen de capabilities', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Ver resumen de capabilities', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </summary>
                         <div style="padding: 10px; background: #f9f9f9; margin-top: 5px; border-radius: 4px; max-height: 200px; overflow-y: auto;">
                             <?php foreach ($resumen_permisos as $grupo => $info): ?>
@@ -184,7 +184,7 @@ $total_paginas = ceil($total_usuarios / $usuarios_por_pagina);
                     <span class="displaying-num">
                         <?php
                         printf(
-                            esc_html(_n('%s usuario', '%s usuarios', $total_usuarios, 'flavor-chat-ia')),
+                            esc_html(_n('%s usuario', '%s usuarios', $total_usuarios, FLAVOR_PLATFORM_TEXT_DOMAIN)),
                             number_format_i18n($total_usuarios)
                         );
                         ?>
@@ -199,23 +199,23 @@ $total_paginas = ceil($total_usuarios / $usuarios_por_pagina);
 
                         if ($paginacion_actual > 1): ?>
                             <a class="prev-page button" href="<?php echo esc_url(add_query_arg('paged', $paginacion_actual - 1, $base_url)); ?>">
-                                <span class="screen-reader-text"><?php esc_html_e('Pagina anterior', 'flavor-chat-ia'); ?></span>
-                                <span aria-hidden="true"><?php esc_html_e('&lsaquo;', 'flavor-chat-ia'); ?></span>
+                                <span class="screen-reader-text"><?php esc_html_e('Pagina anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                                <span aria-hidden="true"><?php esc_html_e('&lsaquo;', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </a>
                         <?php endif; ?>
 
                         <span class="paging-input">
                             <span class="tablenav-paging-text">
                                 <?php echo esc_html($paginacion_actual); ?>
-                                <?php esc_html_e('de', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('de', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 <span class="total-pages"><?php echo esc_html($total_paginas); ?></span>
                             </span>
                         </span>
 
                         <?php if ($paginacion_actual < $total_paginas): ?>
                             <a class="next-page button" href="<?php echo esc_url(add_query_arg('paged', $paginacion_actual + 1, $base_url)); ?>">
-                                <span class="screen-reader-text"><?php esc_html_e('Pagina siguiente', 'flavor-chat-ia'); ?></span>
-                                <span aria-hidden="true"><?php esc_html_e('&rsaquo;', 'flavor-chat-ia'); ?></span>
+                                <span class="screen-reader-text"><?php esc_html_e('Pagina siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                                <span aria-hidden="true"><?php esc_html_e('&rsaquo;', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </a>
                         <?php endif; ?>
                     </span>

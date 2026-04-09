@@ -56,14 +56,14 @@ class Flavor_Saberes_Ancestrales_Dashboard_Tab {
      */
     public function registrar_tabs($tabs) {
         $tabs['saberes-resumen'] = [
-            'label' => __('Saberes Ancestrales', 'flavor-chat-ia'),
+            'label' => __('Saberes Ancestrales', 'flavor-platform'),
             'icon' => 'book-open',
             'callback' => [$this, 'render_tab_resumen'],
             'orden' => 68,
         ];
 
         $tabs['saberes-aportes'] = [
-            'label' => __('Mis Aportes', 'flavor-chat-ia'),
+            'label' => __('Mis Aportes', 'flavor-platform'),
             'icon' => 'scroll',
             'callback' => [$this, 'render_tab_aportes'],
             'orden' => 69,
@@ -78,7 +78,7 @@ class Flavor_Saberes_Ancestrales_Dashboard_Tab {
     public function render_tab_resumen() {
         $user_id = get_current_user_id();
         if (!$user_id) {
-            echo '<p>' . esc_html__('Debes iniciar sesión para ver este contenido.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Debes iniciar sesión para ver este contenido.', 'flavor-platform') . '</p>';
             return;
         }
 
@@ -110,8 +110,8 @@ class Flavor_Saberes_Ancestrales_Dashboard_Tab {
         ?>
         <div class="flavor-panel flavor-saberes-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-book-alt"></span> <?php esc_html_e('Saberes Ancestrales', 'flavor-chat-ia'); ?></h2>
-                <p class="flavor-panel-subtitle"><?php esc_html_e('Preservando la sabiduría de nuestros ancestros', 'flavor-chat-ia'); ?></p>
+                <h2><span class="dashicons dashicons-book-alt"></span> <?php esc_html_e('Saberes Ancestrales', 'flavor-platform'); ?></h2>
+                <p class="flavor-panel-subtitle"><?php esc_html_e('Preservando la sabiduría de nuestros ancestros', 'flavor-platform'); ?></p>
             </div>
 
             <div class="flavor-panel-kpis">
@@ -119,58 +119,58 @@ class Flavor_Saberes_Ancestrales_Dashboard_Tab {
                     <span class="flavor-kpi-icon dashicons dashicons-book"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($total_saberes); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Saberes Documentados', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Saberes Documentados', 'flavor-platform'); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icon dashicons dashicons-edit"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($mis_aportes); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Mis Aportes', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Mis Aportes', 'flavor-platform'); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icon dashicons dashicons-welcome-learn-more"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($transmisiones_activas); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Transmisiones Activas', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Transmisiones Activas', 'flavor-platform'); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icon dashicons dashicons-category"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($categorias_saberes); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Categorías', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Categorías', 'flavor-platform'); ?></span>
                     </div>
                 </div>
             </div>
 
             <div class="flavor-panel-section">
-                <h3><?php esc_html_e('Áreas de Sabiduría', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Áreas de Sabiduría', 'flavor-platform'); ?></h3>
                 <div class="flavor-areas-grid">
                     <div class="flavor-area-item">
                         <span class="dashicons dashicons-carrot"></span>
-                        <span><?php esc_html_e('Agricultura tradicional', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Agricultura tradicional', 'flavor-platform'); ?></span>
                     </div>
                     <div class="flavor-area-item">
                         <span class="dashicons dashicons-heart"></span>
-                        <span><?php esc_html_e('Medicina natural', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Medicina natural', 'flavor-platform'); ?></span>
                     </div>
                     <div class="flavor-area-item">
                         <span class="dashicons dashicons-art"></span>
-                        <span><?php esc_html_e('Artesanías', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Artesanías', 'flavor-platform'); ?></span>
                     </div>
                     <div class="flavor-area-item">
                         <span class="dashicons dashicons-microphone"></span>
-                        <span><?php esc_html_e('Tradición oral', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Tradición oral', 'flavor-platform'); ?></span>
                     </div>
                     <div class="flavor-area-item">
                         <span class="dashicons dashicons-food"></span>
-                        <span><?php esc_html_e('Gastronomía ancestral', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Gastronomía ancestral', 'flavor-platform'); ?></span>
                     </div>
                     <div class="flavor-area-item">
                         <span class="dashicons dashicons-star-filled"></span>
-                        <span><?php esc_html_e('Rituales y ceremonias', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Rituales y ceremonias', 'flavor-platform'); ?></span>
                     </div>
                 </div>
             </div>
@@ -178,15 +178,15 @@ class Flavor_Saberes_Ancestrales_Dashboard_Tab {
             <div class="flavor-panel-actions">
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('saberes_ancestrales', 'explorar')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-search"></span>
-                    <?php esc_html_e('Explorar Saberes', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Explorar Saberes', 'flavor-platform'); ?>
                 </a>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('saberes_ancestrales', 'compartir')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-share"></span>
-                    <?php esc_html_e('Compartir un Saber', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Compartir un Saber', 'flavor-platform'); ?>
                 </a>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('saberes_ancestrales', 'transmisiones')); ?>" class="flavor-btn flavor-btn-outline">
                     <span class="dashicons dashicons-groups"></span>
-                    <?php esc_html_e('Transmisiones', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Transmisiones', 'flavor-platform'); ?>
                 </a>
             </div>
         </div>
@@ -199,7 +199,7 @@ class Flavor_Saberes_Ancestrales_Dashboard_Tab {
     public function render_tab_aportes() {
         $user_id = get_current_user_id();
         if (!$user_id) {
-            echo '<p>' . esc_html__('Debes iniciar sesión para ver este contenido.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Debes iniciar sesión para ver este contenido.', 'flavor-platform') . '</p>';
             return;
         }
 
@@ -217,20 +217,20 @@ class Flavor_Saberes_Ancestrales_Dashboard_Tab {
         ?>
         <div class="flavor-panel flavor-aportes-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-edit"></span> <?php esc_html_e('Mis Aportes', 'flavor-chat-ia'); ?></h2>
+                <h2><span class="dashicons dashicons-edit"></span> <?php esc_html_e('Mis Aportes', 'flavor-platform'); ?></h2>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('saberes_ancestrales', 'compartir')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt"></span>
-                    <?php esc_html_e('Compartir Saber', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Compartir Saber', 'flavor-platform'); ?>
                 </a>
             </div>
 
             <?php if (empty($mis_saberes)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-book-alt"></span>
-                    <p><?php esc_html_e('Aún no has compartido ningún saber ancestral.', 'flavor-chat-ia'); ?></p>
-                    <p class="flavor-text-muted"><?php esc_html_e('Tu conocimiento es valioso. Compártelo con la comunidad para que perdure.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Aún no has compartido ningún saber ancestral.', 'flavor-platform'); ?></p>
+                    <p class="flavor-text-muted"><?php esc_html_e('Tu conocimiento es valioso. Compártelo con la comunidad para que perdure.', 'flavor-platform'); ?></p>
                     <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('saberes_ancestrales', 'compartir')); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php esc_html_e('Compartir mi primer saber', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Compartir mi primer saber', 'flavor-platform'); ?>
                     </a>
                 </div>
             <?php else: ?>

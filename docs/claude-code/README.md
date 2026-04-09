@@ -1,6 +1,6 @@
 # Documentación para Claude Code
 
-Guías y referencias para crear sitios con Flavor Chat IA desde Claude Code.
+Guías y referencias para crear sitios con Flavor Platform desde Claude Code.
 
 ## Archivos de Documentación
 

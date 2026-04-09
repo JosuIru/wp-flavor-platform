@@ -27,8 +27,8 @@ if (!defined('ABSPATH')) {
 $item_id = intval($item_id ?? 0);
 $item_type = $item_type ?? 'newsletter';
 $subscribed = $subscribed ?? false;
-$subscribe_text = $subscribe_text ?? __('Suscribirse', 'flavor-chat-ia');
-$unsubscribe_text = $unsubscribe_text ?? __('Suscrito', 'flavor-chat-ia');
+$subscribe_text = $subscribe_text ?? __('Suscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$unsubscribe_text = $unsubscribe_text ?? __('Suscrito', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $subscribe_icon = $subscribe_icon ?? '🔔';
 $unsubscribe_icon = $unsubscribe_icon ?? '✓';
 $variant = $variant ?? 'button';
@@ -108,7 +108,7 @@ $sz = $size_config[$size] ?? $size_config['md'];
             <span class="subscription-text"><?php echo $subscribed ? esc_html($unsubscribe_text) : esc_html($subscribe_text); ?></span>
         </button>
         <?php if ($subscribers !== null): ?>
-            <span class="text-sm text-gray-500"><?php echo number_format_i18n($subscribers); ?> <?php esc_html_e('suscriptores', 'flavor-chat-ia'); ?></span>
+            <span class="text-sm text-gray-500"><?php echo number_format_i18n($subscribers); ?> <?php esc_html_e('suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         <?php endif; ?>
     <?php endif; ?>
 </div>
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     btn.addEventListener('click', function() {
         if (this.dataset.loginRequired) {
-            alert('<?php esc_html_e('Inicia sesión para suscribirte', 'flavor-chat-ia'); ?>');
+            alert('<?php esc_html_e('Inicia sesión para suscribirte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
             return;
         }
 

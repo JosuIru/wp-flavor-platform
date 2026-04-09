@@ -25,7 +25,7 @@ if (isset($_POST['accion_moderacion']) && isset($_POST['anuncio_id']) && wp_veri
                 'ID' => $anuncio_id,
                 'post_status' => 'publish'
             ]);
-            $mensaje_exito = __('Anuncio aprobado correctamente.', 'flavor-chat-ia');
+            $mensaje_exito = __('Anuncio aprobado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             break;
 
         case 'rechazar':
@@ -41,22 +41,22 @@ if (isset($_POST['accion_moderacion']) && isset($_POST['anuncio_id']) && wp_veri
                     $motivo = isset($_POST['motivo_rechazo']) ? sanitize_textarea_field($_POST['motivo_rechazo']) : '';
                     wp_mail(
                         $autor->user_email,
-                        __('Tu anuncio ha sido rechazado', 'flavor-chat-ia'),
+                        __('Tu anuncio ha sido rechazado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         sprintf(
-                            __("Hola %s,\n\nTu anuncio \"%s\" ha sido rechazado por los moderadores.\n\nMotivo: %s\n\nPuedes editarlo y volver a enviarlo para revision.", 'flavor-chat-ia'),
+                            __("Hola %s,\n\nTu anuncio \"%s\" ha sido rechazado por los moderadores.\n\nMotivo: %s\n\nPuedes editarlo y volver a enviarlo para revision.", FLAVOR_PLATFORM_TEXT_DOMAIN),
                             $autor->display_name,
                             $anuncio->post_title,
-                            $motivo ?: __('No especificado', 'flavor-chat-ia')
+                            $motivo ?: __('No especificado', FLAVOR_PLATFORM_TEXT_DOMAIN)
                         )
                     );
                 }
             }
-            $mensaje_exito = __('Anuncio rechazado y autor notificado.', 'flavor-chat-ia');
+            $mensaje_exito = __('Anuncio rechazado y autor notificado.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             break;
 
         case 'eliminar':
             wp_trash_post($anuncio_id);
-            $mensaje_exito = __('Anuncio movido a la papelera.', 'flavor-chat-ia');
+            $mensaje_exito = __('Anuncio movido a la papelera.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             break;
     }
 }
@@ -73,12 +73,12 @@ if (isset($_POST['accion_reporte']) && isset($_POST['reporte_id']) && wp_verify_
         switch ($accion) {
             case 'resolver':
                 $wpdb->update($tabla_reportes, ['estado' => 'resuelto', 'fecha_resolucion' => current_time('mysql')], ['id' => $reporte_id]);
-                $mensaje_exito = __('Reporte marcado como resuelto.', 'flavor-chat-ia');
+                $mensaje_exito = __('Reporte marcado como resuelto.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 break;
 
             case 'descartar':
                 $wpdb->update($tabla_reportes, ['estado' => 'descartado', 'fecha_resolucion' => current_time('mysql')], ['id' => $reporte_id]);
-                $mensaje_exito = __('Reporte descartado.', 'flavor-chat-ia');
+                $mensaje_exito = __('Reporte descartado.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 break;
 
             case 'eliminar_anuncio':
@@ -86,7 +86,7 @@ if (isset($_POST['accion_reporte']) && isset($_POST['reporte_id']) && wp_verify_
                 if ($reporte && $reporte->anuncio_id) {
                     wp_trash_post($reporte->anuncio_id);
                     $wpdb->update($tabla_reportes, ['estado' => 'resuelto', 'fecha_resolucion' => current_time('mysql')], ['id' => $reporte_id]);
-                    $mensaje_exito = __('Anuncio eliminado y reporte resuelto.', 'flavor-chat-ia');
+                    $mensaje_exito = __('Anuncio eliminado y reporte resuelto.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 }
                 break;
 
@@ -96,7 +96,7 @@ if (isset($_POST['accion_reporte']) && isset($_POST['reporte_id']) && wp_verify_
                     update_user_meta($reporte->usuario_reportado_id, '_marketplace_suspendido', 1);
                     update_user_meta($reporte->usuario_reportado_id, '_marketplace_fecha_suspension', current_time('mysql'));
                     $wpdb->update($tabla_reportes, ['estado' => 'resuelto', 'fecha_resolucion' => current_time('mysql')], ['id' => $reporte_id]);
-                    $mensaje_exito = __('Usuario suspendido del marketplace.', 'flavor-chat-ia');
+                    $mensaje_exito = __('Usuario suspendido del marketplace.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 }
                 break;
         }
@@ -159,7 +159,7 @@ $tab_activa = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'pendien
 <div class="wrap flavor-admin-wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-shield"></span>
-        <?php esc_html_e('Moderacion del Marketplace', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Moderacion del Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <hr class="wp-header-end">
@@ -174,19 +174,19 @@ $tab_activa = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'pendien
     <div class="moderacion-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 20px 0;">
         <div style="background: #fff; border-left: 4px solid #dba617; padding: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <h3 style="margin: 0; font-size: 28px; color: #dba617;"><?php echo esc_html($total_pendientes); ?></h3>
-            <p style="margin: 5px 0 0; color: #666;"><?php esc_html_e('Pendientes de Revision', 'flavor-chat-ia'); ?></p>
+            <p style="margin: 5px 0 0; color: #666;"><?php esc_html_e('Pendientes de Revision', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
         <div style="background: #fff; border-left: 4px solid #00a32a; padding: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <h3 style="margin: 0; font-size: 28px; color: #00a32a;"><?php echo esc_html($aprobados_hoy); ?></h3>
-            <p style="margin: 5px 0 0; color: #666;"><?php esc_html_e('Aprobados Hoy', 'flavor-chat-ia'); ?></p>
+            <p style="margin: 5px 0 0; color: #666;"><?php esc_html_e('Aprobados Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
         <div style="background: #fff; border-left: 4px solid #d63638; padding: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <h3 style="margin: 0; font-size: 28px; color: #d63638;"><?php echo esc_html($rechazados_hoy); ?></h3>
-            <p style="margin: 5px 0 0; color: #666;"><?php esc_html_e('Rechazados Hoy', 'flavor-chat-ia'); ?></p>
+            <p style="margin: 5px 0 0; color: #666;"><?php esc_html_e('Rechazados Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
         <div style="background: #fff; border-left: 4px solid #d63638; padding: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <h3 style="margin: 0; font-size: 28px; color: #d63638;"><?php echo esc_html($total_reportes_pendientes); ?></h3>
-            <p style="margin: 5px 0 0; color: #666;"><?php esc_html_e('Reportes Pendientes', 'flavor-chat-ia'); ?></p>
+            <p style="margin: 5px 0 0; color: #666;"><?php esc_html_e('Reportes Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     </div>
 
@@ -195,7 +195,7 @@ $tab_activa = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'pendien
         <a href="<?php echo esc_url(add_query_arg('tab', 'pendientes')); ?>"
            class="nav-tab <?php echo $tab_activa === 'pendientes' ? 'nav-tab-active' : ''; ?>">
             <span class="dashicons dashicons-clock" style="vertical-align: middle;"></span>
-            <?php esc_html_e('Anuncios Pendientes', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Anuncios Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <?php if ($total_pendientes > 0): ?>
                 <span class="count" style="background: #dba617; color: #fff; padding: 2px 8px; border-radius: 10px; font-size: 11px; margin-left: 5px;">
                     <?php echo esc_html($total_pendientes); ?>
@@ -205,7 +205,7 @@ $tab_activa = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'pendien
         <a href="<?php echo esc_url(add_query_arg('tab', 'reportes')); ?>"
            class="nav-tab <?php echo $tab_activa === 'reportes' ? 'nav-tab-active' : ''; ?>">
             <span class="dashicons dashicons-warning" style="vertical-align: middle;"></span>
-            <?php esc_html_e('Reportes de Abuso', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Reportes de Abuso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <?php if ($total_reportes_pendientes > 0): ?>
                 <span class="count" style="background: #d63638; color: #fff; padding: 2px 8px; border-radius: 10px; font-size: 11px; margin-left: 5px;">
                     <?php echo esc_html($total_reportes_pendientes); ?>
@@ -219,20 +219,20 @@ $tab_activa = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'pendien
         <div class="postbox">
             <h2 class="hndle" style="padding: 12px;">
                 <span class="dashicons dashicons-visibility" style="margin-right: 8px;"></span>
-                <?php esc_html_e('Anuncios Pendientes de Moderacion', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Anuncios Pendientes de Moderacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <div class="inside">
                 <?php if (!empty($anuncios_pendientes)): ?>
                     <table class="widefat striped">
                         <thead>
                             <tr>
-                                <th style="width: 80px;"><?php esc_html_e('Imagen', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Anuncio', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Precio', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Autor', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                                <th style="width: 280px;"><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                                <th style="width: 80px;"><?php esc_html_e('Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Precio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Autor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th style="width: 280px;"><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -288,16 +288,16 @@ $tab_activa = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'pendien
                                         <form method="post" style="display: inline-block;">
                                             <?php wp_nonce_field('moderacion_marketplace'); ?>
                                             <input type="hidden" name="anuncio_id" value="<?php echo esc_attr($anuncio->ID); ?>">
-                                            <button type="submit" name="accion_moderacion" value="aprobar" class="button button-primary button-small" title="<?php esc_attr_e('Aprobar', 'flavor-chat-ia'); ?>">
+                                            <button type="submit" name="accion_moderacion" value="aprobar" class="button button-primary button-small" title="<?php esc_attr_e('Aprobar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                                 <span class="dashicons dashicons-yes" style="vertical-align: middle;"></span>
-                                                <?php esc_html_e('Aprobar', 'flavor-chat-ia'); ?>
+                                                <?php esc_html_e('Aprobar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </button>
                                         </form>
-                                        <button type="button" class="button button-small btn-rechazar" data-id="<?php echo esc_attr($anuncio->ID); ?>" title="<?php esc_attr_e('Rechazar', 'flavor-chat-ia'); ?>" style="color: #d63638;">
+                                        <button type="button" class="button button-small btn-rechazar" data-id="<?php echo esc_attr($anuncio->ID); ?>" title="<?php esc_attr_e('Rechazar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" style="color: #d63638;">
                                             <span class="dashicons dashicons-no" style="vertical-align: middle;"></span>
-                                            <?php esc_html_e('Rechazar', 'flavor-chat-ia'); ?>
+                                            <?php esc_html_e('Rechazar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </button>
-                                        <a href="<?php echo esc_url(get_edit_post_link($anuncio->ID)); ?>" class="button button-small" title="<?php esc_attr_e('Editar', 'flavor-chat-ia'); ?>">
+                                        <a href="<?php echo esc_url(get_edit_post_link($anuncio->ID)); ?>" class="button button-small" title="<?php esc_attr_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <span class="dashicons dashicons-edit" style="vertical-align: middle;"></span>
                                         </a>
                                     </td>
@@ -308,8 +308,8 @@ $tab_activa = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'pendien
                 <?php else: ?>
                     <div style="text-align: center; padding: 40px; color: #666;">
                         <span class="dashicons dashicons-yes-alt" style="font-size: 48px; color: #00a32a;"></span>
-                        <h3><?php esc_html_e('No hay anuncios pendientes', 'flavor-chat-ia'); ?></h3>
-                        <p><?php esc_html_e('Todos los anuncios han sido revisados.', 'flavor-chat-ia'); ?></p>
+                        <h3><?php esc_html_e('No hay anuncios pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                        <p><?php esc_html_e('Todos los anuncios han sido revisados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 <?php endif; ?>
             </div>
@@ -320,25 +320,25 @@ $tab_activa = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'pendien
         <div class="postbox">
             <h2 class="hndle" style="padding: 12px;">
                 <span class="dashicons dashicons-warning" style="margin-right: 8px; color: #d63638;"></span>
-                <?php esc_html_e('Reportes de Fraude y Abusos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Reportes de Fraude y Abusos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <div class="inside">
                 <?php if (!$tabla_reportes_existe): ?>
                     <div style="text-align: center; padding: 40px; color: #666;">
                         <span class="dashicons dashicons-info" style="font-size: 48px; color: #dba617;"></span>
-                        <h3><?php esc_html_e('Sistema de reportes no configurado', 'flavor-chat-ia'); ?></h3>
-                        <p><?php esc_html_e('La tabla de reportes no existe. Ejecuta la instalacion del modulo para crearla.', 'flavor-chat-ia'); ?></p>
+                        <h3><?php esc_html_e('Sistema de reportes no configurado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                        <p><?php esc_html_e('La tabla de reportes no existe. Ejecuta la instalacion del modulo para crearla.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 <?php elseif (!empty($reportes_pendientes)): ?>
                     <table class="widefat striped">
                         <thead>
                             <tr>
-                                <th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Anuncio/Usuario', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Motivo', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Reportado por', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                                <th style="width: 250px;"><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Anuncio/Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Motivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Reportado por', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th style="width: 250px;"><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -374,14 +374,14 @@ $tab_activa = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'pendien
                                             </a>
                                         <?php endif; ?>
                                         <?php if ($reporte->reportado_nombre): ?>
-                                            <br><small style="color: #666;"><?php esc_html_e('Usuario:', 'flavor-chat-ia'); ?> <?php echo esc_html($reporte->reportado_nombre); ?></small>
+                                            <br><small style="color: #666;"><?php esc_html_e('Usuario:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html($reporte->reportado_nombre); ?></small>
                                         <?php endif; ?>
                                     </td>
                                     <td>
                                         <?php echo esc_html($reporte->descripcion ?? '—'); ?>
                                     </td>
                                     <td>
-                                        <?php echo esc_html($reporte->reportador_nombre ?? __('Anonimo', 'flavor-chat-ia')); ?>
+                                        <?php echo esc_html($reporte->reportador_nombre ?? __('Anonimo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                                     </td>
                                     <td>
                                         <?php echo esc_html(human_time_diff(strtotime($reporte->fecha_reporte))); ?>
@@ -393,21 +393,21 @@ $tab_activa = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'pendien
                                             <?php wp_nonce_field('reporte_marketplace'); ?>
                                             <input type="hidden" name="reporte_id" value="<?php echo esc_attr($reporte->id); ?>">
 
-                                            <button type="submit" name="accion_reporte" value="resolver" class="button button-small" title="<?php esc_attr_e('Marcar como resuelto', 'flavor-chat-ia'); ?>">
+                                            <button type="submit" name="accion_reporte" value="resolver" class="button button-small" title="<?php esc_attr_e('Marcar como resuelto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                                 <span class="dashicons dashicons-yes" style="vertical-align: middle;"></span>
                                             </button>
-                                            <button type="submit" name="accion_reporte" value="descartar" class="button button-small" title="<?php esc_attr_e('Descartar reporte', 'flavor-chat-ia'); ?>">
+                                            <button type="submit" name="accion_reporte" value="descartar" class="button button-small" title="<?php esc_attr_e('Descartar reporte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                                 <span class="dashicons dashicons-dismiss" style="vertical-align: middle;"></span>
                                             </button>
                                             <?php if ($reporte->anuncio_id): ?>
-                                                <button type="submit" name="accion_reporte" value="eliminar_anuncio" class="button button-small" style="color: #d63638;" title="<?php esc_attr_e('Eliminar anuncio', 'flavor-chat-ia'); ?>"
-                                                        onclick="return confirm('<?php esc_attr_e('Seguro que deseas eliminar este anuncio?', 'flavor-chat-ia'); ?>');">
+                                                <button type="submit" name="accion_reporte" value="eliminar_anuncio" class="button button-small" style="color: #d63638;" title="<?php esc_attr_e('Eliminar anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
+                                                        onclick="return confirm('<?php esc_attr_e('Seguro que deseas eliminar este anuncio?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');">
                                                     <span class="dashicons dashicons-trash" style="vertical-align: middle;"></span>
                                                 </button>
                                             <?php endif; ?>
                                             <?php if ($reporte->usuario_reportado_id): ?>
-                                                <button type="submit" name="accion_reporte" value="suspender_usuario" class="button button-small" style="color: #d63638;" title="<?php esc_attr_e('Suspender usuario', 'flavor-chat-ia'); ?>"
-                                                        onclick="return confirm('<?php esc_attr_e('Seguro que deseas suspender a este usuario del marketplace?', 'flavor-chat-ia'); ?>');">
+                                                <button type="submit" name="accion_reporte" value="suspender_usuario" class="button button-small" style="color: #d63638;" title="<?php esc_attr_e('Suspender usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
+                                                        onclick="return confirm('<?php esc_attr_e('Seguro que deseas suspender a este usuario del marketplace?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');">
                                                     <span class="dashicons dashicons-admin-users" style="vertical-align: middle;"></span>
                                                 </button>
                                             <?php endif; ?>
@@ -420,8 +420,8 @@ $tab_activa = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'pendien
                 <?php else: ?>
                     <div style="text-align: center; padding: 40px; color: #666;">
                         <span class="dashicons dashicons-shield" style="font-size: 48px; color: #00a32a;"></span>
-                        <h3><?php esc_html_e('No hay reportes pendientes', 'flavor-chat-ia'); ?></h3>
-                        <p><?php esc_html_e('No se han reportado problemas recientemente.', 'flavor-chat-ia'); ?></p>
+                        <h3><?php esc_html_e('No hay reportes pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                        <p><?php esc_html_e('No se han reportado problemas recientemente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 <?php endif; ?>
             </div>
@@ -434,7 +434,7 @@ $tab_activa = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'pendien
     <div style="background: #fff; padding: 30px; border-radius: 8px; max-width: 500px; width: 90%;">
         <h3 style="margin-top: 0;">
             <span class="dashicons dashicons-no" style="color: #d63638;"></span>
-            <?php esc_html_e('Rechazar Anuncio', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Rechazar Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h3>
         <form method="post">
             <?php wp_nonce_field('moderacion_marketplace'); ?>
@@ -442,17 +442,17 @@ $tab_activa = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'pendien
             <input type="hidden" name="accion_moderacion" value="rechazar">
 
             <p>
-                <label for="motivo_rechazo"><strong><?php esc_html_e('Motivo del rechazo:', 'flavor-chat-ia'); ?></strong></label>
+                <label for="motivo_rechazo"><strong><?php esc_html_e('Motivo del rechazo:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label>
                 <textarea name="motivo_rechazo" id="motivo_rechazo" rows="4" style="width: 100%; margin-top: 8px;"
-                          placeholder="<?php esc_attr_e('Explica el motivo del rechazo...', 'flavor-chat-ia'); ?>"></textarea>
+                          placeholder="<?php esc_attr_e('Explica el motivo del rechazo...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
             </p>
 
             <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
                 <button type="button" class="button" onclick="cerrarModalRechazar()">
-                    <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="submit" class="button button-primary" style="background: #d63638; border-color: #d63638;">
-                    <?php esc_html_e('Rechazar Anuncio', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Rechazar Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </form>

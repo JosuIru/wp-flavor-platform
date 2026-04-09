@@ -62,12 +62,12 @@ class Flavor_Permission_Command {
         $user_id = intval($user_id);
 
         if (!$user_id) {
-            WP_CLI::error(__('ID de usuario invalido.', 'flavor-chat-ia'));
+            WP_CLI::error(__('ID de usuario invalido.', 'flavor-platform'));
         }
 
         $usuario = get_userdata($user_id);
         if (!$usuario) {
-            WP_CLI::error(__('Usuario no encontrado.', 'flavor-chat-ia'));
+            WP_CLI::error(__('Usuario no encontrado.', 'flavor-platform'));
         }
 
         $role_manager = Flavor_Role_Manager::get_instance();
@@ -84,7 +84,7 @@ class Flavor_Permission_Command {
 
         if (!$modulo_encontrado) {
             WP_CLI::error(sprintf(
-                __('Rol "%s" no encontrado. Usa "wp flavor permission roles" para ver roles disponibles.', 'flavor-chat-ia'),
+                __('Rol "%s" no encontrado. Usa "wp flavor permission roles" para ver roles disponibles.', 'flavor-platform'),
                 $role
             ));
         }
@@ -93,14 +93,14 @@ class Flavor_Permission_Command {
 
         if ($resultado) {
             WP_CLI::success(sprintf(
-                __('Rol "%s" asignado a usuario %d (%s) en modulo "%s".', 'flavor-chat-ia'),
+                __('Rol "%s" asignado a usuario %d (%s) en modulo "%s".', 'flavor-platform'),
                 $role,
                 $user_id,
                 $usuario->display_name,
                 $modulo_encontrado
             ));
         } else {
-            WP_CLI::error(__('No se pudo asignar el rol.', 'flavor-chat-ia'));
+            WP_CLI::error(__('No se pudo asignar el rol.', 'flavor-platform'));
         }
     }
 
@@ -128,12 +128,12 @@ class Flavor_Permission_Command {
         $user_id = intval($user_id);
 
         if (!$user_id) {
-            WP_CLI::error(__('ID de usuario invalido.', 'flavor-chat-ia'));
+            WP_CLI::error(__('ID de usuario invalido.', 'flavor-platform'));
         }
 
         $usuario = get_userdata($user_id);
         if (!$usuario) {
-            WP_CLI::error(__('Usuario no encontrado.', 'flavor-chat-ia'));
+            WP_CLI::error(__('Usuario no encontrado.', 'flavor-platform'));
         }
 
         $role_manager = Flavor_Role_Manager::get_instance();
@@ -141,7 +141,7 @@ class Flavor_Permission_Command {
 
         if (!$rol_actual) {
             WP_CLI::warning(sprintf(
-                __('El usuario %d no tiene rol asignado en modulo "%s".', 'flavor-chat-ia'),
+                __('El usuario %d no tiene rol asignado en modulo "%s".', 'flavor-platform'),
                 $user_id,
                 $module
             ));
@@ -152,14 +152,14 @@ class Flavor_Permission_Command {
 
         if ($resultado) {
             WP_CLI::success(sprintf(
-                __('Rol "%s" revocado de usuario %d (%s) en modulo "%s".', 'flavor-chat-ia'),
+                __('Rol "%s" revocado de usuario %d (%s) en modulo "%s".', 'flavor-platform'),
                 $rol_actual,
                 $user_id,
                 $usuario->display_name,
                 $module
             ));
         } else {
-            WP_CLI::error(__('No se pudo revocar el rol.', 'flavor-chat-ia'));
+            WP_CLI::error(__('No se pudo revocar el rol.', 'flavor-platform'));
         }
     }
 
@@ -196,11 +196,11 @@ class Flavor_Permission_Command {
             $usuario = get_userdata($user_id);
 
             if (!$usuario) {
-                WP_CLI::error(__('Usuario no encontrado.', 'flavor-chat-ia'));
+                WP_CLI::error(__('Usuario no encontrado.', 'flavor-platform'));
             }
 
             WP_CLI::line(sprintf(
-                __('Permisos de: %s (%s)', 'flavor-chat-ia'),
+                __('Permisos de: %s (%s)', 'flavor-platform'),
                 $usuario->display_name,
                 $usuario->user_email
             ));
@@ -252,10 +252,10 @@ class Flavor_Permission_Command {
             $caps = $role_manager->obtener_capabilities_modulo($module);
 
             if (empty($caps)) {
-                WP_CLI::error(sprintf(__('Modulo "%s" no encontrado.', 'flavor-chat-ia'), $module));
+                WP_CLI::error(sprintf(__('Modulo "%s" no encontrado.', 'flavor-platform'), $module));
             }
 
-            WP_CLI::line(sprintf(__('Capabilities del modulo: %s', 'flavor-chat-ia'), $module));
+            WP_CLI::line(sprintf(__('Capabilities del modulo: %s', 'flavor-platform'), $module));
             WP_CLI::line('');
 
             $data = [];
@@ -291,7 +291,7 @@ class Flavor_Permission_Command {
         }
 
         // Listar todos los modulos
-        WP_CLI::line(__('Modulos disponibles:', 'flavor-chat-ia'));
+        WP_CLI::line(__('Modulos disponibles:', 'flavor-platform'));
         WP_CLI::line('');
 
         $modulos = $role_manager->obtener_modulos_con_capabilities();
@@ -328,7 +328,7 @@ class Flavor_Permission_Command {
         $format = isset($assoc_args['format']) ? $assoc_args['format'] : 'table';
         $role_manager = Flavor_Role_Manager::get_instance();
 
-        WP_CLI::line(__('Roles disponibles por modulo:', 'flavor-chat-ia'));
+        WP_CLI::line(__('Roles disponibles por modulo:', 'flavor-platform'));
         WP_CLI::line('');
 
         $roles_por_modulo = $role_manager->obtener_roles_modulo();
@@ -400,7 +400,7 @@ class Flavor_Permission_Command {
         }
 
         WP_CLI::success(sprintf(
-            __('Rol "%s" creado correctamente.', 'flavor-chat-ia'),
+            __('Rol "%s" creado correctamente.', 'flavor-platform'),
             $label
         ));
     }
@@ -432,13 +432,13 @@ class Flavor_Permission_Command {
 
         if (!isset($roles_personalizados[$slug])) {
             WP_CLI::error(sprintf(
-                __('Rol personalizado "%s" no encontrado.', 'flavor-chat-ia'),
+                __('Rol personalizado "%s" no encontrado.', 'flavor-platform'),
                 $slug
             ));
         }
 
         WP_CLI::confirm(
-            sprintf(__('¿Seguro que quieres eliminar el rol "%s"?', 'flavor-chat-ia'), $slug),
+            sprintf(__('¿Seguro que quieres eliminar el rol "%s"?', 'flavor-platform'), $slug),
             $assoc_args
         );
 
@@ -446,11 +446,11 @@ class Flavor_Permission_Command {
 
         if ($resultado) {
             WP_CLI::success(sprintf(
-                __('Rol "%s" eliminado correctamente.', 'flavor-chat-ia'),
+                __('Rol "%s" eliminado correctamente.', 'flavor-platform'),
                 $slug
             ));
         } else {
-            WP_CLI::error(__('No se pudo eliminar el rol.', 'flavor-chat-ia'));
+            WP_CLI::error(__('No se pudo eliminar el rol.', 'flavor-platform'));
         }
     }
 
@@ -478,26 +478,26 @@ class Flavor_Permission_Command {
         $user_id = intval($user_id);
 
         if (!$user_id) {
-            WP_CLI::error(__('ID de usuario invalido.', 'flavor-chat-ia'));
+            WP_CLI::error(__('ID de usuario invalido.', 'flavor-platform'));
         }
 
         $usuario = get_userdata($user_id);
         if (!$usuario) {
-            WP_CLI::error(__('Usuario no encontrado.', 'flavor-chat-ia'));
+            WP_CLI::error(__('Usuario no encontrado.', 'flavor-platform'));
         }
 
         $puede = Flavor_Permission_Helper::can($capability, $user_id);
 
         if ($puede) {
             WP_CLI::success(sprintf(
-                __('Usuario %d (%s) TIENE la capability "%s".', 'flavor-chat-ia'),
+                __('Usuario %d (%s) TIENE la capability "%s".', 'flavor-platform'),
                 $user_id,
                 $usuario->display_name,
                 $capability
             ));
         } else {
             WP_CLI::warning(sprintf(
-                __('Usuario %d (%s) NO tiene la capability "%s".', 'flavor-chat-ia'),
+                __('Usuario %d (%s) NO tiene la capability "%s".', 'flavor-platform'),
                 $user_id,
                 $usuario->display_name,
                 $capability
@@ -522,11 +522,11 @@ class Flavor_Permission_Command {
      * @param array $assoc_args
      */
     public function sync($args, $assoc_args) {
-        WP_CLI::line(__('Sincronizando roles de Flavor Platform...', 'flavor-chat-ia'));
+        WP_CLI::line(__('Sincronizando roles de Flavor Platform...', 'flavor-platform'));
 
         Flavor_Role_Manager::create_roles();
 
-        WP_CLI::success(__('Roles sincronizados correctamente.', 'flavor-chat-ia'));
+        WP_CLI::success(__('Roles sincronizados correctamente.', 'flavor-platform'));
 
         // Mostrar estadisticas
         $role_manager = Flavor_Role_Manager::get_instance();
@@ -534,8 +534,8 @@ class Flavor_Permission_Command {
         $roles = $role_manager->obtener_roles();
 
         WP_CLI::line('');
-        WP_CLI::line(sprintf(__('Total capabilities: %d', 'flavor-chat-ia'), count($caps)));
-        WP_CLI::line(sprintf(__('Total roles: %d', 'flavor-chat-ia'), count($roles)));
+        WP_CLI::line(sprintf(__('Total capabilities: %d', 'flavor-platform'), count($caps)));
+        WP_CLI::line(sprintf(__('Total roles: %d', 'flavor-platform'), count($roles)));
     }
 
     /**
@@ -565,7 +565,7 @@ class Flavor_Permission_Command {
         $config = Flavor_Permission_Helper::export_user_permissions($user_id);
 
         if (empty($config)) {
-            WP_CLI::error(__('Usuario no encontrado.', 'flavor-chat-ia'));
+            WP_CLI::error(__('Usuario no encontrado.', 'flavor-platform'));
         }
 
         if ($format === 'yaml') {
@@ -598,22 +598,22 @@ class Flavor_Permission_Command {
         $user_id = intval($user_id);
 
         if (!file_exists($file)) {
-            WP_CLI::error(__('Archivo no encontrado.', 'flavor-chat-ia'));
+            WP_CLI::error(__('Archivo no encontrado.', 'flavor-platform'));
         }
 
         $contenido = file_get_contents($file);
         $config = json_decode($contenido, true);
 
         if (!$config) {
-            WP_CLI::error(__('Error al parsear el archivo JSON.', 'flavor-chat-ia'));
+            WP_CLI::error(__('Error al parsear el archivo JSON.', 'flavor-platform'));
         }
 
         $resultado = Flavor_Permission_Helper::import_user_permissions($user_id, $config);
 
         if ($resultado) {
-            WP_CLI::success(__('Permisos importados correctamente.', 'flavor-chat-ia'));
+            WP_CLI::success(__('Permisos importados correctamente.', 'flavor-platform'));
         } else {
-            WP_CLI::error(__('Error al importar permisos.', 'flavor-chat-ia'));
+            WP_CLI::error(__('Error al importar permisos.', 'flavor-platform'));
         }
     }
 }

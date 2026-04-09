@@ -22,8 +22,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $titulo            = isset( $titulo ) ? $titulo : '';
 $subtitulo         = isset( $subtitulo ) ? $subtitulo : '';
-$texto_placeholder = isset( $texto_placeholder ) ? $texto_placeholder : __( 'Tu email', 'flavor-chat-ia' );
-$texto_boton       = isset( $texto_boton ) ? $texto_boton : __( 'Suscribirse', 'flavor-chat-ia' );
+$texto_placeholder = isset( $texto_placeholder ) ? $texto_placeholder : __( 'Tu email', FLAVOR_PLATFORM_TEXT_DOMAIN );
+$texto_boton       = isset( $texto_boton ) ? $texto_boton : __( 'Suscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN );
 $color_fondo       = isset( $color_fondo ) ? $color_fondo : '';
 $component_classes = isset( $component_classes ) ? $component_classes : '';
 

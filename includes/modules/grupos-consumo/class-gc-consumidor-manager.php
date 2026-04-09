@@ -85,7 +85,7 @@ class Flavor_GC_Consumidor_Manager {
     public function registrar_roles_wordpress() {
         // Rol: Coordinador de Grupo de Consumo
         if (!get_role('gc_coordinador')) {
-            add_role('gc_coordinador', __('Coordinador GC', 'flavor-chat-ia'), [
+            add_role('gc_coordinador', __('Coordinador GC', 'flavor-platform'), [
                 'read' => true,
                 'gc_gestionar_pedidos' => true,
                 'gc_gestionar_consumidores' => true,
@@ -96,7 +96,7 @@ class Flavor_GC_Consumidor_Manager {
 
         // Rol: Productor de Grupo de Consumo
         if (!get_role('gc_productor')) {
-            add_role('gc_productor', __('Productor GC', 'flavor-chat-ia'), [
+            add_role('gc_productor', __('Productor GC', 'flavor-platform'), [
                 'read' => true,
                 'gc_ver_consolidado' => true,
                 'gc_gestionar_productos_propios' => true,
@@ -145,7 +145,7 @@ class Flavor_GC_Consumidor_Manager {
         if (!$usuario) {
             return [
                 'success' => false,
-                'error' => __('Usuario no encontrado.', 'flavor-chat-ia'),
+                'error' => __('Usuario no encontrado.', 'flavor-platform'),
             ];
         }
 
@@ -154,7 +154,7 @@ class Flavor_GC_Consumidor_Manager {
         if (!$grupo || $grupo->post_type !== 'gc_grupo') {
             return [
                 'success' => false,
-                'error' => __('Grupo de consumo no encontrado.', 'flavor-chat-ia'),
+                'error' => __('Grupo de consumo no encontrado.', 'flavor-platform'),
             ];
         }
 
@@ -163,7 +163,7 @@ class Flavor_GC_Consumidor_Manager {
         if ($existente) {
             return [
                 'success' => false,
-                'error' => __('El usuario ya es miembro de este grupo.', 'flavor-chat-ia'),
+                'error' => __('El usuario ya es miembro de este grupo.', 'flavor-platform'),
             ];
         }
 
@@ -197,7 +197,7 @@ class Flavor_GC_Consumidor_Manager {
         if ($resultado === false) {
             return [
                 'success' => false,
-                'error' => __('Error al dar de alta al consumidor.', 'flavor-chat-ia'),
+                'error' => __('Error al dar de alta al consumidor.', 'flavor-platform'),
             ];
         }
 
@@ -216,7 +216,7 @@ class Flavor_GC_Consumidor_Manager {
         return [
             'success' => true,
             'consumidor_id' => $consumidor_id,
-            'mensaje' => __('Consumidor dado de alta correctamente. Estado: pendiente de aprobación.', 'flavor-chat-ia'),
+            'mensaje' => __('Consumidor dado de alta correctamente. Estado: pendiente de aprobación.', 'flavor-platform'),
         ];
     }
 
@@ -329,7 +329,7 @@ class Flavor_GC_Consumidor_Manager {
         if (!in_array($nuevo_estado, self::ESTADOS)) {
             return [
                 'success' => false,
-                'error' => __('Estado no válido.', 'flavor-chat-ia'),
+                'error' => __('Estado no válido.', 'flavor-platform'),
             ];
         }
 
@@ -337,7 +337,7 @@ class Flavor_GC_Consumidor_Manager {
         if (!$consumidor) {
             return [
                 'success' => false,
-                'error' => __('Consumidor no encontrado.', 'flavor-chat-ia'),
+                'error' => __('Consumidor no encontrado.', 'flavor-platform'),
             ];
         }
 
@@ -361,7 +361,7 @@ class Flavor_GC_Consumidor_Manager {
         if ($resultado === false) {
             return [
                 'success' => false,
-                'error' => __('Error al actualizar el estado.', 'flavor-chat-ia'),
+                'error' => __('Error al actualizar el estado.', 'flavor-platform'),
             ];
         }
 
@@ -371,7 +371,7 @@ class Flavor_GC_Consumidor_Manager {
         return [
             'success' => true,
             'mensaje' => sprintf(
-                __('Estado actualizado a: %s', 'flavor-chat-ia'),
+                __('Estado actualizado a: %s', 'flavor-platform'),
                 $this->obtener_etiqueta_estado($nuevo_estado)
             ),
         ];
@@ -390,7 +390,7 @@ class Flavor_GC_Consumidor_Manager {
         if (!in_array($nuevo_rol, self::ROLES)) {
             return [
                 'success' => false,
-                'error' => __('Rol no válido.', 'flavor-chat-ia'),
+                'error' => __('Rol no válido.', 'flavor-platform'),
             ];
         }
 
@@ -398,7 +398,7 @@ class Flavor_GC_Consumidor_Manager {
         if (!$consumidor) {
             return [
                 'success' => false,
-                'error' => __('Consumidor no encontrado.', 'flavor-chat-ia'),
+                'error' => __('Consumidor no encontrado.', 'flavor-platform'),
             ];
         }
 
@@ -415,7 +415,7 @@ class Flavor_GC_Consumidor_Manager {
         if ($resultado === false) {
             return [
                 'success' => false,
-                'error' => __('Error al actualizar el rol.', 'flavor-chat-ia'),
+                'error' => __('Error al actualizar el rol.', 'flavor-platform'),
             ];
         }
 
@@ -443,7 +443,7 @@ class Flavor_GC_Consumidor_Manager {
         return [
             'success' => true,
             'mensaje' => sprintf(
-                __('Rol actualizado a: %s', 'flavor-chat-ia'),
+                __('Rol actualizado a: %s', 'flavor-platform'),
                 $this->obtener_etiqueta_rol($nuevo_rol)
             ),
         ];
@@ -463,7 +463,7 @@ class Flavor_GC_Consumidor_Manager {
         if (!$consumidor) {
             return [
                 'success' => false,
-                'error' => __('Consumidor no encontrado.', 'flavor-chat-ia'),
+                'error' => __('Consumidor no encontrado.', 'flavor-platform'),
             ];
         }
 
@@ -488,7 +488,7 @@ class Flavor_GC_Consumidor_Manager {
         if (empty($datos_actualizar)) {
             return [
                 'success' => false,
-                'error' => __('No hay datos para actualizar.', 'flavor-chat-ia'),
+                'error' => __('No hay datos para actualizar.', 'flavor-platform'),
             ];
         }
 
@@ -503,13 +503,13 @@ class Flavor_GC_Consumidor_Manager {
         if ($resultado === false) {
             return [
                 'success' => false,
-                'error' => __('Error al actualizar preferencias.', 'flavor-chat-ia'),
+                'error' => __('Error al actualizar preferencias.', 'flavor-platform'),
             ];
         }
 
         return [
             'success' => true,
-            'mensaje' => __('Preferencias actualizadas correctamente.', 'flavor-chat-ia'),
+            'mensaje' => __('Preferencias actualizadas correctamente.', 'flavor-platform'),
         ];
     }
 
@@ -527,7 +527,7 @@ class Flavor_GC_Consumidor_Manager {
         if (!$consumidor) {
             return [
                 'success' => false,
-                'error' => __('Consumidor no encontrado.', 'flavor-chat-ia'),
+                'error' => __('Consumidor no encontrado.', 'flavor-platform'),
             ];
         }
 
@@ -544,7 +544,7 @@ class Flavor_GC_Consumidor_Manager {
         if ($resultado === false) {
             return [
                 'success' => false,
-                'error' => __('Error al actualizar saldo.', 'flavor-chat-ia'),
+                'error' => __('Error al actualizar saldo.', 'flavor-platform'),
             ];
         }
 
@@ -627,10 +627,10 @@ class Flavor_GC_Consumidor_Manager {
      */
     public function obtener_etiqueta_estado($estado) {
         $etiquetas = [
-            'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-            'activo' => __('Activo', 'flavor-chat-ia'),
-            'suspendido' => __('Suspendido', 'flavor-chat-ia'),
-            'baja' => __('Baja', 'flavor-chat-ia'),
+            'pendiente' => __('Pendiente', 'flavor-platform'),
+            'activo' => __('Activo', 'flavor-platform'),
+            'suspendido' => __('Suspendido', 'flavor-platform'),
+            'baja' => __('Baja', 'flavor-platform'),
         ];
         return $etiquetas[$estado] ?? $estado;
     }
@@ -643,9 +643,9 @@ class Flavor_GC_Consumidor_Manager {
      */
     public function obtener_etiqueta_rol($rol) {
         $etiquetas = [
-            'consumidor' => __('Consumidor', 'flavor-chat-ia'),
-            'coordinador' => __('Coordinador', 'flavor-chat-ia'),
-            'productor' => __('Productor', 'flavor-chat-ia'),
+            'consumidor' => __('Consumidor', 'flavor-platform'),
+            'coordinador' => __('Coordinador', 'flavor-platform'),
+            'productor' => __('Productor', 'flavor-platform'),
         ];
         return $etiquetas[$rol] ?? $rol;
     }
@@ -711,7 +711,7 @@ class Flavor_GC_Consumidor_Manager {
         check_ajax_referer('gc_admin_nonce', 'nonce');
 
         if (!$this->puede_gestionar_consumidores()) {
-            wp_send_json_error(['mensaje' => __('No tienes permisos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('No tienes permisos.', 'flavor-platform')]);
         }
 
         $usuario_id = isset($_POST['usuario_id']) ? absint($_POST['usuario_id']) : 0;
@@ -739,7 +739,7 @@ class Flavor_GC_Consumidor_Manager {
         check_ajax_referer('gc_admin_nonce', 'nonce');
 
         if (!$this->puede_gestionar_consumidores()) {
-            wp_send_json_error(['mensaje' => __('No tienes permisos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('No tienes permisos.', 'flavor-platform')]);
         }
 
         $consumidor_id = isset($_POST['consumidor_id']) ? absint($_POST['consumidor_id']) : 0;
@@ -761,7 +761,7 @@ class Flavor_GC_Consumidor_Manager {
         check_ajax_referer('gc_admin_nonce', 'nonce');
 
         if (!$this->puede_gestionar_consumidores()) {
-            wp_send_json_error(['mensaje' => __('No tienes permisos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('No tienes permisos.', 'flavor-platform')]);
         }
 
         $consumidor_id = isset($_POST['consumidor_id']) ? absint($_POST['consumidor_id']) : 0;
@@ -783,7 +783,7 @@ class Flavor_GC_Consumidor_Manager {
         check_ajax_referer('gc_preferencias_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', 'flavor-platform')]);
         }
 
         $consumidor_id = isset($_POST['consumidor_id']) ? absint($_POST['consumidor_id']) : 0;
@@ -791,7 +791,7 @@ class Flavor_GC_Consumidor_Manager {
 
         // Verificar que es el propio usuario o tiene permisos
         if (!$consumidor || ($consumidor->usuario_id !== get_current_user_id() && !$this->puede_gestionar_consumidores())) {
-            wp_send_json_error(['mensaje' => __('No tienes permisos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('No tienes permisos.', 'flavor-platform')]);
         }
 
         $datos = [

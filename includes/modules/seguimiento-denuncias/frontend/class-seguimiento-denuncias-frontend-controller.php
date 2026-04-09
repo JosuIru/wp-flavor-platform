@@ -194,13 +194,13 @@ class Flavor_Seguimiento_Denuncias_Frontend_Controller {
             'estados' => $this->estados,
             'ambitos' => $this->ambitos,
             'strings' => [
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
-                'error' => __('Error al procesar la solicitud', 'flavor-chat-ia'),
-                'exito' => __('Operación completada', 'flavor-chat-ia'),
-                'confirmar_eliminar' => __('¿Estás seguro de que deseas eliminar esta denuncia?', 'flavor-chat-ia'),
-                'sin_resultados' => __('No se encontraron denuncias', 'flavor-chat-ia'),
-                'plazo_vencido' => __('Plazo vencido', 'flavor-chat-ia'),
-                'dias_restantes' => __('días restantes', 'flavor-chat-ia'),
+                'cargando' => __('Cargando...', 'flavor-platform'),
+                'error' => __('Error al procesar la solicitud', 'flavor-platform'),
+                'exito' => __('Operación completada', 'flavor-platform'),
+                'confirmar_eliminar' => __('¿Estás seguro de que deseas eliminar esta denuncia?', 'flavor-platform'),
+                'sin_resultados' => __('No se encontraron denuncias', 'flavor-platform'),
+                'plazo_vencido' => __('Plazo vencido', 'flavor-platform'),
+                'dias_restantes' => __('días restantes', 'flavor-platform'),
             ],
             'usuarioId' => get_current_user_id()
         ]);

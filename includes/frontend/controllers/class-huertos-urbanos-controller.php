@@ -199,8 +199,8 @@ class Flavor_Frontend_Huertos_Urbanos_Controller extends Flavor_Frontend_Control
 
     protected function ajax_solicitar_parcela($data) {
         if (!is_user_logged_in()) {
-            return ['error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
+            return ['error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
-        return ['success' => true, 'mensaje' => __('Solicitud enviada', 'flavor-chat-ia')];
+        return ['success' => true, 'mensaje' => __('Solicitud enviada', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 }

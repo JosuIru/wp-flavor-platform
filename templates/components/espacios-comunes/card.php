@@ -35,11 +35,11 @@ $tipo = $espacio['tipo'] ?? '';
 
         <?php if ($disponible): ?>
             <span class="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-bold bg-green-500 text-white">
-                <?php echo esc_html__('Disponible', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
         <?php else: ?>
             <span class="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-bold bg-red-500 text-white">
-                <?php echo esc_html__('Ocupado', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Ocupado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
         <?php endif; ?>
 
@@ -83,7 +83,7 @@ $tipo = $espacio['tipo'] ?? '';
 
         <a href="<?php echo esc_url($url); ?>"
            class="block w-full py-2.5 rounded-xl text-center font-semibold text-white bg-gradient-to-r from-rose-500 to-pink-600 transition-all hover:scale-105">
-            <?php echo esc_html__('Ver Disponibilidad', 'flavor-chat-ia'); ?>
+            <?php echo esc_html__('Ver Disponibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 </article>

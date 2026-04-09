@@ -25,7 +25,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$title = $title ?? __('Apoya esta causa', 'flavor-chat-ia');
+$title = $title ?? __('Apoya esta causa', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $description = $description ?? '';
 $goal = floatval($goal ?? 0);
 $raised = floatval($raised ?? 0);
@@ -78,7 +78,7 @@ $donation_id = 'flavor-donation-' . wp_rand(1000, 9999);
 
         <!-- Botón donar -->
         <a href="<?php echo esc_url($action_url ?: '#' . $donation_id . '-form'); ?>" class="block w-full py-2 bg-green-600 hover:bg-green-700 text-white text-center font-medium rounded-lg transition-colors">
-            💚 <?php esc_html_e('Donar ahora', 'flavor-chat-ia'); ?>
+            💚 <?php esc_html_e('Donar ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 
@@ -92,7 +92,7 @@ $donation_id = 'flavor-donation-' . wp_rand(1000, 9999);
                 <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                 <?php if ($days_left !== null): ?>
                     <span class="absolute top-3 right-3 bg-white/90 text-gray-800 text-xs font-medium px-2 py-1 rounded-full">
-                        ⏰ <?php printf(__('%d días restantes', 'flavor-chat-ia'), $days_left); ?>
+                        ⏰ <?php printf(__('%d días restantes', FLAVOR_PLATFORM_TEXT_DOMAIN), $days_left); ?>
                     </span>
                 <?php endif; ?>
             </div>
@@ -113,7 +113,7 @@ $donation_id = 'flavor-donation-' . wp_rand(1000, 9999);
                     </span>
                     <?php if ($goal > 0): ?>
                         <span class="text-sm text-gray-500">
-                            <?php printf(__('de %s %s', 'flavor-chat-ia'), number_format_i18n($goal, 0), $currency); ?>
+                            <?php printf(__('de %s %s', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($goal, 0), $currency); ?>
                         </span>
                     <?php endif; ?>
                 </div>
@@ -122,7 +122,7 @@ $donation_id = 'flavor-donation-' . wp_rand(1000, 9999);
                     <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
                         <div class="h-full bg-gradient-to-r from-green-400 to-green-600 rounded-full transition-all duration-500" style="width: <?php echo $progress; ?>%;"></div>
                     </div>
-                    <p class="text-xs text-gray-500 mt-1"><?php printf(__('%s%% completado', 'flavor-chat-ia'), number_format_i18n($progress, 0)); ?></p>
+                    <p class="text-xs text-gray-500 mt-1"><?php printf(__('%s%% completado', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($progress, 0)); ?></p>
                 <?php endif; ?>
             </div>
 
@@ -131,20 +131,20 @@ $donation_id = 'flavor-donation-' . wp_rand(1000, 9999);
                 <div class="flex items-center gap-1">
                     <span class="text-green-600">👥</span>
                     <span class="font-medium text-gray-900"><?php echo number_format_i18n($donors); ?></span>
-                    <span class="text-gray-500"><?php esc_html_e('donantes', 'flavor-chat-ia'); ?></span>
+                    <span class="text-gray-500"><?php esc_html_e('donantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <?php if ($days_left !== null): ?>
                     <div class="flex items-center gap-1">
                         <span class="text-orange-500">⏱️</span>
                         <span class="font-medium text-gray-900"><?php echo $days_left; ?></span>
-                        <span class="text-gray-500"><?php esc_html_e('días', 'flavor-chat-ia'); ?></span>
+                        <span class="text-gray-500"><?php esc_html_e('días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 <?php endif; ?>
             </div>
 
             <!-- Cantidades predefinidas -->
             <form method="post" action="<?php echo esc_url($action_url); ?>" class="mt-4" id="<?php echo esc_attr($donation_id); ?>-form">
-                <p class="text-sm font-medium text-gray-700 mb-2"><?php esc_html_e('Selecciona una cantidad:', 'flavor-chat-ia'); ?></p>
+                <p class="text-sm font-medium text-gray-700 mb-2"><?php esc_html_e('Selecciona una cantidad:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                 <div class="grid grid-cols-3 gap-2 mb-3">
                     <?php foreach ($amounts as $i => $amount): ?>
@@ -161,7 +161,7 @@ $donation_id = 'flavor-donation-' . wp_rand(1000, 9999);
                     <div class="mb-4">
                         <label class="flex items-center gap-2 text-sm text-gray-600 mb-1">
                             <input type="radio" name="amount" value="custom" class="peer">
-                            <?php esc_html_e('Otra cantidad:', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Otra cantidad:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                         <div class="relative">
                             <input type="number" name="custom_amount" min="1" step="1"
@@ -173,11 +173,11 @@ $donation_id = 'flavor-donation-' . wp_rand(1000, 9999);
                 <?php endif; ?>
 
                 <button type="submit" class="w-full py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all">
-                    💚 <?php esc_html_e('Donar ahora', 'flavor-chat-ia'); ?>
+                    💚 <?php esc_html_e('Donar ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
 
                 <p class="mt-3 text-xs text-gray-400 text-center">
-                    🔒 <?php esc_html_e('Pago seguro con encriptación SSL', 'flavor-chat-ia'); ?>
+                    🔒 <?php esc_html_e('Pago seguro con encriptación SSL', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </form>
         </div>

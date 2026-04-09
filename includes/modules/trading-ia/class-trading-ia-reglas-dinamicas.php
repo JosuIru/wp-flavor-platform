@@ -80,7 +80,7 @@ class Flavor_Trading_IA_Reglas_Dinamicas {
             'exito'   => true,
             'id'      => $regla_id,
             'nombre'  => $nombre,
-            'mensaje' => sprintf(__('Regla "%s" creada', 'flavor-chat-ia'), $nombre),
+            'mensaje' => sprintf(__('Regla "%s" creada', 'flavor-platform'), $nombre),
         );
     }
 

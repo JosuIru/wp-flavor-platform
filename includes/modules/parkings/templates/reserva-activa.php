@@ -76,12 +76,12 @@ if (!$reserva_activa) {
                 <span class="dashicons dashicons-calendar-alt"></span>
             </div>
             <div class="widget-contenido">
-                <span class="widget-label"><?php esc_html_e('Próxima reserva', 'flavor-chat-ia'); ?></span>
+                <span class="widget-label"><?php esc_html_e('Próxima reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="widget-titulo"><?php echo esc_html($proxima_reserva->parking_nombre); ?></span>
                 <span class="widget-fecha"><?php echo date_i18n('d M, H:i', strtotime($proxima_reserva->fecha_inicio)); ?></span>
             </div>
             <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('parkings', 'mis-reservas')); ?>" class="widget-btn">
-                <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
         <?php
@@ -121,15 +121,15 @@ $parkings_url = Flavor_Chat_Helpers::get_action_url('parkings', '');
     <header class="reserva-activa__header">
         <span class="estado-indicador">
             <span class="indicador-punto"></span>
-            <?php esc_html_e('Reserva activa', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Reserva activa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </span>
         <span class="tiempo-restante">
             <?php if ($horas_restantes > 0): ?>
-                <?php printf(esc_html__('%dh %dm', 'flavor-chat-ia'), $horas_restantes, $minutos_restantes); ?>
+                <?php printf(esc_html__('%dh %dm', FLAVOR_PLATFORM_TEXT_DOMAIN), $horas_restantes, $minutos_restantes); ?>
             <?php else: ?>
-                <?php printf(esc_html__('%d min', 'flavor-chat-ia'), $minutos_restantes); ?>
+                <?php printf(esc_html__('%d min', FLAVOR_PLATFORM_TEXT_DOMAIN), $minutos_restantes); ?>
             <?php endif; ?>
-            <small><?php esc_html_e('restantes', 'flavor-chat-ia'); ?></small>
+            <small><?php esc_html_e('restantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
         </span>
     </header>
 
@@ -148,22 +148,22 @@ $parkings_url = Flavor_Chat_Helpers::get_action_url('parkings', '');
                     <span class="plaza-tipo-icono"><?php echo $iconos_tipo[$reserva_activa->plaza_tipo]; ?></span>
                 <?php endif; ?>
                 <span class="numero"><?php echo esc_html($reserva_activa->plaza_numero); ?></span>
-                <span class="label"><?php esc_html_e('Plaza', 'flavor-chat-ia'); ?></span>
+                <span class="label"><?php esc_html_e('Plaza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
         <div class="reserva-detalles">
             <div class="detalle-grupo">
-                <span class="detalle-label"><?php esc_html_e('Entrada', 'flavor-chat-ia'); ?></span>
+                <span class="detalle-label"><?php esc_html_e('Entrada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="detalle-valor"><?php echo date_i18n('d M, H:i', strtotime($reserva_activa->fecha_inicio)); ?></span>
             </div>
             <div class="detalle-grupo">
-                <span class="detalle-label"><?php esc_html_e('Salida', 'flavor-chat-ia'); ?></span>
+                <span class="detalle-label"><?php esc_html_e('Salida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="detalle-valor"><?php echo date_i18n('d M, H:i', $fecha_fin); ?></span>
             </div>
             <?php if ($reserva_activa->matricula): ?>
                 <div class="detalle-grupo">
-                    <span class="detalle-label"><?php esc_html_e('Matrícula', 'flavor-chat-ia'); ?></span>
+                    <span class="detalle-label"><?php esc_html_e('Matrícula', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="detalle-valor detalle-valor--matricula"><?php echo esc_html($reserva_activa->matricula); ?></span>
                 </div>
             <?php endif; ?>
@@ -171,7 +171,7 @@ $parkings_url = Flavor_Chat_Helpers::get_action_url('parkings', '');
 
         <?php if ($reserva_activa->codigo_acceso): ?>
             <div class="codigo-acceso">
-                <span class="codigo-label"><?php esc_html_e('Código de acceso', 'flavor-chat-ia'); ?></span>
+                <span class="codigo-label"><?php esc_html_e('Código de acceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="codigo-valor"><?php echo esc_html($reserva_activa->codigo_acceso); ?></span>
             </div>
         <?php endif; ?>
@@ -181,11 +181,11 @@ $parkings_url = Flavor_Chat_Helpers::get_action_url('parkings', '');
         <?php if ($reserva_activa->parking_telefono): ?>
             <a href="tel:<?php echo esc_attr($reserva_activa->parking_telefono); ?>" class="btn btn-outline btn-sm">
                 <span class="dashicons dashicons-phone"></span>
-                <?php esc_html_e('Llamar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Llamar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         <?php endif; ?>
         <a href="<?php echo esc_url(add_query_arg('reserva', $reserva_activa->id, $parkings_url . 'detalle/')); ?>" class="btn btn-primary btn-sm">
-            <?php esc_html_e('Ver detalles', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </footer>
 </div>

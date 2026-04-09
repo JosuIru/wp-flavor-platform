@@ -2,6 +2,9 @@
 
 Plugin WordPress modular para comunidades, cooperativas y asociaciones. Incluye web builder, apps móviles Flutter y automatización con IA.
 
+Nombre comercial actual: `Flavor Platform`.
+Slug técnico y compatibilidad actual: `flavor-chat-ia`.
+
 ## Quickstart
 
 ```bash
@@ -31,7 +34,7 @@ curl -X POST "http://tu-sitio.local/wp-json/flavor-site-builder/v1/site/create" 
 ## Estructura Principal
 
 ```
-flavor-chat-ia/
+flavor-chat-ia/  # slug técnico actual del plugin
 ├── includes/
 │   ├── modules/           # Catálogo principal de módulos
 │   ├── visual-builder-pro/ # Page builder

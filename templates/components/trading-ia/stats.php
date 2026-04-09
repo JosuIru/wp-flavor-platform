@@ -30,25 +30,25 @@ $datos_barras_mensuales = $datos_barras_mensuales ?? [
     <div class="flavor-container">
         <div class="text-center mb-12">
             <h2 class="text-3xl lg:text-4xl font-bold text-white mb-3"><?php echo esc_html($titulo_stats); ?></h2>
-            <p class="text-gray-400 text-lg"><?php echo esc_html__('Estadisticas en tiempo real de las operaciones de la IA', 'flavor-chat-ia'); ?></p>
+            <p class="text-gray-400 text-lg"><?php echo esc_html__('Estadisticas en tiempo real de las operaciones de la IA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
 
         <!-- KPIs principales -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto mb-10">
             <div class="p-5 rounded-xl bg-gray-800 border border-gray-700">
-                <p class="text-sm text-gray-400 mb-1"><?php echo esc_html__('Rendimiento Mensual', 'flavor-chat-ia'); ?></p>
+                <p class="text-sm text-gray-400 mb-1"><?php echo esc_html__('Rendimiento Mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <p class="text-2xl lg:text-3xl font-bold text-green-400"><?php echo esc_html($rendimiento_mensual); ?></p>
             </div>
             <div class="p-5 rounded-xl bg-gray-800 border border-gray-700">
-                <p class="text-sm text-gray-400 mb-1"><?php echo esc_html__('Operaciones Activas', 'flavor-chat-ia'); ?></p>
+                <p class="text-sm text-gray-400 mb-1"><?php echo esc_html__('Operaciones Activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <p class="text-2xl lg:text-3xl font-bold text-cyan-400"><?php echo esc_html($operaciones_activas); ?></p>
             </div>
             <div class="p-5 rounded-xl bg-gray-800 border border-gray-700">
-                <p class="text-sm text-gray-400 mb-1"><?php echo esc_html__('Win Rate', 'flavor-chat-ia'); ?></p>
+                <p class="text-sm text-gray-400 mb-1"><?php echo esc_html__('Win Rate', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <p class="text-2xl lg:text-3xl font-bold text-green-400"><?php echo esc_html($win_rate); ?></p>
             </div>
             <div class="p-5 rounded-xl bg-gray-800 border border-gray-700">
-                <p class="text-sm text-gray-400 mb-1"><?php echo esc_html__('Drawdown Maximo', 'flavor-chat-ia'); ?></p>
+                <p class="text-sm text-gray-400 mb-1"><?php echo esc_html__('Drawdown Maximo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <p class="text-2xl lg:text-3xl font-bold text-red-400"><?php echo esc_html($drawdown_maximo); ?></p>
             </div>
         </div>
@@ -57,8 +57,8 @@ $datos_barras_mensuales = $datos_barras_mensuales ?? [
         <div class="max-w-4xl mx-auto">
             <div class="bg-gray-800 rounded-2xl p-6 border border-gray-700">
                 <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-lg font-semibold text-white"><?php echo esc_html__('Rendimiento Mensual', 'flavor-chat-ia'); ?></h3>
-                    <span class="text-sm text-gray-400"><?php echo esc_html__('Ultimos 12 meses', 'flavor-chat-ia'); ?></span>
+                    <h3 class="text-lg font-semibold text-white"><?php echo esc_html__('Rendimiento Mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <span class="text-sm text-gray-400"><?php echo esc_html__('Ultimos 12 meses', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
 
                 <!-- Barras -->
@@ -80,15 +80,15 @@ $datos_barras_mensuales = $datos_barras_mensuales ?? [
                 <div class="flex justify-between mt-4 pt-4 border-t border-gray-700">
                     <div class="flex items-center gap-2">
                         <div class="w-3 h-3 rounded-sm bg-cyan-500"></div>
-                        <span class="text-xs text-gray-400"><?php echo esc_html__('Alto rendimiento', 'flavor-chat-ia'); ?></span>
+                        <span class="text-xs text-gray-400"><?php echo esc_html__('Alto rendimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="flex items-center gap-2">
                         <div class="w-3 h-3 rounded-sm bg-cyan-600"></div>
-                        <span class="text-xs text-gray-400"><?php echo esc_html__('Rendimiento medio', 'flavor-chat-ia'); ?></span>
+                        <span class="text-xs text-gray-400"><?php echo esc_html__('Rendimiento medio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="flex items-center gap-2">
                         <div class="w-3 h-3 rounded-sm bg-cyan-800"></div>
-                        <span class="text-xs text-gray-400"><?php echo esc_html__('Bajo rendimiento', 'flavor-chat-ia'); ?></span>
+                        <span class="text-xs text-gray-400"><?php echo esc_html__('Bajo rendimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>

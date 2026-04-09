@@ -110,7 +110,7 @@ class Flavor_Colectivos_Frontend_Controller {
     public function registrar_dashboard_tabs($tabs) {
         $tabs['colectivos'] = [
             'id' => 'colectivos',
-            'label' => __('Colectivos', 'flavor-chat-ia'),
+            'label' => __('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-groups',
             'orden' => 40,
             'callback' => [$this, 'render_dashboard_tab'],
@@ -118,7 +118,7 @@ class Flavor_Colectivos_Frontend_Controller {
 
         $tabs['colectivos-mis'] = [
             'id' => 'colectivos-mis',
-            'label' => __('Mis Colectivos', 'flavor-chat-ia'),
+            'label' => __('Mis Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-id-alt',
             'orden' => 41,
             'parent' => 'colectivos',
@@ -151,9 +151,9 @@ class Flavor_Colectivos_Frontend_Controller {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_colectivos_nonce'),
             'strings' => [
-                'confirmarSalir' => __('¿Estás seguro de que quieres abandonar este colectivo?', 'flavor-chat-ia'),
-                'procesando' => __('Procesando...', 'flavor-chat-ia'),
-                'error' => __('Error al procesar la solicitud', 'flavor-chat-ia'),
+                'confirmarSalir' => __('¿Estás seguro de que quieres abandonar este colectivo?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'procesando' => __('Procesando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al procesar la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -184,7 +184,7 @@ class Flavor_Colectivos_Frontend_Controller {
 
         if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_colectivos)) {
             return '<div class="flavor-alert flavor-alert-warning">' .
-                   __('El sistema de colectivos no está configurado.', 'flavor-chat-ia') . '</div>';
+                   __('El sistema de colectivos no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         global $wpdb;
@@ -218,13 +218,13 @@ class Flavor_Colectivos_Frontend_Controller {
         ?>
         <div class="flavor-colectivos-listado">
             <div class="flavor-colectivos-header">
-                <h2><?php _e('Colectivos y Asociaciones', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Colectivos y Asociaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <div class="flavor-colectivos-acciones">
                     <?php if (is_user_logged_in()): ?>
                         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('colectivos', 'crear')); ?>"
                            class="flavor-btn flavor-btn-primary">
                             <span class="dashicons dashicons-plus"></span>
-                            <?php _e('Crear Colectivo', 'flavor-chat-ia'); ?>
+                            <?php _e('Crear Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     <?php endif; ?>
                 </div>
@@ -233,7 +233,7 @@ class Flavor_Colectivos_Frontend_Controller {
             <div class="flavor-filtros">
                 <form method="get" class="flavor-filtros-form">
                     <select name="tipo" onchange="this.form.submit()">
-                        <option value=""><?php _e('Todos los tipos', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Todos los tipos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($this->tipos as $valor => $nombre): ?>
                             <option value="<?php echo esc_attr($valor); ?>"
                                     <?php selected($filtro_tipo, $valor); ?>>
@@ -246,13 +246,13 @@ class Flavor_Colectivos_Frontend_Controller {
 
             <?php if (empty($colectivos)): ?>
                 <div class="flavor-alert flavor-alert-info">
-                    <p><?php _e('No hay colectivos disponibles.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No hay colectivos disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <div class="flavor-alert-actions">
                         <a href="<?php echo esc_url(home_url('/mi-portal/colectivos/')); ?>" class="flavor-btn flavor-btn-outline">
-                            <?php _e('Quitar filtros', 'flavor-chat-ia'); ?>
+                            <?php _e('Quitar filtros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                         <a href="<?php echo esc_url(home_url('/mi-portal/colectivos/crear/')); ?>" class="flavor-btn flavor-btn-primary">
-                            <?php _e('Crear colectivo', 'flavor-chat-ia'); ?>
+                            <?php _e('Crear colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </div>
@@ -293,11 +293,11 @@ class Flavor_Colectivos_Frontend_Controller {
                 <div class="flavor-colectivo-stats">
                     <span class="flavor-stat">
                         <span class="dashicons dashicons-groups"></span>
-                        <?php printf(_n('%d miembro', '%d miembros', $colectivo->total_miembros, 'flavor-chat-ia'), $colectivo->total_miembros); ?>
+                        <?php printf(_n('%d miembro', '%d miembros', $colectivo->total_miembros, FLAVOR_PLATFORM_TEXT_DOMAIN), $colectivo->total_miembros); ?>
                     </span>
                     <span class="flavor-stat">
                         <span class="dashicons dashicons-portfolio"></span>
-                        <?php printf(_n('%d proyecto', '%d proyectos', $colectivo->total_proyectos, 'flavor-chat-ia'), $colectivo->total_proyectos); ?>
+                        <?php printf(_n('%d proyecto', '%d proyectos', $colectivo->total_proyectos, FLAVOR_PLATFORM_TEXT_DOMAIN), $colectivo->total_proyectos); ?>
                     </span>
                 </div>
             </div>
@@ -332,7 +332,7 @@ class Flavor_Colectivos_Frontend_Controller {
 
         if (!$colectivo) {
             return '<div class="flavor-alert flavor-alert-warning">' .
-                   __('Colectivo no encontrado.', 'flavor-chat-ia') . '</div>';
+                   __('Colectivo no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         $usuario_actual = get_current_user_id();
@@ -371,7 +371,7 @@ class Flavor_Colectivos_Frontend_Controller {
         <div class="flavor-colectivo-detalle">
             <div class="flavor-colectivo-breadcrumb">
                 <a href="<?php echo esc_url(remove_query_arg('colectivo_id')); ?>">
-                    <?php _e('Colectivos', 'flavor-chat-ia'); ?>
+                    <?php _e('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <span class="dashicons dashicons-arrow-right-alt2"></span>
                 <span><?php echo esc_html($colectivo->nombre); ?></span>
@@ -395,9 +395,9 @@ class Flavor_Colectivos_Frontend_Controller {
                     <?php endif; ?>
 
                     <div class="flavor-colectivo-meta-stats">
-                        <span><span class="dashicons dashicons-groups"></span> <?php echo absint($colectivo->total_miembros); ?> <?php _e('miembros', 'flavor-chat-ia'); ?></span>
-                        <span><span class="dashicons dashicons-portfolio"></span> <?php echo absint($colectivo->total_proyectos); ?> <?php _e('proyectos', 'flavor-chat-ia'); ?></span>
-                        <span><span class="dashicons dashicons-calendar-alt"></span> <?php echo absint($colectivo->total_asambleas); ?> <?php _e('asambleas', 'flavor-chat-ia'); ?></span>
+                        <span><span class="dashicons dashicons-groups"></span> <?php echo absint($colectivo->total_miembros); ?> <?php _e('miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                        <span><span class="dashicons dashicons-portfolio"></span> <?php echo absint($colectivo->total_proyectos); ?> <?php _e('proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                        <span><span class="dashicons dashicons-calendar-alt"></span> <?php echo absint($colectivo->total_asambleas); ?> <?php _e('asambleas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <?php if (!empty($colectivo->ubicacion)): ?>
                             <span><span class="dashicons dashicons-location"></span> <?php echo esc_html($colectivo->ubicacion); ?></span>
                         <?php endif; ?>
@@ -408,20 +408,20 @@ class Flavor_Colectivos_Frontend_Controller {
                             <?php if ($es_miembro): ?>
                                 <span class="flavor-badge flavor-badge-success">
                                     <span class="dashicons dashicons-yes"></span>
-                                    <?php _e('Eres miembro', 'flavor-chat-ia'); ?>
+                                    <?php _e('Eres miembro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     <?php if ($rol_usuario): echo '(' . esc_html(ucfirst($rol_usuario)) . ')'; endif; ?>
                                 </span>
                                 <?php if (!$es_admin): ?>
                                     <button class="flavor-btn flavor-btn-outline flavor-btn-sm flavor-salir-colectivo"
                                             data-colectivo-id="<?php echo esc_attr($colectivo_id); ?>">
-                                        <?php _e('Abandonar', 'flavor-chat-ia'); ?>
+                                        <?php _e('Abandonar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 <?php endif; ?>
                             <?php else: ?>
                                 <button class="flavor-btn flavor-btn-primary flavor-unirse-colectivo"
                                         data-colectivo-id="<?php echo esc_attr($colectivo_id); ?>">
                                     <span class="dashicons dashicons-plus"></span>
-                                    <?php _e('Unirse', 'flavor-chat-ia'); ?>
+                                    <?php _e('Unirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             <?php endif; ?>
                         <?php endif; ?>
@@ -429,7 +429,7 @@ class Flavor_Colectivos_Frontend_Controller {
                         <?php if (!empty($colectivo->web)): ?>
                             <a href="<?php echo esc_url($colectivo->web); ?>" target="_blank" class="flavor-btn flavor-btn-outline flavor-btn-sm">
                                 <span class="dashicons dashicons-admin-site"></span>
-                                <?php _e('Web', 'flavor-chat-ia'); ?>
+                                <?php _e('Web', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         <?php endif; ?>
                     </div>
@@ -440,7 +440,7 @@ class Flavor_Colectivos_Frontend_Controller {
                 <div class="flavor-colectivo-main">
                     <?php if (!empty($colectivo->descripcion)): ?>
                         <section class="flavor-panel">
-                            <h2><?php _e('Sobre nosotros', 'flavor-chat-ia'); ?></h2>
+                            <h2><?php _e('Sobre nosotros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                             <div class="flavor-colectivo-descripcion-completa">
                                 <?php echo wp_kses_post(wpautop($colectivo->descripcion)); ?>
                             </div>
@@ -449,7 +449,7 @@ class Flavor_Colectivos_Frontend_Controller {
 
                     <?php if (!empty($proyectos)): ?>
                         <section class="flavor-panel">
-                            <h2><?php _e('Proyectos Activos', 'flavor-chat-ia'); ?></h2>
+                            <h2><?php _e('Proyectos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                             <div class="flavor-proyectos-lista">
                                 <?php foreach ($proyectos as $proyecto): ?>
                                     <div class="flavor-proyecto-item">
@@ -468,7 +468,7 @@ class Flavor_Colectivos_Frontend_Controller {
                                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('colectivos', 'nuevo-proyecto', ['colectivo_id' => $colectivo_id])); ?>"
                                    class="flavor-btn flavor-btn-sm flavor-btn-outline">
                                     <span class="dashicons dashicons-plus"></span>
-                                    <?php _e('Nuevo Proyecto', 'flavor-chat-ia'); ?>
+                                    <?php _e('Nuevo Proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             <?php endif; ?>
                         </section>
@@ -476,7 +476,7 @@ class Flavor_Colectivos_Frontend_Controller {
 
                     <?php if (!empty($asambleas)): ?>
                         <section class="flavor-panel">
-                            <h2><?php _e('Próximas Asambleas', 'flavor-chat-ia'); ?></h2>
+                            <h2><?php _e('Próximas Asambleas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                             <div class="flavor-asambleas-lista">
                                 <?php foreach ($asambleas as $asamblea): ?>
                                     <div class="flavor-asamblea-item">
@@ -500,7 +500,7 @@ class Flavor_Colectivos_Frontend_Controller {
                                         <?php if ($es_miembro): ?>
                                             <button class="flavor-btn flavor-btn-sm flavor-confirmar-asistencia"
                                                     data-asamblea-id="<?php echo esc_attr($asamblea->id); ?>">
-                                                <?php _e('Confirmar', 'flavor-chat-ia'); ?>
+                                                <?php _e('Confirmar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </button>
                                         <?php endif; ?>
                                     </div>
@@ -512,7 +512,7 @@ class Flavor_Colectivos_Frontend_Controller {
 
                 <aside class="flavor-colectivo-sidebar">
                     <section class="flavor-panel">
-                        <h3><?php _e('Miembros', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="flavor-miembros-lista">
                             <?php foreach ($miembros_destacados as $miembro): ?>
                                 <div class="flavor-miembro-item">
@@ -526,14 +526,14 @@ class Flavor_Colectivos_Frontend_Controller {
                         </div>
                         <?php if ($colectivo->total_miembros > 8): ?>
                             <a href="<?php echo esc_url(add_query_arg('ver', 'miembros')); ?>" class="flavor-ver-todos">
-                                <?php printf(__('Ver todos (%d)', 'flavor-chat-ia'), $colectivo->total_miembros); ?>
+                                <?php printf(__('Ver todos (%d)', FLAVOR_PLATFORM_TEXT_DOMAIN), $colectivo->total_miembros); ?>
                             </a>
                         <?php endif; ?>
                     </section>
 
                     <?php if (!empty($colectivo->contacto_email) || !empty($colectivo->telefono)): ?>
                         <section class="flavor-panel">
-                            <h3><?php _e('Contacto', 'flavor-chat-ia'); ?></h3>
+                            <h3><?php _e('Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                             <?php if (!empty($colectivo->contacto_email)): ?>
                                 <p>
                                     <span class="dashicons dashicons-email"></span>
@@ -555,7 +555,7 @@ class Flavor_Colectivos_Frontend_Controller {
                         <?php $redes = maybe_unserialize($colectivo->redes_sociales); ?>
                         <?php if (!empty($redes) && is_array($redes)): ?>
                             <section class="flavor-panel">
-                                <h3><?php _e('Redes Sociales', 'flavor-chat-ia'); ?></h3>
+                                <h3><?php _e('Redes Sociales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                                 <div class="flavor-redes-sociales">
                                     <?php foreach ($redes as $red => $url): ?>
                                         <?php if (!empty($url)): ?>
@@ -581,7 +581,7 @@ class Flavor_Colectivos_Frontend_Controller {
     public function shortcode_crear($atts) {
         if (!is_user_logged_in()) {
             return '<div class="flavor-alert flavor-alert-warning">' .
-                   sprintf(__('<a href="%s">Inicia sesión</a> para crear un colectivo.', 'flavor-chat-ia'), wp_login_url(flavor_current_request_url())) .
+                   sprintf(__('<a href="%s">Inicia sesión</a> para crear un colectivo.', FLAVOR_PLATFORM_TEXT_DOMAIN), wp_login_url(flavor_current_request_url())) .
                    '</div>';
         }
 
@@ -590,20 +590,20 @@ class Flavor_Colectivos_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-crear-colectivo">
-            <h2><?php _e('Crear Nuevo Colectivo', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Crear Nuevo Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <form id="flavor-form-crear-colectivo" class="flavor-form" enctype="multipart/form-data">
                 <?php wp_nonce_field('flavor_colectivos_nonce', 'nonce'); ?>
 
                 <div class="flavor-form-row">
                     <div class="flavor-form-group">
-                        <label for="nombre"><?php _e('Nombre del Colectivo', 'flavor-chat-ia'); ?> *</label>
+                        <label for="nombre"><?php _e('Nombre del Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                         <input type="text" name="nombre" id="nombre" required maxlength="150">
                     </div>
                     <div class="flavor-form-group">
-                        <label for="tipo"><?php _e('Tipo', 'flavor-chat-ia'); ?> *</label>
+                        <label for="tipo"><?php _e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                         <select name="tipo" id="tipo" required>
-                            <option value=""><?php _e('Seleccionar...', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php _e('Seleccionar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php foreach ($this->tipos as $valor => $nombre): ?>
                                 <option value="<?php echo esc_attr($valor); ?>"><?php echo esc_html($nombre); ?></option>
                             <?php endforeach; ?>
@@ -612,52 +612,52 @@ class Flavor_Colectivos_Frontend_Controller {
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="descripcion_corta"><?php _e('Descripción corta', 'flavor-chat-ia'); ?></label>
+                    <label for="descripcion_corta"><?php _e('Descripción corta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="text" name="descripcion_corta" id="descripcion_corta" maxlength="250"
-                           placeholder="<?php esc_attr_e('Breve descripción (máx. 250 caracteres)', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php esc_attr_e('Breve descripción (máx. 250 caracteres)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="descripcion"><?php _e('Descripción completa', 'flavor-chat-ia'); ?> *</label>
+                    <label for="descripcion"><?php _e('Descripción completa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <textarea name="descripcion" id="descripcion" rows="6" required
-                              placeholder="<?php esc_attr_e('Describe los objetivos, actividades y valores del colectivo...', 'flavor-chat-ia'); ?>"></textarea>
+                              placeholder="<?php esc_attr_e('Describe los objetivos, actividades y valores del colectivo...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                 </div>
 
                 <div class="flavor-form-row">
                     <div class="flavor-form-group">
-                        <label for="ubicacion"><?php _e('Ubicación', 'flavor-chat-ia'); ?></label>
+                        <label for="ubicacion"><?php _e('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="text" name="ubicacion" id="ubicacion"
-                               placeholder="<?php esc_attr_e('Ciudad, barrio...', 'flavor-chat-ia'); ?>">
+                               placeholder="<?php esc_attr_e('Ciudad, barrio...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     </div>
                     <div class="flavor-form-group">
-                        <label for="web"><?php _e('Sitio web', 'flavor-chat-ia'); ?></label>
+                        <label for="web"><?php _e('Sitio web', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="url" name="web" id="web" placeholder="https://">
                     </div>
                 </div>
 
                 <div class="flavor-form-row">
                     <div class="flavor-form-group">
-                        <label for="contacto_email"><?php _e('Email de contacto', 'flavor-chat-ia'); ?></label>
+                        <label for="contacto_email"><?php _e('Email de contacto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="email" name="contacto_email" id="contacto_email">
                     </div>
                     <div class="flavor-form-group">
-                        <label for="telefono"><?php _e('Teléfono', 'flavor-chat-ia'); ?></label>
+                        <label for="telefono"><?php _e('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="tel" name="telefono" id="telefono">
                     </div>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="imagen"><?php _e('Imagen/Logo', 'flavor-chat-ia'); ?></label>
+                    <label for="imagen"><?php _e('Imagen/Logo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="file" name="imagen" id="imagen" accept="image/*">
                 </div>
 
                 <div class="flavor-form-actions">
                     <button type="submit" class="flavor-btn flavor-btn-primary">
                         <span class="dashicons dashicons-plus"></span>
-                        <?php _e('Crear Colectivo', 'flavor-chat-ia'); ?>
+                        <?php _e('Crear Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_module_url('colectivos')); ?>" class="flavor-btn flavor-btn-outline">
-                        <?php _e('Cancelar', 'flavor-chat-ia'); ?>
+                        <?php _e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </form>
@@ -689,13 +689,13 @@ class Flavor_Colectivos_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-mis-colectivos">
-            <h2><?php _e('Mis Colectivos', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Mis Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <?php if (empty($colectivos)): ?>
                 <div class="flavor-alert flavor-alert-info">
-                    <?php _e('No perteneces a ningún colectivo todavía.', 'flavor-chat-ia'); ?>
+                    <?php _e('No perteneces a ningún colectivo todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <a href="<?php echo esc_url(remove_query_arg('tab')); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
-                        <?php _e('Explorar Colectivos', 'flavor-chat-ia'); ?>
+                        <?php _e('Explorar Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -719,7 +719,7 @@ class Flavor_Colectivos_Frontend_Controller {
                                 </h3>
                                 <span class="flavor-badge flavor-badge-sm"><?php echo esc_html(ucfirst($colectivo->rol)); ?></span>
                                 <p class="flavor-fecha-union">
-                                    <?php printf(__('Miembro desde %s', 'flavor-chat-ia'), date_i18n(get_option('date_format'), strtotime($colectivo->fecha_union))); ?>
+                                    <?php printf(__('Miembro desde %s', FLAVOR_PLATFORM_TEXT_DOMAIN), date_i18n(get_option('date_format'), strtotime($colectivo->fecha_union))); ?>
                                 </p>
                             </div>
                         </div>
@@ -756,11 +756,11 @@ class Flavor_Colectivos_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-proyectos-colectivo">
-            <h2><?php _e('Proyectos', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <?php if (empty($proyectos)): ?>
                 <div class="flavor-alert flavor-alert-info">
-                    <?php _e('Este colectivo no tiene proyectos todavía.', 'flavor-chat-ia'); ?>
+                    <?php _e('Este colectivo no tiene proyectos todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </div>
             <?php else: ?>
                 <div class="flavor-proyectos-grid">
@@ -829,11 +829,11 @@ class Flavor_Colectivos_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-asambleas-colectivo">
-            <h2><?php _e('Asambleas', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Asambleas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <?php if (empty($asambleas)): ?>
                 <div class="flavor-alert flavor-alert-info">
-                    <?php _e('No hay asambleas programadas.', 'flavor-chat-ia'); ?>
+                    <?php _e('No hay asambleas programadas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </div>
             <?php else: ?>
                 <div class="flavor-asambleas-grid">
@@ -857,7 +857,7 @@ class Flavor_Colectivos_Frontend_Controller {
                                 <?php endif; ?>
                                 <?php if (!empty($asamblea->orden_del_dia)): ?>
                                     <details class="flavor-orden-del-dia">
-                                        <summary><?php _e('Orden del día', 'flavor-chat-ia'); ?></summary>
+                                        <summary><?php _e('Orden del día', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></summary>
                                         <?php echo wp_kses_post(wpautop($asamblea->orden_del_dia)); ?>
                                     </details>
                                 <?php endif; ?>
@@ -898,7 +898,7 @@ class Flavor_Colectivos_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-miembros-colectivo">
-            <h2><?php _e('Miembros', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <div class="flavor-miembros-grid">
                 <?php foreach ($miembros as $miembro): ?>
@@ -907,7 +907,7 @@ class Flavor_Colectivos_Frontend_Controller {
                         <h4><?php echo esc_html($miembro->display_name); ?></h4>
                         <span class="flavor-badge"><?php echo esc_html(ucfirst($miembro->rol)); ?></span>
                         <p class="flavor-fecha-union">
-                            <?php printf(__('Desde %s', 'flavor-chat-ia'), date_i18n('M Y', strtotime($miembro->fecha_union))); ?>
+                            <?php printf(__('Desde %s', FLAVOR_PLATFORM_TEXT_DOMAIN), date_i18n('M Y', strtotime($miembro->fecha_union))); ?>
                         </p>
                     </div>
                 <?php endforeach; ?>
@@ -997,30 +997,30 @@ class Flavor_Colectivos_Frontend_Controller {
                     <div class="flavor-kpi-icono"><span class="dashicons dashicons-id-alt"></span></div>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo absint($mis_colectivos); ?></span>
-                        <span class="flavor-kpi-label"><?php _e('Mis Colectivos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Mis Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <div class="flavor-kpi-icono"><span class="dashicons dashicons-groups"></span></div>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo absint($total_colectivos); ?></span>
-                        <span class="flavor-kpi-label"><?php _e('Total Colectivos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Total Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <div class="flavor-kpi-icono"><span class="dashicons dashicons-plus-alt"></span></div>
                     <div class="flavor-kpi-contenido">
                         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('colectivos', 'crear')); ?>" class="flavor-btn flavor-btn-primary">
-                            <?php _e('Crear Colectivo', 'flavor-chat-ia'); ?>
+                            <?php _e('Crear Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </div>
             </div>
 
             <div class="flavor-panel">
-                <h3><?php _e('Colectivos Recientes', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Colectivos Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <?php if (empty($recientes)): ?>
-                    <p class="flavor-no-datos"><?php _e('No hay colectivos disponibles.', 'flavor-chat-ia'); ?></p>
+                    <p class="flavor-no-datos"><?php _e('No hay colectivos disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php else: ?>
                     <div class="flavor-colectivos-grid flavor-grid-sm">
                         <?php foreach ($recientes as $colectivo): ?>
@@ -1051,7 +1051,7 @@ class Flavor_Colectivos_Frontend_Controller {
         check_ajax_referer('flavor_colectivos_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $nombre = sanitize_text_field($_POST['nombre'] ?? '');
@@ -1059,7 +1059,7 @@ class Flavor_Colectivos_Frontend_Controller {
         $descripcion = wp_kses_post($_POST['descripcion'] ?? '');
 
         if (empty($nombre) || empty($tipo) || empty($descripcion)) {
-            wp_send_json_error(['message' => __('Los campos obligatorios son requeridos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Los campos obligatorios son requeridos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1105,12 +1105,12 @@ class Flavor_Colectivos_Frontend_Controller {
             ]);
 
             wp_send_json_success([
-                'message' => __('Colectivo creado correctamente.', 'flavor-chat-ia'),
+                'message' => __('Colectivo creado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'colectivo_id' => $colectivo_id,
                 'redirect' => Flavor_Chat_Helpers::get_item_url('colectivos', $colectivo_id),
             ]);
         } else {
-            wp_send_json_error(['message' => __('Error al crear el colectivo.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al crear el colectivo.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -1121,18 +1121,18 @@ class Flavor_Colectivos_Frontend_Controller {
         check_ajax_referer('flavor_colectivos_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $colectivo_id = absint($_POST['colectivo_id'] ?? 0);
         $usuario_id = get_current_user_id();
 
         if (!$colectivo_id) {
-            wp_send_json_error(['message' => __('Colectivo no válido.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Colectivo no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if ($this->es_miembro($colectivo_id, $usuario_id)) {
-            wp_send_json_error(['message' => __('Ya eres miembro de este colectivo.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Ya eres miembro de este colectivo.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1146,10 +1146,10 @@ class Flavor_Colectivos_Frontend_Controller {
 
         if ($resultado) {
             wp_send_json_success([
-                'message' => __('Te has unido al colectivo.', 'flavor-chat-ia'),
+                'message' => __('Te has unido al colectivo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         } else {
-            wp_send_json_error(['message' => __('Error al unirse.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al unirse.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -1160,7 +1160,7 @@ class Flavor_Colectivos_Frontend_Controller {
         check_ajax_referer('flavor_colectivos_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $colectivo_id = absint($_POST['colectivo_id'] ?? 0);
@@ -1178,7 +1178,7 @@ class Flavor_Colectivos_Frontend_Controller {
 
             if ($otros_admins == 0) {
                 wp_send_json_error([
-                    'message' => __('No puedes abandonar el colectivo siendo el único administrador. Asigna otro administrador primero.', 'flavor-chat-ia'),
+                    'message' => __('No puedes abandonar el colectivo siendo el único administrador. Asigna otro administrador primero.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ]);
             }
         }
@@ -1190,7 +1190,7 @@ class Flavor_Colectivos_Frontend_Controller {
         );
 
         wp_send_json_success([
-            'message' => __('Has abandonado el colectivo.', 'flavor-chat-ia'),
+            'message' => __('Has abandonado el colectivo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -1201,7 +1201,7 @@ class Flavor_Colectivos_Frontend_Controller {
         check_ajax_referer('flavor_colectivos_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $colectivo_id = absint($_POST['colectivo_id'] ?? 0);
@@ -1210,14 +1210,14 @@ class Flavor_Colectivos_Frontend_Controller {
         // Verificar que es admin del colectivo
         $rol = $this->obtener_rol_usuario($colectivo_id, $usuario_id);
         if (!in_array($rol, ['presidente', 'secretario', 'admin'])) {
-            wp_send_json_error(['message' => __('No tienes permiso para crear proyectos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes permiso para crear proyectos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $nombre = sanitize_text_field($_POST['nombre'] ?? '');
         $descripcion = wp_kses_post($_POST['descripcion'] ?? '');
 
         if (empty($nombre)) {
-            wp_send_json_error(['message' => __('El nombre es requerido.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('El nombre es requerido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1235,11 +1235,11 @@ class Flavor_Colectivos_Frontend_Controller {
 
         if ($resultado) {
             wp_send_json_success([
-                'message' => __('Proyecto creado correctamente.', 'flavor-chat-ia'),
+                'message' => __('Proyecto creado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'proyecto_id' => $wpdb->insert_id,
             ]);
         } else {
-            wp_send_json_error(['message' => __('Error al crear el proyecto.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al crear el proyecto.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -1250,7 +1250,7 @@ class Flavor_Colectivos_Frontend_Controller {
         check_ajax_referer('flavor_colectivos_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $colectivo_id = absint($_POST['colectivo_id'] ?? 0);
@@ -1258,7 +1258,7 @@ class Flavor_Colectivos_Frontend_Controller {
 
         $rol = $this->obtener_rol_usuario($colectivo_id, $usuario_id);
         if (!in_array($rol, ['presidente', 'secretario', 'admin'])) {
-            wp_send_json_error(['message' => __('No tienes permiso para convocar asambleas.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes permiso para convocar asambleas.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $titulo = sanitize_text_field($_POST['titulo'] ?? '');
@@ -1266,7 +1266,7 @@ class Flavor_Colectivos_Frontend_Controller {
         $hora = sanitize_text_field($_POST['hora'] ?? '');
 
         if (empty($titulo) || empty($fecha) || empty($hora)) {
-            wp_send_json_error(['message' => __('Título, fecha y hora son requeridos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Título, fecha y hora son requeridos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1283,10 +1283,10 @@ class Flavor_Colectivos_Frontend_Controller {
 
         if ($resultado) {
             wp_send_json_success([
-                'message' => __('Asamblea convocada correctamente.', 'flavor-chat-ia'),
+                'message' => __('Asamblea convocada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         } else {
-            wp_send_json_error(['message' => __('Error al convocar asamblea.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al convocar asamblea.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -1297,7 +1297,7 @@ class Flavor_Colectivos_Frontend_Controller {
         check_ajax_referer('flavor_colectivos_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Guardar confirmación de asistencia
@@ -1308,7 +1308,7 @@ class Flavor_Colectivos_Frontend_Controller {
         update_user_meta($usuario_id, 'flavor_asistencia_asamblea_' . $asamblea_id, current_time('mysql'));
 
         wp_send_json_success([
-            'message' => __('Asistencia confirmada.', 'flavor-chat-ia'),
+            'message' => __('Asistencia confirmada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -1346,7 +1346,7 @@ class Flavor_Colectivos_Frontend_Controller {
         check_ajax_referer('flavor_colectivos_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $colectivo_id = absint($_POST['colectivo_id'] ?? 0);
@@ -1356,7 +1356,7 @@ class Flavor_Colectivos_Frontend_Controller {
 
         $rol_actual = $this->obtener_rol_usuario($colectivo_id, $usuario_actual);
         if (!in_array($rol_actual, ['presidente', 'admin'])) {
-            wp_send_json_error(['message' => __('No tienes permiso para cambiar roles.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes permiso para cambiar roles.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1366,7 +1366,7 @@ class Flavor_Colectivos_Frontend_Controller {
             ['colectivo_id' => $colectivo_id, 'usuario_id' => $miembro_id]
         );
 
-        wp_send_json_success(['message' => __('Rol actualizado.', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Rol actualizado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     // =========================================================

@@ -9,7 +9,7 @@
 if (!defined('ABSPATH')) exit;
 
 // Extraer variables del array $args con valores por defecto
-$titulo_seccion = isset($args['titulo_seccion']) ? $args['titulo_seccion'] : __('Contenido Destacado', 'flavor-chat-ia');
+$titulo_seccion = isset($args['titulo_seccion']) ? $args['titulo_seccion'] : __('Contenido Destacado', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $mostrar_titulo = isset($args['mostrar_titulo']) ? $args['mostrar_titulo'] : true;
 $autoplay = isset($args['autoplay']) ? $args['autoplay'] : true;
 $intervalo_autoplay = isset($args['intervalo_autoplay']) ? intval($args['intervalo_autoplay']) : 5000;
@@ -132,7 +132,7 @@ $total_items = count($items_multimedia);
                                      loading="<?php echo $indice === 0 ? 'eager' : 'lazy'; ?>">
                                 <button type="button" class="flavor-carousel-play-video"
                                         data-video-url="<?php echo esc_url($item['video_url']); ?>"
-                                        aria-label="<?php esc_attr_e('Reproducir video', 'flavor-chat-ia'); ?>">
+                                        aria-label="<?php esc_attr_e('Reproducir video', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
                                         <circle cx="12" cy="12" r="11" fill="rgba(0,0,0,0.6)"/>
                                         <polygon points="9.5 7.5 16.5 12 9.5 16.5 9.5 7.5" fill="white"/>
@@ -163,14 +163,14 @@ $total_items = count($items_multimedia);
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                                             <polygon points="5 3 19 12 5 21 5 3"></polygon>
                                         </svg>
-                                        <?php esc_html_e('Video', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Video', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     <?php else: ?>
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                                             <circle cx="8.5" cy="8.5" r="1.5"></circle>
                                             <polyline points="21 15 16 10 5 21"></polyline>
                                         </svg>
-                                        <?php esc_html_e('Foto', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Foto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     <?php endif; ?>
                                 </span>
                                 <span class="flavor-carousel-badge flavor-carousel-badge--categoria">
@@ -181,7 +181,7 @@ $total_items = count($items_multimedia);
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                                         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                                     </svg>
-                                    <?php esc_html_e('Destacado', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Destacado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                                 <?php endif; ?>
                             </div>
@@ -221,9 +221,9 @@ $total_items = count($items_multimedia);
                             <!-- Botón de acción -->
                             <a href="<?php echo esc_url($item['enlace']); ?>" class="flavor-carousel-btn">
                                 <?php if ($item['tipo'] === 'video'): ?>
-                                    <?php esc_html_e('Ver video', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Ver video', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 <?php else: ?>
-                                    <?php esc_html_e('Ver más', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Ver más', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 <?php endif; ?>
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -239,13 +239,13 @@ $total_items = count($items_multimedia);
             <?php if ($mostrar_navegacion && $total_items > 1): ?>
             <!-- Botones de navegación -->
             <button type="button" class="flavor-carousel-nav flavor-carousel-nav--anterior"
-                    aria-label="<?php esc_attr_e('Anterior', 'flavor-chat-ia'); ?>">
+                    aria-label="<?php esc_attr_e('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="15 18 9 12 15 6"></polyline>
                 </svg>
             </button>
             <button type="button" class="flavor-carousel-nav flavor-carousel-nav--siguiente"
-                    aria-label="<?php esc_attr_e('Siguiente', 'flavor-chat-ia'); ?>">
+                    aria-label="<?php esc_attr_e('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="9 18 15 12 9 6"></polyline>
                 </svg>
@@ -259,7 +259,7 @@ $total_items = count($items_multimedia);
                 <button type="button"
                         class="flavor-carousel-indicador <?php echo $indicador === 0 ? 'flavor-carousel-indicador--activo' : ''; ?>"
                         data-slide="<?php echo esc_attr($indicador); ?>"
-                        aria-label="<?php echo esc_attr(sprintf(__('Ir al slide %d', 'flavor-chat-ia'), $indicador + 1)); ?>">
+                        aria-label="<?php echo esc_attr(sprintf(__('Ir al slide %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $indicador + 1)); ?>">
                     <span class="flavor-carousel-indicador-progreso"></span>
                 </button>
                 <?php endfor; ?>
@@ -269,7 +269,7 @@ $total_items = count($items_multimedia);
             <?php if ($autoplay): ?>
             <!-- Control de autoplay -->
             <button type="button" class="flavor-carousel-autoplay flavor-carousel-autoplay--activo"
-                    aria-label="<?php esc_attr_e('Pausar reproducción automática', 'flavor-chat-ia'); ?>">
+                    aria-label="<?php esc_attr_e('Pausar reproducción automática', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <svg class="flavor-icono-pausar" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                     <rect x="6" y="4" width="4" height="16"></rect>
                     <rect x="14" y="4" width="4" height="16"></rect>
@@ -296,7 +296,7 @@ $total_items = count($items_multimedia);
                 <button type="button"
                         class="flavor-carousel-miniatura <?php echo $indice === 0 ? 'flavor-carousel-miniatura--activa' : ''; ?>"
                         data-slide="<?php echo esc_attr($indice); ?>"
-                        aria-label="<?php echo esc_attr(sprintf(__('Ver: %s', 'flavor-chat-ia'), $item['titulo'])); ?>">
+                        aria-label="<?php echo esc_attr(sprintf(__('Ver: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $item['titulo'])); ?>">
                     <img src="<?php echo esc_url($item['miniatura']); ?>"
                          alt="<?php echo esc_attr($item['titulo']); ?>"
                          loading="lazy">
@@ -320,7 +320,7 @@ $total_items = count($items_multimedia);
 <div class="flavor-carousel-modal" id="<?php echo esc_attr($carousel_id); ?>-modal">
     <div class="flavor-carousel-modal-overlay"></div>
     <div class="flavor-carousel-modal-content">
-        <button type="button" class="flavor-carousel-modal-cerrar" aria-label="<?php esc_attr_e('Cerrar', 'flavor-chat-ia'); ?>">
+        <button type="button" class="flavor-carousel-modal-cerrar" aria-label="<?php esc_attr_e('Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>

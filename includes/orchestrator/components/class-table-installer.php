@@ -29,7 +29,7 @@ class Flavor_Table_Installer extends Flavor_Template_Component_Base {
      */
     public function __construct() {
         $this->componente_id = 'tablas';
-        $this->componente_nombre = __('Instalador de Tablas', 'flavor-chat-ia');
+        $this->componente_nombre = __('Instalador de Tablas', FLAVOR_PLATFORM_TEXT_DOMAIN);
     }
 
     /**
@@ -48,13 +48,13 @@ class Flavor_Table_Installer extends Flavor_Template_Component_Base {
 
         if (empty($modulos_a_procesar)) {
             // Si no se especifican, obtener los modulos activos de la plantilla
-            $configuracion_plugin = get_option('flavor_chat_ia_settings', []);
+            $configuracion_plugin = flavor_get_main_settings();
             $modulos_a_procesar = $configuracion_plugin['active_modules'] ?? [];
         }
 
         if (empty($modulos_a_procesar)) {
             return $this->respuesta_exito(
-                __('No hay modulos para los que crear tablas.', 'flavor-chat-ia'),
+                __('No hay modulos para los que crear tablas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['tablas_creadas' => []]
             );
         }
@@ -71,7 +71,7 @@ class Flavor_Table_Installer extends Flavor_Template_Component_Base {
                 $tablas_creadas = array_merge($tablas_creadas, $resultado['creadas'] ?? []);
                 $tablas_existentes = array_merge($tablas_existentes, $resultado['existentes'] ?? []);
             } else {
-                $tablas_fallidas[$modulo_normalizado] = $resultado['error'] ?? __('Error desconocido', 'flavor-chat-ia');
+                $tablas_fallidas[$modulo_normalizado] = $resultado['error'] ?? __('Error desconocido', FLAVOR_PLATFORM_TEXT_DOMAIN);
             }
         }
 
@@ -79,14 +79,14 @@ class Flavor_Table_Installer extends Flavor_Template_Component_Base {
         $this->guardar_meta_instalacion($plantilla_id, 'tablas_creadas', $tablas_creadas);
 
         $mensaje = sprintf(
-            __('Proceso de tablas completado: %d creadas, %d ya existian.', 'flavor-chat-ia'),
+            __('Proceso de tablas completado: %d creadas, %d ya existian.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             count($tablas_creadas),
             count($tablas_existentes)
         );
 
         if (!empty($tablas_fallidas)) {
             $mensaje .= ' ' . sprintf(
-                __('%d modulos con errores.', 'flavor-chat-ia'),
+                __('%d modulos con errores.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 count($tablas_fallidas)
             );
         }
@@ -116,7 +116,7 @@ class Flavor_Table_Installer extends Flavor_Template_Component_Base {
 
         if (empty($tablas_creadas)) {
             return $this->respuesta_exito(
-                __('No hay tablas registradas para esta plantilla.', 'flavor-chat-ia'),
+                __('No hay tablas registradas para esta plantilla.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['tablas_huerfanas' => []]
             );
         }
@@ -148,12 +148,12 @@ class Flavor_Table_Installer extends Flavor_Template_Component_Base {
 
         $this->registrar_advertencia(
             'tablas_no_eliminadas',
-            __('Las tablas no se eliminan automaticamente por seguridad. Revise las tablas huerfanas en configuracion.', 'flavor-chat-ia')
+            __('Las tablas no se eliminan automaticamente por seguridad. Revise las tablas huerfanas en configuracion.', FLAVOR_PLATFORM_TEXT_DOMAIN)
         );
 
         return $this->respuesta_exito(
             sprintf(
-                __('%d tablas marcadas como huerfanas. Por seguridad, no se eliminan automaticamente.', 'flavor-chat-ia'),
+                __('%d tablas marcadas como huerfanas. Por seguridad, no se eliminan automaticamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 count($tablas_huerfanas)
             ),
             [
@@ -176,7 +176,7 @@ class Flavor_Table_Installer extends Flavor_Template_Component_Base {
         $modulos = $definicion['modulos'] ?? [];
 
         if (empty($modulos)) {
-            $configuracion_plugin = get_option('flavor_chat_ia_settings', []);
+            $configuracion_plugin = flavor_get_main_settings();
             $modulos = $configuracion_plugin['active_modules'] ?? [];
         }
 
@@ -247,7 +247,7 @@ class Flavor_Table_Installer extends Flavor_Template_Component_Base {
                 } catch (Exception $excepcion) {
                     $this->registrar_error(
                         'install_error',
-                        sprintf(__('Error ejecutando install.php para %s: %s', 'flavor-chat-ia'), $modulo_id, $excepcion->getMessage())
+                        sprintf(__('Error ejecutando install.php para %s: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $modulo_id, $excepcion->getMessage())
                     );
                 }
             }
@@ -425,18 +425,18 @@ class Flavor_Table_Installer extends Flavor_Template_Component_Base {
 
         if ($total_faltantes === 0 && $total_existentes > 0) {
             return sprintf(
-                __('Todas las tablas estan creadas (%d tablas).', 'flavor-chat-ia'),
+                __('Todas las tablas estan creadas (%d tablas).', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $total_existentes
             );
         }
 
         if ($total_faltantes > 0) {
             return sprintf(
-                __('Faltan %d tablas por crear.', 'flavor-chat-ia'),
+                __('Faltan %d tablas por crear.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $total_faltantes
             );
         }
 
-        return __('No se requieren tablas para esta configuracion.', 'flavor-chat-ia');
+        return __('No se requieren tablas para esta configuracion.', FLAVOR_PLATFORM_TEXT_DOMAIN);
     }
 }

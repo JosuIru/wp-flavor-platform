@@ -91,12 +91,12 @@ class Flavor_Incidencias_Frontend_Controller {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('incidencias_nonce'),
             'i18n' => [
-                'reportada' => __('Incidencia reportada correctamente', 'flavor-chat-ia'),
-                'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'confirmacion' => __('¿Estás seguro?', 'flavor-chat-ia'),
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
-                'gracias_voto' => __('Gracias por tu voto', 'flavor-chat-ia'),
-                'comentario_enviado' => __('Comentario enviado', 'flavor-chat-ia'),
+                'reportada' => __('Incidencia reportada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmacion' => __('¿Estás seguro?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'gracias_voto' => __('Gracias por tu voto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'comentario_enviado' => __('Comentario enviado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -213,7 +213,7 @@ class Flavor_Incidencias_Frontend_Controller {
      */
     public function shortcode_mis_reportes($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . __('Inicia sesión para ver tus reportes.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-login-required">' . __('Inicia sesión para ver tus reportes.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $this->encolar_assets();
@@ -241,7 +241,7 @@ class Flavor_Incidencias_Frontend_Controller {
         $incidencia_id = $atts['id'] ?: (isset($_GET['incidencia_id']) ? absint($_GET['incidencia_id']) : 0);
 
         if (!$incidencia_id) {
-            return '<p class="flavor-error">' . __('Incidencia no especificada.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-error">' . __('Incidencia no especificada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -308,16 +308,16 @@ class Flavor_Incidencias_Frontend_Controller {
         if (empty($incidencias)) {
             return '<div class="flavor-widget-empty">
                 <span class="text-4xl">✅</span>
-                <p class="text-gray-500 text-sm mt-2">' . __('No hay incidencias recientes', 'flavor-chat-ia') . '</p>
+                <p class="text-gray-500 text-sm mt-2">' . __('No hay incidencias recientes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
             </div>';
         }
 
         // Estados con colores
         $estados_config = [
-            'pendiente' => ['label' => __('Pendiente', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '🔴'],
-            'en_proceso' => ['label' => __('En proceso', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '🟡'],
-            'validada' => ['label' => __('Validada', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '🔵'],
-            'resuelta' => ['label' => __('Resuelta', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🟢'],
+            'pendiente' => ['label' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'red', 'icon' => '🔴'],
+            'en_proceso' => ['label' => __('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '🟡'],
+            'validada' => ['label' => __('Validada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'blue', 'icon' => '🔵'],
+            'resuelta' => ['label' => __('Resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '🟢'],
         ];
 
         ob_start();
@@ -338,7 +338,7 @@ class Flavor_Incidencias_Frontend_Controller {
                             <?php if ($atts['mostrar_fecha'] === 'true'): ?>
                                 <p class="text-xs text-gray-500 mt-0.5">
                                     <?php echo esc_html(human_time_diff(strtotime($incidencia->created_at), current_time('timestamp'))); ?>
-                                    <?php _e('atrás', 'flavor-chat-ia'); ?>
+                                    <?php _e('atrás', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </p>
                             <?php endif; ?>
                         </div>
@@ -365,7 +365,7 @@ class Flavor_Incidencias_Frontend_Controller {
         $tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_incidencias)) {
-            echo '<p class="flavor-error">' . __('El módulo de incidencias no está configurado.', 'flavor-chat-ia') . '</p>';
+            echo '<p class="flavor-error">' . __('El módulo de incidencias no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -475,7 +475,7 @@ class Flavor_Incidencias_Frontend_Controller {
             return '—';
         }
 
-        return round($tiempo, 1) . ' ' . __('días', 'flavor-chat-ia');
+        return round($tiempo, 1) . ' ' . __('días', FLAVOR_PLATFORM_TEXT_DOMAIN);
     }
 
     /**
@@ -483,12 +483,12 @@ class Flavor_Incidencias_Frontend_Controller {
      */
     private function get_estado_label($estado) {
         $labels = [
-            'pendiente'   => __('Pendiente', 'flavor-chat-ia'),
-            'validada'    => __('Validada', 'flavor-chat-ia'),
-            'en_proceso'  => __('En proceso', 'flavor-chat-ia'),
-            'resuelta'    => __('Resuelta', 'flavor-chat-ia'),
-            'cerrada'     => __('Cerrada', 'flavor-chat-ia'),
-            'rechazada'   => __('Rechazada', 'flavor-chat-ia'),
+            'pendiente'   => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'validada'    => __('Validada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'en_proceso'  => __('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'resuelta'    => __('Resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cerrada'     => __('Cerrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'rechazada'   => __('Rechazada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
         return $labels[$estado] ?? ucfirst($estado);
     }
@@ -527,25 +527,25 @@ class Flavor_Incidencias_Frontend_Controller {
             include $template;
         } else {
             echo '<div class="flavor-incidencias-form">';
-            echo '<h3>' . __('Reportar Incidencia', 'flavor-chat-ia') . '</h3>';
+            echo '<h3>' . __('Reportar Incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
             echo '<form id="form-reportar-incidencia" class="flavor-form">';
             wp_nonce_field('incidencias_nonce', 'incidencias_nonce_field');
-            echo '<p><label>' . __('Tipo de incidencia', 'flavor-chat-ia') . '</label>';
+            echo '<p><label>' . __('Tipo de incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label>';
             echo '<select name="categoria" required>';
-            echo '<option value="">' . __('Selecciona...', 'flavor-chat-ia') . '</option>';
-            echo '<option value="alumbrado">' . __('Alumbrado', 'flavor-chat-ia') . '</option>';
-            echo '<option value="baches">' . __('Baches', 'flavor-chat-ia') . '</option>';
-            echo '<option value="limpieza">' . __('Limpieza', 'flavor-chat-ia') . '</option>';
-            echo '<option value="mobiliario">' . __('Mobiliario urbano', 'flavor-chat-ia') . '</option>';
-            echo '<option value="otros">' . __('Otros', 'flavor-chat-ia') . '</option>';
+            echo '<option value="">' . __('Selecciona...', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
+            echo '<option value="alumbrado">' . __('Alumbrado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
+            echo '<option value="baches">' . __('Baches', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
+            echo '<option value="limpieza">' . __('Limpieza', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
+            echo '<option value="mobiliario">' . __('Mobiliario urbano', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
+            echo '<option value="otros">' . __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
             echo '</select></p>';
-            echo '<p><label>' . __('Título', 'flavor-chat-ia') . '</label>';
+            echo '<p><label>' . __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label>';
             echo '<input type="text" name="titulo" required></p>';
-            echo '<p><label>' . __('Descripción', 'flavor-chat-ia') . '</label>';
+            echo '<p><label>' . __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label>';
             echo '<textarea name="descripcion" rows="4" required></textarea></p>';
-            echo '<p><label>' . __('Ubicación', 'flavor-chat-ia') . '</label>';
-            echo '<input type="text" name="direccion" placeholder="' . __('Dirección aproximada', 'flavor-chat-ia') . '"></p>';
-            echo '<p><button type="submit" class="flavor-btn flavor-btn-primary">' . __('Enviar Reporte', 'flavor-chat-ia') . '</button></p>';
+            echo '<p><label>' . __('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label>';
+            echo '<input type="text" name="direccion" placeholder="' . __('Dirección aproximada', FLAVOR_PLATFORM_TEXT_DOMAIN) . '"></p>';
+            echo '<p><button type="submit" class="flavor-btn flavor-btn-primary">' . __('Enviar Reporte', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</button></p>';
             echo '</form>';
             echo '</div>';
         }
@@ -591,7 +591,7 @@ class Flavor_Incidencias_Frontend_Controller {
         ));
 
         if (!$incidencia) {
-            echo '<p class="flavor-error">' . __('Incidencia no encontrada.', 'flavor-chat-ia') . '</p>';
+            echo '<p class="flavor-error">' . __('Incidencia no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -617,19 +617,19 @@ class Flavor_Incidencias_Frontend_Controller {
         <div class="flavor-incidencias-stats">
             <div class="stat-card">
                 <span class="stat-number"><?php echo esc_html($total); ?></span>
-                <span class="stat-label"><?php _e('Total Incidencias', 'flavor-chat-ia'); ?></span>
+                <span class="stat-label"><?php _e('Total Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="stat-card stat-success">
                 <span class="stat-number"><?php echo esc_html($resueltas); ?></span>
-                <span class="stat-label"><?php _e('Resueltas', 'flavor-chat-ia'); ?></span>
+                <span class="stat-label"><?php _e('Resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="stat-card stat-warning">
                 <span class="stat-number"><?php echo esc_html($en_progreso); ?></span>
-                <span class="stat-label"><?php _e('En Progreso', 'flavor-chat-ia'); ?></span>
+                <span class="stat-label"><?php _e('En Progreso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="stat-card stat-pending">
                 <span class="stat-number"><?php echo esc_html($pendientes); ?></span>
-                <span class="stat-label"><?php _e('Pendientes', 'flavor-chat-ia'); ?></span>
+                <span class="stat-label"><?php _e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
         <?php
@@ -640,7 +640,7 @@ class Flavor_Incidencias_Frontend_Controller {
      */
     public function registrar_tabs($tabs) {
         $tabs['incidencias-mis-reportes'] = [
-            'titulo' => __('Mis Incidencias', 'flavor-chat-ia'),
+            'titulo' => __('Mis Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'dashicons-warning',
             'callback' => [$this, 'render_tab_mis_reportes'],
             'orden' => 40,
@@ -679,7 +679,7 @@ class Flavor_Incidencias_Frontend_Controller {
         $longitud = isset($_POST['longitud']) ? floatval($_POST['longitud']) : null;
 
         if (empty($titulo) || empty($descripcion) || empty($categoria)) {
-            wp_send_json_error(__('Todos los campos son obligatorios', 'flavor-chat-ia'));
+            wp_send_json_error(__('Todos los campos son obligatorios', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -704,11 +704,11 @@ class Flavor_Incidencias_Frontend_Controller {
             do_action('incidencia_created', $incidencia_id, get_current_user_id());
 
             wp_send_json_success([
-                'mensaje' => __('Incidencia reportada correctamente', 'flavor-chat-ia'),
+                'mensaje' => __('Incidencia reportada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'incidencia_id' => $incidencia_id,
             ]);
         } else {
-            wp_send_json_error(__('Error al reportar la incidencia', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al reportar la incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -719,7 +719,7 @@ class Flavor_Incidencias_Frontend_Controller {
         check_ajax_referer('incidencias_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $incidencia_id = isset($_POST['incidencia_id']) ? absint($_POST['incidencia_id']) : 0;
@@ -727,7 +727,7 @@ class Flavor_Incidencias_Frontend_Controller {
         $usuario_id = get_current_user_id();
 
         if (!$incidencia_id || empty($comentario)) {
-            wp_send_json_error(__('Datos no válidos', 'flavor-chat-ia'));
+            wp_send_json_error(__('Datos no válidos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -753,9 +753,9 @@ class Flavor_Incidencias_Frontend_Controller {
                 do_action('incidencia_comment_added', $incidencia_id, $incidencia->usuario_id, $usuario->display_name);
             }
 
-            wp_send_json_success(['mensaje' => __('Comentario enviado', 'flavor-chat-ia')]);
+            wp_send_json_success(['mensaje' => __('Comentario enviado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
-            wp_send_json_error(__('Error al enviar comentario', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al enviar comentario', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -766,14 +766,14 @@ class Flavor_Incidencias_Frontend_Controller {
         check_ajax_referer('incidencias_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $incidencia_id = isset($_POST['incidencia_id']) ? absint($_POST['incidencia_id']) : 0;
         $usuario_id = get_current_user_id();
 
         if (!$incidencia_id) {
-            wp_send_json_error(__('Incidencia no válida', 'flavor-chat-ia'));
+            wp_send_json_error(__('Incidencia no válida', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -787,7 +787,7 @@ class Flavor_Incidencias_Frontend_Controller {
         ));
 
         if ($existe) {
-            wp_send_json_error(__('Ya has votado esta incidencia', 'flavor-chat-ia'));
+            wp_send_json_error(__('Ya has votado esta incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $resultado = $wpdb->insert($tabla_votos, [
@@ -804,11 +804,11 @@ class Flavor_Incidencias_Frontend_Controller {
             ));
 
             wp_send_json_success([
-                'mensaje' => __('Gracias por tu voto', 'flavor-chat-ia'),
+                'mensaje' => __('Gracias por tu voto', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'total_votos' => $total_votos,
             ]);
         } else {
-            wp_send_json_error(__('Error al registrar voto', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al registrar voto', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -859,7 +859,7 @@ class Flavor_Incidencias_Frontend_Controller {
                 $this->render_incidencia_card($incidencia);
             }
         } else {
-            echo '<p class="no-resultados">' . __('No se encontraron incidencias', 'flavor-chat-ia') . '</p>';
+            echo '<p class="no-resultados">' . __('No se encontraron incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
         $html = ob_get_clean();
 
@@ -885,15 +885,15 @@ class Flavor_Incidencias_Frontend_Controller {
 
         $estados_labels = [
             // Estados en español
-            'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-            'en_proceso' => __('En proceso', 'flavor-chat-ia'),
-            'resuelta' => __('Resuelta', 'flavor-chat-ia'),
-            'cerrada' => __('Cerrada', 'flavor-chat-ia'),
+            'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'en_proceso' => __('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'resuelta' => __('Resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cerrada' => __('Cerrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             // Estados en inglés (para datos existentes)
-            'pending' => __('Pendiente', 'flavor-chat-ia'),
-            'in_progress' => __('En proceso', 'flavor-chat-ia'),
-            'resolved' => __('Resuelta', 'flavor-chat-ia'),
-            'closed' => __('Cerrada', 'flavor-chat-ia'),
+            'pending' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'in_progress' => __('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'resolved' => __('Resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'closed' => __('Cerrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $clase_estado = $estado_clases[$incidencia->estado] ?? '';
@@ -909,7 +909,7 @@ class Flavor_Incidencias_Frontend_Controller {
             <div class="incidencia-footer">
                 <span class="fecha"><?php echo esc_html(date_i18n('d/m/Y', strtotime($incidencia->fecha_reporte))); ?></span>
                 <a href="<?php echo esc_url(home_url('/mi-portal/incidencias/' . $incidencia->id . '/')); ?>" class="flavor-btn flavor-btn-sm">
-                    <?php _e('Ver Detalles', 'flavor-chat-ia'); ?>
+                    <?php _e('Ver Detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>

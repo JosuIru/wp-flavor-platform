@@ -65,7 +65,7 @@ $item_classes = [
                 <?php if (!empty($contexto)) : ?>
                     <?php if (!empty($contexto['comunidad_nombre'])) : ?>
                         <span class="mi-red-card__context">
-                            <?php esc_html_e('en', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('en', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             <a href="<?php echo esc_url(home_url('/comunidades/' . $contexto['comunidad_id'] . '/')); ?>">
                                 <?php echo $contexto['comunidad_icono'] ?? '👥'; ?>
                                 <?php echo esc_html($contexto['comunidad_nombre']); ?>
@@ -73,7 +73,7 @@ $item_classes = [
                         </span>
                     <?php elseif (!empty($contexto['foro_nombre'])) : ?>
                         <span class="mi-red-card__context">
-                            <?php esc_html_e('en foro', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('en foro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             <a href="#"><?php echo esc_html($contexto['foro_nombre']); ?></a>
                         </span>
                     <?php endif; ?>
@@ -82,14 +82,14 @@ $item_classes = [
         </div>
 
         <div class="mi-red-card__actions-menu">
-            <button class="mi-red-card__menu-btn" aria-label="<?php esc_attr_e('Más opciones', 'flavor-chat-ia'); ?>">
+            <button class="mi-red-card__menu-btn" aria-label="<?php esc_attr_e('Más opciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 ⋮
             </button>
             <div class="mi-red-card__dropdown" hidden>
-                <button data-accion="guardar"><?php esc_html_e('Guardar', 'flavor-chat-ia'); ?></button>
-                <button data-accion="ocultar"><?php esc_html_e('No me interesa', 'flavor-chat-ia'); ?></button>
-                <button data-accion="reportar"><?php esc_html_e('Reportar', 'flavor-chat-ia'); ?></button>
-                <a href="<?php echo esc_url($url); ?>" target="_blank"><?php esc_html_e('Ver original', 'flavor-chat-ia'); ?></a>
+                <button data-accion="guardar"><?php esc_html_e('Guardar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                <button data-accion="ocultar"><?php esc_html_e('No me interesa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                <button data-accion="reportar"><?php esc_html_e('Reportar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                <a href="<?php echo esc_url($url); ?>" target="_blank"><?php esc_html_e('Ver original', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
             </div>
         </div>
     </header>
@@ -118,8 +118,8 @@ $item_classes = [
             <span class="mi-red-card__urgency mi-red-card__urgency--<?php echo esc_attr($contenido['urgencia']); ?>">
                 <?php
                 $urgencias = [
-                    'alta' => __('Urgente', 'flavor-chat-ia'),
-                    'media' => __('Prioridad media', 'flavor-chat-ia'),
+                    'alta' => __('Urgente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'media' => __('Prioridad media', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
                 echo esc_html($urgencias[$contenido['urgencia']] ?? '');
                 ?>
@@ -217,7 +217,7 @@ $item_classes = [
                 <span class="mi-red-card__stat">
                     <span class="mi-red-card__stat-icon">💬</span>
                     <span class="mi-red-card__stat-count" data-stat="respuestas"><?php echo esc_html(number_format_i18n($interacciones['respuestas'])); ?></span>
-                    <?php esc_html_e('respuestas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
             <?php endif; ?>
 
@@ -225,7 +225,7 @@ $item_classes = [
                 <span class="mi-red-card__stat">
                     <span class="mi-red-card__stat-icon">🤝</span>
                     <span class="mi-red-card__stat-count" data-stat="ofertas"><?php echo esc_html(number_format_i18n($interacciones['ofertas'])); ?></span>
-                    <?php esc_html_e('ofertas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('ofertas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
             <?php endif; ?>
         </div>
@@ -235,31 +235,31 @@ $item_classes = [
                     data-action="like"
                     data-item="<?php echo esc_attr($item_id); ?>"
                     data-tipo="<?php echo esc_attr($tipo); ?>"
-                    aria-label="<?php esc_attr_e('Me gusta', 'flavor-chat-ia'); ?>">
+                    aria-label="<?php esc_attr_e('Me gusta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <span class="mi-red-card__btn-icon">❤️</span>
-                <span class="mi-red-card__btn-text"><?php esc_html_e('Me gusta', 'flavor-chat-ia'); ?></span>
+                <span class="mi-red-card__btn-text"><?php esc_html_e('Me gusta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </button>
 
             <button class="mi-red-card__btn mi-red-card__btn--comment"
                     data-action="comentar"
                     data-item="<?php echo esc_attr($item_id); ?>"
-                    aria-label="<?php esc_attr_e('Comentar', 'flavor-chat-ia'); ?>">
+                    aria-label="<?php esc_attr_e('Comentar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <span class="mi-red-card__btn-icon">💬</span>
-                <span class="mi-red-card__btn-text"><?php esc_html_e('Comentar', 'flavor-chat-ia'); ?></span>
+                <span class="mi-red-card__btn-text"><?php esc_html_e('Comentar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </button>
 
             <button class="mi-red-card__btn mi-red-card__btn--share"
                     data-action="compartir"
                     data-url="<?php echo esc_url($url); ?>"
-                    aria-label="<?php esc_attr_e('Compartir', 'flavor-chat-ia'); ?>">
+                    aria-label="<?php esc_attr_e('Compartir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <span class="mi-red-card__btn-icon">🔗</span>
-                <span class="mi-red-card__btn-text"><?php esc_html_e('Compartir', 'flavor-chat-ia'); ?></span>
+                <span class="mi-red-card__btn-text"><?php esc_html_e('Compartir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </button>
 
             <button class="mi-red-card__btn mi-red-card__btn--save"
                     data-action="guardar"
                     data-item="<?php echo esc_attr($item_id); ?>"
-                    aria-label="<?php esc_attr_e('Guardar', 'flavor-chat-ia'); ?>">
+                    aria-label="<?php esc_attr_e('Guardar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <span class="mi-red-card__btn-icon">🔖</span>
             </button>
         </div>
@@ -276,10 +276,10 @@ $item_classes = [
                 <input type="text"
                        name="comentario"
                        class="mi-red-comments__input"
-                       placeholder="<?php esc_attr_e('Escribe un comentario...', 'flavor-chat-ia'); ?>"
+                       placeholder="<?php esc_attr_e('Escribe un comentario...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                        required>
                 <button type="submit" class="mi-red-comments__submit">
-                    <?php esc_html_e('Enviar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Enviar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </form>
         </div>

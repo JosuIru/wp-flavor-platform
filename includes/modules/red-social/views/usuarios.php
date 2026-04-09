@@ -107,15 +107,15 @@ if ($tabla_posts_existe) {
     <nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">
         <a href="<?php echo admin_url('admin.php?page=flavor-red-social-dashboard'); ?>" style="color: #2271b1; text-decoration: none;">
             <span class="dashicons dashicons-share" style="font-size: 14px; vertical-align: middle;"></span>
-            <?php _e('Red Social', 'flavor-chat-ia'); ?>
+            <?php _e('Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <span style="color: #646970; margin: 0 5px;">›</span>
-        <span style="color: #1d2327;"><?php _e('Usuarios', 'flavor-chat-ia'); ?></span>
+        <span style="color: #1d2327;"><?php _e('Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
     </nav>
 
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-groups"></span>
-        <?php _e('Usuarios de la Red Social', 'flavor-chat-ia'); ?>
+        <?php _e('Usuarios de la Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <hr class="wp-header-end">
@@ -124,15 +124,15 @@ if ($tabla_posts_existe) {
     <div style="display: flex; gap: 20px; margin: 20px 0; flex-wrap: wrap;">
         <div style="background: #fff; padding: 15px 25px; border-left: 4px solid #3b82f6; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="font-size: 28px; font-weight: bold; color: #1d2327;"><?php echo number_format($stats['total_usuarios']); ?></div>
-            <div style="color: #646970; font-size: 13px;"><?php _e('Total usuarios', 'flavor-chat-ia'); ?></div>
+            <div style="color: #646970; font-size: 13px;"><?php _e('Total usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
         <div style="background: #fff; padding: 15px 25px; border-left: 4px solid #10b981; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="font-size: 28px; font-weight: bold; color: #1d2327;"><?php echo number_format($stats['activos_semana']); ?></div>
-            <div style="color: #646970; font-size: 13px;"><?php _e('Activos esta semana', 'flavor-chat-ia'); ?></div>
+            <div style="color: #646970; font-size: 13px;"><?php _e('Activos esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
         <div style="background: #fff; padding: 15px 25px; border-left: 4px solid #f59e0b; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="font-size: 28px; font-weight: bold; color: #1d2327;"><?php echo number_format($stats['nuevos_mes']); ?></div>
-            <div style="color: #646970; font-size: 13px;"><?php _e('Nuevos este mes', 'flavor-chat-ia'); ?></div>
+            <div style="color: #646970; font-size: 13px;"><?php _e('Nuevos este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -143,24 +143,24 @@ if ($tabla_posts_existe) {
 
             <div class="alignleft actions" style="display: flex; gap: 8px; flex-wrap: wrap;">
                 <select name="orderby">
-                    <option value="publicaciones" <?php selected($orden, 'publicaciones'); ?>><?php _e('Ordenar por publicaciones', 'flavor-chat-ia'); ?></option>
-                    <option value="fecha" <?php selected($orden, 'fecha'); ?>><?php _e('Ordenar por actividad reciente', 'flavor-chat-ia'); ?></option>
-                    <option value="nombre" <?php selected($orden, 'nombre'); ?>><?php _e('Ordenar por nombre', 'flavor-chat-ia'); ?></option>
+                    <option value="publicaciones" <?php selected($orden, 'publicaciones'); ?>><?php _e('Ordenar por publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="fecha" <?php selected($orden, 'fecha'); ?>><?php _e('Ordenar por actividad reciente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="nombre" <?php selected($orden, 'nombre'); ?>><?php _e('Ordenar por nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
 
-                <input type="search" name="s" value="<?php echo esc_attr($buscar); ?>" placeholder="<?php esc_attr_e('Buscar usuario...', 'flavor-chat-ia'); ?>">
+                <input type="search" name="s" value="<?php echo esc_attr($buscar); ?>" placeholder="<?php esc_attr_e('Buscar usuario...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
 
-                <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="button"><?php _e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
 
                 <?php if ($buscar || $orden !== 'publicaciones'): ?>
-                <a href="<?php echo admin_url('admin.php?page=flavor-red-social-usuarios'); ?>" class="button"><?php _e('Limpiar', 'flavor-chat-ia'); ?></a>
+                <a href="<?php echo admin_url('admin.php?page=flavor-red-social-usuarios'); ?>" class="button"><?php _e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 <?php endif; ?>
             </div>
         </form>
 
         <div class="tablenav-pages">
             <span class="displaying-num">
-                <?php printf(_n('%s usuario', '%s usuarios', $total_items, 'flavor-chat-ia'), number_format($total_items)); ?>
+                <?php printf(_n('%s usuario', '%s usuarios', $total_items, FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($total_items)); ?>
             </span>
         </div>
     </div>
@@ -169,13 +169,13 @@ if ($tabla_posts_existe) {
     <table class="wp-list-table widefat fixed striped">
         <thead>
             <tr>
-                <th scope="col" style="width: 50px;"><?php _e('ID', 'flavor-chat-ia'); ?></th>
-                <th scope="col"><?php _e('Usuario', 'flavor-chat-ia'); ?></th>
-                <th scope="col" style="width: 120px;"><?php _e('Publicaciones', 'flavor-chat-ia'); ?></th>
-                <th scope="col" style="width: 100px;"><?php _e('Seguidores', 'flavor-chat-ia'); ?></th>
-                <th scope="col" style="width: 100px;"><?php _e('Siguiendo', 'flavor-chat-ia'); ?></th>
-                <th scope="col" style="width: 140px;"><?php _e('Última actividad', 'flavor-chat-ia'); ?></th>
-                <th scope="col" style="width: 100px;"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                <th scope="col" style="width: 50px;"><?php _e('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col"><?php _e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col" style="width: 120px;"><?php _e('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col" style="width: 100px;"><?php _e('Seguidores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col" style="width: 100px;"><?php _e('Siguiendo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col" style="width: 140px;"><?php _e('Última actividad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col" style="width: 100px;"><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -183,7 +183,7 @@ if ($tabla_posts_existe) {
             <tr>
                 <td colspan="7" style="text-align: center; padding: 40px;">
                     <span class="dashicons dashicons-groups" style="font-size: 48px; color: #c3c4c7;"></span>
-                    <p style="color: #646970;"><?php _e('No se encontraron usuarios.', 'flavor-chat-ia'); ?></p>
+                    <p style="color: #646970;"><?php _e('No se encontraron usuarios.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
             <?php else: ?>
@@ -194,7 +194,7 @@ if ($tabla_posts_existe) {
                         <div style="display: flex; align-items: center; gap: 12px;">
                             <?php echo get_avatar($usuario->usuario_id, 40); ?>
                             <div>
-                                <strong><?php echo esc_html($usuario->display_name ?: __('Usuario eliminado', 'flavor-chat-ia')); ?></strong>
+                                <strong><?php echo esc_html($usuario->display_name ?: __('Usuario eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong>
                                 <br><small style="color: #646970;"><?php echo esc_html($usuario->user_email); ?></small>
                             </div>
                         </div>
@@ -216,10 +216,10 @@ if ($tabla_posts_existe) {
                         <?php endif; ?>
                     </td>
                     <td>
-                        <a href="<?php echo admin_url('user-edit.php?user_id=' . $usuario->usuario_id); ?>" class="button button-small" title="<?php esc_attr_e('Editar usuario', 'flavor-chat-ia'); ?>">
+                        <a href="<?php echo admin_url('user-edit.php?user_id=' . $usuario->usuario_id); ?>" class="button button-small" title="<?php esc_attr_e('Editar usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-edit" style="margin-top: 3px;"></span>
                         </a>
-                        <a href="<?php echo admin_url('admin.php?page=flavor-red-social-publicaciones&usuario=' . $usuario->usuario_id); ?>" class="button button-small" title="<?php esc_attr_e('Ver publicaciones', 'flavor-chat-ia'); ?>">
+                        <a href="<?php echo admin_url('admin.php?page=flavor-red-social-publicaciones&usuario=' . $usuario->usuario_id); ?>" class="button button-small" title="<?php esc_attr_e('Ver publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-visibility" style="margin-top: 3px;"></span>
                         </a>
                     </td>

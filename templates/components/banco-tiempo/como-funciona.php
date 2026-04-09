@@ -95,16 +95,16 @@ $pasos_banco_tiempo = $pasos_banco_tiempo ?? [
             <!-- Beneficios adicionales -->
             <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="bg-amber-50 rounded-xl p-6 text-center">
-                    <div class="text-3xl font-bold text-amber-600 mb-2"><?php echo esc_html__('0', 'flavor-chat-ia'); ?>&euro;</div>
-                    <div class="text-gray-700"><?php echo esc_html__('Sin Dinero de Por Medio', 'flavor-chat-ia'); ?></div>
+                    <div class="text-3xl font-bold text-amber-600 mb-2"><?php echo esc_html__('0', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>&euro;</div>
+                    <div class="text-gray-700"><?php echo esc_html__('Sin Dinero de Por Medio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="bg-yellow-50 rounded-xl p-6 text-center">
                     <div class="text-3xl font-bold text-yellow-600 mb-2">1:1</div>
-                    <div class="text-gray-700"><?php echo esc_html__('1 Hora = 1 Credito', 'flavor-chat-ia'); ?></div>
+                    <div class="text-gray-700"><?php echo esc_html__('1 Hora = 1 Credito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="bg-orange-50 rounded-xl p-6 text-center">
                     <div class="text-3xl font-bold text-orange-600 mb-2">100%</div>
-                    <div class="text-gray-700"><?php echo esc_html__('Basado en Confianza', 'flavor-chat-ia'); ?></div>
+                    <div class="text-gray-700"><?php echo esc_html__('Basado en Confianza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
         </div>

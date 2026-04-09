@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <rect x="3" y="3" width="18" height="18" rx="2"/>
                 <path d="M9 3v18M3 9h6M3 15h6"/>
             </svg>
-            <?php esc_html_e( 'Mapa', 'flavor-chat-ia' ); ?>
+            <?php esc_html_e( 'Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
         </span>
         <div class="vbp-minimap-actions">
             <!-- Zoom controls -->
@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <button type="button"
                         class="vbp-minimap-zoom-btn"
                         @click="zoomOut()"
-                        title="<?php esc_attr_e( 'Reducir', 'flavor-chat-ia' ); ?>">
+                        title="<?php esc_attr_e( 'Reducir', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M5 12h14"/>
                     </svg>
@@ -43,7 +43,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <button type="button"
                         class="vbp-minimap-zoom-btn"
                         @click="zoomIn()"
-                        title="<?php esc_attr_e( 'Ampliar', 'flavor-chat-ia' ); ?>">
+                        title="<?php esc_attr_e( 'Ampliar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12 5v14M5 12h14"/>
                     </svg>
@@ -53,7 +53,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             <button type="button"
                     class="vbp-minimap-btn"
                     @click="$store.vbpMinimap.toggle()"
-                    title="<?php esc_attr_e( 'Ocultar mapa', 'flavor-chat-ia' ); ?>">
+                    title="<?php esc_attr_e( 'Ocultar mapa', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M18 6L6 18M6 6l12 12"/>
                 </svg>
@@ -79,7 +79,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                     <rect x="3" y="3" width="18" height="18" rx="2"/>
                     <path d="M12 8v8M8 12h8"/>
                 </svg>
-                <span class="vbp-minimap-empty-text"><?php esc_html_e( 'Sin elementos', 'flavor-chat-ia' ); ?></span>
+                <span class="vbp-minimap-empty-text"><?php esc_html_e( 'Sin elementos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
             </div>
         </template>
 
@@ -125,7 +125,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 CTA
             </span>
             <span class="vbp-minimap-legend-item" x-show="elements.length > 0">
-                <span x-text="elements.length"></span> <?php esc_html_e( 'bloques', 'flavor-chat-ia' ); ?>
+                <span x-text="elements.length"></span> <?php esc_html_e( 'bloques', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
             </span>
         </div>
     </div>
@@ -147,7 +147,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         type="button"
         class="vbp-minimap-show-btn"
         @click="$store.vbpMinimap.toggle()"
-        title="<?php esc_attr_e( 'Mostrar mapa de navegación', 'flavor-chat-ia' ); ?>">
+        title="<?php esc_attr_e( 'Mostrar mapa de navegación', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <rect x="3" y="3" width="18" height="18" rx="2"/>
         <path d="M9 3v18"/>

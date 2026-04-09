@@ -54,18 +54,18 @@ $acciones_registradas = $wpdb->get_results($wpdb->prepare(
     <header class="he-header">
         <h2>
             <span class="dashicons dashicons-chart-line"></span>
-            <?php esc_html_e('Mi Huella Ecológica', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Mi Huella Ecológica', 'flavor-platform'); ?>
         </h2>
-        <p><?php esc_html_e('Seguimiento de tu impacto ambiental y acciones de reducción', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('Seguimiento de tu impacto ambiental y acciones de reducción', 'flavor-platform'); ?></p>
     </header>
 
     <!-- Selector de período -->
     <div style="text-align: right; margin-bottom: 1rem;">
         <select id="he-periodo" class="he-select">
-            <option value="semana"><?php esc_html_e('Esta semana', 'flavor-chat-ia'); ?></option>
-            <option value="mes" selected><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></option>
-            <option value="anio"><?php esc_html_e('Este año', 'flavor-chat-ia'); ?></option>
-            <option value="total"><?php esc_html_e('Todo el historial', 'flavor-chat-ia'); ?></option>
+            <option value="semana"><?php esc_html_e('Esta semana', 'flavor-platform'); ?></option>
+            <option value="mes" selected><?php esc_html_e('Este mes', 'flavor-platform'); ?></option>
+            <option value="anio"><?php esc_html_e('Este año', 'flavor-platform'); ?></option>
+            <option value="total"><?php esc_html_e('Todo el historial', 'flavor-platform'); ?></option>
         </select>
     </div>
 
@@ -74,29 +74,29 @@ $acciones_registradas = $wpdb->get_results($wpdb->prepare(
         <div class="he-stat-card" data-stat="huella">
             <span class="he-stat-card__icono dashicons dashicons-cloud"></span>
             <div class="he-stat-card__valor"><?php echo esc_html($stats['huella_total']); ?> kg</div>
-            <div class="he-stat-card__label"><?php esc_html_e('CO2 emitido', 'flavor-chat-ia'); ?></div>
+            <div class="he-stat-card__label"><?php esc_html_e('CO2 emitido', 'flavor-platform'); ?></div>
         </div>
         <div class="he-stat-card he-stat-card--reduccion" data-stat="reduccion">
             <span class="he-stat-card__icono dashicons dashicons-yes-alt"></span>
             <div class="he-stat-card__valor"><?php echo esc_html($stats['reduccion_total']); ?> kg</div>
-            <div class="he-stat-card__label"><?php esc_html_e('CO2 compensado', 'flavor-chat-ia'); ?></div>
+            <div class="he-stat-card__label"><?php esc_html_e('CO2 compensado', 'flavor-platform'); ?></div>
         </div>
         <div class="he-stat-card he-stat-card--neta" data-stat="neta">
             <span class="he-stat-card__icono dashicons dashicons-performance"></span>
             <div class="he-stat-card__valor"><?php echo esc_html($stats['huella_neta']); ?> kg</div>
-            <div class="he-stat-card__label"><?php esc_html_e('Huella neta', 'flavor-chat-ia'); ?></div>
+            <div class="he-stat-card__label"><?php esc_html_e('Huella neta', 'flavor-platform'); ?></div>
         </div>
         <div class="he-stat-card">
             <span class="he-stat-card__icono dashicons dashicons-awards"></span>
             <div class="he-stat-card__valor"><?php echo count(array_filter($stats['logros'], fn($l) => $l['obtenido'])); ?></div>
-            <div class="he-stat-card__label"><?php esc_html_e('Logros', 'flavor-chat-ia'); ?></div>
+            <div class="he-stat-card__label"><?php esc_html_e('Logros', 'flavor-platform'); ?></div>
         </div>
     </div>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
         <!-- Gráfico por categoría -->
         <div class="he-chart-bar">
-            <h3><?php esc_html_e('Huella por categoría', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Huella por categoría', 'flavor-platform'); ?></h3>
             <?php
             $max_valor = 1;
             if ($stats['huella_por_categoria']) {
@@ -129,14 +129,14 @@ $acciones_registradas = $wpdb->get_results($wpdb->prepare(
 
         <!-- Formulario rápido de registro -->
         <div>
-            <h3><?php esc_html_e('Registrar consumo', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Registrar consumo', 'flavor-platform'); ?></h3>
             <form class="he-form-registro" style="background: var(--he-bg-card); padding: 1.5rem; border-radius: var(--he-radius); box-shadow: var(--he-shadow);">
                 <div class="he-form-grupo">
-                    <label for="he-fecha"><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></label>
+                    <label for="he-fecha"><?php esc_html_e('Fecha', 'flavor-platform'); ?></label>
                     <input type="date" name="fecha" id="he-fecha" value="<?php echo esc_attr(date('Y-m-d')); ?>" required>
                 </div>
                 <div class="he-form-grupo">
-                    <label for="he-categoria"><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></label>
+                    <label for="he-categoria"><?php esc_html_e('Categoría', 'flavor-platform'); ?></label>
                     <select name="categoria" id="he-categoria" required>
                         <?php foreach ($categorias as $cat_id => $cat_data) : ?>
                         <option value="<?php echo esc_attr($cat_id); ?>"><?php echo esc_html($cat_data['nombre']); ?></option>
@@ -144,19 +144,19 @@ $acciones_registradas = $wpdb->get_results($wpdb->prepare(
                     </select>
                 </div>
                 <div class="he-form-grupo">
-                    <label for="he-valor"><?php esc_html_e('Valor', 'flavor-chat-ia'); ?></label>
+                    <label for="he-valor"><?php esc_html_e('Valor', 'flavor-platform'); ?></label>
                     <div class="he-input-con-unidad">
                         <input type="number" name="valor" id="he-valor" min="0.1" step="0.1" required>
                         <span class="he-unidad">kg CO2</span>
                     </div>
                 </div>
                 <div class="he-form-grupo">
-                    <label for="he-descripcion"><?php esc_html_e('Descripción (opcional)', 'flavor-chat-ia'); ?></label>
-                    <input type="text" name="descripcion" id="he-descripcion" placeholder="<?php esc_attr_e('Ej: Viaje en coche al trabajo', 'flavor-chat-ia'); ?>">
+                    <label for="he-descripcion"><?php esc_html_e('Descripción (opcional)', 'flavor-platform'); ?></label>
+                    <input type="text" name="descripcion" id="he-descripcion" placeholder="<?php esc_attr_e('Ej: Viaje en coche al trabajo', 'flavor-platform'); ?>">
                 </div>
                 <button type="submit" class="he-btn he-btn--primary" style="width: 100%;">
                     <span class="dashicons dashicons-plus-alt2"></span>
-                    <?php esc_html_e('Registrar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Registrar', 'flavor-platform'); ?>
                 </button>
             </form>
         </div>
@@ -165,11 +165,11 @@ $acciones_registradas = $wpdb->get_results($wpdb->prepare(
     <!-- Historial -->
     <div class="he-historial" style="margin-top: 2rem;">
         <div class="he-historial__header">
-            <h3><?php esc_html_e('Historial reciente', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Historial reciente', 'flavor-platform'); ?></h3>
             <div class="he-historial__filtros">
-                <button class="he-filtro-btn activo" data-filtro="todos"><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></button>
-                <button class="he-filtro-btn" data-filtro="emisiones"><?php esc_html_e('Emisiones', 'flavor-chat-ia'); ?></button>
-                <button class="he-filtro-btn" data-filtro="acciones"><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></button>
+                <button class="he-filtro-btn activo" data-filtro="todos"><?php esc_html_e('Todos', 'flavor-platform'); ?></button>
+                <button class="he-filtro-btn" data-filtro="emisiones"><?php esc_html_e('Emisiones', 'flavor-platform'); ?></button>
+                <button class="he-filtro-btn" data-filtro="acciones"><?php esc_html_e('Acciones', 'flavor-platform'); ?></button>
             </div>
         </div>
 
@@ -207,7 +207,7 @@ $acciones_registradas = $wpdb->get_results($wpdb->prepare(
             <?php else : ?>
             <div class="he-empty-state">
                 <span class="dashicons dashicons-chart-line"></span>
-                <p><?php esc_html_e('Aún no tienes registros. ¡Empieza a registrar tu huella!', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('Aún no tienes registros. ¡Empieza a registrar tu huella!', 'flavor-platform'); ?></p>
             </div>
             <?php endif; ?>
         </div>
@@ -217,11 +217,11 @@ $acciones_registradas = $wpdb->get_results($wpdb->prepare(
     <div style="text-align: center; margin-top: 2rem;">
         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('huella_ecologica', 'acciones')); ?>" class="he-btn he-btn--primary">
             <span class="dashicons dashicons-yes-alt"></span>
-            <?php esc_html_e('Registrar acción reductora', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Registrar acción reductora', 'flavor-platform'); ?>
         </a>
         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('huella_ecologica', 'logros')); ?>" class="he-btn he-btn--secondary">
             <span class="dashicons dashicons-awards"></span>
-            <?php esc_html_e('Ver mis logros', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Ver mis logros', 'flavor-platform'); ?>
         </a>
     </div>
 </div>

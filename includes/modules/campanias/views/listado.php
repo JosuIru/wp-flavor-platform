@@ -37,26 +37,26 @@ $campanias = $wpdb->get_results($wpdb->prepare(
 ));
 
 $tipos_campania = [
-    'protesta' => __('Protesta', 'flavor-chat-ia'),
-    'recogida_firmas' => __('Recogida de firmas', 'flavor-chat-ia'),
-    'concentracion' => __('Concentración', 'flavor-chat-ia'),
-    'boicot' => __('Boicot', 'flavor-chat-ia'),
-    'denuncia_publica' => __('Denuncia pública', 'flavor-chat-ia'),
-    'sensibilizacion' => __('Sensibilización', 'flavor-chat-ia'),
-    'accion_legal' => __('Acción legal', 'flavor-chat-ia'),
-    'otra' => __('Otra', 'flavor-chat-ia'),
+    'protesta' => __('Protesta', 'flavor-platform'),
+    'recogida_firmas' => __('Recogida de firmas', 'flavor-platform'),
+    'concentracion' => __('Concentración', 'flavor-platform'),
+    'boicot' => __('Boicot', 'flavor-platform'),
+    'denuncia_publica' => __('Denuncia pública', 'flavor-platform'),
+    'sensibilizacion' => __('Sensibilización', 'flavor-platform'),
+    'accion_legal' => __('Acción legal', 'flavor-platform'),
+    'otra' => __('Otra', 'flavor-platform'),
 ];
 ?>
 
 <div class="flavor-campanias-wrapper">
-    <form method="get" class="flavor-campanias-filtros" aria-label="<?php echo esc_attr__('Formulario de filtros de campañas', 'flavor-chat-ia'); ?>" style="margin-bottom: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: end;">
+    <form method="get" class="flavor-campanias-filtros" aria-label="<?php echo esc_attr__('Formulario de filtros de campañas', 'flavor-platform'); ?>" style="margin-bottom: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: end;">
         <?php if (isset($_GET['page'])): ?>
             <input type="hidden" name="page" value="<?php echo esc_attr(sanitize_text_field(wp_unslash($_GET['page']))); ?>">
         <?php endif; ?>
         <div>
-            <label for="flavor-campanias-tipo" class="screen-reader-text"><?php esc_html_e('Filtrar por tipo', 'flavor-chat-ia'); ?></label>
+            <label for="flavor-campanias-tipo" class="screen-reader-text"><?php esc_html_e('Filtrar por tipo', 'flavor-platform'); ?></label>
             <select id="flavor-campanias-tipo" name="tipo" class="flavor-campanias-filtro flavor-filtro-tipo">
-                <option value=""><?php esc_html_e('Todos los tipos', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php esc_html_e('Todos los tipos', 'flavor-platform'); ?></option>
                 <?php foreach ($tipos_campania as $valor => $etiqueta): ?>
                     <option value="<?php echo esc_attr($valor); ?>" <?php selected($tipo_filtro, $valor); ?>>
                         <?php echo esc_html($etiqueta); ?>
@@ -65,24 +65,24 @@ $tipos_campania = [
             </select>
         </div>
         <div>
-            <label for="flavor-campanias-estado" class="screen-reader-text"><?php esc_html_e('Filtrar por estado', 'flavor-chat-ia'); ?></label>
+            <label for="flavor-campanias-estado" class="screen-reader-text"><?php esc_html_e('Filtrar por estado', 'flavor-platform'); ?></label>
             <select id="flavor-campanias-estado" name="estado" class="flavor-campanias-filtro flavor-filtro-estado">
-                <option value="activa" <?php selected($estado_filtro, 'activa'); ?>><?php esc_html_e('Activas', 'flavor-chat-ia'); ?></option>
-                <option value="planificada" <?php selected($estado_filtro, 'planificada'); ?>><?php esc_html_e('Planificadas', 'flavor-chat-ia'); ?></option>
-                <option value="completada" <?php selected($estado_filtro, 'completada'); ?>><?php esc_html_e('Completadas', 'flavor-chat-ia'); ?></option>
-                <option value=""><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></option>
+                <option value="activa" <?php selected($estado_filtro, 'activa'); ?>><?php esc_html_e('Activas', 'flavor-platform'); ?></option>
+                <option value="planificada" <?php selected($estado_filtro, 'planificada'); ?>><?php esc_html_e('Planificadas', 'flavor-platform'); ?></option>
+                <option value="completada" <?php selected($estado_filtro, 'completada'); ?>><?php esc_html_e('Completadas', 'flavor-platform'); ?></option>
+                <option value=""><?php esc_html_e('Todas', 'flavor-platform'); ?></option>
             </select>
         </div>
-        <button type="submit" class="button"><?php esc_html_e('Aplicar filtros', 'flavor-chat-ia'); ?></button>
+        <button type="submit" class="button"><?php esc_html_e('Aplicar filtros', 'flavor-platform'); ?></button>
     </form>
 
     <?php if (empty($campanias)): ?>
         <div class="flavor-empty-state" style="text-align: center; padding: 3rem;">
             <span class="dashicons dashicons-megaphone" style="font-size: 3rem; color: #9ca3af;"></span>
-            <p style="color: #6b7280; margin-top: 1rem;"><?php esc_html_e('No hay campañas que mostrar.', 'flavor-chat-ia'); ?></p>
+            <p style="color: #6b7280; margin-top: 1rem;"><?php esc_html_e('No hay campañas que mostrar.', 'flavor-platform'); ?></p>
             <?php if (is_user_logged_in()): ?>
                 <a href="<?php echo esc_url(home_url('/campanias/crear/')); ?>" class="flavor-btn flavor-btn-primary">
-                    <?php esc_html_e('Crear nueva campaña', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Crear nueva campaña', 'flavor-platform'); ?>
                 </a>
             <?php endif; ?>
         </div>
@@ -124,7 +124,7 @@ $tipos_campania = [
                                     <span class="flavor-firmas-actual">
                                         <?php
                                         printf(
-                                            esc_html__('%s firmas', 'flavor-chat-ia'),
+                                            esc_html__('%s firmas', 'flavor-platform'),
                                             number_format_i18n((int) $campania->firmas_actuales)
                                         );
                                         ?>
@@ -132,7 +132,7 @@ $tipos_campania = [
                                     <span class="flavor-firmas-objetivo" data-objetivo="<?php echo esc_attr($campania->objetivo_firmas); ?>">
                                         <?php
                                         printf(
-                                            esc_html__('Objetivo: %s', 'flavor-chat-ia'),
+                                            esc_html__('Objetivo: %s', 'flavor-platform'),
                                             number_format_i18n((int) $campania->objetivo_firmas)
                                         );
                                         ?>

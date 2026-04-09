@@ -98,9 +98,9 @@ class Flavor_Module_Relations_Admin {
      */
     public function registrar_pagina_admin() {
         add_submenu_page(
-            'flavor-chat-ia',
-            __('Relaciones entre Módulos', 'flavor-chat-ia'),
-            __('Relaciones Módulos', 'flavor-chat-ia'),
+            FLAVOR_PLATFORM_TEXT_DOMAIN,
+            __('Relaciones entre Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Relaciones Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-module-relations',
             [$this, 'renderizar_pagina']
@@ -147,9 +147,9 @@ class Flavor_Module_Relations_Admin {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_module_relations'),
             'i18n' => [
-                'guardado' => __('Relaciones guardadas correctamente', 'flavor-chat-ia'),
-                'error' => __('Error al guardar relaciones', 'flavor-chat-ia'),
-                'confirmReset' => __('¿Estás seguro de resetear todas las relaciones? Se cargarán los valores por defecto del código.', 'flavor-chat-ia'),
+                'guardado' => __('Relaciones guardadas correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al guardar relaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmReset' => __('¿Estás seguro de resetear todas las relaciones? Se cargarán los valores por defecto del código.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -166,25 +166,25 @@ class Flavor_Module_Relations_Admin {
         ?>
         <div class="wrap flavor-module-relations-page">
             <?php if (class_exists('Flavor_Admin_Page_Chrome')) : ?>
-                <?php Flavor_Admin_Page_Chrome::render_breadcrumbs('ecosystem', 'flavor-module-relations', __('Relaciones', 'flavor-chat-ia')); ?>
+                <?php Flavor_Admin_Page_Chrome::render_breadcrumbs('ecosystem', 'flavor-module-relations', __('Relaciones', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                 <?php Flavor_Admin_Page_Chrome::render_compact_nav(Flavor_Admin_Page_Chrome::get_section_links('ecosystem', 'flavor-module-relations')); ?>
             <?php endif; ?>
-            <h1><?php _e('Configuración de Relaciones entre Módulos', 'flavor-chat-ia'); ?></h1>
+            <h1><?php _e('Configuración de Relaciones entre Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
 
             <div class="flavor-mr-description">
-                <p><?php _e('Configura qué módulos horizontales (servicios/herramientas) se muestran en cada módulo vertical (principal).', 'flavor-chat-ia'); ?></p>
-                <p><strong><?php _e('Módulos Verticales:', 'flavor-chat-ia'); ?></strong> <?php _e('Son los módulos principales de negocio (Grupos de Consumo, Eventos, Comunidades, etc.).', 'flavor-chat-ia'); ?></p>
-                <p><strong><?php _e('Módulos Horizontales:', 'flavor-chat-ia'); ?></strong> <?php _e('Son servicios que se integran (Foro, Chat, Multimedia, Recetas, Biblioteca, Podcast, etc.).', 'flavor-chat-ia'); ?></p>
+                <p><?php _e('Configura qué módulos horizontales (servicios/herramientas) se muestran en cada módulo vertical (principal).', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                <p><strong><?php _e('Módulos Verticales:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php _e('Son los módulos principales de negocio (Grupos de Consumo, Eventos, Comunidades, etc.).', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                <p><strong><?php _e('Módulos Horizontales:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php _e('Son servicios que se integran (Foro, Chat, Multimedia, Recetas, Biblioteca, Podcast, etc.).', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <!-- Selector de Contexto -->
             <div class="flavor-mr-context-selector">
                 <label for="context-select">
-                    <strong><?php _e('Contexto:', 'flavor-chat-ia'); ?></strong>
+                    <strong><?php _e('Contexto:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                 </label>
                 <select id="context-select" class="flavor-context-select">
                     <option value="global" <?php selected($contexto_actual, 'global'); ?>>
-                        <?php _e('Global (por defecto)', 'flavor-chat-ia'); ?>
+                        <?php _e('Global (por defecto)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </option>
                     <?php foreach ($contextos as $ctx_id => $ctx_label): ?>
                         <option value="<?php echo esc_attr($ctx_id); ?>" <?php selected($contexto_actual, $ctx_id); ?>>
@@ -193,7 +193,7 @@ class Flavor_Module_Relations_Admin {
                     <?php endforeach; ?>
                 </select>
                 <p class="description">
-                    <?php _e('Global aplica a todos. También puedes configurar relaciones específicas por comunidad.', 'flavor-chat-ia'); ?>
+                    <?php _e('Global aplica a todos. También puedes configurar relaciones específicas por comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
@@ -213,7 +213,7 @@ class Flavor_Module_Relations_Admin {
                         </div>
 
                         <div class="flavor-mr-horizontal-modules">
-                            <h3><?php _e('Módulos Horizontales Vinculados', 'flavor-chat-ia'); ?></h3>
+                            <h3><?php _e('Módulos Horizontales Vinculados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
                             <?php
                             $relaciones_actuales = $this->obtener_relaciones($vertical_id, $contexto_actual);
@@ -243,7 +243,7 @@ class Flavor_Module_Relations_Admin {
 
                             <div class="flavor-mr-config-hint">
                                 <span class="dashicons dashicons-info"></span>
-                                <?php _e('Los módulos seleccionados aparecerán en la navegación del portal unificado.', 'flavor-chat-ia'); ?>
+                                <?php _e('Los módulos seleccionados aparecerán en la navegación del portal unificado.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </div>
                         </div>
                     </div>
@@ -251,19 +251,19 @@ class Flavor_Module_Relations_Admin {
 
                 <div class="flavor-mr-actions">
                     <button type="submit" class="button button-primary button-large">
-                        <?php _e('Guardar Relaciones', 'flavor-chat-ia'); ?>
+                        <?php _e('Guardar Relaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button" class="button button-secondary" id="flavor-reset-relations">
-                        <?php _e('Resetear a Valores por Defecto', 'flavor-chat-ia'); ?>
+                        <?php _e('Resetear a Valores por Defecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </form>
 
             <!-- Previsualización de Navegación -->
             <div class="flavor-mr-preview">
-                <h2><?php _e('Previsualización de Navegación', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Previsualización de Navegación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <p class="description">
-                    <?php _e('Así se verá la navegación para cada módulo vertical según la configuración actual.', 'flavor-chat-ia'); ?>
+                    <?php _e('Así se verá la navegación para cada módulo vertical según la configuración actual.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
                 <div id="flavor-nav-preview-container"></div>
             </div>
@@ -378,7 +378,7 @@ class Flavor_Module_Relations_Admin {
 
             foreach ($comunidades as $comunidad) {
                 $contextos['comunidad_' . $comunidad->id] = sprintf(
-                    __('Comunidad: %s', 'flavor-chat-ia'),
+                    __('Comunidad: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $comunidad->nombre
                 );
             }
@@ -546,7 +546,7 @@ class Flavor_Module_Relations_Admin {
         check_ajax_referer('flavor_module_relations', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $relations = $_POST['relations'] ?? [];
@@ -559,7 +559,7 @@ class Flavor_Module_Relations_Admin {
         }
 
         wp_send_json_success([
-            'message' => __('Relaciones guardadas correctamente', 'flavor-chat-ia'),
+            'message' => __('Relaciones guardadas correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -573,7 +573,7 @@ class Flavor_Module_Relations_Admin {
         $context = sanitize_text_field($_POST['context'] ?? 'global');
 
         if (empty($parent_id)) {
-            wp_send_json_error(['message' => __('ID de módulo requerido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID de módulo requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $relaciones = $this->obtener_relaciones($parent_id, $context);
@@ -590,7 +590,7 @@ class Flavor_Module_Relations_Admin {
         check_ajax_referer('flavor_module_relations', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -599,7 +599,7 @@ class Flavor_Module_Relations_Admin {
 
         if (!$table_exists) {
             wp_send_json_success([
-                'message' => __('No existían relaciones persistidas. Se usarán los valores del código.', 'flavor-chat-ia'),
+                'message' => __('No existían relaciones persistidas. Se usarán los valores del código.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
 
@@ -607,7 +607,7 @@ class Flavor_Module_Relations_Admin {
         $wpdb->query("DELETE FROM $table");
 
         wp_send_json_success([
-            'message' => __('Relaciones reseteadas. Se usarán los valores del código.', 'flavor-chat-ia'),
+            'message' => __('Relaciones reseteadas. Se usarán los valores del código.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 }

@@ -90,205 +90,205 @@ class Flavor_Role_Manager {
         $this->capabilities_definidas = [
             // Dashboard usuario frontend
             'dashboard' => [
-                'flavor_view_dashboard'     => __('Ver dashboard de usuario', 'flavor-chat-ia'),
-                'flavor_edit_profile'       => __('Editar perfil propio', 'flavor-chat-ia'),
+                'flavor_view_dashboard'     => __('Ver dashboard de usuario', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'flavor_edit_profile'       => __('Editar perfil propio', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
 
             // Modulo Grupos de Consumo - Capabilities granulares
             'grupos_consumo' => [
                 // Productos
-                'gc_ver_productos'          => __('Ver productos del grupo', 'flavor-chat-ia'),
-                'gc_gestionar_mis_productos' => __('Gestionar mis productos (productor)', 'flavor-chat-ia'),
-                'gc_gestionar_productos'    => __('Gestionar todos los productos', 'flavor-chat-ia'),
+                'gc_ver_productos'          => __('Ver productos del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'gc_gestionar_mis_productos' => __('Gestionar mis productos (productor)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'gc_gestionar_productos'    => __('Gestionar todos los productos', FLAVOR_PLATFORM_TEXT_DOMAIN),
 
                 // Pedidos
-                'gc_crear_pedido'           => __('Crear pedidos', 'flavor-chat-ia'),
-                'gc_ver_pedidos_propios'    => __('Ver pedidos propios', 'flavor-chat-ia'),
-                'gc_gestionar_pedidos'      => __('Gestionar todos los pedidos', 'flavor-chat-ia'),
-                'gc_cancelar_pedido_propio' => __('Cancelar pedido propio', 'flavor-chat-ia'),
+                'gc_crear_pedido'           => __('Crear pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'gc_ver_pedidos_propios'    => __('Ver pedidos propios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'gc_gestionar_pedidos'      => __('Gestionar todos los pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'gc_cancelar_pedido_propio' => __('Cancelar pedido propio', FLAVOR_PLATFORM_TEXT_DOMAIN),
 
                 // Ciclos
-                'gc_ver_ciclos'             => __('Ver ciclos de pedidos', 'flavor-chat-ia'),
-                'gc_gestionar_ciclos'       => __('Crear y gestionar ciclos', 'flavor-chat-ia'),
-                'gc_cerrar_ciclos'          => __('Cerrar ciclos de pedidos', 'flavor-chat-ia'),
+                'gc_ver_ciclos'             => __('Ver ciclos de pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'gc_gestionar_ciclos'       => __('Crear y gestionar ciclos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'gc_cerrar_ciclos'          => __('Cerrar ciclos de pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
 
                 // Productores
-                'gc_ver_productores'        => __('Ver productores', 'flavor-chat-ia'),
-                'gc_gestionar_productores'  => __('Gestionar productores', 'flavor-chat-ia'),
-                'gc_aprobar_productores'    => __('Aprobar nuevos productores', 'flavor-chat-ia'),
+                'gc_ver_productores'        => __('Ver productores', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'gc_gestionar_productores'  => __('Gestionar productores', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'gc_aprobar_productores'    => __('Aprobar nuevos productores', FLAVOR_PLATFORM_TEXT_DOMAIN),
 
                 // Grupos
-                'gc_ver_grupos'             => __('Ver grupos de consumo', 'flavor-chat-ia'),
-                'gc_gestionar_grupos'       => __('Gestionar grupos de consumo', 'flavor-chat-ia'),
-                'gc_crear_grupos'           => __('Crear nuevos grupos', 'flavor-chat-ia'),
+                'gc_ver_grupos'             => __('Ver grupos de consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'gc_gestionar_grupos'       => __('Gestionar grupos de consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'gc_crear_grupos'           => __('Crear nuevos grupos', FLAVOR_PLATFORM_TEXT_DOMAIN),
 
                 // Miembros
-                'gc_gestionar_miembros'     => __('Gestionar miembros del grupo', 'flavor-chat-ia'),
-                'gc_aprobar_solicitudes'    => __('Aprobar solicitudes de union', 'flavor-chat-ia'),
+                'gc_gestionar_miembros'     => __('Gestionar miembros del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'gc_aprobar_solicitudes'    => __('Aprobar solicitudes de union', FLAVOR_PLATFORM_TEXT_DOMAIN),
 
                 // Repartos
-                'gc_ver_repartos'           => __('Ver calendario de repartos', 'flavor-chat-ia'),
-                'gc_gestionar_repartos'     => __('Gestionar repartos', 'flavor-chat-ia'),
+                'gc_ver_repartos'           => __('Ver calendario de repartos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'gc_gestionar_repartos'     => __('Gestionar repartos', FLAVOR_PLATFORM_TEXT_DOMAIN),
 
                 // Exportacion
-                'gc_exportar_datos'         => __('Exportar datos del grupo', 'flavor-chat-ia'),
-                'gc_ver_estadisticas'       => __('Ver estadisticas del grupo', 'flavor-chat-ia'),
+                'gc_exportar_datos'         => __('Exportar datos del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'gc_ver_estadisticas'       => __('Ver estadisticas del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN),
 
                 // Suscripciones
-                'gc_gestionar_suscripciones' => __('Gestionar suscripciones', 'flavor-chat-ia'),
+                'gc_gestionar_suscripciones' => __('Gestionar suscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
 
                 // Configuracion
-                'gc_configurar_grupo'       => __('Configurar ajustes del grupo', 'flavor-chat-ia'),
+                'gc_configurar_grupo'       => __('Configurar ajustes del grupo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
 
             // Modulo Eventos - Capabilities granulares
             'eventos' => [
-                'eventos_ver'               => __('Ver eventos', 'flavor-chat-ia'),
-                'eventos_ver_detalles'      => __('Ver detalles de eventos', 'flavor-chat-ia'),
-                'eventos_inscribirse'       => __('Inscribirse en eventos', 'flavor-chat-ia'),
-                'eventos_crear'             => __('Crear eventos', 'flavor-chat-ia'),
-                'eventos_editar_propios'    => __('Editar eventos propios', 'flavor-chat-ia'),
-                'eventos_gestionar'         => __('Gestionar todos los eventos', 'flavor-chat-ia'),
-                'eventos_eliminar'          => __('Eliminar eventos', 'flavor-chat-ia'),
-                'eventos_gestionar_asistentes' => __('Gestionar asistentes', 'flavor-chat-ia'),
-                'eventos_ver_estadisticas'  => __('Ver estadisticas de eventos', 'flavor-chat-ia'),
-                'eventos_exportar'          => __('Exportar datos de eventos', 'flavor-chat-ia'),
-                'eventos_configurar'        => __('Configurar modulo de eventos', 'flavor-chat-ia'),
+                'eventos_ver'               => __('Ver eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'eventos_ver_detalles'      => __('Ver detalles de eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'eventos_inscribirse'       => __('Inscribirse en eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'eventos_crear'             => __('Crear eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'eventos_editar_propios'    => __('Editar eventos propios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'eventos_gestionar'         => __('Gestionar todos los eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'eventos_eliminar'          => __('Eliminar eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'eventos_gestionar_asistentes' => __('Gestionar asistentes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'eventos_ver_estadisticas'  => __('Ver estadisticas de eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'eventos_exportar'          => __('Exportar datos de eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'eventos_configurar'        => __('Configurar modulo de eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
 
             // Modulo Socios - Capabilities granulares
             'socios' => [
-                'socios_ver_propios'        => __('Ver datos propios de socio', 'flavor-chat-ia'),
-                'socios_editar_propios'     => __('Editar datos propios', 'flavor-chat-ia'),
-                'socios_ver_directorio'     => __('Ver directorio de socios', 'flavor-chat-ia'),
-                'socios_ver_todos'          => __('Ver todos los socios', 'flavor-chat-ia'),
-                'socios_gestionar'          => __('Gestionar socios', 'flavor-chat-ia'),
-                'socios_crear'              => __('Crear nuevos socios', 'flavor-chat-ia'),
-                'socios_eliminar'           => __('Eliminar socios', 'flavor-chat-ia'),
-                'socios_gestionar_cuotas'   => __('Gestionar cuotas', 'flavor-chat-ia'),
-                'socios_ver_cuotas'         => __('Ver cuotas propias', 'flavor-chat-ia'),
-                'socios_importar'           => __('Importar socios', 'flavor-chat-ia'),
-                'socios_exportar'           => __('Exportar socios', 'flavor-chat-ia'),
-                'socios_configurar'         => __('Configurar modulo de socios', 'flavor-chat-ia'),
+                'socios_ver_propios'        => __('Ver datos propios de socio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'socios_editar_propios'     => __('Editar datos propios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'socios_ver_directorio'     => __('Ver directorio de socios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'socios_ver_todos'          => __('Ver todos los socios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'socios_gestionar'          => __('Gestionar socios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'socios_crear'              => __('Crear nuevos socios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'socios_eliminar'           => __('Eliminar socios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'socios_gestionar_cuotas'   => __('Gestionar cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'socios_ver_cuotas'         => __('Ver cuotas propias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'socios_importar'           => __('Importar socios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'socios_exportar'           => __('Exportar socios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'socios_configurar'         => __('Configurar modulo de socios', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
 
             // Modulo Reservas
             'reservas' => [
-                'reservas_ver_propias'      => __('Ver reservas propias', 'flavor-chat-ia'),
-                'reservas_crear'            => __('Crear reservas', 'flavor-chat-ia'),
-                'reservas_cancelar_propias' => __('Cancelar reservas propias', 'flavor-chat-ia'),
-                'reservas_ver_todas'        => __('Ver todas las reservas', 'flavor-chat-ia'),
-                'reservas_gestionar'        => __('Gestionar todas las reservas', 'flavor-chat-ia'),
-                'reservas_aprobar'          => __('Aprobar reservas pendientes', 'flavor-chat-ia'),
-                'reservas_configurar'       => __('Configurar modulo de reservas', 'flavor-chat-ia'),
+                'reservas_ver_propias'      => __('Ver reservas propias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'reservas_crear'            => __('Crear reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'reservas_cancelar_propias' => __('Cancelar reservas propias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'reservas_ver_todas'        => __('Ver todas las reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'reservas_gestionar'        => __('Gestionar todas las reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'reservas_aprobar'          => __('Aprobar reservas pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'reservas_configurar'       => __('Configurar modulo de reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
 
             // Modulo Banco de Tiempo
             'banco_tiempo' => [
-                'bt_ver_servicios'          => __('Ver servicios disponibles', 'flavor-chat-ia'),
-                'bt_ofrecer_servicio'       => __('Ofrecer servicios', 'flavor-chat-ia'),
-                'bt_solicitar_servicio'     => __('Solicitar servicios', 'flavor-chat-ia'),
-                'bt_ver_saldo_propio'       => __('Ver saldo propio', 'flavor-chat-ia'),
-                'bt_ver_historial_propio'   => __('Ver historial propio', 'flavor-chat-ia'),
-                'bt_gestionar_servicios'    => __('Gestionar todos los servicios', 'flavor-chat-ia'),
-                'bt_gestionar_transacciones' => __('Gestionar transacciones', 'flavor-chat-ia'),
-                'bt_ver_estadisticas'       => __('Ver estadisticas', 'flavor-chat-ia'),
-                'bt_configurar'             => __('Configurar banco de tiempo', 'flavor-chat-ia'),
+                'bt_ver_servicios'          => __('Ver servicios disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'bt_ofrecer_servicio'       => __('Ofrecer servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'bt_solicitar_servicio'     => __('Solicitar servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'bt_ver_saldo_propio'       => __('Ver saldo propio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'bt_ver_historial_propio'   => __('Ver historial propio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'bt_gestionar_servicios'    => __('Gestionar todos los servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'bt_gestionar_transacciones' => __('Gestionar transacciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'bt_ver_estadisticas'       => __('Ver estadisticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'bt_configurar'             => __('Configurar banco de tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
 
             // Modulo Incidencias
             'incidencias' => [
-                'incidencias_ver_propias'   => __('Ver incidencias propias', 'flavor-chat-ia'),
-                'incidencias_crear'         => __('Reportar incidencias', 'flavor-chat-ia'),
-                'incidencias_comentar'      => __('Comentar en incidencias', 'flavor-chat-ia'),
-                'incidencias_ver_todas'     => __('Ver todas las incidencias', 'flavor-chat-ia'),
-                'incidencias_gestionar'     => __('Gestionar incidencias', 'flavor-chat-ia'),
-                'incidencias_asignar'       => __('Asignar incidencias', 'flavor-chat-ia'),
-                'incidencias_cerrar'        => __('Cerrar incidencias', 'flavor-chat-ia'),
-                'incidencias_configurar'    => __('Configurar modulo', 'flavor-chat-ia'),
+                'incidencias_ver_propias'   => __('Ver incidencias propias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'incidencias_crear'         => __('Reportar incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'incidencias_comentar'      => __('Comentar en incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'incidencias_ver_todas'     => __('Ver todas las incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'incidencias_gestionar'     => __('Gestionar incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'incidencias_asignar'       => __('Asignar incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'incidencias_cerrar'        => __('Cerrar incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'incidencias_configurar'    => __('Configurar modulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
 
             // Modulo Newsletter
             'newsletter' => [
-                'newsletter_suscribirse'    => __('Suscribirse a newsletters', 'flavor-chat-ia'),
-                'newsletter_ver_campanas'   => __('Ver campanas', 'flavor-chat-ia'),
-                'newsletter_crear'          => __('Crear newsletters', 'flavor-chat-ia'),
-                'newsletter_enviar'         => __('Enviar newsletters', 'flavor-chat-ia'),
-                'newsletter_gestionar'      => __('Gestionar campanas', 'flavor-chat-ia'),
-                'newsletter_ver_estadisticas' => __('Ver estadisticas', 'flavor-chat-ia'),
-                'newsletter_configurar'     => __('Configurar modulo', 'flavor-chat-ia'),
+                'newsletter_suscribirse'    => __('Suscribirse a newsletters', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'newsletter_ver_campanas'   => __('Ver campanas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'newsletter_crear'          => __('Crear newsletters', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'newsletter_enviar'         => __('Enviar newsletters', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'newsletter_gestionar'      => __('Gestionar campanas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'newsletter_ver_estadisticas' => __('Ver estadisticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'newsletter_configurar'     => __('Configurar modulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
 
             // Modulo Espacios Comunes
             'espacios' => [
-                'espacios_ver'              => __('Ver espacios disponibles', 'flavor-chat-ia'),
-                'espacios_reservar'         => __('Reservar espacios', 'flavor-chat-ia'),
-                'espacios_ver_reservas'     => __('Ver mis reservas', 'flavor-chat-ia'),
-                'espacios_gestionar'        => __('Gestionar espacios', 'flavor-chat-ia'),
-                'espacios_aprobar_reservas' => __('Aprobar reservas de espacios', 'flavor-chat-ia'),
-                'espacios_configurar'       => __('Configurar modulo', 'flavor-chat-ia'),
+                'espacios_ver'              => __('Ver espacios disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'espacios_reservar'         => __('Reservar espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'espacios_ver_reservas'     => __('Ver mis reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'espacios_gestionar'        => __('Gestionar espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'espacios_aprobar_reservas' => __('Aprobar reservas de espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'espacios_configurar'       => __('Configurar modulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
 
             // Modulo Cursos/Talleres
             'cursos' => [
-                'cursos_ver'                => __('Ver cursos disponibles', 'flavor-chat-ia'),
-                'cursos_inscribirse'        => __('Inscribirse en cursos', 'flavor-chat-ia'),
-                'cursos_ver_inscritos'      => __('Ver mis inscripciones', 'flavor-chat-ia'),
-                'cursos_crear'              => __('Crear cursos', 'flavor-chat-ia'),
-                'cursos_gestionar'          => __('Gestionar cursos', 'flavor-chat-ia'),
-                'cursos_gestionar_alumnos'  => __('Gestionar alumnos', 'flavor-chat-ia'),
-                'cursos_ver_estadisticas'   => __('Ver estadisticas', 'flavor-chat-ia'),
-                'cursos_configurar'         => __('Configurar modulo', 'flavor-chat-ia'),
+                'cursos_ver'                => __('Ver cursos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cursos_inscribirse'        => __('Inscribirse en cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cursos_ver_inscritos'      => __('Ver mis inscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cursos_crear'              => __('Crear cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cursos_gestionar'          => __('Gestionar cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cursos_gestionar_alumnos'  => __('Gestionar alumnos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cursos_ver_estadisticas'   => __('Ver estadisticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cursos_configurar'         => __('Configurar modulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
 
             // Modulo Huertos Urbanos
             'huertos' => [
-                'huertos_ver'               => __('Ver huertos', 'flavor-chat-ia'),
-                'huertos_solicitar_parcela' => __('Solicitar parcela', 'flavor-chat-ia'),
-                'huertos_ver_parcela_propia' => __('Ver mi parcela', 'flavor-chat-ia'),
-                'huertos_gestionar'         => __('Gestionar huertos', 'flavor-chat-ia'),
-                'huertos_asignar_parcelas'  => __('Asignar parcelas', 'flavor-chat-ia'),
-                'huertos_ver_estadisticas'  => __('Ver estadisticas', 'flavor-chat-ia'),
-                'huertos_configurar'        => __('Configurar modulo', 'flavor-chat-ia'),
+                'huertos_ver'               => __('Ver huertos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'huertos_solicitar_parcela' => __('Solicitar parcela', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'huertos_ver_parcela_propia' => __('Ver mi parcela', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'huertos_gestionar'         => __('Gestionar huertos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'huertos_asignar_parcelas'  => __('Asignar parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'huertos_ver_estadisticas'  => __('Ver estadisticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'huertos_configurar'        => __('Configurar modulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
 
             // Modulo Biblioteca
             'biblioteca' => [
-                'biblioteca_ver'            => __('Ver catalogo', 'flavor-chat-ia'),
-                'biblioteca_prestar'        => __('Solicitar prestamos', 'flavor-chat-ia'),
-                'biblioteca_ver_prestamos'  => __('Ver mis prestamos', 'flavor-chat-ia'),
-                'biblioteca_gestionar'      => __('Gestionar biblioteca', 'flavor-chat-ia'),
-                'biblioteca_gestionar_prestamos' => __('Gestionar prestamos', 'flavor-chat-ia'),
-                'biblioteca_configurar'     => __('Configurar modulo', 'flavor-chat-ia'),
+                'biblioteca_ver'            => __('Ver catalogo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'biblioteca_prestar'        => __('Solicitar prestamos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'biblioteca_ver_prestamos'  => __('Ver mis prestamos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'biblioteca_gestionar'      => __('Gestionar biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'biblioteca_gestionar_prestamos' => __('Gestionar prestamos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'biblioteca_configurar'     => __('Configurar modulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
 
             // Modulo Carpooling
             'carpooling' => [
-                'carpooling_ver_viajes'     => __('Ver viajes disponibles', 'flavor-chat-ia'),
-                'carpooling_ofrecer_viaje'  => __('Ofrecer viaje', 'flavor-chat-ia'),
-                'carpooling_solicitar_plaza' => __('Solicitar plaza', 'flavor-chat-ia'),
-                'carpooling_gestionar'      => __('Gestionar viajes', 'flavor-chat-ia'),
-                'carpooling_ver_estadisticas' => __('Ver estadisticas', 'flavor-chat-ia'),
-                'carpooling_configurar'     => __('Configurar modulo', 'flavor-chat-ia'),
+                'carpooling_ver_viajes'     => __('Ver viajes disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'carpooling_ofrecer_viaje'  => __('Ofrecer viaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'carpooling_solicitar_plaza' => __('Solicitar plaza', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'carpooling_gestionar'      => __('Gestionar viajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'carpooling_ver_estadisticas' => __('Ver estadisticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'carpooling_configurar'     => __('Configurar modulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
 
             // Administracion general del plugin
             'admin' => [
-                'flavor_manage_settings'    => __('Gestionar configuracion del plugin', 'flavor-chat-ia'),
-                'flavor_view_analytics'     => __('Ver analiticas', 'flavor-chat-ia'),
-                'flavor_manage_modules'     => __('Activar/desactivar modulos', 'flavor-chat-ia'),
-                'flavor_export_data'        => __('Exportar datos globales', 'flavor-chat-ia'),
-                'flavor_import_data'        => __('Importar datos globales', 'flavor-chat-ia'),
-                'flavor_manage_permissions' => __('Gestionar permisos', 'flavor-chat-ia'),
-                'flavor_manage_roles'       => __('Gestionar roles personalizados', 'flavor-chat-ia'),
+                'flavor_manage_settings'    => __('Gestionar configuracion del plugin', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'flavor_view_analytics'     => __('Ver analiticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'flavor_manage_modules'     => __('Activar/desactivar modulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'flavor_export_data'        => __('Exportar datos globales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'flavor_import_data'        => __('Importar datos globales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'flavor_manage_permissions' => __('Gestionar permisos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'flavor_manage_roles'       => __('Gestionar roles personalizados', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
 
             // Moderacion
             'moderacion' => [
-                'flavor_moderate_content'   => __('Moderar contenido', 'flavor-chat-ia'),
-                'flavor_manage_users'       => __('Gestionar usuarios del plugin', 'flavor-chat-ia'),
-                'flavor_ban_users'          => __('Suspender usuarios', 'flavor-chat-ia'),
-                'flavor_view_logs'          => __('Ver logs de actividad', 'flavor-chat-ia'),
+                'flavor_moderate_content'   => __('Moderar contenido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'flavor_manage_users'       => __('Gestionar usuarios del plugin', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'flavor_ban_users'          => __('Suspender usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'flavor_view_logs'          => __('Ver logs de actividad', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
 
@@ -302,7 +302,7 @@ class Flavor_Role_Manager {
     private function definir_roles() {
         $this->roles_definidos = [
             'flavor_visitante' => [
-                'label' => __('Visitante Flavor', 'flavor-chat-ia'),
+                'label' => __('Visitante Flavor', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'capabilities' => [
                     'read' => true,
                     'gc_ver_productos' => true,
@@ -314,7 +314,7 @@ class Flavor_Role_Manager {
             ],
 
             'flavor_socio' => [
-                'label' => __('Socio', 'flavor-chat-ia'),
+                'label' => __('Socio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'capabilities' => [
                     // WordPress base
                     'read' => true,
@@ -379,7 +379,7 @@ class Flavor_Role_Manager {
             ],
 
             'flavor_gestor' => [
-                'label' => __('Gestor', 'flavor-chat-ia'),
+                'label' => __('Gestor', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'capabilities' => [
                     // WordPress base
                     'read'          => true,
@@ -501,7 +501,7 @@ class Flavor_Role_Manager {
             ],
 
             'flavor_moderador' => [
-                'label' => __('Moderador', 'flavor-chat-ia'),
+                'label' => __('Moderador', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'capabilities' => [
                     // WordPress base
                     'read'              => true,
@@ -532,7 +532,7 @@ class Flavor_Role_Manager {
             ],
 
             'flavor_admin' => [
-                'label' => __('Administrador Flavor', 'flavor-chat-ia'),
+                'label' => __('Administrador Flavor', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'capabilities' => 'all', // Marca especial para dar todas las capabilities
             ],
         ];
@@ -546,8 +546,8 @@ class Flavor_Role_Manager {
             // Roles del modulo Grupos de Consumo
             'grupos_consumo' => [
                 'gc_consumidor' => [
-                    'label' => __('Consumidor', 'flavor-chat-ia'),
-                    'description' => __('Puede ver productos y realizar pedidos', 'flavor-chat-ia'),
+                    'label' => __('Consumidor', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Puede ver productos y realizar pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => [
                         'gc_ver_productos',
                         'gc_crear_pedido',
@@ -560,8 +560,8 @@ class Flavor_Role_Manager {
                     ],
                 ],
                 'gc_productor' => [
-                    'label' => __('Productor', 'flavor-chat-ia'),
-                    'description' => __('Puede gestionar sus productos y ver pedidos', 'flavor-chat-ia'),
+                    'label' => __('Productor', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Puede gestionar sus productos y ver pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => [
                         'gc_ver_productos',
                         'gc_gestionar_mis_productos',
@@ -573,8 +573,8 @@ class Flavor_Role_Manager {
                     ],
                 ],
                 'gc_coordinador' => [
-                    'label' => __('Coordinador GC', 'flavor-chat-ia'),
-                    'description' => __('Acceso completo al modulo de grupos de consumo', 'flavor-chat-ia'),
+                    'label' => __('Coordinador GC', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Acceso completo al modulo de grupos de consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => 'gc_*', // Wildcard para todas las gc_*
                 ],
             ],
@@ -582,8 +582,8 @@ class Flavor_Role_Manager {
             // Roles del modulo Eventos
             'eventos' => [
                 'eventos_asistente' => [
-                    'label' => __('Asistente', 'flavor-chat-ia'),
-                    'description' => __('Puede ver e inscribirse en eventos', 'flavor-chat-ia'),
+                    'label' => __('Asistente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Puede ver e inscribirse en eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => [
                         'eventos_ver',
                         'eventos_ver_detalles',
@@ -591,8 +591,8 @@ class Flavor_Role_Manager {
                     ],
                 ],
                 'eventos_organizador' => [
-                    'label' => __('Organizador', 'flavor-chat-ia'),
-                    'description' => __('Puede crear y gestionar sus propios eventos', 'flavor-chat-ia'),
+                    'label' => __('Organizador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Puede crear y gestionar sus propios eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => [
                         'eventos_ver',
                         'eventos_ver_detalles',
@@ -603,8 +603,8 @@ class Flavor_Role_Manager {
                     ],
                 ],
                 'eventos_gestor' => [
-                    'label' => __('Gestor de Eventos', 'flavor-chat-ia'),
-                    'description' => __('Acceso completo al modulo de eventos', 'flavor-chat-ia'),
+                    'label' => __('Gestor de Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Acceso completo al modulo de eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => 'eventos_*',
                 ],
             ],
@@ -612,8 +612,8 @@ class Flavor_Role_Manager {
             // Roles del modulo Socios
             'socios' => [
                 'socios_basico' => [
-                    'label' => __('Socio Basico', 'flavor-chat-ia'),
-                    'description' => __('Puede ver y editar sus propios datos', 'flavor-chat-ia'),
+                    'label' => __('Socio Basico', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Puede ver y editar sus propios datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => [
                         'socios_ver_propios',
                         'socios_editar_propios',
@@ -622,8 +622,8 @@ class Flavor_Role_Manager {
                     ],
                 ],
                 'socios_tesorero' => [
-                    'label' => __('Tesorero', 'flavor-chat-ia'),
-                    'description' => __('Puede gestionar cuotas y ver todos los miembros', 'flavor-chat-ia'),
+                    'label' => __('Tesorero', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Puede gestionar cuotas y ver todos los miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => [
                         'socios_ver_propios',
                         'socios_editar_propios',
@@ -635,8 +635,8 @@ class Flavor_Role_Manager {
                     ],
                 ],
                 'socios_admin' => [
-                    'label' => __('Admin. Miembros', 'flavor-chat-ia'),
-                    'description' => __('Acceso completo al modulo de miembros', 'flavor-chat-ia'),
+                    'label' => __('Admin. Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Acceso completo al modulo de miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => 'socios_*',
                 ],
             ],
@@ -644,8 +644,8 @@ class Flavor_Role_Manager {
             // Roles del modulo Reservas
             'reservas' => [
                 'reservas_usuario' => [
-                    'label' => __('Usuario Reservas', 'flavor-chat-ia'),
-                    'description' => __('Puede hacer y ver sus reservas', 'flavor-chat-ia'),
+                    'label' => __('Usuario Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Puede hacer y ver sus reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => [
                         'reservas_ver_propias',
                         'reservas_crear',
@@ -653,8 +653,8 @@ class Flavor_Role_Manager {
                     ],
                 ],
                 'reservas_gestor' => [
-                    'label' => __('Gestor Reservas', 'flavor-chat-ia'),
-                    'description' => __('Acceso completo a reservas', 'flavor-chat-ia'),
+                    'label' => __('Gestor Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Acceso completo a reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => 'reservas_*',
                 ],
             ],
@@ -662,8 +662,8 @@ class Flavor_Role_Manager {
             // Roles del modulo Banco de Tiempo
             'banco_tiempo' => [
                 'bt_participante' => [
-                    'label' => __('Participante BT', 'flavor-chat-ia'),
-                    'description' => __('Puede ofrecer y solicitar servicios', 'flavor-chat-ia'),
+                    'label' => __('Participante BT', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Puede ofrecer y solicitar servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => [
                         'bt_ver_servicios',
                         'bt_ofrecer_servicio',
@@ -673,8 +673,8 @@ class Flavor_Role_Manager {
                     ],
                 ],
                 'bt_gestor' => [
-                    'label' => __('Gestor BT', 'flavor-chat-ia'),
-                    'description' => __('Acceso completo al banco de tiempo', 'flavor-chat-ia'),
+                    'label' => __('Gestor BT', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Acceso completo al banco de tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => 'bt_*',
                 ],
             ],
@@ -682,8 +682,8 @@ class Flavor_Role_Manager {
             // Roles del modulo Incidencias
             'incidencias' => [
                 'incidencias_reportero' => [
-                    'label' => __('Reportero', 'flavor-chat-ia'),
-                    'description' => __('Puede reportar y seguir incidencias', 'flavor-chat-ia'),
+                    'label' => __('Reportero', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Puede reportar y seguir incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => [
                         'incidencias_ver_propias',
                         'incidencias_crear',
@@ -691,8 +691,8 @@ class Flavor_Role_Manager {
                     ],
                 ],
                 'incidencias_tecnico' => [
-                    'label' => __('Tecnico', 'flavor-chat-ia'),
-                    'description' => __('Puede gestionar y cerrar incidencias', 'flavor-chat-ia'),
+                    'label' => __('Tecnico', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Puede gestionar y cerrar incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => [
                         'incidencias_ver_todas',
                         'incidencias_gestionar',
@@ -701,8 +701,8 @@ class Flavor_Role_Manager {
                     ],
                 ],
                 'incidencias_admin' => [
-                    'label' => __('Admin. Incidencias', 'flavor-chat-ia'),
-                    'description' => __('Acceso completo a incidencias', 'flavor-chat-ia'),
+                    'label' => __('Admin. Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Acceso completo a incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => 'incidencias_*',
                 ],
             ],
@@ -710,15 +710,15 @@ class Flavor_Role_Manager {
             // Roles del modulo Newsletter
             'newsletter' => [
                 'newsletter_suscriptor' => [
-                    'label' => __('Suscriptor', 'flavor-chat-ia'),
-                    'description' => __('Puede suscribirse a newsletters', 'flavor-chat-ia'),
+                    'label' => __('Suscriptor', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Puede suscribirse a newsletters', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => [
                         'newsletter_suscribirse',
                     ],
                 ],
                 'newsletter_editor' => [
-                    'label' => __('Editor Newsletter', 'flavor-chat-ia'),
-                    'description' => __('Puede crear y enviar newsletters', 'flavor-chat-ia'),
+                    'label' => __('Editor Newsletter', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Puede crear y enviar newsletters', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => [
                         'newsletter_ver_campanas',
                         'newsletter_crear',
@@ -727,8 +727,8 @@ class Flavor_Role_Manager {
                     ],
                 ],
                 'newsletter_admin' => [
-                    'label' => __('Admin. Newsletter', 'flavor-chat-ia'),
-                    'description' => __('Acceso completo a newsletter', 'flavor-chat-ia'),
+                    'label' => __('Admin. Newsletter', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Acceso completo a newsletter', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => 'newsletter_*',
                 ],
             ],
@@ -736,8 +736,8 @@ class Flavor_Role_Manager {
             // Roles del modulo Espacios
             'espacios' => [
                 'espacios_usuario' => [
-                    'label' => __('Usuario Espacios', 'flavor-chat-ia'),
-                    'description' => __('Puede ver y reservar espacios', 'flavor-chat-ia'),
+                    'label' => __('Usuario Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Puede ver y reservar espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => [
                         'espacios_ver',
                         'espacios_reservar',
@@ -745,8 +745,8 @@ class Flavor_Role_Manager {
                     ],
                 ],
                 'espacios_gestor' => [
-                    'label' => __('Gestor Espacios', 'flavor-chat-ia'),
-                    'description' => __('Acceso completo a espacios', 'flavor-chat-ia'),
+                    'label' => __('Gestor Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Acceso completo a espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => 'espacios_*',
                 ],
             ],
@@ -754,8 +754,8 @@ class Flavor_Role_Manager {
             // Roles del modulo Cursos
             'cursos' => [
                 'cursos_alumno' => [
-                    'label' => __('Alumno', 'flavor-chat-ia'),
-                    'description' => __('Puede inscribirse en cursos', 'flavor-chat-ia'),
+                    'label' => __('Alumno', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Puede inscribirse en cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => [
                         'cursos_ver',
                         'cursos_inscribirse',
@@ -763,8 +763,8 @@ class Flavor_Role_Manager {
                     ],
                 ],
                 'cursos_profesor' => [
-                    'label' => __('Profesor', 'flavor-chat-ia'),
-                    'description' => __('Puede crear y gestionar cursos', 'flavor-chat-ia'),
+                    'label' => __('Profesor', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Puede crear y gestionar cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => [
                         'cursos_ver',
                         'cursos_crear',
@@ -774,8 +774,8 @@ class Flavor_Role_Manager {
                     ],
                 ],
                 'cursos_admin' => [
-                    'label' => __('Admin. Cursos', 'flavor-chat-ia'),
-                    'description' => __('Acceso completo a cursos', 'flavor-chat-ia'),
+                    'label' => __('Admin. Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Acceso completo a cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => 'cursos_*',
                 ],
             ],
@@ -783,8 +783,8 @@ class Flavor_Role_Manager {
             // Roles del modulo Huertos
             'huertos' => [
                 'huertos_hortelano' => [
-                    'label' => __('Hortelano', 'flavor-chat-ia'),
-                    'description' => __('Puede ver y solicitar parcelas', 'flavor-chat-ia'),
+                    'label' => __('Hortelano', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Puede ver y solicitar parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => [
                         'huertos_ver',
                         'huertos_solicitar_parcela',
@@ -792,8 +792,8 @@ class Flavor_Role_Manager {
                     ],
                 ],
                 'huertos_gestor' => [
-                    'label' => __('Gestor Huertos', 'flavor-chat-ia'),
-                    'description' => __('Acceso completo a huertos', 'flavor-chat-ia'),
+                    'label' => __('Gestor Huertos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Acceso completo a huertos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => 'huertos_*',
                 ],
             ],
@@ -801,8 +801,8 @@ class Flavor_Role_Manager {
             // Roles del modulo Biblioteca
             'biblioteca' => [
                 'biblioteca_lector' => [
-                    'label' => __('Lector', 'flavor-chat-ia'),
-                    'description' => __('Puede ver y solicitar prestamos', 'flavor-chat-ia'),
+                    'label' => __('Lector', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Puede ver y solicitar prestamos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => [
                         'biblioteca_ver',
                         'biblioteca_prestar',
@@ -810,8 +810,8 @@ class Flavor_Role_Manager {
                     ],
                 ],
                 'biblioteca_gestor' => [
-                    'label' => __('Gestor Biblioteca', 'flavor-chat-ia'),
-                    'description' => __('Acceso completo a biblioteca', 'flavor-chat-ia'),
+                    'label' => __('Gestor Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Acceso completo a biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => 'biblioteca_*',
                 ],
             ],
@@ -819,8 +819,8 @@ class Flavor_Role_Manager {
             // Roles del modulo Carpooling
             'carpooling' => [
                 'carpooling_usuario' => [
-                    'label' => __('Usuario Carpooling', 'flavor-chat-ia'),
-                    'description' => __('Puede ofrecer y buscar viajes', 'flavor-chat-ia'),
+                    'label' => __('Usuario Carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Puede ofrecer y buscar viajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => [
                         'carpooling_ver_viajes',
                         'carpooling_ofrecer_viaje',
@@ -828,8 +828,8 @@ class Flavor_Role_Manager {
                     ],
                 ],
                 'carpooling_gestor' => [
-                    'label' => __('Gestor Carpooling', 'flavor-chat-ia'),
-                    'description' => __('Acceso completo a carpooling', 'flavor-chat-ia'),
+                    'label' => __('Gestor Carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'description' => __('Acceso completo a carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'capabilities' => 'carpooling_*',
                 ],
             ],
@@ -1235,7 +1235,7 @@ class Flavor_Role_Manager {
         $modulo = isset($datos_rol['modulo']) ? sanitize_key($datos_rol['modulo']) : null;
 
         if (empty($slug) || empty($label)) {
-            return new WP_Error('datos_invalidos', __('Slug y label son requeridos', 'flavor-chat-ia'));
+            return new WP_Error('datos_invalidos', __('Slug y label son requeridos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Guardar en opciones
@@ -1397,18 +1397,18 @@ class Flavor_Role_Manager {
      */
     private function obtener_label_modulo($slug) {
         $labels = [
-            'grupos_consumo' => __('Grupos de Consumo', 'flavor-chat-ia'),
-            'eventos' => __('Eventos', 'flavor-chat-ia'),
-            'socios' => __('Miembros', 'flavor-chat-ia'),
-            'reservas' => __('Reservas', 'flavor-chat-ia'),
-            'banco_tiempo' => __('Banco de Tiempo', 'flavor-chat-ia'),
-            'incidencias' => __('Incidencias', 'flavor-chat-ia'),
-            'newsletter' => __('Newsletter', 'flavor-chat-ia'),
-            'espacios' => __('Espacios Comunes', 'flavor-chat-ia'),
-            'cursos' => __('Cursos y Talleres', 'flavor-chat-ia'),
-            'huertos' => __('Huertos Urbanos', 'flavor-chat-ia'),
-            'biblioteca' => __('Biblioteca', 'flavor-chat-ia'),
-            'carpooling' => __('Carpooling', 'flavor-chat-ia'),
+            'grupos_consumo' => __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'eventos' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'socios' => __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'reservas' => __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'banco_tiempo' => __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'incidencias' => __('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'newsletter' => __('Newsletter', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'espacios' => __('Espacios Comunes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cursos' => __('Cursos y Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'huertos' => __('Huertos Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'biblioteca' => __('Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'carpooling' => __('Carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         return $labels[$slug] ?? ucfirst(str_replace('_', ' ', $slug));

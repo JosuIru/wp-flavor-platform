@@ -21,12 +21,12 @@ $colores_fondo = ['#128C7E', '#25D366', '#075E54', '#34B7F1', '#E91E63', '#9C27B
     <div class="crear-estado-container">
         <!-- Header -->
         <div class="crear-estado-header">
-            <button type="button" class="btn-cerrar-crear" aria-label="<?php esc_attr_e('Cerrar', 'flavor-chat-ia'); ?>">
+            <button type="button" class="btn-cerrar-crear" aria-label="<?php esc_attr_e('Cerrar', 'flavor-platform'); ?>">
                 <span class="dashicons dashicons-no-alt"></span>
             </button>
-            <h3><?php esc_html_e('Crear estado', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Crear estado', 'flavor-platform'); ?></h3>
             <button type="button" class="btn-publicar-estado" disabled>
-                <?php esc_html_e('Publicar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Publicar', 'flavor-platform'); ?>
             </button>
         </div>
 
@@ -34,15 +34,15 @@ $colores_fondo = ['#128C7E', '#25D366', '#075E54', '#34B7F1', '#E91E63', '#9C27B
         <div class="crear-estado-tabs">
             <button type="button" class="tab-tipo active" data-tipo="texto">
                 <span class="dashicons dashicons-text"></span>
-                <?php esc_html_e('Texto', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Texto', 'flavor-platform'); ?>
             </button>
             <button type="button" class="tab-tipo" data-tipo="imagen">
                 <span class="dashicons dashicons-format-image"></span>
-                <?php esc_html_e('Foto', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Foto', 'flavor-platform'); ?>
             </button>
             <button type="button" class="tab-tipo" data-tipo="video">
                 <span class="dashicons dashicons-video-alt3"></span>
-                <?php esc_html_e('Video', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Video', 'flavor-platform'); ?>
             </button>
         </div>
 
@@ -52,7 +52,7 @@ $colores_fondo = ['#128C7E', '#25D366', '#075E54', '#34B7F1', '#E91E63', '#9C27B
             <div class="estado-tipo-panel tipo-texto active">
                 <div class="estado-texto-preview" style="background-color: #128C7E;">
                     <textarea class="estado-texto-input"
-                              placeholder="<?php esc_attr_e('Escribe tu estado...', 'flavor-chat-ia'); ?>"
+                              placeholder="<?php esc_attr_e('Escribe tu estado...', 'flavor-platform'); ?>"
                               maxlength="700"></textarea>
                 </div>
 
@@ -82,8 +82,8 @@ $colores_fondo = ['#128C7E', '#25D366', '#075E54', '#34B7F1', '#E91E63', '#9C27B
                     <input type="file" class="upload-input" accept="image/*" style="display:none;">
                     <div class="upload-placeholder">
                         <span class="dashicons dashicons-format-image"></span>
-                        <p><?php esc_html_e('Haz clic o arrastra una imagen', 'flavor-chat-ia'); ?></p>
-                        <small><?php esc_html_e('Máximo 5MB', 'flavor-chat-ia'); ?></small>
+                        <p><?php esc_html_e('Haz clic o arrastra una imagen', 'flavor-platform'); ?></p>
+                        <small><?php esc_html_e('Máximo 5MB', 'flavor-platform'); ?></small>
                     </div>
                     <div class="upload-preview" style="display:none;">
                         <img src="" alt="">
@@ -96,7 +96,7 @@ $colores_fondo = ['#128C7E', '#25D366', '#075E54', '#34B7F1', '#E91E63', '#9C27B
                 <!-- Texto superpuesto opcional -->
                 <div class="texto-superpuesto-wrapper" style="display:none;">
                     <input type="text" class="texto-superpuesto-input"
-                           placeholder="<?php esc_attr_e('Añadir texto (opcional)', 'flavor-chat-ia'); ?>"
+                           placeholder="<?php esc_attr_e('Añadir texto (opcional)', 'flavor-platform'); ?>"
                            maxlength="200">
                 </div>
             </div>
@@ -107,8 +107,8 @@ $colores_fondo = ['#128C7E', '#25D366', '#075E54', '#34B7F1', '#E91E63', '#9C27B
                     <input type="file" class="upload-input" accept="video/*" style="display:none;">
                     <div class="upload-placeholder">
                         <span class="dashicons dashicons-video-alt3"></span>
-                        <p><?php esc_html_e('Haz clic o arrastra un video', 'flavor-chat-ia'); ?></p>
-                        <small><?php esc_html_e('Máximo 30 segundos, 16MB', 'flavor-chat-ia'); ?></small>
+                        <p><?php esc_html_e('Haz clic o arrastra un video', 'flavor-platform'); ?></p>
+                        <small><?php esc_html_e('Máximo 30 segundos, 16MB', 'flavor-platform'); ?></small>
                     </div>
                     <div class="upload-preview" style="display:none;">
                         <video src="" controls></video>
@@ -121,7 +121,7 @@ $colores_fondo = ['#128C7E', '#25D366', '#075E54', '#34B7F1', '#E91E63', '#9C27B
                 <!-- Texto superpuesto opcional -->
                 <div class="texto-superpuesto-wrapper" style="display:none;">
                     <input type="text" class="texto-superpuesto-input"
-                           placeholder="<?php esc_attr_e('Añadir texto (opcional)', 'flavor-chat-ia'); ?>"
+                           placeholder="<?php esc_attr_e('Añadir texto (opcional)', 'flavor-platform'); ?>"
                            maxlength="200">
                 </div>
             </div>
@@ -131,7 +131,7 @@ $colores_fondo = ['#128C7E', '#25D366', '#075E54', '#34B7F1', '#E91E63', '#9C27B
         <div class="crear-estado-privacidad">
             <button type="button" class="btn-privacidad">
                 <span class="dashicons dashicons-visibility"></span>
-                <span class="privacidad-label"><?php esc_html_e('Todos mis contactos', 'flavor-chat-ia'); ?></span>
+                <span class="privacidad-label"><?php esc_html_e('Todos mis contactos', 'flavor-platform'); ?></span>
                 <span class="dashicons dashicons-arrow-down-alt2"></span>
             </button>
 
@@ -140,8 +140,8 @@ $colores_fondo = ['#128C7E', '#25D366', '#075E54', '#34B7F1', '#E91E63', '#9C27B
                     <input type="radio" name="privacidad" value="todos" checked>
                     <span class="dashicons dashicons-groups"></span>
                     <div class="privacidad-info">
-                        <strong><?php esc_html_e('Todos mis contactos', 'flavor-chat-ia'); ?></strong>
-                        <small><?php esc_html_e('Todos pueden ver tu estado', 'flavor-chat-ia'); ?></small>
+                        <strong><?php esc_html_e('Todos mis contactos', 'flavor-platform'); ?></strong>
+                        <small><?php esc_html_e('Todos pueden ver tu estado', 'flavor-platform'); ?></small>
                     </div>
                 </label>
 
@@ -149,8 +149,8 @@ $colores_fondo = ['#128C7E', '#25D366', '#075E54', '#34B7F1', '#E91E63', '#9C27B
                     <input type="radio" name="privacidad" value="contactos_excepto">
                     <span class="dashicons dashicons-hidden"></span>
                     <div class="privacidad-info">
-                        <strong><?php esc_html_e('Mis contactos excepto...', 'flavor-chat-ia'); ?></strong>
-                        <small><?php esc_html_e('Ocultar a ciertos contactos', 'flavor-chat-ia'); ?></small>
+                        <strong><?php esc_html_e('Mis contactos excepto...', 'flavor-platform'); ?></strong>
+                        <small><?php esc_html_e('Ocultar a ciertos contactos', 'flavor-platform'); ?></small>
                     </div>
                 </label>
 
@@ -158,8 +158,8 @@ $colores_fondo = ['#128C7E', '#25D366', '#075E54', '#34B7F1', '#E91E63', '#9C27B
                     <input type="radio" name="privacidad" value="solo_compartir">
                     <span class="dashicons dashicons-lock"></span>
                     <div class="privacidad-info">
-                        <strong><?php esc_html_e('Solo compartir con...', 'flavor-chat-ia'); ?></strong>
-                        <small><?php esc_html_e('Solo ciertos contactos verán tu estado', 'flavor-chat-ia'); ?></small>
+                        <strong><?php esc_html_e('Solo compartir con...', 'flavor-platform'); ?></strong>
+                        <small><?php esc_html_e('Solo ciertos contactos verán tu estado', 'flavor-platform'); ?></small>
                     </div>
                 </label>
             </div>
@@ -168,7 +168,7 @@ $colores_fondo = ['#128C7E', '#25D366', '#075E54', '#34B7F1', '#E91E63', '#9C27B
         <!-- Loading overlay -->
         <div class="crear-estado-loading" style="display:none;">
             <div class="loading-spinner"></div>
-            <p><?php esc_html_e('Publicando estado...', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('Publicando estado...', 'flavor-platform'); ?></p>
         </div>
     </div>
 </div>

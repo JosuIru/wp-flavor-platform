@@ -91,7 +91,7 @@ class Flavor_Network_Webhooks {
     public function add_cron_interval($schedules) {
         $schedules['every_minute'] = [
             'interval' => 60,
-            'display'  => __('Cada minuto', 'flavor-chat-ia'),
+            'display'  => __('Cada minuto', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
         return $schedules;
     }
@@ -626,9 +626,9 @@ class Flavor_Network_Webhooks {
      */
     public function add_admin_menu() {
         add_submenu_page(
-            'flavor-network',
-            __('Webhooks', 'flavor-chat-ia'),
-            __('Webhooks', 'flavor-chat-ia'),
+            'flavor-platform-network',
+            __('Webhooks', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Webhooks', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-webhooks',
             [$this, 'render_admin_page']
@@ -644,23 +644,23 @@ class Flavor_Network_Webhooks {
         $queue = get_option('flavor_webhook_queue', []);
         ?>
         <div class="wrap">
-            <h1>🔔 <?php echo esc_html__('Webhooks de Federación', 'flavor-chat-ia'); ?></h1>
+            <h1>🔔 <?php echo esc_html__('Webhooks de Federación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
                 <!-- Suscripciones -->
                 <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                    <h2 style="margin-top: 0;">📥 <?php echo esc_html__('Suscripciones Activas', 'flavor-chat-ia'); ?></h2>
+                    <h2 style="margin-top: 0;">📥 <?php echo esc_html__('Suscripciones Activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
                     <?php if (empty($subscriptions)): ?>
-                        <p style="color: #666;"><?php echo esc_html__('No hay suscripciones de webhooks', 'flavor-chat-ia'); ?></p>
+                        <p style="color: #666;"><?php echo esc_html__('No hay suscripciones de webhooks', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php else: ?>
                         <table class="widefat striped">
                             <thead>
                                 <tr>
-                                    <th><?php echo esc_html__('Nodo', 'flavor-chat-ia'); ?></th>
-                                    <th><?php echo esc_html__('URL', 'flavor-chat-ia'); ?></th>
-                                    <th><?php echo esc_html__('Eventos', 'flavor-chat-ia'); ?></th>
-                                    <th><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
+                                    <th><?php echo esc_html__('Nodo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php echo esc_html__('URL', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php echo esc_html__('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php echo esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -682,27 +682,27 @@ class Flavor_Network_Webhooks {
                         </table>
                     <?php endif; ?>
 
-                    <h3 style="margin-top: 30px;">📤 <?php echo esc_html__('Cola de Envío', 'flavor-chat-ia'); ?></h3>
+                    <h3 style="margin-top: 30px;">📤 <?php echo esc_html__('Cola de Envío', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <p>
-                        <strong><?php echo count($queue); ?></strong> <?php echo esc_html__('webhooks pendientes', 'flavor-chat-ia'); ?>
+                        <strong><?php echo count($queue); ?></strong> <?php echo esc_html__('webhooks pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
 
                 <!-- Logs -->
                 <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                    <h2 style="margin-top: 0;">📋 <?php echo esc_html__('Últimos Webhooks', 'flavor-chat-ia'); ?></h2>
+                    <h2 style="margin-top: 0;">📋 <?php echo esc_html__('Últimos Webhooks', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
                     <?php if (empty($logs)): ?>
-                        <p style="color: #666;"><?php echo esc_html__('No hay logs de webhooks', 'flavor-chat-ia'); ?></p>
+                        <p style="color: #666;"><?php echo esc_html__('No hay logs de webhooks', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php else: ?>
                         <div style="max-height: 400px; overflow-y: auto;">
                             <table class="widefat striped" style="font-size: 12px;">
                                 <thead>
                                     <tr>
-                                        <th><?php echo esc_html__('Hora', 'flavor-chat-ia'); ?></th>
-                                        <th><?php echo esc_html__('Dir', 'flavor-chat-ia'); ?></th>
-                                        <th><?php echo esc_html__('Evento', 'flavor-chat-ia'); ?></th>
-                                        <th><?php echo esc_html__('Nodo', 'flavor-chat-ia'); ?></th>
+                                        <th><?php echo esc_html__('Hora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                        <th><?php echo esc_html__('Dir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                        <th><?php echo esc_html__('Evento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                        <th><?php echo esc_html__('Nodo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -725,21 +725,21 @@ class Flavor_Network_Webhooks {
 
             <!-- Configuración -->
             <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-top: 20px;">
-                <h2 style="margin-top: 0;">⚙️ <?php echo esc_html__('Configuración', 'flavor-chat-ia'); ?></h2>
+                <h2 style="margin-top: 0;">⚙️ <?php echo esc_html__('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
                 <p>
-                    <strong><?php echo esc_html__('URL de Webhook de este nodo:', 'flavor-chat-ia'); ?></strong><br>
+                    <strong><?php echo esc_html__('URL de Webhook de este nodo:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong><br>
                     <code><?php echo esc_url(rest_url('flavor-network/v1/webhook')); ?></code>
                 </p>
 
                 <p>
-                    <strong><?php echo esc_html__('ID de este nodo:', 'flavor-chat-ia'); ?></strong><br>
+                    <strong><?php echo esc_html__('ID de este nodo:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong><br>
                     <code><?php echo esc_html(get_option('flavor_network_node_id', 'No configurado')); ?></code>
                 </p>
 
                 <p style="margin-top: 20px;">
                     <button type="button" class="button" id="btn-test-webhook">
-                        🧪 <?php echo esc_html__('Enviar Webhook de Prueba', 'flavor-chat-ia'); ?>
+                        🧪 <?php echo esc_html__('Enviar Webhook de Prueba', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <span id="test-result" style="margin-left: 10px;"></span>
                 </p>
@@ -792,7 +792,7 @@ class Flavor_Network_Webhooks {
         $this->process_queue();
 
         wp_send_json_success([
-            'message' => __('Webhook de prueba enviado', 'flavor-chat-ia'),
+            'message' => __('Webhook de prueba enviado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -840,7 +840,7 @@ class Flavor_Network_Webhooks {
             update_option('flavor_webhook_secrets', $secrets);
 
             wp_send_json_success([
-                'message' => __('Suscripción completada', 'flavor-chat-ia'),
+                'message' => __('Suscripción completada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         } else {
             wp_send_json_error($body['message'] ?? 'Error desconocido');
@@ -864,7 +864,7 @@ class Flavor_Network_Webhooks {
         update_option('flavor_webhook_subscriptions', $subscriptions);
 
         wp_send_json_success([
-            'message' => __('Suscripción cancelada', 'flavor-chat-ia'),
+            'message' => __('Suscripción cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 

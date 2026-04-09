@@ -32,7 +32,7 @@ class Flavor_Design_Integration {
     public function add_theme_tab() {
         ?>
         <a href="#theme-customizer" class="nav-tab">
-            <?php _e('Tema & Dark Mode', 'flavor-chat-ia'); ?>
+            <?php _e('Tema & Dark Mode', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <span class="flavor-badge flavor-badge--new">NUEVO</span>
         </a>
         <?php
@@ -44,11 +44,11 @@ class Flavor_Design_Integration {
     public function render_theme_content() {
         ?>
         <div id="theme-customizer" class="flavor-tab-panel">
-            <h2><?php _e('Personalización de Tema', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Personalización de Tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <div class="flavor-info-box">
-                <h3>🎨 <?php _e('Nueva Funcionalidad', 'flavor-chat-ia'); ?></h3>
-                <p><?php _e('El sistema de personalización de tema permite a los usuarios finales personalizar colores y activar dark mode desde el frontend.', 'flavor-chat-ia'); ?></p>
+                <h3>🎨 <?php _e('Nueva Funcionalidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php _e('El sistema de personalización de tema permite a los usuarios finales personalizar colores y activar dark mode desde el frontend.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <ul>
                     <li>✅ <strong>Dark Mode</strong> - Toggle flotante para usuarios</li>
                     <li>✅ <strong>Personalización de Colores</strong> - Color pickers frontend</li>
@@ -59,24 +59,24 @@ class Flavor_Design_Integration {
 
             <div class="flavor-grid-2">
                 <div class="flavor-card">
-                    <h3><?php _e('Dark Mode Global', 'flavor-chat-ia'); ?></h3>
-                    <p><?php _e('El botón de dark mode está activo automáticamente en todas las páginas.', 'flavor-chat-ia'); ?></p>
-                    <p><strong><?php _e('Ubicación:', 'flavor-chat-ia'); ?></strong> Botón flotante esquina inferior derecha</p>
-                    <p><strong><?php _e('Estado:', 'flavor-chat-ia'); ?></strong> <span style="color: #10b981;">✓ Activo</span></p>
+                    <h3><?php _e('Dark Mode Global', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php _e('El botón de dark mode está activo automáticamente en todas las páginas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                    <p><strong><?php _e('Ubicación:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> Botón flotante esquina inferior derecha</p>
+                    <p><strong><?php _e('Estado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <span style="color: #10b981;">✓ Activo</span></p>
                 </div>
 
                 <div class="flavor-card">
-                    <h3><?php _e('Página de Personalización', 'flavor-chat-ia'); ?></h3>
-                    <p><?php _e('Crea una página con el shortcode para permitir personalización completa:', 'flavor-chat-ia'); ?></p>
+                    <h3><?php _e('Página de Personalización', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php _e('Crea una página con el shortcode para permitir personalización completa:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <code style="display: block; background: #f3f4f6; padding: 12px; border-radius: 6px; margin: 10px 0;">
                         [flavor_theme_customizer]
                     </code>
-                    <p><small><?php _e('Ejemplo: /configuracion/ o /mi-cuenta/personalizacion/', 'flavor-chat-ia'); ?></small></p>
+                    <p><small><?php _e('Ejemplo: /configuracion/ o /mi-cuenta/personalizacion/', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small></p>
                 </div>
             </div>
 
-            <h3><?php _e('Colores Predeterminados del Sistema', 'flavor-chat-ia'); ?></h3>
-            <p><?php _e('Estos son los colores base que se usan si el usuario no personaliza:', 'flavor-chat-ia'); ?></p>
+            <h3><?php _e('Colores Predeterminados del Sistema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php _e('Estos son los colores base que se usan si el usuario no personaliza:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
             <?php
             $default_colors = [
@@ -105,8 +105,8 @@ class Flavor_Design_Integration {
             echo '</div>';
             ?>
 
-            <h3><?php _e('Presets Disponibles', 'flavor-chat-ia'); ?></h3>
-            <p><?php _e('Los usuarios pueden elegir entre estos presets predefinidos:', 'flavor-chat-ia'); ?></p>
+            <h3><?php _e('Presets Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php _e('Los usuarios pueden elegir entre estos presets predefinidos:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
             <?php
             $presets = [
@@ -133,9 +133,9 @@ class Flavor_Design_Integration {
             ?>
 
             <div class="flavor-info-box flavor-info-box--tip">
-                <h4>💡 <?php _e('Tip:', 'flavor-chat-ia'); ?></h4>
-                <p><?php _e('Los colores configurados en "Colores Principales" arriba se usan como CSS variables globales. Los usuarios pueden sobreescribirlos con sus preferencias personales.', 'flavor-chat-ia'); ?></p>
-                <p><?php _e('Las variables CSS generadas:', 'flavor-chat-ia'); ?></p>
+                <h4>💡 <?php _e('Tip:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                <p><?php _e('Los colores configurados en "Colores Principales" arriba se usan como CSS variables globales. Los usuarios pueden sobreescribirlos con sus preferencias personales.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                <p><?php _e('Las variables CSS generadas:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <code style="display: block; white-space: pre; background: #1f2937; color: #f9fafb; padding: 12px; border-radius: 6px; font-size: 12px;">
 :root {
   --flavor-primary: #3b82f6;

@@ -76,18 +76,18 @@ if ($tabla_existe) {
 
     // Próximas asambleas
     $proximas_asambleas = $tabla_asambleas_existe ? $wpdb->get_results("
-        SELECT a.id, a.titulo, a.fecha, a.hora, a.lugar, c.nombre as colectivo_nombre, c.id as colectivo_id
+        SELECT a.id, a.titulo, a.fecha, DATE_FORMAT(a.fecha, '%H:%i') as hora, a.lugar, c.nombre as colectivo_nombre, c.id as colectivo_id
         FROM {$tabla_asambleas} a
         LEFT JOIN {$tabla_colectivos} c ON a.colectivo_id = c.id
         WHERE a.fecha >= CURDATE()
         AND a.estado != 'cancelada'
-        ORDER BY a.fecha ASC, a.hora ASC
+        ORDER BY a.fecha ASC
         LIMIT 5
     ", ARRAY_A) : [];
 
     // Proyectos recientes
     $proyectos_recientes = $tabla_proyectos_existe ? $wpdb->get_results("
-        SELECT p.id, p.nombre, p.estado, p.progreso, c.nombre as colectivo_nombre
+        SELECT p.id, p.titulo as nombre, p.estado, p.progreso, c.nombre as colectivo_nombre
         FROM {$tabla_proyectos} p
         LEFT JOIN {$tabla_colectivos} c ON p.colectivo_id = c.id
         ORDER BY p.created_at DESC
@@ -145,8 +145,8 @@ $estados_proyecto = [
     <?php if (!$tablas_disponibles): ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <strong><?php esc_html_e('Sin datos disponibles:', 'flavor-chat-ia'); ?></strong>
-        <?php esc_html_e('Faltan tablas del módulo Colectivos o aún no hay colectivos registrados.', 'flavor-chat-ia'); ?>
+        <strong><?php esc_html_e('Sin datos disponibles:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+        <?php esc_html_e('Faltan tablas del módulo Colectivos o aún no hay colectivos registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </div>
     <?php endif; ?>
 
@@ -265,7 +265,7 @@ $estados_proyecto = [
             </a>
             <a href="<?php echo esc_url(home_url('/mi-portal/colectivos/')); ?>" class="dm-action-card" target="_blank">
                 <span class="dashicons dashicons-external dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Portal público', 'flavor-chat-ia'); ?></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Portal público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
         </div>
     </div>

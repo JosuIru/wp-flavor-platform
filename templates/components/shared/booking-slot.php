@@ -42,11 +42,11 @@ $show_actions = $show_actions ?? true;
 
 // Estados
 $status_config = [
-    'available' => ['label' => __('Disponible', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✓', 'bg' => 'bg-green-50', 'border' => 'border-green-200', 'text' => 'text-green-700'],
-    'booked'    => ['label' => __('Reservado', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '📅', 'bg' => 'bg-blue-50', 'border' => 'border-blue-200', 'text' => 'text-blue-700'],
-    'pending'   => ['label' => __('Pendiente', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏳', 'bg' => 'bg-yellow-50', 'border' => 'border-yellow-200', 'text' => 'text-yellow-700'],
-    'blocked'   => ['label' => __('No disponible', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '🚫', 'bg' => 'bg-gray-100', 'border' => 'border-gray-200', 'text' => 'text-gray-500'],
-    'full'      => ['label' => __('Completo', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '🔴', 'bg' => 'bg-red-50', 'border' => 'border-red-200', 'text' => 'text-red-700'],
+    'available' => ['label' => __('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '✓', 'bg' => 'bg-green-50', 'border' => 'border-green-200', 'text' => 'text-green-700'],
+    'booked'    => ['label' => __('Reservado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'blue', 'icon' => '📅', 'bg' => 'bg-blue-50', 'border' => 'border-blue-200', 'text' => 'text-blue-700'],
+    'pending'   => ['label' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '⏳', 'bg' => 'bg-yellow-50', 'border' => 'border-yellow-200', 'text' => 'text-yellow-700'],
+    'blocked'   => ['label' => __('No disponible', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'gray', 'icon' => '🚫', 'bg' => 'bg-gray-100', 'border' => 'border-gray-200', 'text' => 'text-gray-500'],
+    'full'      => ['label' => __('Completo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'red', 'icon' => '🔴', 'bg' => 'bg-red-50', 'border' => 'border-red-200', 'text' => 'text-red-700'],
 ];
 
 // Si tiene capacidad y está lleno
@@ -89,7 +89,7 @@ $remaining = $capacity > 0 ? max(0, $capacity - $occupied) : null;
                 <?php if ($price > 0): ?>
                     <span class="font-bold text-gray-900"><?php echo esc_html($price . ' ' . $currency); ?></span>
                 <?php elseif ($status === 'available'): ?>
-                    <span class="text-green-600 font-medium"><?php esc_html_e('Gratis', 'flavor-chat-ia'); ?></span>
+                    <span class="text-green-600 font-medium"><?php esc_html_e('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <?php endif; ?>
             </div>
         </div>
@@ -124,7 +124,7 @@ $remaining = $capacity > 0 ? max(0, $capacity - $occupied) : null;
                         <div class="h-full bg-blue-600 rounded-full" style="width: <?php echo min(100, ($occupied / $capacity) * 100); ?>%;"></div>
                     </div>
                     <span class="text-xs text-gray-500">
-                        <?php printf(__('%d/%d plazas', 'flavor-chat-ia'), $occupied, $capacity); ?>
+                        <?php printf(__('%d/%d plazas', FLAVOR_PLATFORM_TEXT_DOMAIN), $occupied, $capacity); ?>
                     </span>
                 </div>
             <?php endif; ?>
@@ -132,7 +132,7 @@ $remaining = $capacity > 0 ? max(0, $capacity - $occupied) : null;
             <!-- Reservado por -->
             <?php if ($status === 'booked' && $booked_by): ?>
                 <p class="text-sm text-gray-500">
-                    <?php esc_html_e('Reservado por:', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Reservado por:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="font-medium text-gray-700"><?php echo esc_html($booked_by); ?></span>
                 </p>
             <?php endif; ?>
@@ -141,7 +141,7 @@ $remaining = $capacity > 0 ? max(0, $capacity - $occupied) : null;
             <?php if ($show_actions && $status === 'available' && $remaining !== 0): ?>
                 <a href="<?php echo esc_url($action_url); ?>"
                    class="mt-4 block w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-center font-medium rounded-lg transition-colors">
-                    <?php esc_html_e('Reservar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             <?php endif; ?>
         </div>
@@ -174,7 +174,7 @@ $remaining = $capacity > 0 ? max(0, $capacity - $occupied) : null;
                 <?php if ($remaining !== null): ?>
                     <span class="text-gray-400">•</span>
                     <span class="text-gray-500">
-                        <?php printf(__('%d plazas', 'flavor-chat-ia'), $remaining); ?>
+                        <?php printf(__('%d plazas', FLAVOR_PLATFORM_TEXT_DOMAIN), $remaining); ?>
                     </span>
                 <?php endif; ?>
             </div>
@@ -191,7 +191,7 @@ $remaining = $capacity > 0 ? max(0, $capacity - $occupied) : null;
         <?php if ($show_actions && $status === 'available' && $remaining !== 0): ?>
             <a href="<?php echo esc_url($action_url); ?>"
                class="flex-shrink-0 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
-                <?php esc_html_e('Reservar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         <?php endif; ?>
     </div>

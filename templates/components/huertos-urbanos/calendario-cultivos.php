@@ -32,7 +32,7 @@ $cultivos = [
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                 </svg>
-                <?php echo esc_html__('Calendario', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Calendario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
             <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4"><?php echo esc_html($titulo); ?></h2>
             <p class="text-xl text-gray-600"><?php echo esc_html($descripcion); ?></p>
@@ -42,15 +42,15 @@ $cultivos = [
         <div class="flex items-center justify-center gap-6 mb-8">
             <div class="flex items-center gap-2">
                 <span class="w-6 h-6 rounded bg-amber-200 border-2 border-amber-400"></span>
-                <span class="text-sm text-gray-600"><?php echo esc_html__('Siembra', 'flavor-chat-ia'); ?></span>
+                <span class="text-sm text-gray-600"><?php echo esc_html__('Siembra', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="flex items-center gap-2">
                 <span class="w-6 h-6 rounded bg-green-200 border-2 border-green-400"></span>
-                <span class="text-sm text-gray-600"><?php echo esc_html__('Cosecha', 'flavor-chat-ia'); ?></span>
+                <span class="text-sm text-gray-600"><?php echo esc_html__('Cosecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="flex items-center gap-2">
                 <span class="w-6 h-6 rounded bg-gradient-to-r from-amber-200 to-green-200 border-2 border-lime-400"></span>
-                <span class="text-sm text-gray-600"><?php echo esc_html__('Ambos', 'flavor-chat-ia'); ?></span>
+                <span class="text-sm text-gray-600"><?php echo esc_html__('Ambos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -60,7 +60,7 @@ $cultivos = [
                 <table class="w-full min-w-[800px]">
                     <thead>
                         <tr class="bg-green-50">
-                            <th class="p-4 text-left text-sm font-semibold text-gray-700 border-b border-r border-gray-200 sticky left-0 bg-green-50 z-10"><?php echo esc_html__('Cultivo', 'flavor-chat-ia'); ?></th>
+                            <th class="p-4 text-left text-sm font-semibold text-gray-700 border-b border-r border-gray-200 sticky left-0 bg-green-50 z-10"><?php echo esc_html__('Cultivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             <?php foreach ($meses as $indice => $mes): ?>
                                 <th class="p-3 text-center text-sm font-semibold border-b border-r border-gray-200 last:border-r-0 <?php echo $indice === $mes_actual ? 'bg-green-500 text-white' : 'text-gray-700'; ?>">
                                     <?php echo esc_html($mes); ?>
@@ -115,23 +115,23 @@ $cultivos = [
                 <div class="bg-white rounded-xl p-5 shadow-md">
                     <div class="flex items-center gap-2 mb-3">
                         <span class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center">🌱</span>
-                        <h4 class="font-bold text-gray-900"><?php echo esc_html__('Sembrar', 'flavor-chat-ia'); ?></h4>
+                        <h4 class="font-bold text-gray-900"><?php echo esc_html__('Sembrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     </div>
-                    <p class="text-sm text-gray-600"><?php echo esc_html__('Tomate, lechuga, zanahoria y cebolla. Protege del frio con tuneles.', 'flavor-chat-ia'); ?></p>
+                    <p class="text-sm text-gray-600"><?php echo esc_html__('Tomate, lechuga, zanahoria y cebolla. Protege del frio con tuneles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <div class="bg-white rounded-xl p-5 shadow-md">
                     <div class="flex items-center gap-2 mb-3">
                         <span class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">🧺</span>
-                        <h4 class="font-bold text-gray-900"><?php echo esc_html__('Cosechar', 'flavor-chat-ia'); ?></h4>
+                        <h4 class="font-bold text-gray-900"><?php echo esc_html__('Cosechar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     </div>
-                    <p class="text-sm text-gray-600"><?php echo esc_html__('Ultimas lechugas de invierno, coles y puerros.', 'flavor-chat-ia'); ?></p>
+                    <p class="text-sm text-gray-600"><?php echo esc_html__('Ultimas lechugas de invierno, coles y puerros.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <div class="bg-white rounded-xl p-5 shadow-md">
                     <div class="flex items-center gap-2 mb-3">
                         <span class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">💧</span>
-                        <h4 class="font-bold text-gray-900"><?php echo esc_html__('Cuidados', 'flavor-chat-ia'); ?></h4>
+                        <h4 class="font-bold text-gray-900"><?php echo esc_html__('Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     </div>
-                    <p class="text-sm text-gray-600"><?php echo esc_html__('Prepara el terreno para primavera. Anade compost y acolchado.', 'flavor-chat-ia'); ?></p>
+                    <p class="text-sm text-gray-600"><?php echo esc_html__('Prepara el terreno para primavera. Anade compost y acolchado.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             </div>
         </div>
@@ -141,7 +141,7 @@ $cultivos = [
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                 </svg>
-                <span><?php echo esc_html__('Descargar Calendario PDF', 'flavor-chat-ia'); ?></span>
+                <span><?php echo esc_html__('Descargar Calendario PDF', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
         </div>
     </div>

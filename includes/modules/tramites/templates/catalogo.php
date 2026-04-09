@@ -16,7 +16,7 @@ $tabla_tipos_tramite = $wpdb->prefix . 'flavor_tipos_tramite';
 
 // Verificar si existe la tabla
 if (!Flavor_Chat_Helpers::tabla_existe($tabla_tipos_tramite)) {
-    echo '<div class="tramites-empty"><p>' . esc_html__('El modulo de tramites no esta configurado.', 'flavor-chat-ia') . '</p></div>';
+    echo '<div class="tramites-empty"><p>' . esc_html__('El modulo de tramites no esta configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
 
@@ -61,7 +61,7 @@ $categorias_disponibles = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_
 // Agrupar tramites por categoria
 $tramites_por_categoria = [];
 foreach ($tramites as $tramite) {
-    $categoria = $tramite->categoria ?: __('General', 'flavor-chat-ia');
+    $categoria = $tramite->categoria ?: __('General', FLAVOR_PLATFORM_TEXT_DOMAIN);
     if (!isset($tramites_por_categoria[$categoria])) {
         $tramites_por_categoria[$categoria] = [];
     }
@@ -75,13 +75,13 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
 <div class="tramites-catalogo-wrapper">
     <div class="tramites-header">
         <div class="tramites-header-content">
-            <h2><?php esc_html_e('Catalogo de Tramites', 'flavor-chat-ia'); ?></h2>
-            <p class="tramites-intro"><?php esc_html_e('Encuentra el tramite que necesitas y realiza tu solicitud de forma sencilla.', 'flavor-chat-ia'); ?></p>
+            <h2><?php esc_html_e('Catalogo de Tramites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+            <p class="tramites-intro"><?php esc_html_e('Encuentra el tramite que necesitas y realiza tu solicitud de forma sencilla.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
         <?php if (is_user_logged_in()): ?>
             <a href="<?php echo esc_url($tramites_base_url . 'mis-tramites/'); ?>" class="btn btn-outline">
                 <span class="dashicons dashicons-portfolio"></span>
-                <?php esc_html_e('Mis tramites', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Mis tramites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         <?php endif; ?>
     </div>
@@ -92,12 +92,12 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
     <form class="tramites-filtros" method="get">
         <div class="filtro-grupo filtro-buscar">
             <input type="text" name="buscar" value="<?php echo esc_attr($buscar); ?>"
-                   placeholder="<?php esc_attr_e('Buscar tramite...', 'flavor-chat-ia'); ?>">
+                   placeholder="<?php esc_attr_e('Buscar tramite...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
         </div>
         <?php if ($categorias_disponibles): ?>
             <div class="filtro-grupo">
                 <select name="categoria">
-                    <option value=""><?php esc_html_e('Todas las categorias', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todas las categorias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($categorias_disponibles as $categoria): ?>
                         <option value="<?php echo esc_attr($categoria); ?>" <?php selected($categoria_filtro, $categoria); ?>>
                             <?php echo esc_html(ucfirst($categoria)); ?>
@@ -108,12 +108,12 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
         <?php endif; ?>
         <div class="filtro-grupo">
             <select name="modalidad">
-                <option value=""><?php esc_html_e('Todas las modalidades', 'flavor-chat-ia'); ?></option>
-                <option value="online" <?php selected($modalidad_filtro, 'online'); ?>><?php esc_html_e('Online', 'flavor-chat-ia'); ?></option>
-                <option value="presencial" <?php selected($modalidad_filtro, 'presencial'); ?>><?php esc_html_e('Presencial', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php esc_html_e('Todas las modalidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="online" <?php selected($modalidad_filtro, 'online'); ?>><?php esc_html_e('Online', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="presencial" <?php selected($modalidad_filtro, 'presencial'); ?>><?php esc_html_e('Presencial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             </select>
         </div>
-        <button type="submit" class="btn btn-primary"><?php esc_html_e('Buscar', 'flavor-chat-ia'); ?></button>
+        <button type="submit" class="btn btn-primary"><?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
     </form>
     <?php endif; ?>
 
@@ -132,7 +132,7 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
                 </span>
                 <div class="categoria-info">
                     <h4><?php echo esc_html(ucfirst($categoria)); ?></h4>
-                    <span class="categoria-count"><?php echo intval($total_categoria); ?> <?php esc_html_e('tramites', 'flavor-chat-ia'); ?></span>
+                    <span class="categoria-count"><?php echo intval($total_categoria); ?> <?php esc_html_e('tramites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </a>
         <?php endforeach; ?>
@@ -157,10 +157,10 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
                             </span>
                             <div class="tramite-badges">
                                 <?php if ($tramite->permite_online): ?>
-                                    <span class="badge badge-success"><?php esc_html_e('Online', 'flavor-chat-ia'); ?></span>
+                                    <span class="badge badge-success"><?php esc_html_e('Online', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php endif; ?>
                                 <?php if ($tramite->requiere_cita): ?>
-                                    <span class="badge badge-info"><?php esc_html_e('Cita previa', 'flavor-chat-ia'); ?></span>
+                                    <span class="badge badge-info"><?php esc_html_e('Cita previa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -172,18 +172,18 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
                             <?php if ($tramite->plazo_resolucion_dias): ?>
                                 <span class="tramite-plazo">
                                     <span class="dashicons dashicons-clock"></span>
-                                    <?php echo sprintf(esc_html__('%d dias', 'flavor-chat-ia'), $tramite->plazo_resolucion_dias); ?>
+                                    <?php echo sprintf(esc_html__('%d dias', FLAVOR_PLATFORM_TEXT_DOMAIN), $tramite->plazo_resolucion_dias); ?>
                                 </span>
                             <?php endif; ?>
                             <?php if ($tramite->precio > 0): ?>
                                 <span class="tramite-precio"><?php echo esc_html(number_format($tramite->precio, 2)); ?> &euro;</span>
                             <?php else: ?>
-                                <span class="tramite-precio tramite-gratuito"><?php esc_html_e('Gratuito', 'flavor-chat-ia'); ?></span>
+                                <span class="tramite-precio tramite-gratuito"><?php esc_html_e('Gratuito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <?php endif; ?>
                         </div>
                         <div class="tramite-footer">
                             <a href="<?php echo esc_url(add_query_arg('tramite_id', $tramite->id, $tramites_base_url . 'iniciar/')); ?>" class="btn btn-primary btn-block">
-                                <?php esc_html_e('Iniciar tramite', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Iniciar tramite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </div>
                     </div>
@@ -194,11 +194,11 @@ $tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
     <?php else: ?>
         <div class="tramites-empty">
             <span class="dashicons dashicons-clipboard"></span>
-            <h3><?php esc_html_e('No hay tramites disponibles', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('No se encontraron tramites con los criterios seleccionados.', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('No hay tramites disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php esc_html_e('No se encontraron tramites con los criterios seleccionados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php if ($categoria_filtro || $buscar || $modalidad_filtro): ?>
                 <a href="<?php echo esc_url(remove_query_arg(['categoria', 'buscar', 'modalidad'])); ?>" class="btn btn-outline">
-                    <?php esc_html_e('Ver todos los tramites', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver todos los tramites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             <?php endif; ?>
         </div>

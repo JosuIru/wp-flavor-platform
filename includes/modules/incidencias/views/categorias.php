@@ -88,7 +88,7 @@ foreach ($stats_categorias as $stat) {
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-category"></span>
-        <?php echo esc_html__('Gestión de Categorías', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Gestión de Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <hr class="wp-header-end">
@@ -123,7 +123,7 @@ foreach ($stats_categorias as $stat) {
                             <?php echo number_format($total); ?>
                         </h3>
                         <p style="margin: 5px 0 0 0; color: #646970; text-transform: uppercase; font-size: 11px; letter-spacing: 1px;">
-                            <?php echo esc_html__('Total de Incidencias', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Total de Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                     </div>
 
@@ -133,26 +133,26 @@ foreach ($stats_categorias as $stat) {
                             <div style="font-size: 24px; font-weight: 600; color: #f0b849;">
                                 <?php echo $pendientes; ?>
                             </div>
-                            <div style="font-size: 11px; color: #646970; text-transform: uppercase;"><?php echo esc_html__('Pendientes', 'flavor-chat-ia'); ?></div>
+                            <div style="font-size: 11px; color: #646970; text-transform: uppercase;"><?php echo esc_html__('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                         </div>
                         <div style="text-align: center;">
                             <div style="font-size: 24px; font-weight: 600; color: #2271b1;">
                                 <?php echo $en_proceso; ?>
                             </div>
-                            <div style="font-size: 11px; color: #646970; text-transform: uppercase;"><?php echo esc_html__('En Proceso', 'flavor-chat-ia'); ?></div>
+                            <div style="font-size: 11px; color: #646970; text-transform: uppercase;"><?php echo esc_html__('En Proceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                         </div>
                         <div style="text-align: center;">
                             <div style="font-size: 24px; font-weight: 600; color: #00a32a;">
                                 <?php echo $resueltas; ?>
                             </div>
-                            <div style="font-size: 11px; color: #646970; text-transform: uppercase;"><?php echo esc_html__('Resueltas', 'flavor-chat-ia'); ?></div>
+                            <div style="font-size: 11px; color: #646970; text-transform: uppercase;"><?php echo esc_html__('Resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                         </div>
                     </div>
 
                     <!-- Métricas adicionales -->
                     <div style="padding: 15px 0;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                            <span style="color: #646970; font-size: 13px;"><?php echo esc_html__('Tasa de Resolución:', 'flavor-chat-ia'); ?></span>
+                            <span style="color: #646970; font-size: 13px;"><?php echo esc_html__('Tasa de Resolución:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <strong style="font-size: 16px; color: <?php echo $config_categoria['color']; ?>;">
                                 <?php echo $tasa_resolucion; ?>%
                             </strong>
@@ -166,7 +166,7 @@ foreach ($stats_categorias as $stat) {
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <span style="color: #646970; font-size: 13px;">
                                 <span class="dashicons dashicons-clock" style="font-size: 14px; vertical-align: middle;"></span>
-                                <?php echo esc_html__('Tiempo Promedio:', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Tiempo Promedio:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                             <strong style="font-size: 16px;">
                                 <?php echo $tiempo_promedio; ?>h
@@ -178,7 +178,7 @@ foreach ($stats_categorias as $stat) {
                     <div style="padding-top: 15px; border-top: 1px solid #dcdcde;">
                         <a href="<?php echo admin_url('admin.php?page=incidencias-todas&categoria=' . $slug_categoria); ?>" class="button button-primary" style="width: 100%; text-align: center;">
                             <span class="dashicons dashicons-visibility"></span>
-                            <?php echo esc_html__('Ver Incidencias', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Ver Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
 
@@ -194,7 +194,7 @@ foreach ($stats_categorias as $stat) {
         <div class="postbox-header">
             <h2>
                 <span class="dashicons dashicons-chart-pie"></span>
-                <?php echo esc_html__('Distribución por Categorías', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Distribución por Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
         </div>
         <div class="inside">
@@ -207,7 +207,7 @@ foreach ($stats_categorias as $stat) {
         <div class="postbox-header">
             <h2>
                 <span class="dashicons dashicons-chart-bar"></span>
-                <?php echo esc_html__('Comparativa de Rendimiento', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Comparativa de Rendimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
         </div>
         <div class="inside">

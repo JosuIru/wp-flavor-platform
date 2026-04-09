@@ -25,7 +25,7 @@ $indice_actual = $indice_actual ?? 0;
 $puede_interactuar = $puede_interactuar ?? is_user_logged_in();
 
 if (!$episodio || empty($episodio->audio_url)) {
-    echo '<div class="flavor-aviso flavor-aviso-error">' . esc_html__('Episodio no disponible.', 'flavor-chat-ia') . '</div>';
+    echo '<div class="flavor-aviso flavor-aviso-error">' . esc_html__('Episodio no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
     return;
 }
 
@@ -71,7 +71,7 @@ $reproductor_id = 'flavor-reproductor-' . intval($episodio->id);
             <a href="<?php echo esc_url(add_query_arg('serie', $serie->id ?? 0, home_url('/podcast/'))); ?>"
                class="flavor-reproductor-volver">
                 <span class="dashicons dashicons-arrow-left-alt"></span>
-                <?php esc_html_e('Volver a la serie', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Volver a la serie', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <?php if ($serie): ?>
             <span class="flavor-reproductor-serie-nombre">
@@ -107,7 +107,7 @@ $reproductor_id = 'flavor-reproductor-' . intval($episodio->id);
             <div class="flavor-reproductor-info">
                 <?php if (!empty($episodio->numero_episodio)): ?>
                 <span class="flavor-reproductor-numero">
-                    <?php echo sprintf(esc_html__('Episodio %d', 'flavor-chat-ia'), intval($episodio->numero_episodio)); ?>
+                    <?php echo sprintf(esc_html__('Episodio %d', FLAVOR_PLATFORM_TEXT_DOMAIN), intval($episodio->numero_episodio)); ?>
                 </span>
                 <?php endif; ?>
 
@@ -122,7 +122,7 @@ $reproductor_id = 'flavor-reproductor-' . intval($episodio->id);
                     <?php if (isset($episodio->reproducciones)): ?>
                     <span class="flavor-meta-item">
                         <?php echo esc_html(number_format_i18n($episodio->reproducciones)); ?>
-                        <?php esc_html_e('reproducciones', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('reproducciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                     <?php endif; ?>
                 </div>
@@ -142,7 +142,7 @@ $reproductor_id = 'flavor-reproductor-' . intval($episodio->id);
                                max="100"
                                value="0"
                                step="0.01"
-                               aria-label="<?php esc_attr_e('Progreso de reproduccion', 'flavor-chat-ia'); ?>">
+                               aria-label="<?php esc_attr_e('Progreso de reproduccion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     </div>
                     <div class="flavor-reproductor-tiempos">
                         <span class="flavor-tiempo-actual">0:00</span>
@@ -154,14 +154,14 @@ $reproductor_id = 'flavor-reproductor-' . intval($episodio->id);
                 <div class="flavor-reproductor-btns-principales">
                     <button type="button"
                             class="flavor-reproductor-btn flavor-btn-shuffle <?php echo empty($playlist) ? 'flavor-btn-disabled' : ''; ?>"
-                            title="<?php esc_attr_e('Aleatorio', 'flavor-chat-ia'); ?>"
+                            title="<?php esc_attr_e('Aleatorio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                             <?php echo empty($playlist) ? 'disabled' : ''; ?>>
                         <span class="dashicons dashicons-randomize"></span>
                     </button>
 
                     <button type="button"
                             class="flavor-reproductor-btn flavor-btn-anterior <?php echo !$episodio_anterior ? 'flavor-btn-disabled' : ''; ?>"
-                            title="<?php esc_attr_e('Episodio anterior', 'flavor-chat-ia'); ?>"
+                            title="<?php esc_attr_e('Episodio anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                             <?php echo !$episodio_anterior ? 'disabled' : ''; ?>
                             data-episodio-id="<?php echo $episodio_anterior ? intval($episodio_anterior->id) : ''; ?>">
                         <span class="dashicons dashicons-controls-skipback"></span>
@@ -169,28 +169,28 @@ $reproductor_id = 'flavor-reproductor-' . intval($episodio->id);
 
                     <button type="button"
                             class="flavor-reproductor-btn flavor-btn-retroceder"
-                            title="<?php esc_attr_e('Retroceder 15 segundos', 'flavor-chat-ia'); ?>">
+                            title="<?php esc_attr_e('Retroceder 15 segundos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-undo"></span>
                         <span class="flavor-btn-salto-texto">15</span>
                     </button>
 
                     <button type="button"
                             class="flavor-reproductor-btn-play"
-                            title="<?php esc_attr_e('Reproducir', 'flavor-chat-ia'); ?>">
+                            title="<?php esc_attr_e('Reproducir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-controls-play flavor-icono-play"></span>
                         <span class="dashicons dashicons-controls-pause flavor-icono-pause"></span>
                     </button>
 
                     <button type="button"
                             class="flavor-reproductor-btn flavor-btn-avanzar"
-                            title="<?php esc_attr_e('Avanzar 30 segundos', 'flavor-chat-ia'); ?>">
+                            title="<?php esc_attr_e('Avanzar 30 segundos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-redo"></span>
                         <span class="flavor-btn-salto-texto">30</span>
                     </button>
 
                     <button type="button"
                             class="flavor-reproductor-btn flavor-btn-siguiente <?php echo !$episodio_siguiente ? 'flavor-btn-disabled' : ''; ?>"
-                            title="<?php esc_attr_e('Episodio siguiente', 'flavor-chat-ia'); ?>"
+                            title="<?php esc_attr_e('Episodio siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                             <?php echo !$episodio_siguiente ? 'disabled' : ''; ?>
                             data-episodio-id="<?php echo $episodio_siguiente ? intval($episodio_siguiente->id) : ''; ?>">
                         <span class="dashicons dashicons-controls-skipforward"></span>
@@ -198,7 +198,7 @@ $reproductor_id = 'flavor-reproductor-' . intval($episodio->id);
 
                     <button type="button"
                             class="flavor-reproductor-btn flavor-btn-repetir"
-                            title="<?php esc_attr_e('Repetir', 'flavor-chat-ia'); ?>">
+                            title="<?php esc_attr_e('Repetir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-controls-repeat"></span>
                     </button>
                 </div>
@@ -212,7 +212,7 @@ $reproductor_id = 'flavor-reproductor-' . intval($episodio->id);
                     </div>
 
                     <div class="flavor-control-volumen">
-                        <button type="button" class="flavor-btn-mute" title="<?php esc_attr_e('Silenciar', 'flavor-chat-ia'); ?>">
+                        <button type="button" class="flavor-btn-mute" title="<?php esc_attr_e('Silenciar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-controls-volumeon flavor-icono-volumen-on"></span>
                             <span class="dashicons dashicons-controls-volumeoff flavor-icono-volumen-off"></span>
                         </button>
@@ -222,7 +222,7 @@ $reproductor_id = 'flavor-reproductor-' . intval($episodio->id);
                                    min="0"
                                    max="100"
                                    value="80"
-                                   aria-label="<?php esc_attr_e('Volumen', 'flavor-chat-ia'); ?>">
+                                   aria-label="<?php esc_attr_e('Volumen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         </div>
                     </div>
 
@@ -231,21 +231,21 @@ $reproductor_id = 'flavor-reproductor-' . intval($episodio->id);
                         <button type="button"
                                 class="flavor-btn-accion flavor-btn-like"
                                 data-episodio-id="<?php echo intval($episodio->id); ?>"
-                                title="<?php esc_attr_e('Me gusta', 'flavor-chat-ia'); ?>">
+                                title="<?php esc_attr_e('Me gusta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-heart"></span>
                         </button>
                         <?php endif; ?>
 
                         <button type="button"
                                 class="flavor-btn-accion flavor-btn-compartir"
-                                title="<?php esc_attr_e('Compartir', 'flavor-chat-ia'); ?>">
+                                title="<?php esc_attr_e('Compartir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-share"></span>
                         </button>
 
                         <?php if (!empty($episodio->audio_url)): ?>
                         <a href="<?php echo esc_url($episodio->audio_url); ?>"
                            class="flavor-btn-accion flavor-btn-descargar"
-                           title="<?php esc_attr_e('Descargar', 'flavor-chat-ia'); ?>"
+                           title="<?php esc_attr_e('Descargar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                            download>
                             <span class="dashicons dashicons-download"></span>
                         </a>
@@ -253,7 +253,7 @@ $reproductor_id = 'flavor-reproductor-' . intval($episodio->id);
 
                         <button type="button"
                                 class="flavor-btn-accion flavor-btn-playlist"
-                                title="<?php esc_attr_e('Ver playlist', 'flavor-chat-ia'); ?>">
+                                title="<?php esc_attr_e('Ver playlist', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-playlist-audio"></span>
                         </button>
                     </div>
@@ -267,7 +267,7 @@ $reproductor_id = 'flavor-reproductor-' . intval($episodio->id);
             <div class="flavor-playlist-header">
                 <h3>
                     <span class="dashicons dashicons-playlist-audio"></span>
-                    <?php esc_html_e('Lista de episodios', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Lista de episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <button type="button" class="flavor-playlist-cerrar">
                     <span class="dashicons dashicons-no-alt"></span>
@@ -307,18 +307,18 @@ $reproductor_id = 'flavor-reproductor-' . intval($episodio->id);
         <section class="flavor-reproductor-detalles">
             <button type="button" class="flavor-detalles-toggle">
                 <span class="dashicons dashicons-arrow-up-alt2"></span>
-                <?php esc_html_e('Ver detalles del episodio', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver detalles del episodio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <div class="flavor-detalles-contenido">
                 <?php if (!empty($episodio->descripcion)): ?>
                 <div class="flavor-detalles-seccion">
-                    <h4><?php esc_html_e('Descripcion', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php esc_html_e('Descripcion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <?php echo wp_kses_post($episodio->descripcion); ?>
                 </div>
                 <?php endif; ?>
                 <?php if (!empty($episodio->notas)): ?>
                 <div class="flavor-detalles-seccion">
-                    <h4><?php esc_html_e('Notas del episodio', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php esc_html_e('Notas del episodio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <?php echo wp_kses_post($episodio->notas); ?>
                 </div>
                 <?php endif; ?>

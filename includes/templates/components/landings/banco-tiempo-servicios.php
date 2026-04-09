@@ -54,7 +54,7 @@ $categorias_colores = [
 ?>
 <section class="<?php echo esc_attr($component_classes ?? ''); ?> py-16">
     <div class="max-w-6xl mx-auto px-6">
-        <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center"><?php echo esc_html($titulo ?? __('Servicios Disponibles', 'flavor-chat-ia')); ?></h2>
+        <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center"><?php echo esc_html($titulo ?? __('Servicios Disponibles', 'flavor-platform')); ?></h2>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <?php if ($tiene_servicios_reales): ?>
@@ -62,12 +62,12 @@ $categorias_colores = [
                     $servicio_url = add_query_arg('servicio', $servicio->id, $pagina_banco_tiempo);
                     $categoria_slug = strtolower($servicio->categoria ?? 'default');
                     $colores_categoria = $categorias_colores[$categoria_slug] ?? $categorias_colores['default'];
-                    $nombre_usuario = !empty($servicio->nombre_usuario) ? $servicio->nombre_usuario : __('Anónimo', 'flavor-chat-ia');
+                    $nombre_usuario = !empty($servicio->nombre_usuario) ? $servicio->nombre_usuario : __('Anónimo', 'flavor-platform');
                 ?>
                 <article class="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all overflow-hidden border border-gray-100 p-6">
                     <div class="flex items-center justify-between mb-3">
                         <span class="<?php echo esc_attr($colores_categoria['bg'] . ' ' . $colores_categoria['text']); ?> text-xs font-medium px-3 py-1 rounded-full">
-                            <?php echo esc_html(ucfirst($servicio->categoria ?? __('General', 'flavor-chat-ia'))); ?>
+                            <?php echo esc_html(ucfirst($servicio->categoria ?? __('General', 'flavor-platform'))); ?>
                         </span>
                         <span class="text-violet-600 font-bold"><?php echo esc_html(number_format($servicio->horas_estimadas, 1)); ?>h</span>
                     </div>
@@ -80,7 +80,7 @@ $categorias_colores = [
                     <div class="flex items-center justify-between text-sm text-gray-500">
                         <span><?php echo esc_html($nombre_usuario); ?></span>
                         <a href="<?php echo esc_url($servicio_url); ?>" class="text-violet-600 font-medium hover:underline">
-                            <?php _e('Ver más', 'flavor-chat-ia'); ?> →
+                            <?php _e('Ver más', 'flavor-platform'); ?> →
                         </a>
                     </div>
                 </article>
@@ -91,18 +91,18 @@ $categorias_colores = [
                 <article class="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all overflow-hidden border border-gray-100 p-6 opacity-75">
                     <div class="flex items-center justify-between mb-3">
                         <span class="<?php echo $servicio['tipo'] === 'oferta' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'; ?> text-xs font-medium px-3 py-1 rounded-full">
-                            <?php echo $servicio['tipo'] === 'oferta' ? '🎁 ' . __('Ofrezco', 'flavor-chat-ia') : '🙋 ' . __('Busco', 'flavor-chat-ia'); ?>
+                            <?php echo $servicio['tipo'] === 'oferta' ? '🎁 ' . __('Ofrezco', 'flavor-platform') : '🙋 ' . __('Busco', 'flavor-platform'); ?>
                         </span>
                         <span class="text-violet-600 font-bold"><?php echo esc_html($servicio['horas']); ?>h</span>
                     </div>
                     <h3 class="text-lg font-semibold text-gray-800 mb-2">
                         <?php echo esc_html($servicio['titulo']); ?>
-                        <span class="text-xs text-gray-400 font-normal">(<?php _e('Demo', 'flavor-chat-ia'); ?>)</span>
+                        <span class="text-xs text-gray-400 font-normal">(<?php _e('Demo', 'flavor-platform'); ?>)</span>
                     </h3>
                     <p class="text-sm text-gray-500 mb-3"><?php echo esc_html($servicio['categoria']); ?></p>
                     <div class="flex items-center justify-between text-sm text-gray-500">
                         <span><?php echo esc_html($servicio['usuario']); ?></span>
-                        <span class="text-gray-400 text-xs italic"><?php _e('Próximamente', 'flavor-chat-ia'); ?></span>
+                        <span class="text-gray-400 text-xs italic"><?php _e('Próximamente', 'flavor-platform'); ?></span>
                     </div>
                 </article>
                 <?php endforeach; ?>
@@ -111,7 +111,7 @@ $categorias_colores = [
 
         <div class="text-center mt-8">
             <a href="<?php echo esc_url($pagina_banco_tiempo); ?>" class="inline-block bg-violet-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-violet-600 transition-colors">
-                <?php _e('Ver todos los servicios', 'flavor-chat-ia'); ?>
+                <?php _e('Ver todos los servicios', 'flavor-platform'); ?>
             </a>
         </div>
     </div>

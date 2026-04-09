@@ -20,7 +20,7 @@ $tabla_eventos_existe = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $ta
 $tabla_inscripciones_existe = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla_inscripciones)) === $tabla_inscripciones;
 
 if (!$tabla_eventos_existe) {
-    echo '<div class="wrap"><div class="dm-alert dm-alert--warning"><span class="dashicons dashicons-warning"></span>' . esc_html__('La tabla principal de eventos no está disponible en esta instalación.', 'flavor-chat-ia') . '</div></div>';
+    echo '<div class="wrap"><div class="dm-alert dm-alert--warning"><span class="dashicons dashicons-warning"></span>' . esc_html__('La tabla principal de eventos no está disponible en esta instalación.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div></div>';
     return;
 }
 
@@ -149,11 +149,11 @@ $mensual = $wpdb->get_results(
 );
 
 $estado_labels = [
-    'borrador' => __('Borrador', 'flavor-chat-ia'),
-    'publicado' => __('Publicado', 'flavor-chat-ia'),
-    'cancelado' => __('Cancelado', 'flavor-chat-ia'),
-    'finalizado' => __('Finalizado', 'flavor-chat-ia'),
-    'pospuesto' => __('Pospuesto', 'flavor-chat-ia'),
+    'borrador' => __('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'publicado' => __('Publicado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cancelado' => __('Cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'finalizado' => __('Finalizado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'pospuesto' => __('Pospuesto', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $estado_badges = [
@@ -177,15 +177,15 @@ $estado_badges = [
         <div class="dm-header__content">
             <h1 class="dm-header__title">
                 <span class="dashicons dashicons-calendar"></span>
-                <?php esc_html_e('Dashboard de Eventos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Dashboard de Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h1>
             <p class="dm-header__description">
-                <?php esc_html_e('Panel operativo para programar eventos, controlar inscripciones y detectar cuellos de botella de ocupación.', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Panel operativo para programar eventos, controlar inscripciones y detectar cuellos de botella de ocupación.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
         <div class="dm-header__actions">
             <a href="<?php echo esc_url(admin_url('admin.php?page=eventos-nuevo')); ?>" class="dm-btn dm-btn--primary">
-                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nuevo evento', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nuevo evento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>
@@ -193,34 +193,34 @@ $estado_badges = [
     <!-- Accesos Rápidos -->
     <div class="dm-card">
         <h2 class="dm-card__title">
-            <span class="dashicons dashicons-admin-links"></span> <?php esc_html_e('Accesos Rápidos', 'flavor-chat-ia'); ?>
+            <span class="dashicons dashicons-admin-links"></span> <?php esc_html_e('Accesos Rápidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
         <div class="dm-action-grid">
             <a href="<?php echo esc_url(admin_url('admin.php?page=eventos-proximos')); ?>" class="dm-action-card">
                 <span class="dashicons dashicons-calendar-alt dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Próximos', 'flavor-chat-ia'); ?></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Próximos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <?php if ($eventos_semana > 0): ?>
                     <span class="dm-badge dm-badge--warning"><?php echo $eventos_semana; ?></span>
                 <?php endif; ?>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=eventos-calendario')); ?>" class="dm-action-card dm-action-card--success">
                 <span class="dashicons dashicons-calendar dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Calendario', 'flavor-chat-ia'); ?></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Calendario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=eventos-asistentes')); ?>" class="dm-action-card dm-action-card--warning">
                 <span class="dashicons dashicons-groups dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Asistentes', 'flavor-chat-ia'); ?></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Asistentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <?php if ($inscripciones_pendientes > 0): ?>
                     <span class="dm-badge dm-badge--error"><?php echo $inscripciones_pendientes; ?></span>
                 <?php endif; ?>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=eventos-config')); ?>" class="dm-action-card">
                 <span class="dashicons dashicons-admin-settings dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Configuración', 'flavor-chat-ia'); ?></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
             <a href="<?php echo esc_url(home_url('/mi-portal/eventos/')); ?>" class="dm-action-card dm-action-card--purple">
                 <span class="dashicons dashicons-external dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Portal público', 'flavor-chat-ia'); ?></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Portal público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
         </div>
     </div>
@@ -233,8 +233,8 @@ $estado_badges = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($proximos_publicados); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Próximos publicados', 'flavor-chat-ia'); ?></div>
-                <small class="dm-text-muted"><?php printf(esc_html__('%s esta semana', 'flavor-chat-ia'), number_format_i18n($eventos_semana)); ?></small>
+                <div class="dm-stat-card__label"><?php esc_html_e('Próximos publicados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <small class="dm-text-muted"><?php printf(esc_html__('%s esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($eventos_semana)); ?></small>
             </div>
         </div>
 
@@ -244,8 +244,8 @@ $estado_badges = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($inscripcion_abierta); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Inscripciones abiertas', 'flavor-chat-ia'); ?></div>
-                <small class="dm-text-muted"><?php printf(esc_html__('%s pendientes', 'flavor-chat-ia'), number_format_i18n($inscripciones_pendientes)); ?></small>
+                <div class="dm-stat-card__label"><?php esc_html_e('Inscripciones abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <small class="dm-text-muted"><?php printf(esc_html__('%s pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($inscripciones_pendientes)); ?></small>
             </div>
         </div>
 
@@ -255,7 +255,7 @@ $estado_badges = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($inscripciones_confirmadas_mes); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Confirmadas este mes', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Confirmadas este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 <small class="dm-text-muted"><?php echo esc_html(number_format_i18n($ingresos_mes, 2)); ?> EUR</small>
             </div>
         </div>
@@ -266,8 +266,8 @@ $estado_badges = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($ocupacion_media, 1); ?>%</div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Ocupación media', 'flavor-chat-ia'); ?></div>
-                <small class="dm-text-muted"><?php printf(esc_html__('%s personas previstas', 'flavor-chat-ia'), number_format_i18n($ocupacion_total)); ?></small>
+                <div class="dm-stat-card__label"><?php esc_html_e('Ocupación media', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <small class="dm-text-muted"><?php printf(esc_html__('%s personas previstas', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($ocupacion_total)); ?></small>
             </div>
         </div>
     </div>
@@ -277,16 +277,16 @@ $estado_badges = [
     <div class="dm-alert dm-alert--warning">
         <span class="dashicons dashicons-warning"></span>
         <div>
-            <strong><?php esc_html_e('Alertas operativas', 'flavor-chat-ia'); ?></strong>
+            <strong><?php esc_html_e('Alertas operativas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
             <ul style="margin: 8px 0 0; padding-left: 20px;">
                 <?php if ($inscripciones_pendientes > 0): ?>
-                    <li><?php printf(esc_html__('%s inscripciones pendientes de gestión', 'flavor-chat-ia'), number_format_i18n($inscripciones_pendientes)); ?></li>
+                    <li><?php printf(esc_html__('%s inscripciones pendientes de gestión', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($inscripciones_pendientes)); ?></li>
                 <?php endif; ?>
                 <?php if ($eventos_sin_ubicacion > 0): ?>
-                    <li><?php printf(esc_html__('%s eventos presenciales sin ubicación', 'flavor-chat-ia'), number_format_i18n($eventos_sin_ubicacion)); ?></li>
+                    <li><?php printf(esc_html__('%s eventos presenciales sin ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($eventos_sin_ubicacion)); ?></li>
                 <?php endif; ?>
                 <?php if ($eventos_borrador > 0): ?>
-                    <li><?php printf(esc_html__('%s borradores pendientes de publicar', 'flavor-chat-ia'), number_format_i18n($eventos_borrador)); ?></li>
+                    <li><?php printf(esc_html__('%s borradores pendientes de publicar', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($eventos_borrador)); ?></li>
                 <?php endif; ?>
             </ul>
         </div>
@@ -298,7 +298,7 @@ $estado_badges = [
         <!-- Distribución por estado -->
         <div class="dm-card">
             <h3 class="dm-card__title">
-                <span class="dashicons dashicons-tag"></span> <?php esc_html_e('Por estado', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-tag"></span> <?php esc_html_e('Por estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <?php if (!empty($por_estado)): ?>
                 <div class="dm-badge-list">
@@ -312,33 +312,33 @@ $estado_badges = [
                     <?php endforeach; ?>
                 </div>
             <?php else: ?>
-                <p class="dm-text-muted"><?php esc_html_e('Sin estados registrados todavía.', 'flavor-chat-ia'); ?></p>
+                <p class="dm-text-muted"><?php esc_html_e('Sin estados registrados todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php endif; ?>
         </div>
 
         <!-- Categorías -->
         <div class="dm-card">
             <h3 class="dm-card__title">
-                <span class="dashicons dashicons-category"></span> <?php esc_html_e('Top categorías', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-category"></span> <?php esc_html_e('Top categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <?php if (!empty($por_categoria)): ?>
                 <ol class="dm-ranking">
                     <?php foreach ($por_categoria as $categoria): ?>
                         <li>
-                            <span><?php echo esc_html($categoria->categoria ?: __('Sin categoría', 'flavor-chat-ia')); ?></span>
+                            <span><?php echo esc_html($categoria->categoria ?: __('Sin categoría', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>
                             <strong><?php echo number_format_i18n((int) $categoria->total); ?></strong>
                         </li>
                     <?php endforeach; ?>
                 </ol>
             <?php else: ?>
-                <p class="dm-text-muted"><?php esc_html_e('Aún no hay categorías con actividad.', 'flavor-chat-ia'); ?></p>
+                <p class="dm-text-muted"><?php esc_html_e('Aún no hay categorías con actividad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php endif; ?>
         </div>
 
         <!-- Tendencia mensual -->
         <div class="dm-card">
             <h3 class="dm-card__title">
-                <span class="dashicons dashicons-chart-line"></span> <?php esc_html_e('Tendencia mensual', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-chart-line"></span> <?php esc_html_e('Tendencia mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <?php if (!empty($mensual)): ?>
                 <div class="dm-trend">
@@ -357,7 +357,7 @@ $estado_badges = [
                     <?php endforeach; ?>
                 </div>
             <?php else: ?>
-                <p class="dm-text-muted"><?php esc_html_e('No hay histórico suficiente.', 'flavor-chat-ia'); ?></p>
+                <p class="dm-text-muted"><?php esc_html_e('No hay histórico suficiente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php endif; ?>
         </div>
     </div>
@@ -367,15 +367,15 @@ $estado_badges = [
         <!-- Próximos eventos -->
         <div class="dm-card">
             <h3 class="dm-card__title">
-                <span class="dashicons dashicons-calendar-alt"></span> <?php esc_html_e('Próximos eventos', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-calendar-alt"></span> <?php esc_html_e('Próximos eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <?php if (!empty($proximos_eventos)): ?>
                 <table class="dm-table">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('Evento', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Ocupación', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Evento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Ocupación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -384,7 +384,7 @@ $estado_badges = [
                             $inscritos = (int) $evento->inscritos_count;
                             $ocupacion = $aforo_maximo > 0 ? min(100, round(($inscritos / max(1, $aforo_maximo)) * 100)) : 0;
                             $clase_ocupacion = $ocupacion >= 90 ? 'dm-badge--error' : ($ocupacion >= 70 ? 'dm-badge--warning' : 'dm-badge--success');
-                            $categoria_evento = isset($evento->categoria) && $evento->categoria !== '' ? (string) $evento->categoria : __('Sin categoría', 'flavor-chat-ia');
+                            $categoria_evento = isset($evento->categoria) && $evento->categoria !== '' ? (string) $evento->categoria : __('Sin categoría', FLAVOR_PLATFORM_TEXT_DOMAIN);
                         ?>
                             <tr>
                                 <td>
@@ -413,11 +413,11 @@ $estado_badges = [
                     </tbody>
                 </table>
             <?php else: ?>
-                <p class="dm-text-muted"><?php esc_html_e('No hay eventos futuros publicados.', 'flavor-chat-ia'); ?></p>
+                <p class="dm-text-muted"><?php esc_html_e('No hay eventos futuros publicados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php endif; ?>
             <div class="dm-card__footer">
                 <a href="<?php echo esc_url(admin_url('admin.php?page=eventos-proximos')); ?>" class="dm-btn dm-btn--secondary dm-btn--sm">
-                    <?php esc_html_e('Ver agenda completa', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver agenda completa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -425,15 +425,15 @@ $estado_badges = [
         <!-- Actividad reciente -->
         <div class="dm-card">
             <h3 class="dm-card__title">
-                <span class="dashicons dashicons-groups"></span> <?php esc_html_e('Inscripciones recientes', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-groups"></span> <?php esc_html_e('Inscripciones recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <?php if (!empty($actividad_inscripciones)): ?>
                 <table class="dm-table">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('Asistente', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Evento', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Asistente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Evento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -451,7 +451,7 @@ $estado_badges = [
                                     <div class="dm-table__subtitle"><?php echo esc_html($inscripcion->email); ?></div>
                                 </td>
                                 <td class="dm-table__muted">
-                                    <?php echo esc_html(wp_trim_words($inscripcion->evento_titulo ?: __('Evento eliminado', 'flavor-chat-ia'), 4)); ?>
+                                    <?php echo esc_html(wp_trim_words($inscripcion->evento_titulo ?: __('Evento eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN), 4)); ?>
                                 </td>
                                 <td>
                                     <span class="dm-badge <?php echo esc_attr($estado_inscripcion_badges[$inscripcion->estado] ?? 'dm-badge--secondary'); ?>">
@@ -463,11 +463,11 @@ $estado_badges = [
                     </tbody>
                 </table>
             <?php else: ?>
-                <p class="dm-text-muted"><?php esc_html_e('No hay movimiento reciente de inscripciones.', 'flavor-chat-ia'); ?></p>
+                <p class="dm-text-muted"><?php esc_html_e('No hay movimiento reciente de inscripciones.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php endif; ?>
             <div class="dm-card__footer">
                 <a href="<?php echo esc_url(admin_url('admin.php?page=eventos-asistentes')); ?>" class="dm-btn dm-btn--secondary dm-btn--sm">
-                    <?php esc_html_e('Gestionar asistentes', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Gestionar asistentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -476,24 +476,24 @@ $estado_badges = [
     <!-- Resumen -->
     <div class="dm-card">
         <h3 class="dm-card__title">
-            <span class="dashicons dashicons-lightbulb"></span> <?php esc_html_e('Foco recomendado', 'flavor-chat-ia'); ?>
+            <span class="dashicons dashicons-lightbulb"></span> <?php esc_html_e('Foco recomendado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h3>
         <div class="dm-focus-list">
             <div class="dm-focus-item">
                 <span class="dm-focus-item__value"><?php echo number_format_i18n($eventos_destacados); ?></span>
-                <span class="dm-focus-item__label"><?php esc_html_e('eventos destacados para difusión', 'flavor-chat-ia'); ?></span>
+                <span class="dm-focus-item__label"><?php esc_html_e('eventos destacados para difusión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="dm-focus-item">
                 <span class="dm-focus-item__value"><?php echo number_format_i18n($inscripcion_abierta); ?></span>
-                <span class="dm-focus-item__label"><?php esc_html_e('eventos con inscripción abierta', 'flavor-chat-ia'); ?></span>
+                <span class="dm-focus-item__label"><?php esc_html_e('eventos con inscripción abierta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="dm-focus-item">
                 <span class="dm-focus-item__value"><?php echo number_format_i18n($ocupacion_media, 1); ?>%</span>
-                <span class="dm-focus-item__label"><?php esc_html_e('ocupación media prevista', 'flavor-chat-ia'); ?></span>
+                <span class="dm-focus-item__label"><?php esc_html_e('ocupación media prevista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="dm-focus-item">
                 <span class="dm-focus-item__value"><?php echo number_format_i18n($total_eventos); ?></span>
-                <span class="dm-focus-item__label"><?php esc_html_e('eventos totales en el sistema', 'flavor-chat-ia'); ?></span>
+                <span class="dm-focus-item__label"><?php esc_html_e('eventos totales en el sistema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>

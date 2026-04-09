@@ -43,7 +43,7 @@ foreach ($tablas_documentos_candidatas as $tabla_candidata) {
 if ($tabla_presupuestos === '') {
     echo '<div class="transparencia-aviso transparencia-aviso--info">';
     echo '<span class="dashicons dashicons-info"></span>';
-    echo '<p>' . esc_html__('Todavía no hay presupuestos cargados en esta instalación.', 'flavor-chat-ia') . '</p>';
+    echo '<p>' . esc_html__('Todavía no hay presupuestos cargados en esta instalación.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
     echo '</div>';
     return;
 }
@@ -101,18 +101,18 @@ $ejercicio_actual = date('Y');
     <header class="transparencia-presupuestos__header">
         <div class="transparencia-presupuestos__titulo">
             <span class="dashicons dashicons-chart-area"></span>
-            <h2><?php esc_html_e('Historico de Presupuestos', 'flavor-chat-ia'); ?></h2>
+            <h2><?php esc_html_e('Historico de Presupuestos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         </div>
         <p class="transparencia-presupuestos__descripcion">
-            <?php esc_html_e('Consulta los presupuestos de ejercicios anteriores y su evolucion.', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Consulta los presupuestos de ejercicios anteriores y su evolucion.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </header>
 
     <?php if (empty($ejercicios)) : ?>
     <div class="transparencia-empty-state">
         <span class="dashicons dashicons-chart-pie"></span>
-        <h3><?php esc_html_e('Sin datos presupuestarios', 'flavor-chat-ia'); ?></h3>
-        <p><?php esc_html_e('No hay presupuestos registrados en el sistema.', 'flavor-chat-ia'); ?></p>
+        <h3><?php esc_html_e('Sin datos presupuestarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+        <p><?php esc_html_e('No hay presupuestos registrados en el sistema.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php else : ?>
 
@@ -121,7 +121,7 @@ $ejercicio_actual = date('Y');
     <section class="transparencia-presupuestos__evolucion">
         <h3>
             <span class="dashicons dashicons-chart-line"></span>
-            <?php esc_html_e('Evolucion Presupuestaria', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Evolucion Presupuestaria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h3>
         <div class="transparencia-grafico-evolucion-container">
             <canvas id="grafico-evolucion-presupuestos" height="300"></canvas>
@@ -133,7 +133,7 @@ $ejercicio_actual = date('Y');
     <section class="transparencia-presupuestos__lista">
         <h3>
             <span class="dashicons dashicons-list-view"></span>
-            <?php esc_html_e('Presupuestos por Ejercicio', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Presupuestos por Ejercicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h3>
 
         <div class="transparencia-ejercicios-grid">
@@ -153,7 +153,7 @@ $ejercicio_actual = date('Y');
                     <h4>
                         <?php echo esc_html($ejercicio_data->ejercicio); ?>
                         <?php if ($es_actual) : ?>
-                        <span class="transparencia-badge transparencia-badge--actual"><?php esc_html_e('Actual', 'flavor-chat-ia'); ?></span>
+                        <span class="transparencia-badge transparencia-badge--actual"><?php esc_html_e('Actual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <?php endif; ?>
                     </h4>
                 </header>
@@ -162,7 +162,7 @@ $ejercicio_actual = date('Y');
                     <!-- Ingresos -->
                     <div class="transparencia-ejercicio-card__seccion">
                         <div class="transparencia-ejercicio-card__seccion-header">
-                            <span class="transparencia-ejercicio-card__seccion-titulo"><?php esc_html_e('Ingresos', 'flavor-chat-ia'); ?></span>
+                            <span class="transparencia-ejercicio-card__seccion-titulo"><?php esc_html_e('Ingresos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span class="transparencia-ejercicio-card__porcentaje"><?php echo esc_html($porcentaje_ingresos); ?>%</span>
                         </div>
                         <div class="transparencia-barra-progreso transparencia-barra-progreso--sm">
@@ -173,7 +173,7 @@ $ejercicio_actual = date('Y');
                                 <?php echo esc_html(number_format($ejercicio_data->ingresos_definitivo, 0, ',', '.')); ?> &euro;
                             </span>
                             <span class="transparencia-ejercicio-card__ejecutado">
-                                <?php printf(esc_html__('Recaudado: %s EUR', 'flavor-chat-ia'), number_format($ejercicio_data->ingresos_recaudados, 0, ',', '.')); ?>
+                                <?php printf(esc_html__('Recaudado: %s EUR', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($ejercicio_data->ingresos_recaudados, 0, ',', '.')); ?>
                             </span>
                         </div>
                     </div>
@@ -181,7 +181,7 @@ $ejercicio_actual = date('Y');
                     <!-- Gastos -->
                     <div class="transparencia-ejercicio-card__seccion">
                         <div class="transparencia-ejercicio-card__seccion-header">
-                            <span class="transparencia-ejercicio-card__seccion-titulo"><?php esc_html_e('Gastos', 'flavor-chat-ia'); ?></span>
+                            <span class="transparencia-ejercicio-card__seccion-titulo"><?php esc_html_e('Gastos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span class="transparencia-ejercicio-card__porcentaje"><?php echo esc_html($porcentaje_gastos); ?>%</span>
                         </div>
                         <div class="transparencia-barra-progreso transparencia-barra-progreso--sm">
@@ -192,7 +192,7 @@ $ejercicio_actual = date('Y');
                                 <?php echo esc_html(number_format($ejercicio_data->gastos_definitivo, 0, ',', '.')); ?> &euro;
                             </span>
                             <span class="transparencia-ejercicio-card__ejecutado">
-                                <?php printf(esc_html__('Obligado: %s EUR', 'flavor-chat-ia'), number_format($ejercicio_data->gastos_obligados, 0, ',', '.')); ?>
+                                <?php printf(esc_html__('Obligado: %s EUR', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($ejercicio_data->gastos_obligados, 0, ',', '.')); ?>
                             </span>
                         </div>
                     </div>
@@ -200,7 +200,7 @@ $ejercicio_actual = date('Y');
                     <!-- Resultado -->
                     <div class="transparencia-ejercicio-card__resultado <?php echo $resultado >= 0 ? 'positivo' : 'negativo'; ?>">
                         <span class="transparencia-ejercicio-card__resultado-label">
-                            <?php echo $resultado >= 0 ? esc_html__('Superavit', 'flavor-chat-ia') : esc_html__('Deficit', 'flavor-chat-ia'); ?>
+                            <?php echo $resultado >= 0 ? esc_html__('Superavit', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Deficit', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
                         <span class="transparencia-ejercicio-card__resultado-valor">
                             <?php echo $resultado >= 0 ? '+' : ''; ?><?php echo esc_html(number_format($resultado, 0, ',', '.')); ?> &euro;
@@ -211,7 +211,7 @@ $ejercicio_actual = date('Y');
                 <footer class="transparencia-ejercicio-card__footer">
                     <a href="<?php echo esc_url(add_query_arg('ejercicio', $ejercicio_data->ejercicio, home_url('/mi-portal/transparencia/presupuesto/'))); ?>" class="transparencia-btn transparencia-btn--outline transparencia-btn--sm">
                         <span class="dashicons dashicons-visibility"></span>
-                        <?php esc_html_e('Ver detalle', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver detalle', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <?php if (!empty($documentos_ejercicio)) : ?>
                     <div class="transparencia-ejercicio-card__documentos">
@@ -233,18 +233,18 @@ $ejercicio_actual = date('Y');
     <section class="transparencia-presupuestos__comparativa">
         <h3>
             <span class="dashicons dashicons-editor-table"></span>
-            <?php esc_html_e('Tabla Comparativa', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Tabla Comparativa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h3>
         <div class="transparencia-tabla-wrapper">
             <table class="transparencia-tabla">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('Ejercicio', 'flavor-chat-ia'); ?></th>
-                        <th class="text-right"><?php esc_html_e('Presup. Ingresos', 'flavor-chat-ia'); ?></th>
-                        <th class="text-right"><?php esc_html_e('Recaudado', 'flavor-chat-ia'); ?></th>
-                        <th class="text-right"><?php esc_html_e('Presup. Gastos', 'flavor-chat-ia'); ?></th>
-                        <th class="text-right"><?php esc_html_e('Obligado', 'flavor-chat-ia'); ?></th>
-                        <th class="text-right"><?php esc_html_e('Resultado', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Ejercicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th class="text-right"><?php esc_html_e('Presup. Ingresos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th class="text-right"><?php esc_html_e('Recaudado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th class="text-right"><?php esc_html_e('Presup. Gastos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th class="text-right"><?php esc_html_e('Obligado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th class="text-right"><?php esc_html_e('Resultado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -255,7 +255,7 @@ $ejercicio_actual = date('Y');
                         <td>
                             <strong><?php echo esc_html($ejercicio_data->ejercicio); ?></strong>
                             <?php if ($ejercicio_data->ejercicio == $ejercicio_actual) : ?>
-                            <span class="transparencia-badge transparencia-badge--sm"><?php esc_html_e('Actual', 'flavor-chat-ia'); ?></span>
+                            <span class="transparencia-badge transparencia-badge--sm"><?php esc_html_e('Actual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <?php endif; ?>
                         </td>
                         <td class="text-right"><?php echo esc_html(number_format($ejercicio_data->ingresos_definitivo, 0, ',', '.')); ?> &euro;</td>
@@ -296,7 +296,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 labels: datosEvolucion.map(function(item) { return item.ejercicio; }),
                 datasets: [
                     {
-                        label: '<?php esc_attr_e('Ingresos', 'flavor-chat-ia'); ?>',
+                        label: '<?php esc_attr_e('Ingresos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                         data: datosEvolucion.map(function(item) { return item.ingresos; }),
                         borderColor: '#10b981',
                         backgroundColor: 'rgba(16, 185, 129, 0.1)',
@@ -304,7 +304,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         tension: 0.3
                     },
                     {
-                        label: '<?php esc_attr_e('Gastos', 'flavor-chat-ia'); ?>',
+                        label: '<?php esc_attr_e('Gastos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                         data: datosEvolucion.map(function(item) { return item.gastos; }),
                         borderColor: '#3b82f6',
                         backgroundColor: 'rgba(59, 130, 246, 0.1)',

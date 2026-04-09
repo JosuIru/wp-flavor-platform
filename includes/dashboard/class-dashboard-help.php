@@ -94,7 +94,7 @@ class Flavor_Dashboard_Help {
      */
     public function register_help($module_id, $config) {
         $this->module_help[$module_id] = wp_parse_args($config, [
-            'title'       => __('Ayuda', 'flavor-chat-ia'),
+            'title'       => __('Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'description' => '',
             'tips'        => [],
             'steps'       => [],
@@ -150,10 +150,10 @@ class Flavor_Dashboard_Help {
                     <span class="dm-help__title"><?php echo esc_html($help['title']); ?></span>
                 </div>
                 <div class="dm-help__header-actions">
-                    <button type="button" class="dm-help__toggle" aria-label="<?php esc_attr_e('Expandir/colapsar ayuda', 'flavor-chat-ia'); ?>">
+                    <button type="button" class="dm-help__toggle" aria-label="<?php esc_attr_e('Expandir/colapsar ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-arrow-down-alt2"></span>
                     </button>
-                    <button type="button" class="dm-help__dismiss" aria-label="<?php esc_attr_e('Ocultar ayuda', 'flavor-chat-ia'); ?>" title="<?php esc_attr_e('No volver a mostrar', 'flavor-chat-ia'); ?>">
+                    <button type="button" class="dm-help__dismiss" aria-label="<?php esc_attr_e('Ocultar ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" title="<?php esc_attr_e('No volver a mostrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-no-alt"></span>
                     </button>
                 </div>
@@ -171,7 +171,7 @@ class Flavor_Dashboard_Help {
                     <div class="dm-help__section dm-help__tips">
                         <h4 class="dm-help__section-title">
                             <span class="dashicons dashicons-lightbulb"></span>
-                            <?php esc_html_e('Consejos', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Consejos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h4>
                         <ul class="dm-help__list">
                             <?php foreach ($help['tips'] as $tip): ?>
@@ -185,7 +185,7 @@ class Flavor_Dashboard_Help {
                     <div class="dm-help__section dm-help__steps">
                         <h4 class="dm-help__section-title">
                             <span class="dashicons dashicons-list-view"></span>
-                            <?php esc_html_e('Primeros pasos', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Primeros pasos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h4>
                         <ol class="dm-help__list dm-help__list--numbered">
                             <?php foreach ($help['steps'] as $step): ?>
@@ -199,7 +199,7 @@ class Flavor_Dashboard_Help {
                     <div class="dm-help__section dm-help__links">
                         <h4 class="dm-help__section-title">
                             <span class="dashicons dashicons-admin-links"></span>
-                            <?php esc_html_e('Enlaces útiles', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Enlaces útiles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h4>
                         <ul class="dm-help__list dm-help__list--links">
                             <?php foreach ($help['links'] as $link): ?>
@@ -226,7 +226,7 @@ class Flavor_Dashboard_Help {
                 <div class="dm-help__video">
                     <button type="button" class="dm-btn dm-btn--secondary dm-help__video-btn" data-video="<?php echo esc_url($help['video_url']); ?>">
                         <span class="dashicons dashicons-video-alt3"></span>
-                        <?php esc_html_e('Ver tutorial en vídeo', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver tutorial en vídeo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
                 <?php endif; ?>
@@ -234,7 +234,7 @@ class Flavor_Dashboard_Help {
                 <div class="dm-help__footer">
                     <button type="button" class="dm-help__restore-btn" style="display: none;">
                         <span class="dashicons dashicons-update"></span>
-                        <?php esc_html_e('Mostrar ayuda de nuevo', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Mostrar ayuda de nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </div>
@@ -372,10 +372,10 @@ class Flavor_Dashboard_Help {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce'   => wp_create_nonce('flavor_dashboard_help'),
             'i18n'    => [
-                'collapse'     => __('Colapsar', 'flavor-chat-ia'),
-                'expand'       => __('Expandir', 'flavor-chat-ia'),
-                'dismissed'    => __('Ayuda ocultada. Puedes restaurarla desde el menú.', 'flavor-chat-ia'),
-                'videoTitle'   => __('Tutorial', 'flavor-chat-ia'),
+                'collapse'     => __('Colapsar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'expand'       => __('Expandir', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'dismissed'    => __('Ayuda ocultada. Puedes restaurarla desde el menú.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'videoTitle'   => __('Tutorial', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -386,580 +386,580 @@ class Flavor_Dashboard_Help {
     private function register_default_help() {
         // Grupos de Consumo
         $this->register_help('grupos_consumo', [
-            'title'       => __('Cómo usar Grupos de Consumo', 'flavor-chat-ia'),
-            'description' => __('Gestiona pedidos colectivos, productores locales y ciclos de compra para tu comunidad.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Gestiona pedidos colectivos, productores locales y ciclos de compra para tu comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Crea un <strong>ciclo de pedidos</strong> para organizar cada ronda de compras.', 'flavor-chat-ia'),
-                __('Los <strong>productores</strong> pueden gestionar sus propios productos desde su panel.', 'flavor-chat-ia'),
-                __('Usa las <strong>estadísticas</strong> para ver qué productos son más populares.', 'flavor-chat-ia'),
+                __('Crea un <strong>ciclo de pedidos</strong> para organizar cada ronda de compras.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los <strong>productores</strong> pueden gestionar sus propios productos desde su panel.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Usa las <strong>estadísticas</strong> para ver qué productos son más populares.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Registra tus <strong>productores</strong> locales con sus datos de contacto.', 'flavor-chat-ia'),
-                __('Añade los <strong>productos</strong> disponibles de cada productor.', 'flavor-chat-ia'),
-                __('Crea un <strong>ciclo</strong> con fechas de apertura y cierre de pedidos.', 'flavor-chat-ia'),
-                __('Comparte el enlace de pedidos con los miembros del grupo.', 'flavor-chat-ia'),
+                __('Registra tus <strong>productores</strong> locales con sus datos de contacto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Añade los <strong>productos</strong> disponibles de cada productor.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Crea un <strong>ciclo</strong> con fechas de apertura y cierre de pedidos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Comparte el enlace de pedidos con los miembros del grupo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Documentación completa', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=flavor-documentation#grupos-consumo'), 'icon' => 'dashicons-book'],
-                ['text' => __('Configurar notificaciones', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=gc-settings'), 'icon' => 'dashicons-admin-settings'],
+                ['text' => __('Documentación completa', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=flavor-platform-docs#grupos-consumo'), 'icon' => 'dashicons-book'],
+                ['text' => __('Configurar notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=gc-settings'), 'icon' => 'dashicons-admin-settings'],
             ],
         ]);
 
         // Eventos
         $this->register_help('eventos', [
-            'title'       => __('Cómo usar Eventos', 'flavor-chat-ia'),
-            'description' => __('Organiza eventos comunitarios, gestiona inscripciones y envía recordatorios automáticos.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Organiza eventos comunitarios, gestiona inscripciones y envía recordatorios automáticos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Activa los <strong>recordatorios automáticos</strong> para reducir ausencias.', 'flavor-chat-ia'),
-                __('Usa <strong>categorías</strong> para organizar diferentes tipos de eventos.', 'flavor-chat-ia'),
-                __('El <strong>calendario</strong> público permite a los usuarios ver todos los eventos.', 'flavor-chat-ia'),
+                __('Activa los <strong>recordatorios automáticos</strong> para reducir ausencias.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Usa <strong>categorías</strong> para organizar diferentes tipos de eventos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('El <strong>calendario</strong> público permite a los usuarios ver todos los eventos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Crea un nuevo evento con fecha, hora y ubicación.', 'flavor-chat-ia'),
-                __('Configura el aforo máximo si hay límite de plazas.', 'flavor-chat-ia'),
-                __('Publica el evento para que aparezca en el calendario.', 'flavor-chat-ia'),
-                __('Los usuarios podrán inscribirse desde el frontend.', 'flavor-chat-ia'),
+                __('Crea un nuevo evento con fecha, hora y ubicación.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Configura el aforo máximo si hay límite de plazas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Publica el evento para que aparezca en el calendario.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los usuarios podrán inscribirse desde el frontend.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Ver calendario', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=eventos-calendario'), 'icon' => 'dashicons-calendar-alt'],
+                ['text' => __('Ver calendario', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=eventos-calendario'), 'icon' => 'dashicons-calendar-alt'],
             ],
         ]);
 
         // Reservas
         $this->register_help('reservas', [
-            'title'       => __('Cómo usar Reservas', 'flavor-chat-ia'),
-            'description' => __('Sistema de reserva de recursos compartidos: salas, equipos, vehículos y más.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Sistema de reserva de recursos compartidos: salas, equipos, vehículos y más.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Define <strong>horarios de disponibilidad</strong> para cada recurso.', 'flavor-chat-ia'),
-                __('Configura <strong>reglas de uso</strong> como duración máxima o anticipación.', 'flavor-chat-ia'),
-                __('Los <strong>conflictos</strong> se detectan automáticamente.', 'flavor-chat-ia'),
+                __('Define <strong>horarios de disponibilidad</strong> para cada recurso.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Configura <strong>reglas de uso</strong> como duración máxima o anticipación.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los <strong>conflictos</strong> se detectan automáticamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Registra los recursos disponibles (salas, equipos, etc.).', 'flavor-chat-ia'),
-                __('Configura los horarios en que cada recurso está disponible.', 'flavor-chat-ia'),
-                __('Define quién puede reservar cada recurso.', 'flavor-chat-ia'),
+                __('Registra los recursos disponibles (salas, equipos, etc.).', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Configura los horarios en que cada recurso está disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Define quién puede reservar cada recurso.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Gestionar recursos', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=reservas-recursos'), 'icon' => 'dashicons-admin-tools'],
+                ['text' => __('Gestionar recursos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=reservas-recursos'), 'icon' => 'dashicons-admin-tools'],
             ],
         ]);
 
         // Marketplace
         $this->register_help('marketplace', [
-            'title'       => __('Cómo usar el Marketplace', 'flavor-chat-ia'),
-            'description' => __('Mercado local para compra-venta entre miembros de la comunidad.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar el Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Mercado local para compra-venta entre miembros de la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Los anuncios pueden ser de <strong>venta, intercambio o regalo</strong>.', 'flavor-chat-ia'),
-                __('Activa la <strong>moderación</strong> para revisar anuncios antes de publicar.', 'flavor-chat-ia'),
-                __('Las <strong>categorías</strong> ayudan a los usuarios a encontrar lo que buscan.', 'flavor-chat-ia'),
+                __('Los anuncios pueden ser de <strong>venta, intercambio o regalo</strong>.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Activa la <strong>moderación</strong> para revisar anuncios antes de publicar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Las <strong>categorías</strong> ayudan a los usuarios a encontrar lo que buscan.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Configura las categorías de productos disponibles.', 'flavor-chat-ia'),
-                __('Define las políticas de publicación (moderación, duración).', 'flavor-chat-ia'),
-                __('Los usuarios publican sus anuncios desde el frontend.', 'flavor-chat-ia'),
+                __('Configura las categorías de productos disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Define las políticas de publicación (moderación, duración).', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los usuarios publican sus anuncios desde el frontend.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Configurar marketplace', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=marketplace-settings'), 'icon' => 'dashicons-admin-settings'],
+                ['text' => __('Configurar marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=marketplace-settings'), 'icon' => 'dashicons-admin-settings'],
             ],
         ]);
 
         // Banco de Tiempo
         $this->register_help('banco_tiempo', [
-            'title'       => __('Cómo usar el Banco de Tiempo', 'flavor-chat-ia'),
-            'description' => __('Intercambia horas de servicio entre miembros. Una hora dada = una hora recibida.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar el Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Intercambia horas de servicio entre miembros. Una hora dada = una hora recibida.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Cada persona empieza con un <strong>saldo inicial</strong> configurable.', 'flavor-chat-ia'),
-                __('Los <strong>servicios</strong> se intercambian por tiempo, no por dinero.', 'flavor-chat-ia'),
-                __('El <strong>fondo solidario</strong> permite ayudar a quien más lo necesita.', 'flavor-chat-ia'),
+                __('Cada persona empieza con un <strong>saldo inicial</strong> configurable.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los <strong>servicios</strong> se intercambian por tiempo, no por dinero.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('El <strong>fondo solidario</strong> permite ayudar a quien más lo necesita.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Los usuarios registran los servicios que pueden ofrecer.', 'flavor-chat-ia'),
-                __('Cuando alguien necesita un servicio, contacta al oferente.', 'flavor-chat-ia'),
-                __('Al completar el intercambio, se registran las horas.', 'flavor-chat-ia'),
+                __('Los usuarios registran los servicios que pueden ofrecer.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Cuando alguien necesita un servicio, contacta al oferente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Al completar el intercambio, se registran las horas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Ver intercambios', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=bt-intercambios'), 'icon' => 'dashicons-update'],
+                ['text' => __('Ver intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=bt-intercambios'), 'icon' => 'dashicons-update'],
             ],
         ]);
 
         // Participación
         $this->register_help('participacion', [
-            'title'       => __('Cómo usar Participación', 'flavor-chat-ia'),
-            'description' => __('Herramientas de democracia participativa: propuestas, votaciones y debates.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar Participación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Herramientas de democracia participativa: propuestas, votaciones y debates.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Las <strong>propuestas</strong> pasan por fases: borrador, debate, votación.', 'flavor-chat-ia'),
-                __('Configura <strong>quórums</strong> para que las votaciones sean válidas.', 'flavor-chat-ia'),
-                __('Los <strong>comentarios</strong> permiten debatir antes de votar.', 'flavor-chat-ia'),
+                __('Las <strong>propuestas</strong> pasan por fases: borrador, debate, votación.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Configura <strong>quórums</strong> para que las votaciones sean válidas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los <strong>comentarios</strong> permiten debatir antes de votar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Crea categorías para organizar las propuestas por tema.', 'flavor-chat-ia'),
-                __('Define las reglas de votación (mayoría simple, absoluta, etc.).', 'flavor-chat-ia'),
-                __('Los usuarios crean propuestas desde el frontend.', 'flavor-chat-ia'),
+                __('Crea categorías para organizar las propuestas por tema.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Define las reglas de votación (mayoría simple, absoluta, etc.).', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los usuarios crean propuestas desde el frontend.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Configurar votaciones', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=participacion-settings'), 'icon' => 'dashicons-admin-settings'],
+                ['text' => __('Configurar votaciones', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=participacion-settings'), 'icon' => 'dashicons-admin-settings'],
             ],
         ]);
 
         // Foros
         $this->register_help('foros', [
-            'title'       => __('Cómo usar Foros', 'flavor-chat-ia'),
-            'description' => __('Espacio de discusión organizado por categorías y temas.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Espacio de discusión organizado por categorías y temas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Crea <strong>categorías</strong> para organizar las discusiones.', 'flavor-chat-ia'),
-                __('Los <strong>moderadores</strong> pueden fijar y cerrar temas.', 'flavor-chat-ia'),
-                __('Activa <strong>notificaciones</strong> para seguir temas de interés.', 'flavor-chat-ia'),
+                __('Crea <strong>categorías</strong> para organizar las discusiones.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los <strong>moderadores</strong> pueden fijar y cerrar temas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Activa <strong>notificaciones</strong> para seguir temas de interés.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Crea las categorías principales del foro.', 'flavor-chat-ia'),
-                __('Asigna moderadores para cada categoría.', 'flavor-chat-ia'),
-                __('Los usuarios crean temas y participan en discusiones.', 'flavor-chat-ia'),
+                __('Crea las categorías principales del foro.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Asigna moderadores para cada categoría.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los usuarios crean temas y participan en discusiones.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Gestionar categorías', 'flavor-chat-ia'), 'url' => admin_url('edit-tags.php?taxonomy=foro_categoria'), 'icon' => 'dashicons-category'],
+                ['text' => __('Gestionar categorías', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('edit-tags.php?taxonomy=foro_categoria'), 'icon' => 'dashicons-category'],
             ],
         ]);
 
         // Socios
         $this->register_help('socios', [
-            'title'       => __('Cómo usar Gestión de Miembros', 'flavor-chat-ia'),
-            'description' => __('Administra la membresía: altas, bajas, cuotas y carnets.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar Gestión de Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Administra la membresía: altas, bajas, cuotas y carnets.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Configura <strong>tipos de miembro</strong> con diferentes cuotas.', 'flavor-chat-ia'),
-                __('Las <strong>cuotas</strong> se pueden generar automáticamente.', 'flavor-chat-ia'),
-                __('Exporta el <strong>listado de miembros</strong> en Excel o CSV.', 'flavor-chat-ia'),
+                __('Configura <strong>tipos de miembro</strong> con diferentes cuotas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Las <strong>cuotas</strong> se pueden generar automáticamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Exporta el <strong>listado de miembros</strong> en Excel o CSV.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Define los tipos de membresía disponibles.', 'flavor-chat-ia'),
-                __('Configura las cuotas y periodicidad de pago.', 'flavor-chat-ia'),
-                __('Los nuevos miembros se dan de alta desde el formulario.', 'flavor-chat-ia'),
+                __('Define los tipos de membresía disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Configura las cuotas y periodicidad de pago.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los nuevos miembros se dan de alta desde el formulario.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Configurar tipos de miembro', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=socios-tipos'), 'icon' => 'dashicons-admin-settings'],
+                ['text' => __('Configurar tipos de miembro', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=socios-tipos'), 'icon' => 'dashicons-admin-settings'],
             ],
         ]);
 
         // Red Social
         $this->register_help('red_social', [
-            'title'       => __('Cómo usar la Red Social', 'flavor-chat-ia'),
-            'description' => __('Red social interna para tu comunidad: perfiles, publicaciones, seguimientos y actividad.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar la Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Red social interna para tu comunidad: perfiles, publicaciones, seguimientos y actividad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Los usuarios pueden <strong>seguirse</strong> entre sí para ver su actividad.', 'flavor-chat-ia'),
-                __('Las <strong>publicaciones</strong> pueden incluir texto, imágenes y enlaces.', 'flavor-chat-ia'),
-                __('Configura la <strong>moderación</strong> para mantener un ambiente saludable.', 'flavor-chat-ia'),
-                __('Los <strong>me gusta</strong> y comentarios fomentan la interacción.', 'flavor-chat-ia'),
+                __('Los usuarios pueden <strong>seguirse</strong> entre sí para ver su actividad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Las <strong>publicaciones</strong> pueden incluir texto, imágenes y enlaces.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Configura la <strong>moderación</strong> para mantener un ambiente saludable.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los <strong>me gusta</strong> y comentarios fomentan la interacción.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Configura qué tipos de contenido se pueden publicar.', 'flavor-chat-ia'),
-                __('Define las reglas de moderación y reportes.', 'flavor-chat-ia'),
-                __('Los usuarios completan su perfil y empiezan a publicar.', 'flavor-chat-ia'),
+                __('Configura qué tipos de contenido se pueden publicar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Define las reglas de moderación y reportes.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los usuarios completan su perfil y empiezan a publicar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Configurar red social', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=red-social-settings'), 'icon' => 'dashicons-admin-settings'],
-                ['text' => __('Moderación', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=red-social-moderacion'), 'icon' => 'dashicons-shield'],
+                ['text' => __('Configurar red social', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=red-social-settings'), 'icon' => 'dashicons-admin-settings'],
+                ['text' => __('Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=red-social-moderacion'), 'icon' => 'dashicons-shield'],
             ],
         ]);
 
         // Chat Interno
         $this->register_help('chat_interno', [
-            'title'       => __('Cómo usar el Chat Interno', 'flavor-chat-ia'),
-            'description' => __('Mensajería privada entre miembros de la comunidad en tiempo real.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar el Chat Interno', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Mensajería privada entre miembros de la comunidad en tiempo real.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Los mensajes son <strong>privados</strong> entre los participantes.', 'flavor-chat-ia'),
-                __('Se pueden enviar <strong>archivos adjuntos</strong> en las conversaciones.', 'flavor-chat-ia'),
-                __('Las <strong>notificaciones</strong> avisan de nuevos mensajes.', 'flavor-chat-ia'),
+                __('Los mensajes son <strong>privados</strong> entre los participantes.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Se pueden enviar <strong>archivos adjuntos</strong> en las conversaciones.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Las <strong>notificaciones</strong> avisan de nuevos mensajes.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Los usuarios inician conversaciones desde el perfil de otro miembro.', 'flavor-chat-ia'),
-                __('Los mensajes se envían en tiempo real.', 'flavor-chat-ia'),
-                __('El historial queda guardado para futuras consultas.', 'flavor-chat-ia'),
+                __('Los usuarios inician conversaciones desde el perfil de otro miembro.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los mensajes se envían en tiempo real.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('El historial queda guardado para futuras consultas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Configurar chat', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=chat-interno-settings'), 'icon' => 'dashicons-admin-settings'],
+                ['text' => __('Configurar chat', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=chat-interno-settings'), 'icon' => 'dashicons-admin-settings'],
             ],
         ]);
 
         // Chat Grupos
         $this->register_help('chat_grupos', [
-            'title'       => __('Cómo usar el Chat de Grupos', 'flavor-chat-ia'),
-            'description' => __('Salas de chat grupales para conversaciones temáticas o por equipos.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar el Chat de Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Salas de chat grupales para conversaciones temáticas o por equipos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Crea <strong>salas temáticas</strong> para diferentes grupos o temas.', 'flavor-chat-ia'),
-                __('Los <strong>administradores</strong> de sala pueden moderar mensajes.', 'flavor-chat-ia'),
-                __('Las salas pueden ser <strong>públicas o privadas</strong>.', 'flavor-chat-ia'),
+                __('Crea <strong>salas temáticas</strong> para diferentes grupos o temas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los <strong>administradores</strong> de sala pueden moderar mensajes.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Las salas pueden ser <strong>públicas o privadas</strong>.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Crea las salas de chat necesarias.', 'flavor-chat-ia'),
-                __('Asigna administradores a cada sala.', 'flavor-chat-ia'),
-                __('Los usuarios se unen a las salas que les interesan.', 'flavor-chat-ia'),
+                __('Crea las salas de chat necesarias.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Asigna administradores a cada sala.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los usuarios se unen a las salas que les interesan.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Gestionar salas', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=chat-grupos-salas'), 'icon' => 'dashicons-groups'],
+                ['text' => __('Gestionar salas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=chat-grupos-salas'), 'icon' => 'dashicons-groups'],
             ],
         ]);
 
         // Comunidades
         $this->register_help('comunidades', [
-            'title'       => __('Cómo usar Comunidades', 'flavor-chat-ia'),
-            'description' => __('Espacios independientes dentro de la plataforma con sus propios miembros y contenido.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Espacios independientes dentro de la plataforma con sus propios miembros y contenido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Cada comunidad tiene su propio <strong>espacio y configuración</strong>.', 'flavor-chat-ia'),
-                __('Los <strong>administradores</strong> de comunidad gestionan miembros y contenido.', 'flavor-chat-ia'),
-                __('Las comunidades pueden ser <strong>abiertas o por invitación</strong>.', 'flavor-chat-ia'),
-                __('Los miembros pueden pertenecer a <strong>múltiples comunidades</strong>.', 'flavor-chat-ia'),
+                __('Cada comunidad tiene su propio <strong>espacio y configuración</strong>.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los <strong>administradores</strong> de comunidad gestionan miembros y contenido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Las comunidades pueden ser <strong>abiertas o por invitación</strong>.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los miembros pueden pertenecer a <strong>múltiples comunidades</strong>.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Crea una nueva comunidad con nombre y descripción.', 'flavor-chat-ia'),
-                __('Configura la privacidad y reglas de acceso.', 'flavor-chat-ia'),
-                __('Invita a los primeros miembros o hazla pública.', 'flavor-chat-ia'),
+                __('Crea una nueva comunidad con nombre y descripción.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Configura la privacidad y reglas de acceso.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Invita a los primeros miembros o hazla pública.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Crear comunidad', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=comunidades-nueva'), 'icon' => 'dashicons-plus-alt'],
-                ['text' => __('Ver todas', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=comunidades-listado'), 'icon' => 'dashicons-networking'],
+                ['text' => __('Crear comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=comunidades-nueva'), 'icon' => 'dashicons-plus-alt'],
+                ['text' => __('Ver todas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=comunidades-listado'), 'icon' => 'dashicons-networking'],
             ],
         ]);
 
         // Colectivos
         $this->register_help('colectivos', [
-            'title'       => __('Cómo usar Colectivos', 'flavor-chat-ia'),
-            'description' => __('Grupos de trabajo o interés dentro de la comunidad con objetivos comunes.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Grupos de trabajo o interés dentro de la comunidad con objetivos comunes.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Los colectivos pueden tener <strong>proyectos propios</strong>.', 'flavor-chat-ia'),
-                __('Cada colectivo tiene su <strong>espacio de comunicación</strong>.', 'flavor-chat-ia'),
-                __('Los miembros pueden tener <strong>roles diferentes</strong> (coordinador, miembro, etc.).', 'flavor-chat-ia'),
+                __('Los colectivos pueden tener <strong>proyectos propios</strong>.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Cada colectivo tiene su <strong>espacio de comunicación</strong>.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los miembros pueden tener <strong>roles diferentes</strong> (coordinador, miembro, etc.).', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Crea un colectivo con su propósito y objetivos.', 'flavor-chat-ia'),
-                __('Invita a personas interesadas a unirse.', 'flavor-chat-ia'),
-                __('Organiza tareas y proyectos del colectivo.', 'flavor-chat-ia'),
+                __('Crea un colectivo con su propósito y objetivos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Invita a personas interesadas a unirse.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Organiza tareas y proyectos del colectivo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Crear colectivo', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=colectivos-nuevo'), 'icon' => 'dashicons-plus-alt'],
+                ['text' => __('Crear colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=colectivos-nuevo'), 'icon' => 'dashicons-plus-alt'],
             ],
         ]);
 
         // Multimedia
         $this->register_help('multimedia', [
-            'title'       => __('Cómo usar Multimedia', 'flavor-chat-ia'),
-            'description' => __('Gestión de contenido multimedia: galerías, vídeos, podcasts y documentos.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Gestión de contenido multimedia: galerías, vídeos, podcasts y documentos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Organiza el contenido en <strong>álbumes y colecciones</strong>.', 'flavor-chat-ia'),
-                __('Los usuarios pueden <strong>subir su propio contenido</strong> si está habilitado.', 'flavor-chat-ia'),
-                __('Configura <strong>límites de tamaño</strong> y tipos de archivo permitidos.', 'flavor-chat-ia'),
+                __('Organiza el contenido en <strong>álbumes y colecciones</strong>.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los usuarios pueden <strong>subir su propio contenido</strong> si está habilitado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Configura <strong>límites de tamaño</strong> y tipos de archivo permitidos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Crea las categorías y álbumes para organizar el contenido.', 'flavor-chat-ia'),
-                __('Sube contenido multimedia o permite que los usuarios lo hagan.', 'flavor-chat-ia'),
-                __('Modera el contenido subido por los usuarios.', 'flavor-chat-ia'),
+                __('Crea las categorías y álbumes para organizar el contenido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Sube contenido multimedia o permite que los usuarios lo hagan.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Modera el contenido subido por los usuarios.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Subir contenido', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=multimedia-subir'), 'icon' => 'dashicons-upload'],
-                ['text' => __('Galería', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=multimedia-galeria'), 'icon' => 'dashicons-format-gallery'],
+                ['text' => __('Subir contenido', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=multimedia-subir'), 'icon' => 'dashicons-upload'],
+                ['text' => __('Galería', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=multimedia-galeria'), 'icon' => 'dashicons-format-gallery'],
             ],
         ]);
 
         // Radio
         $this->register_help('radio', [
-            'title'       => __('Cómo usar Radio Comunitaria', 'flavor-chat-ia'),
-            'description' => __('Emisora de radio online con programación, podcasts y emisión en directo.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar Radio Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Emisora de radio online con programación, podcasts y emisión en directo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Configura la <strong>parrilla de programación</strong> semanal.', 'flavor-chat-ia'),
-                __('Los <strong>podcasts</strong> quedan disponibles para escuchar bajo demanda.', 'flavor-chat-ia'),
-                __('La <strong>emisión en directo</strong> permite retransmitir eventos en vivo.', 'flavor-chat-ia'),
+                __('Configura la <strong>parrilla de programación</strong> semanal.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los <strong>podcasts</strong> quedan disponibles para escuchar bajo demanda.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('La <strong>emisión en directo</strong> permite retransmitir eventos en vivo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Configura la URL del stream de audio.', 'flavor-chat-ia'),
-                __('Crea los programas y asigna horarios.', 'flavor-chat-ia'),
-                __('Sube podcasts de los programas emitidos.', 'flavor-chat-ia'),
+                __('Configura la URL del stream de audio.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Crea los programas y asigna horarios.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Sube podcasts de los programas emitidos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Configurar radio', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=radio-settings'), 'icon' => 'dashicons-admin-settings'],
-                ['text' => __('Programación', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=radio-programacion'), 'icon' => 'dashicons-calendar-alt'],
+                ['text' => __('Configurar radio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=radio-settings'), 'icon' => 'dashicons-admin-settings'],
+                ['text' => __('Programación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=radio-programacion'), 'icon' => 'dashicons-calendar-alt'],
             ],
         ]);
 
         // Huertos Urbanos
         $this->register_help('huertos_urbanos', [
-            'title'       => __('Cómo usar Huertos Urbanos', 'flavor-chat-ia'),
-            'description' => __('Gestión de parcelas, cosechas y recursos para huertos comunitarios.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar Huertos Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Gestión de parcelas, cosechas y recursos para huertos comunitarios.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Asigna <strong>parcelas</strong> a los hortelanos registrados.', 'flavor-chat-ia'),
-                __('Registra las <strong>cosechas</strong> para llevar estadísticas.', 'flavor-chat-ia'),
-                __('Comparte <strong>recursos</strong> como herramientas y semillas.', 'flavor-chat-ia'),
+                __('Asigna <strong>parcelas</strong> a los hortelanos registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Registra las <strong>cosechas</strong> para llevar estadísticas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Comparte <strong>recursos</strong> como herramientas y semillas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Registra las parcelas disponibles en el huerto.', 'flavor-chat-ia'),
-                __('Asigna parcelas a los usuarios interesados.', 'flavor-chat-ia'),
-                __('Los hortelanos registran sus cosechas periódicamente.', 'flavor-chat-ia'),
+                __('Registra las parcelas disponibles en el huerto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Asigna parcelas a los usuarios interesados.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los hortelanos registran sus cosechas periódicamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Ver parcelas', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=huertos-parcelas'), 'icon' => 'dashicons-grid-view'],
+                ['text' => __('Ver parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=huertos-parcelas'), 'icon' => 'dashicons-grid-view'],
             ],
         ]);
 
         // Incidencias
         $this->register_help('incidencias', [
-            'title'       => __('Cómo usar Incidencias', 'flavor-chat-ia'),
-            'description' => __('Sistema de reporte y seguimiento de incidencias y problemas.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Sistema de reporte y seguimiento de incidencias y problemas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Las incidencias tienen <strong>estados</strong>: abierta, en proceso, resuelta.', 'flavor-chat-ia'),
-                __('Asigna <strong>responsables</strong> para cada tipo de incidencia.', 'flavor-chat-ia'),
-                __('Los usuarios reciben <strong>notificaciones</strong> del progreso.', 'flavor-chat-ia'),
+                __('Las incidencias tienen <strong>estados</strong>: abierta, en proceso, resuelta.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Asigna <strong>responsables</strong> para cada tipo de incidencia.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los usuarios reciben <strong>notificaciones</strong> del progreso.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Configura las categorías de incidencias.', 'flavor-chat-ia'),
-                __('Los usuarios reportan incidencias desde el frontend.', 'flavor-chat-ia'),
-                __('Gestiona y resuelve las incidencias reportadas.', 'flavor-chat-ia'),
+                __('Configura las categorías de incidencias.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los usuarios reportan incidencias desde el frontend.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Gestiona y resuelve las incidencias reportadas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Ver incidencias', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=incidencias-listado'), 'icon' => 'dashicons-warning'],
+                ['text' => __('Ver incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=incidencias-listado'), 'icon' => 'dashicons-warning'],
             ],
         ]);
 
         // Talleres
         $this->register_help('talleres', [
-            'title'       => __('Cómo usar Talleres', 'flavor-chat-ia'),
-            'description' => __('Organiza talleres formativos con inscripciones, materiales y seguimiento.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Organiza talleres formativos con inscripciones, materiales y seguimiento.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Define los <strong>materiales necesarios</strong> para cada taller.', 'flavor-chat-ia'),
-                __('Configura el <strong>aforo máximo</strong> y lista de espera.', 'flavor-chat-ia'),
-                __('Los <strong>facilitadores</strong> pueden gestionar sus propios talleres.', 'flavor-chat-ia'),
+                __('Define los <strong>materiales necesarios</strong> para cada taller.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Configura el <strong>aforo máximo</strong> y lista de espera.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los <strong>facilitadores</strong> pueden gestionar sus propios talleres.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Crea un taller con descripción, fecha y lugar.', 'flavor-chat-ia'),
-                __('Añade los materiales o requisitos previos.', 'flavor-chat-ia'),
-                __('Abre las inscripciones para los participantes.', 'flavor-chat-ia'),
+                __('Crea un taller con descripción, fecha y lugar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Añade los materiales o requisitos previos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Abre las inscripciones para los participantes.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Crear taller', 'flavor-chat-ia'), 'url' => admin_url('post-new.php?post_type=taller'), 'icon' => 'dashicons-plus-alt'],
+                ['text' => __('Crear taller', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('post-new.php?post_type=taller'), 'icon' => 'dashicons-plus-alt'],
             ],
         ]);
 
         // Cursos
         $this->register_help('cursos', [
-            'title'       => __('Cómo usar Cursos', 'flavor-chat-ia'),
-            'description' => __('Plataforma de aprendizaje con cursos, lecciones y seguimiento de progreso.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Plataforma de aprendizaje con cursos, lecciones y seguimiento de progreso.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Organiza el contenido en <strong>módulos y lecciones</strong>.', 'flavor-chat-ia'),
-                __('Añade <strong>cuestionarios</strong> para evaluar el aprendizaje.', 'flavor-chat-ia'),
-                __('Los usuarios ven su <strong>progreso</strong> en cada curso.', 'flavor-chat-ia'),
+                __('Organiza el contenido en <strong>módulos y lecciones</strong>.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Añade <strong>cuestionarios</strong> para evaluar el aprendizaje.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los usuarios ven su <strong>progreso</strong> en cada curso.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Crea un curso con su estructura de módulos.', 'flavor-chat-ia'),
-                __('Añade las lecciones con contenido multimedia.', 'flavor-chat-ia'),
-                __('Publica el curso para que los usuarios se inscriban.', 'flavor-chat-ia'),
+                __('Crea un curso con su estructura de módulos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Añade las lecciones con contenido multimedia.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Publica el curso para que los usuarios se inscriban.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Crear curso', 'flavor-chat-ia'), 'url' => admin_url('post-new.php?post_type=curso'), 'icon' => 'dashicons-plus-alt'],
+                ['text' => __('Crear curso', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('post-new.php?post_type=curso'), 'icon' => 'dashicons-plus-alt'],
             ],
         ]);
 
         // Biblioteca
         $this->register_help('biblioteca', [
-            'title'       => __('Cómo usar la Biblioteca', 'flavor-chat-ia'),
-            'description' => __('Gestión de préstamos de libros, revistas y otros materiales.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar la Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Gestión de préstamos de libros, revistas y otros materiales.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Configura el <strong>período de préstamo</strong> por tipo de material.', 'flavor-chat-ia'),
-                __('Los usuarios pueden hacer <strong>reservas</strong> de materiales prestados.', 'flavor-chat-ia'),
-                __('Envía <strong>recordatorios</strong> automáticos de devolución.', 'flavor-chat-ia'),
+                __('Configura el <strong>período de préstamo</strong> por tipo de material.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los usuarios pueden hacer <strong>reservas</strong> de materiales prestados.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Envía <strong>recordatorios</strong> automáticos de devolución.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Registra el catálogo de materiales disponibles.', 'flavor-chat-ia'),
-                __('Configura las políticas de préstamo.', 'flavor-chat-ia'),
-                __('Los usuarios solicitan préstamos desde el catálogo.', 'flavor-chat-ia'),
+                __('Registra el catálogo de materiales disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Configura las políticas de préstamo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los usuarios solicitan préstamos desde el catálogo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Ver catálogo', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=biblioteca-catalogo'), 'icon' => 'dashicons-book'],
+                ['text' => __('Ver catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=biblioteca-catalogo'), 'icon' => 'dashicons-book'],
             ],
         ]);
 
         // Bicicletas Compartidas
         $this->register_help('bicicletas_compartidas', [
-            'title'       => __('Cómo usar Bicicletas Compartidas', 'flavor-chat-ia'),
-            'description' => __('Sistema de préstamo de bicicletas con estaciones y seguimiento.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar Bicicletas Compartidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Sistema de préstamo de bicicletas con estaciones y seguimiento.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Registra las <strong>bicicletas</strong> y su estado actual.', 'flavor-chat-ia'),
-                __('Configura las <strong>estaciones</strong> de recogida y devolución.', 'flavor-chat-ia'),
-                __('Los usuarios reservan bicicletas desde su móvil.', 'flavor-chat-ia'),
+                __('Registra las <strong>bicicletas</strong> y su estado actual.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Configura las <strong>estaciones</strong> de recogida y devolución.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los usuarios reservan bicicletas desde su móvil.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Registra las estaciones con su ubicación.', 'flavor-chat-ia'),
-                __('Añade las bicicletas disponibles.', 'flavor-chat-ia'),
-                __('Los usuarios pueden reservar y devolver bicicletas.', 'flavor-chat-ia'),
+                __('Registra las estaciones con su ubicación.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Añade las bicicletas disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los usuarios pueden reservar y devolver bicicletas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Ver estaciones', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=bicicletas-estaciones'), 'icon' => 'dashicons-location'],
+                ['text' => __('Ver estaciones', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=bicicletas-estaciones'), 'icon' => 'dashicons-location'],
             ],
         ]);
 
         // Carpooling
         $this->register_help('carpooling', [
-            'title'       => __('Cómo usar Carpooling', 'flavor-chat-ia'),
-            'description' => __('Comparte viajes en coche para reducir costes y emisiones.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar Carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Comparte viajes en coche para reducir costes y emisiones.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Los <strong>conductores</strong> publican sus rutas disponibles.', 'flavor-chat-ia'),
-                __('Los <strong>pasajeros</strong> buscan viajes por origen y destino.', 'flavor-chat-ia'),
-                __('El sistema calcula una <strong>aportación sugerida</strong> por los gastos.', 'flavor-chat-ia'),
+                __('Los <strong>conductores</strong> publican sus rutas disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los <strong>pasajeros</strong> buscan viajes por origen y destino.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('El sistema calcula una <strong>aportación sugerida</strong> por los gastos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Los conductores registran sus viajes habituales.', 'flavor-chat-ia'),
-                __('Los pasajeros buscan y solicitan plaza.', 'flavor-chat-ia'),
-                __('El conductor acepta o rechaza las solicitudes.', 'flavor-chat-ia'),
+                __('Los conductores registran sus viajes habituales.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los pasajeros buscan y solicitan plaza.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('El conductor acepta o rechaza las solicitudes.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Publicar viaje', 'flavor-chat-ia'), 'url' => home_url('/mi-portal/carpooling/publicar/'), 'icon' => 'dashicons-plus-alt'],
+                ['text' => __('Publicar viaje', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => home_url('/mi-portal/carpooling/publicar/'), 'icon' => 'dashicons-plus-alt'],
             ],
         ]);
 
         // Avisos Municipales
         $this->register_help('avisos_municipales', [
-            'title'       => __('Cómo usar Avisos Municipales', 'flavor-chat-ia'),
-            'description' => __('Publica avisos y comunicados para la comunidad.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar Avisos Municipales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Publica avisos y comunicados para la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Los avisos pueden ser <strong>urgentes</strong> para mayor visibilidad.', 'flavor-chat-ia'),
-                __('Configura <strong>notificaciones</strong> push para avisos importantes.', 'flavor-chat-ia'),
-                __('Los avisos antiguos se archivan automáticamente.', 'flavor-chat-ia'),
+                __('Los avisos pueden ser <strong>urgentes</strong> para mayor visibilidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Configura <strong>notificaciones</strong> push para avisos importantes.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los avisos antiguos se archivan automáticamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Crea un nuevo aviso con título y contenido.', 'flavor-chat-ia'),
-                __('Selecciona el tipo y urgencia del aviso.', 'flavor-chat-ia'),
-                __('Publica para que aparezca en el tablón.', 'flavor-chat-ia'),
+                __('Crea un nuevo aviso con título y contenido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Selecciona el tipo y urgencia del aviso.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Publica para que aparezca en el tablón.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Crear aviso', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=avisos-nuevo'), 'icon' => 'dashicons-megaphone'],
+                ['text' => __('Crear aviso', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=avisos-nuevo'), 'icon' => 'dashicons-megaphone'],
             ],
         ]);
 
         // Tramites
         $this->register_help('tramites', [
-            'title'       => __('Cómo usar Trámites', 'flavor-chat-ia'),
-            'description' => __('Gestión de trámites administrativos y expedientes online.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Gestión de trámites administrativos y expedientes online.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Define los <strong>tipos de trámite</strong> y sus requisitos.', 'flavor-chat-ia'),
-                __('Los usuarios siguen el <strong>estado de sus expedientes</strong>.', 'flavor-chat-ia'),
-                __('Configura <strong>plazos</strong> y alertas automáticas.', 'flavor-chat-ia'),
+                __('Define los <strong>tipos de trámite</strong> y sus requisitos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los usuarios siguen el <strong>estado de sus expedientes</strong>.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Configura <strong>plazos</strong> y alertas automáticas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Crea los tipos de trámite disponibles.', 'flavor-chat-ia'),
-                __('Define los documentos requeridos para cada uno.', 'flavor-chat-ia'),
-                __('Los usuarios inician trámites desde el portal.', 'flavor-chat-ia'),
+                __('Crea los tipos de trámite disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Define los documentos requeridos para cada uno.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los usuarios inician trámites desde el portal.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Ver expedientes', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=tramites-expedientes'), 'icon' => 'dashicons-portfolio'],
+                ['text' => __('Ver expedientes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=tramites-expedientes'), 'icon' => 'dashicons-portfolio'],
             ],
         ]);
 
         // Transparencia
         $this->register_help('transparencia', [
-            'title'       => __('Cómo usar Transparencia', 'flavor-chat-ia'),
-            'description' => __('Portal de transparencia con documentos, presupuestos y rendición de cuentas.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Portal de transparencia con documentos, presupuestos y rendición de cuentas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Publica <strong>documentos</strong> organizados por categorías.', 'flavor-chat-ia'),
-                __('Los <strong>presupuestos</strong> se visualizan con gráficos.', 'flavor-chat-ia'),
-                __('Mantén un <strong>histórico</strong> de documentos anteriores.', 'flavor-chat-ia'),
+                __('Publica <strong>documentos</strong> organizados por categorías.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los <strong>presupuestos</strong> se visualizan con gráficos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Mantén un <strong>histórico</strong> de documentos anteriores.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Configura las categorías de documentos.', 'flavor-chat-ia'),
-                __('Sube los documentos de transparencia.', 'flavor-chat-ia'),
-                __('Los usuarios pueden consultar y descargar.', 'flavor-chat-ia'),
+                __('Configura las categorías de documentos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Sube los documentos de transparencia.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los usuarios pueden consultar y descargar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Subir documento', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=transparencia-subir'), 'icon' => 'dashicons-upload'],
+                ['text' => __('Subir documento', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=transparencia-subir'), 'icon' => 'dashicons-upload'],
             ],
         ]);
 
         // Compostaje
         $this->register_help('compostaje', [
-            'title'       => __('Cómo usar Compostaje', 'flavor-chat-ia'),
-            'description' => __('Gestión de composteras comunitarias y seguimiento de aportaciones.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar Compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Gestión de composteras comunitarias y seguimiento de aportaciones.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Registra las <strong>aportaciones</strong> de cada participante.', 'flavor-chat-ia'),
-                __('Lleva el <strong>control de producción</strong> de compost.', 'flavor-chat-ia'),
-                __('Organiza <strong>turnos de mantenimiento</strong> de las composteras.', 'flavor-chat-ia'),
+                __('Registra las <strong>aportaciones</strong> de cada participante.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Lleva el <strong>control de producción</strong> de compost.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Organiza <strong>turnos de mantenimiento</strong> de las composteras.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Registra las composteras disponibles.', 'flavor-chat-ia'),
-                __('Los participantes registran sus aportaciones.', 'flavor-chat-ia'),
-                __('Distribuye el compost producido.', 'flavor-chat-ia'),
+                __('Registra las composteras disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los participantes registran sus aportaciones.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Distribuye el compost producido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Ver composteras', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=compostaje-composteras'), 'icon' => 'dashicons-carrot'],
+                ['text' => __('Ver composteras', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=compostaje-composteras'), 'icon' => 'dashicons-carrot'],
             ],
         ]);
 
         // Economía del Don
         $this->register_help('economia_don', [
-            'title'       => __('Cómo usar Economía del Don', 'flavor-chat-ia'),
-            'description' => __('Espacio para ofrecer y recibir objetos, servicios y habilidades de forma gratuita.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar Economía del Don', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Espacio para ofrecer y recibir objetos, servicios y habilidades de forma gratuita.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Los <strong>dones</strong> se ofrecen sin esperar nada a cambio.', 'flavor-chat-ia'),
-                __('Fomenta la <strong>abundancia</strong> y el compartir en comunidad.', 'flavor-chat-ia'),
-                __('Cualquier persona puede ofrecer o solicitar dones.', 'flavor-chat-ia'),
+                __('Los <strong>dones</strong> se ofrecen sin esperar nada a cambio.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Fomenta la <strong>abundancia</strong> y el compartir en comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Cualquier persona puede ofrecer o solicitar dones.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Publica lo que quieres ofrecer o necesitas.', 'flavor-chat-ia'),
-                __('Conecta con quien puede ayudarte o necesita ayuda.', 'flavor-chat-ia'),
-                __('Realiza el intercambio y agradece.', 'flavor-chat-ia'),
+                __('Publica lo que quieres ofrecer o necesitas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Conecta con quien puede ayudarte o necesita ayuda.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Realiza el intercambio y agradece.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Ofrecer don', 'flavor-chat-ia'), 'url' => admin_url('post-new.php?post_type=ed_don'), 'icon' => 'dashicons-heart'],
+                ['text' => __('Ofrecer don', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('post-new.php?post_type=ed_don'), 'icon' => 'dashicons-heart'],
             ],
         ]);
 
         // Ayuda Vecinal
         $this->register_help('ayuda_vecinal', [
-            'title'       => __('Cómo usar Ayuda Vecinal', 'flavor-chat-ia'),
-            'description' => __('Red de apoyo mutuo entre vecinos para pequeñas ayudas cotidianas.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Red de apoyo mutuo entre vecinos para pequeñas ayudas cotidianas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Las solicitudes pueden ser <strong>urgentes</strong> para priorizar.', 'flavor-chat-ia'),
-                __('Los vecinos que ayudan reciben <strong>reconocimiento</strong>.', 'flavor-chat-ia'),
-                __('Fomenta la <strong>cohesión social</strong> del barrio.', 'flavor-chat-ia'),
+                __('Las solicitudes pueden ser <strong>urgentes</strong> para priorizar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los vecinos que ayudan reciben <strong>reconocimiento</strong>.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Fomenta la <strong>cohesión social</strong> del barrio.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Publica una solicitud de ayuda.', 'flavor-chat-ia'),
-                __('Los vecinos cercanos ven la solicitud.', 'flavor-chat-ia'),
-                __('Alguien se ofrece y coordinan la ayuda.', 'flavor-chat-ia'),
+                __('Publica una solicitud de ayuda.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los vecinos cercanos ven la solicitud.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Alguien se ofrece y coordinan la ayuda.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Nueva solicitud', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=ayuda-nueva-solicitud'), 'icon' => 'dashicons-sos'],
+                ['text' => __('Nueva solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=ayuda-nueva-solicitud'), 'icon' => 'dashicons-sos'],
             ],
         ]);
 
         // Espacios Comunes
         $this->register_help('espacios_comunes', [
-            'title'       => __('Cómo usar Espacios Comunes', 'flavor-chat-ia'),
-            'description' => __('Gestión y reserva de espacios compartidos: salas, terrazas, cocinas comunitarias.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar Espacios Comunes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Gestión y reserva de espacios compartidos: salas, terrazas, cocinas comunitarias.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Define los <strong>horarios de disponibilidad</strong> de cada espacio.', 'flavor-chat-ia'),
-                __('Configura <strong>reglas de uso</strong> como duración máxima o anticipación.', 'flavor-chat-ia'),
-                __('Los <strong>conflictos de reserva</strong> se detectan automáticamente.', 'flavor-chat-ia'),
+                __('Define los <strong>horarios de disponibilidad</strong> de cada espacio.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Configura <strong>reglas de uso</strong> como duración máxima o anticipación.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los <strong>conflictos de reserva</strong> se detectan automáticamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Registra los espacios disponibles con su capacidad.', 'flavor-chat-ia'),
-                __('Configura los horarios y reglas de cada espacio.', 'flavor-chat-ia'),
-                __('Los usuarios reservan desde el portal.', 'flavor-chat-ia'),
+                __('Registra los espacios disponibles con su capacidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Configura los horarios y reglas de cada espacio.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los usuarios reservan desde el portal.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Ver espacios', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=espacios-listado'), 'icon' => 'dashicons-building'],
+                ['text' => __('Ver espacios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=espacios-listado'), 'icon' => 'dashicons-building'],
             ],
         ]);
 
         // Reciclaje
         $this->register_help('reciclaje', [
-            'title'       => __('Cómo usar Reciclaje', 'flavor-chat-ia'),
-            'description' => __('Sistema de puntos de reciclaje con gamificación y seguimiento de impacto ambiental.', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Sistema de puntos de reciclaje con gamificación y seguimiento de impacto ambiental.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'tips'        => [
-                __('Los usuarios ganan <strong>puntos</strong> por cada depósito de reciclaje.', 'flavor-chat-ia'),
-                __('El <strong>impacto ambiental</strong> se calcula automáticamente.', 'flavor-chat-ia'),
-                __('Monitoriza el <strong>estado de los contenedores</strong> en cada punto.', 'flavor-chat-ia'),
+                __('Los usuarios ganan <strong>puntos</strong> por cada depósito de reciclaje.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('El <strong>impacto ambiental</strong> se calcula automáticamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Monitoriza el <strong>estado de los contenedores</strong> en cada punto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'steps'       => [
-                __('Registra los puntos de reciclaje con su ubicación.', 'flavor-chat-ia'),
-                __('Los usuarios depositan residuos y registran la aportación.', 'flavor-chat-ia'),
-                __('Consulta las estadísticas de impacto ambiental.', 'flavor-chat-ia'),
+                __('Registra los puntos de reciclaje con su ubicación.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Los usuarios depositan residuos y registran la aportación.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Consulta las estadísticas de impacto ambiental.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'links'       => [
-                ['text' => __('Ver puntos', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=reciclaje-puntos'), 'icon' => 'dashicons-admin-site'],
+                ['text' => __('Ver puntos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=reciclaje-puntos'), 'icon' => 'dashicons-admin-site'],
             ],
         ]);
     }

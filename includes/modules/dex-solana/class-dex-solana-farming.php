@@ -104,12 +104,12 @@ class Flavor_Dex_Solana_Farming {
         );
 
         if (!$programa) {
-            return array('success' => false, 'error' => __('Programa de farming no encontrado', 'flavor-chat-ia'));
+            return array('success' => false, 'error' => __('Programa de farming no encontrado', 'flavor-platform'));
         }
 
         // Verificar que el programa esta activo
         if ((int) $programa['activo'] !== 1) {
-            return array('success' => false, 'error' => __('El programa de farming no esta activo', 'flavor-chat-ia'));
+            return array('success' => false, 'error' => __('El programa de farming no esta activo', 'flavor-platform'));
         }
 
         // Verificar que no ha expirado
@@ -117,7 +117,7 @@ class Flavor_Dex_Solana_Farming {
         $timestamp_fin    = strtotime($programa['fecha_fin']);
 
         if ($timestamp_actual >= $timestamp_fin) {
-            return array('success' => false, 'error' => __('El programa de farming ha expirado', 'flavor-chat-ia'));
+            return array('success' => false, 'error' => __('El programa de farming ha expirado', 'flavor-platform'));
         }
 
         // Obtener la posicion LP del usuario para este pool
@@ -131,15 +131,15 @@ class Flavor_Dex_Solana_Farming {
         );
 
         if (!$posicion_lp) {
-            return array('success' => false, 'error' => __('El usuario no tiene posicion LP en este pool', 'flavor-chat-ia'));
+            return array('success' => false, 'error' => __('El usuario no tiene posicion LP en este pool', 'flavor-platform'));
         }
 
         if ((float) $posicion_lp['lp_tokens'] < $lp_tokens) {
-            return array('success' => false, 'error' => __('LP tokens insuficientes', 'flavor-chat-ia'));
+            return array('success' => false, 'error' => __('LP tokens insuficientes', 'flavor-platform'));
         }
 
         if ((int) $posicion_lp['staked'] === 1) {
-            return array('success' => false, 'error' => __('Los LP tokens ya estan stakeados', 'flavor-chat-ia'));
+            return array('success' => false, 'error' => __('Los LP tokens ya estan stakeados', 'flavor-platform'));
         }
 
         // Marcar la posicion como stakeada
@@ -207,7 +207,7 @@ class Flavor_Dex_Solana_Farming {
         );
 
         if (!$programa) {
-            return array('success' => false, 'error' => __('Programa de farming no encontrado', 'flavor-chat-ia'));
+            return array('success' => false, 'error' => __('Programa de farming no encontrado', 'flavor-platform'));
         }
 
         // Obtener la posicion LP del usuario
@@ -221,7 +221,7 @@ class Flavor_Dex_Solana_Farming {
         );
 
         if (!$posicion_lp) {
-            return array('success' => false, 'error' => __('No se encontro posicion LP stakeada para este usuario', 'flavor-chat-ia'));
+            return array('success' => false, 'error' => __('No se encontro posicion LP stakeada para este usuario', 'flavor-platform'));
         }
 
         $lp_tokens_devueltos = (float) $posicion_lp['lp_tokens'];
@@ -288,7 +288,7 @@ class Flavor_Dex_Solana_Farming {
         );
 
         if (!$programa) {
-            return array('success' => false, 'error' => __('Programa de farming no encontrado', 'flavor-chat-ia'));
+            return array('success' => false, 'error' => __('Programa de farming no encontrado', 'flavor-platform'));
         }
 
         // Obtener precio del reward token

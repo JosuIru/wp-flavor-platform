@@ -9,39 +9,39 @@ if (!defined('ABSPATH')) exit;
 ?>
 
 <div class="wrap flavor-voluntarios-management">
-    <h1 class="wp-heading-inline"><?php _e('Gestión de Voluntarios', 'flavor-chat-ia'); ?></h1>
-    <button type="button" class="page-title-action" id="btn-nuevo-voluntario"><?php _e('Nuevo Voluntario', 'flavor-chat-ia'); ?></button>
+    <h1 class="wp-heading-inline"><?php _e('Gestión de Voluntarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
+    <button type="button" class="page-title-action" id="btn-nuevo-voluntario"><?php _e('Nuevo Voluntario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
     <hr class="wp-header-end">
 
     <div class="flavor-filters-bar">
         <div class="flavor-filter-group">
-            <label><?php _e('Buscar:', 'flavor-chat-ia'); ?></label>
-            <input type="text" id="search-voluntarios" class="flavor-search-input" placeholder="<?php _e('Nombre, habilidades...', 'flavor-chat-ia'); ?>">
+            <label><?php _e('Buscar:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+            <input type="text" id="search-voluntarios" class="flavor-search-input" placeholder="<?php _e('Nombre, habilidades...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
         </div>
         <div class="flavor-filter-group">
-            <label><?php _e('Disponibilidad:', 'flavor-chat-ia'); ?></label>
+            <label><?php _e('Disponibilidad:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <select id="filtro-disponibilidad" class="flavor-select">
-                <option value=""><?php _e('Todos', 'flavor-chat-ia'); ?></option>
-                <option value="<?php echo esc_attr__('disponible', 'flavor-chat-ia'); ?>"><?php _e('Disponible', 'flavor-chat-ia'); ?></option>
-                <option value="<?php echo esc_attr__('ocupado', 'flavor-chat-ia'); ?>"><?php _e('Ocupado', 'flavor-chat-ia'); ?></option>
-                <option value="<?php echo esc_attr__('inactivo', 'flavor-chat-ia'); ?>"><?php _e('Inactivo', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php _e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('ocupado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Ocupado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('inactivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Inactivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             </select>
         </div>
         <div class="flavor-filter-group">
-            <label><?php _e('Categoría:', 'flavor-chat-ia'); ?></label>
+            <label><?php _e('Categoría:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <select id="filtro-categoria-vol" class="flavor-select">
-                <option value=""><?php _e('Todas', 'flavor-chat-ia'); ?></option>
-                <option value="<?php echo esc_attr__('compras', 'flavor-chat-ia'); ?>"><?php _e('Compras', 'flavor-chat-ia'); ?></option>
-                <option value="<?php echo esc_attr__('transporte', 'flavor-chat-ia'); ?>"><?php _e('Transporte', 'flavor-chat-ia'); ?></option>
-                <option value="<?php echo esc_attr__('companía', 'flavor-chat-ia'); ?>"><?php _e('Compañía', 'flavor-chat-ia'); ?></option>
-                <option value="<?php echo esc_attr__('tramites', 'flavor-chat-ia'); ?>"><?php _e('Trámites', 'flavor-chat-ia'); ?></option>
-                <option value="<?php echo esc_attr__('tecnologia', 'flavor-chat-ia'); ?>"><?php _e('Tecnología', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php _e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('compras', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Compras', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('transporte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Transporte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('companía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Compañía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('tramites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="<?php echo esc_attr__('tecnologia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             </select>
         </div>
     </div>
 
     <div class="flavor-voluntarios-grid" id="voluntarios-list">
-        <div class="flavor-loading"><?php _e('Cargando voluntarios...', 'flavor-chat-ia'); ?></div>
+        <div class="flavor-loading"><?php _e('Cargando voluntarios...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 </div>
 
@@ -50,62 +50,62 @@ if (!defined('ABSPATH')) exit;
     <div class="flavor-modal-overlay"></div>
     <div class="flavor-modal-content">
         <div class="flavor-modal-header">
-            <h2 id="modal-voluntario-title"><?php _e('Nuevo Voluntario', 'flavor-chat-ia'); ?></h2>
+            <h2 id="modal-voluntario-title"><?php _e('Nuevo Voluntario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <button type="button" class="flavor-modal-close"><span class="dashicons dashicons-no"></span></button>
         </div>
         <div class="flavor-modal-body">
             <form id="form-voluntario">
                 <input type="hidden" id="voluntario-id" name="id">
                 <div class="flavor-form-group">
-                    <label for="voluntario-usuario"><?php _e('Usuario', 'flavor-chat-ia'); ?> *</label>
+                    <label for="voluntario-usuario"><?php _e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <select id="voluntario-usuario" name="usuario_id" required class="widefat">
-                        <option value=""><?php _e('Seleccionar...', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Seleccionar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
                 <div class="flavor-form-group">
-                    <label><?php _e('Categorías de ayuda', 'flavor-chat-ia'); ?> *</label>
+                    <label><?php _e('Categorías de ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <div class="flavor-checkboxes-grid">
-                        <label><input type="checkbox" name="categorias[]" value="<?php echo esc_attr__('compras', 'flavor-chat-ia'); ?>"> <?php _e('Compras', 'flavor-chat-ia'); ?></label>
-                        <label><input type="checkbox" name="categorias[]" value="<?php echo esc_attr__('transporte', 'flavor-chat-ia'); ?>"> <?php _e('Transporte', 'flavor-chat-ia'); ?></label>
-                        <label><input type="checkbox" name="categorias[]" value="<?php echo esc_attr__('companía', 'flavor-chat-ia'); ?>"> <?php _e('Compañía', 'flavor-chat-ia'); ?></label>
-                        <label><input type="checkbox" name="categorias[]" value="<?php echo esc_attr__('tramites', 'flavor-chat-ia'); ?>"> <?php _e('Trámites', 'flavor-chat-ia'); ?></label>
-                        <label><input type="checkbox" name="categorias[]" value="<?php echo esc_attr__('tecnologia', 'flavor-chat-ia'); ?>"> <?php _e('Tecnología', 'flavor-chat-ia'); ?></label>
-                        <label><input type="checkbox" name="categorias[]" value="<?php echo esc_attr__('otro', 'flavor-chat-ia'); ?>"> <?php _e('Otro', 'flavor-chat-ia'); ?></label>
+                        <label><input type="checkbox" name="categorias[]" value="<?php echo esc_attr__('compras', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"> <?php _e('Compras', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                        <label><input type="checkbox" name="categorias[]" value="<?php echo esc_attr__('transporte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"> <?php _e('Transporte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                        <label><input type="checkbox" name="categorias[]" value="<?php echo esc_attr__('companía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"> <?php _e('Compañía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                        <label><input type="checkbox" name="categorias[]" value="<?php echo esc_attr__('tramites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"> <?php _e('Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                        <label><input type="checkbox" name="categorias[]" value="<?php echo esc_attr__('tecnologia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"> <?php _e('Tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                        <label><input type="checkbox" name="categorias[]" value="<?php echo esc_attr__('otro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"> <?php _e('Otro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     </div>
                 </div>
                 <div class="flavor-form-group">
-                    <label for="voluntario-habilidades"><?php _e('Habilidades específicas', 'flavor-chat-ia'); ?></label>
+                    <label for="voluntario-habilidades"><?php _e('Habilidades específicas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <textarea id="voluntario-habilidades" name="habilidades" rows="3" class="widefat"></textarea>
                 </div>
                 <div class="flavor-form-group">
-                    <label><?php _e('Disponibilidad horaria', 'flavor-chat-ia'); ?></label>
+                    <label><?php _e('Disponibilidad horaria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <div class="flavor-checkboxes-inline">
-                        <label><input type="checkbox" name="dias_disponibles[]" value="1"> <?php _e('L', 'flavor-chat-ia'); ?></label>
-                        <label><input type="checkbox" name="dias_disponibles[]" value="2"> <?php _e('M', 'flavor-chat-ia'); ?></label>
-                        <label><input type="checkbox" name="dias_disponibles[]" value="3"> <?php _e('X', 'flavor-chat-ia'); ?></label>
-                        <label><input type="checkbox" name="dias_disponibles[]" value="4"> <?php _e('J', 'flavor-chat-ia'); ?></label>
-                        <label><input type="checkbox" name="dias_disponibles[]" value="5"> <?php _e('V', 'flavor-chat-ia'); ?></label>
-                        <label><input type="checkbox" name="dias_disponibles[]" value="6"> <?php _e('S', 'flavor-chat-ia'); ?></label>
-                        <label><input type="checkbox" name="dias_disponibles[]" value="0"> <?php _e('D', 'flavor-chat-ia'); ?></label>
+                        <label><input type="checkbox" name="dias_disponibles[]" value="1"> <?php _e('L', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                        <label><input type="checkbox" name="dias_disponibles[]" value="2"> <?php _e('M', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                        <label><input type="checkbox" name="dias_disponibles[]" value="3"> <?php _e('X', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                        <label><input type="checkbox" name="dias_disponibles[]" value="4"> <?php _e('J', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                        <label><input type="checkbox" name="dias_disponibles[]" value="5"> <?php _e('V', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                        <label><input type="checkbox" name="dias_disponibles[]" value="6"> <?php _e('S', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                        <label><input type="checkbox" name="dias_disponibles[]" value="0"> <?php _e('D', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     </div>
                 </div>
                 <div class="flavor-form-group">
-                    <label for="voluntario-max-ayudas"><?php _e('Máximo ayudas simultáneas', 'flavor-chat-ia'); ?></label>
+                    <label for="voluntario-max-ayudas"><?php _e('Máximo ayudas simultáneas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="number" id="voluntario-max-ayudas" name="max_ayudas_simultaneas" value="3" min="1" class="widefat">
                 </div>
                 <div class="flavor-form-group">
-                    <label for="voluntario-estado"><?php _e('Estado', 'flavor-chat-ia'); ?></label>
+                    <label for="voluntario-estado"><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="voluntario-estado" name="estado" class="widefat">
-                        <option value="<?php echo esc_attr__('disponible', 'flavor-chat-ia'); ?>"><?php _e('Disponible', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('ocupado', 'flavor-chat-ia'); ?>"><?php _e('Ocupado', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('inactivo', 'flavor-chat-ia'); ?>"><?php _e('Inactivo', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('ocupado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Ocupado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('inactivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php _e('Inactivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
             </form>
         </div>
         <div class="flavor-modal-footer">
-            <button type="button" class="button" id="btn-cancelar-voluntario"><?php _e('Cancelar', 'flavor-chat-ia'); ?></button>
-            <button type="button" class="button button-primary" id="btn-guardar-voluntario"><?php _e('Guardar', 'flavor-chat-ia'); ?></button>
+            <button type="button" class="button" id="btn-cancelar-voluntario"><?php _e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+            <button type="button" class="button button-primary" id="btn-guardar-voluntario"><?php _e('Guardar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
         </div>
     </div>
 </div>
@@ -190,7 +190,7 @@ jQuery(document).ready(function($) {
     $('#btn-nuevo-voluntario').on('click', function() {
         $('#form-voluntario')[0].reset();
         $('#voluntario-id').val('');
-        $('#modal-voluntario-title').text('<?php _e('Nuevo Voluntario', 'flavor-chat-ia'); ?>');
+        $('#modal-voluntario-title').text('<?php _e('Nuevo Voluntario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
         $('#modal-voluntario').fadeIn();
     });
 
@@ -237,7 +237,7 @@ jQuery(document).ready(function($) {
 
     function renderizarVoluntarios(voluntarios) {
         if (voluntarios.length === 0) {
-            $('#voluntarios-list').html('<div class="flavor-empty-state"><p><?php _e('No se encontraron voluntarios', 'flavor-chat-ia'); ?></p></div>');
+            $('#voluntarios-list').html('<div class="flavor-empty-state"><p><?php _e('No se encontraron voluntarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p></div>');
             return;
         }
 
@@ -262,23 +262,23 @@ jQuery(document).ready(function($) {
                     <div class="flavor-voluntario-stats">
                         <div class="flavor-stat-item">
                             <span class="flavor-stat-value">${voluntario.ayudas_completadas || 0}</span>
-                            <span class="flavor-stat-label"><?php _e('Completadas', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-stat-label"><?php _e('Completadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                         <div class="flavor-stat-item">
                             <span class="flavor-stat-value">${voluntario.ayudas_activas || 0}</span>
-                            <span class="flavor-stat-label"><?php _e('Activas', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-stat-label"><?php _e('Activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                         <div class="flavor-stat-item">
                             <span class="flavor-stat-value">${voluntario.valoracion || '-'}</span>
-                            <span class="flavor-stat-label"><?php _e('Valoración', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-stat-label"><?php _e('Valoración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                     </div>
                     <div class="flavor-voluntario-actions">
                         <button class="button btn-editar-voluntario" data-id="${voluntario.id}">
-                            <span class="dashicons dashicons-edit"></span> <?php _e('Editar', 'flavor-chat-ia'); ?>
+                            <span class="dashicons dashicons-edit"></span> <?php _e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <button class="button btn-ver-perfil" data-id="${voluntario.id}">
-                            <span class="dashicons dashicons-visibility"></span> <?php _e('Ver Perfil', 'flavor-chat-ia'); ?>
+                            <span class="dashicons dashicons-visibility"></span> <?php _e('Ver Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </div>
@@ -294,9 +294,9 @@ jQuery(document).ready(function($) {
             data: { action: 'ayuda_vecinal_listar_usuarios' },
             success: function(response) {
                 if (response.success) {
-                    let options = '<option value=""><?php _e('Seleccionar...', 'flavor-chat-ia'); ?></option>';
+                    let options = '<option value=""><?php _e('Seleccionar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>';
                     response.data.forEach(usuario => {
-                        options += `<option value="<?php echo esc_attr__('${usuario.id}', 'flavor-chat-ia'); ?>">${usuario.nombre}</option>`;
+                        options += `<option value="<?php echo esc_attr__('${usuario.id}', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">${usuario.nombre}</option>`;
                     });
                     $('#voluntario-usuario').html(options);
                 }

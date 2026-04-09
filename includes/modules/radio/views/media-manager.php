@@ -43,22 +43,22 @@ $minutos = floor(($stats['duracion_total'] % 3600) / 60);
 <div class="wrap" x-data="radioMediaManager()">
     <h1>
         <span class="dashicons dashicons-format-audio"></span>
-        <?php _e('Gestor de Medios - Radio', 'flavor-chat-ia'); ?>
+        <?php _e('Gestor de Medios - Radio', 'flavor-platform'); ?>
     </h1>
 
     <!-- Tabs -->
     <nav class="nav-tab-wrapper">
         <a href="#" class="nav-tab" :class="{ 'nav-tab-active': tab === 'biblioteca' }" @click.prevent="tab = 'biblioteca'">
-            <span class="dashicons dashicons-playlist-audio"></span> <?php _e('Biblioteca', 'flavor-chat-ia'); ?>
+            <span class="dashicons dashicons-playlist-audio"></span> <?php _e('Biblioteca', 'flavor-platform'); ?>
         </a>
         <a href="#" class="nav-tab" :class="{ 'nav-tab-active': tab === 'subir' }" @click.prevent="tab = 'subir'">
-            <span class="dashicons dashicons-upload"></span> <?php _e('Subir Audio', 'flavor-chat-ia'); ?>
+            <span class="dashicons dashicons-upload"></span> <?php _e('Subir Audio', 'flavor-platform'); ?>
         </a>
         <a href="#" class="nav-tab" :class="{ 'nav-tab-active': tab === 'playlists' }" @click.prevent="tab = 'playlists'">
-            <span class="dashicons dashicons-list-view"></span> <?php _e('Playlists', 'flavor-chat-ia'); ?>
+            <span class="dashicons dashicons-list-view"></span> <?php _e('Playlists', 'flavor-platform'); ?>
         </a>
         <a href="#" class="nav-tab" :class="{ 'nav-tab-active': tab === 'programacion' }" @click.prevent="tab = 'programacion'">
-            <span class="dashicons dashicons-calendar-alt"></span> <?php _e('Programación Auto', 'flavor-chat-ia'); ?>
+            <span class="dashicons dashicons-calendar-alt"></span> <?php _e('Programación Auto', 'flavor-platform'); ?>
         </a>
     </nav>
 
@@ -66,23 +66,23 @@ $minutos = floor(($stats['duracion_total'] % 3600) / 60);
     <div class="radio-media-stats" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin: 20px 0;">
         <div class="stat-card" style="background: #fff; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <div style="font-size: 28px; font-weight: bold; color: #2271b1;"><?php echo number_format($stats['total_audios']); ?></div>
-            <div style="color: #666; font-size: 13px;"><?php _e('Total Audios', 'flavor-chat-ia'); ?></div>
+            <div style="color: #666; font-size: 13px;"><?php _e('Total Audios', 'flavor-platform'); ?></div>
         </div>
         <div class="stat-card" style="background: #fff; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <div style="font-size: 28px; font-weight: bold; color: #00a32a;"><?php echo number_format($stats['canciones']); ?></div>
-            <div style="color: #666; font-size: 13px;"><?php _e('Canciones', 'flavor-chat-ia'); ?></div>
+            <div style="color: #666; font-size: 13px;"><?php _e('Canciones', 'flavor-platform'); ?></div>
         </div>
         <div class="stat-card" style="background: #fff; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <div style="font-size: 28px; font-weight: bold; color: #8c49d8;"><?php echo number_format($stats['podcasts']); ?></div>
-            <div style="color: #666; font-size: 13px;"><?php _e('Podcasts', 'flavor-chat-ia'); ?></div>
+            <div style="color: #666; font-size: 13px;"><?php _e('Podcasts', 'flavor-platform'); ?></div>
         </div>
         <div class="stat-card" style="background: #fff; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <div style="font-size: 28px; font-weight: bold; color: #dba617;"><?php echo number_format($stats['jingles']); ?></div>
-            <div style="color: #666; font-size: 13px;"><?php _e('Jingles/Cortinas', 'flavor-chat-ia'); ?></div>
+            <div style="color: #666; font-size: 13px;"><?php _e('Jingles/Cortinas', 'flavor-platform'); ?></div>
         </div>
         <div class="stat-card" style="background: #fff; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <div style="font-size: 28px; font-weight: bold; color: #d63638;"><?php echo $horas; ?>h <?php echo $minutos; ?>m</div>
-            <div style="color: #666; font-size: 13px;"><?php _e('Duración Total', 'flavor-chat-ia'); ?></div>
+            <div style="color: #666; font-size: 13px;"><?php _e('Duración Total', 'flavor-platform'); ?></div>
         </div>
     </div>
 
@@ -91,19 +91,19 @@ $minutos = floor(($stats['duracion_total'] % 3600) / 60);
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <div style="display: flex; gap: 10px;">
                 <select x-model="filtroTipo" @change="loadBiblioteca()" style="padding: 8px;">
-                    <option value=""><?php _e('Todos los tipos', 'flavor-chat-ia'); ?></option>
-                    <option value="cancion"><?php _e('Canciones', 'flavor-chat-ia'); ?></option>
-                    <option value="podcast"><?php _e('Podcasts', 'flavor-chat-ia'); ?></option>
-                    <option value="jingle"><?php _e('Jingles', 'flavor-chat-ia'); ?></option>
-                    <option value="cortina"><?php _e('Cortinas', 'flavor-chat-ia'); ?></option>
-                    <option value="programa"><?php _e('Programas', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todos los tipos', 'flavor-platform'); ?></option>
+                    <option value="cancion"><?php _e('Canciones', 'flavor-platform'); ?></option>
+                    <option value="podcast"><?php _e('Podcasts', 'flavor-platform'); ?></option>
+                    <option value="jingle"><?php _e('Jingles', 'flavor-platform'); ?></option>
+                    <option value="cortina"><?php _e('Cortinas', 'flavor-platform'); ?></option>
+                    <option value="programa"><?php _e('Programas', 'flavor-platform'); ?></option>
                 </select>
                 <input type="search" x-model="busqueda" @input.debounce.300ms="loadBiblioteca()"
-                       placeholder="<?php esc_attr_e('Buscar por título o artista...', 'flavor-chat-ia'); ?>"
+                       placeholder="<?php esc_attr_e('Buscar por título o artista...', 'flavor-platform'); ?>"
                        style="padding: 8px; width: 300px;">
             </div>
             <button class="button button-primary" @click="tab = 'subir'">
-                <span class="dashicons dashicons-upload"></span> <?php _e('Subir Audio', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-upload"></span> <?php _e('Subir Audio', 'flavor-platform'); ?>
             </button>
         </div>
 
@@ -113,11 +113,11 @@ $minutos = floor(($stats['duracion_total'] % 3600) / 60);
                 <tr>
                     <th style="width: 40px;"><input type="checkbox" @change="toggleSelectAll($event)"></th>
                     <th style="width: 50px;"></th>
-                    <th><?php _e('Título', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 150px;"><?php _e('Artista', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 100px;"><?php _e('Tipo', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 80px;"><?php _e('Duración', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 100px;"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th><?php _e('Título', 'flavor-platform'); ?></th>
+                    <th style="width: 150px;"><?php _e('Artista', 'flavor-platform'); ?></th>
+                    <th style="width: 100px;"><?php _e('Tipo', 'flavor-platform'); ?></th>
+                    <th style="width: 80px;"><?php _e('Duración', 'flavor-platform'); ?></th>
+                    <th style="width: 100px;"><?php _e('Acciones', 'flavor-platform'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -132,7 +132,7 @@ $minutos = floor(($stats['duracion_total'] % 3600) / 60);
                     <tr>
                         <td colspan="7" style="text-align: center; padding: 40px;">
                             <span class="dashicons dashicons-format-audio" style="font-size: 48px; color: #ddd;"></span>
-                            <p><?php _e('No hay audios en la biblioteca', 'flavor-chat-ia'); ?></p>
+                            <p><?php _e('No hay audios en la biblioteca', 'flavor-platform'); ?></p>
                         </td>
                     </tr>
                 </template>
@@ -155,10 +155,10 @@ $minutos = floor(($stats['duracion_total'] % 3600) / 60);
                         </td>
                         <td x-text="audio.duracion_formatted"></td>
                         <td>
-                            <button class="button button-small" @click="addToPlaylist(audio.id)" title="<?php esc_attr_e('Añadir a playlist', 'flavor-chat-ia'); ?>">
+                            <button class="button button-small" @click="addToPlaylist(audio.id)" title="<?php esc_attr_e('Añadir a playlist', 'flavor-platform'); ?>">
                                 <span class="dashicons dashicons-plus-alt"></span>
                             </button>
-                            <button class="button button-small" @click="deleteAudio(audio.id)" title="<?php esc_attr_e('Eliminar', 'flavor-chat-ia'); ?>">
+                            <button class="button button-small" @click="deleteAudio(audio.id)" title="<?php esc_attr_e('Eliminar', 'flavor-platform'); ?>">
                                 <span class="dashicons dashicons-trash"></span>
                             </button>
                         </td>
@@ -172,11 +172,11 @@ $minutos = floor(($stats['duracion_total'] % 3600) / 60);
             <span x-text="'Mostrando ' + audios.length + ' de ' + totalAudios + ' audios'"></span>
             <div style="display: flex; gap: 5px;">
                 <button class="button" :disabled="pagina <= 1" @click="pagina--; loadBiblioteca()">
-                    &laquo; <?php _e('Anterior', 'flavor-chat-ia'); ?>
+                    &laquo; <?php _e('Anterior', 'flavor-platform'); ?>
                 </button>
                 <span style="padding: 5px 10px;" x-text="'Página ' + pagina + ' de ' + totalPaginas"></span>
                 <button class="button" :disabled="pagina >= totalPaginas" @click="pagina++; loadBiblioteca()">
-                    <?php _e('Siguiente', 'flavor-chat-ia'); ?> &raquo;
+                    <?php _e('Siguiente', 'flavor-platform'); ?> &raquo;
                 </button>
             </div>
         </div>
@@ -184,42 +184,42 @@ $minutos = floor(($stats['duracion_total'] % 3600) / 60);
 
     <!-- Tab: Subir Audio -->
     <div x-show="tab === 'subir'" class="tab-content" style="background: #fff; padding: 20px; border-radius: 8px; margin-top: 20px;">
-        <h2><?php _e('Subir Archivos de Audio', 'flavor-chat-ia'); ?></h2>
-        <p style="color: #666;"><?php _e('Formatos permitidos: MP3, OGG, WAV, M4A, AAC. Tamaño máximo: 100MB', 'flavor-chat-ia'); ?></p>
+        <h2><?php _e('Subir Archivos de Audio', 'flavor-platform'); ?></h2>
+        <p style="color: #666;"><?php _e('Formatos permitidos: MP3, OGG, WAV, M4A, AAC. Tamaño máximo: 100MB', 'flavor-platform'); ?></p>
 
         <div class="upload-area" @dragover.prevent="dragover = true" @dragleave="dragover = false"
              @drop.prevent="handleDrop($event)" :class="{ 'dragover': dragover }"
              style="border: 2px dashed #c3c4c7; border-radius: 8px; padding: 60px; text-align: center; margin: 20px 0; transition: all 0.3s;">
 
             <span class="dashicons dashicons-upload" style="font-size: 64px; color: #c3c4c7;"></span>
-            <h3><?php _e('Arrastra archivos aquí', 'flavor-chat-ia'); ?></h3>
-            <p><?php _e('o', 'flavor-chat-ia'); ?></p>
+            <h3><?php _e('Arrastra archivos aquí', 'flavor-platform'); ?></h3>
+            <p><?php _e('o', 'flavor-platform'); ?></p>
             <input type="file" id="audio-files" multiple accept=".mp3,.ogg,.wav,.m4a,.aac" @change="handleFileSelect($event)" style="display: none;">
-            <label for="audio-files" class="button button-primary button-hero"><?php _e('Seleccionar Archivos', 'flavor-chat-ia'); ?></label>
+            <label for="audio-files" class="button button-primary button-hero"><?php _e('Seleccionar Archivos', 'flavor-platform'); ?></label>
         </div>
 
         <!-- Tipo de audio -->
         <div style="margin-bottom: 20px;">
-            <label><strong><?php _e('Tipo de audio:', 'flavor-chat-ia'); ?></strong></label>
+            <label><strong><?php _e('Tipo de audio:', 'flavor-platform'); ?></strong></label>
             <select x-model="uploadTipo" style="margin-left: 10px; padding: 8px;">
-                <option value="cancion"><?php _e('Canción', 'flavor-chat-ia'); ?></option>
-                <option value="podcast"><?php _e('Podcast', 'flavor-chat-ia'); ?></option>
-                <option value="jingle"><?php _e('Jingle', 'flavor-chat-ia'); ?></option>
-                <option value="cortina"><?php _e('Cortina musical', 'flavor-chat-ia'); ?></option>
-                <option value="programa"><?php _e('Programa grabado', 'flavor-chat-ia'); ?></option>
+                <option value="cancion"><?php _e('Canción', 'flavor-platform'); ?></option>
+                <option value="podcast"><?php _e('Podcast', 'flavor-platform'); ?></option>
+                <option value="jingle"><?php _e('Jingle', 'flavor-platform'); ?></option>
+                <option value="cortina"><?php _e('Cortina musical', 'flavor-platform'); ?></option>
+                <option value="programa"><?php _e('Programa grabado', 'flavor-platform'); ?></option>
             </select>
         </div>
 
         <!-- Cola de subida -->
         <div x-show="uploadQueue.length > 0">
-            <h3><?php _e('Cola de subida', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Cola de subida', 'flavor-platform'); ?></h3>
             <table class="wp-list-table widefat">
                 <thead>
                     <tr>
-                        <th><?php _e('Archivo', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 100px;"><?php _e('Tamaño', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 200px;"><?php _e('Progreso', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 100px;"><?php _e('Estado', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Archivo', 'flavor-platform'); ?></th>
+                        <th style="width: 100px;"><?php _e('Tamaño', 'flavor-platform'); ?></th>
+                        <th style="width: 200px;"><?php _e('Progreso', 'flavor-platform'); ?></th>
+                        <th style="width: 100px;"><?php _e('Estado', 'flavor-platform'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -233,18 +233,18 @@ $minutos = floor(($stats['duracion_total'] % 3600) / 60);
                                 </div>
                             </td>
                             <td>
-                                <span x-show="item.status === 'pending'" style="color: #666;"><?php _e('Pendiente', 'flavor-chat-ia'); ?></span>
-                                <span x-show="item.status === 'uploading'" style="color: #2271b1;"><?php _e('Subiendo...', 'flavor-chat-ia'); ?></span>
-                                <span x-show="item.status === 'done'" style="color: #00a32a;"><?php _e('Completado', 'flavor-chat-ia'); ?></span>
-                                <span x-show="item.status === 'error'" style="color: #d63638;"><?php _e('Error', 'flavor-chat-ia'); ?></span>
+                                <span x-show="item.status === 'pending'" style="color: #666;"><?php _e('Pendiente', 'flavor-platform'); ?></span>
+                                <span x-show="item.status === 'uploading'" style="color: #2271b1;"><?php _e('Subiendo...', 'flavor-platform'); ?></span>
+                                <span x-show="item.status === 'done'" style="color: #00a32a;"><?php _e('Completado', 'flavor-platform'); ?></span>
+                                <span x-show="item.status === 'error'" style="color: #d63638;"><?php _e('Error', 'flavor-platform'); ?></span>
                             </td>
                         </tr>
                     </template>
                 </tbody>
             </table>
             <button class="button button-primary" @click="startUpload()" :disabled="uploading" style="margin-top: 15px;">
-                <span x-show="!uploading"><?php _e('Iniciar Subida', 'flavor-chat-ia'); ?></span>
-                <span x-show="uploading"><?php _e('Subiendo...', 'flavor-chat-ia'); ?></span>
+                <span x-show="!uploading"><?php _e('Iniciar Subida', 'flavor-platform'); ?></span>
+                <span x-show="uploading"><?php _e('Subiendo...', 'flavor-platform'); ?></span>
             </button>
         </div>
     </div>
@@ -252,9 +252,9 @@ $minutos = floor(($stats['duracion_total'] % 3600) / 60);
     <!-- Tab: Playlists -->
     <div x-show="tab === 'playlists'" class="tab-content" style="background: #fff; padding: 20px; border-radius: 8px; margin-top: 20px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2 style="margin: 0;"><?php _e('Playlists', 'flavor-chat-ia'); ?></h2>
+            <h2 style="margin: 0;"><?php _e('Playlists', 'flavor-platform'); ?></h2>
             <button class="button button-primary" @click="showPlaylistModal = true; editingPlaylist = null; playlistForm = {nombre: '', descripcion: '', tipo: 'manual', orden: 'secuencial', audios: []}">
-                <span class="dashicons dashicons-plus-alt"></span> <?php _e('Nueva Playlist', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-plus-alt"></span> <?php _e('Nueva Playlist', 'flavor-platform'); ?>
             </button>
         </div>
 
@@ -270,10 +270,10 @@ $minutos = floor(($stats['duracion_total'] % 3600) / 60);
                     </div>
                     <div style="margin-top: 15px; display: flex; gap: 10px;">
                         <button class="button" @click="editPlaylist(playlist)">
-                            <span class="dashicons dashicons-edit"></span> <?php _e('Editar', 'flavor-chat-ia'); ?>
+                            <span class="dashicons dashicons-edit"></span> <?php _e('Editar', 'flavor-platform'); ?>
                         </button>
                         <button class="button" @click="previewPlaylist(playlist)">
-                            <span class="dashicons dashicons-controls-play"></span> <?php _e('Previsualizar', 'flavor-chat-ia'); ?>
+                            <span class="dashicons dashicons-controls-play"></span> <?php _e('Previsualizar', 'flavor-platform'); ?>
                         </button>
                     </div>
                 </div>
@@ -283,8 +283,8 @@ $minutos = floor(($stats['duracion_total'] % 3600) / 60);
 
     <!-- Tab: Programación Automática -->
     <div x-show="tab === 'programacion'" class="tab-content" style="background: #fff; padding: 20px; border-radius: 8px; margin-top: 20px;">
-        <h2><?php _e('Programación Automática', 'flavor-chat-ia'); ?></h2>
-        <p style="color: #666;"><?php _e('Configura qué playlists suenan en cada horario. La radio reproducirá automáticamente según esta programación.', 'flavor-chat-ia'); ?></p>
+        <h2><?php _e('Programación Automática', 'flavor-platform'); ?></h2>
+        <p style="color: #666;"><?php _e('Configura qué playlists suenan en cada horario. La radio reproducirá automáticamente según esta programación.', 'flavor-platform'); ?></p>
 
         <div class="programacion-grid" style="display: grid; grid-template-columns: 80px repeat(7, 1fr); gap: 2px; margin-top: 20px; background: #e0e0e0;">
             <!-- Header días -->
@@ -513,7 +513,7 @@ document.addEventListener('alpine:init', () => {
         },
 
         async deleteAudio(audioId) {
-            if (!confirm('<?php echo esc_js(__('¿Eliminar este audio?', 'flavor-chat-ia')); ?>')) return;
+            if (!confirm('<?php echo esc_js(__('¿Eliminar este audio?', 'flavor-platform')); ?>')) return;
 
             const formData = new FormData();
             formData.append('action', 'flavor_radio_delete_audio');

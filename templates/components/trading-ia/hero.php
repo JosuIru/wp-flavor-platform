@@ -15,7 +15,7 @@ $url_comenzar = $url_comenzar ?? '/trading-ia/comenzar/';
 <section class="flavor-component flavor-section relative overflow-hidden" style="background: linear-gradient(135deg, var(--flavor-primary, #06B6D4) 0%, var(--flavor-secondary, #0D9488) 100%); min-height: 500px;">
     <!-- Patron futurista -->
     <div class="absolute inset-0 opacity-10">
-        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22none%22/><line x1=%220%22 y1=%2250%22 x2=%22100%22 y2=%2250%22 stroke=%22white%22 stroke-width=%220.5%22/><line x1=%2250%22 y1=%220%22 x2=%2250%22 y2=%22100%22 stroke=%22white%22 stroke-width=%220.5%22/></svg><?php echo esc_html__('\'); background-size: 100px 100px;">', 'flavor-chat-ia'); ?></div>
+        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22none%22/><line x1=%220%22 y1=%2250%22 x2=%22100%22 y2=%2250%22 stroke=%22white%22 stroke-width=%220.5%22/><line x1=%2250%22 y1=%220%22 x2=%2250%22 y2=%22100%22 stroke=%22white%22 stroke-width=%220.5%22/></svg><?php echo esc_html__('\'); background-size: 100px 100px;">', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
     <!-- Efecto de lineas de grafico -->
     <div class="absolute bottom-0 left-0 right-0 h-32 opacity-20">
@@ -32,7 +32,7 @@ $url_comenzar = $url_comenzar ?? '/trading-ia/comenzar/';
                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
                 </svg>
-                <span class="text-white text-sm font-medium"><?php echo esc_html__('Inteligencia Artificial', 'flavor-chat-ia'); ?></span>
+                <span class="text-white text-sm font-medium"><?php echo esc_html__('Inteligencia Artificial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
 
             <h1 class="text-4xl lg:text-6xl font-bold text-white mb-4">
@@ -47,7 +47,7 @@ $url_comenzar = $url_comenzar ?? '/trading-ia/comenzar/';
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                 </svg>
-                <?php echo esc_html__('Empezar con IA', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Empezar con IA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
 
@@ -55,15 +55,15 @@ $url_comenzar = $url_comenzar ?? '/trading-ia/comenzar/';
         <div class="grid grid-cols-3 gap-4 max-w-3xl mx-auto">
             <div class="text-center p-5 rounded-xl bg-white/10 backdrop-blur border border-white/20">
                 <div class="text-3xl lg:text-4xl font-bold text-white"><?php echo esc_html($senales_generadas); ?></div>
-                <div class="text-sm text-white/70"><?php echo esc_html__('Senales Generadas', 'flavor-chat-ia'); ?></div>
+                <div class="text-sm text-white/70"><?php echo esc_html__('Senales Generadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
             <div class="text-center p-5 rounded-xl bg-white/10 backdrop-blur border border-white/20">
                 <div class="text-3xl lg:text-4xl font-bold text-white"><?php echo esc_html($precision_porcentaje); ?>%</div>
-                <div class="text-sm text-white/70"><?php echo esc_html__('Precision', 'flavor-chat-ia'); ?></div>
+                <div class="text-sm text-white/70"><?php echo esc_html__('Precision', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
             <div class="text-center p-5 rounded-xl bg-white/10 backdrop-blur border border-white/20">
                 <div class="text-3xl lg:text-4xl font-bold text-white"><?php echo esc_html($mercados_analizados); ?></div>
-                <div class="text-sm text-white/70"><?php echo esc_html__('Mercados Analizados', 'flavor-chat-ia'); ?></div>
+                <div class="text-sm text-white/70"><?php echo esc_html__('Mercados Analizados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
     </div>

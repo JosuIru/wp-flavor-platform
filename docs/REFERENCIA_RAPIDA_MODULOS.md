@@ -215,4 +215,4 @@ update_option('flavor_chat_ia_settings', $settings);
 
 ---
 
-*Referencia rápida - Flavor Chat IA v3.1.0*
+*Referencia rápida - Flavor Platform v3.1.0*

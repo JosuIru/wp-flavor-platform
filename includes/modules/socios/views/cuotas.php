@@ -27,7 +27,7 @@ if (!empty($_GET['cuota_action']) && !empty($_GET['cuota_id']) && isset($_GET['_
             $datos_actualizacion['metodo_pago'] = 'manual_admin';
         }
         $wpdb->update($tabla_cuotas, $datos_actualizacion, ['id' => $identificador_cuota]);
-        echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Estado de la cuota actualizado.', 'flavor-chat-ia') . '</p></div>';
+        echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Estado de la cuota actualizado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     }
 }
 
@@ -66,12 +66,12 @@ if (!empty($_POST['generar_cuotas']) && wp_verify_nonce($_POST['_wpnonce'], 'soc
 
     if ($cuotas_generadas > 0) {
         echo '<div class="notice notice-success is-dismissible"><p>' . sprintf(
-            esc_html__('Se generaron %d cuotas para el periodo %s.', 'flavor-chat-ia'),
+            esc_html__('Se generaron %d cuotas para el periodo %s.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $cuotas_generadas,
             $periodo_generar
         ) . '</p></div>';
     } else {
-        echo '<div class="notice notice-info is-dismissible"><p>' . esc_html__('No se generaron cuotas nuevas. Es posible que ya existan para este periodo.', 'flavor-chat-ia') . '</p></div>';
+        echo '<div class="notice notice-info is-dismissible"><p>' . esc_html__('No se generaron cuotas nuevas. Es posible que ya existan para este periodo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     }
 }
 
@@ -139,9 +139,9 @@ $periodos_disponibles = $wpdb->get_col("SELECT DISTINCT periodo FROM $tabla_cuot
 ?>
 
 <div class="wrap">
-    <h1 class="wp-heading-inline"><?php echo esc_html__('Gestión de Cuotas', 'flavor-chat-ia'); ?></h1>
+    <h1 class="wp-heading-inline"><?php echo esc_html__('Gestión de Cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
     <button type="button" class="page-title-action" id="btn-generar-cuotas">
-        <?php echo esc_html__('Generar Cuotas', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Generar Cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </button>
     <hr class="wp-header-end">
 
@@ -149,46 +149,46 @@ $periodos_disponibles = $wpdb->get_col("SELECT DISTINCT periodo FROM $tabla_cuot
     <div class="flavor-stats-row" style="display: flex; gap: 15px; margin: 20px 0; flex-wrap: wrap;">
         <div class="flavor-mini-stat" style="background: #fff; padding: 15px 20px; border: 1px solid #c3c4c7; border-left: 4px solid #f59e0b; flex: 1; min-width: 150px;">
             <span style="font-size: 24px; font-weight: bold; color: #f59e0b;"><?php echo number_format($cuotas_pendientes); ?></span>
-            <span style="display: block; color: #64748b; font-size: 12px;"><?php echo esc_html__('Pendientes', 'flavor-chat-ia'); ?></span>
+            <span style="display: block; color: #64748b; font-size: 12px;"><?php echo esc_html__('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="flavor-mini-stat" style="background: #fff; padding: 15px 20px; border: 1px solid #c3c4c7; border-left: 4px solid #10b981; flex: 1; min-width: 150px;">
             <span style="font-size: 24px; font-weight: bold; color: #10b981;"><?php echo number_format($cuotas_pagadas); ?></span>
-            <span style="display: block; color: #64748b; font-size: 12px;"><?php echo esc_html__('Pagadas', 'flavor-chat-ia'); ?></span>
+            <span style="display: block; color: #64748b; font-size: 12px;"><?php echo esc_html__('Pagadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="flavor-mini-stat" style="background: #fff; padding: 15px 20px; border: 1px solid #c3c4c7; border-left: 4px solid #ef4444; flex: 1; min-width: 150px;">
             <span style="font-size: 24px; font-weight: bold; color: #ef4444;"><?php echo number_format($cuotas_vencidas); ?></span>
-            <span style="display: block; color: #64748b; font-size: 12px;"><?php echo esc_html__('Vencidas', 'flavor-chat-ia'); ?></span>
+            <span style="display: block; color: #64748b; font-size: 12px;"><?php echo esc_html__('Vencidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="flavor-mini-stat" style="background: #fff; padding: 15px 20px; border: 1px solid #c3c4c7; border-left: 4px solid #8b5cf6; flex: 1; min-width: 180px;">
             <span style="font-size: 24px; font-weight: bold; color: #8b5cf6;"><?php echo number_format($importe_pendiente, 2, ',', '.'); ?> &euro;</span>
-            <span style="display: block; color: #64748b; font-size: 12px;"><?php echo esc_html__('Importe pendiente', 'flavor-chat-ia'); ?></span>
+            <span style="display: block; color: #64748b; font-size: 12px;"><?php echo esc_html__('Importe pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="flavor-mini-stat" style="background: #fff; padding: 15px 20px; border: 1px solid #c3c4c7; border-left: 4px solid #06b6d4; flex: 1; min-width: 180px;">
             <span style="font-size: 24px; font-weight: bold; color: #06b6d4;"><?php echo number_format($importe_cobrado_mes, 2, ',', '.'); ?> &euro;</span>
-            <span style="display: block; color: #64748b; font-size: 12px;"><?php echo esc_html__('Cobrado este mes', 'flavor-chat-ia'); ?></span>
+            <span style="display: block; color: #64748b; font-size: 12px;"><?php echo esc_html__('Cobrado este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
     </div>
 
     <!-- Modal para generar cuotas -->
     <div id="modal-generar-cuotas" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100000; align-items: center; justify-content: center;">
         <div style="background: #fff; padding: 30px; border-radius: 8px; max-width: 400px; width: 90%;">
-            <h2 style="margin-top: 0;"><?php echo esc_html__('Generar Cuotas del Mes', 'flavor-chat-ia'); ?></h2>
+            <h2 style="margin-top: 0;"><?php echo esc_html__('Generar Cuotas del Mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <form method="post">
                 <?php wp_nonce_field('socios_generar_cuotas'); ?>
                 <input type="hidden" name="generar_cuotas" value="1">
                 <p>
-                    <label for="periodo"><strong><?php echo esc_html__('Periodo:', 'flavor-chat-ia'); ?></strong></label><br>
+                    <label for="periodo"><strong><?php echo esc_html__('Periodo:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label><br>
                     <input type="month" name="periodo" id="periodo" value="<?php echo esc_attr(date('Y-m')); ?>" style="width: 100%;">
                 </p>
                 <p class="description">
-                    <?php echo esc_html__('Se crearán cuotas para todos los miembros activos que no tengan cuota en este periodo.', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Se crearán cuotas para todos los miembros activos que no tengan cuota en este periodo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
                 <p style="display: flex; gap: 10px; margin-top: 20px;">
                     <button type="button" class="button" onclick="document.getElementById('modal-generar-cuotas').style.display='none'">
-                        <?php echo esc_html__('Cancelar', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="submit" class="button button-primary">
-                        <?php echo esc_html__('Generar Cuotas', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Generar Cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </p>
             </form>
@@ -200,15 +200,15 @@ $periodos_disponibles = $wpdb->get_col("SELECT DISTINCT periodo FROM $tabla_cuot
         <input type="hidden" name="page" value="socios-cuotas">
 
         <select name="estado" style="min-width: 150px;">
-            <option value=""><?php echo esc_html__('Todos los estados', 'flavor-chat-ia'); ?></option>
-            <option value="pendiente" <?php selected($estado_filtro, 'pendiente'); ?>><?php echo esc_html__('Pendiente', 'flavor-chat-ia'); ?></option>
-            <option value="pagada" <?php selected($estado_filtro, 'pagada'); ?>><?php echo esc_html__('Pagada', 'flavor-chat-ia'); ?></option>
-            <option value="vencida" <?php selected($estado_filtro, 'vencida'); ?>><?php echo esc_html__('Vencida', 'flavor-chat-ia'); ?></option>
-            <option value="condonada" <?php selected($estado_filtro, 'condonada'); ?>><?php echo esc_html__('Condonada', 'flavor-chat-ia'); ?></option>
+            <option value=""><?php echo esc_html__('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+            <option value="pendiente" <?php selected($estado_filtro, 'pendiente'); ?>><?php echo esc_html__('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+            <option value="pagada" <?php selected($estado_filtro, 'pagada'); ?>><?php echo esc_html__('Pagada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+            <option value="vencida" <?php selected($estado_filtro, 'vencida'); ?>><?php echo esc_html__('Vencida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+            <option value="condonada" <?php selected($estado_filtro, 'condonada'); ?>><?php echo esc_html__('Condonada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
         </select>
 
         <select name="periodo" style="min-width: 150px;">
-            <option value=""><?php echo esc_html__('Todos los periodos', 'flavor-chat-ia'); ?></option>
+            <option value=""><?php echo esc_html__('Todos los periodos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             <?php foreach ($periodos_disponibles as $periodo): ?>
                 <option value="<?php echo esc_attr($periodo); ?>" <?php selected($periodo_filtro, $periodo); ?>>
                     <?php echo esc_html(date_i18n('F Y', strtotime($periodo . '-01'))); ?>
@@ -216,14 +216,14 @@ $periodos_disponibles = $wpdb->get_col("SELECT DISTINCT periodo FROM $tabla_cuot
             <?php endforeach; ?>
         </select>
 
-        <input type="search" name="s" placeholder="<?php esc_attr_e('Buscar por socio...', 'flavor-chat-ia'); ?>"
+        <input type="search" name="s" placeholder="<?php esc_attr_e('Buscar por socio...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                value="<?php echo esc_attr($busqueda_texto); ?>" style="min-width: 200px;">
 
-        <button type="submit" class="button"><?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?></button>
+        <button type="submit" class="button"><?php echo esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
 
         <?php if ($estado_filtro || $periodo_filtro || $busqueda_texto): ?>
             <a href="<?php echo admin_url('admin.php?page=socios-cuotas'); ?>" class="button">
-                <?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         <?php endif; ?>
     </form>
@@ -231,7 +231,7 @@ $periodos_disponibles = $wpdb->get_col("SELECT DISTINCT periodo FROM $tabla_cuot
     <!-- Resultados -->
     <p class="cuotas-resultados-info" style="color: #646970; margin-bottom: 10px;">
         <?php printf(
-            esc_html__('Mostrando %d de %d cuotas', 'flavor-chat-ia'),
+            esc_html__('Mostrando %d de %d cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             count($lista_cuotas),
             $total_registros
         ); ?>
@@ -239,28 +239,28 @@ $periodos_disponibles = $wpdb->get_col("SELECT DISTINCT periodo FROM $tabla_cuot
 
     <?php if (empty($lista_cuotas)): ?>
         <div class="notice notice-info">
-            <p><?php echo esc_html__('No se encontraron cuotas con los filtros aplicados.', 'flavor-chat-ia'); ?></p>
+            <p><?php echo esc_html__('No se encontraron cuotas con los filtros aplicados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php else: ?>
         <table class="widefat striped">
             <thead>
                 <tr>
-                    <th><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Socio', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Numero', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Periodo', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Importe', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Fecha Cargo', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Fecha Pago', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th><?php echo esc_html__('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php echo esc_html__('Socio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php echo esc_html__('Numero', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php echo esc_html__('Periodo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php echo esc_html__('Importe', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php echo esc_html__('Fecha Cargo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php echo esc_html__('Fecha Pago', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php echo esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php echo esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($lista_cuotas as $cuota): ?>
                     <tr>
                         <td><?php echo esc_html($cuota->id); ?></td>
-                        <td><strong><?php echo esc_html($cuota->display_name ?: __('Sin nombre', 'flavor-chat-ia')); ?></strong></td>
+                        <td><strong><?php echo esc_html($cuota->display_name ?: __('Sin nombre', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong></td>
                         <td><?php echo esc_html($cuota->numero_socio); ?></td>
                         <td><?php echo esc_html(date_i18n('F Y', strtotime($cuota->periodo . '-01'))); ?></td>
                         <td><strong><?php echo esc_html(number_format((float)$cuota->importe, 2, ',', '.')); ?> &euro;</strong></td>
@@ -290,9 +290,9 @@ $periodos_disponibles = $wpdb->get_col("SELECT DISTINCT periodo FROM $tabla_cuot
                             <?php
                             $acciones_cuota = [];
                             $estados_cuota_disponibles = [
-                                'pagada' => __('Marcar pagada', 'flavor-chat-ia'),
-                                'vencida' => __('Marcar vencida', 'flavor-chat-ia'),
-                                'condonada' => __('Condonar', 'flavor-chat-ia'),
+                                'pagada' => __('Marcar pagada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'vencida' => __('Marcar vencida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'condonada' => __('Condonar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             ];
                             foreach ($estados_cuota_disponibles as $estado_clave => $estado_etiqueta) {
                                 if ($estado_clave !== $cuota->estado) {

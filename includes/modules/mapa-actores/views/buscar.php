@@ -46,28 +46,28 @@ if ($query !== '' || $tipo !== '') {
 ?>
 
 <section class="flavor-actores-buscar">
-    <h2><?php esc_html_e('Buscar actores', 'flavor-chat-ia'); ?></h2>
+    <h2><?php esc_html_e('Buscar actores', 'flavor-platform'); ?></h2>
 
-    <form method="get" aria-label="<?php echo esc_attr__('Formulario de busqueda de actores', 'flavor-chat-ia'); ?>" style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:flex-end;">
+    <form method="get" aria-label="<?php echo esc_attr__('Formulario de busqueda de actores', 'flavor-platform'); ?>" style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:flex-end;">
         <p>
-            <label for="actores_q"><?php esc_html_e('Texto', 'flavor-chat-ia'); ?></label><br>
+            <label for="actores_q"><?php esc_html_e('Texto', 'flavor-platform'); ?></label><br>
             <input id="actores_q" type="text" name="q" value="<?php echo esc_attr($query); ?>">
         </p>
         <p>
-            <label for="actores_tipo"><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></label><br>
+            <label for="actores_tipo"><?php esc_html_e('Tipo', 'flavor-platform'); ?></label><br>
             <input id="actores_tipo" type="text" name="tipo" value="<?php echo esc_attr($tipo); ?>">
         </p>
         <p>
-            <label for="actores_limite"><?php esc_html_e('Limite', 'flavor-chat-ia'); ?></label><br>
+            <label for="actores_limite"><?php esc_html_e('Limite', 'flavor-platform'); ?></label><br>
             <input id="actores_limite" type="number" min="1" max="100" name="limite" value="<?php echo esc_attr($limite); ?>">
         </p>
-        <p><button type="submit" class="button"><?php esc_html_e('Buscar', 'flavor-chat-ia'); ?></button></p>
+        <p><button type="submit" class="button"><?php esc_html_e('Buscar', 'flavor-platform'); ?></button></p>
     </form>
 
     <?php if ($query !== '' || $tipo !== ''): ?>
-        <h3><?php esc_html_e('Resultados', 'flavor-chat-ia'); ?></h3>
+        <h3><?php esc_html_e('Resultados', 'flavor-platform'); ?></h3>
         <?php if (empty($resultados)): ?>
-            <p><?php esc_html_e('Sin coincidencias.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('Sin coincidencias.', 'flavor-platform'); ?></p>
         <?php else: ?>
             <ul>
                 <?php foreach ($resultados as $actor): ?>

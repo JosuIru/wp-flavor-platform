@@ -22,18 +22,18 @@ $atributos = $atributos ?? [];
 
 <div class="flavor-pp-mis-propuestas-contenedor">
     <div class="flavor-pp-mis-propuestas-header">
-        <h2><?php esc_html_e('Mis Propuestas', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Mis Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <a href="<?php echo esc_url(home_url('/proponer-proyecto/')); ?>" class="flavor-pp-boton flavor-pp-boton-primario">
             <span class="dashicons dashicons-plus-alt"></span>
-            <?php esc_html_e('Nueva propuesta', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Nueva propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 
     <?php if (empty($propuestas)): ?>
         <div class="flavor-pp-vacio">
             <span class="dashicons dashicons-lightbulb"></span>
-            <p><?php esc_html_e('Aun no has presentado ninguna propuesta.', 'flavor-chat-ia'); ?></p>
-            <p><?php esc_html_e('Comparte tus ideas para mejorar el barrio!', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('Aun no has presentado ninguna propuesta.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+            <p><?php esc_html_e('Comparte tus ideas para mejorar el barrio!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php else: ?>
         <div class="flavor-pp-propuestas-lista">
@@ -51,13 +51,13 @@ $atributos = $atributos ?? [];
 
                 $categoria_nombre = $categorias[$prop_categoria] ?? ucfirst($prop_categoria);
                 $estados = [
-                    'pendiente' => ['label' => __('Pendiente de revision', 'flavor-chat-ia'), 'color' => 'orange'],
-                    'validado' => ['label' => __('Validado', 'flavor-chat-ia'), 'color' => 'green'],
-                    'en_votacion' => ['label' => __('En votacion', 'flavor-chat-ia'), 'color' => 'blue'],
-                    'seleccionado' => ['label' => __('Seleccionado', 'flavor-chat-ia'), 'color' => 'green'],
-                    'en_ejecucion' => ['label' => __('En ejecucion', 'flavor-chat-ia'), 'color' => 'purple'],
-                    'ejecutado' => ['label' => __('Ejecutado', 'flavor-chat-ia'), 'color' => 'green'],
-                    'rechazado' => ['label' => __('Rechazado', 'flavor-chat-ia'), 'color' => 'red'],
+                    'pendiente' => ['label' => __('Pendiente de revision', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'orange'],
+                    'validado' => ['label' => __('Validado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green'],
+                    'en_votacion' => ['label' => __('En votacion', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'blue'],
+                    'seleccionado' => ['label' => __('Seleccionado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green'],
+                    'en_ejecucion' => ['label' => __('En ejecucion', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'purple'],
+                    'ejecutado' => ['label' => __('Ejecutado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green'],
+                    'rechazado' => ['label' => __('Rechazado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'red'],
                 ];
                 $estado_info = $estados[$prop_estado] ?? ['label' => ucfirst($prop_estado), 'color' => 'gray'];
             ?>
@@ -84,7 +84,7 @@ $atributos = $atributos ?? [];
                         </span>
                         <span class="flavor-pp-meta-item">
                             <span class="dashicons dashicons-heart"></span>
-                            <?php echo esc_html($prop_votos); ?> <?php esc_html_e('votos', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html($prop_votos); ?> <?php esc_html_e('votos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
                         <span class="flavor-pp-meta-item">
                             <span class="dashicons dashicons-calendar-alt"></span>
@@ -98,24 +98,24 @@ $atributos = $atributos ?? [];
                         <button type="button" class="flavor-pp-boton flavor-pp-boton-secundario flavor-pp-btn-editar"
                                 data-id="<?php echo esc_attr($prop_id); ?>">
                             <span class="dashicons dashicons-edit"></span>
-                            <?php esc_html_e('Editar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <button type="button" class="flavor-pp-boton flavor-pp-boton-peligro flavor-pp-btn-eliminar"
                                 data-id="<?php echo esc_attr($prop_id); ?>">
                             <span class="dashicons dashicons-trash"></span>
-                            <?php esc_html_e('Eliminar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     <?php endif; ?>
 
                     <a href="<?php echo esc_url(add_query_arg('proyecto', $prop_id, home_url('/proyectos-participativos/'))); ?>"
                        class="flavor-pp-boton flavor-pp-boton-texto">
-                        <?php esc_html_e('Ver detalles', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
 
                 <?php if ($prop_estado === 'rechazado' && !empty($prop_motivo_rechazo)): ?>
                 <div class="flavor-pp-propuesta-rechazo">
-                    <strong><?php esc_html_e('Motivo del rechazo:', 'flavor-chat-ia'); ?></strong>
+                    <strong><?php esc_html_e('Motivo del rechazo:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                     <p><?php echo esc_html($prop_motivo_rechazo); ?></p>
                 </div>
                 <?php endif; ?>

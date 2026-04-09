@@ -32,7 +32,7 @@ class Flavor_Facturas_Dashboard_Tab {
         }
 
         $tabs['facturas'] = [
-            'label' => __('Facturas', 'flavor-chat-ia'),
+            'label' => __('Facturas', 'flavor-platform'),
             'icon' => 'dashicons-media-text',
             'callback' => [$this, 'render_tab'],
             'priority' => 62,

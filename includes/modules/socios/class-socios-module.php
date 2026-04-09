@@ -59,7 +59,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Miembros no están creadas. Activa el módulo para crearlas automáticamente.', 'flavor-chat-ia');
+            return __('Las tablas de Miembros no están creadas. Activa el módulo para crearlas automáticamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         
     return '';
@@ -83,9 +83,9 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
             'permite_cuota_reducida' => true,
             'requiere_validacion_alta' => true,
             'tipos_socio' => [
-                'consumidor' => __('Miembro Consumidor', 'flavor-chat-ia'),
-                'trabajador' => __('Miembro Trabajador', 'flavor-chat-ia'),
-                'colaborador' => __('Miembro Colaborador', 'flavor-chat-ia'),
+                'consumidor' => __('Miembro Consumidor', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'trabajador' => __('Miembro Trabajador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'colaborador' => __('Miembro Colaborador', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
     }
@@ -252,7 +252,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         if (!$identificador_usuario) {
             return '<p class="flavor-soc-login-required">' .
                 sprintf(
-                    esc_html__('Debes %siniciar sesión%s para ver tu perfil de socio.', 'flavor-chat-ia'),
+                    esc_html__('Debes %siniciar sesión%s para ver tu perfil de socio.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '">',
                     '</a>'
                 ) . '</p>';
@@ -278,25 +278,25 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
                 </div>
                 <div class="flavor-soc-perfil-info">
                     <h3><?php echo esc_html($socio['nombre']); ?></h3>
-                    <p class="flavor-soc-numero"><?php printf(esc_html__('Socio #%s', 'flavor-chat-ia'), esc_html($socio['numero'])); ?></p>
+                    <p class="flavor-soc-numero"><?php printf(esc_html__('Socio #%s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($socio['numero'])); ?></p>
                     <p class="flavor-soc-email"><?php echo esc_html($socio['email']); ?></p>
                 </div>
             </div>
             <div class="flavor-soc-perfil-datos">
                 <div class="flavor-soc-dato-item">
-                    <span class="label"><?php esc_html_e('Tipo de socio', 'flavor-chat-ia'); ?></span>
+                    <span class="label"><?php esc_html_e('Tipo de socio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="valor"><?php echo esc_html($socio['tipo_label']); ?></span>
                 </div>
                 <div class="flavor-soc-dato-item">
-                    <span class="label"><?php esc_html_e('Fecha de alta', 'flavor-chat-ia'); ?></span>
+                    <span class="label"><?php esc_html_e('Fecha de alta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="valor"><?php echo esc_html($socio['fecha_alta']); ?></span>
                 </div>
                 <div class="flavor-soc-dato-item">
-                    <span class="label"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></span>
+                    <span class="label"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="valor estado-<?php echo esc_attr($socio['estado']); ?>"><?php echo esc_html(ucfirst($socio['estado'])); ?></span>
                 </div>
                 <div class="flavor-soc-dato-item">
-                    <span class="label"><?php esc_html_e('Cuota mensual', 'flavor-chat-ia'); ?></span>
+                    <span class="label"><?php esc_html_e('Cuota mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="valor"><?php echo esc_html(number_format($socio['cuota_mensual'], 2, ',', '.')); ?> €</span>
                 </div>
             </div>
@@ -319,7 +319,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         if (!$identificador_usuario) {
             return '<p class="flavor-soc-login-required">' .
                 sprintf(
-                    esc_html__('Debes %siniciar sesión%s para ver tus cuotas.', 'flavor-chat-ia'),
+                    esc_html__('Debes %siniciar sesión%s para ver tus cuotas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '">',
                     '</a>'
                 ) . '</p>';
@@ -343,25 +343,25 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
             <div class="flavor-soc-cuotas-resumen">
                 <div class="resumen-item">
                     <span class="valor"><?php echo esc_html($resumen['cuotas_pendientes']); ?></span>
-                    <span class="label"><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></span>
+                    <span class="label"><?php esc_html_e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="resumen-item">
                     <span class="valor"><?php echo esc_html(number_format($resumen['total_pendiente'], 2, ',', '.')); ?> €</span>
-                    <span class="label"><?php esc_html_e('Total pendiente', 'flavor-chat-ia'); ?></span>
+                    <span class="label"><?php esc_html_e('Total pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
             <?php if (empty($cuotas)): ?>
-                <p class="flavor-soc-sin-cuotas"><?php esc_html_e('No tienes cuotas registradas.', 'flavor-chat-ia'); ?></p>
+                <p class="flavor-soc-sin-cuotas"><?php esc_html_e('No tienes cuotas registradas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php else: ?>
                 <table class="flavor-soc-tabla-cuotas">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('Periodo', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Importe', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Fecha cargo', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Fecha pago', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Periodo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Importe', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Fecha cargo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Fecha pago', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -415,9 +415,9 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce'   => wp_create_nonce('flavor_socios_nonce'),
             'strings' => [
-                'errorConexion'   => __('Error de conexión. Inténtalo de nuevo.', 'flavor-chat-ia'),
-                'pagoConfirmado'  => __('Pago confirmado correctamente.', 'flavor-chat-ia'),
-                'copiado'         => __('Copiado al portapapeles.', 'flavor-chat-ia'),
+                'errorConexion'   => __('Error de conexión. Inténtalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'pagoConfirmado'  => __('Pago confirmado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'copiado'         => __('Copiado al portapapeles.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -525,40 +525,40 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'socios',
-            'label' => __('Miembros', 'flavor-chat-ia'),
+            'label' => __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-groups',
             'capability' => 'manage_options',
             'categoria' => 'personas',
             'paginas' => [
                 [
                     'slug' => 'socios-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'socios-listado',
-                    'titulo' => __('Listado de Miembros', 'flavor-chat-ia'),
+                    'titulo' => __('Listado de Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_listado'],
                 ],
                 [
                     'slug' => 'socios-cuotas',
-                    'titulo' => __('Cuotas', 'flavor-chat-ia'),
+                    'titulo' => __('Cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_cuotas'],
                     'badge' => [$this, 'contar_cuotas_pendientes'],
                 ],
                 [
                     'slug' => 'socios-altas-bajas',
-                    'titulo' => __('Altas/Bajas', 'flavor-chat-ia'),
+                    'titulo' => __('Altas/Bajas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_altas_bajas'],
                 ],
                 [
                     'slug' => 'socios-config',
-                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'titulo' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_config'],
                 ],
                 [
                     'slug' => 'socios-pagos',
-                    'titulo' => __('Pagos', 'flavor-chat-ia'),
+                    'titulo' => __('Pagos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_pagos'],
                 ],
             ],
@@ -611,7 +611,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         $estadisticas[] = [
             'icon' => 'dashicons-groups',
             'valor' => $socios_activos,
-            'label' => __('Miembros activos', 'flavor-chat-ia'),
+            'label' => __('Miembros activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'green',
             'enlace' => admin_url('admin.php?page=socios-listado&estado=activo'),
         ];
@@ -624,7 +624,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
             $estadisticas[] = [
                 'icon' => 'dashicons-money-alt',
                 'valor' => $cuotas_pendientes,
-                'label' => __('Cuotas pendientes', 'flavor-chat-ia'),
+                'label' => __('Cuotas pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $cuotas_pendientes > 0 ? 'orange' : 'green',
                 'enlace' => admin_url('admin.php?page=socios-cuotas&estado=pendiente'),
             ];
@@ -638,13 +638,13 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_dashboard() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Dashboard de Miembros', 'flavor-chat-ia'), [
-            ['label' => __('Nuevo Miembro', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=socios-altas-bajas'), 'class' => 'button-primary'],
+        $this->render_page_header(__('Dashboard de Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+            ['label' => __('Nuevo Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=socios-altas-bajas'), 'class' => 'button-primary'],
         ]);
-        echo '<p>' . __('Panel de control del módulo de gestión de miembros.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Panel de control del módulo de gestión de miembros.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
 
         if (!$this->can_activate()) {
-            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             echo '</div>';
             return;
         }
@@ -659,10 +659,10 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         $cuotas_pendientes = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_cuotas WHERE estado = 'pendiente'");
 
         echo '<div class="flavor-stats-grid">';
-        echo '<div class="flavor-stat-card"><span class="dashicons dashicons-groups"></span><div class="stat-content"><span class="stat-number">' . esc_html($activos) . '</span><span class="stat-label">' . esc_html__('Miembros activos', 'flavor-chat-ia') . '</span></div></div>';
-        echo '<div class="flavor-stat-card"><span class="dashicons dashicons-warning"></span><div class="stat-content"><span class="stat-number">' . esc_html($suspendidos) . '</span><span class="stat-label">' . esc_html__('Suspendidos', 'flavor-chat-ia') . '</span></div></div>';
-        echo '<div class="flavor-stat-card"><span class="dashicons dashicons-dismiss"></span><div class="stat-content"><span class="stat-number">' . esc_html($bajas) . '</span><span class="stat-label">' . esc_html__('Bajas', 'flavor-chat-ia') . '</span></div></div>';
-        echo '<div class="flavor-stat-card"><span class="dashicons dashicons-money-alt"></span><div class="stat-content"><span class="stat-number">' . esc_html($cuotas_pendientes) . '</span><span class="stat-label">' . esc_html__('Cuotas pendientes', 'flavor-chat-ia') . '</span></div></div>';
+        echo '<div class="flavor-stat-card"><span class="dashicons dashicons-groups"></span><div class="stat-content"><span class="stat-number">' . esc_html($activos) . '</span><span class="stat-label">' . esc_html__('Miembros activos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div></div>';
+        echo '<div class="flavor-stat-card"><span class="dashicons dashicons-warning"></span><div class="stat-content"><span class="stat-number">' . esc_html($suspendidos) . '</span><span class="stat-label">' . esc_html__('Suspendidos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div></div>';
+        echo '<div class="flavor-stat-card"><span class="dashicons dashicons-dismiss"></span><div class="stat-content"><span class="stat-number">' . esc_html($bajas) . '</span><span class="stat-label">' . esc_html__('Bajas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div></div>';
+        echo '<div class="flavor-stat-card"><span class="dashicons dashicons-money-alt"></span><div class="stat-content"><span class="stat-number">' . esc_html($cuotas_pendientes) . '</span><span class="stat-label">' . esc_html__('Cuotas pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div></div>';
         echo '</div>';
 
         echo '</div>';
@@ -673,13 +673,13 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_listado() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Listado de Miembros', 'flavor-chat-ia'), [
-            ['label' => __('Nuevo Miembro', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=socios-altas-bajas'), 'class' => 'button-primary'],
+        $this->render_page_header(__('Listado de Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+            ['label' => __('Nuevo Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=socios-altas-bajas'), 'class' => 'button-primary'],
         ]);
         $this->handle_admin_actions();
 
         if (!$this->can_activate()) {
-            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             echo '</div>';
             return;
         }
@@ -691,19 +691,19 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         echo '<form method="get" style="margin: 12px 0;">';
         echo '<input type="hidden" name="page" value="socios-listado">';
         echo '<select name="estado">';
-        echo '<option value="">' . esc_html__('Todos los estados', 'flavor-chat-ia') . '</option>';
-        foreach (['activo' => __('Activo', 'flavor-chat-ia'), 'suspendido' => __('Suspendido', 'flavor-chat-ia'), 'baja' => __('Baja', 'flavor-chat-ia')] as $key => $label) {
+        echo '<option value="">' . esc_html__('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
+        foreach (['activo' => __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'suspendido' => __('Suspendido', FLAVOR_PLATFORM_TEXT_DOMAIN), 'baja' => __('Baja', FLAVOR_PLATFORM_TEXT_DOMAIN)] as $key => $label) {
             echo '<option value="' . esc_attr($key) . '" ' . selected($estado, $key, false) . '>' . esc_html($label) . '</option>';
         }
         echo '</select> ';
         echo '<select name="tipo">';
-        echo '<option value="">' . esc_html__('Todos los tipos', 'flavor-chat-ia') . '</option>';
+        echo '<option value="">' . esc_html__('Todos los tipos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
         foreach ($this->get_setting('tipos_socio', []) as $key => $label) {
             echo '<option value="' . esc_attr($key) . '" ' . selected($tipo, $key, false) . '>' . esc_html($label) . '</option>';
         }
         echo '</select> ';
-        echo '<input type="search" name="s" placeholder="' . esc_attr__('Buscar por nombre o email', 'flavor-chat-ia') . '" value="' . esc_attr($busqueda) . '"> ';
-        echo '<button class="button">' . esc_html__('Filtrar', 'flavor-chat-ia') . '</button>';
+        echo '<input type="search" name="s" placeholder="' . esc_attr__('Buscar por nombre o email', FLAVOR_PLATFORM_TEXT_DOMAIN) . '" value="' . esc_attr($busqueda) . '"> ';
+        echo '<button class="button">' . esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</button>';
         echo '</form>';
 
         global $wpdb;
@@ -736,19 +736,19 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         $socios = $params ? $wpdb->get_results($wpdb->prepare($sql, $params)) : $wpdb->get_results($sql);
 
         if (empty($socios)) {
-            echo '<p>' . esc_html__('No hay miembros con esos filtros.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('No hay miembros con esos filtros.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
             return;
         }
 
         echo '<table class="widefat striped"><thead><tr>';
         echo '<th>ID</th>';
-        echo '<th>' . esc_html__('Nombre', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
         echo '<th>Email</th>';
-        echo '<th>' . esc_html__('Número', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Tipo', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Acciones', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Número', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
         echo '</tr></thead><tbody>';
         foreach ($socios as $socio) {
             echo '<tr>';
@@ -770,14 +770,14 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_cuotas() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Gestión de Cuotas', 'flavor-chat-ia'), [
-            ['label' => __('Generar Cuotas', 'flavor-chat-ia'), 'url' => '#', 'class' => 'button-primary'],
+        $this->render_page_header(__('Gestión de Cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+            ['label' => __('Generar Cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '#', 'class' => 'button-primary'],
         ]);
         $this->handle_admin_actions();
         $this->handle_admin_cuota_action();
 
         if (!$this->can_activate()) {
-            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             echo '</div>';
             return;
         }
@@ -787,12 +787,12 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         echo '<form method="get" style="margin: 12px 0;">';
         echo '<input type="hidden" name="page" value="socios-cuotas">';
         echo '<select name="estado">';
-        echo '<option value="">' . esc_html__('Todos los estados', 'flavor-chat-ia') . '</option>';
+        echo '<option value="">' . esc_html__('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
         foreach (['pendiente', 'pagada', 'vencida', 'condonada'] as $key) {
             echo '<option value="' . esc_attr($key) . '" ' . selected($estado, $key, false) . '>' . esc_html(ucfirst($key)) . '</option>';
         }
         echo '</select> ';
-        echo '<button class="button">' . esc_html__('Filtrar', 'flavor-chat-ia') . '</button>';
+        echo '<button class="button">' . esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</button>';
         echo '</form>';
 
         global $wpdb;
@@ -814,19 +814,19 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         $cuotas = $params ? $wpdb->get_results($wpdb->prepare($sql, $params)) : $wpdb->get_results($sql);
 
         if (empty($cuotas)) {
-            echo '<p>' . esc_html__('No hay cuotas con esos filtros.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('No hay cuotas con esos filtros.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
             return;
         }
 
         echo '<table class="widefat striped"><thead><tr>';
         echo '<th>ID</th>';
-        echo '<th>' . esc_html__('Socio', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Periodo', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Importe', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Fecha cargo', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Acciones', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Socio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Periodo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Importe', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Fecha cargo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
         echo '</tr></thead><tbody>';
         foreach ($cuotas as $cuota) {
             echo '<tr>';
@@ -848,37 +848,37 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_altas_bajas() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Altas y Bajas de Miembros', 'flavor-chat-ia'));
+        $this->render_page_header(__('Altas y Bajas de Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN));
         $this->handle_admin_create_socio();
         $this->handle_admin_baja_socio();
 
-        echo '<h3>' . esc_html__('Alta de miembro', 'flavor-chat-ia') . '</h3>';
+        echo '<h3>' . esc_html__('Alta de miembro', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         echo '<form method="post">';
         wp_nonce_field('socios_alta', 'socios_alta_nonce');
         echo '<table class="form-table"><tbody>';
-        echo '<tr><th>' . esc_html__('Usuario ID', 'flavor-chat-ia') . '</th><td><input type="number" name="usuario_id" min="1" required></td></tr>';
-        echo '<tr><th>' . esc_html__('Número de miembro', 'flavor-chat-ia') . '</th><td><input type="text" name="numero_socio" required></td></tr>';
-        echo '<tr><th>' . esc_html__('Tipo', 'flavor-chat-ia') . '</th><td><select name="tipo_socio">';
+        echo '<tr><th>' . esc_html__('Usuario ID', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="number" name="usuario_id" min="1" required></td></tr>';
+        echo '<tr><th>' . esc_html__('Número de miembro', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="text" name="numero_socio" required></td></tr>';
+        echo '<tr><th>' . esc_html__('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><select name="tipo_socio">';
         foreach ($this->get_setting('tipos_socio', []) as $key => $label) {
             echo '<option value="' . esc_attr($key) . '">' . esc_html($label) . '</option>';
         }
         echo '</select></td></tr>';
-        echo '<tr><th>' . esc_html__('Cuota mensual', 'flavor-chat-ia') . '</th><td><input type="number" step="0.01" name="cuota_mensual" value="' . esc_attr($this->get_setting('cuota_mensual')) . '"></td></tr>';
-        echo '<tr><th>' . esc_html__('Cuota reducida', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="cuota_reducida" value="1"> ' . esc_html__('Aplicar cuota reducida', 'flavor-chat-ia') . '</label></td></tr>';
-        echo '<tr><th>' . esc_html__('Notas', 'flavor-chat-ia') . '</th><td><textarea name="notas" rows="3" class="large-text"></textarea></td></tr>';
+        echo '<tr><th>' . esc_html__('Cuota mensual', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="number" step="0.01" name="cuota_mensual" value="' . esc_attr($this->get_setting('cuota_mensual')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Cuota reducida', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="cuota_reducida" value="1"> ' . esc_html__('Aplicar cuota reducida', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Notas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><textarea name="notas" rows="3" class="large-text"></textarea></td></tr>';
         echo '</tbody></table>';
-        submit_button(__('Dar de alta', 'flavor-chat-ia'));
+        submit_button(__('Dar de alta', FLAVOR_PLATFORM_TEXT_DOMAIN));
         echo '</form>';
 
         echo '<hr>';
-        echo '<h3>' . esc_html__('Baja de miembro', 'flavor-chat-ia') . '</h3>';
+        echo '<h3>' . esc_html__('Baja de miembro', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         echo '<form method="post">';
         wp_nonce_field('socios_baja', 'socios_baja_nonce');
         echo '<table class="form-table"><tbody>';
-        echo '<tr><th>' . esc_html__('ID Miembro', 'flavor-chat-ia') . '</th><td><input type="number" name="socio_id" min="1" required></td></tr>';
-        echo '<tr><th>' . esc_html__('Motivo', 'flavor-chat-ia') . '</th><td><textarea name="motivo" rows="3" class="large-text"></textarea></td></tr>';
+        echo '<tr><th>' . esc_html__('ID Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="number" name="socio_id" min="1" required></td></tr>';
+        echo '<tr><th>' . esc_html__('Motivo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><textarea name="motivo" rows="3" class="large-text"></textarea></td></tr>';
         echo '</tbody></table>';
-        submit_button(__('Dar de baja', 'flavor-chat-ia'));
+        submit_button(__('Dar de baja', FLAVOR_PLATFORM_TEXT_DOMAIN));
         echo '</form>';
         echo '</div>';
     }
@@ -888,9 +888,9 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_config() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Configuración de Miembros', 'flavor-chat-ia'));
+        $this->render_page_header(__('Configuración de Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN));
         $this->handle_admin_save_config();
-        echo '<p>' . __('Configuración del sistema de gestión de miembros.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Configuración del sistema de gestión de miembros.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
 
         $tipos = $this->get_setting('tipos_socio', []);
         $tipos_lineas = [];
@@ -901,17 +901,17 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         echo '<form method="post">';
         wp_nonce_field('socios_config', 'socios_config_nonce');
         echo '<table class="form-table"><tbody>';
-        echo '<tr><th>' . esc_html__('Cuota mensual', 'flavor-chat-ia') . '</th><td><input type="number" step="0.01" name="cuota_mensual" value="' . esc_attr($this->get_setting('cuota_mensual')) . '"></td></tr>';
-        echo '<tr><th>' . esc_html__('Cuota anual', 'flavor-chat-ia') . '</th><td><input type="number" step="0.01" name="cuota_anual" value="' . esc_attr($this->get_setting('cuota_anual')) . '"></td></tr>';
-        echo '<tr><th>' . esc_html__('Día de cargo', 'flavor-chat-ia') . '</th><td><input type="number" name="dia_cargo" min="1" max="28" value="' . esc_attr($this->get_setting('dia_cargo')) . '"></td></tr>';
-        echo '<tr><th>' . esc_html__('Permite cuota reducida', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="permite_cuota_reducida" value="1" ' . checked($this->get_setting('permite_cuota_reducida'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
-        echo '<tr><th>' . esc_html__('Requiere validación de alta', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="requiere_validacion_alta" value="1" ' . checked($this->get_setting('requiere_validacion_alta'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
-        echo '<tr><th>' . esc_html__('Tipos de miembro', 'flavor-chat-ia') . '</th><td>';
+        echo '<tr><th>' . esc_html__('Cuota mensual', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="number" step="0.01" name="cuota_mensual" value="' . esc_attr($this->get_setting('cuota_mensual')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Cuota anual', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="number" step="0.01" name="cuota_anual" value="' . esc_attr($this->get_setting('cuota_anual')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Día de cargo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="number" name="dia_cargo" min="1" max="28" value="' . esc_attr($this->get_setting('dia_cargo')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Permite cuota reducida', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="permite_cuota_reducida" value="1" ' . checked($this->get_setting('permite_cuota_reducida'), true, false) . '> ' . esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Requiere validación de alta', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="requiere_validacion_alta" value="1" ' . checked($this->get_setting('requiere_validacion_alta'), true, false) . '> ' . esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Tipos de miembro', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td>';
         echo '<textarea name="tipos_socio" rows="5" class="large-text" placeholder="consumidor|Socio Consumidor">' . esc_textarea(implode("\n", $tipos_lineas)) . '</textarea>';
-        echo '<p class="description">' . esc_html__('Un tipo por línea en formato clave|Etiqueta.', 'flavor-chat-ia') . '</p>';
+        echo '<p class="description">' . esc_html__('Un tipo por línea en formato clave|Etiqueta.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         echo '</td></tr>';
         echo '</tbody></table>';
-        submit_button(__('Guardar configuración', 'flavor-chat-ia'));
+        submit_button(__('Guardar configuración', FLAVOR_PLATFORM_TEXT_DOMAIN));
         echo '</form>';
         echo '</div>';
     }
@@ -927,12 +927,12 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         $config_stripe = get_option('flavor_socios_stripe_settings', []);
 
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Configuración de Pagos', 'flavor-chat-ia'));
+        $this->render_page_header(__('Configuración de Pagos', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         echo '<div class="flavor-admin-tabs">';
         echo '<nav class="nav-tab-wrapper">';
-        echo '<a href="#tab-manual" class="nav-tab nav-tab-active">' . esc_html__('Pago Manual', 'flavor-chat-ia') . '</a>';
-        echo '<a href="#tab-stripe" class="nav-tab">' . esc_html__('Stripe', 'flavor-chat-ia') . '</a>';
+        echo '<a href="#tab-manual" class="nav-tab nav-tab-active">' . esc_html__('Pago Manual', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
+        echo '<a href="#tab-stripe" class="nav-tab">' . esc_html__('Stripe', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
         echo '</nav>';
 
         echo '<form method="post">';
@@ -940,19 +940,19 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
 
         // Tab: Pago Manual
         echo '<div id="tab-manual" class="flavor-tab-content active">';
-        echo '<h2>' . esc_html__('Datos para transferencia bancaria', 'flavor-chat-ia') . '</h2>';
+        echo '<h2>' . esc_html__('Datos para transferencia bancaria', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2>';
         echo '<table class="form-table"><tbody>';
 
-        echo '<tr><th><label for="banco">' . esc_html__('Banco', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th><label for="banco">' . esc_html__('Banco', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="text" id="banco" name="banco" class="regular-text" value="' . esc_attr($config_socios['banco'] ?? '') . '"></td></tr>';
 
-        echo '<tr><th><label for="iban_cooperativa">' . esc_html__('IBAN', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th><label for="iban_cooperativa">' . esc_html__('IBAN', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="text" id="iban_cooperativa" name="iban_cooperativa" class="regular-text" placeholder="ES00 0000 0000 0000 0000 0000" value="' . esc_attr($config_socios['iban_cooperativa'] ?? '') . '"></td></tr>';
 
-        echo '<tr><th><label for="titular_cuenta">' . esc_html__('Titular de la cuenta', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th><label for="titular_cuenta">' . esc_html__('Titular de la cuenta', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="text" id="titular_cuenta" name="titular_cuenta" class="regular-text" value="' . esc_attr($config_socios['titular_cuenta'] ?? '') . '"></td></tr>';
 
-        echo '<tr><th><label for="telefono_bizum">' . esc_html__('Teléfono Bizum', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th><label for="telefono_bizum">' . esc_html__('Teléfono Bizum', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="tel" id="telefono_bizum" name="telefono_bizum" class="regular-text" placeholder="+34 600 000 000" value="' . esc_attr($config_socios['telefono_bizum'] ?? '') . '"></td></tr>';
 
         echo '</tbody></table>';
@@ -960,49 +960,49 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
 
         // Tab: Stripe
         echo '<div id="tab-stripe" class="flavor-tab-content" style="display:none;">';
-        echo '<h2>' . esc_html__('Configuración de Stripe', 'flavor-chat-ia') . '</h2>';
+        echo '<h2>' . esc_html__('Configuración de Stripe', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2>';
         echo '<p class="description">' . sprintf(
-            esc_html__('Obtén tus claves API en %s', 'flavor-chat-ia'),
+            esc_html__('Obtén tus claves API en %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
             '<a href="https://dashboard.stripe.com/apikeys" target="_blank">dashboard.stripe.com</a>'
         ) . '</p>';
 
         echo '<table class="form-table"><tbody>';
 
-        echo '<tr><th><label for="stripe_test_mode">' . esc_html__('Modo de prueba', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th><label for="stripe_test_mode">' . esc_html__('Modo de prueba', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><label><input type="checkbox" id="stripe_test_mode" name="stripe_test_mode" value="1" ' . checked(!empty($config_stripe['test_mode']), true, false) . '> ';
-        echo esc_html__('Activar modo de prueba (sandbox)', 'flavor-chat-ia') . '</label></td></tr>';
+        echo esc_html__('Activar modo de prueba (sandbox)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
 
-        echo '<tr><th colspan="2"><h3>' . esc_html__('Claves de Producción', 'flavor-chat-ia') . '</h3></th></tr>';
+        echo '<tr><th colspan="2"><h3>' . esc_html__('Claves de Producción', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3></th></tr>';
 
-        echo '<tr><th><label for="stripe_live_publishable">' . esc_html__('Clave pública (Live)', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th><label for="stripe_live_publishable">' . esc_html__('Clave pública (Live)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="text" id="stripe_live_publishable" name="stripe_live_publishable" class="large-text" placeholder="pk_live_..." value="' . esc_attr($config_stripe['live_publishable_key'] ?? '') . '"></td></tr>';
 
-        echo '<tr><th><label for="stripe_live_secret">' . esc_html__('Clave secreta (Live)', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th><label for="stripe_live_secret">' . esc_html__('Clave secreta (Live)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="password" id="stripe_live_secret" name="stripe_live_secret" class="large-text" placeholder="sk_live_..." value="' . esc_attr($config_stripe['live_secret_key'] ?? '') . '"></td></tr>';
 
-        echo '<tr><th colspan="2"><h3>' . esc_html__('Claves de Prueba', 'flavor-chat-ia') . '</h3></th></tr>';
+        echo '<tr><th colspan="2"><h3>' . esc_html__('Claves de Prueba', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3></th></tr>';
 
-        echo '<tr><th><label for="stripe_test_publishable">' . esc_html__('Clave pública (Test)', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th><label for="stripe_test_publishable">' . esc_html__('Clave pública (Test)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="text" id="stripe_test_publishable" name="stripe_test_publishable" class="large-text" placeholder="pk_test_..." value="' . esc_attr($config_stripe['test_publishable_key'] ?? '') . '"></td></tr>';
 
-        echo '<tr><th><label for="stripe_test_secret">' . esc_html__('Clave secreta (Test)', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th><label for="stripe_test_secret">' . esc_html__('Clave secreta (Test)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="password" id="stripe_test_secret" name="stripe_test_secret" class="large-text" placeholder="sk_test_..." value="' . esc_attr($config_stripe['test_secret_key'] ?? '') . '"></td></tr>';
 
-        echo '<tr><th colspan="2"><h3>' . esc_html__('Webhook', 'flavor-chat-ia') . '</h3></th></tr>';
+        echo '<tr><th colspan="2"><h3>' . esc_html__('Webhook', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3></th></tr>';
 
         $webhook_url = rest_url('flavor/v1/socios/webhook/stripe');
-        echo '<tr><th>' . esc_html__('URL del Webhook', 'flavor-chat-ia') . '</th>';
+        echo '<tr><th>' . esc_html__('URL del Webhook', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
         echo '<td><code>' . esc_html($webhook_url) . '</code>';
-        echo '<p class="description">' . esc_html__('Configura esta URL en tu dashboard de Stripe para recibir notificaciones de pago.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . esc_html__('Configura esta URL en tu dashboard de Stripe para recibir notificaciones de pago.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th><label for="stripe_webhook_secret">' . esc_html__('Webhook Secret', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th><label for="stripe_webhook_secret">' . esc_html__('Webhook Secret', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="password" id="stripe_webhook_secret" name="stripe_webhook_secret" class="large-text" placeholder="whsec_..." value="' . esc_attr($config_stripe['webhook_secret'] ?? '') . '">';
-        echo '<p class="description">' . esc_html__('Se encuentra en Stripe Dashboard > Webhooks > Tu endpoint > Signing secret', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . esc_html__('Se encuentra en Stripe Dashboard > Webhooks > Tu endpoint > Signing secret', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
         echo '</tbody></table>';
         echo '</div>';
 
-        submit_button(__('Guardar configuración de pagos', 'flavor-chat-ia'));
+        submit_button(__('Guardar configuración de pagos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         echo '</form>';
         echo '</div>';
 
@@ -1052,7 +1052,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         ];
         update_option('flavor_socios_stripe_settings', $config_stripe);
 
-        echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Configuración de pagos guardada correctamente.', 'flavor-chat-ia') . '</p></div>';
+        echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Configuración de pagos guardada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     }
 
     /**
@@ -1209,7 +1209,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         if (!$usuario_id) {
             return [
                 'success' => false,
-                'error' => __('Debes iniciar sesión para ver tu perfil.', 'flavor-chat-ia'),
+                'error' => __('Debes iniciar sesión para ver tu perfil.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1224,7 +1224,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         if (!$socio) {
             return [
                 'success' => false,
-                'error' => __('No eres socio de la cooperativa.', 'flavor-chat-ia'),
+                'error' => __('No eres socio de la cooperativa.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1254,7 +1254,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         if (!$usuario_id) {
             return [
                 'success' => false,
-                'error' => __('Debes iniciar sesión para ver tus cuotas.', 'flavor-chat-ia'),
+                'error' => __('Debes iniciar sesión para ver tus cuotas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1270,7 +1270,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         if (!$socio) {
             return [
                 'success' => false,
-                'error' => __('No eres socio de la cooperativa.', 'flavor-chat-ia'),
+                'error' => __('No eres socio de la cooperativa.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1326,7 +1326,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         if (!current_user_can('manage_options')) {
             return [
                 'success' => false,
-                'error' => __('No tienes permisos para ver las estadísticas.', 'flavor-chat-ia'),
+                'error' => __('No tienes permisos para ver las estadísticas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1394,8 +1394,8 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
     public static function get_renderer_config(): array {
         return [
             'module'   => 'socios',
-            'title'    => __('Miembros', 'flavor-chat-ia'),
-            'subtitle' => __('Gestiona tu membresía y tus cuotas', 'flavor-chat-ia'),
+            'title'    => __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Gestiona tu membresía y tus cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '🪪',
             'color'    => 'emerald',
 
@@ -1416,36 +1416,36 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
 
             'tabs' => [
                 'socios' => [
-                    'label'   => __('Miembros', 'flavor-chat-ia'),
+                    'label'   => __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-groups',
                     'content' => 'template:_archive.php',
                 ],
                 'unirse' => [
-                    'label'   => __('Unirse', 'flavor-chat-ia'),
+                    'label'   => __('Unirse', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-plus-alt',
                     'content' => '[flavor_module_form module="socios" action="dar_alta_socio"]',
                     'public'  => true,
                 ],
                 'mi-perfil' => [
-                    'label'          => __('Mi perfil', 'flavor-chat-ia'),
+                    'label'          => __('Mi perfil', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'           => 'dashicons-id',
                     'content'        => '[socios_mi_perfil]',
                     'requires_login' => true,
                 ],
                 'mis-cuotas' => [
-                    'label'          => __('Mis cuotas', 'flavor-chat-ia'),
+                    'label'          => __('Mis cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'           => 'dashicons-media-spreadsheet',
                     'content'        => '[socios_mis_cuotas]',
                     'requires_login' => true,
                 ],
                 'pagar-cuota' => [
-                    'label'          => __('Pagar cuota', 'flavor-chat-ia'),
+                    'label'          => __('Pagar cuota', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'           => 'dashicons-money-alt',
                     'content'        => '[socios_pagar_cuota]',
                     'requires_login' => true,
                 ],
                 'carnet' => [
-                    'label'          => __('Mi carnet', 'flavor-chat-ia'),
+                    'label'          => __('Mi carnet', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'           => 'dashicons-id',
                     'content'        => '[socios_mi_carnet]',
                     'requires_login' => true,
@@ -1511,83 +1511,83 @@ KNOWLEDGE;
     public function get_form_config($action_name) {
         $configs = [
             'dar_alta_socio' => [
-                'title' => __('Hazte Miembro', 'flavor-chat-ia'),
-                'description' => __('Únete a nuestra comunidad y disfruta de todos los beneficios', 'flavor-chat-ia'),
+                'title' => __('Hazte Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Únete a nuestra comunidad y disfruta de todos los beneficios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fields' => [
                     'tipo_socio' => [
                         'type' => 'select',
-                        'label' => __('Tipo de miembro', 'flavor-chat-ia'),
+                        'label' => __('Tipo de miembro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'options' => [
-                            'consumidor' => __('Miembro Consumidor - Acceso a grupo de consumo', 'flavor-chat-ia'),
-                            'trabajador' => __('Miembro Trabajador - Trabajas en la cooperativa', 'flavor-chat-ia'),
-                            'colaborador' => __('Miembro Colaborador - Apoyas el proyecto', 'flavor-chat-ia'),
+                            'consumidor' => __('Miembro Consumidor - Acceso a grupo de consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'trabajador' => __('Miembro Trabajador - Trabajas en la cooperativa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'colaborador' => __('Miembro Colaborador - Apoyas el proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ],
                         'default' => 'consumidor',
                     ],
                     'nombre_completo' => [
                         'type' => 'text',
-                        'label' => __('Nombre completo', 'flavor-chat-ia'),
+                        'label' => __('Nombre completo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
-                        'placeholder' => __('Tu nombre y apellidos', 'flavor-chat-ia'),
+                        'placeholder' => __('Tu nombre y apellidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'dni_nif' => [
                         'type' => 'text',
-                        'label' => __('DNI/NIE/NIF', 'flavor-chat-ia'),
+                        'label' => __('DNI/NIE/NIF', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
-                        'placeholder' => __('12345678X', 'flavor-chat-ia'),
+                        'placeholder' => __('12345678X', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'email' => [
                         'type' => 'email',
-                        'label' => __('Email', 'flavor-chat-ia'),
+                        'label' => __('Email', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
-                        'placeholder' => __('tu@email.com', 'flavor-chat-ia'),
+                        'placeholder' => __('tu@email.com', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'telefono' => [
                         'type' => 'tel',
-                        'label' => __('Teléfono', 'flavor-chat-ia'),
+                        'label' => __('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
-                        'placeholder' => __('600123456', 'flavor-chat-ia'),
+                        'placeholder' => __('600123456', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'direccion' => [
                         'type' => 'textarea',
-                        'label' => __('Dirección completa', 'flavor-chat-ia'),
+                        'label' => __('Dirección completa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'rows' => 3,
-                        'placeholder' => __('Calle, número, piso, ciudad, CP', 'flavor-chat-ia'),
+                        'placeholder' => __('Calle, número, piso, ciudad, CP', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'iban' => [
                         'type' => 'text',
-                        'label' => __('IBAN para domiciliación de cuotas', 'flavor-chat-ia'),
+                        'label' => __('IBAN para domiciliación de cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
-                        'placeholder' => __('ES00 0000 0000 0000 0000 0000', 'flavor-chat-ia'),
-                        'description' => __('Necesario para el pago automático de cuotas', 'flavor-chat-ia'),
+                        'placeholder' => __('ES00 0000 0000 0000 0000 0000', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'description' => __('Necesario para el pago automático de cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'cuota_reducida' => [
                         'type' => 'checkbox',
-                        'label' => __('Solicitar cuota reducida', 'flavor-chat-ia'),
-                        'checkbox_label' => __('Por situación económica, solicito cuota reducida (requiere justificación)', 'flavor-chat-ia'),
+                        'label' => __('Solicitar cuota reducida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'checkbox_label' => __('Por situación económica, solicito cuota reducida (requiere justificación)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'motivo_adhesion' => [
                         'type' => 'textarea',
-                        'label' => __('¿Por qué quieres ser socio?', 'flavor-chat-ia'),
+                        'label' => __('¿Por qué quieres ser socio?', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'rows' => 4,
-                        'placeholder' => __('Cuéntanos tus motivaciones...', 'flavor-chat-ia'),
+                        'placeholder' => __('Cuéntanos tus motivaciones...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'acepto_estatutos' => [
                         'type' => 'checkbox',
-                        'label' => __('Acepto los estatutos', 'flavor-chat-ia'),
-                        'checkbox_label' => __('He leído y acepto los estatutos de la cooperativa', 'flavor-chat-ia'),
+                        'label' => __('Acepto los estatutos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'checkbox_label' => __('He leído y acepto los estatutos de la cooperativa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                     ],
                 ],
-                'submit_text' => __('Solicitar Alta como Socio', 'flavor-chat-ia'),
-                'success_message' => __('¡Solicitud recibida! Te contactaremos en breve para completar el proceso.', 'flavor-chat-ia'),
+                'submit_text' => __('Solicitar Alta como Socio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'success_message' => __('¡Solicitud recibida! Te contactaremos en breve para completar el proceso.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'redirect_url' => '/socios/bienvenida/',
             ],
             'pagar_cuota' => [
-                'title' => __('Pagar Cuota', 'flavor-chat-ia'),
-                'description' => __('Registra el pago de tu cuota de socio', 'flavor-chat-ia'),
+                'title' => __('Pagar Cuota', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Registra el pago de tu cuota de socio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fields' => [
                     'cuota_id' => [
                         'type' => 'hidden',
@@ -1595,59 +1595,59 @@ KNOWLEDGE;
                     ],
                     'metodo_pago' => [
                         'type' => 'select',
-                        'label' => __('Método de pago', 'flavor-chat-ia'),
+                        'label' => __('Método de pago', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'options' => [
-                            'transferencia' => __('Transferencia bancaria', 'flavor-chat-ia'),
-                            'efectivo' => __('Efectivo', 'flavor-chat-ia'),
-                            'bizum' => __('Bizum', 'flavor-chat-ia'),
-                            'domiciliacion' => __('Domiciliación bancaria', 'flavor-chat-ia'),
+                            'transferencia' => __('Transferencia bancaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'efectivo' => __('Efectivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'bizum' => __('Bizum', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'domiciliacion' => __('Domiciliación bancaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ],
                     ],
                     'referencia' => [
                         'type' => 'text',
-                        'label' => __('Referencia de pago', 'flavor-chat-ia'),
-                        'placeholder' => __('Nº de operación, recibo, etc.', 'flavor-chat-ia'),
-                        'description' => __('Si el pago fue por transferencia o Bizum', 'flavor-chat-ia'),
+                        'label' => __('Referencia de pago', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'placeholder' => __('Nº de operación, recibo, etc.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'description' => __('Si el pago fue por transferencia o Bizum', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'fecha_pago' => [
                         'type' => 'date',
-                        'label' => __('Fecha de pago', 'flavor-chat-ia'),
+                        'label' => __('Fecha de pago', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'default' => date('Y-m-d'),
                     ],
                 ],
-                'submit_text' => __('Registrar Pago', 'flavor-chat-ia'),
-                'success_message' => __('Pago registrado correctamente. Gracias!', 'flavor-chat-ia'),
+                'submit_text' => __('Registrar Pago', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'success_message' => __('Pago registrado correctamente. Gracias!', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'actualizar_datos' => [
-                'title' => __('Actualizar Mis Datos', 'flavor-chat-ia'),
-                'description' => __('Mantén tu información actualizada', 'flavor-chat-ia'),
+                'title' => __('Actualizar Mis Datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Mantén tu información actualizada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fields' => [
                     'telefono' => [
                         'type' => 'tel',
-                        'label' => __('Teléfono', 'flavor-chat-ia'),
-                        'placeholder' => __('600123456', 'flavor-chat-ia'),
+                        'label' => __('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'placeholder' => __('600123456', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'direccion' => [
                         'type' => 'textarea',
-                        'label' => __('Dirección', 'flavor-chat-ia'),
+                        'label' => __('Dirección', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'rows' => 3,
                     ],
                     'iban' => [
                         'type' => 'text',
-                        'label' => __('IBAN', 'flavor-chat-ia'),
-                        'placeholder' => __('ES00 0000 0000 0000 0000 0000', 'flavor-chat-ia'),
+                        'label' => __('IBAN', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'placeholder' => __('ES00 0000 0000 0000 0000 0000', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'notas' => [
                         'type' => 'textarea',
-                        'label' => __('Notas o comentarios', 'flavor-chat-ia'),
+                        'label' => __('Notas o comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'rows' => 3,
-                        'placeholder' => __('Cualquier información relevante...', 'flavor-chat-ia'),
+                        'placeholder' => __('Cualquier información relevante...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                 ],
-                'submit_text' => __('Actualizar Datos', 'flavor-chat-ia'),
-                'success_message' => __('Datos actualizados correctamente', 'flavor-chat-ia'),
+                'submit_text' => __('Actualizar Datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'success_message' => __('Datos actualizados correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
 
@@ -1660,43 +1660,43 @@ KNOWLEDGE;
     public function get_web_components() {
         return [
             'hero' => [
-                'label' => __('Hero Miembros', 'flavor-chat-ia'),
-                'description' => __('Sección hero con información de membresía', 'flavor-chat-ia'),
+                'label' => __('Hero Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Sección hero con información de membresía', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-groups',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Hazte Miembro', 'flavor-chat-ia'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Hazte Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'subtitulo' => [
                         'type' => 'textarea',
-                        'label' => __('Subtítulo', 'flavor-chat-ia'),
-                        'default' => __('Únete a nuestra comunidad y disfruta de todos los beneficios', 'flavor-chat-ia'),
+                        'label' => __('Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Únete a nuestra comunidad y disfruta de todos los beneficios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'mostrar_contador' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar número de miembros', 'flavor-chat-ia'),
+                        'label' => __('Mostrar número de miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                 ],
                 'template' => 'socios/hero',
             ],
             'beneficios' => [
-                'label' => __('Beneficios de Miembros', 'flavor-chat-ia'),
-                'description' => __('Grid de ventajas de ser miembro', 'flavor-chat-ia'),
+                'label' => __('Beneficios de Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Grid de ventajas de ser miembro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'features',
                 'icon' => 'dashicons-star-filled',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Beneficios', 'flavor-chat-ia'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Beneficios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'columnas' => [
                         'type' => 'select',
-                        'label' => __('Columnas', 'flavor-chat-ia'),
+                        'label' => __('Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => [2, 3, 4],
                         'default' => 3,
                     ],
@@ -1704,57 +1704,57 @@ KNOWLEDGE;
                 'template' => 'socios/beneficios',
             ],
             'tipos_membresia' => [
-                'label' => __('Tipos de Membresía', 'flavor-chat-ia'),
-                'description' => __('Planes y cuotas disponibles', 'flavor-chat-ia'),
+                'label' => __('Tipos de Membresía', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Planes y cuotas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-id-alt',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Tipos de Membresía', 'flavor-chat-ia'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Tipos de Membresía', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'mostrar_precios' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar precios', 'flavor-chat-ia'),
+                        'label' => __('Mostrar precios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                 ],
                 'template' => 'socios/tipos-membresia',
             ],
             'formulario_alta' => [
-                'label' => __('Formulario de Alta', 'flavor-chat-ia'),
-                'description' => __('Formulario para hacerse miembro', 'flavor-chat-ia'),
+                'label' => __('Formulario de Alta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Formulario para hacerse miembro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'forms',
                 'icon' => 'dashicons-edit',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Únete Ahora', 'flavor-chat-ia'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Únete Ahora', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'campos_extra' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar campos adicionales', 'flavor-chat-ia'),
+                        'label' => __('Mostrar campos adicionales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => false,
                     ],
                 ],
                 'template' => 'socios/formulario-alta',
             ],
             'testimonios' => [
-                'label' => __('Testimonios de Miembros', 'flavor-chat-ia'),
-                'description' => __('Opiniones de miembros actuales', 'flavor-chat-ia'),
+                'label' => __('Testimonios de Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Opiniones de miembros actuales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'testimonials',
                 'icon' => 'dashicons-format-quote',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Lo que dicen nuestros miembros', 'flavor-chat-ia'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Lo que dicen nuestros miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'limite' => [
                         'type' => 'number',
-                        'label' => __('Número máximo', 'flavor-chat-ia'),
+                        'label' => __('Número máximo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 3,
                     ],
                 ],
@@ -1772,7 +1772,7 @@ KNOWLEDGE;
         if (!$usuario_id) {
             return [
                 'success' => false,
-                'error' => __('Debes iniciar sesión para actualizar tus datos.', 'flavor-chat-ia'),
+                'error' => __('Debes iniciar sesión para actualizar tus datos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1787,7 +1787,7 @@ KNOWLEDGE;
         if (!$socio) {
             return [
                 'success' => false,
-                'error' => __('No eres socio activo de la cooperativa.', 'flavor-chat-ia'),
+                'error' => __('No eres socio activo de la cooperativa.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1803,7 +1803,7 @@ KNOWLEDGE;
         if (empty($datos_actualizar)) {
             return [
                 'success' => false,
-                'error' => __('No hay datos para actualizar.', 'flavor-chat-ia'),
+                'error' => __('No hay datos para actualizar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1816,13 +1816,13 @@ KNOWLEDGE;
         if ($resultado === false) {
             return [
                 'success' => false,
-                'error' => __('Error al actualizar los datos.', 'flavor-chat-ia'),
+                'error' => __('Error al actualizar los datos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
         return [
             'success' => true,
-            'mensaje' => __('Datos actualizados correctamente.', 'flavor-chat-ia'),
+            'mensaje' => __('Datos actualizados correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -1836,7 +1836,7 @@ KNOWLEDGE;
         $nonce = $_GET['_wpnonce'] ?? '';
 
         if (!wp_verify_nonce($nonce, 'socios_estado_' . $socio_id)) {
-            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             return;
         }
 
@@ -1851,12 +1851,12 @@ KNOWLEDGE;
             $data['fecha_baja'] = date('Y-m-d');
         }
         $wpdb->update($tabla_socios, $data, ['id' => $socio_id]);
-        echo '<div class="notice notice-success"><p>' . esc_html__('Estado actualizado.', 'flavor-chat-ia') . '</p></div>';
+        echo '<div class="notice notice-success"><p>' . esc_html__('Estado actualizado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     }
 
     private function render_estado_actions($socio_id, $estado_actual, $page) {
         $acciones = [];
-        foreach (['activo' => __('Activo', 'flavor-chat-ia'), 'suspendido' => __('Suspendido', 'flavor-chat-ia'), 'baja' => __('Baja', 'flavor-chat-ia')] as $key => $label) {
+        foreach (['activo' => __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'suspendido' => __('Suspendido', FLAVOR_PLATFORM_TEXT_DOMAIN), 'baja' => __('Baja', FLAVOR_PLATFORM_TEXT_DOMAIN)] as $key => $label) {
             if ($key === $estado_actual) {
                 continue;
             }
@@ -1875,7 +1875,7 @@ KNOWLEDGE;
 
     private function render_cuota_actions($cuota_id, $estado_actual) {
         $acciones = [];
-        foreach (['pagada' => __('Marcar pagada', 'flavor-chat-ia'), 'vencida' => __('Marcar vencida', 'flavor-chat-ia'), 'condonada' => __('Condonar', 'flavor-chat-ia')] as $key => $label) {
+        foreach (['pagada' => __('Marcar pagada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'vencida' => __('Marcar vencida', FLAVOR_PLATFORM_TEXT_DOMAIN), 'condonada' => __('Condonar', FLAVOR_PLATFORM_TEXT_DOMAIN)] as $key => $label) {
             if ($key === $estado_actual) {
                 continue;
             }
@@ -1897,7 +1897,7 @@ KNOWLEDGE;
             return;
         }
         if (!wp_verify_nonce($_POST['socios_alta_nonce'], 'socios_alta')) {
-            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             return;
         }
 
@@ -1909,7 +1909,7 @@ KNOWLEDGE;
         $notas = sanitize_textarea_field($_POST['notas'] ?? '');
 
         if (!$usuario_id || !$numero_socio) {
-            echo '<div class="notice notice-error"><p>' . esc_html__('Usuario y número de socio son obligatorios.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-error"><p>' . esc_html__('Usuario y número de socio son obligatorios.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             return;
         }
 
@@ -1917,7 +1917,7 @@ KNOWLEDGE;
         $tabla_socios = $wpdb->prefix . 'flavor_socios';
         $exists = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $tabla_socios WHERE usuario_id = %d", $usuario_id));
         if ($exists) {
-            echo '<div class="notice notice-error"><p>' . esc_html__('El usuario ya es socio.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-error"><p>' . esc_html__('El usuario ya es socio.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             return;
         }
 
@@ -1932,7 +1932,7 @@ KNOWLEDGE;
             'notas' => $notas,
         ]);
 
-        echo '<div class="notice notice-success"><p>' . esc_html__('Socio creado.', 'flavor-chat-ia') . '</p></div>';
+        echo '<div class="notice notice-success"><p>' . esc_html__('Socio creado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     }
 
     private function handle_admin_baja_socio() {
@@ -1940,7 +1940,7 @@ KNOWLEDGE;
             return;
         }
         if (!wp_verify_nonce($_POST['socios_baja_nonce'], 'socios_baja')) {
-            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             return;
         }
 
@@ -1957,7 +1957,7 @@ KNOWLEDGE;
             'notas' => sanitize_textarea_field($_POST['motivo'] ?? ''),
         ], ['id' => $socio_id]);
 
-        echo '<div class="notice notice-success"><p>' . esc_html__('Socio dado de baja.', 'flavor-chat-ia') . '</p></div>';
+        echo '<div class="notice notice-success"><p>' . esc_html__('Socio dado de baja.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     }
 
     private function handle_admin_save_config() {
@@ -1965,7 +1965,7 @@ KNOWLEDGE;
             return;
         }
         if (!wp_verify_nonce($_POST['socios_config_nonce'], 'socios_config')) {
-            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             return;
         }
 
@@ -1987,7 +1987,7 @@ KNOWLEDGE;
             $this->update_setting('tipos_socio', $tipos);
         }
 
-        echo '<div class="notice notice-success"><p>' . esc_html__('Configuración guardada.', 'flavor-chat-ia') . '</p></div>';
+        echo '<div class="notice notice-success"><p>' . esc_html__('Configuración guardada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     }
 
     private function handle_admin_cuota_action() {
@@ -2000,7 +2000,7 @@ KNOWLEDGE;
         $nonce = $_GET['_wpnonce'] ?? '';
 
         if (!wp_verify_nonce($nonce, 'socios_cuota_' . $cuota_id)) {
-            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             return;
         }
 
@@ -2015,7 +2015,7 @@ KNOWLEDGE;
             $data['fecha_pago'] = date('Y-m-d');
         }
         $wpdb->update($tabla_cuotas, $data, ['id' => $cuota_id]);
-        echo '<div class="notice notice-success"><p>' . esc_html__('Cuota actualizada.', 'flavor-chat-ia') . '</p></div>';
+        echo '<div class="notice notice-success"><p>' . esc_html__('Cuota actualizada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     }
     /**
      * Crea/actualiza páginas del módulo si es necesario
@@ -2047,28 +2047,28 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Miembros', 'flavor-chat-ia'),
+                'title' => __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'socios',
-                'content' => '<h1>' . __('Gestión de Miembros', 'flavor-chat-ia') . '</h1>
-<p>' . __('Bienvenido al área de miembros. Aquí podrás gestionar tu membresía, consultar cuotas y actualizar tus datos.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Gestión de Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Bienvenido al área de miembros. Aquí podrás gestionar tu membresía, consultar cuotas y actualizar tus datos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="socios" action="listar" columnas="3" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Unirse', 'flavor-chat-ia'),
+                'title' => __('Unirse', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'unirse',
-                'content' => '<h1>' . __('Hazte Miembro', 'flavor-chat-ia') . '</h1>
-<p>' . __('Únete a nuestra comunidad y disfruta de todos los beneficios de ser miembro.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Hazte Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Únete a nuestra comunidad y disfruta de todos los beneficios de ser miembro.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_form module="socios" action="dar_alta_socio"]',
                 'parent' => 'socios',
             ],
             [
-                'title' => __('Mi Perfil', 'flavor-chat-ia'),
+                'title' => __('Mi Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mi-perfil',
-                'content' => '<h1>' . __('Mi Perfil de Miembro', 'flavor-chat-ia') . '</h1>
-<p>' . __('Consulta y actualiza tu información personal y datos de contacto.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Mi Perfil de Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Consulta y actualiza tu información personal y datos de contacto.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="socios" action="mi_perfil_socio" columnas="1" limite="1"]
 
@@ -2076,10 +2076,10 @@ KNOWLEDGE;
                 'parent' => 'socios',
             ],
             [
-                'title' => __('Pagar Cuota', 'flavor-chat-ia'),
+                'title' => __('Pagar Cuota', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'pagar-cuota',
-                'content' => '<h1>' . __('Pagar Cuota de Miembro', 'flavor-chat-ia') . '</h1>
-<p>' . __('Gestiona el pago de tus cuotas de membresía.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Pagar Cuota de Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Gestiona el pago de tus cuotas de membresía.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="socios" action="mis_cuotas" columnas="1" limite="12"]
 
@@ -2087,19 +2087,19 @@ KNOWLEDGE;
                 'parent' => 'socios',
             ],
             [
-                'title' => __('Mis Cuotas', 'flavor-chat-ia'),
+                'title' => __('Mis Cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mis-cuotas',
-                'content' => '<h1>' . __('Mis Cuotas', 'flavor-chat-ia') . '</h1>
-<p>' . __('Consulta el estado de tus pagos y tu historial de cuotas.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Mis Cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Consulta el estado de tus pagos y tu historial de cuotas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [socios_mis_cuotas]',
                 'parent' => 'socios',
             ],
             [
-                'title' => __('Mi Carnet', 'flavor-chat-ia'),
+                'title' => __('Mi Carnet', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'carnet',
-                'content' => '<h1>' . __('Mi Carnet Digital', 'flavor-chat-ia') . '</h1>
-<p>' . __('Accede a tu carnet de miembro desde el portal.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Mi Carnet Digital', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Accede a tu carnet de miembro desde el portal.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [socios_mi_carnet]',
                 'parent' => 'socios',
@@ -2123,8 +2123,8 @@ KNOWLEDGE;
         // Página principal - alias con sufijo -dashboard para Admin Shell
         add_submenu_page(
             null,
-            __('Dashboard Miembros', 'flavor-chat-ia'),
-            __('Dashboard', 'flavor-chat-ia'),
+            __('Dashboard Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'socios-dashboard',
             [$this, 'render_pagina_dashboard']
@@ -2133,8 +2133,8 @@ KNOWLEDGE;
         // Página principal (oculta) - mantener por compatibilidad
         add_submenu_page(
             null,
-            __('Miembros', 'flavor-chat-ia'),
-            __('Miembros', 'flavor-chat-ia'),
+            __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'socios',
             [$this, 'render_pagina_dashboard']
@@ -2143,8 +2143,8 @@ KNOWLEDGE;
         // Página: Listado Socios (oculta)
         add_submenu_page(
             null,
-            __('Listado Miembros', 'flavor-chat-ia'),
-            __('Listado Miembros', 'flavor-chat-ia'),
+            __('Listado Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Listado Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'socios-listado',
             [$this, 'render_pagina_socios']
@@ -2153,8 +2153,8 @@ KNOWLEDGE;
         // Página: Cuotas (oculta)
         add_submenu_page(
             null,
-            __('Cuotas', 'flavor-chat-ia'),
-            __('Cuotas', 'flavor-chat-ia'),
+            __('Cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'socios-cuotas',
             [$this, 'render_pagina_cuotas']
@@ -2163,8 +2163,8 @@ KNOWLEDGE;
         // Página: Pagos (oculta)
         add_submenu_page(
             null,
-            __('Pagos', 'flavor-chat-ia'),
-            __('Pagos', 'flavor-chat-ia'),
+            __('Pagos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Pagos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'socios-pagos',
             [$this, 'render_pagina_pagos']
@@ -2173,8 +2173,8 @@ KNOWLEDGE;
         // Página: Altas y Bajas (oculta)
         add_submenu_page(
             null,
-            __('Altas y Bajas', 'flavor-chat-ia'),
-            __('Altas y Bajas', 'flavor-chat-ia'),
+            __('Altas y Bajas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Altas y Bajas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'socios-altas-bajas',
             [$this, 'render_pagina_altas_bajas']
@@ -2183,8 +2183,8 @@ KNOWLEDGE;
         // Página: Configuración (oculta)
         add_submenu_page(
             null,
-            __('Configuración Miembros', 'flavor-chat-ia'),
-            __('Configuración', 'flavor-chat-ia'),
+            __('Configuración Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'socios-config',
             [$this, 'render_pagina_config']
@@ -2193,8 +2193,8 @@ KNOWLEDGE;
         // Página: Solicitudes de Alta (oculta)
         add_submenu_page(
             null,
-            __('Solicitudes de Alta', 'flavor-chat-ia'),
-            __('Solicitudes', 'flavor-chat-ia'),
+            __('Solicitudes de Alta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'socios-solicitudes',
             [$this, 'render_pagina_solicitudes']
@@ -2209,8 +2209,8 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Miembros', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Panel de administración del módulo de miembros.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Panel de administración del módulo de miembros.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -2222,7 +2222,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Miembros', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -2234,7 +2234,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Cuotas', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -2246,7 +2246,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Pagos', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Pagos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -2259,9 +2259,9 @@ KNOWLEDGE;
             include $views_path;
         } else {
             echo '<div class="wrap">';
-            echo '<h1>' . esc_html__('Altas y Bajas de Miembros', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Gestión de movimientos de altas y bajas del período actual.', 'flavor-chat-ia') . '</p>';
-            echo '<p><a href="' . esc_url(admin_url('admin.php?page=socios-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', 'flavor-chat-ia') . '</a></p>';
+            echo '<h1>' . esc_html__('Altas y Bajas de Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Gestión de movimientos de altas y bajas del período actual.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
+            echo '<p><a href="' . esc_url(admin_url('admin.php?page=socios-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p>';
             echo '</div>';
         }
     }
@@ -2275,9 +2275,9 @@ KNOWLEDGE;
             include $views_path;
         } else {
             echo '<div class="wrap">';
-            echo '<h1>' . esc_html__('Configuración de Miembros', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Ajustes del módulo de gestión de miembros.', 'flavor-chat-ia') . '</p>';
-            echo '<p><a href="' . esc_url(admin_url('admin.php?page=socios-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', 'flavor-chat-ia') . '</a></p>';
+            echo '<h1>' . esc_html__('Configuración de Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Ajustes del módulo de gestión de miembros.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
+            echo '<p><a href="' . esc_url(admin_url('admin.php?page=socios-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p>';
             echo '</div>';
         }
     }
@@ -2291,9 +2291,9 @@ KNOWLEDGE;
             include $views_path;
         } else {
             echo '<div class="wrap">';
-            echo '<h1>' . esc_html__('Solicitudes de Alta', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Gestión de solicitudes de nuevos miembros.', 'flavor-chat-ia') . '</p>';
-            echo '<p><a href="' . esc_url(admin_url('admin.php?page=socios-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', 'flavor-chat-ia') . '</a></p>';
+            echo '<h1>' . esc_html__('Solicitudes de Alta', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Gestión de solicitudes de nuevos miembros.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
+            echo '<p><a href="' . esc_url(admin_url('admin.php?page=socios-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p>';
             echo '</div>';
         }
     }

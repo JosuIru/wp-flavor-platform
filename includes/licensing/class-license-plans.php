@@ -90,18 +90,18 @@ class Flavor_License_Plans {
         $this->plans = [
             // Plan gratuito / sin licencia
             'free' => [
-                'name'        => __('Plan Gratuito', 'flavor-chat-ia'),
+                'name'        => __('Plan Gratuito', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug'        => 'free',
                 'price'       => 0,
                 'period'      => 'unlimited',
                 'sites'       => 1,
-                'description' => __('Funcionalidades básicas para empezar', 'flavor-chat-ia'),
+                'description' => __('Funcionalidades básicas para empezar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'features'    => [
-                    __('5 módulos básicos', 'flavor-chat-ia'),
-                    __('Chat interno', 'flavor-chat-ia'),
-                    __('Foros de comunidad', 'flavor-chat-ia'),
-                    __('Gestión de eventos', 'flavor-chat-ia'),
-                    __('Soporte por documentación', 'flavor-chat-ia'),
+                    __('5 módulos básicos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Chat interno', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Foros de comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Gestión de eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Soporte por documentación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
                 'modules'     => [], // Solo módulos base
                 'color'       => '#64748b',
@@ -109,17 +109,17 @@ class Flavor_License_Plans {
 
             // Plan Starter
             'starter' => [
-                'name'        => __('Plan Starter', 'flavor-chat-ia'),
+                'name'        => __('Plan Starter', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug'        => 'starter',
                 'price'       => 79,
                 'period'      => 'year',
                 'sites'       => 1,
-                'description' => __('Perfecto para comunidades pequeñas', 'flavor-chat-ia'),
+                'description' => __('Perfecto para comunidades pequeñas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'features'    => [
-                    __('20+ módulos', 'flavor-chat-ia'),
-                    __('1 sitio web', 'flavor-chat-ia'),
-                    __('Soporte por email', 'flavor-chat-ia'),
-                    __('Actualizaciones durante 1 año', 'flavor-chat-ia'),
+                    __('20+ módulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('1 sitio web', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Soporte por email', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Actualizaciones durante 1 año', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
                 'modules'     => [
                     // Comunicación
@@ -154,18 +154,18 @@ class Flavor_License_Plans {
 
             // Plan Professional
             'professional' => [
-                'name'        => __('Plan Professional', 'flavor-chat-ia'),
+                'name'        => __('Plan Professional', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug'        => 'professional',
                 'price'       => 149,
                 'period'      => 'year',
                 'sites'       => 5,
-                'description' => __('Para organizaciones en crecimiento', 'flavor-chat-ia'),
+                'description' => __('Para organizaciones en crecimiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'features'    => [
-                    __('40+ módulos', 'flavor-chat-ia'),
-                    __('5 sitios web', 'flavor-chat-ia'),
-                    __('Soporte prioritario', 'flavor-chat-ia'),
-                    __('Actualizaciones durante 1 año', 'flavor-chat-ia'),
-                    __('Acceso a addons básicos', 'flavor-chat-ia'),
+                    __('40+ módulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('5 sitios web', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Soporte prioritario', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Actualizaciones durante 1 año', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Acceso a addons básicos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
                 'modules'     => [
                     // Todos los de Starter +
@@ -211,19 +211,19 @@ class Flavor_License_Plans {
 
             // Plan Agency
             'agency' => [
-                'name'        => __('Plan Agency', 'flavor-chat-ia'),
+                'name'        => __('Plan Agency', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug'        => 'agency',
                 'price'       => 299,
                 'period'      => 'year',
                 'sites'       => -1, // Ilimitado
-                'description' => __('Para agencias y proyectos múltiples', 'flavor-chat-ia'),
+                'description' => __('Para agencias y proyectos múltiples', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'features'    => [
-                    __('Todos los módulos', 'flavor-chat-ia'),
-                    __('Sitios ilimitados', 'flavor-chat-ia'),
-                    __('Soporte premium 24/7', 'flavor-chat-ia'),
-                    __('Actualizaciones de por vida', 'flavor-chat-ia'),
-                    __('Todos los addons incluidos', 'flavor-chat-ia'),
-                    __('White label disponible', 'flavor-chat-ia'),
+                    __('Todos los módulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Sitios ilimitados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Soporte premium 24/7', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Actualizaciones de por vida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Todos los addons incluidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('White label disponible', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
                 'modules'     => 'all', // Todos los módulos
                 'color'       => '#f59e0b',
@@ -372,11 +372,11 @@ class Flavor_License_Plans {
         $plan = $this->get_plan($plan_slug);
 
         if (!$plan || $plan['price'] === 0) {
-            return __('Gratis', 'flavor-chat-ia');
+            return __('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         $price = number_format($plan['price'], 0, ',', '.');
-        $period = $plan['period'] === 'year' ? __('/año', 'flavor-chat-ia') : '';
+        $period = $plan['period'] === 'year' ? __('/año', FLAVOR_PLATFORM_TEXT_DOMAIN) : '';
 
         return $price . '€' . $period;
     }
@@ -391,15 +391,15 @@ class Flavor_License_Plans {
         $plan = $this->get_plan($plan_slug);
 
         if (!$plan) {
-            return '1 ' . __('sitio', 'flavor-chat-ia');
+            return '1 ' . __('sitio', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         if ($plan['sites'] === -1) {
-            return __('Sitios ilimitados', 'flavor-chat-ia');
+            return __('Sitios ilimitados', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         return sprintf(
-            _n('%d sitio', '%d sitios', $plan['sites'], 'flavor-chat-ia'),
+            _n('%d sitio', '%d sitios', $plan['sites'], FLAVOR_PLATFORM_TEXT_DOMAIN),
             $plan['sites']
         );
     }

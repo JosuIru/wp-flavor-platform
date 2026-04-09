@@ -67,8 +67,8 @@ class Flavor_App_Users_Panel {
     public function add_admin_menu() {
         add_submenu_page(
             'flavor-dashboard',
-            __( 'Usuarios App', 'flavor-chat-ia' ),
-            __( 'Usuarios App', 'flavor-chat-ia' ),
+            __( 'Usuarios App', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+            __( 'Usuarios App', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             'manage_options',
             'flavor-app-users',
             array( $this, 'render_page' )
@@ -102,10 +102,10 @@ class Flavor_App_Users_Panel {
             'ajaxUrl' => admin_url( 'admin-ajax.php' ),
             'nonce'   => wp_create_nonce( 'flavor_app_users' ),
             'i18n'    => array(
-                'confirm_revoke' => __( '¿Revocar acceso de este dispositivo?', 'flavor-chat-ia' ),
-                'confirm_push'   => __( '¿Enviar notificación push?', 'flavor-chat-ia' ),
-                'loading'        => __( 'Cargando...', 'flavor-chat-ia' ),
-                'no_results'     => __( 'No se encontraron usuarios', 'flavor-chat-ia' ),
+                'confirm_revoke' => __( '¿Revocar acceso de este dispositivo?', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'confirm_push'   => __( '¿Enviar notificación push?', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'loading'        => __( 'Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN ),
+                'no_results'     => __( 'No se encontraron usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
         ) );
     }
@@ -157,16 +157,16 @@ class Flavor_App_Users_Panel {
             <div class="page-header">
                 <h1>
                     <span class="dashicons dashicons-smartphone"></span>
-                    <?php esc_html_e( 'Usuarios de la App', 'flavor-chat-ia' ); ?>
+                    <?php esc_html_e( 'Usuarios de la App', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                 </h1>
                 <div class="header-actions">
                     <button type="button" class="button" id="export-users">
                         <span class="dashicons dashicons-download"></span>
-                        <?php esc_html_e( 'Exportar', 'flavor-chat-ia' ); ?>
+                        <?php esc_html_e( 'Exportar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                     </button>
                     <button type="button" class="button button-primary" id="send-broadcast">
                         <span class="dashicons dashicons-megaphone"></span>
-                        <?php esc_html_e( 'Enviar Notificación', 'flavor-chat-ia' ); ?>
+                        <?php esc_html_e( 'Enviar Notificación', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                     </button>
                 </div>
             </div>
@@ -177,28 +177,28 @@ class Flavor_App_Users_Panel {
                     <div class="stat-icon"><span class="dashicons dashicons-groups"></span></div>
                     <div class="stat-content">
                         <div class="stat-value"><?php echo esc_html( $stats['total_users'] ); ?></div>
-                        <div class="stat-label"><?php esc_html_e( 'Usuarios Totales', 'flavor-chat-ia' ); ?></div>
+                        <div class="stat-label"><?php esc_html_e( 'Usuarios Totales', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></div>
                     </div>
                 </div>
                 <div class="stat-card active">
                     <div class="stat-icon"><span class="dashicons dashicons-yes-alt"></span></div>
                     <div class="stat-content">
                         <div class="stat-value"><?php echo esc_html( $stats['active_users'] ); ?></div>
-                        <div class="stat-label"><?php esc_html_e( 'Activos (7 días)', 'flavor-chat-ia' ); ?></div>
+                        <div class="stat-label"><?php esc_html_e( 'Activos (7 días)', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></div>
                     </div>
                 </div>
                 <div class="stat-card devices">
                     <div class="stat-icon"><span class="dashicons dashicons-smartphone"></span></div>
                     <div class="stat-content">
                         <div class="stat-value"><?php echo esc_html( $stats['total_devices'] ); ?></div>
-                        <div class="stat-label"><?php esc_html_e( 'Dispositivos', 'flavor-chat-ia' ); ?></div>
+                        <div class="stat-label"><?php esc_html_e( 'Dispositivos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></div>
                     </div>
                 </div>
                 <div class="stat-card sessions">
                     <div class="stat-icon"><span class="dashicons dashicons-clock"></span></div>
                     <div class="stat-content">
                         <div class="stat-value"><?php echo esc_html( $stats['avg_session_time'] ); ?></div>
-                        <div class="stat-label"><?php esc_html_e( 'Tiempo Promedio', 'flavor-chat-ia' ); ?></div>
+                        <div class="stat-label"><?php esc_html_e( 'Tiempo Promedio', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></div>
                     </div>
                 </div>
             </div>
@@ -218,18 +218,18 @@ class Flavor_App_Users_Panel {
             <!-- Toolbar -->
             <div class="users-toolbar">
                 <div class="search-box">
-                    <input type="search" id="search-users" placeholder="<?php esc_attr_e( 'Buscar usuarios...', 'flavor-chat-ia' ); ?>">
+                    <input type="search" id="search-users" placeholder="<?php esc_attr_e( 'Buscar usuarios...', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
                 </div>
                 <div class="filter-group">
                     <select id="filter-platform">
-                        <option value=""><?php esc_html_e( 'Todas las plataformas', 'flavor-chat-ia' ); ?></option>
+                        <option value=""><?php esc_html_e( 'Todas las plataformas', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
                         <option value="ios">iOS</option>
                         <option value="android">Android</option>
                     </select>
                     <select id="filter-status">
-                        <option value=""><?php esc_html_e( 'Todos los estados', 'flavor-chat-ia' ); ?></option>
-                        <option value="active"><?php esc_html_e( 'Activos', 'flavor-chat-ia' ); ?></option>
-                        <option value="inactive"><?php esc_html_e( 'Inactivos', 'flavor-chat-ia' ); ?></option>
+                        <option value=""><?php esc_html_e( 'Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
+                        <option value="active"><?php esc_html_e( 'Activos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
+                        <option value="inactive"><?php esc_html_e( 'Inactivos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
                     </select>
                 </div>
             </div>
@@ -240,19 +240,19 @@ class Flavor_App_Users_Panel {
                     <thead>
                         <tr>
                             <th class="column-avatar"></th>
-                            <th class="column-user"><?php esc_html_e( 'Usuario', 'flavor-chat-ia' ); ?></th>
-                            <th class="column-devices"><?php esc_html_e( 'Dispositivos', 'flavor-chat-ia' ); ?></th>
-                            <th class="column-platform"><?php esc_html_e( 'Plataforma', 'flavor-chat-ia' ); ?></th>
-                            <th class="column-last-seen"><?php esc_html_e( 'Última sesión', 'flavor-chat-ia' ); ?></th>
-                            <th class="column-sessions"><?php esc_html_e( 'Sesiones', 'flavor-chat-ia' ); ?></th>
-                            <th class="column-actions"><?php esc_html_e( 'Acciones', 'flavor-chat-ia' ); ?></th>
+                            <th class="column-user"><?php esc_html_e( 'Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
+                            <th class="column-devices"><?php esc_html_e( 'Dispositivos', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
+                            <th class="column-platform"><?php esc_html_e( 'Plataforma', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
+                            <th class="column-last-seen"><?php esc_html_e( 'Última sesión', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
+                            <th class="column-sessions"><?php esc_html_e( 'Sesiones', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
+                            <th class="column-actions"><?php esc_html_e( 'Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></th>
                         </tr>
                     </thead>
                     <tbody id="users-list">
                         <tr class="loading-row">
                             <td colspan="7">
                                 <span class="spinner is-active"></span>
-                                <?php esc_html_e( 'Cargando usuarios...', 'flavor-chat-ia' ); ?>
+                                <?php esc_html_e( 'Cargando usuarios...', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                             </td>
                         </tr>
                     </tbody>
@@ -278,7 +278,7 @@ class Flavor_App_Users_Panel {
             <div class="user-modal-overlay" id="user-modal">
                 <div class="user-modal">
                     <div class="user-modal-header">
-                        <h3><?php esc_html_e( 'Detalles del Usuario', 'flavor-chat-ia' ); ?></h3>
+                        <h3><?php esc_html_e( 'Detalles del Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h3>
                         <button type="button" class="user-modal-close">&times;</button>
                     </div>
                     <div class="user-modal-body">
@@ -291,39 +291,39 @@ class Flavor_App_Users_Panel {
             <div class="user-modal-overlay" id="broadcast-modal">
                 <div class="user-modal">
                     <div class="user-modal-header">
-                        <h3><?php esc_html_e( 'Enviar Notificación Push', 'flavor-chat-ia' ); ?></h3>
+                        <h3><?php esc_html_e( 'Enviar Notificación Push', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></h3>
                         <button type="button" class="user-modal-close">&times;</button>
                     </div>
                     <div class="user-modal-body">
                         <form id="broadcast-form">
                             <div class="form-group">
-                                <label for="push-title"><?php esc_html_e( 'Título', 'flavor-chat-ia' ); ?></label>
+                                <label for="push-title"><?php esc_html_e( 'Título', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
                                 <input type="text" id="push-title" name="title" required>
                             </div>
                             <div class="form-group">
-                                <label for="push-body"><?php esc_html_e( 'Mensaje', 'flavor-chat-ia' ); ?></label>
+                                <label for="push-body"><?php esc_html_e( 'Mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
                                 <textarea id="push-body" name="body" rows="3" required></textarea>
                             </div>
                             <div class="form-group">
-                                <label for="push-target"><?php esc_html_e( 'Destinatarios', 'flavor-chat-ia' ); ?></label>
+                                <label for="push-target"><?php esc_html_e( 'Destinatarios', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
                                 <select id="push-target" name="target">
-                                    <option value="all"><?php esc_html_e( 'Todos los usuarios', 'flavor-chat-ia' ); ?></option>
-                                    <option value="ios"><?php esc_html_e( 'Solo iOS', 'flavor-chat-ia' ); ?></option>
-                                    <option value="android"><?php esc_html_e( 'Solo Android', 'flavor-chat-ia' ); ?></option>
-                                    <option value="active"><?php esc_html_e( 'Usuarios activos (7 días)', 'flavor-chat-ia' ); ?></option>
+                                    <option value="all"><?php esc_html_e( 'Todos los usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
+                                    <option value="ios"><?php esc_html_e( 'Solo iOS', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
+                                    <option value="android"><?php esc_html_e( 'Solo Android', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
+                                    <option value="active"><?php esc_html_e( 'Usuarios activos (7 días)', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="push-data"><?php esc_html_e( 'Datos adicionales (JSON)', 'flavor-chat-ia' ); ?></label>
+                                <label for="push-data"><?php esc_html_e( 'Datos adicionales (JSON)', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></label>
                                 <textarea id="push-data" name="data" rows="2" placeholder='{"action": "open_screen", "screen": "eventos"}'></textarea>
                             </div>
                         </form>
                     </div>
                     <div class="user-modal-footer">
-                        <button type="button" class="button btn-cancel"><?php esc_html_e( 'Cancelar', 'flavor-chat-ia' ); ?></button>
+                        <button type="button" class="button btn-cancel"><?php esc_html_e( 'Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></button>
                         <button type="button" class="button button-primary" id="send-push-btn">
                             <span class="dashicons dashicons-megaphone"></span>
-                            <?php esc_html_e( 'Enviar', 'flavor-chat-ia' ); ?>
+                            <?php esc_html_e( 'Enviar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                         </button>
                     </div>
                 </div>
@@ -519,7 +519,7 @@ class Flavor_App_Users_Panel {
                 'avatar'        => get_avatar_url( $user->user_id, array( 'size' => 40 ) ),
                 'device_count'  => intval( $user->device_count ),
                 'platforms'     => $user->platforms,
-                'last_seen'     => $user->last_seen ? human_time_diff( strtotime( $user->last_seen ) ) . ' ' . __( 'ago', 'flavor-chat-ia' ) : '-',
+                'last_seen'     => $user->last_seen ? human_time_diff( strtotime( $user->last_seen ) ) . ' ' . __( 'ago', FLAVOR_PLATFORM_TEXT_DOMAIN ) : '-',
                 'last_seen_raw' => $user->last_seen,
                 'session_count' => isset( $session_counts[ $user->user_id ] ) ? $session_counts[ $user->user_id ] : 0,
             );
@@ -653,7 +653,7 @@ class Flavor_App_Users_Panel {
 
         wp_send_json_success( array(
             'message' => sprintf(
-                __( 'Notificación enviada a %d dispositivos', 'flavor-chat-ia' ),
+                __( 'Notificación enviada a %d dispositivos', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 $sent_count
             ),
             'sent_count' => $sent_count,

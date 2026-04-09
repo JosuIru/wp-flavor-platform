@@ -37,10 +37,10 @@ $edicion_anio = is_array($edicion) ? ($edicion['anio'] ?? date('Y')) : ($edicion
 
 <div class="flavor-pp-votacion-contenedor">
     <div class="flavor-pp-votacion-header">
-        <h2><?php esc_html_e('Votacion de Proyectos', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Votacion de Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <p class="flavor-pp-votacion-intro">
             <?php printf(
-                esc_html__('Edicion %d - Selecciona los proyectos que quieres apoyar con tu voto.', 'flavor-chat-ia'),
+                esc_html__('Edicion %d - Selecciona los proyectos que quieres apoyar con tu voto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 intval($edicion_anio)
             ); ?>
         </p>
@@ -53,7 +53,7 @@ $edicion_anio = is_array($edicion) ? ($edicion['anio'] ?? date('Y')) : ($edicion
             </span>
             <span class="flavor-pp-votos-texto">
                 <?php printf(
-                    esc_html__('Votos disponibles: %d de %d', 'flavor-chat-ia'),
+                    esc_html__('Votos disponibles: %d de %d', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $votos_restantes,
                     $votos_maximos
                 ); ?>
@@ -65,9 +65,9 @@ $edicion_anio = is_array($edicion) ? ($edicion['anio'] ?? date('Y')) : ($edicion
 
         <?php if (!empty($votos_usuario)): ?>
         <div class="flavor-pp-mis-votos">
-            <strong><?php esc_html_e('Has votado:', 'flavor-chat-ia'); ?></strong>
+            <strong><?php esc_html_e('Has votado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
             <span class="flavor-pp-votos-lista">
-                <?php echo count($votos_usuario); ?> <?php esc_html_e('proyecto(s)', 'flavor-chat-ia'); ?>
+                <?php echo count($votos_usuario); ?> <?php esc_html_e('proyecto(s)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
         </div>
         <?php endif; ?>
@@ -76,14 +76,14 @@ $edicion_anio = is_array($edicion) ? ($edicion['anio'] ?? date('Y')) : ($edicion
     <?php if (empty($proyectos)): ?>
         <div class="flavor-pp-vacio">
             <span class="dashicons dashicons-clipboard"></span>
-            <p><?php esc_html_e('No hay proyectos disponibles para votar en este momento.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('No hay proyectos disponibles para votar en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php else: ?>
         <div class="flavor-pp-filtros flavor-pp-filtros-votacion">
             <div class="flavor-pp-filtros-grupo">
-                <label for="flavor-pp-filtro-cat-votacion"><?php esc_html_e('Filtrar por categoria:', 'flavor-chat-ia'); ?></label>
+                <label for="flavor-pp-filtro-cat-votacion"><?php esc_html_e('Filtrar por categoria:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select id="flavor-pp-filtro-cat-votacion" class="flavor-pp-select flavor-pp-filtro-votacion">
-                    <option value=""><?php esc_html_e('Todas las categorias', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todas las categorias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($categorias as $slug => $nombre): ?>
                         <option value="<?php echo esc_attr($slug); ?>"><?php echo esc_html($nombre); ?></option>
                     <?php endforeach; ?>
@@ -115,7 +115,7 @@ $edicion_anio = is_array($edicion) ? ($edicion['anio'] ?? date('Y')) : ($edicion
                     <?php if ($votado): ?>
                     <div class="flavor-pp-votado-badge">
                         <span class="dashicons dashicons-yes-alt"></span>
-                        <?php esc_html_e('Votado', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Votado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </div>
                     <?php endif; ?>
                 </div>
@@ -139,7 +139,7 @@ $edicion_anio = is_array($edicion) ? ($edicion['anio'] ?? date('Y')) : ($edicion
                         </span>
                         <span class="flavor-pp-meta-item">
                             <span class="dashicons dashicons-heart"></span>
-                            <?php echo esc_html($proy_votos); ?> <?php esc_html_e('votos', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html($proy_votos); ?> <?php esc_html_e('votos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
                     </div>
 
@@ -149,7 +149,7 @@ $edicion_anio = is_array($edicion) ? ($edicion['anio'] ?? date('Y')) : ($edicion
                                     class="flavor-pp-boton flavor-pp-boton-secundario flavor-pp-btn-quitar-voto"
                                     data-proyecto-id="<?php echo esc_attr($proy_id); ?>">
                                 <span class="dashicons dashicons-heart"></span>
-                                <?php esc_html_e('Quitar voto', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Quitar voto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         <?php else: ?>
                             <button type="button"
@@ -157,13 +157,13 @@ $edicion_anio = is_array($edicion) ? ($edicion['anio'] ?? date('Y')) : ($edicion
                                     data-proyecto-id="<?php echo esc_attr($proy_id); ?>"
                                     <?php echo ($votos_restantes <= 0) ? 'disabled' : ''; ?>>
                                 <span class="dashicons dashicons-heart"></span>
-                                <?php esc_html_e('Votar este proyecto', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Votar este proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         <?php endif; ?>
 
                         <a href="<?php echo esc_url(add_query_arg('proyecto', $proy_id, home_url('/proyectos-participativos/'))); ?>"
                            class="flavor-pp-boton flavor-pp-boton-texto">
-                            <?php esc_html_e('Ver detalles', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </div>

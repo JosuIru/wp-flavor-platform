@@ -25,7 +25,7 @@ if (!defined('ABSPATH')) {
 $steps = $steps ?? [];
 $title = $title ?? '';
 $color = $color ?? 'blue';
-$submit_label = $submit_label ?? __('Finalizar', 'flavor-chat-ia');
+$submit_label = $submit_label ?? __('Finalizar', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $submit_action = $submit_action ?? '';
 $show_progress = $show_progress ?? true;
 $allow_skip = $allow_skip ?? false;
@@ -99,7 +99,7 @@ $total_steps = count($steps);
             <!-- Barra de progreso -->
             <div class="mt-4">
                 <div class="flex items-center justify-between text-sm text-gray-500 mb-1">
-                    <span class="progress-text"><?php printf(esc_html__('Paso %d de %d', 'flavor-chat-ia'), 1, $total_steps); ?></span>
+                    <span class="progress-text"><?php printf(esc_html__('Paso %d de %d', FLAVOR_PLATFORM_TEXT_DOMAIN), 1, $total_steps); ?></span>
                     <span class="progress-percent">0%</span>
                 </div>
                 <div class="h-1.5 bg-gray-200 rounded-full overflow-hidden">
@@ -164,7 +164,7 @@ $total_steps = count($steps);
                 <button type="button"
                         class="btn-prev hidden px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-xl transition-colors"
                         onclick="flavorWizard.prevStep('<?php echo esc_js($wizard_id); ?>')">
-                    ← <?php esc_html_e('Anterior', 'flavor-chat-ia'); ?>
+                    ← <?php esc_html_e('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
 
                 <div class="flex items-center gap-3 ml-auto">
@@ -172,7 +172,7 @@ $total_steps = count($steps);
                         <button type="button"
                                 class="btn-skip hidden px-4 py-2 text-sm text-gray-500 hover:text-gray-700 transition-colors"
                                 onclick="flavorWizard.skipStep('<?php echo esc_js($wizard_id); ?>')">
-                            <?php esc_html_e('Saltar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Saltar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     <?php endif; ?>
 
@@ -180,7 +180,7 @@ $total_steps = count($steps);
                     <button type="button"
                             class="btn-next px-6 py-2 text-sm font-medium text-white <?php echo esc_attr($color_classes['bg_solid']); ?> hover:opacity-90 rounded-xl transition-colors"
                             onclick="flavorWizard.nextStep('<?php echo esc_js($wizard_id); ?>')">
-                        <?php esc_html_e('Siguiente', 'flavor-chat-ia'); ?> →
+                        <?php esc_html_e('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> →
                     </button>
 
                     <!-- Botón enviar -->
@@ -351,7 +351,7 @@ window.flavorWizard = window.flavorWizard || {
 
                 const error = document.createElement('p');
                 error.className = 'field-error mt-1 text-sm text-red-600';
-                error.textContent = '<?php echo esc_js(__('Este campo es requerido', 'flavor-chat-ia')); ?>';
+                error.textContent = '<?php echo esc_js(__('Este campo es requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
                 field.parentElement.appendChild(error);
             }
         });

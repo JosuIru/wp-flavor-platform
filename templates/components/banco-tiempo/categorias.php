@@ -121,7 +121,7 @@ $clase_columnas = 'flavor-categorias-grid--cols-' . intval($columnas);
                         <span class="flavor-categoria-contador">
                             <?php
                             printf(
-                                _n('%d servicio', '%d servicios', $categoria_servicios_count, 'flavor-chat-ia'),
+                                _n('%d servicio', '%d servicios', $categoria_servicios_count, FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 $categoria_servicios_count
                             );
                             ?>

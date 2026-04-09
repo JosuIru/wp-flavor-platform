@@ -55,7 +55,7 @@ class Flavor_Platform_Menu_Cleaner {
         global $submenu;
 
         // Verificar que existe el menú Flavor Platform
-        if (!isset($submenu['flavor-chat-ia'])) {
+        if (!isset($submenu[FLAVOR_PLATFORM_TEXT_DOMAIN])) {
             return;
         }
 
@@ -63,12 +63,12 @@ class Flavor_Platform_Menu_Cleaner {
         $removed_items = [];
 
         // Remover items que son módulos de negocio
-        foreach ($submenu['flavor-chat-ia'] as $key => $item) {
+        foreach ($submenu[FLAVOR_PLATFORM_TEXT_DOMAIN] as $key => $item) {
             // $item[0] = título, $item[1] = capacidad, $item[2] = slug
             $slug = $item[2];
 
             if (in_array($slug, $this->items_to_remove)) {
-                unset($submenu['flavor-chat-ia'][$key]);
+                unset($submenu[FLAVOR_PLATFORM_TEXT_DOMAIN][$key]);
                 $removed_count++;
                 $removed_items[] = $slug;
             }
@@ -76,7 +76,7 @@ class Flavor_Platform_Menu_Cleaner {
 
         // Reindexar el array después de remover items
         if ($removed_count > 0) {
-            $submenu['flavor-chat-ia'] = array_values($submenu['flavor-chat-ia']);
+            $submenu[FLAVOR_PLATFORM_TEXT_DOMAIN] = array_values($submenu[FLAVOR_PLATFORM_TEXT_DOMAIN]);
         }
 
         // Log para debugging

@@ -158,7 +158,7 @@ class Flavor_BT_Conciencia_Features {
         ), ARRAY_A);
 
         if (!$transaccion) {
-            return new WP_Error('transaccion_no_encontrada', __('Transacción no encontrada', 'flavor-chat-ia'));
+            return new WP_Error('transaccion_no_encontrada', __('Transacción no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Determinar rol y valorado
@@ -174,7 +174,7 @@ class Flavor_BT_Conciencia_Features {
         ));
 
         if ($existe) {
-            return new WP_Error('ya_valorado', __('Ya has valorado este intercambio', 'flavor-chat-ia'));
+            return new WP_Error('ya_valorado', __('Ya has valorado este intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $resultado = $wpdb->insert(
@@ -196,7 +196,7 @@ class Flavor_BT_Conciencia_Features {
         );
 
         if ($resultado === false) {
-            return new WP_Error('db_error', __('Error al guardar la valoración', 'flavor-chat-ia'));
+            return new WP_Error('db_error', __('Error al guardar la valoración', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Actualizar reputación del valorado
@@ -383,14 +383,14 @@ class Flavor_BT_Conciencia_Features {
         check_ajax_referer('bt_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $transaccion_id = intval($_POST['transaccion_id'] ?? 0);
         $rating_general = intval($_POST['rating_general'] ?? 0);
 
         if (!$transaccion_id || $rating_general < 1 || $rating_general > 5) {
-            wp_send_json_error(['message' => __('Datos inválidos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos inválidos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $resultado = $this->registrar_valoracion($transaccion_id, get_current_user_id(), $_POST);
@@ -400,7 +400,7 @@ class Flavor_BT_Conciencia_Features {
         }
 
         wp_send_json_success([
-            'message' => __('Valoración registrada. ¡Gracias por tu feedback!', 'flavor-chat-ia'),
+            'message' => __('Valoración registrada. ¡Gracias por tu feedback!', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'id'      => $resultado,
         ]);
     }
@@ -445,7 +445,7 @@ class Flavor_BT_Conciencia_Features {
         $saldo = $this->obtener_saldo($donante_id);
         if ($saldo < $horas) {
             return new WP_Error('saldo_insuficiente', sprintf(
-                __('No tienes suficientes horas. Tu saldo actual es %.1f horas.', 'flavor-chat-ia'),
+                __('No tienes suficientes horas. Tu saldo actual es %.1f horas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $saldo
             ));
         }
@@ -455,7 +455,7 @@ class Flavor_BT_Conciencia_Features {
 
         // Si es regalo directo, verificar beneficiario
         if ($tipo === 'regalo_directo' && !$beneficiario_id) {
-            return new WP_Error('beneficiario_requerido', __('Debes especificar un beneficiario', 'flavor-chat-ia'));
+            return new WP_Error('beneficiario_requerido', __('Debes especificar un beneficiario', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $resultado = $wpdb->insert(
@@ -474,7 +474,7 @@ class Flavor_BT_Conciencia_Features {
         );
 
         if ($resultado === false) {
-            return new WP_Error('db_error', __('Error al registrar la donación', 'flavor-chat-ia'));
+            return new WP_Error('db_error', __('Error al registrar la donación', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Actualizar saldo del donante
@@ -507,7 +507,7 @@ class Flavor_BT_Conciencia_Features {
         $fondo_disponible = $this->obtener_fondo_comunitario();
         if ($fondo_disponible < $horas) {
             return new WP_Error('fondo_insuficiente', sprintf(
-                __('El fondo comunitario tiene %.1f horas disponibles.', 'flavor-chat-ia'),
+                __('El fondo comunitario tiene %.1f horas disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $fondo_disponible
             ));
         }
@@ -528,7 +528,7 @@ class Flavor_BT_Conciencia_Features {
         );
 
         if ($resultado === false) {
-            return new WP_Error('db_error', __('Error al registrar la solicitud', 'flavor-chat-ia'));
+            return new WP_Error('db_error', __('Error al registrar la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         return $wpdb->insert_id;
@@ -643,12 +643,12 @@ class Flavor_BT_Conciencia_Features {
         check_ajax_referer('bt_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $horas = floatval($_POST['horas'] ?? 0);
         if ($horas < 0.5) {
-            wp_send_json_error(['message' => __('Mínimo 30 minutos para donar', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Mínimo 30 minutos para donar', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $resultado = $this->donar_horas(get_current_user_id(), $horas, $_POST);
@@ -658,7 +658,7 @@ class Flavor_BT_Conciencia_Features {
         }
 
         wp_send_json_success([
-            'message' => __('¡Gracias por tu generosidad! Tu donación ayudará a la comunidad.', 'flavor-chat-ia'),
+            'message' => __('¡Gracias por tu generosidad! Tu donación ayudará a la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'id'      => $resultado,
         ]);
     }
@@ -670,14 +670,14 @@ class Flavor_BT_Conciencia_Features {
         check_ajax_referer('bt_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $horas = floatval($_POST['horas'] ?? 0);
         $motivo = sanitize_textarea_field($_POST['motivo'] ?? '');
 
         if ($horas < 0.5 || empty($motivo)) {
-            wp_send_json_error(['message' => __('Especifica las horas y el motivo', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Especifica las horas y el motivo', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $resultado = $this->solicitar_fondo(get_current_user_id(), $horas, $motivo);
@@ -687,7 +687,7 @@ class Flavor_BT_Conciencia_Features {
         }
 
         wp_send_json_success([
-            'message' => __('Solicitud enviada. Un coordinador la revisará pronto.', 'flavor-chat-ia'),
+            'message' => __('Solicitud enviada. Un coordinador la revisará pronto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'id'      => $resultado,
         ]);
     }
@@ -842,13 +842,13 @@ class Flavor_BT_Conciencia_Features {
         // Generar alertas
         $alertas = [];
         if ($usuarios_deuda_alta > 0) {
-            $alertas[] = sprintf(__('%d usuarios con deuda alta (>20h)', 'flavor-chat-ia'), $usuarios_deuda_alta);
+            $alertas[] = sprintf(__('%d usuarios con deuda alta (>20h)', FLAVOR_PLATFORM_TEXT_DOMAIN), $usuarios_deuda_alta);
         }
         if ($max_ratio > 3) {
-            $alertas[] = sprintf(__('"%s" muy demandada (ratio %.1f:1)', 'flavor-chat-ia'), $categoria_mas_demandada, $max_ratio);
+            $alertas[] = sprintf(__('"%s" muy demandada (ratio %.1f:1)', FLAVOR_PLATFORM_TEXT_DOMAIN), $categoria_mas_demandada, $max_ratio);
         }
         if ($min_ratio < 0.2 && $categoria_menos_demandada) {
-            $alertas[] = sprintf(__('Poca demanda de "%s"', 'flavor-chat-ia'), $categoria_menos_demandada);
+            $alertas[] = sprintf(__('Poca demanda de "%s"', FLAVOR_PLATFORM_TEXT_DOMAIN), $categoria_menos_demandada);
         }
 
         $metricas = [
@@ -971,7 +971,7 @@ class Flavor_BT_Conciencia_Features {
      */
     public function shortcode_mi_reputacion(array $atts): string {
         if (!is_user_logged_in()) {
-            return '<p class="bt-aviso">' . __('Inicia sesión para ver tu reputación', 'flavor-chat-ia') . '</p>';
+            return '<p class="bt-aviso">' . __('Inicia sesión para ver tu reputación', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $reputacion = $this->obtener_reputacion(get_current_user_id());
@@ -1075,7 +1075,7 @@ class Flavor_BT_Conciencia_Features {
      */
     public function shortcode_donar_horas(array $atts): string {
         if (!is_user_logged_in()) {
-            return '<p class="bt-aviso">' . __('Inicia sesión para donar horas', 'flavor-chat-ia') . '</p>';
+            return '<p class="bt-aviso">' . __('Inicia sesión para donar horas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $saldo = $this->obtener_saldo(get_current_user_id());
@@ -1122,17 +1122,17 @@ class Flavor_BT_Conciencia_Features {
         return [
             [
                 'value' => $reputacion['nivel'],
-                'label' => __('Nivel', 'flavor-chat-ia'),
+                'label' => __('Nivel', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'  => 'star-filled',
             ],
             [
                 'value' => number_format($saldo, 1) . 'h',
-                'label' => __('Saldo', 'flavor-chat-ia'),
+                'label' => __('Saldo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'  => 'clock',
             ],
             [
                 'value' => count($reputacion['badges']),
-                'label' => __('Badges', 'flavor-chat-ia'),
+                'label' => __('Badges', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'  => 'awards',
             ],
         ];

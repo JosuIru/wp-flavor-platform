@@ -7,7 +7,7 @@
 
 if (!defined('ABSPATH')) exit;
 
-$titulo_seccion = $titulo_seccion ?? __('Ultimos Temas', 'flavor-chat-ia');
+$titulo_seccion = $titulo_seccion ?? __('Ultimos Temas', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $limite_temas = intval($limite ?? 10);
 $mostrar_nombre_foro = isset($mostrar_foro) ? (bool) $mostrar_foro : true;
 
@@ -21,7 +21,7 @@ $temas_recientes = [
         'foro_color' => '#f59e0b',
         'respuestas' => 23,
         'vistas' => 156,
-        'fecha' => __('Hace 15 min', 'flavor-chat-ia'),
+        'fecha' => __('Hace 15 min', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'es_fijado' => true,
         'es_destacado' => false,
         'tiene_solucion' => false,
@@ -34,7 +34,7 @@ $temas_recientes = [
         'foro_color' => '#667eea',
         'respuestas' => 8,
         'vistas' => 92,
-        'fecha' => __('Hace 1 hora', 'flavor-chat-ia'),
+        'fecha' => __('Hace 1 hora', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'es_fijado' => false,
         'es_destacado' => true,
         'tiene_solucion' => true,
@@ -47,7 +47,7 @@ $temas_recientes = [
         'foro_color' => '#ef4444',
         'respuestas' => 15,
         'vistas' => 234,
-        'fecha' => __('Hace 2 horas', 'flavor-chat-ia'),
+        'fecha' => __('Hace 2 horas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'es_fijado' => false,
         'es_destacado' => false,
         'tiene_solucion' => false,
@@ -60,7 +60,7 @@ $temas_recientes = [
         'foro_color' => '#059669',
         'respuestas' => 12,
         'vistas' => 178,
-        'fecha' => __('Hace 3 horas', 'flavor-chat-ia'),
+        'fecha' => __('Hace 3 horas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'es_fijado' => false,
         'es_destacado' => false,
         'tiene_solucion' => true,
@@ -73,7 +73,7 @@ $temas_recientes = [
         'foro_color' => '#8b5cf6',
         'respuestas' => 31,
         'vistas' => 412,
-        'fecha' => __('Hace 5 horas', 'flavor-chat-ia'),
+        'fecha' => __('Hace 5 horas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'es_fijado' => false,
         'es_destacado' => false,
         'tiene_solucion' => false,
@@ -86,7 +86,7 @@ $temas_recientes = [
         'foro_color' => '#10b981',
         'respuestas' => 7,
         'vistas' => 65,
-        'fecha' => __('Hace 8 horas', 'flavor-chat-ia'),
+        'fecha' => __('Hace 8 horas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'es_fijado' => false,
         'es_destacado' => false,
         'tiene_solucion' => false,
@@ -99,7 +99,7 @@ $temas_recientes = [
         'foro_color' => '#ef4444',
         'respuestas' => 19,
         'vistas' => 287,
-        'fecha' => __('Hace 1 dia', 'flavor-chat-ia'),
+        'fecha' => __('Hace 1 dia', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'es_fijado' => false,
         'es_destacado' => false,
         'tiene_solucion' => false,
@@ -112,7 +112,7 @@ $temas_recientes = [
         'foro_color' => '#f59e0b',
         'respuestas' => 42,
         'vistas' => 523,
-        'fecha' => __('Hace 1 dia', 'flavor-chat-ia'),
+        'fecha' => __('Hace 1 dia', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'es_fijado' => false,
         'es_destacado' => false,
         'tiene_solucion' => false,
@@ -132,13 +132,13 @@ $temas_a_mostrar = array_slice($temas_recientes, 0, $limite_temas);
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    <?php echo esc_html__('Reciente', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Reciente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
                 <h2 class="text-4xl md:text-5xl font-bold mb-2" style="color: var(--flavor-text-primary, #1a1a1a);"><?php echo esc_html($titulo_seccion); ?></h2>
-                <p class="text-xl" style="color: var(--flavor-text-secondary, #666666);"><?php echo esc_html__('Las conversaciones mas recientes de la comunidad', 'flavor-chat-ia'); ?></p>
+                <p class="text-xl" style="color: var(--flavor-text-secondary, #666666);"><?php echo esc_html__('Las conversaciones mas recientes de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <a href="/foros/" class="mt-4 md:mt-0 font-semibold flex items-center gap-1 transition-colors" style="color: var(--flavor-primary, #667eea);">
-                <?php echo esc_html__('Ver todos', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                 </svg>
@@ -156,7 +156,7 @@ $temas_a_mostrar = array_slice($temas_recientes, 0, $limite_temas);
                                 <?php echo esc_html($tema['autor_inicial']); ?>
                             </div>
                             <?php if ($tema['es_fijado']): ?>
-                                <div class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-amber-400 flex items-center justify-center" title="<?php echo esc_attr__('Fijado', 'flavor-chat-ia'); ?>">
+                                <div class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-amber-400 flex items-center justify-center" title="<?php echo esc_attr__('Fijado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/>
                                     </svg>
@@ -177,7 +177,7 @@ $temas_a_mostrar = array_slice($temas_recientes, 0, $limite_temas);
                                         <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
                                         </svg>
-                                        <?php echo esc_html__('Destacado', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Destacado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </span>
                                 <?php endif; ?>
                                 <?php if ($tema['tiene_solucion']): ?>
@@ -185,7 +185,7 @@ $temas_a_mostrar = array_slice($temas_recientes, 0, $limite_temas);
                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                         </svg>
-                                        <?php echo esc_html__('Resuelto', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Resuelto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </span>
                                 <?php endif; ?>
                                 <span class="text-xs" style="color: var(--flavor-text-secondary, #666666);"><?php echo esc_html($tema['fecha']); ?></span>
@@ -221,7 +221,7 @@ $temas_a_mostrar = array_slice($temas_recientes, 0, $limite_temas);
                             <div class="w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg" style="background: var(--flavor-primary, #667eea)10; color: var(--flavor-primary, #667eea);">
                                 <?php echo esc_html($tema['respuestas']); ?>
                             </div>
-                            <span class="text-xs" style="color: var(--flavor-text-secondary, #666666);"><?php echo esc_html__('resp.', 'flavor-chat-ia'); ?></span>
+                            <span class="text-xs" style="color: var(--flavor-text-secondary, #666666);"><?php echo esc_html__('resp.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                     </div>
                 </article>
@@ -231,7 +231,7 @@ $temas_a_mostrar = array_slice($temas_recientes, 0, $limite_temas);
         <!-- Boton para ver mas -->
         <div class="text-center mt-10">
             <a href="/foros/" class="inline-flex items-center gap-2 px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300 hover:shadow-lg hover:scale-105" style="background: linear-gradient(135deg, var(--flavor-primary, #667eea) 0%, var(--flavor-secondary, #764ba2) 100%); color: white;">
-                <span><?php echo esc_html__('Ver Todos los Temas', 'flavor-chat-ia'); ?></span>
+                <span><?php echo esc_html__('Ver Todos los Temas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                 </svg>

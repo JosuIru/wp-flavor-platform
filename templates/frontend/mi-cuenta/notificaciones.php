@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 
     <div class="flavor-dashboard-notificaciones-header">
         <h2 class="flavor-dashboard-section-title">
-            <?php esc_html_e('Notificaciones', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <?php if ($sin_leer > 0) : ?>
                 <span class="flavor-dashboard-badge flavor-dashboard-badge--inline"><?php echo intval($sin_leer); ?></span>
             <?php endif; ?>
@@ -29,7 +29,7 @@ if (!defined('ABSPATH')) {
             <button type="button"
                     class="flavor-dashboard-btn flavor-dashboard-btn--text"
                     id="flavor-btn-marcar-todas-leidas">
-                <?php esc_html_e('Marcar todas como leidas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Marcar todas como leidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         <?php endif; ?>
     </div>
@@ -44,7 +44,7 @@ if (!defined('ABSPATH')) {
                     </svg>
                 </div>
                 <p class="flavor-dashboard-empty-state-texto">
-                    <?php esc_html_e('No tienes notificaciones por el momento.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('No tienes notificaciones por el momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
         <?php else : ?>
@@ -74,7 +74,7 @@ if (!defined('ABSPATH')) {
                                 <time class="flavor-dashboard-notificacion-fecha"
                                       datetime="<?php echo esc_attr($fecha_notificacion); ?>">
                                     <?php echo esc_html(human_time_diff(strtotime($fecha_notificacion), current_time('timestamp'))); ?>
-                                    <?php esc_html_e('hace', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('hace', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </time>
                             <?php endif; ?>
                         </div>
@@ -83,7 +83,7 @@ if (!defined('ABSPATH')) {
                         <button type="button"
                                 class="flavor-dashboard-btn-notificacion-leida"
                                 data-notification-id="<?php echo intval($id_notificacion); ?>"
-                                title="<?php esc_attr_e('Marcar como leida', 'flavor-chat-ia'); ?>">
+                                title="<?php esc_attr_e('Marcar como leida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="20 6 9 17 4 12"/>
                             </svg>

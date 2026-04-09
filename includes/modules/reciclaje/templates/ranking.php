@@ -78,27 +78,27 @@ function obtener_nivel_reciclaje($puntos, $niveles) {
 
 <div class="reciclaje-ranking-wrapper">
     <div class="ranking-header">
-        <h2><?php esc_html_e('Ranking Ecológico', 'flavor-chat-ia'); ?></h2>
-        <p><?php esc_html_e('Los mejores recicladores de la comunidad', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Ranking Ecológico', 'flavor-platform'); ?></h2>
+        <p><?php esc_html_e('Los mejores recicladores de la comunidad', 'flavor-platform'); ?></p>
     </div>
 
     <!-- Filtros -->
     <div class="ranking-filtros">
         <a href="<?php echo esc_url(add_query_arg('periodo', 'semana')); ?>"
            class="filtro-btn <?php echo $periodo === 'semana' ? 'active' : ''; ?>">
-            <?php esc_html_e('Semana', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Semana', 'flavor-platform'); ?>
         </a>
         <a href="<?php echo esc_url(add_query_arg('periodo', 'mes')); ?>"
            class="filtro-btn <?php echo $periodo === 'mes' ? 'active' : ''; ?>">
-            <?php esc_html_e('Mes', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Mes', 'flavor-platform'); ?>
         </a>
         <a href="<?php echo esc_url(add_query_arg('periodo', 'anio')); ?>"
            class="filtro-btn <?php echo $periodo === 'anio' ? 'active' : ''; ?>">
-            <?php esc_html_e('Año', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Año', 'flavor-platform'); ?>
         </a>
         <a href="<?php echo esc_url(remove_query_arg('periodo')); ?>"
            class="filtro-btn <?php echo empty($periodo) || $periodo === 'todo' ? 'active' : ''; ?>">
-            <?php esc_html_e('Todo', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Todo', 'flavor-platform'); ?>
         </a>
     </div>
 
@@ -116,7 +116,7 @@ function obtener_nivel_reciclaje($puntos, $niveles) {
             <?php for ($i = 0; $i < 3; $i++):
                 $u = $ranking[$i];
                 $user_data = get_userdata($u->usuario_id);
-                $nombre = $user_data ? $user_data->display_name : __('Usuario', 'flavor-chat-ia');
+                $nombre = $user_data ? $user_data->display_name : __('Usuario', 'flavor-platform');
                 $avatar = get_avatar_url($u->usuario_id, ['size' => 64]);
                 $nivel = obtener_nivel_reciclaje($u->total_puntos, $niveles);
             ?>
@@ -137,7 +137,7 @@ function obtener_nivel_reciclaje($puntos, $niveles) {
             <?php for ($i = 3; $i < count($ranking); $i++):
                 $u = $ranking[$i];
                 $user_data = get_userdata($u->usuario_id);
-                $nombre = $user_data ? $user_data->display_name : __('Usuario', 'flavor-chat-ia');
+                $nombre = $user_data ? $user_data->display_name : __('Usuario', 'flavor-platform');
                 $avatar = get_avatar_url($u->usuario_id, ['size' => 40]);
                 $nivel = obtener_nivel_reciclaje($u->total_puntos, $niveles);
                 $es_yo = (int) $u->usuario_id === $usuario_actual;
@@ -158,8 +158,8 @@ function obtener_nivel_reciclaje($puntos, $niveles) {
     <?php if (empty($ranking)): ?>
         <div class="ranking-empty">
             <span>♻️</span>
-            <h3><?php esc_html_e('Sin participantes aún', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('¡Sé el primero en aparecer en el ranking!', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('Sin participantes aún', 'flavor-platform'); ?></h3>
+            <p><?php esc_html_e('¡Sé el primero en aparecer en el ranking!', 'flavor-platform'); ?></p>
         </div>
     <?php endif; ?>
 </div>

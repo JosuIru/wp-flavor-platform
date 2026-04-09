@@ -40,10 +40,10 @@ if ($limite > 0 && count($comunidades) > $limite) {
 
 // Mapeo de roles para badges
 $roles_config = [
-    'fundador'  => ['label' => __('Fundador', 'flavor-chat-ia'), 'color' => 'purple', 'icon' => '👑'],
-    'admin'     => ['label' => __('Admin', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '⚙️'],
-    'moderador' => ['label' => __('Moderador', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🛡️'],
-    'miembro'   => ['label' => __('Miembro', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '👤'],
+    'fundador'  => ['label' => __('Fundador', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'purple', 'icon' => '👑'],
+    'admin'     => ['label' => __('Admin', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'blue', 'icon' => '⚙️'],
+    'moderador' => ['label' => __('Moderador', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '🛡️'],
+    'miembro'   => ['label' => __('Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'gray', 'icon' => '👤'],
 ];
 
 // Preparar items para el componente
@@ -107,10 +107,10 @@ $card_config = [
             'miembro'   => '👤',
         ],
         'labels' => [
-            'fundador'  => __('Fundador', 'flavor-chat-ia'),
-            'admin'     => __('Admin', 'flavor-chat-ia'),
-            'moderador' => __('Moderador', 'flavor-chat-ia'),
-            'miembro'   => __('Miembro', 'flavor-chat-ia'),
+            'fundador'  => __('Fundador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'admin'     => __('Admin', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'moderador' => __('Moderador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'miembro'   => __('Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ],
     ],
 
@@ -121,12 +121,12 @@ $card_config = [
     ],
 
     'meta' => [
-        ['icon' => '👥', 'field' => 'miembros', 'suffix' => ' ' . __('miembros', 'flavor-chat-ia')],
+        ['icon' => '👥', 'field' => 'miembros', 'suffix' => ' ' . __('miembros', FLAVOR_PLATFORM_TEXT_DOMAIN)],
     ],
 
     'actions' => [
         [
-            'label'     => __('Entrar', 'flavor-chat-ia'),
+            'label'     => __('Entrar', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'      => '🚀',
             'url_field' => 'url',
             'primary'   => true,
@@ -139,7 +139,7 @@ $card_config = [
 // Si es admin, añadir botón de gestión
 if (!$compacto) {
     $card_config['actions'][] = [
-        'label'     => __('Gestionar', 'flavor-chat-ia'),
+        'label'     => __('Gestionar', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icon'      => '⚙️',
         'url_field' => 'url',
         'url_suffix'=> '?gestionar=1',
@@ -151,9 +151,9 @@ if (!$compacto) {
 // Configuración del estado vacío
 $empty_config = [
     'icon'     => '🏘️',
-    'title'    => __('Aún no perteneces a ninguna comunidad', 'flavor-chat-ia'),
-    'text'     => __('Explora las comunidades disponibles y únete a las que te interesen.', 'flavor-chat-ia'),
-    'cta_text' => __('Explorar comunidades', 'flavor-chat-ia'),
+    'title'    => __('Aún no perteneces a ninguna comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'text'     => __('Explora las comunidades disponibles y únete a las que te interesen.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cta_text' => __('Explorar comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
     'cta_url'  => Flavor_Chat_Helpers::get_action_url('comunidades', ''),
     'color'    => 'teal',
 ];
@@ -165,13 +165,13 @@ $empty_config = [
     <div class="flex items-center justify-between mb-6">
         <div>
             <h2 class="text-2xl font-bold text-gray-900">
-                <?php esc_html_e('Mis Comunidades', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Mis Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <p class="text-gray-500 mt-1">
                 <?php
                 $total = count($items_preparados);
                 printf(
-                    esc_html(_n('Perteneces a %d comunidad', 'Perteneces a %d comunidades', $total, 'flavor-chat-ia')),
+                    esc_html(_n('Perteneces a %d comunidad', 'Perteneces a %d comunidades', $total, FLAVOR_PLATFORM_TEXT_DOMAIN)),
                     $total
                 );
                 ?>
@@ -180,7 +180,7 @@ $empty_config = [
         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('comunidades', 'crear')); ?>"
            class="inline-flex items-center gap-2 px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-xl font-medium transition-colors">
             <span>➕</span>
-            <?php esc_html_e('Crear comunidad', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Crear comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
     <?php endif; ?>
@@ -201,7 +201,7 @@ $empty_config = [
         if (empty($items_preparados)) {
             echo '<div class="text-center py-12 text-gray-500">';
             echo '<p>🏘️</p>';
-            echo '<p>' . esc_html__('Aún no perteneces a ninguna comunidad', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Aún no perteneces a ninguna comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
         } else {
             echo '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">';
@@ -219,7 +219,7 @@ $empty_config = [
                         <span class="px-2 py-0.5 bg-gray-100 rounded-full text-xs"><?php echo esc_html($item['rol_label']); ?></span>
                     </div>
                     <a href="<?php echo esc_url($item['url']); ?>" class="mt-3 block w-full text-center py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors">
-                        <?php esc_html_e('Entrar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Entrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
                 <?php
@@ -234,7 +234,7 @@ $empty_config = [
     <div class="mt-4 text-center">
         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('comunidades', 'mis-comunidades')); ?>"
            class="text-teal-600 hover:text-teal-700 font-medium inline-flex items-center gap-1">
-            <?php esc_html_e('Ver todas mis comunidades', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Ver todas mis comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <span>→</span>
         </a>
     </div>

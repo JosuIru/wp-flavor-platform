@@ -64,7 +64,7 @@ class Flavor_Module_Navigation {
 
         ob_start();
         ?>
-        <nav class="flavor-module-nav" aria-label="<?php esc_attr_e('Navegación del módulo', 'flavor-chat-ia'); ?>">
+        <nav class="flavor-module-nav" aria-label="<?php esc_attr_e('Navegación del módulo', 'flavor-platform'); ?>">
             <ul class="flavor-module-nav__list">
                 <?php foreach ($nav_items as $item) : ?>
                     <li class="flavor-module-nav__item">
@@ -158,36 +158,36 @@ class Flavor_Module_Navigation {
         // Items por defecto según módulo
         $default_items = [
             'eventos' => [
-                ['slug' => 'listado', 'label' => __('Todos los Eventos', 'flavor-chat-ia'), 'url' => home_url('/eventos/'), 'icon' => '📅'],
-                ['slug' => 'mis-eventos', 'label' => __('Mis Eventos', 'flavor-chat-ia'), 'url' => home_url('/eventos/mis-eventos/'), 'icon' => '⭐'],
-                ['slug' => 'crear', 'label' => __('Crear Evento', 'flavor-chat-ia'), 'url' => home_url('/eventos/crear/'), 'icon' => '➕'],
+                ['slug' => 'listado', 'label' => __('Todos los Eventos', 'flavor-platform'), 'url' => home_url('/eventos/'), 'icon' => '📅'],
+                ['slug' => 'mis-eventos', 'label' => __('Mis Eventos', 'flavor-platform'), 'url' => home_url('/eventos/mis-eventos/'), 'icon' => '⭐'],
+                ['slug' => 'crear', 'label' => __('Crear Evento', 'flavor-platform'), 'url' => home_url('/eventos/crear/'), 'icon' => '➕'],
             ],
             'talleres' => [
-                ['slug' => 'listado', 'label' => __('Todos los Talleres', 'flavor-chat-ia'), 'url' => home_url('/talleres/'), 'icon' => '🎨'],
-                ['slug' => 'mis-talleres', 'label' => __('Mis Talleres', 'flavor-chat-ia'), 'url' => home_url('/talleres/mis-talleres/'), 'icon' => '⭐'],
-                ['slug' => 'crear', 'label' => __('Proponer Taller', 'flavor-chat-ia'), 'url' => home_url('/talleres/crear/'), 'icon' => '➕'],
+                ['slug' => 'listado', 'label' => __('Todos los Talleres', 'flavor-platform'), 'url' => home_url('/talleres/'), 'icon' => '🎨'],
+                ['slug' => 'mis-talleres', 'label' => __('Mis Talleres', 'flavor-platform'), 'url' => home_url('/talleres/mis-talleres/'), 'icon' => '⭐'],
+                ['slug' => 'crear', 'label' => __('Proponer Taller', 'flavor-platform'), 'url' => home_url('/talleres/crear/'), 'icon' => '➕'],
             ],
             'grupos-consumo' => [
-                ['slug' => 'listado', 'label' => __('Todos los Grupos', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('grupos_consumo', ''), 'icon' => '🌱'],
-                ['slug' => 'mi-grupo', 'label' => __('Mi Grupo', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mi-grupo'), 'icon' => '⭐'],
-                ['slug' => 'pedidos', 'label' => __('Pedidos', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'pedidos'), 'icon' => '🛒'],
+                ['slug' => 'listado', 'label' => __('Todos los Grupos', 'flavor-platform'), 'url' => Flavor_Chat_Helpers::get_action_url('grupos_consumo', ''), 'icon' => '🌱'],
+                ['slug' => 'mi-grupo', 'label' => __('Mi Grupo', 'flavor-platform'), 'url' => Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mi-grupo'), 'icon' => '⭐'],
+                ['slug' => 'pedidos', 'label' => __('Pedidos', 'flavor-platform'), 'url' => Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'pedidos'), 'icon' => '🛒'],
             ],
             'incidencias' => [
-                ['slug' => 'listado', 'label' => __('Todas las Incidencias', 'flavor-chat-ia'), 'url' => home_url('/incidencias/'), 'icon' => '🔧'],
-                ['slug' => 'mis-incidencias', 'label' => __('Mis Incidencias', 'flavor-chat-ia'), 'url' => home_url('/incidencias/mis-incidencias/'), 'icon' => '⭐'],
-                ['slug' => 'crear', 'label' => __('Reportar Incidencia', 'flavor-chat-ia'), 'url' => home_url('/incidencias/crear/'), 'icon' => '➕'],
+                ['slug' => 'listado', 'label' => __('Todas las Incidencias', 'flavor-platform'), 'url' => home_url('/incidencias/'), 'icon' => '🔧'],
+                ['slug' => 'mis-incidencias', 'label' => __('Mis Incidencias', 'flavor-platform'), 'url' => home_url('/incidencias/mis-incidencias/'), 'icon' => '⭐'],
+                ['slug' => 'crear', 'label' => __('Reportar Incidencia', 'flavor-platform'), 'url' => home_url('/incidencias/crear/'), 'icon' => '➕'],
             ],
             'espacios-comunes' => [
-                ['slug' => 'listado', 'label' => __('Espacios Disponibles', 'flavor-chat-ia'), 'url' => home_url('/espacios-comunes/'), 'icon' => '🏛️'],
-                ['slug' => 'mis-reservas', 'label' => __('Mis Reservas', 'flavor-chat-ia'), 'url' => home_url('/espacios-comunes/mis-reservas/'), 'icon' => '⭐'],
-                ['slug' => 'reservar', 'label' => __('Reservar Espacio', 'flavor-chat-ia'), 'url' => home_url('/espacios-comunes/reservar/'), 'icon' => '➕'],
+                ['slug' => 'listado', 'label' => __('Espacios Disponibles', 'flavor-platform'), 'url' => home_url('/espacios-comunes/'), 'icon' => '🏛️'],
+                ['slug' => 'mis-reservas', 'label' => __('Mis Reservas', 'flavor-platform'), 'url' => home_url('/espacios-comunes/mis-reservas/'), 'icon' => '⭐'],
+                ['slug' => 'reservar', 'label' => __('Reservar Espacio', 'flavor-platform'), 'url' => home_url('/espacios-comunes/reservar/'), 'icon' => '➕'],
             ],
             'mi-red' => [
-                ['slug' => 'feed', 'label' => __('Feed', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('mi_red', ''), 'icon' => '🏠'],
-                ['slug' => 'explorar', 'label' => __('Explorar', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('mi_red', 'explorar'), 'icon' => '🔍'],
-                ['slug' => 'mensajes', 'label' => __('Mensajes', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('mi_red', 'mensajes'), 'icon' => '💬'],
-                ['slug' => 'notificaciones', 'label' => __('Notificaciones', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('mi_red', 'notificaciones'), 'icon' => '🔔'],
-                ['slug' => 'perfil', 'label' => __('Mi Perfil', 'flavor-chat-ia'), 'url' => Flavor_Chat_Helpers::get_action_url('mi_red', 'perfil'), 'icon' => '👤'],
+                ['slug' => 'feed', 'label' => __('Feed', 'flavor-platform'), 'url' => Flavor_Chat_Helpers::get_action_url('mi_red', ''), 'icon' => '🏠'],
+                ['slug' => 'explorar', 'label' => __('Explorar', 'flavor-platform'), 'url' => Flavor_Chat_Helpers::get_action_url('mi_red', 'explorar'), 'icon' => '🔍'],
+                ['slug' => 'mensajes', 'label' => __('Mensajes', 'flavor-platform'), 'url' => Flavor_Chat_Helpers::get_action_url('mi_red', 'mensajes'), 'icon' => '💬'],
+                ['slug' => 'notificaciones', 'label' => __('Notificaciones', 'flavor-platform'), 'url' => Flavor_Chat_Helpers::get_action_url('mi_red', 'notificaciones'), 'icon' => '🔔'],
+                ['slug' => 'perfil', 'label' => __('Mi Perfil', 'flavor-platform'), 'url' => Flavor_Chat_Helpers::get_action_url('mi_red', 'perfil'), 'icon' => '👤'],
             ],
         ];
 

@@ -10,8 +10,8 @@ if (!defined('ABSPATH')) {
 if (!is_user_logged_in()) {
     echo '<div class="reciclaje-login-required">';
     echo '<span class="dashicons dashicons-lock"></span>';
-    echo '<h3>' . esc_html__('Inicia sesión para ver tus puntos', 'flavor-chat-ia') . '</h3>';
-    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="btn btn-primary">' . esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a>';
+    echo '<h3>' . esc_html__('Inicia sesión para ver tus puntos', 'flavor-platform') . '</h3>';
+    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="btn btn-primary">' . esc_html__('Iniciar sesión', 'flavor-platform') . '</a>';
     echo '</div>';
     return;
 }
@@ -96,7 +96,7 @@ if ($nivel_siguiente) {
             </div>
             <div class="puntos-valor">
                 <span class="puntos-numero"><?php echo esc_html(number_format($puntos_totales)); ?></span>
-                <span class="puntos-label"><?php esc_html_e('puntos', 'flavor-chat-ia'); ?></span>
+                <span class="puntos-label"><?php esc_html_e('puntos', 'flavor-platform'); ?></span>
             </div>
             <?php if ($nivel_siguiente): ?>
                 <div class="nivel-progreso">
@@ -109,7 +109,7 @@ if ($nivel_siguiente) {
                     </div>
                 </div>
             <?php else: ?>
-                <div class="nivel-max"><?php esc_html_e('¡Nivel máximo alcanzado!', 'flavor-chat-ia'); ?></div>
+                <div class="nivel-max"><?php esc_html_e('¡Nivel máximo alcanzado!', 'flavor-platform'); ?></div>
             <?php endif; ?>
         </div>
     </div>
@@ -119,17 +119,17 @@ if ($nivel_siguiente) {
         <div class="impacto-card">
             <span class="impacto-icono">♻️</span>
             <span class="impacto-valor"><?php echo esc_html(number_format($stats['kg_reciclados'], 1)); ?> kg</span>
-            <span class="impacto-label"><?php esc_html_e('Reciclado', 'flavor-chat-ia'); ?></span>
+            <span class="impacto-label"><?php esc_html_e('Reciclado', 'flavor-platform'); ?></span>
         </div>
         <div class="impacto-card">
             <span class="impacto-icono">🌿</span>
             <span class="impacto-valor"><?php echo esc_html(number_format($stats['co2_evitado'], 1)); ?> kg</span>
-            <span class="impacto-label"><?php esc_html_e('CO₂ evitado', 'flavor-chat-ia'); ?></span>
+            <span class="impacto-label"><?php esc_html_e('CO₂ evitado', 'flavor-platform'); ?></span>
         </div>
         <div class="impacto-card">
             <span class="impacto-icono">📦</span>
             <span class="impacto-valor"><?php echo esc_html($stats['depositos']); ?></span>
-            <span class="impacto-label"><?php esc_html_e('Depósitos', 'flavor-chat-ia'); ?></span>
+            <span class="impacto-label"><?php esc_html_e('Depósitos', 'flavor-platform'); ?></span>
         </div>
     </div>
 
@@ -137,23 +137,23 @@ if ($nivel_siguiente) {
     <div class="reciclaje-acciones">
         <a href="<?php echo esc_url(add_query_arg('vista', 'puntos-cercanos', get_permalink())); ?>" class="btn btn-primary">
             <span class="dashicons dashicons-location-alt"></span>
-            <?php esc_html_e('Puntos cercanos', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Puntos cercanos', 'flavor-platform'); ?>
         </a>
         <a href="<?php echo esc_url(add_query_arg('vista', 'recompensas', get_permalink())); ?>" class="btn btn-outline">
             <span class="dashicons dashicons-gift"></span>
-            <?php esc_html_e('Canjear puntos', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Canjear puntos', 'flavor-platform'); ?>
         </a>
     </div>
 
     <!-- Historial -->
     <div class="historial-section">
-        <h3><?php esc_html_e('Historial de puntos', 'flavor-chat-ia'); ?></h3>
+        <h3><?php esc_html_e('Historial de puntos', 'flavor-platform'); ?></h3>
         <?php if ($historial): ?>
             <div class="historial-lista">
                 <?php foreach ($historial as $item): ?>
                     <div class="historial-item">
                         <div class="historial-info">
-                            <span class="historial-concepto"><?php echo esc_html($item->concepto ?? __('Reciclaje', 'flavor-chat-ia')); ?></span>
+                            <span class="historial-concepto"><?php echo esc_html($item->concepto ?? __('Reciclaje', 'flavor-platform')); ?></span>
                             <span class="historial-fecha"><?php echo esc_html(date_i18n(get_option('date_format'), strtotime($item->fecha))); ?></span>
                         </div>
                         <span class="historial-puntos <?php echo $item->puntos >= 0 ? 'positivo' : 'negativo'; ?>">
@@ -164,7 +164,7 @@ if ($nivel_siguiente) {
             </div>
         <?php else: ?>
             <div class="historial-empty">
-                <p><?php esc_html_e('Aún no tienes movimientos de puntos.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('Aún no tienes movimientos de puntos.', 'flavor-platform'); ?></p>
             </div>
         <?php endif; ?>
     </div>

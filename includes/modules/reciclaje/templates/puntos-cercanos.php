@@ -15,15 +15,15 @@ $tipo_filtro = isset($_GET['tipo']) ? sanitize_text_field($_GET['tipo']) : '';
 
 // Tipos de contenedores
 $tipos_contenedores = [
-    'papel' => ['nombre' => __('Papel y cartón', 'flavor-chat-ia'), 'color' => '#3b82f6', 'icono' => '📄'],
-    'vidrio' => ['nombre' => __('Vidrio', 'flavor-chat-ia'), 'color' => '#22c55e', 'icono' => '🫙'],
-    'plastico' => ['nombre' => __('Plástico y envases', 'flavor-chat-ia'), 'color' => '#fbbf24', 'icono' => '🧴'],
-    'organico' => ['nombre' => __('Orgánico', 'flavor-chat-ia'), 'color' => '#92400e', 'icono' => '🍃'],
-    'textil' => ['nombre' => __('Textil', 'flavor-chat-ia'), 'color' => '#8b5cf6', 'icono' => '👕'],
-    'aceite' => ['nombre' => __('Aceite usado', 'flavor-chat-ia'), 'color' => '#f59e0b', 'icono' => '🛢️'],
-    'pilas' => ['nombre' => __('Pilas y baterías', 'flavor-chat-ia'), 'color' => '#ef4444', 'icono' => '🔋'],
-    'electronico' => ['nombre' => __('Electrónico', 'flavor-chat-ia'), 'color' => '#6366f1', 'icono' => '💻'],
-    'punto_limpio' => ['nombre' => __('Punto limpio', 'flavor-chat-ia'), 'color' => '#10b981', 'icono' => '♻️'],
+    'papel' => ['nombre' => __('Papel y cartón', 'flavor-platform'), 'color' => '#3b82f6', 'icono' => '📄'],
+    'vidrio' => ['nombre' => __('Vidrio', 'flavor-platform'), 'color' => '#22c55e', 'icono' => '🫙'],
+    'plastico' => ['nombre' => __('Plástico y envases', 'flavor-platform'), 'color' => '#fbbf24', 'icono' => '🧴'],
+    'organico' => ['nombre' => __('Orgánico', 'flavor-platform'), 'color' => '#92400e', 'icono' => '🍃'],
+    'textil' => ['nombre' => __('Textil', 'flavor-platform'), 'color' => '#8b5cf6', 'icono' => '👕'],
+    'aceite' => ['nombre' => __('Aceite usado', 'flavor-platform'), 'color' => '#f59e0b', 'icono' => '🛢️'],
+    'pilas' => ['nombre' => __('Pilas y baterías', 'flavor-platform'), 'color' => '#ef4444', 'icono' => '🔋'],
+    'electronico' => ['nombre' => __('Electrónico', 'flavor-platform'), 'color' => '#6366f1', 'icono' => '💻'],
+    'punto_limpio' => ['nombre' => __('Punto limpio', 'flavor-platform'), 'color' => '#10b981', 'icono' => '♻️'],
 ];
 
 // Obtener puntos de reciclaje
@@ -50,15 +50,15 @@ if (empty($puntos_reciclaje)) {
 
 <div class="reciclaje-puntos-wrapper">
     <div class="puntos-header">
-        <h2><?php esc_html_e('Puntos de Reciclaje', 'flavor-chat-ia'); ?></h2>
-        <p><?php esc_html_e('Encuentra el contenedor más cercano para reciclar', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Puntos de Reciclaje', 'flavor-platform'); ?></h2>
+        <p><?php esc_html_e('Encuentra el contenedor más cercano para reciclar', 'flavor-platform'); ?></p>
     </div>
 
     <!-- Filtros por tipo -->
     <div class="tipos-filtros">
         <a href="<?php echo esc_url(remove_query_arg('tipo')); ?>"
            class="tipo-btn <?php echo empty($tipo_filtro) ? 'active' : ''; ?>">
-            <?php esc_html_e('Todos', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Todos', 'flavor-platform'); ?>
         </a>
         <?php foreach ($tipos_contenedores as $tipo_key => $tipo): ?>
             <a href="<?php echo esc_url(add_query_arg('tipo', $tipo_key)); ?>"
@@ -76,7 +76,7 @@ if (empty($puntos_reciclaje)) {
 
     <!-- Lista de puntos -->
     <div class="puntos-lista">
-        <h3><?php esc_html_e('Puntos disponibles', 'flavor-chat-ia'); ?></h3>
+        <h3><?php esc_html_e('Puntos disponibles', 'flavor-platform'); ?></h3>
         <div class="puntos-grid">
             <?php foreach ($puntos_reciclaje as $punto):
                 $tipo_info = $tipos_contenedores[$punto->tipo] ?? ['nombre' => ucfirst($punto->tipo), 'color' => '#6b7280', 'icono' => '♻️'];
@@ -102,7 +102,7 @@ if (empty($puntos_reciclaje)) {
                     <div class="punto-acciones">
                         <button class="btn btn-sm btn-outline" onclick="abrirMapa(<?php echo esc_attr($punto->latitud ?? 0); ?>, <?php echo esc_attr($punto->longitud ?? 0); ?>)">
                             <span class="dashicons dashicons-location-alt"></span>
-                            <?php esc_html_e('Cómo llegar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Cómo llegar', 'flavor-platform'); ?>
                         </button>
                     </div>
                 </div>
@@ -112,7 +112,7 @@ if (empty($puntos_reciclaje)) {
 
     <!-- Guía rápida -->
     <div class="reciclaje-guia-rapida">
-        <h3><?php esc_html_e('¿Qué va en cada contenedor?', 'flavor-chat-ia'); ?></h3>
+        <h3><?php esc_html_e('¿Qué va en cada contenedor?', 'flavor-platform'); ?></h3>
         <div class="guia-grid">
             <?php foreach ($tipos_contenedores as $tipo => $info): ?>
                 <div class="guia-item" style="border-left-color: <?php echo esc_attr($info['color']); ?>">
@@ -122,7 +122,7 @@ if (empty($puntos_reciclaje)) {
             <?php endforeach; ?>
         </div>
         <a href="<?php echo esc_url(add_query_arg('vista', 'guia', get_permalink())); ?>" class="ver-guia-completa">
-            <?php esc_html_e('Ver guía completa de reciclaje', 'flavor-chat-ia'); ?> →
+            <?php esc_html_e('Ver guía completa de reciclaje', 'flavor-platform'); ?> →
         </a>
     </div>
 </div>

@@ -40,10 +40,10 @@ $component_classes = $component_classes ?? '';
         <!-- Encabezado -->
         <div class="max-w-3xl mx-auto text-center mb-16">
             <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-                <?php echo esc_html__('¿Cómo Funciona?', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('¿Cómo Funciona?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <p class="text-lg text-gray-600">
-                <?php echo esc_html__('Es muy simple. Solo necesitas seguir estos tres pasos para empezar a disfrutar de productos locales y de calidad', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Es muy simple. Solo necesitas seguir estos tres pasos para empezar a disfrutar de productos locales y de calidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
 
@@ -111,16 +111,16 @@ $component_classes = $component_classes ?? '';
         <div class="max-w-2xl mx-auto text-center">
             <div class="rounded-2xl bg-gradient-to-r from-green-50 to-emerald-50 p-8 lg:p-12 border-2 border-green-200">
                 <h3 class="text-2xl font-bold text-gray-900 mb-4">
-                    <?php echo esc_html__('¿Listo para empezar?', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('¿Listo para empezar?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <p class="text-gray-600 mb-8">
-                    <?php echo esc_html__('Únete a nuestra comunidad de consumo responsable y disfruta de productos frescos a mejor precio', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Únete a nuestra comunidad de consumo responsable y disfruta de productos frescos a mejor precio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
                 <a href="<?php echo esc_url(apply_filters('flavor_cta_unirse_url', '/grupos-consumo/unirse/')); ?>" class="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-green-600 text-white font-semibold text-lg hover:bg-green-700 transition-all shadow-lg hover:shadow-xl">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
                     </svg>
-                    <?php echo esc_html__('Unirme Ahora', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Unirme Ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>

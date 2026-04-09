@@ -67,7 +67,7 @@
                         class="flex-shrink-0 px-6 sm:px-8 py-4 text-white font-semibold text-base transition-colors duration-300 hover:opacity-90"
                         style="background-color: <?php echo esc_attr( $color_primario ); ?>;"
                     >
-                        <?php esc_html_e( 'Buscar', 'flavor-chat-ia' ); ?>
+                        <?php esc_html_e( 'Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                     </button>
 
                 </div>

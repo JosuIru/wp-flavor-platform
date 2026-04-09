@@ -88,7 +88,7 @@ class Flavor_Unified_Portal {
      */
     public function ajax_save_user_layout() {
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')], 401);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)], 401);
         }
 
         check_ajax_referer('flavor_unified_portal', 'nonce');
@@ -96,7 +96,7 @@ class Flavor_Unified_Portal {
         $layout = sanitize_key($_POST['layout'] ?? '');
 
         if (empty($layout) || !array_key_exists($layout, self::LAYOUTS)) {
-            wp_send_json_error(['message' => __('Layout no válido.', 'flavor-chat-ia')], 400);
+            wp_send_json_error(['message' => __('Layout no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN)], 400);
         }
 
         $user_id = get_current_user_id();
@@ -104,7 +104,7 @@ class Flavor_Unified_Portal {
 
         wp_send_json_success([
             'layout' => $layout,
-            'message' => __('Preferencia guardada', 'flavor-chat-ia'),
+            'message' => __('Preferencia guardada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -113,7 +113,7 @@ class Flavor_Unified_Portal {
      */
     public function ajax_reset_user_layout() {
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')], 401);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)], 401);
         }
 
         check_ajax_referer('flavor_unified_portal', 'nonce');
@@ -127,7 +127,7 @@ class Flavor_Unified_Portal {
 
         wp_send_json_success([
             'layout' => $global_layout,
-            'message' => __('Usando configuración global', 'flavor-chat-ia'),
+            'message' => __('Usando configuración global', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -220,13 +220,13 @@ class Flavor_Unified_Portal {
                 'userId'      => get_current_user_id(),
                 'settingsUrl' => Flavor_Chat_Helpers::get_action_url('configuracion', ''),
                 'i18n'        => [
-                    'loading'                 => __('Cargando...', 'flavor-chat-ia'),
-                    'error'                   => __('Error al cargar datos', 'flavor-chat-ia'),
-                    'noModules'               => __('No hay módulos activos', 'flavor-chat-ia'),
-                    'layoutSaved'             => __('Vista guardada', 'flavor-chat-ia'),
-                    'notificationsUnavailable' => __('Las notificaciones no están disponibles', 'flavor-chat-ia'),
-                    'nodes'                   => __('nodos', 'flavor-chat-ia'),
-                    'communities'             => __('comunidades', 'flavor-chat-ia'),
+                    'loading'                 => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'error'                   => __('Error al cargar datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'noModules'               => __('No hay módulos activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'layoutSaved'             => __('Vista guardada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'notificationsUnavailable' => __('Las notificaciones no están disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'nodes'                   => __('nodos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'communities'             => __('comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ]);
         }
@@ -313,11 +313,11 @@ class Flavor_Unified_Portal {
     private function get_greeting() {
         $hora = (int) current_time('H');
         if ($hora < 12) {
-            return __('Buenos días', 'flavor-chat-ia');
+            return __('Buenos días', FLAVOR_PLATFORM_TEXT_DOMAIN);
         } elseif ($hora < 20) {
-            return __('Buenas tardes', 'flavor-chat-ia');
+            return __('Buenas tardes', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
-        return __('Buenas noches', 'flavor-chat-ia');
+        return __('Buenas noches', FLAVOR_PLATFORM_TEXT_DOMAIN);
     }
 
     /**
@@ -487,10 +487,10 @@ class Flavor_Unified_Portal {
             <?php if ($network && $network['is_connected']) : ?>
             <div class="fup-header__network">
                 <span class="fup-header__network-status"></span>
-                <span class="fup-header__network-label"><?php _e('Red conectada', 'flavor-chat-ia'); ?></span>
+                <span class="fup-header__network-label"><?php _e('Red conectada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="fup-header__network-stats">
                     <?php printf(
-                        __('%d nodos · %d comunidades', 'flavor-chat-ia'),
+                        __('%d nodos · %d comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $network['nodes_count'],
                         $network['communities_count']
                     ); ?>
@@ -508,14 +508,14 @@ class Flavor_Unified_Portal {
                 $using_personal = !empty($user_preference) && $user_preference !== $global_layout;
                 ?>
                 <div class="fup-layout-selector<?php echo $using_personal ? ' has-personal-preference' : ''; ?>">
-                    <button type="button" class="fup-btn fup-btn--icon fup-layout-selector__toggle" title="<?php esc_attr_e('Cambiar vista', 'flavor-chat-ia'); ?>">
+                    <button type="button" class="fup-btn fup-btn--icon fup-layout-selector__toggle" title="<?php esc_attr_e('Cambiar vista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-layout"></span>
                         <?php if ($using_personal) : ?>
-                        <span class="fup-layout-selector__indicator" title="<?php esc_attr_e('Usando vista personal', 'flavor-chat-ia'); ?>"></span>
+                        <span class="fup-layout-selector__indicator" title="<?php esc_attr_e('Usando vista personal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></span>
                         <?php endif; ?>
                     </button>
                     <div class="fup-layout-selector__dropdown">
-                        <span class="fup-layout-selector__label"><?php _e('Vista del portal', 'flavor-chat-ia'); ?></span>
+                        <span class="fup-layout-selector__label"><?php _e('Vista del portal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <?php
                         $layouts_sin_legacy = array_filter(self::LAYOUTS, function($key) {
                             return $key !== 'legacy';
@@ -537,16 +537,16 @@ class Flavor_Unified_Portal {
                         <hr class="fup-layout-selector__divider">
                         <button type="button" class="fup-layout-selector__reset" data-action="reset-layout">
                             <span class="dashicons dashicons-image-rotate"></span>
-                            <span><?php _e('Usar configuración global', 'flavor-chat-ia'); ?></span>
+                            <span><?php _e('Usar configuración global', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </button>
                         <?php endif; ?>
                     </div>
                 </div>
 
-                <button type="button" class="fup-btn fup-btn--icon" data-action="refresh" title="<?php esc_attr_e('Actualizar', 'flavor-chat-ia'); ?>">
+                <button type="button" class="fup-btn fup-btn--icon" data-action="refresh" title="<?php esc_attr_e('Actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-update"></span>
                 </button>
-                <button type="button" class="fup-btn fup-btn--icon" data-action="notifications" title="<?php esc_attr_e('Notificaciones', 'flavor-chat-ia'); ?>">
+                <button type="button" class="fup-btn fup-btn--icon" data-action="notifications" title="<?php esc_attr_e('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-bell"></span>
                 </button>
             </div>
@@ -587,7 +587,7 @@ class Flavor_Unified_Portal {
             <div class="fup-panel fup-panel--signals">
                 <div class="fup-panel__header">
                     <span class="fup-panel__icon">📡</span>
-                    <h3 class="fup-panel__title"><?php esc_html_e('Señales del nodo', 'flavor-chat-ia'); ?></h3>
+                    <h3 class="fup-panel__title"><?php esc_html_e('Señales del nodo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="fup-panel__content">
                     <?php if (!empty($notifications_html)): ?>
@@ -595,7 +595,7 @@ class Flavor_Unified_Portal {
                     <?php else: ?>
                         <div class="fup-panel__empty">
                             <span class="fup-panel__empty-icon">✨</span>
-                            <p><?php esc_html_e('Sin señales pendientes. Tu nodo está al día.', 'flavor-chat-ia'); ?></p>
+                            <p><?php esc_html_e('Sin señales pendientes. Tu nodo está al día.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -604,7 +604,7 @@ class Flavor_Unified_Portal {
             <div class="fup-panel fup-panel--actions">
                 <div class="fup-panel__header">
                     <span class="fup-panel__icon">⚡</span>
-                    <h3 class="fup-panel__title"><?php esc_html_e('Próximas acciones', 'flavor-chat-ia'); ?></h3>
+                    <h3 class="fup-panel__title"><?php esc_html_e('Próximas acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="fup-panel__content">
                     <?php if (!empty($actions_html)): ?>
@@ -612,7 +612,7 @@ class Flavor_Unified_Portal {
                     <?php else: ?>
                         <div class="fup-panel__empty">
                             <span class="fup-panel__empty-icon">🎯</span>
-                            <p><?php esc_html_e('No hay acciones inmediatas programadas.', 'flavor-chat-ia'); ?></p>
+                            <p><?php esc_html_e('No hay acciones inmediatas programadas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -634,9 +634,9 @@ class Flavor_Unified_Portal {
                 <header class="fup-section__header">
                     <h2 class="fup-section__title">
                         <span class="dashicons dashicons-networking"></span>
-                        <?php _e('Capas Transversales', 'flavor-chat-ia'); ?>
+                        <?php _e('Capas Transversales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h2>
-                    <p class="fup-section__subtitle"><?php _e('Gobernanza, medición y aprendizaje que cruzan todo el ecosistema', 'flavor-chat-ia'); ?></p>
+                    <p class="fup-section__subtitle"><?php _e('Gobernanza, medición y aprendizaje que cruzan todo el ecosistema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </header>
                 <div class="fup-transversal-bar">
                     <?php foreach ($this->modules_by_type['transversal'] as $module) : ?>
@@ -657,9 +657,9 @@ class Flavor_Unified_Portal {
                 <header class="fup-section__header">
                     <h2 class="fup-section__title">
                         <span class="dashicons dashicons-groups"></span>
-                        <?php _e('Mis Espacios Activos', 'flavor-chat-ia'); ?>
+                        <?php _e('Mis Espacios Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h2>
-                    <p class="fup-section__subtitle"><?php _e('Comunidades, colectivos y organizaciones donde participas', 'flavor-chat-ia'); ?></p>
+                    <p class="fup-section__subtitle"><?php _e('Comunidades, colectivos y organizaciones donde participas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </header>
 
                 <?php if (!empty($this->modules_by_type['base'])) : ?>
@@ -678,7 +678,7 @@ class Flavor_Unified_Portal {
 
                         <?php if (!empty($base['satellites'])) : ?>
                         <div class="fup-base-card__satellites">
-                            <span class="fup-base-card__satellites-label"><?php _e('Módulos activos:', 'flavor-chat-ia'); ?></span>
+                            <span class="fup-base-card__satellites-label"><?php _e('Módulos activos:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <ul class="fup-satellites-list">
                                 <?php foreach ($base['satellites'] as $satellite) : ?>
                                 <li>
@@ -694,7 +694,7 @@ class Flavor_Unified_Portal {
 
                         <footer class="fup-base-card__footer">
                             <a href="<?php echo esc_url($base['url']); ?>" class="fup-btn fup-btn--primary">
-                                <?php _e('Abrir', 'flavor-chat-ia'); ?>
+                                <?php _e('Abrir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 <span class="dashicons dashicons-arrow-right-alt2"></span>
                             </a>
                         </footer>
@@ -704,9 +704,9 @@ class Flavor_Unified_Portal {
                 <?php else : ?>
                 <div class="fup-empty-state">
                     <span class="dashicons dashicons-groups"></span>
-                    <p><?php _e('No estás participando en ningún espacio todavía.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No estás participando en ningún espacio todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo home_url('/comunidades/'); ?>" class="fup-btn fup-btn--primary">
-                        <?php _e('Explorar comunidades', 'flavor-chat-ia'); ?>
+                        <?php _e('Explorar comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
                 <?php endif; ?>
@@ -725,9 +725,9 @@ class Flavor_Unified_Portal {
                 <header class="fup-section__header">
                     <h2 class="fup-section__title">
                         <span class="dashicons dashicons-admin-tools"></span>
-                        <?php _e('Herramientas', 'flavor-chat-ia'); ?>
+                        <?php _e('Herramientas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h2>
-                    <p class="fup-section__subtitle"><?php _e('Acceso rápido a servicios y herramientas disponibles', 'flavor-chat-ia'); ?></p>
+                    <p class="fup-section__subtitle"><?php _e('Acceso rápido a servicios y herramientas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </header>
                 <div class="fup-tools-grid">
                     <?php foreach ($independent_verticals as $tool) : ?>
@@ -746,9 +746,9 @@ class Flavor_Unified_Portal {
                 <header class="fup-section__header">
                     <h2 class="fup-section__title">
                         <span class="dashicons dashicons-format-audio"></span>
-                        <?php _e('Otros espacios activos', 'flavor-chat-ia'); ?>
+                        <?php _e('Otros espacios activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h2>
-                    <p class="fup-section__subtitle"><?php _e('Contenidos, recursos y servicios de la comunidad', 'flavor-chat-ia'); ?></p>
+                    <p class="fup-section__subtitle"><?php _e('Contenidos, recursos y servicios de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </header>
                 <div class="fup-services-grid">
                     <?php foreach ($this->modules_by_type['service'] as $service) : ?>
@@ -811,7 +811,7 @@ class Flavor_Unified_Portal {
         <div class="fup-sidebar-layout">
             <aside class="fup-sidebar">
                 <nav class="fup-sidebar-nav">
-                    <?php foreach (['base' => __('Espacios', 'flavor-chat-ia'), 'vertical' => __('Módulos', 'flavor-chat-ia'), 'transversal' => __('Transversales', 'flavor-chat-ia')] as $type => $label) : ?>
+                    <?php foreach (['base' => __('Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'vertical' => __('Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'transversal' => __('Transversales', FLAVOR_PLATFORM_TEXT_DOMAIN)] as $type => $label) : ?>
                     <?php if (!empty($this->modules_by_type[$type])) : ?>
                     <div class="fup-sidebar-group">
                         <h3 class="fup-sidebar-group__title"><?php echo esc_html($label); ?></h3>
@@ -839,7 +839,7 @@ class Flavor_Unified_Portal {
                 <section class="fup-content-feed">
                     <h3 class="fup-section__title">
                         <span class="dashicons dashicons-megaphone"></span>
-                        <?php _e('Novedades del ecosistema', 'flavor-chat-ia'); ?>
+                        <?php _e('Novedades del ecosistema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <div class="fup-feed-list">
                         <?php foreach (array_slice($highlighted_content, 0, 6) as $item) : ?>
@@ -879,7 +879,7 @@ class Flavor_Unified_Portal {
                 <section class="fup-sidebar-activity">
                     <h3 class="fup-section__title">
                         <span class="dashicons dashicons-backup"></span>
-                        <?php _e('Actividad reciente', 'flavor-chat-ia'); ?>
+                        <?php _e('Actividad reciente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <ul class="fup-sidebar-activity__list">
                         <?php foreach (array_slice($recent_activity, 0, 5) as $activity) : ?>
@@ -899,8 +899,8 @@ class Flavor_Unified_Portal {
                 <?php if (empty($highlighted_content) && empty($recent_activity)) : ?>
                 <div class="fup-content-empty">
                     <span class="fup-content-empty__icon">🌱</span>
-                    <h3><?php _e('Tu ecosistema está listo', 'flavor-chat-ia'); ?></h3>
-                    <p><?php _e('Explora los módulos del menú lateral para comenzar a participar.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php _e('Tu ecosistema está listo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php _e('Explora los módulos del menú lateral para comenzar a participar.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <?php endif; ?>
             </main>
@@ -934,7 +934,7 @@ class Flavor_Unified_Portal {
                 $content[] = [
                     'type' => 'aviso',
                     'icon' => '📢',
-                    'source' => __('Aviso oficial', 'flavor-chat-ia'),
+                    'source' => __('Aviso oficial', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'title' => $aviso['titulo'],
                     'excerpt' => wp_trim_words($aviso['contenido'], 15, '...'),
                     'url' => Flavor_Chat_Helpers::get_action_url('avisos_municipales', ''),
@@ -961,7 +961,7 @@ class Flavor_Unified_Portal {
             );
             foreach ($publicaciones as $pub) {
                 $autor = get_userdata((int) $pub['autor_id']);
-                $nombre_autor = $autor ? $autor->display_name : __('Usuario', 'flavor-chat-ia');
+                $nombre_autor = $autor ? $autor->display_name : __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 $content[] = [
                     'type' => 'social',
                     'icon' => '💬',
@@ -971,7 +971,7 @@ class Flavor_Unified_Portal {
                     'url' => Flavor_Chat_Helpers::get_action_url('red_social', '') . '?pub=' . $pub['id'],
                     'time' => strtotime($pub['fecha_creacion']),
                     'time_ago' => $this->time_ago($pub['fecha_creacion']),
-                    'meta' => $pub['reacciones'] > 0 ? sprintf(_n('%d reacción', '%d reacciones', (int) $pub['reacciones'], 'flavor-chat-ia'), (int) $pub['reacciones']) : '',
+                    'meta' => $pub['reacciones'] > 0 ? sprintf(_n('%d reacción', '%d reacciones', (int) $pub['reacciones'], FLAVOR_PLATFORM_TEXT_DOMAIN), (int) $pub['reacciones']) : '',
                 ];
             }
         }
@@ -993,7 +993,7 @@ class Flavor_Unified_Portal {
                 $content[] = [
                     'type' => 'evento',
                     'icon' => '📅',
-                    'source' => __('Evento', 'flavor-chat-ia'),
+                    'source' => __('Evento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'title' => $evento['titulo'],
                     'excerpt' => !empty($evento['descripcion']) ? wp_trim_words($evento['descripcion'], 12, '...') : '',
                     'url' => Flavor_Chat_Helpers::get_action_url('eventos', ''),
@@ -1022,13 +1022,13 @@ class Flavor_Unified_Portal {
                 $content[] = [
                     'type' => 'foro',
                     'icon' => '🗣️',
-                    'source' => __('Foro', 'flavor-chat-ia'),
+                    'source' => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'title' => $tema['titulo'],
                     'excerpt' => '',
                     'url' => Flavor_Chat_Helpers::get_action_url('foros', ''),
                     'time' => strtotime($tema['fecha_creacion']),
                     'time_ago' => $this->time_ago($tema['fecha_creacion']),
-                    'meta' => $tema['respuestas'] > 0 ? sprintf(_n('%d respuesta', '%d respuestas', (int) $tema['respuestas'], 'flavor-chat-ia'), (int) $tema['respuestas']) : __('Sin respuestas', 'flavor-chat-ia'),
+                    'meta' => $tema['respuestas'] > 0 ? sprintf(_n('%d respuesta', '%d respuestas', (int) $tema['respuestas'], FLAVOR_PLATFORM_TEXT_DOMAIN), (int) $tema['respuestas']) : __('Sin respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
         }
@@ -1049,7 +1049,7 @@ class Flavor_Unified_Portal {
                 $content[] = [
                     'type' => 'podcast',
                     'icon' => '🎙️',
-                    'source' => __('Podcast', 'flavor-chat-ia'),
+                    'source' => __('Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'title' => $ep['titulo'],
                     'excerpt' => !empty($ep['descripcion']) ? wp_trim_words($ep['descripcion'], 10, '...') : '',
                     'url' => Flavor_Chat_Helpers::get_action_url('podcast', ''),
@@ -1085,16 +1085,16 @@ class Flavor_Unified_Portal {
             // Fecha futura
             return date_i18n(get_option('date_format'), $time);
         } elseif ($diff < 60) {
-            return __('Hace un momento', 'flavor-chat-ia');
+            return __('Hace un momento', FLAVOR_PLATFORM_TEXT_DOMAIN);
         } elseif ($diff < 3600) {
             $mins = floor($diff / 60);
-            return sprintf(_n('Hace %d minuto', 'Hace %d minutos', $mins, 'flavor-chat-ia'), $mins);
+            return sprintf(_n('Hace %d minuto', 'Hace %d minutos', $mins, FLAVOR_PLATFORM_TEXT_DOMAIN), $mins);
         } elseif ($diff < 86400) {
             $hours = floor($diff / 3600);
-            return sprintf(_n('Hace %d hora', 'Hace %d horas', $hours, 'flavor-chat-ia'), $hours);
+            return sprintf(_n('Hace %d hora', 'Hace %d horas', $hours, FLAVOR_PLATFORM_TEXT_DOMAIN), $hours);
         } elseif ($diff < 604800) {
             $days = floor($diff / 86400);
-            return sprintf(_n('Hace %d día', 'Hace %d días', $days, 'flavor-chat-ia'), $days);
+            return sprintf(_n('Hace %d día', 'Hace %d días', $days, FLAVOR_PLATFORM_TEXT_DOMAIN), $days);
         } else {
             return date_i18n(get_option('date_format'), $time);
         }
@@ -1131,7 +1131,7 @@ class Flavor_Unified_Portal {
                     'icon' => '📅',
                     'text' => $evento['titulo'],
                     'url' => Flavor_Chat_Helpers::get_action_url('eventos', ''),
-                    'module' => __('Eventos', 'flavor-chat-ia'),
+                    'module' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'priority' => 'normal',
                 ];
             }
@@ -1149,9 +1149,9 @@ class Flavor_Unified_Portal {
             if ($reservas > 0) {
                 $actions[] = [
                     'icon' => '📆',
-                    'text' => sprintf(_n('%d reserva pendiente', '%d reservas pendientes', $reservas, 'flavor-chat-ia'), $reservas),
+                    'text' => sprintf(_n('%d reserva pendiente', '%d reservas pendientes', $reservas, FLAVOR_PLATFORM_TEXT_DOMAIN), $reservas),
                     'url' => Flavor_Chat_Helpers::get_action_url('reservas', ''),
-                    'module' => __('Reservas', 'flavor-chat-ia'),
+                    'module' => __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'priority' => 'high',
                 ];
             }
@@ -1169,9 +1169,9 @@ class Flavor_Unified_Portal {
             if ($tramites > 0) {
                 $actions[] = [
                     'icon' => '📋',
-                    'text' => sprintf(_n('%d trámite activo', '%d trámites activos', $tramites, 'flavor-chat-ia'), $tramites),
+                    'text' => sprintf(_n('%d trámite activo', '%d trámites activos', $tramites, FLAVOR_PLATFORM_TEXT_DOMAIN), $tramites),
                     'url' => Flavor_Chat_Helpers::get_action_url('tramites', ''),
-                    'module' => __('Trámites', 'flavor-chat-ia'),
+                    'module' => __('Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'priority' => 'normal',
                 ];
             }
@@ -1187,9 +1187,9 @@ class Flavor_Unified_Portal {
             if ($votaciones > 0) {
                 $actions[] = [
                     'icon' => '🗳️',
-                    'text' => sprintf(_n('%d votación abierta', '%d votaciones abiertas', $votaciones, 'flavor-chat-ia'), $votaciones),
+                    'text' => sprintf(_n('%d votación abierta', '%d votaciones abiertas', $votaciones, FLAVOR_PLATFORM_TEXT_DOMAIN), $votaciones),
                     'url' => Flavor_Chat_Helpers::get_action_url('participacion', ''),
-                    'module' => __('Participación', 'flavor-chat-ia'),
+                    'module' => __('Participación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'priority' => 'high',
                 ];
             }
@@ -1230,10 +1230,10 @@ class Flavor_Unified_Portal {
             );
             foreach ($publicaciones as $pub) {
                 $autor = get_userdata((int) $pub['autor_id']);
-                $nombre_autor = $autor ? $autor->display_name : __('Usuario', 'flavor-chat-ia');
+                $nombre_autor = $autor ? $autor->display_name : __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 $activity_items[] = [
                     'icon' => '🌐',
-                    'text' => sprintf(__('%s publicó: %s', 'flavor-chat-ia'), $nombre_autor, wp_trim_words($pub['contenido'], 6, '...')),
+                    'text' => sprintf(__('%s publicó: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $nombre_autor, wp_trim_words($pub['contenido'], 6, '...')),
                     'time' => strtotime($pub['fecha']),
                 ];
             }
@@ -1255,7 +1255,7 @@ class Flavor_Unified_Portal {
                 foreach ($reacciones as $reaccion) {
                     $activity_items[] = [
                         'icon' => '❤️',
-                        'text' => __('Tu publicación recibió una reacción', 'flavor-chat-ia'),
+                        'text' => __('Tu publicación recibió una reacción', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'time' => strtotime($reaccion['fecha']),
                     ];
                 }
@@ -1285,7 +1285,7 @@ class Flavor_Unified_Portal {
             foreach ($mensajes as $msg) {
                 $activity_items[] = [
                     'icon' => '💭',
-                    'text' => sprintf(__('Nuevo mensaje en %s', 'flavor-chat-ia'), $msg['grupo_nombre']),
+                    'text' => sprintf(__('Nuevo mensaje en %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $msg['grupo_nombre']),
                     'time' => strtotime($msg['fecha']),
                 ];
             }
@@ -1306,7 +1306,7 @@ class Flavor_Unified_Portal {
             foreach ($respuestas as $r) {
                 $activity_items[] = [
                     'icon' => '💬',
-                    'text' => __('Nueva respuesta en foro', 'flavor-chat-ia'),
+                    'text' => __('Nueva respuesta en foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'time' => strtotime($r['fecha']),
                 ];
             }
@@ -1327,7 +1327,7 @@ class Flavor_Unified_Portal {
             foreach ($inscripciones as $i) {
                 $activity_items[] = [
                     'icon' => '📅',
-                    'text' => __('Te inscribiste a un evento', 'flavor-chat-ia'),
+                    'text' => __('Te inscribiste a un evento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'time' => strtotime($i['fecha']),
                 ];
             }
@@ -1349,7 +1349,7 @@ class Flavor_Unified_Portal {
             foreach ($anuncios as $anuncio) {
                 $activity_items[] = [
                     'icon' => '🛒',
-                    'text' => sprintf(__('Nuevo: %s', 'flavor-chat-ia'), wp_trim_words($anuncio['titulo'], 5, '...')),
+                    'text' => sprintf(__('Nuevo: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), wp_trim_words($anuncio['titulo'], 5, '...')),
                     'time' => strtotime($anuncio['fecha']),
                 ];
             }
@@ -1441,7 +1441,7 @@ class Flavor_Unified_Portal {
                         <?php endif; ?>
                     </div>
                     <footer class="fup-dash-widget__footer">
-                        <a href="<?php echo esc_url($base['url']); ?>"><?php _e('Ver todo', 'flavor-chat-ia'); ?> →</a>
+                        <a href="<?php echo esc_url($base['url']); ?>"><?php _e('Ver todo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> →</a>
                     </footer>
                 </article>
                 <?php endforeach; ?>
@@ -1453,7 +1453,7 @@ class Flavor_Unified_Portal {
                         <h3><?php echo esc_html($module['name']); ?></h3>
                     </header>
                     <footer class="fup-dash-widget__footer">
-                        <a href="<?php echo esc_url($module['url']); ?>"><?php _e('Abrir', 'flavor-chat-ia'); ?> →</a>
+                        <a href="<?php echo esc_url($module['url']); ?>"><?php _e('Abrir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> →</a>
                     </footer>
                 </article>
                 <?php endforeach; ?>
@@ -1469,15 +1469,15 @@ class Flavor_Unified_Portal {
         return [
             [
                 'value' => count($this->modules_by_type['base']),
-                'label' => __('Espacios', 'flavor-chat-ia'),
+                'label' => __('Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             [
                 'value' => count($this->modules_by_type['vertical']),
-                'label' => __('Módulos', 'flavor-chat-ia'),
+                'label' => __('Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             [
                 'value' => count($this->modules_by_type['transversal']),
-                'label' => __('Transversales', 'flavor-chat-ia'),
+                'label' => __('Transversales', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
     }
@@ -1491,10 +1491,10 @@ class Flavor_Unified_Portal {
         <div class="fup-login-required">
             <div class="fup-login-required__content">
                 <span class="dashicons dashicons-lock"></span>
-                <h2><?php _e('Acceso restringido', 'flavor-chat-ia'); ?></h2>
-                <p><?php _e('Necesitas iniciar sesión para acceder a tu portal.', 'flavor-chat-ia'); ?></p>
+                <h2><?php _e('Acceso restringido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <p><?php _e('Necesitas iniciar sesión para acceder a tu portal.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <a href="<?php echo wp_login_url(get_permalink()); ?>" class="fup-btn fup-btn--primary">
-                    <?php _e('Iniciar sesión', 'flavor-chat-ia'); ?>
+                    <?php _e('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -1509,7 +1509,7 @@ class Flavor_Unified_Portal {
         check_ajax_referer('flavor_unified_portal', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('No autenticado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No autenticado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $this->load_user_data();

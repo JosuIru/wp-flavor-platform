@@ -38,7 +38,7 @@ $grupos_demo = apply_filters('flavor_grupos_consumo_listado_demo', $grupos_demo)
                 <?php while ($grupos_query->have_posts()): $grupos_query->the_post();
                     $grupo_id = get_the_ID();
                     $grupo_url = get_permalink($grupo_id);
-                    $grupo_tipo = get_post_meta($grupo_id, '_gc_tipo', true) ?: __('Grupo', 'flavor-chat-ia');
+                    $grupo_tipo = get_post_meta($grupo_id, '_gc_tipo', true) ?: __('Grupo', 'flavor-platform');
                     $grupo_socios = (int) get_post_meta($grupo_id, '_gc_num_socios', true) ?: 0;
                     $grupo_imagen = get_the_post_thumbnail_url($grupo_id, 'medium');
                 ?>
@@ -63,7 +63,7 @@ $grupos_demo = apply_filters('flavor_grupos_consumo_listado_demo', $grupos_demo)
                         <div class="flex items-center justify-between text-sm text-gray-500">
                             <span>👥 <?php echo esc_html($grupo_socios); ?> miembros</span>
                             <a href="<?php echo esc_url($grupo_url); ?>" class="text-lime-600 font-medium hover:underline">
-                                <?php _e('Ver más', 'flavor-chat-ia'); ?> →
+                                <?php _e('Ver más', 'flavor-platform'); ?> →
                             </a>
                         </div>
                     </div>
@@ -82,12 +82,12 @@ $grupos_demo = apply_filters('flavor_grupos_consumo_listado_demo', $grupos_demo)
                         </span>
                         <h3 class="text-lg font-bold text-gray-800 mt-3 mb-2">
                             <?php echo esc_html($grupo['nombre']); ?>
-                            <span class="text-xs text-gray-400 font-normal">(<?php _e('Demo', 'flavor-chat-ia'); ?>)</span>
+                            <span class="text-xs text-gray-400 font-normal">(<?php _e('Demo', 'flavor-platform'); ?>)</span>
                         </h3>
                         <p class="text-gray-600 text-sm mb-4"><?php echo esc_html($grupo['descripcion']); ?></p>
                         <div class="flex items-center justify-between text-sm text-gray-500">
                             <span>👥 <?php echo esc_html($grupo['socios']); ?> miembros</span>
-                            <span class="text-gray-400 text-xs italic"><?php _e('Próximamente', 'flavor-chat-ia'); ?></span>
+                            <span class="text-gray-400 text-xs italic"><?php _e('Próximamente', 'flavor-platform'); ?></span>
                         </div>
                     </div>
                 </article>
@@ -97,7 +97,7 @@ $grupos_demo = apply_filters('flavor_grupos_consumo_listado_demo', $grupos_demo)
 
         <div class="text-center mt-8">
             <a href="<?php echo esc_url(get_post_type_archive_link('gc_grupo') ?: home_url('/gc-grupos/')); ?>" class="inline-block bg-lime-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-lime-600 transition-colors">
-                <?php _e('Ver todos los grupos', 'flavor-chat-ia'); ?>
+                <?php _e('Ver todos los grupos', 'flavor-platform'); ?>
             </a>
         </div>
     </div>

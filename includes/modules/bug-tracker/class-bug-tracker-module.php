@@ -124,7 +124,7 @@ class Flavor_Bug_Tracker_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Bug Tracker no están creadas. Ejecuta la instalación del módulo.', 'flavor-chat-ia');
+            return __('Las tablas de Bug Tracker no están creadas. Ejecuta la instalación del módulo.', 'flavor-platform');
         }
         return '';
     }
@@ -149,7 +149,7 @@ class Flavor_Bug_Tracker_Module extends Flavor_Chat_Module_Base {
             'capturar_warnings' => false,
             'capturar_notices' => false,
             'capturar_deprecations' => false,
-            'plugins_monitorizados' => ['flavor-chat-ia', 'flavor-landing', 'flavor-license-server'],
+            'plugins_monitorizados' => ['flavor-platform', 'flavor-landing', 'flavor-license-server'],
             'notificar_admins_inapp' => true,
             'agrupar_duplicados' => true,
             'limite_notificaciones_hora' => 10,
@@ -770,9 +770,9 @@ class Flavor_Bug_Tracker_Module extends Flavor_Chat_Module_Base {
      */
     public function registrar_menu_admin() {
         add_submenu_page(
-            'flavor-chat-ia',
-            __('Bug Tracker', 'flavor-chat-ia'),
-            __('🐛 Bug Tracker', 'flavor-chat-ia'),
+            'flavor-platform',
+            __('Bug Tracker', 'flavor-platform'),
+            __('🐛 Bug Tracker', 'flavor-platform'),
             'manage_options',
             'flavor-bug-tracker',
             [$this, 'render_pagina_admin']
@@ -789,14 +789,14 @@ class Flavor_Bug_Tracker_Module extends Flavor_Chat_Module_Base {
 
         ?>
         <div class="wrap flavor-bug-tracker-admin">
-            <h1><?php esc_html_e('Bug Tracker', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Bug Tracker', 'flavor-platform'); ?></h1>
 
             <nav class="nav-tab-wrapper">
                 <a href="?page=flavor-bug-tracker&tab=lista" class="nav-tab <?php echo $tab_actual === 'lista' ? 'nav-tab-active' : ''; ?>">
-                    <?php esc_html_e('Lista de Bugs', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Lista de Bugs', 'flavor-platform'); ?>
                 </a>
                 <a href="?page=flavor-bug-tracker&tab=settings" class="nav-tab <?php echo $tab_actual === 'settings' ? 'nav-tab-active' : ''; ?>">
-                    <?php esc_html_e('Configuración', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Configuración', 'flavor-platform'); ?>
                 </a>
             </nav>
 
@@ -821,14 +821,14 @@ class Flavor_Bug_Tracker_Module extends Flavor_Chat_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'bug-tracker',
-            'label' => __('Bug Tracker', 'flavor-chat-ia'),
+            'label' => __('Bug Tracker', 'flavor-platform'),
             'icon' => 'dashicons-warning',
             'capability' => 'manage_options',
             'categoria' => 'operaciones',
             'paginas' => [
                 [
                     'slug' => 'flavor-bug-tracker',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', 'flavor-platform'),
                     'callback' => [$this, 'render_pagina_admin'],
                 ],
             ],

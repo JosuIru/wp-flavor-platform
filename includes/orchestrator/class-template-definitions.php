@@ -165,8 +165,8 @@ class Flavor_Template_Definitions {
             // GRUPO DE CONSUMO
             // =========================================================
             'grupo_consumo' => [
-                'nombre' => __('Grupo de Consumo', 'flavor-chat-ia'),
-                'descripcion' => __('Gestion completa de pedidos colectivos, productores locales y repartos para grupos de consumo ecologico.', 'flavor-chat-ia'),
+                'nombre' => __('Grupo de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Gestion completa de pedidos colectivos, productores locales y repartos para grupos de consumo ecologico.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-carrot',
                 'color' => '#84cc16',
                 'modulos' => [
@@ -177,7 +177,7 @@ class Flavor_Template_Definitions {
                 'paginas' => [
                     // === PÁGINA PRINCIPAL ===
                     [
-                        'titulo' => __('Inicio', 'flavor-chat-ia'),
+                        'titulo' => __('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'inicio',
                         'contenido' => '[flavor_landing module="grupos-consumo"]',
                         'parent' => 0,
@@ -186,71 +186,71 @@ class Flavor_Template_Definitions {
                     ],
                     // === SECCIÓN: CATÁLOGO ===
                     [
-                        'titulo' => __('Catálogo', 'flavor-chat-ia'),
+                        'titulo' => __('Catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'catalogo',
-                        'contenido' => '<!-- wp:heading --><h2>' . __('Nuestro Catálogo', 'flavor-chat-ia') . '</h2><!-- /wp:heading -->',
+                        'contenido' => '<!-- wp:heading --><h2>' . __('Nuestro Catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><!-- /wp:heading -->',
                         'parent' => 0,
                     ],
                     [
-                        'titulo' => __('Productos', 'flavor-chat-ia'),
+                        'titulo' => __('Productos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'productos',
                         'contenido' => '[gc_catalogo]',
                         'parent' => 'catalogo',
                     ],
                     [
-                        'titulo' => __('Productores', 'flavor-chat-ia'),
+                        'titulo' => __('Productores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'productores',
                         'contenido' => '[gc_productores]',
                         'parent' => 'catalogo',
                     ],
                     [
-                        'titulo' => __('Ciclo Actual', 'flavor-chat-ia'),
+                        'titulo' => __('Ciclo Actual', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'ciclo-actual',
                         'contenido' => '[gc_ciclo_actual]',
                         'parent' => 'catalogo',
                     ],
                     // === SECCIÓN: MI CUENTA ===
                     [
-                        'titulo' => __('Mi Cuenta', 'flavor-chat-ia'),
+                        'titulo' => __('Mi Cuenta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'mi-cuenta',
                         'contenido' => '[flavor_user_dashboard]',
                         'parent' => 0,
                     ],
                     [
-                        'titulo' => __('Mis Pedidos', 'flavor-chat-ia'),
+                        'titulo' => __('Mis Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'mis-pedidos',
                         'contenido' => '[gc_mis_pedidos]',
                         'parent' => 'mi-cuenta',
                     ],
                     [
-                        'titulo' => __('Mi Cesta', 'flavor-chat-ia'),
+                        'titulo' => __('Mi Cesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'mi-cesta',
                         'contenido' => '[gc_cesta]',
                         'parent' => 'mi-cuenta',
                     ],
                 ],
                 'menu' => [
-                    'nombre' => __('Menu Grupo Consumo', 'flavor-chat-ia'),
+                    'nombre' => __('Menu Grupo Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'ubicacion' => 'primary',
                     'items' => [
-                        ['titulo' => __('Inicio', 'flavor-chat-ia'), 'url' => '/', 'icono' => 'home'],
+                        ['titulo' => __('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '/', 'icono' => 'home'],
                         [
-                            'titulo' => __('Catálogo', 'flavor-chat-ia'),
+                            'titulo' => __('Catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             'url' => '/catalogo/',
                             'icono' => 'carrot',
                             'hijos' => [
-                                ['titulo' => __('Productos', 'flavor-chat-ia'), 'url' => '/catalogo/productos/'],
-                                ['titulo' => __('Productores', 'flavor-chat-ia'), 'url' => '/catalogo/productores/'],
-                                ['titulo' => __('Ciclo Actual', 'flavor-chat-ia'), 'url' => '/catalogo/ciclo-actual/'],
+                                ['titulo' => __('Productos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '/catalogo/productos/'],
+                                ['titulo' => __('Productores', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '/catalogo/productores/'],
+                                ['titulo' => __('Ciclo Actual', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '/catalogo/ciclo-actual/'],
                             ],
                         ],
                         [
-                            'titulo' => __('Mi Cuenta', 'flavor-chat-ia'),
+                            'titulo' => __('Mi Cuenta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             'url' => '/mi-cuenta/',
                             'icono' => 'user',
                             'hijos' => [
-                                ['titulo' => __('Mis Pedidos', 'flavor-chat-ia'), 'url' => '/mi-cuenta/mis-pedidos/'],
-                                ['titulo' => __('Mi Cesta', 'flavor-chat-ia'), 'url' => '/mi-cuenta/mi-cesta/'],
+                                ['titulo' => __('Mis Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '/mi-cuenta/mis-pedidos/'],
+                                ['titulo' => __('Mi Cesta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '/mi-cuenta/mi-cesta/'],
                             ],
                         ],
                     ],
@@ -263,9 +263,9 @@ class Flavor_Template_Definitions {
                             'tipo' => 'hero',
                             'variante' => 'imagen-derecha',
                             'datos' => [
-                                'titulo' => __('Grupos de Consumo', 'flavor-chat-ia'),
-                                'subtitulo' => __('Productos locales, frescos y de temporada directamente del productor', 'flavor-chat-ia'),
-                                'cta_texto' => __('Ver Productores', 'flavor-chat-ia'),
+                                'titulo' => __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'subtitulo' => __('Productos locales, frescos y de temporada directamente del productor', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'cta_texto' => __('Ver Productores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'cta_url' => '#productores',
                                 'imagen' => '',
                             ],
@@ -274,11 +274,11 @@ class Flavor_Template_Definitions {
                             'tipo' => 'features',
                             'variante' => 'iconos-3-columnas',
                             'datos' => [
-                                'titulo' => __('Por que unirte', 'flavor-chat-ia'),
+                                'titulo' => __('Por que unirte', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'items' => [
-                                    ['icono' => 'carrot', 'titulo' => __('Productos Frescos', 'flavor-chat-ia'), 'descripcion' => __('Directos del campo a tu mesa', 'flavor-chat-ia')],
-                                    ['icono' => 'groups', 'titulo' => __('Comunidad', 'flavor-chat-ia'), 'descripcion' => __('Forma parte de un grupo comprometido', 'flavor-chat-ia')],
-                                    ['icono' => 'location-alt', 'titulo' => __('Km 0', 'flavor-chat-ia'), 'descripcion' => __('Apoya a productores locales', 'flavor-chat-ia')],
+                                    ['icono' => 'carrot', 'titulo' => __('Productos Frescos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Directos del campo a tu mesa', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                                    ['icono' => 'groups', 'titulo' => __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Forma parte de un grupo comprometido', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                                    ['icono' => 'location-alt', 'titulo' => __('Km 0', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Apoya a productores locales', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                                 ],
                             ],
                         ],
@@ -286,7 +286,7 @@ class Flavor_Template_Definitions {
                             'tipo' => 'grid',
                             'variante' => 'productos',
                             'datos' => [
-                                'titulo' => __('Productos de Temporada', 'flavor-chat-ia'),
+                                'titulo' => __('Productos de Temporada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'shortcode' => '[flavor_module_listing module="grupos_consumo" action="listar_productos" columnas="4" limite="8"]',
                             ],
                         ],
@@ -294,7 +294,7 @@ class Flavor_Template_Definitions {
                             'tipo' => 'listing',
                             'variante' => 'cards-horizontales',
                             'datos' => [
-                                'titulo' => __('Nuestros Productores', 'flavor-chat-ia'),
+                                'titulo' => __('Nuestros Productores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'shortcode' => '[flavor_module_listing module="grupos_consumo" action="listar_productores" columnas="2" limite="4"]',
                             ],
                         ],
@@ -302,9 +302,9 @@ class Flavor_Template_Definitions {
                             'tipo' => 'cta',
                             'variante' => 'centrado',
                             'datos' => [
-                                'titulo' => __('Unete a un grupo de consumo', 'flavor-chat-ia'),
-                                'descripcion' => __('Apoya a los productores locales y disfruta de alimentos frescos y sostenibles', 'flavor-chat-ia'),
-                                'boton_texto' => __('Registrarse', 'flavor-chat-ia'),
+                                'titulo' => __('Unete a un grupo de consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'descripcion' => __('Apoya a los productores locales y disfruta de alimentos frescos y sostenibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'boton_texto' => __('Registrarse', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'boton_url' => '/registro/',
                             ],
                         ],
@@ -325,7 +325,7 @@ class Flavor_Template_Definitions {
                 ],
                 'demo' => [
                     'disponible' => true,
-                    'descripcion' => __('Incluye 3 productores de ejemplo, 15 productos y un ciclo de pedidos abierto', 'flavor-chat-ia'),
+                    'descripcion' => __('Incluye 3 productores de ejemplo, 15 productos y un ciclo de pedidos abierto', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
 
@@ -333,8 +333,8 @@ class Flavor_Template_Definitions {
             // COMUNIDAD / ASOCIACION
             // =========================================================
             'comunidad' => [
-                'nombre' => __('Comunidad / Asociacion', 'flavor-chat-ia'),
-                'descripcion' => __('Gestion integral de una comunidad o asociacion: miembros, eventos, foros y recursos compartidos.', 'flavor-chat-ia'),
+                'nombre' => __('Comunidad / Asociacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Gestion integral de una comunidad o asociacion: miembros, eventos, foros y recursos compartidos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-groups',
                 'color' => '#e91e63',
                 'modulos' => [
@@ -344,14 +344,14 @@ class Flavor_Template_Definitions {
                 ],
                 'paginas' => [
                     [
-                        'titulo' => __('Comunidad', 'flavor-chat-ia'),
+                        'titulo' => __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'comunidad',
                         'contenido' => '[flavor_landing module="comunidades"]',
                         'parent' => 0,
                         'es_landing' => true,
                     ],
                     [
-                        'titulo' => __('Miembros', 'flavor-chat-ia'),
+                        'titulo' => __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'socios',
                         'contenido' => '<h1>Unete a Nuestra Comunidad</h1>
 <p>Descubre los beneficios de ser miembro</p>
@@ -360,7 +360,7 @@ class Flavor_Template_Definitions {
                         'parent' => 'comunidad',
                     ],
                     [
-                        'titulo' => __('Hacerse Miembro', 'flavor-chat-ia'),
+                        'titulo' => __('Hacerse Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'unirme',
                         'contenido' => '<h1>Unete como Socio</h1>
 
@@ -368,7 +368,7 @@ class Flavor_Template_Definitions {
                         'parent' => 'socios',
                     ],
                     [
-                        'titulo' => __('Mi Perfil de Miembro', 'flavor-chat-ia'),
+                        'titulo' => __('Mi Perfil de Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'mi-perfil',
                         'contenido' => '<h1>Mi Perfil de Miembro</h1>
 
@@ -376,7 +376,7 @@ class Flavor_Template_Definitions {
                         'parent' => 'socios',
                     ],
                     [
-                        'titulo' => __('Eventos', 'flavor-chat-ia'),
+                        'titulo' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'eventos',
                         'contenido' => '<h1>Eventos de la Comunidad</h1>
 
@@ -384,7 +384,7 @@ class Flavor_Template_Definitions {
                         'parent' => 'comunidad',
                     ],
                     [
-                        'titulo' => __('Crear Evento', 'flavor-chat-ia'),
+                        'titulo' => __('Crear Evento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'crear-evento',
                         'contenido' => '<h1>Organiza un Evento</h1>
 <p>Crea encuentros para la comunidad</p>
@@ -393,7 +393,7 @@ class Flavor_Template_Definitions {
                         'parent' => 'eventos',
                     ],
                     [
-                        'titulo' => __('Foros', 'flavor-chat-ia'),
+                        'titulo' => __('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'foros',
                         'contenido' => '<h1>Foros de la Comunidad</h1>
 <p>Participa en las discusiones</p>
@@ -402,7 +402,7 @@ class Flavor_Template_Definitions {
                         'parent' => 'comunidad',
                     ],
                     [
-                        'titulo' => __('Nuevo Tema', 'flavor-chat-ia'),
+                        'titulo' => __('Nuevo Tema', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'nuevo-tema',
                         'contenido' => '<h1>Crear Nuevo Tema</h1>
 <p>Inicia una nueva discusion</p>
@@ -418,9 +418,9 @@ class Flavor_Template_Definitions {
                             'tipo' => 'hero',
                             'variante' => 'centrado',
                             'datos' => [
-                                'titulo' => __('Nuestra Comunidad', 'flavor-chat-ia'),
-                                'subtitulo' => __('Conecta, participa y crece junto a nosotros', 'flavor-chat-ia'),
-                                'cta_texto' => __('Unirse', 'flavor-chat-ia'),
+                                'titulo' => __('Nuestra Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'subtitulo' => __('Conecta, participa y crece junto a nosotros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'cta_texto' => __('Unirse', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'cta_url' => '#socios',
                             ],
                         ],
@@ -429,10 +429,10 @@ class Flavor_Template_Definitions {
                             'variante' => '4-columnas',
                             'datos' => [
                                 'items' => [
-                                    ['numero' => '250+', 'etiqueta' => __('Miembros', 'flavor-chat-ia')],
-                                    ['numero' => '50+', 'etiqueta' => __('Eventos/ano', 'flavor-chat-ia')],
-                                    ['numero' => '15', 'etiqueta' => __('Anos activos', 'flavor-chat-ia')],
-                                    ['numero' => '100%', 'etiqueta' => __('Participativo', 'flavor-chat-ia')],
+                                    ['numero' => '250+', 'etiqueta' => __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                                    ['numero' => '50+', 'etiqueta' => __('Eventos/ano', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                                    ['numero' => '15', 'etiqueta' => __('Anos activos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                                    ['numero' => '100%', 'etiqueta' => __('Participativo', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                                 ],
                             ],
                         ],
@@ -440,7 +440,7 @@ class Flavor_Template_Definitions {
                             'tipo' => 'grid',
                             'variante' => 'eventos',
                             'datos' => [
-                                'titulo' => __('Proximos Eventos', 'flavor-chat-ia'),
+                                'titulo' => __('Proximos Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'shortcode' => '[flavor_module_listing module="eventos" action="eventos_proximos" columnas="3" limite="6"]',
                             ],
                         ],
@@ -448,9 +448,9 @@ class Flavor_Template_Definitions {
                             'tipo' => 'cta',
                             'variante' => 'con-imagen',
                             'datos' => [
-                                'titulo' => __('Forma parte de nuestra comunidad', 'flavor-chat-ia'),
-                                'descripcion' => __('Hazte miembro y disfruta de todos los beneficios', 'flavor-chat-ia'),
-                                'boton_texto' => __('Hacerse Miembro', 'flavor-chat-ia'),
+                                'titulo' => __('Forma parte de nuestra comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'descripcion' => __('Hazte miembro y disfruta de todos los beneficios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'boton_texto' => __('Hacerse Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'boton_url' => '/comunidad/socios/unirme/',
                             ],
                         ],
@@ -474,7 +474,7 @@ class Flavor_Template_Definitions {
                 ],
                 'demo' => [
                     'disponible' => true,
-                    'descripcion' => __('Incluye 6 eventos de ejemplo y configuracion de tipos de miembros', 'flavor-chat-ia'),
+                    'descripcion' => __('Incluye 6 eventos de ejemplo y configuracion de tipos de miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
 
@@ -482,8 +482,8 @@ class Flavor_Template_Definitions {
             // BANCO DE TIEMPO
             // =========================================================
             'banco_tiempo' => [
-                'nombre' => __('Banco de Tiempo', 'flavor-chat-ia'),
-                'descripcion' => __('Intercambio de servicios por horas entre miembros de la comunidad. Tu tiempo vale igual que el de cualquiera.', 'flavor-chat-ia'),
+                'nombre' => __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Intercambio de servicios por horas entre miembros de la comunidad. Tu tiempo vale igual que el de cualquiera.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-clock',
                 'color' => '#9b59b6',
                 'modulos' => [
@@ -493,14 +493,14 @@ class Flavor_Template_Definitions {
                 ],
                 'paginas' => [
                     [
-                        'titulo' => __('Banco de Tiempo', 'flavor-chat-ia'),
+                        'titulo' => __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'banco-tiempo',
                         'contenido' => '[flavor_landing module="banco-tiempo"]',
                         'parent' => 0,
                         'es_landing' => true,
                     ],
                     [
-                        'titulo' => __('Servicios Disponibles', 'flavor-chat-ia'),
+                        'titulo' => __('Servicios Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'servicios',
                         'contenido' => '<h1>Servicios Disponibles</h1>
 <p>Descubre lo que la comunidad puede ofrecerte</p>
@@ -509,7 +509,7 @@ class Flavor_Template_Definitions {
                         'parent' => 'banco-tiempo',
                     ],
                     [
-                        'titulo' => __('Ofrecer Servicio', 'flavor-chat-ia'),
+                        'titulo' => __('Ofrecer Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'ofrecer',
                         'contenido' => '<h1>Ofrecer un Servicio</h1>
 <p>Comparte tus habilidades con la comunidad</p>
@@ -518,7 +518,7 @@ class Flavor_Template_Definitions {
                         'parent' => 'banco-tiempo',
                     ],
                     [
-                        'titulo' => __('Solicitar Servicio', 'flavor-chat-ia'),
+                        'titulo' => __('Solicitar Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'solicitar',
                         'contenido' => '<h1>Solicitar un Servicio</h1>
 <p>Encuentra ayuda en tu comunidad</p>
@@ -527,7 +527,7 @@ class Flavor_Template_Definitions {
                         'parent' => 'banco-tiempo',
                     ],
                     [
-                        'titulo' => __('Mis Intercambios', 'flavor-chat-ia'),
+                        'titulo' => __('Mis Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'mis-intercambios',
                         'contenido' => '<h1>Mis Intercambios</h1>
 
@@ -535,7 +535,7 @@ class Flavor_Template_Definitions {
                         'parent' => 'banco-tiempo',
                     ],
                     [
-                        'titulo' => __('Mi Saldo', 'flavor-chat-ia'),
+                        'titulo' => __('Mi Saldo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'mi-saldo',
                         'contenido' => '<h1>Mi Saldo de Horas</h1>
 <p>Consulta tu balance de tiempo</p>
@@ -551,9 +551,9 @@ class Flavor_Template_Definitions {
                             'tipo' => 'hero',
                             'variante' => 'gradiente',
                             'datos' => [
-                                'titulo' => __('Banco de Tiempo', 'flavor-chat-ia'),
-                                'subtitulo' => __('Intercambia servicios con tus vecinos. Tu tiempo vale tanto como el de cualquiera.', 'flavor-chat-ia'),
-                                'cta_texto' => __('Ver Servicios', 'flavor-chat-ia'),
+                                'titulo' => __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'subtitulo' => __('Intercambia servicios con tus vecinos. Tu tiempo vale tanto como el de cualquiera.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'cta_texto' => __('Ver Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'cta_url' => '#servicios',
                             ],
                         ],
@@ -561,11 +561,11 @@ class Flavor_Template_Definitions {
                             'tipo' => 'como-funciona',
                             'variante' => 'pasos-horizontales',
                             'datos' => [
-                                'titulo' => __('Como funciona', 'flavor-chat-ia'),
+                                'titulo' => __('Como funciona', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'pasos' => [
-                                    ['numero' => '1', 'titulo' => __('Registrate', 'flavor-chat-ia'), 'descripcion' => __('Crea tu cuenta y recibe horas de bienvenida', 'flavor-chat-ia')],
-                                    ['numero' => '2', 'titulo' => __('Ofrece', 'flavor-chat-ia'), 'descripcion' => __('Publica los servicios que puedes ofrecer', 'flavor-chat-ia')],
-                                    ['numero' => '3', 'titulo' => __('Intercambia', 'flavor-chat-ia'), 'descripcion' => __('Da y recibe servicios, acumulando horas', 'flavor-chat-ia')],
+                                    ['numero' => '1', 'titulo' => __('Registrate', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Crea tu cuenta y recibe horas de bienvenida', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                                    ['numero' => '2', 'titulo' => __('Ofrece', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Publica los servicios que puedes ofrecer', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                                    ['numero' => '3', 'titulo' => __('Intercambia', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Da y recibe servicios, acumulando horas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                                 ],
                             ],
                         ],
@@ -573,7 +573,7 @@ class Flavor_Template_Definitions {
                             'tipo' => 'grid',
                             'variante' => 'servicios',
                             'datos' => [
-                                'titulo' => __('Servicios Populares', 'flavor-chat-ia'),
+                                'titulo' => __('Servicios Populares', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'shortcode' => '[flavor_module_listing module="banco_tiempo" action="listar_servicios" columnas="4" limite="8"]',
                             ],
                         ],
@@ -581,14 +581,14 @@ class Flavor_Template_Definitions {
                             'tipo' => 'categorias',
                             'variante' => 'iconos-grid',
                             'datos' => [
-                                'titulo' => __('Categorias', 'flavor-chat-ia'),
+                                'titulo' => __('Categorias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'items' => [
-                                    ['icono' => 'translation', 'titulo' => __('Idiomas', 'flavor-chat-ia')],
-                                    ['icono' => 'admin-tools', 'titulo' => __('Reparaciones', 'flavor-chat-ia')],
-                                    ['icono' => 'heart', 'titulo' => __('Cuidados', 'flavor-chat-ia')],
-                                    ['icono' => 'laptop', 'titulo' => __('Tecnologia', 'flavor-chat-ia')],
-                                    ['icono' => 'car', 'titulo' => __('Transporte', 'flavor-chat-ia')],
-                                    ['icono' => 'carrot', 'titulo' => __('Jardineria', 'flavor-chat-ia')],
+                                    ['icono' => 'translation', 'titulo' => __('Idiomas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                                    ['icono' => 'admin-tools', 'titulo' => __('Reparaciones', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                                    ['icono' => 'heart', 'titulo' => __('Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                                    ['icono' => 'laptop', 'titulo' => __('Tecnologia', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                                    ['icono' => 'car', 'titulo' => __('Transporte', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                                    ['icono' => 'carrot', 'titulo' => __('Jardineria', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                                 ],
                             ],
                         ],
@@ -596,9 +596,9 @@ class Flavor_Template_Definitions {
                             'tipo' => 'cta',
                             'variante' => 'centrado',
                             'datos' => [
-                                'titulo' => __('Empieza a intercambiar tiempo', 'flavor-chat-ia'),
-                                'descripcion' => __('Ofrece lo que sabes hacer y aprende de los demas', 'flavor-chat-ia'),
-                                'boton_texto' => __('Crear cuenta', 'flavor-chat-ia'),
+                                'titulo' => __('Empieza a intercambiar tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'descripcion' => __('Ofrece lo que sabes hacer y aprende de los demas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'boton_texto' => __('Crear cuenta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'boton_url' => '/registro/',
                             ],
                         ],
@@ -618,7 +618,7 @@ class Flavor_Template_Definitions {
                 ],
                 'demo' => [
                     'disponible' => true,
-                    'descripcion' => __('Incluye 8 servicios de ejemplo en diferentes categorias', 'flavor-chat-ia'),
+                    'descripcion' => __('Incluye 8 servicios de ejemplo en diferentes categorias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
 
@@ -626,8 +626,8 @@ class Flavor_Template_Definitions {
             // BARRIO / VECINDARIO
             // =========================================================
             'barrio' => [
-                'nombre' => __('Barrio / Vecindario', 'flavor-chat-ia'),
-                'descripcion' => __('Plataforma vecinal completa con ayuda mutua, huertos, bicicletas y recursos compartidos entre vecinos.', 'flavor-chat-ia'),
+                'nombre' => __('Barrio / Vecindario', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Plataforma vecinal completa con ayuda mutua, huertos, bicicletas y recursos compartidos entre vecinos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-location',
                 'color' => '#22c55e',
                 'modulos' => [
@@ -637,14 +637,14 @@ class Flavor_Template_Definitions {
                 ],
                 'paginas' => [
                     [
-                        'titulo' => __('Mi Barrio', 'flavor-chat-ia'),
+                        'titulo' => __('Mi Barrio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'mi-barrio',
                         'contenido' => '[flavor_landing module="ayuda-vecinal"]',
                         'parent' => 0,
                         'es_landing' => true,
                     ],
                     [
-                        'titulo' => __('Ayuda Vecinal', 'flavor-chat-ia'),
+                        'titulo' => __('Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'ayuda-vecinal',
                         'contenido' => '<h1>Ayuda Vecinal</h1>
 <p>Red de ayuda mutua entre vecinos</p>
@@ -653,7 +653,7 @@ class Flavor_Template_Definitions {
                         'parent' => 'mi-barrio',
                     ],
                     [
-                        'titulo' => __('Pedir Ayuda', 'flavor-chat-ia'),
+                        'titulo' => __('Pedir Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'pedir',
                         'contenido' => '<h1>Solicitar Ayuda</h1>
 <p>Necesitas ayuda? Tu comunidad esta aqui</p>
@@ -662,7 +662,7 @@ class Flavor_Template_Definitions {
                         'parent' => 'ayuda-vecinal',
                     ],
                     [
-                        'titulo' => __('Ofrecer Ayuda', 'flavor-chat-ia'),
+                        'titulo' => __('Ofrecer Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'ofrecer',
                         'contenido' => '<h1>Ofrecer Ayuda</h1>
 <p>Ayuda a un vecino que lo necesita</p>
@@ -671,7 +671,7 @@ class Flavor_Template_Definitions {
                         'parent' => 'ayuda-vecinal',
                     ],
                     [
-                        'titulo' => __('Huertos Urbanos', 'flavor-chat-ia'),
+                        'titulo' => __('Huertos Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'huertos',
                         'contenido' => '<h1>Huertos Urbanos</h1>
 <p>Gestion de parcelas y cosechas comunitarias</p>
@@ -680,7 +680,7 @@ class Flavor_Template_Definitions {
                         'parent' => 'mi-barrio',
                     ],
                     [
-                        'titulo' => __('Solicitar Parcela', 'flavor-chat-ia'),
+                        'titulo' => __('Solicitar Parcela', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'solicitar-parcela',
                         'contenido' => '<h1>Solicitar Parcela</h1>
 <p>Solicita una parcela en los huertos comunitarios</p>
@@ -689,7 +689,7 @@ class Flavor_Template_Definitions {
                         'parent' => 'huertos',
                     ],
                     [
-                        'titulo' => __('Incidencias', 'flavor-chat-ia'),
+                        'titulo' => __('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'incidencias',
                         'contenido' => '<h1>Incidencias del Barrio</h1>
 <p>Reporta y consulta incidencias</p>
@@ -698,7 +698,7 @@ class Flavor_Template_Definitions {
                         'parent' => 'mi-barrio',
                     ],
                     [
-                        'titulo' => __('Reportar Incidencia', 'flavor-chat-ia'),
+                        'titulo' => __('Reportar Incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'reportar',
                         'contenido' => '<h1>Reportar Incidencia</h1>
 <p>Informa de un problema en tu barrio</p>
@@ -707,7 +707,7 @@ class Flavor_Template_Definitions {
                         'parent' => 'incidencias',
                     ],
                     [
-                        'titulo' => __('Eventos del Barrio', 'flavor-chat-ia'),
+                        'titulo' => __('Eventos del Barrio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'eventos',
                         'contenido' => '<h1>Eventos del Barrio</h1>
 
@@ -722,9 +722,9 @@ class Flavor_Template_Definitions {
                             'tipo' => 'hero',
                             'variante' => 'mapa-fondo',
                             'datos' => [
-                                'titulo' => __('Tu Barrio, Tu Comunidad', 'flavor-chat-ia'),
-                                'subtitulo' => __('Conecta con tus vecinos, comparte recursos y haz barrio', 'flavor-chat-ia'),
-                                'cta_texto' => __('Explorar', 'flavor-chat-ia'),
+                                'titulo' => __('Tu Barrio, Tu Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'subtitulo' => __('Conecta con tus vecinos, comparte recursos y haz barrio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'cta_texto' => __('Explorar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'cta_url' => '#servicios',
                             ],
                         ],
@@ -732,12 +732,12 @@ class Flavor_Template_Definitions {
                             'tipo' => 'servicios-barrio',
                             'variante' => 'cards-iconos',
                             'datos' => [
-                                'titulo' => __('Que puedes hacer', 'flavor-chat-ia'),
+                                'titulo' => __('Que puedes hacer', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'items' => [
-                                    ['icono' => 'heart', 'titulo' => __('Ayuda Vecinal', 'flavor-chat-ia'), 'descripcion' => __('Pide o ofrece ayuda', 'flavor-chat-ia'), 'url' => '/mi-barrio/ayuda-vecinal/'],
-                                    ['icono' => 'carrot', 'titulo' => __('Huertos', 'flavor-chat-ia'), 'descripcion' => __('Cultiva en comunidad', 'flavor-chat-ia'), 'url' => '/mi-barrio/huertos/'],
-                                    ['icono' => 'warning', 'titulo' => __('Incidencias', 'flavor-chat-ia'), 'descripcion' => __('Reporta problemas', 'flavor-chat-ia'), 'url' => '/mi-barrio/incidencias/'],
-                                    ['icono' => 'calendar', 'titulo' => __('Eventos', 'flavor-chat-ia'), 'descripcion' => __('Participa y organiza', 'flavor-chat-ia'), 'url' => '/mi-barrio/eventos/'],
+                                    ['icono' => 'heart', 'titulo' => __('Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Pide o ofrece ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '/mi-barrio/ayuda-vecinal/'],
+                                    ['icono' => 'carrot', 'titulo' => __('Huertos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Cultiva en comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '/mi-barrio/huertos/'],
+                                    ['icono' => 'warning', 'titulo' => __('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Reporta problemas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '/mi-barrio/incidencias/'],
+                                    ['icono' => 'calendar', 'titulo' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Participa y organiza', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '/mi-barrio/eventos/'],
                                 ],
                             ],
                         ],
@@ -745,7 +745,7 @@ class Flavor_Template_Definitions {
                             'tipo' => 'grid',
                             'variante' => 'ayuda-urgente',
                             'datos' => [
-                                'titulo' => __('Solicitudes de Ayuda Recientes', 'flavor-chat-ia'),
+                                'titulo' => __('Solicitudes de Ayuda Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'shortcode' => '[flavor_module_listing module="ayuda_vecinal" action="listar_solicitudes" columnas="2" limite="4"]',
                             ],
                         ],
@@ -753,7 +753,7 @@ class Flavor_Template_Definitions {
                             'tipo' => 'mapa',
                             'variante' => 'interactivo',
                             'datos' => [
-                                'titulo' => __('Mapa del Barrio', 'flavor-chat-ia'),
+                                'titulo' => __('Mapa del Barrio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'capas' => ['huertos', 'incidencias', 'puntos_interes'],
                             ],
                         ],
@@ -761,11 +761,11 @@ class Flavor_Template_Definitions {
                             'tipo' => 'cta',
                             'variante' => 'doble-boton',
                             'datos' => [
-                                'titulo' => __('Participa en tu barrio', 'flavor-chat-ia'),
-                                'descripcion' => __('Haz de tu barrio un lugar mejor para vivir', 'flavor-chat-ia'),
-                                'boton_primario_texto' => __('Pedir Ayuda', 'flavor-chat-ia'),
+                                'titulo' => __('Participa en tu barrio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'descripcion' => __('Haz de tu barrio un lugar mejor para vivir', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'boton_primario_texto' => __('Pedir Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'boton_primario_url' => '/mi-barrio/ayuda-vecinal/pedir/',
-                                'boton_secundario_texto' => __('Ofrecer Ayuda', 'flavor-chat-ia'),
+                                'boton_secundario_texto' => __('Ofrecer Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'boton_secundario_url' => '/mi-barrio/ayuda-vecinal/ofrecer/',
                             ],
                         ],
@@ -794,7 +794,7 @@ class Flavor_Template_Definitions {
                 ],
                 'demo' => [
                     'disponible' => true,
-                    'descripcion' => __('Incluye 5 solicitudes de ayuda, parcelas de huerto y algunas incidencias de ejemplo', 'flavor-chat-ia'),
+                    'descripcion' => __('Incluye 5 solicitudes de ayuda, parcelas de huerto y algunas incidencias de ejemplo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
 
@@ -802,8 +802,8 @@ class Flavor_Template_Definitions {
             // TIENDA ONLINE
             // =========================================================
             'tienda' => [
-                'nombre' => __('Tienda Online', 'flavor-chat-ia'),
-                'descripcion' => __('Tienda online completa con carrito, productos, pedidos y chat de atencion al cliente integrado.', 'flavor-chat-ia'),
+                'nombre' => __('Tienda Online', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Tienda online completa con carrito, productos, pedidos y chat de atencion al cliente integrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-store',
                 'color' => '#00a0d2',
                 'modulos' => [
@@ -813,14 +813,14 @@ class Flavor_Template_Definitions {
                 ],
                 'paginas' => [
                     [
-                        'titulo' => __('Tienda', 'flavor-chat-ia'),
+                        'titulo' => __('Tienda', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'tienda',
                         'contenido' => '[flavor_landing module="tienda"]',
                         'parent' => 0,
                         'es_landing' => true,
                     ],
                     [
-                        'titulo' => __('Productos', 'flavor-chat-ia'),
+                        'titulo' => __('Productos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'productos',
                         'contenido' => '<h1>Nuestros Productos</h1>
 
@@ -828,7 +828,7 @@ class Flavor_Template_Definitions {
                         'parent' => 'tienda',
                     ],
                     [
-                        'titulo' => __('Ofertas', 'flavor-chat-ia'),
+                        'titulo' => __('Ofertas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'ofertas',
                         'contenido' => '<h1>Ofertas Especiales</h1>
 
@@ -836,25 +836,25 @@ class Flavor_Template_Definitions {
                         'parent' => 'tienda',
                     ],
                     [
-                        'titulo' => __('Mi Cuenta', 'flavor-chat-ia'),
+                        'titulo' => __('Mi Cuenta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'mi-cuenta-tienda',
                         'contenido' => '[woocommerce_my_account]',
                         'parent' => 'tienda',
                     ],
                     [
-                        'titulo' => __('Carrito', 'flavor-chat-ia'),
+                        'titulo' => __('Carrito', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'carrito',
                         'contenido' => '[woocommerce_cart]',
                         'parent' => 'tienda',
                     ],
                     [
-                        'titulo' => __('Finalizar Compra', 'flavor-chat-ia'),
+                        'titulo' => __('Finalizar Compra', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'checkout',
                         'contenido' => '[woocommerce_checkout]',
                         'parent' => 'tienda',
                     ],
                     [
-                        'titulo' => __('Mis Pedidos', 'flavor-chat-ia'),
+                        'titulo' => __('Mis Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'mis-pedidos',
                         'contenido' => '<h1>Mis Pedidos</h1>
 
@@ -869,9 +869,9 @@ class Flavor_Template_Definitions {
                             'tipo' => 'hero',
                             'variante' => 'slider-productos',
                             'datos' => [
-                                'titulo' => __('Bienvenido a Nuestra Tienda', 'flavor-chat-ia'),
-                                'subtitulo' => __('Los mejores productos al mejor precio', 'flavor-chat-ia'),
-                                'cta_texto' => __('Ver Productos', 'flavor-chat-ia'),
+                                'titulo' => __('Bienvenido a Nuestra Tienda', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'subtitulo' => __('Los mejores productos al mejor precio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'cta_texto' => __('Ver Productos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'cta_url' => '/tienda/productos/',
                             ],
                         ],
@@ -879,7 +879,7 @@ class Flavor_Template_Definitions {
                             'tipo' => 'categorias',
                             'variante' => 'cards-imagen',
                             'datos' => [
-                                'titulo' => __('Categorias', 'flavor-chat-ia'),
+                                'titulo' => __('Categorias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'shortcode' => '[product_categories number="6" columns="3"]',
                             ],
                         ],
@@ -887,7 +887,7 @@ class Flavor_Template_Definitions {
                             'tipo' => 'productos-destacados',
                             'variante' => 'carrusel',
                             'datos' => [
-                                'titulo' => __('Productos Destacados', 'flavor-chat-ia'),
+                                'titulo' => __('Productos Destacados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'shortcode' => '[products limit="8" columns="4" best_selling="true"]',
                             ],
                         ],
@@ -895,7 +895,7 @@ class Flavor_Template_Definitions {
                             'tipo' => 'ofertas',
                             'variante' => 'banner-countdown',
                             'datos' => [
-                                'titulo' => __('Ofertas Especiales', 'flavor-chat-ia'),
+                                'titulo' => __('Ofertas Especiales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'shortcode' => '[products limit="4" columns="4" on_sale="true"]',
                             ],
                         ],
@@ -903,15 +903,15 @@ class Flavor_Template_Definitions {
                             'tipo' => 'testimonios',
                             'variante' => 'carrusel',
                             'datos' => [
-                                'titulo' => __('Lo que dicen nuestros clientes', 'flavor-chat-ia'),
+                                'titulo' => __('Lo que dicen nuestros clientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             ],
                         ],
                         [
                             'tipo' => 'newsletter',
                             'variante' => 'simple',
                             'datos' => [
-                                'titulo' => __('Suscribete a nuestra newsletter', 'flavor-chat-ia'),
-                                'descripcion' => __('Recibe ofertas exclusivas y novedades', 'flavor-chat-ia'),
+                                'titulo' => __('Suscribete a nuestra newsletter', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'descripcion' => __('Recibe ofertas exclusivas y novedades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             ],
                         ],
                     ],
@@ -931,12 +931,12 @@ class Flavor_Template_Definitions {
                     'chat_interno' => [
                         'mostrar_en_producto' => true,
                         'mostrar_en_carrito' => true,
-                        'mensaje_bienvenida' => __('Hola! Como podemos ayudarte?', 'flavor-chat-ia'),
+                        'mensaje_bienvenida' => __('Hola! Como podemos ayudarte?', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                 ],
                 'demo' => [
                     'disponible' => false,
-                    'descripcion' => __('Requiere WooCommerce activo. Usa el importador de WooCommerce para datos de ejemplo.', 'flavor-chat-ia'),
+                    'descripcion' => __('Requiere WooCommerce activo. Usa el importador de WooCommerce para datos de ejemplo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
 
@@ -944,8 +944,8 @@ class Flavor_Template_Definitions {
             // EMPRESA LOCAL / PYME
             // =========================================================
             'empresa_local' => [
-                'nombre' => __('Empresa Local / PYME', 'flavor-chat-ia'),
-                'descripcion' => __('Herramientas para pequeños negocios y autónomos: gestión de clientes, facturación, presencia online y conexión con el tejido local.', 'flavor-chat-ia'),
+                'nombre' => __('Empresa Local / PYME', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Herramientas para pequeños negocios y autónomos: gestión de clientes, facturación, presencia online y conexión con el tejido local.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-store',
                 'color' => '#0ea5e9',
                 'modulos' => [
@@ -956,7 +956,7 @@ class Flavor_Template_Definitions {
                 'paginas' => [
                     // === PÁGINA PRINCIPAL ===
                     [
-                        'titulo' => __('Inicio', 'flavor-chat-ia'),
+                        'titulo' => __('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'inicio',
                         'contenido' => '[flavor_landing module="empresa"]',
                         'parent' => 0,
@@ -965,51 +965,51 @@ class Flavor_Template_Definitions {
                     ],
                     // === SECCIÓN: NEGOCIO ===
                     [
-                        'titulo' => __('Negocio', 'flavor-chat-ia'),
+                        'titulo' => __('Negocio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'negocio',
-                        'contenido' => '<!-- wp:heading --><h2>' . __('Nuestro Negocio', 'flavor-chat-ia') . '</h2><!-- /wp:heading -->
-<!-- wp:paragraph --><p>' . __('Conoce lo que ofrecemos.', 'flavor-chat-ia') . '</p><!-- /wp:paragraph -->',
+                        'contenido' => '<!-- wp:heading --><h2>' . __('Nuestro Negocio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>' . __('Conoce lo que ofrecemos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p><!-- /wp:paragraph -->',
                         'parent' => 0,
                     ],
                     [
-                        'titulo' => __('Servicios', 'flavor-chat-ia'),
+                        'titulo' => __('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'servicios',
                         'contenido' => '[empresa_servicios]',
                         'parent' => 'negocio',
                     ],
                     [
-                        'titulo' => __('Productos', 'flavor-chat-ia'),
+                        'titulo' => __('Productos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'productos',
                         'contenido' => '[marketplace_listado usuario_actual="admin"]',
                         'parent' => 'negocio',
                     ],
                     [
-                        'titulo' => __('Contacto', 'flavor-chat-ia'),
+                        'titulo' => __('Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'contacto',
                         'contenido' => '[flavor_contacto]',
                         'parent' => 'negocio',
                     ],
                     // === SECCIÓN: GESTIÓN ===
                     [
-                        'titulo' => __('Mi Portal', 'flavor-chat-ia'),
+                        'titulo' => __('Mi Portal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'mi-portal',
                         'contenido' => '[flavor_portal_usuario]',
                         'parent' => 0,
                     ],
                     [
-                        'titulo' => __('Mis Clientes', 'flavor-chat-ia'),
+                        'titulo' => __('Mis Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'mis-clientes',
                         'contenido' => '[clientes_listado]',
                         'parent' => 'mi-portal',
                     ],
                     [
-                        'titulo' => __('Facturación', 'flavor-chat-ia'),
+                        'titulo' => __('Facturación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'facturacion',
                         'contenido' => '[facturas_listado]',
                         'parent' => 'mi-portal',
                     ],
                     [
-                        'titulo' => __('Nuevo Cliente', 'flavor-chat-ia'),
+                        'titulo' => __('Nuevo Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'nuevo-cliente',
                         'contenido' => '[clientes_formulario_alta]',
                         'parent' => 'mi-portal',
@@ -1022,9 +1022,9 @@ class Flavor_Template_Definitions {
                             'tipo' => 'hero',
                             'variante' => 'empresa',
                             'datos' => [
-                                'titulo' => __('Tu Negocio, Más Cerca', 'flavor-chat-ia'),
-                                'subtitulo' => __('Conectamos tu empresa con clientes del territorio', 'flavor-chat-ia'),
-                                'cta_texto' => __('Conoce nuestros servicios', 'flavor-chat-ia'),
+                                'titulo' => __('Tu Negocio, Más Cerca', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'subtitulo' => __('Conectamos tu empresa con clientes del territorio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'cta_texto' => __('Conoce nuestros servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'cta_url' => '/servicios',
                             ],
                         ],
@@ -1032,14 +1032,14 @@ class Flavor_Template_Definitions {
                             'tipo' => 'servicios',
                             'variante' => 'grid',
                             'datos' => [
-                                'titulo' => __('Nuestros Servicios', 'flavor-chat-ia'),
+                                'titulo' => __('Nuestros Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             ],
                         ],
                         [
                             'tipo' => 'contacto',
                             'variante' => 'mapa',
                             'datos' => [
-                                'titulo' => __('Visítanos', 'flavor-chat-ia'),
+                                'titulo' => __('Visítanos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             ],
                         ],
                     ],
@@ -1058,7 +1058,7 @@ class Flavor_Template_Definitions {
                 ],
                 'demo' => [
                     'disponible' => true,
-                    'descripcion' => __('Incluye clientes de ejemplo, facturas modelo y configuración básica de negocio.', 'flavor-chat-ia'),
+                    'descripcion' => __('Incluye clientes de ejemplo, facturas modelo y configuración básica de negocio.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
 
@@ -1066,8 +1066,8 @@ class Flavor_Template_Definitions {
             // EMPRESA ÉTICA / COOPERATIVA
             // =========================================================
             'empresa_etica' => [
-                'nombre' => __('Empresa Ética / Cooperativa', 'flavor-chat-ia'),
-                'descripcion' => __('Para empresas con valores sociales: economía social, cooperativas, B Corps. Incluye transparencia, participación y medición de impacto.', 'flavor-chat-ia'),
+                'nombre' => __('Empresa Ética / Cooperativa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Para empresas con valores sociales: economía social, cooperativas, B Corps. Incluye transparencia, participación y medición de impacto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-heart',
                 'color' => '#10b981',
                 'modulos' => [
@@ -1078,7 +1078,7 @@ class Flavor_Template_Definitions {
                 'paginas' => [
                     // === PÁGINA PRINCIPAL ===
                     [
-                        'titulo' => __('Inicio', 'flavor-chat-ia'),
+                        'titulo' => __('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'inicio',
                         'contenido' => '[flavor_landing module="empresa-etica"]',
                         'parent' => 0,
@@ -1087,71 +1087,71 @@ class Flavor_Template_Definitions {
                     ],
                     // === SECCIÓN: SOBRE NOSOTROS ===
                     [
-                        'titulo' => __('Conocenos', 'flavor-chat-ia'),
+                        'titulo' => __('Conocenos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'conocenos',
-                        'contenido' => '<!-- wp:heading --><h2>' . __('Conoce Nuestra Organización', 'flavor-chat-ia') . '</h2><!-- /wp:heading -->
-<!-- wp:paragraph --><p>' . __('Somos una empresa comprometida con los valores sociales y ambientales.', 'flavor-chat-ia') . '</p><!-- /wp:paragraph -->',
+                        'contenido' => '<!-- wp:heading --><h2>' . __('Conoce Nuestra Organización', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>' . __('Somos una empresa comprometida con los valores sociales y ambientales.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p><!-- /wp:paragraph -->',
                         'parent' => 0,
                     ],
                     [
-                        'titulo' => __('Quiénes Somos', 'flavor-chat-ia'),
+                        'titulo' => __('Quiénes Somos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'quienes-somos',
                         'contenido' => '[empresa_etica_sobre_nosotros]',
                         'parent' => 'conocenos',
                     ],
                     [
-                        'titulo' => __('Nuestro Impacto', 'flavor-chat-ia'),
+                        'titulo' => __('Nuestro Impacto', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'impacto',
                         'contenido' => '[empresa_etica_impacto]',
                         'parent' => 'conocenos',
                     ],
                     [
-                        'titulo' => __('Transparencia', 'flavor-chat-ia'),
+                        'titulo' => __('Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'transparencia',
                         'contenido' => '[transparencia_portal]',
                         'parent' => 'conocenos',
                     ],
                     // === SECCIÓN: PARTICIPACIÓN ===
                     [
-                        'titulo' => __('Participación', 'flavor-chat-ia'),
+                        'titulo' => __('Participación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'participacion',
-                        'contenido' => '<!-- wp:heading --><h2>' . __('Participa en la Cooperativa', 'flavor-chat-ia') . '</h2><!-- /wp:heading -->
-<!-- wp:paragraph --><p>' . __('Tu voz importa. Involúcrate en las decisiones.', 'flavor-chat-ia') . '</p><!-- /wp:paragraph -->',
+                        'contenido' => '<!-- wp:heading --><h2>' . __('Participa en la Cooperativa', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>' . __('Tu voz importa. Involúcrate en las decisiones.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p><!-- /wp:paragraph -->',
                         'parent' => 0,
                     ],
                     [
-                        'titulo' => __('Propuestas', 'flavor-chat-ia'),
+                        'titulo' => __('Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'propuestas',
                         'contenido' => '[participacion_propuestas]',
                         'parent' => 'participacion',
                     ],
                     [
-                        'titulo' => __('Votaciones', 'flavor-chat-ia'),
+                        'titulo' => __('Votaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'votaciones',
                         'contenido' => '[participacion_votaciones]',
                         'parent' => 'participacion',
                     ],
                     [
-                        'titulo' => __('Hazte Miembro', 'flavor-chat-ia'),
+                        'titulo' => __('Hazte Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'hazte-socio',
                         'contenido' => '[socios_formulario_alta]',
                         'parent' => 'participacion',
                     ],
                     // === SECCIÓN: ÁREA MIEMBROS ===
                     [
-                        'titulo' => __('Mi Portal', 'flavor-chat-ia'),
+                        'titulo' => __('Mi Portal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'mi-portal',
                         'contenido' => '[flavor_portal_usuario]',
                         'parent' => 0,
                     ],
                     [
-                        'titulo' => __('Mi Perfil de Miembro', 'flavor-chat-ia'),
+                        'titulo' => __('Mi Perfil de Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'mi-perfil',
                         'contenido' => '[socios_mi_perfil]',
                         'parent' => 'mi-portal',
                     ],
                     [
-                        'titulo' => __('Mis Aportaciones', 'flavor-chat-ia'),
+                        'titulo' => __('Mis Aportaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'mis-aportaciones',
                         'contenido' => '[socios_mis_aportaciones]',
                         'parent' => 'mi-portal',
@@ -1164,9 +1164,9 @@ class Flavor_Template_Definitions {
                             'tipo' => 'hero',
                             'variante' => 'impacto',
                             'datos' => [
-                                'titulo' => __('Empresa con Propósito', 'flavor-chat-ia'),
-                                'subtitulo' => __('Generamos valor económico, social y ambiental', 'flavor-chat-ia'),
-                                'cta_texto' => __('Conoce nuestro impacto', 'flavor-chat-ia'),
+                                'titulo' => __('Empresa con Propósito', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'subtitulo' => __('Generamos valor económico, social y ambiental', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'cta_texto' => __('Conoce nuestro impacto', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'cta_url' => '/impacto',
                             ],
                         ],
@@ -1174,7 +1174,7 @@ class Flavor_Template_Definitions {
                             'tipo' => 'metricas-impacto',
                             'variante' => 'dashboard',
                             'datos' => [
-                                'titulo' => __('Nuestro Impacto en Números', 'flavor-chat-ia'),
+                                'titulo' => __('Nuestro Impacto en Números', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'shortcode' => '[empresa_etica_metricas]',
                             ],
                         ],
@@ -1182,17 +1182,17 @@ class Flavor_Template_Definitions {
                             'tipo' => 'valores',
                             'variante' => 'iconos',
                             'datos' => [
-                                'titulo' => __('Nuestros Valores', 'flavor-chat-ia'),
+                                'titulo' => __('Nuestros Valores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             ],
                         ],
                         [
                             'tipo' => 'cta',
                             'variante' => 'doble',
                             'datos' => [
-                                'titulo' => __('Únete al cambio', 'flavor-chat-ia'),
-                                'cta1_texto' => __('Hazte miembro', 'flavor-chat-ia'),
+                                'titulo' => __('Únete al cambio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'cta1_texto' => __('Hazte miembro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'cta1_url' => '/hazte-socio',
-                                'cta2_texto' => __('Colabora', 'flavor-chat-ia'),
+                                'cta2_texto' => __('Colabora', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'cta2_url' => '/participa',
                             ],
                         ],
@@ -1216,7 +1216,7 @@ class Flavor_Template_Definitions {
                 ],
                 'demo' => [
                     'disponible' => true,
-                    'descripcion' => __('Datos de ejemplo para cooperativa: miembros, asambleas, métricas de impacto y documentos de transparencia.', 'flavor-chat-ia'),
+                    'descripcion' => __('Datos de ejemplo para cooperativa: miembros, asambleas, métricas de impacto y documentos de transparencia.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
 
@@ -1224,8 +1224,8 @@ class Flavor_Template_Definitions {
             // HUB DE EMPRENDEDORES / COWORKING
             // =========================================================
             'hub_emprendedores' => [
-                'nombre' => __('Hub de Emprendedores', 'flavor-chat-ia'),
-                'descripcion' => __('Para espacios de coworking, incubadoras y comunidades de emprendedores. Networking, eventos, recursos compartidos y mentoría.', 'flavor-chat-ia'),
+                'nombre' => __('Hub de Emprendedores', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Para espacios de coworking, incubadoras y comunidades de emprendedores. Networking, eventos, recursos compartidos y mentoría.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-networking',
                 'color' => '#8b5cf6',
                 'modulos' => [
@@ -1236,7 +1236,7 @@ class Flavor_Template_Definitions {
                 'paginas' => [
                     // === PÁGINA PRINCIPAL ===
                     [
-                        'titulo' => __('Inicio', 'flavor-chat-ia'),
+                        'titulo' => __('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'inicio',
                         'contenido' => '[flavor_landing module="hub-emprendedores"]',
                         'parent' => 0,
@@ -1245,103 +1245,103 @@ class Flavor_Template_Definitions {
                     ],
                     // === SECCIÓN: COMUNIDAD ===
                     [
-                        'titulo' => __('Comunidad', 'flavor-chat-ia'),
+                        'titulo' => __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'comunidad',
-                        'contenido' => '<!-- wp:heading --><h2>' . __('Nuestra Comunidad', 'flavor-chat-ia') . '</h2><!-- /wp:heading -->
-<!-- wp:paragraph --><p>' . __('Conecta con otros emprendedores y haz crecer tu red.', 'flavor-chat-ia') . '</p><!-- /wp:paragraph -->',
+                        'contenido' => '<!-- wp:heading --><h2>' . __('Nuestra Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>' . __('Conecta con otros emprendedores y haz crecer tu red.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p><!-- /wp:paragraph -->',
                         'parent' => 0,
                     ],
                     [
-                        'titulo' => __('Directorio', 'flavor-chat-ia'),
+                        'titulo' => __('Directorio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'directorio',
                         'contenido' => '[hub_directorio_emprendedores]',
                         'parent' => 'comunidad',
                     ],
                     [
-                        'titulo' => __('Grupos', 'flavor-chat-ia'),
+                        'titulo' => __('Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'grupos',
                         'contenido' => '[comunidades_directorio]',
                         'parent' => 'comunidad',
                     ],
                     [
-                        'titulo' => __('Networking', 'flavor-chat-ia'),
+                        'titulo' => __('Networking', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'networking',
                         'contenido' => '[red_social_feed]',
                         'parent' => 'comunidad',
                     ],
                     // === SECCIÓN: ACTIVIDADES ===
                     [
-                        'titulo' => __('Actividades', 'flavor-chat-ia'),
+                        'titulo' => __('Actividades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'actividades',
-                        'contenido' => '<!-- wp:heading --><h2>' . __('Eventos y Formación', 'flavor-chat-ia') . '</h2><!-- /wp:heading -->
-<!-- wp:paragraph --><p>' . __('Workshops, pitchs, meetups y más.', 'flavor-chat-ia') . '</p><!-- /wp:paragraph -->',
+                        'contenido' => '<!-- wp:heading --><h2>' . __('Eventos y Formación', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>' . __('Workshops, pitchs, meetups y más.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p><!-- /wp:paragraph -->',
                         'parent' => 0,
                     ],
                     [
-                        'titulo' => __('Eventos', 'flavor-chat-ia'),
+                        'titulo' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'eventos',
                         'contenido' => '[eventos_listado tipo="networking"]',
                         'parent' => 'actividades',
                     ],
                     [
-                        'titulo' => __('Proyectos', 'flavor-chat-ia'),
+                        'titulo' => __('Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'proyectos',
                         'contenido' => '[crowdfunding_proyectos]',
                         'parent' => 'actividades',
                     ],
                     [
-                        'titulo' => __('Cursos', 'flavor-chat-ia'),
+                        'titulo' => __('Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'cursos',
                         'contenido' => '[cursos_listado]',
                         'parent' => 'actividades',
                     ],
                     // === SECCIÓN: RECURSOS ===
                     [
-                        'titulo' => __('Recursos', 'flavor-chat-ia'),
+                        'titulo' => __('Recursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'recursos',
-                        'contenido' => '<!-- wp:heading --><h2>' . __('Recursos Compartidos', 'flavor-chat-ia') . '</h2><!-- /wp:heading -->
-<!-- wp:paragraph --><p>' . __('Espacios, servicios e intercambio entre emprendedores.', 'flavor-chat-ia') . '</p><!-- /wp:paragraph -->',
+                        'contenido' => '<!-- wp:heading --><h2>' . __('Recursos Compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>' . __('Espacios, servicios e intercambio entre emprendedores.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p><!-- /wp:paragraph -->',
                         'parent' => 0,
                     ],
                     [
-                        'titulo' => __('Espacios', 'flavor-chat-ia'),
+                        'titulo' => __('Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'espacios',
                         'contenido' => '[reservas_espacios]',
                         'parent' => 'recursos',
                     ],
                     [
-                        'titulo' => __('Intercambio', 'flavor-chat-ia'),
+                        'titulo' => __('Intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'intercambio',
                         'contenido' => '[banco_tiempo_servicios]',
                         'parent' => 'recursos',
                     ],
                     [
-                        'titulo' => __('Biblioteca', 'flavor-chat-ia'),
+                        'titulo' => __('Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'biblioteca',
                         'contenido' => '[biblioteca_recursos]',
                         'parent' => 'recursos',
                     ],
                     // === SECCIÓN: MI PORTAL ===
                     [
-                        'titulo' => __('Mi Portal', 'flavor-chat-ia'),
+                        'titulo' => __('Mi Portal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'mi-portal',
                         'contenido' => '[flavor_portal_usuario]',
                         'parent' => 0,
                     ],
                     [
-                        'titulo' => __('Mi Perfil', 'flavor-chat-ia'),
+                        'titulo' => __('Mi Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'mi-perfil',
                         'contenido' => '[hub_mi_perfil_emprendedor]',
                         'parent' => 'mi-portal',
                     ],
                     [
-                        'titulo' => __('Mis Reservas', 'flavor-chat-ia'),
+                        'titulo' => __('Mis Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'mis-reservas',
                         'contenido' => '[reservas_mis_reservas]',
                         'parent' => 'mi-portal',
                     ],
                     [
-                        'titulo' => __('Mis Servicios', 'flavor-chat-ia'),
+                        'titulo' => __('Mis Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'mis-servicios',
                         'contenido' => '[banco_tiempo_mis_servicios]',
                         'parent' => 'mi-portal',
@@ -1354,9 +1354,9 @@ class Flavor_Template_Definitions {
                             'tipo' => 'hero',
                             'variante' => 'comunidad',
                             'datos' => [
-                                'titulo' => __('Donde Nacen las Ideas', 'flavor-chat-ia'),
-                                'subtitulo' => __('Comunidad de emprendedores que colaboran, aprenden y crecen juntos', 'flavor-chat-ia'),
-                                'cta_texto' => __('Únete a la comunidad', 'flavor-chat-ia'),
+                                'titulo' => __('Donde Nacen las Ideas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'subtitulo' => __('Comunidad de emprendedores que colaboran, aprenden y crecen juntos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'cta_texto' => __('Únete a la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'cta_url' => '/comunidad',
                             ],
                         ],
@@ -1365,10 +1365,10 @@ class Flavor_Template_Definitions {
                             'variante' => 'contador',
                             'datos' => [
                                 'items' => [
-                                    ['numero' => '150+', 'label' => __('Emprendedores', 'flavor-chat-ia')],
-                                    ['numero' => '45', 'label' => __('Startups', 'flavor-chat-ia')],
-                                    ['numero' => '20+', 'label' => __('Eventos/mes', 'flavor-chat-ia')],
-                                    ['numero' => '€2M', 'label' => __('Inversión captada', 'flavor-chat-ia')],
+                                    ['numero' => '150+', 'label' => __('Emprendedores', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                                    ['numero' => '45', 'label' => __('Startups', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                                    ['numero' => '20+', 'label' => __('Eventos/mes', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                                    ['numero' => '€2M', 'label' => __('Inversión captada', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                                 ],
                             ],
                         ],
@@ -1376,12 +1376,12 @@ class Flavor_Template_Definitions {
                             'tipo' => 'servicios',
                             'variante' => 'iconos',
                             'datos' => [
-                                'titulo' => __('Qué Ofrecemos', 'flavor-chat-ia'),
+                                'titulo' => __('Qué Ofrecemos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'items' => [
-                                    ['icono' => 'dashicons-groups', 'titulo' => __('Networking', 'flavor-chat-ia'), 'descripcion' => __('Conecta con otros emprendedores', 'flavor-chat-ia')],
-                                    ['icono' => 'dashicons-calendar', 'titulo' => __('Eventos', 'flavor-chat-ia'), 'descripcion' => __('Workshops, pitchs y meetups', 'flavor-chat-ia')],
-                                    ['icono' => 'dashicons-building', 'titulo' => __('Espacios', 'flavor-chat-ia'), 'descripcion' => __('Coworking y salas de reuniones', 'flavor-chat-ia')],
-                                    ['icono' => 'dashicons-lightbulb', 'titulo' => __('Mentoría', 'flavor-chat-ia'), 'descripcion' => __('Aprende de expertos', 'flavor-chat-ia')],
+                                    ['icono' => 'dashicons-groups', 'titulo' => __('Networking', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Conecta con otros emprendedores', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                                    ['icono' => 'dashicons-calendar', 'titulo' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Workshops, pitchs y meetups', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                                    ['icono' => 'dashicons-building', 'titulo' => __('Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Coworking y salas de reuniones', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                                    ['icono' => 'dashicons-lightbulb', 'titulo' => __('Mentoría', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Aprende de expertos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                                 ],
                             ],
                         ],
@@ -1389,7 +1389,7 @@ class Flavor_Template_Definitions {
                             'tipo' => 'eventos',
                             'variante' => 'proximos',
                             'datos' => [
-                                'titulo' => __('Próximos Eventos', 'flavor-chat-ia'),
+                                'titulo' => __('Próximos Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'shortcode' => '[eventos_proximos limit="3"]',
                             ],
                         ],
@@ -1397,7 +1397,7 @@ class Flavor_Template_Definitions {
                             'tipo' => 'miembros-destacados',
                             'variante' => 'carrusel',
                             'datos' => [
-                                'titulo' => __('Emprendedores Destacados', 'flavor-chat-ia'),
+                                'titulo' => __('Emprendedores Destacados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'shortcode' => '[hub_emprendedores_destacados]',
                             ],
                         ],
@@ -1405,9 +1405,9 @@ class Flavor_Template_Definitions {
                             'tipo' => 'cta',
                             'variante' => 'simple',
                             'datos' => [
-                                'titulo' => __('¿Tienes una idea?', 'flavor-chat-ia'),
-                                'descripcion' => __('Únete a nuestra comunidad y hazla realidad', 'flavor-chat-ia'),
-                                'cta_texto' => __('Empieza ahora', 'flavor-chat-ia'),
+                                'titulo' => __('¿Tienes una idea?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'descripcion' => __('Únete a nuestra comunidad y hazla realidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'cta_texto' => __('Empieza ahora', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'cta_url' => '/mi-portal',
                             ],
                         ],
@@ -1433,7 +1433,7 @@ class Flavor_Template_Definitions {
                 ],
                 'demo' => [
                     'disponible' => true,
-                    'descripcion' => __('Comunidad de ejemplo con emprendedores, eventos de networking, espacios de coworking e intercambio de servicios.', 'flavor-chat-ia'),
+                    'descripcion' => __('Comunidad de ejemplo con emprendedores, eventos de networking, espacios de coworking e intercambio de servicios.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
 
@@ -1441,8 +1441,8 @@ class Flavor_Template_Definitions {
             // COOPERATIVA DE EMPRESAS
             // =========================================================
             'cooperativa_empresas' => [
-                'nombre' => __('Cooperativa de Empresas', 'flavor-chat-ia'),
-                'descripcion' => __('Cluster de pequeños negocios locales que colaboran: directorio compartido, marketplace conjunto, facturación cruzada y banco de tiempo empresarial.', 'flavor-chat-ia'),
+                'nombre' => __('Cooperativa de Empresas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Cluster de pequeños negocios locales que colaboran: directorio compartido, marketplace conjunto, facturación cruzada y banco de tiempo empresarial.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-store',
                 'color' => '#0d9488',
                 'modulos' => [
@@ -1453,7 +1453,7 @@ class Flavor_Template_Definitions {
                 'paginas' => [
                     // === PÁGINA PRINCIPAL ===
                     [
-                        'titulo' => __('Ecosistema Empresarial', 'flavor-chat-ia'),
+                        'titulo' => __('Ecosistema Empresarial', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'ecosistema',
                         'contenido' => '[flavor_landing module="cooperativa-empresas"]',
                         'parent' => 0,
@@ -1463,32 +1463,32 @@ class Flavor_Template_Definitions {
 
                     // === SECCIÓN: DIRECTORIO Y NEGOCIOS ===
                     [
-                        'titulo' => __('Negocios', 'flavor-chat-ia'),
+                        'titulo' => __('Negocios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'negocios',
-                        'contenido' => '<!-- wp:heading --><h2>' . __('Directorio de Negocios Locales', 'flavor-chat-ia') . '</h2><!-- /wp:heading -->
-<!-- wp:paragraph --><p>' . __('Descubre todos los negocios de nuestra cooperativa.', 'flavor-chat-ia') . '</p><!-- /wp:paragraph -->',
+                        'contenido' => '<!-- wp:heading --><h2>' . __('Directorio de Negocios Locales', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>' . __('Descubre todos los negocios de nuestra cooperativa.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p><!-- /wp:paragraph -->',
                         'parent' => 0,
                     ],
                     [
-                        'titulo' => __('Directorio', 'flavor-chat-ia'),
+                        'titulo' => __('Directorio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'directorio',
                         'contenido' => '[bares_mapa] [bares_listado]',
                         'parent' => 'negocios',
                     ],
                     [
-                        'titulo' => __('Marketplace', 'flavor-chat-ia'),
+                        'titulo' => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'marketplace',
                         'contenido' => '[marketplace_listado categorias="productos,servicios"]',
                         'parent' => 'negocios',
                     ],
                     [
-                        'titulo' => __('Banco de Tiempo', 'flavor-chat-ia'),
+                        'titulo' => __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'banco-tiempo',
                         'contenido' => '[banco_tiempo_servicios]',
                         'parent' => 'negocios',
                     ],
                     [
-                        'titulo' => __('Grupos de Consumo', 'flavor-chat-ia'),
+                        'titulo' => __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'grupos-consumo',
                         'contenido' => '[gc_catalogo]',
                         'parent' => 'negocios',
@@ -1496,26 +1496,26 @@ class Flavor_Template_Definitions {
 
                     // === SECCIÓN: FORMACIÓN Y EVENTOS ===
                     [
-                        'titulo' => __('Actividades', 'flavor-chat-ia'),
+                        'titulo' => __('Actividades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'actividades',
-                        'contenido' => '<!-- wp:heading --><h2>' . __('Eventos y Formación', 'flavor-chat-ia') . '</h2><!-- /wp:heading -->
-<!-- wp:paragraph --><p>' . __('Networking, talleres y eventos para emprendedores.', 'flavor-chat-ia') . '</p><!-- /wp:paragraph -->',
+                        'contenido' => '<!-- wp:heading --><h2>' . __('Eventos y Formación', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>' . __('Networking, talleres y eventos para emprendedores.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p><!-- /wp:paragraph -->',
                         'parent' => 0,
                     ],
                     [
-                        'titulo' => __('Eventos', 'flavor-chat-ia'),
+                        'titulo' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'eventos',
                         'contenido' => '[eventos_calendario] [eventos_proximos]',
                         'parent' => 'actividades',
                     ],
                     [
-                        'titulo' => __('Talleres', 'flavor-chat-ia'),
+                        'titulo' => __('Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'talleres',
                         'contenido' => '[talleres_listado]',
                         'parent' => 'actividades',
                     ],
                     [
-                        'titulo' => __('Crowdfunding', 'flavor-chat-ia'),
+                        'titulo' => __('Crowdfunding', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'crowdfunding',
                         'contenido' => '[crowdfunding_proyectos]',
                         'parent' => 'actividades',
@@ -1523,31 +1523,31 @@ class Flavor_Template_Definitions {
 
                     // === SECCIÓN: ÁREA DE MIEMBRO ===
                     [
-                        'titulo' => __('Mi Portal', 'flavor-chat-ia'),
+                        'titulo' => __('Mi Portal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'mi-portal',
                         'contenido' => '[flavor_user_dashboard]',
                         'parent' => 0,
                     ],
                     [
-                        'titulo' => __('Mi Negocio', 'flavor-chat-ia'),
+                        'titulo' => __('Mi Negocio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'mi-negocio',
                         'contenido' => '[perfil_negocio_editar]',
                         'parent' => 'mi-portal',
                     ],
                     [
-                        'titulo' => __('Mis Clientes', 'flavor-chat-ia'),
+                        'titulo' => __('Mis Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'mis-clientes',
                         'contenido' => '[clientes_listado usuario_actual="true"]',
                         'parent' => 'mi-portal',
                     ],
                     [
-                        'titulo' => __('Facturación', 'flavor-chat-ia'),
+                        'titulo' => __('Facturación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'facturacion',
                         'contenido' => '[facturas_listado usuario_actual="true"]',
                         'parent' => 'mi-portal',
                     ],
                     [
-                        'titulo' => __('Mis Servicios', 'flavor-chat-ia'),
+                        'titulo' => __('Mis Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'mis-servicios',
                         'contenido' => '[marketplace_mis_anuncios] [banco_tiempo_mis_servicios]',
                         'parent' => 'mi-portal',
@@ -1555,76 +1555,76 @@ class Flavor_Template_Definitions {
 
                     // === SECCIÓN: COMUNIDAD ===
                     [
-                        'titulo' => __('Comunidad', 'flavor-chat-ia'),
+                        'titulo' => __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'comunidad',
-                        'contenido' => '<!-- wp:heading --><h2>' . __('Nuestra Comunidad Empresarial', 'flavor-chat-ia') . '</h2><!-- /wp:heading -->
-<!-- wp:paragraph --><p>' . __('Espacio de colaboración entre negocios del territorio.', 'flavor-chat-ia') . '</p><!-- /wp:paragraph -->',
+                        'contenido' => '<!-- wp:heading --><h2>' . __('Nuestra Comunidad Empresarial', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>' . __('Espacio de colaboración entre negocios del territorio.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p><!-- /wp:paragraph -->',
                         'parent' => 0,
                     ],
                     [
-                        'titulo' => __('Grupos de Interés', 'flavor-chat-ia'),
+                        'titulo' => __('Grupos de Interés', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'grupos',
                         'contenido' => '[comunidades_listado]',
                         'parent' => 'comunidad',
                     ],
                     [
-                        'titulo' => __('Transparencia', 'flavor-chat-ia'),
+                        'titulo' => __('Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'transparencia',
                         'contenido' => '[transparencia_portal]',
                         'parent' => 'comunidad',
                     ],
                     [
-                        'titulo' => __('Noticias', 'flavor-chat-ia'),
+                        'titulo' => __('Noticias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'slug' => 'noticias',
                         'contenido' => '[avisos_listado categoria="noticias-empresas"]',
                         'parent' => 'comunidad',
                     ],
                 ],
                 'menu' => [
-                    'nombre' => __('Menu Cooperativa Empresas', 'flavor-chat-ia'),
+                    'nombre' => __('Menu Cooperativa Empresas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'ubicacion' => 'primary',
                     'items' => [
-                        ['titulo' => __('Inicio', 'flavor-chat-ia'), 'url' => '/', 'icono' => 'home'],
+                        ['titulo' => __('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '/', 'icono' => 'home'],
                         [
-                            'titulo' => __('Negocios', 'flavor-chat-ia'),
+                            'titulo' => __('Negocios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             'url' => '/negocios/',
                             'icono' => 'store',
                             'hijos' => [
-                                ['titulo' => __('Directorio', 'flavor-chat-ia'), 'url' => '/negocios/directorio/'],
-                                ['titulo' => __('Marketplace', 'flavor-chat-ia'), 'url' => '/negocios/marketplace/'],
-                                ['titulo' => __('Banco de Tiempo', 'flavor-chat-ia'), 'url' => '/negocios/banco-tiempo/'],
-                                ['titulo' => __('Grupos de Consumo', 'flavor-chat-ia'), 'url' => '/negocios/grupos-consumo/'],
+                                ['titulo' => __('Directorio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '/negocios/directorio/'],
+                                ['titulo' => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '/negocios/marketplace/'],
+                                ['titulo' => __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '/negocios/banco-tiempo/'],
+                                ['titulo' => __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '/negocios/grupos-consumo/'],
                             ],
                         ],
                         [
-                            'titulo' => __('Actividades', 'flavor-chat-ia'),
+                            'titulo' => __('Actividades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             'url' => '/actividades/',
                             'icono' => 'calendar',
                             'hijos' => [
-                                ['titulo' => __('Eventos', 'flavor-chat-ia'), 'url' => '/actividades/eventos/'],
-                                ['titulo' => __('Talleres', 'flavor-chat-ia'), 'url' => '/actividades/talleres/'],
-                                ['titulo' => __('Crowdfunding', 'flavor-chat-ia'), 'url' => '/actividades/crowdfunding/'],
+                                ['titulo' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '/actividades/eventos/'],
+                                ['titulo' => __('Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '/actividades/talleres/'],
+                                ['titulo' => __('Crowdfunding', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '/actividades/crowdfunding/'],
                             ],
                         ],
                         [
-                            'titulo' => __('Mi Portal', 'flavor-chat-ia'),
+                            'titulo' => __('Mi Portal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             'url' => '/mi-portal/',
                             'icono' => 'user',
                             'hijos' => [
-                                ['titulo' => __('Mi Negocio', 'flavor-chat-ia'), 'url' => '/mi-portal/mi-negocio/'],
-                                ['titulo' => __('Mis Clientes', 'flavor-chat-ia'), 'url' => '/mi-portal/mis-clientes/'],
-                                ['titulo' => __('Facturación', 'flavor-chat-ia'), 'url' => '/mi-portal/facturacion/'],
-                                ['titulo' => __('Mis Servicios', 'flavor-chat-ia'), 'url' => '/mi-portal/mis-servicios/'],
+                                ['titulo' => __('Mi Negocio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '/mi-portal/mi-negocio/'],
+                                ['titulo' => __('Mis Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '/mi-portal/mis-clientes/'],
+                                ['titulo' => __('Facturación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '/mi-portal/facturacion/'],
+                                ['titulo' => __('Mis Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '/mi-portal/mis-servicios/'],
                             ],
                         ],
                         [
-                            'titulo' => __('Comunidad', 'flavor-chat-ia'),
+                            'titulo' => __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             'url' => '/comunidad/',
                             'icono' => 'groups',
                             'hijos' => [
-                                ['titulo' => __('Grupos', 'flavor-chat-ia'), 'url' => '/comunidad/grupos/'],
-                                ['titulo' => __('Transparencia', 'flavor-chat-ia'), 'url' => '/comunidad/transparencia/'],
-                                ['titulo' => __('Noticias', 'flavor-chat-ia'), 'url' => '/comunidad/noticias/'],
+                                ['titulo' => __('Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '/comunidad/grupos/'],
+                                ['titulo' => __('Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '/comunidad/transparencia/'],
+                                ['titulo' => __('Noticias', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '/comunidad/noticias/'],
                             ],
                         ],
                     ],
@@ -1637,9 +1637,9 @@ class Flavor_Template_Definitions {
                             'tipo' => 'hero',
                             'variante' => 'imagen-fondo',
                             'datos' => [
-                                'titulo' => __('Cooperativa de Empresas Locales', 'flavor-chat-ia'),
-                                'subtitulo' => __('Unidos para fortalecer la economía del territorio', 'flavor-chat-ia'),
-                                'cta_texto' => __('Ver Negocios', 'flavor-chat-ia'),
+                                'titulo' => __('Cooperativa de Empresas Locales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'subtitulo' => __('Unidos para fortalecer la economía del territorio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'cta_texto' => __('Ver Negocios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'cta_url' => '/negocios/directorio/',
                                 'imagen' => '',
                             ],
@@ -1649,10 +1649,10 @@ class Flavor_Template_Definitions {
                             'variante' => 'contador',
                             'datos' => [
                                 'items' => [
-                                    ['numero' => '50+', 'label' => __('Negocios', 'flavor-chat-ia')],
-                                    ['numero' => '200+', 'label' => __('Productos', 'flavor-chat-ia')],
-                                    ['numero' => '1000+', 'label' => __('Clientes', 'flavor-chat-ia')],
-                                    ['numero' => '€100K', 'label' => __('Facturado', 'flavor-chat-ia')],
+                                    ['numero' => '50+', 'label' => __('Negocios', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                                    ['numero' => '200+', 'label' => __('Productos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                                    ['numero' => '1000+', 'label' => __('Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                                    ['numero' => '€100K', 'label' => __('Facturado', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                                 ],
                             ],
                         ],
@@ -1660,12 +1660,12 @@ class Flavor_Template_Definitions {
                             'tipo' => 'features',
                             'variante' => 'iconos-4-columnas',
                             'datos' => [
-                                'titulo' => __('Qué Ofrecemos', 'flavor-chat-ia'),
+                                'titulo' => __('Qué Ofrecemos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'items' => [
-                                    ['icono' => 'store', 'titulo' => __('Directorio', 'flavor-chat-ia'), 'descripcion' => __('Todos los negocios locales en un mapa', 'flavor-chat-ia')],
-                                    ['icono' => 'cart', 'titulo' => __('Marketplace', 'flavor-chat-ia'), 'descripcion' => __('Compra productos y servicios locales', 'flavor-chat-ia')],
-                                    ['icono' => 'clock', 'titulo' => __('Banco de Tiempo', 'flavor-chat-ia'), 'descripcion' => __('Intercambia servicios entre negocios', 'flavor-chat-ia')],
-                                    ['icono' => 'groups', 'titulo' => __('Comunidad', 'flavor-chat-ia'), 'descripcion' => __('Networking y colaboración empresarial', 'flavor-chat-ia')],
+                                    ['icono' => 'store', 'titulo' => __('Directorio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Todos los negocios locales en un mapa', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                                    ['icono' => 'cart', 'titulo' => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Compra productos y servicios locales', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                                    ['icono' => 'clock', 'titulo' => __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Intercambia servicios entre negocios', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                                    ['icono' => 'groups', 'titulo' => __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN), 'descripcion' => __('Networking y colaboración empresarial', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                                 ],
                             ],
                         ],
@@ -1673,7 +1673,7 @@ class Flavor_Template_Definitions {
                             'tipo' => 'grid',
                             'variante' => 'negocios-destacados',
                             'datos' => [
-                                'titulo' => __('Negocios Destacados', 'flavor-chat-ia'),
+                                'titulo' => __('Negocios Destacados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'shortcode' => '[bares_destacados limite="6"]',
                             ],
                         ],
@@ -1681,7 +1681,7 @@ class Flavor_Template_Definitions {
                             'tipo' => 'listing',
                             'variante' => 'productos',
                             'datos' => [
-                                'titulo' => __('Últimos Productos', 'flavor-chat-ia'),
+                                'titulo' => __('Últimos Productos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'shortcode' => '[marketplace_ultimos limite="4"]',
                             ],
                         ],
@@ -1689,7 +1689,7 @@ class Flavor_Template_Definitions {
                             'tipo' => 'eventos',
                             'variante' => 'proximos',
                             'datos' => [
-                                'titulo' => __('Próximos Eventos', 'flavor-chat-ia'),
+                                'titulo' => __('Próximos Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'shortcode' => '[eventos_proximos limit="3"]',
                             ],
                         ],
@@ -1697,9 +1697,9 @@ class Flavor_Template_Definitions {
                             'tipo' => 'cta',
                             'variante' => 'centrado',
                             'datos' => [
-                                'titulo' => __('¿Tienes un negocio local?', 'flavor-chat-ia'),
-                                'descripcion' => __('Únete a nuestra cooperativa y forma parte de la economía del territorio', 'flavor-chat-ia'),
-                                'boton_texto' => __('Inscribir mi negocio', 'flavor-chat-ia'),
+                                'titulo' => __('¿Tienes un negocio local?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'descripcion' => __('Únete a nuestra cooperativa y forma parte de la economía del territorio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'boton_texto' => __('Inscribir mi negocio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'boton_url' => '/mi-portal/mi-negocio/',
                             ],
                         ],
@@ -1725,7 +1725,7 @@ class Flavor_Template_Definitions {
                 ],
                 'demo' => [
                     'disponible' => true,
-                    'descripcion' => __('Incluye 10 negocios de ejemplo, productos en marketplace, servicios en banco de tiempo y eventos de networking.', 'flavor-chat-ia'),
+                    'descripcion' => __('Incluye 10 negocios de ejemplo, productos en marketplace, servicios en banco de tiempo y eventos de networking.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
         ];

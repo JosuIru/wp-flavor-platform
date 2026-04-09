@@ -2286,7 +2286,7 @@ class Flavor_VBP_Canvas {
             }
             wp_reset_postdata();
         } else {
-            $html .= '<p class="vbp-blog__empty">' . esc_html__( 'No se encontraron artículos.', 'flavor-chat-ia' ) . '</p>';
+            $html .= '<p class="vbp-blog__empty">' . esc_html__( 'No se encontraron artículos.', FLAVOR_PLATFORM_TEXT_DOMAIN ) . '</p>';
         }
 
         $html .= '</div>'; // .vbp-blog__grid
@@ -2307,8 +2307,8 @@ class Flavor_VBP_Canvas {
 
         $titulo        = $data['titulo'] ?? '';
         $subtitulo     = $data['subtitulo'] ?? '';
-        $boton_texto   = $data['boton_texto'] ?? __( 'Enviar mensaje', 'flavor-chat-ia' );
-        $mensaje_exito = $data['mensaje_exito'] ?? __( '¡Mensaje enviado correctamente!', 'flavor-chat-ia' );
+        $boton_texto   = $data['boton_texto'] ?? __( 'Enviar mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN );
+        $mensaje_exito = $data['mensaje_exito'] ?? __( '¡Mensaje enviado correctamente!', FLAVOR_PLATFORM_TEXT_DOMAIN );
 
         // ID único para el formulario
         $form_id = 'vbp-contact-' . substr( md5( wp_json_encode( $elemento ) ), 0, 8 );
@@ -2339,19 +2339,19 @@ class Flavor_VBP_Canvas {
 
         // Campos visibles
         $html .= '<div class="vbp-contact__field">';
-        $html .= '<label for="' . esc_attr( $form_id ) . '-name">' . esc_html__( 'Nombre', 'flavor-chat-ia' ) . ' <span class="required">*</span></label>';
+        $html .= '<label for="' . esc_attr( $form_id ) . '-name">' . esc_html__( 'Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN ) . ' <span class="required">*</span></label>';
         $html .= '<input type="text" id="' . esc_attr( $form_id ) . '-name" name="name" required>';
         $html .= '<span class="vbp-field-error"></span>';
         $html .= '</div>';
 
         $html .= '<div class="vbp-contact__field">';
-        $html .= '<label for="' . esc_attr( $form_id ) . '-email">' . esc_html__( 'Email', 'flavor-chat-ia' ) . ' <span class="required">*</span></label>';
+        $html .= '<label for="' . esc_attr( $form_id ) . '-email">' . esc_html__( 'Email', FLAVOR_PLATFORM_TEXT_DOMAIN ) . ' <span class="required">*</span></label>';
         $html .= '<input type="email" id="' . esc_attr( $form_id ) . '-email" name="email" required>';
         $html .= '<span class="vbp-field-error"></span>';
         $html .= '</div>';
 
         $html .= '<div class="vbp-contact__field">';
-        $html .= '<label for="' . esc_attr( $form_id ) . '-message">' . esc_html__( 'Mensaje', 'flavor-chat-ia' ) . ' <span class="required">*</span></label>';
+        $html .= '<label for="' . esc_attr( $form_id ) . '-message">' . esc_html__( 'Mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN ) . ' <span class="required">*</span></label>';
         $html .= '<textarea id="' . esc_attr( $form_id ) . '-message" name="message" rows="4" required></textarea>';
         $html .= '<span class="vbp-field-error"></span>';
         $html .= '</div>';
@@ -2366,7 +2366,7 @@ class Flavor_VBP_Canvas {
         $html .= '<svg class="vbp-spinner" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">';
         $html .= '<path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>';
         $html .= '</svg>';
-        $html .= esc_html__( 'Enviando...', 'flavor-chat-ia' );
+        $html .= esc_html__( 'Enviando...', FLAVOR_PLATFORM_TEXT_DOMAIN );
         $html .= '</span>';
         $html .= '</button>';
 
@@ -2378,7 +2378,7 @@ class Flavor_VBP_Canvas {
         $html .= '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>';
         $html .= '<polyline points="22 4 12 14.01 9 11.01"/>';
         $html .= '</svg>';
-        $html .= '<h3>' . esc_html__( '¡Gracias por tu mensaje!', 'flavor-chat-ia' ) . '</h3>';
+        $html .= '<h3>' . esc_html__( '¡Gracias por tu mensaje!', FLAVOR_PLATFORM_TEXT_DOMAIN ) . '</h3>';
         $html .= '<p>' . esc_html( $mensaje_exito ) . '</p>';
         $html .= '</div>';
 
@@ -2770,14 +2770,14 @@ class Flavor_VBP_Canvas {
 
         if ( ! $widget_id ) {
             return '<div class="vbp-global-widget vbp-global-widget--error">' .
-                   esc_html__( 'Widget global no configurado', 'flavor-chat-ia' ) .
+                   esc_html__( 'Widget global no configurado', FLAVOR_PLATFORM_TEXT_DOMAIN ) .
                    '</div>';
         }
 
         // Obtener el widget global
         if ( ! class_exists( 'Flavor_VBP_Global_Widgets' ) ) {
             return '<div class="vbp-global-widget vbp-global-widget--error">' .
-                   esc_html__( 'Sistema de widgets globales no disponible', 'flavor-chat-ia' ) .
+                   esc_html__( 'Sistema de widgets globales no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN ) .
                    '</div>';
         }
 
@@ -2786,7 +2786,7 @@ class Flavor_VBP_Canvas {
 
         if ( ! $widget_data ) {
             return '<div class="vbp-global-widget vbp-global-widget--error">' .
-                   esc_html__( 'Widget global no encontrado', 'flavor-chat-ia' ) .
+                   esc_html__( 'Widget global no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ) .
                    '</div>';
         }
 
@@ -3138,7 +3138,7 @@ class Flavor_VBP_Canvas {
         $titulo  = $data['titulo'] ?? '';
         $campos  = $data['campos'] ?? array();
         $checkbox_text = $data['checkbox'] ?? '';
-        $boton_texto = $data['boton_texto'] ?? __( 'Enviar', 'flavor-chat-ia' );
+        $boton_texto = $data['boton_texto'] ?? __( 'Enviar', FLAVOR_PLATFORM_TEXT_DOMAIN );
 
         $estilos_css = $this->generar_estilos_elemento( $estilos );
 
@@ -3168,7 +3168,7 @@ class Flavor_VBP_Canvas {
                 $html .= '<textarea class="vbp-form__input vbp-form__textarea" name="' . esc_attr( $nombre ) . '" id="' . esc_attr( $nombre ) . '"' . ( $requerido ? ' required' : '' ) . '></textarea>';
             } elseif ( 'select' === $tipo ) {
                 $html .= '<select class="vbp-form__input vbp-form__select" name="' . esc_attr( $nombre ) . '" id="' . esc_attr( $nombre ) . '"' . ( $requerido ? ' required' : '' ) . '>';
-                $html .= '<option value="">' . __( 'Seleccionar...', 'flavor-chat-ia' ) . '</option>';
+                $html .= '<option value="">' . __( 'Seleccionar...', FLAVOR_PLATFORM_TEXT_DOMAIN ) . '</option>';
                 foreach ( $opciones as $opcion ) {
                     $html .= '<option value="' . esc_attr( $opcion ) . '">' . esc_html( $opcion ) . '</option>';
                 }
@@ -3332,7 +3332,7 @@ class Flavor_VBP_Canvas {
         if ( $titulo ) {
             $html .= '<h3 class="vbp-section__title"' . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . esc_html( $titulo ) . '</h3>';
         }
-        $html .= '<p class="vbp-placeholder__message">' . __( 'Activa el módulo Red Social para ver el feed.', 'flavor-chat-ia' ) . '</p>';
+        $html .= '<p class="vbp-placeholder__message">' . __( 'Activa el módulo Red Social para ver el feed.', FLAVOR_PLATFORM_TEXT_DOMAIN ) . '</p>';
         $html .= '</div>';
 
         return $html;
@@ -3521,7 +3521,7 @@ class Flavor_VBP_Canvas {
     private function render_contact_form_column( $content ) {
         $titulo      = $content['titulo'] ?? '';
         $campos      = $content['campos'] ?? array();
-        $boton_texto = $content['boton_texto'] ?? __( 'Enviar', 'flavor-chat-ia' );
+        $boton_texto = $content['boton_texto'] ?? __( 'Enviar', FLAVOR_PLATFORM_TEXT_DOMAIN );
 
         $html = '<div class="vbp-contact-form">';
 
@@ -3550,7 +3550,7 @@ class Flavor_VBP_Canvas {
                 case 'select':
                     $opciones = $campo['opciones'] ?? array();
                     $html .= '<select name="' . esc_attr( $name ) . '" ' . $req_attr . '>';
-                    $html .= '<option value="">' . esc_html__( 'Selecciona...', 'flavor-chat-ia' ) . '</option>';
+                    $html .= '<option value="">' . esc_html__( 'Selecciona...', FLAVOR_PLATFORM_TEXT_DOMAIN ) . '</option>';
                     foreach ( $opciones as $opcion ) {
                         $html .= '<option value="' . esc_attr( $opcion ) . '">' . esc_html( $opcion ) . '</option>';
                     }
@@ -3823,7 +3823,7 @@ class Flavor_VBP_Canvas {
                     $html .= '<p class="vbp-carousel__description"' . $this->get_editor_contenteditable_path_attr( 'items.' . $indice . '.descripcion' ) . '>' . wp_kses_post( $item['descripcion'] ) . '</p>';
                 }
                 if ( ! empty( $item['enlace_url'] ) ) {
-                    $texto_enlace = ! empty( $item['enlace_texto'] ) ? $item['enlace_texto'] : __( 'Ver más', 'flavor-chat-ia' );
+                    $texto_enlace = ! empty( $item['enlace_texto'] ) ? $item['enlace_texto'] : __( 'Ver más', FLAVOR_PLATFORM_TEXT_DOMAIN );
                     $html .= '<a href="' . esc_url( $item['enlace_url'] ) . '" class="vbp-carousel__link"' . $this->get_editor_link_path_attr( 'items.' . $indice . '.enlace_texto' ) . '>' . esc_html( $texto_enlace ) . '</a>';
                 }
                 $html .= '</div>';
@@ -3834,10 +3834,10 @@ class Flavor_VBP_Canvas {
 
         // Flechas de navegación
         if ( $mostrar_flechas ) {
-            $html .= '<button type="button" class="vbp-carousel__arrow vbp-carousel__arrow--prev" aria-label="' . esc_attr__( 'Anterior', 'flavor-chat-ia' ) . '">';
+            $html .= '<button type="button" class="vbp-carousel__arrow vbp-carousel__arrow--prev" aria-label="' . esc_attr__( 'Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN ) . '">';
             $html .= '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>';
             $html .= '</button>';
-            $html .= '<button type="button" class="vbp-carousel__arrow vbp-carousel__arrow--next" aria-label="' . esc_attr__( 'Siguiente', 'flavor-chat-ia' ) . '">';
+            $html .= '<button type="button" class="vbp-carousel__arrow vbp-carousel__arrow--next" aria-label="' . esc_attr__( 'Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN ) . '">';
             $html .= '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>';
             $html .= '</button>';
         }
@@ -3847,7 +3847,7 @@ class Flavor_VBP_Canvas {
             $html .= '<div class="vbp-carousel__dots">';
             foreach ( $items as $indice => $item ) {
                 $activo = 0 === $indice ? ' vbp-carousel__dot--active' : '';
-                $html .= '<button type="button" class="vbp-carousel__dot' . $activo . '" data-index="' . esc_attr( $indice ) . '" aria-label="' . esc_attr( sprintf( __( 'Ir al slide %d', 'flavor-chat-ia' ), $indice + 1 ) ) . '"></button>';
+                $html .= '<button type="button" class="vbp-carousel__dot' . $activo . '" data-index="' . esc_attr( $indice ) . '" aria-label="' . esc_attr( sprintf( __( 'Ir al slide %d', FLAVOR_PLATFORM_TEXT_DOMAIN ), $indice + 1 ) ) . '"></button>';
             }
             $html .= '</div>';
         }
@@ -3908,7 +3908,7 @@ class Flavor_VBP_Canvas {
             if ( ! empty( $tab['icono'] ) ) {
                 $html .= '<span class="vbp-tabs__icon material-icons">' . esc_html( $tab['icono'] ) . '</span>';
             }
-            $html .= '<span class="vbp-tabs__label"' . $this->get_editor_contenteditable_path_attr( 'tabs.' . $indice . '.titulo' ) . '>' . esc_html( $tab['titulo'] ?? __( 'Tab', 'flavor-chat-ia' ) ) . '</span>';
+            $html .= '<span class="vbp-tabs__label"' . $this->get_editor_contenteditable_path_attr( 'tabs.' . $indice . '.titulo' ) . '>' . esc_html( $tab['titulo'] ?? __( 'Tab', FLAVOR_PLATFORM_TEXT_DOMAIN ) ) . '</span>';
             $html .= '</button>';
         }
         $html .= '</div>';

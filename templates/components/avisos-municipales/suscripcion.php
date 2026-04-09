@@ -17,57 +17,57 @@
 if (!defined('ABSPATH')) exit;
 
 // Extraer variables con valores por defecto
-$titulo_formulario = isset($args['titulo']) ? $args['titulo'] : __('Suscríbete a Avisos Municipales', 'flavor-chat-ia');
-$descripcion_formulario = isset($args['descripcion']) ? $args['descripcion'] : __('Recibe notificaciones sobre los temas que te interesan directamente en tu correo o teléfono.', 'flavor-chat-ia');
+$titulo_formulario = isset($args['titulo']) ? $args['titulo'] : __('Suscríbete a Avisos Municipales', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$descripcion_formulario = isset($args['descripcion']) ? $args['descripcion'] : __('Recibe notificaciones sobre los temas que te interesan directamente en tu correo o teléfono.', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $mostrar_campo_telefono = isset($args['mostrar_telefono']) ? (bool) $args['mostrar_telefono'] : true;
-$texto_boton_enviar = isset($args['texto_boton']) ? $args['texto_boton'] : __('Suscribirme', 'flavor-chat-ia');
+$texto_boton_enviar = isset($args['texto_boton']) ? $args['texto_boton'] : __('Suscribirme', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $clase_css_adicional = isset($args['clase_adicional']) ? sanitize_html_class($args['clase_adicional']) : '';
 
 // Categorías de avisos municipales (datos de demostración si no hay datos reales)
 $categorias_avisos = isset($args['categorias']) && !empty($args['categorias']) ? $args['categorias'] : array(
     array(
         'id' => 'obras-publicas',
-        'nombre' => __('Obras Públicas', 'flavor-chat-ia'),
+        'nombre' => __('Obras Públicas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-hammer',
-        'descripcion' => __('Cortes de calles, obras en curso, desvíos de tráfico', 'flavor-chat-ia')
+        'descripcion' => __('Cortes de calles, obras en curso, desvíos de tráfico', FLAVOR_PLATFORM_TEXT_DOMAIN)
     ),
     array(
         'id' => 'emergencias',
-        'nombre' => __('Emergencias', 'flavor-chat-ia'),
+        'nombre' => __('Emergencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-warning',
-        'descripcion' => __('Alertas climáticas, emergencias sanitarias, avisos urgentes', 'flavor-chat-ia')
+        'descripcion' => __('Alertas climáticas, emergencias sanitarias, avisos urgentes', FLAVOR_PLATFORM_TEXT_DOMAIN)
     ),
     array(
         'id' => 'servicios-municipales',
-        'nombre' => __('Servicios Municipales', 'flavor-chat-ia'),
+        'nombre' => __('Servicios Municipales', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-admin-multisite',
-        'descripcion' => __('Cambios en horarios, nuevos servicios, mantenimiento', 'flavor-chat-ia')
+        'descripcion' => __('Cambios en horarios, nuevos servicios, mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN)
     ),
     array(
         'id' => 'cultura-eventos',
-        'nombre' => __('Cultura y Eventos', 'flavor-chat-ia'),
+        'nombre' => __('Cultura y Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-tickets-alt',
-        'descripcion' => __('Festivales, conciertos, actividades culturales', 'flavor-chat-ia')
+        'descripcion' => __('Festivales, conciertos, actividades culturales', FLAVOR_PLATFORM_TEXT_DOMAIN)
     ),
     array(
         'id' => 'medio-ambiente',
-        'nombre' => __('Medio Ambiente', 'flavor-chat-ia'),
+        'nombre' => __('Medio Ambiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-palmtree',
-        'descripcion' => __('Calidad del aire, reciclaje, espacios verdes', 'flavor-chat-ia')
+        'descripcion' => __('Calidad del aire, reciclaje, espacios verdes', FLAVOR_PLATFORM_TEXT_DOMAIN)
     ),
     array(
         'id' => 'transporte',
-        'nombre' => __('Transporte Público', 'flavor-chat-ia'),
+        'nombre' => __('Transporte Público', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-car',
-        'descripcion' => __('Cambios en rutas, horarios, incidencias', 'flavor-chat-ia')
+        'descripcion' => __('Cambios en rutas, horarios, incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN)
     )
 );
 
 // Frecuencias de notificación
 $frecuencias_notificacion = isset($args['frecuencias']) && !empty($args['frecuencias']) ? $args['frecuencias'] : array(
-    'inmediato' => __('Inmediato (cada aviso)', 'flavor-chat-ia'),
-    'diario' => __('Resumen diario', 'flavor-chat-ia'),
-    'semanal' => __('Resumen semanal', 'flavor-chat-ia')
+    'inmediato' => __('Inmediato (cada aviso)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'diario' => __('Resumen diario', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'semanal' => __('Resumen semanal', FLAVOR_PLATFORM_TEXT_DOMAIN)
 );
 
 // Generar ID único para el formulario
@@ -94,13 +94,13 @@ $id_formulario = 'flavor-suscripcion-avisos-' . wp_rand(1000, 9999);
         <div class="flavor-form-seccion">
             <h3 class="flavor-form-seccion-titulo">
                 <span class="dashicons dashicons-admin-users"></span>
-                <?php esc_html_e('Datos de contacto', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Datos de contacto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
 
             <div class="flavor-form-grid">
                 <div class="flavor-form-campo">
                     <label for="<?php echo esc_attr($id_formulario); ?>-nombre" class="flavor-form-label">
-                        <?php esc_html_e('Nombre completo', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Nombre completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <span class="flavor-required">*</span>
                     </label>
                     <input
@@ -109,13 +109,13 @@ $id_formulario = 'flavor-suscripcion-avisos-' . wp_rand(1000, 9999);
                         name="nombre_suscriptor"
                         class="flavor-form-input"
                         required
-                        placeholder="<?php esc_attr_e('Tu nombre', 'flavor-chat-ia'); ?>"
+                        placeholder="<?php esc_attr_e('Tu nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                     >
                 </div>
 
                 <div class="flavor-form-campo">
                     <label for="<?php echo esc_attr($id_formulario); ?>-email" class="flavor-form-label">
-                        <?php esc_html_e('Correo electrónico', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Correo electrónico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <span class="flavor-required">*</span>
                     </label>
                     <input
@@ -124,25 +124,25 @@ $id_formulario = 'flavor-suscripcion-avisos-' . wp_rand(1000, 9999);
                         name="email_suscriptor"
                         class="flavor-form-input"
                         required
-                        placeholder="<?php esc_attr_e('tu@email.com', 'flavor-chat-ia'); ?>"
+                        placeholder="<?php esc_attr_e('tu@email.com', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                     >
                 </div>
 
                 <?php if ($mostrar_campo_telefono) : ?>
                 <div class="flavor-form-campo">
                     <label for="<?php echo esc_attr($id_formulario); ?>-telefono" class="flavor-form-label">
-                        <?php esc_html_e('Teléfono móvil', 'flavor-chat-ia'); ?>
-                        <span class="flavor-opcional"><?php esc_html_e('(opcional)', 'flavor-chat-ia'); ?></span>
+                        <?php esc_html_e('Teléfono móvil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
+                        <span class="flavor-opcional"><?php esc_html_e('(opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </label>
                     <input
                         type="tel"
                         id="<?php echo esc_attr($id_formulario); ?>-telefono"
                         name="telefono_suscriptor"
                         class="flavor-form-input"
-                        placeholder="<?php esc_attr_e('+34 600 000 000', 'flavor-chat-ia'); ?>"
+                        placeholder="<?php esc_attr_e('+34 600 000 000', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                     >
                     <span class="flavor-form-ayuda">
-                        <?php esc_html_e('Para recibir SMS en caso de emergencias', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Para recibir SMS en caso de emergencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                 </div>
                 <?php endif; ?>
@@ -153,10 +153,10 @@ $id_formulario = 'flavor-suscripcion-avisos-' . wp_rand(1000, 9999);
         <div class="flavor-form-seccion">
             <h3 class="flavor-form-seccion-titulo">
                 <span class="dashicons dashicons-category"></span>
-                <?php esc_html_e('Categorías de interés', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Categorías de interés', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <p class="flavor-form-seccion-descripcion">
-                <?php esc_html_e('Selecciona las categorías sobre las que deseas recibir avisos:', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Selecciona las categorías sobre las que deseas recibir avisos:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
 
             <div class="flavor-categorias-grid">
@@ -190,11 +190,11 @@ $id_formulario = 'flavor-suscripcion-avisos-' . wp_rand(1000, 9999);
 
             <div class="flavor-categorias-acciones">
                 <button type="button" class="flavor-btn-link flavor-seleccionar-todas">
-                    <?php esc_html_e('Seleccionar todas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Seleccionar todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <span class="flavor-separator">|</span>
                 <button type="button" class="flavor-btn-link flavor-deseleccionar-todas">
-                    <?php esc_html_e('Deseleccionar todas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Deseleccionar todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </div>
@@ -203,7 +203,7 @@ $id_formulario = 'flavor-suscripcion-avisos-' . wp_rand(1000, 9999);
         <div class="flavor-form-seccion">
             <h3 class="flavor-form-seccion-titulo">
                 <span class="dashicons dashicons-clock"></span>
-                <?php esc_html_e('Frecuencia de notificaciones', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Frecuencia de notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
 
             <div class="flavor-frecuencias-lista">
@@ -237,7 +237,7 @@ $id_formulario = 'flavor-suscripcion-avisos-' . wp_rand(1000, 9999);
                 <span class="flavor-checkbox-text">
                     <?php
                     printf(
-                        esc_html__('Acepto la %spolítica de privacidad%s y autorizo el tratamiento de mis datos para recibir avisos municipales.', 'flavor-chat-ia'),
+                        esc_html__('Acepto la %spolítica de privacidad%s y autorizo el tratamiento de mis datos para recibir avisos municipales.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         '<a href="#" class="flavor-link" target="_blank">',
                         '</a>'
                     );
@@ -723,18 +723,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (categoriasSeleccionadas.length === 0) {
                 contenedorMensaje.className = 'flavor-form-mensaje flavor-error';
-                contenedorMensaje.textContent = '<?php echo esc_js(__('Por favor, selecciona al menos una categoría de avisos.', 'flavor-chat-ia')); ?>';
+                contenedorMensaje.textContent = '<?php echo esc_js(__('Por favor, selecciona al menos una categoría de avisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
                 return;
             }
 
             // Deshabilitar botón durante el envío
             botonEnviar.disabled = true;
-            botonEnviar.querySelector('.flavor-btn-texto').textContent = '<?php echo esc_js(__('Enviando...', 'flavor-chat-ia')); ?>';
+            botonEnviar.querySelector('.flavor-btn-texto').textContent = '<?php echo esc_js(__('Enviando...', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
 
             // Simular envío (aquí se integraría con AJAX real)
             setTimeout(function() {
                 contenedorMensaje.className = 'flavor-form-mensaje flavor-success';
-                contenedorMensaje.textContent = '<?php echo esc_js(__('¡Suscripción realizada con éxito! Recibirás un correo de confirmación en breve.', 'flavor-chat-ia')); ?>';
+                contenedorMensaje.textContent = '<?php echo esc_js(__('¡Suscripción realizada con éxito! Recibirás un correo de confirmación en breve.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>';
 
                 botonEnviar.disabled = false;
                 botonEnviar.querySelector('.flavor-btn-texto').textContent = '<?php echo esc_js($texto_boton_enviar); ?>';

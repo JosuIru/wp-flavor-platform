@@ -55,7 +55,7 @@ class Flavor_GC_Export {
      */
     public function exportar_pedidos_filtrado() {
         if (!current_user_can('manage_options')) {
-            wp_die(__('No autorizado', 'flavor-chat-ia'));
+            wp_die(__('No autorizado', 'flavor-platform'));
         }
 
         check_admin_referer('gc_exportar_pedidos_filtrado');
@@ -128,7 +128,7 @@ class Flavor_GC_Export {
      */
     public function exportar_consolidado() {
         if (!current_user_can('manage_options')) {
-            wp_die(__('No autorizado', 'flavor-chat-ia'));
+            wp_die(__('No autorizado', 'flavor-platform'));
         }
 
         check_admin_referer('gc_exportar_consolidado');
@@ -137,7 +137,7 @@ class Flavor_GC_Export {
         $formato = sanitize_text_field($_GET['formato'] ?? 'excel');
 
         if (!$ciclo_id) {
-            wp_die(__('Ciclo no especificado', 'flavor-chat-ia'));
+            wp_die(__('Ciclo no especificado', 'flavor-platform'));
         }
 
         $datos = $this->obtener_datos_consolidado($ciclo_id);
@@ -297,7 +297,7 @@ class Flavor_GC_Export {
             <div class="header">
                 <h1><?php echo esc_html($sitio_nombre); ?></h1>
                 <p class="meta">
-                    <strong><?php echo esc_html__('Consolidado de Pedidos', 'flavor-chat-ia'); ?></strong><br>
+                    <strong><?php echo esc_html__('Consolidado de Pedidos', 'flavor-platform'); ?></strong><br>
                     Ciclo: <?php echo esc_html($datos['ciclo']->post_title); ?><br>
                     Fecha de exportación: <?php echo date_i18n('d/m/Y H:i'); ?>
                 </p>
@@ -312,11 +312,11 @@ class Flavor_GC_Export {
                 <table>
                     <thead>
                         <tr>
-                            <th><?php echo esc_html__('Producto', 'flavor-chat-ia'); ?></th>
-                            <th class="text-right"><?php echo esc_html__('Cantidad', 'flavor-chat-ia'); ?></th>
-                            <th><?php echo esc_html__('Unidad', 'flavor-chat-ia'); ?></th>
-                            <th class="text-right"><?php echo esc_html__('Precio Unit.', 'flavor-chat-ia'); ?></th>
-                            <th class="text-right"><?php echo esc_html__('Total', 'flavor-chat-ia'); ?></th>
+                            <th><?php echo esc_html__('Producto', 'flavor-platform'); ?></th>
+                            <th class="text-right"><?php echo esc_html__('Cantidad', 'flavor-platform'); ?></th>
+                            <th><?php echo esc_html__('Unidad', 'flavor-platform'); ?></th>
+                            <th class="text-right"><?php echo esc_html__('Precio Unit.', 'flavor-platform'); ?></th>
+                            <th class="text-right"><?php echo esc_html__('Total', 'flavor-platform'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -342,7 +342,7 @@ class Flavor_GC_Export {
 
             <table>
                 <tr class="grand-total">
-                    <td colspan="4"><strong><?php echo esc_html__('TOTAL GENERAL', 'flavor-chat-ia'); ?></strong></td>
+                    <td colspan="4"><strong><?php echo esc_html__('TOTAL GENERAL', 'flavor-platform'); ?></strong></td>
                     <td class="text-right"><strong><?php echo number_format($total_general, 2, ',', '.'); ?>€</strong></td>
                 </tr>
             </table>
@@ -361,7 +361,7 @@ class Flavor_GC_Export {
      */
     public function exportar_pedidos() {
         if (!current_user_can('manage_options')) {
-            wp_die(__('No autorizado', 'flavor-chat-ia'));
+            wp_die(__('No autorizado', 'flavor-platform'));
         }
 
         check_admin_referer('gc_exportar_pedidos');
@@ -471,7 +471,7 @@ class Flavor_GC_Export {
      */
     public function exportar_consumidores() {
         if (!current_user_can('manage_options')) {
-            wp_die(__('No autorizado', 'flavor-chat-ia'));
+            wp_die(__('No autorizado', 'flavor-platform'));
         }
 
         check_admin_referer('gc_exportar_consumidores');
@@ -536,7 +536,7 @@ class Flavor_GC_Export {
      */
     public function exportar_suscripciones() {
         if (!current_user_can('manage_options')) {
-            wp_die(__('No autorizado', 'flavor-chat-ia'));
+            wp_die(__('No autorizado', 'flavor-platform'));
         }
 
         check_admin_referer('gc_exportar_suscripciones');
@@ -597,7 +597,7 @@ class Flavor_GC_Export {
         check_ajax_referer('gc_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No autorizado', 'flavor-platform')]);
         }
 
         $tipo = sanitize_text_field($_POST['tipo'] ?? '');

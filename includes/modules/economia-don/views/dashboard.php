@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 
 // Verificar permisos
 if (!current_user_can('manage_options') && !current_user_can('flavor_ver_dashboard')) {
-    wp_die(__('No tienes permisos suficientes para acceder a esta página.', 'flavor-chat-ia'));
+    wp_die(__('No tienes permisos suficientes para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
 }
 
 global $wpdb;
@@ -114,9 +114,9 @@ if ($cpt_exists) {
 
 // Definir estados para badges
 $estados_don = [
-    'disponible' => ['nombre' => __('Disponible', 'flavor-chat-ia'), 'color' => 'success'],
-    'reservado' => ['nombre' => __('Reservado', 'flavor-chat-ia'), 'color' => 'warning'],
-    'entregado' => ['nombre' => __('Entregado', 'flavor-chat-ia'), 'color' => 'info'],
+    'disponible' => ['nombre' => __('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'success'],
+    'reservado' => ['nombre' => __('Reservado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'warning'],
+    'entregado' => ['nombre' => __('Entregado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'info'],
 ];
 ?>
 
@@ -126,14 +126,14 @@ $estados_don = [
         <div class="dm-header__title">
             <span class="dashicons dashicons-heart" style="font-size: 28px; color: #ec4899;"></span>
             <div>
-                <h1><?php esc_html_e('Dashboard de Economía del Don', 'flavor-chat-ia'); ?></h1>
-                <p><?php esc_html_e('Dar y recibir sin esperar nada a cambio', 'flavor-chat-ia'); ?></p>
+                <h1><?php esc_html_e('Dashboard de Economía del Don', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
+                <p><?php esc_html_e('Dar y recibir sin esperar nada a cambio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
         <div class="dm-header__actions">
             <a href="<?php echo esc_url(admin_url('post-new.php?post_type=ed_don')); ?>" class="dm-btn dm-btn--primary">
                 <span class="dashicons dashicons-plus-alt2"></span>
-                <?php esc_html_e('Nuevo Don', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Nuevo Don', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>
@@ -141,32 +141,32 @@ $estados_don = [
     <?php if (!$tablas_disponibles) : ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <?php esc_html_e('El módulo Economía del Don no está disponible porque falta el tipo de contenido requerido.', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('El módulo Economía del Don no está disponible porque falta el tipo de contenido requerido.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </div>
     <?php endif; ?>
 
     <!-- Quick Links -->
     <div class="dm-quick-links">
-        <h3 class="dm-quick-links__title"><?php esc_html_e('Acceso Rápido', 'flavor-chat-ia'); ?></h3>
+        <h3 class="dm-quick-links__title"><?php esc_html_e('Acceso Rápido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         <div class="dm-quick-links__grid">
             <a href="<?php echo esc_url(admin_url('admin.php?page=economia-don-listado')); ?>" class="dm-quick-links__item dm-quick-links__item--pink">
                 <span class="dashicons dashicons-heart"></span>
-                <?php esc_html_e('Ver Dones', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver Dones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=economia-don-solicitudes')); ?>" class="dm-quick-links__item dm-quick-links__item--warning">
                 <span class="dashicons dashicons-email"></span>
-                <?php esc_html_e('Solicitudes', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <?php if ($solicitudesPendientes > 0) : ?>
                     <span class="dm-badge dm-badge--error"><?php echo esc_html($solicitudesPendientes); ?></span>
                 <?php endif; ?>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=economia-don-gratitudes')); ?>" class="dm-quick-links__item dm-quick-links__item--purple">
                 <span class="dashicons dashicons-smiley"></span>
-                <?php esc_html_e('Muro de Gratitud', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Muro de Gratitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=economia-don-estadisticas')); ?>" class="dm-quick-links__item dm-quick-links__item--info">
                 <span class="dashicons dashicons-chart-bar"></span>
-                <?php esc_html_e('Estadísticas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>
@@ -179,8 +179,8 @@ $estados_don = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($donesDisponibles)); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Dones Disponibles', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php esc_html_e('para compartir', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Dones Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('para compartir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -190,8 +190,8 @@ $estados_don = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($donesEntregados)); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Dones Entregados', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php esc_html_e('compartidos', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Dones Entregados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -201,8 +201,8 @@ $estados_don = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($solicitudesPendientes)); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Solicitudes Pendientes', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php esc_html_e('por revisar', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Solicitudes Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('por revisar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -212,8 +212,8 @@ $estados_don = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($totalGratitudes)); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Gratitudes', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php esc_html_e('compartidas', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Gratitudes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('compartidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
     </div>
@@ -227,7 +227,7 @@ $estados_don = [
                 <div class="dm-card__header">
                     <h3>
                         <span class="dashicons dashicons-category"></span>
-                        <?php esc_html_e('Dones por Categoría', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Dones por Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                 </div>
                 <?php if (!empty($donesPorCategoria)) : ?>
@@ -243,7 +243,7 @@ $estados_don = [
                 <?php else : ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-category"></span>
-                    <p><?php esc_html_e('No hay categorías configuradas.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay categorías configuradas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <?php endif; ?>
             </div>
@@ -253,27 +253,27 @@ $estados_don = [
                 <div class="dm-card__header">
                     <h3>
                         <span class="dashicons dashicons-clock"></span>
-                        <?php esc_html_e('Dones Recientes', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Dones Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=economia-don-listado')); ?>" class="dm-btn dm-btn--ghost dm-btn--sm">
-                        <?php esc_html_e('Ver todos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
                 <?php if (!empty($donesRecientes)) : ?>
                 <table class="dm-table">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('Don', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Donante', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Don', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Donante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($donesRecientes as $don) :
                             $estado = get_post_meta($don->ID, '_ed_estado', true) ?: 'disponible';
                             $donante = get_userdata($don->post_author);
-                            $donante_nombre = $donante ? $donante->display_name : __('Anónimo', 'flavor-chat-ia');
+                            $donante_nombre = $donante ? $donante->display_name : __('Anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN);
                             $estado_info = $estados_don[$estado] ?? ['nombre' => $estado, 'color' => 'secondary'];
                         ?>
                         <tr>
@@ -298,7 +298,7 @@ $estados_don = [
                 <?php else : ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-heart"></span>
-                    <p><?php esc_html_e('No hay dones publicados todavía.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay dones publicados todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <?php endif; ?>
             </div>
@@ -311,7 +311,7 @@ $estados_don = [
                 <div class="dm-card__header">
                     <h3>
                         <span class="dashicons dashicons-format-quote"></span>
-                        <?php esc_html_e('Últimas Gratitudes', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Últimas Gratitudes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                 </div>
                 <?php if (!empty($gratitudesRecientes)) : ?>
@@ -329,7 +329,7 @@ $estados_don = [
                 <?php else : ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-smiley"></span>
-                    <p><?php esc_html_e('No hay gratitudes compartidas.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay gratitudes compartidas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <?php endif; ?>
             </div>
@@ -339,26 +339,26 @@ $estados_don = [
                 <div class="dm-card__header">
                     <h3>
                         <span class="dashicons dashicons-star-filled"></span>
-                        <?php esc_html_e('Donantes Destacados', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Donantes Destacados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                 </div>
                 <?php if (!empty($donantesMasActivos)) : ?>
                 <ol class="dm-ranking">
                     <?php foreach ($donantesMasActivos as $donante) :
                         $usuario = get_userdata($donante->post_author);
-                        $nombre = $usuario ? $usuario->display_name : __('Usuario', 'flavor-chat-ia');
+                        $nombre = $usuario ? $usuario->display_name : __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN);
                         $total = $donante->total_dones;
                     ?>
                     <li>
                         <span><?php echo esc_html($nombre); ?></span>
-                        <strong><?php echo esc_html(sprintf(_n('%d don', '%d dones', $total, 'flavor-chat-ia'), $total)); ?></strong>
+                        <strong><?php echo esc_html(sprintf(_n('%d don', '%d dones', $total, FLAVOR_PLATFORM_TEXT_DOMAIN), $total)); ?></strong>
                     </li>
                     <?php endforeach; ?>
                 </ol>
                 <?php else : ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-groups"></span>
-                    <p><?php esc_html_e('No hay donantes registrados.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay donantes registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <?php endif; ?>
             </div>

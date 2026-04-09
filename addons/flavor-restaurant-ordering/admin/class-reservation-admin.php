@@ -139,7 +139,7 @@ class Flavor_Reservation_Admin {
                 <div class="filter-group">
                     <label><?php esc_html_e('Estado:', 'flavor-restaurant-ordering'); ?></label>
                     <select id="filter-status" class="status-filter">
-                        <option value=""><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <option value="pending">Pendientes</option>
                         <option value="confirmed">Confirmadas</option>
                         <option value="cancelled">Canceladas</option>

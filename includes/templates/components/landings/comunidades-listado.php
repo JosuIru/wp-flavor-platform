@@ -39,7 +39,7 @@ $pagina_comunidad = home_url('/comunidad/');
 ?>
 <section class="<?php echo esc_attr($component_classes ?? ''); ?> py-16 bg-gray-50">
     <div class="max-w-6xl mx-auto px-6">
-        <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center"><?php echo esc_html($titulo ?? __('Comunidades Activas', 'flavor-chat-ia')); ?></h2>
+        <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center"><?php echo esc_html($titulo ?? __('Comunidades Activas', 'flavor-platform')); ?></h2>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <?php if ($tiene_comunidades_reales): ?>
@@ -61,7 +61,7 @@ $pagina_comunidad = home_url('/comunidad/');
                                 <?php echo esc_html($categoria_nombre); ?>
                             </span>
                             <?php if (($comunidad->tipo ?? 'publica') === 'privada'): ?>
-                            <span class="text-gray-400" title="<?php esc_attr_e('Privada', 'flavor-chat-ia'); ?>">🔒</span>
+                            <span class="text-gray-400" title="<?php esc_attr_e('Privada', 'flavor-platform'); ?>">🔒</span>
                             <?php endif; ?>
                         </div>
                         <h3 class="text-lg font-bold text-gray-800 mb-2">
@@ -71,9 +71,9 @@ $pagina_comunidad = home_url('/comunidad/');
                         </h3>
                         <p class="text-gray-600 text-sm mb-4"><?php echo esc_html(wp_trim_words($comunidad->descripcion ?? '', 15)); ?></p>
                         <div class="flex items-center justify-between text-sm text-gray-500">
-                            <span>👥 <?php echo esc_html($comunidad->total_miembros ?? 0); ?> <?php _e('miembros', 'flavor-chat-ia'); ?></span>
+                            <span>👥 <?php echo esc_html($comunidad->total_miembros ?? 0); ?> <?php _e('miembros', 'flavor-platform'); ?></span>
                             <a href="<?php echo esc_url($comunidad_url); ?>" class="text-rose-600 font-medium hover:underline">
-                                <?php _e('Ver mas', 'flavor-chat-ia'); ?> →
+                                <?php _e('Ver mas', 'flavor-platform'); ?> →
                             </a>
                         </div>
                     </div>
@@ -92,17 +92,17 @@ $pagina_comunidad = home_url('/comunidad/');
                                 <?php echo esc_html($comunidad['tipo']); ?>
                             </span>
                             <?php if ($comunidad['verificada']): ?>
-                            <span class="text-green-500" title="<?php esc_attr_e('Verificada', 'flavor-chat-ia'); ?>">✓</span>
+                            <span class="text-green-500" title="<?php esc_attr_e('Verificada', 'flavor-platform'); ?>">✓</span>
                             <?php endif; ?>
                         </div>
                         <h3 class="text-lg font-bold text-gray-800 mb-2">
                             <?php echo esc_html($comunidad['nombre']); ?>
-                            <span class="text-xs text-gray-400 font-normal">(<?php _e('Demo', 'flavor-chat-ia'); ?>)</span>
+                            <span class="text-xs text-gray-400 font-normal">(<?php _e('Demo', 'flavor-platform'); ?>)</span>
                         </h3>
                         <p class="text-gray-600 text-sm mb-4"><?php echo esc_html($comunidad['descripcion']); ?></p>
                         <div class="flex items-center justify-between text-sm text-gray-500">
-                            <span>👥 <?php echo esc_html($comunidad['miembros']); ?> <?php _e('miembros', 'flavor-chat-ia'); ?></span>
-                            <span class="text-gray-400 text-xs italic"><?php _e('Proximamente', 'flavor-chat-ia'); ?></span>
+                            <span>👥 <?php echo esc_html($comunidad['miembros']); ?> <?php _e('miembros', 'flavor-platform'); ?></span>
+                            <span class="text-gray-400 text-xs italic"><?php _e('Proximamente', 'flavor-platform'); ?></span>
                         </div>
                     </div>
                 </article>
@@ -112,7 +112,7 @@ $pagina_comunidad = home_url('/comunidad/');
 
         <div class="text-center mt-8">
             <a href="<?php echo esc_url(home_url('/comunidades/')); ?>" class="inline-block bg-rose-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-rose-600 transition-colors">
-                <?php _e('Ver todas las comunidades', 'flavor-chat-ia'); ?>
+                <?php _e('Ver todas las comunidades', 'flavor-platform'); ?>
             </a>
         </div>
     </div>

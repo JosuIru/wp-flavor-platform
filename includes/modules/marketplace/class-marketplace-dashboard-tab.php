@@ -27,21 +27,21 @@ class Flavor_Marketplace_Dashboard_Tab {
 
     public function registrar_tabs($tabs) {
         $tabs['marketplace-resumen'] = [
-            'label' => __('Marketplace', 'flavor-chat-ia'),
+            'label' => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'cart',
             'callback' => [$this, 'render_tab_resumen'],
             'orden' => 50,
         ];
 
         $tabs['marketplace-mis-anuncios'] = [
-            'label' => __('Mis Anuncios', 'flavor-chat-ia'),
+            'label' => __('Mis Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'megaphone',
             'callback' => [$this, 'render_tab_mis_anuncios'],
             'orden' => 51,
         ];
 
         $tabs['marketplace-favoritos'] = [
-            'label' => __('Favoritos', 'flavor-chat-ia'),
+            'label' => __('Favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'heart',
             'callback' => [$this, 'render_tab_favoritos'],
             'orden' => 52,
@@ -89,8 +89,8 @@ class Flavor_Marketplace_Dashboard_Tab {
         ?>
         <div class="flavor-panel flavor-marketplace-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-cart"></span> <?php esc_html_e('Marketplace Vecinal', 'flavor-chat-ia'); ?></h2>
-                <p class="flavor-panel-subtitle"><?php esc_html_e('Compra, vende e intercambia con tus vecinos', 'flavor-chat-ia'); ?></p>
+                <h2><span class="dashicons dashicons-cart"></span> <?php esc_html_e('Marketplace Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <p class="flavor-panel-subtitle"><?php esc_html_e('Compra, vende e intercambia con tus vecinos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <div class="flavor-panel-kpis">
@@ -98,28 +98,28 @@ class Flavor_Marketplace_Dashboard_Tab {
                     <span class="flavor-kpi-icon dashicons dashicons-tag"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($total_anuncios); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Anuncios Activos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Anuncios Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icon dashicons dashicons-megaphone"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($mis_anuncios); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Mis Anuncios', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Mis Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-primary">
                     <span class="flavor-kpi-icon dashicons dashicons-heart"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($mis_favoritos); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Favoritos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-success">
                     <span class="flavor-kpi-icon dashicons dashicons-yes-alt"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($mis_ventas); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Vendidos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Vendidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -127,11 +127,11 @@ class Flavor_Marketplace_Dashboard_Tab {
             <div class="flavor-panel-actions">
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', 'publicar')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt2"></span>
-                    <?php esc_html_e('Publicar Anuncio', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Publicar Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', '')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-search"></span>
-                    <?php esc_html_e('Explorar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Explorar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -141,7 +141,7 @@ class Flavor_Marketplace_Dashboard_Tab {
     public function render_tab_mis_anuncios() {
         $user_id = get_current_user_id();
         if (!$user_id) {
-            echo '<p>' . esc_html__('Debes iniciar sesión.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -159,19 +159,19 @@ class Flavor_Marketplace_Dashboard_Tab {
         ?>
         <div class="flavor-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-megaphone"></span> <?php esc_html_e('Mis Anuncios', 'flavor-chat-ia'); ?></h2>
+                <h2><span class="dashicons dashicons-megaphone"></span> <?php esc_html_e('Mis Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', 'publicar')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt2"></span>
-                    <?php esc_html_e('Nuevo', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
             <?php if (empty($anuncios)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-megaphone"></span>
-                    <p><?php esc_html_e('No has publicado ningún anuncio.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No has publicado ningún anuncio.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', 'publicar')); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php esc_html_e('Publicar mi primer anuncio', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Publicar mi primer anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -191,7 +191,7 @@ class Flavor_Marketplace_Dashboard_Tab {
                                 <?php if ($anuncio->precio > 0): ?>
                                     <p class="flavor-precio"><?php echo number_format_i18n($anuncio->precio, 2); ?> €</p>
                                 <?php elseif ($anuncio->es_gratuito): ?>
-                                    <p class="flavor-precio flavor-gratis"><?php esc_html_e('Gratis', 'flavor-chat-ia'); ?></p>
+                                    <p class="flavor-precio flavor-gratis"><?php esc_html_e('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                 <?php endif; ?>
                                 <p class="flavor-text-muted">
                                     <span class="dashicons dashicons-visibility"></span>
@@ -202,10 +202,10 @@ class Flavor_Marketplace_Dashboard_Tab {
                             </div>
                             <div class="flavor-card-footer">
                                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', 'detalle') . '?anuncio_id=' . $anuncio->id); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
-                                    <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                                 <a href="<?php echo esc_url(add_query_arg(['tab' => 'publicar', 'editar' => $anuncio->id], Flavor_Chat_Helpers::get_action_url('marketplace', ''))); ?>" class="flavor-btn flavor-btn-sm flavor-btn-secondary">
-                                    <?php esc_html_e('Editar', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </div>
                         </div>
@@ -219,7 +219,7 @@ class Flavor_Marketplace_Dashboard_Tab {
     public function render_tab_favoritos() {
         $user_id = get_current_user_id();
         if (!$user_id) {
-            echo '<p>' . esc_html__('Debes iniciar sesión.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -241,15 +241,15 @@ class Flavor_Marketplace_Dashboard_Tab {
         ?>
         <div class="flavor-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-heart"></span> <?php esc_html_e('Mis Favoritos', 'flavor-chat-ia'); ?></h2>
+                <h2><span class="dashicons dashicons-heart"></span> <?php esc_html_e('Mis Favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
 
             <?php if (empty($favoritos)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-heart"></span>
-                    <p><?php esc_html_e('No tienes anuncios favoritos.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No tienes anuncios favoritos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', '')); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php esc_html_e('Explorar marketplace', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Explorar marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -269,7 +269,7 @@ class Flavor_Marketplace_Dashboard_Tab {
                             </div>
                             <div class="flavor-card-footer">
                                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', 'detalle') . '?anuncio_id=' . $anuncio->id); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
-                                    <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </div>
                         </div>

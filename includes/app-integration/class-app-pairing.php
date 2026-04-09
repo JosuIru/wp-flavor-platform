@@ -87,7 +87,7 @@ class Flavor_App_Pairing {
         if (!$user_id) {
             return new WP_Error(
                 'no_auth',
-                __('Debes iniciar sesión', 'flavor-chat-ia'),
+                __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 401]
             );
         }
@@ -129,7 +129,7 @@ class Flavor_App_Pairing {
         if (false === $token_data) {
             return new WP_Error(
                 'invalid_token',
-                __('Token inválido o expirado', 'flavor-chat-ia'),
+                __('Token inválido o expirado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 401]
             );
         }
@@ -192,7 +192,7 @@ class Flavor_App_Pairing {
         if (empty($auth_header)) {
             return new WP_Error(
                 'no_token',
-                __('No se proporcionó token de sesión', 'flavor-chat-ia'),
+                __('No se proporcionó token de sesión', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 400]
             );
         }
@@ -202,7 +202,7 @@ class Flavor_App_Pairing {
         if (count($token_parts) !== 2 || $token_parts[0] !== 'Bearer') {
             return new WP_Error(
                 'invalid_format',
-                __('Formato de token inválido', 'flavor-chat-ia'),
+                __('Formato de token inválido', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 400]
             );
         }
@@ -224,7 +224,7 @@ class Flavor_App_Pairing {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => __('Sesión revocada correctamente', 'flavor-chat-ia'),
+            'message' => __('Sesión revocada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 

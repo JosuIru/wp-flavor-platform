@@ -431,17 +431,17 @@ class Flavor_Mi_Red_Social {
             'restNonce' => wp_create_nonce('wp_rest'),
             'userId' => $this->current_user_id,
             'i18n' => [
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
-                'error' => __('Error al cargar', 'flavor-chat-ia'),
-                'sinResultados' => __('No hay resultados', 'flavor-chat-ia'),
-                'publicado' => __('Publicado correctamente', 'flavor-chat-ia'),
-                'comentarioEnviado' => __('Comentario enviado', 'flavor-chat-ia'),
-                'meGusta' => __('Me gusta', 'flavor-chat-ia'),
-                'comentar' => __('Comentar', 'flavor-chat-ia'),
-                'compartir' => __('Compartir', 'flavor-chat-ia'),
-                'guardar' => __('Guardar', 'flavor-chat-ia'),
-                'verMas' => __('Ver más', 'flavor-chat-ia'),
-                'cargarMas' => __('Cargar más', 'flavor-chat-ia'),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al cargar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sinResultados' => __('No hay resultados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'publicado' => __('Publicado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'comentarioEnviado' => __('Comentario enviado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'meGusta' => __('Me gusta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'comentar' => __('Comentar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'compartir' => __('Compartir', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'guardar' => __('Guardar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'verMas' => __('Ver más', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cargarMas' => __('Cargar más', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'contentTypes' => $this->content_types,
         ]);
@@ -959,7 +959,7 @@ class Flavor_Mi_Red_Social {
                 'origen' => 'radio',
                 'autor' => [
                     'id' => $prog->autor_id ?? 0,
-                    'nombre' => $prog->autor_nombre ?? __('Radio Comunitaria', 'flavor-chat-ia'),
+                    'nombre' => $prog->autor_nombre ?? __('Radio Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'avatar' => !empty($prog->autor_id) ? get_avatar_url($prog->autor_id, ['size' => 48]) : '',
                 ],
                 'contenido' => [
@@ -1221,13 +1221,12 @@ class Flavor_Mi_Red_Social {
         // Proyectos recientes de mis colectivos
         if ($this->tabla_existe($tabla_proyectos)) {
             $proyectos = $wpdb->get_results($wpdb->prepare(
-                "SELECT p.*, c.nombre as colectivo_nombre, u.display_name as autor_nombre
+                "SELECT p.*, p.titulo as nombre, c.nombre as colectivo_nombre, u.display_name as autor_nombre
                  FROM {$tabla_proyectos} p
                  LEFT JOIN {$tabla_colectivos} c ON p.colectivo_id = c.id
-                 LEFT JOIN {$wpdb->users} u ON p.creador_id = u.ID
+                 LEFT JOIN {$wpdb->users} u ON p.responsable_id = u.ID
                  WHERE p.colectivo_id IN ({$placeholders})
-                 AND p.estado != 'borrador'
-                 ORDER BY p.fecha_creacion DESC
+                 ORDER BY p.created_at DESC
                  LIMIT %d",
                 array_merge($mis_colectivos, [$limite])
             ));
@@ -1238,9 +1237,9 @@ class Flavor_Mi_Red_Social {
                     'tipo' => 'colectivo',
                     'origen' => 'colectivo-proyecto',
                     'autor' => [
-                        'id' => $proy->creador_id,
-                        'nombre' => $proy->autor_nombre ?? __('Colectivo', 'flavor-chat-ia'),
-                        'avatar' => get_avatar_url($proy->creador_id, ['size' => 48]),
+                        'id' => $proy->responsable_id,
+                        'nombre' => $proy->autor_nombre ?? __('Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'avatar' => get_avatar_url($proy->responsable_id, ['size' => 48]),
                     ],
                     'contenido' => [
                         'titulo' => $proy->nombre ?? '',
@@ -1255,7 +1254,7 @@ class Flavor_Mi_Red_Social {
                     'interacciones' => [
                         'participantes' => (int) ($proy->participantes ?? 0),
                     ],
-                    'fecha' => $proy->fecha_creacion,
+                    'fecha' => $proy->created_at,
                     'url' => home_url('/colectivos/' . $proy->colectivo_id . '/proyectos/' . $proy->id . '/'),
                 ]);
             }
@@ -1264,13 +1263,12 @@ class Flavor_Mi_Red_Social {
         // Asambleas próximas de mis colectivos
         if ($this->tabla_existe($tabla_asambleas)) {
             $asambleas = $wpdb->get_results($wpdb->prepare(
-                "SELECT a.*, c.nombre as colectivo_nombre, u.display_name as convocante_nombre
+                "SELECT a.*, DATE_FORMAT(a.fecha, '%H:%i') as hora, c.nombre as colectivo_nombre
                  FROM {$tabla_asambleas} a
                  LEFT JOIN {$tabla_colectivos} c ON a.colectivo_id = c.id
-                 LEFT JOIN {$wpdb->users} u ON a.convocante_id = u.ID
                  WHERE a.colectivo_id IN ({$placeholders})
-                 AND a.fecha_hora >= NOW()
-                 ORDER BY a.fecha_hora ASC
+                 AND a.fecha >= NOW()
+                 ORDER BY a.fecha ASC
                  LIMIT %d",
                 array_merge($mis_colectivos, [$limite])
             ));
@@ -1281,14 +1279,14 @@ class Flavor_Mi_Red_Social {
                     'tipo' => 'colectivo',
                     'origen' => 'colectivo-asamblea',
                     'autor' => [
-                        'id' => $asam->convocante_id ?? 0,
-                        'nombre' => $asam->convocante_nombre ?? __('Colectivo', 'flavor-chat-ia'),
-                        'avatar' => get_avatar_url($asam->convocante_id ?? 0, ['size' => 48]),
+                        'id' => 0,
+                        'nombre' => $asam->colectivo_nombre ?? __('Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'avatar' => get_avatar_url(0, ['size' => 48]),
                     ],
                     'contenido' => [
-                        'titulo' => sprintf(__('Asamblea: %s', 'flavor-chat-ia'), $asam->titulo ?? ''),
+                        'titulo' => sprintf(__('Asamblea: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $asam->titulo ?? ''),
                         'texto' => $asam->descripcion ?? '',
-                        'fecha_evento' => $asam->fecha_hora,
+                        'fecha_evento' => $asam->fecha,
                         'lugar' => $asam->lugar ?? '',
                     ],
                     'contexto' => [
@@ -1299,7 +1297,7 @@ class Flavor_Mi_Red_Social {
                     'interacciones' => [
                         'confirmados' => (int) ($asam->confirmados ?? 0),
                     ],
-                    'fecha' => $asam->fecha_creacion ?? $asam->fecha_hora,
+                    'fecha' => $asam->fecha,
                     'url' => home_url('/colectivos/' . $asam->colectivo_id . '/asambleas/' . $asam->id . '/'),
                 ]);
             }
@@ -1369,7 +1367,7 @@ class Flavor_Mi_Red_Social {
                 'origen' => 'circulo-cuidados',
                 'autor' => [
                     'id' => $circ->creador_id,
-                    'nombre' => $circ->creador_nombre ?? __('Organizador', 'flavor-chat-ia'),
+                    'nombre' => $circ->creador_nombre ?? __('Organizador', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'avatar' => get_avatar_url($circ->creador_id, ['size' => 48]),
                 ],
                 'contenido' => [
@@ -1412,7 +1410,7 @@ class Flavor_Mi_Red_Social {
                     'origen' => 'circulo-actividad',
                     'autor' => [
                         'id' => $act->organizador_id ?? 0,
-                        'nombre' => $act->organizador_nombre ?? __('Círculo', 'flavor-chat-ia'),
+                        'nombre' => $act->organizador_nombre ?? __('Círculo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'avatar' => get_avatar_url($act->organizador_id ?? 0, ['size' => 48]),
                     ],
                     'contenido' => [
@@ -1476,7 +1474,7 @@ class Flavor_Mi_Red_Social {
                 'origen' => 'eventos',
                 'autor' => [
                     'id' => $evento->organizador_id ?? 0,
-                    'nombre' => $evento->organizador_nombre ?? __('Eventos', 'flavor-chat-ia'),
+                    'nombre' => $evento->organizador_nombre ?? __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'avatar' => !empty($evento->organizador_id) ? get_avatar_url($evento->organizador_id, ['size' => 48]) : '',
                 ],
                 'contenido' => [
@@ -1520,11 +1518,11 @@ class Flavor_Mi_Red_Social {
                     'origen' => 'eventos-inscripcion',
                     'autor' => [
                         'id' => $usuario_id,
-                        'nombre' => wp_get_current_user()->display_name ?: __('Mi agenda', 'flavor-chat-ia'),
+                        'nombre' => wp_get_current_user()->display_name ?: __('Mi agenda', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'avatar' => get_avatar_url($usuario_id, ['size' => 48]),
                     ],
                     'contenido' => [
-                        'titulo' => sprintf(__('Inscrito: %s', 'flavor-chat-ia'), $inscripcion->titulo ?? ''),
+                        'titulo' => sprintf(__('Inscrito: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $inscripcion->titulo ?? ''),
                         'texto' => $inscripcion->descripcion ?? '',
                         'fecha_evento' => $inscripcion->fecha_inicio,
                         'lugar' => $inscripcion->lugar ?? $inscripcion->ubicacion ?? '',
@@ -1601,7 +1599,7 @@ class Flavor_Mi_Red_Social {
                 'origen' => 'grupos-consumo',
                 'autor' => [
                     'id' => $usuario_id,
-                    'nombre' => wp_get_current_user()->display_name ?: __('Grupo de consumo', 'flavor-chat-ia'),
+                    'nombre' => wp_get_current_user()->display_name ?: __('Grupo de consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'avatar' => get_avatar_url($usuario_id, ['size' => 48]),
                 ],
                 'contenido' => [
@@ -1644,7 +1642,7 @@ class Flavor_Mi_Red_Social {
             'origen' => $item['origen'] ?? 'desconocido',
             'autor' => $item['autor'] ?? [
                 'id' => 0,
-                'nombre' => __('Anónimo', 'flavor-chat-ia'),
+                'nombre' => __('Anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'avatar' => '',
             ],
             'contenido' => $item['contenido'] ?? [],
@@ -1692,16 +1690,16 @@ class Flavor_Mi_Red_Social {
         $diferencia = $ahora - $timestamp;
 
         if ($diferencia < 60) {
-            return __('Ahora mismo', 'flavor-chat-ia');
+            return __('Ahora mismo', FLAVOR_PLATFORM_TEXT_DOMAIN);
         } elseif ($diferencia < 3600) {
             $minutos = round($diferencia / 60);
-            return sprintf(_n('Hace %d minuto', 'Hace %d minutos', $minutos, 'flavor-chat-ia'), $minutos);
+            return sprintf(_n('Hace %d minuto', 'Hace %d minutos', $minutos, FLAVOR_PLATFORM_TEXT_DOMAIN), $minutos);
         } elseif ($diferencia < 86400) {
             $horas = round($diferencia / 3600);
-            return sprintf(_n('Hace %d hora', 'Hace %d horas', $horas, 'flavor-chat-ia'), $horas);
+            return sprintf(_n('Hace %d hora', 'Hace %d horas', $horas, FLAVOR_PLATFORM_TEXT_DOMAIN), $horas);
         } elseif ($diferencia < 604800) {
             $dias = round($diferencia / 86400);
-            return sprintf(_n('Hace %d día', 'Hace %d días', $dias, 'flavor-chat-ia'), $dias);
+            return sprintf(_n('Hace %d día', 'Hace %d días', $dias, FLAVOR_PLATFORM_TEXT_DOMAIN), $dias);
         } else {
             return date_i18n(get_option('date_format'), $timestamp);
         }
@@ -2399,10 +2397,10 @@ class Flavor_Mi_Red_Social {
      */
     private function get_allowed_post_types() {
         return [
-            'texto' => ['label' => __('Texto', 'flavor-chat-ia'), 'icon' => '📝'],
-            'imagen' => ['label' => __('Imagen', 'flavor-chat-ia'), 'icon' => '📷'],
-            'video' => ['label' => __('Video', 'flavor-chat-ia'), 'icon' => '🎬'],
-            'enlace' => ['label' => __('Enlace', 'flavor-chat-ia'), 'icon' => '🔗'],
+            'texto' => ['label' => __('Texto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📝'],
+            'imagen' => ['label' => __('Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📷'],
+            'video' => ['label' => __('Video', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🎬'],
+            'enlace' => ['label' => __('Enlace', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🔗'],
         ];
     }
 
@@ -2456,7 +2454,7 @@ class Flavor_Mi_Red_Social {
         $tipo = isset($_POST['tipo']) ? sanitize_key($_POST['tipo']) : 'texto';
 
         if (empty($contenido)) {
-            wp_send_json_error(['message' => __('El contenido no puede estar vacío', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('El contenido no puede estar vacío', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Delegar al módulo de Red Social
@@ -2475,14 +2473,14 @@ class Flavor_Mi_Red_Social {
                     $this->invalidar_cache_feed($usuario_id);
 
                     wp_send_json_success([
-                        'message' => __('Publicación creada', 'flavor-chat-ia'),
+                        'message' => __('Publicación creada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'id' => $resultado,
                     ]);
                 }
             }
         }
 
-        wp_send_json_error(['message' => __('Error al crear la publicación', 'flavor-chat-ia')]);
+        wp_send_json_error(['message' => __('Error al crear la publicación', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -2496,7 +2494,7 @@ class Flavor_Mi_Red_Social {
         $tipo_item = isset($_POST['tipo_item']) ? sanitize_key($_POST['tipo_item']) : 'publicacion';
 
         if (!$item_id) {
-            wp_send_json_error(['message' => __('ID inválido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Delegar según tipo
@@ -2515,7 +2513,7 @@ class Flavor_Mi_Red_Social {
             ]);
         }
 
-        wp_send_json_error(['message' => __('Error al procesar', 'flavor-chat-ia')]);
+        wp_send_json_error(['message' => __('Error al procesar', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -2530,7 +2528,7 @@ class Flavor_Mi_Red_Social {
         $tipo_item = isset($_POST['tipo_item']) ? sanitize_key($_POST['tipo_item']) : 'publicacion';
 
         if (!$item_id || empty($contenido)) {
-            wp_send_json_error(['message' => __('Datos incompletos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Delegar según tipo
@@ -2545,14 +2543,14 @@ class Flavor_Mi_Red_Social {
 
                 if ($comentario_id) {
                     wp_send_json_success([
-                        'message' => __('Comentario añadido', 'flavor-chat-ia'),
+                        'message' => __('Comentario añadido', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'id' => $comentario_id,
                     ]);
                 }
             }
         }
 
-        wp_send_json_error(['message' => __('Error al comentar', 'flavor-chat-ia')]);
+        wp_send_json_error(['message' => __('Error al comentar', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -2565,7 +2563,7 @@ class Flavor_Mi_Red_Social {
         $tipo_item = isset($_POST['tipo_item']) ? sanitize_key($_POST['tipo_item']) : 'publicacion';
 
         if (!$item_id) {
-            wp_send_json_error(['message' => __('ID inválido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -2602,7 +2600,7 @@ class Flavor_Mi_Red_Social {
         $termino = isset($_POST['termino']) ? sanitize_text_field($_POST['termino']) : '';
 
         if (strlen($termino) < 2) {
-            wp_send_json_error(['message' => __('Término muy corto', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Término muy corto', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $resultados = $this->buscar_contenido($termino);
@@ -2631,7 +2629,7 @@ class Flavor_Mi_Red_Social {
         $notificacion_id = isset($_POST['notificacion_id']) ? absint($_POST['notificacion_id']) : 0;
 
         if (!$notificacion_id) {
-            wp_send_json_error(['message' => __('ID inválido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -2645,7 +2643,7 @@ class Flavor_Mi_Red_Social {
             ['%d', '%d']
         );
 
-        wp_send_json_success(['message' => __('Marcada como leída', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Marcada como leída', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -2656,17 +2654,17 @@ class Flavor_Mi_Red_Social {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('Usuario no autenticado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Usuario no autenticado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $subscription_json = isset($_POST['subscription']) ? sanitize_text_field($_POST['subscription']) : '';
         if (empty($subscription_json)) {
-            wp_send_json_error(['message' => __('Suscripción inválida', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Suscripción inválida', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $subscription = json_decode(stripslashes($subscription_json), true);
         if (!$subscription || !isset($subscription['endpoint'])) {
-            wp_send_json_error(['message' => __('Formato de suscripción inválido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Formato de suscripción inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Guardar en usermeta
@@ -2713,7 +2711,7 @@ class Flavor_Mi_Red_Social {
         ], ['%d', '%s', '%s', '%s', '%d']);
 
         wp_send_json_success([
-            'message' => __('Suscripción guardada', 'flavor-chat-ia'),
+            'message' => __('Suscripción guardada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'subscription_id' => $wpdb->insert_id,
         ]);
     }
@@ -2755,7 +2753,7 @@ class Flavor_Mi_Red_Social {
         $tipo = isset($params['tipo']) ? sanitize_key($params['tipo']) : 'texto';
 
         if (empty($contenido)) {
-            return new WP_Error('invalid_content', __('El contenido no puede estar vacío', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('invalid_content', __('El contenido no puede estar vacío', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         // Delegar al módulo de Red Social
@@ -2780,7 +2778,7 @@ class Flavor_Mi_Red_Social {
             }
         }
 
-        return new WP_Error('create_failed', __('Error al crear la publicación', 'flavor-chat-ia'), ['status' => 500]);
+        return new WP_Error('create_failed', __('Error al crear la publicación', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 500]);
     }
 
     /**

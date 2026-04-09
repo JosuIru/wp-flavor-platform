@@ -85,16 +85,16 @@ class Flavor_Reputation_Shortcodes {
         }
 
         $periodo_label = [
-            'total' => __('Todos los tiempos', 'flavor-chat-ia'),
-            'mes' => __('Este mes', 'flavor-chat-ia'),
-            'semana' => __('Esta semana', 'flavor-chat-ia')
+            'total' => __('Todos los tiempos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'mes' => __('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'semana' => __('Esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN)
         ];
 
         ob_start();
         ?>
         <div class="flavor-leaderboard">
             <div class="leaderboard-header">
-                <h3><?php _e('Clasificación', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Clasificación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <span class="leaderboard-periodo"><?php echo esc_html($periodo_label[$atts['periodo']] ?? $atts['periodo']); ?></span>
             </div>
             <div class="leaderboard-list">
@@ -124,10 +124,10 @@ class Flavor_Reputation_Shortcodes {
                     </div>
                     <div class="leaderboard-puntos">
                         <span class="puntos-valor"><?php echo number_format($usuario->puntos); ?></span>
-                        <span class="puntos-label"><?php _e('pts', 'flavor-chat-ia'); ?></span>
+                        <span class="puntos-label"><?php _e('pts', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <?php if ($usuario->racha_dias > 0): ?>
-                    <div class="leaderboard-racha" title="<?php esc_attr_e('Racha de días', 'flavor-chat-ia'); ?>">
+                    <div class="leaderboard-racha" title="<?php esc_attr_e('Racha de días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         🔥 <?php echo $usuario->racha_dias; ?>
                     </div>
                     <?php endif; ?>
@@ -145,7 +145,7 @@ class Flavor_Reputation_Shortcodes {
      */
     public function shortcode_mi_reputacion($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . __('Inicia sesión para ver tu reputación.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-login-required">' . __('Inicia sesión para ver tu reputación.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $atts = shortcode_atts([
@@ -172,14 +172,14 @@ class Flavor_Reputation_Shortcodes {
                 </div>
                 <div class="reputacion-puntos">
                     <span class="puntos-total"><?php echo number_format($reputacion['puntos_totales']); ?></span>
-                    <span class="puntos-label"><?php _e('puntos', 'flavor-chat-ia'); ?></span>
+                    <span class="puntos-label"><?php _e('puntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
             <?php if ($atts['mostrar_progreso'] === 'true' && $reputacion['siguiente_nivel']): ?>
             <div class="reputacion-progreso">
                 <div class="progreso-info">
-                    <span><?php _e('Progreso al siguiente nivel', 'flavor-chat-ia'); ?></span>
+                    <span><?php _e('Progreso al siguiente nivel', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="progreso-siguiente"><?php echo esc_html($reputacion['siguiente_nivel']['nombre']); ?></span>
                 </div>
                 <div class="progreso-barra">
@@ -192,21 +192,21 @@ class Flavor_Reputation_Shortcodes {
             <div class="reputacion-stats">
                 <div class="stat-item">
                     <span class="stat-valor"><?php echo number_format($reputacion['puntos_mes']); ?></span>
-                    <span class="stat-label"><?php _e('Este mes', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php _e('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-valor"><?php echo number_format($reputacion['puntos_semana']); ?></span>
-                    <span class="stat-label"><?php _e('Esta semana', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php _e('Esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-valor"><?php echo $reputacion['racha_dias']; ?> 🔥</span>
-                    <span class="stat-label"><?php _e('Racha', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php _e('Racha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
             <?php if ($atts['mostrar_badges'] === 'true' && !empty($reputacion['badges'])): ?>
             <div class="reputacion-badges">
-                <h4><?php _e('Mis Badges', 'flavor-chat-ia'); ?></h4>
+                <h4><?php _e('Mis Badges', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                 <div class="badges-grid">
                     <?php 
                     $badges_mostrar = array_slice($reputacion['badges'], 0, (int) $atts['limite_badges']);
@@ -236,7 +236,7 @@ class Flavor_Reputation_Shortcodes {
      */
     public function shortcode_mis_badges($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . __('Inicia sesión para ver tus badges.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-login-required">' . __('Inicia sesión para ver tus badges.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         if (!function_exists('flavor_reputation')) {
@@ -247,7 +247,7 @@ class Flavor_Reputation_Shortcodes {
         $badges = flavor_reputation()->get_badges_usuario($usuario_id);
 
         if (empty($badges)) {
-            return '<p class="flavor-empty">' . __('Aún no has obtenido ningún badge. ¡Sigue participando!', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-empty">' . __('Aún no has obtenido ningún badge. ¡Sigue participando!', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -261,7 +261,7 @@ class Flavor_Reputation_Shortcodes {
                         <h4><?php echo esc_html($badge->nombre); ?></h4>
                         <p><?php echo esc_html($badge->descripcion); ?></p>
                         <span class="badge-fecha">
-                            <?php echo sprintf(__('Obtenido el %s', 'flavor-chat-ia'), date_i18n('j M Y', strtotime($badge->fecha_obtenido))); ?>
+                            <?php echo sprintf(__('Obtenido el %s', FLAVOR_PLATFORM_TEXT_DOMAIN), date_i18n('j M Y', strtotime($badge->fecha_obtenido))); ?>
                         </span>
                     </div>
                     <?php if ($badge->destacado): ?>
@@ -296,7 +296,7 @@ class Flavor_Reputation_Shortcodes {
         }
 
         if (empty($badges)) {
-            return '<p class="flavor-empty">' . __('No hay badges disponibles.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-empty">' . __('No hay badges disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -313,7 +313,7 @@ class Flavor_Reputation_Shortcodes {
                         <p><?php echo esc_html($badge->descripcion); ?></p>
                         <?php if ($badge->puntos_requeridos > 0): ?>
                         <span class="badge-requisito">
-                            <?php echo sprintf(__('%s puntos requeridos', 'flavor-chat-ia'), number_format($badge->puntos_requeridos)); ?>
+                            <?php echo sprintf(__('%s puntos requeridos', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($badge->puntos_requeridos)); ?>
                         </span>
                         <?php endif; ?>
                     </div>
@@ -338,7 +338,7 @@ class Flavor_Reputation_Shortcodes {
      */
     public function shortcode_historial_puntos($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . __('Inicia sesión para ver tu historial.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-login-required">' . __('Inicia sesión para ver tu historial.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $atts = shortcode_atts([
@@ -353,7 +353,7 @@ class Flavor_Reputation_Shortcodes {
         $historial = flavor_reputation()->get_historial_puntos($usuario_id, (int) $atts['limite']);
 
         if (empty($historial)) {
-            return '<p class="flavor-empty">' . __('No hay actividad registrada aún.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-empty">' . __('No hay actividad registrada aún.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -369,7 +369,7 @@ class Flavor_Reputation_Shortcodes {
                         <div class="historial-descripcion"><?php echo esc_html($item->descripcion); ?></div>
                         <div class="historial-fecha">
                             <?php echo human_time_diff(strtotime($item->fecha_creacion), current_time('timestamp')); ?> 
-                            <?php _e('atrás', 'flavor-chat-ia'); ?>
+                            <?php _e('atrás', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     </div>
                 </div>

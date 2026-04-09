@@ -49,7 +49,7 @@ global.flavorChatIA = {
     user_id: 1,
     is_admin: true,
     site_url: 'http://localhost',
-    plugin_url: 'http://localhost/wp-content/plugins/flavor-chat-ia',
+    plugin_url: 'http://localhost/wp-content/plugins/flavor-platform',
     i18n: {
         loading: 'Cargando...',
         error: 'Error',

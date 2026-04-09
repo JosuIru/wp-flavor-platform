@@ -29,7 +29,7 @@ class Flavor_Feature_Comments extends Flavor_Feature_Base {
         ob_start();
         ?>
         <div class="flavor-comments" data-entity="<?php echo esc_attr($entity_type); ?>" data-id="<?php echo esc_attr($entity_id); ?>">
-            <h4><?php printf(_n('%d comentario', '%d comentarios', $count, 'flavor-chat-ia'), $count); ?></h4>
+            <h4><?php printf(_n('%d comentario', '%d comentarios', $count, FLAVOR_PLATFORM_TEXT_DOMAIN), $count); ?></h4>
             <div class="comments-list">
                 <?php foreach ($comments as $comment): ?>
                     <div class="comment">
@@ -41,8 +41,8 @@ class Flavor_Feature_Comments extends Flavor_Feature_Base {
             </div>
             <?php if (is_user_logged_in() || $this->allow_anonymous()): ?>
                 <form class="comment-form">
-                    <textarea name="content" placeholder="<?php esc_attr_e('Escribe un comentario...', 'flavor-chat-ia'); ?>"></textarea>
-                    <button type="submit"><?php esc_html_e('Enviar', 'flavor-chat-ia'); ?></button>
+                    <textarea name="content" placeholder="<?php esc_attr_e('Escribe un comentario...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
+                    <button type="submit"><?php esc_html_e('Enviar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                 </form>
             <?php endif; ?>
         </div>
@@ -95,7 +95,7 @@ class Flavor_Feature_Comments extends Flavor_Feature_Base {
         $content = sanitize_textarea_field($_POST['content'] ?? '');
 
         if (empty($content)) {
-            wp_send_json_error(__('El comentario no puede estar vacío', 'flavor-chat-ia'));
+            wp_send_json_error(__('El comentario no puede estar vacío', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $result = $this->register_action($entity_type, $entity_id, get_current_user_id(), $content);

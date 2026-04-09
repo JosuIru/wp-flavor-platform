@@ -92,7 +92,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Participacion no estan creadas. Activa el modulo para crearlas automaticamente.', 'flavor-chat-ia');
+            return __('Las tablas de Participacion no estan creadas. Activa el modulo para crearlas automaticamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         
     return '';
@@ -175,8 +175,8 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
     public static function get_renderer_config(): array {
         return [
             'module'   => 'participacion',
-            'title'    => __('Participación', 'flavor-chat-ia'),
-            'subtitle' => __('Propuestas, votaciones, debates y peticiones ciudadanas', 'flavor-chat-ia'),
+            'title'    => __('Participación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Propuestas, votaciones, debates y peticiones ciudadanas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '🗳️',
             'color'    => 'blue',
             'database' => [
@@ -194,73 +194,73 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
             ],
             'tabs' => [
                 'propuestas' => [
-                    'label'   => __('Iniciativas', 'flavor-chat-ia'),
+                    'label'   => __('Iniciativas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-lightbulb',
                     'content' => '[propuestas_activas]',
                     'public'  => true,
                 ],
                 'crear' => [
-                    'label'          => __('Nueva propuesta', 'flavor-chat-ia'),
+                    'label'          => __('Nueva propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'           => 'dashicons-plus-alt2',
                     'content'        => '[crear_propuesta]',
                     'requires_login' => true,
                     'hidden_nav'     => true,
                 ],
                 'votaciones' => [
-                    'label'   => __('Decisiones', 'flavor-chat-ia'),
+                    'label'   => __('Decisiones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-thumbs-up',
                     'content' => '[participacion_encuestas]',
                     'public'  => true,
                 ],
                 'resultados' => [
-                    'label'   => __('Acuerdos', 'flavor-chat-ia'),
+                    'label'   => __('Acuerdos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-chart-bar',
                     'content' => '[resultados_participacion]',
                     'public'  => true,
                 ],
                 'debates' => [
-                    'label'   => __('Conversaciones', 'flavor-chat-ia'),
+                    'label'   => __('Conversaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-admin-comments',
                     'content' => '[participacion_debates]',
                     'public'  => true,
                 ],
                 'detalle' => [
-                    'label'      => __('Detalle', 'flavor-chat-ia'),
+                    'label'      => __('Detalle', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-visibility',
                     'content'    => '[detalle_propuesta]',
                     'public'     => true,
                     'hidden_nav' => true,
                 ],
                 'encuesta' => [
-                    'label'      => __('Encuesta', 'flavor-chat-ia'),
+                    'label'      => __('Encuesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-chart-bar',
                     'content'    => '[participacion_encuesta]',
                     'public'     => true,
                     'hidden_nav' => true,
                 ],
                 'peticiones' => [
-                    'label'      => __('Peticiones', 'flavor-chat-ia'),
+                    'label'      => __('Peticiones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-megaphone',
                     'content'    => '[participacion_peticiones]',
                     'public'     => true,
                     'hidden_nav' => true,
                 ],
                 'peticion' => [
-                    'label'      => __('Petición', 'flavor-chat-ia'),
+                    'label'      => __('Petición', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-megaphone',
                     'content'    => '[participacion_peticion]',
                     'public'     => true,
                     'hidden_nav' => true,
                 ],
                 'crear-peticion' => [
-                    'label'          => __('Crear petición', 'flavor-chat-ia'),
+                    'label'          => __('Crear petición', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'           => 'dashicons-plus-alt',
                     'content'        => '[participacion_crear_peticion]',
                     'requires_login' => true,
                     'hidden_nav'     => true,
                 ],
                 'debate' => [
-                    'label'      => __('Debate', 'flavor-chat-ia'),
+                    'label'      => __('Debate', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-format-chat',
                     'content'    => '[participacion_debate]',
                     'public'     => true,
@@ -348,9 +348,9 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_participacion_nonce'),
             'strings' => [
-                'error_conexion' => __('Error de conexion. Intentalo de nuevo.', 'flavor-chat-ia'),
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
-                'confirmar_voto' => __('Confirmar voto', 'flavor-chat-ia'),
+                'error_conexion' => __('Error de conexion. Intentalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmar_voto' => __('Confirmar voto', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -643,24 +643,24 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
             <?php if ($atributos['mostrar_filtros'] === 'true'): ?>
             <div class="filtros-participacion">
                 <div class="filtro-grupo">
-                    <label for="filtro_categoria"><?php esc_html_e('Categoria:', 'flavor-chat-ia'); ?></label>
+                    <label for="filtro_categoria"><?php esc_html_e('Categoria:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="filtro_categoria" class="filtro-propuestas">
-                        <option value=""><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($this->categorias_propuesta as $clave_categoria => $nombre_categoria): ?>
                         <option value="<?php echo esc_attr($clave_categoria); ?>"><?php echo esc_html($nombre_categoria); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="filtro-grupo">
-                    <label for="filtro_orden"><?php esc_html_e('Ordenar:', 'flavor-chat-ia'); ?></label>
+                    <label for="filtro_orden"><?php esc_html_e('Ordenar:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="filtro_orden" class="filtro-propuestas">
-                        <option value="<?php echo esc_attr__('apoyos', 'flavor-chat-ia'); ?>"><?php esc_html_e('Mas apoyos', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('recientes', 'flavor-chat-ia'); ?>"><?php esc_html_e('Mas recientes', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('comentarios', 'flavor-chat-ia'); ?>"><?php esc_html_e('Mas comentados', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('apoyos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php esc_html_e('Mas apoyos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php esc_html_e('Mas recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php esc_html_e('Mas comentados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
                 <div class="filtro-busqueda filtro-busqueda-propuestas">
-                    <input type="text" placeholder="<?php esc_attr_e('Buscar propuestas...', 'flavor-chat-ia'); ?>">
+                    <input type="text" placeholder="<?php esc_attr_e('Buscar propuestas...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
             </div>
             <?php endif; ?>
@@ -668,8 +668,8 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
             <?php if (empty($propuestas)): ?>
             <div class="sin-resultados">
                 <div class="sin-resultados-icono">&#128161;</div>
-                <h3><?php esc_html_e('No hay propuestas activas', 'flavor-chat-ia'); ?></h3>
-                <p><?php esc_html_e('Se el primero en crear una propuesta para tu comunidad.', 'flavor-chat-ia'); ?></p>
+                <h3><?php esc_html_e('No hay propuestas activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php esc_html_e('Se el primero en crear una propuesta para tu comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <?php else: ?>
             <div class="propuestas-grid">
@@ -681,7 +681,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
             <?php if (count($propuestas) >= intval($atributos['limite'])): ?>
             <div class="cargar-mas-container" style="text-align: center; margin-top: 2rem;">
                 <button class="btn-participacion btn-participacion-outline btn-cargar-mas-propuestas" data-pagina="1">
-                    <?php esc_html_e('Cargar mas propuestas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Cargar mas propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
             <?php endif; ?>
@@ -696,7 +696,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
      */
     private function render_propuesta_card($propuesta) {
         $usuario = get_userdata($propuesta->proponente_id);
-        $nombre_usuario = $usuario ? $usuario->display_name : __('Usuario', 'flavor-chat-ia');
+        $nombre_usuario = $usuario ? $usuario->display_name : __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $avatar = get_avatar_url($propuesta->proponente_id, ['size' => 32]);
         $ya_apoyo = $this->usuario_ya_apoyo($propuesta->id);
         $categoria_nombre = isset($this->categorias_propuesta[$propuesta->categoria]) ? $this->categorias_propuesta[$propuesta->categoria] : $propuesta->categoria;
@@ -727,16 +727,16 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
             <div class="propuesta-stats">
                 <div class="propuesta-stat">
                     <span class="propuesta-stat-valor votos-favor-valor"><?php echo esc_html($propuesta->total_apoyos); ?></span>
-                    <span class="propuesta-stat-label"><?php esc_html_e('Apoyos', 'flavor-chat-ia'); ?></span>
+                    <span class="propuesta-stat-label"><?php esc_html_e('Apoyos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="propuesta-stat">
                     <span class="propuesta-stat-valor"><?php echo esc_html($propuesta->total_comentarios); ?></span>
-                    <span class="propuesta-stat-label"><?php esc_html_e('Comentarios', 'flavor-chat-ia'); ?></span>
+                    <span class="propuesta-stat-label"><?php esc_html_e('Comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <?php if ($propuesta->presupuesto_estimado): ?>
                 <div class="propuesta-stat">
                     <span class="propuesta-stat-valor"><?php echo esc_html(number_format($propuesta->presupuesto_estimado, 0, ',', '.')); ?></span>
-                    <span class="propuesta-stat-label"><?php esc_html_e('EUR', 'flavor-chat-ia'); ?></span>
+                    <span class="propuesta-stat-label"><?php esc_html_e('EUR', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <?php endif; ?>
             </div>
@@ -744,11 +744,11 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
                 <button class="btn-participacion btn-participacion-primary btn-apoyar <?php echo $ya_apoyo ? 'apoyado' : ''; ?>"
                         data-propuesta-id="<?php echo esc_attr($propuesta->id); ?>"
                         <?php echo $ya_apoyo ? 'disabled' : ''; ?>>
-                    <?php echo $ya_apoyo ? '&#10003; ' . esc_html__('Apoyada', 'flavor-chat-ia') : esc_html__('Apoyar', 'flavor-chat-ia'); ?>
+                    <?php echo $ya_apoyo ? '&#10003; ' . esc_html__('Apoyada', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Apoyar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <a href="<?php echo esc_url(add_query_arg('propuesta_id', $propuesta->id, home_url('/mi-portal/participacion/detalle/'))); ?>"
                    class="btn-participacion btn-participacion-outline">
-                    <?php esc_html_e('Ver mas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver mas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </article>
@@ -762,9 +762,9 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
     public function shortcode_crear_propuesta($atts) {
         if (!is_user_logged_in()) {
             return '<div class="alerta-participacion advertencia">' .
-                   esc_html__('Debes iniciar sesion para crear una propuesta.', 'flavor-chat-ia') .
+                   esc_html__('Debes iniciar sesion para crear una propuesta.', FLAVOR_PLATFORM_TEXT_DOMAIN) .
                    ' <a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '">' .
-                   esc_html__('Iniciar sesion', 'flavor-chat-ia') . '</a></div>';
+                   esc_html__('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></div>';
         }
 
         $atributos = shortcode_atts([
@@ -776,27 +776,27 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
         ?>
         <div class="participacion-container">
             <form class="form-crear-propuesta" method="post">
-                <h2><?php esc_html_e('Nueva Propuesta Ciudadana', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Nueva Propuesta Ciudadana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
                 <div class="form-grupo">
-                    <label for="titulo"><?php esc_html_e('Titulo de la propuesta', 'flavor-chat-ia'); ?> *</label>
+                    <label for="titulo"><?php esc_html_e('Titulo de la propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <input type="text" name="titulo" id="titulo" required
-                           placeholder="<?php esc_attr_e('Escribe un titulo descriptivo', 'flavor-chat-ia'); ?>"
+                           placeholder="<?php esc_attr_e('Escribe un titulo descriptivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                            minlength="10" maxlength="255">
-                    <span class="form-ayuda"><?php esc_html_e('Minimo 10 caracteres', 'flavor-chat-ia'); ?></span>
+                    <span class="form-ayuda"><?php esc_html_e('Minimo 10 caracteres', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
 
                 <div class="form-grupo">
-                    <label for="descripcion"><?php esc_html_e('Descripcion detallada', 'flavor-chat-ia'); ?> *</label>
+                    <label for="descripcion"><?php esc_html_e('Descripcion detallada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                     <textarea name="descripcion" id="descripcion" required
-                              placeholder="<?php esc_attr_e('Describe tu propuesta con el mayor detalle posible...', 'flavor-chat-ia'); ?>"
+                              placeholder="<?php esc_attr_e('Describe tu propuesta con el mayor detalle posible...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                               minlength="50"></textarea>
-                    <span class="form-ayuda"><?php esc_html_e('Minimo 50 caracteres. Explica que propones, por que es importante y como beneficiaria a la comunidad.', 'flavor-chat-ia'); ?></span>
+                    <span class="form-ayuda"><?php esc_html_e('Minimo 50 caracteres. Explica que propones, por que es importante y como beneficiaria a la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
 
                 <div class="form-grupo-row">
                     <div class="form-grupo">
-                        <label for="categoria"><?php esc_html_e('Categoria', 'flavor-chat-ia'); ?></label>
+                        <label for="categoria"><?php esc_html_e('Categoria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select name="categoria" id="categoria">
                             <?php foreach ($this->categorias_propuesta as $clave_categoria => $nombre_categoria): ?>
                             <option value="<?php echo esc_attr($clave_categoria); ?>"><?php echo esc_html($nombre_categoria); ?></option>
@@ -805,33 +805,33 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
                     </div>
 
                     <div class="form-grupo">
-                        <label for="ambito"><?php esc_html_e('Ambito', 'flavor-chat-ia'); ?></label>
+                        <label for="ambito"><?php esc_html_e('Ambito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select name="ambito" id="ambito">
-                            <option value="<?php echo esc_attr__('barrio', 'flavor-chat-ia'); ?>"><?php esc_html_e('Barrio', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('distrito', 'flavor-chat-ia'); ?>"><?php esc_html_e('Distrito', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('ciudad', 'flavor-chat-ia'); ?>"><?php esc_html_e('Ciudad', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('barrio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php esc_html_e('Barrio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="<?php echo esc_attr__('distrito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php esc_html_e('Distrito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="<?php echo esc_attr__('ciudad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php esc_html_e('Ciudad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
                 </div>
 
                 <?php if ($atributos['mostrar_presupuesto'] === 'true'): ?>
                 <div class="form-grupo">
-                    <label for="presupuesto_estimado"><?php esc_html_e('Presupuesto estimado (EUR)', 'flavor-chat-ia'); ?></label>
+                    <label for="presupuesto_estimado"><?php esc_html_e('Presupuesto estimado (EUR)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="number" name="presupuesto_estimado" id="presupuesto_estimado"
                            min="0" max="<?php echo esc_attr($this->settings['max_presupuesto_propuesta']); ?>"
                            placeholder="0">
-                    <span class="form-ayuda"><?php echo esc_html(sprintf(__('Maximo %s EUR', 'flavor-chat-ia'), number_format($this->settings['max_presupuesto_propuesta'], 0, ',', '.'))); ?></span>
+                    <span class="form-ayuda"><?php echo esc_html(sprintf(__('Maximo %s EUR', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($this->settings['max_presupuesto_propuesta'], 0, ',', '.'))); ?></span>
                 </div>
                 <?php endif; ?>
 
                 <div class="form-grupo">
                     <button type="submit" class="btn-participacion btn-participacion-primary btn-participacion-lg btn-participacion-block">
-                        <?php esc_html_e('Enviar Propuesta', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Enviar Propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
 
                 <p class="form-ayuda" style="text-align: center;">
-                    <?php esc_html_e('Tu propuesta sera revisada antes de publicarse.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Tu propuesta sera revisada antes de publicarse.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </form>
         </div>
@@ -857,7 +857,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
         }
 
         if (!$votacion) {
-            return '<div class="sin-resultados"><h3>' . esc_html__('No hay votaciones activas', 'flavor-chat-ia') . '</h3></div>';
+            return '<div class="sin-resultados"><h3>' . esc_html__('No hay votaciones activas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3></div>';
         }
 
         $opciones = json_decode($votacion->opciones, true);
@@ -878,10 +878,10 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
                     <div class="votacion-tiempo <?php echo $votacion->estado === 'activa' ? 'activa' : 'finalizada'; ?>">
                         <?php if ($votacion->estado === 'activa'): ?>
                         <span class="votacion-contador" data-fecha-fin="<?php echo esc_attr($votacion->fecha_fin); ?>">
-                            <?php esc_html_e('Calculando tiempo restante...', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Calculando tiempo restante...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
                         <?php else: ?>
-                        <span><?php esc_html_e('Votacion finalizada', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Votacion finalizada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -915,15 +915,15 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
 
                 <div class="votacion-footer">
                     <span class="votacion-participantes">
-                        <?php echo esc_html(sprintf(__('%d participantes', 'flavor-chat-ia'), $votacion->total_votos)); ?>
+                        <?php echo esc_html(sprintf(__('%d participantes', FLAVOR_PLATFORM_TEXT_DOMAIN), $votacion->total_votos)); ?>
                     </span>
                     <?php if (!$ya_voto && $votacion->estado === 'activa'): ?>
                     <button class="btn-participacion btn-participacion-primary btn-confirmar-voto" disabled>
-                        <?php esc_html_e('Confirmar voto', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Confirmar voto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <?php elseif ($ya_voto): ?>
                     <span class="alerta-participacion exito" style="margin: 0; padding: 0.5rem 1rem;">
-                        <?php esc_html_e('Ya has votado', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ya has votado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                     <?php endif; ?>
                 </div>
@@ -955,7 +955,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
         <div class="participacion-container">
             <div class="progreso-participacion">
                 <div class="progreso-header">
-                    <span class="progreso-titulo"><?php echo esc_html(sprintf(__('Participacion %s', 'flavor-chat-ia'), $atributos['anio'])); ?></span>
+                    <span class="progreso-titulo"><?php echo esc_html(sprintf(__('Participacion %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $atributos['anio'])); ?></span>
                     <span class="progreso-porcentaje"><?php echo esc_html($progreso['porcentaje']); ?>%</span>
                 </div>
                 <div class="progreso-barra">
@@ -964,15 +964,15 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
                 <div class="progreso-stats">
                     <div class="progreso-stat">
                         <span class="progreso-stat-valor"><?php echo esc_html($progreso['propuestas']); ?></span>
-                        <span class="progreso-stat-label"><?php esc_html_e('Propuestas', 'flavor-chat-ia'); ?></span>
+                        <span class="progreso-stat-label"><?php esc_html_e('Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="progreso-stat">
                         <span class="progreso-stat-valor"><?php echo esc_html($progreso['participantes']); ?></span>
-                        <span class="progreso-stat-label"><?php esc_html_e('Participantes', 'flavor-chat-ia'); ?></span>
+                        <span class="progreso-stat-label"><?php esc_html_e('Participantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="progreso-stat">
                         <span class="progreso-stat-valor"><?php echo esc_html($progreso['votos']); ?></span>
-                        <span class="progreso-stat-label"><?php esc_html_e('Votos', 'flavor-chat-ia'); ?></span>
+                        <span class="progreso-stat-label"><?php esc_html_e('Votos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -1024,19 +1024,19 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
         ?>
         <div class="participacion-container">
             <div class="presupuesto-info" data-presupuesto-total="<?php echo esc_attr($presupuesto_total); ?>">
-                <h3 class="presupuesto-titulo"><?php echo esc_html(sprintf(__('Presupuesto Participativo %s', 'flavor-chat-ia'), $atributos['anio'])); ?></h3>
+                <h3 class="presupuesto-titulo"><?php echo esc_html(sprintf(__('Presupuesto Participativo %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $atributos['anio'])); ?></h3>
                 <div class="presupuesto-cantidad"><?php echo esc_html(number_format($presupuesto_total, 0, ',', '.')); ?> EUR</div>
                 <div class="presupuesto-progreso">
                     <div class="presupuesto-progreso-fill" style="width: <?php echo esc_attr($porcentaje_usado); ?>%"></div>
                 </div>
                 <div class="presupuesto-detalles">
-                    <span class="presupuesto-asignado"><?php echo esc_html(sprintf(__('Asignado: %s EUR', 'flavor-chat-ia'), number_format($presupuesto_asignado, 0, ',', '.'))); ?></span>
-                    <span class="presupuesto-disponible"><?php echo esc_html(sprintf(__('Disponible: %s EUR', 'flavor-chat-ia'), number_format($presupuesto_disponible, 0, ',', '.'))); ?></span>
+                    <span class="presupuesto-asignado"><?php echo esc_html(sprintf(__('Asignado: %s EUR', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($presupuesto_asignado, 0, ',', '.'))); ?></span>
+                    <span class="presupuesto-disponible"><?php echo esc_html(sprintf(__('Disponible: %s EUR', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($presupuesto_disponible, 0, ',', '.'))); ?></span>
                 </div>
             </div>
 
             <?php if (!empty($propuestas_presupuesto)): ?>
-            <h3><?php esc_html_e('Proyectos Aprobados', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Proyectos Aprobados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <div class="propuestas-grid">
                 <?php foreach ($propuestas_presupuesto as $propuesta): ?>
                 <?php echo $this->render_propuesta_card($propuesta); ?>
@@ -1068,37 +1068,37 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
         ?>
         <div class="participacion-container">
             <div class="participacion-header">
-                <h1><?php echo esc_html(sprintf(__('Resultados de Participacion %s', 'flavor-chat-ia'), $atributos['anio'])); ?></h1>
-                <p><?php esc_html_e('Resumen de la participacion ciudadana este periodo', 'flavor-chat-ia'); ?></p>
+                <h1><?php echo esc_html(sprintf(__('Resultados de Participacion %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $atributos['anio'])); ?></h1>
+                <p><?php esc_html_e('Resumen de la participacion ciudadana este periodo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <div class="progreso-participacion">
                 <div class="progreso-stats" style="border: none; padding: 0;">
                     <div class="progreso-stat">
                         <span class="progreso-stat-valor"><?php echo esc_html($estadisticas['total_propuestas']); ?></span>
-                        <span class="progreso-stat-label"><?php esc_html_e('Propuestas Totales', 'flavor-chat-ia'); ?></span>
+                        <span class="progreso-stat-label"><?php esc_html_e('Propuestas Totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="progreso-stat">
                         <span class="progreso-stat-valor"><?php echo esc_html($estadisticas['propuestas_aprobadas']); ?></span>
-                        <span class="progreso-stat-label"><?php esc_html_e('Aprobadas', 'flavor-chat-ia'); ?></span>
+                        <span class="progreso-stat-label"><?php esc_html_e('Aprobadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="progreso-stat">
                         <span class="progreso-stat-valor"><?php echo esc_html($estadisticas['propuestas_implementadas']); ?></span>
-                        <span class="progreso-stat-label"><?php esc_html_e('Implementadas', 'flavor-chat-ia'); ?></span>
+                        <span class="progreso-stat-label"><?php esc_html_e('Implementadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="progreso-stat">
                         <span class="progreso-stat-valor"><?php echo esc_html($estadisticas['total_participantes']); ?></span>
-                        <span class="progreso-stat-label"><?php esc_html_e('Participantes', 'flavor-chat-ia'); ?></span>
+                        <span class="progreso-stat-label"><?php esc_html_e('Participantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="progreso-stat">
                         <span class="progreso-stat-valor"><?php echo esc_html(number_format($estadisticas['presupuesto_ejecutado'], 0, ',', '.')); ?></span>
-                        <span class="progreso-stat-label"><?php esc_html_e('EUR Ejecutados', 'flavor-chat-ia'); ?></span>
+                        <span class="progreso-stat-label"><?php esc_html_e('EUR Ejecutados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
 
             <?php if (!empty($propuestas_destacadas)): ?>
-            <h3 style="margin-top: 2rem;"><?php esc_html_e('Propuestas Implementadas', 'flavor-chat-ia'); ?></h3>
+            <h3 style="margin-top: 2rem;"><?php esc_html_e('Propuestas Implementadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <div class="propuestas-grid">
                 <?php foreach ($propuestas_destacadas as $propuesta): ?>
                 <?php echo $this->render_propuesta_card($propuesta); ?>
@@ -1121,20 +1121,20 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
         $propuesta_id = intval($atributos['id']) ?: intval($_GET['propuesta_id'] ?? 0);
 
         if (!$propuesta_id) {
-            return '<div class="alerta-participacion error">' . esc_html__('Propuesta no encontrada.', 'flavor-chat-ia') . '</div>';
+            return '<div class="alerta-participacion error">' . esc_html__('Propuesta no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         $propuesta = $this->obtener_propuesta($propuesta_id);
 
         if (!$propuesta) {
-            return '<div class="alerta-participacion error">' . esc_html__('Propuesta no encontrada.', 'flavor-chat-ia') . '</div>';
+            return '<div class="alerta-participacion error">' . esc_html__('Propuesta no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         // Incrementar visitas
         $this->incrementar_visitas($propuesta_id);
 
         $usuario = get_userdata($propuesta->proponente_id);
-        $nombre_usuario = $usuario ? $usuario->display_name : __('Usuario', 'flavor-chat-ia');
+        $nombre_usuario = $usuario ? $usuario->display_name : __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $ya_apoyo = $this->usuario_ya_apoyo($propuesta_id);
         $comentarios = $this->obtener_comentarios_propuesta($propuesta_id);
         $categoria_nombre = isset($this->categorias_propuesta[$propuesta->categoria]) ? $this->categorias_propuesta[$propuesta->categoria] : $propuesta->categoria;
@@ -1152,17 +1152,17 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
 
                     <div class="propuesta-detalle-meta">
                         <span class="propuesta-detalle-meta-item">
-                            <strong><?php esc_html_e('Autor:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($nombre_usuario); ?>
+                            <strong><?php esc_html_e('Autor:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html($nombre_usuario); ?>
                         </span>
                         <span class="propuesta-detalle-meta-item">
-                            <strong><?php esc_html_e('Categoria:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($categoria_nombre); ?>
+                            <strong><?php esc_html_e('Categoria:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html($categoria_nombre); ?>
                         </span>
                         <span class="propuesta-detalle-meta-item">
-                            <strong><?php esc_html_e('Fecha:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html(date_i18n('d M Y', strtotime($propuesta->fecha_creacion))); ?>
+                            <strong><?php esc_html_e('Fecha:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html(date_i18n('d M Y', strtotime($propuesta->fecha_creacion))); ?>
                         </span>
                         <?php if ($propuesta->presupuesto_estimado): ?>
                         <span class="propuesta-detalle-meta-item">
-                            <strong><?php esc_html_e('Presupuesto:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html(number_format($propuesta->presupuesto_estimado, 0, ',', '.')); ?> EUR
+                            <strong><?php esc_html_e('Presupuesto:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html(number_format($propuesta->presupuesto_estimado, 0, ',', '.')); ?> EUR
                         </span>
                         <?php endif; ?>
                     </div>
@@ -1173,7 +1173,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
 
                     <?php if ($propuesta->respuesta_oficial): ?>
                     <div class="alerta-participacion info" style="margin-top: 1.5rem;">
-                        <strong><?php esc_html_e('Respuesta oficial:', 'flavor-chat-ia'); ?></strong><br>
+                        <strong><?php esc_html_e('Respuesta oficial:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong><br>
                         <?php echo wp_kses_post($propuesta->respuesta_oficial); ?>
                     </div>
                     <?php endif; ?>
@@ -1182,11 +1182,11 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
                         <button class="btn-participacion btn-participacion-primary btn-participacion-lg btn-apoyar <?php echo $ya_apoyo ? 'apoyado' : ''; ?>"
                                 data-propuesta-id="<?php echo esc_attr($propuesta->id); ?>"
                                 <?php echo $ya_apoyo ? 'disabled' : ''; ?>>
-                            <?php echo $ya_apoyo ? '&#10003; ' . esc_html__('Apoyada', 'flavor-chat-ia') : esc_html__('Apoyar esta propuesta', 'flavor-chat-ia'); ?>
+                            <?php echo $ya_apoyo ? '&#10003; ' . esc_html__('Apoyada', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Apoyar esta propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <span class="propuesta-stat" style="margin-left: 1rem;">
                             <span class="propuesta-stat-valor votos-favor-valor" style="font-size: 1.5rem;"><?php echo esc_html($propuesta->total_apoyos); ?></span>
-                            <span class="propuesta-stat-label"><?php esc_html_e('Apoyos', 'flavor-chat-ia'); ?></span>
+                            <span class="propuesta-stat-label"><?php esc_html_e('Apoyos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </span>
                     </div>
                 </div>
@@ -1195,21 +1195,21 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
                 <?php if ($this->settings['permitir_comentarios']): ?>
                 <div class="comentarios-section" data-propuesta-id="<?php echo esc_attr($propuesta->id); ?>">
                     <div class="comentarios-header">
-                        <h3 class="comentarios-titulo"><?php esc_html_e('Comentarios', 'flavor-chat-ia'); ?></h3>
+                        <h3 class="comentarios-titulo"><?php esc_html_e('Comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <span class="comentarios-count"><?php echo esc_html($propuesta->total_comentarios); ?></span>
                     </div>
 
                     <?php if (is_user_logged_in()): ?>
                     <form class="form-comentario" data-propuesta-id="<?php echo esc_attr($propuesta->id); ?>">
-                        <textarea placeholder="<?php esc_attr_e('Escribe tu comentario...', 'flavor-chat-ia'); ?>" rows="3"></textarea>
+                        <textarea placeholder="<?php esc_attr_e('Escribe tu comentario...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" rows="3"></textarea>
                         <button type="submit" class="btn-participacion btn-participacion-primary">
-                            <?php esc_html_e('Comentar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Comentar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </form>
                     <?php else: ?>
                     <div class="alerta-participacion info">
-                        <?php esc_html_e('Inicia sesion para comentar.', 'flavor-chat-ia'); ?>
-                        <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>"><?php esc_html_e('Iniciar sesion', 'flavor-chat-ia'); ?></a>
+                        <?php esc_html_e('Inicia sesion para comentar.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
+                        <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>"><?php esc_html_e('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                     </div>
                     <?php endif; ?>
 
@@ -1222,7 +1222,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
                     <?php if (count($comentarios) >= 10): ?>
                     <button class="btn-participacion btn-participacion-outline btn-cargar-comentarios"
                             data-propuesta-id="<?php echo esc_attr($propuesta->id); ?>" data-offset="10">
-                        <?php esc_html_e('Cargar mas comentarios', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Cargar mas comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <?php endif; ?>
                 </div>
@@ -1238,7 +1238,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
      */
     private function render_comentario($comentario) {
         $usuario = get_userdata($comentario->usuario_id);
-        $nombre_usuario = $usuario ? $usuario->display_name : __('Anonimo', 'flavor-chat-ia');
+        $nombre_usuario = $usuario ? $usuario->display_name : __('Anonimo', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $avatar = get_avatar_url($comentario->usuario_id, ['size' => 40]);
 
         ob_start();
@@ -1249,7 +1249,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
                 <span class="comentario-autor">
                     <?php echo esc_html($nombre_usuario); ?>
                     <?php if ($comentario->es_oficial): ?>
-                    <span class="badge-oficial"><?php esc_html_e('Oficial', 'flavor-chat-ia'); ?></span>
+                    <span class="badge-oficial"><?php esc_html_e('Oficial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <?php endif; ?>
                     <span class="comentario-fecha"><?php echo esc_html(human_time_diff(strtotime($comentario->fecha_creacion), current_time('timestamp'))); ?></span>
                 </span>
@@ -1260,7 +1260,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
                     </button>
                     <?php if (is_user_logged_in()): ?>
                     <button class="comentario-accion comentario-responder">
-                        <?php esc_html_e('Responder', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Responder', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <?php endif; ?>
                 </div>
@@ -1283,23 +1283,23 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['error' => __('Debes iniciar sesion.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Debes iniciar sesion.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar limite mensual
         if (!$this->puede_crear_propuesta($usuario_id)) {
-            wp_send_json_error(['error' => __('Has alcanzado el limite de propuestas este mes.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Has alcanzado el limite de propuestas este mes.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $titulo = sanitize_text_field($_POST['titulo'] ?? '');
         $descripcion = sanitize_textarea_field($_POST['descripcion'] ?? '');
 
         if (strlen($titulo) < 10) {
-            wp_send_json_error(['error' => __('El titulo debe tener al menos 10 caracteres.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('El titulo debe tener al menos 10 caracteres.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (strlen($descripcion) < 50) {
-            wp_send_json_error(['error' => __('La descripcion debe tener al menos 50 caracteres.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('La descripcion debe tener al menos 50 caracteres.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1309,7 +1309,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
         $presupuesto = floatval($_POST['presupuesto_estimado'] ?? 0);
 
         if ($presupuesto > $this->settings['max_presupuesto_propuesta']) {
-            wp_send_json_error(['error' => sprintf(__('El presupuesto maximo es %s EUR.', 'flavor-chat-ia'), number_format($this->settings['max_presupuesto_propuesta'], 0, ',', '.'))]);
+            wp_send_json_error(['error' => sprintf(__('El presupuesto maximo es %s EUR.', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($this->settings['max_presupuesto_propuesta'], 0, ',', '.'))]);
         }
 
         $resultado = $wpdb->insert(
@@ -1330,12 +1330,12 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
         );
 
         if ($resultado === false) {
-            wp_send_json_error(['error' => __('Error al crear la propuesta.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Error al crear la propuesta.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $mensaje = $estado_inicial === 'pendiente_validacion'
-            ? __('Propuesta enviada. Esta pendiente de validacion.', 'flavor-chat-ia')
-            : __('Propuesta publicada correctamente.', 'flavor-chat-ia');
+            ? __('Propuesta enviada. Esta pendiente de validacion.', FLAVOR_PLATFORM_TEXT_DOMAIN)
+            : __('Propuesta publicada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         // Notificacion
         $propuesta_id = $wpdb->insert_id;
@@ -1360,16 +1360,16 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['error' => __('Debes iniciar sesion.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Debes iniciar sesion.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $propuesta_id = absint($_POST['propuesta_id'] ?? 0);
         if (!$propuesta_id) {
-            wp_send_json_error(['error' => __('Propuesta invalida.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Propuesta invalida.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if ($this->usuario_ya_apoyo($propuesta_id, $usuario_id)) {
-            wp_send_json_error(['error' => __('Ya has apoyado esta propuesta.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Ya has apoyado esta propuesta.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1400,7 +1400,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
 
         wp_send_json_success([
             'votos_favor' => $total_apoyos,
-            'mensaje' => sprintf(__('Gracias por tu apoyo. La propuesta tiene %d apoyos.', 'flavor-chat-ia'), $total_apoyos),
+            'mensaje' => sprintf(__('Gracias por tu apoyo. La propuesta tiene %d apoyos.', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_apoyos),
         ]);
     }
 
@@ -1412,23 +1412,23 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['error' => __('Debes iniciar sesion.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Debes iniciar sesion.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $votacion_id = absint($_POST['votacion_id'] ?? 0);
         $opciones = $_POST['opciones'] ?? [];
 
         if (!$votacion_id || empty($opciones)) {
-            wp_send_json_error(['error' => __('Datos de votacion invalidos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Datos de votacion invalidos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $votacion = $this->obtener_votacion($votacion_id);
         if (!$votacion || $votacion->estado !== 'activa') {
-            wp_send_json_error(['error' => __('Esta votacion no esta activa.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Esta votacion no esta activa.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if ($this->usuario_ya_voto_votacion($votacion_id, $usuario_id)) {
-            wp_send_json_error(['error' => __('Ya has votado en esta votacion.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Ya has votado en esta votacion.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1464,7 +1464,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
         $resultados = $this->obtener_resultados_votacion($votacion_id);
 
         wp_send_json_success([
-            'mensaje' => __('Voto registrado correctamente.', 'flavor-chat-ia'),
+            'mensaje' => __('Voto registrado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'resultados' => $resultados,
         ]);
     }
@@ -1477,7 +1477,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id && !$this->settings['permitir_comentarios_anonimos']) {
-            wp_send_json_error(['error' => __('Debes iniciar sesion.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Debes iniciar sesion.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $propuesta_id = absint($_POST['propuesta_id'] ?? 0);
@@ -1485,7 +1485,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
         $comentario_padre_id = absint($_POST['comentario_padre_id'] ?? 0);
 
         if (!$propuesta_id || strlen($contenido) < 5) {
-            wp_send_json_error(['error' => __('El comentario debe tener al menos 5 caracteres.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('El comentario debe tener al menos 5 caracteres.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1517,7 +1517,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
         ));
 
         wp_send_json_success([
-            'mensaje' => __('Comentario publicado.', 'flavor-chat-ia'),
+            'mensaje' => __('Comentario publicado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'html' => $this->render_comentario($comentario),
         ]);
     }
@@ -1584,7 +1584,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
         $votacion = $this->obtener_votacion($votacion_id);
 
         if (!$votacion) {
-            wp_send_json_error(['error' => __('Votacion no encontrada.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Votacion no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $resultados = $this->obtener_resultados_votacion($votacion_id);
@@ -1718,7 +1718,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
         $propuesta = $this->obtener_propuesta($request->get_param('id'));
 
         if (!$propuesta) {
-            return new WP_Error('not_found', __('Propuesta no encontrada.', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Propuesta no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         $respuesta = [
@@ -2208,9 +2208,9 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
      */
     private function notificar_nueva_propuesta($propuesta_id, $titulo) {
         $admin_email = get_option('admin_email');
-        $asunto = sprintf(__('[Participacion] Nueva propuesta: %s', 'flavor-chat-ia'), $titulo);
+        $asunto = sprintf(__('[Participacion] Nueva propuesta: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $titulo);
         $mensaje = sprintf(
-            __("Se ha creado una nueva propuesta ciudadana:\n\nTitulo: %s\n\nRevisa y valida la propuesta en el panel de administracion.", 'flavor-chat-ia'),
+            __("Se ha creado una nueva propuesta ciudadana:\n\nTitulo: %s\n\nRevisa y valida la propuesta en el panel de administracion.", FLAVOR_PLATFORM_TEXT_DOMAIN),
             $titulo
         );
 
@@ -2329,7 +2329,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error' => __('La vista solicitada no esta disponible en Participacion.', 'flavor-chat-ia'),
+            'error' => __('La vista solicitada no esta disponible en Participacion.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -2421,12 +2421,12 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
         if (!$propuesta) {
             return [
                 'success' => false,
-                'error' => __('No se ha encontrado la propuesta contextual.', 'flavor-chat-ia'),
+                'error' => __('No se ha encontrado la propuesta contextual.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
         $html  = '<div class="flavor-context-header">';
-        $html .= '<h3>' . esc_html__('Foro de la propuesta', 'flavor-chat-ia') . '</h3>';
+        $html .= '<h3>' . esc_html__('Foro de la propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         $html .= '<p>' . esc_html($propuesta->titulo) . '</p>';
         $html .= '</div>';
         $html .= do_shortcode('[flavor_foros_integrado entidad="participacion_propuesta" entidad_id="' . absint($propuesta->id) . '"]');
@@ -2436,19 +2436,19 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
 
     private function action_chat_propuesta($params) {
         if (!is_user_logged_in()) {
-            return '<div class="notice notice-info"><p>' . esc_html__('Debes iniciar sesión para acceder al chat de la propuesta.', 'flavor-chat-ia') . '</p></div>';
+            return '<div class="notice notice-info"><p>' . esc_html__('Debes iniciar sesión para acceder al chat de la propuesta.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         $propuesta = $this->resolve_contextual_propuesta($params);
         if (!$propuesta) {
             return [
                 'success' => false,
-                'error' => __('No se ha encontrado la propuesta contextual.', 'flavor-chat-ia'),
+                'error' => __('No se ha encontrado la propuesta contextual.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
         $html  = '<div class="flavor-context-header">';
-        $html .= '<h3>' . esc_html__('Chat de la propuesta', 'flavor-chat-ia') . '</h3>';
+        $html .= '<h3>' . esc_html__('Chat de la propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         $html .= '<p>' . esc_html($propuesta->titulo) . '</p>';
         $html .= '</div>';
         $html .= do_shortcode('[flavor_chat_grupo_integrado entidad="participacion_propuesta" entidad_id="' . absint($propuesta->id) . '"]');
@@ -2461,14 +2461,14 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
         if (!$propuesta) {
             return [
                 'success' => false,
-                'error' => __('No se ha encontrado la propuesta contextual.', 'flavor-chat-ia'),
+                'error' => __('No se ha encontrado la propuesta contextual.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
         $html  = '<div class="flavor-context-header">';
-        $html .= '<h3>' . esc_html__('Multimedia de la propuesta', 'flavor-chat-ia') . '</h3>';
+        $html .= '<h3>' . esc_html__('Multimedia de la propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         $html .= '<p>' . esc_html($propuesta->titulo) . '</p>';
-        $html .= '<p><a class="button button-primary" href="' . esc_url(home_url('/mi-portal/multimedia/subir/?propuesta_id=' . absint($propuesta->id))) . '">' . esc_html__('Subir archivo', 'flavor-chat-ia') . '</a></p>';
+        $html .= '<p><a class="button button-primary" href="' . esc_url(home_url('/mi-portal/multimedia/subir/?propuesta_id=' . absint($propuesta->id))) . '">' . esc_html__('Subir archivo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p>';
         $html .= '</div>';
         $html .= do_shortcode('[flavor_multimedia_galeria entidad="participacion_propuesta" entidad_id="' . absint($propuesta->id) . '"]');
 
@@ -2477,21 +2477,21 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
 
     private function action_red_social_propuesta($params) {
         if (!is_user_logged_in()) {
-            return '<div class="notice notice-info"><p>' . esc_html__('Debes iniciar sesión para ver la actividad social de la propuesta.', 'flavor-chat-ia') . '</p></div>';
+            return '<div class="notice notice-info"><p>' . esc_html__('Debes iniciar sesión para ver la actividad social de la propuesta.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         $propuesta = $this->resolve_contextual_propuesta($params);
         if (!$propuesta) {
             return [
                 'success' => false,
-                'error' => __('No se ha encontrado la propuesta contextual.', 'flavor-chat-ia'),
+                'error' => __('No se ha encontrado la propuesta contextual.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
         $html  = '<div class="flavor-context-header">';
-        $html .= '<h3>' . esc_html__('Actividad social de la propuesta', 'flavor-chat-ia') . '</h3>';
+        $html .= '<h3>' . esc_html__('Actividad social de la propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         $html .= '<p>' . esc_html($propuesta->titulo) . '</p>';
-        $html .= '<p><a class="button button-primary" href="' . esc_url(home_url('/mi-portal/red-social/crear/?propuesta_id=' . absint($propuesta->id))) . '">' . esc_html__('Publicar', 'flavor-chat-ia') . '</a></p>';
+        $html .= '<p><a class="button button-primary" href="' . esc_url(home_url('/mi-portal/red-social/crear/?propuesta_id=' . absint($propuesta->id))) . '">' . esc_html__('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p>';
         $html .= '</div>';
         $html .= do_shortcode('[flavor_social_feed entidad="participacion_propuesta" entidad_id="' . absint($propuesta->id) . '"]');
 
@@ -2643,88 +2643,88 @@ KNOWLEDGE;
     public function get_web_components() {
         return [
             'hero' => [
-                'label' => __('Hero Participacion', 'flavor-chat-ia'),
-                'description' => __('Seccion hero con propuestas destacadas', 'flavor-chat-ia'),
+                'label' => __('Hero Participacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Seccion hero con propuestas destacadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-megaphone',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Titulo', 'flavor-chat-ia'),
-                        'default' => __('Participacion Ciudadana', 'flavor-chat-ia'),
+                        'label' => __('Titulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Participacion Ciudadana', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'subtitulo' => [
                         'type' => 'textarea',
-                        'label' => __('Subtitulo', 'flavor-chat-ia'),
-                        'default' => __('Tu voz importa. Propon y decide el futuro de tu comunidad', 'flavor-chat-ia'),
+                        'label' => __('Subtitulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Tu voz importa. Propon y decide el futuro de tu comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'mostrar_estadisticas' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar estadisticas', 'flavor-chat-ia'),
+                        'label' => __('Mostrar estadisticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                 ],
                 'template' => 'participacion/hero',
             ],
             'propuestas_grid' => [
-                'label' => __('Grid de Propuestas', 'flavor-chat-ia'),
-                'description' => __('Listado de propuestas ciudadanas', 'flavor-chat-ia'),
+                'label' => __('Grid de Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Listado de propuestas ciudadanas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-lightbulb',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Titulo', 'flavor-chat-ia'),
-                        'default' => __('Propuestas Activas', 'flavor-chat-ia'),
+                        'label' => __('Titulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Propuestas Activas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'estado' => [
                         'type' => 'select',
-                        'label' => __('Filtrar por estado', 'flavor-chat-ia'),
+                        'label' => __('Filtrar por estado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['todas', 'activas', 'aprobadas', 'en_estudio'],
                         'default' => 'activas',
                     ],
                     'ordenar' => [
                         'type' => 'select',
-                        'label' => __('Ordenar por', 'flavor-chat-ia'),
+                        'label' => __('Ordenar por', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['recientes', 'apoyos', 'comentarios'],
                         'default' => 'apoyos',
                     ],
                     'limite' => [
                         'type' => 'number',
-                        'label' => __('Numero maximo', 'flavor-chat-ia'),
+                        'label' => __('Numero maximo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 9,
                     ],
                 ],
                 'template' => 'participacion/propuestas-grid',
             ],
             'fases_timeline' => [
-                'label' => __('Timeline de Fases', 'flavor-chat-ia'),
-                'description' => __('Visualizacion de fases del proceso', 'flavor-chat-ia'),
+                'label' => __('Timeline de Fases', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Visualizacion de fases del proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'display',
                 'icon' => 'dashicons-calendar-alt',
                 'fields' => [
                     'anio' => [
                         'type' => 'number',
-                        'label' => __('Ano', 'flavor-chat-ia'),
+                        'label' => __('Ano', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => date('Y'),
                     ],
                     'mostrar_progreso' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar barra de progreso', 'flavor-chat-ia'),
+                        'label' => __('Mostrar barra de progreso', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                 ],
                 'template' => 'participacion/fases-timeline',
             ],
             'presupuesto_widget' => [
-                'label' => __('Widget Presupuesto', 'flavor-chat-ia'),
-                'description' => __('Estado del presupuesto participativo', 'flavor-chat-ia'),
+                'label' => __('Widget Presupuesto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Estado del presupuesto participativo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'widgets',
                 'icon' => 'dashicons-chart-pie',
                 'fields' => [
                     'anio' => [
                         'type' => 'number',
-                        'label' => __('Ano', 'flavor-chat-ia'),
+                        'label' => __('Ano', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => date('Y'),
                     ],
                 ],
@@ -2745,36 +2745,36 @@ KNOWLEDGE;
     protected function get_admin_config() {
         return [
             'id' => 'participacion',
-            'label' => __('Participación', 'flavor-chat-ia'),
+            'label' => __('Participación', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-groups',
             'capability' => 'manage_options',
             'categoria' => 'comunidad',
             'paginas' => [
                 [
                     'slug' => 'participacion-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_dashboard'],
                 ],
                 [
                     'slug' => 'participacion-propuestas',
-                    'titulo' => __('Propuestas', 'flavor-chat-ia'),
+                    'titulo' => __('Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_propuestas'],
                     'badge' => [$this, 'contar_propuestas_activas'],
                 ],
                 [
                     'slug' => 'participacion-votaciones',
-                    'titulo' => __('Votaciones', 'flavor-chat-ia'),
+                    'titulo' => __('Votaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_votaciones'],
                     'badge' => [$this, 'contar_votaciones_abiertas'],
                 ],
                 [
                     'slug' => 'participacion-debates',
-                    'titulo' => __('Debates', 'flavor-chat-ia'),
+                    'titulo' => __('Debates', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_debates'],
                 ],
                 [
                     'slug' => 'participacion-config',
-                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'titulo' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_config'],
                 ],
             ],
@@ -2844,7 +2844,7 @@ KNOWLEDGE;
             $estadisticas[] = [
                 'icon' => 'dashicons-lightbulb',
                 'valor' => $propuestas_activas,
-                'label' => __('Propuestas activas', 'flavor-chat-ia'),
+                'label' => __('Propuestas activas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $propuestas_activas > 0 ? 'blue' : 'gray',
                 'enlace' => admin_url('admin.php?page=participacion-propuestas'),
             ];
@@ -2859,7 +2859,7 @@ KNOWLEDGE;
             $estadisticas[] = [
                 'icon' => 'dashicons-thumbs-up',
                 'valor' => $votaciones_abiertas,
-                'label' => __('Votaciones abiertas', 'flavor-chat-ia'),
+                'label' => __('Votaciones abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $votaciones_abiertas > 0 ? 'green' : 'gray',
                 'enlace' => admin_url('admin.php?page=participacion-votaciones'),
             ];
@@ -2873,8 +2873,8 @@ KNOWLEDGE;
      */
     public function render_admin_dashboard() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Dashboard de Participación', 'flavor-chat-ia'), [
-            ['label' => __('Nueva Propuesta', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=participacion-propuestas&action=nueva'), 'class' => 'button-primary'],
+        $this->render_page_header(__('Dashboard de Participación', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+            ['label' => __('Nueva Propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=participacion-propuestas&action=nueva'), 'class' => 'button-primary'],
         ]);
 
         // Resumen de estadísticas
@@ -2899,12 +2899,12 @@ KNOWLEDGE;
         }
 
         echo '<div class="flavor-stats-grid">';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($total_propuestas) . '</span><span class="stat-label">' . __('Total Propuestas', 'flavor-chat-ia') . '</span></div>';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($propuestas_activas) . '</span><span class="stat-label">' . __('Propuestas Activas', 'flavor-chat-ia') . '</span></div>';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($votaciones_abiertas) . '</span><span class="stat-label">' . __('Votaciones Abiertas', 'flavor-chat-ia') . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($total_propuestas) . '</span><span class="stat-label">' . __('Total Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($propuestas_activas) . '</span><span class="stat-label">' . __('Propuestas Activas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($votaciones_abiertas) . '</span><span class="stat-label">' . __('Votaciones Abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
         echo '</div>';
 
-        echo '<p>' . __('Panel de control del módulo de participación ciudadana con métricas y accesos rápidos.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Panel de control del módulo de participación ciudadana con métricas y accesos rápidos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         echo '</div>';
     }
 
@@ -2913,8 +2913,8 @@ KNOWLEDGE;
      */
     public function render_admin_propuestas() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Propuestas Ciudadanas', 'flavor-chat-ia'), [
-            ['label' => __('Nueva Propuesta', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=participacion-propuestas&action=nueva'), 'class' => 'button-primary'],
+        $this->render_page_header(__('Propuestas Ciudadanas', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+            ['label' => __('Nueva Propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=participacion-propuestas&action=nueva'), 'class' => 'button-primary'],
         ]);
 
         // Listado de propuestas
@@ -2922,7 +2922,7 @@ KNOWLEDGE;
         $tabla_propuestas = $wpdb->prefix . 'flavor_propuestas';
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_propuestas)) {
-            echo '<div class="notice notice-warning"><p>' . __('Las tablas del módulo no están creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-warning"><p>' . __('Las tablas del módulo no están creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             echo '</div>';
             return;
         }
@@ -2930,16 +2930,16 @@ KNOWLEDGE;
         $propuestas = $wpdb->get_results("SELECT * FROM $tabla_propuestas ORDER BY created_at DESC LIMIT 20");
 
         if (empty($propuestas)) {
-            echo '<div class="notice notice-info"><p>' . __('No hay propuestas registradas.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-info"><p>' . __('No hay propuestas registradas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         } else {
             echo '<table class="wp-list-table widefat fixed striped">';
             echo '<thead><tr>';
-            echo '<th>' . __('ID', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Título', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Categoría', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Estado', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Votos', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Fecha', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('ID', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Votos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
             echo '</tr></thead><tbody>';
 
             foreach ($propuestas as $propuesta) {
@@ -2970,8 +2970,8 @@ KNOWLEDGE;
      */
     public function render_admin_votaciones() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Votaciones', 'flavor-chat-ia'), [
-            ['label' => __('Nueva Votación', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=participacion-votaciones&action=nueva'), 'class' => 'button-primary'],
+        $this->render_page_header(__('Votaciones', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+            ['label' => __('Nueva Votación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=participacion-votaciones&action=nueva'), 'class' => 'button-primary'],
         ]);
 
         // Listado de votaciones
@@ -2979,7 +2979,7 @@ KNOWLEDGE;
         $tabla_votaciones = $wpdb->prefix . 'flavor_votaciones';
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_votaciones)) {
-            echo '<div class="notice notice-warning"><p>' . __('Las tablas del módulo no están creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-warning"><p>' . __('Las tablas del módulo no están creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             echo '</div>';
             return;
         }
@@ -2987,15 +2987,15 @@ KNOWLEDGE;
         $votaciones = $wpdb->get_results("SELECT * FROM $tabla_votaciones ORDER BY created_at DESC LIMIT 20");
 
         if (empty($votaciones)) {
-            echo '<div class="notice notice-info"><p>' . __('No hay votaciones registradas.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-info"><p>' . __('No hay votaciones registradas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         } else {
             echo '<table class="wp-list-table widefat fixed striped">';
             echo '<thead><tr>';
-            echo '<th>' . __('ID', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Título', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Estado', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Fecha Inicio', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Fecha Fin', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('ID', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Fecha Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Fecha Fin', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
             echo '</tr></thead><tbody>';
 
             foreach ($votaciones as $votacion) {
@@ -3024,8 +3024,8 @@ KNOWLEDGE;
      */
     public function render_admin_debates() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Debates Ciudadanos', 'flavor-chat-ia'), [
-            ['label' => __('Nuevo Debate', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=participacion-debates&action=nuevo'), 'class' => 'button-primary'],
+        $this->render_page_header(__('Debates Ciudadanos', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+            ['label' => __('Nuevo Debate', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=participacion-debates&action=nuevo'), 'class' => 'button-primary'],
         ]);
 
         // Listado de debates (usando comentarios de propuestas activas o tabla dedicada)
@@ -3034,7 +3034,7 @@ KNOWLEDGE;
         $tabla_comentarios = $wpdb->prefix . 'flavor_participacion_comentarios';
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_propuestas)) {
-            echo '<div class="notice notice-warning"><p>' . __('Las tablas del módulo no están creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-warning"><p>' . __('Las tablas del módulo no están creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             echo '</div>';
             return;
         }
@@ -3050,15 +3050,15 @@ KNOWLEDGE;
         );
 
         if (empty($propuestas_debate)) {
-            echo '<div class="notice notice-info"><p>' . __('No hay debates activos en este momento.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-info"><p>' . __('No hay debates activos en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         } else {
             echo '<table class="wp-list-table widefat fixed striped">';
             echo '<thead><tr>';
-            echo '<th>' . __('Propuesta', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Categoría', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Comentarios', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Estado', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Acciones', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
             echo '</tr></thead><tbody>';
 
             foreach ($propuestas_debate as $propuesta) {
@@ -3070,8 +3070,8 @@ KNOWLEDGE;
                 echo '<td>' . esc_html($titulo) . '</td>';
                 echo '<td>' . esc_html($categoria) . '</td>';
                 echo '<td>' . esc_html($num_comentarios) . '</td>';
-                echo '<td><span class="status-badge status-activa">' . __('Activo', 'flavor-chat-ia') . '</span></td>';
-                echo '<td><a href="' . esc_url(admin_url('admin.php?page=participacion-debates&propuesta_id=' . $propuesta->id)) . '" class="button button-small">' . __('Ver Debate', 'flavor-chat-ia') . '</a></td>';
+                echo '<td><span class="status-badge status-activa">' . __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></td>';
+                echo '<td><a href="' . esc_url(admin_url('admin.php?page=participacion-debates&propuesta_id=' . $propuesta->id)) . '" class="button button-small">' . __('Ver Debate', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></td>';
                 echo '</tr>';
             }
 
@@ -3086,7 +3086,7 @@ KNOWLEDGE;
      */
     public function render_admin_config() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Configuración de Participación', 'flavor-chat-ia'));
+        $this->render_page_header(__('Configuración de Participación', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         // Procesar guardado de configuración
         if (isset($_POST['guardar_config']) && check_admin_referer('participacion_config_nonce')) {
@@ -3103,7 +3103,7 @@ KNOWLEDGE;
             ];
 
             update_option('flavor_participacion_settings', array_merge($this->get_settings(), $nuevos_ajustes));
-            echo '<div class="notice notice-success"><p>' . __('Configuración guardada correctamente.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-success"><p>' . __('Configuración guardada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         $settings = $this->get_settings();
@@ -3113,85 +3113,85 @@ KNOWLEDGE;
 
             <table class="form-table">
                 <tr>
-                    <th scope="row"><?php _e('Requiere verificación', 'flavor-chat-ia'); ?></th>
+                    <th scope="row"><?php _e('Requiere verificación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <label>
                             <input type="checkbox" name="requiere_verificacion" value="1" <?php checked($settings['requiere_verificacion'] ?? true); ?>>
-                            <?php _e('Los usuarios deben estar verificados para participar', 'flavor-chat-ia'); ?>
+                            <?php _e('Los usuarios deben estar verificados para participar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row"><?php _e('Votos necesarios', 'flavor-chat-ia'); ?></th>
+                    <th scope="row"><?php _e('Votos necesarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <input type="number" name="votos_necesarios_propuesta" value="<?php echo esc_attr($settings['votos_necesarios_propuesta'] ?? 10); ?>" min="1" class="small-text">
-                        <p class="description"><?php _e('Votos mínimos para que una propuesta avance', 'flavor-chat-ia'); ?></p>
+                        <p class="description"><?php _e('Votos mínimos para que una propuesta avance', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row"><?php _e('Propuestas ciudadanas', 'flavor-chat-ia'); ?></th>
+                    <th scope="row"><?php _e('Propuestas ciudadanas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <label>
                             <input type="checkbox" name="permite_propuestas_ciudadanas" value="1" <?php checked($settings['permite_propuestas_ciudadanas'] ?? true); ?>>
-                            <?php _e('Permitir que los ciudadanos creen propuestas', 'flavor-chat-ia'); ?>
+                            <?php _e('Permitir que los ciudadanos creen propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row"><?php _e('Moderación', 'flavor-chat-ia'); ?></th>
+                    <th scope="row"><?php _e('Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <label>
                             <input type="checkbox" name="moderacion_propuestas" value="1" <?php checked($settings['moderacion_propuestas'] ?? true); ?>>
-                            <?php _e('Las propuestas requieren aprobación antes de publicarse', 'flavor-chat-ia'); ?>
+                            <?php _e('Las propuestas requieren aprobación antes de publicarse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row"><?php _e('Duración de votaciones', 'flavor-chat-ia'); ?></th>
+                    <th scope="row"><?php _e('Duración de votaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <input type="number" name="duracion_votacion_dias" value="<?php echo esc_attr($settings['duracion_votacion_dias'] ?? 7); ?>" min="1" class="small-text">
-                        <span><?php _e('días', 'flavor-chat-ia'); ?></span>
+                        <span><?php _e('días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row"><?php _e('Límite propuestas/usuario', 'flavor-chat-ia'); ?></th>
+                    <th scope="row"><?php _e('Límite propuestas/usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <input type="number" name="max_propuestas_usuario_mes" value="<?php echo esc_attr($settings['max_propuestas_usuario_mes'] ?? 5); ?>" min="1" class="small-text">
-                        <span><?php _e('propuestas por mes', 'flavor-chat-ia'); ?></span>
+                        <span><?php _e('propuestas por mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row"><?php _e('Comentarios', 'flavor-chat-ia'); ?></th>
+                    <th scope="row"><?php _e('Comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <label>
                             <input type="checkbox" name="permitir_comentarios" value="1" <?php checked($settings['permitir_comentarios'] ?? true); ?>>
-                            <?php _e('Permitir comentarios en propuestas', 'flavor-chat-ia'); ?>
+                            <?php _e('Permitir comentarios en propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row" colspan="2"><h2><?php _e('Presupuestos Participativos', 'flavor-chat-ia'); ?></h2></th>
+                    <th scope="row" colspan="2"><h2><?php _e('Presupuestos Participativos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2></th>
                 </tr>
                 <tr>
-                    <th scope="row"><?php _e('Activar presupuestos', 'flavor-chat-ia'); ?></th>
+                    <th scope="row"><?php _e('Activar presupuestos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <label>
                             <input type="checkbox" name="presupuesto_participativo_activo" value="1" <?php checked($settings['presupuesto_participativo_activo'] ?? false); ?>>
-                            <?php _e('Habilitar módulo de presupuestos participativos', 'flavor-chat-ia'); ?>
+                            <?php _e('Habilitar módulo de presupuestos participativos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row"><?php _e('Presupuesto anual', 'flavor-chat-ia'); ?></th>
+                    <th scope="row"><?php _e('Presupuesto anual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <td>
                         <input type="number" name="presupuesto_total_anual" value="<?php echo esc_attr($settings['presupuesto_total_anual'] ?? 100000); ?>" min="0" step="100" class="regular-text">
-                        <span><?php echo esc_html__('&euro;', 'flavor-chat-ia'); ?></span>
+                        <span><?php echo esc_html__('&euro;', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </td>
                 </tr>
             </table>
 
             <p class="submit">
-                <input type="submit" name="guardar_config" class="button button-primary" value="<?php _e('Guardar Configuración', 'flavor-chat-ia'); ?>">
+                <input type="submit" name="guardar_config" class="button button-primary" value="<?php _e('Guardar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             </p>
         </form>
         <?php
@@ -3212,37 +3212,37 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Participación Ciudadana', 'flavor-chat-ia'),
+                'title' => __('Participación Ciudadana', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'participacion',
-                'content' => '<h1>' . __('Participación Ciudadana', 'flavor-chat-ia') . '</h1>
-<p>' . __('Tu voz importa. Participa en las decisiones de tu comunidad, propón ideas y vota por las iniciativas que quieres ver realizadas.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Participación Ciudadana', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Tu voz importa. Participa en las decisiones de tu comunidad, propón ideas y vota por las iniciativas que quieres ver realizadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="participacion" action="listar" columnas="3" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Crear Propuesta', 'flavor-chat-ia'),
+                'title' => __('Crear Propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'participacion/propuesta',
-                'content' => '<h1>' . __('Crear Nueva Propuesta', 'flavor-chat-ia') . '</h1>
-<p>' . __('Comparte tu idea con la comunidad. Describe tu propuesta y consigue el apoyo de tus vecinos.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Crear Nueva Propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Comparte tu idea con la comunidad. Describe tu propuesta y consigue el apoyo de tus vecinos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="participacion" action="crear_propuesta"]',
                 'parent' => 'participacion',
             ],
             [
-                'title' => __('Votar Propuestas', 'flavor-chat-ia'),
+                'title' => __('Votar Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'participacion/votar',
-                'content' => '<h1>' . __('Votar Propuestas', 'flavor-chat-ia') . '</h1>
-<p>' . __('Apoya las propuestas que más te interesan. Tu voto ayuda a priorizar las iniciativas comunitarias.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Votar Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Apoya las propuestas que más te interesan. Tu voto ayuda a priorizar las iniciativas comunitarias.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="participacion" action="votar" columnas="2" limite="20"]',
                 'parent' => 'participacion',
             ],
             [
-                'title' => __('Mis Propuestas', 'flavor-chat-ia'),
+                'title' => __('Mis Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'participacion/mis-propuestas',
-                'content' => '<h1>' . __('Mis Propuestas', 'flavor-chat-ia') . '</h1>
-<p>' . __('Consulta el estado de las propuestas que has creado y el apoyo que han recibido.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Mis Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Consulta el estado de las propuestas que has creado y el apoyo que han recibido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="participacion" action="mis_propuestas" columnas="2" limite="10"]',
                 'parent' => 'participacion',
@@ -3264,41 +3264,41 @@ KNOWLEDGE;
         $capability = 'manage_options';
 
         // Páginas ocultas (sin menú visible en el sidebar)
-        add_submenu_page(null, __('Configuración Participación', 'flavor-chat-ia'), __('Configuración', 'flavor-chat-ia'), $capability, 'participacion-config', [$this, 'render_pagina_config']);
-        add_submenu_page(null, __('Debates', 'flavor-chat-ia'), __('Debates', 'flavor-chat-ia'), $capability, 'participacion-debates', [$this, 'render_pagina_debates']);
-        add_submenu_page(null, __('Propuestas', 'flavor-chat-ia'), __('Propuestas', 'flavor-chat-ia'), $capability, 'participacion-propuestas', [$this, 'render_pagina_propuestas']);
-        add_submenu_page(null, __('Resultados', 'flavor-chat-ia'), __('Resultados', 'flavor-chat-ia'), $capability, 'participacion-resultados', [$this, 'render_pagina_resultados']);
-        add_submenu_page(null, __('Votaciones', 'flavor-chat-ia'), __('Votaciones', 'flavor-chat-ia'), $capability, 'participacion-votaciones', [$this, 'render_pagina_votaciones']);
+        add_submenu_page(null, __('Configuración Participación', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN), $capability, 'participacion-config', [$this, 'render_pagina_config']);
+        add_submenu_page(null, __('Debates', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Debates', FLAVOR_PLATFORM_TEXT_DOMAIN), $capability, 'participacion-debates', [$this, 'render_pagina_debates']);
+        add_submenu_page(null, __('Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN), $capability, 'participacion-propuestas', [$this, 'render_pagina_propuestas']);
+        add_submenu_page(null, __('Resultados', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Resultados', FLAVOR_PLATFORM_TEXT_DOMAIN), $capability, 'participacion-resultados', [$this, 'render_pagina_resultados']);
+        add_submenu_page(null, __('Votaciones', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Votaciones', FLAVOR_PLATFORM_TEXT_DOMAIN), $capability, 'participacion-votaciones', [$this, 'render_pagina_votaciones']);
     }
 
     public function render_pagina_config() {
         $views_path = dirname(__FILE__) . '/views/config.php';
         if (file_exists($views_path)) { include $views_path; }
-        else { echo '<div class="wrap"><h1>' . esc_html__('Configuración Participación', 'flavor-chat-ia') . '</h1></div>'; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Configuración Participación', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>'; }
     }
 
     public function render_pagina_debates() {
         $views_path = dirname(__FILE__) . '/views/debates.php';
         if (file_exists($views_path)) { include $views_path; }
-        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Debates', 'flavor-chat-ia') . '</h1></div>'; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Debates', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>'; }
     }
 
     public function render_pagina_propuestas() {
         $views_path = dirname(__FILE__) . '/views/propuestas.php';
         if (file_exists($views_path)) { include $views_path; }
-        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Propuestas', 'flavor-chat-ia') . '</h1></div>'; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>'; }
     }
 
     public function render_pagina_resultados() {
         $views_path = dirname(__FILE__) . '/views/resultados.php';
         if (file_exists($views_path)) { include $views_path; }
-        else { echo '<div class="wrap"><h1>' . esc_html__('Resultados', 'flavor-chat-ia') . '</h1></div>'; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Resultados', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>'; }
     }
 
     public function render_pagina_votaciones() {
         $views_path = dirname(__FILE__) . '/views/votaciones.php';
         if (file_exists($views_path)) { include $views_path; }
-        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Votaciones', 'flavor-chat-ia') . '</h1></div>'; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Votaciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>'; }
     }
 
 

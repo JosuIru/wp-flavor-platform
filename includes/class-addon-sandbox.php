@@ -133,21 +133,21 @@ class Flavor_Addon_Sandbox {
      */
     public function validate_addon_code($file_path) {
         if (!file_exists($file_path)) {
-            return new WP_Error('file_not_found', __('Archivo no encontrado.', 'flavor-chat-ia'));
+            return new WP_Error('file_not_found', __('Archivo no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Leer contenido
         $content = file_get_contents($file_path);
 
         if ($content === false) {
-            return new WP_Error('read_error', __('No se pudo leer el archivo.', 'flavor-chat-ia'));
+            return new WP_Error('read_error', __('No se pudo leer el archivo.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Verificar funciones prohibidas
         foreach ($this->prohibited_functions as $func) {
             if (preg_match('/\b' . preg_quote($func, '/') . '\s*\(/i', $content)) {
                 return new WP_Error('prohibited_function', sprintf(
-                    __('El addon usa la función prohibida: %s', 'flavor-chat-ia'),
+                    __('El addon usa la función prohibida: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $func
                 ));
             }
@@ -157,7 +157,7 @@ class Flavor_Addon_Sandbox {
         foreach ($this->prohibited_classes as $class) {
             if (preg_match('/\bnew\s+' . preg_quote($class, '/') . '\s*\(/i', $content)) {
                 return new WP_Error('prohibited_class', sprintf(
-                    __('El addon usa la clase prohibida: %s', 'flavor-chat-ia'),
+                    __('El addon usa la clase prohibida: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $class
                 ));
             }
@@ -165,7 +165,7 @@ class Flavor_Addon_Sandbox {
 
         // Verificar código ofuscado (base64_decode sospechoso)
         if (preg_match('/base64_decode\s*\(\s*["\'][A-Za-z0-9+\/=]{50,}/i', $content)) {
-            return new WP_Error('obfuscated_code', __('El addon contiene código ofuscado sospechoso.', 'flavor-chat-ia'));
+            return new WP_Error('obfuscated_code', __('El addon contiene código ofuscado sospechoso.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Verificar archivos adicionales
@@ -254,7 +254,7 @@ class Flavor_Addon_Sandbox {
         $elapsed_time = microtime(true) - $usage['start_time'];
         if ($elapsed_time > $this->resource_limits['max_execution_time']) {
             return new WP_Error('time_limit_exceeded', sprintf(
-                __('El addon excedió el límite de tiempo: %d segundos', 'flavor-chat-ia'),
+                __('El addon excedió el límite de tiempo: %d segundos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $this->resource_limits['max_execution_time']
             ));
         }
@@ -263,7 +263,7 @@ class Flavor_Addon_Sandbox {
         $memory_used = memory_get_usage(true) - $usage['start_memory'];
         if ($memory_used > $this->resource_limits['max_memory']) {
             return new WP_Error('memory_limit_exceeded', sprintf(
-                __('El addon excedió el límite de memoria: %d MB', 'flavor-chat-ia'),
+                __('El addon excedió el límite de memoria: %d MB', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $this->resource_limits['max_memory'] / 1024 / 1024
             ));
         }
@@ -271,7 +271,7 @@ class Flavor_Addon_Sandbox {
         // Verificar queries
         if ($usage['db_queries'] > $this->resource_limits['max_db_queries']) {
             return new WP_Error('query_limit_exceeded', sprintf(
-                __('El addon excedió el límite de queries: %d queries', 'flavor-chat-ia'),
+                __('El addon excedió el límite de queries: %d queries', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $this->resource_limits['max_db_queries']
             ));
         }
@@ -279,7 +279,7 @@ class Flavor_Addon_Sandbox {
         // Verificar HTTP requests
         if ($usage['http_requests'] > $this->resource_limits['max_http_requests']) {
             return new WP_Error('http_limit_exceeded', sprintf(
-                __('El addon excedió el límite de requests HTTP: %d requests', 'flavor-chat-ia'),
+                __('El addon excedió el límite de requests HTTP: %d requests', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $this->resource_limits['max_http_requests']
             ));
         }
@@ -492,14 +492,14 @@ class Flavor_Addon_Sandbox {
 
         // Verificar permisos de archivo
         if (is_writable($file_path)) {
-            $report['warnings'][] = __('El archivo es escribible, debería ser solo lectura.', 'flavor-chat-ia');
+            $report['warnings'][] = __('El archivo es escribible, debería ser solo lectura.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         // Verificar tamaño
         $size = filesize($file_path);
         if ($size > $this->resource_limits['max_file_size']) {
             $report['warnings'][] = sprintf(
-                __('El archivo es muy grande: %s MB', 'flavor-chat-ia'),
+                __('El archivo es muy grande: %s MB', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 round($size / 1024 / 1024, 2)
             );
         }

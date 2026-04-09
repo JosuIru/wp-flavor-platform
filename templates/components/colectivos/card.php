@@ -14,10 +14,10 @@ $colectivo = $item ?? $card_item ?? [];
 if (empty($colectivo)) return;
 
 $id = $colectivo['id'] ?? 0;
-$nombre = $colectivo['nombre'] ?? $colectivo['title'] ?? __('Colectivo', 'flavor-chat-ia');
+$nombre = $colectivo['nombre'] ?? $colectivo['title'] ?? __('Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $descripcion = $colectivo['descripcion'] ?? '';
 $url = $colectivo['url'] ?? '#';
-$categoria = $colectivo['categoria'] ?? __('General', 'flavor-chat-ia');
+$categoria = $colectivo['categoria'] ?? __('General', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $miembros = $colectivo['miembros'] ?? 0;
 $reunion = $colectivo['reunion'] ?? '';
 $logo = $colectivo['logo'] ?? '';
@@ -57,7 +57,7 @@ $inicial = mb_substr($nombre, 0, 1);
 
         <div class="space-y-2 text-sm text-gray-500">
             <div class="flex items-center gap-2">
-                👥 <span><?php echo esc_html($miembros); ?> <?php echo esc_html__('miembros', 'flavor-chat-ia'); ?></span>
+                👥 <span><?php echo esc_html($miembros); ?> <?php echo esc_html__('miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <?php if ($reunion): ?>
             <div class="flex items-center gap-2">
@@ -69,7 +69,7 @@ $inicial = mb_substr($nombre, 0, 1);
         <div class="mt-4 pt-4 border-t border-gray-100">
             <a href="<?php echo esc_url($url); ?>"
                class="block w-full py-2 rounded-xl text-center text-rose-600 font-semibold text-sm bg-rose-50 hover:bg-rose-100 transition-colors">
-                <?php echo esc_html__('Ver colectivo', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Ver colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>

@@ -24,12 +24,12 @@ if ($es_nueva_campana && empty($contenido_actual)) {
 }
 
 $titulo_pagina = $es_nueva_campana
-    ? __('Crear campana', 'flavor-chat-ia')
-    : sprintf(__('Editar campana #%d', 'flavor-chat-ia'), $identificador_campana);
+    ? __('Crear campana', FLAVOR_PLATFORM_TEXT_DOMAIN)
+    : sprintf(__('Editar campana #%d', FLAVOR_PLATFORM_TEXT_DOMAIN), $identificador_campana);
 ?>
 <div class="wrap">
     <h1><?php echo esc_html($titulo_pagina); ?></h1>
-    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-newsletter')); ?>" class="button">&laquo; <?php esc_html_e('Volver al listado', 'flavor-chat-ia'); ?></a>
+    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-newsletter')); ?>" class="button">&laquo; <?php esc_html_e('Volver al listado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
     <hr class="wp-header-end">
 
     <form id="flavor-newsletter-editor-form" method="post">
@@ -37,11 +37,11 @@ $titulo_pagina = $es_nueva_campana
 
         <table class="form-table">
             <tr>
-                <th><label for="campana_asunto"><?php esc_html_e('Asunto', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="campana_asunto"><?php esc_html_e('Asunto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td><input type="text" id="campana_asunto" name="asunto" class="regular-text large-text" value="<?php echo esc_attr($asunto_actual); ?>" required></td>
             </tr>
             <tr>
-                <th><label for="campana_contenido"><?php esc_html_e('Contenido', 'flavor-chat-ia'); ?></label></th>
+                <th><label for="campana_contenido"><?php esc_html_e('Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                 <td>
                     <?php
                     wp_editor($contenido_actual, 'campana_contenido', [
@@ -53,8 +53,8 @@ $titulo_pagina = $es_nueva_campana
                     ]);
                     ?>
                     <p class="description">
-                        <?php esc_html_e('Variables disponibles:', 'flavor-chat-ia'); ?>
-                        <code><?php echo esc_html__('{{nombre}}', 'flavor-chat-ia'); ?></code>, <code><?php echo esc_html__('{{email}}', 'flavor-chat-ia'); ?></code>, <code><?php echo esc_html__('{{sitio_nombre}}', 'flavor-chat-ia'); ?></code>, <code><?php echo esc_html__('{{sitio_url}}', 'flavor-chat-ia'); ?></code>, <code><?php echo esc_html__('{{fecha}}', 'flavor-chat-ia'); ?></code>, <code><?php echo esc_html__('{{enlace_baja}}', 'flavor-chat-ia'); ?></code>
+                        <?php esc_html_e('Variables disponibles:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
+                        <code><?php echo esc_html__('{{nombre}}', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></code>, <code><?php echo esc_html__('{{email}}', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></code>, <code><?php echo esc_html__('{{sitio_nombre}}', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></code>, <code><?php echo esc_html__('{{sitio_url}}', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></code>, <code><?php echo esc_html__('{{fecha}}', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></code>, <code><?php echo esc_html__('{{enlace_baja}}', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></code>
                     </p>
                 </td>
             </tr>
@@ -62,14 +62,14 @@ $titulo_pagina = $es_nueva_campana
 
         <div class="flavor-newsletter-actions" style="margin:20px 0;display:flex;gap:10px;align-items:center;">
             <button type="button" id="btn-guardar-campana" class="button button-primary">
-                <?php esc_html_e('Guardar campana', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Guardar campana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <button type="button" id="btn-preview-campana" class="button">
-                <?php esc_html_e('Vista previa', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Vista previa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
 <?php if (!$es_nueva_campana && $estado_actual !== 'enviada') : ?>
             <button type="button" id="btn-enviar-campana" class="button button-secondary" style="background:#d63638;color:#fff;border-color:#d63638;">
-                <?php esc_html_e('Enviar campana', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Enviar campana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
 <?php endif; ?>
             <span id="estado-guardado" style="color:#00a32a;display:none;"></span>
@@ -77,10 +77,10 @@ $titulo_pagina = $es_nueva_campana
 
 <?php if (!$es_nueva_campana) : ?>
         <div class="flavor-newsletter-info" style="margin:20px 0;padding:12px 16px;background:#f0f6fc;border-left:4px solid #72aee6;">
-            <strong><?php esc_html_e('Estado:', 'flavor-chat-ia'); ?></strong>
+            <strong><?php esc_html_e('Estado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
             <span class="flavor-badge"><?php echo esc_html($estado_actual); ?></span>
-            <?php echo esc_html__('&mdash;', 'flavor-chat-ia'); ?>
-            <strong><?php esc_html_e('Creada:', 'flavor-chat-ia'); ?></strong>
+            <?php echo esc_html__('&mdash;', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
+            <strong><?php esc_html_e('Creada:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
             <?php echo esc_html($datos_campana->created_at ?? ''); ?>
         </div>
 <?php endif; ?>
@@ -90,8 +90,8 @@ $titulo_pagina = $es_nueva_campana
     <div id="flavor-newsletter-preview-dialog" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:100000;background:rgba(0,0,0,0.7);">
         <div style="position:absolute;top:5%;left:50%;transform:translateX(-50%);width:90%;max-width:700px;max-height:85vh;background:#fff;border-radius:8px;overflow:auto;">
             <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #ddd;">
-                <strong><?php esc_html_e('Vista previa del newsletter', 'flavor-chat-ia'); ?></strong>
-                <button type="button" id="btn-cerrar-preview" class="button"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></button>
+                <strong><?php esc_html_e('Vista previa del newsletter', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                <button type="button" id="btn-cerrar-preview" class="button"><?php echo esc_html__('&times;', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
             </div>
             <div id="flavor-newsletter-preview-content" style="padding:16px;"></div>
         </div>

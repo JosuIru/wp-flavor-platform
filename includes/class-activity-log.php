@@ -272,9 +272,9 @@ class Flavor_Activity_Log {
         foreach ($registros as &$registro) {
             if ($registro->usuario_id > 0) {
                 $informacion_usuario = get_userdata($registro->usuario_id);
-                $registro->nombre_usuario = $informacion_usuario ? $informacion_usuario->display_name : __('Usuario eliminado', 'flavor-chat-ia');
+                $registro->nombre_usuario = $informacion_usuario ? $informacion_usuario->display_name : __('Usuario eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN);
             } else {
-                $registro->nombre_usuario = __('Sistema', 'flavor-chat-ia');
+                $registro->nombre_usuario = __('Sistema', FLAVOR_PLATFORM_TEXT_DOMAIN);
             }
             if ($registro->datos_extra) {
                 $registro->datos_extra = json_decode($registro->datos_extra, true);
@@ -349,9 +349,9 @@ class Flavor_Activity_Log {
         foreach ($registros as &$registro) {
             if ($registro->usuario_id > 0) {
                 $informacion_usuario = get_userdata($registro->usuario_id);
-                $registro->nombre_usuario = $informacion_usuario ? $informacion_usuario->display_name : __('Usuario eliminado', 'flavor-chat-ia');
+                $registro->nombre_usuario = $informacion_usuario ? $informacion_usuario->display_name : __('Usuario eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN);
             } else {
-                $registro->nombre_usuario = __('Sistema', 'flavor-chat-ia');
+                $registro->nombre_usuario = __('Sistema', FLAVOR_PLATFORM_TEXT_DOMAIN);
             }
         }
         unset($registro);

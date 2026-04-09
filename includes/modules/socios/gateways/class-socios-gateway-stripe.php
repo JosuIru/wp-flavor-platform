@@ -98,7 +98,7 @@ class Flavor_Socios_Gateway_Stripe {
         if (!$this->is_configured()) {
             return [
                 'success' => false,
-                'error'   => __('Stripe no está configurado.', 'flavor-chat-ia'),
+                'error'   => __('Stripe no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -156,11 +156,11 @@ class Flavor_Socios_Gateway_Stripe {
             'payment_method_types[]' => 'card',
             'line_items[0][price_data][currency]' => 'eur',
             'line_items[0][price_data][product_data][name]' => sprintf(
-                __('Cuota de socio - %s', 'flavor-chat-ia'),
+                __('Cuota de socio - %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $cuota->periodo
             ),
             'line_items[0][price_data][product_data][description]' => sprintf(
-                __('Socio #%s - %s', 'flavor-chat-ia'),
+                __('Socio #%s - %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $socio->numero_socio,
                 $socio->display_name
             ),
@@ -198,7 +198,7 @@ class Flavor_Socios_Gateway_Stripe {
         $cuerpo = json_decode(wp_remote_retrieve_body($respuesta), true);
 
         if ($codigo !== 200) {
-            $mensaje_error = $cuerpo['error']['message'] ?? __('Error al crear sesión de pago.', 'flavor-chat-ia');
+            $mensaje_error = $cuerpo['error']['message'] ?? __('Error al crear sesión de pago.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             return new WP_Error('stripe_error', $mensaje_error);
         }
 

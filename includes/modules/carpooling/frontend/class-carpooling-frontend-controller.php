@@ -110,16 +110,16 @@ class Flavor_Carpooling_Frontend_Controller {
             'isLoggedIn' => is_user_logged_in(),
             'loginUrl' => wp_login_url(flavor_current_request_url()),
             'i18n' => [
-                'reservaExitosa' => __('Plaza reservada correctamente', 'flavor-chat-ia'),
-                'reservaCancelada' => __('Reserva cancelada', 'flavor-chat-ia'),
-                'viajeCancelado' => __('Viaje cancelado', 'flavor-chat-ia'),
-                'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'confirmarReserva' => __('¿Confirmar reserva de plaza?', 'flavor-chat-ia'),
-                'confirmarCancelarReserva' => __('¿Cancelar tu reserva?', 'flavor-chat-ia'),
-                'confirmarCancelarViaje' => __('¿Cancelar este viaje? Se notificará a los pasajeros.', 'flavor-chat-ia'),
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
-                'sinResultados' => __('No se encontraron viajes', 'flavor-chat-ia'),
-                'mensajeEnviado' => __('Mensaje enviado al conductor', 'flavor-chat-ia'),
+                'reservaExitosa' => __('Plaza reservada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'reservaCancelada' => __('Reserva cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'viajeCancelado' => __('Viaje cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmarReserva' => __('¿Confirmar reserva de plaza?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmarCancelarReserva' => __('¿Cancelar tu reserva?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmarCancelarViaje' => __('¿Cancelar este viaje? Se notificará a los pasajeros.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sinResultados' => __('No se encontraron viajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'mensajeEnviado' => __('Mensaje enviado al conductor', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
 
@@ -142,7 +142,7 @@ class Flavor_Carpooling_Frontend_Controller {
      */
     public function registrar_tabs_dashboard($tabs) {
         $tabs['carpooling-conductor'] = [
-            'label' => __('Mis Viajes', 'flavor-chat-ia'),
+            'label' => __('Mis Viajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'car',
             'callback' => [$this, 'render_tab_mis_viajes'],
             'orden' => 50,
@@ -150,7 +150,7 @@ class Flavor_Carpooling_Frontend_Controller {
         ];
 
         $tabs['carpooling-pasajero'] = [
-            'label' => __('Mis Reservas', 'flavor-chat-ia'),
+            'label' => __('Mis Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'tickets-alt',
             'callback' => [$this, 'render_tab_mis_reservas'],
             'orden' => 51,
@@ -306,27 +306,27 @@ class Flavor_Carpooling_Frontend_Controller {
             <?php if ($atts['mostrar_filtros'] === 'si'): ?>
                 <div class="carpooling-filtros">
                     <div class="filtro-origen">
-                        <label for="carpooling-origen"><?php _e('Origen', 'flavor-chat-ia'); ?></label>
-                        <input type="text" id="carpooling-origen" placeholder="<?php _e('¿Desde dónde?', 'flavor-chat-ia'); ?>">
+                        <label for="carpooling-origen"><?php _e('Origen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                        <input type="text" id="carpooling-origen" placeholder="<?php _e('¿Desde dónde?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     </div>
                     <div class="filtro-destino">
-                        <label for="carpooling-destino"><?php _e('Destino', 'flavor-chat-ia'); ?></label>
-                        <input type="text" id="carpooling-destino" placeholder="<?php _e('¿A dónde?', 'flavor-chat-ia'); ?>">
+                        <label for="carpooling-destino"><?php _e('Destino', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                        <input type="text" id="carpooling-destino" placeholder="<?php _e('¿A dónde?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     </div>
                     <div class="filtro-fecha">
-                        <label for="carpooling-fecha"><?php _e('Fecha', 'flavor-chat-ia'); ?></label>
+                        <label for="carpooling-fecha"><?php _e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="date" id="carpooling-fecha" min="<?php echo date('Y-m-d'); ?>">
                     </div>
                     <button type="button" class="btn-buscar" id="carpooling-buscar-btn">
                         <span class="dashicons dashicons-search"></span>
-                        <?php _e('Buscar', 'flavor-chat-ia'); ?>
+                        <?php _e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             <?php endif; ?>
 
             <div class="carpooling-lista" id="carpooling-lista">
                 <?php if (empty($viajes)): ?>
-                    <p class="carpooling-sin-viajes"><?php _e('No hay viajes disponibles en este momento.', 'flavor-chat-ia'); ?></p>
+                    <p class="carpooling-sin-viajes"><?php _e('No hay viajes disponibles en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php else: ?>
                     <?php foreach ($viajes as $viaje): ?>
                         <?php $this->render_viaje_card($viaje); ?>
@@ -384,7 +384,7 @@ class Flavor_Carpooling_Frontend_Controller {
                 <div class="viaje-detalles">
                     <span class="viaje-plazas <?php echo $plazas_disponibles <= 1 ? 'pocas-plazas' : ''; ?>">
                         <span class="dashicons dashicons-groups"></span>
-                        <?php printf(__('%d plazas', 'flavor-chat-ia'), $plazas_disponibles); ?>
+                        <?php printf(__('%d plazas', FLAVOR_PLATFORM_TEXT_DOMAIN), $plazas_disponibles); ?>
                     </span>
                     <?php if ($vehiculo): ?>
                         <span class="viaje-vehiculo">
@@ -400,7 +400,7 @@ class Flavor_Carpooling_Frontend_Controller {
                     <?php echo get_avatar($viaje->post_author, 48); ?>
                 </div>
                 <div class="conductor-info">
-                    <span class="conductor-nombre"><?php echo esc_html($conductor ? $conductor->display_name : __('Usuario', 'flavor-chat-ia')); ?></span>
+                    <span class="conductor-nombre"><?php echo esc_html($conductor ? $conductor->display_name : __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>
                     <?php if ($valoracion > 0): ?>
                         <span class="conductor-valoracion">
                             <span class="dashicons dashicons-star-filled"></span>
@@ -408,7 +408,7 @@ class Flavor_Carpooling_Frontend_Controller {
                         </span>
                     <?php endif; ?>
                     <?php if ($num_viajes > 0): ?>
-                        <span class="conductor-viajes"><?php printf(__('%d viajes', 'flavor-chat-ia'), $num_viajes); ?></span>
+                        <span class="conductor-viajes"><?php printf(__('%d viajes', FLAVOR_PLATFORM_TEXT_DOMAIN), $num_viajes); ?></span>
                     <?php endif; ?>
                 </div>
             </div>
@@ -416,22 +416,22 @@ class Flavor_Carpooling_Frontend_Controller {
             <div class="viaje-precio">
                 <?php if ($precio && floatval($precio) > 0): ?>
                     <span class="precio-valor"><?php echo number_format($precio, 2, ',', '.'); ?>€</span>
-                    <span class="precio-label"><?php _e('por plaza', 'flavor-chat-ia'); ?></span>
+                    <span class="precio-label"><?php _e('por plaza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <?php else: ?>
-                    <span class="precio-gratis"><?php _e('Gratuito', 'flavor-chat-ia'); ?></span>
+                    <span class="precio-gratis"><?php _e('Gratuito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <?php endif; ?>
             </div>
 
             <div class="viaje-acciones">
                 <a href="<?php echo get_permalink($viaje->ID); ?>" class="btn-ver-detalle">
-                    <?php _e('Ver detalles', 'flavor-chat-ia'); ?>
+                    <?php _e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <?php if (!$es_propio && is_user_logged_in() && $plazas_disponibles > 0): ?>
                     <button type="button" class="btn-reservar" data-viaje-id="<?php echo esc_attr($viaje->ID); ?>">
-                        <?php _e('Reservar plaza', 'flavor-chat-ia'); ?>
+                        <?php _e('Reservar plaza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 <?php elseif ($es_propio): ?>
-                    <span class="badge-propio"><?php _e('Tu viaje', 'flavor-chat-ia'); ?></span>
+                    <span class="badge-propio"><?php _e('Tu viaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <?php endif; ?>
             </div>
         </div>
@@ -445,7 +445,7 @@ class Flavor_Carpooling_Frontend_Controller {
         $this->encolar_assets();
 
         if (!is_user_logged_in()) {
-            return '<p class="carpooling-login-requerido">' . __('Inicia sesión para ver tus viajes.', 'flavor-chat-ia') . '</p>';
+            return '<p class="carpooling-login-requerido">' . __('Inicia sesión para ver tus viajes.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -460,7 +460,7 @@ class Flavor_Carpooling_Frontend_Controller {
         $this->encolar_assets();
 
         if (!is_user_logged_in()) {
-            return '<p class="carpooling-login-requerido">' . __('Inicia sesión para ver tus reservas.', 'flavor-chat-ia') . '</p>';
+            return '<p class="carpooling-login-requerido">' . __('Inicia sesión para ver tus reservas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -475,56 +475,56 @@ class Flavor_Carpooling_Frontend_Controller {
         $this->encolar_assets();
 
         if (!is_user_logged_in()) {
-            return '<p class="carpooling-login-requerido">' . __('Inicia sesión para publicar un viaje.', 'flavor-chat-ia') . '</p>';
+            return '<p class="carpooling-login-requerido">' . __('Inicia sesión para publicar un viaje.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
         ?>
         <div class="carpooling-publicar">
-            <h3><?php _e('Publicar nuevo viaje', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Publicar nuevo viaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <form id="carpooling-form-publicar" class="carpooling-form">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="viaje-origen"><?php _e('Origen', 'flavor-chat-ia'); ?> *</label>
-                        <input type="text" id="viaje-origen" name="origen" required placeholder="<?php _e('Ciudad o punto de partida', 'flavor-chat-ia'); ?>">
+                        <label for="viaje-origen"><?php _e('Origen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
+                        <input type="text" id="viaje-origen" name="origen" required placeholder="<?php _e('Ciudad o punto de partida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     </div>
                     <div class="form-group">
-                        <label for="viaje-destino"><?php _e('Destino', 'flavor-chat-ia'); ?> *</label>
-                        <input type="text" id="viaje-destino" name="destino" required placeholder="<?php _e('Ciudad o punto de llegada', 'flavor-chat-ia'); ?>">
+                        <label for="viaje-destino"><?php _e('Destino', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
+                        <input type="text" id="viaje-destino" name="destino" required placeholder="<?php _e('Ciudad o punto de llegada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="viaje-fecha"><?php _e('Fecha', 'flavor-chat-ia'); ?> *</label>
+                        <label for="viaje-fecha"><?php _e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                         <input type="date" id="viaje-fecha" name="fecha" required min="<?php echo date('Y-m-d'); ?>">
                     </div>
                     <div class="form-group">
-                        <label for="viaje-hora"><?php _e('Hora de salida', 'flavor-chat-ia'); ?> *</label>
+                        <label for="viaje-hora"><?php _e('Hora de salida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                         <input type="time" id="viaje-hora" name="hora" required>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="viaje-plazas"><?php _e('Plazas disponibles', 'flavor-chat-ia'); ?> *</label>
+                        <label for="viaje-plazas"><?php _e('Plazas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                         <input type="number" id="viaje-plazas" name="plazas" required min="1" max="8" value="3">
                     </div>
                     <div class="form-group">
-                        <label for="viaje-precio"><?php _e('Precio por plaza (€)', 'flavor-chat-ia'); ?></label>
-                        <input type="number" id="viaje-precio" name="precio" min="0" step="0.5" value="0" placeholder="<?php _e('0 = Gratuito', 'flavor-chat-ia'); ?>">
+                        <label for="viaje-precio"><?php _e('Precio por plaza (€)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                        <input type="number" id="viaje-precio" name="precio" min="0" step="0.5" value="0" placeholder="<?php _e('0 = Gratuito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="viaje-vehiculo"><?php _e('Vehículo', 'flavor-chat-ia'); ?></label>
-                    <input type="text" id="viaje-vehiculo" name="vehiculo" placeholder="<?php _e('Ej: Seat Ibiza rojo', 'flavor-chat-ia'); ?>">
+                    <label for="viaje-vehiculo"><?php _e('Vehículo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                    <input type="text" id="viaje-vehiculo" name="vehiculo" placeholder="<?php _e('Ej: Seat Ibiza rojo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
                 <div class="form-group">
-                    <label for="viaje-notas"><?php _e('Notas adicionales', 'flavor-chat-ia'); ?></label>
-                    <textarea id="viaje-notas" name="notas" rows="3" placeholder="<?php _e('Paradas intermedias, equipaje permitido, preferencias...', 'flavor-chat-ia'); ?>"></textarea>
+                    <label for="viaje-notas"><?php _e('Notas adicionales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                    <textarea id="viaje-notas" name="notas" rows="3" placeholder="<?php _e('Paradas intermedias, equipaje permitido, preferencias...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                 </div>
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary">
                         <span class="dashicons dashicons-plus"></span>
-                        <?php _e('Publicar viaje', 'flavor-chat-ia'); ?>
+                        <?php _e('Publicar viaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </form>
@@ -557,26 +557,26 @@ class Flavor_Carpooling_Frontend_Controller {
             <form class="busqueda-form" id="carpooling-busqueda-form" method="get">
                 <div class="busqueda-campos">
                     <div class="campo-grupo">
-                        <label for="busqueda-origen"><?php _e('Origen', 'flavor-chat-ia'); ?></label>
+                        <label for="busqueda-origen"><?php _e('Origen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="text" id="busqueda-origen" name="origen"
-                               placeholder="<?php _e('¿Desde dónde?', 'flavor-chat-ia'); ?>"
+                               placeholder="<?php _e('¿Desde dónde?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                                value="<?php echo esc_attr($origen_filtro); ?>">
                     </div>
                     <div class="campo-grupo">
-                        <label for="busqueda-destino"><?php _e('Destino', 'flavor-chat-ia'); ?></label>
+                        <label for="busqueda-destino"><?php _e('Destino', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="text" id="busqueda-destino" name="destino"
-                               placeholder="<?php _e('¿A dónde?', 'flavor-chat-ia'); ?>"
+                               placeholder="<?php _e('¿A dónde?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                                value="<?php echo esc_attr($destino_filtro); ?>">
                     </div>
                     <div class="campo-grupo">
-                        <label for="busqueda-fecha"><?php _e('Fecha', 'flavor-chat-ia'); ?></label>
+                        <label for="busqueda-fecha"><?php _e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="date" id="busqueda-fecha" name="fecha" min="<?php echo date('Y-m-d'); ?>"
                                value="<?php echo esc_attr($fecha_filtro); ?>">
                     </div>
                     <div class="campo-grupo">
-                        <label for="busqueda-plazas"><?php _e('Plazas', 'flavor-chat-ia'); ?></label>
+                        <label for="busqueda-plazas"><?php _e('Plazas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select id="busqueda-plazas" name="plazas">
-                            <option value=""><?php _e('Cualquiera', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php _e('Cualquiera', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <option value="1" <?php selected($plazas_filtro, 1); ?>>1+</option>
                             <option value="2" <?php selected($plazas_filtro, 2); ?>>2+</option>
                             <option value="3" <?php selected($plazas_filtro, 3); ?>>3+</option>
@@ -585,7 +585,7 @@ class Flavor_Carpooling_Frontend_Controller {
                 </div>
                 <button type="submit" class="btn-buscar">
                     <span class="dashicons dashicons-search"></span>
-                    <?php _e('Buscar viajes', 'flavor-chat-ia'); ?>
+                    <?php _e('Buscar viajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </form>
 
@@ -593,7 +593,7 @@ class Flavor_Carpooling_Frontend_Controller {
             <div class="busqueda-resultados" id="carpooling-resultados">
                 <p class="resultados-count">
                     <?php printf(
-                        _n('%d viaje encontrado', '%d viajes encontrados', count($viajes_encontrados), 'flavor-chat-ia'),
+                        _n('%d viaje encontrado', '%d viajes encontrados', count($viajes_encontrados), FLAVOR_PLATFORM_TEXT_DOMAIN),
                         count($viajes_encontrados)
                     ); ?>
                 </p>
@@ -636,7 +636,7 @@ class Flavor_Carpooling_Frontend_Controller {
                                 <?php if ($plazas_viaje): ?>
                                 <span class="viaje-plazas">
                                     <span class="dashicons dashicons-groups"></span>
-                                    <?php printf(__('%d plazas', 'flavor-chat-ia'), intval($plazas_viaje)); ?>
+                                    <?php printf(__('%d plazas', FLAVOR_PLATFORM_TEXT_DOMAIN), intval($plazas_viaje)); ?>
                                 </span>
                                 <?php endif; ?>
                                 <?php if ($precio_viaje): ?>
@@ -648,11 +648,11 @@ class Flavor_Carpooling_Frontend_Controller {
                         </div>
                         <div class="viaje-conductor">
                             <?php echo get_avatar($viaje->post_author, 32); ?>
-                            <span><?php echo esc_html($conductor_viaje->display_name ?? __('Conductor', 'flavor-chat-ia')); ?></span>
+                            <span><?php echo esc_html($conductor_viaje->display_name ?? __('Conductor', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>
                         </div>
                         <div class="viaje-acciones">
                             <a href="<?php echo get_permalink($viaje->ID); ?>" class="btn-ver-viaje">
-                                <?php _e('Ver detalles', 'flavor-chat-ia'); ?>
+                                <?php _e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </div>
                     </div>
@@ -661,8 +661,8 @@ class Flavor_Carpooling_Frontend_Controller {
                 <?php else: ?>
                 <div class="sin-resultados">
                     <span class="dashicons dashicons-car"></span>
-                    <p><?php _e('No se encontraron viajes con esos criterios.', 'flavor-chat-ia'); ?></p>
-                    <p class="sugerencia"><?php _e('Prueba con otras fechas o destinos.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No se encontraron viajes con esos criterios.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                    <p class="sugerencia"><?php _e('Prueba con otras fechas o destinos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <?php endif; ?>
             </div>
@@ -798,7 +798,7 @@ class Flavor_Carpooling_Frontend_Controller {
         }
 
         if (!$viaje) {
-            return '<div class="carpooling-empty-widget"><p>' . __('No tienes viajes próximos', 'flavor-chat-ia') . '</p></div>';
+            return '<div class="carpooling-empty-widget"><p>' . __('No tienes viajes próximos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         $fecha = get_post_meta($viaje->ID, '_carpooling_fecha', true);
@@ -810,7 +810,7 @@ class Flavor_Carpooling_Frontend_Controller {
         ?>
         <div class="carpooling-proximo-widget">
             <div class="proximo-badge <?php echo $es_conductor ? 'conductor' : 'pasajero'; ?>">
-                <?php echo $es_conductor ? __('Conductor', 'flavor-chat-ia') : __('Pasajero', 'flavor-chat-ia'); ?>
+                <?php echo $es_conductor ? __('Conductor', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Pasajero', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
             <div class="proximo-fecha"><?php echo esc_html(date_i18n('D j M', strtotime($fecha)) . ' · ' . $hora); ?></div>
             <div class="proximo-ruta">
@@ -818,7 +818,7 @@ class Flavor_Carpooling_Frontend_Controller {
                 <span class="flecha">→</span>
                 <span class="destino"><?php echo esc_html($destino); ?></span>
             </div>
-            <a href="<?php echo get_permalink($viaje->ID); ?>" class="proximo-link"><?php _e('Ver detalles', 'flavor-chat-ia'); ?></a>
+            <a href="<?php echo get_permalink($viaje->ID); ?>" class="proximo-link"><?php _e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
         </div>
         <?php
         return ob_get_clean();
@@ -835,9 +835,9 @@ class Flavor_Carpooling_Frontend_Controller {
         ?>
         <div class="carpooling-busqueda-rapida">
             <form class="busqueda-rapida-form" action="<?php echo esc_url(home_url('/mi-portal/carpooling/buscar/')); ?>" method="get">
-                <input type="text" name="origen" placeholder="<?php _e('Desde...', 'flavor-chat-ia'); ?>" class="campo-origen">
+                <input type="text" name="origen" placeholder="<?php _e('Desde...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" class="campo-origen">
                 <span class="separador">→</span>
-                <input type="text" name="destino" placeholder="<?php _e('Hasta...', 'flavor-chat-ia'); ?>" class="campo-destino">
+                <input type="text" name="destino" placeholder="<?php _e('Hasta...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" class="campo-destino">
                 <input type="date" name="fecha" min="<?php echo date('Y-m-d'); ?>" value="<?php echo date('Y-m-d'); ?>" class="campo-fecha">
                 <button type="submit" class="btn-busqueda-rapida">
                     <span class="dashicons dashicons-search"></span>
@@ -866,19 +866,19 @@ class Flavor_Carpooling_Frontend_Controller {
         ?>
         <div class="carpooling-dashboard-tab carpooling-mis-viajes">
             <div class="tab-header">
-                <h2><?php _e('Mis Viajes', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Mis Viajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <a href="<?php echo esc_url(home_url('/mi-portal/carpooling/publicar/')); ?>" class="btn btn-primary">
                     <span class="dashicons dashicons-plus"></span>
-                    <?php _e('Nuevo viaje', 'flavor-chat-ia'); ?>
+                    <?php _e('Nuevo viaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
             <?php if (empty($viajes)): ?>
                 <div class="empty-state">
                     <span class="empty-icon dashicons dashicons-car"></span>
-                    <p><?php _e('No has publicado ningún viaje.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No has publicado ningún viaje.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(home_url('/mi-portal/carpooling/publicar/')); ?>" class="btn btn-primary">
-                        <?php _e('Publicar mi primer viaje', 'flavor-chat-ia'); ?>
+                        <?php _e('Publicar mi primer viaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -909,27 +909,27 @@ class Flavor_Carpooling_Frontend_Controller {
                                 </span>
                                 <span class="viaje-plazas">
                                     <span class="dashicons dashicons-groups"></span>
-                                    <?php printf(__('%d/%d plazas', 'flavor-chat-ia'), $plazas - $plazas_disponibles, $plazas); ?>
+                                    <?php printf(__('%d/%d plazas', FLAVOR_PLATFORM_TEXT_DOMAIN), $plazas - $plazas_disponibles, $plazas); ?>
                                 </span>
                             </div>
                             <div class="viaje-estado">
                                 <?php if ($pasado): ?>
-                                    <span class="estado-badge pasado"><?php _e('Finalizado', 'flavor-chat-ia'); ?></span>
+                                    <span class="estado-badge pasado"><?php _e('Finalizado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php elseif ($viaje->post_status === 'draft'): ?>
-                                    <span class="estado-badge borrador"><?php _e('Borrador', 'flavor-chat-ia'); ?></span>
+                                    <span class="estado-badge borrador"><?php _e('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php else: ?>
-                                    <span class="estado-badge activo"><?php _e('Activo', 'flavor-chat-ia'); ?></span>
+                                    <span class="estado-badge activo"><?php _e('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php endif; ?>
                             </div>
                             <div class="viaje-acciones">
-                                <a href="<?php echo get_permalink($viaje->ID); ?>" class="btn-ver" title="<?php _e('Ver', 'flavor-chat-ia'); ?>">
+                                <a href="<?php echo get_permalink($viaje->ID); ?>" class="btn-ver" title="<?php _e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-visibility"></span>
                                 </a>
                                 <?php if (!$pasado): ?>
-                                    <a href="<?php echo get_edit_post_link($viaje->ID); ?>" class="btn-editar" title="<?php _e('Editar', 'flavor-chat-ia'); ?>">
+                                    <a href="<?php echo get_edit_post_link($viaje->ID); ?>" class="btn-editar" title="<?php _e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                         <span class="dashicons dashicons-edit"></span>
                                     </a>
-                                    <button type="button" class="btn-cancelar-viaje" title="<?php _e('Cancelar', 'flavor-chat-ia'); ?>">
+                                    <button type="button" class="btn-cancelar-viaje" title="<?php _e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                         <span class="dashicons dashicons-no-alt"></span>
                                     </button>
                                 <?php endif; ?>
@@ -964,15 +964,15 @@ class Flavor_Carpooling_Frontend_Controller {
         ?>
         <div class="carpooling-dashboard-tab carpooling-mis-reservas">
             <div class="tab-header">
-                <h2><?php _e('Mis Reservas', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Mis Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
 
             <?php if (empty($reservas)): ?>
                 <div class="empty-state">
                     <span class="empty-icon dashicons dashicons-tickets-alt"></span>
-                    <p><?php _e('No tienes reservas de viaje.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No tienes reservas de viaje.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(home_url('/mi-portal/carpooling/')); ?>" class="btn btn-primary">
-                        <?php _e('Buscar viajes', 'flavor-chat-ia'); ?>
+                        <?php _e('Buscar viajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -1012,10 +1012,10 @@ class Flavor_Carpooling_Frontend_Controller {
                                 <span class="estado-badge estado-<?php echo esc_attr($reserva->estado); ?>">
                                     <?php
                                     $estados_label = [
-                                        'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-                                        'confirmada' => __('Confirmada', 'flavor-chat-ia'),
-                                        'cancelada' => __('Cancelada', 'flavor-chat-ia'),
-                                        'completada' => __('Completada', 'flavor-chat-ia'),
+                                        'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                        'confirmada' => __('Confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                        'cancelada' => __('Cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                        'completada' => __('Completada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                     ];
                                     echo esc_html($estados_label[$reserva->estado] ?? $reserva->estado);
                                     ?>
@@ -1046,26 +1046,26 @@ class Flavor_Carpooling_Frontend_Controller {
         check_ajax_referer('carpooling_frontend_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $viaje_id = absint($_POST['viaje_id'] ?? 0);
         $plazas = absint($_POST['plazas'] ?? 1);
 
         if (!$viaje_id) {
-            wp_send_json_error(['message' => __('Viaje no válido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Viaje no válido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar que no sea el propio viaje
         $viaje = get_post($viaje_id);
         if (!$viaje || $viaje->post_author == get_current_user_id()) {
-            wp_send_json_error(['message' => __('No puedes reservar en tu propio viaje', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No puedes reservar en tu propio viaje', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar plazas disponibles
         $plazas_disponibles = (int) get_post_meta($viaje_id, '_carpooling_plazas_disponibles', true);
         if ($plazas > $plazas_disponibles) {
-            wp_send_json_error(['message' => __('No hay suficientes plazas disponibles', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No hay suficientes plazas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1079,7 +1079,7 @@ class Flavor_Carpooling_Frontend_Controller {
         ));
 
         if ($existente) {
-            wp_send_json_error(['message' => __('Ya tienes una reserva para este viaje', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Ya tienes una reserva para este viaje', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Crear reserva
@@ -1092,7 +1092,7 @@ class Flavor_Carpooling_Frontend_Controller {
         ]);
 
         if ($resultado === false) {
-            wp_send_json_error(['message' => __('Error al procesar la reserva', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al procesar la reserva', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Actualizar plazas disponibles
@@ -1106,9 +1106,9 @@ class Flavor_Carpooling_Frontend_Controller {
             $destino = get_post_meta($viaje_id, '_carpooling_destino', true);
             $fecha = get_post_meta($viaje_id, '_carpooling_fecha', true);
 
-            $asunto = sprintf(__('[Carpooling] Nueva reserva para tu viaje %s → %s', 'flavor-chat-ia'), $origen, $destino);
+            $asunto = sprintf(__('[Carpooling] Nueva reserva para tu viaje %s → %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $origen, $destino);
             $cuerpo = sprintf(
-                __("Hola %s,\n\n%s ha reservado %d plaza(s) para tu viaje de %s a %s el %s.\n\nPuedes ver los detalles en tu panel.", 'flavor-chat-ia'),
+                __("Hola %s,\n\n%s ha reservado %d plaza(s) para tu viaje de %s a %s el %s.\n\nPuedes ver los detalles en tu panel.", FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $conductor->display_name,
                 $pasajero->display_name,
                 $plazas,
@@ -1120,7 +1120,7 @@ class Flavor_Carpooling_Frontend_Controller {
             wp_mail($conductor->user_email, $asunto, $cuerpo);
         }
 
-        wp_send_json_success(['message' => __('Plaza reservada correctamente', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Plaza reservada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -1130,7 +1130,7 @@ class Flavor_Carpooling_Frontend_Controller {
         check_ajax_referer('carpooling_frontend_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $reserva_id = absint($_POST['reserva_id'] ?? 0);
@@ -1146,7 +1146,7 @@ class Flavor_Carpooling_Frontend_Controller {
         ));
 
         if (!$reserva) {
-            wp_send_json_error(['message' => __('Reserva no encontrada', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Reserva no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Cancelar
@@ -1156,7 +1156,7 @@ class Flavor_Carpooling_Frontend_Controller {
         $plazas_disponibles = (int) get_post_meta($reserva->viaje_id, '_carpooling_plazas_disponibles', true);
         update_post_meta($reserva->viaje_id, '_carpooling_plazas_disponibles', $plazas_disponibles + $reserva->plazas);
 
-        wp_send_json_success(['message' => __('Reserva cancelada', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Reserva cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -1166,14 +1166,14 @@ class Flavor_Carpooling_Frontend_Controller {
         check_ajax_referer('carpooling_frontend_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $viaje_id = absint($_POST['viaje_id'] ?? 0);
         $viaje = get_post($viaje_id);
 
         if (!$viaje || $viaje->post_author != get_current_user_id()) {
-            wp_send_json_error(['message' => __('No tienes permisos para esta acción', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes permisos para esta acción', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Cambiar a borrador
@@ -1200,9 +1200,9 @@ class Flavor_Carpooling_Frontend_Controller {
 
         foreach ($reservas as $reserva) {
             if ($reserva->user_email) {
-                $asunto = sprintf(__('[Carpooling] Viaje cancelado: %s → %s', 'flavor-chat-ia'), $origen, $destino);
+                $asunto = sprintf(__('[Carpooling] Viaje cancelado: %s → %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $origen, $destino);
                 $cuerpo = sprintf(
-                    __("Hola %s,\n\nLamentamos informarte que el viaje de %s a %s programado para el %s ha sido cancelado por el conductor.\n\nTe invitamos a buscar otras opciones de viaje.", 'flavor-chat-ia'),
+                    __("Hola %s,\n\nLamentamos informarte que el viaje de %s a %s programado para el %s ha sido cancelado por el conductor.\n\nTe invitamos a buscar otras opciones de viaje.", FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $reserva->display_name,
                     $origen,
                     $destino,
@@ -1216,7 +1216,7 @@ class Flavor_Carpooling_Frontend_Controller {
             $wpdb->update($tabla, ['estado' => 'cancelada'], ['id' => $reserva->id]);
         }
 
-        wp_send_json_success(['message' => __('Viaje cancelado', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Viaje cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -1276,7 +1276,7 @@ class Flavor_Carpooling_Frontend_Controller {
 
         ob_start();
         if (empty($viajes)) {
-            echo '<p class="carpooling-sin-viajes">' . __('No se encontraron viajes.', 'flavor-chat-ia') . '</p>';
+            echo '<p class="carpooling-sin-viajes">' . __('No se encontraron viajes.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         } else {
             foreach ($viajes as $viaje) {
                 $this->render_viaje_card($viaje);
@@ -1294,19 +1294,19 @@ class Flavor_Carpooling_Frontend_Controller {
         check_ajax_referer('carpooling_frontend_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $viaje_id = absint($_POST['viaje_id'] ?? 0);
         $mensaje = sanitize_textarea_field($_POST['mensaje'] ?? '');
 
         if (!$viaje_id || empty($mensaje)) {
-            wp_send_json_error(['message' => __('Datos incompletos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $viaje = get_post($viaje_id);
         if (!$viaje) {
-            wp_send_json_error(['message' => __('Viaje no encontrado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Viaje no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $conductor = get_userdata($viaje->post_author);
@@ -1316,9 +1316,9 @@ class Flavor_Carpooling_Frontend_Controller {
             $origen = get_post_meta($viaje_id, '_carpooling_origen', true);
             $destino = get_post_meta($viaje_id, '_carpooling_destino', true);
 
-            $asunto = sprintf(__('[Carpooling] Mensaje sobre tu viaje %s → %s', 'flavor-chat-ia'), $origen, $destino);
+            $asunto = sprintf(__('[Carpooling] Mensaje sobre tu viaje %s → %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $origen, $destino);
             $cuerpo = sprintf(
-                __("Hola %s,\n\n%s te ha enviado un mensaje sobre tu viaje de %s a %s:\n\n%s\n\nPuedes responder directamente a este email.", 'flavor-chat-ia'),
+                __("Hola %s,\n\n%s te ha enviado un mensaje sobre tu viaje de %s a %s:\n\n%s\n\nPuedes responder directamente a este email.", FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $conductor->display_name,
                 $pasajero->display_name,
                 $origen,
@@ -1331,7 +1331,7 @@ class Flavor_Carpooling_Frontend_Controller {
             ]);
         }
 
-        wp_send_json_success(['message' => __('Mensaje enviado al conductor', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Mensaje enviado al conductor', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**

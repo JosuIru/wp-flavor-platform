@@ -46,7 +46,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Chat Interno no estan creadas. Se crearan automaticamente al activar.', 'flavor-chat-ia');
+            return __('Las tablas de Chat Interno no estan creadas. Se crearan automaticamente al activar.', 'flavor-platform');
         }
         
     return '';
@@ -772,26 +772,26 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
             'e2e_enabled' => $configuracion_e2e,
             'e2e_nonce' => wp_create_nonce('wp_rest'),
             'strings' => [
-                'escribiendo' => __('escribiendo...', 'flavor-chat-ia'),
-                'tu' => __('Tu', 'flavor-chat-ia'),
-                'ahora' => __('ahora', 'flavor-chat-ia'),
-                'ayer' => __('ayer', 'flavor-chat-ia'),
-                'mensaje_eliminado' => __('Mensaje eliminado', 'flavor-chat-ia'),
-                'mensaje_editado' => __('editado', 'flavor-chat-ia'),
-                'sin_mensajes' => __('No hay mensajes aun. Inicia la conversacion.', 'flavor-chat-ia'),
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
-                'error' => __('Error al procesar la solicitud', 'flavor-chat-ia'),
-                'usuario_bloqueado' => __('Has bloqueado a este usuario', 'flavor-chat-ia'),
-                'bloqueado_por' => __('Este usuario te ha bloqueado', 'flavor-chat-ia'),
-                'online' => __('En linea', 'flavor-chat-ia'),
-                'offline' => __('Desconectado', 'flavor-chat-ia'),
-                'visto' => __('Visto', 'flavor-chat-ia'),
-                'enviado' => __('Enviado', 'flavor-chat-ia'),
-                'archivo_grande' => __('El archivo es demasiado grande', 'flavor-chat-ia'),
-                'tipo_no_permitido' => __('Tipo de archivo no permitido', 'flavor-chat-ia'),
-                'confirmar_eliminar' => __('Eliminar este mensaje?', 'flavor-chat-ia'),
-                'confirmar_bloquear' => __('Bloquear a este usuario?', 'flavor-chat-ia'),
-                'nuevo_mensaje' => __('Nuevo mensaje', 'flavor-chat-ia'),
+                'escribiendo' => __('escribiendo...', 'flavor-platform'),
+                'tu' => __('Tu', 'flavor-platform'),
+                'ahora' => __('ahora', 'flavor-platform'),
+                'ayer' => __('ayer', 'flavor-platform'),
+                'mensaje_eliminado' => __('Mensaje eliminado', 'flavor-platform'),
+                'mensaje_editado' => __('editado', 'flavor-platform'),
+                'sin_mensajes' => __('No hay mensajes aun. Inicia la conversacion.', 'flavor-platform'),
+                'cargando' => __('Cargando...', 'flavor-platform'),
+                'error' => __('Error al procesar la solicitud', 'flavor-platform'),
+                'usuario_bloqueado' => __('Has bloqueado a este usuario', 'flavor-platform'),
+                'bloqueado_por' => __('Este usuario te ha bloqueado', 'flavor-platform'),
+                'online' => __('En linea', 'flavor-platform'),
+                'offline' => __('Desconectado', 'flavor-platform'),
+                'visto' => __('Visto', 'flavor-platform'),
+                'enviado' => __('Enviado', 'flavor-platform'),
+                'archivo_grande' => __('El archivo es demasiado grande', 'flavor-platform'),
+                'tipo_no_permitido' => __('Tipo de archivo no permitido', 'flavor-platform'),
+                'confirmar_eliminar' => __('Eliminar este mensaje?', 'flavor-platform'),
+                'confirmar_bloquear' => __('Bloquear a este usuario?', 'flavor-platform'),
+                'nuevo_mensaje' => __('Nuevo mensaje', 'flavor-platform'),
             ],
         ]);
     }
@@ -949,7 +949,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error' => __('La vista solicitada no esta disponible en Chat Interno.', 'flavor-chat-ia'),
+            'error' => __('La vista solicitada no esta disponible en Chat Interno.', 'flavor-platform'),
         ];
     }
 
@@ -1054,7 +1054,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $usuario_id = get_current_user_id();
 
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-platform')];
         }
 
         global $wpdb;
@@ -1117,18 +1117,18 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
             // Preview del mensaje
             $preview_mensaje = $conversacion->ultimo_mensaje;
             if ($conversacion->ultimo_mensaje_tipo === 'imagen') {
-                $preview_mensaje = __('Imagen', 'flavor-chat-ia');
+                $preview_mensaje = __('Imagen', 'flavor-platform');
             } elseif ($conversacion->ultimo_mensaje_tipo === 'archivo') {
-                $preview_mensaje = __('Archivo', 'flavor-chat-ia');
+                $preview_mensaje = __('Archivo', 'flavor-platform');
             } elseif ($conversacion->ultimo_mensaje_tipo === 'audio') {
-                $preview_mensaje = __('Mensaje de voz', 'flavor-chat-ia');
+                $preview_mensaje = __('Mensaje de voz', 'flavor-platform');
             }
 
             $resultado[] = [
                 'id' => (int) $conversacion->id,
                 'con_usuario' => [
                     'id' => (int) $otro_participante_id,
-                    'nombre' => $otro_usuario ? $otro_usuario->display_name : __('Usuario', 'flavor-chat-ia'),
+                    'nombre' => $otro_usuario ? $otro_usuario->display_name : __('Usuario', 'flavor-platform'),
                     'avatar' => $otro_participante_id ? get_avatar_url($otro_participante_id, ['size' => 96]) : '',
                     'estado' => $estado_otro_usuario,
                 ],
@@ -1161,31 +1161,31 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $usuario_id = get_current_user_id();
 
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-platform')];
         }
 
         $otro_usuario_id = intval($params['usuario_id'] ?? 0);
 
         if (!$otro_usuario_id) {
-            return ['success' => false, 'error' => __('Debes seleccionar un usuario valido para iniciar la conversación.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes seleccionar un usuario valido para iniciar la conversación.', 'flavor-platform')];
         }
 
         if ($otro_usuario_id === $usuario_id) {
-            return ['success' => false, 'error' => __('No puedes iniciar una conversación contigo mismo.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No puedes iniciar una conversación contigo mismo.', 'flavor-platform')];
         }
 
         // Verificar que el usuario existe
         $otro_usuario = get_userdata($otro_usuario_id);
         if (!$otro_usuario) {
-            return ['success' => false, 'error' => __('El usuario seleccionado no existe.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('El usuario seleccionado no existe.', 'flavor-platform')];
         }
 
         // Verificar bloqueos
         if ($this->esta_bloqueado($usuario_id, $otro_usuario_id)) {
-            return ['success' => false, 'error' => __('Has bloqueado a este usuario. Desbloquéalo para iniciar la conversación.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Has bloqueado a este usuario. Desbloquéalo para iniciar la conversación.', 'flavor-platform')];
         }
         if ($this->esta_bloqueado($otro_usuario_id, $usuario_id)) {
-            return ['success' => false, 'error' => __('Este usuario no puede recibir tus mensajes en este momento.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Este usuario no puede recibir tus mensajes en este momento.', 'flavor-platform')];
         }
 
         global $wpdb;
@@ -1255,7 +1255,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
             'success' => true,
             'conversacion_id' => $conversacion_id,
             'nueva' => true,
-            'mensaje' => __('Conversación iniciada correctamente.', 'flavor-chat-ia'),
+            'mensaje' => __('Conversación iniciada correctamente.', 'flavor-platform'),
         ];
     }
 
@@ -1267,7 +1267,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $conversacion_id = intval($params['conversacion_id'] ?? 0);
 
         if (!$this->usuario_es_participante($usuario_id, $conversacion_id)) {
-            return ['success' => false, 'error' => __('No tienes acceso a esta conversación.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No tienes acceso a esta conversación.', 'flavor-platform')];
         }
 
         global $wpdb;
@@ -1325,7 +1325,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
             $resultado[] = [
                 'id' => (int) $mensaje->id,
                 'remitente_id' => (int) $mensaje->remitente_id,
-                'remitente_nombre' => $mensaje->remitente_nombre ?: __('Usuario', 'flavor-chat-ia'),
+                'remitente_nombre' => $mensaje->remitente_nombre ?: __('Usuario', 'flavor-platform'),
                 'remitente_avatar' => get_avatar_url($mensaje->remitente_id, ['size' => 48]),
                 'mensaje' => $mensaje->eliminado ? '' : $mensaje->mensaje,
                 'mensaje_html' => $mensaje->eliminado ? '' : $this->formatear_mensaje($mensaje->mensaje),
@@ -1427,22 +1427,22 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $usuario_id = get_current_user_id();
 
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-platform')];
         }
 
         $conversacion_id = intval($params['conversacion_id'] ?? 0);
 
         if (!$this->usuario_es_participante($usuario_id, $conversacion_id)) {
-            return ['success' => false, 'error' => __('No tienes acceso a esta conversación.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No tienes acceso a esta conversación.', 'flavor-platform')];
         }
 
         // Verificar bloqueos
         $otro_participante = $this->obtener_otro_participante($usuario_id, $conversacion_id);
         if ($this->esta_bloqueado($usuario_id, $otro_participante['id'])) {
-            return ['success' => false, 'error' => __('Has bloqueado a este usuario. Desbloquéalo para enviar mensajes.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Has bloqueado a este usuario. Desbloquéalo para enviar mensajes.', 'flavor-platform')];
         }
         if ($this->esta_bloqueado($otro_participante['id'], $usuario_id)) {
-            return ['success' => false, 'error' => __('Este usuario no puede recibir tus mensajes en este momento.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Este usuario no puede recibir tus mensajes en este momento.', 'flavor-platform')];
         }
 
         $mensaje = trim($params['mensaje'] ?? '');
@@ -1451,11 +1451,11 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
             : 'texto';
 
         if (empty($mensaje) && empty($params['adjuntos']) && $tipo === 'texto') {
-            return ['success' => false, 'error' => __('El mensaje no puede estar vacío.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('El mensaje no puede estar vacío.', 'flavor-platform')];
         }
 
         if (strlen($mensaje) > 5000) {
-            return ['success' => false, 'error' => __('El mensaje supera el límite permitido.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('El mensaje supera el límite permitido.', 'flavor-platform')];
         }
 
         global $wpdb;
@@ -1571,7 +1571,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
             'editado' => false,
             'eliminado' => false,
             'fecha' => current_time('mysql'),
-            'fecha_humana' => __('ahora', 'flavor-chat-ia'),
+            'fecha_humana' => __('ahora', 'flavor-platform'),
             'hora' => date('H:i'),
             'es_mio' => true,
         ];
@@ -1599,7 +1599,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $conversacion_id = intval($params['conversacion_id'] ?? 0);
 
         if (!$this->usuario_es_participante($usuario_id, $conversacion_id)) {
-            return ['success' => false, 'error' => __('No tienes acceso a esta conversación.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No tienes acceso a esta conversación.', 'flavor-platform')];
         }
 
         global $wpdb;
@@ -1647,13 +1647,13 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $usuario_id = get_current_user_id();
 
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-platform')];
         }
 
         $query = trim($params['query'] ?? '');
 
         if (strlen($query) < 2) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-platform')];
         }
 
         global $wpdb;
@@ -1717,7 +1717,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $conversacion_id = intval($params['conversacion_id'] ?? 0);
 
         if (!$this->usuario_es_participante($usuario_id, $conversacion_id)) {
-            return ['success' => false, 'error' => __('No tienes acceso a esta conversación.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No tienes acceso a esta conversación.', 'flavor-platform')];
         }
 
         global $wpdb;
@@ -1735,8 +1735,8 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
             'success' => true,
             'archivado' => $archivar,
             'mensaje' => $archivar
-                ? __('Conversacion archivada.', 'flavor-chat-ia')
-                : __('Conversacion desarchivada.', 'flavor-chat-ia'),
+                ? __('Conversacion archivada.', 'flavor-platform')
+                : __('Conversacion desarchivada.', 'flavor-platform'),
         ];
     }
 
@@ -1748,7 +1748,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $conversacion_id = intval($params['conversacion_id'] ?? 0);
 
         if (!$this->usuario_es_participante($usuario_id, $conversacion_id)) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-platform')];
         }
 
         global $wpdb;
@@ -1766,8 +1766,8 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
             'success' => true,
             'silenciado' => $silenciar,
             'mensaje' => $silenciar
-                ? __('Conversacion silenciada.', 'flavor-chat-ia')
-                : __('Notificaciones reactivadas.', 'flavor-chat-ia'),
+                ? __('Conversacion silenciada.', 'flavor-platform')
+                : __('Notificaciones reactivadas.', 'flavor-platform'),
         ];
     }
 
@@ -1787,16 +1787,16 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$mensaje) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-platform')];
         }
 
         if (!$this->usuario_es_participante($usuario_id, $mensaje->conversacion_id)) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-platform')];
         }
 
         $settings = $this->get_settings();
         if (!$settings['permite_eliminar_mensajes']) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-platform')];
         }
 
         $para_todos = !empty($params['para_todos']) && (int) $mensaje->remitente_id === $usuario_id;
@@ -1822,7 +1822,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => true,
-            'mensaje' => __('Mensaje eliminado.', 'flavor-chat-ia'),
+            'mensaje' => __('Mensaje eliminado.', 'flavor-platform'),
         ];
     }
 
@@ -1835,7 +1835,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $nuevo_mensaje = trim($params['mensaje'] ?? '');
 
         if (empty($nuevo_mensaje)) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-platform')];
         }
 
         global $wpdb;
@@ -1847,16 +1847,16 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$mensaje) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-platform')];
         }
 
         if ((int) $mensaje->remitente_id !== $usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-platform')];
         }
 
         $settings = $this->get_settings();
         if (!$settings['permite_editar_mensajes']) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-platform')];
         }
 
         // Verificar tiempo limite
@@ -1867,7 +1867,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
             return [
                 'success' => false,
                 'error' => sprintf(
-                    __('Solo puedes editar mensajes en los primeros %d minutos.', 'flavor-chat-ia'),
+                    __('Solo puedes editar mensajes en los primeros %d minutos.', 'flavor-platform'),
                     $settings['tiempo_edicion_minutos']
                 ),
             ];
@@ -1886,7 +1886,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => true,
-            'mensaje' => __('Mensaje editado.', 'flavor-chat-ia'),
+            'mensaje' => __('Mensaje editado.', 'flavor-platform'),
             'nuevo_mensaje' => $nuevo_mensaje,
             'mensaje_html' => $this->formatear_mensaje($nuevo_mensaje),
         ];
@@ -1900,15 +1900,15 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $bloqueado_id = intval($params['usuario_id'] ?? 0);
 
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-platform')];
         }
 
         if (!$bloqueado_id || $bloqueado_id === $usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-platform')];
         }
 
         if ($this->esta_bloqueado($usuario_id, $bloqueado_id)) {
-            return ['success' => false, 'error' => __('escribiendo', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('escribiendo', 'flavor-platform')];
         }
 
         global $wpdb;
@@ -1922,7 +1922,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => true,
-            'mensaje' => __('Usuario bloqueado.', 'flavor-chat-ia'),
+            'mensaje' => __('Usuario bloqueado.', 'flavor-platform'),
         ];
     }
 
@@ -1934,7 +1934,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $bloqueado_id = intval($params['usuario_id'] ?? 0);
 
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Sin permisos.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Sin permisos.', 'flavor-platform')];
         }
 
         global $wpdb;
@@ -1947,7 +1947,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => true,
-            'mensaje' => __('Usuario desbloqueado.', 'flavor-chat-ia'),
+            'mensaje' => __('Usuario desbloqueado.', 'flavor-platform'),
         ];
     }
 
@@ -1960,7 +1960,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $escribiendo = !empty($params['escribiendo']);
 
         if (!$this->usuario_es_participante($usuario_id, $conversacion_id)) {
-            return ['success' => false, 'error' => __('SELECT COUNT(*) FROM $tabla_mensajes WHERE eliminado = 0', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('SELECT COUNT(*) FROM $tabla_mensajes WHERE eliminado = 0', 'flavor-platform')];
         }
 
         global $wpdb;
@@ -1983,7 +1983,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
      */
     private function action_estadisticas_mensajeria($params) {
         if (!current_user_can('manage_options')) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-platform')];
         }
 
         global $wpdb;
@@ -2298,16 +2298,16 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_chat_interno', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json(['success' => false, 'error' => __('query', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('query', 'flavor-platform')]);
         }
 
         $settings = $this->get_settings();
         if (!$settings['permite_archivos']) {
-            wp_send_json(['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-platform')]);
         }
 
         if (empty($_FILES['file'])) {
-            wp_send_json(['success' => false, 'error' => __('search', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('search', 'flavor-platform')]);
         }
 
         $archivo = $_FILES['file'];
@@ -2317,7 +2317,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
             wp_send_json([
                 'success' => false,
                 'error' => sprintf(
-                    __('El archivo es demasiado grande. Maximo: %d MB', 'flavor-chat-ia'),
+                    __('El archivo es demasiado grande. Maximo: %d MB', 'flavor-platform'),
                     $settings['max_tamano_archivo_mb']
                 ),
             ]);
@@ -2325,7 +2325,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
 
         $tipos_permitidos = $this->get_allowed_file_types();
         if (!in_array($archivo['type'], $tipos_permitidos)) {
-            wp_send_json(['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-platform')]);
         }
 
         require_once ABSPATH . 'wp-admin/includes/file.php';
@@ -2358,7 +2358,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_chat_interno', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json(['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-platform')]);
         }
 
         $busqueda = sanitize_text_field($_GET['query'] ?? '');
@@ -2397,7 +2397,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json(['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-platform')]);
         }
 
         $conversacion_id = intval($_GET['conversacion_id'] ?? 0);
@@ -2405,7 +2405,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $dispositivo_id = sanitize_text_field($_GET['dispositivo_id'] ?? '');
 
         if (!$this->usuario_es_participante($usuario_id, $conversacion_id)) {
-            wp_send_json(['success' => false, 'error' => __('mensajes', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('mensajes', 'flavor-platform')]);
         }
 
         // Actualizar actividad
@@ -2529,12 +2529,12 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = intval($_GET['usuario_id'] ?? 0);
         if (!$usuario_id) {
-            wp_send_json(['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-platform')]);
         }
 
         $usuario = get_userdata($usuario_id);
         if (!$usuario) {
-            wp_send_json(['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-platform')]);
         }
 
         $yo = get_current_user_id();
@@ -2642,8 +2642,8 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
     public function shortcode_inbox($atts) {
         if (!is_user_logged_in()) {
             return '<div class="ci-login-required">' .
-                __('Debes iniciar sesion para ver tus mensajes.', 'flavor-chat-ia') .
-                ' <a href="' . wp_login_url(home_url('/mi-portal/chat-interno/')) . '">' . __('Iniciar sesion', 'flavor-chat-ia') . '</a>' .
+                __('Debes iniciar sesion para ver tus mensajes.', 'flavor-platform') .
+                ' <a href="' . wp_login_url(home_url('/mi-portal/chat-interno/')) . '">' . __('Iniciar sesion', 'flavor-platform') . '</a>' .
                 '</div>';
         }
 
@@ -2657,27 +2657,27 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
             <!-- Sidebar con lista de conversaciones -->
             <div class="ci-sidebar">
                 <div class="ci-sidebar-header">
-                    <h3><?php _e('Mensajes', 'flavor-chat-ia'); ?></h3>
-                    <button type="button" class="ci-btn-nuevo" title="<?php esc_attr_e('Nuevo mensaje', 'flavor-chat-ia'); ?>">
+                    <h3><?php _e('Mensajes', 'flavor-platform'); ?></h3>
+                    <button type="button" class="ci-btn-nuevo" title="<?php esc_attr_e('Nuevo mensaje', 'flavor-platform'); ?>">
                         <span class="dashicons dashicons-edit"></span>
                     </button>
                 </div>
 
                 <div class="ci-sidebar-search">
-                    <input type="text" id="ci-buscar-conversacion" placeholder="<?php esc_attr_e('Buscar...', 'flavor-chat-ia'); ?>">
+                    <input type="text" id="ci-buscar-conversacion" placeholder="<?php esc_attr_e('Buscar...', 'flavor-platform'); ?>">
                 </div>
 
                 <div class="ci-conversaciones-lista" id="ci-conversaciones">
                     <div class="ci-loading">
                         <span class="ci-spinner"></span>
-                        <?php _e('Cargando...', 'flavor-chat-ia'); ?>
+                        <?php _e('Cargando...', 'flavor-platform'); ?>
                     </div>
                 </div>
 
                 <div class="ci-sidebar-footer">
                     <button type="button" class="ci-link-archivados" id="ci-toggle-archivados">
                         <span class="dashicons dashicons-archive"></span>
-                        <?php _e('Archivados', 'flavor-chat-ia'); ?>
+                        <?php _e('Archivados', 'flavor-platform'); ?>
                     </button>
                 </div>
             </div>
@@ -2686,17 +2686,17 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
             <div class="ci-main">
                 <div class="ci-no-seleccionado" id="ci-placeholder">
                     <span class="dashicons dashicons-email-alt"></span>
-                    <h3><?php _e('Tus mensajes', 'flavor-chat-ia'); ?></h3>
-                    <p><?php _e('Selecciona una conversacion o inicia una nueva', 'flavor-chat-ia'); ?></p>
+                    <h3><?php _e('Tus mensajes', 'flavor-platform'); ?></h3>
+                    <p><?php _e('Selecciona una conversacion o inicia una nueva', 'flavor-platform'); ?></p>
                     <button type="button" class="ci-btn ci-btn-primary ci-btn-nuevo-main">
-                        <?php _e('Nuevo mensaje', 'flavor-chat-ia'); ?>
+                        <?php _e('Nuevo mensaje', 'flavor-platform'); ?>
                     </button>
                 </div>
 
                 <div class="ci-chat-container" id="ci-chat-container" style="display: none;">
                     <!-- Header de la conversacion -->
                     <div class="ci-chat-header">
-                        <button type="button" class="ci-btn-back" title="<?php esc_attr_e('Volver', 'flavor-chat-ia'); ?>">
+                        <button type="button" class="ci-btn-back" title="<?php esc_attr_e('Volver', 'flavor-platform'); ?>">
                             <span class="dashicons dashicons-arrow-left-alt2"></span>
                         </button>
                         <div class="ci-usuario-info">
@@ -2707,13 +2707,13 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
                             </div>
                         </div>
                         <div class="ci-chat-acciones">
-                            <button type="button" class="ci-btn-icon ci-btn-buscar" title="<?php esc_attr_e('Buscar', 'flavor-chat-ia'); ?>">
+                            <button type="button" class="ci-btn-icon ci-btn-buscar" title="<?php esc_attr_e('Buscar', 'flavor-platform'); ?>">
                                 <span class="dashicons dashicons-search"></span>
                             </button>
-                            <button type="button" class="ci-btn-icon ci-btn-info" title="<?php esc_attr_e('Info', 'flavor-chat-ia'); ?>">
+                            <button type="button" class="ci-btn-icon ci-btn-info" title="<?php esc_attr_e('Info', 'flavor-platform'); ?>">
                                 <span class="dashicons dashicons-info-outline"></span>
                             </button>
-                            <button type="button" class="ci-btn-icon ci-btn-menu" title="<?php esc_attr_e('Menu', 'flavor-chat-ia'); ?>">
+                            <button type="button" class="ci-btn-icon ci-btn-menu" title="<?php esc_attr_e('Menu', 'flavor-platform'); ?>">
                                 <span class="dashicons dashicons-ellipsis"></span>
                             </button>
                         </div>
@@ -2734,7 +2734,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
                     <!-- Area de respuesta -->
                     <div class="ci-respuesta-preview" id="ci-respuesta-preview" style="display: none;">
                         <div class="ci-respuesta-contenido">
-                            <span class="ci-respuesta-label"><?php _e('Respondiendo a:', 'flavor-chat-ia'); ?></span>
+                            <span class="ci-respuesta-label"><?php _e('Respondiendo a:', 'flavor-platform'); ?></span>
                             <span class="ci-respuesta-texto" id="ci-respuesta-texto"></span>
                         </div>
                         <button type="button" class="ci-respuesta-cancelar" id="ci-respuesta-cancelar">
@@ -2745,7 +2745,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
                     <!-- Area de input -->
                     <div class="ci-input-container">
                         <div class="ci-input-acciones">
-                            <button type="button" class="ci-btn-icon ci-btn-adjuntar" title="<?php esc_attr_e('Adjuntar archivo', 'flavor-chat-ia'); ?>">
+                            <button type="button" class="ci-btn-icon ci-btn-adjuntar" title="<?php esc_attr_e('Adjuntar archivo', 'flavor-platform'); ?>">
                                 <span class="dashicons dashicons-paperclip"></span>
                             </button>
                             <input type="file" id="ci-file-input" style="display: none;"
@@ -2753,7 +2753,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
                         </div>
                         <div class="ci-input-wrapper">
                             <textarea id="ci-mensaje-input"
-                                      placeholder="<?php esc_attr_e('Escribe un mensaje...', 'flavor-chat-ia'); ?>"
+                                      placeholder="<?php esc_attr_e('Escribe un mensaje...', 'flavor-platform'); ?>"
                                       rows="1"></textarea>
                         </div>
                         <button type="button" class="ci-btn-enviar" id="ci-btn-enviar" disabled>
@@ -2766,7 +2766,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
             <!-- Panel lateral de info -->
             <div class="ci-panel-info" id="ci-panel-info" style="display: none;">
                 <div class="ci-panel-header">
-                    <h3><?php _e('Informacion', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Informacion', 'flavor-platform'); ?></h3>
                     <button type="button" class="ci-panel-cerrar">
                         <span class="dashicons dashicons-no-alt"></span>
                     </button>
@@ -2781,31 +2781,31 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
             <div class="ci-modal-overlay"></div>
             <div class="ci-modal-content">
                 <div class="ci-modal-header">
-                    <h3><?php _e('Nuevo mensaje', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Nuevo mensaje', 'flavor-platform'); ?></h3>
                     <button type="button" class="ci-modal-cerrar">
                         <span class="dashicons dashicons-no-alt"></span>
                     </button>
                 </div>
                 <div class="ci-modal-body">
                     <div class="ci-form-group">
-                        <label><?php _e('Para:', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Para:', 'flavor-platform'); ?></label>
                         <input type="text" id="ci-buscar-usuario"
-                               placeholder="<?php esc_attr_e('Buscar usuario...', 'flavor-chat-ia'); ?>">
+                               placeholder="<?php esc_attr_e('Buscar usuario...', 'flavor-platform'); ?>">
                         <div class="ci-usuarios-resultado" id="ci-usuarios-resultado"></div>
                         <input type="hidden" id="ci-nuevo-usuario-id">
                     </div>
                     <div class="ci-form-group">
-                        <label><?php _e('Mensaje:', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Mensaje:', 'flavor-platform'); ?></label>
                         <textarea id="ci-nuevo-mensaje" rows="4"
-                                  placeholder="<?php esc_attr_e('Escribe tu mensaje...', 'flavor-chat-ia'); ?>"></textarea>
+                                  placeholder="<?php esc_attr_e('Escribe tu mensaje...', 'flavor-platform'); ?>"></textarea>
                     </div>
                 </div>
                 <div class="ci-modal-footer">
                     <button type="button" class="ci-btn ci-btn-secondary ci-modal-cancelar">
-                        <?php _e('Cancelar', 'flavor-chat-ia'); ?>
+                        <?php _e('Cancelar', 'flavor-platform'); ?>
                     </button>
                     <button type="button" class="ci-btn ci-btn-primary" id="ci-btn-enviar-nuevo" disabled>
-                        <?php _e('Enviar', 'flavor-chat-ia'); ?>
+                        <?php _e('Enviar', 'flavor-platform'); ?>
                     </button>
                 </div>
             </div>
@@ -2815,15 +2815,15 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         <div class="ci-dropdown-menu" id="ci-menu-conversacion" style="display: none;">
             <button type="button" class="ci-dropdown-item" data-action="archivar">
                 <span class="dashicons dashicons-archive"></span>
-                <?php _e('Archivar', 'flavor-chat-ia'); ?>
+                <?php _e('Archivar', 'flavor-platform'); ?>
             </button>
             <button type="button" class="ci-dropdown-item" data-action="silenciar">
                 <span class="dashicons dashicons-controls-volumeoff"></span>
-                <?php _e('Silenciar', 'flavor-chat-ia'); ?>
+                <?php _e('Silenciar', 'flavor-platform'); ?>
             </button>
             <button type="button" class="ci-dropdown-item ci-dropdown-danger" data-action="bloquear">
                 <span class="dashicons dashicons-dismiss"></span>
-                <?php _e('Bloquear usuario', 'flavor-chat-ia'); ?>
+                <?php _e('Bloquear usuario', 'flavor-platform'); ?>
             </button>
         </div>
         <?php
@@ -2836,7 +2836,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
     public function shortcode_conversacion($atts) {
         if (!is_user_logged_in()) {
             return '<div class="ci-login-required">' .
-                __('Debes iniciar sesion para ver esta conversacion.', 'flavor-chat-ia') .
+                __('Debes iniciar sesion para ver esta conversacion.', 'flavor-platform') .
                 '</div>';
         }
 
@@ -2857,7 +2857,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         }
 
         if (!$conversacion_id) {
-            return '<div class="ci-error">' . __('Conversacion no encontrada.', 'flavor-chat-ia') . '</div>';
+            return '<div class="ci-error">' . __('Conversacion no encontrada.', 'flavor-platform') . '</div>';
         }
 
         ob_start();
@@ -2879,7 +2879,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
                     <span class="ci-typing-text"></span>
                 </div>
                 <div class="ci-input-container">
-                    <textarea id="ci-mensaje-input" placeholder="<?php esc_attr_e('Escribe un mensaje...', 'flavor-chat-ia'); ?>" rows="1"></textarea>
+                    <textarea id="ci-mensaje-input" placeholder="<?php esc_attr_e('Escribe un mensaje...', 'flavor-platform'); ?>" rows="1"></textarea>
                     <button type="button" class="ci-btn-enviar" id="ci-btn-enviar" disabled>
                         <span class="dashicons dashicons-arrow-right-alt"></span>
                     </button>
@@ -2900,7 +2900,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
 
         $atts = shortcode_atts([
             'usuario_id' => 0,
-            'texto' => __('Enviar mensaje', 'flavor-chat-ia'),
+            'texto' => __('Enviar mensaje', 'flavor-platform'),
             'clase' => '',
         ], $atts);
 
@@ -2988,7 +2988,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         if (!$otro_id) {
             return [
                 'id' => 0,
-                'nombre' => __('Usuario', 'flavor-chat-ia'),
+                'nombre' => __('Usuario', 'flavor-platform'),
                 'avatar' => '',
                 'estado' => 'offline',
             ];
@@ -2998,7 +2998,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
 
         return [
             'id' => (int) $otro_id,
-            'nombre' => $otro_usuario ? $otro_usuario->display_name : __('Usuario', 'flavor-chat-ia'),
+            'nombre' => $otro_usuario ? $otro_usuario->display_name : __('Usuario', 'flavor-platform'),
             'avatar' => get_avatar_url($otro_id, ['size' => 96]),
             'estado' => $this->obtener_estado_usuario($otro_id),
         ];
@@ -3179,18 +3179,18 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $diferencia = time() - $timestamp;
 
         if ($diferencia < 60) {
-            return __('ahora', 'flavor-chat-ia');
+            return __('ahora', 'flavor-platform');
         } elseif ($diferencia < 3600) {
             $minutos = floor($diferencia / 60);
-            return sprintf(_n('%d min', '%d min', $minutos, 'flavor-chat-ia'), $minutos);
+            return sprintf(_n('%d min', '%d min', $minutos, 'flavor-platform'), $minutos);
         } elseif ($diferencia < 86400) {
             $horas = floor($diferencia / 3600);
-            return sprintf(_n('%d h', '%d h', $horas, 'flavor-chat-ia'), $horas);
+            return sprintf(_n('%d h', '%d h', $horas, 'flavor-platform'), $horas);
         } elseif ($diferencia < 172800) {
-            return __('ayer', 'flavor-chat-ia');
+            return __('ayer', 'flavor-platform');
         } elseif ($diferencia < 604800) {
             $dias = floor($diferencia / 86400);
-            return sprintf(_n('%d dia', '%d dias', $dias, 'flavor-chat-ia'), $dias);
+            return sprintf(_n('%d dia', '%d dias', $dias, 'flavor-platform'), $dias);
         } else {
             return date_i18n('j M', $timestamp);
         }
@@ -3227,7 +3227,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
      */
     public function add_dashboard_tab($tabs) {
         $tabs['mensajes'] = [
-            'label' => __('Mensajes', 'flavor-chat-ia'),
+            'label' => __('Mensajes', 'flavor-platform'),
             'icon' => 'dashicons-email',
             'callback' => [$this, 'render_dashboard_tab'],
             'orden' => 20,
@@ -3253,32 +3253,32 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
     public function get_web_components() {
         return [
             'hero_chat_interno' => [
-                'label' => __('Hero Chat Interno', 'flavor-chat-ia'),
+                'label' => __('Hero Chat Interno', 'flavor-platform'),
                 'category' => 'hero',
                 'icon' => 'dashicons-email',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Mensajeria Privada', 'flavor-chat-ia')],
-                    'subtitulo' => ['type' => 'textarea', 'default' => __('Comunicacion directa y privada entre vecinos', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Mensajeria Privada', 'flavor-platform')],
+                    'subtitulo' => ['type' => 'textarea', 'default' => __('Comunicacion directa y privada entre vecinos', 'flavor-platform')],
                     'imagen_fondo' => ['type' => 'image', 'default' => ''],
                 ],
                 'template' => 'chat-interno/hero',
             ],
             'features_chat' => [
-                'label' => __('Caracteristicas del Chat', 'flavor-chat-ia'),
+                'label' => __('Caracteristicas del Chat', 'flavor-platform'),
                 'category' => 'features',
                 'icon' => 'dashicons-format-chat',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Mensajeria Completa', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Mensajeria Completa', 'flavor-platform')],
                 ],
                 'template' => 'chat-interno/features',
             ],
             'cta_app' => [
-                'label' => __('CTA Descargar App', 'flavor-chat-ia'),
+                'label' => __('CTA Descargar App', 'flavor-platform'),
                 'category' => 'cta',
                 'icon' => 'dashicons-smartphone',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Descarga la App', 'flavor-chat-ia')],
-                    'descripcion' => ['type' => 'textarea', 'default' => __('Chatea desde cualquier lugar con la app movil', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Descarga la App', 'flavor-platform')],
+                    'descripcion' => ['type' => 'textarea', 'default' => __('Chatea desde cualquier lugar con la app movil', 'flavor-platform')],
                     'boton_ios' => ['type' => 'url', 'default' => '#'],
                     'boton_android' => ['type' => 'url', 'default' => '#'],
                 ],
@@ -3394,25 +3394,25 @@ KNOWLEDGE;
     protected function get_admin_config() {
         return [
             'id' => 'chat_interno',
-            'label' => __('Chat Interno', 'flavor-chat-ia'),
+            'label' => __('Chat Interno', 'flavor-platform'),
             'icon' => 'dashicons-testimonial',
             'capability' => 'manage_options',
             'categoria' => 'comunicacion',
             'paginas' => [
                 [
                     'slug' => 'flavor-chat-interno-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_dashboard'],
                 ],
                 [
                     'slug' => 'flavor-chat-interno-conversaciones',
-                    'titulo' => __('Conversaciones', 'flavor-chat-ia'),
+                    'titulo' => __('Conversaciones', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_conversaciones'],
                     'badge' => [$this, 'contar_conversaciones_activas'],
                 ],
                 [
                     'slug' => 'flavor-chat-interno-config',
-                    'titulo' => __('Configuracion', 'flavor-chat-ia'),
+                    'titulo' => __('Configuracion', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_configuracion'],
                 ],
             ],
@@ -3454,24 +3454,24 @@ KNOWLEDGE;
         $acciones = $is_dashboard_viewer
             ? [
                 [
-                    'label' => __('Ver en portal', 'flavor-chat-ia'),
+                    'label' => __('Ver en portal', 'flavor-platform'),
                     'url' => home_url('/mi-portal/chat-interno/'),
                     'class' => '',
                 ],
             ]
             : [];
-        $this->render_page_header(__('Chat Interno - Dashboard', 'flavor-chat-ia'), $acciones);
+        $this->render_page_header(__('Chat Interno - Dashboard', 'flavor-platform'), $acciones);
         ?>
         <div class="wrap flavor-chat-interno-admin">
             <?php if ($is_dashboard_viewer) : ?>
-                <div class="notice notice-info"><p><?php esc_html_e('Vista resumida para gestor de grupos. El dashboard permite consulta rápida, pero la gestión detallada de conversaciones sigue reservada a administración.', 'flavor-chat-ia'); ?></p></div>
+                <div class="notice notice-info"><p><?php esc_html_e('Vista resumida para gestor de grupos. El dashboard permite consulta rápida, pero la gestión detallada de conversaciones sigue reservada a administración.', 'flavor-platform'); ?></p></div>
             <?php endif; ?>
             <?php if (method_exists($this, 'render_admin_module_hub')) : ?>
                 <?php $this->render_admin_module_hub([
-                    'description' => __('Acceso visible al dashboard, conversaciones, configuración y al panel principal de actividad.', 'flavor-chat-ia'),
+                    'description' => __('Acceso visible al dashboard, conversaciones, configuración y al panel principal de actividad.', 'flavor-platform'),
                     'extra_items' => [
                         [
-                            'label' => __('Portal', 'flavor-chat-ia'),
+                            'label' => __('Portal', 'flavor-platform'),
                             'url' => home_url('/mi-portal/chat-interno/'),
                             'icon' => 'dashicons-external',
                         ],
@@ -3491,18 +3491,18 @@ KNOWLEDGE;
     public function render_admin_conversaciones() {
         $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
         $this->render_page_header(
-            __('Conversaciones', 'flavor-chat-ia'),
+            __('Conversaciones', 'flavor-platform'),
             $is_dashboard_viewer
                 ? [
                     [
-                        'label' => __('Ver en portal', 'flavor-chat-ia'),
+                        'label' => __('Ver en portal', 'flavor-platform'),
                         'url' => home_url('/mi-portal/chat-interno/'),
                         'class' => '',
                     ],
                 ]
                 : [
                     [
-                        'label' => __('Exportar', 'flavor-chat-ia'),
+                        'label' => __('Exportar', 'flavor-platform'),
                         'url' => admin_url('admin.php?page=flavor-chat-interno-conversaciones&action=exportar'),
                         'class' => 'button-secondary',
                     ],
@@ -3511,9 +3511,9 @@ KNOWLEDGE;
         ?>
         <div class="wrap flavor-chat-interno-admin">
             <?php if ($is_dashboard_viewer) : ?>
-                <div class="notice notice-info"><p><?php esc_html_e('Vista de solo lectura para gestor de grupos. La exportación y la moderación detallada de conversaciones siguen reservadas a administración.', 'flavor-chat-ia'); ?></p></div>
+                <div class="notice notice-info"><p><?php esc_html_e('Vista de solo lectura para gestor de grupos. La exportación y la moderación detallada de conversaciones siguen reservadas a administración.', 'flavor-platform'); ?></p></div>
             <?php endif; ?>
-            <p><?php _e('Listado de todas las conversaciones del sistema.', 'flavor-chat-ia'); ?></p>
+            <p><?php _e('Listado de todas las conversaciones del sistema.', 'flavor-platform'); ?></p>
             <?php $this->render_tabla_conversaciones(); ?>
         </div>
         <?php
@@ -3528,7 +3528,7 @@ KNOWLEDGE;
         $tabla_participantes = $wpdb->prefix . 'flavor_chat_participantes';
 
         if (!$this->tabla_existe($tabla_conversaciones)) {
-            echo '<div class="notice notice-warning"><p>' . __('Las tablas no estan creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-warning"><p>' . __('Las tablas no estan creadas.', 'flavor-platform') . '</p></div>';
             return;
         }
 
@@ -3543,18 +3543,18 @@ KNOWLEDGE;
         ");
 
         if (empty($conversaciones)) {
-            echo '<div class="notice notice-info"><p>' . __('No hay conversaciones registradas.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-info"><p>' . __('No hay conversaciones registradas.', 'flavor-platform') . '</p></div>';
             return;
         }
         ?>
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th><?php _e('ID', 'flavor-chat-ia'); ?></th>
-                    <th><?php _e('Tipo', 'flavor-chat-ia'); ?></th>
-                    <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                    <th><?php _e('Participantes', 'flavor-chat-ia'); ?></th>
-                    <th><?php _e('Ultima actividad', 'flavor-chat-ia'); ?></th>
+                    <th><?php _e('ID', 'flavor-platform'); ?></th>
+                    <th><?php _e('Tipo', 'flavor-platform'); ?></th>
+                    <th><?php _e('Estado', 'flavor-platform'); ?></th>
+                    <th><?php _e('Participantes', 'flavor-platform'); ?></th>
+                    <th><?php _e('Ultima actividad', 'flavor-platform'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -3568,7 +3568,7 @@ KNOWLEDGE;
                             </span>
                         </td>
                         <td><?php echo intval($conversacion->num_participantes); ?></td>
-                        <td><?php echo esc_html(human_time_diff(strtotime($conversacion->fecha_actualizacion), current_time('timestamp')) . ' ' . __('atras', 'flavor-chat-ia')); ?></td>
+                        <td><?php echo esc_html(human_time_diff(strtotime($conversacion->fecha_actualizacion), current_time('timestamp')) . ' ' . __('atras', 'flavor-platform')); ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -3580,7 +3580,7 @@ KNOWLEDGE;
      * Renderiza la pagina de configuracion en admin
      */
     public function render_admin_configuracion() {
-        $this->render_page_header(__('Configuracion del Chat Interno', 'flavor-chat-ia'));
+        $this->render_page_header(__('Configuracion del Chat Interno', 'flavor-platform'));
         ?>
         <div class="wrap flavor-chat-interno-admin">
             <form method="post" action="">
@@ -3588,25 +3588,25 @@ KNOWLEDGE;
 
                 <table class="form-table">
                     <tr>
-                        <th scope="row"><?php _e('Permitir archivos', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php _e('Permitir archivos', 'flavor-platform'); ?></th>
                         <td>
                             <label>
                                 <input type="checkbox" name="permite_archivos" value="1" <?php checked($this->get_setting('permite_archivos'), true); ?>>
-                                <?php _e('Permitir envio de archivos adjuntos', 'flavor-chat-ia'); ?>
+                                <?php _e('Permitir envio de archivos adjuntos', 'flavor-platform'); ?>
                             </label>
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><?php _e('Notas de voz', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php _e('Notas de voz', 'flavor-platform'); ?></th>
                         <td>
                             <label>
                                 <input type="checkbox" name="permite_notas_voz" value="1" <?php checked($this->get_setting('permite_notas_voz'), true); ?>>
-                                <?php _e('Permitir envio de notas de voz', 'flavor-chat-ia'); ?>
+                                <?php _e('Permitir envio de notas de voz', 'flavor-platform'); ?>
                             </label>
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><?php _e('Mensajes por pagina', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php _e('Mensajes por pagina', 'flavor-platform'); ?></th>
                         <td>
                             <input type="number" name="mensajes_por_pagina" value="<?php echo esc_attr($this->get_setting('mensajes_por_pagina')); ?>" min="10" max="100" class="small-text">
                         </td>
@@ -3614,7 +3614,7 @@ KNOWLEDGE;
                 </table>
 
                 <p class="submit">
-                    <button type="submit" class="button button-primary"><?php _e('Guardar cambios', 'flavor-chat-ia'); ?></button>
+                    <button type="submit" class="button button-primary"><?php _e('Guardar cambios', 'flavor-platform'); ?></button>
                 </p>
             </form>
         </div>
@@ -3646,11 +3646,11 @@ KNOWLEDGE;
         <div class="flavor-widget-stats">
             <div class="stat-item">
                 <span class="stat-number"><?php echo intval($total_conversaciones); ?></span>
-                <span class="stat-label"><?php _e('Conversaciones', 'flavor-chat-ia'); ?></span>
+                <span class="stat-label"><?php _e('Conversaciones', 'flavor-platform'); ?></span>
             </div>
             <div class="stat-item">
                 <span class="stat-number"><?php echo intval($total_mensajes_hoy); ?></span>
-                <span class="stat-label"><?php _e('Mensajes hoy', 'flavor-chat-ia'); ?></span>
+                <span class="stat-label"><?php _e('Mensajes hoy', 'flavor-platform'); ?></span>
             </div>
         </div>
         <?php
@@ -3675,7 +3675,7 @@ KNOWLEDGE;
             [
                 'icon' => 'dashicons-testimonial',
                 'valor' => intval($total_activas),
-                'label' => __('Chats activos', 'flavor-chat-ia'),
+                'label' => __('Chats activos', 'flavor-platform'),
                 'color' => 'purple',
                 'enlace' => $is_dashboard_viewer ? home_url('/mi-portal/chat-interno/') : admin_url('admin.php?page=flavor-chat-interno-conversaciones'),
             ],
@@ -3713,7 +3713,7 @@ KNOWLEDGE;
             $estadisticas['mis_chats'] = [
                 'icon' => 'dashicons-format-chat',
                 'valor' => $mis_chats,
-                'label' => __('Conversaciones', 'flavor-chat-ia'),
+                'label' => __('Conversaciones', 'flavor-platform'),
                 'color' => $mis_chats > 0 ? 'purple' : 'gray',
             ];
 
@@ -3733,7 +3733,7 @@ KNOWLEDGE;
                     $estadisticas['sin_leer'] = [
                         'icon' => 'dashicons-email-alt',
                         'valor' => $sin_leer,
-                        'label' => __('Sin leer', 'flavor-chat-ia'),
+                        'label' => __('Sin leer', 'flavor-platform'),
                         'color' => 'orange',
                     ];
                 }
@@ -3751,19 +3751,19 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Chat Interno', 'flavor-chat-ia'),
+                'title' => __('Chat Interno', 'flavor-platform'),
                 'slug' => 'chat-interno',
-                'content' => '<h1>' . __('Chat Interno', 'flavor-chat-ia') . '</h1>
-<p>' . __('Mensajería privada entre usuarios de la comunidad. Comunícate de forma directa y segura.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Chat Interno', 'flavor-platform') . '</h1>
+<p>' . __('Mensajería privada entre usuarios de la comunidad. Comunícate de forma directa y segura.', 'flavor-platform') . '</p>
 
 [flavor_module_listing module="chat_interno" action="listar"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Conversaciones', 'flavor-chat-ia'),
+                'title' => __('Conversaciones', 'flavor-platform'),
                 'slug' => 'conversaciones',
-                'content' => '<h1>' . __('Mis Conversaciones', 'flavor-chat-ia') . '</h1>
-<p>' . __('Accede a todas tus conversaciones activas y archivadas.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Mis Conversaciones', 'flavor-platform') . '</h1>
+<p>' . __('Accede a todas tus conversaciones activas y archivadas.', 'flavor-platform') . '</p>
 
 [flavor_module_listing module="chat_interno" action="conversaciones"]',
                 'parent' => 'chat-interno',
@@ -3779,8 +3779,8 @@ KNOWLEDGE;
     public static function get_renderer_config(): array {
         return [
             'module'   => 'chat-interno',
-            'title'    => __('Mensajes', 'flavor-chat-ia'),
-            'subtitle' => __('Mensajería privada entre usuarios', 'flavor-chat-ia'),
+            'title'    => __('Mensajes', 'flavor-platform'),
+            'subtitle' => __('Mensajería privada entre usuarios', 'flavor-platform'),
             'icon'     => '💬',
             'color'    => 'primary', // Usa variable CSS --flavor-primary del tema
 
@@ -3790,36 +3790,36 @@ KNOWLEDGE;
             ],
 
             'fields' => [
-                'contenido'      => ['type' => 'textarea', 'label' => __('Mensaje', 'flavor-chat-ia'), 'required' => true],
-                'destinatario_id'=> ['type' => 'user', 'label' => __('Destinatario', 'flavor-chat-ia'), 'required' => true],
-                'adjuntos'       => ['type' => 'file', 'label' => __('Adjuntos', 'flavor-chat-ia'), 'multiple' => true],
-                'conversacion_id'=> ['type' => 'hidden', 'label' => __('Conversación', 'flavor-chat-ia')],
+                'contenido'      => ['type' => 'textarea', 'label' => __('Mensaje', 'flavor-platform'), 'required' => true],
+                'destinatario_id'=> ['type' => 'user', 'label' => __('Destinatario', 'flavor-platform'), 'required' => true],
+                'adjuntos'       => ['type' => 'file', 'label' => __('Adjuntos', 'flavor-platform'), 'multiple' => true],
+                'conversacion_id'=> ['type' => 'hidden', 'label' => __('Conversación', 'flavor-platform')],
             ],
 
             'estados' => [
-                'enviado'    => ['label' => __('Enviado', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '✓'],
-                'entregado'  => ['label' => __('Entregado', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '✓✓'],
-                'leido'      => ['label' => __('Leído', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '👁️'],
+                'enviado'    => ['label' => __('Enviado', 'flavor-platform'), 'color' => 'gray', 'icon' => '✓'],
+                'entregado'  => ['label' => __('Entregado', 'flavor-platform'), 'color' => 'blue', 'icon' => '✓✓'],
+                'leido'      => ['label' => __('Leído', 'flavor-platform'), 'color' => 'green', 'icon' => '👁️'],
             ],
 
             'stats' => [
                 [
                     'key'   => 'conversaciones_activas',
-                    'label' => __('Conversaciones', 'flavor-chat-ia'),
+                    'label' => __('Conversaciones', 'flavor-platform'),
                     'icon'  => '💬',
                     'color' => 'indigo',
                     'query' => "SELECT COUNT(*) FROM {prefix}flavor_chat_participantes WHERE usuario_id = {user_id} AND archivado = 0",
                 ],
                 [
                     'key'   => 'mensajes_sin_leer',
-                    'label' => __('Sin leer', 'flavor-chat-ia'),
+                    'label' => __('Sin leer', 'flavor-platform'),
                     'icon'  => '🔴',
                     'color' => 'red',
                     'query' => "SELECT COUNT(*) FROM {prefix}flavor_chat_mensajes m INNER JOIN {prefix}flavor_chat_participantes p ON p.conversacion_id = m.conversacion_id WHERE p.usuario_id = {user_id} AND m.remitente_id != {user_id} AND m.id > COALESCE(p.ultimo_mensaje_leido, 0) AND m.eliminado = 0",
                 ],
                 [
                     'key'   => 'mensajes_hoy',
-                    'label' => __('Hoy', 'flavor-chat-ia'),
+                    'label' => __('Hoy', 'flavor-platform'),
                     'icon'  => '📨',
                     'color' => 'green',
                     'query' => "SELECT COUNT(*) FROM {prefix}flavor_chat_mensajes m INNER JOIN {prefix}flavor_chat_participantes p ON p.conversacion_id = m.conversacion_id WHERE p.usuario_id = {user_id} AND DATE(m.fecha_creacion) = CURDATE() AND m.eliminado = 0",
@@ -3836,17 +3836,17 @@ KNOWLEDGE;
 
             'tabs' => [
                 'conversaciones' => [
-                    'label'   => __('Conversaciones', 'flavor-chat-ia'),
+                    'label'   => __('Conversaciones', 'flavor-platform'),
                     'icon'    => '💬',
                     'content' => '[chat_interno_conversaciones]',
                 ],
                 'nuevo' => [
-                    'label'   => __('Nuevo mensaje', 'flavor-chat-ia'),
+                    'label'   => __('Nuevo mensaje', 'flavor-platform'),
                     'icon'    => '✏️',
                     'content' => '[chat_interno_nuevo]',
                 ],
                 'archivados' => [
-                    'label'   => __('Archivados', 'flavor-chat-ia'),
+                    'label'   => __('Archivados', 'flavor-platform'),
                     'icon'    => '📁',
                     'content' => '[chat_interno_archivados]',
                 ],
@@ -3862,12 +3862,12 @@ KNOWLEDGE;
 
             'dashboard' => [
                 'widgets' => [
-                    'conversaciones_recientes' => ['type' => 'list', 'title' => __('Conversaciones recientes', 'flavor-chat-ia')],
-                    'mensajes_sin_leer'        => ['type' => 'notification', 'title' => __('Sin leer', 'flavor-chat-ia')],
+                    'conversaciones_recientes' => ['type' => 'list', 'title' => __('Conversaciones recientes', 'flavor-platform')],
+                    'mensajes_sin_leer'        => ['type' => 'notification', 'title' => __('Sin leer', 'flavor-platform')],
                 ],
                 'actions' => [
                     'nuevo_mensaje' => [
-                        'label' => __('Nuevo mensaje', 'flavor-chat-ia'),
+                        'label' => __('Nuevo mensaje', 'flavor-platform'),
                         'icon'  => '✏️',
                         'modal' => 'chat-interno-nuevo',
                     ],

@@ -326,7 +326,7 @@ trait Flavor_Module_Dashboard_Tabs_Trait {
         }
 
         if (!$tab_config) {
-            return '<p>' . esc_html__('Tab no encontrado', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Tab no encontrado', 'flavor-platform') . '</p>';
         }
 
         $contenido = $tab_config['content'] ?? '';
@@ -392,7 +392,7 @@ trait Flavor_Module_Dashboard_Tabs_Trait {
         }
 
         return '<p>' . sprintf(
-            esc_html__('Template %s no encontrado', 'flavor-chat-ia'),
+            esc_html__('Template %s no encontrado', 'flavor-platform'),
             esc_html($template_name)
         ) . '</p>';
     }
@@ -434,7 +434,7 @@ trait Flavor_Module_Dashboard_Tabs_Trait {
      */
     protected function tab_listado($shortcode, $options = []) {
         return array_merge([
-            'label'    => __('Listado', 'flavor-chat-ia'),
+            'label'    => __('Listado', 'flavor-platform'),
             'icon'     => 'dashicons-list-view',
             'content'  => $shortcode,
             'priority' => 10,
@@ -468,7 +468,7 @@ trait Flavor_Module_Dashboard_Tabs_Trait {
      */
     protected function tab_mapa($shortcode, $options = []) {
         return array_merge([
-            'label'    => __('Mapa', 'flavor-chat-ia'),
+            'label'    => __('Mapa', 'flavor-platform'),
             'icon'     => 'dashicons-location',
             'content'  => $shortcode,
             'priority' => 50,
@@ -484,7 +484,7 @@ trait Flavor_Module_Dashboard_Tabs_Trait {
      */
     protected function tab_calendario($shortcode, $options = []) {
         return array_merge([
-            'label'    => __('Calendario', 'flavor-chat-ia'),
+            'label'    => __('Calendario', 'flavor-platform'),
             'icon'     => 'dashicons-calendar-alt',
             'content'  => $shortcode,
             'priority' => 40,
@@ -500,7 +500,7 @@ trait Flavor_Module_Dashboard_Tabs_Trait {
      */
     protected function tab_estadisticas($shortcode, $options = []) {
         return array_merge([
-            'label'    => __('Estadísticas', 'flavor-chat-ia'),
+            'label'    => __('Estadísticas', 'flavor-platform'),
             'icon'     => 'dashicons-chart-bar',
             'content'  => $shortcode,
             'priority' => 60,

@@ -1,4 +1,4 @@
-# Cómo Construir tu Aplicación con Flavor Chat IA
+# Cómo Construir tu Aplicación con Flavor Platform
 
 Esta guía te explica cómo combinar módulos para crear diferentes tipos de aplicaciones.
 
@@ -311,10 +311,10 @@ add_action('flavor_marketplace_compra_completada', function($compra_id) {
 });
 ```
 
-### Ejemplo: Chat IA Contextual
+### Ejemplo: Asistente IA Contextual
 
 ```php
-// El chat IA conoce el contexto de todos los módulos activos
+// El asistente IA conoce el contexto de todos los módulos activos
 add_filter('flavor_chat_system_prompt', function($prompt) {
     $loader = Flavor_Chat_Module_Loader::get_instance();
     $contexto = [];
@@ -511,7 +511,7 @@ $galeria = do_shortcode('[flavor_multimedia_galeria categoria="exposiciones"]');
 
 - [ ] Ajustar estilos CSS
 - [ ] Personalizar templates si es necesario
-- [ ] Configurar el Chat IA
+- [ ] Configurar el Asistente IA
 - [ ] Probar flujos de usuario
 
 ### Lanzamiento
@@ -531,4 +531,4 @@ $galeria = do_shortcode('[flavor_multimedia_galeria categoria="exposiciones"]');
 
 ---
 
-*Documentación actualizada: Febrero 2026 - Flavor Chat IA v3.1.0*
+*Documentación actualizada: Febrero 2026 - Flavor Platform v3.1.0*

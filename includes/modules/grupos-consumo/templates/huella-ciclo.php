@@ -22,20 +22,20 @@ $estilo = $atts['estilo'] ?? 'completo';
 $puntuacion = intval($huella['puntuacion_sostenibilidad'] ?? 0);
 $nivel = 'bajo';
 $nivel_color = '#f44336';
-$nivel_texto = __('Mejorable', 'flavor-chat-ia');
+$nivel_texto = __('Mejorable', 'flavor-platform');
 
 if ($puntuacion >= 80) {
     $nivel = 'excelente';
     $nivel_color = '#2e7d32';
-    $nivel_texto = __('Excelente', 'flavor-chat-ia');
+    $nivel_texto = __('Excelente', 'flavor-platform');
 } elseif ($puntuacion >= 60) {
     $nivel = 'bueno';
     $nivel_color = '#43a047';
-    $nivel_texto = __('Bueno', 'flavor-chat-ia');
+    $nivel_texto = __('Bueno', 'flavor-platform');
 } elseif ($puntuacion >= 40) {
     $nivel = 'medio';
     $nivel_color = '#ff9800';
-    $nivel_texto = __('Aceptable', 'flavor-chat-ia');
+    $nivel_texto = __('Aceptable', 'flavor-platform');
 }
 
 $ciclo_titulo = get_the_title($ciclo_id);
@@ -47,7 +47,7 @@ $ciclo_titulo = get_the_title($ciclo_id);
             <span class="dashicons dashicons-<?php echo $puntuacion >= 60 ? 'yes-alt' : 'warning'; ?>"></span>
         </span>
         <span class="gc-huella-badge__valor"><?php echo esc_html($puntuacion); ?></span>
-        <span class="gc-huella-badge__label"><?php esc_html_e('Sello de Conciencia', 'flavor-chat-ia'); ?></span>
+        <span class="gc-huella-badge__label"><?php esc_html_e('Sello de Conciencia', 'flavor-platform'); ?></span>
     </div>
 
 <?php elseif ($estilo === 'resumen'): ?>
@@ -66,7 +66,7 @@ $ciclo_titulo = get_the_title($ciclo_id);
         </div>
         <div class="gc-huella-resumen__texto">
             <strong><?php echo esc_html($nivel_texto); ?></strong>
-            <small><?php printf(esc_html__('%s kg CO₂ evitados', 'flavor-chat-ia'), number_format($huella['co2_evitado_kg'], 1)); ?></small>
+            <small><?php printf(esc_html__('%s kg CO₂ evitados', 'flavor-platform'), number_format($huella['co2_evitado_kg'], 1)); ?></small>
         </div>
     </div>
 
@@ -75,7 +75,7 @@ $ciclo_titulo = get_the_title($ciclo_id);
         <div class="gc-huella__header">
             <div class="gc-huella__titulo-wrapper">
                 <span class="dashicons dashicons-palmtree"></span>
-                <h3 class="gc-huella__titulo"><?php esc_html_e('Huella Ecológica', 'flavor-chat-ia'); ?></h3>
+                <h3 class="gc-huella__titulo"><?php esc_html_e('Huella Ecológica', 'flavor-platform'); ?></h3>
             </div>
             <?php if ($ciclo_titulo): ?>
                 <span class="gc-huella__ciclo"><?php echo esc_html($ciclo_titulo); ?></span>
@@ -113,7 +113,7 @@ $ciclo_titulo = get_the_title($ciclo_id);
                     <span class="gc-huella__metrica-valor">
                         <?php echo esc_html(number_format($huella['km_evitados'], 0)); ?> km
                     </span>
-                    <span class="gc-huella__metrica-label"><?php esc_html_e('Transporte evitado', 'flavor-chat-ia'); ?></span>
+                    <span class="gc-huella__metrica-label"><?php esc_html_e('Transporte evitado', 'flavor-platform'); ?></span>
                 </div>
             </div>
 
@@ -125,7 +125,7 @@ $ciclo_titulo = get_the_title($ciclo_id);
                     <span class="gc-huella__metrica-valor">
                         <?php echo esc_html(number_format($huella['co2_evitado_kg'], 1)); ?> kg
                     </span>
-                    <span class="gc-huella__metrica-label"><?php esc_html_e('CO₂ evitado', 'flavor-chat-ia'); ?></span>
+                    <span class="gc-huella__metrica-label"><?php esc_html_e('CO₂ evitado', 'flavor-platform'); ?></span>
                 </div>
             </div>
 
@@ -137,7 +137,7 @@ $ciclo_titulo = get_the_title($ciclo_id);
                     <span class="gc-huella__metrica-valor">
                         <?php echo esc_html(number_format($huella['plastico_evitado_kg'] * 1000, 0)); ?> g
                     </span>
-                    <span class="gc-huella__metrica-label"><?php esc_html_e('Plástico evitado', 'flavor-chat-ia'); ?></span>
+                    <span class="gc-huella__metrica-label"><?php esc_html_e('Plástico evitado', 'flavor-platform'); ?></span>
                 </div>
             </div>
 
@@ -149,7 +149,7 @@ $ciclo_titulo = get_the_title($ciclo_id);
                     <span class="gc-huella__metrica-valor">
                         <?php echo esc_html(number_format($huella['agua_ahorrada_litros'], 0)); ?> L
                     </span>
-                    <span class="gc-huella__metrica-label"><?php esc_html_e('Agua ahorrada', 'flavor-chat-ia'); ?></span>
+                    <span class="gc-huella__metrica-label"><?php esc_html_e('Agua ahorrada', 'flavor-platform'); ?></span>
                 </div>
             </div>
         </div>
@@ -158,22 +158,22 @@ $ciclo_titulo = get_the_title($ciclo_id);
             <div class="gc-huella__detalle">
                 <span class="dashicons dashicons-store"></span>
                 <strong><?php echo esc_html($huella['productores_locales']); ?></strong>
-                <?php esc_html_e('productores locales', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('productores locales', 'flavor-platform'); ?>
             </div>
             <div class="gc-huella__detalle">
                 <span class="dashicons dashicons-groups"></span>
                 <strong><?php echo esc_html($huella['num_participantes']); ?></strong>
-                <?php esc_html_e('participantes', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('participantes', 'flavor-platform'); ?>
             </div>
             <div class="gc-huella__detalle">
                 <span class="dashicons dashicons-yes-alt"></span>
                 <strong><?php echo esc_html(number_format($huella['productos_eco_porcentaje'], 0)); ?>%</strong>
-                <?php esc_html_e('productos eco', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('productos eco', 'flavor-platform'); ?>
             </div>
             <div class="gc-huella__detalle">
                 <span class="dashicons dashicons-location"></span>
                 <strong><?php echo esc_html(number_format($huella['km_medio_producto'], 0)); ?> km</strong>
-                <?php esc_html_e('distancia media', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('distancia media', 'flavor-platform'); ?>
             </div>
         </div>
 
@@ -181,7 +181,7 @@ $ciclo_titulo = get_the_title($ciclo_id);
             <small>
                 <?php
                 printf(
-                    esc_html__('Calculado: %s • Total procesado: %s kg', 'flavor-chat-ia'),
+                    esc_html__('Calculado: %s • Total procesado: %s kg', 'flavor-platform'),
                     esc_html(date_i18n(get_option('date_format'), strtotime($huella['fecha_calculo']))),
                     esc_html(number_format($huella['total_kg_productos'], 1))
                 );

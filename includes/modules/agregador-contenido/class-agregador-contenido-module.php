@@ -143,11 +143,11 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
      */
     public function get_actions() {
         return array(
-            'listar_noticias'     => __( 'Listar noticias importadas', 'flavor-chat-ia' ),
-            'listar_videos'       => __( 'Listar videos de YouTube', 'flavor-chat-ia' ),
-            'importar_feed'       => __( 'Importar artículos de un feed RSS', 'flavor-chat-ia' ),
-            'agregar_video'       => __( 'Añadir un video de YouTube', 'flavor-chat-ia' ),
-            'listar_fuentes'      => __( 'Listar fuentes RSS configuradas', 'flavor-chat-ia' ),
+            'listar_noticias'     => __( 'Listar noticias importadas', 'flavor-platform' ),
+            'listar_videos'       => __( 'Listar videos de YouTube', 'flavor-platform' ),
+            'importar_feed'       => __( 'Importar artículos de un feed RSS', 'flavor-platform' ),
+            'agregar_video'       => __( 'Añadir un video de YouTube', 'flavor-platform' ),
+            'listar_fuentes'      => __( 'Listar fuentes RSS configuradas', 'flavor-platform' ),
         );
     }
 
@@ -173,7 +173,7 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
             default:
                 return array(
                     'success' => false,
-                    'message' => __( 'Acción no reconocida', 'flavor-chat-ia' ),
+                    'message' => __( 'Acción no reconocida', 'flavor-platform' ),
                 );
         }
     }
@@ -230,7 +230,7 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
      */
     private function action_importar_feed( $params ) {
         if ( empty( $params['fuente_id'] ) ) {
-            return array( 'success' => false, 'message' => __( 'ID de fuente requerido', 'flavor-chat-ia' ) );
+            return array( 'success' => false, 'message' => __( 'ID de fuente requerido', 'flavor-platform' ) );
         }
         $result = $this->import_feed( intval( $params['fuente_id'] ) );
         return array( 'success' => true, 'data' => $result );
@@ -241,7 +241,7 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
      */
     private function action_agregar_video( $params ) {
         if ( empty( $params['url'] ) ) {
-            return array( 'success' => false, 'message' => __( 'URL del video requerida', 'flavor-chat-ia' ) );
+            return array( 'success' => false, 'message' => __( 'URL del video requerida', 'flavor-platform' ) );
         }
         $result = $this->add_video_from_url( $params['url'] );
         return $result;
@@ -281,7 +281,7 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
         $video_id  = $this->extract_youtube_id( $video_url );
 
         if ( ! $video_id ) {
-            return array( 'success' => false, 'message' => __( 'URL de YouTube no válida', 'flavor-chat-ia' ) );
+            return array( 'success' => false, 'message' => __( 'URL de YouTube no válida', 'flavor-platform' ) );
         }
 
         // Verificar si ya existe
@@ -295,7 +295,7 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
         );
 
         if ( ! empty( $existing ) ) {
-            return array( 'success' => false, 'message' => __( 'Este video ya existe', 'flavor-chat-ia' ) );
+            return array( 'success' => false, 'message' => __( 'Este video ya existe', 'flavor-platform' ) );
         }
 
         // Obtener info del video via oEmbed
@@ -303,7 +303,7 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
         $response   = wp_remote_get( $oembed_url );
 
         if ( is_wp_error( $response ) ) {
-            return array( 'success' => false, 'message' => __( 'No se pudo obtener información del video', 'flavor-chat-ia' ) );
+            return array( 'success' => false, 'message' => __( 'No se pudo obtener información del video', 'flavor-platform' ) );
         }
 
         $data = json_decode( wp_remote_retrieve_body( $response ), true );
@@ -350,26 +350,26 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
         return array(
             array(
                 'name'        => 'agregador_listar_noticias',
-                'description' => __( 'Lista las noticias importadas de fuentes RSS externas', 'flavor-chat-ia' ),
+                'description' => __( 'Lista las noticias importadas de fuentes RSS externas', 'flavor-platform' ),
                 'input_schema' => array(
                     'type'       => 'object',
                     'properties' => array(
                         'limit' => array(
                             'type'        => 'integer',
-                            'description' => __( 'Número máximo de noticias a listar', 'flavor-chat-ia' ),
+                            'description' => __( 'Número máximo de noticias a listar', 'flavor-platform' ),
                         ),
                     ),
                 ),
             ),
             array(
                 'name'        => 'agregador_listar_videos',
-                'description' => __( 'Lista los videos de YouTube guardados', 'flavor-chat-ia' ),
+                'description' => __( 'Lista los videos de YouTube guardados', 'flavor-platform' ),
                 'input_schema' => array(
                     'type'       => 'object',
                     'properties' => array(
                         'limit' => array(
                             'type'        => 'integer',
-                            'description' => __( 'Número máximo de videos a listar', 'flavor-chat-ia' ),
+                            'description' => __( 'Número máximo de videos a listar', 'flavor-platform' ),
                         ),
                     ),
                 ),
@@ -383,7 +383,7 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
      * @return string
      */
     public function get_knowledge_base() {
-        return __( 'El módulo Agregador de Contenido permite importar noticias de fuentes RSS externas filtradas por palabras clave relacionadas con la comunidad, y gestionar videos de YouTube relevantes. Incluye shortcodes para mostrar grids de noticias, videos y feeds combinados.', 'flavor-chat-ia' );
+        return __( 'El módulo Agregador de Contenido permite importar noticias de fuentes RSS externas filtradas por palabras clave relacionadas con la comunidad, y gestionar videos de YouTube relevantes. Incluye shortcodes para mostrar grids de noticias, videos y feeds combinados.', 'flavor-platform' );
     }
 
     /**
@@ -395,11 +395,11 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
             self::CPT_FUENTE,
             array(
                 'labels'              => array(
-                    'name'          => __( 'Fuentes RSS', 'flavor-chat-ia' ),
-                    'singular_name' => __( 'Fuente RSS', 'flavor-chat-ia' ),
-                    'add_new'       => __( 'Añadir Fuente', 'flavor-chat-ia' ),
-                    'add_new_item'  => __( 'Añadir Nueva Fuente', 'flavor-chat-ia' ),
-                    'edit_item'     => __( 'Editar Fuente', 'flavor-chat-ia' ),
+                    'name'          => __( 'Fuentes RSS', 'flavor-platform' ),
+                    'singular_name' => __( 'Fuente RSS', 'flavor-platform' ),
+                    'add_new'       => __( 'Añadir Fuente', 'flavor-platform' ),
+                    'add_new_item'  => __( 'Añadir Nueva Fuente', 'flavor-platform' ),
+                    'edit_item'     => __( 'Editar Fuente', 'flavor-platform' ),
                 ),
                 'public'              => false,
                 'show_ui'             => true,
@@ -414,10 +414,10 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
             self::CPT_NOTICIA,
             array(
                 'labels'              => array(
-                    'name'          => __( 'Noticias Externas', 'flavor-chat-ia' ),
-                    'singular_name' => __( 'Noticia Externa', 'flavor-chat-ia' ),
-                    'add_new'       => __( 'Añadir Noticia', 'flavor-chat-ia' ),
-                    'edit_item'     => __( 'Editar Noticia', 'flavor-chat-ia' ),
+                    'name'          => __( 'Noticias Externas', 'flavor-platform' ),
+                    'singular_name' => __( 'Noticia Externa', 'flavor-platform' ),
+                    'add_new'       => __( 'Añadir Noticia', 'flavor-platform' ),
+                    'edit_item'     => __( 'Editar Noticia', 'flavor-platform' ),
                 ),
                 'public'              => true,
                 'publicly_queryable'  => true,
@@ -436,10 +436,10 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
             self::CPT_VIDEO,
             array(
                 'labels'              => array(
-                    'name'          => __( 'Videos YouTube', 'flavor-chat-ia' ),
-                    'singular_name' => __( 'Video YouTube', 'flavor-chat-ia' ),
-                    'add_new'       => __( 'Añadir Video', 'flavor-chat-ia' ),
-                    'edit_item'     => __( 'Editar Video', 'flavor-chat-ia' ),
+                    'name'          => __( 'Videos YouTube', 'flavor-platform' ),
+                    'singular_name' => __( 'Video YouTube', 'flavor-platform' ),
+                    'add_new'       => __( 'Añadir Video', 'flavor-platform' ),
+                    'edit_item'     => __( 'Editar Video', 'flavor-platform' ),
                 ),
                 'public'              => true,
                 'publicly_queryable'  => true,
@@ -463,8 +463,8 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
             array( self::CPT_NOTICIA, self::CPT_VIDEO ),
             array(
                 'labels'            => array(
-                    'name'          => __( 'Categorías de Contenido', 'flavor-chat-ia' ),
-                    'singular_name' => __( 'Categoría', 'flavor-chat-ia' ),
+                    'name'          => __( 'Categorías de Contenido', 'flavor-platform' ),
+                    'singular_name' => __( 'Categoría', 'flavor-platform' ),
                 ),
                 'hierarchical'      => true,
                 'public'            => true,
@@ -490,9 +490,9 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
      */
     public function add_admin_menus() {
         add_submenu_page(
-            'flavor-chat-ia',
-            __( 'Agregador de Contenido', 'flavor-chat-ia' ),
-            __( 'Agregador Contenido', 'flavor-chat-ia' ),
+            'flavor-platform',
+            __( 'Agregador de Contenido', 'flavor-platform' ),
+            __( 'Agregador Contenido', 'flavor-platform' ),
             'manage_options',
             'flavor-agregador',
             array( $this, 'render_admin_page' )
@@ -528,7 +528,7 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
         // Meta box para fuente RSS
         add_meta_box(
             'flavor_rss_config',
-            __( 'Configuración de Fuente', 'flavor-chat-ia' ),
+            __( 'Configuración de Fuente', 'flavor-platform' ),
             array( $this, 'render_metabox_fuente' ),
             self::CPT_FUENTE,
             'normal',
@@ -538,7 +538,7 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
         // Meta box para video YouTube
         add_meta_box(
             'flavor_video_config',
-            __( 'Datos del Video', 'flavor-chat-ia' ),
+            __( 'Datos del Video', 'flavor-platform' ),
             array( $this, 'render_metabox_video' ),
             self::CPT_VIDEO,
             'normal',
@@ -548,7 +548,7 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
         // Meta box para noticia
         add_meta_box(
             'flavor_noticia_source',
-            __( 'Fuente Original', 'flavor-chat-ia' ),
+            __( 'Fuente Original', 'flavor-platform' ),
             array( $this, 'render_metabox_noticia' ),
             self::CPT_NOTICIA,
             'side',
@@ -572,48 +572,48 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
         ?>
         <table class="form-table">
             <tr>
-                <th><label for="feed_url"><?php esc_html_e( 'URL del Feed RSS', 'flavor-chat-ia' ); ?></label></th>
+                <th><label for="feed_url"><?php esc_html_e( 'URL del Feed RSS', 'flavor-platform' ); ?></label></th>
                 <td>
                     <input type="url" id="feed_url" name="feed_url" value="<?php echo esc_url( $feed_url ); ?>" class="large-text" required>
-                    <p class="description"><?php esc_html_e( 'URL completa del feed RSS (ej: https://ejemplo.com/feed)', 'flavor-chat-ia' ); ?></p>
+                    <p class="description"><?php esc_html_e( 'URL completa del feed RSS (ej: https://ejemplo.com/feed)', 'flavor-platform' ); ?></p>
                 </td>
             </tr>
             <tr>
-                <th><label for="max_items"><?php esc_html_e( 'Máximo de artículos', 'flavor-chat-ia' ); ?></label></th>
+                <th><label for="max_items"><?php esc_html_e( 'Máximo de artículos', 'flavor-platform' ); ?></label></th>
                 <td>
                     <input type="number" id="max_items" name="max_items" value="<?php echo esc_attr( $max_items ); ?>" min="1" max="50">
-                    <p class="description"><?php esc_html_e( 'Número máximo de artículos a importar por vez', 'flavor-chat-ia' ); ?></p>
+                    <p class="description"><?php esc_html_e( 'Número máximo de artículos a importar por vez', 'flavor-platform' ); ?></p>
                 </td>
             </tr>
             <tr>
-                <th><label for="keywords"><?php esc_html_e( 'Palabras clave (filtro)', 'flavor-chat-ia' ); ?></label></th>
+                <th><label for="keywords"><?php esc_html_e( 'Palabras clave (filtro)', 'flavor-platform' ); ?></label></th>
                 <td>
                     <input type="text" id="keywords" name="keywords" value="<?php echo esc_attr( $keywords ); ?>" class="large-text">
-                    <p class="description"><?php esc_html_e( 'Solo importar artículos que contengan estas palabras (separadas por coma). Dejar vacío para importar todo.', 'flavor-chat-ia' ); ?></p>
+                    <p class="description"><?php esc_html_e( 'Solo importar artículos que contengan estas palabras (separadas por coma). Dejar vacío para importar todo.', 'flavor-platform' ); ?></p>
                 </td>
             </tr>
             <tr>
-                <th><label for="auto_import"><?php esc_html_e( 'Importación automática', 'flavor-chat-ia' ); ?></label></th>
+                <th><label for="auto_import"><?php esc_html_e( 'Importación automática', 'flavor-platform' ); ?></label></th>
                 <td>
                     <label>
                         <input type="checkbox" id="auto_import" name="auto_import" value="1" <?php checked( $auto_import, '1' ); ?>>
-                        <?php esc_html_e( 'Importar automáticamente cada hora', 'flavor-chat-ia' ); ?>
+                        <?php esc_html_e( 'Importar automáticamente cada hora', 'flavor-platform' ); ?>
                     </label>
                 </td>
             </tr>
             <?php if ( $last_import ) : ?>
             <tr>
-                <th><?php esc_html_e( 'Última importación', 'flavor-chat-ia' ); ?></th>
+                <th><?php esc_html_e( 'Última importación', 'flavor-platform' ); ?></th>
                 <td><?php echo esc_html( date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), strtotime( $last_import ) ) ); ?></td>
             </tr>
             <?php endif; ?>
         </table>
         <p>
             <button type="button" class="button button-secondary" id="test-feed-btn">
-                <?php esc_html_e( 'Probar Feed', 'flavor-chat-ia' ); ?>
+                <?php esc_html_e( 'Probar Feed', 'flavor-platform' ); ?>
             </button>
             <button type="button" class="button button-primary" id="import-now-btn">
-                <?php esc_html_e( 'Importar Ahora', 'flavor-chat-ia' ); ?>
+                <?php esc_html_e( 'Importar Ahora', 'flavor-platform' ); ?>
             </button>
         </p>
         <div id="feed-test-result"></div>
@@ -637,20 +637,20 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
         ?>
         <table class="form-table">
             <tr>
-                <th><label for="video_url"><?php esc_html_e( 'URL del Video', 'flavor-chat-ia' ); ?></label></th>
+                <th><label for="video_url"><?php esc_html_e( 'URL del Video', 'flavor-platform' ); ?></label></th>
                 <td>
                     <input type="url" id="video_url" name="video_url" value="<?php echo esc_url( $video_url ); ?>" class="large-text">
-                    <p class="description"><?php esc_html_e( 'URL de YouTube (ej: https://youtube.com/watch?v=xxxxx)', 'flavor-chat-ia' ); ?></p>
+                    <p class="description"><?php esc_html_e( 'URL de YouTube (ej: https://youtube.com/watch?v=xxxxx)', 'flavor-platform' ); ?></p>
                 </td>
             </tr>
             <tr>
-                <th><label for="channel_name"><?php esc_html_e( 'Canal', 'flavor-chat-ia' ); ?></label></th>
+                <th><label for="channel_name"><?php esc_html_e( 'Canal', 'flavor-platform' ); ?></label></th>
                 <td>
                     <input type="text" id="channel_name" name="channel_name" value="<?php echo esc_attr( $channel_name ); ?>" class="regular-text">
                 </td>
             </tr>
             <tr>
-                <th><label for="duration"><?php esc_html_e( 'Duración', 'flavor-chat-ia' ); ?></label></th>
+                <th><label for="duration"><?php esc_html_e( 'Duración', 'flavor-platform' ); ?></label></th>
                 <td>
                     <input type="text" id="duration" name="duration" value="<?php echo esc_attr( $duration ); ?>" class="small-text" placeholder="10:30">
                 </td>
@@ -675,19 +675,19 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
         $import_date  = get_post_meta( $post->ID, '_import_date', true );
         ?>
         <p>
-            <strong><?php esc_html_e( 'Fuente:', 'flavor-chat-ia' ); ?></strong><br>
+            <strong><?php esc_html_e( 'Fuente:', 'flavor-platform' ); ?></strong><br>
             <?php echo esc_html( $source_name ); ?>
         </p>
         <?php if ( $source_url ) : ?>
         <p>
             <a href="<?php echo esc_url( $source_url ); ?>" target="_blank" rel="noopener">
-                <?php esc_html_e( 'Ver artículo original', 'flavor-chat-ia' ); ?> →
+                <?php esc_html_e( 'Ver artículo original', 'flavor-platform' ); ?> →
             </a>
         </p>
         <?php endif; ?>
         <?php if ( $import_date ) : ?>
         <p>
-            <strong><?php esc_html_e( 'Importado:', 'flavor-chat-ia' ); ?></strong><br>
+            <strong><?php esc_html_e( 'Importado:', 'flavor-platform' ); ?></strong><br>
             <?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $import_date ) ) ); ?>
         </p>
         <?php endif; ?>
@@ -760,7 +760,7 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
         $fuente    = get_post( $fuente_id );
 
         if ( ! $feed_url ) {
-            return array( 'error' => __( 'URL de feed no configurada', 'flavor-chat-ia' ) );
+            return array( 'error' => __( 'URL de feed no configurada', 'flavor-platform' ) );
         }
 
         include_once ABSPATH . WPINC . '/feed.php';
@@ -974,7 +974,7 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
                     <?php endwhile; ?>
                 </div>
             <?php else : ?>
-                <p class="no-noticias"><?php esc_html_e( 'No hay noticias disponibles.', 'flavor-chat-ia' ); ?></p>
+                <p class="no-noticias"><?php esc_html_e( 'No hay noticias disponibles.', 'flavor-platform' ); ?></p>
             <?php endif; ?>
         </div>
         <?php
@@ -1063,7 +1063,7 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
                     <?php endwhile; ?>
                 </div>
             <?php else : ?>
-                <p class="no-videos"><?php esc_html_e( 'No hay videos disponibles.', 'flavor-chat-ia' ); ?></p>
+                <p class="no-videos"><?php esc_html_e( 'No hay videos disponibles.', 'flavor-platform' ); ?></p>
             <?php endif; ?>
         </div>
         <?php
@@ -1122,7 +1122,7 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
                                 <div class="contenido-media video-thumbnail" data-video-id="<?php echo esc_attr( $video_id ); ?>">
                                     <img src="https://img.youtube.com/vi/<?php echo esc_attr( $video_id ); ?>/hqdefault.jpg"
                                          alt="<?php the_title_attribute(); ?>" loading="lazy">
-                                    <span class="tipo-badge video"><?php esc_html_e( 'Video', 'flavor-chat-ia' ); ?></span>
+                                    <span class="tipo-badge video"><?php esc_html_e( 'Video', 'flavor-platform' ); ?></span>
                                     <div class="video-play-btn">
                                         <svg viewBox="0 0 68 48"><path d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z" fill="#f00"></path><path d="M 45,24 27,14 27,34" fill="#fff"></path></svg>
                                     </div>
@@ -1132,7 +1132,7 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
                                     <a href="<?php the_permalink(); ?>">
                                         <?php the_post_thumbnail( 'medium' ); ?>
                                     </a>
-                                    <span class="tipo-badge noticia"><?php esc_html_e( 'Noticia', 'flavor-chat-ia' ); ?></span>
+                                    <span class="tipo-badge noticia"><?php esc_html_e( 'Noticia', 'flavor-platform' ); ?></span>
                                 </div>
                             <?php endif; ?>
                             <div class="contenido-body">
@@ -1222,13 +1222,13 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer( 'flavor_agregador', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( __( 'Permisos insuficientes', 'flavor-chat-ia' ) );
+            wp_send_json_error( __( 'Permisos insuficientes', 'flavor-platform' ) );
         }
 
         $fuente_id = absint( $_POST['fuente_id'] ?? 0 );
 
         if ( ! $fuente_id ) {
-            wp_send_json_error( __( 'ID de fuente no válido', 'flavor-chat-ia' ) );
+            wp_send_json_error( __( 'ID de fuente no válido', 'flavor-platform' ) );
         }
 
         $result = $this->import_feed( $fuente_id );
@@ -1247,14 +1247,14 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer( 'flavor_agregador', 'nonce' );
 
         if ( ! current_user_can( 'publish_posts' ) ) {
-            wp_send_json_error( __( 'Permisos insuficientes', 'flavor-chat-ia' ) );
+            wp_send_json_error( __( 'Permisos insuficientes', 'flavor-platform' ) );
         }
 
         $video_url = esc_url_raw( $_POST['video_url'] ?? '' );
         $video_id  = $this->extract_youtube_id( $video_url );
 
         if ( ! $video_id ) {
-            wp_send_json_error( __( 'URL de YouTube no válida', 'flavor-chat-ia' ) );
+            wp_send_json_error( __( 'URL de YouTube no válida', 'flavor-platform' ) );
         }
 
         // Verificar si ya existe
@@ -1268,7 +1268,7 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
         );
 
         if ( ! empty( $existing ) ) {
-            wp_send_json_error( __( 'Este video ya existe', 'flavor-chat-ia' ) );
+            wp_send_json_error( __( 'Este video ya existe', 'flavor-platform' ) );
         }
 
         // Obtener info del video via oEmbed
@@ -1276,7 +1276,7 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
         $response   = wp_remote_get( $oembed_url );
 
         if ( is_wp_error( $response ) ) {
-            wp_send_json_error( __( 'No se pudo obtener información del video', 'flavor-chat-ia' ) );
+            wp_send_json_error( __( 'No se pudo obtener información del video', 'flavor-platform' ) );
         }
 
         $data = json_decode( wp_remote_retrieve_body( $response ), true );
@@ -1542,14 +1542,14 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
     public function render_admin_page() {
         echo '<div class="wrap flavor-modulo-page">';
         if (method_exists($this, 'render_page_header')) {
-            $this->render_page_header(__('Agregador de Contenido', 'flavor-chat-ia'));
+            $this->render_page_header(__('Agregador de Contenido', 'flavor-platform'));
         }
 
         $vista = __DIR__ . '/views/dashboard.php';
         if (file_exists($vista)) {
             include $vista;
         } else {
-            echo '<div class="notice notice-warning inline"><p>' . esc_html__('El panel del agregador no está disponible en este momento.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-warning inline"><p>' . esc_html__('El panel del agregador no está disponible en este momento.', 'flavor-platform') . '</p></div>';
         }
         echo '</div>';
     }
@@ -1562,14 +1562,14 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'agregador_contenido',
-            'label' => __('Agregador de Contenido', 'flavor-chat-ia'),
+            'label' => __('Agregador de Contenido', 'flavor-platform'),
             'icon' => 'dashicons-rss',
             'capability' => 'manage_options',
             'categoria' => 'comunicacion',
             'paginas' => [
                 [
                     'slug' => 'flavor-agregador',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_page'],
                 ],
             ],
@@ -1584,16 +1584,16 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
     public static function get_module_config() {
         return array(
             'id'          => self::MODULE_ID,
-            'name'        => __( 'Agregador de Contenido', 'flavor-chat-ia' ),
-            'description' => __( 'Importa noticias RSS y gestiona videos de YouTube relacionados con la comunidad', 'flavor-chat-ia' ),
+            'name'        => __( 'Agregador de Contenido', 'flavor-platform' ),
+            'description' => __( 'Importa noticias RSS y gestiona videos de YouTube relacionados con la comunidad', 'flavor-platform' ),
             'icon'        => 'dashicons-rss',
             'category'    => 'comunicacion',
             'version'     => '1.0.0',
             'shortcodes'  => array(
-                'agregador_noticias'       => __( 'Grid de noticias externas', 'flavor-chat-ia' ),
-                'agregador_videos'         => __( 'Grid de videos YouTube', 'flavor-chat-ia' ),
-                'agregador_feed_combinado' => __( 'Feed combinado noticias + videos', 'flavor-chat-ia' ),
-                'agregador_carrusel_videos' => __( 'Carrusel de videos', 'flavor-chat-ia' ),
+                'agregador_noticias'       => __( 'Grid de noticias externas', 'flavor-platform' ),
+                'agregador_videos'         => __( 'Grid de videos YouTube', 'flavor-platform' ),
+                'agregador_feed_combinado' => __( 'Feed combinado noticias + videos', 'flavor-platform' ),
+                'agregador_carrusel_videos' => __( 'Carrusel de videos', 'flavor-platform' ),
             ),
             'cpts'        => array( self::CPT_NOTICIA, self::CPT_VIDEO, self::CPT_FUENTE ),
             'taxonomies'  => array( self::TAX_CATEGORIA ),

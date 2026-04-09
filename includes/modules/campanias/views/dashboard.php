@@ -25,5 +25,5 @@ if (isset($this) && method_exists($this, 'render_admin_dashboard')) {
 }
 
 echo '<div class="notice notice-error"><p>'
-    . esc_html__('No se pudo renderizar el dashboard de campanias.', 'flavor-chat-ia')
+    . esc_html__('No se pudo renderizar el dashboard de campanias.', 'flavor-platform')
     . '</p></div>';

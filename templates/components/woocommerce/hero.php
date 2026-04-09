@@ -15,7 +15,7 @@ $url_tienda = $url_tienda ?? '#tienda';
 <section class="flavor-component flavor-section relative overflow-hidden" style="background: linear-gradient(135deg, var(--flavor-primary, #A855F7) 0%, var(--flavor-secondary, #6366F1) 100%); min-height: 500px;">
     <!-- Patron decorativo -->
     <div class="absolute inset-0 opacity-10">
-        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22><rect width=%2280%22 height=%2280%22 fill=%22none%22/><circle cx=%2240%22 cy=%2240%22 r=%222%22 fill=%22white%22/></svg><?php echo esc_html__('\'); background-size: 80px 80px;">', 'flavor-chat-ia'); ?></div>
+        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22><rect width=%2280%22 height=%2280%22 fill=%22none%22/><circle cx=%2240%22 cy=%2240%22 r=%222%22 fill=%22white%22/></svg><?php echo esc_html__('\'); background-size: 80px 80px;">', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 
     <div class="flavor-container relative z-10 py-16 lg:py-24">
@@ -25,7 +25,7 @@ $url_tienda = $url_tienda ?? '#tienda';
                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                 </svg>
-                <span class="text-white text-sm font-medium"><?php echo esc_html__('Powered by WooCommerce', 'flavor-chat-ia'); ?></span>
+                <span class="text-white text-sm font-medium"><?php echo esc_html__('Powered by WooCommerce', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
 
             <h1 class="text-4xl lg:text-5xl font-bold text-white mb-4">
@@ -40,7 +40,7 @@ $url_tienda = $url_tienda ?? '#tienda';
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/>
                 </svg>
-                <?php echo esc_html__('Ver Tienda', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Ver Tienda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
 
@@ -48,15 +48,15 @@ $url_tienda = $url_tienda ?? '#tienda';
         <div class="grid grid-cols-3 gap-4 max-w-2xl mx-auto">
             <div class="text-center p-4 rounded-xl bg-white/10 backdrop-blur border border-white/20">
                 <div class="text-3xl font-bold text-white"><?php echo esc_html($total_productos); ?></div>
-                <div class="text-sm text-white/70"><?php echo esc_html__('Productos', 'flavor-chat-ia'); ?></div>
+                <div class="text-sm text-white/70"><?php echo esc_html__('Productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
             <div class="text-center p-4 rounded-xl bg-white/10 backdrop-blur border border-white/20">
                 <div class="text-3xl font-bold text-white"><?php echo esc_html($pedidos_procesados); ?></div>
-                <div class="text-sm text-white/70"><?php echo esc_html__('Pedidos Procesados', 'flavor-chat-ia'); ?></div>
+                <div class="text-sm text-white/70"><?php echo esc_html__('Pedidos Procesados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
             <div class="text-center p-4 rounded-xl bg-white/10 backdrop-blur border border-white/20">
                 <div class="text-3xl font-bold text-white"><?php echo esc_html(number_format_i18n($total_clientes)); ?></div>
-                <div class="text-sm text-white/70"><?php echo esc_html__('Clientes', 'flavor-chat-ia'); ?></div>
+                <div class="text-sm text-white/70"><?php echo esc_html__('Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
     </div>

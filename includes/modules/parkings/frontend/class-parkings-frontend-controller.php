@@ -152,11 +152,11 @@ class Flavor_Parkings_Frontend_Controller {
             'usuarioId' => get_current_user_id(),
             'estados' => $this->estados_plaza,
             'strings' => [
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
-                'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'reserva_exitosa' => __('Reserva realizada con éxito', 'flavor-chat-ia'),
-                'confirmar_cancelar' => __('¿Cancelar esta reserva?', 'flavor-chat-ia'),
-                'confirmar_liberar' => __('¿Liberar esta plaza temporalmente?', 'flavor-chat-ia'),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'reserva_exitosa' => __('Reserva realizada con éxito', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmar_cancelar' => __('¿Cancelar esta reserva?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmar_liberar' => __('¿Liberar esta plaza temporalmente?', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -170,7 +170,7 @@ class Flavor_Parkings_Frontend_Controller {
         }
 
         $tabs['parkings'] = [
-            'titulo' => __('Parking', 'flavor-chat-ia'),
+            'titulo' => __('Parking', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'dashicons-car',
             'callback' => [$this, 'render_dashboard_tab'],
             'orden' => 45,
@@ -200,7 +200,7 @@ class Flavor_Parkings_Frontend_Controller {
                     </div>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-valor"><?php echo $mi_plaza ? esc_html($mi_plaza->numero_plaza) : '-'; ?></span>
-                        <span class="flavor-kpi-label"><?php _e('Mi Plaza', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Mi Plaza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -210,7 +210,7 @@ class Flavor_Parkings_Frontend_Controller {
                     </div>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-valor"><?php echo count($mis_reservas); ?></span>
-                        <span class="flavor-kpi-label"><?php _e('Reservas Activas', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Reservas Activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -220,7 +220,7 @@ class Flavor_Parkings_Frontend_Controller {
                     </div>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-valor"><?php echo intval($estadisticas['horas_uso']); ?>h</span>
-                        <span class="flavor-kpi-label"><?php _e('Horas Usadas', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Horas Usadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -230,7 +230,7 @@ class Flavor_Parkings_Frontend_Controller {
                     </div>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-valor"><?php echo number_format($estadisticas['gasto_total'], 2); ?>€</span>
-                        <span class="flavor-kpi-label"><?php _e('Gasto Total', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php _e('Gasto Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -241,7 +241,7 @@ class Flavor_Parkings_Frontend_Controller {
                     <div class="flavor-panel-header">
                         <h3>
                             <span class="dashicons dashicons-location"></span>
-                            <?php _e('Mi Plaza Asignada', 'flavor-chat-ia'); ?>
+                            <?php _e('Mi Plaza Asignada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
                         <span class="flavor-badge flavor-badge-success">
                             <?php echo esc_html($this->estados_plaza[$mi_plaza->estado]['label']); ?>
@@ -251,7 +251,7 @@ class Flavor_Parkings_Frontend_Controller {
                         <div class="flavor-plaza-info-card">
                             <div class="flavor-plaza-numero">
                                 <span class="numero"><?php echo esc_html($mi_plaza->numero_plaza); ?></span>
-                                <span class="planta"><?php printf(__('Planta %s', 'flavor-chat-ia'), $mi_plaza->planta ?: '-'); ?></span>
+                                <span class="planta"><?php printf(__('Planta %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $mi_plaza->planta ?: '-'); ?></span>
                             </div>
                             <div class="flavor-plaza-detalles">
                                 <p><strong><?php echo esc_html($mi_plaza->nombre_parking); ?></strong></p>
@@ -266,7 +266,7 @@ class Flavor_Parkings_Frontend_Controller {
                                 <button class="flavor-btn flavor-btn-outline flavor-btn-liberar"
                                         data-plaza-id="<?php echo esc_attr($mi_plaza->id); ?>">
                                     <span class="dashicons dashicons-unlock"></span>
-                                    <?php _e('Liberar Temporalmente', 'flavor-chat-ia'); ?>
+                                    <?php _e('Liberar Temporalmente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             </div>
                         </div>
@@ -277,14 +277,14 @@ class Flavor_Parkings_Frontend_Controller {
                     <div class="flavor-panel-body">
                         <div class="flavor-cta-box">
                             <span class="dashicons dashicons-car"></span>
-                            <h4><?php _e('¿Necesitas una plaza de parking?', 'flavor-chat-ia'); ?></h4>
-                            <p><?php _e('Apúntate a la lista de espera o busca plazas disponibles para reservar.', 'flavor-chat-ia'); ?></p>
+                            <h4><?php _e('¿Necesitas una plaza de parking?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                            <p><?php _e('Apúntate a la lista de espera o busca plazas disponibles para reservar.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             <div class="flavor-cta-buttons">
                                 <a href="<?php echo esc_url(add_query_arg('seccion', 'lista-espera')); ?>" class="flavor-btn flavor-btn-primary">
-                                    <?php _e('Lista de Espera', 'flavor-chat-ia'); ?>
+                                    <?php _e('Lista de Espera', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                                 <a href="<?php echo esc_url(add_query_arg('seccion', 'disponibles')); ?>" class="flavor-btn flavor-btn-outline">
-                                    <?php _e('Ver Disponibles', 'flavor-chat-ia'); ?>
+                                    <?php _e('Ver Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </div>
                         </div>
@@ -296,7 +296,7 @@ class Flavor_Parkings_Frontend_Controller {
             <?php if (!empty($mis_reservas)): ?>
                 <div class="flavor-panel">
                     <div class="flavor-panel-header">
-                        <h3><?php _e('Mis Reservas Activas', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Mis Reservas Activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     </div>
                     <div class="flavor-panel-body">
                         <div class="flavor-reservas-list">
@@ -308,7 +308,7 @@ class Flavor_Parkings_Frontend_Controller {
                                     </div>
                                     <div class="flavor-reserva-info">
                                         <span class="flavor-reserva-plaza">
-                                            <?php printf(__('Plaza %s', 'flavor-chat-ia'), $reserva->numero_plaza); ?>
+                                            <?php printf(__('Plaza %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $reserva->numero_plaza); ?>
                                         </span>
                                         <span class="flavor-reserva-parking">
                                             <?php echo esc_html($reserva->nombre_parking); ?>
@@ -339,22 +339,22 @@ class Flavor_Parkings_Frontend_Controller {
             <div class="flavor-acciones-grid flavor-grid-3">
                 <a href="<?php echo esc_url(add_query_arg('seccion', 'reservar')); ?>" class="flavor-accion-card">
                     <span class="dashicons dashicons-calendar-alt"></span>
-                    <span><?php _e('Reservar Plaza', 'flavor-chat-ia'); ?></span>
+                    <span><?php _e('Reservar Plaza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </a>
                 <a href="<?php echo esc_url(add_query_arg('seccion', 'mapa')); ?>" class="flavor-accion-card">
                     <span class="dashicons dashicons-location"></span>
-                    <span><?php _e('Ver Mapa', 'flavor-chat-ia'); ?></span>
+                    <span><?php _e('Ver Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </a>
                 <a href="<?php echo esc_url(add_query_arg('seccion', 'historial')); ?>" class="flavor-accion-card">
                     <span class="dashicons dashicons-list-view"></span>
-                    <span><?php _e('Historial', 'flavor-chat-ia'); ?></span>
+                    <span><?php _e('Historial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </a>
             </div>
 
             <!-- Mapa de Parkings -->
             <div class="flavor-panel">
                 <div class="flavor-panel-header">
-                    <h3><?php _e('Parkings Disponibles', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Parkings Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="flavor-panel-body">
                     <div id="flavor-parkings-mapa" class="flavor-mapa-container"
@@ -387,13 +387,13 @@ class Flavor_Parkings_Frontend_Controller {
             </div>
             <div class="flavor-mapa-leyenda">
                 <span class="flavor-leyenda-item">
-                    <span class="flavor-marker verde"></span> <?php _e('Disponible', 'flavor-chat-ia'); ?>
+                    <span class="flavor-marker verde"></span> <?php _e('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
                 <span class="flavor-leyenda-item">
-                    <span class="flavor-marker naranja"></span> <?php _e('Pocas plazas', 'flavor-chat-ia'); ?>
+                    <span class="flavor-marker naranja"></span> <?php _e('Pocas plazas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
                 <span class="flavor-leyenda-item">
-                    <span class="flavor-marker rojo"></span> <?php _e('Completo', 'flavor-chat-ia'); ?>
+                    <span class="flavor-marker rojo"></span> <?php _e('Completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
             </div>
         </div>
@@ -425,7 +425,7 @@ class Flavor_Parkings_Frontend_Controller {
             <?php else: ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-car"></span>
-                    <p><?php _e('No hay parkings disponibles.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No hay parkings disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
         </div>
@@ -456,16 +456,16 @@ class Flavor_Parkings_Frontend_Controller {
             <div class="flavor-parking-stats">
                 <div class="flavor-stat">
                     <span class="flavor-stat-valor"><?php echo intval($parking->total_plazas); ?></span>
-                    <span class="flavor-stat-label"><?php _e('Total', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-stat-label"><?php _e('Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="flavor-stat">
                     <span class="flavor-stat-valor verde"><?php echo intval($parking->plazas_libres); ?></span>
-                    <span class="flavor-stat-label"><?php _e('Libres', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-stat-label"><?php _e('Libres', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <?php if ($parking->plazas_carga_electrica > 0): ?>
                     <div class="flavor-stat">
                         <span class="flavor-stat-valor azul"><?php echo intval($parking->plazas_carga_electrica); ?></span>
-                        <span class="flavor-stat-label"><?php _e('Eléctricos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-stat-label"><?php _e('Eléctricos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 <?php endif; ?>
             </div>
@@ -473,7 +473,7 @@ class Flavor_Parkings_Frontend_Controller {
             <div class="flavor-parking-info">
                 <span class="flavor-info-item">
                     <span class="dashicons dashicons-clock"></span>
-                    <?php echo $parking->acceso_24h ? __('24h', 'flavor-chat-ia') : esc_html($parking->horario_apertura . ' - ' . $parking->horario_cierre); ?>
+                    <?php echo $parking->acceso_24h ? __('24h', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html($parking->horario_apertura . ' - ' . $parking->horario_cierre); ?>
                 </span>
                 <span class="flavor-info-item">
                     <span class="dashicons dashicons-<?php echo $parking->tipo_acceso === 'app' ? 'smartphone' : 'admin-network'; ?>"></span>
@@ -497,11 +497,11 @@ class Flavor_Parkings_Frontend_Controller {
             <div class="flavor-parking-actions">
                 <a href="<?php echo esc_url(add_query_arg(['seccion' => 'reservar', 'parking_id' => $parking->id])); ?>"
                    class="flavor-btn flavor-btn-primary">
-                    <?php _e('Reservar', 'flavor-chat-ia'); ?>
+                    <?php _e('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="<?php echo esc_url(add_query_arg(['seccion' => 'detalle', 'parking_id' => $parking->id])); ?>"
                    class="flavor-btn flavor-btn-outline">
-                    <?php _e('Ver detalles', 'flavor-chat-ia'); ?>
+                    <?php _e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -528,11 +528,11 @@ class Flavor_Parkings_Frontend_Controller {
                 <input type="date" id="filtro-fecha" class="flavor-input"
                        value="<?php echo esc_attr($atts['fecha'] ?: date('Y-m-d')); ?>">
                 <select id="filtro-tipo" class="flavor-select">
-                    <option value=""><?php _e('Todos los tipos', 'flavor-chat-ia'); ?></option>
-                    <option value="normal"><?php _e('Normal', 'flavor-chat-ia'); ?></option>
-                    <option value="grande"><?php _e('Grande', 'flavor-chat-ia'); ?></option>
-                    <option value="movilidad_reducida"><?php _e('Movilidad reducida', 'flavor-chat-ia'); ?></option>
-                    <option value="electrico"><?php _e('Carga eléctrica', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todos los tipos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="normal"><?php _e('Normal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="grande"><?php _e('Grande', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="movilidad_reducida"><?php _e('Movilidad reducida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="electrico"><?php _e('Carga eléctrica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
             </div>
 
@@ -546,7 +546,7 @@ class Flavor_Parkings_Frontend_Controller {
                             <div class="flavor-plaza-info">
                                 <span class="flavor-plaza-parking"><?php echo esc_html($plaza->nombre_parking); ?></span>
                                 <span class="flavor-plaza-planta">
-                                    <?php printf(__('Planta %s', 'flavor-chat-ia'), $plaza->planta ?: '0'); ?>
+                                    <?php printf(__('Planta %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $plaza->planta ?: '0'); ?>
                                 </span>
                                 <?php if ($plaza->tipo_plaza && $plaza->tipo_plaza !== 'normal'): ?>
                                     <span class="flavor-badge flavor-badge-outline">
@@ -556,7 +556,7 @@ class Flavor_Parkings_Frontend_Controller {
                             </div>
                             <button class="flavor-btn flavor-btn-primary flavor-btn-sm flavor-btn-reservar"
                                     data-plaza-id="<?php echo esc_attr($plaza->id); ?>">
-                                <?php _e('Reservar', 'flavor-chat-ia'); ?>
+                                <?php _e('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </div>
                     <?php endforeach; ?>
@@ -564,7 +564,7 @@ class Flavor_Parkings_Frontend_Controller {
             <?php else: ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-car"></span>
-                    <p><?php _e('No hay plazas disponibles para la fecha seleccionada.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No hay plazas disponibles para la fecha seleccionada.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
         </div>
@@ -578,7 +578,7 @@ class Flavor_Parkings_Frontend_Controller {
     public function shortcode_reservar($atts) {
         if (!is_user_logged_in()) {
             return '<div class="flavor-notice flavor-notice-warning">' .
-                   __('Debes iniciar sesión para reservar.', 'flavor-chat-ia') .
+                   __('Debes iniciar sesión para reservar.', FLAVOR_PLATFORM_TEXT_DOMAIN) .
                    '</div>';
         }
 
@@ -597,9 +597,9 @@ class Flavor_Parkings_Frontend_Controller {
                 <?php wp_nonce_field('flavor_parkings_nonce', 'parkings_nonce'); ?>
 
                 <div class="flavor-form-group">
-                    <label for="parking_id"><?php _e('Parking', 'flavor-chat-ia'); ?></label>
+                    <label for="parking_id"><?php _e('Parking', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="parking_id" id="parking_id" required class="flavor-select">
-                        <option value=""><?php _e('Selecciona un parking...', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Selecciona un parking...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($parkings as $p): ?>
                             <option value="<?php echo esc_attr($p->id); ?>"
                                     <?php selected($atts['parking_id'], $p->id); ?>
@@ -612,43 +612,43 @@ class Flavor_Parkings_Frontend_Controller {
 
                 <div class="flavor-form-row">
                     <div class="flavor-form-group">
-                        <label for="fecha_inicio"><?php _e('Fecha y hora inicio', 'flavor-chat-ia'); ?></label>
+                        <label for="fecha_inicio"><?php _e('Fecha y hora inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="datetime-local" name="fecha_inicio" id="fecha_inicio" required
                                class="flavor-input" min="<?php echo date('Y-m-d\TH:i'); ?>">
                     </div>
                     <div class="flavor-form-group">
-                        <label for="fecha_fin"><?php _e('Fecha y hora fin', 'flavor-chat-ia'); ?></label>
+                        <label for="fecha_fin"><?php _e('Fecha y hora fin', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="datetime-local" name="fecha_fin" id="fecha_fin" required
                                class="flavor-input">
                     </div>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="matricula"><?php _e('Matrícula del vehículo', 'flavor-chat-ia'); ?></label>
+                    <label for="matricula"><?php _e('Matrícula del vehículo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="text" name="matricula" id="matricula" required
                            class="flavor-input" placeholder="1234 ABC" maxlength="10">
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="notas"><?php _e('Notas (opcional)', 'flavor-chat-ia'); ?></label>
+                    <label for="notas"><?php _e('Notas (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <textarea name="notas" id="notas" rows="2" class="flavor-textarea"></textarea>
                 </div>
 
                 <div id="resumen-reserva" class="flavor-resumen-reserva" style="display: none;">
-                    <h4><?php _e('Resumen de la reserva', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php _e('Resumen de la reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <div class="flavor-resumen-linea">
-                        <span><?php _e('Duración:', 'flavor-chat-ia'); ?></span>
+                        <span><?php _e('Duración:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span id="resumen-duracion">-</span>
                     </div>
                     <div class="flavor-resumen-linea total">
-                        <span><?php _e('Total estimado:', 'flavor-chat-ia'); ?></span>
+                        <span><?php _e('Total estimado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span id="resumen-total">0.00€</span>
                     </div>
                 </div>
 
                 <button type="submit" class="flavor-btn flavor-btn-primary flavor-btn-lg flavor-btn-block">
                     <span class="dashicons dashicons-calendar-alt"></span>
-                    <?php _e('Confirmar Reserva', 'flavor-chat-ia'); ?>
+                    <?php _e('Confirmar Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </form>
         </div>
@@ -676,12 +676,12 @@ class Flavor_Parkings_Frontend_Controller {
                     <table class="flavor-tabla">
                         <thead>
                             <tr>
-                                <th><?php _e('Parking', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Plaza', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Horario', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Importe', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Parking', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Plaza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Horario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php _e('Importe', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -705,7 +705,7 @@ class Flavor_Parkings_Frontend_Controller {
                                         <?php if ($r->estado === 'pendiente' || $r->estado === 'confirmada'): ?>
                                             <button class="flavor-btn flavor-btn-sm flavor-btn-danger flavor-btn-cancelar"
                                                     data-reserva-id="<?php echo esc_attr($r->id); ?>">
-                                                <?php _e('Cancelar', 'flavor-chat-ia'); ?>
+                                                <?php _e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </button>
                                         <?php endif; ?>
                                     </td>
@@ -717,7 +717,7 @@ class Flavor_Parkings_Frontend_Controller {
             <?php else: ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-calendar-alt"></span>
-                    <p><?php _e('No tienes reservas.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No tienes reservas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
         </div>
@@ -739,7 +739,7 @@ class Flavor_Parkings_Frontend_Controller {
 
         if (!$plaza) {
             return '<div class="flavor-notice flavor-notice-info">' .
-                   __('No tienes una plaza asignada actualmente.', 'flavor-chat-ia') .
+                   __('No tienes una plaza asignada actualmente.', FLAVOR_PLATFORM_TEXT_DOMAIN) .
                    '</div>';
         }
 
@@ -754,9 +754,9 @@ class Flavor_Parkings_Frontend_Controller {
                     <h3><?php echo esc_html($plaza->nombre_parking); ?></h3>
                     <p><?php echo esc_html($plaza->direccion); ?></p>
                     <div class="flavor-plaza-meta">
-                        <span><strong><?php _e('Planta:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($plaza->planta ?: '0'); ?></span>
-                        <span><strong><?php _e('Tipo:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html(ucfirst($plaza->tipo_plaza)); ?></span>
-                        <span><strong><?php _e('Desde:', 'flavor-chat-ia'); ?></strong> <?php echo date_i18n('d/m/Y', strtotime($plaza->fecha_asignacion)); ?></span>
+                        <span><strong><?php _e('Planta:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html($plaza->planta ?: '0'); ?></span>
+                        <span><strong><?php _e('Tipo:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html(ucfirst($plaza->tipo_plaza)); ?></span>
+                        <span><strong><?php _e('Desde:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo date_i18n('d/m/Y', strtotime($plaza->fecha_asignacion)); ?></span>
                     </div>
                 </div>
             </div>
@@ -771,7 +771,7 @@ class Flavor_Parkings_Frontend_Controller {
     public function shortcode_lista_espera($atts) {
         if (!is_user_logged_in()) {
             return '<div class="flavor-notice flavor-notice-warning">' .
-                   __('Debes iniciar sesión para acceder a la lista de espera.', 'flavor-chat-ia') .
+                   __('Debes iniciar sesión para acceder a la lista de espera.', FLAVOR_PLATFORM_TEXT_DOMAIN) .
                    '</div>';
         }
 
@@ -787,32 +787,32 @@ class Flavor_Parkings_Frontend_Controller {
                 <div class="flavor-lista-estado">
                     <div class="flavor-posicion-badge">
                         <span class="numero"><?php echo intval($posicion); ?></span>
-                        <span class="texto"><?php _e('Tu posición', 'flavor-chat-ia'); ?></span>
+                        <span class="texto"><?php _e('Tu posición', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
-                    <p><?php _e('Estás en la lista de espera. Te notificaremos cuando haya una plaza disponible.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('Estás en la lista de espera. Te notificaremos cuando haya una plaza disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <button class="flavor-btn flavor-btn-danger flavor-btn-salir-lista">
-                        <?php _e('Salir de la lista', 'flavor-chat-ia'); ?>
+                        <?php _e('Salir de la lista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             <?php else: ?>
                 <div class="flavor-lista-inscripcion">
-                    <h3><?php _e('Apúntate a la lista de espera', 'flavor-chat-ia'); ?></h3>
-                    <p><?php _e('Te avisaremos cuando haya una plaza disponible para ti.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php _e('Apúntate a la lista de espera', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php _e('Te avisaremos cuando haya una plaza disponible para ti.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                     <form id="form-lista-espera" class="flavor-form">
                         <?php wp_nonce_field('flavor_parkings_nonce', 'parkings_nonce'); ?>
 
                         <div class="flavor-form-group">
-                            <label><?php _e('Tipo de plaza preferida', 'flavor-chat-ia'); ?></label>
+                            <label><?php _e('Tipo de plaza preferida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <div class="flavor-checkbox-group">
-                                <label><input type="checkbox" name="tipos[]" value="normal" checked> <?php _e('Normal', 'flavor-chat-ia'); ?></label>
-                                <label><input type="checkbox" name="tipos[]" value="grande"> <?php _e('Grande', 'flavor-chat-ia'); ?></label>
-                                <label><input type="checkbox" name="tipos[]" value="electrico"> <?php _e('Con carga eléctrica', 'flavor-chat-ia'); ?></label>
+                                <label><input type="checkbox" name="tipos[]" value="normal" checked> <?php _e('Normal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                                <label><input type="checkbox" name="tipos[]" value="grande"> <?php _e('Grande', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                                <label><input type="checkbox" name="tipos[]" value="electrico"> <?php _e('Con carga eléctrica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             </div>
                         </div>
 
                         <button type="submit" class="flavor-btn flavor-btn-primary flavor-btn-lg">
-                            <?php _e('Apuntarme a la lista', 'flavor-chat-ia'); ?>
+                            <?php _e('Apuntarme a la lista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </form>
                 </div>
@@ -828,7 +828,7 @@ class Flavor_Parkings_Frontend_Controller {
     public function shortcode_dashboard($atts) {
         if (!is_user_logged_in()) {
             return '<div class="flavor-notice flavor-notice-warning">' .
-                   __('Debes iniciar sesión para acceder.', 'flavor-chat-ia') .
+                   __('Debes iniciar sesión para acceder.', FLAVOR_PLATFORM_TEXT_DOMAIN) .
                    '</div>';
         }
 
@@ -849,7 +849,7 @@ class Flavor_Parkings_Frontend_Controller {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -862,7 +862,7 @@ class Flavor_Parkings_Frontend_Controller {
 
         // Validaciones
         if (!$parking_id || !$fecha_inicio || !$fecha_fin || !$matricula) {
-            wp_send_json_error(['message' => __('Datos incompletos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Buscar plaza disponible
@@ -874,7 +874,7 @@ class Flavor_Parkings_Frontend_Controller {
         ));
 
         if (!$plaza) {
-            wp_send_json_error(['message' => __('No hay plazas disponibles', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No hay plazas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Calcular precio
@@ -911,13 +911,13 @@ class Flavor_Parkings_Frontend_Controller {
             );
 
             wp_send_json_success([
-                'message' => __('¡Reserva confirmada!', 'flavor-chat-ia'),
+                'message' => __('¡Reserva confirmada!', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'reserva_id' => $wpdb->insert_id,
                 'plaza' => $plaza->numero_plaza,
                 'importe' => number_format($importe, 2),
             ]);
         } else {
-            wp_send_json_error(['message' => __('Error al crear la reserva', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al crear la reserva', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -929,7 +929,7 @@ class Flavor_Parkings_Frontend_Controller {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -941,7 +941,7 @@ class Flavor_Parkings_Frontend_Controller {
         ));
 
         if (!$reserva) {
-            wp_send_json_error(['message' => __('Reserva no encontrada', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Reserva no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Cancelar
@@ -962,7 +962,7 @@ class Flavor_Parkings_Frontend_Controller {
             ['%d']
         );
 
-        wp_send_json_success(['message' => __('Reserva cancelada', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Reserva cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -973,13 +973,13 @@ class Flavor_Parkings_Frontend_Controller {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
 
         if ($this->usuario_en_lista_espera($usuario_id)) {
-            wp_send_json_error(['message' => __('Ya estás en la lista de espera', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Ya estás en la lista de espera', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $tipos = isset($_POST['tipos']) ? array_map('sanitize_text_field', $_POST['tipos']) : ['normal'];
@@ -994,11 +994,11 @@ class Flavor_Parkings_Frontend_Controller {
         if ($resultado) {
             $posicion = $this->obtener_posicion_lista($usuario_id);
             wp_send_json_success([
-                'message' => __('Te has apuntado a la lista de espera', 'flavor-chat-ia'),
+                'message' => __('Te has apuntado a la lista de espera', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'posicion' => $posicion,
             ]);
         } else {
-            wp_send_json_error(['message' => __('Error al apuntarse', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al apuntarse', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -1010,7 +1010,7 @@ class Flavor_Parkings_Frontend_Controller {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('No autorizado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1023,7 +1023,7 @@ class Flavor_Parkings_Frontend_Controller {
         ));
 
         if (!$asignacion) {
-            wp_send_json_error(['message' => __('No tienes esta plaza asignada', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes esta plaza asignada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Marcar como disponible temporalmente
@@ -1035,7 +1035,7 @@ class Flavor_Parkings_Frontend_Controller {
             ['%d']
         );
 
-        wp_send_json_success(['message' => __('Plaza liberada temporalmente', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Plaza liberada temporalmente', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**

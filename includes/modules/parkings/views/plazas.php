@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 
 // Verificar permisos
 if (!current_user_can('manage_options')) {
-    wp_die(__('No tienes permisos suficientes para acceder a esta página.', 'flavor-chat-ia'));
+    wp_die(__('No tienes permisos suficientes para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
 }
 
 global $wpdb;
@@ -86,9 +86,9 @@ $stats = $wpdb->get_row(
 ?>
 
 <div class="wrap">
-    <h1 class="wp-heading-inline"><?php echo esc_html__('Gestión de Plazas', 'flavor-chat-ia'); ?></h1>
+    <h1 class="wp-heading-inline"><?php echo esc_html__('Gestión de Plazas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-parkings-plazas&action=nueva')); ?>" class="page-title-action">
-        <?php esc_html_e('Añadir Nueva', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Añadir Nueva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </a>
     <hr class="wp-header-end">
 
@@ -99,7 +99,7 @@ $stats = $wpdb->get_row(
                 <?php echo esc_html(number_format($stats->disponibles, 0, ',', '.')); ?>
             </div>
             <div style="color: #666; font-size: 12px; text-transform: uppercase;">
-                <?php esc_html_e('Disponibles', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
         </div>
         <div class="card" style="padding: 15px; text-align: center; min-width: 150px;">
@@ -107,7 +107,7 @@ $stats = $wpdb->get_row(
                 <?php echo esc_html(number_format($stats->ocupadas, 0, ',', '.')); ?>
             </div>
             <div style="color: #666; font-size: 12px; text-transform: uppercase;">
-                <?php esc_html_e('Ocupadas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ocupadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
         </div>
         <div class="card" style="padding: 15px; text-align: center; min-width: 150px;">
@@ -115,7 +115,7 @@ $stats = $wpdb->get_row(
                 <?php echo esc_html(number_format($stats->mantenimiento, 0, ',', '.')); ?>
             </div>
             <div style="color: #666; font-size: 12px; text-transform: uppercase;">
-                <?php esc_html_e('Mantenimiento', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
         </div>
     </div>
@@ -127,19 +127,19 @@ $stats = $wpdb->get_row(
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; align-items: end;">
 
                 <div>
-                    <label for="estado"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></label>
+                    <label for="estado"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="estado" id="estado" class="regular-text">
-                        <option value="todos" <?php selected($filtro_estado, 'todos'); ?>><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
-                        <option value="disponible" <?php selected($filtro_estado, 'disponible'); ?>><?php esc_html_e('Disponible', 'flavor-chat-ia'); ?></option>
-                        <option value="ocupada" <?php selected($filtro_estado, 'ocupada'); ?>><?php esc_html_e('Ocupada', 'flavor-chat-ia'); ?></option>
-                        <option value="mantenimiento" <?php selected($filtro_estado, 'mantenimiento'); ?>><?php esc_html_e('Mantenimiento', 'flavor-chat-ia'); ?></option>
+                        <option value="todos" <?php selected($filtro_estado, 'todos'); ?>><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="disponible" <?php selected($filtro_estado, 'disponible'); ?>><?php esc_html_e('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="ocupada" <?php selected($filtro_estado, 'ocupada'); ?>><?php esc_html_e('Ocupada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="mantenimiento" <?php selected($filtro_estado, 'mantenimiento'); ?>><?php esc_html_e('Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div>
-                    <label for="zona"><?php esc_html_e('Zona', 'flavor-chat-ia'); ?></label>
+                    <label for="zona"><?php esc_html_e('Zona', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="zona" id="zona" class="regular-text">
-                        <option value=""><?php esc_html_e('Todas las zonas', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todas las zonas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($zonas as $zona) : ?>
                             <option value="<?php echo esc_attr($zona); ?>" <?php selected($filtro_zona, $zona); ?>>
                                 <?php echo esc_html($zona); ?>
@@ -149,24 +149,24 @@ $stats = $wpdb->get_row(
                 </div>
 
                 <div>
-                    <label for="tipo"><?php esc_html_e('Tipo Vehículo', 'flavor-chat-ia'); ?></label>
+                    <label for="tipo"><?php esc_html_e('Tipo Vehículo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="tipo" id="tipo" class="regular-text">
-                        <option value=""><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
-                        <option value="coche" <?php selected($filtro_tipo, 'coche'); ?>><?php esc_html_e('Coche', 'flavor-chat-ia'); ?></option>
-                        <option value="moto" <?php selected($filtro_tipo, 'moto'); ?>><?php esc_html_e('Moto', 'flavor-chat-ia'); ?></option>
-                        <option value="bicicleta" <?php selected($filtro_tipo, 'bicicleta'); ?>><?php esc_html_e('Bicicleta', 'flavor-chat-ia'); ?></option>
-                        <option value="furgoneta" <?php selected($filtro_tipo, 'furgoneta'); ?>><?php esc_html_e('Furgoneta', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="coche" <?php selected($filtro_tipo, 'coche'); ?>><?php esc_html_e('Coche', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="moto" <?php selected($filtro_tipo, 'moto'); ?>><?php esc_html_e('Moto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="bicicleta" <?php selected($filtro_tipo, 'bicicleta'); ?>><?php esc_html_e('Bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="furgoneta" <?php selected($filtro_tipo, 'furgoneta'); ?>><?php esc_html_e('Furgoneta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
                 <div>
-                    <label for="busqueda"><?php esc_html_e('Buscar', 'flavor-chat-ia'); ?></label>
-                    <input type="text" name="s" id="busqueda" class="regular-text" placeholder="<?php esc_attr_e('Número o dirección', 'flavor-chat-ia'); ?>" value="<?php echo esc_attr($filtro_busqueda); ?>">
+                    <label for="busqueda"><?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                    <input type="text" name="s" id="busqueda" class="regular-text" placeholder="<?php esc_attr_e('Número o dirección', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" value="<?php echo esc_attr($filtro_busqueda); ?>">
                 </div>
 
                 <div>
-                    <button type="submit" class="button button-primary"><?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?></button>
-                    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-parkings-plazas')); ?>" class="button"><?php esc_html_e('Limpiar', 'flavor-chat-ia'); ?></a>
+                    <button type="submit" class="button button-primary"><?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-parkings-plazas')); ?>" class="button"><?php esc_html_e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 </div>
 
             </div>
@@ -178,15 +178,15 @@ $stats = $wpdb->get_row(
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th style="width: 80px;"><?php esc_html_e('Número', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Ubicación', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Zona', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Propietario', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Precio/hora', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Reservas', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 80px;"><?php esc_html_e('Número', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Zona', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Propietario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Precio/hora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -199,7 +199,7 @@ $stats = $wpdb->get_row(
                                 <?php if ($plaza->coordenadas_lat && $plaza->coordenadas_lng) : ?>
                                     <br><small style="color: #666;">
                                         📍 <a href="https://www.google.com/maps?q=<?php echo esc_attr($plaza->coordenadas_lat); ?>,<?php echo esc_attr($plaza->coordenadas_lng); ?>" target="_blank">
-                                            <?php esc_html_e('Ver en mapa', 'flavor-chat-ia'); ?>
+                                            <?php esc_html_e('Ver en mapa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </a>
                                     </small>
                                 <?php endif; ?>
@@ -216,7 +216,7 @@ $stats = $wpdb->get_row(
                                 echo esc_html($iconos_tipo[$plaza->tipo_vehiculo] ?? '🚗') . ' ' . esc_html(ucfirst($plaza->tipo_vehiculo));
                                 ?>
                             </td>
-                            <td><?php echo esc_html($plaza->nombre_propietario ?? __('Sin propietario', 'flavor-chat-ia')); ?></td>
+                            <td><?php echo esc_html($plaza->nombre_propietario ?? __('Sin propietario', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></td>
                             <td><strong>€<?php echo esc_html(number_format($plaza->precio_por_hora, 2, ',', '.')); ?></strong></td>
                             <td>
                                 <?php
@@ -237,10 +237,10 @@ $stats = $wpdb->get_row(
                             </td>
                             <td>
                                 <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-parkings-plazas&action=ver&plaza_id=' . $plaza->id)); ?>" class="button button-small">
-                                    <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                                 <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-parkings-plazas&action=editar&plaza_id=' . $plaza->id)); ?>" class="button button-small">
-                                    <?php esc_html_e('Editar', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </td>
                         </tr>
@@ -250,7 +250,7 @@ $stats = $wpdb->get_row(
                         <td colspan="9" style="text-align: center; padding: 40px;">
                             <div style="color: #666;">
                                 <span class="dashicons dashicons-location" style="font-size: 48px; opacity: 0.3;"></span>
-                                <p><?php esc_html_e('No se encontraron plazas con los filtros seleccionados.', 'flavor-chat-ia'); ?></p>
+                                <p><?php esc_html_e('No se encontraron plazas con los filtros seleccionados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </div>
                         </td>
                     </tr>
@@ -264,7 +264,7 @@ $stats = $wpdb->get_row(
         <div class="tablenav bottom">
             <div class="tablenav-pages">
                 <span class="displaying-num">
-                    <?php printf(esc_html__('%s plazas', 'flavor-chat-ia'), number_format_i18n($total_plazas)); ?>
+                    <?php printf(esc_html__('%s plazas', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($total_plazas)); ?>
                 </span>
                 <?php
                 echo paginate_links([

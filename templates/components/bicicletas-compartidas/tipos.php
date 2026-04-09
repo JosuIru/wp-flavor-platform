@@ -9,8 +9,8 @@
 if (!defined('ABSPATH')) exit;
 
 // Valores por defecto
-$titulo = $args['titulo'] ?? __('Elige tu Bicicleta', 'flavor-chat-ia');
-$subtitulo = $args['subtitulo'] ?? __('Selecciona el modelo que mejor se adapta a tu viaje', 'flavor-chat-ia');
+$titulo = $args['titulo'] ?? __('Elige tu Bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$subtitulo = $args['subtitulo'] ?? __('Selecciona el modelo que mejor se adapta a tu viaje', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $tipos = $args['tipos'] ?? [];
 
 // Datos de ejemplo si no hay tipos
@@ -23,10 +23,10 @@ if (empty($tipos)) {
             'icono' => '🚲',
             'color' => '#3b82f6',
             'caracteristicas' => [
-                __('Ruedas de 28 pulgadas', 'flavor-chat-ia'),
-                __('Cambios: 21 velocidades', 'flavor-chat-ia'),
-                __('Cesta incluida', 'flavor-chat-ia'),
-                __('Peso: 15 kg', 'flavor-chat-ia'),
+                __('Ruedas de 28 pulgadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Cambios: 21 velocidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Cesta incluida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Peso: 15 kg', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'precio_por_hora' => '€0.50',
             'disponibles' => 234,
@@ -38,10 +38,10 @@ if (empty($tipos)) {
             'icono' => '⚡',
             'color' => '#10b981',
             'caracteristicas' => [
-                __('Motor eléctrico 250W', 'flavor-chat-ia'),
-                __('Batería: 50 km de autonomía', 'flavor-chat-ia'),
-                __('Cambios: 8 velocidades', 'flavor-chat-ia'),
-                __('Peso: 24 kg', 'flavor-chat-ia'),
+                __('Motor eléctrico 250W', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Batería: 50 km de autonomía', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Cambios: 8 velocidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Peso: 24 kg', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'precio_por_hora' => '€1.50',
             'disponibles' => 87,
@@ -53,10 +53,10 @@ if (empty($tipos)) {
             'icono' => '🎨',
             'color' => '#f59e0b',
             'caracteristicas' => [
-                __('Ruedas de 20 pulgadas', 'flavor-chat-ia'),
-                __('Frenos de seguridad mejorados', 'flavor-chat-ia'),
-                __('Asiento ajustable', 'flavor-chat-ia'),
-                __('Peso: 12 kg', 'flavor-chat-ia'),
+                __('Ruedas de 20 pulgadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Frenos de seguridad mejorados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Asiento ajustable', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Peso: 12 kg', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'precio_por_hora' => '€0.30',
             'disponibles' => 156,
@@ -103,7 +103,7 @@ if (empty($tipos)) {
                         <!-- Características -->
                         <div class="bg-gray-50 rounded-lg p-4 mb-4">
                             <p class="text-sm font-semibold text-gray-700 mb-3">
-                                ✓ <?php echo esc_html__('Características', 'flavor-chat-ia'); ?>
+                                ✓ <?php echo esc_html__('Características', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </p>
                             <ul class="space-y-2">
                                 <?php foreach ($tipo['caracteristicas'] as $caracteristica): ?>
@@ -119,7 +119,7 @@ if (empty($tipos)) {
                         <div class="border-t border-gray-200 pt-4 flex items-center justify-between">
                             <div>
                                 <div class="text-sm text-gray-600">
-                                    <?php echo esc_html__('Precio por hora', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Precio por hora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </div>
                                 <div class="text-2xl font-bold text-gray-900">
                                     <?php echo esc_html($tipo['precio_por_hora']); ?>
@@ -127,7 +127,7 @@ if (empty($tipos)) {
                             </div>
                             <div class="text-right">
                                 <div class="text-sm text-gray-600">
-                                    <?php echo esc_html__('Disponibles', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </div>
                                 <div class="text-2xl font-bold" style="color: <?php echo esc_attr($tipo['color']); ?>;">
                                     <?php echo (int)$tipo['disponibles']; ?>
@@ -139,7 +139,7 @@ if (empty($tipos)) {
                         <button class="flavor-button flavor-button-primary w-full mt-4 py-3 rounded-lg font-semibold transition-all"
                                 style="background-color: <?php echo esc_attr($tipo['color']); ?>;"
                                 data-tipo-id="<?php echo esc_attr($tipo['id']); ?>">
-                            <?php echo esc_html__('Seleccionar', 'flavor-chat-ia'); ?> →
+                            <?php echo esc_html__('Seleccionar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> →
                         </button>
                     </div>
                 </div>
@@ -150,31 +150,31 @@ if (empty($tipos)) {
         <!-- Información adicional -->
         <div class="mt-16 bg-blue-50 rounded-2xl p-8">
             <h3 class="text-2xl font-bold text-gray-900 mb-6">
-                💡 <?php echo esc_html__('¿Cómo elegir la bicicleta adecuada?', 'flavor-chat-ia'); ?>
+                💡 <?php echo esc_html__('¿Cómo elegir la bicicleta adecuada?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div>
                     <h4 class="font-bold text-gray-900 mb-2">
-                        <?php echo esc_html__('Viajes Cortos (< 5 km)', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Viajes Cortos (< 5 km)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h4>
                     <p class="text-gray-600">
-                        <?php echo esc_html__('Elige una bicicleta urbana. Son cómodas, ligeras y perfectas para paseos rápidos por la ciudad.', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Elige una bicicleta urbana. Son cómodas, ligeras y perfectas para paseos rápidos por la ciudad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
                 <div>
                     <h4 class="font-bold text-gray-900 mb-2">
-                        <?php echo esc_html__('Viajes Medianos (5-15 km)', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Viajes Medianos (5-15 km)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h4>
                     <p class="text-gray-600">
-                        <?php echo esc_html__('Una bicicleta eléctrica te permitirá llegar más rápido y sin esfuerzo excesivo.', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Una bicicleta eléctrica te permitirá llegar más rápido y sin esfuerzo excesivo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
                 <div>
                     <h4 class="font-bold text-gray-900 mb-2">
-                        <?php echo esc_html__('Viajes en Familia', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Viajes en Familia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h4>
                     <p class="text-gray-600">
-                        <?php echo esc_html__('Para los más pequeños, nuestras bicicletas infantiles son seguras y cómodas.', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Para los más pequeños, nuestras bicicletas infantiles son seguras y cómodas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
             </div>

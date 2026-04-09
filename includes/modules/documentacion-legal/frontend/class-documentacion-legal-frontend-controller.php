@@ -157,11 +157,11 @@ class Flavor_Documentacion_Legal_Frontend_Controller {
             'tipos' => $this->tipos,
             'ambitos' => $this->ambitos,
             'strings' => [
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
-                'error' => __('Error al procesar la solicitud', 'flavor-chat-ia'),
-                'guardado' => __('Documento guardado', 'flavor-chat-ia'),
-                'eliminado_guardado' => __('Documento eliminado de guardados', 'flavor-chat-ia'),
-                'sin_resultados' => __('No se encontraron documentos', 'flavor-chat-ia'),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al procesar la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'guardado' => __('Documento guardado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'eliminado_guardado' => __('Documento eliminado de guardados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sin_resultados' => __('No se encontraron documentos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'usuarioId' => get_current_user_id()
         ]);

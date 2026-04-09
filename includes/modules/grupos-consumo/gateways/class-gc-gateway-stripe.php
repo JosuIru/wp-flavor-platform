@@ -32,7 +32,7 @@ class Flavor_GC_Gateway_Stripe extends Flavor_GC_Payment_Gateway {
      */
     public function __construct() {
         $this->name = 'Stripe';
-        $this->description = __('Paga de forma segura con tu tarjeta.', 'flavor-chat-ia');
+        $this->description = __('Paga de forma segura con tu tarjeta.', 'flavor-platform');
         $this->icon = 'dashicons-credit-card';
 
         parent::__construct();
@@ -105,7 +105,7 @@ class Flavor_GC_Gateway_Stripe extends Flavor_GC_Payment_Gateway {
         if (empty($secret_key)) {
             return [
                 'success' => false,
-                'error' => __('Stripe no está configurado correctamente.', 'flavor-chat-ia'),
+                'error' => __('Stripe no está configurado correctamente.', 'flavor-platform'),
             ];
         }
 
@@ -127,7 +127,7 @@ class Flavor_GC_Gateway_Stripe extends Flavor_GC_Payment_Gateway {
                 'metadata[user_id]' => get_current_user_id(),
                 'metadata[source]' => 'grupos_consumo',
                 'description' => sprintf(
-                    __('Pedido Grupos de Consumo #%d', 'flavor-chat-ia'),
+                    __('Pedido Grupos de Consumo #%d', 'flavor-platform'),
                     $entrega_id
                 ),
                 'receipt_email' => $user->user_email,
@@ -147,7 +147,7 @@ class Flavor_GC_Gateway_Stripe extends Flavor_GC_Payment_Gateway {
         if (isset($body['error'])) {
             return [
                 'success' => false,
-                'error' => $body['error']['message'] ?? __('Error de Stripe.', 'flavor-chat-ia'),
+                'error' => $body['error']['message'] ?? __('Error de Stripe.', 'flavor-platform'),
             ];
         }
 
@@ -438,46 +438,46 @@ class Flavor_GC_Gateway_Stripe extends Flavor_GC_Payment_Gateway {
             [
                 'id' => 'enabled',
                 'type' => 'checkbox',
-                'label' => __('Habilitar Stripe', 'flavor-chat-ia'),
+                'label' => __('Habilitar Stripe', 'flavor-platform'),
                 'default' => false,
             ],
             [
                 'id' => 'sandbox',
                 'type' => 'checkbox',
-                'label' => __('Modo de pruebas (sandbox)', 'flavor-chat-ia'),
-                'description' => __('Usa las claves de prueba de Stripe.', 'flavor-chat-ia'),
+                'label' => __('Modo de pruebas (sandbox)', 'flavor-platform'),
+                'description' => __('Usa las claves de prueba de Stripe.', 'flavor-platform'),
                 'default' => true,
             ],
             [
                 'id' => 'test_publishable_key',
                 'type' => 'text',
-                'label' => __('Clave pública de pruebas', 'flavor-chat-ia'),
-                'description' => __('Empieza con pk_test_', 'flavor-chat-ia'),
+                'label' => __('Clave pública de pruebas', 'flavor-platform'),
+                'description' => __('Empieza con pk_test_', 'flavor-platform'),
             ],
             [
                 'id' => 'test_secret_key',
                 'type' => 'password',
-                'label' => __('Clave secreta de pruebas', 'flavor-chat-ia'),
-                'description' => __('Empieza con sk_test_', 'flavor-chat-ia'),
+                'label' => __('Clave secreta de pruebas', 'flavor-platform'),
+                'description' => __('Empieza con sk_test_', 'flavor-platform'),
             ],
             [
                 'id' => 'live_publishable_key',
                 'type' => 'text',
-                'label' => __('Clave pública de producción', 'flavor-chat-ia'),
-                'description' => __('Empieza con pk_live_', 'flavor-chat-ia'),
+                'label' => __('Clave pública de producción', 'flavor-platform'),
+                'description' => __('Empieza con pk_live_', 'flavor-platform'),
             ],
             [
                 'id' => 'live_secret_key',
                 'type' => 'password',
-                'label' => __('Clave secreta de producción', 'flavor-chat-ia'),
-                'description' => __('Empieza con sk_live_', 'flavor-chat-ia'),
+                'label' => __('Clave secreta de producción', 'flavor-platform'),
+                'description' => __('Empieza con sk_live_', 'flavor-platform'),
             ],
             [
                 'id' => 'webhook_secret',
                 'type' => 'password',
-                'label' => __('Secreto del Webhook', 'flavor-chat-ia'),
+                'label' => __('Secreto del Webhook', 'flavor-platform'),
                 'description' => sprintf(
-                    __('URL del webhook: %s', 'flavor-chat-ia'),
+                    __('URL del webhook: %s', 'flavor-platform'),
                     rest_url('flavor-gc/v1/webhook/stripe')
                 ),
             ],
@@ -504,7 +504,7 @@ class Flavor_GC_Gateway_Stripe extends Flavor_GC_Payment_Gateway {
         if (!$transaccion) {
             return [
                 'success' => false,
-                'error' => __('Transacción no encontrada.', 'flavor-chat-ia'),
+                'error' => __('Transacción no encontrada.', 'flavor-platform'),
             ];
         }
 
@@ -514,7 +514,7 @@ class Flavor_GC_Gateway_Stripe extends Flavor_GC_Payment_Gateway {
         if (empty($payment_intent_id)) {
             return [
                 'success' => false,
-                'error' => __('No se encontró el ID del pago en Stripe.', 'flavor-chat-ia'),
+                'error' => __('No se encontró el ID del pago en Stripe.', 'flavor-platform'),
             ];
         }
 
@@ -559,7 +559,7 @@ class Flavor_GC_Gateway_Stripe extends Flavor_GC_Payment_Gateway {
         return [
             'success' => true,
             'refund_id' => $body['id'],
-            'message' => __('Reembolso procesado correctamente.', 'flavor-chat-ia'),
+            'message' => __('Reembolso procesado correctamente.', 'flavor-platform'),
         ];
     }
 }

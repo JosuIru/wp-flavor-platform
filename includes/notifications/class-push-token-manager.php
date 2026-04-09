@@ -58,7 +58,7 @@ class Flavor_Push_Token_Manager {
                 }
             }
         }
-        return new WP_Error('rest_forbidden', __('Autenticacion requerida.', 'flavor-chat-ia'), ['status' => 401]);
+        return new WP_Error('rest_forbidden', __('Autenticacion requerida.', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 401]);
     }
 
     /**
@@ -80,16 +80,16 @@ class Flavor_Push_Token_Manager {
         $nombre_dispositivo = sanitize_text_field($request->get_param('device_name') ?? '');
 
         if (empty($token_fcm)) {
-            return new WP_Error('missing_token', __('El token FCM es obligatorio.', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('missing_token', __('El token FCM es obligatorio.', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $registrado = self::registrar_token($usuario_id, $token_fcm, $nombre_dispositivo);
 
         if ($registrado) {
-            return new WP_REST_Response(['success' => true, 'message' => __('Token registrado correctamente.', 'flavor-chat-ia')], 200);
+            return new WP_REST_Response(['success' => true, 'message' => __('Token registrado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
         }
 
-        return new WP_Error('register_failed', __('Error al registrar el token.', 'flavor-chat-ia'), ['status' => 500]);
+        return new WP_Error('register_failed', __('Error al registrar el token.', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 500]);
     }
 
     /**
@@ -100,12 +100,12 @@ class Flavor_Push_Token_Manager {
         $token_fcm = sanitize_text_field($request->get_param('token'));
 
         if (empty($token_fcm)) {
-            return new WP_Error('missing_token', __('El token FCM es obligatorio.', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('missing_token', __('El token FCM es obligatorio.', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $eliminado = self::eliminar_token($usuario_id, $token_fcm);
 
-        return new WP_REST_Response(['success' => $eliminado, 'message' => $eliminado ? __('Token eliminado.', 'flavor-chat-ia') : __('Token no encontrado.', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => $eliminado, 'message' => $eliminado ? __('Token eliminado.', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Token no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     /**

@@ -107,14 +107,14 @@ trait Flavor_Module_Integration_Provider {
                     <?php endforeach; ?>
                 <?php else: ?>
                     <p class="flavor-no-items" style="color: #666; font-style: italic; margin: 0;">
-                        <?php printf(__('Sin %s vinculados', 'flavor-chat-ia'), strtolower($content_type['label'])); ?>
+                        <?php printf(__('Sin %s vinculados', 'flavor-platform'), strtolower($content_type['label'])); ?>
                     </p>
                 <?php endif; ?>
             </div>
 
             <div style="display: flex; gap: 5px;">
                 <select class="flavor-integration-selector widefat" style="flex: 1;">
-                    <option value=""><?php printf(__('Seleccionar %s...', 'flavor-chat-ia'), strtolower($content_type['label'])); ?></option>
+                    <option value=""><?php printf(__('Seleccionar %s...', 'flavor-platform'), strtolower($content_type['label'])); ?></option>
                     <?php foreach ($available_items as $item):
                         if (in_array($item->ID, $related_ids)) continue;
                     ?>
@@ -130,7 +130,7 @@ trait Flavor_Module_Integration_Provider {
             <p style="margin-top: 10px;">
                 <a href="<?php echo admin_url('post-new.php?post_type=' . $content_type['post_type']); ?>" class="button button-small" target="_blank">
                     <span class="dashicons dashicons-plus" style="vertical-align: middle;"></span>
-                    <?php printf(__('Crear %s', 'flavor-chat-ia'), $content_type['label']); ?>
+                    <?php printf(__('Crear %s', 'flavor-platform'), $content_type['label']); ?>
                 </a>
             </p>
             <?php endif; ?>
@@ -311,7 +311,7 @@ trait Flavor_Module_Integration_Consumer {
 
             add_meta_box(
                 'flavor_integrations_' . $target['post_type'],
-                __('Contenido Relacionado', 'flavor-chat-ia'),
+                __('Contenido Relacionado', 'flavor-platform'),
                 function($post) use ($active_providers) {
                     $this->render_integrations_metabox($post, $active_providers);
                 },
@@ -329,7 +329,7 @@ trait Flavor_Module_Integration_Consumer {
         wp_nonce_field('flavor_integrations_save', 'flavor_integrations_nonce');
 
         if (empty($providers)) {
-            echo '<p>' . __('No hay modulos de contenido activos para vincular.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('No hay modulos de contenido activos para vincular.', 'flavor-platform') . '</p>';
             return;
         }
 
@@ -514,8 +514,8 @@ class Flavor_Functional_Integrations {
             'id'          => 'eventos_gc_catering',
             'origen'      => 'eventos',
             'destino'     => 'grupos_consumo',
-            'label'       => __('Pedido de Catering', 'flavor-chat-ia'),
-            'descripcion' => __('Crear pedido grupal de productos para el catering del evento', 'flavor-chat-ia'),
+            'label'       => __('Pedido de Catering', 'flavor-platform'),
+            'descripcion' => __('Crear pedido grupal de productos para el catering del evento', 'flavor-platform'),
             'icon'        => 'dashicons-store',
             'callback'    => [$this, 'callback_catering'],
         ];
@@ -525,8 +525,8 @@ class Flavor_Functional_Integrations {
             'id'          => 'cursos_banco_tiempo',
             'origen'      => 'cursos',
             'destino'     => 'banco_tiempo',
-            'label'       => __('Pago con Horas', 'flavor-chat-ia'),
-            'descripcion' => __('Permitir pagar inscripción al curso con horas del banco de tiempo', 'flavor-chat-ia'),
+            'label'       => __('Pago con Horas', 'flavor-platform'),
+            'descripcion' => __('Permitir pagar inscripción al curso con horas del banco de tiempo', 'flavor-platform'),
             'icon'        => 'dashicons-clock',
             'callback'    => [$this, 'callback_pago_horas'],
         ];
@@ -536,8 +536,8 @@ class Flavor_Functional_Integrations {
             'id'          => 'carpooling_eventos',
             'origen'      => 'carpooling',
             'destino'     => 'eventos',
-            'label'       => __('Transporte Compartido', 'flavor-chat-ia'),
-            'descripcion' => __('Ofrecer/buscar transporte compartido para asistir al evento', 'flavor-chat-ia'),
+            'label'       => __('Transporte Compartido', 'flavor-platform'),
+            'descripcion' => __('Ofrecer/buscar transporte compartido para asistir al evento', 'flavor-platform'),
             'icon'        => 'dashicons-car',
             'callback'    => [$this, 'callback_carpooling_evento'],
         ];
@@ -547,8 +547,8 @@ class Flavor_Functional_Integrations {
             'id'          => 'incidencias_huertos',
             'origen'      => 'incidencias',
             'destino'     => 'huertos_urbanos',
-            'label'       => __('Incidencia en Parcela', 'flavor-chat-ia'),
-            'descripcion' => __('Reportar un problema específico en una parcela del huerto', 'flavor-chat-ia'),
+            'label'       => __('Incidencia en Parcela', 'flavor-platform'),
+            'descripcion' => __('Reportar un problema específico en una parcela del huerto', 'flavor-platform'),
             'icon'        => 'dashicons-warning',
             'callback'    => [$this, 'callback_incidencia_parcela'],
         ];
@@ -558,8 +558,8 @@ class Flavor_Functional_Integrations {
             'id'          => 'talleres_comunidades',
             'origen'      => 'talleres',
             'destino'     => 'comunidades',
-            'label'       => __('Taller para Comunidad', 'flavor-chat-ia'),
-            'descripcion' => __('Restringir taller solo a miembros de una comunidad específica', 'flavor-chat-ia'),
+            'label'       => __('Taller para Comunidad', 'flavor-platform'),
+            'descripcion' => __('Restringir taller solo a miembros de una comunidad específica', 'flavor-platform'),
             'icon'        => 'dashicons-groups',
             'callback'    => [$this, 'callback_taller_comunidad'],
         ];
@@ -569,8 +569,8 @@ class Flavor_Functional_Integrations {
             'id'          => 'recetas_gc_ingredientes',
             'origen'      => 'recetas',
             'destino'     => 'grupos_consumo',
-            'label'       => __('Ingredientes Disponibles', 'flavor-chat-ia'),
-            'descripcion' => __('Vincular receta con productos disponibles en grupos de consumo', 'flavor-chat-ia'),
+            'label'       => __('Ingredientes Disponibles', 'flavor-platform'),
+            'descripcion' => __('Vincular receta con productos disponibles en grupos de consumo', 'flavor-platform'),
             'icon'        => 'dashicons-carrot',
             'callback'    => [$this, 'callback_receta_ingredientes'],
         ];
@@ -613,7 +613,7 @@ class Flavor_Functional_Integrations {
         $notas = sanitize_textarea_field($datos['notas'] ?? '');
 
         if (!$evento_id || !$grupo_id || empty($productos)) {
-            return new \WP_Error('datos_incompletos', __('Datos incompletos', 'flavor-chat-ia'));
+            return new \WP_Error('datos_incompletos', __('Datos incompletos', 'flavor-platform'));
         }
 
         // Crear pedido en gc_pedidos
@@ -654,7 +654,7 @@ class Flavor_Functional_Integrations {
         $horas = absint($datos['horas_requeridas'] ?? 0);
 
         if (!$curso_id || !$horas) {
-            return new \WP_Error('datos_incompletos', __('Datos incompletos', 'flavor-chat-ia'));
+            return new \WP_Error('datos_incompletos', __('Datos incompletos', 'flavor-platform'));
         }
 
         update_post_meta($curso_id, '_flavor_pago_banco_tiempo', [
@@ -680,12 +680,12 @@ class Flavor_Functional_Integrations {
         $hora_salida = sanitize_text_field($datos['hora_salida'] ?? '');
 
         if (!$evento_id || !$punto_encuentro) {
-            return new \WP_Error('datos_incompletos', __('Datos incompletos', 'flavor-chat-ia'));
+            return new \WP_Error('datos_incompletos', __('Datos incompletos', 'flavor-platform'));
         }
 
         $evento = get_post($evento_id);
         if (!$evento) {
-            return new \WP_Error('evento_invalido', __('Evento no válido', 'flavor-chat-ia'));
+            return new \WP_Error('evento_invalido', __('Evento no válido', 'flavor-platform'));
         }
 
         $fecha_evento = get_post_meta($evento_id, '_flavor_evento_fecha', true);
@@ -724,7 +724,7 @@ class Flavor_Functional_Integrations {
         $parcela_id = absint($datos['parcela_id'] ?? 0);
 
         if (!$incidencia_id || !$huerto_id || !$parcela_id) {
-            return new \WP_Error('datos_incompletos', __('Datos incompletos', 'flavor-chat-ia'));
+            return new \WP_Error('datos_incompletos', __('Datos incompletos', 'flavor-platform'));
         }
 
         $tabla = $wpdb->prefix . 'flavor_incidencias';
@@ -756,7 +756,7 @@ class Flavor_Functional_Integrations {
         $descuento = min(100, absint($datos['descuento'] ?? 0));
 
         if (!$taller_id || !$comunidad_id) {
-            return new \WP_Error('datos_incompletos', __('Datos incompletos', 'flavor-chat-ia'));
+            return new \WP_Error('datos_incompletos', __('Datos incompletos', 'flavor-platform'));
         }
 
         update_post_meta($taller_id, '_flavor_comunidad_exclusiva', $comunidad_id);
@@ -773,7 +773,7 @@ class Flavor_Functional_Integrations {
         $productos = isset($datos['productos']) ? array_map('absint', (array) $datos['productos']) : [];
 
         if (!$receta_id) {
-            return new \WP_Error('datos_incompletos', __('Datos incompletos', 'flavor-chat-ia'));
+            return new \WP_Error('datos_incompletos', __('Datos incompletos', 'flavor-platform'));
         }
 
         update_post_meta($receta_id, '_flavor_gc_productos', $productos);
@@ -788,14 +788,14 @@ class Flavor_Functional_Integrations {
         check_ajax_referer('flavor_integrations', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['mensaje' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Debes iniciar sesión', 'flavor-platform')]);
         }
 
         $integracion_id = sanitize_key($_POST['integracion_id'] ?? '');
         $datos = isset($_POST['datos']) ? (array) $_POST['datos'] : [];
 
         if (!isset($this->integraciones[$integracion_id])) {
-            wp_send_json_error(['mensaje' => __('Integración no válida', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Integración no válida', 'flavor-platform')]);
         }
 
         $integracion = $this->integraciones[$integracion_id];
@@ -803,7 +803,7 @@ class Flavor_Functional_Integrations {
         // Verificar módulos activos
         if (!flavor_is_module_active($integracion['origen']) ||
             !flavor_is_module_active($integracion['destino'])) {
-            wp_send_json_error(['mensaje' => __('Módulos requeridos no activos', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Módulos requeridos no activos', 'flavor-platform')]);
         }
 
         $resultado = call_user_func($integracion['callback'], $datos, get_current_user_id());

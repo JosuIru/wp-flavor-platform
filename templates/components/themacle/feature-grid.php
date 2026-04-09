@@ -111,7 +111,7 @@ $clase_columnas = $mapa_columnas_grid[ $columnas ];
     <?php else : ?>
 
         <p class="text-gray-500 text-center py-8">
-            <?php echo esc_html__( 'No hay características para mostrar.', 'flavor-chat-ia' ); ?>
+            <?php echo esc_html__( 'No hay características para mostrar.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
         </p>
 
     <?php endif; ?>

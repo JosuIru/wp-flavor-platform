@@ -39,13 +39,13 @@ $size_class = $size_classes[$size] ?? $size_classes['medium'];
     </div>
 
     <div class="fsc-badge__content">
-        <span class="fsc-badge__label"><?php esc_html_e('App Consciente', 'flavor-chat-ia'); ?></span>
+        <span class="fsc-badge__label"><?php esc_html_e('App Consciente', 'flavor-platform'); ?></span>
         <span class="fsc-badge__level"><?php echo esc_html($nivel['nombre']); ?></span>
     </div>
 
     <?php if ($show_details && !empty($evaluacion['puntuaciones_premisas'])) : ?>
     <div class="fsc-badge__details">
-        <h4><?php esc_html_e('Contribución por premisa', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('Contribución por premisa', 'flavor-platform'); ?></h4>
         <ul class="fsc-badge__premisas">
             <?php foreach (Flavor_Chat_Sello_Conciencia_Module::PREMISAS as $premisa_id => $premisa) :
                 $premisa_puntuacion = $evaluacion['puntuaciones_premisas'][$premisa_id] ?? 0;

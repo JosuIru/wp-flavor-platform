@@ -31,7 +31,7 @@ foreach ($tablas_gastos_candidatas as $tabla_candidata) {
 if ($tabla_gastos === '') {
     echo '<div class="transparencia-aviso transparencia-aviso--info">';
     echo '<span class="dashicons dashicons-info"></span>';
-    echo '<p>' . esc_html__('Todavía no hay gastos publicados en esta instalación.', 'flavor-chat-ia') . '</p>';
+    echo '<p>' . esc_html__('Todavía no hay gastos publicados en esta instalación.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
     echo '</div>';
     return;
 }
@@ -126,18 +126,18 @@ $gastos_por_mes = $wpdb->get_results($wpdb->prepare(
 ));
 
 $meses_nombres = [
-    1 => __('Enero', 'flavor-chat-ia'),
-    2 => __('Febrero', 'flavor-chat-ia'),
-    3 => __('Marzo', 'flavor-chat-ia'),
-    4 => __('Abril', 'flavor-chat-ia'),
-    5 => __('Mayo', 'flavor-chat-ia'),
-    6 => __('Junio', 'flavor-chat-ia'),
-    7 => __('Julio', 'flavor-chat-ia'),
-    8 => __('Agosto', 'flavor-chat-ia'),
-    9 => __('Septiembre', 'flavor-chat-ia'),
-    10 => __('Octubre', 'flavor-chat-ia'),
-    11 => __('Noviembre', 'flavor-chat-ia'),
-    12 => __('Diciembre', 'flavor-chat-ia'),
+    1 => __('Enero', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    2 => __('Febrero', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    3 => __('Marzo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    4 => __('Abril', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    5 => __('Mayo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    6 => __('Junio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    7 => __('Julio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    8 => __('Agosto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    9 => __('Septiembre', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    10 => __('Octubre', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    11 => __('Noviembre', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    12 => __('Diciembre', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 
@@ -145,10 +145,10 @@ $meses_nombres = [
     <header class="transparencia-gastos__header">
         <div class="transparencia-gastos__titulo">
             <span class="dashicons dashicons-money-alt"></span>
-            <h2><?php printf(esc_html__('Gastos %d', 'flavor-chat-ia'), $ejercicio_actual); ?></h2>
+            <h2><?php printf(esc_html__('Gastos %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $ejercicio_actual); ?></h2>
         </div>
         <p class="transparencia-gastos__descripcion">
-            <?php esc_html_e('Detalle de los gastos realizados con informacion de proveedores e importes.', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Detalle de los gastos realizados con informacion de proveedores e importes.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </header>
 
@@ -157,19 +157,19 @@ $meses_nombres = [
     <div class="transparencia-gastos__stats">
         <div class="transparencia-stat-mini">
             <span class="transparencia-stat-mini__valor"><?php echo esc_html(number_format($stats_periodo->total_operaciones)); ?></span>
-            <span class="transparencia-stat-mini__label"><?php esc_html_e('Operaciones', 'flavor-chat-ia'); ?></span>
+            <span class="transparencia-stat-mini__label"><?php esc_html_e('Operaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="transparencia-stat-mini">
             <span class="transparencia-stat-mini__valor"><?php echo esc_html(number_format($stats_periodo->total_importe, 0, ',', '.')); ?> &euro;</span>
-            <span class="transparencia-stat-mini__label"><?php esc_html_e('Total gastado', 'flavor-chat-ia'); ?></span>
+            <span class="transparencia-stat-mini__label"><?php esc_html_e('Total gastado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="transparencia-stat-mini">
             <span class="transparencia-stat-mini__valor"><?php echo esc_html(number_format($stats_periodo->promedio, 0, ',', '.')); ?> &euro;</span>
-            <span class="transparencia-stat-mini__label"><?php esc_html_e('Promedio', 'flavor-chat-ia'); ?></span>
+            <span class="transparencia-stat-mini__label"><?php esc_html_e('Promedio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="transparencia-stat-mini">
             <span class="transparencia-stat-mini__valor"><?php echo esc_html(number_format($stats_periodo->maximo, 0, ',', '.')); ?> &euro;</span>
-            <span class="transparencia-stat-mini__label"><?php esc_html_e('Mayor gasto', 'flavor-chat-ia'); ?></span>
+            <span class="transparencia-stat-mini__label"><?php esc_html_e('Mayor gasto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
     </div>
     <?php endif; ?>
@@ -178,13 +178,13 @@ $meses_nombres = [
     <div class="transparencia-filtros">
         <form class="transparencia-filtros__form" method="get">
             <div class="transparencia-filtros__grupo transparencia-filtros__grupo--busqueda">
-                <label for="buscar"><?php esc_html_e('Buscar', 'flavor-chat-ia'); ?></label>
-                <input type="text" name="buscar" id="buscar" value="<?php echo esc_attr($busqueda); ?>" placeholder="<?php esc_attr_e('Concepto o proveedor...', 'flavor-chat-ia'); ?>">
+                <label for="buscar"><?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                <input type="text" name="buscar" id="buscar" value="<?php echo esc_attr($busqueda); ?>" placeholder="<?php esc_attr_e('Concepto o proveedor...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             </div>
             <div class="transparencia-filtros__grupo">
-                <label for="categoria"><?php esc_html_e('Categoria', 'flavor-chat-ia'); ?></label>
+                <label for="categoria"><?php esc_html_e('Categoria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="categoria" id="categoria">
-                    <option value=""><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($categorias as $cat) : ?>
                     <option value="<?php echo esc_attr($cat); ?>" <?php selected($categoria_filtro, $cat); ?>>
                         <?php echo esc_html(ucfirst($cat)); ?>
@@ -193,9 +193,9 @@ $meses_nombres = [
                 </select>
             </div>
             <div class="transparencia-filtros__grupo">
-                <label for="mes"><?php esc_html_e('Mes', 'flavor-chat-ia'); ?></label>
+                <label for="mes"><?php esc_html_e('Mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="mes" id="mes">
-                    <option value=""><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php for ($mes = 1; $mes <= 12; $mes++) : ?>
                     <option value="<?php echo esc_attr($mes); ?>" <?php selected($mes_filtro, $mes); ?>>
                         <?php echo esc_html($meses_nombres[$mes]); ?>
@@ -204,16 +204,16 @@ $meses_nombres = [
                 </select>
             </div>
             <div class="transparencia-filtros__grupo transparencia-filtros__grupo--importe">
-                <label><?php esc_html_e('Importe', 'flavor-chat-ia'); ?></label>
+                <label><?php esc_html_e('Importe', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <div class="transparencia-filtros__rango">
-                    <input type="number" name="importe_min" value="<?php echo esc_attr($importe_min); ?>" placeholder="<?php esc_attr_e('Min', 'flavor-chat-ia'); ?>" step="0.01">
+                    <input type="number" name="importe_min" value="<?php echo esc_attr($importe_min); ?>" placeholder="<?php esc_attr_e('Min', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" step="0.01">
                     <span>-</span>
-                    <input type="number" name="importe_max" value="<?php echo esc_attr($importe_max); ?>" placeholder="<?php esc_attr_e('Max', 'flavor-chat-ia'); ?>" step="0.01">
+                    <input type="number" name="importe_max" value="<?php echo esc_attr($importe_max); ?>" placeholder="<?php esc_attr_e('Max', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" step="0.01">
                 </div>
             </div>
             <button type="submit" class="transparencia-btn transparencia-btn--secondary">
                 <span class="dashicons dashicons-search"></span>
-                <?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </form>
     </div>
@@ -221,7 +221,7 @@ $meses_nombres = [
     <!-- Contador de resultados -->
     <div class="transparencia-resultados-info">
         <?php printf(
-            esc_html(_n('%d gasto encontrado', '%d gastos encontrados', $total_gastos, 'flavor-chat-ia')),
+            esc_html(_n('%d gasto encontrado', '%d gastos encontrados', $total_gastos, FLAVOR_PLATFORM_TEXT_DOMAIN)),
             $total_gastos
         ); ?>
     </div>
@@ -231,7 +231,7 @@ $meses_nombres = [
     <div class="transparencia-gastos__lista">
         <?php foreach ($gastos as $gasto) :
             $estado_pago_clase = $gasto->estado_pago === 'pagado' ? 'pagado' : 'pendiente';
-            $estado_pago_texto = $gasto->estado_pago === 'pagado' ? __('Pagado', 'flavor-chat-ia') : __('Pendiente', 'flavor-chat-ia');
+            $estado_pago_texto = $gasto->estado_pago === 'pagado' ? __('Pagado', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN);
         ?>
         <article class="transparencia-gasto-card">
             <div class="transparencia-gasto-card__icono">
@@ -266,7 +266,7 @@ $meses_nombres = [
                 <?php if ($gasto->factura_numero) : ?>
                 <div class="transparencia-gasto-card__factura">
                     <span class="dashicons dashicons-media-document"></span>
-                    <?php printf(esc_html__('Factura: %s', 'flavor-chat-ia'), esc_html($gasto->factura_numero)); ?>
+                    <?php printf(esc_html__('Factura: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($gasto->factura_numero)); ?>
                     <?php if ($gasto->factura_fecha) : ?>
                     <small>(<?php echo esc_html(date_i18n('d/m/Y', strtotime($gasto->factura_fecha))); ?>)</small>
                     <?php endif; ?>
@@ -278,7 +278,7 @@ $meses_nombres = [
                     <?php echo esc_html($estado_pago_texto); ?>
                 </span>
                 <?php if ($gasto->documento_url) : ?>
-                <a href="<?php echo esc_url($gasto->documento_url); ?>" class="transparencia-btn transparencia-btn--outline transparencia-btn--sm" target="_blank" title="<?php esc_attr_e('Ver documento', 'flavor-chat-ia'); ?>">
+                <a href="<?php echo esc_url($gasto->documento_url); ?>" class="transparencia-btn transparencia-btn--outline transparencia-btn--sm" target="_blank" title="<?php esc_attr_e('Ver documento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-media-document"></span>
                 </a>
                 <?php endif; ?>
@@ -293,13 +293,13 @@ $meses_nombres = [
         <?php if ($pagina_actual > 1) : ?>
         <a href="<?php echo esc_url(add_query_arg('pag', $pagina_actual - 1)); ?>" class="transparencia-paginacion__btn">
             <span class="dashicons dashicons-arrow-left-alt2"></span>
-            <?php esc_html_e('Anterior', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <?php endif; ?>
 
         <span class="transparencia-paginacion__info">
             <?php printf(
-                esc_html__('Pagina %d de %d', 'flavor-chat-ia'),
+                esc_html__('Pagina %d de %d', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $pagina_actual,
                 $total_paginas
             ); ?>
@@ -307,7 +307,7 @@ $meses_nombres = [
 
         <?php if ($pagina_actual < $total_paginas) : ?>
         <a href="<?php echo esc_url(add_query_arg('pag', $pagina_actual + 1)); ?>" class="transparencia-paginacion__btn">
-            <?php esc_html_e('Siguiente', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <span class="dashicons dashicons-arrow-right-alt2"></span>
         </a>
         <?php endif; ?>
@@ -317,8 +317,8 @@ $meses_nombres = [
     <?php else : ?>
     <div class="transparencia-empty-state">
         <span class="dashicons dashicons-money-alt"></span>
-        <h3><?php esc_html_e('No hay gastos registrados', 'flavor-chat-ia'); ?></h3>
-        <p><?php esc_html_e('No se encontraron gastos que coincidan con los filtros seleccionados.', 'flavor-chat-ia'); ?></p>
+        <h3><?php esc_html_e('No hay gastos registrados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+        <p><?php esc_html_e('No se encontraron gastos que coincidan con los filtros seleccionados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php endif; ?>
 </div>

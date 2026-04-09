@@ -76,34 +76,34 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_cursos WHERE
 ?>
 
 <div class="wrap">
-    <h1 class="wp-heading-inline"><?php echo esc_html__('Gestión de Cursos', 'flavor-chat-ia'); ?></h1>
-    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-chat-cursos&tab=nuevo')); ?>" class="page-title-action" id="btn-nuevo-curso"><?php echo esc_html__('Añadir Nuevo', 'flavor-chat-ia'); ?></a>
+    <h1 class="wp-heading-inline"><?php echo esc_html__('Gestión de Cursos', 'flavor-platform'); ?></h1>
+    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-chat-cursos&tab=nuevo')); ?>" class="page-title-action" id="btn-nuevo-curso"><?php echo esc_html__('Añadir Nuevo', 'flavor-platform'); ?></a>
     <hr class="wp-header-end">
 
     <!-- Filtros -->
     <div class="flavor-filters">
         <form method="get" action="">
-            <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-chat-cursos', 'flavor-chat-ia'); ?>">
-            <input type="hidden" name="tab" value="<?php echo esc_attr__('cursos', 'flavor-chat-ia'); ?>">
+            <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-chat-cursos', 'flavor-platform'); ?>">
+            <input type="hidden" name="tab" value="<?php echo esc_attr__('cursos', 'flavor-platform'); ?>">
 
             <div class="flavor-filters-row">
                 <input type="search"
                        name="s"
                        value="<?php echo esc_attr($search); ?>"
-                       placeholder="<?php echo esc_attr__('Buscar cursos...', 'flavor-chat-ia'); ?>"
+                       placeholder="<?php echo esc_attr__('Buscar cursos...', 'flavor-platform'); ?>"
                        class="flavor-filter-search">
 
                 <select name="estado" class="flavor-filter-select">
-                    <option value=""><?php echo esc_html__('Todos los estados', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('borrador', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'borrador'); ?>><?php echo esc_html__('Borrador', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('publicado', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'publicado'); ?>><?php echo esc_html__('Publicado', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('en_curso', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'en_curso'); ?>><?php echo esc_html__('En curso', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('finalizado', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'finalizado'); ?>><?php echo esc_html__('Finalizado', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('cancelado', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'cancelado'); ?>><?php echo esc_html__('Cancelado', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php echo esc_html__('Todos los estados', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('borrador', 'flavor-platform'); ?>" <?php selected($filtro_estado, 'borrador'); ?>><?php echo esc_html__('Borrador', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('publicado', 'flavor-platform'); ?>" <?php selected($filtro_estado, 'publicado'); ?>><?php echo esc_html__('Publicado', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('en_curso', 'flavor-platform'); ?>" <?php selected($filtro_estado, 'en_curso'); ?>><?php echo esc_html__('En curso', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('finalizado', 'flavor-platform'); ?>" <?php selected($filtro_estado, 'finalizado'); ?>><?php echo esc_html__('Finalizado', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('cancelado', 'flavor-platform'); ?>" <?php selected($filtro_estado, 'cancelado'); ?>><?php echo esc_html__('Cancelado', 'flavor-platform'); ?></option>
                 </select>
 
                 <select name="categoria" class="flavor-filter-select">
-                    <option value=""><?php echo esc_html__('Todas las categorías', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php echo esc_html__('Todas las categorías', 'flavor-platform'); ?></option>
                     <?php foreach ($categorias as $cat): ?>
                         <option value="<?php echo esc_attr($cat); ?>" <?php selected($filtro_categoria, $cat); ?>>
                             <?php echo esc_html($cat); ?>
@@ -112,15 +112,15 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_cursos WHERE
                 </select>
 
                 <select name="modalidad" class="flavor-filter-select">
-                    <option value=""><?php echo esc_html__('Todas las modalidades', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('online', 'flavor-chat-ia'); ?>" <?php selected($filtro_modalidad, 'online'); ?>><?php echo esc_html__('Online', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('presencial', 'flavor-chat-ia'); ?>" <?php selected($filtro_modalidad, 'presencial'); ?>><?php echo esc_html__('Presencial', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('mixto', 'flavor-chat-ia'); ?>" <?php selected($filtro_modalidad, 'mixto'); ?>><?php echo esc_html__('Mixto', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php echo esc_html__('Todas las modalidades', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('online', 'flavor-platform'); ?>" <?php selected($filtro_modalidad, 'online'); ?>><?php echo esc_html__('Online', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('presencial', 'flavor-platform'); ?>" <?php selected($filtro_modalidad, 'presencial'); ?>><?php echo esc_html__('Presencial', 'flavor-platform'); ?></option>
+                    <option value="<?php echo esc_attr__('mixto', 'flavor-platform'); ?>" <?php selected($filtro_modalidad, 'mixto'); ?>><?php echo esc_html__('Mixto', 'flavor-platform'); ?></option>
                 </select>
 
-                <button type="submit" class="button"><?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="button"><?php echo esc_html__('Filtrar', 'flavor-platform'); ?></button>
                 <?php if ($search || $filtro_estado || $filtro_categoria || $filtro_modalidad): ?>
-                    <a href="?page=flavor-chat-cursos&tab=cursos" class="button"><?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?></a>
+                    <a href="?page=flavor-chat-cursos&tab=cursos" class="button"><?php echo esc_html__('Limpiar', 'flavor-platform'); ?></a>
                 <?php endif; ?>
             </div>
         </form>
@@ -132,15 +132,15 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_cursos WHERE
             <table class="wp-list-table widefat striped">
                 <thead>
                     <tr>
-                        <th style="width: 50px;"><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
-                        <th><?php echo esc_html__('Curso', 'flavor-chat-ia'); ?></th>
-                        <th><?php echo esc_html__('Instructor', 'flavor-chat-ia'); ?></th>
-                        <th><?php echo esc_html__('Categoría', 'flavor-chat-ia'); ?></th>
-                        <th><?php echo esc_html__('Modalidad', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 80px;"><?php echo esc_html__('Alumnos', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 80px;"><?php echo esc_html__('Precio', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 100px;"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 150px;"><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 50px;"><?php echo esc_html__('ID', 'flavor-platform'); ?></th>
+                        <th><?php echo esc_html__('Curso', 'flavor-platform'); ?></th>
+                        <th><?php echo esc_html__('Instructor', 'flavor-platform'); ?></th>
+                        <th><?php echo esc_html__('Categoría', 'flavor-platform'); ?></th>
+                        <th><?php echo esc_html__('Modalidad', 'flavor-platform'); ?></th>
+                        <th style="width: 80px;"><?php echo esc_html__('Alumnos', 'flavor-platform'); ?></th>
+                        <th style="width: 80px;"><?php echo esc_html__('Precio', 'flavor-platform'); ?></th>
+                        <th style="width: 100px;"><?php echo esc_html__('Estado', 'flavor-platform'); ?></th>
+                        <th style="width: 150px;"><?php echo esc_html__('Acciones', 'flavor-platform'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -179,7 +179,7 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_cursos WHERE
                                 </td>
                                 <td class="flavor-text-right">
                                     <?php if ($curso->es_gratuito): ?>
-                                        <strong class="flavor-text-success"><?php echo esc_html__('Gratis', 'flavor-chat-ia'); ?></strong>
+                                        <strong class="flavor-text-success"><?php echo esc_html__('Gratis', 'flavor-platform'); ?></strong>
                                     <?php else: ?>
                                         <?php echo number_format($curso->precio, 2); ?>€
                                     <?php endif; ?>
@@ -196,10 +196,10 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_cursos WHERE
                                 </td>
                                 <td>
                                     <button class="button button-small btn-editar-curso" data-id="<?php echo $curso->id; ?>">
-                                        <?php echo esc_html__('Editar', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Editar', 'flavor-platform'); ?>
                                     </button>
                                     <button class="button button-small btn-contenido-curso" data-id="<?php echo $curso->id; ?>">
-                                        <?php echo esc_html__('Contenido', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Contenido', 'flavor-platform'); ?>
                                     </button>
                                 </td>
                             </tr>
@@ -207,7 +207,7 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_cursos WHERE
                     <?php else: ?>
                         <tr>
                             <td colspan="9" class="flavor-no-data">
-                                <?php echo esc_html__('No se encontraron cursos', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('No se encontraron cursos', 'flavor-platform'); ?>
                             </td>
                         </tr>
                     <?php endif; ?>
@@ -241,8 +241,8 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_cursos WHERE
 <div id="modal-curso" class="flavor-modal" style="display: none;">
     <div class="flavor-modal-content flavor-modal-large">
         <div class="flavor-modal-header">
-            <h2 id="modal-curso-title"><?php echo esc_html__('Nuevo Curso', 'flavor-chat-ia'); ?></h2>
-            <span class="flavor-modal-close"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></span>
+            <h2 id="modal-curso-title"><?php echo esc_html__('Nuevo Curso', 'flavor-platform'); ?></h2>
+            <span class="flavor-modal-close"><?php echo esc_html__('&times;', 'flavor-platform'); ?></span>
         </div>
         <div class="flavor-modal-body">
             <form id="form-curso">
@@ -250,130 +250,130 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_cursos WHERE
 
                 <div class="flavor-form-row">
                     <div class="flavor-form-group flavor-form-col-12">
-                        <label><?php echo esc_html__('Título del Curso *', 'flavor-chat-ia'); ?></label>
+                        <label><?php echo esc_html__('Título del Curso *', 'flavor-platform'); ?></label>
                         <input type="text" name="titulo" id="titulo" required class="regular-text">
                     </div>
                 </div>
 
                 <div class="flavor-form-row">
                     <div class="flavor-form-group flavor-form-col-12">
-                        <label><?php echo esc_html__('Descripción *', 'flavor-chat-ia'); ?></label>
+                        <label><?php echo esc_html__('Descripción *', 'flavor-platform'); ?></label>
                         <textarea name="descripcion" id="descripcion" required rows="4" class="large-text"></textarea>
                     </div>
                 </div>
 
                 <div class="flavor-form-row">
                     <div class="flavor-form-group flavor-form-col-6">
-                        <label><?php echo esc_html__('Categoría *', 'flavor-chat-ia'); ?></label>
+                        <label><?php echo esc_html__('Categoría *', 'flavor-platform'); ?></label>
                         <input type="text" name="categoria" id="categoria" required class="regular-text"
-                               placeholder="<?php echo esc_attr__('ej: Tecnología, Idiomas...', 'flavor-chat-ia'); ?>">
+                               placeholder="<?php echo esc_attr__('ej: Tecnología, Idiomas...', 'flavor-platform'); ?>">
                     </div>
 
                     <div class="flavor-form-group flavor-form-col-3">
-                        <label><?php echo esc_html__('Nivel *', 'flavor-chat-ia'); ?></label>
+                        <label><?php echo esc_html__('Nivel *', 'flavor-platform'); ?></label>
                         <select name="nivel" id="nivel" required>
-                            <option value="<?php echo esc_attr__('todos', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Todos los niveles', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('principiante', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Principiante', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('intermedio', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Intermedio', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('avanzado', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Avanzado', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('todos', 'flavor-platform'); ?>"><?php echo esc_html__('Todos los niveles', 'flavor-platform'); ?></option>
+                            <option value="<?php echo esc_attr__('principiante', 'flavor-platform'); ?>"><?php echo esc_html__('Principiante', 'flavor-platform'); ?></option>
+                            <option value="<?php echo esc_attr__('intermedio', 'flavor-platform'); ?>"><?php echo esc_html__('Intermedio', 'flavor-platform'); ?></option>
+                            <option value="<?php echo esc_attr__('avanzado', 'flavor-platform'); ?>"><?php echo esc_html__('Avanzado', 'flavor-platform'); ?></option>
                         </select>
                     </div>
 
                     <div class="flavor-form-group flavor-form-col-3">
-                        <label><?php echo esc_html__('Modalidad *', 'flavor-chat-ia'); ?></label>
+                        <label><?php echo esc_html__('Modalidad *', 'flavor-platform'); ?></label>
                         <select name="modalidad" id="modalidad" required>
-                            <option value="<?php echo esc_attr__('online', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Online', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('presencial', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Presencial', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('mixto', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Mixto', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('online', 'flavor-platform'); ?>"><?php echo esc_html__('Online', 'flavor-platform'); ?></option>
+                            <option value="<?php echo esc_attr__('presencial', 'flavor-platform'); ?>"><?php echo esc_html__('Presencial', 'flavor-platform'); ?></option>
+                            <option value="<?php echo esc_attr__('mixto', 'flavor-platform'); ?>"><?php echo esc_html__('Mixto', 'flavor-platform'); ?></option>
                         </select>
                     </div>
                 </div>
 
                 <div class="flavor-form-row">
                     <div class="flavor-form-group flavor-form-col-3">
-                        <label><?php echo esc_html__('Duración (horas) *', 'flavor-chat-ia'); ?></label>
+                        <label><?php echo esc_html__('Duración (horas) *', 'flavor-platform'); ?></label>
                         <input type="number" name="duracion_horas" id="duracion_horas" required min="1">
                     </div>
 
                     <div class="flavor-form-group flavor-form-col-3">
-                        <label><?php echo esc_html__('Máx. Alumnos *', 'flavor-chat-ia'); ?></label>
+                        <label><?php echo esc_html__('Máx. Alumnos *', 'flavor-platform'); ?></label>
                         <input type="number" name="max_alumnos" id="max_alumnos" required min="1" value="30">
                     </div>
 
                     <div class="flavor-form-group flavor-form-col-3">
-                        <label><?php echo esc_html__('Precio (€)', 'flavor-chat-ia'); ?></label>
+                        <label><?php echo esc_html__('Precio (€)', 'flavor-platform'); ?></label>
                         <input type="number" name="precio" id="precio" min="0" step="0.01" value="0">
                     </div>
 
                     <div class="flavor-form-group flavor-form-col-3">
-                        <label><?php echo esc_html__('&nbsp;', 'flavor-chat-ia'); ?></label>
+                        <label><?php echo esc_html__('&nbsp;', 'flavor-platform'); ?></label>
                         <label>
                             <input type="checkbox" name="es_gratuito" id="es_gratuito" value="1" checked>
-                            <?php echo esc_html__('Curso gratuito', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Curso gratuito', 'flavor-platform'); ?>
                         </label>
                     </div>
                 </div>
 
                 <div class="flavor-form-row">
                     <div class="flavor-form-group flavor-form-col-6">
-                        <label><?php echo esc_html__('Fecha de Inicio', 'flavor-chat-ia'); ?></label>
+                        <label><?php echo esc_html__('Fecha de Inicio', 'flavor-platform'); ?></label>
                         <input type="datetime-local" name="fecha_inicio" id="fecha_inicio">
                     </div>
 
                     <div class="flavor-form-group flavor-form-col-6">
-                        <label><?php echo esc_html__('Fecha de Fin', 'flavor-chat-ia'); ?></label>
+                        <label><?php echo esc_html__('Fecha de Fin', 'flavor-platform'); ?></label>
                         <input type="datetime-local" name="fecha_fin" id="fecha_fin">
                     </div>
                 </div>
 
                 <div class="flavor-form-row">
                     <div class="flavor-form-group flavor-form-col-12">
-                        <label><?php echo esc_html__('Ubicación (si es presencial)', 'flavor-chat-ia'); ?></label>
+                        <label><?php echo esc_html__('Ubicación (si es presencial)', 'flavor-platform'); ?></label>
                         <input type="text" name="ubicacion" id="ubicacion" class="regular-text">
                     </div>
                 </div>
 
                 <div class="flavor-form-row">
                     <div class="flavor-form-group flavor-form-col-6">
-                        <label><?php echo esc_html__('Requisitos', 'flavor-chat-ia'); ?></label>
+                        <label><?php echo esc_html__('Requisitos', 'flavor-platform'); ?></label>
                         <textarea name="requisitos" id="requisitos" rows="3" class="large-text"></textarea>
                     </div>
 
                     <div class="flavor-form-group flavor-form-col-6">
-                        <label><?php echo esc_html__('Qué Aprenderás', 'flavor-chat-ia'); ?></label>
+                        <label><?php echo esc_html__('Qué Aprenderás', 'flavor-platform'); ?></label>
                         <textarea name="que_aprenderas" id="que_aprenderas" rows="3" class="large-text"></textarea>
                     </div>
                 </div>
 
                 <div class="flavor-form-row">
                     <div class="flavor-form-group flavor-form-col-6">
-                        <label><?php echo esc_html__('URL Imagen Portada', 'flavor-chat-ia'); ?></label>
+                        <label><?php echo esc_html__('URL Imagen Portada', 'flavor-platform'); ?></label>
                         <input type="url" name="imagen_portada" id="imagen_portada" class="regular-text">
                     </div>
 
                     <div class="flavor-form-group flavor-form-col-6">
-                        <label><?php echo esc_html__('URL Video Presentación', 'flavor-chat-ia'); ?></label>
+                        <label><?php echo esc_html__('URL Video Presentación', 'flavor-platform'); ?></label>
                         <input type="url" name="video_presentacion" id="video_presentacion" class="regular-text">
                     </div>
                 </div>
 
                 <div class="flavor-form-row">
                     <div class="flavor-form-group flavor-form-col-12">
-                        <label><?php echo esc_html__('Estado *', 'flavor-chat-ia'); ?></label>
+                        <label><?php echo esc_html__('Estado *', 'flavor-platform'); ?></label>
                         <select name="estado" id="estado" required>
-                            <option value="<?php echo esc_attr__('borrador', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Borrador', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('publicado', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Publicado', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('en_curso', 'flavor-chat-ia'); ?>"><?php echo esc_html__('En Curso', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('finalizado', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Finalizado', 'flavor-chat-ia'); ?></option>
-                            <option value="<?php echo esc_attr__('cancelado', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Cancelado', 'flavor-chat-ia'); ?></option>
+                            <option value="<?php echo esc_attr__('borrador', 'flavor-platform'); ?>"><?php echo esc_html__('Borrador', 'flavor-platform'); ?></option>
+                            <option value="<?php echo esc_attr__('publicado', 'flavor-platform'); ?>"><?php echo esc_html__('Publicado', 'flavor-platform'); ?></option>
+                            <option value="<?php echo esc_attr__('en_curso', 'flavor-platform'); ?>"><?php echo esc_html__('En Curso', 'flavor-platform'); ?></option>
+                            <option value="<?php echo esc_attr__('finalizado', 'flavor-platform'); ?>"><?php echo esc_html__('Finalizado', 'flavor-platform'); ?></option>
+                            <option value="<?php echo esc_attr__('cancelado', 'flavor-platform'); ?>"><?php echo esc_html__('Cancelado', 'flavor-platform'); ?></option>
                         </select>
                     </div>
                 </div>
             </form>
         </div>
         <div class="flavor-modal-footer">
-            <button type="button" class="button" id="btn-cancelar-curso"><?php echo esc_html__('Cancelar', 'flavor-chat-ia'); ?></button>
-            <button type="button" class="button button-primary" id="btn-guardar-curso"><?php echo esc_html__('Guardar Curso', 'flavor-chat-ia'); ?></button>
+            <button type="button" class="button" id="btn-cancelar-curso"><?php echo esc_html__('Cancelar', 'flavor-platform'); ?></button>
+            <button type="button" class="button button-primary" id="btn-guardar-curso"><?php echo esc_html__('Guardar Curso', 'flavor-platform'); ?></button>
         </div>
     </div>
 </div>

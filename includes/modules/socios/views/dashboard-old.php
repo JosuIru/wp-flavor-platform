@@ -22,7 +22,7 @@ $tabla_cuotas_existe = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tab
 $tabla_pagos_existe = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla_pagos)) === $tabla_pagos;
 
 if (!$tabla_socios_existe) {
-    echo '<div class="dm-alert dm-alert--warning">' . esc_html__('La tabla principal de miembros no está disponible en esta instalación.', 'flavor-chat-ia') . '</div>';
+    echo '<div class="dm-alert dm-alert--warning">' . esc_html__('La tabla principal de miembros no está disponible en esta instalación.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
     return;
 }
 
@@ -130,11 +130,11 @@ if ($tabla_pagos_existe) {
 $tasa_activacion = $total_socios > 0 ? round(($socios_activos / $total_socios) * 100, 1) : 0;
 
 $estado_labels = [
-    'activo' => __('Activo', 'flavor-chat-ia'),
-    'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-    'suspendido' => __('Suspendido', 'flavor-chat-ia'),
-    'moroso' => __('Moroso', 'flavor-chat-ia'),
-    'baja' => __('Baja', 'flavor-chat-ia'),
+    'activo' => __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'suspendido' => __('Suspendido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'moroso' => __('Moroso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'baja' => __('Baja', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $estado_badge_classes = [
@@ -165,10 +165,10 @@ $cuota_badge_classes = [
     <div class="dm-header">
         <div class="dm-header__title">
             <span class="dashicons dashicons-groups"></span>
-            <h1><?php esc_html_e('Dashboard de Miembros', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Dashboard de Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
         </div>
         <p class="dm-header__description">
-            <?php esc_html_e('Panel operativo para controlar la salud de la membresía, las cuotas pendientes y las altas o bajas del mes.', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Panel operativo para controlar la salud de la membresía, las cuotas pendientes y las altas o bajas del mes.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </div>
 
@@ -176,27 +176,27 @@ $cuota_badge_classes = [
     <div class="dm-quick-links">
         <a href="<?php echo esc_url(admin_url('admin.php?page=socios-listado')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-groups"></span>
-            <span><?php esc_html_e('Listado', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Listado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=socios-cuotas')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-money-alt"></span>
-            <span><?php esc_html_e('Cuotas', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=socios-pagos')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-cart"></span>
-            <span><?php esc_html_e('Pagos', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Pagos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=socios-altas-bajas')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-randomize"></span>
-            <span><?php esc_html_e('Altas/Bajas', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Altas/Bajas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=socios-config')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-admin-settings"></span>
-            <span><?php esc_html_e('Configuración', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('socios', '')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-external"></span>
-            <span><?php esc_html_e('Portal de miembros', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Portal de miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
     </div>
 
@@ -208,8 +208,8 @@ $cuota_badge_classes = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($socios_activos); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Miembros activos', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php printf(esc_html__('%s%% activación', 'flavor-chat-ia'), number_format_i18n($tasa_activacion, 1)); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Miembros activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php printf(esc_html__('%s%% activación', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($tasa_activacion, 1)); ?></div>
             </div>
         </div>
 
@@ -219,8 +219,8 @@ $cuota_badge_classes = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($socios_pendientes + $socios_suspendidos); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Pendientes y suspendidos', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php printf(esc_html__('%s pendientes de alta', 'flavor-chat-ia'), number_format_i18n($socios_pendientes)); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Pendientes y suspendidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php printf(esc_html__('%s pendientes de alta', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($socios_pendientes)); ?></div>
             </div>
         </div>
 
@@ -230,7 +230,7 @@ $cuota_badge_classes = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($cuotas_pagadas_mes); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Cuotas cobradas este mes', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Cuotas cobradas este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 <div class="dm-stat-card__meta"><?php echo esc_html(number_format_i18n($importe_pagado_mes, 2)); ?> EUR</div>
             </div>
         </div>
@@ -241,8 +241,8 @@ $cuota_badge_classes = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($importe_pendiente, 2)); ?> €</div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Deuda abierta', 'flavor-chat-ia'); ?></div>
-                <div class="dm-stat-card__meta"><?php printf(esc_html__('%s cuotas abiertas', 'flavor-chat-ia'), number_format_i18n($cuotas_pendientes + $cuotas_vencidas)); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Deuda abierta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                <div class="dm-stat-card__meta"><?php printf(esc_html__('%s cuotas abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($cuotas_pendientes + $cuotas_vencidas)); ?></div>
             </div>
         </div>
     </div>
@@ -252,14 +252,14 @@ $cuota_badge_classes = [
         <!-- Acciones Rápidas -->
         <div class="dm-card">
             <div class="dm-card__header">
-                <h2><?php esc_html_e('Acciones rápidas', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Acciones rápidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
             <div class="dm-action-grid dm-action-grid--2">
                 <a href="<?php echo esc_url(admin_url('admin.php?page=socios-listado&estado=activo')); ?>" class="dm-action-card dm-action-card--primary">
                     <span class="dashicons dashicons-groups"></span>
                     <div class="dm-action-card__content">
-                        <strong><?php esc_html_e('Miembros activos', 'flavor-chat-ia'); ?></strong>
-                        <span><?php esc_html_e('Abrir base activa de membresía', 'flavor-chat-ia'); ?></span>
+                        <strong><?php esc_html_e('Miembros activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                        <span><?php esc_html_e('Abrir base activa de membresía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <?php if ($socios_activos > 0) : ?>
                         <span class="dm-badge dm-badge--primary"><?php echo number_format_i18n($socios_activos); ?></span>
@@ -269,8 +269,8 @@ $cuota_badge_classes = [
                 <a href="<?php echo esc_url(admin_url('admin.php?page=socios-listado&estado=pendiente')); ?>" class="dm-action-card <?php echo $socios_pendientes > 0 ? 'dm-action-card--warning' : ''; ?>">
                     <span class="dashicons dashicons-id-alt"></span>
                     <div class="dm-action-card__content">
-                        <strong><?php esc_html_e('Pendientes de alta', 'flavor-chat-ia'); ?></strong>
-                        <span><?php esc_html_e('Validar nuevas solicitudes', 'flavor-chat-ia'); ?></span>
+                        <strong><?php esc_html_e('Pendientes de alta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                        <span><?php esc_html_e('Validar nuevas solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <?php if ($socios_pendientes > 0) : ?>
                         <span class="dm-badge dm-badge--warning"><?php echo number_format_i18n($socios_pendientes); ?></span>
@@ -280,8 +280,8 @@ $cuota_badge_classes = [
                 <a href="<?php echo esc_url(admin_url('admin.php?page=socios-cuotas&estado=pendiente')); ?>" class="dm-action-card <?php echo $cuotas_pendientes > 0 ? 'dm-action-card--warning' : 'dm-action-card--success'; ?>">
                     <span class="dashicons dashicons-money-alt"></span>
                     <div class="dm-action-card__content">
-                        <strong><?php esc_html_e('Cuotas pendientes', 'flavor-chat-ia'); ?></strong>
-                        <span><?php esc_html_e('Gestionar cobros abiertos', 'flavor-chat-ia'); ?></span>
+                        <strong><?php esc_html_e('Cuotas pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                        <span><?php esc_html_e('Gestionar cobros abiertos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <?php if ($cuotas_pendientes > 0) : ?>
                         <span class="dm-badge dm-badge--warning"><?php echo number_format_i18n($cuotas_pendientes); ?></span>
@@ -291,8 +291,8 @@ $cuota_badge_classes = [
                 <a href="<?php echo esc_url(admin_url('admin.php?page=socios-altas-bajas')); ?>" class="dm-action-card">
                     <span class="dashicons dashicons-randomize"></span>
                     <div class="dm-action-card__content">
-                        <strong><?php esc_html_e('Altas y bajas', 'flavor-chat-ia'); ?></strong>
-                        <span><?php esc_html_e('Registrar movimientos de membresía', 'flavor-chat-ia'); ?></span>
+                        <strong><?php esc_html_e('Altas y bajas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                        <span><?php esc_html_e('Registrar movimientos de membresía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </a>
             </div>
@@ -301,23 +301,23 @@ $cuota_badge_classes = [
         <!-- Panel de Alertas -->
         <div class="dm-card">
             <div class="dm-card__header">
-                <h2><?php esc_html_e('Alertas de membresía', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Alertas de membresía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
             <div class="dm-focus-list">
                 <div class="dm-focus-list__item <?php echo $socios_pendientes > 0 ? 'dm-focus-list__item--warning' : 'dm-focus-list__item--success'; ?>">
-                    <span class="dm-focus-list__label"><?php esc_html_e('Solicitudes pendientes de validar', 'flavor-chat-ia'); ?></span>
+                    <span class="dm-focus-list__label"><?php esc_html_e('Solicitudes pendientes de validar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="dm-focus-list__value"><?php echo number_format_i18n($socios_pendientes); ?></span>
                 </div>
                 <div class="dm-focus-list__item <?php echo $cuotas_vencidas > 0 ? 'dm-focus-list__item--error' : 'dm-focus-list__item--success'; ?>">
-                    <span class="dm-focus-list__label"><?php esc_html_e('Cuotas vencidas', 'flavor-chat-ia'); ?></span>
+                    <span class="dm-focus-list__label"><?php esc_html_e('Cuotas vencidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="dm-focus-list__value"><?php echo number_format_i18n($cuotas_vencidas); ?></span>
                 </div>
                 <div class="dm-focus-list__item <?php echo $pagos_fallidos > 0 ? 'dm-focus-list__item--warning' : 'dm-focus-list__item--success'; ?>">
-                    <span class="dm-focus-list__label"><?php esc_html_e('Pagos fallidos o cancelados', 'flavor-chat-ia'); ?></span>
+                    <span class="dm-focus-list__label"><?php esc_html_e('Pagos fallidos o cancelados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="dm-focus-list__value"><?php echo number_format_i18n($pagos_fallidos); ?></span>
                 </div>
                 <div class="dm-focus-list__item <?php echo $socios_baja_mes > 0 ? 'dm-focus-list__item--warning' : 'dm-focus-list__item--success'; ?>">
-                    <span class="dm-focus-list__label"><?php esc_html_e('Bajas este mes', 'flavor-chat-ia'); ?></span>
+                    <span class="dm-focus-list__label"><?php esc_html_e('Bajas este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="dm-focus-list__value"><?php echo number_format_i18n($socios_baja_mes); ?></span>
                 </div>
             </div>
@@ -329,7 +329,7 @@ $cuota_badge_classes = [
         <!-- Distribución por estado -->
         <div class="dm-card">
             <div class="dm-card__header">
-                <h2><?php esc_html_e('Distribución por estado', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Distribución por estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
             <?php if (!empty($por_estado)) : ?>
                 <div class="dm-badge-list">
@@ -344,7 +344,7 @@ $cuota_badge_classes = [
                 </div>
             <?php else : ?>
                 <div class="dm-empty">
-                    <p><?php esc_html_e('No hay estados registrados todavía.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay estados registrados todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
         </div>
@@ -352,20 +352,20 @@ $cuota_badge_classes = [
         <!-- Tipos de socio -->
         <div class="dm-card">
             <div class="dm-card__header">
-                <h2><?php esc_html_e('Tipos de socio', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Tipos de socio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
             <?php if (!empty($tipos_socio)) : ?>
                 <ol class="dm-ranking">
                     <?php foreach ($tipos_socio as $tipo) : ?>
                         <li class="dm-ranking__item">
-                            <span class="dm-ranking__label"><?php echo esc_html($tipo->tipo_socio ?: __('Sin tipo', 'flavor-chat-ia')); ?></span>
+                            <span class="dm-ranking__label"><?php echo esc_html($tipo->tipo_socio ?: __('Sin tipo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>
                             <span class="dm-ranking__value"><?php echo number_format_i18n((int) $tipo->total); ?></span>
                         </li>
                     <?php endforeach; ?>
                 </ol>
             <?php else : ?>
                 <div class="dm-empty">
-                    <p><?php esc_html_e('No hay tipos de socio con actividad.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay tipos de socio con actividad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
         </div>
@@ -373,7 +373,7 @@ $cuota_badge_classes = [
         <!-- Altas mensuales -->
         <div class="dm-card">
             <div class="dm-card__header">
-                <h2><?php esc_html_e('Altas mensuales', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Altas mensuales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
             <?php if (!empty($mensual_altas)) : ?>
                 <?php
@@ -394,7 +394,7 @@ $cuota_badge_classes = [
                 </div>
             <?php else : ?>
                 <div class="dm-empty">
-                    <p><?php esc_html_e('No hay histórico suficiente de altas.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay histórico suficiente de altas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
         </div>
@@ -405,27 +405,27 @@ $cuota_badge_classes = [
         <!-- Cuotas críticas -->
         <div class="dm-card">
             <div class="dm-card__header">
-                <h2><?php esc_html_e('Cuotas críticas', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Cuotas críticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=socios-cuotas&estado=pendiente')); ?>" class="dm-btn dm-btn--secondary dm-btn--sm">
-                    <?php esc_html_e('Abrir cuotas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Abrir cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php if (!empty($cuotas_criticas)) : ?>
                 <table class="dm-table">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('Socio', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Periodo', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Importe', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Acción', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Socio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Periodo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Importe', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Acción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($cuotas_criticas as $cuota) : ?>
                             <tr>
                                 <td>
-                                    <strong><?php echo esc_html($cuota->display_name ?: __('Sin usuario', 'flavor-chat-ia')); ?></strong>
+                                    <strong><?php echo esc_html($cuota->display_name ?: __('Sin usuario', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong>
                                     <span class="dm-table__subtitle">#<?php echo esc_html($cuota->numero_socio ?: '-'); ?></span>
                                 </td>
                                 <td>
@@ -440,7 +440,7 @@ $cuota_badge_classes = [
                                 </td>
                                 <td>
                                     <a class="dm-btn dm-btn--sm" href="<?php echo esc_url(admin_url('admin.php?page=socios-cuotas&estado=' . rawurlencode($cuota->estado))); ?>">
-                                        <?php esc_html_e('Gestionar', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Gestionar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 </td>
                             </tr>
@@ -450,7 +450,7 @@ $cuota_badge_classes = [
             <?php else : ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-yes-alt"></span>
-                    <p><?php esc_html_e('No hay cuotas críticas ahora mismo.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay cuotas críticas ahora mismo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
         </div>
@@ -458,9 +458,9 @@ $cuota_badge_classes = [
         <!-- Nuevas altas -->
         <div class="dm-card">
             <div class="dm-card__header">
-                <h2><?php esc_html_e('Nuevas altas y cambios recientes', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Nuevas altas y cambios recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=socios-listado')); ?>" class="dm-btn dm-btn--secondary dm-btn--sm">
-                    <?php esc_html_e('Abrir listado', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Abrir listado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php if (!empty($nuevas_altas)) : ?>
@@ -468,8 +468,8 @@ $cuota_badge_classes = [
                     <?php foreach ($nuevas_altas as $socio) : ?>
                         <div class="dm-item-list__item">
                             <div class="dm-item-list__content">
-                                <strong><?php echo esc_html($socio->display_name ?: __('Usuario sin nombre', 'flavor-chat-ia')); ?></strong>
-                                <span class="dm-item-list__subtitle">#<?php echo esc_html($socio->numero_socio ?: '-'); ?> · <?php echo esc_html($socio->tipo_socio ?: __('Sin tipo', 'flavor-chat-ia')); ?></span>
+                                <strong><?php echo esc_html($socio->display_name ?: __('Usuario sin nombre', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong>
+                                <span class="dm-item-list__subtitle">#<?php echo esc_html($socio->numero_socio ?: '-'); ?> · <?php echo esc_html($socio->tipo_socio ?: __('Sin tipo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>
                                 <span class="dm-item-list__muted"><?php echo esc_html($socio->user_email ?: ''); ?></span>
                             </div>
                             <div class="dm-item-list__meta">
@@ -484,7 +484,7 @@ $cuota_badge_classes = [
             <?php else : ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-groups"></span>
-                    <p><?php esc_html_e('No hay altas recientes registradas.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay altas recientes registradas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
         </div>
@@ -495,24 +495,24 @@ $cuota_badge_classes = [
         <!-- Actividad de cuotas -->
         <div class="dm-card">
             <div class="dm-card__header">
-                <h2><?php esc_html_e('Actividad de cuotas', 'flavor-chat-ia'); ?></h2>
-                <span class="dm-card__meta"><?php esc_html_e('Últimos 30 días', 'flavor-chat-ia'); ?></span>
+                <h2><?php esc_html_e('Actividad de cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <span class="dm-card__meta"><?php esc_html_e('Últimos 30 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <?php if (!empty($actividad_cuotas)) : ?>
                 <table class="dm-table">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('Socio', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Periodo', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Cambio', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Socio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Periodo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Cambio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($actividad_cuotas as $cuota) : ?>
                             <tr>
                                 <td>
-                                    <strong><?php echo esc_html($cuota->display_name ?: __('Sin usuario', 'flavor-chat-ia')); ?></strong>
+                                    <strong><?php echo esc_html($cuota->display_name ?: __('Sin usuario', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong>
                                     <span class="dm-table__subtitle">#<?php echo esc_html($cuota->numero_socio ?: '-'); ?></span>
                                 </td>
                                 <td><?php echo esc_html($cuota->periodo ?: '-'); ?></td>
@@ -532,7 +532,7 @@ $cuota_badge_classes = [
             <?php else : ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-calendar-alt"></span>
-                    <p><?php esc_html_e('No hay actividad reciente de cuotas.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay actividad reciente de cuotas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php endif; ?>
         </div>
@@ -540,23 +540,23 @@ $cuota_badge_classes = [
         <!-- Foco recomendado -->
         <div class="dm-card">
             <div class="dm-card__header">
-                <h2><?php esc_html_e('Foco recomendado', 'flavor-chat-ia'); ?></h2>
-                <span class="dm-card__meta"><?php printf(esc_html__('%s altas este mes', 'flavor-chat-ia'), number_format_i18n($altas_mes)); ?></span>
+                <h2><?php esc_html_e('Foco recomendado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <span class="dm-card__meta"><?php printf(esc_html__('%s altas este mes', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($altas_mes)); ?></span>
             </div>
             <div class="dm-focus-list">
                 <div class="dm-focus-list__item dm-focus-list__item--info">
                     <span class="dm-focus-list__label">
-                        <?php printf(esc_html__('%s cuotas abiertas necesitan seguimiento de cobro o regularización.', 'flavor-chat-ia'), number_format_i18n($cuotas_pendientes + $cuotas_vencidas)); ?>
+                        <?php printf(esc_html__('%s cuotas abiertas necesitan seguimiento de cobro o regularización.', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($cuotas_pendientes + $cuotas_vencidas)); ?>
                     </span>
                 </div>
                 <div class="dm-focus-list__item dm-focus-list__item--info">
                     <span class="dm-focus-list__label">
-                        <?php printf(esc_html__('%s pagos en espera o con incidencia requieren revisión manual.', 'flavor-chat-ia'), number_format_i18n($pagos_pendientes + $pagos_fallidos)); ?>
+                        <?php printf(esc_html__('%s pagos en espera o con incidencia requieren revisión manual.', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($pagos_pendientes + $pagos_fallidos)); ?>
                     </span>
                 </div>
                 <div class="dm-focus-list__item dm-focus-list__item--info">
                     <span class="dm-focus-list__label">
-                        <?php printf(esc_html__('%s miembros están fuera de estado activo y pueden requerir decisión operativa.', 'flavor-chat-ia'), number_format_i18n($socios_pendientes + $socios_suspendidos + $socios_baja_mes)); ?>
+                        <?php printf(esc_html__('%s miembros están fuera de estado activo y pueden requerir decisión operativa.', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($socios_pendientes + $socios_suspendidos + $socios_baja_mes)); ?>
                     </span>
                 </div>
             </div>

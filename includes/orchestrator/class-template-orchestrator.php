@@ -150,14 +150,14 @@ class Flavor_Template_Orchestrator {
 
         if (!$definicion) {
             return $this->respuesta_error(
-                sprintf(__('Plantilla no encontrada: %s', 'flavor-chat-ia'), $plantilla_id)
+                sprintf(__('Plantilla no encontrada: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $plantilla_id)
             );
         }
 
         // Verificar si ya esta activa
         if ($this->esta_activa($plantilla_id) && !$opciones['forzar']) {
             return $this->respuesta_error(
-                __('Esta plantilla ya esta activa. Usa la opcion forzar para reinstalar.', 'flavor-chat-ia')
+                __('Esta plantilla ya esta activa. Usa la opcion forzar para reinstalar.', FLAVOR_PLATFORM_TEXT_DOMAIN)
             );
         }
 
@@ -199,7 +199,7 @@ class Flavor_Template_Orchestrator {
             if (!$resultado_componente['success'] && $this->es_componente_critico($componente_nombre)) {
                 $this->registrar_error(
                     'componente_critico_fallo',
-                    sprintf(__('Componente critico fallo: %s', 'flavor-chat-ia'), $componente_nombre),
+                    sprintf(__('Componente critico fallo: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $componente_nombre),
                     $resultado_componente
                 );
 
@@ -207,7 +207,7 @@ class Flavor_Template_Orchestrator {
                 $this->rollback($plantilla_id, $snapshot);
 
                 $resultado['success'] = false;
-                $resultado['message'] = __('La activacion fallo y se ha revertido', 'flavor-chat-ia');
+                $resultado['message'] = __('La activacion fallo y se ha revertido', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 $resultado['errores'] = $this->errores;
                 $resultado['tiempo_total'] = microtime(true) - $resultado['tiempo_inicio'];
 
@@ -236,7 +236,7 @@ class Flavor_Template_Orchestrator {
 
         $resultado['success'] = true;
         $resultado['message'] = sprintf(
-            __('Plantilla "%s" activada correctamente', 'flavor-chat-ia'),
+            __('Plantilla "%s" activada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $definicion['nombre']
         );
         $resultado['advertencias'] = $this->advertencias;
@@ -281,7 +281,7 @@ class Flavor_Template_Orchestrator {
         // Verificar si esta activa
         if (!$this->esta_activa($plantilla_id)) {
             return $this->respuesta_error(
-                __('Esta plantilla no esta activa', 'flavor-chat-ia')
+                __('Esta plantilla no esta activa', FLAVOR_PLATFORM_TEXT_DOMAIN)
             );
         }
 
@@ -326,7 +326,7 @@ class Flavor_Template_Orchestrator {
 
         $resultado['success'] = true;
         $resultado['message'] = sprintf(
-            __('Plantilla "%s" desactivada correctamente', 'flavor-chat-ia'),
+            __('Plantilla "%s" desactivada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $definicion['nombre'] ?? $plantilla_id
         );
         $resultado['tiempo_total'] = microtime(true) - $resultado['tiempo_inicio'];
@@ -356,7 +356,7 @@ class Flavor_Template_Orchestrator {
         if (!$definicion) {
             return [
                 'success' => false,
-                'message' => sprintf(__('Plantilla no encontrada: %s', 'flavor-chat-ia'), $plantilla_id),
+                'message' => sprintf(__('Plantilla no encontrada: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $plantilla_id),
             ];
         }
 
@@ -450,7 +450,7 @@ class Flavor_Template_Orchestrator {
             return [
                 'success' => false,
                 'existe' => false,
-                'message' => sprintf(__('Plantilla no encontrada: %s', 'flavor-chat-ia'), $plantilla_id),
+                'message' => sprintf(__('Plantilla no encontrada: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $plantilla_id),
             ];
         }
 
@@ -530,7 +530,7 @@ class Flavor_Template_Orchestrator {
         check_ajax_referer('flavor_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $plantilla_id = sanitize_text_field($_POST['plantilla_id'] ?? '');
@@ -561,7 +561,7 @@ class Flavor_Template_Orchestrator {
         check_ajax_referer('flavor_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $plantilla_id = sanitize_text_field($_POST['plantilla_id'] ?? '');
@@ -583,7 +583,7 @@ class Flavor_Template_Orchestrator {
         check_ajax_referer('flavor_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $plantilla_id = sanitize_text_field($_POST['plantilla_id'] ?? '');
@@ -612,7 +612,7 @@ class Flavor_Template_Orchestrator {
             // Si no hay componente registrado, simular exito (componente no implementado)
             return [
                 'success' => true,
-                'message' => sprintf(__('Componente %s no implementado, omitido', 'flavor-chat-ia'), $componente_nombre),
+                'message' => sprintf(__('Componente %s no implementado, omitido', FLAVOR_PLATFORM_TEXT_DOMAIN), $componente_nombre),
                 'omitido' => true,
             ];
         }
@@ -623,7 +623,7 @@ class Flavor_Template_Orchestrator {
         } catch (Exception $exception) {
             $this->registrar_error(
                 'componente_excepcion',
-                sprintf(__('Excepcion en componente %s: %s', 'flavor-chat-ia'), $componente_nombre, $exception->getMessage())
+                sprintf(__('Excepcion en componente %s: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $componente_nombre, $exception->getMessage())
             );
 
             return [
@@ -647,7 +647,7 @@ class Flavor_Template_Orchestrator {
         if (!isset($this->componentes[$componente_nombre])) {
             return [
                 'success' => true,
-                'message' => sprintf(__('Componente %s no implementado, omitido', 'flavor-chat-ia'), $componente_nombre),
+                'message' => sprintf(__('Componente %s no implementado, omitido', FLAVOR_PLATFORM_TEXT_DOMAIN), $componente_nombre),
                 'omitido' => true,
             ];
         }
@@ -749,7 +749,7 @@ class Flavor_Template_Orchestrator {
         $snapshot = [
             'fecha' => current_time('mysql'),
             'plantilla_id' => $plantilla_id,
-            'modulos_activos' => get_option('flavor_chat_ia_settings', [])['active_modules'] ?? [],
+            'modulos_activos' => flavor_get_main_settings()['active_modules'] ?? [],
             'plantillas_activas' => get_option('flavor_plantillas_activas', []),
         ];
 
@@ -769,9 +769,9 @@ class Flavor_Template_Orchestrator {
     private function rollback($plantilla_id, $snapshot) {
         // Restaurar modulos activos
         if (isset($snapshot['modulos_activos'])) {
-            $configuracion = get_option('flavor_chat_ia_settings', []);
+            $configuracion = flavor_get_main_settings();
             $configuracion['active_modules'] = $snapshot['modulos_activos'];
-            update_option('flavor_chat_ia_settings', $configuracion);
+            flavor_update_main_settings($configuracion);
         }
 
         // Restaurar plantillas activas
@@ -808,7 +808,7 @@ class Flavor_Template_Orchestrator {
         update_option('flavor_plantillas_activas', $plantillas_activas);
 
         // Actualizar tambien el perfil activo para compatibilidad
-        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $configuracion = flavor_get_main_settings();
         $configuracion['app_profile'] = $plantilla_id;
 
         // Actualizar modulos activos
@@ -819,7 +819,7 @@ class Flavor_Template_Orchestrator {
         }
         $configuracion['active_modules'] = array_unique(array_merge($modulos_actuales, $modulos_plantilla));
 
-        update_option('flavor_chat_ia_settings', $configuracion);
+        flavor_update_main_settings($configuracion);
     }
 
     /**

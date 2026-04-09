@@ -54,20 +54,20 @@ class Flavor_Colectivos_Dashboard_Tab {
         $this->tabla_asambleas = $wpdb->prefix . 'flavor_colectivos_asambleas';
 
         $this->etiquetas_roles = [
-            'presidente' => __('Presidente/a', 'flavor-chat-ia'),
-            'secretario' => __('Secretario/a', 'flavor-chat-ia'),
-            'tesorero'   => __('Tesorero/a', 'flavor-chat-ia'),
-            'vocal'      => __('Vocal', 'flavor-chat-ia'),
-            'miembro'    => __('Miembro', 'flavor-chat-ia'),
-            'admin'      => __('Administrador', 'flavor-chat-ia'),
+            'presidente' => __('Presidente/a', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'secretario' => __('Secretario/a', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'tesorero'   => __('Tesorero/a', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'vocal'      => __('Vocal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'miembro'    => __('Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'admin'      => __('Administrador', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $this->etiquetas_tipos = [
-            'asociacion'  => __('Asociación', 'flavor-chat-ia'),
-            'cooperativa' => __('Cooperativa', 'flavor-chat-ia'),
-            'ong'         => __('ONG', 'flavor-chat-ia'),
-            'colectivo'   => __('Colectivo', 'flavor-chat-ia'),
-            'plataforma'  => __('Plataforma', 'flavor-chat-ia'),
+            'asociacion'  => __('Asociación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cooperativa' => __('Cooperativa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'ong'         => __('ONG', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'colectivo'   => __('Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'plataforma'  => __('Plataforma', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $this->init_hooks();
@@ -102,7 +102,7 @@ class Flavor_Colectivos_Dashboard_Tab {
     public function registrar_tabs($tabs) {
         // Tab principal: Mis Colectivos
         $tabs['colectivos-mis-colectivos'] = [
-            'label'    => __('Mis Colectivos', 'flavor-chat-ia'),
+            'label'    => __('Mis Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => 'groups',
             'callback' => [$this, 'render_tab_mis_colectivos'],
             'orden'    => 50,
@@ -110,7 +110,7 @@ class Flavor_Colectivos_Dashboard_Tab {
 
         // Tab: Mis Proyectos
         $tabs['colectivos-mis-proyectos'] = [
-            'label'    => __('Mis Proyectos', 'flavor-chat-ia'),
+            'label'    => __('Mis Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => 'portfolio',
             'callback' => [$this, 'render_tab_mis_proyectos'],
             'orden'    => 51,
@@ -118,7 +118,7 @@ class Flavor_Colectivos_Dashboard_Tab {
 
         // Tab: Asambleas
         $tabs['colectivos-asambleas'] = [
-            'label'    => __('Asambleas', 'flavor-chat-ia'),
+            'label'    => __('Asambleas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => 'calendar-alt',
             'callback' => [$this, 'render_tab_asambleas'],
             'orden'    => 52,
@@ -134,7 +134,7 @@ class Flavor_Colectivos_Dashboard_Tab {
         $identificador_usuario = get_current_user_id();
         if (!$identificador_usuario) {
             echo '<p class="flavor-alert flavor-alert-warning">' .
-                 esc_html__('Debes iniciar sesión para ver este contenido.', 'flavor-chat-ia') . '</p>';
+                 esc_html__('Debes iniciar sesión para ver este contenido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -143,7 +143,7 @@ class Flavor_Colectivos_Dashboard_Tab {
         // Verificar que las tablas existen
         if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_colectivos)) {
             echo '<div class="flavor-alert flavor-alert-info">' .
-                 esc_html__('El módulo de colectivos no está configurado.', 'flavor-chat-ia') . '</div>';
+                 esc_html__('El módulo de colectivos no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
             return;
         }
 
@@ -179,10 +179,10 @@ class Flavor_Colectivos_Dashboard_Tab {
             <div class="flavor-panel-header">
                 <h2>
                     <span class="dashicons dashicons-groups"></span>
-                    <?php esc_html_e('Mis Colectivos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Mis Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <p class="flavor-panel-subtitle">
-                    <?php esc_html_e('Gestiona tu participación en colectivos, asociaciones y organizaciones.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Gestiona tu participación en colectivos, asociaciones y organizaciones.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
@@ -192,28 +192,28 @@ class Flavor_Colectivos_Dashboard_Tab {
                     <span class="flavor-kpi-icon dashicons dashicons-groups"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($total_mis_colectivos); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Colectivos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icon dashicons dashicons-shield-alt"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($colectivos_administrados); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Administrados', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Administrados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icon dashicons dashicons-portfolio"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($proyectos_activos); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Proyectos Activos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Proyectos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-highlight">
                     <span class="flavor-kpi-icon dashicons dashicons-calendar-alt"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($proximas_asambleas); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Próximas Asambleas', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Próximas Asambleas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -222,11 +222,11 @@ class Flavor_Colectivos_Dashboard_Tab {
             <div class="flavor-panel-actions">
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('colectivos', '')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-search"></span>
-                    <?php esc_html_e('Explorar Colectivos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Explorar Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('colectivos', 'crear')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt"></span>
-                    <?php esc_html_e('Crear Colectivo', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Crear Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
@@ -234,10 +234,10 @@ class Flavor_Colectivos_Dashboard_Tab {
             <?php if (empty($mis_colectivos)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-groups"></span>
-                    <h3><?php esc_html_e('No perteneces a ningún colectivo', 'flavor-chat-ia'); ?></h3>
-                    <p><?php esc_html_e('Únete a un colectivo existente o crea uno nuevo para empezar a participar.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php esc_html_e('No perteneces a ningún colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php esc_html_e('Únete a un colectivo existente o crea uno nuevo para empezar a participar.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('colectivos', '')); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php esc_html_e('Explorar Colectivos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Explorar Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -258,7 +258,7 @@ class Flavor_Colectivos_Dashboard_Tab {
         $identificador_usuario = get_current_user_id();
         if (!$identificador_usuario) {
             echo '<p class="flavor-alert flavor-alert-warning">' .
-                 esc_html__('Debes iniciar sesión para ver este contenido.', 'flavor-chat-ia') . '</p>';
+                 esc_html__('Debes iniciar sesión para ver este contenido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -266,7 +266,7 @@ class Flavor_Colectivos_Dashboard_Tab {
 
         if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_proyectos)) {
             echo '<div class="flavor-alert flavor-alert-info">' .
-                 esc_html__('El sistema de proyectos no está configurado.', 'flavor-chat-ia') . '</div>';
+                 esc_html__('El sistema de proyectos no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
             return;
         }
 
@@ -314,7 +314,7 @@ class Flavor_Colectivos_Dashboard_Tab {
                  INNER JOIN {$this->tabla_colectivos} c ON p.colectivo_id = c.id
                  WHERE p.colectivo_id IN ($placeholders)
                  ORDER BY FIELD(p.estado, 'en_curso', 'activo', 'planificado', 'completado', 'cancelado'),
-                          p.fecha_actualizacion DESC, p.fecha_creacion DESC
+                          p.updated_at DESC, p.created_at DESC
                  LIMIT 20",
                 ...$colectivo_ids
             ));
@@ -325,10 +325,10 @@ class Flavor_Colectivos_Dashboard_Tab {
             <div class="flavor-panel-header">
                 <h2>
                     <span class="dashicons dashicons-portfolio"></span>
-                    <?php esc_html_e('Mis Proyectos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Mis Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <p class="flavor-panel-subtitle">
-                    <?php esc_html_e('Proyectos de los colectivos en los que participas.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Proyectos de los colectivos en los que participas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
@@ -338,21 +338,21 @@ class Flavor_Colectivos_Dashboard_Tab {
                     <span class="flavor-kpi-icon dashicons dashicons-clipboard"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($contador_planificados); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Planificados', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Planificados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-warning">
                     <span class="flavor-kpi-icon dashicons dashicons-controls-play"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($contador_en_curso); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('En Curso', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('En Curso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-success">
                     <span class="flavor-kpi-icon dashicons dashicons-yes-alt"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($contador_completados); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Completados', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Completados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -361,8 +361,8 @@ class Flavor_Colectivos_Dashboard_Tab {
             <?php if (empty($proyectos)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-portfolio"></span>
-                    <h3><?php esc_html_e('Sin proyectos activos', 'flavor-chat-ia'); ?></h3>
-                    <p><?php esc_html_e('Los proyectos de tus colectivos aparecerán aquí.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php esc_html_e('Sin proyectos activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php esc_html_e('Los proyectos de tus colectivos aparecerán aquí.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="flavor-proyectos-lista">
@@ -382,7 +382,7 @@ class Flavor_Colectivos_Dashboard_Tab {
         $identificador_usuario = get_current_user_id();
         if (!$identificador_usuario) {
             echo '<p class="flavor-alert flavor-alert-warning">' .
-                 esc_html__('Debes iniciar sesión para ver este contenido.', 'flavor-chat-ia') . '</p>';
+                 esc_html__('Debes iniciar sesión para ver este contenido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -390,7 +390,7 @@ class Flavor_Colectivos_Dashboard_Tab {
 
         if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_asambleas)) {
             echo '<div class="flavor-alert flavor-alert-info">' .
-                 esc_html__('El sistema de asambleas no está configurado.', 'flavor-chat-ia') . '</div>';
+                 esc_html__('El sistema de asambleas no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
             return;
         }
 
@@ -405,12 +405,12 @@ class Flavor_Colectivos_Dashboard_Tab {
 
             // Próximas asambleas (incluyendo hoy)
             $asambleas_proximas = $wpdb->get_results($wpdb->prepare(
-                "SELECT a.*, c.nombre as colectivo_nombre, c.tipo as colectivo_tipo,
+                "SELECT a.*, DATE_FORMAT(a.fecha, '%H:%i') as hora, c.nombre as colectivo_nombre, c.tipo as colectivo_tipo,
                         (SELECT COUNT(*) FROM {$this->tabla_miembros} WHERE colectivo_id = a.colectivo_id AND estado = 'activo') as total_miembros
                  FROM {$this->tabla_asambleas} a
                  INNER JOIN {$this->tabla_colectivos} c ON a.colectivo_id = c.id
                  WHERE a.colectivo_id IN ($placeholders) AND a.fecha >= CURDATE()
-                 ORDER BY a.fecha ASC, a.hora ASC
+                 ORDER BY a.fecha ASC
                  LIMIT 10",
                 ...$colectivo_ids
             ));
@@ -447,10 +447,10 @@ class Flavor_Colectivos_Dashboard_Tab {
             <div class="flavor-panel-header">
                 <h2>
                     <span class="dashicons dashicons-calendar-alt"></span>
-                    <?php esc_html_e('Asambleas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Asambleas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <p class="flavor-panel-subtitle">
-                    <?php esc_html_e('Próximas asambleas de tus colectivos.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Próximas asambleas de tus colectivos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
@@ -460,7 +460,7 @@ class Flavor_Colectivos_Dashboard_Tab {
                     <span class="flavor-kpi-icon dashicons dashicons-calendar"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($total_proximas); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Próximas', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Próximas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <?php if ($proxima_asamblea): ?>
@@ -470,15 +470,15 @@ class Flavor_Colectivos_Dashboard_Tab {
                         <span class="flavor-kpi-value">
                             <?php
                             if ($dias_para_proxima === 0) {
-                                esc_html_e('Hoy', 'flavor-chat-ia');
+                                esc_html_e('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN);
                             } elseif ($dias_para_proxima === 1) {
-                                esc_html_e('Mañana', 'flavor-chat-ia');
+                                esc_html_e('Mañana', FLAVOR_PLATFORM_TEXT_DOMAIN);
                             } else {
-                                printf(esc_html__('%d días', 'flavor-chat-ia'), $dias_para_proxima);
+                                printf(esc_html__('%d días', FLAVOR_PLATFORM_TEXT_DOMAIN), $dias_para_proxima);
                             }
                             ?>
                         </span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Próxima Asamblea', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Próxima Asamblea', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <?php endif; ?>
@@ -486,7 +486,7 @@ class Flavor_Colectivos_Dashboard_Tab {
                     <span class="flavor-kpi-icon dashicons dashicons-backup"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($total_pasadas); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Pasadas (recientes)', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Pasadas (recientes)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -495,13 +495,13 @@ class Flavor_Colectivos_Dashboard_Tab {
             <div class="flavor-section">
                 <h3 class="flavor-section-title">
                     <span class="dashicons dashicons-calendar"></span>
-                    <?php esc_html_e('Próximas Asambleas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Próximas Asambleas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
 
                 <?php if (empty($asambleas_proximas)): ?>
                     <div class="flavor-empty-state flavor-empty-state-sm">
                         <span class="dashicons dashicons-calendar-alt"></span>
-                        <p><?php esc_html_e('No hay asambleas programadas próximamente.', 'flavor-chat-ia'); ?></p>
+                        <p><?php esc_html_e('No hay asambleas programadas próximamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 <?php else: ?>
                     <div class="flavor-asambleas-timeline">
@@ -516,7 +516,7 @@ class Flavor_Colectivos_Dashboard_Tab {
             <div class="flavor-section">
                 <h3 class="flavor-section-title">
                     <span class="dashicons dashicons-backup"></span>
-                    <?php esc_html_e('Asambleas Recientes', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Asambleas Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <div class="flavor-asambleas-pasadas">
                     <?php foreach ($asambleas_pasadas as $asamblea): ?>
@@ -579,15 +579,15 @@ class Flavor_Colectivos_Dashboard_Tab {
 
             <div class="flavor-card-body">
                 <div class="flavor-card-stats">
-                    <span class="flavor-stat" title="<?php esc_attr_e('Miembros activos', 'flavor-chat-ia'); ?>">
+                    <span class="flavor-stat" title="<?php esc_attr_e('Miembros activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-groups"></span>
                         <?php echo number_format_i18n($colectivo->total_miembros); ?>
                     </span>
-                    <span class="flavor-stat" title="<?php esc_attr_e('Proyectos activos', 'flavor-chat-ia'); ?>">
+                    <span class="flavor-stat" title="<?php esc_attr_e('Proyectos activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-portfolio"></span>
                         <?php echo number_format_i18n($colectivo->proyectos_activos); ?>
                     </span>
-                    <span class="flavor-stat flavor-stat-muted" title="<?php esc_attr_e('Miembro desde', 'flavor-chat-ia'); ?>">
+                    <span class="flavor-stat flavor-stat-muted" title="<?php esc_attr_e('Miembro desde', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-calendar"></span>
                         <?php echo esc_html(date_i18n('M Y', strtotime($colectivo->fecha_union))); ?>
                     </span>
@@ -610,7 +610,7 @@ class Flavor_Colectivos_Dashboard_Tab {
 
                 <?php if (!empty($actividad_reciente)): ?>
                 <div class="flavor-card-actividad">
-                    <h5><?php esc_html_e('Actividad Reciente', 'flavor-chat-ia'); ?></h5>
+                    <h5><?php esc_html_e('Actividad Reciente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h5>
                     <ul class="flavor-actividad-lista">
                         <?php foreach ($actividad_reciente as $actividad): ?>
                             <li class="flavor-actividad-item flavor-actividad-<?php echo esc_attr($actividad['tipo']); ?>">
@@ -626,13 +626,13 @@ class Flavor_Colectivos_Dashboard_Tab {
 
             <div class="flavor-card-footer">
                 <a href="<?php echo esc_url($url_detalle); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
-                    <?php esc_html_e('Ver Colectivo', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <?php if (in_array($colectivo->rol, ['presidente', 'secretario', 'admin'])): ?>
                     <a href="<?php echo esc_url(add_query_arg(['colectivo' => $colectivo->id, 'accion' => 'gestionar'], Flavor_Chat_Helpers::get_action_url('colectivos', ''))); ?>"
                        class="flavor-btn flavor-btn-sm flavor-btn-primary">
                         <span class="dashicons dashicons-admin-generic"></span>
-                        <?php esc_html_e('Gestionar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Gestionar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 <?php endif; ?>
             </div>
@@ -723,9 +723,9 @@ class Flavor_Colectivos_Dashboard_Tab {
                 <span class="flavor-dia"><?php echo esc_html($fecha_formateada); ?></span>
                 <span class="flavor-mes"><?php echo esc_html($mes_formateado); ?></span>
                 <?php if ($es_hoy): ?>
-                    <span class="flavor-etiqueta-hoy"><?php esc_html_e('Hoy', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-etiqueta-hoy"><?php esc_html_e('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <?php elseif ($es_manana): ?>
-                    <span class="flavor-etiqueta-manana"><?php esc_html_e('Mañana', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-etiqueta-manana"><?php esc_html_e('Mañana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <?php endif; ?>
             </div>
 
@@ -752,14 +752,14 @@ class Flavor_Colectivos_Dashboard_Tab {
                     <?php if (isset($asamblea->total_miembros) && $asamblea->total_miembros > 0): ?>
                         <span class="flavor-detalle flavor-detalle-miembros">
                             <span class="dashicons dashicons-groups"></span>
-                            <?php printf(esc_html__('%d miembros', 'flavor-chat-ia'), $asamblea->total_miembros); ?>
+                            <?php printf(esc_html__('%d miembros', FLAVOR_PLATFORM_TEXT_DOMAIN), $asamblea->total_miembros); ?>
                         </span>
                     <?php endif; ?>
                 </div>
 
                 <?php if (!empty($asamblea->orden_del_dia) && $es_futura): ?>
                     <details class="flavor-orden-del-dia">
-                        <summary><?php esc_html_e('Ver orden del día', 'flavor-chat-ia'); ?></summary>
+                        <summary><?php esc_html_e('Ver orden del día', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></summary>
                         <div class="flavor-orden-contenido">
                             <?php echo wp_kses_post(wpautop($asamblea->orden_del_dia)); ?>
                         </div>
@@ -772,7 +772,7 @@ class Flavor_Colectivos_Dashboard_Tab {
                     <button class="flavor-btn flavor-btn-sm flavor-btn-primary flavor-confirmar-asistencia-btn"
                             data-asamblea-id="<?php echo esc_attr($asamblea->id); ?>">
                         <span class="dashicons dashicons-yes"></span>
-                        <?php esc_html_e('Confirmar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Confirmar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             <?php endif; ?>
@@ -803,18 +803,18 @@ class Flavor_Colectivos_Dashboard_Tab {
                 'tipo'  => 'miembro',
                 'icono' => 'admin-users',
                 'texto' => sprintf(
-                    _n('%d nuevo miembro', '%d nuevos miembros', $nuevos_miembros, 'flavor-chat-ia'),
+                    _n('%d nuevo miembro', '%d nuevos miembros', $nuevos_miembros, FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $nuevos_miembros
                 ),
-                'fecha' => __('Esta semana', 'flavor-chat-ia'),
+                'fecha' => __('Esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
         // Proyectos actualizados recientemente
         $proyecto_reciente = $wpdb->get_row($wpdb->prepare(
-            "SELECT nombre, estado, fecha_actualizacion FROM {$this->tabla_proyectos}
+            "SELECT titulo as nombre, estado, updated_at as fecha_actualizacion FROM {$this->tabla_proyectos}
              WHERE colectivo_id = %d
-             ORDER BY fecha_actualizacion DESC LIMIT 1",
+             ORDER BY updated_at DESC LIMIT 1",
             $colectivo_id
         ));
 
@@ -825,12 +825,12 @@ class Flavor_Colectivos_Dashboard_Tab {
                     'tipo'  => 'proyecto',
                     'icono' => 'portfolio',
                     'texto' => sprintf(
-                        __('Proyecto "%s" actualizado', 'flavor-chat-ia'),
+                        __('Proyecto "%s" actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         wp_trim_words($proyecto_reciente->nombre, 4)
                     ),
                     'fecha' => $dias_desde_actualizacion === 0
-                        ? __('Hoy', 'flavor-chat-ia')
-                        : sprintf(__('Hace %d días', 'flavor-chat-ia'), $dias_desde_actualizacion),
+                        ? __('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                        : sprintf(__('Hace %d días', FLAVOR_PLATFORM_TEXT_DOMAIN), $dias_desde_actualizacion),
                 ];
             }
         }
@@ -847,7 +847,7 @@ class Flavor_Colectivos_Dashboard_Tab {
             $actividades[] = [
                 'tipo'  => 'asamblea',
                 'icono' => 'calendar-alt',
-                'texto' => sprintf(__('Asamblea "%s"', 'flavor-chat-ia'), wp_trim_words($ultima_asamblea->titulo, 4)),
+                'texto' => sprintf(__('Asamblea "%s"', FLAVOR_PLATFORM_TEXT_DOMAIN), wp_trim_words($ultima_asamblea->titulo, 4)),
                 'fecha' => date_i18n('j M', strtotime($ultima_asamblea->fecha)),
             ];
         }
@@ -946,12 +946,12 @@ class Flavor_Colectivos_Dashboard_Tab {
      */
     private function obtener_etiqueta_estado_proyecto($estado) {
         $etiquetas = [
-            'planificado' => __('Planificado', 'flavor-chat-ia'),
-            'en_curso'    => __('En Curso', 'flavor-chat-ia'),
-            'activo'      => __('Activo', 'flavor-chat-ia'),
-            'completado'  => __('Completado', 'flavor-chat-ia'),
-            'cancelado'   => __('Cancelado', 'flavor-chat-ia'),
-            'pausado'     => __('Pausado', 'flavor-chat-ia'),
+            'planificado' => __('Planificado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'en_curso'    => __('En Curso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'activo'      => __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'completado'  => __('Completado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cancelado'   => __('Cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'pausado'     => __('Pausado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         return $etiquetas[$estado] ?? ucfirst($estado);

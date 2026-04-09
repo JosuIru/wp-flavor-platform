@@ -38,7 +38,7 @@ $distancia = $local['distancia'] ?? '';
         </div>
         <?php endif; ?>
         <span class="absolute top-3 left-3 <?php echo $abierto ? 'bg-green-500' : 'bg-red-500'; ?> text-white text-xs font-medium px-3 py-1 rounded-full shadow">
-            <?php echo $abierto ? esc_html__('Abierto', 'flavor-chat-ia') : esc_html__('Cerrado', 'flavor-chat-ia'); ?>
+            <?php echo $abierto ? esc_html__('Abierto', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Cerrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </span>
     </div>
 
@@ -74,7 +74,7 @@ $distancia = $local['distancia'] ?? '';
             <span></span>
             <?php endif; ?>
             <a href="<?php echo esc_url($url); ?>" class="text-orange-600 hover:text-orange-700 font-medium">
-                <?php echo esc_html__('Ver mas', 'flavor-chat-ia'); ?> →
+                <?php echo esc_html__('Ver mas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> →
             </a>
         </div>
     </div>

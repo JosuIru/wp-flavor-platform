@@ -86,10 +86,10 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
                 'ajaxUrl' => admin_url('admin-ajax.php'),
                 'nonce' => wp_create_nonce('flavor_trabajo_nonce'),
                 'strings' => [
-                    'procesando' => __('Procesando...', 'flavor-chat-ia'),
-                    'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                    'candidaturaEnviada' => __('Candidatura enviada correctamente', 'flavor-chat-ia'),
-                    'ofertaPublicada' => __('Oferta publicada correctamente', 'flavor-chat-ia'),
+                    'procesando' => __('Procesando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'candidaturaEnviada' => __('Candidatura enviada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'ofertaPublicada' => __('Oferta publicada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ]);
         }
@@ -112,7 +112,7 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
 
     public function register_dashboard_tabs($tabs) {
         $tabs['trabajo-digno'] = [
-            'titulo' => __('Trabajo Digno', 'flavor-chat-ia'),
+            'titulo' => __('Trabajo Digno', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'dashicons-businessman',
             'callback' => [$this, 'render_dashboard_tab'],
             'prioridad' => 35,
@@ -141,13 +141,13 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
         <div class="flavor-trabajo-ofertas">
             <div class="flavor-trabajo-header">
                 <div>
-                    <h2><?php _e('Bolsa de Trabajo Digno', 'flavor-chat-ia'); ?></h2>
-                    <p class="flavor-intro"><?php _e('Ofertas de empleo con condiciones laborales justas y dignas.', 'flavor-chat-ia'); ?></p>
+                    <h2><?php _e('Bolsa de Trabajo Digno', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                    <p class="flavor-intro"><?php _e('Ofertas de empleo con condiciones laborales justas y dignas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <?php if (is_user_logged_in()): ?>
                 <a href="<?php echo esc_url($this->get_publicar_url()); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus"></span>
-                    <?php _e('Publicar oferta', 'flavor-chat-ia'); ?>
+                    <?php _e('Publicar oferta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <?php endif; ?>
             </div>
@@ -155,12 +155,12 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
             <div class="flavor-trabajo-filtros">
                 <form class="flavor-filtros-form" method="get">
                     <div class="flavor-filtro-grupo">
-                        <input type="text" name="buscar" placeholder="<?php esc_attr_e('Buscar empleo...', 'flavor-chat-ia'); ?>"
+                        <input type="text" name="buscar" placeholder="<?php esc_attr_e('Buscar empleo...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                                value="<?php echo esc_attr($_GET['buscar'] ?? ''); ?>">
                     </div>
                     <div class="flavor-filtro-grupo">
                         <select name="categoria">
-                            <option value=""><?php _e('Todas las categorías', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php _e('Todas las categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php foreach ($categorias as $cat): ?>
                             <option value="<?php echo esc_attr($cat['slug']); ?>"
                                     <?php selected($_GET['categoria'] ?? '', $cat['slug']); ?>>
@@ -171,7 +171,7 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
                     </div>
                     <div class="flavor-filtro-grupo">
                         <select name="tipo">
-                            <option value=""><?php _e('Tipo de contrato', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php _e('Tipo de contrato', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php foreach ($tipos as $tipo): ?>
                             <option value="<?php echo esc_attr($tipo['slug']); ?>"
                                     <?php selected($_GET['tipo'] ?? '', $tipo['slug']); ?>>
@@ -190,7 +190,7 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
                 <?php if (empty($ofertas)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-businessman"></span>
-                    <p><?php _e('No se encontraron ofertas con esos criterios.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No se encontraron ofertas con esos criterios.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <?php else: ?>
                     <?php foreach ($ofertas as $oferta): ?>
@@ -242,11 +242,11 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
                         </div>
                         <div class="flavor-oferta-footer">
                             <span class="flavor-fecha-publicacion">
-                                <?php printf(__('Hace %s', 'flavor-chat-ia'), human_time_diff(strtotime($oferta['fecha_publicacion']))); ?>
+                                <?php printf(__('Hace %s', FLAVOR_PLATFORM_TEXT_DOMAIN), human_time_diff(strtotime($oferta['fecha_publicacion']))); ?>
                             </span>
                             <a href="<?php echo esc_url($this->get_oferta_url($oferta['id'])); ?>"
                                class="flavor-btn flavor-btn-sm flavor-btn-primary">
-                                <?php _e('Ver oferta', 'flavor-chat-ia'); ?>
+                                <?php _e('Ver oferta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </div>
                     </div>
@@ -263,12 +263,12 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
         $oferta_id = intval($atts['id']) ?: intval($_GET['oferta_id'] ?? 0);
 
         if (!$oferta_id) {
-            return '<div class="flavor-error">' . __('Oferta no especificada.', 'flavor-chat-ia') . '</div>';
+            return '<div class="flavor-error">' . __('Oferta no especificada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         $oferta = $this->obtener_oferta($oferta_id);
         if (!$oferta) {
-            return '<div class="flavor-error">' . __('Oferta no encontrada.', 'flavor-chat-ia') . '</div>';
+            return '<div class="flavor-error">' . __('Oferta no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         $user_id = get_current_user_id();
@@ -280,7 +280,7 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
             <div class="flavor-oferta-hero">
                 <div class="flavor-oferta-hero-main">
                     <nav class="flavor-breadcrumb">
-                        <a href="<?php echo esc_url($this->get_ofertas_url()); ?>"><?php _e('Ofertas', 'flavor-chat-ia'); ?></a>
+                        <a href="<?php echo esc_url($this->get_ofertas_url()); ?>"><?php _e('Ofertas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                         <span class="separator">›</span>
                         <span><?php echo esc_html($oferta['titulo']); ?></span>
                     </nav>
@@ -311,14 +311,14 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
                         <div class="flavor-resumen-item">
                             <span class="dashicons dashicons-location"></span>
                             <div>
-                                <span class="flavor-resumen-label"><?php _e('Ubicación', 'flavor-chat-ia'); ?></span>
+                                <span class="flavor-resumen-label"><?php _e('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="flavor-resumen-valor"><?php echo esc_html($oferta['ubicacion']); ?></span>
                             </div>
                         </div>
                         <div class="flavor-resumen-item">
                             <span class="dashicons dashicons-clock"></span>
                             <div>
-                                <span class="flavor-resumen-label"><?php _e('Tipo', 'flavor-chat-ia'); ?></span>
+                                <span class="flavor-resumen-label"><?php _e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="flavor-resumen-valor"><?php echo esc_html($oferta['tipo_contrato']); ?></span>
                             </div>
                         </div>
@@ -326,7 +326,7 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
                         <div class="flavor-resumen-item">
                             <span class="dashicons dashicons-money-alt"></span>
                             <div>
-                                <span class="flavor-resumen-label"><?php _e('Salario', 'flavor-chat-ia'); ?></span>
+                                <span class="flavor-resumen-label"><?php _e('Salario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="flavor-resumen-valor"><?php echo esc_html($oferta['salario']); ?></span>
                             </div>
                         </div>
@@ -334,7 +334,7 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
                         <div class="flavor-resumen-item">
                             <span class="dashicons dashicons-calendar-alt"></span>
                             <div>
-                                <span class="flavor-resumen-label"><?php _e('Publicado', 'flavor-chat-ia'); ?></span>
+                                <span class="flavor-resumen-label"><?php _e('Publicado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="flavor-resumen-valor"><?php echo esc_html(date_i18n('d/m/Y', strtotime($oferta['fecha_publicacion']))); ?></span>
                             </div>
                         </div>
@@ -344,29 +344,29 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
                 <div class="flavor-oferta-hero-aside">
                     <div class="flavor-candidatura-card">
                         <?php if (!is_user_logged_in()): ?>
-                        <p><?php _e('Inicia sesión para enviar tu candidatura.', 'flavor-chat-ia'); ?></p>
+                        <p><?php _e('Inicia sesión para enviar tu candidatura.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <a href="<?php echo wp_login_url(flavor_current_request_url()); ?>" class="flavor-btn flavor-btn-primary flavor-btn-block">
-                            <?php _e('Iniciar sesión', 'flavor-chat-ia'); ?>
+                            <?php _e('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                         <?php elseif ($ya_candidato): ?>
                         <div class="flavor-ya-candidato">
                             <span class="dashicons dashicons-yes-alt"></span>
-                            <p><?php _e('Ya has enviado tu candidatura a esta oferta.', 'flavor-chat-ia'); ?></p>
+                            <p><?php _e('Ya has enviado tu candidatura a esta oferta.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                         <?php else: ?>
                         <button type="button" class="flavor-btn flavor-btn-primary flavor-btn-block flavor-btn-lg flavor-enviar-candidatura"
                                 data-oferta-id="<?php echo esc_attr($oferta_id); ?>">
-                            <?php _e('Enviar candidatura', 'flavor-chat-ia'); ?>
+                            <?php _e('Enviar candidatura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <p class="flavor-candidatos-info">
-                            <?php printf(__('%d personas ya se han inscrito', 'flavor-chat-ia'), $oferta['candidatos']); ?>
+                            <?php printf(__('%d personas ya se han inscrito', FLAVOR_PLATFORM_TEXT_DOMAIN), $oferta['candidatos']); ?>
                         </p>
                         <?php endif; ?>
 
                         <button type="button" class="flavor-btn flavor-btn-outline flavor-btn-block flavor-guardar-oferta"
                                 data-oferta-id="<?php echo esc_attr($oferta_id); ?>">
                             <span class="dashicons dashicons-heart"></span>
-                            <?php _e('Guardar oferta', 'flavor-chat-ia'); ?>
+                            <?php _e('Guardar oferta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </div>
@@ -375,7 +375,7 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
             <div class="flavor-oferta-contenido-detalle">
                 <div class="flavor-oferta-main">
                     <section class="flavor-panel">
-                        <h3><?php _e('Descripción del puesto', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Descripción del puesto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="flavor-oferta-descripcion-larga">
                             <?php echo wp_kses_post(nl2br($oferta['descripcion'])); ?>
                         </div>
@@ -383,7 +383,7 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
 
                     <?php if (!empty($oferta['requisitos'])): ?>
                     <section class="flavor-panel">
-                        <h3><?php _e('Requisitos', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Requisitos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="flavor-requisitos">
                             <?php echo wp_kses_post($oferta['requisitos']); ?>
                         </div>
@@ -392,7 +392,7 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
 
                     <?php if (!empty($oferta['beneficios'])): ?>
                     <section class="flavor-panel">
-                        <h3><?php _e('Beneficios', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Beneficios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="flavor-beneficios">
                             <?php echo wp_kses_post($oferta['beneficios']); ?>
                         </div>
@@ -401,7 +401,7 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
 
                     <?php if (!empty($oferta['condiciones_dignas'])): ?>
                     <section class="flavor-panel flavor-panel-destacado">
-                        <h3><span class="dashicons dashicons-shield"></span> <?php _e('Compromiso con el Trabajo Digno', 'flavor-chat-ia'); ?></h3>
+                        <h3><span class="dashicons dashicons-shield"></span> <?php _e('Compromiso con el Trabajo Digno', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="flavor-condiciones-dignas">
                             <?php echo wp_kses_post($oferta['condiciones_dignas']); ?>
                         </div>
@@ -411,7 +411,7 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
 
                 <div class="flavor-oferta-sidebar">
                     <div class="flavor-panel">
-                        <h3><?php _e('Sobre la empresa', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Sobre la empresa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="flavor-empresa-info">
                             <h4><?php echo esc_html($oferta['empresa']); ?></h4>
                             <?php if (!empty($oferta['empresa_descripcion'])): ?>
@@ -419,14 +419,14 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
                             <?php endif; ?>
                             <?php if (!empty($oferta['empresa_web'])): ?>
                             <a href="<?php echo esc_url($oferta['empresa_web']); ?>" target="_blank" class="flavor-empresa-web">
-                                <span class="dashicons dashicons-admin-site"></span> <?php _e('Visitar web', 'flavor-chat-ia'); ?>
+                                <span class="dashicons dashicons-admin-site"></span> <?php _e('Visitar web', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                             <?php endif; ?>
                         </div>
                     </div>
 
                     <div class="flavor-panel">
-                        <h3><?php _e('Comparte esta oferta', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php _e('Comparte esta oferta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="flavor-compartir-botones">
                             <a href="https://twitter.com/intent/tweet?url=<?php echo urlencode(get_permalink()); ?>&text=<?php echo urlencode($oferta['titulo']); ?>"
                                target="_blank" class="flavor-compartir-btn twitter">
@@ -451,7 +451,7 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
 
     public function shortcode_publicar($atts) {
         if (!is_user_logged_in()) {
-            return '<div class="flavor-login-required">' . __('Inicia sesión para publicar una oferta.', 'flavor-chat-ia') . '</div>';
+            return '<div class="flavor-login-required">' . __('Inicia sesión para publicar una oferta.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         $categorias = $this->obtener_categorias();
@@ -460,35 +460,35 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-publicar-oferta">
-            <h2><?php _e('Publicar Oferta de Trabajo', 'flavor-chat-ia'); ?></h2>
-            <p class="flavor-intro"><?php _e('Todas las ofertas deben cumplir los estándares de trabajo digno.', 'flavor-chat-ia'); ?></p>
+            <h2><?php _e('Publicar Oferta de Trabajo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+            <p class="flavor-intro"><?php _e('Todas las ofertas deben cumplir los estándares de trabajo digno.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
             <form id="flavor-form-oferta" class="flavor-form" enctype="multipart/form-data">
                 <?php wp_nonce_field('flavor_trabajo_nonce', 'oferta_nonce'); ?>
 
                 <fieldset>
-                    <legend><?php _e('Información del puesto', 'flavor-chat-ia'); ?></legend>
+                    <legend><?php _e('Información del puesto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></legend>
 
                     <div class="flavor-form-group">
-                        <label for="titulo"><?php _e('Título del puesto', 'flavor-chat-ia'); ?> *</label>
+                        <label for="titulo"><?php _e('Título del puesto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                         <input type="text" id="titulo" name="titulo" required
-                               placeholder="<?php esc_attr_e('Ej: Desarrollador/a Web Junior', 'flavor-chat-ia'); ?>">
+                               placeholder="<?php esc_attr_e('Ej: Desarrollador/a Web Junior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     </div>
 
                     <div class="flavor-form-row">
                         <div class="flavor-form-group">
-                            <label for="categoria"><?php _e('Categoría', 'flavor-chat-ia'); ?> *</label>
+                            <label for="categoria"><?php _e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                             <select id="categoria" name="categoria" required>
-                                <option value=""><?php _e('Selecciona categoría', 'flavor-chat-ia'); ?></option>
+                                <option value=""><?php _e('Selecciona categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                 <?php foreach ($categorias as $cat): ?>
                                 <option value="<?php echo esc_attr($cat['slug']); ?>"><?php echo esc_html($cat['nombre']); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="flavor-form-group">
-                            <label for="tipo_contrato"><?php _e('Tipo de contrato', 'flavor-chat-ia'); ?> *</label>
+                            <label for="tipo_contrato"><?php _e('Tipo de contrato', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                             <select id="tipo_contrato" name="tipo_contrato" required>
-                                <option value=""><?php _e('Selecciona tipo', 'flavor-chat-ia'); ?></option>
+                                <option value=""><?php _e('Selecciona tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                 <?php foreach ($tipos as $tipo): ?>
                                 <option value="<?php echo esc_attr($tipo['slug']); ?>"><?php echo esc_html($tipo['nombre']); ?></option>
                                 <?php endforeach; ?>
@@ -497,78 +497,78 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
                     </div>
 
                     <div class="flavor-form-group">
-                        <label for="descripcion"><?php _e('Descripción del puesto', 'flavor-chat-ia'); ?> *</label>
+                        <label for="descripcion"><?php _e('Descripción del puesto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                         <textarea id="descripcion" name="descripcion" rows="6" required
-                                  placeholder="<?php esc_attr_e('Describe las funciones, responsabilidades y el día a día del puesto...', 'flavor-chat-ia'); ?>"></textarea>
+                                  placeholder="<?php esc_attr_e('Describe las funciones, responsabilidades y el día a día del puesto...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                     </div>
 
                     <div class="flavor-form-group">
-                        <label for="requisitos"><?php _e('Requisitos', 'flavor-chat-ia'); ?></label>
+                        <label for="requisitos"><?php _e('Requisitos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <textarea id="requisitos" name="requisitos" rows="4"
-                                  placeholder="<?php esc_attr_e('Formación, experiencia, habilidades necesarias...', 'flavor-chat-ia'); ?>"></textarea>
+                                  placeholder="<?php esc_attr_e('Formación, experiencia, habilidades necesarias...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                     </div>
 
                     <div class="flavor-form-row">
                         <div class="flavor-form-group">
-                            <label for="ubicacion"><?php _e('Ubicación', 'flavor-chat-ia'); ?> *</label>
+                            <label for="ubicacion"><?php _e('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                             <input type="text" id="ubicacion" name="ubicacion" required
-                                   placeholder="<?php esc_attr_e('Ciudad, País o Remoto', 'flavor-chat-ia'); ?>">
+                                   placeholder="<?php esc_attr_e('Ciudad, País o Remoto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         </div>
                         <div class="flavor-form-group">
-                            <label for="salario"><?php _e('Salario (opcional)', 'flavor-chat-ia'); ?></label>
+                            <label for="salario"><?php _e('Salario (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="text" id="salario" name="salario"
-                                   placeholder="<?php esc_attr_e('Ej: 25.000€ - 30.000€/año', 'flavor-chat-ia'); ?>">
+                                   placeholder="<?php esc_attr_e('Ej: 25.000€ - 30.000€/año', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         </div>
                     </div>
                 </fieldset>
 
                 <fieldset>
-                    <legend><?php _e('Información de la empresa', 'flavor-chat-ia'); ?></legend>
+                    <legend><?php _e('Información de la empresa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></legend>
 
                     <div class="flavor-form-group">
-                        <label for="empresa"><?php _e('Nombre de la empresa/organización', 'flavor-chat-ia'); ?> *</label>
+                        <label for="empresa"><?php _e('Nombre de la empresa/organización', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                         <input type="text" id="empresa" name="empresa" required>
                     </div>
 
                     <div class="flavor-form-group">
-                        <label for="empresa_descripcion"><?php _e('Descripción breve de la empresa', 'flavor-chat-ia'); ?></label>
+                        <label for="empresa_descripcion"><?php _e('Descripción breve de la empresa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <textarea id="empresa_descripcion" name="empresa_descripcion" rows="3"></textarea>
                     </div>
 
                     <div class="flavor-form-group flavor-checkbox-group">
                         <label>
                             <input type="checkbox" name="es_cooperativa" value="1">
-                            <?php _e('Somos una cooperativa o empresa de Economía Social y Solidaria', 'flavor-chat-ia'); ?>
+                            <?php _e('Somos una cooperativa o empresa de Economía Social y Solidaria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                     </div>
                 </fieldset>
 
                 <fieldset>
-                    <legend><?php _e('Compromiso Trabajo Digno', 'flavor-chat-ia'); ?></legend>
+                    <legend><?php _e('Compromiso Trabajo Digno', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></legend>
 
                     <div class="flavor-form-group">
-                        <label for="beneficios"><?php _e('Beneficios que ofreces', 'flavor-chat-ia'); ?></label>
+                        <label for="beneficios"><?php _e('Beneficios que ofreces', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <textarea id="beneficios" name="beneficios" rows="3"
-                                  placeholder="<?php esc_attr_e('Teletrabajo, horario flexible, formación, conciliación...', 'flavor-chat-ia'); ?>"></textarea>
+                                  placeholder="<?php esc_attr_e('Teletrabajo, horario flexible, formación, conciliación...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                     </div>
 
                     <div class="flavor-form-group">
-                        <label for="condiciones_dignas"><?php _e('¿Cómo garantizáis condiciones de trabajo dignas?', 'flavor-chat-ia'); ?></label>
+                        <label for="condiciones_dignas"><?php _e('¿Cómo garantizáis condiciones de trabajo dignas?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <textarea id="condiciones_dignas" name="condiciones_dignas" rows="3"
-                                  placeholder="<?php esc_attr_e('Describe vuestro compromiso con salarios justos, igualdad, conciliación...', 'flavor-chat-ia'); ?>"></textarea>
+                                  placeholder="<?php esc_attr_e('Describe vuestro compromiso con salarios justos, igualdad, conciliación...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                     </div>
 
                     <div class="flavor-form-group flavor-checkbox-group">
                         <label>
                             <input type="checkbox" name="acepto_condiciones" required>
-                            <?php _e('Confirmo que esta oferta cumple con los estándares de trabajo digno y las condiciones descritas son veraces.', 'flavor-chat-ia'); ?>
+                            <?php _e('Confirmo que esta oferta cumple con los estándares de trabajo digno y las condiciones descritas son veraces.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                     </div>
                 </fieldset>
 
                 <div class="flavor-form-actions">
                     <button type="submit" class="flavor-btn flavor-btn-primary flavor-btn-lg">
-                        <?php _e('Publicar oferta', 'flavor-chat-ia'); ?>
+                        <?php _e('Publicar oferta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </form>
@@ -579,7 +579,7 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
 
     public function shortcode_mis_ofertas($atts) {
         if (!is_user_logged_in()) {
-            return '<div class="flavor-login-required">' . __('Inicia sesión para ver tus ofertas.', 'flavor-chat-ia') . '</div>';
+            return '<div class="flavor-login-required">' . __('Inicia sesión para ver tus ofertas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         $user_id = get_current_user_id();
@@ -589,16 +589,16 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
         ?>
         <div class="flavor-mis-ofertas">
             <div class="flavor-mis-ofertas-header">
-                <h2><?php _e('Mis Ofertas Publicadas', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Mis Ofertas Publicadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <a href="<?php echo esc_url($this->get_publicar_url()); ?>" class="flavor-btn flavor-btn-primary">
-                    <?php _e('Nueva oferta', 'flavor-chat-ia'); ?>
+                    <?php _e('Nueva oferta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
             <?php if (empty($ofertas)): ?>
             <div class="flavor-empty-state">
                 <span class="dashicons dashicons-businessman"></span>
-                <p><?php _e('No has publicado ninguna oferta aún.', 'flavor-chat-ia'); ?></p>
+                <p><?php _e('No has publicado ninguna oferta aún.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <?php else: ?>
             <div class="flavor-mis-ofertas-lista">
@@ -606,12 +606,12 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
                 <div class="flavor-mi-oferta-item">
                     <div class="flavor-mi-oferta-info">
                         <h4><?php echo esc_html($oferta['titulo']); ?></h4>
-                        <p><?php printf(__('%d candidaturas', 'flavor-chat-ia'), $oferta['candidatos']); ?></p>
+                        <p><?php printf(__('%d candidaturas', FLAVOR_PLATFORM_TEXT_DOMAIN), $oferta['candidatos']); ?></p>
                     </div>
                     <?php echo $this->render_estado_badge($oferta['estado']); ?>
                     <a href="<?php echo esc_url($this->get_oferta_url($oferta['id'])); ?>"
                        class="flavor-btn flavor-btn-sm flavor-btn-outline">
-                        <?php _e('Ver', 'flavor-chat-ia'); ?>
+                        <?php _e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
                 <?php endforeach; ?>
@@ -624,7 +624,7 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
 
     public function shortcode_mis_candidaturas($atts) {
         if (!is_user_logged_in()) {
-            return '<div class="flavor-login-required">' . __('Inicia sesión para ver tus candidaturas.', 'flavor-chat-ia') . '</div>';
+            return '<div class="flavor-login-required">' . __('Inicia sesión para ver tus candidaturas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         $user_id = get_current_user_id();
@@ -633,14 +633,14 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-mis-candidaturas">
-            <h2><?php _e('Mis Candidaturas', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Mis Candidaturas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <?php if (empty($candidaturas)): ?>
             <div class="flavor-empty-state">
                 <span class="dashicons dashicons-welcome-write-blog"></span>
-                <p><?php _e('No has enviado ninguna candidatura aún.', 'flavor-chat-ia'); ?></p>
+                <p><?php _e('No has enviado ninguna candidatura aún.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <a href="<?php echo esc_url($this->get_ofertas_url()); ?>" class="flavor-btn flavor-btn-primary">
-                    <?php _e('Ver ofertas', 'flavor-chat-ia'); ?>
+                    <?php _e('Ver ofertas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php else: ?>
@@ -669,8 +669,8 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
         ?>
         <div class="flavor-cooperativas">
             <div class="flavor-cooperativas-header">
-                <h2><?php _e('Cooperativas y Economía Social', 'flavor-chat-ia'); ?></h2>
-                <p><?php _e('Empresas comprometidas con el trabajo digno y la economía solidaria.', 'flavor-chat-ia'); ?></p>
+                <h2><?php _e('Cooperativas y Economía Social', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <p><?php _e('Empresas comprometidas con el trabajo digno y la economía solidaria.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <div class="flavor-cooperativas-grid">
@@ -687,7 +687,7 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
                     <p class="flavor-cooperativa-sector"><?php echo esc_html($coop['sector']); ?></p>
                     <p class="flavor-cooperativa-desc"><?php echo esc_html(wp_trim_words($coop['descripcion'], 15)); ?></p>
                     <div class="flavor-cooperativa-stats">
-                        <span><?php printf(__('%d empleos', 'flavor-chat-ia'), $coop['empleos']); ?></span>
+                        <span><?php printf(__('%d empleos', FLAVOR_PLATFORM_TEXT_DOMAIN), $coop['empleos']); ?></span>
                     </div>
                 </div>
                 <?php endforeach; ?>
@@ -703,8 +703,8 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-formacion-laboral">
-            <h2><?php _e('Formación para el Empleo', 'flavor-chat-ia'); ?></h2>
-            <p><?php _e('Cursos y recursos para mejorar tu empleabilidad.', 'flavor-chat-ia'); ?></p>
+            <h2><?php _e('Formación para el Empleo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+            <p><?php _e('Cursos y recursos para mejorar tu empleabilidad.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
             <div class="flavor-cursos-grid">
                 <?php foreach ($cursos as $curso): ?>
@@ -726,23 +726,23 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-trabajo-estadisticas">
-            <h2><?php _e('Impacto de la Bolsa de Trabajo Digno', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Impacto de la Bolsa de Trabajo Digno', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <div class="flavor-stats-grid">
                 <div class="flavor-stat-card">
                     <span class="flavor-stat-valor"><?php echo intval($stats['ofertas_activas']); ?></span>
-                    <span class="flavor-stat-label"><?php _e('Ofertas activas', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-stat-label"><?php _e('Ofertas activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="flavor-stat-valor"><?php echo intval($stats['contrataciones']); ?></span>
-                    <span class="flavor-stat-label"><?php _e('Contrataciones', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-stat-label"><?php _e('Contrataciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="flavor-stat-valor"><?php echo intval($stats['empresas']); ?></span>
-                    <span class="flavor-stat-label"><?php _e('Empresas', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-stat-label"><?php _e('Empresas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="flavor-stat-valor"><?php echo intval($stats['cooperativas']); ?></span>
-                    <span class="flavor-stat-label"><?php _e('Cooperativas', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-stat-label"><?php _e('Cooperativas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
         </div>
@@ -765,24 +765,24 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
             <div class="flavor-kpi-grid">
                 <div class="flavor-kpi-card">
                     <div class="flavor-kpi-valor"><?php echo intval($stats['candidaturas']); ?></div>
-                    <div class="flavor-kpi-label"><?php _e('Candidaturas', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-kpi-label"><?php _e('Candidaturas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="flavor-kpi-card">
                     <div class="flavor-kpi-valor"><?php echo intval($stats['ofertas_publicadas']); ?></div>
-                    <div class="flavor-kpi-label"><?php _e('Ofertas publicadas', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-kpi-label"><?php _e('Ofertas publicadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
 
             <div class="flavor-panel">
                 <div class="flavor-panel-header">
-                    <h3><?php _e('Mis Candidaturas', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Mis Candidaturas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <a href="<?php echo esc_url($this->get_ofertas_url()); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
-                        <?php _e('Ver ofertas', 'flavor-chat-ia'); ?>
+                        <?php _e('Ver ofertas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
 
                 <?php if (empty($candidaturas)): ?>
-                <p class="flavor-text-muted"><?php _e('No tienes candidaturas activas.', 'flavor-chat-ia'); ?></p>
+                <p class="flavor-text-muted"><?php _e('No tienes candidaturas activas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php else: ?>
                 <div class="flavor-candidaturas-mini">
                     <?php foreach ($candidaturas as $cand): ?>
@@ -809,7 +809,7 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
         check_ajax_referer('flavor_trabajo_nonce', 'oferta_nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $titulo = sanitize_text_field($_POST['titulo'] ?? '');
@@ -817,14 +817,14 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
         $empresa = sanitize_text_field($_POST['empresa'] ?? '');
 
         if (empty($titulo) || empty($descripcion) || empty($empresa)) {
-            wp_send_json_error(['message' => __('Completa los campos obligatorios.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Completa los campos obligatorios.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_trabajo_ofertas';
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
-            wp_send_json_error(['message' => __('Sistema no disponible.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sistema no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $user_id = get_current_user_id();
@@ -849,11 +849,11 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
 
         if ($result) {
             wp_send_json_success([
-                'message' => __('Oferta enviada para revisión. Se publicará pronto.', 'flavor-chat-ia'),
+                'message' => __('Oferta enviada para revisión. Se publicará pronto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'redirect' => $this->get_mis_ofertas_url(),
             ]);
         } else {
-            wp_send_json_error(['message' => __('Error al publicar.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al publicar.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -861,21 +861,21 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
         check_ajax_referer('flavor_trabajo_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $oferta_id = intval($_POST['oferta_id'] ?? 0);
         $user_id = get_current_user_id();
 
         if (!$oferta_id) {
-            wp_send_json_error(['message' => __('Oferta no especificada.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Oferta no especificada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_trabajo_candidaturas';
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
-            wp_send_json_error(['message' => __('Sistema no disponible.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sistema no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar si ya es candidato
@@ -885,7 +885,7 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
         ));
 
         if ($existe) {
-            wp_send_json_error(['message' => __('Ya has enviado tu candidatura a esta oferta.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Ya has enviado tu candidatura a esta oferta.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $result = $wpdb->insert($tabla, [
@@ -896,20 +896,20 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
         ]);
 
         if ($result) {
-            wp_send_json_success(['message' => __('Candidatura enviada correctamente.', 'flavor-chat-ia')]);
+            wp_send_json_success(['message' => __('Candidatura enviada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
-            wp_send_json_error(['message' => __('Error al enviar.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al enviar.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
     public function ajax_guardar_oferta() {
         check_ajax_referer('flavor_trabajo_nonce', 'nonce');
-        wp_send_json_success(['message' => __('Oferta guardada.', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Oferta guardada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     public function ajax_actualizar_estado() {
         check_ajax_referer('flavor_trabajo_nonce', 'nonce');
-        wp_send_json_success(['message' => __('Estado actualizado.', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Estado actualizado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     public function ajax_buscar() {

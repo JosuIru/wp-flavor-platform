@@ -41,7 +41,7 @@ $identificador_galeria = 'galeria-carrusel-' . wp_unique_id();
                 type="button"
                 class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors hidden md:flex"
                 onclick="document.getElementById('<?php echo esc_attr( $identificador_galeria ); ?>').scrollBy({left: -350, behavior: 'smooth'})"
-                aria-label="<?php echo esc_attr__( 'Anterior', 'flavor-chat-ia' ); ?>"
+                aria-label="<?php echo esc_attr__( 'Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
             >
                 <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
@@ -51,7 +51,7 @@ $identificador_galeria = 'galeria-carrusel-' . wp_unique_id();
                 type="button"
                 class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors hidden md:flex"
                 onclick="document.getElementById('<?php echo esc_attr( $identificador_galeria ); ?>').scrollBy({left: 350, behavior: 'smooth'})"
-                aria-label="<?php echo esc_attr__( 'Siguiente', 'flavor-chat-ia' ); ?>"
+                aria-label="<?php echo esc_attr__( 'Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
             >
                 <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>

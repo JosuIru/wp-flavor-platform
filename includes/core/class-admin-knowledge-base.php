@@ -693,7 +693,7 @@ ESTRUCTURA DEL PLUGIN:
                 'titulo' => 'Perfil de Aplicación',
                 'ayuda' => 'Selecciona el tipo de organización para preconfigurar módulos recomendados. Cambiarlo no desactiva módulos ya configurados.',
             ],
-            'flavor-chat-ia' => [
+            'flavor-platform' => [
                 'titulo' => 'Configuración Chat IA',
                 'ayuda' => 'Configura el asistente virtual: proveedor de IA (Claude, OpenAI, Mistral, DeepSeek), API keys, personalidad del asistente y base de conocimiento.',
             ],
@@ -708,6 +708,10 @@ ESTRUCTURA DEL PLUGIN:
             'flavor-tours' => [
                 'titulo' => 'Tours Guiados',
                 'ayuda' => 'Tours interactivos para aprender a usar la plataforma. Recomendados para nuevos administradores.',
+            ],
+            'flavor-platform-docs' => [
+                'titulo' => 'Documentación',
+                'ayuda' => 'Documentación completa del plugin, guías de uso y referencia técnica.',
             ],
             'flavor-docs' => [
                 'titulo' => 'Documentación',

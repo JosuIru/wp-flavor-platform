@@ -111,14 +111,14 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_bicicletas_nonce'),
             'strings' => [
-                'procesando' => __('Procesando...', 'flavor-chat-ia'),
-                'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'confirmarReserva' => __('¿Confirmas la reserva de esta bicicleta?', 'flavor-chat-ia'),
-                'confirmarDevolucion' => __('¿Confirmas la devolución en esta estación?', 'flavor-chat-ia'),
-                'confirmarCancelar' => __('¿Cancelar esta reserva?', 'flavor-chat-ia'),
-                'bicicletaReservada' => __('Bicicleta reservada correctamente', 'flavor-chat-ia'),
-                'bicicletaDevuelta' => __('Bicicleta devuelta correctamente', 'flavor-chat-ia'),
-                'sinUbicacion' => __('No se pudo obtener tu ubicación', 'flavor-chat-ia'),
+                'procesando' => __('Procesando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmarReserva' => __('¿Confirmas la reserva de esta bicicleta?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmarDevolucion' => __('¿Confirmas la devolución en esta estación?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmarCancelar' => __('¿Cancelar esta reserva?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'bicicletaReservada' => __('Bicicleta reservada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'bicicletaDevuelta' => __('Bicicleta devuelta correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sinUbicacion' => __('No se pudo obtener tu ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -140,7 +140,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
      */
     public function registrar_dashboard_tabs($tabs) {
         $tabs['bicicletas'] = [
-            'titulo' => __('Bicicletas', 'flavor-chat-ia'),
+            'titulo' => __('Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'dashicons-bike',
             'prioridad' => 50,
             'callback' => [$this, 'render_dashboard_tab'],
@@ -200,28 +200,28 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
                     <span class="flavor-kpi-icono dashicons dashicons-chart-bar"></span>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo intval($estadisticas->total_prestamos ?? 0); ?></span>
-                        <span class="flavor-kpi-etiqueta"><?php _e('Total préstamos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-etiqueta"><?php _e('Total préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icono dashicons dashicons-location"></span>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo number_format($estadisticas->km_totales ?? 0, 1); ?> km</span>
-                        <span class="flavor-kpi-etiqueta"><?php _e('Km recorridos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-etiqueta"><?php _e('Km recorridos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icono dashicons dashicons-clock"></span>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo $this->formatear_duracion($estadisticas->minutos_totales ?? 0); ?></span>
-                        <span class="flavor-kpi-etiqueta"><?php _e('Tiempo pedaleando', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-etiqueta"><?php _e('Tiempo pedaleando', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icono dashicons dashicons-awards"></span>
                     <div class="flavor-kpi-contenido">
                         <span class="flavor-kpi-valor"><?php echo number_format(($estadisticas->km_totales ?? 0) * 0.21, 1); ?> kg</span>
-                        <span class="flavor-kpi-etiqueta"><?php _e('CO₂ ahorrado', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-etiqueta"><?php _e('CO₂ ahorrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -231,7 +231,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
             <div class="flavor-panel flavor-panel-destacado">
                 <h3 class="flavor-panel-titulo">
                     <span class="dashicons dashicons-bike"></span>
-                    <?php _e('Préstamo Activo', 'flavor-chat-ia'); ?>
+                    <?php _e('Préstamo Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <div class="flavor-prestamo-activo">
                     <div class="flavor-bici-info">
@@ -251,19 +251,19 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
                             echo $this->formatear_duracion($minutos_transcurridos);
                             ?>
                         </div>
-                        <small><?php _e('Tiempo de uso', 'flavor-chat-ia'); ?></small>
+                        <small><?php _e('Tiempo de uso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                     </div>
                     <div class="flavor-prestamo-acciones">
                         <button type="button" class="flavor-btn flavor-btn-primary flavor-btn-devolver"
                                 data-prestamo-id="<?php echo intval($prestamo_activo->id); ?>"
                                 data-bicicleta-id="<?php echo intval($prestamo_activo->bicicleta_id); ?>">
                             <span class="dashicons dashicons-location"></span>
-                            <?php _e('Devolver bicicleta', 'flavor-chat-ia'); ?>
+                            <?php _e('Devolver bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <button type="button" class="flavor-btn flavor-btn-outline flavor-btn-reportar"
                                 data-bicicleta-id="<?php echo intval($prestamo_activo->bicicleta_id); ?>">
                             <span class="dashicons dashicons-warning"></span>
-                            <?php _e('Reportar problema', 'flavor-chat-ia'); ?>
+                            <?php _e('Reportar problema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </div>
@@ -273,11 +273,11 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
             <div class="flavor-acciones-rapidas">
                 <a href="#mapa-estaciones" class="flavor-accion-card">
                     <span class="dashicons dashicons-location-alt"></span>
-                    <span><?php _e('Ver estaciones', 'flavor-chat-ia'); ?></span>
+                    <span><?php _e('Ver estaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </a>
                 <a href="#bicicletas-disponibles" class="flavor-accion-card">
                     <span class="dashicons dashicons-bike"></span>
-                    <span><?php _e('Reservar bici', 'flavor-chat-ia'); ?></span>
+                    <span><?php _e('Reservar bici', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </a>
             </div>
             <?php endif; ?>
@@ -286,7 +286,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
             <div class="flavor-panel">
                 <h3 class="flavor-panel-titulo">
                     <span class="dashicons dashicons-backup"></span>
-                    <?php _e('Historial de préstamos', 'flavor-chat-ia'); ?>
+                    <?php _e('Historial de préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <?php if (!empty($historial)): ?>
                 <div class="flavor-historial-lista">
@@ -317,7 +317,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
                     <?php endforeach; ?>
                 </div>
                 <?php else: ?>
-                <p class="flavor-vacio"><?php _e('Aún no has usado el servicio de bicicletas', 'flavor-chat-ia'); ?></p>
+                <p class="flavor-vacio"><?php _e('Aún no has usado el servicio de bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php endif; ?>
             </div>
 
@@ -325,34 +325,34 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
             <div id="modal-devolucion" class="flavor-modal" style="display:none;">
                 <div class="flavor-modal-contenido">
                     <button type="button" class="flavor-modal-cerrar">&times;</button>
-                    <h3><?php _e('Devolver bicicleta', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Devolver bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <form id="form-devolver-bicicleta">
                         <input type="hidden" name="prestamo_id" id="devolver-prestamo-id">
                         <input type="hidden" name="bicicleta_id" id="devolver-bicicleta-id">
 
                         <div class="flavor-form-grupo">
-                            <label><?php _e('Estación de devolución', 'flavor-chat-ia'); ?></label>
+                            <label><?php _e('Estación de devolución', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <select name="estacion_id" id="devolver-estacion" required>
-                                <option value=""><?php _e('Selecciona una estación', 'flavor-chat-ia'); ?></option>
+                                <option value=""><?php _e('Selecciona una estación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             </select>
                             <button type="button" class="flavor-btn flavor-btn-sm flavor-btn-ubicacion">
                                 <span class="dashicons dashicons-location"></span>
-                                <?php _e('Usar mi ubicación', 'flavor-chat-ia'); ?>
+                                <?php _e('Usar mi ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </div>
 
                         <div class="flavor-form-grupo">
-                            <label><?php _e('Kilómetros recorridos (opcional)', 'flavor-chat-ia'); ?></label>
+                            <label><?php _e('Kilómetros recorridos (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="number" name="kilometros" step="0.1" min="0" max="100" placeholder="0.0">
                         </div>
 
                         <div class="flavor-form-grupo">
-                            <label><?php _e('¿Alguna incidencia?', 'flavor-chat-ia'); ?></label>
-                            <textarea name="incidencias" rows="2" placeholder="<?php esc_attr_e('Describe cualquier problema con la bicicleta', 'flavor-chat-ia'); ?>"></textarea>
+                            <label><?php _e('¿Alguna incidencia?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                            <textarea name="incidencias" rows="2" placeholder="<?php esc_attr_e('Describe cualquier problema con la bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                         </div>
 
                         <div class="flavor-form-grupo">
-                            <label><?php _e('Valoración del servicio', 'flavor-chat-ia'); ?></label>
+                            <label><?php _e('Valoración del servicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <div class="flavor-valoracion-estrellas">
                                 <?php for ($i = 5; $i >= 1; $i--): ?>
                                 <input type="radio" name="valoracion" id="val-<?php echo $i; ?>" value="<?php echo $i; ?>">
@@ -363,11 +363,11 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
 
                         <div class="flavor-form-acciones">
                             <button type="button" class="flavor-btn flavor-btn-outline flavor-modal-cerrar-btn">
-                                <?php _e('Cancelar', 'flavor-chat-ia'); ?>
+                                <?php _e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                             <button type="submit" class="flavor-btn flavor-btn-primary">
                                 <span class="dashicons dashicons-yes"></span>
-                                <?php _e('Confirmar devolución', 'flavor-chat-ia'); ?>
+                                <?php _e('Confirmar devolución', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </div>
                     </form>
@@ -464,7 +464,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
                     </div>
                 </div>
                 <a href="?estacion=<?php echo intval($estacion->id); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
-                    <?php _e('Ver bicicletas', 'flavor-chat-ia'); ?>
+                    <?php _e('Ver bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php endforeach; ?>
@@ -520,19 +520,19 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
             <!-- Filtros -->
             <div class="flavor-filtros">
                 <select id="filtro-tipo-bici" class="flavor-select">
-                    <option value=""><?php _e('Todos los tipos', 'flavor-chat-ia'); ?></option>
-                    <option value="urbana"><?php _e('Urbana', 'flavor-chat-ia'); ?></option>
-                    <option value="montana"><?php _e('Montaña', 'flavor-chat-ia'); ?></option>
-                    <option value="electrica"><?php _e('Eléctrica', 'flavor-chat-ia'); ?></option>
-                    <option value="infantil"><?php _e('Infantil', 'flavor-chat-ia'); ?></option>
-                    <option value="carga"><?php _e('Cargo', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todos los tipos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="urbana"><?php _e('Urbana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="montana"><?php _e('Montaña', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="electrica"><?php _e('Eléctrica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="infantil"><?php _e('Infantil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="carga"><?php _e('Cargo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
             </div>
 
             <!-- Grid de bicicletas -->
             <div class="flavor-bicicletas-grid">
                 <?php if (empty($bicicletas)): ?>
-                <p class="flavor-vacio"><?php _e('No hay bicicletas disponibles con los filtros seleccionados', 'flavor-chat-ia'); ?></p>
+                <p class="flavor-vacio"><?php _e('No hay bicicletas disponibles con los filtros seleccionados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php else: ?>
                     <?php foreach ($bicicletas as $bici): ?>
                     <div class="flavor-bicicleta-card" data-tipo="<?php echo esc_attr($bici->tipo); ?>">
@@ -563,11 +563,11 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
                                     data-bicicleta-id="<?php echo intval($bici->id); ?>"
                                     data-codigo="<?php echo esc_attr($bici->codigo); ?>">
                                 <span class="dashicons dashicons-yes"></span>
-                                <?php _e('Reservar', 'flavor-chat-ia'); ?>
+                                <?php _e('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                             <?php else: ?>
                             <a href="<?php echo wp_login_url(flavor_current_request_url()); ?>" class="flavor-btn flavor-btn-outline">
-                                <?php _e('Inicia sesión para reservar', 'flavor-chat-ia'); ?>
+                                <?php _e('Inicia sesión para reservar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                             <?php endif; ?>
                         </div>
@@ -594,7 +594,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
         ], $atts);
 
         if (!$atts['id']) {
-            return '<p class="flavor-aviso">' . __('Bicicleta no especificada', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-aviso">' . __('Bicicleta no especificada', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $bici = $wpdb->get_row($wpdb->prepare(
@@ -606,7 +606,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
         ));
 
         if (!$bici) {
-            return '<p class="flavor-error">' . __('Bicicleta no encontrada', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-error">' . __('Bicicleta no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -637,27 +637,27 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
 
                     <dl class="flavor-detalles-lista">
                         <?php if (!empty($bici->color)): ?>
-                        <dt><?php _e('Color', 'flavor-chat-ia'); ?></dt>
+                        <dt><?php _e('Color', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></dt>
                         <dd><?php echo esc_html($bici->color); ?></dd>
                         <?php endif; ?>
 
                         <?php if (!empty($bici->talla)): ?>
-                        <dt><?php _e('Talla', 'flavor-chat-ia'); ?></dt>
+                        <dt><?php _e('Talla', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></dt>
                         <dd><?php echo esc_html($bici->talla); ?></dd>
                         <?php endif; ?>
 
-                        <dt><?php _e('Km acumulados', 'flavor-chat-ia'); ?></dt>
+                        <dt><?php _e('Km acumulados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></dt>
                         <dd><?php echo number_format($bici->kilometros_acumulados, 0); ?> km</dd>
 
                         <?php if (!empty($bici->ultima_revision)): ?>
-                        <dt><?php _e('Última revisión', 'flavor-chat-ia'); ?></dt>
+                        <dt><?php _e('Última revisión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></dt>
                         <dd><?php echo date_i18n('j M Y', strtotime($bici->ultima_revision)); ?></dd>
                         <?php endif; ?>
                     </dl>
 
                     <?php if ($bici->estacion_nombre): ?>
                     <div class="flavor-ubicacion-actual">
-                        <h4><?php _e('Ubicación actual', 'flavor-chat-ia'); ?></h4>
+                        <h4><?php _e('Ubicación actual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                         <p>
                             <span class="dashicons dashicons-location"></span>
                             <?php echo esc_html($bici->estacion_nombre); ?><br>
@@ -671,11 +671,11 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
                             data-bicicleta-id="<?php echo intval($bici->id); ?>"
                             data-codigo="<?php echo esc_attr($bici->codigo); ?>">
                         <span class="dashicons dashicons-yes"></span>
-                        <?php _e('Reservar esta bicicleta', 'flavor-chat-ia'); ?>
+                        <?php _e('Reservar esta bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <?php elseif (!is_user_logged_in()): ?>
                     <a href="<?php echo wp_login_url(flavor_current_request_url()); ?>" class="flavor-btn flavor-btn-lg flavor-btn-primary">
-                        <?php _e('Inicia sesión para reservar', 'flavor-chat-ia'); ?>
+                        <?php _e('Inicia sesión para reservar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <?php endif; ?>
                 </div>
@@ -690,7 +690,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
      */
     public function shortcode_mis_prestamos($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-aviso">' . __('Inicia sesión para ver tus préstamos', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-aviso">' . __('Inicia sesión para ver tus préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $this->cargar_assets();
@@ -730,7 +730,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
         ?>
         <div class="flavor-mis-prestamos">
             <?php if (empty($prestamos)): ?>
-            <p class="flavor-vacio"><?php _e('No tienes préstamos registrados', 'flavor-chat-ia'); ?></p>
+            <p class="flavor-vacio"><?php _e('No tienes préstamos registrados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php else: ?>
             <div class="flavor-prestamos-lista">
                 <?php foreach ($prestamos as $prestamo): ?>
@@ -752,7 +752,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
                         <?php if ($prestamo->estacion_salida): ?>
                         <div class="flavor-detalle">
                             <span class="dashicons dashicons-location"></span>
-                            <span><?php _e('Salida:', 'flavor-chat-ia'); ?></span>
+                            <span><?php _e('Salida:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <?php echo esc_html($prestamo->estacion_salida); ?>
                         </div>
                         <?php endif; ?>
@@ -774,7 +774,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
                         <button type="button" class="flavor-btn flavor-btn-primary flavor-btn-devolver"
                                 data-prestamo-id="<?php echo intval($prestamo->id); ?>"
                                 data-bicicleta-id="<?php echo intval($prestamo->bicicleta_id); ?>">
-                            <?php _e('Devolver', 'flavor-chat-ia'); ?>
+                            <?php _e('Devolver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                     <?php endif; ?>
@@ -829,7 +829,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
             <button type="button" class="flavor-btn flavor-btn-primary flavor-btn-devolver"
                     data-prestamo-id="<?php echo intval($prestamo->id); ?>"
                     data-bicicleta-id="<?php echo intval($prestamo->bicicleta_id); ?>">
-                <?php _e('Devolver', 'flavor-chat-ia'); ?>
+                <?php _e('Devolver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
         <?php
@@ -863,32 +863,32 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
                 <div class="flavor-stat-card">
                     <span class="flavor-stat-icono dashicons dashicons-bike"></span>
                     <div class="flavor-stat-valor"><?php echo intval($stats->total_bicicletas ?? 0); ?></div>
-                    <div class="flavor-stat-etiqueta"><?php _e('Bicicletas', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-stat-etiqueta"><?php _e('Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="flavor-stat-icono dashicons dashicons-yes-alt"></span>
                     <div class="flavor-stat-valor"><?php echo intval($stats->disponibles ?? 0); ?></div>
-                    <div class="flavor-stat-etiqueta"><?php _e('Disponibles', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-stat-etiqueta"><?php _e('Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="flavor-stat-icono dashicons dashicons-location-alt"></span>
                     <div class="flavor-stat-valor"><?php echo intval($stats->estaciones ?? 0); ?></div>
-                    <div class="flavor-stat-etiqueta"><?php _e('Estaciones', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-stat-etiqueta"><?php _e('Estaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="flavor-stat-icono dashicons dashicons-chart-bar"></span>
                     <div class="flavor-stat-valor"><?php echo number_format($stats->total_prestamos ?? 0); ?></div>
-                    <div class="flavor-stat-etiqueta"><?php _e('Préstamos', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-stat-etiqueta"><?php _e('Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="flavor-stat-icono dashicons dashicons-chart-line"></span>
                     <div class="flavor-stat-valor"><?php echo number_format($stats->km_totales ?? 0); ?> km</div>
-                    <div class="flavor-stat-etiqueta"><?php _e('Km recorridos', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-stat-etiqueta"><?php _e('Km recorridos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="flavor-stat-icono dashicons dashicons-awards"></span>
                     <div class="flavor-stat-valor"><?php echo number_format(($stats->km_totales ?? 0) * 0.21); ?> kg</div>
-                    <div class="flavor-stat-etiqueta"><?php _e('CO₂ ahorrado', 'flavor-chat-ia'); ?></div>
+                    <div class="flavor-stat-etiqueta"><?php _e('CO₂ ahorrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
         </div>
@@ -907,7 +907,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
         check_ajax_referer('flavor_bicicletas_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -924,7 +924,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
         ));
 
         if (!$bicicleta) {
-            wp_send_json_error(['message' => __('Bicicleta no disponible', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Bicicleta no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar que no tenga préstamo activo
@@ -934,7 +934,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
         ));
 
         if ($tiene_activo > 0) {
-            wp_send_json_error(['message' => __('Ya tienes un préstamo activo', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Ya tienes un préstamo activo', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Crear préstamo
@@ -949,7 +949,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
         ]);
 
         if ($resultado === false) {
-            wp_send_json_error(['message' => __('Error al crear el préstamo', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al crear el préstamo', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Actualizar estado bicicleta
@@ -968,7 +968,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
         }
 
         wp_send_json_success([
-            'message' => sprintf(__('Bicicleta %s reservada correctamente', 'flavor-chat-ia'), $bicicleta->codigo),
+            'message' => sprintf(__('Bicicleta %s reservada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN), $bicicleta->codigo),
             'prestamo_id' => $wpdb->insert_id,
         ]);
     }
@@ -980,7 +980,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
         check_ajax_referer('flavor_bicicletas_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1003,7 +1003,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
         ));
 
         if (!$prestamo) {
-            wp_send_json_error(['message' => __('Préstamo no encontrado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Préstamo no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar estación
@@ -1013,7 +1013,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
         ));
 
         if (!$estacion) {
-            wp_send_json_error(['message' => __('Estación no válida', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Estación no válida', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Calcular duración
@@ -1060,7 +1060,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
         }
 
         wp_send_json_success([
-            'message' => __('Bicicleta devuelta correctamente', 'flavor-chat-ia'),
+            'message' => __('Bicicleta devuelta correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'duracion' => $this->formatear_duracion($duracion_minutos),
             'kilometros' => $kilometros,
         ]);
@@ -1073,7 +1073,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
         check_ajax_referer('flavor_bicicletas_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1082,7 +1082,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
         $tipo_problema = sanitize_text_field($_POST['tipo_problema'] ?? 'otro');
 
         if (empty($descripcion)) {
-            wp_send_json_error(['message' => __('Describe el problema', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Describe el problema', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Crear incidencia (si existe tabla de incidencias de bicicletas)
@@ -1110,7 +1110,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
         }
 
         wp_send_json_success([
-            'message' => __('Problema reportado correctamente. Gracias por tu colaboración.', 'flavor-chat-ia'),
+            'message' => __('Problema reportado correctamente. Gracias por tu colaboración.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -1121,7 +1121,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
         check_ajax_referer('flavor_bicicletas_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1137,7 +1137,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
         ));
 
         if (!$prestamo) {
-            wp_send_json_error(['message' => __('Reserva no encontrada', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Reserva no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Actualizar préstamo
@@ -1155,7 +1155,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
         );
 
         wp_send_json_success([
-            'message' => __('Reserva cancelada', 'flavor-chat-ia'),
+            'message' => __('Reserva cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -1166,7 +1166,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
         check_ajax_referer('flavor_bicicletas_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1175,7 +1175,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
         $usuario_id = get_current_user_id();
 
         if ($valoracion < 1 || $valoracion > 5) {
-            wp_send_json_error(['message' => __('Valoración no válida', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Valoración no válida', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $tabla_prestamos = $wpdb->prefix . 'flavor_bicicletas_prestamos';
@@ -1187,11 +1187,11 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
         );
 
         if ($resultado === false) {
-            wp_send_json_error(['message' => __('Error al guardar la valoración', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al guardar la valoración', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         wp_send_json_success([
-            'message' => __('Gracias por tu valoración', 'flavor-chat-ia'),
+            'message' => __('Gracias por tu valoración', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -1247,7 +1247,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
         $minutos = intval($minutos);
 
         if ($minutos < 60) {
-            return sprintf(__('%d min', 'flavor-chat-ia'), $minutos);
+            return sprintf(__('%d min', FLAVOR_PLATFORM_TEXT_DOMAIN), $minutos);
         }
 
         $horas = floor($minutos / 60);
@@ -1255,14 +1255,14 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
 
         if ($horas < 24) {
             return $mins > 0
-                ? sprintf(__('%dh %dmin', 'flavor-chat-ia'), $horas, $mins)
-                : sprintf(__('%dh', 'flavor-chat-ia'), $horas);
+                ? sprintf(__('%dh %dmin', FLAVOR_PLATFORM_TEXT_DOMAIN), $horas, $mins)
+                : sprintf(__('%dh', FLAVOR_PLATFORM_TEXT_DOMAIN), $horas);
         }
 
         $dias = floor($horas / 24);
         $horas = $horas % 24;
 
-        return sprintf(__('%dd %dh', 'flavor-chat-ia'), $dias, $horas);
+        return sprintf(__('%dd %dh', FLAVOR_PLATFORM_TEXT_DOMAIN), $dias, $horas);
     }
 
     /**
@@ -1270,13 +1270,13 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
      */
     private function obtener_etiqueta_estado($estado) {
         $etiquetas = [
-            'disponible' => __('Disponible', 'flavor-chat-ia'),
-            'en_uso' => __('En uso', 'flavor-chat-ia'),
-            'reservada' => __('Reservada', 'flavor-chat-ia'),
-            'mantenimiento' => __('En mantenimiento', 'flavor-chat-ia'),
-            'activo' => __('En curso', 'flavor-chat-ia'),
-            'finalizado' => __('Finalizado', 'flavor-chat-ia'),
-            'cancelado' => __('Cancelado', 'flavor-chat-ia'),
+            'disponible' => __('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'en_uso' => __('En uso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'reservada' => __('Reservada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'mantenimiento' => __('En mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'activo' => __('En curso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'finalizado' => __('Finalizado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cancelado' => __('Cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
         return $etiquetas[$estado] ?? ucfirst($estado);
     }

@@ -62,7 +62,7 @@ $url_iframe_mapa = sprintf(
                 <form id="<?php echo esc_attr( $identificador_form ); ?>" class="space-y-5" method="post">
                     <div>
                         <label for="<?php echo esc_attr( $identificador_form ); ?>-nombre" class="block text-sm font-medium text-gray-700 mb-1">
-                            <?php echo esc_html__( 'Nombre completo', 'flavor-chat-ia' ); ?>
+                            <?php echo esc_html__( 'Nombre completo', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                         </label>
                         <input
                             type="text"
@@ -78,7 +78,7 @@ $url_iframe_mapa = sprintf(
 
                     <div>
                         <label for="<?php echo esc_attr( $identificador_form ); ?>-email" class="block text-sm font-medium text-gray-700 mb-1">
-                            <?php echo esc_html__( 'Email', 'flavor-chat-ia' ); ?>
+                            <?php echo esc_html__( 'Email', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                         </label>
                         <input
                             type="email"
@@ -94,7 +94,7 @@ $url_iframe_mapa = sprintf(
 
                     <div>
                         <label for="<?php echo esc_attr( $identificador_form ); ?>-mensaje" class="block text-sm font-medium text-gray-700 mb-1">
-                            <?php echo esc_html__( 'Mensaje', 'flavor-chat-ia' ); ?>
+                            <?php echo esc_html__( 'Mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                         </label>
                         <textarea
                             id="<?php echo esc_attr( $identificador_form ); ?>-mensaje"
@@ -113,7 +113,7 @@ $url_iframe_mapa = sprintf(
                         class="w-full py-3 px-6 rounded-lg text-white font-semibold transition-opacity hover:opacity-90"
                         style="background-color: <?php echo esc_attr( $color_principal ); ?>;"
                     >
-                        <?php echo esc_html__( 'Enviar mensaje', 'flavor-chat-ia' ); ?>
+                        <?php echo esc_html__( 'Enviar mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                     </button>
                 </form>
             </div>
@@ -128,7 +128,7 @@ $url_iframe_mapa = sprintf(
                         allowfullscreen
                         loading="lazy"
                         referrerpolicy="no-referrer-when-downgrade"
-                        title="<?php echo esc_attr__( 'Mapa de ubicacion', 'flavor-chat-ia' ); ?>"
+                        title="<?php echo esc_attr__( 'Mapa de ubicacion', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
                     ></iframe>
                 <?php else : ?>
                     <div class="h-full min-h-[400px] flex flex-col items-center justify-center p-8 text-center">

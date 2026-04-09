@@ -27,8 +27,8 @@ if (!$tabla_registros_existe) {
         <div class="dm-alert dm-alert--info">
             <span class="dashicons dashicons-info"></span>
             <div>
-                <strong><?php esc_html_e('Módulo en preparación', 'flavor-chat-ia'); ?></strong>
-                <p><?php esc_html_e('Las tablas del módulo Huella Ecológica aún no han sido creadas. Activa el módulo completamente para generar la estructura necesaria.', 'flavor-chat-ia'); ?></p>
+                <strong><?php esc_html_e('Módulo en preparación', 'flavor-platform'); ?></strong>
+                <p><?php esc_html_e('Las tablas del módulo Huella Ecológica aún no han sido creadas. Activa el módulo completamente para generar la estructura necesaria.', 'flavor-platform'); ?></p>
             </div>
         </div>
     </div>
@@ -110,7 +110,7 @@ $tendencia = $wpdb->get_results(
         <span class="dashicons dashicons-cloud dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($co2_total, 1)); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('kg CO₂ Total', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('kg CO₂ Total', 'flavor-platform'); ?></div>
         </div>
     </div>
 
@@ -118,7 +118,7 @@ $tendencia = $wpdb->get_results(
         <span class="dashicons dashicons-palmtree dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($co2_compensado, 1)); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('kg Compensados', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('kg Compensados', 'flavor-platform'); ?></div>
         </div>
     </div>
 
@@ -126,7 +126,7 @@ $tendencia = $wpdb->get_results(
         <span class="dashicons dashicons-admin-users dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($usuarios_activos); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Participantes', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Participantes', 'flavor-platform'); ?></div>
         </div>
     </div>
 
@@ -134,7 +134,7 @@ $tendencia = $wpdb->get_results(
         <span class="dashicons dashicons-<?php echo $balance_neto <= 0 ? 'yes-alt' : 'warning'; ?> dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n(abs($balance_neto), 1)); ?></div>
-            <div class="dm-stat-card__label"><?php echo $balance_neto <= 0 ? esc_html__('Carbono Neutro', 'flavor-chat-ia') : esc_html__('Balance Neto', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php echo $balance_neto <= 0 ? esc_html__('Carbono Neutro', 'flavor-platform') : esc_html__('Balance Neto', 'flavor-platform'); ?></div>
         </div>
     </div>
 </div>
@@ -143,8 +143,8 @@ $tendencia = $wpdb->get_results(
 <div class="dm-alert dm-alert--info">
     <span class="dashicons dashicons-lightbulb"></span>
     <div>
-        <strong><?php esc_html_e('Oportunidad de mejora', 'flavor-chat-ia'); ?></strong>
-        <span><?php printf(esc_html__('Aún quedan %.1f kg de CO₂ por compensar.', 'flavor-chat-ia'), $balance_neto); ?></span>
+        <strong><?php esc_html_e('Oportunidad de mejora', 'flavor-platform'); ?></strong>
+        <span><?php printf(esc_html__('Aún quedan %.1f kg de CO₂ por compensar.', 'flavor-platform'), $balance_neto); ?></span>
     </div>
 </div>
 <?php endif; ?>
@@ -154,23 +154,23 @@ $tendencia = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-chart-bar"></span>
-                <?php esc_html_e('Emisiones Esta Semana', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Emisiones Esta Semana', 'flavor-platform'); ?>
             </h3>
-            <span class="dm-card__subtitle"><?php printf(esc_html__('%.1f kg CO₂ este mes', 'flavor-chat-ia'), $co2_mes); ?></span>
+            <span class="dm-card__subtitle"><?php printf(esc_html__('%.1f kg CO₂ este mes', 'flavor-platform'), $co2_mes); ?></span>
         </div>
         <div class="dm-card__body">
             <?php if (empty($actividad_semanal)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-chart-line"></span>
-                    <p><?php esc_html_e('No hay registros esta semana.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay registros esta semana.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <?php
                 $max_co2 = max(array_column($actividad_semanal, 'total_co2'));
                 $dias_semana = [
-                    __('Dom', 'flavor-chat-ia'), __('Lun', 'flavor-chat-ia'), __('Mar', 'flavor-chat-ia'),
-                    __('Mié', 'flavor-chat-ia'), __('Jue', 'flavor-chat-ia'), __('Vie', 'flavor-chat-ia'),
-                    __('Sáb', 'flavor-chat-ia')
+                    __('Dom', 'flavor-platform'), __('Lun', 'flavor-platform'), __('Mar', 'flavor-platform'),
+                    __('Mié', 'flavor-platform'), __('Jue', 'flavor-platform'), __('Vie', 'flavor-platform'),
+                    __('Sáb', 'flavor-platform')
                 ];
                 ?>
                 <div class="dm-chart-bars">
@@ -195,14 +195,14 @@ $tendencia = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-category"></span>
-                <?php esc_html_e('Por Categoría', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Por Categoría', 'flavor-platform'); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <?php if (empty($por_categoria)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-list-view"></span>
-                    <p><?php esc_html_e('No hay registros todavía.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay registros todavía.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <div class="dm-data-list">
@@ -223,15 +223,15 @@ $tendencia = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-awards"></span>
-                <?php esc_html_e('Usuarios Más Sostenibles', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Usuarios Más Sostenibles', 'flavor-platform'); ?>
             </h3>
-            <span class="dm-card__subtitle"><?php esc_html_e('Menor huella mensual', 'flavor-chat-ia'); ?></span>
+            <span class="dm-card__subtitle"><?php esc_html_e('Menor huella mensual', 'flavor-platform'); ?></span>
         </div>
         <div class="dm-card__body">
             <?php if (empty($usuarios_eco)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-admin-users"></span>
-                    <p><?php esc_html_e('No hay datos suficientes.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay datos suficientes.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <ul class="dm-ranking">
@@ -239,12 +239,12 @@ $tendencia = $wpdb->get_results(
                         <li class="dm-ranking__item">
                             <span class="dm-ranking__position"><?php echo ($index + 1); ?></span>
                             <div class="dm-ranking__avatar" style="background: var(--dm-success);">
-                                <?php echo mb_substr($usuario->display_name ?: __('U', 'flavor-chat-ia'), 0, 1); ?>
+                                <?php echo mb_substr($usuario->display_name ?: __('U', 'flavor-platform'), 0, 1); ?>
                             </div>
                             <div class="dm-ranking__content">
-                                <strong class="dm-ranking__name"><?php echo esc_html($usuario->display_name ?: __('Usuario', 'flavor-chat-ia')); ?></strong>
+                                <strong class="dm-ranking__name"><?php echo esc_html($usuario->display_name ?: __('Usuario', 'flavor-platform')); ?></strong>
                                 <span class="dm-ranking__meta">
-                                    <?php echo esc_html($usuario->registros); ?> <?php esc_html_e('registros', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html($usuario->registros); ?> <?php esc_html_e('registros', 'flavor-platform'); ?>
                                 </span>
                             </div>
                             <span class="dm-badge dm-badge--eco">
@@ -261,25 +261,25 @@ $tendencia = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-chart-line"></span>
-                <?php esc_html_e('Tendencia Mensual', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Tendencia Mensual', 'flavor-platform'); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <?php if (empty($tendencia)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-chart-area"></span>
-                    <p><?php esc_html_e('No hay datos históricos.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay datos históricos.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <div class="dm-data-list">
                     <?php
                     $meses = [
-                        '01' => __('Enero', 'flavor-chat-ia'), '02' => __('Febrero', 'flavor-chat-ia'),
-                        '03' => __('Marzo', 'flavor-chat-ia'), '04' => __('Abril', 'flavor-chat-ia'),
-                        '05' => __('Mayo', 'flavor-chat-ia'), '06' => __('Junio', 'flavor-chat-ia'),
-                        '07' => __('Julio', 'flavor-chat-ia'), '08' => __('Agosto', 'flavor-chat-ia'),
-                        '09' => __('Septiembre', 'flavor-chat-ia'), '10' => __('Octubre', 'flavor-chat-ia'),
-                        '11' => __('Noviembre', 'flavor-chat-ia'), '12' => __('Diciembre', 'flavor-chat-ia')
+                        '01' => __('Enero', 'flavor-platform'), '02' => __('Febrero', 'flavor-platform'),
+                        '03' => __('Marzo', 'flavor-platform'), '04' => __('Abril', 'flavor-platform'),
+                        '05' => __('Mayo', 'flavor-platform'), '06' => __('Junio', 'flavor-platform'),
+                        '07' => __('Julio', 'flavor-platform'), '08' => __('Agosto', 'flavor-platform'),
+                        '09' => __('Septiembre', 'flavor-platform'), '10' => __('Octubre', 'flavor-platform'),
+                        '11' => __('Noviembre', 'flavor-platform'), '12' => __('Diciembre', 'flavor-platform')
                     ];
                     foreach ($tendencia as $mes_data):
                         $partes = explode('-', $mes_data->mes);
@@ -300,24 +300,24 @@ $tendencia = $wpdb->get_results(
     <div class="dm-stat-card dm-stat-card--secondary">
         <span class="dashicons dashicons-clipboard dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($total_registros)); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Total Registros', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Total Registros', 'flavor-platform'); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--info">
         <span class="dashicons dashicons-businessman dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($co2_promedio_usuario, 1)); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('kg/Usuario', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('kg/Usuario', 'flavor-platform'); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--success">
         <span class="dashicons dashicons-flag dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($objetivos_cumplidos); ?>/<?php echo esc_html($total_objetivos); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Objetivos', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Objetivos', 'flavor-platform'); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--primary">
         <span class="dashicons dashicons-chart-pie dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($tasa_cumplimiento); ?>%</div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Cumplimiento', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Cumplimiento', 'flavor-platform'); ?></div>
     </div>
 </div>

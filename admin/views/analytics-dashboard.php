@@ -13,29 +13,29 @@ if (!defined('ABSPATH')) {
 <div class="wrap flavor-analytics-dashboard">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-chart-area"></span>
-        <?php esc_html_e('Analytics Dashboard', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Analytics Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <!-- Controles de período -->
     <div class="flavor-analytics-controls">
         <div class="periodo-selector">
-            <label for="periodo-select"><?php esc_html_e('Período:', 'flavor-chat-ia'); ?></label>
+            <label for="periodo-select"><?php esc_html_e('Período:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <select id="periodo-select" class="flavor-select">
-                <option value="hoy"><?php esc_html_e('Hoy', 'flavor-chat-ia'); ?></option>
-                <option value="semana"><?php esc_html_e('Últimos 7 días', 'flavor-chat-ia'); ?></option>
-                <option value="mes" selected><?php esc_html_e('Últimos 30 días', 'flavor-chat-ia'); ?></option>
-                <option value="ano"><?php esc_html_e('Último año', 'flavor-chat-ia'); ?></option>
+                <option value="hoy"><?php esc_html_e('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="semana"><?php esc_html_e('Últimos 7 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="mes" selected><?php esc_html_e('Últimos 30 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="ano"><?php esc_html_e('Último año', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             </select>
         </div>
 
         <div class="export-buttons">
             <button type="button" class="button" id="btn-export-csv">
                 <span class="dashicons dashicons-download"></span>
-                <?php esc_html_e('Exportar CSV', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Exportar CSV', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <button type="button" class="button" id="btn-refresh">
                 <span class="dashicons dashicons-update"></span>
-                <?php esc_html_e('Actualizar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     </div>
@@ -53,7 +53,7 @@ if (!defined('ABSPATH')) {
             </div>
             <div class="kpi-content">
                 <span class="kpi-value" id="kpi-usuarios-activos">-</span>
-                <span class="kpi-label"><?php esc_html_e('Usuarios Activos', 'flavor-chat-ia'); ?></span>
+                <span class="kpi-label"><?php esc_html_e('Usuarios Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="kpi-secondary" id="kpi-usuarios-total">-</span>
             </div>
         </div>
@@ -64,7 +64,7 @@ if (!defined('ABSPATH')) {
             </div>
             <div class="kpi-content">
                 <span class="kpi-value" id="kpi-publicaciones">-</span>
-                <span class="kpi-label"><?php esc_html_e('Publicaciones', 'flavor-chat-ia'); ?></span>
+                <span class="kpi-label"><?php esc_html_e('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="kpi-secondary" id="kpi-comentarios">-</span>
             </div>
         </div>
@@ -75,7 +75,7 @@ if (!defined('ABSPATH')) {
             </div>
             <div class="kpi-content">
                 <span class="kpi-value" id="kpi-engagement">-</span>
-                <span class="kpi-label"><?php esc_html_e('Engagement Rate', 'flavor-chat-ia'); ?></span>
+                <span class="kpi-label"><?php esc_html_e('Engagement Rate', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="kpi-secondary" id="kpi-interacciones">-</span>
             </div>
         </div>
@@ -86,7 +86,7 @@ if (!defined('ABSPATH')) {
             </div>
             <div class="kpi-content">
                 <span class="kpi-value" id="kpi-nuevos-usuarios">-</span>
-                <span class="kpi-label"><?php esc_html_e('Nuevos Usuarios', 'flavor-chat-ia'); ?></span>
+                <span class="kpi-label"><?php esc_html_e('Nuevos Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="kpi-secondary" id="kpi-porcentaje-activos">-</span>
             </div>
         </div>
@@ -96,16 +96,16 @@ if (!defined('ABSPATH')) {
     <div class="flavor-charts-grid">
         <div class="flavor-chart-card">
             <div class="chart-header">
-                <h3><?php esc_html_e('Actividad', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div class="chart-tabs">
                     <button type="button" class="chart-tab active" data-metrica="usuarios">
-                        <?php esc_html_e('Usuarios', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button" class="chart-tab" data-metrica="publicaciones">
-                        <?php esc_html_e('Publicaciones', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button" class="chart-tab" data-metrica="interacciones">
-                        <?php esc_html_e('Interacciones', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Interacciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </div>
@@ -116,7 +116,7 @@ if (!defined('ABSPATH')) {
 
         <div class="flavor-chart-card">
             <div class="chart-header">
-                <h3><?php esc_html_e('Estadísticas por Módulo', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Estadísticas por Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             </div>
             <div class="chart-container">
                 <canvas id="chart-modulos"></canvas>
@@ -131,24 +131,24 @@ if (!defined('ABSPATH')) {
             <div class="table-header">
                 <h3>
                     <span class="dashicons dashicons-star-filled"></span>
-                    <?php esc_html_e('Usuarios más activos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Usuarios más activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <div class="table-content">
                 <table class="wp-list-table widefat fixed striped" id="tabla-usuarios-activos">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('Usuario', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Publicaciones', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Comentarios', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Puntos', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Puntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td colspan="4" class="loading-row">
                                 <span class="spinner is-active"></span>
-                                <?php esc_html_e('Cargando...', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </td>
                         </tr>
                     </tbody>
@@ -161,24 +161,24 @@ if (!defined('ABSPATH')) {
             <div class="table-header">
                 <h3>
                     <span class="dashicons dashicons-megaphone"></span>
-                    <?php esc_html_e('Contenido popular', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Contenido popular', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <div class="table-content">
                 <table class="wp-list-table widefat fixed striped" id="tabla-contenido-popular">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('Contenido', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Autor', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Likes', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Comentarios', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Autor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Likes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td colspan="4" class="loading-row">
                                 <span class="spinner is-active"></span>
-                                <?php esc_html_e('Cargando...', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </td>
                         </tr>
                     </tbody>
@@ -191,13 +191,13 @@ if (!defined('ABSPATH')) {
     <div class="flavor-modules-stats" id="modulos-stats-container">
         <h3>
             <span class="dashicons dashicons-screenoptions"></span>
-            <?php esc_html_e('Estadísticas por Módulo', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Estadísticas por Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h3>
         <div class="modules-grid">
             <!-- Se llena vía AJAX -->
             <div class="loading-placeholder">
                 <span class="spinner is-active"></span>
-                <?php esc_html_e('Cargando estadísticas de módulos...', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Cargando estadísticas de módulos...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
         </div>
     </div>

@@ -38,19 +38,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && check_admin_referer('flavor_recicla
 
         if ($punto_id > 0) {
             $resultado = $wpdb->update($tabla_puntos_reciclaje, $datos_punto, ['id' => $punto_id]);
-            $mensaje_exito = __('Punto de reciclaje actualizado correctamente.', 'flavor-chat-ia');
+            $mensaje_exito = __('Punto de reciclaje actualizado correctamente.', 'flavor-platform');
         } else {
             $resultado = $wpdb->insert($tabla_puntos_reciclaje, $datos_punto);
-            $mensaje_exito = __('Punto de reciclaje creado correctamente.', 'flavor-chat-ia');
+            $mensaje_exito = __('Punto de reciclaje creado correctamente.', 'flavor-platform');
             $punto_id = $wpdb->insert_id;
         }
 
         if ($resultado === false) {
-            $mensaje_error = __('Error al guardar el punto de reciclaje.', 'flavor-chat-ia');
+            $mensaje_error = __('Error al guardar el punto de reciclaje.', 'flavor-platform');
         }
     } elseif (isset($_POST['eliminar_punto'])) {
         $wpdb->delete($tabla_puntos_reciclaje, ['id' => $punto_id]);
-        $mensaje_exito = __('Punto de reciclaje eliminado correctamente.', 'flavor-chat-ia');
+        $mensaje_exito = __('Punto de reciclaje eliminado correctamente.', 'flavor-platform');
         $accion_actual = 'list';
         $punto_id = 0;
     }
@@ -77,12 +77,12 @@ $puntos_reciclaje = $wpdb->get_results("
 <div class="wrap flavor-reciclaje-puntos">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-location"></span>
-        <?php echo esc_html__('Puntos de Reciclaje', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Puntos de Reciclaje', 'flavor-platform'); ?>
     </h1>
 
     <?php if ($accion_actual === 'list') : ?>
         <a href="<?php echo admin_url('admin.php?page=flavor-reciclaje-puntos&action=new'); ?>" class="page-title-action">
-            <?php echo esc_html__('Añadir Nuevo', 'flavor-chat-ia'); ?>
+            <?php echo esc_html__('Añadir Nuevo', 'flavor-platform'); ?>
         </a>
     <?php endif; ?>
 
@@ -109,32 +109,32 @@ $puntos_reciclaje = $wpdb->get_results("
 
             <div class="flavor-puntos-lista">
                 <div class="flavor-filtros">
-                    <input type="text" id="buscar-punto" class="regular-text" placeholder="<?php echo esc_attr__('Buscar punto...', 'flavor-chat-ia'); ?>">
+                    <input type="text" id="buscar-punto" class="regular-text" placeholder="<?php echo esc_attr__('Buscar punto...', 'flavor-platform'); ?>">
                     <select id="filtro-tipo" class="regular-text">
-                        <option value=""><?php echo esc_html__('Todos los tipos', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('punto_limpio', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Punto Limpio', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('contenedor_comunitario', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Contenedor Comunitario', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('centro_acopio', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Centro de Acopio', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('movil', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Móvil', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php echo esc_html__('Todos los tipos', 'flavor-platform'); ?></option>
+                        <option value="<?php echo esc_attr__('punto_limpio', 'flavor-platform'); ?>"><?php echo esc_html__('Punto Limpio', 'flavor-platform'); ?></option>
+                        <option value="<?php echo esc_attr__('contenedor_comunitario', 'flavor-platform'); ?>"><?php echo esc_html__('Contenedor Comunitario', 'flavor-platform'); ?></option>
+                        <option value="<?php echo esc_attr__('centro_acopio', 'flavor-platform'); ?>"><?php echo esc_html__('Centro de Acopio', 'flavor-platform'); ?></option>
+                        <option value="<?php echo esc_attr__('movil', 'flavor-platform'); ?>"><?php echo esc_html__('Móvil', 'flavor-platform'); ?></option>
                     </select>
                     <select id="filtro-estado" class="regular-text">
-                        <option value=""><?php echo esc_html__('Todos los estados', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('activo', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Activo', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('lleno', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Lleno', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('mantenimiento', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Mantenimiento', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('inactivo', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Inactivo', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php echo esc_html__('Todos los estados', 'flavor-platform'); ?></option>
+                        <option value="<?php echo esc_attr__('activo', 'flavor-platform'); ?>"><?php echo esc_html__('Activo', 'flavor-platform'); ?></option>
+                        <option value="<?php echo esc_attr__('lleno', 'flavor-platform'); ?>"><?php echo esc_html__('Lleno', 'flavor-platform'); ?></option>
+                        <option value="<?php echo esc_attr__('mantenimiento', 'flavor-platform'); ?>"><?php echo esc_html__('Mantenimiento', 'flavor-platform'); ?></option>
+                        <option value="<?php echo esc_attr__('inactivo', 'flavor-platform'); ?>"><?php echo esc_html__('Inactivo', 'flavor-platform'); ?></option>
                     </select>
                 </div>
 
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
-                            <th><?php echo esc_html__('Nombre', 'flavor-chat-ia'); ?></th>
-                            <th><?php echo esc_html__('Tipo', 'flavor-chat-ia'); ?></th>
-                            <th><?php echo esc_html__('Dirección', 'flavor-chat-ia'); ?></th>
-                            <th><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
-                            <th><?php echo esc_html__('Contenedores', 'flavor-chat-ia'); ?></th>
-                            <th><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
+                            <th><?php echo esc_html__('Nombre', 'flavor-platform'); ?></th>
+                            <th><?php echo esc_html__('Tipo', 'flavor-platform'); ?></th>
+                            <th><?php echo esc_html__('Dirección', 'flavor-platform'); ?></th>
+                            <th><?php echo esc_html__('Estado', 'flavor-platform'); ?></th>
+                            <th><?php echo esc_html__('Contenedores', 'flavor-platform'); ?></th>
+                            <th><?php echo esc_html__('Acciones', 'flavor-platform'); ?></th>
                         </tr>
                     </thead>
                     <tbody id="tabla-puntos">
@@ -146,10 +146,10 @@ $puntos_reciclaje = $wpdb->get_results("
                                 <td>
                                     <?php
                                     $tipos_labels = [
-                                        'punto_limpio' => __('Punto Limpio', 'flavor-chat-ia'),
-                                        'contenedor_comunitario' => __('Contenedor Comunitario', 'flavor-chat-ia'),
-                                        'centro_acopio' => __('Centro de Acopio', 'flavor-chat-ia'),
-                                        'movil' => __('Móvil', 'flavor-chat-ia'),
+                                        'punto_limpio' => __('Punto Limpio', 'flavor-platform'),
+                                        'contenedor_comunitario' => __('Contenedor Comunitario', 'flavor-platform'),
+                                        'centro_acopio' => __('Centro de Acopio', 'flavor-platform'),
+                                        'movil' => __('Móvil', 'flavor-platform'),
                                     ];
                                     echo esc_html($tipos_labels[$punto->tipo] ?? $punto->tipo);
                                     ?>
@@ -164,10 +164,10 @@ $puntos_reciclaje = $wpdb->get_results("
                                         'inactivo' => 'flavor-badge-secondary',
                                     ];
                                     $estados_labels = [
-                                        'activo' => __('Activo', 'flavor-chat-ia'),
-                                        'lleno' => __('Lleno', 'flavor-chat-ia'),
-                                        'mantenimiento' => __('Mantenimiento', 'flavor-chat-ia'),
-                                        'inactivo' => __('Inactivo', 'flavor-chat-ia'),
+                                        'activo' => __('Activo', 'flavor-platform'),
+                                        'lleno' => __('Lleno', 'flavor-platform'),
+                                        'mantenimiento' => __('Mantenimiento', 'flavor-platform'),
+                                        'inactivo' => __('Inactivo', 'flavor-platform'),
                                     ];
                                     ?>
                                     <span class="flavor-badge <?php echo $estados_clases[$punto->estado] ?? 'flavor-badge-secondary'; ?>">
@@ -178,16 +178,16 @@ $puntos_reciclaje = $wpdb->get_results("
                                     <?php echo number_format($punto->total_contenedores); ?>
                                     <?php if ($punto->contenedores_llenos > 0) : ?>
                                         <span class="flavor-badge flavor-badge-warning">
-                                            <?php echo sprintf(__('%d llenos', 'flavor-chat-ia'), $punto->contenedores_llenos); ?>
+                                            <?php echo sprintf(__('%d llenos', 'flavor-platform'), $punto->contenedores_llenos); ?>
                                         </span>
                                     <?php endif; ?>
                                 </td>
                                 <td>
                                     <a href="<?php echo admin_url('admin.php?page=flavor-reciclaje-puntos&action=edit&id=' . $punto->id); ?>" class="button button-small">
-                                        <?php echo esc_html__('Editar', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Editar', 'flavor-platform'); ?>
                                     </a>
                                     <button class="button button-small ver-en-mapa" data-lat="<?php echo esc_attr($punto->latitud); ?>" data-lng="<?php echo esc_attr($punto->longitud); ?>">
-                                        <?php echo esc_html__('Ver en Mapa', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Ver en Mapa', 'flavor-platform'); ?>
                                     </button>
                                 </td>
                             </tr>
@@ -204,12 +204,12 @@ $puntos_reciclaje = $wpdb->get_results("
                 <?php wp_nonce_field('flavor_reciclaje_punto_action'); ?>
 
                 <div class="flavor-form-section">
-                    <h2><?php echo $punto_id > 0 ? __('Editar Punto de Reciclaje', 'flavor-chat-ia') : __('Nuevo Punto de Reciclaje', 'flavor-chat-ia'); ?></h2>
+                    <h2><?php echo $punto_id > 0 ? __('Editar Punto de Reciclaje', 'flavor-platform') : __('Nuevo Punto de Reciclaje', 'flavor-platform'); ?></h2>
 
                     <table class="form-table">
                         <tr>
                             <th scope="row">
-                                <label for="nombre"><?php echo esc_html__('Nombre', 'flavor-chat-ia'); ?> *</label>
+                                <label for="nombre"><?php echo esc_html__('Nombre', 'flavor-platform'); ?> *</label>
                             </th>
                             <td>
                                 <input type="text" name="nombre" id="nombre" class="regular-text" value="<?php echo esc_attr($punto_actual->nombre ?? ''); ?>" required>
@@ -218,41 +218,41 @@ $puntos_reciclaje = $wpdb->get_results("
 
                         <tr>
                             <th scope="row">
-                                <label for="tipo"><?php echo esc_html__('Tipo', 'flavor-chat-ia'); ?> *</label>
+                                <label for="tipo"><?php echo esc_html__('Tipo', 'flavor-platform'); ?> *</label>
                             </th>
                             <td>
                                 <select name="tipo" id="tipo" required>
-                                    <option value="<?php echo esc_attr__('punto_limpio', 'flavor-chat-ia'); ?>" <?php selected($punto_actual->tipo ?? '', 'punto_limpio'); ?>><?php echo esc_html__('Punto Limpio', 'flavor-chat-ia'); ?></option>
-                                    <option value="<?php echo esc_attr__('contenedor_comunitario', 'flavor-chat-ia'); ?>" <?php selected($punto_actual->tipo ?? '', 'contenedor_comunitario'); ?>><?php echo esc_html__('Contenedor Comunitario', 'flavor-chat-ia'); ?></option>
-                                    <option value="<?php echo esc_attr__('centro_acopio', 'flavor-chat-ia'); ?>" <?php selected($punto_actual->tipo ?? '', 'centro_acopio'); ?>><?php echo esc_html__('Centro de Acopio', 'flavor-chat-ia'); ?></option>
-                                    <option value="<?php echo esc_attr__('movil', 'flavor-chat-ia'); ?>" <?php selected($punto_actual->tipo ?? '', 'movil'); ?>><?php echo esc_html__('Móvil', 'flavor-chat-ia'); ?></option>
+                                    <option value="<?php echo esc_attr__('punto_limpio', 'flavor-platform'); ?>" <?php selected($punto_actual->tipo ?? '', 'punto_limpio'); ?>><?php echo esc_html__('Punto Limpio', 'flavor-platform'); ?></option>
+                                    <option value="<?php echo esc_attr__('contenedor_comunitario', 'flavor-platform'); ?>" <?php selected($punto_actual->tipo ?? '', 'contenedor_comunitario'); ?>><?php echo esc_html__('Contenedor Comunitario', 'flavor-platform'); ?></option>
+                                    <option value="<?php echo esc_attr__('centro_acopio', 'flavor-platform'); ?>" <?php selected($punto_actual->tipo ?? '', 'centro_acopio'); ?>><?php echo esc_html__('Centro de Acopio', 'flavor-platform'); ?></option>
+                                    <option value="<?php echo esc_attr__('movil', 'flavor-platform'); ?>" <?php selected($punto_actual->tipo ?? '', 'movil'); ?>><?php echo esc_html__('Móvil', 'flavor-platform'); ?></option>
                                 </select>
                             </td>
                         </tr>
 
                         <tr>
                             <th scope="row">
-                                <label for="direccion"><?php echo esc_html__('Dirección', 'flavor-chat-ia'); ?> *</label>
+                                <label for="direccion"><?php echo esc_html__('Dirección', 'flavor-platform'); ?> *</label>
                             </th>
                             <td>
                                 <input type="text" name="direccion" id="direccion" class="large-text" value="<?php echo esc_attr($punto_actual->direccion ?? ''); ?>" required>
-                                <p class="description"><?php echo esc_html__('Introduce la dirección y busca en el mapa para obtener las coordenadas.', 'flavor-chat-ia'); ?></p>
+                                <p class="description"><?php echo esc_html__('Introduce la dirección y busca en el mapa para obtener las coordenadas.', 'flavor-platform'); ?></p>
                             </td>
                         </tr>
 
                         <tr>
                             <th scope="row">
-                                <label><?php echo esc_html__('Ubicación en Mapa', 'flavor-chat-ia'); ?> *</label>
+                                <label><?php echo esc_html__('Ubicación en Mapa', 'flavor-platform'); ?> *</label>
                             </th>
                             <td>
                                 <div id="mapa-ubicacion" style="height: 400px; margin-bottom: 10px; border-radius: 8px;"></div>
                                 <div class="flavor-coords-inputs">
                                     <label>
-                                        <?php echo esc_html__('Latitud:', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Latitud:', 'flavor-platform'); ?>
                                         <input type="number" name="latitud" id="latitud" step="0.0000001" value="<?php echo esc_attr($punto_actual->latitud ?? ''); ?>" required>
                                     </label>
                                     <label>
-                                        <?php echo esc_html__('Longitud:', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Longitud:', 'flavor-platform'); ?>
                                         <input type="number" name="longitud" id="longitud" step="0.0000001" value="<?php echo esc_attr($punto_actual->longitud ?? ''); ?>" required>
                                     </label>
                                 </div>
@@ -261,7 +261,7 @@ $puntos_reciclaje = $wpdb->get_results("
 
                         <tr>
                             <th scope="row">
-                                <label><?php echo esc_html__('Materiales Aceptados', 'flavor-chat-ia'); ?> *</label>
+                                <label><?php echo esc_html__('Materiales Aceptados', 'flavor-platform'); ?> *</label>
                             </th>
                             <td>
                                 <?php
@@ -279,41 +279,41 @@ $puntos_reciclaje = $wpdb->get_results("
 
                         <tr>
                             <th scope="row">
-                                <label for="horario"><?php echo esc_html__('Horario', 'flavor-chat-ia'); ?></label>
+                                <label for="horario"><?php echo esc_html__('Horario', 'flavor-platform'); ?></label>
                             </th>
                             <td>
                                 <textarea name="horario" id="horario" rows="3" class="large-text"><?php echo esc_textarea($punto_actual->horario ?? ''); ?></textarea>
-                                <p class="description"><?php echo esc_html__('Ejemplo: Lunes a Viernes: 9:00 - 18:00', 'flavor-chat-ia'); ?></p>
+                                <p class="description"><?php echo esc_html__('Ejemplo: Lunes a Viernes: 9:00 - 18:00', 'flavor-platform'); ?></p>
                             </td>
                         </tr>
 
                         <tr>
                             <th scope="row">
-                                <label for="contacto"><?php echo esc_html__('Contacto', 'flavor-chat-ia'); ?></label>
+                                <label for="contacto"><?php echo esc_html__('Contacto', 'flavor-platform'); ?></label>
                             </th>
                             <td>
                                 <input type="text" name="contacto" id="contacto" class="regular-text" value="<?php echo esc_attr($punto_actual->contacto ?? ''); ?>">
-                                <p class="description"><?php echo esc_html__('Teléfono o email de contacto.', 'flavor-chat-ia'); ?></p>
+                                <p class="description"><?php echo esc_html__('Teléfono o email de contacto.', 'flavor-platform'); ?></p>
                             </td>
                         </tr>
 
                         <tr>
                             <th scope="row">
-                                <label for="instrucciones"><?php echo esc_html__('Instrucciones', 'flavor-chat-ia'); ?></label>
+                                <label for="instrucciones"><?php echo esc_html__('Instrucciones', 'flavor-platform'); ?></label>
                             </th>
                             <td>
                                 <textarea name="instrucciones" id="instrucciones" rows="4" class="large-text"><?php echo esc_textarea($punto_actual->instrucciones ?? ''); ?></textarea>
-                                <p class="description"><?php echo esc_html__('Instrucciones especiales para los usuarios.', 'flavor-chat-ia'); ?></p>
+                                <p class="description"><?php echo esc_html__('Instrucciones especiales para los usuarios.', 'flavor-platform'); ?></p>
                             </td>
                         </tr>
 
                         <tr>
                             <th scope="row">
-                                <label for="foto_url"><?php echo esc_html__('Foto', 'flavor-chat-ia'); ?></label>
+                                <label for="foto_url"><?php echo esc_html__('Foto', 'flavor-platform'); ?></label>
                             </th>
                             <td>
                                 <input type="url" name="foto_url" id="foto_url" class="large-text" value="<?php echo esc_url($punto_actual->foto_url ?? ''); ?>">
-                                <button type="button" class="button" id="subir-foto"><?php echo esc_html__('Subir Imagen', 'flavor-chat-ia'); ?></button>
+                                <button type="button" class="button" id="subir-foto"><?php echo esc_html__('Subir Imagen', 'flavor-platform'); ?></button>
                                 <div id="preview-foto" style="margin-top: 10px;">
                                     <?php if (!empty($punto_actual->foto_url)) : ?>
                                         <img src="<?php echo esc_url($punto_actual->foto_url); ?>" style="max-width: 300px; height: auto; border-radius: 4px;">
@@ -324,14 +324,14 @@ $puntos_reciclaje = $wpdb->get_results("
 
                         <tr>
                             <th scope="row">
-                                <label for="estado"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?> *</label>
+                                <label for="estado"><?php echo esc_html__('Estado', 'flavor-platform'); ?> *</label>
                             </th>
                             <td>
                                 <select name="estado" id="estado" required>
-                                    <option value="<?php echo esc_attr__('activo', 'flavor-chat-ia'); ?>" <?php selected($punto_actual->estado ?? 'activo', 'activo'); ?>><?php echo esc_html__('Activo', 'flavor-chat-ia'); ?></option>
-                                    <option value="<?php echo esc_attr__('lleno', 'flavor-chat-ia'); ?>" <?php selected($punto_actual->estado ?? '', 'lleno'); ?>><?php echo esc_html__('Lleno', 'flavor-chat-ia'); ?></option>
-                                    <option value="<?php echo esc_attr__('mantenimiento', 'flavor-chat-ia'); ?>" <?php selected($punto_actual->estado ?? '', 'mantenimiento'); ?>><?php echo esc_html__('Mantenimiento', 'flavor-chat-ia'); ?></option>
-                                    <option value="<?php echo esc_attr__('inactivo', 'flavor-chat-ia'); ?>" <?php selected($punto_actual->estado ?? '', 'inactivo'); ?>><?php echo esc_html__('Inactivo', 'flavor-chat-ia'); ?></option>
+                                    <option value="<?php echo esc_attr__('activo', 'flavor-platform'); ?>" <?php selected($punto_actual->estado ?? 'activo', 'activo'); ?>><?php echo esc_html__('Activo', 'flavor-platform'); ?></option>
+                                    <option value="<?php echo esc_attr__('lleno', 'flavor-platform'); ?>" <?php selected($punto_actual->estado ?? '', 'lleno'); ?>><?php echo esc_html__('Lleno', 'flavor-platform'); ?></option>
+                                    <option value="<?php echo esc_attr__('mantenimiento', 'flavor-platform'); ?>" <?php selected($punto_actual->estado ?? '', 'mantenimiento'); ?>><?php echo esc_html__('Mantenimiento', 'flavor-platform'); ?></option>
+                                    <option value="<?php echo esc_attr__('inactivo', 'flavor-platform'); ?>" <?php selected($punto_actual->estado ?? '', 'inactivo'); ?>><?php echo esc_html__('Inactivo', 'flavor-platform'); ?></option>
                                 </select>
                             </td>
                         </tr>
@@ -340,14 +340,14 @@ $puntos_reciclaje = $wpdb->get_results("
 
                 <p class="submit">
                     <button type="submit" name="guardar_punto" class="button button-primary">
-                        <?php echo esc_html__('Guardar Punto', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Guardar Punto', 'flavor-platform'); ?>
                     </button>
                     <a href="<?php echo admin_url('admin.php?page=flavor-reciclaje-puntos'); ?>" class="button">
-                        <?php echo esc_html__('Cancelar', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Cancelar', 'flavor-platform'); ?>
                     </a>
                     <?php if ($punto_id > 0) : ?>
-                        <button type="submit" name="eliminar_punto" class="button button-link-delete" onclick="return confirm('<?php echo esc_js(__('¿Estás seguro de eliminar este punto?', 'flavor-chat-ia')); ?>');">
-                            <?php echo esc_html__('Eliminar Punto', 'flavor-chat-ia'); ?>
+                        <button type="submit" name="eliminar_punto" class="button button-link-delete" onclick="return confirm('<?php echo esc_js(__('¿Estás seguro de eliminar este punto?', 'flavor-platform')); ?>');">
+                            <?php echo esc_html__('Eliminar Punto', 'flavor-platform'); ?>
                         </button>
                     <?php endif; ?>
                 </p>
@@ -429,8 +429,8 @@ jQuery(document).ready(function($) {
     $('#subir-foto').on('click', function(e) {
         e.preventDefault();
         const frame = wp.media({
-            title: '<?php echo esc_js(__('Seleccionar imagen', 'flavor-chat-ia')); ?>',
-            button: { text: '<?php echo esc_js(__('Usar imagen', 'flavor-chat-ia')); ?>' },
+            title: '<?php echo esc_js(__('Seleccionar imagen', 'flavor-platform')); ?>',
+            button: { text: '<?php echo esc_js(__('Usar imagen', 'flavor-platform')); ?>' },
             multiple: false
         });
 

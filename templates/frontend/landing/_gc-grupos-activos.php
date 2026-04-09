@@ -53,8 +53,8 @@ if (!function_exists('gc_contar_miembros')) {
 <section id="<?php echo esc_attr($id_seccion); ?>" class="flavor-landing__section flavor-gc-grupos-section">
     <div class="flavor-container">
         <header class="flavor-section-header">
-            <h2 class="flavor-section-title"><?php _e('Grupos de Consumo', 'flavor-chat-ia'); ?></h2>
-            <p class="flavor-section-subtitle"><?php _e('Encuentra un grupo cerca de ti y empieza a consumir local', 'flavor-chat-ia'); ?></p>
+            <h2 class="flavor-section-title"><?php _e('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+            <p class="flavor-section-subtitle"><?php _e('Encuentra un grupo cerca de ti y empieza a consumir local', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </header>
 
         <?php if (!empty($grupos)): ?>
@@ -74,7 +74,7 @@ if (!function_exists('gc_contar_miembros')) {
                                     <span class="dashicons dashicons-groups"></span>
                                 </div>
                             <?php endif; ?>
-                            <span class="flavor-gc-badge flavor-gc-badge--success"><?php _e('Abierto', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-gc-badge flavor-gc-badge--success"><?php _e('Abierto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                         <div class="flavor-gc-grupo-content">
                             <h3 class="flavor-gc-grupo-titulo"><?php echo esc_html($grupo->post_title); ?></h3>
@@ -90,16 +90,16 @@ if (!function_exists('gc_contar_miembros')) {
                             <div class="flavor-gc-grupo-meta">
                                 <span class="flavor-gc-grupo-miembros">
                                     <span class="dashicons dashicons-admin-users"></span>
-                                    <?php printf(_n('%d miembro', '%d miembros', $num_miembros, 'flavor-chat-ia'), $num_miembros); ?>
+                                    <?php printf(_n('%d miembro', '%d miembros', $num_miembros, FLAVOR_PLATFORM_TEXT_DOMAIN), $num_miembros); ?>
                                 </span>
                             </div>
                         </div>
                         <div class="flavor-gc-grupo-actions">
                             <a href="<?php echo get_permalink($grupo->ID); ?>" class="flavor-btn flavor-btn--outline flavor-btn--sm">
-                                <?php _e('Ver detalles', 'flavor-chat-ia'); ?>
+                                <?php _e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                             <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_item_url('grupos-consumo', $grupo->ID, 'unirme')); ?>" class="flavor-btn flavor-btn--primary flavor-btn--sm">
-                                <?php _e('Unirme', 'flavor-chat-ia'); ?>
+                                <?php _e('Unirme', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </div>
                     </article>
@@ -108,16 +108,16 @@ if (!function_exists('gc_contar_miembros')) {
 
             <div class="flavor-section-footer">
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', '')); ?>" class="flavor-btn flavor-btn--outline">
-                    <?php _e('Ver todos los grupos', 'flavor-chat-ia'); ?>
+                    <?php _e('Ver todos los grupos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="dashicons dashicons-arrow-right-alt"></span>
                 </a>
             </div>
         <?php else: ?>
             <div class="flavor-gc-empty-state">
                 <span class="dashicons dashicons-groups"></span>
-                <p><?php _e('Pronto habrá grupos de consumo disponibles en tu zona.', 'flavor-chat-ia'); ?></p>
+                <p><?php _e('Pronto habrá grupos de consumo disponibles en tu zona.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <a href="<?php echo esc_url(home_url('/contacto/')); ?>" class="flavor-btn flavor-btn--primary">
-                    <?php _e('Avísame cuando haya grupos', 'flavor-chat-ia'); ?>
+                    <?php _e('Avísame cuando haya grupos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         <?php endif; ?>

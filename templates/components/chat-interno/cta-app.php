@@ -9,8 +9,8 @@
 if (!defined('ABSPATH')) exit;
 
 // Extraer variables del array $args con valores por defecto
-$titulo = isset($args['titulo']) ? $args['titulo'] : __('Lleva tu comunidad contigo', 'flavor-chat-ia');
-$subtitulo = isset($args['subtitulo']) ? $args['subtitulo'] : __('Descarga la app y mantente conectado con tus vecinos desde cualquier lugar', 'flavor-chat-ia');
+$titulo = isset($args['titulo']) ? $args['titulo'] : __('Lleva tu comunidad contigo', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$subtitulo = isset($args['subtitulo']) ? $args['subtitulo'] : __('Descarga la app y mantente conectado con tus vecinos desde cualquier lugar', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $descripcion = isset($args['descripcion']) ? $args['descripcion'] : '';
 $url_app_store = isset($args['url_app_store']) ? $args['url_app_store'] : '#';
 $url_google_play = isset($args['url_google_play']) ? $args['url_google_play'] : '#';
@@ -27,19 +27,19 @@ if (empty($caracteristicas)) {
     $caracteristicas = array(
         array(
             'icono' => 'notificaciones',
-            'texto' => __('Notificaciones en tiempo real', 'flavor-chat-ia'),
+            'texto' => __('Notificaciones en tiempo real', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ),
         array(
             'icono' => 'chat',
-            'texto' => __('Chat con tus vecinos', 'flavor-chat-ia'),
+            'texto' => __('Chat con tus vecinos', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ),
         array(
             'icono' => 'eventos',
-            'texto' => __('Eventos de tu comunidad', 'flavor-chat-ia'),
+            'texto' => __('Eventos de tu comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ),
         array(
             'icono' => 'seguro',
-            'texto' => __('Acceso seguro y privado', 'flavor-chat-ia'),
+            'texto' => __('Acceso seguro y privado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ),
     );
 }
@@ -90,7 +90,7 @@ function flavor_obtener_icono_caracteristica($nombre_icono, $iconos_disponibles)
             </div>
 
             <div class="flavor-cta-app__descargas">
-                <p class="flavor-cta-app__descargas-label"><?php esc_html_e('Disponible en:', 'flavor-chat-ia'); ?></p>
+                <p class="flavor-cta-app__descargas-label"><?php esc_html_e('Disponible en:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                 <div class="flavor-cta-app__badges">
                     <!-- Badge App Store -->
@@ -99,13 +99,13 @@ function flavor_obtener_icono_caracteristica($nombre_icono, $iconos_disponibles)
                         class="flavor-cta-app__badge flavor-cta-app__badge--app-store"
                         target="_blank"
                         rel="noopener noreferrer"
-                        aria-label="<?php esc_attr_e('Descargar en App Store', 'flavor-chat-ia'); ?>"
+                        aria-label="<?php esc_attr_e('Descargar en App Store', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                     >
                         <svg class="flavor-cta-app__badge-icono" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                             <path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.09997 22C7.78997 22.05 6.79997 20.68 5.95997 19.47C4.24997 17 2.93997 12.45 4.69997 9.39C5.56997 7.87 7.12997 6.91 8.81997 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/>
                         </svg>
                         <div class="flavor-cta-app__badge-texto">
-                            <span class="flavor-cta-app__badge-small"><?php esc_html_e('Descargar en', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-cta-app__badge-small"><?php esc_html_e('Descargar en', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span class="flavor-cta-app__badge-store">App Store</span>
                         </div>
                     </a>
@@ -116,7 +116,7 @@ function flavor_obtener_icono_caracteristica($nombre_icono, $iconos_disponibles)
                         class="flavor-cta-app__badge flavor-cta-app__badge--google-play"
                         target="_blank"
                         rel="noopener noreferrer"
-                        aria-label="<?php esc_attr_e('Disponible en Google Play', 'flavor-chat-ia'); ?>"
+                        aria-label="<?php esc_attr_e('Disponible en Google Play', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                     >
                         <svg class="flavor-cta-app__badge-icono" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                             <path d="M3.60867 1.81818C3.22272 2.21818 3 2.81818 3 3.56364V20.4364C3 21.1818 3.22272 21.7818 3.60867 22.1818L3.68168 22.2545L13.4033 12.5455V12.4545V12.3636L3.68168 2.65455L3.60867 1.81818Z"/>
@@ -125,7 +125,7 @@ function flavor_obtener_icono_caracteristica($nombre_icono, $iconos_disponibles)
                             <path d="M16.7577 9.14545L5.22262 2.56364C4.56362 2.18182 3.97663 2.23636 3.60867 2.63636L13.4033 12.3636L16.7577 9.14545Z"/>
                         </svg>
                         <div class="flavor-cta-app__badge-texto">
-                            <span class="flavor-cta-app__badge-small"><?php esc_html_e('Disponible en', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-cta-app__badge-small"><?php esc_html_e('Disponible en', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span class="flavor-cta-app__badge-store">Google Play</span>
                         </div>
                     </a>
@@ -135,10 +135,10 @@ function flavor_obtener_icono_caracteristica($nombre_icono, $iconos_disponibles)
                     <div class="flavor-cta-app__qr">
                         <img
                             src="<?php echo esc_url($url_qr); ?>"
-                            alt="<?php esc_attr_e('Código QR para descargar la app', 'flavor-chat-ia'); ?>"
+                            alt="<?php esc_attr_e('Código QR para descargar la app', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                             class="flavor-cta-app__qr-imagen"
                         />
-                        <span class="flavor-cta-app__qr-texto"><?php esc_html_e('Escanea para descargar', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-cta-app__qr-texto"><?php esc_html_e('Escanea para descargar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 <?php endif; ?>
             </div>
@@ -148,7 +148,7 @@ function flavor_obtener_icono_caracteristica($nombre_icono, $iconos_disponibles)
             <div class="flavor-cta-app__preview">
                 <img
                     src="<?php echo esc_url($imagen_preview); ?>"
-                    alt="<?php esc_attr_e('Vista previa de la aplicación', 'flavor-chat-ia'); ?>"
+                    alt="<?php esc_attr_e('Vista previa de la aplicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                     class="flavor-cta-app__preview-imagen"
                 />
             </div>

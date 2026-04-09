@@ -88,7 +88,7 @@ if ( ! in_array( $estilo, $estilos_permitidos, true ) ) {
                                     class="inline-flex items-center text-sm font-medium transition-colors duration-200 hover:underline"
                                     style="color: var(--flavor-primary, #2563eb);"
                                 >
-                                    <?php echo esc_html__( 'Descubrir', 'flavor-chat-ia' ); ?>
+                                    <?php echo esc_html__( 'Descubrir', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                                     <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                     </svg>
@@ -225,7 +225,7 @@ if ( ! in_array( $estilo, $estilos_permitidos, true ) ) {
     <?php else : ?>
 
         <p class="text-gray-500 text-center py-8">
-            <?php echo esc_html__( 'No hay elementos destacados para mostrar.', 'flavor-chat-ia' ); ?>
+            <?php echo esc_html__( 'No hay elementos destacados para mostrar.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
         </p>
 
     <?php endif; ?>

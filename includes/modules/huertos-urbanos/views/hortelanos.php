@@ -145,12 +145,12 @@ $total_paginas = ceil($total_registros / $por_pagina);
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-groups" style="color: #28a745;"></span>
-        <?php echo esc_html__('Hortelanos', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Hortelanos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <?php if ($usar_demo): ?>
         <div class="notice notice-info" style="margin: 15px 0;">
-            <p><span class="dashicons dashicons-info"></span> <?php echo esc_html__('Mostrando datos de demostración. Los datos reales aparecerán cuando haya hortelanos registrados.', 'flavor-chat-ia'); ?></p>
+            <p><span class="dashicons dashicons-info"></span> <?php echo esc_html__('Mostrando datos de demostración. Los datos reales aparecerán cuando haya hortelanos registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php endif; ?>
 
@@ -162,7 +162,7 @@ $total_paginas = ceil($total_registros / $por_pagina);
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div style="font-size: 28px; font-weight: bold; color: #28a745;"><?php echo number_format($total_hortelanos); ?></div>
-                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Total Hortelanos', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Total Hortelanos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <span class="dashicons dashicons-groups" style="font-size: 36px; color: #28a745; opacity: 0.3;"></span>
             </div>
@@ -172,7 +172,7 @@ $total_paginas = ceil($total_registros / $por_pagina);
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div style="font-size: 28px; font-weight: bold; color: #17a2b8;"><?php echo number_format($hortelanos_nuevos_mes); ?></div>
-                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Nuevos (30 días)', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Nuevos (30 días)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <span class="dashicons dashicons-plus-alt" style="font-size: 36px; color: #17a2b8; opacity: 0.3;"></span>
             </div>
@@ -182,7 +182,7 @@ $total_paginas = ceil($total_registros / $por_pagina);
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div style="font-size: 28px; font-weight: bold; color: #ffc107;"><?php echo $promedio_parcelas; ?></div>
-                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Parcelas/Huertano', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Parcelas/Huertano', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <span class="dashicons dashicons-layout" style="font-size: 36px; color: #ffc107; opacity: 0.3;"></span>
             </div>
@@ -192,7 +192,7 @@ $total_paginas = ceil($total_registros / $por_pagina);
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div style="font-size: 28px; font-weight: bold; color: #6f42c1;"><?php echo number_format($hortelanos_veteranos); ?></div>
-                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Veteranos (+1 año)', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Veteranos (+1 año)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <span class="dashicons dashicons-awards" style="font-size: 36px; color: #6f42c1; opacity: 0.3;"></span>
             </div>
@@ -205,9 +205,9 @@ $total_paginas = ceil($total_registros / $por_pagina);
             <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page'] ?? 'huertos-urbanos-hortelanos'); ?>">
 
             <div>
-                <label style="font-weight: 500; margin-right: 5px;"><?php echo esc_html__('Huerto:', 'flavor-chat-ia'); ?></label>
+                <label style="font-weight: 500; margin-right: 5px;"><?php echo esc_html__('Huerto:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="huerto_id" style="min-width: 180px;">
-                    <option value="0"><?php echo esc_html__('Todos los huertos', 'flavor-chat-ia'); ?></option>
+                    <option value="0"><?php echo esc_html__('Todos los huertos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($huertos_disponibles as $huerto): ?>
                         <option value="<?php echo esc_attr($huerto->id); ?>" <?php selected($filtro_huerto, $huerto->id); ?>>
                             <?php echo esc_html($huerto->nombre); ?>
@@ -217,16 +217,16 @@ $total_paginas = ceil($total_registros / $por_pagina);
             </div>
 
             <div>
-                <label style="font-weight: 500; margin-right: 5px;"><?php echo esc_html__('Buscar:', 'flavor-chat-ia'); ?></label>
+                <label style="font-weight: 500; margin-right: 5px;"><?php echo esc_html__('Buscar:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <input type="text" name="busqueda" value="<?php echo esc_attr($filtro_busqueda); ?>"
-                       placeholder="<?php echo esc_attr__('Nombre o email...', 'flavor-chat-ia'); ?>" style="min-width: 200px;">
+                       placeholder="<?php echo esc_attr__('Nombre o email...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" style="min-width: 200px;">
             </div>
 
-            <button type="submit" class="button"><?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?></button>
+            <button type="submit" class="button"><?php echo esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
 
             <?php if ($filtro_huerto > 0 || !empty($filtro_busqueda)): ?>
                 <a href="<?php echo admin_url('admin.php?page=' . esc_attr($_GET['page'] ?? 'huertos-urbanos-hortelanos')); ?>" class="button">
-                    <?php echo esc_html__('Limpiar filtros', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Limpiar filtros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             <?php endif; ?>
         </form>
@@ -237,14 +237,14 @@ $total_paginas = ceil($total_registros / $por_pagina);
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th style="width: 50px;"><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Nombre', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Email', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Huertos', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 80px; text-align: center;"><?php echo esc_html__('Parcelas', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 120px;"><?php echo esc_html__('Miembro desde', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 120px;"><?php echo esc_html__('Antigüedad', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 100px;"><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 50px;"><?php echo esc_html__('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php echo esc_html__('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php echo esc_html__('Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php echo esc_html__('Huertos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 80px; text-align: center;"><?php echo esc_html__('Parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 120px;"><?php echo esc_html__('Miembro desde', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 120px;"><?php echo esc_html__('Antigüedad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 100px;"><?php echo esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -252,7 +252,7 @@ $total_paginas = ceil($total_registros / $por_pagina);
                     <tr>
                         <td colspan="8" style="text-align: center; padding: 40px;">
                             <span class="dashicons dashicons-groups" style="font-size: 48px; color: #ddd;"></span>
-                            <p style="color: #666; margin-top: 10px;"><?php echo esc_html__('No se encontraron hortelanos con los filtros aplicados.', 'flavor-chat-ia'); ?></p>
+                            <p style="color: #666; margin-top: 10px;"><?php echo esc_html__('No se encontraron hortelanos con los filtros aplicados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </td>
                     </tr>
                 <?php else: ?>
@@ -261,13 +261,13 @@ $total_paginas = ceil($total_registros / $por_pagina);
                         $dias_antiguedad = floor((time() - $fecha_primera) / 86400);
 
                         if ($dias_antiguedad > 365) {
-                            $antiguedad_texto = floor($dias_antiguedad / 365) . ' ' . __('años', 'flavor-chat-ia');
+                            $antiguedad_texto = floor($dias_antiguedad / 365) . ' ' . __('años', FLAVOR_PLATFORM_TEXT_DOMAIN);
                             $antiguedad_clase = 'veterano';
                         } elseif ($dias_antiguedad > 30) {
-                            $antiguedad_texto = floor($dias_antiguedad / 30) . ' ' . __('meses', 'flavor-chat-ia');
+                            $antiguedad_texto = floor($dias_antiguedad / 30) . ' ' . __('meses', FLAVOR_PLATFORM_TEXT_DOMAIN);
                             $antiguedad_clase = 'intermedio';
                         } else {
-                            $antiguedad_texto = $dias_antiguedad . ' ' . __('días', 'flavor-chat-ia');
+                            $antiguedad_texto = $dias_antiguedad . ' ' . __('días', FLAVOR_PLATFORM_TEXT_DOMAIN);
                             $antiguedad_clase = 'nuevo';
                         }
                     ?>
@@ -276,7 +276,7 @@ $total_paginas = ceil($total_registros / $por_pagina);
                             <td>
                                 <strong><?php echo esc_html($hortelano->display_name); ?></strong>
                                 <?php if ($dias_antiguedad > 365): ?>
-                                    <span class="dashicons dashicons-star-filled" style="color: #ffc107; font-size: 14px;" title="<?php echo esc_attr__('Huertano veterano', 'flavor-chat-ia'); ?>"></span>
+                                    <span class="dashicons dashicons-star-filled" style="color: #ffc107; font-size: 14px;" title="<?php echo esc_attr__('Huertano veterano', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></span>
                                 <?php endif; ?>
                             </td>
                             <td>
@@ -300,11 +300,11 @@ $total_paginas = ceil($total_registros / $por_pagina);
                             </td>
                             <td>
                                 <a href="<?php echo admin_url('user-edit.php?user_id=' . $hortelano->ID); ?>"
-                                   class="button button-small" title="<?php echo esc_attr__('Ver perfil', 'flavor-chat-ia'); ?>">
+                                   class="button button-small" title="<?php echo esc_attr__('Ver perfil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-admin-users" style="vertical-align: text-bottom;"></span>
                                 </a>
                                 <a href="mailto:<?php echo esc_attr($hortelano->user_email); ?>"
-                                   class="button button-small" title="<?php echo esc_attr__('Enviar email', 'flavor-chat-ia'); ?>">
+                                   class="button button-small" title="<?php echo esc_attr__('Enviar email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-email" style="vertical-align: text-bottom;"></span>
                                 </a>
                             </td>
@@ -321,7 +321,7 @@ $total_paginas = ceil($total_registros / $por_pagina);
             <div class="tablenav-pages">
                 <span class="displaying-num">
                     <?php printf(
-                        esc_html__('%s hortelanos', 'flavor-chat-ia'),
+                        esc_html__('%s hortelanos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         number_format($total_registros)
                     ); ?>
                 </span>
@@ -333,29 +333,29 @@ $total_paginas = ceil($total_registros / $por_pagina);
 
                     if ($pagina_actual > 1): ?>
                         <a class="first-page button" href="<?php echo esc_url($url_base . '&paged=1'); ?>">
-                            <span class="screen-reader-text"><?php echo esc_html__('Primera página', 'flavor-chat-ia'); ?></span>
+                            <span class="screen-reader-text"><?php echo esc_html__('Primera página', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                         <a class="prev-page button" href="<?php echo esc_url($url_base . '&paged=' . ($pagina_actual - 1)); ?>">
-                            <span class="screen-reader-text"><?php echo esc_html__('Página anterior', 'flavor-chat-ia'); ?></span>
+                            <span class="screen-reader-text"><?php echo esc_html__('Página anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span aria-hidden="true">&lsaquo;</span>
                         </a>
                     <?php endif; ?>
 
                     <span class="paging-input">
                         <span class="tablenav-paging-text">
-                            <?php echo $pagina_actual; ?> <?php echo esc_html__('de', 'flavor-chat-ia'); ?>
+                            <?php echo $pagina_actual; ?> <?php echo esc_html__('de', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             <span class="total-pages"><?php echo $total_paginas; ?></span>
                         </span>
                     </span>
 
                     <?php if ($pagina_actual < $total_paginas): ?>
                         <a class="next-page button" href="<?php echo esc_url($url_base . '&paged=' . ($pagina_actual + 1)); ?>">
-                            <span class="screen-reader-text"><?php echo esc_html__('Página siguiente', 'flavor-chat-ia'); ?></span>
+                            <span class="screen-reader-text"><?php echo esc_html__('Página siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span aria-hidden="true">&rsaquo;</span>
                         </a>
                         <a class="last-page button" href="<?php echo esc_url($url_base . '&paged=' . $total_paginas); ?>">
-                            <span class="screen-reader-text"><?php echo esc_html__('Última página', 'flavor-chat-ia'); ?></span>
+                            <span class="screen-reader-text"><?php echo esc_html__('Última página', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     <?php endif; ?>

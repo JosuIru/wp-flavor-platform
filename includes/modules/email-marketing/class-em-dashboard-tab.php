@@ -91,7 +91,7 @@ class Flavor_EM_Dashboard_Tab {
 
         // Tab de suscripciones
         $tabs['email-suscripciones'] = [
-            'titulo' => __('Mis Suscripciones', 'flavor-chat-ia'),
+            'titulo' => __('Mis Suscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'dashicons-email-alt',
             'callback' => [$this, 'render_tab_suscripciones'],
             'orden' => 50,
@@ -100,7 +100,7 @@ class Flavor_EM_Dashboard_Tab {
 
         // Tab de preferencias
         $tabs['email-preferencias'] = [
-            'titulo' => __('Preferencias de Email', 'flavor-chat-ia'),
+            'titulo' => __('Preferencias de Email', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'dashicons-admin-generic',
             'callback' => [$this, 'render_tab_preferencias'],
             'orden' => 51,
@@ -109,7 +109,7 @@ class Flavor_EM_Dashboard_Tab {
 
         // Tab de historial
         $tabs['email-historial'] = [
-            'titulo' => __('Historial de Emails', 'flavor-chat-ia'),
+            'titulo' => __('Historial de Emails', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'dashicons-list-view',
             'callback' => [$this, 'render_tab_historial'],
             'orden' => 52,
@@ -151,12 +151,12 @@ class Flavor_EM_Dashboard_Tab {
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_em_dashboard'),
             'strings' => [
-                'guardando' => __('Guardando...', 'flavor-chat-ia'),
-                'guardado' => __('Guardado correctamente', 'flavor-chat-ia'),
-                'error' => __('Error al guardar', 'flavor-chat-ia'),
-                'confirmar_baja' => __('¿Estás seguro de darte de baja de esta lista?', 'flavor-chat-ia'),
-                'suscrito' => __('Suscrito', 'flavor-chat-ia'),
-                'no_suscrito' => __('No suscrito', 'flavor-chat-ia'),
+                'guardando' => __('Guardando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'guardado' => __('Guardado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error al guardar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmar_baja' => __('¿Estás seguro de darte de baja de esta lista?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'suscrito' => __('Suscrito', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'no_suscrito' => __('No suscrito', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -296,17 +296,17 @@ class Flavor_EM_Dashboard_Tab {
         ?>
         <div class="em-dashboard-tab em-suscripciones">
             <div class="em-tab-header">
-                <h3><?php esc_html_e('Mis Suscripciones de Email', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Mis Suscripciones de Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <p class="em-tab-descripcion">
-                    <?php esc_html_e('Gestiona las listas de email a las que estás suscrito.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Gestiona las listas de email a las que estás suscrito.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
             <?php if (!$suscriptor): ?>
                 <div class="em-no-suscriptor">
-                    <p><?php esc_html_e('No tienes ninguna suscripción activa.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No tienes ninguna suscripción activa.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <button type="button" class="em-btn em-btn-primary" id="em-crear-suscriptor">
-                        <?php esc_html_e('Activar suscripciones', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Activar suscripciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             <?php else: ?>
@@ -315,25 +315,25 @@ class Flavor_EM_Dashboard_Tab {
                 <div class="em-stats-grid">
                     <div class="em-stat-card">
                         <span class="em-stat-numero"><?php echo count($listas_suscritas); ?></span>
-                        <span class="em-stat-label"><?php esc_html_e('Listas activas', 'flavor-chat-ia'); ?></span>
+                        <span class="em-stat-label"><?php esc_html_e('Listas activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="em-stat-card">
                         <span class="em-stat-numero"><?php echo intval($suscriptor->total_emails_enviados); ?></span>
-                        <span class="em-stat-label"><?php esc_html_e('Emails recibidos', 'flavor-chat-ia'); ?></span>
+                        <span class="em-stat-label"><?php esc_html_e('Emails recibidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="em-stat-card">
                         <span class="em-stat-numero"><?php echo intval($suscriptor->total_abiertos); ?></span>
-                        <span class="em-stat-label"><?php esc_html_e('Emails leídos', 'flavor-chat-ia'); ?></span>
+                        <span class="em-stat-label"><?php esc_html_e('Emails leídos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
                 <!-- Listas suscritas -->
                 <div class="em-seccion">
-                    <h4><?php esc_html_e('Listas a las que estás suscrito', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php esc_html_e('Listas a las que estás suscrito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
 
                     <?php if (empty($listas_suscritas)): ?>
                         <p class="em-empty-message">
-                            <?php esc_html_e('No estás suscrito a ninguna lista actualmente.', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('No estás suscrito a ninguna lista actualmente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                     <?php else: ?>
                         <div class="em-listas-grid">
@@ -347,7 +347,7 @@ class Flavor_EM_Dashboard_Tab {
                                         <span class="em-lista-fecha">
                                             <?php
                                             printf(
-                                                esc_html__('Suscrito desde: %s', 'flavor-chat-ia'),
+                                                esc_html__('Suscrito desde: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                                 date_i18n(get_option('date_format'), strtotime($lista->fecha_suscripcion))
                                             );
                                             ?>
@@ -371,7 +371,7 @@ class Flavor_EM_Dashboard_Tab {
                 <!-- Listas disponibles -->
                 <?php if (!empty($listas_disponibles)): ?>
                     <div class="em-seccion">
-                        <h4><?php esc_html_e('Otras listas disponibles', 'flavor-chat-ia'); ?></h4>
+                        <h4><?php esc_html_e('Otras listas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                         <div class="em-listas-grid">
                             <?php foreach ($listas_disponibles as $lista): ?>
                                 <div class="em-lista-card em-lista-disponible" data-lista-id="<?php echo esc_attr($lista->id); ?>">
@@ -383,7 +383,7 @@ class Flavor_EM_Dashboard_Tab {
                                         <span class="em-lista-suscriptores">
                                             <?php
                                             printf(
-                                                esc_html(_n('%d suscriptor', '%d suscriptores', $lista->total_suscriptores, 'flavor-chat-ia')),
+                                                esc_html(_n('%d suscriptor', '%d suscriptores', $lista->total_suscriptores, FLAVOR_PLATFORM_TEXT_DOMAIN)),
                                                 $lista->total_suscriptores
                                             );
                                             ?>
@@ -483,9 +483,9 @@ class Flavor_EM_Dashboard_Tab {
         ?>
         <div class="em-dashboard-tab em-preferencias">
             <div class="em-tab-header">
-                <h3><?php esc_html_e('Preferencias de Email', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Preferencias de Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <p class="em-tab-descripcion">
-                    <?php esc_html_e('Configura cómo y cuándo quieres recibir nuestros emails.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Configura cómo y cuándo quieres recibir nuestros emails.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
@@ -494,9 +494,9 @@ class Flavor_EM_Dashboard_Tab {
 
                 <!-- Frecuencia de emails -->
                 <div class="em-form-seccion">
-                    <h4><?php esc_html_e('Frecuencia de envío', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php esc_html_e('Frecuencia de envío', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <p class="em-form-ayuda">
-                        <?php esc_html_e('Elige con qué frecuencia deseas recibir nuestros emails.', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Elige con qué frecuencia deseas recibir nuestros emails.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
 
                     <div class="em-radio-group">
@@ -504,8 +504,8 @@ class Flavor_EM_Dashboard_Tab {
                             <input type="radio" name="frecuencia" value="tiempo_real"
                                    <?php checked($preferencias['frecuencia'], 'tiempo_real'); ?>>
                             <span class="em-radio-label">
-                                <strong><?php esc_html_e('Tiempo real', 'flavor-chat-ia'); ?></strong>
-                                <span><?php esc_html_e('Recibir emails tan pronto como se envíen', 'flavor-chat-ia'); ?></span>
+                                <strong><?php esc_html_e('Tiempo real', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                                <span><?php esc_html_e('Recibir emails tan pronto como se envíen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </span>
                         </label>
 
@@ -513,8 +513,8 @@ class Flavor_EM_Dashboard_Tab {
                             <input type="radio" name="frecuencia" value="diario"
                                    <?php checked($preferencias['frecuencia'], 'diario'); ?>>
                             <span class="em-radio-label">
-                                <strong><?php esc_html_e('Resumen diario', 'flavor-chat-ia'); ?></strong>
-                                <span><?php esc_html_e('Un email al día con todas las novedades', 'flavor-chat-ia'); ?></span>
+                                <strong><?php esc_html_e('Resumen diario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                                <span><?php esc_html_e('Un email al día con todas las novedades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </span>
                         </label>
 
@@ -522,8 +522,8 @@ class Flavor_EM_Dashboard_Tab {
                             <input type="radio" name="frecuencia" value="semanal"
                                    <?php checked($preferencias['frecuencia'], 'semanal'); ?>>
                             <span class="em-radio-label">
-                                <strong><?php esc_html_e('Resumen semanal', 'flavor-chat-ia'); ?></strong>
-                                <span><?php esc_html_e('Un email a la semana con lo más importante', 'flavor-chat-ia'); ?></span>
+                                <strong><?php esc_html_e('Resumen semanal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                                <span><?php esc_html_e('Un email a la semana con lo más importante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </span>
                         </label>
 
@@ -531,8 +531,8 @@ class Flavor_EM_Dashboard_Tab {
                             <input type="radio" name="frecuencia" value="mensual"
                                    <?php checked($preferencias['frecuencia'], 'mensual'); ?>>
                             <span class="em-radio-label">
-                                <strong><?php esc_html_e('Resumen mensual', 'flavor-chat-ia'); ?></strong>
-                                <span><?php esc_html_e('Un email al mes con lo destacado', 'flavor-chat-ia'); ?></span>
+                                <strong><?php esc_html_e('Resumen mensual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                                <span><?php esc_html_e('Un email al mes con lo destacado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </span>
                         </label>
                     </div>
@@ -540,9 +540,9 @@ class Flavor_EM_Dashboard_Tab {
 
                 <!-- Tipos de contenido -->
                 <div class="em-form-seccion">
-                    <h4><?php esc_html_e('Tipos de contenido', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php esc_html_e('Tipos de contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <p class="em-form-ayuda">
-                        <?php esc_html_e('Selecciona qué tipos de emails deseas recibir.', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Selecciona qué tipos de emails deseas recibir.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
 
                     <div class="em-checkbox-group">
@@ -550,8 +550,8 @@ class Flavor_EM_Dashboard_Tab {
                             <input type="checkbox" name="tipos[]" value="novedades"
                                    <?php checked(in_array('novedades', $preferencias['tipos'])); ?>>
                             <span class="em-checkbox-label">
-                                <strong><?php esc_html_e('Novedades y actualizaciones', 'flavor-chat-ia'); ?></strong>
-                                <span><?php esc_html_e('Información sobre nuevas funciones y mejoras', 'flavor-chat-ia'); ?></span>
+                                <strong><?php esc_html_e('Novedades y actualizaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                                <span><?php esc_html_e('Información sobre nuevas funciones y mejoras', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </span>
                         </label>
 
@@ -559,8 +559,8 @@ class Flavor_EM_Dashboard_Tab {
                             <input type="checkbox" name="tipos[]" value="promociones"
                                    <?php checked(in_array('promociones', $preferencias['tipos'])); ?>>
                             <span class="em-checkbox-label">
-                                <strong><?php esc_html_e('Ofertas y promociones', 'flavor-chat-ia'); ?></strong>
-                                <span><?php esc_html_e('Descuentos exclusivos y ofertas especiales', 'flavor-chat-ia'); ?></span>
+                                <strong><?php esc_html_e('Ofertas y promociones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                                <span><?php esc_html_e('Descuentos exclusivos y ofertas especiales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </span>
                         </label>
 
@@ -568,8 +568,8 @@ class Flavor_EM_Dashboard_Tab {
                             <input type="checkbox" name="tipos[]" value="eventos"
                                    <?php checked(in_array('eventos', $preferencias['tipos'])); ?>>
                             <span class="em-checkbox-label">
-                                <strong><?php esc_html_e('Eventos y actividades', 'flavor-chat-ia'); ?></strong>
-                                <span><?php esc_html_e('Invitaciones a eventos, talleres y actividades', 'flavor-chat-ia'); ?></span>
+                                <strong><?php esc_html_e('Eventos y actividades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                                <span><?php esc_html_e('Invitaciones a eventos, talleres y actividades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </span>
                         </label>
 
@@ -577,8 +577,8 @@ class Flavor_EM_Dashboard_Tab {
                             <input type="checkbox" name="tipos[]" value="comunidad"
                                    <?php checked(in_array('comunidad', $preferencias['tipos'])); ?>>
                             <span class="em-checkbox-label">
-                                <strong><?php esc_html_e('Noticias de la comunidad', 'flavor-chat-ia'); ?></strong>
-                                <span><?php esc_html_e('Actividad de la comunidad y menciones', 'flavor-chat-ia'); ?></span>
+                                <strong><?php esc_html_e('Noticias de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                                <span><?php esc_html_e('Actividad de la comunidad y menciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </span>
                         </label>
 
@@ -586,8 +586,8 @@ class Flavor_EM_Dashboard_Tab {
                             <input type="checkbox" name="tipos[]" value="transaccional"
                                    <?php checked(in_array('transaccional', $preferencias['tipos'])); ?>>
                             <span class="em-checkbox-label">
-                                <strong><?php esc_html_e('Emails transaccionales', 'flavor-chat-ia'); ?></strong>
-                                <span><?php esc_html_e('Confirmaciones, recibos y notificaciones importantes', 'flavor-chat-ia'); ?></span>
+                                <strong><?php esc_html_e('Emails transaccionales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                                <span><?php esc_html_e('Confirmaciones, recibos y notificaciones importantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </span>
                         </label>
                     </div>
@@ -595,19 +595,19 @@ class Flavor_EM_Dashboard_Tab {
 
                 <!-- Formato preferido -->
                 <div class="em-form-seccion">
-                    <h4><?php esc_html_e('Formato de email', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php esc_html_e('Formato de email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
 
                     <div class="em-radio-group em-radio-inline">
                         <label class="em-radio-option">
                             <input type="radio" name="formato" value="html"
                                    <?php checked($preferencias['formato'], 'html'); ?>>
-                            <span class="em-radio-label"><?php esc_html_e('HTML (con imágenes)', 'flavor-chat-ia'); ?></span>
+                            <span class="em-radio-label"><?php esc_html_e('HTML (con imágenes)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
 
                         <label class="em-radio-option">
                             <input type="radio" name="formato" value="texto"
                                    <?php checked($preferencias['formato'], 'texto'); ?>>
-                            <span class="em-radio-label"><?php esc_html_e('Solo texto', 'flavor-chat-ia'); ?></span>
+                            <span class="em-radio-label"><?php esc_html_e('Solo texto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                     </div>
                 </div>
@@ -615,7 +615,7 @@ class Flavor_EM_Dashboard_Tab {
                 <!-- Botones de acción -->
                 <div class="em-form-acciones">
                     <button type="submit" class="em-btn em-btn-primary">
-                        <?php esc_html_e('Guardar preferencias', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Guardar preferencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <span class="em-form-mensaje"></span>
                 </div>
@@ -623,10 +623,10 @@ class Flavor_EM_Dashboard_Tab {
 
             <!-- Opción de darse de baja de todo -->
             <div class="em-seccion em-seccion-peligro">
-                <h4><?php esc_html_e('Darse de baja', 'flavor-chat-ia'); ?></h4>
-                <p><?php esc_html_e('Si no deseas recibir más emails, puedes darte de baja de todas las listas.', 'flavor-chat-ia'); ?></p>
+                <h4><?php esc_html_e('Darse de baja', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                <p><?php esc_html_e('Si no deseas recibir más emails, puedes darte de baja de todas las listas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <button type="button" class="em-btn em-btn-danger" id="em-baja-total">
-                    <?php esc_html_e('Darme de baja de todo', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Darme de baja de todo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </div>
@@ -681,28 +681,28 @@ class Flavor_EM_Dashboard_Tab {
         ?>
         <div class="em-dashboard-tab em-historial">
             <div class="em-tab-header">
-                <h3><?php esc_html_e('Historial de Emails', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Historial de Emails', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <p class="em-tab-descripcion">
-                    <?php esc_html_e('Revisa los emails que has recibido.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Revisa los emails que has recibido.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
             <?php if (!$suscriptor): ?>
                 <div class="em-empty-state">
                     <span class="dashicons dashicons-email-alt"></span>
-                    <p><?php esc_html_e('No tienes historial de emails.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No tienes historial de emails.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php elseif (empty($historial['items'])): ?>
                 <div class="em-empty-state">
                     <span class="dashicons dashicons-email-alt"></span>
-                    <p><?php esc_html_e('Aún no has recibido ningún email.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Aún no has recibido ningún email.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
 
                 <!-- Filtros -->
                 <div class="em-historial-filtros">
                     <select id="em-filtro-campania" class="em-select">
-                        <option value=""><?php esc_html_e('Todas las campañas', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todas las campañas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($this->obtener_campanias_usuario() as $campania): ?>
                             <option value="<?php echo esc_attr($campania->id); ?>">
                                 <?php echo esc_html($campania->nombre); ?>
@@ -711,9 +711,9 @@ class Flavor_EM_Dashboard_Tab {
                     </select>
 
                     <select id="em-filtro-estado" class="em-select">
-                        <option value=""><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
-                        <option value="abierto"><?php esc_html_e('Leídos', 'flavor-chat-ia'); ?></option>
-                        <option value="no_abierto"><?php esc_html_e('No leídos', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="abierto"><?php esc_html_e('Leídos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="no_abierto"><?php esc_html_e('No leídos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
 
@@ -724,9 +724,9 @@ class Flavor_EM_Dashboard_Tab {
                              data-email-id="<?php echo esc_attr($email->id); ?>">
                             <div class="em-email-indicador">
                                 <?php if ($email->abierto): ?>
-                                    <span class="dashicons dashicons-yes-alt" title="<?php esc_attr_e('Leído', 'flavor-chat-ia'); ?>"></span>
+                                    <span class="dashicons dashicons-yes-alt" title="<?php esc_attr_e('Leído', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></span>
                                 <?php else: ?>
-                                    <span class="dashicons dashicons-marker" title="<?php esc_attr_e('No leído', 'flavor-chat-ia'); ?>"></span>
+                                    <span class="dashicons dashicons-marker" title="<?php esc_attr_e('No leído', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></span>
                                 <?php endif; ?>
                             </div>
                             <div class="em-email-contenido">
@@ -737,13 +737,13 @@ class Flavor_EM_Dashboard_Tab {
                                     <?php endif; ?>
                                     <span class="em-email-fecha">
                                         <?php echo esc_html(human_time_diff(strtotime($email->enviado_en), current_time('timestamp'))); ?>
-                                        <?php esc_html_e('atrás', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('atrás', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </span>
                                 </div>
                             </div>
                             <div class="em-email-acciones">
                                 <?php if ($email->clicks > 0): ?>
-                                    <span class="em-email-clicks" title="<?php esc_attr_e('Clicks en enlaces', 'flavor-chat-ia'); ?>">
+                                    <span class="em-email-clicks" title="<?php esc_attr_e('Clicks en enlaces', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                         <span class="dashicons dashicons-admin-links"></span>
                                         <?php echo intval($email->clicks); ?>
                                     </span>
@@ -762,14 +762,14 @@ class Flavor_EM_Dashboard_Tab {
                         if ($pagina_actual > 1): ?>
                             <a href="<?php echo esc_url(add_query_arg('em_page', $pagina_actual - 1, $pagina_base)); ?>"
                                class="em-btn em-btn-secundario">
-                                <?php esc_html_e('Anterior', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         <?php endif; ?>
 
                         <span class="em-paginacion-info">
                             <?php
                             printf(
-                                esc_html__('Página %1$d de %2$d', 'flavor-chat-ia'),
+                                esc_html__('Página %1$d de %2$d', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 $pagina_actual,
                                 $historial['total_paginas']
                             );
@@ -779,7 +779,7 @@ class Flavor_EM_Dashboard_Tab {
                         <?php if ($pagina_actual < $historial['total_paginas']): ?>
                             <a href="<?php echo esc_url(add_query_arg('em_page', $pagina_actual + 1, $pagina_base)); ?>"
                                class="em-btn em-btn-secundario">
-                                <?php esc_html_e('Siguiente', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         <?php endif; ?>
                     </div>
@@ -886,20 +886,20 @@ class Flavor_EM_Dashboard_Tab {
         check_ajax_referer('flavor_em_dashboard', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $lista_id = isset($_POST['lista_id']) ? intval($_POST['lista_id']) : 0;
         $accion = isset($_POST['accion']) ? sanitize_text_field($_POST['accion']) : 'toggle';
 
         if (!$lista_id) {
-            wp_send_json_error(['message' => __('Lista no válida.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Lista no válida.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $suscriptor = $this->crear_suscriptor_si_no_existe();
 
         if (!$suscriptor) {
-            wp_send_json_error(['message' => __('Error al crear suscriptor.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al crear suscriptor.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -913,7 +913,7 @@ class Flavor_EM_Dashboard_Tab {
         ));
 
         if (!$lista) {
-            wp_send_json_error(['message' => __('Lista no disponible.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Lista no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar estado actual
@@ -945,8 +945,8 @@ class Flavor_EM_Dashboard_Tab {
             wp_send_json_success([
                 'estado' => $nuevo_estado,
                 'message' => ($nuevo_estado === 'activo')
-                    ? __('Suscrito correctamente.', 'flavor-chat-ia')
-                    : __('Dado de baja correctamente.', 'flavor-chat-ia'),
+                    ? __('Suscrito correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                    : __('Dado de baja correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         } else {
             // Crear nueva suscripción
@@ -962,7 +962,7 @@ class Flavor_EM_Dashboard_Tab {
 
             wp_send_json_success([
                 'estado' => 'activo',
-                'message' => __('Suscrito correctamente.', 'flavor-chat-ia'),
+                'message' => __('Suscrito correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
     }
@@ -996,7 +996,7 @@ class Flavor_EM_Dashboard_Tab {
         check_ajax_referer('flavor_em_dashboard', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $usuario = $this->get_usuario_actual();
@@ -1032,7 +1032,7 @@ class Flavor_EM_Dashboard_Tab {
         update_user_meta($usuario->ID, 'flavor_em_preferencias', $preferencias);
 
         wp_send_json_success([
-            'message' => __('Preferencias guardadas correctamente.', 'flavor-chat-ia'),
+            'message' => __('Preferencias guardadas correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'preferencias' => $preferencias,
         ]);
     }
@@ -1044,19 +1044,19 @@ class Flavor_EM_Dashboard_Tab {
         check_ajax_referer('flavor_em_dashboard', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $email_id = isset($_POST['email_id']) ? intval($_POST['email_id']) : 0;
 
         if (!$email_id) {
-            wp_send_json_error(['message' => __('Email no válido.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Email no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $suscriptor = $this->get_suscriptor_actual();
 
         if (!$suscriptor) {
-            wp_send_json_error(['message' => __('Suscriptor no encontrado.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Suscriptor no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1071,7 +1071,7 @@ class Flavor_EM_Dashboard_Tab {
         ));
 
         if (!$email) {
-            wp_send_json_error(['message' => __('Email no encontrado.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Email no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Registrar apertura manual si no existe
@@ -1103,7 +1103,7 @@ class Flavor_EM_Dashboard_Tab {
         }
 
         wp_send_json_success([
-            'message' => __('Email marcado como leído.', 'flavor-chat-ia'),
+            'message' => __('Email marcado como leído.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 

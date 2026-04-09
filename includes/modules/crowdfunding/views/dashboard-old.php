@@ -77,15 +77,15 @@ if ($tabla_existe) {
 
 // Labels para tipos
 $tipos_labels = [
-    'album' => __('Álbum/Grabación', 'flavor-chat-ia'),
-    'tour' => __('Gira/Tour', 'flavor-chat-ia'),
-    'produccion' => __('Producción', 'flavor-chat-ia'),
-    'equipamiento' => __('Equipamiento', 'flavor-chat-ia'),
-    'espacio' => __('Espacio', 'flavor-chat-ia'),
-    'evento' => __('Evento', 'flavor-chat-ia'),
-    'social' => __('Proyecto Social', 'flavor-chat-ia'),
-    'emergencia' => __('Emergencia', 'flavor-chat-ia'),
-    'otro' => __('Otro', 'flavor-chat-ia'),
+    'album' => __('Álbum/Grabación', 'flavor-platform'),
+    'tour' => __('Gira/Tour', 'flavor-platform'),
+    'produccion' => __('Producción', 'flavor-platform'),
+    'equipamiento' => __('Equipamiento', 'flavor-platform'),
+    'espacio' => __('Espacio', 'flavor-platform'),
+    'evento' => __('Evento', 'flavor-platform'),
+    'social' => __('Proyecto Social', 'flavor-platform'),
+    'emergencia' => __('Emergencia', 'flavor-platform'),
+    'otro' => __('Otro', 'flavor-platform'),
 ];
 
 $tipo_colores = [
@@ -105,8 +105,8 @@ $tipo_colores = [
     <?php if (!$tabla_existe): ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <strong><?php esc_html_e('Sin datos disponibles:', 'flavor-chat-ia'); ?></strong>
-        <?php esc_html_e('Faltan tablas del módulo Crowdfunding o aún no hay proyectos creados.', 'flavor-chat-ia'); ?>
+        <strong><?php esc_html_e('Sin datos disponibles:', 'flavor-platform'); ?></strong>
+        <?php esc_html_e('Faltan tablas del módulo Crowdfunding o aún no hay proyectos creados.', 'flavor-platform'); ?>
     </div>
     <?php endif; ?>
 
@@ -115,13 +115,13 @@ $tipo_colores = [
         <div class="dm-header__title">
             <span class="dashicons dashicons-heart"></span>
             <div>
-                <h1><?php esc_html_e('Crowdfunding', 'flavor-chat-ia'); ?></h1>
-                <p><?php esc_html_e('Financiación colectiva para proyectos culturales y comunitarios', 'flavor-chat-ia'); ?></p>
+                <h1><?php esc_html_e('Crowdfunding', 'flavor-platform'); ?></h1>
+                <p><?php esc_html_e('Financiación colectiva para proyectos culturales y comunitarios', 'flavor-platform'); ?></p>
             </div>
         </div>
         <div class="dm-header__actions">
             <a href="<?php echo esc_url(home_url('/crowdfunding/crear/')); ?>" class="dm-btn dm-btn--primary">
-                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nuevo Proyecto', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nuevo Proyecto', 'flavor-platform'); ?>
             </a>
         </div>
     </div>
@@ -132,7 +132,7 @@ $tipo_colores = [
             <span class="dashicons dashicons-portfolio dm-stat-card__icon"></span>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_proyectos); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Total Proyectos', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Total Proyectos', 'flavor-platform'); ?></div>
             </div>
         </div>
 
@@ -140,7 +140,7 @@ $tipo_colores = [
             <span class="dashicons dashicons-controls-play dm-stat-card__icon"></span>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($activos); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Activos', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Activos', 'flavor-platform'); ?></div>
             </div>
         </div>
 
@@ -148,7 +148,7 @@ $tipo_colores = [
             <span class="dashicons dashicons-money-alt dm-stat-card__icon"></span>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_recaudado_eur, 0); ?>€</div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Recaudado (EUR)', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Recaudado (EUR)', 'flavor-platform'); ?></div>
             </div>
         </div>
 
@@ -156,7 +156,7 @@ $tipo_colores = [
             <span class="dashicons dashicons-carrot dm-stat-card__icon"></span>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_recaudado_semilla, 0); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('SEMILLA', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('SEMILLA', 'flavor-platform'); ?></div>
             </div>
         </div>
 
@@ -164,7 +164,7 @@ $tipo_colores = [
             <span class="dashicons dashicons-groups dm-stat-card__icon"></span>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_aportantes); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Mecenas', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Mecenas', 'flavor-platform'); ?></div>
             </div>
         </div>
 
@@ -172,7 +172,7 @@ $tipo_colores = [
             <span class="dashicons dashicons-yes-alt dm-stat-card__icon"></span>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo $tasa_exito; ?>%</div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Tasa de Éxito', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Tasa de Éxito', 'flavor-platform'); ?></div>
             </div>
         </div>
     </div>
@@ -181,36 +181,36 @@ $tipo_colores = [
     <div class="dm-quick-links">
         <h2 class="dm-quick-links__title">
             <span class="dashicons dashicons-admin-links"></span>
-            <?php esc_html_e('Accesos Rápidos', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Accesos Rápidos', 'flavor-platform'); ?>
         </h2>
         <div class="dm-quick-links__grid">
             <a href="<?php echo esc_url(home_url('/crowdfunding/')); ?>" class="dm-quick-links__item">
                 <span class="dashicons dashicons-list-view"></span>
-                <span><?php esc_html_e('Todos los proyectos', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Todos los proyectos', 'flavor-platform'); ?></span>
             </a>
             <a href="<?php echo esc_url(home_url('/crowdfunding/crear/')); ?>" class="dm-quick-links__item dm-quick-links__item--success">
                 <span class="dashicons dashicons-plus-alt"></span>
-                <span><?php esc_html_e('Crear proyecto', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Crear proyecto', 'flavor-platform'); ?></span>
             </a>
             <a href="<?php echo esc_url(home_url('/crowdfunding/?estado=activo')); ?>" class="dm-quick-links__item dm-quick-links__item--primary">
                 <span class="dashicons dashicons-controls-play"></span>
-                <span><?php esc_html_e('Proyectos activos', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Proyectos activos', 'flavor-platform'); ?></span>
             </a>
             <a href="<?php echo esc_url(home_url('/crowdfunding/mis-aportaciones/')); ?>" class="dm-quick-links__item dm-quick-links__item--pink">
                 <span class="dashicons dashicons-heart"></span>
-                <span><?php esc_html_e('Mis aportaciones', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Mis aportaciones', 'flavor-platform'); ?></span>
             </a>
             <a href="<?php echo esc_url(home_url('/crowdfunding/mis-proyectos/')); ?>" class="dm-quick-links__item dm-quick-links__item--warning">
                 <span class="dashicons dashicons-portfolio"></span>
-                <span><?php esc_html_e('Mis proyectos', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Mis proyectos', 'flavor-platform'); ?></span>
             </a>
             <a href="<?php echo esc_url(home_url('/crowdfunding/estadisticas/')); ?>" class="dm-quick-links__item dm-quick-links__item--purple">
                 <span class="dashicons dashicons-chart-bar"></span>
-                <span><?php esc_html_e('Estadísticas', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Estadísticas', 'flavor-platform'); ?></span>
             </a>
             <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('crowdfunding', '')); ?>" class="dm-quick-links__item" target="_blank">
                 <span class="dashicons dashicons-external"></span>
-                <span><?php esc_html_e('Portal público', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Portal público', 'flavor-platform'); ?></span>
             </a>
         </div>
     </div>
@@ -222,7 +222,7 @@ $tipo_colores = [
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-category"></span>
-                    <?php esc_html_e('Recaudación por Tipo', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Recaudación por Tipo', 'flavor-platform'); ?>
                 </h3>
             </div>
             <div class="dm-card__chart">
@@ -235,7 +235,7 @@ $tipo_colores = [
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-heart"></span>
-                    <?php esc_html_e('Últimas Aportaciones', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Últimas Aportaciones', 'flavor-platform'); ?>
                 </h3>
             </div>
             <div class="dm-card__body">
@@ -249,10 +249,10 @@ $tipo_colores = [
                             <div class="dm-activity-list__content">
                                 <div class="dm-activity-list__title">
                                     <?php
-                                    $nombre = $aportacion['anonimo'] ? __('Anónimo', 'flavor-chat-ia') : esc_html($aportacion['nombre']);
+                                    $nombre = $aportacion['anonimo'] ? __('Anónimo', 'flavor-platform') : esc_html($aportacion['nombre']);
                                     $moneda_simbolo = $aportacion['moneda'] === 'eur' ? '€' : ' ' . strtoupper($aportacion['moneda']);
                                     printf(
-                                        esc_html__('%s aportó %s%s', 'flavor-chat-ia'),
+                                        esc_html__('%s aportó %s%s', 'flavor-platform'),
                                         '<strong>' . $nombre . '</strong>',
                                         number_format_i18n($aportacion['importe'], $aportacion['moneda'] === 'eur' ? 2 : 0),
                                         $moneda_simbolo
@@ -268,7 +268,7 @@ $tipo_colores = [
                         <?php endforeach; ?>
                     </ul>
                 <?php else: ?>
-                    <p class="dm-empty"><?php esc_html_e('No hay aportaciones recientes.', 'flavor-chat-ia'); ?></p>
+                    <p class="dm-empty"><?php esc_html_e('No hay aportaciones recientes.', 'flavor-platform'); ?></p>
                 <?php endif; ?>
             </div>
         </div>
@@ -279,17 +279,17 @@ $tipo_colores = [
         <div class="dm-card__header">
             <h3>
                 <span class="dashicons dashicons-portfolio"></span>
-                <?php esc_html_e('Proyectos en Curso', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Proyectos en Curso', 'flavor-platform'); ?>
             </h3>
         </div>
         <table class="dm-table">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Proyecto', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Progreso', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Mecenas', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Tiempo', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Proyecto', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Tipo', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Progreso', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Mecenas', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Tiempo', 'flavor-platform'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -327,7 +327,7 @@ $tipo_colores = [
                         </td>
                         <td>
                             <span class="dm-badge dm-badge--sm <?php echo $dias_restantes <= 3 ? 'dm-badge--error' : ($dias_restantes <= 7 ? 'dm-badge--warning' : 'dm-badge--success'); ?>">
-                                <?php printf(esc_html__('%d días', 'flavor-chat-ia'), $dias_restantes); ?>
+                                <?php printf(esc_html__('%d días', 'flavor-platform'), $dias_restantes); ?>
                             </span>
                         </td>
                     </tr>
@@ -336,7 +336,7 @@ $tipo_colores = [
                     <tr>
                         <td colspan="5" class="dm-table__empty">
                             <span class="dashicons dashicons-portfolio"></span>
-                            <?php esc_html_e('No hay proyectos activos', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('No hay proyectos activos', 'flavor-platform'); ?>
                         </td>
                     </tr>
                 <?php endif; ?>
@@ -344,7 +344,7 @@ $tipo_colores = [
         </table>
         <div class="dm-card__footer">
             <a href="<?php echo esc_url(home_url('/crowdfunding/')); ?>" class="dm-btn dm-btn--secondary dm-btn--sm">
-                <?php esc_html_e('Ver todos los proyectos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver todos los proyectos', 'flavor-platform'); ?>
             </a>
         </div>
     </div>

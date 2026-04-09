@@ -27,18 +27,18 @@ $vista = $args['vista'] ?? 'mes';
         <h2 class="gc-calendario-titulo">
             <?php
             $meses = [
-                1 => __('Enero', 'flavor-chat-ia'),
-                2 => __('Febrero', 'flavor-chat-ia'),
-                3 => __('Marzo', 'flavor-chat-ia'),
-                4 => __('Abril', 'flavor-chat-ia'),
-                5 => __('Mayo', 'flavor-chat-ia'),
-                6 => __('Junio', 'flavor-chat-ia'),
-                7 => __('Julio', 'flavor-chat-ia'),
-                8 => __('Agosto', 'flavor-chat-ia'),
-                9 => __('Septiembre', 'flavor-chat-ia'),
-                10 => __('Octubre', 'flavor-chat-ia'),
-                11 => __('Noviembre', 'flavor-chat-ia'),
-                12 => __('Diciembre', 'flavor-chat-ia'),
+                1 => __('Enero', 'flavor-platform'),
+                2 => __('Febrero', 'flavor-platform'),
+                3 => __('Marzo', 'flavor-platform'),
+                4 => __('Abril', 'flavor-platform'),
+                5 => __('Mayo', 'flavor-platform'),
+                6 => __('Junio', 'flavor-platform'),
+                7 => __('Julio', 'flavor-platform'),
+                8 => __('Agosto', 'flavor-platform'),
+                9 => __('Septiembre', 'flavor-platform'),
+                10 => __('Octubre', 'flavor-platform'),
+                11 => __('Noviembre', 'flavor-platform'),
+                12 => __('Diciembre', 'flavor-platform'),
             ];
             echo esc_html($meses[$mes_actual] . ' ' . $ano_actual);
             ?>
@@ -52,10 +52,10 @@ $vista = $args['vista'] ?? 'mes';
     <!-- Selector de vista -->
     <div class="gc-calendario-vistas">
         <button type="button" class="gc-vista-btn <?php echo $vista === 'mes' ? 'activa' : ''; ?>" data-vista="mes">
-            <?php _e('Mes', 'flavor-chat-ia'); ?>
+            <?php _e('Mes', 'flavor-platform'); ?>
         </button>
         <button type="button" class="gc-vista-btn <?php echo $vista === 'lista' ? 'activa' : ''; ?>" data-vista="lista">
-            <?php _e('Lista', 'flavor-chat-ia'); ?>
+            <?php _e('Lista', 'flavor-platform'); ?>
         </button>
     </div>
 
@@ -63,28 +63,28 @@ $vista = $args['vista'] ?? 'mes';
     <div class="gc-calendario-leyenda">
         <span class="gc-leyenda-item gc-estado-abierto">
             <span class="gc-leyenda-dot"></span>
-            <?php _e('Pedidos abiertos', 'flavor-chat-ia'); ?>
+            <?php _e('Pedidos abiertos', 'flavor-platform'); ?>
         </span>
         <span class="gc-leyenda-item gc-estado-cerrado">
             <span class="gc-leyenda-dot"></span>
-            <?php _e('Pedidos cerrados', 'flavor-chat-ia'); ?>
+            <?php _e('Pedidos cerrados', 'flavor-platform'); ?>
         </span>
         <span class="gc-leyenda-item gc-estado-entrega">
             <span class="gc-leyenda-dot"></span>
-            <?php _e('Día de entrega', 'flavor-chat-ia'); ?>
+            <?php _e('Día de entrega', 'flavor-platform'); ?>
         </span>
     </div>
 
     <!-- Vista de mes -->
     <div class="gc-calendario-mes <?php echo $vista !== 'mes' ? 'oculto' : ''; ?>">
         <div class="gc-calendario-dias-semana">
-            <span><?php _e('Lun', 'flavor-chat-ia'); ?></span>
-            <span><?php _e('Mar', 'flavor-chat-ia'); ?></span>
-            <span><?php _e('Mié', 'flavor-chat-ia'); ?></span>
-            <span><?php _e('Jue', 'flavor-chat-ia'); ?></span>
-            <span><?php _e('Vie', 'flavor-chat-ia'); ?></span>
-            <span><?php _e('Sáb', 'flavor-chat-ia'); ?></span>
-            <span><?php _e('Dom', 'flavor-chat-ia'); ?></span>
+            <span><?php _e('Lun', 'flavor-platform'); ?></span>
+            <span><?php _e('Mar', 'flavor-platform'); ?></span>
+            <span><?php _e('Mié', 'flavor-platform'); ?></span>
+            <span><?php _e('Jue', 'flavor-platform'); ?></span>
+            <span><?php _e('Vie', 'flavor-platform'); ?></span>
+            <span><?php _e('Sáb', 'flavor-platform'); ?></span>
+            <span><?php _e('Dom', 'flavor-platform'); ?></span>
         </div>
 
         <div class="gc-calendario-grid">
@@ -155,7 +155,7 @@ $vista = $args['vista'] ?? 'mes';
         <?php if (empty($ciclos)): ?>
             <div class="gc-calendario-sin-ciclos">
                 <span class="dashicons dashicons-calendar"></span>
-                <p><?php _e('No hay ciclos programados para este mes.', 'flavor-chat-ia'); ?></p>
+                <p><?php _e('No hay ciclos programados para este mes.', 'flavor-platform'); ?></p>
             </div>
         <?php else: ?>
             <?php foreach ($ciclos as $ciclo): ?>
@@ -170,7 +170,7 @@ $vista = $args['vista'] ?? 'mes';
                         <div class="gc-ciclo-detalles">
                             <span class="gc-detalle">
                                 <span class="dashicons dashicons-calendar-alt"></span>
-                                <?php printf(__('Pedidos: %s - %s', 'flavor-chat-ia'),
+                                <?php printf(__('Pedidos: %s - %s', 'flavor-platform'),
                                     date('d/m', strtotime($ciclo['fecha_inicio'])),
                                     date('d/m', strtotime($ciclo['fecha_cierre']))
                                 ); ?>
@@ -193,15 +193,15 @@ $vista = $args['vista'] ?? 'mes';
                     <div class="gc-ciclo-accion">
                         <?php if ($ciclo['estado'] === 'abierto'): ?>
                             <a href="<?php echo esc_url(add_query_arg('ciclo', intval($ciclo['id']), Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'ciclo'))); ?>" class="gc-btn gc-btn-primary">
-                                <?php _e('Hacer pedido', 'flavor-chat-ia'); ?>
+                                <?php _e('Hacer pedido', 'flavor-platform'); ?>
                             </a>
                         <?php else: ?>
                             <span class="gc-badge gc-badge-<?php echo esc_attr($ciclo['estado']); ?>">
                                 <?php
                                 $estados = [
-                                    'cerrado' => __('Cerrado', 'flavor-chat-ia'),
-                                    'entregado' => __('Entregado', 'flavor-chat-ia'),
-                                    'preparando' => __('En preparación', 'flavor-chat-ia'),
+                                    'cerrado' => __('Cerrado', 'flavor-platform'),
+                                    'entregado' => __('Entregado', 'flavor-platform'),
+                                    'preparando' => __('En preparación', 'flavor-platform'),
                                 ];
                                 echo esc_html($estados[$ciclo['estado']] ?? $ciclo['estado']);
                                 ?>
@@ -216,7 +216,7 @@ $vista = $args['vista'] ?? 'mes';
     <!-- Modal de detalle de ciclo -->
     <div class="gc-modal gc-modal-ciclo" id="gc-modal-ciclo" style="display: none;">
         <div class="gc-modal-content">
-            <button type="button" class="gc-modal-close"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></button>
+            <button type="button" class="gc-modal-close"><?php echo esc_html__('&times;', 'flavor-platform'); ?></button>
             <div class="gc-modal-body">
                 <!-- Contenido cargado dinámicamente -->
             </div>

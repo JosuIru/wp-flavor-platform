@@ -79,7 +79,7 @@ class Chat_IA_Engine_Mistral extends Chat_IA_Engine_Base {
         if (empty($api_key)) {
             return [
                 'success' => false,
-                'error' => __('API key de Mistral no configurada', 'flavor-chat-ia'),
+                'error' => __('API key de Mistral no configurada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'error_code' => 'no_api_key',
             ];
         }

@@ -16,10 +16,10 @@ $notificaciones = $datos_vista['notificaciones'] ?? [];
 
 <div class="mi-red-notificaciones">
     <header class="mi-red-notificaciones__header">
-        <h1><?php esc_html_e('Notificaciones', 'flavor-chat-ia'); ?></h1>
+        <h1><?php esc_html_e('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
         <?php if (!empty($notificaciones)) : ?>
             <button class="mi-red-btn mi-red-btn--outline mi-red-btn--small" id="marcar-todas">
-                <?php esc_html_e('Marcar todas como leídas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Marcar todas como leídas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         <?php endif; ?>
     </header>
@@ -27,8 +27,8 @@ $notificaciones = $datos_vista['notificaciones'] ?? [];
     <?php if (empty($notificaciones)) : ?>
         <div class="mi-red-empty-state">
             <div class="mi-red-empty-state__icon">🔔</div>
-            <h3><?php esc_html_e('No tienes notificaciones', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('Cuando alguien interactúe con tu contenido, lo verás aquí.', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('No tienes notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php esc_html_e('Cuando alguien interactúe con tu contenido, lo verás aquí.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php else : ?>
         <ul class="mi-red-notificaciones__list">

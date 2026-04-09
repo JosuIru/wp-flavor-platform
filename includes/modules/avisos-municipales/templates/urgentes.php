@@ -18,7 +18,7 @@ $tabla_zonas = $wpdb->prefix . 'flavor_avisos_zonas';
 
 // Verificar si existe la tabla
 if (!Flavor_Chat_Helpers::tabla_existe($tabla_avisos)) {
-    echo '<div class="avisos-empty"><p>' . esc_html__('El modulo de avisos municipales no esta configurado.', 'flavor-chat-ia') . '</p></div>';
+    echo '<div class="avisos-empty"><p>' . esc_html__('El modulo de avisos municipales no esta configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
 
@@ -51,8 +51,8 @@ $avisos_base_url = Flavor_Chat_Helpers::get_action_url('avisos_municipales', '')
             <span class="dashicons dashicons-warning"></span>
         </div>
         <div class="avisos-urgentes-title-group">
-            <h2><?php esc_html_e('Avisos Urgentes', 'flavor-chat-ia'); ?></h2>
-            <p><?php esc_html_e('Comunicados que requieren atencion inmediata', 'flavor-chat-ia'); ?></p>
+            <h2><?php esc_html_e('Avisos Urgentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+            <p><?php esc_html_e('Comunicados que requieren atencion inmediata', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
         <?php if ($avisos_urgentes): ?>
         <span class="avisos-urgentes-contador"><?php echo count($avisos_urgentes); ?></span>
@@ -68,7 +68,7 @@ $avisos_base_url = Flavor_Chat_Helpers::get_action_url('avisos_municipales', '')
                 $diferencia = $fecha_fin_timestamp - time();
                 if ($diferencia > 0 && $diferencia < 86400) {
                     $horas = floor($diferencia / 3600);
-                    $tiempo_restante = sprintf(__('Expira en %d horas', 'flavor-chat-ia'), $horas);
+                    $tiempo_restante = sprintf(__('Expira en %d horas', FLAVOR_PLATFORM_TEXT_DOMAIN), $horas);
                 }
             }
         ?>
@@ -80,7 +80,7 @@ $avisos_base_url = Flavor_Chat_Helpers::get_action_url('avisos_municipales', '')
                 <div class="aviso-urgente-badges">
                     <span class="aviso-badge aviso-badge--urgente">
                         <span class="dashicons dashicons-warning"></span>
-                        <?php esc_html_e('Urgente', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Urgente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                     <?php if ($aviso->categoria_nombre): ?>
                     <span class="aviso-badge aviso-badge--categoria" style="background: <?php echo esc_attr($aviso->categoria_color ?: '#6b7280'); ?>">
@@ -123,7 +123,7 @@ $avisos_base_url = Flavor_Chat_Helpers::get_action_url('avisos_municipales', '')
             </div>
             <div class="aviso-urgente-accion">
                 <a href="<?php echo esc_url($avisos_base_url . '?aviso=' . $aviso->id); ?>" class="btn btn-urgente">
-                    <?php esc_html_e('Ver aviso', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver aviso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="dashicons dashicons-arrow-right-alt"></span>
                 </a>
             </div>
@@ -133,10 +133,10 @@ $avisos_base_url = Flavor_Chat_Helpers::get_action_url('avisos_municipales', '')
     <?php else: ?>
     <div class="avisos-empty avisos-empty--success">
         <span class="dashicons dashicons-yes-alt"></span>
-        <h3><?php esc_html_e('Sin avisos urgentes', 'flavor-chat-ia'); ?></h3>
-        <p><?php esc_html_e('No hay comunicados urgentes en este momento. Consulta los avisos activos para mas informacion.', 'flavor-chat-ia'); ?></p>
+        <h3><?php esc_html_e('Sin avisos urgentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+        <p><?php esc_html_e('No hay comunicados urgentes en este momento. Consulta los avisos activos para mas informacion.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         <a href="<?php echo esc_url($avisos_base_url); ?>" class="btn btn-outline">
-            <?php esc_html_e('Ver todos los avisos', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Ver todos los avisos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
     <?php endif; ?>

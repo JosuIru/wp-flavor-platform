@@ -73,9 +73,9 @@ class Flavor_Shell_Custom_Views {
      */
     public function register_admin_page() {
         $hook = add_submenu_page(
-            'flavor-chat-ia',
-            __('Gestión de Vistas', 'flavor-chat-ia'),
-            __('Vistas del Shell', 'flavor-chat-ia'),
+            FLAVOR_PLATFORM_TEXT_DOMAIN,
+            __('Gestión de Vistas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Vistas del Shell', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-shell-views',
             [$this, 'render_admin_page']
@@ -384,8 +384,8 @@ class Flavor_Shell_Custom_Views {
         // Vistas del sistema siempre disponibles
         $available_views[] = [
             'id' => 'admin',
-            'name' => __('Administrador', 'flavor-chat-ia'),
-            'description' => __('Vista completa con todos los módulos', 'flavor-chat-ia'),
+            'name' => __('Administrador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Vista completa con todos los módulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => '',
             'color' => '#6366f1',
             'is_system' => true,
@@ -393,8 +393,8 @@ class Flavor_Shell_Custom_Views {
 
         $available_views[] = [
             'id' => 'gestor',
-            'name' => __('Gestor de Grupos', 'flavor-chat-ia'),
-            'description' => __('Vista simplificada para gestores', 'flavor-chat-ia'),
+            'name' => __('Gestor de Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'description' => __('Vista simplificada para gestores', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => '',
             'color' => '#10b981',
             'is_system' => true,
@@ -500,13 +500,13 @@ class Flavor_Shell_Custom_Views {
         check_ajax_referer('flavor_admin_shell', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $name = isset($_POST['name']) ? sanitize_text_field($_POST['name']) : '';
 
         if (empty($name)) {
-            wp_send_json_error(['message' => __('Nombre requerido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Nombre requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $view_id = $this->create_view([
@@ -519,12 +519,12 @@ class Flavor_Shell_Custom_Views {
         ]);
 
         if (!$view_id) {
-            wp_send_json_error(['message' => __('Error al crear vista o nombre duplicado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al crear vista o nombre duplicado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         wp_send_json_success([
             'view_id' => $view_id,
-            'message' => __('Vista creada', 'flavor-chat-ia'),
+            'message' => __('Vista creada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -535,13 +535,13 @@ class Flavor_Shell_Custom_Views {
         check_ajax_referer('flavor_admin_shell', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $view_id = isset($_POST['view_id']) ? sanitize_text_field($_POST['view_id']) : '';
 
         if (empty($view_id)) {
-            wp_send_json_error(['message' => __('ID de vista requerido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID de vista requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $data = [];
@@ -554,10 +554,10 @@ class Flavor_Shell_Custom_Views {
         if (isset($_POST['is_default'])) $data['is_default'] = $_POST['is_default'];
 
         if (!$this->update_view($view_id, $data)) {
-            wp_send_json_error(['message' => __('Error al actualizar vista', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al actualizar vista', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
-        wp_send_json_success(['message' => __('Vista actualizada', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Vista actualizada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -567,20 +567,20 @@ class Flavor_Shell_Custom_Views {
         check_ajax_referer('flavor_admin_shell', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $view_id = isset($_POST['view_id']) ? sanitize_text_field($_POST['view_id']) : '';
 
         if (empty($view_id)) {
-            wp_send_json_error(['message' => __('ID de vista requerido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID de vista requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (!$this->delete_view($view_id)) {
-            wp_send_json_error(['message' => __('Error al eliminar vista', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al eliminar vista', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
-        wp_send_json_success(['message' => __('Vista eliminada', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Vista eliminada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -590,21 +590,21 @@ class Flavor_Shell_Custom_Views {
         check_ajax_referer('flavor_admin_shell', 'nonce');
 
         if (!current_user_can('read')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $view_id = isset($_POST['view_id']) ? sanitize_text_field($_POST['view_id']) : '';
 
         if (empty($view_id)) {
-            wp_send_json_error(['message' => __('ID de vista requerido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID de vista requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (!$this->set_user_active_view($view_id)) {
-            wp_send_json_error(['message' => __('Vista no disponible', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Vista no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         wp_send_json_success([
-            'message' => __('Vista cambiada', 'flavor-chat-ia'),
+            'message' => __('Vista cambiada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'view_id' => $view_id,
         ]);
     }
@@ -616,7 +616,7 @@ class Flavor_Shell_Custom_Views {
         check_ajax_referer('flavor_admin_shell', 'nonce');
 
         if (!current_user_can('read')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $views = $this->get_available_views();
@@ -643,25 +643,25 @@ class Flavor_Shell_Custom_Views {
         check_ajax_referer('flavor_admin_shell', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $view_id = isset($_POST['view_id']) ? sanitize_text_field($_POST['view_id']) : '';
         $new_name = isset($_POST['new_name']) ? sanitize_text_field($_POST['new_name']) : '';
 
         if (empty($view_id)) {
-            wp_send_json_error(['message' => __('ID de vista requerido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID de vista requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $new_view_id = $this->duplicate_view($view_id, $new_name);
 
         if (!$new_view_id) {
-            wp_send_json_error(['message' => __('Error al duplicar vista', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al duplicar vista', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         wp_send_json_success([
             'view_id' => $new_view_id,
-            'message' => __('Vista duplicada', 'flavor-chat-ia'),
+            'message' => __('Vista duplicada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -670,7 +670,7 @@ class Flavor_Shell_Custom_Views {
      */
     public function render_admin_page() {
         if (!current_user_can('manage_options')) {
-            wp_die(__('No tienes permisos para acceder a esta página.', 'flavor-chat-ia'));
+            wp_die(__('No tienes permisos para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $custom_views = $this->get_custom_views();
@@ -681,55 +681,55 @@ class Flavor_Shell_Custom_Views {
         <div class="wrap flavor-shell-views-wrap" x-data="flavorShellViewsAdmin()">
             <h1>
                 <span class="dashicons dashicons-visibility" style="font-size:28px;margin-right:10px;"></span>
-                <?php esc_html_e('Gestión de Vistas del Shell', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Gestión de Vistas del Shell', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h1>
 
             <p class="description" style="font-size:14px;margin:15px 0 25px;">
-                <?php esc_html_e('Crea y gestiona vistas personalizadas del menú. Las vistas permiten mostrar diferentes conjuntos de menús según el rol o necesidad del usuario.', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Crea y gestiona vistas personalizadas del menú. Las vistas permiten mostrar diferentes conjuntos de menús según el rol o necesidad del usuario.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
 
             <div class="flavor-views-container">
                 <!-- Panel izquierdo: Lista de vistas -->
                 <div class="flavor-views-list-panel">
                     <div class="flavor-views-list-header">
-                        <h2><?php esc_html_e('Vistas', 'flavor-chat-ia'); ?></h2>
+                        <h2><?php esc_html_e('Vistas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                         <button type="button" class="button button-primary" @click="openCreateModal()">
                             <span class="dashicons dashicons-plus-alt2"></span>
-                            <?php esc_html_e('Nueva Vista', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Nueva Vista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
 
                     <!-- Vistas del sistema -->
                     <div class="flavor-views-group">
-                        <h3 class="flavor-views-group-title"><?php esc_html_e('Vistas del Sistema', 'flavor-chat-ia'); ?></h3>
+                        <h3 class="flavor-views-group-title"><?php esc_html_e('Vistas del Sistema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="flavor-view-card flavor-view-card--system">
                             <div class="flavor-view-card-icon">👤</div>
                             <div class="flavor-view-card-content">
-                                <strong><?php esc_html_e('Administrador', 'flavor-chat-ia'); ?></strong>
-                                <p><?php esc_html_e('Acceso completo a todos los módulos', 'flavor-chat-ia'); ?></p>
+                                <strong><?php esc_html_e('Administrador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                                <p><?php esc_html_e('Acceso completo a todos los módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </div>
-                            <span class="flavor-view-badge flavor-view-badge--system"><?php esc_html_e('Sistema', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-view-badge flavor-view-badge--system"><?php esc_html_e('Sistema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                         <div class="flavor-view-card flavor-view-card--system">
                             <div class="flavor-view-card-icon">👥</div>
                             <div class="flavor-view-card-content">
-                                <strong><?php esc_html_e('Gestor de Grupos', 'flavor-chat-ia'); ?></strong>
-                                <p><?php esc_html_e('Vista simplificada configurable', 'flavor-chat-ia'); ?></p>
+                                <strong><?php esc_html_e('Gestor de Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                                <p><?php esc_html_e('Vista simplificada configurable', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </div>
-                            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-config-vistas')); ?>" class="button button-small">
-                                <?php esc_html_e('Configurar', 'flavor-chat-ia'); ?>
+                            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-platform-views')); ?>" class="button button-small">
+                                <?php esc_html_e('Configurar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </div>
                     </div>
 
                     <!-- Vistas personalizadas -->
                     <div class="flavor-views-group">
-                        <h3 class="flavor-views-group-title"><?php esc_html_e('Vistas Personalizadas', 'flavor-chat-ia'); ?></h3>
+                        <h3 class="flavor-views-group-title"><?php esc_html_e('Vistas Personalizadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
                         <?php if (empty($custom_views)) : ?>
                             <div class="flavor-views-empty">
                                 <span class="dashicons dashicons-welcome-add-page"></span>
-                                <p><?php esc_html_e('No hay vistas personalizadas. Crea una nueva para comenzar.', 'flavor-chat-ia'); ?></p>
+                                <p><?php esc_html_e('No hay vistas personalizadas. Crea una nueva para comenzar.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </div>
                         <?php else : ?>
                             <?php foreach ($custom_views as $view_id => $view) : ?>
@@ -739,13 +739,13 @@ class Flavor_Shell_Custom_Views {
                                     </div>
                                     <div class="flavor-view-card-content">
                                         <strong><?php echo esc_html($view['name']); ?></strong>
-                                        <p><?php echo esc_html($view['description'] ?: __('Sin descripción', 'flavor-chat-ia')); ?></p>
+                                        <p><?php echo esc_html($view['description'] ?: __('Sin descripción', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></p>
                                         <small>
                                             <?php
                                             $menu_count = count($view['menus'] ?? []);
                                             $role_count = count($view['roles'] ?? []);
                                             printf(
-                                                esc_html__('%d menús · %d roles', 'flavor-chat-ia'),
+                                                esc_html__('%d menús · %d roles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                                 $menu_count,
                                                 $role_count
                                             );
@@ -753,13 +753,13 @@ class Flavor_Shell_Custom_Views {
                                         </small>
                                     </div>
                                     <div class="flavor-view-card-actions">
-                                        <button type="button" class="button button-small" @click="editView('<?php echo esc_js($view_id); ?>')" title="<?php esc_attr_e('Editar', 'flavor-chat-ia'); ?>">
+                                        <button type="button" class="button button-small" @click="editView('<?php echo esc_js($view_id); ?>')" title="<?php esc_attr_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <span class="dashicons dashicons-edit"></span>
                                         </button>
-                                        <button type="button" class="button button-small" @click="duplicateView('<?php echo esc_js($view_id); ?>')" title="<?php esc_attr_e('Duplicar', 'flavor-chat-ia'); ?>">
+                                        <button type="button" class="button button-small" @click="duplicateView('<?php echo esc_js($view_id); ?>')" title="<?php esc_attr_e('Duplicar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <span class="dashicons dashicons-admin-page"></span>
                                         </button>
-                                        <button type="button" class="button button-small button-link-delete" @click="deleteView('<?php echo esc_js($view_id); ?>', '<?php echo esc_js($view['name']); ?>')" title="<?php esc_attr_e('Eliminar', 'flavor-chat-ia'); ?>">
+                                        <button type="button" class="button button-small button-link-delete" @click="deleteView('<?php echo esc_js($view_id); ?>', '<?php echo esc_js($view['name']); ?>')" title="<?php esc_attr_e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <span class="dashicons dashicons-trash"></span>
                                         </button>
                                     </div>
@@ -771,24 +771,24 @@ class Flavor_Shell_Custom_Views {
 
                 <!-- Panel derecho: Información -->
                 <div class="flavor-views-info-panel">
-                    <h3><?php esc_html_e('¿Qué son las vistas?', 'flavor-chat-ia'); ?></h3>
-                    <p><?php esc_html_e('Las vistas permiten crear diferentes configuraciones del menú lateral para distintos tipos de usuarios.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php esc_html_e('¿Qué son las vistas?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p><?php esc_html_e('Las vistas permiten crear diferentes configuraciones del menú lateral para distintos tipos de usuarios.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
-                    <h4><?php esc_html_e('Vistas del Sistema', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php esc_html_e('Vistas del Sistema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <ul>
-                        <li><strong><?php esc_html_e('Administrador:', 'flavor-chat-ia'); ?></strong> <?php esc_html_e('Muestra todos los menús (no editable)', 'flavor-chat-ia'); ?></li>
-                        <li><strong><?php esc_html_e('Gestor:', 'flavor-chat-ia'); ?></strong> <?php esc_html_e('Menús configurables desde "Configurar vistas"', 'flavor-chat-ia'); ?></li>
+                        <li><strong><?php esc_html_e('Administrador:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php esc_html_e('Muestra todos los menús (no editable)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                        <li><strong><?php esc_html_e('Gestor:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php esc_html_e('Menús configurables desde "Configurar vistas"', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
                     </ul>
 
-                    <h4><?php esc_html_e('Vistas Personalizadas', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php esc_html_e('Vistas Personalizadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <ul>
-                        <li><?php esc_html_e('Puedes crear vistas con cualquier combinación de menús', 'flavor-chat-ia'); ?></li>
-                        <li><?php esc_html_e('Restringirlas por rol de WordPress', 'flavor-chat-ia'); ?></li>
-                        <li><?php esc_html_e('Personalizar icono y color', 'flavor-chat-ia'); ?></li>
+                        <li><?php esc_html_e('Puedes crear vistas con cualquier combinación de menús', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                        <li><?php esc_html_e('Restringirlas por rol de WordPress', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                        <li><?php esc_html_e('Personalizar icono y color', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
                     </ul>
 
-                    <h4><?php esc_html_e('¿Cómo cambiar de vista?', 'flavor-chat-ia'); ?></h4>
-                    <p><?php esc_html_e('Los usuarios pueden cambiar de vista desde el selector en el menú lateral del Shell.', 'flavor-chat-ia'); ?></p>
+                    <h4><?php esc_html_e('¿Cómo cambiar de vista?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                    <p><?php esc_html_e('Los usuarios pueden cambiar de vista desde el selector en el menú lateral del Shell.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             </div>
 
@@ -796,7 +796,7 @@ class Flavor_Shell_Custom_Views {
             <div class="flavor-views-modal-backdrop" x-show="modalOpen" x-cloak @click.self="closeModal()">
                 <div class="flavor-views-modal">
                     <div class="flavor-views-modal-header">
-                        <h2 x-text="editingView ? '<?php echo esc_js(__('Editar Vista', 'flavor-chat-ia')); ?>' : '<?php echo esc_js(__('Nueva Vista', 'flavor-chat-ia')); ?>'"></h2>
+                        <h2 x-text="editingView ? '<?php echo esc_js(__('Editar Vista', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>' : '<?php echo esc_js(__('Nueva Vista', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>'"></h2>
                         <button type="button" class="flavor-views-modal-close" @click="closeModal()">
                             <span class="dashicons dashicons-no-alt"></span>
                         </button>
@@ -804,29 +804,29 @@ class Flavor_Shell_Custom_Views {
 
                     <form @submit.prevent="saveView()" class="flavor-views-modal-content">
                         <div class="flavor-views-form-row">
-                            <label for="view-name"><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?> <span class="required">*</span></label>
-                            <input type="text" id="view-name" x-model="viewForm.name" required placeholder="<?php esc_attr_e('Ej: Coordinadores', 'flavor-chat-ia'); ?>">
+                            <label for="view-name"><?php esc_html_e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="required">*</span></label>
+                            <input type="text" id="view-name" x-model="viewForm.name" required placeholder="<?php esc_attr_e('Ej: Coordinadores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         </div>
 
                         <div class="flavor-views-form-row">
-                            <label for="view-description"><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?></label>
-                            <input type="text" id="view-description" x-model="viewForm.description" placeholder="<?php esc_attr_e('Breve descripción de la vista', 'flavor-chat-ia'); ?>">
+                            <label for="view-description"><?php esc_html_e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                            <input type="text" id="view-description" x-model="viewForm.description" placeholder="<?php esc_attr_e('Breve descripción de la vista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         </div>
 
                         <div class="flavor-views-form-row flavor-views-form-row--inline">
                             <div>
-                                <label for="view-icon"><?php esc_html_e('Icono (emoji)', 'flavor-chat-ia'); ?></label>
+                                <label for="view-icon"><?php esc_html_e('Icono (emoji)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <input type="text" id="view-icon" x-model="viewForm.icon" placeholder="📋" maxlength="4" style="width:60px;text-align:center;">
                             </div>
                             <div>
-                                <label for="view-color"><?php esc_html_e('Color', 'flavor-chat-ia'); ?></label>
+                                <label for="view-color"><?php esc_html_e('Color', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <input type="color" id="view-color" x-model="viewForm.color" style="width:60px;height:38px;">
                             </div>
                         </div>
 
                         <div class="flavor-views-form-row">
-                            <label><?php esc_html_e('Roles permitidos', 'flavor-chat-ia'); ?></label>
-                            <p class="description"><?php esc_html_e('Dejar vacío para permitir a todos los roles', 'flavor-chat-ia'); ?></p>
+                            <label><?php esc_html_e('Roles permitidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                            <p class="description"><?php esc_html_e('Dejar vacío para permitir a todos los roles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             <div class="flavor-views-checkbox-grid">
                                 <?php foreach ($wp_roles as $role_slug => $role) : ?>
                                     <label class="flavor-views-checkbox">
@@ -838,15 +838,15 @@ class Flavor_Shell_Custom_Views {
                         </div>
 
                         <div class="flavor-views-form-row">
-                            <label><?php esc_html_e('Menús visibles', 'flavor-chat-ia'); ?></label>
-                            <p class="description"><?php esc_html_e('Selecciona qué menús aparecerán en esta vista', 'flavor-chat-ia'); ?></p>
+                            <label><?php esc_html_e('Menús visibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                            <p class="description"><?php esc_html_e('Selecciona qué menús aparecerán en esta vista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                             <div class="flavor-views-menus-sections">
                                 <?php
                                 // Agrupar menús por sección
                                 $sections = [];
                                 foreach ($available_menus as $menu_item) {
-                                    $section_name = $menu_item['section'] ?? __('Otros', 'flavor-chat-ia');
+                                    $section_name = $menu_item['section'] ?? __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN);
                                     if (!isset($sections[$section_name])) {
                                         $sections[$section_name] = [];
                                     }
@@ -858,7 +858,7 @@ class Flavor_Shell_Custom_Views {
                                         <div class="flavor-views-menu-section-header">
                                             <strong><?php echo esc_html($section_name); ?></strong>
                                             <button type="button" class="button-link" @click="toggleSection('<?php echo esc_js($section_name); ?>')">
-                                                <?php esc_html_e('Marcar/Desmarcar todos', 'flavor-chat-ia'); ?>
+                                                <?php esc_html_e('Marcar/Desmarcar todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </button>
                                         </div>
                                         <div class="flavor-views-checkbox-grid">
@@ -876,10 +876,10 @@ class Flavor_Shell_Custom_Views {
                         </div>
 
                         <div class="flavor-views-modal-footer">
-                            <button type="button" class="button" @click="closeModal()"><?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?></button>
+                            <button type="button" class="button" @click="closeModal()"><?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                             <button type="submit" class="button button-primary" :disabled="saving">
-                                <span x-show="!saving"><?php esc_html_e('Guardar Vista', 'flavor-chat-ia'); ?></span>
-                                <span x-show="saving"><?php esc_html_e('Guardando...', 'flavor-chat-ia'); ?></span>
+                                <span x-show="!saving"><?php esc_html_e('Guardar Vista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                                <span x-show="saving"><?php esc_html_e('Guardando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </button>
                         </div>
                     </form>
@@ -1137,7 +1137,7 @@ class Flavor_Shell_Custom_Views {
 
                     async saveView() {
                         if (!this.viewForm.name.trim()) {
-                            alert('<?php echo esc_js(__('El nombre es obligatorio', 'flavor-chat-ia')); ?>');
+                            alert('<?php echo esc_js(__('El nombre es obligatorio', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                             return;
                         }
 
@@ -1169,17 +1169,17 @@ class Flavor_Shell_Custom_Views {
                             if (data.success) {
                                 window.location.reload();
                             } else {
-                                alert(data.data?.message || '<?php echo esc_js(__('Error al guardar', 'flavor-chat-ia')); ?>');
+                                alert(data.data?.message || '<?php echo esc_js(__('Error al guardar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                             }
                         } catch (e) {
-                            alert('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>');
+                            alert('<?php echo esc_js(__('Error de conexión', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                         }
 
                         this.saving = false;
                     },
 
                     async duplicateView(viewId) {
-                        const newName = prompt('<?php echo esc_js(__('Nombre para la nueva vista:', 'flavor-chat-ia')); ?>');
+                        const newName = prompt('<?php echo esc_js(__('Nombre para la nueva vista:', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                         if (!newName) return;
 
                         const formData = new FormData();
@@ -1198,15 +1198,15 @@ class Flavor_Shell_Custom_Views {
                             if (data.success) {
                                 window.location.reload();
                             } else {
-                                alert(data.data?.message || '<?php echo esc_js(__('Error al duplicar', 'flavor-chat-ia')); ?>');
+                                alert(data.data?.message || '<?php echo esc_js(__('Error al duplicar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                             }
                         } catch (e) {
-                            alert('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>');
+                            alert('<?php echo esc_js(__('Error de conexión', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                         }
                     },
 
                     async deleteView(viewId, viewName) {
-                        if (!confirm('<?php echo esc_js(__('¿Eliminar la vista', 'flavor-chat-ia')); ?> "' + viewName + '"?')) {
+                        if (!confirm('<?php echo esc_js(__('¿Eliminar la vista', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?> "' + viewName + '"?')) {
                             return;
                         }
 
@@ -1225,10 +1225,10 @@ class Flavor_Shell_Custom_Views {
                             if (data.success) {
                                 window.location.reload();
                             } else {
-                                alert(data.data?.message || '<?php echo esc_js(__('Error al eliminar', 'flavor-chat-ia')); ?>');
+                                alert(data.data?.message || '<?php echo esc_js(__('Error al eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                             }
                         } catch (e) {
-                            alert('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>');
+                            alert('<?php echo esc_js(__('Error de conexión', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                         }
                     },
 

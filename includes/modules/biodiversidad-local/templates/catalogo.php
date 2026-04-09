@@ -46,15 +46,15 @@ foreach ($especies as $especie) {
 
 <div class="bl-container">
     <header class="bl-header">
-        <h2><?php esc_html_e('Catálogo de Biodiversidad Local', 'flavor-chat-ia'); ?></h2>
-        <p><?php esc_html_e('Conoce las especies que habitan nuestro territorio', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Catálogo de Biodiversidad Local', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p><?php esc_html_e('Conoce las especies que habitan nuestro territorio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </header>
 
     <!-- Estadísticas -->
     <div class="bl-stats-bar">
         <div class="bl-stat-item">
             <div class="bl-stat-item__valor"><?php echo esc_html(count($especies)); ?></div>
-            <div class="bl-stat-item__label"><?php esc_html_e('Especies', 'flavor-chat-ia'); ?></div>
+            <div class="bl-stat-item__label"><?php esc_html_e('Especies', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
         <?php foreach ($categorias as $cat_id => $cat_data) : ?>
         <div class="bl-stat-item">
@@ -70,7 +70,7 @@ foreach ($especies as $especie) {
     <div class="bl-categorias-grid">
         <button class="bl-categoria-btn activo" data-categoria="todos">
             <span class="dashicons dashicons-screenoptions"></span>
-            <?php esc_html_e('Todos', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
         <?php foreach ($categorias as $cat_id => $cat_data) : ?>
         <button class="bl-categoria-btn" data-categoria="<?php echo esc_attr($cat_id); ?>">
@@ -125,12 +125,12 @@ foreach ($especies as $especie) {
                 <?php endif; ?>
 
                 <div class="bl-especie-card__meta">
-                    <span title="<?php esc_attr_e('Avistamientos', 'flavor-chat-ia'); ?>">
+                    <span title="<?php esc_attr_e('Avistamientos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-visibility"></span>
                         <?php echo esc_html($avistamientos->found_posts); ?>
                     </span>
                     <?php if (!empty($habitats)) : ?>
-                    <span title="<?php esc_attr_e('Hábitats', 'flavor-chat-ia'); ?>">
+                    <span title="<?php esc_attr_e('Hábitats', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-admin-site"></span>
                         <?php echo esc_html(count($habitats)); ?>
                     </span>
@@ -143,10 +143,10 @@ foreach ($especies as $especie) {
     <?php else : ?>
     <div class="bl-empty-state">
         <span class="dashicons dashicons-admin-site-alt3"></span>
-        <p><?php esc_html_e('Aún no hay especies catalogadas.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('Aún no hay especies catalogadas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         <?php if (is_user_logged_in()) : ?>
         <a href="<?php echo esc_url(home_url('/biodiversidad/registrar/')); ?>" class="bl-btn bl-btn--primary">
-            <?php esc_html_e('Proponer una especie', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Proponer una especie', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <?php endif; ?>
     </div>
@@ -157,7 +157,7 @@ foreach ($especies as $especie) {
     <div style="text-align: center; margin-top: 2rem;">
         <a href="<?php echo esc_url(home_url('/biodiversidad/registrar/')); ?>" class="bl-btn bl-btn--primary">
             <span class="dashicons dashicons-plus-alt2"></span>
-            <?php esc_html_e('Registrar avistamiento', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Registrar avistamiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
     <?php endif; ?>

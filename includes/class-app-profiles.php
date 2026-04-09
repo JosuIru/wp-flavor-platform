@@ -394,7 +394,7 @@ class Flavor_App_Profiles {
             $configuracion['active_modules'] = $modulos_activos;
         }
 
-        update_option('flavor_chat_ia_settings', $configuracion);
+        flavor_update_main_settings($configuracion);
 
         // Limpiar cache de opciones para asegurar que se lee el valor actualizado
         wp_cache_delete('alloptions', 'options');
@@ -462,7 +462,7 @@ class Flavor_App_Profiles {
      * @return array
      */
     public function obtener_perfiles_activos() {
-        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $configuracion = flavor_get_main_settings();
 
         // Verificar si hay múltiples perfiles activos
         if (isset($configuracion['app_profiles']) && is_array($configuracion['app_profiles'])) {
@@ -492,7 +492,7 @@ class Flavor_App_Profiles {
             }
         }
 
-        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $configuracion = flavor_get_main_settings();
 
         // Guardar perfiles activos
         $configuracion['app_profiles'] = $perfiles_ids;
@@ -502,7 +502,7 @@ class Flavor_App_Profiles {
         $modulos_combinados = $this->combinar_modulos_de_perfiles($perfiles_ids);
         $configuracion['active_modules'] = $modulos_combinados;
 
-        update_option('flavor_chat_ia_settings', $configuracion);
+        flavor_update_main_settings($configuracion);
 
         // Limpiar cache
         wp_cache_delete('alloptions', 'options');
@@ -698,7 +698,8 @@ class Flavor_App_Profiles {
             }
 
             // Limpiar TODO el caché DESPUÉS de verificar
-            wp_cache_delete('flavor_chat_ia_settings', 'options');
+            wp_cache_delete(FLAVOR_CHAT_IA_SETTINGS_OPTION, 'options');
+            wp_cache_delete(FLAVOR_PLATFORM_SETTINGS_OPTION, 'options');
             wp_cache_delete('alloptions', 'options');
             wp_cache_flush();
 
@@ -947,7 +948,8 @@ class Flavor_App_Profiles {
             }
 
             // Limpiar TODO el caché DESPUÉS de verificar
-            wp_cache_delete('flavor_chat_ia_settings', 'options');
+            wp_cache_delete(FLAVOR_CHAT_IA_SETTINGS_OPTION, 'options');
+            wp_cache_delete(FLAVOR_PLATFORM_SETTINGS_OPTION, 'options');
             wp_cache_delete('alloptions', 'options');
             wp_cache_flush();
 

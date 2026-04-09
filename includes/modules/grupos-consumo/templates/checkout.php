@@ -18,9 +18,9 @@ if (!defined('ABSPATH')) {
 // Verificar autenticación
 if (!is_user_logged_in()) {
     echo '<div class="gc-checkout-error">';
-    echo '<p>' . esc_html__('Debes iniciar sesión para continuar.', 'flavor-chat-ia') . '</p>';
+    echo '<p>' . esc_html__('Debes iniciar sesión para continuar.', 'flavor-platform') . '</p>';
     echo '<a href="' . esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'checkout'))) . '" class="gc-btn gc-btn-primary">';
-    echo esc_html__('Iniciar sesión', 'flavor-chat-ia');
+    echo esc_html__('Iniciar sesión', 'flavor-platform');
     echo '</a></div>';
     return;
 }
@@ -30,9 +30,9 @@ $entrega_id = isset($entrega_id) ? absint($entrega_id) : absint($_GET['entrega_i
 
 if (!$entrega_id) {
     echo '<div class="gc-checkout-error">';
-    echo '<p>' . esc_html__('No se especificó una entrega válida.', 'flavor-chat-ia') . '</p>';
+    echo '<p>' . esc_html__('No se especificó una entrega válida.', 'flavor-platform') . '</p>';
     echo '<a href="' . esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mi-pedido')) . '" class="gc-btn gc-btn-secondary">';
-    echo esc_html__('Ir a mi cesta', 'flavor-chat-ia');
+    echo esc_html__('Ir a mi cesta', 'flavor-platform');
     echo '</a></div>';
     return;
 }
@@ -43,7 +43,7 @@ $checkout_data = $payment_manager->get_checkout_summary($entrega_id);
 
 if (!$checkout_data) {
     echo '<div class="gc-checkout-error">';
-    echo '<p>' . esc_html__('La entrega no existe o no tienes permisos para acceder.', 'flavor-chat-ia') . '</p>';
+    echo '<p>' . esc_html__('La entrega no existe o no tienes permisos para acceder.', 'flavor-platform') . '</p>';
     echo '</div>';
     return;
 }
@@ -58,7 +58,7 @@ $entrega = $wpdb->get_row($wpdb->prepare(
 
 if (!$entrega || (int) $entrega->usuario_id !== get_current_user_id()) {
     echo '<div class="gc-checkout-error">';
-    echo '<p>' . esc_html__('No tienes permisos para acceder a esta entrega.', 'flavor-chat-ia') . '</p>';
+    echo '<p>' . esc_html__('No tienes permisos para acceder a esta entrega.', 'flavor-platform') . '</p>';
     echo '</div>';
     return;
 }
@@ -67,10 +67,10 @@ if (!$entrega || (int) $entrega->usuario_id !== get_current_user_id()) {
 if ($checkout_data['estado_pago'] === 'completado') {
     echo '<div class="gc-checkout-success">';
     echo '<span class="dashicons dashicons-yes-alt"></span>';
-    echo '<h2>' . esc_html__('Pedido ya pagado', 'flavor-chat-ia') . '</h2>';
-    echo '<p>' . esc_html__('Este pedido ya ha sido pagado correctamente.', 'flavor-chat-ia') . '</p>';
+    echo '<h2>' . esc_html__('Pedido ya pagado', 'flavor-platform') . '</h2>';
+    echo '<p>' . esc_html__('Este pedido ya ha sido pagado correctamente.', 'flavor-platform') . '</p>';
     echo '<a href="' . esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mis-pedidos')) . '" class="gc-btn gc-btn-primary">';
-    echo esc_html__('Ver mis pedidos', 'flavor-chat-ia');
+    echo esc_html__('Ver mis pedidos', 'flavor-platform');
     echo '</a></div>';
     return;
 }
@@ -81,24 +81,24 @@ $selected_gateway = $pasarelas[0]['id'] ?? '';
 
 <div class="gc-checkout-container">
     <div class="gc-checkout-main">
-        <h2 class="gc-checkout-title"><?php esc_html_e('Finalizar pedido', 'flavor-chat-ia'); ?></h2>
+        <h2 class="gc-checkout-title"><?php esc_html_e('Finalizar pedido', 'flavor-platform'); ?></h2>
 
         <!-- Resumen del pedido -->
         <div class="gc-checkout-summary">
-            <h3><?php esc_html_e('Resumen del pedido', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Resumen del pedido', 'flavor-platform'); ?></h3>
 
             <div class="gc-checkout-ciclo">
-                <strong><?php esc_html_e('Ciclo:', 'flavor-chat-ia'); ?></strong>
+                <strong><?php esc_html_e('Ciclo:', 'flavor-platform'); ?></strong>
                 <?php echo esc_html($checkout_data['ciclo']); ?>
             </div>
 
             <table class="gc-checkout-items">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('Producto', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Cantidad', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Precio', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Subtotal', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Producto', 'flavor-platform'); ?></th>
+                        <th><?php esc_html_e('Cantidad', 'flavor-platform'); ?></th>
+                        <th><?php esc_html_e('Precio', 'flavor-platform'); ?></th>
+                        <th><?php esc_html_e('Subtotal', 'flavor-platform'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -113,17 +113,17 @@ $selected_gateway = $pasarelas[0]['id'] ?? '';
                 </tbody>
                 <tfoot>
                     <tr class="gc-checkout-subtotal">
-                        <td colspan="3"><?php esc_html_e('Subtotal', 'flavor-chat-ia'); ?></td>
+                        <td colspan="3"><?php esc_html_e('Subtotal', 'flavor-platform'); ?></td>
                         <td><?php echo number_format($checkout_data['subtotal'], 2, ',', '.'); ?> €</td>
                     </tr>
                     <?php if ($checkout_data['descuento'] > 0) : ?>
                     <tr class="gc-checkout-discount">
-                        <td colspan="3"><?php esc_html_e('Descuento', 'flavor-chat-ia'); ?></td>
+                        <td colspan="3"><?php esc_html_e('Descuento', 'flavor-platform'); ?></td>
                         <td>-<?php echo number_format($checkout_data['descuento'], 2, ',', '.'); ?> €</td>
                     </tr>
                     <?php endif; ?>
                     <tr class="gc-checkout-total">
-                        <td colspan="3"><?php esc_html_e('Total a pagar', 'flavor-chat-ia'); ?></td>
+                        <td colspan="3"><?php esc_html_e('Total a pagar', 'flavor-platform'); ?></td>
                         <td><strong><?php echo number_format($checkout_data['total'], 2, ',', '.'); ?> €</strong></td>
                     </tr>
                 </tfoot>
@@ -132,11 +132,11 @@ $selected_gateway = $pasarelas[0]['id'] ?? '';
 
         <!-- Métodos de pago -->
         <div class="gc-checkout-payment">
-            <h3><?php esc_html_e('Método de pago', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Método de pago', 'flavor-platform'); ?></h3>
 
             <?php if (empty($pasarelas)) : ?>
             <div class="gc-checkout-no-gateways">
-                <p><?php esc_html_e('No hay métodos de pago disponibles. Contacta con el administrador.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No hay métodos de pago disponibles. Contacta con el administrador.', 'flavor-platform'); ?></p>
             </div>
             <?php else : ?>
 
@@ -170,13 +170,13 @@ $selected_gateway = $pasarelas[0]['id'] ?? '';
 
                 <div class="gc-checkout-actions">
                     <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mi-pedido')); ?>" class="gc-btn gc-btn-secondary">
-                        <?php esc_html_e('Volver a la cesta', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Volver a la cesta', 'flavor-platform'); ?>
                     </a>
                     <button type="submit" class="gc-btn gc-btn-primary gc-btn-pay" id="gc-btn-pay">
-                        <span class="gc-btn-text"><?php esc_html_e('Pagar', 'flavor-chat-ia'); ?> <?php echo number_format($checkout_data['total'], 2, ',', '.'); ?> €</span>
+                        <span class="gc-btn-text"><?php esc_html_e('Pagar', 'flavor-platform'); ?> <?php echo number_format($checkout_data['total'], 2, ',', '.'); ?> €</span>
                         <span class="gc-btn-loading" style="display: none;">
                             <span class="gc-spinner"></span>
-                            <?php esc_html_e('Procesando...', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Procesando...', 'flavor-platform'); ?>
                         </span>
                     </button>
                 </div>
@@ -190,12 +190,12 @@ $selected_gateway = $pasarelas[0]['id'] ?? '';
     <aside class="gc-checkout-sidebar">
         <div class="gc-checkout-secure">
             <span class="dashicons dashicons-lock"></span>
-            <span><?php esc_html_e('Pago seguro', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Pago seguro', 'flavor-platform'); ?></span>
         </div>
 
         <div class="gc-checkout-help">
-            <h4><?php esc_html_e('¿Necesitas ayuda?', 'flavor-chat-ia'); ?></h4>
-            <p><?php esc_html_e('Si tienes dudas sobre el proceso de pago, contacta con nosotros.', 'flavor-chat-ia'); ?></p>
+            <h4><?php esc_html_e('¿Necesitas ayuda?', 'flavor-platform'); ?></h4>
+            <p><?php esc_html_e('Si tienes dudas sobre el proceso de pago, contacta con nosotros.', 'flavor-platform'); ?></p>
         </div>
     </aside>
 </div>
@@ -232,7 +232,7 @@ $selected_gateway = $pasarelas[0]['id'] ?? '';
                 }
             },
             error: function() {
-                $gatewayFields.html('<p class="gc-error"><?php echo esc_js(__('Error al cargar el formulario.', 'flavor-chat-ia')); ?></p>');
+                $gatewayFields.html('<p class="gc-error"><?php echo esc_js(__('Error al cargar el formulario.', 'flavor-platform')); ?></p>');
             }
         });
     }
@@ -275,14 +275,14 @@ $selected_gateway = $pasarelas[0]['id'] ?? '';
                         window.location.href = '<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mis-pedidos') . '?payment=success'); ?>';
                     }
                 } else {
-                    mostrarAviso(response.data.error || '<?php echo esc_js(__('Error al procesar el pago.', 'flavor-chat-ia')); ?>', 'error');
+                    mostrarAviso(response.data.error || '<?php echo esc_js(__('Error al procesar el pago.', 'flavor-platform')); ?>', 'error');
                     $btn.prop('disabled', false);
                     $btn.find('.gc-btn-text').show();
                     $btn.find('.gc-btn-loading').hide();
                 }
             },
             error: function() {
-                mostrarAviso('<?php echo esc_js(__('Error de conexión. Inténtalo de nuevo.', 'flavor-chat-ia')); ?>', 'error');
+                mostrarAviso('<?php echo esc_js(__('Error de conexión. Inténtalo de nuevo.', 'flavor-platform')); ?>', 'error');
                 $btn.prop('disabled', false);
                 $btn.find('.gc-btn-text').show();
                 $btn.find('.gc-btn-loading').hide();

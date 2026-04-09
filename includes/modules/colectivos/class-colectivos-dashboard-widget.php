@@ -27,8 +27,8 @@ class Flavor_Colectivos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
     public function __construct() {
         global $wpdb;
         $this->prefix_tabla = $wpdb->prefix . 'flavor_colectivos_';
-        $this->title = __('Colectivos', 'flavor-chat-ia');
-        $this->description = __('Colectivos y asociaciones locales', 'flavor-chat-ia');
+        $this->title = __('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Colectivos y asociaciones locales', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         parent::__construct([
             'id' => $this->widget_id,
@@ -77,7 +77,7 @@ class Flavor_Colectivos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             [
                 'icon' => 'dashicons-groups',
                 'valor' => $total_colectivos,
-                'label' => __('Colectivos', 'flavor-chat-ia'),
+                'label' => __('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'primary',
                 'url' => $es_admin ? admin_url('admin.php?page=colectivos') : Flavor_Chat_Helpers::get_action_url('colectivos', ''),
             ],
@@ -87,7 +87,7 @@ class Flavor_Colectivos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $stats[] = [
                 'icon' => 'dashicons-admin-users',
                 'valor' => $mis_colectivos,
-                'label' => __('Mis colectivos', 'flavor-chat-ia'),
+                'label' => __('Mis colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $mis_colectivos > 0 ? 'success' : 'gray',
                 'url' => $es_admin ? admin_url('admin.php?page=colectivos&tab=mis-colectivos') : Flavor_Chat_Helpers::get_action_url('colectivos', 'mis-colectivos'),
             ];
@@ -98,10 +98,10 @@ class Flavor_Colectivos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats,
             'items' => $items,
-            'empty_state' => __('No hay colectivos registrados', 'flavor-chat-ia'),
+            'empty_state' => __('No hay colectivos registrados', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => __('Explorar colectivos', 'flavor-chat-ia'),
+                    'label' => __('Explorar colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => $es_admin ? admin_url('admin.php?page=colectivos') : Flavor_Chat_Helpers::get_action_url('colectivos', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
@@ -131,7 +131,7 @@ class Flavor_Colectivos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         foreach ($colectivos as $colectivo) {
             $miembros_texto = '';
             if (isset($colectivo->total_miembros) && $colectivo->total_miembros > 0) {
-                $miembros_texto = sprintf(_n('%d miembro', '%d miembros', $colectivo->total_miembros, 'flavor-chat-ia'), $colectivo->total_miembros);
+                $miembros_texto = sprintf(_n('%d miembro', '%d miembros', $colectivo->total_miembros, FLAVOR_PLATFORM_TEXT_DOMAIN), $colectivo->total_miembros);
             }
 
             $items[] = [

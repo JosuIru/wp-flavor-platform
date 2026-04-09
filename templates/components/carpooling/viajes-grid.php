@@ -139,7 +139,7 @@ $col_class = $grid_cols[$columnas] ?? 'md:grid-cols-3';
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                                 </svg>
                                 <span class="text-sm">
-                                    <?php printf(_n('%d plaza disponible', '%d plazas disponibles', $viaje['plazas'], 'flavor-chat-ia'), $viaje['plazas']); ?>
+                                    <?php printf(_n('%d plaza disponible', '%d plazas disponibles', $viaje['plazas'], FLAVOR_PLATFORM_TEXT_DOMAIN), $viaje['plazas']); ?>
                                 </span>
                             </div>
                         </div>
@@ -148,10 +148,10 @@ $col_class = $grid_cols[$columnas] ?? 'md:grid-cols-3';
                         <div class="flex items-center justify-between pt-4 border-t">
                             <div class="text-2xl font-bold text-blue-600">
                                 <?php echo number_format($viaje['precio'], 2); ?>€
-                                <span class="text-sm text-gray-500 font-normal"><?php echo esc_html__('/plaza', 'flavor-chat-ia'); ?></span>
+                                <span class="text-sm text-gray-500 font-normal"><?php echo esc_html__('/plaza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                             <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition duration-300 transform group-hover:scale-105">
-                                <?php _e('Reservar', 'flavor-chat-ia'); ?>
+                                <?php _e('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </div>
                     </div>
@@ -162,7 +162,7 @@ $col_class = $grid_cols[$columnas] ?? 'md:grid-cols-3';
         <!-- Ver todos -->
         <div class="text-center mt-12">
             <a href="#" class="inline-flex items-center px-8 py-3 bg-white border-2 border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-600 hover:text-white transition duration-300">
-                <span><?php _e('Ver Todos los Viajes', 'flavor-chat-ia'); ?></span>
+                <span><?php _e('Ver Todos los Viajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>

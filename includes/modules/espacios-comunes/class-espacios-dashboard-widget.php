@@ -27,8 +27,8 @@ class Flavor_Espacios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
     public function __construct() {
         global $wpdb;
         $this->prefix_tabla = $wpdb->prefix . 'flavor_espacios_';
-        $this->title = __('Espacios', 'flavor-chat-ia');
-        $this->description = __('Reserva de espacios comunitarios', 'flavor-chat-ia');
+        $this->title = __('Espacios', 'flavor-platform');
+        $this->description = __('Reserva de espacios comunitarios', 'flavor-platform');
 
         parent::__construct([
             'id' => $this->widget_id,
@@ -91,7 +91,7 @@ class Flavor_Espacios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             [
                 'icon' => 'dashicons-building',
                 'valor' => $espacios_disponibles,
-                'label' => __('Espacios', 'flavor-chat-ia'),
+                'label' => __('Espacios', 'flavor-platform'),
                 'color' => 'primary',
                 'url' => $es_admin ? admin_url('admin.php?page=espacios-comunes') : Flavor_Chat_Helpers::get_action_url('espacios_comunes', ''),
             ],
@@ -101,7 +101,7 @@ class Flavor_Espacios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $stats[] = [
                 'icon' => 'dashicons-calendar-alt',
                 'valor' => $mis_reservas,
-                'label' => __('Mis reservas', 'flavor-chat-ia'),
+                'label' => __('Mis reservas', 'flavor-platform'),
                 'color' => $mis_reservas > 0 ? 'success' : 'gray',
                 'url' => $es_admin ? admin_url('admin.php?page=espacios-comunes&tab=mis-reservas') : Flavor_Chat_Helpers::get_action_url('espacios_comunes', 'mis-reservas'),
             ];
@@ -123,10 +123,10 @@ class Flavor_Espacios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats,
             'items' => $items,
-            'empty_state' => __('No hay espacios disponibles', 'flavor-chat-ia'),
+            'empty_state' => __('No hay espacios disponibles', 'flavor-platform'),
             'footer' => [
                 [
-                    'label' => __('Reservar espacio', 'flavor-chat-ia'),
+                    'label' => __('Reservar espacio', 'flavor-platform'),
                     'url' => $es_admin ? admin_url('admin.php?page=espacios-comunes&action=reservar') : Flavor_Chat_Helpers::get_action_url('espacios_comunes', 'reservar'),
                     'icon' => 'dashicons-plus-alt2',
                 ],
@@ -154,7 +154,7 @@ class Flavor_Espacios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         $items = [];
 
         foreach ($espacios as $espacio) {
-            $capacidad = $espacio->capacidad > 0 ? sprintf(__('%d pers.', 'flavor-chat-ia'), $espacio->capacidad) : '';
+            $capacidad = $espacio->capacidad > 0 ? sprintf(__('%d pers.', 'flavor-platform'), $espacio->capacidad) : '';
 
             $items[] = [
                 'icon' => 'dashicons-building',

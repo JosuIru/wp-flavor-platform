@@ -131,7 +131,7 @@ class Flavor_EM_List_Manager {
         global $wpdb;
 
         if (empty($data['nombre'])) {
-            return new WP_Error('missing_name', __('El nombre es obligatorio', 'flavor-chat-ia'));
+            return new WP_Error('missing_name', __('El nombre es obligatorio', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $table = $wpdb->prefix . self::TABLE_PREFIX . 'listas';
@@ -143,7 +143,7 @@ class Flavor_EM_List_Manager {
         ));
 
         if ($exists) {
-            return new WP_Error('duplicate_name', __('Ya existe una lista con ese nombre', 'flavor-chat-ia'));
+            return new WP_Error('duplicate_name', __('Ya existe una lista con ese nombre', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $insert_data = [
@@ -160,7 +160,7 @@ class Flavor_EM_List_Manager {
         $result = $wpdb->insert($table, $insert_data);
 
         if ($result === false) {
-            return new WP_Error('db_error', __('Error al crear lista', 'flavor-chat-ia'));
+            return new WP_Error('db_error', __('Error al crear lista', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $list_id = $wpdb->insert_id;
@@ -182,7 +182,7 @@ class Flavor_EM_List_Manager {
 
         $list = $this->get_list($id);
         if (!$list) {
-            return new WP_Error('not_found', __('Lista no encontrada', 'flavor-chat-ia'));
+            return new WP_Error('not_found', __('Lista no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $table = $wpdb->prefix . self::TABLE_PREFIX . 'listas';
@@ -198,7 +198,7 @@ class Flavor_EM_List_Manager {
             ));
 
             if ($exists) {
-                return new WP_Error('duplicate_name', __('Ya existe una lista con ese nombre', 'flavor-chat-ia'));
+                return new WP_Error('duplicate_name', __('Ya existe una lista con ese nombre', FLAVOR_PLATFORM_TEXT_DOMAIN));
             }
 
             $update_data['nombre'] = sanitize_text_field($data['nombre']);
@@ -222,7 +222,7 @@ class Flavor_EM_List_Manager {
         }
 
         if (empty($update_data)) {
-            return new WP_Error('no_data', __('No hay datos para actualizar', 'flavor-chat-ia'));
+            return new WP_Error('no_data', __('No hay datos para actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $update_data['updated_at'] = current_time('mysql');
@@ -230,7 +230,7 @@ class Flavor_EM_List_Manager {
         $result = $wpdb->update($table, $update_data, ['id' => $id]);
 
         if ($result === false) {
-            return new WP_Error('db_error', __('Error al actualizar lista', 'flavor-chat-ia'));
+            return new WP_Error('db_error', __('Error al actualizar lista', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         do_action('flavor_em_list_updated', $id, $data);
@@ -250,12 +250,12 @@ class Flavor_EM_List_Manager {
 
         $list = $this->get_list($id);
         if (!$list) {
-            return new WP_Error('not_found', __('Lista no encontrada', 'flavor-chat-ia'));
+            return new WP_Error('not_found', __('Lista no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Verificar si es lista del sistema
         if ($list['tipo'] === 'sistema') {
-            return new WP_Error('system_list', __('No se pueden eliminar listas del sistema', 'flavor-chat-ia'));
+            return new WP_Error('system_list', __('No se pueden eliminar listas del sistema', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $table = $wpdb->prefix . self::TABLE_PREFIX . 'listas';
@@ -285,7 +285,7 @@ class Flavor_EM_List_Manager {
         $result = $wpdb->delete($table, ['id' => $id]);
 
         if ($result === false) {
-            return new WP_Error('db_error', __('Error al eliminar lista', 'flavor-chat-ia'));
+            return new WP_Error('db_error', __('Error al eliminar lista', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         do_action('flavor_em_list_deleted', $id);
@@ -432,7 +432,7 @@ class Flavor_EM_List_Manager {
 
             if (!is_email($email)) {
                 $results['errors']++;
-                $results['details'][] = sprintf(__('Email inválido: %s', 'flavor-chat-ia'), $email);
+                $results['details'][] = sprintf(__('Email inválido: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $email);
                 continue;
             }
 

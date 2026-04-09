@@ -136,28 +136,28 @@ if ($usar_demo_recursos) {
 
 // Estados para badges
 $estados_herramienta = [
-    'disponible' => ['label' => __('Disponible', 'flavor-chat-ia'), 'color' => '#28a745'],
-    'prestada' => ['label' => __('Prestada', 'flavor-chat-ia'), 'color' => '#ffc107'],
-    'mantenimiento' => ['label' => __('Mantenimiento', 'flavor-chat-ia'), 'color' => '#dc3545'],
-    'baja' => ['label' => __('Baja', 'flavor-chat-ia'), 'color' => '#6c757d'],
+    'disponible' => ['label' => __('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#28a745'],
+    'prestada' => ['label' => __('Prestada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#ffc107'],
+    'mantenimiento' => ['label' => __('Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#dc3545'],
+    'baja' => ['label' => __('Baja', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#6c757d'],
 ];
 
 $estados_recurso = [
-    'operativo' => ['label' => __('Operativo', 'flavor-chat-ia'), 'color' => '#28a745'],
-    'revision' => ['label' => __('En Revisión', 'flavor-chat-ia'), 'color' => '#ffc107'],
-    'averiado' => ['label' => __('Averiado', 'flavor-chat-ia'), 'color' => '#dc3545'],
+    'operativo' => ['label' => __('Operativo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#28a745'],
+    'revision' => ['label' => __('En Revisión', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#ffc107'],
+    'averiado' => ['label' => __('Averiado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#dc3545'],
 ];
 ?>
 
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-hammer" style="color: #6f42c1;"></span>
-        <?php echo esc_html__('Recursos y Herramientas', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Recursos y Herramientas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <?php if ($usar_demo): ?>
         <div class="notice notice-info" style="margin: 15px 0;">
-            <p><span class="dashicons dashicons-info"></span> <?php echo esc_html__('Mostrando datos de demostración. Los datos reales aparecerán cuando se registren herramientas y recursos.', 'flavor-chat-ia'); ?></p>
+            <p><span class="dashicons dashicons-info"></span> <?php echo esc_html__('Mostrando datos de demostración. Los datos reales aparecerán cuando se registren herramientas y recursos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php endif; ?>
 
@@ -169,7 +169,7 @@ $estados_recurso = [
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div style="font-size: 28px; font-weight: bold; color: #6f42c1;"><?php echo number_format($total_herramientas); ?></div>
-                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Total Herramientas', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Total Herramientas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <span class="dashicons dashicons-hammer" style="font-size: 32px; color: #6f42c1; opacity: 0.3;"></span>
             </div>
@@ -179,7 +179,7 @@ $estados_recurso = [
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div style="font-size: 28px; font-weight: bold; color: #28a745;"><?php echo number_format($herramientas_disponibles); ?></div>
-                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Disponibles', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <span class="dashicons dashicons-yes-alt" style="font-size: 32px; color: #28a745; opacity: 0.3;"></span>
             </div>
@@ -189,7 +189,7 @@ $estados_recurso = [
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div style="font-size: 28px; font-weight: bold; color: #ffc107;"><?php echo number_format($herramientas_prestadas); ?></div>
-                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Prestadas', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Prestadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <span class="dashicons dashicons-external" style="font-size: 32px; color: #ffc107; opacity: 0.3;"></span>
             </div>
@@ -199,7 +199,7 @@ $estados_recurso = [
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div style="font-size: 28px; font-weight: bold; color: #dc3545;"><?php echo number_format($herramientas_mantenimiento); ?></div>
-                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('En Mantenimiento', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('En Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <span class="dashicons dashicons-admin-tools" style="font-size: 32px; color: #dc3545; opacity: 0.3;"></span>
             </div>
@@ -209,7 +209,7 @@ $estados_recurso = [
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div style="font-size: 28px; font-weight: bold; color: #17a2b8;"><?php echo number_format($prestamos_activos); ?></div>
-                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Préstamos Activos', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Préstamos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <span class="dashicons dashicons-groups" style="font-size: 32px; color: #17a2b8; opacity: 0.3;"></span>
             </div>
@@ -223,9 +223,9 @@ $estados_recurso = [
                 <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page'] ?? 'huertos-urbanos-recursos'); ?>">
 
                 <div>
-                    <label style="display: block; font-weight: 500; margin-bottom: 4px; font-size: 12px;"><?php echo esc_html__('Tipo', 'flavor-chat-ia'); ?></label>
+                    <label style="display: block; font-weight: 500; margin-bottom: 4px; font-size: 12px;"><?php echo esc_html__('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="tipo" style="min-width: 140px;">
-                        <option value=""><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php echo esc_html__('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($tipos_disponibles as $tipo): ?>
                             <option value="<?php echo esc_attr($tipo); ?>" <?php selected($filtro_tipo, $tipo); ?>>
                                 <?php echo esc_html($tipo); ?>
@@ -235,9 +235,9 @@ $estados_recurso = [
                 </div>
 
                 <div>
-                    <label style="display: block; font-weight: 500; margin-bottom: 4px; font-size: 12px;"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></label>
+                    <label style="display: block; font-weight: 500; margin-bottom: 4px; font-size: 12px;"><?php echo esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="estado" style="min-width: 140px;">
-                        <option value=""><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php echo esc_html__('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($estados_herramienta as $estado_key => $estado_data): ?>
                             <option value="<?php echo esc_attr($estado_key); ?>" <?php selected($filtro_estado, $estado_key); ?>>
                                 <?php echo esc_html($estado_data['label']); ?>
@@ -247,16 +247,16 @@ $estados_recurso = [
                 </div>
 
                 <div>
-                    <label style="display: block; font-weight: 500; margin-bottom: 4px; font-size: 12px;"><?php echo esc_html__('Buscar', 'flavor-chat-ia'); ?></label>
+                    <label style="display: block; font-weight: 500; margin-bottom: 4px; font-size: 12px;"><?php echo esc_html__('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="text" name="busqueda" value="<?php echo esc_attr($filtro_busqueda); ?>"
-                           placeholder="<?php echo esc_attr__('Nombre...', 'flavor-chat-ia'); ?>" style="min-width: 150px;">
+                           placeholder="<?php echo esc_attr__('Nombre...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" style="min-width: 150px;">
                 </div>
 
-                <button type="submit" class="button button-primary"><?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="button button-primary"><?php echo esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
 
                 <?php if (!empty($filtro_tipo) || !empty($filtro_estado) || !empty($filtro_busqueda)): ?>
                     <a href="<?php echo admin_url('admin.php?page=' . esc_attr($_GET['page'] ?? 'huertos-urbanos-recursos')); ?>" class="button">
-                        <?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 <?php endif; ?>
             </form>
@@ -266,7 +266,7 @@ $estados_recurso = [
         <div style="background: #fff; padding: 15px 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #666;">
                 <span class="dashicons dashicons-chart-pie" style="font-size: 16px;"></span>
-                <?php echo esc_html__('Por Categoría', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Por Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h4>
             <canvas id="chartTiposHerramientas" height="120"></canvas>
         </div>
@@ -277,19 +277,19 @@ $estados_recurso = [
         <div style="padding: 15px 20px; background: #f8f9fa; border-bottom: 1px solid #e9ecef;">
             <h3 style="margin: 0; font-size: 16px;">
                 <span class="dashicons dashicons-hammer" style="color: #6f42c1;"></span>
-                <?php echo esc_html__('Inventario de Herramientas', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Inventario de Herramientas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th style="width: 50px;"><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Herramienta', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 120px;"><?php echo esc_html__('Tipo', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 80px; text-align: center;"><?php echo esc_html__('Cantidad', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 120px;"><?php echo esc_html__('Ubicación', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 120px;"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 100px;"><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 50px;"><?php echo esc_html__('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php echo esc_html__('Herramienta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 120px;"><?php echo esc_html__('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 80px; text-align: center;"><?php echo esc_html__('Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 120px;"><?php echo esc_html__('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 120px;"><?php echo esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 100px;"><?php echo esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -297,7 +297,7 @@ $estados_recurso = [
                     <tr>
                         <td colspan="7" style="text-align: center; padding: 40px;">
                             <span class="dashicons dashicons-hammer" style="font-size: 48px; color: #ddd;"></span>
-                            <p style="color: #666; margin-top: 10px;"><?php echo esc_html__('No se encontraron herramientas.', 'flavor-chat-ia'); ?></p>
+                            <p style="color: #666; margin-top: 10px;"><?php echo esc_html__('No se encontraron herramientas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </td>
                     </tr>
                 <?php else: ?>
@@ -330,10 +330,10 @@ $estados_recurso = [
                                 </span>
                             </td>
                             <td>
-                                <button class="button button-small" title="<?php echo esc_attr__('Registrar préstamo', 'flavor-chat-ia'); ?>" <?php echo $herramienta->estado !== 'disponible' ? 'disabled' : ''; ?>>
+                                <button class="button button-small" title="<?php echo esc_attr__('Registrar préstamo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php echo $herramienta->estado !== 'disponible' ? 'disabled' : ''; ?>>
                                     <span class="dashicons dashicons-external" style="vertical-align: text-bottom;"></span>
                                 </button>
-                                <button class="button button-small" title="<?php echo esc_attr__('Editar', 'flavor-chat-ia'); ?>">
+                                <button class="button button-small" title="<?php echo esc_attr__('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-edit" style="vertical-align: text-bottom;"></span>
                                 </button>
                             </td>
@@ -349,7 +349,7 @@ $estados_recurso = [
         <div style="padding: 15px 20px; background: #f8f9fa; border-bottom: 1px solid #e9ecef;">
             <h3 style="margin: 0; font-size: 16px;">
                 <span class="dashicons dashicons-building" style="color: #28a745;"></span>
-                <?php echo esc_html__('Recursos Comunes e Infraestructura', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Recursos Comunes e Infraestructura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; padding: 20px;">
@@ -372,7 +372,7 @@ $estados_recurso = [
                         <?php if (!empty($recurso->ultima_revision)): ?>
                             <span>
                                 <span class="dashicons dashicons-calendar-alt" style="font-size: 14px;"></span>
-                                <?php echo esc_html__('Revisión:', 'flavor-chat-ia'); ?> <?php echo date_i18n('d/m/Y', strtotime($recurso->ultima_revision)); ?>
+                                <?php echo esc_html__('Revisión:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo date_i18n('d/m/Y', strtotime($recurso->ultima_revision)); ?>
                             </span>
                         <?php endif; ?>
                     </div>

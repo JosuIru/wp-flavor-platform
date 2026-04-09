@@ -108,7 +108,7 @@ if ( $total_slides === 0 ) {
             class="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full flex items-center justify-center transition duration-300 hover:scale-110"
             style="background-color: rgba(255, 255, 255, 0.2); backdrop-filter: blur(4px);"
             data-slider-prev="<?php echo esc_attr( $identificador_slider ); ?>"
-            aria-label="<?php esc_attr_e( 'Slide anterior', 'flavor-chat-ia' ); ?>"
+            aria-label="<?php esc_attr_e( 'Slide anterior', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
         >
             <svg class="w-6 h-6" style="color: #ffffff;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -120,7 +120,7 @@ if ( $total_slides === 0 ) {
             class="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full flex items-center justify-center transition duration-300 hover:scale-110"
             style="background-color: rgba(255, 255, 255, 0.2); backdrop-filter: blur(4px);"
             data-slider-next="<?php echo esc_attr( $identificador_slider ); ?>"
-            aria-label="<?php esc_attr_e( 'Slide siguiente', 'flavor-chat-ia' ); ?>"
+            aria-label="<?php esc_attr_e( 'Slide siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
         >
             <svg class="w-6 h-6" style="color: #ffffff;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -138,7 +138,7 @@ if ( $total_slides === 0 ) {
                     style="background-color: <?php echo $indice_bullet === 0 ? 'var(--flavor-primary)' : 'rgba(255, 255, 255, 0.5)'; ?>;"
                     data-slider-bullet="<?php echo esc_attr( $identificador_slider ); ?>"
                     data-slide-target="<?php echo esc_attr( $indice_bullet ); ?>"
-                    aria-label="<?php echo esc_attr( sprintf( __( 'Ir al slide %d', 'flavor-chat-ia' ), $indice_bullet + 1 ) ); ?>"
+                    aria-label="<?php echo esc_attr( sprintf( __( 'Ir al slide %d', FLAVOR_PLATFORM_TEXT_DOMAIN ), $indice_bullet + 1 ) ); ?>"
                 ></button>
             <?php endfor; ?>
         </div>

@@ -35,8 +35,8 @@ class Flavor_Chat_Empresas_Module extends Flavor_Chat_Module_Base {
 
     public function __construct() {
         $this->id = 'empresas';
-        $this->name = __('Empresas', 'flavor-chat-ia');
-        $this->description = __('Gestión de empresas con contabilidad, facturación y miembros independientes dentro de comunidades.', 'flavor-chat-ia');
+        $this->name = __('Empresas', 'flavor-platform');
+        $this->description = __('Gestión de empresas con contabilidad, facturación y miembros independientes dentro de comunidades.', 'flavor-platform');
 
         global $wpdb;
         $this->tabla_empresas = $wpdb->prefix . 'flavor_empresas';
@@ -53,8 +53,8 @@ class Flavor_Chat_Empresas_Module extends Flavor_Chat_Module_Base {
     public static function get_module_info() {
         return [
             'id' => 'empresas',
-            'name' => __('Empresas', 'flavor-chat-ia'),
-            'description' => __('Crea y gestiona empresas dentro de tu comunidad. Cada empresa tiene su propia contabilidad, facturas, miembros y documentación.', 'flavor-chat-ia'),
+            'name' => __('Empresas', 'flavor-platform'),
+            'description' => __('Crea y gestiona empresas dentro de tu comunidad. Cada empresa tiene su propia contabilidad, facturas, miembros y documentación.', 'flavor-platform'),
             'icon' => 'dashicons-building',
             'category' => 'economia',
             'tags' => ['empresas', 'negocios', 'contabilidad', 'facturación', 'b2b'],
@@ -63,13 +63,13 @@ class Flavor_Chat_Empresas_Module extends Flavor_Chat_Module_Base {
             'requires' => [],
             'recommends' => ['contabilidad', 'facturas', 'comunidades'],
             'features' => [
-                __('Registro de empresas con datos fiscales', 'flavor-chat-ia'),
-                __('Miembros con roles (admin, contable, empleado)', 'flavor-chat-ia'),
-                __('Contabilidad independiente por empresa', 'flavor-chat-ia'),
-                __('Facturación propia', 'flavor-chat-ia'),
-                __('Documentación centralizada', 'flavor-chat-ia'),
-                __('Dashboard de cliente para empresas', 'flavor-chat-ia'),
-                __('API para aplicaciones móviles', 'flavor-chat-ia'),
+                __('Registro de empresas con datos fiscales', 'flavor-platform'),
+                __('Miembros con roles (admin, contable, empleado)', 'flavor-platform'),
+                __('Contabilidad independiente por empresa', 'flavor-platform'),
+                __('Facturación propia', 'flavor-platform'),
+                __('Documentación centralizada', 'flavor-platform'),
+                __('Dashboard de cliente para empresas', 'flavor-platform'),
+                __('API para aplicaciones móviles', 'flavor-platform'),
             ],
             'screenshots' => [],
             'documentation_url' => '',
@@ -83,7 +83,7 @@ class Flavor_Chat_Empresas_Module extends Flavor_Chat_Module_Base {
 
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Empresas no están creadas. Se crearán automáticamente al activar.', 'flavor-chat-ia');
+            return __('Las tablas de Empresas no están creadas. Se crearán automáticamente al activar.', 'flavor-platform');
         }
         return '';
     }
@@ -128,29 +128,29 @@ class Flavor_Chat_Empresas_Module extends Flavor_Chat_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'empresas',
-            'label' => __('Empresas', 'flavor-chat-ia'),
+            'label' => __('Empresas', 'flavor-platform'),
             'icon' => 'dashicons-building',
             'capability' => 'manage_options',
             'categoria' => 'negocios',
             'paginas' => [
                 [
                     'slug' => 'empresas-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_dashboard'],
                 ],
                 [
                     'slug' => 'empresas-listado',
-                    'titulo' => __('Empresas', 'flavor-chat-ia'),
+                    'titulo' => __('Empresas', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_listado'],
                 ],
                 [
                     'slug' => 'empresas-solicitudes',
-                    'titulo' => __('Solicitudes', 'flavor-chat-ia'),
+                    'titulo' => __('Solicitudes', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_solicitudes'],
                 ],
                 [
                     'slug' => 'empresas-config',
-                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'titulo' => __('Configuración', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_config'],
                 ],
             ],
@@ -314,19 +314,19 @@ class Flavor_Chat_Empresas_Module extends Flavor_Chat_Module_Base {
         $resultado = $wpdb->insert($this->tabla_empresas, $datos_insert);
 
         if ($resultado === false) {
-            return new WP_Error('db_error', __('Error al crear la empresa.', 'flavor-chat-ia'));
+            return new WP_Error('db_error', __('Error al crear la empresa.', 'flavor-platform'));
         }
 
         $empresa_id = $wpdb->insert_id;
 
         // Añadir al creador como admin
         $this->agregar_miembro($empresa_id, get_current_user_id(), 'admin', [
-            'cargo' => __('Administrador', 'flavor-chat-ia'),
+            'cargo' => __('Administrador', 'flavor-platform'),
             'estado' => 'activo',
         ]);
 
         // Registrar actividad
-        $this->registrar_actividad($empresa_id, 'empresa_creada', __('Empresa creada', 'flavor-chat-ia'));
+        $this->registrar_actividad($empresa_id, 'empresa_creada', __('Empresa creada', 'flavor-platform'));
 
         do_action('flavor_empresa_creada', $empresa_id, $datos_insert);
 
@@ -377,7 +377,7 @@ class Flavor_Chat_Empresas_Module extends Flavor_Chat_Module_Base {
         );
 
         if ($resultado !== false) {
-            $this->registrar_actividad($empresa_id, 'empresa_actualizada', __('Datos actualizados', 'flavor-chat-ia'));
+            $this->registrar_actividad($empresa_id, 'empresa_actualizada', __('Datos actualizados', 'flavor-platform'));
             do_action('flavor_empresa_actualizada', $empresa_id, $datos_update);
         }
 
@@ -479,7 +479,7 @@ class Flavor_Chat_Empresas_Module extends Flavor_Chat_Module_Base {
 
         if ($resultado !== false) {
             $this->registrar_actividad($empresa_id, 'miembro_agregado', sprintf(
-                __('Miembro añadido: %s', 'flavor-chat-ia'),
+                __('Miembro añadido: %s', 'flavor-platform'),
                 get_userdata($user_id)->display_name ?? ''
             ));
             do_action('flavor_empresa_miembro_agregado', $empresa_id, $user_id, $rol);
@@ -668,21 +668,21 @@ class Flavor_Chat_Empresas_Module extends Flavor_Chat_Module_Base {
             [
                 'icon' => 'dashicons-building',
                 'valor' => $total_empresas,
-                'label' => __('Empresas activas', 'flavor-chat-ia'),
+                'label' => __('Empresas activas', 'flavor-platform'),
                 'color' => 'blue',
                 'enlace' => admin_url('admin.php?page=empresas-listado'),
             ],
             [
                 'icon' => 'dashicons-clock',
                 'valor' => $pendientes,
-                'label' => __('Pendientes', 'flavor-chat-ia'),
+                'label' => __('Pendientes', 'flavor-platform'),
                 'color' => $pendientes > 0 ? 'orange' : 'gray',
                 'enlace' => admin_url('admin.php?page=empresas-solicitudes'),
             ],
             [
                 'icon' => 'dashicons-groups',
                 'valor' => $total_miembros,
-                'label' => __('Miembros totales', 'flavor-chat-ia'),
+                'label' => __('Miembros totales', 'flavor-platform'),
                 'color' => 'green',
             ],
         ];
@@ -765,10 +765,10 @@ class Flavor_Chat_Empresas_Module extends Flavor_Chat_Module_Base {
 
                 if ($accion === 'aprobar') {
                     $this->actualizar_empresa($empresa_id, ['estado' => 'activa']);
-                    echo '<div class="notice notice-success"><p>' . esc_html__('Empresa aprobada.', 'flavor-chat-ia') . '</p></div>';
+                    echo '<div class="notice notice-success"><p>' . esc_html__('Empresa aprobada.', 'flavor-platform') . '</p></div>';
                 } elseif ($accion === 'rechazar') {
                     $this->actualizar_empresa($empresa_id, ['estado' => 'baja', 'motivo_baja' => sanitize_textarea_field($_POST['motivo'] ?? '')]);
-                    echo '<div class="notice notice-warning"><p>' . esc_html__('Solicitud rechazada.', 'flavor-chat-ia') . '</p></div>';
+                    echo '<div class="notice notice-warning"><p>' . esc_html__('Solicitud rechazada.', 'flavor-platform') . '</p></div>';
                 }
             }
         }
@@ -789,7 +789,7 @@ class Flavor_Chat_Empresas_Module extends Flavor_Chat_Module_Base {
                 $this->update_setting('integracion_contabilidad', isset($_POST['integracion_contabilidad']));
                 $this->update_setting('integracion_facturas', isset($_POST['integracion_facturas']));
 
-                echo '<div class="notice notice-success"><p>' . esc_html__('Configuración guardada.', 'flavor-chat-ia') . '</p></div>';
+                echo '<div class="notice notice-success"><p>' . esc_html__('Configuración guardada.', 'flavor-platform') . '</p></div>';
             }
         }
 
@@ -823,7 +823,7 @@ class Flavor_Chat_Empresas_Module extends Flavor_Chat_Module_Base {
 
                 if ($es_edicion) {
                     $this->actualizar_empresa($empresa_id, $datos);
-                    echo '<div class="notice notice-success"><p>' . esc_html__('Empresa actualizada.', 'flavor-chat-ia') . '</p></div>';
+                    echo '<div class="notice notice-success"><p>' . esc_html__('Empresa actualizada.', 'flavor-platform') . '</p></div>';
                     $empresa = $this->obtener_empresa($empresa_id);
                 } else {
                     $resultado = $this->crear_empresa($datos);
@@ -844,7 +844,7 @@ class Flavor_Chat_Empresas_Module extends Flavor_Chat_Module_Base {
         $empresa = $this->obtener_empresa($empresa_id);
 
         if (!$empresa) {
-            echo '<div class="notice notice-error"><p>' . esc_html__('Empresa no encontrada.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-error"><p>' . esc_html__('Empresa no encontrada.', 'flavor-platform') . '</p></div>';
             return;
         }
 
@@ -861,7 +861,7 @@ class Flavor_Chat_Empresas_Module extends Flavor_Chat_Module_Base {
         $empresa = $this->obtener_empresa($empresa_id);
 
         if (!$empresa) {
-            echo '<div class="notice notice-error"><p>' . esc_html__('Empresa no encontrada.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-error"><p>' . esc_html__('Empresa no encontrada.', 'flavor-platform') . '</p></div>';
             return;
         }
 
@@ -994,7 +994,7 @@ class Flavor_Chat_Empresas_Module extends Flavor_Chat_Module_Base {
 
         // Fallback si no existe el controlador
         if (!is_user_logged_in()) {
-            return '<p>' . esc_html__('Debes iniciar sesión para ver tu dashboard de empresa.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Debes iniciar sesión para ver tu dashboard de empresa.', 'flavor-platform') . '</p>';
         }
 
         $empresas = $this->obtener_empresas_usuario();
@@ -1062,13 +1062,13 @@ class Flavor_Chat_Empresas_Module extends Flavor_Chat_Module_Base {
         $empresa_id = absint($atts['id']) ?: (isset($_GET['empresa_id']) ? absint($_GET['empresa_id']) : 0);
 
         if (!$empresa_id) {
-            return '<p>' . esc_html__('Empresa no especificada.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Empresa no especificada.', 'flavor-platform') . '</p>';
         }
 
         $empresa = $this->obtener_empresa($empresa_id);
 
         if (!$empresa || $empresa->estado !== 'activa') {
-            return '<p>' . esc_html__('Empresa no encontrada.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Empresa no encontrada.', 'flavor-platform') . '</p>';
         }
 
         $miembros = $this->obtener_miembros($empresa_id, 'activo');
@@ -1142,7 +1142,7 @@ class Flavor_Chat_Empresas_Module extends Flavor_Chat_Module_Base {
         $empresa = $this->obtener_empresa($request->get_param('id'));
 
         if (!$empresa) {
-            return new WP_Error('not_found', __('Empresa no encontrada.', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Empresa no encontrada.', 'flavor-platform'), ['status' => 404]);
         }
 
         return rest_ensure_response([
@@ -1216,19 +1216,19 @@ class Flavor_Chat_Empresas_Module extends Flavor_Chat_Module_Base {
     public function get_actions() {
         return [
             'listar_empresas' => [
-                'description' => __('Listar empresas con filtros', 'flavor-chat-ia'),
+                'description' => __('Listar empresas con filtros', 'flavor-platform'),
                 'params' => ['estado', 'tipo', 'sector', 'busqueda', 'limite'],
             ],
             'obtener_empresa' => [
-                'description' => __('Obtener detalles de una empresa', 'flavor-chat-ia'),
+                'description' => __('Obtener detalles de una empresa', 'flavor-platform'),
                 'params' => ['empresa_id'],
             ],
             'mis_empresas' => [
-                'description' => __('Obtener empresas del usuario actual', 'flavor-chat-ia'),
+                'description' => __('Obtener empresas del usuario actual', 'flavor-platform'),
                 'params' => [],
             ],
             'estadisticas_empresa' => [
-                'description' => __('Obtener estadísticas de una empresa', 'flavor-chat-ia'),
+                'description' => __('Obtener estadísticas de una empresa', 'flavor-platform'),
                 'params' => ['empresa_id'],
             ],
         ];
@@ -1249,7 +1249,7 @@ class Flavor_Chat_Empresas_Module extends Flavor_Chat_Module_Base {
             case 'detalle':
                 $empresa = $this->obtener_empresa(absint($params['empresa_id'] ?? 0));
                 if (!$empresa) {
-                    return ['success' => false, 'error' => __('Empresa no encontrada.', 'flavor-chat-ia')];
+                    return ['success' => false, 'error' => __('Empresa no encontrada.', 'flavor-platform')];
                 }
                 return [
                     'success' => true,
@@ -1268,7 +1268,7 @@ class Flavor_Chat_Empresas_Module extends Flavor_Chat_Module_Base {
             case 'stats':
                 $empresa_id = absint($params['empresa_id'] ?? 0);
                 if (!$empresa_id) {
-                    return ['success' => false, 'error' => __('ID de empresa requerido.', 'flavor-chat-ia')];
+                    return ['success' => false, 'error' => __('ID de empresa requerido.', 'flavor-platform')];
                 }
                 return [
                     'success' => true,
@@ -1276,7 +1276,7 @@ class Flavor_Chat_Empresas_Module extends Flavor_Chat_Module_Base {
                 ];
 
             default:
-                return ['success' => false, 'error' => __('Acción no disponible.', 'flavor-chat-ia')];
+                return ['success' => false, 'error' => __('Acción no disponible.', 'flavor-platform')];
         }
     }
 
@@ -1322,7 +1322,7 @@ class Flavor_Chat_Empresas_Module extends Flavor_Chat_Module_Base {
         $pendientes = $this->contar_empresas(['estado' => 'pendiente']);
 
         return sprintf(
-            __("Módulo de Empresas:\n- Empresas activas: %d\n- Solicitudes pendientes: %d\n\nPermite crear y gestionar empresas dentro de comunidades, con su propia contabilidad, facturación y miembros.", 'flavor-chat-ia'),
+            __("Módulo de Empresas:\n- Empresas activas: %d\n- Solicitudes pendientes: %d\n\nPermite crear y gestionar empresas dentro de comunidades, con su propia contabilidad, facturación y miembros.", 'flavor-platform'),
             $total,
             $pendientes
         );

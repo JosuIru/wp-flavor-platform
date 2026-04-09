@@ -20,12 +20,12 @@ $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
 
 // Categorías disponibles
 $categorias = [
-    'cuidados' => __('Cuidados', 'flavor-chat-ia'),
-    'educacion' => __('Educación', 'flavor-chat-ia'),
-    'bricolaje' => __('Bricolaje', 'flavor-chat-ia'),
-    'tecnologia' => __('Tecnología', 'flavor-chat-ia'),
-    'transporte' => __('Transporte', 'flavor-chat-ia'),
-    'otros' => __('Otros', 'flavor-chat-ia'),
+    'cuidados' => __('Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'educacion' => __('Educación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'bricolaje' => __('Bricolaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'tecnologia' => __('Tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'transporte' => __('Transporte', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'otros' => __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $iconos_categoria = [
@@ -105,11 +105,11 @@ if (!empty($stats_params)) {
         <div class="fl-section-header">
             <h3 class="fl-section-title">
                 <span class="dashicons dashicons-businessman"></span>
-                <?php esc_html_e('Mis Servicios', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Mis Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
             <button type="button" class="fl-btn fl-btn-primary fl-btn-sm bt-btn-nuevo-servicio">
                 <span class="dashicons dashicons-plus-alt"></span>
-                <?php esc_html_e('Ofrecer servicio', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ofrecer servicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
         <div class="fl-services-grid fl-services-mine">
@@ -121,7 +121,7 @@ if (!empty($stats_params)) {
                         <?php echo esc_html($categorias[$servicio->categoria] ?? $servicio->categoria); ?>
                     </span>
                     <span class="fl-service-status fl-status-<?php echo esc_attr($servicio->estado); ?>">
-                        <?php echo $servicio->estado === 'activo' ? esc_html__('Activo', 'flavor-chat-ia') : esc_html__('Pausado', 'flavor-chat-ia'); ?>
+                        <?php echo $servicio->estado === 'activo' ? esc_html__('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Pausado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                 </div>
                 <h4 class="fl-service-title"><?php echo esc_html($servicio->titulo); ?></h4>
@@ -132,7 +132,7 @@ if (!empty($stats_params)) {
                         <?php echo number_format($servicio->horas_estimadas, 1); ?>h
                     </span>
                     <div class="fl-service-actions">
-                        <button type="button" class="fl-btn-icon bt-btn-editar" data-servicio-id="<?php echo esc_attr($servicio->id); ?>" title="<?php esc_attr_e('Editar', 'flavor-chat-ia'); ?>">
+                        <button type="button" class="fl-btn-icon bt-btn-editar" data-servicio-id="<?php echo esc_attr($servicio->id); ?>" title="<?php esc_attr_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-edit"></span>
                         </button>
                     </div>
@@ -144,11 +144,11 @@ if (!empty($stats_params)) {
     <?php elseif ($mostrar_propios && $usuario_id) : ?>
     <div class="fl-empty-cta">
         <span class="dashicons dashicons-admin-tools"></span>
-        <h4><?php esc_html_e('¿Qué sabes hacer?', 'flavor-chat-ia'); ?></h4>
-        <p><?php esc_html_e('Comparte tus habilidades con la comunidad y empieza a acumular horas.', 'flavor-chat-ia'); ?></p>
+        <h4><?php esc_html_e('¿Qué sabes hacer?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+        <p><?php esc_html_e('Comparte tus habilidades con la comunidad y empieza a acumular horas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         <button type="button" class="fl-btn fl-btn-primary bt-btn-nuevo-servicio">
             <span class="dashicons dashicons-plus-alt"></span>
-            <?php esc_html_e('Ofrecer mi primer servicio', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Ofrecer mi primer servicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
     </div>
     <?php endif; ?>
@@ -158,16 +158,16 @@ if (!empty($stats_params)) {
         <div class="fl-section-header">
             <h3 class="fl-section-title">
                 <span class="dashicons dashicons-networking"></span>
-                <?php esc_html_e('Servicios Disponibles', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Servicios Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
-            <span class="fl-section-count"><?php echo intval($total_servicios); ?> <?php esc_html_e('servicios', 'flavor-chat-ia'); ?></span>
+            <span class="fl-section-count"><?php echo intval($total_servicios); ?> <?php esc_html_e('servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
 
         <!-- Filtros por categoría -->
         <div class="fl-category-filters">
             <button class="fl-filter-btn active" data-categoria="all">
                 <span class="dashicons dashicons-screenoptions"></span>
-                <?php esc_html_e('Todos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <?php foreach ($categorias as $cat_id => $cat_nombre) : ?>
             <button class="fl-filter-btn" data-categoria="<?php echo esc_attr($cat_id); ?>">
@@ -191,7 +191,7 @@ if (!empty($stats_params)) {
                 <p class="fl-service-desc"><?php echo esc_html(wp_trim_words($servicio->descripcion, 20)); ?></p>
                 <div class="fl-service-provider">
                     <?php echo get_avatar($servicio->usuario_id, 24); ?>
-                    <span><?php echo esc_html($servicio->usuario_nombre ?: __('Usuario', 'flavor-chat-ia')); ?></span>
+                    <span><?php echo esc_html($servicio->usuario_nombre ?: __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>
                 </div>
                 <div class="fl-service-footer">
                     <span class="fl-service-hours">
@@ -200,11 +200,11 @@ if (!empty($stats_params)) {
                     </span>
                     <?php if ($usuario_id) : ?>
                     <button type="button" class="fl-btn fl-btn-primary fl-btn-sm bt-btn-solicitar" data-servicio-id="<?php echo esc_attr($servicio->id); ?>">
-                        <?php esc_html_e('Solicitar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Solicitar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <?php else : ?>
                     <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="fl-btn fl-btn-outline fl-btn-sm">
-                        <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <?php endif; ?>
                 </div>
@@ -217,8 +217,8 @@ if (!empty($stats_params)) {
             <p>
                 <?php
                 echo $usuario_id
-                    ? esc_html__('No hay servicios de otros usuarios disponibles en este momento.', 'flavor-chat-ia')
-                    : esc_html__('No hay servicios disponibles en este momento.', 'flavor-chat-ia');
+                    ? esc_html__('No hay servicios de otros usuarios disponibles en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                    : esc_html__('No hay servicios disponibles en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 ?>
             </p>
         </div>
@@ -228,9 +228,9 @@ if (!empty($stats_params)) {
             <div class="fl-section-header">
                 <h3 class="fl-section-title">
                     <span class="dashicons dashicons-businessman"></span>
-                    <?php esc_html_e('Tus servicios activos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Tus servicios activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
-                <span class="fl-section-count"><?php echo intval(count($mis_servicios)); ?> <?php esc_html_e('servicios', 'flavor-chat-ia'); ?></span>
+                <span class="fl-section-count"><?php echo intval(count($mis_servicios)); ?> <?php esc_html_e('servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="fl-services-grid fl-services-mine">
                 <?php foreach ($mis_servicios as $servicio) : ?>
@@ -241,7 +241,7 @@ if (!empty($stats_params)) {
                             <?php echo esc_html($categorias[$servicio->categoria] ?? $servicio->categoria); ?>
                         </span>
                         <span class="fl-service-status fl-status-<?php echo esc_attr($servicio->estado); ?>">
-                            <?php echo $servicio->estado === 'activo' ? esc_html__('Activo', 'flavor-chat-ia') : esc_html__('Pausado', 'flavor-chat-ia'); ?>
+                            <?php echo $servicio->estado === 'activo' ? esc_html__('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Pausado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
                     </div>
                     <h4 class="fl-service-title"><?php echo esc_html($servicio->titulo); ?></h4>
@@ -252,7 +252,7 @@ if (!empty($stats_params)) {
                             <?php echo number_format($servicio->horas_estimadas, 1); ?>h
                         </span>
                         <div class="fl-service-actions">
-                            <button type="button" class="fl-btn-icon bt-btn-editar" data-servicio-id="<?php echo esc_attr($servicio->id); ?>" title="<?php esc_attr_e('Editar', 'flavor-chat-ia'); ?>">
+                            <button type="button" class="fl-btn-icon bt-btn-editar" data-servicio-id="<?php echo esc_attr($servicio->id); ?>" title="<?php esc_attr_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <span class="dashicons dashicons-edit"></span>
                             </button>
                         </div>

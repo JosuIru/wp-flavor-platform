@@ -119,7 +119,7 @@ final class Flavor_Cron_Manager {
         if (!isset($schedules['weekly'])) {
             $schedules['weekly'] = [
                 'interval' => 604800, // 7 días
-                'display'  => __('Una vez a la semana', 'flavor-chat-ia'),
+                'display'  => __('Una vez a la semana', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -127,7 +127,7 @@ final class Flavor_Cron_Manager {
         if (!isset($schedules['monthly'])) {
             $schedules['monthly'] = [
                 'interval' => 2635200, // 30.5 días aproximadamente
-                'display'  => __('Una vez al mes', 'flavor-chat-ia'),
+                'display'  => __('Una vez al mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 

@@ -56,7 +56,7 @@ $categoria = $programa['categoria'] ?? '';
 
         <a href="<?php echo esc_url($url); ?>"
            class="text-red-600 font-medium text-sm hover:text-red-700 transition-colors">
-            <?php echo esc_html__('Ver programa', 'flavor-chat-ia'); ?> →
+            <?php echo esc_html__('Ver programa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> →
         </a>
     </div>
 </article>

@@ -66,7 +66,7 @@ class Flavor_User_Messages {
         }
 
         if (empty($title)) {
-            $title = __('Acceso Denegado', 'flavor-chat-ia');
+            $title = __('Acceso Denegado', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         // Extraer mensaje limpio
@@ -223,19 +223,19 @@ class Flavor_User_Messages {
                 <div class="error-actions">
                     <?php if ($args['home_link']) : ?>
                         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('', '')); ?>" class="error-button error-button--primary">
-                            🏠 <?php _e('Ir a Mi Portal', 'flavor-chat-ia'); ?>
+                            🏠 <?php _e('Ir a Mi Portal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     <?php endif; ?>
 
                     <?php if ($args['back_link']) : ?>
                         <a href="javascript:history.back()" class="error-button error-button--secondary">
-                            ← <?php _e('Volver Atrás', 'flavor-chat-ia'); ?>
+                            ← <?php _e('Volver Atrás', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     <?php endif; ?>
 
                     <?php if ($args['support_link']) : ?>
                         <a href="<?php echo esc_url(home_url('/contacto/')); ?>" class="error-button error-button--secondary">
-                            💬 <?php _e('Contactar Soporte', 'flavor-chat-ia'); ?>
+                            💬 <?php _e('Contactar Soporte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     <?php endif; ?>
                 </div>
@@ -250,13 +250,13 @@ class Flavor_User_Messages {
      */
     public static function access_denied($module_name = '', $reason = '') {
         if (empty($module_name)) {
-            $module_name = __('este módulo', 'flavor-chat-ia');
+            $module_name = __('este módulo', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
-        $title = __('Acceso Denegado', 'flavor-chat-ia');
+        $title = __('Acceso Denegado', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         $message = '<p>' . sprintf(
-            __('No tienes permisos para acceder a %s.', 'flavor-chat-ia'),
+            __('No tienes permisos para acceder a %s.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             '<strong>' . esc_html($module_name) . '</strong>'
         ) . '</p>';
 
@@ -265,9 +265,9 @@ class Flavor_User_Messages {
         }
 
         if (!is_user_logged_in()) {
-            $message .= '<p>' . __('Necesitas iniciar sesión para acceder a esta página.', 'flavor-chat-ia') . '</p>';
+            $message .= '<p>' . __('Necesitas iniciar sesión para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         } else {
-            $message .= '<p>' . __('Si crees que esto es un error, contacta con el administrador.', 'flavor-chat-ia') . '</p>';
+            $message .= '<p>' . __('Si crees que esto es un error, contacta con el administrador.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         self::render_error_page($title, $message, [
@@ -285,18 +285,18 @@ class Flavor_User_Messages {
      * Muestra mensaje de página no encontrada personalizado
      */
     public static function not_found($item_type = '') {
-        $title = __('No Encontrado', 'flavor-chat-ia');
+        $title = __('No Encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         if (!empty($item_type)) {
             $message = '<p>' . sprintf(
-                __('El %s que buscas no existe o ha sido eliminado.', 'flavor-chat-ia'),
+                __('El %s que buscas no existe o ha sido eliminado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 esc_html($item_type)
             ) . '</p>';
         } else {
-            $message = '<p>' . __('La página que buscas no existe o ha sido eliminada.', 'flavor-chat-ia') . '</p>';
+            $message = '<p>' . __('La página que buscas no existe o ha sido eliminada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
-        $message .= '<p>' . __('Verifica la URL o navega desde el menú principal.', 'flavor-chat-ia') . '</p>';
+        $message .= '<p>' . __('Verifica la URL o navega desde el menú principal.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
 
         self::render_error_page($title, $message, [
             'icon' => '🔍',

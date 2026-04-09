@@ -108,7 +108,7 @@ class Flavor_Archive_Renderer {
         // Si no se especifica badge, generarlo automáticamente
         if (empty($config['badge']) && $config['total'] > 0) {
             $config['badge'] = sprintf(
-                _n('%d registrado', '%d registrados', $config['total'], 'flavor-chat-ia'),
+                _n('%d registrado', '%d registrados', $config['total'], FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $config['total']
             );
         }
@@ -191,7 +191,7 @@ class Flavor_Archive_Renderer {
                 'data_attr'     => $config['filter_data_attr'],
                 'empty_state'   => wp_parse_args($config['empty_state'], [
                     'icon'       => $config['icon'] ?: '📭',
-                    'title'      => sprintf(__('No hay %s', 'flavor-chat-ia'), strtolower($config['title'] ?: 'elementos')),
+                    'title'      => sprintf(__('No hay %s', FLAVOR_PLATFORM_TEXT_DOMAIN), strtolower($config['title'] ?: 'elementos')),
                     'cta_text'   => $config['cta_text'],
                     'cta_action' => $config['cta_action'],
                     'cta_url'    => $config['cta_url'],
@@ -250,17 +250,17 @@ class Flavor_Archive_Renderer {
     public static function get_module_config(string $module): array {
         $configs = [
             'incidencias' => [
-                'title'     => __('Incidencias del Barrio', 'flavor-chat-ia'),
-                'subtitle'  => __('Reporta y consulta problemas en espacios públicos', 'flavor-chat-ia'),
+                'title'     => __('Incidencias del Barrio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Reporta y consulta problemas en espacios públicos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '⚠️',
                 'color'     => 'red',
-                'cta_text'  => __('Reportar incidencia', 'flavor-chat-ia'),
+                'cta_text'  => __('Reportar incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'cta_icon'  => '📝',
                 'filters'   => [
-                    ['id' => 'todos', 'label' => __('Todas', 'flavor-chat-ia'), 'active' => true],
-                    ['id' => 'pendiente', 'label' => __('Pendientes', 'flavor-chat-ia'), 'icon' => '🔴'],
-                    ['id' => 'en_proceso', 'label' => __('En proceso', 'flavor-chat-ia'), 'icon' => '🟡'],
-                    ['id' => 'resuelto', 'label' => __('Resueltas', 'flavor-chat-ia'), 'icon' => '🟢'],
+                    ['id' => 'todos', 'label' => __('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'active' => true],
+                    ['id' => 'pendiente', 'label' => __('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🔴'],
+                    ['id' => 'en_proceso', 'label' => __('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🟡'],
+                    ['id' => 'resuelto', 'label' => __('Resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🟢'],
                 ],
                 'filter_data_attr' => 'estado',
                 'card_config' => [
@@ -298,11 +298,11 @@ class Flavor_Archive_Renderer {
             ],
 
             'marketplace' => [
-                'title'     => __('Marketplace Local', 'flavor-chat-ia'),
-                'subtitle'  => __('Compra, vende e intercambia productos en tu comunidad', 'flavor-chat-ia'),
+                'title'     => __('Marketplace Local', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Compra, vende e intercambia productos en tu comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🛒',
                 'color'     => 'green',
-                'cta_text'  => __('Publicar Anuncio', 'flavor-chat-ia'),
+                'cta_text'  => __('Publicar Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'cta_icon'  => '📢',
                 'stats_layout' => 'vertical',
                 'card_config' => [
@@ -340,11 +340,11 @@ class Flavor_Archive_Renderer {
             ],
 
             'eventos' => [
-                'title'     => __('Eventos del Barrio', 'flavor-chat-ia'),
-                'subtitle'  => __('Descubre y participa en actividades locales', 'flavor-chat-ia'),
+                'title'     => __('Eventos del Barrio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Descubre y participa en actividades locales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '📅',
                 'color'     => 'purple',
-                'cta_text'  => __('Crear evento', 'flavor-chat-ia'),
+                'cta_text'  => __('Crear evento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'cta_icon'  => '➕',
                 'card_config' => [
                     'color'  => 'purple',
@@ -379,11 +379,11 @@ class Flavor_Archive_Renderer {
             ],
 
             'comunidades' => [
-                'title'     => __('Comunidades', 'flavor-chat-ia'),
-                'subtitle'  => __('Conecta con grupos de tu zona', 'flavor-chat-ia'),
+                'title'     => __('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Conecta con grupos de tu zona', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '👥',
                 'color'     => 'blue',
-                'cta_text'  => __('Crear comunidad', 'flavor-chat-ia'),
+                'cta_text'  => __('Crear comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'cta_icon'  => '➕',
                 'card_config' => [
                     'color'  => 'blue',
@@ -416,8 +416,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'colectivos' => [
-                'title'     => __('Colectivos', 'flavor-chat-ia'),
-                'subtitle'  => __('Organizaciones y grupos del territorio', 'flavor-chat-ia'),
+                'title'     => __('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Organizaciones y grupos del territorio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🏛️',
                 'color'     => 'indigo',
                 'card_config' => [
@@ -451,11 +451,11 @@ class Flavor_Archive_Renderer {
             ],
 
             'banco-tiempo' => [
-                'title'     => __('Banco del Tiempo', 'flavor-chat-ia'),
-                'subtitle'  => __('Intercambia servicios con tus vecinos', 'flavor-chat-ia'),
+                'title'     => __('Banco del Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Intercambia servicios con tus vecinos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '⏰',
                 'color'     => 'teal',
-                'cta_text'  => __('Ofrecer servicio', 'flavor-chat-ia'),
+                'cta_text'  => __('Ofrecer servicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'cta_icon'  => '🤝',
                 'card_config' => [
                     'color'  => 'teal',
@@ -495,8 +495,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'cursos' => [
-                'title'     => __('Cursos y Talleres', 'flavor-chat-ia'),
-                'subtitle'  => __('Aprende nuevas habilidades', 'flavor-chat-ia'),
+                'title'     => __('Cursos y Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Aprende nuevas habilidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '📚',
                 'color'     => 'orange',
                 'card_config' => [
@@ -540,8 +540,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'reciclaje' => [
-                'title'     => __('Puntos de Reciclaje', 'flavor-chat-ia'),
-                'subtitle'  => __('Encuentra dónde reciclar cerca de ti', 'flavor-chat-ia'),
+                'title'     => __('Puntos de Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Encuentra dónde reciclar cerca de ti', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '♻️',
                 'color'     => 'green',
                 'card_config' => [
@@ -575,8 +575,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'biodiversidad' => [
-                'title'     => __('Biodiversidad Local', 'flavor-chat-ia'),
-                'subtitle'  => __('Flora y fauna de nuestro entorno', 'flavor-chat-ia'),
+                'title'     => __('Biodiversidad Local', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Flora y fauna de nuestro entorno', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🌿',
                 'color'     => 'lime',
                 'card_config' => [
@@ -612,8 +612,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'grupos-consumo' => [
-                'title'     => __('Grupos de Consumo', 'flavor-chat-ia'),
-                'subtitle'  => __('Consume productos locales, ecológicos y de temporada', 'flavor-chat-ia'),
+                'title'     => __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Consume productos locales, ecológicos y de temporada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🥕',
                 'color'     => 'lime',
                 'card_config' => [
@@ -653,8 +653,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'socios' => [
-                'title'     => __('Directorio de Miembros', 'flavor-chat-ia'),
-                'subtitle'  => __('Conecta con nuestra comunidad de miembros activos', 'flavor-chat-ia'),
+                'title'     => __('Directorio de Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Conecta con nuestra comunidad de miembros activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '👥',
                 'color'     => 'rose',
                 'card_config' => [
@@ -692,8 +692,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'radio' => [
-                'title'     => __('Radio Comunitaria', 'flavor-chat-ia'),
-                'subtitle'  => __('La voz de tu barrio, 24 horas', 'flavor-chat-ia'),
+                'title'     => __('Radio Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('La voz de tu barrio, 24 horas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '📻',
                 'color'     => 'red',
                 'card_config' => [
@@ -728,8 +728,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'presupuestos-participativos' => [
-                'title'     => __('Presupuestos Participativos', 'flavor-chat-ia'),
-                'subtitle'  => __('Decide cómo se invierte el presupuesto de tu municipio', 'flavor-chat-ia'),
+                'title'     => __('Presupuestos Participativos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Decide cómo se invierte el presupuesto de tu municipio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '💰',
                 'color'     => 'amber',
                 'card_config' => [
@@ -781,8 +781,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'transparencia' => [
-                'title'     => __('Portal de Transparencia', 'flavor-chat-ia'),
-                'subtitle'  => __('Acceso a toda la información pública del municipio', 'flavor-chat-ia'),
+                'title'     => __('Portal de Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Acceso a toda la información pública del municipio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🏛️',
                 'color'     => 'teal',
                 'card_config' => [
@@ -828,8 +828,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'avisos-municipales' => [
-                'title'     => __('Avisos Municipales', 'flavor-chat-ia'),
-                'subtitle'  => __('Información oficial del ayuntamiento', 'flavor-chat-ia'),
+                'title'     => __('Avisos Municipales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Información oficial del ayuntamiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '📢',
                 'color'     => 'blue',
                 'card_config' => [
@@ -867,8 +867,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'biblioteca' => [
-                'title'     => __('Biblioteca Municipal', 'flavor-chat-ia'),
-                'subtitle'  => __('Catálogo de libros y recursos', 'flavor-chat-ia'),
+                'title'     => __('Biblioteca Municipal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Catálogo de libros y recursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '📚',
                 'color'     => 'amber',
                 'card_config' => [
@@ -902,8 +902,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'bares' => [
-                'title'     => __('Bares y Restaurantes', 'flavor-chat-ia'),
-                'subtitle'  => __('Descubre dónde comer en el barrio', 'flavor-chat-ia'),
+                'title'     => __('Bares y Restaurantes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Descubre dónde comer en el barrio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🍽️',
                 'color'     => 'orange',
                 'card_config' => [
@@ -945,8 +945,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'parkings' => [
-                'title'     => __('Parkings', 'flavor-chat-ia'),
-                'subtitle'  => __('Encuentra aparcamiento cerca de ti', 'flavor-chat-ia'),
+                'title'     => __('Parkings', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Encuentra aparcamiento cerca de ti', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🅿️',
                 'color'     => 'blue',
                 'card_config' => [
@@ -988,8 +988,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'espacios-comunes' => [
-                'title'     => __('Espacios Comunes', 'flavor-chat-ia'),
-                'subtitle'  => __('Reserva espacios para actividades', 'flavor-chat-ia'),
+                'title'     => __('Espacios Comunes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Reserva espacios para actividades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🏢',
                 'color'     => 'purple',
                 'card_config' => [
@@ -1027,8 +1027,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'tramites' => [
-                'title'     => __('Trámites Online', 'flavor-chat-ia'),
-                'subtitle'  => __('Gestiona tus trámites con el ayuntamiento', 'flavor-chat-ia'),
+                'title'     => __('Trámites Online', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Gestiona tus trámites con el ayuntamiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '📋',
                 'color'     => 'indigo',
                 'card_config' => [
@@ -1066,8 +1066,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'compostaje' => [
-                'title'     => __('Compostaje Comunitario', 'flavor-chat-ia'),
-                'subtitle'  => __('Reduce residuos y genera compost', 'flavor-chat-ia'),
+                'title'     => __('Compostaje Comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Reduce residuos y genera compost', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🌱',
                 'color'     => 'lime',
                 'card_config' => [
@@ -1106,8 +1106,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'huertos-urbanos' => [
-                'title'     => __('Huertos Urbanos', 'flavor-chat-ia'),
-                'subtitle'  => __('Cultiva en tu parcela comunitaria', 'flavor-chat-ia'),
+                'title'     => __('Huertos Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Cultiva en tu parcela comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🥬',
                 'color'     => 'green',
                 'card_config' => [
@@ -1142,8 +1142,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'talleres' => [
-                'title'     => __('Talleres', 'flavor-chat-ia'),
-                'subtitle'  => __('Aprende nuevas habilidades', 'flavor-chat-ia'),
+                'title'     => __('Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Aprende nuevas habilidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🎨',
                 'color'     => 'pink',
                 'card_config' => [
@@ -1187,8 +1187,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'carpooling' => [
-                'title'     => __('Carpooling', 'flavor-chat-ia'),
-                'subtitle'  => __('Comparte coche con tus vecinos', 'flavor-chat-ia'),
+                'title'     => __('Carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Comparte coche con tus vecinos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🚗',
                 'color'     => 'cyan',
                 'card_config' => [
@@ -1226,8 +1226,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'participacion' => [
-                'title'     => __('Participación Ciudadana', 'flavor-chat-ia'),
-                'subtitle'  => __('Tu voz cuenta en las decisiones del barrio', 'flavor-chat-ia'),
+                'title'     => __('Participación Ciudadana', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Tu voz cuenta en las decisiones del barrio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🗳️',
                 'color'     => 'indigo',
                 'card_config' => [
@@ -1265,8 +1265,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'multimedia' => [
-                'title'     => __('Galería Multimedia', 'flavor-chat-ia'),
-                'subtitle'  => __('Fotos y vídeos de la comunidad', 'flavor-chat-ia'),
+                'title'     => __('Galería Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Fotos y vídeos de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '📷',
                 'color'     => 'rose',
                 'card_config' => [
@@ -1305,8 +1305,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'podcast' => [
-                'title'     => __('Podcast Comunitario', 'flavor-chat-ia'),
-                'subtitle'  => __('Escucha las voces del barrio', 'flavor-chat-ia'),
+                'title'     => __('Podcast Comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Escucha las voces del barrio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🎙️',
                 'color'     => 'purple',
                 'card_config' => [
@@ -1341,8 +1341,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'reservas' => [
-                'title'     => __('Reservas', 'flavor-chat-ia'),
-                'subtitle'  => __('Reserva equipamiento y espacios', 'flavor-chat-ia'),
+                'title'     => __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Reserva equipamiento y espacios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '📅',
                 'color'     => 'cyan',
                 'card_config' => [
@@ -1379,8 +1379,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'advertising' => [
-                'title'     => __('Publicidad Local', 'flavor-chat-ia'),
-                'subtitle'  => __('Espacios publicitarios del municipio', 'flavor-chat-ia'),
+                'title'     => __('Publicidad Local', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Espacios publicitarios del municipio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '📣',
                 'color'     => 'orange',
                 'card_config' => [
@@ -1413,8 +1413,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'ayuda-vecinal' => [
-                'title'     => __('Ayuda Vecinal', 'flavor-chat-ia'),
-                'subtitle'  => __('Red de apoyo entre vecinos', 'flavor-chat-ia'),
+                'title'     => __('Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Red de apoyo entre vecinos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🤝',
                 'color'     => 'rose',
                 'card_config' => [
@@ -1452,8 +1452,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'bicicletas-compartidas' => [
-                'title'     => __('Bicicletas Compartidas', 'flavor-chat-ia'),
-                'subtitle'  => __('Sistema de préstamo de bicis', 'flavor-chat-ia'),
+                'title'     => __('Bicicletas Compartidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Sistema de préstamo de bicis', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🚲',
                 'color'     => 'lime',
                 'card_config' => [
@@ -1489,8 +1489,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'circulos-cuidados' => [
-                'title'     => __('Círculos de Cuidados', 'flavor-chat-ia'),
-                'subtitle'  => __('Redes de apoyo y cuidado mutuo', 'flavor-chat-ia'),
+                'title'     => __('Círculos de Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Redes de apoyo y cuidado mutuo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '💜',
                 'color'     => 'purple',
                 'card_config' => [
@@ -1525,8 +1525,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'economia-don' => [
-                'title'     => __('Economía del Don', 'flavor-chat-ia'),
-                'subtitle'  => __('Dar sin esperar nada a cambio', 'flavor-chat-ia'),
+                'title'     => __('Economía del Don', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Dar sin esperar nada a cambio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🎁',
                 'color'     => 'pink',
                 'card_config' => [
@@ -1560,8 +1560,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'economia-suficiencia' => [
-                'title'     => __('Economía de Suficiencia', 'flavor-chat-ia'),
-                'subtitle'  => __('Vivir con lo necesario', 'flavor-chat-ia'),
+                'title'     => __('Economía de Suficiencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Vivir con lo necesario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🌱',
                 'color'     => 'teal',
                 'card_config' => [
@@ -1594,8 +1594,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'encuestas' => [
-                'title'     => __('Encuestas', 'flavor-chat-ia'),
-                'subtitle'  => __('Tu opinión importa', 'flavor-chat-ia'),
+                'title'     => __('Encuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Tu opinión importa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '📊',
                 'color'     => 'indigo',
                 'card_config' => [
@@ -1633,8 +1633,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'foros' => [
-                'title'     => __('Foros de Discusión', 'flavor-chat-ia'),
-                'subtitle'  => __('Debate y comparte ideas', 'flavor-chat-ia'),
+                'title'     => __('Foros de Discusión', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Debate y comparte ideas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '💬',
                 'color'     => 'blue',
                 'card_config' => [
@@ -1669,8 +1669,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'huella-ecologica' => [
-                'title'     => __('Huella Ecológica', 'flavor-chat-ia'),
-                'subtitle'  => __('Mide y reduce tu impacto ambiental', 'flavor-chat-ia'),
+                'title'     => __('Huella Ecológica', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Mide y reduce tu impacto ambiental', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🌍',
                 'color'     => 'green',
                 'card_config' => [
@@ -1702,8 +1702,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'justicia-restaurativa' => [
-                'title'     => __('Justicia Restaurativa', 'flavor-chat-ia'),
-                'subtitle'  => __('Resolución pacífica de conflictos', 'flavor-chat-ia'),
+                'title'     => __('Justicia Restaurativa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Resolución pacífica de conflictos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '⚖️',
                 'color'     => 'indigo',
                 'card_config' => [
@@ -1736,8 +1736,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'saberes-ancestrales' => [
-                'title'     => __('Saberes Ancestrales', 'flavor-chat-ia'),
-                'subtitle'  => __('Conocimientos tradicionales de la comunidad', 'flavor-chat-ia'),
+                'title'     => __('Saberes Ancestrales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Conocimientos tradicionales de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '📜',
                 'color'     => 'amber',
                 'card_config' => [
@@ -1771,8 +1771,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'sello-conciencia' => [
-                'title'     => __('Sello Conciencia', 'flavor-chat-ia'),
-                'subtitle'  => __('Comercios y servicios con impacto positivo', 'flavor-chat-ia'),
+                'title'     => __('Sello Conciencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Comercios y servicios con impacto positivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🏅',
                 'color'     => 'amber',
                 'card_config' => [
@@ -1810,8 +1810,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'trabajo-digno' => [
-                'title'     => __('Trabajo Digno', 'flavor-chat-ia'),
-                'subtitle'  => __('Empleo con condiciones justas', 'flavor-chat-ia'),
+                'title'     => __('Trabajo Digno', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Empleo con condiciones justas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '💼',
                 'color'     => 'blue',
                 'card_config' => [
@@ -1851,8 +1851,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'recetas' => [
-                'title'     => __('Recetas Comunitarias', 'flavor-chat-ia'),
-                'subtitle'  => __('Cocina local y tradicional', 'flavor-chat-ia'),
+                'title'     => __('Recetas Comunitarias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Cocina local y tradicional', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🍳',
                 'color'     => 'orange',
                 'card_config' => [
@@ -1886,8 +1886,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'red-social' => [
-                'title'     => __('Red Social', 'flavor-chat-ia'),
-                'subtitle'  => __('Conecta con tu comunidad', 'flavor-chat-ia'),
+                'title'     => __('Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Conecta con tu comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🌐',
                 'color'     => 'blue',
                 'card_config' => [
@@ -1914,8 +1914,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'mapa-actores' => [
-                'title'     => __('Mapa de Actores', 'flavor-chat-ia'),
-                'subtitle'  => __('Organizaciones y personas clave', 'flavor-chat-ia'),
+                'title'     => __('Mapa de Actores', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Organizaciones y personas clave', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🗺️',
                 'color'     => 'teal',
                 'card_config' => [
@@ -1949,8 +1949,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'seguimiento-denuncias' => [
-                'title'     => __('Seguimiento de Denuncias', 'flavor-chat-ia'),
-                'subtitle'  => __('Consulta el estado de tus denuncias', 'flavor-chat-ia'),
+                'title'     => __('Seguimiento de Denuncias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Consulta el estado de tus denuncias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '📋',
                 'color'     => 'red',
                 'card_config' => [
@@ -1984,8 +1984,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'email-marketing' => [
-                'title'     => __('Campañas de Email', 'flavor-chat-ia'),
-                'subtitle'  => __('Gestión de newsletters y comunicaciones', 'flavor-chat-ia'),
+                'title'     => __('Campañas de Email', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Gestión de newsletters y comunicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '📧',
                 'color'     => 'cyan',
                 'card_config' => [
@@ -2018,8 +2018,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'empresarial' => [
-                'title'     => __('Directorio Empresarial', 'flavor-chat-ia'),
-                'subtitle'  => __('Empresas y negocios locales', 'flavor-chat-ia'),
+                'title'     => __('Directorio Empresarial', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Empresas y negocios locales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🏢',
                 'color'     => 'gray',
                 'card_config' => [
@@ -2055,8 +2055,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'clientes' => [
-                'title'     => __('Clientes', 'flavor-chat-ia'),
-                'subtitle'  => __('Gestión de clientes', 'flavor-chat-ia'),
+                'title'     => __('Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Gestión de clientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '👥',
                 'color'     => 'blue',
                 'card_config' => [
@@ -2090,8 +2090,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'facturas' => [
-                'title'     => __('Facturas', 'flavor-chat-ia'),
-                'subtitle'  => __('Gestión de facturación', 'flavor-chat-ia'),
+                'title'     => __('Facturas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Gestión de facturación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🧾',
                 'color'     => 'green',
                 'card_config' => [
@@ -2130,8 +2130,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'fichaje-empleados' => [
-                'title'     => __('Control de Fichaje', 'flavor-chat-ia'),
-                'subtitle'  => __('Registro de jornada laboral', 'flavor-chat-ia'),
+                'title'     => __('Control de Fichaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Registro de jornada laboral', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '⏰',
                 'color'     => 'indigo',
                 'card_config' => [
@@ -2165,8 +2165,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'documentacion-legal' => [
-                'title'     => __('Documentación Legal', 'flavor-chat-ia'),
-                'subtitle'  => __('Normativa y documentos oficiales', 'flavor-chat-ia'),
+                'title'     => __('Documentación Legal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Normativa y documentos oficiales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '⚖️',
                 'color'     => 'gray',
                 'card_config' => [
@@ -2200,8 +2200,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'dex-solana' => [
-                'title'     => __('DEX Solana', 'flavor-chat-ia'),
-                'subtitle'  => __('Exchange descentralizado', 'flavor-chat-ia'),
+                'title'     => __('DEX Solana', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Exchange descentralizado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '💱',
                 'color'     => 'purple',
                 'card_config' => [
@@ -2238,8 +2238,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'trading-ia' => [
-                'title'     => __('Trading IA', 'flavor-chat-ia'),
-                'subtitle'  => __('Trading automatizado con IA', 'flavor-chat-ia'),
+                'title'     => __('Trading IA', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Trading automatizado con IA', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🤖',
                 'color'     => 'cyan',
                 'card_config' => [
@@ -2272,8 +2272,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'woocommerce' => [
-                'title'     => __('Tienda Online', 'flavor-chat-ia'),
-                'subtitle'  => __('Productos y servicios', 'flavor-chat-ia'),
+                'title'     => __('Tienda Online', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Productos y servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🛍️',
                 'color'     => 'purple',
                 'card_config' => [
@@ -2315,8 +2315,8 @@ class Flavor_Archive_Renderer {
 
             // Alias: biodiversidad-local usa la misma config que biodiversidad
             'biodiversidad-local' => [
-                'title'     => __('Biodiversidad Local', 'flavor-chat-ia'),
-                'subtitle'  => __('Flora y fauna de nuestro entorno', 'flavor-chat-ia'),
+                'title'     => __('Biodiversidad Local', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Flora y fauna de nuestro entorno', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '🌿',
                 'color'     => 'lime',
                 'card_config' => [
@@ -2352,8 +2352,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'campanias' => [
-                'title'     => __('Campañas', 'flavor-chat-ia'),
-                'subtitle'  => __('Campañas y acciones colectivas', 'flavor-chat-ia'),
+                'title'     => __('Campañas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Campañas y acciones colectivas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '📢',
                 'color'     => 'orange',
                 'card_config' => [
@@ -2392,8 +2392,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'chat-grupos' => [
-                'title'     => __('Grupos de Chat', 'flavor-chat-ia'),
-                'subtitle'  => __('Conversaciones grupales', 'flavor-chat-ia'),
+                'title'     => __('Grupos de Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Conversaciones grupales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '💬',
                 'color'     => 'blue',
                 'card_config' => [
@@ -2426,8 +2426,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'chat-interno' => [
-                'title'     => __('Chat Interno', 'flavor-chat-ia'),
-                'subtitle'  => __('Mensajería privada', 'flavor-chat-ia'),
+                'title'     => __('Chat Interno', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Mensajería privada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '💬',
                 'color'     => 'indigo',
                 'card_config' => [
@@ -2459,8 +2459,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'chat-estados' => [
-                'title'     => __('Estados', 'flavor-chat-ia'),
-                'subtitle'  => __('Comparte tu momento', 'flavor-chat-ia'),
+                'title'     => __('Estados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'subtitle'  => __('Comparte tu momento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'      => '📸',
                 'color'     => 'pink',
                 'card_config' => [
@@ -2767,10 +2767,10 @@ class Flavor_Archive_Renderer {
                     'categoria'   => 'categoria',
                 ],
                 'stats' => [
-                    ['label' => __('Pendientes', 'flavor-chat-ia'), 'icon' => '🔴', 'color' => 'red', 'count_where' => "estado = 'pendiente'"],
-                    ['label' => __('En proceso', 'flavor-chat-ia'), 'icon' => '🟡', 'color' => 'yellow', 'count_where' => "estado IN ('en_proceso', 'validada')"],
-                    ['label' => __('Resueltas', 'flavor-chat-ia'), 'icon' => '🟢', 'color' => 'green', 'count_where' => "estado = 'resuelta'"],
-                    ['label' => __('Días promedio', 'flavor-chat-ia'), 'icon' => '📊', 'color' => 'blue', 'query' => "SELECT COALESCE(ROUND(AVG(DATEDIFF(fecha_resolucion, created_at)), 1), 0) FROM {table} WHERE estado = 'resuelta' AND fecha_resolucion IS NOT NULL"],
+                    ['label' => __('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🔴', 'color' => 'red', 'count_where' => "estado = 'pendiente'"],
+                    ['label' => __('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🟡', 'color' => 'yellow', 'count_where' => "estado IN ('en_proceso', 'validada')"],
+                    ['label' => __('Resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🟢', 'color' => 'green', 'count_where' => "estado = 'resuelta'"],
+                    ['label' => __('Días promedio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📊', 'color' => 'blue', 'query' => "SELECT COALESCE(ROUND(AVG(DATEDIFF(fecha_resolucion, created_at)), 1), 0) FROM {table} WHERE estado = 'resuelta' AND fecha_resolucion IS NOT NULL"],
                 ],
             ],
 
@@ -2789,9 +2789,9 @@ class Flavor_Archive_Renderer {
                     'categoria'   => 'categoria',
                 ],
                 'stats' => [
-                    ['label' => __('Activos', 'flavor-chat-ia'), 'icon' => '🟢', 'color' => 'green', 'count_where' => "estado = 'activo'"],
-                    ['label' => __('Vendidos', 'flavor-chat-ia'), 'icon' => '✅', 'color' => 'blue', 'count_where' => "estado = 'vendido'"],
-                    ['label' => __('Reservados', 'flavor-chat-ia'), 'icon' => '🔒', 'color' => 'yellow', 'count_where' => "estado = 'reservado'"],
+                    ['label' => __('Activos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🟢', 'color' => 'green', 'count_where' => "estado = 'activo'"],
+                    ['label' => __('Vendidos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '✅', 'color' => 'blue', 'count_where' => "estado = 'vendido'"],
+                    ['label' => __('Reservados', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🔒', 'color' => 'yellow', 'count_where' => "estado = 'reservado'"],
                 ],
             ],
 
@@ -2809,9 +2809,9 @@ class Flavor_Archive_Renderer {
                     'categoria'   => 'categoria',
                 ],
                 'stats' => [
-                    ['label' => __('Próximos', 'flavor-chat-ia'), 'icon' => '📅', 'color' => 'blue', 'count_where' => "fecha_inicio > NOW()"],
-                    ['label' => __('Hoy', 'flavor-chat-ia'), 'icon' => '🎯', 'color' => 'green', 'count_where' => "DATE(fecha_inicio) = CURDATE()"],
-                    ['label' => __('Esta semana', 'flavor-chat-ia'), 'icon' => '📆', 'color' => 'purple', 'count_where' => "fecha_inicio BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 7 DAY)"],
+                    ['label' => __('Próximos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📅', 'color' => 'blue', 'count_where' => "fecha_inicio > NOW()"],
+                    ['label' => __('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🎯', 'color' => 'green', 'count_where' => "DATE(fecha_inicio) = CURDATE()"],
+                    ['label' => __('Esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📆', 'color' => 'purple', 'count_where' => "fecha_inicio BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 7 DAY)"],
                 ],
             ],
 
@@ -2828,9 +2828,9 @@ class Flavor_Archive_Renderer {
                     'categoria'   => 'categoria',
                 ],
                 'stats' => [
-                    ['label' => __('Servicios', 'flavor-chat-ia'), 'icon' => '🤝', 'color' => 'green', 'count_where' => "estado = 'activo'"],
-                    ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => '🗂️', 'color' => 'blue', 'query' => "SELECT COUNT(DISTINCT categoria) FROM {table} WHERE estado = 'activo'"],
-                    ['label' => __('Intercambios', 'flavor-chat-ia'), 'icon' => '🔄', 'color' => 'purple', 'query' => "SELECT COUNT(*) FROM {prefix}flavor_banco_tiempo_transacciones WHERE estado = 'completado'"],
+                    ['label' => __('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🤝', 'color' => 'green', 'count_where' => "estado = 'activo'"],
+                    ['label' => __('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🗂️', 'color' => 'blue', 'query' => "SELECT COUNT(DISTINCT categoria) FROM {table} WHERE estado = 'activo'"],
+                    ['label' => __('Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🔄', 'color' => 'purple', 'query' => "SELECT COUNT(*) FROM {prefix}flavor_banco_tiempo_transacciones WHERE estado = 'completado'"],
                 ],
             ],
 
@@ -2851,10 +2851,10 @@ class Flavor_Archive_Renderer {
                     'ubicacion'   => 'ubicacion',
                 ],
                 'stats' => [
-                    ['label' => __('Propuestas', 'flavor-chat-ia'), 'icon' => '💡', 'color' => 'blue', 'count_where' => "1=1"],
-                    ['label' => __('Validados', 'flavor-chat-ia'), 'icon' => '✅', 'color' => 'green', 'count_where' => "estado = 'validado'"],
-                    ['label' => __('En votación', 'flavor-chat-ia'), 'icon' => '🗳️', 'color' => 'amber', 'count_where' => "estado = 'en_votacion'"],
-                    ['label' => __('Seleccionados', 'flavor-chat-ia'), 'icon' => '🏆', 'color' => 'purple', 'count_where' => "estado IN ('seleccionado', 'en_ejecucion', 'ejecutado')"],
+                    ['label' => __('Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '💡', 'color' => 'blue', 'count_where' => "1=1"],
+                    ['label' => __('Validados', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '✅', 'color' => 'green', 'count_where' => "estado = 'validado'"],
+                    ['label' => __('En votación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🗳️', 'color' => 'amber', 'count_where' => "estado = 'en_votacion'"],
+                    ['label' => __('Seleccionados', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🏆', 'color' => 'purple', 'count_where' => "estado IN ('seleccionado', 'en_ejecucion', 'ejecutado')"],
                 ],
             ],
 
@@ -2872,8 +2872,8 @@ class Flavor_Archive_Renderer {
                     'miembros'    => 'miembros_count',
                 ],
                 'stats' => [
-                    ['label' => __('Activas', 'flavor-chat-ia'), 'icon' => '🏘️', 'color' => 'green', 'count_where' => "estado = 'activa'"],
-                    ['label' => __('Miembros', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'blue', 'query' => "SELECT COALESCE(SUM(miembros_count), 0) FROM {table}"],
+                    ['label' => __('Activas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🏘️', 'color' => 'green', 'count_where' => "estado = 'activa'"],
+                    ['label' => __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👥', 'color' => 'blue', 'query' => "SELECT COALESCE(SUM(miembros_count), 0) FROM {table}"],
                 ],
             ],
 
@@ -2892,8 +2892,8 @@ class Flavor_Archive_Renderer {
                     'duracion'    => 'duracion',
                 ],
                 'stats' => [
-                    ['label' => __('Activos', 'flavor-chat-ia'), 'icon' => '📚', 'color' => 'green', 'count_where' => "estado = 'activo'"],
-                    ['label' => __('Próximos', 'flavor-chat-ia'), 'icon' => '📅', 'color' => 'blue', 'count_where' => "fecha_inicio > NOW()"],
+                    ['label' => __('Activos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📚', 'color' => 'green', 'count_where' => "estado = 'activo'"],
+                    ['label' => __('Próximos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📅', 'color' => 'blue', 'count_where' => "fecha_inicio > NOW()"],
                 ],
             ],
 
@@ -2912,8 +2912,8 @@ class Flavor_Archive_Renderer {
                     'ubicacion'   => 'ubicacion',
                 ],
                 'stats' => [
-                    ['label' => __('Próximos', 'flavor-chat-ia'), 'icon' => '🎨', 'color' => 'green', 'count_where' => "fecha > NOW()"],
-                    ['label' => __('Plazas disponibles', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'blue', 'query' => "SELECT COALESCE(SUM(plazas - inscritos), 0) FROM {table} WHERE fecha > NOW()"],
+                    ['label' => __('Próximos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🎨', 'color' => 'green', 'count_where' => "fecha > NOW()"],
+                    ['label' => __('Plazas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👥', 'color' => 'blue', 'query' => "SELECT COALESCE(SUM(plazas - inscritos), 0) FROM {table} WHERE fecha > NOW()"],
                 ],
             ],
 
@@ -2932,8 +2932,8 @@ class Flavor_Archive_Renderer {
                     'recurso'     => 'recurso_nombre',
                 ],
                 'stats' => [
-                    ['label' => __('Pendientes', 'flavor-chat-ia'), 'icon' => '🕐', 'color' => 'amber', 'count_where' => "estado = 'pendiente'"],
-                    ['label' => __('Confirmadas', 'flavor-chat-ia'), 'icon' => '✅', 'color' => 'green', 'count_where' => "estado = 'confirmada'"],
+                    ['label' => __('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🕐', 'color' => 'amber', 'count_where' => "estado = 'pendiente'"],
+                    ['label' => __('Confirmadas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '✅', 'color' => 'green', 'count_where' => "estado = 'confirmada'"],
                 ],
             ],
 
@@ -2951,8 +2951,8 @@ class Flavor_Archive_Renderer {
                     'fecha'       => 'fecha_creacion',
                 ],
                 'stats' => [
-                    ['label' => __('Grupos activos', 'flavor-chat-ia'), 'icon' => '🥬', 'color' => 'green', 'count_where' => "estado = 'activo'"],
-                    ['label' => __('Consumidores', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'blue', 'query' => "SELECT COUNT(*) FROM {prefix}flavor_gc_consumidores WHERE estado = 'activo'"],
+                    ['label' => __('Grupos activos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🥬', 'color' => 'green', 'count_where' => "estado = 'activo'"],
+                    ['label' => __('Consumidores', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👥', 'color' => 'blue', 'query' => "SELECT COUNT(*) FROM {prefix}flavor_gc_consumidores WHERE estado = 'activo'"],
                 ],
             ],
 
@@ -2970,8 +2970,8 @@ class Flavor_Archive_Renderer {
                     'fecha_fin'   => 'fecha_fin',
                 ],
                 'stats' => [
-                    ['label' => __('Activas', 'flavor-chat-ia'), 'icon' => '🗳️', 'color' => 'green', 'count_where' => "estado = 'activa' AND fecha_fin > NOW()"],
-                    ['label' => __('Finalizadas', 'flavor-chat-ia'), 'icon' => '✅', 'color' => 'blue', 'count_where' => "estado = 'finalizada'"],
+                    ['label' => __('Activas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🗳️', 'color' => 'green', 'count_where' => "estado = 'activa' AND fecha_fin > NOW()"],
+                    ['label' => __('Finalizadas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '✅', 'color' => 'blue', 'count_where' => "estado = 'finalizada'"],
                 ],
             ],
 
@@ -2998,14 +2998,14 @@ class Flavor_Archive_Renderer {
         }
 
         if (empty($id)) {
-            return $this->render_single_error(__('Item no encontrado', 'flavor-chat-ia'));
+            return $this->render_single_error(__('Item no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Obtener datos del item
         $item = $this->get_single_item($module, $id);
 
         if (empty($item)) {
-            return $this->render_single_error(__('Item no encontrado', 'flavor-chat-ia'));
+            return $this->render_single_error(__('Item no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Obtener configuración del módulo
@@ -3098,7 +3098,7 @@ class Flavor_Archive_Renderer {
             // Breadcrumb
             $this->render_component('breadcrumb', [
                 'items' => [
-                    ['label' => __('Inicio', 'flavor-chat-ia'), 'url' => home_url('/')],
+                    ['label' => __('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => home_url('/')],
                     ['label' => $module_title, 'url' => home_url("/{$module}/")],
                     ['label' => $title, 'current' => true],
                 ],
@@ -3126,7 +3126,7 @@ class Flavor_Archive_Renderer {
                             <?php if (!empty($config['single_cta'])): ?>
                             <button class="w-full py-4 rounded-xl text-lg font-semibold text-white transition-all hover:scale-105 bg-<?php echo esc_attr($resolved_color); ?>-600 hover:bg-<?php echo esc_attr($resolved_color); ?>-700"
                                     onclick="<?php echo esc_attr($config['single_cta']['action'] ?? ''); ?>">
-                                <?php echo esc_html($config['single_cta']['text'] ?? __('Acción', 'flavor-chat-ia')); ?>
+                                <?php echo esc_html($config['single_cta']['text'] ?? __('Acción', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                             </button>
                             <?php endif; ?>
 
@@ -3222,9 +3222,9 @@ class Flavor_Archive_Renderer {
         $this->render_component('empty-state', [
             'icon'    => '❌',
             'title'   => $message,
-            'message' => __('El elemento que buscas no existe o ha sido eliminado.', 'flavor-chat-ia'),
+            'message' => __('El elemento que buscas no existe o ha sido eliminado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'cta'     => [
-                'text' => __('Volver al listado', 'flavor-chat-ia'),
+                'text' => __('Volver al listado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url'  => 'javascript:history.back()',
             ],
         ]);

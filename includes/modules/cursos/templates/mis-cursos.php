@@ -11,21 +11,21 @@ $cursos = $resultado['success'] ? $resultado['cursos'] : [];
 ?>
 
 <div class="mis-cursos-wrapper">
-    <h2><?php _e('Mis Cursos', 'flavor-chat-ia'); ?></h2>
+    <h2><?php _e('Mis Cursos', 'flavor-platform'); ?></h2>
 
     <?php if (empty($cursos)): ?>
         <div class="cursos-vacio">
             <span class="dashicons dashicons-welcome-learn-more"></span>
-            <p><?php _e('Aún no te has inscrito en ningún curso.', 'flavor-chat-ia'); ?></p>
+            <p><?php _e('Aún no te has inscrito en ningún curso.', 'flavor-platform'); ?></p>
             <a href="<?php echo esc_url(home_url('/cursos/')); ?>" class="btn-continuar-curso">
-                <?php _e('Explorar cursos', 'flavor-chat-ia'); ?>
+                <?php _e('Explorar cursos', 'flavor-platform'); ?>
             </a>
         </div>
     <?php else: ?>
         <div class="mis-cursos-tabs" style="margin-bottom: 1.5rem;">
-            <button class="tab-btn active" data-filter="todos"><?php _e('Todos', 'flavor-chat-ia'); ?></button>
-            <button class="tab-btn" data-filter="activa"><?php _e('En progreso', 'flavor-chat-ia'); ?></button>
-            <button class="tab-btn" data-filter="completada"><?php _e('Completados', 'flavor-chat-ia'); ?></button>
+            <button class="tab-btn active" data-filter="todos"><?php _e('Todos', 'flavor-platform'); ?></button>
+            <button class="tab-btn" data-filter="activa"><?php _e('En progreso', 'flavor-platform'); ?></button>
+            <button class="tab-btn" data-filter="completada"><?php _e('Completados', 'flavor-platform'); ?></button>
         </div>
 
         <div class="mis-cursos-grid">
@@ -43,19 +43,19 @@ $cursos = $resultado['success'] ? $resultado['cursos'] : [];
                                 <div class="progreso-bar-fill" style="width: <?php echo $curso['progreso']; ?>%"></div>
                             </div>
                             <div class="progreso-texto">
-                                <?php printf(__('%d%% completado', 'flavor-chat-ia'), $curso['progreso']); ?>
+                                <?php printf(__('%d%% completado', 'flavor-platform'), $curso['progreso']); ?>
                             </div>
                         </div>
                     </div>
 
                     <div class="mi-curso-contenido">
                         <h3 class="mi-curso-titulo"><?php echo esc_html($curso['titulo']); ?></h3>
-                        <p class="mi-curso-instructor"><?php printf(__('Por %s', 'flavor-chat-ia'), esc_html($curso['instructor'])); ?></p>
+                        <p class="mi-curso-instructor"><?php printf(__('Por %s', 'flavor-platform'), esc_html($curso['instructor'])); ?></p>
 
                         <div class="mi-curso-acciones">
                             <?php if ($curso['estado_inscripcion'] === 'completada'): ?>
                                 <a href="<?php echo esc_url(add_query_arg(['page' => 'aula', 'curso_id' => $curso['id']], get_permalink())); ?>" class="btn-continuar-curso">
-                                    <?php _e('Revisar', 'flavor-chat-ia'); ?>
+                                    <?php _e('Revisar', 'flavor-platform'); ?>
                                 </a>
                                 <?php if (!$curso['certificado']): ?>
                                     <button type="button" class="btn-certificado" data-curso-id="<?php echo $curso['id']; ?>">
@@ -68,7 +68,7 @@ $cursos = $resultado['success'] ? $resultado['cursos'] : [];
                                 <?php endif; ?>
                             <?php else: ?>
                                 <a href="<?php echo esc_url(add_query_arg(['page' => 'aula', 'curso_id' => $curso['id']], get_permalink())); ?>" class="btn-continuar-curso">
-                                    <?php _e('Continuar', 'flavor-chat-ia'); ?>
+                                    <?php _e('Continuar', 'flavor-platform'); ?>
                                 </a>
                             <?php endif; ?>
                         </div>

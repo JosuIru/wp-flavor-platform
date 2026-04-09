@@ -22,10 +22,10 @@ $resultados = $datos_vista['resultados'] ?? [];
                    name="q"
                    value="<?php echo esc_attr($termino); ?>"
                    class="mi-red-buscar__input"
-                   placeholder="<?php esc_attr_e('Buscar personas, publicaciones, hashtags...', 'flavor-chat-ia'); ?>"
+                   placeholder="<?php esc_attr_e('Buscar personas, publicaciones, hashtags...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                    autofocus>
             <button type="submit" class="mi-red-btn mi-red-btn--primary">
-                <?php esc_html_e('Buscar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </form>
     </header>
@@ -35,13 +35,13 @@ $resultados = $datos_vista['resultados'] ?? [];
         <div class="mi-red-buscar__intro">
             <div class="mi-red-empty-state">
                 <div class="mi-red-empty-state__icon">🔎</div>
-                <h3><?php esc_html_e('Encuentra lo que buscas', 'flavor-chat-ia'); ?></h3>
-                <p><?php esc_html_e('Busca personas, publicaciones, hashtags, comunidades y más.', 'flavor-chat-ia'); ?></p>
+                <h3><?php esc_html_e('Encuentra lo que buscas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php esc_html_e('Busca personas, publicaciones, hashtags, comunidades y más.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <!-- Búsquedas sugeridas -->
             <div class="mi-red-buscar__sugerencias">
-                <h4><?php esc_html_e('Sugerencias', 'flavor-chat-ia'); ?></h4>
+                <h4><?php esc_html_e('Sugerencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                 <div class="mi-red-buscar__tags">
                     <a href="?q=%23comunidad" class="mi-red-tag">#comunidad</a>
                     <a href="?q=%23eventos" class="mi-red-tag">#eventos</a>
@@ -54,15 +54,15 @@ $resultados = $datos_vista['resultados'] ?? [];
         <!-- Sin resultados -->
         <div class="mi-red-empty-state">
             <div class="mi-red-empty-state__icon">😕</div>
-            <h3><?php esc_html_e('Sin resultados', 'flavor-chat-ia'); ?></h3>
-            <p><?php printf(esc_html__('No encontramos resultados para "%s"', 'flavor-chat-ia'), esc_html($termino)); ?></p>
+            <h3><?php esc_html_e('Sin resultados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php printf(esc_html__('No encontramos resultados para "%s"', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($termino)); ?></p>
         </div>
     <?php else : ?>
         <!-- Resultados -->
         <div class="mi-red-buscar__resultados">
             <?php if (!empty($resultados['usuarios'])) : ?>
                 <section class="mi-red-buscar__seccion">
-                    <h3><?php esc_html_e('Personas', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Personas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <div class="mi-red-usuarios-lista">
                         <?php foreach ($resultados['usuarios'] as $user) : ?>
                             <a href="<?php echo esc_url($base_url . 'perfil/' . $user['ID'] . '/'); ?>" class="mi-red-usuario-item">
@@ -71,7 +71,7 @@ $resultados = $datos_vista['resultados'] ?? [];
                                     <span class="mi-red-usuario-item__nombre"><?php echo esc_html($user['display_name']); ?></span>
                                 </div>
                                 <button class="mi-red-btn mi-red-btn--outline mi-red-btn--small" data-action="seguir" data-usuario="<?php echo esc_attr($user['ID']); ?>">
-                                    <?php esc_html_e('Seguir', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Seguir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             </a>
                         <?php endforeach; ?>
@@ -81,7 +81,7 @@ $resultados = $datos_vista['resultados'] ?? [];
 
             <?php if (!empty($resultados['publicaciones'])) : ?>
                 <section class="mi-red-buscar__seccion">
-                    <h3><?php esc_html_e('Publicaciones', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <div class="mi-red-feed__list">
                         <?php foreach ($resultados['publicaciones'] as $item) : ?>
                             <?php include FLAVOR_CHAT_IA_PATH . 'templates/frontend/mi-red/partials/feed-item.php'; ?>

@@ -92,7 +92,7 @@ class Flavor_WP_Social_Share {
         foreach ($this->post_types_habilitados as $post_type) {
             add_meta_box(
                 'flavor_social_share',
-                __('Compartir en Red Social', 'flavor-chat-ia'),
+                __('Compartir en Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 [$this, 'renderizar_metabox'],
                 $post_type,
                 'side',
@@ -120,7 +120,7 @@ class Flavor_WP_Social_Share {
                 <div class="flavor-social-compartido-notice" style="background:#d4edda;padding:8px;border-radius:4px;margin-bottom:10px;">
                     <span class="dashicons dashicons-yes-alt" style="color:#28a745;"></span>
                     <?php printf(
-                        __('Compartido en red social (ID: %d)', 'flavor-chat-ia'),
+                        __('Compartido en red social (ID: %d)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $publicacion_social_id
                     ); ?>
                 </div>
@@ -133,39 +133,39 @@ class Flavor_WP_Social_Share {
                            value="1"
                            <?php checked($compartir_habilitado, '1'); ?>
                            <?php disabled($ya_compartido); ?>>
-                    <?php esc_html_e('Compartir al publicar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Compartir al publicar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </label>
             </p>
 
             <p>
                 <label for="flavor_social_visibilidad">
-                    <?php esc_html_e('Visibilidad:', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Visibilidad:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </label>
                 <select name="flavor_social_visibilidad"
                         id="flavor_social_visibilidad"
                         style="width:100%;"
                         <?php disabled($ya_compartido); ?>>
                     <option value="publico" <?php selected($visibilidad, 'publico'); ?>>
-                        <?php esc_html_e('Público', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </option>
                     <option value="seguidores" <?php selected($visibilidad, 'seguidores'); ?>>
-                        <?php esc_html_e('Solo seguidores', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Solo seguidores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </option>
                     <option value="privado" <?php selected($visibilidad, 'privado'); ?>>
-                        <?php esc_html_e('Privado', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Privado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </option>
                 </select>
             </p>
 
             <p>
                 <label for="flavor_social_mensaje">
-                    <?php esc_html_e('Mensaje personalizado (opcional):', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Mensaje personalizado (opcional):', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </label>
                 <textarea name="flavor_social_mensaje"
                           id="flavor_social_mensaje"
                           rows="3"
                           style="width:100%;"
-                          placeholder="<?php esc_attr_e('Añade un comentario...', 'flavor-chat-ia'); ?>"
+                          placeholder="<?php esc_attr_e('Añade un comentario...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                           <?php disabled($ya_compartido); ?>><?php echo esc_textarea($mensaje_personalizado); ?></textarea>
             </p>
 
@@ -176,10 +176,10 @@ class Flavor_WP_Social_Share {
                            value="1"
                            <?php checked($federar, '1'); ?>
                            <?php disabled($ya_compartido); ?>>
-                    <?php esc_html_e('Federar a nodos públicos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Federar a nodos públicos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </label>
                 <span class="dashicons dashicons-info-outline"
-                      title="<?php esc_attr_e('Comparte también en la red de nodos conectados', 'flavor-chat-ia'); ?>"
+                      title="<?php esc_attr_e('Comparte también en la red de nodos conectados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                       style="color:#666;cursor:help;"></span>
             </p>
 
@@ -191,7 +191,7 @@ class Flavor_WP_Social_Share {
                         data-post-id="<?php echo esc_attr($post->ID); ?>"
                         style="width:100%;">
                     <span class="dashicons dashicons-share" style="margin-top:4px;"></span>
-                    <?php esc_html_e('Compartir ahora', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Compartir ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             <?php endif; ?>
         </div>
@@ -295,7 +295,7 @@ class Flavor_WP_Social_Share {
 
         $post = get_post($post_id);
         if (!$post) {
-            return new WP_Error('post_no_existe', __('El post no existe', 'flavor-chat-ia'));
+            return new WP_Error('post_no_existe', __('El post no existe', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Obtener datos del post
@@ -326,7 +326,7 @@ class Flavor_WP_Social_Share {
         // Verificar que la tabla existe
         $tabla_existe = $wpdb->get_var("SHOW TABLES LIKE '{$this->tabla_publicaciones}'");
         if (!$tabla_existe) {
-            return new WP_Error('tabla_no_existe', __('La tabla de red social no existe', 'flavor-chat-ia'));
+            return new WP_Error('tabla_no_existe', __('La tabla de red social no existe', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Insertar publicación social
@@ -493,17 +493,17 @@ class Flavor_WP_Social_Share {
         check_ajax_referer('flavor_social_share_ajax', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $post_id = intval($_POST['post_id'] ?? 0);
         if (!$post_id) {
-            wp_send_json_error(['message' => __('ID de post inválido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID de post inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar si ya fue compartido
         if (get_post_meta($post_id, '_flavor_social_compartido', true)) {
-            wp_send_json_error(['message' => __('Este post ya fue compartido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Este post ya fue compartido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Guardar opciones desde AJAX
@@ -549,7 +549,7 @@ class Flavor_WP_Social_Share {
         }
 
         wp_send_json_success([
-            'message'        => __('Post compartido en la red social', 'flavor-chat-ia'),
+            'message'        => __('Post compartido en la red social', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'publicacion_id' => $resultado,
         ]);
     }
@@ -579,9 +579,9 @@ class Flavor_WP_Social_Share {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce'   => wp_create_nonce('flavor_social_share_ajax'),
             'i18n'    => [
-                'compartiendo' => __('Compartiendo...', 'flavor-chat-ia'),
-                'compartido'   => __('Compartido!', 'flavor-chat-ia'),
-                'error'        => __('Error al compartir', 'flavor-chat-ia'),
+                'compartiendo' => __('Compartiendo...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'compartido'   => __('Compartido!', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error'        => __('Error al compartir', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -612,10 +612,10 @@ class Flavor_WP_Social_Share {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce'   => wp_create_nonce('flavor_social_share_ajax'),
             'i18n'    => [
-                'compartiendo' => __('Compartiendo...', 'flavor-chat-ia'),
-                'compartido'   => __('¡Compartido en la comunidad!', 'flavor-chat-ia'),
-                'error'        => __('Error al compartir', 'flavor-chat-ia'),
-                'btnCompartir' => __('Compartir', 'flavor-chat-ia'),
+                'compartiendo' => __('Compartiendo...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'compartido'   => __('¡Compartido en la comunidad!', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error'        => __('Error al compartir', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'btnCompartir' => __('Compartir', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -626,7 +626,7 @@ class Flavor_WP_Social_Share {
     public function shortcode_boton_compartir($atts) {
         $atts = shortcode_atts([
             'post_id' => get_the_ID(),
-            'texto'   => __('Compartir en comunidad', 'flavor-chat-ia'),
+            'texto'   => __('Compartir en comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'class'   => 'flavor-btn-compartir-social',
         ], $atts);
 
@@ -640,7 +640,7 @@ class Flavor_WP_Social_Share {
         if ($ya_compartido) {
             return '<span class="flavor-ya-compartido">' .
                    '<span class="dashicons dashicons-yes"></span> ' .
-                   __('Compartido', 'flavor-chat-ia') .
+                   __('Compartido', FLAVOR_PLATFORM_TEXT_DOMAIN) .
                    '</span>';
         }
 
@@ -681,17 +681,17 @@ class Flavor_WP_Social_Share {
             $html = '<div class="flavor-social-share-wrapper flavor-ya-compartido-wrapper">';
             $html .= '<span class="flavor-ya-compartido">';
             $html .= '<span class="dashicons dashicons-yes"></span> ';
-            $html .= __('Compartido en la comunidad', 'flavor-chat-ia');
+            $html .= __('Compartido en la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN);
             $html .= '</span>';
             $html .= '</div>';
             return $content . $html;
         }
 
         $html = '<div class="flavor-social-share-wrapper">';
-        $html .= '<p class="flavor-share-intro">' . __('¿Te ha gustado? Compártelo con la comunidad', 'flavor-chat-ia') . '</p>';
+        $html .= '<p class="flavor-share-intro">' . __('¿Te ha gustado? Compártelo con la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         $html .= '<button type="button" class="flavor-btn-compartir-social" data-post-id="' . esc_attr($post_id) . '">';
         $html .= '<span class="dashicons dashicons-share"></span> ';
-        $html .= __('Compartir en comunidad', 'flavor-chat-ia');
+        $html .= __('Compartir en comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $html .= '</button>';
         $html .= '</div>';
 
@@ -721,7 +721,7 @@ class Flavor_WP_Social_Share {
 
                 <h3 class="flavor-modal-title">
                     <span class="dashicons dashicons-share"></span>
-                    <?php esc_html_e('Compartir en la comunidad', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Compartir en la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
 
                 <!-- Preview del post -->
@@ -739,35 +739,35 @@ class Flavor_WP_Social_Share {
                     <!-- Mensaje personalizado -->
                     <div class="flavor-form-group">
                         <label for="flavor-share-mensaje">
-                            <?php esc_html_e('Añade un comentario (opcional)', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Añade un comentario (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                         <textarea id="flavor-share-mensaje"
                                   name="mensaje"
                                   rows="3"
-                                  placeholder="<?php esc_attr_e('¿Qué opinas sobre esto?', 'flavor-chat-ia'); ?>"></textarea>
+                                  placeholder="<?php esc_attr_e('¿Qué opinas sobre esto?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                     </div>
 
                     <!-- Visibilidad -->
                     <div class="flavor-form-group">
-                        <label><?php esc_html_e('¿Quién puede verlo?', 'flavor-chat-ia'); ?></label>
+                        <label><?php esc_html_e('¿Quién puede verlo?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <div class="flavor-visibility-options">
                             <label class="flavor-radio-card selected">
                                 <input type="radio" name="visibilidad" value="publico" checked>
                                 <span class="dashicons dashicons-admin-site"></span>
-                                <span class="flavor-radio-label"><?php esc_html_e('Público', 'flavor-chat-ia'); ?></span>
-                                <small><?php esc_html_e('Todos pueden ver', 'flavor-chat-ia'); ?></small>
+                                <span class="flavor-radio-label"><?php esc_html_e('Público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                                <small><?php esc_html_e('Todos pueden ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                             </label>
                             <label class="flavor-radio-card">
                                 <input type="radio" name="visibilidad" value="seguidores">
                                 <span class="dashicons dashicons-groups"></span>
-                                <span class="flavor-radio-label"><?php esc_html_e('Seguidores', 'flavor-chat-ia'); ?></span>
-                                <small><?php esc_html_e('Solo mis seguidores', 'flavor-chat-ia'); ?></small>
+                                <span class="flavor-radio-label"><?php esc_html_e('Seguidores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                                <small><?php esc_html_e('Solo mis seguidores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                             </label>
                             <label class="flavor-radio-card">
                                 <input type="radio" name="visibilidad" value="privado">
                                 <span class="dashicons dashicons-lock"></span>
-                                <span class="flavor-radio-label"><?php esc_html_e('Privado', 'flavor-chat-ia'); ?></span>
-                                <small><?php esc_html_e('Solo yo', 'flavor-chat-ia'); ?></small>
+                                <span class="flavor-radio-label"><?php esc_html_e('Privado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                                <small><?php esc_html_e('Solo yo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                             </label>
                         </div>
                     </div>
@@ -780,18 +780,18 @@ class Flavor_WP_Social_Share {
                         <label class="flavor-checkbox-inline">
                             <input type="checkbox" name="federar" value="1">
                             <span class="dashicons dashicons-networking"></span>
-                            <?php esc_html_e('Compartir también en la red de comunidades conectadas', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Compartir también en la red de comunidades conectadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                     </div>
 
                     <!-- Botones -->
                     <div class="flavor-modal-actions">
                         <button type="button" class="flavor-btn-cancelar">
-                            <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <button type="submit" class="flavor-btn-compartir-submit">
                             <span class="dashicons dashicons-share"></span>
-                            <?php esc_html_e('Compartir', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Compartir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </form>
@@ -812,7 +812,7 @@ add_action('plugins_loaded', function() {
         $modulo_activo = flavor_is_module_active('red_social') || flavor_is_module_active('red-social');
     } else {
         // Fallback: verificar en ambas opciones
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $active_modules = $settings['active_modules'] ?? [];
 
         $modulos_legacy = get_option('flavor_active_modules', []);

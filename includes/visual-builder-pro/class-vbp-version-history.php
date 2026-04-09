@@ -411,7 +411,7 @@ class Flavor_VBP_Version_History {
             $version['fecha_formateada'] = human_time_diff(
                 strtotime( $version['fecha_creacion'] ),
                 current_time( 'timestamp' )
-            ) . ' ' . __( 'atrás', 'flavor-chat-ia' );
+            ) . ' ' . __( 'atrás', FLAVOR_PLATFORM_TEXT_DOMAIN );
 
             // Obtener resumen de elementos
             $contenido = $this->obtener_contenido_version( $version['id'] );
@@ -457,7 +457,7 @@ class Flavor_VBP_Version_History {
             return new WP_REST_Response(
                 array(
                     'success' => false,
-                    'message' => __( 'Versión no encontrada', 'flavor-chat-ia' ),
+                    'message' => __( 'Versión no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 404
             );
@@ -563,7 +563,7 @@ class Flavor_VBP_Version_History {
             return new WP_REST_Response(
                 array(
                     'success' => false,
-                    'message' => __( 'No hay contenido VBP para guardar', 'flavor-chat-ia' ),
+                    'message' => __( 'No hay contenido VBP para guardar', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 400
             );
@@ -575,7 +575,7 @@ class Flavor_VBP_Version_History {
             return new WP_REST_Response(
                 array(
                     'success'    => true,
-                    'message'    => __( 'Versión guardada correctamente', 'flavor-chat-ia' ),
+                    'message'    => __( 'Versión guardada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     'version_id' => $version_id,
                 ),
                 201
@@ -585,7 +585,7 @@ class Flavor_VBP_Version_History {
         return new WP_REST_Response(
             array(
                 'success' => false,
-                'message' => __( 'Error al guardar la versión', 'flavor-chat-ia' ),
+                'message' => __( 'Error al guardar la versión', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             500
         );
@@ -610,7 +610,7 @@ class Flavor_VBP_Version_History {
             return new WP_REST_Response(
                 array(
                     'success' => false,
-                    'message' => __( 'Versión no encontrada', 'flavor-chat-ia' ),
+                    'message' => __( 'Versión no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 404
             );
@@ -622,7 +622,7 @@ class Flavor_VBP_Version_History {
             $this->guardar_version(
                 $post_id,
                 $contenido_actual,
-                __( 'Antes de restaurar', 'flavor-chat-ia' )
+                __( 'Antes de restaurar', FLAVOR_PLATFORM_TEXT_DOMAIN )
             );
         }
 
@@ -633,13 +633,13 @@ class Flavor_VBP_Version_History {
         $this->guardar_version(
             $post_id,
             $contenido,
-            __( 'Restaurado desde versión', 'flavor-chat-ia' ) . ' #' . $version_id
+            __( 'Restaurado desde versión', FLAVOR_PLATFORM_TEXT_DOMAIN ) . ' #' . $version_id
         );
 
         return new WP_REST_Response(
             array(
                 'success'  => true,
-                'message'  => __( 'Versión restaurada correctamente', 'flavor-chat-ia' ),
+                'message'  => __( 'Versión restaurada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 'content'  => $contenido,
             ),
             200
@@ -664,7 +664,7 @@ class Flavor_VBP_Version_History {
             return new WP_REST_Response(
                 array(
                     'success' => false,
-                    'message' => __( 'Una o ambas versiones no encontradas', 'flavor-chat-ia' ),
+                    'message' => __( 'Una o ambas versiones no encontradas', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 404
             );
@@ -890,7 +890,7 @@ class Flavor_VBP_Version_History {
             return new WP_REST_Response(
                 array(
                     'success' => true,
-                    'message' => __( 'Versión eliminada correctamente', 'flavor-chat-ia' ),
+                    'message' => __( 'Versión eliminada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 200
             );
@@ -899,7 +899,7 @@ class Flavor_VBP_Version_History {
         return new WP_REST_Response(
             array(
                 'success' => false,
-                'message' => __( 'Error al eliminar la versión', 'flavor-chat-ia' ),
+                'message' => __( 'Error al eliminar la versión', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             500
         );
@@ -933,7 +933,7 @@ class Flavor_VBP_Version_History {
             return new WP_REST_Response(
                 array(
                     'success' => true,
-                    'message' => __( 'Etiqueta actualizada correctamente', 'flavor-chat-ia' ),
+                    'message' => __( 'Etiqueta actualizada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 ),
                 200
             );
@@ -942,7 +942,7 @@ class Flavor_VBP_Version_History {
         return new WP_REST_Response(
             array(
                 'success' => false,
-                'message' => __( 'Error al actualizar la etiqueta', 'flavor-chat-ia' ),
+                'message' => __( 'Error al actualizar la etiqueta', FLAVOR_PLATFORM_TEXT_DOMAIN ),
             ),
             500
         );

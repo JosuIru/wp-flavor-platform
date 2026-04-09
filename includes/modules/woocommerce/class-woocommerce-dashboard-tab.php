@@ -32,7 +32,7 @@ class Flavor_Woocommerce_Dashboard_Tab {
         }
 
         $tabs['tienda'] = [
-            'label' => __('Mi Tienda', 'flavor-chat-ia'),
+            'label' => __('Mi Tienda', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-cart',
             'callback' => [$this, 'render_tab'],
             'priority' => 55,

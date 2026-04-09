@@ -27,8 +27,8 @@ class Flavor_Podcast_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
     public function __construct() {
         global $wpdb;
         $this->prefix_tabla = $wpdb->prefix . 'flavor_podcast_';
-        $this->title = __('Podcast', 'flavor-chat-ia');
-        $this->description = __('Escucha los episodios de la comunidad', 'flavor-chat-ia');
+        $this->title = __('Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Escucha los episodios de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         parent::__construct([
             'id' => $this->widget_id,
@@ -75,7 +75,7 @@ class Flavor_Podcast_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             [
                 'icon' => 'dashicons-microphone',
                 'valor' => $total_episodios,
-                'label' => __('Episodios', 'flavor-chat-ia'),
+                'label' => __('Episodios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'primary',
                 'url' => $es_admin ? admin_url('admin.php?page=podcast') : Flavor_Chat_Helpers::get_action_url('podcast', ''),
             ],
@@ -84,7 +84,7 @@ class Flavor_Podcast_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         if ($ultimo_episodio) {
             $stats[] = [
                 'icon' => 'dashicons-controls-play',
-                'valor' => __('Nuevo', 'flavor-chat-ia'),
+                'valor' => __('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'label' => wp_trim_words($ultimo_episodio->titulo, 3, '...'),
                 'color' => 'success',
                 'url' => $es_admin ? admin_url('admin.php?page=podcast&id=' . $ultimo_episodio->id) : Flavor_Chat_Helpers::get_action_url('podcast', 'episodio') . '/' . $ultimo_episodio->id . '/',
@@ -96,10 +96,10 @@ class Flavor_Podcast_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats,
             'items' => $items,
-            'empty_state' => __('No hay episodios publicados', 'flavor-chat-ia'),
+            'empty_state' => __('No hay episodios publicados', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => __('Ver todos', 'flavor-chat-ia'),
+                    'label' => __('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => $es_admin ? admin_url('admin.php?page=podcast') : Flavor_Chat_Helpers::get_action_url('podcast', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],

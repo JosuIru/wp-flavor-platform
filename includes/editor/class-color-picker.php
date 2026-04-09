@@ -141,7 +141,7 @@ class Flavor_Color_Picker {
         check_ajax_referer('flavor_editor_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-platform')]);
         }
 
         $colors = $_POST['colors'] ?? [];

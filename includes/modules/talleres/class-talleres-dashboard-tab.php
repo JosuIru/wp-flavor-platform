@@ -27,14 +27,14 @@ class Flavor_Talleres_Dashboard_Tab {
 
     public function registrar_tabs($tabs) {
         $tabs['talleres-proximos'] = [
-            'label' => __('Talleres', 'flavor-chat-ia'),
+            'label' => __('Talleres', 'flavor-platform'),
             'icon' => 'hammer',
             'callback' => [$this, 'render_tab_proximos'],
             'orden' => 35,
         ];
 
         $tabs['talleres-mis-cursos'] = [
-            'label' => __('Mis Cursos', 'flavor-chat-ia'),
+            'label' => __('Mis Cursos', 'flavor-platform'),
             'icon' => 'welcome-learn-more',
             'callback' => [$this, 'render_tab_mis_cursos'],
             'orden' => 36,
@@ -67,14 +67,14 @@ class Flavor_Talleres_Dashboard_Tab {
         ?>
         <div class="flavor-panel flavor-talleres-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-hammer"></span> <?php esc_html_e('Próximos Talleres', 'flavor-chat-ia'); ?></h2>
-                <span class="flavor-badge"><?php echo number_format_i18n($total_proximos); ?> <?php esc_html_e('disponibles', 'flavor-chat-ia'); ?></span>
+                <h2><span class="dashicons dashicons-hammer"></span> <?php esc_html_e('Próximos Talleres', 'flavor-platform'); ?></h2>
+                <span class="flavor-badge"><?php echo number_format_i18n($total_proximos); ?> <?php esc_html_e('disponibles', 'flavor-platform'); ?></span>
             </div>
 
             <?php if (empty($talleres)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-hammer"></span>
-                    <p><?php esc_html_e('No hay talleres próximos programados.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay talleres próximos programados.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <div class="flavor-cards-grid flavor-cards-grid-3">
@@ -84,7 +84,7 @@ class Flavor_Talleres_Dashboard_Tab {
                                 <div class="flavor-card-image">
                                     <img src="<?php echo esc_url($taller->imagen_destacada); ?>" alt="">
                                     <?php if ($taller->es_gratuito): ?>
-                                        <span class="flavor-badge flavor-badge-success"><?php esc_html_e('Gratis', 'flavor-chat-ia'); ?></span>
+                                        <span class="flavor-badge flavor-badge-success"><?php esc_html_e('Gratis', 'flavor-platform'); ?></span>
                                     <?php endif; ?>
                                 </div>
                             <?php endif; ?>
@@ -107,7 +107,7 @@ class Flavor_Talleres_Dashboard_Tab {
                                     <p class="flavor-taller-plazas">
                                         <span class="dashicons dashicons-groups"></span>
                                         <?php printf(
-                                            esc_html__('%d/%d plazas', 'flavor-chat-ia'),
+                                            esc_html__('%d/%d plazas', 'flavor-platform'),
                                             $taller->inscritos_count,
                                             $taller->plazas_maximas
                                         ); ?>
@@ -119,7 +119,7 @@ class Flavor_Talleres_Dashboard_Tab {
                                     <span class="flavor-precio"><?php echo number_format_i18n($taller->precio, 2); ?> €</span>
                                 <?php endif; ?>
                                 <a href="<?php echo esc_url(home_url('/talleres/' . $taller->slug)); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
-                                    <?php esc_html_e('Ver más', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Ver más', 'flavor-platform'); ?>
                                 </a>
                             </div>
                         </div>
@@ -129,7 +129,7 @@ class Flavor_Talleres_Dashboard_Tab {
 
             <div class="flavor-panel-actions">
                 <a href="<?php echo esc_url(home_url('/talleres/')); ?>" class="flavor-btn flavor-btn-outline">
-                    <?php esc_html_e('Ver todos los talleres', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver todos los talleres', 'flavor-platform'); ?>
                 </a>
             </div>
         </div>
@@ -139,7 +139,7 @@ class Flavor_Talleres_Dashboard_Tab {
     public function render_tab_mis_cursos() {
         $user_id = get_current_user_id();
         if (!$user_id) {
-            echo '<p>' . esc_html__('Debes iniciar sesión.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Debes iniciar sesión.', 'flavor-platform') . '</p>';
             return;
         }
 
@@ -162,15 +162,15 @@ class Flavor_Talleres_Dashboard_Tab {
         ?>
         <div class="flavor-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-welcome-learn-more"></span> <?php esc_html_e('Mis Cursos y Talleres', 'flavor-chat-ia'); ?></h2>
+                <h2><span class="dashicons dashicons-welcome-learn-more"></span> <?php esc_html_e('Mis Cursos y Talleres', 'flavor-platform'); ?></h2>
             </div>
 
             <?php if (empty($inscripciones)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-welcome-learn-more"></span>
-                    <p><?php esc_html_e('No estás inscrito en ningún taller.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No estás inscrito en ningún taller.', 'flavor-platform'); ?></p>
                     <a href="<?php echo esc_url(home_url('/talleres/')); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php esc_html_e('Explorar talleres', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Explorar talleres', 'flavor-platform'); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -178,12 +178,12 @@ class Flavor_Talleres_Dashboard_Tab {
                     <table class="flavor-table">
                         <thead>
                             <tr>
-                                <th><?php esc_html_e('Taller', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Instructor', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Fechas', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Asistencia', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Taller', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Instructor', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Fechas', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Asistencia', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Acciones', 'flavor-platform'); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -216,11 +216,11 @@ class Flavor_Talleres_Dashboard_Tab {
                                         <?php if ($insc->certificado_emitido && $insc->certificado_url): ?>
                                             <a href="<?php echo esc_url($insc->certificado_url); ?>" class="flavor-btn flavor-btn-sm flavor-btn-success" target="_blank">
                                                 <span class="dashicons dashicons-awards"></span>
-                                                <?php esc_html_e('Certificado', 'flavor-chat-ia'); ?>
+                                                <?php esc_html_e('Certificado', 'flavor-platform'); ?>
                                             </a>
                                         <?php else: ?>
                                             <a href="<?php echo esc_url(home_url('/talleres/' . $insc->slug)); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
-                                                <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                                                <?php esc_html_e('Ver', 'flavor-platform'); ?>
                                             </a>
                                         <?php endif; ?>
                                     </td>

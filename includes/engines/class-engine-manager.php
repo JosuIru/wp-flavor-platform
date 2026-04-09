@@ -123,7 +123,7 @@ class Flavor_Engine_Manager {
      * @return array ['provider' => string, 'model' => string]
      */
     public function get_context_config($context = self::CONTEXT_DEFAULT) {
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
 
         // Configuración por defecto
         $default_provider = $settings['active_provider'] ?? 'claude';
@@ -218,7 +218,7 @@ class Flavor_Engine_Manager {
             return false;
         }
 
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
 
         if ($context === self::CONTEXT_DEFAULT) {
             $settings['active_provider'] = $provider_id;
@@ -232,7 +232,7 @@ class Flavor_Engine_Manager {
             }
         }
 
-        update_option('flavor_chat_ia_settings', $settings);
+        flavor_update_main_settings($settings);
 
         // Limpiar cache
         unset($this->active_engines[$context]);
@@ -284,7 +284,7 @@ class Flavor_Engine_Manager {
      */
     public function get_configured_engines() {
         $configured = [];
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
 
         // Obtener engines que están configurados
         foreach ($this->engines as $id => $engine) {
@@ -363,7 +363,7 @@ class Flavor_Engine_Manager {
         if (empty($configured_engines)) {
             return [
                 'success' => false,
-                'error' => __('No hay ningún motor de IA configurado. Configura al menos una API key.', 'flavor-chat-ia'),
+                'error' => __('No hay ningún motor de IA configurado. Configura al menos una API key.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'error_code' => 'no_engine_configured',
             ];
         }
@@ -420,7 +420,7 @@ class Flavor_Engine_Manager {
                 }
 
                 // Guardar el error para posible uso posterior
-                $last_error = $response['error'] ?? __('Error desconocido', 'flavor-chat-ia');
+                $last_error = $response['error'] ?? __('Error desconocido', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 $attempts[] = [
                     'engine' => $engine_id,
                     'error' => $last_error,
@@ -448,7 +448,7 @@ class Flavor_Engine_Manager {
         return [
             'success' => false,
             'error' => sprintf(
-                __('Todos los motores de IA fallaron. Último error: %s', 'flavor-chat-ia'),
+                __('Todos los motores de IA fallaron. Último error: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $last_error
             ),
             'error_code' => 'all_engines_failed',
@@ -493,7 +493,7 @@ class Flavor_Engine_Manager {
         if (!$engine) {
             return [
                 'valid' => false,
-                'error' => __('Proveedor no encontrado', 'flavor-chat-ia'),
+                'error' => __('Proveedor no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -528,16 +528,16 @@ class Flavor_Engine_Manager {
     public function get_available_contexts() {
         return [
             self::CONTEXT_DEFAULT => [
-                'name' => __('Por defecto', 'flavor-chat-ia'),
-                'description' => __('Configuración general usada cuando no hay una específica', 'flavor-chat-ia'),
+                'name' => __('Por defecto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Configuración general usada cuando no hay una específica', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             self::CONTEXT_FRONTEND => [
-                'name' => __('Chat Público (Frontend)', 'flavor-chat-ia'),
-                'description' => __('Widget de chat para visitantes del sitio', 'flavor-chat-ia'),
+                'name' => __('Chat Público (Frontend)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Widget de chat para visitantes del sitio', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             self::CONTEXT_BACKEND => [
-                'name' => __('Admin Assistant (Backend)', 'flavor-chat-ia'),
-                'description' => __('Asistente de IA para administradores', 'flavor-chat-ia'),
+                'name' => __('Admin Assistant (Backend)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Asistente de IA para administradores', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
     }

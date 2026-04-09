@@ -15,8 +15,8 @@ if (!defined('ABSPATH')) {
 $usuario_id = get_current_user_id();
 if (!$usuario_id) {
     echo '<div class="rs-login-required">';
-    echo '<p>' . esc_html__('Debes iniciar sesion para ver tus amigos.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('red_social', 'amigos'))) . '" class="rs-btn-primary">' . esc_html__('Iniciar sesion', 'flavor-chat-ia') . '</a>';
+    echo '<p>' . esc_html__('Debes iniciar sesion para ver tus amigos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
+    echo '<a href="' . esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('red_social', 'amigos'))) . '" class="rs-btn-primary">' . esc_html__('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
     echo '</div>';
     return;
 }
@@ -38,7 +38,7 @@ $offset = ($pagina_actual - 1) * $por_pagina;
 // Obtener datos del usuario del perfil
 $usuario_perfil = get_userdata($perfil_usuario_id);
 if (!$usuario_perfil) {
-    echo '<div class="rs-error">' . esc_html__('Usuario no encontrado.', 'flavor-chat-ia') . '</div>';
+    echo '<div class="rs-error">' . esc_html__('Usuario no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
     return;
 }
 
@@ -109,7 +109,7 @@ $total_paginas = ceil($total_usuarios / $por_pagina);
                 ?>
                 <button class="rs-btn-seguir <?php echo $ya_sigue ? 'rs-siguiendo' : ''; ?>"
                         data-usuario-id="<?php echo esc_attr($perfil_usuario_id); ?>">
-                    <?php echo $ya_sigue ? esc_html__('Siguiendo', 'flavor-chat-ia') : esc_html__('Seguir', 'flavor-chat-ia'); ?>
+                    <?php echo $ya_sigue ? esc_html__('Siguiendo', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Seguir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             <?php endif; ?>
         </div>
@@ -119,12 +119,12 @@ $total_paginas = ceil($total_usuarios / $por_pagina);
             <a href="?tipo=seguidores<?php echo !$es_perfil_propio ? '&rs_usuario=' . $perfil_usuario_id : ''; ?>"
                class="rs-amigos-tab <?php echo $tipo_lista === 'seguidores' ? 'active' : ''; ?>">
                 <span class="rs-tab-count"><?php echo number_format($total_seguidores); ?></span>
-                <span class="rs-tab-label"><?php echo esc_html__('Seguidores', 'flavor-chat-ia'); ?></span>
+                <span class="rs-tab-label"><?php echo esc_html__('Seguidores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
             <a href="?tipo=siguiendo<?php echo !$es_perfil_propio ? '&rs_usuario=' . $perfil_usuario_id : ''; ?>"
                class="rs-amigos-tab <?php echo $tipo_lista === 'siguiendo' ? 'active' : ''; ?>">
                 <span class="rs-tab-count"><?php echo number_format($total_siguiendo); ?></span>
-                <span class="rs-tab-label"><?php echo esc_html__('Siguiendo', 'flavor-chat-ia'); ?></span>
+                <span class="rs-tab-label"><?php echo esc_html__('Siguiendo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
         </div>
 
@@ -138,7 +138,7 @@ $total_paginas = ceil($total_usuarios / $por_pagina);
                 <input type="text"
                        class="rs-buscar-input"
                        id="rs-buscar-amigos"
-                       placeholder="<?php echo esc_attr__('Buscar usuarios...', 'flavor-chat-ia'); ?>">
+                       placeholder="<?php echo esc_attr__('Buscar usuarios...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             </div>
         </div>
 
@@ -153,14 +153,14 @@ $total_paginas = ceil($total_usuarios / $por_pagina);
                         <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                     </svg>
                     <?php if ($tipo_lista === 'seguidores'): ?>
-                        <p><?php echo esc_html__('Aun no hay seguidores.', 'flavor-chat-ia'); ?></p>
+                        <p><?php echo esc_html__('Aun no hay seguidores.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <?php if ($es_perfil_propio): ?>
-                            <span class="rs-amigos-sugerencia"><?php echo esc_html__('Comparte tu perfil para conseguir seguidores.', 'flavor-chat-ia'); ?></span>
+                            <span class="rs-amigos-sugerencia"><?php echo esc_html__('Comparte tu perfil para conseguir seguidores.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <?php endif; ?>
                     <?php else: ?>
-                        <p><?php echo esc_html__('Aun no sigue a nadie.', 'flavor-chat-ia'); ?></p>
+                        <p><?php echo esc_html__('Aun no sigue a nadie.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <?php if ($es_perfil_propio): ?>
-                            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('red_social', 'explorar')); ?>" class="rs-btn-primary"><?php echo esc_html__('Explorar usuarios', 'flavor-chat-ia'); ?></a>
+                            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('red_social', 'explorar')); ?>" class="rs-btn-primary"><?php echo esc_html__('Explorar usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                         <?php endif; ?>
                     <?php endif; ?>
                 </div>
@@ -199,7 +199,7 @@ $total_paginas = ceil($total_usuarios / $por_pagina);
                         <?php if ($usuario_item->ID != $usuario_id): ?>
                             <button class="rs-btn-seguir-mini <?php echo $sigo_usuario ? 'rs-siguiendo' : ''; ?>"
                                     data-usuario-id="<?php echo esc_attr($usuario_item->ID); ?>">
-                                <?php echo $sigo_usuario ? esc_html__('Siguiendo', 'flavor-chat-ia') : esc_html__('Seguir', 'flavor-chat-ia'); ?>
+                                <?php echo $sigo_usuario ? esc_html__('Siguiendo', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Seguir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         <?php endif; ?>
                     </div>
@@ -216,13 +216,13 @@ $total_paginas = ceil($total_usuarios / $por_pagina);
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="15 18 9 12 15 6"></polyline>
                         </svg>
-                        <?php echo esc_html__('Anterior', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 <?php endif; ?>
 
                 <span class="rs-paginacion-info">
                     <?php printf(
-                        esc_html__('Pagina %d de %d', 'flavor-chat-ia'),
+                        esc_html__('Pagina %d de %d', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $pagina_actual,
                         $total_paginas
                     ); ?>
@@ -231,7 +231,7 @@ $total_paginas = ceil($total_usuarios / $por_pagina);
                 <?php if ($pagina_actual < $total_paginas): ?>
                     <a href="?tipo=<?php echo esc_attr($tipo_lista); ?>&pag=<?php echo $pagina_actual + 1; ?><?php echo !$es_perfil_propio ? '&rs_usuario=' . $perfil_usuario_id : ''; ?>"
                        class="rs-paginacion-btn">
-                        <?php echo esc_html__('Siguiente', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="9 18 15 12 9 6"></polyline>
                         </svg>
@@ -257,7 +257,7 @@ $total_paginas = ceil($total_usuarios / $por_pagina);
             if (!empty($sugerencias)):
             ?>
                 <div class="rs-amigos-sugerencias">
-                    <h3 class="rs-sugerencias-titulo"><?php echo esc_html__('Personas que quizas conozcas', 'flavor-chat-ia'); ?></h3>
+                    <h3 class="rs-sugerencias-titulo"><?php echo esc_html__('Personas que quizas conozcas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <div class="rs-sugerencias-lista">
                         <?php foreach ($sugerencias as $sugerencia): ?>
                             <div class="rs-sugerencia-card">
@@ -269,7 +269,7 @@ $total_paginas = ceil($total_usuarios / $por_pagina);
                                     <span>@<?php echo esc_html($sugerencia->user_login); ?></span>
                                 </div>
                                 <button class="rs-btn-seguir-mini" data-usuario-id="<?php echo esc_attr($sugerencia->ID); ?>">
-                                    <?php echo esc_html__('Seguir', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Seguir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             </div>
                         <?php endforeach; ?>

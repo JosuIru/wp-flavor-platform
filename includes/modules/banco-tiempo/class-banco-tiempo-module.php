@@ -54,7 +54,7 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas del Banco de Tiempo no están creadas. Se crearán automáticamente al activar.', 'flavor-chat-ia');
+            return __('Las tablas del Banco de Tiempo no están creadas. Se crearán automáticamente al activar.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         
     return '';
@@ -76,12 +76,12 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
             'hora_maxima_intercambio' => 8, // 8 horas máximo por servicio
             'requiere_validacion' => true,
             'categorias_servicios' => [
-                'cuidados' => __('Cuidados', 'flavor-chat-ia'),
-                'educacion' => __('Educación', 'flavor-chat-ia'),
-                'bricolaje' => __('Bricolaje', 'flavor-chat-ia'),
-                'tecnologia' => __('Tecnología', 'flavor-chat-ia'),
-                'transporte' => __('Transporte', 'flavor-chat-ia'),
-                'otros' => __('Otros', 'flavor-chat-ia'),
+                'cuidados' => __('Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'educacion' => __('Educación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'bricolaje' => __('Bricolaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'tecnologia' => __('Tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'transporte' => __('Transporte', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'otros' => __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
     }
@@ -402,15 +402,15 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
             return;
         }
 
-        $nombre = sanitize_text_field($datos['nombre'] ?? __('Comunidad', 'flavor-chat-ia'));
+        $nombre = sanitize_text_field($datos['nombre'] ?? __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         $wpdb->insert(
             $tabla_servicios,
             [
                 'usuario_id' => $creador_id,
                 'comunidad_id' => $comunidad_id,
-                'titulo' => sprintf(__('Apoyo vecinal en %s', 'flavor-chat-ia'), $nombre),
-                'descripcion' => __('Servicio inicial para activar el banco del tiempo de la comunidad. Puedes editarlo o crear nuevos servicios desde la pestaña Banco del tiempo.', 'flavor-chat-ia'),
+                'titulo' => sprintf(__('Apoyo vecinal en %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $nombre),
+                'descripcion' => __('Servicio inicial para activar el banco del tiempo de la comunidad. Puedes editarlo o crear nuevos servicios desde la pestaña Banco del tiempo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'categoria' => 'otros',
                 'horas_estimadas' => 1,
                 'estado' => 'activo',
@@ -513,7 +513,7 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error' => __('La vista solicitada no está disponible en Banco de Tiempo.', 'flavor-chat-ia'),
+            'error' => __('La vista solicitada no está disponible en Banco de Tiempo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -598,12 +598,12 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
     private function action_reputacion($params) {
         $template = dirname(__FILE__) . '/templates/mi-reputacion.php';
         if (!file_exists($template)) {
-            return '<p>' . esc_html__('La vista de reputación no está disponible.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('La vista de reputación no está disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return '<p>' . esc_html__('Debes iniciar sesión para ver tu reputación.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Debes iniciar sesión para ver tu reputación.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         global $wpdb;
@@ -673,7 +673,7 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
         if (!$usuario_id) {
             return [
                 'success' => false,
-                'error' => __('Debes iniciar sesión para ver tu saldo.', 'flavor-chat-ia'),
+                'error' => __('Debes iniciar sesión para ver tu saldo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -794,7 +794,7 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
         if (!$usuario_id) {
             return [
                 'success' => false,
-                'error' => __('Debes iniciar sesión para ofrecer un servicio.', 'flavor-chat-ia'),
+                'error' => __('Debes iniciar sesión para ofrecer un servicio.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -806,7 +806,7 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
         if (empty($titulo) || empty($descripcion)) {
             return [
                 'success' => false,
-                'error' => __('El título y la descripción son obligatorios.', 'flavor-chat-ia'),
+                'error' => __('El título y la descripción son obligatorios.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -830,7 +830,7 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
         if ($resultado === false) {
             return [
                 'success' => false,
-                'error' => __('Error al crear el servicio. Por favor, inténtalo de nuevo.', 'flavor-chat-ia'),
+                'error' => __('Error al crear el servicio. Por favor, inténtalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -839,7 +839,7 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
             'servicio_id' => $wpdb->insert_id,
             'mensaje' => sprintf(
                 /* translators: %s: título del servicio */
-                __('¡Servicio "%s" publicado con éxito! Ahora otros usuarios podrán solicitarlo.', 'flavor-chat-ia'),
+                __('¡Servicio "%s" publicado con éxito! Ahora otros usuarios podrán solicitarlo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $titulo
             ),
         ];
@@ -851,11 +851,11 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
     private function action_foro_servicio($params) {
         $servicio = $this->resolve_contextual_servicio((array) $params);
         if (!$servicio) {
-            return '<p>' . esc_html__('Selecciona un servicio para ver su foro.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Selecciona un servicio para ver su foro.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $header  = '<div class="flavor-contextual-section-header">';
-        $header .= '<h3>' . esc_html__('Foro del servicio', 'flavor-chat-ia') . '</h3>';
+        $header .= '<h3>' . esc_html__('Foro del servicio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         $header .= '<p>' . esc_html($servicio['titulo']) . '</p>';
         $header .= '</div>';
 
@@ -867,19 +867,19 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
      */
     private function action_chat_servicio($params) {
         if (!is_user_logged_in()) {
-            return '<p>' . esc_html__('Debes iniciar sesión para acceder al chat del servicio.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Debes iniciar sesión para acceder al chat del servicio.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $servicio = $this->resolve_contextual_servicio((array) $params);
         if (!$servicio) {
-            return '<p>' . esc_html__('Selecciona un servicio para ver su chat.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Selecciona un servicio para ver su chat.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $header  = '<div class="flavor-contextual-section-header">';
-        $header .= '<h3>' . esc_html__('Chat del servicio', 'flavor-chat-ia') . '</h3>';
+        $header .= '<h3>' . esc_html__('Chat del servicio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         $header .= '<p>' . esc_html($servicio['titulo']) . '</p>';
         $header .= '</div>';
-        $header .= '<p><a class="flavor-btn flavor-btn-secondary" href="' . esc_url(home_url('/mi-portal/chat-grupos/mensajes/?servicio_id=' . absint($servicio['id']))) . '">' . esc_html__('Abrir chat completo', 'flavor-chat-ia') . '</a></p>';
+        $header .= '<p><a class="flavor-btn flavor-btn-secondary" href="' . esc_url(home_url('/mi-portal/chat-grupos/mensajes/?servicio_id=' . absint($servicio['id']))) . '">' . esc_html__('Abrir chat completo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p>';
 
         return $header . do_shortcode('[flavor_chat_grupo_integrado entidad="servicio_bt" entidad_id="' . absint($servicio['id']) . '"]');
     }
@@ -890,14 +890,14 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
     private function action_multimedia_servicio($params) {
         $servicio = $this->resolve_contextual_servicio((array) $params);
         if (!$servicio) {
-            return '<p>' . esc_html__('Selecciona un servicio para ver sus archivos.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Selecciona un servicio para ver sus archivos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $header  = '<div class="flavor-contextual-section-header">';
-        $header .= '<h3>' . esc_html__('Multimedia del servicio', 'flavor-chat-ia') . '</h3>';
+        $header .= '<h3>' . esc_html__('Multimedia del servicio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         $header .= '<p>' . esc_html($servicio['titulo']) . '</p>';
         $header .= '</div>';
-        $header .= '<p><a class="flavor-btn flavor-btn-primary" href="' . esc_url(home_url('/mi-portal/multimedia/subir/?servicio_id=' . absint($servicio['id']))) . '">' . esc_html__('Subir archivo', 'flavor-chat-ia') . '</a></p>';
+        $header .= '<p><a class="flavor-btn flavor-btn-primary" href="' . esc_url(home_url('/mi-portal/multimedia/subir/?servicio_id=' . absint($servicio['id']))) . '">' . esc_html__('Subir archivo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p>';
 
         return $header . do_shortcode('[flavor_multimedia_galeria entidad="servicio_bt" entidad_id="' . absint($servicio['id']) . '"]');
     }
@@ -907,19 +907,19 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
      */
     private function action_red_social_servicio($params) {
         if (!is_user_logged_in()) {
-            return '<p>' . esc_html__('Debes iniciar sesión para ver la actividad social del servicio.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Debes iniciar sesión para ver la actividad social del servicio.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $servicio = $this->resolve_contextual_servicio((array) $params);
         if (!$servicio) {
-            return '<p>' . esc_html__('Selecciona un servicio para ver su actividad social.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . esc_html__('Selecciona un servicio para ver su actividad social.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $header  = '<div class="flavor-contextual-section-header">';
-        $header .= '<h3>' . esc_html__('Actividad social del servicio', 'flavor-chat-ia') . '</h3>';
+        $header .= '<h3>' . esc_html__('Actividad social del servicio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         $header .= '<p>' . esc_html($servicio['titulo']) . '</p>';
         $header .= '</div>';
-        $header .= '<p><a class="flavor-btn flavor-btn-primary" href="' . esc_url(home_url('/mi-portal/red-social/crear/?servicio_id=' . absint($servicio['id']))) . '">' . esc_html__('Publicar', 'flavor-chat-ia') . '</a></p>';
+        $header .= '<p><a class="flavor-btn flavor-btn-primary" href="' . esc_url(home_url('/mi-portal/red-social/crear/?servicio_id=' . absint($servicio['id']))) . '">' . esc_html__('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></p>';
 
         return $header . do_shortcode('[flavor_social_feed entidad="servicio_bt" entidad_id="' . absint($servicio['id']) . '"]');
     }
@@ -1052,54 +1052,54 @@ KNOWLEDGE;
 
         $configs = [
             'ofrecer_servicio' => [
-                'title' => __('Ofrecer un Servicio', 'flavor-chat-ia'),
-                'description' => __('Publica un servicio que puedes ofrecer a la comunidad', 'flavor-chat-ia'),
+                'title' => __('Ofrecer un Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Publica un servicio que puedes ofrecer a la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título del servicio', 'flavor-chat-ia'),
+                        'label' => __('Título del servicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
-                        'placeholder' => __('Ej: Clases de guitarra', 'flavor-chat-ia'),
+                        'placeholder' => __('Ej: Clases de guitarra', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'descripcion' => [
                         'type' => 'textarea',
-                        'label' => __('Descripción', 'flavor-chat-ia'),
+                        'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'rows' => 5,
-                        'placeholder' => __('Describe tu servicio en detalle...', 'flavor-chat-ia'),
+                        'placeholder' => __('Describe tu servicio en detalle...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'categoria' => [
                         'type' => 'select',
-                        'label' => __('Categoría', 'flavor-chat-ia'),
+                        'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'options' => $settings['categorias_servicios'],
                     ],
                     'horas_estimadas' => [
                         'type' => 'number',
-                        'label' => __('Horas estimadas', 'flavor-chat-ia'),
+                        'label' => __('Horas estimadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'min' => $settings['hora_minima_intercambio'],
                         'max' => $settings['hora_maxima_intercambio'],
                         'step' => 0.5,
                         'default' => 1,
                         'description' => sprintf(
-                            __('Mínimo %s horas, máximo %s horas', 'flavor-chat-ia'),
+                            __('Mínimo %s horas, máximo %s horas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             $settings['hora_minima_intercambio'],
                             $settings['hora_maxima_intercambio']
                         ),
                     ],
                     'disponibilidad' => [
                         'type' => 'textarea',
-                        'label' => __('Disponibilidad', 'flavor-chat-ia'),
+                        'label' => __('Disponibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'rows' => 3,
-                        'placeholder' => __('Ej: Tardes entre semana, fines de semana...', 'flavor-chat-ia'),
+                        'placeholder' => __('Ej: Tardes entre semana, fines de semana...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                 ],
-                'submit_text' => __('Publicar Servicio', 'flavor-chat-ia'),
+                'submit_text' => __('Publicar Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'solicitar_servicio' => [
-                'title' => __('Solicitar un Servicio', 'flavor-chat-ia'),
-                'description' => __('Solicita este servicio al usuario que lo ofrece', 'flavor-chat-ia'),
+                'title' => __('Solicitar un Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Solicita este servicio al usuario que lo ofrece', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fields' => [
                     'servicio_id' => [
                         'type' => 'hidden',
@@ -1107,51 +1107,51 @@ KNOWLEDGE;
                     ],
                     'mensaje' => [
                         'type' => 'textarea',
-                        'label' => __('Mensaje', 'flavor-chat-ia'),
+                        'label' => __('Mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'rows' => 4,
-                        'placeholder' => __('Explica qué necesitas y cuándo...', 'flavor-chat-ia'),
+                        'placeholder' => __('Explica qué necesitas y cuándo...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'fecha_preferida' => [
                         'type' => 'date',
-                        'label' => __('Fecha preferida', 'flavor-chat-ia'),
-                        'description' => __('¿Cuándo necesitas este servicio?', 'flavor-chat-ia'),
+                        'label' => __('Fecha preferida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'description' => __('¿Cuándo necesitas este servicio?', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'horas_solicitadas' => [
                         'type' => 'number',
-                        'label' => __('Horas solicitadas', 'flavor-chat-ia'),
+                        'label' => __('Horas solicitadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'min' => $settings['hora_minima_intercambio'],
                         'max' => $settings['hora_maxima_intercambio'],
                         'step' => 0.5,
                         'default' => 1,
                     ],
                 ],
-                'submit_text' => __('Enviar Solicitud', 'flavor-chat-ia'),
+                'submit_text' => __('Enviar Solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'crear_servicio' => [
-                'title' => __('Crear Servicio', 'flavor-chat-ia'),
-                'description' => __('Publica un nuevo servicio que puedes ofrecer', 'flavor-chat-ia'),
+                'title' => __('Crear Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Publica un nuevo servicio que puedes ofrecer', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título del servicio', 'flavor-chat-ia'),
+                        'label' => __('Título del servicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                     ],
                     'descripcion' => [
                         'type' => 'textarea',
-                        'label' => __('Descripción', 'flavor-chat-ia'),
+                        'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'rows' => 5,
                     ],
                     'categoria' => [
                         'type' => 'select',
-                        'label' => __('Categoría', 'flavor-chat-ia'),
+                        'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'options' => $settings['categorias_servicios'],
                     ],
                     'horas_estimadas' => [
                         'type' => 'number',
-                        'label' => __('Horas estimadas', 'flavor-chat-ia'),
+                        'label' => __('Horas estimadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'min' => $settings['hora_minima_intercambio'],
                         'max' => $settings['hora_maxima_intercambio'],
@@ -1159,7 +1159,7 @@ KNOWLEDGE;
                         'default' => 1,
                     ],
                 ],
-                'submit_text' => __('Publicar Servicio', 'flavor-chat-ia'),
+                'submit_text' => __('Publicar Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
 
@@ -1177,78 +1177,78 @@ KNOWLEDGE;
     public function get_web_components() {
         return [
             'hero' => [
-                'label' => __('Hero Banco de Tiempo', 'flavor-chat-ia'),
-                'description' => __('Sección hero con estadísticas del banco de tiempo', 'flavor-chat-ia'),
+                'label' => __('Hero Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Sección hero con estadísticas del banco de tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-clock',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Banco de Tiempo', 'flavor-chat-ia'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'subtitulo' => [
                         'type' => 'textarea',
-                        'label' => __('Subtítulo', 'flavor-chat-ia'),
-                        'default' => __('Intercambia habilidades con tu comunidad', 'flavor-chat-ia'),
+                        'label' => __('Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Intercambia habilidades con tu comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'mostrar_estadisticas' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar estadísticas', 'flavor-chat-ia'),
+                        'label' => __('Mostrar estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                 ],
                 'template' => 'banco-tiempo/hero',
             ],
             'servicios_grid' => [
-                'label' => __('Grid de Servicios', 'flavor-chat-ia'),
-                'description' => __('Listado de servicios ofrecidos y demandados', 'flavor-chat-ia'),
+                'label' => __('Grid de Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Listado de servicios ofrecidos y demandados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-grid-view',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Servicios Disponibles', 'flavor-chat-ia'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Servicios Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'tipo' => [
                         'type' => 'select',
-                        'label' => __('Tipo', 'flavor-chat-ia'),
+                        'label' => __('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['todos', 'ofertas', 'demandas'],
                         'default' => 'todos',
                     ],
                     'limite' => [
                         'type' => 'number',
-                        'label' => __('Número máximo', 'flavor-chat-ia'),
+                        'label' => __('Número máximo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 8,
                     ],
                 ],
                 'template' => 'banco-tiempo/servicios-grid',
             ],
             'como_funciona' => [
-                'label' => __('Cómo Funciona', 'flavor-chat-ia'),
-                'description' => __('Explicación del sistema de intercambio', 'flavor-chat-ia'),
+                'label' => __('Cómo Funciona', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Explicación del sistema de intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'features',
                 'icon' => 'dashicons-info',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('¿Cómo funciona?', 'flavor-chat-ia'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('¿Cómo funciona?', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                 ],
                 'template' => 'banco-tiempo/como-funciona',
             ],
             'categorias' => [
-                'label' => __('Categorías de Servicios', 'flavor-chat-ia'),
-                'description' => __('Grid de categorías disponibles', 'flavor-chat-ia'),
+                'label' => __('Categorías de Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Grid de categorías disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-category',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Explora por Categoría', 'flavor-chat-ia'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Explora por Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                 ],
                 'template' => 'banco-tiempo/categorias',
@@ -1266,35 +1266,35 @@ KNOWLEDGE;
     protected function get_admin_config() {
         return [
             'id' => 'banco_tiempo',
-            'label' => __('Banco de Tiempo', 'flavor-chat-ia'),
+            'label' => __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-backup',
             'capability' => 'manage_options',
             'categoria' => 'comunidad',
             'paginas' => [
                 [
                     'slug' => 'banco-tiempo-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'banco-tiempo-intercambios',
-                    'titulo' => __('Intercambios', 'flavor-chat-ia'),
+                    'titulo' => __('Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_intercambios'],
                     'badge' => [$this, 'contar_intercambios_pendientes'],
                 ],
                 [
                     'slug' => 'banco-tiempo-miembros',
-                    'titulo' => __('Miembros', 'flavor-chat-ia'),
+                    'titulo' => __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_miembros'],
                 ],
                 [
                     'slug' => 'banco-tiempo-servicios',
-                    'titulo' => __('Servicios', 'flavor-chat-ia'),
+                    'titulo' => __('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_servicios'],
                 ],
                 [
                     'slug' => 'banco-tiempo-config',
-                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'titulo' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_config'],
                 ],
             ],
@@ -1348,7 +1348,7 @@ KNOWLEDGE;
         $estadisticas[] = [
             'icon' => 'dashicons-update',
             'valor' => $intercambios_activos,
-            'label' => __('Intercambios activos', 'flavor-chat-ia'),
+            'label' => __('Intercambios activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => $intercambios_activos > 0 ? 'blue' : 'gray',
             'enlace' => $is_dashboard_viewer ? home_url('/mi-portal/banco-tiempo/') : admin_url('admin.php?page=bt-intercambios'),
         ];
@@ -1360,7 +1360,7 @@ KNOWLEDGE;
         $estadisticas[] = [
             'icon' => 'dashicons-groups',
             'valor' => $total_miembros,
-            'label' => __('Miembros', 'flavor-chat-ia'),
+            'label' => __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => $total_miembros > 0 ? 'green' : 'gray',
             'enlace' => $is_dashboard_viewer ? home_url('/mi-portal/banco-tiempo/') : admin_url('admin.php?page=bt-usuarios'),
         ];
@@ -1380,15 +1380,15 @@ KNOWLEDGE;
         echo '<div class="wrap flavor-modulo-page">';
         $acciones = $is_dashboard_viewer
             ? [
-                ['label' => __('Ver en portal', 'flavor-chat-ia'), 'url' => home_url('/mi-portal/banco-tiempo/'), 'class' => ''],
+                ['label' => __('Ver en portal', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => home_url('/mi-portal/banco-tiempo/'), 'class' => ''],
             ]
             : [
-                ['label' => __('Nuevo Servicio', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=bt-servicios&nuevo=1'), 'class' => 'button-primary'],
+                ['label' => __('Nuevo Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=bt-servicios&nuevo=1'), 'class' => 'button-primary'],
             ];
-        $this->render_page_header(__('Dashboard de Banco de Tiempo', 'flavor-chat-ia'), $acciones);
+        $this->render_page_header(__('Dashboard de Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN), $acciones);
 
         if ($is_dashboard_viewer) {
-            echo '<div class="notice notice-info"><p>' . esc_html__('Vista resumida para gestor de grupos. La creación de servicios y la gestión de intercambios siguen reservadas a administración.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-info"><p>' . esc_html__('Vista resumida para gestor de grupos. La creación de servicios y la gestión de intercambios siguen reservadas a administración.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         // Estadísticas generales
@@ -1407,13 +1407,13 @@ KNOWLEDGE;
         $intercambios_pendientes = $this->contar_intercambios_pendientes();
 
         echo '<div class="flavor-stats-grid">';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($total_servicios) . '</span><span class="stat-label">' . __('Servicios Activos', 'flavor-chat-ia') . '</span></div>';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($total_intercambios) . '</span><span class="stat-label">' . __('Intercambios Completados', 'flavor-chat-ia') . '</span></div>';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html(number_format($horas_intercambiadas, 1)) . 'h</span><span class="stat-label">' . __('Horas Intercambiadas', 'flavor-chat-ia') . '</span></div>';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($intercambios_pendientes) . '</span><span class="stat-label">' . __('Pendientes', 'flavor-chat-ia') . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($total_servicios) . '</span><span class="stat-label">' . __('Servicios Activos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($total_intercambios) . '</span><span class="stat-label">' . __('Intercambios Completados', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html(number_format($horas_intercambiadas, 1)) . 'h</span><span class="stat-label">' . __('Horas Intercambiadas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($intercambios_pendientes) . '</span><span class="stat-label">' . __('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
         echo '</div>';
 
-        echo '<p>' . __('El Banco de Tiempo es un sistema de intercambio de servicios donde el tiempo es la moneda. Cada hora vale lo mismo, independientemente del tipo de servicio.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('El Banco de Tiempo es un sistema de intercambio de servicios donde el tiempo es la moneda. Cada hora vale lo mismo, independientemente del tipo de servicio.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         echo '</div>';
     }
 
@@ -1428,20 +1428,20 @@ KNOWLEDGE;
 
         echo '<div class="wrap flavor-modulo-page">';
         $this->render_page_header(
-            __('Gestión de Intercambios', 'flavor-chat-ia'),
+            __('Gestión de Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $is_dashboard_viewer
                 ? [
-                    ['label' => __('Ver en portal', 'flavor-chat-ia'), 'url' => home_url('/mi-portal/banco-tiempo/'), 'class' => ''],
+                    ['label' => __('Ver en portal', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => home_url('/mi-portal/banco-tiempo/'), 'class' => ''],
                 ]
                 : []
         );
 
         if ($is_dashboard_viewer) {
-            echo '<div class="notice notice-info"><p>' . esc_html__('Vista de consulta para gestor de grupos. Los intercambios pueden revisarse, pero su gestión operativa sigue reservada a administración.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-info"><p>' . esc_html__('Vista de consulta para gestor de grupos. Los intercambios pueden revisarse, pero su gestión operativa sigue reservada a administración.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_transacciones)) {
-            echo '<p>' . __('Las tablas no están creadas.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('Las tablas no están creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
             return;
         }
@@ -1458,13 +1458,13 @@ KNOWLEDGE;
         if (!empty($intercambios)) {
             echo '<table class="wp-list-table widefat fixed striped">';
             echo '<thead><tr>';
-            echo '<th>' . __('Servicio', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Solicitante', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Receptor', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Horas', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Estado', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Fecha', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Acciones', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Solicitante', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Receptor', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Horas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
             echo '</tr></thead>';
             echo '<tbody>';
 
@@ -1474,19 +1474,19 @@ KNOWLEDGE;
                 $clase_estado = $this->obtener_clase_estado_intercambio($intercambio['estado']);
 
                 echo '<tr>';
-                echo '<td><strong>' . esc_html($intercambio['servicio_titulo'] ?? __('Servicio eliminado', 'flavor-chat-ia')) . '</strong></td>';
-                echo '<td>' . esc_html($solicitante ? $solicitante->display_name : __('Usuario', 'flavor-chat-ia')) . '</td>';
-                echo '<td>' . esc_html($receptor ? $receptor->display_name : __('Usuario', 'flavor-chat-ia')) . '</td>';
+                echo '<td><strong>' . esc_html($intercambio['servicio_titulo'] ?? __('Servicio eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '</strong></td>';
+                echo '<td>' . esc_html($solicitante ? $solicitante->display_name : __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '</td>';
+                echo '<td>' . esc_html($receptor ? $receptor->display_name : __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '</td>';
                 echo '<td>' . esc_html(number_format((float)$intercambio['horas'], 1)) . 'h</td>';
                 echo '<td><span class="' . esc_attr($clase_estado) . '">' . esc_html(ucfirst($intercambio['estado'])) . '</span></td>';
                 echo '<td>' . esc_html(date_i18n('d/m/Y H:i', strtotime($intercambio['fecha_solicitud']))) . '</td>';
-                echo '<td><a href="#" class="button button-small bt-ver-intercambio" data-id="' . esc_attr($intercambio['id']) . '">' . __('Ver', 'flavor-chat-ia') . '</a></td>';
+                echo '<td><a href="#" class="button button-small bt-ver-intercambio" data-id="' . esc_attr($intercambio['id']) . '">' . __('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></td>';
                 echo '</tr>';
             }
 
             echo '</tbody></table>';
         } else {
-            echo '<p>' . __('No hay intercambios registrados.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('No hay intercambios registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         // Modal para ver detalles del intercambio
@@ -1494,9 +1494,9 @@ KNOWLEDGE;
         <div id="modal-intercambio-detalle" style="display:none;">
             <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:100000;">
                 <div class="modal-content" style="position:relative;max-width:600px;margin:50px auto;background:#fff;padding:20px;border-radius:4px;">
-                    <h2><?php _e('Detalles del Intercambio', 'flavor-chat-ia'); ?></h2>
+                    <h2><?php _e('Detalles del Intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                     <div id="intercambio-detalle-contenido"></div>
-                    <p><button type="button" class="button" id="cerrar-modal-intercambio"><?php _e('Cerrar', 'flavor-chat-ia'); ?></button></p>
+                    <p><button type="button" class="button" id="cerrar-modal-intercambio"><?php _e('Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button></p>
                 </div>
             </div>
         </div>
@@ -1514,12 +1514,12 @@ KNOWLEDGE;
                 var fecha = $row.find('td:eq(5)').text();
 
                 var html = '<table class="form-table">' +
-                    '<tr><th><?php _e("Servicio", "flavor-chat-ia"); ?>:</th><td><strong>' + servicio + '</strong></td></tr>' +
-                    '<tr><th><?php _e("Solicitante", "flavor-chat-ia"); ?>:</th><td>' + solicitante + '</td></tr>' +
-                    '<tr><th><?php _e("Receptor", "flavor-chat-ia"); ?>:</th><td>' + receptor + '</td></tr>' +
-                    '<tr><th><?php _e("Horas", "flavor-chat-ia"); ?>:</th><td>' + horas + '</td></tr>' +
-                    '<tr><th><?php _e("Estado", "flavor-chat-ia"); ?>:</th><td>' + estado + '</td></tr>' +
-                    '<tr><th><?php _e("Fecha", "flavor-chat-ia"); ?>:</th><td>' + fecha + '</td></tr>' +
+                    '<tr><th><?php _e("Servicio", FLAVOR_PLATFORM_TEXT_DOMAIN); ?>:</th><td><strong>' + servicio + '</strong></td></tr>' +
+                    '<tr><th><?php _e("Solicitante", FLAVOR_PLATFORM_TEXT_DOMAIN); ?>:</th><td>' + solicitante + '</td></tr>' +
+                    '<tr><th><?php _e("Receptor", FLAVOR_PLATFORM_TEXT_DOMAIN); ?>:</th><td>' + receptor + '</td></tr>' +
+                    '<tr><th><?php _e("Horas", FLAVOR_PLATFORM_TEXT_DOMAIN); ?>:</th><td>' + horas + '</td></tr>' +
+                    '<tr><th><?php _e("Estado", FLAVOR_PLATFORM_TEXT_DOMAIN); ?>:</th><td>' + estado + '</td></tr>' +
+                    '<tr><th><?php _e("Fecha", FLAVOR_PLATFORM_TEXT_DOMAIN); ?>:</th><td>' + fecha + '</td></tr>' +
                     '</table>';
 
                 $('#intercambio-detalle-contenido').html(html);
@@ -1548,20 +1548,20 @@ KNOWLEDGE;
 
         echo '<div class="wrap flavor-modulo-page">';
         $this->render_page_header(
-            __('Miembros del Banco de Tiempo', 'flavor-chat-ia'),
+            __('Miembros del Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $is_dashboard_viewer
                 ? [
-                    ['label' => __('Ver en portal', 'flavor-chat-ia'), 'url' => home_url('/mi-portal/banco-tiempo/'), 'class' => ''],
+                    ['label' => __('Ver en portal', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => home_url('/mi-portal/banco-tiempo/'), 'class' => ''],
                 ]
                 : []
         );
 
         if ($is_dashboard_viewer) {
-            echo '<div class="notice notice-info"><p>' . esc_html__('Vista de consulta para gestor de grupos. Los perfiles detallados de usuario siguen reservados a administración.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-info"><p>' . esc_html__('Vista de consulta para gestor de grupos. Los perfiles detallados de usuario siguen reservados a administración.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_servicios)) {
-            echo '<p>' . __('Las tablas no están creadas.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('Las tablas no están creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
             return;
         }
@@ -1579,12 +1579,12 @@ KNOWLEDGE;
         if (!empty($miembros)) {
             echo '<table class="wp-list-table widefat fixed striped">';
             echo '<thead><tr>';
-            echo '<th>' . __('Usuario', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Servicios Ofrecidos', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Horas Dadas', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Horas Recibidas', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Saldo', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Acciones', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Servicios Ofrecidos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Horas Dadas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Horas Recibidas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Saldo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
             echo '</tr></thead>';
             echo '<tbody>';
 
@@ -1608,22 +1608,22 @@ KNOWLEDGE;
                 $clase_saldo = $saldo >= 0 ? 'status-positive' : 'status-negative';
 
                 echo '<tr>';
-                echo '<td><strong>' . esc_html($usuario ? $usuario->display_name : __('Usuario', 'flavor-chat-ia')) . '</strong></td>';
+                echo '<td><strong>' . esc_html($usuario ? $usuario->display_name : __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '</strong></td>';
                 echo '<td>' . esc_html($miembro['total_servicios']) . '</td>';
                 echo '<td>' . esc_html(number_format($horas_dadas, 1)) . 'h</td>';
                 echo '<td>' . esc_html(number_format($horas_recibidas, 1)) . 'h</td>';
                 echo '<td><span class="' . esc_attr($clase_saldo) . '">' . esc_html(($saldo >= 0 ? '+' : '') . number_format($saldo, 1)) . 'h</span></td>';
                 if ($is_dashboard_viewer) {
-                    echo '<td><span class="description">' . __('Solo lectura', 'flavor-chat-ia') . '</span></td>';
+                    echo '<td><span class="description">' . __('Solo lectura', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></td>';
                 } else {
-                    echo '<td><a href="' . esc_url(admin_url('user-edit.php?user_id=' . $miembro['usuario_id'])) . '" class="button button-small">' . __('Ver Perfil', 'flavor-chat-ia') . '</a></td>';
+                    echo '<td><a href="' . esc_url(admin_url('user-edit.php?user_id=' . $miembro['usuario_id'])) . '" class="button button-small">' . __('Ver Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></td>';
                 }
                 echo '</tr>';
             }
 
             echo '</tbody></table>';
         } else {
-            echo '<p>' . __('No hay miembros registrados en el banco de tiempo.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('No hay miembros registrados en el banco de tiempo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         echo '</div>';
@@ -1655,9 +1655,9 @@ KNOWLEDGE;
             if ($servicio_id > 0) {
                 $actualizado = $wpdb->update($tabla_servicios, $datos_servicio, ['id' => $servicio_id]);
                 if ($actualizado !== false) {
-                    $mensaje_exito = __('Servicio actualizado correctamente.', 'flavor-chat-ia');
+                    $mensaje_exito = __('Servicio actualizado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 } else {
-                    $mensaje_error = __('No se pudo actualizar el servicio.', 'flavor-chat-ia');
+                    $mensaje_error = __('No se pudo actualizar el servicio.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 }
             } else {
                 $datos_servicio['usuario_id'] = get_current_user_id();
@@ -1665,35 +1665,35 @@ KNOWLEDGE;
                 $datos_servicio['fecha_publicacion'] = current_time('mysql');
 
                 if (empty($datos_servicio['titulo']) || empty($datos_servicio['descripcion'])) {
-                    $mensaje_error = __('Debes completar título y descripción para crear el servicio.', 'flavor-chat-ia');
+                    $mensaje_error = __('Debes completar título y descripción para crear el servicio.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 } elseif ($wpdb->insert($tabla_servicios, $datos_servicio)) {
-                    $mensaje_exito = __('Servicio creado correctamente.', 'flavor-chat-ia');
+                    $mensaje_exito = __('Servicio creado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 } else {
-                    $mensaje_error = __('No se pudo crear el servicio.', 'flavor-chat-ia');
+                    $mensaje_error = __('No se pudo crear el servicio.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 }
             }
         }
 
         echo '<div class="wrap flavor-modulo-page">';
         $this->render_page_header(
-            __('Servicios del Banco de Tiempo', 'flavor-chat-ia'),
+            __('Servicios del Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $is_dashboard_viewer
                 ? [
-                    ['label' => __('Ver en portal', 'flavor-chat-ia'), 'url' => home_url('/mi-portal/banco-tiempo/'), 'class' => ''],
+                    ['label' => __('Ver en portal', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => home_url('/mi-portal/banco-tiempo/'), 'class' => ''],
                 ]
                 : [
-                    ['label' => __('Nuevo Servicio', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=bt-servicios&nuevo=1'), 'class' => 'button-primary'],
+                    ['label' => __('Nuevo Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=bt-servicios&nuevo=1'), 'class' => 'button-primary'],
                 ]
         );
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_servicios)) {
-            echo '<p>' . __('Las tablas no están creadas.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('Las tablas no están creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
             return;
         }
 
         if ($is_dashboard_viewer) {
-            echo '<div class="notice notice-info"><p>' . esc_html__('Vista de consulta para gestor de grupos. La creación y edición de servicios siguen reservadas a administración.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-info"><p>' . esc_html__('Vista de consulta para gestor de grupos. La creación y edición de servicios siguen reservadas a administración.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         if ($mensaje_exito) {
@@ -1715,13 +1715,13 @@ KNOWLEDGE;
         if (!empty($servicios)) {
             echo '<table class="wp-list-table widefat fixed striped">';
             echo '<thead><tr>';
-            echo '<th>' . __('Título', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Usuario', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Categoría', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Horas Est.', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Estado', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Fecha', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Acciones', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Horas Est.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
             echo '</tr></thead>';
             echo '<tbody>';
 
@@ -1731,18 +1731,18 @@ KNOWLEDGE;
 
                 echo '<tr>';
                 echo '<td><strong>' . esc_html($servicio['titulo']) . '</strong></td>';
-                echo '<td>' . esc_html($usuario ? $usuario->display_name : __('Usuario', 'flavor-chat-ia')) . '</td>';
+                echo '<td>' . esc_html($usuario ? $usuario->display_name : __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '</td>';
                 echo '<td>' . esc_html(ucfirst($servicio['categoria'])) . '</td>';
                 echo '<td>' . esc_html(number_format((float)$servicio['horas_estimadas'], 1)) . 'h</td>';
                 echo '<td><span class="' . esc_attr($clase_estado) . '">' . esc_html(ucfirst($servicio['estado'])) . '</span></td>';
                 echo '<td>' . esc_html(date_i18n('d/m/Y', strtotime($servicio['fecha_publicacion']))) . '</td>';
-                echo '<td><a href="#" class="button button-small bt-editar-servicio" data-id="' . esc_attr($servicio['id']) . '" data-titulo="' . esc_attr($servicio['titulo']) . '" data-descripcion="' . esc_attr($servicio['descripcion']) . '" data-categoria="' . esc_attr($servicio['categoria']) . '" data-horas="' . esc_attr($servicio['horas_estimadas']) . '" data-estado="' . esc_attr($servicio['estado']) . '">' . __('Editar', 'flavor-chat-ia') . '</a></td>';
+                echo '<td><a href="#" class="button button-small bt-editar-servicio" data-id="' . esc_attr($servicio['id']) . '" data-titulo="' . esc_attr($servicio['titulo']) . '" data-descripcion="' . esc_attr($servicio['descripcion']) . '" data-categoria="' . esc_attr($servicio['categoria']) . '" data-horas="' . esc_attr($servicio['horas_estimadas']) . '" data-estado="' . esc_attr($servicio['estado']) . '">' . __('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></td>';
                 echo '</tr>';
             }
 
             echo '</tbody></table>';
         } else {
-            echo '<p>' . __('No hay servicios publicados.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('No hay servicios publicados.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         // Modal para editar servicio
@@ -1750,50 +1750,50 @@ KNOWLEDGE;
         <div id="modal-editar-servicio" style="display:none;">
             <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:100000;">
                 <div class="modal-content" style="position:relative;max-width:500px;margin:50px auto;background:#fff;padding:20px;border-radius:4px;">
-                    <h2 id="bt-modal-servicio-titulo"><?php _e('Editar Servicio', 'flavor-chat-ia'); ?></h2>
+                    <h2 id="bt-modal-servicio-titulo"><?php _e('Editar Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                     <form id="form-editar-servicio" method="post">
                         <?php wp_nonce_field('bt_editar_servicio', 'bt_nonce'); ?>
                         <input type="hidden" name="bt_guardar_servicio" value="1" />
                         <input type="hidden" name="servicio_id" id="edit-servicio-id" />
                         <table class="form-table">
                             <tr>
-                                <th><label for="edit-titulo"><?php _e('Título', 'flavor-chat-ia'); ?></label></th>
+                                <th><label for="edit-titulo"><?php _e('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                                 <td><input type="text" id="edit-titulo" name="titulo" class="regular-text" required /></td>
                             </tr>
                             <tr id="bt-row-descripcion">
-                                <th><label for="edit-descripcion"><?php _e('Descripción', 'flavor-chat-ia'); ?></label></th>
+                                <th><label for="edit-descripcion"><?php _e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                                 <td><textarea id="edit-descripcion" name="descripcion" rows="4" class="large-text"></textarea></td>
                             </tr>
                             <tr>
-                                <th><label for="edit-categoria"><?php _e('Categoría', 'flavor-chat-ia'); ?></label></th>
+                                <th><label for="edit-categoria"><?php _e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                                 <td>
                                     <select id="edit-categoria" name="categoria">
-                                        <option value="cuidados"><?php _e('Cuidados', 'flavor-chat-ia'); ?></option>
-                                        <option value="educacion"><?php _e('Educación', 'flavor-chat-ia'); ?></option>
-                                        <option value="bricolaje"><?php _e('Bricolaje', 'flavor-chat-ia'); ?></option>
-                                        <option value="tecnologia"><?php _e('Tecnología', 'flavor-chat-ia'); ?></option>
-                                        <option value="transporte"><?php _e('Transporte', 'flavor-chat-ia'); ?></option>
-                                        <option value="otros"><?php _e('Otros', 'flavor-chat-ia'); ?></option>
+                                        <option value="cuidados"><?php _e('Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                        <option value="educacion"><?php _e('Educación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                        <option value="bricolaje"><?php _e('Bricolaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                        <option value="tecnologia"><?php _e('Tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                        <option value="transporte"><?php _e('Transporte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                        <option value="otros"><?php _e('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                     </select>
                                 </td>
                             </tr>
                             <tr>
-                                <th><label for="edit-horas"><?php _e('Horas Estimadas', 'flavor-chat-ia'); ?></label></th>
+                                <th><label for="edit-horas"><?php _e('Horas Estimadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                                 <td><input type="number" id="edit-horas" name="horas_estimadas" step="0.5" min="0.5" class="small-text" /></td>
                             </tr>
                             <tr>
-                                <th><label for="edit-estado"><?php _e('Estado', 'flavor-chat-ia'); ?></label></th>
+                                <th><label for="edit-estado"><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                                 <td>
                                     <select id="edit-estado" name="estado">
-                                        <option value="activo"><?php _e('Activo', 'flavor-chat-ia'); ?></option>
-                                        <option value="inactivo"><?php _e('Inactivo', 'flavor-chat-ia'); ?></option>
+                                        <option value="activo"><?php _e('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                        <option value="inactivo"><?php _e('Inactivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                     </select>
                                 </td>
                             </tr>
                         </table>
                         <p>
-                            <button type="submit" class="button button-primary"><?php _e('Guardar', 'flavor-chat-ia'); ?></button>
-                            <button type="button" class="button" id="cerrar-modal-servicio"><?php _e('Cancelar', 'flavor-chat-ia'); ?></button>
+                            <button type="submit" class="button button-primary"><?php _e('Guardar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                            <button type="button" class="button" id="cerrar-modal-servicio"><?php _e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                         </p>
                     </form>
                 </div>
@@ -1802,7 +1802,7 @@ KNOWLEDGE;
         <script>
         jQuery(document).ready(function($) {
             function abrirModalNuevoServicio() {
-                $('#bt-modal-servicio-titulo').text('<?php echo esc_js(__('Nuevo Servicio', 'flavor-chat-ia')); ?>');
+                $('#bt-modal-servicio-titulo').text('<?php echo esc_js(__('Nuevo Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                 $('#edit-servicio-id').val('');
                 $('#edit-titulo').val('');
                 $('#edit-descripcion').val('');
@@ -1815,7 +1815,7 @@ KNOWLEDGE;
 
             $('.bt-editar-servicio').on('click', function(e) {
                 e.preventDefault();
-                $('#bt-modal-servicio-titulo').text('<?php echo esc_js(__('Editar Servicio', 'flavor-chat-ia')); ?>');
+                $('#bt-modal-servicio-titulo').text('<?php echo esc_js(__('Editar Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                 $('#edit-servicio-id').val($(this).data('id'));
                 $('#edit-titulo').val($(this).data('titulo'));
                 $('#edit-descripcion').val($(this).data('descripcion'));
@@ -1865,30 +1865,30 @@ KNOWLEDGE;
             update_option($option_name, $configuracion_actual);
             $this->settings = $configuracion_actual;
 
-            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Configuración guardada correctamente.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Configuración guardada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Configuración de Banco de Tiempo', 'flavor-chat-ia'));
+        $this->render_page_header(__('Configuración de Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         echo '<form method="post" action="">';
         wp_nonce_field('flavor_banco_tiempo_config', 'flavor_banco_tiempo_config_nonce');
         echo '<table class="form-table">';
 
-        echo '<tr><th scope="row"><label for="hora_minima_intercambio">' . __('Horas mínimas por intercambio', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="hora_minima_intercambio">' . __('Horas mínimas por intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="number" name="hora_minima_intercambio" id="hora_minima_intercambio" value="' . esc_attr($configuracion_actual['hora_minima_intercambio']) . '" step="0.5" min="0.5" class="small-text" />';
-        echo '<p class="description">' . __('Tiempo mínimo para un intercambio (en horas).', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . __('Tiempo mínimo para un intercambio (en horas).', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="hora_maxima_intercambio">' . __('Horas máximas por intercambio', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="hora_maxima_intercambio">' . __('Horas máximas por intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="number" name="hora_maxima_intercambio" id="hora_maxima_intercambio" value="' . esc_attr($configuracion_actual['hora_maxima_intercambio']) . '" step="0.5" min="1" class="small-text" />';
-        echo '<p class="description">' . __('Tiempo máximo para un solo intercambio (en horas).', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . __('Tiempo máximo para un solo intercambio (en horas).', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
-        echo '<tr><th scope="row"><label for="requiere_validacion">' . __('Requiere validación', 'flavor-chat-ia') . '</label></th>';
+        echo '<tr><th scope="row"><label for="requiere_validacion">' . __('Requiere validación', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>';
         echo '<td><input type="checkbox" name="requiere_validacion" id="requiere_validacion" ' . checked($configuracion_actual['requiere_validacion'], true, false) . ' />';
-        echo '<p class="description">' . __('Los intercambios requieren validación de un administrador.', 'flavor-chat-ia') . '</p></td></tr>';
+        echo '<p class="description">' . __('Los intercambios requieren validación de un administrador.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
 
         echo '</table>';
-        echo '<p class="submit"><input type="submit" name="guardar_config" class="button-primary" value="' . __('Guardar Configuración', 'flavor-chat-ia') . '" /></p>';
+        echo '<p class="submit"><input type="submit" name="guardar_config" class="button-primary" value="' . __('Guardar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN) . '" /></p>';
         echo '</form>';
         echo '</div>';
     }
@@ -1920,38 +1920,38 @@ KNOWLEDGE;
         return [
             // Página principal
             [
-                'title' => __('Banco de Tiempo', 'flavor-chat-ia'),
+                'title' => __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'banco-tiempo',
-                'content' => '<h1>' . __('Banco de Tiempo', 'flavor-chat-ia') . '</h1>
-<p>' . __('Intercambia servicios y tiempo con tu comunidad', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Intercambia servicios y tiempo con tu comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="banco_tiempo" action="listar_servicios" columnas="3" limite="12"]',
                 'parent' => 0,
             ],
             // Ofrecer servicio
             [
-                'title' => __('Ofrecer Servicio', 'flavor-chat-ia'),
+                'title' => __('Ofrecer Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'ofrecer',
-                'content' => '<h1>' . __('Ofrecer un Servicio', 'flavor-chat-ia') . '</h1>
-<p>' . __('Comparte tus habilidades con la comunidad', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Ofrecer un Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Comparte tus habilidades con la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_form module="banco_tiempo" action="crear_servicio"]',
                 'parent' => 'banco-tiempo',
             ],
             // Solicitar servicio
             [
-                'title' => __('Solicitar Servicio', 'flavor-chat-ia'),
+                'title' => __('Solicitar Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'solicitar',
-                'content' => '<h1>' . __('Solicitar un Servicio', 'flavor-chat-ia') . '</h1>
+                'content' => '<h1>' . __('Solicitar un Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
 
 [flavor_module_form module="banco_tiempo" action="solicitar_servicio"]',
                 'parent' => 'banco-tiempo',
             ],
             // Mis intercambios
             [
-                'title' => __('Mis Intercambios', 'flavor-chat-ia'),
+                'title' => __('Mis Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mis-intercambios',
-                'content' => '<h1>' . __('Mis Intercambios', 'flavor-chat-ia') . '</h1>
+                'content' => '<h1>' . __('Mis Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
 
 [flavor_module_dashboard module="banco_tiempo"]',
                 'parent' => 'banco-tiempo',
@@ -1980,8 +1980,8 @@ KNOWLEDGE;
         // Página principal (oculta)
         add_submenu_page(
             null,
-            __('Banco de Tiempo', 'flavor-chat-ia'),
-            __('Banco Tiempo', 'flavor-chat-ia'),
+            __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Banco Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'banco-tiempo',
             [$this, 'render_pagina_dashboard']
@@ -1990,8 +1990,8 @@ KNOWLEDGE;
         // Página: Servicios (oculta)
         add_submenu_page(
             null,
-            __('Servicios', 'flavor-chat-ia'),
-            __('Servicios', 'flavor-chat-ia'),
+            __('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'bt-servicios',
             [$this, 'render_pagina_servicios']
@@ -2000,8 +2000,8 @@ KNOWLEDGE;
         // Página: Intercambios (oculta)
         add_submenu_page(
             null,
-            __('Intercambios', 'flavor-chat-ia'),
-            __('Intercambios', 'flavor-chat-ia'),
+            __('Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'bt-intercambios',
             [$this, 'render_pagina_intercambios']
@@ -2010,8 +2010,8 @@ KNOWLEDGE;
         // Página: Usuarios (oculta)
         add_submenu_page(
             null,
-            __('Usuarios', 'flavor-chat-ia'),
-            __('Usuarios', 'flavor-chat-ia'),
+            __('Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'bt-usuarios',
             [$this, 'render_pagina_usuarios']
@@ -2020,8 +2020,8 @@ KNOWLEDGE;
         // Página: Configuración (oculta)
         add_submenu_page(
             null,
-            __('Configuración', 'flavor-chat-ia'),
-            __('Configuración', 'flavor-chat-ia'),
+            __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'banco-tiempo-config',
             [$this, 'render_admin_config']
@@ -2036,8 +2036,8 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Banco de Tiempo', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Vista no encontrada.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Vista no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -2049,7 +2049,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Servicios', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -2061,7 +2061,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Intercambios', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -2073,7 +2073,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Usuarios', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -2121,7 +2121,7 @@ KNOWLEDGE;
         }
 
         $usuario = get_userdata($servicio->usuario_id);
-        $usuario_nombre = $usuario ? $usuario->display_name : __('Usuario anónimo', 'flavor-chat-ia');
+        $usuario_nombre = $usuario ? $usuario->display_name : __('Usuario anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         $ubicacion = get_user_meta($servicio->usuario_id, 'ubicacion', true) ?: '';
         $latitud = get_user_meta($servicio->usuario_id, 'latitud', true) ?: null;
@@ -2232,13 +2232,13 @@ function banco_tiempo_ajax_ver_intercambio() {
     check_ajax_referer('banco_tiempo_nonce', 'nonce');
 
     if (!current_user_can('manage_options')) {
-        wp_send_json_error(__('Sin permisos', 'flavor-chat-ia'));
+        wp_send_json_error(__('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     $intercambio_id = isset($_POST['intercambio_id']) ? absint($_POST['intercambio_id']) : 0;
 
     if (!$intercambio_id) {
-        wp_send_json_error(__('ID no válido', 'flavor-chat-ia'));
+        wp_send_json_error(__('ID no válido', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     global $wpdb;
@@ -2257,7 +2257,7 @@ function banco_tiempo_ajax_ver_intercambio() {
     ));
 
     if (!$intercambio) {
-        wp_send_json_error(__('Intercambio no encontrado', 'flavor-chat-ia'));
+        wp_send_json_error(__('Intercambio no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     wp_send_json_success([
@@ -2278,13 +2278,13 @@ function banco_tiempo_ajax_obtener_servicio() {
     check_ajax_referer('banco_tiempo_nonce', 'nonce');
 
     if (!current_user_can('manage_options')) {
-        wp_send_json_error(__('Sin permisos', 'flavor-chat-ia'));
+        wp_send_json_error(__('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     $servicio_id = isset($_POST['servicio_id']) ? absint($_POST['servicio_id']) : 0;
 
     if (!$servicio_id) {
-        wp_send_json_error(__('ID no válido', 'flavor-chat-ia'));
+        wp_send_json_error(__('ID no válido', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     global $wpdb;
@@ -2298,7 +2298,7 @@ function banco_tiempo_ajax_obtener_servicio() {
     ));
 
     if (!$servicio) {
-        wp_send_json_error(__('Servicio no encontrado', 'flavor-chat-ia'));
+        wp_send_json_error(__('Servicio no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     wp_send_json_success([
@@ -2319,13 +2319,13 @@ function banco_tiempo_ajax_historial_usuario() {
     check_ajax_referer('banco_tiempo_nonce', 'nonce');
 
     if (!current_user_can('manage_options')) {
-        wp_send_json_error(__('Sin permisos', 'flavor-chat-ia'));
+        wp_send_json_error(__('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     $usuario_id = isset($_POST['usuario_id']) ? absint($_POST['usuario_id']) : 0;
 
     if (!$usuario_id) {
-        wp_send_json_error(__('ID no válido', 'flavor-chat-ia'));
+        wp_send_json_error(__('ID no válido', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     global $wpdb;
@@ -2370,7 +2370,7 @@ function banco_tiempo_ajax_historial_usuario() {
         $es_ofertante = $item->usuario_receptor_id == $usuario_id;
         $historial_formateado[] = [
             'fecha' => date_i18n('d/m/Y', strtotime($item->fecha_creacion)),
-            'tipo' => $es_ofertante ? __('Ofrecido', 'flavor-chat-ia') : __('Solicitado', 'flavor-chat-ia'),
+            'tipo' => $es_ofertante ? __('Ofrecido', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Solicitado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'servicio' => $item->servicio,
             'con_usuario' => $es_ofertante ? $item->solicitante : $item->ofertante,
             'horas' => number_format($item->horas, 1) . ' h',

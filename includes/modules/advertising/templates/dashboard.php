@@ -49,13 +49,13 @@ $base_url = remove_query_arg(['vista', 'ad_id']);
     <!-- Header -->
     <div class="ads-dashboard-header">
         <div class="ads-header-info">
-            <h2><?php esc_html_e('Panel de Anunciante', 'flavor-chat-ia'); ?></h2>
-            <p class="ads-header-subtitle"><?php esc_html_e('Gestiona tus campañas publicitarias', 'flavor-chat-ia'); ?></p>
+            <h2><?php esc_html_e('Panel de Anunciante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+            <p class="ads-header-subtitle"><?php esc_html_e('Gestiona tus campañas publicitarias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
         <div class="ads-header-actions">
             <a href="<?php echo esc_url(add_query_arg('vista', 'crear', $base_url)); ?>" class="btn btn-primary">
                 <span class="dashicons dashicons-plus-alt2"></span>
-                <?php esc_html_e('Crear anuncio', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Crear anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>
@@ -64,18 +64,18 @@ $base_url = remove_query_arg(['vista', 'ad_id']);
     <div class="ads-nav-tabs">
         <a href="<?php echo esc_url($base_url); ?>" class="ads-nav-tab <?php echo $vista_actual === 'resumen' ? 'active' : ''; ?>">
             <span class="dashicons dashicons-dashboard"></span>
-            <?php esc_html_e('Resumen', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Resumen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <a href="<?php echo esc_url(add_query_arg('vista', 'anuncios', $base_url)); ?>" class="ads-nav-tab <?php echo $vista_actual === 'anuncios' ? 'active' : ''; ?>">
             <span class="dashicons dashicons-megaphone"></span>
-            <?php esc_html_e('Mis Anuncios', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Mis Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <?php if (count($anuncios) > 0): ?>
                 <span class="ads-badge"><?php echo count($anuncios); ?></span>
             <?php endif; ?>
         </a>
         <a href="<?php echo esc_url(add_query_arg('vista', 'estadisticas', $base_url)); ?>" class="ads-nav-tab <?php echo $vista_actual === 'estadisticas' ? 'active' : ''; ?>">
             <span class="dashicons dashicons-chart-bar"></span>
-            <?php esc_html_e('Estadísticas', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 
@@ -91,7 +91,7 @@ $base_url = remove_query_arg(['vista', 'ad_id']);
                     </div>
                     <div class="ads-stat-content">
                         <span class="ads-stat-valor"><?php echo esc_html($anuncios_activos); ?></span>
-                        <span class="ads-stat-label"><?php esc_html_e('Anuncios Activos', 'flavor-chat-ia'); ?></span>
+                        <span class="ads-stat-label"><?php esc_html_e('Anuncios Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="ads-stat-card">
@@ -100,7 +100,7 @@ $base_url = remove_query_arg(['vista', 'ad_id']);
                     </div>
                     <div class="ads-stat-content">
                         <span class="ads-stat-valor"><?php echo esc_html(number_format($total_impresiones)); ?></span>
-                        <span class="ads-stat-label"><?php esc_html_e('Impresiones', 'flavor-chat-ia'); ?></span>
+                        <span class="ads-stat-label"><?php esc_html_e('Impresiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="ads-stat-card">
@@ -109,7 +109,7 @@ $base_url = remove_query_arg(['vista', 'ad_id']);
                     </div>
                     <div class="ads-stat-content">
                         <span class="ads-stat-valor"><?php echo esc_html(number_format($total_clics)); ?></span>
-                        <span class="ads-stat-label"><?php esc_html_e('Clics', 'flavor-chat-ia'); ?></span>
+                        <span class="ads-stat-label"><?php esc_html_e('Clics', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="ads-stat-card">
@@ -118,7 +118,7 @@ $base_url = remove_query_arg(['vista', 'ad_id']);
                     </div>
                     <div class="ads-stat-content">
                         <span class="ads-stat-valor"><?php echo esc_html($ctr_total); ?>%</span>
-                        <span class="ads-stat-label"><?php esc_html_e('CTR Promedio', 'flavor-chat-ia'); ?></span>
+                        <span class="ads-stat-label"><?php esc_html_e('CTR Promedio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -126,16 +126,16 @@ $base_url = remove_query_arg(['vista', 'ad_id']);
             <!-- Gasto y anuncios pendientes -->
             <div class="ads-info-row">
                 <div class="ads-info-card">
-                    <h4><?php esc_html_e('Gasto Total', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php esc_html_e('Gasto Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <div class="ads-gasto-valor"><?php echo esc_html(number_format($total_gasto, 2)); ?>€</div>
-                    <p class="ads-info-desc"><?php esc_html_e('Invertido en todas tus campañas', 'flavor-chat-ia'); ?></p>
+                    <p class="ads-info-desc"><?php esc_html_e('Invertido en todas tus campañas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
 
                 <?php if ($anuncios_pendientes > 0): ?>
                 <div class="ads-info-card ads-warning">
-                    <h4><?php esc_html_e('Pendientes de Aprobación', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php esc_html_e('Pendientes de Aprobación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <div class="ads-gasto-valor"><?php echo esc_html($anuncios_pendientes); ?></div>
-                    <p class="ads-info-desc"><?php esc_html_e('Anuncios esperando revisión', 'flavor-chat-ia'); ?></p>
+                    <p class="ads-info-desc"><?php esc_html_e('Anuncios esperando revisión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <?php endif; ?>
             </div>
@@ -143,7 +143,7 @@ $base_url = remove_query_arg(['vista', 'ad_id']);
             <!-- Últimos anuncios -->
             <?php if (!empty($anuncios)): ?>
             <div class="ads-section">
-                <h3><?php esc_html_e('Últimos Anuncios', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Últimos Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div class="ads-grid">
                     <?php foreach (array_slice($anuncios, 0, 3) as $anuncio): ?>
                         <div class="ads-card">
@@ -159,15 +159,15 @@ $base_url = remove_query_arg(['vista', 'ad_id']);
                             <div class="ads-card-stats">
                                 <div>
                                     <strong><?php echo esc_html(number_format($anuncio['impresiones'])); ?></strong>
-                                    <span><?php esc_html_e('Imp.', 'flavor-chat-ia'); ?></span>
+                                    <span><?php esc_html_e('Imp.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                                 <div>
                                     <strong><?php echo esc_html(number_format($anuncio['clics'])); ?></strong>
-                                    <span><?php esc_html_e('Clics', 'flavor-chat-ia'); ?></span>
+                                    <span><?php esc_html_e('Clics', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                                 <div>
                                     <strong><?php echo esc_html(number_format($anuncio['gasto'], 2)); ?>€</strong>
-                                    <span><?php esc_html_e('Gasto', 'flavor-chat-ia'); ?></span>
+                                    <span><?php esc_html_e('Gasto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                             </div>
                         </div>
@@ -177,7 +177,7 @@ $base_url = remove_query_arg(['vista', 'ad_id']);
                 <?php if (count($anuncios) > 3): ?>
                 <p class="ads-ver-mas">
                     <a href="<?php echo esc_url(add_query_arg('vista', 'anuncios', $base_url)); ?>">
-                        <?php esc_html_e('Ver todos los anuncios', 'flavor-chat-ia'); ?> →
+                        <?php esc_html_e('Ver todos los anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> →
                     </a>
                 </p>
                 <?php endif; ?>
@@ -185,9 +185,9 @@ $base_url = remove_query_arg(['vista', 'ad_id']);
             <?php else: ?>
             <div class="ads-empty">
                 <span class="dashicons dashicons-megaphone"></span>
-                <p><?php esc_html_e('Aún no tienes anuncios. ¡Crea tu primera campaña!', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('Aún no tienes anuncios. ¡Crea tu primera campaña!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <a href="<?php echo esc_url(add_query_arg('vista', 'crear', $base_url)); ?>" class="btn btn-primary">
-                    <?php esc_html_e('Crear mi primer anuncio', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Crear mi primer anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
             <?php endif; ?>
@@ -210,37 +210,37 @@ $base_url = remove_query_arg(['vista', 'ad_id']);
                                 <span class="ads-tipo"><?php echo esc_html(str_replace('_', ' ', $anuncio['tipo'])); ?></span>
                                 <?php if (!empty($anuncio['presupuesto'])): ?>
                                 <span class="ads-presupuesto">
-                                    <?php printf(esc_html__('Presupuesto: %s€', 'flavor-chat-ia'), number_format($anuncio['presupuesto'], 2)); ?>
+                                    <?php printf(esc_html__('Presupuesto: %s€', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($anuncio['presupuesto'], 2)); ?>
                                 </span>
                                 <?php endif; ?>
                             </div>
                             <div class="ads-card-stats">
                                 <div>
                                     <strong><?php echo esc_html(number_format($anuncio['impresiones'])); ?></strong>
-                                    <span><?php esc_html_e('Impresiones', 'flavor-chat-ia'); ?></span>
+                                    <span><?php esc_html_e('Impresiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                                 <div>
                                     <strong><?php echo esc_html(number_format($anuncio['clics'])); ?></strong>
-                                    <span><?php esc_html_e('Clics', 'flavor-chat-ia'); ?></span>
+                                    <span><?php esc_html_e('Clics', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                                 <div>
                                     <strong><?php echo esc_html(number_format($anuncio['gasto'], 2)); ?>€</strong>
-                                    <span><?php esc_html_e('Gasto', 'flavor-chat-ia'); ?></span>
+                                    <span><?php esc_html_e('Gasto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                             </div>
                             <div class="ads-card-actions">
                                 <?php if ($anuncio['estado'] === 'publish'): ?>
                                     <button type="button" class="btn btn-sm btn-outline btn-pausar-anuncio" data-ad-id="<?php echo esc_attr($anuncio['id']); ?>">
                                         <span class="dashicons dashicons-controls-pause"></span>
-                                        <?php esc_html_e('Pausar', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Pausar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 <?php elseif ($anuncio['estado'] === 'draft'): ?>
                                     <button type="button" class="btn btn-sm btn-primary btn-reanudar-anuncio" data-ad-id="<?php echo esc_attr($anuncio['id']); ?>">
                                         <span class="dashicons dashicons-controls-play"></span>
-                                        <?php esc_html_e('Reanudar', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Reanudar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 <?php elseif ($anuncio['estado'] === 'pending'): ?>
-                                    <span class="ads-status-text"><?php esc_html_e('Pendiente de aprobación', 'flavor-chat-ia'); ?></span>
+                                    <span class="ads-status-text"><?php esc_html_e('Pendiente de aprobación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -249,9 +249,9 @@ $base_url = remove_query_arg(['vista', 'ad_id']);
             <?php else: ?>
                 <div class="ads-empty">
                     <span class="dashicons dashicons-megaphone"></span>
-                    <p><?php esc_html_e('No tienes anuncios creados.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No tienes anuncios creados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(add_query_arg('vista', 'crear', $base_url)); ?>" class="btn btn-primary">
-                        <?php esc_html_e('Crear anuncio', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Crear anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php endif; ?>
@@ -261,12 +261,12 @@ $base_url = remove_query_arg(['vista', 'ad_id']);
         <!-- Vista Estadísticas -->
         <div class="ads-estadisticas-view">
             <div class="ads-periodo-selector-container">
-                <label for="ads-periodo"><?php esc_html_e('Periodo:', 'flavor-chat-ia'); ?></label>
+                <label for="ads-periodo"><?php esc_html_e('Periodo:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select id="ads-periodo" class="ads-periodo-selector">
-                    <option value="today"><?php esc_html_e('Hoy', 'flavor-chat-ia'); ?></option>
-                    <option value="week"><?php esc_html_e('Última semana', 'flavor-chat-ia'); ?></option>
-                    <option value="month" selected><?php esc_html_e('Último mes', 'flavor-chat-ia'); ?></option>
-                    <option value="year"><?php esc_html_e('Último año', 'flavor-chat-ia'); ?></option>
+                    <option value="today"><?php esc_html_e('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="week"><?php esc_html_e('Última semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="month" selected><?php esc_html_e('Último mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="year"><?php esc_html_e('Último año', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
             </div>
 
@@ -274,19 +274,19 @@ $base_url = remove_query_arg(['vista', 'ad_id']);
                 <div class="ads-stats-grid">
                     <div class="ads-stat-card-lg">
                         <span class="ads-stat-valor"><?php echo esc_html(number_format($estadisticas['impresiones'] ?? 0)); ?></span>
-                        <span class="ads-stat-label"><?php esc_html_e('Impresiones', 'flavor-chat-ia'); ?></span>
+                        <span class="ads-stat-label"><?php esc_html_e('Impresiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="ads-stat-card-lg">
                         <span class="ads-stat-valor"><?php echo esc_html(number_format($estadisticas['clics'] ?? 0)); ?></span>
-                        <span class="ads-stat-label"><?php esc_html_e('Clics', 'flavor-chat-ia'); ?></span>
+                        <span class="ads-stat-label"><?php esc_html_e('Clics', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="ads-stat-card-lg">
                         <span class="ads-stat-valor"><?php echo esc_html($estadisticas['ctr'] ?? 0); ?>%</span>
-                        <span class="ads-stat-label"><?php esc_html_e('CTR', 'flavor-chat-ia'); ?></span>
+                        <span class="ads-stat-label"><?php esc_html_e('CTR', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <div class="ads-stat-card-lg">
                         <span class="ads-stat-valor"><?php echo esc_html(number_format($estadisticas['gasto'] ?? 0, 2)); ?>€</span>
-                        <span class="ads-stat-label"><?php esc_html_e('Gasto Total', 'flavor-chat-ia'); ?></span>
+                        <span class="ads-stat-label"><?php esc_html_e('Gasto Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -294,16 +294,16 @@ $base_url = remove_query_arg(['vista', 'ad_id']);
             <!-- Rendimiento por anuncio -->
             <?php if (!empty($anuncios)): ?>
             <div class="ads-section">
-                <h3><?php esc_html_e('Rendimiento por Anuncio', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Rendimiento por Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <table class="ads-table">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('Anuncio', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Impresiones', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Clics', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('CTR', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Gasto', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Impresiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Clics', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('CTR', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Gasto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>

@@ -31,7 +31,7 @@ foreach ($tablas_presupuestos_candidatas as $tabla_candidata) {
 if ($tabla_presupuestos === '') {
     echo '<div class="transparencia-aviso transparencia-aviso--info">';
     echo '<span class="dashicons dashicons-info"></span>';
-    echo '<p>' . esc_html__('Todavía no hay presupuesto publicado en esta instalación.', 'flavor-chat-ia') . '</p>';
+    echo '<p>' . esc_html__('Todavía no hay presupuesto publicado en esta instalación.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
     echo '</div>';
     return;
 }
@@ -118,27 +118,27 @@ $capitulos_gastos = $wpdb->get_results($wpdb->prepare(
 
 // Nombres de capitulos presupuestarios
 $nombres_capitulos_ingresos = [
-    '1' => __('Impuestos directos', 'flavor-chat-ia'),
-    '2' => __('Impuestos indirectos', 'flavor-chat-ia'),
-    '3' => __('Tasas y otros ingresos', 'flavor-chat-ia'),
-    '4' => __('Transferencias corrientes', 'flavor-chat-ia'),
-    '5' => __('Ingresos patrimoniales', 'flavor-chat-ia'),
-    '6' => __('Enajenacion inversiones', 'flavor-chat-ia'),
-    '7' => __('Transferencias de capital', 'flavor-chat-ia'),
-    '8' => __('Activos financieros', 'flavor-chat-ia'),
-    '9' => __('Pasivos financieros', 'flavor-chat-ia'),
+    '1' => __('Impuestos directos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    '2' => __('Impuestos indirectos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    '3' => __('Tasas y otros ingresos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    '4' => __('Transferencias corrientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    '5' => __('Ingresos patrimoniales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    '6' => __('Enajenacion inversiones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    '7' => __('Transferencias de capital', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    '8' => __('Activos financieros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    '9' => __('Pasivos financieros', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $nombres_capitulos_gastos = [
-    '1' => __('Gastos de personal', 'flavor-chat-ia'),
-    '2' => __('Gastos en bienes y servicios', 'flavor-chat-ia'),
-    '3' => __('Gastos financieros', 'flavor-chat-ia'),
-    '4' => __('Transferencias corrientes', 'flavor-chat-ia'),
-    '5' => __('Fondo de contingencia', 'flavor-chat-ia'),
-    '6' => __('Inversiones reales', 'flavor-chat-ia'),
-    '7' => __('Transferencias de capital', 'flavor-chat-ia'),
-    '8' => __('Activos financieros', 'flavor-chat-ia'),
-    '9' => __('Pasivos financieros', 'flavor-chat-ia'),
+    '1' => __('Gastos de personal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    '2' => __('Gastos en bienes y servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    '3' => __('Gastos financieros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    '4' => __('Transferencias corrientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    '5' => __('Fondo de contingencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    '6' => __('Inversiones reales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    '7' => __('Transferencias de capital', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    '8' => __('Activos financieros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    '9' => __('Pasivos financieros', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 // Colores para graficos
@@ -170,11 +170,11 @@ foreach ($capitulos_gastos as $index => $capitulo) {
     <header class="transparencia-presupuesto__header">
         <div class="transparencia-presupuesto__titulo">
             <span class="dashicons dashicons-chart-pie"></span>
-            <h2><?php printf(esc_html__('Presupuesto %d', 'flavor-chat-ia'), $ejercicio_solicitado); ?></h2>
+            <h2><?php printf(esc_html__('Presupuesto %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $ejercicio_solicitado); ?></h2>
         </div>
         <?php if (count($ejercicios_disponibles) > 1) : ?>
         <form class="transparencia-presupuesto__selector" method="get">
-            <label for="ejercicio"><?php esc_html_e('Ejercicio:', 'flavor-chat-ia'); ?></label>
+            <label for="ejercicio"><?php esc_html_e('Ejercicio:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <select name="ejercicio" id="ejercicio" onchange="this.form.submit()">
                 <?php foreach ($ejercicios_disponibles as $ej) : ?>
                 <option value="<?php echo esc_attr($ej); ?>" <?php selected($ejercicio_solicitado, $ej); ?>>
@@ -189,8 +189,8 @@ foreach ($capitulos_gastos as $index => $capitulo) {
     <?php if (!$ingresos && !$gastos) : ?>
     <div class="transparencia-empty-state">
         <span class="dashicons dashicons-chart-pie"></span>
-        <h3><?php esc_html_e('Sin datos presupuestarios', 'flavor-chat-ia'); ?></h3>
-        <p><?php printf(esc_html__('No hay datos de presupuesto para el ejercicio %d.', 'flavor-chat-ia'), $ejercicio_solicitado); ?></p>
+        <h3><?php esc_html_e('Sin datos presupuestarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+        <p><?php printf(esc_html__('No hay datos de presupuesto para el ejercicio %d.', FLAVOR_PLATFORM_TEXT_DOMAIN), $ejercicio_solicitado); ?></p>
     </div>
     <?php else : ?>
 
@@ -201,35 +201,35 @@ foreach ($capitulos_gastos as $index => $capitulo) {
             <div class="transparencia-presupuesto__bloque-header">
                 <h3>
                     <span class="dashicons dashicons-chart-line"></span>
-                    <?php esc_html_e('Presupuesto de Ingresos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Presupuesto de Ingresos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <div class="transparencia-presupuesto__kpis">
                 <div class="transparencia-kpi-mini">
-                    <span class="transparencia-kpi-mini__label"><?php esc_html_e('Inicial', 'flavor-chat-ia'); ?></span>
+                    <span class="transparencia-kpi-mini__label"><?php esc_html_e('Inicial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="transparencia-kpi-mini__valor"><?php echo esc_html(number_format($ingresos->inicial ?: 0, 2, ',', '.')); ?> &euro;</span>
                 </div>
                 <div class="transparencia-kpi-mini">
-                    <span class="transparencia-kpi-mini__label"><?php esc_html_e('Modificaciones', 'flavor-chat-ia'); ?></span>
+                    <span class="transparencia-kpi-mini__label"><?php esc_html_e('Modificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="transparencia-kpi-mini__valor <?php echo ($ingresos->modificaciones ?? 0) >= 0 ? 'positivo' : 'negativo'; ?>">
                         <?php echo ($ingresos->modificaciones ?? 0) >= 0 ? '+' : ''; ?><?php echo esc_html(number_format($ingresos->modificaciones ?: 0, 2, ',', '.')); ?> &euro;
                     </span>
                 </div>
                 <div class="transparencia-kpi-mini transparencia-kpi-mini--destacado">
-                    <span class="transparencia-kpi-mini__label"><?php esc_html_e('Definitivo', 'flavor-chat-ia'); ?></span>
+                    <span class="transparencia-kpi-mini__label"><?php esc_html_e('Definitivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="transparencia-kpi-mini__valor"><?php echo esc_html(number_format($ingresos->definitivo ?: 0, 2, ',', '.')); ?> &euro;</span>
                 </div>
             </div>
             <div class="transparencia-ejecucion">
                 <div class="transparencia-ejecucion__header">
-                    <span><?php esc_html_e('Ejecucion', 'flavor-chat-ia'); ?></span>
+                    <span><?php esc_html_e('Ejecucion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="transparencia-ejecucion__porcentaje"><?php echo esc_html($porcentaje_ingresos); ?>%</span>
                 </div>
                 <div class="transparencia-barra-progreso transparencia-barra-progreso--grande">
                     <div class="transparencia-barra-progreso__fill transparencia-barra-progreso__fill--ingresos" style="width: <?php echo esc_attr(min(100, $porcentaje_ingresos)); ?>%"></div>
                 </div>
                 <div class="transparencia-ejecucion__detalle">
-                    <span><?php esc_html_e('Recaudado:', 'flavor-chat-ia'); ?> <?php echo esc_html(number_format($ingresos->recaudado ?: 0, 2, ',', '.')); ?> &euro;</span>
+                    <span><?php esc_html_e('Recaudado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html(number_format($ingresos->recaudado ?: 0, 2, ',', '.')); ?> &euro;</span>
                 </div>
             </div>
         </div>
@@ -239,36 +239,36 @@ foreach ($capitulos_gastos as $index => $capitulo) {
             <div class="transparencia-presupuesto__bloque-header">
                 <h3>
                     <span class="dashicons dashicons-chart-bar"></span>
-                    <?php esc_html_e('Presupuesto de Gastos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Presupuesto de Gastos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <div class="transparencia-presupuesto__kpis">
                 <div class="transparencia-kpi-mini">
-                    <span class="transparencia-kpi-mini__label"><?php esc_html_e('Inicial', 'flavor-chat-ia'); ?></span>
+                    <span class="transparencia-kpi-mini__label"><?php esc_html_e('Inicial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="transparencia-kpi-mini__valor"><?php echo esc_html(number_format($gastos->inicial ?: 0, 2, ',', '.')); ?> &euro;</span>
                 </div>
                 <div class="transparencia-kpi-mini">
-                    <span class="transparencia-kpi-mini__label"><?php esc_html_e('Modificaciones', 'flavor-chat-ia'); ?></span>
+                    <span class="transparencia-kpi-mini__label"><?php esc_html_e('Modificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="transparencia-kpi-mini__valor <?php echo ($gastos->modificaciones ?? 0) >= 0 ? 'positivo' : 'negativo'; ?>">
                         <?php echo ($gastos->modificaciones ?? 0) >= 0 ? '+' : ''; ?><?php echo esc_html(number_format($gastos->modificaciones ?: 0, 2, ',', '.')); ?> &euro;
                     </span>
                 </div>
                 <div class="transparencia-kpi-mini transparencia-kpi-mini--destacado">
-                    <span class="transparencia-kpi-mini__label"><?php esc_html_e('Definitivo', 'flavor-chat-ia'); ?></span>
+                    <span class="transparencia-kpi-mini__label"><?php esc_html_e('Definitivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="transparencia-kpi-mini__valor"><?php echo esc_html(number_format($gastos->definitivo ?: 0, 2, ',', '.')); ?> &euro;</span>
                 </div>
             </div>
             <div class="transparencia-ejecucion">
                 <div class="transparencia-ejecucion__header">
-                    <span><?php esc_html_e('Ejecucion', 'flavor-chat-ia'); ?></span>
+                    <span><?php esc_html_e('Ejecucion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="transparencia-ejecucion__porcentaje"><?php echo esc_html($porcentaje_gastos); ?>%</span>
                 </div>
                 <div class="transparencia-barra-progreso transparencia-barra-progreso--grande">
                     <div class="transparencia-barra-progreso__fill transparencia-barra-progreso__fill--gastos" style="width: <?php echo esc_attr(min(100, $porcentaje_gastos)); ?>%"></div>
                 </div>
                 <div class="transparencia-ejecucion__detalle">
-                    <span><?php esc_html_e('Obligaciones:', 'flavor-chat-ia'); ?> <?php echo esc_html(number_format($gastos->obligaciones ?: 0, 2, ',', '.')); ?> &euro;</span>
-                    <span><?php esc_html_e('Pagado:', 'flavor-chat-ia'); ?> <?php echo esc_html(number_format($gastos->pagos ?: 0, 2, ',', '.')); ?> &euro; (<?php echo esc_html($porcentaje_pagos); ?>%)</span>
+                    <span><?php esc_html_e('Obligaciones:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html(number_format($gastos->obligaciones ?: 0, 2, ',', '.')); ?> &euro;</span>
+                    <span><?php esc_html_e('Pagado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html(number_format($gastos->pagos ?: 0, 2, ',', '.')); ?> &euro; (<?php echo esc_html($porcentaje_pagos); ?>%)</span>
                 </div>
             </div>
         </div>
@@ -277,11 +277,11 @@ foreach ($capitulos_gastos as $index => $capitulo) {
     <!-- Graficos -->
     <div class="transparencia-presupuesto__graficos">
         <div class="transparencia-grafico-container">
-            <h4><?php esc_html_e('Distribucion de Ingresos', 'flavor-chat-ia'); ?></h4>
+            <h4><?php esc_html_e('Distribucion de Ingresos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
             <canvas id="grafico-ingresos" width="300" height="300"></canvas>
         </div>
         <div class="transparencia-grafico-container">
-            <h4><?php esc_html_e('Distribucion de Gastos', 'flavor-chat-ia'); ?></h4>
+            <h4><?php esc_html_e('Distribucion de Gastos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
             <canvas id="grafico-gastos" width="300" height="300"></canvas>
         </div>
     </div>
@@ -292,7 +292,7 @@ foreach ($capitulos_gastos as $index => $capitulo) {
         <section class="transparencia-capitulos">
             <h4>
                 <span class="dashicons dashicons-list-view"></span>
-                <?php esc_html_e('Desglose de Ingresos por Capitulos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Desglose de Ingresos por Capitulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h4>
             <?php if (!empty($capitulos_ingresos)) : ?>
             <div class="transparencia-capitulos__lista">
@@ -327,7 +327,7 @@ foreach ($capitulos_gastos as $index => $capitulo) {
         <section class="transparencia-capitulos">
             <h4>
                 <span class="dashicons dashicons-list-view"></span>
-                <?php esc_html_e('Desglose de Gastos por Capitulos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Desglose de Gastos por Capitulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h4>
             <?php if (!empty($capitulos_gastos)) : ?>
             <div class="transparencia-capitulos__lista">

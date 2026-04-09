@@ -58,31 +58,31 @@ class Flavor_Auto_Reply_Suggester {
     private function load_response_templates() {
         $this->response_templates = [
             'incidencias' => [
-                'recibida' => __('Hemos recibido tu incidencia y la estamos revisando. Te contactaremos pronto con una solución.', 'flavor-chat-ia'),
-                'en_proceso' => __('Estamos trabajando en tu caso. Te mantendremos informado/a del progreso.', 'flavor-chat-ia'),
-                'solicitar_info' => __('Para poder ayudarte mejor, necesitamos más información. ¿Podrías proporcionarnos los siguientes datos?', 'flavor-chat-ia'),
-                'resuelta' => __('Tu incidencia ha sido resuelta. Si tienes alguna otra consulta, no dudes en contactarnos.', 'flavor-chat-ia'),
+                'recibida' => __('Hemos recibido tu incidencia y la estamos revisando. Te contactaremos pronto con una solución.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'en_proceso' => __('Estamos trabajando en tu caso. Te mantendremos informado/a del progreso.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'solicitar_info' => __('Para poder ayudarte mejor, necesitamos más información. ¿Podrías proporcionarnos los siguientes datos?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'resuelta' => __('Tu incidencia ha sido resuelta. Si tienes alguna otra consulta, no dudes en contactarnos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'socios' => [
-                'bienvenida' => __('¡Bienvenido/a a nuestra comunidad! Estamos encantados de tenerte con nosotros.', 'flavor-chat-ia'),
-                'solicitud_recibida' => __('Hemos recibido tu solicitud de membresía. La revisaremos en breve.', 'flavor-chat-ia'),
-                'solicitud_aprobada' => __('¡Enhorabuena! Tu solicitud ha sido aprobada. Ya puedes acceder a todos los beneficios de socio/a.', 'flavor-chat-ia'),
-                'recordatorio_cuota' => __('Te recordamos que tienes una cuota pendiente de pago. Puedes realizarlo desde tu área de socio/a.', 'flavor-chat-ia'),
+                'bienvenida' => __('¡Bienvenido/a a nuestra comunidad! Estamos encantados de tenerte con nosotros.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'solicitud_recibida' => __('Hemos recibido tu solicitud de membresía. La revisaremos en breve.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'solicitud_aprobada' => __('¡Enhorabuena! Tu solicitud ha sido aprobada. Ya puedes acceder a todos los beneficios de socio/a.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'recordatorio_cuota' => __('Te recordamos que tienes una cuota pendiente de pago. Puedes realizarlo desde tu área de socio/a.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'eventos' => [
-                'inscripcion_confirmada' => __('Tu inscripción al evento ha sido confirmada. ¡Te esperamos!', 'flavor-chat-ia'),
-                'recordatorio' => __('Te recordamos que mañana tienes el evento. ¡No faltes!', 'flavor-chat-ia'),
-                'cancelacion' => __('Lamentamos informarte que el evento ha sido cancelado. Te contactaremos con más información.', 'flavor-chat-ia'),
+                'inscripcion_confirmada' => __('Tu inscripción al evento ha sido confirmada. ¡Te esperamos!', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'recordatorio' => __('Te recordamos que mañana tienes el evento. ¡No faltes!', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cancelacion' => __('Lamentamos informarte que el evento ha sido cancelado. Te contactaremos con más información.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'reservas' => [
-                'confirmada' => __('Tu reserva ha sido confirmada. Te esperamos en la fecha indicada.', 'flavor-chat-ia'),
-                'pendiente' => __('Tu reserva está pendiente de confirmación. Te notificaremos en breve.', 'flavor-chat-ia'),
-                'cancelada' => __('Tu reserva ha sido cancelada según tu solicitud.', 'flavor-chat-ia'),
+                'confirmada' => __('Tu reserva ha sido confirmada. Te esperamos en la fecha indicada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'pendiente' => __('Tu reserva está pendiente de confirmación. Te notificaremos en breve.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cancelada' => __('Tu reserva ha sido cancelada según tu solicitud.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'grupos_consumo' => [
-                'pedido_recibido' => __('Hemos recibido tu pedido. Te avisaremos cuando esté listo para recoger.', 'flavor-chat-ia'),
-                'pedido_listo' => __('¡Tu pedido está listo! Puedes pasar a recogerlo en el horario habitual.', 'flavor-chat-ia'),
-                'ciclo_abierto' => __('Se ha abierto un nuevo ciclo de pedidos. ¡No te quedes sin tus productos favoritos!', 'flavor-chat-ia'),
+                'pedido_recibido' => __('Hemos recibido tu pedido. Te avisaremos cuando esté listo para recoger.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'pedido_listo' => __('¡Tu pedido está listo! Puedes pasar a recogerlo en el horario habitual.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ciclo_abierto' => __('Se ha abierto un nuevo ciclo de pedidos. ¡No te quedes sin tus productos favoritos!', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
     }
@@ -105,7 +105,7 @@ class Flavor_Auto_Reply_Suggester {
         check_ajax_referer('flavor_auto_reply', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['error' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $context_type = sanitize_text_field($_POST['context_type'] ?? '');
@@ -271,23 +271,23 @@ class Flavor_Auto_Reply_Suggester {
      */
     private function get_template_label($template_key) {
         $labels = [
-            'recibida' => __('Acuse de recibo', 'flavor-chat-ia'),
-            'en_proceso' => __('En proceso', 'flavor-chat-ia'),
-            'solicitar_info' => __('Solicitar información', 'flavor-chat-ia'),
-            'resuelta' => __('Caso resuelto', 'flavor-chat-ia'),
-            'bienvenida' => __('Bienvenida', 'flavor-chat-ia'),
-            'solicitud_recibida' => __('Solicitud recibida', 'flavor-chat-ia'),
-            'solicitud_aprobada' => __('Solicitud aprobada', 'flavor-chat-ia'),
-            'recordatorio_cuota' => __('Recordatorio cuota', 'flavor-chat-ia'),
-            'inscripcion_confirmada' => __('Inscripción confirmada', 'flavor-chat-ia'),
-            'recordatorio' => __('Recordatorio', 'flavor-chat-ia'),
-            'cancelacion' => __('Cancelación', 'flavor-chat-ia'),
-            'confirmada' => __('Reserva confirmada', 'flavor-chat-ia'),
-            'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-            'cancelada' => __('Cancelada', 'flavor-chat-ia'),
-            'pedido_recibido' => __('Pedido recibido', 'flavor-chat-ia'),
-            'pedido_listo' => __('Pedido listo', 'flavor-chat-ia'),
-            'ciclo_abierto' => __('Nuevo ciclo', 'flavor-chat-ia'),
+            'recibida' => __('Acuse de recibo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'en_proceso' => __('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'solicitar_info' => __('Solicitar información', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'resuelta' => __('Caso resuelto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'bienvenida' => __('Bienvenida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'solicitud_recibida' => __('Solicitud recibida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'solicitud_aprobada' => __('Solicitud aprobada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'recordatorio_cuota' => __('Recordatorio cuota', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'inscripcion_confirmada' => __('Inscripción confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'recordatorio' => __('Recordatorio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cancelacion' => __('Cancelación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'confirmada' => __('Reserva confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cancelada' => __('Cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'pedido_recibido' => __('Pedido recibido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'pedido_listo' => __('Pedido listo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'ciclo_abierto' => __('Nuevo ciclo', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         return $labels[$template_key] ?? ucfirst(str_replace('_', ' ', $template_key));
@@ -325,7 +325,7 @@ class Flavor_Auto_Reply_Suggester {
                     'type' => 'ai',
                     'text' => $response['response'],
                     'relevance' => 0.85,
-                    'label' => __('Sugerencia IA', 'flavor-chat-ia'),
+                    'label' => __('Sugerencia IA', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
 
                 // Cache por 5 minutos

@@ -132,18 +132,18 @@ class Flavor_Recetas_Frontend_Controller {
             'requiresModeration' => $this->frontend_requires_moderation,
             'dificultades' => $this->dificultades,
             'strings' => [
-                'guardado' => __('Receta guardada', 'flavor-chat-ia'),
-                'guardado_pendiente' => __('Receta enviada para revisión', 'flavor-chat-ia'),
-                'error' => __('Error al procesar', 'flavor-chat-ia'),
-                'confirmar_eliminar' => __('¿Eliminar esta receta?', 'flavor-chat-ia'),
-                'eliminado' => __('Receta eliminada', 'flavor-chat-ia'),
-                'favorito_agregado' => __('Agregado a favoritos', 'flavor-chat-ia'),
-                'favorito_quitado' => __('Quitado de favoritos', 'flavor-chat-ia'),
-                'valoracion_guardada' => __('Gracias por tu valoración', 'flavor-chat-ia'),
-                'buscando' => __('Buscando...', 'flavor-chat-ia'),
-                'sin_resultados' => __('No se encontraron recetas', 'flavor-chat-ia'),
-                'minutos' => __('minutos', 'flavor-chat-ia'),
-                'porciones' => __('porciones', 'flavor-chat-ia'),
+                'guardado' => __('Receta guardada', 'flavor-platform'),
+                'guardado_pendiente' => __('Receta enviada para revisión', 'flavor-platform'),
+                'error' => __('Error al procesar', 'flavor-platform'),
+                'confirmar_eliminar' => __('¿Eliminar esta receta?', 'flavor-platform'),
+                'eliminado' => __('Receta eliminada', 'flavor-platform'),
+                'favorito_agregado' => __('Agregado a favoritos', 'flavor-platform'),
+                'favorito_quitado' => __('Quitado de favoritos', 'flavor-platform'),
+                'valoracion_guardada' => __('Gracias por tu valoración', 'flavor-platform'),
+                'buscando' => __('Buscando...', 'flavor-platform'),
+                'sin_resultados' => __('No se encontraron recetas', 'flavor-platform'),
+                'minutos' => __('minutos', 'flavor-platform'),
+                'porciones' => __('porciones', 'flavor-platform'),
             ],
         ]);
     }
@@ -156,7 +156,7 @@ class Flavor_Recetas_Frontend_Controller {
      */
     public function registrar_tabs($tabs) {
         $tabs['recetas'] = [
-            'label' => __('Recetas', 'flavor-chat-ia'),
+            'label' => __('Recetas', 'flavor-platform'),
             'icon' => 'carrot',
             'callback' => [$this, 'render_tab_recetas'],
             'orden' => 80,
@@ -173,7 +173,7 @@ class Flavor_Recetas_Frontend_Controller {
         $user_id = get_current_user_id();
 
         if (!$user_id) {
-            echo '<p class="flavor-login-required">' . esc_html__('Debes iniciar sesión para ver tus recetas.', 'flavor-chat-ia') . '</p>';
+            echo '<p class="flavor-login-required">' . esc_html__('Debes iniciar sesión para ver tus recetas.', 'flavor-platform') . '</p>';
             return;
         }
 
@@ -211,8 +211,8 @@ class Flavor_Recetas_Frontend_Controller {
         ?>
         <div class="flavor-panel flavor-recetas-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-carrot"></span> <?php esc_html_e('Mis Recetas', 'flavor-chat-ia'); ?></h2>
-                <p class="flavor-panel-subtitle"><?php esc_html_e('Crea, guarda y comparte tus recetas favoritas', 'flavor-chat-ia'); ?></p>
+                <h2><span class="dashicons dashicons-carrot"></span> <?php esc_html_e('Mis Recetas', 'flavor-platform'); ?></h2>
+                <p class="flavor-panel-subtitle"><?php esc_html_e('Crea, guarda y comparte tus recetas favoritas', 'flavor-platform'); ?></p>
             </div>
 
             <div class="flavor-panel-kpis">
@@ -220,28 +220,28 @@ class Flavor_Recetas_Frontend_Controller {
                     <span class="flavor-kpi-icon dashicons dashicons-book-alt"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($mis_recetas); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Mis Recetas', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Mis Recetas', 'flavor-platform'); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icon dashicons dashicons-heart"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($total_favoritas); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Favoritas', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Favoritas', 'flavor-platform'); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icon dashicons dashicons-star-filled"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($promedio_valoracion, 1); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Valoración media', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Valoración media', 'flavor-platform'); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-accent">
                     <span class="flavor-kpi-icon dashicons dashicons-thumbs-up"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($total_valoraciones); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Valoraciones', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Valoraciones', 'flavor-platform'); ?></span>
                     </div>
                 </div>
             </div>
@@ -251,19 +251,19 @@ class Flavor_Recetas_Frontend_Controller {
             <div class="flavor-panel-actions">
                 <a href="<?php echo esc_url(home_url('/mi-portal/recetas/nueva/')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt"></span>
-                    <?php esc_html_e('Nueva Receta', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Nueva Receta', 'flavor-platform'); ?>
                 </a>
                 <a href="<?php echo esc_url(home_url('/mi-portal/recetas/mis-recetas/')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-book-alt"></span>
-                    <?php esc_html_e('Mis Recetas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Mis Recetas', 'flavor-platform'); ?>
                 </a>
                 <a href="<?php echo esc_url(home_url('/mi-portal/recetas/favoritas/')); ?>" class="flavor-btn flavor-btn-outline">
                     <span class="dashicons dashicons-heart"></span>
-                    <?php esc_html_e('Favoritas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Favoritas', 'flavor-platform'); ?>
                 </a>
                 <a href="<?php echo esc_url(home_url('/recetas/')); ?>" class="flavor-btn flavor-btn-outline">
                     <span class="dashicons dashicons-admin-site"></span>
-                    <?php esc_html_e('Explorar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Explorar', 'flavor-platform'); ?>
                 </a>
             </div>
         </div>
@@ -284,16 +284,16 @@ class Flavor_Recetas_Frontend_Controller {
         if (empty($recetas)) {
             echo '<div class="flavor-empty-state">';
             echo '<span class="dashicons dashicons-carrot"></span>';
-            echo '<p>' . esc_html__('Aún no has creado ninguna receta.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Aún no has creado ninguna receta.', 'flavor-platform') . '</p>';
             echo '<a href="' . esc_url(home_url('/mi-portal/recetas/nueva/')) . '" class="flavor-btn flavor-btn-primary">';
-            echo esc_html__('Crear mi primera receta', 'flavor-chat-ia') . '</a>';
+            echo esc_html__('Crear mi primera receta', 'flavor-platform') . '</a>';
             echo '</div>';
             return;
         }
 
         ?>
         <div class="flavor-panel-section">
-            <h3><?php esc_html_e('Mis recetas recientes', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Mis recetas recientes', 'flavor-platform'); ?></h3>
             <div class="flavor-recetas-grid">
                 <?php foreach ($recetas as $receta):
                     $tiempo = get_post_meta($receta->ID, '_receta_tiempo_preparacion', true);
@@ -357,12 +357,12 @@ class Flavor_Recetas_Frontend_Controller {
                 <div class="flavor-search-box">
                     <span class="dashicons dashicons-search"></span>
                     <input type="text" name="busqueda"
-                           placeholder="<?php esc_attr_e('Buscar recetas...', 'flavor-chat-ia'); ?>"
+                           placeholder="<?php esc_attr_e('Buscar recetas...', 'flavor-platform'); ?>"
                            class="flavor-input"
                            value="<?php echo esc_attr($termino_busqueda); ?>">
                 </div>
                 <select name="categoria" class="flavor-select">
-                    <option value=""><?php esc_html_e('Todas las categorías', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todas las categorías', 'flavor-platform'); ?></option>
                     <?php
                     $categorias = get_terms(['taxonomy' => 'receta_categoria', 'hide_empty' => true]);
                     foreach ($categorias as $categoria):
@@ -371,19 +371,19 @@ class Flavor_Recetas_Frontend_Controller {
                     <?php endforeach; ?>
                 </select>
                 <select name="dificultad" class="flavor-select">
-                    <option value=""><?php esc_html_e('Cualquier dificultad', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Cualquier dificultad', 'flavor-platform'); ?></option>
                     <?php foreach ($this->dificultades as $clave_dificultad => $datos_dificultad): ?>
                         <option value="<?php echo esc_attr($clave_dificultad); ?>" <?php selected($dificultad_filtro, $clave_dificultad); ?>><?php echo esc_html($datos_dificultad['nombre']); ?></option>
                     <?php endforeach; ?>
                 </select>
-                <button type="submit" class="flavor-btn flavor-btn-primary"><?php esc_html_e('Buscar', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="flavor-btn flavor-btn-primary"><?php esc_html_e('Buscar', 'flavor-platform'); ?></button>
             </form>
 
             <?php if ($hay_busqueda): ?>
             <div id="resultados-recetas" class="flavor-recetas-resultados">
                 <p class="flavor-resultados-count">
                     <?php printf(
-                        _n('%d receta encontrada', '%d recetas encontradas', count($recetas_encontradas), 'flavor-chat-ia'),
+                        _n('%d receta encontrada', '%d recetas encontradas', count($recetas_encontradas), 'flavor-platform'),
                         count($recetas_encontradas)
                     ); ?>
                 </p>
@@ -423,7 +423,7 @@ class Flavor_Recetas_Frontend_Controller {
                                 <?php if ($tiempo_preparacion): ?>
                                 <span class="flavor-receta-tiempo">
                                     <span class="dashicons dashicons-clock"></span>
-                                    <?php echo intval($tiempo_preparacion); ?> <?php esc_html_e('min', 'flavor-chat-ia'); ?>
+                                    <?php echo intval($tiempo_preparacion); ?> <?php esc_html_e('min', 'flavor-platform'); ?>
                                 </span>
                                 <?php endif; ?>
                                 <?php if ($porciones_receta): ?>
@@ -445,7 +445,7 @@ class Flavor_Recetas_Frontend_Controller {
                 <?php else: ?>
                 <div class="flavor-sin-resultados">
                     <span>🔍</span>
-                    <p><?php esc_html_e('No se encontraron recetas con esos criterios.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No se encontraron recetas con esos criterios.', 'flavor-platform'); ?></p>
                 </div>
                 <?php endif; ?>
             </div>
@@ -517,7 +517,7 @@ class Flavor_Recetas_Frontend_Controller {
                 <a href="<?php echo get_term_link($categoria); ?>" class="flavor-categoria-card">
                     <span class="flavor-categoria-icono"><?php echo esc_html($icono); ?></span>
                     <span class="flavor-categoria-nombre"><?php echo esc_html($categoria->name); ?></span>
-                    <span class="flavor-categoria-count"><?php echo intval($categoria->count); ?> <?php esc_html_e('recetas', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-categoria-count"><?php echo intval($categoria->count); ?> <?php esc_html_e('recetas', 'flavor-platform'); ?></span>
                 </a>
             <?php endforeach; ?>
         </div>
@@ -532,7 +532,7 @@ class Flavor_Recetas_Frontend_Controller {
         $this->enqueue_assets();
 
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . esc_html__('Debes iniciar sesión para ver tus recetas.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-login-required">' . esc_html__('Debes iniciar sesión para ver tus recetas.', 'flavor-platform') . '</p>';
         }
 
         $user_id = get_current_user_id();
@@ -547,17 +547,17 @@ class Flavor_Recetas_Frontend_Controller {
         ?>
         <div class="flavor-mis-recetas">
             <div class="flavor-panel-header">
-                <h2><?php esc_html_e('Mis Recetas', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Mis Recetas', 'flavor-platform'); ?></h2>
                 <a href="<?php echo esc_url(home_url('/mi-portal/recetas/nueva/')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt"></span>
-                    <?php esc_html_e('Nueva Receta', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Nueva Receta', 'flavor-platform'); ?>
                 </a>
             </div>
 
             <?php if (empty($recetas)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-carrot"></span>
-                    <p><?php esc_html_e('No has creado ninguna receta aún.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No has creado ninguna receta aún.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <div class="flavor-recetas-grid">
@@ -587,10 +587,10 @@ class Flavor_Recetas_Frontend_Controller {
                                 </div>
                             </div>
                             <div class="flavor-receta-actions">
-                                <a href="<?php echo get_edit_post_link($receta->ID); ?>" class="flavor-btn-icon" title="<?php esc_attr_e('Editar', 'flavor-chat-ia'); ?>">
+                                <a href="<?php echo get_edit_post_link($receta->ID); ?>" class="flavor-btn-icon" title="<?php esc_attr_e('Editar', 'flavor-platform'); ?>">
                                     <span class="dashicons dashicons-edit"></span>
                                 </a>
-                                <a href="<?php echo get_permalink($receta->ID); ?>" class="flavor-btn-icon" title="<?php esc_attr_e('Ver', 'flavor-chat-ia'); ?>">
+                                <a href="<?php echo get_permalink($receta->ID); ?>" class="flavor-btn-icon" title="<?php esc_attr_e('Ver', 'flavor-platform'); ?>">
                                     <span class="dashicons dashicons-visibility"></span>
                                 </a>
                             </div>
@@ -610,7 +610,7 @@ class Flavor_Recetas_Frontend_Controller {
         $this->enqueue_assets();
 
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . esc_html__('Debes iniciar sesión para ver tus favoritos.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-login-required">' . esc_html__('Debes iniciar sesión para ver tus favoritos.', 'flavor-platform') . '</p>';
         }
 
         $user_id = get_current_user_id();
@@ -619,14 +619,14 @@ class Flavor_Recetas_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-recetas-favoritas">
-            <h2><?php esc_html_e('Mis Recetas Favoritas', 'flavor-chat-ia'); ?></h2>
+            <h2><?php esc_html_e('Mis Recetas Favoritas', 'flavor-platform'); ?></h2>
 
             <?php if (empty($favoritos)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-heart"></span>
-                    <p><?php esc_html_e('No tienes recetas favoritas aún.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No tienes recetas favoritas aún.', 'flavor-platform'); ?></p>
                     <a href="<?php echo esc_url(home_url('/recetas/')); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php esc_html_e('Explorar recetas', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Explorar recetas', 'flavor-platform'); ?>
                     </a>
                 </div>
             <?php else:
@@ -678,7 +678,7 @@ class Flavor_Recetas_Frontend_Controller {
         $this->enqueue_assets();
 
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . esc_html__('Debes iniciar sesión para crear recetas.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-login-required">' . esc_html__('Debes iniciar sesión para crear recetas.', 'flavor-platform') . '</p>';
         }
 
         ob_start();
@@ -688,31 +688,31 @@ class Flavor_Recetas_Frontend_Controller {
                 <?php wp_nonce_field('flavor_recetas_nonce', 'recetas_nonce'); ?>
 
                 <div class="flavor-form-row">
-                    <label for="titulo"><?php esc_html_e('Nombre de la receta *', 'flavor-chat-ia'); ?></label>
+                    <label for="titulo"><?php esc_html_e('Nombre de la receta *', 'flavor-platform'); ?></label>
                     <input type="text" name="titulo" id="titulo" class="flavor-input" required>
                 </div>
 
                 <div class="flavor-form-row">
-                    <label for="descripcion"><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?></label>
+                    <label for="descripcion"><?php esc_html_e('Descripción', 'flavor-platform'); ?></label>
                     <textarea name="descripcion" id="descripcion" class="flavor-textarea" rows="3"></textarea>
                 </div>
 
                 <div class="flavor-form-row">
-                    <label for="imagen"><?php esc_html_e('Imagen', 'flavor-chat-ia'); ?></label>
+                    <label for="imagen"><?php esc_html_e('Imagen', 'flavor-platform'); ?></label>
                     <input type="file" name="imagen" id="imagen" accept="image/*">
                 </div>
 
                 <div class="flavor-form-grid flavor-form-grid-3">
                     <div class="flavor-form-row">
-                        <label for="tiempo"><?php esc_html_e('Tiempo (minutos)', 'flavor-chat-ia'); ?></label>
+                        <label for="tiempo"><?php esc_html_e('Tiempo (minutos)', 'flavor-platform'); ?></label>
                         <input type="number" name="tiempo" id="tiempo" class="flavor-input" min="1">
                     </div>
                     <div class="flavor-form-row">
-                        <label for="porciones"><?php esc_html_e('Porciones', 'flavor-chat-ia'); ?></label>
+                        <label for="porciones"><?php esc_html_e('Porciones', 'flavor-platform'); ?></label>
                         <input type="number" name="porciones" id="porciones" class="flavor-input" min="1">
                     </div>
                     <div class="flavor-form-row">
-                        <label for="dificultad"><?php esc_html_e('Dificultad', 'flavor-chat-ia'); ?></label>
+                        <label for="dificultad"><?php esc_html_e('Dificultad', 'flavor-platform'); ?></label>
                         <select name="dificultad" id="dificultad" class="flavor-select">
                             <?php foreach ($this->dificultades as $key => $dif): ?>
                                 <option value="<?php echo esc_attr($key); ?>"><?php echo esc_html($dif['icono'] . ' ' . $dif['nombre']); ?></option>
@@ -722,9 +722,9 @@ class Flavor_Recetas_Frontend_Controller {
                 </div>
 
                 <div class="flavor-form-row">
-                    <label for="categoria"><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></label>
+                    <label for="categoria"><?php esc_html_e('Categoría', 'flavor-platform'); ?></label>
                     <select name="categoria" id="categoria" class="flavor-select">
-                        <option value=""><?php esc_html_e('Selecciona una categoría', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Selecciona una categoría', 'flavor-platform'); ?></option>
                         <?php
                         $categorias = get_terms(['taxonomy' => 'receta_categoria', 'hide_empty' => false]);
                         foreach ($categorias as $categoria):
@@ -735,33 +735,33 @@ class Flavor_Recetas_Frontend_Controller {
                 </div>
 
                 <div class="flavor-form-row">
-                    <label><?php esc_html_e('Ingredientes', 'flavor-chat-ia'); ?></label>
+                    <label><?php esc_html_e('Ingredientes', 'flavor-platform'); ?></label>
                     <div id="ingredientes-container">
                         <div class="flavor-ingrediente-row">
-                            <input type="text" name="ingredientes[]" placeholder="<?php esc_attr_e('Ej: 2 tazas de harina', 'flavor-chat-ia'); ?>" class="flavor-input">
+                            <input type="text" name="ingredientes[]" placeholder="<?php esc_attr_e('Ej: 2 tazas de harina', 'flavor-platform'); ?>" class="flavor-input">
                             <button type="button" class="flavor-btn-icon flavor-btn-quitar-ingrediente">
                                 <span class="dashicons dashicons-minus"></span>
                             </button>
                         </div>
                     </div>
                     <button type="button" id="agregar-ingrediente" class="flavor-btn flavor-btn-sm flavor-btn-secondary">
-                        <span class="dashicons dashicons-plus"></span> <?php esc_html_e('Agregar ingrediente', 'flavor-chat-ia'); ?>
+                        <span class="dashicons dashicons-plus"></span> <?php esc_html_e('Agregar ingrediente', 'flavor-platform'); ?>
                     </button>
                 </div>
 
                 <div class="flavor-form-row">
-                    <label><?php esc_html_e('Pasos de preparación', 'flavor-chat-ia'); ?></label>
+                    <label><?php esc_html_e('Pasos de preparación', 'flavor-platform'); ?></label>
                     <div id="pasos-container">
                         <div class="flavor-paso-row">
                             <span class="flavor-paso-numero">1</span>
-                            <textarea name="pasos[]" placeholder="<?php esc_attr_e('Describe el paso...', 'flavor-chat-ia'); ?>" class="flavor-textarea" rows="2"></textarea>
+                            <textarea name="pasos[]" placeholder="<?php esc_attr_e('Describe el paso...', 'flavor-platform'); ?>" class="flavor-textarea" rows="2"></textarea>
                             <button type="button" class="flavor-btn-icon flavor-btn-quitar-paso">
                                 <span class="dashicons dashicons-minus"></span>
                             </button>
                         </div>
                     </div>
                     <button type="button" id="agregar-paso" class="flavor-btn flavor-btn-sm flavor-btn-secondary">
-                        <span class="dashicons dashicons-plus"></span> <?php esc_html_e('Agregar paso', 'flavor-chat-ia'); ?>
+                        <span class="dashicons dashicons-plus"></span> <?php esc_html_e('Agregar paso', 'flavor-platform'); ?>
                     </button>
                 </div>
 
@@ -775,8 +775,8 @@ class Flavor_Recetas_Frontend_Controller {
                         <?php
                         echo esc_html(
                             $this->frontend_requires_moderation
-                                ? __('Enviar Receta', 'flavor-chat-ia')
-                                : __('Guardar Receta', 'flavor-chat-ia')
+                                ? __('Enviar Receta', 'flavor-platform')
+                                : __('Guardar Receta', 'flavor-platform')
                         );
                         ?>
                     </button>
@@ -806,8 +806,8 @@ class Flavor_Recetas_Frontend_Controller {
         }
         ?>
         <div class="flavor-form-row">
-            <label><?php esc_html_e('Productos del Grupo de Consumo', 'flavor-chat-ia'); ?></label>
-            <p class="flavor-form-help"><?php esc_html_e('Selecciona los productos locales que se usan en esta receta.', 'flavor-chat-ia'); ?></p>
+            <label><?php esc_html_e('Productos del Grupo de Consumo', 'flavor-platform'); ?></label>
+            <p class="flavor-form-help"><?php esc_html_e('Selecciona los productos locales que se usan en esta receta.', 'flavor-platform'); ?></p>
             <div class="flavor-chips-selector" id="gc-productos-chips">
                 <?php foreach ($productos_gc as $producto):
                     $precio = get_post_meta($producto->ID, '_gc_precio', true);
@@ -938,8 +938,8 @@ class Flavor_Recetas_Frontend_Controller {
         }
         ?>
         <div class="flavor-form-row">
-            <label><?php esc_html_e('Videos de la Receta', 'flavor-chat-ia'); ?></label>
-            <p class="flavor-form-help"><?php esc_html_e('Vincula videos tutoriales o de preparación.', 'flavor-chat-ia'); ?></p>
+            <label><?php esc_html_e('Videos de la Receta', 'flavor-platform'); ?></label>
+            <p class="flavor-form-help"><?php esc_html_e('Vincula videos tutoriales o de preparación.', 'flavor-platform'); ?></p>
             <div class="flavor-chips-selector" id="videos-chips">
                 <?php foreach ($videos as $video): ?>
                 <label class="flavor-chip flavor-chip--video">
@@ -1045,7 +1045,7 @@ class Flavor_Recetas_Frontend_Controller {
         }
 
         if (empty($ingrediente)) {
-            return '<p class="flavor-notice">' . esc_html__('No se especificó un ingrediente.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('No se especificó un ingrediente.', 'flavor-platform') . '</p>';
         }
 
         global $wpdb;
@@ -1061,12 +1061,12 @@ class Flavor_Recetas_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-recetas-ingrediente">
-            <h2><?php printf(esc_html__('Recetas con "%s"', 'flavor-chat-ia'), esc_html($ingrediente)); ?></h2>
+            <h2><?php printf(esc_html__('Recetas con "%s"', 'flavor-platform'), esc_html($ingrediente)); ?></h2>
 
             <?php if (empty($recetas)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-carrot"></span>
-                    <p><?php esc_html_e('No se encontraron recetas con ese ingrediente.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No se encontraron recetas con ese ingrediente.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <div class="flavor-recetas-grid">
@@ -1117,12 +1117,12 @@ class Flavor_Recetas_Frontend_Controller {
         check_ajax_referer('flavor_recetas_nonce', 'recetas_nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
         }
 
         $titulo = sanitize_text_field($_POST['titulo'] ?? '');
         if (empty($titulo)) {
-            wp_send_json_error(['message' => __('El título es obligatorio', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('El título es obligatorio', 'flavor-platform')]);
         }
 
         $user_id = get_current_user_id();
@@ -1142,7 +1142,7 @@ class Flavor_Recetas_Frontend_Controller {
             // Verificar propiedad
             $receta_existente = get_post($receta_id);
             if (!$receta_existente || $receta_existente->post_author != $user_id) {
-                wp_send_json_error(['message' => __('No tienes permiso para editar esta receta', 'flavor-chat-ia')]);
+                wp_send_json_error(['message' => __('No tienes permiso para editar esta receta', 'flavor-platform')]);
             }
             $datos_receta['ID'] = $receta_id;
             $receta_id = wp_update_post($datos_receta, true);
@@ -1151,7 +1151,7 @@ class Flavor_Recetas_Frontend_Controller {
         }
 
         if (is_wp_error($receta_id) || empty($receta_id)) {
-            $error = is_wp_error($receta_id) ? $receta_id->get_error_message() : __('No se pudo guardar la receta.', 'flavor-chat-ia');
+            $error = is_wp_error($receta_id) ? $receta_id->get_error_message() : __('No se pudo guardar la receta.', 'flavor-platform');
             wp_send_json_error(['message' => $error]);
         }
 
@@ -1218,8 +1218,8 @@ class Flavor_Recetas_Frontend_Controller {
         }
 
         $message = $post_status === 'pending'
-            ? __('Receta enviada para revisión. Aparecerá publicada cuando un moderador la apruebe.', 'flavor-chat-ia')
-            : __('Receta guardada correctamente', 'flavor-chat-ia');
+            ? __('Receta enviada para revisión. Aparecerá publicada cuando un moderador la apruebe.', 'flavor-platform')
+            : __('Receta guardada correctamente', 'flavor-platform');
 
         $redirect_url = $post_status === 'publish'
             ? get_permalink($receta_id)
@@ -1240,12 +1240,12 @@ class Flavor_Recetas_Frontend_Controller {
         check_ajax_referer('flavor_recetas_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
         }
 
         $receta_id = intval($_POST['receta_id'] ?? 0);
         if (!$receta_id) {
-            wp_send_json_error(['message' => __('Receta no válida', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Receta no válida', 'flavor-platform')]);
         }
 
         $user_id = get_current_user_id();
@@ -1255,10 +1255,10 @@ class Flavor_Recetas_Frontend_Controller {
 
         if ($es_favorito) {
             $favoritos = array_diff($favoritos, [$receta_id]);
-            $mensaje = __('Quitado de favoritos', 'flavor-chat-ia');
+            $mensaje = __('Quitado de favoritos', 'flavor-platform');
         } else {
             $favoritos[] = $receta_id;
-            $mensaje = __('Agregado a favoritos', 'flavor-chat-ia');
+            $mensaje = __('Agregado a favoritos', 'flavor-platform');
         }
 
         update_user_meta($user_id, '_flavor_recetas_favoritas', array_values($favoritos));
@@ -1279,7 +1279,7 @@ class Flavor_Recetas_Frontend_Controller {
         $valoracion = intval($_POST['valoracion'] ?? 0);
 
         if (!$receta_id || $valoracion < 1 || $valoracion > 5) {
-            wp_send_json_error(['message' => __('Datos inválidos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos inválidos', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -1324,7 +1324,7 @@ class Flavor_Recetas_Frontend_Controller {
         }
 
         wp_send_json_success([
-            'message' => __('Gracias por tu valoración', 'flavor-chat-ia'),
+            'message' => __('Gracias por tu valoración', 'flavor-platform'),
             'promedio' => round($promedio, 1),
         ]);
     }
@@ -1388,7 +1388,7 @@ class Flavor_Recetas_Frontend_Controller {
         check_ajax_referer('flavor_recetas_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
         }
 
         $user_id = get_current_user_id();

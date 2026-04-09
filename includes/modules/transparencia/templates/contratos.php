@@ -31,7 +31,7 @@ foreach ($tablas_documentos_candidatas as $tabla_candidata) {
 if ($tabla_documentos === '') {
     echo '<div class="transparencia-aviso transparencia-aviso--info">';
     echo '<span class="dashicons dashicons-info"></span>';
-    echo '<p>' . esc_html__('Todavía no hay contratos publicados en esta instalación.', 'flavor-chat-ia') . '</p>';
+    echo '<p>' . esc_html__('Todavía no hay contratos publicados en esta instalación.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
     echo '</div>';
     return;
 }
@@ -106,13 +106,13 @@ $entidades_disponibles = $wpdb->get_col(
 
 // Nombres legibles de tipos de contrato
 $tipos_contrato_nombres = [
-    'obra' => __('Contrato de Obra', 'flavor-chat-ia'),
-    'servicio' => __('Contrato de Servicio', 'flavor-chat-ia'),
-    'suministro' => __('Contrato de Suministro', 'flavor-chat-ia'),
-    'consultoria' => __('Consultoria', 'flavor-chat-ia'),
-    'concesion' => __('Concesion', 'flavor-chat-ia'),
-    'administrativo' => __('Contrato Administrativo', 'flavor-chat-ia'),
-    'menor' => __('Contrato Menor', 'flavor-chat-ia'),
+    'obra' => __('Contrato de Obra', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'servicio' => __('Contrato de Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'suministro' => __('Contrato de Suministro', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'consultoria' => __('Consultoria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'concesion' => __('Concesion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'administrativo' => __('Contrato Administrativo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'menor' => __('Contrato Menor', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 // Calcular estadisticas
@@ -127,10 +127,10 @@ $estadisticas_importes = $wpdb->get_row(
     <header class="transparencia-contratos__header">
         <div class="transparencia-contratos__titulo">
             <span class="dashicons dashicons-media-document"></span>
-            <h2><?php esc_html_e('Contratos Publicos', 'flavor-chat-ia'); ?></h2>
+            <h2><?php esc_html_e('Contratos Publicos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         </div>
         <p class="transparencia-contratos__descripcion">
-            <?php esc_html_e('Consulta los contratos formalizados, su importe y documentacion asociada.', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Consulta los contratos formalizados, su importe y documentacion asociada.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </header>
 
@@ -141,21 +141,21 @@ $estadisticas_importes = $wpdb->get_row(
             <span class="transparencia-stat-card__icono dashicons dashicons-portfolio"></span>
             <div class="transparencia-stat-card__contenido">
                 <span class="transparencia-stat-card__valor"><?php echo esc_html(number_format($estadisticas_importes->cantidad)); ?></span>
-                <span class="transparencia-stat-card__etiqueta"><?php esc_html_e('Contratos publicados', 'flavor-chat-ia'); ?></span>
+                <span class="transparencia-stat-card__etiqueta"><?php esc_html_e('Contratos publicados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
         <div class="transparencia-stat-card">
             <span class="transparencia-stat-card__icono dashicons dashicons-chart-bar"></span>
             <div class="transparencia-stat-card__contenido">
                 <span class="transparencia-stat-card__valor"><?php echo esc_html(number_format($estadisticas_importes->total, 2, ',', '.')); ?> &euro;</span>
-                <span class="transparencia-stat-card__etiqueta"><?php esc_html_e('Importe total', 'flavor-chat-ia'); ?></span>
+                <span class="transparencia-stat-card__etiqueta"><?php esc_html_e('Importe total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
         <div class="transparencia-stat-card">
             <span class="transparencia-stat-card__icono dashicons dashicons-calculator"></span>
             <div class="transparencia-stat-card__contenido">
                 <span class="transparencia-stat-card__valor"><?php echo esc_html(number_format($estadisticas_importes->promedio, 2, ',', '.')); ?> &euro;</span>
-                <span class="transparencia-stat-card__etiqueta"><?php esc_html_e('Importe medio', 'flavor-chat-ia'); ?></span>
+                <span class="transparencia-stat-card__etiqueta"><?php esc_html_e('Importe medio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
@@ -165,13 +165,13 @@ $estadisticas_importes = $wpdb->get_row(
     <div class="transparencia-filtros">
         <form class="transparencia-filtros__form" method="get">
             <div class="transparencia-filtros__grupo transparencia-filtros__grupo--busqueda">
-                <label for="buscar"><?php esc_html_e('Buscar', 'flavor-chat-ia'); ?></label>
-                <input type="text" name="buscar" id="buscar" value="<?php echo esc_attr($busqueda); ?>" placeholder="<?php esc_attr_e('Buscar contrato...', 'flavor-chat-ia'); ?>">
+                <label for="buscar"><?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                <input type="text" name="buscar" id="buscar" value="<?php echo esc_attr($busqueda); ?>" placeholder="<?php esc_attr_e('Buscar contrato...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             </div>
             <div class="transparencia-filtros__grupo">
-                <label for="tipo"><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></label>
+                <label for="tipo"><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="tipo" id="tipo">
-                    <option value=""><?php esc_html_e('Todos los tipos', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todos los tipos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($tipos_contrato as $tipo) : ?>
                     <option value="<?php echo esc_attr($tipo); ?>" <?php selected($tipo_contrato_filtro, $tipo); ?>>
                         <?php echo esc_html($tipos_contrato_nombres[$tipo] ?? ucfirst($tipo)); ?>
@@ -180,9 +180,9 @@ $estadisticas_importes = $wpdb->get_row(
                 </select>
             </div>
             <div class="transparencia-filtros__grupo">
-                <label for="anio"><?php esc_html_e('Ano', 'flavor-chat-ia'); ?></label>
+                <label for="anio"><?php esc_html_e('Ano', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="anio" id="anio">
-                    <option value=""><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($anios_disponibles as $anio) : ?>
                     <option value="<?php echo esc_attr($anio); ?>" <?php selected($anio_filtro, $anio); ?>>
                         <?php echo esc_html($anio); ?>
@@ -192,9 +192,9 @@ $estadisticas_importes = $wpdb->get_row(
             </div>
             <?php if (!empty($entidades_disponibles)) : ?>
             <div class="transparencia-filtros__grupo">
-                <label for="entidad"><?php esc_html_e('Entidad', 'flavor-chat-ia'); ?></label>
+                <label for="entidad"><?php esc_html_e('Entidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="entidad" id="entidad">
-                    <option value=""><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($entidades_disponibles as $entidad) : ?>
                     <option value="<?php echo esc_attr($entidad); ?>" <?php selected($entidad_filtro, $entidad); ?>>
                         <?php echo esc_html($entidad); ?>
@@ -205,7 +205,7 @@ $estadisticas_importes = $wpdb->get_row(
             <?php endif; ?>
             <button type="submit" class="transparencia-btn transparencia-btn--secondary">
                 <span class="dashicons dashicons-search"></span>
-                <?php esc_html_e('Buscar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </form>
     </div>
@@ -213,7 +213,7 @@ $estadisticas_importes = $wpdb->get_row(
     <!-- Contador de resultados -->
     <div class="transparencia-resultados-info">
         <?php printf(
-            esc_html(_n('%d contrato encontrado', '%d contratos encontrados', $total_contratos, 'flavor-chat-ia')),
+            esc_html(_n('%d contrato encontrado', '%d contratos encontrados', $total_contratos, FLAVOR_PLATFORM_TEXT_DOMAIN)),
             $total_contratos
         ); ?>
     </div>
@@ -224,12 +224,12 @@ $estadisticas_importes = $wpdb->get_row(
         <table class="transparencia-tabla transparencia-contratos__tabla">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Contrato', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Adjudicatario', 'flavor-chat-ia'); ?></th>
-                    <th class="text-right"><?php esc_html_e('Importe', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                    <th class="text-center"><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Contrato', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Adjudicatario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th class="text-right"><?php esc_html_e('Importe', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th class="text-center"><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -265,7 +265,7 @@ $estadisticas_importes = $wpdb->get_row(
                     </td>
                     <td class="text-center">
                         <?php if ($contrato->archivo_url) : ?>
-                        <a href="<?php echo esc_url($contrato->archivo_url); ?>" class="transparencia-btn transparencia-btn--sm transparencia-btn--outline" target="_blank" title="<?php esc_attr_e('Descargar', 'flavor-chat-ia'); ?>">
+                        <a href="<?php echo esc_url($contrato->archivo_url); ?>" class="transparencia-btn transparencia-btn--sm transparencia-btn--outline" target="_blank" title="<?php esc_attr_e('Descargar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-download"></span>
                         </a>
                         <?php else : ?>
@@ -316,7 +316,7 @@ $estadisticas_importes = $wpdb->get_row(
             <footer class="transparencia-contrato-card__footer">
                 <a href="<?php echo esc_url($contrato->archivo_url); ?>" class="transparencia-btn transparencia-btn--primary transparencia-btn--sm" target="_blank">
                     <span class="dashicons dashicons-download"></span>
-                    <?php esc_html_e('Descargar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Descargar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </footer>
             <?php endif; ?>
@@ -330,13 +330,13 @@ $estadisticas_importes = $wpdb->get_row(
         <?php if ($pagina_actual > 1) : ?>
         <a href="<?php echo esc_url(add_query_arg('pag', $pagina_actual - 1)); ?>" class="transparencia-paginacion__btn">
             <span class="dashicons dashicons-arrow-left-alt2"></span>
-            <?php esc_html_e('Anterior', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <?php endif; ?>
 
         <span class="transparencia-paginacion__info">
             <?php printf(
-                esc_html__('Pagina %d de %d', 'flavor-chat-ia'),
+                esc_html__('Pagina %d de %d', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $pagina_actual,
                 $total_paginas
             ); ?>
@@ -344,7 +344,7 @@ $estadisticas_importes = $wpdb->get_row(
 
         <?php if ($pagina_actual < $total_paginas) : ?>
         <a href="<?php echo esc_url(add_query_arg('pag', $pagina_actual + 1)); ?>" class="transparencia-paginacion__btn">
-            <?php esc_html_e('Siguiente', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <span class="dashicons dashicons-arrow-right-alt2"></span>
         </a>
         <?php endif; ?>
@@ -354,8 +354,8 @@ $estadisticas_importes = $wpdb->get_row(
     <?php else : ?>
     <div class="transparencia-empty-state">
         <span class="dashicons dashicons-media-document"></span>
-        <h3><?php esc_html_e('No hay contratos disponibles', 'flavor-chat-ia'); ?></h3>
-        <p><?php esc_html_e('No se encontraron contratos que coincidan con los filtros seleccionados.', 'flavor-chat-ia'); ?></p>
+        <h3><?php esc_html_e('No hay contratos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+        <p><?php esc_html_e('No se encontraron contratos que coincidan con los filtros seleccionados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php endif; ?>
 </div>

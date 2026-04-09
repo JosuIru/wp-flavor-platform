@@ -19,19 +19,19 @@ if (!defined('ABSPATH')) {
     <?php if (!$identificador_usuario): ?>
         <div class="flavor-soc-login-requerido">
             <span class="dashicons dashicons-lock"></span>
-            <h3><?php esc_html_e('Inicia sesión para ver tus cuotas', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('Accede a tu cuenta para gestionar tus pagos de socio.', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('Inicia sesión para ver tus cuotas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php esc_html_e('Accede a tu cuenta para gestionar tus pagos de socio.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="flavor-soc-btn flavor-soc-btn-primary">
-                <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     <?php elseif (empty($socio)): ?>
         <div class="flavor-soc-no-socio">
             <span class="dashicons dashicons-info-outline"></span>
-            <h3><?php esc_html_e('No eres socio aún', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('Para acceder a esta sección necesitas ser socio de la cooperativa.', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('No eres socio aún', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php esc_html_e('Para acceder a esta sección necesitas ser socio de la cooperativa.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('socios', 'unirse')); ?>" class="flavor-soc-btn flavor-soc-btn-primary">
-                <?php esc_html_e('Hacerse socio', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Hacerse socio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     <?php else: ?>
@@ -41,12 +41,12 @@ if (!defined('ABSPATH')) {
         if ($resultado_pago === 'exitoso'): ?>
             <div class="flavor-soc-mensaje flavor-soc-mensaje-success">
                 <span class="dashicons dashicons-yes-alt"></span>
-                <p><?php esc_html_e('¡Pago realizado con éxito! Gracias por tu cuota.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('¡Pago realizado con éxito! Gracias por tu cuota.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         <?php elseif ($resultado_pago === 'cancelado'): ?>
             <div class="flavor-soc-mensaje flavor-soc-mensaje-warning">
                 <span class="dashicons dashicons-warning"></span>
-                <p><?php esc_html_e('El pago ha sido cancelado. Puedes intentarlo de nuevo.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('El pago ha sido cancelado. Puedes intentarlo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         <?php endif; ?>
 
@@ -57,7 +57,7 @@ if (!defined('ABSPATH')) {
             </div>
             <div class="flavor-soc-info-datos">
                 <h3><?php echo esc_html($socio['nombre']); ?></h3>
-                <span class="flavor-soc-numero"><?php printf(esc_html__('Socio #%s', 'flavor-chat-ia'), esc_html($socio['numero'])); ?></span>
+                <span class="flavor-soc-numero"><?php printf(esc_html__('Socio #%s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($socio['numero'])); ?></span>
                 <span class="flavor-soc-tipo"><?php echo esc_html($socio['tipo_label']); ?></span>
             </div>
         </div>
@@ -66,11 +66,11 @@ if (!defined('ABSPATH')) {
         <?php if ($total_pendiente > 0): ?>
             <div class="flavor-soc-resumen">
                 <div class="flavor-soc-resumen-item">
-                    <span class="label"><?php esc_html_e('Cuotas pendientes', 'flavor-chat-ia'); ?></span>
+                    <span class="label"><?php esc_html_e('Cuotas pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="valor"><?php echo count($cuotas_pendientes); ?></span>
                 </div>
                 <div class="flavor-soc-resumen-item flavor-soc-resumen-total">
-                    <span class="label"><?php esc_html_e('Total pendiente', 'flavor-chat-ia'); ?></span>
+                    <span class="label"><?php esc_html_e('Total pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="valor"><?php echo esc_html(number_format($total_pendiente, 2, ',', '.')); ?> €</span>
                 </div>
             </div>
@@ -78,12 +78,12 @@ if (!defined('ABSPATH')) {
 
         <!-- Lista de cuotas -->
         <div class="flavor-soc-cuotas-lista">
-            <h3><?php esc_html_e('Cuotas pendientes', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Cuotas pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <?php if (empty($cuotas_pendientes)): ?>
                 <div class="flavor-soc-sin-cuotas">
                     <span class="dashicons dashicons-yes-alt"></span>
-                    <p><?php esc_html_e('¡Estás al día! No tienes cuotas pendientes.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('¡Estás al día! No tienes cuotas pendientes.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="flavor-soc-cuotas-grid">
@@ -93,7 +93,7 @@ if (!defined('ABSPATH')) {
                                 <span class="periodo"><?php echo esc_html($cuota['periodo']); ?></span>
                                 <span class="fecha-cargo">
                                     <?php printf(
-                                        esc_html__('Cargo: %s', 'flavor-chat-ia'),
+                                        esc_html__('Cargo: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                         esc_html(date_i18n('j M Y', strtotime($cuota['fecha_cargo'])))
                                     ); ?>
                                 </span>
@@ -109,7 +109,7 @@ if (!defined('ABSPATH')) {
                                         data-cuota="<?php echo esc_attr($cuota['id']); ?>"
                                         data-importe="<?php echo esc_attr($cuota['importe']); ?>">
                                     <span class="dashicons dashicons-money-alt"></span>
-                                    <?php esc_html_e('Pagar', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Pagar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             </div>
                         </article>
@@ -122,7 +122,7 @@ if (!defined('ABSPATH')) {
         <div id="modal-pagar-cuota" class="flavor-soc-modal" style="display: none;">
             <div class="flavor-soc-modal-content">
                 <div class="flavor-soc-modal-header">
-                    <h3><?php esc_html_e('Selecciona método de pago', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Selecciona método de pago', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <button type="button" class="flavor-soc-modal-close">&times;</button>
                 </div>
 
@@ -150,7 +150,7 @@ if (!defined('ABSPATH')) {
                     <!-- Panel de pago manual -->
                     <div id="panel-pago-manual" class="flavor-soc-panel-pago">
                         <div class="flavor-soc-datos-bancarios">
-                            <h4><?php esc_html_e('Datos para transferencia', 'flavor-chat-ia'); ?></h4>
+                            <h4><?php esc_html_e('Datos para transferencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                             <?php
                             $opciones_pago = get_option('flavor_socios_settings', []);
                             $iban = $opciones_pago['iban_cooperativa'] ?? '';
@@ -159,56 +159,56 @@ if (!defined('ABSPATH')) {
                             ?>
                             <?php if ($iban): ?>
                                 <div class="flavor-soc-dato">
-                                    <span class="label"><?php esc_html_e('IBAN:', 'flavor-chat-ia'); ?></span>
+                                    <span class="label"><?php esc_html_e('IBAN:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     <span class="valor copiable" data-copiar="<?php echo esc_attr($iban); ?>">
                                         <?php echo esc_html($iban); ?>
-                                        <button type="button" class="flavor-soc-btn-copiar" title="<?php esc_attr_e('Copiar', 'flavor-chat-ia'); ?>">
+                                        <button type="button" class="flavor-soc-btn-copiar" title="<?php esc_attr_e('Copiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <span class="dashicons dashicons-clipboard"></span>
                                         </button>
                                     </span>
                                 </div>
                             <?php endif; ?>
                             <div class="flavor-soc-dato">
-                                <span class="label"><?php esc_html_e('Titular:', 'flavor-chat-ia'); ?></span>
+                                <span class="label"><?php esc_html_e('Titular:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="valor"><?php echo esc_html($titular); ?></span>
                             </div>
                             <?php if ($bizum): ?>
                                 <div class="flavor-soc-dato">
-                                    <span class="label"><?php esc_html_e('Bizum:', 'flavor-chat-ia'); ?></span>
+                                    <span class="label"><?php esc_html_e('Bizum:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     <span class="valor copiable" data-copiar="<?php echo esc_attr($bizum); ?>">
                                         <?php echo esc_html($bizum); ?>
-                                        <button type="button" class="flavor-soc-btn-copiar" title="<?php esc_attr_e('Copiar', 'flavor-chat-ia'); ?>">
+                                        <button type="button" class="flavor-soc-btn-copiar" title="<?php esc_attr_e('Copiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <span class="dashicons dashicons-clipboard"></span>
                                         </button>
                                     </span>
                                 </div>
                             <?php endif; ?>
                             <div class="flavor-soc-dato">
-                                <span class="label"><?php esc_html_e('Concepto:', 'flavor-chat-ia'); ?></span>
+                                <span class="label"><?php esc_html_e('Concepto:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="valor referencia-pago"></span>
                             </div>
                         </div>
 
                         <div class="flavor-soc-confirmar-manual">
-                            <p><?php esc_html_e('Una vez realizada la transferencia, introduce la referencia:', 'flavor-chat-ia'); ?></p>
+                            <p><?php esc_html_e('Una vez realizada la transferencia, introduce la referencia:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             <input type="text" id="referencia-pago-manual" class="flavor-soc-input"
-                                   placeholder="<?php esc_attr_e('Referencia de la operación', 'flavor-chat-ia'); ?>">
+                                   placeholder="<?php esc_attr_e('Referencia de la operación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         </div>
                     </div>
 
                     <!-- Panel de pago con tarjeta -->
                     <div id="panel-pago-stripe" class="flavor-soc-panel-pago" style="display: none;">
-                        <p><?php esc_html_e('Serás redirigido a la pasarela de pago segura.', 'flavor-chat-ia'); ?></p>
+                        <p><?php esc_html_e('Serás redirigido a la pasarela de pago segura.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 </div>
 
                 <div class="flavor-soc-modal-footer">
                     <button type="button" class="flavor-soc-btn flavor-soc-btn-secondary flavor-soc-modal-cancelar">
-                        <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button" id="btn-confirmar-pago" class="flavor-soc-btn flavor-soc-btn-primary">
                         <span class="dashicons dashicons-yes"></span>
-                        <?php esc_html_e('Confirmar pago', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Confirmar pago', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </div>

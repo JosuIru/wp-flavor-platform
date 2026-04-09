@@ -10,12 +10,12 @@ $usuario_logueado = is_user_logged_in();
 <div class="ev-inclusivos" data-nonce="<?php echo esc_attr($nonce); ?>">
     <div class="ev-inclusivos__header">
         <span class="dashicons dashicons-universal-access-alt"></span>
-        <h3><?php esc_html_e('Eventos Inclusivos', 'flavor-chat-ia'); ?></h3>
-        <p><?php esc_html_e('Eventos con accesibilidad y plazas solidarias disponibles', 'flavor-chat-ia'); ?></p>
+        <h3><?php esc_html_e('Eventos Inclusivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+        <p><?php esc_html_e('Eventos con accesibilidad y plazas solidarias disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php if (empty($eventos)): ?>
         <div class="ev-inclusivos__vacio">
-            <p><?php esc_html_e('No hay eventos inclusivos programados próximamente.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('No hay eventos inclusivos programados próximamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php else: ?>
         <div class="ev-inclusivos__lista">
@@ -30,22 +30,22 @@ $usuario_logueado = is_user_logged_in();
                     </div>
                     <div class="ev-inclusivos__badges">
                         <?php if ($evento->accesibilidad_fisica): ?>
-                            <span class="ev-badge" title="<?php esc_attr_e('Acceso para silla de ruedas', 'flavor-chat-ia'); ?>">
+                            <span class="ev-badge" title="<?php esc_attr_e('Acceso para silla de ruedas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <span class="dashicons dashicons-universal-access"></span>
                             </span>
                         <?php endif; ?>
                         <?php if ($evento->interprete_lse): ?>
-                            <span class="ev-badge" title="<?php esc_attr_e('Intérprete de lengua de signos', 'flavor-chat-ia'); ?>">
+                            <span class="ev-badge" title="<?php esc_attr_e('Intérprete de lengua de signos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <span class="dashicons dashicons-format-status"></span> LSE
                             </span>
                         <?php endif; ?>
                         <?php if ($evento->cuidado_infantil): ?>
-                            <span class="ev-badge" title="<?php esc_attr_e('Servicio de guardería', 'flavor-chat-ia'); ?>">
+                            <span class="ev-badge" title="<?php esc_attr_e('Servicio de guardería', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <span class="dashicons dashicons-smiley"></span>
                             </span>
                         <?php endif; ?>
                         <?php if ($evento->bucle_magnetico): ?>
-                            <span class="ev-badge" title="<?php esc_attr_e('Bucle magnético', 'flavor-chat-ia'); ?>">
+                            <span class="ev-badge" title="<?php esc_attr_e('Bucle magnético', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <span class="dashicons dashicons-megaphone"></span>
                             </span>
                         <?php endif; ?>
@@ -56,18 +56,18 @@ $usuario_logueado = is_user_logged_in();
                             <span class="dashicons dashicons-heart"></span>
                             <span>
                                 <?php printf(
-                                    esc_html__('%d plazas solidarias disponibles', 'flavor-chat-ia'),
+                                    esc_html__('%d plazas solidarias disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                     $disponibles
                                 ); ?>
                                 <?php if ($evento->precio_solidario > 0): ?>
                                     (<?php echo esc_html(number_format($evento->precio_solidario, 2)); ?>€)
                                 <?php else: ?>
-                                    (<?php esc_html_e('Gratis', 'flavor-chat-ia'); ?>)
+                                    (<?php esc_html_e('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>)
                                 <?php endif; ?>
                             </span>
                             <?php if ($usuario_logueado && $disponibles > 0): ?>
                                 <button type="button" class="ev-btn ev-btn--sm ev-solicitar-solidaria" data-evento="<?php echo esc_attr($evento->id); ?>">
-                                    <?php esc_html_e('Solicitar', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Solicitar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             <?php endif; ?>
                         </div>

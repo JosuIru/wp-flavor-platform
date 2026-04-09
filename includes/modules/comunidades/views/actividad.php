@@ -38,11 +38,11 @@ $comunidades = $wpdb->get_results("SELECT id, nombre FROM {$tabla_comunidades} W
 
 // Tipos de actividad
 $tipos_actividad = [
-    'publicacion' => __('Publicación', 'flavor-chat-ia'),
-    'comentario'  => __('Comentario', 'flavor-chat-ia'),
-    'reaccion'    => __('Reacción', 'flavor-chat-ia'),
-    'nuevo_miembro' => __('Nuevo miembro', 'flavor-chat-ia'),
-    'evento'      => __('Evento', 'flavor-chat-ia'),
+    'publicacion' => __('Publicación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'comentario'  => __('Comentario', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'reaccion'    => __('Reacción', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'nuevo_miembro' => __('Nuevo miembro', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'evento'      => __('Evento', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $iconos_tipo = [
@@ -172,15 +172,15 @@ if ($tabla_actividad_existe) {
     <nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">
         <a href="<?php echo admin_url('admin.php?page=comunidades-dashboard'); ?>" style="color: #2271b1; text-decoration: none;">
             <span class="dashicons dashicons-admin-multisite" style="font-size: 14px; vertical-align: middle;"></span>
-            <?php _e('Comunidades', 'flavor-chat-ia'); ?>
+            <?php _e('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <span style="color: #646970; margin: 0 5px;">›</span>
-        <span style="color: #1d2327;"><?php _e('Feed de Actividad', 'flavor-chat-ia'); ?></span>
+        <span style="color: #1d2327;"><?php _e('Feed de Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
     </nav>
 
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-rss"></span>
-        <?php _e('Feed de Actividad', 'flavor-chat-ia'); ?>
+        <?php _e('Feed de Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <hr class="wp-header-end">
@@ -190,20 +190,20 @@ if ($tabla_actividad_existe) {
         <div style="background: #fff; padding: 15px 20px; border-left: 4px solid #3b82f6; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="font-size: 28px; font-weight: bold; color: #1d2327;"><?php echo number_format($stats['total_actividad']); ?></div>
             <div style="color: #646970; font-size: 13px;">
-                <?php printf(__('Actividad en %s días', 'flavor-chat-ia'), $periodo); ?>
+                <?php printf(__('Actividad en %s días', FLAVOR_PLATFORM_TEXT_DOMAIN), $periodo); ?>
             </div>
         </div>
         <div style="background: #fff; padding: 15px 20px; border-left: 4px solid #10b981; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="font-size: 28px; font-weight: bold; color: #1d2327;"><?php echo number_format($stats['publicaciones_hoy']); ?></div>
-            <div style="color: #646970; font-size: 13px;"><?php _e('Publicaciones hoy', 'flavor-chat-ia'); ?></div>
+            <div style="color: #646970; font-size: 13px;"><?php _e('Publicaciones hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
         <div style="background: #fff; padding: 15px 20px; border-left: 4px solid #8b5cf6; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="font-size: 28px; font-weight: bold; color: #1d2327;"><?php echo number_format($stats['usuarios_activos']); ?></div>
-            <div style="color: #646970; font-size: 13px;"><?php _e('Usuarios activos', 'flavor-chat-ia'); ?></div>
+            <div style="color: #646970; font-size: 13px;"><?php _e('Usuarios activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
         <div style="background: #fff; padding: 15px 20px; border-left: 4px solid #f59e0b; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="font-size: 28px; font-weight: bold; color: #1d2327;"><?php echo number_format($stats['comunidades_activas']); ?></div>
-            <div style="color: #646970; font-size: 13px;"><?php _e('Comunidades activas', 'flavor-chat-ia'); ?></div>
+            <div style="color: #646970; font-size: 13px;"><?php _e('Comunidades activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -214,14 +214,14 @@ if ($tabla_actividad_existe) {
 
             <div class="alignleft actions" style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
                 <select name="periodo" onchange="this.form.submit()">
-                    <option value="1" <?php selected($periodo, '1'); ?>><?php _e('Últimas 24 horas', 'flavor-chat-ia'); ?></option>
-                    <option value="7" <?php selected($periodo, '7'); ?>><?php _e('Últimos 7 días', 'flavor-chat-ia'); ?></option>
-                    <option value="30" <?php selected($periodo, '30'); ?>><?php _e('Últimos 30 días', 'flavor-chat-ia'); ?></option>
-                    <option value="90" <?php selected($periodo, '90'); ?>><?php _e('Últimos 90 días', 'flavor-chat-ia'); ?></option>
+                    <option value="1" <?php selected($periodo, '1'); ?>><?php _e('Últimas 24 horas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="7" <?php selected($periodo, '7'); ?>><?php _e('Últimos 7 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="30" <?php selected($periodo, '30'); ?>><?php _e('Últimos 30 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="90" <?php selected($periodo, '90'); ?>><?php _e('Últimos 90 días', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
 
                 <select name="comunidad">
-                    <option value=""><?php _e('Todas las comunidades', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todas las comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($comunidades as $com): ?>
                     <option value="<?php echo esc_attr($com->id); ?>" <?php selected($comunidad_filtro, $com->id); ?>>
                         <?php echo esc_html($com->nombre); ?>
@@ -231,7 +231,7 @@ if ($tabla_actividad_existe) {
 
                 <?php if ($tabla_actividad_existe): ?>
                 <select name="tipo">
-                    <option value=""><?php _e('Todos los tipos', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todos los tipos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($tipos_actividad as $slug => $label): ?>
                     <option value="<?php echo esc_attr($slug); ?>" <?php selected($tipo_filtro, $slug); ?>>
                         <?php echo esc_html($label); ?>
@@ -240,17 +240,17 @@ if ($tabla_actividad_existe) {
                 </select>
                 <?php endif; ?>
 
-                <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="button"><?php _e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
 
                 <?php if ($comunidad_filtro || $tipo_filtro || $periodo !== '7'): ?>
-                <a href="<?php echo admin_url('admin.php?page=comunidades-actividad'); ?>" class="button"><?php _e('Limpiar', 'flavor-chat-ia'); ?></a>
+                <a href="<?php echo admin_url('admin.php?page=comunidades-actividad'); ?>" class="button"><?php _e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 <?php endif; ?>
             </div>
         </form>
 
         <div class="tablenav-pages">
             <span class="displaying-num">
-                <?php printf(_n('%s elemento', '%s elementos', $total_items, 'flavor-chat-ia'), number_format($total_items)); ?>
+                <?php printf(_n('%s elemento', '%s elementos', $total_items, FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($total_items)); ?>
             </span>
         </div>
     </div>
@@ -259,7 +259,7 @@ if ($tabla_actividad_existe) {
     <?php if (empty($actividades)): ?>
     <div style="background: #fff; padding: 40px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
         <span class="dashicons dashicons-rss" style="font-size: 48px; color: #c3c4c7;"></span>
-        <p style="color: #646970; font-size: 14px;"><?php _e('No hay actividad en el periodo seleccionado.', 'flavor-chat-ia'); ?></p>
+        <p style="color: #646970; font-size: 14px;"><?php _e('No hay actividad en el periodo seleccionado.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php else: ?>
     <div style="display: flex; flex-direction: column; gap: 1px; background: #c3c4c7;">
@@ -279,16 +279,16 @@ if ($tabla_actividad_existe) {
             <div style="flex: 1; min-width: 0;">
                 <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap;">
                     <strong style="color: #1d2327;">
-                        <?php echo esc_html($actividad->display_name ?: __('Usuario', 'flavor-chat-ia')); ?>
+                        <?php echo esc_html($actividad->display_name ?: __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                     </strong>
                     <span style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 3px; font-size: 11px; background: <?php echo esc_attr($color); ?>20; color: <?php echo esc_attr($color); ?>;">
                         <span class="dashicons <?php echo esc_attr($icono); ?>" style="font-size: 12px; width: 12px; height: 12px;"></span>
                         <?php echo esc_html($tipos_actividad[$tipo] ?? ucfirst($tipo)); ?>
                     </span>
                     <span style="color: #646970; font-size: 12px;">
-                        <?php _e('en', 'flavor-chat-ia'); ?>
+                        <?php _e('en', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <a href="<?php echo admin_url('admin.php?page=comunidades-editar&id=' . $actividad->comunidad_id); ?>" style="color: #2271b1; text-decoration: none;">
-                            <?php echo esc_html($actividad->comunidad_nombre ?: __('Comunidad', 'flavor-chat-ia')); ?>
+                            <?php echo esc_html($actividad->comunidad_nombre ?: __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                         </a>
                     </span>
                 </div>
@@ -307,7 +307,7 @@ if ($tabla_actividad_existe) {
                     <span class="dashicons dashicons-clock" style="font-size: 12px; width: 12px; height: 12px; vertical-align: middle;"></span>
                     <?php
                     $fecha = strtotime($actividad->created_at ?? 'now');
-                    echo esc_html(human_time_diff($fecha, current_time('timestamp'))) . ' ' . __('ago', 'flavor-chat-ia');
+                    echo esc_html(human_time_diff($fecha, current_time('timestamp'))) . ' ' . __('ago', FLAVOR_PLATFORM_TEXT_DOMAIN);
                     ?>
                     <span style="margin-left: 10px;" title="<?php echo esc_attr(date_i18n(get_option('date_format') . ' ' . get_option('time_format'), $fecha)); ?>">
                         <?php echo esc_html(date_i18n('d M Y, H:i', $fecha)); ?>
@@ -318,7 +318,7 @@ if ($tabla_actividad_existe) {
             <!-- Acciones -->
             <div style="flex-shrink: 0;">
                 <a href="<?php echo admin_url('admin.php?page=comunidades-publicaciones&comunidad=' . $actividad->comunidad_id); ?>"
-                   class="button button-small" title="<?php esc_attr_e('Ver publicaciones', 'flavor-chat-ia'); ?>">
+                   class="button button-small" title="<?php esc_attr_e('Ver publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-visibility" style="margin-top: 3px;"></span>
                 </a>
             </div>

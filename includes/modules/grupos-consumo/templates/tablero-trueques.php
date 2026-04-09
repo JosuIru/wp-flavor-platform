@@ -21,9 +21,9 @@ $usuario_logueado = is_user_logged_in();
 $usuario_actual = get_current_user_id();
 
 $tipos_labels = [
-    'trueque'  => __('Trueque', 'flavor-chat-ia'),
-    'regalo'   => __('Regalo', 'flavor-chat-ia'),
-    'prestamo' => __('Préstamo', 'flavor-chat-ia'),
+    'trueque'  => __('Trueque', 'flavor-platform'),
+    'regalo'   => __('Regalo', 'flavor-platform'),
+    'prestamo' => __('Préstamo', 'flavor-platform'),
 ];
 
 $tipos_icons = [
@@ -45,10 +45,10 @@ $tipos_colors = [
     <div class="gc-trueques__header">
         <h3 class="gc-trueques__titulo">
             <span class="dashicons dashicons-randomize"></span>
-            <?php esc_html_e('Cestas de Trueque', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Cestas de Trueque', 'flavor-platform'); ?>
         </h3>
         <p class="gc-trueques__descripcion">
-            <?php esc_html_e('Intercambia productos con otros miembros de la comunidad. Sin dinero, solo solidaridad.', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Intercambia productos con otros miembros de la comunidad. Sin dinero, solo solidaridad.', 'flavor-platform'); ?>
         </p>
     </div>
 
@@ -59,14 +59,14 @@ $tipos_colors = [
             <input
                 type="text"
                 id="gc-trueque-buscar"
-                placeholder="<?php esc_attr_e('Buscar productos...', 'flavor-chat-ia'); ?>"
+                placeholder="<?php esc_attr_e('Buscar productos...', 'flavor-platform'); ?>"
                 class="gc-trueques__input"
             >
         </div>
 
         <div class="gc-trueques__tipos">
             <button type="button" class="gc-trueques__tipo-btn active" data-tipo="">
-                <?php esc_html_e('Todos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Todos', 'flavor-platform'); ?>
             </button>
             <?php foreach ($tipos_labels as $tipo => $label): ?>
                 <button
@@ -84,7 +84,7 @@ $tipos_colors = [
         <?php if ($usuario_logueado): ?>
             <button type="button" id="gc-nuevo-trueque-btn" class="gc-btn gc-btn--primary">
                 <span class="dashicons dashicons-plus"></span>
-                <?php esc_html_e('Publicar oferta', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Publicar oferta', 'flavor-platform'); ?>
             </button>
         <?php endif; ?>
     </div>
@@ -94,7 +94,7 @@ $tipos_colors = [
         <?php if (empty($trueques)): ?>
             <div class="gc-trueques__vacio">
                 <span class="dashicons dashicons-coffee"></span>
-                <p><?php esc_html_e('No hay ofertas de trueque activas. ¡Sé el primero en publicar!', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No hay ofertas de trueque activas. ¡Sé el primero en publicar!', 'flavor-platform'); ?></p>
             </div>
         <?php else: ?>
             <?php foreach ($trueques as $trueque): ?>
@@ -110,7 +110,7 @@ $tipos_colors = [
                     $diff = $expira - $ahora;
                     if ($diff > 0) {
                         $dias = floor($diff / 86400);
-                        $tiempo_restante = $dias > 0 ? sprintf(_n('%d día', '%d días', $dias, 'flavor-chat-ia'), $dias) : __('Hoy', 'flavor-chat-ia');
+                        $tiempo_restante = $dias > 0 ? sprintf(_n('%d día', '%d días', $dias, 'flavor-platform'), $dias) : __('Hoy', 'flavor-platform');
                     }
                 }
                 ?>
@@ -131,13 +131,13 @@ $tipos_colors = [
                             <?php echo get_avatar($trueque['usuario_ofrece_id'], 24); ?>
                             <span><?php echo esc_html($trueque['nombre_usuario']); ?></span>
                             <?php if ($es_propio): ?>
-                                <span class="gc-trueque-card__badge gc-trueque-card__badge--tuyo"><?php esc_html_e('Tu oferta', 'flavor-chat-ia'); ?></span>
+                                <span class="gc-trueque-card__badge gc-trueque-card__badge--tuyo"><?php esc_html_e('Tu oferta', 'flavor-platform'); ?></span>
                             <?php endif; ?>
                         </div>
 
                         <div class="gc-trueque-card__productos">
                             <div class="gc-trueque-card__ofrece">
-                                <strong><?php esc_html_e('Ofrece:', 'flavor-chat-ia'); ?></strong>
+                                <strong><?php esc_html_e('Ofrece:', 'flavor-platform'); ?></strong>
                                 <ul>
                                     <?php foreach ((array)$productos as $producto): ?>
                                         <li><?php echo esc_html(is_array($producto) ? ($producto['nombre'] ?? '') : $producto); ?></li>
@@ -147,7 +147,7 @@ $tipos_colors = [
 
                             <?php if ($tipo === 'trueque' && $deseados): ?>
                                 <div class="gc-trueque-card__busca">
-                                    <strong><?php esc_html_e('Busca:', 'flavor-chat-ia'); ?></strong>
+                                    <strong><?php esc_html_e('Busca:', 'flavor-platform'); ?></strong>
                                     <ul>
                                         <?php foreach ((array)$deseados as $deseado): ?>
                                             <li><?php echo esc_html(is_array($deseado) ? ($deseado['nombre'] ?? '') : $deseado); ?></li>
@@ -190,16 +190,16 @@ $tipos_colors = [
                         <?php if ($usuario_logueado && !$es_propio): ?>
                             <button type="button" class="gc-btn gc-btn--primary gc-contactar-btn" data-trueque-id="<?php echo esc_attr($trueque['id']); ?>">
                                 <span class="dashicons dashicons-email"></span>
-                                <?php esc_html_e('Contactar', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Contactar', 'flavor-platform'); ?>
                             </button>
                         <?php elseif ($es_propio): ?>
                             <button type="button" class="gc-btn gc-btn--outline gc-completar-btn" data-trueque-id="<?php echo esc_attr($trueque['id']); ?>">
                                 <span class="dashicons dashicons-yes"></span>
-                                <?php esc_html_e('Completar', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Completar', 'flavor-platform'); ?>
                             </button>
                         <?php else: ?>
                             <a href="<?php echo esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', ''))); ?>" class="gc-btn gc-btn--outline">
-                                <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Iniciar sesión', 'flavor-platform'); ?>
                             </a>
                         <?php endif; ?>
                     </div>
@@ -217,54 +217,54 @@ $tipos_colors = [
                     <span class="dashicons dashicons-no-alt"></span>
                 </button>
 
-                <h3 class="gc-modal__titulo"><?php esc_html_e('Publicar oferta', 'flavor-chat-ia'); ?></h3>
+                <h3 class="gc-modal__titulo"><?php esc_html_e('Publicar oferta', 'flavor-platform'); ?></h3>
 
                 <form id="gc-form-trueque" class="gc-form">
                     <div class="gc-form__grupo">
-                        <label for="gc-trueque-tipo"><?php esc_html_e('Tipo de oferta', 'flavor-chat-ia'); ?></label>
+                        <label for="gc-trueque-tipo"><?php esc_html_e('Tipo de oferta', 'flavor-platform'); ?></label>
                         <select id="gc-trueque-tipo" name="tipo" required>
-                            <option value="trueque"><?php esc_html_e('Trueque', 'flavor-chat-ia'); ?></option>
-                            <option value="regalo"><?php esc_html_e('Regalo', 'flavor-chat-ia'); ?></option>
-                            <option value="prestamo"><?php esc_html_e('Préstamo', 'flavor-chat-ia'); ?></option>
+                            <option value="trueque"><?php esc_html_e('Trueque', 'flavor-platform'); ?></option>
+                            <option value="regalo"><?php esc_html_e('Regalo', 'flavor-platform'); ?></option>
+                            <option value="prestamo"><?php esc_html_e('Préstamo', 'flavor-platform'); ?></option>
                         </select>
                     </div>
 
                     <div class="gc-form__grupo">
-                        <label for="gc-trueque-titulo"><?php esc_html_e('Título', 'flavor-chat-ia'); ?></label>
-                        <input type="text" id="gc-trueque-titulo" name="titulo" required maxlength="100" placeholder="<?php esc_attr_e('Ej: Huevos de gallinas felices', 'flavor-chat-ia'); ?>">
+                        <label for="gc-trueque-titulo"><?php esc_html_e('Título', 'flavor-platform'); ?></label>
+                        <input type="text" id="gc-trueque-titulo" name="titulo" required maxlength="100" placeholder="<?php esc_attr_e('Ej: Huevos de gallinas felices', 'flavor-platform'); ?>">
                     </div>
 
                     <div class="gc-form__grupo">
-                        <label for="gc-trueque-productos"><?php esc_html_e('Productos que ofreces', 'flavor-chat-ia'); ?></label>
-                        <textarea id="gc-trueque-productos" name="productos_ofrecidos" required rows="3" placeholder="<?php esc_attr_e('Una línea por producto...', 'flavor-chat-ia'); ?>"></textarea>
-                        <small><?php esc_html_e('Escribe cada producto en una línea', 'flavor-chat-ia'); ?></small>
+                        <label for="gc-trueque-productos"><?php esc_html_e('Productos que ofreces', 'flavor-platform'); ?></label>
+                        <textarea id="gc-trueque-productos" name="productos_ofrecidos" required rows="3" placeholder="<?php esc_attr_e('Una línea por producto...', 'flavor-platform'); ?>"></textarea>
+                        <small><?php esc_html_e('Escribe cada producto en una línea', 'flavor-platform'); ?></small>
                     </div>
 
                     <div class="gc-form__grupo gc-form__grupo--deseados" id="gc-grupo-deseados">
-                        <label for="gc-trueque-deseados"><?php esc_html_e('Productos que buscas', 'flavor-chat-ia'); ?></label>
-                        <textarea id="gc-trueque-deseados" name="productos_deseados" rows="2" placeholder="<?php esc_attr_e('Opcional: lo que te gustaría recibir a cambio...', 'flavor-chat-ia'); ?>"></textarea>
+                        <label for="gc-trueque-deseados"><?php esc_html_e('Productos que buscas', 'flavor-platform'); ?></label>
+                        <textarea id="gc-trueque-deseados" name="productos_deseados" rows="2" placeholder="<?php esc_attr_e('Opcional: lo que te gustaría recibir a cambio...', 'flavor-platform'); ?>"></textarea>
                     </div>
 
                     <div class="gc-form__grupo">
-                        <label for="gc-trueque-descripcion"><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?></label>
-                        <textarea id="gc-trueque-descripcion" name="descripcion" rows="2" placeholder="<?php esc_attr_e('Detalles adicionales...', 'flavor-chat-ia'); ?>"></textarea>
+                        <label for="gc-trueque-descripcion"><?php esc_html_e('Descripción', 'flavor-platform'); ?></label>
+                        <textarea id="gc-trueque-descripcion" name="descripcion" rows="2" placeholder="<?php esc_attr_e('Detalles adicionales...', 'flavor-platform'); ?>"></textarea>
                     </div>
 
                     <div class="gc-form__fila">
                         <div class="gc-form__grupo">
-                            <label for="gc-trueque-ubicacion"><?php esc_html_e('Lugar de intercambio', 'flavor-chat-ia'); ?></label>
-                            <input type="text" id="gc-trueque-ubicacion" name="ubicacion" placeholder="<?php esc_attr_e('Ej: Centro social', 'flavor-chat-ia'); ?>">
+                            <label for="gc-trueque-ubicacion"><?php esc_html_e('Lugar de intercambio', 'flavor-platform'); ?></label>
+                            <input type="text" id="gc-trueque-ubicacion" name="ubicacion" placeholder="<?php esc_attr_e('Ej: Centro social', 'flavor-platform'); ?>">
                         </div>
 
                         <div class="gc-form__grupo">
-                            <label for="gc-trueque-vigencia"><?php esc_html_e('Vigencia (días)', 'flavor-chat-ia'); ?></label>
+                            <label for="gc-trueque-vigencia"><?php esc_html_e('Vigencia (días)', 'flavor-platform'); ?></label>
                             <input type="number" id="gc-trueque-vigencia" name="dias_vigencia" min="1" max="90" value="30">
                         </div>
                     </div>
 
                     <div class="gc-form__acciones">
-                        <button type="button" class="gc-btn gc-btn--outline gc-modal__cancelar"><?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?></button>
-                        <button type="submit" class="gc-btn gc-btn--primary"><?php esc_html_e('Publicar', 'flavor-chat-ia'); ?></button>
+                        <button type="button" class="gc-btn gc-btn--outline gc-modal__cancelar"><?php esc_html_e('Cancelar', 'flavor-platform'); ?></button>
+                        <button type="submit" class="gc-btn gc-btn--primary"><?php esc_html_e('Publicar', 'flavor-platform'); ?></button>
                     </div>
                 </form>
             </div>
@@ -278,19 +278,19 @@ $tipos_colors = [
                     <span class="dashicons dashicons-no-alt"></span>
                 </button>
 
-                <h3 class="gc-modal__titulo"><?php esc_html_e('Enviar mensaje', 'flavor-chat-ia'); ?></h3>
+                <h3 class="gc-modal__titulo"><?php esc_html_e('Enviar mensaje', 'flavor-platform'); ?></h3>
 
                 <form id="gc-form-contactar" class="gc-form">
                     <input type="hidden" name="trueque_id" id="gc-contactar-trueque-id">
 
                     <div class="gc-form__grupo">
-                        <label for="gc-contactar-mensaje"><?php esc_html_e('Tu mensaje', 'flavor-chat-ia'); ?></label>
-                        <textarea id="gc-contactar-mensaje" name="mensaje" required rows="4" placeholder="<?php esc_attr_e('Hola, me interesa tu oferta...', 'flavor-chat-ia'); ?>"></textarea>
+                        <label for="gc-contactar-mensaje"><?php esc_html_e('Tu mensaje', 'flavor-platform'); ?></label>
+                        <textarea id="gc-contactar-mensaje" name="mensaje" required rows="4" placeholder="<?php esc_attr_e('Hola, me interesa tu oferta...', 'flavor-platform'); ?>"></textarea>
                     </div>
 
                     <div class="gc-form__acciones">
-                        <button type="button" class="gc-btn gc-btn--outline gc-modal__cancelar"><?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?></button>
-                        <button type="submit" class="gc-btn gc-btn--primary"><?php esc_html_e('Enviar', 'flavor-chat-ia'); ?></button>
+                        <button type="button" class="gc-btn gc-btn--outline gc-modal__cancelar"><?php esc_html_e('Cancelar', 'flavor-platform'); ?></button>
+                        <button type="submit" class="gc-btn gc-btn--primary"><?php esc_html_e('Enviar', 'flavor-platform'); ?></button>
                     </div>
                 </form>
             </div>
@@ -818,7 +818,7 @@ $tipos_colors = [
 
                 const btn = this.querySelector('button[type="submit"]');
                 btn.disabled = true;
-                btn.textContent = '<?php echo esc_js(__('Publicando...', 'flavor-chat-ia')); ?>';
+                btn.textContent = '<?php echo esc_js(__('Publicando...', 'flavor-platform')); ?>';
 
                 fetch(ajaxUrl, {
                     method: 'POST',
@@ -841,15 +841,15 @@ $tipos_colors = [
                         mostrarAviso(data.data.message, 'success');
                         location.reload();
                     } else {
-                        mostrarAviso(data.data.message || '<?php echo esc_js(__('Error al publicar', 'flavor-chat-ia')); ?>', 'error');
+                        mostrarAviso(data.data.message || '<?php echo esc_js(__('Error al publicar', 'flavor-platform')); ?>', 'error');
                         btn.disabled = false;
-                        btn.textContent = '<?php echo esc_js(__('Publicar', 'flavor-chat-ia')); ?>';
+                        btn.textContent = '<?php echo esc_js(__('Publicar', 'flavor-platform')); ?>';
                     }
                 })
                 .catch(() => {
-                    mostrarAviso('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>', 'error');
+                    mostrarAviso('<?php echo esc_js(__('Error de conexión', 'flavor-platform')); ?>', 'error');
                     btn.disabled = false;
-                    btn.textContent = '<?php echo esc_js(__('Publicar', 'flavor-chat-ia')); ?>';
+                    btn.textContent = '<?php echo esc_js(__('Publicar', 'flavor-platform')); ?>';
                 });
             });
         }
@@ -875,7 +875,7 @@ $tipos_colors = [
                 const formData = new FormData(this);
                 const btn = this.querySelector('button[type="submit"]');
                 btn.disabled = true;
-                btn.textContent = '<?php echo esc_js(__('Enviando...', 'flavor-chat-ia')); ?>';
+                btn.textContent = '<?php echo esc_js(__('Enviando...', 'flavor-platform')); ?>';
 
                 fetch(ajaxUrl, {
                     method: 'POST',
@@ -894,15 +894,15 @@ $tipos_colors = [
                         modalContactar.style.display = 'none';
                         this.reset();
                     } else {
-                        mostrarAviso(data.data.message || '<?php echo esc_js(__('Error al enviar', 'flavor-chat-ia')); ?>', 'error');
+                        mostrarAviso(data.data.message || '<?php echo esc_js(__('Error al enviar', 'flavor-platform')); ?>', 'error');
                     }
                     btn.disabled = false;
-                    btn.textContent = '<?php echo esc_js(__('Enviar', 'flavor-chat-ia')); ?>';
+                    btn.textContent = '<?php echo esc_js(__('Enviar', 'flavor-platform')); ?>';
                 })
                 .catch(() => {
-                    mostrarAviso('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>', 'error');
+                    mostrarAviso('<?php echo esc_js(__('Error de conexión', 'flavor-platform')); ?>', 'error');
                     btn.disabled = false;
-                    btn.textContent = '<?php echo esc_js(__('Enviar', 'flavor-chat-ia')); ?>';
+                    btn.textContent = '<?php echo esc_js(__('Enviar', 'flavor-platform')); ?>';
                 });
             });
         }

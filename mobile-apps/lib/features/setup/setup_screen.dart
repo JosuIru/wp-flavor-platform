@@ -579,9 +579,7 @@ class SetupChecker extends ConsumerWidget {
       final serverUrl = await ServerConfig.getServerUrl();
       // Si tiene la URL por defecto, consideramos que no esta configurado
       // para otros usuarios que no sean Basabere
-      return serverUrl != ServerConfig.defaultServerUrl ||
-          serverUrl ==
-              'https://basabere.com'; // Para Basabere si esta configurado
+      return serverUrl != ServerConfig.defaultServerUrl;
     } catch (e) {
       return false;
     }

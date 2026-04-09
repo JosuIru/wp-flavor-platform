@@ -76,9 +76,9 @@ class Flavor_Module_Access_Control {
     public function registrar_capacidades_personalizadas() {
         // Capacidad especial para acceso a módulos de socios
         $capacidades_modulos = [
-            'flavor_access_members_content' => __('Acceder a contenido de miembros', 'flavor-chat-ia'),
-            'flavor_access_private_modules' => __('Acceder a módulos privados', 'flavor-chat-ia'),
-            'flavor_manage_module_access' => __('Gestionar acceso a módulos', 'flavor-chat-ia'),
+            'flavor_access_members_content' => __('Acceder a contenido de miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'flavor_access_private_modules' => __('Acceder a módulos privados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'flavor_manage_module_access' => __('Gestionar acceso a módulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         // Añadir capacidades al rol de administrador si no existen
@@ -483,25 +483,25 @@ class Flavor_Module_Access_Control {
         switch ($visibilidad) {
             case self::VISIBILIDAD_SOLO_MIEMBROS:
                 $icono = '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>';
-                $titulo = __('Contenido exclusivo para miembros', 'flavor-chat-ia');
-                $mensaje = __('Este contenido solo esta disponible para miembros registrados de nuestra comunidad.', 'flavor-chat-ia');
-                $cta_texto = __('Hazte miembro', 'flavor-chat-ia');
+                $titulo = __('Contenido exclusivo para miembros', FLAVOR_PLATFORM_TEXT_DOMAIN);
+                $mensaje = __('Este contenido solo esta disponible para miembros registrados de nuestra comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN);
+                $cta_texto = __('Hazte miembro', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 $cta_url = apply_filters('flavor_membership_url', home_url('/hazte-socio/'));
                 break;
 
             case self::VISIBILIDAD_PRIVADA:
                 $icono = '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>';
-                $titulo = __('Acceso restringido', 'flavor-chat-ia');
-                $mensaje = __('No tienes permisos para acceder a este contenido. Si crees que esto es un error, contacta con el administrador.', 'flavor-chat-ia');
-                $cta_texto = __('Contactar', 'flavor-chat-ia');
+                $titulo = __('Acceso restringido', FLAVOR_PLATFORM_TEXT_DOMAIN);
+                $mensaje = __('No tienes permisos para acceder a este contenido. Si crees que esto es un error, contacta con el administrador.', FLAVOR_PLATFORM_TEXT_DOMAIN);
+                $cta_texto = __('Contactar', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 $cta_url = apply_filters('flavor_contact_url', home_url('/contacto/'));
                 break;
 
             default:
                 $icono = '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
-                $titulo = __('Contenido no disponible', 'flavor-chat-ia');
-                $mensaje = __('Este contenido no esta disponible en este momento.', 'flavor-chat-ia');
-                $cta_texto = __('Volver al inicio', 'flavor-chat-ia');
+                $titulo = __('Contenido no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN);
+                $mensaje = __('Este contenido no esta disponible en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN);
+                $cta_texto = __('Volver al inicio', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 $cta_url = home_url('/');
         }
 
@@ -514,7 +514,7 @@ class Flavor_Module_Access_Control {
             $url_login = wp_login_url($this->obtener_url_actual());
             $html .= '<div class="flavor-access-actions">';
             $html .= '<a href="' . esc_url($url_login) . '" class="flavor-btn flavor-btn-primary">';
-            $html .= esc_html__('Iniciar sesion', 'flavor-chat-ia');
+            $html .= esc_html__('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN);
             $html .= '</a>';
             $html .= '<a href="' . esc_url($cta_url) . '" class="flavor-btn flavor-btn-secondary">';
             $html .= esc_html($cta_texto);
@@ -547,17 +547,17 @@ class Flavor_Module_Access_Control {
         $html .= '<div class="flavor-login-icon">';
         $html .= '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>';
         $html .= '</div>';
-        $html .= '<h3 class="flavor-login-title">' . esc_html__('Inicia sesion para continuar', 'flavor-chat-ia') . '</h3>';
-        $html .= '<p class="flavor-login-message">' . esc_html__('Necesitas iniciar sesion para acceder a este contenido.', 'flavor-chat-ia') . '</p>';
+        $html .= '<h3 class="flavor-login-title">' . esc_html__('Inicia sesion para continuar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
+        $html .= '<p class="flavor-login-message">' . esc_html__('Necesitas iniciar sesion para acceder a este contenido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
 
         // Formulario de WordPress
         $argumentos_formulario = [
             'redirect' => $redirect_url,
             'form_id' => 'flavor-login-form',
-            'label_username' => __('Usuario o email', 'flavor-chat-ia'),
-            'label_password' => __('Contrasena', 'flavor-chat-ia'),
-            'label_remember' => __('Recordarme', 'flavor-chat-ia'),
-            'label_log_in' => __('Iniciar sesion', 'flavor-chat-ia'),
+            'label_username' => __('Usuario o email', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'label_password' => __('Contrasena', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'label_remember' => __('Recordarme', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'label_log_in' => __('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'remember' => true,
         ];
 
@@ -568,12 +568,12 @@ class Flavor_Module_Access_Control {
         // Enlaces adicionales
         $html .= '<div class="flavor-login-links">';
         $html .= '<a href="' . esc_url(wp_lostpassword_url($redirect_url)) . '">';
-        $html .= esc_html__('Olvidaste tu contrasena?', 'flavor-chat-ia');
+        $html .= esc_html__('Olvidaste tu contrasena?', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $html .= '</a>';
 
         if (get_option('users_can_register')) {
             $html .= ' | <a href="' . esc_url(wp_registration_url()) . '">';
-            $html .= esc_html__('Registrarse', 'flavor-chat-ia');
+            $html .= esc_html__('Registrarse', FLAVOR_PLATFORM_TEXT_DOMAIN);
             $html .= '</a>';
         }
 
@@ -778,9 +778,9 @@ class Flavor_Module_Access_Control {
      */
     public static function get_visibility_types() {
         return [
-            self::VISIBILIDAD_PUBLICA => __('Publico - Cualquier visitante', 'flavor-chat-ia'),
-            self::VISIBILIDAD_SOLO_MIEMBROS => __('Solo miembros - Usuarios registrados', 'flavor-chat-ia'),
-            self::VISIBILIDAD_PRIVADA => __('Privado - Solo usuarios con permisos especificos', 'flavor-chat-ia'),
+            self::VISIBILIDAD_PUBLICA => __('Publico - Cualquier visitante', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            self::VISIBILIDAD_SOLO_MIEMBROS => __('Solo miembros - Usuarios registrados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            self::VISIBILIDAD_PRIVADA => __('Privado - Solo usuarios con permisos especificos', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -791,14 +791,14 @@ class Flavor_Module_Access_Control {
      */
     public static function get_available_capabilities() {
         return [
-            'read' => __('Leer (cualquier usuario registrado)', 'flavor-chat-ia'),
-            'edit_posts' => __('Editar publicaciones (colaboradores+)', 'flavor-chat-ia'),
-            'edit_others_posts' => __('Editar publicaciones de otros (editores+)', 'flavor-chat-ia'),
-            'manage_options' => __('Gestionar opciones (solo administradores)', 'flavor-chat-ia'),
-            'manage_woocommerce' => __('Gestionar WooCommerce (solo gerentes de tienda)', 'flavor-chat-ia'),
-            'flavor_access_members_content' => __('Acceso a contenido de miembros', 'flavor-chat-ia'),
-            'flavor_access_private_modules' => __('Acceso a modulos privados', 'flavor-chat-ia'),
-            'flavor_fichaje_acceso' => __('Acceso al sistema de fichaje', 'flavor-chat-ia'),
+            'read' => __('Leer (cualquier usuario registrado)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'edit_posts' => __('Editar publicaciones (colaboradores+)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'edit_others_posts' => __('Editar publicaciones de otros (editores+)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'manage_options' => __('Gestionar opciones (solo administradores)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'manage_woocommerce' => __('Gestionar WooCommerce (solo gerentes de tienda)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'flavor_access_members_content' => __('Acceso a contenido de miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'flavor_access_private_modules' => __('Acceso a modulos privados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'flavor_fichaje_acceso' => __('Acceso al sistema de fichaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 }

@@ -16,10 +16,10 @@ if (!defined('ABSPATH')) {
 if (!is_user_logged_in()) {
     echo '<div class="gc-pedido-login-required">';
     echo '<span class="dashicons dashicons-lock"></span>';
-    echo '<h3>' . esc_html__('Acceso restringido', 'flavor-chat-ia') . '</h3>';
-    echo '<p>' . esc_html__('Inicia sesion para ver los detalles de tu pedido.', 'flavor-chat-ia') . '</p>';
+    echo '<h3>' . esc_html__('Acceso restringido', 'flavor-platform') . '</h3>';
+    echo '<p>' . esc_html__('Inicia sesion para ver los detalles de tu pedido.', 'flavor-platform') . '</p>';
     echo '<a href="' . esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mi-pedido'))) . '" class="gc-btn gc-btn-primary">';
-    echo esc_html__('Iniciar sesion', 'flavor-chat-ia');
+    echo esc_html__('Iniciar sesion', 'flavor-platform');
     echo '</a></div>';
     return;
 }
@@ -59,10 +59,10 @@ if ($entrega_id) {
 if (!$entrega) {
     echo '<div class="gc-pedido-no-encontrado">';
     echo '<span class="dashicons dashicons-clipboard"></span>';
-    echo '<h3>' . esc_html__('Pedido no encontrado', 'flavor-chat-ia') . '</h3>';
-    echo '<p>' . esc_html__('No se ha encontrado el pedido solicitado o no tienes pedidos aun.', 'flavor-chat-ia') . '</p>';
+    echo '<h3>' . esc_html__('Pedido no encontrado', 'flavor-platform') . '</h3>';
+    echo '<p>' . esc_html__('No se ha encontrado el pedido solicitado o no tienes pedidos aun.', 'flavor-platform') . '</p>';
     echo '<a href="' . esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')) . '" class="gc-btn gc-btn-primary">';
-    echo esc_html__('Ver catalogo', 'flavor-chat-ia');
+    echo esc_html__('Ver catalogo', 'flavor-platform');
     echo '</a></div>';
     return;
 }
@@ -95,18 +95,18 @@ $ciclo_meta = [
 
 // Estados del pedido
 $estados_pago = [
-    'pendiente'          => ['label' => __('Pendiente de pago', 'flavor-chat-ia'), 'class' => 'gc-status-warning', 'icon' => 'clock'],
-    'pendiente_recogida' => ['label' => __('Pago en recogida', 'flavor-chat-ia'), 'class' => 'gc-status-info', 'icon' => 'location'],
-    'procesando'         => ['label' => __('Procesando pago', 'flavor-chat-ia'), 'class' => 'gc-status-info', 'icon' => 'update'],
-    'completado'         => ['label' => __('Pagado', 'flavor-chat-ia'), 'class' => 'gc-status-success', 'icon' => 'yes'],
-    'fallido'            => ['label' => __('Pago fallido', 'flavor-chat-ia'), 'class' => 'gc-status-error', 'icon' => 'no'],
-    'reembolsado'        => ['label' => __('Reembolsado', 'flavor-chat-ia'), 'class' => 'gc-status-secondary', 'icon' => 'undo'],
+    'pendiente'          => ['label' => __('Pendiente de pago', 'flavor-platform'), 'class' => 'gc-status-warning', 'icon' => 'clock'],
+    'pendiente_recogida' => ['label' => __('Pago en recogida', 'flavor-platform'), 'class' => 'gc-status-info', 'icon' => 'location'],
+    'procesando'         => ['label' => __('Procesando pago', 'flavor-platform'), 'class' => 'gc-status-info', 'icon' => 'update'],
+    'completado'         => ['label' => __('Pagado', 'flavor-platform'), 'class' => 'gc-status-success', 'icon' => 'yes'],
+    'fallido'            => ['label' => __('Pago fallido', 'flavor-platform'), 'class' => 'gc-status-error', 'icon' => 'no'],
+    'reembolsado'        => ['label' => __('Reembolsado', 'flavor-platform'), 'class' => 'gc-status-secondary', 'icon' => 'undo'],
 ];
 
 $estados_recogida = [
-    'pendiente' => ['label' => __('Pendiente de recoger', 'flavor-chat-ia'), 'class' => 'gc-status-warning', 'icon' => 'clock'],
-    'preparado' => ['label' => __('Preparado para recoger', 'flavor-chat-ia'), 'class' => 'gc-status-info', 'icon' => 'yes-alt'],
-    'recogido'  => ['label' => __('Recogido', 'flavor-chat-ia'), 'class' => 'gc-status-success', 'icon' => 'yes'],
+    'pendiente' => ['label' => __('Pendiente de recoger', 'flavor-platform'), 'class' => 'gc-status-warning', 'icon' => 'clock'],
+    'preparado' => ['label' => __('Preparado para recoger', 'flavor-platform'), 'class' => 'gc-status-info', 'icon' => 'yes-alt'],
+    'recogido'  => ['label' => __('Recogido', 'flavor-platform'), 'class' => 'gc-status-success', 'icon' => 'yes'],
 ];
 
 $estado_pago_actual = $estados_pago[$entrega->estado_pago] ?? $estados_pago['pendiente'];
@@ -119,7 +119,7 @@ foreach ($items_pedido as $item) {
     if (!isset($items_por_productor[$productor_id])) {
         $productor = $productor_id ? get_post($productor_id) : null;
         $items_por_productor[$productor_id] = [
-            'nombre' => $productor ? $productor->post_title : __('Sin productor', 'flavor-chat-ia'),
+            'nombre' => $productor ? $productor->post_title : __('Sin productor', 'flavor-platform'),
             'items'  => [],
         ];
     }
@@ -135,8 +135,8 @@ foreach ($items_pedido as $item) {
                 <span class="dashicons dashicons-arrow-left-alt2"></span>
             </a>
             <div>
-                <span class="gc-pedido-numero"><?php printf(__('Pedido #%d', 'flavor-chat-ia'), $entrega->id); ?></span>
-                <h2><?php echo esc_html($entrega->ciclo_nombre ?: __('Ciclo de pedidos', 'flavor-chat-ia')); ?></h2>
+                <span class="gc-pedido-numero"><?php printf(__('Pedido #%d', 'flavor-platform'), $entrega->id); ?></span>
+                <h2><?php echo esc_html($entrega->ciclo_nombre ?: __('Ciclo de pedidos', 'flavor-platform')); ?></h2>
             </div>
         </div>
 
@@ -159,14 +159,14 @@ foreach ($items_pedido as $item) {
         <div class="gc-pedido-main">
             <!-- Timeline del pedido -->
             <div class="gc-pedido-timeline">
-                <h3><?php esc_html_e('Estado del pedido', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Estado del pedido', 'flavor-platform'); ?></h3>
                 <div class="gc-timeline">
                     <div class="gc-timeline-item gc-timeline-completado">
                         <span class="gc-timeline-icon">
                             <span class="dashicons dashicons-yes"></span>
                         </span>
                         <div class="gc-timeline-content">
-                            <strong><?php esc_html_e('Pedido realizado', 'flavor-chat-ia'); ?></strong>
+                            <strong><?php esc_html_e('Pedido realizado', 'flavor-platform'); ?></strong>
                             <span class="gc-timeline-fecha">
                                 <?php echo esc_html(date_i18n('j M Y, H:i', strtotime($entrega->fecha_creacion))); ?>
                             </span>
@@ -182,7 +182,7 @@ foreach ($items_pedido as $item) {
                             <?php endif; ?>
                         </span>
                         <div class="gc-timeline-content">
-                            <strong><?php esc_html_e('Pago confirmado', 'flavor-chat-ia'); ?></strong>
+                            <strong><?php esc_html_e('Pago confirmado', 'flavor-platform'); ?></strong>
                             <?php if ($entrega->fecha_pago) : ?>
                             <span class="gc-timeline-fecha">
                                 <?php echo esc_html(date_i18n('j M Y, H:i', strtotime($entrega->fecha_pago))); ?>
@@ -200,7 +200,7 @@ foreach ($items_pedido as $item) {
                             <?php endif; ?>
                         </span>
                         <div class="gc-timeline-content">
-                            <strong><?php esc_html_e('Pedido preparado', 'flavor-chat-ia'); ?></strong>
+                            <strong><?php esc_html_e('Pedido preparado', 'flavor-platform'); ?></strong>
                         </div>
                     </div>
 
@@ -213,7 +213,7 @@ foreach ($items_pedido as $item) {
                             <?php endif; ?>
                         </span>
                         <div class="gc-timeline-content">
-                            <strong><?php esc_html_e('Pedido recogido', 'flavor-chat-ia'); ?></strong>
+                            <strong><?php esc_html_e('Pedido recogido', 'flavor-platform'); ?></strong>
                             <?php if ($entrega->fecha_recogida) : ?>
                             <span class="gc-timeline-fecha">
                                 <?php echo esc_html(date_i18n('j M Y, H:i', strtotime($entrega->fecha_recogida))); ?>
@@ -227,7 +227,7 @@ foreach ($items_pedido as $item) {
             <!-- Detalle de productos -->
             <div class="gc-pedido-productos">
                 <h3>
-                    <?php esc_html_e('Productos del pedido', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Productos del pedido', 'flavor-platform'); ?>
                     <span class="gc-productos-count">(<?php echo count($items_pedido); ?>)</span>
                 </h3>
 
@@ -249,23 +249,23 @@ foreach ($items_pedido as $item) {
                             switch ($item->estado) {
                                 case 'confirmado':
                                     $estado_item_class = 'gc-item-confirmado';
-                                    $estado_item_label = __('Confirmado', 'flavor-chat-ia');
+                                    $estado_item_label = __('Confirmado', 'flavor-platform');
                                     break;
                                 case 'completado':
                                     $estado_item_class = 'gc-item-completado';
-                                    $estado_item_label = __('Preparado', 'flavor-chat-ia');
+                                    $estado_item_label = __('Preparado', 'flavor-platform');
                                     break;
                                 case 'cancelado':
                                     $estado_item_class = 'gc-item-cancelado';
-                                    $estado_item_label = __('Cancelado', 'flavor-chat-ia');
+                                    $estado_item_label = __('Cancelado', 'flavor-platform');
                                     break;
                                 case 'sin_stock':
                                     $estado_item_class = 'gc-item-sin-stock';
-                                    $estado_item_label = __('Sin stock', 'flavor-chat-ia');
+                                    $estado_item_label = __('Sin stock', 'flavor-platform');
                                     break;
                                 default:
                                     $estado_item_class = 'gc-item-pendiente';
-                                    $estado_item_label = __('Pendiente', 'flavor-chat-ia');
+                                    $estado_item_label = __('Pendiente', 'flavor-platform');
                             }
                         ?>
                         <div class="gc-pedido-item <?php echo esc_attr($estado_item_class); ?>">
@@ -315,23 +315,23 @@ foreach ($items_pedido as $item) {
         <aside class="gc-pedido-sidebar">
             <!-- Resumen economico -->
             <div class="gc-sidebar-card gc-resumen-economico">
-                <h3><?php esc_html_e('Resumen', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Resumen', 'flavor-platform'); ?></h3>
 
                 <div class="gc-resumen-lineas">
                     <div class="gc-resumen-linea">
-                        <span><?php esc_html_e('Subtotal productos', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Subtotal productos', 'flavor-platform'); ?></span>
                         <span><?php echo number_format($entrega->total_pedido, 2, ',', '.'); ?> &euro;</span>
                     </div>
 
                     <?php if ($entrega->gastos_gestion > 0) : ?>
                     <div class="gc-resumen-linea gc-linea-gestion">
-                        <span><?php esc_html_e('Gastos de gestion', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Gastos de gestion', 'flavor-platform'); ?></span>
                         <span><?php echo number_format($entrega->gastos_gestion, 2, ',', '.'); ?> &euro;</span>
                     </div>
                     <?php endif; ?>
 
                     <div class="gc-resumen-linea gc-linea-total">
-                        <strong><?php esc_html_e('Total', 'flavor-chat-ia'); ?></strong>
+                        <strong><?php esc_html_e('Total', 'flavor-platform'); ?></strong>
                         <strong><?php echo number_format($entrega->total_final, 2, ',', '.'); ?> &euro;</strong>
                     </div>
                 </div>
@@ -340,20 +340,20 @@ foreach ($items_pedido as $item) {
                 <a href="<?php echo esc_url(add_query_arg('entrega_id', $entrega->id, Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'checkout'))); ?>"
                    class="gc-btn gc-btn-primary gc-btn-block">
                     <span class="dashicons dashicons-money-alt"></span>
-                    <?php esc_html_e('Pagar ahora', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Pagar ahora', 'flavor-platform'); ?>
                 </a>
                 <?php endif; ?>
             </div>
 
             <!-- Informacion de entrega -->
             <div class="gc-sidebar-card gc-info-entrega">
-                <h3><?php esc_html_e('Entrega', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Entrega', 'flavor-platform'); ?></h3>
 
                 <?php if ($ciclo_meta['fecha_entrega']) : ?>
                 <div class="gc-info-item">
                     <span class="dashicons dashicons-calendar-alt"></span>
                     <div>
-                        <span class="gc-info-label"><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></span>
+                        <span class="gc-info-label"><?php esc_html_e('Fecha', 'flavor-platform'); ?></span>
                         <strong>
                             <?php echo esc_html(date_i18n('l j \d\e F', strtotime($ciclo_meta['fecha_entrega']))); ?>
                             <?php if ($ciclo_meta['hora_entrega']) : ?>
@@ -368,7 +368,7 @@ foreach ($items_pedido as $item) {
                 <div class="gc-info-item">
                     <span class="dashicons dashicons-location"></span>
                     <div>
-                        <span class="gc-info-label"><?php esc_html_e('Lugar', 'flavor-chat-ia'); ?></span>
+                        <span class="gc-info-label"><?php esc_html_e('Lugar', 'flavor-platform'); ?></span>
                         <strong><?php echo esc_html($ciclo_meta['lugar_entrega']); ?></strong>
                     </div>
                 </div>
@@ -385,7 +385,7 @@ foreach ($items_pedido as $item) {
             <!-- Notas del pedido -->
             <?php if ($entrega->notas) : ?>
             <div class="gc-sidebar-card gc-notas-pedido">
-                <h3><?php esc_html_e('Notas del pedido', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Notas del pedido', 'flavor-platform'); ?></h3>
                 <p><?php echo wp_kses_post(nl2br($entrega->notas)); ?></p>
             </div>
             <?php endif; ?>
@@ -394,7 +394,7 @@ foreach ($items_pedido as $item) {
             <div class="gc-sidebar-acciones">
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mis-pedidos')); ?>" class="gc-btn gc-btn-text gc-btn-block">
                     <span class="dashicons dashicons-list-view"></span>
-                    <?php esc_html_e('Ver todos mis pedidos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver todos mis pedidos', 'flavor-platform'); ?>
                 </a>
             </div>
         </aside>

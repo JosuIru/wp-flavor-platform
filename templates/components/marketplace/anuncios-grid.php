@@ -78,11 +78,11 @@ if (!isset($anuncios_marketplace) || empty($anuncios_marketplace)) {
             'tipo_anuncio'    => $tipo_anuncio,
             'imagen'          => $imagen_anuncio,
             'imagen_fondo'    => $colores_tipo[$tipo_anuncio] ?? 'from-gray-400 to-gray-600',
-            'usuario_nombre'  => $autor_anuncio ? $autor_anuncio->display_name : __('Usuario', 'flavor-chat-ia'),
+            'usuario_nombre'  => $autor_anuncio ? $autor_anuncio->display_name : __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'usuario_avatar'  => '👤',
-            'ubicacion'       => $ubicacion_anuncio ?: __('Sin ubicación', 'flavor-chat-ia'),
+            'ubicacion'       => $ubicacion_anuncio ?: __('Sin ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'fechaPublicacion' => human_time_diff(get_the_time('U', $post_anuncio), current_time('timestamp')),
-            'condicion'       => $condicion_anuncio ?: __('No especificada', 'flavor-chat-ia'),
+            'condicion'       => $condicion_anuncio ?: __('No especificada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'intercambio_por' => $intercambio_por,
             'url'             => get_permalink($post_anuncio->ID),
         ];
@@ -128,13 +128,13 @@ function obtener_clase_tipo_anuncio($tipo_anuncio_variable) {
 function obtener_etiqueta_tipo_anuncio($tipo_anuncio_variable) {
     switch ($tipo_anuncio_variable) {
         case 'venta':
-            return __('Venta', 'flavor-chat-ia');
+            return __('Venta', FLAVOR_PLATFORM_TEXT_DOMAIN);
         case 'regalo':
-            return __('Regalo', 'flavor-chat-ia');
+            return __('Regalo', FLAVOR_PLATFORM_TEXT_DOMAIN);
         case 'intercambio':
-            return __('Intercambio', 'flavor-chat-ia');
+            return __('Intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN);
         default:
-            return __('Anuncio', 'flavor-chat-ia');
+            return __('Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN);
     }
 }
 ?>
@@ -198,7 +198,7 @@ function obtener_etiqueta_tipo_anuncio($tipo_anuncio_variable) {
                         </div>
 
                         <!-- Boton favorito -->
-                        <button class="flavor-btn-favorito absolute top-3 right-3 w-10 h-10 rounded-full bg-white/90 backdrop-blur flex items-center justify-center shadow-sm hover:bg-white transition-all group/fav" aria-label="<?php echo esc_attr__('Anadir a favoritos', 'flavor-chat-ia'); ?>">
+                        <button class="flavor-btn-favorito absolute top-3 right-3 w-10 h-10 rounded-full bg-white/90 backdrop-blur flex items-center justify-center shadow-sm hover:bg-white transition-all group/fav" aria-label="<?php echo esc_attr__('Anadir a favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <svg class="w-5 h-5 text-gray-400 group-hover/fav:text-red-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                             </svg>
@@ -242,14 +242,14 @@ function obtener_etiqueta_tipo_anuncio($tipo_anuncio_variable) {
                         <div class="mb-4">
                             <?php if ($anuncio_item['tipo_anuncio'] === 'intercambio' && !empty($anuncio_item['intercambio_por'])) : ?>
                                 <p class="text-sm font-semibold text-orange-600">
-                                    <?php echo esc_html__('Busca: ', 'flavor-chat-ia'); ?><?php echo esc_html($anuncio_item['intercambio_por']); ?>
+                                    <?php echo esc_html__('Busca: ', FLAVOR_PLATFORM_TEXT_DOMAIN); ?><?php echo esc_html($anuncio_item['intercambio_por']); ?>
                                 </p>
                             <?php else : ?>
                                 <div class="text-2xl font-bold text-green-600">
                                     <?php if ($anuncio_item['tipo_anuncio'] === 'regalo') : ?>
-                                        <span class="text-lg text-blue-600"><?php echo esc_html__('GRATIS', 'flavor-chat-ia'); ?></span>
+                                        <span class="text-lg text-blue-600"><?php echo esc_html__('GRATIS', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     <?php elseif ($anuncio_item['tipo_anuncio'] === 'intercambio') : ?>
-                                        <span class="text-lg text-orange-600"><?php echo esc_html__('INTERCAMBIO', 'flavor-chat-ia'); ?></span>
+                                        <span class="text-lg text-orange-600"><?php echo esc_html__('INTERCAMBIO', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     <?php else : ?>
                                         <?php echo esc_html($anuncio_item['precio']); ?>&euro;
                                     <?php endif; ?>
@@ -266,7 +266,7 @@ function obtener_etiqueta_tipo_anuncio($tipo_anuncio_variable) {
                                 <span class="text-sm font-medium text-gray-700"><?php echo esc_html($anuncio_item['usuario_nombre']); ?></span>
                             </div>
                             <a href="<?php echo esc_url($anuncio_item['url'] ?? get_permalink($anuncio_item['id'] ?? 0)); ?>" class="flavor-btn-contactar text-green-600 hover:text-green-700 font-semibold text-sm transition-colors">
-                                <?php echo esc_html__('Ver', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </div>
                     </div>
@@ -280,13 +280,13 @@ function obtener_etiqueta_tipo_anuncio($tipo_anuncio_variable) {
             <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.354 15.354A9 9 0 015.646 5.646 9 9 0 0120.354 15.354z"/>
             </svg>
-            <h3 class="text-lg font-semibold text-gray-600 mb-2"><?php echo esc_html__('No hay anuncios', 'flavor-chat-ia'); ?></h3>
-            <p class="text-gray-500"><?php echo esc_html__('Se el primero en publicar un anuncio', 'flavor-chat-ia'); ?></p>
+            <h3 class="text-lg font-semibold text-gray-600 mb-2"><?php echo esc_html__('No hay anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p class="text-gray-500"><?php echo esc_html__('Se el primero en publicar un anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', 'publicar')); ?>" class="inline-flex items-center gap-2 mt-4 px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                 </svg>
-                <?php echo esc_html__('Publicar Anuncio', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Publicar Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
         <?php endif; ?>

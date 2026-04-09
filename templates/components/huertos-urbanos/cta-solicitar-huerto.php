@@ -41,7 +41,7 @@ $requisitos = [
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
                 </svg>
-                <?php echo esc_html__('Solicita tu Huerto', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Solicita tu Huerto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
             <h2 class="text-4xl md:text-5xl font-bold text-white mb-6"><?php echo esc_html($titulo); ?></h2>
             <p class="text-xl text-white/90"><?php echo esc_html($subtitulo); ?></p>
@@ -64,7 +64,7 @@ $requisitos = [
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
             <!-- Pasos -->
             <div class="bg-white rounded-2xl p-8 shadow-2xl">
-                <h3 class="text-2xl font-bold text-gray-900 mb-6"><?php echo esc_html__('Como solicitarlo', 'flavor-chat-ia'); ?></h3>
+                <h3 class="text-2xl font-bold text-gray-900 mb-6"><?php echo esc_html__('Como solicitarlo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div class="space-y-4">
                     <?php foreach ($pasos as $paso): ?>
                         <div class="flex items-start gap-4">
@@ -82,7 +82,7 @@ $requisitos = [
 
             <!-- Requisitos -->
             <div class="bg-white/15 backdrop-blur-sm rounded-2xl p-8">
-                <h3 class="text-2xl font-bold text-white mb-6"><?php echo esc_html__('Requisitos', 'flavor-chat-ia'); ?></h3>
+                <h3 class="text-2xl font-bold text-white mb-6"><?php echo esc_html__('Requisitos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <ul class="space-y-4">
                     <?php foreach ($requisitos as $requisito): ?>
                         <li class="flex items-center gap-3 text-white">
@@ -95,7 +95,7 @@ $requisitos = [
                 </ul>
                 <div class="mt-6 p-4 rounded-xl bg-white/10">
                     <p class="text-white/90 text-sm">
-                        <strong><?php echo esc_html__('Nota:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html__('El tiempo de espera actual es de aproximadamente 6-12 meses dependiendo del huerto solicitado.', 'flavor-chat-ia'); ?>
+                        <strong><?php echo esc_html__('Nota:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html__('El tiempo de espera actual es de aproximadamente 6-12 meses dependiendo del huerto solicitado.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
             </div>
@@ -108,16 +108,16 @@ $requisitos = [
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
-                    <span><?php echo esc_html__('Solicitar Ahora', 'flavor-chat-ia'); ?></span>
+                    <span><?php echo esc_html__('Solicitar Ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </a>
                 <a href="#mas-info" class="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300 hover:bg-white/20" style="background: transparent; color: white; border: 2px solid rgba(255,255,255,0.5);">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    <span><?php echo esc_html__('Mas Informacion', 'flavor-chat-ia'); ?></span>
+                    <span><?php echo esc_html__('Mas Informacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </a>
             </div>
-            <p class="mt-6 text-white/70 text-sm"><?php echo esc_html__('Convocatoria abierta todo el ano · Asignacion por sorteo entre solicitantes', 'flavor-chat-ia'); ?></p>
+            <p class="mt-6 text-white/70 text-sm"><?php echo esc_html__('Convocatoria abierta todo el ano · Asignacion por sorteo entre solicitantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     </div>
 </section>

@@ -31,7 +31,7 @@ foreach ($tablas_actas_candidatas as $tabla_candidata) {
 if ($tabla_actas === '') {
     echo '<div class="transparencia-aviso transparencia-aviso--info">';
     echo '<span class="dashicons dashicons-info"></span>';
-    echo '<p>' . esc_html__('Todavía no hay actas publicadas en esta instalación.', 'flavor-chat-ia') . '</p>';
+    echo '<p>' . esc_html__('Todavía no hay actas publicadas en esta instalación.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
     echo '</div>';
     return;
 }
@@ -77,18 +77,18 @@ $anios_disponibles = $wpdb->get_col("SELECT DISTINCT YEAR(fecha_sesion) as anio 
 
 // Nombres legibles de tipos de organo
 $tipos_organo_nombres = [
-    'pleno' => __('Pleno', 'flavor-chat-ia'),
-    'junta_gobierno' => __('Junta de Gobierno', 'flavor-chat-ia'),
-    'comision' => __('Comision', 'flavor-chat-ia'),
-    'consejo' => __('Consejo', 'flavor-chat-ia'),
-    'otros' => __('Otros', 'flavor-chat-ia'),
+    'pleno' => __('Pleno', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'junta_gobierno' => __('Junta de Gobierno', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'comision' => __('Comision', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'consejo' => __('Consejo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'otros' => __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 // Tipos de sesion
 $tipos_sesion_nombres = [
-    'ordinaria' => __('Ordinaria', 'flavor-chat-ia'),
-    'extraordinaria' => __('Extraordinaria', 'flavor-chat-ia'),
-    'urgente' => __('Urgente', 'flavor-chat-ia'),
+    'ordinaria' => __('Ordinaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'extraordinaria' => __('Extraordinaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'urgente' => __('Urgente', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 
@@ -96,10 +96,10 @@ $tipos_sesion_nombres = [
     <header class="transparencia-actas__header">
         <div class="transparencia-actas__titulo">
             <span class="dashicons dashicons-text-page"></span>
-            <h2><?php esc_html_e('Actas de Reuniones', 'flavor-chat-ia'); ?></h2>
+            <h2><?php esc_html_e('Actas de Reuniones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         </div>
         <p class="transparencia-actas__descripcion">
-            <?php esc_html_e('Consulta y descarga las actas de las sesiones de los organos de gobierno.', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Consulta y descarga las actas de las sesiones de los organos de gobierno.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </header>
 
@@ -107,9 +107,9 @@ $tipos_sesion_nombres = [
     <div class="transparencia-filtros">
         <form class="transparencia-filtros__form" method="get">
             <div class="transparencia-filtros__grupo">
-                <label for="tipo_organo"><?php esc_html_e('Organo', 'flavor-chat-ia'); ?></label>
+                <label for="tipo_organo"><?php esc_html_e('Organo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="tipo_organo" id="tipo_organo">
-                    <option value=""><?php esc_html_e('Todos los organos', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todos los organos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($tipos_organo as $tipo) : ?>
                     <option value="<?php echo esc_attr($tipo); ?>" <?php selected($tipo_organo_filtro, $tipo); ?>>
                         <?php echo esc_html($tipos_organo_nombres[$tipo] ?? ucfirst(str_replace('_', ' ', $tipo))); ?>
@@ -118,9 +118,9 @@ $tipos_sesion_nombres = [
                 </select>
             </div>
             <div class="transparencia-filtros__grupo">
-                <label for="anio"><?php esc_html_e('Ano', 'flavor-chat-ia'); ?></label>
+                <label for="anio"><?php esc_html_e('Ano', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="anio" id="anio">
-                    <option value=""><?php esc_html_e('Todos los anos', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todos los anos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($anios_disponibles as $anio) : ?>
                     <option value="<?php echo esc_attr($anio); ?>" <?php selected($anio_filtro, $anio); ?>>
                         <?php echo esc_html($anio); ?>
@@ -130,7 +130,7 @@ $tipos_sesion_nombres = [
             </div>
             <button type="submit" class="transparencia-btn transparencia-btn--secondary">
                 <span class="dashicons dashicons-filter"></span>
-                <?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </form>
     </div>
@@ -138,7 +138,7 @@ $tipos_sesion_nombres = [
     <!-- Contador de resultados -->
     <div class="transparencia-resultados-info">
         <?php printf(
-            esc_html(_n('%d acta encontrada', '%d actas encontradas', $total_actas, 'flavor-chat-ia')),
+            esc_html(_n('%d acta encontrada', '%d actas encontradas', $total_actas, FLAVOR_PLATFORM_TEXT_DOMAIN)),
             $total_actas
         ); ?>
     </div>
@@ -164,7 +164,7 @@ $tipos_sesion_nombres = [
                 </div>
                 <span class="transparencia-acta-card__numero">
                     <?php if ($acta->numero_sesion) : ?>
-                    <?php printf(esc_html__('Sesion %s', 'flavor-chat-ia'), esc_html($acta->numero_sesion)); ?>
+                    <?php printf(esc_html__('Sesion %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($acta->numero_sesion)); ?>
                     <?php endif; ?>
                 </span>
             </header>
@@ -186,21 +186,21 @@ $tipos_sesion_nombres = [
                     <?php if (!empty($asistentes)) : ?>
                     <span class="transparencia-meta-item">
                         <span class="dashicons dashicons-groups"></span>
-                        <?php printf(esc_html__('%d asistentes', 'flavor-chat-ia'), count($asistentes)); ?>
+                        <?php printf(esc_html__('%d asistentes', FLAVOR_PLATFORM_TEXT_DOMAIN), count($asistentes)); ?>
                     </span>
                     <?php endif; ?>
                 </div>
 
                 <?php if (!empty($acuerdos)) : ?>
                 <div class="transparencia-acta-card__acuerdos">
-                    <strong><?php esc_html_e('Acuerdos:', 'flavor-chat-ia'); ?></strong>
+                    <strong><?php esc_html_e('Acuerdos:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                     <span><?php echo esc_html(count($acuerdos)); ?></span>
                 </div>
                 <?php endif; ?>
 
                 <?php if ($acta->orden_del_dia) : ?>
                 <details class="transparencia-acta-card__orden">
-                    <summary><?php esc_html_e('Ver orden del dia', 'flavor-chat-ia'); ?></summary>
+                    <summary><?php esc_html_e('Ver orden del dia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></summary>
                     <div class="transparencia-orden-contenido">
                         <?php echo wp_kses_post(nl2br($acta->orden_del_dia)); ?>
                     </div>
@@ -213,26 +213,26 @@ $tipos_sesion_nombres = [
                     <?php if ($acta->acta_url) : ?>
                     <a href="<?php echo esc_url($acta->acta_url); ?>" class="transparencia-btn transparencia-btn--primary transparencia-btn--sm" target="_blank">
                         <span class="dashicons dashicons-download"></span>
-                        <?php esc_html_e('Descargar Acta', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Descargar Acta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <?php endif; ?>
                     <?php if ($acta->convocatoria_url) : ?>
                     <a href="<?php echo esc_url($acta->convocatoria_url); ?>" class="transparencia-btn transparencia-btn--outline transparencia-btn--sm" target="_blank">
                         <span class="dashicons dashicons-media-document"></span>
-                        <?php esc_html_e('Convocatoria', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Convocatoria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <?php endif; ?>
                     <?php if ($acta->video_url) : ?>
                     <a href="<?php echo esc_url($acta->video_url); ?>" class="transparencia-btn transparencia-btn--outline transparencia-btn--sm" target="_blank">
                         <span class="dashicons dashicons-video-alt3"></span>
-                        <?php esc_html_e('Video', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Video', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <?php endif; ?>
                 </div>
                 <?php if ($acta->fecha_aprobacion) : ?>
                 <span class="transparencia-acta-card__aprobacion">
                     <?php printf(
-                        esc_html__('Aprobada: %s', 'flavor-chat-ia'),
+                        esc_html__('Aprobada: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         date_i18n('d/m/Y', strtotime($acta->fecha_aprobacion))
                     ); ?>
                 </span>
@@ -248,13 +248,13 @@ $tipos_sesion_nombres = [
         <?php if ($pagina_actual > 1) : ?>
         <a href="<?php echo esc_url(add_query_arg('pag', $pagina_actual - 1)); ?>" class="transparencia-paginacion__btn">
             <span class="dashicons dashicons-arrow-left-alt2"></span>
-            <?php esc_html_e('Anterior', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <?php endif; ?>
 
         <span class="transparencia-paginacion__info">
             <?php printf(
-                esc_html__('Pagina %d de %d', 'flavor-chat-ia'),
+                esc_html__('Pagina %d de %d', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $pagina_actual,
                 $total_paginas
             ); ?>
@@ -262,7 +262,7 @@ $tipos_sesion_nombres = [
 
         <?php if ($pagina_actual < $total_paginas) : ?>
         <a href="<?php echo esc_url(add_query_arg('pag', $pagina_actual + 1)); ?>" class="transparencia-paginacion__btn">
-            <?php esc_html_e('Siguiente', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <span class="dashicons dashicons-arrow-right-alt2"></span>
         </a>
         <?php endif; ?>
@@ -272,8 +272,8 @@ $tipos_sesion_nombres = [
     <?php else : ?>
     <div class="transparencia-empty-state">
         <span class="dashicons dashicons-text-page"></span>
-        <h3><?php esc_html_e('No hay actas disponibles', 'flavor-chat-ia'); ?></h3>
-        <p><?php esc_html_e('No se encontraron actas que coincidan con los filtros seleccionados.', 'flavor-chat-ia'); ?></p>
+        <h3><?php esc_html_e('No hay actas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+        <p><?php esc_html_e('No se encontraron actas que coincidan con los filtros seleccionados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php endif; ?>
 </div>

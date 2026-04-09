@@ -53,11 +53,11 @@ if (empty($user_name) && $user_id) {
 if (empty($greeting) && $user_name) {
     $hour = (int) current_time('G');
     if ($hour < 12) {
-        $greeting = sprintf(__('Buenos días, %s', 'flavor-chat-ia'), $user_name);
+        $greeting = sprintf(__('Buenos días, %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $user_name);
     } elseif ($hour < 18) {
-        $greeting = sprintf(__('Buenas tardes, %s', 'flavor-chat-ia'), $user_name);
+        $greeting = sprintf(__('Buenas tardes, %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $user_name);
     } else {
-        $greeting = sprintf(__('Buenas noches, %s', 'flavor-chat-ia'), $user_name);
+        $greeting = sprintf(__('Buenas noches, %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $user_name);
     }
 }
 
@@ -89,7 +89,7 @@ $summary_id = 'user-summary-' . wp_rand(1000, 9999);
                 <div class="flex items-center gap-2">
                     <h3 class="font-bold text-gray-900"><?php echo esc_html($user_name); ?></h3>
                     <?php if ($user_verified): ?>
-                        <span class="text-blue-500" title="<?php esc_attr_e('Verificado', 'flavor-chat-ia'); ?>">✓</span>
+                        <span class="text-blue-500" title="<?php esc_attr_e('Verificado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">✓</span>
                     <?php endif; ?>
                 </div>
                 <?php if ($user_role): ?>

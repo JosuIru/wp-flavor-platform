@@ -41,13 +41,13 @@ $recursos = $wpdb->get_results(
 
 <div class="es-container">
     <header class="es-header">
-        <h2><?php esc_html_e('Biblioteca de Objetos', 'flavor-chat-ia'); ?></h2>
-        <p><?php esc_html_e('¿Por qué comprar algo que solo usarás una vez? Comparte y pide prestado.', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Biblioteca de Objetos', 'flavor-platform'); ?></h2>
+        <p><?php esc_html_e('¿Por qué comprar algo que solo usarás una vez? Comparte y pide prestado.', 'flavor-platform'); ?></p>
     </header>
 
     <div class="es-biblioteca-header">
         <div class="es-biblioteca-filtros">
-            <button class="es-filtro-btn activo" data-filtro="todos"><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></button>
+            <button class="es-filtro-btn activo" data-filtro="todos"><?php esc_html_e('Todos', 'flavor-platform'); ?></button>
             <?php foreach ($categorias_objetos as $cat_id => $cat_data) : ?>
             <button class="es-filtro-btn" data-filtro="<?php echo esc_attr($cat_id); ?>">
                 <?php echo esc_html($cat_data['icono'] . ' ' . $cat_data['nombre']); ?>
@@ -58,7 +58,7 @@ $recursos = $wpdb->get_results(
         <?php if (is_user_logged_in()) : ?>
         <button class="es-btn es-btn--primary es-btn-abrir-modal" data-modal="modal-compartir">
             <span class="dashicons dashicons-plus-alt"></span>
-            <?php esc_html_e('Compartir objeto', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Compartir objeto', 'flavor-platform'); ?>
         </button>
         <?php endif; ?>
     </div>
@@ -90,14 +90,14 @@ $recursos = $wpdb->get_results(
                     </div>
                     <span class="es-estado-badge es-estado-badge--<?php echo esc_attr($recurso->estado ?: 'disponible'); ?>">
                         <?php echo $recurso->estado === 'prestado'
-                            ? esc_html__('Prestado', 'flavor-chat-ia')
-                            : esc_html__('Disponible', 'flavor-chat-ia'); ?>
+                            ? esc_html__('Prestado', 'flavor-platform')
+                            : esc_html__('Disponible', 'flavor-platform'); ?>
                     </span>
                 </div>
 
                 <?php if (is_user_logged_in() && !$es_propio && $recurso->estado !== 'prestado') : ?>
                 <button class="es-btn es-btn--primary es-btn--small es-btn-solicitar" data-recurso="<?php echo esc_attr($recurso->ID); ?>" style="width: 100%; margin-top: 1rem;">
-                    <?php esc_html_e('Solicitar préstamo', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Solicitar préstamo', 'flavor-platform'); ?>
                 </button>
                 <?php endif; ?>
             </div>
@@ -107,9 +107,9 @@ $recursos = $wpdb->get_results(
     <?php else : ?>
     <div class="es-empty-state">
         <span class="dashicons dashicons-archive"></span>
-        <p><?php esc_html_e('Aún no hay objetos en la biblioteca.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('Aún no hay objetos en la biblioteca.', 'flavor-platform'); ?></p>
         <?php if (is_user_logged_in()) : ?>
-        <p><?php esc_html_e('¡Sé el primero en compartir algo!', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('¡Sé el primero en compartir algo!', 'flavor-platform'); ?></p>
         <?php endif; ?>
     </div>
     <?php endif; ?>
@@ -119,18 +119,18 @@ $recursos = $wpdb->get_results(
 <div id="modal-compartir" class="es-modal">
     <div class="es-modal__contenido">
         <div class="es-modal__header">
-            <h3><?php esc_html_e('Compartir un objeto', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Compartir un objeto', 'flavor-platform'); ?></h3>
             <button class="es-modal__cerrar">&times;</button>
         </div>
         <form class="es-modal__body es-form-recurso">
             <div class="es-form-grupo">
-                <label for="recurso-nombre"><?php esc_html_e('¿Qué quieres compartir?', 'flavor-chat-ia'); ?> *</label>
+                <label for="recurso-nombre"><?php esc_html_e('¿Qué quieres compartir?', 'flavor-platform'); ?> *</label>
                 <input type="text" name="nombre" id="recurso-nombre" required
-                       placeholder="<?php esc_attr_e('Ej: Taladro eléctrico', 'flavor-chat-ia'); ?>">
+                       placeholder="<?php esc_attr_e('Ej: Taladro eléctrico', 'flavor-platform'); ?>">
             </div>
 
             <div class="es-form-grupo">
-                <label for="recurso-categoria"><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></label>
+                <label for="recurso-categoria"><?php esc_html_e('Categoría', 'flavor-platform'); ?></label>
                 <select name="categoria" id="recurso-categoria">
                     <?php foreach ($categorias_objetos as $cat_id => $cat_data) : ?>
                     <option value="<?php echo esc_attr($cat_id); ?>">
@@ -141,24 +141,24 @@ $recursos = $wpdb->get_results(
             </div>
 
             <div class="es-form-grupo">
-                <label for="recurso-descripcion"><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?></label>
+                <label for="recurso-descripcion"><?php esc_html_e('Descripción', 'flavor-platform'); ?></label>
                 <textarea name="descripcion" id="recurso-descripcion" rows="3"
-                          placeholder="<?php esc_attr_e('Estado, características, marca...', 'flavor-chat-ia'); ?>"></textarea>
+                          placeholder="<?php esc_attr_e('Estado, características, marca...', 'flavor-platform'); ?>"></textarea>
             </div>
 
             <div class="es-form-grupo">
-                <label for="recurso-condiciones"><?php esc_html_e('Condiciones de préstamo', 'flavor-chat-ia'); ?></label>
+                <label for="recurso-condiciones"><?php esc_html_e('Condiciones de préstamo', 'flavor-platform'); ?></label>
                 <textarea name="condiciones" id="recurso-condiciones" rows="2"
-                          placeholder="<?php esc_attr_e('Ej: Máximo 1 semana, recoger en mi casa...', 'flavor-chat-ia'); ?>"></textarea>
+                          placeholder="<?php esc_attr_e('Ej: Máximo 1 semana, recoger en mi casa...', 'flavor-platform'); ?>"></textarea>
             </div>
 
             <div class="es-modal__footer">
                 <button type="button" class="es-btn es-btn--secondary es-modal__cerrar">
-                    <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Cancelar', 'flavor-platform'); ?>
                 </button>
                 <button type="submit" class="es-btn es-btn--primary">
                     <span class="dashicons dashicons-share"></span>
-                    <?php esc_html_e('Compartir', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Compartir', 'flavor-platform'); ?>
                 </button>
             </div>
         </form>

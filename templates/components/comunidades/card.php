@@ -31,9 +31,9 @@ $nombre = $comunidad['nombre'] ?? $comunidad['titulo'] ?? $comunidad['title'] ??
 $descripcion = $comunidad['descripcion'] ?? $comunidad['excerpt'] ?? '';
 $imagen = $comunidad['imagen'] ?? $comunidad['image'] ?? '';
 $url = $comunidad['url'] ?? $comunidad['permalink'] ?? '#';
-$tipo = $comunidad['tipo'] ?? __('Vecinal', 'flavor-chat-ia');
+$tipo = $comunidad['tipo'] ?? __('Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $miembros = $comunidad['miembros'] ?? 0;
-$ubicacion = $comunidad['ubicacion'] ?? __('Local', 'flavor-chat-ia');
+$ubicacion = $comunidad['ubicacion'] ?? __('Local', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $verificada = !empty($comunidad['verificada']);
 $activa = !empty($comunidad['activa']);
 $emoji = $comunidad['emoji'] ?? '🏘️';
@@ -65,7 +65,7 @@ $emoji = $comunidad['emoji'] ?? '🏘️';
                 <?php echo esc_html($tipo); ?>
             </span>
             <?php if ($verificada): ?>
-            <span class="text-green-500" title="<?php echo esc_attr__('Comunidad verificada', 'flavor-chat-ia'); ?>">✓</span>
+            <span class="text-green-500" title="<?php echo esc_attr__('Comunidad verificada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">✓</span>
             <?php endif; ?>
         </div>
 
@@ -90,7 +90,7 @@ $emoji = $comunidad['emoji'] ?? '🏘️';
                 <span>📍 <?php echo esc_html($ubicacion); ?></span>
             </div>
             <?php if ($activa): ?>
-            <span class="w-2 h-2 bg-green-500 rounded-full" title="<?php echo esc_attr__('Comunidad activa', 'flavor-chat-ia'); ?>"></span>
+            <span class="w-2 h-2 bg-green-500 rounded-full" title="<?php echo esc_attr__('Comunidad activa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></span>
             <?php endif; ?>
         </div>
     </div>

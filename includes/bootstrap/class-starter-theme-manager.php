@@ -154,29 +154,29 @@ final class Flavor_Starter_Theme_Manager {
         ?>
         <div class="notice notice-info is-dismissible">
             <p>
-                <strong><?php esc_html_e('Flavor Starter disponible', 'flavor-chat-ia'); ?></strong><br>
+                <strong><?php esc_html_e('Flavor Starter disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong><br>
                 <?php
                 if ($is_installed) {
-                    esc_html_e('El tema companion "Flavor Starter" está instalado y optimizado para este plugin. ¿Quieres activarlo ahora?', 'flavor-chat-ia');
+                    esc_html_e('El tema companion "Flavor Starter" está instalado y optimizado para este plugin. ¿Quieres activarlo ahora?', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 } elseif ($is_bundled) {
-                    esc_html_e('El tema companion "Flavor Starter" está incluido en el plugin. ¿Quieres instalarlo y activarlo ahora?', 'flavor-chat-ia');
+                    esc_html_e('El tema companion "Flavor Starter" está incluido en el plugin. ¿Quieres instalarlo y activarlo ahora?', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 } else {
-                    esc_html_e('El tema companion "Flavor Starter" no está instalado. Puedes instalarlo manualmente desde Apariencia > Temas.', 'flavor-chat-ia');
+                    esc_html_e('El tema companion "Flavor Starter" no está instalado. Puedes instalarlo manualmente desde Apariencia > Temas.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 }
                 ?>
             </p>
             <p>
                 <?php if ($is_installed): ?>
                     <a href="<?php echo esc_url($activate_url); ?>" class="button button-primary">
-                        <?php esc_html_e('Activar tema', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Activar tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 <?php elseif ($is_bundled): ?>
                     <a href="<?php echo esc_url($install_url); ?>" class="button button-primary">
-                        <?php esc_html_e('Instalar y activar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Instalar y activar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 <?php endif; ?>
                 <a href="<?php echo esc_url($dismiss_url); ?>" class="button button-secondary">
-                    <?php esc_html_e('Ahora no', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ahora no', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </p>
         </div>
@@ -190,12 +190,12 @@ final class Flavor_Starter_Theme_Manager {
      */
     public function handle_activate() {
         if (!current_user_can('manage_options')) {
-            wp_die(__('Sin permisos', 'flavor-chat-ia'));
+            wp_die(__('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         if (!$this->verify_nonce('flavor_activate_starter_theme')) {
             if (!current_user_can('manage_options')) {
-                wp_die(__('Enlace caducado. Intenta de nuevo.', 'flavor-chat-ia'));
+                wp_die(__('Enlace caducado. Intenta de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN));
             }
         }
 
@@ -218,12 +218,12 @@ final class Flavor_Starter_Theme_Manager {
      */
     public function handle_install() {
         if (!current_user_can('manage_options')) {
-            wp_die(__('Sin permisos', 'flavor-chat-ia'));
+            wp_die(__('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         if (!$this->verify_nonce('flavor_install_starter_theme')) {
             if (!current_user_can('manage_options')) {
-                wp_die(__('Enlace caducado. Intenta de nuevo.', 'flavor-chat-ia'));
+                wp_die(__('Enlace caducado. Intenta de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN));
             }
         }
 
@@ -236,7 +236,7 @@ final class Flavor_Starter_Theme_Manager {
             if (!file_exists($source)) {
                 update_option(
                     'flavor_starter_theme_notice_error',
-                    __('No se encontró el bundle del tema en el plugin.', 'flavor-chat-ia')
+                    __('No se encontró el bundle del tema en el plugin.', FLAVOR_PLATFORM_TEXT_DOMAIN)
                 );
                 wp_safe_redirect(admin_url());
                 exit;
@@ -272,12 +272,12 @@ final class Flavor_Starter_Theme_Manager {
      */
     public function handle_dismiss_notice() {
         if (!current_user_can('manage_options')) {
-            wp_die(__('Sin permisos', 'flavor-chat-ia'));
+            wp_die(__('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         if (!$this->verify_nonce('flavor_dismiss_starter_theme_notice')) {
             if (!current_user_can('manage_options')) {
-                wp_die(__('Enlace caducado. Intenta de nuevo.', 'flavor-chat-ia'));
+                wp_die(__('Enlace caducado. Intenta de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN));
             }
         }
 

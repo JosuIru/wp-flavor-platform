@@ -260,28 +260,28 @@ class Flavor_Cursos_Dashboard_Tab {
      */
     public function registrar_tabs($tabs) {
         $tabs['cursos-catalogo'] = [
-            'label' => __('Cursos', 'flavor-chat-ia'),
+            'label' => __('Cursos', 'flavor-platform'),
             'icon' => 'welcome-learn-more',
             'callback' => [$this, 'render_tab_catalogo'],
             'orden' => 33,
         ];
 
         $tabs['cursos-mis-cursos'] = [
-            'label' => __('Mi Aprendizaje', 'flavor-chat-ia'),
+            'label' => __('Mi Aprendizaje', 'flavor-platform'),
             'icon' => 'book-alt',
             'callback' => [$this, 'render_tab_mis_cursos'],
             'orden' => 34,
         ];
 
         $tabs['cursos-inscripciones'] = [
-            'label' => __('Inscripciones', 'flavor-chat-ia'),
+            'label' => __('Inscripciones', 'flavor-platform'),
             'icon' => 'clipboard',
             'callback' => [$this, 'render_tab_inscripciones'],
             'orden' => 35,
         ];
 
         $tabs['cursos-certificados'] = [
-            'label' => __('Certificados', 'flavor-chat-ia'),
+            'label' => __('Certificados', 'flavor-platform'),
             'icon' => 'awards',
             'callback' => [$this, 'render_tab_certificados'],
             'orden' => 36,
@@ -331,8 +331,8 @@ class Flavor_Cursos_Dashboard_Tab {
         ?>
         <div class="flavor-panel flavor-cursos-catalogo-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-welcome-learn-more"></span> <?php esc_html_e('Formacion y Cursos', 'flavor-chat-ia'); ?></h2>
-                <p class="flavor-panel-subtitle"><?php esc_html_e('Aprende nuevas habilidades con nuestra comunidad', 'flavor-chat-ia'); ?></p>
+                <h2><span class="dashicons dashicons-welcome-learn-more"></span> <?php esc_html_e('Formacion y Cursos', 'flavor-platform'); ?></h2>
+                <p class="flavor-panel-subtitle"><?php esc_html_e('Aprende nuevas habilidades con nuestra comunidad', 'flavor-platform'); ?></p>
             </div>
 
             <div class="flavor-panel-kpis">
@@ -340,14 +340,14 @@ class Flavor_Cursos_Dashboard_Tab {
                     <span class="flavor-kpi-icon dashicons dashicons-book"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($total_cursos); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Cursos Disponibles', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Cursos Disponibles', 'flavor-platform'); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-success">
                     <span class="flavor-kpi-icon dashicons dashicons-yes-alt"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($cursos_activos); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('En Marcha', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('En Marcha', 'flavor-platform'); ?></span>
                     </div>
                 </div>
             </div>
@@ -360,7 +360,7 @@ class Flavor_Cursos_Dashboard_Tab {
                                 <div class="flavor-card-image">
                                     <img src="<?php echo esc_url($curso->imagen_destacada); ?>" alt="<?php echo esc_attr($curso->titulo); ?>">
                                     <?php if ($curso->es_gratuito): ?>
-                                        <span class="cursos-gratuito-badge"><?php esc_html_e('Gratis', 'flavor-chat-ia'); ?></span>
+                                        <span class="cursos-gratuito-badge"><?php esc_html_e('Gratis', 'flavor-platform'); ?></span>
                                     <?php endif; ?>
                                 </div>
                             <?php endif; ?>
@@ -376,7 +376,7 @@ class Flavor_Cursos_Dashboard_Tab {
                                 <?php endif; ?>
                                 <p class="flavor-text-muted">
                                     <span class="dashicons dashicons-admin-users"></span>
-                                    <?php echo number_format_i18n($curso->total_inscritos ?? $curso->inscritos_count ?? 0); ?> <?php esc_html_e('inscritos', 'flavor-chat-ia'); ?>
+                                    <?php echo number_format_i18n($curso->total_inscritos ?? $curso->inscritos_count ?? 0); ?> <?php esc_html_e('inscritos', 'flavor-platform'); ?>
                                     <?php if (!empty($curso->duracion_horas)): ?>
                                         <span class="dashicons dashicons-clock" style="margin-left: 0.5rem;"></span>
                                         <?php echo number_format_i18n($curso->duracion_horas); ?>h
@@ -390,7 +390,7 @@ class Flavor_Cursos_Dashboard_Tab {
                                     <span></span>
                                 <?php endif; ?>
                                 <a href="<?php echo esc_url(home_url('/cursos/' . $curso->slug)); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
-                                    <?php esc_html_e('Ver curso', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Ver curso', 'flavor-platform'); ?>
                                 </a>
                             </div>
                         </div>
@@ -399,14 +399,14 @@ class Flavor_Cursos_Dashboard_Tab {
             <?php else: ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-welcome-learn-more"></span>
-                    <p><?php esc_html_e('No hay cursos disponibles en este momento.', 'flavor-chat-ia'); ?></p>
-                    <p><?php esc_html_e('Vuelve pronto para ver las nuevas formaciones.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay cursos disponibles en este momento.', 'flavor-platform'); ?></p>
+                    <p><?php esc_html_e('Vuelve pronto para ver las nuevas formaciones.', 'flavor-platform'); ?></p>
                 </div>
             <?php endif; ?>
 
             <div class="flavor-panel-actions">
                 <a href="<?php echo esc_url(home_url('/cursos/')); ?>" class="flavor-btn flavor-btn-primary">
-                    <?php esc_html_e('Ver todos los cursos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver todos los cursos', 'flavor-platform'); ?>
                 </a>
             </div>
         </div>
@@ -419,7 +419,7 @@ class Flavor_Cursos_Dashboard_Tab {
     public function render_tab_mis_cursos() {
         $user_id = get_current_user_id();
         if (!$user_id) {
-            echo '<p>' . esc_html__('Debes iniciar sesion para ver este contenido.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Debes iniciar sesion para ver este contenido.', 'flavor-platform') . '</p>';
             return;
         }
 
@@ -466,8 +466,8 @@ class Flavor_Cursos_Dashboard_Tab {
         ?>
         <div class="flavor-panel flavor-cursos-mis-cursos-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-book-alt"></span> <?php esc_html_e('Mi Aprendizaje', 'flavor-chat-ia'); ?></h2>
-                <p class="flavor-panel-subtitle"><?php esc_html_e('Continua donde lo dejaste', 'flavor-chat-ia'); ?></p>
+                <h2><span class="dashicons dashicons-book-alt"></span> <?php esc_html_e('Mi Aprendizaje', 'flavor-platform'); ?></h2>
+                <p class="flavor-panel-subtitle"><?php esc_html_e('Continua donde lo dejaste', 'flavor-platform'); ?></p>
             </div>
 
             <div class="flavor-panel-kpis">
@@ -475,21 +475,21 @@ class Flavor_Cursos_Dashboard_Tab {
                     <span class="flavor-kpi-icon dashicons dashicons-book"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas['en_curso']); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('En curso', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('En curso', 'flavor-platform'); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-success">
                     <span class="flavor-kpi-icon dashicons dashicons-yes-alt"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas['completados']); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Completados', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Completados', 'flavor-platform'); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icon dashicons dashicons-clock"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas['horas_totales']); ?>h</span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Tiempo total', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Tiempo total', 'flavor-platform'); ?></span>
                     </div>
                 </div>
             </div>
@@ -497,10 +497,10 @@ class Flavor_Cursos_Dashboard_Tab {
             <?php if (empty($mis_cursos)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-welcome-learn-more"></span>
-                    <p><?php esc_html_e('No estas matriculado en ningun curso.', 'flavor-chat-ia'); ?></p>
-                    <p><?php esc_html_e('Explora nuestro catalogo y empieza a aprender.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No estas matriculado en ningun curso.', 'flavor-platform'); ?></p>
+                    <p><?php esc_html_e('Explora nuestro catalogo y empieza a aprender.', 'flavor-platform'); ?></p>
                     <a href="<?php echo esc_url(home_url('/cursos/')); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php esc_html_e('Explorar cursos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Explorar cursos', 'flavor-platform'); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -523,7 +523,7 @@ class Flavor_Cursos_Dashboard_Tab {
                                     <div class="cursos-progress-fill <?php echo esc_attr($clase_progreso); ?>" style="width: <?php echo esc_attr($progreso); ?>%;"></div>
                                 </div>
                                 <div class="cursos-curso-meta">
-                                    <?php echo number_format_i18n($progreso, 0); ?>% <?php esc_html_e('completado', 'flavor-chat-ia'); ?>
+                                    <?php echo number_format_i18n($progreso, 0); ?>% <?php esc_html_e('completado', 'flavor-platform'); ?>
                                     <?php if (!empty($curso->duracion_horas)): ?>
                                         &bull; <?php echo number_format_i18n($curso->duracion_horas); ?>h
                                     <?php endif; ?>
@@ -535,7 +535,7 @@ class Flavor_Cursos_Dashboard_Tab {
                             </div>
                             <div class="cursos-curso-acciones">
                                 <a href="<?php echo esc_url(home_url('/cursos/' . $curso->slug . '/aula')); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
-                                    <?php esc_html_e('Continuar', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Continuar', 'flavor-platform'); ?>
                                 </a>
                             </div>
                         </div>
@@ -544,7 +544,7 @@ class Flavor_Cursos_Dashboard_Tab {
 
                 <div class="flavor-panel-footer">
                     <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('cursos', '')); ?>" class="flavor-btn flavor-btn-outline">
-                        <?php esc_html_e('Ver todos mis cursos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver todos mis cursos', 'flavor-platform'); ?>
                     </a>
                 </div>
             <?php endif; ?>
@@ -558,7 +558,7 @@ class Flavor_Cursos_Dashboard_Tab {
     public function render_tab_inscripciones() {
         $user_id = get_current_user_id();
         if (!$user_id) {
-            echo '<p>' . esc_html__('Debes iniciar sesion para ver este contenido.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Debes iniciar sesion para ver este contenido.', 'flavor-platform') . '</p>';
             return;
         }
 
@@ -601,17 +601,17 @@ class Flavor_Cursos_Dashboard_Tab {
         }
 
         $estados_config = [
-            'activa' => ['color' => 'success', 'icono' => 'book', 'label' => __('Activa', 'flavor-chat-ia')],
-            'pausada' => ['color' => 'warning', 'icono' => 'clock', 'label' => __('Pausada', 'flavor-chat-ia')],
-            'completada' => ['color' => 'primary', 'icono' => 'yes-alt', 'label' => __('Completada', 'flavor-chat-ia')],
-            'cancelada' => ['color' => 'secondary', 'icono' => 'no-alt', 'label' => __('Cancelada', 'flavor-chat-ia')],
+            'activa' => ['color' => 'success', 'icono' => 'book', 'label' => __('Activa', 'flavor-platform')],
+            'pausada' => ['color' => 'warning', 'icono' => 'clock', 'label' => __('Pausada', 'flavor-platform')],
+            'completada' => ['color' => 'primary', 'icono' => 'yes-alt', 'label' => __('Completada', 'flavor-platform')],
+            'cancelada' => ['color' => 'secondary', 'icono' => 'no-alt', 'label' => __('Cancelada', 'flavor-platform')],
         ];
 
         ?>
         <div class="flavor-panel flavor-cursos-inscripciones-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-clipboard"></span> <?php esc_html_e('Mis Inscripciones', 'flavor-chat-ia'); ?></h2>
-                <p class="flavor-panel-subtitle"><?php esc_html_e('Historial de matriculas en cursos', 'flavor-chat-ia'); ?></p>
+                <h2><span class="dashicons dashicons-clipboard"></span> <?php esc_html_e('Mis Inscripciones', 'flavor-platform'); ?></h2>
+                <p class="flavor-panel-subtitle"><?php esc_html_e('Historial de matriculas en cursos', 'flavor-platform'); ?></p>
             </div>
 
             <div class="flavor-panel-kpis">
@@ -619,21 +619,21 @@ class Flavor_Cursos_Dashboard_Tab {
                     <span class="flavor-kpi-icon dashicons dashicons-book"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas['activas']); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Activas', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Activas', 'flavor-platform'); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-primary">
                     <span class="flavor-kpi-icon dashicons dashicons-yes-alt"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas['completadas']); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Completadas', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Completadas', 'flavor-platform'); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icon dashicons dashicons-no-alt"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas['canceladas']); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Canceladas', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Canceladas', 'flavor-platform'); ?></span>
                     </div>
                 </div>
             </div>
@@ -641,9 +641,9 @@ class Flavor_Cursos_Dashboard_Tab {
             <?php if (empty($inscripciones)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-clipboard"></span>
-                    <p><?php esc_html_e('No tienes inscripciones registradas.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No tienes inscripciones registradas.', 'flavor-platform'); ?></p>
                     <a href="<?php echo esc_url(home_url('/cursos/')); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php esc_html_e('Explorar cursos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Explorar cursos', 'flavor-platform'); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -666,13 +666,13 @@ class Flavor_Cursos_Dashboard_Tab {
                                     <?php if ($inscripcion->monto_pagado > 0): ?>
                                         &bull; <?php echo number_format_i18n($inscripcion->monto_pagado, 2); ?> &euro;
                                     <?php elseif ($inscripcion->es_gratuito): ?>
-                                        &bull; <?php esc_html_e('Gratuito', 'flavor-chat-ia'); ?>
+                                        &bull; <?php esc_html_e('Gratuito', 'flavor-platform'); ?>
                                     <?php endif; ?>
                                 </div>
                             </div>
                             <?php if ($inscripcion->estado === 'activa'): ?>
                                 <a href="<?php echo esc_url(home_url('/cursos/' . $inscripcion->slug . '/aula')); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
-                                    <?php esc_html_e('Acceder', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Acceder', 'flavor-platform'); ?>
                                 </a>
                             <?php elseif ($inscripcion->estado === 'completada' && $inscripcion->certificado_emitido): ?>
                                 <a href="<?php echo esc_url($inscripcion->certificado_url ?? '#'); ?>" class="flavor-btn flavor-btn-sm flavor-btn-success" target="_blank">
@@ -693,7 +693,7 @@ class Flavor_Cursos_Dashboard_Tab {
     public function render_tab_certificados() {
         $user_id = get_current_user_id();
         if (!$user_id) {
-            echo '<p>' . esc_html__('Debes iniciar sesion para ver este contenido.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Debes iniciar sesion para ver este contenido.', 'flavor-platform') . '</p>';
             return;
         }
 
@@ -718,8 +718,8 @@ class Flavor_Cursos_Dashboard_Tab {
         ?>
         <div class="flavor-panel flavor-cursos-certificados-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-awards"></span> <?php esc_html_e('Mis Certificados', 'flavor-chat-ia'); ?></h2>
-                <p class="flavor-panel-subtitle"><?php esc_html_e('Tus logros y acreditaciones obtenidas', 'flavor-chat-ia'); ?></p>
+                <h2><span class="dashicons dashicons-awards"></span> <?php esc_html_e('Mis Certificados', 'flavor-platform'); ?></h2>
+                <p class="flavor-panel-subtitle"><?php esc_html_e('Tus logros y acreditaciones obtenidas', 'flavor-platform'); ?></p>
             </div>
 
             <div class="flavor-panel-kpis">
@@ -727,7 +727,7 @@ class Flavor_Cursos_Dashboard_Tab {
                     <span class="flavor-kpi-icon dashicons dashicons-awards"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($total_certificados); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Certificados Obtenidos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Certificados Obtenidos', 'flavor-platform'); ?></span>
                     </div>
                 </div>
             </div>
@@ -735,10 +735,10 @@ class Flavor_Cursos_Dashboard_Tab {
             <?php if (empty($certificados)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-awards"></span>
-                    <p><?php esc_html_e('Aun no has obtenido certificados.', 'flavor-chat-ia'); ?></p>
-                    <p><?php esc_html_e('Completa cursos para obtener tus acreditaciones.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Aun no has obtenido certificados.', 'flavor-platform'); ?></p>
+                    <p><?php esc_html_e('Completa cursos para obtener tus acreditaciones.', 'flavor-platform'); ?></p>
                     <a href="<?php echo esc_url(home_url('/cursos/')); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php esc_html_e('Explorar cursos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Explorar cursos', 'flavor-platform'); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -751,7 +751,7 @@ class Flavor_Cursos_Dashboard_Tab {
                             <div class="cursos-certificado-info">
                                 <div class="cursos-certificado-titulo"><?php echo esc_html($certificado->titulo); ?></div>
                                 <div class="cursos-certificado-fecha">
-                                    <?php esc_html_e('Emitido el', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Emitido el', 'flavor-platform'); ?>
                                     <?php echo esc_html(date_i18n('d M Y', strtotime($certificado->certificado_fecha))); ?>
                                     <?php if (!empty($certificado->duracion_horas)): ?>
                                         &bull; <?php echo number_format_i18n($certificado->duracion_horas); ?>h
@@ -766,11 +766,11 @@ class Flavor_Cursos_Dashboard_Tab {
                                 <?php if (!empty($certificado->certificado_url)): ?>
                                     <a href="<?php echo esc_url($certificado->certificado_url); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary" target="_blank">
                                         <span class="dashicons dashicons-download"></span>
-                                        <?php esc_html_e('Descargar', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Descargar', 'flavor-platform'); ?>
                                     </a>
                                 <?php else: ?>
                                     <a href="<?php echo esc_url(home_url('/cursos/' . $certificado->slug . '/certificado')); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
-                                        <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Ver', 'flavor-platform'); ?>
                                     </a>
                                 <?php endif; ?>
                             </div>
@@ -781,7 +781,7 @@ class Flavor_Cursos_Dashboard_Tab {
                 <div class="flavor-panel-footer">
                     <p class="flavor-text-muted flavor-text-center">
                         <span class="dashicons dashicons-info"></span>
-                        <?php esc_html_e('Los certificados son verificables digitalmente y pueden compartirse en redes profesionales.', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Los certificados son verificables digitalmente y pueden compartirse en redes profesionales.', 'flavor-platform'); ?>
                     </p>
                 </div>
             <?php endif; ?>

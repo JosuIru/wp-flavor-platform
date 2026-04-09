@@ -95,10 +95,10 @@ $estado_badges = [
 ];
 
 $estado_labels = [
-    'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-    'confirmado' => __('Confirmado', 'flavor-chat-ia'),
-    'completado' => __('Completado', 'flavor-chat-ia'),
-    'cancelado' => __('Cancelado', 'flavor-chat-ia'),
+    'pendiente' => __('Pendiente', 'flavor-platform'),
+    'confirmado' => __('Confirmado', 'flavor-platform'),
+    'completado' => __('Completado', 'flavor-platform'),
+    'cancelado' => __('Cancelado', 'flavor-platform'),
 ];
 ?>
 
@@ -113,8 +113,8 @@ $estado_labels = [
     <?php if (!$tablas_disponibles): ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <strong><?php esc_html_e('Sin datos disponibles:', 'flavor-chat-ia'); ?></strong>
-        <?php esc_html_e('Falta la tabla del módulo Grupos de Consumo o aún no hay pedidos registrados.', 'flavor-chat-ia'); ?>
+        <strong><?php esc_html_e('Sin datos disponibles:', 'flavor-platform'); ?></strong>
+        <?php esc_html_e('Falta la tabla del módulo Grupos de Consumo o aún no hay pedidos registrados.', 'flavor-platform'); ?>
     </div>
     <?php endif; ?>
 
@@ -123,16 +123,16 @@ $estado_labels = [
         <div class="dm-header__content">
             <h1 class="dm-header__title">
                 <span class="dashicons dashicons-carrot"></span>
-                <?php esc_html_e('Grupos de Consumo', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Grupos de Consumo', 'flavor-platform'); ?>
             </h1>
             <p class="dm-header__description">
-                <?php esc_html_e('Gestión de pedidos, productos y productores del grupo de consumo', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Gestión de pedidos, productos y productores del grupo de consumo', 'flavor-platform'); ?>
             </p>
         </div>
         <div class="dm-header__actions">
             <?php if (!$hay_ciclo_abierto): ?>
             <a href="<?php echo esc_url(admin_url('post-new.php?post_type=gc_ciclo')); ?>" class="dm-btn dm-btn--primary">
-                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nuevo Ciclo', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nuevo Ciclo', 'flavor-platform'); ?>
             </a>
             <?php endif; ?>
         </div>
@@ -144,11 +144,11 @@ $estado_labels = [
         <div class="dm-alert dm-alert--success">
             <span class="dashicons dashicons-calendar-alt"></span>
             <div>
-                <strong><?php esc_html_e('Ciclo activo:', 'flavor-chat-ia'); ?> <?php the_title(); ?></strong>
+                <strong><?php esc_html_e('Ciclo activo:', 'flavor-platform'); ?> <?php the_title(); ?></strong>
                 <div style="margin-top: 4px;">
-                    <?php esc_html_e('Fecha cierre:', 'flavor-chat-ia'); ?> <?php echo esc_html(get_post_meta(get_the_ID(), '_gc_fecha_cierre', true)); ?>
+                    <?php esc_html_e('Fecha cierre:', 'flavor-platform'); ?> <?php echo esc_html(get_post_meta(get_the_ID(), '_gc_fecha_cierre', true)); ?>
                     <a href="<?php echo esc_url(admin_url('post.php?post=' . get_the_ID() . '&action=edit')); ?>" class="dm-btn dm-btn--sm dm-btn--secondary" style="margin-left: 12px;">
-                        <?php esc_html_e('Gestionar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Gestionar', 'flavor-platform'); ?>
                     </a>
                 </div>
             </div>
@@ -157,9 +157,9 @@ $estado_labels = [
     <?php else: ?>
         <div class="dm-alert dm-alert--warning">
             <span class="dashicons dashicons-warning"></span>
-            <strong><?php esc_html_e('No hay ningún ciclo abierto actualmente.', 'flavor-chat-ia'); ?></strong>
+            <strong><?php esc_html_e('No hay ningún ciclo abierto actualmente.', 'flavor-platform'); ?></strong>
             <a href="<?php echo esc_url(admin_url('post-new.php?post_type=gc_ciclo')); ?>" class="dm-btn dm-btn--sm dm-btn--primary" style="margin-left: 12px;">
-                <?php esc_html_e('Crear Ciclo', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Crear Ciclo', 'flavor-platform'); ?>
             </a>
         </div>
     <?php endif; ?>
@@ -172,7 +172,7 @@ $estado_labels = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_pedidos); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Total Pedidos', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Total Pedidos', 'flavor-platform'); ?></div>
             </div>
         </div>
 
@@ -182,7 +182,7 @@ $estado_labels = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($pedidos_pendientes); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Pendientes', 'flavor-platform'); ?></div>
             </div>
         </div>
 
@@ -192,7 +192,7 @@ $estado_labels = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($pedidos_completados); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Completados', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Completados', 'flavor-platform'); ?></div>
             </div>
         </div>
 
@@ -202,7 +202,7 @@ $estado_labels = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($ventas_mes, 2); ?> €</div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Ventas del mes', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Ventas del mes', 'flavor-platform'); ?></div>
             </div>
         </div>
 
@@ -212,7 +212,7 @@ $estado_labels = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_productos); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Productos', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Productos', 'flavor-platform'); ?></div>
             </div>
         </div>
 
@@ -222,7 +222,7 @@ $estado_labels = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_productores); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Productores', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Productores', 'flavor-platform'); ?></div>
             </div>
         </div>
     </div>
@@ -230,47 +230,47 @@ $estado_labels = [
     <!-- Accesos Rápidos -->
     <div class="dm-card">
         <h2 class="dm-card__title">
-            <span class="dashicons dashicons-admin-links"></span> <?php esc_html_e('Accesos Rápidos', 'flavor-chat-ia'); ?>
+            <span class="dashicons dashicons-admin-links"></span> <?php esc_html_e('Accesos Rápidos', 'flavor-platform'); ?>
         </h2>
         <div class="dm-action-grid">
             <a href="<?php echo esc_url(admin_url('admin.php?page=gc-pedidos')); ?>" class="dm-action-card">
                 <span class="dashicons dashicons-clipboard dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Pedidos', 'flavor-chat-ia'); ?></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Pedidos', 'flavor-platform'); ?></span>
                 <?php if ($pedidos_pendientes > 0): ?>
                     <span class="dm-badge dm-badge--warning"><?php echo $pedidos_pendientes; ?></span>
                 <?php endif; ?>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=gc-consumidores')); ?>" class="dm-action-card dm-action-card--success">
                 <span class="dashicons dashicons-admin-users dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Consumidores', 'flavor-chat-ia'); ?></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Consumidores', 'flavor-platform'); ?></span>
             </a>
             <a href="<?php echo esc_url(admin_url('edit.php?post_type=gc_ciclo')); ?>" class="dm-action-card dm-action-card--warning">
                 <span class="dashicons dashicons-calendar-alt dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Ciclos', 'flavor-chat-ia'); ?></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Ciclos', 'flavor-platform'); ?></span>
             </a>
             <a href="<?php echo esc_url(admin_url('edit.php?post_type=gc_producto')); ?>" class="dm-action-card dm-action-card--pink">
                 <span class="dashicons dashicons-carrot dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Productos', 'flavor-chat-ia'); ?></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Productos', 'flavor-platform'); ?></span>
             </a>
             <a href="<?php echo esc_url(admin_url('edit.php?post_type=gc_productor')); ?>" class="dm-action-card dm-action-card--purple">
                 <span class="dashicons dashicons-store dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Productores', 'flavor-chat-ia'); ?></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Productores', 'flavor-platform'); ?></span>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=gc-consolidado')); ?>" class="dm-action-card dm-action-card--info">
                 <span class="dashicons dashicons-list-view dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Consolidado', 'flavor-chat-ia'); ?></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Consolidado', 'flavor-platform'); ?></span>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=gc-solicitudes')); ?>" class="dm-action-card">
                 <span class="dashicons dashicons-businessperson dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Solicitudes', 'flavor-chat-ia'); ?></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Solicitudes', 'flavor-platform'); ?></span>
             </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=gc-configuracion')); ?>" class="dm-action-card">
                 <span class="dashicons dashicons-admin-settings dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Configuración', 'flavor-chat-ia'); ?></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Configuración', 'flavor-platform'); ?></span>
             </a>
             <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', '')); ?>" class="dm-action-card" target="_blank">
                 <span class="dashicons dashicons-external dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Portal público', 'flavor-chat-ia'); ?></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Portal público', 'flavor-platform'); ?></span>
             </a>
         </div>
     </div>
@@ -279,7 +279,7 @@ $estado_labels = [
     <div class="dm-grid dm-grid--2">
         <div class="dm-card">
             <h3 class="dm-card__title">
-                <span class="dashicons dashicons-chart-bar"></span> <?php esc_html_e('Productos Más Pedidos', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-chart-bar"></span> <?php esc_html_e('Productos Más Pedidos', 'flavor-platform'); ?>
             </h3>
             <div class="dm-chart-container">
                 <canvas id="grafico-productos-top"></canvas>
@@ -288,7 +288,7 @@ $estado_labels = [
 
         <div class="dm-card">
             <h3 class="dm-card__title">
-                <span class="dashicons dashicons-chart-line"></span> <?php esc_html_e('Actividad por Ciclo', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-chart-line"></span> <?php esc_html_e('Actividad por Ciclo', 'flavor-platform'); ?>
             </h3>
             <div class="dm-chart-container">
                 <canvas id="grafico-ciclos"></canvas>
@@ -301,7 +301,7 @@ $estado_labels = [
         <!-- Productos top -->
         <div class="dm-card">
             <h3 class="dm-card__title">
-                <span class="dashicons dashicons-star-filled"></span> <?php esc_html_e('Productos Destacados', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-star-filled"></span> <?php esc_html_e('Productos Destacados', 'flavor-platform'); ?>
             </h3>
             <?php if (!empty($productos_top)): ?>
                 <ol class="dm-ranking">
@@ -315,22 +315,22 @@ $estado_labels = [
                     <?php endforeach; ?>
                 </ol>
             <?php else: ?>
-                <p class="dm-text-muted"><?php esc_html_e('Sin datos de productos.', 'flavor-chat-ia'); ?></p>
+                <p class="dm-text-muted"><?php esc_html_e('Sin datos de productos.', 'flavor-platform'); ?></p>
             <?php endif; ?>
         </div>
 
         <!-- Pedidos recientes -->
         <div class="dm-card">
             <h3 class="dm-card__title">
-                <span class="dashicons dashicons-update"></span> <?php esc_html_e('Pedidos Recientes', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-update"></span> <?php esc_html_e('Pedidos Recientes', 'flavor-platform'); ?>
             </h3>
             <?php if (!empty($pedidos_recientes)): ?>
                 <table class="dm-table">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('Producto', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Cantidad', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Producto', 'flavor-platform'); ?></th>
+                            <th><?php esc_html_e('Cantidad', 'flavor-platform'); ?></th>
+                            <th><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -356,12 +356,12 @@ $estado_labels = [
             <?php else: ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-cart dm-empty__icon"></span>
-                    <p><?php esc_html_e('No hay pedidos registrados.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay pedidos registrados.', 'flavor-platform'); ?></p>
                 </div>
             <?php endif; ?>
             <div class="dm-card__footer">
                 <a href="<?php echo esc_url(admin_url('admin.php?page=gc-pedidos')); ?>" class="dm-btn dm-btn--secondary dm-btn--sm">
-                    <?php esc_html_e('Ver todos los pedidos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver todos los pedidos', 'flavor-platform'); ?>
                 </a>
             </div>
         </div>
@@ -370,24 +370,24 @@ $estado_labels = [
     <!-- Resumen -->
     <div class="dm-card">
         <h3 class="dm-card__title">
-            <span class="dashicons dashicons-lightbulb"></span> <?php esc_html_e('Resumen del Grupo', 'flavor-chat-ia'); ?>
+            <span class="dashicons dashicons-lightbulb"></span> <?php esc_html_e('Resumen del Grupo', 'flavor-platform'); ?>
         </h3>
         <div class="dm-focus-list">
             <div class="dm-focus-item">
                 <span class="dm-focus-item__value"><?php echo number_format_i18n($total_pedidos); ?></span>
-                <span class="dm-focus-item__label"><?php esc_html_e('pedidos totales', 'flavor-chat-ia'); ?></span>
+                <span class="dm-focus-item__label"><?php esc_html_e('pedidos totales', 'flavor-platform'); ?></span>
             </div>
             <div class="dm-focus-item">
                 <span class="dm-focus-item__value"><?php echo number_format_i18n($ventas_mes, 0); ?>€</span>
-                <span class="dm-focus-item__label"><?php esc_html_e('facturado este mes', 'flavor-chat-ia'); ?></span>
+                <span class="dm-focus-item__label"><?php esc_html_e('facturado este mes', 'flavor-platform'); ?></span>
             </div>
             <div class="dm-focus-item">
                 <span class="dm-focus-item__value"><?php echo number_format_i18n($total_productos); ?></span>
-                <span class="dm-focus-item__label"><?php esc_html_e('productos en catálogo', 'flavor-chat-ia'); ?></span>
+                <span class="dm-focus-item__label"><?php esc_html_e('productos en catálogo', 'flavor-platform'); ?></span>
             </div>
             <div class="dm-focus-item">
                 <span class="dm-focus-item__value"><?php echo number_format_i18n($total_productores); ?></span>
-                <span class="dm-focus-item__label"><?php esc_html_e('productores activos', 'flavor-chat-ia'); ?></span>
+                <span class="dm-focus-item__label"><?php esc_html_e('productores activos', 'flavor-platform'); ?></span>
             </div>
         </div>
     </div>
@@ -413,7 +413,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 ?>],
                 datasets: [{
-                    label: '<?php esc_attr_e('Cantidad', 'flavor-chat-ia'); ?>',
+                    label: '<?php esc_attr_e('Cantidad', 'flavor-platform'); ?>',
                     data: [<?php foreach ($productos_top as $prod) echo (int) $prod->total_cantidad . ','; ?>],
                     backgroundColor: primaryColor,
                     borderRadius: 4
@@ -436,14 +436,14 @@ document.addEventListener('DOMContentLoaded', function() {
             data: {
                 labels: [<?php foreach ($actividad_ciclos as $ciclo) echo "'" . esc_js($ciclo->ciclo) . "',"; ?>],
                 datasets: [{
-                    label: '<?php esc_attr_e('Pedidos', 'flavor-chat-ia'); ?>',
+                    label: '<?php esc_attr_e('Pedidos', 'flavor-platform'); ?>',
                     data: [<?php foreach ($actividad_ciclos as $ciclo) echo (int) $ciclo->total_pedidos . ','; ?>],
                     borderColor: primaryColor,
                     backgroundColor: primaryColor + '20',
                     tension: 0.4,
                     fill: true
                 }, {
-                    label: '<?php esc_attr_e('Ventas (€)', 'flavor-chat-ia'); ?>',
+                    label: '<?php esc_attr_e('Ventas (€)', 'flavor-platform'); ?>',
                     data: [<?php foreach ($actividad_ciclos as $ciclo) echo (float) ($ciclo->total_ventas ?: 0) . ','; ?>],
                     borderColor: successColor,
                     backgroundColor: successColor + '20',

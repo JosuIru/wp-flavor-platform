@@ -22,12 +22,12 @@ if (!defined('ABSPATH')) {
 }
 
 $items = $items ?? [];
-$title = $title ?? __('Tareas Pendientes', 'flavor-chat-ia');
+$title = $title ?? __('Tareas Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $color = $color ?? 'blue';
 $interactive = $interactive ?? true;
 $ajax_action = $ajax_action ?? '';
 $filters = $filters ?? [];
-$empty_text = $empty_text ?? __('No hay tareas pendientes', 'flavor-chat-ia');
+$empty_text = $empty_text ?? __('No hay tareas pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $add_action = $add_action ?? [];
 
 // Clases de color
@@ -63,7 +63,7 @@ $todo_id = 'todo-' . wp_rand(1000, 9999);
             <?php if ($total > 0): ?>
                 <span class="text-sm text-gray-500">
                     <?php printf(
-                        esc_html__('%d de %d', 'flavor-chat-ia'),
+                        esc_html__('%d de %d', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $completed,
                         $total
                     ); ?>
@@ -188,7 +188,7 @@ $todo_id = 'todo-' . wp_rand(1000, 9999);
             <button onclick="<?php echo esc_attr($add_action['action'] ?? ''); ?>"
                     class="w-full py-2 px-4 text-sm font-medium <?php echo esc_attr($color_classes['text']); ?> hover:<?php echo esc_attr($color_classes['bg']); ?> rounded-lg transition-colors flex items-center justify-center gap-2">
                 <span>+</span>
-                <?php echo esc_html($add_action['label'] ?? __('Añadir tarea', 'flavor-chat-ia')); ?>
+                <?php echo esc_html($add_action['label'] ?? __('Añadir tarea', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
             </button>
         </div>
     <?php endif; ?>

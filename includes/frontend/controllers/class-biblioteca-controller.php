@@ -209,15 +209,15 @@ class Flavor_Frontend_Biblioteca_Controller extends Flavor_Frontend_Controller_B
 
     protected function ajax_solicitar_prestamo($data) {
         if (!is_user_logged_in()) {
-            return ['error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
+            return ['error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
-        return ['success' => true, 'mensaje' => __('Préstamo solicitado', 'flavor-chat-ia')];
+        return ['success' => true, 'mensaje' => __('Préstamo solicitado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     protected function ajax_devolver_libro($data) {
         if (!is_user_logged_in()) {
-            return ['error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
+            return ['error' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
-        return ['success' => true, 'mensaje' => __('Libro devuelto', 'flavor-chat-ia')];
+        return ['success' => true, 'mensaje' => __('Libro devuelto', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 }

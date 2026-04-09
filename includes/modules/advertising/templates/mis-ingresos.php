@@ -66,9 +66,9 @@ $minimo_pago = $configuracion['minimo_pago'] ?? 10;
 <div class="flavor-ads-ingresos-page">
     <!-- Header -->
     <div class="ads-ingresos-header">
-        <h2><?php esc_html_e('Mis Ingresos por Publicidad', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Mis Ingresos por Publicidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <p class="ads-ingresos-intro">
-            <?php esc_html_e('Como miembro activo de la comunidad, recibes una parte de los ingresos publicitarios generados en la plataforma.', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Como miembro activo de la comunidad, recibes una parte de los ingresos publicitarios generados en la plataforma.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </div>
 
@@ -80,7 +80,7 @@ $minimo_pago = $configuracion['minimo_pago'] ?? 10;
             </div>
             <div class="ingreso-content">
                 <span class="ingreso-valor"><?php echo esc_html(number_format((float)$ingresos_mes, 2)); ?>€</span>
-                <span class="ingreso-label"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></span>
+                <span class="ingreso-label"><?php esc_html_e('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -90,7 +90,7 @@ $minimo_pago = $configuracion['minimo_pago'] ?? 10;
             </div>
             <div class="ingreso-content">
                 <span class="ingreso-valor"><?php echo esc_html(number_format((float)$ingresos_total, 2)); ?>€</span>
-                <span class="ingreso-label"><?php esc_html_e('Total ganado', 'flavor-chat-ia'); ?></span>
+                <span class="ingreso-label"><?php esc_html_e('Total ganado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -100,10 +100,10 @@ $minimo_pago = $configuracion['minimo_pago'] ?? 10;
             </div>
             <div class="ingreso-content">
                 <span class="ingreso-valor"><?php echo esc_html(number_format((float)$pendiente_pago, 2)); ?>€</span>
-                <span class="ingreso-label"><?php esc_html_e('Pendiente de pago', 'flavor-chat-ia'); ?></span>
+                <span class="ingreso-label"><?php esc_html_e('Pendiente de pago', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <?php if ((float)$pendiente_pago >= $minimo_pago): ?>
-            <span class="ingreso-badge"><?php esc_html_e('Disponible', 'flavor-chat-ia'); ?></span>
+            <span class="ingreso-badge"><?php esc_html_e('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             <?php endif; ?>
         </div>
     </div>
@@ -111,20 +111,20 @@ $minimo_pago = $configuracion['minimo_pago'] ?? 10;
     <!-- Información del sistema -->
     <div class="ads-info-section">
         <div class="ads-info-box">
-            <h4><?php esc_html_e('¿Cómo funciona?', 'flavor-chat-ia'); ?></h4>
+            <h4><?php esc_html_e('¿Cómo funciona?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
             <ul>
                 <li>
                     <span class="dashicons dashicons-yes-alt"></span>
-                    <?php esc_html_e('Los anunciantes pagan por mostrar sus anuncios en la plataforma.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Los anunciantes pagan por mostrar sus anuncios en la plataforma.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </li>
                 <li>
                     <span class="dashicons dashicons-yes-alt"></span>
-                    <?php esc_html_e('Un porcentaje de esos ingresos se distribuye entre los miembros activos.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Un porcentaje de esos ingresos se distribuye entre los miembros activos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </li>
                 <li>
                     <span class="dashicons dashicons-yes-alt"></span>
                     <?php printf(
-                        esc_html__('Los pagos se procesan cuando alcanzas el mínimo de %s€.', 'flavor-chat-ia'),
+                        esc_html__('Los pagos se procesan cuando alcanzas el mínimo de %s€.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         number_format($minimo_pago, 2)
                     ); ?>
                 </li>
@@ -132,42 +132,42 @@ $minimo_pago = $configuracion['minimo_pago'] ?? 10;
         </div>
 
         <div class="ads-pool-box">
-            <h4><?php esc_html_e('Pool Comunitario', 'flavor-chat-ia'); ?></h4>
+            <h4><?php esc_html_e('Pool Comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
             <div class="pool-valor"><?php echo esc_html(number_format((float)$pool_comunidad, 2)); ?>€</div>
-            <p><?php esc_html_e('Acumulado para distribuir entre la comunidad', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('Acumulado para distribuir entre la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     </div>
 
     <!-- Historial de transacciones -->
     <?php if (!empty($historial)): ?>
     <div class="ads-historial-section">
-        <h3><?php esc_html_e('Historial de ingresos', 'flavor-chat-ia'); ?></h3>
+        <h3><?php esc_html_e('Historial de ingresos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
         <div class="ads-historial-table-wrapper">
             <table class="ads-historial-table">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Concepto', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Cantidad', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Concepto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Cantidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($historial as $transaccion): ?>
                     <tr>
                         <td><?php echo esc_html(date_i18n('d/m/Y H:i', strtotime($transaccion->fecha))); ?></td>
-                        <td><?php echo esc_html($transaccion->concepto ?? __('Reparto publicitario', 'flavor-chat-ia')); ?></td>
+                        <td><?php echo esc_html($transaccion->concepto ?? __('Reparto publicitario', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></td>
                         <td class="cantidad"><?php echo esc_html(number_format((float)$transaccion->cantidad, 2)); ?>€</td>
                         <td>
                             <span class="estado-badge estado-<?php echo esc_attr($transaccion->estado); ?>">
                                 <?php
                                 switch ($transaccion->estado) {
                                     case 'completado':
-                                        esc_html_e('Pagado', 'flavor-chat-ia');
+                                        esc_html_e('Pagado', FLAVOR_PLATFORM_TEXT_DOMAIN);
                                         break;
                                     case 'pendiente':
-                                        esc_html_e('Pendiente', 'flavor-chat-ia');
+                                        esc_html_e('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN);
                                         break;
                                     default:
                                         echo esc_html(ucfirst($transaccion->estado));
@@ -184,7 +184,7 @@ $minimo_pago = $configuracion['minimo_pago'] ?? 10;
     <?php else: ?>
     <div class="ads-empty-historial">
         <span class="dashicons dashicons-chart-line"></span>
-        <p><?php esc_html_e('Aún no tienes ingresos registrados. Participa activamente en la comunidad para empezar a recibir recompensas.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('Aún no tienes ingresos registrados. Participa activamente en la comunidad para empezar a recibir recompensas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php endif; ?>
 </div>

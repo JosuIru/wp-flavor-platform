@@ -35,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         <button type="button"
                 class="vbp-zoom-btn"
                 @click="zoomOut()"
-                title="<?php esc_attr_e( 'Alejar (Ctrl+-)', 'flavor-chat-ia' ); ?>">
+                title="<?php esc_attr_e( 'Alejar (Ctrl+-)', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="11" cy="11" r="8"/>
                 <path d="M21 21l-4.35-4.35M8 11h6"/>
@@ -64,7 +64,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <button type="button"
                         class="vbp-zoom-preset"
                         @click="fitToScreen(); $refs.zoomDropdown.classList.add('hidden')">
-                    <?php esc_html_e( 'Ajustar', 'flavor-chat-ia' ); ?>
+                    <?php esc_html_e( 'Ajustar', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                 </button>
             </div>
         </div>
@@ -72,7 +72,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         <button type="button"
                 class="vbp-zoom-btn"
                 @click="zoomIn()"
-                title="<?php esc_attr_e( 'Acercar (Ctrl++)', 'flavor-chat-ia' ); ?>">
+                title="<?php esc_attr_e( 'Acercar (Ctrl++)', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="11" cy="11" r="8"/>
                 <path d="M21 21l-4.35-4.35M11 8v6M8 11h6"/>
@@ -82,7 +82,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         <button type="button"
                 class="vbp-zoom-btn"
                 @click="resetZoom()"
-                title="<?php esc_attr_e( 'Zoom 100% (Ctrl+0)', 'flavor-chat-ia' ); ?>"
+                title="<?php esc_attr_e( 'Zoom 100% (Ctrl+0)', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
                 x-show="zoom !== 100">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 21l-4.35-4.35"/>

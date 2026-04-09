@@ -639,17 +639,17 @@ class Flavor_Notification_Center {
             'restUrl' => rest_url(),
             'nonce' => wp_create_nonce('flavor_notifications'),
             'userId' => get_current_user_id(),
-            'preferencesUrl' => admin_url('admin.php?page=flavor-settings&tab=notifications'),
+            'preferencesUrl' => admin_url('admin.php?page=flavor-platform-settings&tab=notifications'),
             'allNotificationsUrl' => Flavor_Chat_Helpers::get_action_url('', '') . '#notifications',
             'enablePolling' => true,
             'soundEnabled' => get_user_meta(get_current_user_id(), 'flavor_notification_sound', true) !== 'off',
             'iconUrl' => FLAVOR_CHAT_IA_URL . 'assets/images/icon-notification.png',
             'i18n' => [
-                'confirmDelete' => __('¿Eliminar esta notificación?', 'flavor-chat-ia'),
-                'noNotifications' => __('No tienes notificaciones', 'flavor-chat-ia'),
-                'markAllRead' => __('Marcar todas como leídas', 'flavor-chat-ia'),
-                'loadMore' => __('Cargar más', 'flavor-chat-ia'),
-                'loading' => __('Cargando...', 'flavor-chat-ia'),
+                'confirmDelete' => __('¿Eliminar esta notificación?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'noNotifications' => __('No tienes notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'markAllRead' => __('Marcar todas como leídas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'loadMore' => __('Cargar más', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'loading' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }

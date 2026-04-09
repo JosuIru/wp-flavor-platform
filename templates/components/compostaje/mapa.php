@@ -9,8 +9,8 @@
 if (!defined('ABSPATH')) exit;
 
 // Valores por defecto
-$titulo = $args['titulo'] ?? __('Puntos de Compostaje', 'flavor-chat-ia');
-$subtitulo = $args['subtitulo'] ?? __('Encuentra el punto más cercano para compostar', 'flavor-chat-ia');
+$titulo = $args['titulo'] ?? __('Puntos de Compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$subtitulo = $args['subtitulo'] ?? __('Encuentra el punto más cercano para compostar', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $puntos_compostaje = $args['puntos_compostaje'] ?? [];
 $altura_mapa = $args['altura_mapa'] ?? '500px';
 $mostrar_filtros = $args['mostrar_filtros'] ?? true;
@@ -82,13 +82,13 @@ $colores_residuos = [
         <?php if ($mostrar_filtros): ?>
         <div class="flavor-compostaje-filtros mb-8 flex flex-wrap gap-3 justify-center">
             <button class="flavor-filtro-btn active px-4 py-2 rounded-full bg-green-500 text-white font-medium" data-filtro="todas">
-                <?php echo esc_html__('Todos los puntos', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Todos los puntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <button class="flavor-filtro-btn px-4 py-2 rounded-full bg-white text-gray-700 font-medium border border-gray-300" data-filtro="abiertos">
-                <?php echo esc_html__('Abiertos ahora', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Abiertos ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <button class="flavor-filtro-btn px-4 py-2 rounded-full bg-white text-gray-700 font-medium border border-gray-300" data-filtro="cercanos">
-                <?php echo esc_html__('Más cercanos', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Más cercanos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
         <?php endif; ?>
@@ -103,14 +103,14 @@ $colores_residuos = [
                     </div>
                 </div>
                 <p class="text-sm text-gray-500 mt-2">
-                    💡 <?php echo esc_html__('Haz clic en cualquier punto para ver los detalles y horario', 'flavor-chat-ia'); ?>
+                    💡 <?php echo esc_html__('Haz clic en cualquier punto para ver los detalles y horario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
             <!-- Panel lateral de puntos -->
             <div class="bg-white rounded-2xl shadow-lg p-6 overflow-y-auto" style="max-height: 600px;">
                 <h3 class="text-xl font-bold text-gray-900 mb-4">
-                    <?php echo esc_html__('Puntos Cercanos', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Puntos Cercanos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
 
                 <div class="space-y-4 flavor-puntos-lista">
@@ -127,11 +127,11 @@ $colores_residuos = [
                             </h4>
                             <?php if ($punto['abierta']): ?>
                             <span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">
-                                <?php echo esc_html__('Abierto', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Abierto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                             <?php else: ?>
                             <span class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full">
-                                <?php echo esc_html__('Cerrado', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Cerrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                             <?php endif; ?>
                         </div>
@@ -147,29 +147,29 @@ $colores_residuos = [
                         <!-- Capacidad -->
                         <div class="mb-3">
                             <div class="text-xs text-gray-600 mb-1">
-                                <?php echo esc_html__('Capacidad', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Capacidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2">
                                 <div class="bg-green-500 h-2 rounded-full"
                                      style="width: <?php echo (int)$punto['capacidad_actual']; ?>%;"></div>
                             </div>
                             <div class="text-xs text-gray-600 mt-1">
-                                <?php echo (int)$punto['capacidad_actual']; ?>% <?php echo esc_html__('lleno', 'flavor-chat-ia'); ?>
+                                <?php echo (int)$punto['capacidad_actual']; ?>% <?php echo esc_html__('lleno', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </div>
                         </div>
 
                         <!-- Tipos aceptados -->
                         <div class="mb-3">
                             <p class="text-xs font-semibold text-gray-700 mb-2">
-                                ✓ <?php echo esc_html__('Acepta', 'flavor-chat-ia'); ?>
+                                ✓ <?php echo esc_html__('Acepta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </p>
                             <div class="flex flex-wrap gap-1">
                                 <?php
                                 $tipos_labels = [
-                                    'residuos_verdes' => __('Residuos Verdes', 'flavor-chat-ia'),
-                                    'restos_comida' => __('Restos de Comida', 'flavor-chat-ia'),
-                                    'papel' => __('Papel', 'flavor-chat-ia'),
-                                    'carton' => __('Cartón', 'flavor-chat-ia'),
+                                    'residuos_verdes' => __('Residuos Verdes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    'restos_comida' => __('Restos de Comida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    'papel' => __('Papel', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                    'carton' => __('Cartón', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 ];
                                 foreach ($punto['tipos_aceptados'] as $tipo):
                                     $color = $colores_residuos[$tipo] ?? '#6b7280';
@@ -197,15 +197,15 @@ $colores_residuos = [
         <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-green-50 rounded-xl p-6 text-center">
                 <div class="text-4xl font-bold text-green-600 mb-2"><?php echo count($puntos_compostaje); ?></div>
-                <p class="text-gray-700"><?php echo esc_html__('Puntos de compostaje', 'flavor-chat-ia'); ?></p>
+                <p class="text-gray-700"><?php echo esc_html__('Puntos de compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <div class="bg-blue-50 rounded-xl p-6 text-center">
                 <div class="text-4xl font-bold text-blue-600 mb-2">24/7</div>
-                <p class="text-gray-700"><?php echo esc_html__('Disponibilidad', 'flavor-chat-ia'); ?></p>
+                <p class="text-gray-700"><?php echo esc_html__('Disponibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <div class="bg-purple-50 rounded-xl p-6 text-center">
                 <div class="text-4xl font-bold text-purple-600 mb-2">4+</div>
-                <p class="text-gray-700"><?php echo esc_html__('Tipos de residuos', 'flavor-chat-ia'); ?></p>
+                <p class="text-gray-700"><?php echo esc_html__('Tipos de residuos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
     </div>

@@ -58,7 +58,7 @@ class Flavor_Trading_IA_Cerebro {
 
         if (empty($respuesta['success'])) {
             $decision_error = $this->crear_decision_espera(
-                isset($respuesta['error']) ? $respuesta['error'] : __('Error al comunicar con la IA', 'flavor-chat-ia')
+                isset($respuesta['error']) ? $respuesta['error'] : __('Error al comunicar con la IA', 'flavor-platform')
             );
             $this->registrar_decision($decision_error);
             return $decision_error;

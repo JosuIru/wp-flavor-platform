@@ -55,7 +55,7 @@ $map_id = 'map-' . wp_unique_id();
 
         <?php if ($mostrar_listado && !empty($marcadores)) : ?>
         <aside class="fgm-sidebar">
-            <h3 class="fgm-sidebar__title"><?php esc_html_e('Ubicaciones', 'flavor-chat-ia'); ?></h3>
+            <h3 class="fgm-sidebar__title"><?php esc_html_e('Ubicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <ul class="fgm-list">
                 <?php foreach ($marcadores as $index => $marcador) :
                     $nombre = $marcador['nombre'] ?? $marcador['titulo'] ?? '';

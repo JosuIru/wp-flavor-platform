@@ -30,7 +30,7 @@ class Flavor_Justicia_Restaurativa_Widget extends Flavor_Dashboard_Widget_Base {
         $this->module = $module;
 
         $this->widget_id = 'justicia-restaurativa';
-        $this->title = __('Justicia Restaurativa', 'flavor-chat-ia');
+        $this->title = __('Justicia Restaurativa', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $this->icon = 'dashicons-shield';
         $this->size = 'small';
         $this->category = 'gobernanza';
@@ -49,7 +49,7 @@ class Flavor_Justicia_Restaurativa_Widget extends Flavor_Dashboard_Widget_Base {
             return [
                 'stats' => [],
                 'items' => [],
-                'empty_state' => __('Inicia sesión para ver tus procesos', 'flavor-chat-ia'),
+                'empty_state' => __('Inicia sesión para ver tus procesos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -73,13 +73,13 @@ class Flavor_Justicia_Restaurativa_Widget extends Flavor_Dashboard_Widget_Base {
             [
                 'icon' => 'dashicons-shield',
                 'valor' => $stats['procesos'],
-                'label' => __('Procesos', 'flavor-chat-ia'),
+                'label' => __('Procesos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'purple',
             ],
             [
                 'icon' => 'dashicons-yes-alt',
                 'valor' => $stats['acuerdos'],
-                'label' => __('Acuerdos', 'flavor-chat-ia'),
+                'label' => __('Acuerdos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'green',
             ],
         ];
@@ -89,11 +89,11 @@ class Flavor_Justicia_Restaurativa_Widget extends Flavor_Dashboard_Widget_Base {
             $items[] = [
                 'icon' => 'dashicons-warning',
                 'title' => sprintf(
-                    _n('%d invitación pendiente', '%d invitaciones pendientes', $procesos_pendientes, 'flavor-chat-ia'),
+                    _n('%d invitación pendiente', '%d invitaciones pendientes', $procesos_pendientes, FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $procesos_pendientes
                 ),
                 'url' => $this->get_context_url('/mi-portal/justicia-restaurativa/mis-procesos/', 'flavor-justicia-restaurativa'),
-                'badge' => __('Pendiente', 'flavor-chat-ia'),
+                'badge' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'badge_color' => 'orange',
             ];
         }
@@ -102,7 +102,7 @@ class Flavor_Justicia_Restaurativa_Widget extends Flavor_Dashboard_Widget_Base {
             $stats_array[] = [
                 'icon' => 'dashicons-businessman',
                 'valor' => '✓',
-                'label' => __('Mediador', 'flavor-chat-ia'),
+                'label' => __('Mediador', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'blue',
             ];
         }
@@ -110,10 +110,10 @@ class Flavor_Justicia_Restaurativa_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats_array,
             'items' => $items,
-            'empty_state' => __('No hay procesos activos', 'flavor-chat-ia'),
+            'empty_state' => __('No hay procesos activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => __('Más info', 'flavor-chat-ia'),
+                    'label' => __('Más info', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => $this->get_context_url('/mi-portal/justicia-restaurativa/', 'flavor-justicia-restaurativa'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],

@@ -202,7 +202,7 @@ build_apk() {
     if [ -f "$apk_path" ]; then
         mkdir -p "$OUTPUT_DIR"
         local version=$(grep "^version:" "$SCRIPT_DIR/pubspec.yaml" | sed 's/version: //' | cut -d'+' -f1)
-        local output_name="basabere-${flavor}-v${version}.apk"
+        local output_name="flavor-${flavor}-v${version}.apk"
         cp "$apk_path" "$OUTPUT_DIR/$output_name"
         log_success "APK generado: $OUTPUT_DIR/$output_name"
     else
@@ -229,7 +229,7 @@ build_aab() {
     if [ -f "$aab_path" ]; then
         mkdir -p "$OUTPUT_DIR"
         local version=$(grep "^version:" "$SCRIPT_DIR/pubspec.yaml" | sed 's/version: //' | cut -d'+' -f1)
-        local output_name="basabere-${flavor}-v${version}.aab"
+        local output_name="flavor-${flavor}-v${version}.aab"
         cp "$aab_path" "$OUTPUT_DIR/$output_name"
         log_success "AAB generado: $OUTPUT_DIR/$output_name"
     else

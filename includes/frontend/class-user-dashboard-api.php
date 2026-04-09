@@ -39,14 +39,14 @@ class Flavor_User_Dashboard_API {
     private function verificar_autorizacion() {
         if (!check_ajax_referer('flavor_user_dashboard', 'nonce', false)) {
             wp_send_json_error([
-                'message' => __('Token de seguridad invalido. Recarga la pagina.', 'flavor-chat-ia'),
+                'message' => __('Token de seguridad invalido. Recarga la pagina.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
             return false;
         }
 
         if (!is_user_logged_in()) {
             wp_send_json_error([
-                'message' => __('Debes iniciar sesion para realizar esta accion.', 'flavor-chat-ia'),
+                'message' => __('Debes iniciar sesion para realizar esta accion.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
             return false;
         }
@@ -71,7 +71,7 @@ class Flavor_User_Dashboard_API {
         // Validar email
         if (!empty($email_nuevo) && !is_email($email_nuevo)) {
             wp_send_json_error([
-                'message' => __('El email introducido no es valido.', 'flavor-chat-ia'),
+                'message' => __('El email introducido no es valido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
             return;
         }
@@ -81,7 +81,7 @@ class Flavor_User_Dashboard_API {
             $usuario_con_mismo_email = get_user_by('email', $email_nuevo);
             if ($usuario_con_mismo_email && $usuario_con_mismo_email->ID !== $id_usuario_actual) {
                 wp_send_json_error([
-                    'message' => __('Este email ya esta registrado por otro usuario.', 'flavor-chat-ia'),
+                    'message' => __('Este email ya esta registrado por otro usuario.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ]);
                 return;
             }
@@ -132,13 +132,13 @@ class Flavor_User_Dashboard_API {
         if (class_exists('Flavor_Activity_Log')) {
             Flavor_Activity_Log::get_instance()->log(
                 'profile_updated',
-                __('Perfil actualizado desde Mi Cuenta', 'flavor-chat-ia'),
+                __('Perfil actualizado desde Mi Cuenta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $id_usuario_actual
             );
         }
 
         wp_send_json_success([
-            'message' => __('Perfil actualizado correctamente.', 'flavor-chat-ia'),
+            'message' => __('Perfil actualizado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'data'    => [
                 'nombre'         => $nombre_nuevo,
                 'apellido'       => $apellido_nuevo,
@@ -165,7 +165,7 @@ class Flavor_User_Dashboard_API {
         // Validaciones
         if (empty($contrasena_actual) || empty($contrasena_nueva) || empty($confirmacion_contrasena)) {
             wp_send_json_error([
-                'message' => __('Todos los campos de contrasena son obligatorios.', 'flavor-chat-ia'),
+                'message' => __('Todos los campos de contrasena son obligatorios.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
             return;
         }
@@ -174,7 +174,7 @@ class Flavor_User_Dashboard_API {
         $usuario_actual = wp_get_current_user();
         if (!wp_check_password($contrasena_actual, $usuario_actual->user_pass, $id_usuario_actual)) {
             wp_send_json_error([
-                'message' => __('La contrasena actual no es correcta.', 'flavor-chat-ia'),
+                'message' => __('La contrasena actual no es correcta.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
             return;
         }
@@ -182,7 +182,7 @@ class Flavor_User_Dashboard_API {
         // Verificar que las nuevas contrasenas coinciden
         if ($contrasena_nueva !== $confirmacion_contrasena) {
             wp_send_json_error([
-                'message' => __('Las contrasenas nuevas no coinciden.', 'flavor-chat-ia'),
+                'message' => __('Las contrasenas nuevas no coinciden.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
             return;
         }
@@ -190,7 +190,7 @@ class Flavor_User_Dashboard_API {
         // Verificar longitud minima
         if (strlen($contrasena_nueva) < 8) {
             wp_send_json_error([
-                'message' => __('La contrasena debe tener al menos 8 caracteres.', 'flavor-chat-ia'),
+                'message' => __('La contrasena debe tener al menos 8 caracteres.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
             return;
         }
@@ -206,13 +206,13 @@ class Flavor_User_Dashboard_API {
         if (class_exists('Flavor_Activity_Log')) {
             Flavor_Activity_Log::get_instance()->log(
                 'password_changed',
-                __('Contrasena cambiada desde Mi Cuenta', 'flavor-chat-ia'),
+                __('Contrasena cambiada desde Mi Cuenta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $id_usuario_actual
             );
         }
 
         wp_send_json_success([
-            'message' => __('Contrasena actualizada correctamente.', 'flavor-chat-ia'),
+            'message' => __('Contrasena actualizada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -264,7 +264,7 @@ class Flavor_User_Dashboard_API {
 
         if (!$id_notificacion) {
             wp_send_json_error([
-                'message' => __('ID de notificacion no valido.', 'flavor-chat-ia'),
+                'message' => __('ID de notificacion no valido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
             return;
         }
@@ -274,12 +274,12 @@ class Flavor_User_Dashboard_API {
             $gestor_notificaciones->mark_as_read($id_notificacion, $id_usuario_actual);
 
             wp_send_json_success([
-                'message'           => __('Notificacion marcada como leida.', 'flavor-chat-ia'),
+                'message'           => __('Notificacion marcada como leida.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'cantidad_sin_leer' => $gestor_notificaciones->get_unread_count($id_usuario_actual),
             ]);
         } else {
             wp_send_json_error([
-                'message' => __('Sistema de notificaciones no disponible.', 'flavor-chat-ia'),
+                'message' => __('Sistema de notificaciones no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
     }
@@ -298,12 +298,12 @@ class Flavor_User_Dashboard_API {
             $gestor_notificaciones->mark_all_as_read($id_usuario_actual);
 
             wp_send_json_success([
-                'message'           => __('Todas las notificaciones marcadas como leidas.', 'flavor-chat-ia'),
+                'message'           => __('Todas las notificaciones marcadas como leidas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'cantidad_sin_leer' => 0,
             ]);
         } else {
             wp_send_json_error([
-                'message' => __('Sistema de notificaciones no disponible.', 'flavor-chat-ia'),
+                'message' => __('Sistema de notificaciones no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
     }

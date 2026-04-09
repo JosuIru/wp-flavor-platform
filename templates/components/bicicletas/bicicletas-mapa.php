@@ -32,7 +32,7 @@ $stats = [
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                <?php echo esc_html__('BiciVecinal', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('BiciVecinal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
             <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4"><?php echo esc_html($titulo); ?></h2>
             <p class="text-xl text-gray-600"><?php echo esc_html($descripcion); ?></p>
@@ -58,7 +58,7 @@ $stats = [
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
                             </svg>
                         </div>
-                        <p class="text-lime-800 font-medium"><?php echo esc_html__('Mapa de estaciones', 'flavor-chat-ia'); ?></p>
+                        <p class="text-lime-800 font-medium"><?php echo esc_html__('Mapa de estaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 </div>
                 <!-- Marcadores -->
@@ -70,12 +70,12 @@ $stats = [
             <!-- Lista de estaciones -->
             <div class="space-y-4">
                 <div class="flex items-center justify-between mb-2">
-                    <h3 class="text-lg font-bold text-gray-900"><?php echo esc_html__('Estaciones cercanas', 'flavor-chat-ia'); ?></h3>
+                    <h3 class="text-lg font-bold text-gray-900"><?php echo esc_html__('Estaciones cercanas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <button class="text-sm text-lime-600 hover:text-lime-700 font-medium flex items-center gap-1">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                         </svg>
-                        <?php echo esc_html__('Usar mi ubicacion', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Usar mi ubicacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
 
@@ -86,7 +86,7 @@ $stats = [
                             <!-- Indicador de bicis -->
                             <div class="flex-shrink-0 w-16 h-16 rounded-xl flex flex-col items-center justify-center <?php echo $pocasBicis ? 'bg-orange-100' : 'bg-lime-100'; ?>">
                                 <span class="text-2xl font-bold <?php echo $pocasBicis ? 'text-orange-600' : 'text-lime-600'; ?>"><?php echo esc_html($estacion['bicis']); ?></span>
-                                <span class="text-xs <?php echo $pocasBicis ? 'text-orange-500' : 'text-lime-500'; ?>"><?php echo esc_html__('bicis', 'flavor-chat-ia'); ?></span>
+                                <span class="text-xs <?php echo $pocasBicis ? 'text-orange-500' : 'text-lime-500'; ?>"><?php echo esc_html__('bicis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
 
                             <div class="flex-1 min-w-0">
@@ -114,7 +114,7 @@ $stats = [
                             </div>
 
                             <button class="flex-shrink-0 px-4 py-2 rounded-xl text-white font-semibold transition-all hover:scale-105" style="background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);">
-                                <?php echo esc_html__('Reservar', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </div>
                     </article>
@@ -122,7 +122,7 @@ $stats = [
 
                 <div class="text-center pt-4">
                     <a href="#todas-estaciones" class="inline-flex items-center gap-2 text-lime-600 font-semibold hover:text-lime-700">
-                        <?php echo esc_html__('Ver todas las estaciones', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Ver todas las estaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                         </svg>

@@ -162,10 +162,6 @@ class ModuleScreenRegistry {
     loader.registerScreenBuilder('bares', (_) => const BaresScreen());
     loader.registerScreenBuilder('reservas', (_) => const ReservasScreen());
     loader.registerScreenBuilder('campamentos', (_) => const CampsScreen());
-    loader.registerScreenBuilder(
-      'basabere-campamentos',
-      (_) => const CampsScreen(),
-    );
 
     // Variantes con guion bajo (compatibilidad)
     loader.registerScreenBuilder(

@@ -13,8 +13,8 @@ if (!defined('ABSPATH')) {
 // Verificar permisos
 if (!is_user_logged_in()) {
     echo '<div class="flavor-alert flavor-alert-warning">';
-    echo '<p>' . __('Debes iniciar sesión para crear eventos.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="flavor-btn flavor-btn-primary">' . __('Iniciar sesión', 'flavor-chat-ia') . '</a>';
+    echo '<p>' . __('Debes iniciar sesión para crear eventos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
+    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="flavor-btn flavor-btn-primary">' . __('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
     echo '</div>';
     return;
 }
@@ -22,7 +22,7 @@ if (!is_user_logged_in()) {
 // Verificar capacidad
 if (!current_user_can('edit_posts')) {
     echo '<div class="flavor-alert flavor-alert-error">';
-    echo '<p>' . __('No tienes permisos para crear eventos.', 'flavor-chat-ia') . '</p>';
+    echo '<p>' . __('No tienes permisos para crear eventos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
     echo '</div>';
     return;
 }
@@ -41,7 +41,7 @@ if ($evento_id) {
         // Verificar que el usuario sea el organizador
         if ($evento['organizador_id'] != get_current_user_id() && !current_user_can('manage_options')) {
             echo '<div class="flavor-alert flavor-alert-error">';
-            echo '<p>' . __('No tienes permisos para editar este evento.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('No tienes permisos para editar este evento.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
             return;
         }
@@ -51,14 +51,14 @@ if ($evento_id) {
 
 // Tipos de evento
 $tipos_evento = [
-    'conferencia' => __('Conferencia', 'flavor-chat-ia'),
-    'taller'      => __('Taller', 'flavor-chat-ia'),
-    'charla'      => __('Charla', 'flavor-chat-ia'),
-    'festival'    => __('Festival', 'flavor-chat-ia'),
-    'deportivo'   => __('Deportivo', 'flavor-chat-ia'),
-    'cultural'    => __('Cultural', 'flavor-chat-ia'),
-    'social'      => __('Social', 'flavor-chat-ia'),
-    'networking'  => __('Networking', 'flavor-chat-ia'),
+    'conferencia' => __('Conferencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'taller'      => __('Taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'charla'      => __('Charla', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'festival'    => __('Festival', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'deportivo'   => __('Deportivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cultural'    => __('Cultural', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'social'      => __('Social', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'networking'  => __('Networking', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 // Valores del formulario
@@ -82,10 +82,10 @@ $estado = $evento['estado'] ?? 'borrador';
 <div class="flavor-eventos-formulario">
     <header class="flavor-form-header">
         <h2>
-            <?php echo $is_edit ? __('Editar Evento', 'flavor-chat-ia') : __('Crear Nuevo Evento', 'flavor-chat-ia'); ?>
+            <?php echo $is_edit ? __('Editar Evento', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Crear Nuevo Evento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
         <a href="<?php echo esc_url(home_url('/eventos/')); ?>" class="flavor-btn flavor-btn-secondary">
-            <?php _e('Volver', 'flavor-chat-ia'); ?>
+            <?php _e('Volver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </header>
 
@@ -96,18 +96,18 @@ $estado = $evento['estado'] ?? 'borrador';
 
         <!-- Información básica -->
         <section class="flavor-form-section">
-            <h3><?php _e('Información básica', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Información básica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <div class="flavor-form-group">
-                <label for="titulo" class="required"><?php _e('Título del evento', 'flavor-chat-ia'); ?></label>
+                <label for="titulo" class="required"><?php _e('Título del evento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <input type="text" id="titulo" name="titulo" value="<?php echo esc_attr($titulo); ?>"
                        required maxlength="255" class="flavor-input"
-                       placeholder="<?php esc_attr_e('Nombre del evento', 'flavor-chat-ia'); ?>">
+                       placeholder="<?php esc_attr_e('Nombre del evento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             </div>
 
             <div class="flavor-form-row">
                 <div class="flavor-form-group">
-                    <label for="tipo" class="required"><?php _e('Tipo de evento', 'flavor-chat-ia'); ?></label>
+                    <label for="tipo" class="required"><?php _e('Tipo de evento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="tipo" name="tipo" required class="flavor-select">
                         <?php foreach ($tipos_evento as $value => $label): ?>
                             <option value="<?php echo esc_attr($value); ?>" <?php selected($tipo, $value); ?>>
@@ -118,42 +118,42 @@ $estado = $evento['estado'] ?? 'borrador';
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="estado"><?php _e('Estado', 'flavor-chat-ia'); ?></label>
+                    <label for="estado"><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="estado" name="estado" class="flavor-select">
-                        <option value="borrador" <?php selected($estado, 'borrador'); ?>><?php _e('Borrador', 'flavor-chat-ia'); ?></option>
-                        <option value="publicado" <?php selected($estado, 'publicado'); ?>><?php _e('Publicado', 'flavor-chat-ia'); ?></option>
+                        <option value="borrador" <?php selected($estado, 'borrador'); ?>><?php _e('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="publicado" <?php selected($estado, 'publicado'); ?>><?php _e('Publicado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
             </div>
 
             <div class="flavor-form-group">
-                <label for="descripcion"><?php _e('Descripción breve', 'flavor-chat-ia'); ?></label>
+                <label for="descripcion"><?php _e('Descripción breve', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <textarea id="descripcion" name="descripcion" rows="3" class="flavor-textarea"
-                          placeholder="<?php esc_attr_e('Resumen del evento (máx. 300 caracteres)', 'flavor-chat-ia'); ?>"
+                          placeholder="<?php esc_attr_e('Resumen del evento (máx. 300 caracteres)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                           maxlength="500"><?php echo esc_textarea($descripcion); ?></textarea>
             </div>
 
             <div class="flavor-form-group">
-                <label for="contenido"><?php _e('Descripción completa', 'flavor-chat-ia'); ?></label>
+                <label for="contenido"><?php _e('Descripción completa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <textarea id="contenido" name="contenido" rows="8" class="flavor-textarea"
-                          placeholder="<?php esc_attr_e('Descripción detallada del evento...', 'flavor-chat-ia'); ?>"><?php echo esc_textarea($contenido); ?></textarea>
+                          placeholder="<?php esc_attr_e('Descripción detallada del evento...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_textarea($contenido); ?></textarea>
             </div>
         </section>
 
         <!-- Fecha y hora -->
         <section class="flavor-form-section">
-            <h3><?php _e('Fecha y hora', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Fecha y hora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <div class="flavor-form-row">
                 <div class="flavor-form-group">
-                    <label for="fecha_inicio" class="required"><?php _e('Fecha y hora de inicio', 'flavor-chat-ia'); ?></label>
+                    <label for="fecha_inicio" class="required"><?php _e('Fecha y hora de inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="datetime-local" id="fecha_inicio" name="fecha_inicio"
                            value="<?php echo esc_attr($fecha_inicio ? date('Y-m-d\TH:i', strtotime($fecha_inicio)) : ''); ?>"
                            required class="flavor-input">
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="fecha_fin"><?php _e('Fecha y hora de fin', 'flavor-chat-ia'); ?></label>
+                    <label for="fecha_fin"><?php _e('Fecha y hora de fin', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="datetime-local" id="fecha_fin" name="fecha_fin"
                            value="<?php echo esc_attr($fecha_fin ? date('Y-m-d\TH:i', strtotime($fecha_fin)) : ''); ?>"
                            class="flavor-input">
@@ -163,55 +163,55 @@ $estado = $evento['estado'] ?? 'borrador';
 
         <!-- Ubicación -->
         <section class="flavor-form-section">
-            <h3><?php _e('Ubicación', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <div class="flavor-form-group">
                 <label class="flavor-checkbox-label">
                     <input type="checkbox" id="es_online" name="es_online" value="1" <?php checked($es_online, 1); ?>>
-                    <?php _e('Es un evento online', 'flavor-chat-ia'); ?>
+                    <?php _e('Es un evento online', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </label>
             </div>
 
             <div id="ubicacion-presencial" class="<?php echo $es_online ? 'hidden' : ''; ?>">
                 <div class="flavor-form-group">
-                    <label for="ubicacion"><?php _e('Nombre del lugar', 'flavor-chat-ia'); ?></label>
+                    <label for="ubicacion"><?php _e('Nombre del lugar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="text" id="ubicacion" name="ubicacion" value="<?php echo esc_attr($ubicacion); ?>"
-                           class="flavor-input" placeholder="<?php esc_attr_e('Ej: Centro Cultural, Sala de reuniones...', 'flavor-chat-ia'); ?>">
+                           class="flavor-input" placeholder="<?php esc_attr_e('Ej: Centro Cultural, Sala de reuniones...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="direccion"><?php _e('Dirección', 'flavor-chat-ia'); ?></label>
+                    <label for="direccion"><?php _e('Dirección', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="text" id="direccion" name="direccion" value="<?php echo esc_attr($direccion); ?>"
-                           class="flavor-input" placeholder="<?php esc_attr_e('Calle, número, ciudad...', 'flavor-chat-ia'); ?>">
+                           class="flavor-input" placeholder="<?php esc_attr_e('Calle, número, ciudad...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
             </div>
 
             <div id="ubicacion-online" class="<?php echo !$es_online ? 'hidden' : ''; ?>">
                 <div class="flavor-form-group">
-                    <label for="url_online"><?php _e('Enlace de la reunión', 'flavor-chat-ia'); ?></label>
+                    <label for="url_online"><?php _e('Enlace de la reunión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="url" id="url_online" name="url_online" value="<?php echo esc_attr($url_online); ?>"
-                           class="flavor-input" placeholder="<?php esc_attr_e('https://meet.google.com/...', 'flavor-chat-ia'); ?>">
+                           class="flavor-input" placeholder="<?php esc_attr_e('https://meet.google.com/...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
             </div>
         </section>
 
         <!-- Precio y aforo -->
         <section class="flavor-form-section">
-            <h3><?php _e('Precio y aforo', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Precio y aforo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <div class="flavor-form-row">
                 <div class="flavor-form-group">
-                    <label for="precio"><?php _e('Precio general', 'flavor-chat-ia'); ?></label>
+                    <label for="precio"><?php _e('Precio general', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <div class="flavor-input-group">
                         <input type="number" id="precio" name="precio" value="<?php echo esc_attr($precio); ?>"
                                min="0" step="0.01" class="flavor-input">
                         <span class="flavor-input-addon">&euro;</span>
                     </div>
-                    <small class="flavor-form-hint"><?php _e('0 = Gratuito', 'flavor-chat-ia'); ?></small>
+                    <small class="flavor-form-hint"><?php _e('0 = Gratuito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="precio_socios"><?php _e('Precio para miembros', 'flavor-chat-ia'); ?></label>
+                    <label for="precio_socios"><?php _e('Precio para miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <div class="flavor-input-group">
                         <input type="number" id="precio_socios" name="precio_socios" value="<?php echo esc_attr($precio_socios); ?>"
                                min="0" step="0.01" class="flavor-input">
@@ -221,43 +221,43 @@ $estado = $evento['estado'] ?? 'borrador';
             </div>
 
             <div class="flavor-form-group">
-                <label for="aforo_maximo"><?php _e('Aforo máximo', 'flavor-chat-ia'); ?></label>
+                <label for="aforo_maximo"><?php _e('Aforo máximo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <input type="number" id="aforo_maximo" name="aforo_maximo" value="<?php echo esc_attr($aforo_maximo); ?>"
                        min="0" class="flavor-input" style="max-width: 150px;">
-                <small class="flavor-form-hint"><?php _e('0 = Sin límite', 'flavor-chat-ia'); ?></small>
+                <small class="flavor-form-hint"><?php _e('0 = Sin límite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
             </div>
         </section>
 
         <!-- Imagen -->
         <section class="flavor-form-section">
-            <h3><?php _e('Imagen del evento', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Imagen del evento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <div class="flavor-form-group">
-                <label for="imagen"><?php _e('Imagen destacada', 'flavor-chat-ia'); ?></label>
+                <label for="imagen"><?php _e('Imagen destacada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
 
                 <?php if ($imagen): ?>
                     <div class="flavor-image-preview">
                         <img src="<?php echo esc_url($imagen); ?>" alt="" style="max-width: 300px; border-radius: 8px;">
                         <button type="button" class="flavor-btn flavor-btn-small flavor-btn-danger" id="btn-eliminar-imagen">
-                            <?php _e('Eliminar', 'flavor-chat-ia'); ?>
+                            <?php _e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                     <input type="hidden" name="imagen_actual" value="<?php echo esc_attr($imagen); ?>">
                 <?php endif; ?>
 
                 <input type="file" id="imagen" name="imagen" accept="image/*" class="flavor-input-file">
-                <small class="flavor-form-hint"><?php _e('Formatos: JPG, PNG, GIF. Máx: 2MB', 'flavor-chat-ia'); ?></small>
+                <small class="flavor-form-hint"><?php _e('Formatos: JPG, PNG, GIF. Máx: 2MB', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
             </div>
         </section>
 
         <!-- Botones -->
         <div class="flavor-form-actions">
             <button type="submit" class="flavor-btn flavor-btn-primary flavor-btn-lg">
-                <?php echo $is_edit ? __('Guardar cambios', 'flavor-chat-ia') : __('Crear evento', 'flavor-chat-ia'); ?>
+                <?php echo $is_edit ? __('Guardar cambios', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Crear evento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
 
             <a href="<?php echo esc_url(home_url('/eventos/')); ?>" class="flavor-btn flavor-btn-secondary flavor-btn-lg">
-                <?php _e('Cancelar', 'flavor-chat-ia'); ?>
+                <?php _e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </form>
@@ -522,7 +522,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const originalText = submitBtn.textContent;
 
             submitBtn.disabled = true;
-            submitBtn.textContent = '<?php _e("Guardando...", "flavor-chat-ia"); ?>';
+            submitBtn.textContent = '<?php _e("Guardando...", FLAVOR_PLATFORM_TEXT_DOMAIN); ?>';
 
             fetch('<?php echo admin_url("admin-ajax.php"); ?>', {
                 method: 'POST',
@@ -534,17 +534,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (data.data.redirect) {
                         window.location.href = data.data.redirect;
                     } else {
-                        alert(data.data.message || '<?php _e("Evento guardado correctamente", "flavor-chat-ia"); ?>');
+                        alert(data.data.message || '<?php _e("Evento guardado correctamente", FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                     }
                 } else {
-                    alert(data.data.message || '<?php _e("Error al guardar el evento", "flavor-chat-ia"); ?>');
+                    alert(data.data.message || '<?php _e("Error al guardar el evento", FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                     submitBtn.disabled = false;
                     submitBtn.textContent = originalText;
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('<?php _e("Error de conexión", "flavor-chat-ia"); ?>');
+                alert('<?php _e("Error de conexión", FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                 submitBtn.disabled = false;
                 submitBtn.textContent = originalText;
             });

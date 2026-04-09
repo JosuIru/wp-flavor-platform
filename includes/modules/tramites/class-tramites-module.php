@@ -92,7 +92,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Tramites no estan creadas. Se crearan automaticamente al activar.', 'flavor-chat-ia');
+            return __('Las tablas de Tramites no estan creadas. Se crearan automaticamente al activar.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         
     return '';
@@ -342,35 +342,35 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'tramites',
-            'label' => __('Trámites', 'flavor-chat-ia'),
+            'label' => __('Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-clipboard',
             'capability' => 'manage_options',
             'categoria' => 'servicios',
             'paginas' => [
                 [
                     'slug' => 'tramites-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'tramites-pendientes',
-                    'titulo' => __('Pendientes', 'flavor-chat-ia'),
+                    'titulo' => __('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_pendientes'],
                     'badge' => [$this, 'contar_tramites_pendientes'],
                 ],
                 [
                     'slug' => 'tramites-historial',
-                    'titulo' => __('Historial', 'flavor-chat-ia'),
+                    'titulo' => __('Historial', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_historial'],
                 ],
                 [
                     'slug' => 'tramites-tipos',
-                    'titulo' => __('Tipos de Trámite', 'flavor-chat-ia'),
+                    'titulo' => __('Tipos de Trámite', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_tipos'],
                 ],
                 [
                     'slug' => 'tramites-config',
-                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'titulo' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_config'],
                 ],
             ],
@@ -434,7 +434,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         $estadisticas[] = [
             'icon' => 'dashicons-clipboard',
             'valor' => $tramites_pendientes,
-            'label' => __('Trámites pendientes', 'flavor-chat-ia'),
+            'label' => __('Trámites pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => $tramites_pendientes > 0 ? 'orange' : 'green',
             'enlace' => admin_url('admin.php?page=tramites-pendientes'),
         ];
@@ -444,7 +444,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         $estadisticas[] = [
             'icon' => 'dashicons-yes-alt',
             'valor' => $tramites_procesados_hoy,
-            'label' => __('Procesados hoy', 'flavor-chat-ia'),
+            'label' => __('Procesados hoy', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'blue',
             'enlace' => admin_url('admin.php?page=tramites-historial'),
         ];
@@ -461,23 +461,23 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         echo '<div class="wrap flavor-modulo-page">';
         $acciones = $is_dashboard_viewer
             ? [
-                ['label' => __('Ver en portal', 'flavor-chat-ia'), 'url' => home_url('/mi-portal/tramites/'), 'class' => ''],
+                ['label' => __('Ver en portal', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => home_url('/mi-portal/tramites/'), 'class' => ''],
             ]
             : [
-                ['label' => __('Ver Pendientes', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=tramites-pendientes'), 'class' => 'button-primary'],
-                ['label' => __('Tipos de Trámite', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=tramites-tipos'), 'class' => ''],
+                ['label' => __('Ver Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=tramites-pendientes'), 'class' => 'button-primary'],
+                ['label' => __('Tipos de Trámite', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=tramites-tipos'), 'class' => ''],
             ];
-        $this->render_page_header(__('Dashboard de Trámites', 'flavor-chat-ia'), $acciones);
+        $this->render_page_header(__('Dashboard de Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN), $acciones);
 
         if (!$is_dashboard_viewer) {
             $this->handle_admin_actions();
         } else {
-            echo '<div class="notice notice-info"><p>' . esc_html__('Vista resumida para gestor de grupos. Este dashboard muestra métricas, pero la gestión administrativa avanzada sigue reservada a administradores.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-info"><p>' . esc_html__('Vista resumida para gestor de grupos. Este dashboard muestra métricas, pero la gestión administrativa avanzada sigue reservada a administradores.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
-        echo '<p>' . __('Panel de control del módulo de trámites administrativos.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Panel de control del módulo de trámites administrativos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
 
         if (!$this->can_activate()) {
-            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             echo '</div>';
             return;
         }
@@ -537,13 +537,13 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_tipos() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Tipos de Trámite', 'flavor-chat-ia'), [
-            ['label' => __('Nuevo Tipo', 'flavor-chat-ia'), 'url' => '#nuevo-tipo', 'class' => 'button-primary'],
+        $this->render_page_header(__('Tipos de Trámite', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+            ['label' => __('Nuevo Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '#nuevo-tipo', 'class' => 'button-primary'],
         ]);
         $this->handle_admin_tipo_action();
 
         if (!$this->can_activate()) {
-            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             echo '</div>';
             return;
         }
@@ -551,23 +551,23 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tipos = $wpdb->get_results("SELECT id, nombre, descripcion, categoria, icono, plazo_resolucion_dias, requiere_cita, permite_online, permite_presencial, precio, estado, orden, created_at FROM {$this->tabla_tipos_tramite} ORDER BY orden ASC, nombre ASC");
 
-        echo '<p>' . __('Aquí se gestionan los diferentes tipos de trámites disponibles.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Aquí se gestionan los diferentes tipos de trámites disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
 
         if (empty($tipos)) {
-            echo '<p>' . esc_html__('No hay tipos registrados todavía.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('No hay tipos registrados todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         } else {
             echo '<table class="widefat striped"><thead><tr>';
-            echo '<th>ID</th><th>' . esc_html__('Nombre', 'flavor-chat-ia') . '</th><th>' . esc_html__('Categoría', 'flavor-chat-ia') . '</th><th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th><th>' . esc_html__('Online', 'flavor-chat-ia') . '</th><th>' . esc_html__('Presencial', 'flavor-chat-ia') . '</th><th>' . esc_html__('Acciones', 'flavor-chat-ia') . '</th>';
+            echo '<th>ID</th><th>' . esc_html__('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Online', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Presencial', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
             echo '</tr></thead><tbody>';
             foreach ($tipos as $tipo) {
-                $estado_label = $tipo->estado === 'activo' ? __('Activo', 'flavor-chat-ia') : __('Inactivo', 'flavor-chat-ia');
+                $estado_label = $tipo->estado === 'activo' ? __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Inactivo', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 echo '<tr>';
                 echo '<td>' . esc_html($tipo->id) . '</td>';
                 echo '<td>' . esc_html($tipo->nombre) . '</td>';
                 echo '<td>' . esc_html($tipo->categoria ?: '-') . '</td>';
                 echo '<td>' . esc_html($estado_label) . '</td>';
-                echo '<td>' . esc_html($tipo->permite_online ? __('Sí', 'flavor-chat-ia') : __('No', 'flavor-chat-ia')) . '</td>';
-                echo '<td>' . esc_html($tipo->permite_presencial ? __('Sí', 'flavor-chat-ia') : __('No', 'flavor-chat-ia')) . '</td>';
+                echo '<td>' . esc_html($tipo->permite_online ? __('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('No', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '</td>';
+                echo '<td>' . esc_html($tipo->permite_presencial ? __('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('No', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '</td>';
                 echo '<td>' . $this->render_tipo_actions($tipo->id, $tipo->estado) . '</td>';
                 echo '</tr>';
             }
@@ -575,22 +575,22 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         }
 
         echo '<hr id="nuevo-tipo">';
-        echo '<h3>' . esc_html__('Nuevo tipo de trámite', 'flavor-chat-ia') . '</h3>';
+        echo '<h3>' . esc_html__('Nuevo tipo de trámite', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         echo '<form method="post">';
         wp_nonce_field('tramites_tipo', 'tramites_tipo_nonce');
         echo '<table class="form-table"><tbody>';
-        echo '<tr><th>' . esc_html__('Nombre', 'flavor-chat-ia') . '</th><td><input type="text" name="nombre" class="regular-text" required></td></tr>';
-        echo '<tr><th>' . esc_html__('Descripción', 'flavor-chat-ia') . '</th><td><textarea name="descripcion" rows="3" class="large-text"></textarea></td></tr>';
-        echo '<tr><th>' . esc_html__('Categoría', 'flavor-chat-ia') . '</th><td><input type="text" name="categoria" class="regular-text"></td></tr>';
-        echo '<tr><th>' . esc_html__('Icono (dashicons)', 'flavor-chat-ia') . '</th><td><input type="text" name="icono" class="regular-text" placeholder="dashicons-clipboard"></td></tr>';
-        echo '<tr><th>' . esc_html__('Plazo resolución (días)', 'flavor-chat-ia') . '</th><td><input type="number" name="plazo_resolucion_dias" min="1" value="7"></td></tr>';
-        echo '<tr><th>' . esc_html__('Requiere cita', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="requiere_cita" value="1"> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
-        echo '<tr><th>' . esc_html__('Permite online', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="permite_online" value="1" checked> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
-        echo '<tr><th>' . esc_html__('Permite presencial', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="permite_presencial" value="1" checked> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
-        echo '<tr><th>' . esc_html__('Precio', 'flavor-chat-ia') . '</th><td><input type="number" step="0.01" name="precio" value="0"></td></tr>';
-        echo '<tr><th>' . esc_html__('Orden', 'flavor-chat-ia') . '</th><td><input type="number" name="orden" value="0"></td></tr>';
+        echo '<tr><th>' . esc_html__('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="text" name="nombre" class="regular-text" required></td></tr>';
+        echo '<tr><th>' . esc_html__('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><textarea name="descripcion" rows="3" class="large-text"></textarea></td></tr>';
+        echo '<tr><th>' . esc_html__('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="text" name="categoria" class="regular-text"></td></tr>';
+        echo '<tr><th>' . esc_html__('Icono (dashicons)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="text" name="icono" class="regular-text" placeholder="dashicons-clipboard"></td></tr>';
+        echo '<tr><th>' . esc_html__('Plazo resolución (días)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="number" name="plazo_resolucion_dias" min="1" value="7"></td></tr>';
+        echo '<tr><th>' . esc_html__('Requiere cita', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="requiere_cita" value="1"> ' . esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Permite online', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="permite_online" value="1" checked> ' . esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Permite presencial', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="permite_presencial" value="1" checked> ' . esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Precio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="number" step="0.01" name="precio" value="0"></td></tr>';
+        echo '<tr><th>' . esc_html__('Orden', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="number" name="orden" value="0"></td></tr>';
         echo '</tbody></table>';
-        submit_button(__('Crear Tipo', 'flavor-chat-ia'));
+        submit_button(__('Crear Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN));
         echo '</form>';
         echo '</div>';
     }
@@ -600,35 +600,35 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_config() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Configuración de Trámites', 'flavor-chat-ia'));
+        $this->render_page_header(__('Configuración de Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN));
         $this->handle_admin_save_config();
-        echo '<p>' . __('Configuración del sistema de gestión de trámites.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Configuración del sistema de gestión de trámites.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
 
         echo '<form method="post">';
         wp_nonce_field('tramites_config', 'tramites_config_nonce');
         echo '<table class="form-table"><tbody>';
-        echo '<tr><th>' . esc_html__('Disponible en app', 'flavor-chat-ia') . '</th><td><select name="disponible_app">';
-        foreach (['cliente' => __('Cliente', 'flavor-chat-ia'), 'admin' => __('Admin', 'flavor-chat-ia'), 'ambas' => __('Ambas', 'flavor-chat-ia')] as $key => $label) {
+        echo '<tr><th>' . esc_html__('Disponible en app', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><select name="disponible_app">';
+        foreach (['cliente' => __('Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN), 'admin' => __('Admin', FLAVOR_PLATFORM_TEXT_DOMAIN), 'ambas' => __('Ambas', FLAVOR_PLATFORM_TEXT_DOMAIN)] as $key => $label) {
             echo '<option value="' . esc_attr($key) . '" ' . selected($this->get_setting('disponible_app'), $key, false) . '>' . esc_html($label) . '</option>';
         }
         echo '</select></td></tr>';
-        echo '<tr><th>' . esc_html__('Requiere aprobación', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="requiere_aprobacion" value="1" ' . checked($this->get_setting('requiere_aprobacion'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
-        echo '<tr><th>' . esc_html__('Permite trámites online', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="permite_tramites_online" value="1" ' . checked($this->get_setting('permite_tramites_online'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
-        echo '<tr><th>' . esc_html__('Permite trámites presenciales', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="permite_tramites_presencial" value="1" ' . checked($this->get_setting('permite_tramites_presencial'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
-        echo '<tr><th>' . esc_html__('Plazo máximo resolución (días)', 'flavor-chat-ia') . '</th><td><input type="number" name="plazo_resolucion_maximo_dias" min="1" value="' . esc_attr($this->get_setting('plazo_resolucion_maximo_dias')) . '"></td></tr>';
-        echo '<tr><th>' . esc_html__('Notificar cambio de estado', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="notificar_cambio_estado" value="1" ' . checked($this->get_setting('notificar_cambio_estado'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
-        echo '<tr><th>' . esc_html__('Notificar por email', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="notificar_por_email" value="1" ' . checked($this->get_setting('notificar_por_email'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
-        echo '<tr><th>' . esc_html__('Permite cancelación', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="permite_cancelacion" value="1" ' . checked($this->get_setting('permite_cancelacion'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
-        echo '<tr><th>' . esc_html__('Días límite cancelación', 'flavor-chat-ia') . '</th><td><input type="number" name="dias_limite_cancelacion" min="0" value="' . esc_attr($this->get_setting('dias_limite_cancelacion')) . '"></td></tr>';
-        echo '<tr><th>' . esc_html__('Tamaño máximo archivo (MB)', 'flavor-chat-ia') . '</th><td><input type="number" name="tamanio_maximo_archivo_mb" min="1" value="' . esc_attr($this->get_setting('tamanio_maximo_archivo_mb')) . '"></td></tr>';
-        echo '<tr><th>' . esc_html__('Tipos de archivo permitidos', 'flavor-chat-ia') . '</th><td><input type="text" name="tipos_archivo_permitidos" class="regular-text" value="' . esc_attr($this->get_setting('tipos_archivo_permitidos')) . '"></td></tr>';
-        echo '<tr><th>' . esc_html__('Máx. archivos por expediente', 'flavor-chat-ia') . '</th><td><input type="number" name="max_archivos_por_expediente" min="1" value="' . esc_attr($this->get_setting('max_archivos_por_expediente')) . '"></td></tr>';
-        echo '<tr><th>' . esc_html__('Mostrar timeline público', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="mostrar_timeline_publico" value="1" ' . checked($this->get_setting('mostrar_timeline_publico'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
-        echo '<tr><th>' . esc_html__('Auto asignar número', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="auto_asignar_numero_expediente" value="1" ' . checked($this->get_setting('auto_asignar_numero_expediente'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
-        echo '<tr><th>' . esc_html__('Prefijo expediente', 'flavor-chat-ia') . '</th><td><input type="text" name="prefijo_expediente" value="' . esc_attr($this->get_setting('prefijo_expediente')) . '"></td></tr>';
-        echo '<tr><th>' . esc_html__('Requiere login', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="requiere_login" value="1" ' . checked($this->get_setting('requiere_login'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Requiere aprobación', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="requiere_aprobacion" value="1" ' . checked($this->get_setting('requiere_aprobacion'), true, false) . '> ' . esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Permite trámites online', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="permite_tramites_online" value="1" ' . checked($this->get_setting('permite_tramites_online'), true, false) . '> ' . esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Permite trámites presenciales', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="permite_tramites_presencial" value="1" ' . checked($this->get_setting('permite_tramites_presencial'), true, false) . '> ' . esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Plazo máximo resolución (días)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="number" name="plazo_resolucion_maximo_dias" min="1" value="' . esc_attr($this->get_setting('plazo_resolucion_maximo_dias')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Notificar cambio de estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="notificar_cambio_estado" value="1" ' . checked($this->get_setting('notificar_cambio_estado'), true, false) . '> ' . esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Notificar por email', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="notificar_por_email" value="1" ' . checked($this->get_setting('notificar_por_email'), true, false) . '> ' . esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Permite cancelación', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="permite_cancelacion" value="1" ' . checked($this->get_setting('permite_cancelacion'), true, false) . '> ' . esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Días límite cancelación', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="number" name="dias_limite_cancelacion" min="0" value="' . esc_attr($this->get_setting('dias_limite_cancelacion')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Tamaño máximo archivo (MB)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="number" name="tamanio_maximo_archivo_mb" min="1" value="' . esc_attr($this->get_setting('tamanio_maximo_archivo_mb')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Tipos de archivo permitidos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="text" name="tipos_archivo_permitidos" class="regular-text" value="' . esc_attr($this->get_setting('tipos_archivo_permitidos')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Máx. archivos por expediente', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="number" name="max_archivos_por_expediente" min="1" value="' . esc_attr($this->get_setting('max_archivos_por_expediente')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Mostrar timeline público', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="mostrar_timeline_publico" value="1" ' . checked($this->get_setting('mostrar_timeline_publico'), true, false) . '> ' . esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Auto asignar número', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="auto_asignar_numero_expediente" value="1" ' . checked($this->get_setting('auto_asignar_numero_expediente'), true, false) . '> ' . esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Prefijo expediente', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="text" name="prefijo_expediente" value="' . esc_attr($this->get_setting('prefijo_expediente')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Requiere login', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="requiere_login" value="1" ' . checked($this->get_setting('requiere_login'), true, false) . '> ' . esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
         echo '</tbody></table>';
-        submit_button(__('Guardar configuración', 'flavor-chat-ia'));
+        submit_button(__('Guardar configuración', FLAVOR_PLATFORM_TEXT_DOMAIN));
         echo '</form>';
         echo '</div>';
     }
@@ -648,14 +648,14 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
              LIMIT 10"
         );
 
-        echo '<h3>' . esc_html__('Expedientes recientes', 'flavor-chat-ia') . '</h3>';
+        echo '<h3>' . esc_html__('Expedientes recientes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         if (empty($expedientes)) {
-            echo '<p>' . esc_html__('No hay expedientes registrados aún.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('No hay expedientes registrados aún.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
         echo '<table class="widefat striped"><thead><tr>';
-        echo '<th>ID</th><th>' . esc_html__('Número', 'flavor-chat-ia') . '</th><th>' . esc_html__('Tipo', 'flavor-chat-ia') . '</th><th>' . esc_html__('Solicitante', 'flavor-chat-ia') . '</th><th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th><th>' . esc_html__('Prioridad', 'flavor-chat-ia') . '</th><th>' . esc_html__('Fecha', 'flavor-chat-ia') . '</th>';
+        echo '<th>ID</th><th>' . esc_html__('Número', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Solicitante', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Prioridad', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
         echo '</tr></thead><tbody>';
         foreach ($expedientes as $expediente) {
             echo '<tr>';
@@ -673,14 +673,14 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
 
     private function render_admin_listado_expedientes($solo_pendientes, $modo_historial) {
         echo '<div class="wrap flavor-modulo-page">';
-        $titulo = $solo_pendientes ? __('Trámites Pendientes', 'flavor-chat-ia') : __('Historial de Trámites', 'flavor-chat-ia');
+        $titulo = $solo_pendientes ? __('Trámites Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Historial de Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $this->render_page_header($titulo, [
-            ['label' => __('Tipos de Trámite', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=tramites-tipos'), 'class' => ''],
+            ['label' => __('Tipos de Trámite', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=tramites-tipos'), 'class' => ''],
         ]);
         $this->handle_admin_actions();
 
         if (!$this->can_activate()) {
-            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             echo '</div>';
             return;
         }
@@ -706,22 +706,22 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         echo '<form method="get" style="margin: 12px 0;">';
         echo '<input type="hidden" name="page" value="' . esc_attr($solo_pendientes ? 'tramites-pendientes' : 'tramites-historial') . '">';
         echo '<select name="estado">';
-        echo '<option value="">' . esc_html__('Todos los estados', 'flavor-chat-ia') . '</option>';
+        echo '<option value="">' . esc_html__('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
         if ($solo_pendientes) {
-            echo '<option value="pendientes" ' . selected($estado, 'pendientes', false) . '>' . esc_html__('Solo pendientes', 'flavor-chat-ia') . '</option>';
+            echo '<option value="pendientes" ' . selected($estado, 'pendientes', false) . '>' . esc_html__('Solo pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
         }
         foreach (['pendiente','en_proceso','requiere_documentacion','resuelto','rechazado','cancelado'] as $estado_key) {
             echo '<option value="' . esc_attr($estado_key) . '" ' . selected($estado, $estado_key, false) . '>' . esc_html($estado_key) . '</option>';
         }
         echo '</select> ';
         echo '<select name="prioridad">';
-        echo '<option value="">' . esc_html__('Todas las prioridades', 'flavor-chat-ia') . '</option>';
+        echo '<option value="">' . esc_html__('Todas las prioridades', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
         foreach (['baja','media','alta','urgente'] as $prio) {
             echo '<option value="' . esc_attr($prio) . '" ' . selected($prioridad, $prio, false) . '>' . esc_html(ucfirst($prio)) . '</option>';
         }
         echo '</select> ';
         echo '<select name="tipo">';
-        echo '<option value="0">' . esc_html__('Todos los tipos', 'flavor-chat-ia') . '</option>';
+        echo '<option value="0">' . esc_html__('Todos los tipos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
         foreach ($tipos as $t) {
             echo '<option value="' . esc_attr($t->id) . '" ' . selected($tipo, $t->id, false) . '>' . esc_html($t->nombre) . '</option>';
         }
@@ -730,8 +730,8 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
             echo '<input type="date" name="desde" value="' . esc_attr($fecha_desde) . '"> ';
             echo '<input type="date" name="hasta" value="' . esc_attr($fecha_hasta) . '"> ';
         }
-        echo '<input type="search" name="s" placeholder="' . esc_attr__('Buscar por número', 'flavor-chat-ia') . '" value="' . esc_attr($busqueda) . '"> ';
-        echo '<button class="button">' . esc_html__('Filtrar', 'flavor-chat-ia') . '</button>';
+        echo '<input type="search" name="s" placeholder="' . esc_attr__('Buscar por número', FLAVOR_PLATFORM_TEXT_DOMAIN) . '" value="' . esc_attr($busqueda) . '"> ';
+        echo '<button class="button">' . esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</button>';
         echo '</form>';
 
         $where = [];
@@ -777,13 +777,13 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         $expedientes = $params ? $wpdb->get_results($wpdb->prepare($sql, $params)) : $wpdb->get_results($sql);
 
         if (empty($expedientes)) {
-            echo '<p>' . esc_html__('No hay expedientes con esos filtros.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('No hay expedientes con esos filtros.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
             return;
         }
 
         echo '<table class="widefat striped"><thead><tr>';
-        echo '<th>ID</th><th>' . esc_html__('Número', 'flavor-chat-ia') . '</th><th>' . esc_html__('Tipo', 'flavor-chat-ia') . '</th><th>' . esc_html__('Solicitante', 'flavor-chat-ia') . '</th><th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th><th>' . esc_html__('Prioridad', 'flavor-chat-ia') . '</th><th>' . esc_html__('Fecha', 'flavor-chat-ia') . '</th><th>' . esc_html__('Acciones', 'flavor-chat-ia') . '</th>';
+        echo '<th>ID</th><th>' . esc_html__('Número', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Solicitante', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Prioridad', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
         echo '</tr></thead><tbody>';
         foreach ($expedientes as $expediente) {
             echo '<tr>';
@@ -843,10 +843,10 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
 
         $output = '';
         if (!empty($links)) {
-            $output .= '<div><strong>' . esc_html__('Estado:', 'flavor-chat-ia') . '</strong> ' . implode(' | ', $links) . '</div>';
+            $output .= '<div><strong>' . esc_html__('Estado:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ' . implode(' | ', $links) . '</div>';
         }
         if (!empty($prio_links)) {
-            $output .= '<div><strong>' . esc_html__('Prioridad:', 'flavor-chat-ia') . '</strong> ' . implode(' | ', $prio_links) . '</div>';
+            $output .= '<div><strong>' . esc_html__('Prioridad:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ' . implode(' | ', $prio_links) . '</div>';
         }
         return $output;
     }
@@ -864,7 +864,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
             return;
         }
         if (!wp_verify_nonce($nonce, 'tramites_admin_' . $expediente_id)) {
-            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             return;
         }
 
@@ -883,7 +883,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
                 $format[] = '%s';
             }
             $wpdb->update($tabla, $data, ['id' => $expediente_id], $format, ['%d']);
-            echo '<div class="notice notice-success"><p>' . esc_html__('Estado actualizado.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-success"><p>' . esc_html__('Estado actualizado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         if ($accion === 'prioridad') {
@@ -892,7 +892,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
                 return;
             }
             $wpdb->update($tabla, ['prioridad' => $nueva_prioridad], ['id' => $expediente_id], ['%s'], ['%d']);
-            echo '<div class="notice notice-success"><p>' . esc_html__('Prioridad actualizada.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-success"><p>' . esc_html__('Prioridad actualizada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -901,7 +901,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
             return;
         }
         if (!wp_verify_nonce($_POST['tramites_config_nonce'], 'tramites_config')) {
-            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             return;
         }
 
@@ -922,12 +922,12 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         $this->update_setting('prefijo_expediente', sanitize_text_field($_POST['prefijo_expediente'] ?? 'EXP'));
         $this->update_setting('requiere_login', !empty($_POST['requiere_login']));
 
-        echo '<div class="notice notice-success"><p>' . esc_html__('Configuración guardada.', 'flavor-chat-ia') . '</p></div>';
+        echo '<div class="notice notice-success"><p>' . esc_html__('Configuración guardada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     }
 
     private function render_tipo_actions($tipo_id, $estado_actual) {
         $nuevo_estado = $estado_actual === 'activo' ? 'inactivo' : 'activo';
-        $label = $estado_actual === 'activo' ? __('Desactivar', 'flavor-chat-ia') : __('Activar', 'flavor-chat-ia');
+        $label = $estado_actual === 'activo' ? __('Desactivar', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Activar', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $url = add_query_arg([
             'page' => 'tramites-tipos',
             'tipo_action' => 'estado',
@@ -941,7 +941,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
     private function handle_admin_tipo_action() {
         if (!empty($_POST['tramites_tipo_nonce'])) {
             if (!wp_verify_nonce($_POST['tramites_tipo_nonce'], 'tramites_tipo')) {
-                echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+                echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
                 return;
             }
 
@@ -961,7 +961,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
                 'created_at' => current_time('mysql'),
             ]);
 
-            echo '<div class="notice notice-success"><p>' . esc_html__('Tipo creado.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-success"><p>' . esc_html__('Tipo creado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         if (empty($_GET['tipo_action']) || empty($_GET['tipo_id'])) {
@@ -976,7 +976,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
             return;
         }
         if (!wp_verify_nonce($nonce, 'tramites_tipo_' . $tipo_id)) {
-            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             return;
         }
 
@@ -987,7 +987,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
             }
             global $wpdb;
             $wpdb->update($this->tabla_tipos_tramite, ['estado' => $nuevo_estado], ['id' => $tipo_id], ['%s'], ['%d']);
-            echo '<div class="notice notice-success"><p>' . esc_html__('Estado actualizado.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-success"><p>' . esc_html__('Estado actualizado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -1025,17 +1025,17 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
                 'allowedTypes' => explode(',', $this->get_setting('tipos_archivo_permitidos')),
                 'maxFiles' => $this->get_setting('max_archivos_por_expediente'),
                 'i18n' => [
-                    'uploading' => __('Subiendo...', 'flavor-chat-ia'),
-                    'uploadError' => __('Error al subir el archivo', 'flavor-chat-ia'),
-                    'fileTooBig' => __('El archivo es demasiado grande', 'flavor-chat-ia'),
-                    'invalidType' => __('Tipo de archivo no permitido', 'flavor-chat-ia'),
-                    'confirmDelete' => __('¿Estas seguro de eliminar este documento?', 'flavor-chat-ia'),
-                    'confirmSubmit' => __('¿Deseas enviar el tramite?', 'flavor-chat-ia'),
-                    'required' => __('Este campo es obligatorio', 'flavor-chat-ia'),
-                    'invalidEmail' => __('Email no valido', 'flavor-chat-ia'),
-                    'invalidPhone' => __('Telefono no valido', 'flavor-chat-ia'),
-                    'success' => __('Operacion completada', 'flavor-chat-ia'),
-                    'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
+                    'uploading' => __('Subiendo...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'uploadError' => __('Error al subir el archivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'fileTooBig' => __('El archivo es demasiado grande', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'invalidType' => __('Tipo de archivo no permitido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'confirmDelete' => __('¿Estas seguro de eliminar este documento?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'confirmSubmit' => __('¿Deseas enviar el tramite?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'required' => __('Este campo es obligatorio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'invalidEmail' => __('Email no valido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'invalidPhone' => __('Telefono no valido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'success' => __('Operacion completada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ]);
         }
@@ -1650,7 +1650,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
 
         return rest_ensure_response([
             'success' => true,
-            'mensaje' => __('Expediente actualizado', 'flavor-chat-ia'),
+            'mensaje' => __('Expediente actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -1736,7 +1736,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
 
         return rest_ensure_response([
             'success' => true,
-            'mensaje' => __('Expediente actualizado', 'flavor-chat-ia'),
+            'mensaje' => __('Expediente actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'documento' => [
                 'id' => $documento_id,
                 'nombre' => $archivo['name'],
@@ -1853,7 +1853,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         ];
 
         if (!in_array($accion, $acciones_permitidas)) {
-            wp_send_json_error(['mensaje' => __('Accion no permitida', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Accion no permitida', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $metodo = 'ajax_' . $accion;
@@ -1865,7 +1865,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
                 wp_send_json_error($resultado);
             }
         } else {
-            wp_send_json_error(['mensaje' => __('Metodo no implementado', 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Metodo no implementado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -1876,13 +1876,13 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         $tipo_id = isset($_POST['tipo_id']) ? absint($_POST['tipo_id']) : 0;
 
         if (!$tipo_id) {
-            return ['success' => false, 'mensaje' => __('ID de tipo requerido', 'flavor-chat-ia')];
+            return ['success' => false, 'mensaje' => __('ID de tipo requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $tipo = $this->get_tipo_tramite_completo($tipo_id);
 
         if (!$tipo) {
-            return ['success' => false, 'mensaje' => __('Tipo no encontrado', 'flavor-chat-ia')];
+            return ['success' => false, 'mensaje' => __('Tipo no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         return ['success' => true, 'tipo' => $tipo];
@@ -1918,7 +1918,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
      */
     private function ajax_listar_expedientes() {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'mensaje' => __('ID de tipo requerido', 'flavor-chat-ia')];
+            return ['success' => false, 'mensaje' => __('ID de tipo requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $request = new WP_REST_Request('GET');
@@ -1938,7 +1938,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         $numero = isset($_POST['numero_expediente']) ? sanitize_text_field($_POST['numero_expediente']) : '';
 
         if (empty($numero)) {
-            return ['success' => false, 'mensaje' => __('ID de tipo requerido', 'flavor-chat-ia')];
+            return ['success' => false, 'mensaje' => __('ID de tipo requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $request = new WP_REST_Request('GET');
@@ -1997,14 +1997,14 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
             <div class="flavor-tramites-filtros">
                 <?php if ($atributos['mostrar_buscador'] === 'true'): ?>
                 <div class="flavor-tramites-buscador">
-                    <input type="text" id="flavor-buscar-tramite" placeholder="<?php esc_attr_e('Buscar tramite...', 'flavor-chat-ia'); ?>">
+                    <input type="text" id="flavor-buscar-tramite" placeholder="<?php esc_attr_e('Buscar tramite...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-search"></span>
                 </div>
                 <?php endif; ?>
 
                 <?php if ($atributos['mostrar_filtros'] === 'true' && !empty($categorias)): ?>
                 <div class="flavor-tramites-categorias">
-                    <button class="flavor-categoria-btn active" data-categoria=""><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></button>
+                    <button class="flavor-categoria-btn active" data-categoria=""><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                     <?php foreach ($categorias as $categoria): ?>
                     <button class="flavor-categoria-btn" data-categoria="<?php echo esc_attr($categoria); ?>"><?php echo esc_html($categoria); ?></button>
                     <?php endforeach; ?>
@@ -2015,7 +2015,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
 
             <div class="flavor-tramites-grid">
                 <?php if (empty($tipos)): ?>
-                <p class="flavor-tramites-vacio"><?php esc_html_e('No hay tramites disponibles.', 'flavor-chat-ia'); ?></p>
+                <p class="flavor-tramites-vacio"><?php esc_html_e('No hay tramites disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php else: ?>
                     <?php foreach ($tipos as $tipo): ?>
                     <div class="flavor-tramite-card" data-categoria="<?php echo esc_attr($tipo->categoria); ?>" data-id="<?php echo esc_attr($tipo->id); ?>">
@@ -2029,7 +2029,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
                                 <?php if ($tipo->plazo_resolucion_dias): ?>
                                 <span class="flavor-tramite-plazo">
                                     <span class="dashicons dashicons-clock"></span>
-                                    <?php echo esc_html($tipo->plazo_resolucion_dias); ?> <?php esc_html_e('dias', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html($tipo->plazo_resolucion_dias); ?> <?php esc_html_e('dias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                                 <?php endif; ?>
                                 <?php if ($tipo->tasa > 0): ?>
@@ -2041,7 +2041,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
                             </div>
                         </div>
                         <a href="<?php echo esc_url(add_query_arg('tramite', $tipo->id, flavor_current_request_url())); ?>" class="flavor-tramite-enlace">
-                            <?php esc_html_e('Iniciar tramite', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Iniciar tramite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             <span class="dashicons dashicons-arrow-right-alt"></span>
                         </a>
                     </div>
@@ -2064,19 +2064,19 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         $tipo_id = !empty($atributos['id']) ? absint($atributos['id']) : (isset($_GET['tramite']) ? absint($_GET['tramite']) : 0);
 
         if (!$tipo_id) {
-            return '<p class="flavor-tramites-error">' . esc_html__('No se ha especificado el tipo de tramite.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-tramites-error">' . esc_html__('No se ha especificado el tipo de tramite.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $tipo = $this->get_tipo_tramite_completo($tipo_id);
 
         if (!$tipo) {
-            return '<p class="flavor-tramites-error">' . esc_html__('Tramite no encontrado.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-tramites-error">' . esc_html__('Tramite no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         if ($this->get_setting('requiere_login') && !is_user_logged_in()) {
             return '<div class="flavor-tramites-login-required">
-                <p>' . esc_html__('Debes iniciar sesion para realizar este tramite.', 'flavor-chat-ia') . '</p>
-                <a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="flavor-btn flavor-btn-primary">' . esc_html__('Iniciar sesion', 'flavor-chat-ia') . '</a>
+                <p>' . esc_html__('Debes iniciar sesion para realizar este tramite.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
+                <a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="flavor-btn flavor-btn-primary">' . esc_html__('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>
             </div>';
         }
 
@@ -2097,7 +2097,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
 
             <?php if (!empty($tipo->requisitos)): ?>
             <div class="flavor-tramite-requisitos">
-                <h3><span class="dashicons dashicons-info-outline"></span> <?php esc_html_e('Requisitos', 'flavor-chat-ia'); ?></h3>
+                <h3><span class="dashicons dashicons-info-outline"></span> <?php esc_html_e('Requisitos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <ul>
                     <?php foreach ($tipo->requisitos as $requisito): ?>
                     <li><?php echo esc_html($requisito); ?></li>
@@ -2110,47 +2110,47 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
                 <input type="hidden" name="tipo_tramite_id" value="<?php echo esc_attr($tipo_id); ?>">
 
                 <div class="flavor-form-seccion">
-                    <h3><?php esc_html_e('Datos del solicitante', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Datos del solicitante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
                     <div class="flavor-form-row">
                         <div class="flavor-form-field flavor-field-half">
-                            <label for="nombre_solicitante"><?php esc_html_e('Nombre completo', 'flavor-chat-ia'); ?> *</label>
+                            <label for="nombre_solicitante"><?php esc_html_e('Nombre completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                             <input type="text" id="nombre_solicitante" name="nombre_solicitante" required value="<?php echo esc_attr($usuario_actual->display_name); ?>">
                         </div>
                         <div class="flavor-form-field flavor-field-half">
-                            <label for="dni_solicitante"><?php esc_html_e('DNI/NIE/CIF', 'flavor-chat-ia'); ?></label>
+                            <label for="dni_solicitante"><?php esc_html_e('DNI/NIE/CIF', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="text" id="dni_solicitante" name="dni_solicitante" pattern="[0-9A-Za-z]{8,12}">
                         </div>
                     </div>
 
                     <div class="flavor-form-row">
                         <div class="flavor-form-field flavor-field-half">
-                            <label for="email_solicitante"><?php esc_html_e('Email', 'flavor-chat-ia'); ?> *</label>
+                            <label for="email_solicitante"><?php esc_html_e('Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                             <input type="email" id="email_solicitante" name="email_solicitante" required value="<?php echo esc_attr($usuario_actual->user_email); ?>">
                         </div>
                         <div class="flavor-form-field flavor-field-half">
-                            <label for="telefono_solicitante"><?php esc_html_e('Telefono', 'flavor-chat-ia'); ?></label>
+                            <label for="telefono_solicitante"><?php esc_html_e('Telefono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="tel" id="telefono_solicitante" name="telefono_solicitante">
                         </div>
                     </div>
 
                     <div class="flavor-form-field">
-                        <label for="direccion_solicitante"><?php esc_html_e('Direccion', 'flavor-chat-ia'); ?></label>
+                        <label for="direccion_solicitante"><?php esc_html_e('Direccion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <textarea id="direccion_solicitante" name="direccion_solicitante" rows="2"></textarea>
                     </div>
                 </div>
 
                 <?php if (!empty($tipo->campos_formulario)): ?>
                 <div class="flavor-form-seccion">
-                    <h3><?php esc_html_e('Datos del tramite', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Datos del tramite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <?php echo $this->renderizar_campos_formulario($tipo->campos_formulario); ?>
                 </div>
                 <?php endif; ?>
 
                 <?php if (!empty($tipo->documentos_requeridos)): ?>
                 <div class="flavor-form-seccion">
-                    <h3><?php esc_html_e('Documentacion', 'flavor-chat-ia'); ?></h3>
-                    <p class="flavor-form-ayuda"><?php esc_html_e('Formatos permitidos:', 'flavor-chat-ia'); ?> <?php echo esc_html($this->get_setting('tipos_archivo_permitidos')); ?></p>
+                    <h3><?php esc_html_e('Documentacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <p class="flavor-form-ayuda"><?php esc_html_e('Formatos permitidos:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html($this->get_setting('tipos_archivo_permitidos')); ?></p>
 
                     <div class="flavor-documentos-requeridos">
                         <?php foreach ($tipo->documentos_requeridos as $doc): ?>
@@ -2170,7 +2170,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
                                 <input type="file" name="documentos[<?php echo esc_attr($doc['codigo']); ?>]" class="flavor-file-input" <?php echo !empty($doc['obligatorio']) ? 'required' : ''; ?>>
                                 <label class="flavor-file-label">
                                     <span class="dashicons dashicons-upload"></span>
-                                    <?php esc_html_e('Seleccionar archivo', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Seleccionar archivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </label>
                                 <span class="flavor-file-name"></span>
                             </div>
@@ -2181,27 +2181,27 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
                 <?php endif; ?>
 
                 <div class="flavor-form-seccion">
-                    <h3><?php esc_html_e('Observaciones', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Observaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <div class="flavor-form-field">
-                        <textarea id="notas_solicitante" name="notas" rows="3" placeholder="<?php esc_attr_e('Informacion adicional que quieras aportar...', 'flavor-chat-ia'); ?>"></textarea>
+                        <textarea id="notas_solicitante" name="notas" rows="3" placeholder="<?php esc_attr_e('Informacion adicional que quieras aportar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                     </div>
                 </div>
 
                 <?php if ($tipo->tasa > 0): ?>
                 <div class="flavor-tramite-tasa-info">
                     <span class="dashicons dashicons-info"></span>
-                    <?php printf(esc_html__('Este tramite tiene una tasa de %s EUR', 'flavor-chat-ia'), number_format($tipo->tasa, 2)); ?>
+                    <?php printf(esc_html__('Este tramite tiene una tasa de %s EUR', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($tipo->tasa, 2)); ?>
                 </div>
                 <?php endif; ?>
 
                 <div class="flavor-form-acciones">
                     <button type="button" class="flavor-btn flavor-btn-secondary" id="flavor-guardar-borrador">
                         <span class="dashicons dashicons-edit"></span>
-                        <?php esc_html_e('Guardar borrador', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Guardar borrador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="submit" class="flavor-btn flavor-btn-primary">
                         <span class="dashicons dashicons-yes-alt"></span>
-                        <?php esc_html_e('Enviar solicitud', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Enviar solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </form>
@@ -2210,12 +2210,12 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
                 <div class="flavor-resultado-icono">
                     <span class="dashicons dashicons-yes-alt"></span>
                 </div>
-                <h3><?php esc_html_e('Solicitud enviada correctamente', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Solicitud enviada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <p class="flavor-resultado-numero"></p>
-                <p class="flavor-resultado-mensaje"><?php esc_html_e('Recibiras un email de confirmacion con los detalles.', 'flavor-chat-ia'); ?></p>
+                <p class="flavor-resultado-mensaje"><?php esc_html_e('Recibiras un email de confirmacion con los detalles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <div class="flavor-resultado-acciones">
-                    <a href="#" class="flavor-btn flavor-btn-secondary flavor-ver-expediente" onclick="flavorVerExpediente(this); return false;"><?php esc_html_e('Ver mi expediente', 'flavor-chat-ia'); ?></a>
-                    <a href="<?php echo esc_url(remove_query_arg('tramite')); ?>" class="flavor-btn flavor-btn-outline"><?php esc_html_e('Iniciar otro tramite', 'flavor-chat-ia'); ?></a>
+                    <a href="#" class="flavor-btn flavor-btn-secondary flavor-ver-expediente" onclick="flavorVerExpediente(this); return false;"><?php esc_html_e('Ver mi expediente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
+                    <a href="<?php echo esc_url(remove_query_arg('tramite')); ?>" class="flavor-btn flavor-btn-outline"><?php esc_html_e('Iniciar otro tramite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 </div>
                 <script>
                 function flavorVerExpediente(el) {
@@ -2246,8 +2246,8 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
     public function shortcode_mis_expedientes($atts) {
         if (!is_user_logged_in()) {
             return '<div class="flavor-tramites-login-required">
-                <p>' . esc_html__('Debes iniciar sesion para ver tus expedientes.', 'flavor-chat-ia') . '</p>
-                <a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="flavor-btn flavor-btn-primary">' . esc_html__('Iniciar sesion', 'flavor-chat-ia') . '</a>
+                <p>' . esc_html__('Debes iniciar sesion para ver tus expedientes.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
+                <a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="flavor-btn flavor-btn-primary">' . esc_html__('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>
             </div>';
         }
 
@@ -2271,16 +2271,16 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         ?>
         <div class="flavor-mis-expedientes">
             <div class="flavor-expedientes-cabecera">
-                <h2><?php esc_html_e('Mis expedientes', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Mis expedientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <div class="flavor-expedientes-filtros">
                     <select id="flavor-filtro-estado">
-                        <option value=""><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('borrador', 'flavor-chat-ia'); ?>"><?php esc_html_e('Borrador', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('pendiente', 'flavor-chat-ia'); ?>"><?php esc_html_e('Pendiente', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('en_revision', 'flavor-chat-ia'); ?>"><?php esc_html_e('En revision', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('en_tramite', 'flavor-chat-ia'); ?>"><?php esc_html_e('En tramite', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('resuelto_favorable', 'flavor-chat-ia'); ?>"><?php esc_html_e('Resuelto favorable', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('resuelto_desfavorable', 'flavor-chat-ia'); ?>"><?php esc_html_e('Resuelto desfavorable', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('borrador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php esc_html_e('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php esc_html_e('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('en_revision', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php esc_html_e('En revision', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('en_tramite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php esc_html_e('En tramite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('resuelto_favorable', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php esc_html_e('Resuelto favorable', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="<?php echo esc_attr__('resuelto_desfavorable', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php esc_html_e('Resuelto desfavorable', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
             </div>
@@ -2288,7 +2288,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
             <?php if (empty($expedientes)): ?>
             <div class="flavor-expedientes-vacio">
                 <span class="dashicons dashicons-clipboard"></span>
-                <p><?php esc_html_e('No tienes expedientes registrados.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No tienes expedientes registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <?php else: ?>
             <div class="flavor-expedientes-lista">
@@ -2312,7 +2312,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
                     </div>
                     <div class="flavor-expediente-acciones">
                         <a href="<?php echo esc_url(add_query_arg('expediente', $expediente->numero_expediente, flavor_current_request_url())); ?>" class="flavor-btn flavor-btn-small">
-                            <?php esc_html_e('Ver detalle', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Ver detalle', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </div>
@@ -2334,12 +2334,12 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         ?>
         <div class="flavor-estado-expediente">
             <div class="flavor-consulta-estado">
-                <h2><?php esc_html_e('Consultar estado de expediente', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Consultar estado de expediente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <form id="flavor-form-consulta" class="flavor-form-inline">
-                    <input type="text" id="flavor-numero-expediente" name="numero" placeholder="<?php esc_attr_e('Numero de expediente (ej: EXP-2024-00001)', 'flavor-chat-ia'); ?>" value="<?php echo esc_attr($numero); ?>">
+                    <input type="text" id="flavor-numero-expediente" name="numero" placeholder="<?php esc_attr_e('Numero de expediente (ej: EXP-2024-00001)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" value="<?php echo esc_attr($numero); ?>">
                     <button type="submit" class="flavor-btn flavor-btn-primary">
                         <span class="dashicons dashicons-search"></span>
-                        <?php esc_html_e('Consultar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Consultar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </form>
             </div>
@@ -2352,28 +2352,28 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
 
                 <div class="flavor-detalle-info">
                     <div class="flavor-info-item">
-                        <span class="flavor-info-label"><?php esc_html_e('Tipo de tramite', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-info-label"><?php esc_html_e('Tipo de tramite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="flavor-info-valor flavor-detalle-tipo"></span>
                     </div>
                     <div class="flavor-info-item">
-                        <span class="flavor-info-label"><?php esc_html_e('Fecha de inicio', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-info-label"><?php esc_html_e('Fecha de inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="flavor-info-valor flavor-detalle-fecha"></span>
                     </div>
                     <div class="flavor-info-item">
-                        <span class="flavor-info-label"><?php esc_html_e('Fecha limite', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-info-label"><?php esc_html_e('Fecha limite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <span class="flavor-info-valor flavor-detalle-limite"></span>
                     </div>
                 </div>
 
                 <div class="flavor-timeline-container">
-                    <h3><?php esc_html_e('Historico del expediente', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Historico del expediente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <div class="flavor-timeline"></div>
                 </div>
             </div>
 
             <div class="flavor-expediente-no-encontrado" style="display: none;">
                 <span class="dashicons dashicons-warning"></span>
-                <p><?php esc_html_e('No se ha encontrado ningun expediente con ese numero.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No se ha encontrado ningun expediente con ese numero.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
         <?php
@@ -2578,13 +2578,13 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
             $valor = isset($datos[$campo->nombre_campo]) ? $datos[$campo->nombre_campo] : null;
 
             if ($campo->es_obligatorio && (empty($valor) && $valor !== '0')) {
-                $errores[$campo->nombre_campo] = sprintf(__('El campo %s es obligatorio', 'flavor-chat-ia'), $campo->etiqueta);
+                $errores[$campo->nombre_campo] = sprintf(__('El campo %s es obligatorio', FLAVOR_PLATFORM_TEXT_DOMAIN), $campo->etiqueta);
                 continue;
             }
 
             if (!empty($valor) && !empty($campo->patron_validacion)) {
                 if (!preg_match('/' . $campo->patron_validacion . '/', $valor)) {
-                    $errores[$campo->nombre_campo] = $campo->mensaje_error ?: sprintf(__('El campo %s no tiene un formato valido', 'flavor-chat-ia'), $campo->etiqueta);
+                    $errores[$campo->nombre_campo] = $campo->mensaje_error ?: sprintf(__('El campo %s no tiene un formato valido', FLAVOR_PLATFORM_TEXT_DOMAIN), $campo->etiqueta);
                 }
             }
 
@@ -2592,17 +2592,17 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
                 switch ($campo->tipo_campo) {
                     case 'email':
                         if (!is_email($valor)) {
-                            $errores[$campo->nombre_campo] = __('Email no valido', 'flavor-chat-ia');
+                            $errores[$campo->nombre_campo] = __('Email no valido', FLAVOR_PLATFORM_TEXT_DOMAIN);
                         }
                         break;
                     case 'dni':
                         if (!$this->validar_dni_nie($valor)) {
-                            $errores[$campo->nombre_campo] = __('DNI/NIE no valido', 'flavor-chat-ia');
+                            $errores[$campo->nombre_campo] = __('DNI/NIE no valido', FLAVOR_PLATFORM_TEXT_DOMAIN);
                         }
                         break;
                     case 'iban':
                         if (!$this->validar_iban($valor)) {
-                            $errores[$campo->nombre_campo] = __('IBAN no valido', 'flavor-chat-ia');
+                            $errores[$campo->nombre_campo] = __('IBAN no valido', FLAVOR_PLATFORM_TEXT_DOMAIN);
                         }
                         break;
                 }
@@ -2713,7 +2713,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
 
                 case 'select':
                     $html .= '<select ' . $atributos_campo . '>';
-                    $html .= '<option value="">' . esc_html__('Seleccionar...', 'flavor-chat-ia') . '</option>';
+                    $html .= '<option value="">' . esc_html__('Seleccionar...', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
                     if (is_array($campo->opciones)) {
                         foreach ($campo->opciones as $opcion) {
                             $valor_opcion = is_array($opcion) ? $opcion['valor'] : $opcion;
@@ -2795,7 +2795,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         $usuario_id = get_current_user_id();
-        $nombre_usuario = $usuario_id ? wp_get_current_user()->display_name : __('Sistema', 'flavor-chat-ia');
+        $nombre_usuario = $usuario_id ? wp_get_current_user()->display_name : __('Sistema', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         $wpdb->insert($this->tabla_historial, [
             'expediente_id' => $expediente_id,
@@ -2822,10 +2822,10 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
             return false;
         }
 
-        $asunto = sprintf(__('Confirmacion de tramite - %s', 'flavor-chat-ia'), $expediente->numero_expediente);
+        $asunto = sprintf(__('Confirmacion de tramite - %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $expediente->numero_expediente);
 
         $mensaje = sprintf(
-            __("Estimado/a %s,\n\nSu solicitud ha sido registrada correctamente.\n\nNumero de expediente: %s\nTipo de tramite: %s\nFecha de registro: %s\n\nPuede consultar el estado de su expediente en cualquier momento.\n\nSaludos.", 'flavor-chat-ia'),
+            __("Estimado/a %s,\n\nSu solicitud ha sido registrada correctamente.\n\nNumero de expediente: %s\nTipo de tramite: %s\nFecha de registro: %s\n\nPuede consultar el estado de su expediente en cualquier momento.\n\nSaludos.", FLAVOR_PLATFORM_TEXT_DOMAIN),
             $expediente->nombre_solicitante,
             $expediente->numero_expediente,
             $expediente->tipo_nombre,
@@ -2918,7 +2918,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
      */
     private function action_detalle_tramite($params) {
         if (empty($params['tramite_id'])) {
-            return ['success' => false, 'error' => __('Se requiere el ID del tramite', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Se requiere el ID del tramite', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $request = new WP_REST_Request('GET');
@@ -2938,7 +2938,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
      */
     private function action_estado_expediente($params) {
         if (empty($params['numero_expediente'])) {
-            return ['success' => false, 'error' => __('Se requiere el ID del tramite', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Se requiere el ID del tramite', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $request = new WP_REST_Request('GET');
@@ -2963,11 +2963,11 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
     public function get_web_components() {
         return [
             'catalogo_tramites' => [
-                'label' => __('Catalogo de Tramites', 'flavor-chat-ia'),
+                'label' => __('Catalogo de Tramites', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-grid-view',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Tramites Disponibles', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Tramites Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'columnas' => ['type' => 'select', 'options' => [2, 3, 4], 'default' => 3],
                     'categoria' => ['type' => 'text', 'default' => ''],
                     'mostrar_filtros' => ['type' => 'toggle', 'default' => true],
@@ -2975,7 +2975,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
                 'shortcode' => 'catalogo_tramites',
             ],
             'formulario_tramite' => [
-                'label' => __('Formulario de Tramite', 'flavor-chat-ia'),
+                'label' => __('Formulario de Tramite', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'forms',
                 'icon' => 'dashicons-welcome-write-blog',
                 'fields' => [
@@ -2984,13 +2984,13 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
                 'shortcode' => 'iniciar_tramite',
             ],
             'mis_expedientes' => [
-                'label' => __('Mis Expedientes', 'flavor-chat-ia'),
+                'label' => __('Mis Expedientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'user',
                 'icon' => 'dashicons-portfolio',
                 'shortcode' => 'mis_expedientes',
             ],
             'consulta_estado' => [
-                'label' => __('Consultar Estado', 'flavor-chat-ia'),
+                'label' => __('Consultar Estado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'widgets',
                 'icon' => 'dashicons-search',
                 'shortcode' => 'estado_expediente',
@@ -3150,28 +3150,28 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Trámites Online', 'flavor-chat-ia'),
+                'title' => __('Trámites Online', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'tramites',
-                'content' => '<h1>' . __('Trámites Online', 'flavor-chat-ia') . '</h1>
-<p>' . __('Realiza tus trámites de forma rápida y sencilla. Consulta el catálogo de servicios disponibles, inicia solicitudes y haz seguimiento de tus expedientes.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Trámites Online', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Realiza tus trámites de forma rápida y sencilla. Consulta el catálogo de servicios disponibles, inicia solicitudes y haz seguimiento de tus expedientes.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="tramites" action="listar" columnas="3" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Iniciar Trámite', 'flavor-chat-ia'),
+                'title' => __('Iniciar Trámite', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'iniciar',
-                'content' => '<h1>' . __('Iniciar Trámite', 'flavor-chat-ia') . '</h1>
-<p>' . __('Selecciona el tipo de trámite que deseas realizar, completa el formulario con la información requerida y adjunta la documentación necesaria.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Iniciar Trámite', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Selecciona el tipo de trámite que deseas realizar, completa el formulario con la información requerida y adjunta la documentación necesaria.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="tramites" action="crear"]',
                 'parent' => 'tramites',
             ],
             [
-                'title' => __('Mis Trámites', 'flavor-chat-ia'),
+                'title' => __('Mis Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mis-tramites',
-                'content' => '<h1>' . __('Mis Trámites', 'flavor-chat-ia') . '</h1>
-<p>' . __('Consulta el estado de tus expedientes, revisa las notificaciones y gestiona tus solicitudes en curso.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Mis Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Consulta el estado de tus expedientes, revisa las notificaciones y gestiona tus solicitudes en curso.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="tramites" action="mis_items"]',
                 'parent' => 'tramites',
@@ -3187,8 +3187,8 @@ KNOWLEDGE;
     public static function get_renderer_config(): array {
         return [
             'module'   => 'tramites',
-            'title'    => __('Trámites Online', 'flavor-chat-ia'),
-            'subtitle' => __('Realiza gestiones administrativas de forma rápida y sencilla', 'flavor-chat-ia'),
+            'title'    => __('Trámites Online', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Realiza gestiones administrativas de forma rápida y sencilla', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '📋',
             'color'    => 'secondary', // Usa variable CSS --flavor-secondary del tema
 
@@ -3198,30 +3198,30 @@ KNOWLEDGE;
             ],
 
             'fields' => [
-                'tipo'          => ['type' => 'select', 'label' => __('Tipo de trámite', 'flavor-chat-ia'), 'required' => true],
-                'titulo'        => ['type' => 'text', 'label' => __('Asunto', 'flavor-chat-ia'), 'required' => true],
-                'descripcion'   => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
-                'documentos'    => ['type' => 'file', 'label' => __('Documentación', 'flavor-chat-ia'), 'multiple' => true],
-                'expediente'    => ['type' => 'text', 'label' => __('Nº Expediente', 'flavor-chat-ia'), 'readonly' => true],
-                'fecha_inicio'  => ['type' => 'date', 'label' => __('Fecha inicio', 'flavor-chat-ia')],
-                'fecha_resolucion' => ['type' => 'date', 'label' => __('Fecha resolución', 'flavor-chat-ia')],
+                'tipo'          => ['type' => 'select', 'label' => __('Tipo de trámite', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'titulo'        => ['type' => 'text', 'label' => __('Asunto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'descripcion'   => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'documentos'    => ['type' => 'file', 'label' => __('Documentación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'multiple' => true],
+                'expediente'    => ['type' => 'text', 'label' => __('Nº Expediente', FLAVOR_PLATFORM_TEXT_DOMAIN), 'readonly' => true],
+                'fecha_inicio'  => ['type' => 'date', 'label' => __('Fecha inicio', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'fecha_resolucion' => ['type' => 'date', 'label' => __('Fecha resolución', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ],
 
             'estados' => [
-                'borrador'    => ['label' => __('Borrador', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '📝'],
-                'presentado'  => ['label' => __('Presentado', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '📤'],
-                'en_tramite'  => ['label' => __('En trámite', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏳'],
-                'pendiente_doc' => ['label' => __('Pendiente documentación', 'flavor-chat-ia'), 'color' => 'orange', 'icon' => '📎'],
-                'resuelto'    => ['label' => __('Resuelto', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
-                'denegado'    => ['label' => __('Denegado', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '❌'],
-                'archivado'   => ['label' => __('Archivado', 'flavor-chat-ia'), 'color' => 'slate', 'icon' => '🗄️'],
+                'borrador'    => ['label' => __('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'gray', 'icon' => '📝'],
+                'presentado'  => ['label' => __('Presentado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'blue', 'icon' => '📤'],
+                'en_tramite'  => ['label' => __('En trámite', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '⏳'],
+                'pendiente_doc' => ['label' => __('Pendiente documentación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'orange', 'icon' => '📎'],
+                'resuelto'    => ['label' => __('Resuelto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '✅'],
+                'denegado'    => ['label' => __('Denegado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'red', 'icon' => '❌'],
+                'archivado'   => ['label' => __('Archivado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'slate', 'icon' => '🗄️'],
             ],
 
             'stats' => [
-                'total_tramites'   => ['label' => __('Total trámites', 'flavor-chat-ia'), 'icon' => '📋', 'color' => 'slate'],
-                'en_curso'         => ['label' => __('En curso', 'flavor-chat-ia'), 'icon' => '⏳', 'color' => 'yellow'],
-                'resueltos'        => ['label' => __('Resueltos', 'flavor-chat-ia'), 'icon' => '✅', 'color' => 'green'],
-                'tiempo_medio'     => ['label' => __('Tiempo medio', 'flavor-chat-ia'), 'icon' => '⏱️', 'color' => 'blue'],
+                'total_tramites'   => ['label' => __('Total trámites', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📋', 'color' => 'slate'],
+                'en_curso'         => ['label' => __('En curso', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '⏳', 'color' => 'yellow'],
+                'resueltos'        => ['label' => __('Resueltos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '✅', 'color' => 'green'],
+                'tiempo_medio'     => ['label' => __('Tiempo medio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '⏱️', 'color' => 'blue'],
             ],
 
             'card' => [
@@ -3235,38 +3235,38 @@ KNOWLEDGE;
 
             'tabs' => [
                 'catalogo' => [
-                    'label'   => __('Catálogo', 'flavor-chat-ia'),
+                    'label'   => __('Catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-portfolio',
                     'content' => '[flavor_tramites_catalogo]',
                     'public'  => true,
                 ],
                 'iniciar' => [
-                    'label'      => __('Iniciar trámite', 'flavor-chat-ia'),
+                    'label'      => __('Iniciar trámite', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-plus-alt',
                     'content'    => '[flavor_tramites_solicitar]',
                     'requires_login' => true,
                 ],
                 'mis-tramites' => [
-                    'label'      => __('Mis trámites', 'flavor-chat-ia'),
+                    'label'      => __('Mis trámites', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-admin-users',
                     'content'    => '[flavor_tramites_mis_solicitudes]',
                     'requires_login' => true,
                 ],
                 'seguimiento' => [
-                    'label'   => __('Seguimiento', 'flavor-chat-ia'),
+                    'label'   => __('Seguimiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-search',
                     'content' => '[flavor_tramites_seguimiento]',
                     'public'  => true,
                 ],
                 'detalle' => [
-                    'label'      => __('Detalle', 'flavor-chat-ia'),
+                    'label'      => __('Detalle', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-visibility',
                     'content'    => '[flavor_tramites_detalle]',
                     'public'     => true,
                     'hidden_nav' => true,
                 ],
                 'citas' => [
-                    'label'          => __('Citas', 'flavor-chat-ia'),
+                    'label'          => __('Citas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'           => 'dashicons-calendar-alt',
                     'content'        => '[flavor_tramites_citas]',
                     'requires_login' => true,
@@ -3285,8 +3285,8 @@ KNOWLEDGE;
             'dashboard' => [
                 'widgets' => ['stats', 'mis_tramites', 'pendientes', 'historial'],
                 'actions' => [
-                    'nuevo'      => ['label' => __('Nuevo trámite', 'flavor-chat-ia'), 'icon' => '➕', 'color' => 'blue'],
-                    'seguimiento' => ['label' => __('Consultar estado', 'flavor-chat-ia'), 'icon' => '🔍', 'color' => 'slate'],
+                    'nuevo'      => ['label' => __('Nuevo trámite', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '➕', 'color' => 'blue'],
+                    'seguimiento' => ['label' => __('Consultar estado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🔍', 'color' => 'slate'],
                 ],
             ],
 
@@ -3334,8 +3334,8 @@ KNOWLEDGE;
         // Página principal - alias con sufijo -dashboard para Admin Shell
         add_submenu_page(
             null,
-            __('Dashboard Trámites', 'flavor-chat-ia'),
-            __('Dashboard', 'flavor-chat-ia'),
+            __('Dashboard Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'tramites-dashboard',
             [$this, 'render_pagina_dashboard']
@@ -3344,8 +3344,8 @@ KNOWLEDGE;
         // Pendientes
         add_submenu_page(
             null,
-            __('Pendientes - Trámites', 'flavor-chat-ia'),
-            __('Pendientes', 'flavor-chat-ia'),
+            __('Pendientes - Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'tramites-pendientes',
             [$this, 'render_admin_pendientes']
@@ -3354,8 +3354,8 @@ KNOWLEDGE;
         // Historial
         add_submenu_page(
             null,
-            __('Historial - Trámites', 'flavor-chat-ia'),
-            __('Historial', 'flavor-chat-ia'),
+            __('Historial - Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Historial', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'tramites-historial',
             [$this, 'render_admin_historial']
@@ -3364,8 +3364,8 @@ KNOWLEDGE;
         // Tipos de trámite
         add_submenu_page(
             null,
-            __('Tipos de Trámite - Trámites', 'flavor-chat-ia'),
-            __('Tipos de Trámite', 'flavor-chat-ia'),
+            __('Tipos de Trámite - Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Tipos de Trámite', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'tramites-tipos',
             [$this, 'render_admin_tipos']
@@ -3374,8 +3374,8 @@ KNOWLEDGE;
         // Configuración
         add_submenu_page(
             null,
-            __('Configuración - Trámites', 'flavor-chat-ia'),
-            __('Configuración', 'flavor-chat-ia'),
+            __('Configuración - Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'tramites-config',
             [$this, 'render_admin_config']

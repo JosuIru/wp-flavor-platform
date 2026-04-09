@@ -46,15 +46,15 @@ foreach ($estaciones_db as $estacion) {
 }
 
 // Parámetros para el mapa unificado
-$titulo = __('Mapa de Estaciones', 'flavor-chat-ia');
-$subtitulo = __('Encuentra la estación más cercana para recoger o devolver una bicicleta', 'flavor-chat-ia');
+$titulo = __('Mapa de Estaciones', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$subtitulo = __('Encuentra la estación más cercana para recoger o devolver una bicicleta', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $color_primario = '#0ea5e9'; // Azul cielo para bicicletas
 $modulo_id = 'bicicletas';
-$texto_boton = __('Cómo llegar', 'flavor-chat-ia');
+$texto_boton = __('Cómo llegar', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $etiquetas = [
-    'disponible' => __('Disponible (+3 bicis)', 'flavor-chat-ia'),
-    'limitado' => __('Pocas bicis (1-3)', 'flavor-chat-ia'),
-    'vacio' => __('Sin bicis', 'flavor-chat-ia'),
+    'disponible' => __('Disponible (+3 bicis)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'limitado' => __('Pocas bicis (1-3)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'vacio' => __('Sin bicis', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 // Incluir el template unificado
@@ -62,5 +62,5 @@ $template_path = FLAVOR_CHAT_IA_PATH . 'templates/components/unified/mapa-leafle
 if (file_exists($template_path)) {
     include $template_path;
 } else {
-    echo '<div class="flavor-error">' . esc_html__('Template de mapa no encontrado', 'flavor-chat-ia') . '</div>';
+    echo '<div class="flavor-error">' . esc_html__('Template de mapa no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
 }

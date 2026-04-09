@@ -828,8 +828,8 @@ class Flavor_Chat_Sello_Conciencia_Module extends Flavor_Chat_Module_Base {
      */
     public function __construct() {
         $this->id = 'sello_conciencia';
-        $this->name = __('Sello de Conciencia', 'flavor-chat-ia');
-        $this->description = __('Evalúa automáticamente el nivel de conciencia de la aplicación según los módulos activos y las 5 premisas fundamentales.', 'flavor-chat-ia');
+        $this->name = __('Sello de Conciencia', 'flavor-platform');
+        $this->description = __('Evalúa automáticamente el nivel de conciencia de la aplicación según los módulos activos y las 5 premisas fundamentales.', 'flavor-platform');
 
         parent::__construct();
     }
@@ -960,24 +960,24 @@ class Flavor_Chat_Sello_Conciencia_Module extends Flavor_Chat_Module_Base {
     public function get_admin_config(): array {
         return [
             'id' => 'sello_conciencia',
-            'label' => __('Sello de Conciencia', 'flavor-chat-ia'),
+            'label' => __('Sello de Conciencia', 'flavor-platform'),
             'icon' => 'dashicons-awards',
             'capability' => 'manage_options',
             'categoria' => 'recursos',
             'paginas' => [
                 [
                     'slug' => 'sello-conciencia',
-                    'titulo' => __('Sello de Conciencia', 'flavor-chat-ia'),
+                    'titulo' => __('Sello de Conciencia', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_dashboard'],
                 ],
                 [
                     'slug' => 'sc-evaluacion',
-                    'titulo' => __('Evaluación', 'flavor-chat-ia'),
+                    'titulo' => __('Evaluación', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_evaluacion'],
                 ],
                 [
                     'slug' => 'sc-premisas',
-                    'titulo' => __('Premisas', 'flavor-chat-ia'),
+                    'titulo' => __('Premisas', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_premisas'],
                 ],
             ],
@@ -997,7 +997,7 @@ class Flavor_Chat_Sello_Conciencia_Module extends Flavor_Chat_Module_Base {
         <div class="wrap flavor-sello-dashboard">
             <h1>
                 <span class="dashicons dashicons-awards" style="font-size: 30px; margin-right: 10px;"></span>
-                <?php esc_html_e('Sello de Conciencia', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Sello de Conciencia', 'flavor-platform'); ?>
             </h1>
 
             <div class="sello-header-grid">
@@ -1020,14 +1020,14 @@ class Flavor_Chat_Sello_Conciencia_Module extends Flavor_Chat_Module_Base {
                         <span class="dashicons dashicons-admin-plugins"></span>
                         <div class="stat-content">
                             <span class="stat-value"><?php echo esc_html($resumen['modulos_activos']); ?></span>
-                            <span class="stat-label"><?php esc_html_e('Módulos evaluados', 'flavor-chat-ia'); ?></span>
+                            <span class="stat-label"><?php esc_html_e('Módulos evaluados', 'flavor-platform'); ?></span>
                         </div>
                     </div>
                     <div class="sello-stat-card">
                         <span class="dashicons dashicons-heart"></span>
                         <div class="stat-content">
                             <span class="stat-value">5</span>
-                            <span class="stat-label"><?php esc_html_e('Premisas', 'flavor-chat-ia'); ?></span>
+                            <span class="stat-label"><?php esc_html_e('Premisas', 'flavor-platform'); ?></span>
                         </div>
                     </div>
                 </div>
@@ -1035,7 +1035,7 @@ class Flavor_Chat_Sello_Conciencia_Module extends Flavor_Chat_Module_Base {
 
             <!-- Premisas con progreso -->
             <div class="sello-section">
-                <h2><span class="dashicons dashicons-clipboard"></span> <?php esc_html_e('Evaluación por Premisa', 'flavor-chat-ia'); ?></h2>
+                <h2><span class="dashicons dashicons-clipboard"></span> <?php esc_html_e('Evaluación por Premisa', 'flavor-platform'); ?></h2>
                 <div class="sello-premisas-grid">
                     <?php foreach (self::PREMISAS as $premisa_id => $premisa):
                         $puntuacion_premisa = $evaluacion['puntuaciones_premisas'][$premisa_id] ?? 0;
@@ -1058,13 +1058,13 @@ class Flavor_Chat_Sello_Conciencia_Module extends Flavor_Chat_Module_Base {
             <!-- Módulos evaluados -->
             <?php if (!empty($evaluacion['modulos_evaluados'])): ?>
             <div class="sello-section">
-                <h2><span class="dashicons dashicons-yes-alt"></span> <?php esc_html_e('Módulos Evaluados', 'flavor-chat-ia'); ?></h2>
+                <h2><span class="dashicons dashicons-yes-alt"></span> <?php esc_html_e('Módulos Evaluados', 'flavor-platform'); ?></h2>
                 <table class="wp-list-table widefat fixed striped sello-modulos-table">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('Módulo', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 100px; text-align: center;"><?php esc_html_e('Puntuación', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 120px;"><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Módulo', 'flavor-platform'); ?></th>
+                            <th style="width: 100px; text-align: center;"><?php esc_html_e('Puntuación', 'flavor-platform'); ?></th>
+                            <th style="width: 120px;"><?php esc_html_e('Categoría', 'flavor-platform'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1091,8 +1091,8 @@ class Flavor_Chat_Sello_Conciencia_Module extends Flavor_Chat_Module_Base {
             <div class="sello-section">
                 <div class="sello-empty-state">
                     <span class="dashicons dashicons-info"></span>
-                    <p><?php esc_html_e('No hay módulos con valoración de conciencia activos.', 'flavor-chat-ia'); ?></p>
-                    <p><small><?php esc_html_e('Activa módulos que contribuyan a las premisas de economía consciente para ver la evaluación.', 'flavor-chat-ia'); ?></small></p>
+                    <p><?php esc_html_e('No hay módulos con valoración de conciencia activos.', 'flavor-platform'); ?></p>
+                    <p><small><?php esc_html_e('Activa módulos que contribuyan a las premisas de economía consciente para ver la evaluación.', 'flavor-platform'); ?></small></p>
                 </div>
             </div>
             <?php endif; ?>
@@ -1276,9 +1276,9 @@ class Flavor_Chat_Sello_Conciencia_Module extends Flavor_Chat_Module_Base {
         $evaluacion = $this->evaluar();
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e('Evaluación de Módulos', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Evaluación de Módulos', 'flavor-platform'); ?></h1>
             <table class="wp-list-table widefat fixed striped">
-                <thead><tr><th><?php esc_html_e('Módulo', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Puntuación', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></th></tr></thead>
+                <thead><tr><th><?php esc_html_e('Módulo', 'flavor-platform'); ?></th><th><?php esc_html_e('Puntuación', 'flavor-platform'); ?></th><th><?php esc_html_e('Categoría', 'flavor-platform'); ?></th></tr></thead>
                 <tbody>
                 <?php foreach ($evaluacion['modulos_evaluados'] as $id => $mod): ?>
                     <tr>
@@ -1299,13 +1299,13 @@ class Flavor_Chat_Sello_Conciencia_Module extends Flavor_Chat_Module_Base {
     public function render_admin_premisas(): void {
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e('Las 5 Premisas Fundamentales', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Las 5 Premisas Fundamentales', 'flavor-platform'); ?></h1>
             <div class="flavor-premisas-grid">
                 <?php foreach (self::PREMISAS as $premisa): ?>
                 <div class="flavor-premisa-card" style="border-left: 4px solid <?php echo esc_attr($premisa['color']); ?>">
                     <h3><span class="dashicons <?php echo esc_attr($premisa['icono']); ?>"></span> <?php echo esc_html($premisa['nombre']); ?></h3>
                     <p><?php echo esc_html($premisa['descripcion']); ?></p>
-                    <small><strong><?php esc_html_e('Principio:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($premisa['principio']); ?></small>
+                    <small><strong><?php esc_html_e('Principio:', 'flavor-platform'); ?></strong> <?php echo esc_html($premisa['principio']); ?></small>
                 </div>
                 <?php endforeach; ?>
             </div>
@@ -1503,7 +1503,7 @@ class Flavor_Chat_Sello_Conciencia_Module extends Flavor_Chat_Module_Base {
                 'madurez_ciclica' => 0.20,
                 'valor_intrinseco' => 0.20,
             ],
-            'descripcion_contribucion' => __('Módulo sin valoración específica.', 'flavor-chat-ia'),
+            'descripcion_contribucion' => __('Módulo sin valoración específica.', 'flavor-platform'),
             'categoria' => 'otros',
         ];
     }
@@ -1820,7 +1820,7 @@ class Flavor_Chat_Sello_Conciencia_Module extends Flavor_Chat_Module_Base {
             default:
                 return [
                     'success' => false,
-                    'error' => __('Acción no reconocida', 'flavor-chat-ia'),
+                    'error' => __('Acción no reconocida', 'flavor-platform'),
                 ];
         }
     }

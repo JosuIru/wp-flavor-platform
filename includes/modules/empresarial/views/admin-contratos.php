@@ -62,11 +62,11 @@ $conteo_estados = $wpdb->get_results(
 
 // Etiquetas de estado
 $etiquetas_estado = [
-    'propuesta'  => __('Propuesta', 'flavor-chat-ia'),
-    'aprobado'   => __('Aprobado', 'flavor-chat-ia'),
-    'en_curso'   => __('En Curso', 'flavor-chat-ia'),
-    'completado' => __('Completado', 'flavor-chat-ia'),
-    'cancelado'  => __('Cancelado', 'flavor-chat-ia'),
+    'propuesta'  => __('Propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'aprobado'   => __('Aprobado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'en_curso'   => __('En Curso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'completado' => __('Completado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cancelado'  => __('Cancelado', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 
@@ -89,24 +89,24 @@ $etiquetas_estado = [
 
                 <div class="flavor-form-grid">
                     <div class="flavor-form-section">
-                        <h3><?php esc_html_e('Información del Proyecto', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php esc_html_e('Información del Proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
                         <div class="flavor-form-row">
-                            <label for="titulo"><?php esc_html_e('Título del Proyecto', 'flavor-chat-ia'); ?> *</label>
+                            <label for="titulo"><?php esc_html_e('Título del Proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                             <input type="text" id="titulo" name="titulo" required
                                    value="<?php echo esc_attr($proyecto_editar['titulo'] ?? ''); ?>"
-                                   placeholder="<?php esc_attr_e('Nombre del proyecto', 'flavor-chat-ia'); ?>">
+                                   placeholder="<?php esc_attr_e('Nombre del proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         </div>
 
                         <div class="flavor-form-row">
-                            <label for="descripcion"><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?></label>
+                            <label for="descripcion"><?php esc_html_e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <textarea id="descripcion" name="descripcion" rows="4"
-                                      placeholder="<?php esc_attr_e('Describe el alcance del proyecto', 'flavor-chat-ia'); ?>"><?php echo esc_textarea($proyecto_editar['descripcion'] ?? ''); ?></textarea>
+                                      placeholder="<?php esc_attr_e('Describe el alcance del proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_textarea($proyecto_editar['descripcion'] ?? ''); ?></textarea>
                         </div>
 
                         <div class="flavor-form-row-group">
                             <div class="flavor-form-row">
-                                <label for="estado"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></label>
+                                <label for="estado"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <select id="estado" name="estado">
                                     <?php foreach ($etiquetas_estado as $estado_valor => $estado_label): ?>
                                         <option value="<?php echo esc_attr($estado_valor); ?>"
@@ -118,7 +118,7 @@ $etiquetas_estado = [
                             </div>
 
                             <div class="flavor-form-row">
-                                <label for="progreso"><?php esc_html_e('Progreso (%)', 'flavor-chat-ia'); ?></label>
+                                <label for="progreso"><?php esc_html_e('Progreso (%)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <input type="number" id="progreso" name="progreso" min="0" max="100"
                                        value="<?php echo esc_attr($proyecto_editar['progreso'] ?? 0); ?>">
                             </div>
@@ -126,28 +126,28 @@ $etiquetas_estado = [
                     </div>
 
                     <div class="flavor-form-section">
-                        <h3><?php esc_html_e('Cliente', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php esc_html_e('Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
                         <div class="flavor-form-row">
-                            <label for="cliente_nombre"><?php esc_html_e('Nombre del Cliente', 'flavor-chat-ia'); ?> *</label>
+                            <label for="cliente_nombre"><?php esc_html_e('Nombre del Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                             <input type="text" id="cliente_nombre" name="cliente_nombre" required
                                    value="<?php echo esc_attr($proyecto_editar['cliente_nombre'] ?? ''); ?>"
-                                   placeholder="<?php esc_attr_e('Nombre o razón social', 'flavor-chat-ia'); ?>">
+                                   placeholder="<?php esc_attr_e('Nombre o razón social', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         </div>
 
                         <div class="flavor-form-row">
-                            <label for="cliente_email"><?php esc_html_e('Email del Cliente', 'flavor-chat-ia'); ?></label>
+                            <label for="cliente_email"><?php esc_html_e('Email del Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="email" id="cliente_email" name="cliente_email"
                                    value="<?php echo esc_attr($proyecto_editar['cliente_email'] ?? ''); ?>"
-                                   placeholder="<?php esc_attr_e('contacto@empresa.com', 'flavor-chat-ia'); ?>">
+                                   placeholder="<?php esc_attr_e('contacto@empresa.com', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         </div>
                     </div>
 
                     <div class="flavor-form-section">
-                        <h3><?php esc_html_e('Presupuesto y Fechas', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php esc_html_e('Presupuesto y Fechas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
                         <div class="flavor-form-row">
-                            <label for="presupuesto"><?php esc_html_e('Presupuesto (€)', 'flavor-chat-ia'); ?></label>
+                            <label for="presupuesto"><?php esc_html_e('Presupuesto (€)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="number" id="presupuesto" name="presupuesto" min="0" step="0.01"
                                    value="<?php echo esc_attr($proyecto_editar['presupuesto'] ?? 0); ?>"
                                    placeholder="0.00">
@@ -155,13 +155,13 @@ $etiquetas_estado = [
 
                         <div class="flavor-form-row-group">
                             <div class="flavor-form-row">
-                                <label for="fecha_inicio"><?php esc_html_e('Fecha de Inicio', 'flavor-chat-ia'); ?></label>
+                                <label for="fecha_inicio"><?php esc_html_e('Fecha de Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <input type="date" id="fecha_inicio" name="fecha_inicio"
                                        value="<?php echo esc_attr($proyecto_editar['fecha_inicio'] ?? ''); ?>">
                             </div>
 
                             <div class="flavor-form-row">
-                                <label for="fecha_entrega"><?php esc_html_e('Fecha de Entrega', 'flavor-chat-ia'); ?></label>
+                                <label for="fecha_entrega"><?php esc_html_e('Fecha de Entrega', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <input type="date" id="fecha_entrega" name="fecha_entrega"
                                        value="<?php echo esc_attr($proyecto_editar['fecha_entrega'] ?? ''); ?>">
                             </div>
@@ -171,10 +171,10 @@ $etiquetas_estado = [
 
                 <div class="flavor-form-actions">
                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-empresarial-contratos')); ?>" class="button">
-                        <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <button type="submit" class="button button-primary">
-                        <?php echo $proyecto_id ? esc_html__('Actualizar Proyecto', 'flavor-chat-ia') : esc_html__('Crear Proyecto', 'flavor-chat-ia'); ?>
+                        <?php echo $proyecto_id ? esc_html__('Actualizar Proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Crear Proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </form>
@@ -190,7 +190,7 @@ $etiquetas_estado = [
                     <input type="hidden" name="page" value="flavor-empresarial-contratos">
 
                     <select name="estado">
-                        <option value=""><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($etiquetas_estado as $estado_valor => $estado_label): ?>
                             <option value="<?php echo esc_attr($estado_valor); ?>" <?php selected($estado_filtro, $estado_valor); ?>>
                                 <?php echo esc_html($estado_label); ?>
@@ -199,7 +199,7 @@ $etiquetas_estado = [
                         <?php endforeach; ?>
                     </select>
 
-                    <input type="submit" class="button" value="<?php esc_attr_e('Filtrar', 'flavor-chat-ia'); ?>">
+                    <input type="submit" class="button" value="<?php esc_attr_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </form>
             </div>
 
@@ -207,15 +207,15 @@ $etiquetas_estado = [
                 <form method="get" action="">
                     <input type="hidden" name="page" value="flavor-empresarial-contratos">
                     <input type="search" name="s" value="<?php echo esc_attr($busqueda_termino); ?>"
-                           placeholder="<?php esc_attr_e('Buscar proyectos...', 'flavor-chat-ia'); ?>">
-                    <input type="submit" class="button" value="<?php esc_attr_e('Buscar', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php esc_attr_e('Buscar proyectos...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                    <input type="submit" class="button" value="<?php esc_attr_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </form>
             </div>
 
             <div class="tablenav-pages">
                 <span class="displaying-num">
                     <?php printf(
-                        esc_html(_n('%s proyecto', '%s proyectos', $total_proyectos, 'flavor-chat-ia')),
+                        esc_html(_n('%s proyecto', '%s proyectos', $total_proyectos, FLAVOR_PLATFORM_TEXT_DOMAIN)),
                         number_format_i18n($total_proyectos)
                     ); ?>
                 </span>
@@ -227,13 +227,13 @@ $etiquetas_estado = [
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th scope="col" class="column-titulo"><?php esc_html_e('Proyecto', 'flavor-chat-ia'); ?></th>
-                        <th scope="col" class="column-cliente"><?php esc_html_e('Cliente', 'flavor-chat-ia'); ?></th>
-                        <th scope="col" class="column-presupuesto"><?php esc_html_e('Presupuesto', 'flavor-chat-ia'); ?></th>
-                        <th scope="col" class="column-progreso"><?php esc_html_e('Progreso', 'flavor-chat-ia'); ?></th>
-                        <th scope="col" class="column-estado"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                        <th scope="col" class="column-fechas"><?php esc_html_e('Fechas', 'flavor-chat-ia'); ?></th>
-                        <th scope="col" class="column-acciones"><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                        <th scope="col" class="column-titulo"><?php esc_html_e('Proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th scope="col" class="column-cliente"><?php esc_html_e('Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th scope="col" class="column-presupuesto"><?php esc_html_e('Presupuesto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th scope="col" class="column-progreso"><?php esc_html_e('Progreso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th scope="col" class="column-estado"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th scope="col" class="column-fechas"><?php esc_html_e('Fechas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th scope="col" class="column-acciones"><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -298,9 +298,9 @@ $etiquetas_estado = [
                                         <span class="dashicons dashicons-flag"></span>
                                         <?php echo esc_html(date_i18n('j M Y', strtotime($proyecto['fecha_entrega']))); ?>
                                         <?php if ($dias_restantes !== null && $dias_restantes < 0): ?>
-                                            <span class="dias-vencido">(<?php printf(esc_html__('%d días vencido', 'flavor-chat-ia'), abs($dias_restantes)); ?>)</span>
+                                            <span class="dias-vencido">(<?php printf(esc_html__('%d días vencido', FLAVOR_PLATFORM_TEXT_DOMAIN), abs($dias_restantes)); ?>)</span>
                                         <?php elseif ($dias_restantes !== null && $dias_restantes <= 7): ?>
-                                            <span class="dias-restantes">(<?php printf(esc_html(_n('%d día', '%d días', $dias_restantes, 'flavor-chat-ia')), $dias_restantes); ?>)</span>
+                                            <span class="dias-restantes">(<?php printf(esc_html(_n('%d día', '%d días', $dias_restantes, FLAVOR_PLATFORM_TEXT_DOMAIN)), $dias_restantes); ?>)</span>
                                         <?php endif; ?>
                                     </span>
                                 <?php endif; ?>
@@ -349,10 +349,10 @@ $etiquetas_estado = [
         <?php else: ?>
             <div class="flavor-empty-state">
                 <span class="dashicons dashicons-portfolio"></span>
-                <h3><?php esc_html_e('No hay proyectos', 'flavor-chat-ia'); ?></h3>
-                <p><?php esc_html_e('No se encontraron proyectos con los filtros seleccionados.', 'flavor-chat-ia'); ?></p>
+                <h3><?php esc_html_e('No hay proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php esc_html_e('No se encontraron proyectos con los filtros seleccionados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-empresarial-contratos&action=nuevo')); ?>" class="button button-primary">
-                    <?php esc_html_e('Crear Primer Proyecto', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Crear Primer Proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         <?php endif; ?>
@@ -560,13 +560,13 @@ jQuery(document).ready(function($) {
     // Completar proyecto
     $('.completar-proyecto').on('click', function() {
         var proyectoId = $(this).data('id');
-        if (confirm('<?php echo esc_js(__('¿Marcar este proyecto como completado?', 'flavor-chat-ia')); ?>')) {
+        if (confirm('<?php echo esc_js(__('¿Marcar este proyecto como completado?', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>')) {
             // En producción, llamar a AJAX
             var $row = $('tr[data-proyecto-id="' + proyectoId + '"]');
             $row.find('.estado-badge')
                 .removeClass('estado-propuesta estado-aprobado estado-en_curso')
                 .addClass('estado-completado')
-                .text('<?php echo esc_js(__('Completado', 'flavor-chat-ia')); ?>');
+                .text('<?php echo esc_js(__('Completado', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
             $row.find('.progreso-fill').css('width', '100%');
             $row.find('.progreso-texto').text('100%');
             $(this).remove();

@@ -38,8 +38,8 @@ $productos = get_posts([
 <section id="<?php echo esc_attr($id_seccion); ?>" class="flavor-landing__section flavor-gc-productos-section">
     <div class="flavor-container">
         <header class="flavor-section-header">
-            <h2 class="flavor-section-title"><?php _e('Productos Disponibles', 'flavor-chat-ia'); ?></h2>
-            <p class="flavor-section-subtitle"><?php _e('Productos frescos y de temporada de nuestros productores locales', 'flavor-chat-ia'); ?></p>
+            <h2 class="flavor-section-title"><?php _e('Productos Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+            <p class="flavor-section-subtitle"><?php _e('Productos frescos y de temporada de nuestros productores locales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </header>
 
         <?php if (!empty($productos)): ?>
@@ -62,7 +62,7 @@ $productos = get_posts([
                                 </div>
                             <?php endif; ?>
                             <?php if ($stock !== '' && intval($stock) <= 5 && intval($stock) > 0): ?>
-                                <span class="flavor-gc-badge flavor-gc-badge--warning"><?php _e('Últimas unidades', 'flavor-chat-ia'); ?></span>
+                                <span class="flavor-gc-badge flavor-gc-badge--warning"><?php _e('Últimas unidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <?php endif; ?>
                         </div>
                         <div class="flavor-gc-producto-content">
@@ -75,10 +75,10 @@ $productos = get_posts([
                             <?php endif; ?>
                             <div class="flavor-gc-producto-precio">
                                 <?php if ($precio): ?>
-                                    <span class="flavor-gc-precio-valor"><?php echo number_format(floatval($precio), 2); ?> <?php esc_html_e('&euro;', 'flavor-chat-ia'); ?></span>
+                                    <span class="flavor-gc-precio-valor"><?php echo number_format(floatval($precio), 2); ?> <?php esc_html_e('&euro;', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     <span class="flavor-gc-precio-unidad">/ <?php echo esc_html($unidad); ?></span>
                                 <?php else: ?>
-                                    <span class="flavor-gc-precio-consultar"><?php _e('Consultar', 'flavor-chat-ia'); ?></span>
+                                    <span class="flavor-gc-precio-consultar"><?php _e('Consultar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -86,11 +86,11 @@ $productos = get_posts([
                             <?php if (is_user_logged_in()): ?>
                                 <button type="button" class="flavor-btn flavor-btn--primary flavor-btn--sm flavor-btn--full gc-agregar-lista" data-producto-id="<?php echo esc_attr($producto->ID); ?>">
                                     <span class="dashicons dashicons-plus"></span>
-                                    <?php _e('Añadir', 'flavor-chat-ia'); ?>
+                                    <?php _e('Añadir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             <?php else: ?>
                                 <a href="<?php echo esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos'))); ?>" class="flavor-btn flavor-btn--outline flavor-btn--sm flavor-btn--full">
-                                    <?php _e('Inicia sesión para pedir', 'flavor-chat-ia'); ?>
+                                    <?php _e('Inicia sesión para pedir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             <?php endif; ?>
                         </div>
@@ -100,14 +100,14 @@ $productos = get_posts([
 
             <div class="flavor-section-footer">
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="flavor-btn flavor-btn--primary">
-                    <?php _e('Ver todo el catálogo', 'flavor-chat-ia'); ?>
+                    <?php _e('Ver todo el catálogo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="dashicons dashicons-arrow-right-alt"></span>
                 </a>
             </div>
         <?php else: ?>
             <div class="flavor-gc-empty-state">
                 <span class="dashicons dashicons-carrot"></span>
-                <p><?php _e('Los productos estarán disponibles cuando abra el próximo ciclo de pedidos.', 'flavor-chat-ia'); ?></p>
+                <p><?php _e('Los productos estarán disponibles cuando abra el próximo ciclo de pedidos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         <?php endif; ?>
     </div>

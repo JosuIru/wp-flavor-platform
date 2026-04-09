@@ -240,7 +240,7 @@ class Flavor_Email_Marketing_API {
         $modulo = Flavor_Chat_Module_Loader::get_module('email_marketing');
 
         if (!$modulo) {
-            return new WP_REST_Response(['success' => false, 'error' => __('Módulo no disponible', 'flavor-chat-ia')], 500);
+            return new WP_REST_Response(['success' => false, 'error' => __('Módulo no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN)], 500);
         }
 
         $resultado = $modulo->suscribir($email, $lista, ['nombre' => $nombre]);
@@ -288,7 +288,7 @@ class Flavor_Email_Marketing_API {
         }
 
         if (!$suscriptor) {
-            return new WP_REST_Response(['success' => false, 'error' => __('Token no válido', 'flavor-chat-ia')], 400);
+            return new WP_REST_Response(['success' => false, 'error' => __('Token no válido', FLAVOR_PLATFORM_TEXT_DOMAIN)], 400);
         }
 
         $resultado = $modulo->dar_de_baja($suscriptor->id, null, $motivo);
@@ -319,7 +319,7 @@ class Flavor_Email_Marketing_API {
         }
 
         if (!$suscriptor) {
-            return new WP_REST_Response(['success' => false, 'error' => __('Token no válido', 'flavor-chat-ia')], 400);
+            return new WP_REST_Response(['success' => false, 'error' => __('Token no válido', FLAVOR_PLATFORM_TEXT_DOMAIN)], 400);
         }
 
         // Obtener listas del suscriptor
@@ -365,7 +365,7 @@ class Flavor_Email_Marketing_API {
         }
 
         if (!$suscriptor) {
-            return new WP_REST_Response(['success' => false, 'error' => __('Token no válido', 'flavor-chat-ia')], 400);
+            return new WP_REST_Response(['success' => false, 'error' => __('Token no válido', FLAVOR_PLATFORM_TEXT_DOMAIN)], 400);
         }
 
         // Actualizar listas
@@ -399,7 +399,7 @@ class Flavor_Email_Marketing_API {
             }
         }
 
-        return new WP_REST_Response(['success' => true, 'mensaje' => __('Preferencias actualizadas', 'flavor-chat-ia')]);
+        return new WP_REST_Response(['success' => true, 'mensaje' => __('Preferencias actualizadas', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -501,7 +501,7 @@ class Flavor_Email_Marketing_API {
         $estadisticas = $tracking->get_estadisticas_suscriptor($id);
 
         if (!$estadisticas) {
-            return new WP_REST_Response(['success' => false, 'error' => __('Suscriptor no encontrado', 'flavor-chat-ia')], 404);
+            return new WP_REST_Response(['success' => false, 'error' => __('Suscriptor no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)], 404);
         }
 
         return new WP_REST_Response([
@@ -617,7 +617,7 @@ class Flavor_Email_Marketing_API {
         ));
 
         if (!$campania) {
-            return new WP_REST_Response(['success' => false, 'error' => __('Campaña no encontrada', 'flavor-chat-ia')], 404);
+            return new WP_REST_Response(['success' => false, 'error' => __('Campaña no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN)], 404);
         }
 
         return new WP_REST_Response([
@@ -650,7 +650,7 @@ class Flavor_Email_Marketing_API {
         }
 
         if (empty($update_data)) {
-            return new WP_REST_Response(['success' => false, 'error' => __('No hay datos para actualizar', 'flavor-chat-ia')], 400);
+            return new WP_REST_Response(['success' => false, 'error' => __('No hay datos para actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN)], 400);
         }
 
         $wpdb->update(
@@ -685,7 +685,7 @@ class Flavor_Email_Marketing_API {
         $email_test = sanitize_email($request->get_param('email'));
 
         if (!is_email($email_test)) {
-            return new WP_REST_Response(['success' => false, 'error' => __('Email no válido', 'flavor-chat-ia')], 400);
+            return new WP_REST_Response(['success' => false, 'error' => __('Email no válido', FLAVOR_PLATFORM_TEXT_DOMAIN)], 400);
         }
 
         $campania = $wpdb->get_row($wpdb->prepare(
@@ -694,7 +694,7 @@ class Flavor_Email_Marketing_API {
         ));
 
         if (!$campania) {
-            return new WP_REST_Response(['success' => false, 'error' => __('Campaña no encontrada', 'flavor-chat-ia')], 404);
+            return new WP_REST_Response(['success' => false, 'error' => __('Campaña no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN)], 404);
         }
 
         $modulo = Flavor_Chat_Module_Loader::get_module('email_marketing');
@@ -716,7 +716,7 @@ class Flavor_Email_Marketing_API {
         $estadisticas = $tracking->get_estadisticas_campania($id);
 
         if (!$estadisticas) {
-            return new WP_REST_Response(['success' => false, 'error' => __('Campaña no encontrada', 'flavor-chat-ia')], 404);
+            return new WP_REST_Response(['success' => false, 'error' => __('Campaña no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN)], 404);
         }
 
         return new WP_REST_Response([
@@ -777,7 +777,7 @@ class Flavor_Email_Marketing_API {
         $estados_validos = ['activa', 'pausada', 'borrador'];
 
         if (!in_array($estado, $estados_validos)) {
-            return new WP_REST_Response(['success' => false, 'error' => __('Estado no válido', 'flavor-chat-ia')], 400);
+            return new WP_REST_Response(['success' => false, 'error' => __('Estado no válido', FLAVOR_PLATFORM_TEXT_DOMAIN)], 400);
         }
 
         $wpdb->update(

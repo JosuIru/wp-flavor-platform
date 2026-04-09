@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!current_user_can('manage_options')) {
-    wp_die(__('No tienes permisos suficientes para acceder a esta página.', 'flavor-chat-ia'));
+    wp_die(__('No tienes permisos suficientes para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
 }
 
 global $wpdb;
@@ -60,7 +60,7 @@ foreach ($reservas_calendario as $reserva) {
 ?>
 
 <div class="wrap">
-    <h1><?php echo esc_html__('Calendario de Disponibilidad', 'flavor-chat-ia'); ?></h1>
+    <h1><?php echo esc_html__('Calendario de Disponibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
 
     <div class="card" style="padding: 20px; margin: 20px 0;">
         <div id="calendario-parkings"></div>
@@ -68,19 +68,19 @@ foreach ($reservas_calendario as $reserva) {
 
     <!-- Leyenda -->
     <div class="card" style="padding: 20px; margin: 20px 0;">
-        <h3><?php esc_html_e('Leyenda', 'flavor-chat-ia'); ?></h3>
+        <h3><?php esc_html_e('Leyenda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
         <div style="display: flex; gap: 20px; flex-wrap: wrap;">
             <div style="display: flex; align-items: center; gap: 10px;">
                 <div style="width: 20px; height: 20px; background: #2271b1; border-radius: 3px;"></div>
-                <span><?php esc_html_e('Reserva Activa', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Reserva Activa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div style="display: flex; align-items: center; gap: 10px;">
                 <div style="width: 20px; height: 20px; background: #00a32a; border-radius: 3px;"></div>
-                <span><?php esc_html_e('Reserva Completada', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Reserva Completada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div style="display: flex; align-items: center; gap: 10px;">
                 <div style="width: 20px; height: 20px; background: #d63638; border-radius: 3px;"></div>
-                <span><?php esc_html_e('Reserva Cancelada', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Reserva Cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>

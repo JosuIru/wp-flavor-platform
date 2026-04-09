@@ -69,9 +69,9 @@ class Flavor_Dashboard_Breadcrumbs {
      */
     private function __construct() {
         $this->config = [
-            'home_label'    => __('Inicio', 'flavor-chat-ia'),
+            'home_label'    => __('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'home_icon'     => 'dashicons-admin-home',
-            'portal_label'  => __('Mi Portal', 'flavor-chat-ia'),
+            'portal_label'  => __('Mi Portal', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'portal_url'    => home_url('/mi-portal/'),
             'show_home'     => true,
             'show_current'  => true,
@@ -286,18 +286,18 @@ class Flavor_Dashboard_Breadcrumbs {
 
             // Mapear vistas comunes
             $vistas_comunes = [
-                'listado'       => __('Listado', 'flavor-chat-ia'),
-                'nuevo'         => __('Nuevo', 'flavor-chat-ia'),
-                'crear'         => __('Crear', 'flavor-chat-ia'),
-                'editar'        => __('Editar', 'flavor-chat-ia'),
-                'detalle'       => __('Detalle', 'flavor-chat-ia'),
-                'ver'           => __('Ver', 'flavor-chat-ia'),
-                'mis-reservas'  => __('Mis Reservas', 'flavor-chat-ia'),
-                'mis-eventos'   => __('Mis Eventos', 'flavor-chat-ia'),
-                'calendario'    => __('Calendario', 'flavor-chat-ia'),
-                'mapa'          => __('Mapa', 'flavor-chat-ia'),
-                'estadisticas'  => __('Estadisticas', 'flavor-chat-ia'),
-                'configuracion' => __('Configuracion', 'flavor-chat-ia'),
+                'listado'       => __('Listado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'nuevo'         => __('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'crear'         => __('Crear', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'editar'        => __('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'detalle'       => __('Detalle', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ver'           => __('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'mis-reservas'  => __('Mis Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'mis-eventos'   => __('Mis Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'calendario'    => __('Calendario', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'mapa'          => __('Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'estadisticas'  => __('Estadisticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'configuracion' => __('Configuracion', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
 
             $label_vista = $vistas_comunes[$slug_vista] ?? ucfirst(str_replace('-', ' ', $slug_vista));
@@ -322,84 +322,84 @@ class Flavor_Dashboard_Breadcrumbs {
         // Mapeo de slugs a nombres e iconos
         $modulos = [
             // Eventos y Reservas
-            'eventos'                   => ['nombre' => __('Eventos', 'flavor-chat-ia'), 'icono' => 'dashicons-calendar-alt'],
-            'reservas'                  => ['nombre' => __('Reservas', 'flavor-chat-ia'), 'icono' => 'dashicons-calendar'],
-            'espacios-comunes'          => ['nombre' => __('Espacios Comunes', 'flavor-chat-ia'), 'icono' => 'dashicons-admin-home'],
+            'eventos'                   => ['nombre' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-calendar-alt'],
+            'reservas'                  => ['nombre' => __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-calendar'],
+            'espacios-comunes'          => ['nombre' => __('Espacios Comunes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-admin-home'],
 
             // Gestión
-            'incidencias'               => ['nombre' => __('Incidencias', 'flavor-chat-ia'), 'icono' => 'dashicons-warning'],
-            'fichaje'                   => ['nombre' => __('Fichaje', 'flavor-chat-ia'), 'icono' => 'dashicons-clock'],
-            'fichaje-empleados'         => ['nombre' => __('Fichaje', 'flavor-chat-ia'), 'icono' => 'dashicons-clock'],
-            'tramites'                  => ['nombre' => __('Trámites', 'flavor-chat-ia'), 'icono' => 'dashicons-clipboard'],
-            'facturas'                  => ['nombre' => __('Facturas', 'flavor-chat-ia'), 'icono' => 'dashicons-media-text'],
+            'incidencias'               => ['nombre' => __('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-warning'],
+            'fichaje'                   => ['nombre' => __('Fichaje', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-clock'],
+            'fichaje-empleados'         => ['nombre' => __('Fichaje', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-clock'],
+            'tramites'                  => ['nombre' => __('Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-clipboard'],
+            'facturas'                  => ['nombre' => __('Facturas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-media-text'],
 
             // Comercio
-            'marketplace'               => ['nombre' => __('Marketplace', 'flavor-chat-ia'), 'icono' => 'dashicons-cart'],
-            'banco-tiempo'              => ['nombre' => __('Banco de Tiempo', 'flavor-chat-ia'), 'icono' => 'dashicons-backup'],
-            'grupos-consumo'            => ['nombre' => __('Grupos de Consumo', 'flavor-chat-ia'), 'icono' => 'dashicons-store'],
+            'marketplace'               => ['nombre' => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-cart'],
+            'banco-tiempo'              => ['nombre' => __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-backup'],
+            'grupos-consumo'            => ['nombre' => __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-store'],
 
             // Formación
-            'cursos'                    => ['nombre' => __('Cursos', 'flavor-chat-ia'), 'icono' => 'dashicons-welcome-learn-more'],
-            'talleres'                  => ['nombre' => __('Talleres', 'flavor-chat-ia'), 'icono' => 'dashicons-hammer'],
-            'biblioteca'                => ['nombre' => __('Biblioteca', 'flavor-chat-ia'), 'icono' => 'dashicons-book'],
+            'cursos'                    => ['nombre' => __('Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-welcome-learn-more'],
+            'talleres'                  => ['nombre' => __('Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-hammer'],
+            'biblioteca'                => ['nombre' => __('Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-book'],
 
             // Comunicación
-            'foros'                     => ['nombre' => __('Foros', 'flavor-chat-ia'), 'icono' => 'dashicons-format-chat'],
-            'podcast'                   => ['nombre' => __('Podcast', 'flavor-chat-ia'), 'icono' => 'dashicons-microphone'],
-            'radio'                     => ['nombre' => __('Radio', 'flavor-chat-ia'), 'icono' => 'dashicons-controls-volumeon'],
-            'multimedia'                => ['nombre' => __('Multimedia', 'flavor-chat-ia'), 'icono' => 'dashicons-format-video'],
-            'chat-interno'              => ['nombre' => __('Chat', 'flavor-chat-ia'), 'icono' => 'dashicons-format-chat'],
-            'chat-grupos'               => ['nombre' => __('Grupos de Chat', 'flavor-chat-ia'), 'icono' => 'dashicons-groups'],
-            'red-social'                => ['nombre' => __('Red Social', 'flavor-chat-ia'), 'icono' => 'dashicons-share'],
+            'foros'                     => ['nombre' => __('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-format-chat'],
+            'podcast'                   => ['nombre' => __('Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-microphone'],
+            'radio'                     => ['nombre' => __('Radio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-controls-volumeon'],
+            'multimedia'                => ['nombre' => __('Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-format-video'],
+            'chat-interno'              => ['nombre' => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-format-chat'],
+            'chat-grupos'               => ['nombre' => __('Grupos de Chat', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-groups'],
+            'red-social'                => ['nombre' => __('Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-share'],
 
             // Ecología
-            'huertos-urbanos'           => ['nombre' => __('Huertos Urbanos', 'flavor-chat-ia'), 'icono' => 'dashicons-carrot'],
-            'reciclaje'                 => ['nombre' => __('Reciclaje', 'flavor-chat-ia'), 'icono' => 'dashicons-update'],
-            'compostaje'                => ['nombre' => __('Compostaje', 'flavor-chat-ia'), 'icono' => 'dashicons-carrot'],
-            'biodiversidad-local'       => ['nombre' => __('Biodiversidad', 'flavor-chat-ia'), 'icono' => 'dashicons-palmtree'],
-            'energia-comunitaria'       => ['nombre' => __('Energía Comunitaria', 'flavor-chat-ia'), 'icono' => 'dashicons-lightbulb'],
-            'huella-ecologica'          => ['nombre' => __('Huella Ecológica', 'flavor-chat-ia'), 'icono' => 'dashicons-location'],
+            'huertos-urbanos'           => ['nombre' => __('Huertos Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-carrot'],
+            'reciclaje'                 => ['nombre' => __('Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-update'],
+            'compostaje'                => ['nombre' => __('Compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-carrot'],
+            'biodiversidad-local'       => ['nombre' => __('Biodiversidad', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-palmtree'],
+            'energia-comunitaria'       => ['nombre' => __('Energía Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-lightbulb'],
+            'huella-ecologica'          => ['nombre' => __('Huella Ecológica', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-location'],
 
             // Movilidad
-            'bicicletas-compartidas'    => ['nombre' => __('Bicicletas', 'flavor-chat-ia'), 'icono' => 'dashicons-admin-site'],
-            'carpooling'                => ['nombre' => __('Carpooling', 'flavor-chat-ia'), 'icono' => 'dashicons-car'],
-            'parkings'                  => ['nombre' => __('Parkings', 'flavor-chat-ia'), 'icono' => 'dashicons-location'],
+            'bicicletas-compartidas'    => ['nombre' => __('Bicicletas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-admin-site'],
+            'carpooling'                => ['nombre' => __('Carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-car'],
+            'parkings'                  => ['nombre' => __('Parkings', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-location'],
 
             // Participación
-            'participacion'             => ['nombre' => __('Participación', 'flavor-chat-ia'), 'icono' => 'dashicons-megaphone'],
-            'presupuestos-participativos' => ['nombre' => __('Presupuestos', 'flavor-chat-ia'), 'icono' => 'dashicons-chart-pie'],
-            'encuestas'                 => ['nombre' => __('Encuestas', 'flavor-chat-ia'), 'icono' => 'dashicons-forms'],
-            'campanias'                 => ['nombre' => __('Campañas', 'flavor-chat-ia'), 'icono' => 'dashicons-flag'],
-            'avisos-municipales'        => ['nombre' => __('Avisos', 'flavor-chat-ia'), 'icono' => 'dashicons-bell'],
-            'transparencia'             => ['nombre' => __('Transparencia', 'flavor-chat-ia'), 'icono' => 'dashicons-visibility'],
-            'seguimiento-denuncias'     => ['nombre' => __('Denuncias', 'flavor-chat-ia'), 'icono' => 'dashicons-flag'],
+            'participacion'             => ['nombre' => __('Participación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-megaphone'],
+            'presupuestos-participativos' => ['nombre' => __('Presupuestos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-chart-pie'],
+            'encuestas'                 => ['nombre' => __('Encuestas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-forms'],
+            'campanias'                 => ['nombre' => __('Campañas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-flag'],
+            'avisos-municipales'        => ['nombre' => __('Avisos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-bell'],
+            'transparencia'             => ['nombre' => __('Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-visibility'],
+            'seguimiento-denuncias'     => ['nombre' => __('Denuncias', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-flag'],
 
             // Comunidad
-            'comunidades'               => ['nombre' => __('Comunidades', 'flavor-chat-ia'), 'icono' => 'dashicons-groups'],
-            'socios'                    => ['nombre' => __('Miembros', 'flavor-chat-ia'), 'icono' => 'dashicons-id-alt'],
-            'colectivos'                => ['nombre' => __('Colectivos', 'flavor-chat-ia'), 'icono' => 'dashicons-networking'],
-            'circulos-cuidados'         => ['nombre' => __('Círculos de Cuidados', 'flavor-chat-ia'), 'icono' => 'dashicons-heart'],
-            'ayuda-vecinal'             => ['nombre' => __('Ayuda Vecinal', 'flavor-chat-ia'), 'icono' => 'dashicons-admin-users'],
+            'comunidades'               => ['nombre' => __('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-groups'],
+            'socios'                    => ['nombre' => __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-id-alt'],
+            'colectivos'                => ['nombre' => __('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-networking'],
+            'circulos-cuidados'         => ['nombre' => __('Círculos de Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-heart'],
+            'ayuda-vecinal'             => ['nombre' => __('Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-admin-users'],
 
             // Economía alternativa
-            'economia-don'              => ['nombre' => __('Economía del Don', 'flavor-chat-ia'), 'icono' => 'dashicons-heart'],
-            'economia-suficiencia'      => ['nombre' => __('Economía Suficiencia', 'flavor-chat-ia'), 'icono' => 'dashicons-chart-line'],
-            'crowdfunding'              => ['nombre' => __('Crowdfunding', 'flavor-chat-ia'), 'icono' => 'dashicons-money-alt'],
-            'trabajo-digno'             => ['nombre' => __('Trabajo Digno', 'flavor-chat-ia'), 'icono' => 'dashicons-businessperson'],
+            'economia-don'              => ['nombre' => __('Economía del Don', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-heart'],
+            'economia-suficiencia'      => ['nombre' => __('Economía Suficiencia', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-chart-line'],
+            'crowdfunding'              => ['nombre' => __('Crowdfunding', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-money-alt'],
+            'trabajo-digno'             => ['nombre' => __('Trabajo Digno', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-businessperson'],
 
             // Cultura
-            'kulturaka'                 => ['nombre' => __('Kulturaka', 'flavor-chat-ia'), 'icono' => 'dashicons-art'],
-            'saberes-ancestrales'       => ['nombre' => __('Saberes Ancestrales', 'flavor-chat-ia'), 'icono' => 'dashicons-book-alt'],
-            'recetas'                   => ['nombre' => __('Recetas', 'flavor-chat-ia'), 'icono' => 'dashicons-carrot'],
+            'kulturaka'                 => ['nombre' => __('Kulturaka', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-art'],
+            'saberes-ancestrales'       => ['nombre' => __('Saberes Ancestrales', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-book-alt'],
+            'recetas'                   => ['nombre' => __('Recetas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-carrot'],
 
             // Otros
-            'advertising'               => ['nombre' => __('Publicidad', 'flavor-chat-ia'), 'icono' => 'dashicons-megaphone'],
-            'email-marketing'           => ['nombre' => __('Email Marketing', 'flavor-chat-ia'), 'icono' => 'dashicons-email'],
-            'mapa-actores'              => ['nombre' => __('Mapa de Actores', 'flavor-chat-ia'), 'icono' => 'dashicons-location-alt'],
-            'documentacion-legal'       => ['nombre' => __('Documentación Legal', 'flavor-chat-ia'), 'icono' => 'dashicons-media-document'],
-            'justicia-restaurativa'     => ['nombre' => __('Justicia Restaurativa', 'flavor-chat-ia'), 'icono' => 'dashicons-shield'],
-            'sello-conciencia'          => ['nombre' => __('Sello de Conciencia', 'flavor-chat-ia'), 'icono' => 'dashicons-awards'],
-            'clientes'                  => ['nombre' => __('Clientes', 'flavor-chat-ia'), 'icono' => 'dashicons-businessman'],
+            'advertising'               => ['nombre' => __('Publicidad', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-megaphone'],
+            'email-marketing'           => ['nombre' => __('Email Marketing', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-email'],
+            'mapa-actores'              => ['nombre' => __('Mapa de Actores', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-location-alt'],
+            'documentacion-legal'       => ['nombre' => __('Documentación Legal', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-media-document'],
+            'justicia-restaurativa'     => ['nombre' => __('Justicia Restaurativa', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-shield'],
+            'sello-conciencia'          => ['nombre' => __('Sello de Conciencia', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-awards'],
+            'clientes'                  => ['nombre' => __('Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'dashicons-businessman'],
         ];
 
         // Permitir extensiones via filtro
@@ -454,7 +454,7 @@ class Flavor_Dashboard_Breadcrumbs {
         // Busqueda
         if (is_search()) {
             $this->items[] = [
-                'label' => sprintf(__('Busqueda: %s', 'flavor-chat-ia'), get_search_query()),
+                'label' => sprintf(__('Busqueda: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), get_search_query()),
                 'url'   => '',
                 'type'  => 'search',
             ];
@@ -463,7 +463,7 @@ class Flavor_Dashboard_Breadcrumbs {
         // 404
         if (is_404()) {
             $this->items[] = [
-                'label' => __('Pagina no encontrada', 'flavor-chat-ia'),
+                'label' => __('Pagina no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url'   => '',
                 'type'  => '404',
             ];
@@ -514,7 +514,7 @@ class Flavor_Dashboard_Breadcrumbs {
             $clases[] = $args['extra_class'];
         }
 
-        $html = '<nav class="' . esc_attr(implode(' ', $clases)) . '" aria-label="' . esc_attr__('Navegacion de migas de pan', 'flavor-chat-ia') . '">';
+        $html = '<nav class="' . esc_attr(implode(' ', $clases)) . '" aria-label="' . esc_attr__('Navegacion de migas de pan', FLAVOR_PLATFORM_TEXT_DOMAIN) . '">';
 
         // Lista con schema.org
         $html .= '<ol class="fl-breadcrumbs__list" itemscope itemtype="https://schema.org/BreadcrumbList">';

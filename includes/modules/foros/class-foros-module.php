@@ -55,7 +55,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Foros no estan creadas. Se crearan automaticamente al activar.', 'flavor-chat-ia');
+            return __('Las tablas de Foros no estan creadas. Se crearan automaticamente al activar.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         
     return '';
@@ -123,7 +123,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             // Tab de foro para Grupos de Consumo
             'grupos_consumo' => [
                 'id'       => 'foro-grupo',
-                'label'    => __('Foro', 'flavor-chat-ia'),
+                'label'    => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-chat',
                 'content'  => '[flavor_foros_integrado entidad="grupo_consumo" entidad_id="{entity_id}"]',
                 'priority' => 100,
@@ -135,7 +135,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             // Tab de discusión para Eventos
             'eventos' => [
                 'id'       => 'discusion-evento',
-                'label'    => __('Discusión', 'flavor-chat-ia'),
+                'label'    => __('Discusión', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-chat',
                 'content'  => '[flavor_foros_integrado entidad="evento" entidad_id="{entity_id}"]',
                 'priority' => 100,
@@ -147,7 +147,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             // Tab de foro para Comunidades
             'comunidades' => [
                 'id'       => 'foro-comunidad',
-                'label'    => __('Foro', 'flavor-chat-ia'),
+                'label'    => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-chat',
                 'content'  => '[flavor_foros_integrado entidad="comunidad" entidad_id="{entity_id}"]',
                 'priority' => 90,
@@ -158,7 +158,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
             'incidencias' => [
                 'id'       => 'foro-incidencia',
-                'label'    => __('Foro', 'flavor-chat-ia'),
+                'label'    => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-chat',
                 'content'  => '[flavor_foros_integrado entidad="incidencia" entidad_id="{entity_id}"]',
                 'priority' => 95,
@@ -169,7 +169,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
             'documentacion_legal' => [
                 'id'       => 'foro-documento-legal',
-                'label'    => __('Foro', 'flavor-chat-ia'),
+                'label'    => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-chat',
                 'content'  => '[flavor_foros_integrado entidad="documento_legal" entidad_id="{entity_id}"]',
                 'priority' => 95,
@@ -180,7 +180,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
             'presupuestos_participativos' => [
                 'id'       => 'foro-pp-proyecto',
-                'label'    => __('Foro', 'flavor-chat-ia'),
+                'label'    => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-chat',
                 'content'  => '[flavor_foros_integrado entidad="pp_proyecto" entidad_id="{entity_id}"]',
                 'priority' => 95,
@@ -191,7 +191,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
             'saberes_ancestrales' => [
                 'id'       => 'foro-saber-ancestral',
-                'label'    => __('Foro', 'flavor-chat-ia'),
+                'label'    => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-chat',
                 'content'  => '[flavor_foros_integrado entidad="saber_ancestral" entidad_id="{entity_id}"]',
                 'priority' => 95,
@@ -202,7 +202,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
             'transparencia' => [
                 'id'       => 'foro-documento-transparencia',
-                'label'    => __('Foro', 'flavor-chat-ia'),
+                'label'    => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-chat',
                 'content'  => '[flavor_foros_integrado entidad="documento_transparencia" entidad_id="{entity_id}"]',
                 'priority' => 95,
@@ -213,7 +213,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
             'avisos_municipales' => [
                 'id'       => 'foro-aviso-municipal',
-                'label'    => __('Foro', 'flavor-chat-ia'),
+                'label'    => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-chat',
                 'content'  => '[flavor_foros_integrado entidad="aviso_municipal" entidad_id="{entity_id}"]',
                 'priority' => 95,
@@ -224,7 +224,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
             'economia_don' => [
                 'id'       => 'foro-economia-don',
-                'label'    => __('Foro', 'flavor-chat-ia'),
+                'label'    => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-chat',
                 'content'  => '[flavor_foros_integrado entidad="economia_don" entidad_id="{entity_id}"]',
                 'priority' => 95,
@@ -235,7 +235,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
             'advertising' => [
                 'id'       => 'foro-advertising-ad',
-                'label'    => __('Foro', 'flavor-chat-ia'),
+                'label'    => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-chat',
                 'content'  => '[flavor_foros_integrado entidad="advertising_ad" entidad_id="{entity_id}"]',
                 'priority' => 95,
@@ -246,7 +246,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
             'radio' => [
                 'id'       => 'foro-radio-programa',
-                'label'    => __('Foro', 'flavor-chat-ia'),
+                'label'    => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-chat',
                 'content'  => '[flavor_foros_integrado entidad="radio_programa" entidad_id="{entity_id}"]',
                 'priority' => 95,
@@ -257,7 +257,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
             'energia_comunitaria' => [
                 'id'       => 'foro-energia-comunidad',
-                'label'    => __('Foro', 'flavor-chat-ia'),
+                'label'    => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-chat',
                 'content'  => '[flavor_foros_integrado entidad="energia_comunidad" entidad_id="{entity_id}"]',
                 'priority' => 95,
@@ -269,7 +269,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             // Tab de discusión para Cursos
             'cursos' => [
                 'id'       => 'foro-curso',
-                'label'    => __('Foro del Curso', 'flavor-chat-ia'),
+                'label'    => __('Foro del Curso', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-chat',
                 'content'  => '[flavor_foros_integrado entidad="curso" entidad_id="{entity_id}"]',
                 'priority' => 100,
@@ -281,7 +281,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             // Tab de discusión para Talleres
             'talleres' => [
                 'id'       => 'foro-taller',
-                'label'    => __('Foro del Taller', 'flavor-chat-ia'),
+                'label'    => __('Foro del Taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-chat',
                 'content'  => '[flavor_foros_integrado entidad="taller" entidad_id="{entity_id}"]',
                 'priority' => 100,
@@ -293,7 +293,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             // Tab para Colectivos
             'colectivos' => [
                 'id'       => 'foro-colectivo',
-                'label'    => __('Foro', 'flavor-chat-ia'),
+                'label'    => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-chat',
                 'content'  => '[flavor_foros_integrado entidad="colectivo" entidad_id="{entity_id}"]',
                 'priority' => 100,
@@ -305,7 +305,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             // Tab para Círculos de Cuidados
             'circulos_cuidados' => [
                 'id'       => 'foro-circulo',
-                'label'    => __('Discusión', 'flavor-chat-ia'),
+                'label'    => __('Discusión', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-chat',
                 'content'  => '[flavor_foros_integrado entidad="circulo" entidad_id="{entity_id}"]',
                 'priority' => 100,
@@ -317,7 +317,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             // Tab para Banco de Tiempo
             'banco_tiempo' => [
                 'id'       => 'foro-servicio',
-                'label'    => __('Foro', 'flavor-chat-ia'),
+                'label'    => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-chat',
                 'content'  => '[flavor_foros_integrado entidad="servicio_bt" entidad_id="{entity_id}"]',
                 'priority' => 100,
@@ -329,7 +329,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             // Tab de foro para Trabajo Digno
             'trabajo_digno' => [
                 'id'       => 'foro-oferta-trabajo',
-                'label'    => __('Foro', 'flavor-chat-ia'),
+                'label'    => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-chat',
                 'content'  => '[flavor_foros_integrado entidad="trabajo_digno_oferta" entidad_id="{entity_id}"]',
                 'priority' => 100,
@@ -341,7 +341,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             // Tab de foro para Huertos Urbanos
             'huertos_urbanos' => [
                 'id'       => 'foro-huerto',
-                'label'    => __('Foro', 'flavor-chat-ia'),
+                'label'    => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-chat',
                 'content'  => '[flavor_foros_integrado entidad="huerto" entidad_id="{entity_id}"]',
                 'priority' => 100,
@@ -351,7 +351,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             ],
             'participacion' => [
                 'id'       => 'foro-propuesta',
-                'label'    => __('Foro', 'flavor-chat-ia'),
+                'label'    => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-chat',
                 'content'  => '[flavor_foros_integrado entidad="participacion_propuesta" entidad_id="{entity_id}"]',
                 'priority' => 100,
@@ -361,7 +361,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             ],
             'economia_suficiencia' => [
                 'id'       => 'foro-recurso-suficiencia',
-                'label'    => __('Foro', 'flavor-chat-ia'),
+                'label'    => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-chat',
                 'content'  => '[flavor_foros_integrado entidad="es_recurso" entidad_id="{entity_id}"]',
                 'priority' => 100,
@@ -371,7 +371,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             ],
             'justicia_restaurativa' => [
                 'id'       => 'foro-proceso-restaurativo',
-                'label'    => __('Foro', 'flavor-chat-ia'),
+                'label'    => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-format-chat',
                 'content'  => '[flavor_foros_integrado entidad="jr_proceso" entidad_id="{entity_id}"]',
                 'priority' => 100,
@@ -498,7 +498,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         $foro_id = absint($atts['foro_id']);
 
         if (!$foro_id && !$entidad_tipo && !$entidad_id) {
-            return '<p class="foros-aviso">' . __('Configuración del foro incompleta.', 'flavor-chat-ia') . '</p>';
+            return '<p class="foros-aviso">' . __('Configuración del foro incompleta.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         global $wpdb;
@@ -508,7 +508,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
         $resolved_foro_id = $foro_id ?: $this->resolve_integrated_forum_id($entidad_tipo, $entidad_id);
         if (!$resolved_foro_id) {
-            return '<p class="foros-aviso">' . esc_html__('No hay un foro disponible para este contexto todavía.', 'flavor-chat-ia') . '</p>';
+            return '<p class="foros-aviso">' . esc_html__('No hay un foro disponible para este contexto todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $foro = $wpdb->get_row($wpdb->prepare(
@@ -517,7 +517,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$foro) {
-            return '<p class="foros-aviso">' . esc_html__('El foro asociado no está disponible.', 'flavor-chat-ia') . '</p>';
+            return '<p class="foros-aviso">' . esc_html__('El foro asociado no está disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $hilos = $wpdb->get_results($wpdb->prepare(
@@ -544,7 +544,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             <div class="foros-aviso-contexto" style="margin-bottom:16px;padding:12px 14px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;color:#1d4ed8;">
                 <?php
                 printf(
-                    esc_html__('Mostrando el foro general "%s" mientras se define un mapeo específico para este módulo.', 'flavor-chat-ia'),
+                    esc_html__('Mostrando el foro general "%s" mientras se define un mapeo específico para este módulo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     esc_html($foro->nombre)
                 );
                 ?>
@@ -555,7 +555,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             <div class="foros-acciones-header">
                 <button type="button" class="foros-btn-nuevo-tema">
                     <span class="dashicons dashicons-plus-alt2"></span>
-                    <?php _e('Nuevo tema', 'flavor-chat-ia'); ?>
+                    <?php _e('Nuevo tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
             <?php endif; ?>
@@ -563,9 +563,9 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             <?php if (empty($hilos)): ?>
                 <div class="foros-vacio">
                     <span class="dashicons dashicons-format-chat"></span>
-                    <p><?php _e('Aún no hay temas de discusión.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('Aún no hay temas de discusión.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php if ($puede_crear): ?>
-                    <p class="foros-vacio-cta"><?php _e('¡Sé el primero en iniciar una conversación!', 'flavor-chat-ia'); ?></p>
+                    <p class="foros-vacio-cta"><?php _e('¡Sé el primero en iniciar una conversación!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php endif; ?>
                 </div>
             <?php else: ?>
@@ -578,7 +578,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
                         <div class="foros-tema-contenido">
                             <h4 class="foros-tema-titulo">
                                 <?php if (!empty($tema->es_fijado)): ?>
-                                    <span class="dashicons dashicons-admin-post" title="<?php esc_attr_e('Fijado', 'flavor-chat-ia'); ?>"></span>
+                                    <span class="dashicons dashicons-admin-post" title="<?php esc_attr_e('Fijado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></span>
                                 <?php endif; ?>
                                 <a href="<?php echo esc_url(add_query_arg('tema_id', $tema->id, home_url('/mi-portal/foros/'))); ?>">
                                     <?php echo esc_html($tema->titulo); ?>
@@ -600,7 +600,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
                 <?php if (count($hilos) >= intval($atts['limite'])): ?>
                 <div class="foros-ver-mas">
                     <a href="<?php echo esc_url(home_url('/mi-portal/foros/')); ?>" class="foros-btn-ver-todos">
-                        <?php _e('Ver todos los temas', 'flavor-chat-ia'); ?>
+                        <?php _e('Ver todos los temas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
                 <?php endif; ?>
@@ -612,22 +612,22 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
                 <div class="foros-modal-overlay"></div>
                 <div class="foros-modal-content">
                     <button class="foros-modal-cerrar">&times;</button>
-                    <h3><?php _e('Nuevo tema de discusión', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Nuevo tema de discusión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <form class="foros-form-tema">
                         <?php wp_nonce_field('flavor_foros_nonce', 'foros_nonce'); ?>
                         <input type="hidden" name="foro_id" value="<?php echo esc_attr($resolved_foro_id); ?>">
 
                         <div class="foros-form-campo">
-                            <label><?php _e('Título', 'flavor-chat-ia'); ?></label>
-                            <input type="text" name="titulo" required placeholder="<?php esc_attr_e('Título del tema', 'flavor-chat-ia'); ?>">
+                            <label><?php _e('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                            <input type="text" name="titulo" required placeholder="<?php esc_attr_e('Título del tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         </div>
 
                         <div class="foros-form-campo">
-                            <label><?php _e('Contenido', 'flavor-chat-ia'); ?></label>
-                            <textarea name="contenido" rows="5" required placeholder="<?php esc_attr_e('Escribe tu mensaje...', 'flavor-chat-ia'); ?>"></textarea>
+                            <label><?php _e('Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                            <textarea name="contenido" rows="5" required placeholder="<?php esc_attr_e('Escribe tu mensaje...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                         </div>
 
-                        <button type="submit" class="foros-btn-enviar"><?php _e('Publicar tema', 'flavor-chat-ia'); ?></button>
+                        <button type="submit" class="foros-btn-enviar"><?php _e('Publicar tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                     </form>
                 </div>
             </div>
@@ -1186,8 +1186,8 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
         return [
             'label' => $label,
-            'forum_name' => sprintf(__('Foro: %s', 'flavor-chat-ia'), $label),
-            'description' => $description ?: sprintf(__('Espacio de debate para %s.', 'flavor-chat-ia'), $label),
+            'forum_name' => sprintf(__('Foro: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $label),
+            'description' => $description ?: sprintf(__('Espacio de debate para %s.', FLAVOR_PLATFORM_TEXT_DOMAIN), $label),
         ];
     }
 
@@ -1225,7 +1225,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         ?>
         <div class="flavor-foros-listado">
             <?php if (empty($foros)): ?>
-                <p class="foros-vacio"><?php esc_html_e('No hay foros disponibles.', 'flavor-chat-ia'); ?></p>
+                <p class="foros-vacio"><?php esc_html_e('No hay foros disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php else: ?>
                 <div class="foros-grid">
                     <?php foreach ($foros as $foro): ?>
@@ -1239,7 +1239,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
                                 <p class="foro-descripcion"><?php echo esc_html(wp_trim_words($foro->descripcion, 20)); ?></p>
                             <?php endif; ?>
                             <div class="foro-meta">
-                                <span class="foro-temas"><?php echo esc_html($foro->total_temas ?? 0); ?> <?php esc_html_e('temas', 'flavor-chat-ia'); ?></span>
+                                <span class="foro-temas"><?php echo esc_html($foro->total_temas ?? 0); ?> <?php esc_html_e('temas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -1278,36 +1278,36 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
         $categorias_ejemplo = [
             [
-                'nombre'      => __('General', 'flavor-chat-ia'),
-                'descripcion' => __('Discusiones generales de la comunidad. Cualquier tema es bienvenido aquí.', 'flavor-chat-ia'),
+                'nombre'      => __('General', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Discusiones generales de la comunidad. Cualquier tema es bienvenido aquí.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono'       => '💬',
                 'orden'       => 1,
                 'estado'      => 'activo',
             ],
             [
-                'nombre'      => __('Presentaciones', 'flavor-chat-ia'),
-                'descripcion' => __('¡Preséntate a la comunidad! Cuéntanos quién eres y qué te trae por aquí.', 'flavor-chat-ia'),
+                'nombre'      => __('Presentaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('¡Preséntate a la comunidad! Cuéntanos quién eres y qué te trae por aquí.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono'       => '👋',
                 'orden'       => 2,
                 'estado'      => 'activo',
             ],
             [
-                'nombre'      => __('Ayuda y Soporte', 'flavor-chat-ia'),
-                'descripcion' => __('¿Tienes dudas o problemas? Pregunta aquí y la comunidad te ayudará.', 'flavor-chat-ia'),
+                'nombre'      => __('Ayuda y Soporte', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('¿Tienes dudas o problemas? Pregunta aquí y la comunidad te ayudará.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono'       => '🆘',
                 'orden'       => 3,
                 'estado'      => 'activo',
             ],
             [
-                'nombre'      => __('Ideas y Sugerencias', 'flavor-chat-ia'),
-                'descripcion' => __('Comparte tus ideas para mejorar la comunidad. Todas las propuestas son bienvenidas.', 'flavor-chat-ia'),
+                'nombre'      => __('Ideas y Sugerencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Comparte tus ideas para mejorar la comunidad. Todas las propuestas son bienvenidas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono'       => '💡',
                 'orden'       => 4,
                 'estado'      => 'activo',
             ],
             [
-                'nombre'      => __('Eventos y Actividades', 'flavor-chat-ia'),
-                'descripcion' => __('Organiza o entérate de los próximos eventos y actividades de la comunidad.', 'flavor-chat-ia'),
+                'nombre'      => __('Eventos y Actividades', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Organiza o entérate de los próximos eventos y actividades de la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono'       => '📅',
                 'orden'       => 5,
                 'estado'      => 'activo',
@@ -1462,7 +1462,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error' => sprintf(__('Accion no implementada: %s', 'flavor-chat-ia'), $nombre_accion),
+            'error' => sprintf(__('Accion no implementada: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $nombre_accion),
         ];
     }
 
@@ -1519,7 +1519,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         if (!$foro_id) {
             return [
                 'success' => false,
-                'error' => __('ID de foro no valido.', 'flavor-chat-ia'),
+                'error' => __('ID de foro no valido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1532,7 +1532,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         if (!$foro) {
             return [
                 'success' => false,
-                'error' => __('Foro no encontrado o no disponible.', 'flavor-chat-ia'),
+                'error' => __('Foro no encontrado o no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1602,7 +1602,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         if (!$usuario_id_actual) {
             return [
                 'success' => false,
-                'error' => __('Debes iniciar sesion para crear un hilo.', 'flavor-chat-ia'),
+                'error' => __('Debes iniciar sesion para crear un hilo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1617,14 +1617,14 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         if (!$foro_id) {
             return [
                 'success' => false,
-                'error' => __('Debes seleccionar un foro.', 'flavor-chat-ia'),
+                'error' => __('Debes seleccionar un foro.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
         if (empty($titulo_hilo)) {
             return [
                 'success' => false,
-                'error' => __('El titulo es obligatorio.', 'flavor-chat-ia'),
+                'error' => __('El titulo es obligatorio.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1633,7 +1633,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             return [
                 'success' => false,
                 'error' => sprintf(
-                    __('El contenido debe tener al menos %d caracteres.', 'flavor-chat-ia'),
+                    __('El contenido debe tener al menos %d caracteres.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $longitud_minima_contenido
                 ),
             ];
@@ -1648,7 +1648,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         if (!$foro) {
             return [
                 'success' => false,
-                'error' => __('El foro seleccionado no existe o esta cerrado.', 'flavor-chat-ia'),
+                'error' => __('El foro seleccionado no existe o esta cerrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1672,7 +1672,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         if ($resultado_insercion === false) {
             return [
                 'success' => false,
-                'error' => __('Error al crear el hilo. Intentalo de nuevo.', 'flavor-chat-ia'),
+                'error' => __('Error al crear el hilo. Intentalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1682,7 +1682,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             'success' => true,
             'hilo_id' => $hilo_id_nuevo,
             'mensaje' => sprintf(
-                __('Hilo "%s" creado correctamente en el foro "%s".', 'flavor-chat-ia'),
+                __('Hilo "%s" creado correctamente en el foro "%s".', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $titulo_hilo,
                 $foro->nombre
             ),
@@ -1702,7 +1702,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         if (!$hilo_id) {
             return [
                 'success' => false,
-                'error' => __('ID de hilo no valido.', 'flavor-chat-ia'),
+                'error' => __('ID de hilo no valido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1717,7 +1717,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         if (!$hilo) {
             return [
                 'success' => false,
-                'error' => __('Hilo no encontrado.', 'flavor-chat-ia'),
+                'error' => __('Hilo no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1788,7 +1788,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         if (!$usuario_id_actual) {
             return [
                 'success' => false,
-                'error' => __('Debes iniciar sesion para responder.', 'flavor-chat-ia'),
+                'error' => __('Debes iniciar sesion para responder.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1803,7 +1803,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         if (!$hilo_id) {
             return [
                 'success' => false,
-                'error' => __('ID de hilo no valido.', 'flavor-chat-ia'),
+                'error' => __('ID de hilo no valido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1812,7 +1812,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             return [
                 'success' => false,
                 'error' => sprintf(
-                    __('La respuesta debe tener al menos %d caracteres.', 'flavor-chat-ia'),
+                    __('La respuesta debe tener al menos %d caracteres.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $longitud_minima_contenido
                 ),
             ];
@@ -1827,7 +1827,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         if (!$hilo) {
             return [
                 'success' => false,
-                'error' => __('El hilo no existe o esta cerrado para respuestas.', 'flavor-chat-ia'),
+                'error' => __('El hilo no existe o esta cerrado para respuestas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1842,7 +1842,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             if (!$respuesta_padre_existe) {
                 return [
                     'success' => false,
-                    'error' => __('La respuesta padre no existe.', 'flavor-chat-ia'),
+                    'error' => __('La respuesta padre no existe.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
         }
@@ -1865,7 +1865,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         if ($resultado_insercion === false) {
             return [
                 'success' => false,
-                'error' => __('Error al publicar la respuesta.', 'flavor-chat-ia'),
+                'error' => __('Error al publicar la respuesta.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1885,7 +1885,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             'success' => true,
             'respuesta_id' => $wpdb->insert_id,
             'mensaje' => sprintf(
-                __('Respuesta publicada en el hilo "%s".', 'flavor-chat-ia'),
+                __('Respuesta publicada en el hilo "%s".', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $hilo->titulo
             ),
         ];
@@ -1903,7 +1903,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         if (empty($termino_busqueda)) {
             return [
                 'success' => false,
-                'error' => __('Introduce un termino de busqueda.', 'flavor-chat-ia'),
+                'error' => __('Introduce un termino de busqueda.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1957,7 +1957,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         if (!$usuario_id_actual) {
             return [
                 'success' => false,
-                'error' => __('Debes iniciar sesion para ver tus hilos.', 'flavor-chat-ia'),
+                'error' => __('Debes iniciar sesion para ver tus hilos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2008,7 +2008,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         if (!$usuario_id_actual) {
             return [
                 'success' => false,
-                'error' => __('Debes iniciar sesion.', 'flavor-chat-ia'),
+                'error' => __('Debes iniciar sesion.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2016,7 +2016,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         if (!$this->usuario_es_moderador($usuario_id_actual)) {
             return [
                 'success' => false,
-                'error' => __('No tienes permisos de moderacion.', 'flavor-chat-ia'),
+                'error' => __('No tienes permisos de moderacion.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2029,7 +2029,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         if (empty($accion_moderacion) || empty($tipo_elemento) || !$id_elemento) {
             return [
                 'success' => false,
-                'error' => __('Parametros de moderacion incompletos.', 'flavor-chat-ia'),
+                'error' => __('Parametros de moderacion incompletos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2040,7 +2040,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             if (!in_array($accion_moderacion, $acciones_validas_hilos, true)) {
                 return [
                     'success' => false,
-                    'error' => __('Accion de moderacion no valida para hilos.', 'flavor-chat-ia'),
+                    'error' => __('Accion de moderacion no valida para hilos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
 
@@ -2051,7 +2051,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             if (!in_array($accion_moderacion, $acciones_validas_respuestas, true)) {
                 return [
                     'success' => false,
-                    'error' => __('Accion de moderacion no valida para respuestas.', 'flavor-chat-ia'),
+                    'error' => __('Accion de moderacion no valida para respuestas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
 
@@ -2060,7 +2060,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error' => __('Tipo de elemento no valido. Use "hilo" o "respuesta".', 'flavor-chat-ia'),
+            'error' => __('Tipo de elemento no valido. Use "hilo" o "respuesta".', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -2081,23 +2081,23 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         switch ($accion_moderacion) {
             case 'cerrar':
                 $datos_actualizacion = ['estado' => 'cerrado'];
-                $mensaje_confirmacion = __('Hilo cerrado correctamente.', 'flavor-chat-ia');
+                $mensaje_confirmacion = __('Hilo cerrado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 break;
             case 'abrir':
                 $datos_actualizacion = ['estado' => 'abierto'];
-                $mensaje_confirmacion = __('Hilo reabierto correctamente.', 'flavor-chat-ia');
+                $mensaje_confirmacion = __('Hilo reabierto correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 break;
             case 'fijar':
                 $datos_actualizacion = ['es_fijado' => 1, 'estado' => 'fijado'];
-                $mensaje_confirmacion = __('Hilo fijado correctamente.', 'flavor-chat-ia');
+                $mensaje_confirmacion = __('Hilo fijado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 break;
             case 'desfijar':
                 $datos_actualizacion = ['es_fijado' => 0, 'estado' => 'abierto'];
-                $mensaje_confirmacion = __('Hilo desfijado correctamente.', 'flavor-chat-ia');
+                $mensaje_confirmacion = __('Hilo desfijado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 break;
             case 'eliminar':
                 $datos_actualizacion = ['estado' => 'eliminado'];
-                $mensaje_confirmacion = __('Hilo eliminado correctamente.', 'flavor-chat-ia');
+                $mensaje_confirmacion = __('Hilo eliminado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 break;
         }
 
@@ -2110,7 +2110,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         if ($resultado === false) {
             return [
                 'success' => false,
-                'error' => __('Error al moderar el hilo.', 'flavor-chat-ia'),
+                'error' => __('Error al moderar el hilo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2133,15 +2133,15 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         switch ($accion_moderacion) {
             case 'ocultar':
                 $datos_actualizacion = ['estado' => 'oculto'];
-                $mensaje_confirmacion = __('Respuesta ocultada correctamente.', 'flavor-chat-ia');
+                $mensaje_confirmacion = __('Respuesta ocultada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 break;
             case 'mostrar':
                 $datos_actualizacion = ['estado' => 'visible'];
-                $mensaje_confirmacion = __('Respuesta mostrada correctamente.', 'flavor-chat-ia');
+                $mensaje_confirmacion = __('Respuesta mostrada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 break;
             case 'eliminar':
                 $datos_actualizacion = ['estado' => 'eliminado'];
-                $mensaje_confirmacion = __('Respuesta eliminada correctamente.', 'flavor-chat-ia');
+                $mensaje_confirmacion = __('Respuesta eliminada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 break;
         }
 
@@ -2154,7 +2154,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         if ($resultado === false) {
             return [
                 'success' => false,
-                'error' => __('Error al moderar la respuesta.', 'flavor-chat-ia'),
+                'error' => __('Error al moderar la respuesta.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2316,53 +2316,53 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
     public function get_form_config($action_name) {
         $configs = [
             'crear_tema' => [
-                'title' => __('Crear Nuevo Tema', 'flavor-chat-ia'),
-                'description' => __('Inicia un nuevo hilo de discusión', 'flavor-chat-ia'),
+                'title' => __('Crear Nuevo Tema', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Inicia un nuevo hilo de discusión', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fields' => [
                     'categoria_id' => [
                         'type' => 'select',
-                        'label' => __('Categoría', 'flavor-chat-ia'),
+                        'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'options' => [
-                            'general' => __('General', 'flavor-chat-ia'),
-                            'anuncios' => __('Anuncios', 'flavor-chat-ia'),
-                            'dudas' => __('Dudas y preguntas', 'flavor-chat-ia'),
-                            'propuestas' => __('Propuestas', 'flavor-chat-ia'),
-                            'quejas' => __('Quejas y sugerencias', 'flavor-chat-ia'),
+                            'general' => __('General', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'anuncios' => __('Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'dudas' => __('Dudas y preguntas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'propuestas' => __('Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'quejas' => __('Quejas y sugerencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ],
                     ],
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título del tema', 'flavor-chat-ia'),
+                        'label' => __('Título del tema', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
-                        'placeholder' => __('Resume el tema en pocas palabras', 'flavor-chat-ia'),
+                        'placeholder' => __('Resume el tema en pocas palabras', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'contenido' => [
                         'type' => 'textarea',
-                        'label' => __('Mensaje', 'flavor-chat-ia'),
+                        'label' => __('Mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'rows' => 6,
-                        'placeholder' => __('Desarrolla tu mensaje...', 'flavor-chat-ia'),
+                        'placeholder' => __('Desarrolla tu mensaje...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'etiquetas' => [
                         'type' => 'text',
-                        'label' => __('Etiquetas', 'flavor-chat-ia'),
-                        'placeholder' => __('Separadas por comas: urgente, grupo-consumo', 'flavor-chat-ia'),
-                        'description' => __('Ayuda a otros a encontrar tu tema', 'flavor-chat-ia'),
+                        'label' => __('Etiquetas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'placeholder' => __('Separadas por comas: urgente, grupo-consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'description' => __('Ayuda a otros a encontrar tu tema', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'permitir_respuestas' => [
                         'type' => 'checkbox',
-                        'label' => __('Permitir respuestas', 'flavor-chat-ia'),
-                        'checkbox_label' => __('Permitir que otros respondan a este tema', 'flavor-chat-ia'),
+                        'label' => __('Permitir respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'checkbox_label' => __('Permitir que otros respondan a este tema', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                 ],
-                'submit_text' => __('Publicar Tema', 'flavor-chat-ia'),
-                'success_message' => __('Tema publicado correctamente', 'flavor-chat-ia'),
+                'submit_text' => __('Publicar Tema', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'success_message' => __('Tema publicado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'redirect_url' => '/foros/',
             ],
             'responder_tema' => [
-                'title' => __('Responder al Tema', 'flavor-chat-ia'),
+                'title' => __('Responder al Tema', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fields' => [
                     'tema_id' => [
                         'type' => 'hidden',
@@ -2370,22 +2370,22 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
                     ],
                     'contenido' => [
                         'type' => 'textarea',
-                        'label' => __('Tu respuesta', 'flavor-chat-ia'),
+                        'label' => __('Tu respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'rows' => 5,
-                        'placeholder' => __('Escribe tu respuesta...', 'flavor-chat-ia'),
+                        'placeholder' => __('Escribe tu respuesta...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'notificar_respuestas' => [
                         'type' => 'checkbox',
-                        'label' => __('Notificaciones', 'flavor-chat-ia'),
-                        'checkbox_label' => __('Recibir notificaciones de nuevas respuestas', 'flavor-chat-ia'),
+                        'label' => __('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'checkbox_label' => __('Recibir notificaciones de nuevas respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                 ],
-                'submit_text' => __('Publicar Respuesta', 'flavor-chat-ia'),
-                'success_message' => __('Respuesta publicada', 'flavor-chat-ia'),
+                'submit_text' => __('Publicar Respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'success_message' => __('Respuesta publicada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'editar_mensaje' => [
-                'title' => __('Editar Mensaje', 'flavor-chat-ia'),
+                'title' => __('Editar Mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fields' => [
                     'mensaje_id' => [
                         'type' => 'hidden',
@@ -2393,22 +2393,22 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
                     ],
                     'contenido' => [
                         'type' => 'textarea',
-                        'label' => __('Contenido', 'flavor-chat-ia'),
+                        'label' => __('Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'rows' => 5,
                     ],
                     'motivo_edicion' => [
                         'type' => 'text',
-                        'label' => __('Motivo de la edición (opcional)', 'flavor-chat-ia'),
-                        'placeholder' => __('Corrección, añadir información...', 'flavor-chat-ia'),
+                        'label' => __('Motivo de la edición (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'placeholder' => __('Corrección, añadir información...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                 ],
-                'submit_text' => __('Guardar Cambios', 'flavor-chat-ia'),
-                'success_message' => __('Mensaje actualizado', 'flavor-chat-ia'),
+                'submit_text' => __('Guardar Cambios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'success_message' => __('Mensaje actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'reportar_mensaje' => [
-                'title' => __('Reportar Mensaje', 'flavor-chat-ia'),
-                'description' => __('Ayúdanos a mantener un ambiente respetuoso', 'flavor-chat-ia'),
+                'title' => __('Reportar Mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Ayúdanos a mantener un ambiente respetuoso', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fields' => [
                     'mensaje_id' => [
                         'type' => 'hidden',
@@ -2416,25 +2416,25 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
                     ],
                     'motivo' => [
                         'type' => 'select',
-                        'label' => __('Motivo del reporte', 'flavor-chat-ia'),
+                        'label' => __('Motivo del reporte', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'options' => [
-                            'spam' => __('Spam o publicidad', 'flavor-chat-ia'),
-                            'ofensivo' => __('Contenido ofensivo', 'flavor-chat-ia'),
-                            'acoso' => __('Acoso o insultos', 'flavor-chat-ia'),
-                            'desinformacion' => __('Desinformación', 'flavor-chat-ia'),
-                            'otro' => __('Otro motivo', 'flavor-chat-ia'),
+                            'spam' => __('Spam o publicidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'ofensivo' => __('Contenido ofensivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'acoso' => __('Acoso o insultos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'desinformacion' => __('Desinformación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'otro' => __('Otro motivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ],
                     ],
                     'detalles' => [
                         'type' => 'textarea',
-                        'label' => __('Detalles adicionales', 'flavor-chat-ia'),
+                        'label' => __('Detalles adicionales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'rows' => 3,
-                        'placeholder' => __('Explica el problema con más detalle...', 'flavor-chat-ia'),
+                        'placeholder' => __('Explica el problema con más detalle...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                 ],
-                'submit_text' => __('Enviar Reporte', 'flavor-chat-ia'),
-                'success_message' => __('Reporte enviado. Lo revisaremos pronto.', 'flavor-chat-ia'),
+                'submit_text' => __('Enviar Reporte', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'success_message' => __('Reporte enviado. Lo revisaremos pronto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
 
@@ -2450,73 +2450,73 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
     public function get_web_components() {
         return [
             'foros_hero' => [
-                'label' => __('Hero Foros', 'flavor-chat-ia'),
-                'description' => __('Seccion hero para la pagina principal de foros', 'flavor-chat-ia'),
+                'label' => __('Hero Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Seccion hero para la pagina principal de foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-format-chat',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Titulo', 'flavor-chat-ia'),
-                        'default' => __('Foros de la Comunidad', 'flavor-chat-ia'),
+                        'label' => __('Titulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Foros de la Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'subtitulo' => [
                         'type' => 'textarea',
-                        'label' => __('Subtitulo', 'flavor-chat-ia'),
-                        'default' => __('Participa en las discusiones, comparte conocimiento y conecta con tu comunidad', 'flavor-chat-ia'),
+                        'label' => __('Subtitulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Participa en las discusiones, comparte conocimiento y conecta con tu comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'imagen_fondo' => [
                         'type' => 'image',
-                        'label' => __('Imagen de fondo', 'flavor-chat-ia'),
+                        'label' => __('Imagen de fondo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '',
                     ],
                 ],
                 'template' => 'foros/hero',
             ],
             'foros_lista' => [
-                'label' => __('Lista de Foros', 'flavor-chat-ia'),
-                'description' => __('Grid de categorias de foros con estadisticas', 'flavor-chat-ia'),
+                'label' => __('Lista de Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Grid de categorias de foros con estadisticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-list-view',
                 'fields' => [
                     'titulo_seccion' => [
                         'type' => 'text',
-                        'label' => __('Titulo de seccion', 'flavor-chat-ia'),
-                        'default' => __('Categorias de Foros', 'flavor-chat-ia'),
+                        'label' => __('Titulo de seccion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Categorias de Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'columnas' => [
                         'type' => 'select',
-                        'label' => __('Columnas', 'flavor-chat-ia'),
+                        'label' => __('Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => [2, 3],
                         'default' => 2,
                     ],
                     'mostrar_estadisticas' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar estadisticas', 'flavor-chat-ia'),
+                        'label' => __('Mostrar estadisticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                 ],
                 'template' => 'foros/foros-lista',
             ],
             'foros_ultimos_temas' => [
-                'label' => __('Ultimos Temas', 'flavor-chat-ia'),
-                'description' => __('Lista de los ultimos temas publicados en los foros', 'flavor-chat-ia'),
+                'label' => __('Ultimos Temas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Lista de los ultimos temas publicados en los foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-editor-ul',
                 'fields' => [
                     'titulo_seccion' => [
                         'type' => 'text',
-                        'label' => __('Titulo de seccion', 'flavor-chat-ia'),
-                        'default' => __('Ultimos Temas', 'flavor-chat-ia'),
+                        'label' => __('Titulo de seccion', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Ultimos Temas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'limite' => [
                         'type' => 'number',
-                        'label' => __('Numero de temas', 'flavor-chat-ia'),
+                        'label' => __('Numero de temas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 10,
                     ],
                     'mostrar_foro' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar nombre del foro', 'flavor-chat-ia'),
+                        'label' => __('Mostrar nombre del foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                 ],
@@ -2537,36 +2537,36 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'foros',
-            'label' => __('Foros de Discusion', 'flavor-chat-ia'),
+            'label' => __('Foros de Discusion', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-format-chat',
             'capability' => 'manage_options',
             'categoria' => 'comunicacion',
             'paginas' => [
                 [
                     'slug' => 'flavor-foros-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'flavor-foros-listado',
-                    'titulo' => __('Foros', 'flavor-chat-ia'),
+                    'titulo' => __('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_foros'],
                     'badge' => [$this, 'contar_foros_activos'],
                 ],
                 [
                     'slug' => 'flavor-foros-moderacion',
-                    'titulo' => __('Moderacion', 'flavor-chat-ia'),
+                    'titulo' => __('Moderacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_moderacion'],
                     'badge' => [$this, 'contar_pendientes_moderacion'],
                 ],
                 [
                     'slug' => 'foros-categorias',
-                    'titulo' => __('Categorías', 'flavor-chat-ia'),
+                    'titulo' => __('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_categorias'],
                 ],
                 [
                     'slug' => 'foros-config',
-                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'titulo' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_configuracion'],
                 ],
             ],
@@ -2635,50 +2635,50 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             $acciones = $is_dashboard_viewer
                 ? [
                     [
-                        'label' => __('Ver en portal', 'flavor-chat-ia'),
+                        'label' => __('Ver en portal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'url' => home_url('/mi-portal/foros/'),
                         'class' => '',
                     ],
                 ]
                 : [
                     [
-                        'label' => __('Nuevo Foro', 'flavor-chat-ia'),
+                        'label' => __('Nuevo Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'url' => admin_url('admin.php?page=flavor-foros-listado&action=nuevo'),
                         'class' => 'button-primary',
                     ],
                 ];
-            $this->render_page_header(__('Dashboard de Foros', 'flavor-chat-ia'), $acciones);
+            $this->render_page_header(__('Dashboard de Foros', FLAVOR_PLATFORM_TEXT_DOMAIN), $acciones);
 
             if ($is_dashboard_viewer) :
             ?>
-                <div class="notice notice-info"><p><?php esc_html_e('Vista resumida para gestor de grupos. La creación y moderación avanzada siguen reservadas a administración.', 'flavor-chat-ia'); ?></p></div>
+                <div class="notice notice-info"><p><?php esc_html_e('Vista resumida para gestor de grupos. La creación y moderación avanzada siguen reservadas a administración.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p></div>
             <?php endif; ?>
 
             <div class="flavor-stats-grid">
                 <div class="stat-card">
                     <span class="dashicons dashicons-category"></span>
                     <div class="stat-value"><?php echo intval($estadisticas['total_foros']); ?></div>
-                    <div class="stat-label"><?php esc_html_e('Foros', 'flavor-chat-ia'); ?></div>
+                    <div class="stat-label"><?php esc_html_e('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="stat-card">
                     <span class="dashicons dashicons-admin-comments"></span>
                     <div class="stat-value"><?php echo intval($estadisticas['total_hilos']); ?></div>
-                    <div class="stat-label"><?php esc_html_e('Hilos', 'flavor-chat-ia'); ?></div>
+                    <div class="stat-label"><?php esc_html_e('Hilos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="stat-card">
                     <span class="dashicons dashicons-format-chat"></span>
                     <div class="stat-value"><?php echo intval($estadisticas['total_respuestas']); ?></div>
-                    <div class="stat-label"><?php esc_html_e('Respuestas', 'flavor-chat-ia'); ?></div>
+                    <div class="stat-label"><?php esc_html_e('Respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="stat-card">
                     <span class="dashicons dashicons-visibility"></span>
                     <div class="stat-value"><?php echo intval($estadisticas['total_vistas']); ?></div>
-                    <div class="stat-label"><?php esc_html_e('Vistas Totales', 'flavor-chat-ia'); ?></div>
+                    <div class="stat-label"><?php esc_html_e('Vistas Totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
 
             <div class="flavor-admin-section">
-                <h2><?php esc_html_e('Ultimos Hilos', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Ultimos Hilos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <?php $this->render_ultimos_hilos_tabla(); ?>
             </div>
         </div>
@@ -2691,9 +2691,9 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
     public function render_admin_foros() {
         ?>
         <div class="wrap flavor-admin-page">
-            <?php $this->render_page_header(__('Gestionar Foros', 'flavor-chat-ia'), [
+            <?php $this->render_page_header(__('Gestionar Foros', FLAVOR_PLATFORM_TEXT_DOMAIN), [
                 [
-                    'label' => __('Crear Foro', 'flavor-chat-ia'),
+                    'label' => __('Crear Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => admin_url('admin.php?page=flavor-foros-listado&action=nuevo'),
                     'class' => 'button-primary',
                 ],
@@ -2714,22 +2714,22 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
 
         ?>
         <div class="wrap flavor-admin-page">
-            <?php $this->render_page_header(__('Moderacion de Foros', 'flavor-chat-ia')); ?>
+            <?php $this->render_page_header(__('Moderacion de Foros', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
 
             <?php $this->render_page_tabs([
                 [
                     'slug' => 'hilos',
-                    'label' => __('Hilos', 'flavor-chat-ia'),
+                    'label' => __('Hilos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'badge' => $pendientes_hilos,
                 ],
                 [
                     'slug' => 'respuestas',
-                    'label' => __('Respuestas', 'flavor-chat-ia'),
+                    'label' => __('Respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'badge' => $pendientes_respuestas,
                 ],
                 [
                     'slug' => 'reportes',
-                    'label' => __('Reportes', 'flavor-chat-ia'),
+                    'label' => __('Reportes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ], $tab_actual); ?>
 
@@ -2761,25 +2761,25 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         <div class="flavor-widget-content">
             <ul class="flavor-widget-stats">
                 <li>
-                    <span class="label"><?php esc_html_e('Foros activos:', 'flavor-chat-ia'); ?></span>
+                    <span class="label"><?php esc_html_e('Foros activos:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="value"><?php echo intval($estadisticas['total_foros']); ?></span>
                 </li>
                 <li>
-                    <span class="label"><?php esc_html_e('Hilos totales:', 'flavor-chat-ia'); ?></span>
+                    <span class="label"><?php esc_html_e('Hilos totales:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="value"><?php echo intval($estadisticas['total_hilos']); ?></span>
                 </li>
                 <li>
-                    <span class="label"><?php esc_html_e('Respuestas:', 'flavor-chat-ia'); ?></span>
+                    <span class="label"><?php esc_html_e('Respuestas:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="value"><?php echo intval($estadisticas['total_respuestas']); ?></span>
                 </li>
                 <li>
-                    <span class="label"><?php esc_html_e('Pendientes moderacion:', 'flavor-chat-ia'); ?></span>
+                    <span class="label"><?php esc_html_e('Pendientes moderacion:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="value"><?php echo intval($this->contar_pendientes_moderacion()); ?></span>
                 </li>
             </ul>
             <p class="flavor-widget-actions">
                 <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-foros-dashboard')); ?>" class="button">
-                    <?php esc_html_e('Ver Dashboard', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </p>
         </div>
@@ -2881,17 +2881,17 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         );
 
         if (empty($hilos_recientes)) {
-            echo '<p>' . esc_html__('No hay hilos todavia.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('No hay hilos todavia.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
         echo '<table class="wp-list-table widefat fixed striped">';
         echo '<thead><tr>';
-        echo '<th>' . esc_html__('Titulo', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Foro', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Autor', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Respuestas', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Fecha', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Titulo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Autor', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
         echo '</tr></thead><tbody>';
 
         foreach ($hilos_recientes as $hilo) {
@@ -2918,17 +2918,17 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         $foros = $wpdb->get_results("SELECT * FROM $tabla_foros ORDER BY orden ASC, nombre ASC");
 
         if (empty($foros)) {
-            echo '<p>' . esc_html__('No hay foros creados. Crea el primero.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('No hay foros creados. Crea el primero.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
         echo '<table class="wp-list-table widefat fixed striped">';
         echo '<thead><tr>';
-        echo '<th>' . esc_html__('Nombre', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Descripcion', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Orden', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Acciones', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Descripcion', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Orden', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
         echo '</tr></thead><tbody>';
 
         foreach ($foros as $foro) {
@@ -2945,8 +2945,8 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             echo '<td><span class="status-badge ' . esc_attr($estado_clase) . '">' . esc_html(ucfirst($foro->estado)) . '</span></td>';
             echo '<td>' . intval($foro->orden) . '</td>';
             echo '<td>';
-            echo '<a href="#" class="button button-small foro-editar" data-id="' . esc_attr($foro->id) . '" data-nombre="' . esc_attr($foro->nombre) . '" data-descripcion="' . esc_attr($foro->descripcion) . '" data-estado="' . esc_attr($foro->estado) . '" data-orden="' . esc_attr($foro->orden) . '">' . esc_html__('Editar', 'flavor-chat-ia') . '</a> ';
-            echo '<a href="' . esc_url(home_url('/foro/' . $foro->slug)) . '" class="button button-small" target="_blank">' . esc_html__('Ver', 'flavor-chat-ia') . '</a>';
+            echo '<a href="#" class="button button-small foro-editar" data-id="' . esc_attr($foro->id) . '" data-nombre="' . esc_attr($foro->nombre) . '" data-descripcion="' . esc_attr($foro->descripcion) . '" data-estado="' . esc_attr($foro->estado) . '" data-orden="' . esc_attr($foro->orden) . '">' . esc_html__('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a> ';
+            echo '<a href="' . esc_url(home_url('/foro/' . $foro->slug)) . '" class="button button-small" target="_blank">' . esc_html__('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
             echo '</td>';
             echo '</tr>';
         }
@@ -2957,28 +2957,28 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         echo '<div id="modal-editar-foro" style="display:none;">
             <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:100000;">
                 <div class="modal-content" style="position:relative;max-width:500px;margin:50px auto;background:#fff;padding:20px;border-radius:4px;">
-                    <h2>' . esc_html__('Editar Foro', 'flavor-chat-ia') . '</h2>
+                    <h2>' . esc_html__('Editar Foro', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2>
                     <form method="post">
                         ' . wp_nonce_field('editar_foro', '_wpnonce', true, false) . '
                         <input type="hidden" name="accion" value="editar_foro">
                         <input type="hidden" name="foro_id" id="edit-foro-id">
                         <table class="form-table">
-                            <tr><th><label for="edit-foro-nombre">' . esc_html__('Nombre', 'flavor-chat-ia') . '</label></th>
+                            <tr><th><label for="edit-foro-nombre">' . esc_html__('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>
                             <td><input type="text" id="edit-foro-nombre" name="nombre" class="regular-text" required></td></tr>
-                            <tr><th><label for="edit-foro-descripcion">' . esc_html__('Descripción', 'flavor-chat-ia') . '</label></th>
+                            <tr><th><label for="edit-foro-descripcion">' . esc_html__('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>
                             <td><textarea id="edit-foro-descripcion" name="descripcion" rows="3" class="large-text"></textarea></td></tr>
-                            <tr><th><label for="edit-foro-estado">' . esc_html__('Estado', 'flavor-chat-ia') . '</label></th>
+                            <tr><th><label for="edit-foro-estado">' . esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>
                             <td><select id="edit-foro-estado" name="estado">
-                                <option value="activo">' . esc_html__('Activo', 'flavor-chat-ia') . '</option>
-                                <option value="cerrado">' . esc_html__('Cerrado', 'flavor-chat-ia') . '</option>
-                                <option value="archivado">' . esc_html__('Archivado', 'flavor-chat-ia') . '</option>
+                                <option value="activo">' . esc_html__('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>
+                                <option value="cerrado">' . esc_html__('Cerrado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>
+                                <option value="archivado">' . esc_html__('Archivado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>
                             </select></td></tr>
-                            <tr><th><label for="edit-foro-orden">' . esc_html__('Orden', 'flavor-chat-ia') . '</label></th>
+                            <tr><th><label for="edit-foro-orden">' . esc_html__('Orden', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></th>
                             <td><input type="number" id="edit-foro-orden" name="orden" class="small-text" min="0"></td></tr>
                         </table>
                         <p class="submit">
-                            <button type="submit" class="button button-primary">' . esc_html__('Guardar', 'flavor-chat-ia') . '</button>
-                            <button type="button" class="button" id="cerrar-modal-foro">' . esc_html__('Cancelar', 'flavor-chat-ia') . '</button>
+                            <button type="submit" class="button button-primary">' . esc_html__('Guardar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</button>
+                            <button type="button" class="button" id="cerrar-modal-foro">' . esc_html__('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</button>
                         </p>
                     </form>
                 </div>
@@ -3007,21 +3007,21 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
      * Renderiza la seccion de moderacion de hilos
      */
     private function render_hilos_moderacion() {
-        echo '<p>' . esc_html__('Aqui apareceran los hilos que requieran moderacion.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . esc_html__('Aqui apareceran los hilos que requieran moderacion.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
     }
 
     /**
      * Renderiza la seccion de moderacion de respuestas
      */
     private function render_respuestas_moderacion() {
-        echo '<p>' . esc_html__('Aqui apareceran las respuestas reportadas o pendientes de revision.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . esc_html__('Aqui apareceran las respuestas reportadas o pendientes de revision.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
     }
 
     /**
      * Renderiza la seccion de reportes
      */
     private function render_reportes() {
-        echo '<p>' . esc_html__('Aqui apareceran los reportes enviados por los usuarios.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . esc_html__('Aqui apareceran los reportes enviados por los usuarios.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
     }
 
     // =========================================================
@@ -3127,7 +3127,7 @@ KNOWLEDGE;
         if (!$usuario_id) {
             return [
                 'success' => false,
-                'error' => __('Debes iniciar sesion para editar.', 'flavor-chat-ia'),
+                'error' => __('Debes iniciar sesion para editar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -3138,7 +3138,7 @@ KNOWLEDGE;
         if (!$mensaje_id || empty($contenido)) {
             return [
                 'success' => false,
-                'error' => __('Debes iniciar sesion para editar.', 'flavor-chat-ia'),
+                'error' => __('Debes iniciar sesion para editar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -3152,11 +3152,11 @@ KNOWLEDGE;
         ));
 
         if (!$mensaje) {
-            return ['success' => false, 'error' => __('Mensaje no encontrado.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Mensaje no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         if ((int) $mensaje->autor_id !== $usuario_id && !current_user_can('manage_options')) {
-            return ['success' => false, 'error' => __('Mensaje no encontrado.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Mensaje no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $datos_actualizar = [
@@ -3176,12 +3176,12 @@ KNOWLEDGE;
         );
 
         if ($resultado === false) {
-            return ['success' => false, 'error' => __('Mensaje no encontrado.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Mensaje no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         return [
             'success' => true,
-            'mensaje' => __('Mensaje actualizado correctamente.', 'flavor-chat-ia'),
+            'mensaje' => __('Mensaje actualizado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -3209,17 +3209,17 @@ KNOWLEDGE;
             'permission_callback' => [$this, 'api_permiso_publico'],
             'args'                => [
                 'id' => [
-                    'description' => __('ID del foro', 'flavor-chat-ia'),
+                    'description' => __('ID del foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'integer',
                     'required'    => true,
                 ],
                 'pagina' => [
-                    'description' => __('Numero de pagina', 'flavor-chat-ia'),
+                    'description' => __('Numero de pagina', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'integer',
                     'default'     => 1,
                 ],
                 'orden' => [
-                    'description' => __('Criterio de ordenacion', 'flavor-chat-ia'),
+                    'description' => __('Criterio de ordenacion', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'string',
                     'enum'        => ['recientes', 'actividad', 'mas_vistos', 'mas_respuestas'],
                     'default'     => 'actividad',
@@ -3234,12 +3234,12 @@ KNOWLEDGE;
             'permission_callback' => [$this, 'api_permiso_publico'],
             'args'                => [
                 'id' => [
-                    'description' => __('ID del tema/hilo', 'flavor-chat-ia'),
+                    'description' => __('ID del tema/hilo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'integer',
                     'required'    => true,
                 ],
                 'pagina' => [
-                    'description' => __('Numero de pagina de respuestas', 'flavor-chat-ia'),
+                    'description' => __('Numero de pagina de respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'integer',
                     'default'     => 1,
                 ],
@@ -3253,17 +3253,17 @@ KNOWLEDGE;
             'permission_callback' => [$this, 'api_permiso_usuario_autenticado'],
             'args'                => [
                 'foro_id' => [
-                    'description' => __('ID del foro donde crear el tema', 'flavor-chat-ia'),
+                    'description' => __('ID del foro donde crear el tema', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'integer',
                     'required'    => true,
                 ],
                 'titulo' => [
-                    'description' => __('Titulo del tema', 'flavor-chat-ia'),
+                    'description' => __('Titulo del tema', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'string',
                     'required'    => true,
                 ],
                 'contenido' => [
-                    'description' => __('Contenido del tema', 'flavor-chat-ia'),
+                    'description' => __('Contenido del tema', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'string',
                     'required'    => true,
                 ],
@@ -3277,17 +3277,17 @@ KNOWLEDGE;
             'permission_callback' => [$this, 'api_permiso_usuario_autenticado'],
             'args'                => [
                 'id' => [
-                    'description' => __('ID del tema/hilo', 'flavor-chat-ia'),
+                    'description' => __('ID del tema/hilo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'integer',
                     'required'    => true,
                 ],
                 'contenido' => [
-                    'description' => __('Contenido de la respuesta', 'flavor-chat-ia'),
+                    'description' => __('Contenido de la respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'string',
                     'required'    => true,
                 ],
                 'parent_id' => [
-                    'description' => __('ID de la respuesta padre (para respuestas anidadas)', 'flavor-chat-ia'),
+                    'description' => __('ID de la respuesta padre (para respuestas anidadas)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'integer',
                     'default'     => 0,
                 ],
@@ -3301,17 +3301,17 @@ KNOWLEDGE;
             'permission_callback' => [$this, 'api_permiso_publico'],
             'args'                => [
                 'busqueda' => [
-                    'description' => __('Termino de busqueda', 'flavor-chat-ia'),
+                    'description' => __('Termino de busqueda', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'string',
                     'required'    => true,
                 ],
                 'foro_id' => [
-                    'description' => __('ID del foro para filtrar (opcional)', 'flavor-chat-ia'),
+                    'description' => __('ID del foro para filtrar (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'integer',
                     'default'     => 0,
                 ],
                 'limite' => [
-                    'description' => __('Numero maximo de resultados', 'flavor-chat-ia'),
+                    'description' => __('Numero maximo de resultados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'integer',
                     'default'     => 20,
                 ],
@@ -3325,7 +3325,7 @@ KNOWLEDGE;
             'permission_callback' => [$this, 'api_permiso_usuario_autenticado'],
             'args'                => [
                 'pagina' => [
-                    'description' => __('Numero de pagina', 'flavor-chat-ia'),
+                    'description' => __('Numero de pagina', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'type'        => 'integer',
                     'default'     => 1,
                 ],
@@ -3363,7 +3363,7 @@ KNOWLEDGE;
         if (!is_user_logged_in()) {
             return new WP_Error(
                 'rest_forbidden',
-                __('Debes iniciar sesion para realizar esta accion.', 'flavor-chat-ia'),
+                __('Debes iniciar sesion para realizar esta accion.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 401]
             );
         }
@@ -3375,7 +3375,7 @@ KNOWLEDGE;
             if (!Flavor_API_Rate_Limiter::check_rate_limit($tipo_limite)) {
                 return new WP_Error(
                     'rest_rate_limit_exceeded',
-                    __('Has excedido el limite de peticiones. Intenta de nuevo mas tarde.', 'flavor-chat-ia'),
+                    __('Has excedido el limite de peticiones. Intenta de nuevo mas tarde.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ['status' => 429]
                 );
             }
@@ -3420,7 +3420,7 @@ KNOWLEDGE;
         $resultado = $this->action_ver_foro($parametros);
 
         if (!$resultado['success']) {
-            $codigo_estado = ($resultado['error'] ?? '') === __('Foro no encontrado o no disponible.', 'flavor-chat-ia') ? 404 : 400;
+            $codigo_estado = ($resultado['error'] ?? '') === __('Foro no encontrado o no disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) ? 404 : 400;
             return new WP_REST_Response($resultado, $codigo_estado);
         }
 
@@ -3442,7 +3442,7 @@ KNOWLEDGE;
         $resultado = $this->action_ver_hilo($parametros);
 
         if (!$resultado['success']) {
-            $codigo_estado = ($resultado['error'] ?? '') === __('Hilo no encontrado.', 'flavor-chat-ia') ? 404 : 400;
+            $codigo_estado = ($resultado['error'] ?? '') === __('Hilo no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN) ? 404 : 400;
             return new WP_REST_Response($resultado, $codigo_estado);
         }
 
@@ -3585,7 +3585,7 @@ KNOWLEDGE;
         $estadisticas['foros'] = [
             'icon' => 'dashicons-format-chat',
             'valor' => $total_foros,
-            'label' => __('Foros', 'flavor-chat-ia'),
+            'label' => __('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'purple',
         ];
 
@@ -3601,7 +3601,7 @@ KNOWLEDGE;
                 $estadisticas['hilos_recientes'] = [
                     'icon' => 'dashicons-admin-comments',
                     'valor' => $hilos_activos,
-                    'label' => __('Hilos esta semana', 'flavor-chat-ia'),
+                    'label' => __('Hilos esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'green',
                 ];
             }
@@ -3619,7 +3619,7 @@ KNOWLEDGE;
                 $estadisticas['mis_hilos'] = [
                     'icon' => 'dashicons-edit',
                     'valor' => $mis_hilos,
-                    'label' => __('Mis hilos', 'flavor-chat-ia'),
+                    'label' => __('Mis hilos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'blue',
                 ];
             }
@@ -3636,33 +3636,33 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Foros', 'flavor-chat-ia'),
+                'title' => __('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'foros',
-                'content' => '<h1>' . __('Foros de la Comunidad', 'flavor-chat-ia') . '</h1>
-<p>' . __('Participa en las discusiones de la comunidad', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Foros de la Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Participa en las discusiones de la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="foros" action="listar_temas" columnas="1"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Nuevo Tema', 'flavor-chat-ia'),
+                'title' => __('Nuevo Tema', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'nuevo-tema',
-                'content' => '<h1>' . __('Crear Nuevo Tema', 'flavor-chat-ia') . '</h1>
-<p>' . __('Inicia una nueva discusión', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Crear Nuevo Tema', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Inicia una nueva discusión', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_form module="foros" action="crear_tema"]',
                 'parent' => 'foros',
             ],
             [
-                'title' => __('Ver Tema', 'flavor-chat-ia'),
+                'title' => __('Ver Tema', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'tema',
                 'content' => '[flavor_module_form module="foros" action="responder_tema"]',
                 'parent' => 'foros',
             ],
             [
-                'title' => __('Mis Temas', 'flavor-chat-ia'),
+                'title' => __('Mis Temas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mis-temas',
-                'content' => '<h1>' . __('Mis Temas', 'flavor-chat-ia') . '</h1>
+                'content' => '<h1>' . __('Mis Temas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
 
 [flavor_module_dashboard module="foros"]',
                 'parent' => 'foros',
@@ -3679,9 +3679,9 @@ KNOWLEDGE;
      */
     public function register_admin_menu() {
         add_submenu_page(
-            'flavor-chat-ia',
-            __('Gestionar Foros', 'flavor-chat-ia'),
-            __('Foros', 'flavor-chat-ia'),
+            FLAVOR_PLATFORM_TEXT_DOMAIN,
+            __('Gestionar Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-foros-admin',
             [$this, 'render_admin_page']
@@ -3720,7 +3720,7 @@ KNOWLEDGE;
         ?>
         <div class="wrap">
             <h1 class="wp-heading-inline">
-                <?php esc_html_e('Gestionar Categorías de Foros', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Gestionar Categorías de Foros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h1>
             <hr class="wp-header-end">
 
@@ -3730,12 +3730,12 @@ KNOWLEDGE;
                     <table class="wp-list-table widefat fixed striped">
                         <thead>
                             <tr>
-                                <th style="width: 40px;"><?php esc_html_e('Orden', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?></th>
-                                <th style="width: 80px;"><?php esc_html_e('Hilos', 'flavor-chat-ia'); ?></th>
-                                <th style="width: 100px;"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                                <th style="width: 120px;"><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                                <th style="width: 40px;"><?php esc_html_e('Orden', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th style="width: 80px;"><?php esc_html_e('Hilos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th style="width: 100px;"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th style="width: 120px;"><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody id="foros-lista">
@@ -3743,8 +3743,8 @@ KNOWLEDGE;
                                 <tr>
                                     <td colspan="6" style="text-align: center; padding: 40px;">
                                         <span class="dashicons dashicons-format-chat" style="font-size: 48px; color: #ccc;"></span>
-                                        <p><?php esc_html_e('No hay categorías de foros creadas.', 'flavor-chat-ia'); ?></p>
-                                        <p><?php esc_html_e('Usa el formulario de la derecha para crear tu primera categoría.', 'flavor-chat-ia'); ?></p>
+                                        <p><?php esc_html_e('No hay categorías de foros creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                                        <p><?php esc_html_e('Usa el formulario de la derecha para crear tu primera categoría.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                     </td>
                                 </tr>
                             <?php else : ?>
@@ -3784,13 +3784,13 @@ KNOWLEDGE;
                                         <td>
                                             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-foros-admin&action=editar&id=' . $cat->id)); ?>"
                                                class="button button-small">
-                                                <?php esc_html_e('Editar', 'flavor-chat-ia'); ?>
+                                                <?php esc_html_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </a>
                                             <button type="button"
                                                     class="button button-small button-link-delete foro-eliminar"
                                                     data-id="<?php echo esc_attr($cat->id); ?>"
                                                     data-nombre="<?php echo esc_attr($cat->nombre); ?>">
-                                                <?php esc_html_e('Eliminar', 'flavor-chat-ia'); ?>
+                                                <?php esc_html_e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </button>
                                         </td>
                                     </tr>
@@ -3804,8 +3804,8 @@ KNOWLEDGE;
                 <div class="flavor-foros-form" style="background: #fff; padding: 20px; border: 1px solid #ccd0d4; border-radius: 4px;">
                     <h2 style="margin-top: 0;">
                         <?php echo $editando
-                            ? esc_html__('Editar Categoría', 'flavor-chat-ia')
-                            : esc_html__('Nueva Categoría', 'flavor-chat-ia'); ?>
+                            ? esc_html__('Editar Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                            : esc_html__('Nueva Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h2>
 
                     <form id="form-categoria-foro">
@@ -3813,38 +3813,38 @@ KNOWLEDGE;
                         <input type="hidden" name="nonce" value="<?php echo esc_attr($nonce); ?>">
 
                         <p>
-                            <label for="nombre"><strong><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?></strong></label>
+                            <label for="nombre"><strong><?php esc_html_e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label>
                             <input type="text"
                                    id="nombre"
                                    name="nombre"
                                    class="widefat"
                                    required
-                                   placeholder="<?php esc_attr_e('Ej: General, Soporte, Ideas...', 'flavor-chat-ia'); ?>"
+                                   placeholder="<?php esc_attr_e('Ej: General, Soporte, Ideas...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                                    value="<?php echo $editando ? esc_attr($editando->nombre) : ''; ?>">
                         </p>
 
                         <p>
-                            <label for="descripcion"><strong><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?></strong></label>
+                            <label for="descripcion"><strong><?php esc_html_e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label>
                             <textarea id="descripcion"
                                       name="descripcion"
                                       class="widefat"
                                       rows="3"
-                                      placeholder="<?php esc_attr_e('Describe el propósito de este foro...', 'flavor-chat-ia'); ?>"><?php echo $editando ? esc_textarea($editando->descripcion) : ''; ?></textarea>
+                                      placeholder="<?php esc_attr_e('Describe el propósito de este foro...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo $editando ? esc_textarea($editando->descripcion) : ''; ?></textarea>
                         </p>
 
                         <p>
-                            <label for="icono"><strong><?php esc_html_e('Icono', 'flavor-chat-ia'); ?></strong></label>
+                            <label for="icono"><strong><?php esc_html_e('Icono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label>
                             <input type="text"
                                    id="icono"
                                    name="icono"
                                    class="widefat"
                                    placeholder="💬"
                                    value="<?php echo $editando ? esc_attr($editando->icono) : '💬'; ?>">
-                            <span class="description"><?php esc_html_e('Usa un emoji o nombre de dashicon (ej: forum, admin-comments)', 'flavor-chat-ia'); ?></span>
+                            <span class="description"><?php esc_html_e('Usa un emoji o nombre de dashicon (ej: forum, admin-comments)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </p>
 
                         <p>
-                            <label for="orden"><strong><?php esc_html_e('Orden', 'flavor-chat-ia'); ?></strong></label>
+                            <label for="orden"><strong><?php esc_html_e('Orden', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label>
                             <input type="number"
                                    id="orden"
                                    name="orden"
@@ -3854,16 +3854,16 @@ KNOWLEDGE;
                         </p>
 
                         <p>
-                            <label for="estado"><strong><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></strong></label>
+                            <label for="estado"><strong><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label>
                             <select id="estado" name="estado" class="widefat">
                                 <option value="activo" <?php selected($editando->estado ?? 'activo', 'activo'); ?>>
-                                    <?php esc_html_e('Activo - Los usuarios pueden crear hilos', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Activo - Los usuarios pueden crear hilos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </option>
                                 <option value="cerrado" <?php selected($editando->estado ?? '', 'cerrado'); ?>>
-                                    <?php esc_html_e('Cerrado - Solo lectura, no se pueden crear hilos', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Cerrado - Solo lectura, no se pueden crear hilos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </option>
                                 <option value="archivado" <?php selected($editando->estado ?? '', 'archivado'); ?>>
-                                    <?php esc_html_e('Archivado - Oculto del listado público', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Archivado - Oculto del listado público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </option>
                             </select>
                         </p>
@@ -3871,12 +3871,12 @@ KNOWLEDGE;
                         <p style="margin-top: 20px;">
                             <button type="submit" class="button button-primary button-large">
                                 <?php echo $editando
-                                    ? esc_html__('Guardar Cambios', 'flavor-chat-ia')
-                                    : esc_html__('Crear Categoría', 'flavor-chat-ia'); ?>
+                                    ? esc_html__('Guardar Cambios', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                                    : esc_html__('Crear Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                             <?php if ($editando) : ?>
                                 <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-foros-admin')); ?>" class="button">
-                                    <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             <?php endif; ?>
                         </p>
@@ -3895,7 +3895,7 @@ KNOWLEDGE;
                     var $btn = $form.find('button[type="submit"]');
                     var originalText = $btn.text();
 
-                    $btn.prop('disabled', true).text('<?php echo esc_js(__('Guardando...', 'flavor-chat-ia')); ?>');
+                    $btn.prop('disabled', true).text('<?php echo esc_js(__('Guardando...', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
 
                     $.ajax({
                         url: ajaxurl,
@@ -3914,12 +3914,12 @@ KNOWLEDGE;
                             if (response.success) {
                                 window.location.href = '<?php echo esc_js(admin_url('admin.php?page=flavor-foros-admin&saved=1')); ?>';
                             } else {
-                                alert(response.data || '<?php echo esc_js(__('Error al guardar', 'flavor-chat-ia')); ?>');
+                                alert(response.data || '<?php echo esc_js(__('Error al guardar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                                 $btn.prop('disabled', false).text(originalText);
                             }
                         },
                         error: function() {
-                            alert('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>');
+                            alert('<?php echo esc_js(__('Error de conexión', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                             $btn.prop('disabled', false).text(originalText);
                         }
                     });
@@ -3930,7 +3930,7 @@ KNOWLEDGE;
                     var id = $(this).data('id');
                     var nombre = $(this).data('nombre');
 
-                    if (!confirm('<?php echo esc_js(__('¿Eliminar la categoría', 'flavor-chat-ia')); ?> "' + nombre + '"?\n\n<?php echo esc_js(__('Los hilos dentro de esta categoría también se eliminarán.', 'flavor-chat-ia')); ?>')) {
+                    if (!confirm('<?php echo esc_js(__('¿Eliminar la categoría', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?> "' + nombre + '"?\n\n<?php echo esc_js(__('Los hilos dentro de esta categoría también se eliminarán.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>')) {
                         return;
                     }
 
@@ -3946,7 +3946,7 @@ KNOWLEDGE;
                             if (response.success) {
                                 window.location.reload();
                             } else {
-                                alert(response.data || '<?php echo esc_js(__('Error al eliminar', 'flavor-chat-ia')); ?>');
+                                alert(response.data || '<?php echo esc_js(__('Error al eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                             }
                         }
                     });
@@ -3972,7 +3972,7 @@ KNOWLEDGE;
 
                 // Mostrar mensaje de guardado
                 <?php if (isset($_GET['saved'])) : ?>
-                    var $notice = $('<div class="notice notice-success is-dismissible"><p><?php echo esc_js(__('Categoría guardada correctamente.', 'flavor-chat-ia')); ?></p></div>');
+                    var $notice = $('<div class="notice notice-success is-dismissible"><p><?php echo esc_js(__('Categoría guardada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></p></div>');
                     $('.wrap h1').after($notice);
                 <?php endif; ?>
             });
@@ -3988,7 +3988,7 @@ KNOWLEDGE;
         check_ajax_referer('flavor_foros_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No tienes permisos para esta acción.', 'flavor-chat-ia'));
+            wp_send_json_error(__('No tienes permisos para esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -4012,7 +4012,7 @@ KNOWLEDGE;
         // Validar nombre
         $nombre = sanitize_text_field($_POST['nombre'] ?? '');
         if (empty($nombre)) {
-            wp_send_json_error(__('El nombre es obligatorio.', 'flavor-chat-ia'));
+            wp_send_json_error(__('El nombre es obligatorio.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $datos = [
@@ -4049,7 +4049,7 @@ KNOWLEDGE;
         }
 
         if ($resultado === false) {
-            wp_send_json_error(__('Error al guardar en la base de datos.', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al guardar en la base de datos.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         wp_send_json_success(['id' => $id]);
@@ -4062,12 +4062,12 @@ KNOWLEDGE;
         check_ajax_referer('flavor_foros_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No tienes permisos para esta acción.', 'flavor-chat-ia'));
+            wp_send_json_error(__('No tienes permisos para esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $id = absint($_POST['id'] ?? 0);
         if (!$id) {
-            wp_send_json_error(__('ID no válido.', 'flavor-chat-ia'));
+            wp_send_json_error(__('ID no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -4097,7 +4097,7 @@ KNOWLEDGE;
         $resultado = $wpdb->delete($tabla_foros, ['id' => $id], ['%d']);
 
         if ($resultado === false) {
-            wp_send_json_error(__('Error al eliminar.', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al eliminar.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         wp_send_json_success();
@@ -4110,19 +4110,19 @@ KNOWLEDGE;
         check_ajax_referer('flavor_foros_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No tienes permisos para esta accion.', 'flavor-chat-ia'));
+            wp_send_json_error(__('No tienes permisos para esta accion.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $hilo_id = absint($_POST['hilo_id'] ?? 0);
         $accion_moderacion = sanitize_key($_POST['accion_moderacion'] ?? '');
 
         if (!$hilo_id) {
-            wp_send_json_error(__('ID de hilo no valido.', 'flavor-chat-ia'));
+            wp_send_json_error(__('ID de hilo no valido.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $acciones_permitidas = ['abrir', 'cerrar', 'fijar', 'desfijar', 'eliminar'];
         if (!in_array($accion_moderacion, $acciones_permitidas, true)) {
-            wp_send_json_error(__('Accion no permitida.', 'flavor-chat-ia'));
+            wp_send_json_error(__('Accion no permitida.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -4134,23 +4134,23 @@ KNOWLEDGE;
         switch ($accion_moderacion) {
             case 'abrir':
                 $datos_actualizar = ['estado' => 'abierto', 'es_fijado' => 0];
-                $mensaje_exito = __('Hilo abierto correctamente.', 'flavor-chat-ia');
+                $mensaje_exito = __('Hilo abierto correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 break;
             case 'cerrar':
                 $datos_actualizar = ['estado' => 'cerrado'];
-                $mensaje_exito = __('Hilo cerrado correctamente.', 'flavor-chat-ia');
+                $mensaje_exito = __('Hilo cerrado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 break;
             case 'fijar':
                 $datos_actualizar = ['es_fijado' => 1, 'estado' => 'fijado'];
-                $mensaje_exito = __('Hilo fijado correctamente.', 'flavor-chat-ia');
+                $mensaje_exito = __('Hilo fijado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 break;
             case 'desfijar':
                 $datos_actualizar = ['es_fijado' => 0, 'estado' => 'abierto'];
-                $mensaje_exito = __('Hilo desfijado correctamente.', 'flavor-chat-ia');
+                $mensaje_exito = __('Hilo desfijado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 break;
             case 'eliminar':
                 $datos_actualizar = ['estado' => 'eliminado'];
-                $mensaje_exito = __('Hilo eliminado correctamente.', 'flavor-chat-ia');
+                $mensaje_exito = __('Hilo eliminado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 break;
         }
 
@@ -4163,7 +4163,7 @@ KNOWLEDGE;
         );
 
         if ($resultado === false) {
-            wp_send_json_error(__('Error al actualizar el hilo.', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al actualizar el hilo.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         wp_send_json_success(['mensaje' => $mensaje_exito]);
@@ -4176,19 +4176,19 @@ KNOWLEDGE;
         check_ajax_referer('flavor_foros_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No tienes permisos para esta accion.', 'flavor-chat-ia'));
+            wp_send_json_error(__('No tienes permisos para esta accion.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $respuesta_id = absint($_POST['respuesta_id'] ?? 0);
         $accion_moderacion = sanitize_key($_POST['accion_moderacion'] ?? '');
 
         if (!$respuesta_id) {
-            wp_send_json_error(__('ID de respuesta no valido.', 'flavor-chat-ia'));
+            wp_send_json_error(__('ID de respuesta no valido.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $acciones_permitidas = ['mostrar', 'ocultar', 'eliminar'];
         if (!in_array($accion_moderacion, $acciones_permitidas, true)) {
-            wp_send_json_error(__('Accion no permitida.', 'flavor-chat-ia'));
+            wp_send_json_error(__('Accion no permitida.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -4200,15 +4200,15 @@ KNOWLEDGE;
         switch ($accion_moderacion) {
             case 'mostrar':
                 $datos_actualizar = ['estado' => 'visible'];
-                $mensaje_exito = __('Respuesta visible nuevamente.', 'flavor-chat-ia');
+                $mensaje_exito = __('Respuesta visible nuevamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 break;
             case 'ocultar':
                 $datos_actualizar = ['estado' => 'oculto'];
-                $mensaje_exito = __('Respuesta ocultada correctamente.', 'flavor-chat-ia');
+                $mensaje_exito = __('Respuesta ocultada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 break;
             case 'eliminar':
                 $datos_actualizar = ['estado' => 'eliminado'];
-                $mensaje_exito = __('Respuesta eliminada correctamente.', 'flavor-chat-ia');
+                $mensaje_exito = __('Respuesta eliminada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 break;
         }
 
@@ -4221,7 +4221,7 @@ KNOWLEDGE;
         );
 
         if ($resultado === false) {
-            wp_send_json_error(__('Error al actualizar la respuesta.', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al actualizar la respuesta.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Si se elimina respuesta, actualizar contador del hilo
@@ -4259,8 +4259,8 @@ KNOWLEDGE;
         // Dashboard - página oculta (slug principal)
         add_submenu_page(
             null,
-            __('Dashboard Foros', 'flavor-chat-ia'),
-            __('Dashboard', 'flavor-chat-ia'),
+            __('Dashboard Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'foros',
             [$this, 'render_pagina_dashboard']
@@ -4269,8 +4269,8 @@ KNOWLEDGE;
         // Dashboard - página oculta (slug para panel unificado)
         add_submenu_page(
             null,
-            __('Dashboard Foros', 'flavor-chat-ia'),
-            __('Dashboard', 'flavor-chat-ia'),
+            __('Dashboard Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'foros-dashboard',
             [$this, 'render_pagina_dashboard']
@@ -4279,8 +4279,8 @@ KNOWLEDGE;
         // Listado de foros - página oculta (flavor-foros-listado)
         add_submenu_page(
             null,
-            __('Listado de Foros', 'flavor-chat-ia'),
-            __('Foros', 'flavor-chat-ia'),
+            __('Listado de Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-foros-listado',
             [$this, 'render_pagina_foros']
@@ -4289,8 +4289,8 @@ KNOWLEDGE;
         // Listado de foros - página oculta (foros-listado)
         add_submenu_page(
             null,
-            __('Listado de Foros', 'flavor-chat-ia'),
-            __('Foros', 'flavor-chat-ia'),
+            __('Listado de Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'foros-listado',
             [$this, 'render_pagina_foros']
@@ -4299,8 +4299,8 @@ KNOWLEDGE;
         // Hilos - página oculta
         add_submenu_page(
             null,
-            __('Hilos de Foros', 'flavor-chat-ia'),
-            __('Hilos', 'flavor-chat-ia'),
+            __('Hilos de Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Hilos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'foros-hilos',
             [$this, 'render_pagina_hilos']
@@ -4309,8 +4309,8 @@ KNOWLEDGE;
         // Moderación - página oculta (flavor-foros-moderacion)
         add_submenu_page(
             null,
-            __('Moderación de Foros', 'flavor-chat-ia'),
-            __('Moderación', 'flavor-chat-ia'),
+            __('Moderación de Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-foros-moderacion',
             [$this, 'render_pagina_moderacion']
@@ -4319,8 +4319,8 @@ KNOWLEDGE;
         // Moderación - página oculta (foros-moderacion)
         add_submenu_page(
             null,
-            __('Moderación de Foros', 'flavor-chat-ia'),
-            __('Moderación', 'flavor-chat-ia'),
+            __('Moderación de Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'foros-moderacion',
             [$this, 'render_pagina_moderacion']
@@ -4335,8 +4335,8 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Foros', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Panel de administración del módulo de foros.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Foros', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Panel de administración del módulo de foros.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -4348,7 +4348,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Foros', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Foros', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -4360,7 +4360,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Hilos', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Hilos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -4372,7 +4372,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Moderación de Foros', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Moderación de Foros', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -4384,8 +4384,8 @@ KNOWLEDGE;
     public static function get_renderer_config(): array {
         return [
             'module'   => 'foros',
-            'title'    => __('Foros de la Comunidad', 'flavor-chat-ia'),
-            'subtitle' => __('Participa en debates y comparte ideas', 'flavor-chat-ia'),
+            'title'    => __('Foros de la Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Participa en debates y comparte ideas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '💬',
             'color'    => 'primary', // Usa variable CSS --flavor-primary del tema
 
@@ -4395,23 +4395,23 @@ KNOWLEDGE;
             ],
 
             'fields' => [
-                'nombre'      => ['label' => __('Nombre', 'flavor-chat-ia'), 'type' => 'text', 'required' => true],
-                'descripcion' => ['label' => __('Descripción', 'flavor-chat-ia'), 'type' => 'textarea'],
-                'icono'       => ['label' => __('Icono', 'flavor-chat-ia'), 'type' => 'emoji', 'default' => '💬'],
-                'estado'      => ['label' => __('Estado', 'flavor-chat-ia'), 'type' => 'select'],
+                'nombre'      => ['label' => __('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'text', 'required' => true],
+                'descripcion' => ['label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'textarea'],
+                'icono'       => ['label' => __('Icono', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'emoji', 'default' => '💬'],
+                'estado'      => ['label' => __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'select'],
             ],
 
             'estados' => [
-                'activo'    => ['label' => __('Activo', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
-                'cerrado'   => ['label' => __('Cerrado', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '🔒'],
-                'archivado' => ['label' => __('Archivado', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '📦'],
+                'activo'    => ['label' => __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '✅'],
+                'cerrado'   => ['label' => __('Cerrado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'gray', 'icon' => '🔒'],
+                'archivado' => ['label' => __('Archivado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '📦'],
             ],
 
             'stats' => [
-                'total_foros'     => ['label' => __('Foros', 'flavor-chat-ia'), 'icon' => '💬', 'color' => 'blue'],
-                'total_hilos'     => ['label' => __('Hilos', 'flavor-chat-ia'), 'icon' => '📝', 'color' => 'indigo'],
-                'total_respuestas'=> ['label' => __('Respuestas', 'flavor-chat-ia'), 'icon' => '💭', 'color' => 'purple'],
-                'usuarios_activos'=> ['label' => __('Usuarios activos', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'green'],
+                'total_foros'     => ['label' => __('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '💬', 'color' => 'blue'],
+                'total_hilos'     => ['label' => __('Hilos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📝', 'color' => 'indigo'],
+                'total_respuestas'=> ['label' => __('Respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '💭', 'color' => 'purple'],
+                'usuarios_activos'=> ['label' => __('Usuarios activos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👥', 'color' => 'green'],
             ],
 
             'card' => [
@@ -4424,22 +4424,22 @@ KNOWLEDGE;
 
             'tabs' => [
                 'categorias' => [
-                    'label'   => __('Categorías', 'flavor-chat-ia'),
+                    'label'   => __('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-category',
                     'content' => 'template:_archive.php',
                 ],
                 'hilos' => [
-                    'label'   => __('Hilos recientes', 'flavor-chat-ia'),
+                    'label'   => __('Hilos recientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-format-chat',
                     'content' => '[flavor_foros_actividad_reciente limite="12"]',
                 ],
                 'mis-hilos' => [
-                    'label'   => __('Mis hilos', 'flavor-chat-ia'),
+                    'label'   => __('Mis hilos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-admin-comments',
                     'content' => 'template:mis-hilos.php',
                 ],
                 'nuevo-hilo' => [
-                    'label'   => __('Nuevo hilo', 'flavor-chat-ia'),
+                    'label'   => __('Nuevo hilo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-plus-alt',
                     'content' => 'template:nuevo-hilo.php',
                 ],
@@ -4456,8 +4456,8 @@ KNOWLEDGE;
                 'show_stats'   => true,
                 'show_actions' => true,
                 'actions'      => [
-                    'nuevo_hilo' => ['label' => __('Nuevo hilo', 'flavor-chat-ia'), 'icon' => '➕', 'color' => 'blue'],
-                    'ver_foros'  => ['label' => __('Ver foros', 'flavor-chat-ia'), 'icon' => '💬', 'color' => 'indigo'],
+                    'nuevo_hilo' => ['label' => __('Nuevo hilo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '➕', 'color' => 'blue'],
+                    'ver_foros'  => ['label' => __('Ver foros', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '💬', 'color' => 'indigo'],
                 ],
             ],
         ];

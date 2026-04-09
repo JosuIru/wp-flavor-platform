@@ -49,7 +49,7 @@ $limite = count($items) > 0 ? count($items) : ($limite ?? 6);
                         <div class="flavor-grid-item-image flavor-placeholder-bg"></div>
                         <div class="flavor-grid-item-content">
                             <h3>Elemento <?php echo $i + 1; ?></h3>
-                            <p><?php echo esc_html__('Descripción del elemento', 'flavor-chat-ia'); ?></p>
+                            <p><?php echo esc_html__('Descripción del elemento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                     </div>
                 <?php endfor; ?>

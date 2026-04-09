@@ -32,7 +32,7 @@ $beneficios = [
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                <?php echo esc_html__('Tarifas', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Tarifas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
             <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4"><?php echo esc_html($titulo); ?></h2>
             <p class="text-xl text-gray-600"><?php echo esc_html($descripcion); ?></p>
@@ -57,7 +57,7 @@ $beneficios = [
                 <div class="relative bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border-2 <?php echo $plan['destacado'] ? 'border-lime-500 scale-105' : 'border-gray-100'; ?> overflow-hidden">
                     <?php if ($plan['destacado']): ?>
                         <div class="absolute top-0 left-0 right-0 py-2 text-center text-sm font-bold text-white" style="background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);">
-                            <?php echo esc_html__('MAS POPULAR', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('MAS POPULAR', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     <?php endif; ?>
 
@@ -82,13 +82,13 @@ $beneficios = [
                         </ul>
 
                         <a href="#contratar-<?php echo sanitize_title($plan['nombre']); ?>" class="block w-full py-3 rounded-xl text-center font-semibold transition-all hover:scale-105 <?php echo $plan['destacado'] ? 'text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>" style="<?php echo $plan['destacado'] ? 'background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);' : ''; ?>">
-                            <?php echo esc_html__('Elegir Plan', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Elegir Plan', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </div>
             <?php endforeach; ?>
         </div>
 
-        <p class="text-center text-sm text-gray-500 mt-8"><?php echo esc_html__('Todos los planes se renuevan automaticamente. Puedes cancelar en cualquier momento.', 'flavor-chat-ia'); ?></p>
+        <p class="text-center text-sm text-gray-500 mt-8"><?php echo esc_html__('Todos los planes se renuevan automaticamente. Puedes cancelar en cualquier momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
 </section>

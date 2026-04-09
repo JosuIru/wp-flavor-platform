@@ -143,10 +143,10 @@ $max_contenido = max(array_column($contenido_popular, 'publicaciones'));
                     <div class="flavor-activity-chart bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
                         <div class="mb-6">
                             <h3 class="text-xl font-bold text-gray-900 mb-2">
-                                <?php echo esc_html__('Actividad por Día', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Actividad por Día', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </h3>
                             <p class="text-sm text-gray-600">
-                                <?php echo esc_html__('Publicaciones e interacciones diarias', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Publicaciones e interacciones diarias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </p>
                         </div>
                         <div class="space-y-4">
@@ -172,10 +172,10 @@ $max_contenido = max(array_column($contenido_popular, 'publicaciones'));
                     <div class="flavor-content-chart bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
                         <div class="mb-6">
                             <h3 class="text-xl font-bold text-gray-900 mb-2">
-                                <?php echo esc_html__('Tipos de Contenido Popular', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Tipos de Contenido Popular', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </h3>
                             <p class="text-sm text-gray-600">
-                                <?php echo esc_html__('Distribución por categoría', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Distribución por categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </p>
                         </div>
                         <div class="space-y-4">
@@ -203,10 +203,10 @@ $max_contenido = max(array_column($contenido_popular, 'publicaciones'));
             <div class="flavor-top-members bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
                 <div class="mb-8">
                     <h3 class="text-2xl font-bold text-gray-900 mb-2">
-                        <?php echo esc_html__('Miembros Más Activos', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Miembros Más Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <p class="text-gray-600">
-                        <?php echo esc_html__('Nuestros colaboradores destacados', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Nuestros colaboradores destacados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
 
@@ -226,7 +226,7 @@ $max_contenido = max(array_column($contenido_popular, 'publicaciones'));
                                 <?php echo esc_html($miembro['publicaciones']); ?>
                             </p>
                             <p class="text-xs text-gray-500">
-                                <?php echo esc_html__('publicaciones', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </p>
                         </div>
                     <?php endforeach; ?>
@@ -244,10 +244,10 @@ $max_contenido = max(array_column($contenido_popular, 'publicaciones'));
                         </div>
                         <div>
                             <h4 class="font-bold text-gray-900 mb-1">
-                                <?php echo esc_html__('Pico de Actividad', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Pico de Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </h4>
                             <p class="text-sm text-gray-600">
-                                <?php echo esc_html__('Viernes es el día más activo con 310 publicaciones', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Viernes es el día más activo con 310 publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </p>
                         </div>
                     </div>
@@ -262,10 +262,10 @@ $max_contenido = max(array_column($contenido_popular, 'publicaciones'));
                         </div>
                         <div>
                             <h4 class="font-bold text-gray-900 mb-1">
-                                <?php echo esc_html__('Contenido Estrella', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Contenido Estrella', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </h4>
                             <p class="text-sm text-gray-600">
-                                <?php echo esc_html__('Eventos comunitarios generan 35% del contenido', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Eventos comunitarios generan 35% del contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </p>
                         </div>
                     </div>
@@ -280,10 +280,10 @@ $max_contenido = max(array_column($contenido_popular, 'publicaciones'));
                         </div>
                         <div>
                             <h4 class="font-bold text-gray-900 mb-1">
-                                <?php echo esc_html__('Crecimiento Consistente', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Crecimiento Consistente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </h4>
                             <p class="text-sm text-gray-600">
-                                <?php echo esc_html__('Aumento de 45% en interacciones mes a mes', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Aumento de 45% en interacciones mes a mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </p>
                         </div>
                     </div>

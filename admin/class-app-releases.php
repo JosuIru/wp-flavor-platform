@@ -123,9 +123,9 @@ class Flavor_App_Releases {
      */
     public function add_menu_page() {
         add_submenu_page(
-            'flavor-chat-ia',
-            __('Releases Apps', 'flavor-chat-ia'),
-            __('Releases Apps', 'flavor-chat-ia'),
+            FLAVOR_PLATFORM_TEXT_DOMAIN,
+            __('Releases Apps', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Releases Apps', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             self::MENU_SLUG,
             array($this, 'render_page')
@@ -170,11 +170,11 @@ class Flavor_App_Releases {
             'uploadUrl' => admin_url('async-upload.php'),
             'uploadNonce' => wp_create_nonce('media-upload'),
             'i18n' => array(
-                'confirmDelete' => __('¿Eliminar esta release?', 'flavor-chat-ia'),
-                'confirmPublish' => __('¿Publicar esta release? Los usuarios recibirán notificación de actualización.', 'flavor-chat-ia'),
-                'uploading' => __('Subiendo...', 'flavor-chat-ia'),
-                'saved' => __('Guardado', 'flavor-chat-ia'),
-                'error' => __('Error', 'flavor-chat-ia'),
+                'confirmDelete' => __('¿Eliminar esta release?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmPublish' => __('¿Publicar esta release? Los usuarios recibirán notificación de actualización.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'uploading' => __('Subiendo...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'saved' => __('Guardado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error', FLAVOR_PLATFORM_TEXT_DOMAIN),
             )
         ));
     }
@@ -187,10 +187,10 @@ class Flavor_App_Releases {
         <div class="wrap flavor-app-releases-wrap">
             <h1>
                 <span class="dashicons dashicons-cloud-upload"></span>
-                <?php _e('Gestión de Releases', 'flavor-chat-ia'); ?>
+                <?php _e('Gestión de Releases', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <button type="button" id="new-release-btn" class="page-title-action">
                     <span class="dashicons dashicons-plus-alt"></span>
-                    <?php _e('Nueva Release', 'flavor-chat-ia'); ?>
+                    <?php _e('Nueva Release', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </h1>
 
@@ -199,52 +199,52 @@ class Flavor_App_Releases {
                 <?php $stats = $this->get_stats(); ?>
                 <div class="stat-card">
                     <span class="stat-value"><?php echo esc_html($stats['total_releases']); ?></span>
-                    <span class="stat-label"><?php _e('Total Releases', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php _e('Total Releases', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="stat-card">
                     <span class="stat-value"><?php echo esc_html($stats['published']); ?></span>
-                    <span class="stat-label"><?php _e('Publicadas', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php _e('Publicadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="stat-card">
                     <span class="stat-value"><?php echo esc_html($stats['total_downloads']); ?></span>
-                    <span class="stat-label"><?php _e('Descargas Totales', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php _e('Descargas Totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="stat-card">
                     <span class="stat-value"><?php echo esc_html($stats['latest_version']); ?></span>
-                    <span class="stat-label"><?php _e('Última Versión', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php _e('Última Versión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
             <!-- Filtros -->
             <div class="releases-filters">
                 <select id="filter-app-type">
-                    <option value=""><?php _e('Todas las apps', 'flavor-chat-ia'); ?></option>
-                    <option value="client"><?php _e('App Cliente', 'flavor-chat-ia'); ?></option>
-                    <option value="admin"><?php _e('App Admin', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todas las apps', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="client"><?php _e('App Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="admin"><?php _e('App Admin', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
                 <select id="filter-channel">
-                    <option value=""><?php _e('Todos los canales', 'flavor-chat-ia'); ?></option>
-                    <option value="stable"><?php _e('Estable', 'flavor-chat-ia'); ?></option>
-                    <option value="beta"><?php _e('Beta', 'flavor-chat-ia'); ?></option>
-                    <option value="alpha"><?php _e('Alpha', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todos los canales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="stable"><?php _e('Estable', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="beta"><?php _e('Beta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="alpha"><?php _e('Alpha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
                 <select id="filter-status">
-                    <option value=""><?php _e('Todos los estados', 'flavor-chat-ia'); ?></option>
-                    <option value="published"><?php _e('Publicadas', 'flavor-chat-ia'); ?></option>
-                    <option value="draft"><?php _e('Borrador', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="published"><?php _e('Publicadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="draft"><?php _e('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
             </div>
 
             <!-- Lista de releases -->
             <div class="releases-list" id="releases-list">
-                <div class="loading"><?php _e('Cargando releases...', 'flavor-chat-ia'); ?></div>
+                <div class="loading"><?php _e('Cargando releases...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
 
             <!-- Modal: Nueva/Editar Release -->
             <div id="release-modal" class="flavor-modal" style="display:none;">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h2 id="modal-title"><?php _e('Nueva Release', 'flavor-chat-ia'); ?></h2>
+                        <h2 id="modal-title"><?php _e('Nueva Release', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                         <button type="button" class="modal-close">&times;</button>
                     </div>
                     <form id="release-form">
@@ -253,12 +253,12 @@ class Flavor_App_Releases {
                         <div class="modal-body">
                             <div class="form-row two-cols">
                                 <div class="form-field">
-                                    <label for="release_version"><?php _e('Versión', 'flavor-chat-ia'); ?> *</label>
+                                    <label for="release_version"><?php _e('Versión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                                     <input type="text" id="release_version" name="version"
                                            placeholder="1.0.0" required pattern="\d+\.\d+\.\d+">
                                 </div>
                                 <div class="form-field">
-                                    <label for="release_build"><?php _e('Build Number', 'flavor-chat-ia'); ?> *</label>
+                                    <label for="release_build"><?php _e('Build Number', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                                     <input type="number" id="release_build" name="build_number"
                                            placeholder="1" required min="1">
                                 </div>
@@ -266,35 +266,35 @@ class Flavor_App_Releases {
 
                             <div class="form-row three-cols">
                                 <div class="form-field">
-                                    <label for="release_app_type"><?php _e('Tipo de App', 'flavor-chat-ia'); ?></label>
+                                    <label for="release_app_type"><?php _e('Tipo de App', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                     <select id="release_app_type" name="app_type">
-                                        <option value="client"><?php _e('Cliente', 'flavor-chat-ia'); ?></option>
-                                        <option value="admin"><?php _e('Admin', 'flavor-chat-ia'); ?></option>
+                                        <option value="client"><?php _e('Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                        <option value="admin"><?php _e('Admin', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                     </select>
                                 </div>
                                 <div class="form-field">
-                                    <label for="release_platform"><?php _e('Plataforma', 'flavor-chat-ia'); ?></label>
+                                    <label for="release_platform"><?php _e('Plataforma', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                     <select id="release_platform" name="platform">
-                                        <option value="android"><?php _e('Android', 'flavor-chat-ia'); ?></option>
-                                        <option value="ios"><?php _e('iOS', 'flavor-chat-ia'); ?></option>
+                                        <option value="android"><?php _e('Android', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                        <option value="ios"><?php _e('iOS', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                     </select>
                                 </div>
                                 <div class="form-field">
-                                    <label for="release_channel"><?php _e('Canal', 'flavor-chat-ia'); ?></label>
+                                    <label for="release_channel"><?php _e('Canal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                     <select id="release_channel" name="channel">
-                                        <option value="stable"><?php _e('Estable', 'flavor-chat-ia'); ?></option>
-                                        <option value="beta"><?php _e('Beta', 'flavor-chat-ia'); ?></option>
-                                        <option value="alpha"><?php _e('Alpha', 'flavor-chat-ia'); ?></option>
+                                        <option value="stable"><?php _e('Estable', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                        <option value="beta"><?php _e('Beta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                        <option value="alpha"><?php _e('Alpha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                     </select>
                                 </div>
                             </div>
 
                             <div class="form-row">
-                                <label><?php _e('Archivo APK', 'flavor-chat-ia'); ?></label>
+                                <label><?php _e('Archivo APK', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <div class="file-upload-area" id="apk-upload-area">
                                     <div class="upload-placeholder" id="upload-placeholder">
                                         <span class="dashicons dashicons-upload"></span>
-                                        <span><?php _e('Arrastra el APK aquí o haz clic para seleccionar', 'flavor-chat-ia'); ?></span>
+                                        <span><?php _e('Arrastra el APK aquí o haz clic para seleccionar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </div>
                                     <div class="upload-progress" id="upload-progress" style="display:none;">
                                         <div class="progress-bar"></div>
@@ -314,31 +314,31 @@ class Flavor_App_Releases {
                             </div>
 
                             <div class="form-row">
-                                <label for="release_changelog"><?php _e('Changelog', 'flavor-chat-ia'); ?></label>
+                                <label for="release_changelog"><?php _e('Changelog', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 <textarea id="release_changelog" name="changelog" rows="6"
                                           placeholder="- Nueva funcionalidad X&#10;- Corrección de bugs&#10;- Mejoras de rendimiento"></textarea>
                             </div>
 
                             <div class="form-row two-cols">
                                 <div class="form-field">
-                                    <label for="release_min_os"><?php _e('Versión Mínima OS', 'flavor-chat-ia'); ?></label>
+                                    <label for="release_min_os"><?php _e('Versión Mínima OS', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                     <input type="text" id="release_min_os" name="min_os_version"
                                            placeholder="Android 5.0 / iOS 12.0">
                                 </div>
                                 <div class="form-field checkbox-field">
                                     <label>
                                         <input type="checkbox" id="release_mandatory" name="is_mandatory" value="1">
-                                        <?php _e('Actualización obligatoria', 'flavor-chat-ia'); ?>
+                                        <?php _e('Actualización obligatoria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </label>
-                                    <p class="description"><?php _e('Los usuarios deberán actualizar para seguir usando la app', 'flavor-chat-ia'); ?></p>
+                                    <p class="description"><?php _e('Los usuarios deberán actualizar para seguir usando la app', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                 </div>
                             </div>
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="button modal-close"><?php _e('Cancelar', 'flavor-chat-ia'); ?></button>
+                            <button type="button" class="button modal-close"><?php _e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                             <button type="submit" class="button button-primary" id="save-release">
-                                <?php _e('Guardar Release', 'flavor-chat-ia'); ?>
+                                <?php _e('Guardar Release', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </div>
                     </form>
@@ -349,7 +349,7 @@ class Flavor_App_Releases {
             <div id="qr-modal" class="flavor-modal" style="display:none;">
                 <div class="modal-content modal-small">
                     <div class="modal-header">
-                        <h2><?php _e('QR de Descarga', 'flavor-chat-ia'); ?></h2>
+                        <h2><?php _e('QR de Descarga', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                         <button type="button" class="modal-close">&times;</button>
                     </div>
                     <div class="modal-body qr-body">
@@ -358,7 +358,7 @@ class Flavor_App_Releases {
                         <p class="qr-url"></p>
                         <button type="button" id="download-qr" class="button">
                             <span class="dashicons dashicons-download"></span>
-                            <?php _e('Descargar QR', 'flavor-chat-ia'); ?>
+                            <?php _e('Descargar QR', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </div>

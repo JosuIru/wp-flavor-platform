@@ -43,7 +43,7 @@ $colores_consumo = [
             <span class="dashicons dashicons-chart-area"></span>
         </span>
         <div>
-            <h3 class="ec-huella__titulo"><?php esc_html_e('Huella de Uso', 'flavor-chat-ia'); ?></h3>
+            <h3 class="ec-huella__titulo"><?php esc_html_e('Huella de Uso', 'flavor-platform'); ?></h3>
             <span class="ec-huella__periodo"><?php echo esc_html(date_i18n('F Y', strtotime($huella['periodo'] . '-01'))); ?></span>
         </div>
     </div>
@@ -58,14 +58,14 @@ $colores_consumo = [
             </div>
         </div>
         <div class="ec-huella__coste">
-            <span class="ec-huella__coste-label"><?php esc_html_e('Coste estimado', 'flavor-chat-ia'); ?></span>
+            <span class="ec-huella__coste-label"><?php esc_html_e('Coste estimado', 'flavor-platform'); ?></span>
             <span class="ec-huella__coste-valor"><?php echo esc_html(number_format($total_coste, 2)); ?>€</span>
         </div>
     </div>
 
     <?php if (!empty($consumos)): ?>
         <div class="ec-huella__desglose">
-            <h4><?php esc_html_e('Desglose por tipo', 'flavor-chat-ia'); ?></h4>
+            <h4><?php esc_html_e('Desglose por tipo', 'flavor-platform'); ?></h4>
             <?php foreach ($consumos as $consumo): ?>
                 <?php
                 $tipo = $consumo['tipo_consumo'];
@@ -94,19 +94,19 @@ $colores_consumo = [
     <?php else: ?>
         <div class="ec-huella__sin-datos">
             <span class="dashicons dashicons-info"></span>
-            <p><?php esc_html_e('No hay datos de consumo registrados para este período.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('No hay datos de consumo registrados para este período.', 'flavor-platform'); ?></p>
         </div>
     <?php endif; ?>
 
     <div class="ec-huella__consejos">
-        <h4><span class="dashicons dashicons-lightbulb"></span> <?php esc_html_e('Consejos de ahorro', 'flavor-chat-ia'); ?></h4>
+        <h4><span class="dashicons dashicons-lightbulb"></span> <?php esc_html_e('Consejos de ahorro', 'flavor-platform'); ?></h4>
         <ul>
             <?php if ($tendencia === 'subiendo'): ?>
-                <li><?php esc_html_e('Apaga luces y equipos al terminar de usar el espacio.', 'flavor-chat-ia'); ?></li>
-                <li><?php esc_html_e('Ajusta la climatización a temperaturas moderadas (20-22°C).', 'flavor-chat-ia'); ?></li>
+                <li><?php esc_html_e('Apaga luces y equipos al terminar de usar el espacio.', 'flavor-platform'); ?></li>
+                <li><?php esc_html_e('Ajusta la climatización a temperaturas moderadas (20-22°C).', 'flavor-platform'); ?></li>
             <?php endif; ?>
-            <li><?php esc_html_e('Aprovecha la luz natural siempre que sea posible.', 'flavor-chat-ia'); ?></li>
-            <li><?php esc_html_e('Reporta fugas de agua o equipos defectuosos.', 'flavor-chat-ia'); ?></li>
+            <li><?php esc_html_e('Aprovecha la luz natural siempre que sea posible.', 'flavor-platform'); ?></li>
+            <li><?php esc_html_e('Reporta fugas de agua o equipos defectuosos.', 'flavor-platform'); ?></li>
         </ul>
     </div>
 </div>

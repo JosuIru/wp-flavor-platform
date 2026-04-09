@@ -29,8 +29,8 @@ $talleres = $wpdb->get_results(
 
 <div class="sa-container">
     <header class="sa-header">
-        <h2><?php esc_html_e('Talleres de Saberes', 'flavor-chat-ia'); ?></h2>
-        <p><?php esc_html_e('Aprende directamente de quienes saben', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Talleres de Saberes', 'flavor-platform'); ?></h2>
+        <p><?php esc_html_e('Aprende directamente de quienes saben', 'flavor-platform'); ?></p>
     </header>
 
     <?php if ($talleres) : ?>
@@ -74,18 +74,18 @@ $talleres = $wpdb->get_results(
 
             <div class="sa-taller-card__footer">
                 <span class="sa-plazas <?php echo $plazas_restantes < 5 ? 'sa-plazas--pocas' : ''; ?>">
-                    <?php printf(esc_html__('%d plazas', 'flavor-chat-ia'), $plazas_restantes); ?>
+                    <?php printf(esc_html__('%d plazas', 'flavor-platform'), $plazas_restantes); ?>
                 </span>
 
                 <?php if (is_user_logged_in()) : ?>
                     <?php if ($ya_inscrito) : ?>
-                    <span class="sa-btn sa-btn--secondary sa-btn--small"><?php esc_html_e('Inscrito/a', 'flavor-chat-ia'); ?></span>
+                    <span class="sa-btn sa-btn--secondary sa-btn--small"><?php esc_html_e('Inscrito/a', 'flavor-platform'); ?></span>
                     <?php elseif ($plazas_restantes > 0) : ?>
                     <button class="sa-btn sa-btn--primary sa-btn--small sa-btn-inscribirse" data-taller="<?php echo esc_attr($taller->ID); ?>">
-                        <?php esc_html_e('Inscribirme', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Inscribirme', 'flavor-platform'); ?>
                     </button>
                     <?php else : ?>
-                    <span class="sa-btn sa-btn--secondary sa-btn--small"><?php esc_html_e('Completo', 'flavor-chat-ia'); ?></span>
+                    <span class="sa-btn sa-btn--secondary sa-btn--small"><?php esc_html_e('Completo', 'flavor-platform'); ?></span>
                     <?php endif; ?>
                 <?php endif; ?>
             </div>
@@ -95,7 +95,7 @@ $talleres = $wpdb->get_results(
     <?php else : ?>
     <div class="sa-empty-state">
         <span class="dashicons dashicons-calendar-alt"></span>
-        <p><?php esc_html_e('No hay talleres programados.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('No hay talleres programados.', 'flavor-platform'); ?></p>
     </div>
     <?php endif; ?>
 </div>

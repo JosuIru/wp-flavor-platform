@@ -404,7 +404,7 @@ class Flavor_Network_API {
         $nodo = Flavor_Network_Node::find_by_slug($request['slug']);
 
         if (!$nodo) {
-            return new WP_Error('nodo_no_encontrado', __('Nodo no encontrado', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('nodo_no_encontrado', __('Nodo no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         return new WP_REST_Response($nodo->to_public_array(), 200);
@@ -496,7 +496,7 @@ class Flavor_Network_API {
         $nodo_local = Flavor_Network_Node::get_local_node();
 
         if (!$nodo_local) {
-            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $datos = [
@@ -510,7 +510,7 @@ class Flavor_Network_API {
         ];
 
         if (empty($datos['titulo']) || empty($datos['contenido'])) {
-            return new WP_Error('datos_incompletos', __('Título y contenido son obligatorios', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('datos_incompletos', __('Título y contenido son obligatorios', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $wpdb->insert($tabla, $datos);
@@ -518,7 +518,7 @@ class Flavor_Network_API {
         return new WP_REST_Response([
             'success' => true,
             'id'      => $wpdb->insert_id,
-            'message' => __('Publicación creada', 'flavor-chat-ia'),
+            'message' => __('Publicación creada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 201);
     }
 
@@ -575,7 +575,7 @@ class Flavor_Network_API {
         $nodo_local = Flavor_Network_Node::get_local_node();
 
         if (!$nodo_local) {
-            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $datos = [
@@ -596,11 +596,11 @@ class Flavor_Network_API {
 
         $tipos_validos = ['producto', 'servicio', 'espacio', 'recurso', 'excedente', 'necesidad', 'saber'];
         if (!in_array($datos['tipo_contenido'], $tipos_validos)) {
-            return new WP_Error('tipo_invalido', __('Tipo de contenido no válido', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('tipo_invalido', __('Tipo de contenido no válido', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         if (empty($datos['titulo'])) {
-            return new WP_Error('titulo_requerido', __('El título es obligatorio', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('titulo_requerido', __('El título es obligatorio', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $wpdb->insert($tabla, $datos);
@@ -608,7 +608,7 @@ class Flavor_Network_API {
         return new WP_REST_Response([
             'success' => true,
             'id'      => $wpdb->insert_id,
-            'message' => __('Contenido publicado', 'flavor-chat-ia'),
+            'message' => __('Contenido publicado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 201);
     }
 
@@ -626,7 +626,7 @@ class Flavor_Network_API {
         ));
 
         if (!$contenido) {
-            return new WP_Error('no_encontrado', __('Contenido no encontrado', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('no_encontrado', __('Contenido no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         // Incrementar vistas
@@ -653,12 +653,12 @@ class Flavor_Network_API {
         }
 
         if (empty($datos_actualizar)) {
-            return new WP_Error('sin_datos', __('No hay datos para actualizar', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('sin_datos', __('No hay datos para actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $wpdb->update($tabla, $datos_actualizar, ['id' => $request['id']]);
 
-        return new WP_REST_Response(['success' => true, 'message' => __('Actualizado', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     public function delete_shared_content($request) {
@@ -667,7 +667,7 @@ class Flavor_Network_API {
 
         $wpdb->update($tabla, ['estado' => 'eliminado'], ['id' => $request['id']]);
 
-        return new WP_REST_Response(['success' => true, 'message' => __('Eliminado', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     // ─── CATÁLOGO DE NODO ───
@@ -679,7 +679,7 @@ class Flavor_Network_API {
 
         $nodo = Flavor_Network_Node::find_by_slug($request['slug']);
         if (!$nodo) {
-            return new WP_Error('nodo_no_encontrado', __('Nodo no encontrado', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('nodo_no_encontrado', __('Nodo no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         $contenidos = $wpdb->get_results($wpdb->prepare(
@@ -728,7 +728,7 @@ class Flavor_Network_API {
         $nodo_local = Flavor_Network_Node::get_local_node();
 
         if (!$nodo_local) {
-            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $datos = [
@@ -746,7 +746,7 @@ class Flavor_Network_API {
         ];
 
         if (empty($datos['titulo']) || empty($datos['fecha_inicio'])) {
-            return new WP_Error('datos_incompletos', __('Título y fecha son obligatorios', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('datos_incompletos', __('Título y fecha son obligatorios', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $wpdb->insert($tabla, $datos);
@@ -754,7 +754,7 @@ class Flavor_Network_API {
         return new WP_REST_Response([
             'success' => true,
             'id'      => $wpdb->insert_id,
-            'message' => __('Evento creado', 'flavor-chat-ia'),
+            'message' => __('Evento creado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 201);
     }
 
@@ -797,7 +797,7 @@ class Flavor_Network_API {
         $nodo_local = Flavor_Network_Node::get_local_node();
 
         if (!$nodo_local) {
-            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $tipos_validos = ['compra_colectiva', 'logistica', 'proyecto', 'alianza', 'hermanamiento', 'mentoria'];
@@ -816,11 +816,11 @@ class Flavor_Network_API {
         ];
 
         if (!in_array($datos['tipo'], $tipos_validos)) {
-            return new WP_Error('tipo_invalido', __('Tipo de colaboración no válido', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('tipo_invalido', __('Tipo de colaboración no válido', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         if (empty($datos['titulo'])) {
-            return new WP_Error('titulo_requerido', __('El título es obligatorio', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('titulo_requerido', __('El título es obligatorio', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $wpdb->insert($tabla, $datos);
@@ -828,7 +828,7 @@ class Flavor_Network_API {
         return new WP_REST_Response([
             'success' => true,
             'id'      => $wpdb->insert_id,
-            'message' => __('Colaboración creada', 'flavor-chat-ia'),
+            'message' => __('Colaboración creada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 201);
     }
 
@@ -838,7 +838,7 @@ class Flavor_Network_API {
         $nodo_local = Flavor_Network_Node::get_local_node();
 
         if (!$nodo_local) {
-            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $colaboracion_id = (int) $request['id'];
@@ -850,7 +850,7 @@ class Flavor_Network_API {
         ));
 
         if ($existe) {
-            return new WP_Error('ya_participa', __('Ya participas en esta colaboración', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('ya_participa', __('Ya participas en esta colaboración', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $wpdb->insert($tabla_participantes, [
@@ -861,7 +861,7 @@ class Flavor_Network_API {
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => __('Solicitud de participación enviada', 'flavor-chat-ia'),
+            'message' => __('Solicitud de participación enviada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 201);
     }
 
@@ -873,13 +873,13 @@ class Flavor_Network_API {
         $nodo_local = Flavor_Network_Node::get_local_node();
 
         if (!$nodo_local) {
-            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $nodo_destino_id = (int) $request->get_param('nodo_destino_id');
 
         if ($nodo_destino_id === (int) $nodo_local->id) {
-            return new WP_Error('auto_conexion', __('No puedes conectarte contigo mismo', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('auto_conexion', __('No puedes conectarte contigo mismo', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         // Verificar que no exista conexión
@@ -892,7 +892,7 @@ class Flavor_Network_API {
         ));
 
         if ($existe) {
-            return new WP_Error('conexion_existente', __('Ya existe una conexión con este nodo', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('conexion_existente', __('Ya existe una conexión con este nodo', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $wpdb->insert($tabla, [
@@ -904,7 +904,7 @@ class Flavor_Network_API {
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => __('Solicitud de conexión enviada', 'flavor-chat-ia'),
+            'message' => __('Solicitud de conexión enviada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 201);
     }
 
@@ -953,12 +953,12 @@ class Flavor_Network_API {
         }
 
         if (empty($datos_actualizar)) {
-            return new WP_Error('sin_cambios', __('No hay cambios válidos', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('sin_cambios', __('No hay cambios válidos', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $wpdb->update($tabla, $datos_actualizar, ['id' => $request['id']]);
 
-        return new WP_REST_Response(['success' => true, 'message' => __('Conexión actualizada', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Conexión actualizada', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     public function delete_connection($request) {
@@ -967,7 +967,7 @@ class Flavor_Network_API {
 
         $wpdb->delete($tabla, ['id' => $request['id']], ['%d']);
 
-        return new WP_REST_Response(['success' => true, 'message' => __('Conexión eliminada', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Conexión eliminada', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     // ─── MENSAJERÍA ───
@@ -1012,7 +1012,7 @@ class Flavor_Network_API {
         $nodo_local = Flavor_Network_Node::get_local_node();
 
         if (!$nodo_local) {
-            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $datos = [
@@ -1024,7 +1024,7 @@ class Flavor_Network_API {
         ];
 
         if (empty($datos['contenido']) || empty($datos['a_nodo_id'])) {
-            return new WP_Error('datos_incompletos', __('Destinatario y contenido son obligatorios', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('datos_incompletos', __('Destinatario y contenido son obligatorios', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $wpdb->insert($tabla, $datos);
@@ -1032,7 +1032,7 @@ class Flavor_Network_API {
         return new WP_REST_Response([
             'success' => true,
             'id'      => $wpdb->insert_id,
-            'message' => __('Mensaje enviado', 'flavor-chat-ia'),
+            'message' => __('Mensaje enviado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 201);
     }
 
@@ -1073,7 +1073,7 @@ class Flavor_Network_API {
         $nodo_local = Flavor_Network_Node::get_local_node();
 
         if (!$nodo_local) {
-            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $datos = [
@@ -1086,7 +1086,7 @@ class Flavor_Network_API {
         ];
 
         if (empty($datos['titulo']) || empty($datos['descripcion'])) {
-            return new WP_Error('datos_incompletos', __('Título y descripción son obligatorios', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('datos_incompletos', __('Título y descripción son obligatorios', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $wpdb->insert($tabla, $datos);
@@ -1094,7 +1094,7 @@ class Flavor_Network_API {
         return new WP_REST_Response([
             'success' => true,
             'id'      => $wpdb->insert_id,
-            'message' => __('Alerta solidaria publicada', 'flavor-chat-ia'),
+            'message' => __('Alerta solidaria publicada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 201);
     }
 
@@ -1123,7 +1123,7 @@ class Flavor_Network_API {
         $nodo_local = Flavor_Network_Node::get_local_node();
 
         if (!$nodo_local) {
-            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $datos = [
@@ -1137,7 +1137,7 @@ class Flavor_Network_API {
         ];
 
         if (empty($datos['titulo'])) {
-            return new WP_Error('titulo_requerido', __('El título es obligatorio', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('titulo_requerido', __('El título es obligatorio', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $wpdb->insert($tabla, $datos);
@@ -1145,7 +1145,7 @@ class Flavor_Network_API {
         return new WP_REST_Response([
             'success' => true,
             'id'      => $wpdb->insert_id,
-            'message' => __('Oferta de tiempo publicada', 'flavor-chat-ia'),
+            'message' => __('Oferta de tiempo publicada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 201);
     }
 
@@ -1165,7 +1165,7 @@ class Flavor_Network_API {
         ));
 
         if (!$evento) {
-            return new WP_Error('no_encontrado', __('Evento no encontrado', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('no_encontrado', __('Evento no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         return new WP_REST_Response($evento, 200);
@@ -1194,12 +1194,12 @@ class Flavor_Network_API {
         }
 
         if (empty($datos_actualizar)) {
-            return new WP_Error('sin_datos', __('No hay datos para actualizar', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('sin_datos', __('No hay datos para actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $wpdb->update($tabla, $datos_actualizar, ['id' => $request['id']]);
 
-        return new WP_REST_Response(['success' => true, 'message' => __('Evento actualizado', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Evento actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     public function delete_event($request) {
@@ -1208,7 +1208,7 @@ class Flavor_Network_API {
 
         $wpdb->update($tabla, ['estado' => 'eliminado'], ['id' => $request['id']]);
 
-        return new WP_REST_Response(['success' => true, 'message' => __('Evento eliminado', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Evento eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     // ─── TABLÓN: Editar, Eliminar ───
@@ -1234,12 +1234,12 @@ class Flavor_Network_API {
         }
 
         if (empty($datos_actualizar)) {
-            return new WP_Error('sin_datos', __('No hay datos para actualizar', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('sin_datos', __('No hay datos para actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $wpdb->update($tabla, $datos_actualizar, ['id' => $request['id']]);
 
-        return new WP_REST_Response(['success' => true, 'message' => __('Publicación actualizada', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Publicación actualizada', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     public function delete_board($request) {
@@ -1248,7 +1248,7 @@ class Flavor_Network_API {
 
         $wpdb->update($tabla, ['activo' => 0], ['id' => $request['id']]);
 
-        return new WP_REST_Response(['success' => true, 'message' => __('Publicación eliminada', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Publicación eliminada', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     // ─── COLABORACIONES: Detalle, Editar, Eliminar ───
@@ -1268,7 +1268,7 @@ class Flavor_Network_API {
         ));
 
         if (!$colaboracion) {
-            return new WP_Error('no_encontrado', __('Colaboración no encontrada', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('no_encontrado', __('Colaboración no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         $participantes = $wpdb->get_results($wpdb->prepare(
@@ -1305,12 +1305,12 @@ class Flavor_Network_API {
         }
 
         if (empty($datos_actualizar)) {
-            return new WP_Error('sin_datos', __('No hay datos para actualizar', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('sin_datos', __('No hay datos para actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $wpdb->update($tabla, $datos_actualizar, ['id' => $request['id']]);
 
-        return new WP_REST_Response(['success' => true, 'message' => __('Colaboración actualizada', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Colaboración actualizada', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     public function delete_collaboration($request) {
@@ -1319,7 +1319,7 @@ class Flavor_Network_API {
 
         $wpdb->update($tabla, ['estado' => 'cerrada'], ['id' => $request['id']]);
 
-        return new WP_REST_Response(['success' => true, 'message' => __('Colaboración cerrada', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Colaboración cerrada', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     // ─── ALERTAS: Editar, Eliminar ───
@@ -1347,12 +1347,12 @@ class Flavor_Network_API {
         }
 
         if (empty($datos_actualizar)) {
-            return new WP_Error('sin_datos', __('No hay datos para actualizar', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('sin_datos', __('No hay datos para actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $wpdb->update($tabla, $datos_actualizar, ['id' => $request['id']]);
 
-        return new WP_REST_Response(['success' => true, 'message' => __('Alerta actualizada', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Alerta actualizada', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     public function delete_alert($request) {
@@ -1361,7 +1361,7 @@ class Flavor_Network_API {
 
         $wpdb->update($tabla, ['estado' => 'eliminada'], ['id' => $request['id']]);
 
-        return new WP_REST_Response(['success' => true, 'message' => __('Alerta eliminada', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Alerta eliminada', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     // ─── OFERTAS DE TIEMPO: Editar, Eliminar ───
@@ -1387,12 +1387,12 @@ class Flavor_Network_API {
         }
 
         if (empty($datos_actualizar)) {
-            return new WP_Error('sin_datos', __('No hay datos para actualizar', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('sin_datos', __('No hay datos para actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $wpdb->update($tabla, $datos_actualizar, ['id' => $request['id']]);
 
-        return new WP_REST_Response(['success' => true, 'message' => __('Oferta actualizada', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Oferta actualizada', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     public function delete_time_offer($request) {
@@ -1401,7 +1401,7 @@ class Flavor_Network_API {
 
         $wpdb->update($tabla, ['estado' => 'eliminada'], ['id' => $request['id']]);
 
-        return new WP_REST_Response(['success' => true, 'message' => __('Oferta eliminada', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Oferta eliminada', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     // ─── RECOMENDACIONES ───
@@ -1440,7 +1440,7 @@ class Flavor_Network_API {
         $nodo_local = Flavor_Network_Node::get_local_node();
 
         if (!$nodo_local) {
-            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $datos = [
@@ -1451,7 +1451,7 @@ class Flavor_Network_API {
         ];
 
         if (empty($datos['a_nodo_id']) || empty($datos['nodo_recomendado_id'])) {
-            return new WP_Error('datos_incompletos', __('Destinatario y nodo recomendado son obligatorios', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('datos_incompletos', __('Destinatario y nodo recomendado son obligatorios', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $wpdb->insert($tabla, $datos);
@@ -1459,7 +1459,7 @@ class Flavor_Network_API {
         return new WP_REST_Response([
             'success' => true,
             'id'      => $wpdb->insert_id,
-            'message' => __('Recomendación enviada', 'flavor-chat-ia'),
+            'message' => __('Recomendación enviada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 201);
     }
 
@@ -1469,7 +1469,7 @@ class Flavor_Network_API {
 
         $wpdb->delete($tabla, ['id' => $request['id']], ['%d']);
 
-        return new WP_REST_Response(['success' => true, 'message' => __('Recomendación eliminada', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Recomendación eliminada', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     // ─── NODOS ADMIN ───
@@ -1478,19 +1478,19 @@ class Flavor_Network_API {
         $datos = $request->get_json_params();
 
         if (empty($datos['nombre']) || empty($datos['slug'])) {
-            return new WP_Error('datos_incompletos', __('Nombre y slug son obligatorios', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('datos_incompletos', __('Nombre y slug son obligatorios', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $nodo = Flavor_Network_Node::create($datos);
 
         if (!$nodo) {
-            return new WP_Error('error_creacion', __('Error al crear el nodo', 'flavor-chat-ia'), ['status' => 500]);
+            return new WP_Error('error_creacion', __('Error al crear el nodo', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 500]);
         }
 
         return new WP_REST_Response([
             'success' => true,
             'nodo'    => $nodo->to_array(),
-            'message' => __('Nodo creado correctamente', 'flavor-chat-ia'),
+            'message' => __('Nodo creado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 201);
     }
 
@@ -1499,13 +1499,13 @@ class Flavor_Network_API {
         $nodo = Flavor_Network_Node::update_node($request['id'], $datos);
 
         if (!$nodo) {
-            return new WP_Error('error_actualizacion', __('Error al actualizar el nodo', 'flavor-chat-ia'), ['status' => 500]);
+            return new WP_Error('error_actualizacion', __('Error al actualizar el nodo', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 500]);
         }
 
         return new WP_REST_Response([
             'success' => true,
             'nodo'    => $nodo->to_array(),
-            'message' => __('Nodo actualizado', 'flavor-chat-ia'),
+            'message' => __('Nodo actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 200);
     }
 
@@ -1513,10 +1513,10 @@ class Flavor_Network_API {
         $resultado = Flavor_Network_Node::delete_node($request['id']);
 
         if (!$resultado) {
-            return new WP_Error('error_eliminacion', __('No se puede eliminar este nodo', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('error_eliminacion', __('No se puede eliminar este nodo', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
-        return new WP_REST_Response(['success' => true, 'message' => __('Nodo eliminado', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Nodo eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     public function get_nodes_list($request) {
@@ -1538,7 +1538,7 @@ class Flavor_Network_API {
         $nodo_local = Flavor_Network_Node::get_local_node();
 
         if (!$nodo_local) {
-            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $mensaje_original = $wpdb->get_row($wpdb->prepare(
@@ -1547,7 +1547,7 @@ class Flavor_Network_API {
         ));
 
         if (!$mensaje_original) {
-            return new WP_Error('no_encontrado', __('Mensaje no encontrado', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('no_encontrado', __('Mensaje no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         $datos = [
@@ -1560,7 +1560,7 @@ class Flavor_Network_API {
         ];
 
         if (empty($datos['contenido'])) {
-            return new WP_Error('contenido_requerido', __('El contenido es obligatorio', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('contenido_requerido', __('El contenido es obligatorio', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $wpdb->insert($tabla, $datos);
@@ -1571,7 +1571,7 @@ class Flavor_Network_API {
         return new WP_REST_Response([
             'success' => true,
             'id'      => $wpdb->insert_id,
-            'message' => __('Respuesta enviada', 'flavor-chat-ia'),
+            'message' => __('Respuesta enviada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 201);
     }
 
@@ -1581,7 +1581,7 @@ class Flavor_Network_API {
 
         $wpdb->delete($tabla, ['id' => $request['id']], ['%d']);
 
-        return new WP_REST_Response(['success' => true, 'message' => __('Mensaje eliminado', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Mensaje eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     // ─── QR DE ENTIDAD ───
@@ -1589,7 +1589,7 @@ class Flavor_Network_API {
     public function get_node_qr($request) {
         $nodo = Flavor_Network_Node::find_by_slug($request['slug']);
         if (!$nodo) {
-            return new WP_Error('no_encontrado', __('Nodo no encontrado', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('no_encontrado', __('Nodo no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         $profile_url = $nodo->web ?: get_site_url() . '?nodo=' . $nodo->slug;
@@ -1625,7 +1625,7 @@ class Flavor_Network_API {
 
         $nodo = Flavor_Network_Node::find_by_slug($request['slug']);
         if (!$nodo) {
-            return new WP_Error('nodo_no_encontrado', __('Nodo no encontrado', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('nodo_no_encontrado', __('Nodo no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         $sello = $wpdb->get_row($wpdb->prepare(
@@ -1684,7 +1684,7 @@ class Flavor_Network_API {
         ];
 
         if (empty($datos['nodo_id'])) {
-            return new WP_Error('datos_incompletos', __('Selecciona un nodo', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('datos_incompletos', __('Selecciona un nodo', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         // Also update the node's nivel_sello field
@@ -1696,7 +1696,7 @@ class Flavor_Network_API {
         return new WP_REST_Response([
             'success' => true,
             'id'      => $wpdb->insert_id,
-            'message' => __('Sello otorgado correctamente', 'flavor-chat-ia'),
+            'message' => __('Sello otorgado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 201);
     }
 
@@ -1725,19 +1725,19 @@ class Flavor_Network_API {
         }
 
         if (empty($datos_actualizar)) {
-            return new WP_Error('sin_datos', __('No hay datos para actualizar', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('sin_datos', __('No hay datos para actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $wpdb->update($tabla, $datos_actualizar, ['id' => $request['id']]);
 
-        return new WP_REST_Response(['success' => true, 'message' => __('Sello actualizado', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Sello actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     public function delete_seal($request) {
         global $wpdb;
         $tabla = Flavor_Network_Installer::get_table_name('quality_seals');
         $wpdb->update($tabla, ['estado' => 'revocado'], ['id' => $request['id']]);
-        return new WP_REST_Response(['success' => true, 'message' => __('Sello revocado', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Sello revocado', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     // ─── FAVORITOS ───
@@ -1770,7 +1770,7 @@ class Flavor_Network_API {
         $nodo_local = Flavor_Network_Node::get_local_node();
 
         if (!$nodo_local) {
-            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $nodo_favorito_id = (int) $request->get_param('nodo_favorito_id');
@@ -1785,7 +1785,7 @@ class Flavor_Network_API {
             return new WP_REST_Response([
                 'success'  => true,
                 'favorito' => false,
-                'message'  => __('Eliminado de favoritos', 'flavor-chat-ia'),
+                'message'  => __('Eliminado de favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ], 200);
         }
 
@@ -1798,7 +1798,7 @@ class Flavor_Network_API {
         return new WP_REST_Response([
             'success'  => true,
             'favorito' => true,
-            'message'  => __('Añadido a favoritos', 'flavor-chat-ia'),
+            'message'  => __('Añadido a favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 201);
     }
 
@@ -1810,7 +1810,7 @@ class Flavor_Network_API {
         if (!$nodo) {
             return new WP_REST_Response([
                 'configurado' => false,
-                'message'     => __('El nodo local no está configurado', 'flavor-chat-ia'),
+                'message'     => __('El nodo local no está configurado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ], 200);
         }
 
@@ -1824,7 +1824,7 @@ class Flavor_Network_API {
         $datos = $request->get_json_params();
 
         if (empty($datos['nombre']) || empty($datos['slug'])) {
-            return new WP_Error('datos_incompletos', __('Nombre y slug son obligatorios', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('datos_incompletos', __('Nombre y slug son obligatorios', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $datos['site_url'] = get_site_url();
@@ -1832,13 +1832,13 @@ class Flavor_Network_API {
         $nodo = Flavor_Network_Node::save_local_node($datos);
 
         if (!$nodo) {
-            return new WP_Error('error_guardado', __('Error al guardar el nodo local', 'flavor-chat-ia'), ['status' => 500]);
+            return new WP_Error('error_guardado', __('Error al guardar el nodo local', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 500]);
         }
 
         return new WP_REST_Response([
             'success' => true,
             'nodo'    => $nodo->to_array(),
-            'message' => __('Nodo local guardado correctamente', 'flavor-chat-ia'),
+            'message' => __('Nodo local guardado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 200);
     }
 
@@ -1893,7 +1893,7 @@ class Flavor_Network_API {
         $tabla = Flavor_Network_Installer::get_table_name('newsletters');
         $newsletter = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$tabla} WHERE id = %d", $request['id']));
         if (!$newsletter) {
-            return new WP_Error('no_encontrado', __('Newsletter no encontrada', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('no_encontrado', __('Newsletter no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
         return new WP_REST_Response($newsletter, 200);
     }
@@ -1913,11 +1913,11 @@ class Flavor_Network_API {
         ];
 
         if (empty($datos['asunto'])) {
-            return new WP_Error('sin_asunto', __('El asunto es obligatorio', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('sin_asunto', __('El asunto es obligatorio', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $wpdb->insert($tabla, $datos);
-        return new WP_REST_Response(['success' => true, 'id' => $wpdb->insert_id, 'message' => __('Newsletter creada', 'flavor-chat-ia')], 201);
+        return new WP_REST_Response(['success' => true, 'id' => $wpdb->insert_id, 'message' => __('Newsletter creada', FLAVOR_PLATFORM_TEXT_DOMAIN)], 201);
     }
 
     public function update_newsletter($request) {
@@ -1933,18 +1933,18 @@ class Flavor_Network_API {
         }
 
         if (empty($datos_actualizar)) {
-            return new WP_Error('sin_datos', __('No hay datos para actualizar', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('sin_datos', __('No hay datos para actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $wpdb->update($tabla, $datos_actualizar, ['id' => $request['id']]);
-        return new WP_REST_Response(['success' => true, 'message' => __('Newsletter actualizada', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Newsletter actualizada', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     public function delete_newsletter($request) {
         global $wpdb;
         $tabla = Flavor_Network_Installer::get_table_name('newsletters');
         $wpdb->delete($tabla, ['id' => $request['id']], ['%d']);
-        return new WP_REST_Response(['success' => true, 'message' => __('Newsletter eliminada', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Newsletter eliminada', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     public function send_newsletter($request) {
@@ -1955,7 +1955,7 @@ class Flavor_Network_API {
 
         $newsletter = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$tabla} WHERE id = %d", $request['id']));
         if (!$newsletter) {
-            return new WP_Error('no_encontrada', __('Newsletter no encontrada', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('no_encontrada', __('Newsletter no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         $suscriptores = $wpdb->get_results($wpdb->prepare(
@@ -1994,7 +1994,7 @@ class Flavor_Network_API {
             'success'  => true,
             'enviados' => $enviados,
             'total'    => count($suscriptores),
-            'message'  => sprintf(__('Newsletter enviada a %d suscriptores', 'flavor-chat-ia'), $enviados),
+            'message'  => sprintf(__('Newsletter enviada a %d suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN), $enviados),
         ], 200);
     }
 
@@ -2018,7 +2018,7 @@ class Flavor_Network_API {
 
         $email = sanitize_email($request->get_param('email'));
         if (!is_email($email)) {
-            return new WP_Error('email_invalido', __('Email no válido', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('email_invalido', __('Email no válido', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $datos = [
@@ -2035,18 +2035,18 @@ class Flavor_Network_API {
         ));
 
         if ($existente) {
-            return new WP_Error('ya_suscrito', __('Este email ya está suscrito', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('ya_suscrito', __('Este email ya está suscrito', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $wpdb->insert($tabla, $datos);
-        return new WP_REST_Response(['success' => true, 'id' => $wpdb->insert_id, 'message' => __('Suscriptor añadido', 'flavor-chat-ia')], 201);
+        return new WP_REST_Response(['success' => true, 'id' => $wpdb->insert_id, 'message' => __('Suscriptor añadido', FLAVOR_PLATFORM_TEXT_DOMAIN)], 201);
     }
 
     public function remove_subscriber($request) {
         global $wpdb;
         $tabla = Flavor_Network_Installer::get_table_name('newsletter_subscribers');
         $wpdb->delete($tabla, ['id' => $request['id']], ['%d']);
-        return new WP_REST_Response(['success' => true, 'message' => __('Suscriptor eliminado', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Suscriptor eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     public function get_auto_newsletter_content($request) {
@@ -2163,7 +2163,7 @@ class Flavor_Network_API {
         $nodo_local = Flavor_Network_Node::get_local_node();
 
         if (!$nodo_local) {
-            return new WP_Error('sin_nodo', __('Configura tu nodo primero', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('sin_nodo', __('Configura tu nodo primero', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         // Get all active needs from local node
@@ -2252,7 +2252,7 @@ class Flavor_Network_API {
         return new WP_REST_Response([
             'success'       => true,
             'nuevos_matches' => $nuevos_matches,
-            'message'       => sprintf(__('Se encontraron %d nuevos matches', 'flavor-chat-ia'), $nuevos_matches),
+            'message'       => sprintf(__('Se encontraron %d nuevos matches', FLAVOR_PLATFORM_TEXT_DOMAIN), $nuevos_matches),
         ], 200);
     }
 
@@ -2319,7 +2319,7 @@ class Flavor_Network_API {
         $respuesta_texto = wp_kses_post($request->get_param('respuesta') ?: '');
 
         if (!in_array($estado, ['aceptado', 'rechazado', 'en_proceso'])) {
-            return new WP_Error('estado_invalido', __('Estado no válido', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('estado_invalido', __('Estado no válido', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $wpdb->update($tabla, [
@@ -2328,14 +2328,14 @@ class Flavor_Network_API {
             'fecha_respuesta' => current_time('mysql'),
         ], ['id' => $request['id']]);
 
-        return new WP_REST_Response(['success' => true, 'message' => __('Match actualizado', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Match actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     public function dismiss_match($request) {
         global $wpdb;
         $tabla = Flavor_Network_Installer::get_table_name('matches');
         $wpdb->update($tabla, ['estado' => 'descartado'], ['id' => $request['id']]);
-        return new WP_REST_Response(['success' => true, 'message' => __('Match descartado', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Match descartado', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     public function contact_match($request) {
@@ -2346,7 +2346,7 @@ class Flavor_Network_API {
 
         $match = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$tabla_matches} WHERE id = %d", $request['id']));
         if (!$match) {
-            return new WP_Error('no_encontrado', __('Match no encontrado', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('no_encontrado', __('Match no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         // Determine who to contact
@@ -2354,19 +2354,19 @@ class Flavor_Network_API {
             ? $match->nodo_excedente_id
             : $match->nodo_necesidad_id;
 
-        $mensaje_contenido = wp_kses_post($request->get_param('mensaje') ?: __('Hola, me interesa el match entre nuestras necesidades y excedentes. ¿Podemos hablar?', 'flavor-chat-ia'));
+        $mensaje_contenido = wp_kses_post($request->get_param('mensaje') ?: __('Hola, me interesa el match entre nuestras necesidades y excedentes. ¿Podemos hablar?', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         $wpdb->insert($tabla_mensajes, [
             'de_nodo_id' => $nodo_local->id,
             'a_nodo_id'  => $nodo_destino_id,
             'tipo'       => 'match',
-            'asunto'     => __('Contacto por match', 'flavor-chat-ia'),
+            'asunto'     => __('Contacto por match', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'contenido'  => $mensaje_contenido,
         ]);
 
         $wpdb->update($tabla_matches, ['estado' => 'contactado'], ['id' => $request['id']]);
 
-        return new WP_REST_Response(['success' => true, 'message' => __('Mensaje enviado al nodo', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Mensaje enviado al nodo', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
 
@@ -2474,7 +2474,7 @@ class Flavor_Network_API {
         ));
 
         if (!$pregunta) {
-            return new WP_Error('no_encontrada', __('Pregunta no encontrada', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('no_encontrada', __('Pregunta no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         // Incrementar vistas
@@ -2504,14 +2504,14 @@ class Flavor_Network_API {
         $nodo_local = Flavor_Network_Node::get_local_node();
 
         if (!$nodo_local) {
-            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $titulo_pregunta = sanitize_text_field($request->get_param('titulo'));
         $descripcion_pregunta = wp_kses_post($request->get_param('descripcion'));
 
         if (empty($titulo_pregunta) || empty($descripcion_pregunta)) {
-            return new WP_Error('datos_incompletos', __('Titulo y descripcion son obligatorios', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('datos_incompletos', __('Titulo y descripcion son obligatorios', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $categorias_validas = ['general', 'tecnica', 'comercial', 'logistica', 'legal', 'otra'];
@@ -2541,7 +2541,7 @@ class Flavor_Network_API {
         return new WP_REST_Response([
             'success' => true,
             'id'      => $wpdb->insert_id,
-            'message' => __('Pregunta publicada', 'flavor-chat-ia'),
+            'message' => __('Pregunta publicada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 201);
     }
 
@@ -2570,12 +2570,12 @@ class Flavor_Network_API {
         }
 
         if (empty($datos_actualizar)) {
-            return new WP_Error('sin_datos', __('No hay datos para actualizar', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('sin_datos', __('No hay datos para actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $wpdb->update($tabla_preguntas, $datos_actualizar, ['id' => $request['id']]);
 
-        return new WP_REST_Response(['success' => true, 'message' => __('Pregunta actualizada', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Pregunta actualizada', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     public function delete_question($request) {
@@ -2589,7 +2589,7 @@ class Flavor_Network_API {
         // Eliminar pregunta
         $wpdb->delete($tabla_preguntas, ['id' => $request['id']], ['%d']);
 
-        return new WP_REST_Response(['success' => true, 'message' => __('Pregunta eliminada', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Pregunta eliminada', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     public function get_answers($request) {
@@ -2616,13 +2616,13 @@ class Flavor_Network_API {
         $nodo_local = Flavor_Network_Node::get_local_node();
 
         if (!$nodo_local) {
-            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('sin_nodo_local', __('Configura primero tu nodo local', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $contenido_respuesta = wp_kses_post($request->get_param('contenido'));
 
         if (empty($contenido_respuesta)) {
-            return new WP_Error('contenido_requerido', __('El contenido es obligatorio', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('contenido_requerido', __('El contenido es obligatorio', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         // Verificar que la pregunta existe
@@ -2632,7 +2632,7 @@ class Flavor_Network_API {
         ));
 
         if (!$pregunta_existe) {
-            return new WP_Error('pregunta_no_encontrada', __('Pregunta no encontrada', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('pregunta_no_encontrada', __('Pregunta no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         $wpdb->insert($tabla_respuestas, [
@@ -2650,7 +2650,7 @@ class Flavor_Network_API {
         return new WP_REST_Response([
             'success' => true,
             'id'      => $wpdb->insert_id,
-            'message' => __('Respuesta publicada', 'flavor-chat-ia'),
+            'message' => __('Respuesta publicada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 201);
     }
 
@@ -2661,7 +2661,7 @@ class Flavor_Network_API {
         $tipo_voto = sanitize_text_field($request->get_param('voto'));
 
         if (!in_array($tipo_voto, ['positivo', 'negativo'])) {
-            return new WP_Error('voto_invalido', __('Tipo de voto no valido', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('voto_invalido', __('Tipo de voto no valido', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $columna_voto = ($tipo_voto === 'positivo') ? 'votos_positivos' : 'votos_negativos';
@@ -2671,7 +2671,7 @@ class Flavor_Network_API {
             $request['id']
         ));
 
-        return new WP_REST_Response(['success' => true, 'message' => __('Voto registrado', 'flavor-chat-ia')], 200);
+        return new WP_REST_Response(['success' => true, 'message' => __('Voto registrado', FLAVOR_PLATFORM_TEXT_DOMAIN)], 200);
     }
 
     public function mark_solution($request) {
@@ -2686,7 +2686,7 @@ class Flavor_Network_API {
         ));
 
         if (!$respuesta) {
-            return new WP_Error('no_encontrada', __('Respuesta no encontrada', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('no_encontrada', __('Respuesta no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         // Toggle es_solucion
@@ -2710,8 +2710,8 @@ class Flavor_Network_API {
             'success'     => true,
             'es_solucion' => (bool) $nuevo_estado_solucion,
             'message'     => $nuevo_estado_solucion
-                ? __('Marcada como solucion', 'flavor-chat-ia')
-                : __('Solucion desmarcada', 'flavor-chat-ia'),
+                ? __('Marcada como solucion', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                : __('Solucion desmarcada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 200);
     }
 

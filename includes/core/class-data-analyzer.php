@@ -65,7 +65,7 @@ class Flavor_Data_Analyzer {
         check_ajax_referer('flavor_data_analyzer', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['error' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $analysis_type = sanitize_text_field($_POST['type'] ?? 'general');
@@ -83,7 +83,7 @@ class Flavor_Data_Analyzer {
         check_ajax_referer('flavor_data_analyzer', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['error' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $module = sanitize_text_field($_POST['module'] ?? '');
@@ -99,7 +99,7 @@ class Flavor_Data_Analyzer {
         check_ajax_referer('flavor_data_analyzer', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['error' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $anomalies = $this->detect_all_anomalies();
@@ -368,10 +368,10 @@ class Flavor_Data_Analyzer {
             $trends['incidencias'] = [
                 'avg_resolution_hours' => round($tiempo, 1),
                 'description' => $tiempo < 24
-                    ? __('Excelente tiempo de resolución (menos de 24h)', 'flavor-chat-ia')
+                    ? __('Excelente tiempo de resolución (menos de 24h)', FLAVOR_PLATFORM_TEXT_DOMAIN)
                     : ($tiempo < 72
-                        ? __('Tiempo de resolución aceptable', 'flavor-chat-ia')
-                        : __('El tiempo de resolución necesita mejorar', 'flavor-chat-ia')
+                        ? __('Tiempo de resolución aceptable', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                        : __('El tiempo de resolución necesita mejorar', FLAVOR_PLATFORM_TEXT_DOMAIN)
                     ),
             ];
         }
@@ -419,15 +419,15 @@ class Flavor_Data_Analyzer {
      */
     private function describe_trend($metric, $slope) {
         if ($slope > 0.5) {
-            return sprintf(__('Fuerte crecimiento en %s', 'flavor-chat-ia'), $metric);
+            return sprintf(__('Fuerte crecimiento en %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $metric);
         } elseif ($slope > 0) {
-            return sprintf(__('Crecimiento moderado en %s', 'flavor-chat-ia'), $metric);
+            return sprintf(__('Crecimiento moderado en %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $metric);
         } elseif ($slope < -0.5) {
-            return sprintf(__('Fuerte descenso en %s', 'flavor-chat-ia'), $metric);
+            return sprintf(__('Fuerte descenso en %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $metric);
         } elseif ($slope < 0) {
-            return sprintf(__('Descenso moderado en %s', 'flavor-chat-ia'), $metric);
+            return sprintf(__('Descenso moderado en %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $metric);
         } else {
-            return sprintf(__('%s estable', 'flavor-chat-ia'), ucfirst($metric));
+            return sprintf(__('%s estable', FLAVOR_PLATFORM_TEXT_DOMAIN), ucfirst($metric));
         }
     }
 
@@ -466,7 +466,7 @@ class Flavor_Data_Analyzer {
                     'busiest_day' => $busiest_day,
                     'peak_reservations' => $max_reservations,
                     'recommendation' => sprintf(
-                        __('Mayor demanda los %s. Considera aumentar disponibilidad.', 'flavor-chat-ia'),
+                        __('Mayor demanda los %s. Considera aumentar disponibilidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $busiest_day
                     ),
                 ];
@@ -477,7 +477,7 @@ class Flavor_Data_Analyzer {
             'type' => 'predictions',
             'period' => $data['period'],
             'predictions' => $predictions,
-            'disclaimer' => __('Las predicciones son estimaciones basadas en datos históricos.', 'flavor-chat-ia'),
+            'disclaimer' => __('Las predicciones son estimaciones basadas en datos históricos.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -491,7 +491,7 @@ class Flavor_Data_Analyzer {
         if (!empty($data['eventos']) && !empty($data['socios'])) {
             $correlations[] = [
                 'metrics' => ['eventos', 'socios_nuevos'],
-                'description' => __('Analizar si más eventos generan más altas de socios', 'flavor-chat-ia'),
+                'description' => __('Analizar si más eventos generan más altas de socios', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -612,13 +612,13 @@ class Flavor_Data_Analyzer {
                 $insights[] = [
                     'type' => 'positive',
                     'icon' => '📈',
-                    'text' => sprintf(__('Crecimiento neto de %d socios', 'flavor-chat-ia'), $net_growth),
+                    'text' => sprintf(__('Crecimiento neto de %d socios', FLAVOR_PLATFORM_TEXT_DOMAIN), $net_growth),
                 ];
             } elseif ($net_growth < 0) {
                 $insights[] = [
                     'type' => 'warning',
                     'icon' => '📉',
-                    'text' => sprintf(__('Pérdida neta de %d socios', 'flavor-chat-ia'), abs($net_growth)),
+                    'text' => sprintf(__('Pérdida neta de %d socios', FLAVOR_PLATFORM_TEXT_DOMAIN), abs($net_growth)),
                 ];
             }
         }
@@ -628,7 +628,7 @@ class Flavor_Data_Analyzer {
             $insights[] = [
                 'type' => 'suggestion',
                 'icon' => '💡',
-                'text' => __('La ocupación media de eventos es baja. Considera promocionar más.', 'flavor-chat-ia'),
+                'text' => __('La ocupación media de eventos es baja. Considera promocionar más.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -637,7 +637,7 @@ class Flavor_Data_Analyzer {
             $insights[] = [
                 'type' => 'warning',
                 'icon' => '⚠️',
-                'text' => __('El tiempo de resolución de incidencias supera las 72h', 'flavor-chat-ia'),
+                'text' => __('El tiempo de resolución de incidencias supera las 72h', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -697,7 +697,7 @@ class Flavor_Data_Analyzer {
                     'severity' => 'high',
                     'module' => 'socios',
                     'description' => sprintf(
-                        __('Anomalía: %d bajas vs %d altas en el periodo', 'flavor-chat-ia'),
+                        __('Anomalía: %d bajas vs %d altas en el periodo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $bajas, $nuevos
                     ),
                 ];
@@ -717,7 +717,7 @@ class Flavor_Data_Analyzer {
                     'severity' => 'medium',
                     'module' => 'incidencias',
                     'description' => sprintf(
-                        __('Anomalía: %d incidencias pendientes acumuladas', 'flavor-chat-ia'),
+                        __('Anomalía: %d incidencias pendientes acumuladas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $pendientes
                     ),
                 ];

@@ -21,7 +21,7 @@ $fecha = $viaje['fecha'] ?? '';
 $hora = $viaje['hora'] ?? '';
 $plazas_libres = $viaje['plazas_libres'] ?? 0;
 $precio = $viaje['precio'] ?? 0;
-$conductor_nombre = $viaje['conductor_nombre'] ?? __('Conductor', 'flavor-chat-ia');
+$conductor_nombre = $viaje['conductor_nombre'] ?? __('Conductor', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $conductor_inicial = mb_substr($conductor_nombre, 0, 1);
 $valoracion = $viaje['valoracion'] ?? '4.8';
 ?>
@@ -61,7 +61,7 @@ $valoracion = $viaje['valoracion'] ?? '4.8';
             </span>
             <?php endif; ?>
             <span class="bg-lime-100 text-lime-700 text-xs px-3 py-1 rounded-full flex items-center gap-1">
-                💺 <?php echo esc_html($plazas_libres); ?> <?php echo esc_html__('plazas', 'flavor-chat-ia'); ?>
+                💺 <?php echo esc_html($plazas_libres); ?> <?php echo esc_html__('plazas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
         </div>
 

@@ -7,7 +7,7 @@
 
 if (!defined('ABSPATH')) exit;
 
-$titulo_seccion = $titulo_seccion ?? __('Categorias de Foros', 'flavor-chat-ia');
+$titulo_seccion = $titulo_seccion ?? __('Categorias de Foros', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $numero_columnas = intval($columnas ?? 2);
 $mostrar_estadisticas_foro = isset($mostrar_estadisticas) ? (bool) $mostrar_estadisticas : true;
 
@@ -91,10 +91,10 @@ function flavor_foros_obtener_icono_svg($tipo_icono) {
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a2 2 0 01-2-2v-1"/>
                 </svg>
-                <?php echo esc_html__('Foros', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
             <h2 class="text-4xl md:text-5xl font-bold mb-4" style="color: var(--flavor-text-primary, #1a1a1a);"><?php echo esc_html($titulo_seccion); ?></h2>
-            <p class="text-xl" style="color: var(--flavor-text-secondary, #666666);"><?php echo esc_html__('Elige una categoria y participa en las conversaciones', 'flavor-chat-ia'); ?></p>
+            <p class="text-xl" style="color: var(--flavor-text-secondary, #666666);"><?php echo esc_html__('Elige una categoria y participa en las conversaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
 
         <!-- Grid de foros -->
@@ -131,7 +131,7 @@ function flavor_foros_obtener_icono_svg($tipo_icono) {
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
                                             </svg>
                                             <span class="text-sm font-medium" style="color: var(--flavor-text-secondary, #666666);">
-                                                <?php echo esc_html($foro['total_hilos']); ?> <?php echo esc_html__('hilos', 'flavor-chat-ia'); ?>
+                                                <?php echo esc_html($foro['total_hilos']); ?> <?php echo esc_html__('hilos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </span>
                                         </div>
                                         <div class="flex items-center gap-2">
@@ -139,7 +139,7 @@ function flavor_foros_obtener_icono_svg($tipo_icono) {
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
                                             </svg>
                                             <span class="text-sm font-medium" style="color: var(--flavor-text-secondary, #666666);">
-                                                <?php echo esc_html($foro['total_respuestas']); ?> <?php echo esc_html__('respuestas', 'flavor-chat-ia'); ?>
+                                                <?php echo esc_html($foro['total_respuestas']); ?> <?php echo esc_html__('respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </span>
                                         </div>
                                     </div>
@@ -165,10 +165,10 @@ function flavor_foros_obtener_icono_svg($tipo_icono) {
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--flavor-primary, #667eea);">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    <span class="text-lg font-medium" style="color: var(--flavor-text-primary, #1a1a1a);"><?php echo esc_html__('No encuentras lo que buscas?', 'flavor-chat-ia'); ?></span>
+                    <span class="text-lg font-medium" style="color: var(--flavor-text-primary, #1a1a1a);"><?php echo esc_html__('No encuentras lo que buscas?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <a href="/foros/nuevo-tema/" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-base font-semibold text-white transition-all duration-300 hover:scale-105 hover:shadow-lg" style="background: linear-gradient(135deg, var(--flavor-primary, #667eea) 0%, var(--flavor-secondary, #764ba2) 100%);">
-                    <?php echo esc_html__('Crea un nuevo hilo', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Crea un nuevo hilo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                     </svg>

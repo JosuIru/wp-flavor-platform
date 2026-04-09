@@ -50,14 +50,14 @@ class Flavor_Preview_Handler {
 
         // Verificar nonce
         if (!wp_verify_nonce($nonce, 'flavor_preview_' . $preview_id)) {
-            wp_die(__('Vista previa no válida', 'flavor-chat-ia'));
+            wp_die(__('Vista previa no válida', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Obtener datos del preview desde transient
         $preview_data = get_transient('flavor_preview_' . $preview_id);
 
         if (!$preview_data) {
-            wp_die(__('La vista previa ha expirado. Por favor, genera una nueva.', 'flavor-chat-ia'));
+            wp_die(__('La vista previa ha expirado. Por favor, genera una nueva.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Renderizar preview
@@ -72,14 +72,14 @@ class Flavor_Preview_Handler {
         check_ajax_referer('flavor_page_builder', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $layout = isset($_POST['layout']) ? json_decode(stripslashes($_POST['layout']), true) : [];
         $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
 
         if (empty($layout)) {
-            wp_send_json_error(['message' => __('No hay contenido para previsualizar', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No hay contenido para previsualizar', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Generar ID único para este preview
@@ -115,7 +115,7 @@ class Flavor_Preview_Handler {
         $post_id = $preview_data['post_id'];
 
         // Obtener título del post si existe
-        $post_title = $post_id ? get_the_title($post_id) : __('Vista Previa', 'flavor-chat-ia');
+        $post_title = $post_id ? get_the_title($post_id) : __('Vista Previa', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         // Cargar Tailwind CSS y estilos del diseño
         $design_settings = Flavor_Design_Settings::get_instance();
@@ -247,7 +247,7 @@ class Flavor_Preview_Handler {
                     <svg class="flavor-preview-bar-icon" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
                     </svg>
-                    <span><?php _e('MODO VISTA PREVIA', 'flavor-chat-ia'); ?> - <?php echo esc_html($post_title); ?></span>
+                    <span><?php _e('MODO VISTA PREVIA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> - <?php echo esc_html($post_title); ?></span>
                 </div>
 
                 <div class="flavor-preview-device-toggle">
@@ -269,7 +269,7 @@ class Flavor_Preview_Handler {
                 </div>
 
                 <button class="flavor-preview-bar-close" onclick="window.close();">
-                    <?php _e('Cerrar Vista Previa', 'flavor-chat-ia'); ?>
+                    <?php _e('Cerrar Vista Previa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
 

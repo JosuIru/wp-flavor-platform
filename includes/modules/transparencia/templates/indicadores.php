@@ -54,27 +54,27 @@ if (Flavor_Chat_Helpers::tabla_existe($tabla_presupuestos)) {
     $porcentaje_ejecucion = $presupuesto_gastos > 0 ? round(($obligaciones / $presupuesto_gastos) * 100, 1) : 0;
 
     $indicadores['economicos'][] = [
-        'titulo' => __('Presupuesto Ingresos', 'flavor-chat-ia'),
+        'titulo' => __('Presupuesto Ingresos', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'valor' => number_format($presupuesto_ingresos ?: 0, 0, ',', '.') . ' EUR',
         'icono' => 'dashicons-chart-line',
         'color' => '#10b981',
-        'descripcion' => sprintf(__('Ejercicio %d', 'flavor-chat-ia'), $ejercicio_actual),
+        'descripcion' => sprintf(__('Ejercicio %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $ejercicio_actual),
     ];
 
     $indicadores['economicos'][] = [
-        'titulo' => __('Presupuesto Gastos', 'flavor-chat-ia'),
+        'titulo' => __('Presupuesto Gastos', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'valor' => number_format($presupuesto_gastos ?: 0, 0, ',', '.') . ' EUR',
         'icono' => 'dashicons-chart-bar',
         'color' => '#3b82f6',
-        'descripcion' => sprintf(__('Ejercicio %d', 'flavor-chat-ia'), $ejercicio_actual),
+        'descripcion' => sprintf(__('Ejercicio %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $ejercicio_actual),
     ];
 
     $indicadores['economicos'][] = [
-        'titulo' => __('Ejecucion Presupuestaria', 'flavor-chat-ia'),
+        'titulo' => __('Ejecucion Presupuestaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'valor' => $porcentaje_ejecucion . '%',
         'icono' => 'dashicons-performance',
         'color' => $porcentaje_ejecucion >= 75 ? '#10b981' : ($porcentaje_ejecucion >= 50 ? '#f59e0b' : '#ef4444'),
-        'descripcion' => __('Obligaciones / Credito definitivo', 'flavor-chat-ia'),
+        'descripcion' => __('Obligaciones / Credito definitivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'progreso' => $porcentaje_ejecucion,
     ];
 }
@@ -94,19 +94,19 @@ if (Flavor_Chat_Helpers::tabla_existe($tabla_gastos)) {
     $porcentaje_pagado = $total_gastos > 0 ? round(($gastos_pagados / $total_gastos) * 100, 1) : 0;
 
     $indicadores['economicos'][] = [
-        'titulo' => __('Gastos Totales', 'flavor-chat-ia'),
+        'titulo' => __('Gastos Totales', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'valor' => number_format($total_gastos ?: 0, 0, ',', '.') . ' EUR',
         'icono' => 'dashicons-money-alt',
         'color' => '#8b5cf6',
-        'descripcion' => sprintf(__('Ejercicio %d', 'flavor-chat-ia'), $ejercicio_actual),
+        'descripcion' => sprintf(__('Ejercicio %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $ejercicio_actual),
     ];
 
     $indicadores['economicos'][] = [
-        'titulo' => __('Tasa de Pago', 'flavor-chat-ia'),
+        'titulo' => __('Tasa de Pago', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'valor' => $porcentaje_pagado . '%',
         'icono' => 'dashicons-yes-alt',
         'color' => $porcentaje_pagado >= 80 ? '#10b981' : '#f59e0b',
-        'descripcion' => __('Pagos realizados / Total gastos', 'flavor-chat-ia'),
+        'descripcion' => __('Pagos realizados / Total gastos', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'progreso' => $porcentaje_pagado,
     ];
 }
@@ -123,19 +123,19 @@ if (Flavor_Chat_Helpers::tabla_existe($tabla_documentos)) {
     ));
 
     $indicadores['transparencia'][] = [
-        'titulo' => __('Documentos Publicados', 'flavor-chat-ia'),
+        'titulo' => __('Documentos Publicados', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'valor' => number_format($total_documentos ?: 0),
         'icono' => 'dashicons-media-document',
         'color' => '#6366f1',
-        'descripcion' => __('Total acumulado', 'flavor-chat-ia'),
+        'descripcion' => __('Total acumulado', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ];
 
     $indicadores['transparencia'][] = [
-        'titulo' => __('Publicados Este Ano', 'flavor-chat-ia'),
+        'titulo' => __('Publicados Este Ano', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'valor' => number_format($documentos_este_anio ?: 0),
         'icono' => 'dashicons-calendar',
         'color' => '#14b8a6',
-        'descripcion' => sprintf(__('Ejercicio %d', 'flavor-chat-ia'), $ejercicio_actual),
+        'descripcion' => sprintf(__('Ejercicio %d', FLAVOR_PLATFORM_TEXT_DOMAIN), $ejercicio_actual),
     ];
 }
 
@@ -149,19 +149,19 @@ if (Flavor_Chat_Helpers::tabla_existe($tabla_actas)) {
     );
 
     $indicadores['transparencia'][] = [
-        'titulo' => __('Actas Publicadas', 'flavor-chat-ia'),
+        'titulo' => __('Actas Publicadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'valor' => number_format($total_actas ?: 0),
         'icono' => 'dashicons-text-page',
         'color' => '#ec4899',
-        'descripcion' => __('Total disponibles', 'flavor-chat-ia'),
+        'descripcion' => __('Total disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ];
 
     $indicadores['transparencia'][] = [
-        'titulo' => __('Sesiones con Video', 'flavor-chat-ia'),
+        'titulo' => __('Sesiones con Video', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'valor' => number_format($actas_con_video ?: 0),
         'icono' => 'dashicons-video-alt3',
         'color' => '#f97316',
-        'descripcion' => __('Retransmisiones disponibles', 'flavor-chat-ia'),
+        'descripcion' => __('Retransmisiones disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ];
 }
 
@@ -187,45 +187,45 @@ if (Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
     );
 
     $indicadores['participacion'][] = [
-        'titulo' => __('Solicitudes Recibidas', 'flavor-chat-ia'),
+        'titulo' => __('Solicitudes Recibidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'valor' => number_format($total_solicitudes ?: 0),
         'icono' => 'dashicons-email',
         'color' => '#3b82f6',
-        'descripcion' => __('Total acumulado', 'flavor-chat-ia'),
+        'descripcion' => __('Total acumulado', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ];
 
     $indicadores['participacion'][] = [
-        'titulo' => __('Solicitudes Resueltas', 'flavor-chat-ia'),
+        'titulo' => __('Solicitudes Resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'valor' => number_format($solicitudes_resueltas ?: 0),
         'icono' => 'dashicons-yes-alt',
         'color' => '#10b981',
-        'descripcion' => __('Tramitadas completamente', 'flavor-chat-ia'),
+        'descripcion' => __('Tramitadas completamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ];
 
     $indicadores['participacion'][] = [
-        'titulo' => __('Tasa de Respuesta', 'flavor-chat-ia'),
+        'titulo' => __('Tasa de Respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'valor' => $tasa_respuesta . '%',
         'icono' => 'dashicons-chart-pie',
         'color' => $tasa_respuesta >= 80 ? '#10b981' : ($tasa_respuesta >= 60 ? '#f59e0b' : '#ef4444'),
-        'descripcion' => __('Solicitudes resueltas / Total', 'flavor-chat-ia'),
+        'descripcion' => __('Solicitudes resueltas / Total', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'progreso' => $tasa_respuesta,
     ];
 
     $indicadores['participacion'][] = [
-        'titulo' => __('Pendientes de Tramitar', 'flavor-chat-ia'),
+        'titulo' => __('Pendientes de Tramitar', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'valor' => number_format($solicitudes_pendientes ?: 0),
         'icono' => 'dashicons-clock',
         'color' => $solicitudes_pendientes > 10 ? '#ef4444' : '#f59e0b',
-        'descripcion' => __('En proceso actualmente', 'flavor-chat-ia'),
+        'descripcion' => __('En proceso actualmente', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ];
 
     if ($tiempo_medio) {
         $indicadores['eficiencia'][] = [
-            'titulo' => __('Tiempo Medio Respuesta', 'flavor-chat-ia'),
-            'valor' => round($tiempo_medio) . ' ' . __('dias', 'flavor-chat-ia'),
+            'titulo' => __('Tiempo Medio Respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'valor' => round($tiempo_medio) . ' ' . __('dias', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'dashicons-clock',
             'color' => $tiempo_medio <= 15 ? '#10b981' : ($tiempo_medio <= 30 ? '#f59e0b' : '#ef4444'),
-            'descripcion' => __('Desde solicitud hasta resolucion', 'flavor-chat-ia'),
+            'descripcion' => __('Desde solicitud hasta resolucion', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 }
@@ -233,22 +233,22 @@ if (Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
 // Categorias de indicadores
 $categorias_indicadores = [
     'economicos' => [
-        'titulo' => __('Indicadores Economicos', 'flavor-chat-ia'),
+        'titulo' => __('Indicadores Economicos', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-chart-bar',
         'color' => '#3b82f6',
     ],
     'transparencia' => [
-        'titulo' => __('Indicadores de Transparencia', 'flavor-chat-ia'),
+        'titulo' => __('Indicadores de Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-visibility',
         'color' => '#6366f1',
     ],
     'participacion' => [
-        'titulo' => __('Participacion Ciudadana', 'flavor-chat-ia'),
+        'titulo' => __('Participacion Ciudadana', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-groups',
         'color' => '#10b981',
     ],
     'eficiencia' => [
-        'titulo' => __('Eficiencia y Calidad', 'flavor-chat-ia'),
+        'titulo' => __('Eficiencia y Calidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'dashicons-performance',
         'color' => '#f59e0b',
     ],
@@ -259,15 +259,15 @@ $categorias_indicadores = [
     <header class="transparencia-indicadores__header">
         <div class="transparencia-indicadores__titulo">
             <span class="dashicons dashicons-chart-bar"></span>
-            <h2><?php esc_html_e('Indicadores de Gestion', 'flavor-chat-ia'); ?></h2>
+            <h2><?php esc_html_e('Indicadores de Gestion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         </div>
         <p class="transparencia-indicadores__descripcion">
-            <?php esc_html_e('Metricas clave de rendimiento y gestion institucional.', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Metricas clave de rendimiento y gestion institucional.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
         <div class="transparencia-indicadores__fecha">
             <span class="dashicons dashicons-calendar-alt"></span>
             <?php printf(
-                esc_html__('Ultima actualizacion: %s', 'flavor-chat-ia'),
+                esc_html__('Ultima actualizacion: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 date_i18n('d F Y, H:i')
             ); ?>
         </div>
@@ -310,8 +310,8 @@ $categorias_indicadores = [
     <?php if (array_filter($indicadores, fn($cat) => !empty($cat)) === []) : ?>
     <div class="transparencia-empty-state">
         <span class="dashicons dashicons-chart-bar"></span>
-        <h3><?php esc_html_e('Sin indicadores disponibles', 'flavor-chat-ia'); ?></h3>
-        <p><?php esc_html_e('No hay datos suficientes para mostrar indicadores de gestion.', 'flavor-chat-ia'); ?></p>
+        <h3><?php esc_html_e('Sin indicadores disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+        <p><?php esc_html_e('No hay datos suficientes para mostrar indicadores de gestion.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php endif; ?>
 
@@ -319,7 +319,7 @@ $categorias_indicadores = [
     <div class="transparencia-indicadores__nota">
         <span class="dashicons dashicons-info"></span>
         <p>
-            <?php esc_html_e('Los indicadores se calculan automaticamente a partir de los datos registrados en el sistema. Los valores pueden variar segun la informacion disponible y su actualizacion.', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Los indicadores se calculan automaticamente a partir de los datos registrados en el sistema. Los valores pueden variar segun la informacion disponible y su actualizacion.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </div>
 </div>

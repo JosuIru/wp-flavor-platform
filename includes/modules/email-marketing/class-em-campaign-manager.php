@@ -148,11 +148,11 @@ class Flavor_EM_Campaign_Manager {
 
         // Validaciones
         if (empty($data['nombre'])) {
-            return new WP_Error('missing_name', __('El nombre es obligatorio', 'flavor-chat-ia'));
+            return new WP_Error('missing_name', __('El nombre es obligatorio', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         if (empty($data['asunto'])) {
-            return new WP_Error('missing_subject', __('El asunto es obligatorio', 'flavor-chat-ia'));
+            return new WP_Error('missing_subject', __('El asunto es obligatorio', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $table = $wpdb->prefix . self::TABLE_PREFIX . 'campanias';
@@ -176,7 +176,7 @@ class Flavor_EM_Campaign_Manager {
         $result = $wpdb->insert($table, $insert_data);
 
         if ($result === false) {
-            return new WP_Error('db_error', __('Error al crear campaña', 'flavor-chat-ia'));
+            return new WP_Error('db_error', __('Error al crear campaña', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $campaign_id = $wpdb->insert_id;
@@ -198,12 +198,12 @@ class Flavor_EM_Campaign_Manager {
 
         $campaign = $this->get_campaign($id);
         if (!$campaign) {
-            return new WP_Error('not_found', __('Campaña no encontrada', 'flavor-chat-ia'));
+            return new WP_Error('not_found', __('Campaña no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // No permitir editar campañas enviadas
         if (in_array($campaign['estado'], ['enviando', 'enviada'])) {
-            return new WP_Error('not_editable', __('No se puede editar una campaña enviada', 'flavor-chat-ia'));
+            return new WP_Error('not_editable', __('No se puede editar una campaña enviada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $table = $wpdb->prefix . self::TABLE_PREFIX . 'campanias';
@@ -245,7 +245,7 @@ class Flavor_EM_Campaign_Manager {
         }
 
         if (empty($update_data)) {
-            return new WP_Error('no_data', __('No hay datos para actualizar', 'flavor-chat-ia'));
+            return new WP_Error('no_data', __('No hay datos para actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $update_data['updated_at'] = current_time('mysql');
@@ -253,7 +253,7 @@ class Flavor_EM_Campaign_Manager {
         $result = $wpdb->update($table, $update_data, ['id' => $id]);
 
         if ($result === false) {
-            return new WP_Error('db_error', __('Error al actualizar campaña', 'flavor-chat-ia'));
+            return new WP_Error('db_error', __('Error al actualizar campaña', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         do_action('flavor_em_campaign_updated', $id, $data);
@@ -272,12 +272,12 @@ class Flavor_EM_Campaign_Manager {
 
         $campaign = $this->get_campaign($id);
         if (!$campaign) {
-            return new WP_Error('not_found', __('Campaña no encontrada', 'flavor-chat-ia'));
+            return new WP_Error('not_found', __('Campaña no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // No permitir eliminar campañas en proceso
         if ($campaign['estado'] === 'enviando') {
-            return new WP_Error('in_progress', __('No se puede eliminar una campaña en proceso', 'flavor-chat-ia'));
+            return new WP_Error('in_progress', __('No se puede eliminar una campaña en proceso', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $table = $wpdb->prefix . self::TABLE_PREFIX . 'campanias';
@@ -285,7 +285,7 @@ class Flavor_EM_Campaign_Manager {
         $result = $wpdb->delete($table, ['id' => $id]);
 
         if ($result === false) {
-            return new WP_Error('db_error', __('Error al eliminar campaña', 'flavor-chat-ia'));
+            return new WP_Error('db_error', __('Error al eliminar campaña', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         do_action('flavor_em_campaign_deleted', $id);
@@ -305,11 +305,11 @@ class Flavor_EM_Campaign_Manager {
 
         $campaign = $this->get_campaign($id);
         if (!$campaign) {
-            return new WP_Error('not_found', __('Campaña no encontrada', 'flavor-chat-ia'));
+            return new WP_Error('not_found', __('Campaña no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         if ($campaign['estado'] !== 'borrador') {
-            return new WP_Error('invalid_status', __('Solo se pueden programar campañas en borrador', 'flavor-chat-ia'));
+            return new WP_Error('invalid_status', __('Solo se pueden programar campañas en borrador', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $table = $wpdb->prefix . self::TABLE_PREFIX . 'campanias';
@@ -321,7 +321,7 @@ class Flavor_EM_Campaign_Manager {
         ], ['id' => $id]);
 
         if ($result === false) {
-            return new WP_Error('db_error', __('Error al programar campaña', 'flavor-chat-ia'));
+            return new WP_Error('db_error', __('Error al programar campaña', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         do_action('flavor_em_campaign_scheduled', $id, $datetime);
@@ -340,7 +340,7 @@ class Flavor_EM_Campaign_Manager {
         global $wpdb;
 
         if (!in_array($status, self::VALID_STATUSES)) {
-            return new WP_Error('invalid_status', __('Estado inválido', 'flavor-chat-ia'));
+            return new WP_Error('invalid_status', __('Estado inválido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $table = $wpdb->prefix . self::TABLE_PREFIX . 'campanias';
@@ -357,7 +357,7 @@ class Flavor_EM_Campaign_Manager {
         $result = $wpdb->update($table, $update_data, ['id' => $id]);
 
         if ($result === false) {
-            return new WP_Error('db_error', __('Error al cambiar estado', 'flavor-chat-ia'));
+            return new WP_Error('db_error', __('Error al cambiar estado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         do_action('flavor_em_campaign_status_changed', $id, $status);
@@ -446,13 +446,13 @@ class Flavor_EM_Campaign_Manager {
         $campaign = $this->get_campaign($id);
 
         if (!$campaign) {
-            return new WP_Error('not_found', __('Campaña no encontrada', 'flavor-chat-ia'));
+            return new WP_Error('not_found', __('Campaña no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         unset($campaign['id'], $campaign['stats'], $campaign['created_at'],
               $campaign['updated_at'], $campaign['enviada_at']);
 
-        $campaign['nombre'] = sprintf(__('%s (copia)', 'flavor-chat-ia'), $campaign['nombre']);
+        $campaign['nombre'] = sprintf(__('%s (copia)', FLAVOR_PLATFORM_TEXT_DOMAIN), $campaign['nombre']);
         $campaign['estado'] = 'borrador';
         $campaign['programada_para'] = null;
 

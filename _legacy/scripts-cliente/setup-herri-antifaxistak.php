@@ -89,7 +89,7 @@ class Herri_Antifaxistak_Setup {
      */
     public function agregar_menu_admin() {
         add_submenu_page(
-            'flavor-chat-ia',
+            'flavor-platform',
             'Setup Herri Antifaxistak',
             '🔧 Setup Herri',
             'manage_options',

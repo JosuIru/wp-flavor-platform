@@ -98,15 +98,15 @@ $pasos_tramitacion = [
             <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="bg-orange-50 rounded-xl p-6 text-center">
                     <div class="text-3xl font-bold text-orange-600 mb-2">100%</div>
-                    <div class="text-gray-700"><?php echo esc_html__('Digital y seguro', 'flavor-chat-ia'); ?></div>
+                    <div class="text-gray-700"><?php echo esc_html__('Digital y seguro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="bg-amber-50 rounded-xl p-6 text-center">
                     <div class="text-3xl font-bold text-amber-600 mb-2">24/7</div>
-                    <div class="text-gray-700"><?php echo esc_html__('Disponible siempre', 'flavor-chat-ia'); ?></div>
+                    <div class="text-gray-700"><?php echo esc_html__('Disponible siempre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="bg-green-50 rounded-xl p-6 text-center">
-                    <div class="text-3xl font-bold text-green-600 mb-2"><?php echo esc_html__('3 dias', 'flavor-chat-ia'); ?></div>
-                    <div class="text-gray-700"><?php echo esc_html__('Resolucion media', 'flavor-chat-ia'); ?></div>
+                    <div class="text-3xl font-bold text-green-600 mb-2"><?php echo esc_html__('3 dias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
+                    <div class="text-gray-700"><?php echo esc_html__('Resolucion media', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
         </div>

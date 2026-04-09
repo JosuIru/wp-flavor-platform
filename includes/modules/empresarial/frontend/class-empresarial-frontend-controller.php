@@ -79,8 +79,8 @@ class Flavor_Empresarial_Frontend_Controller {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('empresarial_nonce'),
             'i18n' => [
-                'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
+                'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -114,7 +114,7 @@ class Flavor_Empresarial_Frontend_Controller {
 
         ob_start();
         echo '<div class="flavor-empresarial-listado">';
-        echo '<p>' . __('Módulo Empresarial - Listado', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Módulo Empresarial - Listado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         echo '</div>';
         return ob_get_clean();
     }
@@ -124,7 +124,7 @@ class Flavor_Empresarial_Frontend_Controller {
      */
     public function registrar_tabs($tabs) {
         $tabs['empresarial'] = [
-            'titulo' => __('Empresarial', 'flavor-chat-ia'),
+            'titulo' => __('Empresarial', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icono' => 'dashicons-admin-generic',
             'callback' => [$this, 'render_tab_principal'],
             'orden' => 50,
@@ -140,8 +140,8 @@ class Flavor_Empresarial_Frontend_Controller {
     public function render_tab_principal() {
         $this->encolar_assets();
         echo '<div class="flavor-empresarial-tab">';
-        echo '<h3>' . esc_html__('Empresarial', 'flavor-chat-ia') . '</h3>';
-        echo '<p>' . esc_html__('Contenido del tab de Empresarial.', 'flavor-chat-ia') . '</p>';
+        echo '<h3>' . esc_html__('Empresarial', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
+        echo '<p>' . esc_html__('Contenido del tab de Empresarial.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         echo '</div>';
     }
 }

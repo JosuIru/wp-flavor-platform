@@ -112,7 +112,7 @@ $url_iframe_mapa = 'https://www.openstreetmap.org/export/embed.html?' . $paramet
                     allowfullscreen
                     loading="lazy"
                     referrerpolicy="no-referrer-when-downgrade"
-                    title="<?php echo esc_attr__( 'Mapa de ubicaciones', 'flavor-chat-ia' ); ?>"
+                    title="<?php echo esc_attr__( 'Mapa de ubicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
                 ></iframe>
             </div>
         </div>

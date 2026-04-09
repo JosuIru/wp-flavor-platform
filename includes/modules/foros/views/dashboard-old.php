@@ -72,14 +72,14 @@ $estado_badge_classes = [
     <?php if (!$tablas_disponibles): ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <p><?php esc_html_e('Faltan tablas del módulo Foros o aún no hay actividad registrada.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('Faltan tablas del módulo Foros o aún no hay actividad registrada.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php endif; ?>
 
     <div class="dm-header">
         <div class="dm-header__title">
             <span class="dashicons dashicons-format-chat"></span>
-            <h1><?php esc_html_e('Dashboard - Foros', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Dashboard - Foros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
         </div>
     </div>
 
@@ -87,23 +87,23 @@ $estado_badge_classes = [
     <div class="dm-quick-links">
         <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-foros-listado')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-format-chat"></span>
-            <span><?php esc_html_e('Foros', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=foros-hilos')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-admin-comments"></span>
-            <span><?php esc_html_e('Hilos', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Hilos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=foros-listado')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-category"></span>
-            <span><?php esc_html_e('Categorías', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=foros-moderacion')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-shield"></span>
-            <span><?php esc_html_e('Moderación', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('foros', '')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-external"></span>
-            <span><?php esc_html_e('Portal', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Portal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
     </div>
 
@@ -115,7 +115,7 @@ $estado_badge_classes = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_foros); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Foros Activos', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Foros Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -125,7 +125,7 @@ $estado_badge_classes = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_hilos); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Hilos/Temas', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Hilos/Temas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -135,7 +135,7 @@ $estado_badge_classes = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($total_respuestas); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Respuestas', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
 
@@ -145,7 +145,7 @@ $estado_badge_classes = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($usuarios_activos); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Usuarios Activos', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Usuarios Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
         </div>
     </div>
@@ -155,11 +155,11 @@ $estado_badge_classes = [
         <div class="dm-card__header">
             <h2>
                 <span class="dashicons dashicons-update"></span>
-                <?php esc_html_e('Hilos Recientes', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Hilos Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <?php if (!empty($hilos_recientes)) : ?>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=foros-hilos')); ?>" class="dm-btn dm-btn--secondary dm-btn--sm">
-                    <?php esc_html_e('Ver todos los hilos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver todos los hilos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             <?php endif; ?>
         </div>
@@ -168,13 +168,13 @@ $estado_badge_classes = [
             <table class="dm-table">
                 <thead>
                     <tr>
-                        <th style="width: 50px;"><?php esc_html_e('ID', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Título', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Autor', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Foro', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 80px;"><?php esc_html_e('Respuestas', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 120px;"><?php esc_html_e('Última Act.', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 100px;"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                        <th style="width: 50px;"><?php esc_html_e('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Autor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width: 80px;"><?php esc_html_e('Respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width: 120px;"><?php esc_html_e('Última Act.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width: 100px;"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -183,18 +183,18 @@ $estado_badge_classes = [
                             <td><strong>#<?php echo absint($hilo->id); ?></strong></td>
                             <td>
                                 <?php if ($hilo->es_fijado) : ?>
-                                    <span class="dashicons dashicons-admin-post dm-text-primary" title="<?php esc_attr_e('Fijado', 'flavor-chat-ia'); ?>"></span>
+                                    <span class="dashicons dashicons-admin-post dm-text-primary" title="<?php esc_attr_e('Fijado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></span>
                                 <?php endif; ?>
                                 <?php echo esc_html($hilo->titulo); ?>
                             </td>
-                            <td><?php echo esc_html($hilo->nombre_autor ?: __('Anónimo', 'flavor-chat-ia')); ?></td>
+                            <td><?php echo esc_html($hilo->nombre_autor ?: __('Anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></td>
                             <td><?php echo esc_html($hilo->nombre_foro ?: '-'); ?></td>
                             <td style="text-align: center;"><?php echo absint($hilo->respuestas_count); ?></td>
                             <td>
                                 <?php
                                 if ($hilo->ultima_actividad) {
                                     $diferencia = human_time_diff(strtotime($hilo->ultima_actividad), current_time('timestamp'));
-                                    printf(esc_html__('hace %s', 'flavor-chat-ia'), esc_html($diferencia));
+                                    printf(esc_html__('hace %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($diferencia));
                                 } else {
                                     echo '-';
                                 }
@@ -212,7 +212,7 @@ $estado_badge_classes = [
         <?php else : ?>
             <div class="dm-empty">
                 <span class="dashicons dashicons-format-chat"></span>
-                <p><?php esc_html_e('No hay hilos registrados', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No hay hilos registrados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         <?php endif; ?>
     </div>

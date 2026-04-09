@@ -9,7 +9,7 @@ require_once __DIR__ . '/../../../../wp-load.php';
 
 // Verificar que el usuario es administrador
 if (!current_user_can('manage_options')) {
-    wp_die(__('No tienes permisos para acceder a esta página.', 'flavor-chat-ia'));
+    wp_die(__('No tienes permisos para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
 }
 
 // Limpiar OPcache

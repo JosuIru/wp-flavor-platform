@@ -19,9 +19,9 @@ class Flavor_Dashboard_Severity {
      */
     public static function get_label($severity) {
         $labels = [
-            'attention' => __('Atención', 'flavor-chat-ia'),
-            'followup' => __('Seguimiento', 'flavor-chat-ia'),
-            'stable' => __('Estable', 'flavor-chat-ia'),
+            'attention' => __('Atención', 'flavor-platform'),
+            'followup' => __('Seguimiento', 'flavor-platform'),
+            'stable' => __('Estable', 'flavor-platform'),
         ];
 
         $severity = sanitize_key((string) $severity);

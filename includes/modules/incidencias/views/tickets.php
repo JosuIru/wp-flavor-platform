@@ -201,16 +201,16 @@ $usuarios_staff = get_users(['role__in' => ['administrator', 'editor']]);
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-tickets-alt"></span>
-        <?php echo esc_html__('Gestión de Incidencias', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Gestión de Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <?php if (!$incidencia_id_detalle): ?>
         <a href="#" class="page-title-action" onclick="document.getElementById('filtros').style.display='block'; return false;">
-            <span class="dashicons dashicons-filter"></span> <?php echo esc_html__('Filtros', 'flavor-chat-ia'); ?>
+            <span class="dashicons dashicons-filter"></span> <?php echo esc_html__('Filtros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     <?php else: ?>
         <a href="<?php echo admin_url('admin.php?page=incidencias-todas'); ?>" class="page-title-action">
-            <span class="dashicons dashicons-arrow-left-alt"></span> <?php echo esc_html__('Volver al listado', 'flavor-chat-ia'); ?>
+            <span class="dashicons dashicons-arrow-left-alt"></span> <?php echo esc_html__('Volver al listado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     <?php endif; ?>
 
@@ -222,60 +222,60 @@ $usuarios_staff = get_users(['role__in' => ['administrator', 'editor']]);
         <div id="filtros" class="postbox" style="margin: 20px 0; display: none;">
             <div class="inside">
                 <form method="get" action="">
-                    <input type="hidden" name="page" value="<?php echo esc_attr__('incidencias-todas', 'flavor-chat-ia'); ?>">
+                    <input type="hidden" name="page" value="<?php echo esc_attr__('incidencias-todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
 
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
 
                         <div>
-                            <label><strong><?php echo esc_html__('Estado:', 'flavor-chat-ia'); ?></strong></label>
+                            <label><strong><?php echo esc_html__('Estado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label>
                             <select name="estado" class="regular-text">
-                                <option value=""><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></option>
-                                <option value="<?php echo esc_attr__('pendiente', 'flavor-chat-ia'); ?>" <?php selected($estado_filtro, 'pendiente'); ?>><?php echo esc_html__('Pendiente', 'flavor-chat-ia'); ?></option>
-                                <option value="<?php echo esc_attr__('en_proceso', 'flavor-chat-ia'); ?>" <?php selected($estado_filtro, 'en_proceso'); ?>><?php echo esc_html__('En Proceso', 'flavor-chat-ia'); ?></option>
-                                <option value="<?php echo esc_attr__('resuelta', 'flavor-chat-ia'); ?>" <?php selected($estado_filtro, 'resuelta'); ?>><?php echo esc_html__('Resuelta', 'flavor-chat-ia'); ?></option>
-                                <option value="<?php echo esc_attr__('cerrada', 'flavor-chat-ia'); ?>" <?php selected($estado_filtro, 'cerrada'); ?>><?php echo esc_html__('Cerrada', 'flavor-chat-ia'); ?></option>
-                                <option value="<?php echo esc_attr__('rechazada', 'flavor-chat-ia'); ?>" <?php selected($estado_filtro, 'rechazada'); ?>><?php echo esc_html__('Rechazada', 'flavor-chat-ia'); ?></option>
+                                <option value=""><?php echo esc_html__('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="<?php echo esc_attr__('pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($estado_filtro, 'pendiente'); ?>><?php echo esc_html__('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="<?php echo esc_attr__('en_proceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($estado_filtro, 'en_proceso'); ?>><?php echo esc_html__('En Proceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="<?php echo esc_attr__('resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($estado_filtro, 'resuelta'); ?>><?php echo esc_html__('Resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="<?php echo esc_attr__('cerrada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($estado_filtro, 'cerrada'); ?>><?php echo esc_html__('Cerrada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="<?php echo esc_attr__('rechazada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($estado_filtro, 'rechazada'); ?>><?php echo esc_html__('Rechazada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             </select>
                         </div>
 
                         <div>
-                            <label><strong><?php echo esc_html__('Categoría:', 'flavor-chat-ia'); ?></strong></label>
+                            <label><strong><?php echo esc_html__('Categoría:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label>
                             <select name="categoria" class="regular-text">
-                                <option value=""><?php echo esc_html__('Todas', 'flavor-chat-ia'); ?></option>
-                                <option value="<?php echo esc_attr__('alumbrado', 'flavor-chat-ia'); ?>" <?php selected($categoria_filtro, 'alumbrado'); ?>><?php echo esc_html__('Alumbrado', 'flavor-chat-ia'); ?></option>
-                                <option value="<?php echo esc_attr__('limpieza', 'flavor-chat-ia'); ?>" <?php selected($categoria_filtro, 'limpieza'); ?>><?php echo esc_html__('Limpieza', 'flavor-chat-ia'); ?></option>
-                                <option value="<?php echo esc_attr__('via_publica', 'flavor-chat-ia'); ?>" <?php selected($categoria_filtro, 'via_publica'); ?>><?php echo esc_html__('Vía Pública', 'flavor-chat-ia'); ?></option>
-                                <option value="<?php echo esc_attr__('mobiliario', 'flavor-chat-ia'); ?>" <?php selected($categoria_filtro, 'mobiliario'); ?>><?php echo esc_html__('Mobiliario', 'flavor-chat-ia'); ?></option>
-                                <option value="<?php echo esc_attr__('parques', 'flavor-chat-ia'); ?>" <?php selected($categoria_filtro, 'parques'); ?>><?php echo esc_html__('Parques', 'flavor-chat-ia'); ?></option>
-                                <option value="<?php echo esc_attr__('ruido', 'flavor-chat-ia'); ?>" <?php selected($categoria_filtro, 'ruido'); ?>><?php echo esc_html__('Ruido', 'flavor-chat-ia'); ?></option>
-                                <option value="<?php echo esc_attr__('agua', 'flavor-chat-ia'); ?>" <?php selected($categoria_filtro, 'agua'); ?>><?php echo esc_html__('Agua', 'flavor-chat-ia'); ?></option>
-                                <option value="<?php echo esc_attr__('señalizacion', 'flavor-chat-ia'); ?>" <?php selected($categoria_filtro, 'señalizacion'); ?>><?php echo esc_html__('Señalización', 'flavor-chat-ia'); ?></option>
+                                <option value=""><?php echo esc_html__('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="<?php echo esc_attr__('alumbrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($categoria_filtro, 'alumbrado'); ?>><?php echo esc_html__('Alumbrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="<?php echo esc_attr__('limpieza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($categoria_filtro, 'limpieza'); ?>><?php echo esc_html__('Limpieza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="<?php echo esc_attr__('via_publica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($categoria_filtro, 'via_publica'); ?>><?php echo esc_html__('Vía Pública', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="<?php echo esc_attr__('mobiliario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($categoria_filtro, 'mobiliario'); ?>><?php echo esc_html__('Mobiliario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="<?php echo esc_attr__('parques', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($categoria_filtro, 'parques'); ?>><?php echo esc_html__('Parques', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="<?php echo esc_attr__('ruido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($categoria_filtro, 'ruido'); ?>><?php echo esc_html__('Ruido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="<?php echo esc_attr__('agua', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($categoria_filtro, 'agua'); ?>><?php echo esc_html__('Agua', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="<?php echo esc_attr__('señalizacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($categoria_filtro, 'señalizacion'); ?>><?php echo esc_html__('Señalización', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             </select>
                         </div>
 
                         <div>
-                            <label><strong><?php echo esc_html__('Prioridad:', 'flavor-chat-ia'); ?></strong></label>
+                            <label><strong><?php echo esc_html__('Prioridad:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label>
                             <select name="prioridad" class="regular-text">
-                                <option value=""><?php echo esc_html__('Todas', 'flavor-chat-ia'); ?></option>
-                                <option value="<?php echo esc_attr__('baja', 'flavor-chat-ia'); ?>" <?php selected($prioridad_filtro, 'baja'); ?>><?php echo esc_html__('Baja', 'flavor-chat-ia'); ?></option>
-                                <option value="<?php echo esc_attr__('media', 'flavor-chat-ia'); ?>" <?php selected($prioridad_filtro, 'media'); ?>><?php echo esc_html__('Media', 'flavor-chat-ia'); ?></option>
-                                <option value="<?php echo esc_attr__('alta', 'flavor-chat-ia'); ?>" <?php selected($prioridad_filtro, 'alta'); ?>><?php echo esc_html__('Alta', 'flavor-chat-ia'); ?></option>
-                                <option value="<?php echo esc_attr__('urgente', 'flavor-chat-ia'); ?>" <?php selected($prioridad_filtro, 'urgente'); ?>><?php echo esc_html__('Urgente', 'flavor-chat-ia'); ?></option>
+                                <option value=""><?php echo esc_html__('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="<?php echo esc_attr__('baja', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($prioridad_filtro, 'baja'); ?>><?php echo esc_html__('Baja', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="<?php echo esc_attr__('media', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($prioridad_filtro, 'media'); ?>><?php echo esc_html__('Media', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="<?php echo esc_attr__('alta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($prioridad_filtro, 'alta'); ?>><?php echo esc_html__('Alta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="<?php echo esc_attr__('urgente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($prioridad_filtro, 'urgente'); ?>><?php echo esc_html__('Urgente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             </select>
                         </div>
 
                         <div>
-                            <label><strong><?php echo esc_html__('Buscar:', 'flavor-chat-ia'); ?></strong></label>
-                            <input type="text" name="s" value="<?php echo esc_attr($buscar); ?>" class="regular-text" placeholder="<?php echo esc_attr__('Número, título...', 'flavor-chat-ia'); ?>">
+                            <label><strong><?php echo esc_html__('Buscar:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label>
+                            <input type="text" name="s" value="<?php echo esc_attr($buscar); ?>" class="regular-text" placeholder="<?php echo esc_attr__('Número, título...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         </div>
 
                     </div>
 
                     <button type="submit" class="button button-primary">
-                        <span class="dashicons dashicons-search"></span> <?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?>
+                        <span class="dashicons dashicons-search"></span> <?php echo esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <a href="<?php echo admin_url('admin.php?page=incidencias-todas'); ?>" class="button">
-                        <?php echo esc_html__('Limpiar filtros', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Limpiar filtros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </form>
             </div>
@@ -287,14 +287,14 @@ $usuarios_staff = get_users(['role__in' => ['administrator', 'editor']]);
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
-                            <th style="width: 100px;"><?php echo esc_html__('Número', 'flavor-chat-ia'); ?></th>
-                            <th><?php echo esc_html__('Título', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 120px;"><?php echo esc_html__('Categoría', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 100px;"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 100px;"><?php echo esc_html__('Prioridad', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 150px;"><?php echo esc_html__('Fecha Reporte', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 80px;"><?php echo esc_html__('Votos', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 100px;"><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
+                            <th style="width: 100px;"><?php echo esc_html__('Número', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php echo esc_html__('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 120px;"><?php echo esc_html__('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 100px;"><?php echo esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 100px;"><?php echo esc_html__('Prioridad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 150px;"><?php echo esc_html__('Fecha Reporte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 80px;"><?php echo esc_html__('Votos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 100px;"><?php echo esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -351,7 +351,7 @@ $usuarios_staff = get_users(['role__in' => ['administrator', 'editor']]);
                                     </td>
                                     <td>
                                         <a href="<?php echo admin_url('admin.php?page=incidencias-todas&id=' . $incidencia->id); ?>" class="button button-small">
-                                            <?php echo esc_html__('Ver detalles', 'flavor-chat-ia'); ?>
+                                            <?php echo esc_html__('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </a>
                                     </td>
                                 </tr>
@@ -359,7 +359,7 @@ $usuarios_staff = get_users(['role__in' => ['administrator', 'editor']]);
                         <?php else: ?>
                             <tr>
                                 <td colspan="8" style="text-align: center; padding: 40px 0; color: #646970;">
-                                    <?php echo esc_html__('No se encontraron incidencias', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('No se encontraron incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </td>
                             </tr>
                         <?php endif; ?>
@@ -410,11 +410,11 @@ $usuarios_staff = get_users(['role__in' => ['administrator', 'editor']]);
                         <div class="inside">
                             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px;">
                                 <div>
-                                    <strong><?php echo esc_html__('Categoría:', 'flavor-chat-ia'); ?></strong><br>
+                                    <strong><?php echo esc_html__('Categoría:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong><br>
                                     <?php echo esc_html(ucfirst(str_replace('_', ' ', $incidencia_detalle->categoria))); ?>
                                 </div>
                                 <div>
-                                    <strong><?php echo esc_html__('Estado:', 'flavor-chat-ia'); ?></strong><br>
+                                    <strong><?php echo esc_html__('Estado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong><br>
                                     <?php
                                     $estado_colores = [
                                         'pendiente' => '#f0b849',
@@ -430,7 +430,7 @@ $usuarios_staff = get_users(['role__in' => ['administrator', 'editor']]);
                                     </span>
                                 </div>
                                 <div>
-                                    <strong><?php echo esc_html__('Prioridad:', 'flavor-chat-ia'); ?></strong><br>
+                                    <strong><?php echo esc_html__('Prioridad:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong><br>
                                     <?php
                                     $prioridad_colores = [
                                         'baja' => '#00a32a',
@@ -445,15 +445,15 @@ $usuarios_staff = get_users(['role__in' => ['administrator', 'editor']]);
                                     </span>
                                 </div>
                                 <div>
-                                    <strong><?php echo esc_html__('Fecha Reporte:', 'flavor-chat-ia'); ?></strong><br>
+                                    <strong><?php echo esc_html__('Fecha Reporte:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong><br>
                                     <?php echo date('d/m/Y H:i', strtotime($incidencia_detalle->fecha_reporte)); ?>
                                 </div>
                                 <div>
-                                    <strong><?php echo esc_html__('Ubicación:', 'flavor-chat-ia'); ?></strong><br>
+                                    <strong><?php echo esc_html__('Ubicación:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong><br>
                                     <?php echo $incidencia_detalle->direccion ? esc_html($incidencia_detalle->direccion) : '<em>No especificada</em>'; ?>
                                 </div>
                                 <div>
-                                    <strong><?php echo esc_html__('Votos Ciudadanos:', 'flavor-chat-ia'); ?></strong><br>
+                                    <strong><?php echo esc_html__('Votos Ciudadanos:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong><br>
                                     <span class="dashicons dashicons-thumbs-up" style="color: #2271b1;"></span>
                                     <?php echo $incidencia_detalle->votos_ciudadanos; ?>
                                 </div>
@@ -462,14 +462,14 @@ $usuarios_staff = get_users(['role__in' => ['administrator', 'editor']]);
                             <hr>
 
                             <div style="margin-top: 15px;">
-                                <strong><?php echo esc_html__('Descripción:', 'flavor-chat-ia'); ?></strong>
+                                <strong><?php echo esc_html__('Descripción:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                                 <p><?php echo nl2br(esc_html($incidencia_detalle->descripcion)); ?></p>
                             </div>
 
                             <?php if ($incidencia_detalle->notas_internas): ?>
                                 <hr>
                                 <div style="background: #fff3cd; border-left: 4px solid #f0b849; padding: 15px; margin-top: 15px;">
-                                    <strong><?php echo esc_html__('Notas Internas:', 'flavor-chat-ia'); ?></strong>
+                                    <strong><?php echo esc_html__('Notas Internas:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                                     <p style="margin: 5px 0 0 0;"><?php echo nl2br(esc_html($incidencia_detalle->notas_internas)); ?></p>
                                 </div>
                             <?php endif; ?>
@@ -479,7 +479,7 @@ $usuarios_staff = get_users(['role__in' => ['administrator', 'editor']]);
                     <!-- Historial de seguimiento -->
                     <div class="postbox" style="margin-top: 20px;">
                         <div class="postbox-header">
-                            <h2><?php echo esc_html__('Historial de Seguimiento', 'flavor-chat-ia'); ?></h2>
+                            <h2><?php echo esc_html__('Historial de Seguimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                         </div>
                         <div class="inside">
                             <div class="flavor-timeline">
@@ -512,7 +512,7 @@ $usuarios_staff = get_users(['role__in' => ['administrator', 'editor']]);
                                                     </span>
                                                     <?php if (!$item->es_publico): ?>
                                                         <span class="flavor-badge" style="background: #ff8c00; color: white; padding: 3px 8px; border-radius: 3px; font-size: 11px; text-transform: uppercase;">
-                                                            <?php echo esc_html__('Privado', 'flavor-chat-ia'); ?>
+                                                            <?php echo esc_html__('Privado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                                         </span>
                                                     <?php endif; ?>
                                                 </div>
@@ -528,7 +528,7 @@ $usuarios_staff = get_users(['role__in' => ['administrator', 'editor']]);
                                         </div>
                                     <?php endforeach; ?>
                                 <?php else: ?>
-                                    <p style="color: #646970; text-align: center; padding: 20px 0;"><?php echo esc_html__('No hay seguimiento registrado', 'flavor-chat-ia'); ?></p>
+                                    <p style="color: #646970; text-align: center; padding: 20px 0;"><?php echo esc_html__('No hay seguimiento registrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                 <?php endif; ?>
                             </div>
 
@@ -536,11 +536,11 @@ $usuarios_staff = get_users(['role__in' => ['administrator', 'editor']]);
                             <hr style="margin: 20px 0;">
                             <form method="post" action="" id="form-agregar-comentario">
                                 <?php wp_nonce_field('flavor_incidencias_action'); ?>
-                                <input type="hidden" name="action" value="<?php echo esc_attr__('agregar_comentario', 'flavor-chat-ia'); ?>">
+                                <input type="hidden" name="action" value="<?php echo esc_attr__('agregar_comentario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <input type="hidden" name="incidencia_id" value="<?php echo $incidencia_detalle->id; ?>">
 
                                 <p>
-                                    <label><strong><?php echo esc_html__('Agregar Comentario:', 'flavor-chat-ia'); ?></strong></label>
+                                    <label><strong><?php echo esc_html__('Agregar Comentario:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label>
                                     <!-- Panel de sugerencias IA se inyecta aquí vía JS -->
                                     <textarea name="comentario" id="incidencia-respuesta" rows="4" class="large-text ticket-reply-textarea" required
                                         data-incidencia-id="<?php echo esc_attr($incidencia_detalle->id); ?>"
@@ -552,12 +552,12 @@ $usuarios_staff = get_users(['role__in' => ['administrator', 'editor']]);
                                 <p>
                                     <label>
                                         <input type="checkbox" name="es_publico" value="1" checked>
-                                        <?php echo esc_html__('Visible para el ciudadano', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Visible para el ciudadano', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </label>
                                 </p>
 
                                 <button type="submit" class="button button-primary">
-                                    <span class="dashicons dashicons-plus"></span> <?php echo esc_html__('Agregar Comentario', 'flavor-chat-ia'); ?>
+                                    <span class="dashicons dashicons-plus"></span> <?php echo esc_html__('Agregar Comentario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             </form>
                         </div>
@@ -571,33 +571,33 @@ $usuarios_staff = get_users(['role__in' => ['administrator', 'editor']]);
                     <!-- Cambiar estado -->
                     <div class="postbox">
                         <div class="postbox-header">
-                            <h2><?php echo esc_html__('Cambiar Estado', 'flavor-chat-ia'); ?></h2>
+                            <h2><?php echo esc_html__('Cambiar Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                         </div>
                         <div class="inside">
                             <form method="post" action="">
                                 <?php wp_nonce_field('flavor_incidencias_action'); ?>
-                                <input type="hidden" name="action" value="<?php echo esc_attr__('cambiar_estado', 'flavor-chat-ia'); ?>">
+                                <input type="hidden" name="action" value="<?php echo esc_attr__('cambiar_estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <input type="hidden" name="incidencia_id" value="<?php echo $incidencia_detalle->id; ?>">
 
                                 <p>
-                                    <label><strong><?php echo esc_html__('Nuevo Estado:', 'flavor-chat-ia'); ?></strong></label>
+                                    <label><strong><?php echo esc_html__('Nuevo Estado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label>
                                     <select name="nuevo_estado" class="regular-text" required>
-                                        <option value=""><?php echo esc_html__('Seleccionar...', 'flavor-chat-ia'); ?></option>
-                                        <option value="<?php echo esc_attr__('pendiente', 'flavor-chat-ia'); ?>" <?php selected($incidencia_detalle->estado, 'pendiente'); ?>><?php echo esc_html__('Pendiente', 'flavor-chat-ia'); ?></option>
-                                        <option value="<?php echo esc_attr__('en_proceso', 'flavor-chat-ia'); ?>" <?php selected($incidencia_detalle->estado, 'en_proceso'); ?>><?php echo esc_html__('En Proceso', 'flavor-chat-ia'); ?></option>
-                                        <option value="<?php echo esc_attr__('resuelta', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Resuelta', 'flavor-chat-ia'); ?></option>
-                                        <option value="<?php echo esc_attr__('cerrada', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Cerrada', 'flavor-chat-ia'); ?></option>
-                                        <option value="<?php echo esc_attr__('rechazada', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Rechazada', 'flavor-chat-ia'); ?></option>
+                                        <option value=""><?php echo esc_html__('Seleccionar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                        <option value="<?php echo esc_attr__('pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($incidencia_detalle->estado, 'pendiente'); ?>><?php echo esc_html__('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                        <option value="<?php echo esc_attr__('en_proceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" <?php selected($incidencia_detalle->estado, 'en_proceso'); ?>><?php echo esc_html__('En Proceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                        <option value="<?php echo esc_attr__('resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_html__('Resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                        <option value="<?php echo esc_attr__('cerrada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_html__('Cerrada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                        <option value="<?php echo esc_attr__('rechazada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_html__('Rechazada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                     </select>
                                 </p>
 
                                 <p>
-                                    <label><strong><?php echo esc_html__('Comentario:', 'flavor-chat-ia'); ?></strong></label>
+                                    <label><strong><?php echo esc_html__('Comentario:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label>
                                     <textarea name="comentario" rows="3" class="regular-text" required></textarea>
                                 </p>
 
                                 <button type="submit" class="button button-primary button-large" style="width: 100%;">
-                                    <span class="dashicons dashicons-update"></span> <?php echo esc_html__('Actualizar Estado', 'flavor-chat-ia'); ?>
+                                    <span class="dashicons dashicons-update"></span> <?php echo esc_html__('Actualizar Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             </form>
                         </div>
@@ -606,18 +606,18 @@ $usuarios_staff = get_users(['role__in' => ['administrator', 'editor']]);
                     <!-- Asignar personal -->
                     <div class="postbox" style="margin-top: 20px;">
                         <div class="postbox-header">
-                            <h2><?php echo esc_html__('Asignar Personal', 'flavor-chat-ia'); ?></h2>
+                            <h2><?php echo esc_html__('Asignar Personal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                         </div>
                         <div class="inside">
                             <form method="post" action="">
                                 <?php wp_nonce_field('flavor_incidencias_action'); ?>
-                                <input type="hidden" name="action" value="<?php echo esc_attr__('asignar_personal', 'flavor-chat-ia'); ?>">
+                                <input type="hidden" name="action" value="<?php echo esc_attr__('asignar_personal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <input type="hidden" name="incidencia_id" value="<?php echo $incidencia_detalle->id; ?>">
 
                                 <p>
-                                    <label><strong><?php echo esc_html__('Asignar a:', 'flavor-chat-ia'); ?></strong></label>
+                                    <label><strong><?php echo esc_html__('Asignar a:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label>
                                     <select name="asignado_a" class="regular-text" required>
-                                        <option value=""><?php echo esc_html__('Seleccionar...', 'flavor-chat-ia'); ?></option>
+                                        <option value=""><?php echo esc_html__('Seleccionar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                         <?php foreach ($usuarios_staff as $usuario): ?>
                                             <option value="<?php echo $usuario->ID; ?>" <?php selected($incidencia_detalle->asignado_a, $usuario->ID); ?>>
                                                 <?php echo esc_html($usuario->display_name); ?>
@@ -627,20 +627,20 @@ $usuarios_staff = get_users(['role__in' => ['administrator', 'editor']]);
                                 </p>
 
                                 <p>
-                                    <label><strong><?php echo esc_html__('Departamento:', 'flavor-chat-ia'); ?></strong></label>
+                                    <label><strong><?php echo esc_html__('Departamento:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></label>
                                     <select name="departamento" class="regular-text" required>
-                                        <option value=""><?php echo esc_html__('Seleccionar...', 'flavor-chat-ia'); ?></option>
-                                        <option value="<?php echo esc_attr__('Mantenimiento', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Mantenimiento', 'flavor-chat-ia'); ?></option>
-                                        <option value="<?php echo esc_attr__('Limpieza', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Limpieza', 'flavor-chat-ia'); ?></option>
-                                        <option value="<?php echo esc_attr__('Obras Públicas', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Obras Públicas', 'flavor-chat-ia'); ?></option>
-                                        <option value="<?php echo esc_attr__('Parques y Jardines', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Parques y Jardines', 'flavor-chat-ia'); ?></option>
-                                        <option value="<?php echo esc_attr__('Servicios Urbanos', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Servicios Urbanos', 'flavor-chat-ia'); ?></option>
-                                        <option value="<?php echo esc_attr__('Medio Ambiente', 'flavor-chat-ia'); ?>"><?php echo esc_html__('Medio Ambiente', 'flavor-chat-ia'); ?></option>
+                                        <option value=""><?php echo esc_html__('Seleccionar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                        <option value="<?php echo esc_attr__('Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_html__('Mantenimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                        <option value="<?php echo esc_attr__('Limpieza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_html__('Limpieza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                        <option value="<?php echo esc_attr__('Obras Públicas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_html__('Obras Públicas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                        <option value="<?php echo esc_attr__('Parques y Jardines', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_html__('Parques y Jardines', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                        <option value="<?php echo esc_attr__('Servicios Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_html__('Servicios Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                        <option value="<?php echo esc_attr__('Medio Ambiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_html__('Medio Ambiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                     </select>
                                 </p>
 
                                 <button type="submit" class="button button-primary button-large" style="width: 100%;">
-                                    <span class="dashicons dashicons-admin-users"></span> <?php echo esc_html__('Asignar', 'flavor-chat-ia'); ?>
+                                    <span class="dashicons dashicons-admin-users"></span> <?php echo esc_html__('Asignar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             </form>
                         </div>
@@ -652,15 +652,15 @@ $usuarios_staff = get_users(['role__in' => ['administrator', 'editor']]);
                         <?php if ($ciudadano): ?>
                             <div class="postbox" style="margin-top: 20px;">
                                 <div class="postbox-header">
-                                    <h2><?php echo esc_html__('Información del Ciudadano', 'flavor-chat-ia'); ?></h2>
+                                    <h2><?php echo esc_html__('Información del Ciudadano', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                                 </div>
                                 <div class="inside">
                                     <p>
-                                        <strong><?php echo esc_html__('Nombre:', 'flavor-chat-ia'); ?></strong><br>
+                                        <strong><?php echo esc_html__('Nombre:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong><br>
                                         <?php echo esc_html($ciudadano->display_name); ?>
                                     </p>
                                     <p>
-                                        <strong><?php echo esc_html__('Email:', 'flavor-chat-ia'); ?></strong><br>
+                                        <strong><?php echo esc_html__('Email:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong><br>
                                         <a href="mailto:<?php echo esc_attr($ciudadano->user_email); ?>">
                                             <?php echo esc_html($ciudadano->user_email); ?>
                                         </a>
@@ -671,10 +671,10 @@ $usuarios_staff = get_users(['role__in' => ['administrator', 'editor']]);
                     <?php else: ?>
                         <div class="postbox" style="margin-top: 20px;">
                             <div class="postbox-header">
-                                <h2><?php echo esc_html__('Información del Ciudadano', 'flavor-chat-ia'); ?></h2>
+                                <h2><?php echo esc_html__('Información del Ciudadano', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                             </div>
                             <div class="inside">
-                                <p style="color: #646970;"><em><?php echo esc_html__('Reporte anónimo', 'flavor-chat-ia'); ?></em></p>
+                                <p style="color: #646970;"><em><?php echo esc_html__('Reporte anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></em></p>
                             </div>
                         </div>
                     <?php endif; ?>
@@ -685,7 +685,7 @@ $usuarios_staff = get_users(['role__in' => ['administrator', 'editor']]);
 
         <?php else: ?>
             <div class="notice notice-error">
-                <p><?php echo esc_html__('La incidencia solicitada no existe.', 'flavor-chat-ia'); ?></p>
+                <p><?php echo esc_html__('La incidencia solicitada no existe.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         <?php endif; ?>
 

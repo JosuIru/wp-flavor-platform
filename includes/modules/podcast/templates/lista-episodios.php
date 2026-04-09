@@ -25,7 +25,7 @@ $total_paginas = $total_paginas ?? 1;
 $esta_suscrito = $esta_suscrito ?? false;
 
 if (!$serie) {
-    echo '<div class="flavor-aviso flavor-aviso-error">' . esc_html__('Serie no encontrada.', 'flavor-chat-ia') . '</div>';
+    echo '<div class="flavor-aviso flavor-aviso-error">' . esc_html__('Serie no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
     return;
 }
 
@@ -51,14 +51,14 @@ $total_episodios = count($episodios);
             <h1 class="flavor-serie-titulo-principal"><?php echo esc_html($serie->titulo); ?></h1>
             <?php if (!empty($serie->autor_nombre)): ?>
             <p class="flavor-serie-autor">
-                <?php echo esc_html__('Por', 'flavor-chat-ia') . ' ' . esc_html($serie->autor_nombre); ?>
+                <?php echo esc_html__('Por', FLAVOR_PLATFORM_TEXT_DOMAIN) . ' ' . esc_html($serie->autor_nombre); ?>
             </p>
             <?php endif; ?>
             <div class="flavor-serie-stats-compacto">
                 <span class="flavor-stat">
                     <span class="dashicons dashicons-playlist-audio"></span>
                     <?php echo sprintf(
-                        esc_html(_n('%d episodio', '%d episodios', $total_episodios, 'flavor-chat-ia')),
+                        esc_html(_n('%d episodio', '%d episodios', $total_episodios, FLAVOR_PLATFORM_TEXT_DOMAIN)),
                         $total_episodios
                     ); ?>
                 </span>
@@ -66,7 +66,7 @@ $total_episodios = count($episodios);
                 <span class="flavor-stat">
                     <span class="dashicons dashicons-groups"></span>
                     <?php echo sprintf(
-                        esc_html(_n('%d suscriptor', '%d suscriptores', $serie->total_suscriptores, 'flavor-chat-ia')),
+                        esc_html(_n('%d suscriptor', '%d suscriptores', $serie->total_suscriptores, FLAVOR_PLATFORM_TEXT_DOMAIN)),
                         intval($serie->total_suscriptores)
                     ); ?>
                 </span>
@@ -79,7 +79,7 @@ $total_episodios = count($episodios);
                     class="flavor-btn <?php echo $esta_suscrito ? 'flavor-btn-outline flavor-suscrito' : 'flavor-btn-primary'; ?> flavor-btn-suscribir"
                     data-serie-id="<?php echo intval($serie->id); ?>">
                 <span class="dashicons dashicons-<?php echo $esta_suscrito ? 'yes' : 'heart'; ?>"></span>
-                <?php echo $esta_suscrito ? esc_html__('Suscrito', 'flavor-chat-ia') : esc_html__('Suscribirse', 'flavor-chat-ia'); ?>
+                <?php echo $esta_suscrito ? esc_html__('Suscrito', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Suscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
         <?php endif; ?>
@@ -89,16 +89,16 @@ $total_episodios = count($episodios);
     <div class="flavor-episodios-toolbar">
         <div class="flavor-episodios-contador">
             <?php echo sprintf(
-                esc_html__('Mostrando %d episodios', 'flavor-chat-ia'),
+                esc_html__('Mostrando %d episodios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $total_episodios
             ); ?>
         </div>
         <div class="flavor-episodios-ordenar">
-            <label for="orden-episodios"><?php esc_html_e('Ordenar:', 'flavor-chat-ia'); ?></label>
+            <label for="orden-episodios"><?php esc_html_e('Ordenar:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <select id="orden-episodios" class="flavor-select flavor-select-sm">
-                <option value="recientes"><?php esc_html_e('Mas recientes', 'flavor-chat-ia'); ?></option>
-                <option value="antiguos"><?php esc_html_e('Mas antiguos', 'flavor-chat-ia'); ?></option>
-                <option value="populares"><?php esc_html_e('Mas populares', 'flavor-chat-ia'); ?></option>
+                <option value="recientes"><?php esc_html_e('Mas recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="antiguos"><?php esc_html_e('Mas antiguos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="populares"><?php esc_html_e('Mas populares', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             </select>
         </div>
     </div>
@@ -131,7 +131,7 @@ $total_episodios = count($episodios);
                 <button type="button"
                         class="flavor-btn-play-circular"
                         data-audio="<?php echo esc_url($episodio->audio_url ?? ''); ?>"
-                        title="<?php esc_attr_e('Reproducir', 'flavor-chat-ia'); ?>">
+                        title="<?php esc_attr_e('Reproducir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-controls-play"></span>
                 </button>
             </div>
@@ -164,7 +164,7 @@ $total_episodios = count($episodios);
 
             <div class="flavor-episodio-stats-col">
                 <?php if (isset($episodio->reproducciones)): ?>
-                <span class="flavor-episodio-repro" title="<?php esc_attr_e('Reproducciones', 'flavor-chat-ia'); ?>">
+                <span class="flavor-episodio-repro" title="<?php esc_attr_e('Reproducciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-controls-play"></span>
                     <?php echo esc_html(number_format_i18n($episodio->reproducciones)); ?>
                 </span>
@@ -174,7 +174,7 @@ $total_episodios = count($episodios);
             <div class="flavor-episodio-acciones-col">
                 <a href="<?php echo esc_url(add_query_arg('episodio', $episodio->id)); ?>"
                    class="flavor-btn flavor-btn-sm flavor-btn-outline">
-                    <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </article>
@@ -188,13 +188,13 @@ $total_episodios = count($episodios);
         <a href="<?php echo esc_url(add_query_arg('pag', $pagina_actual - 1)); ?>"
            class="flavor-btn flavor-btn-sm flavor-btn-outline">
             <span class="dashicons dashicons-arrow-left-alt2"></span>
-            <?php esc_html_e('Anterior', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <?php endif; ?>
 
         <span class="flavor-paginacion-info">
             <?php echo sprintf(
-                esc_html__('Pagina %d de %d', 'flavor-chat-ia'),
+                esc_html__('Pagina %d de %d', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $pagina_actual,
                 $total_paginas
             ); ?>
@@ -203,7 +203,7 @@ $total_episodios = count($episodios);
         <?php if ($pagina_actual < $total_paginas): ?>
         <a href="<?php echo esc_url(add_query_arg('pag', $pagina_actual + 1)); ?>"
            class="flavor-btn flavor-btn-sm flavor-btn-outline">
-            <?php esc_html_e('Siguiente', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <span class="dashicons dashicons-arrow-right-alt2"></span>
         </a>
         <?php endif; ?>
@@ -213,14 +213,14 @@ $total_episodios = count($episodios);
     <?php else: ?>
     <div class="flavor-episodios-vacio">
         <span class="dashicons dashicons-format-audio"></span>
-        <h3><?php esc_html_e('Esta serie aun no tiene episodios', 'flavor-chat-ia'); ?></h3>
-        <p><?php esc_html_e('Vuelve pronto para escuchar nuevo contenido.', 'flavor-chat-ia'); ?></p>
+        <h3><?php esc_html_e('Esta serie aun no tiene episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+        <p><?php esc_html_e('Vuelve pronto para escuchar nuevo contenido.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         <?php if (is_user_logged_in() && !$esta_suscrito): ?>
         <button type="button"
                 class="flavor-btn flavor-btn-primary flavor-btn-suscribir"
                 data-serie-id="<?php echo intval($serie->id); ?>">
             <span class="dashicons dashicons-bell"></span>
-            <?php esc_html_e('Suscribirse para recibir notificaciones', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Suscribirse para recibir notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </button>
         <?php endif; ?>
     </div>

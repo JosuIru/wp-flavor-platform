@@ -62,7 +62,7 @@ $categorias_grupos = $categorias_grupos ?? [
     <div class="flavor-container">
         <div class="text-center mb-10">
             <h2 class="text-3xl font-bold text-gray-800 mb-2"><?php echo esc_html($titulo_categorias); ?></h2>
-            <p class="text-gray-500"><?php echo esc_html__('Encuentra grupos segun tus intereses', 'flavor-chat-ia'); ?></p>
+            <p class="text-gray-500"><?php echo esc_html__('Encuentra grupos segun tus intereses', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
@@ -75,7 +75,7 @@ $categorias_grupos = $categorias_grupos ?? [
                     </div>
                     <div class="text-center">
                         <h3 class="font-semibold text-gray-800 text-sm"><?php echo esc_html($categoria_item['nombre']); ?></h3>
-                        <span class="text-xs text-gray-400"><?php echo esc_html($categoria_item['total']); ?> <?php echo esc_html__('grupos', 'flavor-chat-ia'); ?></span>
+                        <span class="text-xs text-gray-400"><?php echo esc_html($categoria_item['total']); ?> <?php echo esc_html__('grupos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </a>
             <?php endforeach; ?>

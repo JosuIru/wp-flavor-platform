@@ -79,11 +79,11 @@ class Flavor_Keystore_Manager {
         check_ajax_referer('flavor_keystore', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No autorizado', 'flavor-chat-ia'));
+            wp_send_json_error(__('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         if (empty($_FILES['keystore'])) {
-            wp_send_json_error(__('No se recibió ningún archivo', 'flavor-chat-ia'));
+            wp_send_json_error(__('No se recibió ningún archivo', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $file = $_FILES['keystore'];
@@ -95,12 +95,12 @@ class Flavor_Keystore_Manager {
         // Validar extensión
         $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         if (!in_array($ext, ['jks', 'keystore'])) {
-            wp_send_json_error(__('Tipo de archivo no válido. Use .jks o .keystore', 'flavor-chat-ia'));
+            wp_send_json_error(__('Tipo de archivo no válido. Use .jks o .keystore', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Validar tamaño (máx 10MB)
         if ($file['size'] > 10 * 1024 * 1024) {
-            wp_send_json_error(__('El archivo es demasiado grande', 'flavor-chat-ia'));
+            wp_send_json_error(__('El archivo es demasiado grande', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Generar nombre único
@@ -109,7 +109,7 @@ class Flavor_Keystore_Manager {
 
         // Mover archivo
         if (!move_uploaded_file($file['tmp_name'], $destination)) {
-            wp_send_json_error(__('Error al guardar el archivo', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al guardar el archivo', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Guardar metadatos (encriptados)
@@ -132,7 +132,7 @@ class Flavor_Keystore_Manager {
         wp_send_json_success([
             'id' => $keystore_id,
             'name' => $keystores[$keystore_id]['name'],
-            'message' => __('Keystore subido correctamente', 'flavor-chat-ia'),
+            'message' => __('Keystore subido correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -143,7 +143,7 @@ class Flavor_Keystore_Manager {
         check_ajax_referer('flavor_keystore', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No autorizado', 'flavor-chat-ia'));
+            wp_send_json_error(__('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $keystores = get_option('flavor_keystores', []);
@@ -170,14 +170,14 @@ class Flavor_Keystore_Manager {
         check_ajax_referer('flavor_keystore', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No autorizado', 'flavor-chat-ia'));
+            wp_send_json_error(__('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $keystore_id = sanitize_text_field($_POST['keystore_id'] ?? '');
         $keystores = get_option('flavor_keystores', []);
 
         if (!isset($keystores[$keystore_id])) {
-            wp_send_json_error(__('Keystore no encontrado', 'flavor-chat-ia'));
+            wp_send_json_error(__('Keystore no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Eliminar archivo
@@ -195,7 +195,7 @@ class Flavor_Keystore_Manager {
             delete_option('flavor_default_keystore');
         }
 
-        wp_send_json_success(__('Keystore eliminado', 'flavor-chat-ia'));
+        wp_send_json_success(__('Keystore eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**
@@ -205,7 +205,7 @@ class Flavor_Keystore_Manager {
         check_ajax_referer('flavor_keystore', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No autorizado', 'flavor-chat-ia'));
+            wp_send_json_error(__('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Validar datos requeridos
@@ -225,25 +225,25 @@ class Flavor_Keystore_Manager {
 
         // Validaciones
         if (empty($params['name']) || empty($params['store_password']) || empty($params['cn'])) {
-            wp_send_json_error(__('Faltan campos requeridos', 'flavor-chat-ia'));
+            wp_send_json_error(__('Faltan campos requeridos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         if (strlen($params['store_password']) < 6) {
-            wp_send_json_error(__('La contraseña debe tener al menos 6 caracteres', 'flavor-chat-ia'));
+            wp_send_json_error(__('La contraseña debe tener al menos 6 caracteres', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         if ( ! $this->can_execute_commands() ) {
-            wp_send_json_error(__('La ejecución de comandos del sistema no está disponible en este entorno', 'flavor-chat-ia'));
+            wp_send_json_error(__('La ejecución de comandos del sistema no está disponible en este entorno', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         if ( ! preg_match( '/^[a-zA-Z0-9._-]+$/', $params['alias'] ) ) {
-            wp_send_json_error(__('El alias contiene caracteres no permitidos', 'flavor-chat-ia'));
+            wp_send_json_error(__('El alias contiene caracteres no permitidos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Verificar keytool disponible
         $keytool = $this->find_keytool();
         if (!$keytool) {
-            wp_send_json_error(__('keytool no encontrado. Instale Java JDK', 'flavor-chat-ia'));
+            wp_send_json_error(__('keytool no encontrado. Instale Java JDK', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Generar nombre de archivo único
@@ -278,7 +278,7 @@ class Flavor_Keystore_Manager {
         exec($command, $output, $return_var);
 
         if ($return_var !== 0 || !file_exists($filepath)) {
-            wp_send_json_error(__('Error generando keystore: ', 'flavor-chat-ia') . implode("\n", $output));
+            wp_send_json_error(__('Error generando keystore: ', FLAVOR_PLATFORM_TEXT_DOMAIN) . implode("\n", $output));
         }
 
         // Guardar metadatos
@@ -304,7 +304,7 @@ class Flavor_Keystore_Manager {
         wp_send_json_success([
             'id' => $keystore_id,
             'name' => $params['name'],
-            'message' => __('Keystore generado correctamente', 'flavor-chat-ia'),
+            'message' => __('Keystore generado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -315,30 +315,30 @@ class Flavor_Keystore_Manager {
         check_ajax_referer('flavor_keystore', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No autorizado', 'flavor-chat-ia'));
+            wp_send_json_error(__('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $keystore_id = sanitize_text_field($_POST['keystore_id'] ?? '');
         $keystores = get_option('flavor_keystores', []);
 
         if (!isset($keystores[$keystore_id])) {
-            wp_send_json_error(__('Keystore no encontrado', 'flavor-chat-ia'));
+            wp_send_json_error(__('Keystore no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $ks = $keystores[$keystore_id];
         $filepath = $this->keystore_dir . '/' . $ks['filename'];
 
         if (!file_exists($filepath)) {
-            wp_send_json_error(__('Archivo de keystore no encontrado', 'flavor-chat-ia'));
+            wp_send_json_error(__('Archivo de keystore no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         if ( ! $this->can_execute_commands() ) {
-            wp_send_json_error(__('La ejecución de comandos del sistema no está disponible en este entorno', 'flavor-chat-ia'));
+            wp_send_json_error(__('La ejecución de comandos del sistema no está disponible en este entorno', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $keytool = $this->find_keytool();
         if (!$keytool) {
-            wp_send_json_error(__('keytool no encontrado', 'flavor-chat-ia'));
+            wp_send_json_error(__('keytool no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $store_pass = $this->decrypt_value($ks['store_password']);
@@ -356,7 +356,7 @@ class Flavor_Keystore_Manager {
         exec($command, $output, $return_var);
 
         if ($return_var !== 0) {
-            wp_send_json_error(__('Error verificando keystore. Contraseña incorrecta?', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error verificando keystore. Contraseña incorrecta?', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Parsear información
@@ -384,19 +384,19 @@ class Flavor_Keystore_Manager {
         check_ajax_referer('flavor_keystore', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No autorizado', 'flavor-chat-ia'));
+            wp_send_json_error(__('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $keystore_id = sanitize_text_field($_POST['keystore_id'] ?? '');
         $keystores = get_option('flavor_keystores', []);
 
         if (!isset($keystores[$keystore_id])) {
-            wp_send_json_error(__('Keystore no encontrado', 'flavor-chat-ia'));
+            wp_send_json_error(__('Keystore no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         update_option('flavor_default_keystore', $keystore_id);
 
-        wp_send_json_success(__('Keystore establecido como predeterminado', 'flavor-chat-ia'));
+        wp_send_json_success(__('Keystore establecido como predeterminado', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**

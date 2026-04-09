@@ -52,15 +52,15 @@ if (function_exists('flavor_get_color_classes')) {
             <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
             </svg>
-            <?php printf(esc_html(_n('%d Comentario', '%d Comentarios', $total, 'flavor-chat-ia')), $total); ?>
+            <?php printf(esc_html(_n('%d Comentario', '%d Comentarios', $total, FLAVOR_PLATFORM_TEXT_DOMAIN)), $total); ?>
         </h3>
 
         <!-- Orden -->
         <select class="flavor-comments-order text-sm border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-            <option value="newest" <?php selected($order, 'newest'); ?>><?php esc_html_e('Más recientes', 'flavor-chat-ia'); ?></option>
-            <option value="oldest" <?php selected($order, 'oldest'); ?>><?php esc_html_e('Más antiguos', 'flavor-chat-ia'); ?></option>
+            <option value="newest" <?php selected($order, 'newest'); ?>><?php esc_html_e('Más recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+            <option value="oldest" <?php selected($order, 'oldest'); ?>><?php esc_html_e('Más antiguos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             <?php if ($allow_votes): ?>
-                <option value="popular" <?php selected($order, 'popular'); ?>><?php esc_html_e('Más votados', 'flavor-chat-ia'); ?></option>
+                <option value="popular" <?php selected($order, 'popular'); ?>><?php esc_html_e('Más votados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             <?php endif; ?>
         </select>
     </div>
@@ -73,14 +73,14 @@ if (function_exists('flavor_get_color_classes')) {
                 <div class="flex-1">
                     <textarea class="flavor-comment-input w-full px-4 py-3 border border-gray-200 rounded-xl resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                               rows="2"
-                              placeholder="<?php esc_attr_e('Escribe un comentario...', 'flavor-chat-ia'); ?>"></textarea>
+                              placeholder="<?php esc_attr_e('Escribe un comentario...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                     <div class="flex items-center justify-between mt-2">
                         <p class="text-xs text-gray-500">
-                            <?php esc_html_e('Sé respetuoso con los demás usuarios', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Sé respetuoso con los demás usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                         <button type="button" class="flavor-submit-comment px-4 py-2 text-sm font-medium text-white <?php echo esc_attr($color_classes['bg_solid']); ?> rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
                                 disabled>
-                            <?php esc_html_e('Comentar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Comentar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </div>
@@ -88,9 +88,9 @@ if (function_exists('flavor_get_color_classes')) {
         </div>
     <?php else: ?>
         <div class="bg-gray-50 rounded-xl p-4 mb-6 text-center">
-            <p class="text-gray-600 mb-2"><?php esc_html_e('Inicia sesión para comentar', 'flavor-chat-ia'); ?></p>
+            <p class="text-gray-600 mb-2"><?php esc_html_e('Inicia sesión para comentar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white <?php echo esc_attr($color_classes['bg_solid']); ?> rounded-lg hover:opacity-90">
-                <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     <?php endif; ?>
@@ -102,7 +102,7 @@ if (function_exists('flavor_get_color_classes')) {
                 <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                 </svg>
-                <p><?php esc_html_e('Sé el primero en comentar', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('Sé el primero en comentar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         <?php else: ?>
             <?php foreach ($comments as $comment): ?>
@@ -119,7 +119,7 @@ if (function_exists('flavor_get_color_classes')) {
     <?php if ($total > count($comments)): ?>
         <div class="text-center mt-6">
             <button type="button" class="flavor-load-more-comments px-6 py-2 text-sm font-medium <?php echo esc_attr($color_classes['text']); ?> border border-current rounded-lg hover:bg-gray-50 transition-colors">
-                <?php esc_html_e('Cargar más comentarios', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Cargar más comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     <?php endif; ?>
@@ -162,11 +162,11 @@ if (function_exists('flavor_get_color_classes')) {
                 <div class="flex items-center gap-4 mt-2 ml-2">
                     <?php if ($allow_reply && $is_logged_in): ?>
                         <button type="button" class="comment-reply text-xs text-gray-500 hover:text-gray-700">
-                            <?php esc_html_e('Responder', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Responder', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     <?php endif; ?>
                     <button type="button" class="comment-report text-xs text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <?php esc_html_e('Reportar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Reportar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
 
@@ -209,7 +209,7 @@ if (function_exists('flavor_get_color_classes')) {
             if (!content) return;
 
             submitBtn.disabled = true;
-            submitBtn.textContent = '<?php esc_html_e('Enviando...', 'flavor-chat-ia'); ?>';
+            submitBtn.textContent = '<?php esc_html_e('Enviando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>';
 
             fetch(flavorAjax.url, {
                 method: 'POST',
@@ -240,11 +240,11 @@ if (function_exists('flavor_get_color_classes')) {
                     const currentCount = parseInt(header.textContent.match(/\d+/)[0]) + 1;
                     header.innerHTML = header.innerHTML.replace(/\d+/, currentCount);
                 }
-                submitBtn.textContent = '<?php esc_html_e('Comentar', 'flavor-chat-ia'); ?>';
+                submitBtn.textContent = '<?php esc_html_e('Comentar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>';
             })
             .catch(() => {
                 submitBtn.disabled = false;
-                submitBtn.textContent = '<?php esc_html_e('Comentar', 'flavor-chat-ia'); ?>';
+                submitBtn.textContent = '<?php esc_html_e('Comentar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>';
             });
         });
     }
@@ -284,12 +284,12 @@ if (function_exists('flavor_get_color_classes')) {
                 const replyForm = document.createElement('div');
                 replyForm.className = 'reply-form flex gap-2 mt-2';
                 replyForm.innerHTML = `
-                    <input type="text" class="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="<?php esc_attr_e('Escribe una respuesta...', 'flavor-chat-ia'); ?>">
+                    <input type="text" class="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="<?php esc_attr_e('Escribe una respuesta...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <button type="button" class="px-3 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600">
-                        <?php esc_html_e('Enviar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Enviar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button" class="px-3 py-2 text-sm text-gray-500 hover:text-gray-700">
-                        <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 `;
 
@@ -370,7 +370,7 @@ if (function_exists('flavor_get_color_classes')) {
     if (loadMoreBtn) {
         loadMoreBtn.addEventListener('click', function() {
             this.disabled = true;
-            this.textContent = '<?php esc_html_e('Cargando...', 'flavor-chat-ia'); ?>';
+            this.textContent = '<?php esc_html_e('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>';
 
             fetch(flavorAjax.url + '?' + new URLSearchParams({
                 action: 'flavor_get_comments',
@@ -393,7 +393,7 @@ if (function_exists('flavor_get_color_classes')) {
                         loadMoreBtn.remove();
                     } else {
                         loadMoreBtn.disabled = false;
-                        loadMoreBtn.textContent = '<?php esc_html_e('Cargar más comentarios', 'flavor-chat-ia'); ?>';
+                        loadMoreBtn.textContent = '<?php esc_html_e('Cargar más comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>';
                     }
                 }
             });

@@ -153,7 +153,7 @@ class Flavor_Deep_Link_Manager {
         if (!$config) {
             return new WP_Error(
                 'company_not_found',
-                __('Empresa no encontrada', 'flavor-chat-ia'),
+                __('Empresa no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 404]
             );
         }
@@ -219,7 +219,7 @@ class Flavor_Deep_Link_Manager {
         if (empty($params['slug']) || empty($params['nombre']) || empty($params['api_base'])) {
             return new WP_Error(
                 'missing_required_fields',
-                __('Faltan campos requeridos: slug, nombre, api_base', 'flavor-chat-ia'),
+                __('Faltan campos requeridos: slug, nombre, api_base', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 400]
             );
         }
@@ -228,7 +228,7 @@ class Flavor_Deep_Link_Manager {
         if (!preg_match('/^[a-z0-9-]+$/', $params['slug'])) {
             return new WP_Error(
                 'invalid_slug',
-                __('El slug solo puede contener letras minúsculas, números y guiones', 'flavor-chat-ia'),
+                __('El slug solo puede contener letras minúsculas, números y guiones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 400]
             );
         }
@@ -269,12 +269,12 @@ class Flavor_Deep_Link_Manager {
             );
 
             if ($result === false) {
-                return new WP_Error('db_error', __('Error al actualizar configuración', 'flavor-chat-ia'));
+                return new WP_Error('db_error', __('Error al actualizar configuración', FLAVOR_PLATFORM_TEXT_DOMAIN));
             }
 
             return new WP_REST_Response([
                 'success' => true,
-                'message' => __('Configuración actualizada correctamente', 'flavor-chat-ia'),
+                'message' => __('Configuración actualizada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => $data['slug'],
             ], 200);
         } else {
@@ -282,12 +282,12 @@ class Flavor_Deep_Link_Manager {
             $result = $wpdb->insert($table_name, $data, ['%s', '%s', '%s', '%s', '%s', '%s', '%d']);
 
             if ($result === false) {
-                return new WP_Error('db_error', __('Error al crear configuración', 'flavor-chat-ia'));
+                return new WP_Error('db_error', __('Error al crear configuración', FLAVOR_PLATFORM_TEXT_DOMAIN));
             }
 
             return new WP_REST_Response([
                 'success' => true,
-                'message' => __('Configuración creada correctamente', 'flavor-chat-ia'),
+                'message' => __('Configuración creada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => $data['slug'],
             ], 201);
         }
@@ -305,16 +305,16 @@ class Flavor_Deep_Link_Manager {
         $result = $wpdb->delete($table_name, ['slug' => $slug], ['%s']);
 
         if ($result === false) {
-            return new WP_Error('db_error', __('Error al eliminar configuración', 'flavor-chat-ia'));
+            return new WP_Error('db_error', __('Error al eliminar configuración', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         if ($result === 0) {
-            return new WP_Error('not_found', __('Configuración no encontrada', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Configuración no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => __('Configuración eliminada correctamente', 'flavor-chat-ia'),
+            'message' => __('Configuración eliminada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 200);
     }
 
@@ -334,7 +334,7 @@ class Flavor_Deep_Link_Manager {
         ));
 
         if (!$exists) {
-            return new WP_Error('company_not_found', __('Empresa no encontrada', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('company_not_found', __('Empresa no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         $site_url = get_site_url();
@@ -398,11 +398,11 @@ class Flavor_Deep_Link_Manager {
      */
     public function add_admin_menu() {
         add_submenu_page(
-            'flavor-chat-ia',
-            __('Deep Links App', 'flavor-chat-ia'),
-            __('Deep Links App', 'flavor-chat-ia'),
+            FLAVOR_PLATFORM_TEXT_DOMAIN,
+            __('Deep Links App', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Deep Links App', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
-            'flavor-deep-links',
+            'flavor-platform-deep-links',
             [$this, 'render_admin_page']
         );
     }
@@ -425,8 +425,11 @@ class Flavor_Deep_Link_Manager {
      */
     public function enqueue_admin_assets($hook) {
         $current_page = isset($_GET['page']) ? sanitize_key((string) $_GET['page']) : '';
-        $matches_page = ($current_page === 'flavor-deep-links');
-        $matches_hook = is_string($hook) && strpos($hook, 'page_flavor-deep-links') !== false;
+        $matches_page = in_array($current_page, ['flavor-platform-deep-links', 'flavor-deep-links'], true);
+        $matches_hook = is_string($hook) && (
+            strpos($hook, 'page_flavor-platform-deep-links') !== false ||
+            strpos($hook, 'page_flavor-deep-links') !== false
+        );
 
         if (!$matches_page && !$matches_hook) {
             return;
@@ -460,19 +463,19 @@ class Flavor_Deep_Link_Manager {
             'apiUrl' => rest_url(self::API_NAMESPACE),
             'nonce' => wp_create_nonce('wp_rest'),
             'i18n' => [
-                'addCompany' => __('Nueva Empresa', 'flavor-chat-ia'),
-                'editCompany' => __('Editar Empresa', 'flavor-chat-ia'),
-                'save' => __('Guardar', 'flavor-chat-ia'),
-                'saving' => __('Guardando...', 'flavor-chat-ia'),
-                'cancel' => __('Cancelar', 'flavor-chat-ia'),
-                'saved' => __('Configuración guardada correctamente', 'flavor-chat-ia'),
-                'deleted' => __('Configuración eliminada correctamente', 'flavor-chat-ia'),
-                'generatedLinks' => __('Enlaces Generados', 'flavor-chat-ia'),
-                'selectLogo' => __('Seleccionar Logo', 'flavor-chat-ia'),
-                'useThisImage' => __('Usar esta imagen', 'flavor-chat-ia'),
-                'confirmDelete' => __('¿Estás seguro de eliminar esta configuración?', 'flavor-chat-ia'),
-                'copied' => __('¡Copiado!', 'flavor-chat-ia'),
-                'error' => __('Error', 'flavor-chat-ia'),
+                'addCompany' => __('Nueva Empresa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'editCompany' => __('Editar Empresa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'save' => __('Guardar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'saving' => __('Guardando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cancel' => __('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'saved' => __('Configuración guardada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'deleted' => __('Configuración eliminada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'generatedLinks' => __('Enlaces Generados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'selectLogo' => __('Seleccionar Logo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'useThisImage' => __('Usar esta imagen', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmDelete' => __('¿Estás seguro de eliminar esta configuración?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'copied' => __('¡Copiado!', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }

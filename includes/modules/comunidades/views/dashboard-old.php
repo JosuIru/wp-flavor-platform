@@ -127,18 +127,18 @@ $privacidad_labels = ['publica' => 'Pública', 'privada' => 'Privada', 'secreta'
     <?php if (!$tablas_disponibles): ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <strong><?php esc_html_e('Sin datos disponibles:', 'flavor-chat-ia'); ?></strong>
-        <?php esc_html_e('Faltan tablas del módulo Comunidades o aún no hay actividad registrada.', 'flavor-chat-ia'); ?>
+        <strong><?php esc_html_e('Sin datos disponibles:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+        <?php esc_html_e('Faltan tablas del módulo Comunidades o aún no hay actividad registrada.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </div>
     <?php endif; ?>
 
     <div class="dm-header">
         <h1 class="dm-header__title">
             <span class="dashicons dashicons-admin-multisite"></span>
-            <?php esc_html_e('Dashboard de Comunidades', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Dashboard de Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h1>
         <a href="<?php echo esc_url(admin_url('admin.php?page=comunidades-listado&accion=nueva')); ?>" class="dm-btn dm-btn--primary">
-            <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nueva Comunidad', 'flavor-chat-ia'); ?>
+            <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nueva Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 
@@ -147,11 +147,11 @@ $privacidad_labels = ['publica' => 'Pública', 'privada' => 'Privada', 'secreta'
         <span class="dashicons dashicons-warning"></span>
         <div>
             <?php printf(
-                esc_html__('Hay %d comunidad(es) sin actividad en los últimos 30 días.', 'flavor-chat-ia'),
+                esc_html__('Hay %d comunidad(es) sin actividad en los últimos 30 días.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $sin_actividad
             ); ?>
             <a href="<?php echo esc_url(admin_url('admin.php?page=comunidades-listado&filtro=inactivas')); ?>" class="dm-btn dm-btn--sm dm-btn--warning" style="margin-left: 10px;">
-                <?php esc_html_e('Revisar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Revisar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>
@@ -161,37 +161,37 @@ $privacidad_labels = ['publica' => 'Pública', 'privada' => 'Privada', 'secreta'
     <div class="dm-stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
         <div class="dm-stat-card dm-stat-card--primary">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($total_comunidades); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Total Comunidades', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Total Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <span class="dashicons dashicons-admin-multisite dm-stat-card__icon"></span>
         </div>
 
         <div class="dm-stat-card dm-stat-card--success">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($miembros_activos); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Miembros Activos', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Miembros Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <span class="dashicons dashicons-groups dm-stat-card__icon"></span>
         </div>
 
         <div class="dm-stat-card dm-stat-card--purple">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($publicaciones_hoy); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Publicaciones Hoy', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Publicaciones Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <span class="dashicons dashicons-format-chat dm-stat-card__icon"></span>
         </div>
 
         <div class="dm-stat-card dm-stat-card--warning">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($eventos_programados); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Eventos Próximos', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Eventos Próximos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <span class="dashicons dashicons-calendar-alt dm-stat-card__icon"></span>
         </div>
 
         <div class="dm-stat-card dm-stat-card--pink">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($nuevos_miembros_semana); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Nuevos (7 días)', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Nuevos (7 días)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <span class="dashicons dashicons-plus-alt dm-stat-card__icon"></span>
         </div>
 
         <div class="dm-stat-card dm-stat-card--info">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($total_publicaciones); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Total Publicaciones', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Total Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <span class="dashicons dashicons-text-page dm-stat-card__icon"></span>
         </div>
     </div>
@@ -200,23 +200,23 @@ $privacidad_labels = ['publica' => 'Pública', 'privada' => 'Privada', 'secreta'
     <div class="dm-action-grid" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));">
         <a href="<?php echo esc_url(admin_url('admin.php?page=comunidades-listado')); ?>" class="dm-action-card">
             <span class="dashicons dashicons-admin-multisite dm-text-primary"></span>
-            <span><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=comunidades-miembros')); ?>" class="dm-action-card">
             <span class="dashicons dashicons-groups dm-text-purple"></span>
-            <span><?php esc_html_e('Miembros', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=comunidades-publicaciones')); ?>" class="dm-action-card">
             <span class="dashicons dashicons-format-chat dm-text-warning"></span>
-            <span><?php esc_html_e('Publicaciones', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('comunidades', '')); ?>" class="dm-action-card">
             <span class="dashicons dashicons-external dm-text-pink"></span>
-            <span><?php esc_html_e('Portal', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Portal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=comunidades-config')); ?>" class="dm-action-card">
             <span class="dashicons dashicons-admin-settings dm-text-muted"></span>
-            <span><?php esc_html_e('Configuración', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
     </div>
 
@@ -226,7 +226,7 @@ $privacidad_labels = ['publica' => 'Pública', 'privada' => 'Privada', 'secreta'
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-chart-pie"></span>
-                    <?php esc_html_e('Distribución por Categoría', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Distribución por Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <div class="dm-card__chart">
@@ -238,7 +238,7 @@ $privacidad_labels = ['publica' => 'Pública', 'privada' => 'Privada', 'secreta'
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-chart-line"></span>
-                    <?php esc_html_e('Crecimiento de Miembros (6 meses)', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Crecimiento de Miembros (6 meses)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <div class="dm-card__chart">
@@ -253,15 +253,15 @@ $privacidad_labels = ['publica' => 'Pública', 'privada' => 'Privada', 'secreta'
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-admin-multisite"></span>
-                    <?php esc_html_e('Comunidades Más Activas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Comunidades Más Activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <table class="dm-table">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('Comunidad', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Miembros', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -292,7 +292,7 @@ $privacidad_labels = ['publica' => 'Pública', 'privada' => 'Privada', 'secreta'
                             <td colspan="3">
                                 <div class="dm-empty">
                                     <span class="dashicons dashicons-admin-multisite"></span>
-                                    <p><?php esc_html_e('No hay comunidades registradas', 'flavor-chat-ia'); ?></p>
+                                    <p><?php esc_html_e('No hay comunidades registradas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                 </div>
                             </td>
                         </tr>
@@ -305,7 +305,7 @@ $privacidad_labels = ['publica' => 'Pública', 'privada' => 'Privada', 'secreta'
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-format-chat"></span>
-                    <?php esc_html_e('Actividad Reciente', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Actividad Reciente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <?php if (!empty($actividad_reciente)): ?>
@@ -316,7 +316,7 @@ $privacidad_labels = ['publica' => 'Pública', 'privada' => 'Privada', 'secreta'
                         <strong><?php echo esc_html($actividad['autor_nombre']); ?></strong>
                         <p><?php echo esc_html(wp_trim_words($actividad['contenido'], 12)); ?></p>
                         <span class="dm-item-list__muted">
-                            <?php esc_html_e('en', 'flavor-chat-ia'); ?> <strong><?php echo esc_html($actividad['comunidad_nombre']); ?></strong>
+                            <?php esc_html_e('en', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <strong><?php echo esc_html($actividad['comunidad_nombre']); ?></strong>
                         </span>
                     </div>
                     <div class="dm-item-list__meta">
@@ -328,7 +328,7 @@ $privacidad_labels = ['publica' => 'Pública', 'privada' => 'Privada', 'secreta'
             <?php else: ?>
             <div class="dm-empty">
                 <span class="dashicons dashicons-format-chat"></span>
-                <p><?php esc_html_e('No hay actividad reciente', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No hay actividad reciente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <?php endif; ?>
         </div>
@@ -398,7 +398,7 @@ jQuery(document).ready(function($) {
             data: {
                 labels: crecimientoData.map(function(c) { return c.mes; }),
                 datasets: [{
-                    label: '<?php esc_attr_e('Nuevos miembros', 'flavor-chat-ia'); ?>',
+                    label: '<?php esc_attr_e('Nuevos miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                     data: crecimientoData.map(function(c) { return c.value; }),
                     borderColor: purpleColor,
                     backgroundColor: 'rgba(139, 92, 246, 0.1)',

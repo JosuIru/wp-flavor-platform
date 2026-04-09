@@ -69,9 +69,9 @@ class Flavor_Addon_Admin {
      */
     public function add_menu_page() {
         add_submenu_page(
-            'flavor-chat-ia',  // Parent slug
-            __('Addons', 'flavor-chat-ia'),
-            __('Addons', 'flavor-chat-ia'),
+            FLAVOR_PLATFORM_TEXT_DOMAIN,  // Parent slug
+            __('Addons', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Addons', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-addons',
             [$this, 'render_addons_page']
@@ -117,7 +117,7 @@ class Flavor_Addon_Admin {
                     add_settings_error(
                         'flavor_addons',
                         'addon_activation_success',
-                        __('Addon activado correctamente.', 'flavor-chat-ia'),
+                        __('Addon activado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'success'
                     );
                 }
@@ -128,7 +128,7 @@ class Flavor_Addon_Admin {
                 add_settings_error(
                     'flavor_addons',
                     'addon_deactivation_success',
-                    __('Addon desactivado correctamente.', 'flavor-chat-ia'),
+                    __('Addon desactivado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'success'
                 );
                 break;
@@ -254,12 +254,12 @@ class Flavor_Addon_Admin {
 
         ?>
         <div class="wrap">
-            <h1><?php echo esc_html__('Addons de Flavor Platform', 'flavor-chat-ia'); ?></h1>
+            <h1><?php echo esc_html__('Addons de Flavor Platform', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
 
             <?php settings_errors('flavor_addons'); ?>
 
             <p class="description">
-                <?php echo esc_html__('Los addons extienden la funcionalidad de Flavor Platform con características adicionales.', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Los addons extienden la funcionalidad de Flavor Platform con características adicionales.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
 
             <!-- Estadísticas -->
@@ -269,7 +269,7 @@ class Flavor_Addon_Admin {
                         <?php echo esc_html($estadisticas['total_registrados']); ?>
                     </div>
                     <div style="color: #646970; font-size: 13px;">
-                        <?php echo esc_html__('Addons Disponibles', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Addons Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </div>
                 </div>
                 <div style="background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; padding: 15px; flex: 1;">
@@ -277,7 +277,7 @@ class Flavor_Addon_Admin {
                         <?php echo esc_html($estadisticas['total_activos']); ?>
                     </div>
                     <div style="color: #646970; font-size: 13px;">
-                        <?php echo esc_html__('Addons Activos', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Addons Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </div>
                 </div>
                 <div style="background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; padding: 15px; flex: 1;">
@@ -285,7 +285,7 @@ class Flavor_Addon_Admin {
                         <?php echo esc_html($estadisticas['premium_count']); ?>
                     </div>
                     <div style="color: #646970; font-size: 13px;">
-                        <?php echo esc_html__('Addons Premium', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Addons Premium', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </div>
                 </div>
             </div>
@@ -294,9 +294,9 @@ class Flavor_Addon_Admin {
                 <!-- Sin addons -->
                 <div class="flavor-addon-empty">
                     <span class="dashicons dashicons-admin-plugins"></span>
-                    <h2><?php echo esc_html__('No se detectaron addons', 'flavor-chat-ia'); ?></h2>
+                    <h2><?php echo esc_html__('No se detectaron addons', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                     <p>
-                        <?php echo esc_html__('Los addons son extensiones integradas que amplían las funcionalidades de Flavor Platform. Coloca los addons en la carpeta addons/ del plugin.', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Los addons son extensiones integradas que amplían las funcionalidades de Flavor Platform. Coloca los addons en la carpeta addons/ del plugin.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                     <p>
                         <code><?php echo esc_html(FLAVOR_CHAT_IA_PATH . 'addons/'); ?></code>
@@ -335,11 +335,11 @@ class Flavor_Addon_Admin {
                             <!-- Badges -->
                             <div style="margin-bottom: 15px;">
                                 <span class="flavor-addon-badge <?php echo $es_activo ? 'active' : 'inactive'; ?>">
-                                    <?php echo $es_activo ? esc_html__('Activo', 'flavor-chat-ia') : esc_html__('Inactivo', 'flavor-chat-ia'); ?>
+                                    <?php echo $es_activo ? esc_html__('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Inactivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                                 <?php if (!empty($configuracion['is_premium'])): ?>
                                     <span class="flavor-addon-badge premium">
-                                        <?php echo esc_html__('Premium', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Premium', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </span>
                                 <?php endif; ?>
                             </div>
@@ -355,7 +355,7 @@ class Flavor_Addon_Admin {
                             <div class="flavor-addon-meta">
                                 <?php if (!empty($configuracion['requires_core'])): ?>
                                     <span>
-                                        <?php echo esc_html__('Requiere Core:', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Requiere Core:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         <?php echo esc_html($configuracion['requires_core']); ?>
                                     </span>
                                 <?php endif; ?>
@@ -365,22 +365,22 @@ class Flavor_Addon_Admin {
                             <div class="flavor-addon-actions">
                                 <?php if ($es_activo): ?>
                                     <a href="<?php echo esc_url($url_accion); ?>" class="button">
-                                        <?php echo esc_html__('Desactivar', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Desactivar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                     <?php if (!empty($configuracion['settings_page'])): ?>
                                         <a href="<?php echo esc_url(admin_url($configuracion['settings_page'])); ?>" class="button button-primary">
-                                            <?php echo esc_html__('Configurar', 'flavor-chat-ia'); ?>
+                                            <?php echo esc_html__('Configurar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </a>
                                     <?php endif; ?>
                                 <?php else: ?>
                                     <a href="<?php echo esc_url($url_accion); ?>" class="button button-primary">
-                                        <?php echo esc_html__('Activar', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Activar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 <?php endif; ?>
 
                                 <?php if (!empty($configuracion['documentation_url'])): ?>
                                     <a href="<?php echo esc_url($configuracion['documentation_url']); ?>" class="button" target="_blank">
-                                        <?php echo esc_html__('Documentación', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Documentación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 <?php endif; ?>
                             </div>
@@ -391,18 +391,18 @@ class Flavor_Addon_Admin {
 
             <!-- Información adicional -->
             <div style="margin-top: 30px; padding: 20px; background: #f0f6fc; border-left: 4px solid #2271b1;">
-                <h3><?php echo esc_html__('¿Qué son los Addons?', 'flavor-chat-ia'); ?></h3>
+                <h3><?php echo esc_html__('¿Qué son los Addons?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <p>
-                    <?php echo esc_html__('Los addons son extensiones integradas que añaden funcionalidades específicas a Flavor Platform. Se ubican en la carpeta addons/ del plugin y se activan individualmente desde esta página, permitiendo personalizar tu instalación con solo las características que necesitas.', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Los addons son extensiones integradas que añaden funcionalidades específicas a Flavor Platform. Se ubican en la carpeta addons/ del plugin y se activan individualmente desde esta página, permitiendo personalizar tu instalación con solo las características que necesitas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
                 <p>
-                    <strong><?php echo esc_html__('Ventajas:', 'flavor-chat-ia'); ?></strong>
+                    <strong><?php echo esc_html__('Ventajas:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                 </p>
                 <ul style="list-style: disc; margin-left: 20px;">
-                    <li><?php echo esc_html__('Instala solo lo que necesitas', 'flavor-chat-ia'); ?></li>
-                    <li><?php echo esc_html__('Mejor rendimiento (menos código cargado)', 'flavor-chat-ia'); ?></li>
-                    <li><?php echo esc_html__('Actualizaciones independientes', 'flavor-chat-ia'); ?></li>
-                    <li><?php echo esc_html__('Fácil mantenimiento y debugging', 'flavor-chat-ia'); ?></li>
+                    <li><?php echo esc_html__('Instala solo lo que necesitas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                    <li><?php echo esc_html__('Mejor rendimiento (menos código cargado)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                    <li><?php echo esc_html__('Actualizaciones independientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                    <li><?php echo esc_html__('Fácil mantenimiento y debugging', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
                 </ul>
             </div>
         </div>

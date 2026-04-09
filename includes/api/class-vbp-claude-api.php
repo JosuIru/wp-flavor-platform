@@ -7068,7 +7068,7 @@ class Flavor_VBP_Claude_API {
 
         // Preparar título y slug
         if ( empty( $new_title ) ) {
-            $new_title = sprintf( __( 'Copia de %s', 'flavor-chat-ia' ), $post->post_title );
+            $new_title = sprintf( __( 'Copia de %s', FLAVOR_PLATFORM_TEXT_DOMAIN ), $post->post_title );
         }
         if ( empty( $new_slug ) ) {
             $new_slug = sanitize_title( $new_title );

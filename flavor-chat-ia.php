@@ -12,7 +12,7 @@
  * Author URI: https://gailu.net
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: flavor-chat-ia
+ * Text Domain: flavor-platform
  * Domain Path: /languages
  * Requires at least: 5.8
  * Tested up to: 6.4
@@ -71,6 +71,33 @@ if (!defined('FLAVOR_CHAT_IA_URL')) {
 }
 if (!defined('FLAVOR_CHAT_IA_BASENAME')) {
     define('FLAVOR_CHAT_IA_BASENAME', plugin_basename(__FILE__));
+}
+
+// Alias de compatibilidad para el rebranding a Flavor Platform.
+// Mantienen el nombre técnico legado sin romper instalaciones existentes.
+if (!defined('FLAVOR_PLATFORM_VERSION')) {
+    define('FLAVOR_PLATFORM_VERSION', FLAVOR_CHAT_IA_VERSION);
+}
+if (!defined('FLAVOR_PLATFORM_PATH')) {
+    define('FLAVOR_PLATFORM_PATH', FLAVOR_CHAT_IA_PATH);
+}
+if (!defined('FLAVOR_PLATFORM_URL')) {
+    define('FLAVOR_PLATFORM_URL', FLAVOR_CHAT_IA_URL);
+}
+if (!defined('FLAVOR_PLATFORM_BASENAME')) {
+    define('FLAVOR_PLATFORM_BASENAME', FLAVOR_CHAT_IA_BASENAME);
+}
+if (!defined('FLAVOR_CHAT_IA_SETTINGS_OPTION')) {
+    define('FLAVOR_CHAT_IA_SETTINGS_OPTION', 'flavor_chat_ia_settings');
+}
+if (!defined('FLAVOR_PLATFORM_SETTINGS_OPTION')) {
+    define('FLAVOR_PLATFORM_SETTINGS_OPTION', 'flavor_platform_settings');
+}
+if (!defined('FLAVOR_PLATFORM_TEXT_DOMAIN')) {
+    define('FLAVOR_PLATFORM_TEXT_DOMAIN', 'flavor-platform');
+}
+if (!defined('FLAVOR_CHAT_IA_TEXT_DOMAIN')) {
+    define('FLAVOR_CHAT_IA_TEXT_DOMAIN', 'flavor-platform');
 }
 
 // Modo debug
@@ -136,6 +163,112 @@ function flavor_chat_ia_log( $message, $level = 'info', $module = '' ) {
     }
 
     error_log( $prefix . ' ' . $message );
+}
+
+/**
+ * Alias de logging para el nombre comercial Flavor Platform.
+ *
+ * @param string $message Mensaje a loguear.
+ * @param string $level Nivel: 'debug', 'info', 'warning', 'error'.
+ * @param string $module Módulo origen.
+ */
+function flavor_platform_log( $message, $level = 'info', $module = '' ) {
+    flavor_chat_ia_log( $message, $level, $module );
+}
+
+/**
+ * Obtiene los settings principales con compatibilidad entre nombre legado y nuevo.
+ *
+ * @return array
+ */
+function flavor_get_main_settings() {
+    $platform_settings = get_option( FLAVOR_PLATFORM_SETTINGS_OPTION, null );
+    if ( is_array( $platform_settings ) ) {
+        return $platform_settings;
+    }
+
+    $legacy_settings = get_option( FLAVOR_CHAT_IA_SETTINGS_OPTION, array() );
+    return is_array( $legacy_settings ) ? $legacy_settings : array();
+}
+
+/**
+ * Persiste los settings principales en la opción legacy y en la nueva.
+ *
+ * @param array $settings Settings a guardar.
+ * @param bool  $autoload Autoload de la opción.
+ * @return bool
+ */
+function flavor_update_main_settings( array $settings, $autoload = true ) {
+    $updated_legacy = update_option( FLAVOR_CHAT_IA_SETTINGS_OPTION, $settings, $autoload );
+    update_option( FLAVOR_PLATFORM_SETTINGS_OPTION, $settings, $autoload );
+
+    wp_cache_delete( FLAVOR_CHAT_IA_SETTINGS_OPTION, 'options' );
+    wp_cache_delete( FLAVOR_PLATFORM_SETTINGS_OPTION, 'options' );
+
+    return (bool) $updated_legacy;
+}
+
+/**
+ * Sincroniza la opción nueva cuando se actualiza la legacy.
+ *
+ * @param array $old_value Valor anterior.
+ * @param array $value     Valor nuevo.
+ * @return void
+ */
+function flavor_sync_platform_settings_option( $old_value, $value ) {
+    if ( is_array( $value ) ) {
+        update_option( FLAVOR_PLATFORM_SETTINGS_OPTION, $value );
+        wp_cache_delete( FLAVOR_PLATFORM_SETTINGS_OPTION, 'options' );
+    }
+}
+
+add_action( 'update_option_' . FLAVOR_CHAT_IA_SETTINGS_OPTION, 'flavor_sync_platform_settings_option', 10, 2 );
+
+/**
+ * Carga el dominio legado y el nuevo dominio comercial.
+ *
+ * Mientras el código siga usando mayoritariamente `flavor-chat-ia`,
+ * mantenemos ambos dominios activos. Si todavía no existe un archivo `.mo`
+ * con el nombre nuevo, reutilizamos el archivo legado para que la transición
+ * no deje el plugin sin traducciones.
+ *
+ * @return void
+ */
+function flavor_load_textdomains() {
+    $languages_rel_path = dirname( FLAVOR_CHAT_IA_BASENAME ) . '/languages/';
+
+    load_plugin_textdomain(
+        FLAVOR_CHAT_IA_TEXT_DOMAIN,
+        false,
+        $languages_rel_path
+    );
+
+    load_plugin_textdomain(
+        FLAVOR_PLATFORM_TEXT_DOMAIN,
+        false,
+        $languages_rel_path
+    );
+
+    $locale = function_exists( 'determine_locale' ) ? determine_locale() : get_locale();
+    if ( ! is_string( $locale ) || $locale === '' ) {
+        return;
+    }
+
+    $domain_registry = $GLOBALS['l10n'] ?? [];
+    if ( isset( $domain_registry[ FLAVOR_PLATFORM_TEXT_DOMAIN ] ) ) {
+        return;
+    }
+
+    $new_domain_mofile = FLAVOR_CHAT_IA_PATH . 'languages/' . FLAVOR_PLATFORM_TEXT_DOMAIN . '-' . $locale . '.mo';
+    if ( file_exists( $new_domain_mofile ) ) {
+        load_textdomain( FLAVOR_PLATFORM_TEXT_DOMAIN, $new_domain_mofile );
+        return;
+    }
+
+    $legacy_domain_mofile = FLAVOR_CHAT_IA_PATH . 'languages/' . FLAVOR_CHAT_IA_TEXT_DOMAIN . '-' . $locale . '.mo';
+    if ( file_exists( $legacy_domain_mofile ) ) {
+        load_textdomain( FLAVOR_PLATFORM_TEXT_DOMAIN, $legacy_domain_mofile );
+    }
 }
 
 /**
@@ -232,7 +365,7 @@ function flavor_get_cached_settings( $option_name = 'main' ) {
             break;
         case 'main':
         default:
-            $cached_settings[ $option_name ] = get_option( 'flavor_chat_ia_settings', array() );
+            $cached_settings[ $option_name ] = flavor_get_main_settings();
             break;
     }
 
@@ -841,7 +974,7 @@ final class Flavor_Chat_IA {
         // Página de Servicios (Landing)
         if (!get_page_by_path('servicios')) {
             wp_insert_post([
-                'post_title' => __('Servicios', 'flavor-chat-ia'),
+                'post_title' => __('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'post_name' => 'servicios',
                 'post_content' => '[flavor_servicios mostrar_stats="yes" columnas="3"]',
                 'post_status' => 'publish',
@@ -855,7 +988,7 @@ final class Flavor_Chat_IA {
         // Página Mi Portal (Dashboard)
         if (!get_page_by_path('mi-portal')) {
             wp_insert_post([
-                'post_title' => __('Mi Portal', 'flavor-chat-ia'),
+                'post_title' => __('Mi Portal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'post_name' => 'mi-portal',
                 'post_content' => '[flavor_mi_portal mostrar_actividad="yes" mostrar_notificaciones="yes" columnas="3"]',
                 'post_status' => 'publish',
@@ -909,9 +1042,9 @@ final class Flavor_Chat_IA {
             'widget_color' => '#0073aa',
         ];
 
-        $existing = get_option('flavor_chat_ia_settings', []);
+        $existing = flavor_get_main_settings();
         $merged = wp_parse_args($existing, $defaults);
-        update_option('flavor_chat_ia_settings', $merged);
+        flavor_update_main_settings($merged);
 
         // Crear roles y capabilities personalizados
         if (class_exists('Flavor_Role_Manager')) {
@@ -993,11 +1126,7 @@ final class Flavor_Chat_IA {
      * Carga el textdomain para traducciones
      */
     public function load_textdomain() {
-        load_plugin_textdomain(
-            'flavor-chat-ia',
-            false,
-            dirname(FLAVOR_CHAT_IA_BASENAME) . '/languages/'
-        );
+        flavor_load_textdomains();
     }
 
     /**
@@ -1088,6 +1217,15 @@ function flavor_chat_ia() {
 }
 
 /**
+ * Helper de compatibilidad para el nombre comercial Flavor Platform.
+ *
+ * @return Flavor_Chat_IA
+ */
+function flavor_platform() {
+    return flavor_chat_ia();
+}
+
+/**
  * Inicialización del plugin usando hooks de WordPress.
  *
  * El plugin sigue teniendo bastante carga y registro de clases durante
@@ -1099,11 +1237,7 @@ function flavor_chat_ia() {
  * cualquier __()/esc_html__() posterior ya encuentre el dominio registrado.
  */
 
-load_plugin_textdomain(
-    'flavor-chat-ia',
-    false,
-    dirname(FLAVOR_CHAT_IA_BASENAME) . '/languages/'
-);
+flavor_load_textdomains();
 
 // Algunos modulos y dependencias cargan demasiado pronto y WordPress 6.7+
 // inyecta notices de `_load_textdomain_just_in_time` en el HTML. Mientras se
@@ -1121,15 +1255,17 @@ add_filter('doing_it_wrong_trigger_error', function($trigger, $function_name) {
 add_action('plugins_loaded', 'flavor_chat_ia', 1);
 
 // DEBUG TEMPORAL - Diagnóstico del portal layout (ELIMINAR DESPUÉS DE USAR)
-if (
-    is_admin() &&
-    defined( 'WP_DEBUG' ) &&
-    WP_DEBUG &&
-    current_user_can( 'manage_options' ) &&
-    file_exists(__DIR__ . '/debug-portal-layout.php')
-) {
-    require_once __DIR__ . '/debug-portal-layout.php';
-}
+// Se difiere a admin_init para no tocar capacidades antes de que WP cargue al usuario.
+add_action('admin_init', function() {
+    if (
+        defined('WP_DEBUG') &&
+        WP_DEBUG &&
+        current_user_can('manage_options') &&
+        file_exists(__DIR__ . '/debug-portal-layout.php')
+    ) {
+        require_once __DIR__ . '/debug-portal-layout.php';
+    }
+});
 
 /**
  * Registrar y encolar estilos visuales del VBP para el frontend

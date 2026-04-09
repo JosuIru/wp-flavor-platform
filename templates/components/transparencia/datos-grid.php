@@ -85,7 +85,7 @@ $categorias_datos = [
                                 <?php echo esc_html($categoria_dato['nombre']); ?>
                             </h3>
                             <span class="text-sm text-teal-600 font-medium">
-                                <?php echo esc_html($categoria_dato['total_documentos']); ?> <?php echo esc_html__('documentos', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html($categoria_dato['total_documentos']); ?> <?php echo esc_html__('documentos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         </div>
                     </div>
@@ -98,13 +98,13 @@ $categorias_datos = [
                     <!-- Pie con fecha y enlace -->
                     <div class="flex items-center justify-between pt-4 border-t border-gray-100">
                         <span class="text-xs text-gray-400">
-                            <?php echo esc_html__('Actualizado:', 'flavor-chat-ia'); ?> <?php echo esc_html($categoria_dato['ultima_actualizacion']); ?>
+                            <?php echo esc_html__('Actualizado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html($categoria_dato['ultima_actualizacion']); ?>
                         </span>
                         <a href="#" class="inline-flex items-center text-teal-600 hover:text-teal-700 text-sm font-medium transition duration-300">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                             </svg>
-                            <?php echo esc_html__('Descargar', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Descargar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </div>

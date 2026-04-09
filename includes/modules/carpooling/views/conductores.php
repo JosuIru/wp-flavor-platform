@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 
 // Verificar permisos
 if (!current_user_can('manage_options')) {
-    wp_die(__('No tienes permisos suficientes para acceder a esta página.', 'flavor-chat-ia'));
+    wp_die(__('No tienes permisos suficientes para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
 }
 
 global $wpdb;
@@ -81,7 +81,7 @@ $stats_totales = (object) [
 ?>
 
 <div class="wrap">
-    <h1 class="wp-heading-inline"><?php echo esc_html__('Gestión de Conductores', 'flavor-chat-ia'); ?></h1>
+    <h1 class="wp-heading-inline"><?php echo esc_html__('Gestión de Conductores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
     <hr class="wp-header-end">
 
     <!-- Estadísticas rápidas -->
@@ -91,7 +91,7 @@ $stats_totales = (object) [
                 <?php echo esc_html(number_format($stats_totales->total, 0, ',', '.')); ?>
             </div>
             <div style="color: #666; font-size: 12px; text-transform: uppercase;">
-                <?php esc_html_e('Total Conductores', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Total Conductores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
         </div>
         <div class="card" style="padding: 15px; text-align: center; min-width: 150px;">
@@ -99,7 +99,7 @@ $stats_totales = (object) [
                 <?php echo esc_html(number_format($stats_totales->activos, 0, ',', '.')); ?>
             </div>
             <div style="color: #666; font-size: 12px; text-transform: uppercase;">
-                <?php esc_html_e('Con viajes activos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Con viajes activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
         </div>
         <div class="card" style="padding: 15px; text-align: center; min-width: 150px;">
@@ -107,7 +107,7 @@ $stats_totales = (object) [
                 <?php echo esc_html(number_format($stats_totales->con_viajes_completados, 0, ',', '.')); ?>
             </div>
             <div style="color: #666; font-size: 12px; text-transform: uppercase;">
-                <?php esc_html_e('Con viajes completados', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Con viajes completados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
         </div>
     </div>
@@ -120,16 +120,16 @@ $stats_totales = (object) [
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; align-items: end;">
 
                 <div>
-                    <label for="busqueda"><?php esc_html_e('Buscar', 'flavor-chat-ia'); ?></label>
-                    <input type="text" name="s" id="busqueda" class="regular-text" placeholder="<?php esc_attr_e('Nombre o email', 'flavor-chat-ia'); ?>" value="<?php echo esc_attr($filtro_busqueda); ?>">
+                    <label for="busqueda"><?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                    <input type="text" name="s" id="busqueda" class="regular-text" placeholder="<?php esc_attr_e('Nombre o email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" value="<?php echo esc_attr($filtro_busqueda); ?>">
                 </div>
 
                 <div>
                     <button type="submit" class="button button-primary">
-                        <?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-conductores')); ?>" class="button">
-                        <?php esc_html_e('Limpiar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
 
@@ -142,13 +142,13 @@ $stats_totales = (object) [
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th style="width: 50px;"><?php esc_html_e('ID', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Conductor', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Valoracion', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Viajes', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Vehiculos', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Registro', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 50px;"><?php esc_html_e('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Conductor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Valoracion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Viajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Vehiculos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Registro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -177,7 +177,7 @@ $stats_totales = (object) [
                                 <?php echo esc_html($conductor->total_viajes); ?>
                                 <br>
                                 <small style="color: #666;">
-                                    <?php esc_html_e('Completados / Total', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Completados / Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </small>
                             </td>
                             <td>
@@ -186,7 +186,7 @@ $stats_totales = (object) [
                                     <br>
                                     <small>
                                         <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-conductores&action=vehiculos&conductor_id=' . $conductor->id)); ?>">
-                                            <?php esc_html_e('Ver vehiculos', 'flavor-chat-ia'); ?>
+                                            <?php esc_html_e('Ver vehiculos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </a>
                                     </small>
                                 <?php endif; ?>
@@ -198,7 +198,7 @@ $stats_totales = (object) [
                             </td>
                             <td>
                                 <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-viajes&conductor_id=' . $conductor->id)); ?>" class="button button-small">
-                                    <?php esc_html_e('Ver Viajes', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Ver Viajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             </td>
                         </tr>
@@ -208,7 +208,7 @@ $stats_totales = (object) [
                         <td colspan="7" style="text-align: center; padding: 40px;">
                             <div style="color: #666;">
                                 <span class="dashicons dashicons-admin-users" style="font-size: 48px; opacity: 0.3;"></span>
-                                <p><?php esc_html_e('No se encontraron conductores.', 'flavor-chat-ia'); ?></p>
+                                <p><?php esc_html_e('No se encontraron conductores.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </div>
                         </td>
                     </tr>
@@ -223,7 +223,7 @@ $stats_totales = (object) [
             <div class="tablenav-pages">
                 <span class="displaying-num">
                     <?php printf(
-                        esc_html__('%s conductores', 'flavor-chat-ia'),
+                        esc_html__('%s conductores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         number_format_i18n($total_conductores)
                     ); ?>
                 </span>

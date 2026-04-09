@@ -27,8 +27,8 @@ class Flavor_Transparencia_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
     public function __construct() {
         global $wpdb;
         $this->prefix_tabla = $wpdb->prefix . 'flavor_transparencia_';
-        $this->title = __('Transparencia', 'flavor-chat-ia');
-        $this->description = __('Portal de transparencia y datos abiertos', 'flavor-chat-ia');
+        $this->title = __('Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Portal de transparencia y datos abiertos', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         parent::__construct([
             'id' => $this->widget_id,
@@ -75,14 +75,14 @@ class Flavor_Transparencia_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
             [
                 'icon' => 'dashicons-media-document',
                 'valor' => $total_documentos,
-                'label' => __('Documentos', 'flavor-chat-ia'),
+                'label' => __('Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'primary',
                 'url' => $es_admin ? admin_url('admin.php?page=transparencia') : Flavor_Chat_Helpers::get_action_url('transparencia', ''),
             ],
             [
                 'icon' => 'dashicons-category',
                 'valor' => $total_categorias,
-                'label' => __('Categorías', 'flavor-chat-ia'),
+                'label' => __('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'info',
                 'url' => $es_admin ? admin_url('admin.php?page=transparencia&tab=categorias') : Flavor_Chat_Helpers::get_action_url('transparencia', 'categorias'),
             ],
@@ -93,10 +93,10 @@ class Flavor_Transparencia_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
         return [
             'stats' => $stats,
             'items' => $items,
-            'empty_state' => __('No hay documentos publicados', 'flavor-chat-ia'),
+            'empty_state' => __('No hay documentos publicados', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => __('Portal transparencia', 'flavor-chat-ia'),
+                    'label' => __('Portal transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => $es_admin ? admin_url('admin.php?page=transparencia') : Flavor_Chat_Helpers::get_action_url('transparencia', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],

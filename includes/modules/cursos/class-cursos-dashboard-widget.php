@@ -29,8 +29,8 @@ class Flavor_Cursos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         global $wpdb;
         $this->tabla_cursos = $wpdb->prefix . 'flavor_cursos';
         $this->tabla_matriculas = $wpdb->prefix . 'flavor_cursos_matriculas';
-        $this->title = __('Cursos', 'flavor-chat-ia');
-        $this->description = __('Formación y aprendizaje continuo', 'flavor-chat-ia');
+        $this->title = __('Cursos', 'flavor-platform');
+        $this->description = __('Formación y aprendizaje continuo', 'flavor-platform');
 
         parent::__construct([
             'id' => $this->widget_id,
@@ -78,7 +78,7 @@ class Flavor_Cursos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             [
                 'icon' => 'dashicons-welcome-learn-more',
                 'valor' => $cursos_activos,
-                'label' => __('Cursos disponibles', 'flavor-chat-ia'),
+                'label' => __('Cursos disponibles', 'flavor-platform'),
                 'color' => 'primary',
                 'url' => $es_admin ? admin_url('admin.php?page=cursos') : Flavor_Chat_Helpers::get_action_url('cursos', ''),
             ],
@@ -88,7 +88,7 @@ class Flavor_Cursos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $stats[] = [
                 'icon' => 'dashicons-book',
                 'valor' => $mis_cursos,
-                'label' => __('Mis cursos', 'flavor-chat-ia'),
+                'label' => __('Mis cursos', 'flavor-platform'),
                 'color' => $mis_cursos > 0 ? 'success' : 'gray',
                 'url' => $es_admin ? admin_url('admin.php?page=cursos&tab=mis-cursos') : Flavor_Chat_Helpers::get_action_url('cursos', 'mis-cursos'),
             ];
@@ -99,10 +99,10 @@ class Flavor_Cursos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats,
             'items' => $items,
-            'empty_state' => __('No hay cursos disponibles actualmente', 'flavor-chat-ia'),
+            'empty_state' => __('No hay cursos disponibles actualmente', 'flavor-platform'),
             'footer' => [
                 [
-                    'label' => __('Ver catálogo', 'flavor-chat-ia'),
+                    'label' => __('Ver catálogo', 'flavor-platform'),
                     'url' => $es_admin ? admin_url('admin.php?page=cursos') : Flavor_Chat_Helpers::get_action_url('cursos', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
@@ -133,9 +133,9 @@ class Flavor_Cursos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 $plazas_disponibles = max(0, $curso->plazas_maximas - ($curso->inscritos_count ?? 0));
             }
 
-            $meta_text = $curso->fecha_inicio ? date_i18n('j M', strtotime($curso->fecha_inicio)) : __('Abierto', 'flavor-chat-ia');
+            $meta_text = $curso->fecha_inicio ? date_i18n('j M', strtotime($curso->fecha_inicio)) : __('Abierto', 'flavor-platform');
             if ($plazas_disponibles !== null) {
-                $meta_text .= ' - ' . sprintf(__('%d plazas', 'flavor-chat-ia'), $plazas_disponibles);
+                $meta_text .= ' - ' . sprintf(__('%d plazas', 'flavor-platform'), $plazas_disponibles);
             }
 
             $items[] = [

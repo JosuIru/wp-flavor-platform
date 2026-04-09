@@ -177,13 +177,13 @@ function renderizar_estrellas_vendedor($valoracion) {
 <div class="wrap flavor-marketplace-vendedores">
     <h1>
         <span class="dashicons dashicons-groups"></span>
-        <?php echo esc_html__('Vendedores del Marketplace', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Vendedores del Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
     <hr class="wp-header-end">
 
     <?php if (!$cpt_existe): ?>
     <div class="notice notice-info">
-        <p><span class="dashicons dashicons-info"></span> <?php _e('No hay datos disponibles: falta registrar el tipo de contenido marketplace_item.', 'flavor-chat-ia'); ?></p>
+        <p><span class="dashicons dashicons-info"></span> <?php _e('No hay datos disponibles: falta registrar el tipo de contenido marketplace_item.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php endif; ?>
 
@@ -195,7 +195,7 @@ function renderizar_estrellas_vendedor($valoracion) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value"><?php echo number_format($total_vendedores); ?></span>
-                <span class="flavor-stat-label"><?php _e('Vendedores Activos', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php _e('Vendedores Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -205,7 +205,7 @@ function renderizar_estrellas_vendedor($valoracion) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value"><?php echo number_format($total_anuncios); ?></span>
-                <span class="flavor-stat-label"><?php _e('Anuncios Publicados', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php _e('Anuncios Publicados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -215,7 +215,7 @@ function renderizar_estrellas_vendedor($valoracion) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value"><?php echo number_format($total_ventas); ?></span>
-                <span class="flavor-stat-label"><?php _e('Ventas Completadas', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php _e('Ventas Completadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -225,7 +225,7 @@ function renderizar_estrellas_vendedor($valoracion) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value"><?php echo $promedio_anuncios; ?></span>
-                <span class="flavor-stat-label"><?php _e('Promedio Anuncios/Vendedor', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php _e('Promedio Anuncios/Vendedor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
@@ -240,31 +240,31 @@ function renderizar_estrellas_vendedor($valoracion) {
                     <input type="hidden" name="tab" value="<?php echo esc_attr($_GET['tab'] ?? ''); ?>">
 
                     <div class="flavor-filter-group">
-                        <input type="text" name="busqueda" placeholder="<?php esc_attr_e('Buscar vendedor...', 'flavor-chat-ia'); ?>" value="<?php echo esc_attr($busqueda); ?>" class="flavor-search-input">
+                        <input type="text" name="busqueda" placeholder="<?php esc_attr_e('Buscar vendedor...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" value="<?php echo esc_attr($busqueda); ?>" class="flavor-search-input">
                     </div>
 
                     <div class="flavor-filter-group">
                         <select name="estado" class="flavor-select">
-                            <option value=""><?php _e('Todos los niveles', 'flavor-chat-ia'); ?></option>
-                            <option value="activo" <?php selected($filtro_estado, 'activo'); ?>><?php _e('Vendedores activos (3+)', 'flavor-chat-ia'); ?></option>
-                            <option value="moderado" <?php selected($filtro_estado, 'moderado'); ?>><?php _e('Actividad moderada (1-2)', 'flavor-chat-ia'); ?></option>
-                            <option value="nuevo" <?php selected($filtro_estado, 'nuevo'); ?>><?php _e('Nuevos (1 anuncio)', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php _e('Todos los niveles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="activo" <?php selected($filtro_estado, 'activo'); ?>><?php _e('Vendedores activos (3+)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="moderado" <?php selected($filtro_estado, 'moderado'); ?>><?php _e('Actividad moderada (1-2)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="nuevo" <?php selected($filtro_estado, 'nuevo'); ?>><?php _e('Nuevos (1 anuncio)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
 
                     <div class="flavor-filter-group">
                         <select name="orden" class="flavor-select">
-                            <option value="anuncios" <?php selected($orden, 'anuncios'); ?>><?php _e('Más anuncios', 'flavor-chat-ia'); ?></option>
-                            <option value="valoracion" <?php selected($orden, 'valoracion'); ?>><?php _e('Mejor valoración', 'flavor-chat-ia'); ?></option>
-                            <option value="reciente" <?php selected($orden, 'reciente'); ?>><?php _e('Actividad reciente', 'flavor-chat-ia'); ?></option>
-                            <option value="nombre" <?php selected($orden, 'nombre'); ?>><?php _e('Nombre A-Z', 'flavor-chat-ia'); ?></option>
+                            <option value="anuncios" <?php selected($orden, 'anuncios'); ?>><?php _e('Más anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="valoracion" <?php selected($orden, 'valoracion'); ?>><?php _e('Mejor valoración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="reciente" <?php selected($orden, 'reciente'); ?>><?php _e('Actividad reciente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="nombre" <?php selected($orden, 'nombre'); ?>><?php _e('Nombre A-Z', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
 
-                    <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
+                    <button type="submit" class="button"><?php _e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
 
                     <?php if (!empty($busqueda) || !empty($filtro_estado)): ?>
-                        <a href="?page=<?php echo esc_attr($_GET['page'] ?? ''); ?>&tab=<?php echo esc_attr($_GET['tab'] ?? ''); ?>" class="button"><?php _e('Limpiar', 'flavor-chat-ia'); ?></a>
+                        <a href="?page=<?php echo esc_attr($_GET['page'] ?? ''); ?>&tab=<?php echo esc_attr($_GET['tab'] ?? ''); ?>" class="button"><?php _e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                     <?php endif; ?>
                 </form>
             </div>
@@ -275,12 +275,12 @@ function renderizar_estrellas_vendedor($valoracion) {
                     <thead>
                         <tr>
                             <th style="width: 50px;">#</th>
-                            <th><?php _e('Vendedor', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 100px; text-align: center;"><?php _e('Anuncios', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 140px;"><?php _e('Valoración', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 110px;"><?php _e('Nivel', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 120px;"><?php _e('Último Anuncio', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 130px;"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Vendedor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 100px; text-align: center;"><?php _e('Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 140px;"><?php _e('Valoración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 110px;"><?php _e('Nivel', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 120px;"><?php _e('Último Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th style="width: 130px;"><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -312,7 +312,7 @@ function renderizar_estrellas_vendedor($valoracion) {
                             <td class="flavor-text-center">
                                 <span class="flavor-anuncios-count"><?php echo number_format($vendedor->total_anuncios); ?></span>
                                 <?php if ($vendedor->categorias_distintas > 1): ?>
-                                    <br><small style="color: #666;"><?php printf(__('%d categorías', 'flavor-chat-ia'), $vendedor->categorias_distintas); ?></small>
+                                    <br><small style="color: #666;"><?php printf(__('%d categorías', FLAVOR_PLATFORM_TEXT_DOMAIN), $vendedor->categorias_distintas); ?></small>
                                 <?php endif; ?>
                             </td>
                             <td>
@@ -330,26 +330,26 @@ function renderizar_estrellas_vendedor($valoracion) {
                                 $fecha_ultimo = strtotime($vendedor->ultimo_anuncio);
                                 $dias_desde = floor((time() - $fecha_ultimo) / 86400);
                                 if ($dias_desde == 0) {
-                                    echo '<span style="color: #10b981;">' . __('Hoy', 'flavor-chat-ia') . '</span>';
+                                    echo '<span style="color: #10b981;">' . __('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span>';
                                 } elseif ($dias_desde == 1) {
-                                    echo __('Ayer', 'flavor-chat-ia');
+                                    echo __('Ayer', FLAVOR_PLATFORM_TEXT_DOMAIN);
                                 } elseif ($dias_desde < 7) {
-                                    printf(__('Hace %d días', 'flavor-chat-ia'), $dias_desde);
+                                    printf(__('Hace %d días', FLAVOR_PLATFORM_TEXT_DOMAIN), $dias_desde);
                                 } elseif ($dias_desde < 30) {
-                                    printf(__('Hace %d sem.', 'flavor-chat-ia'), floor($dias_desde / 7));
+                                    printf(__('Hace %d sem.', FLAVOR_PLATFORM_TEXT_DOMAIN), floor($dias_desde / 7));
                                 } else {
                                     echo date_i18n('d M Y', $fecha_ultimo);
                                 }
                                 ?>
                             </td>
                             <td>
-                                <a href="<?php echo admin_url('edit.php?post_type=marketplace_item&author=' . $vendedor->ID); ?>" class="button button-small" title="<?php esc_attr_e('Ver anuncios', 'flavor-chat-ia'); ?>">
+                                <a href="<?php echo admin_url('edit.php?post_type=marketplace_item&author=' . $vendedor->ID); ?>" class="button button-small" title="<?php esc_attr_e('Ver anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-megaphone"></span>
                                 </a>
-                                <a href="<?php echo admin_url('user-edit.php?user_id=' . $vendedor->ID); ?>" class="button button-small" title="<?php esc_attr_e('Editar perfil', 'flavor-chat-ia'); ?>">
+                                <a href="<?php echo admin_url('user-edit.php?user_id=' . $vendedor->ID); ?>" class="button button-small" title="<?php esc_attr_e('Editar perfil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-admin-users"></span>
                                 </a>
-                                <button type="button" class="button button-small btn-contactar" data-user="<?php echo esc_attr($vendedor->ID); ?>" data-email="<?php echo esc_attr($vendedor->user_email); ?>" title="<?php esc_attr_e('Contactar', 'flavor-chat-ia'); ?>">
+                                <button type="button" class="button button-small btn-contactar" data-user="<?php echo esc_attr($vendedor->ID); ?>" data-email="<?php echo esc_attr($vendedor->user_email); ?>" title="<?php esc_attr_e('Contactar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-email"></span>
                                 </button>
                             </td>
@@ -359,7 +359,7 @@ function renderizar_estrellas_vendedor($valoracion) {
                         <tr>
                             <td colspan="7" style="text-align: center; padding: 40px;">
                                 <span class="dashicons dashicons-info" style="font-size: 48px; color: #ccc;"></span>
-                                <p style="margin-top: 10px; color: #666;"><?php _e('No se encontraron vendedores con los filtros seleccionados', 'flavor-chat-ia'); ?></p>
+                                <p style="margin-top: 10px; color: #666;"><?php _e('No se encontraron vendedores con los filtros seleccionados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </td>
                         </tr>
                         <?php endif; ?>
@@ -370,7 +370,7 @@ function renderizar_estrellas_vendedor($valoracion) {
                 <?php if (isset($total_paginas) && $total_paginas > 1): ?>
                 <div class="flavor-pagination">
                     <span class="flavor-pagination-info">
-                        <?php printf(__('Mostrando %d-%d de %d vendedores', 'flavor-chat-ia'),
+                        <?php printf(__('Mostrando %d-%d de %d vendedores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             $offset + 1,
                             min($offset + $por_pagina, $total_registros),
                             $total_registros
@@ -387,7 +387,7 @@ function renderizar_estrellas_vendedor($valoracion) {
                         ], admin_url('admin.php'));
 
                         if ($pagina_actual > 1): ?>
-                            <a href="<?php echo esc_url(add_query_arg('paged', $pagina_actual - 1, $url_base)); ?>" class="button">&laquo; <?php _e('Anterior', 'flavor-chat-ia'); ?></a>
+                            <a href="<?php echo esc_url(add_query_arg('paged', $pagina_actual - 1, $url_base)); ?>" class="button">&laquo; <?php _e('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                         <?php endif;
 
                         for ($i = max(1, $pagina_actual - 2); $i <= min($total_paginas, $pagina_actual + 2); $i++): ?>
@@ -399,7 +399,7 @@ function renderizar_estrellas_vendedor($valoracion) {
                         endfor;
 
                         if ($pagina_actual < $total_paginas): ?>
-                            <a href="<?php echo esc_url(add_query_arg('paged', $pagina_actual + 1, $url_base)); ?>" class="button"><?php _e('Siguiente', 'flavor-chat-ia'); ?> &raquo;</a>
+                            <a href="<?php echo esc_url(add_query_arg('paged', $pagina_actual + 1, $url_base)); ?>" class="button"><?php _e('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> &raquo;</a>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -412,7 +412,7 @@ function renderizar_estrellas_vendedor($valoracion) {
             <!-- Top Vendedores -->
             <div class="flavor-card">
                 <div class="flavor-card-header">
-                    <h3><span class="dashicons dashicons-awards"></span> <?php _e('Top 5 Vendedores', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-awards"></span> <?php _e('Top 5 Vendedores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="flavor-card-body">
                     <?php if (!empty($top_vendedores)): ?>
@@ -429,13 +429,13 @@ function renderizar_estrellas_vendedor($valoracion) {
                                 <span class="flavor-ranking-position"><?php echo $medalla; ?></span>
                                 <div class="flavor-ranking-info">
                                     <strong><?php echo esc_html($top_vendedor->display_name); ?></strong>
-                                    <small><?php printf(__('%d anuncios', 'flavor-chat-ia'), $top_vendedor->total_anuncios); ?></small>
+                                    <small><?php printf(__('%d anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN), $top_vendedor->total_anuncios); ?></small>
                                 </div>
                             </li>
                             <?php endforeach; ?>
                         </ul>
                     <?php else: ?>
-                        <p style="text-align: center; color: #666; padding: 20px;"><?php _e('Sin datos disponibles', 'flavor-chat-ia'); ?></p>
+                        <p style="text-align: center; color: #666; padding: 20px;"><?php _e('Sin datos disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php endif; ?>
                 </div>
             </div>
@@ -443,7 +443,7 @@ function renderizar_estrellas_vendedor($valoracion) {
             <!-- Distribución por Nivel -->
             <div class="flavor-card">
                 <div class="flavor-card-header">
-                    <h3><span class="dashicons dashicons-chart-pie"></span> <?php _e('Distribución por Nivel', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-chart-pie"></span> <?php _e('Distribución por Nivel', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="flavor-card-body">
                     <canvas id="grafico-niveles" height="200"></canvas>
@@ -453,7 +453,7 @@ function renderizar_estrellas_vendedor($valoracion) {
             <!-- Actividad Mensual -->
             <div class="flavor-card">
                 <div class="flavor-card-header">
-                    <h3><span class="dashicons dashicons-chart-area"></span> <?php _e('Nuevos Anuncios (Mensual)', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-chart-area"></span> <?php _e('Nuevos Anuncios (Mensual)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="flavor-card-body">
                     <canvas id="grafico-actividad" height="150"></canvas>
@@ -678,7 +678,7 @@ jQuery(document).ready(function($) {
         new Chart(ctxNiveles.getContext('2d'), {
             type: 'doughnut',
             data: {
-                labels: ['<?php _e('Premium', 'flavor-chat-ia'); ?>', '<?php _e('Destacado', 'flavor-chat-ia'); ?>', '<?php _e('Activo', 'flavor-chat-ia'); ?>', '<?php _e('Nuevo', 'flavor-chat-ia'); ?>'],
+                labels: ['<?php _e('Premium', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', '<?php _e('Destacado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', '<?php _e('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', '<?php _e('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>'],
                 datasets: [{
                     data: [5, 12, 15, 10],
                     backgroundColor: ['#f59e0b', '#3b82f6', '#10b981', '#9ca3af']
@@ -703,9 +703,9 @@ jQuery(document).ready(function($) {
         new Chart(ctxActividad.getContext('2d'), {
             type: 'line',
             data: {
-                labels: ['<?php _e('Ene', 'flavor-chat-ia'); ?>', '<?php _e('Feb', 'flavor-chat-ia'); ?>', '<?php _e('Mar', 'flavor-chat-ia'); ?>', '<?php _e('Abr', 'flavor-chat-ia'); ?>', '<?php _e('May', 'flavor-chat-ia'); ?>', '<?php _e('Jun', 'flavor-chat-ia'); ?>'],
+                labels: ['<?php _e('Ene', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', '<?php _e('Feb', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', '<?php _e('Mar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', '<?php _e('Abr', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', '<?php _e('May', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>', '<?php _e('Jun', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>'],
                 datasets: [{
-                    label: '<?php _e('Anuncios', 'flavor-chat-ia'); ?>',
+                    label: '<?php _e('Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                     data: [12, 19, 15, 25, 22, 30],
                     borderColor: '#2271b1',
                     backgroundColor: 'rgba(34, 113, 177, 0.1)',

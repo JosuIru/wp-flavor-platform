@@ -39,14 +39,14 @@ class Flavor_Network_Federation_Admin {
      */
     private function __construct() {
         $this->content_types = [
-            'producers'   => ['label' => __('Productores', 'flavor-chat-ia'), 'icon' => '🌾', 'table' => 'flavor_network_producers'],
-            'events'      => ['label' => __('Eventos', 'flavor-chat-ia'), 'icon' => '📅', 'table' => 'flavor_network_events'],
-            'carpooling'  => ['label' => __('Carpooling', 'flavor-chat-ia'), 'icon' => '🚗', 'table' => 'flavor_network_carpooling'],
-            'workshops'   => ['label' => __('Talleres', 'flavor-chat-ia'), 'icon' => '🎓', 'table' => 'flavor_network_workshops'],
-            'spaces'      => ['label' => __('Espacios', 'flavor-chat-ia'), 'icon' => '🏠', 'table' => 'flavor_network_spaces'],
-            'marketplace' => ['label' => __('Marketplace', 'flavor-chat-ia'), 'icon' => '🛒', 'table' => 'flavor_network_marketplace'],
-            'time_bank'   => ['label' => __('Banco Tiempo', 'flavor-chat-ia'), 'icon' => '⏰', 'table' => 'flavor_network_time_bank'],
-            'courses'     => ['label' => __('Cursos', 'flavor-chat-ia'), 'icon' => '📚', 'table' => 'flavor_network_courses'],
+            'producers'   => ['label' => __('Productores', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🌾', 'table' => 'flavor_network_producers'],
+            'events'      => ['label' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📅', 'table' => 'flavor_network_events'],
+            'carpooling'  => ['label' => __('Carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🚗', 'table' => 'flavor_network_carpooling'],
+            'workshops'   => ['label' => __('Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🎓', 'table' => 'flavor_network_workshops'],
+            'spaces'      => ['label' => __('Espacios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🏠', 'table' => 'flavor_network_spaces'],
+            'marketplace' => ['label' => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🛒', 'table' => 'flavor_network_marketplace'],
+            'time_bank'   => ['label' => __('Banco Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '⏰', 'table' => 'flavor_network_time_bank'],
+            'courses'     => ['label' => __('Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📚', 'table' => 'flavor_network_courses'],
         ];
 
         add_action('admin_menu', [$this, 'add_admin_menu']);
@@ -59,9 +59,9 @@ class Flavor_Network_Federation_Admin {
      */
     public function add_admin_menu() {
         add_submenu_page(
-            'flavor-network',
-            __('Contenido Federado', 'flavor-chat-ia'),
-            __('Contenido Federado', 'flavor-chat-ia'),
+            'flavor-platform-network',
+            __('Contenido Federado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Contenido Federado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-federation',
             [$this, 'render_admin_page']
@@ -81,7 +81,7 @@ class Flavor_Network_Federation_Admin {
         $stats = $this->get_federation_stats();
         ?>
         <div class="wrap flavor-federation-admin">
-            <h1><?php echo esc_html__('Contenido Federado de la Red', 'flavor-chat-ia'); ?></h1>
+            <h1><?php echo esc_html__('Contenido Federado de la Red', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
 
             <!-- Estadísticas generales -->
             <div class="federation-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 20px 0;">
@@ -103,7 +103,7 @@ class Flavor_Network_Federation_Admin {
             <!-- Acciones -->
             <div style="margin: 20px 0; display: flex; gap: 10px; align-items: center;">
                 <button type="button" class="button button-primary" id="btn-sync-now">
-                    🔄 <?php echo esc_html__('Sincronizar Ahora', 'flavor-chat-ia'); ?>
+                    🔄 <?php echo esc_html__('Sincronizar Ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <span id="sync-status" style="color: #666;"></span>
 
@@ -112,8 +112,8 @@ class Flavor_Network_Federation_Admin {
                     $last_sync = get_option('flavor_network_last_sync', 0);
                     if ($last_sync) {
                         printf(
-                            __('Última sincronización: %s', 'flavor-chat-ia'),
-                            human_time_diff($last_sync) . ' ' . __('atrás', 'flavor-chat-ia')
+                            __('Última sincronización: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            human_time_diff($last_sync) . ' ' . __('atrás', FLAVOR_PLATFORM_TEXT_DOMAIN)
                         );
                     }
                     ?>
@@ -140,7 +140,7 @@ class Flavor_Network_Federation_Admin {
                     action: 'federation_sync_now',
                     _wpnonce: '<?php echo wp_create_nonce('federation_sync'); ?>'
                 }, function(response) {
-                    $btn.prop('disabled', false).html('🔄 <?php echo esc_js(__('Sincronizar Ahora', 'flavor-chat-ia')); ?>');
+                    $btn.prop('disabled', false).html('🔄 <?php echo esc_js(__('Sincronizar Ahora', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                     if (response.success) {
                         $status.text('✅ ' + response.data.message);
                         setTimeout(function() { location.reload(); }, 1500);
@@ -198,7 +198,7 @@ class Flavor_Network_Federation_Admin {
         // Verificar que la tabla existe
         if ($wpdb->get_var("SHOW TABLES LIKE '$tabla'") !== $tabla) {
             echo '<p style="padding: 20px; text-align: center; color: #666;">';
-            echo esc_html__('Tabla no disponible. Ejecute la actualización de base de datos.', 'flavor-chat-ia');
+            echo esc_html__('Tabla no disponible. Ejecute la actualización de base de datos.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             echo '</p>';
             return;
         }
@@ -212,7 +212,7 @@ class Flavor_Network_Federation_Admin {
         if (empty($items)) {
             echo '<p style="padding: 40px; text-align: center; color: #666;">';
             echo $config['icon'] . ' ';
-            echo esc_html__('No hay contenido federado de este tipo todavía.', 'flavor-chat-ia');
+            echo esc_html__('No hay contenido federado de este tipo todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             echo '</p>';
             return;
         }
@@ -224,37 +224,37 @@ class Flavor_Network_Federation_Admin {
 
         switch ($type) {
             case 'events':
-                echo '<th>' . esc_html__('Evento', 'flavor-chat-ia') . '</th>';
-                echo '<th>' . esc_html__('Fecha', 'flavor-chat-ia') . '</th>';
-                echo '<th>' . esc_html__('Ubicación', 'flavor-chat-ia') . '</th>';
-                echo '<th>' . esc_html__('Nodo', 'flavor-chat-ia') . '</th>';
+                echo '<th>' . esc_html__('Evento', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+                echo '<th>' . esc_html__('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+                echo '<th>' . esc_html__('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+                echo '<th>' . esc_html__('Nodo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
                 break;
             case 'courses':
-                echo '<th>' . esc_html__('Curso', 'flavor-chat-ia') . '</th>';
-                echo '<th>' . esc_html__('Categoría', 'flavor-chat-ia') . '</th>';
-                echo '<th>' . esc_html__('Modalidad', 'flavor-chat-ia') . '</th>';
-                echo '<th>' . esc_html__('Precio', 'flavor-chat-ia') . '</th>';
-                echo '<th>' . esc_html__('Nodo', 'flavor-chat-ia') . '</th>';
+                echo '<th>' . esc_html__('Curso', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+                echo '<th>' . esc_html__('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+                echo '<th>' . esc_html__('Modalidad', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+                echo '<th>' . esc_html__('Precio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+                echo '<th>' . esc_html__('Nodo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
                 break;
             case 'marketplace':
-                echo '<th>' . esc_html__('Anuncio', 'flavor-chat-ia') . '</th>';
-                echo '<th>' . esc_html__('Tipo', 'flavor-chat-ia') . '</th>';
-                echo '<th>' . esc_html__('Precio', 'flavor-chat-ia') . '</th>';
-                echo '<th>' . esc_html__('Nodo', 'flavor-chat-ia') . '</th>';
+                echo '<th>' . esc_html__('Anuncio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+                echo '<th>' . esc_html__('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+                echo '<th>' . esc_html__('Precio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+                echo '<th>' . esc_html__('Nodo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
                 break;
             case 'time_bank':
-                echo '<th>' . esc_html__('Servicio', 'flavor-chat-ia') . '</th>';
-                echo '<th>' . esc_html__('Tipo', 'flavor-chat-ia') . '</th>';
-                echo '<th>' . esc_html__('Horas', 'flavor-chat-ia') . '</th>';
-                echo '<th>' . esc_html__('Nodo', 'flavor-chat-ia') . '</th>';
+                echo '<th>' . esc_html__('Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+                echo '<th>' . esc_html__('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+                echo '<th>' . esc_html__('Horas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+                echo '<th>' . esc_html__('Nodo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
                 break;
             default:
-                echo '<th>' . esc_html__('Título', 'flavor-chat-ia') . '</th>';
-                echo '<th>' . esc_html__('Descripción', 'flavor-chat-ia') . '</th>';
-                echo '<th>' . esc_html__('Nodo', 'flavor-chat-ia') . '</th>';
+                echo '<th>' . esc_html__('Título', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+                echo '<th>' . esc_html__('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+                echo '<th>' . esc_html__('Nodo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
         }
 
-        echo '<th style="width: 100px;">' . esc_html__('Actualizado', 'flavor-chat-ia') . '</th>';
+        echo '<th style="width: 100px;">' . esc_html__('Actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
         echo '</tr></thead>';
         echo '<tbody>';
 
@@ -277,12 +277,12 @@ class Flavor_Network_Federation_Admin {
                     echo '<td><strong>' . esc_html($item->titulo) . '</strong></td>';
                     echo '<td>' . esc_html($item->categoria ?: '-') . '</td>';
                     echo '<td>' . esc_html(ucfirst($item->modalidad)) . '</td>';
-                    echo '<td>' . ($item->es_gratuito ? __('Gratis', 'flavor-chat-ia') : number_format($item->precio, 2) . ' €') . '</td>';
+                    echo '<td>' . ($item->es_gratuito ? __('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN) : number_format($item->precio, 2) . ' €') . '</td>';
                     break;
                 case 'marketplace':
                     echo '<td><strong>' . esc_html($item->titulo) . '</strong></td>';
                     echo '<td>' . esc_html(ucfirst($item->tipo)) . '</td>';
-                    echo '<td>' . ($item->es_gratuito ? __('Gratis', 'flavor-chat-ia') : ($item->precio ? number_format($item->precio, 2) . ' €' : '-')) . '</td>';
+                    echo '<td>' . ($item->es_gratuito ? __('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN) : ($item->precio ? number_format($item->precio, 2) . ' €' : '-')) . '</td>';
                     break;
                 case 'time_bank':
                     echo '<td><strong>' . esc_html($item->titulo) . '</strong></td>';
@@ -380,7 +380,7 @@ class Flavor_Network_Federation_Admin {
         update_option('flavor_network_last_sync', time());
 
         wp_send_json_success([
-            'message' => __('Sincronización completada', 'flavor-chat-ia'),
+            'message' => __('Sincronización completada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 }

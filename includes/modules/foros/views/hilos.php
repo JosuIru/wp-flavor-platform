@@ -95,12 +95,12 @@ $nonce = wp_create_nonce('flavor_foros_admin');
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-admin-comments"></span>
-        <?php echo esc_html__('Gestion de Hilos', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Gestion de Hilos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <a href="<?php echo admin_url('admin.php?page=foros'); ?>" class="page-title-action">
         <span class="dashicons dashicons-arrow-left-alt"></span>
-        <?php echo esc_html__('Volver al Dashboard', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Volver al Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </a>
 
     <hr class="wp-header-end">
@@ -112,7 +112,7 @@ $nonce = wp_create_nonce('flavor_foros_admin');
 
             <!-- Filtro por foro -->
             <select name="foro_id" style="min-width: 150px;">
-                <option value=""><?php echo esc_html__('Todos los foros', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php echo esc_html__('Todos los foros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 <?php foreach ($foros_disponibles as $foro) : ?>
                     <option value="<?php echo esc_attr($foro->id); ?>" <?php selected($filtro_foro, $foro->id); ?>>
                         <?php echo esc_html($foro->nombre); ?>
@@ -122,24 +122,24 @@ $nonce = wp_create_nonce('flavor_foros_admin');
 
             <!-- Filtro por estado -->
             <select name="estado" style="min-width: 120px;">
-                <option value=""><?php echo esc_html__('Todos los estados', 'flavor-chat-ia'); ?></option>
-                <option value="abierto" <?php selected($filtro_estado, 'abierto'); ?>><?php echo esc_html__('Abierto', 'flavor-chat-ia'); ?></option>
-                <option value="cerrado" <?php selected($filtro_estado, 'cerrado'); ?>><?php echo esc_html__('Cerrado', 'flavor-chat-ia'); ?></option>
-                <option value="fijado" <?php selected($filtro_estado, 'fijado'); ?>><?php echo esc_html__('Fijado', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php echo esc_html__('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="abierto" <?php selected($filtro_estado, 'abierto'); ?>><?php echo esc_html__('Abierto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="cerrado" <?php selected($filtro_estado, 'cerrado'); ?>><?php echo esc_html__('Cerrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="fijado" <?php selected($filtro_estado, 'fijado'); ?>><?php echo esc_html__('Fijado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             </select>
 
             <!-- Busqueda -->
             <input type="search"
                    name="s"
                    value="<?php echo esc_attr($filtro_busqueda); ?>"
-                   placeholder="<?php echo esc_attr__('Buscar hilos...', 'flavor-chat-ia'); ?>"
+                   placeholder="<?php echo esc_attr__('Buscar hilos...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                    style="min-width: 200px;">
 
-            <button type="submit" class="button"><?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?></button>
+            <button type="submit" class="button"><?php echo esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
 
             <?php if ($filtro_foro || $filtro_estado || $filtro_busqueda) : ?>
                 <a href="<?php echo admin_url('admin.php?page=foros-hilos'); ?>" class="button">
-                    <?php echo esc_html__('Limpiar filtros', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Limpiar filtros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             <?php endif; ?>
         </form>
@@ -147,7 +147,7 @@ $nonce = wp_create_nonce('flavor_foros_admin');
         <div class="tablenav-pages" style="float: right; margin-top: -30px;">
             <span class="displaying-num">
                 <?php printf(
-                    _n('%s hilo', '%s hilos', $total_hilos, 'flavor-chat-ia'),
+                    _n('%s hilo', '%s hilos', $total_hilos, FLAVOR_PLATFORM_TEXT_DOMAIN),
                     number_format_i18n($total_hilos)
                 ); ?>
             </span>
@@ -159,15 +159,15 @@ $nonce = wp_create_nonce('flavor_foros_admin');
         <thead>
             <tr>
                 <th style="width: 30px;"><input type="checkbox" id="select-all-hilos"></th>
-                <th style="width: 50px;"><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
-                <th><?php echo esc_html__('Titulo', 'flavor-chat-ia'); ?></th>
-                <th style="width: 120px;"><?php echo esc_html__('Foro', 'flavor-chat-ia'); ?></th>
-                <th style="width: 120px;"><?php echo esc_html__('Autor', 'flavor-chat-ia'); ?></th>
-                <th style="width: 80px;"><?php echo esc_html__('Respuestas', 'flavor-chat-ia'); ?></th>
-                <th style="width: 80px;"><?php echo esc_html__('Vistas', 'flavor-chat-ia'); ?></th>
-                <th style="width: 120px;"><?php echo esc_html__('Ultima Act.', 'flavor-chat-ia'); ?></th>
-                <th style="width: 100px;"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
-                <th style="width: 150px;"><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
+                <th style="width: 50px;"><?php echo esc_html__('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th><?php echo esc_html__('Titulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="width: 120px;"><?php echo esc_html__('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="width: 120px;"><?php echo esc_html__('Autor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="width: 80px;"><?php echo esc_html__('Respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="width: 80px;"><?php echo esc_html__('Vistas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="width: 120px;"><?php echo esc_html__('Ultima Act.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="width: 100px;"><?php echo esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="width: 150px;"><?php echo esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -176,9 +176,9 @@ $nonce = wp_create_nonce('flavor_foros_admin');
                     <td colspan="10" style="text-align: center; padding: 40px;">
                         <span class="dashicons dashicons-admin-comments" style="font-size: 48px; color: #ccc; display: block; margin-bottom: 10px;"></span>
                         <?php if ($filtro_foro || $filtro_estado || $filtro_busqueda) : ?>
-                            <p><?php echo esc_html__('No se encontraron hilos con los filtros seleccionados.', 'flavor-chat-ia'); ?></p>
+                            <p><?php echo esc_html__('No se encontraron hilos con los filtros seleccionados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <?php else : ?>
-                            <p><?php echo esc_html__('No hay hilos registrados.', 'flavor-chat-ia'); ?></p>
+                            <p><?php echo esc_html__('No hay hilos registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <?php endif; ?>
                     </td>
                 </tr>
@@ -197,10 +197,10 @@ $nonce = wp_create_nonce('flavor_foros_admin');
                         <td><strong>#<?php echo intval($hilo->id); ?></strong></td>
                         <td>
                             <?php if ($hilo->es_fijado) : ?>
-                                <span class="dashicons dashicons-admin-post" style="color: #2271b1;" title="<?php echo esc_attr__('Fijado', 'flavor-chat-ia'); ?>"></span>
+                                <span class="dashicons dashicons-admin-post" style="color: #2271b1;" title="<?php echo esc_attr__('Fijado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></span>
                             <?php endif; ?>
                             <?php if ($hilo->es_destacado) : ?>
-                                <span class="dashicons dashicons-star-filled" style="color: #dba617;" title="<?php echo esc_attr__('Destacado', 'flavor-chat-ia'); ?>"></span>
+                                <span class="dashicons dashicons-star-filled" style="color: #dba617;" title="<?php echo esc_attr__('Destacado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></span>
                             <?php endif; ?>
                             <strong><?php echo esc_html($hilo->titulo); ?></strong>
                             <br>
@@ -216,7 +216,7 @@ $nonce = wp_create_nonce('flavor_foros_admin');
                             if ($hilo->autor_id) {
                                 echo get_avatar($hilo->autor_id, 24, '', '', ['style' => 'vertical-align: middle; margin-right: 5px; border-radius: 50%;']);
                             }
-                            echo esc_html($hilo->nombre_autor ?: __('Usuario eliminado', 'flavor-chat-ia'));
+                            echo esc_html($hilo->nombre_autor ?: __('Usuario eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN));
                             ?>
                         </td>
                         <td style="text-align: center;">
@@ -231,7 +231,7 @@ $nonce = wp_create_nonce('flavor_foros_admin');
                             <?php
                             if ($hilo->ultima_actividad) {
                                 $diferencia_tiempo = human_time_diff(strtotime($hilo->ultima_actividad), current_time('timestamp'));
-                                echo sprintf(__('hace %s', 'flavor-chat-ia'), $diferencia_tiempo);
+                                echo sprintf(__('hace %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $diferencia_tiempo);
                             } else {
                                 echo '-';
                             }
@@ -247,38 +247,38 @@ $nonce = wp_create_nonce('flavor_foros_admin');
                             <div class="row-actions visible">
                                 <span class="edit">
                                     <a href="#" class="hilo-accion" data-id="<?php echo esc_attr($hilo->id); ?>" data-accion="ver">
-                                        <?php echo esc_html__('Ver', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a> |
                                 </span>
                                 <?php if ($hilo->estado === 'abierto') : ?>
                                     <span class="close">
                                         <a href="#" class="hilo-accion" data-id="<?php echo esc_attr($hilo->id); ?>" data-accion="cerrar">
-                                            <?php echo esc_html__('Cerrar', 'flavor-chat-ia'); ?>
+                                            <?php echo esc_html__('Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </a> |
                                     </span>
                                 <?php else : ?>
                                     <span class="open">
                                         <a href="#" class="hilo-accion" data-id="<?php echo esc_attr($hilo->id); ?>" data-accion="abrir">
-                                            <?php echo esc_html__('Abrir', 'flavor-chat-ia'); ?>
+                                            <?php echo esc_html__('Abrir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </a> |
                                     </span>
                                 <?php endif; ?>
                                 <?php if (!$hilo->es_fijado) : ?>
                                     <span class="pin">
                                         <a href="#" class="hilo-accion" data-id="<?php echo esc_attr($hilo->id); ?>" data-accion="fijar">
-                                            <?php echo esc_html__('Fijar', 'flavor-chat-ia'); ?>
+                                            <?php echo esc_html__('Fijar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </a> |
                                     </span>
                                 <?php else : ?>
                                     <span class="unpin">
                                         <a href="#" class="hilo-accion" data-id="<?php echo esc_attr($hilo->id); ?>" data-accion="desfijar">
-                                            <?php echo esc_html__('Desfijar', 'flavor-chat-ia'); ?>
+                                            <?php echo esc_html__('Desfijar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </a> |
                                     </span>
                                 <?php endif; ?>
                                 <span class="trash">
                                     <a href="#" class="hilo-accion" data-id="<?php echo esc_attr($hilo->id); ?>" data-accion="eliminar" style="color: #b32d2e;">
-                                        <?php echo esc_html__('Eliminar', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 </span>
                             </div>
@@ -295,7 +295,7 @@ $nonce = wp_create_nonce('flavor_foros_admin');
             <div class="tablenav-pages">
                 <span class="displaying-num">
                     <?php printf(
-                        _n('%s hilo', '%s hilos', $total_hilos, 'flavor-chat-ia'),
+                        _n('%s hilo', '%s hilos', $total_hilos, FLAVOR_PLATFORM_TEXT_DOMAIN),
                         number_format_i18n($total_hilos)
                     ); ?>
                 </span>
@@ -315,26 +315,26 @@ $nonce = wp_create_nonce('flavor_foros_admin');
 
                     <?php if ($pagina_actual > 1) : ?>
                         <a class="first-page button" href="<?php echo esc_url($url_base . '&paged=1'); ?>">
-                            <span class="screen-reader-text"><?php echo esc_html__('Primera pagina', 'flavor-chat-ia'); ?></span>
+                            <span class="screen-reader-text"><?php echo esc_html__('Primera pagina', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span>&laquo;</span>
                         </a>
                         <a class="prev-page button" href="<?php echo esc_url($url_base . '&paged=' . ($pagina_actual - 1)); ?>">
-                            <span class="screen-reader-text"><?php echo esc_html__('Pagina anterior', 'flavor-chat-ia'); ?></span>
+                            <span class="screen-reader-text"><?php echo esc_html__('Pagina anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span>&lsaquo;</span>
                         </a>
                     <?php endif; ?>
 
                     <span class="paging-input">
-                        <?php echo $pagina_actual; ?> <?php echo esc_html__('de', 'flavor-chat-ia'); ?> <?php echo $total_paginas; ?>
+                        <?php echo $pagina_actual; ?> <?php echo esc_html__('de', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo $total_paginas; ?>
                     </span>
 
                     <?php if ($pagina_actual < $total_paginas) : ?>
                         <a class="next-page button" href="<?php echo esc_url($url_base . '&paged=' . ($pagina_actual + 1)); ?>">
-                            <span class="screen-reader-text"><?php echo esc_html__('Pagina siguiente', 'flavor-chat-ia'); ?></span>
+                            <span class="screen-reader-text"><?php echo esc_html__('Pagina siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span>&rsaquo;</span>
                         </a>
                         <a class="last-page button" href="<?php echo esc_url($url_base . '&paged=' . $total_paginas); ?>">
-                            <span class="screen-reader-text"><?php echo esc_html__('Ultima pagina', 'flavor-chat-ia'); ?></span>
+                            <span class="screen-reader-text"><?php echo esc_html__('Ultima pagina', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <span>&raquo;</span>
                         </a>
                     <?php endif; ?>
@@ -368,7 +368,7 @@ jQuery(document).ready(function($) {
         }
 
         if (accion === 'eliminar') {
-            if (!confirm('<?php echo esc_js(__('Eliminar este hilo y todas sus respuestas?', 'flavor-chat-ia')); ?>')) {
+            if (!confirm('<?php echo esc_js(__('Eliminar este hilo y todas sus respuestas?', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>')) {
                 return;
             }
         }
@@ -386,11 +386,11 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     window.location.reload();
                 } else {
-                    alert(response.data || '<?php echo esc_js(__('Error al procesar', 'flavor-chat-ia')); ?>');
+                    alert(response.data || '<?php echo esc_js(__('Error al procesar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
                 }
             },
             error: function() {
-                alert('<?php echo esc_js(__('Error de conexion', 'flavor-chat-ia')); ?>');
+                alert('<?php echo esc_js(__('Error de conexion', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
             }
         });
     });

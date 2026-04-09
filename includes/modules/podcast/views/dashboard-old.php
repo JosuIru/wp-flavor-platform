@@ -69,15 +69,15 @@ $stats_plataforma = [
     <?php if (!$tablas_disponibles): ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <strong><?php esc_html_e('Sin datos disponibles:', 'flavor-chat-ia'); ?></strong>
-        <?php esc_html_e('Faltan tablas del módulo Podcast o aún no hay contenido publicado.', 'flavor-chat-ia'); ?>
+        <strong><?php esc_html_e('Sin datos disponibles:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+        <?php esc_html_e('Faltan tablas del módulo Podcast o aún no hay contenido publicado.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </div>
     <?php endif; ?>
 
     <div class="dm-header">
         <h1 class="dm-header__title">
             <span class="dashicons dashicons-microphone"></span>
-            <?php esc_html_e('Dashboard de Podcasts', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Dashboard de Podcasts', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h1>
     </div>
 
@@ -85,19 +85,19 @@ $stats_plataforma = [
     <div class="dm-action-grid dm-action-grid--3">
         <a href="<?php echo esc_url(admin_url('admin.php?page=podcast-series')); ?>" class="dm-action-card">
             <span class="dashicons dashicons-playlist-audio dm-text-primary"></span>
-            <span><?php esc_html_e('Series', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Series', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=podcast-episodios')); ?>" class="dm-action-card">
             <span class="dashicons dashicons-microphone dm-text-success"></span>
-            <span><?php esc_html_e('Episodios', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(admin_url('admin.php?page=podcast-suscriptores')); ?>" class="dm-action-card">
             <span class="dashicons dashicons-groups dm-text-purple"></span>
-            <span><?php esc_html_e('Suscriptores', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('podcast', '')); ?>" class="dm-action-card" target="_blank">
             <span class="dashicons dashicons-external"></span>
-            <span><?php esc_html_e('Portal público', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Portal público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
     </div>
 
@@ -105,25 +105,25 @@ $stats_plataforma = [
     <div class="dm-stats-grid dm-stats-grid--4">
         <div class="dm-stat-card dm-stat-card--primary">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($total_podcasts); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Total Podcasts', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Total Podcasts', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <span class="dashicons dashicons-microphone dm-stat-card__icon"></span>
         </div>
 
         <div class="dm-stat-card dm-stat-card--success">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($total_episodios); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Total Episodios', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Total Episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <span class="dashicons dashicons-playlist-audio dm-stat-card__icon"></span>
         </div>
 
         <div class="dm-stat-card dm-stat-card--purple">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($total_suscriptores); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Total Suscriptores', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Total Suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <span class="dashicons dashicons-groups dm-stat-card__icon"></span>
         </div>
 
         <div class="dm-stat-card dm-stat-card--error">
             <div class="dm-stat-card__value"><?php echo number_format_i18n($total_reproducciones); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Reproducciones', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Reproducciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             <span class="dashicons dashicons-controls-play dm-stat-card__icon"></span>
         </div>
     </div>
@@ -134,7 +134,7 @@ $stats_plataforma = [
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-chart-line"></span>
-                    <?php esc_html_e('Crecimiento de Suscriptores (30 días)', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Crecimiento de Suscriptores (30 días)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <div class="dm-card__chart">
@@ -147,7 +147,7 @@ $stats_plataforma = [
             <div class="dm-card__header">
                 <h3>
                     <span class="dashicons dashicons-share"></span>
-                    <?php esc_html_e('Plataformas de Escucha', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Plataformas de Escucha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <div class="dm-card__chart">
@@ -161,19 +161,19 @@ $stats_plataforma = [
         <div class="dm-card__header">
             <h3>
                 <span class="dashicons dashicons-star-filled"></span>
-                <?php esc_html_e('Episodios Más Populares', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Episodios Más Populares', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
 
         <table class="dm-table">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Pos.', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Episodio', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Podcast', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Reproducciones', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Me Gusta', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Pos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Episodio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Reproducciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Me Gusta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -182,7 +182,7 @@ $stats_plataforma = [
                         <td colspan="6">
                             <div class="dm-empty">
                                 <span class="dashicons dashicons-admin-media"></span>
-                                <p><?php esc_html_e('No hay episodios publicados todavía', 'flavor-chat-ia'); ?></p>
+                                <p><?php esc_html_e('No hay episodios publicados todavía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </div>
                         </td>
                     </tr>
@@ -195,7 +195,7 @@ $stats_plataforma = [
                             <td>
                                 <strong><?php echo esc_html($episodio->titulo); ?></strong>
                                 <div class="dm-table__subtitle">
-                                    <?php echo esc_html(sprintf(__('Episodio #%d', 'flavor-chat-ia'), $episodio->numero_episodio)); ?>
+                                    <?php echo esc_html(sprintf(__('Episodio #%d', FLAVOR_PLATFORM_TEXT_DOMAIN), $episodio->numero_episodio)); ?>
                                 </div>
                             </td>
                             <td><?php echo esc_html($episodio->podcast_titulo); ?></td>
@@ -237,7 +237,7 @@ jQuery(document).ready(function($) {
                     return date_i18n('d/m', strtotime($item->fecha));
                 }, $datos_crecimiento)); ?>,
                 datasets: [{
-                    label: '<?php esc_attr_e('Nuevos Suscriptores', 'flavor-chat-ia'); ?>',
+                    label: '<?php esc_attr_e('Nuevos Suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>',
                     data: <?php echo wp_json_encode(array_map(function($item) {
                         return $item->total;
                     }, $datos_crecimiento)); ?>,

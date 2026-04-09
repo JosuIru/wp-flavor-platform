@@ -70,7 +70,7 @@ class Flavor_Module_Renderer {
         $config = $this->get_module_config($module);
 
         if (empty($config)) {
-            return $this->render_error(__('Módulo no configurado', 'flavor-chat-ia'));
+            return $this->render_error(__('Módulo no configurado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Añadir módulo y config a params
@@ -97,7 +97,7 @@ class Flavor_Module_Renderer {
                 return $this->render_tab($module, $config, $params);
 
             default:
-                return $this->render_error(sprintf(__('Vista "%s" no reconocida', 'flavor-chat-ia'), $view));
+                return $this->render_error(sprintf(__('Vista "%s" no reconocida', FLAVOR_PLATFORM_TEXT_DOMAIN), $view));
         }
     }
 
@@ -157,7 +157,7 @@ class Flavor_Module_Renderer {
             if (!empty($data['items']) && ($dashboard_config['show_recent'] ?? true)) {
                 echo '<div class="mt-6">';
                 $this->render_component('dashboard-section', [
-                    'title'   => $dashboard_config['recent_title'] ?? __('Recientes', 'flavor-chat-ia'),
+                    'title'   => $dashboard_config['recent_title'] ?? __('Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-clock',
                     'content' => $this->render_items_grid($data['items'], $config, ['limit' => 6]),
                 ]);
@@ -215,14 +215,14 @@ class Flavor_Module_Renderer {
         $item_id = $params['id'] ?? 0;
 
         if (!$item_id) {
-            return $this->render_error(__('ID no especificado', 'flavor-chat-ia'));
+            return $this->render_error(__('ID no especificado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Obtener item
         $item = $this->get_single_item($module, $item_id, $config);
 
         if (!$item) {
-            return $this->render_error(__('Elemento no encontrado', 'flavor-chat-ia'));
+            return $this->render_error(__('Elemento no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $color_classes = function_exists('flavor_get_color_classes')
@@ -355,8 +355,8 @@ class Flavor_Module_Renderer {
 
         $is_edit = !empty($item);
         $form_title = $is_edit
-            ? ($form_config['edit_title'] ?? __('Editar', 'flavor-chat-ia'))
-            : ($form_config['create_title'] ?? __('Crear nuevo', 'flavor-chat-ia'));
+            ? ($form_config['edit_title'] ?? __('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN))
+            : ($form_config['create_title'] ?? __('Crear nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         $color_classes = function_exists('flavor_get_color_classes')
             ? flavor_get_color_classes($config['color'] ?? 'blue')
@@ -397,11 +397,11 @@ class Flavor_Module_Renderer {
                     <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
                         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url(str_replace('-', '_', $module), '')); ?>"
                            class="px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors">
-                            <?php _e('Cancelar', 'flavor-chat-ia'); ?>
+                            <?php _e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                         <button type="submit"
                                 class="px-6 py-2 rounded-xl text-white <?php echo esc_attr($color_classes['bg_solid']); ?> hover:opacity-90 transition-colors">
-                            <?php echo $is_edit ? __('Guardar cambios', 'flavor-chat-ia') : __('Crear', 'flavor-chat-ia'); ?>
+                            <?php echo $is_edit ? __('Guardar cambios', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Crear', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </form>
@@ -891,7 +891,7 @@ class Flavor_Module_Renderer {
                 // Items relacionados
                 $related = $this->get_related_items($module, $item, $widget['limit'] ?? 3);
                 if ($related) {
-                    echo '<h4 class="font-medium mb-2">' . esc_html($widget['title'] ?? __('Relacionados', 'flavor-chat-ia')) . '</h4>';
+                    echo '<h4 class="font-medium mb-2">' . esc_html($widget['title'] ?? __('Relacionados', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '</h4>';
                     echo '<ul class="space-y-2">';
                     foreach ($related as $rel) {
                         echo '<li><a href="' . esc_url($rel['url']) . '" class="text-sm text-blue-600 hover:underline">' . esc_html($rel['titulo'] ?? $rel['title']) . '</a></li>';
@@ -992,7 +992,7 @@ class Flavor_Module_Renderer {
             }
         }
 
-        return $this->render_error(sprintf(__('Template no encontrado: %s', 'flavor-chat-ia'), $template));
+        return $this->render_error(sprintf(__('Template no encontrado: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $template));
     }
 
     /**
@@ -1016,7 +1016,7 @@ class Flavor_Module_Renderer {
      */
     private function get_default_filters(string $module, array $config): array {
         $filters = [
-            ['id' => 'todos', 'label' => __('Todos', 'flavor-chat-ia'), 'active' => true],
+            ['id' => 'todos', 'label' => __('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'active' => true],
         ];
 
         // Añadir filtros según estados configurados
@@ -1149,7 +1149,7 @@ class Flavor_Module_Renderer {
                 'imagen'      => 'imagen',
             ],
             'tabs'     => [
-                'listado' => ['label' => __('Listado', 'flavor-chat-ia'), 'type' => 'archive'],
+                'listado' => ['label' => __('Listado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'type' => 'archive'],
             ],
         ];
     }

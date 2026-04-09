@@ -120,7 +120,7 @@ usort($datos_usuarios, function($a, $b) use ($orden) {
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-groups"></span>
-        <?php echo esc_html__('Usuarios del Banco de Tiempo', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Usuarios del Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <hr class="wp-header-end">
@@ -131,7 +131,7 @@ usort($datos_usuarios, function($a, $b) use ($orden) {
             <div class="stat-value" style="font-size: 28px; font-weight: bold; color: #2271b1;">
                 <?php echo number_format(count($datos_usuarios)); ?>
             </div>
-            <div class="stat-label" style="color: #646970;"><?php echo esc_html__('Usuarios Activos', 'flavor-chat-ia'); ?></div>
+            <div class="stat-label" style="color: #646970;"><?php echo esc_html__('Usuarios Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
 
         <div class="stat-box" style="background: #fff; padding: 16px; border-left: 4px solid #00a32a; box-shadow: 0 1px 1px rgba(0,0,0,.04);">
@@ -141,7 +141,7 @@ usort($datos_usuarios, function($a, $b) use ($orden) {
                 echo number_format($total_horas_circulando, 1);
                 ?>
             </div>
-            <div class="stat-label" style="color: #646970;"><?php echo esc_html__('Total Horas Circulando', 'flavor-chat-ia'); ?></div>
+            <div class="stat-label" style="color: #646970;"><?php echo esc_html__('Total Horas Circulando', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
 
         <div class="stat-box" style="background: #fff; padding: 16px; border-left: 4px solid #8c52ff; box-shadow: 0 1px 1px rgba(0,0,0,.04);">
@@ -152,7 +152,7 @@ usort($datos_usuarios, function($a, $b) use ($orden) {
                 echo number_format($promedio_saldo, 1);
                 ?>
             </div>
-            <div class="stat-label" style="color: #646970;"><?php echo esc_html__('Saldo Promedio', 'flavor-chat-ia'); ?></div>
+            <div class="stat-label" style="color: #646970;"><?php echo esc_html__('Saldo Promedio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -162,20 +162,20 @@ usort($datos_usuarios, function($a, $b) use ($orden) {
             <form method="get" style="display: inline-flex; gap: 8px; align-items: center;">
                 <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']); ?>">
 
-                <label for="orden"><?php echo esc_html__('Ordenar por:', 'flavor-chat-ia'); ?></label>
+                <label for="orden"><?php echo esc_html__('Ordenar por:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <select name="orden" id="orden" onchange="this.form.submit()">
-                    <option value="saldo_desc" <?php selected($orden, 'saldo_desc'); ?>><?php echo esc_html__('Saldo (mayor a menor)', 'flavor-chat-ia'); ?></option>
-                    <option value="saldo_asc" <?php selected($orden, 'saldo_asc'); ?>><?php echo esc_html__('Saldo (menor a mayor)', 'flavor-chat-ia'); ?></option>
-                    <option value="nombre_asc" <?php selected($orden, 'nombre_asc'); ?>><?php echo esc_html__('Nombre (A-Z)', 'flavor-chat-ia'); ?></option>
-                    <option value="nombre_desc" <?php selected($orden, 'nombre_desc'); ?>><?php echo esc_html__('Nombre (Z-A)', 'flavor-chat-ia'); ?></option>
-                    <option value="intercambios_desc" <?php selected($orden, 'intercambios_desc'); ?>><?php echo esc_html__('Más intercambios', 'flavor-chat-ia'); ?></option>
+                    <option value="saldo_desc" <?php selected($orden, 'saldo_desc'); ?>><?php echo esc_html__('Saldo (mayor a menor)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="saldo_asc" <?php selected($orden, 'saldo_asc'); ?>><?php echo esc_html__('Saldo (menor a mayor)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="nombre_asc" <?php selected($orden, 'nombre_asc'); ?>><?php echo esc_html__('Nombre (A-Z)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="nombre_desc" <?php selected($orden, 'nombre_desc'); ?>><?php echo esc_html__('Nombre (Z-A)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="intercambios_desc" <?php selected($orden, 'intercambios_desc'); ?>><?php echo esc_html__('Más intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
             </form>
         </div>
 
         <div class="alignright actions">
             <button type="button" class="button" id="btn-exportar-usuarios">
-                <span class="dashicons dashicons-download"></span> <?php echo esc_html__('Exportar CSV', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-download"></span> <?php echo esc_html__('Exportar CSV', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     </div>
@@ -185,15 +185,15 @@ usort($datos_usuarios, function($a, $b) use ($orden) {
         <thead>
             <tr>
                 <th style="width: 50px;">#</th>
-                <th><?php echo esc_html__('Usuario', 'flavor-chat-ia'); ?></th>
-                <th style="text-align: center;"><?php echo esc_html__('Servicios', 'flavor-chat-ia'); ?><br><?php echo esc_html__('Ofrecidos', 'flavor-chat-ia'); ?></th>
-                <th style="text-align: center;"><?php echo esc_html__('Servicios', 'flavor-chat-ia'); ?><br><?php echo esc_html__('Activos', 'flavor-chat-ia'); ?></th>
-                <th style="text-align: right;"><?php echo esc_html__('Horas', 'flavor-chat-ia'); ?><br><?php echo esc_html__('Ganadas', 'flavor-chat-ia'); ?></th>
-                <th style="text-align: right;"><?php echo esc_html__('Horas', 'flavor-chat-ia'); ?><br><?php echo esc_html__('Gastadas', 'flavor-chat-ia'); ?></th>
-                <th style="text-align: right;"><?php echo esc_html__('Saldo', 'flavor-chat-ia'); ?><br><?php echo esc_html__('Actual', 'flavor-chat-ia'); ?></th>
-                <th style="text-align: center;"><?php echo esc_html__('Intercambios', 'flavor-chat-ia'); ?><br><?php echo esc_html__('Completados', 'flavor-chat-ia'); ?></th>
-                <th style="text-align: center;"><?php echo esc_html__('Intercambios', 'flavor-chat-ia'); ?><br><?php echo esc_html__('Pendientes', 'flavor-chat-ia'); ?></th>
-                <th style="width: 100px;"><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
+                <th><?php echo esc_html__('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="text-align: center;"><?php echo esc_html__('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?><br><?php echo esc_html__('Ofrecidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="text-align: center;"><?php echo esc_html__('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?><br><?php echo esc_html__('Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="text-align: right;"><?php echo esc_html__('Horas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?><br><?php echo esc_html__('Ganadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="text-align: right;"><?php echo esc_html__('Horas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?><br><?php echo esc_html__('Gastadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="text-align: right;"><?php echo esc_html__('Saldo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?><br><?php echo esc_html__('Actual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="text-align: center;"><?php echo esc_html__('Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?><br><?php echo esc_html__('Completados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="text-align: center;"><?php echo esc_html__('Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?><br><?php echo esc_html__('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="width: 100px;"><?php echo esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -255,7 +255,7 @@ usort($datos_usuarios, function($a, $b) use ($orden) {
                 <td>
                     <a href="#" class="button button-small ver-historial"
                        data-usuario-id="<?php echo $datos['id']; ?>">
-                        <?php echo esc_html__('Historial', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Historial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </td>
             </tr>
@@ -265,7 +265,7 @@ usort($datos_usuarios, function($a, $b) use ($orden) {
                 <tr>
                     <td colspan="10" style="text-align: center; padding: 40px; color: #646970;">
                         <span class="dashicons dashicons-info" style="font-size: 48px;"></span>
-                        <p><?php echo esc_html__('No hay usuarios con actividad en el banco de tiempo.', 'flavor-chat-ia'); ?></p>
+                        <p><?php echo esc_html__('No hay usuarios con actividad en el banco de tiempo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </td>
                 </tr>
             <?php endif; ?>
@@ -278,14 +278,14 @@ usort($datos_usuarios, function($a, $b) use ($orden) {
 <div id="modal-historial" style="display:none;">
     <div class="modal-overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 100000;">
         <div class="modal-content" style="position: relative; max-width: 900px; margin: 50px auto; background: #fff; padding: 20px; border-radius: 4px; max-height: 80vh; overflow-y: auto;">
-            <h2><?php echo esc_html__('Historial de Usuario', 'flavor-chat-ia'); ?></h2>
+            <h2><?php echo esc_html__('Historial de Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <div id="contenido-historial">
                 <p style="text-align: center; padding: 40px;">
                     <span class="spinner is-active"></span>
                 </p>
             </div>
             <p>
-                <button type="button" class="button" id="btn-cerrar-historial"><?php echo esc_html__('Cerrar', 'flavor-chat-ia'); ?></button>
+                <button type="button" class="button" id="btn-cerrar-historial"><?php echo esc_html__('Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
             </p>
         </div>
     </div>

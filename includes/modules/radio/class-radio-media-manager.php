@@ -243,11 +243,11 @@ class Flavor_Radio_Media_Manager {
         check_ajax_referer('flavor_radio_nonce', 'nonce');
 
         if (!current_user_can('upload_files')) {
-            wp_send_json_error(['message' => __('No tienes permisos para subir archivos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No tienes permisos para subir archivos', 'flavor-platform')]);
         }
 
         if (empty($_FILES['audio_file'])) {
-            wp_send_json_error(['message' => __('No se recibió ningún archivo', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No se recibió ningún archivo', 'flavor-platform')]);
         }
 
         $file = $_FILES['audio_file'];
@@ -261,7 +261,7 @@ class Flavor_Radio_Media_Manager {
         }
 
         wp_send_json_success([
-            'message' => __('Archivo subido correctamente', 'flavor-chat-ia'),
+            'message' => __('Archivo subido correctamente', 'flavor-platform'),
             'audio' => $result,
         ]);
     }
@@ -273,12 +273,12 @@ class Flavor_Radio_Media_Manager {
         // Validar formato
         $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         if (!in_array($extension, $this->allowed_formats)) {
-            return new WP_Error('invalid_format', __('Formato de audio no permitido', 'flavor-chat-ia'));
+            return new WP_Error('invalid_format', __('Formato de audio no permitido', 'flavor-platform'));
         }
 
         // Validar tamaño
         if ($file['size'] > $this->max_file_size) {
-            return new WP_Error('file_too_large', __('El archivo excede el tamaño máximo (100MB)', 'flavor-chat-ia'));
+            return new WP_Error('file_too_large', __('El archivo excede el tamaño máximo (100MB)', 'flavor-platform'));
         }
 
         // Determinar subdirectorio
@@ -292,7 +292,7 @@ class Flavor_Radio_Media_Manager {
 
         // Mover archivo
         if (!move_uploaded_file($file['tmp_name'], $target_path)) {
-            return new WP_Error('upload_failed', __('Error al guardar el archivo', 'flavor-chat-ia'));
+            return new WP_Error('upload_failed', __('Error al guardar el archivo', 'flavor-platform'));
         }
 
         // Obtener metadatos del audio
@@ -404,7 +404,7 @@ class Flavor_Radio_Media_Manager {
         check_ajax_referer('flavor_radio_nonce', 'nonce');
 
         if (!current_user_can('upload_files')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-platform')]);
         }
 
         $tipo = sanitize_text_field($_GET['tipo'] ?? '');
@@ -486,12 +486,12 @@ class Flavor_Radio_Media_Manager {
         check_ajax_referer('flavor_radio_nonce', 'nonce');
 
         if (!current_user_can('delete_posts')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-platform')]);
         }
 
         $audio_id = absint($_POST['audio_id'] ?? 0);
         if (!$audio_id) {
-            wp_send_json_error(['message' => __('ID no válido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID no válido', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -510,7 +510,7 @@ class Flavor_Radio_Media_Manager {
         // Eliminar de DB (soft delete)
         $wpdb->update($tabla, ['activo' => 0], ['id' => $audio_id]);
 
-        wp_send_json_success(['message' => __('Audio eliminado', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Audio eliminado', 'flavor-platform')]);
     }
 
     // =========================================================================
@@ -524,7 +524,7 @@ class Flavor_Radio_Media_Manager {
         check_ajax_referer('flavor_radio_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -538,7 +538,7 @@ class Flavor_Radio_Media_Manager {
         $orden = sanitize_text_field($_POST['orden'] ?? 'secuencial');
 
         if (empty($nombre)) {
-            wp_send_json_error(['message' => __('El nombre es obligatorio', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('El nombre es obligatorio', 'flavor-platform')]);
         }
 
         $data = [
@@ -561,7 +561,7 @@ class Flavor_Radio_Media_Manager {
         }
 
         wp_send_json_success([
-            'message' => __('Playlist guardada', 'flavor-chat-ia'),
+            'message' => __('Playlist guardada', 'flavor-platform'),
             'playlist_id' => $playlist_id,
         ]);
     }
@@ -573,7 +573,7 @@ class Flavor_Radio_Media_Manager {
         $playlist_id = absint($_GET['playlist_id'] ?? 0);
 
         if (!$playlist_id) {
-            wp_send_json_error(['message' => __('ID no válido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID no válido', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -586,7 +586,7 @@ class Flavor_Radio_Media_Manager {
         ));
 
         if (!$playlist) {
-            wp_send_json_error(['message' => __('Playlist no encontrada', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Playlist no encontrada', 'flavor-platform')]);
         }
 
         $audios_ids = json_decode($playlist->audios_ids, true) ?: [];
@@ -669,7 +669,7 @@ class Flavor_Radio_Media_Manager {
             if (!$playlist_default) {
                 return [
                     'playing' => false,
-                    'message' => __('No hay programación activa', 'flavor-chat-ia'),
+                    'message' => __('No hay programación activa', 'flavor-platform'),
                 ];
             }
 
@@ -688,7 +688,7 @@ class Flavor_Radio_Media_Manager {
         if (!$playlist) {
             return [
                 'playing' => false,
-                'message' => __('Playlist no disponible', 'flavor-chat-ia'),
+                'message' => __('Playlist no disponible', 'flavor-platform'),
             ];
         }
 
@@ -697,7 +697,7 @@ class Flavor_Radio_Media_Manager {
         if (empty($audios_ids)) {
             return [
                 'playing' => false,
-                'message' => __('Playlist vacía', 'flavor-chat-ia'),
+                'message' => __('Playlist vacía', 'flavor-platform'),
             ];
         }
 
@@ -714,7 +714,7 @@ class Flavor_Radio_Media_Manager {
         if (!$audio) {
             return [
                 'playing' => false,
-                'message' => __('Audio no disponible', 'flavor-chat-ia'),
+                'message' => __('Audio no disponible', 'flavor-platform'),
             ];
         }
 

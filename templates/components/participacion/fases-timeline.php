@@ -144,7 +144,7 @@ $porcentaje_progreso = ($fases_completadas / $total_fases) * 100;
             </div>
             <p class="text-xs text-gray-500 mt-3">
                 <?php printf(
-                    esc_html__('%d de %d fases completadas', 'flavor-chat-ia'),
+                    esc_html__('%d de %d fases completadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $fases_completadas,
                     $total_fases
                 ); ?>
@@ -225,7 +225,7 @@ $porcentaje_progreso = ($fases_completadas / $total_fases) * 100;
                                         };
                                         ?>
                                         <span class="inline-block px-2 py-1 text-xs font-semibold rounded-full <?php echo $clase_estado; ?>">
-                                            <?php echo esc_html__($texto_estado, 'flavor-chat-ia'); ?>
+                                            <?php echo esc_html__($texto_estado, FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </span>
                                     </div>
                                 </div>
@@ -283,7 +283,7 @@ $porcentaje_progreso = ($fases_completadas / $total_fases) * 100;
                                     };
                                     ?>
                                     <span class="inline-block px-2 py-1 text-xs font-semibold rounded-full whitespace-nowrap <?php echo $clase_estado; ?>">
-                                        <?php echo esc_html__($texto_estado, 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__($texto_estado, FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </span>
                                 </div>
 
@@ -310,10 +310,10 @@ $porcentaje_progreso = ($fases_completadas / $total_fases) * 100;
         <!-- CTA o información adicional -->
         <div class="mt-12 text-center">
             <p class="text-gray-600 mb-6">
-                <?php echo esc_html__('Descubre cómo puedes participar en cada fase del proceso', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Descubre cómo puedes participar en cada fase del proceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
             <a href="#" class="inline-flex items-center px-8 py-3 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-lg transition duration-300 transform hover:scale-105">
-                <span><?php echo esc_html__('Participar Ahora', 'flavor-chat-ia'); ?></span>
+                <span><?php echo esc_html__('Participar Ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>

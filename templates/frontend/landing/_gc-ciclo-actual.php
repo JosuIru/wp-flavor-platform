@@ -52,7 +52,7 @@ if ($ciclo):
             <div class="flavor-gc-ciclo-estado">
                 <span class="flavor-gc-estado-badge flavor-gc-estado--abierto">
                     <span class="dashicons dashicons-yes-alt"></span>
-                    <?php _e('Ciclo de pedidos abierto', 'flavor-chat-ia'); ?>
+                    <?php _e('Ciclo de pedidos abierto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
             </div>
 
@@ -61,17 +61,17 @@ if ($ciclo):
                     <h2 class="flavor-gc-ciclo-titulo"><?php echo esc_html($ciclo->post_title); ?></h2>
 
                     <div class="flavor-gc-ciclo-countdown">
-                        <span class="flavor-gc-countdown-label"><?php _e('Tiempo para hacer tu pedido:', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-gc-countdown-label"><?php _e('Tiempo para hacer tu pedido:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <div class="flavor-gc-countdown-timer" data-cierre="<?php echo esc_attr($fecha_cierre); ?>">
                             <?php if ($dias_restantes > 0): ?>
                                 <div class="flavor-gc-countdown-item">
                                     <span class="flavor-gc-countdown-valor"><?php echo $dias_restantes; ?></span>
-                                    <span class="flavor-gc-countdown-unidad"><?php echo _n('día', 'días', $dias_restantes, 'flavor-chat-ia'); ?></span>
+                                    <span class="flavor-gc-countdown-unidad"><?php echo _n('día', 'días', $dias_restantes, FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                             <?php endif; ?>
                             <div class="flavor-gc-countdown-item">
                                 <span class="flavor-gc-countdown-valor"><?php echo $horas_restantes; ?></span>
-                                <span class="flavor-gc-countdown-unidad"><?php echo _n('hora', 'horas', $horas_restantes, 'flavor-chat-ia'); ?></span>
+                                <span class="flavor-gc-countdown-unidad"><?php echo _n('hora', 'horas', $horas_restantes, FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                         </div>
                     </div>
@@ -79,7 +79,7 @@ if ($ciclo):
                     <div class="flavor-gc-ciclo-cta">
                         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="flavor-btn flavor-btn--primary flavor-btn--lg">
                             <span class="dashicons dashicons-cart"></span>
-                            <?php _e('Hacer mi pedido', 'flavor-chat-ia'); ?>
+                            <?php _e('Hacer mi pedido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </div>
@@ -90,7 +90,7 @@ if ($ciclo):
                             <span class="dashicons dashicons-clock"></span>
                         </div>
                         <div class="flavor-gc-detalle-info">
-                            <span class="flavor-gc-detalle-label"><?php _e('Cierre de pedidos', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-gc-detalle-label"><?php _e('Cierre de pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <strong class="flavor-gc-detalle-valor">
                                 <?php echo date_i18n('l j \d\e F, H:i', strtotime($fecha_cierre)); ?>
                             </strong>
@@ -102,7 +102,7 @@ if ($ciclo):
                             <span class="dashicons dashicons-calendar-alt"></span>
                         </div>
                         <div class="flavor-gc-detalle-info">
-                            <span class="flavor-gc-detalle-label"><?php _e('Fecha de entrega', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-gc-detalle-label"><?php _e('Fecha de entrega', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <strong class="flavor-gc-detalle-valor">
                                 <?php echo date_i18n('l j \d\e F', strtotime($fecha_entrega)); ?>
                                 <?php if ($hora_entrega): ?>
@@ -118,7 +118,7 @@ if ($ciclo):
                             <span class="dashicons dashicons-location"></span>
                         </div>
                         <div class="flavor-gc-detalle-info">
-                            <span class="flavor-gc-detalle-label"><?php _e('Lugar de recogida', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-gc-detalle-label"><?php _e('Lugar de recogida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <strong class="flavor-gc-detalle-valor"><?php echo esc_html($lugar_entrega); ?></strong>
                         </div>
                     </div>
@@ -130,7 +130,7 @@ if ($ciclo):
                             <span class="dashicons dashicons-info"></span>
                         </div>
                         <div class="flavor-gc-detalle-info">
-                            <span class="flavor-gc-detalle-label"><?php _e('Información adicional', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-gc-detalle-label"><?php _e('Información adicional', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             <p class="flavor-gc-detalle-texto"><?php echo esc_html($notas); ?></p>
                         </div>
                     </div>
@@ -149,16 +149,16 @@ if ($ciclo):
             <div class="flavor-gc-ciclo-estado">
                 <span class="flavor-gc-estado-badge flavor-gc-estado--cerrado">
                     <span class="dashicons dashicons-clock"></span>
-                    <?php _e('Próximo ciclo de pedidos', 'flavor-chat-ia'); ?>
+                    <?php _e('Próximo ciclo de pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
             </div>
 
             <div class="flavor-gc-ciclo-content flavor-gc-ciclo-content--cerrado">
                 <span class="dashicons dashicons-calendar-alt flavor-gc-ciclo-icono-grande"></span>
-                <h3><?php _e('El ciclo de pedidos está cerrado', 'flavor-chat-ia'); ?></h3>
-                <p><?php _e('Te avisaremos cuando abra el próximo ciclo de pedidos.', 'flavor-chat-ia'); ?></p>
+                <h3><?php _e('El ciclo de pedidos está cerrado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php _e('Te avisaremos cuando abra el próximo ciclo de pedidos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'unirme')); ?>" class="flavor-btn flavor-btn--outline">
-                    <?php _e('Unirme al grupo para recibir avisos', 'flavor-chat-ia'); ?>
+                    <?php _e('Unirme al grupo para recibir avisos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>

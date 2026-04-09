@@ -1,6 +1,6 @@
 # Referencia Completa de Endpoints
 
-Tabla exhaustiva de todos los endpoints REST disponibles en Flavor Chat IA.
+Tabla exhaustiva de todos los endpoints REST disponibles en Flavor Platform.
 
 ## Autenticación
 

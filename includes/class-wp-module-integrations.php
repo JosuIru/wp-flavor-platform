@@ -278,57 +278,57 @@ class Flavor_WP_Module_Integrations {
         $modulos_integrables = [
             'email_marketing' => [
                 'slug'        => 'email-marketing',
-                'nombre'      => __('Email Marketing', 'flavor-chat-ia'),
+                'nombre'      => __('Email Marketing', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono'       => 'email-alt',
-                'descripcion' => __('Incluir en próxima newsletter', 'flavor-chat-ia'),
+                'descripcion' => __('Incluir en próxima newsletter', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'comunidades' => [
                 'slug'        => 'comunidades',
-                'nombre'      => __('Comunidades', 'flavor-chat-ia'),
+                'nombre'      => __('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono'       => 'groups',
-                'descripcion' => __('Compartir en una comunidad', 'flavor-chat-ia'),
+                'descripcion' => __('Compartir en una comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'colectivos' => [
                 'slug'        => 'colectivos',
-                'nombre'      => __('Colectivos', 'flavor-chat-ia'),
+                'nombre'      => __('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono'       => 'buddicons-groups',
-                'descripcion' => __('Publicar en un colectivo', 'flavor-chat-ia'),
+                'descripcion' => __('Publicar en un colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'eventos' => [
                 'slug'        => 'eventos',
-                'nombre'      => __('Eventos', 'flavor-chat-ia'),
+                'nombre'      => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono'       => 'calendar-alt',
-                'descripcion' => __('Asociar a un evento', 'flavor-chat-ia'),
+                'descripcion' => __('Asociar a un evento', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'foros' => [
                 'slug'        => 'foros',
-                'nombre'      => __('Foros', 'flavor-chat-ia'),
+                'nombre'      => __('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono'       => 'format-chat',
-                'descripcion' => __('Crear debate en foro', 'flavor-chat-ia'),
+                'descripcion' => __('Crear debate en foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'cursos' => [
                 'slug'        => 'cursos',
-                'nombre'      => __('Cursos', 'flavor-chat-ia'),
+                'nombre'      => __('Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono'       => 'welcome-learn-more',
-                'descripcion' => __('Vincular como material de curso', 'flavor-chat-ia'),
+                'descripcion' => __('Vincular como material de curso', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'talleres' => [
                 'slug'        => 'talleres',
-                'nombre'      => __('Talleres', 'flavor-chat-ia'),
+                'nombre'      => __('Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono'       => 'hammer',
-                'descripcion' => __('Asociar a un taller', 'flavor-chat-ia'),
+                'descripcion' => __('Asociar a un taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'campanias' => [
                 'slug'        => 'campanias',
-                'nombre'      => __('Campañas', 'flavor-chat-ia'),
+                'nombre'      => __('Campañas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono'       => 'megaphone',
-                'descripcion' => __('Vincular a una campaña activa', 'flavor-chat-ia'),
+                'descripcion' => __('Vincular a una campaña activa', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'biblioteca' => [
                 'slug'        => 'biblioteca',
-                'nombre'      => __('Biblioteca', 'flavor-chat-ia'),
+                'nombre'      => __('Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono'       => 'book',
-                'descripcion' => __('Catalogar como recurso', 'flavor-chat-ia'),
+                'descripcion' => __('Catalogar como recurso', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
 
@@ -390,7 +390,7 @@ class Flavor_WP_Module_Integrations {
         foreach ($this->post_types_habilitados as $post_type) {
             add_meta_box(
                 'flavor_module_integrations',
-                __('Integrar con Módulos', 'flavor-chat-ia'),
+                __('Integrar con Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 [$this, 'renderizar_metabox'],
                 $post_type,
                 'side',
@@ -405,7 +405,7 @@ class Flavor_WP_Module_Integrations {
     public function renderizar_metabox($post) {
         // Verificar permisos
         if (!$this->usuario_puede_integrar($post->ID)) {
-            echo '<p class="description">' . esc_html__('No tienes permisos para integrar este contenido.', 'flavor-chat-ia') . '</p>';
+            echo '<p class="description">' . esc_html__('No tienes permisos para integrar este contenido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -415,13 +415,13 @@ class Flavor_WP_Module_Integrations {
         $modulos_usuario = $this->get_modulos_para_usuario();
 
         if (empty($modulos_usuario)) {
-            echo '<p class="description">' . esc_html__('No hay módulos disponibles para integración.', 'flavor-chat-ia') . '</p>';
+            echo '<p class="description">' . esc_html__('No hay módulos disponibles para integración.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
         ?>
         <div class="flavor-module-integrations-metabox">
             <p class="description" style="margin-bottom:12px;">
-                <?php esc_html_e('Selecciona dónde quieres integrar este contenido:', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Selecciona dónde quieres integrar este contenido:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
 
             <?php foreach ($modulos_usuario as $key => $modulo):
@@ -465,7 +465,7 @@ class Flavor_WP_Module_Integrations {
                         data-post-id="<?php echo esc_attr($post->ID); ?>"
                         style="width:100%;">
                     <span class="dashicons dashicons-update" style="margin-top:4px;"></span>
-                    <?php esc_html_e('Integrar ahora', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Integrar ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
 
                 <?php
@@ -476,7 +476,7 @@ class Flavor_WP_Module_Integrations {
                 <div class="flavor-historial-seccion" style="margin-top:15px;">
                     <h4 class="flavor-historial-titulo" style="margin:0 0 8px;font-size:12px;color:#666;">
                         <span class="dashicons dashicons-clock" style="font-size:14px;"></span>
-                        <?php esc_html_e('Integraciones activas', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Integraciones activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <span class="flavor-count" style="background:#2271b1;color:#fff;padding:1px 6px;border-radius:10px;font-size:10px;margin-left:5px;">
                             <?php echo count($historial); ?>
                         </span>
@@ -501,7 +501,7 @@ class Flavor_WP_Module_Integrations {
                                     data-modulo="<?php echo esc_attr($integracion['modulo']); ?>"
                                     data-elemento-id="<?php echo esc_attr($integracion['elemento_id']); ?>"
                                     style="color:#a00;padding:2px;cursor:pointer;"
-                                    title="<?php esc_attr_e('Eliminar', 'flavor-chat-ia'); ?>">
+                                    title="<?php esc_attr_e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <span class="dashicons dashicons-no-alt" style="font-size:14px;"></span>
                             </button>
                         </div>
@@ -556,17 +556,17 @@ class Flavor_WP_Module_Integrations {
      */
     private function get_placeholder_select($modulo) {
         $placeholders = [
-            'email_marketing' => __('Seleccionar newsletter...', 'flavor-chat-ia'),
-            'comunidades'     => __('Seleccionar comunidad...', 'flavor-chat-ia'),
-            'colectivos'      => __('Seleccionar colectivo...', 'flavor-chat-ia'),
-            'eventos'         => __('Seleccionar evento...', 'flavor-chat-ia'),
-            'foros'           => __('Seleccionar foro...', 'flavor-chat-ia'),
-            'cursos'          => __('Seleccionar curso...', 'flavor-chat-ia'),
-            'talleres'        => __('Seleccionar taller...', 'flavor-chat-ia'),
-            'campanias'       => __('Seleccionar campaña...', 'flavor-chat-ia'),
-            'biblioteca'      => __('Seleccionar categoría...', 'flavor-chat-ia'),
+            'email_marketing' => __('Seleccionar newsletter...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'comunidades'     => __('Seleccionar comunidad...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'colectivos'      => __('Seleccionar colectivo...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'eventos'         => __('Seleccionar evento...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'foros'           => __('Seleccionar foro...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cursos'          => __('Seleccionar curso...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'talleres'        => __('Seleccionar taller...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'campanias'       => __('Seleccionar campaña...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'biblioteca'      => __('Seleccionar categoría...', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
-        return $placeholders[$modulo] ?? __('Seleccionar...', 'flavor-chat-ia');
+        return $placeholders[$modulo] ?? __('Seleccionar...', FLAVOR_PLATFORM_TEXT_DOMAIN);
     }
 
     /**
@@ -703,7 +703,7 @@ class Flavor_WP_Module_Integrations {
                     }
                 } else {
                     // Si no hay tabla de categorías, usar opción de crear nuevo
-                    $elementos[] = ['id' => 'nuevo', 'titulo' => __('Crear como nuevo recurso', 'flavor-chat-ia')];
+                    $elementos[] = ['id' => 'nuevo', 'titulo' => __('Crear como nuevo recurso', FLAVOR_PLATFORM_TEXT_DOMAIN)];
                 }
                 break;
         }
@@ -1034,9 +1034,9 @@ class Flavor_WP_Module_Integrations {
         $resultado = $wpdb->insert($tabla_temas, [
             'foro_id'        => intval($foro_id),
             'autor_id'       => $post->post_author ?: get_current_user_id(),
-            'titulo'         => sprintf(__('Debate: %s', 'flavor-chat-ia'), $post->post_title),
+            'titulo'         => sprintf(__('Debate: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $post->post_title),
             'contenido'      => sprintf(
-                __("Este debate ha sido creado automáticamente a partir del artículo:\n\n**%s**\n\n%s\n\n[Leer artículo completo](%s)", 'flavor-chat-ia'),
+                __("Este debate ha sido creado automáticamente a partir del artículo:\n\n**%s**\n\n%s\n\n[Leer artículo completo](%s)", FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $post->post_title,
                 wp_trim_words(strip_shortcodes($post->post_content), 100),
                 get_permalink($post->ID)
@@ -1324,12 +1324,12 @@ class Flavor_WP_Module_Integrations {
         check_ajax_referer('flavor_module_integrations', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $modulo = sanitize_key($_POST['modulo'] ?? '');
         if (empty($modulo)) {
-            wp_send_json_error(['message' => __('Módulo no especificado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Módulo no especificado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $elementos = $this->obtener_elementos_modulo($modulo);
@@ -1343,7 +1343,7 @@ class Flavor_WP_Module_Integrations {
         check_ajax_referer('flavor_module_integrations', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $post_id = intval($_POST['post_id'] ?? 0);
@@ -1351,7 +1351,7 @@ class Flavor_WP_Module_Integrations {
         $elemento_id = sanitize_text_field($_POST['elemento_id'] ?? '');
 
         if (!$post_id || !$modulo) {
-            wp_send_json_error(['message' => __('Datos incompletos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $resultado = $this->ejecutar_integracion($modulo, $post_id, $elemento_id);
@@ -1359,13 +1359,13 @@ class Flavor_WP_Module_Integrations {
         if ($resultado) {
             wp_send_json_success([
                 'message' => sprintf(
-                    __('Post integrado con %s correctamente', 'flavor-chat-ia'),
+                    __('Post integrado con %s correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $this->modulos_disponibles[$modulo]['nombre'] ?? $modulo
                 ),
             ]);
         } else {
             wp_send_json_error([
-                'message' => __('Error al integrar. Verifica que el módulo esté configurado correctamente.', 'flavor-chat-ia'),
+                'message' => __('Error al integrar. Verifica que el módulo esté configurado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
     }
@@ -1396,16 +1396,16 @@ class Flavor_WP_Module_Integrations {
             'nonce'   => wp_create_nonce('flavor_module_integrations'),
             'postId'  => $post->ID,
             'i18n'    => [
-                'integrando'        => __('Integrando...', 'flavor-chat-ia'),
-                'integrado'         => __('¡Integrado!', 'flavor-chat-ia'),
-                'error'             => __('Error al integrar', 'flavor-chat-ia'),
-                'seleccionar'       => __('Selecciona al menos una integración', 'flavor-chat-ia'),
-                'confirmarEliminar' => __('¿Eliminar esta integración?', 'flavor-chat-ia'),
-                'eliminando'        => __('Eliminando...', 'flavor-chat-ia'),
-                'eliminado'         => __('¡Eliminado!', 'flavor-chat-ia'),
-                'errorEliminar'     => __('Error al eliminar', 'flavor-chat-ia'),
-                'cargando'          => __('Cargando...', 'flavor-chat-ia'),
-                'sinIntegraciones'  => __('Sin integraciones', 'flavor-chat-ia'),
+                'integrando'        => __('Integrando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'integrado'         => __('¡Integrado!', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error'             => __('Error al integrar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'seleccionar'       => __('Selecciona al menos una integración', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmarEliminar' => __('¿Eliminar esta integración?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'eliminando'        => __('Eliminando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'eliminado'         => __('¡Eliminado!', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'errorEliminar'     => __('Error al eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cargando'          => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sinIntegraciones'  => __('Sin integraciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -1451,7 +1451,7 @@ class Flavor_WP_Module_Integrations {
         <div class="flavor-integraciones-adicionales">
             <h4 class="flavor-integraciones-titulo">
                 <span class="dashicons dashicons-admin-plugins"></span>
-                <?php esc_html_e('Integrar también con:', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Integrar también con:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h4>
 
             <div class="flavor-integraciones-grid">
@@ -1846,7 +1846,7 @@ class Flavor_WP_Module_Integrations {
         ];
 
         $html = '<div class="' . esc_attr($atts['class']) . '">';
-        $html .= '<span class="flavor-integraciones-label">' . esc_html__('Integrado en:', 'flavor-chat-ia') . '</span>';
+        $html .= '<span class="flavor-integraciones-label">' . esc_html__('Integrado en:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span>';
         $html .= '<div class="flavor-integraciones-badges">';
 
         foreach ($integraciones as $int) {
@@ -2001,7 +2001,7 @@ class Flavor_WP_Module_Integrations {
         $modulos = $this->get_modulos_para_usuario();
 
         if (empty($modulos)) {
-            return '<p class="flavor-no-modulos">' . esc_html__('No hay módulos de integración disponibles.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-no-modulos">' . esc_html__('No hay módulos de integración disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $mostrar_desc = filter_var($atts['mostrar_descripcion'], FILTER_VALIDATE_BOOLEAN);
@@ -2081,7 +2081,7 @@ class Flavor_WP_Module_Integrations {
         foreach ($columns as $key => $value) {
             $new_columns[$key] = $value;
             if ($key === 'title') {
-                $new_columns['flavor_integraciones'] = __('Integraciones', 'flavor-chat-ia');
+                $new_columns['flavor_integraciones'] = __('Integraciones', FLAVOR_PLATFORM_TEXT_DOMAIN);
             }
         }
         return $new_columns;
@@ -2210,7 +2210,7 @@ class Flavor_WP_Module_Integrations {
         check_ajax_referer('flavor_module_integrations', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $post_id = intval($_POST['post_id'] ?? 0);
@@ -2218,15 +2218,15 @@ class Flavor_WP_Module_Integrations {
         $elemento_id = intval($_POST['elemento_id'] ?? 0);
 
         if (!$post_id || !$modulo) {
-            wp_send_json_error(['message' => __('Datos incompletos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $resultado = self::eliminar_integracion($post_id, $modulo, $elemento_id ?: null);
 
         if ($resultado) {
-            wp_send_json_success(['message' => __('Integración eliminada', 'flavor-chat-ia')]);
+            wp_send_json_success(['message' => __('Integración eliminada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
-            wp_send_json_error(['message' => __('Error al eliminar', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -2237,13 +2237,13 @@ class Flavor_WP_Module_Integrations {
         check_ajax_referer('flavor_module_integrations', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $post_id = intval($_POST['post_id'] ?? 0);
 
         if (!$post_id) {
-            wp_send_json_error(['message' => __('Post ID requerido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Post ID requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $integraciones = self::obtener_integraciones_post($post_id);
@@ -2251,7 +2251,7 @@ class Flavor_WP_Module_Integrations {
         if (empty($integraciones)) {
             wp_send_json_success([
                 'html' => '<p class="flavor-historial-vacio">' .
-                          esc_html__('Sin integraciones activas', 'flavor-chat-ia') .
+                          esc_html__('Sin integraciones activas', FLAVOR_PLATFORM_TEXT_DOMAIN) .
                           '</p>'
             ]);
             return;
@@ -2287,7 +2287,7 @@ class Flavor_WP_Module_Integrations {
                         data-post-id="<?php echo esc_attr($post_id); ?>"
                         data-modulo="<?php echo esc_attr($integracion['modulo']); ?>"
                         data-elemento-id="<?php echo esc_attr($integracion['elemento_id']); ?>"
-                        title="<?php esc_attr_e('Eliminar', 'flavor-chat-ia'); ?>">
+                        title="<?php esc_attr_e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-no-alt"></span>
                 </button>
             </div>
@@ -2452,7 +2452,7 @@ class Flavor_WP_Module_Integrations {
         $elemento_id = sanitize_text_field($request->get_param('elemento_id'));
 
         if (!$modulo) {
-            return new WP_Error('missing_modulo', __('Módulo requerido', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('missing_modulo', __('Módulo requerido', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $instance = self::get_instance();
@@ -2461,13 +2461,13 @@ class Flavor_WP_Module_Integrations {
         if ($resultado) {
             return rest_ensure_response([
                 'success' => true,
-                'message' => __('Post integrado correctamente', 'flavor-chat-ia'),
+                'message' => __('Post integrado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'post_id' => $post_id,
                 'modulo'  => $modulo,
             ]);
         }
 
-        return new WP_Error('integration_failed', __('Error al integrar', 'flavor-chat-ia'), ['status' => 500]);
+        return new WP_Error('integration_failed', __('Error al integrar', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 500]);
     }
 
     /**
@@ -2525,7 +2525,7 @@ class Flavor_WP_Module_Integrations {
     public function registrar_widget_dashboard() {
         wp_add_dashboard_widget(
             'flavor_integraciones_widget',
-            __('Integraciones de Contenido', 'flavor-chat-ia'),
+            __('Integraciones de Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'renderizar_widget_dashboard']
         );
     }
@@ -2596,7 +2596,7 @@ class Flavor_WP_Module_Integrations {
         echo '</div>';
 
         if (!$hay_datos) {
-            echo '<p class="flavor-dash-empty">' . esc_html__('Aún no hay posts integrados con módulos.', 'flavor-chat-ia') . '</p>';
+            echo '<p class="flavor-dash-empty">' . esc_html__('Aún no hay posts integrados con módulos.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         // Últimas integraciones
@@ -2612,7 +2612,7 @@ class Flavor_WP_Module_Integrations {
             );
 
             if (!empty($ultimas)) {
-                echo '<h4 style="margin-top:16px;">' . esc_html__('Últimas integraciones', 'flavor-chat-ia') . '</h4>';
+                echo '<h4 style="margin-top:16px;">' . esc_html__('Últimas integraciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h4>';
                 echo '<ul class="flavor-dash-recientes">';
                 foreach ($ultimas as $log) {
                     $icono = $iconos[$log->modulo] ?? 'admin-plugins';
@@ -2624,7 +2624,7 @@ class Flavor_WP_Module_Integrations {
                         </li>',
                         esc_attr($icono),
                         esc_url(get_edit_post_link($log->post_id)),
-                        esc_html($log->post_title ?: __('(Sin título)', 'flavor-chat-ia')),
+                        esc_html($log->post_title ?: __('(Sin título)', FLAVOR_PLATFORM_TEXT_DOMAIN)),
                         esc_html(human_time_diff(strtotime($log->fecha)))
                     );
                 }
@@ -2642,7 +2642,7 @@ class Flavor_WP_Module_Integrations {
                     </a>
                 </p>',
                 esc_url(self::get_url_exportacion()),
-                esc_html__('Exportar CSV', 'flavor-chat-ia')
+                esc_html__('Exportar CSV', FLAVOR_PLATFORM_TEXT_DOMAIN)
             );
         }
 
@@ -2740,7 +2740,7 @@ class Flavor_WP_Module_Integrations {
     public function agregar_bulk_actions($bulk_actions) {
         foreach ($this->modulos_disponibles as $key => $modulo) {
             $bulk_actions['flavor_integrar_' . $key] = sprintf(
-                __('Integrar con %s', 'flavor-chat-ia'),
+                __('Integrar con %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $modulo['nombre']
             );
         }
@@ -2796,7 +2796,7 @@ class Flavor_WP_Module_Integrations {
                     '%d post integrado con %s.',
                     '%d posts integrados con %s.',
                     $count,
-                    'flavor-chat-ia'
+                    FLAVOR_PLATFORM_TEXT_DOMAIN
                 ),
                 $count,
                 esc_html($nombre)
@@ -2823,14 +2823,14 @@ class Flavor_WP_Module_Integrations {
         $seleccionado = $_GET['flavor_modulo_filtro'] ?? '';
         ?>
         <select name="flavor_modulo_filtro" id="flavor-modulo-filtro">
-            <option value=""><?php esc_html_e('Filtrar por módulo', 'flavor-chat-ia'); ?></option>
+            <option value=""><?php esc_html_e('Filtrar por módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             <?php foreach ($this->modulos_disponibles as $key => $modulo): ?>
                 <option value="<?php echo esc_attr($key); ?>" <?php selected($seleccionado, $key); ?>>
                     <?php echo esc_html($modulo['nombre']); ?>
                 </option>
             <?php endforeach; ?>
             <option value="_sin_integracion" <?php selected($seleccionado, '_sin_integracion'); ?>>
-                <?php esc_html_e('— Sin integraciones —', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('— Sin integraciones —', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </option>
         </select>
         <?php
@@ -2971,7 +2971,7 @@ class Flavor_WP_Module_Integrations {
         }
 
         if (!current_user_can('manage_options')) {
-            wp_die(__('Sin permisos', 'flavor-chat-ia'));
+            wp_die(__('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         check_admin_referer('flavor_exportar_integraciones', 'nonce');
@@ -2981,7 +2981,7 @@ class Flavor_WP_Module_Integrations {
 
         $tabla_log = $prefix . 'posts_integraciones_log';
         if ($wpdb->get_var("SHOW TABLES LIKE '{$tabla_log}'") !== $tabla_log) {
-            wp_die(__('No hay datos para exportar', 'flavor-chat-ia'));
+            wp_die(__('No hay datos para exportar', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $datos = $wpdb->get_results(
@@ -2994,7 +2994,7 @@ class Flavor_WP_Module_Integrations {
         );
 
         if (empty($datos)) {
-            wp_die(__('No hay datos para exportar', 'flavor-chat-ia'));
+            wp_die(__('No hay datos para exportar', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Generar CSV
@@ -3059,9 +3059,9 @@ class Flavor_WP_Module_Integrations {
     public function registrar_menu_admin() {
         // Página principal de integraciones
         add_submenu_page(
-            'flavor-chat-ia',
-            __('Integraciones de Posts', 'flavor-chat-ia'),
-            __('Integraciones Posts', 'flavor-chat-ia'),
+            FLAVOR_PLATFORM_TEXT_DOMAIN,
+            __('Integraciones de Posts', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Integraciones Posts', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-integraciones-posts',
             [$this, 'renderizar_pagina_admin']
@@ -3069,9 +3069,9 @@ class Flavor_WP_Module_Integrations {
 
         // Página de configuración
         add_submenu_page(
-            'flavor-chat-ia',
-            __('Config. Integraciones', 'flavor-chat-ia'),
-            __('Config. Integraciones', 'flavor-chat-ia'),
+            FLAVOR_PLATFORM_TEXT_DOMAIN,
+            __('Config. Integraciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Config. Integraciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-integraciones-config',
             [$this, 'renderizar_pagina_config']
@@ -3090,7 +3090,7 @@ class Flavor_WP_Module_Integrations {
                 'cache_ttl'        => absint($_POST['cache_ttl'] ?? 300),
             ];
             update_option('flavor_integraciones_config', $config);
-            echo '<div class="notice notice-success"><p>' . esc_html__('Configuración guardada.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-success"><p>' . esc_html__('Configuración guardada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
 
             // Recargar configuración
             $this->cargar_configuracion();
@@ -3113,7 +3113,7 @@ class Flavor_WP_Module_Integrations {
         <div class="wrap">
             <h1>
                 <span class="dashicons dashicons-admin-settings" style="margin-right:8px;"></span>
-                <?php esc_html_e('Configuración de Integraciones', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Configuración de Integraciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h1>
 
             <form method="post">
@@ -3122,7 +3122,7 @@ class Flavor_WP_Module_Integrations {
                 <table class="form-table">
                     <tr>
                         <th scope="row">
-                            <label><?php esc_html_e('Tipos de contenido', 'flavor-chat-ia'); ?></label>
+                            <label><?php esc_html_e('Tipos de contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         </th>
                         <td>
                             <fieldset>
@@ -3138,14 +3138,14 @@ class Flavor_WP_Module_Integrations {
                                 <?php endforeach; ?>
                             </fieldset>
                             <p class="description">
-                                <?php esc_html_e('Selecciona qué tipos de contenido pueden integrarse con módulos.', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Selecciona qué tipos de contenido pueden integrarse con módulos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </p>
                         </td>
                     </tr>
 
                     <tr>
                         <th scope="row">
-                            <label><?php esc_html_e('Roles con permisos', 'flavor-chat-ia'); ?></label>
+                            <label><?php esc_html_e('Roles con permisos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         </th>
                         <td>
                             <fieldset>
@@ -3158,38 +3158,38 @@ class Flavor_WP_Module_Integrations {
                                                <?php disabled($role_key, 'administrator'); ?>>
                                         <?php echo esc_html(translate_user_role($role['name'])); ?>
                                         <?php if ($role_key === 'administrator'): ?>
-                                            <span style="color:#666;">(<?php esc_html_e('siempre habilitado', 'flavor-chat-ia'); ?>)</span>
+                                            <span style="color:#666;">(<?php esc_html_e('siempre habilitado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>)</span>
                                         <?php endif; ?>
                                     </label>
                                 <?php endforeach; ?>
                             </fieldset>
                             <p class="description">
-                                <?php esc_html_e('Selecciona qué roles de usuario pueden crear integraciones.', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Selecciona qué roles de usuario pueden crear integraciones.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </p>
                         </td>
                     </tr>
 
                     <tr>
                         <th scope="row">
-                            <label for="cache_ttl"><?php esc_html_e('Tiempo de caché', 'flavor-chat-ia'); ?></label>
+                            <label for="cache_ttl"><?php esc_html_e('Tiempo de caché', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         </th>
                         <td>
                             <select name="cache_ttl" id="cache_ttl">
-                                <option value="60" <?php selected($cache_ttl, 60); ?>><?php esc_html_e('1 minuto', 'flavor-chat-ia'); ?></option>
-                                <option value="300" <?php selected($cache_ttl, 300); ?>><?php esc_html_e('5 minutos', 'flavor-chat-ia'); ?></option>
-                                <option value="900" <?php selected($cache_ttl, 900); ?>><?php esc_html_e('15 minutos', 'flavor-chat-ia'); ?></option>
-                                <option value="3600" <?php selected($cache_ttl, 3600); ?>><?php esc_html_e('1 hora', 'flavor-chat-ia'); ?></option>
-                                <option value="0" <?php selected($cache_ttl, 0); ?>><?php esc_html_e('Desactivado', 'flavor-chat-ia'); ?></option>
+                                <option value="60" <?php selected($cache_ttl, 60); ?>><?php esc_html_e('1 minuto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="300" <?php selected($cache_ttl, 300); ?>><?php esc_html_e('5 minutos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="900" <?php selected($cache_ttl, 900); ?>><?php esc_html_e('15 minutos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="3600" <?php selected($cache_ttl, 3600); ?>><?php esc_html_e('1 hora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="0" <?php selected($cache_ttl, 0); ?>><?php esc_html_e('Desactivado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             </select>
                             <p class="description">
-                                <?php esc_html_e('Tiempo que se mantienen en caché las consultas de integraciones.', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Tiempo que se mantienen en caché las consultas de integraciones.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </p>
                         </td>
                     </tr>
 
                     <tr>
                         <th scope="row">
-                            <label><?php esc_html_e('Módulos activos', 'flavor-chat-ia'); ?></label>
+                            <label><?php esc_html_e('Módulos activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         </th>
                         <td>
                             <div style="display:flex;flex-wrap:wrap;gap:12px;">
@@ -3201,12 +3201,12 @@ class Flavor_WP_Module_Integrations {
                                 <?php endforeach; ?>
                                 <?php if (empty($this->modulos_disponibles)): ?>
                                     <p style="color:#666;font-style:italic;">
-                                        <?php esc_html_e('No hay módulos activos para integración.', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('No hay módulos activos para integración.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </p>
                                 <?php endif; ?>
                             </div>
                             <p class="description" style="margin-top:10px;">
-                                <?php esc_html_e('Los módulos se activan desde la configuración general del plugin.', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Los módulos se activan desde la configuración general del plugin.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </p>
                         </td>
                     </tr>
@@ -3214,32 +3214,32 @@ class Flavor_WP_Module_Integrations {
 
                 <hr>
 
-                <h2><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
                 <table class="form-table">
                     <tr>
-                        <th scope="row"><?php esc_html_e('Limpiar caché', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php esc_html_e('Limpiar caché', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=flavor-integraciones-config&action=limpiar_cache'), 'limpiar_cache_integraciones')); ?>"
                                class="button">
                                 <span class="dashicons dashicons-trash" style="margin-top:4px;"></span>
-                                <?php esc_html_e('Limpiar caché ahora', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Limpiar caché ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                             <p class="description">
-                                <?php esc_html_e('Elimina todos los datos en caché de integraciones.', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Elimina todos los datos en caché de integraciones.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </p>
                         </td>
                     </tr>
 
                     <tr>
-                        <th scope="row"><?php esc_html_e('Exportar datos', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php esc_html_e('Exportar datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <a href="<?php echo esc_url(self::get_url_exportacion()); ?>" class="button">
                                 <span class="dashicons dashicons-download" style="margin-top:4px;"></span>
-                                <?php esc_html_e('Exportar CSV', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Exportar CSV', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                             <p class="description">
-                                <?php esc_html_e('Descarga todas las integraciones en formato CSV.', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Descarga todas las integraciones en formato CSV.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </p>
                         </td>
                     </tr>
@@ -3247,28 +3247,28 @@ class Flavor_WP_Module_Integrations {
 
                 <p class="submit">
                     <button type="submit" name="flavor_integraciones_guardar" class="button button-primary">
-                        <?php esc_html_e('Guardar cambios', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Guardar cambios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </p>
             </form>
 
             <hr>
 
-            <h2><?php esc_html_e('Hooks disponibles', 'flavor-chat-ia'); ?></h2>
+            <h2><?php esc_html_e('Hooks disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <div style="background:#f6f7f7;padding:16px;border-radius:6px;font-family:monospace;font-size:12px;">
                 <p><strong>Filtros:</strong></p>
                 <ul style="margin-left:20px;">
-                    <li><code>flavor_integraciones_post_types</code> - <?php esc_html_e('Modificar post types habilitados', 'flavor-chat-ia'); ?></li>
-                    <li><code>flavor_integraciones_roles_permitidos</code> - <?php esc_html_e('Modificar roles permitidos', 'flavor-chat-ia'); ?></li>
-                    <li><code>flavor_usuario_puede_integrar</code> - <?php esc_html_e('Filtrar permiso de integración', 'flavor-chat-ia'); ?></li>
-                    <li><code>flavor_usuario_puede_integrar_{modulo}</code> - <?php esc_html_e('Permiso por módulo específico', 'flavor-chat-ia'); ?></li>
-                    <li><code>flavor_notificar_integracion</code> - <?php esc_html_e('Activar notificaciones', 'flavor-chat-ia'); ?></li>
+                    <li><code>flavor_integraciones_post_types</code> - <?php esc_html_e('Modificar post types habilitados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                    <li><code>flavor_integraciones_roles_permitidos</code> - <?php esc_html_e('Modificar roles permitidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                    <li><code>flavor_usuario_puede_integrar</code> - <?php esc_html_e('Filtrar permiso de integración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                    <li><code>flavor_usuario_puede_integrar_{modulo}</code> - <?php esc_html_e('Permiso por módulo específico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                    <li><code>flavor_notificar_integracion</code> - <?php esc_html_e('Activar notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
                 </ul>
                 <p style="margin-top:12px;"><strong>Acciones:</strong></p>
                 <ul style="margin-left:20px;">
-                    <li><code>flavor_post_integrado_modulo</code> - <?php esc_html_e('Al integrar un post', 'flavor-chat-ia'); ?></li>
-                    <li><code>flavor_integraciones_cache_invalidate</code> - <?php esc_html_e('Al invalidar caché', 'flavor-chat-ia'); ?></li>
-                    <li><code>flavor_enviar_notificacion_integracion</code> - <?php esc_html_e('Enviar notificación', 'flavor-chat-ia'); ?></li>
+                    <li><code>flavor_post_integrado_modulo</code> - <?php esc_html_e('Al integrar un post', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                    <li><code>flavor_integraciones_cache_invalidate</code> - <?php esc_html_e('Al invalidar caché', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                    <li><code>flavor_enviar_notificacion_integracion</code> - <?php esc_html_e('Enviar notificación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
                 </ul>
             </div>
         </div>
@@ -3279,7 +3279,7 @@ class Flavor_WP_Module_Integrations {
             $this->cache_invalidate();
             global $wpdb;
             $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_flavor_int_%' OR option_name LIKE '_transient_timeout_flavor_int_%'");
-            echo '<div class="notice notice-success"><p>' . esc_html__('Caché limpiado correctamente.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-success"><p>' . esc_html__('Caché limpiado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -3345,11 +3345,11 @@ class Flavor_WP_Module_Integrations {
         <div class="wrap">
             <h1 class="wp-heading-inline">
                 <span class="dashicons dashicons-admin-plugins" style="margin-right:8px;"></span>
-                <?php esc_html_e('Integraciones de Posts con Módulos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Integraciones de Posts con Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h1>
             <a href="<?php echo esc_url(self::get_url_exportacion()); ?>" class="page-title-action">
                 <span class="dashicons dashicons-download" style="vertical-align:middle;"></span>
-                <?php esc_html_e('Exportar CSV', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Exportar CSV', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <hr class="wp-header-end">
 
@@ -3364,7 +3364,7 @@ class Flavor_WP_Module_Integrations {
                     <span class="dashicons dashicons-<?php echo esc_attr($icono); ?>" style="font-size:28px;width:28px;height:28px;color:#2271b1;"></span>
                     <div style="font-size:24px;font-weight:600;margin:8px 0;"><?php echo intval($stat->total); ?></div>
                     <div style="color:#666;"><?php echo esc_html($nombre); ?></div>
-                    <div style="font-size:11px;color:#999;"><?php printf(__('%d exitosas', 'flavor-chat-ia'), $stat->exitosas); ?></div>
+                    <div style="font-size:11px;color:#999;"><?php printf(__('%d exitosas', FLAVOR_PLATFORM_TEXT_DOMAIN), $stat->exitosas); ?></div>
                 </div>
                 <?php endforeach; ?>
             </div>
@@ -3374,7 +3374,7 @@ class Flavor_WP_Module_Integrations {
             <form method="get" style="margin:16px 0;">
                 <input type="hidden" name="page" value="flavor-integraciones-posts">
                 <select name="modulo">
-                    <option value=""><?php esc_html_e('Todos los módulos', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todos los módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($this->modulos_disponibles as $key => $modulo): ?>
                         <option value="<?php echo esc_attr($key); ?>" <?php selected($filtro_modulo, $key); ?>>
                             <?php echo esc_html($modulo['nombre']); ?>
@@ -3382,14 +3382,14 @@ class Flavor_WP_Module_Integrations {
                     <?php endforeach; ?>
                 </select>
                 <select name="estado">
-                    <option value=""><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
-                    <option value="exito" <?php selected($filtro_estado, 'exito'); ?>><?php esc_html_e('Exitoso', 'flavor-chat-ia'); ?></option>
-                    <option value="error" <?php selected($filtro_estado, 'error'); ?>><?php esc_html_e('Error', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="exito" <?php selected($filtro_estado, 'exito'); ?>><?php esc_html_e('Exitoso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="error" <?php selected($filtro_estado, 'error'); ?>><?php esc_html_e('Error', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
-                <button type="submit" class="button"><?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="button"><?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                 <?php if ($filtro_modulo || $filtro_estado): ?>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-integraciones-posts')); ?>" class="button">
-                        <?php esc_html_e('Limpiar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 <?php endif; ?>
             </form>
@@ -3399,19 +3399,19 @@ class Flavor_WP_Module_Integrations {
                 <thead>
                     <tr>
                         <th style="width:50px;">ID</th>
-                        <th><?php esc_html_e('Post', 'flavor-chat-ia'); ?></th>
-                        <th style="width:140px;"><?php esc_html_e('Módulo', 'flavor-chat-ia'); ?></th>
-                        <th style="width:100px;"><?php esc_html_e('Elemento', 'flavor-chat-ia'); ?></th>
-                        <th style="width:80px;"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                        <th style="width:140px;"><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                        <th style="width:120px;"><?php esc_html_e('Usuario', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Post', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width:140px;"><?php esc_html_e('Módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width:100px;"><?php esc_html_e('Elemento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width:80px;"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width:140px;"><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th style="width:120px;"><?php esc_html_e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($integraciones)): ?>
                         <tr>
                             <td colspan="7" style="text-align:center;padding:40px;color:#666;">
-                                <?php esc_html_e('No hay integraciones registradas.', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('No hay integraciones registradas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </td>
                         </tr>
                     <?php else: ?>
@@ -3423,11 +3423,11 @@ class Flavor_WP_Module_Integrations {
                             <td><?php echo intval($item->id); ?></td>
                             <td>
                                 <a href="<?php echo esc_url(get_edit_post_link($item->post_id)); ?>">
-                                    <?php echo esc_html($item->post_title ?: __('(Sin título)', 'flavor-chat-ia')); ?>
+                                    <?php echo esc_html($item->post_title ?: __('(Sin título)', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                                 </a>
                                 <div class="row-actions">
                                     <a href="<?php echo esc_url(get_permalink($item->post_id)); ?>" target="_blank">
-                                        <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </a>
                                 </div>
                             </td>
@@ -3444,18 +3444,18 @@ class Flavor_WP_Module_Integrations {
                             </td>
                             <td>
                                 <?php if ($item->estado === 'exito'): ?>
-                                    <span style="color:#00a32a;">✓ <?php esc_html_e('Éxito', 'flavor-chat-ia'); ?></span>
+                                    <span style="color:#00a32a;">✓ <?php esc_html_e('Éxito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php else: ?>
-                                    <span style="color:#d63638;">✗ <?php esc_html_e('Error', 'flavor-chat-ia'); ?></span>
+                                    <span style="color:#d63638;">✗ <?php esc_html_e('Error', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php endif; ?>
                             </td>
                             <td>
                                 <span title="<?php echo esc_attr($item->fecha); ?>">
-                                    <?php echo esc_html(human_time_diff(strtotime($item->fecha), current_time('timestamp')) . ' ' . __('atrás', 'flavor-chat-ia')); ?>
+                                    <?php echo esc_html(human_time_diff(strtotime($item->fecha), current_time('timestamp')) . ' ' . __('atrás', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                                 </span>
                             </td>
                             <td>
-                                <?php echo esc_html($item->usuario_nombre ?: __('Sistema', 'flavor-chat-ia')); ?>
+                                <?php echo esc_html($item->usuario_nombre ?: __('Sistema', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                             </td>
                         </tr>
                         <?php endforeach; ?>
@@ -3467,7 +3467,7 @@ class Flavor_WP_Module_Integrations {
             <div class="tablenav bottom">
                 <div class="tablenav-pages">
                     <span class="displaying-num">
-                        <?php printf(_n('%s elemento', '%s elementos', $total, 'flavor-chat-ia'), number_format_i18n($total)); ?>
+                        <?php printf(_n('%s elemento', '%s elementos', $total, FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($total)); ?>
                     </span>
                     <?php
                     echo paginate_links([
@@ -3506,7 +3506,7 @@ class Flavor_WP_Module_Integrations {
         $nombre_modulo = $this->modulos_disponibles[$modulo]['nombre'] ?? $modulo;
 
         $mensaje = sprintf(
-            __('%s ha integrado "%s" con %s.', 'flavor-chat-ia'),
+            __('%s ha integrado "%s" con %s.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $usuario->display_name,
             $post->post_title,
             $nombre_modulo

@@ -76,7 +76,7 @@ class Flavor_EM_Sender {
         }
 
         global $phpmailer;
-        $error = isset($phpmailer) && isset($phpmailer->ErrorInfo) ? $phpmailer->ErrorInfo : __('Error desconocido', 'flavor-chat-ia');
+        $error = isset($phpmailer) && isset($phpmailer->ErrorInfo) ? $phpmailer->ErrorInfo : __('Error desconocido', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         return ['success' => false, 'error' => $error];
     }
@@ -147,7 +147,7 @@ class Flavor_EM_Sender {
      */
     public function validar_smtp() {
         if (empty($this->settings['smtp_host'])) {
-            return ['success' => false, 'error' => __('Host SMTP no configurado', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Host SMTP no configurado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Intentar enviar email de prueba al admin
@@ -156,11 +156,11 @@ class Flavor_EM_Sender {
         $email_data = new stdClass();
         $email_data->id = 'smtp_test_' . time();
         $email_data->email = $admin_email;
-        $email_data->asunto = __('Test de configuración SMTP', 'flavor-chat-ia');
+        $email_data->asunto = __('Test de configuración SMTP', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $email_data->contenido = sprintf(
             '<p>%s</p><p>%s: %s</p>',
-            __('Este es un email de prueba para verificar la configuración SMTP.', 'flavor-chat-ia'),
-            __('Fecha', 'flavor-chat-ia'),
+            __('Este es un email de prueba para verificar la configuración SMTP.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN),
             current_time('mysql')
         );
 

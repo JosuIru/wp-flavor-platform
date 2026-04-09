@@ -17,25 +17,25 @@ $categorias = [
         'valor' => $huella['co2_transporte'] ?? 0,
         'icono' => 'dashicons-car',
         'color' => '#2196f3',
-        'label' => __('Transporte', 'flavor-chat-ia'),
+        'label' => __('Transporte', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ],
     'energia' => [
         'valor' => $huella['co2_energia'] ?? 0,
         'icono' => 'dashicons-lightbulb',
         'color' => '#ff9800',
-        'label' => __('Energía', 'flavor-chat-ia'),
+        'label' => __('Energía', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ],
     'materiales' => [
         'valor' => $huella['co2_materiales'] ?? 0,
         'icono' => 'dashicons-archive',
         'color' => '#9c27b0',
-        'label' => __('Materiales', 'flavor-chat-ia'),
+        'label' => __('Materiales', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ],
     'catering' => [
         'valor' => $huella['co2_catering'] ?? 0,
         'icono' => 'dashicons-food',
         'color' => '#4caf50',
-        'label' => __('Catering', 'flavor-chat-ia'),
+        'label' => __('Catering', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ],
 ];
 
@@ -56,7 +56,7 @@ $co2_neto = max(0, $co2_total - $co2_compensado);
             <span class="dashicons dashicons-cloud"></span>
         </span>
         <div>
-            <h3><?php esc_html_e('Huella de Carbono', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Huella de Carbono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <span class="ev-huella__evento"><?php echo esc_html($evento->titulo); ?></span>
         </div>
     </div>
@@ -66,17 +66,17 @@ $co2_neto = max(0, $co2_total - $co2_compensado);
         <div class="ev-huella__total">
             <span class="ev-huella__total-valor"><?php echo esc_html(number_format($co2_total, 1)); ?></span>
             <span class="ev-huella__total-unidad">kg CO<sub>2</sub></span>
-            <span class="ev-huella__total-label"><?php esc_html_e('Emisiones totales', 'flavor-chat-ia'); ?></span>
+            <span class="ev-huella__total-label"><?php esc_html_e('Emisiones totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="ev-huella__per-capita">
             <span class="ev-huella__pc-valor"><?php echo esc_html(number_format($co2_per_capita, 2)); ?></span>
-            <span class="ev-huella__pc-label"><?php esc_html_e('kg CO₂ por asistente', 'flavor-chat-ia'); ?></span>
+            <span class="ev-huella__pc-label"><?php esc_html_e('kg CO₂ por asistente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
     </div>
 
     <!-- Desglose por categorías -->
     <div class="ev-huella__categorias">
-        <h4><?php esc_html_e('Desglose de emisiones', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('Desglose de emisiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <?php foreach ($categorias as $key => $cat): ?>
             <div class="ev-huella__categoria">
                 <div class="ev-huella__cat-header">
@@ -97,7 +97,7 @@ $co2_neto = max(0, $co2_total - $co2_compensado);
     <div class="ev-huella__compensaciones">
         <h4>
             <span class="dashicons dashicons-palmtree"></span>
-            <?php esc_html_e('Compensaciones', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Compensaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h4>
         <?php if (!empty($compensaciones)): ?>
             <div class="ev-huella__comp-lista">
@@ -113,15 +113,15 @@ $co2_neto = max(0, $co2_total - $co2_compensado);
 
         <div class="ev-huella__balance">
             <div class="ev-huella__balance-item">
-                <span class="ev-huella__balance-label"><?php esc_html_e('Emitido', 'flavor-chat-ia'); ?></span>
+                <span class="ev-huella__balance-label"><?php esc_html_e('Emitido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="ev-huella__balance-valor ev-huella__balance-valor--negativo"><?php echo esc_html(number_format($co2_total, 1)); ?> kg</span>
             </div>
             <div class="ev-huella__balance-item">
-                <span class="ev-huella__balance-label"><?php esc_html_e('Compensado', 'flavor-chat-ia'); ?></span>
+                <span class="ev-huella__balance-label"><?php esc_html_e('Compensado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="ev-huella__balance-valor ev-huella__balance-valor--positivo">-<?php echo esc_html(number_format($co2_compensado, 1)); ?> kg</span>
             </div>
             <div class="ev-huella__balance-item ev-huella__balance-item--total">
-                <span class="ev-huella__balance-label"><?php esc_html_e('Huella neta', 'flavor-chat-ia'); ?></span>
+                <span class="ev-huella__balance-label"><?php esc_html_e('Huella neta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="ev-huella__balance-valor"><?php echo esc_html(number_format($co2_neto, 1)); ?> kg</span>
             </div>
         </div>
@@ -129,7 +129,7 @@ $co2_neto = max(0, $co2_total - $co2_compensado);
 
     <!-- Equivalencias visuales -->
     <div class="ev-huella__equivalencias">
-        <h4><?php esc_html_e('¿Qué significa?', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('¿Qué significa?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <div class="ev-huella__equiv-grid">
             <?php
             $km_coche = $co2_neto / 0.12; // ~120g CO2/km
@@ -139,40 +139,40 @@ $co2_neto = max(0, $co2_total - $co2_compensado);
             <div class="ev-huella__equiv-item">
                 <span class="dashicons dashicons-car"></span>
                 <span class="ev-huella__equiv-valor"><?php echo esc_html(number_format($km_coche, 0)); ?></span>
-                <span class="ev-huella__equiv-label"><?php esc_html_e('km en coche', 'flavor-chat-ia'); ?></span>
+                <span class="ev-huella__equiv-label"><?php esc_html_e('km en coche', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="ev-huella__equiv-item">
                 <span class="dashicons dashicons-palmtree"></span>
                 <span class="ev-huella__equiv-valor"><?php echo esc_html(number_format($arboles_necesarios, 1)); ?></span>
-                <span class="ev-huella__equiv-label"><?php esc_html_e('árboles/año', 'flavor-chat-ia'); ?></span>
+                <span class="ev-huella__equiv-label"><?php esc_html_e('árboles/año', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="ev-huella__equiv-item">
                 <span class="dashicons dashicons-lightbulb"></span>
                 <span class="ev-huella__equiv-valor"><?php echo esc_html(number_format($horas_led, 0)); ?></span>
-                <span class="ev-huella__equiv-label"><?php esc_html_e('h bombilla LED', 'flavor-chat-ia'); ?></span>
+                <span class="ev-huella__equiv-label"><?php esc_html_e('h bombilla LED', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
 
     <!-- Tips para reducir -->
     <div class="ev-huella__tips">
-        <h4><?php esc_html_e('Consejos para reducir', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('Consejos para reducir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <ul>
             <li>
                 <span class="dashicons dashicons-car"></span>
-                <?php esc_html_e('Fomenta el transporte compartido o público', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Fomenta el transporte compartido o público', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </li>
             <li>
                 <span class="dashicons dashicons-food"></span>
-                <?php esc_html_e('Opta por catering local y de temporada', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Opta por catering local y de temporada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </li>
             <li>
                 <span class="dashicons dashicons-archive"></span>
-                <?php esc_html_e('Usa materiales reutilizables o reciclados', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Usa materiales reutilizables o reciclados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </li>
             <li>
                 <span class="dashicons dashicons-video-alt3"></span>
-                <?php esc_html_e('Considera formato híbrido presencial/online', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Considera formato híbrido presencial/online', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </li>
         </ul>
     </div>

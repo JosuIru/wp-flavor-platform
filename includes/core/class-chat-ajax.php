@@ -71,12 +71,12 @@ class Flavor_Chat_Ajax {
         $nonce_valid = check_ajax_referer('flavor_chat_nonce', 'nonce', false) ||
                        check_ajax_referer('chat_ia_nonce', 'nonce', false);
         if (!$nonce_valid) {
-            wp_send_json_error(['error' => __('Nonce inválido', 'flavor-chat-ia')], 403);
+            wp_send_json_error(['error' => __('Nonce inválido', 'flavor-platform')], 403);
         }
 
         // Rate limiting básico
         if (!self::check_rate_limit()) {
-            wp_send_json_error(['error' => __('Demasiadas solicitudes. Espera un momento.', 'flavor-chat-ia')], 429);
+            wp_send_json_error(['error' => __('Demasiadas solicitudes. Espera un momento.', 'flavor-platform')], 429);
         }
 
         $message = sanitize_textarea_field($_POST['message'] ?? '');
@@ -93,11 +93,11 @@ class Flavor_Chat_Ajax {
         }
 
         if (empty($message)) {
-            wp_send_json_error(['error' => __('Mensaje vacío', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Mensaje vacío', 'flavor-platform')]);
         }
 
         if (strlen($message) > 2000) {
-            wp_send_json_error(['error' => __('Mensaje demasiado largo', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Mensaje demasiado largo', 'flavor-platform')]);
         }
 
         // Sistema Antispam
@@ -128,7 +128,7 @@ class Flavor_Chat_Ajax {
         // Obtener motor de IA activo
         if (!class_exists('Flavor_Engine_Manager')) {
             wp_send_json_error([
-                'error' => __('El chat no está disponible.', 'flavor-chat-ia'),
+                'error' => __('El chat no está disponible.', 'flavor-platform'),
                 'fallback' => self::get_fallback_response($language),
             ]);
         }
@@ -138,13 +138,13 @@ class Flavor_Chat_Ajax {
 
         if (!$engine || !$engine->is_configured()) {
             wp_send_json_error([
-                'error' => __('El chat no está configurado.', 'flavor-chat-ia'),
+                'error' => __('El chat no está configurado.', 'flavor-platform'),
                 'fallback' => self::get_fallback_response($language),
             ]);
         }
 
         // Obtener configuración
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $assistant_name = $settings['assistant_name'] ?? 'Asistente Virtual';
         $assistant_role = $settings['assistant_role'] ?? '';
 
@@ -167,7 +167,7 @@ class Flavor_Chat_Ajax {
         if (!$response['success']) {
             $fallback = self::get_fallback_response($language);
             wp_send_json_error([
-                'error' => $response['error'] ?? __('Error al procesar mensaje', 'flavor-chat-ia'),
+                'error' => $response['error'] ?? __('Error al procesar mensaje', 'flavor-platform'),
                 'fallback' => $fallback,
             ]);
         }
@@ -188,7 +188,7 @@ class Flavor_Chat_Ajax {
     public static function handle_start_session() {
         // Verificar nonce
         if (!check_ajax_referer('flavor_chat_nonce', 'nonce', false)) {
-            wp_send_json_error(['error' => __('Nonce inválido', 'flavor-chat-ia')], 403);
+            wp_send_json_error(['error' => __('Nonce inválido', 'flavor-platform')], 403);
         }
 
         $language = sanitize_text_field($_POST['language'] ?? 'es');
@@ -211,7 +211,7 @@ class Flavor_Chat_Ajax {
         $nonce_valid = check_ajax_referer('flavor_chat_nonce', 'nonce', false);
 
         if (!$nonce_valid) {
-            wp_send_json_error(['error' => __('Nonce inválido', 'flavor-chat-ia')], 403);
+            wp_send_json_error(['error' => __('Nonce inválido', 'flavor-platform')], 403);
         }
 
         $language = sanitize_text_field($_POST['language'] ?? 'es');
@@ -226,9 +226,9 @@ class Flavor_Chat_Ajax {
         $session->start_conversation($language);
 
         // Obtener mensaje de bienvenida
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $appearance = $settings['appearance'] ?? [];
-        $welcome_message = $appearance['welcome_message'] ?? __('¡Hola! ¿En qué puedo ayudarte?', 'flavor-chat-ia');
+        $welcome_message = $appearance['welcome_message'] ?? __('¡Hola! ¿En qué puedo ayudarte?', 'flavor-platform');
 
         wp_send_json_success([
             'session_id' => $session->get_session_id(),
@@ -483,7 +483,7 @@ modules/mi-modulo/
     public static function handle_send_message_admin() {
         // Verificar nonce (diferente al del frontend)
         if (!check_ajax_referer('chat_ia_nonce', 'nonce', false)) {
-            wp_send_json_error(['error' => __('Sesión expirada. Recarga la página.', 'flavor-chat-ia')], 403);
+            wp_send_json_error(['error' => __('Sesión expirada. Recarga la página.', 'flavor-platform')], 403);
         }
 
         $message = sanitize_textarea_field($_POST['message'] ?? '');
@@ -492,17 +492,17 @@ modules/mi-modulo/
         $language = 'es';
 
         if (empty($message)) {
-            wp_send_json_error(['error' => __('Mensaje vacío', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Mensaje vacío', 'flavor-platform')]);
         }
 
         if (strlen($message) > 2000) {
-            wp_send_json_error(['error' => __('Mensaje demasiado largo', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Mensaje demasiado largo', 'flavor-platform')]);
         }
 
         // Obtener motor de IA activo
         if (!class_exists('Flavor_Engine_Manager')) {
             wp_send_json_error([
-                'error' => __('Sistema de IA no disponible. Contacta al administrador.', 'flavor-chat-ia'),
+                'error' => __('Sistema de IA no disponible. Contacta al administrador.', 'flavor-platform'),
                 'debug' => 'Flavor_Engine_Manager class not found',
             ]);
         }
@@ -511,23 +511,23 @@ modules/mi-modulo/
         $engine = $engine_manager->get_active_engine();
 
         if (!$engine) {
-            $settings = get_option('flavor_chat_ia_settings', []);
+            $settings = flavor_get_main_settings();
             $active_provider = $settings['active_provider'] ?? 'no_configurado';
             wp_send_json_error([
-                'error' => sprintf(__('Motor de IA "%s" no encontrado. Verifica la configuración.', 'flavor-chat-ia'), $active_provider),
+                'error' => sprintf(__('Motor de IA "%s" no encontrado. Verifica la configuración.', 'flavor-platform'), $active_provider),
                 'debug' => 'Engine is null for provider: ' . $active_provider,
             ]);
         }
 
         if (!$engine->is_configured()) {
             wp_send_json_error([
-                'error' => sprintf(__('El motor %s no tiene API key configurada. Ve a Flavor → Configuración → Proveedores IA.', 'flavor-chat-ia'), $engine->get_name()),
+                'error' => sprintf(__('El motor %s no tiene API key configurada. Ve a Flavor → Configuración → Proveedores IA.', 'flavor-platform'), $engine->get_name()),
                 'debug' => 'Engine not configured: ' . $engine->get_id(),
             ]);
         }
 
         // Obtener configuración
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $assistant_name = $settings['assistant_name'] ?? 'Asistente Flavor';
 
         // Construir system prompt completo con knowledge base
@@ -543,7 +543,7 @@ modules/mi-modulo/
 
         if (!$response['success']) {
             wp_send_json_error([
-                'error' => $response['error'] ?? __('Error al procesar mensaje', 'flavor-chat-ia'),
+                'error' => $response['error'] ?? __('Error al procesar mensaje', 'flavor-platform'),
             ]);
         }
 

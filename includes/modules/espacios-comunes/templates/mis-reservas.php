@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!is_user_logged_in()) {
-    echo '<div class="espacios-empty"><span class="dashicons dashicons-lock"></span><h3>' . __('Inicia sesión para ver tus reservas', 'flavor-chat-ia') . '</h3></div>';
+    echo '<div class="espacios-empty"><span class="dashicons dashicons-lock"></span><h3>' . __('Inicia sesión para ver tus reservas', 'flavor-platform') . '</h3></div>';
     return;
 }
 
@@ -52,27 +52,27 @@ if (!function_exists('espacios_get_primera_imagen')) {
 }
 
 $estados_labels = [
-    'solicitada' => __('Pendiente de aprobación', 'flavor-chat-ia'),
-    'confirmada' => __('Confirmada', 'flavor-chat-ia'),
-    'en_curso' => __('En uso', 'flavor-chat-ia'),
-    'finalizada' => __('Completada', 'flavor-chat-ia'),
-    'cancelada' => __('Cancelada', 'flavor-chat-ia'),
-    'rechazada' => __('Rechazada', 'flavor-chat-ia'),
+    'solicitada' => __('Pendiente de aprobación', 'flavor-platform'),
+    'confirmada' => __('Confirmada', 'flavor-platform'),
+    'en_curso' => __('En uso', 'flavor-platform'),
+    'finalizada' => __('Completada', 'flavor-platform'),
+    'cancelada' => __('Cancelada', 'flavor-platform'),
+    'rechazada' => __('Rechazada', 'flavor-platform'),
 ];
 ?>
 
 <div class="espacios-wrapper">
     <div class="espacios-header">
-        <h2 class="espacios-titulo"><?php _e('Mis Reservas', 'flavor-chat-ia'); ?></h2>
+        <h2 class="espacios-titulo"><?php _e('Mis Reservas', 'flavor-platform'); ?></h2>
         <a href="<?php echo remove_query_arg('vista'); ?>" class="btn btn-outline">
             <span class="dashicons dashicons-arrow-left-alt2"></span>
-            <?php _e('Ver espacios', 'flavor-chat-ia'); ?>
+            <?php _e('Ver espacios', 'flavor-platform'); ?>
         </a>
     </div>
 
     <div class="mis-reservas-tabs">
         <button class="mis-reservas-tab active" data-tab="activas">
-            <?php _e('Activas', 'flavor-chat-ia'); ?>
+            <?php _e('Activas', 'flavor-platform'); ?>
             <?php if ($reservas_activas): ?>
                 <span style="background: #6366f1; color: #fff; border-radius: 10px; padding: 2px 8px; font-size: 0.75rem; margin-left: 0.5rem;">
                     <?php echo count($reservas_activas); ?>
@@ -80,7 +80,7 @@ $estados_labels = [
             <?php endif; ?>
         </button>
         <button class="mis-reservas-tab" data-tab="historial">
-            <?php _e('Historial', 'flavor-chat-ia'); ?>
+            <?php _e('Historial', 'flavor-platform'); ?>
         </button>
     </div>
 
@@ -116,11 +116,11 @@ $estados_labels = [
 
                     <div class="reserva-card-detalles">
                         <div class="reserva-card-detalle">
-                            <label><?php _e('Fecha', 'flavor-chat-ia'); ?></label>
+                            <label><?php _e('Fecha', 'flavor-platform'); ?></label>
                             <span style="<?php echo $es_hoy ? 'color: #6366f1; font-weight: 600;' : ''; ?>">
                                 <?php
                                 if ($es_hoy) {
-                                    _e('Hoy', 'flavor-chat-ia');
+                                    _e('Hoy', 'flavor-platform');
                                 } else {
                                     echo date_i18n(get_option('date_format'), strtotime($reserva->fecha_inicio));
                                 }
@@ -128,24 +128,24 @@ $estados_labels = [
                             </span>
                         </div>
                         <div class="reserva-card-detalle">
-                            <label><?php _e('Horario', 'flavor-chat-ia'); ?></label>
+                            <label><?php _e('Horario', 'flavor-platform'); ?></label>
                             <span><?php echo esc_html($fecha_inicio_dt->format('H:i')); ?> - <?php echo esc_html($fecha_fin_dt->format('H:i')); ?></span>
                         </div>
                         <?php if (!empty($reserva->num_asistentes)): ?>
                             <div class="reserva-card-detalle">
-                                <label><?php _e('Personas', 'flavor-chat-ia'); ?></label>
+                                <label><?php _e('Personas', 'flavor-platform'); ?></label>
                                 <span><?php echo (int) $reserva->num_asistentes; ?></span>
                             </div>
                         <?php endif; ?>
                         <?php if (!empty($reserva->precio_total) && $reserva->precio_total > 0): ?>
                             <div class="reserva-card-detalle">
-                                <label><?php _e('Precio', 'flavor-chat-ia'); ?></label>
+                                <label><?php _e('Precio', 'flavor-platform'); ?></label>
                                 <span style="font-weight: 600;"><?php echo number_format((float) $reserva->precio_total, 2); ?>€</span>
                             </div>
                         <?php endif; ?>
                         <?php if (!empty($reserva->fianza) && $reserva->fianza > 0): ?>
                             <div class="reserva-card-detalle">
-                                <label><?php _e('Fianza', 'flavor-chat-ia'); ?></label>
+                                <label><?php _e('Fianza', 'flavor-platform'); ?></label>
                                 <span style="font-family: monospace; font-weight: 600; color: #6366f1;"><?php echo number_format((float) $reserva->fianza, 2); ?>€</span>
                             </div>
                         <?php endif; ?>
@@ -154,7 +154,7 @@ $estados_labels = [
                     <?php if (!empty($reserva->motivo)): ?>
                         <div style="padding: 0.75rem; background: #f9fafb; border-radius: 8px; margin-bottom: 1rem;">
                             <label style="font-size: 0.75rem; color: #6b7280; text-transform: uppercase; display: block; margin-bottom: 0.25rem;">
-                                <?php _e('Motivo', 'flavor-chat-ia'); ?>
+                                <?php _e('Motivo', 'flavor-platform'); ?>
                             </label>
                             <span style="font-size: 0.875rem;"><?php echo esc_html($reserva->motivo); ?></span>
                         </div>
@@ -163,7 +163,7 @@ $estados_labels = [
                     <?php if (!empty($reserva->motivo_rechazo)): ?>
                         <div style="padding: 0.75rem; background: #fef2f2; border-radius: 8px; margin-bottom: 1rem;">
                             <label style="font-size: 0.75rem; color: #dc2626; text-transform: uppercase; display: block; margin-bottom: 0.25rem;">
-                                <?php _e('Motivo de rechazo', 'flavor-chat-ia'); ?>
+                                <?php _e('Motivo de rechazo', 'flavor-platform'); ?>
                             </label>
                             <span style="font-size: 0.875rem;"><?php echo esc_html($reserva->motivo_rechazo); ?></span>
                         </div>
@@ -181,17 +181,17 @@ $estados_labels = [
                             <?php if ($puede_cancelar): ?>
                                 <button class="btn btn-danger btn-sm btn-cancelar-reserva" data-reserva-id="<?php echo (int) $reserva->id; ?>">
                                     <span class="dashicons dashicons-no"></span>
-                                    <?php _e('Cancelar', 'flavor-chat-ia'); ?>
+                                    <?php _e('Cancelar', 'flavor-platform'); ?>
                                 </button>
                             <?php else: ?>
                                 <span style="font-size: 0.8rem; color: #6b7280;">
-                                    <?php _e('No se puede cancelar con menos de 24h de antelación', 'flavor-chat-ia'); ?>
+                                    <?php _e('No se puede cancelar con menos de 24h de antelación', 'flavor-platform'); ?>
                                 </span>
                             <?php endif; ?>
                         <?php endif; ?>
 
                         <a href="<?php echo add_query_arg('espacio_id', $reserva->espacio_id, remove_query_arg('vista')); ?>" class="btn btn-outline btn-sm">
-                            <?php _e('Ver espacio', 'flavor-chat-ia'); ?>
+                            <?php _e('Ver espacio', 'flavor-platform'); ?>
                         </a>
                     </div>
                 </div>
@@ -199,10 +199,10 @@ $estados_labels = [
         <?php else: ?>
             <div class="espacios-empty">
                 <span class="dashicons dashicons-calendar-alt"></span>
-                <h3><?php _e('No tienes reservas activas', 'flavor-chat-ia'); ?></h3>
-                <p><?php _e('Explora los espacios disponibles y haz tu primera reserva.', 'flavor-chat-ia'); ?></p>
+                <h3><?php _e('No tienes reservas activas', 'flavor-platform'); ?></h3>
+                <p><?php _e('Explora los espacios disponibles y haz tu primera reserva.', 'flavor-platform'); ?></p>
                 <a href="<?php echo remove_query_arg('vista'); ?>" class="btn btn-primary">
-                    <?php _e('Ver espacios', 'flavor-chat-ia'); ?>
+                    <?php _e('Ver espacios', 'flavor-platform'); ?>
                 </a>
             </div>
         <?php endif; ?>
@@ -235,16 +235,16 @@ $estados_labels = [
 
                     <div class="reserva-card-detalles">
                         <div class="reserva-card-detalle">
-                            <label><?php _e('Fecha', 'flavor-chat-ia'); ?></label>
+                            <label><?php _e('Fecha', 'flavor-platform'); ?></label>
                             <span><?php echo date_i18n(get_option('date_format'), strtotime($reserva->fecha_inicio)); ?></span>
                         </div>
                         <div class="reserva-card-detalle">
-                            <label><?php _e('Horario', 'flavor-chat-ia'); ?></label>
+                            <label><?php _e('Horario', 'flavor-platform'); ?></label>
                             <span><?php echo esc_html($fecha_inicio_hist->format('H:i')); ?> - <?php echo esc_html($fecha_fin_hist->format('H:i')); ?></span>
                         </div>
                         <?php if (!empty($reserva->valoracion)): ?>
                             <div class="reserva-card-detalle">
-                                <label><?php _e('Tu valoración', 'flavor-chat-ia'); ?></label>
+                                <label><?php _e('Tu valoración', 'flavor-platform'); ?></label>
                                 <span>
                                     <?php for ($i = 1; $i <= 5; $i++): ?>
                                         <span class="dashicons dashicons-star-<?php echo $i <= $reserva->valoracion ? 'filled' : 'empty'; ?>" style="color: #fbbf24; font-size: 14px; width: 14px; height: 14px;"></span>
@@ -258,7 +258,7 @@ $estados_labels = [
                         <div class="reserva-card-acciones">
                             <a href="<?php echo add_query_arg('espacio_id', $reserva->espacio_id, remove_query_arg('vista')); ?>" class="btn btn-primary btn-sm">
                                 <span class="dashicons dashicons-star-filled"></span>
-                                <?php _e('Valorar', 'flavor-chat-ia'); ?>
+                                <?php _e('Valorar', 'flavor-platform'); ?>
                             </a>
                         </div>
                     <?php endif; ?>
@@ -267,8 +267,8 @@ $estados_labels = [
         <?php else: ?>
             <div class="espacios-empty">
                 <span class="dashicons dashicons-backup"></span>
-                <h3><?php _e('Sin historial', 'flavor-chat-ia'); ?></h3>
-                <p><?php _e('Aquí aparecerán tus reservas pasadas.', 'flavor-chat-ia'); ?></p>
+                <h3><?php _e('Sin historial', 'flavor-platform'); ?></h3>
+                <p><?php _e('Aquí aparecerán tus reservas pasadas.', 'flavor-platform'); ?></p>
             </div>
         <?php endif; ?>
     </div>

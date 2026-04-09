@@ -156,10 +156,10 @@ $categorias = [
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-admin-tools"></span>
-        <?php echo esc_html__('Gestión de Servicios', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Gestión de Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
-    <a href="#" class="page-title-action" id="btn-nuevo-servicio"><?php echo esc_html__('Añadir Nuevo', 'flavor-chat-ia'); ?></a>
+    <a href="#" class="page-title-action" id="btn-nuevo-servicio"><?php echo esc_html__('Añadir Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
 
     <hr class="wp-header-end">
 
@@ -182,7 +182,7 @@ $categorias = [
                 <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page'] ?? ''); ?>">
 
                 <select name="categoria" id="filter-categoria">
-                    <option value=""><?php echo esc_html__('Todas las categorías', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php echo esc_html__('Todas las categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($categorias as $key => $label): ?>
                         <option value="<?php echo esc_attr($key); ?>" <?php selected($filtro_categoria, $key); ?>>
                             <?php echo esc_html($label); ?>
@@ -191,16 +191,16 @@ $categorias = [
                 </select>
 
                 <select name="estado" id="filter-estado">
-                    <option value=""><?php echo esc_html__('Todos los estados', 'flavor-chat-ia'); ?></option>
-                    <option value="activo" <?php selected($filtro_estado, 'activo'); ?>><?php echo esc_html__('Activo', 'flavor-chat-ia'); ?></option>
-                    <option value="inactivo" <?php selected($filtro_estado, 'inactivo'); ?>><?php echo esc_html__('Inactivo', 'flavor-chat-ia'); ?></option>
-                    <option value="completado" <?php selected($filtro_estado, 'completado'); ?>><?php echo esc_html__('Completado', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php echo esc_html__('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="activo" <?php selected($filtro_estado, 'activo'); ?>><?php echo esc_html__('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="inactivo" <?php selected($filtro_estado, 'inactivo'); ?>><?php echo esc_html__('Inactivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="completado" <?php selected($filtro_estado, 'completado'); ?>><?php echo esc_html__('Completado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
 
-                <button type="submit" class="button"><?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="button"><?php echo esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
 
                 <?php if ($filtro_categoria || $filtro_estado || $filtro_busqueda): ?>
-                    <a href="?page=<?php echo esc_attr($_GET['page'] ?? ''); ?>" class="button"><?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?></a>
+                    <a href="?page=<?php echo esc_attr($_GET['page'] ?? ''); ?>" class="button"><?php echo esc_html__('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 <?php endif; ?>
             </form>
         </div>
@@ -209,8 +209,8 @@ $categorias = [
             <form method="get" style="display: inline-flex; gap: 8px;">
                 <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page'] ?? ''); ?>">
                 <input type="search" name="s" value="<?php echo esc_attr($filtro_busqueda); ?>"
-                       placeholder="<?php echo esc_attr__('Buscar servicios...', 'flavor-chat-ia'); ?>">
-                <button type="submit" class="button"><?php echo esc_html__('Buscar', 'flavor-chat-ia'); ?></button>
+                       placeholder="<?php echo esc_attr__('Buscar servicios...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                <button type="submit" class="button"><?php echo esc_html__('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
             </form>
         </div>
     </div>
@@ -219,14 +219,14 @@ $categorias = [
     <table class="wp-list-table widefat fixed striped">
         <thead>
             <tr>
-                <th style="width: 50px;"><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
-                <th><?php echo esc_html__('Título', 'flavor-chat-ia'); ?></th>
-                <th><?php echo esc_html__('Usuario', 'flavor-chat-ia'); ?></th>
-                <th><?php echo esc_html__('Categoría', 'flavor-chat-ia'); ?></th>
-                <th><?php echo esc_html__('Horas Est.', 'flavor-chat-ia'); ?></th>
-                <th><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
-                <th><?php echo esc_html__('Fecha Publicación', 'flavor-chat-ia'); ?></th>
-                <th style="width: 150px;"><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
+                <th style="width: 50px;"><?php echo esc_html__('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th><?php echo esc_html__('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th><?php echo esc_html__('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th><?php echo esc_html__('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th><?php echo esc_html__('Horas Est.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th><?php echo esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th><?php echo esc_html__('Fecha Publicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="width: 150px;"><?php echo esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -270,7 +270,7 @@ $categorias = [
                     <td><?php echo date_i18n('d/m/Y H:i', strtotime($servicio->fecha_publicacion)); ?></td>
                     <td>
                         <a href="#" class="button button-small editar-servicio"
-                           data-id="<?php echo $servicio->id; ?>"><?php echo esc_html__('Editar', 'flavor-chat-ia'); ?></a>
+                           data-id="<?php echo $servicio->id; ?>"><?php echo esc_html__('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                         <a href="#" class="button button-small cambiar-estado"
                            data-id="<?php echo $servicio->id; ?>"
                            data-estado="<?php echo $servicio->estado; ?>">
@@ -283,7 +283,7 @@ $categorias = [
                 <tr>
                     <td colspan="8" style="text-align: center; padding: 40px; color: #646970;">
                         <span class="dashicons dashicons-info" style="font-size: 48px;"></span>
-                        <p><?php echo esc_html__('No se encontraron servicios con los filtros seleccionados.', 'flavor-chat-ia'); ?></p>
+                        <p><?php echo esc_html__('No se encontraron servicios con los filtros seleccionados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </td>
                 </tr>
             <?php endif; ?>
@@ -317,7 +317,7 @@ $categorias = [
 <div id="modal-servicio" style="display:none;">
     <div class="modal-overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 100000;">
         <div class="modal-content" style="position: relative; max-width: 600px; margin: 50px auto; background: #fff; padding: 20px; border-radius: 4px;">
-            <h2 id="modal-titulo"><?php echo esc_html__('Nuevo Servicio', 'flavor-chat-ia'); ?></h2>
+            <h2 id="modal-titulo"><?php echo esc_html__('Nuevo Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <form method="post" id="form-servicio">
                 <?php wp_nonce_field('banco_tiempo_servicios'); ?>
@@ -326,7 +326,7 @@ $categorias = [
 
                 <table class="form-table">
                     <tr>
-                        <th><label for="usuario_id"><?php echo esc_html__('Usuario *', 'flavor-chat-ia'); ?></label></th>
+                        <th><label for="usuario_id"><?php echo esc_html__('Usuario *', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                         <td>
                             <?php
                             wp_dropdown_users([
@@ -339,22 +339,22 @@ $categorias = [
                         </td>
                     </tr>
                     <tr>
-                        <th><label for="titulo"><?php echo esc_html__('Título *', 'flavor-chat-ia'); ?></label></th>
+                        <th><label for="titulo"><?php echo esc_html__('Título *', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                         <td>
                             <input type="text" name="titulo" id="titulo" class="regular-text" required>
                         </td>
                     </tr>
                     <tr>
-                        <th><label for="descripcion"><?php echo esc_html__('Descripción *', 'flavor-chat-ia'); ?></label></th>
+                        <th><label for="descripcion"><?php echo esc_html__('Descripción *', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                         <td>
                             <textarea name="descripcion" id="descripcion" rows="4" class="large-text" required></textarea>
                         </td>
                     </tr>
                     <tr>
-                        <th><label for="categoria"><?php echo esc_html__('Categoría *', 'flavor-chat-ia'); ?></label></th>
+                        <th><label for="categoria"><?php echo esc_html__('Categoría *', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                         <td>
                             <select name="categoria" id="categoria" required>
-                                <option value=""><?php echo esc_html__('Seleccionar...', 'flavor-chat-ia'); ?></option>
+                                <option value=""><?php echo esc_html__('Seleccionar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                 <?php foreach ($categorias as $key => $label): ?>
                                     <option value="<?php echo esc_attr($key); ?>">
                                         <?php echo esc_html($label); ?>
@@ -364,7 +364,7 @@ $categorias = [
                         </td>
                     </tr>
                     <tr>
-                        <th><label for="horas_estimadas"><?php echo esc_html__('Horas Estimadas *', 'flavor-chat-ia'); ?></label></th>
+                        <th><label for="horas_estimadas"><?php echo esc_html__('Horas Estimadas *', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                         <td>
                             <input type="number" name="horas_estimadas" id="horas_estimadas"
                                    step="0.5" min="0.5" value="1" required>
@@ -373,8 +373,8 @@ $categorias = [
                 </table>
 
                 <p class="submit">
-                    <button type="submit" class="button button-primary"><?php echo esc_html__('Guardar Servicio', 'flavor-chat-ia'); ?></button>
-                    <button type="button" class="button" id="btn-cerrar-modal"><?php echo esc_html__('Cancelar', 'flavor-chat-ia'); ?></button>
+                    <button type="submit" class="button button-primary"><?php echo esc_html__('Guardar Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                    <button type="button" class="button" id="btn-cerrar-modal"><?php echo esc_html__('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                 </p>
             </form>
         </div>
@@ -385,10 +385,10 @@ $categorias = [
 <div id="modal-detalle" style="display:none;">
     <div class="modal-overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 100000;">
         <div class="modal-content" style="position: relative; max-width: 700px; margin: 50px auto; background: #fff; padding: 20px; border-radius: 4px;">
-            <h2><?php echo esc_html__('Detalles del Servicio', 'flavor-chat-ia'); ?></h2>
+            <h2><?php echo esc_html__('Detalles del Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <div id="contenido-detalle"></div>
             <p>
-                <button type="button" class="button" id="btn-cerrar-detalle"><?php echo esc_html__('Cerrar', 'flavor-chat-ia'); ?></button>
+                <button type="button" class="button" id="btn-cerrar-detalle"><?php echo esc_html__('Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
             </p>
         </div>
     </div>
@@ -447,7 +447,7 @@ jQuery(document).ready(function($) {
         var $btn = $(this);
         var $row = $btn.closest('tr');
 
-        $('#modal-titulo').text('<?php echo esc_js(__('Editar Servicio', 'flavor-chat-ia')); ?>');
+        $('#modal-titulo').text('<?php echo esc_js(__('Editar Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
         $('#servicio_id').val(id);
         $('input[name="accion"]').val('editar_servicio');
 
@@ -472,7 +472,7 @@ jQuery(document).ready(function($) {
                 $('#modal-servicio').fadeIn();
             },
             error: function() {
-                mostrarAvisoServicios('<?php echo esc_js(__('Error al cargar el servicio', 'flavor-chat-ia')); ?>');
+                mostrarAvisoServicios('<?php echo esc_js(__('Error al cargar el servicio', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>');
             }
         });
     });
@@ -484,7 +484,7 @@ jQuery(document).ready(function($) {
         var estadoActual = $(this).data('estado');
         var nuevoEstado = estadoActual === 'activo' ? 'inactivo' : 'activo';
 
-        if (window.confirm('<?php echo esc_js(__('¿Confirmar cambio de estado?', 'flavor-chat-ia')); ?>')) {
+        if (window.confirm('<?php echo esc_js(__('¿Confirmar cambio de estado?', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>')) {
             $('<form method="post">' +
                 '<input type="hidden" name="accion" value="actualizar_estado">' +
                 '<input type="hidden" name="servicio_id" value="' + id + '">' +

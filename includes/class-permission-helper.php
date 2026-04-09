@@ -436,7 +436,7 @@ class Flavor_Permission_Helper {
         if (!$tiene_permiso) {
             if (wp_doing_ajax()) {
                 wp_send_json_error([
-                    'message' => __('No tienes permisos para realizar esta accion.', 'flavor-chat-ia'),
+                    'message' => __('No tienes permisos para realizar esta accion.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'code' => 'permission_denied',
                 ], 403);
             }

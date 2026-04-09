@@ -63,7 +63,7 @@
 
             // Cargar script
             var config = typeof VBP_Config !== 'undefined' ? VBP_Config : {};
-            var baseUrl = config.assetsUrl || '/wp-content/plugins/flavor-chat-ia/assets/vbp/';
+            var baseUrl = config.assetsUrl || '/wp-content/plugins/flavor-platform/assets/vbp/';
             var script = document.createElement('script');
             script.src = baseUrl + 'js/modules/' + moduleName + '.js';
             script.async = true;

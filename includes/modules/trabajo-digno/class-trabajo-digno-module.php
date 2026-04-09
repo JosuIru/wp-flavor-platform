@@ -132,8 +132,8 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
      */
     public function __construct() {
         $this->id = 'trabajo_digno';
-        $this->name = __('Trabajo Digno', 'flavor-chat-ia');
-        $this->description = __('Bolsa de empleo ético, emprendimiento local y promoción del trabajo digno.', 'flavor-chat-ia');
+        $this->name = __('Trabajo Digno', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Bolsa de empleo ético, emprendimiento local y promoción del trabajo digno.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $this->icon = 'dashicons-businessman';
         $this->category = 'economia';
         $this->visibility = 'registered';
@@ -161,33 +161,33 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
             'premisas' => [
                 'conciencia_fundamental' => [
                     'puntuacion' => 18,
-                    'descripcion' => __('Reconoce la dignidad inherente del trabajador y su derecho a condiciones justas y respetuosas.', 'flavor-chat-ia'),
+                    'descripcion' => __('Reconoce la dignidad inherente del trabajador y su derecho a condiciones justas y respetuosas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
                 'abundancia_organizable' => [
                     'puntuacion' => 17,
-                    'descripcion' => __('Organiza las oportunidades laborales locales como recurso comunitario compartido.', 'flavor-chat-ia'),
+                    'descripcion' => __('Organiza las oportunidades laborales locales como recurso comunitario compartido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
                 'interdependencia_radical' => [
                     'puntuacion' => 17,
-                    'descripcion' => __('Conecta empleadores y trabajadores en relaciones de mutuo beneficio y corresponsabilidad.', 'flavor-chat-ia'),
+                    'descripcion' => __('Conecta empleadores y trabajadores en relaciones de mutuo beneficio y corresponsabilidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
                 'madurez_ciclica' => [
                     'puntuacion' => 16,
-                    'descripcion' => __('Respeta los ritmos de vida, la conciliación familiar y el derecho al descanso.', 'flavor-chat-ia'),
+                    'descripcion' => __('Respeta los ritmos de vida, la conciliación familiar y el derecho al descanso.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
                 'valor_intrinseco' => [
                     'puntuacion' => 17,
-                    'descripcion' => __('Valora el trabajo por su aporte social y no solo por su productividad económica.', 'flavor-chat-ia'),
+                    'descripcion' => __('Valora el trabajo por su aporte social y no solo por su productividad económica.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ],
             ],
             'fortalezas' => [
-                __('Criterios explícitos de trabajo digno basados en OIT', 'flavor-chat-ia'),
-                __('Promoción de economía cooperativa y solidaria', 'flavor-chat-ia'),
-                __('Conexión empleo-formación-emprendimiento', 'flavor-chat-ia'),
+                __('Criterios explícitos de trabajo digno basados en OIT', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Promoción de economía cooperativa y solidaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Conexión empleo-formación-emprendimiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'areas_mejora' => [
-                __('Incorporar métricas de impacto social del empleo', 'flavor-chat-ia'),
-                __('Desarrollar sistema de verificación de condiciones laborales', 'flavor-chat-ia'),
+                __('Incorporar métricas de impacto social del empleo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Desarrollar sistema de verificación de condiciones laborales', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
     }
@@ -489,29 +489,29 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
     public function get_admin_config(): array {
         return [
             'id' => 'trabajo_digno',
-            'label' => __('Trabajo Digno', 'flavor-chat-ia'),
+            'label' => __('Trabajo Digno', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-businessman',
             'capability' => 'manage_options',
             'categoria' => 'economia',
             'paginas' => [
                 [
                     'slug' => 'trabajo-digno',
-                    'titulo' => __('Trabajo Digno', 'flavor-chat-ia'),
+                    'titulo' => __('Trabajo Digno', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_dashboard'],
                 ],
                 [
                     'slug' => 'td-ofertas',
-                    'titulo' => __('Ofertas', 'flavor-chat-ia'),
+                    'titulo' => __('Ofertas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_ofertas'],
                 ],
                 [
                     'slug' => 'td-formacion',
-                    'titulo' => __('Formación', 'flavor-chat-ia'),
+                    'titulo' => __('Formación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_formacion'],
                 ],
                 [
                     'slug' => 'td-emprendimientos',
-                    'titulo' => __('Emprendimientos', 'flavor-chat-ia'),
+                    'titulo' => __('Emprendimientos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_emprendimientos'],
                 ],
             ],
@@ -525,22 +525,22 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
         $stats = $this->get_estadisticas();
         ?>
         <div class="wrap flavor-admin-trabajo">
-            <h1><?php esc_html_e('Trabajo Digno', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Trabajo Digno', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
             <div class="flavor-stats-grid">
                 <div class="flavor-stat-card">
                     <span class="dashicons dashicons-businessman"></span>
                     <h3><?php echo esc_html($stats['ofertas_activas']); ?></h3>
-                    <p><?php esc_html_e('Ofertas activas', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Ofertas activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="dashicons dashicons-welcome-learn-more"></span>
                     <h3><?php echo esc_html($stats['formaciones_disponibles']); ?></h3>
-                    <p><?php esc_html_e('Formaciones', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Formaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <div class="flavor-stat-card">
                     <span class="dashicons dashicons-store"></span>
                     <h3><?php echo esc_html($stats['emprendimientos_locales']); ?></h3>
-                    <p><?php esc_html_e('Emprendimientos', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Emprendimientos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             </div>
         </div>
@@ -554,11 +554,11 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
         $ofertas = get_posts(['post_type' => 'td_oferta', 'posts_per_page' => 50, 'post_status' => 'any']);
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e('Ofertas de Trabajo', 'flavor-chat-ia'); ?>
-                <a href="<?php echo admin_url('post-new.php?post_type=td_oferta'); ?>" class="page-title-action"><?php esc_html_e('Añadir', 'flavor-chat-ia'); ?></a>
+            <h1><?php esc_html_e('Ofertas de Trabajo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
+                <a href="<?php echo admin_url('post-new.php?post_type=td_oferta'); ?>" class="page-title-action"><?php esc_html_e('Añadir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
             </h1>
             <table class="wp-list-table widefat fixed striped">
-                <thead><tr><th><?php esc_html_e('Título', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Dignidad', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th></tr></thead>
+                <thead><tr><th><?php esc_html_e('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Dignidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th></tr></thead>
                 <tbody>
                 <?php foreach ($ofertas as $oferta): $tipo = get_post_meta($oferta->ID, '_td_tipo', true); ?>
                     <tr>
@@ -581,11 +581,11 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
         $formaciones = get_posts(['post_type' => 'td_formacion', 'posts_per_page' => 50, 'post_status' => 'any']);
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e('Formación', 'flavor-chat-ia'); ?>
-                <a href="<?php echo admin_url('post-new.php?post_type=td_formacion'); ?>" class="page-title-action"><?php esc_html_e('Añadir', 'flavor-chat-ia'); ?></a>
+            <h1><?php esc_html_e('Formación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
+                <a href="<?php echo admin_url('post-new.php?post_type=td_formacion'); ?>" class="page-title-action"><?php esc_html_e('Añadir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
             </h1>
             <table class="wp-list-table widefat fixed striped">
-                <thead><tr><th><?php esc_html_e('Título', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Plazas', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Inscritos', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th></tr></thead>
+                <thead><tr><th><?php esc_html_e('Título', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Plazas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Inscritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th></tr></thead>
                 <tbody>
                 <?php foreach ($formaciones as $form): $inscritos = get_post_meta($form->ID, '_td_inscritos', true) ?: []; ?>
                     <tr>
@@ -608,11 +608,11 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
         $emprendimientos = get_posts(['post_type' => 'td_emprendimiento', 'posts_per_page' => 50, 'post_status' => 'any']);
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e('Emprendimientos', 'flavor-chat-ia'); ?>
-                <a href="<?php echo admin_url('post-new.php?post_type=td_emprendimiento'); ?>" class="page-title-action"><?php esc_html_e('Añadir', 'flavor-chat-ia'); ?></a>
+            <h1><?php esc_html_e('Emprendimientos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
+                <a href="<?php echo admin_url('post-new.php?post_type=td_emprendimiento'); ?>" class="page-title-action"><?php esc_html_e('Añadir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
             </h1>
             <table class="wp-list-table widefat fixed striped">
-                <thead><tr><th><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Sector', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th></tr></thead>
+                <thead><tr><th><?php esc_html_e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Sector', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th><th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th></tr></thead>
                 <tbody>
                 <?php foreach ($emprendimientos as $emp): $sectores = wp_get_object_terms($emp->ID, 'td_sector', ['fields' => 'names']); ?>
                     <tr>
@@ -634,11 +634,11 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
     private function register_cpt_oferta() {
         register_post_type('td_oferta', [
             'labels' => [
-                'name' => __('Ofertas de Trabajo', 'flavor-chat-ia'),
-                'singular_name' => __('Oferta', 'flavor-chat-ia'),
-                'add_new' => __('Publicar Oferta', 'flavor-chat-ia'),
-                'add_new_item' => __('Publicar Nueva Oferta', 'flavor-chat-ia'),
-                'edit_item' => __('Editar Oferta', 'flavor-chat-ia'),
+                'name' => __('Ofertas de Trabajo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Oferta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'add_new' => __('Publicar Oferta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'add_new_item' => __('Publicar Nueva Oferta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'edit_item' => __('Editar Oferta', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => true,
             'show_ui' => true,
@@ -656,8 +656,8 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
     private function register_cpt_perfil() {
         register_post_type('td_perfil', [
             'labels' => [
-                'name' => __('Perfiles Profesionales', 'flavor-chat-ia'),
-                'singular_name' => __('Perfil', 'flavor-chat-ia'),
+                'name' => __('Perfiles Profesionales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => false,
             'show_ui' => true,
@@ -672,9 +672,9 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
     private function register_cpt_formacion() {
         register_post_type('td_formacion', [
             'labels' => [
-                'name' => __('Formación', 'flavor-chat-ia'),
-                'singular_name' => __('Curso/Taller', 'flavor-chat-ia'),
-                'add_new' => __('Añadir Formación', 'flavor-chat-ia'),
+                'name' => __('Formación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Curso/Taller', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'add_new' => __('Añadir Formación', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => true,
             'show_ui' => true,
@@ -691,9 +691,9 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
     private function register_cpt_emprendimiento() {
         register_post_type('td_emprendimiento', [
             'labels' => [
-                'name' => __('Emprendimientos', 'flavor-chat-ia'),
-                'singular_name' => __('Emprendimiento', 'flavor-chat-ia'),
-                'add_new' => __('Registrar Emprendimiento', 'flavor-chat-ia'),
+                'name' => __('Emprendimientos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Emprendimiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'add_new' => __('Registrar Emprendimiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => true,
             'show_ui' => true,
@@ -710,8 +710,8 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
     private function register_taxonomies() {
         register_taxonomy('td_sector', ['td_oferta', 'td_emprendimiento', 'td_formacion'], [
             'labels' => [
-                'name' => __('Sectores', 'flavor-chat-ia'),
-                'singular_name' => __('Sector', 'flavor-chat-ia'),
+                'name' => __('Sectores', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Sector', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'hierarchical' => true,
             'show_admin_column' => true,
@@ -720,8 +720,8 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
 
         register_taxonomy('td_habilidad', ['td_oferta', 'td_perfil'], [
             'labels' => [
-                'name' => __('Habilidades', 'flavor-chat-ia'),
-                'singular_name' => __('Habilidad', 'flavor-chat-ia'),
+                'name' => __('Habilidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Habilidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'hierarchical' => false,
             'show_admin_column' => true,
@@ -778,9 +778,9 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
             'sectores' => self::SECTORES,
             'criterios' => self::CRITERIOS_DIGNIDAD,
             'i18n' => [
-                'error' => __('Error al procesar la solicitud', 'flavor-chat-ia'),
-                'success' => __('Operación completada', 'flavor-chat-ia'),
-                'confirm_postular' => __('¿Confirmas tu postulación?', 'flavor-chat-ia'),
+                'error' => __('Error al procesar la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'success' => __('Operación completada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirm_postular' => __('¿Confirmas tu postulación?', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -842,7 +842,7 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('trabajo_digno_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $titulo = sanitize_text_field($_POST['titulo'] ?? '');
@@ -855,7 +855,7 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
         $criterios = array_map('sanitize_text_field', $_POST['criterios'] ?? []);
 
         if (empty($titulo) || empty($descripcion)) {
-            wp_send_json_error(['message' => __('Título y descripción son requeridos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Título y descripción son requeridos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $oferta_id = wp_insert_post([
@@ -867,7 +867,7 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
         ], true);
 
         if (is_wp_error($oferta_id) || empty($oferta_id)) {
-            $error = is_wp_error($oferta_id) ? $oferta_id->get_error_message() : __('No se pudo crear la oferta.', 'flavor-chat-ia');
+            $error = is_wp_error($oferta_id) ? $oferta_id->get_error_message() : __('No se pudo crear la oferta.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             wp_send_json_error(['message' => $error]);
         }
 
@@ -883,7 +883,7 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
         }
 
         wp_send_json_success([
-            'message' => __('Oferta publicada. Será revisada antes de su publicación.', 'flavor-chat-ia'),
+            'message' => __('Oferta publicada. Será revisada antes de su publicación.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'oferta_id' => $oferta_id,
         ]);
     }
@@ -895,7 +895,7 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('trabajo_digno_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $oferta_id = intval($_POST['oferta_id'] ?? 0);
@@ -906,7 +906,7 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
 
         foreach ($postulaciones as $p) {
             if ($p['user_id'] === $user_id) {
-                wp_send_json_error(['message' => __('Ya has postulado a esta oferta', 'flavor-chat-ia')]);
+                wp_send_json_error(['message' => __('Ya has postulado a esta oferta', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             }
         }
 
@@ -926,17 +926,17 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
 
         wp_mail(
             $autor_email,
-            sprintf(__('Nueva postulación: %s', 'flavor-chat-ia'), $oferta->post_title),
+            sprintf(__('Nueva postulación: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $oferta->post_title),
             sprintf(
-                __("%s ha postulado a tu oferta '%s'.\n\nMensaje: %s\n\nAccede al panel para revisar la postulación.", 'flavor-chat-ia'),
+                __("%s ha postulado a tu oferta '%s'.\n\nMensaje: %s\n\nAccede al panel para revisar la postulación.", FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $candidato->display_name,
                 $oferta->post_title,
-                $mensaje ?: __('Sin mensaje', 'flavor-chat-ia')
+                $mensaje ?: __('Sin mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN)
             )
         );
 
         wp_send_json_success([
-            'message' => __('Postulación enviada correctamente', 'flavor-chat-ia'),
+            'message' => __('Postulación enviada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -947,7 +947,7 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('trabajo_digno_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $user_id = get_current_user_id();
@@ -982,7 +982,7 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
         }
 
         if (is_wp_error($perfil_id) || empty($perfil_id)) {
-            $error = is_wp_error($perfil_id) ? $perfil_id->get_error_message() : __('No se pudo guardar el perfil.', 'flavor-chat-ia');
+            $error = is_wp_error($perfil_id) ? $perfil_id->get_error_message() : __('No se pudo guardar el perfil.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             wp_send_json_error(['message' => $error]);
         }
 
@@ -998,7 +998,7 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
         }
 
         wp_send_json_success([
-            'message' => __('Perfil actualizado correctamente', 'flavor-chat-ia'),
+            'message' => __('Perfil actualizado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'perfil_id' => $perfil_id,
         ]);
     }
@@ -1010,7 +1010,7 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('trabajo_digno_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $nombre = sanitize_text_field($_POST['nombre'] ?? '');
@@ -1021,7 +1021,7 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
         $contacto = sanitize_email($_POST['contacto'] ?? '');
 
         if (empty($nombre) || empty($descripcion)) {
-            wp_send_json_error(['message' => __('Nombre y descripción son requeridos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Nombre y descripción son requeridos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $emprendimiento_id = wp_insert_post([
@@ -1033,7 +1033,7 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
         ], true);
 
         if (is_wp_error($emprendimiento_id) || empty($emprendimiento_id)) {
-            $error = is_wp_error($emprendimiento_id) ? $emprendimiento_id->get_error_message() : __('No se pudo crear el emprendimiento.', 'flavor-chat-ia');
+            $error = is_wp_error($emprendimiento_id) ? $emprendimiento_id->get_error_message() : __('No se pudo crear el emprendimiento.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             wp_send_json_error(['message' => $error]);
         }
 
@@ -1046,7 +1046,7 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
         }
 
         wp_send_json_success([
-            'message' => __('Emprendimiento registrado. Será revisado antes de su publicación.', 'flavor-chat-ia'),
+            'message' => __('Emprendimiento registrado. Será revisado antes de su publicación.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'emprendimiento_id' => $emprendimiento_id,
         ]);
     }
@@ -1058,7 +1058,7 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('trabajo_digno_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $formacion_id = intval($_POST['formacion_id'] ?? 0);
@@ -1068,18 +1068,18 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
         $plazas_max = intval(get_post_meta($formacion_id, '_td_plazas', true));
 
         if (in_array($user_id, $inscritos)) {
-            wp_send_json_error(['message' => __('Ya estás inscrito/a', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Ya estás inscrito/a', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if ($plazas_max > 0 && count($inscritos) >= $plazas_max) {
-            wp_send_json_error(['message' => __('No quedan plazas disponibles', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No quedan plazas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $inscritos[] = $user_id;
         update_post_meta($formacion_id, '_td_inscritos', $inscritos);
 
         wp_send_json_success([
-            'message' => __('Inscripción completada', 'flavor-chat-ia'),
+            'message' => __('Inscripción completada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'inscritos' => count($inscritos),
         ]);
     }
@@ -1151,31 +1151,31 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
     public function get_frontend_pages(): array {
         return [
             'ofertas' => [
-                'titulo' => __('Bolsa de Empleo', 'flavor-chat-ia'),
+                'titulo' => __('Bolsa de Empleo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'trabajo-digno',
                 'shortcode' => '[trabajo_digno_ofertas]',
                 'icono' => 'dashicons-businessman',
             ],
             'formacion' => [
-                'titulo' => __('Formación', 'flavor-chat-ia'),
+                'titulo' => __('Formación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'trabajo-digno/formacion',
                 'shortcode' => '[trabajo_digno_formacion]',
                 'icono' => 'dashicons-welcome-learn-more',
             ],
             'emprendimientos' => [
-                'titulo' => __('Emprendimientos Locales', 'flavor-chat-ia'),
+                'titulo' => __('Emprendimientos Locales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'trabajo-digno/emprendimientos',
                 'shortcode' => '[trabajo_digno_emprendimientos]',
                 'icono' => 'dashicons-store',
             ],
             'mi_perfil' => [
-                'titulo' => __('Mi Perfil Profesional', 'flavor-chat-ia'),
+                'titulo' => __('Mi Perfil Profesional', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mi-portal/trabajo-digno',
                 'shortcode' => '[trabajo_digno_mi_perfil]',
                 'icono' => 'dashicons-id-alt',
             ],
             'publicar' => [
-                'titulo' => __('Publicar Oferta', 'flavor-chat-ia'),
+                'titulo' => __('Publicar Oferta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'trabajo-digno/publicar',
                 'shortcode' => '[trabajo_digno_publicar]',
                 'icono' => 'dashicons-plus-alt',
@@ -1191,13 +1191,13 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
     public function get_actions(): array {
         return [
             'buscar_empleo' => [
-                'name' => __('Buscar Empleo', 'flavor-chat-ia'),
-                'description' => __('Busca ofertas de trabajo digno', 'flavor-chat-ia'),
+                'name' => __('Buscar Empleo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Busca ofertas de trabajo digno', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'callback' => [$this, 'action_buscar_empleo'],
             ],
             'ver_formacion' => [
-                'name' => __('Ver Formación', 'flavor-chat-ia'),
-                'description' => __('Consulta cursos y talleres disponibles', 'flavor-chat-ia'),
+                'name' => __('Ver Formación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Consulta cursos y talleres disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'callback' => [$this, 'action_ver_formacion'],
             ],
         ];
@@ -1242,7 +1242,7 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => true,
-            'message' => sprintf(__('Encontré %d oferta(s) de trabajo', 'flavor-chat-ia'), count($lista)),
+            'message' => sprintf(__('Encontré %d oferta(s) de trabajo', FLAVOR_PLATFORM_TEXT_DOMAIN), count($lista)),
             'ofertas' => $lista,
             'url_completa' => home_url('/trabajo-digno/'),
         ];
@@ -1270,7 +1270,7 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => true,
-            'message' => sprintf(__('Hay %d formación(es) disponible(s)', 'flavor-chat-ia'), count($lista)),
+            'message' => sprintf(__('Hay %d formación(es) disponible(s)', FLAVOR_PLATFORM_TEXT_DOMAIN), count($lista)),
             'formaciones' => $lista,
         ];
     }
@@ -1293,7 +1293,7 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
             "- Índice de dignidad para cada oferta\n" .
             "- Formación profesional y capacitación\n" .
             "- Directorio de emprendimientos locales\n" .
-            "- Perfiles profesionales y postulaciones", 'flavor-chat-ia'),
+            "- Perfiles profesionales y postulaciones", FLAVOR_PLATFORM_TEXT_DOMAIN),
             $stats['ofertas_activas'],
             $stats['formaciones_disponibles'],
             $stats['emprendimientos_locales']
@@ -1308,20 +1308,20 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
     public function get_faqs(): array {
         return [
             [
-                'pregunta' => __('¿Qué es el índice de dignidad?', 'flavor-chat-ia'),
-                'respuesta' => __('Es un indicador que muestra cuántos criterios de trabajo digno cumple una oferta (salario justo, conciliación, igualdad, etc.).', 'flavor-chat-ia'),
+                'pregunta' => __('¿Qué es el índice de dignidad?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'respuesta' => __('Es un indicador que muestra cuántos criterios de trabajo digno cumple una oferta (salario justo, conciliación, igualdad, etc.).', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             [
-                'pregunta' => __('¿Cómo publico una oferta de empleo?', 'flavor-chat-ia'),
-                'respuesta' => __('Ve a Trabajo Digno > Publicar Oferta. Completa el formulario incluyendo los criterios de dignidad que ofreces.', 'flavor-chat-ia'),
+                'pregunta' => __('¿Cómo publico una oferta de empleo?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'respuesta' => __('Ve a Trabajo Digno > Publicar Oferta. Completa el formulario incluyendo los criterios de dignidad que ofreces.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             [
-                'pregunta' => __('¿Cómo postulo a una oferta?', 'flavor-chat-ia'),
-                'respuesta' => __('Desde la ficha de la oferta, haz clic en "Postular". Puedes adjuntar un mensaje de presentación.', 'flavor-chat-ia'),
+                'pregunta' => __('¿Cómo postulo a una oferta?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'respuesta' => __('Desde la ficha de la oferta, haz clic en "Postular". Puedes adjuntar un mensaje de presentación.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             [
-                'pregunta' => __('¿Puedo registrar mi emprendimiento?', 'flavor-chat-ia'),
-                'respuesta' => __('Sí, en la sección de Emprendimientos puedes registrar tu proyecto o empresa local.', 'flavor-chat-ia'),
+                'pregunta' => __('¿Puedo registrar mi emprendimiento?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'respuesta' => __('Sí, en la sección de Emprendimientos puedes registrar tu proyecto o empresa local.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
     }
@@ -1363,7 +1363,7 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'message' => __('Acción no implementada', 'flavor-chat-ia'),
+            'message' => __('Acción no implementada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -1409,14 +1409,14 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
     private function action_foro_oferta($params) {
         $oferta = $this->resolve_contextual_oferta((array) $params);
         if (!$oferta) {
-            return ['success' => false, 'message' => __('Selecciona una oferta para abrir su foro.', 'flavor-chat-ia')];
+            return ['success' => false, 'message' => __('Selecciona una oferta para abrir su foro.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         ob_start();
         ?>
         <div class="td-contexto td-contexto-foro">
             <div class="td-contexto-header">
-                <h3><?php echo esc_html__('Foro de la oferta', 'flavor-chat-ia'); ?></h3>
+                <h3><?php echo esc_html__('Foro de la oferta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <p><?php echo esc_html($oferta->post_title); ?></p>
             </div>
             <?php echo do_shortcode('[flavor_foros_integrado entidad="trabajo_digno_oferta" entidad_id="' . intval($oferta->ID) . '"]'); ?>
@@ -1428,17 +1428,17 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
     private function action_chat_oferta($params) {
         $oferta = $this->resolve_contextual_oferta((array) $params);
         if (!$oferta) {
-            return ['success' => false, 'message' => __('Selecciona una oferta para abrir su chat.', 'flavor-chat-ia')];
+            return ['success' => false, 'message' => __('Selecciona una oferta para abrir su chat.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         ob_start();
         ?>
         <div class="td-contexto td-contexto-chat">
             <div class="td-contexto-header">
-                <h3><?php echo esc_html__('Chat de la oferta', 'flavor-chat-ia'); ?></h3>
+                <h3><?php echo esc_html__('Chat de la oferta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <p><?php echo esc_html($oferta->post_title); ?></p>
             </div>
-            <p><a class="button button-secondary" href="<?php echo esc_url(home_url('/mi-portal/chat-grupos/')); ?>"><?php echo esc_html__('Abrir chat completo', 'flavor-chat-ia'); ?></a></p>
+            <p><a class="button button-secondary" href="<?php echo esc_url(home_url('/mi-portal/chat-grupos/')); ?>"><?php echo esc_html__('Abrir chat completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a></p>
             <?php echo do_shortcode('[flavor_chat_grupo_integrado entidad="trabajo_digno_oferta" entidad_id="' . intval($oferta->ID) . '"]'); ?>
         </div>
         <?php
@@ -1448,17 +1448,17 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
     private function action_multimedia_oferta($params) {
         $oferta = $this->resolve_contextual_oferta((array) $params);
         if (!$oferta) {
-            return ['success' => false, 'message' => __('Selecciona una oferta para ver sus recursos multimedia.', 'flavor-chat-ia')];
+            return ['success' => false, 'message' => __('Selecciona una oferta para ver sus recursos multimedia.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         ob_start();
         ?>
         <div class="td-contexto td-contexto-multimedia">
             <div class="td-contexto-header">
-                <h3><?php echo esc_html__('Recursos de la oferta', 'flavor-chat-ia'); ?></h3>
+                <h3><?php echo esc_html__('Recursos de la oferta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <p><?php echo esc_html($oferta->post_title); ?></p>
             </div>
-            <p><a class="button button-secondary" href="<?php echo esc_url(home_url('/mi-portal/multimedia/subir/?trabajo_digno_oferta_id=' . intval($oferta->ID))); ?>"><?php echo esc_html__('Subir archivo', 'flavor-chat-ia'); ?></a></p>
+            <p><a class="button button-secondary" href="<?php echo esc_url(home_url('/mi-portal/multimedia/subir/?trabajo_digno_oferta_id=' . intval($oferta->ID))); ?>"><?php echo esc_html__('Subir archivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a></p>
             <?php echo do_shortcode('[flavor_multimedia_galeria entidad="trabajo_digno_oferta" entidad_id="' . intval($oferta->ID) . '"]'); ?>
         </div>
         <?php
@@ -1468,17 +1468,17 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
     private function action_red_social_oferta($params) {
         $oferta = $this->resolve_contextual_oferta((array) $params);
         if (!$oferta) {
-            return ['success' => false, 'message' => __('Selecciona una oferta para ver su actividad social.', 'flavor-chat-ia')];
+            return ['success' => false, 'message' => __('Selecciona una oferta para ver su actividad social.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         ob_start();
         ?>
         <div class="td-contexto td-contexto-red-social">
             <div class="td-contexto-header">
-                <h3><?php echo esc_html__('Actividad social de la oferta', 'flavor-chat-ia'); ?></h3>
+                <h3><?php echo esc_html__('Actividad social de la oferta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <p><?php echo esc_html($oferta->post_title); ?></p>
             </div>
-            <p><a class="button button-secondary" href="<?php echo esc_url(home_url('/mi-portal/red-social/crear/?trabajo_digno_oferta_id=' . intval($oferta->ID))); ?>"><?php echo esc_html__('Publicar', 'flavor-chat-ia'); ?></a></p>
+            <p><a class="button button-secondary" href="<?php echo esc_url(home_url('/mi-portal/red-social/crear/?trabajo_digno_oferta_id=' . intval($oferta->ID))); ?>"><?php echo esc_html__('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a></p>
             <?php echo do_shortcode('[flavor_social_feed entidad="trabajo_digno_oferta" entidad_id="' . intval($oferta->ID) . '"]'); ?>
         </div>
         <?php
@@ -1493,8 +1493,8 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
     public static function get_renderer_config(): array {
         return [
             'module'   => 'trabajo-digno',
-            'title'    => __('Trabajo Digno', 'flavor-chat-ia'),
-            'subtitle' => __('Ofertas de empleo con criterios de dignidad laboral', 'flavor-chat-ia'),
+            'title'    => __('Trabajo Digno', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Ofertas de empleo con criterios de dignidad laboral', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '💼',
             'color'    => 'accent', // Usa variable CSS --flavor-primary del tema
 
@@ -1504,28 +1504,28 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
             ],
 
             'fields' => [
-                'titulo'        => ['type' => 'text', 'label' => __('Puesto', 'flavor-chat-ia'), 'required' => true],
-                'empresa'       => ['type' => 'text', 'label' => __('Empresa/Organización', 'flavor-chat-ia'), 'required' => true],
-                'descripcion'   => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
-                'tipo_contrato' => ['type' => 'select', 'label' => __('Tipo de contrato', 'flavor-chat-ia')],
-                'jornada'       => ['type' => 'select', 'label' => __('Jornada', 'flavor-chat-ia'), 'options' => ['completa', 'parcial', 'flexible']],
-                'salario'       => ['type' => 'text', 'label' => __('Salario', 'flavor-chat-ia')],
-                'ubicacion'     => ['type' => 'text', 'label' => __('Ubicación', 'flavor-chat-ia')],
-                'indice_dignidad' => ['type' => 'number', 'label' => __('Índice dignidad', 'flavor-chat-ia'), 'min' => 0, 'max' => 100],
+                'titulo'        => ['type' => 'text', 'label' => __('Puesto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'empresa'       => ['type' => 'text', 'label' => __('Empresa/Organización', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'descripcion'   => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'tipo_contrato' => ['type' => 'select', 'label' => __('Tipo de contrato', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'jornada'       => ['type' => 'select', 'label' => __('Jornada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['completa', 'parcial', 'flexible']],
+                'salario'       => ['type' => 'text', 'label' => __('Salario', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'ubicacion'     => ['type' => 'text', 'label' => __('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'indice_dignidad' => ['type' => 'number', 'label' => __('Índice dignidad', FLAVOR_PLATFORM_TEXT_DOMAIN), 'min' => 0, 'max' => 100],
             ],
 
             'estados' => [
-                'activa'    => ['label' => __('Activa', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🟢'],
-                'pausada'   => ['label' => __('Pausada', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏸️'],
-                'cubierta'  => ['label' => __('Cubierta', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '✅'],
-                'cancelada' => ['label' => __('Cancelada', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '❌'],
+                'activa'    => ['label' => __('Activa', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '🟢'],
+                'pausada'   => ['label' => __('Pausada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '⏸️'],
+                'cubierta'  => ['label' => __('Cubierta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'blue', 'icon' => '✅'],
+                'cancelada' => ['label' => __('Cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'red', 'icon' => '❌'],
             ],
 
             'stats' => [
-                'ofertas_activas'  => ['label' => __('Ofertas activas', 'flavor-chat-ia'), 'icon' => '💼', 'color' => 'sky'],
-                'empresas'         => ['label' => __('Empresas', 'flavor-chat-ia'), 'icon' => '🏢', 'color' => 'blue'],
-                'emprendimientos'  => ['label' => __('Emprendimientos', 'flavor-chat-ia'), 'icon' => '🚀', 'color' => 'indigo'],
-                'contrataciones'   => ['label' => __('Contrataciones', 'flavor-chat-ia'), 'icon' => '🤝', 'color' => 'green'],
+                'ofertas_activas'  => ['label' => __('Ofertas activas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '💼', 'color' => 'sky'],
+                'empresas'         => ['label' => __('Empresas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🏢', 'color' => 'blue'],
+                'emprendimientos'  => ['label' => __('Emprendimientos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🚀', 'color' => 'indigo'],
+                'contrataciones'   => ['label' => __('Contrataciones', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🤝', 'color' => 'green'],
             ],
 
             'card' => [
@@ -1539,55 +1539,55 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
 
             'tabs' => [
                 'ofertas' => [
-                    'label'   => __('Ofertas', 'flavor-chat-ia'),
+                    'label'   => __('Ofertas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-clipboard',
                     'content' => 'template:_archive.php',
                     'public'  => true,
                 ],
                 'emprendimientos' => [
-                    'label'   => __('Emprendimientos', 'flavor-chat-ia'),
+                    'label'   => __('Emprendimientos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-lightbulb',
                     'content' => 'shortcode:trabajo_digno_emprendimientos',
                     'public'  => true,
                 ],
                 'publicar' => [
-                    'label'      => __('Publicar oferta', 'flavor-chat-ia'),
+                    'label'      => __('Publicar oferta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-plus-alt',
                     'content'    => 'shortcode:trabajo_digno_publicar',
                     'requires_login' => true,
                 ],
                 'mis-postulaciones' => [
-                    'label'      => __('Mis postulaciones', 'flavor-chat-ia'),
+                    'label'      => __('Mis postulaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-admin-users',
                     'content'    => 'callback:render_tab_mis_postulaciones',
                     'requires_login' => true,
                 ],
                 'mi-cv' => [
-                    'label'      => __('Mi CV', 'flavor-chat-ia'),
+                    'label'      => __('Mi CV', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-id',
                     'content'    => 'shortcode:trabajo_digno_mi_perfil',
                     'requires_login' => true,
                 ],
                 'foro' => [
-                    'label'      => __('Foro', 'flavor-chat-ia'),
+                    'label'      => __('Foro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-format-chat',
                     'content'    => 'callback:render_tab_foro',
                     'hidden_nav' => true,
                 ],
                 'chat' => [
-                    'label'      => __('Chat', 'flavor-chat-ia'),
+                    'label'      => __('Chat', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-format-status',
                     'content'    => 'callback:render_tab_chat',
                     'hidden_nav' => true,
                 ],
                 'multimedia' => [
-                    'label'      => __('Multimedia', 'flavor-chat-ia'),
+                    'label'      => __('Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-format-gallery',
                     'content'    => 'callback:render_tab_multimedia',
                     'hidden_nav' => true,
                 ],
                 'red-social' => [
-                    'label'      => __('Red social', 'flavor-chat-ia'),
+                    'label'      => __('Red social', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-share',
                     'content'    => 'callback:render_tab_red_social',
                     'hidden_nav' => true,
@@ -1605,8 +1605,8 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
             'dashboard' => [
                 'widgets' => ['stats', 'ofertas_recientes', 'mis_postulaciones', 'emprendimientos_locales'],
                 'actions' => [
-                    'publicar'  => ['label' => __('Publicar oferta', 'flavor-chat-ia'), 'icon' => '📝', 'color' => 'sky'],
-                    'buscar'    => ['label' => __('Buscar empleo', 'flavor-chat-ia'), 'icon' => '🔍', 'color' => 'blue'],
+                    'publicar'  => ['label' => __('Publicar oferta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📝', 'color' => 'sky'],
+                    'buscar'    => ['label' => __('Buscar empleo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🔍', 'color' => 'blue'],
                 ],
             ],
 
@@ -1628,12 +1628,12 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
         ?>
         <div class="td-mis-postulaciones">
             <?php if (empty($postulaciones)) : ?>
-                <p><?php esc_html_e('No tienes postulaciones registradas todavía.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No tienes postulaciones registradas todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php else : ?>
                 <ul class="td-postulaciones-lista">
                     <?php foreach ($postulaciones as $postulacion) : ?>
                         <li>
-                            <strong><?php echo esc_html($postulacion['oferta_titulo'] ?? __('Oferta', 'flavor-chat-ia')); ?></strong>
+                            <strong><?php echo esc_html($postulacion['oferta_titulo'] ?? __('Oferta', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong>
                             <span><?php echo esc_html($postulacion['fecha'] ?? ''); ?></span>
                         </li>
                     <?php endforeach; ?>

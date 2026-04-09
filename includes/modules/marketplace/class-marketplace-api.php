@@ -402,7 +402,7 @@ class Flavor_Marketplace_API {
         return new WP_REST_Response([
             'success' => true,
             'anuncio' => $anuncio,
-            'mensaje' => __('Anuncio publicado con éxito', 'flavor-chat-ia'),
+            'mensaje' => __('Anuncio publicado con éxito', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 201);
     }
 
@@ -526,7 +526,7 @@ class Flavor_Marketplace_API {
         return new WP_REST_Response([
             'success' => true,
             'anuncio' => $this->formatear_anuncio($post),
-            'mensaje' => __('Anuncio actualizado con éxito', 'flavor-chat-ia'),
+            'mensaje' => __('Anuncio actualizado con éxito', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 200);
     }
 
@@ -561,7 +561,7 @@ class Flavor_Marketplace_API {
 
         return new WP_REST_Response([
             'success' => true,
-            'mensaje' => __('Anuncio eliminado con éxito', 'flavor-chat-ia'),
+            'mensaje' => __('Anuncio eliminado con éxito', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 200);
     }
 
@@ -663,9 +663,9 @@ class Flavor_Marketplace_API {
 
         $vendedor_email = get_the_author_meta('user_email', $post->post_author);
         if ($vendedor_email) {
-            $asunto = sprintf(__('Nuevo mensaje sobre tu anuncio "%s"', 'flavor-chat-ia'), $post->post_title);
+            $asunto = sprintf(__('Nuevo mensaje sobre tu anuncio "%s"', FLAVOR_PLATFORM_TEXT_DOMAIN), $post->post_title);
             $contenido = sprintf(
-                __("Hola,\n\nHas recibido un mensaje sobre tu anuncio \"%s\".\n\nMensaje:\n%s\n\nVer anuncio: %s\n", 'flavor-chat-ia'),
+                __("Hola,\n\nHas recibido un mensaje sobre tu anuncio \"%s\".\n\nMensaje:\n%s\n\nVer anuncio: %s\n", FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $post->post_title,
                 $mensaje,
                 get_permalink($post_id)
@@ -675,7 +675,7 @@ class Flavor_Marketplace_API {
 
         return new WP_REST_Response([
             'success' => true,
-            'mensaje' => __('Mensaje enviado correctamente', 'flavor-chat-ia'),
+            'mensaje' => __('Mensaje enviado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 200);
     }
 
@@ -719,7 +719,7 @@ class Flavor_Marketplace_API {
 
         return new WP_REST_Response([
             'success' => true,
-            'mensaje' => __('Anuncio marcado como vendido', 'flavor-chat-ia'),
+            'mensaje' => __('Anuncio marcado como vendido', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 200);
     }
 

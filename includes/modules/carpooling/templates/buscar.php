@@ -29,10 +29,10 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_anticipacion} days"));
 <div class="flavor-carpooling-buscar carpooling-container">
     <header class="flavor-carpooling-buscar__header">
         <h2 class="flavor-carpooling-buscar__titulo">
-            <?php esc_html_e('Buscar viajes compartidos', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Buscar viajes compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
         <p class="flavor-carpooling-buscar__subtitulo">
-            <?php esc_html_e('Encuentra viajes que se adapten a tu ruta y horario', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Encuentra viajes que se adapten a tu ruta y horario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </header>
 
@@ -44,7 +44,7 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_anticipacion} days"));
             <div class="carpooling-form-group">
                 <label for="carpooling-origen">
                     <span class="dashicons dashicons-location"></span>
-                    <?php esc_html_e('Origen', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Origen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="required">*</span>
                 </label>
                 <input
@@ -53,7 +53,7 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_anticipacion} days"));
                     id="carpooling-origen"
                     class="flavor-input flavor-input--with-icon"
                     value="<?php echo esc_attr($origen_anterior); ?>"
-                    placeholder="<?php esc_attr_e('Ciudad o direccion de salida...', 'flavor-chat-ia'); ?>"
+                    placeholder="<?php esc_attr_e('Ciudad o direccion de salida...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                     autocomplete="off"
                     required
                 />
@@ -64,7 +64,7 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_anticipacion} days"));
             <div class="carpooling-form-group">
                 <label for="carpooling-destino">
                     <span class="dashicons dashicons-flag"></span>
-                    <?php esc_html_e('Destino', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Destino', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="required">*</span>
                 </label>
                 <input
@@ -73,7 +73,7 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_anticipacion} days"));
                     id="carpooling-destino"
                     class="flavor-input flavor-input--with-icon"
                     value="<?php echo esc_attr($destino_anterior); ?>"
-                    placeholder="<?php esc_attr_e('Ciudad o direccion de llegada...', 'flavor-chat-ia'); ?>"
+                    placeholder="<?php esc_attr_e('Ciudad o direccion de llegada...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                     autocomplete="off"
                     required
                 />
@@ -84,7 +84,7 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_anticipacion} days"));
 
         <!-- Boton intercambiar origen/destino -->
         <div class="flavor-carpooling-buscar__swap">
-            <button type="button" class="cp-btn cp-btn-outline" id="carpooling-swap-btn" title="<?php esc_attr_e('Intercambiar origen y destino', 'flavor-chat-ia'); ?>">
+            <button type="button" class="cp-btn cp-btn-outline" id="carpooling-swap-btn" title="<?php esc_attr_e('Intercambiar origen y destino', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <span class="dashicons dashicons-randomize"></span>
             </button>
         </div>
@@ -94,7 +94,7 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_anticipacion} days"));
             <div class="carpooling-form-group">
                 <label for="carpooling-fecha">
                     <span class="dashicons dashicons-calendar-alt"></span>
-                    <?php esc_html_e('Fecha del viaje', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Fecha del viaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="required">*</span>
                 </label>
                 <input
@@ -112,12 +112,12 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_anticipacion} days"));
             <div class="carpooling-form-group">
                 <label for="carpooling-plazas">
                     <span class="dashicons dashicons-groups"></span>
-                    <?php esc_html_e('Plazas necesarias', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Plazas necesarias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </label>
                 <select name="plazas" id="carpooling-plazas" class="flavor-select">
                     <?php for ($plazas_contador = 1; $plazas_contador <= 4; $plazas_contador++) : ?>
                         <option value="<?php echo esc_attr($plazas_contador); ?>" <?php selected($plazas_anteriores, $plazas_contador); ?>>
-                            <?php echo esc_html($plazas_contador); ?> <?php echo esc_html(_n('plaza', 'plazas', $plazas_contador, 'flavor-chat-ia')); ?>
+                            <?php echo esc_html($plazas_contador); ?> <?php echo esc_html(_n('plaza', 'plazas', $plazas_contador, FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                         </option>
                     <?php endfor; ?>
                 </select>
@@ -128,7 +128,7 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_anticipacion} days"));
         <details class="flavor-carpooling-buscar__filtros-avanzados">
             <summary class="flavor-carpooling-buscar__filtros-toggle">
                 <span class="dashicons dashicons-filter"></span>
-                <?php esc_html_e('Filtros avanzados', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Filtros avanzados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </summary>
 
             <div class="flavor-carpooling-buscar__filtros-contenido">
@@ -136,7 +136,7 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_anticipacion} days"));
                     <div class="carpooling-form-group">
                         <label for="carpooling-hora-desde">
                             <span class="dashicons dashicons-clock"></span>
-                            <?php esc_html_e('Hora desde', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Hora desde', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                         <input
                             type="time"
@@ -149,7 +149,7 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_anticipacion} days"));
                     <div class="carpooling-form-group">
                         <label for="carpooling-hora-hasta">
                             <span class="dashicons dashicons-clock"></span>
-                            <?php esc_html_e('Hora hasta', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Hora hasta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                         <input
                             type="time"
@@ -164,7 +164,7 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_anticipacion} days"));
                     <div class="carpooling-form-group">
                         <label for="carpooling-precio-max">
                             <span class="dashicons dashicons-money-alt"></span>
-                            <?php esc_html_e('Precio maximo por plaza', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Precio maximo por plaza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                         <input
                             type="number"
@@ -173,20 +173,20 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_anticipacion} days"));
                             class="flavor-input"
                             min="0"
                             step="0.50"
-                            placeholder="<?php esc_attr_e('Sin limite', 'flavor-chat-ia'); ?>"
+                            placeholder="<?php esc_attr_e('Sin limite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                         />
                     </div>
 
                     <div class="carpooling-form-group">
                         <label for="carpooling-radio">
                             <span class="dashicons dashicons-location-alt"></span>
-                            <?php esc_html_e('Radio de busqueda', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Radio de busqueda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                         <select name="radio_km" id="carpooling-radio" class="flavor-select">
-                            <option value="5"><?php esc_html_e('5 km', 'flavor-chat-ia'); ?></option>
-                            <option value="10" selected><?php esc_html_e('10 km', 'flavor-chat-ia'); ?></option>
-                            <option value="20"><?php esc_html_e('20 km', 'flavor-chat-ia'); ?></option>
-                            <option value="50"><?php esc_html_e('50 km', 'flavor-chat-ia'); ?></option>
+                            <option value="5"><?php esc_html_e('5 km', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="10" selected><?php esc_html_e('10 km', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="20"><?php esc_html_e('20 km', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="50"><?php esc_html_e('50 km', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
                 </div>
@@ -194,7 +194,7 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_anticipacion} days"));
                 <!-- Preferencias del viaje -->
                 <div class="flavor-carpooling-buscar__preferencias">
                     <label class="flavor-carpooling-buscar__preferencias-titulo">
-                        <?php esc_html_e('Preferencias del viaje', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Preferencias del viaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <div class="flavor-carpooling-buscar__preferencias-grid">
                         <label class="flavor-checkbox">
@@ -202,7 +202,7 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_anticipacion} days"));
                             <span class="flavor-checkbox__mark"></span>
                             <span class="flavor-checkbox__label">
                                 <span class="dashicons dashicons-pets"></span>
-                                <?php esc_html_e('Acepta mascotas', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Acepta mascotas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         </label>
 
@@ -211,7 +211,7 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_anticipacion} days"));
                             <span class="flavor-checkbox__mark"></span>
                             <span class="flavor-checkbox__label">
                                 <span class="dashicons dashicons-portfolio"></span>
-                                <?php esc_html_e('Equipaje grande', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Equipaje grande', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         </label>
 
@@ -220,7 +220,7 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_anticipacion} days"));
                             <span class="flavor-checkbox__mark"></span>
                             <span class="flavor-checkbox__label">
                                 <span class="dashicons dashicons-no"></span>
-                                <?php esc_html_e('Sin fumar', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Sin fumar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         </label>
                     </div>
@@ -232,7 +232,7 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_anticipacion} days"));
         <div class="flavor-carpooling-buscar__acciones">
             <button type="submit" class="cp-btn cp-btn-primary cp-btn--lg" id="carpooling-buscar-btn">
                 <span class="dashicons dashicons-search"></span>
-                <?php esc_html_e('Buscar viajes', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Buscar viajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     </form>

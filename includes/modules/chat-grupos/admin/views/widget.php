@@ -25,28 +25,28 @@ $estadisticas = $estadisticas ?? [
     <div class="flavor-widget-stats">
         <div class="flavor-widget-stat">
             <span class="flavor-widget-stat-numero"><?php echo number_format_i18n($estadisticas['total_grupos']); ?></span>
-            <span class="flavor-widget-stat-label"><?php _e('Grupos', 'flavor-chat-ia'); ?></span>
+            <span class="flavor-widget-stat-label"><?php _e('Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="flavor-widget-stat">
             <span class="flavor-widget-stat-numero"><?php echo number_format_i18n($estadisticas['total_miembros']); ?></span>
-            <span class="flavor-widget-stat-label"><?php _e('Miembros', 'flavor-chat-ia'); ?></span>
+            <span class="flavor-widget-stat-label"><?php _e('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="flavor-widget-stat">
             <span class="flavor-widget-stat-numero"><?php echo number_format_i18n($estadisticas['total_mensajes']); ?></span>
-            <span class="flavor-widget-stat-label"><?php _e('Mensajes', 'flavor-chat-ia'); ?></span>
+            <span class="flavor-widget-stat-label"><?php _e('Mensajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="flavor-widget-stat flavor-widget-stat-highlight">
             <span class="flavor-widget-stat-numero"><?php echo number_format_i18n($estadisticas['mensajes_hoy']); ?></span>
-            <span class="flavor-widget-stat-label"><?php _e('Hoy', 'flavor-chat-ia'); ?></span>
+            <span class="flavor-widget-stat-label"><?php _e('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
     </div>
 
     <div class="flavor-widget-acciones">
         <a href="<?php echo admin_url('admin.php?page=chat-grupos'); ?>" class="button">
-            <?php _e('Ver grupos', 'flavor-chat-ia'); ?>
+            <?php _e('Ver grupos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <a href="<?php echo admin_url('admin.php?page=chat-grupos-moderacion'); ?>" class="button">
-            <?php _e('Moderacion', 'flavor-chat-ia'); ?>
+            <?php _e('Moderacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 </div>

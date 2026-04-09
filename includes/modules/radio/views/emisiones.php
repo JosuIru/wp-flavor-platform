@@ -37,9 +37,9 @@ $programas = $wpdb->get_results("SELECT id, nombre FROM $tabla_programas WHERE e
 <div class="wrap">
     <h1>
         <span class="dashicons dashicons-album"></span>
-        <?php echo esc_html__('Gestión de Emisiones', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Gestión de Emisiones', 'flavor-platform'); ?>
         <a href="#" class="page-title-action" onclick="abrirModalNuevaEmision(); return false;">
-            <span class="dashicons dashicons-plus-alt"></span> <?php echo esc_html__('Nueva Emisión', 'flavor-chat-ia'); ?>
+            <span class="dashicons dashicons-plus-alt"></span> <?php echo esc_html__('Nueva Emisión', 'flavor-platform'); ?>
         </a>
     </h1>
 
@@ -48,20 +48,20 @@ $programas = $wpdb->get_results("SELECT id, nombre FROM $tabla_programas WHERE e
         <div class="notice notice-success" style="display: flex; align-items: center; padding: 20px; margin: 20px 0; border-left: 4px solid #00a32a;">
             <span class="dashicons dashicons-controls-play" style="font-size: 48px; color: #00a32a; margin-right: 20px; animation: pulse 2s infinite;"></span>
             <div style="flex: 1;">
-                <h2 style="margin: 0; color: #00a32a;"><?php echo esc_html__('EN VIVO AHORA', 'flavor-chat-ia'); ?></h2>
+                <h2 style="margin: 0; color: #00a32a;"><?php echo esc_html__('EN VIVO AHORA', 'flavor-platform'); ?></h2>
                 <h3 style="margin: 5px 0;"><?php echo esc_html($emision_en_vivo->programa_nombre); ?></h3>
                 <p style="margin: 0;">
                     <strong><?php echo number_format($emision_en_vivo->oyentes_actual ?? 0); ?></strong> <?php echo esc_html__('oyentes conectados
-                    | Pico:', 'flavor-chat-ia'); ?> <strong><?php echo number_format($emision_en_vivo->oyentes_pico ?? 0); ?></strong>
+                    | Pico:', 'flavor-platform'); ?> <strong><?php echo number_format($emision_en_vivo->oyentes_pico ?? 0); ?></strong>
                 </p>
             </div>
             <button class="button button-primary button-large" onclick="finalizarEmision(<?php echo $emision_en_vivo->id; ?>)">
-                <span class="dashicons dashicons-controls-pause"></span> <?php echo esc_html__('Finalizar Emisión', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-controls-pause"></span> <?php echo esc_html__('Finalizar Emisión', 'flavor-platform'); ?>
             </button>
         </div>
     <?php else: ?>
         <div class="notice notice-info" style="padding: 20px; margin: 20px 0;">
-            <p style="margin: 0;"><strong><?php echo esc_html__('No hay emisiones en vivo', 'flavor-chat-ia'); ?></strong></p>
+            <p style="margin: 0;"><strong><?php echo esc_html__('No hay emisiones en vivo', 'flavor-platform'); ?></strong></p>
         </div>
     <?php endif; ?>
 
@@ -70,13 +70,13 @@ $programas = $wpdb->get_results("SELECT id, nombre FROM $tabla_programas WHERE e
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th style="width: 60px;"><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Programa', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 150px;"><?php echo esc_html__('Fecha/Hora', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 100px;"><?php echo esc_html__('Duración', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 120px;"><?php echo esc_html__('Oyentes Pico', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 100px;"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 150px;"><?php echo esc_html__('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 60px;"><?php echo esc_html__('ID', 'flavor-platform'); ?></th>
+                    <th><?php echo esc_html__('Programa', 'flavor-platform'); ?></th>
+                    <th style="width: 150px;"><?php echo esc_html__('Fecha/Hora', 'flavor-platform'); ?></th>
+                    <th style="width: 100px;"><?php echo esc_html__('Duración', 'flavor-platform'); ?></th>
+                    <th style="width: 120px;"><?php echo esc_html__('Oyentes Pico', 'flavor-platform'); ?></th>
+                    <th style="width: 100px;"><?php echo esc_html__('Estado', 'flavor-platform'); ?></th>
+                    <th style="width: 150px;"><?php echo esc_html__('Acciones', 'flavor-platform'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -84,7 +84,7 @@ $programas = $wpdb->get_results("SELECT id, nombre FROM $tabla_programas WHERE e
                     <tr>
                         <td colspan="7" style="text-align: center; padding: 40px;">
                             <span class="dashicons dashicons-album" style="font-size: 48px; color: #ddd;"></span>
-                            <p style="color: #666;"><?php echo esc_html__('No hay emisiones registradas', 'flavor-chat-ia'); ?></p>
+                            <p style="color: #666;"><?php echo esc_html__('No hay emisiones registradas', 'flavor-platform'); ?></p>
                         </td>
                     </tr>
                 <?php else: ?>
@@ -114,11 +114,11 @@ $programas = $wpdb->get_results("SELECT id, nombre FROM $tabla_programas WHERE e
                             <td>
                                 <?php if ($emision->estado == 'programada'): ?>
                                     <button class="button button-small button-primary" onclick="iniciarEmision(<?php echo $emision->id; ?>)">
-                                        <span class="dashicons dashicons-controls-play"></span> <?php echo esc_html__('Iniciar', 'flavor-chat-ia'); ?>
+                                        <span class="dashicons dashicons-controls-play"></span> <?php echo esc_html__('Iniciar', 'flavor-platform'); ?>
                                     </button>
                                 <?php else: ?>
                                     <button class="button button-small" onclick="verEmision(<?php echo $emision->id; ?>)">
-                                        <span class="dashicons dashicons-visibility"></span> <?php echo esc_html__('Ver', 'flavor-chat-ia'); ?>
+                                        <span class="dashicons dashicons-visibility"></span> <?php echo esc_html__('Ver', 'flavor-platform'); ?>
                                     </button>
                                 <?php endif; ?>
                             </td>
@@ -141,9 +141,9 @@ $programas = $wpdb->get_results("SELECT id, nombre FROM $tabla_programas WHERE e
 
 <script>
 function abrirModalNuevaEmision() {
-    var html = '<h3><?php echo esc_js(__('Nueva Emisión', 'flavor-chat-ia')); ?></h3>' +
+    var html = '<h3><?php echo esc_js(__('Nueva Emisión', 'flavor-platform')); ?></h3>' +
         '<form id="form-nueva-emision">' +
-        '<div class="form-row"><label><?php echo esc_js(__('Programa', 'flavor-chat-ia')); ?></label>' +
+        '<div class="form-row"><label><?php echo esc_js(__('Programa', 'flavor-platform')); ?></label>' +
         '<select name="programa_id" required>' +
         '<?php
         global $wpdb;
@@ -153,20 +153,20 @@ function abrirModalNuevaEmision() {
         }
         ?>' +
         '</select></div>' +
-        '<div class="form-row"><label><?php echo esc_js(__('Fecha y hora', 'flavor-chat-ia')); ?></label>' +
+        '<div class="form-row"><label><?php echo esc_js(__('Fecha y hora', 'flavor-platform')); ?></label>' +
         '<input type="datetime-local" name="fecha_emision" required></div>' +
-        '<div class="form-row"><label><?php echo esc_js(__('Duración (min)', 'flavor-chat-ia')); ?></label>' +
+        '<div class="form-row"><label><?php echo esc_js(__('Duración (min)', 'flavor-platform')); ?></label>' +
         '<input type="number" name="duracion_minutos" value="60" min="15"></div>' +
         '<div class="flavor-modal-actions">' +
-        '<button type="button" class="button" onclick="cerrarModal()"><?php echo esc_js(__('Cancelar', 'flavor-chat-ia')); ?></button> ' +
-        '<button type="submit" class="button button-primary"><?php echo esc_js(__('Programar', 'flavor-chat-ia')); ?></button>' +
+        '<button type="button" class="button" onclick="cerrarModal()"><?php echo esc_js(__('Cancelar', 'flavor-platform')); ?></button> ' +
+        '<button type="submit" class="button button-primary"><?php echo esc_js(__('Programar', 'flavor-platform')); ?></button>' +
         '</div></form>';
     document.getElementById('modal-emision-contenido').innerHTML = html;
     document.getElementById('modal-emision').style.display = 'block';
 }
 
 function iniciarEmision(id) {
-    if (confirm('<?php echo esc_js(__('¿Iniciar emisión en vivo?', 'flavor-chat-ia')); ?>')) {
+    if (confirm('<?php echo esc_js(__('¿Iniciar emisión en vivo?', 'flavor-platform')); ?>')) {
         jQuery.post(ajaxurl, {
             action: 'flavor_radio_iniciar_emision',
             emision_id: id,
@@ -175,14 +175,14 @@ function iniciarEmision(id) {
             if (response.success) {
                 location.reload();
             } else {
-                alert(response.data || '<?php echo esc_js(__('Error al iniciar', 'flavor-chat-ia')); ?>');
+                alert(response.data || '<?php echo esc_js(__('Error al iniciar', 'flavor-platform')); ?>');
             }
         });
     }
 }
 
 function finalizarEmision(id) {
-    if (confirm('<?php echo esc_js(__('¿Finalizar la emisión?', 'flavor-chat-ia')); ?>')) {
+    if (confirm('<?php echo esc_js(__('¿Finalizar la emisión?', 'flavor-platform')); ?>')) {
         jQuery.post(ajaxurl, {
             action: 'flavor_radio_finalizar_emision',
             emision_id: id,
@@ -191,14 +191,14 @@ function finalizarEmision(id) {
             if (response.success) {
                 location.reload();
             } else {
-                alert(response.data || '<?php echo esc_js(__('Error al finalizar', 'flavor-chat-ia')); ?>');
+                alert(response.data || '<?php echo esc_js(__('Error al finalizar', 'flavor-platform')); ?>');
             }
         });
     }
 }
 
 function verEmision(id) {
-    document.getElementById('modal-emision-contenido').innerHTML = '<p><?php echo esc_js(__('Cargando...', 'flavor-chat-ia')); ?></p>';
+    document.getElementById('modal-emision-contenido').innerHTML = '<p><?php echo esc_js(__('Cargando...', 'flavor-platform')); ?></p>';
     document.getElementById('modal-emision').style.display = 'block';
 
     jQuery.get(ajaxurl, {
@@ -209,13 +209,13 @@ function verEmision(id) {
         if (response.success) {
             var e = response.data;
             var html = '<h3>' + e.programa_nombre + '</h3>' +
-                '<p><strong><?php echo esc_js(__('Fecha:', 'flavor-chat-ia')); ?></strong> ' + e.fecha + '</p>' +
-                '<p><strong><?php echo esc_js(__('Duración:', 'flavor-chat-ia')); ?></strong> ' + e.duracion + ' min</p>' +
-                '<p><strong><?php echo esc_js(__('Estado:', 'flavor-chat-ia')); ?></strong> ' + e.estado + '</p>' +
-                '<p><strong><?php echo esc_js(__('Oyentes pico:', 'flavor-chat-ia')); ?></strong> ' + e.oyentes_pico + '</p>';
+                '<p><strong><?php echo esc_js(__('Fecha:', 'flavor-platform')); ?></strong> ' + e.fecha + '</p>' +
+                '<p><strong><?php echo esc_js(__('Duración:', 'flavor-platform')); ?></strong> ' + e.duracion + ' min</p>' +
+                '<p><strong><?php echo esc_js(__('Estado:', 'flavor-platform')); ?></strong> ' + e.estado + '</p>' +
+                '<p><strong><?php echo esc_js(__('Oyentes pico:', 'flavor-platform')); ?></strong> ' + e.oyentes_pico + '</p>';
             document.getElementById('modal-emision-contenido').innerHTML = html;
         } else {
-            document.getElementById('modal-emision-contenido').innerHTML = '<p><?php echo esc_js(__('Error al cargar', 'flavor-chat-ia')); ?></p>';
+            document.getElementById('modal-emision-contenido').innerHTML = '<p><?php echo esc_js(__('Error al cargar', 'flavor-platform')); ?></p>';
         }
     });
 }

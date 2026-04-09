@@ -155,12 +155,12 @@ class Flavor_EM_Subscriber_Manager {
 
         // Validar email
         if (empty($data['email']) || !is_email($data['email'])) {
-            return new WP_Error('invalid_email', __('Email inválido', 'flavor-chat-ia'));
+            return new WP_Error('invalid_email', __('Email inválido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Verificar duplicado
         if ($this->get_by_email($data['email'])) {
-            return new WP_Error('duplicate_email', __('El email ya está registrado', 'flavor-chat-ia'));
+            return new WP_Error('duplicate_email', __('El email ya está registrado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $table = $wpdb->prefix . self::TABLE_PREFIX . 'suscriptores';
@@ -179,7 +179,7 @@ class Flavor_EM_Subscriber_Manager {
         $result = $wpdb->insert($table, $insert_data);
 
         if ($result === false) {
-            return new WP_Error('db_error', __('Error al crear suscriptor', 'flavor-chat-ia'));
+            return new WP_Error('db_error', __('Error al crear suscriptor', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $subscriber_id = $wpdb->insert_id;
@@ -221,7 +221,7 @@ class Flavor_EM_Subscriber_Manager {
         }
 
         if (empty($update_data)) {
-            return new WP_Error('no_data', __('No hay datos para actualizar', 'flavor-chat-ia'));
+            return new WP_Error('no_data', __('No hay datos para actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $update_data['updated_at'] = current_time('mysql');
@@ -229,7 +229,7 @@ class Flavor_EM_Subscriber_Manager {
         $result = $wpdb->update($table, $update_data, ['id' => $id]);
 
         if ($result === false) {
-            return new WP_Error('db_error', __('Error al actualizar suscriptor', 'flavor-chat-ia'));
+            return new WP_Error('db_error', __('Error al actualizar suscriptor', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         do_action('flavor_em_subscriber_updated', $id, $data);
@@ -256,7 +256,7 @@ class Flavor_EM_Subscriber_Manager {
         $result = $wpdb->delete($table, ['id' => $id]);
 
         if ($result === false) {
-            return new WP_Error('db_error', __('Error al eliminar suscriptor', 'flavor-chat-ia'));
+            return new WP_Error('db_error', __('Error al eliminar suscriptor', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         do_action('flavor_em_subscriber_deleted', $id);
@@ -334,7 +334,7 @@ class Flavor_EM_Subscriber_Manager {
         $subscriber = $this->get_by_email($email);
 
         if (!$subscriber) {
-            return new WP_Error('not_found', __('Suscriptor no encontrado', 'flavor-chat-ia'));
+            return new WP_Error('not_found', __('Suscriptor no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         return $this->update($subscriber['id'], [

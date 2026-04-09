@@ -126,7 +126,7 @@ class Flavor_Module_Versioning {
             return new WP_Error(
                 'module_not_found',
                 sprintf(
-                    __( 'No se encontro module.json para el modulo: %s', 'flavor-chat-ia' ),
+                    __( 'No se encontro module.json para el modulo: %s', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     $module_id
                 )
             );
@@ -139,7 +139,7 @@ class Flavor_Module_Versioning {
             return new WP_Error(
                 'invalid_json',
                 sprintf(
-                    __( 'Error al parsear module.json del modulo %s: %s', 'flavor-chat-ia' ),
+                    __( 'Error al parsear module.json del modulo %s: %s', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     $module_id,
                     json_last_error_msg()
                 )
@@ -188,7 +188,7 @@ class Flavor_Module_Versioning {
         foreach ( $required_fields as $field ) {
             if ( empty( $module_data[ $field ] ) ) {
                 $this->validation_errors[] = sprintf(
-                    __( 'Campo requerido faltante: %s', 'flavor-chat-ia' ),
+                    __( 'Campo requerido faltante: %s', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     $field
                 );
             }
@@ -198,7 +198,7 @@ class Flavor_Module_Versioning {
         if ( ! empty( $module_data['version'] ) ) {
             if ( ! $this->is_valid_semver( $module_data['version'] ) ) {
                 $this->validation_errors[] = sprintf(
-                    __( 'Version invalida: %s. Debe seguir el formato semver (ej: 1.0.0)', 'flavor-chat-ia' ),
+                    __( 'Version invalida: %s. Debe seguir el formato semver (ej: 1.0.0)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     $module_data['version']
                 );
             }
@@ -208,7 +208,7 @@ class Flavor_Module_Versioning {
         if ( ! empty( $module_data['id'] ) ) {
             if ( ! preg_match( '/^[a-z][a-z0-9-]*$/', $module_data['id'] ) ) {
                 $this->validation_errors[] = sprintf(
-                    __( 'ID de modulo invalido: %s. Solo minusculas, numeros y guiones.', 'flavor-chat-ia' ),
+                    __( 'ID de modulo invalido: %s. Solo minusculas, numeros y guiones.', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     $module_data['id']
                 );
             }
@@ -218,7 +218,7 @@ class Flavor_Module_Versioning {
         if ( ! empty( $module_data['wp_version_min'] ) ) {
             if ( ! preg_match( '/^\d+\.\d+(\.\d+)?$/', $module_data['wp_version_min'] ) ) {
                 $this->validation_errors[] = sprintf(
-                    __( 'Version de WordPress invalida: %s', 'flavor-chat-ia' ),
+                    __( 'Version de WordPress invalida: %s', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     $module_data['wp_version_min']
                 );
             }
@@ -227,7 +227,7 @@ class Flavor_Module_Versioning {
         if ( ! empty( $module_data['php_version_min'] ) ) {
             if ( ! preg_match( '/^\d+\.\d+(\.\d+)?$/', $module_data['php_version_min'] ) ) {
                 $this->validation_errors[] = sprintf(
-                    __( 'Version de PHP invalida: %s', 'flavor-chat-ia' ),
+                    __( 'Version de PHP invalida: %s', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     $module_data['php_version_min']
                 );
             }
@@ -459,7 +459,7 @@ class Flavor_Module_Versioning {
 
         if ( version_compare( $wp_version, $wp_version_min, '<' ) ) {
             $result['errors'][] = sprintf(
-                __( 'WordPress %s requerido. Version actual: %s', 'flavor-chat-ia' ),
+                __( 'WordPress %s requerido. Version actual: %s', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 $wp_version_min,
                 $wp_version
             );
@@ -479,7 +479,7 @@ class Flavor_Module_Versioning {
 
         if ( version_compare( $php_version, $php_version_min, '<' ) ) {
             $result['errors'][] = sprintf(
-                __( 'PHP %s requerido. Version actual: %s', 'flavor-chat-ia' ),
+                __( 'PHP %s requerido. Version actual: %s', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 $php_version_min,
                 $php_version
             );
@@ -499,7 +499,7 @@ class Flavor_Module_Versioning {
 
             if ( version_compare( $flavor_version, $module_info['flavor_version_min'], '<' ) ) {
                 $result['errors'][] = sprintf(
-                    __( 'Flavor Platform %s requerido. Version actual: %s', 'flavor-chat-ia' ),
+                    __( 'Flavor Platform %s requerido. Version actual: %s', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     $module_info['flavor_version_min'],
                     $flavor_version
                 );
@@ -511,7 +511,7 @@ class Flavor_Module_Versioning {
         if ( ! empty( $module_info['wp_version_tested'] ) ) {
             if ( version_compare( $wp_version, $module_info['wp_version_tested'], '>' ) ) {
                 $result['warnings'][] = sprintf(
-                    __( 'El modulo fue probado hasta WordPress %s. Version actual: %s', 'flavor-chat-ia' ),
+                    __( 'El modulo fue probado hasta WordPress %s. Version actual: %s', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                     $module_info['wp_version_tested'],
                     $wp_version
                 );
@@ -526,7 +526,7 @@ class Flavor_Module_Versioning {
                 if ( ! is_wp_error( $conflict_info ) ) {
                     if ( $this->version_satisfies_constraint( $conflict_info['version'], $conflict_version ) ) {
                         $result['errors'][] = sprintf(
-                            __( 'Conflicto detectado con modulo %s (version %s)', 'flavor-chat-ia' ),
+                            __( 'Conflicto detectado con modulo %s (version %s)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                             $conflict_id,
                             $conflict_info['version']
                         );
@@ -540,7 +540,7 @@ class Flavor_Module_Versioning {
         if ( ! empty( $module_info['deprecated'] ) && $module_info['deprecated'] === true ) {
             $deprecation_message = ! empty( $module_info['deprecated_message'] )
                 ? $module_info['deprecated_message']
-                : __( 'Este modulo esta deprecado.', 'flavor-chat-ia' );
+                : __( 'Este modulo esta deprecado.', FLAVOR_PLATFORM_TEXT_DOMAIN );
 
             $result['warnings'][] = $deprecation_message;
         }

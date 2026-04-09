@@ -19,7 +19,7 @@ $tabla_reservas = $wpdb->prefix . 'flavor_parkings_reservas';
 
 // Verificar si existe la tabla
 if (!Flavor_Chat_Helpers::tabla_existe($tabla_parkings)) {
-    echo '<div class="parkings-empty"><p>' . esc_html__('El módulo de parkings no está configurado.', 'flavor-chat-ia') . '</p></div>';
+    echo '<div class="parkings-empty"><p>' . esc_html__('El módulo de parkings no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
 
@@ -86,23 +86,23 @@ $colores_estado = [
 
 <div class="parkings-mapa-wrapper">
     <header class="mapa-header">
-        <h2><?php esc_html_e('Mapa de Parkings', 'flavor-chat-ia'); ?></h2>
-        <p><?php esc_html_e('Encuentra el parking más cercano a tu destino', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Mapa de Parkings', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p><?php esc_html_e('Encuentra el parking más cercano a tu destino', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </header>
 
     <!-- Leyenda -->
     <div class="mapa-leyenda">
         <span class="leyenda-item">
             <span class="leyenda-color" style="background: <?php echo esc_attr($colores_estado['verde']); ?>"></span>
-            <?php esc_html_e('Alta disponibilidad', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Alta disponibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </span>
         <span class="leyenda-item">
             <span class="leyenda-color" style="background: <?php echo esc_attr($colores_estado['amarillo']); ?>"></span>
-            <?php esc_html_e('Disponibilidad media', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Disponibilidad media', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </span>
         <span class="leyenda-item">
             <span class="leyenda-color" style="background: <?php echo esc_attr($colores_estado['rojo']); ?>"></span>
-            <?php esc_html_e('Casi lleno', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Casi lleno', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </span>
     </div>
 
@@ -111,8 +111,8 @@ $colores_estado = [
         <div id="mapa-parkings" class="mapa-canvas">
             <div class="mapa-placeholder">
                 <span class="dashicons dashicons-location-alt"></span>
-                <p><?php esc_html_e('Mapa de ubicaciones', 'flavor-chat-ia'); ?></p>
-                <small><?php esc_html_e('Requiere configurar API de mapas', 'flavor-chat-ia'); ?></small>
+                <p><?php esc_html_e('Mapa de ubicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                <small><?php esc_html_e('Requiere configurar API de mapas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
             </div>
         </div>
     </div>
@@ -121,7 +121,7 @@ $colores_estado = [
     <div class="mapa-info">
         <span class="parkings-count">
             <?php printf(
-                esc_html(_n('%d parking disponible', '%d parkings disponibles', count($parkings), 'flavor-chat-ia')),
+                esc_html(_n('%d parking disponible', '%d parkings disponibles', count($parkings), FLAVOR_PLATFORM_TEXT_DOMAIN)),
                 count($parkings)
             ); ?>
         </span>
@@ -141,10 +141,10 @@ $colores_estado = [
                     </div>
                     <div class="mini-disponibilidad">
                         <span class="disponibilidad-numero"><?php echo esc_html($parking_item['plazas_libres']); ?></span>
-                        <span class="disponibilidad-label"><?php esc_html_e('libres', 'flavor-chat-ia'); ?></span>
+                        <span class="disponibilidad-label"><?php esc_html_e('libres', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <a href="<?php echo esc_url(add_query_arg('parking', $parking_item['id'], $parkings_base_url . 'disponibilidad/')); ?>" class="mini-ver-btn">
-                        <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php endforeach; ?>
@@ -152,7 +152,7 @@ $colores_estado = [
     <?php else: ?>
         <div class="parkings-empty-state">
             <span class="dashicons dashicons-car"></span>
-            <p><?php esc_html_e('No hay parkings configurados actualmente.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('No hay parkings configurados actualmente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php endif; ?>
 </div>

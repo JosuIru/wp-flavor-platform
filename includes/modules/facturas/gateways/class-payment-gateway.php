@@ -225,7 +225,7 @@ abstract class Flavor_Payment_Gateway {
      */
     protected function create_payment_description($factura) {
         return sprintf(
-            __('Pago de factura %s - %s', 'flavor-chat-ia'),
+            __('Pago de factura %s - %s', 'flavor-platform'),
             $factura['numero_factura'] ?? '',
             $factura['cliente_nombre'] ?? ''
         );
@@ -244,7 +244,7 @@ abstract class Flavor_Payment_Gateway {
             'numero_factura' => $factura['numero_factura'] ?? '',
             'cliente_id' => $factura['cliente_id'] ?? '',
             'cliente_nombre' => $factura['cliente_nombre'] ?? '',
-            'plugin' => 'flavor-chat-ia',
+            'plugin' => 'flavor-platform',
             'module' => 'facturas',
         ];
     }

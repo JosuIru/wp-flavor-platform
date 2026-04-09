@@ -137,25 +137,25 @@ if ($tablas_existen) {
 
 // Función para obtener estado visual del préstamo
 function obtener_estado_prestamo($dias_restantes, $estado) {
-    if ($estado === 'devuelto') return ['clase' => 'devuelto', 'texto' => __('Devuelto', 'flavor-chat-ia'), 'icono' => 'yes-alt'];
-    if ($estado === 'perdido') return ['clase' => 'perdido', 'texto' => __('Perdido', 'flavor-chat-ia'), 'icono' => 'warning'];
-    if ($dias_restantes < 0) return ['clase' => 'retrasado', 'texto' => sprintf(__('%d días retraso', 'flavor-chat-ia'), abs($dias_restantes)), 'icono' => 'warning'];
-    if ($dias_restantes == 0) return ['clase' => 'vence-hoy', 'texto' => __('Vence hoy', 'flavor-chat-ia'), 'icono' => 'clock'];
-    if ($dias_restantes <= 3) return ['clase' => 'urgente', 'texto' => sprintf(__('%d días', 'flavor-chat-ia'), $dias_restantes), 'icono' => 'clock'];
-    return ['clase' => 'normal', 'texto' => sprintf(__('%d días', 'flavor-chat-ia'), $dias_restantes), 'icono' => 'calendar-alt'];
+    if ($estado === 'devuelto') return ['clase' => 'devuelto', 'texto' => __('Devuelto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'yes-alt'];
+    if ($estado === 'perdido') return ['clase' => 'perdido', 'texto' => __('Perdido', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'warning'];
+    if ($dias_restantes < 0) return ['clase' => 'retrasado', 'texto' => sprintf(__('%d días retraso', FLAVOR_PLATFORM_TEXT_DOMAIN), abs($dias_restantes)), 'icono' => 'warning'];
+    if ($dias_restantes == 0) return ['clase' => 'vence-hoy', 'texto' => __('Vence hoy', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'clock'];
+    if ($dias_restantes <= 3) return ['clase' => 'urgente', 'texto' => sprintf(__('%d días', FLAVOR_PLATFORM_TEXT_DOMAIN), $dias_restantes), 'icono' => 'clock'];
+    return ['clase' => 'normal', 'texto' => sprintf(__('%d días', FLAVOR_PLATFORM_TEXT_DOMAIN), $dias_restantes), 'icono' => 'calendar-alt'];
 }
 ?>
 
 <div class="wrap flavor-biblioteca-prestamos">
     <h1>
         <span class="dashicons dashicons-randomize"></span>
-        <?php echo esc_html__('Gestión de Préstamos', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Gestión de Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
     <hr class="wp-header-end">
 
     <?php if (!$tablas_existen): ?>
     <div class="notice notice-info">
-        <p><span class="dashicons dashicons-info"></span> <?php _e('No se han encontrado las tablas requeridas de biblioteca. Mostrando únicamente datos reales disponibles.', 'flavor-chat-ia'); ?></p>
+        <p><span class="dashicons dashicons-info"></span> <?php _e('No se han encontrado las tablas requeridas de biblioteca. Mostrando únicamente datos reales disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php endif; ?>
 
@@ -167,7 +167,7 @@ function obtener_estado_prestamo($dias_restantes, $estado) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value"><?php echo number_format($total_prestamos); ?></span>
-                <span class="flavor-stat-label"><?php _e('Total Préstamos', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php _e('Total Préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -177,7 +177,7 @@ function obtener_estado_prestamo($dias_restantes, $estado) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value"><?php echo number_format($prestamos_activos); ?></span>
-                <span class="flavor-stat-label"><?php _e('Préstamos Activos', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php _e('Préstamos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -187,7 +187,7 @@ function obtener_estado_prestamo($dias_restantes, $estado) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value"><?php echo number_format($prestamos_retrasados); ?></span>
-                <span class="flavor-stat-label"><?php _e('Con Retraso', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php _e('Con Retraso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -197,7 +197,7 @@ function obtener_estado_prestamo($dias_restantes, $estado) {
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value"><?php echo number_format($devueltos_este_mes); ?></span>
-                <span class="flavor-stat-label"><?php _e('Devueltos Este Mes', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php _e('Devueltos Este Mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
@@ -209,32 +209,32 @@ function obtener_estado_prestamo($dias_restantes, $estado) {
             <input type="hidden" name="tab" value="<?php echo esc_attr($_GET['tab'] ?? ''); ?>">
 
             <div class="flavor-filter-group">
-                <input type="text" name="busqueda" placeholder="<?php esc_attr_e('Buscar libro o usuario...', 'flavor-chat-ia'); ?>" value="<?php echo esc_attr($busqueda); ?>" class="flavor-search-input">
+                <input type="text" name="busqueda" placeholder="<?php esc_attr_e('Buscar libro o usuario...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" value="<?php echo esc_attr($busqueda); ?>" class="flavor-search-input">
             </div>
 
             <div class="flavor-filter-group">
                 <select name="estado" class="flavor-select">
-                    <option value="activo" <?php selected($filtro_estado, 'activo'); ?>><?php _e('Préstamos activos', 'flavor-chat-ia'); ?></option>
-                    <option value="retrasado" <?php selected($filtro_estado, 'retrasado'); ?>><?php _e('Con retraso', 'flavor-chat-ia'); ?></option>
-                    <option value="devuelto" <?php selected($filtro_estado, 'devuelto'); ?>><?php _e('Devueltos', 'flavor-chat-ia'); ?></option>
-                    <option value="perdido" <?php selected($filtro_estado, 'perdido'); ?>><?php _e('Perdidos', 'flavor-chat-ia'); ?></option>
-                    <option value="" <?php selected($filtro_estado, ''); ?>><?php _e('Todos', 'flavor-chat-ia'); ?></option>
+                    <option value="activo" <?php selected($filtro_estado, 'activo'); ?>><?php _e('Préstamos activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="retrasado" <?php selected($filtro_estado, 'retrasado'); ?>><?php _e('Con retraso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="devuelto" <?php selected($filtro_estado, 'devuelto'); ?>><?php _e('Devueltos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="perdido" <?php selected($filtro_estado, 'perdido'); ?>><?php _e('Perdidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="" <?php selected($filtro_estado, ''); ?>><?php _e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
             </div>
 
             <div class="flavor-filter-group">
                 <select name="orden" class="flavor-select">
-                    <option value="reciente" <?php selected($orden, 'reciente'); ?>><?php _e('Más recientes', 'flavor-chat-ia'); ?></option>
-                    <option value="devolucion" <?php selected($orden, 'devolucion'); ?>><?php _e('Próximos a vencer', 'flavor-chat-ia'); ?></option>
-                    <option value="libro" <?php selected($orden, 'libro'); ?>><?php _e('Por libro', 'flavor-chat-ia'); ?></option>
-                    <option value="prestamista" <?php selected($orden, 'prestamista'); ?>><?php _e('Por prestamista', 'flavor-chat-ia'); ?></option>
+                    <option value="reciente" <?php selected($orden, 'reciente'); ?>><?php _e('Más recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="devolucion" <?php selected($orden, 'devolucion'); ?>><?php _e('Próximos a vencer', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="libro" <?php selected($orden, 'libro'); ?>><?php _e('Por libro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="prestamista" <?php selected($orden, 'prestamista'); ?>><?php _e('Por prestamista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
             </div>
 
-            <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
+            <button type="submit" class="button"><?php _e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
 
             <?php if (!empty($busqueda) || $filtro_estado !== 'activo'): ?>
-                <a href="?page=<?php echo esc_attr($_GET['page'] ?? ''); ?>&tab=<?php echo esc_attr($_GET['tab'] ?? ''); ?>" class="button"><?php _e('Limpiar', 'flavor-chat-ia'); ?></a>
+                <a href="?page=<?php echo esc_attr($_GET['page'] ?? ''); ?>&tab=<?php echo esc_attr($_GET['tab'] ?? ''); ?>" class="button"><?php _e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
             <?php endif; ?>
         </form>
     </div>
@@ -244,13 +244,13 @@ function obtener_estado_prestamo($dias_restantes, $estado) {
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th style="width: 50px;"><?php _e('ID', 'flavor-chat-ia'); ?></th>
-                    <th><?php _e('Libro', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 160px;"><?php _e('Prestamista', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 160px;"><?php _e('Prestatario', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 100px;"><?php _e('Prestado', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 120px;"><?php _e('Devolución', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 130px;"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 50px;"><?php _e('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th><?php _e('Libro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 160px;"><?php _e('Prestamista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 160px;"><?php _e('Prestatario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 100px;"><?php _e('Prestado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 120px;"><?php _e('Devolución', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 130px;"><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -281,7 +281,7 @@ function obtener_estado_prestamo($dias_restantes, $estado) {
                                 <?php echo $avatar_prestamista; ?>
                                 <div>
                                     <strong><?php echo esc_html($prestamo->prestamista); ?></strong>
-                                    <span class="flavor-rol-badge"><?php _e('Presta', 'flavor-chat-ia'); ?></span>
+                                    <span class="flavor-rol-badge"><?php _e('Presta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                             </div>
                         </td>
@@ -290,13 +290,13 @@ function obtener_estado_prestamo($dias_restantes, $estado) {
                                 <?php echo $avatar_prestatario; ?>
                                 <div>
                                     <strong><?php echo esc_html($prestamo->prestatario); ?></strong>
-                                    <span class="flavor-rol-badge receptor"><?php _e('Recibe', 'flavor-chat-ia'); ?></span>
+                                    <span class="flavor-rol-badge receptor"><?php _e('Recibe', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                             </div>
                         </td>
                         <td>
                             <?php echo date_i18n('d M', strtotime($prestamo->fecha_prestamo)); ?>
-                            <br><small style="color: #666;"><?php printf(__('%d días', 'flavor-chat-ia'), $prestamo->dias_prestado); ?></small>
+                            <br><small style="color: #666;"><?php printf(__('%d días', FLAVOR_PLATFORM_TEXT_DOMAIN), $prestamo->dias_prestado); ?></small>
                         </td>
                         <td>
                             <span class="flavor-estado-prestamo <?php echo esc_attr($estado_visual['clase']); ?>">
@@ -307,16 +307,16 @@ function obtener_estado_prestamo($dias_restantes, $estado) {
                         </td>
                         <td>
                             <?php if ($prestamo->estado === 'activo'): ?>
-                                <button type="button" class="button button-small button-primary btn-devolver" data-id="<?php echo esc_attr($prestamo->id); ?>" title="<?php esc_attr_e('Registrar devolución', 'flavor-chat-ia'); ?>">
+                                <button type="button" class="button button-small button-primary btn-devolver" data-id="<?php echo esc_attr($prestamo->id); ?>" title="<?php esc_attr_e('Registrar devolución', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                     <span class="dashicons dashicons-yes"></span>
                                 </button>
                                 <?php if ($es_retrasado): ?>
-                                    <button type="button" class="button button-small btn-recordatorio" data-id="<?php echo esc_attr($prestamo->id); ?>" data-email="<?php echo esc_attr($prestamo->prestatario_email); ?>" title="<?php esc_attr_e('Enviar recordatorio', 'flavor-chat-ia'); ?>">
+                                    <button type="button" class="button button-small btn-recordatorio" data-id="<?php echo esc_attr($prestamo->id); ?>" data-email="<?php echo esc_attr($prestamo->prestatario_email); ?>" title="<?php esc_attr_e('Enviar recordatorio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                         <span class="dashicons dashicons-email-alt"></span>
                                     </button>
                                 <?php endif; ?>
                             <?php endif; ?>
-                            <button type="button" class="button button-small btn-ver-detalles" data-id="<?php echo esc_attr($prestamo->id); ?>" title="<?php esc_attr_e('Ver detalles', 'flavor-chat-ia'); ?>">
+                            <button type="button" class="button button-small btn-ver-detalles" data-id="<?php echo esc_attr($prestamo->id); ?>" title="<?php esc_attr_e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <span class="dashicons dashicons-visibility"></span>
                             </button>
                         </td>
@@ -326,7 +326,7 @@ function obtener_estado_prestamo($dias_restantes, $estado) {
                     <tr>
                         <td colspan="7" style="text-align: center; padding: 40px;">
                             <span class="dashicons dashicons-randomize" style="font-size: 48px; color: #ccc;"></span>
-                            <p style="margin-top: 10px; color: #666;"><?php _e('No hay préstamos con los filtros seleccionados', 'flavor-chat-ia'); ?></p>
+                            <p style="margin-top: 10px; color: #666;"><?php _e('No hay préstamos con los filtros seleccionados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </td>
                     </tr>
                 <?php endif; ?>
@@ -337,7 +337,7 @@ function obtener_estado_prestamo($dias_restantes, $estado) {
         <?php if (isset($total_paginas) && $total_paginas > 1): ?>
         <div class="flavor-pagination">
             <span class="flavor-pagination-info">
-                <?php printf(__('Mostrando %d-%d de %d préstamos', 'flavor-chat-ia'),
+                <?php printf(__('Mostrando %d-%d de %d préstamos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $offset + 1,
                     min($offset + $por_pagina, $total_registros),
                     $total_registros
@@ -354,7 +354,7 @@ function obtener_estado_prestamo($dias_restantes, $estado) {
                 ], admin_url('admin.php'));
 
                 if ($pagina_actual > 1): ?>
-                    <a href="<?php echo esc_url(add_query_arg('paged', $pagina_actual - 1, $url_base)); ?>" class="button">&laquo; <?php _e('Anterior', 'flavor-chat-ia'); ?></a>
+                    <a href="<?php echo esc_url(add_query_arg('paged', $pagina_actual - 1, $url_base)); ?>" class="button">&laquo; <?php _e('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 <?php endif;
 
                 for ($i = max(1, $pagina_actual - 2); $i <= min($total_paginas, $pagina_actual + 2); $i++): ?>
@@ -366,7 +366,7 @@ function obtener_estado_prestamo($dias_restantes, $estado) {
                 endfor;
 
                 if ($pagina_actual < $total_paginas): ?>
-                    <a href="<?php echo esc_url(add_query_arg('paged', $pagina_actual + 1, $url_base)); ?>" class="button"><?php _e('Siguiente', 'flavor-chat-ia'); ?> &raquo;</a>
+                    <a href="<?php echo esc_url(add_query_arg('paged', $pagina_actual + 1, $url_base)); ?>" class="button"><?php _e('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> &raquo;</a>
                 <?php endif; ?>
             </div>
         </div>
@@ -540,7 +540,7 @@ jQuery(document).ready(function($) {
     // Registrar devolución
     $('.btn-devolver').on('click', function() {
         const id = $(this).data('id');
-        if (confirm('<?php _e('¿Confirmar la devolución de este libro?', 'flavor-chat-ia'); ?>')) {
+        if (confirm('<?php _e('¿Confirmar la devolución de este libro?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>')) {
             $.post(ajaxurl, {
                 action: 'biblioteca_devolver_libro',
                 prestamo_id: id,
@@ -549,7 +549,7 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     location.reload();
                 } else {
-                    alert(response.data || '<?php _e('Error al registrar devolución', 'flavor-chat-ia'); ?>');
+                    alert(response.data || '<?php _e('Error al registrar devolución', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                 }
             });
         }
@@ -559,16 +559,16 @@ jQuery(document).ready(function($) {
     $('.btn-recordatorio').on('click', function() {
         const id = $(this).data('id');
         const email = $(this).data('email');
-        if (confirm('<?php _e('¿Enviar recordatorio de devolución a', 'flavor-chat-ia'); ?> ' + email + '?')) {
+        if (confirm('<?php _e('¿Enviar recordatorio de devolución a', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> ' + email + '?')) {
             $.post(ajaxurl, {
                 action: 'biblioteca_enviar_recordatorio',
                 prestamo_id: id,
                 _wpnonce: '<?php echo wp_create_nonce('biblioteca_prestamo'); ?>'
             }, function(response) {
                 if (response.success) {
-                    alert('<?php _e('Recordatorio enviado correctamente', 'flavor-chat-ia'); ?>');
+                    alert('<?php _e('Recordatorio enviado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                 } else {
-                    alert(response.data || '<?php _e('Error al enviar recordatorio', 'flavor-chat-ia'); ?>');
+                    alert(response.data || '<?php _e('Error al enviar recordatorio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                 }
             });
         }
@@ -577,7 +577,7 @@ jQuery(document).ready(function($) {
     // Ver detalles
     $('.btn-ver-detalles').on('click', function() {
         const id = $(this).data('id');
-        alert('<?php _e('Detalles del préstamo #', 'flavor-chat-ia'); ?>' + id + ' - <?php _e('Función en desarrollo', 'flavor-chat-ia'); ?>');
+        alert('<?php _e('Detalles del préstamo #', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>' + id + ' - <?php _e('Función en desarrollo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
     });
 });
 </script>

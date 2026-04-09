@@ -84,11 +84,11 @@ $fases_ciclo = $fases_ciclo ?? [
                 <span class="text-sm font-semibold">
                     <?php
                     if ($estado_ciclo_actual === 'abierto') {
-                        echo esc_html__('Pedidos Abiertos', 'flavor-chat-ia');
+                        echo esc_html__('Pedidos Abiertos', FLAVOR_PLATFORM_TEXT_DOMAIN);
                     } elseif ($estado_ciclo_actual === 'cerrado') {
-                        echo esc_html__('Pedidos Cerrados', 'flavor-chat-ia');
+                        echo esc_html__('Pedidos Cerrados', FLAVOR_PLATFORM_TEXT_DOMAIN);
                     } else {
-                        echo esc_html__('En Preparacion', 'flavor-chat-ia');
+                        echo esc_html__('En Preparacion', FLAVOR_PLATFORM_TEXT_DOMAIN);
                     }
                     ?>
                 </span>
@@ -146,11 +146,11 @@ $fases_ciclo = $fases_ciclo ?? [
             <div class="mt-16 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
                 <div class="bg-green-50 rounded-xl p-6 text-center">
                     <div class="text-3xl font-bold text-green-600 mb-2"><?php echo esc_html($pedidos_en_curso); ?></div>
-                    <div class="text-gray-700"><?php echo esc_html__('Pedidos en Este Ciclo', 'flavor-chat-ia'); ?></div>
+                    <div class="text-gray-700"><?php echo esc_html__('Pedidos en Este Ciclo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="bg-emerald-50 rounded-xl p-6 text-center">
                     <div class="text-3xl font-bold text-emerald-600 mb-2"><?php echo esc_html($productos_en_cesta); ?></div>
-                    <div class="text-gray-700"><?php echo esc_html__('Productos en Cestas', 'flavor-chat-ia'); ?></div>
+                    <div class="text-gray-700"><?php echo esc_html__('Productos en Cestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
         </div>

@@ -232,7 +232,7 @@ class Flavor_Module_Actions_API {
         if (!$es_publica && !is_user_logged_in()) {
             return new WP_Error(
                 'unauthorized',
-                __('Debes iniciar sesión para realizar esta acción', 'flavor-chat-ia'),
+                __('Debes iniciar sesión para realizar esta acción', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 401]
             );
         }
@@ -252,7 +252,7 @@ class Flavor_Module_Actions_API {
             if (!$nonce || !wp_verify_nonce($nonce, 'wp_rest')) {
                 return new WP_Error(
                     'invalid_nonce',
-                    __('Nonce inválido', 'flavor-chat-ia'),
+                    __('Nonce inválido', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ['status' => 403]
                 );
             }
@@ -293,7 +293,7 @@ class Flavor_Module_Actions_API {
         if (in_array($action_name, $acciones_admin) && !current_user_can('manage_options')) {
             return new WP_REST_Response([
                 'success' => false,
-                'error' => __('No tienes permisos de administrador para esta acción.', 'flavor-chat-ia'),
+                'error' => __('No tienes permisos de administrador para esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ], 403);
         }
 
@@ -315,7 +315,7 @@ class Flavor_Module_Actions_API {
         if (!$module) {
             return new WP_Error(
                 'module_not_found',
-                sprintf(__('Módulo no encontrado: %s', 'flavor-chat-ia'), $module_id),
+                sprintf(__('Módulo no encontrado: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $module_id),
                 ['status' => 404]
             );
         }
@@ -325,7 +325,7 @@ class Flavor_Module_Actions_API {
         if (!isset($actions[$action_name])) {
             return new WP_Error(
                 'action_not_found',
-                sprintf(__('Acción no encontrada: %s', 'flavor-chat-ia'), $action_name),
+                sprintf(__('Acción no encontrada: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $action_name),
                 ['status' => 404]
             );
         }
@@ -360,14 +360,14 @@ class Flavor_Module_Actions_API {
             if ($resultado['success']) {
                 return new WP_REST_Response([
                     'success' => true,
-                    'message' => $resultado['message'] ?? $resultado['mensaje'] ?? __('Acción ejecutada correctamente', 'flavor-chat-ia'),
+                    'message' => $resultado['message'] ?? $resultado['mensaje'] ?? __('Acción ejecutada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'data' => $resultado['data'] ?? $resultado,
                     'redirect_url' => $resultado['redirect_url'] ?? null,
                 ], 200);
             } else {
                 return new WP_Error(
                     'action_failed',
-                    $resultado['error'] ?? $resultado['mensaje'] ?? __('Error al ejecutar la acción', 'flavor-chat-ia'),
+                    $resultado['error'] ?? $resultado['mensaje'] ?? __('Error al ejecutar la acción', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ['status' => 400]
                 );
             }
@@ -376,7 +376,7 @@ class Flavor_Module_Actions_API {
 
             return new WP_Error(
                 'execution_error',
-                __('Error interno al ejecutar la acción', 'flavor-chat-ia'),
+                __('Error interno al ejecutar la acción', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 500]
             );
         }
@@ -397,7 +397,7 @@ class Flavor_Module_Actions_API {
                     // Verificar campos requeridos
                     if (!empty($field_config['required']) && empty($params[$field_name])) {
                         $label = $field_config['label'] ?? $field_name;
-                        $errores[] = sprintf(__('%s es obligatorio', 'flavor-chat-ia'), $label);
+                        $errores[] = sprintf(__('%s es obligatorio', FLAVOR_PLATFORM_TEXT_DOMAIN), $label);
                     }
 
                     // Validaciones específicas por tipo
@@ -408,26 +408,26 @@ class Flavor_Module_Actions_API {
                         switch ($tipo) {
                             case 'email':
                                 if (!is_email($valor)) {
-                                    $errores[] = sprintf(__('%s debe ser un email válido', 'flavor-chat-ia'), $field_config['label'] ?? $field_name);
+                                    $errores[] = sprintf(__('%s debe ser un email válido', FLAVOR_PLATFORM_TEXT_DOMAIN), $field_config['label'] ?? $field_name);
                                 }
                                 break;
 
                             case 'number':
                                 if (!is_numeric($valor)) {
-                                    $errores[] = sprintf(__('%s debe ser un número', 'flavor-chat-ia'), $field_config['label'] ?? $field_name);
+                                    $errores[] = sprintf(__('%s debe ser un número', FLAVOR_PLATFORM_TEXT_DOMAIN), $field_config['label'] ?? $field_name);
                                 }
                                 // Validar min/max
                                 if (isset($field_config['min']) && $valor < $field_config['min']) {
-                                    $errores[] = sprintf(__('%s debe ser mayor o igual a %s', 'flavor-chat-ia'), $field_config['label'] ?? $field_name, $field_config['min']);
+                                    $errores[] = sprintf(__('%s debe ser mayor o igual a %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $field_config['label'] ?? $field_name, $field_config['min']);
                                 }
                                 if (isset($field_config['max']) && $valor > $field_config['max']) {
-                                    $errores[] = sprintf(__('%s debe ser menor o igual a %s', 'flavor-chat-ia'), $field_config['label'] ?? $field_name, $field_config['max']);
+                                    $errores[] = sprintf(__('%s debe ser menor o igual a %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $field_config['label'] ?? $field_name, $field_config['max']);
                                 }
                                 break;
 
                             case 'url':
                                 if (!filter_var($valor, FILTER_VALIDATE_URL)) {
-                                    $errores[] = sprintf(__('%s debe ser una URL válida', 'flavor-chat-ia'), $field_config['label'] ?? $field_name);
+                                    $errores[] = sprintf(__('%s debe ser una URL válida', FLAVOR_PLATFORM_TEXT_DOMAIN), $field_config['label'] ?? $field_name);
                                 }
                                 break;
                         }
@@ -484,7 +484,7 @@ class Flavor_Module_Actions_API {
         if (!$module) {
             return new WP_Error(
                 'module_not_found',
-                sprintf(__('Módulo no encontrado: %s', 'flavor-chat-ia'), $module_id),
+                sprintf(__('Módulo no encontrado: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $module_id),
                 ['status' => 404]
             );
         }

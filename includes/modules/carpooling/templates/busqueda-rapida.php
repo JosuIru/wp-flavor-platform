@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
 
 // Atributos del widget (pueden venir de shortcode o widget)
 $atributos_widget = wp_parse_args($args ?? [], [
-    'titulo'        => __('Buscar viaje', 'flavor-chat-ia'),
+    'titulo'        => __('Buscar viaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
     'mostrar_titulo' => true,
     'estilo'        => 'horizontal', // horizontal, vertical, minimal
     'redirect_url'  => '', // URL de redireccion tras buscar
@@ -47,7 +47,7 @@ $fecha_hoy = date('Y-m-d');
         <div class="flavor-carpooling-busqueda-rapida__campos">
             <!-- Origen -->
             <div class="flavor-carpooling-busqueda-rapida__campo">
-                <label for="br-origen" class="sr-only"><?php esc_html_e('Origen', 'flavor-chat-ia'); ?></label>
+                <label for="br-origen" class="sr-only"><?php esc_html_e('Origen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <div class="flavor-input-icon">
                     <span class="dashicons dashicons-location" aria-hidden="true"></span>
                     <input
@@ -55,7 +55,7 @@ $fecha_hoy = date('Y-m-d');
                         name="origen"
                         id="br-origen"
                         class="flavor-input"
-                        placeholder="<?php esc_attr_e('Desde...', 'flavor-chat-ia'); ?>"
+                        placeholder="<?php esc_attr_e('Desde...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                         required
                     />
                 </div>
@@ -63,7 +63,7 @@ $fecha_hoy = date('Y-m-d');
 
             <!-- Destino -->
             <div class="flavor-carpooling-busqueda-rapida__campo">
-                <label for="br-destino" class="sr-only"><?php esc_html_e('Destino', 'flavor-chat-ia'); ?></label>
+                <label for="br-destino" class="sr-only"><?php esc_html_e('Destino', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <div class="flavor-input-icon">
                     <span class="dashicons dashicons-flag" aria-hidden="true"></span>
                     <input
@@ -71,7 +71,7 @@ $fecha_hoy = date('Y-m-d');
                         name="destino"
                         id="br-destino"
                         class="flavor-input"
-                        placeholder="<?php esc_attr_e('Hasta...', 'flavor-chat-ia'); ?>"
+                        placeholder="<?php esc_attr_e('Hasta...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                         required
                     />
                 </div>
@@ -79,7 +79,7 @@ $fecha_hoy = date('Y-m-d');
 
             <!-- Fecha -->
             <div class="flavor-carpooling-busqueda-rapida__campo flavor-carpooling-busqueda-rapida__campo--fecha">
-                <label for="br-fecha" class="sr-only"><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></label>
+                <label for="br-fecha" class="sr-only"><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                 <div class="flavor-input-icon">
                     <span class="dashicons dashicons-calendar-alt" aria-hidden="true"></span>
                     <input
@@ -99,7 +99,7 @@ $fecha_hoy = date('Y-m-d');
                 <button type="submit" class="cp-btn cp-btn-primary">
                     <span class="dashicons dashicons-search"></span>
                     <span class="flavor-carpooling-busqueda-rapida__btn-texto">
-                        <?php esc_html_e('Buscar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                 </button>
             </div>
@@ -109,7 +109,7 @@ $fecha_hoy = date('Y-m-d');
     <!-- Link a busqueda avanzada -->
     <div class="flavor-carpooling-busqueda-rapida__footer">
         <a href="<?php echo esc_url(home_url('/carpooling/buscar/')); ?>" class="flavor-carpooling-busqueda-rapida__link-avanzado">
-            <?php esc_html_e('Busqueda avanzada', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Busqueda avanzada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <span class="dashicons dashicons-arrow-right-alt2"></span>
         </a>
     </div>

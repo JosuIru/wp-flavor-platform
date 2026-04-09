@@ -69,7 +69,7 @@ $tipos_anuncios = $tipos_anuncios ?? [
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                 </svg>
-                <?php echo esc_html__('Empieza a publicar ahora', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Empieza a publicar ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
 
             <!-- Titulo principal -->
@@ -98,7 +98,7 @@ $tipos_anuncios = $tipos_anuncios ?? [
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                 </svg>
-                <span><?php echo esc_html__('Publicar Anuncio Gratis', 'flavor-chat-ia'); ?></span>
+                <span><?php echo esc_html__('Publicar Anuncio Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
         </div>
 
@@ -106,7 +106,7 @@ $tipos_anuncios = $tipos_anuncios ?? [
             <!-- Ventajas de publicar -->
             <div class="max-w-5xl mx-auto">
                 <h3 class="text-2xl font-bold text-gray-900 text-center mb-10">
-                    <?php echo esc_html__('Por que publicar con nosotros?', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Por que publicar con nosotros?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -135,26 +135,26 @@ $tipos_anuncios = $tipos_anuncios ?? [
             <div class="max-w-4xl mx-auto mt-16 p-8 rounded-2xl bg-white/50 backdrop-blur border border-green-100">
                 <div class="text-center">
                     <h3 class="text-xl font-bold text-gray-900 mb-3">
-                        <?php echo esc_html__('Pasos simples para publicar', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Pasos simples para publicar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <ol class="flex flex-col md:flex-row justify-center items-center gap-6 text-sm text-gray-700">
                         <li class="flex items-center gap-2">
                             <span class="flex-shrink-0 w-8 h-8 rounded-full bg-green-500 text-white font-bold flex items-center justify-center">1</span>
-                            <span><?php echo esc_html__('Completa el formulario', 'flavor-chat-ia'); ?></span>
+                            <span><?php echo esc_html__('Completa el formulario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </li>
                         <svg class="w-4 h-4 text-gray-300 hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                         </svg>
                         <li class="flex items-center gap-2">
                             <span class="flex-shrink-0 w-8 h-8 rounded-full bg-green-500 text-white font-bold flex items-center justify-center">2</span>
-                            <span><?php echo esc_html__('Agrega fotos y descripcion', 'flavor-chat-ia'); ?></span>
+                            <span><?php echo esc_html__('Agrega fotos y descripcion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </li>
                         <svg class="w-4 h-4 text-gray-300 hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                         </svg>
                         <li class="flex items-center gap-2">
                             <span class="flex-shrink-0 w-8 h-8 rounded-full bg-green-500 text-white font-bold flex items-center justify-center">3</span>
-                            <span><?php echo esc_html__('Publica y recibe mensajes', 'flavor-chat-ia'); ?></span>
+                            <span><?php echo esc_html__('Publica y recibe mensajes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </li>
                     </ol>
                 </div>

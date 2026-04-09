@@ -19,7 +19,7 @@ $tabla_reservas = $wpdb->prefix . 'flavor_parkings_reservas';
 
 // Verificar si existen las tablas
 if (!Flavor_Chat_Helpers::tabla_existe($tabla_parkings)) {
-    echo '<div class="parkings-empty"><p>' . esc_html__('El módulo de parkings no está configurado.', 'flavor-chat-ia') . '</p></div>';
+    echo '<div class="parkings-empty"><p>' . esc_html__('El módulo de parkings no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
 
@@ -99,18 +99,18 @@ foreach ($plazas as $plaza) {
 $tipos_disponibles = $wpdb->get_col("SELECT DISTINCT tipo FROM $tabla_plazas WHERE tipo IS NOT NULL AND tipo != '' ORDER BY tipo");
 
 $tipos_labels = [
-    'normal' => __('Normal', 'flavor-chat-ia'),
-    'discapacitado' => __('Movilidad reducida', 'flavor-chat-ia'),
-    'moto' => __('Moto', 'flavor-chat-ia'),
-    'electrico' => __('Vehículo eléctrico', 'flavor-chat-ia'),
-    'grande' => __('Plaza grande', 'flavor-chat-ia'),
+    'normal' => __('Normal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'discapacitado' => __('Movilidad reducida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'moto' => __('Moto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'electrico' => __('Vehículo eléctrico', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'grande' => __('Plaza grande', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 
 <div class="parkings-disponibilidad">
     <header class="parkings-header">
-        <h2><?php esc_html_e('Disponibilidad de Plazas', 'flavor-chat-ia'); ?></h2>
-        <p><?php esc_html_e('Consulta en tiempo real las plazas disponibles', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Disponibilidad de Plazas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+        <p><?php esc_html_e('Consulta en tiempo real las plazas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </header>
 
     <!-- Filtros -->
@@ -118,7 +118,7 @@ $tipos_labels = [
         <form class="parkings-filtros__form" method="get">
             <div class="filtro-grupo">
                 <select name="parking" onchange="this.form.submit()">
-                    <option value=""><?php esc_html_e('Todos los parkings', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todos los parkings', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($parkings_disponibles as $parking_item): ?>
                         <option value="<?php echo esc_attr($parking_item->id); ?>" <?php selected($parking_filtro, $parking_item->id); ?>>
                             <?php echo esc_html($parking_item->nombre); ?>
@@ -129,7 +129,7 @@ $tipos_labels = [
             <?php if ($tipos_disponibles): ?>
             <div class="filtro-grupo">
                 <select name="tipo" onchange="this.form.submit()">
-                    <option value=""><?php esc_html_e('Todos los tipos', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todos los tipos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($tipos_disponibles as $tipo_item): ?>
                         <option value="<?php echo esc_attr($tipo_item); ?>" <?php selected($tipo_filtro, $tipo_item); ?>>
                             <?php echo esc_html($tipos_labels[$tipo_item] ?? ucfirst($tipo_item)); ?>
@@ -141,11 +141,11 @@ $tipos_labels = [
             <div class="filtro-leyenda">
                 <span class="leyenda-item">
                     <span class="leyenda-color leyenda-color--libre"></span>
-                    <?php esc_html_e('Libre', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Libre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
                 <span class="leyenda-item">
                     <span class="leyenda-color leyenda-color--ocupada"></span>
-                    <?php esc_html_e('Ocupada', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ocupada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
             </div>
         </form>
@@ -166,11 +166,11 @@ $tipos_labels = [
                     <div class="parking-card__resumen">
                         <div class="resumen-stat resumen-stat--libres">
                             <span class="stat-numero"><?php echo esc_html($parking_data['libres']); ?></span>
-                            <span class="stat-label"><?php esc_html_e('Libres', 'flavor-chat-ia'); ?></span>
+                            <span class="stat-label"><?php esc_html_e('Libres', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                         <div class="resumen-stat resumen-stat--ocupadas">
                             <span class="stat-numero"><?php echo esc_html($parking_data['ocupadas']); ?></span>
-                            <span class="stat-label"><?php esc_html_e('Ocupadas', 'flavor-chat-ia'); ?></span>
+                            <span class="stat-label"><?php esc_html_e('Ocupadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                     </div>
 
@@ -194,7 +194,7 @@ $tipos_labels = [
                             }
                         ?>
                             <div class="plaza <?php echo esc_attr($estado_clase); ?>"
-                                 title="<?php printf(esc_attr__('Plaza %s - %s', 'flavor-chat-ia'), $plaza->numero, $plaza->disponibilidad === 'libre' ? __('Disponible', 'flavor-chat-ia') : __('Ocupada', 'flavor-chat-ia')); ?>">
+                                 title="<?php printf(esc_attr__('Plaza %s - %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $plaza->numero, $plaza->disponibilidad === 'libre' ? __('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Ocupada', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>">
                                 <span class="plaza__numero"><?php echo esc_html($plaza->numero); ?></span>
                                 <?php if ($tipo_icono): ?>
                                     <span class="plaza__tipo"><?php echo $tipo_icono; ?></span>
@@ -206,7 +206,7 @@ $tipos_labels = [
                     <?php if (is_user_logged_in() && $parking_data['libres'] > 0): ?>
                         <footer class="parking-card__footer">
                             <a href="<?php echo esc_url(add_query_arg('parking', $parking_id, Flavor_Chat_Helpers::get_action_url('parkings', 'solicitar'))); ?>" class="btn btn-primary btn-sm">
-                                <?php esc_html_e('Reservar plaza', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Reservar plaza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </footer>
                     <?php endif; ?>
@@ -216,7 +216,7 @@ $tipos_labels = [
     <?php else: ?>
         <div class="parkings-empty-state">
             <span class="dashicons dashicons-car"></span>
-            <p><?php esc_html_e('No se encontraron plazas con los filtros seleccionados.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('No se encontraron plazas con los filtros seleccionados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php endif; ?>
 </div>

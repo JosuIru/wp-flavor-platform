@@ -76,9 +76,9 @@ $sz = $size_config[$size] ?? $size_config['md'];
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/>
             </svg>
             <?php if ($show_count): ?>
-                <span class="vote-count"><?php echo number_format_i18n($upvotes); ?> <?php esc_html_e('apoyos', 'flavor-chat-ia'); ?></span>
+                <span class="vote-count"><?php echo number_format_i18n($upvotes); ?> <?php esc_html_e('apoyos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             <?php else: ?>
-                <span><?php echo $user_vote === 'up' ? esc_html__('Apoyado', 'flavor-chat-ia') : esc_html__('Apoyar', 'flavor-chat-ia'); ?></span>
+                <span><?php echo $user_vote === 'up' ? esc_html__('Apoyado', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Apoyar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             <?php endif; ?>
         </button>
 
@@ -101,7 +101,7 @@ $sz = $size_config[$size] ?? $size_config['md'];
             <!-- Upvote -->
             <button type="button"
                     class="vote-btn vote-up <?php echo esc_attr($sz['btn']); ?> rounded-full flex items-center justify-center transition-all <?php echo $user_vote === 'up' ? 'bg-green-500 text-white' : 'text-gray-600 hover:bg-green-100 hover:text-green-600'; ?>"
-                    title="<?php esc_attr_e('Votar a favor', 'flavor-chat-ia'); ?>"
+                    title="<?php esc_attr_e('Votar a favor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                     <?php if (!$is_logged_in): ?>data-login-required="true"<?php endif; ?>>
                 <svg class="<?php echo esc_attr($sz['icon']); ?>" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
@@ -118,7 +118,7 @@ $sz = $size_config[$size] ?? $size_config['md'];
             <!-- Downvote -->
             <button type="button"
                     class="vote-btn vote-down <?php echo esc_attr($sz['btn']); ?> rounded-full flex items-center justify-center transition-all <?php echo $user_vote === 'down' ? 'bg-red-500 text-white' : 'text-gray-600 hover:bg-red-100 hover:text-red-600'; ?>"
-                    title="<?php esc_attr_e('Votar en contra', 'flavor-chat-ia'); ?>"
+                    title="<?php esc_attr_e('Votar en contra', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                     <?php if (!$is_logged_in): ?>data-login-required="true"<?php endif; ?>>
                 <svg class="<?php echo esc_attr($sz['icon']); ?>" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Check login
             if (this.dataset.loginRequired) {
                 <?php if (!$is_logged_in): ?>
-                alert('<?php esc_html_e('Inicia sesión para votar', 'flavor-chat-ia'); ?>');
+                alert('<?php esc_html_e('Inicia sesión para votar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                 return;
                 <?php endif; ?>
             }

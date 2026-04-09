@@ -88,7 +88,7 @@ class Flavor_GC_Facturas_Integration {
     public function registrar_metabox_productor() {
         add_meta_box(
             'gc_productor_facturas',
-            __('Facturacion', 'flavor-chat-ia'),
+            __('Facturacion', 'flavor-platform'),
             [$this, 'render_metabox_facturas'],
             'gc_productor',
             'side',
@@ -120,12 +120,12 @@ class Flavor_GC_Facturas_Integration {
             <?php if ($total_facturas > 0): ?>
             <div class="gc-facturas-stats" style="margin-bottom: 15px; padding: 10px; background: #f9f9f9; border-radius: 4px;">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                    <span><?php _e('Total facturas:', 'flavor-chat-ia'); ?></span>
+                    <span><?php _e('Total facturas:', 'flavor-platform'); ?></span>
                     <strong><?php echo $total_facturas; ?></strong>
                 </div>
                 <?php if ($facturas_pendientes > 0): ?>
                 <div style="display: flex; justify-content: space-between; color: #d63638;">
-                    <span><?php _e('Pendientes de pago:', 'flavor-chat-ia'); ?></span>
+                    <span><?php _e('Pendientes de pago:', 'flavor-platform'); ?></span>
                     <strong><?php echo $facturas_pendientes; ?></strong>
                 </div>
                 <?php endif; ?>
@@ -135,7 +135,7 @@ class Flavor_GC_Facturas_Integration {
             <p style="margin-bottom: 10px;">
                 <a href="<?php echo esc_url($url_nueva_factura); ?>" class="button button-primary" style="width: 100%; text-align: center;">
                     <span class="dashicons dashicons-plus-alt" style="vertical-align: middle; margin-right: 5px;"></span>
-                    <?php _e('Crear Factura', 'flavor-chat-ia'); ?>
+                    <?php _e('Crear Factura', 'flavor-platform'); ?>
                 </a>
             </p>
 
@@ -143,7 +143,7 @@ class Flavor_GC_Facturas_Integration {
             <p>
                 <a href="<?php echo esc_url($url_ver_facturas); ?>" class="button" style="width: 100%; text-align: center;">
                     <span class="dashicons dashicons-media-text" style="vertical-align: middle; margin-right: 5px;"></span>
-                    <?php _e('Ver Facturas', 'flavor-chat-ia'); ?>
+                    <?php _e('Ver Facturas', 'flavor-platform'); ?>
                 </a>
             </p>
             <?php endif; ?>
@@ -162,7 +162,7 @@ class Flavor_GC_Facturas_Integration {
 
             // Insertar despues de la columna de titulo
             if ($key === 'title') {
-                $nueva_columnas['gc_facturas'] = __('Facturas', 'flavor-chat-ia');
+                $nueva_columnas['gc_facturas'] = __('Facturas', 'flavor-platform');
             }
         }
 
@@ -192,7 +192,7 @@ class Flavor_GC_Facturas_Integration {
                 <span class="gc-facturas-count">
                     <?php echo $total; ?>
                     <?php if ($pendientes > 0): ?>
-                        <span style="color: #d63638;" title="<?php esc_attr_e('Pendientes', 'flavor-chat-ia'); ?>">
+                        <span style="color: #d63638;" title="<?php esc_attr_e('Pendientes', 'flavor-platform'); ?>">
                             (<?php echo $pendientes; ?>)
                         </span>
                     <?php endif; ?>
@@ -240,19 +240,19 @@ class Flavor_GC_Facturas_Integration {
         check_ajax_referer('gc_facturas_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Sin permisos', 'flavor-chat-ia'));
+            wp_send_json_error(__('Sin permisos', 'flavor-platform'));
         }
 
         $productor_id = absint($_POST['productor_id'] ?? 0);
 
         if (!$productor_id) {
-            wp_send_json_error(__('ID de productor invalido', 'flavor-chat-ia'));
+            wp_send_json_error(__('ID de productor invalido', 'flavor-platform'));
         }
 
         $productor = get_post($productor_id);
 
         if (!$productor || $productor->post_type !== 'gc_productor') {
-            wp_send_json_error(__('Productor no encontrado', 'flavor-chat-ia'));
+            wp_send_json_error(__('Productor no encontrado', 'flavor-platform'));
         }
 
         // Redirigir a la pagina de nueva factura con datos pre-rellenados
@@ -274,20 +274,20 @@ class Flavor_GC_Facturas_Integration {
         check_ajax_referer('gc_facturas_nonce', 'nonce');
 
         if (!current_user_can('manage_options') && !current_user_can('gc_gestionar_pedidos')) {
-            wp_send_json_error(__('Sin permisos', 'flavor-chat-ia'));
+            wp_send_json_error(__('Sin permisos', 'flavor-platform'));
         }
 
         $consumidor_id = absint($_POST['consumidor_id'] ?? 0);
         $usuario_id = absint($_POST['usuario_id'] ?? 0);
 
         if (!$usuario_id) {
-            wp_send_json_error(__('ID de usuario invalido', 'flavor-chat-ia'));
+            wp_send_json_error(__('ID de usuario invalido', 'flavor-platform'));
         }
 
         $usuario = get_user_by('ID', $usuario_id);
 
         if (!$usuario) {
-            wp_send_json_error(__('Usuario no encontrado', 'flavor-chat-ia'));
+            wp_send_json_error(__('Usuario no encontrado', 'flavor-platform'));
         }
 
         // Redirigir a la pagina de nueva factura con datos pre-rellenados

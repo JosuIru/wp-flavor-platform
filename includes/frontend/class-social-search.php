@@ -93,7 +93,7 @@ class Flavor_Social_Search {
      */
     public function shortcode_busqueda($atts) {
         $atts = shortcode_atts([
-            'placeholder' => __('Buscar publicaciones, usuarios, hashtags...', 'flavor-chat-ia'),
+            'placeholder' => __('Buscar publicaciones, usuarios, hashtags...', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'mostrar_filtros' => 'yes',
             'tipos' => 'publicaciones,usuarios,hashtags,comunidades',
             'limite' => 10,
@@ -130,7 +130,7 @@ class Flavor_Social_Search {
                 </div>
 
                 <?php if ($mostrar_filtros): ?>
-                <button type="button" class="fss-btn-filtros" title="<?php esc_attr_e('Filtros', 'flavor-chat-ia'); ?>">
+                <button type="button" class="fss-btn-filtros" title="<?php esc_attr_e('Filtros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-filter"></span>
                 </button>
                 <?php endif; ?>
@@ -143,7 +143,7 @@ class Flavor_Social_Search {
             <!-- Panel de filtros -->
             <div class="fss-filters" style="display: none;">
                 <div class="fss-filters-header">
-                    <h4><?php esc_html_e('Filtros de búsqueda', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php esc_html_e('Filtros de búsqueda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <button type="button" class="fss-btn-close-filters">
                         <span class="dashicons dashicons-no-alt"></span>
                     </button>
@@ -152,7 +152,7 @@ class Flavor_Social_Search {
                 <div class="fss-filters-body">
                     <!-- Tipo de contenido -->
                     <div class="fss-filter-group">
-                        <label><?php esc_html_e('Tipo de contenido', 'flavor-chat-ia'); ?></label>
+                        <label><?php esc_html_e('Tipo de contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <div class="fss-filter-chips">
                             <?php foreach ($tipos_permitidos as $tipo): ?>
                                 <?php if (isset($this->tipos_contenido[$tipo])): ?>
@@ -168,53 +168,53 @@ class Flavor_Social_Search {
 
                     <!-- Fecha -->
                     <div class="fss-filter-group">
-                        <label><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></label>
+                        <label><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select name="fecha" class="fss-select">
-                            <option value=""><?php esc_html_e('Cualquier fecha', 'flavor-chat-ia'); ?></option>
-                            <option value="hoy"><?php esc_html_e('Hoy', 'flavor-chat-ia'); ?></option>
-                            <option value="semana"><?php esc_html_e('Esta semana', 'flavor-chat-ia'); ?></option>
-                            <option value="mes"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></option>
-                            <option value="ano"><?php esc_html_e('Este año', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php esc_html_e('Cualquier fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="hoy"><?php esc_html_e('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="semana"><?php esc_html_e('Esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="mes"><?php esc_html_e('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="ano"><?php esc_html_e('Este año', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
 
                     <!-- Hashtag específico -->
                     <div class="fss-filter-group">
-                        <label><?php esc_html_e('Hashtag', 'flavor-chat-ia'); ?></label>
+                        <label><?php esc_html_e('Hashtag', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="text" name="hashtag" class="fss-input-small" placeholder="#ejemplo">
                     </div>
 
                     <!-- Ubicación -->
                     <div class="fss-filter-group">
-                        <label><?php esc_html_e('Ubicación', 'flavor-chat-ia'); ?></label>
-                        <input type="text" name="ubicacion" class="fss-input-small" placeholder="<?php esc_attr_e('Ciudad o lugar', 'flavor-chat-ia'); ?>">
+                        <label><?php esc_html_e('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                        <input type="text" name="ubicacion" class="fss-input-small" placeholder="<?php esc_attr_e('Ciudad o lugar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     </div>
 
                     <!-- Solo usuarios verificados -->
                     <div class="fss-filter-group">
                         <label class="fss-checkbox-label">
                             <input type="checkbox" name="verificados">
-                            <?php esc_html_e('Solo usuarios verificados', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Solo usuarios verificados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                     </div>
 
                     <!-- Ordenar por -->
                     <div class="fss-filter-group">
-                        <label><?php esc_html_e('Ordenar por', 'flavor-chat-ia'); ?></label>
+                        <label><?php esc_html_e('Ordenar por', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select name="ordenar" class="fss-select">
-                            <option value="relevancia"><?php esc_html_e('Relevancia', 'flavor-chat-ia'); ?></option>
-                            <option value="reciente"><?php esc_html_e('Más reciente', 'flavor-chat-ia'); ?></option>
-                            <option value="popular"><?php esc_html_e('Más popular', 'flavor-chat-ia'); ?></option>
+                            <option value="relevancia"><?php esc_html_e('Relevancia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="reciente"><?php esc_html_e('Más reciente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="popular"><?php esc_html_e('Más popular', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
                 </div>
 
                 <div class="fss-filters-footer">
                     <button type="button" class="fss-btn fss-btn-secondary fss-btn-reset">
-                        <?php esc_html_e('Limpiar filtros', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Limpiar filtros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button" class="fss-btn fss-btn-primary fss-btn-apply">
-                        <?php esc_html_e('Aplicar filtros', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Aplicar filtros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </div>
@@ -229,7 +229,7 @@ class Flavor_Social_Search {
                 <div class="fss-results-body"></div>
                 <div class="fss-results-footer" style="display: none;">
                     <button type="button" class="fss-btn fss-btn-secondary fss-btn-load-more">
-                        <?php esc_html_e('Cargar más resultados', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Cargar más resultados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </div>
@@ -237,7 +237,7 @@ class Flavor_Social_Search {
             <!-- Estado vacío -->
             <div class="fss-empty" style="display: none;">
                 <span class="dashicons dashicons-search"></span>
-                <p><?php esc_html_e('No se encontraron resultados', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('No se encontraron resultados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
 
@@ -247,14 +247,14 @@ class Flavor_Social_Search {
                     ajaxUrl: '<?php echo esc_url(admin_url('admin-ajax.php')); ?>',
                     nonce: '<?php echo wp_create_nonce('flavor_social_search_nonce'); ?>',
                     strings: {
-                        resultados: '<?php echo esc_js(__('resultados', 'flavor-chat-ia')); ?>',
-                        resultado: '<?php echo esc_js(__('resultado', 'flavor-chat-ia')); ?>',
-                        buscando: '<?php echo esc_js(__('Buscando...', 'flavor-chat-ia')); ?>',
-                        error: '<?php echo esc_js(__('Error al buscar', 'flavor-chat-ia')); ?>',
-                        seguidores: '<?php echo esc_js(__('seguidores', 'flavor-chat-ia')); ?>',
-                        publicaciones: '<?php echo esc_js(__('publicaciones', 'flavor-chat-ia')); ?>',
-                        miembros: '<?php echo esc_js(__('miembros', 'flavor-chat-ia')); ?>',
-                        usos: '<?php echo esc_js(__('usos', 'flavor-chat-ia')); ?>'
+                        resultados: '<?php echo esc_js(__('resultados', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
+                        resultado: '<?php echo esc_js(__('resultado', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
+                        buscando: '<?php echo esc_js(__('Buscando...', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
+                        error: '<?php echo esc_js(__('Error al buscar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
+                        seguidores: '<?php echo esc_js(__('seguidores', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
+                        publicaciones: '<?php echo esc_js(__('publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
+                        miembros: '<?php echo esc_js(__('miembros', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>',
+                        usos: '<?php echo esc_js(__('usos', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>'
                     }
                 };
             }
@@ -273,7 +273,7 @@ class Flavor_Social_Search {
         if (strlen($termino) < 2) {
             return [
                 'success' => false,
-                'error' => __('El término debe tener al menos 2 caracteres', 'flavor-chat-ia'),
+                'error' => __('El término debe tener al menos 2 caracteres', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -407,7 +407,7 @@ class Flavor_Social_Search {
         return [
             'items' => $items,
             'total' => $total,
-            'etiqueta' => __('Publicaciones', 'flavor-chat-ia'),
+            'etiqueta' => __('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -491,7 +491,7 @@ class Flavor_Social_Search {
         return [
             'items' => $items,
             'total' => $total,
-            'etiqueta' => __('Usuarios', 'flavor-chat-ia'),
+            'etiqueta' => __('Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -540,7 +540,7 @@ class Flavor_Social_Search {
         return [
             'items' => $items,
             'total' => $total,
-            'etiqueta' => __('Hashtags', 'flavor-chat-ia'),
+            'etiqueta' => __('Hashtags', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -598,7 +598,7 @@ class Flavor_Social_Search {
         return [
             'items' => $items,
             'total' => $total,
-            'etiqueta' => __('Comunidades', 'flavor-chat-ia'),
+            'etiqueta' => __('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -631,7 +631,7 @@ class Flavor_Social_Search {
                 $sugerencias[] = [
                     'tipo' => 'hashtag',
                     'texto' => '#' . $hash->nombre,
-                    'subtexto' => sprintf(__('%d usos', 'flavor-chat-ia'), $hash->usos_count),
+                    'subtexto' => sprintf(__('%d usos', FLAVOR_PLATFORM_TEXT_DOMAIN), $hash->usos_count),
                     'icono' => 'dashicons-tag',
                 ];
             }

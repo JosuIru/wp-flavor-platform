@@ -18,7 +18,7 @@ $url_activar = $url_activar ?? '/fichaje/';
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                <?php echo esc_html__('Registro de jornada digital', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Registro de jornada digital', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
 
             <h2 class="text-3xl lg:text-4xl font-bold text-gray-800 mb-4">
@@ -42,19 +42,19 @@ $url_activar = $url_activar ?? '/fichaje/';
                     <svg class="w-5 h-5 text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                     </svg>
-                    <span class="text-sm text-gray-700"><?php echo esc_html__('Configuracion en 5 minutos', 'flavor-chat-ia'); ?></span>
+                    <span class="text-sm text-gray-700"><?php echo esc_html__('Configuracion en 5 minutos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="flex items-center gap-3 p-4 rounded-xl bg-white shadow-sm border border-gray-100">
                     <svg class="w-5 h-5 text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                     </svg>
-                    <span class="text-sm text-gray-700"><?php echo esc_html__('Sin hardware adicional', 'flavor-chat-ia'); ?></span>
+                    <span class="text-sm text-gray-700"><?php echo esc_html__('Sin hardware adicional', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="flex items-center gap-3 p-4 rounded-xl bg-white shadow-sm border border-gray-100">
                     <svg class="w-5 h-5 text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                     </svg>
-                    <span class="text-sm text-gray-700"><?php echo esc_html__('Soporte personalizado', 'flavor-chat-ia'); ?></span>
+                    <span class="text-sm text-gray-700"><?php echo esc_html__('Soporte personalizado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
@@ -63,7 +63,7 @@ $url_activar = $url_activar ?? '/fichaje/';
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                 </svg>
-                <?php echo esc_html__('Activar Fichaje', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Activar Fichaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>

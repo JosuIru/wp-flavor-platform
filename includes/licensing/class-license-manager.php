@@ -165,7 +165,7 @@ class Flavor_License_Manager {
         if (!$this->is_valid_license_format($license_key)) {
             return new WP_Error(
                 'invalid_format',
-                __('Formato de licencia inválido. Debe ser XXXX-XXXX-XXXX-XXXX', 'flavor-chat-ia')
+                __('Formato de licencia inválido. Debe ser XXXX-XXXX-XXXX-XXXX', FLAVOR_PLATFORM_TEXT_DOMAIN)
             );
         }
 
@@ -222,7 +222,7 @@ class Flavor_License_Manager {
      */
     public function deactivate_license() {
         if (!$this->has_license()) {
-            return new WP_Error('no_license', __('No hay licencia activa para desactivar.', 'flavor-chat-ia'));
+            return new WP_Error('no_license', __('No hay licencia activa para desactivar.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $license_key = $this->license_data['key'];
@@ -347,7 +347,7 @@ class Flavor_License_Manager {
         if ($code !== 200 || (isset($result['success']) && $result['success'] === false)) {
             return new WP_Error(
                 'license_error',
-                $result['message'] ?? __('Error del servidor de licencias', 'flavor-chat-ia'),
+                $result['message'] ?? __('Error del servidor de licencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => $code]
             );
         }
@@ -511,13 +511,13 @@ class Flavor_License_Manager {
         check_ajax_referer('flavor_license_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Sin permisos', 'flavor-chat-ia'));
+            wp_send_json_error(__('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $license_key = sanitize_text_field($_POST['license_key'] ?? '');
 
         if (empty($license_key)) {
-            wp_send_json_error(__('Introduce una clave de licencia', 'flavor-chat-ia'));
+            wp_send_json_error(__('Introduce una clave de licencia', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $result = $this->activate_license($license_key);
@@ -527,7 +527,7 @@ class Flavor_License_Manager {
         }
 
         wp_send_json_success([
-            'message' => __('Licencia activada correctamente', 'flavor-chat-ia'),
+            'message' => __('Licencia activada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'license' => $result,
             'plan'    => $result['plan'],
         ]);
@@ -542,7 +542,7 @@ class Flavor_License_Manager {
         check_ajax_referer('flavor_license_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Sin permisos', 'flavor-chat-ia'));
+            wp_send_json_error(__('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $result = $this->deactivate_license();
@@ -552,7 +552,7 @@ class Flavor_License_Manager {
         }
 
         wp_send_json_success([
-            'message' => __('Licencia desactivada', 'flavor-chat-ia'),
+            'message' => __('Licencia desactivada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -565,7 +565,7 @@ class Flavor_License_Manager {
         check_ajax_referer('flavor_license_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Sin permisos', 'flavor-chat-ia'));
+            wp_send_json_error(__('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $result = $this->verify_license_remote(true);
@@ -602,10 +602,10 @@ class Flavor_License_Manager {
         // Sin licencia
         if (!$this->has_license()) {
             echo '<div class="notice notice-info is-dismissible">';
-            echo '<p><strong>' . esc_html__('Flavor Platform:', 'flavor-chat-ia') . '</strong> ';
-            echo esc_html__('Activa tu licencia para desbloquear todos los módulos.', 'flavor-chat-ia');
-            echo ' <a href="' . esc_url(admin_url('admin.php?page=flavor-license')) . '">';
-            echo esc_html__('Activar licencia', 'flavor-chat-ia') . '</a>';
+            echo '<p><strong>' . esc_html__('Flavor Platform:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ';
+            echo esc_html__('Activa tu licencia para desbloquear todos los módulos.', FLAVOR_PLATFORM_TEXT_DOMAIN);
+            echo ' <a href="' . esc_url(admin_url('admin.php?page=flavor-platform-license')) . '">';
+            echo esc_html__('Activar licencia', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
             echo '</p></div>';
             return;
         }
@@ -614,8 +614,8 @@ class Flavor_License_Manager {
         $days = $this->get_days_remaining();
         if ($days !== null && $days <= 0) {
             echo '<div class="notice notice-error">';
-            echo '<p><strong>' . esc_html__('Licencia expirada:', 'flavor-chat-ia') . '</strong> ';
-            echo esc_html__('Tu licencia de Flavor Platform ha expirado. Renuévala para mantener el acceso a los módulos premium.', 'flavor-chat-ia');
+            echo '<p><strong>' . esc_html__('Licencia expirada:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ';
+            echo esc_html__('Tu licencia de Flavor Platform ha expirado. Renuévala para mantener el acceso a los módulos premium.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             echo '</p></div>';
             return;
         }
@@ -623,9 +623,9 @@ class Flavor_License_Manager {
         // Licencia por expirar (30 días)
         if ($days !== null && $days <= 30) {
             echo '<div class="notice notice-warning is-dismissible">';
-            echo '<p><strong>' . esc_html__('Licencia por expirar:', 'flavor-chat-ia') . '</strong> ';
+            echo '<p><strong>' . esc_html__('Licencia por expirar:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ';
             echo sprintf(
-                esc_html__('Tu licencia expira en %d días. Renuévala para mantener el acceso.', 'flavor-chat-ia'),
+                esc_html__('Tu licencia expira en %d días. Renuévala para mantener el acceso.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $days
             );
             echo '</p></div>';

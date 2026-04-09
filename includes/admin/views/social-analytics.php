@@ -11,24 +11,24 @@ if (!defined('ABSPATH')) {
 }
 
 $periodos = [
-    'hoy' => __('Hoy', 'flavor-chat-ia'),
-    'semana' => __('Última semana', 'flavor-chat-ia'),
-    'mes' => __('Último mes', 'flavor-chat-ia'),
-    'trimestre' => __('Último trimestre', 'flavor-chat-ia'),
-    'año' => __('Último año', 'flavor-chat-ia'),
+    'hoy' => __('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'semana' => __('Última semana', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'mes' => __('Último mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'trimestre' => __('Último trimestre', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'año' => __('Último año', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 
 <div class="wrap flavor-analytics-wrap">
     <h1 class="flavor-analytics-title">
         <span class="dashicons dashicons-chart-area"></span>
-        <?php esc_html_e('Analytics Social', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Analytics Social', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <!-- Selector de período -->
     <div class="flavor-analytics-toolbar">
         <div class="periodo-selector">
-            <label for="periodo-select"><?php esc_html_e('Período:', 'flavor-chat-ia'); ?></label>
+            <label for="periodo-select"><?php esc_html_e('Período:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
             <select id="periodo-select" class="periodo-select">
                 <?php foreach ($periodos as $valor => $etiqueta): ?>
                     <option value="<?php echo esc_attr($valor); ?>" <?php selected($periodo, $valor); ?>>
@@ -39,16 +39,16 @@ $periodos = [
         </div>
 
         <div class="toolbar-actions">
-            <button type="button" id="btn-refresh" class="button" title="<?php esc_attr_e('Actualizar datos', 'flavor-chat-ia'); ?>">
+            <button type="button" id="btn-refresh" class="button" title="<?php esc_attr_e('Actualizar datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <span class="dashicons dashicons-update"></span>
             </button>
             <button type="button" id="btn-export-csv" class="button">
                 <span class="dashicons dashicons-download"></span>
-                <?php esc_html_e('Exportar CSV', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Exportar CSV', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <button type="button" id="btn-export-json" class="button">
                 <span class="dashicons dashicons-media-code"></span>
-                <?php esc_html_e('Exportar JSON', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Exportar JSON', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     </div>
@@ -61,7 +61,7 @@ $periodos = [
             </div>
             <div class="kpi-content">
                 <span class="kpi-value"><?php echo esc_html($stats['usuarios_activos'] ?? 0); ?></span>
-                <span class="kpi-label"><?php esc_html_e('Usuarios Activos', 'flavor-chat-ia'); ?></span>
+                <span class="kpi-label"><?php esc_html_e('Usuarios Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <?php if (isset($stats['tendencia_usuarios'])): ?>
                     <span class="kpi-trend <?php echo $stats['tendencia_usuarios'] >= 0 ? 'positive' : 'negative'; ?>">
                         <span class="dashicons <?php echo $stats['tendencia_usuarios'] >= 0 ? 'dashicons-arrow-up-alt' : 'dashicons-arrow-down-alt'; ?>"></span>
@@ -77,7 +77,7 @@ $periodos = [
             </div>
             <div class="kpi-content">
                 <span class="kpi-value"><?php echo esc_html($stats['usuarios_nuevos'] ?? 0); ?></span>
-                <span class="kpi-label"><?php esc_html_e('Usuarios Nuevos', 'flavor-chat-ia'); ?></span>
+                <span class="kpi-label"><?php esc_html_e('Usuarios Nuevos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -87,7 +87,7 @@ $periodos = [
             </div>
             <div class="kpi-content">
                 <span class="kpi-value"><?php echo esc_html($stats['publicaciones'] ?? 0); ?></span>
-                <span class="kpi-label"><?php esc_html_e('Publicaciones', 'flavor-chat-ia'); ?></span>
+                <span class="kpi-label"><?php esc_html_e('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <?php if (isset($stats['tendencia_publicaciones'])): ?>
                     <span class="kpi-trend <?php echo $stats['tendencia_publicaciones'] >= 0 ? 'positive' : 'negative'; ?>">
                         <span class="dashicons <?php echo $stats['tendencia_publicaciones'] >= 0 ? 'dashicons-arrow-up-alt' : 'dashicons-arrow-down-alt'; ?>"></span>
@@ -103,7 +103,7 @@ $periodos = [
             </div>
             <div class="kpi-content">
                 <span class="kpi-value"><?php echo esc_html($stats['engagement_rate'] ?? 0); ?>%</span>
-                <span class="kpi-label"><?php esc_html_e('Engagement Rate', 'flavor-chat-ia'); ?></span>
+                <span class="kpi-label"><?php esc_html_e('Engagement Rate', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -113,7 +113,7 @@ $periodos = [
             </div>
             <div class="kpi-content">
                 <span class="kpi-value"><?php echo esc_html($stats['likes'] ?? 0); ?></span>
-                <span class="kpi-label"><?php esc_html_e('Likes', 'flavor-chat-ia'); ?></span>
+                <span class="kpi-label"><?php esc_html_e('Likes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -123,7 +123,7 @@ $periodos = [
             </div>
             <div class="kpi-content">
                 <span class="kpi-value"><?php echo esc_html($stats['comentarios'] ?? 0); ?></span>
-                <span class="kpi-label"><?php esc_html_e('Comentarios', 'flavor-chat-ia'); ?></span>
+                <span class="kpi-label"><?php esc_html_e('Comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
@@ -131,7 +131,7 @@ $periodos = [
     <!-- Gráfico de actividad -->
     <div class="flavor-analytics-section">
         <div class="section-header">
-            <h2><?php esc_html_e('Actividad en el Tiempo', 'flavor-chat-ia'); ?></h2>
+            <h2><?php esc_html_e('Actividad en el Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         </div>
         <div class="section-content">
             <div class="chart-container">
@@ -147,7 +147,7 @@ $periodos = [
             <div class="panel-header">
                 <h3>
                     <span class="dashicons dashicons-tag"></span>
-                    <?php esc_html_e('Hashtags Trending', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Hashtags Trending', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <div class="panel-content">
@@ -162,7 +162,7 @@ $periodos = [
                         <?php endforeach; ?>
                     </ul>
                 <?php else: ?>
-                    <p class="no-data"><?php esc_html_e('Sin hashtags en este período', 'flavor-chat-ia'); ?></p>
+                    <p class="no-data"><?php esc_html_e('Sin hashtags en este período', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php endif; ?>
             </div>
         </div>
@@ -172,7 +172,7 @@ $periodos = [
             <div class="panel-header">
                 <h3>
                     <span class="dashicons dashicons-star-filled"></span>
-                    <?php esc_html_e('Top Usuarios', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Top Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <div class="panel-content">
@@ -186,7 +186,7 @@ $periodos = [
                                     <span class="user-name"><?php echo esc_html($usuario->display_name); ?></span>
                                     <span class="user-stats">
                                         <?php printf(
-                                            esc_html__('%d seguidores · %d posts', 'flavor-chat-ia'),
+                                            esc_html__('%d seguidores · %d posts', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                             $usuario->seguidores_count,
                                             $usuario->publicaciones_count
                                         ); ?>
@@ -196,7 +196,7 @@ $periodos = [
                         <?php endforeach; ?>
                     </ul>
                 <?php else: ?>
-                    <p class="no-data"><?php esc_html_e('Sin usuarios con actividad', 'flavor-chat-ia'); ?></p>
+                    <p class="no-data"><?php esc_html_e('Sin usuarios con actividad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php endif; ?>
             </div>
         </div>
@@ -206,7 +206,7 @@ $periodos = [
             <div class="panel-header">
                 <h3>
                     <span class="dashicons dashicons-format-status"></span>
-                    <?php esc_html_e('Publicaciones Destacadas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Publicaciones Destacadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <div class="panel-content">
@@ -214,12 +214,12 @@ $periodos = [
                     <table class="widefat top-posts-table">
                         <thead>
                             <tr>
-                                <th><?php esc_html_e('Autor', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Contenido', 'flavor-chat-ia'); ?></th>
-                                <th class="num"><?php esc_html_e('Likes', 'flavor-chat-ia'); ?></th>
-                                <th class="num"><?php esc_html_e('Comentarios', 'flavor-chat-ia'); ?></th>
-                                <th class="num"><?php esc_html_e('Compartidos', 'flavor-chat-ia'); ?></th>
-                                <th class="num"><?php esc_html_e('Engagement', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Autor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th class="num"><?php esc_html_e('Likes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th class="num"><?php esc_html_e('Comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th class="num"><?php esc_html_e('Compartidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th class="num"><?php esc_html_e('Engagement', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -241,7 +241,7 @@ $periodos = [
                         </tbody>
                     </table>
                 <?php else: ?>
-                    <p class="no-data"><?php esc_html_e('Sin publicaciones destacadas', 'flavor-chat-ia'); ?></p>
+                    <p class="no-data"><?php esc_html_e('Sin publicaciones destacadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php endif; ?>
             </div>
         </div>
@@ -251,7 +251,7 @@ $periodos = [
             <div class="panel-header">
                 <h3>
                     <span class="dashicons dashicons-networking"></span>
-                    <?php esc_html_e('Comunidades', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <div class="panel-content">
@@ -259,16 +259,16 @@ $periodos = [
                     <div class="comunidades-summary">
                         <div class="summary-stat">
                             <span class="stat-value"><?php echo esc_html($comunidades_stats['total'] ?? 0); ?></span>
-                            <span class="stat-label"><?php esc_html_e('Activas', 'flavor-chat-ia'); ?></span>
+                            <span class="stat-label"><?php esc_html_e('Activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                         <div class="summary-stat">
                             <span class="stat-value"><?php echo esc_html($comunidades_stats['nuevas'] ?? 0); ?></span>
-                            <span class="stat-label"><?php esc_html_e('Nuevas (7d)', 'flavor-chat-ia'); ?></span>
+                            <span class="stat-label"><?php esc_html_e('Nuevas (7d)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                     </div>
 
                     <?php if (!empty($comunidades_stats['top_comunidades'])): ?>
-                        <h4><?php esc_html_e('Top por Miembros', 'flavor-chat-ia'); ?></h4>
+                        <h4><?php esc_html_e('Top por Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                         <ul class="comunidades-list">
                             <?php foreach ($comunidades_stats['top_comunidades'] as $comunidad): ?>
                                 <li class="comunidad-item">
@@ -279,7 +279,7 @@ $periodos = [
                         </ul>
                     <?php endif; ?>
                 <?php else: ?>
-                    <p class="no-data"><?php esc_html_e('Sin datos de comunidades', 'flavor-chat-ia'); ?></p>
+                    <p class="no-data"><?php esc_html_e('Sin datos de comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php endif; ?>
             </div>
         </div>
@@ -290,7 +290,7 @@ $periodos = [
             <div class="panel-header">
                 <h3>
                     <span class="dashicons dashicons-format-gallery"></span>
-                    <?php esc_html_e('Estados (Stories)', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Estados (Stories)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
             </div>
             <div class="panel-content">
@@ -298,21 +298,21 @@ $periodos = [
                     <div class="estados-summary">
                         <div class="summary-stat">
                             <span class="stat-value"><?php echo esc_html($estados_stats['ultimas_24h'] ?? 0); ?></span>
-                            <span class="stat-label"><?php esc_html_e('Estados (24h)', 'flavor-chat-ia'); ?></span>
+                            <span class="stat-label"><?php esc_html_e('Estados (24h)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                         <div class="summary-stat">
                             <span class="stat-value"><?php echo esc_html($estados_stats['usuarios_activos'] ?? 0); ?></span>
-                            <span class="stat-label"><?php esc_html_e('Usuarios', 'flavor-chat-ia'); ?></span>
+                            <span class="stat-label"><?php esc_html_e('Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                         <?php if (isset($estados_stats['vistas_24h'])): ?>
                             <div class="summary-stat">
                                 <span class="stat-value"><?php echo esc_html($estados_stats['vistas_24h']); ?></span>
-                                <span class="stat-label"><?php esc_html_e('Vistas (24h)', 'flavor-chat-ia'); ?></span>
+                                <span class="stat-label"><?php esc_html_e('Vistas (24h)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                         <?php endif; ?>
                     </div>
                 <?php else: ?>
-                    <p class="no-data"><?php esc_html_e('Sin datos de estados', 'flavor-chat-ia'); ?></p>
+                    <p class="no-data"><?php esc_html_e('Sin datos de estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php endif; ?>
             </div>
         </div>

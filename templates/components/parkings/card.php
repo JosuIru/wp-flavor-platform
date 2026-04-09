@@ -14,7 +14,7 @@ $plaza = $item ?? $card_item ?? [];
 if (empty($plaza)) return;
 
 $id = $plaza['id'] ?? 0;
-$ubicacion = $plaza['ubicacion'] ?? __('Plaza de parking', 'flavor-chat-ia');
+$ubicacion = $plaza['ubicacion'] ?? __('Plaza de parking', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $url = $plaza['url'] ?? '#';
 $descripcion = $plaza['descripcion'] ?? '';
 $tipo_vehiculo = $plaza['tipo_vehiculo'] ?? 'Coche';
@@ -35,7 +35,7 @@ $propietario_nombre = $plaza['propietario_nombre'] ?? 'Propietario';
                 🚗 <?php echo esc_html($tipo_vehiculo); ?>
             </span>
             <span class="<?php echo $disponible ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'; ?> text-xs font-medium px-3 py-1 rounded-full">
-                <?php echo $disponible ? esc_html__('Disponible', 'flavor-chat-ia') : esc_html__('Ocupada', 'flavor-chat-ia'); ?>
+                <?php echo $disponible ? esc_html__('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Ocupada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
         </div>
 

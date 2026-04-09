@@ -14,7 +14,7 @@ $punto = $item ?? $card_item ?? [];
 if (empty($punto)) return;
 
 $id = $punto['id'] ?? 0;
-$nombre = $punto['nombre'] ?? __('Punto de reciclaje', 'flavor-chat-ia');
+$nombre = $punto['nombre'] ?? __('Punto de reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $direccion = $punto['direccion'] ?? '';
 $url = $punto['url'] ?? '#';
 $distancia = $punto['distancia'] ?? '';
@@ -53,7 +53,7 @@ $tipos = $punto['tipos'] ?? [];
 
         <a href="<?php echo esc_url($url); ?>"
            class="px-4 py-2 rounded-xl bg-emerald-100 text-emerald-700 font-medium text-sm hover:bg-emerald-200 transition-colors flex-shrink-0">
-            <?php echo esc_html__('Cómo llegar', 'flavor-chat-ia'); ?>
+            <?php echo esc_html__('Cómo llegar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 </article>

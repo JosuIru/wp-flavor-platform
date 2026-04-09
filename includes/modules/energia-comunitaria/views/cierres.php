@@ -51,11 +51,11 @@ if (Flavor_Chat_Helpers::tabla_existe($tabla_cierres)) {
 $comunidades = $wpdb->get_results("SELECT id, nombre FROM $tabla_comunidades WHERE estado = 'activa' ORDER BY nombre");
 
 $estados_cierre = [
-    'borrador' => ['label' => __('Borrador', 'flavor-chat-ia'), 'color' => '#6b7280'],
-    'pendiente' => ['label' => __('Pendiente', 'flavor-chat-ia'), 'color' => '#f59e0b'],
-    'procesando' => ['label' => __('Procesando', 'flavor-chat-ia'), 'color' => '#3b82f6'],
-    'completado' => ['label' => __('Completado', 'flavor-chat-ia'), 'color' => '#10b981'],
-    'anulado' => ['label' => __('Anulado', 'flavor-chat-ia'), 'color' => '#ef4444'],
+    'borrador' => ['label' => __('Borrador', 'flavor-platform'), 'color' => '#6b7280'],
+    'pendiente' => ['label' => __('Pendiente', 'flavor-platform'), 'color' => '#f59e0b'],
+    'procesando' => ['label' => __('Procesando', 'flavor-platform'), 'color' => '#3b82f6'],
+    'completado' => ['label' => __('Completado', 'flavor-platform'), 'color' => '#10b981'],
+    'anulado' => ['label' => __('Anulado', 'flavor-platform'), 'color' => '#ef4444'],
 ];
 ?>
 
@@ -63,32 +63,32 @@ $estados_cierre = [
     <!-- KPIs -->
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
         <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #fff; padding: 20px; border-radius: 12px;">
-            <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase;"><?php esc_html_e('Cierres este año', 'flavor-chat-ia'); ?></div>
+            <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase;"><?php esc_html_e('Cierres este año', 'flavor-platform'); ?></div>
             <div style="font-size: 28px; font-weight: bold;"><?php echo $stats['total_cierres']; ?></div>
         </div>
 
         <div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: #fff; padding: 20px; border-radius: 12px;">
-            <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase;"><?php esc_html_e('Pendientes liquidar', 'flavor-chat-ia'); ?></div>
+            <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase;"><?php esc_html_e('Pendientes liquidar', 'flavor-platform'); ?></div>
             <div style="font-size: 28px; font-weight: bold;"><?php echo $stats['pendientes_liquidar']; ?></div>
         </div>
 
         <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #fff; padding: 20px; border-radius: 12px;">
-            <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase;"><?php esc_html_e('kWh repartidos (año)', 'flavor-chat-ia'); ?></div>
+            <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase;"><?php esc_html_e('kWh repartidos (año)', 'flavor-platform'); ?></div>
             <div style="font-size: 28px; font-weight: bold;"><?php echo number_format($stats['kwh_repartidos_ano'], 0); ?></div>
         </div>
 
         <div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: #fff; padding: 20px; border-radius: 12px;">
-            <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase;"><?php esc_html_e('Ahorro total (año)', 'flavor-chat-ia'); ?></div>
+            <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase;"><?php esc_html_e('Ahorro total (año)', 'flavor-platform'); ?></div>
             <div style="font-size: 28px; font-weight: bold;"><?php echo number_format($stats['ahorro_total_ano'], 0); ?> €</div>
         </div>
     </div>
 
     <!-- Acciones -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 style="margin: 0;"><?php esc_html_e('Histórico de Cierres', 'flavor-chat-ia'); ?></h2>
+        <h2 style="margin: 0;"><?php esc_html_e('Histórico de Cierres', 'flavor-platform'); ?></h2>
         <button class="button button-primary" @click="showModalCierre = true">
             <span class="dashicons dashicons-plus-alt2"></span>
-            <?php esc_html_e('Nuevo Cierre de Período', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Nuevo Cierre de Período', 'flavor-platform'); ?>
         </button>
     </div>
 
@@ -119,40 +119,40 @@ $estados_cierre = [
                         <div style="font-size: 20px; font-weight: bold; color: #10b981;">
                             <?php echo number_format($cierre->kwh_total_periodo, 1); ?>
                         </div>
-                        <div style="font-size: 11px; color: #666;"><?php esc_html_e('kWh generados', 'flavor-chat-ia'); ?></div>
+                        <div style="font-size: 11px; color: #666;"><?php esc_html_e('kWh generados', 'flavor-platform'); ?></div>
                     </div>
                     <div style="text-align: center;">
                         <div style="font-size: 20px; font-weight: bold; color: #3b82f6;">
                             <?php echo intval($cierre->num_participantes); ?>
                         </div>
-                        <div style="font-size: 11px; color: #666;"><?php esc_html_e('Participantes', 'flavor-chat-ia'); ?></div>
+                        <div style="font-size: 11px; color: #666;"><?php esc_html_e('Participantes', 'flavor-platform'); ?></div>
                     </div>
                     <div style="text-align: center;">
                         <div style="font-size: 20px; font-weight: bold; color: #8b5cf6;">
                             <?php echo number_format($cierre->total_kwh_repartidos * 0.18, 0); ?>€
                         </div>
-                        <div style="font-size: 11px; color: #666;"><?php esc_html_e('Valor', 'flavor-chat-ia'); ?></div>
+                        <div style="font-size: 11px; color: #666;"><?php esc_html_e('Valor', 'flavor-platform'); ?></div>
                     </div>
                 </div>
 
                 <?php if ($cierre->modelo_reparto): ?>
                 <div style="background: #f3f4f6; padding: 8px 12px; border-radius: 8px; margin-bottom: 12px; font-size: 13px;">
-                    <strong><?php esc_html_e('Modelo:', 'flavor-chat-ia'); ?></strong>
+                    <strong><?php esc_html_e('Modelo:', 'flavor-platform'); ?></strong>
                     <?php echo esc_html(ucfirst($cierre->modelo_reparto)); ?>
                 </div>
                 <?php endif; ?>
 
                 <div style="display: flex; gap: 8px;">
                     <button class="button" style="flex: 1;" @click="verDetalleCierre(<?php echo $cierre->id; ?>)">
-                        <?php esc_html_e('Ver detalle', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver detalle', 'flavor-platform'); ?>
                     </button>
                     <?php if ($cierre->estado === 'pendiente'): ?>
                     <button class="button button-primary" @click="procesarCierre(<?php echo $cierre->id; ?>)">
-                        <?php esc_html_e('Procesar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Procesar', 'flavor-platform'); ?>
                     </button>
                     <?php endif; ?>
                     <a href="<?php echo admin_url('admin-post.php?action=energia_comunitaria_exportar_liquidacion&cierre_id=' . $cierre->id . '&_wpnonce=' . wp_create_nonce('export_liquidacion')); ?>"
-                       class="button" title="<?php esc_attr_e('Exportar CSV', 'flavor-chat-ia'); ?>">
+                       class="button" title="<?php esc_attr_e('Exportar CSV', 'flavor-platform'); ?>">
                         <span class="dashicons dashicons-download"></span>
                     </a>
                 </div>
@@ -163,10 +163,10 @@ $estados_cierre = [
     <?php else: ?>
     <div style="text-align: center; padding: 60px 20px; background: #f9fafb; border-radius: 12px;">
         <span class="dashicons dashicons-chart-pie" style="font-size: 48px; color: #ccc;"></span>
-        <h3><?php esc_html_e('Sin cierres registrados', 'flavor-chat-ia'); ?></h3>
-        <p style="color: #666;"><?php esc_html_e('Crea el primer cierre de período para repartir la energía generada.', 'flavor-chat-ia'); ?></p>
+        <h3><?php esc_html_e('Sin cierres registrados', 'flavor-platform'); ?></h3>
+        <p style="color: #666;"><?php esc_html_e('Crea el primer cierre de período para repartir la energía generada.', 'flavor-platform'); ?></p>
         <button class="button button-primary" @click="showModalCierre = true">
-            <?php esc_html_e('Crear Cierre', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Crear Cierre', 'flavor-platform'); ?>
         </button>
     </div>
     <?php endif; ?>
@@ -175,25 +175,25 @@ $estados_cierre = [
     <div style="margin-top: 24px; padding: 20px; background: #eff6ff; border-radius: 12px; border: 1px solid #bfdbfe;">
         <h4 style="margin: 0 0 12px; color: #1e40af;">
             <span class="dashicons dashicons-info"></span>
-            <?php esc_html_e('Modelos de reparto disponibles', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Modelos de reparto disponibles', 'flavor-platform'); ?>
         </h4>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
             <div>
-                <strong><?php esc_html_e('Proporcional', 'flavor-chat-ia'); ?></strong>
+                <strong><?php esc_html_e('Proporcional', 'flavor-platform'); ?></strong>
                 <p style="margin: 4px 0 0; font-size: 13px; color: #1e3a8a;">
-                    <?php esc_html_e('Reparto según el coeficiente de cada participante (inversión, consumo estimado, etc.)', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Reparto según el coeficiente de cada participante (inversión, consumo estimado, etc.)', 'flavor-platform'); ?>
                 </p>
             </div>
             <div>
-                <strong><?php esc_html_e('Igualitario', 'flavor-chat-ia'); ?></strong>
+                <strong><?php esc_html_e('Igualitario', 'flavor-platform'); ?></strong>
                 <p style="margin: 4px 0 0; font-size: 13px; color: #1e3a8a;">
-                    <?php esc_html_e('Todos los participantes reciben la misma cantidad de energía.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Todos los participantes reciben la misma cantidad de energía.', 'flavor-platform'); ?>
                 </p>
             </div>
             <div>
-                <strong><?php esc_html_e('Por consumo real', 'flavor-chat-ia'); ?></strong>
+                <strong><?php esc_html_e('Por consumo real', 'flavor-platform'); ?></strong>
                 <p style="margin: 4px 0 0; font-size: 13px; color: #1e3a8a;">
-                    <?php esc_html_e('Se prioriza el autoconsumo y se reparte el excedente.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Se prioriza el autoconsumo y se reparte el excedente.', 'flavor-platform'); ?>
                 </p>
             </div>
         </div>
@@ -204,7 +204,7 @@ $estados_cierre = [
          style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center;"
          @click.self="showModalCierre = false">
         <div style="background: #fff; border-radius: 12px; padding: 24px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto;">
-            <h2 style="margin: 0 0 20px;"><?php esc_html_e('Nuevo Cierre de Período', 'flavor-chat-ia'); ?></h2>
+            <h2 style="margin: 0 0 20px;"><?php esc_html_e('Nuevo Cierre de Período', 'flavor-platform'); ?></h2>
             <?php echo do_shortcode('[flavor_energia_form_cierre]'); ?>
         </div>
     </div>
@@ -220,7 +220,7 @@ document.addEventListener('alpine:init', () => {
         },
 
         procesarCierre(id) {
-            if (!confirm('<?php echo esc_js(__('¿Procesar este cierre? Se generarán las liquidaciones para cada participante.', 'flavor-chat-ia')); ?>')) {
+            if (!confirm('<?php echo esc_js(__('¿Procesar este cierre? Se generarán las liquidaciones para cada participante.', 'flavor-platform')); ?>')) {
                 return;
             }
 

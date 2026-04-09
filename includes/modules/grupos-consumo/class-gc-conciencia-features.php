@@ -88,7 +88,7 @@ class Flavor_GC_Conciencia_Features {
         $requeridos = ['ciclo_id', 'producto_id', 'cantidad_sobrante'];
         foreach ($requeridos as $campo) {
             if (empty($datos[$campo])) {
-                return new WP_Error('campo_requerido', sprintf(__('El campo %s es requerido', 'flavor-chat-ia'), $campo));
+                return new WP_Error('campo_requerido', sprintf(__('El campo %s es requerido', 'flavor-platform'), $campo));
             }
         }
 
@@ -108,7 +108,7 @@ class Flavor_GC_Conciencia_Features {
         );
 
         if ($resultado === false) {
-            return new WP_Error('db_error', __('Error al registrar el excedente', 'flavor-chat-ia'));
+            return new WP_Error('db_error', __('Error al registrar el excedente', 'flavor-platform'));
         }
 
         return $wpdb->insert_id;
@@ -154,14 +154,14 @@ class Flavor_GC_Conciencia_Features {
         ), ARRAY_A);
 
         if (!$excedente) {
-            return new WP_Error('no_encontrado', __('Excedente no encontrado', 'flavor-chat-ia'));
+            return new WP_Error('no_encontrado', __('Excedente no encontrado', 'flavor-platform'));
         }
 
         $disponible = $excedente['cantidad_sobrante'] - $excedente['cantidad_reclamada'] - $excedente['cantidad_donada'];
 
         if ($cantidad > $disponible) {
             return new WP_Error('cantidad_excedida', sprintf(
-                __('Solo hay %s unidades disponibles', 'flavor-chat-ia'),
+                __('Solo hay %s unidades disponibles', 'flavor-platform'),
                 number_format($disponible, 2)
             ));
         }
@@ -183,7 +183,7 @@ class Flavor_GC_Conciencia_Features {
         );
 
         if ($resultado === false) {
-            return new WP_Error('db_error', __('Error al registrar la reclamación', 'flavor-chat-ia'));
+            return new WP_Error('db_error', __('Error al registrar la reclamación', 'flavor-platform'));
         }
 
         // Actualizar excedente
@@ -211,7 +211,7 @@ class Flavor_GC_Conciencia_Features {
         check_ajax_referer('gc_conciencia_nonce', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-platform')]);
         }
 
         $resultado = $this->registrar_excedente($_POST);
@@ -221,7 +221,7 @@ class Flavor_GC_Conciencia_Features {
         }
 
         wp_send_json_success([
-            'message' => __('Excedente registrado correctamente', 'flavor-chat-ia'),
+            'message' => __('Excedente registrado correctamente', 'flavor-platform'),
             'id'      => $resultado,
         ]);
     }
@@ -233,14 +233,14 @@ class Flavor_GC_Conciencia_Features {
         check_ajax_referer('gc_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
         }
 
         $excedente_id = intval($_POST['excedente_id'] ?? 0);
         $cantidad = floatval($_POST['cantidad'] ?? 0);
 
         if (!$excedente_id || !$cantidad) {
-            wp_send_json_error(['message' => __('Datos incompletos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos incompletos', 'flavor-platform')]);
         }
 
         $resultado = $this->reclamar_excedente(
@@ -255,7 +255,7 @@ class Flavor_GC_Conciencia_Features {
         }
 
         wp_send_json_success([
-            'message' => __('Excedente reclamado. Te contactaremos para la recogida.', 'flavor-chat-ia'),
+            'message' => __('Excedente reclamado. Te contactaremos para la recogida.', 'flavor-platform'),
             'id'      => $resultado,
         ]);
     }
@@ -479,17 +479,17 @@ class Flavor_GC_Conciencia_Features {
         $ciclo_id = intval($_POST['ciclo_id'] ?? 0);
 
         if (!$ciclo_id) {
-            wp_send_json_error(['message' => __('Ciclo no especificado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Ciclo no especificado', 'flavor-platform')]);
         }
 
         $huella = $this->calcular_huella_ciclo($ciclo_id);
 
         if (empty($huella)) {
-            wp_send_json_error(['message' => __('No hay datos suficientes para calcular', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No hay datos suficientes para calcular', 'flavor-platform')]);
         }
 
         wp_send_json_success([
-            'message' => __('Huella calculada correctamente', 'flavor-chat-ia'),
+            'message' => __('Huella calculada correctamente', 'flavor-platform'),
             'huella'  => $huella,
         ]);
     }
@@ -587,7 +587,7 @@ class Flavor_GC_Conciencia_Features {
         $ciclo_id = isset($_POST['ciclo_id']) ? intval($_POST['ciclo_id']) : null;
 
         if (!$producto_id) {
-            wp_send_json_error(['message' => __('Producto no especificado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Producto no especificado', 'flavor-platform')]);
         }
 
         $desglose = $this->obtener_precio_desglose($producto_id, $ciclo_id);
@@ -640,13 +640,13 @@ class Flavor_GC_Conciencia_Features {
         $requeridos = ['titulo', 'productos_ofrecidos'];
         foreach ($requeridos as $campo) {
             if (empty($datos[$campo])) {
-                return new WP_Error('campo_requerido', sprintf(__('El campo %s es requerido', 'flavor-chat-ia'), $campo));
+                return new WP_Error('campo_requerido', sprintf(__('El campo %s es requerido', 'flavor-platform'), $campo));
             }
         }
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            return new WP_Error('no_logueado', __('Debes iniciar sesión', 'flavor-chat-ia'));
+            return new WP_Error('no_logueado', __('Debes iniciar sesión', 'flavor-platform'));
         }
 
         $productos_ofrecidos = is_array($datos['productos_ofrecidos'])
@@ -684,7 +684,7 @@ class Flavor_GC_Conciencia_Features {
         );
 
         if ($resultado === false) {
-            return new WP_Error('db_error', __('Error al publicar el trueque', 'flavor-chat-ia'));
+            return new WP_Error('db_error', __('Error al publicar el trueque', 'flavor-platform'));
         }
 
         return $wpdb->insert_id;
@@ -750,11 +750,11 @@ class Flavor_GC_Conciencia_Features {
         ), ARRAY_A);
 
         if (!$trueque) {
-            return new WP_Error('no_encontrado', __('Trueque no encontrado', 'flavor-chat-ia'));
+            return new WP_Error('no_encontrado', __('Trueque no encontrado', 'flavor-platform'));
         }
 
         if (!in_array($trueque['estado'], ['abierto', 'en_negociacion'])) {
-            return new WP_Error('cerrado', __('Este trueque ya no acepta respuestas', 'flavor-chat-ia'));
+            return new WP_Error('cerrado', __('Este trueque ya no acepta respuestas', 'flavor-platform'));
         }
 
         // Insertar mensaje
@@ -772,7 +772,7 @@ class Flavor_GC_Conciencia_Features {
         );
 
         if ($resultado === false) {
-            return new WP_Error('db_error', __('Error al enviar el mensaje', 'flavor-chat-ia'));
+            return new WP_Error('db_error', __('Error al enviar el mensaje', 'flavor-platform'));
         }
 
         // Actualizar estado del trueque si es primera respuesta
@@ -805,12 +805,12 @@ class Flavor_GC_Conciencia_Features {
         ), ARRAY_A);
 
         if (!$trueque) {
-            return new WP_Error('no_encontrado', __('Trueque no encontrado', 'flavor-chat-ia'));
+            return new WP_Error('no_encontrado', __('Trueque no encontrado', 'flavor-platform'));
         }
 
         // Solo el dueño puede marcar como completado
         if ($trueque['usuario_ofrece_id'] != $usuario_id && !current_user_can('manage_options')) {
-            return new WP_Error('sin_permisos', __('No tienes permisos para esta acción', 'flavor-chat-ia'));
+            return new WP_Error('sin_permisos', __('No tienes permisos para esta acción', 'flavor-platform'));
         }
 
         $wpdb->update(
@@ -834,7 +834,7 @@ class Flavor_GC_Conciencia_Features {
         check_ajax_referer('gc_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
         }
 
         $resultado = $this->publicar_trueque($_POST);
@@ -844,7 +844,7 @@ class Flavor_GC_Conciencia_Features {
         }
 
         wp_send_json_success([
-            'message' => __('Trueque publicado correctamente', 'flavor-chat-ia'),
+            'message' => __('Trueque publicado correctamente', 'flavor-platform'),
             'id'      => $resultado,
         ]);
     }
@@ -856,14 +856,14 @@ class Flavor_GC_Conciencia_Features {
         check_ajax_referer('gc_conciencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
         }
 
         $trueque_id = intval($_POST['trueque_id'] ?? 0);
         $mensaje = sanitize_textarea_field($_POST['mensaje'] ?? '');
 
         if (!$trueque_id || !$mensaje) {
-            wp_send_json_error(['message' => __('Datos incompletos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos incompletos', 'flavor-platform')]);
         }
 
         $propuesta = null;
@@ -878,7 +878,7 @@ class Flavor_GC_Conciencia_Features {
         }
 
         wp_send_json_success([
-            'message' => __('Mensaje enviado', 'flavor-chat-ia'),
+            'message' => __('Mensaje enviado', 'flavor-platform'),
             'id'      => $resultado,
         ]);
     }
@@ -948,7 +948,7 @@ class Flavor_GC_Conciencia_Features {
         }
 
         if (!$ciclo_id) {
-            return '<p class="gc-aviso">' . __('No hay ciclos disponibles', 'flavor-chat-ia') . '</p>';
+            return '<p class="gc-aviso">' . __('No hay ciclos disponibles', 'flavor-platform') . '</p>';
         }
 
         $huella = $this->obtener_huella_ciclo(intval($ciclo_id));
@@ -973,7 +973,7 @@ class Flavor_GC_Conciencia_Features {
         ], $atts);
 
         if (!$atts['producto_id']) {
-            return '<p class="gc-aviso">' . __('Producto no especificado', 'flavor-chat-ia') . '</p>';
+            return '<p class="gc-aviso">' . __('Producto no especificado', 'flavor-platform') . '</p>';
         }
 
         $desglose = $this->obtener_precio_desglose(
@@ -1013,9 +1013,9 @@ class Flavor_GC_Conciencia_Features {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce'   => wp_create_nonce('gc_conciencia_nonce'),
             'i18n'    => [
-                'enviando'   => __('Enviando...', 'flavor-chat-ia'),
-                'error'      => __('Error al procesar', 'flavor-chat-ia'),
-                'confirmado' => __('Operación completada', 'flavor-chat-ia'),
+                'enviando'   => __('Enviando...', 'flavor-platform'),
+                'error'      => __('Error al procesar', 'flavor-platform'),
+                'confirmado' => __('Operación completada', 'flavor-platform'),
             ],
         ]);
 
@@ -1044,7 +1044,7 @@ class Flavor_GC_Conciencia_Features {
         ));
         $stats[] = [
             'value' => $excedentes_reclamados,
-            'label' => __('Excedentes aprovechados', 'flavor-chat-ia'),
+            'label' => __('Excedentes aprovechados', 'flavor-platform'),
             'icon'  => 'carrot',
         ];
 
@@ -1059,7 +1059,7 @@ class Flavor_GC_Conciencia_Features {
         ));
         $stats[] = [
             'value' => $trueques_activos,
-            'label' => __('Trueques activos', 'flavor-chat-ia'),
+            'label' => __('Trueques activos', 'flavor-platform'),
             'icon'  => 'randomize',
         ];
 

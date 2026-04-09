@@ -17,8 +17,8 @@
 if (!defined('ABSPATH')) exit;
 
 // Extraer variables con valores por defecto
-$titulo_formulario = isset($args['titulo']) ? $args['titulo'] : __('Solicitud de Acceso a Información Pública', 'flavor-chat-ia');
-$descripcion_formulario = isset($args['descripcion']) ? $args['descripcion'] : __('Complete el siguiente formulario para solicitar información pública según la Ley de Transparencia.', 'flavor-chat-ia');
+$titulo_formulario = isset($args['titulo']) ? $args['titulo'] : __('Solicitud de Acceso a Información Pública', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$descripcion_formulario = isset($args['descripcion']) ? $args['descripcion'] : __('Complete el siguiente formulario para solicitar información pública según la Ley de Transparencia.', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $mostrar_urgencia = isset($args['mostrar_urgencia']) ? $args['mostrar_urgencia'] : true;
 $mostrar_adjuntos = isset($args['mostrar_adjuntos']) ? $args['mostrar_adjuntos'] : true;
 $url_terminos = isset($args['terminos_url']) ? $args['terminos_url'] : '#';
@@ -27,35 +27,35 @@ $nonce_field = wp_nonce_field('flavor_solicitud_transparencia', 'flavor_solicitu
 
 // Categorías de demostración
 $categorias_solicitud = isset($args['categorias']) ? $args['categorias'] : array(
-    'contratos' => __('Contratos y licitaciones', 'flavor-chat-ia'),
-    'presupuestos' => __('Presupuestos y cuentas', 'flavor-chat-ia'),
-    'subvenciones' => __('Subvenciones y ayudas', 'flavor-chat-ia'),
-    'urbanismo' => __('Urbanismo y obras', 'flavor-chat-ia'),
-    'personal' => __('Personal y retribuciones', 'flavor-chat-ia'),
-    'medioambiente' => __('Medio ambiente', 'flavor-chat-ia'),
-    'servicios' => __('Servicios públicos', 'flavor-chat-ia'),
-    'otros' => __('Otros', 'flavor-chat-ia')
+    'contratos' => __('Contratos y licitaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'presupuestos' => __('Presupuestos y cuentas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'subvenciones' => __('Subvenciones y ayudas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'urbanismo' => __('Urbanismo y obras', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'personal' => __('Personal y retribuciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'medioambiente' => __('Medio ambiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'servicios' => __('Servicios públicos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'otros' => __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN)
 );
 
 // Niveles de urgencia
 $niveles_urgencia = array(
-    'normal' => __('Normal (20 días hábiles)', 'flavor-chat-ia'),
-    'preferente' => __('Preferente (10 días hábiles)', 'flavor-chat-ia'),
-    'urgente' => __('Urgente (5 días hábiles)', 'flavor-chat-ia')
+    'normal' => __('Normal (20 días hábiles)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'preferente' => __('Preferente (10 días hábiles)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'urgente' => __('Urgente (5 días hábiles)', FLAVOR_PLATFORM_TEXT_DOMAIN)
 );
 
 // Tipos de identificación
 $tipos_identificacion = array(
-    'dni' => __('DNI/NIE', 'flavor-chat-ia'),
-    'pasaporte' => __('Pasaporte', 'flavor-chat-ia'),
-    'cif' => __('CIF (Personas jurídicas)', 'flavor-chat-ia')
+    'dni' => __('DNI/NIE', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'pasaporte' => __('Pasaporte', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cif' => __('CIF (Personas jurídicas)', FLAVOR_PLATFORM_TEXT_DOMAIN)
 );
 
 // Formatos de respuesta preferidos
 $formatos_respuesta = array(
-    'electronico' => __('Electrónico (email/descarga)', 'flavor-chat-ia'),
-    'papel' => __('Copia en papel', 'flavor-chat-ia'),
-    'presencial' => __('Consulta presencial', 'flavor-chat-ia')
+    'electronico' => __('Electrónico (email/descarga)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'papel' => __('Copia en papel', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'presencial' => __('Consulta presencial', FLAVOR_PLATFORM_TEXT_DOMAIN)
 );
 ?>
 
@@ -75,13 +75,13 @@ $formatos_respuesta = array(
         <fieldset class="flavor-solicitud-fieldset">
             <legend class="flavor-solicitud-legend">
                 <span class="flavor-solicitud-step">1</span>
-                <?php esc_html_e('Datos del solicitante', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Datos del solicitante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </legend>
 
             <div class="flavor-solicitud-grid">
                 <div class="flavor-solicitud-campo">
                     <label for="flavor-nombre" class="flavor-solicitud-label">
-                        <?php esc_html_e('Nombre completo', 'flavor-chat-ia'); ?> <span class="flavor-requerido">*</span>
+                        <?php esc_html_e('Nombre completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="flavor-requerido">*</span>
                     </label>
                     <input
                         type="text"
@@ -89,16 +89,16 @@ $formatos_respuesta = array(
                         name="solicitante_nombre"
                         class="flavor-solicitud-input"
                         required
-                        placeholder="<?php esc_attr_e('Nombre y apellidos', 'flavor-chat-ia'); ?>"
+                        placeholder="<?php esc_attr_e('Nombre y apellidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                     >
                 </div>
 
                 <div class="flavor-solicitud-campo">
                     <label for="flavor-tipo-id" class="flavor-solicitud-label">
-                        <?php esc_html_e('Tipo de identificación', 'flavor-chat-ia'); ?> <span class="flavor-requerido">*</span>
+                        <?php esc_html_e('Tipo de identificación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="flavor-requerido">*</span>
                     </label>
                     <select id="flavor-tipo-id" name="solicitante_tipo_id" class="flavor-solicitud-select" required>
-                        <option value=""><?php esc_html_e('Seleccione...', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Seleccione...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($tipos_identificacion as $clave_tipo => $nombre_tipo) : ?>
                         <option value="<?php echo esc_attr($clave_tipo); ?>"><?php echo esc_html($nombre_tipo); ?></option>
                         <?php endforeach; ?>
@@ -107,7 +107,7 @@ $formatos_respuesta = array(
 
                 <div class="flavor-solicitud-campo">
                     <label for="flavor-numero-id" class="flavor-solicitud-label">
-                        <?php esc_html_e('Número de identificación', 'flavor-chat-ia'); ?> <span class="flavor-requerido">*</span>
+                        <?php esc_html_e('Número de identificación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="flavor-requerido">*</span>
                     </label>
                     <input
                         type="text"
@@ -115,13 +115,13 @@ $formatos_respuesta = array(
                         name="solicitante_numero_id"
                         class="flavor-solicitud-input"
                         required
-                        placeholder="<?php esc_attr_e('Ej: 12345678A', 'flavor-chat-ia'); ?>"
+                        placeholder="<?php esc_attr_e('Ej: 12345678A', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                     >
                 </div>
 
                 <div class="flavor-solicitud-campo">
                     <label for="flavor-email" class="flavor-solicitud-label">
-                        <?php esc_html_e('Correo electrónico', 'flavor-chat-ia'); ?> <span class="flavor-requerido">*</span>
+                        <?php esc_html_e('Correo electrónico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="flavor-requerido">*</span>
                     </label>
                     <input
                         type="email"
@@ -129,33 +129,33 @@ $formatos_respuesta = array(
                         name="solicitante_email"
                         class="flavor-solicitud-input"
                         required
-                        placeholder="<?php esc_attr_e('correo@ejemplo.com', 'flavor-chat-ia'); ?>"
+                        placeholder="<?php esc_attr_e('correo@ejemplo.com', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                     >
                 </div>
 
                 <div class="flavor-solicitud-campo">
                     <label for="flavor-telefono" class="flavor-solicitud-label">
-                        <?php esc_html_e('Teléfono', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <input
                         type="tel"
                         id="flavor-telefono"
                         name="solicitante_telefono"
                         class="flavor-solicitud-input"
-                        placeholder="<?php esc_attr_e('Ej: 600123456', 'flavor-chat-ia'); ?>"
+                        placeholder="<?php esc_attr_e('Ej: 600123456', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                     >
                 </div>
 
                 <div class="flavor-solicitud-campo">
                     <label for="flavor-direccion" class="flavor-solicitud-label">
-                        <?php esc_html_e('Dirección postal', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Dirección postal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <input
                         type="text"
                         id="flavor-direccion"
                         name="solicitante_direccion"
                         class="flavor-solicitud-input"
-                        placeholder="<?php esc_attr_e('Calle, número, ciudad, CP', 'flavor-chat-ia'); ?>"
+                        placeholder="<?php esc_attr_e('Calle, número, ciudad, CP', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                     >
                 </div>
             </div>
@@ -165,15 +165,15 @@ $formatos_respuesta = array(
         <fieldset class="flavor-solicitud-fieldset">
             <legend class="flavor-solicitud-legend">
                 <span class="flavor-solicitud-step">2</span>
-                <?php esc_html_e('Información solicitada', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Información solicitada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </legend>
 
             <div class="flavor-solicitud-campo flavor-solicitud-campo-full">
                 <label for="flavor-categoria" class="flavor-solicitud-label">
-                    <?php esc_html_e('Categoría de la solicitud', 'flavor-chat-ia'); ?> <span class="flavor-requerido">*</span>
+                    <?php esc_html_e('Categoría de la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="flavor-requerido">*</span>
                 </label>
                 <select id="flavor-categoria" name="solicitud_categoria" class="flavor-solicitud-select" required>
-                    <option value=""><?php esc_html_e('Seleccione una categoría...', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Seleccione una categoría...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($categorias_solicitud as $clave_categoria => $nombre_categoria) : ?>
                     <option value="<?php echo esc_attr($clave_categoria); ?>"><?php echo esc_html($nombre_categoria); ?></option>
                     <?php endforeach; ?>
@@ -182,7 +182,7 @@ $formatos_respuesta = array(
 
             <div class="flavor-solicitud-campo flavor-solicitud-campo-full">
                 <label for="flavor-asunto" class="flavor-solicitud-label">
-                    <?php esc_html_e('Asunto de la solicitud', 'flavor-chat-ia'); ?> <span class="flavor-requerido">*</span>
+                    <?php esc_html_e('Asunto de la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="flavor-requerido">*</span>
                 </label>
                 <input
                     type="text"
@@ -190,13 +190,13 @@ $formatos_respuesta = array(
                     name="solicitud_asunto"
                     class="flavor-solicitud-input"
                     required
-                    placeholder="<?php esc_attr_e('Breve descripción de la información solicitada', 'flavor-chat-ia'); ?>"
+                    placeholder="<?php esc_attr_e('Breve descripción de la información solicitada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                 >
             </div>
 
             <div class="flavor-solicitud-campo flavor-solicitud-campo-full">
                 <label for="flavor-descripcion" class="flavor-solicitud-label">
-                    <?php esc_html_e('Descripción detallada', 'flavor-chat-ia'); ?> <span class="flavor-requerido">*</span>
+                    <?php esc_html_e('Descripción detallada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="flavor-requerido">*</span>
                 </label>
                 <textarea
                     id="flavor-descripcion"
@@ -204,23 +204,23 @@ $formatos_respuesta = array(
                     class="flavor-solicitud-textarea"
                     rows="5"
                     required
-                    placeholder="<?php esc_attr_e('Describa con el mayor detalle posible la información que desea obtener, incluyendo fechas, referencias, o cualquier dato que facilite su localización.', 'flavor-chat-ia'); ?>"
+                    placeholder="<?php esc_attr_e('Describa con el mayor detalle posible la información que desea obtener, incluyendo fechas, referencias, o cualquier dato que facilite su localización.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                 ></textarea>
-                <p class="flavor-solicitud-ayuda"><?php esc_html_e('Sea lo más específico posible para agilizar la tramitación de su solicitud.', 'flavor-chat-ia'); ?></p>
+                <p class="flavor-solicitud-ayuda"><?php esc_html_e('Sea lo más específico posible para agilizar la tramitación de su solicitud.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <div class="flavor-solicitud-campo flavor-solicitud-campo-full">
                 <label for="flavor-motivo" class="flavor-solicitud-label">
-                    <?php esc_html_e('Motivo o finalidad (opcional)', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Motivo o finalidad (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </label>
                 <textarea
                     id="flavor-motivo"
                     name="solicitud_motivo"
                     class="flavor-solicitud-textarea"
                     rows="2"
-                    placeholder="<?php esc_attr_e('Indique el motivo de su solicitud si lo considera relevante', 'flavor-chat-ia'); ?>"
+                    placeholder="<?php esc_attr_e('Indique el motivo de su solicitud si lo considera relevante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                 ></textarea>
-                <p class="flavor-solicitud-ayuda"><?php esc_html_e('No es obligatorio indicar el motivo de su solicitud según la Ley de Transparencia.', 'flavor-chat-ia'); ?></p>
+                <p class="flavor-solicitud-ayuda"><?php esc_html_e('No es obligatorio indicar el motivo de su solicitud según la Ley de Transparencia.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </fieldset>
 
@@ -228,13 +228,13 @@ $formatos_respuesta = array(
         <fieldset class="flavor-solicitud-fieldset">
             <legend class="flavor-solicitud-legend">
                 <span class="flavor-solicitud-step">3</span>
-                <?php esc_html_e('Opciones de entrega', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Opciones de entrega', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </legend>
 
             <div class="flavor-solicitud-grid">
                 <div class="flavor-solicitud-campo">
                     <label for="flavor-formato" class="flavor-solicitud-label">
-                        <?php esc_html_e('Formato de respuesta preferido', 'flavor-chat-ia'); ?> <span class="flavor-requerido">*</span>
+                        <?php esc_html_e('Formato de respuesta preferido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="flavor-requerido">*</span>
                     </label>
                     <select id="flavor-formato" name="solicitud_formato" class="flavor-solicitud-select" required>
                         <?php foreach ($formatos_respuesta as $clave_formato => $nombre_formato) : ?>
@@ -246,7 +246,7 @@ $formatos_respuesta = array(
                 <?php if ($mostrar_urgencia) : ?>
                 <div class="flavor-solicitud-campo">
                     <label for="flavor-urgencia" class="flavor-solicitud-label">
-                        <?php esc_html_e('Nivel de urgencia', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Nivel de urgencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </label>
                     <select id="flavor-urgencia" name="solicitud_urgencia" class="flavor-solicitud-select">
                         <?php foreach ($niveles_urgencia as $clave_urgencia => $nombre_urgencia) : ?>
@@ -260,7 +260,7 @@ $formatos_respuesta = array(
             <?php if ($mostrar_adjuntos) : ?>
             <div class="flavor-solicitud-campo flavor-solicitud-campo-full">
                 <label for="flavor-adjuntos" class="flavor-solicitud-label">
-                    <?php esc_html_e('Documentación adjunta (opcional)', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Documentación adjunta (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </label>
                 <div class="flavor-solicitud-dropzone" id="flavor-dropzone">
                     <input
@@ -273,8 +273,8 @@ $formatos_respuesta = array(
                     >
                     <div class="flavor-dropzone-contenido">
                         <span class="dashicons dashicons-upload"></span>
-                        <p><?php esc_html_e('Arrastre archivos aquí o haga clic para seleccionar', 'flavor-chat-ia'); ?></p>
-                        <span class="flavor-dropzone-formatos"><?php esc_html_e('PDF, DOC, DOCX, JPG, PNG (máx. 10MB por archivo)', 'flavor-chat-ia'); ?></span>
+                        <p><?php esc_html_e('Arrastre archivos aquí o haga clic para seleccionar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                        <span class="flavor-dropzone-formatos"><?php esc_html_e('PDF, DOC, DOCX, JPG, PNG (máx. 10MB por archivo)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-solicitud-archivos-lista" id="flavor-archivos-lista"></div>
@@ -295,7 +295,7 @@ $formatos_respuesta = array(
                     <span class="flavor-checkbox-texto">
                         <?php
                         printf(
-                            esc_html__('He leído y acepto la %spolítica de privacidad%s y el tratamiento de mis datos personales.', 'flavor-chat-ia'),
+                            esc_html__('He leído y acepto la %spolítica de privacidad%s y el tratamiento de mis datos personales.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             '<a href="' . esc_url($url_terminos) . '" target="_blank">',
                             '</a>'
                         );
@@ -313,7 +313,7 @@ $formatos_respuesta = array(
                         class="flavor-solicitud-checkbox"
                     >
                     <span class="flavor-checkbox-texto">
-                        <?php esc_html_e('Deseo recibir notificaciones sobre el estado de mi solicitud por correo electrónico.', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Deseo recibir notificaciones sobre el estado de mi solicitud por correo electrónico.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                 </label>
             </div>
@@ -321,11 +321,11 @@ $formatos_respuesta = array(
             <div class="flavor-solicitud-acciones">
                 <button type="reset" class="flavor-solicitud-btn flavor-solicitud-btn-secundario">
                     <span class="dashicons dashicons-dismiss"></span>
-                    <?php esc_html_e('Limpiar formulario', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Limpiar formulario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="submit" class="flavor-solicitud-btn flavor-solicitud-btn-primario">
                     <span class="dashicons dashicons-yes-alt"></span>
-                    <?php esc_html_e('Enviar solicitud', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Enviar solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </fieldset>
@@ -334,13 +334,13 @@ $formatos_respuesta = array(
     <aside class="flavor-solicitud-info-legal">
         <h3 class="flavor-info-legal-titulo">
             <span class="dashicons dashicons-info-outline"></span>
-            <?php esc_html_e('Información importante', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Información importante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h3>
         <ul class="flavor-info-legal-lista">
-            <li><?php esc_html_e('El plazo máximo de respuesta es de un mes desde la recepción de la solicitud.', 'flavor-chat-ia'); ?></li>
-            <li><?php esc_html_e('Recibirá un acuse de recibo con el número de expediente asignado.', 'flavor-chat-ia'); ?></li>
-            <li><?php esc_html_e('Puede consultar el estado de su solicitud en cualquier momento.', 'flavor-chat-ia'); ?></li>
-            <li><?php esc_html_e('Los datos personales serán tratados conforme al RGPD y la LOPDGDD.', 'flavor-chat-ia'); ?></li>
+            <li><?php esc_html_e('El plazo máximo de respuesta es de un mes desde la recepción de la solicitud.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+            <li><?php esc_html_e('Recibirá un acuse de recibo con el número de expediente asignado.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+            <li><?php esc_html_e('Puede consultar el estado de su solicitud en cualquier momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+            <li><?php esc_html_e('Los datos personales serán tratados conforme al RGPD y la LOPDGDD.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
         </ul>
     </aside>
 </div>

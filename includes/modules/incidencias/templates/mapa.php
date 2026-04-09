@@ -12,7 +12,7 @@ $tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
 
 // Verificar si existe la tabla
 if (!Flavor_Chat_Helpers::tabla_existe($tabla_incidencias)) {
-    echo '<div class="incidencias-empty"><p>' . esc_html__('El módulo de incidencias no está configurado.', 'flavor-chat-ia') . '</p></div>';
+    echo '<div class="incidencias-empty"><p>' . esc_html__('El módulo de incidencias no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
 
@@ -53,15 +53,15 @@ $tipos_disponibles = $wpdb->get_col("SELECT DISTINCT tipo FROM $tabla_incidencia
 // Labels para estados (español e inglés)
 $estados_labels = [
     // Estados en español
-    'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-    'en_proceso' => __('En proceso', 'flavor-chat-ia'),
-    'resuelta' => __('Resuelta', 'flavor-chat-ia'),
-    'cerrada' => __('Cerrada', 'flavor-chat-ia'),
+    'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'en_proceso' => __('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'resuelta' => __('Resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cerrada' => __('Cerrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
     // Estados en inglés (para datos existentes)
-    'pending' => __('Pendiente', 'flavor-chat-ia'),
-    'in_progress' => __('En proceso', 'flavor-chat-ia'),
-    'resolved' => __('Resuelta', 'flavor-chat-ia'),
-    'closed' => __('Cerrada', 'flavor-chat-ia'),
+    'pending' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'in_progress' => __('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'resolved' => __('Resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'closed' => __('Cerrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $estados_colors = [
@@ -102,11 +102,11 @@ foreach ($incidencias as $incidencia) {
 
 <div class="incidencias-mapa-wrapper">
     <div class="mapa-header">
-        <h2><?php esc_html_e('Mapa de Incidencias', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Mapa de Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <?php if (is_user_logged_in()): ?>
             <a href="<?php echo esc_url($incidencias_base_url . 'reportar/'); ?>" class="btn btn-primary">
                 <span class="dashicons dashicons-plus-alt2"></span>
-                <?php esc_html_e('Reportar incidencia', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Reportar incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         <?php endif; ?>
     </div>
@@ -115,7 +115,7 @@ foreach ($incidencias as $incidencia) {
     <div class="mapa-filtros">
         <div class="filtro-grupo">
             <select id="filtro-estado" onchange="filtrarMapa()">
-                <option value=""><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php esc_html_e('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 <?php foreach ($estados_labels as $estado => $label): ?>
                     <option value="<?php echo esc_attr($estado); ?>" <?php selected($estado_filtro, $estado); ?>>
                         <?php echo esc_html($label); ?>
@@ -126,7 +126,7 @@ foreach ($incidencias as $incidencia) {
         <?php if ($tipos_disponibles): ?>
             <div class="filtro-grupo">
                 <select id="filtro-tipo" onchange="filtrarMapa()">
-                    <option value=""><?php esc_html_e('Todos los tipos', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todos los tipos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($tipos_disponibles as $tipo): ?>
                         <option value="<?php echo esc_attr($tipo); ?>" <?php selected($tipo_filtro, $tipo); ?>>
                             <?php echo esc_html(ucfirst($tipo)); ?>
@@ -154,7 +154,7 @@ foreach ($incidencias as $incidencia) {
     <div class="mapa-info">
         <span class="incidencias-count">
             <?php printf(
-                esc_html(_n('%d incidencia en el mapa', '%d incidencias en el mapa', count($incidencias), 'flavor-chat-ia')),
+                esc_html(_n('%d incidencia en el mapa', '%d incidencias en el mapa', count($incidencias), FLAVOR_PLATFORM_TEXT_DOMAIN)),
                 count($incidencias)
             ); ?>
         </span>
@@ -174,7 +174,7 @@ foreach ($incidencias as $incidencia) {
             <?php endforeach; ?>
             <?php if (count($incidencias) > 5): ?>
                 <a href="<?php echo esc_url($incidencias_base_url); ?>" class="ver-todas">
-                    <?php esc_html_e('Ver todas las incidencias', 'flavor-chat-ia'); ?> →
+                    <?php esc_html_e('Ver todas las incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> →
                 </a>
             <?php endif; ?>
         </div>

@@ -56,14 +56,14 @@ class Flavor_Huella_Ecologica_Dashboard_Tab {
      */
     public function registrar_tabs($tabs) {
         $tabs['huella-resumen'] = [
-            'label' => __('Huella Ecológica', 'flavor-chat-ia'),
+            'label' => __('Huella Ecológica', 'flavor-platform'),
             'icon' => 'globe',
             'callback' => [$this, 'render_tab_resumen'],
             'orden' => 70,
         ];
 
         $tabs['huella-seguimiento'] = [
-            'label' => __('Mi Seguimiento', 'flavor-chat-ia'),
+            'label' => __('Mi Seguimiento', 'flavor-platform'),
             'icon' => 'chart-line',
             'callback' => [$this, 'render_tab_seguimiento'],
             'orden' => 71,
@@ -78,7 +78,7 @@ class Flavor_Huella_Ecologica_Dashboard_Tab {
     public function render_tab_resumen() {
         $user_id = get_current_user_id();
         if (!$user_id) {
-            echo '<p>' . esc_html__('Debes iniciar sesión para ver este contenido.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Debes iniciar sesión para ver este contenido.', 'flavor-platform') . '</p>';
             return;
         }
 
@@ -123,8 +123,8 @@ class Flavor_Huella_Ecologica_Dashboard_Tab {
         ?>
         <div class="flavor-panel flavor-huella-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-admin-site-alt"></span> <?php esc_html_e('Mi Huella Ecológica', 'flavor-chat-ia'); ?></h2>
-                <p class="flavor-panel-subtitle"><?php esc_html_e('Mide, reduce y compensa tu impacto ambiental', 'flavor-chat-ia'); ?></p>
+                <h2><span class="dashicons dashicons-admin-site-alt"></span> <?php esc_html_e('Mi Huella Ecológica', 'flavor-platform'); ?></h2>
+                <p class="flavor-panel-subtitle"><?php esc_html_e('Mide, reduce y compensa tu impacto ambiental', 'flavor-platform'); ?></p>
             </div>
 
             <div class="flavor-panel-kpis">
@@ -132,28 +132,28 @@ class Flavor_Huella_Ecologica_Dashboard_Tab {
                     <span class="flavor-kpi-icon dashicons dashicons-chart-pie"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($mi_huella_actual, 1); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Kg CO₂ (último registro)', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Kg CO₂ (último registro)', 'flavor-platform'); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icon dashicons dashicons-groups"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($huella_media_comunidad, 1); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Media Comunidad', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Media Comunidad', 'flavor-platform'); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icon dashicons dashicons-clipboard"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($mis_registros); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Registros', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Registros', 'flavor-platform'); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-success">
                     <span class="flavor-kpi-icon dashicons dashicons-yes-alt"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($objetivos_cumplidos); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Objetivos Cumplidos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Objetivos Cumplidos', 'flavor-platform'); ?></span>
                     </div>
                 </div>
             </div>
@@ -162,32 +162,32 @@ class Flavor_Huella_Ecologica_Dashboard_Tab {
                 <div class="flavor-panel-highlight <?php echo $comparacion <= 0 ? 'flavor-highlight-success' : 'flavor-highlight-warning'; ?>">
                     <?php if ($comparacion <= 0): ?>
                         <span class="dashicons dashicons-thumbs-up"></span>
-                        <p><?php printf(esc_html__('Tu huella es un %d%% menor que la media de la comunidad.', 'flavor-chat-ia'), abs($comparacion)); ?></p>
+                        <p><?php printf(esc_html__('Tu huella es un %d%% menor que la media de la comunidad.', 'flavor-platform'), abs($comparacion)); ?></p>
                     <?php else: ?>
                         <span class="dashicons dashicons-warning"></span>
-                        <p><?php printf(esc_html__('Tu huella es un %d%% mayor que la media. ¡Sigue trabajando!', 'flavor-chat-ia'), $comparacion); ?></p>
+                        <p><?php printf(esc_html__('Tu huella es un %d%% mayor que la media. ¡Sigue trabajando!', 'flavor-platform'), $comparacion); ?></p>
                     <?php endif; ?>
                 </div>
             <?php endif; ?>
 
             <div class="flavor-panel-section">
-                <h3><?php esc_html_e('Áreas de Impacto', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Áreas de Impacto', 'flavor-platform'); ?></h3>
                 <div class="flavor-impact-grid">
                     <div class="flavor-impact-item">
                         <span class="dashicons dashicons-car"></span>
-                        <span><?php esc_html_e('Transporte', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Transporte', 'flavor-platform'); ?></span>
                     </div>
                     <div class="flavor-impact-item">
                         <span class="dashicons dashicons-admin-home"></span>
-                        <span><?php esc_html_e('Hogar', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Hogar', 'flavor-platform'); ?></span>
                     </div>
                     <div class="flavor-impact-item">
                         <span class="dashicons dashicons-food"></span>
-                        <span><?php esc_html_e('Alimentación', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Alimentación', 'flavor-platform'); ?></span>
                     </div>
                     <div class="flavor-impact-item">
                         <span class="dashicons dashicons-cart"></span>
-                        <span><?php esc_html_e('Consumo', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Consumo', 'flavor-platform'); ?></span>
                     </div>
                 </div>
             </div>
@@ -195,15 +195,15 @@ class Flavor_Huella_Ecologica_Dashboard_Tab {
             <div class="flavor-panel-actions">
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('huella_ecologica', 'calcular')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-calculator"></span>
-                    <?php esc_html_e('Calcular Huella', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Calcular Huella', 'flavor-platform'); ?>
                 </a>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('huella_ecologica', 'consejos')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-lightbulb"></span>
-                    <?php esc_html_e('Consejos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Consejos', 'flavor-platform'); ?>
                 </a>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('huella_ecologica', 'compensar')); ?>" class="flavor-btn flavor-btn-outline">
                     <span class="dashicons dashicons-palmtree"></span>
-                    <?php esc_html_e('Compensar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Compensar', 'flavor-platform'); ?>
                 </a>
             </div>
         </div>
@@ -216,7 +216,7 @@ class Flavor_Huella_Ecologica_Dashboard_Tab {
     public function render_tab_seguimiento() {
         $user_id = get_current_user_id();
         if (!$user_id) {
-            echo '<p>' . esc_html__('Debes iniciar sesión para ver este contenido.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Debes iniciar sesión para ver este contenido.', 'flavor-platform') . '</p>';
             return;
         }
 
@@ -234,20 +234,20 @@ class Flavor_Huella_Ecologica_Dashboard_Tab {
         ?>
         <div class="flavor-panel flavor-seguimiento-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-chart-area"></span> <?php esc_html_e('Mi Seguimiento', 'flavor-chat-ia'); ?></h2>
+                <h2><span class="dashicons dashicons-chart-area"></span> <?php esc_html_e('Mi Seguimiento', 'flavor-platform'); ?></h2>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('huella_ecologica', 'calcular')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt"></span>
-                    <?php esc_html_e('Nuevo Registro', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Nuevo Registro', 'flavor-platform'); ?>
                 </a>
             </div>
 
             <?php if (empty($registros)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-chart-line"></span>
-                    <p><?php esc_html_e('Aún no has registrado tu huella ecológica.', 'flavor-chat-ia'); ?></p>
-                    <p class="flavor-text-muted"><?php esc_html_e('Calcular tu huella es el primer paso para reducirla.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Aún no has registrado tu huella ecológica.', 'flavor-platform'); ?></p>
+                    <p class="flavor-text-muted"><?php esc_html_e('Calcular tu huella es el primer paso para reducirla.', 'flavor-platform'); ?></p>
                     <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('huella_ecologica', 'calcular')); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php esc_html_e('Calcular mi huella', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Calcular mi huella', 'flavor-platform'); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -255,10 +255,10 @@ class Flavor_Huella_Ecologica_Dashboard_Tab {
                     <table class="flavor-table">
                         <thead>
                             <tr>
-                                <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('CO₂ (kg)', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Tendencia', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Fecha', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Categoría', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('CO₂ (kg)', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Tendencia', 'flavor-platform'); ?></th>
                             </tr>
                         </thead>
                         <tbody>

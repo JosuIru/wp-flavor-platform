@@ -78,8 +78,8 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
 
         $nc->send(
             $user_id,
-            __('Incidencia reportada', 'flavor-chat-ia'),
-            sprintf(__('Tu incidencia #%d ha sido registrada. Te mantendremos informado del progreso.', 'flavor-chat-ia'), $ticket_id),
+            __('Incidencia reportada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            sprintf(__('Tu incidencia #%d ha sido registrada. Te mantendremos informado del progreso.', FLAVOR_PLATFORM_TEXT_DOMAIN), $ticket_id),
             [
                 'module_id' => $this->id,
                 'type' => 'success',
@@ -103,18 +103,18 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         $nc = Flavor_Notification_Center::get_instance();
 
         $status_labels = [
-            'pending' => __('Pendiente', 'flavor-chat-ia'),
-            'in_progress' => __('En progreso', 'flavor-chat-ia'),
-            'resolved' => __('Resuelta', 'flavor-chat-ia'),
-            'closed' => __('Cerrada', 'flavor-chat-ia'),
+            'pending' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'in_progress' => __('En progreso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'resolved' => __('Resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'closed' => __('Cerrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $status_label = $status_labels[$new_status] ?? $new_status;
 
         $nc->send(
             $user_id,
-            __('Estado de incidencia actualizado', 'flavor-chat-ia'),
-            sprintf(__('El estado de tu incidencia #%d cambió a: %s', 'flavor-chat-ia'), $ticket_id, $status_label),
+            __('Estado de incidencia actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            sprintf(__('El estado de tu incidencia #%d cambió a: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $ticket_id, $status_label),
             [
                 'module_id' => $this->id,
                 'type' => 'info',
@@ -140,8 +140,8 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
 
         $nc->send(
             $user_id,
-            __('Nuevo comentario en tu incidencia', 'flavor-chat-ia'),
-            sprintf(__('%s ha comentado en tu incidencia #%d', 'flavor-chat-ia'), $comment_author, $ticket_id),
+            __('Nuevo comentario en tu incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            sprintf(__('%s ha comentado en tu incidencia #%d', FLAVOR_PLATFORM_TEXT_DOMAIN), $comment_author, $ticket_id),
             [
                 'module_id' => $this->id,
                 'type' => 'info',
@@ -167,8 +167,8 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
 
         $nc->send(
             $user_id,
-            __('Incidencia resuelta', 'flavor-chat-ia'),
-            sprintf(__('¡Tu incidencia #%d ha sido resuelta! Gracias por reportarla.', 'flavor-chat-ia'), $ticket_id),
+            __('Incidencia resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            sprintf(__('¡Tu incidencia #%d ha sido resuelta! Gracias por reportarla.', FLAVOR_PLATFORM_TEXT_DOMAIN), $ticket_id),
             [
                 'module_id' => $this->id,
                 'type' => 'success',
@@ -195,7 +195,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Incidencias no están creadas. Activa el módulo para crearlas automáticamente.', 'flavor-chat-ia');
+            return __('Las tablas de Incidencias no están creadas. Activa el módulo para crearlas automáticamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         
     return '';
@@ -228,37 +228,37 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
             'centro_mapa_lng' => -3.7038,
             'zoom_mapa' => 14,
             'categorias' => [
-                'alumbrado' => __('Alumbrado público', 'flavor-chat-ia'),
-                'limpieza' => __('Limpieza y residuos', 'flavor-chat-ia'),
-                'via_publica' => __('Vía pública (baches, aceras)', 'flavor-chat-ia'),
-                'mobiliario' => __('Mobiliario urbano', 'flavor-chat-ia'),
-                'parques' => __('Parques y jardines', 'flavor-chat-ia'),
-                'ruido' => __('Ruidos y molestias', 'flavor-chat-ia'),
-                'agua' => __('Agua y alcantarillado', 'flavor-chat-ia'),
-                'senalizacion' => __('Señalización', 'flavor-chat-ia'),
-                'accesibilidad' => __('Accesibilidad', 'flavor-chat-ia'),
-                'otros' => __('Otros', 'flavor-chat-ia'),
+                'alumbrado' => __('Alumbrado público', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'limpieza' => __('Limpieza y residuos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'via_publica' => __('Vía pública (baches, aceras)', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'mobiliario' => __('Mobiliario urbano', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'parques' => __('Parques y jardines', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ruido' => __('Ruidos y molestias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'agua' => __('Agua y alcantarillado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'senalizacion' => __('Señalización', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'accesibilidad' => __('Accesibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'otros' => __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'prioridades' => [
-                'baja' => __('Baja', 'flavor-chat-ia'),
-                'media' => __('Media', 'flavor-chat-ia'),
-                'alta' => __('Alta', 'flavor-chat-ia'),
-                'urgente' => __('Urgente', 'flavor-chat-ia'),
+                'baja' => __('Baja', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'media' => __('Media', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'alta' => __('Alta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'urgente' => __('Urgente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'estados' => [
-                'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-                'validada' => __('Validada', 'flavor-chat-ia'),
-                'en_proceso' => __('En proceso', 'flavor-chat-ia'),
-                'resuelta' => __('Resuelta', 'flavor-chat-ia'),
-                'cerrada' => __('Cerrada', 'flavor-chat-ia'),
-                'rechazada' => __('Rechazada', 'flavor-chat-ia'),
+                'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'validada' => __('Validada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'en_proceso' => __('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'resuelta' => __('Resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cerrada' => __('Cerrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'rechazada' => __('Rechazada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'departamentos' => [
-                'obras' => __('Obras y Servicios', 'flavor-chat-ia'),
-                'medio_ambiente' => __('Medio Ambiente', 'flavor-chat-ia'),
-                'seguridad' => __('Seguridad Ciudadana', 'flavor-chat-ia'),
-                'urbanismo' => __('Urbanismo', 'flavor-chat-ia'),
-                'trafico' => __('Tráfico', 'flavor-chat-ia'),
+                'obras' => __('Obras y Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'medio_ambiente' => __('Medio Ambiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'seguridad' => __('Seguridad Ciudadana', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'urbanismo' => __('Urbanismo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'trafico' => __('Tráfico', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
     }
@@ -380,35 +380,35 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'incidencias',
-            'label' => __('Incidencias', 'flavor-chat-ia'),
+            'label' => __('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-warning',
             'capability' => 'manage_options',
             'categoria' => 'servicios',
             'paginas' => [
                 [
                     'slug' => 'incidencias-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'incidencias-abiertas',
-                    'titulo' => __('Abiertas', 'flavor-chat-ia'),
+                    'titulo' => __('Abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_abiertas'],
                     'badge' => [$this, 'contar_incidencias_abiertas'],
                 ],
                 [
                     'slug' => 'incidencias-todas',
-                    'titulo' => __('Todas', 'flavor-chat-ia'),
+                    'titulo' => __('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_todas'],
                 ],
                 [
                     'slug' => 'incidencias-mapa',
-                    'titulo' => __('Mapa', 'flavor-chat-ia'),
+                    'titulo' => __('Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_mapa'],
                 ],
                 [
                     'slug' => 'incidencias-config',
-                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'titulo' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_config'],
                 ],
             ],
@@ -497,7 +497,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         $estadisticas[] = [
             'icon' => 'dashicons-warning',
             'valor' => $incidencias_abiertas,
-            'label' => __('Incidencias abiertas', 'flavor-chat-ia'),
+            'label' => __('Incidencias abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => $incidencias_abiertas > 0 ? 'orange' : 'green',
             'enlace' => admin_url('admin.php?page=incidencias-abiertas'),
         ];
@@ -513,7 +513,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         $estadisticas[] = [
             'icon' => 'dashicons-yes-alt',
             'valor' => $resueltas_mes,
-            'label' => __('Resueltas este mes', 'flavor-chat-ia'),
+            'label' => __('Resueltas este mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'green',
             'enlace' => admin_url('admin.php?page=incidencias-todas&estado=resuelta'),
         ];
@@ -530,27 +530,27 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         echo '<div class="wrap flavor-modulo-page">';
         $acciones = $is_dashboard_viewer
             ? [
-                ['label' => __('Ver en portal', 'flavor-chat-ia'), 'url' => home_url('/mi-portal/incidencias/'), 'class' => ''],
+                ['label' => __('Ver en portal', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => home_url('/mi-portal/incidencias/'), 'class' => ''],
             ]
             : [
-                ['label' => __('Ver Abiertas', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=incidencias-abiertas'), 'class' => 'button-primary'],
-                ['label' => __('Ver Mapa', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=incidencias-mapa'), 'class' => ''],
+                ['label' => __('Ver Abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=incidencias-abiertas'), 'class' => 'button-primary'],
+                ['label' => __('Ver Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=incidencias-mapa'), 'class' => ''],
             ];
-        $this->render_page_header(__('Dashboard de Incidencias', 'flavor-chat-ia'), $acciones);
+        $this->render_page_header(__('Dashboard de Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN), $acciones);
 
         if (!$is_dashboard_viewer) {
             $this->handle_admin_actions();
         } else {
-            echo '<div class="notice notice-info"><p>' . esc_html__('Vista resumida para gestor de grupos. Las acciones de validación y cambio de estado siguen restringidas a administración.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-info"><p>' . esc_html__('Vista resumida para gestor de grupos. Las acciones de validación y cambio de estado siguen restringidas a administración.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         if (!$this->can_activate()) {
-            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             echo '</div>';
             return;
         }
 
-        echo '<p>' . __('Panel de control del módulo de incidencias urbanas.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Panel de control del módulo de incidencias urbanas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
 
         $estadisticas = $this->get_estadisticas_dashboard();
         if (!empty($estadisticas)) {
@@ -595,11 +595,11 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_mapa() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Mapa de Incidencias', 'flavor-chat-ia'));
+        $this->render_page_header(__('Mapa de Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN));
         $this->handle_admin_actions();
 
         if (!$this->can_activate()) {
-            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             echo '</div>';
             return;
         }
@@ -646,16 +646,16 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
             true
         );
 
-        echo '<p>' . __('Mapa interactivo de incidencias reportadas con coordenadas.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Mapa interactivo de incidencias reportadas con coordenadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         echo '<div id="incidencias-admin-mapa" style="height: 520px; background: #f5f5f5; border: 1px solid #e5e5e5;"></div>';
 
         echo '<div style="margin-top: 20px;">';
-        echo '<h3>' . esc_html__('Últimas incidencias geolocalizadas', 'flavor-chat-ia') . '</h3>';
+        echo '<h3>' . esc_html__('Últimas incidencias geolocalizadas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         if (empty($incidencias)) {
-            echo '<p>' . esc_html__('No hay incidencias con coordenadas todavía.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('No hay incidencias con coordenadas todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         } else {
             echo '<table class="widefat striped"><thead><tr>';
-            echo '<th>ID</th><th>' . esc_html__('Número', 'flavor-chat-ia') . '</th><th>' . esc_html__('Título', 'flavor-chat-ia') . '</th><th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th><th>' . esc_html__('Fecha', 'flavor-chat-ia') . '</th>';
+            echo '<th>ID</th><th>' . esc_html__('Número', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Título', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
             echo '</tr></thead><tbody>';
             foreach (array_slice($incidencias, 0, 20) as $incidencia) {
                 echo '<tr>';
@@ -705,9 +705,9 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_config() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Configuración de Incidencias', 'flavor-chat-ia'));
+        $this->render_page_header(__('Configuración de Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN));
         $this->handle_admin_save_config();
-        echo '<p>' . __('Configuración del sistema de incidencias urbanas.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Configuración del sistema de incidencias urbanas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
 
         $categorias = $this->get_setting('categorias', []);
         $prioridades = $this->get_setting('prioridades', []);
@@ -725,36 +725,36 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         echo '<form method="post">';
         wp_nonce_field('incidencias_config', 'incidencias_config_nonce');
         echo '<table class="form-table"><tbody>';
-        echo '<tr><th>' . esc_html__('Requiere validación', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="requiere_validacion" value="1" ' . checked($this->get_setting('requiere_validacion'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
-        echo '<tr><th>' . esc_html__('Permite reporte anónimo', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="permite_anonimo" value="1" ' . checked($this->get_setting('permite_anonimo'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
-        echo '<tr><th>' . esc_html__('Tiempo objetivo (h)', 'flavor-chat-ia') . '</th><td><input type="number" name="tiempo_respuesta_objetivo" min="1" value="' . esc_attr($this->get_setting('tiempo_respuesta_objetivo')) . '"></td></tr>';
-        echo '<tr><th>' . esc_html__('Notificar actualizaciones', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="notificar_actualizaciones" value="1" ' . checked($this->get_setting('notificar_actualizaciones'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
-        echo '<tr><th>' . esc_html__('Notificar días antes', 'flavor-chat-ia') . '</th><td><input type="number" name="notificar_dias_antes" min="0" value="' . esc_attr($this->get_setting('notificar_dias_antes')) . '"></td></tr>';
-        echo '<tr><th>' . esc_html__('Máx. fotos por incidencia', 'flavor-chat-ia') . '</th><td><input type="number" name="max_fotos_por_incidencia" min="0" value="' . esc_attr($this->get_setting('max_fotos_por_incidencia')) . '"></td></tr>';
-        echo '<tr><th>' . esc_html__('Tamaño máximo foto (MB)', 'flavor-chat-ia') . '</th><td><input type="number" name="tamano_max_foto" min="1" value="' . esc_attr($this->get_setting('tamano_max_foto')) . '"></td></tr>';
-        echo '<tr><th>' . esc_html__('Habilitar votos', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="habilitar_votos" value="1" ' . checked($this->get_setting('habilitar_votos'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
-        echo '<tr><th>' . esc_html__('Habilitar comentarios', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="habilitar_comentarios" value="1" ' . checked($this->get_setting('habilitar_comentarios'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
-        echo '<tr><th>' . esc_html__('Moderación comentarios', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="moderacion_comentarios" value="1" ' . checked($this->get_setting('moderacion_comentarios'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
-        echo '<tr><th>' . esc_html__('Token Mapbox', 'flavor-chat-ia') . '</th><td><input type="text" name="mapbox_token" class="regular-text" value="' . esc_attr($this->get_setting('mapbox_token')) . '"></td></tr>';
-        echo '<tr><th>' . esc_html__('Centro mapa (lat, lng)', 'flavor-chat-ia') . '</th><td>';
+        echo '<tr><th>' . esc_html__('Requiere validación', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="requiere_validacion" value="1" ' . checked($this->get_setting('requiere_validacion'), true, false) . '> ' . esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Permite reporte anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="permite_anonimo" value="1" ' . checked($this->get_setting('permite_anonimo'), true, false) . '> ' . esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Tiempo objetivo (h)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="number" name="tiempo_respuesta_objetivo" min="1" value="' . esc_attr($this->get_setting('tiempo_respuesta_objetivo')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Notificar actualizaciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="notificar_actualizaciones" value="1" ' . checked($this->get_setting('notificar_actualizaciones'), true, false) . '> ' . esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Notificar días antes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="number" name="notificar_dias_antes" min="0" value="' . esc_attr($this->get_setting('notificar_dias_antes')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Máx. fotos por incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="number" name="max_fotos_por_incidencia" min="0" value="' . esc_attr($this->get_setting('max_fotos_por_incidencia')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Tamaño máximo foto (MB)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="number" name="tamano_max_foto" min="1" value="' . esc_attr($this->get_setting('tamano_max_foto')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Habilitar votos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="habilitar_votos" value="1" ' . checked($this->get_setting('habilitar_votos'), true, false) . '> ' . esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Habilitar comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="habilitar_comentarios" value="1" ' . checked($this->get_setting('habilitar_comentarios'), true, false) . '> ' . esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Moderación comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="moderacion_comentarios" value="1" ' . checked($this->get_setting('moderacion_comentarios'), true, false) . '> ' . esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Token Mapbox', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="text" name="mapbox_token" class="regular-text" value="' . esc_attr($this->get_setting('mapbox_token')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Centro mapa (lat, lng)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td>';
         echo '<input type="number" step="0.000001" name="centro_mapa_lat" value="' . esc_attr($this->get_setting('centro_mapa_lat')) . '" style="width:140px;"> ';
         echo '<input type="number" step="0.000001" name="centro_mapa_lng" value="' . esc_attr($this->get_setting('centro_mapa_lng')) . '" style="width:140px;">';
         echo '</td></tr>';
-        echo '<tr><th>' . esc_html__('Zoom mapa', 'flavor-chat-ia') . '</th><td><input type="number" name="zoom_mapa" min="1" max="20" value="' . esc_attr($this->get_setting('zoom_mapa')) . '"></td></tr>';
-        echo '<tr><th>' . esc_html__('Categorías', 'flavor-chat-ia') . '</th><td>';
+        echo '<tr><th>' . esc_html__('Zoom mapa', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="number" name="zoom_mapa" min="1" max="20" value="' . esc_attr($this->get_setting('zoom_mapa')) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td>';
         echo '<textarea name="categorias" rows="6" class="large-text" placeholder="alumbrado|Alumbrado público">' . esc_textarea($format_lines($categorias)) . '</textarea>';
-        echo '<p class="description">' . esc_html__('Una por línea en formato clave|Etiqueta.', 'flavor-chat-ia') . '</p></td></tr>';
-        echo '<tr><th>' . esc_html__('Prioridades', 'flavor-chat-ia') . '</th><td>';
+        echo '<p class="description">' . esc_html__('Una por línea en formato clave|Etiqueta.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></td></tr>';
+        echo '<tr><th>' . esc_html__('Prioridades', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td>';
         echo '<textarea name="prioridades" rows="4" class="large-text" placeholder="baja|Baja">' . esc_textarea($format_lines($prioridades)) . '</textarea>';
         echo '</td></tr>';
-        echo '<tr><th>' . esc_html__('Estados', 'flavor-chat-ia') . '</th><td>';
+        echo '<tr><th>' . esc_html__('Estados', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td>';
         echo '<textarea name="estados" rows="6" class="large-text" placeholder="pendiente|Pendiente">' . esc_textarea($format_lines($estados)) . '</textarea>';
         echo '</td></tr>';
-        echo '<tr><th>' . esc_html__('Departamentos', 'flavor-chat-ia') . '</th><td>';
+        echo '<tr><th>' . esc_html__('Departamentos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td>';
         echo '<textarea name="departamentos" rows="4" class="large-text" placeholder="obras|Obras y Servicios">' . esc_textarea($format_lines($departamentos)) . '</textarea>';
         echo '</td></tr>';
         echo '</tbody></table>';
-        submit_button(__('Guardar configuración', 'flavor-chat-ia'));
+        submit_button(__('Guardar configuración', FLAVOR_PLATFORM_TEXT_DOMAIN));
         echo '</form>';
         echo '</div>';
     }
@@ -769,14 +769,14 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
              LIMIT 10"
         );
 
-        echo '<h3>' . esc_html__('Incidencias recientes', 'flavor-chat-ia') . '</h3>';
+        echo '<h3>' . esc_html__('Incidencias recientes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         if (empty($incidencias)) {
-            echo '<p>' . esc_html__('No hay incidencias registradas aún.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('No hay incidencias registradas aún.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
         echo '<table class="widefat striped"><thead><tr>';
-        echo '<th>ID</th><th>' . esc_html__('Número', 'flavor-chat-ia') . '</th><th>' . esc_html__('Título', 'flavor-chat-ia') . '</th><th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th><th>' . esc_html__('Prioridad', 'flavor-chat-ia') . '</th><th>' . esc_html__('Fecha', 'flavor-chat-ia') . '</th>';
+        echo '<th>ID</th><th>' . esc_html__('Número', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Título', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Prioridad', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><th>' . esc_html__('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
         echo '</tr></thead><tbody>';
         foreach ($incidencias as $incidencia) {
             echo '<tr>';
@@ -793,14 +793,14 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
 
     private function render_admin_listado_incidencias($solo_abiertas) {
         echo '<div class="wrap flavor-modulo-page">';
-        $titulo = $solo_abiertas ? __('Incidencias Abiertas', 'flavor-chat-ia') : __('Todas las Incidencias', 'flavor-chat-ia');
+        $titulo = $solo_abiertas ? __('Incidencias Abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Todas las Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $this->render_page_header($titulo, [
-            ['label' => __('Ver Mapa', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=incidencias-mapa'), 'class' => ''],
+            ['label' => __('Ver Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=incidencias-mapa'), 'class' => ''],
         ]);
         $this->handle_admin_actions();
 
         if (!$this->can_activate()) {
-            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             echo '</div>';
             return;
         }
@@ -822,28 +822,28 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         echo '<form method="get" style="margin: 12px 0;">';
         echo '<input type="hidden" name="page" value="' . esc_attr($solo_abiertas ? 'incidencias-abiertas' : 'incidencias-todas') . '">';
         echo '<select name="estado">';
-        echo '<option value="">' . esc_html__('Todos los estados', 'flavor-chat-ia') . '</option>';
+        echo '<option value="">' . esc_html__('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
         if ($solo_abiertas) {
-            echo '<option value="abiertas" ' . selected($estado, 'abiertas', false) . '>' . esc_html__('Solo abiertas', 'flavor-chat-ia') . '</option>';
+            echo '<option value="abiertas" ' . selected($estado, 'abiertas', false) . '>' . esc_html__('Solo abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
         }
         foreach ($estados_disponibles as $key) {
             echo '<option value="' . esc_attr($key) . '" ' . selected($estado, $key, false) . '>' . esc_html($config['estados'][$key] ?? $key) . '</option>';
         }
         echo '</select> ';
         echo '<select name="categoria">';
-        echo '<option value="">' . esc_html__('Todas las categorías', 'flavor-chat-ia') . '</option>';
+        echo '<option value="">' . esc_html__('Todas las categorías', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
         foreach ($categorias_disponibles as $key) {
             echo '<option value="' . esc_attr($key) . '" ' . selected($categoria, $key, false) . '>' . esc_html($config['categorias'][$key] ?? $key) . '</option>';
         }
         echo '</select> ';
         echo '<select name="prioridad">';
-        echo '<option value="">' . esc_html__('Todas las prioridades', 'flavor-chat-ia') . '</option>';
+        echo '<option value="">' . esc_html__('Todas las prioridades', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
         foreach ($prioridades_disponibles as $key) {
             echo '<option value="' . esc_attr($key) . '" ' . selected($prioridad, $key, false) . '>' . esc_html($config['prioridades'][$key] ?? $key) . '</option>';
         }
         echo '</select> ';
-        echo '<input type="search" name="s" placeholder="' . esc_attr__('Buscar por título o número', 'flavor-chat-ia') . '" value="' . esc_attr($busqueda) . '"> ';
-        echo '<button class="button">' . esc_html__('Filtrar', 'flavor-chat-ia') . '</button>';
+        echo '<input type="search" name="s" placeholder="' . esc_attr__('Buscar por título o número', FLAVOR_PLATFORM_TEXT_DOMAIN) . '" value="' . esc_attr($busqueda) . '"> ';
+        echo '<button class="button">' . esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</button>';
         echo '</form>';
 
         global $wpdb;
@@ -884,21 +884,21 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         $incidencias = $params ? $wpdb->get_results($wpdb->prepare($sql, $params)) : $wpdb->get_results($sql);
 
         if (empty($incidencias)) {
-            echo '<p>' . esc_html__('No hay incidencias con esos filtros.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('No hay incidencias con esos filtros.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
             return;
         }
 
         echo '<table class="widefat striped"><thead><tr>';
         echo '<th>ID</th>';
-        echo '<th>' . esc_html__('Número', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Título', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Categoría', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Prioridad', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Estado', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Votos', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Fecha', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . esc_html__('Acciones', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . esc_html__('Número', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Título', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Prioridad', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Votos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . esc_html__('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
         echo '</tr></thead><tbody>';
         foreach ($incidencias as $incidencia) {
             echo '<tr>';
@@ -960,10 +960,10 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
 
         $output = '';
         if (!empty($links)) {
-            $output .= '<div><strong>' . esc_html__('Estado:', 'flavor-chat-ia') . '</strong> ' . implode(' | ', $links) . '</div>';
+            $output .= '<div><strong>' . esc_html__('Estado:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ' . implode(' | ', $links) . '</div>';
         }
         if (!empty($prio_links)) {
-            $output .= '<div><strong>' . esc_html__('Prioridad:', 'flavor-chat-ia') . '</strong> ' . implode(' | ', $prio_links) . '</div>';
+            $output .= '<div><strong>' . esc_html__('Prioridad:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ' . implode(' | ', $prio_links) . '</div>';
         }
         return $output;
     }
@@ -981,7 +981,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
             return;
         }
         if (!wp_verify_nonce($nonce, 'incidencias_admin_' . $incidencia_id)) {
-            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             return;
         }
 
@@ -1004,7 +1004,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
                 $format[] = '%s';
             }
             $wpdb->update($tabla, $data, ['id' => $incidencia_id], $format, ['%d']);
-            echo '<div class="notice notice-success"><p>' . esc_html__('Estado actualizado.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-success"><p>' . esc_html__('Estado actualizado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         if ($accion === 'prioridad') {
@@ -1013,7 +1013,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
                 return;
             }
             $wpdb->update($tabla, ['prioridad' => $nueva_prioridad], ['id' => $incidencia_id], ['%s'], ['%d']);
-            echo '<div class="notice notice-success"><p>' . esc_html__('Prioridad actualizada.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-success"><p>' . esc_html__('Prioridad actualizada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -1022,7 +1022,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
             return;
         }
         if (!wp_verify_nonce($_POST['incidencias_config_nonce'], 'incidencias_config')) {
-            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             return;
         }
 
@@ -1046,7 +1046,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         $this->update_setting('estados', $this->parse_config_lines($_POST['estados'] ?? ''));
         $this->update_setting('departamentos', $this->parse_config_lines($_POST['departamentos'] ?? ''));
 
-        echo '<div class="notice notice-success"><p>' . esc_html__('Configuración guardada.', 'flavor-chat-ia') . '</p></div>';
+        echo '<div class="notice notice-success"><p>' . esc_html__('Configuración guardada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     }
 
     private function parse_config_lines($raw) {
@@ -1141,15 +1141,15 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
             'maxFotos' => intval($this->get_setting('max_fotos_por_incidencia')),
             'maxFileSize' => intval($this->get_setting('tamano_max_foto')) * 1024 * 1024,
             'i18n' => [
-                'errorGenerico' => __('Ha ocurrido un error. Por favor, intenta de nuevo.', 'flavor-chat-ia'),
-                'confirmDelete' => __('Esta acción no se puede deshacer.', 'flavor-chat-ia'),
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
-                'enviando' => __('Enviando...', 'flavor-chat-ia'),
-                'ubicacionObtenida' => __('Ubicación obtenida correctamente', 'flavor-chat-ia'),
-                'errorUbicacion' => __('No se pudo obtener la ubicación', 'flavor-chat-ia'),
-                'archivoGrande' => __('El archivo es demasiado grande', 'flavor-chat-ia'),
-                'tipoNoPermitido' => __('Tipo de archivo no permitido', 'flavor-chat-ia'),
-                'maxFotosAlcanzado' => __('Número máximo de fotos alcanzado', 'flavor-chat-ia'),
+                'errorGenerico' => __('Ha ocurrido un error. Por favor, intenta de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmDelete' => __('Esta acción no se puede deshacer.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cargando' => __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'enviando' => __('Enviando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'ubicacionObtenida' => __('Ubicación obtenida correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'errorUbicacion' => __('No se pudo obtener la ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'archivoGrande' => __('El archivo es demasiado grande', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'tipoNoPermitido' => __('Tipo de archivo no permitido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'maxFotosAlcanzado' => __('Número máximo de fotos alcanzado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
 
@@ -1466,7 +1466,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         $descripcion = sanitize_textarea_field($_POST['descripcion'] ?? '');
 
         if (empty($categoria) || empty($titulo) || empty($descripcion)) {
-            wp_send_json_error(['error' => __('Categoría, título y descripción son obligatorios.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Categoría, título y descripción son obligatorios.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Datos opcionales
@@ -1480,7 +1480,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         // Si no está logueado, verificar datos de contacto
         if (!$usuario_id && !$configuracion['permite_anonimo']) {
             if (empty($email_reportante)) {
-                wp_send_json_error(['error' => __('Se requiere un email de contacto.', 'flavor-chat-ia')]);
+                wp_send_json_error(['error' => __('Se requiere un email de contacto.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             }
         }
 
@@ -1513,7 +1513,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         $resultado = $wpdb->insert($tabla_incidencias, $datos_insertar);
 
         if ($resultado === false) {
-            wp_send_json_error(['error' => __('Error al registrar la incidencia.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Error al registrar la incidencia.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $incidencia_id = $wpdb->insert_id;
@@ -1524,7 +1524,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         }
 
         // Registrar en seguimiento
-        $this->agregar_seguimiento($incidencia_id, $usuario_id, 'comentario', __('Incidencia reportada', 'flavor-chat-ia'), true);
+        $this->agregar_seguimiento($incidencia_id, $usuario_id, 'comentario', __('Incidencia reportada', FLAVOR_PLATFORM_TEXT_DOMAIN), true);
 
         // Enviar notificación al admin
         $this->notificar_nueva_incidencia($incidencia_id);
@@ -1536,7 +1536,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
             'incidencia_id' => $incidencia_id,
             'numero_incidencia' => $numero_incidencia,
             'mensaje' => sprintf(
-                __('Incidencia reportada con éxito. Número de seguimiento: %s', 'flavor-chat-ia'),
+                __('Incidencia reportada con éxito. Número de seguimiento: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $numero_incidencia
             ),
             'redirect_url' => add_query_arg('incidencia', $numero_incidencia, get_permalink()),
@@ -1705,13 +1705,13 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         $numero_incidencia = sanitize_text_field($_POST['numero'] ?? '');
 
         if (!$incidencia_id && empty($numero_incidencia)) {
-            wp_send_json_error(['error' => __('ID de incidencia inválido.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('ID de incidencia inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $incidencia = $this->obtener_incidencia($incidencia_id, $numero_incidencia);
 
         if (!$incidencia) {
-            wp_send_json_error(['error' => __('Incidencia no encontrada.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Incidencia no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Obtener fotos
@@ -1754,14 +1754,14 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('incidencias_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['error' => __('Debes iniciar sesión para votar.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Debes iniciar sesión para votar.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $incidencia_id = absint($_POST['incidencia_id'] ?? 0);
         $usuario_id = get_current_user_id();
 
         if (!$incidencia_id) {
-            wp_send_json_error(['error' => __('ID de incidencia inválido.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('ID de incidencia inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1776,7 +1776,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         ));
 
         if ($voto_existente) {
-            wp_send_json_error(['error' => __('Ya has votado esta incidencia.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Ya has votado esta incidencia.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Registrar voto
@@ -1792,7 +1792,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
             $incidencia_id
         ));
 
-        wp_send_json_success(['mensaje' => __('Voto registrado correctamente.', 'flavor-chat-ia')]);
+        wp_send_json_success(['mensaje' => __('Voto registrado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -1802,7 +1802,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('incidencias_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['error' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $incidencia_id = absint($_POST['incidencia_id'] ?? 0);
@@ -1824,7 +1824,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
             ));
         }
 
-        wp_send_json_success(['mensaje' => __('Voto eliminado.', 'flavor-chat-ia')]);
+        wp_send_json_success(['mensaje' => __('Voto eliminado.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -1834,14 +1834,14 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('incidencias_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['error' => __('Debes iniciar sesión para comentar.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Debes iniciar sesión para comentar.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $incidencia_id = absint($_POST['incidencia_id'] ?? 0);
         $contenido = sanitize_textarea_field($_POST['contenido'] ?? '');
 
         if (!$incidencia_id || empty($contenido)) {
-            wp_send_json_error(['error' => __('Datos incompletos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Datos incompletos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $usuario_id = get_current_user_id();
@@ -1850,7 +1850,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         $id_comentario = $this->agregar_seguimiento($incidencia_id, $usuario_id, 'comentario', $contenido, true);
 
         if (!$id_comentario) {
-            wp_send_json_error(['error' => __('Error al guardar el comentario.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Error al guardar el comentario.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         wp_send_json_success([
@@ -1870,7 +1870,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('incidencias_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['error' => __('Sin permisos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Sin permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $incidencia_id = absint($_POST['incidencia_id'] ?? 0);
@@ -1879,7 +1879,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
 
         $estados_validos = ['pendiente', 'validada', 'en_proceso', 'resuelta', 'cerrada', 'rechazada'];
         if (!in_array($nuevo_estado, $estados_validos)) {
-            wp_send_json_error(['error' => __('Estado no válido.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Estado no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1891,7 +1891,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$incidencia) {
-            wp_send_json_error(['error' => __('Incidencia no encontrada.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Incidencia no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $estado_anterior = $incidencia->estado;
@@ -1919,7 +1919,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
 
         // Registrar cambio
         $mensaje_cambio = sprintf(
-            __('Estado cambiado de "%s" a "%s"', 'flavor-chat-ia'),
+            __('Estado cambiado de "%s" a "%s"', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $estado_anterior,
             $nuevo_estado
         );
@@ -1943,7 +1943,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         $configuracion = $this->get_settings();
 
         wp_send_json_success([
-            'mensaje' => __('Estado actualizado correctamente.', 'flavor-chat-ia'),
+            'mensaje' => __('Estado actualizado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'estado_texto' => $configuracion['estados'][$nuevo_estado] ?? $nuevo_estado,
         ]);
     }
@@ -1955,7 +1955,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('incidencias_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['error' => __('Sin permisos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Sin permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $incidencia_id = absint($_POST['incidencia_id'] ?? 0);
@@ -1963,7 +1963,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
 
         $prioridades_validas = ['baja', 'media', 'alta', 'urgente'];
         if (!in_array($nueva_prioridad, $prioridades_validas)) {
-            wp_send_json_error(['error' => __('Prioridad no válida.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Prioridad no válida.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1971,7 +1971,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
 
         $wpdb->update($tabla_incidencias, ['prioridad' => $nueva_prioridad], ['id' => $incidencia_id]);
 
-        wp_send_json_success(['mensaje' => __('Prioridad actualizada.', 'flavor-chat-ia')]);
+        wp_send_json_success(['mensaje' => __('Prioridad actualizada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -1981,7 +1981,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('incidencias_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['error' => __('Sin permisos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Sin permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $incidencia_id = absint($_POST['incidencia_id'] ?? 0);
@@ -2017,12 +2017,12 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
                 $incidencia_id,
                 get_current_user_id(),
                 'asignacion',
-                sprintf(__('Asignada a %s', 'flavor-chat-ia'), $usuario_asignado->display_name),
+                sprintf(__('Asignada a %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $usuario_asignado->display_name),
                 true
             );
         }
 
-        wp_send_json_success(['mensaje' => __('Responsable asignado correctamente.', 'flavor-chat-ia')]);
+        wp_send_json_success(['mensaje' => __('Responsable asignado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -2032,13 +2032,13 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('incidencias_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['error' => __('Sin permisos.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Sin permisos.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $incidencia_id = absint($_POST['incidencia_id'] ?? 0);
 
         if (!$incidencia_id) {
-            wp_send_json_error(['error' => __('ID inválido.', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('ID inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -2063,7 +2063,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         // Eliminar incidencia
         $wpdb->delete($wpdb->prefix . 'flavor_incidencias', ['id' => $incidencia_id]);
 
-        wp_send_json_success(['mensaje' => __('Incidencia eliminada.', 'flavor-chat-ia')]);
+        wp_send_json_success(['mensaje' => __('Incidencia eliminada.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     // =========================================================================
@@ -2143,7 +2143,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
                 'id' => $seguimiento->id,
                 'tipo' => $seguimiento->tipo,
                 'contenido' => $seguimiento->contenido,
-                'autor' => $seguimiento->autor_nombre ?: __('Sistema', 'flavor-chat-ia'),
+                'autor' => $seguimiento->autor_nombre ?: __('Sistema', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha' => date_i18n('d/m/Y H:i', strtotime($seguimiento->fecha_creacion)),
                 'estado_anterior' => $seguimiento->estado_anterior,
                 'estado_nuevo' => $seguimiento->estado_nuevo,
@@ -2274,10 +2274,10 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         if (!$incidencia) return;
 
         $email_admin = get_option('admin_email');
-        $asunto = sprintf(__('[Nueva Incidencia] %s - %s', 'flavor-chat-ia'), $incidencia->numero_incidencia, $incidencia->titulo);
+        $asunto = sprintf(__('[Nueva Incidencia] %s - %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $incidencia->numero_incidencia, $incidencia->titulo);
 
         $mensaje = sprintf(
-            __("Se ha reportado una nueva incidencia:\n\nNúmero: %s\nTítulo: %s\nCategoría: %s\nDirección: %s\n\nDescripción:\n%s", 'flavor-chat-ia'),
+            __("Se ha reportado una nueva incidencia:\n\nNúmero: %s\nTítulo: %s\nCategoría: %s\nDirección: %s\n\nDescripción:\n%s", FLAVOR_PLATFORM_TEXT_DOMAIN),
             $incidencia->numero_incidencia,
             $incidencia->titulo,
             $incidencia->categoria,
@@ -2308,10 +2308,10 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
 
         if (!$email_destinatario) return;
 
-        $asunto = sprintf(__('[Actualización] Tu incidencia %s ha cambiado de estado', 'flavor-chat-ia'), $incidencia->numero_incidencia);
+        $asunto = sprintf(__('[Actualización] Tu incidencia %s ha cambiado de estado', FLAVOR_PLATFORM_TEXT_DOMAIN), $incidencia->numero_incidencia);
 
         $mensaje = sprintf(
-            __("Hola,\n\nTu incidencia \"%s\" (Nº %s) ha cambiado de estado.\n\nEstado anterior: %s\nNuevo estado: %s\n\nPuedes seguir el progreso de tu incidencia en nuestra plataforma.\n\nGracias por tu colaboración.", 'flavor-chat-ia'),
+            __("Hola,\n\nTu incidencia \"%s\" (Nº %s) ha cambiado de estado.\n\nEstado anterior: %s\nNuevo estado: %s\n\nPuedes seguir el progreso de tu incidencia en nuestra plataforma.\n\nGracias por tu colaboración.", FLAVOR_PLATFORM_TEXT_DOMAIN),
             $incidencia->titulo,
             $incidencia->numero_incidencia,
             $configuracion['estados'][$estado_anterior] ?? $estado_anterior,
@@ -2370,7 +2370,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_reportar($atributos) {
         $atributos = shortcode_atts([
-            'titulo' => __('Reportar Incidencia', 'flavor-chat-ia'),
+            'titulo' => __('Reportar Incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'mostrar_mapa' => 'true',
         ], $atributos);
 
@@ -2387,7 +2387,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_mapa($atributos) {
         $atributos = shortcode_atts([
-            'titulo' => __('Mapa de Incidencias', 'flavor-chat-ia'),
+            'titulo' => __('Mapa de Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'altura' => '500',
             'categoria' => '',
             'estado' => '',
@@ -2403,7 +2403,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_listado($atributos) {
         $atributos = shortcode_atts([
-            'titulo' => __('Incidencias', 'flavor-chat-ia'),
+            'titulo' => __('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'limite' => 20,
             'categoria' => '',
             'estado' => '',
@@ -2425,11 +2425,11 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_mis_incidencias($atributos) {
         if (!is_user_logged_in()) {
-            return '<p class="incidencias-login-required">' . __('Debes iniciar sesión para ver tus incidencias.', 'flavor-chat-ia') . '</p>';
+            return '<p class="incidencias-login-required">' . __('Debes iniciar sesión para ver tus incidencias.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $atributos = shortcode_atts([
-            'titulo' => __('Mis Incidencias', 'flavor-chat-ia'),
+            'titulo' => __('Mis Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], $atributos);
 
         $usuario_id = get_current_user_id();
@@ -2447,13 +2447,13 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         $numero_incidencia = sanitize_text_field($_GET['incidencia'] ?? '');
 
         if (empty($numero_incidencia)) {
-            return '<p class="incidencias-error">' . __('No se especificó ninguna incidencia.', 'flavor-chat-ia') . '</p>';
+            return '<p class="incidencias-error">' . __('No se especificó ninguna incidencia.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $incidencia = $this->obtener_incidencia(0, $numero_incidencia);
 
         if (!$incidencia) {
-            return '<p class="incidencias-error">' . __('Incidencia no encontrada.', 'flavor-chat-ia') . '</p>';
+            return '<p class="incidencias-error">' . __('Incidencia no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $fotos = $this->obtener_fotos_incidencia($incidencia->id);
@@ -2470,7 +2470,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_estadisticas($atributos) {
         $atributos = shortcode_atts([
-            'titulo' => __('Estadísticas de Incidencias', 'flavor-chat-ia'),
+            'titulo' => __('Estadísticas de Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], $atributos);
 
         $estadisticas = $this->obtener_estadisticas_generales();
@@ -2667,7 +2667,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         $incidencia = $this->obtener_incidencia($id);
 
         if (!$incidencia) {
-            return new WP_Error('not_found', __('Incidencia no encontrada.', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Incidencia no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         $fotos = $this->obtener_fotos_incidencia($id);
@@ -2693,7 +2693,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         $descripcion = sanitize_textarea_field($parametros['descripcion'] ?? '');
 
         if (empty($categoria) || empty($titulo) || empty($descripcion)) {
-            return new WP_Error('invalid_data', __('Datos incompletos.', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('invalid_data', __('Datos incompletos.', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         global $wpdb;
@@ -2717,13 +2717,13 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         ]);
 
         if (!$resultado) {
-            return new WP_Error('db_error', __('Error al crear incidencia.', 'flavor-chat-ia'), ['status' => 500]);
+            return new WP_Error('db_error', __('Error al crear incidencia.', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 500]);
         }
 
         return new WP_REST_Response([
             'id' => $wpdb->insert_id,
             'numero_incidencia' => $numero_incidencia,
-            'mensaje' => __('Incidencia creada correctamente.', 'flavor-chat-ia'),
+            'mensaje' => __('Incidencia creada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 201);
     }
 
@@ -2867,7 +2867,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error' => sprintf(__('Acción no implementada: %s', 'flavor-chat-ia'), $nombre_accion),
+            'error' => sprintf(__('Acción no implementada: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $nombre_accion),
         ];
     }
 
@@ -2905,14 +2905,14 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
     private function action_foro_incidencia($parametros) {
         $incidencia = $this->resolve_contextual_incidencia($parametros);
         if (!$incidencia) {
-            return '<div class="flavor-empty-state"><p>' . esc_html__('Incidencia no encontrada.', 'flavor-chat-ia') . '</p></div>';
+            return '<div class="flavor-empty-state"><p>' . esc_html__('Incidencia no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         ob_start();
         ?>
         <div class="flavor-contextual-panel flavor-contextual-panel--incidencias-foro">
             <div class="flavor-contextual-panel__header">
-                <h3><?php esc_html_e('Foro de la incidencia', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Foro de la incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <p><?php echo esc_html($incidencia->titulo); ?></p>
             </div>
             <?php echo do_shortcode('[flavor_foros_integrado entidad="incidencia" entidad_id="' . absint($incidencia->id) . '"]'); ?>
@@ -2924,14 +2924,14 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
     private function action_chat_incidencia($parametros) {
         $incidencia = $this->resolve_contextual_incidencia($parametros);
         if (!$incidencia) {
-            return '<div class="flavor-empty-state"><p>' . esc_html__('Incidencia no encontrada.', 'flavor-chat-ia') . '</p></div>';
+            return '<div class="flavor-empty-state"><p>' . esc_html__('Incidencia no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         ob_start();
         ?>
         <div class="flavor-contextual-panel flavor-contextual-panel--incidencias-chat">
             <div class="flavor-contextual-panel__header">
-                <h3><?php esc_html_e('Chat de seguimiento', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Chat de seguimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <p><?php echo esc_html($incidencia->titulo); ?></p>
             </div>
             <?php echo do_shortcode('[flavor_chat_grupo_integrado entidad="incidencia" entidad_id="' . absint($incidencia->id) . '"]'); ?>
@@ -2943,14 +2943,14 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
     private function action_multimedia_incidencia($parametros) {
         $incidencia = $this->resolve_contextual_incidencia($parametros);
         if (!$incidencia) {
-            return '<div class="flavor-empty-state"><p>' . esc_html__('Incidencia no encontrada.', 'flavor-chat-ia') . '</p></div>';
+            return '<div class="flavor-empty-state"><p>' . esc_html__('Incidencia no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         ob_start();
         ?>
         <div class="flavor-contextual-panel flavor-contextual-panel--incidencias-multimedia">
             <div class="flavor-contextual-panel__header">
-                <h3><?php esc_html_e('Archivos de la incidencia', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Archivos de la incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <p><?php echo esc_html($incidencia->titulo); ?></p>
             </div>
             <?php echo do_shortcode('[flavor_multimedia_galeria entidad="incidencia" entidad_id="' . absint($incidencia->id) . '"]'); ?>
@@ -2962,14 +2962,14 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
     private function action_red_social_incidencia($parametros) {
         $incidencia = $this->resolve_contextual_incidencia($parametros);
         if (!$incidencia) {
-            return '<div class="flavor-empty-state"><p>' . esc_html__('Incidencia no encontrada.', 'flavor-chat-ia') . '</p></div>';
+            return '<div class="flavor-empty-state"><p>' . esc_html__('Incidencia no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         ob_start();
         ?>
         <div class="flavor-contextual-panel flavor-contextual-panel--incidencias-social">
             <div class="flavor-contextual-panel__header">
-                <h3><?php esc_html_e('Actividad social de la incidencia', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Actividad social de la incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <p><?php echo esc_html($incidencia->titulo); ?></p>
             </div>
             <?php echo do_shortcode('[flavor_social_feed entidad="incidencia" entidad_id="' . absint($incidencia->id) . '"]'); ?>
@@ -2989,7 +2989,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         if (empty($categoria) || empty($titulo) || empty($descripcion)) {
             return [
                 'success' => false,
-                'error' => __('Categoría, título y descripción son obligatorios.', 'flavor-chat-ia'),
+                'error' => __('Categoría, título y descripción son obligatorios.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -3016,7 +3016,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         if (!$resultado) {
             return [
                 'success' => false,
-                'error' => __('Error al registrar la incidencia.', 'flavor-chat-ia'),
+                'error' => __('Error al registrar la incidencia.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -3025,7 +3025,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
             'incidencia_id' => $wpdb->insert_id,
             'numero_incidencia' => $numero_incidencia,
             'mensaje' => sprintf(
-                __('Incidencia reportada con éxito. Número de seguimiento: %s', 'flavor-chat-ia'),
+                __('Incidencia reportada con éxito. Número de seguimiento: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $numero_incidencia
             ),
         ];
@@ -3094,7 +3094,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         if (!$incidencia) {
             return [
                 'success' => false,
-                'error' => __('Incidencia no encontrada.', 'flavor-chat-ia'),
+                'error' => __('Incidencia no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -3294,72 +3294,72 @@ KNOWLEDGE;
     public function get_web_components() {
         return [
             'hero' => [
-                'label' => __('Hero Incidencias', 'flavor-chat-ia'),
-                'description' => __('Sección hero con formulario rápido de reporte', 'flavor-chat-ia'),
+                'label' => __('Hero Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Sección hero con formulario rápido de reporte', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-warning',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Reportar Incidencias', 'flavor-chat-ia'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Reportar Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'subtitulo' => [
                         'type' => 'textarea',
-                        'label' => __('Subtítulo', 'flavor-chat-ia'),
-                        'default' => __('Ayúdanos a mejorar tu barrio', 'flavor-chat-ia'),
+                        'label' => __('Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Ayúdanos a mejorar tu barrio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                 ],
                 'template' => 'incidencias/hero',
             ],
             'mapa_incidencias' => [
-                'label' => __('Mapa de Incidencias', 'flavor-chat-ia'),
-                'description' => __('Mapa interactivo con ubicación de reportes', 'flavor-chat-ia'),
+                'label' => __('Mapa de Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Mapa interactivo con ubicación de reportes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-location',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Mapa de Incidencias', 'flavor-chat-ia'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Mapa de Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'altura_mapa' => [
                         'type' => 'number',
-                        'label' => __('Altura del mapa (px)', 'flavor-chat-ia'),
+                        'label' => __('Altura del mapa (px)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 500,
                     ],
                 ],
                 'template' => 'incidencias/mapa',
             ],
             'incidencias_grid' => [
-                'label' => __('Grid de Incidencias', 'flavor-chat-ia'),
-                'description' => __('Listado de incidencias recientes', 'flavor-chat-ia'),
+                'label' => __('Grid de Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Listado de incidencias recientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-list-view',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Incidencias Recientes', 'flavor-chat-ia'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Incidencias Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'limite' => [
                         'type' => 'number',
-                        'label' => __('Número máximo', 'flavor-chat-ia'),
+                        'label' => __('Número máximo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 6,
                     ],
                 ],
                 'template' => 'incidencias/grid',
             ],
             'estadisticas' => [
-                'label' => __('Estadísticas Incidencias', 'flavor-chat-ia'),
-                'description' => __('Métricas de resolución y tiempos', 'flavor-chat-ia'),
+                'label' => __('Estadísticas Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Métricas de resolución y tiempos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-chart-bar',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Estadísticas', 'flavor-chat-ia'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                 ],
                 'template' => 'incidencias/estadisticas',
@@ -3407,11 +3407,11 @@ KNOWLEDGE;
         return [
             // Página principal
             [
-                'title' => __('Incidencias', 'flavor-chat-ia'),
+                'title' => __('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'incidencias',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Gestión de Incidencias', 'flavor-chat-ia'),
-                    'subtitle' => __('Reporta problemas y consulta el estado de tus tickets', 'flavor-chat-ia'),
+                    'title' => __('Gestión de Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Reporta problemas y consulta el estado de tus tickets', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'background' => 'gradient',
                     'module' => 'incidencias',
                     'current' => 'listado',
@@ -3422,11 +3422,11 @@ KNOWLEDGE;
 
             // Crear incidencia
             [
-                'title' => __('Crear Incidencia', 'flavor-chat-ia'),
+                'title' => __('Crear Incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'nueva',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Reportar Incidencia', 'flavor-chat-ia'),
-                    'subtitle' => __('Describe el problema que quieres reportar', 'flavor-chat-ia'),
+                    'title' => __('Reportar Incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Describe el problema que quieres reportar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'module' => 'incidencias',
                     'current' => 'crear',
                     'content_after' => '[flavor_module_form module="incidencias" action="crear_ticket"]',
@@ -3436,11 +3436,11 @@ KNOWLEDGE;
 
             // Mis incidencias
             [
-                'title' => __('Mis Incidencias', 'flavor-chat-ia'),
+                'title' => __('Mis Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mis-tickets',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Mis Incidencias', 'flavor-chat-ia'),
-                    'subtitle' => __('Seguimiento de tus tickets', 'flavor-chat-ia'),
+                    'title' => __('Mis Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Seguimiento de tus tickets', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'module' => 'incidencias',
                     'current' => 'mis_tickets',
                     'content_after' => '[flavor_module_listing module="incidencias" action="mis_tickets" user_specific="yes"]',
@@ -3450,11 +3450,11 @@ KNOWLEDGE;
 
             // Mapa de incidencias
             [
-                'title' => __('Mapa', 'flavor-chat-ia'),
+                'title' => __('Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mapa',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Mapa de Incidencias', 'flavor-chat-ia'),
-                    'subtitle' => __('Visualiza las incidencias en el mapa', 'flavor-chat-ia'),
+                    'title' => __('Mapa de Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Visualiza las incidencias en el mapa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'module' => 'incidencias',
                     'current' => 'mapa',
                     'content_after' => '[flavor_module_map module="incidencias" action="mapa_incidencias"]',
@@ -3464,11 +3464,11 @@ KNOWLEDGE;
 
             // Estadísticas
             [
-                'title' => __('Estadísticas', 'flavor-chat-ia'),
+                'title' => __('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'estadisticas',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Estadísticas de Incidencias', 'flavor-chat-ia'),
-                    'subtitle' => __('Datos sobre las incidencias reportadas y resueltas', 'flavor-chat-ia'),
+                    'title' => __('Estadísticas de Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'subtitle' => __('Datos sobre las incidencias reportadas y resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'module' => 'incidencias',
                     'current' => 'estadisticas',
                     'content_after' => '[flavor_module_stats module="incidencias"]',
@@ -3494,8 +3494,8 @@ KNOWLEDGE;
         // Página principal - alias con sufijo -dashboard para Admin Shell
         add_submenu_page(
             null,
-            __('Dashboard Incidencias', 'flavor-chat-ia'),
-            __('Dashboard', 'flavor-chat-ia'),
+            __('Dashboard Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'incidencias-dashboard',
             [$this, 'render_pagina_dashboard']
@@ -3504,8 +3504,8 @@ KNOWLEDGE;
         // Páginas ocultas (sin menú visible en el sidebar) - mantener por compatibilidad
         add_submenu_page(
             null,
-            __('Incidencias - Dashboard', 'flavor-chat-ia'),
-            __('Dashboard', 'flavor-chat-ia'),
+            __('Incidencias - Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'incidencias',
             [$this, 'render_pagina_dashboard']
@@ -3513,8 +3513,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Incidencias - Tickets', 'flavor-chat-ia'),
-            __('Tickets', 'flavor-chat-ia'),
+            __('Incidencias - Tickets', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Tickets', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'incidencias-tickets',
             [$this, 'render_pagina_tickets']
@@ -3522,8 +3522,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Incidencias - Categorías', 'flavor-chat-ia'),
-            __('Categorías', 'flavor-chat-ia'),
+            __('Incidencias - Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'incidencias-categorias',
             [$this, 'render_pagina_categorias']
@@ -3531,8 +3531,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Incidencias - Estadísticas', 'flavor-chat-ia'),
-            __('Estadísticas', 'flavor-chat-ia'),
+            __('Incidencias - Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'incidencias-estadisticas',
             [$this, 'render_pagina_estadisticas']
@@ -3541,8 +3541,8 @@ KNOWLEDGE;
         // Subpáginas adicionales ocultas
         add_submenu_page(
             null,
-            __('Incidencias Abiertas', 'flavor-chat-ia'),
-            __('Abiertas', 'flavor-chat-ia'),
+            __('Incidencias Abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'incidencias-abiertas',
             [$this, 'render_pagina_abiertas']
@@ -3550,8 +3550,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Todas las Incidencias', 'flavor-chat-ia'),
-            __('Todas', 'flavor-chat-ia'),
+            __('Todas las Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'incidencias-todas',
             [$this, 'render_pagina_todas']
@@ -3559,8 +3559,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Mapa de Incidencias', 'flavor-chat-ia'),
-            __('Mapa', 'flavor-chat-ia'),
+            __('Mapa de Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'incidencias-mapa',
             [$this, 'render_pagina_mapa']
@@ -3568,8 +3568,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Configuración de Incidencias', 'flavor-chat-ia'),
-            __('Configuración', 'flavor-chat-ia'),
+            __('Configuración de Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'incidencias-config',
             [$this, 'render_pagina_config']
@@ -3577,8 +3577,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Detalle de Ticket', 'flavor-chat-ia'),
-            __('Detalle Ticket', 'flavor-chat-ia'),
+            __('Detalle de Ticket', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Detalle Ticket', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-incidencias-tickets',
             [$this, 'render_pagina_detalle_ticket']
@@ -3593,7 +3593,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Incidencias', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -3605,7 +3605,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Tickets', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Tickets', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -3617,7 +3617,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Categorías', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -3629,7 +3629,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Estadísticas de Incidencias', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Estadísticas de Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -3669,8 +3669,8 @@ KNOWLEDGE;
             include $views_path;
         } else {
             echo '<div class="wrap">';
-            echo '<h1>' . esc_html__('Mapa de Incidencias', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Vista de mapa no disponible. Configure el token de Mapbox en la configuración del módulo.', 'flavor-chat-ia') . '</p>';
+            echo '<h1>' . esc_html__('Mapa de Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Vista de mapa no disponible. Configure el token de Mapbox en la configuración del módulo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
         }
     }
@@ -3684,8 +3684,8 @@ KNOWLEDGE;
             include $views_path;
         } else {
             echo '<div class="wrap">';
-            echo '<h1>' . esc_html__('Configuración de Incidencias', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Página de configuración en desarrollo.', 'flavor-chat-ia') . '</p>';
+            echo '<h1>' . esc_html__('Configuración de Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Página de configuración en desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
         }
     }
@@ -3700,11 +3700,11 @@ KNOWLEDGE;
         } else {
             $ticket_id = isset($_GET['ticket_id']) ? intval($_GET['ticket_id']) : 0;
             echo '<div class="wrap">';
-            echo '<h1>' . esc_html__('Detalle de Ticket', 'flavor-chat-ia') . '</h1>';
+            echo '<h1>' . esc_html__('Detalle de Ticket', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
             if ($ticket_id > 0) {
-                echo '<p>' . sprintf(esc_html__('Mostrando ticket #%d', 'flavor-chat-ia'), $ticket_id) . '</p>';
+                echo '<p>' . sprintf(esc_html__('Mostrando ticket #%d', FLAVOR_PLATFORM_TEXT_DOMAIN), $ticket_id) . '</p>';
             } else {
-                echo '<p>' . esc_html__('No se especificó un ticket válido.', 'flavor-chat-ia') . '</p>';
+                echo '<p>' . esc_html__('No se especificó un ticket válido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             }
             echo '</div>';
         }

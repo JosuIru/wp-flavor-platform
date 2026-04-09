@@ -166,8 +166,8 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
      */
     public function __construct() {
         $this->module_id = 'economia_suficiencia';
-        $this->module_name = __('Economía de Suficiencia', 'flavor-chat-ia');
-        $this->module_description = __('Promueve un modelo basado en "suficiente" vs "máximo"', 'flavor-chat-ia');
+        $this->module_name = __('Economía de Suficiencia', 'flavor-platform');
+        $this->module_description = __('Promueve un modelo basado en "suficiente" vs "máximo"', 'flavor-platform');
         $this->module_icon = 'dashicons-editor-expand';
         $this->module_color = '#27ae60';
         $this->module_role = 'transversal';
@@ -384,8 +384,8 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         // Reflexiones personales
         register_post_type('es_reflexion', [
             'labels' => [
-                'name' => __('Reflexiones de Suficiencia', 'flavor-chat-ia'),
-                'singular_name' => __('Reflexión', 'flavor-chat-ia'),
+                'name' => __('Reflexiones de Suficiencia', 'flavor-platform'),
+                'singular_name' => __('Reflexión', 'flavor-platform'),
             ],
             'public' => false,
             'show_ui' => true,
@@ -397,8 +397,8 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         // Compromisos de suficiencia
         register_post_type('es_compromiso', [
             'labels' => [
-                'name' => __('Compromisos de Suficiencia', 'flavor-chat-ia'),
-                'singular_name' => __('Compromiso', 'flavor-chat-ia'),
+                'name' => __('Compromisos de Suficiencia', 'flavor-platform'),
+                'singular_name' => __('Compromiso', 'flavor-platform'),
             ],
             'public' => false,
             'show_ui' => true,
@@ -410,8 +410,8 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         // Registro de prácticas
         register_post_type('es_practica', [
             'labels' => [
-                'name' => __('Prácticas de Suficiencia', 'flavor-chat-ia'),
-                'singular_name' => __('Práctica', 'flavor-chat-ia'),
+                'name' => __('Prácticas de Suficiencia', 'flavor-platform'),
+                'singular_name' => __('Práctica', 'flavor-platform'),
             ],
             'public' => false,
             'show_ui' => true,
@@ -423,8 +423,8 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         // Recursos compartidos (biblioteca de objetos)
         register_post_type('es_recurso', [
             'labels' => [
-                'name' => __('Biblioteca de Objetos', 'flavor-chat-ia'),
-                'singular_name' => __('Objeto', 'flavor-chat-ia'),
+                'name' => __('Biblioteca de Objetos', 'flavor-platform'),
+                'singular_name' => __('Objeto', 'flavor-platform'),
             ],
             'public' => false,
             'show_ui' => true,
@@ -494,8 +494,8 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
             'categorias' => self::CATEGORIAS_NECESIDADES,
             'compromisos' => self::TIPOS_COMPROMISO,
             'i18n' => [
-                'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'guardado' => __('Guardado correctamente', 'flavor-chat-ia'),
+                'error' => __('Ha ocurrido un error', 'flavor-platform'),
+                'guardado' => __('Guardado correctamente', 'flavor-platform'),
             ],
         ]);
     }
@@ -548,7 +548,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('suficiencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
         }
 
         $user_id = get_current_user_id();
@@ -557,19 +557,19 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         $respuesta = sanitize_textarea_field($_POST['respuesta'] ?? '');
 
         if (empty($respuesta)) {
-            wp_send_json_error(['message' => __('La reflexión no puede estar vacía', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('La reflexión no puede estar vacía', 'flavor-platform')]);
         }
 
         $reflexion_id = wp_insert_post([
             'post_type' => 'es_reflexion',
             'post_status' => 'private',
             'post_author' => $user_id,
-            'post_title' => $pregunta ?: __('Reflexión personal', 'flavor-chat-ia'),
+            'post_title' => $pregunta ?: __('Reflexión personal', 'flavor-platform'),
             'post_content' => $respuesta,
         ], true);
 
         if (is_wp_error($reflexion_id) || empty($reflexion_id)) {
-            $error = is_wp_error($reflexion_id) ? $reflexion_id->get_error_message() : __('No se pudo guardar la reflexión.', 'flavor-chat-ia');
+            $error = is_wp_error($reflexion_id) ? $reflexion_id->get_error_message() : __('No se pudo guardar la reflexión.', 'flavor-platform');
             wp_send_json_error(['message' => $error]);
         }
 
@@ -580,7 +580,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         $this->sumar_puntos($user_id, 5, 'reflexion');
 
         wp_send_json_success([
-            'message' => __('Reflexión guardada', 'flavor-chat-ia'),
+            'message' => __('Reflexión guardada', 'flavor-platform'),
             'reflexion_id' => $reflexion_id,
         ]);
     }
@@ -592,7 +592,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('suficiencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
         }
 
         $user_id = get_current_user_id();
@@ -601,7 +601,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         $duracion = sanitize_text_field($_POST['duracion'] ?? '30');
 
         if (!isset(self::TIPOS_COMPROMISO[$tipo])) {
-            wp_send_json_error(['message' => __('Tipo de compromiso no válido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Tipo de compromiso no válido', 'flavor-platform')]);
         }
 
         $compromiso_data = self::TIPOS_COMPROMISO[$tipo];
@@ -614,7 +614,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         ], true);
 
         if (is_wp_error($compromiso_id) || empty($compromiso_id)) {
-            $error = is_wp_error($compromiso_id) ? $compromiso_id->get_error_message() : __('No se pudo crear el compromiso.', 'flavor-chat-ia');
+            $error = is_wp_error($compromiso_id) ? $compromiso_id->get_error_message() : __('No se pudo crear el compromiso.', 'flavor-platform');
             wp_send_json_error(['message' => $error]);
         }
 
@@ -630,7 +630,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         $this->sumar_puntos($user_id, 10, 'compromiso');
 
         wp_send_json_success([
-            'message' => __('¡Compromiso adquirido!', 'flavor-chat-ia'),
+            'message' => __('¡Compromiso adquirido!', 'flavor-platform'),
             'compromiso_id' => $compromiso_id,
         ]);
     }
@@ -642,7 +642,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('suficiencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
         }
 
         $user_id = get_current_user_id();
@@ -652,18 +652,18 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         // Verificar que el compromiso existe y pertenece al usuario
         $compromiso = get_post($compromiso_id);
         if (!$compromiso || (int) $compromiso->post_author !== $user_id) {
-            wp_send_json_error(['message' => __('Compromiso no encontrado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Compromiso no encontrado', 'flavor-platform')]);
         }
 
         $practica_id = wp_insert_post([
             'post_type' => 'es_practica',
             'post_status' => 'publish',
             'post_author' => $user_id,
-            'post_title' => sprintf(__('Práctica: %s', 'flavor-chat-ia'), $compromiso->post_title),
+            'post_title' => sprintf(__('Práctica: %s', 'flavor-platform'), $compromiso->post_title),
         ], true);
 
         if (is_wp_error($practica_id) || empty($practica_id)) {
-            $error = is_wp_error($practica_id) ? $practica_id->get_error_message() : __('No se pudo registrar la práctica.', 'flavor-chat-ia');
+            $error = is_wp_error($practica_id) ? $practica_id->get_error_message() : __('No se pudo registrar la práctica.', 'flavor-platform');
             wp_send_json_error(['message' => $error]);
         }
 
@@ -679,7 +679,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         $this->sumar_puntos($user_id, 3, 'practica');
 
         wp_send_json_success([
-            'message' => __('¡Práctica registrada!', 'flavor-chat-ia'),
+            'message' => __('¡Práctica registrada!', 'flavor-platform'),
             'dias_cumplidos' => $dias_cumplidos + 1,
         ]);
     }
@@ -691,7 +691,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('suficiencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
         }
 
         $user_id = get_current_user_id();
@@ -701,7 +701,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         $condiciones = sanitize_textarea_field($_POST['condiciones'] ?? '');
 
         if (empty($nombre)) {
-            wp_send_json_error(['message' => __('El nombre es requerido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('El nombre es requerido', 'flavor-platform')]);
         }
 
         $recurso_id = wp_insert_post([
@@ -713,7 +713,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         ], true);
 
         if (is_wp_error($recurso_id) || empty($recurso_id)) {
-            $error = is_wp_error($recurso_id) ? $recurso_id->get_error_message() : __('No se pudo crear el recurso.', 'flavor-chat-ia');
+            $error = is_wp_error($recurso_id) ? $recurso_id->get_error_message() : __('No se pudo crear el recurso.', 'flavor-platform');
             wp_send_json_error(['message' => $error]);
         }
 
@@ -726,7 +726,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         $this->sumar_puntos($user_id, 15, 'compartir_recurso');
 
         wp_send_json_success([
-            'message' => __('¡Recurso añadido a la biblioteca!', 'flavor-chat-ia'),
+            'message' => __('¡Recurso añadido a la biblioteca!', 'flavor-platform'),
             'recurso_id' => $recurso_id,
         ]);
     }
@@ -738,7 +738,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('suficiencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
         }
 
         $user_id = get_current_user_id();
@@ -748,12 +748,12 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
 
         $recurso = get_post($recurso_id);
         if (!$recurso || $recurso->post_type !== 'es_recurso') {
-            wp_send_json_error(['message' => __('Recurso no encontrado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Recurso no encontrado', 'flavor-platform')]);
         }
 
         $estado = get_post_meta($recurso_id, '_es_estado', true);
         if ($estado !== 'disponible') {
-            wp_send_json_error(['message' => __('Este recurso no está disponible', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Este recurso no está disponible', 'flavor-platform')]);
         }
 
         // Actualizar estado
@@ -771,7 +771,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         $this->notificar_prestamo_recurso($propietario_id, $user_id, $recurso, $dias, $mensaje);
 
         wp_send_json_success([
-            'message' => __('Préstamo solicitado. El propietario ha sido notificado.', 'flavor-chat-ia'),
+            'message' => __('Préstamo solicitado. El propietario ha sido notificado.', 'flavor-platform'),
         ]);
     }
 
@@ -801,16 +801,16 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         }
 
         $subject = sprintf(
-            __('Nuevo préstamo solicitado para "%s"', 'flavor-chat-ia'),
+            __('Nuevo préstamo solicitado para "%s"', 'flavor-platform'),
             $recurso->post_title
         );
 
         $body_lines = [
-            sprintf(__('Hola %s,', 'flavor-chat-ia'), $propietario->display_name ?: __('propietario', 'flavor-chat-ia')),
+            sprintf(__('Hola %s,', 'flavor-platform'), $propietario->display_name ?: __('propietario', 'flavor-platform')),
             '',
             sprintf(
-                __('%s ha solicitado el recurso "%s" durante %d días.', 'flavor-chat-ia'),
-                $solicitante->display_name ?: __('Un usuario', 'flavor-chat-ia'),
+                __('%s ha solicitado el recurso "%s" durante %d días.', 'flavor-platform'),
+                $solicitante->display_name ?: __('Un usuario', 'flavor-platform'),
                 $recurso->post_title,
                 max(1, $dias)
             ),
@@ -818,12 +818,12 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
 
         if ($mensaje !== '') {
             $body_lines[] = '';
-            $body_lines[] = __('Mensaje del solicitante:', 'flavor-chat-ia');
+            $body_lines[] = __('Mensaje del solicitante:', 'flavor-platform');
             $body_lines[] = $mensaje;
         }
 
         $body_lines[] = '';
-        $body_lines[] = __('Puedes revisar el recurso desde tu panel de economía de suficiencia.', 'flavor-chat-ia');
+        $body_lines[] = __('Puedes revisar el recurso desde tu panel de economía de suficiencia.', 'flavor-platform');
 
         wp_mail($propietario->user_email, $subject, implode("\n", $body_lines));
 
@@ -840,14 +840,14 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('suficiencia_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
         }
 
         $user_id = get_current_user_id();
         $evaluaciones = $_POST['evaluaciones'] ?? [];
 
         if (empty($evaluaciones) || !is_array($evaluaciones)) {
-            wp_send_json_error(['message' => __('Datos de evaluación no válidos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos de evaluación no válidos', 'flavor-platform')]);
         }
 
         // Guardar evaluación
@@ -875,7 +875,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         }
 
         wp_send_json_success([
-            'message' => __('Evaluación guardada', 'flavor-chat-ia'),
+            'message' => __('Evaluación guardada', 'flavor-platform'),
             'areas_mejorar' => $areas_mejorar,
         ]);
     }
@@ -1004,7 +1004,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_evaluacion($atts): string {
         if (!is_user_logged_in()) {
-            return '<p class="es-login-required">' . __('Inicia sesión para evaluar tus necesidades', 'flavor-chat-ia') . '</p>';
+            return '<p class="es-login-required">' . __('Inicia sesión para evaluar tus necesidades', 'flavor-platform') . '</p>';
         }
         ob_start();
         include $this->get_module_path() . 'templates/evaluacion.php';
@@ -1016,7 +1016,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_compromisos($atts): string {
         if (!is_user_logged_in()) {
-            return '<p class="es-login-required">' . __('Inicia sesión para hacer compromisos', 'flavor-chat-ia') . '</p>';
+            return '<p class="es-login-required">' . __('Inicia sesión para hacer compromisos', 'flavor-platform') . '</p>';
         }
         ob_start();
         include $this->get_module_path() . 'templates/compromisos.php';
@@ -1037,7 +1037,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_mi_camino($atts): string {
         if (!is_user_logged_in()) {
-            return '<p class="es-login-required">' . __('Inicia sesión para ver tu camino', 'flavor-chat-ia') . '</p>';
+            return '<p class="es-login-required">' . __('Inicia sesión para ver tu camino', 'flavor-platform') . '</p>';
         }
         ob_start();
         include $this->get_module_path() . 'templates/mi-camino.php';
@@ -1141,7 +1141,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error' => __('Acción no implementada', 'flavor-chat-ia'),
+            'error' => __('Acción no implementada', 'flavor-platform'),
         ];
     }
 
@@ -1206,12 +1206,12 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         if (!$recurso) {
             return [
                 'success' => false,
-                'error' => __('No se ha encontrado el recurso contextual.', 'flavor-chat-ia'),
+                'error' => __('No se ha encontrado el recurso contextual.', 'flavor-platform'),
             ];
         }
 
         $html  = '<div class="flavor-context-header">';
-        $html .= '<h3>' . esc_html__('Foro del recurso', 'flavor-chat-ia') . '</h3>';
+        $html .= '<h3>' . esc_html__('Foro del recurso', 'flavor-platform') . '</h3>';
         $html .= '<p>' . esc_html($recurso->post_title) . '</p>';
         $html .= '</div>';
         $html .= do_shortcode('[flavor_foros_integrado entidad="es_recurso" entidad_id="' . absint($recurso->ID) . '"]');
@@ -1221,19 +1221,19 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
 
     private function action_chat_recurso($params) {
         if (!is_user_logged_in()) {
-            return '<div class="notice notice-info"><p>' . esc_html__('Debes iniciar sesión para acceder al chat del recurso.', 'flavor-chat-ia') . '</p></div>';
+            return '<div class="notice notice-info"><p>' . esc_html__('Debes iniciar sesión para acceder al chat del recurso.', 'flavor-platform') . '</p></div>';
         }
 
         $recurso = $this->resolve_contextual_recurso($params);
         if (!$recurso) {
             return [
                 'success' => false,
-                'error' => __('No se ha encontrado el recurso contextual.', 'flavor-chat-ia'),
+                'error' => __('No se ha encontrado el recurso contextual.', 'flavor-platform'),
             ];
         }
 
         $html  = '<div class="flavor-context-header">';
-        $html .= '<h3>' . esc_html__('Chat del recurso', 'flavor-chat-ia') . '</h3>';
+        $html .= '<h3>' . esc_html__('Chat del recurso', 'flavor-platform') . '</h3>';
         $html .= '<p>' . esc_html($recurso->post_title) . '</p>';
         $html .= '</div>';
         $html .= do_shortcode('[flavor_chat_grupo_integrado entidad="es_recurso" entidad_id="' . absint($recurso->ID) . '"]');
@@ -1246,14 +1246,14 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         if (!$recurso) {
             return [
                 'success' => false,
-                'error' => __('No se ha encontrado el recurso contextual.', 'flavor-chat-ia'),
+                'error' => __('No se ha encontrado el recurso contextual.', 'flavor-platform'),
             ];
         }
 
         $html  = '<div class="flavor-context-header">';
-        $html .= '<h3>' . esc_html__('Multimedia del recurso', 'flavor-chat-ia') . '</h3>';
+        $html .= '<h3>' . esc_html__('Multimedia del recurso', 'flavor-platform') . '</h3>';
         $html .= '<p>' . esc_html($recurso->post_title) . '</p>';
-        $html .= '<p><a class="button button-primary" href="' . esc_url(home_url('/mi-portal/multimedia/subir/?recurso_id=' . absint($recurso->ID))) . '">' . esc_html__('Subir archivo', 'flavor-chat-ia') . '</a></p>';
+        $html .= '<p><a class="button button-primary" href="' . esc_url(home_url('/mi-portal/multimedia/subir/?recurso_id=' . absint($recurso->ID))) . '">' . esc_html__('Subir archivo', 'flavor-platform') . '</a></p>';
         $html .= '</div>';
         $html .= do_shortcode('[flavor_multimedia_galeria entidad="es_recurso" entidad_id="' . absint($recurso->ID) . '"]');
 
@@ -1262,21 +1262,21 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
 
     private function action_red_social_recurso($params) {
         if (!is_user_logged_in()) {
-            return '<div class="notice notice-info"><p>' . esc_html__('Debes iniciar sesión para ver la actividad social del recurso.', 'flavor-chat-ia') . '</p></div>';
+            return '<div class="notice notice-info"><p>' . esc_html__('Debes iniciar sesión para ver la actividad social del recurso.', 'flavor-platform') . '</p></div>';
         }
 
         $recurso = $this->resolve_contextual_recurso($params);
         if (!$recurso) {
             return [
                 'success' => false,
-                'error' => __('No se ha encontrado el recurso contextual.', 'flavor-chat-ia'),
+                'error' => __('No se ha encontrado el recurso contextual.', 'flavor-platform'),
             ];
         }
 
         $html  = '<div class="flavor-context-header">';
-        $html .= '<h3>' . esc_html__('Actividad social del recurso', 'flavor-chat-ia') . '</h3>';
+        $html .= '<h3>' . esc_html__('Actividad social del recurso', 'flavor-platform') . '</h3>';
         $html .= '<p>' . esc_html($recurso->post_title) . '</p>';
-        $html .= '<p><a class="button button-primary" href="' . esc_url(home_url('/mi-portal/red-social/crear/?recurso_id=' . absint($recurso->ID))) . '">' . esc_html__('Publicar', 'flavor-chat-ia') . '</a></p>';
+        $html .= '<p><a class="button button-primary" href="' . esc_url(home_url('/mi-portal/red-social/crear/?recurso_id=' . absint($recurso->ID))) . '">' . esc_html__('Publicar', 'flavor-platform') . '</a></p>';
         $html .= '</div>';
         $html .= do_shortcode('[flavor_social_feed entidad="es_recurso" entidad_id="' . absint($recurso->ID) . '"]');
 
@@ -1294,7 +1294,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function get_knowledge_base() {
-        return __('La Economía de Suficiencia promueve un modelo basado en "suficiente" vs "máximo", enfocándose en necesidades reales y bienestar colectivo.', 'flavor-chat-ia');
+        return __('La Economía de Suficiencia promueve un modelo basado en "suficiente" vs "máximo", enfocándose en necesidades reales y bienestar colectivo.', 'flavor-platform');
     }
 
     // =========================================================================
@@ -1313,35 +1313,35 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
     public function get_admin_config(): array {
         return [
             'id'         => 'economia_suficiencia',
-            'label'      => __('Economía de Suficiencia', 'flavor-chat-ia'),
+            'label'      => __('Economía de Suficiencia', 'flavor-platform'),
             'icon'       => 'dashicons-editor-expand',
             'capability' => 'manage_options',
             'categoria'  => 'sostenibilidad',
             'paginas'    => [
                 [
                     'slug'     => 'suficiencia-dashboard',
-                    'titulo'   => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo'   => __('Dashboard', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_dashboard'],
                     'badge'    => [$this, 'contar_compromisos_pendientes'],
                 ],
                 [
                     'slug'     => 'suficiencia-usuarios',
-                    'titulo'   => __('Usuarios', 'flavor-chat-ia'),
+                    'titulo'   => __('Usuarios', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_usuarios'],
                 ],
                 [
                     'slug'     => 'suficiencia-compromisos',
-                    'titulo'   => __('Compromisos', 'flavor-chat-ia'),
+                    'titulo'   => __('Compromisos', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_compromisos'],
                 ],
                 [
                     'slug'     => 'suficiencia-biblioteca',
-                    'titulo'   => __('Biblioteca', 'flavor-chat-ia'),
+                    'titulo'   => __('Biblioteca', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_biblioteca'],
                 ],
                 [
                     'slug'     => 'suficiencia-config',
-                    'titulo'   => __('Configuración', 'flavor-chat-ia'),
+                    'titulo'   => __('Configuración', 'flavor-platform'),
                     'callback' => [$this, 'render_admin_config'],
                 ],
             ],
@@ -1381,21 +1381,21 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
             [
                 'icon'   => 'dashicons-groups',
                 'valor'  => intval($total_usuarios_participando),
-                'label'  => __('Participantes', 'flavor-chat-ia'),
+                'label'  => __('Participantes', 'flavor-platform'),
                 'color'  => 'green',
                 'enlace' => admin_url('admin.php?page=suficiencia-usuarios'),
             ],
             [
                 'icon'   => 'dashicons-heart',
                 'valor'  => intval($total_compromisos_activos),
-                'label'  => __('Compromisos activos', 'flavor-chat-ia'),
+                'label'  => __('Compromisos activos', 'flavor-platform'),
                 'color'  => 'blue',
                 'enlace' => admin_url('admin.php?page=suficiencia-compromisos'),
             ],
             [
                 'icon'   => 'dashicons-share',
                 'valor'  => intval($total_recursos_compartidos),
-                'label'  => __('Recursos compartidos', 'flavor-chat-ia'),
+                'label'  => __('Recursos compartidos', 'flavor-platform'),
                 'color'  => 'purple',
                 'enlace' => admin_url('admin.php?page=suficiencia-biblioteca'),
             ],
@@ -1439,11 +1439,11 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         <div class="suficiencia-widget-resumen">
             <p>
                 <strong><?php echo intval($estadisticas_recientes->practicas_semana ?? 0); ?></strong>
-                <?php _e('prácticas registradas esta semana', 'flavor-chat-ia'); ?>
+                <?php _e('prácticas registradas esta semana', 'flavor-platform'); ?>
             </p>
             <p>
                 <strong><?php echo intval($estadisticas_recientes->compromisos_semana ?? 0); ?></strong>
-                <?php _e('nuevos compromisos esta semana', 'flavor-chat-ia'); ?>
+                <?php _e('nuevos compromisos esta semana', 'flavor-platform'); ?>
             </p>
         </div>
         <?php
@@ -1523,43 +1523,43 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         );
         ?>
         <div class="wrap flavor-admin-page">
-            <?php $this->render_page_header(__('Dashboard - Economía de Suficiencia', 'flavor-chat-ia')); ?>
+            <?php $this->render_page_header(__('Dashboard - Economía de Suficiencia', 'flavor-platform')); ?>
 
             <!-- KPIs principales -->
             <div class="flavor-admin-kpis" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0;">
                 <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                     <span class="dashicons dashicons-groups" style="font-size: 32px; color: #27ae60;"></span>
                     <h3 style="margin: 10px 0 5px; font-size: 28px;"><?php echo intval($total_usuarios); ?></h3>
-                    <p style="color: #666; margin: 0;"><?php _e('Usuarios participando', 'flavor-chat-ia'); ?></p>
+                    <p style="color: #666; margin: 0;"><?php _e('Usuarios participando', 'flavor-platform'); ?></p>
                 </div>
                 <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                     <span class="dashicons dashicons-heart" style="font-size: 32px; color: #e74c3c;"></span>
                     <h3 style="margin: 10px 0 5px; font-size: 28px;"><?php echo intval($total_compromisos_activos); ?></h3>
-                    <p style="color: #666; margin: 0;"><?php _e('Compromisos activos', 'flavor-chat-ia'); ?></p>
+                    <p style="color: #666; margin: 0;"><?php _e('Compromisos activos', 'flavor-platform'); ?></p>
                 </div>
                 <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                     <span class="dashicons dashicons-chart-bar" style="font-size: 32px; color: #3498db;"></span>
                     <h3 style="margin: 10px 0 5px; font-size: 28px;"><?php echo number_format(floatval($promedio_puntos), 1); ?></h3>
-                    <p style="color: #666; margin: 0;"><?php _e('Progreso comunitario (promedio)', 'flavor-chat-ia'); ?></p>
+                    <p style="color: #666; margin: 0;"><?php _e('Progreso comunitario (promedio)', 'flavor-platform'); ?></p>
                 </div>
                 <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                     <span class="dashicons dashicons-share" style="font-size: 32px; color: #9b59b6;"></span>
                     <h3 style="margin: 10px 0 5px; font-size: 28px;"><?php echo intval($total_recursos); ?></h3>
-                    <p style="color: #666; margin: 0;"><?php _e('Recursos compartidos', 'flavor-chat-ia'); ?></p>
+                    <p style="color: #666; margin: 0;"><?php _e('Recursos compartidos', 'flavor-platform'); ?></p>
                 </div>
             </div>
 
             <div class="flavor-admin-columns" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
                 <!-- Usuarios más activos -->
                 <div class="flavor-admin-box" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                    <h2><?php _e('Usuarios más activos', 'flavor-chat-ia'); ?></h2>
+                    <h2><?php _e('Usuarios más activos', 'flavor-platform'); ?></h2>
                     <?php if ($usuarios_activos): ?>
                         <table class="widefat striped">
                             <thead>
                                 <tr>
-                                    <th><?php _e('Usuario', 'flavor-chat-ia'); ?></th>
-                                    <th><?php _e('Puntos', 'flavor-chat-ia'); ?></th>
-                                    <th><?php _e('Actividad', 'flavor-chat-ia'); ?></th>
+                                    <th><?php _e('Usuario', 'flavor-platform'); ?></th>
+                                    <th><?php _e('Puntos', 'flavor-platform'); ?></th>
+                                    <th><?php _e('Actividad', 'flavor-platform'); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1570,19 +1570,19 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
                                             <?php echo esc_html($usuario->display_name); ?>
                                         </td>
                                         <td><strong><?php echo intval($usuario->puntos); ?></strong></td>
-                                        <td><?php echo intval($usuario->actividad); ?> <?php _e('acciones', 'flavor-chat-ia'); ?></td>
+                                        <td><?php echo intval($usuario->actividad); ?> <?php _e('acciones', 'flavor-platform'); ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
                     <?php else: ?>
-                        <p class="description"><?php _e('Aún no hay usuarios participando.', 'flavor-chat-ia'); ?></p>
+                        <p class="description"><?php _e('Aún no hay usuarios participando.', 'flavor-platform'); ?></p>
                     <?php endif; ?>
                 </div>
 
                 <!-- Compromisos más populares -->
                 <div class="flavor-admin-box" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                    <h2><?php _e('Compromisos más populares', 'flavor-chat-ia'); ?></h2>
+                    <h2><?php _e('Compromisos más populares', 'flavor-platform'); ?></h2>
                     <?php if ($compromisos_populares): ?>
                         <ul style="margin: 0; padding: 0; list-style: none;">
                             <?php foreach ($compromisos_populares as $compromiso):
@@ -1593,36 +1593,36 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
                                         <span class="dashicons <?php echo esc_attr($tipo_info['icono']); ?>"></span>
                                         <?php echo esc_html($tipo_info['nombre']); ?>
                                     </span>
-                                    <strong><?php echo intval($compromiso->total); ?> <?php _e('personas', 'flavor-chat-ia'); ?></strong>
+                                    <strong><?php echo intval($compromiso->total); ?> <?php _e('personas', 'flavor-platform'); ?></strong>
                                 </li>
                             <?php endforeach; ?>
                         </ul>
                     <?php else: ?>
-                        <p class="description"><?php _e('Aún no hay compromisos registrados.', 'flavor-chat-ia'); ?></p>
+                        <p class="description"><?php _e('Aún no hay compromisos registrados.', 'flavor-platform'); ?></p>
                     <?php endif; ?>
                 </div>
             </div>
 
             <!-- Actividad reciente -->
             <div class="flavor-admin-box" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-top: 20px;">
-                <h2><?php _e('Actividad reciente', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Actividad reciente', 'flavor-platform'); ?></h2>
                 <?php if ($actividad_reciente): ?>
                     <table class="widefat striped">
                         <thead>
                             <tr>
-                                <th><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Tipo', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Descripción', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Usuario', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Fecha', 'flavor-platform'); ?></th>
+                                <th><?php _e('Tipo', 'flavor-platform'); ?></th>
+                                <th><?php _e('Descripción', 'flavor-platform'); ?></th>
+                                <th><?php _e('Usuario', 'flavor-platform'); ?></th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($actividad_reciente as $actividad):
                                 $tipo_labels = [
-                                    'es_reflexion' => __('Reflexión', 'flavor-chat-ia'),
-                                    'es_compromiso' => __('Compromiso', 'flavor-chat-ia'),
-                                    'es_practica' => __('Práctica', 'flavor-chat-ia'),
-                                    'es_recurso' => __('Recurso', 'flavor-chat-ia'),
+                                    'es_reflexion' => __('Reflexión', 'flavor-platform'),
+                                    'es_compromiso' => __('Compromiso', 'flavor-platform'),
+                                    'es_practica' => __('Práctica', 'flavor-platform'),
+                                    'es_recurso' => __('Recurso', 'flavor-platform'),
                                 ];
                             ?>
                                 <tr>
@@ -1635,7 +1635,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
                         </tbody>
                     </table>
                 <?php else: ?>
-                    <p class="description"><?php _e('No hay actividad reciente.', 'flavor-chat-ia'); ?></p>
+                    <p class="description"><?php _e('No hay actividad reciente.', 'flavor-platform'); ?></p>
                 <?php endif; ?>
             </div>
         </div>
@@ -1698,22 +1698,22 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         $total_paginas = ceil($total_usuarios / $items_por_pagina);
         ?>
         <div class="wrap flavor-admin-page">
-            <?php $this->render_page_header(__('Usuarios - Economía de Suficiencia', 'flavor-chat-ia')); ?>
+            <?php $this->render_page_header(__('Usuarios - Economía de Suficiencia', 'flavor-platform')); ?>
 
             <!-- Filtros -->
             <div class="tablenav top">
                 <form method="get" style="display: flex; gap: 10px; align-items: center;">
                     <input type="hidden" name="page" value="suficiencia-usuarios">
-                    <input type="search" name="s" value="<?php echo esc_attr($buscar); ?>" placeholder="<?php esc_attr_e('Buscar usuario...', 'flavor-chat-ia'); ?>">
+                    <input type="search" name="s" value="<?php echo esc_attr($buscar); ?>" placeholder="<?php esc_attr_e('Buscar usuario...', 'flavor-platform'); ?>">
                     <select name="nivel">
-                        <option value=""><?php _e('Todos los niveles', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Todos los niveles', 'flavor-platform'); ?></option>
                         <?php foreach (self::NIVELES_SUFICIENCIA as $nivel_id => $nivel_data): ?>
                             <option value="<?php echo esc_attr($nivel_id); ?>" <?php selected($filtro_nivel, $nivel_id); ?>>
                                 <?php echo esc_html($nivel_data['nombre']); ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
-                    <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
+                    <button type="submit" class="button"><?php _e('Filtrar', 'flavor-platform'); ?></button>
                 </form>
             </div>
 
@@ -1722,14 +1722,14 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
                 <thead>
                     <tr>
                         <th style="width: 40px;"></th>
-                        <th><?php _e('Usuario', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Email', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Nivel', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Puntos', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Compromisos', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Prácticas', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Reflexiones', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Usuario', 'flavor-platform'); ?></th>
+                        <th><?php _e('Email', 'flavor-platform'); ?></th>
+                        <th><?php _e('Nivel', 'flavor-platform'); ?></th>
+                        <th><?php _e('Puntos', 'flavor-platform'); ?></th>
+                        <th><?php _e('Compromisos', 'flavor-platform'); ?></th>
+                        <th><?php _e('Prácticas', 'flavor-platform'); ?></th>
+                        <th><?php _e('Reflexiones', 'flavor-platform'); ?></th>
+                        <th><?php _e('Acciones', 'flavor-platform'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1741,7 +1741,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
                                 <td><?php echo get_avatar($usuario->ID, 32); ?></td>
                                 <td>
                                     <strong><?php echo esc_html($usuario->display_name); ?></strong>
-                                    <br><small><?php _e('Desde:', 'flavor-chat-ia'); ?> <?php echo esc_html(date_i18n('j M Y', strtotime($usuario->user_registered))); ?></small>
+                                    <br><small><?php _e('Desde:', 'flavor-platform'); ?> <?php echo esc_html(date_i18n('j M Y', strtotime($usuario->user_registered))); ?></small>
                                 </td>
                                 <td><?php echo esc_html($usuario->user_email); ?></td>
                                 <td>
@@ -1755,14 +1755,14 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
                                 <td><?php echo intval($usuario->total_reflexiones); ?></td>
                                 <td>
                                     <a href="<?php echo esc_url(get_edit_user_link($usuario->ID)); ?>" class="button button-small">
-                                        <?php _e('Ver perfil', 'flavor-chat-ia'); ?>
+                                        <?php _e('Ver perfil', 'flavor-platform'); ?>
                                     </a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="9"><?php _e('No se encontraron usuarios participando en el módulo.', 'flavor-chat-ia'); ?></td>
+                            <td colspan="9"><?php _e('No se encontraron usuarios participando en el módulo.', 'flavor-platform'); ?></td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
@@ -1773,7 +1773,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
                 <div class="tablenav bottom">
                     <div class="tablenav-pages">
                         <span class="displaying-num">
-                            <?php printf(__('%d usuarios', 'flavor-chat-ia'), $total_usuarios); ?>
+                            <?php printf(__('%d usuarios', 'flavor-platform'), $total_usuarios); ?>
                         </span>
                         <?php
                         echo paginate_links([
@@ -1805,15 +1805,15 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
             switch ($accion) {
                 case 'aprobar':
                     update_post_meta($compromiso_id, '_es_estado', 'activo');
-                    echo '<div class="notice notice-success"><p>' . __('Compromiso aprobado.', 'flavor-chat-ia') . '</p></div>';
+                    echo '<div class="notice notice-success"><p>' . __('Compromiso aprobado.', 'flavor-platform') . '</p></div>';
                     break;
                 case 'rechazar':
                     update_post_meta($compromiso_id, '_es_estado', 'rechazado');
-                    echo '<div class="notice notice-warning"><p>' . __('Compromiso rechazado.', 'flavor-chat-ia') . '</p></div>';
+                    echo '<div class="notice notice-warning"><p>' . __('Compromiso rechazado.', 'flavor-platform') . '</p></div>';
                     break;
                 case 'completar':
                     update_post_meta($compromiso_id, '_es_estado', 'completado');
-                    echo '<div class="notice notice-success"><p>' . __('Compromiso marcado como completado.', 'flavor-chat-ia') . '</p></div>';
+                    echo '<div class="notice notice-success"><p>' . __('Compromiso marcado como completado.', 'flavor-platform') . '</p></div>';
                     break;
             }
         }
@@ -1872,19 +1872,19 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         $total_paginas = ceil($total_compromisos / $items_por_pagina);
 
         $estados_compromisos = [
-            'activo' => ['label' => __('Activo', 'flavor-chat-ia'), 'color' => '#27ae60'],
-            'pendiente_revision' => ['label' => __('Pendiente', 'flavor-chat-ia'), 'color' => '#f39c12'],
-            'completado' => ['label' => __('Completado', 'flavor-chat-ia'), 'color' => '#3498db'],
-            'abandonado' => ['label' => __('Abandonado', 'flavor-chat-ia'), 'color' => '#95a5a6'],
-            'rechazado' => ['label' => __('Rechazado', 'flavor-chat-ia'), 'color' => '#e74c3c'],
+            'activo' => ['label' => __('Activo', 'flavor-platform'), 'color' => '#27ae60'],
+            'pendiente_revision' => ['label' => __('Pendiente', 'flavor-platform'), 'color' => '#f39c12'],
+            'completado' => ['label' => __('Completado', 'flavor-platform'), 'color' => '#3498db'],
+            'abandonado' => ['label' => __('Abandonado', 'flavor-platform'), 'color' => '#95a5a6'],
+            'rechazado' => ['label' => __('Rechazado', 'flavor-platform'), 'color' => '#e74c3c'],
         ];
         ?>
         <div class="wrap flavor-admin-page">
-            <?php $this->render_page_header(__('Compromisos - Economía de Suficiencia', 'flavor-chat-ia')); ?>
+            <?php $this->render_page_header(__('Compromisos - Economía de Suficiencia', 'flavor-platform')); ?>
 
             <!-- Resumen de tipos de compromiso disponibles -->
             <div class="flavor-admin-box" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
-                <h3><?php _e('Tipos de compromiso disponibles', 'flavor-chat-ia'); ?></h3>
+                <h3><?php _e('Tipos de compromiso disponibles', 'flavor-platform'); ?></h3>
                 <div style="display: flex; flex-wrap: wrap; gap: 15px;">
                     <?php foreach (self::TIPOS_COMPROMISO as $tipo_id => $tipo_data): ?>
                         <div style="padding: 10px 15px; background: #f0f0f1; border-radius: 6px; display: flex; align-items: center; gap: 8px;">
@@ -1900,7 +1900,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
                 <form method="get" style="display: flex; gap: 10px; align-items: center;">
                     <input type="hidden" name="page" value="suficiencia-compromisos">
                     <select name="estado">
-                        <option value=""><?php _e('Todos los estados', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Todos los estados', 'flavor-platform'); ?></option>
                         <?php foreach ($estados_compromisos as $estado_id => $estado_data): ?>
                             <option value="<?php echo esc_attr($estado_id); ?>" <?php selected($filtro_estado, $estado_id); ?>>
                                 <?php echo esc_html($estado_data['label']); ?>
@@ -1908,14 +1908,14 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
                         <?php endforeach; ?>
                     </select>
                     <select name="tipo">
-                        <option value=""><?php _e('Todos los tipos', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Todos los tipos', 'flavor-platform'); ?></option>
                         <?php foreach (self::TIPOS_COMPROMISO as $tipo_id => $tipo_data): ?>
                             <option value="<?php echo esc_attr($tipo_id); ?>" <?php selected($filtro_tipo, $tipo_id); ?>>
                                 <?php echo esc_html($tipo_data['nombre']); ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
-                    <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
+                    <button type="submit" class="button"><?php _e('Filtrar', 'flavor-platform'); ?></button>
                 </form>
             </div>
 
@@ -1923,13 +1923,13 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th><?php _e('Tipo', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Usuario', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Descripción', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Progreso', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Fecha inicio', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Tipo', 'flavor-platform'); ?></th>
+                        <th><?php _e('Usuario', 'flavor-platform'); ?></th>
+                        <th><?php _e('Descripción', 'flavor-platform'); ?></th>
+                        <th><?php _e('Estado', 'flavor-platform'); ?></th>
+                        <th><?php _e('Progreso', 'flavor-platform'); ?></th>
+                        <th><?php _e('Fecha inicio', 'flavor-platform'); ?></th>
+                        <th><?php _e('Acciones', 'flavor-platform'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1963,7 +1963,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
                                         <div style="flex: 1; background: #e0e0e0; border-radius: 4px; height: 8px;">
                                             <div style="width: <?php echo $progreso; ?>%; background: #27ae60; border-radius: 4px; height: 100%;"></div>
                                         </div>
-                                        <span><?php echo $dias_cumplidos; ?>/<?php echo $duracion; ?> <?php _e('días', 'flavor-chat-ia'); ?></span>
+                                        <span><?php echo $dias_cumplidos; ?>/<?php echo $duracion; ?> <?php _e('días', 'flavor-platform'); ?></span>
                                     </div>
                                 </td>
                                 <td><?php echo esc_html(date_i18n('j M Y', strtotime($compromiso->post_date))); ?></td>
@@ -1973,10 +1973,10 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
                                             <?php wp_nonce_field('suficiencia_admin_compromisos', '_wpnonce_suficiencia'); ?>
                                             <input type="hidden" name="compromiso_id" value="<?php echo $compromiso->ID; ?>">
                                             <button type="submit" name="accion_compromiso" value="aprobar" class="button button-small button-primary">
-                                                <?php _e('Aprobar', 'flavor-chat-ia'); ?>
+                                                <?php _e('Aprobar', 'flavor-platform'); ?>
                                             </button>
                                             <button type="submit" name="accion_compromiso" value="rechazar" class="button button-small">
-                                                <?php _e('Rechazar', 'flavor-chat-ia'); ?>
+                                                <?php _e('Rechazar', 'flavor-platform'); ?>
                                             </button>
                                         </form>
                                     <?php elseif ($compromiso->estado === 'activo'): ?>
@@ -1984,7 +1984,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
                                             <?php wp_nonce_field('suficiencia_admin_compromisos', '_wpnonce_suficiencia'); ?>
                                             <input type="hidden" name="compromiso_id" value="<?php echo $compromiso->ID; ?>">
                                             <button type="submit" name="accion_compromiso" value="completar" class="button button-small">
-                                                <?php _e('Marcar completado', 'flavor-chat-ia'); ?>
+                                                <?php _e('Marcar completado', 'flavor-platform'); ?>
                                             </button>
                                         </form>
                                     <?php endif; ?>
@@ -1993,7 +1993,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="7"><?php _e('No se encontraron compromisos.', 'flavor-chat-ia'); ?></td>
+                            <td colspan="7"><?php _e('No se encontraron compromisos.', 'flavor-platform'); ?></td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
@@ -2004,7 +2004,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
                 <div class="tablenav bottom">
                     <div class="tablenav-pages">
                         <span class="displaying-num">
-                            <?php printf(__('%d compromisos', 'flavor-chat-ia'), $total_compromisos); ?>
+                            <?php printf(__('%d compromisos', 'flavor-platform'), $total_compromisos); ?>
                         </span>
                         <?php
                         echo paginate_links([
@@ -2046,10 +2046,10 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
             if ($recurso_id) {
                 $post_data['ID'] = $recurso_id;
                 wp_update_post($post_data);
-                $mensaje = __('Recurso actualizado correctamente.', 'flavor-chat-ia');
+                $mensaje = __('Recurso actualizado correctamente.', 'flavor-platform');
             } else {
                 $recurso_id = wp_insert_post($post_data, true);
-                $mensaje = __('Recurso creado correctamente.', 'flavor-chat-ia');
+                $mensaje = __('Recurso creado correctamente.', 'flavor-platform');
             }
 
             if (!is_wp_error($recurso_id) && !empty($recurso_id)) {
@@ -2059,7 +2059,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
             } elseif (is_wp_error($recurso_id)) {
                 echo '<div class="notice notice-error"><p>' . esc_html($recurso_id->get_error_message()) . '</p></div>';
             } else {
-                echo '<div class="notice notice-error"><p>' . esc_html__('No se pudo guardar el recurso.', 'flavor-chat-ia') . '</p></div>';
+                echo '<div class="notice notice-error"><p>' . esc_html__('No se pudo guardar el recurso.', 'flavor-platform') . '</p></div>';
             }
         }
 
@@ -2067,7 +2067,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         if (isset($_GET['eliminar']) && isset($_GET['_wpnonce']) && wp_verify_nonce($_GET['_wpnonce'], 'eliminar_recurso')) {
             $recurso_id = intval($_GET['eliminar']);
             wp_delete_post($recurso_id, true);
-            echo '<div class="notice notice-success"><p>' . __('Recurso eliminado.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-success"><p>' . __('Recurso eliminado.', 'flavor-platform') . '</p></div>';
         }
 
         // Paginación
@@ -2080,19 +2080,19 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         $filtro_tipo = isset($_GET['tipo']) ? sanitize_key($_GET['tipo']) : '';
 
         $categorias_recursos = [
-            'libros' => __('Libros', 'flavor-chat-ia'),
-            'articulos' => __('Artículos', 'flavor-chat-ia'),
-            'videos' => __('Videos', 'flavor-chat-ia'),
-            'podcasts' => __('Podcasts', 'flavor-chat-ia'),
-            'cursos' => __('Cursos', 'flavor-chat-ia'),
-            'herramientas' => __('Herramientas', 'flavor-chat-ia'),
-            'comunidades' => __('Comunidades', 'flavor-chat-ia'),
+            'libros' => __('Libros', 'flavor-platform'),
+            'articulos' => __('Artículos', 'flavor-platform'),
+            'videos' => __('Videos', 'flavor-platform'),
+            'podcasts' => __('Podcasts', 'flavor-platform'),
+            'cursos' => __('Cursos', 'flavor-platform'),
+            'herramientas' => __('Herramientas', 'flavor-platform'),
+            'comunidades' => __('Comunidades', 'flavor-platform'),
         ];
 
         $tipos_recursos = [
-            'enlace' => __('Enlace externo', 'flavor-chat-ia'),
-            'documento' => __('Documento descargable', 'flavor-chat-ia'),
-            'texto' => __('Contenido propio', 'flavor-chat-ia'),
+            'enlace' => __('Enlace externo', 'flavor-platform'),
+            'documento' => __('Documento descargable', 'flavor-platform'),
+            'texto' => __('Contenido propio', 'flavor-platform'),
         ];
 
         // Construir query
@@ -2142,14 +2142,14 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         <div class="wrap flavor-admin-page">
             <?php
             $acciones_header = [
-                ['label' => __('Añadir recurso', 'flavor-chat-ia'), 'url' => '#formulario-recurso', 'class' => 'button-primary'],
+                ['label' => __('Añadir recurso', 'flavor-platform'), 'url' => '#formulario-recurso', 'class' => 'button-primary'],
             ];
-            $this->render_page_header(__('Biblioteca - Economía de Suficiencia', 'flavor-chat-ia'), $acciones_header);
+            $this->render_page_header(__('Biblioteca - Economía de Suficiencia', 'flavor-platform'), $acciones_header);
             ?>
 
             <!-- Formulario para añadir/editar recurso -->
             <div id="formulario-recurso" class="flavor-admin-box" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
-                <h3><?php echo $editando_recurso ? __('Editar recurso', 'flavor-chat-ia') : __('Añadir nuevo recurso educativo', 'flavor-chat-ia'); ?></h3>
+                <h3><?php echo $editando_recurso ? __('Editar recurso', 'flavor-platform') : __('Añadir nuevo recurso educativo', 'flavor-platform'); ?></h3>
                 <form method="post">
                     <?php wp_nonce_field('suficiencia_admin_biblioteca', '_wpnonce_suficiencia'); ?>
                     <?php if ($editando_recurso): ?>
@@ -2158,14 +2158,14 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
 
                     <table class="form-table">
                         <tr>
-                            <th><label for="titulo"><?php _e('Título', 'flavor-chat-ia'); ?></label></th>
+                            <th><label for="titulo"><?php _e('Título', 'flavor-platform'); ?></label></th>
                             <td>
                                 <input type="text" name="titulo" id="titulo" class="regular-text" required
                                        value="<?php echo $editando_recurso ? esc_attr($editando_recurso->post_title) : ''; ?>">
                             </td>
                         </tr>
                         <tr>
-                            <th><label for="categoria_recurso"><?php _e('Categoría', 'flavor-chat-ia'); ?></label></th>
+                            <th><label for="categoria_recurso"><?php _e('Categoría', 'flavor-platform'); ?></label></th>
                             <td>
                                 <select name="categoria_recurso" id="categoria_recurso">
                                     <?php
@@ -2180,7 +2180,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
                             </td>
                         </tr>
                         <tr>
-                            <th><label for="tipo_recurso"><?php _e('Tipo', 'flavor-chat-ia'); ?></label></th>
+                            <th><label for="tipo_recurso"><?php _e('Tipo', 'flavor-platform'); ?></label></th>
                             <td>
                                 <select name="tipo_recurso" id="tipo_recurso">
                                     <?php
@@ -2195,7 +2195,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
                             </td>
                         </tr>
                         <tr>
-                            <th><label for="contenido"><?php _e('Contenido/Descripción', 'flavor-chat-ia'); ?></label></th>
+                            <th><label for="contenido"><?php _e('Contenido/Descripción', 'flavor-platform'); ?></label></th>
                             <td>
                                 <?php
                                 wp_editor(
@@ -2210,11 +2210,11 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
 
                     <p class="submit">
                         <button type="submit" name="guardar_recurso" class="button button-primary">
-                            <?php echo $editando_recurso ? __('Actualizar recurso', 'flavor-chat-ia') : __('Añadir recurso', 'flavor-chat-ia'); ?>
+                            <?php echo $editando_recurso ? __('Actualizar recurso', 'flavor-platform') : __('Añadir recurso', 'flavor-platform'); ?>
                         </button>
                         <?php if ($editando_recurso): ?>
                             <a href="<?php echo admin_url('admin.php?page=suficiencia-biblioteca'); ?>" class="button">
-                                <?php _e('Cancelar', 'flavor-chat-ia'); ?>
+                                <?php _e('Cancelar', 'flavor-platform'); ?>
                             </a>
                         <?php endif; ?>
                     </p>
@@ -2226,7 +2226,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
                 <form method="get" style="display: flex; gap: 10px; align-items: center;">
                     <input type="hidden" name="page" value="suficiencia-biblioteca">
                     <select name="categoria">
-                        <option value=""><?php _e('Todas las categorías', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Todas las categorías', 'flavor-platform'); ?></option>
                         <?php foreach ($categorias_recursos as $cat_id => $cat_label): ?>
                             <option value="<?php echo esc_attr($cat_id); ?>" <?php selected($filtro_categoria, $cat_id); ?>>
                                 <?php echo esc_html($cat_label); ?>
@@ -2234,14 +2234,14 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
                         <?php endforeach; ?>
                     </select>
                     <select name="tipo">
-                        <option value=""><?php _e('Todos los tipos', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php _e('Todos los tipos', 'flavor-platform'); ?></option>
                         <?php foreach ($tipos_recursos as $tipo_id => $tipo_label): ?>
                             <option value="<?php echo esc_attr($tipo_id); ?>" <?php selected($filtro_tipo, $tipo_id); ?>>
                                 <?php echo esc_html($tipo_label); ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
-                    <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
+                    <button type="submit" class="button"><?php _e('Filtrar', 'flavor-platform'); ?></button>
                 </form>
             </div>
 
@@ -2249,12 +2249,12 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th><?php _e('Título', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Categoría', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Tipo', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Autor', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
-                        <th><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Título', 'flavor-platform'); ?></th>
+                        <th><?php _e('Categoría', 'flavor-platform'); ?></th>
+                        <th><?php _e('Tipo', 'flavor-platform'); ?></th>
+                        <th><?php _e('Autor', 'flavor-platform'); ?></th>
+                        <th><?php _e('Fecha', 'flavor-platform'); ?></th>
+                        <th><?php _e('Acciones', 'flavor-platform'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -2271,19 +2271,19 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
                                 <td><?php echo esc_html(date_i18n('j M Y', strtotime($recurso->post_date))); ?></td>
                                 <td>
                                     <a href="<?php echo add_query_arg('editar', $recurso->ID); ?>" class="button button-small">
-                                        <?php _e('Editar', 'flavor-chat-ia'); ?>
+                                        <?php _e('Editar', 'flavor-platform'); ?>
                                     </a>
                                     <a href="<?php echo wp_nonce_url(add_query_arg('eliminar', $recurso->ID), 'eliminar_recurso'); ?>"
                                        class="button button-small"
-                                       onclick="return confirm('<?php esc_attr_e('¿Estás seguro de eliminar este recurso?', 'flavor-chat-ia'); ?>');">
-                                        <?php _e('Eliminar', 'flavor-chat-ia'); ?>
+                                       onclick="return confirm('<?php esc_attr_e('¿Estás seguro de eliminar este recurso?', 'flavor-platform'); ?>');">
+                                        <?php _e('Eliminar', 'flavor-platform'); ?>
                                     </a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="6"><?php _e('No hay recursos en la biblioteca.', 'flavor-chat-ia'); ?></td>
+                            <td colspan="6"><?php _e('No hay recursos en la biblioteca.', 'flavor-platform'); ?></td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
@@ -2294,7 +2294,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
                 <div class="tablenav bottom">
                     <div class="tablenav-pages">
                         <span class="displaying-num">
-                            <?php printf(__('%d recursos', 'flavor-chat-ia'), $total_recursos); ?>
+                            <?php printf(__('%d recursos', 'flavor-platform'), $total_recursos); ?>
                         </span>
                         <?php
                         echo paginate_links([
@@ -2337,7 +2337,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
                 update_option($opcion_key, $opcion_valor);
             }
 
-            echo '<div class="notice notice-success"><p>' . __('Configuración guardada correctamente.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-success"><p>' . __('Configuración guardada correctamente.', 'flavor-platform') . '</p></div>';
         }
 
         // Obtener valores actuales
@@ -2357,33 +2357,33 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         ];
         ?>
         <div class="wrap flavor-admin-page">
-            <?php $this->render_page_header(__('Configuración - Economía de Suficiencia', 'flavor-chat-ia')); ?>
+            <?php $this->render_page_header(__('Configuración - Economía de Suficiencia', 'flavor-platform')); ?>
 
             <form method="post">
                 <?php wp_nonce_field('suficiencia_admin_config', '_wpnonce_suficiencia'); ?>
 
                 <!-- Configuración General -->
                 <div class="flavor-admin-box" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
-                    <h2><?php _e('Configuración General', 'flavor-chat-ia'); ?></h2>
+                    <h2><?php _e('Configuración General', 'flavor-platform'); ?></h2>
                     <table class="form-table">
                         <tr>
-                            <th><?php _e('Biblioteca de recursos', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Biblioteca de recursos', 'flavor-platform'); ?></th>
                             <td>
                                 <label>
                                     <input type="checkbox" name="es_habilitar_biblioteca" value="1" <?php checked($config['es_habilitar_biblioteca'], 1); ?>>
-                                    <?php _e('Habilitar biblioteca de objetos compartidos', 'flavor-chat-ia'); ?>
+                                    <?php _e('Habilitar biblioteca de objetos compartidos', 'flavor-platform'); ?>
                                 </label>
-                                <p class="description"><?php _e('Permite a los usuarios compartir y solicitar préstamos de objetos.', 'flavor-chat-ia'); ?></p>
+                                <p class="description"><?php _e('Permite a los usuarios compartir y solicitar préstamos de objetos.', 'flavor-platform'); ?></p>
                             </td>
                         </tr>
                         <tr>
-                            <th><?php _e('Moderación de compromisos', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Moderación de compromisos', 'flavor-platform'); ?></th>
                             <td>
                                 <label>
                                     <input type="checkbox" name="es_moderacion_compromisos" value="1" <?php checked($config['es_moderacion_compromisos'], 1); ?>>
-                                    <?php _e('Requerir aprobación para nuevos compromisos', 'flavor-chat-ia'); ?>
+                                    <?php _e('Requerir aprobación para nuevos compromisos', 'flavor-platform'); ?>
                                 </label>
-                                <p class="description"><?php _e('Los compromisos quedarán en estado pendiente hasta ser aprobados por un administrador.', 'flavor-chat-ia'); ?></p>
+                                <p class="description"><?php _e('Los compromisos quedarán en estado pendiente hasta ser aprobados por un administrador.', 'flavor-platform'); ?></p>
                             </td>
                         </tr>
                     </table>
@@ -2391,45 +2391,45 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
 
                 <!-- Sistema de Gamificación -->
                 <div class="flavor-admin-box" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
-                    <h2><?php _e('Sistema de Gamificación', 'flavor-chat-ia'); ?></h2>
+                    <h2><?php _e('Sistema de Gamificación', 'flavor-platform'); ?></h2>
                     <table class="form-table">
                         <tr>
-                            <th><?php _e('Habilitar gamificación', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Habilitar gamificación', 'flavor-platform'); ?></th>
                             <td>
                                 <label>
                                     <input type="checkbox" name="es_habilitar_gamificacion" value="1" <?php checked($config['es_habilitar_gamificacion'], 1); ?>>
-                                    <?php _e('Activar sistema de puntos y niveles', 'flavor-chat-ia'); ?>
+                                    <?php _e('Activar sistema de puntos y niveles', 'flavor-platform'); ?>
                                 </label>
                             </td>
                         </tr>
                         <tr>
-                            <th><?php _e('Mostrar ranking público', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Mostrar ranking público', 'flavor-platform'); ?></th>
                             <td>
                                 <label>
                                     <input type="checkbox" name="es_mostrar_ranking" value="1" <?php checked($config['es_mostrar_ranking'], 1); ?>>
-                                    <?php _e('Mostrar clasificación de usuarios por puntos', 'flavor-chat-ia'); ?>
+                                    <?php _e('Mostrar clasificación de usuarios por puntos', 'flavor-platform'); ?>
                                 </label>
                             </td>
                         </tr>
                         <tr>
-                            <th><?php _e('Puntos por acción', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Puntos por acción', 'flavor-platform'); ?></th>
                             <td>
                                 <table style="border-collapse: separate; border-spacing: 10px 5px;">
                                     <tr>
-                                        <td><label><?php _e('Reflexión:', 'flavor-chat-ia'); ?></label></td>
-                                        <td><input type="number" name="es_puntos_reflexion" value="<?php echo esc_attr($config['es_puntos_reflexion']); ?>" min="1" max="100" style="width: 60px;"> <?php _e('puntos', 'flavor-chat-ia'); ?></td>
+                                        <td><label><?php _e('Reflexión:', 'flavor-platform'); ?></label></td>
+                                        <td><input type="number" name="es_puntos_reflexion" value="<?php echo esc_attr($config['es_puntos_reflexion']); ?>" min="1" max="100" style="width: 60px;"> <?php _e('puntos', 'flavor-platform'); ?></td>
                                     </tr>
                                     <tr>
-                                        <td><label><?php _e('Nuevo compromiso:', 'flavor-chat-ia'); ?></label></td>
-                                        <td><input type="number" name="es_puntos_compromiso" value="<?php echo esc_attr($config['es_puntos_compromiso']); ?>" min="1" max="100" style="width: 60px;"> <?php _e('puntos', 'flavor-chat-ia'); ?></td>
+                                        <td><label><?php _e('Nuevo compromiso:', 'flavor-platform'); ?></label></td>
+                                        <td><input type="number" name="es_puntos_compromiso" value="<?php echo esc_attr($config['es_puntos_compromiso']); ?>" min="1" max="100" style="width: 60px;"> <?php _e('puntos', 'flavor-platform'); ?></td>
                                     </tr>
                                     <tr>
-                                        <td><label><?php _e('Práctica diaria:', 'flavor-chat-ia'); ?></label></td>
-                                        <td><input type="number" name="es_puntos_practica" value="<?php echo esc_attr($config['es_puntos_practica']); ?>" min="1" max="100" style="width: 60px;"> <?php _e('puntos', 'flavor-chat-ia'); ?></td>
+                                        <td><label><?php _e('Práctica diaria:', 'flavor-platform'); ?></label></td>
+                                        <td><input type="number" name="es_puntos_practica" value="<?php echo esc_attr($config['es_puntos_practica']); ?>" min="1" max="100" style="width: 60px;"> <?php _e('puntos', 'flavor-platform'); ?></td>
                                     </tr>
                                     <tr>
-                                        <td><label><?php _e('Compartir recurso:', 'flavor-chat-ia'); ?></label></td>
-                                        <td><input type="number" name="es_puntos_compartir" value="<?php echo esc_attr($config['es_puntos_compartir']); ?>" min="1" max="100" style="width: 60px;"> <?php _e('puntos', 'flavor-chat-ia'); ?></td>
+                                        <td><label><?php _e('Compartir recurso:', 'flavor-platform'); ?></label></td>
+                                        <td><input type="number" name="es_puntos_compartir" value="<?php echo esc_attr($config['es_puntos_compartir']); ?>" min="1" max="100" style="width: 60px;"> <?php _e('puntos', 'flavor-platform'); ?></td>
                                     </tr>
                                 </table>
                             </td>
@@ -2439,20 +2439,20 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
 
                 <!-- Compromisos -->
                 <div class="flavor-admin-box" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
-                    <h2><?php _e('Configuración de Compromisos', 'flavor-chat-ia'); ?></h2>
+                    <h2><?php _e('Configuración de Compromisos', 'flavor-platform'); ?></h2>
                     <table class="form-table">
                         <tr>
-                            <th><?php _e('Duración mínima', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Duración mínima', 'flavor-platform'); ?></th>
                             <td>
-                                <input type="number" name="es_duracion_minima_compromiso" value="<?php echo esc_attr($config['es_duracion_minima_compromiso']); ?>" min="1" max="365" style="width: 80px;"> <?php _e('días', 'flavor-chat-ia'); ?>
-                                <p class="description"><?php _e('Duración mínima que debe tener un compromiso.', 'flavor-chat-ia'); ?></p>
+                                <input type="number" name="es_duracion_minima_compromiso" value="<?php echo esc_attr($config['es_duracion_minima_compromiso']); ?>" min="1" max="365" style="width: 80px;"> <?php _e('días', 'flavor-platform'); ?>
+                                <p class="description"><?php _e('Duración mínima que debe tener un compromiso.', 'flavor-platform'); ?></p>
                             </td>
                         </tr>
                         <tr>
-                            <th><?php _e('Duración máxima', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Duración máxima', 'flavor-platform'); ?></th>
                             <td>
-                                <input type="number" name="es_duracion_maxima_compromiso" value="<?php echo esc_attr($config['es_duracion_maxima_compromiso']); ?>" min="1" max="365" style="width: 80px;"> <?php _e('días', 'flavor-chat-ia'); ?>
-                                <p class="description"><?php _e('Duración máxima permitida para un compromiso.', 'flavor-chat-ia'); ?></p>
+                                <input type="number" name="es_duracion_maxima_compromiso" value="<?php echo esc_attr($config['es_duracion_maxima_compromiso']); ?>" min="1" max="365" style="width: 80px;"> <?php _e('días', 'flavor-platform'); ?>
+                                <p class="description"><?php _e('Duración máxima permitida para un compromiso.', 'flavor-platform'); ?></p>
                             </td>
                         </tr>
                     </table>
@@ -2460,22 +2460,22 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
 
                 <!-- Notificaciones -->
                 <div class="flavor-admin-box" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
-                    <h2><?php _e('Notificaciones', 'flavor-chat-ia'); ?></h2>
+                    <h2><?php _e('Notificaciones', 'flavor-platform'); ?></h2>
                     <table class="form-table">
                         <tr>
-                            <th><?php _e('Notificar nuevos compromisos', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Notificar nuevos compromisos', 'flavor-platform'); ?></th>
                             <td>
                                 <label>
                                     <input type="checkbox" name="es_notificar_nuevos_compromisos" value="1" <?php checked($config['es_notificar_nuevos_compromisos'], 1); ?>>
-                                    <?php _e('Enviar email cuando se registre un nuevo compromiso', 'flavor-chat-ia'); ?>
+                                    <?php _e('Enviar email cuando se registre un nuevo compromiso', 'flavor-platform'); ?>
                                 </label>
                             </td>
                         </tr>
                         <tr>
-                            <th><?php _e('Email de notificaciones', 'flavor-chat-ia'); ?></th>
+                            <th><?php _e('Email de notificaciones', 'flavor-platform'); ?></th>
                             <td>
                                 <input type="email" name="es_email_notificaciones" value="<?php echo esc_attr($config['es_email_notificaciones']); ?>" class="regular-text">
-                                <p class="description"><?php _e('Dirección de email donde se enviarán las notificaciones de administración.', 'flavor-chat-ia'); ?></p>
+                                <p class="description"><?php _e('Dirección de email donde se enviarán las notificaciones de administración.', 'flavor-platform'); ?></p>
                             </td>
                         </tr>
                     </table>
@@ -2483,14 +2483,14 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
 
                 <!-- Niveles de suficiencia (solo lectura) -->
                 <div class="flavor-admin-box" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
-                    <h2><?php _e('Niveles de Suficiencia', 'flavor-chat-ia'); ?></h2>
-                    <p class="description"><?php _e('Los niveles están predefinidos y se asignan automáticamente según los puntos acumulados.', 'flavor-chat-ia'); ?></p>
+                    <h2><?php _e('Niveles de Suficiencia', 'flavor-platform'); ?></h2>
+                    <p class="description"><?php _e('Los niveles están predefinidos y se asignan automáticamente según los puntos acumulados.', 'flavor-platform'); ?></p>
                     <table class="widefat striped" style="margin-top: 15px;">
                         <thead>
                             <tr>
-                                <th><?php _e('Nivel', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Puntos mínimos', 'flavor-chat-ia'); ?></th>
-                                <th><?php _e('Descripción', 'flavor-chat-ia'); ?></th>
+                                <th><?php _e('Nivel', 'flavor-platform'); ?></th>
+                                <th><?php _e('Puntos mínimos', 'flavor-platform'); ?></th>
+                                <th><?php _e('Descripción', 'flavor-platform'); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -2510,7 +2510,7 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
 
                 <p class="submit">
                     <button type="submit" name="guardar_config" class="button button-primary button-large">
-                        <?php _e('Guardar configuración', 'flavor-chat-ia'); ?>
+                        <?php _e('Guardar configuración', 'flavor-platform'); ?>
                     </button>
                 </p>
             </form>
@@ -2526,8 +2526,8 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
     public static function get_renderer_config(): array {
         return [
             'module'   => 'economia-suficiencia',
-            'title'    => __('Economía de Suficiencia', 'flavor-chat-ia'),
-            'subtitle' => __('Vivir con lo suficiente para el bienestar colectivo', 'flavor-chat-ia'),
+            'title'    => __('Economía de Suficiencia', 'flavor-platform'),
+            'subtitle' => __('Vivir con lo suficiente para el bienestar colectivo', 'flavor-platform'),
             'icon'     => '🌿',
             'color'    => 'secondary', // Usa variable CSS --flavor-secondary del tema
 
@@ -2537,25 +2537,25 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
             ],
 
             'fields' => [
-                'titulo'      => ['type' => 'text', 'label' => __('Práctica', 'flavor-chat-ia'), 'required' => true],
-                'categoria'   => ['type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'options' => ['consumo', 'energia', 'transporte', 'alimentacion', 'vivienda']],
-                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
-                'impacto'     => ['type' => 'number', 'label' => __('Impacto estimado', 'flavor-chat-ia')],
-                'dificultad'  => ['type' => 'select', 'label' => __('Dificultad', 'flavor-chat-ia'), 'options' => ['facil', 'media', 'dificil']],
+                'titulo'      => ['type' => 'text', 'label' => __('Práctica', 'flavor-platform'), 'required' => true],
+                'categoria'   => ['type' => 'select', 'label' => __('Categoría', 'flavor-platform'), 'options' => ['consumo', 'energia', 'transporte', 'alimentacion', 'vivienda']],
+                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-platform')],
+                'impacto'     => ['type' => 'number', 'label' => __('Impacto estimado', 'flavor-platform')],
+                'dificultad'  => ['type' => 'select', 'label' => __('Dificultad', 'flavor-platform'), 'options' => ['facil', 'media', 'dificil']],
             ],
 
             'estados' => [
-                'propuesta'  => ['label' => __('Propuesta', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '💡'],
-                'en_practica' => ['label' => __('En práctica', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '🌱'],
-                'consolidada' => ['label' => __('Consolidada', 'flavor-chat-ia'), 'color' => 'emerald', 'icon' => '🌿'],
-                'compartida' => ['label' => __('Compartida', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '🤝'],
+                'propuesta'  => ['label' => __('Propuesta', 'flavor-platform'), 'color' => 'gray', 'icon' => '💡'],
+                'en_practica' => ['label' => __('En práctica', 'flavor-platform'), 'color' => 'green', 'icon' => '🌱'],
+                'consolidada' => ['label' => __('Consolidada', 'flavor-platform'), 'color' => 'emerald', 'icon' => '🌿'],
+                'compartida' => ['label' => __('Compartida', 'flavor-platform'), 'color' => 'blue', 'icon' => '🤝'],
             ],
 
             'stats' => [
-                'practicas_activas' => ['label' => __('Prácticas activas', 'flavor-chat-ia'), 'icon' => '🌿', 'color' => 'emerald'],
-                'participantes'     => ['label' => __('Participantes', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'blue'],
-                'ahorro_recursos'   => ['label' => __('Recursos ahorrados', 'flavor-chat-ia'), 'icon' => '♻️', 'color' => 'green'],
-                'impacto_comunidad' => ['label' => __('Impacto comunidad', 'flavor-chat-ia'), 'icon' => '🌍', 'color' => 'teal'],
+                'practicas_activas' => ['label' => __('Prácticas activas', 'flavor-platform'), 'icon' => '🌿', 'color' => 'emerald'],
+                'participantes'     => ['label' => __('Participantes', 'flavor-platform'), 'icon' => '👥', 'color' => 'blue'],
+                'ahorro_recursos'   => ['label' => __('Recursos ahorrados', 'flavor-platform'), 'icon' => '♻️', 'color' => 'green'],
+                'impacto_comunidad' => ['label' => __('Impacto comunidad', 'flavor-platform'), 'icon' => '🌍', 'color' => 'teal'],
             ],
 
             'card' => [
@@ -2568,52 +2568,52 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
 
             'tabs' => [
                 'practicas' => [
-                    'label'   => __('Prácticas', 'flavor-chat-ia'),
+                    'label'   => __('Prácticas', 'flavor-platform'),
                     'icon'    => 'dashicons-portfolio',
                     'content' => 'template:_archive.php',
                     'public'  => true,
                 ],
                 'biblioteca' => [
-                    'label'   => __('Biblioteca', 'flavor-chat-ia'),
+                    'label'   => __('Biblioteca', 'flavor-platform'),
                     'icon'    => 'dashicons-book',
                     'content' => 'shortcode:suficiencia_biblioteca',
                     'public'  => true,
                 ],
                 'mi-compromiso' => [
-                    'label'      => __('Mi compromiso', 'flavor-chat-ia'),
+                    'label'      => __('Mi compromiso', 'flavor-platform'),
                     'icon'       => 'dashicons-heart',
                     'content'    => 'shortcode:suficiencia_mi_compromiso',
                     'requires_login' => true,
                 ],
                 'registrar' => [
-                    'label'      => __('Registrar práctica', 'flavor-chat-ia'),
+                    'label'      => __('Registrar práctica', 'flavor-platform'),
                     'icon'       => 'dashicons-plus-alt',
                     'content'    => 'shortcode:suficiencia_registrar',
                     'requires_login' => true,
                 ],
                 'foro' => [
-                    'label'      => __('Foro', 'flavor-chat-ia'),
+                    'label'      => __('Foro', 'flavor-platform'),
                     'icon'       => 'dashicons-format-chat',
                     'content'    => 'callback:action_foro_recurso',
                     'requires_login' => false,
                     'hidden_nav' => true,
                 ],
                 'chat' => [
-                    'label'      => __('Chat', 'flavor-chat-ia'),
+                    'label'      => __('Chat', 'flavor-platform'),
                     'icon'       => 'dashicons-format-status',
                     'content'    => 'callback:action_chat_recurso',
                     'requires_login' => true,
                     'hidden_nav' => true,
                 ],
                 'multimedia' => [
-                    'label'      => __('Multimedia', 'flavor-chat-ia'),
+                    'label'      => __('Multimedia', 'flavor-platform'),
                     'icon'       => 'dashicons-format-gallery',
                     'content'    => 'callback:action_multimedia_recurso',
                     'requires_login' => false,
                     'hidden_nav' => true,
                 ],
                 'red-social' => [
-                    'label'      => __('Red social', 'flavor-chat-ia'),
+                    'label'      => __('Red social', 'flavor-platform'),
                     'icon'       => 'dashicons-share',
                     'content'    => 'callback:action_red_social_recurso',
                     'requires_login' => true,
@@ -2632,8 +2632,8 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
             'dashboard' => [
                 'widgets' => ['mi_nivel', 'practicas_sugeridas', 'comunidad', 'recursos'],
                 'actions' => [
-                    'compromiso' => ['label' => __('Nuevo compromiso', 'flavor-chat-ia'), 'icon' => '🌱', 'color' => 'emerald'],
-                    'explorar'   => ['label' => __('Explorar prácticas', 'flavor-chat-ia'), 'icon' => '🔍', 'color' => 'green'],
+                    'compromiso' => ['label' => __('Nuevo compromiso', 'flavor-platform'), 'icon' => '🌱', 'color' => 'emerald'],
+                    'explorar'   => ['label' => __('Explorar prácticas', 'flavor-platform'), 'icon' => '🔍', 'color' => 'green'],
                 ],
             ],
 

@@ -3,12 +3,12 @@
 if (!defined('ABSPATH')) exit;
 ?>
 <div class="wrap flavor-calendario-eventos">
-    <h1><?php _e('Calendario de Eventos', 'flavor-chat-ia'); ?></h1>
+    <h1><?php _e('Calendario de Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
     <hr class="wp-header-end">
     <div class="flavor-calendar-toolbar">
-        <div class="flavor-calendar-nav"><button id="btn-mes-ant" class="button"><span class="dashicons dashicons-arrow-left-alt2"></span></button><h2 id="mes-actual"></h2><button id="btn-mes-sig" class="button"><span class="dashicons dashicons-arrow-right-alt2"></span></button><button id="btn-hoy" class="button"><?php _e('Hoy', 'flavor-chat-ia'); ?></button></div>
-        <div class="flavor-view-modes"><button class="flavor-view-btn active" data-mode="month"><?php _e('Mes', 'flavor-chat-ia'); ?></button><button class="flavor-view-btn" data-mode="week"><?php _e('Semana', 'flavor-chat-ia'); ?></button><button class="flavor-view-btn" data-mode="day"><?php _e('Día', 'flavor-chat-ia'); ?></button></div>
-        <select id="filtro-categoria-cal" class="flavor-select"><option value=""><?php _e('Todas las categorías', 'flavor-chat-ia'); ?></option></select>
+        <div class="flavor-calendar-nav"><button id="btn-mes-ant" class="button"><span class="dashicons dashicons-arrow-left-alt2"></span></button><h2 id="mes-actual"></h2><button id="btn-mes-sig" class="button"><span class="dashicons dashicons-arrow-right-alt2"></span></button><button id="btn-hoy" class="button"><?php _e('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button></div>
+        <div class="flavor-view-modes"><button class="flavor-view-btn active" data-mode="month"><?php _e('Mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button><button class="flavor-view-btn" data-mode="week"><?php _e('Semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button><button class="flavor-view-btn" data-mode="day"><?php _e('Día', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button></div>
+        <select id="filtro-categoria-cal" class="flavor-select"><option value=""><?php _e('Todas las categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option></select>
     </div>
     <div id="calendar-container" class="flavor-calendar-container"></div>
 </div>
@@ -68,7 +68,7 @@ jQuery(document).ready(function($) {
             html += `<div class="flavor-calendar-cell ${isToday ? 'today' : ''}"><div style="font-weight:600;margin-bottom:5px;">${day}</div>`;
             if (eventos[dateStr]) {
                 eventos[dateStr].forEach(evento => {
-                    html += `<div class="flavor-evento-mini" title="<?php echo esc_attr__('${evento.titulo}', 'flavor-chat-ia'); ?>">${evento.hora} ${evento.titulo}</div>`;
+                    html += `<div class="flavor-evento-mini" title="<?php echo esc_attr__('${evento.titulo}', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">${evento.hora} ${evento.titulo}</div>`;
                 });
             }
             html += '</div>';

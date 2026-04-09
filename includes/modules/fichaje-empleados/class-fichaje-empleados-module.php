@@ -47,7 +47,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Fichajes no están creadas. Activa el módulo para crearlas automáticamente.', 'flavor-chat-ia');
+            return __('Las tablas de Fichajes no están creadas. Activa el módulo para crearlas automáticamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         
     return '';
@@ -278,7 +278,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
         if (!$usuario_id) {
             return new WP_Error(
                 'rest_not_logged_in',
-                __('Debes iniciar sesion para acceder a esta funcion.', 'flavor-chat-ia'),
+                __('Debes iniciar sesion para acceder a esta funcion.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 401]
             );
         }
@@ -493,7 +493,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
             ],
             'detalle_dias' => $detalle_dias,
             'mensaje' => sprintf(
-                __('En %s/%d has trabajado %d dias con un total de %.2f horas.', 'flavor-chat-ia'),
+                __('En %s/%d has trabajado %d dias con un total de %.2f horas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 str_pad($mes, 2, '0', STR_PAD_LEFT),
                 $anio,
                 $dias_trabajados,
@@ -510,7 +510,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
 
         $parametros = [
             'tipo' => 'pausa_inicio',
-            'notas' => sprintf(__('Pausa: %s', 'flavor-chat-ia'), $tipo_pausa),
+            'notas' => sprintf(__('Pausa: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $tipo_pausa),
         ];
 
         $resultado = $this->action_fichar($parametros);
@@ -592,35 +592,35 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'fichaje_empleados',
-            'label' => __('Fichaje', 'flavor-chat-ia'),
+            'label' => __('Fichaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-clock',
             'capability' => 'manage_options',
             'categoria' => 'personas',
             'paginas' => [
                 [
                     'slug' => 'fichaje-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_dashboard'],
                     'badge' => [$this, 'contar_fichajes_pendientes'],
                 ],
                 [
                     'slug' => 'fichaje-registros-hoy',
-                    'titulo' => __('Registros de hoy', 'flavor-chat-ia'),
+                    'titulo' => __('Registros de hoy', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_registros_hoy'],
                 ],
                 [
                     'slug' => 'fichaje-historial',
-                    'titulo' => __('Historial', 'flavor-chat-ia'),
+                    'titulo' => __('Historial', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_historial'],
                 ],
                 [
                     'slug' => 'fichaje-empleados',
-                    'titulo' => __('Empleados', 'flavor-chat-ia'),
+                    'titulo' => __('Empleados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_empleados'],
                 ],
                 [
                     'slug' => 'fichaje-config',
-                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'titulo' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_config'],
                 ],
             ],
@@ -675,7 +675,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
         $estadisticas[] = [
             'icon' => 'dashicons-clock',
             'valor' => $fichajes_hoy,
-            'label' => __('Fichajes hoy', 'flavor-chat-ia'),
+            'label' => __('Fichajes hoy', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => $fichajes_hoy > 0 ? 'blue' : 'gray',
             'enlace' => admin_url('admin.php?page=fichaje-registros-hoy'),
         ];
@@ -696,7 +696,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
         $estadisticas[] = [
             'icon' => 'dashicons-groups',
             'valor' => $empleados_activos,
-            'label' => __('Empleados activos', 'flavor-chat-ia'),
+            'label' => __('Empleados activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => $empleados_activos > 0 ? 'green' : 'gray',
             'enlace' => admin_url('admin.php?page=fichaje-dashboard'),
         ];
@@ -709,7 +709,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
             $estadisticas[] = [
                 'icon' => 'dashicons-warning',
                 'valor' => $pendientes_validar,
-                'label' => __('Pendientes validar', 'flavor-chat-ia'),
+                'label' => __('Pendientes validar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'orange',
                 'enlace' => admin_url('admin.php?page=fichaje-historial&validado=0'),
             ];
@@ -723,7 +723,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_dashboard() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Dashboard de Fichaje', 'flavor-chat-ia'));
+        $this->render_page_header(__('Dashboard de Fichaje', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         // Resumen del día
         $estadisticas = $this->get_estadisticas_dashboard();
@@ -738,7 +738,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
         }
         echo '</div>';
 
-        echo '<p>' . __('Panel de control con resumen de fichajes y empleados.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Panel de control con resumen de fichajes y empleados.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         echo '</div>';
     }
 
@@ -747,7 +747,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_registros_hoy() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Registros de Hoy', 'flavor-chat-ia'));
+        $this->render_page_header(__('Registros de Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN));
 
         global $wpdb;
         $tabla_fichajes = $wpdb->prefix . 'flavor_fichajes';
@@ -763,26 +763,26 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (empty($fichajes_hoy)) {
-            echo '<p>' . __('No hay fichajes registrados hoy.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('No hay fichajes registrados hoy.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         } else {
             echo '<table class="wp-list-table widefat fixed striped">';
             echo '<thead><tr>';
-            echo '<th>' . __('Empleado', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Tipo', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Hora', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Notas', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Validado', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Empleado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Hora', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Notas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Validado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
             echo '</tr></thead><tbody>';
 
             foreach ($fichajes_hoy as $fichaje) {
                 $tipo_labels = [
-                    'entrada' => __('Entrada', 'flavor-chat-ia'),
-                    'salida' => __('Salida', 'flavor-chat-ia'),
-                    'pausa_inicio' => __('Inicio pausa', 'flavor-chat-ia'),
-                    'pausa_fin' => __('Fin pausa', 'flavor-chat-ia'),
+                    'entrada' => __('Entrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'salida' => __('Salida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'pausa_inicio' => __('Inicio pausa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'pausa_fin' => __('Fin pausa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
                 echo '<tr>';
-                echo '<td>' . esc_html($fichaje->display_name ?: __('Usuario #', 'flavor-chat-ia') . $fichaje->usuario_id) . '</td>';
+                echo '<td>' . esc_html($fichaje->display_name ?: __('Usuario #', FLAVOR_PLATFORM_TEXT_DOMAIN) . $fichaje->usuario_id) . '</td>';
                 echo '<td>' . esc_html($tipo_labels[$fichaje->tipo] ?? $fichaje->tipo) . '</td>';
                 echo '<td>' . esc_html(date('H:i', strtotime($fichaje->fecha_hora))) . '</td>';
                 echo '<td>' . esc_html($fichaje->notas) . '</td>';
@@ -801,8 +801,8 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_historial() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Historial de Fichajes', 'flavor-chat-ia'));
-        echo '<p>' . __('Historial completo de fichajes con filtros por fecha y empleado.', 'flavor-chat-ia') . '</p>';
+        $this->render_page_header(__('Historial de Fichajes', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        echo '<p>' . __('Historial completo de fichajes con filtros por fecha y empleado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_fichajes';
 
@@ -813,16 +813,16 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
 
         echo '<form method="get" style="margin: 12px 0;">';
         echo '<input type="hidden" name="page" value="fichaje-historial">';
-        echo '<input type="number" name="usuario_id" placeholder="' . esc_attr__('ID usuario', 'flavor-chat-ia') . '" value="' . esc_attr($usuario_id ?: '') . '"> ';
+        echo '<input type="number" name="usuario_id" placeholder="' . esc_attr__('ID usuario', FLAVOR_PLATFORM_TEXT_DOMAIN) . '" value="' . esc_attr($usuario_id ?: '') . '"> ';
         echo '<select name="tipo">';
-        echo '<option value="">' . esc_html__('Todos los tipos', 'flavor-chat-ia') . '</option>';
+        echo '<option value="">' . esc_html__('Todos los tipos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</option>';
         foreach (['entrada','salida','pausa_inicio','pausa_fin'] as $tipo_key) {
             echo '<option value="' . esc_attr($tipo_key) . '" ' . selected($tipo, $tipo_key, false) . '>' . esc_html($tipo_key) . '</option>';
         }
         echo '</select> ';
         echo '<input type="date" name="desde" value="' . esc_attr($desde) . '"> ';
         echo '<input type="date" name="hasta" value="' . esc_attr($hasta) . '"> ';
-        echo '<button class="button">' . esc_html__('Filtrar', 'flavor-chat-ia') . '</button>';
+        echo '<button class="button">' . esc_html__('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</button>';
         echo '</form>';
 
         $where = [];
@@ -855,29 +855,29 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
         $fichajes = $params ? $wpdb->get_results($wpdb->prepare($sql, $params)) : $wpdb->get_results($sql);
 
         if (empty($fichajes)) {
-            echo '<p>' . esc_html__('No hay fichajes con esos filtros.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('No hay fichajes con esos filtros.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
             return;
         }
 
         $tipo_labels = [
-            'entrada' => __('Entrada', 'flavor-chat-ia'),
-            'salida' => __('Salida', 'flavor-chat-ia'),
-            'pausa_inicio' => __('Inicio pausa', 'flavor-chat-ia'),
-            'pausa_fin' => __('Fin pausa', 'flavor-chat-ia'),
+            'entrada' => __('Entrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'salida' => __('Salida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'pausa_inicio' => __('Inicio pausa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'pausa_fin' => __('Fin pausa', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         echo '<table class="wp-list-table widefat fixed striped">';
         echo '<thead><tr>';
-        echo '<th>' . __('Empleado', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . __('Tipo', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . __('Fecha', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . __('Notas', 'flavor-chat-ia') . '</th>';
-        echo '<th>' . __('Validado', 'flavor-chat-ia') . '</th>';
+        echo '<th>' . __('Empleado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . __('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . __('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . __('Notas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+        echo '<th>' . __('Validado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
         echo '</tr></thead><tbody>';
         foreach ($fichajes as $fichaje) {
             echo '<tr>';
-            echo '<td>' . esc_html($fichaje->display_name ?: __('Usuario #', 'flavor-chat-ia') . $fichaje->usuario_id) . '</td>';
+            echo '<td>' . esc_html($fichaje->display_name ?: __('Usuario #', FLAVOR_PLATFORM_TEXT_DOMAIN) . $fichaje->usuario_id) . '</td>';
             echo '<td>' . esc_html($tipo_labels[$fichaje->tipo] ?? $fichaje->tipo) . '</td>';
             echo '<td>' . esc_html(date_i18n('d/m/Y H:i', strtotime($fichaje->fecha_hora))) . '</td>';
             echo '<td>' . esc_html($fichaje->notas) . '</td>';
@@ -893,10 +893,10 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_empleados() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Gestión de Empleados', 'flavor-chat-ia'), [
-            ['label' => __('Nuevo Empleado', 'flavor-chat-ia'), 'url' => '#nuevo-empleado', 'class' => 'button-primary'],
+        $this->render_page_header(__('Gestión de Empleados', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+            ['label' => __('Nuevo Empleado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '#nuevo-empleado', 'class' => 'button-primary'],
         ]);
-        echo '<p>' . __('Gestión de empleados y sus horarios de trabajo.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Gestión de empleados y sus horarios de trabajo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
 
         $this->handle_admin_save_horario();
 
@@ -911,45 +911,45 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
         );
 
         if (empty($horarios)) {
-            echo '<p>' . esc_html__('No hay horarios registrados aún.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('No hay horarios registrados aún.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         } else {
             echo '<table class="wp-list-table widefat fixed striped">';
             echo '<thead><tr>';
-            echo '<th>' . __('Empleado', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Día', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Entrada', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Salida', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Activo', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Empleado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Día', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Entrada', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Salida', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
             echo '</tr></thead><tbody>';
             foreach ($horarios as $horario) {
                 echo '<tr>';
-                echo '<td>' . esc_html($horario->display_name ?: __('Usuario #', 'flavor-chat-ia') . $horario->usuario_id) . '</td>';
+                echo '<td>' . esc_html($horario->display_name ?: __('Usuario #', FLAVOR_PLATFORM_TEXT_DOMAIN) . $horario->usuario_id) . '</td>';
                 echo '<td>' . esc_html($horario->dia_semana) . '</td>';
                 echo '<td>' . esc_html($horario->hora_entrada) . '</td>';
                 echo '<td>' . esc_html($horario->hora_salida) . '</td>';
-                echo '<td>' . ($horario->activo ? esc_html__('Sí', 'flavor-chat-ia') : esc_html__('No', 'flavor-chat-ia')) . '</td>';
+                echo '<td>' . ($horario->activo ? esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('No', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '</td>';
                 echo '</tr>';
             }
             echo '</tbody></table>';
         }
 
         echo '<hr id="nuevo-empleado">';
-        echo '<h3>' . esc_html__('Asignar horario', 'flavor-chat-ia') . '</h3>';
+        echo '<h3>' . esc_html__('Asignar horario', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
         echo '<form method="post">';
         wp_nonce_field('fichaje_horario', 'fichaje_horario_nonce');
         echo '<table class="form-table"><tbody>';
-        echo '<tr><th>' . esc_html__('Usuario ID', 'flavor-chat-ia') . '</th><td><input type="number" name="usuario_id" min="1" required></td></tr>';
-        echo '<tr><th>' . esc_html__('Día de la semana', 'flavor-chat-ia') . '</th><td><select name="dia_semana">';
+        echo '<tr><th>' . esc_html__('Usuario ID', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="number" name="usuario_id" min="1" required></td></tr>';
+        echo '<tr><th>' . esc_html__('Día de la semana', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><select name="dia_semana">';
         foreach (['monday','tuesday','wednesday','thursday','friday','saturday','sunday'] as $dia) {
             echo '<option value="' . esc_attr($dia) . '">' . esc_html($dia) . '</option>';
         }
         echo '</select></td></tr>';
-        echo '<tr><th>' . esc_html__('Hora entrada', 'flavor-chat-ia') . '</th><td><input type="time" name="hora_entrada" required></td></tr>';
-        echo '<tr><th>' . esc_html__('Hora salida', 'flavor-chat-ia') . '</th><td><input type="time" name="hora_salida" required></td></tr>';
-        echo '<tr><th>' . esc_html__('Es laboral', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="es_laboral" value="1" checked> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
-        echo '<tr><th>' . esc_html__('Activo', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="activo" value="1" checked> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Hora entrada', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="time" name="hora_entrada" required></td></tr>';
+        echo '<tr><th>' . esc_html__('Hora salida', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="time" name="hora_salida" required></td></tr>';
+        echo '<tr><th>' . esc_html__('Es laboral', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="es_laboral" value="1" checked> ' . esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="activo" value="1" checked> ' . esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
         echo '</tbody></table>';
-        submit_button(__('Guardar horario', 'flavor-chat-ia'));
+        submit_button(__('Guardar horario', FLAVOR_PLATFORM_TEXT_DOMAIN));
         echo '</form>';
         echo '</div>';
     }
@@ -982,7 +982,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
 
         $this->save_settings($settings);
 
-        echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Configuración guardada correctamente.', 'flavor-chat-ia') . '</p></div>';
+        echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Configuración guardada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     }
 
     /**
@@ -990,23 +990,23 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_config() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Configuración de Fichaje', 'flavor-chat-ia'));
-        echo '<p>' . __('Configuración del sistema de fichaje de empleados.', 'flavor-chat-ia') . '</p>';
+        $this->render_page_header(__('Configuración de Fichaje', FLAVOR_PLATFORM_TEXT_DOMAIN));
+        echo '<p>' . __('Configuración del sistema de fichaje de empleados.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         $this->handle_admin_save_config();
         $configuracion = $this->get_settings();
 
         echo '<form method="post">';
         wp_nonce_field('fichaje_config', 'fichaje_config_nonce');
         echo '<table class="form-table"><tbody>';
-        echo '<tr><th>' . esc_html__('Horario entrada', 'flavor-chat-ia') . '</th><td><input type="time" name="horario_entrada" value="' . esc_attr($configuracion['horario_entrada']) . '"></td></tr>';
-        echo '<tr><th>' . esc_html__('Horario salida', 'flavor-chat-ia') . '</th><td><input type="time" name="horario_salida" value="' . esc_attr($configuracion['horario_salida']) . '"></td></tr>';
-        echo '<tr><th>' . esc_html__('Tiempo de gracia (min)', 'flavor-chat-ia') . '</th><td><input type="number" name="tiempo_gracia" value="' . esc_attr($configuracion['tiempo_gracia']) . '"></td></tr>';
-        echo '<tr><th>' . esc_html__('Requiere geolocalización', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="requiere_geolocalizacion" value="1" ' . checked($configuracion['requiere_geolocalizacion'], true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
-        echo '<tr><th>' . esc_html__('Radio máximo (m)', 'flavor-chat-ia') . '</th><td><input type="number" name="radio_maximo" value="' . esc_attr($configuracion['radio_maximo']) . '"></td></tr>';
-        echo '<tr><th>' . esc_html__('Permite fichaje remoto', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="permite_fichaje_remoto" value="1" ' . checked($configuracion['permite_fichaje_remoto'], true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
-        echo '<tr><th>' . esc_html__('Notificar retrasos', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="notificar_retrasos" value="1" ' . checked($configuracion['notificar_retrasos'], true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Horario entrada', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="time" name="horario_entrada" value="' . esc_attr($configuracion['horario_entrada']) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Horario salida', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="time" name="horario_salida" value="' . esc_attr($configuracion['horario_salida']) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Tiempo de gracia (min)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="number" name="tiempo_gracia" value="' . esc_attr($configuracion['tiempo_gracia']) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Requiere geolocalización', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="requiere_geolocalizacion" value="1" ' . checked($configuracion['requiere_geolocalizacion'], true, false) . '> ' . esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Radio máximo (m)', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><input type="number" name="radio_maximo" value="' . esc_attr($configuracion['radio_maximo']) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Permite fichaje remoto', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="permite_fichaje_remoto" value="1" ' . checked($configuracion['permite_fichaje_remoto'], true, false) . '> ' . esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
+        echo '<tr><th>' . esc_html__('Notificar retrasos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th><td><label><input type="checkbox" name="notificar_retrasos" value="1" ' . checked($configuracion['notificar_retrasos'], true, false) . '> ' . esc_html__('Sí', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</label></td></tr>';
         echo '</tbody></table>';
-        submit_button(__('Guardar configuración', 'flavor-chat-ia'));
+        submit_button(__('Guardar configuración', FLAVOR_PLATFORM_TEXT_DOMAIN));
         echo '</form>';
         echo '</div>';
     }
@@ -1016,7 +1016,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
             return;
         }
         if (!wp_verify_nonce($_POST['fichaje_horario_nonce'], 'fichaje_horario')) {
-            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-error"><p>' . esc_html__('Nonce inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             return;
         }
 
@@ -1041,7 +1041,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
             'activo' => !empty($_POST['activo']) ? 1 : 0,
         ]);
 
-        echo '<div class="notice notice-success"><p>' . esc_html__('Horario guardado.', 'flavor-chat-ia') . '</p></div>';
+        echo '<div class="notice notice-success"><p>' . esc_html__('Horario guardado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     }
 
     /**
@@ -1251,7 +1251,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
         if (!$usuario_id) {
             return [
                 'success' => false,
-                'error' => __('Resumen de Horas', 'flavor-chat-ia'),
+                'error' => __('Resumen de Horas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1261,7 +1261,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
         if (!in_array($tipo, $tipos_validos)) {
             return [
                 'success' => false,
-                'error' => __('mostrar_grafico', 'flavor-chat-ia'),
+                'error' => __('mostrar_grafico', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1274,7 +1274,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
             if (!$latitud || !$longitud) {
                 return [
                     'success' => false,
-                    'error' => __('Se requiere la ubicación para fichar.', 'flavor-chat-ia'),
+                    'error' => __('Se requiere la ubicación para fichar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ];
             }
         }
@@ -1305,7 +1305,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
         if ($resultado === false) {
             return [
                 'success' => false,
-                'error' => __('Error al registrar el fichaje. Por favor, inténtalo de nuevo.', 'flavor-chat-ia'),
+                'error' => __('Error al registrar el fichaje. Por favor, inténtalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1338,7 +1338,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
         if (!$usuario_id) {
             return [
                 'success' => false,
-                'error' => __('Debes iniciar sesión para ver tus fichajes.', 'flavor-chat-ia'),
+                'error' => __('Debes iniciar sesión para ver tus fichajes.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1395,7 +1395,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
         if (!$usuario_id) {
             return [
                 'success' => false,
-                'error' => __('Debes iniciar sesión para ver tu estado de fichaje.', 'flavor-chat-ia'),
+                'error' => __('Debes iniciar sesión para ver tu estado de fichaje.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1419,7 +1419,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
             return [
                 'success' => true,
                 'estado' => 'sin_fichar',
-                'mensaje' => __('No has fichado hoy todavía.', 'flavor-chat-ia'),
+                'mensaje' => __('No has fichado hoy todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1564,92 +1564,92 @@ KNOWLEDGE;
     public function get_form_config($action_name) {
         $configs = [
             'fichar_entrada' => [
-                'title' => __('Fichar Entrada', 'flavor-chat-ia'),
-                'description' => __('Registra tu entrada al trabajo', 'flavor-chat-ia'),
+                'title' => __('Fichar Entrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Registra tu entrada al trabajo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fields' => [
                     'notas' => [
                         'type' => 'textarea',
-                        'label' => __('Notas (opcional)', 'flavor-chat-ia'),
+                        'label' => __('Notas (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'rows' => 2,
-                        'placeholder' => __('Proyecto, tarea, ubicación...', 'flavor-chat-ia'),
+                        'placeholder' => __('Proyecto, tarea, ubicación...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                 ],
-                'submit_text' => __('Fichar Entrada', 'flavor-chat-ia'),
-                'success_message' => __('Entrada registrada correctamente', 'flavor-chat-ia'),
+                'submit_text' => __('Fichar Entrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'success_message' => __('Entrada registrada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'fichar_salida' => [
-                'title' => __('Fichar Salida', 'flavor-chat-ia'),
-                'description' => __('Registra tu salida del trabajo', 'flavor-chat-ia'),
+                'title' => __('Fichar Salida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Registra tu salida del trabajo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fields' => [
                     'notas' => [
                         'type' => 'textarea',
-                        'label' => __('Resumen del día (opcional)', 'flavor-chat-ia'),
+                        'label' => __('Resumen del día (opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'rows' => 3,
-                        'placeholder' => __('¿Qué has hecho hoy?', 'flavor-chat-ia'),
+                        'placeholder' => __('¿Qué has hecho hoy?', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                 ],
-                'submit_text' => __('Fichar Salida', 'flavor-chat-ia'),
-                'success_message' => __('Salida registrada correctamente. ¡Buen trabajo!', 'flavor-chat-ia'),
+                'submit_text' => __('Fichar Salida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'success_message' => __('Salida registrada correctamente. ¡Buen trabajo!', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'pausar_jornada' => [
-                'title' => __('Iniciar Pausa', 'flavor-chat-ia'),
-                'description' => __('Pausa tu jornada temporalmente', 'flavor-chat-ia'),
+                'title' => __('Iniciar Pausa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Pausa tu jornada temporalmente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fields' => [
                     'tipo_pausa' => [
                         'type' => 'select',
-                        'label' => __('Tipo de pausa', 'flavor-chat-ia'),
+                        'label' => __('Tipo de pausa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'options' => [
-                            'comida' => __('Comida', 'flavor-chat-ia'),
-                            'descanso' => __('Descanso', 'flavor-chat-ia'),
-                            'reunion' => __('Reunión externa', 'flavor-chat-ia'),
-                            'otros' => __('Otros', 'flavor-chat-ia'),
+                            'comida' => __('Comida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'descanso' => __('Descanso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'reunion' => __('Reunión externa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'otros' => __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ],
                     ],
                 ],
-                'submit_text' => __('Iniciar Pausa', 'flavor-chat-ia'),
-                'success_message' => __('Pausa iniciada', 'flavor-chat-ia'),
+                'submit_text' => __('Iniciar Pausa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'success_message' => __('Pausa iniciada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'reanudar_jornada' => [
-                'title' => __('Reanudar Jornada', 'flavor-chat-ia'),
-                'description' => __('Vuelve al trabajo tras la pausa', 'flavor-chat-ia'),
+                'title' => __('Reanudar Jornada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Vuelve al trabajo tras la pausa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fields' => [],
-                'submit_text' => __('Reanudar Jornada', 'flavor-chat-ia'),
-                'success_message' => __('Jornada reanudada', 'flavor-chat-ia'),
+                'submit_text' => __('Reanudar Jornada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'success_message' => __('Jornada reanudada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'solicitar_cambio' => [
-                'title' => __('Solicitar Corrección de Fichaje', 'flavor-chat-ia'),
-                'description' => __('¿Olvidaste fichar? Solicita una corrección', 'flavor-chat-ia'),
+                'title' => __('Solicitar Corrección de Fichaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('¿Olvidaste fichar? Solicita una corrección', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fields' => [
                     'fecha' => [
                         'type' => 'date',
-                        'label' => __('Fecha del fichaje', 'flavor-chat-ia'),
+                        'label' => __('Fecha del fichaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                     ],
                     'tipo' => [
                         'type' => 'select',
-                        'label' => __('Tipo de fichaje', 'flavor-chat-ia'),
+                        'label' => __('Tipo de fichaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'options' => [
-                            'entrada' => __('Entrada', 'flavor-chat-ia'),
-                            'salida' => __('Salida', 'flavor-chat-ia'),
+                            'entrada' => __('Entrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'salida' => __('Salida', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ],
                     ],
                     'hora' => [
                         'type' => 'time',
-                        'label' => __('Hora correcta', 'flavor-chat-ia'),
+                        'label' => __('Hora correcta', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                     ],
                     'motivo' => [
                         'type' => 'textarea',
-                        'label' => __('Motivo de la corrección', 'flavor-chat-ia'),
+                        'label' => __('Motivo de la corrección', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required' => true,
                         'rows' => 3,
-                        'placeholder' => __('Explica por qué necesitas esta corrección...', 'flavor-chat-ia'),
+                        'placeholder' => __('Explica por qué necesitas esta corrección...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                 ],
-                'submit_text' => __('Solicitar Corrección', 'flavor-chat-ia'),
-                'success_message' => __('Solicitud enviada. Pendiente de validación.', 'flavor-chat-ia'),
+                'submit_text' => __('Solicitar Corrección', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'success_message' => __('Solicitud enviada. Pendiente de validación.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ];
 
@@ -1664,8 +1664,8 @@ KNOWLEDGE;
     public static function get_renderer_config(): array {
         return [
             'module'   => 'fichaje_empleados',
-            'title'    => __('Fichaje de Empleados', 'flavor-chat-ia'),
-            'subtitle' => __('Control de presencia, historial y correcciones', 'flavor-chat-ia'),
+            'title'    => __('Fichaje de Empleados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Control de presencia, historial y correcciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '🕒',
             'color'    => 'slate',
 
@@ -1685,35 +1685,35 @@ KNOWLEDGE;
 
             'tabs' => [
                 'estado-actual' => [
-                    'label'          => __('Estado actual', 'flavor-chat-ia'),
+                    'label'          => __('Estado actual', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'           => 'dashicons-clock',
                     'content'        => '[fichaje_panel]',
                     'requires_login' => true,
                     'cap'            => 'flavor_fichaje_acceso',
                 ],
                 'entrada' => [
-                    'label'          => __('Fichar entrada', 'flavor-chat-ia'),
+                    'label'          => __('Fichar entrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'           => 'dashicons-arrow-right-alt',
                     'content'        => '[flavor_module_form module="fichaje_empleados" action="fichar_entrada"]',
                     'requires_login' => true,
                     'cap'            => 'flavor_fichaje_acceso',
                 ],
                 'salida' => [
-                    'label'          => __('Fichar salida', 'flavor-chat-ia'),
+                    'label'          => __('Fichar salida', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'           => 'dashicons-arrow-left-alt',
                     'content'        => '[flavor_module_form module="fichaje_empleados" action="fichar_salida"]',
                     'requires_login' => true,
                     'cap'            => 'flavor_fichaje_acceso',
                 ],
                 'mis-fichajes' => [
-                    'label'          => __('Mis fichajes', 'flavor-chat-ia'),
+                    'label'          => __('Mis fichajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'           => 'dashicons-list-view',
                     'content'        => '[fichaje_historial periodo="semana"]',
                     'requires_login' => true,
                     'cap'            => 'flavor_fichaje_acceso',
                 ],
                 'solicitar-cambio' => [
-                    'label'          => __('Solicitar corrección', 'flavor-chat-ia'),
+                    'label'          => __('Solicitar corrección', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'           => 'dashicons-edit',
                     'content'        => '[fichaje_solicitar_cambio]',
                     'requires_login' => true,
@@ -1729,88 +1729,88 @@ KNOWLEDGE;
     public function get_web_components() {
         return [
             'hero' => [
-                'label' => __('Hero Fichaje', 'flavor-chat-ia'),
-                'description' => __('Sección hero con botón de fichaje rápido', 'flavor-chat-ia'),
+                'label' => __('Hero Fichaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Sección hero con botón de fichaje rápido', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-clock',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Control de Presencia', 'flavor-chat-ia'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Control de Presencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'subtitulo' => [
                         'type' => 'textarea',
-                        'label' => __('Subtítulo', 'flavor-chat-ia'),
-                        'default' => __('Registra tu entrada y salida de forma sencilla', 'flavor-chat-ia'),
+                        'label' => __('Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Registra tu entrada y salida de forma sencilla', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'mostrar_reloj' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar reloj', 'flavor-chat-ia'),
+                        'label' => __('Mostrar reloj', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                 ],
                 'template' => 'fichaje-empleados/hero',
             ],
             'boton_fichaje' => [
-                'label' => __('Botón de Fichaje', 'flavor-chat-ia'),
-                'description' => __('Botón grande para fichar entrada/salida', 'flavor-chat-ia'),
+                'label' => __('Botón de Fichaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Botón grande para fichar entrada/salida', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'cta',
                 'icon' => 'dashicons-yes-alt',
                 'fields' => [
                     'estilo' => [
                         'type' => 'select',
-                        'label' => __('Estilo', 'flavor-chat-ia'),
+                        'label' => __('Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['grande', 'compacto'],
                         'default' => 'grande',
                     ],
                     'mostrar_estado' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar estado actual', 'flavor-chat-ia'),
+                        'label' => __('Mostrar estado actual', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                 ],
                 'template' => 'fichaje-empleados/boton-fichaje',
             ],
             'historial' => [
-                'label' => __('Historial de Fichajes', 'flavor-chat-ia'),
-                'description' => __('Tabla con registro de fichajes', 'flavor-chat-ia'),
+                'label' => __('Historial de Fichajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Tabla con registro de fichajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-list-view',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Mis Fichajes', 'flavor-chat-ia'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Mis Fichajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'periodo' => [
                         'type' => 'select',
-                        'label' => __('Periodo', 'flavor-chat-ia'),
+                        'label' => __('Periodo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['hoy', 'semana', 'mes'],
                         'default' => 'semana',
                     ],
                     'limite' => [
                         'type' => 'number',
-                        'label' => __('Número máximo', 'flavor-chat-ia'),
+                        'label' => __('Número máximo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 30,
                     ],
                 ],
                 'template' => 'fichaje-empleados/historial',
             ],
             'resumen_horas' => [
-                'label' => __('Resumen de Horas', 'flavor-chat-ia'),
-                'description' => __('Estadísticas de horas trabajadas', 'flavor-chat-ia'),
+                'label' => __('Resumen de Horas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Estadísticas de horas trabajadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-chart-bar',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Resumen de Horas', 'flavor-chat-ia'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'default' => __('Resumen de Horas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'mostrar_grafico' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar gráfico', 'flavor-chat-ia'),
+                        'label' => __('Mostrar gráfico', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true,
                     ],
                 ],
@@ -1849,7 +1849,7 @@ KNOWLEDGE;
         if (!$usuario_id) {
             return [
                 'success' => false,
-                'error' => __('Debes iniciar sesión para solicitar un cambio.', 'flavor-chat-ia'),
+                'error' => __('Debes iniciar sesión para solicitar un cambio.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1861,7 +1861,7 @@ KNOWLEDGE;
         if (empty($fecha) || empty($tipo) || empty($hora) || empty($motivo)) {
             return [
                 'success' => false,
-                'error' => __('Todos los campos son obligatorios: fecha, tipo, hora y motivo.', 'flavor-chat-ia'),
+                'error' => __('Todos los campos son obligatorios: fecha, tipo, hora y motivo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1879,7 +1879,7 @@ KNOWLEDGE;
 
         return [
             'success' => true,
-            'mensaje' => __('Solicitud de correccion enviada. Un administrador la revisara.', 'flavor-chat-ia'),
+            'mensaje' => __('Solicitud de correccion enviada. Un administrador la revisara.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
     /**
@@ -1912,37 +1912,37 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Fichaje de Empleados', 'flavor-chat-ia'),
+                'title' => __('Fichaje de Empleados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'fichaje-empleados',
-                'content' => '<h1>' . __('Control de Presencia', 'flavor-chat-ia') . '</h1>
-<p>' . __('Sistema de fichaje para el control de horarios y asistencia de empleados.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Control de Presencia', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Sistema de fichaje para el control de horarios y asistencia de empleados.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="fichaje_empleados" action="estado_actual" columnas="1" limite="1"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Fichar Entrada', 'flavor-chat-ia'),
+                'title' => __('Fichar Entrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'entrada',
-                'content' => '<h1>' . __('Fichar Entrada', 'flavor-chat-ia') . '</h1>
-<p>' . __('Registra tu entrada al trabajo.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Fichar Entrada', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Registra tu entrada al trabajo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_form module="fichaje_empleados" action="fichar_entrada"]',
                 'parent' => 'fichaje-empleados',
             ],
             [
-                'title' => __('Fichar Salida', 'flavor-chat-ia'),
+                'title' => __('Fichar Salida', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'salida',
-                'content' => '<h1>' . __('Fichar Salida', 'flavor-chat-ia') . '</h1>
-<p>' . __('Registra tu salida del trabajo.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Fichar Salida', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Registra tu salida del trabajo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_form module="fichaje_empleados" action="fichar_salida"]',
                 'parent' => 'fichaje-empleados',
             ],
             [
-                'title' => __('Mis Fichajes', 'flavor-chat-ia'),
+                'title' => __('Mis Fichajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mis-fichajes',
-                'content' => '<h1>' . __('Mis Fichajes', 'flavor-chat-ia') . '</h1>
-<p>' . __('Consulta tu historial de fichajes y horas trabajadas.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Mis Fichajes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Consulta tu historial de fichajes y horas trabajadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="fichaje_empleados" action="ver_fichajes_hoy" columnas="1" limite="30"]',
                 'parent' => 'fichaje-empleados',

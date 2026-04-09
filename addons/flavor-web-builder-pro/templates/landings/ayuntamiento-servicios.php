@@ -9,48 +9,48 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$titulo = $titulo ?? __('Servicios al Ciudadano', 'flavor-chat-ia');
+$titulo = $titulo ?? __('Servicios al Ciudadano', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $color_primario = $color_primario ?? '#1d4ed8';
 
 $servicios_default = [
     [
-        'nombre' => __('Cita Previa', 'flavor-chat-ia'),
-        'descripcion' => __('Solicita cita para trámites presenciales', 'flavor-chat-ia'),
+        'nombre' => __('Cita Previa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Solicita cita para trámites presenciales', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'calendar-alt',
         'url' => '#cita',
         'destacado' => true,
     ],
     [
-        'nombre' => __('Sede Electrónica', 'flavor-chat-ia'),
-        'descripcion' => __('Trámites y gestiones online', 'flavor-chat-ia'),
+        'nombre' => __('Sede Electrónica', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Trámites y gestiones online', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'admin-site-alt3',
         'url' => '#sede',
         'destacado' => true,
     ],
     [
-        'nombre' => __('Padrón Municipal', 'flavor-chat-ia'),
-        'descripcion' => __('Altas, bajas y certificados', 'flavor-chat-ia'),
+        'nombre' => __('Padrón Municipal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Altas, bajas y certificados', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'id-alt',
         'url' => '#padron',
         'destacado' => false,
     ],
     [
-        'nombre' => __('Urbanismo', 'flavor-chat-ia'),
-        'descripcion' => __('Licencias y permisos de obra', 'flavor-chat-ia'),
+        'nombre' => __('Urbanismo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Licencias y permisos de obra', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'building',
         'url' => '#urbanismo',
         'destacado' => false,
     ],
     [
-        'nombre' => __('Tributos', 'flavor-chat-ia'),
-        'descripcion' => __('IBI, tasas y pagos municipales', 'flavor-chat-ia'),
+        'nombre' => __('Tributos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('IBI, tasas y pagos municipales', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'money-alt',
         'url' => '#tributos',
         'destacado' => false,
     ],
     [
-        'nombre' => __('Incidencias', 'flavor-chat-ia'),
-        'descripcion' => __('Reportar averías y problemas', 'flavor-chat-ia'),
+        'nombre' => __('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Reportar averías y problemas', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'warning',
         'url' => '#incidencias',
         'destacado' => false,
@@ -60,12 +60,12 @@ $servicios_default = [
 $servicios = $servicios ?? $servicios_default;
 
 $accesos_rapidos = [
-    ['nombre' => __('Transportes', 'flavor-chat-ia'), 'icono' => 'car', 'url' => '#'],
-    ['nombre' => __('Empleo', 'flavor-chat-ia'), 'icono' => 'businessperson', 'url' => '#'],
-    ['nombre' => __('Cultura', 'flavor-chat-ia'), 'icono' => 'art', 'url' => '#'],
-    ['nombre' => __('Deportes', 'flavor-chat-ia'), 'icono' => 'heart', 'url' => '#'],
-    ['nombre' => __('Educación', 'flavor-chat-ia'), 'icono' => 'welcome-learn-more', 'url' => '#'],
-    ['nombre' => __('Medio Ambiente', 'flavor-chat-ia'), 'icono' => 'palmtree', 'url' => '#'],
+    ['nombre' => __('Transportes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'car', 'url' => '#'],
+    ['nombre' => __('Empleo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'businessperson', 'url' => '#'],
+    ['nombre' => __('Cultura', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'art', 'url' => '#'],
+    ['nombre' => __('Deportes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'heart', 'url' => '#'],
+    ['nombre' => __('Educación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'welcome-learn-more', 'url' => '#'],
+    ['nombre' => __('Medio Ambiente', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icono' => 'palmtree', 'url' => '#'],
 ];
 ?>
 
@@ -118,7 +118,7 @@ $accesos_rapidos = [
 
         <!-- Accesos rápidos -->
         <div class="flavor-accesos-rapidos">
-            <h3 class="flavor-accesos-titulo"><?php esc_html_e('Accesos rápidos', 'flavor-chat-ia'); ?></h3>
+            <h3 class="flavor-accesos-titulo"><?php esc_html_e('Accesos rápidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <div class="flavor-accesos-grid">
                 <?php foreach ($accesos_rapidos as $acceso): ?>
                     <a href="<?php echo esc_url($acceso['url']); ?>" class="flavor-acceso-item">
@@ -134,21 +134,21 @@ $accesos_rapidos = [
             <div class="flavor-contacto-item">
                 <span class="dashicons dashicons-phone"></span>
                 <div>
-                    <strong><?php esc_html_e('Teléfono de atención', 'flavor-chat-ia'); ?></strong>
+                    <strong><?php esc_html_e('Teléfono de atención', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                     <span>010 / 900 000 000</span>
                 </div>
             </div>
             <div class="flavor-contacto-item">
                 <span class="dashicons dashicons-email-alt"></span>
                 <div>
-                    <strong><?php esc_html_e('Correo electrónico', 'flavor-chat-ia'); ?></strong>
+                    <strong><?php esc_html_e('Correo electrónico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                     <span>atencion@ayuntamiento.es</span>
                 </div>
             </div>
             <div class="flavor-contacto-item">
                 <span class="dashicons dashicons-clock"></span>
                 <div>
-                    <strong><?php esc_html_e('Horario de atención', 'flavor-chat-ia'); ?></strong>
+                    <strong><?php esc_html_e('Horario de atención', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                     <span>L-V 9:00 - 14:00</span>
                 </div>
             </div>

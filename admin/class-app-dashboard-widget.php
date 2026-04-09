@@ -57,7 +57,7 @@ class Flavor_App_Dashboard_Widget {
     public function register_widget() {
         wp_add_dashboard_widget(
             self::WIDGET_ID,
-            '<span class="dashicons dashicons-smartphone"></span> ' . __('Apps Móviles', 'flavor-chat-ia'),
+            '<span class="dashicons dashicons-smartphone"></span> ' . __('Apps Móviles', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [$this, 'render_widget'],
             [$this, 'configure_widget']
         );
@@ -108,7 +108,7 @@ class Flavor_App_Dashboard_Widget {
                         <span class="metric-value" data-metric="active_users">
                             <?php echo esc_html($stats['active_users']); ?>
                         </span>
-                        <span class="metric-label"><?php _e('Usuarios activos', 'flavor-chat-ia'); ?></span>
+                        <span class="metric-label"><?php _e('Usuarios activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                     <span class="metric-trend <?php echo $stats['users_trend'] >= 0 ? 'up' : 'down'; ?>">
                         <?php echo ($stats['users_trend'] >= 0 ? '+' : '') . $stats['users_trend']; ?>%
@@ -121,7 +121,7 @@ class Flavor_App_Dashboard_Widget {
                         <span class="metric-value" data-metric="sessions_today">
                             <?php echo esc_html($stats['sessions_today']); ?>
                         </span>
-                        <span class="metric-label"><?php _e('Sesiones hoy', 'flavor-chat-ia'); ?></span>
+                        <span class="metric-label"><?php _e('Sesiones hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
 
@@ -131,7 +131,7 @@ class Flavor_App_Dashboard_Widget {
                         <span class="metric-value" data-metric="total_downloads">
                             <?php echo esc_html($stats['total_downloads']); ?>
                         </span>
-                        <span class="metric-label"><?php _e('Descargas totales', 'flavor-chat-ia'); ?></span>
+                        <span class="metric-label"><?php _e('Descargas totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -174,23 +174,23 @@ class Flavor_App_Dashboard_Widget {
             <!-- Acciones rápidas -->
             <div class="app-widget-actions">
                 <a href="<?php echo admin_url('admin.php?page=flavor-app-analytics'); ?>" class="button">
-                    <?php _e('Ver Analytics', 'flavor-chat-ia'); ?>
+                    <?php _e('Ver Analytics', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="<?php echo admin_url('admin.php?page=flavor-app-releases'); ?>" class="button">
-                    <?php _e('Releases', 'flavor-chat-ia'); ?>
+                    <?php _e('Releases', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="<?php echo admin_url('admin.php?page=flavor-apk-builder'); ?>" class="button button-primary">
-                    <?php _e('Compilar APK', 'flavor-chat-ia'); ?>
+                    <?php _e('Compilar APK', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
             <!-- Timestamp -->
             <div class="app-widget-footer">
                 <span class="last-updated">
-                    <?php _e('Actualizado:', 'flavor-chat-ia'); ?>
+                    <?php _e('Actualizado:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span id="widget-timestamp"><?php echo date_i18n('H:i'); ?></span>
                 </span>
-                <button type="button" class="refresh-btn" id="refresh-app-widget" title="<?php _e('Actualizar', 'flavor-chat-ia'); ?>">
+                <button type="button" class="refresh-btn" id="refresh-app-widget" title="<?php _e('Actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-update"></span>
                 </button>
             </div>
@@ -218,19 +218,19 @@ class Flavor_App_Dashboard_Widget {
         <p>
             <label>
                 <input type="checkbox" name="show_chart" <?php checked($show_chart); ?>>
-                <?php _e('Mostrar gráfico de actividad', 'flavor-chat-ia'); ?>
+                <?php _e('Mostrar gráfico de actividad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </label>
         </p>
         <p>
             <label>
                 <input type="checkbox" name="show_alerts" <?php checked($show_alerts); ?>>
-                <?php _e('Mostrar alertas', 'flavor-chat-ia'); ?>
+                <?php _e('Mostrar alertas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </label>
         </p>
         <p>
             <label>
                 <input type="checkbox" name="auto_refresh" <?php checked($auto_refresh); ?>>
-                <?php _e('Auto-actualizar cada minuto', 'flavor-chat-ia'); ?>
+                <?php _e('Auto-actualizar cada minuto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </label>
         </p>
         <input type="hidden" name="flavor_app_widget_submit" value="1">
@@ -347,7 +347,7 @@ class Flavor_App_Dashboard_Widget {
                 'type' => 'warning',
                 'icon' => 'warning',
                 'message' => sprintf(
-                    __('Caída del %d%% en usuarios activos', 'flavor-chat-ia'),
+                    __('Caída del %d%% en usuarios activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     abs($stats['users_trend'])
                 ),
             ];
@@ -358,7 +358,7 @@ class Flavor_App_Dashboard_Widget {
             $alerts[] = [
                 'type' => 'info',
                 'icon' => 'info-outline',
-                'message' => __('No hay releases publicados', 'flavor-chat-ia'),
+                'message' => __('No hay releases publicados', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -377,7 +377,7 @@ class Flavor_App_Dashboard_Widget {
                     'type' => 'error',
                     'icon' => 'dismiss',
                     'message' => sprintf(
-                        __('%d crashes en las últimas 24h', 'flavor-chat-ia'),
+                        __('%d crashes en las últimas 24h', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $recent_crashes
                     ),
                 ];

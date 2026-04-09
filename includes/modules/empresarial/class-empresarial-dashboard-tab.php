@@ -32,7 +32,7 @@ class Flavor_Empresarial_Dashboard_Tab {
         }
 
         $tabs['empresarial'] = [
-            'label' => __('Mi Empresa', 'flavor-chat-ia'),
+            'label' => __('Mi Empresa', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-building',
             'callback' => [$this, 'render_tab'],
             'priority' => 65,
@@ -94,13 +94,13 @@ class Flavor_Empresarial_Dashboard_Tab {
         ?>
         <div class="empresa-perfil-resumen">
             <div class="flavor-notice flavor-notice-info">
-                <p><?php esc_html_e('Este dashboard muestra el estado público del módulo. La edición avanzada del perfil empresarial sigue dependiendo de las vistas nativas y del panel administrativo.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('Este dashboard muestra el estado público del módulo. La edición avanzada del perfil empresarial sigue dependiendo de las vistas nativas y del panel administrativo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <div class="flavor-card">
-                <h3><?php echo esc_html($empresa['nombre'] ?? __('Mi empresa', 'flavor-chat-ia')); ?></h3>
+                <h3><?php echo esc_html($empresa['nombre'] ?? __('Mi empresa', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></h3>
                 <?php if (!empty($empresa['eslogan'])): ?>
-                    <p><strong><?php esc_html_e('Eslogan:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($empresa['eslogan']); ?></p>
+                    <p><strong><?php esc_html_e('Eslogan:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html($empresa['eslogan']); ?></p>
                 <?php endif; ?>
                 <?php if (!empty($empresa['descripcion'])): ?>
                     <p><?php echo esc_html($empresa['descripcion']); ?></p>
@@ -108,16 +108,16 @@ class Flavor_Empresarial_Dashboard_Tab {
 
                 <div class="empresa-meta">
                     <?php if (!empty($empresa['email'])): ?>
-                        <p><strong><?php esc_html_e('Email:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($empresa['email']); ?></p>
+                        <p><strong><?php esc_html_e('Email:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html($empresa['email']); ?></p>
                     <?php endif; ?>
                     <?php if (!empty($empresa['telefono'])): ?>
-                        <p><strong><?php esc_html_e('Teléfono:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($empresa['telefono']); ?></p>
+                        <p><strong><?php esc_html_e('Teléfono:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html($empresa['telefono']); ?></p>
                     <?php endif; ?>
                     <?php if (!empty($empresa['web'])): ?>
-                        <p><strong><?php esc_html_e('Web:', 'flavor-chat-ia'); ?></strong> <a href="<?php echo esc_url($empresa['web']); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html($empresa['web']); ?></a></p>
+                        <p><strong><?php esc_html_e('Web:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <a href="<?php echo esc_url($empresa['web']); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html($empresa['web']); ?></a></p>
                     <?php endif; ?>
                     <?php if (!empty($empresa['direccion'])): ?>
-                        <p><strong><?php esc_html_e('Dirección:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($empresa['direccion']); ?></p>
+                        <p><strong><?php esc_html_e('Dirección:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong> <?php echo esc_html($empresa['direccion']); ?></p>
                     <?php endif; ?>
                 </div>
             </div>

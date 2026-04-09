@@ -32,37 +32,37 @@ $total_reportes_revisados = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_reportes
 ?>
 
 <div class="wrap flavor-chat-moderacion">
-    <h1><?php _e('Moderacion de Chat', 'flavor-chat-ia'); ?></h1>
+    <h1><?php _e('Moderacion de Chat', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
 
     <div class="flavor-stats-row">
         <div class="flavor-stat-card">
             <span class="flavor-stat-numero"><?php echo number_format_i18n($total_reportes_pendientes); ?></span>
-            <span class="flavor-stat-label"><?php _e('Reportes pendientes', 'flavor-chat-ia'); ?></span>
+            <span class="flavor-stat-label"><?php _e('Reportes pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="flavor-stat-card">
             <span class="flavor-stat-numero"><?php echo number_format_i18n($total_reportes_revisados); ?></span>
-            <span class="flavor-stat-label"><?php _e('Reportes revisados', 'flavor-chat-ia'); ?></span>
+            <span class="flavor-stat-label"><?php _e('Reportes revisados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
     </div>
 
-    <h2><?php _e('Mensajes reportados', 'flavor-chat-ia'); ?></h2>
+    <h2><?php _e('Mensajes reportados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
     <?php if (empty($reportes_pendientes)): ?>
     <div class="flavor-empty-state">
         <span class="dashicons dashicons-yes-alt"></span>
-        <p><?php _e('No hay mensajes reportados pendientes de revision.', 'flavor-chat-ia'); ?></p>
+        <p><?php _e('No hay mensajes reportados pendientes de revision.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php else: ?>
 
     <table class="wp-list-table widefat fixed striped">
         <thead>
             <tr>
-                <th scope="col" class="column-primary"><?php _e('Mensaje', 'flavor-chat-ia'); ?></th>
-                <th scope="col"><?php _e('Grupo', 'flavor-chat-ia'); ?></th>
-                <th scope="col"><?php _e('Usuario', 'flavor-chat-ia'); ?></th>
-                <th scope="col"><?php _e('Motivo', 'flavor-chat-ia'); ?></th>
-                <th scope="col"><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
-                <th scope="col"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                <th scope="col" class="column-primary"><?php _e('Mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col"><?php _e('Grupo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col"><?php _e('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col"><?php _e('Motivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col"><?php _e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th scope="col"><?php _e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -90,16 +90,16 @@ $total_reportes_revisados = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_reportes
                 <td>
                     <span class="flavor-motivo"><?php echo esc_html(ucfirst($reporte->motivo ?? 'inapropiado')); ?></span>
                     <?php if ($reportador): ?>
-                    <br><small><?php printf(__('Reportado por: %s', 'flavor-chat-ia'), esc_html($reportador->display_name)); ?></small>
+                    <br><small><?php printf(__('Reportado por: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($reportador->display_name)); ?></small>
                     <?php endif; ?>
                 </td>
                 <td><?php echo esc_html(date_i18n('d/m/Y H:i', strtotime($reporte->fecha_reporte))); ?></td>
                 <td>
                     <button class="button button-small flavor-aprobar-reporte" data-id="<?php echo esc_attr($reporte->id); ?>" data-action="eliminar">
-                        <?php _e('Eliminar mensaje', 'flavor-chat-ia'); ?>
+                        <?php _e('Eliminar mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button class="button button-small flavor-rechazar-reporte" data-id="<?php echo esc_attr($reporte->id); ?>">
-                        <?php _e('Descartar', 'flavor-chat-ia'); ?>
+                        <?php _e('Descartar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </td>
             </tr>

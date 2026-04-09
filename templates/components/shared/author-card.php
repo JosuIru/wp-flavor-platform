@@ -20,10 +20,10 @@ if (!defined('ABSPATH')) {
 $author = $author ?? [];
 $color = $color ?? 'blue';
 $actions = $actions ?? [];
-$title = $title ?? __('Publicado por', 'flavor-chat-ia');
+$title = $title ?? __('Publicado por', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
 // Extraer datos del autor
-$name = $author['name'] ?? $author['nombre'] ?? __('Usuario', 'flavor-chat-ia');
+$name = $author['name'] ?? $author['nombre'] ?? __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $avatar = $author['avatar'] ?? $author['imagen'] ?? '';
 $bio = $author['bio'] ?? $author['descripcion'] ?? '';
 $verified = $author['verified'] ?? $author['verificado'] ?? false;
@@ -72,7 +72,7 @@ if (function_exists('flavor_get_color_classes')) {
                 <?php endif; ?>
 
                 <?php if ($verified): ?>
-                    <span class="text-blue-500 flex-shrink-0" title="<?php esc_attr_e('Verificado', 'flavor-chat-ia'); ?>">✓</span>
+                    <span class="text-blue-500 flex-shrink-0" title="<?php esc_attr_e('Verificado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">✓</span>
                 <?php endif; ?>
             </div>
 
@@ -88,7 +88,7 @@ if (function_exists('flavor_get_color_classes')) {
 
             <?php if ($member_since): ?>
                 <p class="text-xs text-gray-500 mt-1">
-                    <?php echo esc_html__('Miembro desde', 'flavor-chat-ia'); ?> <?php echo esc_html($member_since); ?>
+                    <?php echo esc_html__('Miembro desde', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo esc_html($member_since); ?>
                 </p>
             <?php endif; ?>
         </div>

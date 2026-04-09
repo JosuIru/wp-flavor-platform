@@ -38,7 +38,7 @@ $imagen_hero_url = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_f
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
-                <span class="text-white text-sm font-medium"><?php echo esc_html__('Gobierno abierto', 'flavor-chat-ia'); ?></span>
+                <span class="text-white text-sm font-medium"><?php echo esc_html__('Gobierno abierto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
 
             <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6" style="color: white;">
@@ -51,7 +51,7 @@ $imagen_hero_url = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_f
             <!-- Buscador -->
             <div class="max-w-2xl mx-auto mb-12">
                 <div class="relative">
-                    <input type="text" placeholder="<?php echo esc_attr__('Buscar documentos, datos, informes...', 'flavor-chat-ia'); ?>"
+                    <input type="text" placeholder="<?php echo esc_attr__('Buscar documentos, datos, informes...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                            class="w-full px-6 py-4 pr-14 rounded-xl text-gray-900 shadow-xl text-lg focus:outline-none focus:ring-4 focus:ring-teal-300">
                     <button class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-teal-500 hover:bg-teal-600 text-white p-3 rounded-lg transition duration-300">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,19 +67,19 @@ $imagen_hero_url = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_f
                     <div class="text-4xl font-bold text-white mb-1">
                         <?php echo esc_html($estadistica_documentos ?? '1.245'); ?>
                     </div>
-                    <div class="text-white text-opacity-80 text-sm"><?php echo esc_html__('Documentos publicados', 'flavor-chat-ia'); ?></div>
+                    <div class="text-white text-opacity-80 text-sm"><?php echo esc_html__('Documentos publicados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="bg-white bg-opacity-15 backdrop-blur-sm rounded-xl p-6 text-center">
                     <div class="text-4xl font-bold text-white mb-1">
                         <?php echo esc_html($estadistica_datos ?? '89'); ?>
                     </div>
-                    <div class="text-white text-opacity-80 text-sm"><?php echo esc_html__('Conjuntos de datos abiertos', 'flavor-chat-ia'); ?></div>
+                    <div class="text-white text-opacity-80 text-sm"><?php echo esc_html__('Conjuntos de datos abiertos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="bg-white bg-opacity-15 backdrop-blur-sm rounded-xl p-6 text-center">
                     <div class="text-4xl font-bold text-white mb-1">
                         <?php echo esc_html($estadistica_consultas ?? '3.670'); ?>
                     </div>
-                    <div class="text-white text-opacity-80 text-sm"><?php echo esc_html__('Consultas atendidas', 'flavor-chat-ia'); ?></div>
+                    <div class="text-white text-opacity-80 text-sm"><?php echo esc_html__('Consultas atendidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
         </div>

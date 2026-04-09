@@ -16,10 +16,10 @@ if (!defined('ABSPATH')) {
 if (!is_user_logged_in()) {
     echo '<div class="gc-panel-login-required">';
     echo '<span class="dashicons dashicons-lock"></span>';
-    echo '<h3>' . esc_html__('Acceso restringido', 'flavor-chat-ia') . '</h3>';
-    echo '<p>' . esc_html__('Inicia sesion para acceder a tu panel de consumidor.', 'flavor-chat-ia') . '</p>';
+    echo '<h3>' . esc_html__('Acceso restringido', 'flavor-platform') . '</h3>';
+    echo '<p>' . esc_html__('Inicia sesion para acceder a tu panel de consumidor.', 'flavor-platform') . '</p>';
     echo '<a href="' . esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', ''))) . '" class="gc-btn gc-btn-primary">';
-    echo esc_html__('Iniciar sesion', 'flavor-chat-ia');
+    echo esc_html__('Iniciar sesion', 'flavor-platform');
     echo '</a></div>';
     return;
 }
@@ -109,31 +109,31 @@ $notificaciones_count = (int) $wpdb->get_var($wpdb->prepare(
 // Accesos rapidos
 $accesos_rapidos = [
     [
-        'titulo' => __('Catalogo', 'flavor-chat-ia'),
-        'desc'   => __('Ver productos disponibles', 'flavor-chat-ia'),
+        'titulo' => __('Catalogo', 'flavor-platform'),
+        'desc'   => __('Ver productos disponibles', 'flavor-platform'),
         'url'    => Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos'),
         'icon'   => 'products',
         'color'  => '#4caf50',
     ],
     [
-        'titulo' => __('Pedido actual', 'flavor-chat-ia'),
-        'desc'   => sprintf(_n('%d producto', '%d productos', $estadisticas['items_cesta'], 'flavor-chat-ia'), $estadisticas['items_cesta']),
+        'titulo' => __('Pedido actual', 'flavor-platform'),
+        'desc'   => sprintf(_n('%d producto', '%d productos', $estadisticas['items_cesta'], 'flavor-platform'), $estadisticas['items_cesta']),
         'url'    => Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mi-pedido'),
         'icon'   => 'cart',
         'color'  => '#2196f3',
         'badge'  => $estadisticas['items_cesta'],
     ],
     [
-        'titulo' => __('Historial', 'flavor-chat-ia'),
-        'desc'   => __('Pedidos confirmados', 'flavor-chat-ia'),
+        'titulo' => __('Historial', 'flavor-platform'),
+        'desc'   => __('Pedidos confirmados', 'flavor-platform'),
         'url'    => Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mis-pedidos'),
         'icon'   => 'clipboard',
         'color'  => '#ff9800',
         'badge'  => $estadisticas['pedidos_pendientes'],
     ],
     [
-        'titulo' => __('Productores', 'flavor-chat-ia'),
-        'desc'   => __('Conoce a los productores', 'flavor-chat-ia'),
+        'titulo' => __('Productores', 'flavor-platform'),
+        'desc'   => __('Conoce a los productores', 'flavor-platform'),
         'url'    => Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productores-cercanos'),
         'icon'   => 'store',
         'color'  => '#9c27b0',
@@ -149,11 +149,11 @@ $accesos_rapidos = [
                 <?php
                 $hora = (int) date('H');
                 if ($hora < 12) {
-                    $saludo = __('Buenos dias', 'flavor-chat-ia');
+                    $saludo = __('Buenos dias', 'flavor-platform');
                 } elseif ($hora < 20) {
-                    $saludo = __('Buenas tardes', 'flavor-chat-ia');
+                    $saludo = __('Buenas tardes', 'flavor-platform');
                 } else {
-                    $saludo = __('Buenas noches', 'flavor-chat-ia');
+                    $saludo = __('Buenas noches', 'flavor-platform');
                 }
                 echo esc_html($saludo . ', ' . $user->display_name);
                 ?>
@@ -179,24 +179,24 @@ $accesos_rapidos = [
                 <span class="dashicons dashicons-yes-alt"></span>
             </div>
             <div class="gc-ciclo-info">
-                <span class="gc-ciclo-estado"><?php esc_html_e('Ciclo de pedidos abierto', 'flavor-chat-ia'); ?></span>
+                <span class="gc-ciclo-estado"><?php esc_html_e('Ciclo de pedidos abierto', 'flavor-platform'); ?></span>
                 <h3><?php echo esc_html($ciclo_activo->post_title); ?></h3>
                 <div class="gc-ciclo-fechas">
                     <span>
                         <span class="dashicons dashicons-clock"></span>
-                        <?php esc_html_e('Cierra:', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Cierra:', 'flavor-platform'); ?>
                         <?php echo esc_html(date_i18n('j M, H:i', strtotime($meta_ciclo['fecha_cierre']))); ?>
                     </span>
                     <span>
                         <span class="dashicons dashicons-location"></span>
-                        <?php esc_html_e('Entrega:', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Entrega:', 'flavor-platform'); ?>
                         <?php echo esc_html(date_i18n('j M', strtotime($meta_ciclo['fecha_entrega']))); ?>
                     </span>
                 </div>
             </div>
             <div class="gc-ciclo-acciones">
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-primary">
-                    <?php esc_html_e('Hacer pedido', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Hacer pedido', 'flavor-platform'); ?>
                 </a>
             </div>
         </div>
@@ -208,8 +208,8 @@ $accesos_rapidos = [
                 <span class="dashicons dashicons-calendar-alt"></span>
             </div>
             <div class="gc-ciclo-info">
-                <span class="gc-ciclo-estado"><?php esc_html_e('Sin ciclo activo', 'flavor-chat-ia'); ?></span>
-                <p><?php esc_html_e('No hay ciclos de pedidos abiertos actualmente. Te notificaremos cuando se abra el proximo.', 'flavor-chat-ia'); ?></p>
+                <span class="gc-ciclo-estado"><?php esc_html_e('Sin ciclo activo', 'flavor-platform'); ?></span>
+                <p><?php esc_html_e('No hay ciclos de pedidos abiertos actualmente. Te notificaremos cuando se abra el proximo.', 'flavor-platform'); ?></p>
             </div>
         </div>
     </section>
@@ -217,7 +217,7 @@ $accesos_rapidos = [
 
     <!-- Accesos rapidos -->
     <section class="gc-panel-accesos">
-        <h3 class="gc-section-title"><?php esc_html_e('Acceso rapido', 'flavor-chat-ia'); ?></h3>
+        <h3 class="gc-section-title"><?php esc_html_e('Acceso rapido', 'flavor-platform'); ?></h3>
         <div class="gc-accesos-grid">
             <?php foreach ($accesos_rapidos as $acceso) : ?>
             <a href="<?php echo esc_url($acceso['url']); ?>" class="gc-acceso-card">
@@ -242,7 +242,7 @@ $accesos_rapidos = [
     <div class="gc-panel-grid">
         <!-- Resumen de actividad -->
         <section class="gc-panel-resumen">
-            <h3 class="gc-section-title"><?php esc_html_e('Tu actividad', 'flavor-chat-ia'); ?></h3>
+            <h3 class="gc-section-title"><?php esc_html_e('Tu actividad', 'flavor-platform'); ?></h3>
             <div class="gc-stats-grid">
                 <div class="gc-stat-card">
                     <span class="gc-stat-icon" style="background: #e8f5e9; color: #4caf50;">
@@ -250,7 +250,7 @@ $accesos_rapidos = [
                     </span>
                     <div class="gc-stat-info">
                         <span class="gc-stat-value"><?php echo esc_html($estadisticas['total_pedidos']); ?></span>
-                        <span class="gc-stat-label"><?php esc_html_e('Pedidos realizados', 'flavor-chat-ia'); ?></span>
+                        <span class="gc-stat-label"><?php esc_html_e('Pedidos realizados', 'flavor-platform'); ?></span>
                     </div>
                 </div>
 
@@ -260,7 +260,7 @@ $accesos_rapidos = [
                     </span>
                     <div class="gc-stat-info">
                         <span class="gc-stat-value"><?php echo number_format($estadisticas['gasto_total'], 0, ',', '.'); ?> &euro;</span>
-                        <span class="gc-stat-label"><?php esc_html_e('Total consumido', 'flavor-chat-ia'); ?></span>
+                        <span class="gc-stat-label"><?php esc_html_e('Total consumido', 'flavor-platform'); ?></span>
                     </div>
                 </div>
 
@@ -271,7 +271,7 @@ $accesos_rapidos = [
                     </span>
                     <div class="gc-stat-info">
                         <span class="gc-stat-value"><?php echo esc_html($estadisticas['pedidos_pendientes']); ?></span>
-                        <span class="gc-stat-label"><?php esc_html_e('Pedidos pendientes', 'flavor-chat-ia'); ?></span>
+                        <span class="gc-stat-label"><?php esc_html_e('Pedidos pendientes', 'flavor-platform'); ?></span>
                     </div>
                 </div>
                 <?php endif; ?>
@@ -281,18 +281,18 @@ $accesos_rapidos = [
         <!-- Pedidos recientes -->
         <section class="gc-panel-pedidos">
             <div class="gc-section-header">
-                <h3 class="gc-section-title"><?php esc_html_e('Pedidos recientes', 'flavor-chat-ia'); ?></h3>
+                <h3 class="gc-section-title"><?php esc_html_e('Pedidos recientes', 'flavor-platform'); ?></h3>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mis-pedidos')); ?>" class="gc-link-ver-todos">
-                    <?php esc_html_e('Ver todos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver todos', 'flavor-platform'); ?>
                 </a>
             </div>
 
             <?php if (empty($pedidos_recientes)) : ?>
             <div class="gc-pedidos-empty">
                 <span class="dashicons dashicons-clipboard"></span>
-                <p><?php esc_html_e('Aun no has realizado ningun pedido.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('Aun no has realizado ningun pedido.', 'flavor-platform'); ?></p>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-sm gc-btn-primary">
-                    <?php esc_html_e('Ver catalogo', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver catalogo', 'flavor-platform'); ?>
                 </a>
             </div>
             <?php else : ?>
@@ -303,12 +303,12 @@ $accesos_rapidos = [
                     switch ($pedido->estado_pago) {
                         case 'completado':
                             $estado_class = 'gc-estado-pagado';
-                            $estado_label = __('Pagado', 'flavor-chat-ia');
+                            $estado_label = __('Pagado', 'flavor-platform');
                             break;
                         case 'pendiente':
                         case 'pendiente_recogida':
                             $estado_class = 'gc-estado-pendiente';
-                            $estado_label = __('Pendiente', 'flavor-chat-ia');
+                            $estado_label = __('Pendiente', 'flavor-platform');
                             break;
                         default:
                             $estado_class = 'gc-estado-otro';
@@ -338,7 +338,7 @@ $accesos_rapidos = [
     <!-- Mis grupos -->
     <?php if (!empty($mis_grupos)) : ?>
     <section class="gc-panel-grupos">
-        <h3 class="gc-section-title"><?php esc_html_e('Mis grupos', 'flavor-chat-ia'); ?></h3>
+        <h3 class="gc-section-title"><?php esc_html_e('Mis grupos', 'flavor-platform'); ?></h3>
         <div class="gc-grupos-lista">
             <?php foreach ($mis_grupos as $grupo) : ?>
             <a href="<?php echo esc_url(add_query_arg('grupo', $grupo->grupo_id, Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'unirme'))); ?>" class="gc-grupo-item">
@@ -350,9 +350,9 @@ $accesos_rapidos = [
                     <span class="gc-grupo-rol">
                         <?php
                         $roles = [
-                            'consumidor'  => __('Consumidor', 'flavor-chat-ia'),
-                            'coordinador' => __('Coordinador', 'flavor-chat-ia'),
-                            'productor'   => __('Productor', 'flavor-chat-ia'),
+                            'consumidor'  => __('Consumidor', 'flavor-platform'),
+                            'coordinador' => __('Coordinador', 'flavor-platform'),
+                            'productor'   => __('Productor', 'flavor-platform'),
                         ];
                         echo esc_html($roles[$grupo->rol] ?? $grupo->rol);
                         ?>
@@ -372,11 +372,11 @@ $accesos_rapidos = [
                 <span class="dashicons dashicons-editor-help"></span>
             </span>
             <div class="gc-ayuda-content">
-                <strong><?php esc_html_e('Necesitas ayuda?', 'flavor-chat-ia'); ?></strong>
-                <p><?php esc_html_e('Consulta nuestras guias o contacta con los coordinadores del grupo.', 'flavor-chat-ia'); ?></p>
+                <strong><?php esc_html_e('Necesitas ayuda?', 'flavor-platform'); ?></strong>
+                <p><?php esc_html_e('Consulta nuestras guias o contacta con los coordinadores del grupo.', 'flavor-platform'); ?></p>
             </div>
             <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('ayuda', '')); ?>" class="gc-btn gc-btn-sm gc-btn-secondary">
-                <?php esc_html_e('Ver ayuda', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver ayuda', 'flavor-platform'); ?>
             </a>
         </div>
     </section>

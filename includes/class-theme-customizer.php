@@ -243,8 +243,8 @@ class Flavor_Theme_Customizer {
         <div class="flavor-theme-switcher">
             <button class="flavor-theme-switcher__button"
                     id="flavor-theme-toggle"
-                    aria-label="<?php esc_attr_e('Cambiar tema', 'flavor-chat-ia'); ?>"
-                    title="<?php esc_attr_e('Cambiar tema', 'flavor-chat-ia'); ?>">
+                    aria-label="<?php esc_attr_e('Cambiar tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
+                    title="<?php esc_attr_e('Cambiar tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <span class="flavor-theme-icon">
                     <?php echo ($current_theme === 'dark') ? '☀️' : '🌙'; ?>
                 </span>
@@ -309,60 +309,60 @@ class Flavor_Theme_Customizer {
         ob_start();
         ?>
         <div class="flavor-theme-customizer">
-            <h3><?php _e('Personaliza tu Tema', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Personaliza tu Tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <div class="flavor-theme-customizer__section">
-                <h4><?php _e('Modo de Tema', 'flavor-chat-ia'); ?></h4>
+                <h4><?php _e('Modo de Tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                 <div class="flavor-theme-modes">
                     <button class="flavor-theme-mode" data-theme="light">
-                        ☀️ <?php _e('Claro', 'flavor-chat-ia'); ?>
+                        ☀️ <?php _e('Claro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button class="flavor-theme-mode" data-theme="dark">
-                        🌙 <?php _e('Oscuro', 'flavor-chat-ia'); ?>
+                        🌙 <?php _e('Oscuro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button class="flavor-theme-mode" data-theme="auto">
-                        🔄 <?php _e('Auto', 'flavor-chat-ia'); ?>
+                        🔄 <?php _e('Auto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </div>
 
             <div class="flavor-theme-customizer__section">
-                <h4><?php _e('Colores', 'flavor-chat-ia'); ?></h4>
+                <h4><?php _e('Colores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                 <div class="flavor-color-pickers">
                     <div class="flavor-color-picker">
-                        <label><?php _e('Color Principal', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Color Principal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="color" name="primary" value="<?php echo esc_attr($current_colors['primary']); ?>">
                     </div>
                     <div class="flavor-color-picker">
-                        <label><?php _e('Color Secundario', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Color Secundario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="color" name="secondary" value="<?php echo esc_attr($current_colors['secondary']); ?>">
                     </div>
                     <div class="flavor-color-picker">
-                        <label><?php _e('Éxito', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Éxito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="color" name="success" value="<?php echo esc_attr($current_colors['success']); ?>">
                     </div>
                     <div class="flavor-color-picker">
-                        <label><?php _e('Advertencia', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Advertencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="color" name="warning" value="<?php echo esc_attr($current_colors['warning']); ?>">
                     </div>
                     <div class="flavor-color-picker">
-                        <label><?php _e('Peligro', 'flavor-chat-ia'); ?></label>
+                        <label><?php _e('Peligro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="color" name="danger" value="<?php echo esc_attr($current_colors['danger']); ?>">
                     </div>
                 </div>
 
                 <div class="flavor-color-presets">
-                    <h5><?php _e('Presets', 'flavor-chat-ia'); ?></h5>
+                    <h5><?php _e('Presets', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h5>
                     <?php echo $this->render_color_presets(); ?>
                 </div>
             </div>
 
             <div class="flavor-theme-customizer__actions">
                 <button class="flavor-button flavor-button--primary" id="flavor-save-colors">
-                    <?php _e('Guardar Cambios', 'flavor-chat-ia'); ?>
+                    <?php _e('Guardar Cambios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button class="flavor-button flavor-button--secondary" id="flavor-reset-colors">
-                    <?php _e('Restaurar por Defecto', 'flavor-chat-ia'); ?>
+                    <?php _e('Restaurar por Defecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </div>

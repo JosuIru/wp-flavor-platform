@@ -19,8 +19,8 @@ $descripcion = $curso['descripcion'] ?? '';
 $url = $curso['url'] ?? '#';
 $imagen = $curso['imagen'] ?? 'https://picsum.photos/seed/curso' . $id . '/600/340';
 $fecha = $curso['fecha'] ?? '';
-$categoria = $curso['categoria'] ?? __('General', 'flavor-chat-ia');
-$instructor = $curso['instructor'] ?? __('Instructor', 'flavor-chat-ia');
+$categoria = $curso['categoria'] ?? __('General', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$instructor = $curso['instructor'] ?? __('Instructor', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $instructor_avatar = $curso['instructor_avatar'] ?? 'https://i.pravatar.cc/150?img=' . ($id % 70 + 1);
 $precio = $curso['precio'] ?? '25€';
 $gratuito = !empty($curso['gratuito']) || $precio == 0 || $precio === 'Gratis';
@@ -46,11 +46,11 @@ $nivel = $curso['nivel'] ?? '';
         <!-- Badge -->
         <?php if ($gratuito): ?>
             <span class="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-bold bg-green-500 text-white">
-                <?php echo esc_html__('Gratuito', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Gratuito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
         <?php elseif ($plazas_limitadas): ?>
             <span class="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-bold bg-orange-500 text-white">
-                <?php echo esc_html__('Últimas plazas', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Últimas plazas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
         <?php endif; ?>
     </div>
@@ -81,11 +81,11 @@ $nivel = $curso['nivel'] ?? '';
 
         <div class="flex items-center justify-between">
             <span class="text-lg font-bold <?php echo $gratuito ? 'text-green-600' : 'text-purple-600'; ?>">
-                <?php echo $gratuito ? __('Gratis', 'flavor-chat-ia') : esc_html($precio); ?>
+                <?php echo $gratuito ? __('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html($precio); ?>
             </span>
             <a href="<?php echo esc_url($url); ?>"
                class="px-4 py-2 rounded-xl text-white font-semibold text-sm transition-all hover:scale-105 bg-gradient-to-r from-purple-600 to-violet-600">
-                <?php echo esc_html__('Inscribirse', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Inscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>

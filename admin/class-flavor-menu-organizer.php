@@ -42,22 +42,24 @@ class Flavor_Menu_Organizer {
         'flavor-create-pages',
         'flavor-landings',
         'flavor-permissions',
-        'flavor-chat-config',
-        'flavor-chat-ia-escalations',
-        'flavor-apps-config',
-        'flavor-deep-links',
-        'flavor-network',
+        'flavor-platform-settings',
+        'flavor-platform-escalations',
+        'flavor-platform-apps',
+        'flavor-platform-deep-links',
+        'flavor-platform-network',
         'flavor-addons',
         'flavor-marketplace',
         'flavor-newsletter',
-        'flavor-export-import',
-        'flavor-health-check',
-        'flavor-activity-log',
+        'flavor-platform-license',
+        'flavor-platform-demo-data',
+        'flavor-platform-export-import',
+        'flavor-platform-health-check',
+        'flavor-platform-activity-log',
         'flavor-api-docs',
-        'flavor-documentation',
+        'flavor-platform-docs',
         'flavor-tours',
         'flavor-layouts', // herramienta de diseño
-        'flavor-chat-ia', // dashboard principal
+        FLAVOR_PLATFORM_TEXT_DOMAIN, // dashboard principal
     ];
 
     /**
@@ -89,67 +91,67 @@ class Flavor_Menu_Organizer {
     private function setup_categories() {
         $this->categories = [
             'personas' => [
-                'title' => __('Personas', 'flavor-chat-ia'),
+                'title' => __('Personas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-groups',
                 'position' => 25,
                 'patterns' => ['fichaje', 'socios', 'clientes'],
-                'description' => __('Gestión de personas: empleados, miembros y clientes', 'flavor-chat-ia')
+                'description' => __('Gestión de personas: empleados, miembros y clientes', FLAVOR_PLATFORM_TEXT_DOMAIN)
             ],
             'economia' => [
-                'title' => __('Economía', 'flavor-chat-ia'),
+                'title' => __('Economía', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-money-alt',
                 'position' => 26,
                 'patterns' => ['woocommerce', 'marketplace', '^pp-', 'empresarial', 'trading', 'transparencia', 'facturas'],
-                'description' => __('Gestión económica y financiera', 'flavor-chat-ia')
+                'description' => __('Gestión económica y financiera', FLAVOR_PLATFORM_TEXT_DOMAIN)
             ],
             'operaciones' => [
-                'title' => __('Operaciones', 'flavor-chat-ia'),
+                'title' => __('Operaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-clipboard',
                 'position' => 27,
                 'patterns' => ['reservas'],
-                'description' => __('Operaciones diarias y reservas', 'flavor-chat-ia')
+                'description' => __('Operaciones diarias y reservas', FLAVOR_PLATFORM_TEXT_DOMAIN)
             ],
             'recursos' => [
-                'title' => __('Recursos', 'flavor-chat-ia'),
+                'title' => __('Recursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-home',
                 'position' => 28,
                 'patterns' => ['multimedia', 'themacle', 'biblioteca'],
-                'description' => __('Recursos y materiales', 'flavor-chat-ia')
+                'description' => __('Recursos y materiales', FLAVOR_PLATFORM_TEXT_DOMAIN)
             ],
             'comunicacion' => [
-                'title' => __('Comunicación', 'flavor-chat-ia'),
+                'title' => __('Comunicación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-megaphone',
                 'position' => 29,
                 'patterns' => ['avisos', 'chat-grupos', 'chat-interno', 'podcast', 'radio'],
-                'description' => __('Comunicación y medios', 'flavor-chat-ia')
+                'description' => __('Comunicación y medios', FLAVOR_PLATFORM_TEXT_DOMAIN)
             ],
             'actividades' => [
-                'title' => __('Actividades', 'flavor-chat-ia'),
+                'title' => __('Actividades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-calendar-alt',
                 'position' => 30,
                 'patterns' => ['eventos', 'cursos', 'talleres'],
-                'description' => __('Eventos, cursos y talleres', 'flavor-chat-ia')
+                'description' => __('Eventos, cursos y talleres', FLAVOR_PLATFORM_TEXT_DOMAIN)
             ],
             'servicios' => [
-                'title' => __('Servicios', 'flavor-chat-ia'),
+                'title' => __('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-admin-tools',
                 'position' => 31,
                 'patterns' => ['incidencias', 'parkings', 'tramites', 'bares', 'espacios-comunes'],
-                'description' => __('Servicios urbanos y comunitarios', 'flavor-chat-ia')
+                'description' => __('Servicios urbanos y comunitarios', FLAVOR_PLATFORM_TEXT_DOMAIN)
             ],
             'comunidad' => [
-                'title' => __('Comunidad', 'flavor-chat-ia'),
+                'title' => __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-heart',
                 'position' => 32,
                 'patterns' => ['banco-tiempo', '^gc-', 'grupos-consumo', 'participacion', 'ayuda-vecinal', 'colectivos', 'comunidades'],
-                'description' => __('Iniciativas comunitarias', 'flavor-chat-ia')
+                'description' => __('Iniciativas comunitarias', FLAVOR_PLATFORM_TEXT_DOMAIN)
             ],
             'sostenibilidad' => [
-                'title' => __('Sostenibilidad', 'flavor-chat-ia'),
+                'title' => __('Sostenibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon' => 'dashicons-palmtree',
                 'position' => 33,
                 'patterns' => ['bicicletas', 'carpooling', 'compostaje', 'huertos', 'reciclaje'],
-                'description' => __('Sostenibilidad y medio ambiente', 'flavor-chat-ia')
+                'description' => __('Sostenibilidad y medio ambiente', FLAVOR_PLATFORM_TEXT_DOMAIN)
             ],
         ];
     }
@@ -222,8 +224,8 @@ class Flavor_Menu_Organizer {
         global $menu, $submenu;
 
         // 1. Guardar submenús del menú "Flavor Platform"
-        // Los módulos se registran en 'flavor-chat-ia', no en 'flavor-gestion'
-        $platform_submenus = isset($submenu['flavor-chat-ia']) ? $submenu['flavor-chat-ia'] : [];
+        // Los módulos se registran en FLAVOR_PLATFORM_TEXT_DOMAIN, no en 'flavor-gestion'
+        $platform_submenus = isset($submenu[FLAVOR_PLATFORM_TEXT_DOMAIN]) ? $submenu[FLAVOR_PLATFORM_TEXT_DOMAIN] : [];
 
         // Si no hay submenús, no hacer nada
         if (empty($platform_submenus)) {
@@ -267,7 +269,7 @@ class Flavor_Menu_Organizer {
             add_submenu_page(
                 'flavor-cat-' . $slug,
                 $config['title'] . ' - Dashboard',
-                __('Dashboard', 'flavor-chat-ia'),
+                __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $capability,
                 'flavor-cat-' . $slug,
                 function() use ($slug, $config) {
@@ -315,7 +317,7 @@ class Flavor_Menu_Organizer {
                 $category_slug = 'flavor-cat-' . $category;
 
                 // Obtener el hookname del slug original
-                $hookname = get_plugin_page_hookname($slug, 'flavor-chat-ia');
+                $hookname = get_plugin_page_hookname($slug, FLAVOR_PLATFORM_TEXT_DOMAIN);
 
                 // Copiar el item completo al nuevo menú
                 if (!isset($submenu[$category_slug])) {
@@ -418,14 +420,14 @@ class Flavor_Menu_Organizer {
                             </h3>
                         </div>
                         <p style="margin: 0; color: #646970; font-size: 14px;">
-                            <?php _e('Acceder al módulo', 'flavor-chat-ia'); ?> →
+                            <?php _e('Acceder al módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> →
                         </p>
                     </a>
                     <?php
                 }
 
                 if ($module_count === 0) {
-                    echo '<p>' . __('No hay módulos activos en esta categoría.', 'flavor-chat-ia') . '</p>';
+                    echo '<p>' . __('No hay módulos activos en esta categoría.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
                 }
                 ?>
             </div>

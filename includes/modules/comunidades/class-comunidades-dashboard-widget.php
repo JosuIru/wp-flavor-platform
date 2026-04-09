@@ -82,8 +82,8 @@ class Flavor_Comunidades_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
     public function __construct() {
         global $wpdb;
         $this->prefix_tabla = $wpdb->prefix . 'flavor_comunidades_';
-        $this->title = __('Comunidades', 'flavor-chat-ia');
-        $this->description = __('Grupos y comunidades a las que perteneces', 'flavor-chat-ia');
+        $this->title = __('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Grupos y comunidades a las que perteneces', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         parent::__construct([
             'id' => $this->widget_id,
@@ -176,7 +176,7 @@ class Flavor_Comunidades_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $stats[] = [
                 'icon' => 'dashicons-groups',
                 'valor' => $mis_comunidades,
-                'label' => __('Mis comunidades', 'flavor-chat-ia'),
+                'label' => __('Mis comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $mis_comunidades > 0 ? 'success' : 'gray',
                 'url' => $es_admin ? admin_url('admin.php?page=comunidades-dashboard') : Flavor_Chat_Helpers::get_action_url('comunidades', 'mis-comunidades'),
             ];
@@ -187,7 +187,7 @@ class Flavor_Comunidades_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $stats[] = [
                 'icon' => 'dashicons-format-chat',
                 'valor' => $publicaciones_nuevas,
-                'label' => __('Nuevas publicaciones', 'flavor-chat-ia'),
+                'label' => __('Nuevas publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'warning',
                 'url' => $es_admin ? admin_url('admin.php?page=comunidades-miembros&estado=pendiente') : Flavor_Chat_Helpers::get_action_url('comunidades', 'actividad'),
             ];
@@ -198,7 +198,7 @@ class Flavor_Comunidades_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $stats[] = [
                 'icon' => 'dashicons-shield-alt',
                 'valor' => $soy_admin,
-                'label' => __('Administro', 'flavor-chat-ia'),
+                'label' => __('Administro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'primary',
                 'url' => $es_admin ? admin_url('admin.php?page=comunidades-miembros') : Flavor_Chat_Helpers::get_action_url('comunidades', 'mis-comunidades'),
             ];
@@ -208,7 +208,7 @@ class Flavor_Comunidades_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         $stats[] = [
             'icon' => 'dashicons-search',
             'valor' => $total_comunidades,
-            'label' => __('Comunidades', 'flavor-chat-ia'),
+            'label' => __('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'info',
             'url' => $es_admin ? admin_url('admin.php?page=comunidades-listado') : Flavor_Chat_Helpers::get_action_url('comunidades', 'explorar'),
         ];
@@ -219,10 +219,10 @@ class Flavor_Comunidades_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats,
             'items' => $items,
-            'empty_state' => $user_id ? __('Aún no perteneces a ninguna comunidad', 'flavor-chat-ia') : __('Inicia sesión para ver tus comunidades', 'flavor-chat-ia'),
+            'empty_state' => $user_id ? __('Aún no perteneces a ninguna comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Inicia sesión para ver tus comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => $user_id ? __('Explorar comunidades', 'flavor-chat-ia') : __('Ver comunidades', 'flavor-chat-ia'),
+                    'label' => $user_id ? __('Explorar comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN) : __('Ver comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => $es_admin ? admin_url('admin.php?page=comunidades-listado') : Flavor_Chat_Helpers::get_action_url('comunidades', 'explorar'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
@@ -268,15 +268,15 @@ class Flavor_Comunidades_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         foreach ($comunidades as $comunidad) {
             $rol_texto = '';
             if ($comunidad->rol === 'admin') {
-                $rol_texto = __('Admin', 'flavor-chat-ia');
+                $rol_texto = __('Admin', FLAVOR_PLATFORM_TEXT_DOMAIN);
             } elseif ($comunidad->rol === 'moderador') {
-                $rol_texto = __('Mod', 'flavor-chat-ia');
+                $rol_texto = __('Mod', FLAVOR_PLATFORM_TEXT_DOMAIN);
             }
 
             $items[] = [
                 'icon' => $comunidad->icono ?: 'dashicons-groups',
                 'title' => $comunidad->nombre,
-                'meta' => $rol_texto ?: __('Miembro', 'flavor-chat-ia'),
+                'meta' => $rol_texto ?: __('Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => $es_admin ? admin_url('admin.php?page=comunidades-listado&accion=ver&id=' . $comunidad->id) : add_query_arg('comunidad_id', $comunidad->id, Flavor_Chat_Helpers::get_action_url('comunidades', 'detalle')),
                 'badge' => $rol_texto,
             ];

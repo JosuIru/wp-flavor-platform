@@ -19,10 +19,10 @@ if (!is_user_logged_in()) {
     <div class="flavor-carpooling-publicar flavor-carpooling-publicar--no-login">
         <div class="flavor-carpooling-publicar__aviso">
             <span class="dashicons dashicons-lock"></span>
-            <h3><?php esc_html_e('Inicia sesion para publicar', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('Necesitas una cuenta para publicar viajes compartidos.', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('Inicia sesion para publicar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php esc_html_e('Necesitas una cuenta para publicar viajes compartidos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="cp-btn cp-btn-primary">
-                <?php esc_html_e('Iniciar sesion', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>
@@ -55,10 +55,10 @@ $hora_minima = date('H:i', strtotime('+1 hour'));
     <header class="flavor-carpooling-publicar__header">
         <h2 class="flavor-carpooling-publicar__titulo">
             <span class="dashicons dashicons-car"></span>
-            <?php esc_html_e('Publicar un viaje', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Publicar un viaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
         <p class="flavor-carpooling-publicar__subtitulo">
-            <?php esc_html_e('Comparte tu viaje con otros vecinos y reduce costes y emisiones', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Comparte tu viaje con otros vecinos y reduce costes y emisiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </header>
 
@@ -69,13 +69,13 @@ $hora_minima = date('H:i', strtotime('+1 hour'));
         <fieldset class="flavor-carpooling-publicar__seccion">
             <legend class="flavor-carpooling-publicar__seccion-titulo">
                 <span class="dashicons dashicons-location-alt"></span>
-                <?php esc_html_e('Ruta del viaje', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ruta del viaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </legend>
 
             <div class="carpooling-form-row">
                 <div class="carpooling-form-group">
                     <label for="cp-origen">
-                        <?php esc_html_e('Punto de salida', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Punto de salida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <span class="required">*</span>
                     </label>
                     <div class="flavor-input-icon">
@@ -85,7 +85,7 @@ $hora_minima = date('H:i', strtotime('+1 hour'));
                             name="origen"
                             id="cp-origen"
                             class="flavor-input"
-                            placeholder="<?php esc_attr_e('Direccion o lugar de salida...', 'flavor-chat-ia'); ?>"
+                            placeholder="<?php esc_attr_e('Direccion o lugar de salida...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                             autocomplete="off"
                             required
                         />
@@ -97,7 +97,7 @@ $hora_minima = date('H:i', strtotime('+1 hour'));
 
                 <div class="carpooling-form-group">
                     <label for="cp-destino">
-                        <?php esc_html_e('Punto de llegada', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Punto de llegada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <span class="required">*</span>
                     </label>
                     <div class="flavor-input-icon">
@@ -107,7 +107,7 @@ $hora_minima = date('H:i', strtotime('+1 hour'));
                             name="destino"
                             id="cp-destino"
                             class="flavor-input"
-                            placeholder="<?php esc_attr_e('Direccion o lugar de destino...', 'flavor-chat-ia'); ?>"
+                            placeholder="<?php esc_attr_e('Direccion o lugar de destino...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                             autocomplete="off"
                             required
                         />
@@ -121,15 +121,15 @@ $hora_minima = date('H:i', strtotime('+1 hour'));
             <!-- Paradas intermedias (opcional) -->
             <div class="carpooling-form-group">
                 <label>
-                    <?php esc_html_e('Paradas intermedias', 'flavor-chat-ia'); ?>
-                    <span class="flavor-label-hint"><?php esc_html_e('(opcional)', 'flavor-chat-ia'); ?></span>
+                    <?php esc_html_e('Paradas intermedias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
+                    <span class="flavor-label-hint"><?php esc_html_e('(opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </label>
                 <div id="cp-paradas-container" class="flavor-carpooling-publicar__paradas">
                     <!-- Las paradas se agregan dinamicamente -->
                 </div>
                 <button type="button" class="cp-btn cp-btn-outline cp-btn--sm" id="cp-agregar-parada">
                     <span class="dashicons dashicons-plus-alt2"></span>
-                    <?php esc_html_e('Agregar parada', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Agregar parada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </fieldset>
@@ -138,13 +138,13 @@ $hora_minima = date('H:i', strtotime('+1 hour'));
         <fieldset class="flavor-carpooling-publicar__seccion">
             <legend class="flavor-carpooling-publicar__seccion-titulo">
                 <span class="dashicons dashicons-calendar-alt"></span>
-                <?php esc_html_e('Fecha y hora', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Fecha y hora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </legend>
 
             <div class="carpooling-form-row">
                 <div class="carpooling-form-group">
                     <label for="cp-fecha">
-                        <?php esc_html_e('Fecha de salida', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Fecha de salida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <span class="required">*</span>
                     </label>
                     <input
@@ -160,7 +160,7 @@ $hora_minima = date('H:i', strtotime('+1 hour'));
 
                 <div class="carpooling-form-group">
                     <label for="cp-hora">
-                        <?php esc_html_e('Hora de salida', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Hora de salida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <span class="required">*</span>
                     </label>
                     <input
@@ -179,22 +179,22 @@ $hora_minima = date('H:i', strtotime('+1 hour'));
                     <input type="checkbox" name="es_recurrente" id="cp-es-recurrente" value="1" />
                     <span class="flavor-checkbox__mark"></span>
                     <span class="flavor-checkbox__label">
-                        <?php esc_html_e('Este viaje se repite semanalmente', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Este viaje se repite semanalmente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                 </label>
 
                 <div id="cp-recurrente-opciones" class="flavor-carpooling-publicar__recurrente" style="display: none;">
-                    <label><?php esc_html_e('Dias de la semana:', 'flavor-chat-ia'); ?></label>
+                    <label><?php esc_html_e('Dias de la semana:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <div class="flavor-carpooling-publicar__dias-semana">
                         <?php
                         $dias_semana = [
-                            'lunes'     => __('L', 'flavor-chat-ia'),
-                            'martes'    => __('M', 'flavor-chat-ia'),
-                            'miercoles' => __('X', 'flavor-chat-ia'),
-                            'jueves'    => __('J', 'flavor-chat-ia'),
-                            'viernes'   => __('V', 'flavor-chat-ia'),
-                            'sabado'    => __('S', 'flavor-chat-ia'),
-                            'domingo'   => __('D', 'flavor-chat-ia'),
+                            'lunes'     => __('L', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'martes'    => __('M', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'miercoles' => __('X', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'jueves'    => __('J', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'viernes'   => __('V', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'sabado'    => __('S', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'domingo'   => __('D', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ];
                         foreach ($dias_semana as $dia_id => $dia_label) :
                         ?>
@@ -212,19 +212,19 @@ $hora_minima = date('H:i', strtotime('+1 hour'));
         <fieldset class="flavor-carpooling-publicar__seccion">
             <legend class="flavor-carpooling-publicar__seccion-titulo">
                 <span class="dashicons dashicons-groups"></span>
-                <?php esc_html_e('Plazas y precio', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Plazas y precio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </legend>
 
             <div class="carpooling-form-row">
                 <div class="carpooling-form-group">
                     <label for="cp-plazas">
-                        <?php esc_html_e('Plazas disponibles', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Plazas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <span class="required">*</span>
                     </label>
                     <select name="plazas" id="cp-plazas" class="flavor-select" required>
                         <?php for ($contador_plazas = 1; $contador_plazas <= $max_pasajeros; $contador_plazas++) : ?>
                             <option value="<?php echo esc_attr($contador_plazas); ?>">
-                                <?php echo esc_html($contador_plazas); ?> <?php echo esc_html(_n('plaza', 'plazas', $contador_plazas, 'flavor-chat-ia')); ?>
+                                <?php echo esc_html($contador_plazas); ?> <?php echo esc_html(_n('plaza', 'plazas', $contador_plazas, FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                             </option>
                         <?php endfor; ?>
                     </select>
@@ -232,7 +232,7 @@ $hora_minima = date('H:i', strtotime('+1 hour'));
 
                 <div class="carpooling-form-group">
                     <label for="cp-precio">
-                        <?php esc_html_e('Precio por plaza', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Precio por plaza', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <span class="flavor-label-hint">(€)</span>
                     </label>
                     <div class="flavor-input-addon">
@@ -256,7 +256,7 @@ $hora_minima = date('H:i', strtotime('+1 hour'));
             <div class="flavor-carpooling-publicar__precio-info">
                 <span class="dashicons dashicons-info-outline"></span>
                 <p>
-                    <?php esc_html_e('Si dejas el precio en blanco, se calculara automaticamente basandose en la distancia del viaje.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Si dejas el precio en blanco, se calculara automaticamente basandose en la distancia del viaje.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
         </fieldset>
@@ -265,14 +265,14 @@ $hora_minima = date('H:i', strtotime('+1 hour'));
         <fieldset class="flavor-carpooling-publicar__seccion">
             <legend class="flavor-carpooling-publicar__seccion-titulo">
                 <span class="dashicons dashicons-car"></span>
-                <?php esc_html_e('Vehiculo', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Vehiculo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </legend>
 
             <?php if (!empty($vehiculos_usuario)) : ?>
                 <div class="carpooling-form-group">
-                    <label for="cp-vehiculo"><?php esc_html_e('Selecciona tu vehiculo', 'flavor-chat-ia'); ?></label>
+                    <label for="cp-vehiculo"><?php esc_html_e('Selecciona tu vehiculo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="vehiculo_id" id="cp-vehiculo" class="flavor-select">
-                        <option value=""><?php esc_html_e('Sin especificar', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Sin especificar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($vehiculos_usuario as $vehiculo) : ?>
                             <option value="<?php echo esc_attr($vehiculo->id); ?>">
                                 <?php echo esc_html($vehiculo->marca . ' ' . $vehiculo->modelo . ' (' . $vehiculo->color . ')'); ?>
@@ -282,10 +282,10 @@ $hora_minima = date('H:i', strtotime('+1 hour'));
                 </div>
             <?php else : ?>
                 <div class="flavor-carpooling-publicar__sin-vehiculo">
-                    <p><?php esc_html_e('No tienes vehiculos registrados.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No tienes vehiculos registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <button type="button" class="cp-btn cp-btn-outline cp-btn--sm" id="cp-agregar-vehiculo-btn">
                         <span class="dashicons dashicons-plus-alt2"></span>
-                        <?php esc_html_e('Agregar vehiculo', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Agregar vehiculo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             <?php endif; ?>
@@ -295,7 +295,7 @@ $hora_minima = date('H:i', strtotime('+1 hour'));
         <fieldset class="flavor-carpooling-publicar__seccion">
             <legend class="flavor-carpooling-publicar__seccion-titulo">
                 <span class="dashicons dashicons-admin-generic"></span>
-                <?php esc_html_e('Preferencias del viaje', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Preferencias del viaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </legend>
 
             <div class="flavor-carpooling-publicar__preferencias">
@@ -304,7 +304,7 @@ $hora_minima = date('H:i', strtotime('+1 hour'));
                     <span class="flavor-checkbox__mark"></span>
                     <span class="flavor-checkbox__label">
                         <span class="dashicons dashicons-pets"></span>
-                        <?php esc_html_e('Acepto mascotas pequenas', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Acepto mascotas pequenas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                 </label>
 
@@ -313,7 +313,7 @@ $hora_minima = date('H:i', strtotime('+1 hour'));
                     <span class="flavor-checkbox__mark"></span>
                     <span class="flavor-checkbox__label">
                         <span class="dashicons dashicons-portfolio"></span>
-                        <?php esc_html_e('Espacio para equipaje grande', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Espacio para equipaje grande', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                 </label>
 
@@ -322,7 +322,7 @@ $hora_minima = date('H:i', strtotime('+1 hour'));
                     <span class="flavor-checkbox__mark"></span>
                     <span class="flavor-checkbox__label">
                         <span class="dashicons dashicons-marker"></span>
-                        <?php esc_html_e('Se permite fumar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Se permite fumar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                 </label>
 
@@ -331,7 +331,7 @@ $hora_minima = date('H:i', strtotime('+1 hour'));
                     <span class="flavor-checkbox__mark"></span>
                     <span class="flavor-checkbox__label">
                         <span class="dashicons dashicons-admin-users"></span>
-                        <?php esc_html_e('Solo para mujeres', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Solo para mujeres', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                 </label>
             </div>
@@ -341,20 +341,20 @@ $hora_minima = date('H:i', strtotime('+1 hour'));
         <fieldset class="flavor-carpooling-publicar__seccion">
             <legend class="flavor-carpooling-publicar__seccion-titulo">
                 <span class="dashicons dashicons-edit"></span>
-                <?php esc_html_e('Informacion adicional', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Informacion adicional', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </legend>
 
             <div class="carpooling-form-group">
                 <label for="cp-notas">
-                    <?php esc_html_e('Notas para los pasajeros', 'flavor-chat-ia'); ?>
-                    <span class="flavor-label-hint"><?php esc_html_e('(opcional)', 'flavor-chat-ia'); ?></span>
+                    <?php esc_html_e('Notas para los pasajeros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
+                    <span class="flavor-label-hint"><?php esc_html_e('(opcional)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </label>
                 <textarea
                     name="notas"
                     id="cp-notas"
                     class="flavor-textarea"
                     rows="4"
-                    placeholder="<?php esc_attr_e('Ej: Salgo puntual, punto de encuentro exacto, prefiero no hablar mucho...', 'flavor-chat-ia'); ?>"
+                    placeholder="<?php esc_attr_e('Ej: Salgo puntual, punto de encuentro exacto, prefiero no hablar mucho...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                 ></textarea>
             </div>
         </fieldset>
@@ -363,12 +363,12 @@ $hora_minima = date('H:i', strtotime('+1 hour'));
         <div class="flavor-carpooling-publicar__acciones">
             <button type="button" class="cp-btn cp-btn-outline" id="cp-vista-previa-btn">
                 <span class="dashicons dashicons-visibility"></span>
-                <?php esc_html_e('Vista previa', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Vista previa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
 
             <button type="submit" class="cp-btn cp-btn-primary cp-btn--lg" id="cp-publicar-btn">
                 <span class="dashicons dashicons-megaphone"></span>
-                <?php esc_html_e('Publicar viaje', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Publicar viaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     </form>
@@ -378,7 +378,7 @@ $hora_minima = date('H:i', strtotime('+1 hour'));
 <div id="cp-modal-vehiculo" class="flavor-modal" style="display: none;">
     <div class="flavor-modal__contenido">
         <div class="flavor-modal__header">
-            <h3><?php esc_html_e('Agregar vehiculo', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Agregar vehiculo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <button type="button" class="flavor-modal__cerrar" data-close-modal>
                 <span class="dashicons dashicons-no-alt"></span>
             </button>
@@ -389,33 +389,33 @@ $hora_minima = date('H:i', strtotime('+1 hour'));
 
                 <div class="carpooling-form-row">
                     <div class="carpooling-form-group">
-                        <label for="vehiculo-marca"><?php esc_html_e('Marca', 'flavor-chat-ia'); ?> <span class="required">*</span></label>
+                        <label for="vehiculo-marca"><?php esc_html_e('Marca', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="required">*</span></label>
                         <input type="text" name="marca" id="vehiculo-marca" class="flavor-input" required />
                     </div>
                     <div class="carpooling-form-group">
-                        <label for="vehiculo-modelo"><?php esc_html_e('Modelo', 'flavor-chat-ia'); ?> <span class="required">*</span></label>
+                        <label for="vehiculo-modelo"><?php esc_html_e('Modelo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="required">*</span></label>
                         <input type="text" name="modelo" id="vehiculo-modelo" class="flavor-input" required />
                     </div>
                 </div>
 
                 <div class="carpooling-form-row">
                     <div class="carpooling-form-group">
-                        <label for="vehiculo-color"><?php esc_html_e('Color', 'flavor-chat-ia'); ?></label>
+                        <label for="vehiculo-color"><?php esc_html_e('Color', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="text" name="color" id="vehiculo-color" class="flavor-input" />
                     </div>
                     <div class="carpooling-form-group">
-                        <label for="vehiculo-matricula"><?php esc_html_e('Matricula', 'flavor-chat-ia'); ?> <span class="required">*</span></label>
+                        <label for="vehiculo-matricula"><?php esc_html_e('Matricula', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="required">*</span></label>
                         <input type="text" name="matricula" id="vehiculo-matricula" class="flavor-input" required />
                     </div>
                 </div>
 
                 <div class="carpooling-form-row">
                     <div class="carpooling-form-group">
-                        <label for="vehiculo-ano"><?php esc_html_e('Ano', 'flavor-chat-ia'); ?></label>
+                        <label for="vehiculo-ano"><?php esc_html_e('Ano', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="number" name="ano" id="vehiculo-ano" class="flavor-input" min="1990" max="<?php echo esc_attr(date('Y') + 1); ?>" />
                     </div>
                     <div class="carpooling-form-group">
-                        <label for="vehiculo-plazas"><?php esc_html_e('Plazas totales', 'flavor-chat-ia'); ?> <span class="required">*</span></label>
+                        <label for="vehiculo-plazas"><?php esc_html_e('Plazas totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="required">*</span></label>
                         <select name="plazas_totales" id="vehiculo-plazas" class="flavor-select" required>
                             <?php for ($contador_plazas_vehiculo = 2; $contador_plazas_vehiculo <= 9; $contador_plazas_vehiculo++) : ?>
                                 <option value="<?php echo esc_attr($contador_plazas_vehiculo); ?>" <?php selected($contador_plazas_vehiculo, 5); ?>>
@@ -428,10 +428,10 @@ $hora_minima = date('H:i', strtotime('+1 hour'));
 
                 <div class="flavor-modal__acciones">
                     <button type="button" class="cp-btn cp-btn-outline" data-close-modal>
-                        <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="submit" class="cp-btn cp-btn-primary">
-                        <?php esc_html_e('Guardar vehiculo', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Guardar vehiculo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </form>

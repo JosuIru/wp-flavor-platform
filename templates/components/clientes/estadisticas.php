@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$titulo_seccion = $titulo_seccion ?? __('Dashboard CRM', 'flavor-chat-ia');
+$titulo_seccion = $titulo_seccion ?? __('Dashboard CRM', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $estilo = $estilo ?? 'cards';
 
 // Obtener estadisticas reales
@@ -122,19 +122,19 @@ $iconos_estadisticas_crm = [
 
 // Etiquetas de tipo
 $etiquetas_tipo_crm = [
-    'particular' => __('Particular', 'flavor-chat-ia'),
-    'empresa' => __('Empresa', 'flavor-chat-ia'),
-    'autonomo' => __('Autonomo', 'flavor-chat-ia'),
-    'administracion' => __('Administracion', 'flavor-chat-ia'),
+    'particular' => __('Particular', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'empresa' => __('Empresa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'autonomo' => __('Autonomo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'administracion' => __('Administracion', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 // Etiquetas de origen
 $etiquetas_origen_crm = [
-    'web' => __('Web', 'flavor-chat-ia'),
-    'referido' => __('Referido', 'flavor-chat-ia'),
-    'redes' => __('Redes Sociales', 'flavor-chat-ia'),
-    'directo' => __('Directo', 'flavor-chat-ia'),
-    'otro' => __('Otro', 'flavor-chat-ia'),
+    'web' => __('Web', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'referido' => __('Referido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'redes' => __('Redes Sociales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'directo' => __('Directo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'otro' => __('Otro', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 // Colores para barras de tipo
@@ -165,7 +165,7 @@ $colores_origen_crm = [
                     <?php echo esc_html($titulo_seccion); ?>
                 </h2>
                 <p class="text-lg" style="color: var(--flavor-text-secondary, #666666);">
-                    <?php esc_html_e('Metricas clave de tu gestion comercial', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Metricas clave de tu gestion comercial', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
@@ -183,7 +183,7 @@ $colores_origen_crm = [
                                 <?php echo esc_html(number_format($total_clientes_crm, 0, ',', '.')); ?>
                             </div>
                             <div class="text-sm" style="color: var(--flavor-text-secondary, #666);">
-                                <?php esc_html_e('Total Clientes', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Total Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </div>
                         </div>
                     </div>
@@ -201,7 +201,7 @@ $colores_origen_crm = [
                                 <?php echo esc_html($nuevos_este_mes_crm); ?>
                             </div>
                             <div class="text-sm" style="color: var(--flavor-text-secondary, #666);">
-                                <?php esc_html_e('Nuevos este mes', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Nuevos este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </div>
                         </div>
                     </div>
@@ -219,7 +219,7 @@ $colores_origen_crm = [
                                 <?php echo $pipeline_formateado; ?>
                             </div>
                             <div class="text-sm" style="color: var(--flavor-text-secondary, #666);">
-                                <?php esc_html_e('Pipeline', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Pipeline', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </div>
                         </div>
                     </div>
@@ -237,7 +237,7 @@ $colores_origen_crm = [
                                 <?php echo esc_html($tasa_conversion_crm); ?>%
                             </div>
                             <div class="text-sm" style="color: var(--flavor-text-secondary, #666);">
-                                <?php esc_html_e('Tasa Conversion', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Tasa Conversion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </div>
                         </div>
                     </div>
@@ -249,15 +249,15 @@ $colores_origen_crm = [
                 <!-- Desglose por estado -->
                 <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                     <h3 class="text-lg font-semibold mb-4" style="color: var(--flavor-text-primary, #1a1a1a);">
-                        <?php esc_html_e('Por Estado', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Por Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <div class="space-y-4">
                         <?php
                         $estados_datos = [
-                            ['label' => __('Activos', 'flavor-chat-ia'), 'valor' => $clientes_activos_crm, 'color' => '#10b981'],
-                            ['label' => __('Potenciales', 'flavor-chat-ia'), 'valor' => $clientes_potenciales_crm, 'color' => '#f59e0b'],
-                            ['label' => __('Inactivos', 'flavor-chat-ia'), 'valor' => $clientes_inactivos_crm, 'color' => '#6b7280'],
-                            ['label' => __('Perdidos', 'flavor-chat-ia'), 'valor' => $clientes_perdidos_crm, 'color' => '#ef4444'],
+                            ['label' => __('Activos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'valor' => $clientes_activos_crm, 'color' => '#10b981'],
+                            ['label' => __('Potenciales', FLAVOR_PLATFORM_TEXT_DOMAIN), 'valor' => $clientes_potenciales_crm, 'color' => '#f59e0b'],
+                            ['label' => __('Inactivos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'valor' => $clientes_inactivos_crm, 'color' => '#6b7280'],
+                            ['label' => __('Perdidos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'valor' => $clientes_perdidos_crm, 'color' => '#ef4444'],
                         ];
                         foreach ($estados_datos as $estado_dato):
                             $porcentaje_estado = $total_clientes_crm > 0 ? round(($estado_dato['valor'] / $total_clientes_crm) * 100) : 0;
@@ -283,7 +283,7 @@ $colores_origen_crm = [
                 <!-- Desglose por tipo -->
                 <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                     <h3 class="text-lg font-semibold mb-4" style="color: var(--flavor-text-primary, #1a1a1a);">
-                        <?php esc_html_e('Por Tipo', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Por Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <div class="space-y-4">
                         <?php foreach ($desglose_por_tipo_crm as $tipo_clave => $tipo_cantidad):
@@ -312,7 +312,7 @@ $colores_origen_crm = [
                 <!-- Desglose por origen -->
                 <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                     <h3 class="text-lg font-semibold mb-4" style="color: var(--flavor-text-primary, #1a1a1a);">
-                        <?php esc_html_e('Por Origen', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Por Origen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <div class="space-y-4">
                         <?php foreach ($desglose_por_origen_crm as $origen_clave => $origen_cantidad):
@@ -352,7 +352,7 @@ $colores_origen_crm = [
                             <?php echo esc_html(number_format($interacciones_recientes_crm, 0, ',', '.')); ?>
                         </div>
                         <div class="text-sm" style="color: var(--flavor-text-secondary, #666);">
-                            <?php esc_html_e('Interacciones este mes', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Interacciones este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     </div>
                 </div>
@@ -368,7 +368,7 @@ $colores_origen_crm = [
                             <?php echo esc_html(number_format($clientes_activos_crm, 0, ',', '.')); ?>
                         </div>
                         <div class="text-sm" style="color: var(--flavor-text-secondary, #666);">
-                            <?php esc_html_e('Clientes activos', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Clientes activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     </div>
                 </div>
@@ -393,32 +393,32 @@ $colores_origen_crm = [
                 $metricas_minimas = [
                     [
                         'valor' => number_format($total_clientes_crm, 0, ',', '.'),
-                        'etiqueta' => __('Total', 'flavor-chat-ia'),
+                        'etiqueta' => __('Total', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'color' => 'var(--flavor-primary, #667eea)',
                     ],
                     [
                         'valor' => $clientes_activos_crm,
-                        'etiqueta' => __('Activos', 'flavor-chat-ia'),
+                        'etiqueta' => __('Activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'color' => '#10b981',
                     ],
                     [
                         'valor' => $clientes_potenciales_crm,
-                        'etiqueta' => __('Potenciales', 'flavor-chat-ia'),
+                        'etiqueta' => __('Potenciales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'color' => '#f59e0b',
                     ],
                     [
                         'valor' => $nuevos_este_mes_crm,
-                        'etiqueta' => __('Nuevos', 'flavor-chat-ia'),
+                        'etiqueta' => __('Nuevos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'color' => '#3b82f6',
                     ],
                     [
                         'valor' => $pipeline_formateado,
-                        'etiqueta' => __('Pipeline', 'flavor-chat-ia'),
+                        'etiqueta' => __('Pipeline', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'color' => '#8b5cf6',
                     ],
                     [
                         'valor' => $tasa_conversion_crm . '%',
-                        'etiqueta' => __('Conversion', 'flavor-chat-ia'),
+                        'etiqueta' => __('Conversion', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'color' => '#ec4899',
                     ],
                 ];
@@ -445,7 +445,7 @@ $colores_origen_crm = [
                 <!-- Por Tipo -->
                 <div>
                     <h3 class="text-lg font-semibold mb-6" style="color: var(--flavor-text-primary, #1a1a1a);">
-                        <?php esc_html_e('Distribucion por Tipo', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Distribucion por Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <div class="space-y-3">
                         <?php foreach ($desglose_por_tipo_crm as $tipo_clave => $tipo_cantidad):
@@ -472,7 +472,7 @@ $colores_origen_crm = [
                 <!-- Por Origen -->
                 <div>
                     <h3 class="text-lg font-semibold mb-6" style="color: var(--flavor-text-primary, #1a1a1a);">
-                        <?php esc_html_e('Distribucion por Origen', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Distribucion por Origen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <div class="space-y-3">
                         <?php foreach ($desglose_por_origen_crm as $origen_clave => $origen_cantidad):

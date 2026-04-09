@@ -84,7 +84,7 @@ $categorias_stats = $wpdb->get_results("
 <div class="wrap flavor-campanias-estadisticas">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-chart-bar"></span>
-        <?php esc_html_e('Estadísticas de Campañas', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Estadísticas de Campañas', 'flavor-platform'); ?>
     </h1>
     <hr class="wp-header-end">
 
@@ -94,14 +94,14 @@ $categorias_stats = $wpdb->get_results("
             <input type="hidden" name="page" value="flavor-campanias">
             <input type="hidden" name="subpage" value="campanias-estadisticas">
             <div class="dm-filter-group">
-                <label><?php esc_html_e('Desde', 'flavor-chat-ia'); ?></label>
+                <label><?php esc_html_e('Desde', 'flavor-platform'); ?></label>
                 <input type="date" name="fecha_inicio" value="<?php echo esc_attr($fecha_inicio); ?>">
             </div>
             <div class="dm-filter-group">
-                <label><?php esc_html_e('Hasta', 'flavor-chat-ia'); ?></label>
+                <label><?php esc_html_e('Hasta', 'flavor-platform'); ?></label>
                 <input type="date" name="fecha_fin" value="<?php echo esc_attr($fecha_fin); ?>">
             </div>
-            <button type="submit" class="button"><?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?></button>
+            <button type="submit" class="button"><?php esc_html_e('Filtrar', 'flavor-platform'); ?></button>
         </form>
     </div>
 
@@ -113,7 +113,7 @@ $categorias_stats = $wpdb->get_results("
             </div>
             <div class="dm-stat-content">
                 <span class="dm-stat-value"><?php echo number_format_i18n($total_campanias); ?></span>
-                <span class="dm-stat-label"><?php esc_html_e('Total Campañas', 'flavor-chat-ia'); ?></span>
+                <span class="dm-stat-label"><?php esc_html_e('Total Campañas', 'flavor-platform'); ?></span>
             </div>
         </div>
 
@@ -123,7 +123,7 @@ $categorias_stats = $wpdb->get_results("
             </div>
             <div class="dm-stat-content">
                 <span class="dm-stat-value"><?php echo number_format_i18n($campanias_activas); ?></span>
-                <span class="dm-stat-label"><?php esc_html_e('Campañas Activas', 'flavor-chat-ia'); ?></span>
+                <span class="dm-stat-label"><?php esc_html_e('Campañas Activas', 'flavor-platform'); ?></span>
             </div>
         </div>
 
@@ -133,7 +133,7 @@ $categorias_stats = $wpdb->get_results("
             </div>
             <div class="dm-stat-content">
                 <span class="dm-stat-value"><?php echo number_format_i18n($total_firmas); ?></span>
-                <span class="dm-stat-label"><?php esc_html_e('Total Firmas', 'flavor-chat-ia'); ?></span>
+                <span class="dm-stat-label"><?php esc_html_e('Total Firmas', 'flavor-platform'); ?></span>
             </div>
         </div>
 
@@ -143,7 +143,7 @@ $categorias_stats = $wpdb->get_results("
             </div>
             <div class="dm-stat-content">
                 <span class="dm-stat-value"><?php echo number_format_i18n($firmas_periodo); ?></span>
-                <span class="dm-stat-label"><?php esc_html_e('Firmas en Período', 'flavor-chat-ia'); ?></span>
+                <span class="dm-stat-label"><?php esc_html_e('Firmas en Período', 'flavor-platform'); ?></span>
             </div>
         </div>
     </div>
@@ -152,7 +152,7 @@ $categorias_stats = $wpdb->get_results("
         <!-- Gráfico de firmas -->
         <div class="dm-card dm-card--chart">
             <div class="dm-card__header">
-                <h3><span class="dashicons dashicons-chart-area"></span> <?php esc_html_e('Evolución de Firmas', 'flavor-chat-ia'); ?></h3>
+                <h3><span class="dashicons dashicons-chart-area"></span> <?php esc_html_e('Evolución de Firmas', 'flavor-platform'); ?></h3>
             </div>
             <div class="dm-card__body">
                 <canvas id="firmas-chart" height="250"></canvas>
@@ -162,7 +162,7 @@ $categorias_stats = $wpdb->get_results("
         <!-- Campañas más populares -->
         <div class="dm-card">
             <div class="dm-card__header">
-                <h3><span class="dashicons dashicons-star-filled"></span> <?php esc_html_e('Campañas Más Populares', 'flavor-chat-ia'); ?></h3>
+                <h3><span class="dashicons dashicons-star-filled"></span> <?php esc_html_e('Campañas Más Populares', 'flavor-platform'); ?></h3>
             </div>
             <div class="dm-card__body">
                 <?php if ($campanias_populares): ?>
@@ -177,7 +177,7 @@ $categorias_stats = $wpdb->get_results("
                                             ? min(100, round(($campania->total_firmas / $campania->meta_firmas) * 100))
                                             : 0;
                                         printf(
-                                            esc_html__('%s firmas de %s (%d%%)', 'flavor-chat-ia'),
+                                            esc_html__('%s firmas de %s (%d%%)', 'flavor-platform'),
                                             number_format_i18n($campania->total_firmas),
                                             number_format_i18n($campania->meta_firmas ?: 0),
                                             $progreso
@@ -192,7 +192,7 @@ $categorias_stats = $wpdb->get_results("
                         <?php endforeach; ?>
                     </ul>
                 <?php else: ?>
-                    <p class="dm-empty"><?php esc_html_e('No hay campañas registradas.', 'flavor-chat-ia'); ?></p>
+                    <p class="dm-empty"><?php esc_html_e('No hay campañas registradas.', 'flavor-platform'); ?></p>
                 <?php endif; ?>
             </div>
         </div>
@@ -201,17 +201,17 @@ $categorias_stats = $wpdb->get_results("
     <!-- Estadísticas por categoría -->
     <div class="dm-card">
         <div class="dm-card__header">
-            <h3><span class="dashicons dashicons-category"></span> <?php esc_html_e('Estadísticas por Categoría', 'flavor-chat-ia'); ?></h3>
+            <h3><span class="dashicons dashicons-category"></span> <?php esc_html_e('Estadísticas por Categoría', 'flavor-platform'); ?></h3>
         </div>
         <div class="dm-card__body">
             <?php if ($categorias_stats): ?>
                 <table class="widefat striped dm-table">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></th>
-                            <th class="num"><?php esc_html_e('Campañas', 'flavor-chat-ia'); ?></th>
-                            <th class="num"><?php esc_html_e('Total Firmas', 'flavor-chat-ia'); ?></th>
-                            <th class="num"><?php esc_html_e('Promedio Firmas', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Categoría', 'flavor-platform'); ?></th>
+                            <th class="num"><?php esc_html_e('Campañas', 'flavor-platform'); ?></th>
+                            <th class="num"><?php esc_html_e('Total Firmas', 'flavor-platform'); ?></th>
+                            <th class="num"><?php esc_html_e('Promedio Firmas', 'flavor-platform'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -230,7 +230,7 @@ $categorias_stats = $wpdb->get_results("
                     </tbody>
                 </table>
             <?php else: ?>
-                <p class="dm-empty"><?php esc_html_e('No hay datos de categorías disponibles.', 'flavor-chat-ia'); ?></p>
+                <p class="dm-empty"><?php esc_html_e('No hay datos de categorías disponibles.', 'flavor-platform'); ?></p>
             <?php endif; ?>
         </div>
     </div>
@@ -239,17 +239,17 @@ $categorias_stats = $wpdb->get_results("
     <?php if ($total_donaciones > 0): ?>
     <div class="dm-card">
         <div class="dm-card__header">
-            <h3><span class="dashicons dashicons-money-alt"></span> <?php esc_html_e('Donaciones', 'flavor-chat-ia'); ?></h3>
+            <h3><span class="dashicons dashicons-money-alt"></span> <?php esc_html_e('Donaciones', 'flavor-platform'); ?></h3>
         </div>
         <div class="dm-card__body">
             <div class="dm-donation-stats">
                 <div class="dm-donation-stat">
                     <span class="dm-donation-value"><?php echo number_format_i18n($total_donaciones, 2); ?> &euro;</span>
-                    <span class="dm-donation-label"><?php esc_html_e('Total Recaudado', 'flavor-chat-ia'); ?></span>
+                    <span class="dm-donation-label"><?php esc_html_e('Total Recaudado', 'flavor-platform'); ?></span>
                 </div>
                 <div class="dm-donation-stat">
                     <span class="dm-donation-value"><?php echo number_format_i18n($donaciones_periodo, 2); ?> &euro;</span>
-                    <span class="dm-donation-label"><?php esc_html_e('En el Período', 'flavor-chat-ia'); ?></span>
+                    <span class="dm-donation-label"><?php esc_html_e('En el Período', 'flavor-platform'); ?></span>
                 </div>
             </div>
         </div>
@@ -317,7 +317,7 @@ document.addEventListener('DOMContentLoaded', function() {
             data: {
                 labels: <?php echo json_encode($labels_grafico); ?>,
                 datasets: [{
-                    label: '<?php esc_html_e('Firmas', 'flavor-chat-ia'); ?>',
+                    label: '<?php esc_html_e('Firmas', 'flavor-platform'); ?>',
                     data: <?php echo json_encode($datos_grafico); ?>,
                     borderColor: '#667eea',
                     backgroundColor: 'rgba(102, 126, 234, 0.1)',

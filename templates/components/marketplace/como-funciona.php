@@ -18,18 +18,18 @@ if (!defined('ABSPATH')) {
 $default_steps = [
     [
         'icon'  => '📸',
-        'title' => __('Publica', 'flavor-chat-ia'),
-        'text'  => __('Sube fotos y describe tu producto para que otros lo encuentren', 'flavor-chat-ia'),
+        'title' => __('Publica', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'text'  => __('Sube fotos y describe tu producto para que otros lo encuentren', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ],
     [
         'icon'  => '💬',
-        'title' => __('Contacta', 'flavor-chat-ia'),
-        'text'  => __('Habla directamente con compradores o vendedores cercanos', 'flavor-chat-ia'),
+        'title' => __('Contacta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'text'  => __('Habla directamente con compradores o vendedores cercanos', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ],
     [
         'icon'  => '🎉',
-        'title' => __('Intercambia', 'flavor-chat-ia'),
-        'text'  => __('Acuerda el precio y recoge el producto en tu barrio', 'flavor-chat-ia'),
+        'title' => __('Intercambia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'text'  => __('Acuerda el precio y recoge el producto en tu barrio', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ],
 ];
 
@@ -38,7 +38,7 @@ $steps = $steps ?? $default_steps;
 
 <div class="bg-lime-50 rounded-2xl p-6 mb-8">
     <h2 class="text-xl font-bold text-gray-800 mb-4">
-        <?php echo esc_html__('💡 ¿Cómo funciona?', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('💡 ¿Cómo funciona?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h2>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">

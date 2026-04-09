@@ -356,7 +356,7 @@ class Flavor_Webhook_Manager {
         check_ajax_referer('flavor_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -367,18 +367,18 @@ class Flavor_Webhook_Manager {
         $secret = sanitize_text_field($_POST['secret'] ?? '');
 
         if (empty($name) || empty($url) || empty($events)) {
-            wp_send_json_error(['message' => __('Campos requeridos incompletos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Campos requeridos incompletos', 'flavor-platform')]);
         }
 
         // Validar URL
         if (!filter_var($url, FILTER_VALIDATE_URL)) {
-            wp_send_json_error(['message' => __('URL inválida', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('URL inválida', 'flavor-platform')]);
         }
 
         // Validar eventos
         foreach ($events as $event) {
             if (!isset($this->events[$event])) {
-                wp_send_json_error(['message' => __('Evento inválido: ', 'flavor-chat-ia') . $event]);
+                wp_send_json_error(['message' => __('Evento inválido: ', 'flavor-platform') . $event]);
             }
         }
 
@@ -392,12 +392,12 @@ class Flavor_Webhook_Manager {
         ]);
 
         if ($result === false) {
-            wp_send_json_error(['message' => __('Error al crear webhook', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al crear webhook', 'flavor-platform')]);
         }
 
         wp_send_json_success([
             'id' => $wpdb->insert_id,
-            'message' => __('Webhook creado correctamente', 'flavor-chat-ia'),
+            'message' => __('Webhook creado correctamente', 'flavor-platform'),
         ]);
     }
 
@@ -408,7 +408,7 @@ class Flavor_Webhook_Manager {
         check_ajax_referer('flavor_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -420,7 +420,7 @@ class Flavor_Webhook_Manager {
         $status = sanitize_text_field($_POST['status'] ?? 'active');
 
         if (!$webhook_id) {
-            wp_send_json_error(['message' => __('ID de webhook requerido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID de webhook requerido', 'flavor-platform')]);
         }
 
         $update_data = [];
@@ -431,7 +431,7 @@ class Flavor_Webhook_Manager {
 
         if (!empty($url)) {
             if (!filter_var($url, FILTER_VALIDATE_URL)) {
-                wp_send_json_error(['message' => __('URL inválida', 'flavor-chat-ia')]);
+                wp_send_json_error(['message' => __('URL inválida', 'flavor-platform')]);
             }
             $update_data['url'] = $url;
         }
@@ -449,16 +449,16 @@ class Flavor_Webhook_Manager {
         }
 
         if (empty($update_data)) {
-            wp_send_json_error(['message' => __('Nada que actualizar', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Nada que actualizar', 'flavor-platform')]);
         }
 
         $result = $wpdb->update($this->table_webhooks, $update_data, ['id' => $webhook_id]);
 
         if ($result === false) {
-            wp_send_json_error(['message' => __('Error al actualizar webhook', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al actualizar webhook', 'flavor-platform')]);
         }
 
-        wp_send_json_success(['message' => __('Webhook actualizado', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Webhook actualizado', 'flavor-platform')]);
     }
 
     /**
@@ -468,7 +468,7 @@ class Flavor_Webhook_Manager {
         check_ajax_referer('flavor_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -476,7 +476,7 @@ class Flavor_Webhook_Manager {
         $webhook_id = intval($_POST['id'] ?? 0);
 
         if (!$webhook_id) {
-            wp_send_json_error(['message' => __('ID de webhook requerido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID de webhook requerido', 'flavor-platform')]);
         }
 
         // Eliminar logs asociados
@@ -486,10 +486,10 @@ class Flavor_Webhook_Manager {
         $result = $wpdb->delete($this->table_webhooks, ['id' => $webhook_id]);
 
         if ($result === false) {
-            wp_send_json_error(['message' => __('Error al eliminar webhook', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al eliminar webhook', 'flavor-platform')]);
         }
 
-        wp_send_json_success(['message' => __('Webhook eliminado', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Webhook eliminado', 'flavor-platform')]);
     }
 
     /**
@@ -499,7 +499,7 @@ class Flavor_Webhook_Manager {
         check_ajax_referer('flavor_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -507,7 +507,7 @@ class Flavor_Webhook_Manager {
         $webhook_id = intval($_POST['id'] ?? 0);
 
         if (!$webhook_id) {
-            wp_send_json_error(['message' => __('ID de webhook requerido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID de webhook requerido', 'flavor-platform')]);
         }
 
         $webhook = $wpdb->get_row($wpdb->prepare(
@@ -516,13 +516,13 @@ class Flavor_Webhook_Manager {
         ));
 
         if (!$webhook) {
-            wp_send_json_error(['message' => __('Webhook no encontrado', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Webhook no encontrado', 'flavor-platform')]);
         }
 
         // Enviar evento de prueba
         $test_data = [
             'test' => true,
-            'message' => __('Este es un webhook de prueba', 'flavor-chat-ia'),
+            'message' => __('Este es un webhook de prueba', 'flavor-platform'),
             'webhook_id' => $webhook_id,
             'timestamp' => current_time('c'),
         ];
@@ -539,7 +539,7 @@ class Flavor_Webhook_Manager {
         ));
 
         wp_send_json_success([
-            'message' => __('Webhook de prueba enviado', 'flavor-chat-ia'),
+            'message' => __('Webhook de prueba enviado', 'flavor-platform'),
             'log' => $last_log,
         ]);
     }
@@ -551,7 +551,7 @@ class Flavor_Webhook_Manager {
         check_ajax_referer('flavor_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -581,7 +581,7 @@ class Flavor_Webhook_Manager {
         check_ajax_referer('flavor_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', 'flavor-platform')]);
         }
 
         global $wpdb;

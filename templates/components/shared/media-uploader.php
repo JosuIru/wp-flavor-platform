@@ -24,7 +24,7 @@ if (!defined('ABSPATH')) {
 }
 
 $name = $name ?? 'files';
-$label = $label ?? __('Archivos', 'flavor-chat-ia');
+$label = $label ?? __('Archivos', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $accept = $accept ?? 'image/*';
 $max_files = intval($max_files ?? 5);
 $max_size = intval($max_size ?? 5); // MB
@@ -88,8 +88,8 @@ if (function_exists('flavor_get_color_classes')) {
             </div>
 
             <p class="text-sm text-gray-600 mb-1">
-                <span class="font-medium <?php echo esc_attr($color_classes['text']); ?>"><?php esc_html_e('Haz clic para subir', 'flavor-chat-ia'); ?></span>
-                <?php esc_html_e('o arrastra aquí', 'flavor-chat-ia'); ?>
+                <span class="font-medium <?php echo esc_attr($color_classes['text']); ?>"><?php esc_html_e('Haz clic para subir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                <?php esc_html_e('o arrastra aquí', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
 
             <p class="text-xs text-gray-500">
@@ -97,9 +97,9 @@ if (function_exists('flavor_get_color_classes')) {
                 $accept_text = str_replace(['image/*', 'video/*', 'audio/*', '.'], ['Imágenes', 'Videos', 'Audio', ''], $accept);
                 echo esc_html($accept_text);
                 ?>
-                · <?php printf(esc_html__('Máx. %dMB', 'flavor-chat-ia'), $max_size); ?>
+                · <?php printf(esc_html__('Máx. %dMB', FLAVOR_PLATFORM_TEXT_DOMAIN), $max_size); ?>
                 <?php if (!$is_single): ?>
-                    · <?php printf(esc_html__('Hasta %d archivos', 'flavor-chat-ia'), $max_files); ?>
+                    · <?php printf(esc_html__('Hasta %d archivos', FLAVOR_PLATFORM_TEXT_DOMAIN), $max_files); ?>
                 <?php endif; ?>
             </p>
         </div>
@@ -111,7 +111,7 @@ if (function_exists('flavor_get_color_classes')) {
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                 </svg>
-                <p class="text-sm text-gray-600"><?php esc_html_e('Subiendo...', 'flavor-chat-ia'); ?></p>
+                <p class="text-sm text-gray-600"><?php esc_html_e('Subiendo...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <div class="w-32 h-1.5 bg-gray-200 rounded-full mt-2 mx-auto overflow-hidden">
                     <div class="flavor-upload-progress h-full bg-blue-500 rounded-full transition-all" style="width: 0%;"></div>
                 </div>
@@ -146,7 +146,7 @@ if (function_exists('flavor_get_color_classes')) {
                 <!-- Botón eliminar -->
                 <button type="button"
                         class="flavor-remove-file absolute <?php echo $is_image ? 'top-1 right-1 opacity-0 group-hover:opacity-100' : 'right-2'; ?> p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all"
-                        title="<?php esc_attr_e('Eliminar', 'flavor-chat-ia'); ?>">
+                        title="<?php esc_attr_e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -223,20 +223,20 @@ if (function_exists('flavor_get_color_classes')) {
         const remaining = maxFiles - fileCount;
 
         if (filesArray.length > remaining) {
-            showError(`<?php esc_html_e('Máximo %d archivos permitidos', 'flavor-chat-ia'); ?>`.replace('%d', maxFiles));
+            showError(`<?php esc_html_e('Máximo %d archivos permitidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>`.replace('%d', maxFiles));
             return;
         }
 
         filesArray.forEach(file => {
             // Validar tamaño
             if (file.size > maxSize) {
-                showError(`<?php esc_html_e('El archivo "%s" excede el tamaño máximo', 'flavor-chat-ia'); ?>`.replace('%s', file.name));
+                showError(`<?php esc_html_e('El archivo "%s" excede el tamaño máximo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>`.replace('%s', file.name));
                 return;
             }
 
             // Validar tipo
             if (accept !== '*' && !matchAccept(file.type, accept)) {
-                showError(`<?php esc_html_e('Tipo de archivo no permitido: %s', 'flavor-chat-ia'); ?>`.replace('%s', file.type));
+                showError(`<?php esc_html_e('Tipo de archivo no permitido: %s', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>`.replace('%s', file.type));
                 return;
             }
 
@@ -291,19 +291,19 @@ if (function_exists('flavor_get_color_classes')) {
                             zone.classList.add('hidden');
                         }
                     } else {
-                        showError(response.data || '<?php esc_html_e('Error al subir', 'flavor-chat-ia'); ?>');
+                        showError(response.data || '<?php esc_html_e('Error al subir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                     }
                 } catch (e) {
-                    showError('<?php esc_html_e('Error de respuesta', 'flavor-chat-ia'); ?>');
+                    showError('<?php esc_html_e('Error de respuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
                 }
             } else {
-                showError('<?php esc_html_e('Error de conexión', 'flavor-chat-ia'); ?>');
+                showError('<?php esc_html_e('Error de conexión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
             }
         });
 
         xhr.addEventListener('error', () => {
             loading.classList.add('hidden');
-            showError('<?php esc_html_e('Error de red', 'flavor-chat-ia'); ?>');
+            showError('<?php esc_html_e('Error de red', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');
         });
 
         xhr.open('POST', flavorAjax.url);

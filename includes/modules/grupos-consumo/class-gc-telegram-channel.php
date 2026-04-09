@@ -83,7 +83,7 @@ class Flavor_GC_Telegram_Channel {
      */
     public function enviar($evento, $destinatarios, $datos) {
         if (!$this->esta_configurado()) {
-            return ['error' => __('Telegram no está configurado', 'flavor-chat-ia')];
+            return ['error' => __('Telegram no está configurado', 'flavor-platform')];
         }
 
         $resultados = [
@@ -750,7 +750,7 @@ class Flavor_GC_Telegram_Channel {
         if (!$this->esta_configurado()) {
             return [
                 'configurado' => false,
-                'mensaje' => __('Telegram no está configurado', 'flavor-chat-ia'),
+                'mensaje' => __('Telegram no está configurado', 'flavor-platform'),
             ];
         }
 
@@ -760,7 +760,7 @@ class Flavor_GC_Telegram_Channel {
             return [
                 'configurado' => true,
                 'conectado' => false,
-                'mensaje' => __('Error de conexión: ', 'flavor-chat-ia') . ($info['error'] ?? 'Desconocido'),
+                'mensaje' => __('Error de conexión: ', 'flavor-platform') . ($info['error'] ?? 'Desconocido'),
             ];
         }
 
@@ -772,7 +772,7 @@ class Flavor_GC_Telegram_Channel {
             'bot_username' => $info['result']['username'],
             'bot_nombre' => $info['result']['first_name'],
             'webhook_url' => $webhook_info['success'] ? ($webhook_info['result']['url'] ?? 'No configurado') : 'Error',
-            'mensaje' => __('Conectado correctamente', 'flavor-chat-ia'),
+            'mensaje' => __('Conectado correctamente', 'flavor-platform'),
         ];
     }
 

@@ -35,7 +35,7 @@ $clase_tema = $tema_usuario === 'dark' ? 'flavor-dark fl-dark' : ($tema_usuario 
 
 // Obtener URL actual para breadcrumbs
 $url_actual = home_url($_SERVER['REQUEST_URI'] ?? Flavor_Chat_Helpers::get_action_url('', ''));
-$nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
+$nombre_pagina = get_the_title() ?: __('Mi Portal', FLAVOR_PLATFORM_TEXT_DOMAIN);
 ?>
 
 <div class="flavor-client-dashboard fl-dashboard-wrapper fl-dashboard-container <?php echo esc_attr($clase_tema); ?>"
@@ -43,31 +43,31 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
      data-user-id="<?php echo esc_attr($usuario->ID); ?>">
 
     <?php if (!empty($legacy_notice) && !empty($portal_url)) : ?>
-        <section class="flavor-client-dashboard__legacy-notice fl-legacy-notice" aria-label="<?php esc_attr_e('Aviso de compatibilidad', 'flavor-chat-ia'); ?>">
+        <section class="flavor-client-dashboard__legacy-notice fl-legacy-notice" aria-label="<?php esc_attr_e('Aviso de compatibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <div class="flavor-client-dashboard__legacy-copy">
                 <span class="flavor-client-dashboard__legacy-eyebrow"><?php echo esc_html($legacy_notice['eyebrow'] ?? ''); ?></span>
                 <h2 class="flavor-client-dashboard__legacy-title"><?php echo esc_html($legacy_notice['title'] ?? ''); ?></h2>
                 <p class="flavor-client-dashboard__legacy-text"><?php echo esc_html($legacy_notice['text'] ?? ''); ?></p>
             </div>
             <a href="<?php echo esc_url($portal_url); ?>" class="flavor-client-dashboard__legacy-cta fl-btn fl-btn--primary">
-                <?php echo esc_html($legacy_notice['cta'] ?? __('Abrir Mi Portal', 'flavor-chat-ia')); ?>
+                <?php echo esc_html($legacy_notice['cta'] ?? __('Abrir Mi Portal', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
             </a>
         </section>
     <?php endif; ?>
 
     <!-- Skip Links (Accesibilidad) -->
-    <a href="#fl-main-content" class="fl-skip-link"><?php esc_html_e('Saltar al contenido principal', 'flavor-chat-ia'); ?></a>
-    <a href="#fl-shortcuts" class="fl-skip-link"><?php esc_html_e('Saltar a acciones rapidas', 'flavor-chat-ia'); ?></a>
+    <a href="#fl-main-content" class="fl-skip-link"><?php esc_html_e('Saltar al contenido principal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
+    <a href="#fl-shortcuts" class="fl-skip-link"><?php esc_html_e('Saltar a acciones rapidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
 
     <!-- =========================================================
          BREADCRUMBS
     ========================================================= -->
-    <nav class="fl-breadcrumbs" aria-label="<?php esc_attr_e('Navegacion', 'flavor-chat-ia'); ?>">
+    <nav class="fl-breadcrumbs" aria-label="<?php esc_attr_e('Navegacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
         <ol class="fl-breadcrumbs__list" itemscope itemtype="https://schema.org/BreadcrumbList">
             <li class="fl-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
                 <a href="<?php echo esc_url(home_url('/')); ?>" class="fl-breadcrumbs__link" itemprop="item">
                     <span class="fl-breadcrumbs__icon dashicons dashicons-admin-home" aria-hidden="true"></span>
-                    <span itemprop="name"><?php esc_html_e('Inicio', 'flavor-chat-ia'); ?></span>
+                    <span itemprop="name"><?php esc_html_e('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </a>
                 <meta itemprop="position" content="1">
             </li>
@@ -108,8 +108,8 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
                 <button type="button"
                         class="flavor-client-dashboard__btn-icon fl-btn fl-btn--icon"
                         id="flavor-dashboard-refresh"
-                        title="<?php esc_attr_e('Actualizar (Ctrl+R)', 'flavor-chat-ia'); ?>"
-                        aria-label="<?php esc_attr_e('Actualizar datos', 'flavor-chat-ia'); ?>">
+                        title="<?php esc_attr_e('Actualizar (Ctrl+R)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
+                        aria-label="<?php esc_attr_e('Actualizar datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <?php echo $dashboard_instance->obtener_icono_svg('refresh', 20); ?>
                 </button>
 
@@ -117,8 +117,8 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
                 <button type="button"
                         class="flavor-client-dashboard__btn-icon fl-btn fl-btn--icon"
                         id="flavor-dashboard-theme-toggle"
-                        title="<?php esc_attr_e('Cambiar tema', 'flavor-chat-ia'); ?>"
-                        aria-label="<?php esc_attr_e('Cambiar tema claro/oscuro', 'flavor-chat-ia'); ?>">
+                        title="<?php esc_attr_e('Cambiar tema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
+                        aria-label="<?php esc_attr_e('Cambiar tema claro/oscuro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="flavor-icon-sun"><?php echo $dashboard_instance->obtener_icono_svg('sun', 20); ?></span>
                     <span class="flavor-icon-moon"><?php echo $dashboard_instance->obtener_icono_svg('moon', 20); ?></span>
                 </button>
@@ -128,8 +128,8 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
                     <button type="button"
                             class="flavor-client-dashboard__btn-icon flavor-client-dashboard__btn-icon--notifications fl-btn fl-btn--icon fl-btn--badge"
                             id="flavor-dashboard-notifications-toggle"
-                            title="<?php esc_attr_e('Notificaciones', 'flavor-chat-ia'); ?>"
-                            aria-label="<?php printf(esc_attr__('%d notificaciones pendientes', 'flavor-chat-ia'), count($notificaciones)); ?>"
+                            title="<?php esc_attr_e('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
+                            aria-label="<?php printf(esc_attr__('%d notificaciones pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN), count($notificaciones)); ?>"
                             aria-expanded="false"
                             aria-controls="flavor-notifications-panel">
                         <?php echo $dashboard_instance->obtener_icono_svg('bell', 20); ?>
@@ -140,7 +140,7 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
                 <!-- Enlace a Mi Cuenta -->
                 <a href="<?php echo esc_url(home_url('/mi-cuenta/')); ?>"
                    class="flavor-client-dashboard__btn-icon fl-btn fl-btn--icon"
-                   title="<?php esc_attr_e('Mi Cuenta', 'flavor-chat-ia'); ?>">
+                   title="<?php esc_attr_e('Mi Cuenta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <?php echo $dashboard_instance->obtener_icono_svg('settings', 20); ?>
                 </a>
             </div>
@@ -162,18 +162,18 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
                id="flavor-notifications-panel"
                aria-hidden="true"
                role="region"
-               aria-label="<?php esc_attr_e('Panel de notificaciones', 'flavor-chat-ia'); ?>">
+               aria-label="<?php esc_attr_e('Panel de notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <div class="flavor-client-dashboard__notifications-header fl-notifications-panel__header">
-                <h3><?php esc_html_e('Notificaciones', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <button type="button"
                         class="flavor-client-dashboard__btn-text fl-btn fl-btn--text"
                         id="flavor-mark-all-read">
-                    <?php esc_html_e('Marcar todas como leidas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Marcar todas como leidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
             <ul class="flavor-client-dashboard__notifications-list fl-notifications-list" role="list">
                 <?php foreach ($notificaciones as $notificacion) :
-                    $titulo_notificacion = $notificacion['title'] ?? __('Notificacion', 'flavor-chat-ia');
+                    $titulo_notificacion = $notificacion['title'] ?? __('Notificacion', FLAVOR_PLATFORM_TEXT_DOMAIN);
                     $mensaje_notificacion = $notificacion['message'] ?? '';
                     $fecha_notificacion = isset($notificacion['created_at']) ?
                         $dashboard_instance->formatear_fecha_relativa($notificacion['created_at']) : '';
@@ -199,7 +199,7 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
                         <button type="button"
                                 class="flavor-client-dashboard__notification-dismiss fl-btn fl-btn--icon fl-btn--sm"
                                 data-notification-id="<?php echo esc_attr($id_notificacion); ?>"
-                                aria-label="<?php esc_attr_e('Descartar notificacion', 'flavor-chat-ia'); ?>">
+                                aria-label="<?php esc_attr_e('Descartar notificacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <?php echo $dashboard_instance->obtener_icono_svg('x', 16); ?>
                         </button>
                     </li>
@@ -207,7 +207,7 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
             </ul>
             <a href="<?php echo esc_url(home_url('/mi-cuenta/?tab=notificaciones')); ?>"
                class="flavor-client-dashboard__notifications-footer fl-notifications-panel__footer">
-                <?php esc_html_e('Ver todas las notificaciones', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver todas las notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <span class="dashicons dashicons-arrow-right-alt2" aria-hidden="true"></span>
             </a>
         </aside>
@@ -219,7 +219,7 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
     <?php if ($atributos['mostrar_estadisticas'] === 'true' && !empty($estadisticas)) : ?>
         <section class="flavor-client-dashboard__stats fl-stats-section" aria-labelledby="stats-heading">
             <h2 id="stats-heading" class="fl-sr-only">
-                <?php esc_html_e('Resumen de tu actividad', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Resumen de tu actividad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <div class="flavor-client-dashboard__stats-grid fl-stats-grid fl-widget-stats">
                 <?php foreach ($estadisticas as $identificador => $estadistica) :
@@ -255,7 +255,7 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
         <section class="flavor-client-dashboard__ecosystems" aria-labelledby="ecosystems-heading">
             <div class="flavor-client-dashboard__section-header">
                 <h2 id="ecosystems-heading" class="flavor-client-dashboard__section-title fl-section-title">
-                    <?php esc_html_e('Mis ecosistemas activos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Mis ecosistemas activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
             </div>
             <div class="flavor-client-dashboard__ecosystems-grid">
@@ -267,7 +267,7 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
                                 <span class="flavor-client-dashboard__ecosystem-role"><?php echo esc_html($node['role_label']); ?></span>
                                 <?php if (!empty($dashboard_contexts) && !empty($node['context_match_score'])) : ?>
                                     <div class="flavor-client-dashboard__ecosystem-context">
-                                        <?php esc_html_e('Relevante en este contexto', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Relevante en este contexto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </div>
                                 <?php endif; ?>
                             </div>
@@ -276,7 +276,7 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
 
                         <?php if (!empty($node['satellites'])) : ?>
                             <div class="flavor-client-dashboard__ecosystem-block">
-                                <div class="flavor-client-dashboard__ecosystem-label"><?php esc_html_e('Satelites', 'flavor-chat-ia'); ?></div>
+                                <div class="flavor-client-dashboard__ecosystem-label"><?php esc_html_e('Satelites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                                 <div class="flavor-client-dashboard__ecosystem-tags">
                                     <?php foreach ($node['satellites'] as $satellite) : ?>
                                         <span class="flavor-client-dashboard__ecosystem-tag">
@@ -289,7 +289,7 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
 
                         <?php if (!empty($node['transversals'])) : ?>
                             <div class="flavor-client-dashboard__ecosystem-block">
-                                <div class="flavor-client-dashboard__ecosystem-label"><?php esc_html_e('Capas transversales', 'flavor-chat-ia'); ?></div>
+                                <div class="flavor-client-dashboard__ecosystem-label"><?php esc_html_e('Capas transversales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                                 <div class="flavor-client-dashboard__ecosystem-tags">
                                     <?php foreach ($node['transversals'] as $transversal) : ?>
                                         <?php if (!empty($transversal['url'])) : ?>
@@ -308,7 +308,7 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
 
                         <?php if (!empty($node['shortcuts'])) : ?>
                             <div class="flavor-client-dashboard__ecosystem-block">
-                                <div class="flavor-client-dashboard__ecosystem-label"><?php esc_html_e('Accesos', 'flavor-chat-ia'); ?></div>
+                                <div class="flavor-client-dashboard__ecosystem-label"><?php esc_html_e('Accesos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                                 <div class="flavor-client-dashboard__ecosystem-links">
                                     <?php foreach (array_slice($node['shortcuts'], 0, 3) as $shortcut) : ?>
                                         <a href="<?php echo esc_url($shortcut['url'] ?? '#'); ?>" class="flavor-client-dashboard__ecosystem-link">
@@ -321,7 +321,7 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
 
                         <div class="flavor-client-dashboard__ecosystem-actions">
                             <a href="<?php echo esc_url($node['url']); ?>" class="flavor-client-dashboard__ecosystem-open">
-                                <?php esc_html_e('Abrir modulo', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Abrir modulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </div>
                     </article>
@@ -334,7 +334,7 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
         <section class="flavor-client-dashboard__signals" aria-labelledby="signals-heading">
             <div class="flavor-client-dashboard__section-header">
                 <h2 id="signals-heading" class="flavor-client-dashboard__section-title fl-section-title">
-                    <?php esc_html_e('Senales del nodo', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Senales del nodo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
             </div>
             <div class="flavor-client-dashboard__layer-list">
@@ -360,7 +360,7 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
         <section class="flavor-client-dashboard__actions-layer" aria-labelledby="actions-layer-heading">
             <div class="flavor-client-dashboard__section-header">
                 <h2 id="actions-layer-heading" class="flavor-client-dashboard__section-title fl-section-title">
-                    <?php esc_html_e('Que hacer ahora', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Que hacer ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
             </div>
             <div class="flavor-client-dashboard__layer-list">
@@ -390,7 +390,7 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
     <?php if ($atributos['mostrar_atajos'] === 'true' && !empty($panel_layers['services'])) : ?>
         <section class="flavor-client-dashboard__shortcuts fl-quick-actions-section" id="fl-shortcuts" aria-labelledby="shortcuts-heading">
             <h2 id="shortcuts-heading" class="flavor-client-dashboard__section-title fl-section-title">
-                <?php esc_html_e('Herramientas disponibles', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Herramientas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <div class="flavor-client-dashboard__shortcuts-grid fl-quick-actions">
                 <?php foreach ($panel_layers['services'] as $identificador => $atajo) :
@@ -436,14 +436,14 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
              FILTROS DE CATEGORIA
         ========================================================= -->
         <?php if ($atributos['mostrar_widgets'] === 'true' && !empty($categorias)) : ?>
-            <nav class="fl-category-filters" role="tablist" aria-label="<?php esc_attr_e('Filtrar por categoria', 'flavor-chat-ia'); ?>">
+            <nav class="fl-category-filters" role="tablist" aria-label="<?php esc_attr_e('Filtrar por categoria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <button type="button"
                         class="fl-category-filter fl-category-filter--active"
                         role="tab"
                         aria-selected="true"
                         data-category="all"
                         id="fl-filter-all">
-                    <span class="fl-category-filter__label"><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></span>
+                    <span class="fl-category-filter__label"><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="fl-category-filter__count"><?php echo esc_html($total_widgets); ?></span>
                 </button>
                 <?php foreach ($categorias as $categoria_id => $categoria_info) :
@@ -471,7 +471,7 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
         <?php if ($atributos['mostrar_widgets'] === 'true' && !empty($widgets_agrupados)) : ?>
             <section class="flavor-client-dashboard__widgets fl-widgets-section" aria-labelledby="widgets-heading">
                 <h2 id="widgets-heading" class="fl-sr-only">
-                    <?php esc_html_e('Widgets del dashboard', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Widgets del dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
 
                 <?php foreach ($widgets_agrupados as $categoria_id => $grupo) :
@@ -496,7 +496,7 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
                                 <h2 class="fl-widget-group__title" id="fl-group-<?php echo esc_attr($categoria_id); ?>-title">
                                     <?php echo esc_html($categoria_info['label']); ?>
                                 </h2>
-                                <span class="fl-widget-group__count" aria-label="<?php printf(esc_attr__('%d widgets en esta categoria', 'flavor-chat-ia'), count($widgets_categoria)); ?>">
+                                <span class="fl-widget-group__count" aria-label="<?php printf(esc_attr__('%d widgets en esta categoria', FLAVOR_PLATFORM_TEXT_DOMAIN), count($widgets_categoria)); ?>">
                                     <?php echo count($widgets_categoria); ?>
                                 </span>
                                 <span class="fl-widget-group__arrow dashicons dashicons-arrow-up-alt2" aria-hidden="true"></span>
@@ -570,11 +570,11 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
                                             </h3>
                                         </div>
 
-                                        <nav class="fl-widget__actions" aria-label="<?php printf(esc_attr__('Acciones de %s', 'flavor-chat-ia'), $titulo_widget); ?>">
+                                        <nav class="fl-widget__actions" aria-label="<?php printf(esc_attr__('Acciones de %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $titulo_widget); ?>">
                                             <button type="button"
                                                     class="fl-widget__action fl-widget__action--refresh"
                                                     data-widget-id="<?php echo esc_attr($identificador); ?>"
-                                                    aria-label="<?php printf(esc_attr__('Actualizar %s', 'flavor-chat-ia'), $titulo_widget); ?>">
+                                                    aria-label="<?php printf(esc_attr__('Actualizar %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $titulo_widget); ?>">
                                                 <span class="dashicons dashicons-update" aria-hidden="true"></span>
                                             </button>
                                             <button type="button"
@@ -582,7 +582,7 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
                                                     data-widget-id="<?php echo esc_attr($identificador); ?>"
                                                     aria-expanded="<?php echo $colapsado ? 'false' : 'true'; ?>"
                                                     aria-controls="widget-content-<?php echo esc_attr($identificador); ?>"
-                                                    aria-label="<?php echo $colapsado ? esc_attr__('Expandir widget', 'flavor-chat-ia') : esc_attr__('Colapsar widget', 'flavor-chat-ia'); ?>">
+                                                    aria-label="<?php echo $colapsado ? esc_attr__('Expandir widget', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_attr__('Colapsar widget', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                                 <span class="dashicons <?php echo $colapsado ? 'dashicons-arrow-down-alt2' : 'dashicons-arrow-up-alt2'; ?>" aria-hidden="true"></span>
                                             </button>
                                         </nav>
@@ -609,7 +609,7 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
             <!-- Fallback: Widgets sin agrupacion (compatibilidad) -->
             <section class="flavor-client-dashboard__widgets fl-widgets-section" aria-labelledby="widgets-heading">
                 <h2 id="widgets-heading" class="fl-sr-only">
-                    <?php esc_html_e('Widgets del dashboard', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Widgets del dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <div class="fl-widgets-grid fud-widgets-grid" data-columns="<?php echo esc_attr($atributos['columnas_widgets']); ?>">
                     <?php foreach ($widgets as $identificador => $widget) :
@@ -660,11 +660,11 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
             <aside class="flavor-client-dashboard__activity fl-activity-section" aria-labelledby="activity-heading">
                 <header class="flavor-client-dashboard__activity-header fl-section-header">
                     <h2 id="activity-heading" class="flavor-client-dashboard__section-title fl-section-title">
-                        <?php esc_html_e('Actividad Reciente', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Actividad Reciente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h2>
                     <a href="<?php echo esc_url(home_url('/mi-cuenta/?tab=actividad')); ?>"
                        class="flavor-client-dashboard__btn-text fl-btn fl-btn--text">
-                        <?php esc_html_e('Ver todo', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver todo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <span class="dashicons dashicons-arrow-right-alt2" aria-hidden="true"></span>
                     </a>
                 </header>
@@ -695,7 +695,7 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
                                     <?php if (!empty($item_actividad['url'])) : ?>
                                         <a href="<?php echo esc_url($item_actividad['url']); ?>"
                                            class="flavor-client-dashboard__timeline-link fl-timeline__link"
-                                           aria-label="<?php esc_attr_e('Ver detalle', 'flavor-chat-ia'); ?>">
+                                           aria-label="<?php esc_attr_e('Ver detalle', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <span class="dashicons dashicons-arrow-right-alt2" aria-hidden="true"></span>
                                         </a>
                                     <?php endif; ?>
@@ -708,7 +708,7 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
                                 <?php echo $dashboard_instance->obtener_icono_svg('activity', 48); ?>
                             </div>
                             <p class="flavor-client-dashboard__empty-text fl-empty-state__message">
-                                <?php esc_html_e('No hay actividad reciente para mostrar', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('No hay actividad reciente para mostrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </p>
                         </div>
                     <?php endif; ?>
@@ -724,7 +724,7 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
     <footer class="fl-dashboard-footer">
         <span class="fl-last-update">
             <span class="dashicons dashicons-clock" aria-hidden="true"></span>
-            <?php esc_html_e('Ultima actualizacion:', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Ultima actualizacion:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <time datetime="<?php echo esc_attr(current_time('c')); ?>" id="fl-last-refresh">
                 <?php echo esc_html(date_i18n(get_option('time_format'), current_time('timestamp'))); ?>
             </time>
@@ -737,7 +737,7 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
     <!-- Indicador de carga -->
     <div class="flavor-client-dashboard__loading fl-loading-overlay" id="flavor-dashboard-loading" aria-hidden="true">
         <div class="flavor-client-dashboard__loading-spinner fl-loading-spinner"></div>
-        <span class="flavor-client-dashboard__loading-text fl-loading-text"><?php esc_html_e('Actualizando...', 'flavor-chat-ia'); ?></span>
+        <span class="flavor-client-dashboard__loading-text fl-loading-text"><?php esc_html_e('Actualizando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
     </div>
 
     <!-- Live Region para anuncios de accesibilidad -->

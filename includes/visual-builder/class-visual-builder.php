@@ -132,13 +132,13 @@ class Flavor_Visual_Builder {
 
         register_post_type('flavor_landing', [
             'labels' => [
-                'name' => __('Landing Pages', 'flavor-chat-ia'),
-                'singular_name' => __('Landing Page', 'flavor-chat-ia'),
-                'add_new' => __('Añadir Nueva', 'flavor-chat-ia'),
-                'add_new_item' => __('Añadir Nueva Landing', 'flavor-chat-ia'),
-                'edit_item' => __('Editar con Visual Builder', 'flavor-chat-ia'),
-                'view_item' => __('Ver Landing', 'flavor-chat-ia'),
-                'all_items' => __('Todas las Landings', 'flavor-chat-ia'),
+                'name' => __('Landing Pages', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'singular_name' => __('Landing Page', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'add_new' => __('Añadir Nueva', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'add_new_item' => __('Añadir Nueva Landing', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'edit_item' => __('Editar con Visual Builder', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'view_item' => __('Ver Landing', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'all_items' => __('Todas las Landings', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
             'public' => true,
             'publicly_queryable' => true,
@@ -259,7 +259,7 @@ class Flavor_Visual_Builder {
         foreach ($post_types as $post_type) {
             add_meta_box(
                 'flavor_visual_builder',
-                __('Flavor Visual Builder', 'flavor-chat-ia'),
+                __('Flavor Visual Builder', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 [$this, 'render_meta_box'],
                 $post_type,
                 'normal',
@@ -274,7 +274,7 @@ class Flavor_Visual_Builder {
     public function render_meta_box($post) {
         // Verificar permisos
         if (!current_user_can('edit_post', $post->ID)) {
-            echo '<p>' . __('No tienes permisos para editar este contenido.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('No tienes permisos para editar este contenido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -555,9 +555,9 @@ class Flavor_Visual_Builder {
             ?>
             <div class="notice notice-info is-dismissible">
                 <p>
-                    <strong><?php _e('Flavor Visual Builder', 'flavor-chat-ia'); ?>:</strong>
+                    <strong><?php _e('Flavor Visual Builder', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>:</strong>
                     <?php printf(
-                        __('Se encontraron %d páginas con formato antiguo. Se migrarán automáticamente al editarlas.', 'flavor-chat-ia'),
+                        __('Se encontraron %d páginas con formato antiguo. Se migrarán automáticamente al editarlas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $pending
                     ); ?>
                 </p>
@@ -674,12 +674,12 @@ class Flavor_Visual_Builder {
             'components' => $this->get_components(),
             'sections' => $this->get_sections(),
             'i18n' => [
-                'save' => __('Guardar', 'flavor-chat-ia'),
-                'preview' => __('Vista Previa', 'flavor-chat-ia'),
-                'undo' => __('Deshacer', 'flavor-chat-ia'),
-                'redo' => __('Rehacer', 'flavor-chat-ia'),
-                'mode_sections' => __('Modo Secciones', 'flavor-chat-ia'),
-                'mode_components' => __('Modo Componentes', 'flavor-chat-ia'),
+                'save' => __('Guardar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'preview' => __('Vista Previa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'undo' => __('Deshacer', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'redo' => __('Rehacer', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'mode_sections' => __('Modo Secciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'mode_components' => __('Modo Componentes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
 
@@ -837,19 +837,19 @@ class Flavor_Visual_Builder {
         $post_id = intval($_POST['post_id'] ?? 0);
 
         if (!current_user_can('edit_post', $post_id)) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $data = json_decode(stripslashes($_POST['data'] ?? '{}'), true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            wp_send_json_error(['message' => __('JSON inválido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('JSON inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         update_post_meta($post_id, self::META_DATA, $data);
         update_post_meta($post_id, self::META_VERSION, self::VERSION);
 
-        wp_send_json_success(['message' => __('Guardado correctamente', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Guardado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -861,7 +861,7 @@ class Flavor_Visual_Builder {
         $post_id = intval($_POST['post_id'] ?? 0);
 
         if (!current_user_can('edit_post', $post_id)) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $data = $this->get_builder_data($post_id);
@@ -879,11 +879,11 @@ class Flavor_Visual_Builder {
         $mode = sanitize_text_field($_POST['mode'] ?? '');
 
         if (!current_user_can('edit_post', $post_id)) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (!in_array($mode, [self::MODE_SECTIONS, self::MODE_COMPONENTS])) {
-            wp_send_json_error(['message' => __('Modo inválido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Modo inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         update_post_meta($post_id, self::META_MODE, $mode);
@@ -900,7 +900,7 @@ class Flavor_Visual_Builder {
         $data = json_decode(stripslashes($_POST['data'] ?? '{}'), true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            wp_send_json_error(['message' => __('JSON inválido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('JSON inválido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Renderizar preview
@@ -930,7 +930,7 @@ class Flavor_Visual_Builder {
             wp_send_json_success(['section' => $this->sections[$component_id]]);
         }
 
-        wp_send_json_error(['message' => __('Componente no encontrado', 'flavor-chat-ia')]);
+        wp_send_json_error(['message' => __('Componente no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -947,7 +947,7 @@ class Flavor_Visual_Builder {
     public function ajax_undo() {
         check_ajax_referer('flavor_vb_ajax', 'nonce');
         // TODO: Implementar sistema de historial
-        wp_send_json_success(['message' => __('Deshacer', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Deshacer', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -956,7 +956,7 @@ class Flavor_Visual_Builder {
     public function ajax_redo() {
         check_ajax_referer('flavor_vb_ajax', 'nonce');
         // TODO: Implementar sistema de historial
-        wp_send_json_success(['message' => __('Rehacer', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Rehacer', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**

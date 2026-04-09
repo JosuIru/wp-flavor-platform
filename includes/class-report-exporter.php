@@ -82,7 +82,7 @@ class Report_Exporter {
      */
     public function export_csv($data, $filename = 'export', $headers = array()) {
         if (empty($data)) {
-            return new \WP_Error('empty_data', __('No hay datos para exportar', 'flavor-chat-ia'));
+            return new \WP_Error('empty_data', __('No hay datos para exportar', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $filename = sanitize_file_name($filename) . '-' . date('Y-m-d-His') . '.csv';
@@ -90,7 +90,7 @@ class Report_Exporter {
 
         $file_handle = fopen($filepath, 'w');
         if (!$file_handle) {
-            return new \WP_Error('file_error', __('No se pudo crear el archivo', 'flavor-chat-ia'));
+            return new \WP_Error('file_error', __('No se pudo crear el archivo', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // BOM para UTF-8
@@ -155,7 +155,7 @@ class Report_Exporter {
             return $this->generar_csv_completo($datos_reporte, $periodo);
         }
 
-        return new \WP_Error('formato_invalido', __('Formato no soportado', 'flavor-chat-ia'));
+        return new \WP_Error('formato_invalido', __('Formato no soportado', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**
@@ -223,34 +223,34 @@ class Report_Exporter {
 
         return array(
             array(
-                'Métrica'      => __('Usuarios Activos', 'flavor-chat-ia'),
+                'Métrica'      => __('Usuarios Activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'Valor'        => intval($usuarios_activos),
                 'Porcentaje'   => $usuarios_totales > 0
                     ? round(($usuarios_activos / $usuarios_totales) * 100, 2) . '%'
                     : '0%',
             ),
             array(
-                'Métrica'      => __('Usuarios Totales', 'flavor-chat-ia'),
+                'Métrica'      => __('Usuarios Totales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'Valor'        => intval($usuarios_totales),
                 'Porcentaje'   => '100%',
             ),
             array(
-                'Métrica'      => __('Publicaciones', 'flavor-chat-ia'),
+                'Métrica'      => __('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'Valor'        => intval($publicaciones),
                 'Porcentaje'   => '-',
             ),
             array(
-                'Métrica'      => __('Comentarios', 'flavor-chat-ia'),
+                'Métrica'      => __('Comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'Valor'        => intval($comentarios),
                 'Porcentaje'   => '-',
             ),
             array(
-                'Métrica'      => __('Interacciones', 'flavor-chat-ia'),
+                'Métrica'      => __('Interacciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'Valor'        => intval($interacciones),
                 'Porcentaje'   => '-',
             ),
             array(
-                'Métrica'      => __('Nuevos Usuarios', 'flavor-chat-ia'),
+                'Métrica'      => __('Nuevos Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'Valor'        => intval($nuevos_usuarios),
                 'Porcentaje'   => '-',
             ),
@@ -400,7 +400,7 @@ class Report_Exporter {
 
         $file_handle = fopen($filepath, 'w');
         if (!$file_handle) {
-            return new \WP_Error('file_error', __('No se pudo crear el archivo', 'flavor-chat-ia'));
+            return new \WP_Error('file_error', __('No se pudo crear el archivo', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // BOM para UTF-8
@@ -524,7 +524,7 @@ class Report_Exporter {
         $filepath = $this->export_dir . sanitize_file_name($filename);
 
         if (!file_exists($filepath)) {
-            wp_die(__('Archivo no encontrado', 'flavor-chat-ia'));
+            wp_die(__('Archivo no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         header('Content-Type: text/csv; charset=utf-8');

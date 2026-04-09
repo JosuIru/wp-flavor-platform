@@ -46,7 +46,7 @@ $total_coeficiente = array_sum(array_column($participantes, 'coeficiente_reparto
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
         <div style="display: flex; gap: 12px; align-items: center;">
             <select @change="filtrarComunidad($event.target.value)" style="padding: 8px 12px;">
-                <option value=""><?php esc_html_e('Todas las comunidades', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php esc_html_e('Todas las comunidades', 'flavor-platform'); ?></option>
                 <?php foreach ($comunidades as $com): ?>
                     <option value="<?php echo esc_attr($com->id); ?>" <?php selected($energia_comunidad_id, $com->id); ?>>
                         <?php echo esc_html($com->nombre); ?>
@@ -55,13 +55,13 @@ $total_coeficiente = array_sum(array_column($participantes, 'coeficiente_reparto
             </select>
 
             <span style="color: #666; font-size: 13px;">
-                <?php echo count($participantes); ?> <?php esc_html_e('participantes', 'flavor-chat-ia'); ?>
+                <?php echo count($participantes); ?> <?php esc_html_e('participantes', 'flavor-platform'); ?>
             </span>
         </div>
 
         <button class="button button-primary" @click="showModalParticipante = true">
             <span class="dashicons dashicons-plus-alt2"></span>
-            <?php esc_html_e('Añadir Participante', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Añadir Participante', 'flavor-platform'); ?>
         </button>
     </div>
 
@@ -72,12 +72,12 @@ $total_coeficiente = array_sum(array_column($participantes, 'coeficiente_reparto
             <thead>
                 <tr>
                     <th style="width: 50px;"></th>
-                    <th><?php esc_html_e('Participante', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Comunidad', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Rol', 'flavor-chat-ia'); ?></th>
-                    <th style="text-align: center;"><?php esc_html_e('Coeficiente', 'flavor-chat-ia'); ?></th>
-                    <th style="text-align: center;"><?php esc_html_e('% Reparto', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Desde', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Participante', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Comunidad', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Rol', 'flavor-platform'); ?></th>
+                    <th style="text-align: center;"><?php esc_html_e('Coeficiente', 'flavor-platform'); ?></th>
+                    <th style="text-align: center;"><?php esc_html_e('% Reparto', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Desde', 'flavor-platform'); ?></th>
                     <th style="width: 100px;"></th>
                 </tr>
             </thead>
@@ -90,7 +90,7 @@ $total_coeficiente = array_sum(array_column($participantes, 'coeficiente_reparto
                         <?php echo get_avatar($p->user_id, 36); ?>
                     </td>
                     <td>
-                        <strong><?php echo esc_html($p->display_name ?: __('Usuario', 'flavor-chat-ia')); ?></strong>
+                        <strong><?php echo esc_html($p->display_name ?: __('Usuario', 'flavor-platform')); ?></strong>
                         <br>
                         <span style="color: #666; font-size: 12px;"><?php echo esc_html($p->user_email); ?></span>
                     </td>
@@ -102,9 +102,9 @@ $total_coeficiente = array_sum(array_column($participantes, 'coeficiente_reparto
                     <td>
                         <?php
                         $roles = [
-                            'miembro' => ['label' => __('Miembro', 'flavor-chat-ia'), 'color' => '#6b7280'],
-                            'gestor' => ['label' => __('Gestor', 'flavor-chat-ia'), 'color' => '#3b82f6'],
-                            'administrador' => ['label' => __('Administrador', 'flavor-chat-ia'), 'color' => '#10b981'],
+                            'miembro' => ['label' => __('Miembro', 'flavor-platform'), 'color' => '#6b7280'],
+                            'gestor' => ['label' => __('Gestor', 'flavor-platform'), 'color' => '#3b82f6'],
+                            'administrador' => ['label' => __('Administrador', 'flavor-platform'), 'color' => '#10b981'],
                         ];
                         $rol_info = $roles[$p->rol] ?? $roles['miembro'];
                         ?>
@@ -129,7 +129,7 @@ $total_coeficiente = array_sum(array_column($participantes, 'coeficiente_reparto
                     </td>
                     <td>
                         <button class="button button-small" @click="editarParticipante(<?php echo $p->id; ?>)">
-                            <?php esc_html_e('Editar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Editar', 'flavor-platform'); ?>
                         </button>
                     </td>
                 </tr>
@@ -138,7 +138,7 @@ $total_coeficiente = array_sum(array_column($participantes, 'coeficiente_reparto
             <tfoot>
                 <tr style="background: #f9fafb;">
                     <td colspan="4" style="text-align: right; font-weight: bold;">
-                        <?php esc_html_e('Total:', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Total:', 'flavor-platform'); ?>
                     </td>
                     <td style="text-align: center; font-weight: bold;">
                         <?php echo number_format($total_coeficiente, 2); ?>
@@ -152,19 +152,19 @@ $total_coeficiente = array_sum(array_column($participantes, 'coeficiente_reparto
     <?php else: ?>
     <div style="text-align: center; padding: 60px 20px; background: #f9fafb; border-radius: 12px;">
         <span class="dashicons dashicons-groups" style="font-size: 48px; color: #ccc;"></span>
-        <h3><?php esc_html_e('No hay participantes registrados', 'flavor-chat-ia'); ?></h3>
-        <p style="color: #666;"><?php esc_html_e('Añade participantes a las comunidades energéticas para gestionar el reparto.', 'flavor-chat-ia'); ?></p>
+        <h3><?php esc_html_e('No hay participantes registrados', 'flavor-platform'); ?></h3>
+        <p style="color: #666;"><?php esc_html_e('Añade participantes a las comunidades energéticas para gestionar el reparto.', 'flavor-platform'); ?></p>
         <button class="button button-primary" @click="showModalParticipante = true">
-            <?php esc_html_e('Añadir Participante', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Añadir Participante', 'flavor-platform'); ?>
         </button>
     </div>
     <?php endif; ?>
 
     <!-- Información sobre coeficientes -->
     <div style="margin-top: 20px; padding: 16px; background: #fef3c7; border-radius: 8px; border-left: 4px solid #f59e0b;">
-        <h4 style="margin: 0 0 8px; color: #92400e;"><?php esc_html_e('Sobre los coeficientes de reparto', 'flavor-chat-ia'); ?></h4>
+        <h4 style="margin: 0 0 8px; color: #92400e;"><?php esc_html_e('Sobre los coeficientes de reparto', 'flavor-platform'); ?></h4>
         <p style="margin: 0; color: #78350f; font-size: 13px;">
-            <?php esc_html_e('El coeficiente de reparto determina qué porcentaje de la energía generada corresponde a cada participante. Se puede basar en la inversión realizada, consumo estimado, o acuerdo entre los miembros.', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('El coeficiente de reparto determina qué porcentaje de la energía generada corresponde a cada participante. Se puede basar en la inversión realizada, consumo estimado, o acuerdo entre los miembros.', 'flavor-platform'); ?>
         </p>
     </div>
 
@@ -173,7 +173,7 @@ $total_coeficiente = array_sum(array_column($participantes, 'coeficiente_reparto
          style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center;"
          @click.self="showModalParticipante = false">
         <div style="background: #fff; border-radius: 12px; padding: 24px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto;">
-            <h2 style="margin: 0 0 20px;"><?php esc_html_e('Añadir Participante', 'flavor-chat-ia'); ?></h2>
+            <h2 style="margin: 0 0 20px;"><?php esc_html_e('Añadir Participante', 'flavor-platform'); ?></h2>
             <?php echo do_shortcode('[flavor_energia_form_participante]'); ?>
         </div>
     </div>

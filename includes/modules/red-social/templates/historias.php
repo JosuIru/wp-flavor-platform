@@ -76,7 +76,7 @@ $ver_historia_usuario = isset($_GET['ver']) ? absint($_GET['ver']) : 0;
     <div class="rs-historias-page">
         <!-- Carrusel de historias -->
         <div class="rs-historias-carrusel">
-            <h2 class="rs-historias-titulo"><?php echo esc_html__('Historias', 'flavor-chat-ia'); ?></h2>
+            <h2 class="rs-historias-titulo"><?php echo esc_html__('Historias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <div class="rs-historias-scroll">
                 <!-- Crear nueva historia -->
@@ -91,7 +91,7 @@ $ver_historia_usuario = isset($_GET['ver']) ? absint($_GET['ver']) : 0;
                                 </svg>
                             </span>
                         </div>
-                        <span class="rs-historia-nombre"><?php echo esc_html__('Tu historia', 'flavor-chat-ia'); ?></span>
+                        <span class="rs-historia-nombre"><?php echo esc_html__('Tu historia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         <?php if (!empty($mis_historias)): ?>
                             <span class="rs-historia-badge"><?php echo count($mis_historias); ?></span>
                         <?php endif; ?>
@@ -115,7 +115,7 @@ $ver_historia_usuario = isset($_GET['ver']) ? absint($_GET['ver']) : 0;
 
                 <?php if (empty($historias_seguidos) && $usuario_id): ?>
                     <div class="rs-historias-vacio">
-                        <p><?php echo esc_html__('Las historias de las personas que sigues apareceran aqui.', 'flavor-chat-ia'); ?></p>
+                        <p><?php echo esc_html__('Las historias de las personas que sigues apareceran aqui.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 <?php endif; ?>
             </div>
@@ -127,7 +127,7 @@ $ver_historia_usuario = isset($_GET['ver']) ? absint($_GET['ver']) : 0;
                 <div class="rs-modal-overlay"></div>
                 <div class="rs-modal-contenido">
                     <div class="rs-modal-header">
-                        <h3><?php echo esc_html__('Crear historia', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php echo esc_html__('Crear historia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <button class="rs-modal-cerrar" id="rs-cerrar-modal-historia">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -145,7 +145,7 @@ $ver_historia_usuario = isset($_GET['ver']) ? absint($_GET['ver']) : 0;
                                     <circle cx="8.5" cy="8.5" r="1.5"/>
                                     <path d="M21 15l-5-5L5 21"/>
                                 </svg>
-                                <?php echo esc_html__('Foto', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Foto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                             <button class="rs-historia-tipo" data-tipo="texto">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -154,14 +154,14 @@ $ver_historia_usuario = isset($_GET['ver']) ? absint($_GET['ver']) : 0;
                                     <line x1="16" y1="13" x2="8" y2="13"/>
                                     <line x1="16" y1="17" x2="8" y2="17"/>
                                 </svg>
-                                <?php echo esc_html__('Texto', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Texto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                             <button class="rs-historia-tipo" data-tipo="video">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <polygon points="23 7 16 12 23 17 23 7"/>
                                     <rect x="1" y="5" width="15" height="14" rx="2"/>
                                 </svg>
-                                <?php echo esc_html__('Video', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Video', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </div>
 
@@ -176,7 +176,7 @@ $ver_historia_usuario = isset($_GET['ver']) ? absint($_GET['ver']) : 0;
                                             <circle cx="8.5" cy="8.5" r="1.5"/>
                                             <path d="M21 15l-5-5L5 21"/>
                                         </svg>
-                                        <p><?php echo esc_html__('Arrastra una imagen o haz clic para seleccionar', 'flavor-chat-ia'); ?></p>
+                                        <p><?php echo esc_html__('Arrastra una imagen o haz clic para seleccionar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                         <input type="file" accept="image/*" id="rs-input-historia-imagen" style="display: none;">
                                     </div>
                                 </div>
@@ -187,11 +187,11 @@ $ver_historia_usuario = isset($_GET['ver']) ? absint($_GET['ver']) : 0;
                                 <div class="rs-historia-preview" id="rs-historia-preview-texto">
                                     <textarea class="rs-historia-texto-input"
                                               id="rs-historia-texto"
-                                              placeholder="<?php echo esc_attr__('Escribe tu historia...', 'flavor-chat-ia'); ?>"
+                                              placeholder="<?php echo esc_attr__('Escribe tu historia...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                                               maxlength="280"></textarea>
                                 </div>
                                 <div class="rs-historia-colores">
-                                    <span><?php echo esc_html__('Color de fondo:', 'flavor-chat-ia'); ?></span>
+                                    <span><?php echo esc_html__('Color de fondo:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     <div class="rs-colores-lista">
                                         <button class="rs-color-btn active" data-color="#6366f1" style="background: #6366f1;"></button>
                                         <button class="rs-color-btn" data-color="#ec4899" style="background: #ec4899;"></button>
@@ -212,8 +212,8 @@ $ver_historia_usuario = isset($_GET['ver']) ? absint($_GET['ver']) : 0;
                                             <polygon points="23 7 16 12 23 17 23 7"/>
                                             <rect x="1" y="5" width="15" height="14" rx="2"/>
                                         </svg>
-                                        <p><?php echo esc_html__('Arrastra un video o haz clic para seleccionar', 'flavor-chat-ia'); ?></p>
-                                        <span class="rs-historia-video-nota"><?php echo esc_html__('Maximo 30 segundos', 'flavor-chat-ia'); ?></span>
+                                        <p><?php echo esc_html__('Arrastra un video o haz clic para seleccionar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                                        <span class="rs-historia-video-nota"><?php echo esc_html__('Maximo 30 segundos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         <input type="file" accept="video/*" id="rs-input-historia-video" style="display: none;">
                                     </div>
                                 </div>
@@ -222,10 +222,10 @@ $ver_historia_usuario = isset($_GET['ver']) ? absint($_GET['ver']) : 0;
 
                         <div class="rs-historia-acciones">
                             <button class="rs-btn-secundario" id="rs-cancelar-historia">
-                                <?php echo esc_html__('Cancelar', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                             <button class="rs-btn-primary" id="rs-publicar-historia" disabled>
-                                <?php echo esc_html__('Compartir historia', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Compartir historia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </div>
                     </div>
@@ -283,7 +283,7 @@ $ver_historia_usuario = isset($_GET['ver']) ? absint($_GET['ver']) : 0;
                             <input type="text"
                                    class="rs-visor-input"
                                    id="rs-visor-respuesta"
-                                   placeholder="<?php echo esc_attr__('Enviar mensaje...', 'flavor-chat-ia'); ?>">
+                                   placeholder="<?php echo esc_attr__('Enviar mensaje...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <button class="rs-visor-enviar" id="rs-visor-enviar">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <line x1="22" y1="2" x2="11" y2="13"></line>
@@ -299,7 +299,7 @@ $ver_historia_usuario = isset($_GET['ver']) ? absint($_GET['ver']) : 0;
         <!-- Mis historias recientes -->
         <?php if (!empty($mis_historias)): ?>
             <div class="rs-mis-historias">
-                <h3 class="rs-seccion-titulo"><?php echo esc_html__('Tus historias activas', 'flavor-chat-ia'); ?></h3>
+                <h3 class="rs-seccion-titulo"><?php echo esc_html__('Tus historias activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div class="rs-mis-historias-lista">
                     <?php foreach ($mis_historias as $historia): ?>
                         <div class="rs-mi-historia-card" data-historia-id="<?php echo esc_attr($historia->id); ?>">
@@ -330,15 +330,15 @@ $ver_historia_usuario = isset($_GET['ver']) ? absint($_GET['ver']) : 0;
                                     $tiempo_restante = strtotime($historia->fecha_expiracion) - current_time('timestamp');
                                     $horas_restantes = floor($tiempo_restante / 3600);
                                     if ($horas_restantes > 0) {
-                                        printf(esc_html__('%dh restantes', 'flavor-chat-ia'), $horas_restantes);
+                                        printf(esc_html__('%dh restantes', FLAVOR_PLATFORM_TEXT_DOMAIN), $horas_restantes);
                                     } else {
                                         $minutos_restantes = floor($tiempo_restante / 60);
-                                        printf(esc_html__('%dm restantes', 'flavor-chat-ia'), max(1, $minutos_restantes));
+                                        printf(esc_html__('%dm restantes', FLAVOR_PLATFORM_TEXT_DOMAIN), max(1, $minutos_restantes));
                                     }
                                     ?>
                                 </span>
                             </div>
-                            <button class="rs-mi-historia-eliminar" data-historia-id="<?php echo esc_attr($historia->id); ?>" title="<?php echo esc_attr__('Eliminar historia', 'flavor-chat-ia'); ?>">
+                            <button class="rs-mi-historia-eliminar" data-historia-id="<?php echo esc_attr($historia->id); ?>" title="<?php echo esc_attr__('Eliminar historia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <polyline points="3 6 5 6 21 6"></polyline>
                                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>

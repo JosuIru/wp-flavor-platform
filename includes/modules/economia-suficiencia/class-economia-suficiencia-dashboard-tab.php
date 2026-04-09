@@ -56,14 +56,14 @@ class Flavor_Economia_Suficiencia_Dashboard_Tab {
      */
     public function registrar_tabs($tabs) {
         $tabs['suficiencia-resumen'] = [
-            'label' => __('Suficiencia', 'flavor-chat-ia'),
+            'label' => __('Suficiencia', 'flavor-platform'),
             'icon' => 'balance-scale',
             'callback' => [$this, 'render_tab_resumen'],
             'orden' => 64,
         ];
 
         $tabs['suficiencia-recursos'] = [
-            'label' => __('Mis Recursos', 'flavor-chat-ia'),
+            'label' => __('Mis Recursos', 'flavor-platform'),
             'icon' => 'chart-pie',
             'callback' => [$this, 'render_tab_recursos'],
             'orden' => 65,
@@ -78,7 +78,7 @@ class Flavor_Economia_Suficiencia_Dashboard_Tab {
     public function render_tab_resumen() {
         $user_id = get_current_user_id();
         if (!$user_id) {
-            echo '<p>' . esc_html__('Debes iniciar sesión para ver este contenido.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Debes iniciar sesión para ver este contenido.', 'flavor-platform') . '</p>';
             return;
         }
 
@@ -118,8 +118,8 @@ class Flavor_Economia_Suficiencia_Dashboard_Tab {
         ?>
         <div class="flavor-panel flavor-suficiencia-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-chart-bar"></span> <?php esc_html_e('Economía de la Suficiencia', 'flavor-chat-ia'); ?></h2>
-                <p class="flavor-panel-subtitle"><?php esc_html_e('Tener suficiente, no más de lo necesario', 'flavor-chat-ia'); ?></p>
+                <h2><span class="dashicons dashicons-chart-bar"></span> <?php esc_html_e('Economía de la Suficiencia', 'flavor-platform'); ?></h2>
+                <p class="flavor-panel-subtitle"><?php esc_html_e('Tener suficiente, no más de lo necesario', 'flavor-platform'); ?></p>
             </div>
 
             <div class="flavor-panel-kpis">
@@ -127,50 +127,50 @@ class Flavor_Economia_Suficiencia_Dashboard_Tab {
                     <span class="flavor-kpi-icon dashicons dashicons-flag"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($mis_compromisos); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Mis Compromisos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Mis Compromisos', 'flavor-platform'); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-success">
                     <span class="flavor-kpi-icon dashicons dashicons-yes-alt"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo $porcentaje_cumplimiento; ?>%</span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Cumplimiento', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Cumplimiento', 'flavor-platform'); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icon dashicons dashicons-share"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($recursos_compartidos); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Recursos Compartidos', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Recursos Compartidos', 'flavor-platform'); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icon dashicons dashicons-groups"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($comunidad_participantes); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Participantes', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Participantes', 'flavor-platform'); ?></span>
                     </div>
                 </div>
             </div>
 
             <div class="flavor-panel-section">
-                <h3><?php esc_html_e('Principios de Suficiencia', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Principios de Suficiencia', 'flavor-platform'); ?></h3>
                 <div class="flavor-principles-grid">
                     <div class="flavor-principle">
                         <span class="dashicons dashicons-minus"></span>
-                        <span><?php esc_html_e('Reducir lo innecesario', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Reducir lo innecesario', 'flavor-platform'); ?></span>
                     </div>
                     <div class="flavor-principle">
                         <span class="dashicons dashicons-update"></span>
-                        <span><?php esc_html_e('Reutilizar antes de comprar', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Reutilizar antes de comprar', 'flavor-platform'); ?></span>
                     </div>
                     <div class="flavor-principle">
                         <span class="dashicons dashicons-share-alt2"></span>
-                        <span><?php esc_html_e('Compartir recursos', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Compartir recursos', 'flavor-platform'); ?></span>
                     </div>
                     <div class="flavor-principle">
                         <span class="dashicons dashicons-clock"></span>
-                        <span><?php esc_html_e('Tiempo sobre consumo', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Tiempo sobre consumo', 'flavor-platform'); ?></span>
                     </div>
                 </div>
             </div>
@@ -178,11 +178,11 @@ class Flavor_Economia_Suficiencia_Dashboard_Tab {
             <div class="flavor-panel-actions">
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia_suficiencia', 'nuevo-compromiso')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-flag"></span>
-                    <?php esc_html_e('Nuevo Compromiso', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Nuevo Compromiso', 'flavor-platform'); ?>
                 </a>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia_suficiencia', 'biblioteca')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-book"></span>
-                    <?php esc_html_e('Biblioteca', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Biblioteca', 'flavor-platform'); ?>
                 </a>
             </div>
         </div>
@@ -195,7 +195,7 @@ class Flavor_Economia_Suficiencia_Dashboard_Tab {
     public function render_tab_recursos() {
         $user_id = get_current_user_id();
         if (!$user_id) {
-            echo '<p>' . esc_html__('Debes iniciar sesión para ver este contenido.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Debes iniciar sesión para ver este contenido.', 'flavor-platform') . '</p>';
             return;
         }
 
@@ -213,28 +213,28 @@ class Flavor_Economia_Suficiencia_Dashboard_Tab {
         ?>
         <div class="flavor-panel flavor-recursos-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-portfolio"></span> <?php esc_html_e('Mis Recursos', 'flavor-chat-ia'); ?></h2>
+                <h2><span class="dashicons dashicons-portfolio"></span> <?php esc_html_e('Mis Recursos', 'flavor-platform'); ?></h2>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia_suficiencia', 'nuevo-recurso')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt"></span>
-                    <?php esc_html_e('Añadir', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Añadir', 'flavor-platform'); ?>
                 </a>
             </div>
 
             <?php if (empty($mis_recursos)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-portfolio"></span>
-                    <p><?php esc_html_e('No has registrado ningún recurso todavía.', 'flavor-chat-ia'); ?></p>
-                    <p class="flavor-text-muted"><?php esc_html_e('Inventaría tus recursos para gestionar mejor tu suficiencia.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No has registrado ningún recurso todavía.', 'flavor-platform'); ?></p>
+                    <p class="flavor-text-muted"><?php esc_html_e('Inventaría tus recursos para gestionar mejor tu suficiencia.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <div class="flavor-table-responsive">
                     <table class="flavor-table">
                         <thead>
                             <tr>
-                                <th><?php esc_html_e('Recurso', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Compartido', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Recurso', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Categoría', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Compartido', 'flavor-platform'); ?></th>
+                                <th><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
                             </tr>
                         </thead>
                         <tbody>

@@ -14,16 +14,16 @@ if (!defined('ABSPATH')) {
 
 // Verificar permisos
 if (!current_user_can('manage_woocommerce')) {
-    wp_die(__('No tienes permisos suficientes para acceder a esta página.', 'flavor-chat-ia'));
+    wp_die(__('No tienes permisos suficientes para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
 }
 
 // Verificar que WooCommerce está activo
 if (!class_exists('WooCommerce')) {
     ?>
     <div class="wrap">
-        <h1><?php esc_html_e('Dashboard de WooCommerce', 'flavor-chat-ia'); ?></h1>
+        <h1><?php esc_html_e('Dashboard de WooCommerce', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
         <div class="notice notice-error">
-            <p><?php esc_html_e('WooCommerce no está instalado o activado.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('WooCommerce no está instalado o activado.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     </div>
     <?php
@@ -204,8 +204,8 @@ if (in_array('marketplace', $active_modules)) {
             $datos_html .= '</div>';
 
             $modulos_relacionados['marketplace'] = [
-                'titulo' => sprintf(__('Productos Marketplace (%d)', 'flavor-chat-ia'), count($productos_marketplace)),
-                'descripcion' => __('Productos del marketplace local', 'flavor-chat-ia'),
+                'titulo' => sprintf(__('Productos Marketplace (%d)', FLAVOR_PLATFORM_TEXT_DOMAIN), count($productos_marketplace)),
+                'descripcion' => __('Productos del marketplace local', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-store',
                 'url' => admin_url('admin.php?page=flavor-marketplace'),
                 'datos' => $datos_html,
@@ -245,8 +245,8 @@ if (in_array('socios', $active_modules)) {
             $datos_html .= '</div>';
 
             $modulos_relacionados['socios'] = [
-                'titulo' => sprintf(__('Socios Recientes (%d)', 'flavor-chat-ia'), count($socios_recientes)),
-                'descripcion' => __('Socios activos de la plataforma', 'flavor-chat-ia'),
+                'titulo' => sprintf(__('Socios Recientes (%d)', FLAVOR_PLATFORM_TEXT_DOMAIN), count($socios_recientes)),
+                'descripcion' => __('Socios activos de la plataforma', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-groups',
                 'url' => admin_url('admin.php?page=socios-dashboard'),
                 'datos' => $datos_html,
@@ -290,8 +290,8 @@ if (in_array('eventos', $active_modules)) {
             $datos_html .= '</div>';
 
             $modulos_relacionados['eventos'] = [
-                'titulo' => sprintf(__('Eventos de Pago (%d)', 'flavor-chat-ia'), count($eventos_con_precio)),
-                'descripcion' => __('Eventos con venta de entradas', 'flavor-chat-ia'),
+                'titulo' => sprintf(__('Eventos de Pago (%d)', FLAVOR_PLATFORM_TEXT_DOMAIN), count($eventos_con_precio)),
+                'descripcion' => __('Eventos con venta de entradas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-tickets-alt',
                 'url' => admin_url('admin.php?page=flavor-eventos'),
                 'datos' => $datos_html,
@@ -333,8 +333,8 @@ if (in_array('grupos_consumo', $active_modules)) {
             $datos_html .= '</div>';
 
             $modulos_relacionados['grupos_consumo'] = [
-                'titulo' => sprintf(__('Pedidos G. Consumo (%d)', 'flavor-chat-ia'), count($pedidos_gc_activos)),
-                'descripcion' => __('Pedidos activos de grupos de consumo', 'flavor-chat-ia'),
+                'titulo' => sprintf(__('Pedidos G. Consumo (%d)', FLAVOR_PLATFORM_TEXT_DOMAIN), count($pedidos_gc_activos)),
+                'descripcion' => __('Pedidos activos de grupos de consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-carrot',
                 'url' => admin_url('admin.php?page=flavor-grupos-consumo'),
                 'datos' => $datos_html,
@@ -376,8 +376,8 @@ if (in_array('biblioteca', $active_modules)) {
             $datos_html .= '</div>';
 
             $modulos_relacionados['biblioteca'] = [
-                'titulo' => sprintf(__('Préstamos Activos (%d)', 'flavor-chat-ia'), count($prestamos_activos)),
-                'descripcion' => __('Material prestado de la biblioteca', 'flavor-chat-ia'),
+                'titulo' => sprintf(__('Préstamos Activos (%d)', FLAVOR_PLATFORM_TEXT_DOMAIN), count($prestamos_activos)),
+                'descripcion' => __('Material prestado de la biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-book',
                 'url' => admin_url('admin.php?page=flavor-biblioteca'),
                 'datos' => $datos_html,
@@ -420,8 +420,8 @@ if (in_array('talleres', $active_modules)) {
             $datos_html .= '</div>';
 
             $modulos_relacionados['talleres'] = [
-                'titulo' => sprintf(__('Talleres de Pago (%d)', 'flavor-chat-ia'), count($talleres_pago)),
-                'descripcion' => __('Talleres con inscripción de pago', 'flavor-chat-ia'),
+                'titulo' => sprintf(__('Talleres de Pago (%d)', FLAVOR_PLATFORM_TEXT_DOMAIN), count($talleres_pago)),
+                'descripcion' => __('Talleres con inscripción de pago', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icono' => 'dashicons-welcome-learn-more',
                 'url' => admin_url('admin.php?page=flavor-talleres'),
                 'datos' => $datos_html,
@@ -434,7 +434,7 @@ if (in_array('talleres', $active_modules)) {
 <div class="wrap flavor-admin-page flavor-woocommerce-dashboard">
     <h1>
         <span class="dashicons dashicons-cart"></span>
-        <?php esc_html_e('Dashboard de WooCommerce', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Dashboard de WooCommerce', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <!-- ==================== WIDGETS DE MÓDULOS RELACIONADOS ==================== -->
@@ -442,7 +442,7 @@ if (in_array('talleres', $active_modules)) {
     <div class="dm-widgets-relacionados">
         <h2 class="dm-widgets-titulo">
             <span class="dashicons dashicons-networking"></span>
-            <?php _e('Ecosistema de Ventas', 'flavor-chat-ia'); ?>
+            <?php _e('Ecosistema de Ventas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h2>
         <div class="dm-widgets-grid">
             <?php foreach ($modulos_relacionados as $modulo_key => $modulo): ?>
@@ -459,7 +459,7 @@ if (in_array('talleres', $active_modules)) {
                     </div>
                     <div class="dm-widget-footer">
                         <a href="<?php echo esc_url($modulo['url']); ?>" class="dm-widget-link">
-                            <?php _e('Ver todo', 'flavor-chat-ia'); ?> →
+                            <?php _e('Ver todo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> →
                         </a>
                     </div>
                 </div>
@@ -476,8 +476,8 @@ if (in_array('talleres', $active_modules)) {
             </div>
             <div class="stat-content">
                 <span class="stat-value"><?php echo wc_price($ventas_hoy); ?></span>
-                <span class="stat-label"><?php esc_html_e('Ventas hoy', 'flavor-chat-ia'); ?></span>
-                <span class="stat-secondary"><?php printf(esc_html__('%d pedidos', 'flavor-chat-ia'), $total_pedidos_hoy); ?></span>
+                <span class="stat-label"><?php esc_html_e('Ventas hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                <span class="stat-secondary"><?php printf(esc_html__('%d pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_pedidos_hoy); ?></span>
             </div>
         </div>
 
@@ -487,8 +487,8 @@ if (in_array('talleres', $active_modules)) {
             </div>
             <div class="stat-content">
                 <span class="stat-value"><?php echo wc_price($ventas_semana); ?></span>
-                <span class="stat-label"><?php esc_html_e('Esta semana', 'flavor-chat-ia'); ?></span>
-                <span class="stat-secondary"><?php printf(esc_html__('%d pedidos', 'flavor-chat-ia'), $total_pedidos_semana); ?></span>
+                <span class="stat-label"><?php esc_html_e('Esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                <span class="stat-secondary"><?php printf(esc_html__('%d pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_pedidos_semana); ?></span>
             </div>
         </div>
 
@@ -498,8 +498,8 @@ if (in_array('talleres', $active_modules)) {
             </div>
             <div class="stat-content">
                 <span class="stat-value"><?php echo wc_price($ventas_mes); ?></span>
-                <span class="stat-label"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></span>
-                <span class="stat-secondary"><?php printf(esc_html__('%d pedidos', 'flavor-chat-ia'), $total_pedidos_mes); ?></span>
+                <span class="stat-label"><?php esc_html_e('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                <span class="stat-secondary"><?php printf(esc_html__('%d pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_pedidos_mes); ?></span>
             </div>
         </div>
 
@@ -509,12 +509,12 @@ if (in_array('talleres', $active_modules)) {
             </div>
             <div class="stat-content">
                 <span class="stat-value"><?php echo esc_html($total_productos); ?></span>
-                <span class="stat-label"><?php esc_html_e('Productos', 'flavor-chat-ia'); ?></span>
+                <span class="stat-label"><?php esc_html_e('Productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="stat-secondary">
                     <?php if ($productos_sin_stock > 0): ?>
-                        <span class="text-danger"><?php printf(esc_html__('%d sin stock', 'flavor-chat-ia'), $productos_sin_stock); ?></span>
+                        <span class="text-danger"><?php printf(esc_html__('%d sin stock', FLAVOR_PLATFORM_TEXT_DOMAIN), $productos_sin_stock); ?></span>
                     <?php else: ?>
-                        <?php esc_html_e('Todos en stock', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Todos en stock', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <?php endif; ?>
                 </span>
             </div>
@@ -523,19 +523,19 @@ if (in_array('talleres', $active_modules)) {
 
     <!-- Estado de pedidos -->
     <div class="flavor-section">
-        <h2><?php esc_html_e('Estado de Pedidos', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Estado de Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <div class="flavor-order-status-grid">
             <a href="<?php echo esc_url(admin_url('edit.php?post_type=shop_order&post_status=wc-pending')); ?>" class="order-status-card status-pending">
                 <span class="status-count"><?php echo esc_html($total_pendientes); ?></span>
-                <span class="status-label"><?php esc_html_e('Pendientes de pago', 'flavor-chat-ia'); ?></span>
+                <span class="status-label"><?php esc_html_e('Pendientes de pago', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
             <a href="<?php echo esc_url(admin_url('edit.php?post_type=shop_order&post_status=wc-processing')); ?>" class="order-status-card status-processing">
                 <span class="status-count"><?php echo esc_html($total_procesando); ?></span>
-                <span class="status-label"><?php esc_html_e('Procesando', 'flavor-chat-ia'); ?></span>
+                <span class="status-label"><?php esc_html_e('Procesando', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
             <a href="<?php echo esc_url(admin_url('edit.php?post_type=shop_order&post_status=wc-on-hold')); ?>" class="order-status-card status-on-hold">
                 <span class="status-count"><?php echo esc_html($total_en_espera); ?></span>
-                <span class="status-label"><?php esc_html_e('En espera', 'flavor-chat-ia'); ?></span>
+                <span class="status-label"><?php esc_html_e('En espera', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
         </div>
     </div>
@@ -545,9 +545,9 @@ if (in_array('talleres', $active_modules)) {
         <div class="flavor-column">
             <div class="flavor-card">
                 <div class="card-header">
-                    <h3><?php esc_html_e('Pedidos Recientes', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Pedidos Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <a href="<?php echo esc_url(admin_url('edit.php?post_type=shop_order')); ?>" class="button button-small">
-                        <?php esc_html_e('Ver todos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
                 <div class="card-content">
@@ -555,10 +555,10 @@ if (in_array('talleres', $active_modules)) {
                         <table class="wp-list-table widefat striped">
                             <thead>
                                 <tr>
-                                    <th><?php esc_html_e('Pedido', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Cliente', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Total', 'flavor-chat-ia'); ?></th>
+                                    <th><?php esc_html_e('Pedido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php esc_html_e('Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php esc_html_e('Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -587,7 +587,7 @@ if (in_array('talleres', $active_modules)) {
                             </tbody>
                         </table>
                     <?php else: ?>
-                        <p class="no-data"><?php esc_html_e('No hay pedidos recientes.', 'flavor-chat-ia'); ?></p>
+                        <p class="no-data"><?php esc_html_e('No hay pedidos recientes.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php endif; ?>
                 </div>
             </div>
@@ -597,9 +597,9 @@ if (in_array('talleres', $active_modules)) {
         <div class="flavor-column">
             <div class="flavor-card">
                 <div class="card-header">
-                    <h3><?php esc_html_e('Productos Más Vendidos', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Productos Más Vendidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <a href="<?php echo esc_url(admin_url('edit.php?post_type=product')); ?>" class="button button-small">
-                        <?php esc_html_e('Ver todos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
                 <div class="card-content">
@@ -607,9 +607,9 @@ if (in_array('talleres', $active_modules)) {
                         <table class="wp-list-table widefat striped">
                             <thead>
                                 <tr>
-                                    <th><?php esc_html_e('Producto', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Precio', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Ventas', 'flavor-chat-ia'); ?></th>
+                                    <th><?php esc_html_e('Producto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php esc_html_e('Precio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php esc_html_e('Ventas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -631,7 +631,7 @@ if (in_array('talleres', $active_modules)) {
                             </tbody>
                         </table>
                     <?php else: ?>
-                        <p class="no-data"><?php esc_html_e('No hay datos de ventas disponibles.', 'flavor-chat-ia'); ?></p>
+                        <p class="no-data"><?php esc_html_e('No hay datos de ventas disponibles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php endif; ?>
                 </div>
             </div>
@@ -640,7 +640,7 @@ if (in_array('talleres', $active_modules)) {
             <?php if ($productos_sin_stock > 0 || $productos_stock_bajo > 0): ?>
                 <div class="flavor-card flavor-card-warning">
                     <div class="card-header">
-                        <h3><?php esc_html_e('Alertas de Stock', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php esc_html_e('Alertas de Stock', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     </div>
                     <div class="card-content">
                         <ul class="stock-alerts">
@@ -648,7 +648,7 @@ if (in_array('talleres', $active_modules)) {
                                 <li class="alert-danger">
                                     <span class="dashicons dashicons-warning"></span>
                                     <?php printf(
-                                        esc_html__('%d productos sin stock', 'flavor-chat-ia'),
+                                        esc_html__('%d productos sin stock', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                         $productos_sin_stock
                                     ); ?>
                                 </li>
@@ -657,7 +657,7 @@ if (in_array('talleres', $active_modules)) {
                                 <li class="alert-warning">
                                     <span class="dashicons dashicons-info"></span>
                                     <?php printf(
-                                        esc_html__('%d productos con stock bajo', 'flavor-chat-ia'),
+                                        esc_html__('%d productos con stock bajo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                         $productos_stock_bajo
                                     ); ?>
                                 </li>

@@ -203,31 +203,31 @@ if ($bug_id_detalle) {
             <div class="stat-number" style="color: #dc2626;">
                 <?php echo esc_html($estadisticas['por_estado']['nuevo'] ?? 0); ?>
             </div>
-            <div class="stat-label"><?php esc_html_e('Nuevos', 'flavor-chat-ia'); ?></div>
+            <div class="stat-label"><?php esc_html_e('Nuevos', 'flavor-platform'); ?></div>
         </div>
         <div class="stat-card">
             <div class="stat-number" style="color: #ea580c;">
                 <?php echo esc_html($estadisticas['por_estado']['abierto'] ?? 0); ?>
             </div>
-            <div class="stat-label"><?php esc_html_e('Abiertos', 'flavor-chat-ia'); ?></div>
+            <div class="stat-label"><?php esc_html_e('Abiertos', 'flavor-platform'); ?></div>
         </div>
         <div class="stat-card">
             <div class="stat-number" style="color: #16a34a;">
                 <?php echo esc_html($estadisticas['por_estado']['resuelto'] ?? 0); ?>
             </div>
-            <div class="stat-label"><?php esc_html_e('Resueltos', 'flavor-chat-ia'); ?></div>
+            <div class="stat-label"><?php esc_html_e('Resueltos', 'flavor-platform'); ?></div>
         </div>
         <div class="stat-card">
             <div class="stat-number" style="color: #dc2626;">
                 <?php echo esc_html($estadisticas['por_severidad']['critical'] ?? 0); ?>
             </div>
-            <div class="stat-label"><?php esc_html_e('Críticos', 'flavor-chat-ia'); ?></div>
+            <div class="stat-label"><?php esc_html_e('Críticos', 'flavor-platform'); ?></div>
         </div>
         <div class="stat-card">
             <div class="stat-number" style="color: #2563eb;">
                 <?php echo esc_html($estadisticas['ultimas_24h']); ?>
             </div>
-            <div class="stat-label"><?php esc_html_e('Últimas 24h', 'flavor-chat-ia'); ?></div>
+            <div class="stat-label"><?php esc_html_e('Últimas 24h', 'flavor-platform'); ?></div>
         </div>
     </div>
 
@@ -237,39 +237,39 @@ if ($bug_id_detalle) {
         <input type="hidden" name="tab" value="lista">
 
         <select name="estado">
-            <option value=""><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
-            <option value="nuevo" <?php selected($filtro_estado, 'nuevo'); ?>><?php esc_html_e('Nuevo', 'flavor-chat-ia'); ?></option>
-            <option value="abierto" <?php selected($filtro_estado, 'abierto'); ?>><?php esc_html_e('Abierto', 'flavor-chat-ia'); ?></option>
-            <option value="resuelto" <?php selected($filtro_estado, 'resuelto'); ?>><?php esc_html_e('Resuelto', 'flavor-chat-ia'); ?></option>
-            <option value="ignorado" <?php selected($filtro_estado, 'ignorado'); ?>><?php esc_html_e('Ignorado', 'flavor-chat-ia'); ?></option>
+            <option value=""><?php esc_html_e('Todos los estados', 'flavor-platform'); ?></option>
+            <option value="nuevo" <?php selected($filtro_estado, 'nuevo'); ?>><?php esc_html_e('Nuevo', 'flavor-platform'); ?></option>
+            <option value="abierto" <?php selected($filtro_estado, 'abierto'); ?>><?php esc_html_e('Abierto', 'flavor-platform'); ?></option>
+            <option value="resuelto" <?php selected($filtro_estado, 'resuelto'); ?>><?php esc_html_e('Resuelto', 'flavor-platform'); ?></option>
+            <option value="ignorado" <?php selected($filtro_estado, 'ignorado'); ?>><?php esc_html_e('Ignorado', 'flavor-platform'); ?></option>
         </select>
 
         <select name="severidad">
-            <option value=""><?php esc_html_e('Todas las severidades', 'flavor-chat-ia'); ?></option>
-            <option value="critical" <?php selected($filtro_severidad, 'critical'); ?>><?php esc_html_e('Crítica', 'flavor-chat-ia'); ?></option>
-            <option value="high" <?php selected($filtro_severidad, 'high'); ?>><?php esc_html_e('Alta', 'flavor-chat-ia'); ?></option>
-            <option value="medium" <?php selected($filtro_severidad, 'medium'); ?>><?php esc_html_e('Media', 'flavor-chat-ia'); ?></option>
-            <option value="low" <?php selected($filtro_severidad, 'low'); ?>><?php esc_html_e('Baja', 'flavor-chat-ia'); ?></option>
-            <option value="info" <?php selected($filtro_severidad, 'info'); ?>><?php esc_html_e('Info', 'flavor-chat-ia'); ?></option>
+            <option value=""><?php esc_html_e('Todas las severidades', 'flavor-platform'); ?></option>
+            <option value="critical" <?php selected($filtro_severidad, 'critical'); ?>><?php esc_html_e('Crítica', 'flavor-platform'); ?></option>
+            <option value="high" <?php selected($filtro_severidad, 'high'); ?>><?php esc_html_e('Alta', 'flavor-platform'); ?></option>
+            <option value="medium" <?php selected($filtro_severidad, 'medium'); ?>><?php esc_html_e('Media', 'flavor-platform'); ?></option>
+            <option value="low" <?php selected($filtro_severidad, 'low'); ?>><?php esc_html_e('Baja', 'flavor-platform'); ?></option>
+            <option value="info" <?php selected($filtro_severidad, 'info'); ?>><?php esc_html_e('Info', 'flavor-platform'); ?></option>
         </select>
 
         <select name="tipo">
-            <option value=""><?php esc_html_e('Todos los tipos', 'flavor-chat-ia'); ?></option>
-            <option value="error_php" <?php selected($filtro_tipo, 'error_php'); ?>><?php esc_html_e('Error PHP', 'flavor-chat-ia'); ?></option>
-            <option value="exception" <?php selected($filtro_tipo, 'exception'); ?>><?php esc_html_e('Excepción', 'flavor-chat-ia'); ?></option>
-            <option value="warning" <?php selected($filtro_tipo, 'warning'); ?>><?php esc_html_e('Warning', 'flavor-chat-ia'); ?></option>
-            <option value="notice" <?php selected($filtro_tipo, 'notice'); ?>><?php esc_html_e('Notice', 'flavor-chat-ia'); ?></option>
-            <option value="manual" <?php selected($filtro_tipo, 'manual'); ?>><?php esc_html_e('Manual', 'flavor-chat-ia'); ?></option>
-            <option value="crash" <?php selected($filtro_tipo, 'crash'); ?>><?php esc_html_e('Crash', 'flavor-chat-ia'); ?></option>
-            <option value="deprecation" <?php selected($filtro_tipo, 'deprecation'); ?>><?php esc_html_e('Deprecation', 'flavor-chat-ia'); ?></option>
+            <option value=""><?php esc_html_e('Todos los tipos', 'flavor-platform'); ?></option>
+            <option value="error_php" <?php selected($filtro_tipo, 'error_php'); ?>><?php esc_html_e('Error PHP', 'flavor-platform'); ?></option>
+            <option value="exception" <?php selected($filtro_tipo, 'exception'); ?>><?php esc_html_e('Excepción', 'flavor-platform'); ?></option>
+            <option value="warning" <?php selected($filtro_tipo, 'warning'); ?>><?php esc_html_e('Warning', 'flavor-platform'); ?></option>
+            <option value="notice" <?php selected($filtro_tipo, 'notice'); ?>><?php esc_html_e('Notice', 'flavor-platform'); ?></option>
+            <option value="manual" <?php selected($filtro_tipo, 'manual'); ?>><?php esc_html_e('Manual', 'flavor-platform'); ?></option>
+            <option value="crash" <?php selected($filtro_tipo, 'crash'); ?>><?php esc_html_e('Crash', 'flavor-platform'); ?></option>
+            <option value="deprecation" <?php selected($filtro_tipo, 'deprecation'); ?>><?php esc_html_e('Deprecation', 'flavor-platform'); ?></option>
         </select>
 
-        <input type="text" name="busqueda" value="<?php echo esc_attr($filtro_busqueda); ?>" placeholder="<?php esc_attr_e('Buscar...', 'flavor-chat-ia'); ?>" style="min-width: 200px;">
+        <input type="text" name="busqueda" value="<?php echo esc_attr($filtro_busqueda); ?>" placeholder="<?php esc_attr_e('Buscar...', 'flavor-platform'); ?>" style="min-width: 200px;">
 
-        <button type="submit" class="button"><?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?></button>
+        <button type="submit" class="button"><?php esc_html_e('Filtrar', 'flavor-platform'); ?></button>
 
         <?php if ($filtro_estado || $filtro_severidad || $filtro_tipo || $filtro_busqueda) : ?>
-            <a href="?page=flavor-bug-tracker" class="button"><?php esc_html_e('Limpiar', 'flavor-chat-ia'); ?></a>
+            <a href="?page=flavor-bug-tracker" class="button"><?php esc_html_e('Limpiar', 'flavor-platform'); ?></a>
         <?php endif; ?>
     </form>
 
@@ -278,20 +278,20 @@ if ($bug_id_detalle) {
         <div style="background: white; padding: 40px; text-align: center; border-radius: 8px; border: 1px solid #ddd;">
             <span style="font-size: 48px;">✓</span>
             <p style="color: #16a34a; font-size: 18px; margin-top: 10px;">
-                <?php esc_html_e('No se encontraron bugs', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('No se encontraron bugs', 'flavor-platform'); ?>
             </p>
         </div>
     <?php else : ?>
         <table class="bugs-table">
             <thead>
                 <tr>
-                    <th style="width: 120px;"><?php esc_html_e('Código', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Bug', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 90px;"><?php esc_html_e('Severidad', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 80px;"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 80px;"><?php esc_html_e('Ocurrencias', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 140px;"><?php esc_html_e('Última vez', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 150px;"><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 120px;"><?php esc_html_e('Código', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Bug', 'flavor-platform'); ?></th>
+                    <th style="width: 90px;"><?php esc_html_e('Severidad', 'flavor-platform'); ?></th>
+                    <th style="width: 80px;"><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
+                    <th style="width: 80px;"><?php esc_html_e('Ocurrencias', 'flavor-platform'); ?></th>
+                    <th style="width: 140px;"><?php esc_html_e('Última vez', 'flavor-platform'); ?></th>
+                    <th style="width: 150px;"><?php esc_html_e('Acciones', 'flavor-platform'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -340,21 +340,21 @@ if ($bug_id_detalle) {
                         <td>
                             <div class="bug-actions">
                                 <?php if ($bug->estado !== 'resuelto') : ?>
-                                    <button type="button" class="button button-small btn-resolver" data-id="<?php echo esc_attr($bug->id); ?>" title="<?php esc_attr_e('Marcar como resuelto', 'flavor-chat-ia'); ?>">
+                                    <button type="button" class="button button-small btn-resolver" data-id="<?php echo esc_attr($bug->id); ?>" title="<?php esc_attr_e('Marcar como resuelto', 'flavor-platform'); ?>">
                                         ✓
                                     </button>
                                 <?php endif; ?>
                                 <?php if ($bug->estado !== 'ignorado') : ?>
-                                    <button type="button" class="button button-small btn-ignorar" data-id="<?php echo esc_attr($bug->id); ?>" title="<?php esc_attr_e('Ignorar', 'flavor-chat-ia'); ?>">
+                                    <button type="button" class="button button-small btn-ignorar" data-id="<?php echo esc_attr($bug->id); ?>" title="<?php esc_attr_e('Ignorar', 'flavor-platform'); ?>">
                                         ✗
                                     </button>
                                 <?php endif; ?>
                                 <?php if ($bug->estado === 'resuelto' || $bug->estado === 'ignorado') : ?>
-                                    <button type="button" class="button button-small btn-reabrir" data-id="<?php echo esc_attr($bug->id); ?>" title="<?php esc_attr_e('Reabrir', 'flavor-chat-ia'); ?>">
+                                    <button type="button" class="button button-small btn-reabrir" data-id="<?php echo esc_attr($bug->id); ?>" title="<?php esc_attr_e('Reabrir', 'flavor-platform'); ?>">
                                         ↺
                                     </button>
                                 <?php endif; ?>
-                                <a href="?page=flavor-bug-tracker&bug_id=<?php echo esc_attr($bug->id); ?>" class="button button-small" title="<?php esc_attr_e('Ver detalles', 'flavor-chat-ia'); ?>">
+                                <a href="?page=flavor-bug-tracker&bug_id=<?php echo esc_attr($bug->id); ?>" class="button button-small" title="<?php esc_attr_e('Ver detalles', 'flavor-platform'); ?>">
                                     👁
                                 </a>
                             </div>
@@ -378,7 +378,7 @@ if ($bug_id_detalle) {
                 ], admin_url('admin.php'));
 
                 if ($pagina_actual > 1) : ?>
-                    <a href="<?php echo esc_url(add_query_arg('paged', $pagina_actual - 1, $url_base)); ?>">« <?php esc_html_e('Anterior', 'flavor-chat-ia'); ?></a>
+                    <a href="<?php echo esc_url(add_query_arg('paged', $pagina_actual - 1, $url_base)); ?>">« <?php esc_html_e('Anterior', 'flavor-platform'); ?></a>
                 <?php endif;
 
                 for ($numero_pagina = 1; $numero_pagina <= $paginas; $numero_pagina++) :
@@ -390,7 +390,7 @@ if ($bug_id_detalle) {
                 endfor;
 
                 if ($pagina_actual < $paginas) : ?>
-                    <a href="<?php echo esc_url(add_query_arg('paged', $pagina_actual + 1, $url_base)); ?>"><?php esc_html_e('Siguiente', 'flavor-chat-ia'); ?> »</a>
+                    <a href="<?php echo esc_url(add_query_arg('paged', $pagina_actual + 1, $url_base)); ?>"><?php esc_html_e('Siguiente', 'flavor-platform'); ?> »</a>
                 <?php endif; ?>
             </div>
         <?php endif; ?>
@@ -402,7 +402,7 @@ jQuery(document).ready(function($) {
     // Resolver bug
     $('.btn-resolver').on('click', function() {
         var bugId = $(this).data('id');
-        if (confirm('<?php echo esc_js(__('¿Marcar este bug como resuelto?', 'flavor-chat-ia')); ?>')) {
+        if (confirm('<?php echo esc_js(__('¿Marcar este bug como resuelto?', 'flavor-platform')); ?>')) {
             $.post(ajaxurl, {
                 action: 'flavor_bug_tracker_action',
                 bug_id: bugId,
@@ -421,7 +421,7 @@ jQuery(document).ready(function($) {
     // Ignorar bug
     $('.btn-ignorar').on('click', function() {
         var bugId = $(this).data('id');
-        if (confirm('<?php echo esc_js(__('¿Ignorar este bug?', 'flavor-chat-ia')); ?>')) {
+        if (confirm('<?php echo esc_js(__('¿Ignorar este bug?', 'flavor-platform')); ?>')) {
             $.post(ajaxurl, {
                 action: 'flavor_bug_tracker_action',
                 bug_id: bugId,
@@ -440,7 +440,7 @@ jQuery(document).ready(function($) {
     // Reabrir bug
     $('.btn-reabrir').on('click', function() {
         var bugId = $(this).data('id');
-        if (confirm('<?php echo esc_js(__('¿Reabrir este bug?', 'flavor-chat-ia')); ?>')) {
+        if (confirm('<?php echo esc_js(__('¿Reabrir este bug?', 'flavor-platform')); ?>')) {
             $.post(ajaxurl, {
                 action: 'flavor_bug_tracker_action',
                 bug_id: bugId,

@@ -81,11 +81,11 @@ $total_paginas = ceil($total_items / $por_pagina);
 // Estados disponibles
 $estados = ['recibida', 'en_tramite', 'resuelta', 'denegada', 'archivada'];
 $estado_labels = [
-    'recibida' => __('Recibida', 'flavor-chat-ia'),
-    'en_tramite' => __('En Trámite', 'flavor-chat-ia'),
-    'resuelta' => __('Resuelta', 'flavor-chat-ia'),
-    'denegada' => __('Denegada', 'flavor-chat-ia'),
-    'archivada' => __('Archivada', 'flavor-chat-ia'),
+    'recibida' => __('Recibida', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'en_tramite' => __('En Trámite', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'resuelta' => __('Resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'denegada' => __('Denegada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'archivada' => __('Archivada', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 $estado_badges = [
     'recibida' => 'dm-badge--warning',
@@ -99,7 +99,7 @@ $estado_badges = [
 <div class="wrap flavor-transparencia-solicitudes">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-clipboard"></span>
-        <?php esc_html_e('Solicitudes de Información', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Solicitudes de Información', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
     <hr class="wp-header-end">
 
@@ -107,8 +107,8 @@ $estado_badges = [
         <div class="dm-alert dm-alert--warning">
             <span class="dashicons dashicons-warning"></span>
             <div>
-                <strong><?php esc_html_e('Tablas no encontradas', 'flavor-chat-ia'); ?></strong>
-                <p><?php esc_html_e('Las tablas del módulo Transparencia no están creadas.', 'flavor-chat-ia'); ?></p>
+                <strong><?php esc_html_e('Tablas no encontradas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                <p><?php esc_html_e('Las tablas del módulo Transparencia no están creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
     <?php else: ?>
@@ -135,14 +135,14 @@ $estado_badges = [
 
             <div class="dm-filters__row">
                 <div class="dm-filters__field">
-                    <label><?php esc_html_e('Buscar', 'flavor-chat-ia'); ?></label>
-                    <input type="text" name="s" value="<?php echo esc_attr($filtro_busqueda); ?>" placeholder="<?php esc_attr_e('Nº registro, título...', 'flavor-chat-ia'); ?>">
+                    <label><?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
+                    <input type="text" name="s" value="<?php echo esc_attr($filtro_busqueda); ?>" placeholder="<?php esc_attr_e('Nº registro, título...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
 
                 <div class="dm-filters__field">
-                    <label><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></label>
+                    <label><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select name="estado">
-                        <option value=""><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($estados as $estado): ?>
                             <option value="<?php echo esc_attr($estado); ?>" <?php selected($filtro_estado, $estado); ?>>
                                 <?php echo esc_html($estado_labels[$estado]); ?>
@@ -154,10 +154,10 @@ $estado_badges = [
                 <div class="dm-filters__actions">
                     <button type="submit" class="button button-primary">
                         <span class="dashicons dashicons-search"></span>
-                        <?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=transparencia-solicitudes')); ?>" class="button">
-                        <?php esc_html_e('Limpiar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             </div>
@@ -169,13 +169,13 @@ $estado_badges = [
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th style="width: 10%;"><?php esc_html_e('Nº Registro', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 30%;"><?php esc_html_e('Solicitud', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 15%;"><?php esc_html_e('Solicitante', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 10%;"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 12%;"><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 12%;"><?php esc_html_e('Plazo', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 11%;"><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 10%;"><?php esc_html_e('Nº Registro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 30%;"><?php esc_html_e('Solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 15%;"><?php esc_html_e('Solicitante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 10%;"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 12%;"><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 12%;"><?php esc_html_e('Plazo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                    <th style="width: 11%;"><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -184,7 +184,7 @@ $estado_badges = [
                         <td colspan="7">
                             <div class="dm-empty" style="padding: 40px;">
                                 <span class="dashicons dashicons-clipboard"></span>
-                                <p><?php esc_html_e('No hay solicitudes registradas.', 'flavor-chat-ia'); ?></p>
+                                <p><?php esc_html_e('No hay solicitudes registradas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </div>
                         </td>
                     </tr>
@@ -203,7 +203,7 @@ $estado_badges = [
                             </td>
                             <td>
                                 <a href="<?php echo esc_url(admin_url('admin.php?page=transparencia-solicitud&id=' . $solicitud->id)); ?>">
-                                    <strong><?php echo esc_html(wp_trim_words($solicitud->titulo ?? __('Sin título', 'flavor-chat-ia'), 10)); ?></strong>
+                                    <strong><?php echo esc_html(wp_trim_words($solicitud->titulo ?? __('Sin título', FLAVOR_PLATFORM_TEXT_DOMAIN), 10)); ?></strong>
                                 </a>
                                 <?php if ($solicitud->descripcion): ?>
                                     <p class="description" style="margin: 4px 0 0;"><?php echo esc_html(wp_trim_words($solicitud->descripcion, 12)); ?></p>
@@ -214,7 +214,7 @@ $estado_badges = [
                                     <?php echo esc_html($solicitud->solicitante_nombre); ?>
                                     <br><small class="description"><?php echo esc_html($solicitud->solicitante_email); ?></small>
                                 <?php else: ?>
-                                    <em><?php esc_html_e('Anónimo', 'flavor-chat-ia'); ?></em>
+                                    <em><?php esc_html_e('Anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></em>
                                 <?php endif; ?>
                             </td>
                             <td>
@@ -228,28 +228,28 @@ $estado_badges = [
                             </td>
                             <td>
                                 <?php if (in_array($solicitud->estado, ['resuelta', 'denegada', 'archivada'])): ?>
-                                    <span class="dm-badge dm-badge--success"><?php esc_html_e('Cerrada', 'flavor-chat-ia'); ?></span>
+                                    <span class="dm-badge dm-badge--success"><?php esc_html_e('Cerrada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php elseif ($plazo_vencido): ?>
                                     <span class="dm-badge dm-badge--error">
-                                        <?php printf(esc_html__('Vencido hace %d días', 'flavor-chat-ia'), abs($dias_restantes)); ?>
+                                        <?php printf(esc_html__('Vencido hace %d días', FLAVOR_PLATFORM_TEXT_DOMAIN), abs($dias_restantes)); ?>
                                     </span>
                                 <?php elseif ($dias_restantes <= 5): ?>
                                     <span class="dm-badge dm-badge--warning">
-                                        <?php printf(esc_html__('%d días', 'flavor-chat-ia'), $dias_restantes); ?>
+                                        <?php printf(esc_html__('%d días', FLAVOR_PLATFORM_TEXT_DOMAIN), $dias_restantes); ?>
                                     </span>
                                 <?php else: ?>
                                     <span class="description">
-                                        <?php printf(esc_html__('%d días', 'flavor-chat-ia'), $dias_restantes); ?>
+                                        <?php printf(esc_html__('%d días', FLAVOR_PLATFORM_TEXT_DOMAIN), $dias_restantes); ?>
                                     </span>
                                 <?php endif; ?>
                             </td>
                             <td>
                                 <div class="row-actions visible">
-                                    <a href="<?php echo esc_url(admin_url('admin.php?page=transparencia-solicitud&id=' . $solicitud->id)); ?>" title="<?php esc_attr_e('Ver detalle', 'flavor-chat-ia'); ?>">
+                                    <a href="<?php echo esc_url(admin_url('admin.php?page=transparencia-solicitud&id=' . $solicitud->id)); ?>" title="<?php esc_attr_e('Ver detalle', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                         <span class="dashicons dashicons-visibility"></span>
                                     </a>
                                     <?php if (in_array($solicitud->estado, ['recibida', 'en_tramite'])): ?>
-                                        <a href="<?php echo esc_url(admin_url('admin.php?page=transparencia-solicitud&id=' . $solicitud->id . '&action=responder')); ?>" title="<?php esc_attr_e('Responder', 'flavor-chat-ia'); ?>">
+                                        <a href="<?php echo esc_url(admin_url('admin.php?page=transparencia-solicitud&id=' . $solicitud->id . '&action=responder')); ?>" title="<?php esc_attr_e('Responder', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <span class="dashicons dashicons-edit"></span>
                                         </a>
                                     <?php endif; ?>
@@ -266,7 +266,7 @@ $estado_badges = [
                 <div class="tablenav-pages">
                     <span class="displaying-num">
                         <?php printf(
-                            esc_html(_n('%s solicitud', '%s solicitudes', $total_items, 'flavor-chat-ia')),
+                            esc_html(_n('%s solicitud', '%s solicitudes', $total_items, FLAVOR_PLATFORM_TEXT_DOMAIN)),
                             number_format_i18n($total_items)
                         ); ?>
                     </span>

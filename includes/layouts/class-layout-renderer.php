@@ -184,7 +184,7 @@ class Flavor_Layout_Renderer {
                     </div>
 
                     <!-- Navigation -->
-                    <nav class="flavor-menu__nav" role="navigation" aria-label="<?php esc_attr_e('Navegación principal', 'flavor-chat-ia'); ?>">
+                    <nav class="flavor-menu__nav" role="navigation" aria-label="<?php esc_attr_e('Navegación principal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <?php $this->render_navigation(); ?>
                     </nav>
 
@@ -194,7 +194,7 @@ class Flavor_Layout_Renderer {
                     </div>
 
                     <!-- Mobile Toggle -->
-                    <button class="flavor-menu__toggle" aria-label="<?php esc_attr_e('Abrir menú', 'flavor-chat-ia'); ?>" aria-expanded="false">
+                    <button class="flavor-menu__toggle" aria-label="<?php esc_attr_e('Abrir menú', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" aria-expanded="false">
                         <span class="flavor-menu__toggle-bar"></span>
                         <span class="flavor-menu__toggle-bar"></span>
                         <span class="flavor-menu__toggle-bar"></span>
@@ -266,7 +266,7 @@ class Flavor_Layout_Renderer {
                 </nav>
 
                 <!-- Mobile Toggle -->
-                <button class="flavor-menu__toggle" aria-label="<?php esc_attr_e('Abrir menú', 'flavor-chat-ia'); ?>">
+                <button class="flavor-menu__toggle" aria-label="<?php esc_attr_e('Abrir menú', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="flavor-menu__toggle-bar"></span>
                     <span class="flavor-menu__toggle-bar"></span>
                     <span class="flavor-menu__toggle-bar"></span>
@@ -299,7 +299,7 @@ class Flavor_Layout_Renderer {
             <div class="flavor-container">
                 <div class="flavor-menu__inner">
                     <!-- Toggle Sidebar -->
-                    <button class="flavor-menu__sidebar-toggle" aria-label="<?php esc_attr_e('Abrir menú', 'flavor-chat-ia'); ?>" data-position="<?php echo esc_attr($settings['sidebar_position']); ?>">
+                    <button class="flavor-menu__sidebar-toggle" aria-label="<?php esc_attr_e('Abrir menú', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" data-position="<?php echo esc_attr($settings['sidebar_position']); ?>">
                         <span class="dashicons dashicons-menu"></span>
                     </button>
 
@@ -320,7 +320,7 @@ class Flavor_Layout_Renderer {
         <!-- Sidebar Drawer -->
         <aside class="flavor-sidebar" data-position="<?php echo esc_attr($settings['sidebar_position']); ?>" style="--sidebar-width: <?php echo esc_attr($settings['sidebar_width']); ?>;" aria-hidden="true">
             <div class="flavor-sidebar__header">
-                <button class="flavor-sidebar__close" aria-label="<?php esc_attr_e('Cerrar menú', 'flavor-chat-ia'); ?>">
+                <button class="flavor-sidebar__close" aria-label="<?php esc_attr_e('Cerrar menú', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-no-alt"></span>
                 </button>
             </div>
@@ -377,7 +377,7 @@ class Flavor_Layout_Renderer {
         </header>
 
         <!-- Bottom Navigation -->
-        <nav class="flavor-bottom-nav <?php echo $settings['hide_on_scroll'] ? 'flavor-bottom-nav--hide-on-scroll' : ''; ?>" role="navigation" aria-label="<?php esc_attr_e('Navegación principal', 'flavor-chat-ia'); ?>">
+        <nav class="flavor-bottom-nav <?php echo $settings['hide_on_scroll'] ? 'flavor-bottom-nav--hide-on-scroll' : ''; ?>" role="navigation" aria-label="<?php esc_attr_e('Navegación principal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <?php foreach ($navigation_items as $item): ?>
             <a href="<?php echo esc_url($item['url']); ?>" class="flavor-bottom-nav__item <?php echo $item['active'] ? 'is-active' : ''; ?>">
                 <span class="flavor-bottom-nav__icon">
@@ -436,7 +436,7 @@ class Flavor_Layout_Renderer {
                     </div>
 
                     <!-- Mobile Toggle -->
-                    <button class="flavor-menu__toggle" aria-label="<?php esc_attr_e('Abrir menú', 'flavor-chat-ia'); ?>">
+                    <button class="flavor-menu__toggle" aria-label="<?php esc_attr_e('Abrir menú', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="flavor-menu__toggle-bar"></span>
                         <span class="flavor-menu__toggle-bar"></span>
                         <span class="flavor-menu__toggle-bar"></span>
@@ -486,7 +486,7 @@ class Flavor_Layout_Renderer {
                     </div>
 
                     <!-- Hamburger Toggle -->
-                    <button class="flavor-menu__hamburger flavor-menu__hamburger--<?php echo esc_attr($settings['hamburger_style']); ?>" aria-label="<?php esc_attr_e('Abrir menú', 'flavor-chat-ia'); ?>" aria-expanded="false">
+                    <button class="flavor-menu__hamburger flavor-menu__hamburger--<?php echo esc_attr($settings['hamburger_style']); ?>" aria-label="<?php esc_attr_e('Abrir menú', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" aria-expanded="false">
                         <span></span>
                         <span></span>
                         <span></span>
@@ -618,13 +618,13 @@ class Flavor_Layout_Renderer {
                 <div class="flavor-container">
                     <div class="flavor-newsletter">
                         <div class="flavor-newsletter__content">
-                            <h3 class="flavor-newsletter__title"><?php esc_html_e('Suscríbete a nuestra newsletter', 'flavor-chat-ia'); ?></h3>
-                            <p class="flavor-newsletter__description"><?php esc_html_e('Recibe las últimas novedades y ofertas exclusivas.', 'flavor-chat-ia'); ?></p>
+                            <h3 class="flavor-newsletter__title"><?php esc_html_e('Suscríbete a nuestra newsletter', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                            <p class="flavor-newsletter__description"><?php esc_html_e('Recibe las últimas novedades y ofertas exclusivas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                         <form class="flavor-newsletter__form flavor-newsletter-form" action="" method="post" data-source="footer">
-                            <input type="email" name="email" class="flavor-newsletter__input" placeholder="<?php esc_attr_e('Tu email', 'flavor-chat-ia'); ?>" required>
+                            <input type="email" name="email" class="flavor-newsletter__input" placeholder="<?php esc_attr_e('Tu email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" required>
                             <button type="submit" class="flavor-newsletter__submit flavor-button flavor-button--primary">
-                                <span class="flavor-button__text"><?php esc_html_e('Suscribirse', 'flavor-chat-ia'); ?></span>
+                                <span class="flavor-button__text"><?php esc_html_e('Suscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="flavor-button__loading" style="display:none;">
                                     <span class="spinner"></span>
                                 </span>
@@ -683,14 +683,14 @@ class Flavor_Layout_Renderer {
                     <!-- Address Card -->
                     <div class="flavor-contact-card">
                         <span class="flavor-contact-card__icon dashicons dashicons-location"></span>
-                        <h4 class="flavor-contact-card__title"><?php esc_html_e('Dirección', 'flavor-chat-ia'); ?></h4>
+                        <h4 class="flavor-contact-card__title"><?php esc_html_e('Dirección', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                         <p class="flavor-contact-card__content"><?php echo esc_html($this->get_contact_address()); ?></p>
                     </div>
 
                     <!-- Phone Card -->
                     <div class="flavor-contact-card">
                         <span class="flavor-contact-card__icon dashicons dashicons-phone"></span>
-                        <h4 class="flavor-contact-card__title"><?php esc_html_e('Teléfono', 'flavor-chat-ia'); ?></h4>
+                        <h4 class="flavor-contact-card__title"><?php esc_html_e('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                         <p class="flavor-contact-card__content">
                             <a href="tel:<?php echo esc_attr($this->get_contact_phone()); ?>"><?php echo esc_html($this->get_contact_phone()); ?></a>
                         </p>
@@ -699,7 +699,7 @@ class Flavor_Layout_Renderer {
                     <!-- Email Card -->
                     <div class="flavor-contact-card">
                         <span class="flavor-contact-card__icon dashicons dashicons-email-alt"></span>
-                        <h4 class="flavor-contact-card__title"><?php esc_html_e('Email', 'flavor-chat-ia'); ?></h4>
+                        <h4 class="flavor-contact-card__title"><?php esc_html_e('Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                         <p class="flavor-contact-card__content">
                             <a href="mailto:<?php echo esc_attr($this->get_contact_email()); ?>"><?php echo esc_html($this->get_contact_email()); ?></a>
                         </p>
@@ -708,7 +708,7 @@ class Flavor_Layout_Renderer {
                     <!-- Hours Card -->
                     <div class="flavor-contact-card">
                         <span class="flavor-contact-card__icon dashicons dashicons-clock"></span>
-                        <h4 class="flavor-contact-card__title"><?php esc_html_e('Horario', 'flavor-chat-ia'); ?></h4>
+                        <h4 class="flavor-contact-card__title"><?php esc_html_e('Horario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                         <p class="flavor-contact-card__content"><?php echo esc_html($this->get_business_hours()); ?></p>
                     </div>
                 </div>
@@ -748,14 +748,14 @@ class Flavor_Layout_Renderer {
                 <div class="flavor-footer__app-promo">
                     <div class="flavor-app-promo">
                         <div class="flavor-app-promo__content">
-                            <h3 class="flavor-app-promo__title"><?php esc_html_e('Descarga nuestra App', 'flavor-chat-ia'); ?></h3>
-                            <p class="flavor-app-promo__description"><?php esc_html_e('Lleva todo en tu bolsillo. Disponible para iOS y Android.', 'flavor-chat-ia'); ?></p>
+                            <h3 class="flavor-app-promo__title"><?php esc_html_e('Descarga nuestra App', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                            <p class="flavor-app-promo__description"><?php esc_html_e('Lleva todo en tu bolsillo. Disponible para iOS y Android.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                             <?php if ($settings['show_features']): ?>
                             <ul class="flavor-app-promo__features">
-                                <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Notificaciones en tiempo real', 'flavor-chat-ia'); ?></li>
-                                <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Acceso sin conexión', 'flavor-chat-ia'); ?></li>
-                                <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Interfaz optimizada', 'flavor-chat-ia'); ?></li>
+                                <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Notificaciones en tiempo real', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                                <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Acceso sin conexión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                                <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Interfaz optimizada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
                             </ul>
                             <?php endif; ?>
 
@@ -764,7 +764,7 @@ class Flavor_Layout_Renderer {
                                 <a href="<?php echo esc_url($app_store_url); ?>" class="flavor-app-button flavor-app-button--ios" target="_blank" rel="noopener">
                                     <span class="flavor-app-button__icon"></span>
                                     <span class="flavor-app-button__text">
-                                        <small><?php esc_html_e('Descargar en', 'flavor-chat-ia'); ?></small>
+                                        <small><?php esc_html_e('Descargar en', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                                         App Store
                                     </span>
                                 </a>
@@ -774,7 +774,7 @@ class Flavor_Layout_Renderer {
                                 <a href="<?php echo esc_url($play_store_url); ?>" class="flavor-app-button flavor-app-button--android" target="_blank" rel="noopener">
                                     <span class="flavor-app-button__icon"></span>
                                     <span class="flavor-app-button__text">
-                                        <small><?php esc_html_e('Disponible en', 'flavor-chat-ia'); ?></small>
+                                        <small><?php esc_html_e('Disponible en', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                                         Google Play
                                     </span>
                                 </a>
@@ -785,7 +785,7 @@ class Flavor_Layout_Renderer {
                         <?php if ($settings['show_qr']): ?>
                         <div class="flavor-app-promo__qr">
                             <div class="flavor-qr-code" id="flavor-app-qr"></div>
-                            <p class="flavor-qr-code__label"><?php esc_html_e('Escanea para descargar', 'flavor-chat-ia'); ?></p>
+                            <p class="flavor-qr-code__label"><?php esc_html_e('Escanea para descargar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </div>
                         <?php endif; ?>
                     </div>
@@ -819,7 +819,7 @@ class Flavor_Layout_Renderer {
         }
         ?>
         <div class="flavor-footer__sponsors">
-            <span class="flavor-footer__sponsors-label"><?php esc_html_e('Patrocinan', 'flavor-chat-ia'); ?></span>
+            <span class="flavor-footer__sponsors-label"><?php esc_html_e('Patrocinan', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             <div class="flavor-footer__sponsors-logos">
                 <?php foreach ($sponsors as $sponsor): ?>
                     <?php
@@ -905,7 +905,7 @@ class Flavor_Layout_Renderer {
     public function fallback_navigation() {
         ?>
         <ul class="flavor-nav">
-            <li><a href="<?php echo esc_url(home_url('/')); ?>"><?php esc_html_e('Inicio', 'flavor-chat-ia'); ?></a></li>
+            <li><a href="<?php echo esc_url(home_url('/')); ?>"><?php esc_html_e('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a></li>
             <?php wp_list_pages(['title_li' => '', 'depth' => 1]); ?>
         </ul>
         <?php
@@ -916,7 +916,7 @@ class Flavor_Layout_Renderer {
      */
     private function render_search_button() {
         ?>
-        <button class="flavor-search-toggle" aria-label="<?php esc_attr_e('Buscar', 'flavor-chat-ia'); ?>">
+        <button class="flavor-search-toggle" aria-label="<?php esc_attr_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <span class="dashicons dashicons-search"></span>
         </button>
         <?php
@@ -995,7 +995,7 @@ class Flavor_Layout_Renderer {
             ?>
             <a href="<?php echo esc_url(wp_login_url($this->get_current_request_url())); ?>" class="flavor-login-link">
                 <span class="dashicons dashicons-admin-users"></span>
-                <span class="flavor-login-link__text"><?php esc_html_e('Acceder', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-login-link__text"><?php esc_html_e('Acceder', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </a>
             <?php
         }
@@ -1014,7 +1014,7 @@ class Flavor_Layout_Renderer {
         // Mi Portal (siempre visible)
         $links[] = [
             'url'   => Flavor_Chat_Helpers::get_action_url('', ''),
-            'label' => __('Mi Portal', 'flavor-chat-ia'),
+            'label' => __('Mi Portal', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'  => 'dashicons-dashboard',
         ];
 
@@ -1024,7 +1024,7 @@ class Flavor_Layout_Renderer {
         if ($tiene_social) {
             $links[] = [
                 'url'   => Flavor_Chat_Helpers::get_action_url('mi_red', ''),
-                'label' => __('Mi Red Social', 'flavor-chat-ia'),
+                'label' => __('Mi Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'  => 'dashicons-share',
             ];
         }
@@ -1034,7 +1034,7 @@ class Flavor_Layout_Renderer {
             $mensajes_no_leidos = $this->contar_mensajes_no_leidos($user->ID);
             $links[] = [
                 'url'   => Flavor_Chat_Helpers::get_action_url('mensajes', ''),
-                'label' => __('Mis Mensajes', 'flavor-chat-ia'),
+                'label' => __('Mis Mensajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'  => 'dashicons-email',
                 'badge' => $mensajes_no_leidos > 0 ? $mensajes_no_leidos : null,
             ];
@@ -1044,7 +1044,7 @@ class Flavor_Layout_Renderer {
         $notificaciones_no_leidas = $this->contar_notificaciones_no_leidas($user->ID);
         $links[] = [
             'url'   => Flavor_Chat_Helpers::get_action_url('notificaciones', ''),
-            'label' => __('Notificaciones', 'flavor-chat-ia'),
+            'label' => __('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'  => 'dashicons-bell',
             'badge' => $notificaciones_no_leidas > 0 ? $notificaciones_no_leidas : null,
         ];
@@ -1069,7 +1069,7 @@ class Flavor_Layout_Renderer {
         if (class_exists('WooCommerce') && in_array('woocommerce', $active_modules, true)) {
             $links[] = [
                 'url'   => wc_get_account_endpoint_url('orders'),
-                'label' => __('Mis Pedidos', 'flavor-chat-ia'),
+                'label' => __('Mis Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'  => 'dashicons-cart',
             ];
         }
@@ -1084,14 +1084,14 @@ class Flavor_Layout_Renderer {
         // Mi Perfil
         $links[] = [
             'url'   => Flavor_Chat_Helpers::get_action_url('perfil', ''),
-            'label' => __('Mi Perfil', 'flavor-chat-ia'),
+            'label' => __('Mi Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'  => 'dashicons-admin-users',
         ];
 
         // Configuración
         $links[] = [
             'url'   => Flavor_Chat_Helpers::get_action_url('configuracion', ''),
-            'label' => __('Configuración', 'flavor-chat-ia'),
+            'label' => __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'  => 'dashicons-admin-generic',
         ];
 
@@ -1099,7 +1099,7 @@ class Flavor_Layout_Renderer {
         if (current_user_can('manage_options')) {
             $links[] = [
                 'url'   => admin_url(),
-                'label' => __('Administración', 'flavor-chat-ia'),
+                'label' => __('Administración', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'  => 'dashicons-wordpress',
             ];
         }
@@ -1107,7 +1107,7 @@ class Flavor_Layout_Renderer {
         // Cerrar sesión
         $links[] = [
             'url'   => wp_logout_url(home_url()),
-            'label' => __('Cerrar sesión', 'flavor-chat-ia'),
+            'label' => __('Cerrar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'  => 'dashicons-exit',
         ];
 
@@ -1126,42 +1126,42 @@ class Flavor_Layout_Renderer {
         $module_config = [
             'grupos_consumo' => [
                 'url'   => '/mi-portal/grupos-consumo/',
-                'label' => __('Grupos de Consumo', 'flavor-chat-ia'),
+                'label' => __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'  => 'dashicons-groups',
             ],
             'banco_tiempo' => [
                 'url'   => '/mi-portal/banco-tiempo/',
-                'label' => __('Banco de Tiempo', 'flavor-chat-ia'),
+                'label' => __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'  => 'dashicons-clock',
             ],
             'marketplace' => [
                 'url'   => '/mi-portal/marketplace/',
-                'label' => __('Marketplace', 'flavor-chat-ia'),
+                'label' => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'  => 'dashicons-store',
             ],
             'eventos' => [
                 'url'   => '/mi-portal/eventos/',
-                'label' => __('Mis Eventos', 'flavor-chat-ia'),
+                'label' => __('Mis Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'  => 'dashicons-calendar-alt',
             ],
             'reservas' => [
                 'url'   => '/mi-portal/reservas/',
-                'label' => __('Mis Reservas', 'flavor-chat-ia'),
+                'label' => __('Mis Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'  => 'dashicons-calendar',
             ],
             'ayuda_vecinal' => [
                 'url'   => '/mi-portal/ayuda-vecinal/',
-                'label' => __('Ayuda Vecinal', 'flavor-chat-ia'),
+                'label' => __('Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'  => 'dashicons-heart',
             ],
             'cursos' => [
                 'url'   => '/mi-portal/cursos/',
-                'label' => __('Mis Cursos', 'flavor-chat-ia'),
+                'label' => __('Mis Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'  => 'dashicons-welcome-learn-more',
             ],
             'tramites' => [
                 'url'   => '/mi-portal/tramites/',
-                'label' => __('Mis Trámites', 'flavor-chat-ia'),
+                'label' => __('Mis Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'  => 'dashicons-clipboard',
             ],
         ];
@@ -1243,7 +1243,7 @@ class Flavor_Layout_Renderer {
      */
     private function render_cta_button() {
         $settings = get_option('flavor_layout_settings', []);
-        $cta_text = $settings['cta_text'] ?? __('Empezar', 'flavor-chat-ia');
+        $cta_text = $settings['cta_text'] ?? __('Empezar', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $cta_url = $settings['cta_url'] ?? '#';
 
         if (!empty($cta_text) && !empty($cta_url)) {
@@ -1315,7 +1315,7 @@ class Flavor_Layout_Renderer {
 
         $notifications_count = apply_filters('flavor_notifications_count', 0);
         ?>
-        <button class="flavor-notifications-toggle" aria-label="<?php esc_attr_e('Notificaciones', 'flavor-chat-ia'); ?>">
+        <button class="flavor-notifications-toggle" aria-label="<?php esc_attr_e('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <span class="dashicons dashicons-bell"></span>
             <?php if ($notifications_count > 0): ?>
             <span class="flavor-notifications-badge"><?php echo intval($notifications_count); ?></span>
@@ -1342,8 +1342,8 @@ class Flavor_Layout_Renderer {
         } else {
             ?>
             <div class="flavor-user-section flavor-user-section--guest">
-                <a href="<?php echo esc_url(wp_login_url()); ?>" class="flavor-button flavor-button--primary"><?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?></a>
-                <a href="<?php echo esc_url(wp_registration_url()); ?>" class="flavor-button flavor-button--secondary"><?php esc_html_e('Registrarse', 'flavor-chat-ia'); ?></a>
+                <a href="<?php echo esc_url(wp_login_url()); ?>" class="flavor-button flavor-button--primary"><?php esc_html_e('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
+                <a href="<?php echo esc_url(wp_registration_url()); ?>" class="flavor-button flavor-button--secondary"><?php esc_html_e('Registrarse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
             </div>
             <?php
         }
@@ -1372,11 +1372,11 @@ class Flavor_Layout_Renderer {
 
         // Defaults si no hay menú configurado
         $default_items = [
-            ['url' => home_url('/'), 'label' => __('Inicio', 'flavor-chat-ia'), 'icon' => 'admin-home', 'badge' => 0],
-            ['url' => home_url('/explorar'), 'label' => __('Explorar', 'flavor-chat-ia'), 'icon' => 'search', 'badge' => 0],
-            ['url' => home_url('/crear'), 'label' => __('Crear', 'flavor-chat-ia'), 'icon' => 'plus-alt', 'badge' => 0],
-            ['url' => home_url('/mensajes'), 'label' => __('Mensajes', 'flavor-chat-ia'), 'icon' => 'email', 'badge' => 0],
-            ['url' => home_url('/perfil'), 'label' => __('Perfil', 'flavor-chat-ia'), 'icon' => 'admin-users', 'badge' => 0],
+            ['url' => home_url('/'), 'label' => __('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'admin-home', 'badge' => 0],
+            ['url' => home_url('/explorar'), 'label' => __('Explorar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'search', 'badge' => 0],
+            ['url' => home_url('/crear'), 'label' => __('Crear', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'plus-alt', 'badge' => 0],
+            ['url' => home_url('/mensajes'), 'label' => __('Mensajes', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'email', 'badge' => 0],
+            ['url' => home_url('/perfil'), 'label' => __('Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'admin-users', 'badge' => 0],
         ];
 
         // Obtener del menú si existe
@@ -1457,7 +1457,7 @@ class Flavor_Layout_Renderer {
     private function render_copyright() {
         $settings = get_option('flavor_layout_settings', []);
         $copyright_text = $settings['copyright_text'] ?? sprintf(
-            __('&copy; %d %s. Todos los derechos reservados.', 'flavor-chat-ia'),
+            __('&copy; %d %s. Todos los derechos reservados.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             date('Y'),
             get_bloginfo('name')
         );
@@ -1479,13 +1479,13 @@ class Flavor_Layout_Renderer {
         ?>
         <nav class="flavor-legal-links">
             <?php if ($privacy_page): ?>
-            <a href="<?php echo esc_url($privacy_page); ?>"><?php esc_html_e('Política de privacidad', 'flavor-chat-ia'); ?></a>
+            <a href="<?php echo esc_url($privacy_page); ?>"><?php esc_html_e('Política de privacidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
             <?php endif; ?>
             <?php if ($terminos_page): ?>
-            <a href="<?php echo esc_url(get_permalink($terminos_page)); ?>"><?php esc_html_e('Términos de uso', 'flavor-chat-ia'); ?></a>
+            <a href="<?php echo esc_url(get_permalink($terminos_page)); ?>"><?php esc_html_e('Términos de uso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
             <?php endif; ?>
             <?php if ($cookies_page): ?>
-            <a href="<?php echo esc_url(get_permalink($cookies_page)); ?>"><?php esc_html_e('Política de cookies', 'flavor-chat-ia'); ?></a>
+            <a href="<?php echo esc_url(get_permalink($cookies_page)); ?>"><?php esc_html_e('Política de cookies', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
             <?php endif; ?>
         </nav>
         <?php
@@ -1506,7 +1506,7 @@ class Flavor_Layout_Renderer {
             ?>
             <div class="flavor-map-placeholder">
                 <span class="dashicons dashicons-location-alt"></span>
-                <p><?php esc_html_e('Configura el mapa en los ajustes', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('Configura el mapa en los ajustes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <?php
         }
@@ -1530,7 +1530,7 @@ class Flavor_Layout_Renderer {
 
     private function get_business_hours() {
         $settings = get_option('flavor_layout_settings', []);
-        return $settings['business_hours'] ?? __('Lun - Vie: 9:00 - 18:00', 'flavor-chat-ia');
+        return $settings['business_hours'] ?? __('Lun - Vie: 9:00 - 18:00', FLAVOR_PLATFORM_TEXT_DOMAIN);
     }
 
     /**

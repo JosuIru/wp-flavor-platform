@@ -25,20 +25,20 @@ $tipo_filtro = isset($_GET['tipo']) ? sanitize_text_field($_GET['tipo']) : '';
 
 // Tipos disponibles
 $tipos_disponibles = [
-    'comunitario' => __('Comunitario', 'flavor-chat-ia'),
-    'vecinal' => __('Vecinal', 'flavor-chat-ia'),
-    'escolar' => __('Escolar', 'flavor-chat-ia'),
-    'municipal' => __('Municipal', 'flavor-chat-ia'),
-    'privado' => __('Privado', 'flavor-chat-ia'),
+    'comunitario' => __('Comunitario', 'flavor-platform'),
+    'vecinal' => __('Vecinal', 'flavor-platform'),
+    'escolar' => __('Escolar', 'flavor-platform'),
+    'municipal' => __('Municipal', 'flavor-platform'),
+    'privado' => __('Privado', 'flavor-platform'),
 ];
 
 // Fases labels
 $fases_labels = [
-    'recepcion' => __('Recepción', 'flavor-chat-ia'),
-    'activo' => __('Activo', 'flavor-chat-ia'),
-    'maduracion' => __('Maduración', 'flavor-chat-ia'),
-    'listo' => __('Compost listo', 'flavor-chat-ia'),
-    'mantenimiento' => __('Mantenimiento', 'flavor-chat-ia'),
+    'recepcion' => __('Recepción', 'flavor-platform'),
+    'activo' => __('Activo', 'flavor-platform'),
+    'maduracion' => __('Maduración', 'flavor-platform'),
+    'listo' => __('Compost listo', 'flavor-platform'),
+    'mantenimiento' => __('Mantenimiento', 'flavor-platform'),
 ];
 
 // Colores por tipo
@@ -80,16 +80,16 @@ foreach ($puntos as $punto) {
 
 <div class="compostaje-mapa-wrapper">
     <div class="mapa-header">
-        <h2><?php esc_html_e('Puntos de Compostaje', 'flavor-chat-ia'); ?></h2>
-        <p><?php esc_html_e('Encuentra el punto de compostaje más cercano a ti', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Puntos de Compostaje', 'flavor-platform'); ?></h2>
+        <p><?php esc_html_e('Encuentra el punto de compostaje más cercano a ti', 'flavor-platform'); ?></p>
     </div>
 
     <!-- Filtros -->
     <div class="mapa-filtros">
         <div class="filtro-grupo">
-            <label><?php esc_html_e('Filtrar por tipo', 'flavor-chat-ia'); ?></label>
+            <label><?php esc_html_e('Filtrar por tipo', 'flavor-platform'); ?></label>
             <select id="filtro-tipo" onchange="filtrarPuntos(this.value)">
-                <option value=""><?php esc_html_e('Todos los tipos', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php esc_html_e('Todos los tipos', 'flavor-platform'); ?></option>
                 <?php foreach ($tipos_disponibles as $tipo_key => $tipo_label): ?>
                     <option value="<?php echo esc_attr($tipo_key); ?>" <?php selected($tipo_filtro, $tipo_key); ?>>
                         <?php echo esc_html($tipo_label); ?>
@@ -114,7 +114,7 @@ foreach ($puntos as $punto) {
 
     <!-- Lista de puntos -->
     <div class="puntos-lista">
-        <h3><?php esc_html_e('Puntos disponibles', 'flavor-chat-ia'); ?> <span class="contador">(<?php echo count($puntos_json); ?>)</span></h3>
+        <h3><?php esc_html_e('Puntos disponibles', 'flavor-platform'); ?> <span class="contador">(<?php echo count($puntos_json); ?>)</span></h3>
 
         <?php if ($puntos_json): ?>
             <div class="puntos-grid" id="puntos-grid">
@@ -140,7 +140,7 @@ foreach ($puntos as $punto) {
                             </div>
                         <?php endif; ?>
                         <div class="punto-llenado">
-                            <span class="llenado-label"><?php esc_html_e('Nivel de llenado', 'flavor-chat-ia'); ?></span>
+                            <span class="llenado-label"><?php esc_html_e('Nivel de llenado', 'flavor-platform'); ?></span>
                             <div class="llenado-barra">
                                 <div class="llenado-progreso" style="width: <?php echo esc_attr($punto['llenado']); ?>%"></div>
                             </div>
@@ -149,11 +149,11 @@ foreach ($puntos as $punto) {
                         <div class="punto-acciones">
                             <button class="btn btn-sm btn-outline" onclick="centrarMapa(<?php echo esc_attr($punto['lat']); ?>, <?php echo esc_attr($punto['lng']); ?>)">
                                 <span class="dashicons dashicons-location-alt"></span>
-                                <?php esc_html_e('Ver en mapa', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Ver en mapa', 'flavor-platform'); ?>
                             </button>
                             <?php if (is_user_logged_in()): ?>
                                 <a href="<?php echo esc_url(add_query_arg(['vista' => 'registrar', 'punto_id' => $punto['id']], get_permalink())); ?>" class="btn btn-sm btn-primary">
-                                    <?php esc_html_e('Aportar', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Aportar', 'flavor-platform'); ?>
                                 </a>
                             <?php endif; ?>
                         </div>
@@ -163,8 +163,8 @@ foreach ($puntos as $punto) {
         <?php else: ?>
             <div class="puntos-empty">
                 <span class="dashicons dashicons-location-alt"></span>
-                <h4><?php esc_html_e('No hay puntos disponibles', 'flavor-chat-ia'); ?></h4>
-                <p><?php esc_html_e('Aún no hay puntos de compostaje registrados en esta zona.', 'flavor-chat-ia'); ?></p>
+                <h4><?php esc_html_e('No hay puntos disponibles', 'flavor-platform'); ?></h4>
+                <p><?php esc_html_e('Aún no hay puntos de compostaje registrados en esta zona.', 'flavor-platform'); ?></p>
             </div>
         <?php endif; ?>
     </div>

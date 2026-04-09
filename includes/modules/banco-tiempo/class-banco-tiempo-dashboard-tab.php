@@ -289,35 +289,35 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
      */
     public function registrar_tabs($tabs) {
         $tabs['bt-mi-balance'] = [
-            'label' => __('Mi Saldo', 'flavor-chat-ia'),
+            'label' => __('Mi Saldo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'clock',
             'callback' => [$this, 'render_tab_mi_balance'],
             'orden' => 50,
         ];
 
         $tabs['bt-mis-servicios'] = [
-            'label' => __('Mis Servicios', 'flavor-chat-ia'),
+            'label' => __('Mis Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'hammer',
             'callback' => [$this, 'render_tab_mis_servicios'],
             'orden' => 51,
         ];
 
         $tabs['bt-mis-intercambios'] = [
-            'label' => __('Mis Intercambios', 'flavor-chat-ia'),
+            'label' => __('Mis Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'randomize',
             'callback' => [$this, 'render_tab_mis_intercambios'],
             'orden' => 52,
         ];
 
         $tabs['bt-mi-reputacion'] = [
-            'label' => __('Mi Reputación', 'flavor-chat-ia'),
+            'label' => __('Mi Reputación', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'star-filled',
             'callback' => [$this, 'render_tab_mi_reputacion'],
             'orden' => 53,
         ];
 
         $tabs['bt-ranking'] = [
-            'label' => __('Ranking', 'flavor-chat-ia'),
+            'label' => __('Ranking', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'awards',
             'callback' => [$this, 'render_tab_ranking'],
             'orden' => 54,
@@ -402,7 +402,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
     public function render_tab_mi_balance() {
         $user_id = get_current_user_id();
         if (!$user_id) {
-            echo '<p>' . esc_html__('Debes iniciar sesión para ver este contenido.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Debes iniciar sesión para ver este contenido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -417,14 +417,14 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
         ?>
         <div class="flavor-panel flavor-bt-balance-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-clock"></span> <?php esc_html_e('Mi Balance de Tiempo', 'flavor-chat-ia'); ?></h2>
-                <p class="flavor-panel-subtitle"><?php esc_html_e('Tu saldo de horas en el banco de tiempo comunitario', 'flavor-chat-ia'); ?></p>
+                <h2><span class="dashicons dashicons-clock"></span> <?php esc_html_e('Mi Balance de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <p class="flavor-panel-subtitle"><?php esc_html_e('Tu saldo de horas en el banco de tiempo comunitario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <!-- Saldo actual -->
             <div class="bt-saldo-card <?php echo esc_attr($clase_saldo); ?>">
                 <div class="bt-saldo-valor"><?php echo esc_html($signo_saldo . number_format($balance['saldo'], 1)); ?>h</div>
-                <div class="bt-saldo-label"><?php esc_html_e('Saldo actual', 'flavor-chat-ia'); ?></div>
+                <div class="bt-saldo-label"><?php esc_html_e('Saldo actual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
             </div>
 
             <!-- Grafico de barras -->
@@ -434,14 +434,14 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
                         <div class="bt-barra bt-barra-dadas" style="height: <?php echo esc_attr(max($altura_dadas, 10)); ?>px;"></div>
                     </div>
                     <div class="bt-barra-valor"><?php echo esc_html(number_format($balance['horas_dadas'], 1)); ?>h</div>
-                    <div class="bt-barra-label"><?php esc_html_e('Horas Dadas', 'flavor-chat-ia'); ?></div>
+                    <div class="bt-barra-label"><?php esc_html_e('Horas Dadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="bt-grafico-barra">
                     <div class="bt-barra-contenedor">
                         <div class="bt-barra bt-barra-recibidas" style="height: <?php echo esc_attr(max($altura_recibidas, 10)); ?>px;"></div>
                     </div>
                     <div class="bt-barra-valor"><?php echo esc_html(number_format($balance['horas_recibidas'], 1)); ?>h</div>
-                    <div class="bt-barra-label"><?php esc_html_e('Horas Recibidas', 'flavor-chat-ia'); ?></div>
+                    <div class="bt-barra-label"><?php esc_html_e('Horas Recibidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
 
@@ -451,14 +451,14 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
                     <span class="flavor-kpi-icon dashicons dashicons-yes-alt"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($balance['intercambios_completados']); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Completados', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Completados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-warning">
                     <span class="flavor-kpi-icon dashicons dashicons-update"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($balance['intercambios_pendientes']); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('En curso', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('En curso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <?php if ($balance['valoracion_promedio'] > 0): ?>
@@ -466,7 +466,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
                     <span class="flavor-kpi-icon dashicons dashicons-star-filled"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format($balance['valoracion_promedio'], 1); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Valoración', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Valoración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <?php endif; ?>
@@ -476,11 +476,11 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
             <div class="flavor-panel-actions" style="margin-top: 1.5rem;">
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt2"></span>
-                    <?php esc_html_e('Ofrecer Servicio', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ofrecer Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'servicios')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-search"></span>
-                    <?php esc_html_e('Buscar Servicios', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Buscar Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -493,7 +493,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
     public function render_tab_mis_servicios() {
         $user_id = get_current_user_id();
         if (!$user_id) {
-            echo '<p>' . esc_html__('Debes iniciar sesión para ver este contenido.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Debes iniciar sesión para ver este contenido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -523,20 +523,20 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
         ?>
         <div class="flavor-panel flavor-bt-servicios-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-hammer"></span> <?php esc_html_e('Mis Servicios', 'flavor-chat-ia'); ?></h2>
+                <h2><span class="dashicons dashicons-hammer"></span> <?php esc_html_e('Mis Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt2"></span>
-                    <?php esc_html_e('Nuevo', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
             <?php if (empty($mis_servicios)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-clock"></span>
-                    <p><?php esc_html_e('Aun no has publicado ningun servicio.', 'flavor-chat-ia'); ?></p>
-                    <p><?php esc_html_e('Comparte tus habilidades con la comunidad y gana horas.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('Aun no has publicado ningun servicio.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                    <p><?php esc_html_e('Comparte tus habilidades con la comunidad y gana horas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php esc_html_e('Ofrecer mi primer servicio', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ofrecer mi primer servicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -560,15 +560,15 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
                                 </span>
                                 <div class="bt-servicio-acciones">
                                     <button type="button" class="flavor-btn flavor-btn-outline flavor-btn-sm bt-btn-editar" data-servicio-id="<?php echo esc_attr($servicio->id); ?>">
-                                        <?php esc_html_e('Editar', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                     <?php if ($servicio->estado === 'activo') : ?>
                                         <button type="button" class="flavor-btn flavor-btn-secondary flavor-btn-sm bt-btn-pausar" data-servicio-id="<?php echo esc_attr($servicio->id); ?>">
-                                            <?php esc_html_e('Pausar', 'flavor-chat-ia'); ?>
+                                            <?php esc_html_e('Pausar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </button>
                                     <?php else : ?>
                                         <button type="button" class="flavor-btn flavor-btn-primary flavor-btn-sm bt-btn-activar" data-servicio-id="<?php echo esc_attr($servicio->id); ?>">
-                                            <?php esc_html_e('Activar', 'flavor-chat-ia'); ?>
+                                            <?php esc_html_e('Activar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </button>
                                     <?php endif; ?>
                                 </div>
@@ -579,7 +579,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
 
                 <div class="flavor-panel-footer">
                     <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'servicios')); ?>" class="flavor-btn flavor-btn-outline">
-                        <?php esc_html_e('Ver mis servicios', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver mis servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php endif; ?>
@@ -593,7 +593,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
     public function render_tab_mis_intercambios() {
         $user_id = get_current_user_id();
         if (!$user_id) {
-            echo '<p>' . esc_html__('Debes iniciar sesión para ver este contenido.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Debes iniciar sesión para ver este contenido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -624,17 +624,17 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
         ?>
         <div class="flavor-panel flavor-bt-intercambios-panel">
             <div class="flavor-panel-header">
-                <h2><span class="dashicons dashicons-randomize"></span> <?php esc_html_e('Mis Intercambios', 'flavor-chat-ia'); ?></h2>
-                <p class="flavor-panel-subtitle"><?php esc_html_e('Historial de servicios dados y recibidos', 'flavor-chat-ia'); ?></p>
+                <h2><span class="dashicons dashicons-randomize"></span> <?php esc_html_e('Mis Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <p class="flavor-panel-subtitle"><?php esc_html_e('Historial de servicios dados y recibidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <?php if (empty($mis_intercambios)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-randomize"></span>
-                    <p><?php esc_html_e('No tienes intercambios registrados.', 'flavor-chat-ia'); ?></p>
-                    <p><?php esc_html_e('Busca servicios que necesites o publica los tuyos.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No tienes intercambios registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                    <p><?php esc_html_e('Busca servicios que necesites o publica los tuyos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'servicios')); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php esc_html_e('Explorar servicios', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Explorar servicios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -647,7 +647,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
                         // Obtener nombre del otro usuario
                         $otro_usuario_id = $es_proveedor ? $intercambio->usuario_solicitante_id : $intercambio->usuario_receptor_id;
                         $otro_usuario = get_userdata($otro_usuario_id);
-                        $nombre_otro = $otro_usuario ? $otro_usuario->display_name : __('Usuario', 'flavor-chat-ia');
+                        $nombre_otro = $otro_usuario ? $otro_usuario->display_name : __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN);
                     ?>
                         <div class="bt-intercambio-item">
                             <div class="bt-intercambio-icon <?php echo esc_attr($tipo_intercambio); ?>">
@@ -655,13 +655,13 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
                             </div>
                             <div class="bt-intercambio-info">
                                 <div class="bt-intercambio-titulo">
-                                    <?php echo esc_html($intercambio->servicio_titulo ?? __('Servicio', 'flavor-chat-ia')); ?>
+                                    <?php echo esc_html($intercambio->servicio_titulo ?? __('Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                                 </div>
                                 <div class="bt-intercambio-meta">
                                     <?php if ($es_proveedor): ?>
-                                        <?php printf(esc_html__('Para %s', 'flavor-chat-ia'), esc_html($nombre_otro)); ?>
+                                        <?php printf(esc_html__('Para %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($nombre_otro)); ?>
                                     <?php else: ?>
-                                        <?php printf(esc_html__('De %s', 'flavor-chat-ia'), esc_html($nombre_otro)); ?>
+                                        <?php printf(esc_html__('De %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($nombre_otro)); ?>
                                     <?php endif; ?>
                                     &bull;
                                     <?php echo esc_html(date_i18n('d M Y', strtotime($intercambio->fecha_solicitud))); ?>
@@ -678,18 +678,18 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
                                 <div class="bt-intercambio-acciones">
                                     <?php if ($intercambio->estado === 'pendiente' && $es_proveedor) : ?>
                                         <button type="button" class="flavor-btn flavor-btn-primary flavor-btn-sm bt-btn-aceptar-intercambio" data-intercambio-id="<?php echo esc_attr($intercambio->id); ?>">
-                                            <?php esc_html_e('Aceptar', 'flavor-chat-ia'); ?>
+                                            <?php esc_html_e('Aceptar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </button>
                                         <button type="button" class="flavor-btn flavor-btn-danger flavor-btn-sm bt-btn-rechazar-intercambio" data-intercambio-id="<?php echo esc_attr($intercambio->id); ?>">
-                                            <?php esc_html_e('Rechazar', 'flavor-chat-ia'); ?>
+                                            <?php esc_html_e('Rechazar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </button>
                                     <?php elseif ($intercambio->estado === 'pendiente' && !$es_proveedor) : ?>
                                         <button type="button" class="flavor-btn flavor-btn-outline flavor-btn-sm bt-btn-cancelar-intercambio" data-intercambio-id="<?php echo esc_attr($intercambio->id); ?>">
-                                            <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                                            <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </button>
                                     <?php elseif (in_array($intercambio->estado, ['aceptado', 'en_curso'], true)) : ?>
                                         <button type="button" class="flavor-btn flavor-btn-success flavor-btn-sm bt-btn-completar-intercambio" data-intercambio-id="<?php echo esc_attr($intercambio->id); ?>">
-                                            <?php esc_html_e('Completar', 'flavor-chat-ia'); ?>
+                                            <?php esc_html_e('Completar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </button>
                                     <?php endif; ?>
                                 </div>
@@ -700,7 +700,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
 
                 <div class="flavor-panel-footer">
                     <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'intercambios')); ?>" class="flavor-btn flavor-btn-outline">
-                        <?php esc_html_e('Ver historial completo', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver historial completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php endif; ?>
@@ -714,7 +714,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
     public function render_tab_mi_reputacion() {
         $user_id = get_current_user_id();
         if (!$user_id) {
-            echo '<p>' . esc_html__('Debes iniciar sesión para ver este contenido.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Debes iniciar sesión para ver este contenido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -775,7 +775,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
             return;
         }
 
-        echo '<p>' . esc_html__('La vista de reputación no está disponible.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . esc_html__('La vista de reputación no está disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
     }
 
     /**

@@ -67,7 +67,7 @@ $identificador_form = 'newsletter-card-' . wp_unique_id();
             </form>
 
             <p class="text-xs text-gray-400 mt-4">
-                <?php echo esc_html__( 'No spam. Puedes darte de baja en cualquier momento.', 'flavor-chat-ia' ); ?>
+                <?php echo esc_html__( 'No spam. Puedes darte de baja en cualquier momento.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
             </p>
         </div>
     </div>

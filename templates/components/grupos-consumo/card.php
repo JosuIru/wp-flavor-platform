@@ -36,7 +36,7 @@ $abierto = $grupo['abierto_inscripciones'] ?? true;
         <?php endif; ?>
         <?php if ($abierto): ?>
         <span class="absolute top-3 right-3 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">
-            <?php echo esc_html__('Abierto', 'flavor-chat-ia'); ?>
+            <?php echo esc_html__('Abierto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </span>
         <?php endif; ?>
     </div>
@@ -66,7 +66,7 @@ $abierto = $grupo['abierto_inscripciones'] ?? true;
 
         <div class="flex items-center justify-between text-sm text-gray-500 border-t border-gray-100 pt-4">
             <span class="flex items-center gap-1">
-                👥 <?php echo esc_html($num_miembros); ?> <?php echo esc_html__('miembros', 'flavor-chat-ia'); ?>
+                👥 <?php echo esc_html($num_miembros); ?> <?php echo esc_html__('miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
             <?php if ($zona): ?>
             <span class="flex items-center gap-1">
@@ -77,7 +77,7 @@ $abierto = $grupo['abierto_inscripciones'] ?? true;
 
         <a href="<?php echo esc_url($url); ?>"
            class="block mt-4 text-center bg-lime-500 hover:bg-lime-600 text-white py-2 px-4 rounded-xl font-medium transition-colors">
-            <?php echo esc_html__('Ver grupo', 'flavor-chat-ia'); ?>
+            <?php echo esc_html__('Ver grupo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 </article>

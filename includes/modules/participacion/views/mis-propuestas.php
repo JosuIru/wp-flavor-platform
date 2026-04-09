@@ -12,8 +12,8 @@ $usuario_actual_id = get_current_user_id();
 if (!$usuario_actual_id) {
     echo '<div class="flavor-empty-state">';
     echo '<div class="flavor-empty-icon"><span class="dashicons dashicons-lock"></span></div>';
-    echo '<p>' . esc_html__('Debes iniciar sesión para ver tus propuestas.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="flavor-btn flavor-btn-primary">' . esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a>';
+    echo '<p>' . esc_html__('Debes iniciar sesión para ver tus propuestas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
+    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="flavor-btn flavor-btn-primary">' . esc_html__('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
     echo '</div>';
     return;
 }
@@ -108,14 +108,14 @@ $total_propuestas = (int) $wpdb->get_var($wpdb->prepare(
 $total_paginas = ceil($total_propuestas / $elementos_por_pagina);
 
 $mapa_estados = [
-    'borrador' => ['etiqueta' => __('Borrador', 'flavor-chat-ia'), 'color' => '#6b7280', 'icono' => 'edit'],
-    'pendiente_validacion' => ['etiqueta' => __('Pendiente', 'flavor-chat-ia'), 'color' => '#f59e0b', 'icono' => 'clock'],
-    'activa' => ['etiqueta' => __('Activa', 'flavor-chat-ia'), 'color' => '#3b82f6', 'icono' => 'visibility'],
-    'en_estudio' => ['etiqueta' => __('En Estudio', 'flavor-chat-ia'), 'color' => '#8b5cf6', 'icono' => 'search'],
-    'aprobada' => ['etiqueta' => __('Aprobada', 'flavor-chat-ia'), 'color' => '#10b981', 'icono' => 'yes-alt'],
-    'rechazada' => ['etiqueta' => __('Rechazada', 'flavor-chat-ia'), 'color' => '#ef4444', 'icono' => 'dismiss'],
-    'implementada' => ['etiqueta' => __('Implementada', 'flavor-chat-ia'), 'color' => '#059669', 'icono' => 'flag'],
-    'archivada' => ['etiqueta' => __('Archivada', 'flavor-chat-ia'), 'color' => '#9ca3af', 'icono' => 'archive'],
+    'borrador' => ['etiqueta' => __('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#6b7280', 'icono' => 'edit'],
+    'pendiente_validacion' => ['etiqueta' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#f59e0b', 'icono' => 'clock'],
+    'activa' => ['etiqueta' => __('Activa', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#3b82f6', 'icono' => 'visibility'],
+    'en_estudio' => ['etiqueta' => __('En Estudio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#8b5cf6', 'icono' => 'search'],
+    'aprobada' => ['etiqueta' => __('Aprobada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#10b981', 'icono' => 'yes-alt'],
+    'rechazada' => ['etiqueta' => __('Rechazada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#ef4444', 'icono' => 'dismiss'],
+    'implementada' => ['etiqueta' => __('Implementada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#059669', 'icono' => 'flag'],
+    'archivada' => ['etiqueta' => __('Archivada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => '#9ca3af', 'icono' => 'archive'],
 ];
 
 $url_base = remove_query_arg(['pag', 'estado']);
@@ -127,14 +127,14 @@ $url_base = remove_query_arg(['pag', 'estado']);
         <div class="flavor-header-content">
             <h2>
                 <span class="dashicons dashicons-lightbulb"></span>
-                <?php esc_html_e('Mis Propuestas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Mis Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
-            <p class="flavor-subtitle"><?php esc_html_e('Gestiona las propuestas que has presentado a la comunidad', 'flavor-chat-ia'); ?></p>
+            <p class="flavor-subtitle"><?php esc_html_e('Gestiona las propuestas que has presentado a la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
         <div class="flavor-header-actions">
             <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('participacion', 'crear')); ?>" class="flavor-btn flavor-btn-primary">
                 <span class="dashicons dashicons-plus-alt2"></span>
-                <?php esc_html_e('Nueva Propuesta', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Nueva Propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>
@@ -147,7 +147,7 @@ $url_base = remove_query_arg(['pag', 'estado']);
             </div>
             <div class="flavor-kpi-content">
                 <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas_usuario['total_propuestas']); ?></span>
-                <span class="flavor-kpi-label"><?php esc_html_e('Propuestas', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-kpi-label"><?php esc_html_e('Propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -157,7 +157,7 @@ $url_base = remove_query_arg(['pag', 'estado']);
             </div>
             <div class="flavor-kpi-content">
                 <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas_usuario['aprobadas']); ?></span>
-                <span class="flavor-kpi-label"><?php esc_html_e('Aprobadas', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-kpi-label"><?php esc_html_e('Aprobadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -167,7 +167,7 @@ $url_base = remove_query_arg(['pag', 'estado']);
             </div>
             <div class="flavor-kpi-content">
                 <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas_usuario['votos_recibidos']); ?></span>
-                <span class="flavor-kpi-label"><?php esc_html_e('Votos Recibidos', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-kpi-label"><?php esc_html_e('Votos Recibidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -177,7 +177,7 @@ $url_base = remove_query_arg(['pag', 'estado']);
             </div>
             <div class="flavor-kpi-content">
                 <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas_usuario['comentarios_recibidos']); ?></span>
-                <span class="flavor-kpi-label"><?php esc_html_e('Comentarios', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-kpi-label"><?php esc_html_e('Comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
@@ -187,20 +187,20 @@ $url_base = remove_query_arg(['pag', 'estado']);
         <div class="flavor-filter-tabs">
             <a href="<?php echo esc_url(add_query_arg('estado', 'todos', $url_base)); ?>"
                class="flavor-filter-tab <?php echo (!$estado_filtro || $estado_filtro === 'todos') ? 'active' : ''; ?>">
-                <?php esc_html_e('Todas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <span class="flavor-badge"><?php echo $estadisticas_usuario['total_propuestas']; ?></span>
             </a>
             <a href="<?php echo esc_url(add_query_arg('estado', 'activa', $url_base)); ?>"
                class="flavor-filter-tab <?php echo $estado_filtro === 'activa' ? 'active' : ''; ?>">
-                <?php esc_html_e('Activas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="<?php echo esc_url(add_query_arg('estado', 'aprobada', $url_base)); ?>"
                class="flavor-filter-tab <?php echo $estado_filtro === 'aprobada' ? 'active' : ''; ?>">
-                <?php esc_html_e('Aprobadas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Aprobadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
             <a href="<?php echo esc_url(add_query_arg('estado', 'borrador', $url_base)); ?>"
                class="flavor-filter-tab <?php echo $estado_filtro === 'borrador' ? 'active' : ''; ?>">
-                <?php esc_html_e('Borradores', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Borradores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>
@@ -211,10 +211,10 @@ $url_base = remove_query_arg(['pag', 'estado']);
             <div class="flavor-empty-icon">
                 <span class="dashicons dashicons-lightbulb"></span>
             </div>
-            <h3><?php esc_html_e('No tienes propuestas', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('Comparte tus ideas para mejorar la comunidad creando tu primera propuesta.', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('No tienes propuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php esc_html_e('Comparte tus ideas para mejorar la comunidad creando tu primera propuesta.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('participacion', 'crear')); ?>" class="flavor-btn flavor-btn-primary">
-                <?php esc_html_e('Crear mi primera propuesta', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Crear mi primera propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     <?php else: ?>
@@ -258,7 +258,7 @@ $url_base = remove_query_arg(['pag', 'estado']);
                             <?php if ($total_votos > 0): ?>
                                 <span class="flavor-meta-item">
                                     <span class="dashicons dashicons-chart-bar"></span>
-                                    <?php echo number_format_i18n($total_votos); ?> <?php esc_html_e('votos', 'flavor-chat-ia'); ?>
+                                    <?php echo number_format_i18n($total_votos); ?> <?php esc_html_e('votos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                             <?php endif; ?>
                             <?php if ($propuesta->comentarios_count > 0): ?>
@@ -274,7 +274,7 @@ $url_base = remove_query_arg(['pag', 'estado']);
                         <?php if ($total_votos > 0): ?>
                             <div class="flavor-stat-circular" style="--porcentaje: <?php echo $porcentaje_aprobacion; ?>;">
                                 <span class="flavor-stat-value"><?php echo $porcentaje_aprobacion; ?>%</span>
-                                <span class="flavor-stat-label"><?php esc_html_e('Apoyo', 'flavor-chat-ia'); ?></span>
+                                <span class="flavor-stat-label"><?php esc_html_e('Apoyo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                             <div class="flavor-votos-detalle">
                                 <span class="votos-favor">+<?php echo number_format_i18n($votos_favor); ?></span>
@@ -283,7 +283,7 @@ $url_base = remove_query_arg(['pag', 'estado']);
                         <?php else: ?>
                             <div class="flavor-sin-votos">
                                 <span class="dashicons dashicons-marker"></span>
-                                <span><?php esc_html_e('Sin votos aún', 'flavor-chat-ia'); ?></span>
+                                <span><?php esc_html_e('Sin votos aún', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -291,7 +291,7 @@ $url_base = remove_query_arg(['pag', 'estado']);
                     <div class="flavor-propuesta-actions">
                         <a href="<?php echo esc_url(add_query_arg('propuesta_id', $propuesta->id, Flavor_Chat_Helpers::get_action_url('participacion', 'detalle'))); ?>"
                            class="flavor-btn flavor-btn-sm flavor-btn-outline"
-                           title="<?php esc_attr_e('Ver detalles', 'flavor-chat-ia'); ?>">
+                           title="<?php esc_attr_e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <span class="dashicons dashicons-visibility"></span>
                         </a>
                     </div>
@@ -305,13 +305,13 @@ $url_base = remove_query_arg(['pag', 'estado']);
                 <?php if ($pagina_actual > 1): ?>
                     <a href="<?php echo esc_url(add_query_arg('pag', $pagina_actual - 1)); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
                         <span class="dashicons dashicons-arrow-left-alt2"></span>
-                        <?php esc_html_e('Anterior', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 <?php endif; ?>
 
                 <span class="flavor-pagination-info">
                     <?php printf(
-                        esc_html__('Página %d de %d', 'flavor-chat-ia'),
+                        esc_html__('Página %d de %d', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $pagina_actual,
                         $total_paginas
                     ); ?>
@@ -319,7 +319,7 @@ $url_base = remove_query_arg(['pag', 'estado']);
 
                 <?php if ($pagina_actual < $total_paginas): ?>
                     <a href="<?php echo esc_url(add_query_arg('pag', $pagina_actual + 1)); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
-                        <?php esc_html_e('Siguiente', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <span class="dashicons dashicons-arrow-right-alt2"></span>
                     </a>
                 <?php endif; ?>

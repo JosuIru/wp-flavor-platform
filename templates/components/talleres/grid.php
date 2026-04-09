@@ -238,18 +238,18 @@ $clase_grid = match($columnas) {
                     <div class="flex flex-col md:flex-row items-center gap-6">
                         <div class="flex-1">
                             <label class="text-sm font-semibold text-gray-700 mb-2 block">
-                                <?php echo esc_html__('Buscar talleres', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Buscar talleres', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
-                            <input type="text" placeholder="<?php echo esc_attr__('Nombre del taller, categoría...', 'flavor-chat-ia'); ?>" class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+                            <input type="text" placeholder="<?php echo esc_attr__('Nombre del taller, categoría...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                         </div>
                         <div>
                             <label class="text-sm font-semibold text-gray-700 mb-2 block">
-                                <?php echo esc_html__('Ordenar por', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Ordenar por', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
                             <select class="px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white">
-                                <option value="popular"><?php echo esc_html__('Más Popular', 'flavor-chat-ia'); ?></option>
-                                <option value="nuevo"><?php echo esc_html__('Más Nuevo', 'flavor-chat-ia'); ?></option>
-                                <option value="precio"><?php echo esc_html__('Precio', 'flavor-chat-ia'); ?></option>
+                                <option value="popular"><?php echo esc_html__('Más Popular', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="nuevo"><?php echo esc_html__('Más Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="precio"><?php echo esc_html__('Precio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             </select>
                         </div>
                     </div>
@@ -257,23 +257,23 @@ $clase_grid = match($columnas) {
                     <!-- Categorías -->
                     <div class="mt-6">
                         <p class="text-sm font-semibold text-gray-700 mb-3">
-                            <?php echo esc_html__('Categorías', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                         <div class="flex flex-wrap gap-2">
                             <button class="px-4 py-2 rounded-full bg-blue-100 text-blue-700 font-medium hover:bg-blue-200 transition-colors">
-                                <?php echo esc_html__('Todas', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                             <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-700 font-medium hover:bg-gray-200 transition-colors">
-                                <?php echo esc_html__('Ecología', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Ecología', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                             <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-700 font-medium hover:bg-gray-200 transition-colors">
-                                <?php echo esc_html__('Cocina', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Cocina', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                             <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-700 font-medium hover:bg-gray-200 transition-colors">
-                                <?php echo esc_html__('Tecnología', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                             <button class="px-4 py-2 rounded-full bg-gray-100 text-gray-700 font-medium hover:bg-gray-200 transition-colors">
-                                <?php echo esc_html__('Bienestar', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Bienestar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </div>
                     </div>
@@ -301,11 +301,11 @@ $clase_grid = match($columnas) {
                             <!-- Badge de Estado -->
                             <?php if ($taller['estado'] === 'completo'): ?>
                                 <div class="absolute top-4 left-4 px-3 py-1 bg-red-500 rounded-full text-xs font-bold text-white">
-                                    <?php echo esc_html__('Completo', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </div>
                             <?php else: ?>
                                 <div class="absolute top-4 left-4 px-3 py-1 bg-green-500 rounded-full text-xs font-bold text-white animate-pulse">
-                                    <?php echo esc_html__('Disponible', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </div>
                             <?php endif; ?>
 
@@ -371,17 +371,17 @@ $clase_grid = match($columnas) {
                             <!-- Botón Acción -->
                             <?php if ($taller['estado'] === 'completo'): ?>
                                 <button class="w-full py-2 px-4 bg-gray-300 text-gray-600 font-semibold rounded-lg cursor-not-allowed" disabled>
-                                    <?php echo esc_html__('Completo', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             <?php else: ?>
                                 <button class="w-full py-2 px-4 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-lg transition-all hover:shadow-lg">
-                                    <?php echo esc_html__('Inscribirse', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Inscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             <?php endif; ?>
 
                             <!-- Nivel -->
                             <p class="text-xs text-gray-500 mt-3 text-center">
-                                <span class="font-semibold"><?php echo esc_html__('Nivel:', 'flavor-chat-ia'); ?></span>
+                                <span class="font-semibold"><?php echo esc_html__('Nivel:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php echo esc_html($taller['nivel']); ?>
                             </p>
                         </div>
@@ -392,7 +392,7 @@ $clase_grid = match($columnas) {
             <!-- Botón Ver Más -->
             <div class="text-center">
                 <button class="px-8 py-3 rounded-full font-bold text-white shadow-lg hover:shadow-xl transition-all" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);">
-                    <?php echo esc_html__('Ver Más Talleres', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Ver Más Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </div>

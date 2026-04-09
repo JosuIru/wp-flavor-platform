@@ -20,15 +20,15 @@ $tipos_reto = [
             <span class="dashicons dashicons-flag"></span>
         </span>
         <div>
-            <h3><?php esc_html_e('Retos Comunitarios', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('Únete a retos colectivos de reciclaje', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('Retos Comunitarios', 'flavor-platform'); ?></h3>
+            <p><?php esc_html_e('Únete a retos colectivos de reciclaje', 'flavor-platform'); ?></p>
         </div>
     </div>
 
     <?php if (empty($retos)): ?>
         <div class="rec-retos__vacio">
             <span class="dashicons dashicons-calendar-alt"></span>
-            <p><?php esc_html_e('No hay retos activos en este momento.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('No hay retos activos en este momento.', 'flavor-platform'); ?></p>
         </div>
     <?php else: ?>
         <div class="rec-retos__lista">
@@ -47,12 +47,12 @@ $tipos_reto = [
                             <strong><?php echo esc_html($reto->titulo); ?></strong>
                             <span class="rec-retos__participantes">
                                 <span class="dashicons dashicons-groups"></span>
-                                <?php printf(esc_html__('%d participantes', 'flavor-chat-ia'), $reto->total_participantes); ?>
+                                <?php printf(esc_html__('%d participantes', 'flavor-platform'), $reto->total_participantes); ?>
                             </span>
                         </div>
                         <div class="rec-retos__dias">
                             <span class="rec-retos__dias-valor"><?php echo esc_html($dias_restantes); ?></span>
-                            <span class="rec-retos__dias-label"><?php esc_html_e('días', 'flavor-chat-ia'); ?></span>
+                            <span class="rec-retos__dias-label"><?php esc_html_e('días', 'flavor-platform'); ?></span>
                         </div>
                     </div>
 
@@ -60,7 +60,7 @@ $tipos_reto = [
 
                     <div class="rec-retos__progreso">
                         <div class="rec-retos__progreso-header">
-                            <span><?php printf(esc_html__('Progreso: %s de %s %s', 'flavor-chat-ia'),
+                            <span><?php printf(esc_html__('Progreso: %s de %s %s', 'flavor-platform'),
                                 number_format($reto->progreso_actual, 0),
                                 number_format($reto->meta_cantidad, 0),
                                 $reto->unidad
@@ -80,11 +80,11 @@ $tipos_reto = [
                         <?php if ($participo): ?>
                             <span class="rec-retos__participando-badge">
                                 <span class="dashicons dashicons-yes-alt"></span>
-                                <?php esc_html_e('Participando', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Participando', 'flavor-platform'); ?>
                             </span>
                         <?php elseif (is_user_logged_in()): ?>
                             <button type="button" class="rec-btn rec-btn--primary rec-unirse-reto" data-id="<?php echo esc_attr($reto->id); ?>">
-                                <?php esc_html_e('Unirme', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Unirme', 'flavor-platform'); ?>
                             </button>
                         <?php endif; ?>
                     </div>
@@ -95,7 +95,7 @@ $tipos_reto = [
 
     <!-- Tipos de retos -->
     <div class="rec-retos__tipos">
-        <h4><?php esc_html_e('Tipos de retos', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('Tipos de retos', 'flavor-platform'); ?></h4>
         <div class="rec-retos__tipos-grid">
             <?php foreach ($tipos_reto as $key => $tipo): ?>
                 <div class="rec-retos__tipo">

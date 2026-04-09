@@ -45,29 +45,29 @@ $denuncias = empty($params) ? $wpdb->get_results($sql) : $wpdb->get_results($wpd
 ?>
 
 <section class="flavor-denuncias-listado">
-    <h2><?php esc_html_e('Listado de denuncias', 'flavor-chat-ia'); ?></h2>
+    <h2><?php esc_html_e('Listado de denuncias', 'flavor-platform'); ?></h2>
 
-    <form method="get" aria-label="<?php echo esc_attr__('Formulario de filtros de denuncias', 'flavor-chat-ia'); ?>" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0.5rem;align-items:end;">
+    <form method="get" aria-label="<?php echo esc_attr__('Formulario de filtros de denuncias', 'flavor-platform'); ?>" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0.5rem;align-items:end;">
         <p>
-            <label for="den_busqueda"><?php esc_html_e('Buscar', 'flavor-chat-ia'); ?></label><br>
+            <label for="den_busqueda"><?php esc_html_e('Buscar', 'flavor-platform'); ?></label><br>
             <input id="den_busqueda" type="text" name="busqueda" value="<?php echo esc_attr($busqueda); ?>" style="width:100%;">
         </p>
         <p>
-            <label for="den_tipo"><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></label><br>
+            <label for="den_tipo"><?php esc_html_e('Tipo', 'flavor-platform'); ?></label><br>
             <input id="den_tipo" type="text" name="tipo" value="<?php echo esc_attr($tipo); ?>" style="width:100%;">
         </p>
         <p>
-            <label for="den_estado"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></label><br>
+            <label for="den_estado"><?php esc_html_e('Estado', 'flavor-platform'); ?></label><br>
             <input id="den_estado" type="text" name="estado" value="<?php echo esc_attr($estado); ?>" style="width:100%;">
         </p>
-        <p><button type="submit" class="button"><?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?></button></p>
+        <p><button type="submit" class="button"><?php esc_html_e('Filtrar', 'flavor-platform'); ?></button></p>
     </form>
 
     <?php if (empty($denuncias)): ?>
-        <p><?php esc_html_e('No hay denuncias para los filtros actuales.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('No hay denuncias para los filtros actuales.', 'flavor-platform'); ?></p>
     <?php else: ?>
         <table class="widefat striped">
-            <thead><tr><th><?php esc_html_e('Titulo', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Prioridad', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Organismo', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Presentacion', 'flavor-chat-ia'); ?></th><th><?php esc_html_e('Limite', 'flavor-chat-ia'); ?></th></tr></thead>
+            <thead><tr><th><?php esc_html_e('Titulo', 'flavor-platform'); ?></th><th><?php esc_html_e('Tipo', 'flavor-platform'); ?></th><th><?php esc_html_e('Estado', 'flavor-platform'); ?></th><th><?php esc_html_e('Prioridad', 'flavor-platform'); ?></th><th><?php esc_html_e('Organismo', 'flavor-platform'); ?></th><th><?php esc_html_e('Presentacion', 'flavor-platform'); ?></th><th><?php esc_html_e('Limite', 'flavor-platform'); ?></th></tr></thead>
             <tbody>
                 <?php foreach ($denuncias as $denuncia): ?>
                     <tr>

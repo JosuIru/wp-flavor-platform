@@ -78,8 +78,8 @@ class Flavor_Deep_Link_Handler {
 
         if (!$config) {
             wp_die(
-                __('Empresa no encontrada', 'flavor-chat-ia'),
-                __('Error', 'flavor-chat-ia'),
+                __('Empresa no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                __('Error', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['response' => 404]
             );
         }

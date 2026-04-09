@@ -12,8 +12,8 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$titulo_seccion    = !empty($titulo) ? $titulo : __('Colectivos y Asociaciones', 'flavor-chat-ia');
-$subtitulo_seccion = !empty($subtitulo) ? $subtitulo : __('Descubre y participa en los colectivos de tu comunidad', 'flavor-chat-ia');
+$titulo_seccion    = !empty($titulo) ? $titulo : __('Colectivos y Asociaciones', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$subtitulo_seccion = !empty($subtitulo) ? $subtitulo : __('Descubre y participa en los colectivos de tu comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
 // Datos fallback para estadisticas del hero
 $total_colectivos_activos = 0;
@@ -78,13 +78,13 @@ if ($total_colectivos_activos === 0) {
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
-                    <?php esc_html_e('Explorar Colectivos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Explorar Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="#crear-colectivo" class="inline-flex items-center justify-center px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:-translate-y-1" style="background: rgba(255,255,255,0.15); color: white; border: 2px solid rgba(255,255,255,0.3); backdrop-filter: blur(10px);">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                     </svg>
-                    <?php esc_html_e('Crear Colectivo', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Crear Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
 
@@ -96,7 +96,7 @@ if ($total_colectivos_activos === 0) {
                             <?php echo esc_html($total_colectivos_activos); ?>
                         </div>
                         <div class="text-sm mt-1" style="color: var(--flavor-text-muted, #6B7280);">
-                            <?php esc_html_e('Colectivos Activos', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Colectivos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     </div>
                     <div class="text-center">
@@ -104,7 +104,7 @@ if ($total_colectivos_activos === 0) {
                             <?php echo esc_html($total_miembros_activos); ?>
                         </div>
                         <div class="text-sm mt-1" style="color: var(--flavor-text-muted, #6B7280);">
-                            <?php esc_html_e('Miembros', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     </div>
                     <div class="text-center">
@@ -112,7 +112,7 @@ if ($total_colectivos_activos === 0) {
                             <?php echo esc_html($total_proyectos_activos); ?>
                         </div>
                         <div class="text-sm mt-1" style="color: var(--flavor-text-muted, #6B7280);">
-                            <?php esc_html_e('Proyectos Activos', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Proyectos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     </div>
                 </div>

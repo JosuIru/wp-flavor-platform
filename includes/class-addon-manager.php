@@ -222,23 +222,23 @@ class Flavor_Addon_Manager {
 
         // Validar slug
         if (empty($slug_addon) || !is_string($slug_addon)) {
-            return new WP_Error('slug_invalido', __('El slug del addon es inválido.', 'flavor-chat-ia'));
+            return new WP_Error('slug_invalido', __('El slug del addon es inválido.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Validar campos requeridos
         if (empty($configuracion['name'])) {
-            return new WP_Error('nombre_requerido', __('El addon debe tener un nombre.', 'flavor-chat-ia'));
+            return new WP_Error('nombre_requerido', __('El addon debe tener un nombre.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         if (empty($configuracion['version'])) {
-            return new WP_Error('version_requerida', __('El addon debe especificar una versión.', 'flavor-chat-ia'));
+            return new WP_Error('version_requerida', __('El addon debe especificar una versión.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Evitar duplicados
         if (isset($instancia->addons_registrados[$slug_addon])) {
             flavor_chat_ia_log("Addon duplicado intentó registrarse: {$slug_addon}", 'warning');
             return new WP_Error('addon_duplicado', sprintf(
-                __('El addon "%s" ya está registrado.', 'flavor-chat-ia'),
+                __('El addon "%s" ya está registrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $slug_addon
             ));
         }
@@ -247,7 +247,7 @@ class Flavor_Addon_Manager {
         if (!empty($configuracion['requires_core'])) {
             if (version_compare(FLAVOR_CHAT_IA_VERSION, $configuracion['requires_core'], '<')) {
                 return new WP_Error('version_core_incompatible', sprintf(
-                    __('El addon "%s" requiere Flavor Platform versión %s o superior (versión actual: %s).', 'flavor-chat-ia'),
+                    __('El addon "%s" requiere Flavor Platform versión %s o superior (versión actual: %s).', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $configuracion['name'],
                     $configuracion['requires_core'],
                     FLAVOR_CHAT_IA_VERSION
@@ -317,7 +317,7 @@ class Flavor_Addon_Manager {
         if (!isset($this->addons_registrados[$slug_addon])) {
             flavor_chat_ia_log("Addon no registrado: {$slug_addon}", 'warning');
             return new WP_Error('addon_no_registrado', sprintf(
-                __('El addon "%s" no está registrado.', 'flavor-chat-ia'),
+                __('El addon "%s" no está registrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $slug_addon
             ));
         }
@@ -374,7 +374,7 @@ class Flavor_Addon_Manager {
         // Verificar que esté registrado
         if (!isset($this->addons_registrados[$slug_addon])) {
             return new WP_Error('addon_no_registrado', sprintf(
-                __('El addon "%s" no está registrado.', 'flavor-chat-ia'),
+                __('El addon "%s" no está registrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $slug_addon
             ));
         }
@@ -545,9 +545,9 @@ class Flavor_Addon_Manager {
                 $configuracion = $this->addons_registrados[$slug_addon];
 
                 echo '<div class="notice notice-error is-dismissible">';
-                echo '<p><strong>' . esc_html__('Error en addon:', 'flavor-chat-ia') . '</strong> ';
+                echo '<p><strong>' . esc_html__('Error en addon:', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</strong> ';
                 echo sprintf(
-                    esc_html__('El addon "%s" está activo pero no pudo cargarse. Verifica las dependencias.', 'flavor-chat-ia'),
+                    esc_html__('El addon "%s" está activo pero no pudo cargarse. Verifica las dependencias.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     esc_html($configuracion['name'])
                 );
                 echo '</p></div>';
@@ -580,9 +580,9 @@ class Flavor_Addon_Manager {
      */
     public function register_admin_menu() {
         add_submenu_page(
-            'flavor-chat-ia',
-            __('Addons', 'flavor-chat-ia'),
-            __('Addons', 'flavor-chat-ia'),
+            FLAVOR_PLATFORM_TEXT_DOMAIN,
+            __('Addons', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Addons', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-addons',
             [$this, 'render_admin_page']
@@ -603,13 +603,13 @@ class Flavor_Addon_Manager {
         <div class="wrap flavor-addons-page">
             <h1 class="wp-heading-inline">
                 <span class="dashicons dashicons-admin-plugins" style="margin-right: 10px;"></span>
-                <?php esc_html_e('Gestión de Addons', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Gestión de Addons', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h1>
 
             <div class="flavor-addons-summary">
                 <span class="flavor-addons-count">
                     <?php printf(
-                        esc_html__('%d de %d addons activos', 'flavor-chat-ia'),
+                        esc_html__('%d de %d addons activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $total_activos,
                         $total_addons
                     ); ?>
@@ -621,9 +621,9 @@ class Flavor_Addon_Manager {
             <?php if (empty($addons)): ?>
                 <div class="flavor-addons-empty">
                     <span class="dashicons dashicons-plugins-checked"></span>
-                    <h2><?php esc_html_e('No hay addons instalados', 'flavor-chat-ia'); ?></h2>
-                    <p><?php esc_html_e('Los addons extienden las funcionalidades de Flavor Chat IA.', 'flavor-chat-ia'); ?></p>
-                    <p><?php esc_html_e('Coloca los addons en la carpeta /addons/ del plugin.', 'flavor-chat-ia'); ?></p>
+                    <h2><?php esc_html_e('No hay addons instalados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                    <p><?php esc_html_e('Los addons extienden las funcionalidades de Flavor Chat IA.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                    <p><?php esc_html_e('Coloca los addons en la carpeta /addons/ del plugin.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="flavor-addons-grid">
@@ -638,16 +638,16 @@ class Flavor_Addon_Manager {
                                     <h3 class="addon-name">
                                         <?php echo esc_html($addon['name']); ?>
                                         <?php if (!empty($addon['is_premium'])): ?>
-                                            <span class="addon-premium-badge"><?php esc_html_e('PRO', 'flavor-chat-ia'); ?></span>
+                                            <span class="addon-premium-badge"><?php esc_html_e('PRO', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         <?php endif; ?>
                                     </h3>
                                     <span class="addon-version">v<?php echo esc_html($addon['version']); ?></span>
                                 </div>
                                 <div class="addon-status">
                                     <?php if ($esta_activo): ?>
-                                        <span class="status-badge status-active"><?php esc_html_e('Activo', 'flavor-chat-ia'); ?></span>
+                                        <span class="status-badge status-active"><?php esc_html_e('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     <?php else: ?>
-                                        <span class="status-badge status-inactive"><?php esc_html_e('Inactivo', 'flavor-chat-ia'); ?></span>
+                                        <span class="status-badge status-inactive"><?php esc_html_e('Inactivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     <?php endif; ?>
                                 </div>
                             </div>
@@ -657,7 +657,7 @@ class Flavor_Addon_Manager {
 
                                 <?php if (!empty($addon['author'])): ?>
                                     <p class="addon-author">
-                                        <strong><?php esc_html_e('Autor:', 'flavor-chat-ia'); ?></strong>
+                                        <strong><?php esc_html_e('Autor:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                                         <?php if (!empty($addon['author_uri'])): ?>
                                             <a href="<?php echo esc_url($addon['author_uri']); ?>" target="_blank">
                                                 <?php echo esc_html($addon['author']); ?>
@@ -672,7 +672,7 @@ class Flavor_Addon_Manager {
                                     <div class="addon-requirements-error">
                                         <span class="dashicons dashicons-warning"></span>
                                         <?php printf(
-                                            esc_html__('Requiere Flavor Chat IA %s o superior', 'flavor-chat-ia'),
+                                            esc_html__('Requiere Flavor Chat IA %s o superior', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                             esc_html($addon['requires_core'])
                                         ); ?>
                                     </div>
@@ -687,12 +687,12 @@ class Flavor_Addon_Manager {
                                             <input type="hidden" name="addon_id" value="<?php echo esc_attr($addon_id); ?>">
                                             <input type="hidden" name="addon_action" value="deactivate">
                                             <button type="submit" class="button addon-deactivate">
-                                                <?php esc_html_e('Desactivar', 'flavor-chat-ia'); ?>
+                                                <?php esc_html_e('Desactivar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </button>
                                         </form>
                                         <?php if (!empty($addon['settings_page'])): ?>
                                             <a href="<?php echo esc_url($addon['settings_page']); ?>" class="button button-primary">
-                                                <?php esc_html_e('Configurar', 'flavor-chat-ia'); ?>
+                                                <?php esc_html_e('Configurar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </a>
                                         <?php endif; ?>
                                     <?php else: ?>
@@ -701,13 +701,13 @@ class Flavor_Addon_Manager {
                                             <input type="hidden" name="addon_id" value="<?php echo esc_attr($addon_id); ?>">
                                             <input type="hidden" name="addon_action" value="activate">
                                             <button type="submit" class="button button-primary addon-activate">
-                                                <?php esc_html_e('Activar', 'flavor-chat-ia'); ?>
+                                                <?php esc_html_e('Activar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </button>
                                         </form>
                                     <?php endif; ?>
 
                                     <?php if (!empty($addon['documentation_url'])): ?>
-                                        <a href="<?php echo esc_url($addon['documentation_url']); ?>" class="button addon-docs" target="_blank" title="<?php esc_attr_e('Documentación', 'flavor-chat-ia'); ?>">
+                                        <a href="<?php echo esc_url($addon['documentation_url']); ?>" class="button addon-docs" target="_blank" title="<?php esc_attr_e('Documentación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <span class="dashicons dashicons-book-alt"></span>
                                         </a>
                                     <?php endif; ?>
@@ -792,8 +792,8 @@ class Flavor_Addon_Manager {
             ], 30);
         } else {
             $mensaje = $action === 'activate'
-                ? sprintf(__('Addon "%s" activado correctamente', 'flavor-chat-ia'), $this->addons_registrados[$addon_id]['name'] ?? $addon_id)
-                : sprintf(__('Addon "%s" desactivado correctamente', 'flavor-chat-ia'), $this->addons_registrados[$addon_id]['name'] ?? $addon_id);
+                ? sprintf(__('Addon "%s" activado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN), $this->addons_registrados[$addon_id]['name'] ?? $addon_id)
+                : sprintf(__('Addon "%s" desactivado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN), $this->addons_registrados[$addon_id]['name'] ?? $addon_id);
 
             set_transient('flavor_addon_action_result', [
                 'success' => true,
@@ -815,14 +815,14 @@ class Flavor_Addon_Manager {
         check_ajax_referer('flavor_addon_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $addon_id = sanitize_text_field($_POST['addon_id'] ?? '');
         $action = sanitize_text_field($_POST['action_type'] ?? 'toggle');
 
         if (empty($addon_id)) {
-            wp_send_json_error(['message' => __('ID de addon requerido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('ID de addon requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if ($action === 'activate' || (!in_array($addon_id, $this->addons_activos) && $action === 'toggle')) {
@@ -836,7 +836,7 @@ class Flavor_Addon_Manager {
         }
 
         wp_send_json_success([
-            'message' => __('Operación completada', 'flavor-chat-ia'),
+            'message' => __('Operación completada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'is_active' => in_array($addon_id, $this->addons_activos),
         ]);
     }
@@ -941,7 +941,7 @@ class Flavor_Addon_Manager {
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => __('Addon activado', 'flavor-chat-ia'),
+            'message' => __('Addon activado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 200);
     }
 
@@ -956,7 +956,7 @@ class Flavor_Addon_Manager {
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => __('Addon desactivado', 'flavor-chat-ia'),
+            'message' => __('Addon desactivado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 200);
     }
 }

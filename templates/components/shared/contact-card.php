@@ -231,12 +231,12 @@ $avatar_color = $avatar_colors[crc32($name) % count($avatar_colors)];
                 <div class="mt-5 flex items-center justify-center gap-3">
                     <?php if ($email): ?>
                         <a href="mailto:<?php echo esc_attr($email); ?>" class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
-                            <?php esc_html_e('Contactar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Contactar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     <?php endif; ?>
                     <?php if ($profile_url): ?>
                         <a href="<?php echo esc_url($profile_url); ?>" class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors">
-                            <?php esc_html_e('Ver perfil', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Ver perfil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     <?php endif; ?>
                 </div>

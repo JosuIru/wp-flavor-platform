@@ -28,7 +28,7 @@ class Flavor_Feature_Bookmarks extends Flavor_Feature_Base {
     }
 
     public function register_action($entity_type, $entity_id, $user_id, $value = null) {
-        if (!$user_id) return new WP_Error('auth', __('Debes iniciar sesión', 'flavor-chat-ia'));
+        if (!$user_id) return new WP_Error('auth', __('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         global $wpdb;
         $table = $wpdb->prefix . 'flavor_bookmarks';
         if ($this->is_bookmarked($entity_type, $entity_id, $user_id)) {

@@ -20,13 +20,13 @@ $url = $evento['url'] ?? '#';
 $dia = $evento['dia'] ?? '01';
 $mes = $evento['mes'] ?? 'Ene';
 $hora = $evento['hora'] ?? '';
-$ubicacion = $evento['ubicacion'] ?? __('Por confirmar', 'flavor-chat-ia');
+$ubicacion = $evento['ubicacion'] ?? __('Por confirmar', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $asistentes = $evento['asistentes'] ?? 0;
 $precio = $evento['precio'] ?? 0;
 $categoria = $evento['categoria'] ?? '';
 $imagen = $evento['imagen'] ?? '';
 
-$precio_label = $precio == 0 ? __('Gratis', 'flavor-chat-ia') : $precio . ' €';
+$precio_label = $precio == 0 ? __('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN) : $precio . ' €';
 $precio_class = $precio == 0 ? 'bg-green-100 text-green-700' : 'bg-rose-100 text-rose-700';
 ?>
 
@@ -70,7 +70,7 @@ $precio_class = $precio == 0 ? 'bg-green-100 text-green-700' : 'bg-rose-100 text
                 <?php echo esc_html($precio_label); ?>
             </span>
             <a href="<?php echo esc_url($url); ?>" class="bg-rose-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-rose-600 transition-colors">
-                <?php echo esc_html__('Inscribirse', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Inscribirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>

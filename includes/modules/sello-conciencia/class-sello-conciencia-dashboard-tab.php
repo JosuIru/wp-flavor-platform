@@ -32,7 +32,7 @@ class Flavor_Sello_Conciencia_Dashboard_Tab {
 
     public function registrar_tabs($tabs) {
         $tabs['sello-conciencia'] = [
-            'label' => __('Sello Conciencia', 'flavor-chat-ia'),
+            'label' => __('Sello Conciencia', 'flavor-platform'),
             'icon' => 'dashicons-awards',
             'callback' => [$this, 'render_tab'],
             'priority' => 80,
@@ -161,7 +161,7 @@ class Flavor_Sello_Conciencia_Dashboard_Tab {
         if (!is_user_logged_in()) {
             $this->mensajes[] = [
                 'tipo' => 'error',
-                'texto' => __('Debes iniciar sesión para enviar una solicitud.', 'flavor-chat-ia'),
+                'texto' => __('Debes iniciar sesión para enviar una solicitud.', 'flavor-platform'),
             ];
             return;
         }
@@ -170,7 +170,7 @@ class Flavor_Sello_Conciencia_Dashboard_Tab {
         if (!wp_verify_nonce($nonce, 'flavor_solicitud_sello')) {
             $this->mensajes[] = [
                 'tipo' => 'error',
-                'texto' => __('No se pudo validar el formulario. Inténtalo de nuevo.', 'flavor-chat-ia'),
+                'texto' => __('No se pudo validar el formulario. Inténtalo de nuevo.', 'flavor-platform'),
             ];
             return;
         }
@@ -183,7 +183,7 @@ class Flavor_Sello_Conciencia_Dashboard_Tab {
         if ($tipo === '' || $nombre_entidad === '' || $descripcion === '' || !$acepto) {
             $this->mensajes[] = [
                 'tipo' => 'error',
-                'texto' => __('Completa los campos obligatorios y acepta las condiciones.', 'flavor-chat-ia'),
+                'texto' => __('Completa los campos obligatorios y acepta las condiciones.', 'flavor-platform'),
             ];
             return;
         }
@@ -199,7 +199,7 @@ class Flavor_Sello_Conciencia_Dashboard_Tab {
         if ($pendiente > 0) {
             $this->mensajes[] = [
                 'tipo' => 'warning',
-                'texto' => __('Ya tienes una solicitud en proceso. Espera su revisión antes de enviar otra.', 'flavor-chat-ia'),
+                'texto' => __('Ya tienes una solicitud en proceso. Espera su revisión antes de enviar otra.', 'flavor-platform'),
             ];
             return;
         }
@@ -237,14 +237,14 @@ class Flavor_Sello_Conciencia_Dashboard_Tab {
         if ($insertado === false) {
             $this->mensajes[] = [
                 'tipo' => 'error',
-                'texto' => __('No se pudo guardar la solicitud. Revisa la configuración de base de datos.', 'flavor-chat-ia'),
+                'texto' => __('No se pudo guardar la solicitud. Revisa la configuración de base de datos.', 'flavor-platform'),
             ];
             return;
         }
 
         $this->mensajes[] = [
             'tipo' => 'success',
-            'texto' => __('Solicitud enviada correctamente. La revisaremos y te notificaremos el resultado.', 'flavor-chat-ia'),
+            'texto' => __('Solicitud enviada correctamente. La revisaremos y te notificaremos el resultado.', 'flavor-platform'),
         ];
     }
 
@@ -421,7 +421,7 @@ class Flavor_Sello_Conciencia_Dashboard_Tab {
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="flavor-btn flavor-btn-primary"><?php esc_html_e('Enviar solicitud', 'flavor-chat-ia'); ?></button>
+                    <button type="submit" class="flavor-btn flavor-btn-primary"><?php esc_html_e('Enviar solicitud', 'flavor-platform'); ?></button>
                 </div>
             </form>
         </div>
@@ -557,7 +557,7 @@ class Flavor_Sello_Conciencia_Dashboard_Tab {
         $user_id = get_current_user_id();
 
         if (!$sello_id) {
-            echo '<div class="flavor-empty-state"><p>' . esc_html__('Se requiere el identificador del sello.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="flavor-empty-state"><p>' . esc_html__('Se requiere el identificador del sello.', 'flavor-platform') . '</p></div>';
             return;
         }
 
@@ -568,7 +568,7 @@ class Flavor_Sello_Conciencia_Dashboard_Tab {
         ));
 
         if (!$sello) {
-            echo '<div class="flavor-empty-state"><p>' . esc_html__('El sello solicitado no existe o no está disponible.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="flavor-empty-state"><p>' . esc_html__('El sello solicitado no existe o no está disponible.', 'flavor-platform') . '</p></div>';
             return;
         }
 
@@ -584,29 +584,29 @@ class Flavor_Sello_Conciencia_Dashboard_Tab {
                     </div>
                 </div>
                 <a href="?tab=sello-conciencia&subtab=mis-sellos" class="flavor-btn flavor-btn-sm">
-                    <?php esc_html_e('Volver', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Volver', 'flavor-platform'); ?>
                 </a>
             </div>
 
             <div class="sello-detalle__meta">
-                <div><strong><?php esc_html_e('Estado', 'flavor-chat-ia'); ?>:</strong> <?php echo esc_html(ucfirst((string) $sello->estado)); ?></div>
-                <div><strong><?php esc_html_e('Emitido', 'flavor-chat-ia'); ?>:</strong> <?php echo esc_html(date_i18n('j M Y', strtotime((string) $sello->fecha_emision))); ?></div>
-                <div><strong><?php esc_html_e('Válido hasta', 'flavor-chat-ia'); ?>:</strong> <?php echo esc_html(date_i18n('j M Y', strtotime((string) $sello->fecha_expiracion))); ?></div>
+                <div><strong><?php esc_html_e('Estado', 'flavor-platform'); ?>:</strong> <?php echo esc_html(ucfirst((string) $sello->estado)); ?></div>
+                <div><strong><?php esc_html_e('Emitido', 'flavor-platform'); ?>:</strong> <?php echo esc_html(date_i18n('j M Y', strtotime((string) $sello->fecha_emision))); ?></div>
+                <div><strong><?php esc_html_e('Válido hasta', 'flavor-platform'); ?>:</strong> <?php echo esc_html(date_i18n('j M Y', strtotime((string) $sello->fecha_expiracion))); ?></div>
                 <?php if (!empty($sello->direccion)) : ?>
-                    <div><strong><?php esc_html_e('Dirección', 'flavor-chat-ia'); ?>:</strong> <?php echo esc_html($sello->direccion); ?></div>
+                    <div><strong><?php esc_html_e('Dirección', 'flavor-platform'); ?>:</strong> <?php echo esc_html($sello->direccion); ?></div>
                 <?php endif; ?>
             </div>
 
             <?php if (!empty($sello->descripcion)) : ?>
                 <div class="sello-detalle__bloque">
-                    <h4><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php esc_html_e('Descripción', 'flavor-platform'); ?></h4>
                     <p><?php echo esc_html($sello->descripcion); ?></p>
                 </div>
             <?php endif; ?>
 
             <?php if (!empty($categorias)) : ?>
                 <div class="sello-detalle__bloque">
-                    <h4><?php esc_html_e('Categorías', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php esc_html_e('Categorías', 'flavor-platform'); ?></h4>
                     <div class="sello-categorias">
                         <?php foreach ($categorias as $cat) : ?>
                             <span class="categoria-tag"><?php echo esc_html($cat); ?></span>

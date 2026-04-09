@@ -107,7 +107,7 @@ $identificador_unico = 'masonry-' . wp_unique_id();
 
                     <?php if ( ! empty( $item_url ) ) : ?>
                         <div class="mt-3 flex items-center text-xs font-medium" style="color: <?php echo $color_primario_escapado; ?>;">
-                            <span><?php esc_html_e( 'Leer más', 'flavor-chat-ia' ); ?></span>
+                            <span><?php esc_html_e( 'Leer más', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?></span>
                             <svg class="ml-1 h-3 w-3 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                             </svg>

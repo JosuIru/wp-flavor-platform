@@ -9,8 +9,8 @@
 if (!defined('ABSPATH')) exit;
 
 // Extraer variables del array $args con valores por defecto
-$titulo_seccion = isset($args['titulo_seccion']) ? $args['titulo_seccion'] : __('Grupos Destacados', 'flavor-chat-ia');
-$subtitulo = isset($args['subtitulo']) ? $args['subtitulo'] : __('Únete a comunidades activas de tu barrio', 'flavor-chat-ia');
+$titulo_seccion = isset($args['titulo_seccion']) ? $args['titulo_seccion'] : __('Grupos Destacados', FLAVOR_PLATFORM_TEXT_DOMAIN);
+$subtitulo = isset($args['subtitulo']) ? $args['subtitulo'] : __('Únete a comunidades activas de tu barrio', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $grupos = isset($args['grupos']) ? $args['grupos'] : array();
 $mostrar_ver_todos = isset($args['mostrar_ver_todos']) ? $args['mostrar_ver_todos'] : true;
 $url_ver_todos = isset($args['url_ver_todos']) ? $args['url_ver_todos'] : '#';
@@ -129,7 +129,7 @@ function flavor_formatear_miembros($numero_miembros) {
         </div>
         <?php if ($mostrar_ver_todos) : ?>
             <a href="<?php echo esc_url($url_ver_todos); ?>" class="flavor-grupos-destacados__ver-todos">
-                <?php esc_html_e('Ver todos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <svg class="flavor-grupos-destacados__icono-flecha" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -169,7 +169,7 @@ function flavor_formatear_miembros($numero_miembros) {
                     <?php endif; ?>
 
                     <?php if ($grupo_es_privado) : ?>
-                        <span class="flavor-grupo-card__badge-privado" title="<?php esc_attr_e('Grupo privado', 'flavor-chat-ia'); ?>">
+                        <span class="flavor-grupo-card__badge-privado" title="<?php esc_attr_e('Grupo privado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M9 5.5H3C2.72386 5.5 2.5 5.72386 2.5 6V9.5C2.5 9.77614 2.72386 10 3 10H9C9.27614 10 9.5 9.77614 9.5 9.5V6C9.5 5.72386 9.27614 5.5 9 5.5Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M4 5.5V3.5C4 2.39543 4.89543 1.5 6 1.5C7.10457 1.5 8 2.39543 8 3.5V5.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
@@ -199,7 +199,7 @@ function flavor_formatear_miembros($numero_miembros) {
                             </svg>
                             <span class="flavor-grupo-card__miembros-texto">
                                 <?php echo esc_html(flavor_formatear_miembros($grupo_miembros)); ?>
-                                <?php esc_html_e('miembros', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         </div>
                     </div>
@@ -216,7 +216,7 @@ function flavor_formatear_miembros($numero_miembros) {
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M13.3334 4L6.00008 11.3333L2.66675 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
-                            <?php esc_html_e('Unido', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Unido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     <?php else : ?>
                         <button
@@ -225,9 +225,9 @@ function flavor_formatear_miembros($numero_miembros) {
                             data-grupo-id="<?php echo esc_attr($grupo_id); ?>"
                         >
                             <?php if ($grupo_es_privado) : ?>
-                                <?php esc_html_e('Solicitar unirse', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Solicitar unirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             <?php else : ?>
-                                <?php esc_html_e('Unirse', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Unirse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             <?php endif; ?>
                         </button>
                     <?php endif; ?>

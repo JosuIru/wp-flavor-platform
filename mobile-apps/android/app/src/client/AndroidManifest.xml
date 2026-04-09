@@ -18,6 +18,6 @@
     <!-- Permite consultar si la app admin está instalada -->
     <!-- PERSONALIZAR: Cambiar al package name de tu app admin -->
     <queries>
-        <package android:name="com.basabere.chatia.admin"/>
+        <package android:name="com.flavorplatform.chatia.admin"/>
     </queries>
 </manifest>

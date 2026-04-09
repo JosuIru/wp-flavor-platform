@@ -89,7 +89,7 @@ $tipos_membresia = [
                     <!-- Badge recomendado -->
                     <?php if ($tipo_actual['destacado']): ?>
                         <div class="bg-rose-500 text-white text-center py-2 text-sm font-bold uppercase tracking-wide">
-                            <?php echo esc_html__('Recomendado', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Recomendado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </div>
                     <?php endif; ?>
 
@@ -108,10 +108,10 @@ $tipos_membresia = [
                         <div class="mb-6">
                             <div class="flex items-baseline">
                                 <?php if ($tipo_actual['precio'] === '0'): ?>
-                                    <span class="text-4xl font-bold text-gray-900"><?php echo esc_html__('Gratis', 'flavor-chat-ia'); ?></span>
+                                    <span class="text-4xl font-bold text-gray-900"><?php echo esc_html__('Gratis', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php else: ?>
                                     <span class="text-4xl font-bold text-gray-900"><?php echo esc_html($tipo_actual['precio']); ?>&euro;</span>
-                                    <span class="text-gray-500 ml-2">/<?php echo esc_html__('mes', 'flavor-chat-ia'); ?></span>
+                                    <span class="text-gray-500 ml-2">/<?php echo esc_html__('mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php endif; ?>
                             </div>
                             <p class="text-sm text-gray-400 mt-1">
@@ -150,7 +150,7 @@ $tipos_membresia = [
 
         <!-- Nota inferior -->
         <p class="text-center text-sm text-gray-400 mt-8">
-            <?php echo esc_html__('Todos los planes se pueden cancelar en cualquier momento. IVA no incluido en planes de pago.', 'flavor-chat-ia'); ?>
+            <?php echo esc_html__('Todos los planes se pueden cancelar en cualquier momento. IVA no incluido en planes de pago.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </p>
     </div>
 </section>

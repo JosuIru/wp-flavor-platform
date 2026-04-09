@@ -101,65 +101,65 @@ $datos_grafico = $wpdb->get_results($wpdb->prepare(
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
         <div style="display: flex; gap: 8px;">
             <button class="button <?php echo $periodo === 'semana' ? 'button-primary' : ''; ?>"
-                    onclick="location.href='?periodo=semana'"><?php esc_html_e('Semana', 'flavor-chat-ia'); ?></button>
+                    onclick="location.href='?periodo=semana'"><?php esc_html_e('Semana', 'flavor-platform'); ?></button>
             <button class="button <?php echo $periodo === 'mes' ? 'button-primary' : ''; ?>"
-                    onclick="location.href='?periodo=mes'"><?php esc_html_e('Mes', 'flavor-chat-ia'); ?></button>
+                    onclick="location.href='?periodo=mes'"><?php esc_html_e('Mes', 'flavor-platform'); ?></button>
             <button class="button <?php echo $periodo === 'trimestre' ? 'button-primary' : ''; ?>"
-                    onclick="location.href='?periodo=trimestre'"><?php esc_html_e('Trimestre', 'flavor-chat-ia'); ?></button>
+                    onclick="location.href='?periodo=trimestre'"><?php esc_html_e('Trimestre', 'flavor-platform'); ?></button>
             <button class="button <?php echo $periodo === 'año' ? 'button-primary' : ''; ?>"
-                    onclick="location.href='?periodo=año'"><?php esc_html_e('Año', 'flavor-chat-ia'); ?></button>
+                    onclick="location.href='?periodo=año'"><?php esc_html_e('Año', 'flavor-platform'); ?></button>
         </div>
 
         <button class="button button-primary" @click="showModalLectura = true">
             <span class="dashicons dashicons-plus-alt2"></span>
-            <?php esc_html_e('Nueva Lectura', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Nueva Lectura', 'flavor-platform'); ?>
         </button>
     </div>
 
     <!-- KPIs del período -->
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
         <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #fff; padding: 20px; border-radius: 12px;">
-            <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase;"><?php esc_html_e('Generado', 'flavor-chat-ia'); ?></div>
+            <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase;"><?php esc_html_e('Generado', 'flavor-platform'); ?></div>
             <div style="font-size: 28px; font-weight: bold;"><?php echo number_format($stats['total_generado'], 1); ?> kWh</div>
         </div>
 
         <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #fff; padding: 20px; border-radius: 12px;">
-            <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase;"><?php esc_html_e('Consumido', 'flavor-chat-ia'); ?></div>
+            <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase;"><?php esc_html_e('Consumido', 'flavor-platform'); ?></div>
             <div style="font-size: 28px; font-weight: bold;"><?php echo number_format($stats['total_consumido'], 1); ?> kWh</div>
         </div>
 
         <div style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: #fff; padding: 20px; border-radius: 12px;">
-            <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase;"><?php esc_html_e('Vertido a red', 'flavor-chat-ia'); ?></div>
+            <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase;"><?php esc_html_e('Vertido a red', 'flavor-platform'); ?></div>
             <div style="font-size: 28px; font-weight: bold;"><?php echo number_format($stats['total_vertido'], 1); ?> kWh</div>
         </div>
 
         <div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: #fff; padding: 20px; border-radius: 12px;">
-            <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase;"><?php esc_html_e('Ahorro estimado', 'flavor-chat-ia'); ?></div>
+            <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase;"><?php esc_html_e('Ahorro estimado', 'flavor-platform'); ?></div>
             <div style="font-size: 28px; font-weight: bold;"><?php echo number_format($stats['ahorro_total'], 2); ?> €</div>
         </div>
     </div>
 
     <!-- Gráfico -->
     <div style="background: #fff; padding: 20px; border-radius: 12px; margin-bottom: 24px; border: 1px solid #e5e7eb;">
-        <h3 style="margin: 0 0 16px;"><?php esc_html_e('Evolución del período', 'flavor-chat-ia'); ?></h3>
+        <h3 style="margin: 0 0 16px;"><?php esc_html_e('Evolución del período', 'flavor-platform'); ?></h3>
         <canvas id="graficoBalance" height="100"></canvas>
     </div>
 
     <!-- Tabla de lecturas -->
     <div style="background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #e5e7eb;">
-        <h3 style="margin: 0 0 16px;"><?php esc_html_e('Registro de lecturas', 'flavor-chat-ia'); ?></h3>
+        <h3 style="margin: 0 0 16px;"><?php esc_html_e('Registro de lecturas', 'flavor-platform'); ?></h3>
 
         <?php if ($lecturas): ?>
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Instalación', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Comunidad', 'flavor-chat-ia'); ?></th>
-                    <th style="text-align: right;"><?php esc_html_e('Generado', 'flavor-chat-ia'); ?></th>
-                    <th style="text-align: right;"><?php esc_html_e('Consumido', 'flavor-chat-ia'); ?></th>
-                    <th style="text-align: right;"><?php esc_html_e('Vertido', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Validada', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Fecha', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Instalación', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Comunidad', 'flavor-platform'); ?></th>
+                    <th style="text-align: right;"><?php esc_html_e('Generado', 'flavor-platform'); ?></th>
+                    <th style="text-align: right;"><?php esc_html_e('Consumido', 'flavor-platform'); ?></th>
+                    <th style="text-align: right;"><?php esc_html_e('Vertido', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Validada', 'flavor-platform'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -190,7 +190,7 @@ $datos_grafico = $wpdb->get_results($wpdb->prepare(
         </table>
         <?php else: ?>
         <p style="text-align: center; color: #666; padding: 20px;">
-            <?php esc_html_e('No hay lecturas registradas en este período.', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('No hay lecturas registradas en este período.', 'flavor-platform'); ?>
         </p>
         <?php endif; ?>
     </div>
@@ -200,7 +200,7 @@ $datos_grafico = $wpdb->get_results($wpdb->prepare(
          style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center;"
          @click.self="showModalLectura = false">
         <div style="background: #fff; border-radius: 12px; padding: 24px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto;">
-            <h2 style="margin: 0 0 20px;"><?php esc_html_e('Registrar Lectura', 'flavor-chat-ia'); ?></h2>
+            <h2 style="margin: 0 0 20px;"><?php esc_html_e('Registrar Lectura', 'flavor-platform'); ?></h2>
             <?php echo do_shortcode('[flavor_energia_form_lectura]'); ?>
         </div>
     </div>
@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 labels: datos.map(d => d.fecha),
                 datasets: [
                     {
-                        label: '<?php echo esc_js(__('Generado', 'flavor-chat-ia')); ?>',
+                        label: '<?php echo esc_js(__('Generado', 'flavor-platform')); ?>',
                         data: datos.map(d => parseFloat(d.generado)),
                         borderColor: '#10b981',
                         backgroundColor: 'rgba(16, 185, 129, 0.1)',
@@ -227,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         tension: 0.3
                     },
                     {
-                        label: '<?php echo esc_js(__('Consumido', 'flavor-chat-ia')); ?>',
+                        label: '<?php echo esc_js(__('Consumido', 'flavor-platform')); ?>',
                         data: datos.map(d => parseFloat(d.consumido)),
                         borderColor: '#f59e0b',
                         backgroundColor: 'rgba(245, 158, 11, 0.1)',
@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         tension: 0.3
                     },
                     {
-                        label: '<?php echo esc_js(__('Vertido', 'flavor-chat-ia')); ?>',
+                        label: '<?php echo esc_js(__('Vertido', 'flavor-platform')); ?>',
                         data: datos.map(d => parseFloat(d.vertido)),
                         borderColor: '#3b82f6',
                         backgroundColor: 'rgba(59, 130, 246, 0.1)',

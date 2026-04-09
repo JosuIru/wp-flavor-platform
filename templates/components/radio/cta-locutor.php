@@ -32,7 +32,7 @@ $testimonios = [
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
                 </svg>
-                <?php echo esc_html__('Se Locutor', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Se Locutor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
             <h2 class="text-4xl md:text-5xl font-bold text-white mb-6"><?php echo esc_html($titulo); ?></h2>
             <p class="text-xl text-white/90"><?php echo esc_html($subtitulo); ?></p>
@@ -69,17 +69,17 @@ $testimonios = [
 
         <!-- CTA -->
         <div class="text-center bg-white/15 backdrop-blur-sm rounded-2xl p-8">
-            <h3 class="text-2xl font-bold text-white mb-4"><?php echo esc_html__('Empieza Tu Aventura en la Radio', 'flavor-chat-ia'); ?></h3>
-            <p class="text-white/90 mb-6"><?php echo esc_html__('No necesitas experiencia previa. Solo ganas de comunicar.', 'flavor-chat-ia'); ?></p>
+            <h3 class="text-2xl font-bold text-white mb-4"><?php echo esc_html__('Empieza Tu Aventura en la Radio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p class="text-white/90 mb-6"><?php echo esc_html__('No necesitas experiencia previa. Solo ganas de comunicar.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="#solicitar" class="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-semibold rounded-xl bg-white text-purple-600 hover:scale-105 transition-transform">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
                     </svg>
-                    <?php echo esc_html__('Quiero Ser Locutor', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Quiero Ser Locutor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="#info" class="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-semibold rounded-xl text-white border-2 border-white/50 hover:bg-white/20 transition-colors">
-                    <?php echo esc_html__('Mas Informacion', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Mas Informacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>

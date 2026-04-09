@@ -27,8 +27,8 @@ class Flavor_Huertos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
     public function __construct() {
         global $wpdb;
         $this->prefix_tabla = $wpdb->prefix . 'flavor_huertos_';
-        $this->title = __('Huertos Urbanos', 'flavor-chat-ia');
-        $this->description = __('Gestión de parcelas y huertos comunitarios', 'flavor-chat-ia');
+        $this->title = __('Huertos Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN);
+        $this->description = __('Gestión de parcelas y huertos comunitarios', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
         parent::__construct([
             'id' => $this->widget_id,
@@ -80,7 +80,7 @@ class Flavor_Huertos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $stats[] = [
                 'icon' => 'dashicons-carrot',
                 'valor' => $mis_parcelas,
-                'label' => __('Mis parcelas', 'flavor-chat-ia'),
+                'label' => __('Mis parcelas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $mis_parcelas > 0 ? 'success' : 'gray',
                 'url' => $es_admin ? admin_url('admin.php?page=huertos-urbanos') : Flavor_Chat_Helpers::get_action_url('huertos_urbanos', 'mis-parcelas'),
             ];
@@ -89,7 +89,7 @@ class Flavor_Huertos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         $stats[] = [
             'icon' => 'dashicons-location',
             'valor' => $parcelas_disponibles,
-            'label' => __('Disponibles', 'flavor-chat-ia'),
+            'label' => __('Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => $parcelas_disponibles > 0 ? 'info' : 'gray',
             'url' => $es_admin ? admin_url('admin.php?page=huertos-urbanos&tab=disponibles') : Flavor_Chat_Helpers::get_action_url('huertos_urbanos', 'disponibles'),
         ];
@@ -99,10 +99,10 @@ class Flavor_Huertos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats,
             'items' => $items,
-            'empty_state' => __('Solicita una parcela para empezar a cultivar', 'flavor-chat-ia'),
+            'empty_state' => __('Solicita una parcela para empezar a cultivar', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'footer' => [
                 [
-                    'label' => __('Ver huertos', 'flavor-chat-ia'),
+                    'label' => __('Ver huertos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url' => $es_admin ? admin_url('admin.php?page=huertos-urbanos') : Flavor_Chat_Helpers::get_action_url('huertos_urbanos', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
@@ -135,7 +135,7 @@ class Flavor_Huertos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         foreach ($parcelas as $parcela) {
             $items[] = [
                 'icon' => 'dashicons-carrot',
-                'title' => $parcela->nombre ?: __('Parcela', 'flavor-chat-ia'),
+                'title' => $parcela->nombre ?: __('Parcela', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'meta' => $parcela->ubicacion ?: '',
                 'url' => $es_admin ? admin_url('admin.php?page=huertos-urbanos&parcela=' . $parcela->id) : Flavor_Chat_Helpers::get_action_url('huertos_urbanos', 'parcela') . '/' . $parcela->id . '/',
             ];

@@ -18,8 +18,8 @@ $avatar = get_avatar_url($user_id, ['size' => 100]);
 
 <div class="flavor-estados-container" data-flavor-estados>
     <div class="flavor-estados-header">
-        <h3><?php esc_html_e('Estados', 'flavor-chat-ia'); ?></h3>
-        <button class="btn-crear-estado" type="button" title="<?php esc_attr_e('Crear estado', 'flavor-chat-ia'); ?>">
+        <h3><?php esc_html_e('Estados', 'flavor-platform'); ?></h3>
+        <button class="btn-crear-estado" type="button" title="<?php esc_attr_e('Crear estado', 'flavor-platform'); ?>">
             <span class="dashicons dashicons-plus-alt2"></span>
         </button>
     </div>
@@ -31,7 +31,7 @@ $avatar = get_avatar_url($user_id, ['size' => 100]);
                 <div class="estado-ring"></div>
                 <img src="<?php echo esc_url($avatar); ?>" class="estado-avatar" alt="">
             </div>
-            <span class="estado-nombre"><?php esc_html_e('Tu estado', 'flavor-chat-ia'); ?></span>
+            <span class="estado-nombre"><?php esc_html_e('Tu estado', 'flavor-platform'); ?></span>
         </div>
 
         <!-- Los estados de contactos se cargarán por JavaScript -->
@@ -44,7 +44,7 @@ $avatar = get_avatar_url($user_id, ['size' => 100]);
     <div class="estados-acciones">
         <button class="btn-crear-estado-grande" type="button">
             <span class="dashicons dashicons-camera"></span>
-            <?php esc_html_e('Crear estado', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Crear estado', 'flavor-platform'); ?>
         </button>
     </div>
     <?php endif; ?>

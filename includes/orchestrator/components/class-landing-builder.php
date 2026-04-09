@@ -51,7 +51,7 @@ class Flavor_Landing_Builder extends Flavor_Template_Component_Base {
      */
     public function __construct() {
         $this->componente_id = 'landing';
-        $this->componente_nombre = __('Constructor de Landing', 'flavor-chat-ia');
+        $this->componente_nombre = __('Constructor de Landing', FLAVOR_PLATFORM_TEXT_DOMAIN);
     }
 
     /**
@@ -70,7 +70,7 @@ class Flavor_Landing_Builder extends Flavor_Template_Component_Base {
 
         if (empty($secciones)) {
             return $this->respuesta_exito(
-                __('No hay secciones definidas para la landing.', 'flavor-chat-ia'),
+                __('No hay secciones definidas para la landing.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['contenido_generado' => false]
             );
         }
@@ -80,7 +80,7 @@ class Flavor_Landing_Builder extends Flavor_Template_Component_Base {
 
         if (!$id_pagina_landing) {
             return $this->respuesta_error(
-                __('No se encontro la pagina landing para actualizar.', 'flavor-chat-ia'),
+                __('No se encontro la pagina landing para actualizar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['pagina_buscada' => $config_landing['slug'] ?? 'landing']
             );
         }
@@ -105,7 +105,7 @@ class Flavor_Landing_Builder extends Flavor_Template_Component_Base {
             );
 
             return $this->respuesta_error(
-                __('Error al actualizar la landing page.', 'flavor-chat-ia'),
+                __('Error al actualizar la landing page.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['error' => $resultado_actualizacion->get_error_message()]
             );
         }
@@ -119,7 +119,7 @@ class Flavor_Landing_Builder extends Flavor_Template_Component_Base {
 
         return $this->respuesta_exito(
             sprintf(
-                __('Landing page actualizada con %d secciones.', 'flavor-chat-ia'),
+                __('Landing page actualizada con %d secciones.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 count($secciones)
             ),
             [
@@ -145,7 +145,7 @@ class Flavor_Landing_Builder extends Flavor_Template_Component_Base {
 
         if (!$id_pagina_landing) {
             return $this->respuesta_exito(
-                __('No hay landing page registrada para esta plantilla.', 'flavor-chat-ia'),
+                __('No hay landing page registrada para esta plantilla.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['restaurada' => false]
             );
         }
@@ -165,7 +165,7 @@ class Flavor_Landing_Builder extends Flavor_Template_Component_Base {
         } else {
             $this->registrar_advertencia(
                 'sin_snapshot',
-                __('No se encontro el contenido original para restaurar.', 'flavor-chat-ia')
+                __('No se encontro el contenido original para restaurar.', FLAVOR_PLATFORM_TEXT_DOMAIN)
             );
         }
 
@@ -173,7 +173,7 @@ class Flavor_Landing_Builder extends Flavor_Template_Component_Base {
         $this->eliminar_meta_instalacion($plantilla_id);
 
         return $this->respuesta_exito(
-            __('Landing page restaurada a su estado original.', 'flavor-chat-ia'),
+            __('Landing page restaurada a su estado original.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [
                 'pagina_id'  => $id_pagina_landing,
                 'restaurada' => $contenido_original !== null,
@@ -203,7 +203,7 @@ class Flavor_Landing_Builder extends Flavor_Template_Component_Base {
             return [
                 'estado'   => 'no_instalado',
                 'detalles' => [],
-                'mensaje'  => __('No se encontro la pagina landing.', 'flavor-chat-ia'),
+                'mensaje'  => __('No se encontro la pagina landing.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -248,7 +248,7 @@ class Flavor_Landing_Builder extends Flavor_Template_Component_Base {
                 ],
             ],
             'mensaje'  => sprintf(
-                __('%d de %d secciones configuradas.', 'flavor-chat-ia'),
+                __('%d de %d secciones configuradas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 count($secciones_encontradas),
                 count($secciones_esperadas)
             ),
@@ -610,7 +610,7 @@ class Flavor_Landing_Builder extends Flavor_Template_Component_Base {
      * @return string
      */
     private function renderizar_seccion_faq($seccion, $id_seccion) {
-        $titulo = $seccion['titulo'] ?? __('Preguntas Frecuentes', 'flavor-chat-ia');
+        $titulo = $seccion['titulo'] ?? __('Preguntas Frecuentes', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $items = $seccion['items'] ?? [];
 
         $html = sprintf(

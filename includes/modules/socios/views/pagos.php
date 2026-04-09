@@ -27,8 +27,8 @@ $pagina_actual = isset($_GET['paged']) ? max(1, absint($_GET['paged'])) : 1;
 $offset = ($pagina_actual - 1) * $por_pagina;
 
 // Estados y métodos
-$estados = ['pendiente' => __('Pendiente', 'flavor-chat-ia'), 'pagado' => __('Pagado', 'flavor-chat-ia'), 'fallido' => __('Fallido', 'flavor-chat-ia'), 'reembolsado' => __('Reembolsado', 'flavor-chat-ia')];
-$metodos = ['transferencia' => __('Transferencia', 'flavor-chat-ia'), 'tarjeta' => __('Tarjeta', 'flavor-chat-ia'), 'efectivo' => __('Efectivo', 'flavor-chat-ia'), 'domiciliacion' => __('Domiciliación', 'flavor-chat-ia')];
+$estados = ['pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN), 'pagado' => __('Pagado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'fallido' => __('Fallido', FLAVOR_PLATFORM_TEXT_DOMAIN), 'reembolsado' => __('Reembolsado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
+$metodos = ['transferencia' => __('Transferencia', FLAVOR_PLATFORM_TEXT_DOMAIN), 'tarjeta' => __('Tarjeta', FLAVOR_PLATFORM_TEXT_DOMAIN), 'efectivo' => __('Efectivo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'domiciliacion' => __('Domiciliación', FLAVOR_PLATFORM_TEXT_DOMAIN)];
 $colores_estado = ['pendiente' => '#dba617', 'pagado' => '#00a32a', 'fallido' => '#d63638', 'reembolsado' => '#646970'];
 
 // Obtener pagos
@@ -90,15 +90,15 @@ if ($tabla_existe) {
     <nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">
         <a href="<?php echo admin_url('admin.php?page=socios-dashboard'); ?>" style="color: #2271b1; text-decoration: none;">
             <span class="dashicons dashicons-id-alt" style="font-size: 14px; vertical-align: middle;"></span>
-            <?php _e('Miembros', 'flavor-chat-ia'); ?>
+            <?php _e('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <span style="color: #646970; margin: 0 5px;">›</span>
-        <span style="color: #1d2327;"><?php _e('Pagos', 'flavor-chat-ia'); ?></span>
+        <span style="color: #1d2327;"><?php _e('Pagos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
     </nav>
 
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-money-alt"></span>
-        <?php _e('Historial de Pagos', 'flavor-chat-ia'); ?>
+        <?php _e('Historial de Pagos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <hr class="wp-header-end">
@@ -107,15 +107,15 @@ if ($tabla_existe) {
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 20px 0;">
         <div style="background: #fff; padding: 15px; border-left: 4px solid #00a32a; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="font-size: 24px; font-weight: bold;"><?php echo number_format($stats['total_recaudado'], 2); ?> &euro;</div>
-            <div style="color: #646970; font-size: 13px;"><?php _e('Total recaudado', 'flavor-chat-ia'); ?></div>
+            <div style="color: #646970; font-size: 13px;"><?php _e('Total recaudado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
         <div style="background: #fff; padding: 15px; border-left: 4px solid #dba617; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="font-size: 24px; font-weight: bold;"><?php echo number_format($stats['pendiente'], 2); ?> &euro;</div>
-            <div style="color: #646970; font-size: 13px;"><?php _e('Pendiente cobro', 'flavor-chat-ia'); ?></div>
+            <div style="color: #646970; font-size: 13px;"><?php _e('Pendiente cobro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
         <div style="background: #fff; padding: 15px; border-left: 4px solid #2271b1; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="font-size: 24px; font-weight: bold;"><?php echo number_format($stats['pagos_mes']); ?></div>
-            <div style="color: #646970; font-size: 13px;"><?php _e('Pagos este mes', 'flavor-chat-ia'); ?></div>
+            <div style="color: #646970; font-size: 13px;"><?php _e('Pagos este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -125,30 +125,30 @@ if ($tabla_existe) {
             <input type="hidden" name="page" value="socios-pagos">
             <div class="alignleft actions" style="display: flex; gap: 8px; flex-wrap: wrap;">
                 <select name="estado">
-                    <option value=""><?php _e('Todos los estados', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($estados as $slug => $label): ?>
                     <option value="<?php echo esc_attr($slug); ?>" <?php selected($estado_filtro, $slug); ?>><?php echo esc_html($label); ?></option>
                     <?php endforeach; ?>
                 </select>
                 <select name="metodo">
-                    <option value=""><?php _e('Todos los métodos', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todos los métodos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     <?php foreach ($metodos as $slug => $label): ?>
                     <option value="<?php echo esc_attr($slug); ?>" <?php selected($metodo_filtro, $slug); ?>><?php echo esc_html($label); ?></option>
                     <?php endforeach; ?>
                 </select>
                 <select name="periodo">
-                    <option value=""><?php _e('Todo el tiempo', 'flavor-chat-ia'); ?></option>
-                    <option value="mes" <?php selected($periodo_filtro, 'mes'); ?>><?php _e('Este mes', 'flavor-chat-ia'); ?></option>
-                    <option value="anio" <?php selected($periodo_filtro, 'anio'); ?>><?php _e('Este año', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php _e('Todo el tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="mes" <?php selected($periodo_filtro, 'mes'); ?>><?php _e('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                    <option value="anio" <?php selected($periodo_filtro, 'anio'); ?>><?php _e('Este año', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                 </select>
-                <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="button"><?php _e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                 <?php if ($estado_filtro || $metodo_filtro || $periodo_filtro): ?>
-                <a href="<?php echo admin_url('admin.php?page=socios-pagos'); ?>" class="button"><?php _e('Limpiar', 'flavor-chat-ia'); ?></a>
+                <a href="<?php echo admin_url('admin.php?page=socios-pagos'); ?>" class="button"><?php _e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 <?php endif; ?>
             </div>
         </form>
         <div class="tablenav-pages">
-            <span class="displaying-num"><?php printf(_n('%s pago', '%s pagos', $total_items, 'flavor-chat-ia'), number_format($total_items)); ?></span>
+            <span class="displaying-num"><?php printf(_n('%s pago', '%s pagos', $total_items, FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($total_items)); ?></span>
         </div>
     </div>
 
@@ -156,26 +156,26 @@ if ($tabla_existe) {
     <table class="wp-list-table widefat fixed striped">
         <thead>
             <tr>
-                <th style="width: 50px;"><?php _e('ID', 'flavor-chat-ia'); ?></th>
-                <th><?php _e('Miembro', 'flavor-chat-ia'); ?></th>
-                <th style="width: 100px;"><?php _e('Importe', 'flavor-chat-ia'); ?></th>
-                <th style="width: 120px;"><?php _e('Método', 'flavor-chat-ia'); ?></th>
-                <th style="width: 100px;"><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                <th style="width: 120px;"><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
+                <th style="width: 50px;"><?php _e('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th><?php _e('Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="width: 100px;"><?php _e('Importe', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="width: 120px;"><?php _e('Método', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="width: 100px;"><?php _e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                <th style="width: 120px;"><?php _e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
             </tr>
         </thead>
         <tbody>
             <?php if (empty($pagos)): ?>
             <tr><td colspan="6" style="text-align: center; padding: 40px;">
                 <span class="dashicons dashicons-money-alt" style="font-size: 48px; color: #c3c4c7;"></span>
-                <p style="color: #646970;"><?php _e('No se encontraron pagos.', 'flavor-chat-ia'); ?></p>
+                <p style="color: #646970;"><?php _e('No se encontraron pagos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </td></tr>
             <?php else: ?>
                 <?php foreach ($pagos as $p): ?>
                 <tr>
                     <td><code><?php echo esc_html($p->id); ?></code></td>
                     <td>
-                        <strong><?php echo esc_html($p->display_name ?: __('Miembro', 'flavor-chat-ia')); ?></strong>
+                        <strong><?php echo esc_html($p->display_name ?: __('Miembro', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong>
                         <?php if ($p->numero_socio): ?>
                         <br><small style="color: #646970;">#<?php echo esc_html($p->numero_socio); ?></small>
                         <?php endif; ?>

@@ -31,7 +31,7 @@ if (isset($_POST['comunidades_guardar_config']) && wp_verify_nonce($_POST['comun
 
     update_option('flavor_comunidades_settings', $opciones);
 
-    echo '<div class="notice notice-success is-dismissible"><p>' . __('Configuración guardada correctamente.', 'flavor-chat-ia') . '</p></div>';
+    echo '<div class="notice notice-success is-dismissible"><p>' . __('Configuración guardada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
 }
 
 // Obtener configuración actual
@@ -54,13 +54,13 @@ $config = get_option('flavor_comunidades_settings', [
 
 // Categorías disponibles
 $categorias_disponibles = [
-    'vecinal'     => __('Vecinal', 'flavor-chat-ia'),
-    'deportiva'   => __('Deportiva', 'flavor-chat-ia'),
-    'cultural'    => __('Cultural', 'flavor-chat-ia'),
-    'educativa'   => __('Educativa', 'flavor-chat-ia'),
-    'social'      => __('Social', 'flavor-chat-ia'),
-    'profesional' => __('Profesional', 'flavor-chat-ia'),
-    'otra'        => __('Otra', 'flavor-chat-ia'),
+    'vecinal'     => __('Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'deportiva'   => __('Deportiva', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cultural'    => __('Cultural', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'educativa'   => __('Educativa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'social'      => __('Social', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'profesional' => __('Profesional', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'otra'        => __('Otra', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 
@@ -69,15 +69,15 @@ $categorias_disponibles = [
     <nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">
         <a href="<?php echo admin_url('admin.php?page=comunidades-dashboard'); ?>" style="color: #2271b1; text-decoration: none;">
             <span class="dashicons dashicons-admin-multisite" style="font-size: 14px; vertical-align: middle;"></span>
-            <?php _e('Comunidades', 'flavor-chat-ia'); ?>
+            <?php _e('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
         <span style="color: #646970; margin: 0 5px;">›</span>
-        <span style="color: #1d2327;"><?php _e('Configuración', 'flavor-chat-ia'); ?></span>
+        <span style="color: #1d2327;"><?php _e('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
     </nav>
 
     <h1>
         <span class="dashicons dashicons-admin-settings"></span>
-        <?php _e('Configuración de Comunidades', 'flavor-chat-ia'); ?>
+        <?php _e('Configuración de Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <form method="post" action="">
@@ -87,37 +87,37 @@ $categorias_disponibles = [
         <div class="postbox" style="margin-top: 20px;">
             <h2 class="hndle" style="padding: 12px; margin: 0; border-bottom: 1px solid #c3c4c7;">
                 <span class="dashicons dashicons-admin-generic"></span>
-                <?php _e('Configuración General', 'flavor-chat-ia'); ?>
+                <?php _e('Configuración General', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <div class="inside">
                 <table class="form-table">
                     <tr>
                         <th scope="row">
-                            <label for="max_miembros_comunidad"><?php _e('Máximo de miembros por comunidad', 'flavor-chat-ia'); ?></label>
+                            <label for="max_miembros_comunidad"><?php _e('Máximo de miembros por comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         </th>
                         <td>
                             <input type="number" id="max_miembros_comunidad" name="max_miembros_comunidad"
                                    value="<?php echo esc_attr($config['max_miembros_comunidad']); ?>" min="0" class="small-text">
-                            <p class="description"><?php _e('0 = sin límite', 'flavor-chat-ia'); ?></p>
+                            <p class="description"><?php _e('0 = sin límite', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><?php _e('Aprobación de miembros', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php _e('Aprobación de miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <label>
                                 <input type="checkbox" name="requiere_aprobacion" value="1"
                                        <?php checked($config['requiere_aprobacion'], 1); ?>>
-                                <?php _e('Requerir aprobación del administrador para nuevos miembros', 'flavor-chat-ia'); ?>
+                                <?php _e('Requerir aprobación del administrador para nuevos miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><?php _e('Moderación de publicaciones', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php _e('Moderación de publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <label>
                                 <input type="checkbox" name="moderar_publicaciones" value="1"
                                        <?php checked($config['moderar_publicaciones'], 1); ?>>
-                                <?php _e('Moderar publicaciones antes de publicarlas', 'flavor-chat-ia'); ?>
+                                <?php _e('Moderar publicaciones antes de publicarlas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
                         </td>
                     </tr>
@@ -129,29 +129,29 @@ $categorias_disponibles = [
         <div class="postbox">
             <h2 class="hndle" style="padding: 12px; margin: 0; border-bottom: 1px solid #c3c4c7;">
                 <span class="dashicons dashicons-privacy"></span>
-                <?php _e('Tipos de Comunidades', 'flavor-chat-ia'); ?>
+                <?php _e('Tipos de Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <div class="inside">
                 <table class="form-table">
                     <tr>
-                        <th scope="row"><?php _e('Privacidad permitida', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php _e('Privacidad permitida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <fieldset>
                                 <label style="display: block; margin-bottom: 8px;">
                                     <input type="checkbox" name="permitir_comunidades_privadas" value="1"
                                            <?php checked($config['permitir_comunidades_privadas'], 1); ?>>
-                                    <?php _e('Permitir comunidades privadas (visibles pero requieren solicitud)', 'flavor-chat-ia'); ?>
+                                    <?php _e('Permitir comunidades privadas (visibles pero requieren solicitud)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </label>
                                 <label style="display: block;">
                                     <input type="checkbox" name="permitir_comunidades_secretas" value="1"
                                            <?php checked($config['permitir_comunidades_secretas'], 1); ?>>
-                                    <?php _e('Permitir comunidades secretas (solo visibles para miembros)', 'flavor-chat-ia'); ?>
+                                    <?php _e('Permitir comunidades secretas (solo visibles para miembros)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </label>
                             </fieldset>
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><?php _e('Categorías habilitadas', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php _e('Categorías habilitadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <fieldset>
                                 <?php foreach ($categorias_disponibles as $slug => $label): ?>
@@ -172,35 +172,35 @@ $categorias_disponibles = [
         <div class="postbox">
             <h2 class="hndle" style="padding: 12px; margin: 0; border-bottom: 1px solid #c3c4c7;">
                 <span class="dashicons dashicons-admin-plugins"></span>
-                <?php _e('Funcionalidades', 'flavor-chat-ia'); ?>
+                <?php _e('Funcionalidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <div class="inside">
                 <table class="form-table">
                     <tr>
-                        <th scope="row"><?php _e('Características adicionales', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php _e('Características adicionales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <fieldset>
                                 <label style="display: block; margin-bottom: 8px;">
                                     <input type="checkbox" name="permitir_eventos" value="1"
                                            <?php checked($config['permitir_eventos'], 1); ?>>
-                                    <?php _e('Permitir crear eventos dentro de las comunidades', 'flavor-chat-ia'); ?>
+                                    <?php _e('Permitir crear eventos dentro de las comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </label>
                                 <label style="display: block; margin-bottom: 8px;">
                                     <input type="checkbox" name="permitir_encuestas" value="1"
                                            <?php checked($config['permitir_encuestas'], 1); ?>>
-                                    <?php _e('Permitir crear encuestas dentro de las comunidades', 'flavor-chat-ia'); ?>
+                                    <?php _e('Permitir crear encuestas dentro de las comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </label>
                                 <label style="display: block;">
                                     <input type="checkbox" name="permitir_archivos" value="1"
                                            <?php checked($config['permitir_archivos'], 1); ?>>
-                                    <?php _e('Permitir compartir archivos', 'flavor-chat-ia'); ?>
+                                    <?php _e('Permitir compartir archivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </label>
                             </fieldset>
                         </td>
                     </tr>
                     <tr>
                         <th scope="row">
-                            <label for="max_archivos_mb"><?php _e('Tamaño máximo de archivos', 'flavor-chat-ia'); ?></label>
+                            <label for="max_archivos_mb"><?php _e('Tamaño máximo de archivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         </th>
                         <td>
                             <input type="number" id="max_archivos_mb" name="max_archivos_mb"
@@ -216,35 +216,35 @@ $categorias_disponibles = [
         <div class="postbox">
             <h2 class="hndle" style="padding: 12px; margin: 0; border-bottom: 1px solid #c3c4c7;">
                 <span class="dashicons dashicons-email"></span>
-                <?php _e('Notificaciones', 'flavor-chat-ia'); ?>
+                <?php _e('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <div class="inside">
                 <table class="form-table">
                     <tr>
-                        <th scope="row"><?php _e('Notificaciones automáticas', 'flavor-chat-ia'); ?></th>
+                        <th scope="row"><?php _e('Notificaciones automáticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         <td>
                             <fieldset>
                                 <label style="display: block; margin-bottom: 8px;">
                                     <input type="checkbox" name="notificar_nuevos_miembros" value="1"
                                            <?php checked($config['notificar_nuevos_miembros'], 1); ?>>
-                                    <?php _e('Notificar a administradores cuando hay nuevos miembros', 'flavor-chat-ia'); ?>
+                                    <?php _e('Notificar a administradores cuando hay nuevos miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </label>
                                 <label style="display: block;">
                                     <input type="checkbox" name="notificar_publicaciones" value="1"
                                            <?php checked($config['notificar_publicaciones'], 1); ?>>
-                                    <?php _e('Notificar a miembros sobre nuevas publicaciones', 'flavor-chat-ia'); ?>
+                                    <?php _e('Notificar a miembros sobre nuevas publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </label>
                             </fieldset>
                         </td>
                     </tr>
                     <tr>
                         <th scope="row">
-                            <label for="email_admin"><?php _e('Email de administración', 'flavor-chat-ia'); ?></label>
+                            <label for="email_admin"><?php _e('Email de administración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         </th>
                         <td>
                             <input type="email" id="email_admin" name="email_admin"
                                    value="<?php echo esc_attr($config['email_admin']); ?>" class="regular-text">
-                            <p class="description"><?php _e('Email para recibir notificaciones del módulo', 'flavor-chat-ia'); ?></p>
+                            <p class="description"><?php _e('Email para recibir notificaciones del módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </td>
                     </tr>
                 </table>
@@ -255,13 +255,13 @@ $categorias_disponibles = [
         <div class="postbox">
             <h2 class="hndle" style="padding: 12px; margin: 0; border-bottom: 1px solid #c3c4c7;">
                 <span class="dashicons dashicons-admin-links"></span>
-                <?php _e('Integración', 'flavor-chat-ia'); ?>
+                <?php _e('Integración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <div class="inside">
                 <table class="form-table">
                     <tr>
                         <th scope="row">
-                            <label for="pagina_comunidades"><?php _e('Página de comunidades', 'flavor-chat-ia'); ?></label>
+                            <label for="pagina_comunidades"><?php _e('Página de comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         </th>
                         <td>
                             <?php
@@ -269,11 +269,11 @@ $categorias_disponibles = [
                                 'name'              => 'pagina_comunidades',
                                 'id'                => 'pagina_comunidades',
                                 'selected'          => $config['pagina_comunidades'],
-                                'show_option_none'  => __('— Seleccionar página —', 'flavor-chat-ia'),
+                                'show_option_none'  => __('— Seleccionar página —', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 'option_none_value' => '',
                             ]);
                             ?>
-                            <p class="description"><?php _e('Página donde se mostrarán las comunidades en el frontend', 'flavor-chat-ia'); ?></p>
+                            <p class="description"><?php _e('Página donde se mostrarán las comunidades en el frontend', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         </td>
                     </tr>
                 </table>
@@ -283,7 +283,7 @@ $categorias_disponibles = [
         <p class="submit">
             <button type="submit" name="comunidades_guardar_config" class="button button-primary">
                 <span class="dashicons dashicons-saved" style="margin-top: 4px;"></span>
-                <?php _e('Guardar Configuración', 'flavor-chat-ia'); ?>
+                <?php _e('Guardar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </p>
     </form>

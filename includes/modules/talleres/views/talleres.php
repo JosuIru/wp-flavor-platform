@@ -28,32 +28,32 @@ function obtener_badge_estado_taller($estado) {
     $estados = [
         'borrador' => [
             'clase' => 'secondary',
-            'texto' => __('Borrador', 'flavor-chat-ia'),
+            'texto' => __('Borrador', 'flavor-platform'),
             'icono' => 'edit'
         ],
         'publicado' => [
             'clase' => 'info',
-            'texto' => __('Publicado', 'flavor-chat-ia'),
+            'texto' => __('Publicado', 'flavor-platform'),
             'icono' => 'visibility'
         ],
         'confirmado' => [
             'clase' => 'success',
-            'texto' => __('Confirmado', 'flavor-chat-ia'),
+            'texto' => __('Confirmado', 'flavor-platform'),
             'icono' => 'yes-alt'
         ],
         'en_curso' => [
             'clase' => 'warning',
-            'texto' => __('En Curso', 'flavor-chat-ia'),
+            'texto' => __('En Curso', 'flavor-platform'),
             'icono' => 'controls-play'
         ],
         'finalizado' => [
             'clase' => 'primary',
-            'texto' => __('Finalizado', 'flavor-chat-ia'),
+            'texto' => __('Finalizado', 'flavor-platform'),
             'icono' => 'flag'
         ],
         'cancelado' => [
             'clase' => 'danger',
-            'texto' => __('Cancelado', 'flavor-chat-ia'),
+            'texto' => __('Cancelado', 'flavor-platform'),
             'icono' => 'dismiss'
         ]
     ];
@@ -73,22 +73,22 @@ function obtener_badge_nivel_taller($nivel) {
     $niveles = [
         'basico' => [
             'clase' => 'success',
-            'texto' => __('Básico', 'flavor-chat-ia'),
+            'texto' => __('Básico', 'flavor-platform'),
             'icono' => '🌱'
         ],
         'intermedio' => [
             'clase' => 'info',
-            'texto' => __('Intermedio', 'flavor-chat-ia'),
+            'texto' => __('Intermedio', 'flavor-platform'),
             'icono' => '🌿'
         ],
         'avanzado' => [
             'clase' => 'warning',
-            'texto' => __('Avanzado', 'flavor-chat-ia'),
+            'texto' => __('Avanzado', 'flavor-platform'),
             'icono' => '🌳'
         ],
         'experto' => [
             'clase' => 'danger',
-            'texto' => __('Experto', 'flavor-chat-ia'),
+            'texto' => __('Experto', 'flavor-platform'),
             'icono' => '🔥'
         ]
     ];
@@ -96,7 +96,7 @@ function obtener_badge_nivel_taller($nivel) {
     $nivel_key = strtolower(str_replace(' ', '_', $nivel));
     return $niveles[$nivel_key] ?? [
         'clase' => 'secondary',
-        'texto' => ucfirst($nivel ?: __('Sin definir', 'flavor-chat-ia')),
+        'texto' => ucfirst($nivel ?: __('Sin definir', 'flavor-platform')),
         'icono' => '📚'
     ];
 }
@@ -108,17 +108,17 @@ function obtener_badge_modalidad_taller($modalidad) {
     $modalidades = [
         'presencial' => [
             'clase' => 'success',
-            'texto' => __('Presencial', 'flavor-chat-ia'),
+            'texto' => __('Presencial', 'flavor-platform'),
             'icono' => 'location'
         ],
         'online' => [
             'clase' => 'info',
-            'texto' => __('Online', 'flavor-chat-ia'),
+            'texto' => __('Online', 'flavor-platform'),
             'icono' => 'video-alt2'
         ],
         'hibrido' => [
             'clase' => 'warning',
-            'texto' => __('Híbrido', 'flavor-chat-ia'),
+            'texto' => __('Híbrido', 'flavor-platform'),
             'icono' => 'randomize'
         ]
     ];
@@ -126,7 +126,7 @@ function obtener_badge_modalidad_taller($modalidad) {
     $modalidad_key = strtolower(str_replace(' ', '_', $modalidad));
     return $modalidades[$modalidad_key] ?? [
         'clase' => 'secondary',
-        'texto' => ucfirst($modalidad ?: __('Sin definir', 'flavor-chat-ia')),
+        'texto' => ucfirst($modalidad ?: __('Sin definir', 'flavor-platform')),
         'icono' => 'admin-generic'
     ];
 }
@@ -136,19 +136,19 @@ function obtener_badge_modalidad_taller($modalidad) {
  */
 function calcular_ocupacion_taller($inscritos, $maximo) {
     if ($maximo <= 0) {
-        return ['porcentaje' => 0, 'clase' => 'secondary', 'texto' => __('Sin límite', 'flavor-chat-ia')];
+        return ['porcentaje' => 0, 'clase' => 'secondary', 'texto' => __('Sin límite', 'flavor-platform')];
     }
 
     $porcentaje = round(($inscritos / $maximo) * 100);
 
     if ($porcentaje >= 100) {
-        return ['porcentaje' => 100, 'clase' => 'danger', 'texto' => __('Completo', 'flavor-chat-ia')];
+        return ['porcentaje' => 100, 'clase' => 'danger', 'texto' => __('Completo', 'flavor-platform')];
     } elseif ($porcentaje >= 80) {
-        return ['porcentaje' => $porcentaje, 'clase' => 'warning', 'texto' => __('Casi lleno', 'flavor-chat-ia')];
+        return ['porcentaje' => $porcentaje, 'clase' => 'warning', 'texto' => __('Casi lleno', 'flavor-platform')];
     } elseif ($porcentaje >= 50) {
-        return ['porcentaje' => $porcentaje, 'clase' => 'info', 'texto' => __('Disponible', 'flavor-chat-ia')];
+        return ['porcentaje' => $porcentaje, 'clase' => 'info', 'texto' => __('Disponible', 'flavor-platform')];
     } else {
-        return ['porcentaje' => $porcentaje, 'clase' => 'success', 'texto' => __('Plazas libres', 'flavor-chat-ia')];
+        return ['porcentaje' => $porcentaje, 'clase' => 'success', 'texto' => __('Plazas libres', 'flavor-platform')];
     }
 }
 
@@ -157,7 +157,7 @@ function calcular_ocupacion_taller($inscritos, $maximo) {
  */
 function formatear_precio_taller($precio) {
     if ($precio <= 0) {
-        return ['texto' => __('Gratis', 'flavor-chat-ia'), 'clase' => 'success'];
+        return ['texto' => __('Gratis', 'flavor-platform'), 'clase' => 'success'];
     }
     return ['texto' => number_format($precio, 2, ',', '.') . ' €', 'clase' => 'info'];
 }
@@ -359,16 +359,16 @@ $modalidades_disponibles = ['presencial', 'online', 'hibrido'];
         <div class="flavor-header-content">
             <h1>
                 <span class="dashicons dashicons-welcome-learn-more"></span>
-                <?php esc_html_e('Gestión de Talleres', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Gestión de Talleres', 'flavor-platform'); ?>
             </h1>
             <p class="flavor-header-subtitle">
-                <?php esc_html_e('Administra talleres, cursos y formaciones de la comunidad', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Administra talleres, cursos y formaciones de la comunidad', 'flavor-platform'); ?>
             </p>
         </div>
         <div class="flavor-header-actions">
             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-chat-talleres&tab=nuevo')); ?>" class="button button-primary button-hero">
                 <span class="dashicons dashicons-plus-alt"></span>
-                <?php esc_html_e('Nuevo Taller', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Nuevo Taller', 'flavor-platform'); ?>
             </a>
         </div>
     </div>
@@ -377,8 +377,8 @@ $modalidades_disponibles = ['presencial', 'online', 'hibrido'];
     <div class="notice notice-info is-dismissible" style="margin: 20px 0;">
         <p>
             <span class="dashicons dashicons-info"></span>
-            <strong><?php esc_html_e('Sin datos:', 'flavor-chat-ia'); ?></strong>
-            <?php esc_html_e('No hay tablas del módulo Talleres disponibles todavía.', 'flavor-chat-ia'); ?>
+            <strong><?php esc_html_e('Sin datos:', 'flavor-platform'); ?></strong>
+            <?php esc_html_e('No hay tablas del módulo Talleres disponibles todavía.', 'flavor-platform'); ?>
         </p>
     </div>
     <?php endif; ?>
@@ -391,7 +391,7 @@ $modalidades_disponibles = ['presencial', 'online', 'hibrido'];
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value"><?php echo number_format($total_talleres); ?></span>
-                <span class="flavor-stat-label"><?php esc_html_e('Total Talleres', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php esc_html_e('Total Talleres', 'flavor-platform'); ?></span>
             </div>
         </div>
 
@@ -401,7 +401,7 @@ $modalidades_disponibles = ['presencial', 'online', 'hibrido'];
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value"><?php echo number_format($talleres_activos); ?></span>
-                <span class="flavor-stat-label"><?php esc_html_e('Talleres Activos', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php esc_html_e('Talleres Activos', 'flavor-platform'); ?></span>
             </div>
         </div>
 
@@ -411,7 +411,7 @@ $modalidades_disponibles = ['presencial', 'online', 'hibrido'];
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value"><?php echo number_format($total_inscritos); ?></span>
-                <span class="flavor-stat-label"><?php esc_html_e('Total Inscritos', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php esc_html_e('Total Inscritos', 'flavor-platform'); ?></span>
             </div>
         </div>
 
@@ -421,7 +421,7 @@ $modalidades_disponibles = ['presencial', 'online', 'hibrido'];
             </div>
             <div class="flavor-stat-content">
                 <span class="flavor-stat-value"><?php echo number_format($ingresos_estimados, 0, ',', '.'); ?> €</span>
-                <span class="flavor-stat-label"><?php esc_html_e('Ingresos Estimados', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-stat-label"><?php esc_html_e('Ingresos Estimados', 'flavor-platform'); ?></span>
             </div>
         </div>
     </div>
@@ -438,12 +438,12 @@ $modalidades_disponibles = ['presencial', 'online', 'hibrido'];
                 </label>
                 <input type="text" id="filter-search" name="s"
                        value="<?php echo esc_attr($busqueda); ?>"
-                       placeholder="<?php esc_attr_e('Buscar talleres...', 'flavor-chat-ia'); ?>">
+                       placeholder="<?php esc_attr_e('Buscar talleres...', 'flavor-platform'); ?>">
             </div>
 
             <div class="flavor-filter-group">
                 <select name="estado" id="filter-estado">
-                    <option value=""><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todos los estados', 'flavor-platform'); ?></option>
                     <?php foreach ($estados_disponibles as $estado_opcion): ?>
                         <option value="<?php echo esc_attr($estado_opcion); ?>" <?php selected($filtro_estado, $estado_opcion); ?>>
                             <?php echo esc_html(ucfirst(str_replace('_', ' ', $estado_opcion))); ?>
@@ -454,7 +454,7 @@ $modalidades_disponibles = ['presencial', 'online', 'hibrido'];
 
             <div class="flavor-filter-group">
                 <select name="categoria" id="filter-categoria">
-                    <option value=""><?php esc_html_e('Todas las categorías', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todas las categorías', 'flavor-platform'); ?></option>
                     <?php foreach ($categorias_disponibles as $cat_opcion): ?>
                         <option value="<?php echo esc_attr($cat_opcion); ?>" <?php selected($filtro_categoria, $cat_opcion); ?>>
                             <?php echo esc_html(ucfirst($cat_opcion)); ?>
@@ -465,7 +465,7 @@ $modalidades_disponibles = ['presencial', 'online', 'hibrido'];
 
             <div class="flavor-filter-group">
                 <select name="nivel" id="filter-nivel">
-                    <option value=""><?php esc_html_e('Todos los niveles', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todos los niveles', 'flavor-platform'); ?></option>
                     <?php foreach (['basico', 'intermedio', 'avanzado', 'experto'] as $nivel_opcion): ?>
                         <option value="<?php echo esc_attr($nivel_opcion); ?>" <?php selected($filtro_nivel, $nivel_opcion); ?>>
                             <?php echo esc_html(ucfirst($nivel_opcion)); ?>
@@ -476,7 +476,7 @@ $modalidades_disponibles = ['presencial', 'online', 'hibrido'];
 
             <div class="flavor-filter-group">
                 <select name="modalidad" id="filter-modalidad">
-                    <option value=""><?php esc_html_e('Todas las modalidades', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Todas las modalidades', 'flavor-platform'); ?></option>
                     <?php foreach ($modalidades_disponibles as $mod_opcion): ?>
                         <option value="<?php echo esc_attr($mod_opcion); ?>" <?php selected($filtro_modalidad, $mod_opcion); ?>>
                             <?php echo esc_html(ucfirst($mod_opcion)); ?>
@@ -487,22 +487,22 @@ $modalidades_disponibles = ['presencial', 'online', 'hibrido'];
 
             <div class="flavor-filter-group">
                 <select name="orden" id="filter-orden">
-                    <option value="recientes" <?php selected($orden, 'recientes'); ?>><?php esc_html_e('Más recientes', 'flavor-chat-ia'); ?></option>
-                    <option value="nombre" <?php selected($orden, 'nombre'); ?>><?php esc_html_e('Nombre A-Z', 'flavor-chat-ia'); ?></option>
-                    <option value="fecha_inicio" <?php selected($orden, 'fecha_inicio'); ?>><?php esc_html_e('Fecha inicio', 'flavor-chat-ia'); ?></option>
-                    <option value="precio_asc" <?php selected($orden, 'precio_asc'); ?>><?php esc_html_e('Precio menor', 'flavor-chat-ia'); ?></option>
-                    <option value="precio_desc" <?php selected($orden, 'precio_desc'); ?>><?php esc_html_e('Precio mayor', 'flavor-chat-ia'); ?></option>
-                    <option value="ocupacion" <?php selected($orden, 'ocupacion'); ?>><?php esc_html_e('Más ocupados', 'flavor-chat-ia'); ?></option>
+                    <option value="recientes" <?php selected($orden, 'recientes'); ?>><?php esc_html_e('Más recientes', 'flavor-platform'); ?></option>
+                    <option value="nombre" <?php selected($orden, 'nombre'); ?>><?php esc_html_e('Nombre A-Z', 'flavor-platform'); ?></option>
+                    <option value="fecha_inicio" <?php selected($orden, 'fecha_inicio'); ?>><?php esc_html_e('Fecha inicio', 'flavor-platform'); ?></option>
+                    <option value="precio_asc" <?php selected($orden, 'precio_asc'); ?>><?php esc_html_e('Precio menor', 'flavor-platform'); ?></option>
+                    <option value="precio_desc" <?php selected($orden, 'precio_desc'); ?>><?php esc_html_e('Precio mayor', 'flavor-platform'); ?></option>
+                    <option value="ocupacion" <?php selected($orden, 'ocupacion'); ?>><?php esc_html_e('Más ocupados', 'flavor-platform'); ?></option>
                 </select>
             </div>
 
             <div class="flavor-filter-actions">
                 <button type="submit" class="button button-primary">
                     <span class="dashicons dashicons-filter"></span>
-                    <?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Filtrar', 'flavor-platform'); ?>
                 </button>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=' . ($_GET['page'] ?? 'flavor-chat-talleres') . '&tab=talleres')); ?>" class="button">
-                    <?php esc_html_e('Limpiar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Limpiar', 'flavor-platform'); ?>
                 </a>
             </div>
         </form>
@@ -517,11 +517,11 @@ $modalidades_disponibles = ['presencial', 'online', 'hibrido'];
                     <div class="flavor-empty-icon">
                         <span class="dashicons dashicons-welcome-learn-more"></span>
                     </div>
-                    <h3><?php esc_html_e('No se encontraron talleres', 'flavor-chat-ia'); ?></h3>
-                    <p><?php esc_html_e('Ajusta los filtros o crea un nuevo taller para comenzar.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php esc_html_e('No se encontraron talleres', 'flavor-platform'); ?></h3>
+                    <p><?php esc_html_e('Ajusta los filtros o crea un nuevo taller para comenzar.', 'flavor-platform'); ?></p>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-chat-talleres&tab=nuevo')); ?>" class="button button-primary">
                         <span class="dashicons dashicons-plus-alt"></span>
-                        <?php esc_html_e('Crear Primer Taller', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Crear Primer Taller', 'flavor-platform'); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -529,7 +529,7 @@ $modalidades_disponibles = ['presencial', 'online', 'hibrido'];
                 <div class="flavor-results-info">
                     <span class="flavor-results-count">
                         <?php printf(
-                            esc_html__('Mostrando %1$d-%2$d de %3$d talleres', 'flavor-chat-ia'),
+                            esc_html__('Mostrando %1$d-%2$d de %3$d talleres', 'flavor-platform'),
                             $offset + 1,
                             min($offset + $items_por_pagina, $total_items),
                             $total_items
@@ -550,7 +550,7 @@ $modalidades_disponibles = ['presencial', 'online', 'hibrido'];
                             <?php if ($taller->destacado ?? false): ?>
                                 <div class="flavor-taller-destacado-badge">
                                     <span class="dashicons dashicons-star-filled"></span>
-                                    <?php esc_html_e('Destacado', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Destacado', 'flavor-platform'); ?>
                                 </div>
                             <?php endif; ?>
 
@@ -580,7 +580,7 @@ $modalidades_disponibles = ['presencial', 'online', 'hibrido'];
                                 <div class="flavor-taller-meta">
                                     <div class="flavor-taller-meta-item">
                                         <span class="dashicons dashicons-admin-users"></span>
-                                        <span><?php echo esc_html($taller->organizador ?? __('Sin asignar', 'flavor-chat-ia')); ?></span>
+                                        <span><?php echo esc_html($taller->organizador ?? __('Sin asignar', 'flavor-platform')); ?></span>
                                     </div>
 
                                     <?php if (!empty($taller->categoria)): ?>
@@ -642,15 +642,15 @@ $modalidades_disponibles = ['presencial', 'online', 'hibrido'];
 
                                 <div class="flavor-taller-acciones">
                                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-chat-talleres&tab=editar&id=' . $taller->id)); ?>"
-                                       class="button button-small" title="<?php esc_attr_e('Editar', 'flavor-chat-ia'); ?>">
+                                       class="button button-small" title="<?php esc_attr_e('Editar', 'flavor-platform'); ?>">
                                         <span class="dashicons dashicons-edit"></span>
                                     </a>
                                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-chat-talleres&tab=inscritos&id=' . $taller->id)); ?>"
-                                       class="button button-small" title="<?php esc_attr_e('Ver Inscritos', 'flavor-chat-ia'); ?>">
+                                       class="button button-small" title="<?php esc_attr_e('Ver Inscritos', 'flavor-platform'); ?>">
                                         <span class="dashicons dashicons-groups"></span>
                                     </a>
                                     <button type="button" class="button button-small flavor-btn-duplicar"
-                                            data-id="<?php echo esc_attr($taller->id); ?>" title="<?php esc_attr_e('Duplicar', 'flavor-chat-ia'); ?>">
+                                            data-id="<?php echo esc_attr($taller->id); ?>" title="<?php esc_attr_e('Duplicar', 'flavor-platform'); ?>">
                                         <span class="dashicons dashicons-admin-page"></span>
                                     </button>
                                 </div>
@@ -688,7 +688,7 @@ $modalidades_disponibles = ['presencial', 'online', 'hibrido'];
                     if ($pagination_links):
                         echo '<div class="flavor-pagination-info">';
                         printf(
-                            esc_html__('Página %1$d de %2$d', 'flavor-chat-ia'),
+                            esc_html__('Página %1$d de %2$d', 'flavor-platform'),
                             $pagina_actual,
                             $total_paginas
                         );
@@ -712,7 +712,7 @@ $modalidades_disponibles = ['presencial', 'online', 'hibrido'];
             <div class="flavor-sidebar-card">
                 <h3 class="flavor-sidebar-title">
                     <span class="dashicons dashicons-star-filled"></span>
-                    <?php esc_html_e('Talleres Destacados', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Talleres Destacados', 'flavor-platform'); ?>
                 </h3>
                 <ul class="flavor-sidebar-list">
                     <?php foreach ($talleres_destacados as $destacado):
@@ -739,7 +739,7 @@ $modalidades_disponibles = ['presencial', 'online', 'hibrido'];
             <div class="flavor-sidebar-card">
                 <h3 class="flavor-sidebar-title">
                     <span class="dashicons dashicons-chart-pie"></span>
-                    <?php esc_html_e('Por Categoría', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Por Categoría', 'flavor-platform'); ?>
                 </h3>
                 <div class="flavor-chart-container">
                     <canvas id="chart-categorias" width="250" height="250"></canvas>
@@ -760,24 +760,24 @@ $modalidades_disponibles = ['presencial', 'online', 'hibrido'];
             <div class="flavor-sidebar-card">
                 <h3 class="flavor-sidebar-title">
                     <span class="dashicons dashicons-admin-tools"></span>
-                    <?php esc_html_e('Acciones Rápidas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Acciones Rápidas', 'flavor-platform'); ?>
                 </h3>
                 <div class="flavor-quick-actions">
                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-chat-talleres&tab=nuevo')); ?>" class="flavor-quick-action">
                         <span class="dashicons dashicons-plus-alt"></span>
-                        <?php esc_html_e('Nuevo Taller', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Nuevo Taller', 'flavor-platform'); ?>
                     </a>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-chat-talleres&tab=categorias')); ?>" class="flavor-quick-action">
                         <span class="dashicons dashicons-category"></span>
-                        <?php esc_html_e('Categorías', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Categorías', 'flavor-platform'); ?>
                     </a>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-chat-talleres&tab=exportar')); ?>" class="flavor-quick-action">
                         <span class="dashicons dashicons-download"></span>
-                        <?php esc_html_e('Exportar Datos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Exportar Datos', 'flavor-platform'); ?>
                     </a>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-chat-talleres&tab=ajustes')); ?>" class="flavor-quick-action">
                         <span class="dashicons dashicons-admin-settings"></span>
-                        <?php esc_html_e('Ajustes', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ajustes', 'flavor-platform'); ?>
                     </a>
                 </div>
             </div>

@@ -1650,7 +1650,7 @@ class Flavor_Site_Builder_API {
             if ( ! isset( $templates[ $config['template'] ] ) ) {
                 $errors[] = array(
                     'field'   => 'template',
-                    'message' => sprintf( __( 'Plantilla "%s" no encontrada', 'flavor-chat-ia' ), $config['template'] ),
+                    'message' => sprintf( __( 'Plantilla "%s" no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN ), $config['template'] ),
                     'available' => array_keys( $templates ),
                 );
             }
@@ -1662,7 +1662,7 @@ class Flavor_Site_Builder_API {
             if ( ! isset( $themes[ $config['theme'] ] ) ) {
                 $errors[] = array(
                     'field'   => 'theme',
-                    'message' => sprintf( __( 'Tema "%s" no encontrado', 'flavor-chat-ia' ), $config['theme'] ),
+                    'message' => sprintf( __( 'Tema "%s" no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN ), $config['theme'] ),
                     'available' => array_keys( $themes ),
                 );
             }
@@ -1683,7 +1683,7 @@ class Flavor_Site_Builder_API {
                 if ( ! $found ) {
                     $warnings[] = array(
                         'field'   => 'modules',
-                        'message' => sprintf( __( 'Módulo "%s" no reconocido', 'flavor-chat-ia' ), $module_id ),
+                        'message' => sprintf( __( 'Módulo "%s" no reconocido', FLAVOR_PLATFORM_TEXT_DOMAIN ), $module_id ),
                     );
                 }
             }
@@ -1694,7 +1694,7 @@ class Flavor_Site_Builder_API {
             if ( ! preg_match( '/^#[0-9A-Fa-f]{6}$/', $config['settings']['primary_color'] ) ) {
                 $errors[] = array(
                     'field'   => 'settings.primary_color',
-                    'message' => __( 'Color primario debe ser un hex válido (#RRGGBB)', 'flavor-chat-ia' ),
+                    'message' => __( 'Color primario debe ser un hex válido (#RRGGBB)', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 );
             }
         }
@@ -1794,7 +1794,7 @@ class Flavor_Site_Builder_API {
         if ( empty( $config ) ) {
             return new WP_Error(
                 'invalid_config',
-                __( 'Configuración inválida o vacía', 'flavor-chat-ia' ),
+                __( 'Configuración inválida o vacía', FLAVOR_PLATFORM_TEXT_DOMAIN ),
                 array( 'status' => 400 )
             );
         }

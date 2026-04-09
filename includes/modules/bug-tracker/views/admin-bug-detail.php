@@ -162,7 +162,7 @@ $emojis_tipo = [
 <div class="bug-detail-container">
     <p>
         <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-bug-tracker')); ?>" class="button">
-            ← <?php esc_html_e('Volver a la lista', 'flavor-chat-ia'); ?>
+            ← <?php esc_html_e('Volver a la lista', 'flavor-platform'); ?>
         </a>
     </p>
 
@@ -175,7 +175,7 @@ $emojis_tipo = [
 
         <div class="bug-detail-meta">
             <div class="meta-item">
-                <strong><?php esc_html_e('Código:', 'flavor-chat-ia'); ?></strong>
+                <strong><?php esc_html_e('Código:', 'flavor-platform'); ?></strong>
                 <code><?php echo esc_html($bug_detalle->codigo); ?></code>
             </div>
 
@@ -192,12 +192,12 @@ $emojis_tipo = [
             </div>
 
             <div class="meta-item">
-                <strong><?php esc_html_e('Tipo:', 'flavor-chat-ia'); ?></strong>
+                <strong><?php esc_html_e('Tipo:', 'flavor-platform'); ?></strong>
                 <?php echo esc_html(str_replace('_', ' ', ucfirst($bug_detalle->tipo))); ?>
             </div>
 
             <div class="meta-item">
-                <strong><?php esc_html_e('Ocurrencias:', 'flavor-chat-ia'); ?></strong>
+                <strong><?php esc_html_e('Ocurrencias:', 'flavor-platform'); ?></strong>
                 <?php echo esc_html($bug_detalle->ocurrencias); ?>
             </div>
         </div>
@@ -209,7 +209,7 @@ $emojis_tipo = [
                     <input type="hidden" name="bug_id" value="<?php echo esc_attr($bug_detalle->id); ?>">
                     <input type="hidden" name="accion" value="resolver">
                     <button type="submit" class="button button-primary">
-                        ✓ <?php esc_html_e('Marcar como Resuelto', 'flavor-chat-ia'); ?>
+                        ✓ <?php esc_html_e('Marcar como Resuelto', 'flavor-platform'); ?>
                     </button>
                 </form>
             <?php endif; ?>
@@ -220,7 +220,7 @@ $emojis_tipo = [
                     <input type="hidden" name="bug_id" value="<?php echo esc_attr($bug_detalle->id); ?>">
                     <input type="hidden" name="accion" value="ignorar">
                     <button type="submit" class="button">
-                        ✗ <?php esc_html_e('Ignorar', 'flavor-chat-ia'); ?>
+                        ✗ <?php esc_html_e('Ignorar', 'flavor-platform'); ?>
                     </button>
                 </form>
             <?php endif; ?>
@@ -231,7 +231,7 @@ $emojis_tipo = [
                     <input type="hidden" name="bug_id" value="<?php echo esc_attr($bug_detalle->id); ?>">
                     <input type="hidden" name="accion" value="reabrir">
                     <button type="submit" class="button">
-                        ↺ <?php esc_html_e('Reabrir', 'flavor-chat-ia'); ?>
+                        ↺ <?php esc_html_e('Reabrir', 'flavor-platform'); ?>
                     </button>
                 </form>
             <?php endif; ?>
@@ -241,19 +241,19 @@ $emojis_tipo = [
     <!-- Ubicación -->
     <?php if ($bug_detalle->archivo) : ?>
         <div class="bug-detail-section">
-            <h3><?php esc_html_e('Ubicación', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Ubicación', 'flavor-platform'); ?></h3>
             <div class="context-grid">
                 <div class="context-item">
-                    <div class="label"><?php esc_html_e('Archivo', 'flavor-chat-ia'); ?></div>
+                    <div class="label"><?php esc_html_e('Archivo', 'flavor-platform'); ?></div>
                     <div class="value"><code><?php echo esc_html($bug_detalle->archivo); ?></code></div>
                 </div>
                 <div class="context-item">
-                    <div class="label"><?php esc_html_e('Línea', 'flavor-chat-ia'); ?></div>
+                    <div class="label"><?php esc_html_e('Línea', 'flavor-platform'); ?></div>
                     <div class="value"><?php echo esc_html($bug_detalle->linea); ?></div>
                 </div>
                 <?php if ($bug_detalle->modulo_id) : ?>
                     <div class="context-item">
-                        <div class="label"><?php esc_html_e('Módulo', 'flavor-chat-ia'); ?></div>
+                        <div class="label"><?php esc_html_e('Módulo', 'flavor-platform'); ?></div>
                         <div class="value"><?php echo esc_html($bug_detalle->modulo_id); ?></div>
                     </div>
                 <?php endif; ?>
@@ -264,7 +264,7 @@ $emojis_tipo = [
     <!-- Mensaje -->
     <?php if ($bug_detalle->mensaje) : ?>
         <div class="bug-detail-section">
-            <h3><?php esc_html_e('Mensaje de Error', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Mensaje de Error', 'flavor-platform'); ?></h3>
             <div class="message-box"><?php echo esc_html($bug_detalle->mensaje); ?></div>
         </div>
     <?php endif; ?>
@@ -272,7 +272,7 @@ $emojis_tipo = [
     <!-- Stack Trace -->
     <?php if ($bug_detalle->stack_trace) : ?>
         <div class="bug-detail-section">
-            <h3><?php esc_html_e('Stack Trace', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Stack Trace', 'flavor-platform'); ?></h3>
             <pre><?php echo esc_html($bug_detalle->stack_trace); ?></pre>
         </div>
     <?php endif; ?>
@@ -280,7 +280,7 @@ $emojis_tipo = [
     <!-- Contexto de Request -->
     <?php if (!empty($bug_detalle->contexto_request)) : ?>
         <div class="bug-detail-section">
-            <h3><?php esc_html_e('Contexto de Request', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Contexto de Request', 'flavor-platform'); ?></h3>
             <div class="context-grid">
                 <?php foreach ($bug_detalle->contexto_request as $clave => $valor) : ?>
                     <div class="context-item">
@@ -305,7 +305,7 @@ $emojis_tipo = [
     <!-- Contexto de Servidor -->
     <?php if (!empty($bug_detalle->contexto_servidor)) : ?>
         <div class="bug-detail-section">
-            <h3><?php esc_html_e('Contexto del Servidor', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Contexto del Servidor', 'flavor-platform'); ?></h3>
             <div class="context-grid">
                 <?php foreach ($bug_detalle->contexto_servidor as $clave => $valor) : ?>
                     <div class="context-item">
@@ -320,7 +320,7 @@ $emojis_tipo = [
     <!-- Contexto de Usuario -->
     <?php if (!empty($bug_detalle->contexto_usuario)) : ?>
         <div class="bug-detail-section">
-            <h3><?php esc_html_e('Usuario Afectado', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Usuario Afectado', 'flavor-platform'); ?></h3>
             <div class="context-grid">
                 <?php foreach ($bug_detalle->contexto_usuario as $clave => $valor) : ?>
                     <div class="context-item">
@@ -342,29 +342,29 @@ $emojis_tipo = [
 
     <!-- Timestamps -->
     <div class="bug-detail-section">
-        <h3><?php esc_html_e('Historial de Tiempo', 'flavor-chat-ia'); ?></h3>
+        <h3><?php esc_html_e('Historial de Tiempo', 'flavor-platform'); ?></h3>
         <div class="context-grid">
             <div class="context-item">
-                <div class="label"><?php esc_html_e('Primera Ocurrencia', 'flavor-chat-ia'); ?></div>
+                <div class="label"><?php esc_html_e('Primera Ocurrencia', 'flavor-platform'); ?></div>
                 <div class="value"><?php echo esc_html($bug_detalle->primera_ocurrencia); ?></div>
             </div>
             <div class="context-item">
-                <div class="label"><?php esc_html_e('Última Ocurrencia', 'flavor-chat-ia'); ?></div>
+                <div class="label"><?php esc_html_e('Última Ocurrencia', 'flavor-platform'); ?></div>
                 <div class="value"><?php echo esc_html($bug_detalle->ultima_ocurrencia); ?></div>
             </div>
             <?php if ($bug_detalle->resuelto_at) : ?>
                 <div class="context-item">
-                    <div class="label"><?php esc_html_e('Resuelto el', 'flavor-chat-ia'); ?></div>
+                    <div class="label"><?php esc_html_e('Resuelto el', 'flavor-platform'); ?></div>
                     <div class="value"><?php echo esc_html($bug_detalle->resuelto_at); ?></div>
                 </div>
             <?php endif; ?>
             <?php if ($bug_detalle->resuelto_por) : ?>
                 <div class="context-item">
-                    <div class="label"><?php esc_html_e('Resuelto por', 'flavor-chat-ia'); ?></div>
+                    <div class="label"><?php esc_html_e('Resuelto por', 'flavor-platform'); ?></div>
                     <div class="value">
                         <?php
                         $usuario_resolvio = get_user_by('ID', $bug_detalle->resuelto_por);
-                        echo $usuario_resolvio ? esc_html($usuario_resolvio->display_name) : esc_html__('Usuario desconocido', 'flavor-chat-ia');
+                        echo $usuario_resolvio ? esc_html($usuario_resolvio->display_name) : esc_html__('Usuario desconocido', 'flavor-platform');
                         ?>
                     </div>
                 </div>
@@ -374,17 +374,17 @@ $emojis_tipo = [
 
     <!-- Notas -->
     <div class="bug-detail-section notes-section">
-        <h3><?php esc_html_e('Notas', 'flavor-chat-ia'); ?></h3>
+        <h3><?php esc_html_e('Notas', 'flavor-platform'); ?></h3>
 
         <form method="post">
             <?php wp_nonce_field('bug_action_' . $bug_detalle->id); ?>
             <input type="hidden" name="bug_id" value="<?php echo esc_attr($bug_detalle->id); ?>">
             <input type="hidden" name="accion" value="agregar_nota">
 
-            <textarea name="nota" placeholder="<?php esc_attr_e('Agregar una nota...', 'flavor-chat-ia'); ?>"></textarea>
+            <textarea name="nota" placeholder="<?php esc_attr_e('Agregar una nota...', 'flavor-platform'); ?>"></textarea>
 
             <p style="margin-top: 10px;">
-                <button type="submit" class="button"><?php esc_html_e('Agregar Nota', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="button"><?php esc_html_e('Agregar Nota', 'flavor-platform'); ?></button>
             </p>
         </form>
 
@@ -398,21 +398,21 @@ $emojis_tipo = [
     <!-- Debug Info -->
     <?php if (!empty($bug_detalle->contexto_extra)) : ?>
         <div class="bug-detail-section">
-            <h3><?php esc_html_e('Información Adicional', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Información Adicional', 'flavor-platform'); ?></h3>
             <pre><?php echo esc_html(wp_json_encode($bug_detalle->contexto_extra, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)); ?></pre>
         </div>
     <?php endif; ?>
 
     <!-- Fingerprint (para debug) -->
     <div class="bug-detail-section">
-        <h3><?php esc_html_e('Información Técnica', 'flavor-chat-ia'); ?></h3>
+        <h3><?php esc_html_e('Información Técnica', 'flavor-platform'); ?></h3>
         <div class="context-grid">
             <div class="context-item">
-                <div class="label"><?php esc_html_e('ID', 'flavor-chat-ia'); ?></div>
+                <div class="label"><?php esc_html_e('ID', 'flavor-platform'); ?></div>
                 <div class="value"><?php echo esc_html($bug_detalle->id); ?></div>
             </div>
             <div class="context-item">
-                <div class="label"><?php esc_html_e('Hash Fingerprint', 'flavor-chat-ia'); ?></div>
+                <div class="label"><?php esc_html_e('Hash Fingerprint', 'flavor-platform'); ?></div>
                 <div class="value"><code style="font-size: 10px;"><?php echo esc_html($bug_detalle->hash_fingerprint); ?></code></div>
             </div>
         </div>

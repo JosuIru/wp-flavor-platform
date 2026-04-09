@@ -39,7 +39,7 @@ $nivel_clase = $nivel_clases[$artista->nivel_artista] ?? '';
             <div class="flavor-artista-avatar">
                 <img src="<?php echo esc_url($artista->avatar); ?>" alt="<?php echo esc_attr($artista->nombre_artistico); ?>">
                 <?php if ($artista->verificado): ?>
-                    <span class="flavor-artista-verificado" title="<?php esc_attr_e('Artista verificado', 'flavor-chat-ia'); ?>">
+                    <span class="flavor-artista-verificado" title="<?php esc_attr_e('Artista verificado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-yes-alt"></span>
                     </span>
                 <?php endif; ?>
@@ -79,18 +79,18 @@ $nivel_clase = $nivel_clases[$artista->nivel_artista] ?? '';
                             data-siguiendo="<?php echo $esta_siguiendo ? '1' : '0'; ?>">
                         <span class="dashicons <?php echo $esta_siguiendo ? 'dashicons-yes' : 'dashicons-plus-alt2'; ?>"></span>
                         <span class="texto">
-                            <?php echo $esta_siguiendo ? esc_html__('Siguiendo', 'flavor-chat-ia') : esc_html__('Seguir', 'flavor-chat-ia'); ?>
+                            <?php echo $esta_siguiendo ? esc_html__('Siguiendo', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Seguir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
                     </button>
 
                     <button type="button" class="flavor-btn flavor-btn--secondary flavor-artista-contactar">
                         <span class="dashicons dashicons-email"></span>
-                        <?php esc_html_e('Contactar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Contactar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 <?php else: ?>
                     <a href="<?php echo esc_url(home_url('/mi-perfil-artista/editar/')); ?>" class="flavor-btn flavor-btn--secondary">
                         <span class="dashicons dashicons-edit"></span>
-                        <?php esc_html_e('Editar perfil', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Editar perfil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 <?php endif; ?>
             </div>
@@ -101,15 +101,15 @@ $nivel_clase = $nivel_clases[$artista->nivel_artista] ?? '';
     <div class="flavor-artista-stats">
         <div class="flavor-artista-stat">
             <span class="flavor-artista-stat__valor"><?php echo number_format_i18n($artista->eventos_realizados); ?></span>
-            <span class="flavor-artista-stat__label"><?php esc_html_e('Eventos', 'flavor-chat-ia'); ?></span>
+            <span class="flavor-artista-stat__label"><?php esc_html_e('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="flavor-artista-stat">
             <span class="flavor-artista-stat__valor"><?php echo number_format_i18n($artista->seguidores_count); ?></span>
-            <span class="flavor-artista-stat__label"><?php esc_html_e('Seguidores', 'flavor-chat-ia'); ?></span>
+            <span class="flavor-artista-stat__label"><?php esc_html_e('Seguidores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <div class="flavor-artista-stat">
             <span class="flavor-artista-stat__valor"><?php echo number_format_i18n($artista->audiencia_total); ?></span>
-            <span class="flavor-artista-stat__label"><?php esc_html_e('Audiencia total', 'flavor-chat-ia'); ?></span>
+            <span class="flavor-artista-stat__label"><?php esc_html_e('Audiencia total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </div>
         <?php if ($artista->rating): ?>
         <div class="flavor-artista-stat">
@@ -118,7 +118,7 @@ $nivel_clase = $nivel_clases[$artista->nivel_artista] ?? '';
                 <?php echo number_format_i18n($artista->rating, 1); ?>
             </span>
             <span class="flavor-artista-stat__label">
-                <?php printf(esc_html__('(%s valoraciones)', 'flavor-chat-ia'), number_format_i18n($artista->total_valoraciones)); ?>
+                <?php printf(esc_html__('(%s valoraciones)', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($artista->total_valoraciones)); ?>
             </span>
         </div>
         <?php endif; ?>
@@ -135,7 +135,7 @@ $nivel_clase = $nivel_clases[$artista->nivel_artista] ?? '';
             <section class="flavor-artista-seccion">
                 <h2 class="flavor-artista-seccion__titulo">
                     <span class="dashicons dashicons-id-alt"></span>
-                    <?php esc_html_e('Sobre el artista', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Sobre el artista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <div class="flavor-artista-bio">
                     <?php echo wp_kses_post(wpautop($artista->bio_artistica)); ?>
@@ -148,7 +148,7 @@ $nivel_clase = $nivel_clases[$artista->nivel_artista] ?? '';
             <section class="flavor-artista-seccion">
                 <h2 class="flavor-artista-seccion__titulo">
                     <span class="dashicons dashicons-video-alt3"></span>
-                    <?php esc_html_e('Video destacado', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Video destacado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <div class="flavor-artista-video-destacado">
                     <?php echo wp_oembed_get($artista->video_destacado); ?>
@@ -161,7 +161,7 @@ $nivel_clase = $nivel_clases[$artista->nivel_artista] ?? '';
             <section class="flavor-artista-seccion">
                 <h2 class="flavor-artista-seccion__titulo">
                     <span class="dashicons dashicons-playlist-video"></span>
-                    <?php esc_html_e('Videos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Videos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <div class="flavor-artista-portfolio-grid">
                     <?php foreach ($artista->portfolio_videos as $video): ?>
@@ -178,7 +178,7 @@ $nivel_clase = $nivel_clases[$artista->nivel_artista] ?? '';
             <section class="flavor-artista-seccion">
                 <h2 class="flavor-artista-seccion__titulo">
                     <span class="dashicons dashicons-format-audio"></span>
-                    <?php esc_html_e('Música', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Música', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <div class="flavor-artista-audio">
                     <?php if (!empty($artista->audio_destacado)): ?>
@@ -195,7 +195,7 @@ $nivel_clase = $nivel_clases[$artista->nivel_artista] ?? '';
             <section class="flavor-artista-seccion">
                 <h2 class="flavor-artista-seccion__titulo">
                     <span class="dashicons dashicons-format-gallery"></span>
-                    <?php esc_html_e('Galería', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Galería', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <div class="flavor-artista-galeria">
                     <?php foreach ($artista->portfolio_imagenes as $imagen): ?>
@@ -217,7 +217,7 @@ $nivel_clase = $nivel_clases[$artista->nivel_artista] ?? '';
             <div class="flavor-artista-card">
                 <h3 class="flavor-artista-card__titulo">
                     <span class="dashicons dashicons-tag"></span>
-                    <?php esc_html_e('Géneros', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Géneros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <div class="flavor-artista-tags">
                     <?php foreach ($artista->generos as $genero): ?>
@@ -232,7 +232,7 @@ $nivel_clase = $nivel_clases[$artista->nivel_artista] ?? '';
             <div class="flavor-artista-card">
                 <h3 class="flavor-artista-card__titulo">
                     <span class="dashicons dashicons-translation"></span>
-                    <?php esc_html_e('Idiomas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Idiomas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <div class="flavor-artista-idiomas">
                     <?php
@@ -257,31 +257,31 @@ $nivel_clase = $nivel_clases[$artista->nivel_artista] ?? '';
             <div class="flavor-artista-card flavor-artista-card--disponible">
                 <h3 class="flavor-artista-card__titulo">
                     <span class="dashicons dashicons-yes"></span>
-                    <?php esc_html_e('Disponible para eventos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Disponible para eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <ul class="flavor-artista-disponibilidad">
                     <?php if ($artista->radio_actuacion_km): ?>
                         <li>
                             <span class="dashicons dashicons-location"></span>
-                            <?php printf(esc_html__('Radio: %d km', 'flavor-chat-ia'), $artista->radio_actuacion_km); ?>
+                            <?php printf(esc_html__('Radio: %d km', FLAVOR_PLATFORM_TEXT_DOMAIN), $artista->radio_actuacion_km); ?>
                         </li>
                     <?php endif; ?>
                     <?php if ($artista->duracion_tipica_min): ?>
                         <li>
                             <span class="dashicons dashicons-clock"></span>
-                            <?php printf(esc_html__('Duración: %d min', 'flavor-chat-ia'), $artista->duracion_tipica_min); ?>
+                            <?php printf(esc_html__('Duración: %d min', FLAVOR_PLATFORM_TEXT_DOMAIN), $artista->duracion_tipica_min); ?>
                         </li>
                     <?php endif; ?>
                     <?php if ($artista->acepta_semilla): ?>
                         <li>
                             <span class="dashicons dashicons-money-alt"></span>
-                            <?php esc_html_e('Acepta SEMILLA', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Acepta SEMILLA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </li>
                     <?php endif; ?>
                     <?php if ($artista->acepta_hours): ?>
                         <li>
                             <span class="dashicons dashicons-backup"></span>
-                            <?php esc_html_e('Acepta HOURS', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Acepta HOURS', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </li>
                     <?php endif; ?>
                 </ul>
@@ -289,7 +289,7 @@ $nivel_clase = $nivel_clases[$artista->nivel_artista] ?? '';
                 <?php if (!$es_propio): ?>
                 <a href="<?php echo esc_url(home_url('/proponer-evento/?artista=' . $artista->id)); ?>" class="flavor-btn flavor-btn--success flavor-btn--block">
                     <span class="dashicons dashicons-calendar-alt"></span>
-                    <?php esc_html_e('Proponer evento', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Proponer evento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <?php endif; ?>
             </div>
@@ -320,7 +320,7 @@ $nivel_clase = $nivel_clases[$artista->nivel_artista] ?? '';
             <div class="flavor-artista-card">
                 <h3 class="flavor-artista-card__titulo">
                     <span class="dashicons dashicons-share"></span>
-                    <?php esc_html_e('Enlaces', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Enlaces', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <div class="flavor-artista-redes">
                     <?php foreach ($redes as $red => $config):
@@ -345,13 +345,13 @@ $nivel_clase = $nivel_clases[$artista->nivel_artista] ?? '';
             <div class="flavor-artista-card">
                 <h3 class="flavor-artista-card__titulo">
                     <span class="dashicons dashicons-media-document"></span>
-                    <?php esc_html_e('Prensa', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Prensa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
                 <ul class="flavor-artista-prensa">
                     <?php foreach ($artista->portfolio_prensa as $prensa): ?>
                         <li>
                             <a href="<?php echo esc_url($prensa['url'] ?? $prensa); ?>" target="_blank">
-                                <?php echo esc_html($prensa['titulo'] ?? __('Ver artículo', 'flavor-chat-ia')); ?>
+                                <?php echo esc_html($prensa['titulo'] ?? __('Ver artículo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                             </a>
                         </li>
                     <?php endforeach; ?>
@@ -793,10 +793,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     if (data.siguiendo) {
                         icono.className = 'dashicons dashicons-yes';
-                        texto.textContent = '<?php esc_html_e('Siguiendo', 'flavor-chat-ia'); ?>';
+                        texto.textContent = '<?php esc_html_e('Siguiendo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>';
                     } else {
                         icono.className = 'dashicons dashicons-plus-alt2';
-                        texto.textContent = '<?php esc_html_e('Seguir', 'flavor-chat-ia'); ?>';
+                        texto.textContent = '<?php esc_html_e('Seguir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>';
                     }
                 }
             } catch (error) {

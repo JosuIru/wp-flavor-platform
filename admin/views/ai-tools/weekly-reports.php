@@ -27,16 +27,16 @@ $latest_reports = array_slice($saved_reports, -5, 5, true);
 <div class="wrap flavor-ai-page flavor-weekly-reports">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-chart-area"></span>
-        <?php esc_html_e('Reportes Semanales IA', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Reportes Semanales IA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <?php if (!$is_ai_configured): ?>
     <div class="notice notice-warning">
         <p>
             <span class="dashicons dashicons-warning"></span>
-            <?php esc_html_e('Configura el motor de IA para generar análisis inteligentes.', 'flavor-chat-ia'); ?>
-            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-chat-config')); ?>">
-                <?php esc_html_e('Ir a configuración', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Configura el motor de IA para generar análisis inteligentes.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-platform-settings')); ?>">
+                <?php esc_html_e('Ir a configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </p>
     </div>
@@ -49,42 +49,42 @@ $latest_reports = array_slice($saved_reports, -5, 5, true);
             <div class="report-generator card">
                 <h2>
                     <span class="dashicons dashicons-plus-alt"></span>
-                    <?php esc_html_e('Generar Nuevo Reporte', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Generar Nuevo Reporte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
 
                 <form id="generate-report-form" class="report-form">
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="report-week-start"><?php esc_html_e('Semana a analizar', 'flavor-chat-ia'); ?></label>
+                            <label for="report-week-start"><?php esc_html_e('Semana a analizar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="date" id="report-week-start" value="<?php echo esc_attr(date('Y-m-d', strtotime('last monday'))); ?>">
                         </div>
 
                         <div class="form-group">
-                            <label><?php esc_html_e('Módulos a incluir', 'flavor-chat-ia'); ?></label>
+                            <label><?php esc_html_e('Módulos a incluir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <div class="modules-selector">
                                 <label class="module-checkbox">
                                     <input type="checkbox" name="modules[]" value="all" checked>
-                                    <span><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></span>
+                                    <span><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </label>
                                 <label class="module-checkbox">
                                     <input type="checkbox" name="modules[]" value="socios">
-                                    <span><?php esc_html_e('Miembros', 'flavor-chat-ia'); ?></span>
+                                    <span><?php esc_html_e('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </label>
                                 <label class="module-checkbox">
                                     <input type="checkbox" name="modules[]" value="eventos">
-                                    <span><?php esc_html_e('Eventos', 'flavor-chat-ia'); ?></span>
+                                    <span><?php esc_html_e('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </label>
                                 <label class="module-checkbox">
                                     <input type="checkbox" name="modules[]" value="reservas">
-                                    <span><?php esc_html_e('Reservas', 'flavor-chat-ia'); ?></span>
+                                    <span><?php esc_html_e('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </label>
                                 <label class="module-checkbox">
                                     <input type="checkbox" name="modules[]" value="grupos_consumo">
-                                    <span><?php esc_html_e('Grupos Consumo', 'flavor-chat-ia'); ?></span>
+                                    <span><?php esc_html_e('Grupos Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </label>
                                 <label class="module-checkbox">
                                     <input type="checkbox" name="modules[]" value="incidencias">
-                                    <span><?php esc_html_e('Incidencias', 'flavor-chat-ia'); ?></span>
+                                    <span><?php esc_html_e('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </label>
                             </div>
                         </div>
@@ -93,11 +93,11 @@ $latest_reports = array_slice($saved_reports, -5, 5, true);
                     <div class="form-actions">
                         <button type="button" id="preview-metrics" class="button">
                             <span class="dashicons dashicons-visibility"></span>
-                            <?php esc_html_e('Vista previa métricas', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Vista previa métricas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <button type="submit" class="button button-primary" <?php echo !$is_ai_configured ? 'disabled' : ''; ?>>
                             <span class="dashicons dashicons-admin-generic"></span>
-                            <?php esc_html_e('Generar Reporte', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Generar Reporte', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </form>
@@ -107,7 +107,7 @@ $latest_reports = array_slice($saved_reports, -5, 5, true);
             <div class="metrics-preview card" id="metrics-preview" style="display: none;">
                 <h2>
                     <span class="dashicons dashicons-chart-bar"></span>
-                    <?php esc_html_e('Métricas de la Semana', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Métricas de la Semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
 
                 <div class="metrics-grid" id="metrics-grid">
@@ -120,7 +120,7 @@ $latest_reports = array_slice($saved_reports, -5, 5, true);
                 <div class="report-header">
                     <h2>
                         <span class="dashicons dashicons-media-document"></span>
-                        <span id="report-title"><?php esc_html_e('Reporte Semanal', 'flavor-chat-ia'); ?></span>
+                        <span id="report-title"><?php esc_html_e('Reporte Semanal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </h2>
                     <div class="report-meta">
                         <span class="report-date" id="report-date"></span>
@@ -129,7 +129,7 @@ $latest_reports = array_slice($saved_reports, -5, 5, true);
 
                 <!-- Resumen Ejecutivo -->
                 <div class="report-section">
-                    <h3><?php esc_html_e('Resumen Ejecutivo', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Resumen Ejecutivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <div class="executive-summary" id="executive-summary">
                         <!-- Generado por IA -->
                     </div>
@@ -137,7 +137,7 @@ $latest_reports = array_slice($saved_reports, -5, 5, true);
 
                 <!-- Métricas Clave -->
                 <div class="report-section">
-                    <h3><?php esc_html_e('Métricas Clave', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Métricas Clave', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <div class="key-metrics" id="key-metrics">
                         <!-- Tarjetas de métricas con variación -->
                     </div>
@@ -145,7 +145,7 @@ $latest_reports = array_slice($saved_reports, -5, 5, true);
 
                 <!-- Gráficos -->
                 <div class="report-section">
-                    <h3><?php esc_html_e('Tendencias', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Tendencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <div class="charts-container">
                         <div class="chart-wrapper">
                             <canvas id="activity-chart"></canvas>
@@ -160,7 +160,7 @@ $latest_reports = array_slice($saved_reports, -5, 5, true);
                 <div class="report-section">
                     <h3>
                         <span class="dashicons dashicons-lightbulb"></span>
-                        <?php esc_html_e('Análisis IA', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Análisis IA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <div class="ai-analysis" id="ai-analysis">
                         <!-- Análisis generado por IA -->
@@ -171,7 +171,7 @@ $latest_reports = array_slice($saved_reports, -5, 5, true);
                 <div class="report-section">
                     <h3>
                         <span class="dashicons dashicons-yes-alt"></span>
-                        <?php esc_html_e('Recomendaciones', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Recomendaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <div class="recommendations" id="recommendations">
                         <!-- Lista de recomendaciones -->
@@ -182,15 +182,15 @@ $latest_reports = array_slice($saved_reports, -5, 5, true);
                 <div class="report-actions">
                     <button type="button" class="button" id="export-pdf">
                         <span class="dashicons dashicons-pdf"></span>
-                        <?php esc_html_e('Exportar PDF', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Exportar PDF', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button" class="button" id="send-email">
                         <span class="dashicons dashicons-email"></span>
-                        <?php esc_html_e('Enviar por Email', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Enviar por Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button" class="button" id="save-report">
                         <span class="dashicons dashicons-saved"></span>
-                        <?php esc_html_e('Guardar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Guardar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </div>
@@ -200,8 +200,8 @@ $latest_reports = array_slice($saved_reports, -5, 5, true);
                 <div class="status-content">
                     <div class="spinner is-active"></div>
                     <div class="status-text">
-                        <strong><?php esc_html_e('Generando reporte...', 'flavor-chat-ia'); ?></strong>
-                        <span id="status-step"><?php esc_html_e('Recopilando métricas...', 'flavor-chat-ia'); ?></span>
+                        <strong><?php esc_html_e('Generando reporte...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                        <span id="status-step"><?php esc_html_e('Recopilando métricas...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="progress-bar">
@@ -216,11 +216,11 @@ $latest_reports = array_slice($saved_reports, -5, 5, true);
             <div class="card saved-reports">
                 <h3>
                     <span class="dashicons dashicons-portfolio"></span>
-                    <?php esc_html_e('Reportes Anteriores', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Reportes Anteriores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
 
                 <?php if (empty($latest_reports)): ?>
-                    <p class="no-reports"><?php esc_html_e('No hay reportes guardados aún.', 'flavor-chat-ia'); ?></p>
+                    <p class="no-reports"><?php esc_html_e('No hay reportes guardados aún.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php else: ?>
                     <ul class="reports-list">
                         <?php foreach (array_reverse($latest_reports, true) as $report_id => $report): ?>
@@ -231,7 +231,7 @@ $latest_reports = array_slice($saved_reports, -5, 5, true);
                                         <span class="report-name">
                                             <?php printf(
                                                 /* translators: %s: date range */
-                                                esc_html__('Semana %s', 'flavor-chat-ia'),
+                                                esc_html__('Semana %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                                 esc_html($report['period']['start'] ?? $report_id)
                                             ); ?>
                                         </span>
@@ -250,7 +250,7 @@ $latest_reports = array_slice($saved_reports, -5, 5, true);
             <div class="card auto-reports">
                 <h3>
                     <span class="dashicons dashicons-clock"></span>
-                    <?php esc_html_e('Reportes Automáticos', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Reportes Automáticos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
 
                 <div class="auto-report-setting">
@@ -258,11 +258,11 @@ $latest_reports = array_slice($saved_reports, -5, 5, true);
                         <input type="checkbox" id="auto-reports-enabled" <?php checked(get_option('flavor_auto_weekly_reports', false)); ?>>
                         <span class="slider"></span>
                     </label>
-                    <span><?php esc_html_e('Generar cada lunes', 'flavor-chat-ia'); ?></span>
+                    <span><?php esc_html_e('Generar cada lunes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
 
                 <div class="auto-report-email">
-                    <label for="report-email"><?php esc_html_e('Enviar a:', 'flavor-chat-ia'); ?></label>
+                    <label for="report-email"><?php esc_html_e('Enviar a:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="email" id="report-email" value="<?php echo esc_attr(get_option('admin_email')); ?>" placeholder="email@ejemplo.com">
                 </div>
             </div>
@@ -271,14 +271,14 @@ $latest_reports = array_slice($saved_reports, -5, 5, true);
             <div class="card help-card">
                 <h3>
                     <span class="dashicons dashicons-editor-help"></span>
-                    <?php esc_html_e('Ayuda', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h3>
-                <p><?php esc_html_e('Los reportes semanales incluyen:', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('Los reportes semanales incluyen:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <ul>
-                    <li><?php esc_html_e('Métricas clave de cada módulo', 'flavor-chat-ia'); ?></li>
-                    <li><?php esc_html_e('Comparativa con semana anterior', 'flavor-chat-ia'); ?></li>
-                    <li><?php esc_html_e('Análisis de tendencias por IA', 'flavor-chat-ia'); ?></li>
-                    <li><?php esc_html_e('Recomendaciones automáticas', 'flavor-chat-ia'); ?></li>
+                    <li><?php esc_html_e('Métricas clave de cada módulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                    <li><?php esc_html_e('Comparativa con semana anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                    <li><?php esc_html_e('Análisis de tendencias por IA', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
+                    <li><?php esc_html_e('Recomendaciones automáticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></li>
                 </ul>
             </div>
         </div>

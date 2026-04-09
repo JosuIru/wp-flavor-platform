@@ -32,7 +32,7 @@ class Flavor_Advertising_Dashboard_Tab {
         }
 
         $tabs['publicidad'] = [
-            'label' => __('Publicidad', 'flavor-chat-ia'),
+            'label' => __('Publicidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-megaphone',
             'callback' => [$this, 'render_tab'],
             'priority' => 75,

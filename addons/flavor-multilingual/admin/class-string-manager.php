@@ -69,7 +69,7 @@ class Flavor_String_Manager {
 
         // Dominios por defecto a rastrear
         $this->tracked_domains = apply_filters('flavor_multilingual_tracked_domains', array(
-            'flavor-chat-ia',
+            FLAVOR_PLATFORM_TEXT_DOMAIN,
             'flavor-multilingual',
             get_template(),
             get_stylesheet(),

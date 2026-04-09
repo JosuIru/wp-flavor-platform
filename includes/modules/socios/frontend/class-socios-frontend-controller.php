@@ -79,11 +79,11 @@ class Flavor_Socios_Frontend_Controller {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('socios_nonce'),
             'i18n' => [
-                'solicitud_enviada' => __('Solicitud enviada correctamente', 'flavor-chat-ia'),
-                'perfil_actualizado' => __('Perfil actualizado', 'flavor-chat-ia'),
-                'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'cargando' => __('Procesando...', 'flavor-chat-ia'),
-                'confirmar_renovar' => __('¿Confirmas la renovación de tu cuota?', 'flavor-chat-ia'),
+                'solicitud_enviada' => __('Solicitud enviada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'perfil_actualizado' => __('Perfil actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'cargando' => __('Procesando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmar_renovar' => __('¿Confirmas la renovación de tu cuota?', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -133,7 +133,7 @@ class Flavor_Socios_Frontend_Controller {
         return '<div class="flavor-empty-state">' .
             '<p>' . esc_html($mensaje) . '</p>' .
             '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="flavor-btn flavor-btn-primary">' .
-            esc_html__('Iniciar sesión', 'flavor-chat-ia') .
+            esc_html__('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN) .
             '</a></div>';
     }
 
@@ -162,9 +162,9 @@ class Flavor_Socios_Frontend_Controller {
 
                 if ($es_socio) {
                     return '<div class="flavor-notice flavor-notice-info"><p>' .
-                        __('Ya eres miembro. Puedes ver tu perfil en el área de miembros.', 'flavor-chat-ia') .
+                        __('Ya eres miembro. Puedes ver tu perfil en el área de miembros.', FLAVOR_PLATFORM_TEXT_DOMAIN) .
                         '</p><a href="' . esc_url(home_url('/mi-portal/socios/')) . '" class="flavor-btn flavor-btn-primary">' .
-                        __('Ir a mi perfil', 'flavor-chat-ia') . '</a></div>';
+                        __('Ir a mi perfil', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></div>';
                 }
             }
         }
@@ -183,16 +183,16 @@ class Flavor_Socios_Frontend_Controller {
         ob_start();
         ?>
         <div class="flavor-socios-alta">
-            <h2><?php esc_html_e('Hazte Socio/a', 'flavor-chat-ia'); ?></h2>
+            <h2><?php esc_html_e('Hazte Socio/a', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
             <?php if ($atts['mostrar_tipos'] === 'true' && !empty($tipos_membresia)): ?>
                 <div class="tipos-membresia">
-                    <h3><?php esc_html_e('Elige tu tipo de membresía', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Elige tu tipo de membresía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <div class="tipos-grid">
                         <?php foreach ($tipos_membresia as $tipo): ?>
                             <div class="tipo-card <?php echo $tipo->destacado ? 'destacado' : ''; ?>">
                                 <?php if ($tipo->destacado): ?>
-                                    <span class="tipo-badge"><?php esc_html_e('Recomendado', 'flavor-chat-ia'); ?></span>
+                                    <span class="tipo-badge"><?php esc_html_e('Recomendado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php endif; ?>
                                 <h4><?php echo esc_html($tipo->nombre); ?></h4>
                                 <div class="tipo-precio">
@@ -212,7 +212,7 @@ class Flavor_Socios_Frontend_Controller {
                                     </ul>
                                 <?php endif; ?>
                                 <button type="button" class="flavor-btn flavor-btn-primary flavor-btn-block btn-seleccionar-tipo" data-tipo="<?php echo esc_attr($tipo->id); ?>">
-                                    <?php esc_html_e('Seleccionar', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Seleccionar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             </div>
                         <?php endforeach; ?>
@@ -225,53 +225,53 @@ class Flavor_Socios_Frontend_Controller {
                 <input type="hidden" name="tipo_membresia_id" id="tipo_membresia_id" value="<?php echo esc_attr($atts['tipo_membresia']); ?>">
 
                 <div class="flavor-form-section">
-                    <h3><?php esc_html_e('Datos Personales', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Datos Personales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
                     <div class="flavor-form-row">
                         <div class="flavor-form-group flavor-form-col-6">
-                            <label for="nombre"><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?> *</label>
+                            <label for="nombre"><?php esc_html_e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                             <input type="text" name="nombre" id="nombre" required value="<?php echo is_user_logged_in() ? esc_attr(wp_get_current_user()->first_name) : ''; ?>">
                         </div>
                         <div class="flavor-form-group flavor-form-col-6">
-                            <label for="apellidos"><?php esc_html_e('Apellidos', 'flavor-chat-ia'); ?> *</label>
+                            <label for="apellidos"><?php esc_html_e('Apellidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                             <input type="text" name="apellidos" id="apellidos" required value="<?php echo is_user_logged_in() ? esc_attr(wp_get_current_user()->last_name) : ''; ?>">
                         </div>
                     </div>
 
                     <div class="flavor-form-row">
                         <div class="flavor-form-group flavor-form-col-6">
-                            <label for="email"><?php esc_html_e('Email', 'flavor-chat-ia'); ?> *</label>
+                            <label for="email"><?php esc_html_e('Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                             <input type="email" name="email" id="email" required value="<?php echo is_user_logged_in() ? esc_attr(wp_get_current_user()->user_email) : ''; ?>">
                         </div>
                         <div class="flavor-form-group flavor-form-col-6">
-                            <label for="telefono"><?php esc_html_e('Teléfono', 'flavor-chat-ia'); ?></label>
+                            <label for="telefono"><?php esc_html_e('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="tel" name="telefono" id="telefono">
                         </div>
                     </div>
 
                     <div class="flavor-form-row">
                         <div class="flavor-form-group flavor-form-col-6">
-                            <label for="dni"><?php esc_html_e('DNI/NIE', 'flavor-chat-ia'); ?></label>
+                            <label for="dni"><?php esc_html_e('DNI/NIE', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="text" name="dni" id="dni">
                         </div>
                         <div class="flavor-form-group flavor-form-col-6">
-                            <label for="fecha_nacimiento"><?php esc_html_e('Fecha de Nacimiento', 'flavor-chat-ia'); ?></label>
+                            <label for="fecha_nacimiento"><?php esc_html_e('Fecha de Nacimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="date" name="fecha_nacimiento" id="fecha_nacimiento">
                         </div>
                     </div>
 
                     <div class="flavor-form-group">
-                        <label for="direccion"><?php esc_html_e('Dirección', 'flavor-chat-ia'); ?></label>
+                        <label for="direccion"><?php esc_html_e('Dirección', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="text" name="direccion" id="direccion">
                     </div>
 
                     <div class="flavor-form-row">
                         <div class="flavor-form-group flavor-form-col-4">
-                            <label for="codigo_postal"><?php esc_html_e('Código Postal', 'flavor-chat-ia'); ?></label>
+                            <label for="codigo_postal"><?php esc_html_e('Código Postal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="text" name="codigo_postal" id="codigo_postal">
                         </div>
                         <div class="flavor-form-group flavor-form-col-8">
-                            <label for="ciudad"><?php esc_html_e('Ciudad', 'flavor-chat-ia'); ?></label>
+                            <label for="ciudad"><?php esc_html_e('Ciudad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="text" name="ciudad" id="ciudad">
                         </div>
                     </div>
@@ -279,14 +279,14 @@ class Flavor_Socios_Frontend_Controller {
 
                 <?php if (!is_user_logged_in()): ?>
                     <div class="flavor-form-section">
-                        <h3><?php esc_html_e('Crear Cuenta', 'flavor-chat-ia'); ?></h3>
+                        <h3><?php esc_html_e('Crear Cuenta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                         <div class="flavor-form-row">
                             <div class="flavor-form-group flavor-form-col-6">
-                                <label for="password"><?php esc_html_e('Contraseña', 'flavor-chat-ia'); ?> *</label>
+                                <label for="password"><?php esc_html_e('Contraseña', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                                 <input type="password" name="password" id="password" required minlength="8">
                             </div>
                             <div class="flavor-form-group flavor-form-col-6">
-                                <label for="password_confirm"><?php esc_html_e('Confirmar Contraseña', 'flavor-chat-ia'); ?> *</label>
+                                <label for="password_confirm"><?php esc_html_e('Confirmar Contraseña', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label>
                                 <input type="password" name="password_confirm" id="password_confirm" required>
                             </div>
                         </div>
@@ -297,26 +297,26 @@ class Flavor_Socios_Frontend_Controller {
                     <div class="flavor-form-group flavor-checkbox-group">
                         <label>
                             <input type="checkbox" name="acepta_estatutos" value="1" required>
-                            <?php esc_html_e('Acepto los estatutos y normas de la asociación', 'flavor-chat-ia'); ?> *
+                            <?php esc_html_e('Acepto los estatutos y normas de la asociación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *
                         </label>
                     </div>
                     <div class="flavor-form-group flavor-checkbox-group">
                         <label>
                             <input type="checkbox" name="acepta_privacidad" value="1" required>
-                            <?php printf(__('Acepto la %spolitica de privacidad%s', 'flavor-chat-ia'), '<a href="' . esc_url(get_privacy_policy_url()) . '" target="_blank">', '</a>'); ?> *
+                            <?php printf(__('Acepto la %spolitica de privacidad%s', FLAVOR_PLATFORM_TEXT_DOMAIN), '<a href="' . esc_url(get_privacy_policy_url()) . '" target="_blank">', '</a>'); ?> *
                         </label>
                     </div>
                     <div class="flavor-form-group flavor-checkbox-group">
                         <label>
                             <input type="checkbox" name="acepta_comunicaciones" value="1">
-                            <?php esc_html_e('Acepto recibir comunicaciones sobre actividades y novedades', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Acepto recibir comunicaciones sobre actividades y novedades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </label>
                     </div>
                 </div>
 
                 <div class="flavor-form-actions">
                     <button type="submit" class="flavor-btn flavor-btn-primary flavor-btn-lg">
-                        <?php esc_html_e('Enviar Solicitud', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Enviar Solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </form>
@@ -330,7 +330,7 @@ class Flavor_Socios_Frontend_Controller {
      */
     public function shortcode_mi_perfil($atts) {
         if (!is_user_logged_in()) {
-            return $this->render_login_required(__('Debes iniciar sesión para ver tu perfil de socio.', 'flavor-chat-ia'));
+            return $this->render_login_required(__('Debes iniciar sesión para ver tu perfil de socio.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $this->encolar_assets();
@@ -354,9 +354,9 @@ class Flavor_Socios_Frontend_Controller {
 
         if (!$socio) {
             return '<div class="flavor-empty-state"><p>' .
-                __('No eres socio/a todavía.', 'flavor-chat-ia') . '</p>' .
+                __('No eres socio/a todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>' .
                 '<a href="' . esc_url(home_url('/mi-portal/socios/unirse/')) . '" class="flavor-btn flavor-btn-primary">' .
-                __('Hacerse Socio/a', 'flavor-chat-ia') . '</a></div>';
+                __('Hacerse Socio/a', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></div>';
         }
 
         $estados_colores = [
@@ -376,7 +376,7 @@ class Flavor_Socios_Frontend_Controller {
                 <div class="perfil-info">
                     <h2><?php echo esc_html($socio->nombre . ' ' . $socio->apellidos); ?></h2>
                     <p class="numero-socio">
-                        <?php esc_html_e('Nº Socio:', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Nº Socio:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <strong><?php echo esc_html($socio->numero_socio ?? '-'); ?></strong>
                     </p>
                     <span class="flavor-badge flavor-badge-<?php echo esc_attr($estados_colores[$socio->estado] ?? 'secondary'); ?>">
@@ -387,86 +387,86 @@ class Flavor_Socios_Frontend_Controller {
 
             <div class="perfil-cards">
                 <div class="perfil-card">
-                    <h4><?php esc_html_e('Membresía', 'flavor-chat-ia'); ?></h4>
-                    <p class="tipo-membresia"><?php echo esc_html($socio->tipo_nombre ?? __('Estándar', 'flavor-chat-ia')); ?></p>
+                    <h4><?php esc_html_e('Membresía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+                    <p class="tipo-membresia"><?php echo esc_html($socio->tipo_nombre ?? __('Estándar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></p>
                     <?php if ($socio->fecha_alta): ?>
                         <p class="fecha-alta">
-                            <small><?php esc_html_e('Socio/a desde:', 'flavor-chat-ia'); ?> <?php echo date_i18n('d/m/Y', strtotime($socio->fecha_alta)); ?></small>
+                            <small><?php esc_html_e('Socio/a desde:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo date_i18n('d/m/Y', strtotime($socio->fecha_alta)); ?></small>
                         </p>
                     <?php endif; ?>
                 </div>
 
                 <div class="perfil-card">
-                    <h4><?php esc_html_e('Cuota', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php esc_html_e('Cuota', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <?php if ($socio->cuota_pagada): ?>
                         <p class="cuota-estado cuota-pagada">
                             <span class="dashicons dashicons-yes-alt"></span>
-                            <?php esc_html_e('Cuota al día', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Cuota al día', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                         <?php if ($socio->fecha_vencimiento_cuota): ?>
-                            <p><small><?php esc_html_e('Vence:', 'flavor-chat-ia'); ?> <?php echo date_i18n('d/m/Y', strtotime($socio->fecha_vencimiento_cuota)); ?></small></p>
+                            <p><small><?php esc_html_e('Vence:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <?php echo date_i18n('d/m/Y', strtotime($socio->fecha_vencimiento_cuota)); ?></small></p>
                         <?php endif; ?>
                     <?php else: ?>
                         <p class="cuota-estado cuota-pendiente">
                             <span class="dashicons dashicons-warning"></span>
-                            <?php esc_html_e('Cuota pendiente', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Cuota pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                         <a href="<?php echo esc_url(home_url('/mi-portal/socios/pagar-cuota/')); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
-                            <?php esc_html_e('Pagar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Pagar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     <?php endif; ?>
                 </div>
 
                 <div class="perfil-card">
-                    <h4><?php esc_html_e('Carnet', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php esc_html_e('Carnet', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <?php if ($socio->estado === 'activo' && $socio->cuota_pagada): ?>
                         <a href="<?php echo esc_url(home_url('/mi-portal/socios/carnet/')); ?>" class="flavor-btn flavor-btn-sm flavor-btn-secondary">
                             <span class="dashicons dashicons-id-alt"></span>
-                            <?php esc_html_e('Ver Carnet', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Ver Carnet', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     <?php else: ?>
                         <p class="carnet-no-disponible">
-                            <small><?php esc_html_e('Disponible cuando la cuota esté al día', 'flavor-chat-ia'); ?></small>
+                            <small><?php esc_html_e('Disponible cuando la cuota esté al día', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
                         </p>
                     <?php endif; ?>
                 </div>
             </div>
 
             <div class="perfil-datos">
-                <h3><?php esc_html_e('Mis Datos', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Mis Datos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <form id="form-actualizar-perfil" class="flavor-form">
                     <?php wp_nonce_field('socios_nonce', 'socios_nonce_field'); ?>
 
                     <div class="flavor-form-row">
                         <div class="flavor-form-group flavor-form-col-6">
-                            <label><?php esc_html_e('Email', 'flavor-chat-ia'); ?></label>
+                            <label><?php esc_html_e('Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="email" name="email" value="<?php echo esc_attr($socio->email); ?>">
                         </div>
                         <div class="flavor-form-group flavor-form-col-6">
-                            <label><?php esc_html_e('Teléfono', 'flavor-chat-ia'); ?></label>
+                            <label><?php esc_html_e('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="tel" name="telefono" value="<?php echo esc_attr($socio->telefono); ?>">
                         </div>
                     </div>
 
                     <div class="flavor-form-group">
-                        <label><?php esc_html_e('Dirección', 'flavor-chat-ia'); ?></label>
+                        <label><?php esc_html_e('Dirección', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="text" name="direccion" value="<?php echo esc_attr($socio->direccion); ?>">
                     </div>
 
                     <div class="flavor-form-row">
                         <div class="flavor-form-group flavor-form-col-4">
-                            <label><?php esc_html_e('Código Postal', 'flavor-chat-ia'); ?></label>
+                            <label><?php esc_html_e('Código Postal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="text" name="codigo_postal" value="<?php echo esc_attr($socio->codigo_postal); ?>">
                         </div>
                         <div class="flavor-form-group flavor-form-col-8">
-                            <label><?php esc_html_e('Ciudad', 'flavor-chat-ia'); ?></label>
+                            <label><?php esc_html_e('Ciudad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="text" name="ciudad" value="<?php echo esc_attr($socio->ciudad); ?>">
                         </div>
                     </div>
 
                     <div class="flavor-form-actions">
                         <button type="submit" class="flavor-btn flavor-btn-primary">
-                            <?php esc_html_e('Guardar Cambios', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Guardar Cambios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 </form>
@@ -474,7 +474,7 @@ class Flavor_Socios_Frontend_Controller {
 
             <?php if (!empty($socio->tipo_beneficios)): ?>
                 <div class="perfil-beneficios">
-                    <h3><?php esc_html_e('Tus Beneficios', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Tus Beneficios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <ul class="beneficios-lista">
                         <?php foreach (explode("\n", $socio->tipo_beneficios) as $beneficio): ?>
                             <?php if (trim($beneficio)): ?>
@@ -494,7 +494,7 @@ class Flavor_Socios_Frontend_Controller {
      */
     public function shortcode_mi_carnet($atts) {
         if (!is_user_logged_in()) {
-            return $this->render_login_required(__('Debes iniciar sesión para ver tu carnet digital.', 'flavor-chat-ia'));
+            return $this->render_login_required(__('Debes iniciar sesión para ver tu carnet digital.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $this->encolar_assets();
@@ -509,7 +509,7 @@ class Flavor_Socios_Frontend_Controller {
         ));
 
         if (!$socio || !$socio->cuota_pagada) {
-            return '<div class="flavor-empty-state"><p>' . __('Tu carnet no está disponible. Asegúrate de que tu cuota esté al día.', 'flavor-chat-ia') . '</p></div>';
+            return '<div class="flavor-empty-state"><p>' . __('Tu carnet no está disponible. Asegúrate de que tu cuota esté al día.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         $sitio_nombre = get_bloginfo('name');
@@ -521,7 +521,7 @@ class Flavor_Socios_Frontend_Controller {
             <div class="carnet-card">
                 <div class="carnet-header">
                     <h3><?php echo esc_html($sitio_nombre); ?></h3>
-                    <span class="carnet-tipo"><?php esc_html_e('Carnet de Socio/a', 'flavor-chat-ia'); ?></span>
+                    <span class="carnet-tipo"><?php esc_html_e('Carnet de Socio/a', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
 
                 <div class="carnet-body">
@@ -531,11 +531,11 @@ class Flavor_Socios_Frontend_Controller {
                     <div class="carnet-datos">
                         <h2><?php echo esc_html($socio->nombre . ' ' . $socio->apellidos); ?></h2>
                         <p class="carnet-numero">
-                            <?php esc_html_e('Nº', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Nº', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             <strong><?php echo esc_html($socio->numero_socio ?? sprintf('%06d', $socio->id)); ?></strong>
                         </p>
                         <p class="carnet-desde">
-                            <?php esc_html_e('Socio/a desde', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Socio/a desde', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             <?php echo date_i18n('Y', strtotime($socio->fecha_alta ?? $socio->created_at)); ?>
                         </p>
                     </div>
@@ -543,7 +543,7 @@ class Flavor_Socios_Frontend_Controller {
 
                 <div class="carnet-footer">
                     <div class="carnet-validez">
-                        <?php esc_html_e('Válido hasta:', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Válido hasta:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <?php echo date_i18n('d/m/Y', strtotime($socio->fecha_vencimiento_cuota ?? '+1 year')); ?>
                     </div>
                     <div class="carnet-qr" data-qr="<?php echo esc_attr($qr_data); ?>">
@@ -555,11 +555,11 @@ class Flavor_Socios_Frontend_Controller {
             <div class="carnet-acciones">
                 <button type="button" class="flavor-btn flavor-btn-secondary" onclick="window.print();">
                     <span class="dashicons dashicons-printer"></span>
-                    <?php esc_html_e('Imprimir', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Imprimir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" class="flavor-btn flavor-btn-primary btn-descargar-carnet">
                     <span class="dashicons dashicons-download"></span>
-                    <?php esc_html_e('Descargar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Descargar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
         </div>
@@ -572,7 +572,7 @@ class Flavor_Socios_Frontend_Controller {
      */
     public function shortcode_mis_cuotas($atts) {
         if (!is_user_logged_in()) {
-            return $this->render_login_required(__('Debes iniciar sesión para ver tus cuotas.', 'flavor-chat-ia'));
+            return $this->render_login_required(__('Debes iniciar sesión para ver tus cuotas.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $this->encolar_assets();
@@ -588,7 +588,7 @@ class Flavor_Socios_Frontend_Controller {
         ));
 
         if (!$socio) {
-            return '<div class="flavor-empty-state"><p>' . __('No eres socio/a.', 'flavor-chat-ia') . '</p></div>';
+            return '<div class="flavor-empty-state"><p>' . __('No eres socio/a.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         $pagos = [];
@@ -600,10 +600,10 @@ class Flavor_Socios_Frontend_Controller {
         }
 
         $estados_pagos = [
-            'pendiente' => ['color' => 'warning', 'label' => __('Pendiente', 'flavor-chat-ia')],
-            'completado' => ['color' => 'success', 'label' => __('Pagado', 'flavor-chat-ia')],
-            'fallido' => ['color' => 'danger', 'label' => __('Fallido', 'flavor-chat-ia')],
-            'reembolsado' => ['color' => 'secondary', 'label' => __('Reembolsado', 'flavor-chat-ia')],
+            'pendiente' => ['color' => 'warning', 'label' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'completado' => ['color' => 'success', 'label' => __('Pagado', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'fallido' => ['color' => 'danger', 'label' => __('Fallido', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            'reembolsado' => ['color' => 'secondary', 'label' => __('Reembolsado', FLAVOR_PLATFORM_TEXT_DOMAIN)],
         ];
 
         ob_start();
@@ -611,50 +611,50 @@ class Flavor_Socios_Frontend_Controller {
         <div class="flavor-socio-cuotas">
             <div class="cuotas-resumen">
                 <div class="resumen-card">
-                    <h4><?php esc_html_e('Estado Actual', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php esc_html_e('Estado Actual', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <?php if ($socio->cuota_pagada): ?>
                         <p class="estado-ok">
                             <span class="dashicons dashicons-yes-alt"></span>
-                            <?php esc_html_e('Cuota al día', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Cuota al día', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                     <?php else: ?>
                         <p class="estado-pendiente">
                             <span class="dashicons dashicons-warning"></span>
-                            <?php esc_html_e('Cuota pendiente', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Cuota pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                         <a href="<?php echo esc_url(home_url('/mi-portal/socios/pagar-cuota/')); ?>" class="flavor-btn flavor-btn-primary">
-                            <?php esc_html_e('Pagar Ahora', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Pagar Ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     <?php endif; ?>
                 </div>
                 <?php if ($socio->fecha_vencimiento_cuota): ?>
                     <div class="resumen-card">
-                        <h4><?php esc_html_e('Próxima Renovación', 'flavor-chat-ia'); ?></h4>
+                        <h4><?php esc_html_e('Próxima Renovación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                         <p class="fecha-renovacion"><?php echo date_i18n('d F Y', strtotime($socio->fecha_vencimiento_cuota)); ?></p>
                     </div>
                 <?php endif; ?>
             </div>
 
-            <h3><?php esc_html_e('Historial de Pagos', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Historial de Pagos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <?php if (empty($pagos)): ?>
-                <p class="sin-pagos"><?php esc_html_e('No hay pagos registrados.', 'flavor-chat-ia'); ?></p>
+                <p class="sin-pagos"><?php esc_html_e('No hay pagos registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php else: ?>
                 <div class="flavor-table-responsive">
                     <table class="flavor-table">
                         <thead>
                             <tr>
-                                <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Concepto', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Importe', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Concepto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Importe', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($pagos as $pago): ?>
                                 <tr>
                                     <td><?php echo date_i18n('d/m/Y', strtotime($pago->fecha_pago ?? $pago->created_at)); ?></td>
-                                    <td><?php echo esc_html($pago->concepto ?? __('Cuota anual', 'flavor-chat-ia')); ?></td>
+                                    <td><?php echo esc_html($pago->concepto ?? __('Cuota anual', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></td>
                                     <td><?php echo number_format_i18n($pago->importe, 2); ?> €</td>
                                     <td>
                                         <span class="flavor-badge flavor-badge-<?php echo esc_attr($estados_pagos[$pago->estado]['color'] ?? 'secondary'); ?>">
@@ -729,14 +729,14 @@ class Flavor_Socios_Frontend_Controller {
         ));
 
         if (empty($socios)) {
-            return '<p>' . __('No hay miembros en el directorio público.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('No hay miembros en el directorio público.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
         ?>
         <div class="flavor-socios-directorio">
             <div class="directorio-stats">
-                <p><?php printf(esc_html__('%d miembros activos', 'flavor-chat-ia'), count($socios)); ?></p>
+                <p><?php printf(esc_html__('%d miembros activos', FLAVOR_PLATFORM_TEXT_DOMAIN), count($socios)); ?></p>
             </div>
 
             <div class="directorio-grid">
@@ -749,7 +749,7 @@ class Flavor_Socios_Frontend_Controller {
                                 <p class="socio-ciudad"><?php echo esc_html($socio->ciudad); ?></p>
                             <?php endif; ?>
                             <p class="socio-desde">
-                                <small><?php printf(esc_html__('Desde %s', 'flavor-chat-ia'), date_i18n('Y', strtotime($socio->fecha_alta))); ?></small>
+                                <small><?php printf(esc_html__('Desde %s', FLAVOR_PLATFORM_TEXT_DOMAIN), date_i18n('Y', strtotime($socio->fecha_alta))); ?></small>
                             </p>
                         </div>
                     </div>
@@ -776,17 +776,17 @@ class Flavor_Socios_Frontend_Controller {
 
         // Ventajas generales
         $ventajas_generales = [
-            ['icon' => 'tickets', 'titulo' => __('Descuentos en Actividades', 'flavor-chat-ia'), 'desc' => __('Precios especiales en todos los eventos y talleres', 'flavor-chat-ia')],
-            ['icon' => 'groups', 'titulo' => __('Comunidad', 'flavor-chat-ia'), 'desc' => __('Forma parte de una red de personas con intereses comunes', 'flavor-chat-ia')],
-            ['icon' => 'megaphone', 'titulo' => __('Participación', 'flavor-chat-ia'), 'desc' => __('Voz y voto en las decisiones de la asociación', 'flavor-chat-ia')],
-            ['icon' => 'email', 'titulo' => __('Información Exclusiva', 'flavor-chat-ia'), 'desc' => __('Acceso anticipado a eventos y novedades', 'flavor-chat-ia')],
+            ['icon' => 'tickets', 'titulo' => __('Descuentos en Actividades', FLAVOR_PLATFORM_TEXT_DOMAIN), 'desc' => __('Precios especiales en todos los eventos y talleres', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            ['icon' => 'groups', 'titulo' => __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN), 'desc' => __('Forma parte de una red de personas con intereses comunes', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            ['icon' => 'megaphone', 'titulo' => __('Participación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'desc' => __('Voz y voto en las decisiones de la asociación', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+            ['icon' => 'email', 'titulo' => __('Información Exclusiva', FLAVOR_PLATFORM_TEXT_DOMAIN), 'desc' => __('Acceso anticipado a eventos y novedades', FLAVOR_PLATFORM_TEXT_DOMAIN)],
         ];
 
         ob_start();
         ?>
         <div class="flavor-socios-ventajas">
             <div class="ventajas-generales">
-                <h3><?php esc_html_e('Ventajas de ser Socio/a', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Ventajas de ser Socio/a', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div class="ventajas-grid">
                     <?php foreach ($ventajas_generales as $ventaja): ?>
                         <div class="ventaja-item">
@@ -800,7 +800,7 @@ class Flavor_Socios_Frontend_Controller {
 
             <?php if (!empty($tipos)): ?>
                 <div class="tipos-membresia-info">
-                    <h3><?php esc_html_e('Tipos de Membresía', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('Tipos de Membresía', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                     <div class="tipos-comparativa">
                         <?php foreach ($tipos as $tipo): ?>
                             <div class="tipo-info-card">
@@ -823,7 +823,7 @@ class Flavor_Socios_Frontend_Controller {
 
             <div class="socios-cta">
                 <a href="<?php echo esc_url(home_url('/mi-portal/socios/unirse/')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-lg">
-                    <?php esc_html_e('Hazte Socio/a', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Hazte Socio/a', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -848,12 +848,12 @@ class Flavor_Socios_Frontend_Controller {
         <div class="flavor-socios-stats-public">
             <div class="stat-big">
                 <span class="stat-numero"><?php echo number_format_i18n($total_socios); ?></span>
-                <span class="stat-texto"><?php esc_html_e('Miembros activos', 'flavor-chat-ia'); ?></span>
+                <span class="stat-texto"><?php esc_html_e('Miembros activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <?php if ($nuevos_mes > 0): ?>
                 <div class="stat-secundario">
                     <span>+<?php echo number_format_i18n($nuevos_mes); ?></span>
-                    <span><?php esc_html_e('nuevos este mes', 'flavor-chat-ia'); ?></span>
+                    <span><?php esc_html_e('nuevos este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             <?php endif; ?>
         </div>
@@ -884,11 +884,11 @@ class Flavor_Socios_Frontend_Controller {
         $acepta_comunicaciones = isset($_POST['acepta_comunicaciones']) ? 1 : 0;
 
         if (empty($nombre) || empty($apellidos) || empty($email)) {
-            wp_send_json_error(__('Los campos nombre, apellidos y email son obligatorios', 'flavor-chat-ia'));
+            wp_send_json_error(__('Los campos nombre, apellidos y email son obligatorios', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         if (!is_email($email)) {
-            wp_send_json_error(__('El email no es válido', 'flavor-chat-ia'));
+            wp_send_json_error(__('El email no es válido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -899,11 +899,11 @@ class Flavor_Socios_Frontend_Controller {
         if (!$usuario_id) {
             $password = isset($_POST['password']) ? $_POST['password'] : '';
             if (empty($password)) {
-                wp_send_json_error(__('La contraseña es obligatoria', 'flavor-chat-ia'));
+                wp_send_json_error(__('La contraseña es obligatoria', FLAVOR_PLATFORM_TEXT_DOMAIN));
             }
 
             if (email_exists($email)) {
-                wp_send_json_error(__('Este email ya está registrado', 'flavor-chat-ia'));
+                wp_send_json_error(__('Este email ya está registrado', FLAVOR_PLATFORM_TEXT_DOMAIN));
             }
 
             $usuario_id = wp_create_user($email, $password, $email);
@@ -926,7 +926,7 @@ class Flavor_Socios_Frontend_Controller {
         ));
 
         if ($existe) {
-            wp_send_json_error(__('Ya existe una solicitud o membresía con estos datos', 'flavor-chat-ia'));
+            wp_send_json_error(__('Ya existe una solicitud o membresía con estos datos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Generar número de socio
@@ -955,11 +955,11 @@ class Flavor_Socios_Frontend_Controller {
             do_action('socio_solicitud_created', $wpdb->insert_id, $usuario_id);
 
             wp_send_json_success([
-                'mensaje' => __('Solicitud enviada correctamente. Te contactaremos pronto.', 'flavor-chat-ia'),
+                'mensaje' => __('Solicitud enviada correctamente. Te contactaremos pronto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'redirect' => home_url('/mi-portal/'),
             ]);
         } else {
-            wp_send_json_error(__('Error al procesar la solicitud', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al procesar la solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -970,7 +970,7 @@ class Flavor_Socios_Frontend_Controller {
         check_ajax_referer('socios_nonce', 'socios_nonce_field');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $usuario_id = get_current_user_id();
@@ -990,9 +990,9 @@ class Flavor_Socios_Frontend_Controller {
         $resultado = $wpdb->update($tabla_socios, $datos, ['usuario_id' => $usuario_id]);
 
         if ($resultado !== false) {
-            wp_send_json_success(['mensaje' => __('Perfil actualizado', 'flavor-chat-ia')]);
+            wp_send_json_success(['mensaje' => __('Perfil actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
-            wp_send_json_error(__('Error al actualizar', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al actualizar', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -1003,7 +1003,7 @@ class Flavor_Socios_Frontend_Controller {
         check_ajax_referer('socios_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('Debes iniciar sesión', 'flavor-chat-ia'));
+            wp_send_json_error(__('Debes iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Redirigir a página de pago
@@ -1017,7 +1017,7 @@ class Flavor_Socios_Frontend_Controller {
      */
     public function ajax_obtener_estado() {
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('No autorizado', 'flavor-chat-ia'));
+            wp_send_json_error(__('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -1047,7 +1047,7 @@ class Flavor_Socios_Frontend_Controller {
         check_ajax_referer('socios_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(__('No autorizado', 'flavor-chat-ia'));
+            wp_send_json_error(__('No autorizado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Aquí se generaría el PDF del carnet

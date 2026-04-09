@@ -89,7 +89,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Red Social no estan creadas. Se crearan automaticamente al activar.', 'flavor-chat-ia');
+            return __('Las tablas de Red Social no estan creadas. Se crearan automaticamente al activar.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         
     return '';
@@ -381,7 +381,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
     protected function get_integration_content_type() {
         return [
             'id'         => 'publicaciones',
-            'label'      => __('Publicaciones', 'flavor-chat-ia'),
+            'label'      => __('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'       => 'dashicons-share',
             'table'      => 'flavor_social_publicaciones',
             'capability' => 'edit_posts',
@@ -401,7 +401,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
             // Tab de publicaciones para Grupos de Consumo
             'grupos_consumo' => [
                 'id'       => 'posts-grupo',
-                'label'    => __('Publicaciones', 'flavor-chat-ia'),
+                'label'    => __('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-share',
                 'content'  => '[flavor_social_feed entidad="grupo_consumo" entidad_id="{entity_id}"]',
                 'priority' => 90,
@@ -413,7 +413,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
             // Tab de publicaciones para Eventos
             'eventos' => [
                 'id'       => 'posts-evento',
-                'label'    => __('Publicaciones', 'flavor-chat-ia'),
+                'label'    => __('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-share',
                 'content'  => '[flavor_social_feed entidad="evento" entidad_id="{entity_id}"]',
                 'priority' => 90,
@@ -425,7 +425,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
             // Tab de publicaciones para Comunidades
             'comunidades' => [
                 'id'       => 'feed-comunidad',
-                'label'    => __('Feed', 'flavor-chat-ia'),
+                'label'    => __('Feed', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-share',
                 'content'  => '[flavor_social_feed entidad="comunidad" entidad_id="{entity_id}"]',
                 'priority' => 80,
@@ -436,7 +436,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
             'incidencias' => [
                 'id'       => 'feed-incidencia',
-                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'label'    => __('Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-share',
                 'content'  => '[flavor_social_feed entidad="incidencia" entidad_id="{entity_id}"]',
                 'priority' => 85,
@@ -447,7 +447,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
             'documentacion_legal' => [
                 'id'       => 'feed-documento-legal',
-                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'label'    => __('Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-share',
                 'content'  => '[flavor_social_feed entidad="documento_legal" entidad_id="{entity_id}"]',
                 'priority' => 85,
@@ -458,7 +458,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
             'presupuestos_participativos' => [
                 'id'       => 'feed-pp-proyecto',
-                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'label'    => __('Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-share',
                 'content'  => '[flavor_social_feed entidad="pp_proyecto" entidad_id="{entity_id}"]',
                 'priority' => 85,
@@ -469,7 +469,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
             'saberes_ancestrales' => [
                 'id'       => 'feed-saber-ancestral',
-                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'label'    => __('Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-share',
                 'content'  => '[flavor_social_feed entidad="saber_ancestral" entidad_id="{entity_id}"]',
                 'priority' => 85,
@@ -480,7 +480,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
             'transparencia' => [
                 'id'       => 'feed-documento-transparencia',
-                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'label'    => __('Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-share',
                 'content'  => '[flavor_social_feed entidad="documento_transparencia" entidad_id="{entity_id}"]',
                 'priority' => 85,
@@ -491,7 +491,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
             'avisos_municipales' => [
                 'id'       => 'feed-aviso-municipal',
-                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'label'    => __('Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-share',
                 'content'  => '[flavor_social_feed entidad="aviso_municipal" entidad_id="{entity_id}"]',
                 'priority' => 85,
@@ -502,7 +502,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
             'economia_don' => [
                 'id'       => 'feed-economia-don',
-                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'label'    => __('Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-share',
                 'content'  => '[flavor_social_feed entidad="economia_don" entidad_id="{entity_id}"]',
                 'priority' => 85,
@@ -513,7 +513,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
             'advertising' => [
                 'id'       => 'feed-advertising-ad',
-                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'label'    => __('Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-share',
                 'content'  => '[flavor_social_feed entidad="advertising_ad" entidad_id="{entity_id}"]',
                 'priority' => 85,
@@ -524,7 +524,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
             'radio' => [
                 'id'       => 'feed-radio-programa',
-                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'label'    => __('Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-share',
                 'content'  => '[flavor_social_feed entidad="radio_programa" entidad_id="{entity_id}"]',
                 'priority' => 85,
@@ -535,7 +535,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
             'energia_comunitaria' => [
                 'id'       => 'feed-energia-comunidad',
-                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'label'    => __('Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-share',
                 'content'  => '[flavor_social_feed entidad="energia_comunidad" entidad_id="{entity_id}"]',
                 'priority' => 85,
@@ -547,7 +547,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
             // Tab de publicaciones para Talleres
             'talleres' => [
                 'id'       => 'posts-taller',
-                'label'    => __('Publicaciones', 'flavor-chat-ia'),
+                'label'    => __('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-share',
                 'content'  => '[flavor_social_feed entidad="taller" entidad_id="{entity_id}"]',
                 'priority' => 90,
@@ -559,7 +559,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
             // Tab de publicaciones para Trabajo Digno
             'trabajo_digno' => [
                 'id'       => 'posts-oferta-trabajo',
-                'label'    => __('Publicaciones', 'flavor-chat-ia'),
+                'label'    => __('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-share',
                 'content'  => '[flavor_social_feed entidad="trabajo_digno_oferta" entidad_id="{entity_id}"]',
                 'priority' => 90,
@@ -571,7 +571,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
             // Tab de publicaciones para Huertos Urbanos
             'huertos_urbanos' => [
                 'id'       => 'posts-huerto',
-                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'label'    => __('Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-share',
                 'content'  => '[flavor_social_feed entidad="huerto" entidad_id="{entity_id}"]',
                 'priority' => 90,
@@ -581,7 +581,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
             ],
             'participacion' => [
                 'id'       => 'posts-propuesta',
-                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'label'    => __('Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-share',
                 'content'  => '[flavor_social_feed entidad="participacion_propuesta" entidad_id="{entity_id}"]',
                 'priority' => 90,
@@ -591,7 +591,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
             ],
             'economia_suficiencia' => [
                 'id'       => 'posts-recurso-suficiencia',
-                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'label'    => __('Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-share',
                 'content'  => '[flavor_social_feed entidad="es_recurso" entidad_id="{entity_id}"]',
                 'priority' => 90,
@@ -601,7 +601,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
             ],
             'justicia_restaurativa' => [
                 'id'       => 'posts-proceso-restaurativo',
-                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'label'    => __('Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-share',
                 'content'  => '[flavor_social_feed entidad="jr_proceso" entidad_id="{entity_id}"]',
                 'priority' => 90,
@@ -613,7 +613,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
             // Tab de publicaciones para Colectivos
             'colectivos' => [
                 'id'       => 'posts-colectivo',
-                'label'    => __('Publicaciones', 'flavor-chat-ia'),
+                'label'    => __('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-share',
                 'content'  => '[flavor_social_feed entidad="colectivo" entidad_id="{entity_id}"]',
                 'priority' => 90,
@@ -625,7 +625,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
             // Tab para Círculos de Cuidados
             'circulos_cuidados' => [
                 'id'       => 'posts-circulo',
-                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'label'    => __('Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-share',
                 'content'  => '[flavor_social_feed entidad="circulo" entidad_id="{entity_id}"]',
                 'priority' => 90,
@@ -637,7 +637,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
             // Tab para Banco de Tiempo
             'banco_tiempo' => [
                 'id'       => 'posts-servicio',
-                'label'    => __('Publicaciones', 'flavor-chat-ia'),
+                'label'    => __('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'icon'     => 'dashicons-share',
                 'content'  => '[flavor_social_feed entidad="servicio_bt" entidad_id="{entity_id}"]',
                 'priority' => 90,
@@ -833,7 +833,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $contenido = sanitize_textarea_field($_POST['contenido'] ?? '');
@@ -842,7 +842,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $adjuntos_json = null;
 
         if (empty($contenido) && empty($_FILES['adjuntos'])) {
-            wp_send_json_error(['message' => __('El contenido no puede estar vacío', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('El contenido no puede estar vacío', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $max_caracteres = $this->get_setting('max_caracteres_publicacion');
@@ -879,7 +879,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         ], ['%d', '%s', '%s', '%s', '%s', '%s', '%s']);
 
         if ($resultado_insercion === false) {
-            wp_send_json_error(['message' => __('Error al crear la publicación', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al crear la publicación', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $publicacion_id = $wpdb->insert_id;
@@ -908,7 +908,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $publicacion_html = $this->renderizar_publicacion($publicacion_id);
 
         wp_send_json_success([
-            'message' => __('Publicacion creada', 'flavor-chat-ia'),
+            'message' => __('Publicacion creada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'publicacion_id' => $publicacion_id,
             'html' => $publicacion_html,
         ]);
@@ -922,14 +922,14 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $publicacion_id = absint($_POST['publicacion_id'] ?? 0);
         $tipo_reaccion = sanitize_text_field($_POST['tipo'] ?? 'me_gusta');
 
         if (!$publicacion_id) {
-            wp_send_json_error(['message' => __('Publicación no válida', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Publicación no válida', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (!in_array($tipo_reaccion, self::TIPOS_REACCION)) {
@@ -1012,7 +1012,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $publicacion_id = absint($_POST['publicacion_id'] ?? 0);
@@ -1020,7 +1020,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $padre_id = absint($_POST['padre_id'] ?? 0);
 
         if (!$publicacion_id || empty($contenido)) {
-            wp_send_json_error(['message' => __('Publicación y contenido son requeridos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Publicación y contenido son requeridos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1037,7 +1037,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         ], ['%d', '%d', '%d', '%s', '%s', '%s']);
 
         if ($resultado_insercion === false) {
-            wp_send_json_error(['message' => __('Error al crear el comentario', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al crear el comentario', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $comentario_id = $wpdb->insert_id;
@@ -1085,7 +1085,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $offset = absint($_POST['offset'] ?? 0);
 
         if (!$publicacion_id) {
-            wp_send_json_error(['message' => __('Publicación no válida', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Publicación no válida', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1128,13 +1128,13 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $comentario_id = absint($_POST['comentario_id'] ?? 0);
 
         if (!$comentario_id) {
-            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1187,13 +1187,13 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $seguidor_id = get_current_user_id();
         if (!$seguidor_id) {
-            wp_send_json_error(['message' => __('total_seguidores', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('total_seguidores', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $seguido_id = absint($_POST['usuario_id'] ?? 0);
 
         if (!$seguido_id || $seguidor_id === $seguido_id) {
-            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1281,7 +1281,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $limite = absint($_POST['limite'] ?? 10);
 
         if (strlen($query) < 2) {
-            wp_send_json_error(['message' => __('Usuario invalido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Usuario invalido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1316,7 +1316,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $usuario_id = absint($_POST['usuario_id'] ?? 0);
 
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1360,11 +1360,11 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('fecha_creacion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('fecha_creacion', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if (!$this->get_setting('permite_historias')) {
-            wp_send_json_error(['message' => __('Historia creada', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Historia creada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $tipo_historia = sanitize_text_field($_POST['tipo'] ?? 'imagen');
@@ -1380,7 +1380,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         }
 
         if (empty($contenido_url) && empty($texto)) {
-            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1399,7 +1399,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
             'fecha_expiracion' => $fecha_expiracion,
         ], ['%d', '%s', '%s', '%s', '%s', '%s', '%s']);
 
-        wp_send_json_success(['message' => __('Historia creada', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Historia creada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -1410,13 +1410,13 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $publicacion_id = absint($_POST['publicacion_id'] ?? 0);
 
         if (!$publicacion_id) {
-            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1454,7 +1454,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('SELECT COUNT(*) FROM $tabla_notificaciones WHERE usuario_id = %d AND leida = 0', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('SELECT COUNT(*) FROM $tabla_notificaciones WHERE usuario_id = %d AND leida = 0', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $limite = absint($_POST['limite'] ?? 20);
@@ -1507,7 +1507,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $notificacion_id = absint($_POST['notificacion_id'] ?? 0);
@@ -1534,7 +1534,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
             );
         }
 
-        wp_send_json_success(['message' => __('Historia creada', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Historia creada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -1547,13 +1547,13 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $usuario_actual = get_current_user_id();
 
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $perfil = $this->obtener_perfil_completo($usuario_id);
 
         if (!$perfil) {
-            wp_send_json_error(['message' => __('sitio_web', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('sitio_web', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $perfil['es_propio'] = ($usuario_id === $usuario_actual);
@@ -1570,7 +1570,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $bio = sanitize_textarea_field($_POST['bio'] ?? '');
@@ -1608,7 +1608,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
             }
         }
 
-        wp_send_json_success(['message' => __('Historia creada', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Historia creada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -1619,13 +1619,13 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $publicacion_id = absint($_POST['publicacion_id'] ?? 0);
 
         if (!$publicacion_id) {
-            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -1637,7 +1637,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$publicacion || ($publicacion->autor_id != $usuario_id && !current_user_can('manage_options'))) {
-            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $wpdb->update(
@@ -1650,7 +1650,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $this->actualizar_contador_perfil($publicacion->autor_id, 'total_publicaciones', -1);
 
-        wp_send_json_success(['message' => __('Historia creada', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Historia creada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     /**
@@ -1661,7 +1661,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
-            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $tipo_contenido = sanitize_text_field($_POST['tipo'] ?? '');
@@ -1669,7 +1669,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $motivo = sanitize_textarea_field($_POST['motivo'] ?? '');
 
         if (!$tipo_contenido || !$contenido_id) {
-            wp_send_json_error(['message' => __('Debes iniciar sesion', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesion', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Aqui se guardaria el reporte en una tabla de reportes
@@ -1686,7 +1686,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         wp_mail($admin_email, $asunto, $mensaje);
 
-        wp_send_json_success(['message' => __('Historia creada', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Historia creada', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
     }
 
     // ========================================
@@ -1765,7 +1765,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $visibilidad = $request->get_param('visibilidad') ?? 'comunidad';
 
         if (empty($contenido)) {
-            return new WP_REST_Response(['success' => false, 'message' => __('Contenido vacio', 'flavor-chat-ia')], 400);
+            return new WP_REST_Response(['success' => false, 'message' => __('Contenido vacio', FLAVOR_PLATFORM_TEXT_DOMAIN)], 400);
         }
 
         global $wpdb;
@@ -1803,7 +1803,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$publicacion) {
-            return new WP_REST_Response(['success' => false, 'message' => __('trending', 'flavor-chat-ia')], 404);
+            return new WP_REST_Response(['success' => false, 'message' => __('trending', FLAVOR_PLATFORM_TEXT_DOMAIN)], 404);
         }
 
         $respuesta = [
@@ -1822,7 +1822,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $perfil = $this->obtener_perfil_completo($usuario_id);
 
         if (!$perfil) {
-            return new WP_REST_Response(['success' => false, 'message' => __('No encontrada', 'flavor-chat-ia')], 404);
+            return new WP_REST_Response(['success' => false, 'message' => __('No encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN)], 404);
         }
 
         $respuesta = [
@@ -1956,9 +1956,9 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
                     <div class="rs-feed-header">
                         <div class="rs-feed-tabs">
-                            <button class="rs-feed-tab <?php echo $atts['tipo'] === 'timeline' ? 'active' : ''; ?>" data-tipo="timeline"><?php echo esc_html__('Para ti', 'flavor-chat-ia'); ?></button>
-                            <button class="rs-feed-tab <?php echo $atts['tipo'] === 'comunidad' ? 'active' : ''; ?>" data-tipo="comunidad"><?php echo esc_html__('Comunidad', 'flavor-chat-ia'); ?></button>
-                            <button class="rs-feed-tab <?php echo $atts['tipo'] === 'trending' ? 'active' : ''; ?>" data-tipo="trending"><?php echo esc_html__('Trending', 'flavor-chat-ia'); ?></button>
+                            <button class="rs-feed-tab <?php echo $atts['tipo'] === 'timeline' ? 'active' : ''; ?>" data-tipo="timeline"><?php echo esc_html__('Para ti', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                            <button class="rs-feed-tab <?php echo $atts['tipo'] === 'comunidad' ? 'active' : ''; ?>" data-tipo="comunidad"><?php echo esc_html__('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                            <button class="rs-feed-tab <?php echo $atts['tipo'] === 'trending' ? 'active' : ''; ?>" data-tipo="trending"><?php echo esc_html__('Trending', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                         </div>
                     </div>
 
@@ -2041,15 +2041,15 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
                     <div class="rs-perfil-stats">
                         <div class="rs-perfil-stat">
                             <span class="rs-perfil-stat-num"><?php echo number_format($perfil['total_publicaciones']); ?></span>
-                            <span class="rs-perfil-stat-label"><?php echo esc_html__('Publicaciones', 'flavor-chat-ia'); ?></span>
+                            <span class="rs-perfil-stat-label"><?php echo esc_html__('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                         <div class="rs-perfil-stat" data-tipo="seguidores">
                             <span class="rs-perfil-stat-num"><?php echo number_format($perfil['total_seguidores']); ?></span>
-                            <span class="rs-perfil-stat-label"><?php echo esc_html__('Seguidores', 'flavor-chat-ia'); ?></span>
+                            <span class="rs-perfil-stat-label"><?php echo esc_html__('Seguidores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                         <div class="rs-perfil-stat">
                             <span class="rs-perfil-stat-num"><?php echo number_format($perfil['total_siguiendo']); ?></span>
-                            <span class="rs-perfil-stat-label"><?php echo esc_html__('Siguiendo', 'flavor-chat-ia'); ?></span>
+                            <span class="rs-perfil-stat-label"><?php echo esc_html__('Siguiendo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                     </div>
                 </div>
@@ -2165,7 +2165,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         <div class="rs-container">
             <div class="rs-notificaciones">
                 <?php if (empty($notificaciones)): ?>
-                    <p style="text-align: center; padding: 40px; color: var(--rs-text-muted);"><?php echo esc_html__('No tienes notificaciones', 'flavor-chat-ia'); ?></p>
+                    <p style="text-align: center; padding: 40px; color: var(--rs-text-muted);"><?php echo esc_html__('No tienes notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php else: ?>
                     <?php foreach ($notificaciones as $notificacion): ?>
                         <?php
@@ -2239,7 +2239,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                         </svg>
                     </div>
-                    <span class="rs-historia-nombre"><?php echo esc_html__('Tu historia', 'flavor-chat-ia'); ?></span>
+                    <span class="rs-historia-nombre"><?php echo esc_html__('Tu historia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             <?php endif; ?>
 
@@ -2841,7 +2841,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
                     <img class="rs-crear-post-avatar" src="<?php echo esc_url($avatar); ?>" alt="">
                     <div class="rs-crear-post-input">
                         <textarea class="rs-crear-post-textarea"
-                                  placeholder="<?php echo esc_attr__('¿Que quieres compartir con la comunidad?', 'flavor-chat-ia'); ?>"
+                                  placeholder="<?php echo esc_attr__('¿Que quieres compartir con la comunidad?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                                   maxlength="<?php echo esc_attr($this->get_setting('max_caracteres_publicacion')); ?>"></textarea>
                     </div>
                 </div>
@@ -2853,7 +2853,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
                                 <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
                                 <path d="M21 15l-5-5L5 21"/>
                             </svg>
-                            <?php echo esc_html__('Foto', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Foto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <?php endif; ?>
                         <?php if ($this->get_setting('permite_videos')): ?>
@@ -2861,12 +2861,12 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/>
                             </svg>
-                            <?php echo esc_html__('Video', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Video', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <?php endif; ?>
                     </div>
-                    <input type="hidden" name="visibilidad" value="<?php echo esc_attr__('comunidad', 'flavor-chat-ia'); ?>">
-                    <button type="submit" class="rs-btn-publicar"><?php echo esc_html__('Publicar', 'flavor-chat-ia'); ?></button>
+                    <input type="hidden" name="visibilidad" value="<?php echo esc_attr__('comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                    <button type="submit" class="rs-btn-publicar"><?php echo esc_html__('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                 </div>
             </form>
         </div>
@@ -2985,7 +2985,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
                         <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
                         <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
                     </svg>
-                    <span><?php echo esc_html__('Compartir', 'flavor-chat-ia'); ?></span>
+                    <span><?php echo esc_html__('Compartir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </button>
                 <button class="rs-post-accion" data-accion="guardar">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -3054,7 +3054,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
                 </div>
                 <div class="rs-comentario-acciones">
                     <button class="rs-comentario-like"><?php echo $comentario->me_gusta > 0 ? $comentario->me_gusta . ' Me gusta' : 'Me gusta'; ?></button>
-                    <button class="rs-comentario-responder"><?php echo esc_html__('Responder', 'flavor-chat-ia'); ?></button>
+                    <button class="rs-comentario-responder"><?php echo esc_html__('Responder', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                     <span><?php echo human_time_diff(strtotime($comentario->fecha_creacion), current_time('timestamp')); ?></span>
                 </div>
             </div>
@@ -3080,8 +3080,8 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
                 <img class="rs-comentario-avatar"
                      src="<?php echo esc_url(get_avatar_url($usuario_id, ['size' => 40])); ?>"
                      alt="">
-                <input type="text" class="rs-comentar-input" placeholder="<?php echo esc_attr__('Escribe un comentario...', 'flavor-chat-ia'); ?>">
-                <button type="submit" class="rs-comentar-enviar"><?php echo esc_html__('Enviar', 'flavor-chat-ia'); ?></button>
+                <input type="text" class="rs-comentar-input" placeholder="<?php echo esc_attr__('Escribe un comentario...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                <button type="submit" class="rs-comentar-enviar"><?php echo esc_html__('Enviar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
             </form>
             <?php endif; ?>
         </div>
@@ -3107,7 +3107,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         ob_start();
         ?>
         <div class="rs-widget">
-            <h3 class="rs-widget-titulo"><?php echo esc_html__('Sugerencias para ti', 'flavor-chat-ia'); ?></h3>
+            <h3 class="rs-widget-titulo"><?php echo esc_html__('Sugerencias para ti', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <div class="rs-sugerencias-lista">
                 <?php foreach ($sugerencias as $sugerencia): ?>
                     <?php $usuario = get_userdata($sugerencia->ID); ?>
@@ -3117,10 +3117,10 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
                              alt="">
                         <div class="rs-sugerencia-info">
                             <h4 class="rs-sugerencia-nombre"><?php echo esc_html($usuario->display_name); ?></h4>
-                            <span class="rs-sugerencia-motivo"><?php echo esc_html__('Sugerido para ti', 'flavor-chat-ia'); ?></span>
+                            <span class="rs-sugerencia-motivo"><?php echo esc_html__('Sugerido para ti', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                         <button class="rs-btn-seguir" data-usuario-id="<?php echo esc_attr($sugerencia->ID); ?>">
-                            <?php echo esc_html__('Seguir', 'flavor-chat-ia'); ?>
+                            <?php echo esc_html__('Seguir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                 <?php endforeach; ?>
@@ -3162,7 +3162,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         ob_start();
         ?>
         <div class="rs-widget">
-            <h3 class="rs-widget-titulo"><?php echo esc_html__('Tendencias', 'flavor-chat-ia'); ?></h3>
+            <h3 class="rs-widget-titulo"><?php echo esc_html__('Tendencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <div class="rs-trending-lista">
                 <?php foreach ($trending as $index => $hashtag): ?>
                     <div class="rs-trending-item" onclick="window.location='<?php echo esc_url(add_query_arg('hashtag', $hashtag->hashtag, home_url('/mi-portal/red-social/explorar/'))); ?>'">
@@ -3274,7 +3274,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error' => __('La vista solicitada no esta disponible en Red Social.', 'flavor-chat-ia'),
+            'error' => __('La vista solicitada no esta disponible en Red Social.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -3285,7 +3285,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $usuario_id = get_current_user_id();
 
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión para ver tu timeline.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión para ver tu timeline.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $limite = absint($params['limite'] ?? 20);
@@ -3319,7 +3319,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
     private function action_mensajes($params) {
         if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión para ver tus mensajes.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión para ver tus mensajes.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         return do_shortcode('[chat_interno_conversaciones]');
@@ -3353,23 +3353,23 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
     public function get_web_components() {
         return [
             'hero_social' => [
-                'label' => __('Hero Red Social', 'flavor-chat-ia'),
+                'label' => __('Hero Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-groups',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Red Social Comunitaria', 'flavor-chat-ia')],
-                    'subtitulo' => ['type' => 'textarea', 'default' => __('Conecta con tus vecinos de forma privada y segura', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Red Social Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'subtitulo' => ['type' => 'textarea', 'default' => __('Conecta con tus vecinos de forma privada y segura', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'imagen_fondo' => ['type' => 'image', 'default' => ''],
                     'mostrar_cta' => ['type' => 'toggle', 'default' => true],
                 ],
                 'template' => 'red-social/hero',
             ],
             'timeline_feed' => [
-                'label' => __('Feed de Publicaciones', 'flavor-chat-ia'),
+                'label' => __('Feed de Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-rss',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Ultimas Publicaciones', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Ultimas Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'limite' => ['type' => 'number', 'default' => 10],
                     'mostrar_formulario' => ['type' => 'toggle', 'default' => true],
                     'tipo_feed' => ['type' => 'select', 'options' => ['timeline', 'comunidad', 'trending'], 'default' => 'timeline'],
@@ -3377,11 +3377,11 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
                 'template' => 'red-social/feed',
             ],
             'stats_comunidad' => [
-                'label' => __('Estadisticas de la Comunidad', 'flavor-chat-ia'),
+                'label' => __('Estadisticas de la Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-chart-area',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Nuestra Comunidad', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Nuestra Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'mostrar_miembros' => ['type' => 'toggle', 'default' => true],
                     'mostrar_publicaciones' => ['type' => 'toggle', 'default' => true],
                     'mostrar_actividad' => ['type' => 'toggle', 'default' => true],
@@ -3389,18 +3389,18 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
                 'template' => 'red-social/stats',
             ],
             'sugerencias_usuarios' => [
-                'label' => __('Sugerencias de Conexion', 'flavor-chat-ia'),
+                'label' => __('Sugerencias de Conexion', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-admin-users',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Vecinos que Quizas Conozcas', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Vecinos que Quizas Conozcas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'limite' => ['type' => 'number', 'default' => 6],
                     'criterio' => ['type' => 'select', 'options' => ['cercania', 'intereses', 'aleatorio'], 'default' => 'cercania'],
                 ],
                 'template' => 'red-social/sugerencias',
             ],
             'historias_carousel' => [
-                'label' => __('Carrusel de Historias', 'flavor-chat-ia'),
+                'label' => __('Carrusel de Historias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'content',
                 'icon' => 'dashicons-format-gallery',
                 'fields' => [
@@ -3556,25 +3556,25 @@ KNOWLEDGE;
     protected function get_admin_config() {
         return [
             'id' => 'red_social',
-            'label' => __('Red Social', 'flavor-chat-ia'),
+            'label' => __('Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-share',
             'capability' => 'manage_options',
             'categoria' => 'comunidad',
             'paginas' => [
                 [
                     'slug' => 'flavor-red-social-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'flavor-red-social-publicaciones',
-                    'titulo' => __('Publicaciones', 'flavor-chat-ia'),
+                    'titulo' => __('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_publicaciones'],
                     'badge' => [$this, 'contar_publicaciones_pendientes'],
                 ],
                 [
                     'slug' => 'flavor-red-social-moderacion',
-                    'titulo' => __('Moderación', 'flavor-chat-ia'),
+                    'titulo' => __('Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_moderacion'],
                     'badge' => [$this, 'contar_reportes_pendientes'],
                 ],
@@ -3614,36 +3614,36 @@ KNOWLEDGE;
         );
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e('Dashboard Red Social', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Dashboard Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
 
             <div class="flavor-admin-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px;">
                 <div class="flavor-stat-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                     <span class="dashicons dashicons-format-aside" style="font-size: 32px; color: #0073aa;"></span>
                     <h3 style="margin: 10px 0 5px;"><?php echo esc_html($total_publicaciones); ?></h3>
-                    <p style="margin: 0; color: #666;"><?php esc_html_e('Total Publicaciones', 'flavor-chat-ia'); ?></p>
+                    <p style="margin: 0; color: #666;"><?php esc_html_e('Total Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
 
                 <div class="flavor-stat-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                     <span class="dashicons dashicons-groups" style="font-size: 32px; color: #00a32a;"></span>
                     <h3 style="margin: 10px 0 5px;"><?php echo esc_html($total_usuarios); ?></h3>
-                    <p style="margin: 0; color: #666;"><?php esc_html_e('Usuarios Activos', 'flavor-chat-ia'); ?></p>
+                    <p style="margin: 0; color: #666;"><?php esc_html_e('Usuarios Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
 
                 <div class="flavor-stat-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                     <span class="dashicons dashicons-calendar-alt" style="font-size: 32px; color: #dba617;"></span>
                     <h3 style="margin: 10px 0 5px;"><?php echo esc_html($publicaciones_hoy); ?></h3>
-                    <p style="margin: 0; color: #666;"><?php esc_html_e('Publicaciones Hoy', 'flavor-chat-ia'); ?></p>
+                    <p style="margin: 0; color: #666;"><?php esc_html_e('Publicaciones Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             </div>
 
             <div class="flavor-admin-section" style="margin-top: 30px;">
-                <h2><?php esc_html_e('Acciones Rápidas', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Acciones Rápidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <p>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-red-social-publicaciones')); ?>" class="button button-primary">
-                        <?php esc_html_e('Ver Publicaciones', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-red-social-moderacion')); ?>" class="button">
-                        <?php esc_html_e('Moderar Contenido', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Moderar Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </p>
             </div>
@@ -3679,29 +3679,29 @@ KNOWLEDGE;
         );
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e('Publicaciones', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
 
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('ID', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Autor', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Contenido', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Autor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($publicaciones)): ?>
                         <tr>
-                            <td colspan="6"><?php esc_html_e('No hay publicaciones.', 'flavor-chat-ia'); ?></td>
+                            <td colspan="6"><?php esc_html_e('No hay publicaciones.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($publicaciones as $publicacion): ?>
                             <tr>
                                 <td><?php echo esc_html($publicacion->id); ?></td>
-                                <td><?php echo esc_html($publicacion->autor_nombre ?: __('Usuario eliminado', 'flavor-chat-ia')); ?></td>
+                                <td><?php echo esc_html($publicacion->autor_nombre ?: __('Usuario eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></td>
                                 <td><?php echo esc_html(wp_trim_words(strip_tags($publicacion->contenido), 15)); ?></td>
                                 <td>
                                     <span class="status-<?php echo esc_attr($publicacion->estado ?? 'publicado'); ?>">
@@ -3711,14 +3711,14 @@ KNOWLEDGE;
                                 <td><?php echo esc_html(date_i18n(get_option('date_format'), strtotime($publicacion->fecha_creacion))); ?></td>
                                 <td>
                                     <button class="button button-small rs-toggle-detalle-publicacion" type="button" data-target="rs-publicacion-<?php echo esc_attr($publicacion->id); ?>">
-                                        <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </button>
                                 </td>
                             </tr>
                             <tr id="rs-publicacion-<?php echo esc_attr($publicacion->id); ?>" class="rs-detalle-publicacion" style="display:none;">
                                 <td colspan="6">
                                     <div class="rs-detalle-publicacion__body">
-                                        <h4><?php esc_html_e('Detalle de la publicación', 'flavor-chat-ia'); ?></h4>
+                                        <h4><?php esc_html_e('Detalle de la publicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                                         <div class="rs-detalle-publicacion__content">
                                             <?php echo wp_kses_post(wpautop($publicacion->contenido)); ?>
                                         </div>
@@ -3793,26 +3793,26 @@ KNOWLEDGE;
         }
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e('Moderación de Contenido', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Moderación de Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
 
             <div class="notice notice-info">
-                <p><?php esc_html_e('Revisa y gestiona los reportes de contenido de la red social.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('Revisa y gestiona los reportes de contenido de la red social.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <?php if (empty($reportes)): ?>
                 <div class="notice notice-success">
-                    <p><?php esc_html_e('No hay reportes pendientes de revisión.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay reportes pendientes de revisión.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('ID', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Motivo', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Reportado por', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('ID', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Motivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Reportado por', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -3821,11 +3821,11 @@ KNOWLEDGE;
                                 <td><?php echo esc_html($reporte->id); ?></td>
                                 <td><?php echo esc_html($reporte->tipo_contenido ?? 'publicacion'); ?></td>
                                 <td><?php echo esc_html($reporte->motivo ?? '-'); ?></td>
-                                <td><?php echo esc_html($reporte->reportador_nombre ?: __('Anónimo', 'flavor-chat-ia')); ?></td>
+                                <td><?php echo esc_html($reporte->reportador_nombre ?: __('Anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></td>
                                 <td><?php echo esc_html(date_i18n(get_option('date_format'), strtotime($reporte->fecha_creacion))); ?></td>
                                 <td>
-                                    <button class="button button-small"><?php esc_html_e('Revisar', 'flavor-chat-ia'); ?></button>
-                                    <button class="button button-small"><?php esc_html_e('Descartar', 'flavor-chat-ia'); ?></button>
+                                    <button class="button button-small"><?php esc_html_e('Revisar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                                    <button class="button button-small"><?php esc_html_e('Descartar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -3910,20 +3910,20 @@ KNOWLEDGE;
         <div class="flavor-widget-stats">
             <div class="stat-item">
                 <span class="stat-numero"><?php echo esc_html($total_publicaciones); ?></span>
-                <span class="stat-etiqueta"><?php esc_html_e('Publicaciones', 'flavor-chat-ia'); ?></span>
+                <span class="stat-etiqueta"><?php esc_html_e('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="stat-item">
                 <span class="stat-numero"><?php echo esc_html($total_usuarios); ?></span>
-                <span class="stat-etiqueta"><?php esc_html_e('Usuarios', 'flavor-chat-ia'); ?></span>
+                <span class="stat-etiqueta"><?php esc_html_e('Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="stat-item">
                 <span class="stat-numero"><?php echo esc_html($publicaciones_semana); ?></span>
-                <span class="stat-etiqueta"><?php esc_html_e('Esta semana', 'flavor-chat-ia'); ?></span>
+                <span class="stat-etiqueta"><?php esc_html_e('Esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
         <p>
             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-red-social-dashboard')); ?>" class="button">
-                <?php esc_html_e('Ver Dashboard', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </p>
         <?php
@@ -4026,7 +4026,7 @@ KNOWLEDGE;
             $estadisticas['mis_publicaciones'] = [
                 'icon' => 'dashicons-format-status',
                 'valor' => $mis_publicaciones,
-                'label' => __('Publicaciones', 'flavor-chat-ia'),
+                'label' => __('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'blue',
             ];
         }
@@ -4042,7 +4042,7 @@ KNOWLEDGE;
             $estadisticas['seguidores'] = [
                 'icon' => 'dashicons-groups',
                 'valor' => $seguidores,
-                'label' => __('Seguidores', 'flavor-chat-ia'),
+                'label' => __('Seguidores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $seguidores > 0 ? 'green' : 'gray',
             ];
 
@@ -4056,7 +4056,7 @@ KNOWLEDGE;
             $estadisticas['siguiendo'] = [
                 'icon' => 'dashicons-admin-users',
                 'valor' => $siguiendo,
-                'label' => __('Siguiendo', 'flavor-chat-ia'),
+                'label' => __('Siguiendo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => 'purple',
             ];
         }
@@ -4072,37 +4072,37 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Red Social', 'flavor-chat-ia'),
+                'title' => __('Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'red-social',
-                'content' => '<h1>' . __('Red Social', 'flavor-chat-ia') . '</h1>
-<p>' . __('Conecta con tu comunidad, comparte publicaciones y sigue a otros usuarios.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Conecta con tu comunidad, comparte publicaciones y sigue a otros usuarios.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="red_social" action="listar" columnas="3" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Mi Perfil', 'flavor-chat-ia'),
+                'title' => __('Mi Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mi-perfil',
-                'content' => '<h1>' . __('Mi Perfil', 'flavor-chat-ia') . '</h1>
-<p>' . __('Gestiona tu perfil, tus publicaciones y tu información personal.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Mi Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Gestiona tu perfil, tus publicaciones y tu información personal.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="red_social" action="mi_perfil"]',
                 'parent' => 'red-social',
             ],
             [
-                'title' => __('Amigos', 'flavor-chat-ia'),
+                'title' => __('Amigos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'amigos',
-                'content' => '<h1>' . __('Amigos', 'flavor-chat-ia') . '</h1>
-<p>' . __('Descubre personas, gestiona tus seguidores y a quiénes sigues.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Amigos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Descubre personas, gestiona tus seguidores y a quiénes sigues.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="red_social" action="amigos" columnas="4" limite="20"]',
                 'parent' => 'red-social',
             ],
             [
-                'title' => __('Mensajes', 'flavor-chat-ia'),
+                'title' => __('Mensajes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mensajes',
-                'content' => '<h1>' . __('Mensajes', 'flavor-chat-ia') . '</h1>
-<p>' . __('Envía y recibe mensajes privados con otros usuarios de la comunidad.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Mensajes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Envía y recibe mensajes privados con otros usuarios de la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="red_social" action="mensajes"]',
                 'parent' => 'red-social',
@@ -4250,20 +4250,20 @@ KNOWLEDGE;
      */
     private function get_descripcion_accion($tipo_accion) {
         $descripciones = [
-            'publicacion' => __('Publicación creada', 'flavor-chat-ia'),
-            'comentario' => __('Comentario realizado', 'flavor-chat-ia'),
-            'like_recibido' => __('Like recibido', 'flavor-chat-ia'),
-            'like_dado' => __('Like dado', 'flavor-chat-ia'),
-            'compartido' => __('Contenido compartido', 'flavor-chat-ia'),
-            'seguidor_ganado' => __('Nuevo seguidor', 'flavor-chat-ia'),
-            'seguir_usuario' => __('Usuario seguido', 'flavor-chat-ia'),
-            'historia' => __('Historia publicada', 'flavor-chat-ia'),
-            'mencion_recibida' => __('Mencionado', 'flavor-chat-ia'),
-            'login_diario' => __('Actividad diaria', 'flavor-chat-ia'),
-            'primera_publicacion' => __('Primera publicación', 'flavor-chat-ia'),
-            'verificacion_perfil' => __('Perfil verificado', 'flavor-chat-ia'),
-            'invitar_usuario' => __('Usuario invitado', 'flavor-chat-ia'),
-            'badge_obtenido' => __('Badge obtenido', 'flavor-chat-ia'),
+            'publicacion' => __('Publicación creada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'comentario' => __('Comentario realizado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'like_recibido' => __('Like recibido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'like_dado' => __('Like dado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'compartido' => __('Contenido compartido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'seguidor_ganado' => __('Nuevo seguidor', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'seguir_usuario' => __('Usuario seguido', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'historia' => __('Historia publicada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'mencion_recibida' => __('Mencionado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'login_diario' => __('Actividad diaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'primera_publicacion' => __('Primera publicación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'verificacion_perfil' => __('Perfil verificado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'invitar_usuario' => __('Usuario invitado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'badge_obtenido' => __('Badge obtenido', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         return $descripciones[$tipo_accion] ?? $tipo_accion;
@@ -4700,7 +4700,7 @@ KNOWLEDGE;
 
         $usuario_id = absint($atts['usuario_id']);
         if (!$usuario_id) {
-            return '<p class="rs-mensaje">' . __('Usuario no encontrado', 'flavor-chat-ia') . '</p>';
+            return '<p class="rs-mensaje">' . __('Usuario no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $reputacion = $this->obtener_reputacion_usuario($usuario_id);
@@ -4729,7 +4729,7 @@ KNOWLEDGE;
                     </span>
                     <div class="rs-puntos-total">
                         <strong><?php echo number_format($reputacion['puntos_totales']); ?></strong>
-                        <?php esc_html_e('puntos', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('puntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </div>
                 </div>
             </div>
@@ -4741,7 +4741,7 @@ KNOWLEDGE;
                 </div>
                 <div class="rs-progreso-texto">
                     <?php printf(
-                        esc_html__('%d puntos para %s', 'flavor-chat-ia'),
+                        esc_html__('%d puntos para %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         $reputacion['puntos_para_siguiente'],
                         $reputacion['siguiente_nivel']
                     ); ?>
@@ -4752,21 +4752,21 @@ KNOWLEDGE;
             <div class="rs-reputacion-stats">
                 <div class="rs-stat">
                     <span class="rs-stat-valor"><?php echo number_format($reputacion['puntos_semana']); ?></span>
-                    <span class="rs-stat-label"><?php esc_html_e('Esta semana', 'flavor-chat-ia'); ?></span>
+                    <span class="rs-stat-label"><?php esc_html_e('Esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="rs-stat">
                     <span class="rs-stat-valor"><?php echo number_format($reputacion['puntos_mes']); ?></span>
-                    <span class="rs-stat-label"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></span>
+                    <span class="rs-stat-label"><?php esc_html_e('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="rs-stat">
                     <span class="rs-stat-valor"><?php echo $reputacion['racha_dias']; ?> 🔥</span>
-                    <span class="rs-stat-label"><?php esc_html_e('Racha', 'flavor-chat-ia'); ?></span>
+                    <span class="rs-stat-label"><?php esc_html_e('Racha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
             <?php if ($mostrar_badges && !empty($reputacion['badges'])): ?>
             <div class="rs-badges-lista">
-                <h4><?php esc_html_e('Badges', 'flavor-chat-ia'); ?></h4>
+                <h4><?php esc_html_e('Badges', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                 <div class="rs-badges-grid">
                     <?php foreach (array_slice($reputacion['badges'], 0, 6) as $badge): ?>
                     <div class="rs-badge-item" title="<?php echo esc_attr($badge->descripcion); ?>">
@@ -4797,20 +4797,20 @@ KNOWLEDGE;
         $ranking = $this->obtener_ranking_reputacion(absint($atts['limite']), $atts['periodo']);
 
         if (empty($ranking)) {
-            return '<p class="rs-mensaje">' . __('No hay datos de ranking', 'flavor-chat-ia') . '</p>';
+            return '<p class="rs-mensaje">' . __('No hay datos de ranking', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $periodo_labels = [
-            'total' => __('Total', 'flavor-chat-ia'),
-            'semana' => __('Esta semana', 'flavor-chat-ia'),
-            'mes' => __('Este mes', 'flavor-chat-ia'),
+            'total' => __('Total', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'semana' => __('Esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'mes' => __('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         ob_start();
         ?>
         <div class="rs-ranking">
             <h3 class="rs-ranking-titulo">
-                🏆 <?php esc_html_e('Ranking de reputación', 'flavor-chat-ia'); ?>
+                🏆 <?php esc_html_e('Ranking de reputación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <span class="rs-ranking-periodo"><?php echo esc_html($periodo_labels[$atts['periodo']] ?? ''); ?></span>
             </h3>
             <div class="rs-ranking-lista">
@@ -4833,7 +4833,7 @@ KNOWLEDGE;
                     </div>
                     <div class="rs-ranking-puntos">
                         <strong><?php echo number_format($usuario['puntos']); ?></strong>
-                        <span><?php esc_html_e('pts', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('pts', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <?php endforeach; ?>
@@ -4863,7 +4863,7 @@ KNOWLEDGE;
         $badges = $wpdb->get_results("SELECT * FROM $tabla_badges {$where} ORDER BY orden ASC");
 
         if (empty($badges)) {
-            return '<p class="rs-mensaje">' . __('No hay badges disponibles', 'flavor-chat-ia') . '</p>';
+            return '<p class="rs-mensaje">' . __('No hay badges disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $usuario_id = get_current_user_id();
@@ -4876,7 +4876,7 @@ KNOWLEDGE;
         ob_start();
         ?>
         <div class="rs-badges-catalogo">
-            <h3><?php esc_html_e('Badges disponibles', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Badges disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <div class="rs-badges-grid-large">
                 <?php foreach ($badges as $badge): ?>
                 <?php $obtenido = in_array($badge->id, $badges_usuario); ?>
@@ -4887,9 +4887,9 @@ KNOWLEDGE;
                     <h4><?php echo esc_html($badge->nombre); ?></h4>
                     <p><?php echo esc_html($badge->descripcion); ?></p>
                     <?php if ($obtenido): ?>
-                    <span class="rs-badge-estado">✓ <?php esc_html_e('Obtenido', 'flavor-chat-ia'); ?></span>
+                    <span class="rs-badge-estado">✓ <?php esc_html_e('Obtenido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <?php elseif ($badge->puntos_requeridos > 0): ?>
-                    <span class="rs-badge-requisito"><?php printf(esc_html__('%d puntos requeridos', 'flavor-chat-ia'), $badge->puntos_requeridos); ?></span>
+                    <span class="rs-badge-requisito"><?php printf(esc_html__('%d puntos requeridos', FLAVOR_PLATFORM_TEXT_DOMAIN), $badge->puntos_requeridos); ?></span>
                     <?php endif; ?>
                 </div>
                 <?php endforeach; ?>
@@ -4909,7 +4909,7 @@ KNOWLEDGE;
         ], $atts);
 
         if (!is_user_logged_in()) {
-            return '<p class="rs-login-required">' . __('Inicia sesión para ver tu actividad.', 'flavor-chat-ia') . '</p>';
+            return '<p class="rs-login-required">' . __('Inicia sesión para ver tu actividad.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $usuario_id = get_current_user_id();
@@ -4954,21 +4954,21 @@ KNOWLEDGE;
             <div class="rs-actividad-stats">
                 <div class="stat-item">
                     <span class="stat-numero"><?php echo esc_html(number_format_i18n($num_publicaciones)); ?></span>
-                    <span class="stat-label"><?php esc_html_e('Publicaciones', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-numero"><?php echo esc_html(number_format_i18n($num_seguidores)); ?></span>
-                    <span class="stat-label"><?php esc_html_e('Seguidores', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Seguidores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-numero"><?php echo esc_html(number_format_i18n($num_siguiendo)); ?></span>
-                    <span class="stat-label"><?php esc_html_e('Siguiendo', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Siguiendo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
             <?php if (!empty($publicaciones_recientes)): ?>
             <div class="rs-actividad-reciente">
-                <h4><?php esc_html_e('Actividad reciente', 'flavor-chat-ia'); ?></h4>
+                <h4><?php esc_html_e('Actividad reciente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                 <ul class="rs-lista-publicaciones">
                     <?php foreach ($publicaciones_recientes as $pub): ?>
                     <li>
@@ -4984,11 +4984,11 @@ KNOWLEDGE;
                 </ul>
             </div>
             <?php else: ?>
-            <p class="rs-sin-actividad"><?php esc_html_e('Aún no has publicado nada.', 'flavor-chat-ia'); ?></p>
+            <p class="rs-sin-actividad"><?php esc_html_e('Aún no has publicado nada.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <?php endif; ?>
 
             <a href="<?php echo esc_url(home_url('/mi-portal/red-social/perfil/')); ?>" class="rs-ver-perfil">
-                <?php esc_html_e('Ver mi perfil completo', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver mi perfil completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
         <?php
@@ -5022,7 +5022,7 @@ KNOWLEDGE;
         $mostrar_comentarios = filter_var($atributos['mostrar_comentarios'], FILTER_VALIDATE_BOOLEAN);
 
         if (empty($entidad) || $entidad_id === 0) {
-            return '<div class="flavor-notice warning">' . __('Configuración de feed social incompleta.', 'flavor-chat-ia') . '</div>';
+            return '<div class="flavor-notice warning">' . __('Configuración de feed social incompleta.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</div>';
         }
 
         // Obtener publicaciones asociadas a esta entidad
@@ -5041,16 +5041,16 @@ KNOWLEDGE;
                     <?php echo get_avatar($usuario_actual, 40); ?>
                 </div>
                 <form class="form-publicar" data-entidad="<?php echo esc_attr($entidad); ?>" data-entidad-id="<?php echo esc_attr($entidad_id); ?>">
-                    <textarea name="contenido" placeholder="<?php esc_attr_e('¿Qué quieres compartir con el grupo?', 'flavor-chat-ia'); ?>" rows="2"></textarea>
+                    <textarea name="contenido" placeholder="<?php esc_attr_e('¿Qué quieres compartir con el grupo?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" rows="2"></textarea>
                     <div class="publicacion-acciones">
                         <div class="publicacion-adjuntos">
-                            <button type="button" class="btn-adjuntar-imagen" title="<?php esc_attr_e('Añadir imagen', 'flavor-chat-ia'); ?>">
+                            <button type="button" class="btn-adjuntar-imagen" title="<?php esc_attr_e('Añadir imagen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                 <span class="dashicons dashicons-format-image"></span>
                             </button>
                             <input type="file" name="imagen" accept="image/*" style="display:none;">
                         </div>
                         <button type="submit" class="flavor-btn flavor-btn--primary flavor-btn--sm">
-                            <?php _e('Publicar', 'flavor-chat-ia'); ?>
+                            <?php _e('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                     <div class="preview-imagen" style="display:none;">
@@ -5064,9 +5064,9 @@ KNOWLEDGE;
             <?php if (empty($publicaciones)): ?>
             <div class="feed-vacio">
                 <span class="dashicons dashicons-format-status"></span>
-                <p><?php _e('No hay publicaciones todavía.', 'flavor-chat-ia'); ?></p>
+                <p><?php _e('No hay publicaciones todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php if ($puede_publicar): ?>
-                <p class="texto-secundario"><?php _e('¡Sé el primero en compartir algo!', 'flavor-chat-ia'); ?></p>
+                <p class="texto-secundario"><?php _e('¡Sé el primero en compartir algo!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php endif; ?>
             </div>
             <?php else: ?>
@@ -5085,15 +5085,15 @@ KNOWLEDGE;
                             <?php echo get_avatar($publicacion->usuario_id, 44); ?>
                         </a>
                         <div class="post-meta">
-                            <span class="post-autor"><?php echo esc_html($autor ? $autor->display_name : __('Usuario', 'flavor-chat-ia')); ?></span>
+                            <span class="post-autor"><?php echo esc_html($autor ? $autor->display_name : __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></span>
                             <span class="post-fecha"><?php echo human_time_diff(strtotime($publicacion->fecha_creacion), current_time('timestamp')); ?></span>
                         </div>
                         <?php if ($es_autor): ?>
                         <div class="post-opciones">
                             <button class="btn-opciones-post"><span class="dashicons dashicons-ellipsis"></span></button>
                             <div class="menu-opciones" style="display:none;">
-                                <button class="btn-editar-post"><?php _e('Editar', 'flavor-chat-ia'); ?></button>
-                                <button class="btn-eliminar-post"><?php _e('Eliminar', 'flavor-chat-ia'); ?></button>
+                                <button class="btn-editar-post"><?php _e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                                <button class="btn-eliminar-post"><?php _e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                             </div>
                         </div>
                         <?php endif; ?>
@@ -5132,7 +5132,7 @@ KNOWLEDGE;
                         </div>
                         <?php if ($mostrar_comentarios): ?>
                         <span class="comentarios-count">
-                            <?php echo number_format_i18n($publicacion->num_comentarios ?? 0); ?> <?php _e('comentarios', 'flavor-chat-ia'); ?>
+                            <?php echo number_format_i18n($publicacion->num_comentarios ?? 0); ?> <?php _e('comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
                         <?php endif; ?>
                     </div>
@@ -5140,17 +5140,17 @@ KNOWLEDGE;
                     <div class="post-acciones-bar">
                         <button class="btn-reaccionar <?php echo $mi_reaccion ? 'activo' : ''; ?>" data-post-id="<?php echo esc_attr($publicacion->id); ?>">
                             <span class="dashicons dashicons-thumbs-up"></span>
-                            <?php _e('Me gusta', 'flavor-chat-ia'); ?>
+                            <?php _e('Me gusta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <?php if ($mostrar_comentarios): ?>
                         <button class="btn-comentar" data-post-id="<?php echo esc_attr($publicacion->id); ?>">
                             <span class="dashicons dashicons-admin-comments"></span>
-                            <?php _e('Comentar', 'flavor-chat-ia'); ?>
+                            <?php _e('Comentar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                         <?php endif; ?>
                         <button class="btn-compartir" data-post-id="<?php echo esc_attr($publicacion->id); ?>">
                             <span class="dashicons dashicons-share"></span>
-                            <?php _e('Compartir', 'flavor-chat-ia'); ?>
+                            <?php _e('Compartir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </div>
                     <?php endif; ?>
@@ -5162,7 +5162,7 @@ KNOWLEDGE;
                         <form class="form-comentar">
                             <input type="hidden" name="post_id" value="<?php echo esc_attr($publicacion->id); ?>">
                             <?php echo get_avatar($usuario_actual, 32); ?>
-                            <input type="text" name="comentario" placeholder="<?php esc_attr_e('Escribe un comentario...', 'flavor-chat-ia'); ?>">
+                            <input type="text" name="comentario" placeholder="<?php esc_attr_e('Escribe un comentario...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                             <button type="submit"><span class="dashicons dashicons-arrow-right-alt2"></span></button>
                         </form>
                         <?php endif; ?>
@@ -5174,7 +5174,7 @@ KNOWLEDGE;
 
             <div class="feed-cargar-mas" style="display:none;">
                 <button class="flavor-btn flavor-btn--secondary" data-offset="<?php echo esc_attr($limite); ?>">
-                    <?php _e('Cargar más publicaciones', 'flavor-chat-ia'); ?>
+                    <?php _e('Cargar más publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
 
@@ -5494,8 +5494,8 @@ KNOWLEDGE;
         // Páginas ocultas (sin menú visible en el sidebar)
         add_submenu_page(
             null,
-            __('Red Social - Estadísticas', 'flavor-chat-ia'),
-            __('Estadísticas', 'flavor-chat-ia'),
+            __('Red Social - Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-red-social-estadisticas',
             [$this, 'render_pagina_estadisticas']
@@ -5503,8 +5503,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Red Social - Moderación', 'flavor-chat-ia'),
-            __('Moderación', 'flavor-chat-ia'),
+            __('Red Social - Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Moderación', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-red-social-moderacion',
             [$this, 'render_pagina_moderacion']
@@ -5512,8 +5512,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Red Social - Publicaciones', 'flavor-chat-ia'),
-            __('Publicaciones', 'flavor-chat-ia'),
+            __('Red Social - Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-red-social-publicaciones',
             [$this, 'render_pagina_publicaciones']
@@ -5521,8 +5521,8 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Red Social - Usuarios', 'flavor-chat-ia'),
-            __('Usuarios', 'flavor-chat-ia'),
+            __('Red Social - Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-red-social-usuarios',
             [$this, 'render_pagina_usuarios']
@@ -5537,8 +5537,8 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Red Social', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Panel de administración del módulo de red social.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Panel de administración del módulo de red social.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -5550,8 +5550,8 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Estadísticas Red Social', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Estadísticas y métricas de la red social comunitaria.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Estadísticas Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Estadísticas y métricas de la red social comunitaria.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -5563,7 +5563,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Publicaciones', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Publicaciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -5575,7 +5575,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Usuarios', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 
@@ -5587,7 +5587,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Moderación de Contenido', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Moderación de Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
         }
     }
 

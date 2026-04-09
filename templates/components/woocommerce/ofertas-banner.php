@@ -80,7 +80,7 @@ $fecha_fin_oferta = $fecha_fin_oferta ?? '';
                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
                 </svg>
-                <span class="text-white text-sm font-medium"><?php echo esc_html__('Ofertas Limitadas', 'flavor-chat-ia'); ?></span>
+                <span class="text-white text-sm font-medium"><?php echo esc_html__('Ofertas Limitadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
 
             <h2 class="text-3xl lg:text-4xl font-bold text-white mb-3">
@@ -97,22 +97,22 @@ $fecha_fin_oferta = $fecha_fin_oferta ?? '';
                 <div class="inline-flex items-center gap-4 px-6 py-4 rounded-2xl bg-white/10 backdrop-blur border border-white/20">
                     <div class="text-center">
                         <div class="text-2xl font-bold text-white" id="flavor-dias">0</div>
-                        <div class="text-xs text-white/70 uppercase tracking-wide"><?php echo esc_html__('Dias', 'flavor-chat-ia'); ?></div>
+                        <div class="text-xs text-white/70 uppercase tracking-wide"><?php echo esc_html__('Dias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     </div>
                     <span class="text-white/50">:</span>
                     <div class="text-center">
                         <div class="text-2xl font-bold text-white" id="flavor-horas">0</div>
-                        <div class="text-xs text-white/70 uppercase tracking-wide"><?php echo esc_html__('Horas', 'flavor-chat-ia'); ?></div>
+                        <div class="text-xs text-white/70 uppercase tracking-wide"><?php echo esc_html__('Horas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     </div>
                     <span class="text-white/50">:</span>
                     <div class="text-center">
                         <div class="text-2xl font-bold text-white" id="flavor-minutos">0</div>
-                        <div class="text-xs text-white/70 uppercase tracking-wide"><?php echo esc_html__('Minutos', 'flavor-chat-ia'); ?></div>
+                        <div class="text-xs text-white/70 uppercase tracking-wide"><?php echo esc_html__('Minutos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     </div>
                     <span class="text-white/50">:</span>
                     <div class="text-center">
                         <div class="text-2xl font-bold text-white" id="flavor-segundos">0</div>
-                        <div class="text-xs text-white/70 uppercase tracking-wide"><?php echo esc_html__('Segundos', 'flavor-chat-ia'); ?></div>
+                        <div class="text-xs text-white/70 uppercase tracking-wide"><?php echo esc_html__('Segundos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     </div>
                 </div>
             </div>
@@ -156,7 +156,7 @@ $fecha_fin_oferta = $fecha_fin_oferta ?? '';
                             <!-- Indicador de stock -->
                             <?php if (!$producto_oferta['stock_disponible']) : ?>
                                 <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                                    <span class="px-4 py-2 rounded-lg bg-gray-700 text-white font-semibold text-sm"><?php echo esc_html__('Agotado', 'flavor-chat-ia'); ?></span>
+                                    <span class="px-4 py-2 rounded-lg bg-gray-700 text-white font-semibold text-sm"><?php echo esc_html__('Agotado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 </div>
                             <?php endif; ?>
                         </div>
@@ -180,7 +180,7 @@ $fecha_fin_oferta = $fecha_fin_oferta ?? '';
                                 <div class="text-xs text-green-600 font-semibold">
                                     <?php
                                     $ahorros = floatval($producto_oferta['precio_original']) - floatval($producto_oferta['precio_oferta']);
-                                    echo esc_html(sprintf(__('Ahorras: %s€', 'flavor-chat-ia'), number_format($ahorros, 2, ',', '.')));
+                                    echo esc_html(sprintf(__('Ahorras: %s€', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format($ahorros, 2, ',', '.')));
                                     ?>
                                 </div>
                             </div>
@@ -191,11 +191,11 @@ $fecha_fin_oferta = $fecha_fin_oferta ?? '';
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/>
                                     </svg>
-                                    <?php echo esc_html__('Comprar Ahora', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Comprar Ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             <?php else : ?>
                                 <button disabled class="w-full px-4 py-3 rounded-xl bg-gray-300 text-gray-600 font-semibold cursor-not-allowed opacity-60">
-                                    <?php echo esc_html__('Sin Stock', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Sin Stock', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             <?php endif; ?>
                         </div>
@@ -210,7 +210,7 @@ $fecha_fin_oferta = $fecha_fin_oferta ?? '';
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                 </svg>
-                <?php echo esc_html__('Ver Todas las Ofertas', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Ver Todas las Ofertas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>

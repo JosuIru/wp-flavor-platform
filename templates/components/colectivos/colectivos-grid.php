@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$titulo_de_seccion    = !empty($titulo_seccion) ? $titulo_seccion : __('Nuestros Colectivos', 'flavor-chat-ia');
+$titulo_de_seccion    = !empty($titulo_seccion) ? $titulo_seccion : __('Nuestros Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $numero_columnas      = !empty($columnas) ? (int) $columnas : 3;
 $filtro_tipo_activo   = !empty($tipo_filtro) ? $tipo_filtro : 'todos';
 $clases_componente    = !empty($component_classes) ? $component_classes : '';
@@ -131,11 +131,11 @@ if (empty($colectivos_para_mostrar)) {
 
 // Etiquetas y colores por tipo
 $etiquetas_tipo_colectivo = [
-    'asociacion'  => __('Asociación', 'flavor-chat-ia'),
-    'cooperativa' => __('Cooperativa', 'flavor-chat-ia'),
-    'ong'         => __('ONG', 'flavor-chat-ia'),
-    'colectivo'   => __('Colectivo', 'flavor-chat-ia'),
-    'plataforma'  => __('Plataforma', 'flavor-chat-ia'),
+    'asociacion'  => __('Asociación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cooperativa' => __('Cooperativa', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'ong'         => __('ONG', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'colectivo'   => __('Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'plataforma'  => __('Plataforma', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $colores_tipo_colectivo = [
@@ -163,14 +163,14 @@ $iconos_tipo_colectivo = [
                 <?php echo esc_html($titulo_de_seccion); ?>
             </h2>
             <p class="text-lg max-w-2xl mx-auto" style="color: var(--flavor-text-muted, #6B7280);">
-                <?php esc_html_e('Organizaciones y grupos que trabajan por la comunidad', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Organizaciones y grupos que trabajan por la comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
 
         <!-- Filtros por tipo -->
         <div class="flex flex-wrap justify-center gap-3 mb-12">
             <button class="px-5 py-2 rounded-full font-medium text-sm transition-all duration-300 shadow-sm" style="background: var(--flavor-primary, #6366F1); color: white;" data-tipo-filtro="todos">
-                <?php esc_html_e('Todos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <?php foreach ($etiquetas_tipo_colectivo as $clave_tipo => $etiqueta_tipo): ?>
                 <button class="px-5 py-2 rounded-full font-medium text-sm transition-all duration-300 border" style="background: white; color: var(--flavor-text, #374151); border-color: #E5E7EB;" data-tipo-filtro="<?php echo esc_attr($clave_tipo); ?>">
@@ -223,23 +223,23 @@ $iconos_tipo_colectivo = [
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                                 </svg>
-                                <?php echo esc_html($colectivo_item->miembros_count ?? 0); ?> <?php esc_html_e('miembros', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html($colectivo_item->miembros_count ?? 0); ?> <?php esc_html_e('miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </div>
                             <div class="flex items-center gap-1">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
                                 </svg>
-                                <?php echo esc_html($colectivo_item->proyectos_count ?? 0); ?> <?php esc_html_e('proyectos', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html($colectivo_item->proyectos_count ?? 0); ?> <?php esc_html_e('proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </div>
                         </div>
 
                         <!-- Boton -->
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-medium px-2 py-1 rounded-full" style="background: #F0FDF4; color: #16A34A;">
-                                <?php esc_html_e('Activo', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                             <a href="#colectivo-<?php echo esc_attr($colectivo_item->id); ?>" class="inline-flex items-center px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-300" style="background: <?php echo esc_attr($colores_actuales['desde']); ?>; color: white;">
-                                <?php esc_html_e('Ver más', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Ver más', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                 </svg>
@@ -253,7 +253,7 @@ $iconos_tipo_colectivo = [
         <!-- Ver mas -->
         <div class="text-center mt-12">
             <button class="inline-flex items-center px-8 py-3 rounded-full font-bold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1" style="background: var(--flavor-primary, #6366F1); color: white;">
-                <?php esc_html_e('Ver Todos los Colectivos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver Todos los Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                 </svg>

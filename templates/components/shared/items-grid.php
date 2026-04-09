@@ -59,7 +59,7 @@ $columns_class = $columns_classes[$columns] ?? $columns_classes[3];
 // Estado vacío por defecto
 $empty_defaults = [
     'icon'       => '📭',
-    'title'      => __('No hay elementos', 'flavor-chat-ia'),
+    'title'      => __('No hay elementos', FLAVOR_PLATFORM_TEXT_DOMAIN),
     'text'       => '',
     'cta_text'   => '',
     'cta_action' => '',

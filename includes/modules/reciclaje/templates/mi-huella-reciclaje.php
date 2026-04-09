@@ -22,7 +22,7 @@ $km_coche = $co2_mes / 0.12; // 120g CO2/km
         </div>
         <div class="rec-huella__info">
             <h3><?php echo esc_html($usuario->display_name); ?></h3>
-            <span class="rec-huella__titulo"><?php esc_html_e('Eco-ciudadano', 'flavor-chat-ia'); ?></span>
+            <span class="rec-huella__titulo"><?php esc_html_e('Eco-ciudadano', 'flavor-platform'); ?></span>
         </div>
     </div>
 
@@ -42,30 +42,30 @@ $km_coche = $co2_mes / 0.12; // 120g CO2/km
                 <span class="dashicons dashicons-update"></span>
             </span>
             <span class="rec-huella__stat-valor"><?php echo esc_html(number_format($kg_mes, 1)); ?></span>
-            <span class="rec-huella__stat-label"><?php esc_html_e('kg reciclados', 'flavor-chat-ia'); ?></span>
+            <span class="rec-huella__stat-label"><?php esc_html_e('kg reciclados', 'flavor-platform'); ?></span>
         </div>
         <div class="rec-huella__stat">
             <span class="rec-huella__stat-icono" style="background: #2196f3;">
                 <span class="dashicons dashicons-share-alt"></span>
             </span>
             <span class="rec-huella__stat-valor"><?php echo esc_html($huella_mes->items_reutilizados ?? 0); ?></span>
-            <span class="rec-huella__stat-label"><?php esc_html_e('reutilizados', 'flavor-chat-ia'); ?></span>
+            <span class="rec-huella__stat-label"><?php esc_html_e('reutilizados', 'flavor-platform'); ?></span>
         </div>
         <div class="rec-huella__stat">
             <span class="rec-huella__stat-icono" style="background: #ff9800;">
                 <span class="dashicons dashicons-admin-tools"></span>
             </span>
             <span class="rec-huella__stat-valor"><?php echo esc_html($huella_mes->items_reparados ?? 0); ?></span>
-            <span class="rec-huella__stat-label"><?php esc_html_e('reparados', 'flavor-chat-ia'); ?></span>
+            <span class="rec-huella__stat-label"><?php esc_html_e('reparados', 'flavor-platform'); ?></span>
         </div>
     </div>
 
     <!-- Desglose CO2 -->
     <div class="rec-huella__desglose">
-        <h4><?php esc_html_e('Desglose de ahorro', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('Desglose de ahorro', 'flavor-platform'); ?></h4>
         <div class="rec-huella__desglose-items">
             <div class="rec-huella__desglose-item">
-                <span class="rec-huella__desglose-label"><?php esc_html_e('Reciclaje', 'flavor-chat-ia'); ?></span>
+                <span class="rec-huella__desglose-label"><?php esc_html_e('Reciclaje', 'flavor-platform'); ?></span>
                 <div class="rec-huella__desglose-bar">
                     <?php $pct_rec = $co2_mes > 0 ? (($huella_mes->co2_reciclaje ?? 0) / $co2_mes) * 100 : 0; ?>
                     <div class="rec-huella__desglose-fill" style="width: <?php echo esc_attr($pct_rec); ?>%; background: #4caf50;"></div>
@@ -73,7 +73,7 @@ $km_coche = $co2_mes / 0.12; // 120g CO2/km
                 <span class="rec-huella__desglose-valor"><?php echo esc_html(number_format($huella_mes->co2_reciclaje ?? 0, 1)); ?> kg</span>
             </div>
             <div class="rec-huella__desglose-item">
-                <span class="rec-huella__desglose-label"><?php esc_html_e('Reutilización', 'flavor-chat-ia'); ?></span>
+                <span class="rec-huella__desglose-label"><?php esc_html_e('Reutilización', 'flavor-platform'); ?></span>
                 <div class="rec-huella__desglose-bar">
                     <?php $pct_reut = $co2_mes > 0 ? (($huella_mes->co2_reutilizacion ?? 0) / $co2_mes) * 100 : 0; ?>
                     <div class="rec-huella__desglose-fill" style="width: <?php echo esc_attr($pct_reut); ?>%; background: #2196f3;"></div>
@@ -81,7 +81,7 @@ $km_coche = $co2_mes / 0.12; // 120g CO2/km
                 <span class="rec-huella__desglose-valor"><?php echo esc_html(number_format($huella_mes->co2_reutilizacion ?? 0, 1)); ?> kg</span>
             </div>
             <div class="rec-huella__desglose-item">
-                <span class="rec-huella__desglose-label"><?php esc_html_e('Reparación', 'flavor-chat-ia'); ?></span>
+                <span class="rec-huella__desglose-label"><?php esc_html_e('Reparación', 'flavor-platform'); ?></span>
                 <div class="rec-huella__desglose-bar">
                     <?php $pct_rep = $co2_mes > 0 ? (($huella_mes->co2_reparacion ?? 0) / $co2_mes) * 100 : 0; ?>
                     <div class="rec-huella__desglose-fill" style="width: <?php echo esc_attr($pct_rep); ?>%; background: #ff9800;"></div>
@@ -93,17 +93,17 @@ $km_coche = $co2_mes / 0.12; // 120g CO2/km
 
     <!-- Equivalencias -->
     <div class="rec-huella__equivalencias">
-        <h4><?php esc_html_e('Tu impacto equivale a...', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('Tu impacto equivale a...', 'flavor-platform'); ?></h4>
         <div class="rec-huella__equiv-grid">
             <div class="rec-huella__equiv-item">
                 <span class="dashicons dashicons-palmtree"></span>
                 <span class="rec-huella__equiv-valor"><?php echo esc_html(number_format($arboles_equivalentes, 1)); ?></span>
-                <span class="rec-huella__equiv-label"><?php esc_html_e('árboles/año', 'flavor-chat-ia'); ?></span>
+                <span class="rec-huella__equiv-label"><?php esc_html_e('árboles/año', 'flavor-platform'); ?></span>
             </div>
             <div class="rec-huella__equiv-item">
                 <span class="dashicons dashicons-car"></span>
                 <span class="rec-huella__equiv-valor"><?php echo esc_html(number_format($km_coche, 0)); ?></span>
-                <span class="rec-huella__equiv-label"><?php esc_html_e('km no recorridos', 'flavor-chat-ia'); ?></span>
+                <span class="rec-huella__equiv-label"><?php esc_html_e('km no recorridos', 'flavor-platform'); ?></span>
             </div>
         </div>
     </div>
@@ -111,19 +111,19 @@ $km_coche = $co2_mes / 0.12; // 120g CO2/km
     <!-- Totales acumulados -->
     <?php if ($totales): ?>
         <div class="rec-huella__totales">
-            <h4><?php esc_html_e('Acumulado histórico', 'flavor-chat-ia'); ?></h4>
+            <h4><?php esc_html_e('Acumulado histórico', 'flavor-platform'); ?></h4>
             <div class="rec-huella__totales-grid">
                 <div class="rec-huella__total-item">
                     <span class="rec-huella__total-valor"><?php echo esc_html(number_format($totales->co2_total ?? 0, 0)); ?></span>
-                    <span class="rec-huella__total-label"><?php esc_html_e('kg CO₂ total', 'flavor-chat-ia'); ?></span>
+                    <span class="rec-huella__total-label"><?php esc_html_e('kg CO₂ total', 'flavor-platform'); ?></span>
                 </div>
                 <div class="rec-huella__total-item">
                     <span class="rec-huella__total-valor"><?php echo esc_html(number_format($totales->kg_total ?? 0, 0)); ?></span>
-                    <span class="rec-huella__total-label"><?php esc_html_e('kg reciclados', 'flavor-chat-ia'); ?></span>
+                    <span class="rec-huella__total-label"><?php esc_html_e('kg reciclados', 'flavor-platform'); ?></span>
                 </div>
                 <div class="rec-huella__total-item">
                     <span class="rec-huella__total-valor"><?php echo esc_html($totales->items_reut ?? 0); ?></span>
-                    <span class="rec-huella__total-label"><?php esc_html_e('items reutil.', 'flavor-chat-ia'); ?></span>
+                    <span class="rec-huella__total-label"><?php esc_html_e('items reutil.', 'flavor-platform'); ?></span>
                 </div>
             </div>
         </div>
@@ -132,7 +132,7 @@ $km_coche = $co2_mes / 0.12; // 120g CO2/km
     <!-- Tendencia -->
     <?php if (!empty($historico)): ?>
         <div class="rec-huella__tendencia">
-            <h4><?php esc_html_e('Evolución mensual', 'flavor-chat-ia'); ?></h4>
+            <h4><?php esc_html_e('Evolución mensual', 'flavor-platform'); ?></h4>
             <div class="rec-huella__chart">
                 <?php
                 $max_co2 = max(array_column($historico, 'co2_total_ahorrado')) ?: 1;

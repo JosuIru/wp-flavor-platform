@@ -18,7 +18,7 @@ $titulo = $podcast['titulo'] ?? $podcast['title'] ?? '';
 $descripcion = $podcast['descripcion'] ?? '';
 $url = $podcast['url'] ?? '#';
 $portada = $podcast['portada'] ?? $podcast['imagen'] ?? 'https://picsum.photos/seed/podcast' . $id . '/400/400';
-$autor = $podcast['autor'] ?? __('Creador', 'flavor-chat-ia');
+$autor = $podcast['autor'] ?? __('Creador', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $episodios = $podcast['episodios'] ?? 0;
 $reproducciones = $podcast['reproducciones'] ?? 0;
 $suscriptores = $podcast['suscriptores'] ?? 0;
@@ -40,7 +40,7 @@ $categoria = $podcast['categoria'] ?? '';
 
         <!-- Episodios -->
         <span class="absolute top-3 left-3 px-2 py-1 rounded-full text-xs font-bold bg-black/50 text-white">
-            <?php echo esc_html($episodios); ?> <?php echo esc_html__('episodios', 'flavor-chat-ia'); ?>
+            <?php echo esc_html($episodios); ?> <?php echo esc_html__('episodios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </span>
     </div>
 

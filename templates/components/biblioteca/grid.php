@@ -217,10 +217,10 @@ $generos_unicos = array_unique(array_column($libros, 'genero'));
                     <?php if ($mostrar_busqueda): ?>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                <?php echo esc_html__('Buscar Libro', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Buscar Libro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
                             <div class="relative">
-                                <input type="text" placeholder="<?php echo esc_attr__('Título, autor...', 'flavor-chat-ia'); ?>"
+                                <input type="text" placeholder="<?php echo esc_attr__('Título, autor...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"
                                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
                                 <svg class="absolute right-3 top-3 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -233,10 +233,10 @@ $generos_unicos = array_unique(array_column($libros, 'genero'));
                     <?php if ($mostrar_filtros && !empty($generos_unicos)): ?>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                <?php echo esc_html__('Género', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Género', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
                             <select class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
-                                <option value=""><?php echo esc_html__('Todos los géneros', 'flavor-chat-ia'); ?></option>
+                                <option value=""><?php echo esc_html__('Todos los géneros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                                 <?php foreach ($generos_unicos as $genero): ?>
                                     <option value="<?php echo esc_attr($genero); ?>"><?php echo esc_html($genero); ?></option>
                                 <?php endforeach; ?>
@@ -248,12 +248,12 @@ $generos_unicos = array_unique(array_column($libros, 'genero'));
                     <?php if ($mostrar_filtros): ?>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                <?php echo esc_html__('Disponibilidad', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Disponibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </label>
                             <select class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
-                                <option value=""><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></option>
-                                <option value="disponible"><?php echo esc_html__('Disponibles', 'flavor-chat-ia'); ?></option>
-                                <option value="prestado"><?php echo esc_html__('En préstamo', 'flavor-chat-ia'); ?></option>
+                                <option value=""><?php echo esc_html__('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="disponible"><?php echo esc_html__('Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="prestado"><?php echo esc_html__('En préstamo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             </select>
                         </div>
                     <?php endif; ?>
@@ -288,14 +288,14 @@ $generos_unicos = array_unique(array_column($libros, 'genero'));
                                     <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                                     </svg>
-                                    <?php echo esc_html__('Disponible', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                             <?php else: ?>
                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-amber-500 text-white shadow-lg">
                                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
-                                    <?php echo esc_html__('Prestado', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Prestado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                             <?php endif; ?>
                         </div>
@@ -318,7 +318,7 @@ $generos_unicos = array_unique(array_column($libros, 'genero'));
 
                         <!-- Año de publicación -->
                         <p class="text-xs text-gray-500 mb-3 pb-3 border-b border-gray-100">
-                            <?php echo esc_html($libro['año']); ?> · <?php echo esc_html__('Edad recomendada', 'flavor-chat-ia'); ?>: <span class="font-semibold"><?php echo esc_html($libro['edad_recomendada']); ?></span>
+                            <?php echo esc_html($libro['año']); ?> · <?php echo esc_html__('Edad recomendada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>: <span class="font-semibold"><?php echo esc_html($libro['edad_recomendada']); ?></span>
                         </p>
 
                         <!-- Valoración -->
@@ -333,7 +333,7 @@ $generos_unicos = array_unique(array_column($libros, 'genero'));
                                 </div>
                                 <span class="text-xs font-semibold text-gray-700"><?php echo number_format($libro['valoracion'], 1); ?></span>
                             </div>
-                            <span class="text-xs text-gray-500"><?php echo number_format($libro['reseñas']); ?> <?php echo esc_html__('reseñas', 'flavor-chat-ia'); ?></span>
+                            <span class="text-xs text-gray-500"><?php echo number_format($libro['reseñas']); ?> <?php echo esc_html__('reseñas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
 
                         <!-- Copias disponibles -->
@@ -343,7 +343,7 @@ $generos_unicos = array_unique(array_column($libros, 'genero'));
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                 </svg>
                                 <?php printf(
-                                    esc_html__('%d copias disponibles', 'flavor-chat-ia'),
+                                    esc_html__('%d copias disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                     $libro['copias']
                                 ); ?>
                             </p>
@@ -356,14 +356,14 @@ $generos_unicos = array_unique(array_column($libros, 'genero'));
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                                     </svg>
-                                    <?php echo esc_html__('Solicitar Préstamo', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Solicitar Préstamo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             <?php else: ?>
                                 <button class="w-full bg-gray-300 text-gray-700 font-semibold py-2 rounded-lg cursor-not-allowed flex items-center justify-center gap-2">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                                     </svg>
-                                    <?php echo esc_html__('Reservar', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Reservar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             <?php endif; ?>
                             <button class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 rounded-lg transition duration-300 flex items-center justify-center gap-2">
@@ -371,7 +371,7 @@ $generos_unicos = array_unique(array_column($libros, 'genero'));
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                 </svg>
-                                <?php echo esc_html__('Ver Detalles', 'flavor-chat-ia'); ?>
+                                <?php echo esc_html__('Ver Detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </div>
                     </div>
@@ -382,7 +382,7 @@ $generos_unicos = array_unique(array_column($libros, 'genero'));
         <!-- Ver Todos -->
         <div class="text-center">
             <a href="#" class="inline-flex items-center px-8 py-3 bg-white border-2 border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-600 hover:text-white transition duration-300 transform hover:scale-105">
-                <span><?php echo esc_html__('Ver Todos los Libros', 'flavor-chat-ia'); ?></span>
+                <span><?php echo esc_html__('Ver Todos los Libros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>

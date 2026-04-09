@@ -846,12 +846,12 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
     private function action_foro_documento($params) {
         $documento = $this->resolve_contextual_documento((array) $params);
         if (!$documento) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un documento para ver su foro.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un documento para ver su foro.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-foro">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;">'
-            . '<h2>' . esc_html__('Foro del documento', 'flavor-chat-ia') . '</h2>'
+            . '<h2>' . esc_html__('Foro del documento', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2>'
             . '<p>' . esc_html($documento['titulo']) . '</p>'
             . '</div>'
             . do_shortcode('[flavor_foros_integrado entidad="documento_legal" entidad_id="' . absint($documento['id']) . '"]')
@@ -861,18 +861,18 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
     private function action_chat_documento($params) {
         $documento = $this->resolve_contextual_documento((array) $params);
         if (!$documento) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un documento para ver su chat.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un documento para ver su chat.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         if (!is_user_logged_in()) {
-            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este documento.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este documento.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-chat">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Chat del documento', 'flavor-chat-ia') . '</h2><p>' . esc_html($documento['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Chat del documento', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($documento['titulo']) . '</p></div>'
             . '<a href="' . esc_url(home_url('/mi-portal/chat-grupos/mensajes/?documento_id=' . absint($documento['id']))) . '" class="button button-secondary">'
-            . esc_html__('Abrir chat completo', 'flavor-chat-ia')
+            . esc_html__('Abrir chat completo', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>'
             . do_shortcode('[flavor_chat_grupo_integrado entidad="documento_legal" entidad_id="' . absint($documento['id']) . '"]')
             . '</div>';
@@ -881,14 +881,14 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
     private function action_multimedia_documento($params) {
         $documento = $this->resolve_contextual_documento((array) $params);
         if (!$documento) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un documento para ver sus archivos relacionados.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un documento para ver sus archivos relacionados.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-multimedia">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Archivos del documento', 'flavor-chat-ia') . '</h2><p>' . esc_html($documento['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Archivos del documento', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($documento['titulo']) . '</p></div>'
             . '<a href="' . esc_url(home_url('/mi-portal/multimedia/subir/?documento_id=' . absint($documento['id']))) . '" class="button button-primary">'
-            . esc_html__('Subir archivo', 'flavor-chat-ia')
+            . esc_html__('Subir archivo', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>'
             . do_shortcode('[flavor_multimedia_galeria entidad="documento_legal" entidad_id="' . absint($documento['id']) . '"]')
             . '</div>';
@@ -897,18 +897,18 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
     private function action_red_social_documento($params) {
         $documento = $this->resolve_contextual_documento((array) $params);
         if (!$documento) {
-            return '<p class="flavor-notice">' . esc_html__('Selecciona un documento para ver su actividad social.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un documento para ver su actividad social.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         if (!is_user_logged_in()) {
-            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este documento.', 'flavor-chat-ia') . '</p>';
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este documento.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         return '<div class="flavor-contextual-tab flavor-contextual-red-social">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
-            . '<div><h2>' . esc_html__('Actividad social del documento', 'flavor-chat-ia') . '</h2><p>' . esc_html($documento['titulo']) . '</p></div>'
+            . '<div><h2>' . esc_html__('Actividad social del documento', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2><p>' . esc_html($documento['titulo']) . '</p></div>'
             . '<a href="' . esc_url(home_url('/mi-portal/red-social/crear/?documento_id=' . absint($documento['id']))) . '" class="button button-primary">'
-            . esc_html__('Publicar', 'flavor-chat-ia')
+            . esc_html__('Publicar', FLAVOR_PLATFORM_TEXT_DOMAIN)
             . '</a></div>'
             . do_shortcode('[flavor_social_feed entidad="documento_legal" entidad_id="' . absint($documento['id']) . '"]')
             . '</div>';
@@ -1066,30 +1066,30 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
     protected function get_admin_config() {
         return [
             'id'         => 'documentacion_legal',
-            'label'      => __('Documentacion Legal', 'flavor-chat-ia'),
+            'label'      => __('Documentacion Legal', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'       => 'dashicons-media-document',
             'capability' => 'manage_options',
             'categoria'  => 'recursos', // personas|economia|operaciones|recursos|comunicacion|actividades|servicios|comunidad|sostenibilidad
             'paginas'    => [
                 [
                     'slug'     => 'documentos-dashboard',
-                    'titulo'   => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo'   => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug'     => 'documentos-listado',
-                    'titulo'   => __('Listado', 'flavor-chat-ia'),
+                    'titulo'   => __('Listado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_listado'],
                     'badge'    => [$this, 'contar_documentos_pendientes'],
                 ],
                 [
                     'slug'     => 'documentos-categorias',
-                    'titulo'   => __('Categorias', 'flavor-chat-ia'),
+                    'titulo'   => __('Categorias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_categorias'],
                 ],
                 [
                     'slug'     => 'documentos-config',
-                    'titulo'   => __('Configuracion', 'flavor-chat-ia'),
+                    'titulo'   => __('Configuracion', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_config'],
                 ],
             ],
@@ -1187,17 +1187,17 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
 
         ?>
         <div class="wrap flavor-admin-dashboard">
-            <?php $this->render_page_header(__('Dashboard - Documentacion Legal', 'flavor-chat-ia'), [
-                ['label' => __('Nuevo Documento', 'flavor-chat-ia'), 'url' => '#nuevo-documento', 'class' => 'button-primary'],
+            <?php $this->render_page_header(__('Dashboard - Documentacion Legal', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+                ['label' => __('Nuevo Documento', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '#nuevo-documento', 'class' => 'button-primary'],
             ]); ?>
 
             <?php if (method_exists($this, 'render_admin_module_hub')) : ?>
                 <?php $this->render_admin_module_hub([
-                    'description' => __('Acceso visible al dashboard, listado, categorías, configuración y al bloque principal de métricas.', 'flavor-chat-ia'),
+                    'description' => __('Acceso visible al dashboard, listado, categorías, configuración y al bloque principal de métricas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'stats_anchor' => '#documentacion-legal-stats',
                     'extra_items' => [
                         [
-                            'label' => __('Portal', 'flavor-chat-ia'),
+                            'label' => __('Portal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             'url' => home_url('/mi-portal/documentacion-legal/'),
                             'icon' => 'dashicons-external',
                         ],
@@ -1212,7 +1212,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                         <span class="dashicons dashicons-media-document" style="font-size: 40px; color: #2271b1;"></span>
                         <div>
                             <div style="font-size: 28px; font-weight: 600; color: #1d2327;"><?php echo esc_html($estadisticas['total_documentos']); ?></div>
-                            <div style="color: #646970;"><?php esc_html_e('Total Documentos', 'flavor-chat-ia'); ?></div>
+                            <div style="color: #646970;"><?php esc_html_e('Total Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                         </div>
                     </div>
                 </div>
@@ -1222,7 +1222,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                         <span class="dashicons dashicons-download" style="font-size: 40px; color: #00a32a;"></span>
                         <div>
                             <div style="font-size: 28px; font-weight: 600; color: #1d2327;"><?php echo esc_html(number_format($estadisticas['total_descargas'])); ?></div>
-                            <div style="color: #646970;"><?php esc_html_e('Descargas Totales', 'flavor-chat-ia'); ?></div>
+                            <div style="color: #646970;"><?php esc_html_e('Descargas Totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                         </div>
                     </div>
                 </div>
@@ -1232,7 +1232,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                         <span class="dashicons dashicons-yes-alt" style="font-size: 40px; color: #00a32a;"></span>
                         <div>
                             <div style="font-size: 28px; font-weight: 600; color: #1d2327;"><?php echo esc_html($estadisticas['documentos_publicados']); ?></div>
-                            <div style="color: #646970;"><?php esc_html_e('Publicados', 'flavor-chat-ia'); ?></div>
+                            <div style="color: #646970;"><?php esc_html_e('Publicados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                         </div>
                     </div>
                 </div>
@@ -1242,7 +1242,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                         <span class="dashicons dashicons-clock" style="font-size: 40px; color: #dba617;"></span>
                         <div>
                             <div style="font-size: 28px; font-weight: 600; color: #1d2327;"><?php echo esc_html($estadisticas['documentos_pendientes']); ?></div>
-                            <div style="color: #646970;"><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></div>
+                            <div style="color: #646970;"><?php esc_html_e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                         </div>
                     </div>
                 </div>
@@ -1252,7 +1252,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                         <span class="dashicons dashicons-category" style="font-size: 40px; color: #8c5cb6;"></span>
                         <div>
                             <div style="font-size: 28px; font-weight: 600; color: #1d2327;"><?php echo esc_html($estadisticas['total_categorias']); ?></div>
-                            <div style="color: #646970;"><?php esc_html_e('Categorias', 'flavor-chat-ia'); ?></div>
+                            <div style="color: #646970;"><?php esc_html_e('Categorias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                         </div>
                     </div>
                 </div>
@@ -1263,17 +1263,17 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                 <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                     <h3 style="margin-top: 0; display: flex; align-items: center; gap: 10px;">
                         <span class="dashicons dashicons-clock"></span>
-                        <?php esc_html_e('Documentos Recientes', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Documentos Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <?php if (!empty($documentos_recientes)): ?>
                         <table class="widefat striped">
                             <thead>
                                 <tr>
-                                    <th><?php esc_html_e('Titulo', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Descargas', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
+                                    <th><?php esc_html_e('Titulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php esc_html_e('Descargas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1306,7 +1306,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                             </tbody>
                         </table>
                     <?php else: ?>
-                        <p style="color: #646970;"><?php esc_html_e('No hay documentos registrados.', 'flavor-chat-ia'); ?></p>
+                        <p style="color: #646970;"><?php esc_html_e('No hay documentos registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php endif; ?>
                 </div>
 
@@ -1316,7 +1316,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                     <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
                         <h3 style="margin-top: 0; display: flex; align-items: center; gap: 10px;">
                             <span class="dashicons dashicons-category"></span>
-                            <?php esc_html_e('Categorias', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Categorias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
                         <?php if (!empty($categorias_con_conteo)): ?>
                             <ul style="margin: 0; padding: 0; list-style: none;">
@@ -1335,7 +1335,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                                 <?php endforeach; ?>
                             </ul>
                         <?php else: ?>
-                            <p style="color: #646970;"><?php esc_html_e('No hay categorias.', 'flavor-chat-ia'); ?></p>
+                            <p style="color: #646970;"><?php esc_html_e('No hay categorias.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <?php endif; ?>
                     </div>
 
@@ -1343,7 +1343,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                     <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                         <h3 style="margin-top: 0; display: flex; align-items: center; gap: 10px;">
                             <span class="dashicons dashicons-star-filled"></span>
-                            <?php esc_html_e('Mas Descargados', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Mas Descargados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
                         <?php if (!empty($documentos_populares)): ?>
                             <ul style="margin: 0; padding: 0; list-style: none;">
@@ -1356,7 +1356,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                                             <div style="flex: 1;">
                                                 <div style="font-weight: 500;"><?php echo esc_html($documento->titulo); ?></div>
                                                 <div style="font-size: 12px; color: #646970;">
-                                                    <?php echo esc_html($documento->descargas); ?> <?php esc_html_e('descargas', 'flavor-chat-ia'); ?>
+                                                    <?php echo esc_html($documento->descargas); ?> <?php esc_html_e('descargas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                                 </div>
                                             </div>
                                         </div>
@@ -1364,7 +1364,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                                 <?php endforeach; ?>
                             </ul>
                         <?php else: ?>
-                            <p style="color: #646970;"><?php esc_html_e('No hay descargas registradas.', 'flavor-chat-ia'); ?></p>
+                            <p style="color: #646970;"><?php esc_html_e('No hay descargas registradas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -1455,19 +1455,19 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
 
         // Estados
         $estados_disponibles = [
-            'publicado' => __('Publicado', 'flavor-chat-ia'),
-            'borrador'  => __('Borrador', 'flavor-chat-ia'),
-            'revision'  => __('En revision', 'flavor-chat-ia'),
-            'archivado' => __('Archivado', 'flavor-chat-ia'),
+            'publicado' => __('Publicado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'borrador'  => __('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'revision'  => __('En revision', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'archivado' => __('Archivado', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $total_paginas = ceil($total_documentos / $por_pagina);
 
         ?>
         <div class="wrap">
-            <?php $this->render_page_header(__('Listado de Documentos', 'flavor-chat-ia'), [
-                ['label' => __('Nuevo Documento', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=documentos-listado&action=new'), 'class' => 'button-primary'],
-                ['label' => __('Exportar', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=documentos-listado&action=export'), 'class' => 'button'],
+            <?php $this->render_page_header(__('Listado de Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN), [
+                ['label' => __('Nuevo Documento', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=documentos-listado&action=new'), 'class' => 'button-primary'],
+                ['label' => __('Exportar', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => admin_url('admin.php?page=documentos-listado&action=export'), 'class' => 'button'],
             ]); ?>
 
             <!-- Filtros -->
@@ -1475,10 +1475,10 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                 <form method="get" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                     <input type="hidden" name="page" value="documentos-listado">
 
-                    <input type="search" name="s" value="<?php echo esc_attr($busqueda); ?>" placeholder="<?php esc_attr_e('Buscar...', 'flavor-chat-ia'); ?>" style="width: 200px;">
+                    <input type="search" name="s" value="<?php echo esc_attr($busqueda); ?>" placeholder="<?php esc_attr_e('Buscar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" style="width: 200px;">
 
                     <select name="tipo">
-                        <option value=""><?php esc_html_e('Todos los tipos', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todos los tipos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($tipos_documento as $slug_tipo => $nombre_tipo): ?>
                             <option value="<?php echo esc_attr($slug_tipo); ?>" <?php selected($filtro_tipo, $slug_tipo); ?>>
                                 <?php echo esc_html($nombre_tipo); ?>
@@ -1487,7 +1487,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                     </select>
 
                     <select name="categoria">
-                        <option value=""><?php esc_html_e('Todas las categorias', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todas las categorias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($categorias as $categoria): ?>
                             <option value="<?php echo esc_attr($categoria->slug); ?>" <?php selected($filtro_categoria, $categoria->slug); ?>>
                                 <?php echo esc_html($categoria->nombre); ?>
@@ -1496,7 +1496,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                     </select>
 
                     <select name="estado">
-                        <option value=""><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($estados_disponibles as $slug_estado => $nombre_estado): ?>
                             <option value="<?php echo esc_attr($slug_estado); ?>" <?php selected($filtro_estado, $slug_estado); ?>>
                                 <?php echo esc_html($nombre_estado); ?>
@@ -1504,11 +1504,11 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                         <?php endforeach; ?>
                     </select>
 
-                    <button type="submit" class="button"><?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?></button>
+                    <button type="submit" class="button"><?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
 
                     <?php if ($filtro_tipo || $filtro_categoria || $filtro_estado || $busqueda): ?>
                         <a href="<?php echo esc_url(admin_url('admin.php?page=documentos-listado')); ?>" class="button">
-                            <?php esc_html_e('Limpiar', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     <?php endif; ?>
                 </form>
@@ -1516,7 +1516,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                 <div class="tablenav-pages">
                     <span class="displaying-num">
                         <?php printf(
-                            esc_html(_n('%s documento', '%s documentos', $total_documentos, 'flavor-chat-ia')),
+                            esc_html(_n('%s documento', '%s documentos', $total_documentos, FLAVOR_PLATFORM_TEXT_DOMAIN)),
                             number_format_i18n($total_documentos)
                         ); ?>
                     </span>
@@ -1530,12 +1530,12 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                         <td class="manage-column column-cb check-column">
                             <input type="checkbox" id="cb-select-all-1">
                         </td>
-                        <th scope="col" class="manage-column column-title column-primary"><?php esc_html_e('Titulo', 'flavor-chat-ia'); ?></th>
-                        <th scope="col" class="manage-column"><?php esc_html_e('Tipo', 'flavor-chat-ia'); ?></th>
-                        <th scope="col" class="manage-column"><?php esc_html_e('Categoria', 'flavor-chat-ia'); ?></th>
-                        <th scope="col" class="manage-column"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                        <th scope="col" class="manage-column"><?php esc_html_e('Descargas', 'flavor-chat-ia'); ?></th>
-                        <th scope="col" class="manage-column"><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
+                        <th scope="col" class="manage-column column-title column-primary"><?php esc_html_e('Titulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th scope="col" class="manage-column"><?php esc_html_e('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th scope="col" class="manage-column"><?php esc_html_e('Categoria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th scope="col" class="manage-column"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th scope="col" class="manage-column"><?php esc_html_e('Descargas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                        <th scope="col" class="manage-column"><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1554,17 +1554,17 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                                     <div class="row-actions">
                                         <span class="edit">
                                             <a href="<?php echo esc_url(admin_url('admin.php?page=documentos-listado&action=edit&id=' . $documento->id)); ?>">
-                                                <?php esc_html_e('Editar', 'flavor-chat-ia'); ?>
+                                                <?php esc_html_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </a> |
                                         </span>
                                         <span class="view">
                                             <a href="<?php echo esc_url($documento->archivo_adjunto ?: '#'); ?>" target="_blank">
-                                                <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                                                <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </a> |
                                         </span>
                                         <span class="trash">
-                                            <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=documentos-listado&action=delete&id=' . $documento->id), 'delete_documento_' . $documento->id)); ?>" onclick="return confirm('<?php esc_attr_e('Estas seguro de eliminar este documento?', 'flavor-chat-ia'); ?>');">
-                                                <?php esc_html_e('Eliminar', 'flavor-chat-ia'); ?>
+                                            <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=documentos-listado&action=delete&id=' . $documento->id), 'delete_documento_' . $documento->id)); ?>" onclick="return confirm('<?php esc_attr_e('Estas seguro de eliminar este documento?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');">
+                                                <?php esc_html_e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </a>
                                         </span>
                                     </div>
@@ -1592,7 +1592,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                     <?php else: ?>
                         <tr>
                             <td colspan="7" style="text-align: center; padding: 20px;">
-                                <?php esc_html_e('No se encontraron documentos.', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('No se encontraron documentos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </td>
                         </tr>
                     <?php endif; ?>
@@ -1635,7 +1635,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
             $documento_id = intval($_GET['id']);
 
             if (!wp_verify_nonce($_GET['_wpnonce'] ?? '', 'delete_documento_' . $documento_id)) {
-                wp_die(__('Accion no autorizada.', 'flavor-chat-ia'));
+                wp_die(__('Accion no autorizada.', FLAVOR_PLATFORM_TEXT_DOMAIN));
             }
 
             global $wpdb;
@@ -1647,7 +1647,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                 add_settings_error(
                     'flavor_documentacion_legal',
                     'documento_eliminado',
-                    __('Documento eliminado correctamente.', 'flavor-chat-ia'),
+                    __('Documento eliminado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'success'
                 );
             }
@@ -1683,13 +1683,13 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
 
         ?>
         <div class="wrap">
-            <?php $this->render_page_header(__('Categorias de Documentos', 'flavor-chat-ia')); ?>
+            <?php $this->render_page_header(__('Categorias de Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
                 <!-- Formulario -->
                 <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                     <h3 style="margin-top: 0;">
-                        <?php echo $categoria_editar ? esc_html__('Editar Categoria', 'flavor-chat-ia') : esc_html__('Nueva Categoria', 'flavor-chat-ia'); ?>
+                        <?php echo $categoria_editar ? esc_html__('Editar Categoria', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Nueva Categoria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
 
                     <form method="post">
@@ -1700,44 +1700,44 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
 
                         <table class="form-table">
                             <tr>
-                                <th scope="row"><label for="nombre"><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?> *</label></th>
+                                <th scope="row"><label for="nombre"><?php esc_html_e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> *</label></th>
                                 <td>
                                     <input type="text" name="nombre" id="nombre" class="regular-text" required
                                            value="<?php echo esc_attr($categoria_editar->nombre ?? ''); ?>">
                                 </td>
                             </tr>
                             <tr>
-                                <th scope="row"><label for="slug"><?php esc_html_e('Slug', 'flavor-chat-ia'); ?></label></th>
+                                <th scope="row"><label for="slug"><?php esc_html_e('Slug', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                                 <td>
                                     <input type="text" name="slug" id="slug" class="regular-text"
                                            value="<?php echo esc_attr($categoria_editar->slug ?? ''); ?>">
-                                    <p class="description"><?php esc_html_e('Dejar vacio para generar automaticamente.', 'flavor-chat-ia'); ?></p>
+                                    <p class="description"><?php esc_html_e('Dejar vacio para generar automaticamente.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                 </td>
                             </tr>
                             <tr>
-                                <th scope="row"><label for="descripcion"><?php esc_html_e('Descripcion', 'flavor-chat-ia'); ?></label></th>
+                                <th scope="row"><label for="descripcion"><?php esc_html_e('Descripcion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                                 <td>
                                     <textarea name="descripcion" id="descripcion" rows="3" class="large-text"><?php echo esc_textarea($categoria_editar->descripcion ?? ''); ?></textarea>
                                 </td>
                             </tr>
                             <tr>
-                                <th scope="row"><label for="icono"><?php esc_html_e('Icono', 'flavor-chat-ia'); ?></label></th>
+                                <th scope="row"><label for="icono"><?php esc_html_e('Icono', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                                 <td>
                                     <input type="text" name="icono" id="icono" class="regular-text"
                                            value="<?php echo esc_attr($categoria_editar->icono ?? ''); ?>"
                                            placeholder="dashicons-admin-generic">
-                                    <p class="description"><?php esc_html_e('Clase de dashicon (ej: dashicons-media-document)', 'flavor-chat-ia'); ?></p>
+                                    <p class="description"><?php esc_html_e('Clase de dashicon (ej: dashicons-media-document)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                 </td>
                             </tr>
                             <tr>
-                                <th scope="row"><label for="color"><?php esc_html_e('Color', 'flavor-chat-ia'); ?></label></th>
+                                <th scope="row"><label for="color"><?php esc_html_e('Color', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                                 <td>
                                     <input type="color" name="color" id="color"
                                            value="<?php echo esc_attr($categoria_editar->color ?? '#2271b1'); ?>">
                                 </td>
                             </tr>
                             <tr>
-                                <th scope="row"><label for="orden"><?php esc_html_e('Orden', 'flavor-chat-ia'); ?></label></th>
+                                <th scope="row"><label for="orden"><?php esc_html_e('Orden', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label></th>
                                 <td>
                                     <input type="number" name="orden" id="orden" class="small-text" min="0"
                                            value="<?php echo esc_attr($categoria_editar->orden ?? 0); ?>">
@@ -1747,11 +1747,11 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
 
                         <p class="submit">
                             <button type="submit" name="guardar_categoria" class="button button-primary">
-                                <?php echo $categoria_editar ? esc_html__('Actualizar Categoria', 'flavor-chat-ia') : esc_html__('Crear Categoria', 'flavor-chat-ia'); ?>
+                                <?php echo $categoria_editar ? esc_html__('Actualizar Categoria', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Crear Categoria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                             <?php if ($categoria_editar): ?>
                                 <a href="<?php echo esc_url(admin_url('admin.php?page=documentos-categorias')); ?>" class="button">
-                                    <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </a>
                             <?php endif; ?>
                         </p>
@@ -1760,16 +1760,16 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
 
                 <!-- Lista de categorias -->
                 <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                    <h3 style="margin-top: 0;"><?php esc_html_e('Categorias Existentes', 'flavor-chat-ia'); ?></h3>
+                    <h3 style="margin-top: 0;"><?php esc_html_e('Categorias Existentes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
                     <?php if (!empty($categorias)): ?>
                         <table class="widefat striped">
                             <thead>
                                 <tr>
-                                    <th><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Slug', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Orden', 'flavor-chat-ia'); ?></th>
-                                    <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                                    <th><?php esc_html_e('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php esc_html_e('Slug', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php esc_html_e('Orden', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                    <th><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1785,12 +1785,12 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                                         <td><?php echo esc_html($categoria->orden); ?></td>
                                         <td>
                                             <a href="<?php echo esc_url(admin_url('admin.php?page=documentos-categorias&action=edit&id=' . $categoria->id)); ?>" class="button button-small">
-                                                <?php esc_html_e('Editar', 'flavor-chat-ia'); ?>
+                                                <?php esc_html_e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </a>
                                             <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=documentos-categorias&action=delete&id=' . $categoria->id), 'delete_categoria_' . $categoria->id)); ?>"
                                                class="button button-small button-link-delete"
-                                               onclick="return confirm('<?php esc_attr_e('Eliminar esta categoria?', 'flavor-chat-ia'); ?>');">
-                                                <?php esc_html_e('Eliminar', 'flavor-chat-ia'); ?>
+                                               onclick="return confirm('<?php esc_attr_e('Eliminar esta categoria?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>');">
+                                                <?php esc_html_e('Eliminar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </a>
                                         </td>
                                     </tr>
@@ -1798,7 +1798,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                             </tbody>
                         </table>
                     <?php else: ?>
-                        <p style="color: #646970;"><?php esc_html_e('No hay categorias creadas.', 'flavor-chat-ia'); ?></p>
+                        <p style="color: #646970;"><?php esc_html_e('No hay categorias creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php endif; ?>
                 </div>
             </div>
@@ -1834,11 +1834,11 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
             if (isset($_POST['categoria_id']) && $_POST['categoria_id']) {
                 // Actualizar
                 $wpdb->update($tabla_categorias, $datos_categoria, ['id' => intval($_POST['categoria_id'])]);
-                add_settings_error('flavor_categorias', 'actualizada', __('Categoria actualizada.', 'flavor-chat-ia'), 'success');
+                add_settings_error('flavor_categorias', 'actualizada', __('Categoria actualizada.', FLAVOR_PLATFORM_TEXT_DOMAIN), 'success');
             } else {
                 // Crear
                 $wpdb->insert($tabla_categorias, $datos_categoria);
-                add_settings_error('flavor_categorias', 'creada', __('Categoria creada.', 'flavor-chat-ia'), 'success');
+                add_settings_error('flavor_categorias', 'creada', __('Categoria creada.', FLAVOR_PLATFORM_TEXT_DOMAIN), 'success');
             }
 
             wp_safe_redirect(admin_url('admin.php?page=documentos-categorias'));
@@ -1848,7 +1848,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
         // Eliminar categoria
         if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
             if (!wp_verify_nonce($_GET['_wpnonce'] ?? '', 'delete_categoria_' . intval($_GET['id']))) {
-                wp_die(__('Accion no autorizada.', 'flavor-chat-ia'));
+                wp_die(__('Accion no autorizada.', FLAVOR_PLATFORM_TEXT_DOMAIN));
             }
 
             global $wpdb;
@@ -1878,7 +1878,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
             ];
 
             update_option('flavor_documentacion_legal_config', $configuracion);
-            add_settings_error('flavor_config', 'guardada', __('Configuracion guardada.', 'flavor-chat-ia'), 'success');
+            add_settings_error('flavor_config', 'guardada', __('Configuracion guardada.', FLAVOR_PLATFORM_TEXT_DOMAIN), 'success');
         }
 
         // Obtener configuracion actual
@@ -1889,7 +1889,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
 
         ?>
         <div class="wrap">
-            <?php $this->render_page_header(__('Configuracion - Documentacion Legal', 'flavor-chat-ia')); ?>
+            <?php $this->render_page_header(__('Configuracion - Documentacion Legal', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
 
             <?php settings_errors('flavor_config'); ?>
 
@@ -1901,47 +1901,47 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                     <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                         <h3 style="margin-top: 0;">
                             <span class="dashicons dashicons-admin-generic"></span>
-                            <?php esc_html_e('Configuracion General', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Configuracion General', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
 
                         <table class="form-table">
                             <tr>
-                                <th scope="row"><?php esc_html_e('Verificacion', 'flavor-chat-ia'); ?></th>
+                                <th scope="row"><?php esc_html_e('Verificacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                 <td>
                                     <label>
                                         <input type="checkbox" name="requiere_verificacion" value="1"
                                                <?php checked($configuracion_actual['requiere_verificacion'] ?? true); ?>>
-                                        <?php esc_html_e('Los documentos requieren verificacion antes de publicarse', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Los documentos requieren verificacion antes de publicarse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </label>
                                 </td>
                             </tr>
                             <tr>
-                                <th scope="row"><?php esc_html_e('Comentarios', 'flavor-chat-ia'); ?></th>
+                                <th scope="row"><?php esc_html_e('Comentarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                 <td>
                                     <label>
                                         <input type="checkbox" name="permitir_comentarios" value="1"
                                                <?php checked($configuracion_actual['permitir_comentarios'] ?? true); ?>>
-                                        <?php esc_html_e('Permitir comentarios en documentos', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Permitir comentarios en documentos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </label>
                                 </td>
                             </tr>
                             <tr>
-                                <th scope="row"><?php esc_html_e('Descargas', 'flavor-chat-ia'); ?></th>
+                                <th scope="row"><?php esc_html_e('Descargas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                 <td>
                                     <label>
                                         <input type="checkbox" name="permitir_descargas" value="1"
                                                <?php checked($configuracion_actual['permitir_descargas'] ?? true); ?>>
-                                        <?php esc_html_e('Permitir descargas de documentos', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Permitir descargas de documentos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </label>
                                 </td>
                             </tr>
                             <tr>
-                                <th scope="row"><?php esc_html_e('Estadisticas', 'flavor-chat-ia'); ?></th>
+                                <th scope="row"><?php esc_html_e('Estadisticas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                 <td>
                                     <label>
                                         <input type="checkbox" name="mostrar_visitas" value="1"
                                                <?php checked($configuracion_actual['mostrar_visitas'] ?? true); ?>>
-                                        <?php esc_html_e('Mostrar contador de visitas', 'flavor-chat-ia'); ?>
+                                        <?php esc_html_e('Mostrar contador de visitas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                     </label>
                                 </td>
                             </tr>
@@ -1952,28 +1952,28 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                     <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                         <h3 style="margin-top: 0;">
                             <span class="dashicons dashicons-media-document"></span>
-                            <?php esc_html_e('Configuracion de Archivos', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Configuracion de Archivos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
 
                         <table class="form-table">
                             <tr>
                                 <th scope="row">
-                                    <label for="tipos_archivo_permitidos"><?php esc_html_e('Tipos permitidos', 'flavor-chat-ia'); ?></label>
+                                    <label for="tipos_archivo_permitidos"><?php esc_html_e('Tipos permitidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 </th>
                                 <td>
                                     <input type="text" name="tipos_archivo_permitidos" id="tipos_archivo_permitidos" class="regular-text"
                                            value="<?php echo esc_attr(implode(',', $configuracion_actual['tipos_archivo_permitidos'] ?? ['pdf', 'doc', 'docx'])); ?>">
-                                    <p class="description"><?php esc_html_e('Extensiones separadas por coma (ej: pdf,doc,docx,odt)', 'flavor-chat-ia'); ?></p>
+                                    <p class="description"><?php esc_html_e('Extensiones separadas por coma (ej: pdf,doc,docx,odt)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                 </td>
                             </tr>
                             <tr>
                                 <th scope="row">
-                                    <label for="tamano_maximo_archivo"><?php esc_html_e('Tamano maximo (MB)', 'flavor-chat-ia'); ?></label>
+                                    <label for="tamano_maximo_archivo"><?php esc_html_e('Tamano maximo (MB)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                                 </th>
                                 <td>
                                     <input type="number" name="tamano_maximo_archivo" id="tamano_maximo_archivo" class="small-text" min="1" max="100"
                                            value="<?php echo esc_attr($configuracion_actual['tamano_maximo_archivo'] ?? 10); ?>">
-                                    <p class="description"><?php esc_html_e('Tamano maximo de archivo en megabytes', 'flavor-chat-ia'); ?></p>
+                                    <p class="description"><?php esc_html_e('Tamano maximo de archivo en megabytes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                 </td>
                             </tr>
                         </table>
@@ -1983,12 +1983,12 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                     <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                         <h3 style="margin-top: 0;">
                             <span class="dashicons dashicons-admin-users"></span>
-                            <?php esc_html_e('Permisos de Subida', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Permisos de Subida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
 
                         <table class="form-table">
                             <tr>
-                                <th scope="row"><?php esc_html_e('Roles que pueden subir documentos', 'flavor-chat-ia'); ?></th>
+                                <th scope="row"><?php esc_html_e('Roles que pueden subir documentos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                 <td>
                                     <?php
                                     $roles_pueden_subir = $configuracion_actual['roles_pueden_subir'] ?? ['administrator'];
@@ -2009,7 +2009,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                     <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                         <h3 style="margin-top: 0;">
                             <span class="dashicons dashicons-info-outline"></span>
-                            <?php esc_html_e('Informacion del Modulo', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Informacion del Modulo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
 
                         <?php
@@ -2017,23 +2017,23 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                         ?>
                         <table class="widefat">
                             <tr>
-                                <td><strong><?php esc_html_e('Total documentos', 'flavor-chat-ia'); ?></strong></td>
+                                <td><strong><?php esc_html_e('Total documentos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></td>
                                 <td><?php echo esc_html($estadisticas['total_documentos']); ?></td>
                             </tr>
                             <tr>
-                                <td><strong><?php esc_html_e('Documentos publicados', 'flavor-chat-ia'); ?></strong></td>
+                                <td><strong><?php esc_html_e('Documentos publicados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></td>
                                 <td><?php echo esc_html($estadisticas['documentos_publicados']); ?></td>
                             </tr>
                             <tr>
-                                <td><strong><?php esc_html_e('Pendientes de revision', 'flavor-chat-ia'); ?></strong></td>
+                                <td><strong><?php esc_html_e('Pendientes de revision', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></td>
                                 <td><?php echo esc_html($estadisticas['documentos_pendientes']); ?></td>
                             </tr>
                             <tr>
-                                <td><strong><?php esc_html_e('Total descargas', 'flavor-chat-ia'); ?></strong></td>
+                                <td><strong><?php esc_html_e('Total descargas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></td>
                                 <td><?php echo esc_html(number_format($estadisticas['total_descargas'])); ?></td>
                             </tr>
                             <tr>
-                                <td><strong><?php esc_html_e('Categorias', 'flavor-chat-ia'); ?></strong></td>
+                                <td><strong><?php esc_html_e('Categorias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong></td>
                                 <td><?php echo esc_html($estadisticas['total_categorias']); ?></td>
                             </tr>
                         </table>
@@ -2042,7 +2042,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
 
                 <p class="submit" style="margin-top: 20px;">
                     <button type="submit" name="guardar_config" class="button button-primary button-large">
-                        <?php esc_html_e('Guardar Configuracion', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Guardar Configuracion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </p>
             </form>
@@ -2060,19 +2060,19 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 15px;">
                 <div style="text-align: center;">
                     <div style="font-size: 24px; font-weight: 600; color: #2271b1;"><?php echo esc_html($estadisticas['total_documentos']); ?></div>
-                    <div style="font-size: 12px; color: #646970;"><?php esc_html_e('Documentos', 'flavor-chat-ia'); ?></div>
+                    <div style="font-size: 12px; color: #646970;"><?php esc_html_e('Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div style="text-align: center;">
                     <div style="font-size: 24px; font-weight: 600; color: #00a32a;"><?php echo esc_html(number_format($estadisticas['total_descargas'])); ?></div>
-                    <div style="font-size: 12px; color: #646970;"><?php esc_html_e('Descargas', 'flavor-chat-ia'); ?></div>
+                    <div style="font-size: 12px; color: #646970;"><?php esc_html_e('Descargas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div style="text-align: center;">
                     <div style="font-size: 24px; font-weight: 600; color: #dba617;"><?php echo esc_html($estadisticas['documentos_pendientes']); ?></div>
-                    <div style="font-size: 12px; color: #646970;"><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></div>
+                    <div style="font-size: 12px; color: #646970;"><?php esc_html_e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
             <a href="<?php echo esc_url(admin_url('admin.php?page=documentos-dashboard')); ?>" class="button button-primary" style="width: 100%; text-align: center;">
-                <?php esc_html_e('Ver Dashboard Completo', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver Dashboard Completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
         <?php
@@ -2086,8 +2086,8 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
     public static function get_renderer_config(): array {
         return [
             'module'   => 'documentacion-legal',
-            'title'    => __('Documentación Legal', 'flavor-chat-ia'),
-            'subtitle' => __('Repositorio de documentos jurídicos y modelos', 'flavor-chat-ia'),
+            'title'    => __('Documentación Legal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Repositorio de documentos jurídicos y modelos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '⚖️',
             'color'    => 'secondary', // Usa variable CSS --flavor-secondary del tema
 
@@ -2097,48 +2097,48 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
             ],
 
             'fields' => [
-                'titulo'      => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'required' => true],
-                'tipo'        => ['type' => 'select', 'label' => __('Tipo', 'flavor-chat-ia'), 'required' => true],
-                'categoria'   => ['type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia')],
-                'ambito'      => ['type' => 'select', 'label' => __('Ámbito', 'flavor-chat-ia')],
-                'fecha_publicacion' => ['type' => 'date', 'label' => __('Fecha publicación', 'flavor-chat-ia')],
-                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia')],
-                'archivo'     => ['type' => 'file', 'label' => __('Documento', 'flavor-chat-ia')],
-                'url_oficial' => ['type' => 'url', 'label' => __('URL oficial', 'flavor-chat-ia')],
+                'titulo'      => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'tipo'        => ['type' => 'select', 'label' => __('Tipo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'categoria'   => ['type' => 'select', 'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'ambito'      => ['type' => 'select', 'label' => __('Ámbito', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'fecha_publicacion' => ['type' => 'date', 'label' => __('Fecha publicación', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'archivo'     => ['type' => 'file', 'label' => __('Documento', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'url_oficial' => ['type' => 'url', 'label' => __('URL oficial', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ],
 
             'estados' => [
-                'borrador'   => ['label' => __('Borrador', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '📝'],
-                'pendiente'  => ['label' => __('Pendiente', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏳'],
-                'publicado'  => ['label' => __('Publicado', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
-                'obsoleto'   => ['label' => __('Obsoleto', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '⚠️'],
+                'borrador'   => ['label' => __('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'gray', 'icon' => '📝'],
+                'pendiente'  => ['label' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '⏳'],
+                'publicado'  => ['label' => __('Publicado', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '✅'],
+                'obsoleto'   => ['label' => __('Obsoleto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'red', 'icon' => '⚠️'],
             ],
 
             'stats' => [
                 [
                     'key'   => 'total_documentos',
-                    'label' => __('Documentos', 'flavor-chat-ia'),
+                    'label' => __('Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'  => '📄',
                     'color' => 'slate',
                     'query' => "SELECT COUNT(*) FROM {prefix}flavor_documentacion_legal WHERE estado = 'publicado'",
                 ],
                 [
                     'key'   => 'leyes',
-                    'label' => __('Leyes', 'flavor-chat-ia'),
+                    'label' => __('Leyes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'  => '📜',
                     'color' => 'blue',
                     'query' => "SELECT COUNT(*) FROM {prefix}flavor_documentacion_legal WHERE tipo = 'ley' AND estado = 'publicado'",
                 ],
                 [
                     'key'   => 'modelos',
-                    'label' => __('Modelos', 'flavor-chat-ia'),
+                    'label' => __('Modelos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'  => '📋',
                     'color' => 'green',
                     'query' => "SELECT COUNT(*) FROM {prefix}flavor_documentacion_legal WHERE tipo LIKE 'modelo%' AND estado = 'publicado'",
                 ],
                 [
                     'key'   => 'sentencias',
-                    'label' => __('Sentencias', 'flavor-chat-ia'),
+                    'label' => __('Sentencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'  => '⚖️',
                     'color' => 'purple',
                     'query' => "SELECT COUNT(*) FROM {prefix}flavor_documentacion_legal WHERE tipo = 'sentencia' AND estado = 'publicado'",
@@ -2156,27 +2156,27 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
 
             'tabs' => [
                 'listado' => [
-                    'label'   => __('Documentos', 'flavor-chat-ia'),
+                    'label'   => __('Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => '📄',
                     'content' => 'template:documentacion-legal/_listado.php',
                 ],
                 'leyes' => [
-                    'label'   => __('Leyes', 'flavor-chat-ia'),
+                    'label'   => __('Leyes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => '📜',
                     'content' => 'shortcode:documentacion_legal_leyes',
                 ],
                 'modelos' => [
-                    'label'   => __('Modelos', 'flavor-chat-ia'),
+                    'label'   => __('Modelos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => '📋',
                     'content' => 'shortcode:documentacion_legal_modelos',
                 ],
                 'sentencias' => [
-                    'label'   => __('Sentencias', 'flavor-chat-ia'),
+                    'label'   => __('Sentencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => '⚖️',
                     'content' => 'shortcode:documentacion_legal_sentencias',
                 ],
                 'favoritos' => [
-                    'label'   => __('Favoritos', 'flavor-chat-ia'),
+                    'label'   => __('Favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => '⭐',
                     'content' => 'shortcode:documentacion_legal_favoritos',
                 ],
@@ -2192,12 +2192,12 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
 
             'dashboard' => [
                 'widgets' => [
-                    'documentos_recientes' => ['type' => 'list', 'title' => __('Documentos recientes', 'flavor-chat-ia')],
-                    'mis_favoritos'        => ['type' => 'list', 'title' => __('Mis favoritos', 'flavor-chat-ia')],
+                    'documentos_recientes' => ['type' => 'list', 'title' => __('Documentos recientes', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'mis_favoritos'        => ['type' => 'list', 'title' => __('Mis favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 ],
                 'actions' => [
                     'subir_documento' => [
-                        'label' => __('Subir documento', 'flavor-chat-ia'),
+                        'label' => __('Subir documento', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'icon'  => '📤',
                         'modal' => 'documentacion-legal-subir',
                     ],
@@ -2232,8 +2232,8 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
 
         add_submenu_page(
             null,
-            __('Categorias de Documentos', 'flavor-chat-ia'),
-            __('Categorias', 'flavor-chat-ia'),
+            __('Categorias de Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Categorias', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'documentos-categorias',
             [$this, 'render_documentos_categorias']
@@ -2241,8 +2241,8 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
 
         add_submenu_page(
             null,
-            __('Configuracion Documentacion Legal', 'flavor-chat-ia'),
-            __('Configuracion', 'flavor-chat-ia'),
+            __('Configuracion Documentacion Legal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Configuracion', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'documentos-config',
             [$this, 'render_documentos_config']
@@ -2250,8 +2250,8 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
 
         add_submenu_page(
             null,
-            __('Estadisticas Documentacion Legal', 'flavor-chat-ia'),
-            __('Estadisticas', 'flavor-chat-ia'),
+            __('Estadisticas Documentacion Legal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Estadisticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'documentos-estadisticas',
             [$this, 'render_documentos_estadisticas']
@@ -2259,8 +2259,8 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
 
         add_submenu_page(
             null,
-            __('Listado de Documentos', 'flavor-chat-ia'),
-            __('Documentos', 'flavor-chat-ia'),
+            __('Listado de Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'documentos-listado',
             [$this, 'render_documentos_listado']
@@ -2268,8 +2268,8 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
 
         add_submenu_page(
             null,
-            __('Modelos de Documentos', 'flavor-chat-ia'),
-            __('Modelos', 'flavor-chat-ia'),
+            __('Modelos de Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Modelos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'documentos-modelos',
             [$this, 'render_documentos_modelos']
@@ -2277,8 +2277,8 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
 
         add_submenu_page(
             null,
-            __('Nuevo Documento', 'flavor-chat-ia'),
-            __('Nuevo', 'flavor-chat-ia'),
+            __('Nuevo Documento', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'documentos-nuevo',
             [$this, 'render_documentos_nuevo']
@@ -2293,8 +2293,8 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
         if (file_exists($vista)) {
             include $vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Categorias de Documentos', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Categorias de Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -2306,8 +2306,8 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
         if (file_exists($vista)) {
             include $vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Configuracion Documentacion Legal', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Configuracion Documentacion Legal', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -2319,8 +2319,8 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
         if (file_exists($vista)) {
             include $vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Estadisticas Documentacion Legal', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Estadisticas Documentacion Legal', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -2332,8 +2332,8 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
         if (file_exists($vista)) {
             include $vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Listado de Documentos', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Listado de Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -2345,8 +2345,8 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
         if (file_exists($vista)) {
             include $vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Modelos de Documentos', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Modelos de Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -2358,8 +2358,8 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
         if (file_exists($vista)) {
             include $vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Nuevo Documento', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Nuevo Documento', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 }

@@ -108,11 +108,11 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (version_compare(PHP_VERSION, '7.4', '<')) {
-            return __('Se requiere PHP 7.4 o superior para el módulo de Email Marketing.', 'flavor-chat-ia');
+            return __('Se requiere PHP 7.4 o superior para el módulo de Email Marketing.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         if (!function_exists('mail') && !class_exists('PHPMailer\PHPMailer\PHPMailer')) {
-            return __('No hay ningún sistema de envío de emails disponible.', 'flavor-chat-ia');
+            return __('No hay ningún sistema de envío de emails disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         return '';
@@ -359,19 +359,19 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
     public function add_cron_intervals($schedules) {
         $schedules['every_minute'] = [
             'interval' => 60,
-            'display' => __('Cada minuto', 'flavor-chat-ia'),
+            'display' => __('Cada minuto', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
         $schedules['every_five_minutes'] = [
             'interval' => 300,
-            'display' => __('Cada 5 minutos', 'flavor-chat-ia'),
+            'display' => __('Cada 5 minutos', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
         $schedules['every_fifteen_minutes'] = [
             'interval' => 900,
-            'display' => __('Cada 15 minutos', 'flavor-chat-ia'),
+            'display' => __('Cada 15 minutos', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
         $schedules['every_thirty_minutes'] = [
             'interval' => 1800,
-            'display' => __('Cada 30 minutos', 'flavor-chat-ia'),
+            'display' => __('Cada 30 minutos', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
         return $schedules;
     }
@@ -497,7 +497,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $estadisticas[] = [
             'icon'  => 'dashicons-email-alt',
             'valor' => $total_suscriptores,
-            'label' => __('Suscriptores', 'flavor-chat-ia'),
+            'label' => __('Suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => $total_suscriptores > 0 ? 'green' : 'gray'
         ];
 
@@ -521,7 +521,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
             $estadisticas[] = [
                 'icon'  => 'dashicons-megaphone',
                 'valor' => $campanias_mes,
-                'label' => __('Campañas este mes', 'flavor-chat-ia'),
+                'label' => __('Campañas este mes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $campanias_mes > 0 ? 'blue' : 'gray'
             ];
         }
@@ -541,7 +541,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
                 $estadisticas[] = [
                     'icon'  => 'dashicons-plus-alt',
                     'valor' => '+' . $nuevos_semana,
-                    'label' => __('Nuevos esta semana', 'flavor-chat-ia'),
+                    'label' => __('Nuevos esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'green'
                 ];
             }
@@ -586,7 +586,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $this->encolar_email([
             'suscriptor_id' => $suscriptor->id,
             'email' => $datos['email'],
-            'asunto' => $datos['asunto'] ?? __('Notificación', 'flavor-chat-ia'),
+            'asunto' => $datos['asunto'] ?? __('Notificación', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'contenido' => $datos['mensaje'] ?? '',
             'prioridad' => isset($datos['urgente']) && $datos['urgente'] ? 1 : 5,
             'tipo' => 'notificacion',
@@ -980,17 +980,17 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
     private function crear_paginas_por_defecto() {
         $paginas = [
             'confirmacion' => [
-                'titulo' => __('Confirmar Suscripción', 'flavor-chat-ia'),
+                'titulo' => __('Confirmar Suscripción', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'contenido' => '[em_confirmar_suscripcion]',
                 'opcion' => 'flavor_em_pagina_confirmacion',
             ],
             'preferencias' => [
-                'titulo' => __('Preferencias de Email', 'flavor-chat-ia'),
+                'titulo' => __('Preferencias de Email', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'contenido' => '[em_preferencias]',
                 'opcion' => 'flavor_em_pagina_preferencias',
             ],
             'baja' => [
-                'titulo' => __('Darse de Baja', 'flavor-chat-ia'),
+                'titulo' => __('Darse de Baja', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'contenido' => '[em_darse_baja]',
                 'opcion' => 'flavor_em_pagina_baja',
             ],
@@ -1029,9 +1029,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         if (!$lista_existe) {
             $wpdb->insert($tabla_listas, [
-                'nombre' => __('Newsletter Principal', 'flavor-chat-ia'),
+                'nombre' => __('Newsletter Principal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'newsletter-principal',
-                'descripcion' => __('Lista principal de suscriptores del sitio.', 'flavor-chat-ia'),
+                'descripcion' => __('Lista principal de suscriptores del sitio.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'activa' => 1,
                 'publica' => 1,
                 'doble_optin' => 1,
@@ -1096,8 +1096,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         // Páginas ocultas (accesibles desde Panel Unificado)
         add_submenu_page(
             null, // Oculto en el menú
-            __('Email Marketing - Dashboard', 'flavor-chat-ia'),
-            __('Dashboard', 'flavor-chat-ia'),
+            __('Email Marketing - Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-email-marketing',
             [$this, 'render_admin_dashboard']
@@ -1105,8 +1105,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         add_submenu_page(
             null,
-            __('Campañas', 'flavor-chat-ia'),
-            __('Campañas', 'flavor-chat-ia'),
+            __('Campañas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Campañas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-em-campanias',
             [$this, 'render_admin_campanias']
@@ -1114,8 +1114,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         add_submenu_page(
             null,
-            __('Automatizaciones', 'flavor-chat-ia'),
-            __('Automatizaciones', 'flavor-chat-ia'),
+            __('Automatizaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Automatizaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-em-automatizaciones',
             [$this, 'render_admin_automatizaciones']
@@ -1123,8 +1123,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         add_submenu_page(
             null,
-            __('Suscriptores', 'flavor-chat-ia'),
-            __('Suscriptores', 'flavor-chat-ia'),
+            __('Suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-em-suscriptores',
             [$this, 'render_admin_suscriptores']
@@ -1132,8 +1132,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         add_submenu_page(
             null,
-            __('Listas', 'flavor-chat-ia'),
-            __('Listas', 'flavor-chat-ia'),
+            __('Listas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Listas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-em-listas',
             [$this, 'render_admin_listas']
@@ -1141,8 +1141,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         add_submenu_page(
             null,
-            __('Plantillas', 'flavor-chat-ia'),
-            __('Plantillas', 'flavor-chat-ia'),
+            __('Plantillas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Plantillas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-em-plantillas',
             [$this, 'render_admin_plantillas']
@@ -1150,8 +1150,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         add_submenu_page(
             null,
-            __('Estadísticas', 'flavor-chat-ia'),
-            __('Estadísticas', 'flavor-chat-ia'),
+            __('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-em-estadisticas',
             [$this, 'render_admin_estadisticas']
@@ -1159,8 +1159,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         add_submenu_page(
             null,
-            __('Configuración', 'flavor-chat-ia'),
-            __('Configuración', 'flavor-chat-ia'),
+            __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'manage_options',
             'flavor-em-configuracion',
             [$this, 'render_admin_configuracion']
@@ -1200,11 +1200,11 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_em_admin'),
             'strings' => [
-                'confirmDelete' => __('¿Estás seguro de eliminar este elemento?', 'flavor-chat-ia'),
-                'sending' => __('Enviando...', 'flavor-chat-ia'),
-                'sent' => __('Enviado', 'flavor-chat-ia'),
-                'error' => __('Error', 'flavor-chat-ia'),
-                'saved' => __('Guardado', 'flavor-chat-ia'),
+                'confirmDelete' => __('¿Estás seguro de eliminar este elemento?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sending' => __('Enviando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sent' => __('Enviado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error' => __('Error', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'saved' => __('Guardado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -1467,13 +1467,13 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         $signature = (string) $request->get_header('X-Flavor-Signature');
         if ($signature === '') {
-            return new WP_Error('invalid_signature', __('Firma requerida', 'flavor-chat-ia'), ['status' => 403]);
+            return new WP_Error('invalid_signature', __('Firma requerida', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 403]);
         }
 
         $body = $request->get_body();
         $expected = hash_hmac('sha256', $body, $secret);
         if (!hash_equals($expected, $signature)) {
-            return new WP_Error('invalid_signature', __('Firma inválida', 'flavor-chat-ia'), ['status' => 403]);
+            return new WP_Error('invalid_signature', __('Firma inválida', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 403]);
         }
 
         return true;
@@ -1570,7 +1570,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$suscriptor) {
-            return new WP_Error('not_found', __('Suscriptor no encontrado', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Suscriptor no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         // Obtener listas del suscriptor
@@ -1604,12 +1604,12 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $nombre = sanitize_text_field($request->get_param('nombre') ?: '');
 
         if (!is_email($email)) {
-            return new WP_Error('invalid_email', __('Email no válido', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('invalid_email', __('Email no válido', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         // Verificar rate limit si está habilitado
         if (!$this->verificar_rate_limit()) {
-            return new WP_Error('rate_limited', __('Demasiadas solicitudes. Intenta más tarde.', 'flavor-chat-ia'), ['status' => 429]);
+            return new WP_Error('rate_limited', __('Demasiadas solicitudes. Intenta más tarde.', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 429]);
         }
 
         $resultado = $this->suscribir($email, $lista, [
@@ -1644,7 +1644,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$suscriptor) {
-            return new WP_Error('not_found', __('Suscriptor no encontrado', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Suscriptor no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         $update_data = [];
@@ -1696,7 +1696,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$suscriptor) {
-            return new WP_Error('not_found', __('Suscriptor no encontrado', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Suscriptor no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         // Eliminar relaciones con listas
@@ -1752,7 +1752,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$lista) {
-            return new WP_Error('not_found', __('Lista no encontrada', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Lista no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         return new WP_REST_Response($lista);
@@ -1771,7 +1771,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $slug = sanitize_title($request->get_param('slug') ?: $nombre);
 
         if (empty($nombre)) {
-            return new WP_Error('invalid_name', __('El nombre es requerido', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('invalid_name', __('El nombre es requerido', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $tabla = $wpdb->prefix . self::TABLE_PREFIX . 'listas';
@@ -1822,7 +1822,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$lista) {
-            return new WP_Error('not_found', __('Lista no encontrada', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Lista no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         $update_data = [];
@@ -1874,7 +1874,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$lista) {
-            return new WP_Error('not_found', __('Lista no encontrada', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Lista no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         // Eliminar relaciones
@@ -1964,7 +1964,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$campania) {
-            return new WP_Error('not_found', __('Campaña no encontrada', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Campaña no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         $campania->listas_ids = json_decode($campania->listas_ids) ?: [];
@@ -1989,7 +1989,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ];
 
         if (empty($datos['nombre']) || empty($datos['asunto'])) {
-            return new WP_Error('invalid_data', __('Nombre y asunto son requeridos', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('invalid_data', __('Nombre y asunto son requeridos', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $campania_id = $this->crear_campania($datos);
@@ -2018,11 +2018,11 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$campania) {
-            return new WP_Error('not_found', __('Campaña no encontrada', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Campaña no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         if (!in_array($campania->estado, ['borrador', 'programada'])) {
-            return new WP_Error('cannot_edit', __('No se puede editar una campaña en este estado', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('cannot_edit', __('No se puede editar una campaña en este estado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $update_data = [];
@@ -2070,11 +2070,11 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$campania) {
-            return new WP_Error('not_found', __('Campaña no encontrada', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Campaña no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         if ($campania->estado === 'enviando') {
-            return new WP_Error('cannot_delete', __('No se puede eliminar una campaña en envío', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('cannot_delete', __('No se puede eliminar una campaña en envío', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $wpdb->delete($tabla, ['id' => $id]);
@@ -2157,7 +2157,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $trigger_tipo = sanitize_key($request->get_param('trigger_tipo'));
 
         if (empty($nombre) || !in_array($trigger_tipo, self::TRIGGERS_AUTOMATIZACION)) {
-            return new WP_Error('invalid_data', __('Datos inválidos', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('invalid_data', __('Datos inválidos', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $tabla = $wpdb->prefix . self::TABLE_PREFIX . 'automatizaciones';
@@ -2327,7 +2327,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $nombre = sanitize_text_field($request->get_param('nombre'));
 
         if (empty($nombre)) {
-            return new WP_Error('invalid_name', __('El nombre es requerido', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('invalid_name', __('El nombre es requerido', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $tabla = $wpdb->prefix . self::TABLE_PREFIX . 'plantillas';
@@ -2369,7 +2369,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $razon = sanitize_text_field($request->get_param('reason') ?: '');
 
         if (!is_email($email)) {
-            return new WP_REST_Response(['error' => __('Invalid email', 'flavor-chat-ia')], 400);
+            return new WP_REST_Response(['error' => __('Invalid email', FLAVOR_PLATFORM_TEXT_DOMAIN)], 400);
         }
 
         $this->registrar_rebote($email, $tipo, $razon);
@@ -2400,7 +2400,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $suscriptor = $this->get_suscriptor_por_token($token);
 
         if (!$suscriptor) {
-            return new WP_Error('invalid_token', __('Token no válido', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('invalid_token', __('Token no válido', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $resultado = $this->dar_de_baja($suscriptor->id, null, $motivo);
@@ -2490,12 +2490,12 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $email_admin = $settings['email_notificaciones'] ?: get_option('admin_email');
 
         $asuntos = [
-            'nuevo_suscriptor' => sprintf(__('[%s] Nuevo suscriptor', 'flavor-chat-ia'), get_bloginfo('name')),
-            'baja' => sprintf(__('[%s] Baja de suscriptor', 'flavor-chat-ia'), get_bloginfo('name')),
-            'rebote' => sprintf(__('[%s] Email rebotado', 'flavor-chat-ia'), get_bloginfo('name')),
+            'nuevo_suscriptor' => sprintf(__('[%s] Nuevo suscriptor', FLAVOR_PLATFORM_TEXT_DOMAIN), get_bloginfo('name')),
+            'baja' => sprintf(__('[%s] Baja de suscriptor', FLAVOR_PLATFORM_TEXT_DOMAIN), get_bloginfo('name')),
+            'rebote' => sprintf(__('[%s] Email rebotado', FLAVOR_PLATFORM_TEXT_DOMAIN), get_bloginfo('name')),
         ];
 
-        $asunto = $asuntos[$tipo] ?? sprintf(__('[%s] Notificación Email Marketing', 'flavor-chat-ia'), get_bloginfo('name'));
+        $asunto = $asuntos[$tipo] ?? sprintf(__('[%s] Notificación Email Marketing', FLAVOR_PLATFORM_TEXT_DOMAIN), get_bloginfo('name'));
 
         $mensaje = $this->generar_mensaje_notificacion($tipo, $datos);
 
@@ -2513,7 +2513,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         switch ($tipo) {
             case 'nuevo_suscriptor':
                 return sprintf(
-                    __("Nuevo suscriptor:\n\nEmail: %s\nNombre: %s\nLista: %s\nFecha: %s", 'flavor-chat-ia'),
+                    __("Nuevo suscriptor:\n\nEmail: %s\nNombre: %s\nLista: %s\nFecha: %s", FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $datos['email'] ?? '',
                     $datos['nombre'] ?? '-',
                     $datos['lista'] ?? '-',
@@ -2522,7 +2522,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
             case 'baja':
                 return sprintf(
-                    __("Baja de suscriptor:\n\nEmail: %s\nMotivo: %s\nFecha: %s", 'flavor-chat-ia'),
+                    __("Baja de suscriptor:\n\nEmail: %s\nMotivo: %s\nFecha: %s", FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $datos['email'] ?? '',
                     $datos['motivo'] ?? '-',
                     current_time('mysql')
@@ -2530,7 +2530,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
             case 'rebote':
                 return sprintf(
-                    __("Email rebotado:\n\nEmail: %s\nTipo: %s\nRazón: %s\nFecha: %s", 'flavor-chat-ia'),
+                    __("Email rebotado:\n\nEmail: %s\nTipo: %s\nRazón: %s\nFecha: %s", FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $datos['email'] ?? '',
                     $datos['tipo'] ?? '-',
                     $datos['razon'] ?? '-',
@@ -2555,9 +2555,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
     public function shortcode_formulario_suscripcion($atts) {
         $atts = shortcode_atts([
             'lista' => 'newsletter-principal',
-            'titulo' => __('Suscribete a nuestro newsletter', 'flavor-chat-ia'),
-            'descripcion' => __('Recibe las ultimas novedades en tu email.', 'flavor-chat-ia'),
-            'boton' => __('Suscribirme', 'flavor-chat-ia'),
+            'titulo' => __('Suscribete a nuestro newsletter', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'descripcion' => __('Recibe las ultimas novedades en tu email.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'boton' => __('Suscribirme', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'mostrar_nombre' => 'true',
             'estilo' => 'card',
             'redirect' => '',
@@ -2603,12 +2603,12 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
                 <?php if ($mostrar_nombre): ?>
                     <div class="em-campo">
-                        <input type="text" name="nombre" placeholder="<?php esc_attr_e('Tu nombre', 'flavor-chat-ia'); ?>" class="em-input">
+                        <input type="text" name="nombre" placeholder="<?php esc_attr_e('Tu nombre', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" class="em-input">
                     </div>
                 <?php endif; ?>
 
                 <div class="em-campo">
-                    <input type="email" name="email" placeholder="<?php esc_attr_e('Tu email', 'flavor-chat-ia'); ?>" required class="em-input">
+                    <input type="email" name="email" placeholder="<?php esc_attr_e('Tu email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" required class="em-input">
                 </div>
 
                 <?php if (!empty($settings['honeypot_enabled'])): ?>
@@ -2638,13 +2638,13 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $token = isset($_GET['token']) ? sanitize_text_field($_GET['token']) : '';
 
         if (empty($token)) {
-            return '<p class="em-error">' . __('Token no valido.', 'flavor-chat-ia') . '</p>';
+            return '<p class="em-error">' . __('Token no valido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $suscriptor = $this->get_suscriptor_por_token($token);
 
         if (!$suscriptor) {
-            return '<p class="em-error">' . __('Suscriptor no encontrado.', 'flavor-chat-ia') . '</p>';
+            return '<p class="em-error">' . __('Suscriptor no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $template_path = plugin_dir_path(__FILE__) . 'templates/preferencias.php';
@@ -2692,17 +2692,17 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ob_start();
         ?>
         <div class="flavor-em-preferencias">
-            <h3><?php esc_html_e('Preferencias de Email', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Preferencias de Email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
-            <p><?php printf(esc_html__('Email: %s', 'flavor-chat-ia'), esc_html($suscriptor->email)); ?></p>
+            <p><?php printf(esc_html__('Email: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($suscriptor->email)); ?></p>
 
             <form class="em-preferencias-form" data-token="<?php echo esc_attr($token); ?>">
                 <?php wp_nonce_field('flavor_em_public', 'em_nonce'); ?>
 
-                <h4><?php esc_html_e('Tus suscripciones actuales', 'flavor-chat-ia'); ?></h4>
+                <h4><?php esc_html_e('Tus suscripciones actuales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
 
                 <?php if (empty($listas_suscriptor)): ?>
-                    <p><?php esc_html_e('No estas suscrito a ninguna lista.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No estas suscrito a ninguna lista.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php else: ?>
                     <?php foreach ($listas_suscriptor as $lista): ?>
                         <label class="em-checkbox">
@@ -2717,7 +2717,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
                 <?php endif; ?>
 
                 <?php if (!empty($listas_disponibles)): ?>
-                    <h4><?php esc_html_e('Otras listas disponibles', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php esc_html_e('Otras listas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
                     <?php foreach ($listas_disponibles as $lista): ?>
                         <label class="em-checkbox">
                             <input type="checkbox" name="listas_nuevas[]" value="<?php echo esc_attr($lista->id); ?>">
@@ -2729,7 +2729,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
                     <?php endforeach; ?>
                 <?php endif; ?>
 
-                <button type="submit" class="em-boton"><?php esc_html_e('Guardar preferencias', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="em-boton"><?php esc_html_e('Guardar preferencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
 
                 <div class="em-mensaje" style="display:none;"></div>
             </form>
@@ -2738,7 +2738,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
             <p>
                 <a href="<?php echo esc_url($this->generar_url_baja($suscriptor->id)); ?>" class="em-link-baja">
-                    <?php esc_html_e('Darme de baja de todo', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Darme de baja de todo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </p>
         </div>
@@ -2756,7 +2756,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $token = isset($_GET['token']) ? sanitize_text_field($_GET['token']) : '';
 
         if (empty($token)) {
-            return '<p class="em-error">' . __('Token de confirmacion no valido.', 'flavor-chat-ia') . '</p>';
+            return '<p class="em-error">' . __('Token de confirmacion no valido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $resultado = $this->confirmar_suscripcion($token);
@@ -2764,8 +2764,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         if ($resultado['success']) {
             return '<div class="em-confirmacion-exitosa">
                 <span class="em-icono">&#10003;</span>
-                <h3>' . __('Suscripcion confirmada!', 'flavor-chat-ia') . '</h3>
-                <p>' . __('Gracias por confirmar tu suscripcion. Pronto recibiras nuestras novedades.', 'flavor-chat-ia') . '</p>
+                <h3>' . __('Suscripcion confirmada!', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>
+                <p>' . __('Gracias por confirmar tu suscripcion. Pronto recibiras nuestras novedades.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
             </div>';
         }
 
@@ -2782,13 +2782,13 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $token = isset($_GET['token']) ? sanitize_text_field($_GET['token']) : '';
 
         if (empty($token)) {
-            return '<p class="em-error">' . __('Token no valido.', 'flavor-chat-ia') . '</p>';
+            return '<p class="em-error">' . __('Token no valido.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $suscriptor = $this->get_suscriptor_por_token($token);
 
         if (!$suscriptor) {
-            return '<p class="em-error">' . __('Suscriptor no encontrado.', 'flavor-chat-ia') . '</p>';
+            return '<p class="em-error">' . __('Suscriptor no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         $template_path = plugin_dir_path(__FILE__) . 'templates/darse-baja.php';
@@ -2813,40 +2813,40 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ob_start();
         ?>
         <div class="flavor-em-baja">
-            <h3><?php esc_html_e('Darse de baja', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Darse de baja', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
-            <p><?php printf(esc_html__('Email: %s', 'flavor-chat-ia'), esc_html($suscriptor->email)); ?></p>
+            <p><?php printf(esc_html__('Email: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($suscriptor->email)); ?></p>
 
             <form class="em-baja-form" data-token="<?php echo esc_attr($token); ?>">
                 <?php wp_nonce_field('flavor_em_public', 'em_nonce'); ?>
 
-                <p><?php esc_html_e('Lamentamos verte partir. Por favor, indicanos el motivo:', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('Lamentamos verte partir. Por favor, indicanos el motivo:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
                 <label class="em-radio">
-                    <input type="radio" name="motivo" value="<?php echo esc_attr__('demasiados_emails', 'flavor-chat-ia'); ?>">
-                    <?php esc_html_e('Recibo demasiados emails', 'flavor-chat-ia'); ?>
+                    <input type="radio" name="motivo" value="<?php echo esc_attr__('demasiados_emails', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                    <?php esc_html_e('Recibo demasiados emails', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </label>
 
                 <label class="em-radio">
-                    <input type="radio" name="motivo" value="<?php echo esc_attr__('no_relevante', 'flavor-chat-ia'); ?>">
-                    <?php esc_html_e('El contenido no es relevante para mi', 'flavor-chat-ia'); ?>
+                    <input type="radio" name="motivo" value="<?php echo esc_attr__('no_relevante', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                    <?php esc_html_e('El contenido no es relevante para mi', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </label>
 
                 <label class="em-radio">
-                    <input type="radio" name="motivo" value="<?php echo esc_attr__('no_recuerdo', 'flavor-chat-ia'); ?>">
-                    <?php esc_html_e('No recuerdo haberme suscrito', 'flavor-chat-ia'); ?>
+                    <input type="radio" name="motivo" value="<?php echo esc_attr__('no_recuerdo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                    <?php esc_html_e('No recuerdo haberme suscrito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </label>
 
                 <label class="em-radio">
-                    <input type="radio" name="motivo" value="<?php echo esc_attr__('otro', 'flavor-chat-ia'); ?>">
-                    <?php esc_html_e('Otro motivo', 'flavor-chat-ia'); ?>
+                    <input type="radio" name="motivo" value="<?php echo esc_attr__('otro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                    <?php esc_html_e('Otro motivo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </label>
 
                 <div class="em-campo em-motivo-otro" style="display:none;">
-                    <textarea name="motivo_detalle" placeholder="<?php esc_attr_e('Cuentanos mas...', 'flavor-chat-ia'); ?>"></textarea>
+                    <textarea name="motivo_detalle" placeholder="<?php esc_attr_e('Cuentanos mas...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                 </div>
 
-                <button type="submit" class="em-boton em-boton-danger"><?php esc_html_e('Darme de baja', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="em-boton em-boton-danger"><?php esc_html_e('Darme de baja', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
 
                 <div class="em-mensaje" style="display:none;"></div>
             </form>
@@ -2901,7 +2901,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (empty($campanias)) {
-            return '<p class="em-archivo-vacio">' . __('No hay newsletters anteriores.', 'flavor-chat-ia') . '</p>';
+            return '<p class="em-archivo-vacio">' . __('No hay newsletters anteriores.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         ob_start();
@@ -2994,9 +2994,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
     public function shortcode_formulario_popup($atts) {
         $atts = shortcode_atts([
             'lista' => 'newsletter-principal',
-            'titulo' => __('Suscribete!', 'flavor-chat-ia'),
-            'descripcion' => __('No te pierdas nuestras novedades.', 'flavor-chat-ia'),
-            'boton' => __('Suscribirme', 'flavor-chat-ia'),
+            'titulo' => __('Suscribete!', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'descripcion' => __('No te pierdas nuestras novedades.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'boton' => __('Suscribirme', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'trigger' => 'exit', // exit, scroll, time
             'delay' => 5,
             'scroll_percent' => 50,
@@ -3018,7 +3018,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
             <div class="em-popup-overlay"></div>
 
             <div class="em-popup-contenido">
-                <button type="button" class="em-popup-cerrar" aria-label="<?php esc_attr_e('Cerrar', 'flavor-chat-ia'); ?>"><?php echo esc_html__('&times;', 'flavor-chat-ia'); ?></button>
+                <button type="button" class="em-popup-cerrar" aria-label="<?php esc_attr_e('Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo esc_html__('&times;', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
 
                 <?php if (!empty($atts['titulo'])): ?>
                     <h3 class="em-popup-titulo"><?php echo esc_html($atts['titulo']); ?></h3>
@@ -3032,7 +3032,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
                     <?php wp_nonce_field('flavor_em_public', 'em_nonce'); ?>
 
                     <div class="em-campo">
-                        <input type="email" name="email" placeholder="<?php esc_attr_e('Tu email', 'flavor-chat-ia'); ?>" required class="em-input">
+                        <input type="email" name="email" placeholder="<?php esc_attr_e('Tu email', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>" required class="em-input">
                     </div>
 
                     <div class="em-campo">
@@ -3072,7 +3072,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$campania) {
-            return '<p class="em-error">' . __('Newsletter no encontrado.', 'flavor-chat-ia') . '</p>';
+            return '<p class="em-error">' . __('Newsletter no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         // Limpiar variables de personalización para la vista pública
@@ -3095,13 +3095,13 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         $email = sanitize_email($email);
         if (!is_email($email)) {
-            return ['success' => false, 'error' => __('Email no válido', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Email no válido', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Obtener lista
         $lista = $this->get_lista_por_slug($lista_slug);
         if (!$lista) {
-            return ['success' => false, 'error' => __('Lista no encontrada', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Lista no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Buscar o crear suscriptor
@@ -3175,7 +3175,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
                     ['id' => $ya_suscrito]
                 );
             } else {
-                return ['success' => false, 'error' => __('Ya estás suscrito a esta lista', 'flavor-chat-ia')];
+                return ['success' => false, 'error' => __('Ya estás suscrito a esta lista', FLAVOR_PLATFORM_TEXT_DOMAIN)];
             }
         } else {
             $wpdb->insert($tabla_relacion, [
@@ -3204,8 +3204,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         return [
             'success' => true,
             'mensaje' => $lista->doble_optin
-                ? __('Te hemos enviado un email de confirmación. Por favor, revisa tu bandeja de entrada.', 'flavor-chat-ia')
-                : __('¡Te has suscrito correctamente!', 'flavor-chat-ia'),
+                ? __('Te hemos enviado un email de confirmación. Por favor, revisa tu bandeja de entrada.', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                : __('¡Te has suscrito correctamente!', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'requiere_confirmacion' => $lista->doble_optin,
         ];
     }
@@ -3228,7 +3228,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$suscriptor) {
-            return ['success' => false, 'error' => __('Token de confirmación no válido o expirado.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Token de confirmación no válido o expirado.', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Activar suscriptor
@@ -3454,14 +3454,14 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$campania) {
-            return ['success' => false, 'error' => __('Campaña no encontrada', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Campaña no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Calcular destinatarios
         $destinatarios = $this->calcular_destinatarios_campania($campania);
 
         if (empty($destinatarios)) {
-            return ['success' => false, 'error' => __('No hay destinatarios para esta campaña', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No hay destinatarios para esta campaña', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         // Actualizar campaña
@@ -3486,8 +3486,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
             'success' => true,
             'destinatarios' => count($destinatarios),
             'mensaje' => $fecha_programada
-                ? sprintf(__('Campaña programada para %s', 'flavor-chat-ia'), $fecha_programada)
-                : __('Campaña en proceso de envío', 'flavor-chat-ia'),
+                ? sprintf(__('Campaña programada para %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $fecha_programada)
+                : __('Campaña en proceso de envío', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -4217,17 +4217,17 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
             get_option('flavor_em_pagina_confirmacion', home_url('/confirmar-suscripcion/'))
         );
 
-        $asunto = sprintf(__('Confirma tu suscripción a %s', 'flavor-chat-ia'), get_bloginfo('name'));
+        $asunto = sprintf(__('Confirma tu suscripción a %s', FLAVOR_PLATFORM_TEXT_DOMAIN), get_bloginfo('name'));
 
         $mensaje = sprintf(
-            __('Hola %s,', 'flavor-chat-ia') . "\n\n" .
-            __('Has solicitado suscribirte a nuestra lista "%s".', 'flavor-chat-ia') . "\n\n" .
-            __('Por favor, confirma tu suscripción haciendo clic en el siguiente enlace:', 'flavor-chat-ia') . "\n\n" .
+            __('Hola %s,', FLAVOR_PLATFORM_TEXT_DOMAIN) . "\n\n" .
+            __('Has solicitado suscribirte a nuestra lista "%s".', FLAVOR_PLATFORM_TEXT_DOMAIN) . "\n\n" .
+            __('Por favor, confirma tu suscripción haciendo clic en el siguiente enlace:', FLAVOR_PLATFORM_TEXT_DOMAIN) . "\n\n" .
             '%s' . "\n\n" .
-            __('Si no has solicitado esta suscripción, puedes ignorar este email.', 'flavor-chat-ia') . "\n\n" .
-            __('Saludos,', 'flavor-chat-ia') . "\n" .
+            __('Si no has solicitado esta suscripción, puedes ignorar este email.', FLAVOR_PLATFORM_TEXT_DOMAIN) . "\n\n" .
+            __('Saludos,', FLAVOR_PLATFORM_TEXT_DOMAIN) . "\n" .
             get_bloginfo('name'),
-            $suscriptor->nombre ?: __('suscriptor', 'flavor-chat-ia'),
+            $suscriptor->nombre ?: __('suscriptor', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $lista->nombre,
             $url_confirmacion
         );
@@ -4248,7 +4248,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
             $suscriptor_id
         ));
 
-        $asunto = sprintf(__('¡Bienvenido/a a %s!', 'flavor-chat-ia'), get_bloginfo('name'));
+        $asunto = sprintf(__('¡Bienvenido/a a %s!', FLAVOR_PLATFORM_TEXT_DOMAIN), get_bloginfo('name'));
 
         $mensaje = $this->personalizar_contenido($lista->mensaje_bienvenida, [
             'id' => $suscriptor_id,
@@ -4357,12 +4357,12 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         // Verificar honeypot
         $settings = $this->get_settings();
         if (!empty($settings['honeypot_enabled']) && !empty($_POST['em_website'])) {
-            wp_send_json(['success' => false, 'error' => __('Error de validacion', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Error de validacion', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar rate limit
         if (!$this->verificar_rate_limit()) {
-            wp_send_json(['success' => false, 'error' => __('Demasiadas solicitudes. Intenta mas tarde.', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Demasiadas solicitudes. Intenta mas tarde.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $email = isset($_POST['email']) ? sanitize_email($_POST['email']) : '';
@@ -4406,7 +4406,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $suscriptor = $this->get_suscriptor_por_token($token);
 
         if (!$suscriptor) {
-            wp_send_json(['success' => false, 'error' => __('Token no valido', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Token no valido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $motivo_completo = $motivo;
@@ -4441,7 +4441,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $suscriptor = $this->get_suscriptor_por_token($token);
 
         if (!$suscriptor) {
-            wp_send_json(['success' => false, 'error' => __('Token no valido', 'flavor-chat-ia')]);
+            wp_send_json(['success' => false, 'error' => __('Token no valido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -4486,7 +4486,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         wp_send_json([
             'success' => true,
-            'mensaje' => __('Preferencias actualizadas correctamente', 'flavor-chat-ia'),
+            'mensaje' => __('Preferencias actualizadas correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ]);
     }
 
@@ -4501,7 +4501,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $accion = isset($_POST['accion']) ? sanitize_key($_POST['accion']) : '';
@@ -4515,7 +4515,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
                 $this->ajax_listar_campanias();
                 break;
             default:
-                wp_send_json_error(__('Accion no valida', 'flavor-chat-ia'));
+                wp_send_json_error(__('Accion no valida', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -4537,7 +4537,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$campania) {
-            wp_send_json_error(__('Campana no encontrada', 'flavor-chat-ia'));
+            wp_send_json_error(__('Campana no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $campania->listas_ids = json_decode($campania->listas_ids) ?: [];
@@ -4589,7 +4589,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $campania_id = isset($_POST['campania_id']) ? absint($_POST['campania_id']) : 0;
@@ -4609,7 +4609,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ];
 
         if (empty($datos['nombre']) || empty($datos['asunto'])) {
-            wp_send_json_error(__('Nombre y asunto son requeridos', 'flavor-chat-ia'));
+            wp_send_json_error(__('Nombre y asunto son requeridos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -4623,11 +4623,11 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
             ));
 
             if (!$campania_existente) {
-                wp_send_json_error(__('Campana no encontrada', 'flavor-chat-ia'));
+                wp_send_json_error(__('Campana no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
             }
 
             if (!in_array($campania_existente->estado, ['borrador', 'programada'])) {
-                wp_send_json_error(__('No se puede editar una campana en este estado', 'flavor-chat-ia'));
+                wp_send_json_error(__('No se puede editar una campana en este estado', FLAVOR_PLATFORM_TEXT_DOMAIN));
             }
 
             $wpdb->update($tabla, [
@@ -4645,14 +4645,14 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
             ], ['id' => $campania_id]);
 
             wp_send_json_success([
-                'mensaje' => __('Campana actualizada', 'flavor-chat-ia'),
+                'mensaje' => __('Campana actualizada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'campania_id' => $campania_id,
             ]);
         } else {
             $nuevo_id = $this->crear_campania($datos);
 
             wp_send_json_success([
-                'mensaje' => __('Campana creada', 'flavor-chat-ia'),
+                'mensaje' => __('Campana creada', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'campania_id' => $nuevo_id,
             ]);
         }
@@ -4665,7 +4665,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $campania_id = isset($_POST['campania_id']) ? absint($_POST['campania_id']) : 0;
@@ -4679,11 +4679,11 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$campania) {
-            wp_send_json_error(__('Campana no encontrada', 'flavor-chat-ia'));
+            wp_send_json_error(__('Campana no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         if ($campania->estado === 'enviando') {
-            wp_send_json_error(__('No se puede eliminar una campana en envio', 'flavor-chat-ia'));
+            wp_send_json_error(__('No se puede eliminar una campana en envio', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $wpdb->delete($tabla, ['id' => $campania_id]);
@@ -4691,7 +4691,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         // También eliminar de la cola
         $wpdb->delete($wpdb->prefix . self::TABLE_PREFIX . 'cola', ['campania_id' => $campania_id]);
 
-        wp_send_json_success(__('Campana eliminada', 'flavor-chat-ia'));
+        wp_send_json_success(__('Campana eliminada', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**
@@ -4701,7 +4701,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $campania_id = isset($_POST['campania_id']) ? absint($_POST['campania_id']) : 0;
@@ -4717,7 +4717,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$campania) {
-            wp_send_json_error(__('Campana no encontrada', 'flavor-chat-ia'));
+            wp_send_json_error(__('Campana no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $nueva_campania = [
@@ -4741,7 +4741,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $nueva_id = $wpdb->insert_id;
 
         wp_send_json_success([
-            'mensaje' => __('Campana duplicada', 'flavor-chat-ia'),
+            'mensaje' => __('Campana duplicada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'campania_id' => $nueva_id,
         ]);
     }
@@ -4753,7 +4753,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $campania_id = isset($_POST['campania_id']) ? absint($_POST['campania_id']) : 0;
@@ -4775,7 +4775,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $campania_id = isset($_POST['campania_id']) ? absint($_POST['campania_id']) : 0;
@@ -4789,12 +4789,12 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$campania || $campania->estado !== 'enviando') {
-            wp_send_json_error(__('Solo se pueden pausar campanas en envio', 'flavor-chat-ia'));
+            wp_send_json_error(__('Solo se pueden pausar campanas en envio', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $wpdb->update($tabla, ['estado' => 'pausada'], ['id' => $campania_id]);
 
-        wp_send_json_success(__('Campana pausada', 'flavor-chat-ia'));
+        wp_send_json_success(__('Campana pausada', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**
@@ -4804,7 +4804,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $campania_id = isset($_POST['campania_id']) ? absint($_POST['campania_id']) : 0;
@@ -4818,12 +4818,12 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$campania || $campania->estado !== 'pausada') {
-            wp_send_json_error(__('Solo se pueden reanudar campanas pausadas', 'flavor-chat-ia'));
+            wp_send_json_error(__('Solo se pueden reanudar campanas pausadas', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $wpdb->update($tabla, ['estado' => 'enviando'], ['id' => $campania_id]);
 
-        wp_send_json_success(__('Campana reanudada', 'flavor-chat-ia'));
+        wp_send_json_success(__('Campana reanudada', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**
@@ -4833,7 +4833,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $campania_id = isset($_POST['campania_id']) ? absint($_POST['campania_id']) : 0;
@@ -4848,7 +4848,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$campania || !in_array($campania->estado, ['enviando', 'pausada', 'programada'])) {
-            wp_send_json_error(__('No se puede cancelar esta campana', 'flavor-chat-ia'));
+            wp_send_json_error(__('No se puede cancelar esta campana', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Cancelar campaña
@@ -4857,7 +4857,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         // Eliminar emails pendientes de la cola
         $wpdb->delete($tabla_cola, ['campania_id' => $campania_id, 'estado' => 'pendiente']);
 
-        wp_send_json_success(__('Campana cancelada', 'flavor-chat-ia'));
+        wp_send_json_success(__('Campana cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**
@@ -4867,14 +4867,14 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $campania_id = isset($_POST['campania_id']) ? absint($_POST['campania_id']) : 0;
         $email_test = isset($_POST['email_test']) ? sanitize_email($_POST['email_test']) : '';
 
         if (!is_email($email_test)) {
-            wp_send_json_error(__('Email de prueba no valido', 'flavor-chat-ia'));
+            wp_send_json_error(__('Email de prueba no valido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -4887,7 +4887,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$campania) {
-            wp_send_json_error(__('Campana no encontrada', 'flavor-chat-ia'));
+            wp_send_json_error(__('Campana no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Personalizar contenido con datos de prueba
@@ -4912,9 +4912,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $enviado = wp_mail($email_test, $asunto, $contenido, $headers);
 
         if ($enviado) {
-            wp_send_json_success(__('Email de prueba enviado', 'flavor-chat-ia'));
+            wp_send_json_success(__('Email de prueba enviado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         } else {
-            wp_send_json_error(__('Error al enviar el email de prueba', 'flavor-chat-ia'));
+            wp_send_json_error(__('Error al enviar el email de prueba', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -4925,7 +4925,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $contenido_html = isset($_POST['contenido_html']) ? wp_kses_post($_POST['contenido_html']) : '';
@@ -4953,7 +4953,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $accion = isset($_POST['accion']) ? sanitize_key($_POST['accion']) : '';
@@ -4966,7 +4966,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
                 $this->ajax_obtener_lista(absint($_POST['lista_id'] ?? 0));
                 break;
             default:
-                wp_send_json_error(__('Accion no valida', 'flavor-chat-ia'));
+                wp_send_json_error(__('Accion no valida', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -5000,7 +5000,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$lista) {
-            wp_send_json_error(__('Lista no encontrada', 'flavor-chat-ia'));
+            wp_send_json_error(__('Lista no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         wp_send_json_success($lista);
@@ -5013,14 +5013,14 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $nombre = sanitize_text_field($_POST['nombre'] ?? '');
         $slug = sanitize_title($_POST['slug'] ?? $nombre);
 
         if (empty($nombre)) {
-            wp_send_json_error(__('El nombre es requerido', 'flavor-chat-ia'));
+            wp_send_json_error(__('El nombre es requerido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -5047,7 +5047,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ]);
 
         wp_send_json_success([
-            'mensaje' => __('Lista creada', 'flavor-chat-ia'),
+            'mensaje' => __('Lista creada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'lista_id' => $wpdb->insert_id,
         ]);
     }
@@ -5059,7 +5059,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $lista_id = isset($_POST['lista_id']) ? absint($_POST['lista_id']) : 0;
@@ -5075,7 +5075,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$lista) {
-            wp_send_json_error(__('Lista no encontrada', 'flavor-chat-ia'));
+            wp_send_json_error(__('Lista no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $wpdb->update($tabla, [
@@ -5087,7 +5087,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
             'mensaje_bienvenida' => wp_kses_post($_POST['mensaje_bienvenida'] ?? ''),
         ], ['id' => $lista_id]);
 
-        wp_send_json_success(__('Lista actualizada', 'flavor-chat-ia'));
+        wp_send_json_success(__('Lista actualizada', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**
@@ -5097,7 +5097,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $lista_id = isset($_POST['lista_id']) ? absint($_POST['lista_id']) : 0;
@@ -5112,7 +5112,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         // Eliminar lista
         $wpdb->delete($tabla, ['id' => $lista_id]);
 
-        wp_send_json_success(__('Lista eliminada', 'flavor-chat-ia'));
+        wp_send_json_success(__('Lista eliminada', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**
@@ -5122,7 +5122,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $lista_origen = isset($_POST['lista_origen']) ? absint($_POST['lista_origen']) : 0;
@@ -5130,7 +5130,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $eliminar_origen = isset($_POST['eliminar_origen']) && $_POST['eliminar_origen'] === 'true';
 
         if ($lista_origen === $lista_destino || !$lista_origen || !$lista_destino) {
-            wp_send_json_error(__('Selecciona dos listas diferentes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Selecciona dos listas diferentes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -5170,7 +5170,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         }
 
         wp_send_json_success([
-            'mensaje' => sprintf(__('%d suscriptores fusionados', 'flavor-chat-ia'), $fusionados),
+            'mensaje' => sprintf(__('%d suscriptores fusionados', FLAVOR_PLATFORM_TEXT_DOMAIN), $fusionados),
         ]);
     }
 
@@ -5185,7 +5185,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $accion = isset($_POST['accion']) ? sanitize_key($_POST['accion']) : '';
@@ -5198,7 +5198,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
                 $this->ajax_obtener_suscriptor(absint($_POST['suscriptor_id'] ?? 0));
                 break;
             default:
-                wp_send_json_error(__('Accion no valida', 'flavor-chat-ia'));
+                wp_send_json_error(__('Accion no valida', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -5282,7 +5282,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$suscriptor) {
-            wp_send_json_error(__('Suscriptor no encontrado', 'flavor-chat-ia'));
+            wp_send_json_error(__('Suscriptor no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         // Obtener listas
@@ -5310,7 +5310,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $email = sanitize_email($_POST['email'] ?? '');
@@ -5319,7 +5319,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $listas = isset($_POST['listas']) ? array_map('absint', (array) $_POST['listas']) : [];
 
         if (!is_email($email)) {
-            wp_send_json_error(__('Email no valido', 'flavor-chat-ia'));
+            wp_send_json_error(__('Email no valido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -5332,7 +5332,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if ($existe) {
-            wp_send_json_error(__('Este email ya esta registrado', 'flavor-chat-ia'));
+            wp_send_json_error(__('Este email ya esta registrado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $wpdb->insert($tabla, [
@@ -5352,7 +5352,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         }
 
         wp_send_json_success([
-            'mensaje' => __('Suscriptor creado', 'flavor-chat-ia'),
+            'mensaje' => __('Suscriptor creado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'suscriptor_id' => $suscriptor_id,
         ]);
     }
@@ -5364,7 +5364,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $suscriptor_id = isset($_POST['suscriptor_id']) ? absint($_POST['suscriptor_id']) : 0;
@@ -5380,7 +5380,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$suscriptor) {
-            wp_send_json_error(__('Suscriptor no encontrado', 'flavor-chat-ia'));
+            wp_send_json_error(__('Suscriptor no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $update_data = [];
@@ -5402,7 +5402,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
             $wpdb->update($tabla, $update_data, ['id' => $suscriptor_id]);
         }
 
-        wp_send_json_success(__('Suscriptor actualizado', 'flavor-chat-ia'));
+        wp_send_json_success(__('Suscriptor actualizado', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**
@@ -5412,7 +5412,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $suscriptor_id = isset($_POST['suscriptor_id']) ? absint($_POST['suscriptor_id']) : 0;
@@ -5422,7 +5422,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $wpdb->delete($wpdb->prefix . self::TABLE_PREFIX . 'suscriptor_lista', ['suscriptor_id' => $suscriptor_id]);
         $wpdb->delete($wpdb->prefix . self::TABLE_PREFIX . 'suscriptores', ['id' => $suscriptor_id]);
 
-        wp_send_json_success(__('Suscriptor eliminado', 'flavor-chat-ia'));
+        wp_send_json_success(__('Suscriptor eliminado', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**
@@ -5432,11 +5432,11 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         if (!isset($_FILES['archivo'])) {
-            wp_send_json_error(__('No se ha subido ningun archivo', 'flavor-chat-ia'));
+            wp_send_json_error(__('No se ha subido ningun archivo', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $archivo = $_FILES['archivo'];
@@ -5446,7 +5446,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $extension = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
 
         if (!in_array($extension, ['csv', 'txt'])) {
-            wp_send_json_error(__('Formato de archivo no soportado. Usa CSV.', 'flavor-chat-ia'));
+            wp_send_json_error(__('Formato de archivo no soportado. Usa CSV.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $contenido = file_get_contents($archivo['tmp_name']);
@@ -5472,7 +5472,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
             if (!is_email($email)) {
                 $errores++;
-                $mensajes_error[] = sprintf(__('Linea %d: Email invalido', 'flavor-chat-ia'), $numero_linea + 1);
+                $mensajes_error[] = sprintf(__('Linea %d: Email invalido', FLAVOR_PLATFORM_TEXT_DOMAIN), $numero_linea + 1);
                 continue;
             }
 
@@ -5528,7 +5528,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $lista_id = isset($_POST['lista_id']) ? absint($_POST['lista_id']) : 0;
@@ -5584,14 +5584,14 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $accion = isset($_POST['accion_bulk']) ? sanitize_key($_POST['accion_bulk']) : '';
         $suscriptor_ids = isset($_POST['suscriptor_ids']) ? array_map('absint', (array) $_POST['suscriptor_ids']) : [];
 
         if (empty($suscriptor_ids)) {
-            wp_send_json_error(__('No se han seleccionado suscriptores', 'flavor-chat-ia'));
+            wp_send_json_error(__('No se han seleccionado suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -5655,11 +5655,11 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
                 break;
 
             default:
-                wp_send_json_error(__('Accion no valida', 'flavor-chat-ia'));
+                wp_send_json_error(__('Accion no valida', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         wp_send_json_success([
-            'mensaje' => sprintf(__('%d suscriptores afectados', 'flavor-chat-ia'), $afectados),
+            'mensaje' => sprintf(__('%d suscriptores afectados', FLAVOR_PLATFORM_TEXT_DOMAIN), $afectados),
         ]);
     }
 
@@ -5670,7 +5670,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $termino = isset($_POST['termino']) ? sanitize_text_field($_POST['termino']) : '';
@@ -5704,7 +5704,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $accion = isset($_POST['accion']) ? sanitize_key($_POST['accion']) : '';
@@ -5717,7 +5717,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
                 $this->ajax_obtener_automatizacion(absint($_POST['automatizacion_id'] ?? 0));
                 break;
             default:
-                wp_send_json_error(__('Accion no valida', 'flavor-chat-ia'));
+                wp_send_json_error(__('Accion no valida', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -5755,7 +5755,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$auto) {
-            wp_send_json_error(__('Automatizacion no encontrada', 'flavor-chat-ia'));
+            wp_send_json_error(__('Automatizacion no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $auto->pasos = json_decode($auto->pasos) ?: [];
@@ -5771,14 +5771,14 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $nombre = sanitize_text_field($_POST['nombre'] ?? '');
         $trigger_tipo = sanitize_key($_POST['trigger_tipo'] ?? '');
 
         if (empty($nombre) || !in_array($trigger_tipo, self::TRIGGERS_AUTOMATIZACION)) {
-            wp_send_json_error(__('Datos invalidos', 'flavor-chat-ia'));
+            wp_send_json_error(__('Datos invalidos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -5794,7 +5794,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ]);
 
         wp_send_json_success([
-            'mensaje' => __('Automatizacion creada', 'flavor-chat-ia'),
+            'mensaje' => __('Automatizacion creada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'automatizacion_id' => $wpdb->insert_id,
         ]);
     }
@@ -5806,7 +5806,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $automatizacion_id = isset($_POST['automatizacion_id']) ? absint($_POST['automatizacion_id']) : 0;
@@ -5822,7 +5822,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$auto) {
-            wp_send_json_error(__('Automatizacion no encontrada', 'flavor-chat-ia'));
+            wp_send_json_error(__('Automatizacion no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $update_data = [];
@@ -5844,7 +5844,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
             $wpdb->update($tabla, $update_data, ['id' => $automatizacion_id]);
         }
 
-        wp_send_json_success(__('Automatizacion actualizada', 'flavor-chat-ia'));
+        wp_send_json_success(__('Automatizacion actualizada', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**
@@ -5854,7 +5854,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $automatizacion_id = isset($_POST['automatizacion_id']) ? absint($_POST['automatizacion_id']) : 0;
@@ -5867,7 +5867,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         // Eliminar automatización
         $wpdb->delete($wpdb->prefix . self::TABLE_PREFIX . 'automatizaciones', ['id' => $automatizacion_id]);
 
-        wp_send_json_success(__('Automatizacion eliminada', 'flavor-chat-ia'));
+        wp_send_json_success(__('Automatizacion eliminada', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**
@@ -5877,7 +5877,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $automatizacion_id = isset($_POST['automatizacion_id']) ? absint($_POST['automatizacion_id']) : 0;
@@ -5887,7 +5887,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         $wpdb->update($tabla, ['estado' => 'activa'], ['id' => $automatizacion_id]);
 
-        wp_send_json_success(__('Automatizacion activada', 'flavor-chat-ia'));
+        wp_send_json_success(__('Automatizacion activada', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**
@@ -5897,7 +5897,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $automatizacion_id = isset($_POST['automatizacion_id']) ? absint($_POST['automatizacion_id']) : 0;
@@ -5907,7 +5907,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         $wpdb->update($tabla, ['estado' => 'pausada'], ['id' => $automatizacion_id]);
 
-        wp_send_json_success(__('Automatizacion pausada', 'flavor-chat-ia'));
+        wp_send_json_success(__('Automatizacion pausada', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     // =========================================================================
@@ -5921,7 +5921,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $accion = isset($_POST['accion']) ? sanitize_key($_POST['accion']) : '';
@@ -5934,7 +5934,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
                 $this->ajax_obtener_plantilla(absint($_POST['plantilla_id'] ?? 0));
                 break;
             default:
-                wp_send_json_error(__('Accion no valida', 'flavor-chat-ia'));
+                wp_send_json_error(__('Accion no valida', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
     }
 
@@ -5972,7 +5972,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$plantilla) {
-            wp_send_json_error(__('Plantilla no encontrada', 'flavor-chat-ia'));
+            wp_send_json_error(__('Plantilla no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         wp_send_json_success($plantilla);
@@ -5985,14 +5985,14 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $plantilla_id = isset($_POST['plantilla_id']) ? absint($_POST['plantilla_id']) : 0;
         $nombre = sanitize_text_field($_POST['nombre'] ?? '');
 
         if (empty($nombre)) {
-            wp_send_json_error(__('El nombre es requerido', 'flavor-chat-ia'));
+            wp_send_json_error(__('El nombre es requerido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -6008,11 +6008,11 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         if ($plantilla_id > 0) {
             $wpdb->update($tabla, $datos, ['id' => $plantilla_id]);
-            $mensaje = __('Plantilla actualizada', 'flavor-chat-ia');
+            $mensaje = __('Plantilla actualizada', FLAVOR_PLATFORM_TEXT_DOMAIN);
         } else {
             $wpdb->insert($tabla, $datos);
             $plantilla_id = $wpdb->insert_id;
-            $mensaje = __('Plantilla creada', 'flavor-chat-ia');
+            $mensaje = __('Plantilla creada', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         wp_send_json_success([
@@ -6028,7 +6028,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $plantilla_id = isset($_POST['plantilla_id']) ? absint($_POST['plantilla_id']) : 0;
@@ -6042,12 +6042,12 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if ($plantilla && $plantilla->es_predefinida) {
-            wp_send_json_error(__('No se pueden eliminar plantillas predefinidas', 'flavor-chat-ia'));
+            wp_send_json_error(__('No se pueden eliminar plantillas predefinidas', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $wpdb->delete($tabla, ['id' => $plantilla_id]);
 
-        wp_send_json_success(__('Plantilla eliminada', 'flavor-chat-ia'));
+        wp_send_json_success(__('Plantilla eliminada', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**
@@ -6057,7 +6057,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $plantilla_id = isset($_POST['plantilla_id']) ? absint($_POST['plantilla_id']) : 0;
@@ -6073,7 +6073,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$plantilla) {
-            wp_send_json_error(__('Plantilla no encontrada', 'flavor-chat-ia'));
+            wp_send_json_error(__('Plantilla no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $wpdb->insert($tabla, [
@@ -6086,7 +6086,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ]);
 
         wp_send_json_success([
-            'mensaje' => __('Plantilla duplicada', 'flavor-chat-ia'),
+            'mensaje' => __('Plantilla duplicada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'plantilla_id' => $wpdb->insert_id,
         ]);
     }
@@ -6098,7 +6098,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $plantilla_id = isset($_POST['plantilla_id']) ? absint($_POST['plantilla_id']) : 0;
@@ -6112,7 +6112,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$plantilla) {
-            wp_send_json_error(__('Plantilla no encontrada', 'flavor-chat-ia'));
+            wp_send_json_error(__('Plantilla no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $contenido_preview = $this->personalizar_contenido($plantilla->contenido_html, [
@@ -6137,7 +6137,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $resultado = $this->action_estadisticas_generales([]);
@@ -6151,7 +6151,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $campania_id = isset($_POST['campania_id']) ? absint($_POST['campania_id']) : 0;
@@ -6172,7 +6172,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $lista_id = isset($_POST['lista_id']) ? absint($_POST['lista_id']) : 0;
@@ -6226,7 +6226,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $periodo = isset($_POST['periodo']) ? sanitize_key($_POST['periodo']) : '30d';
@@ -6310,7 +6310,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $tipo = isset($_POST['tipo']) ? sanitize_key($_POST['tipo']) : 'general';
@@ -6395,7 +6395,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $settings = $this->get_default_settings();
@@ -6435,7 +6435,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $this->save_settings($nuevos_settings);
         $this->clear_settings_cache();
 
-        wp_send_json_success(__('Configuracion guardada', 'flavor-chat-ia'));
+        wp_send_json_success(__('Configuracion guardada', FLAVOR_PLATFORM_TEXT_DOMAIN));
     }
 
     /**
@@ -6445,20 +6445,20 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $email_test = isset($_POST['email_test']) ? sanitize_email($_POST['email_test']) : get_option('admin_email');
 
         if (!is_email($email_test)) {
-            wp_send_json_error(__('Email de prueba no valido', 'flavor-chat-ia'));
+            wp_send_json_error(__('Email de prueba no valido', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $settings = $this->get_settings();
 
-        $asunto = sprintf(__('[Test SMTP] %s', 'flavor-chat-ia'), get_bloginfo('name'));
+        $asunto = sprintf(__('[Test SMTP] %s', FLAVOR_PLATFORM_TEXT_DOMAIN), get_bloginfo('name'));
         $mensaje = sprintf(
-            __("Este es un email de prueba enviado desde %s.\n\nSi recibes este email, la configuracion SMTP es correcta.", 'flavor-chat-ia'),
+            __("Este es un email de prueba enviado desde %s.\n\nSi recibes este email, la configuracion SMTP es correcta.", FLAVOR_PLATFORM_TEXT_DOMAIN),
             get_bloginfo('name')
         );
 
@@ -6469,14 +6469,14 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $enviado = wp_mail($email_test, $asunto, $mensaje, $headers);
 
         if ($enviado) {
-            wp_send_json_success(__('Email de prueba enviado correctamente', 'flavor-chat-ia'));
+            wp_send_json_success(__('Email de prueba enviado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN));
         } else {
             global $phpmailer;
             $error = '';
             if (isset($phpmailer) && is_wp_error($phpmailer->ErrorInfo)) {
                 $error = $phpmailer->ErrorInfo;
             }
-            wp_send_json_error(__('Error al enviar el email de prueba', 'flavor-chat-ia') . ($error ? ': ' . $error : ''));
+            wp_send_json_error(__('Error al enviar el email de prueba', FLAVOR_PLATFORM_TEXT_DOMAIN) . ($error ? ': ' . $error : ''));
         }
     }
 
@@ -6487,7 +6487,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $tipo = isset($_POST['tipo']) ? sanitize_key($_POST['tipo']) : 'fallidos';
@@ -6510,7 +6510,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         }
 
         wp_send_json_success([
-            'mensaje' => sprintf(__('%d registros eliminados', 'flavor-chat-ia'), $eliminados),
+            'mensaje' => sprintf(__('%d registros eliminados', FLAVOR_PLATFORM_TEXT_DOMAIN), $eliminados),
         ]);
     }
 
@@ -6521,7 +6521,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         check_ajax_referer('flavor_em_admin', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permisos insuficientes', 'flavor-chat-ia'));
+            wp_send_json_error(__('Permisos insuficientes', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $dias = isset($_POST['dias']) ? absint($_POST['dias']) : 30;
@@ -6542,7 +6542,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         wp_send_json_success([
-            'mensaje' => sprintf(__('%d logs eliminados', 'flavor-chat-ia'), $eliminados),
+            'mensaje' => sprintf(__('%d logs eliminados', FLAVOR_PLATFORM_TEXT_DOMAIN), $eliminados),
         ]);
     }
 
@@ -6658,7 +6658,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
             "SELECT COUNT(*) FROM {$prefijo}suscriptores WHERE estado = 'activo'"
         );
 
-        $asunto = sprintf(__('[%s] Resumen Email Marketing - %s', 'flavor-chat-ia'), get_bloginfo('name'), $ayer);
+        $asunto = sprintf(__('[%s] Resumen Email Marketing - %s', FLAVOR_PLATFORM_TEXT_DOMAIN), get_bloginfo('name'), $ayer);
 
         $mensaje = sprintf(
             __("Resumen de Email Marketing para %s\n\n" .
@@ -6668,7 +6668,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
                "Aperturas: %d\n" .
                "Clicks: %d\n\n" .
                "Total suscriptores activos: %d\n\n" .
-               "Administra tu Email Marketing en: %s", 'flavor-chat-ia'),
+               "Administra tu Email Marketing en: %s", FLAVOR_PLATFORM_TEXT_DOMAIN),
             $ayer,
             $nuevos_suscriptores,
             $bajas,
@@ -6891,7 +6891,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         echo '<div class="wrap">';
         echo '<h1>' . esc_html(ucfirst($vista)) . '</h1>';
-        echo '<div class="notice notice-warning"><p>' . esc_html__('La plantilla concreta no está disponible. Se muestra navegación de respaldo para mantener el módulo accesible.', 'flavor-chat-ia') . '</p></div>';
+        echo '<div class="notice notice-warning"><p>' . esc_html__('La plantilla concreta no está disponible. Se muestra navegación de respaldo para mantener el módulo accesible.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         echo '<p>';
         foreach ($paginas as $slug => $url) {
             $classes = $slug === $vista ? 'button button-primary' : 'button';
@@ -6959,7 +6959,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
             return $this->$metodo($params);
         }
 
-        return ['success' => false, 'error' => __('Acción no encontrada', 'flavor-chat-ia')];
+        return ['success' => false, 'error' => __('Acción no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN)];
     }
 
     /**
@@ -6997,7 +6997,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$suscriptor) {
-            return ['success' => false, 'error' => __('Suscriptor no encontrado', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Suscriptor no encontrado', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         return [
@@ -7040,7 +7040,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         if (!$campania) {
-            return ['success' => false, 'error' => __('Campaña no encontrada', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Campaña no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN)];
         }
 
         $tasa_apertura = $campania->total_enviados > 0
@@ -7187,25 +7187,25 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'email_marketing',
-            'label' => __('Email Marketing', 'flavor-chat-ia'),
+            'label' => __('Email Marketing', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-email-alt',
             'capability' => 'manage_options',
             'categoria' => 'comunicacion',
             'paginas' => [
                 [
                     'slug' => 'flavor-em-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'flavor-em-campanias',
-                    'titulo' => __('Campañas', 'flavor-chat-ia'),
+                    'titulo' => __('Campañas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_campanias'],
                     'badge' => [$this, 'contar_campanias_activas'],
                 ],
                 [
                     'slug' => 'flavor-em-suscriptores',
-                    'titulo' => __('Suscriptores', 'flavor-chat-ia'),
+                    'titulo' => __('Suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_suscriptores'],
                     'badge' => [$this, 'contar_suscriptores_activos'],
                 ],
@@ -7270,15 +7270,15 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
             <div class="em-widget-stats">
                 <div class="em-stat">
                     <span class="em-stat-value"><?php echo esc_html(number_format_i18n($estadisticas['total_suscriptores'])); ?></span>
-                    <span class="em-stat-label"><?php esc_html_e('Suscriptores', 'flavor-chat-ia'); ?></span>
+                    <span class="em-stat-label"><?php esc_html_e('Suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="em-stat">
                     <span class="em-stat-value"><?php echo esc_html(number_format_i18n($estadisticas['campanias_enviadas'])); ?></span>
-                    <span class="em-stat-label"><?php esc_html_e('Campañas enviadas', 'flavor-chat-ia'); ?></span>
+                    <span class="em-stat-label"><?php esc_html_e('Campañas enviadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="em-stat">
                     <span class="em-stat-value"><?php echo esc_html($estadisticas['tasa_apertura']); ?>%</span>
-                    <span class="em-stat-label"><?php esc_html_e('Tasa de apertura', 'flavor-chat-ia'); ?></span>
+                    <span class="em-stat-label"><?php esc_html_e('Tasa de apertura', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
         </div>
@@ -7335,37 +7335,37 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Email Marketing', 'flavor-chat-ia'),
+                'title' => __('Email Marketing', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'email-marketing',
-                'content' => '<h1>' . __('Email Marketing', 'flavor-chat-ia') . '</h1>
-<p>' . __('Gestiona tus campañas de email', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Email Marketing', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Gestiona tus campañas de email', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="email_marketing" action="dashboard" columnas="3" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Crear Campaña', 'flavor-chat-ia'),
+                'title' => __('Crear Campaña', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'crear-campana-email',
-                'content' => '<h1>' . __('Crear Campaña', 'flavor-chat-ia') . '</h1>
-<p>' . __('Crea una nueva campaña de email', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Crear Campaña', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Crea una nueva campaña de email', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_form module="email_marketing" action="crear_campana"]',
                 'parent' => 'email-marketing',
             ],
             [
-                'title' => __('Mis Listas', 'flavor-chat-ia'),
+                'title' => __('Mis Listas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'listas-email',
-                'content' => '<h1>' . __('Mis Listas', 'flavor-chat-ia') . '</h1>
-<p>' . __('Gestiona tus listas de suscriptores', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Mis Listas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Gestiona tus listas de suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_dashboard module="email_marketing" action="listas"]',
                 'parent' => 'email-marketing',
             ],
             [
-                'title' => __('Estadísticas', 'flavor-chat-ia'),
+                'title' => __('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'estadisticas-email',
-                'content' => '<h1>' . __('Estadísticas', 'flavor-chat-ia') . '</h1>
-<p>' . __('Analiza el rendimiento de tus campañas', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Analiza el rendimiento de tus campañas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="email_marketing" action="estadisticas"]',
                 'parent' => 'email-marketing',
@@ -7381,8 +7381,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
     public static function get_renderer_config(): array {
         return [
             'module'   => 'email-marketing',
-            'title'    => __('Email Marketing', 'flavor-chat-ia'),
-            'subtitle' => __('Gestiona campañas de email y listas de suscriptores', 'flavor-chat-ia'),
+            'title'    => __('Email Marketing', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Gestiona campañas de email y listas de suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '📧',
             'color'    => 'primary', // Usa variable CSS --flavor-primary del tema
 
@@ -7392,27 +7392,27 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
             ],
 
             'fields' => [
-                'nombre'      => ['type' => 'text', 'label' => __('Nombre campaña', 'flavor-chat-ia'), 'required' => true],
-                'asunto'      => ['type' => 'text', 'label' => __('Asunto', 'flavor-chat-ia'), 'required' => true],
-                'lista_id'    => ['type' => 'select', 'label' => __('Lista destino', 'flavor-chat-ia')],
-                'contenido'   => ['type' => 'editor', 'label' => __('Contenido', 'flavor-chat-ia')],
-                'fecha_envio' => ['type' => 'datetime', 'label' => __('Fecha programada', 'flavor-chat-ia')],
-                'plantilla'   => ['type' => 'select', 'label' => __('Plantilla', 'flavor-chat-ia')],
+                'nombre'      => ['type' => 'text', 'label' => __('Nombre campaña', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'asunto'      => ['type' => 'text', 'label' => __('Asunto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'lista_id'    => ['type' => 'select', 'label' => __('Lista destino', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'contenido'   => ['type' => 'editor', 'label' => __('Contenido', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'fecha_envio' => ['type' => 'datetime', 'label' => __('Fecha programada', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'plantilla'   => ['type' => 'select', 'label' => __('Plantilla', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ],
 
             'estados' => [
-                'borrador'    => ['label' => __('Borrador', 'flavor-chat-ia'), 'color' => 'gray', 'icon' => '📝'],
-                'programada'  => ['label' => __('Programada', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏰'],
-                'enviando'    => ['label' => __('Enviando', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '📤'],
-                'enviada'     => ['label' => __('Enviada', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
-                'pausada'     => ['label' => __('Pausada', 'flavor-chat-ia'), 'color' => 'orange', 'icon' => '⏸️'],
+                'borrador'    => ['label' => __('Borrador', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'gray', 'icon' => '📝'],
+                'programada'  => ['label' => __('Programada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '⏰'],
+                'enviando'    => ['label' => __('Enviando', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'blue', 'icon' => '📤'],
+                'enviada'     => ['label' => __('Enviada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '✅'],
+                'pausada'     => ['label' => __('Pausada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'orange', 'icon' => '⏸️'],
             ],
 
             'stats' => [
-                'campanias_activas' => ['label' => __('Campañas activas', 'flavor-chat-ia'), 'icon' => '📧', 'color' => 'blue'],
-                'suscriptores'      => ['label' => __('Suscriptores', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'green'],
-                'tasa_apertura'     => ['label' => __('Tasa apertura', 'flavor-chat-ia'), 'icon' => '📊', 'color' => 'purple'],
-                'tasa_clics'        => ['label' => __('Tasa clics', 'flavor-chat-ia'), 'icon' => '🖱️', 'color' => 'indigo'],
+                'campanias_activas' => ['label' => __('Campañas activas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📧', 'color' => 'blue'],
+                'suscriptores'      => ['label' => __('Suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '👥', 'color' => 'green'],
+                'tasa_apertura'     => ['label' => __('Tasa apertura', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📊', 'color' => 'purple'],
+                'tasa_clics'        => ['label' => __('Tasa clics', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🖱️', 'color' => 'indigo'],
             ],
 
             'card' => [
@@ -7425,31 +7425,31 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
             'tabs' => [
                 'campanias' => [
-                    'label'      => __('Campañas', 'flavor-chat-ia'),
+                    'label'      => __('Campañas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-email-alt',
                     'content'    => 'template:_archive.php',
                     'requires_login' => true,
                 ],
                 'crear' => [
-                    'label'      => __('Crear campaña', 'flavor-chat-ia'),
+                    'label'      => __('Crear campaña', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-plus-alt',
                     'content'    => 'shortcode:email_marketing_crear',
                     'requires_login' => true,
                 ],
                 'listas' => [
-                    'label'      => __('Listas', 'flavor-chat-ia'),
+                    'label'      => __('Listas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-groups',
                     'content'    => 'shortcode:email_marketing_listas',
                     'requires_login' => true,
                 ],
                 'plantillas' => [
-                    'label'      => __('Plantillas', 'flavor-chat-ia'),
+                    'label'      => __('Plantillas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-layout',
                     'content'    => 'shortcode:email_marketing_plantillas',
                     'requires_login' => true,
                 ],
                 'estadisticas' => [
-                    'label'      => __('Estadísticas', 'flavor-chat-ia'),
+                    'label'      => __('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-chart-bar',
                     'content'    => 'shortcode:email_marketing_estadisticas',
                     'requires_login' => true,
@@ -7467,8 +7467,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
             'dashboard' => [
                 'widgets' => ['stats', 'campanias_recientes', 'rendimiento', 'listas_activas'],
                 'actions' => [
-                    'crear'    => ['label' => __('Nueva campaña', 'flavor-chat-ia'), 'icon' => '📧', 'color' => 'blue'],
-                    'importar' => ['label' => __('Importar contactos', 'flavor-chat-ia'), 'icon' => '📥', 'color' => 'green'],
+                    'crear'    => ['label' => __('Nueva campaña', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📧', 'color' => 'blue'],
+                    'importar' => ['label' => __('Importar contactos', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📥', 'color' => 'green'],
                 ],
             ],
 
@@ -7498,8 +7498,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         add_submenu_page(
             null,
-            __('Automatizaciones Email', 'flavor-chat-ia'),
-            __('Automatizaciones', 'flavor-chat-ia'),
+            __('Automatizaciones Email', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Automatizaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-em-automatizaciones',
             [$this, 'render_em_automatizaciones']
@@ -7507,8 +7507,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         add_submenu_page(
             null,
-            __('Campanias Email', 'flavor-chat-ia'),
-            __('Campanias', 'flavor-chat-ia'),
+            __('Campanias Email', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Campanias', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-em-campanias',
             [$this, 'render_em_campanias']
@@ -7516,8 +7516,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         add_submenu_page(
             null,
-            __('Configuracion Email Marketing', 'flavor-chat-ia'),
-            __('Configuracion', 'flavor-chat-ia'),
+            __('Configuracion Email Marketing', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Configuracion', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-em-configuracion',
             [$this, 'render_em_configuracion']
@@ -7525,8 +7525,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         add_submenu_page(
             null,
-            __('Listas de Correo', 'flavor-chat-ia'),
-            __('Listas', 'flavor-chat-ia'),
+            __('Listas de Correo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Listas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-em-listas',
             [$this, 'render_em_listas']
@@ -7534,8 +7534,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         add_submenu_page(
             null,
-            __('Plantillas Email', 'flavor-chat-ia'),
-            __('Plantillas', 'flavor-chat-ia'),
+            __('Plantillas Email', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Plantillas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-em-plantillas',
             [$this, 'render_em_plantillas']
@@ -7543,8 +7543,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         add_submenu_page(
             null,
-            __('Suscriptores', 'flavor-chat-ia'),
-            __('Suscriptores', 'flavor-chat-ia'),
+            __('Suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('Suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $capability,
             'flavor-em-suscriptores',
             [$this, 'render_em_suscriptores']
@@ -7559,8 +7559,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         if (file_exists($vista)) {
             include $vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Automatizaciones Email', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Automatizaciones Email', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -7572,8 +7572,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         if (file_exists($vista)) {
             include $vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Campanias Email', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Campanias Email', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -7585,8 +7585,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         if (file_exists($vista)) {
             include $vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Configuracion Email Marketing', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Configuracion Email Marketing', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -7598,8 +7598,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         if (file_exists($vista)) {
             include $vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Listas de Correo', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Listas de Correo', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -7611,8 +7611,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         if (file_exists($vista)) {
             include $vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Plantillas Email', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Plantillas Email', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 
@@ -7624,8 +7624,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         if (file_exists($vista)) {
             include $vista;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Suscriptores', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Suscriptores', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
     }
 }

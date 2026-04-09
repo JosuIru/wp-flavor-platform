@@ -71,101 +71,101 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
     public function get_web_components() {
         return [
             'empresarial_hero' => [
-                'label' => __('Hero Corporativo', 'flavor-chat-ia'),
-                'description' => __('Hero profesional para empresas con diseño elegante', 'flavor-chat-ia'),
+                'label' => __('Hero Corporativo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Hero profesional para empresas con diseño elegante', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'empresarial',
                 'icon' => 'dashicons-building',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
-                        'label' => __('Título', 'flavor-chat-ia'),
+                        'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 'Soluciones Empresariales de Calidad'
                     ],
                     'subtitulo' => [
                         'type' => 'textarea',
-                        'label' => __('Subtítulo', 'flavor-chat-ia'),
+                        'label' => __('Subtítulo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 'Potencia tu negocio con nuestros servicios profesionales y tecnología de vanguardia'
                     ],
                     'texto_boton_principal' => [
                         'type' => 'text',
-                        'label' => __('Texto Botón Principal', 'flavor-chat-ia'),
+                        'label' => __('Texto Botón Principal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 'Solicitar Demo'
                     ],
                     'url_boton_principal' => [
                         'type' => 'url',
-                        'label' => __('URL Botón Principal', 'flavor-chat-ia'),
+                        'label' => __('URL Botón Principal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '#contacto'
                     ],
                     'texto_boton_secundario' => [
                         'type' => 'text',
-                        'label' => __('Texto Botón Secundario', 'flavor-chat-ia'),
+                        'label' => __('Texto Botón Secundario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 'Ver Servicios'
                     ],
                     'url_boton_secundario' => [
                         'type' => 'url',
-                        'label' => __('URL Botón Secundario', 'flavor-chat-ia'),
+                        'label' => __('URL Botón Secundario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '#servicios'
                     ],
                     'imagen_fondo' => [
                         'type' => 'image',
-                        'label' => __('Imagen de Fondo', 'flavor-chat-ia'),
+                        'label' => __('Imagen de Fondo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => ''
                     ],
                     'mostrar_video' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar Video', 'flavor-chat-ia'),
+                        'label' => __('Mostrar Video', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => false
                     ],
                     'url_video' => [
                         'type' => 'url',
-                        'label' => __('URL Video (YouTube/Vimeo)', 'flavor-chat-ia'),
+                        'label' => __('URL Video (YouTube/Vimeo)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => ''
                     ]
                 ],
                 'template' => 'empresarial/hero'
             ],
             'empresarial_servicios' => [
-                'label' => __('Grid de Servicios', 'flavor-chat-ia'),
-                'description' => __('Muestra servicios o soluciones en un grid profesional', 'flavor-chat-ia'),
+                'label' => __('Grid de Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Muestra servicios o soluciones en un grid profesional', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'empresarial',
                 'icon' => 'dashicons-grid-view',
                 'fields' => [
                     'titulo_seccion' => [
                         'type' => 'text',
-                        'label' => __('Título de Sección', 'flavor-chat-ia'),
+                        'label' => __('Título de Sección', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 'Nuestros Servicios'
                     ],
                     'descripcion_seccion' => [
                         'type' => 'textarea',
-                        'label' => __('Descripción de Sección', 'flavor-chat-ia'),
+                        'label' => __('Descripción de Sección', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 'Soluciones integrales diseñadas para hacer crecer tu negocio'
                     ],
                     'columnas' => [
                         'type' => 'select',
-                        'label' => __('Columnas', 'flavor-chat-ia'),
+                        'label' => __('Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['2', '3', '4'],
                         'default' => '3'
                     ],
                     'estilo' => [
                         'type' => 'select',
-                        'label' => __('Estilo', 'flavor-chat-ia'),
+                        'label' => __('Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['cards', 'minimal', 'bordered'],
                         'default' => 'cards'
                     ],
                     'fuente_datos' => [
                         'type' => 'data_source',
-                        'label' => __('Fuente de datos', 'flavor-chat-ia'),
+                        'label' => __('Fuente de datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'post_types' => ['post'],
                         'items_field' => 'items',
                         'default' => 'manual',
                     ],
                     'items' => [
                         'type' => 'repeater',
-                        'label' => __('Servicios', 'flavor-chat-ia'),
+                        'label' => __('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'fields' => [
-                            'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'default' => ''],
-                            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia'), 'default' => ''],
-                            'icono' => ['type' => 'text', 'label' => __('Icono (clase dashicons)', 'flavor-chat-ia'), 'default' => ''],
+                            'titulo' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'icono' => ['type' => 'text', 'label' => __('Icono (clase dashicons)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
                         ],
                         'default' => [],
                         'max_items' => 12,
@@ -174,49 +174,49 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
                 'template' => 'empresarial/servicios-grid'
             ],
             'empresarial_equipo' => [
-                'label' => __('Equipo / Staff', 'flavor-chat-ia'),
-                'description' => __('Muestra los miembros del equipo con fotos y roles', 'flavor-chat-ia'),
+                'label' => __('Equipo / Staff', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Muestra los miembros del equipo con fotos y roles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'empresarial',
                 'icon' => 'dashicons-groups',
                 'fields' => [
                     'titulo_seccion' => [
                         'type' => 'text',
-                        'label' => __('Título de Sección', 'flavor-chat-ia'),
+                        'label' => __('Título de Sección', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 'Nuestro Equipo'
                     ],
                     'descripcion_seccion' => [
                         'type' => 'textarea',
-                        'label' => __('Descripción de Sección', 'flavor-chat-ia'),
+                        'label' => __('Descripción de Sección', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 'Profesionales comprometidos con tu éxito'
                     ],
                     'layout' => [
                         'type' => 'select',
-                        'label' => __('Layout', 'flavor-chat-ia'),
+                        'label' => __('Layout', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['grid', 'slider', 'list'],
                         'default' => 'grid'
                     ],
                     'columnas' => [
                         'type' => 'select',
-                        'label' => __('Columnas (Grid)', 'flavor-chat-ia'),
+                        'label' => __('Columnas (Grid)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['2', '3', '4'],
                         'default' => '4'
                     ],
                     'mostrar_redes_sociales' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar Redes Sociales', 'flavor-chat-ia'),
+                        'label' => __('Mostrar Redes Sociales', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true
                     ],
                     'items' => [
                         'type' => 'repeater',
-                        'label' => __('Miembros del equipo', 'flavor-chat-ia'),
+                        'label' => __('Miembros del equipo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'fields' => [
-                            'nombre' => ['type' => 'text', 'label' => __('Nombre', 'flavor-chat-ia'), 'default' => ''],
-                            'puesto' => ['type' => 'text', 'label' => __('Puesto', 'flavor-chat-ia'), 'default' => ''],
-                            'bio' => ['type' => 'textarea', 'label' => __('Biografía', 'flavor-chat-ia'), 'default' => ''],
-                            'foto' => ['type' => 'image', 'label' => __('Foto', 'flavor-chat-ia'), 'default' => ''],
-                            'linkedin' => ['type' => 'url', 'label' => __('LinkedIn URL', 'flavor-chat-ia'), 'default' => ''],
-                            'twitter' => ['type' => 'url', 'label' => __('Twitter URL', 'flavor-chat-ia'), 'default' => ''],
-                            'email' => ['type' => 'text', 'label' => __('Email', 'flavor-chat-ia'), 'default' => ''],
+                            'nombre' => ['type' => 'text', 'label' => __('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'puesto' => ['type' => 'text', 'label' => __('Puesto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'bio' => ['type' => 'textarea', 'label' => __('Biografía', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'foto' => ['type' => 'image', 'label' => __('Foto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'linkedin' => ['type' => 'url', 'label' => __('LinkedIn URL', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'twitter' => ['type' => 'url', 'label' => __('Twitter URL', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'email' => ['type' => 'text', 'label' => __('Email', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
                         ],
                         'default' => [],
                         'max_items' => 12,
@@ -225,41 +225,41 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
                 'template' => 'empresarial/equipo'
             ],
             'empresarial_testimonios' => [
-                'label' => __('Testimonios', 'flavor-chat-ia'),
-                'description' => __('Muestra testimonios de clientes satisfechos', 'flavor-chat-ia'),
+                'label' => __('Testimonios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Muestra testimonios de clientes satisfechos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'empresarial',
                 'icon' => 'dashicons-format-quote',
                 'fields' => [
                     'titulo_seccion' => [
                         'type' => 'text',
-                        'label' => __('Título de Sección', 'flavor-chat-ia'),
+                        'label' => __('Título de Sección', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 'Lo Que Dicen Nuestros Clientes'
                     ],
                     'layout' => [
                         'type' => 'select',
-                        'label' => __('Layout', 'flavor-chat-ia'),
+                        'label' => __('Layout', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['carousel', 'grid', 'masonry'],
                         'default' => 'carousel'
                     ],
                     'mostrar_foto' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar Foto del Cliente', 'flavor-chat-ia'),
+                        'label' => __('Mostrar Foto del Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true
                     ],
                     'mostrar_empresa' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar Empresa', 'flavor-chat-ia'),
+                        'label' => __('Mostrar Empresa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true
                     ],
                     'items' => [
                         'type' => 'repeater',
-                        'label' => __('Testimonios', 'flavor-chat-ia'),
+                        'label' => __('Testimonios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'fields' => [
-                            'nombre' => ['type' => 'text', 'label' => __('Nombre', 'flavor-chat-ia'), 'default' => ''],
-                            'puesto' => ['type' => 'text', 'label' => __('Puesto', 'flavor-chat-ia'), 'default' => ''],
-                            'empresa' => ['type' => 'text', 'label' => __('Empresa', 'flavor-chat-ia'), 'default' => ''],
-                            'testimonio' => ['type' => 'textarea', 'label' => __('Testimonio', 'flavor-chat-ia'), 'default' => ''],
-                            'rating' => ['type' => 'number', 'label' => __('Rating (1-5)', 'flavor-chat-ia'), 'default' => 5],
+                            'nombre' => ['type' => 'text', 'label' => __('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'puesto' => ['type' => 'text', 'label' => __('Puesto', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'empresa' => ['type' => 'text', 'label' => __('Empresa', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'testimonio' => ['type' => 'textarea', 'label' => __('Testimonio', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'rating' => ['type' => 'number', 'label' => __('Rating (1-5)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => 5],
                         ],
                         'default' => [],
                         'max_items' => 12,
@@ -268,28 +268,28 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
                 'template' => 'empresarial/testimonios'
             ],
             'empresarial_stats' => [
-                'label' => __('Estadísticas / Métricas', 'flavor-chat-ia'),
-                'description' => __('Muestra números y logros importantes de la empresa', 'flavor-chat-ia'),
+                'label' => __('Estadísticas / Métricas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Muestra números y logros importantes de la empresa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'empresarial',
                 'icon' => 'dashicons-chart-bar',
                 'fields' => [
                     'titulo_seccion' => [
                         'type' => 'text',
-                        'label' => __('Título de Sección', 'flavor-chat-ia'),
+                        'label' => __('Título de Sección', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 'Resultados que Hablan por Sí Solos'
                     ],
                     'estilo' => [
                         'type' => 'select',
-                        'label' => __('Estilo', 'flavor-chat-ia'),
+                        'label' => __('Estilo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['minimal', 'cards', 'highlighted'],
                         'default' => 'highlighted'
                     ],
                     'items' => [
                         'type' => 'repeater',
-                        'label' => __('Estadísticas', 'flavor-chat-ia'),
+                        'label' => __('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'fields' => [
-                            'numero' => ['type' => 'text', 'label' => __('Número / Cifra', 'flavor-chat-ia'), 'default' => ''],
-                            'texto' => ['type' => 'text', 'label' => __('Texto descriptivo', 'flavor-chat-ia'), 'default' => ''],
+                            'numero' => ['type' => 'text', 'label' => __('Número / Cifra', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'texto' => ['type' => 'text', 'label' => __('Texto descriptivo', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
                         ],
                         'default' => [],
                         'max_items' => 8,
@@ -298,88 +298,88 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
                 'template' => 'empresarial/stats'
             ],
             'empresarial_contacto' => [
-                'label' => __('Formulario de Contacto', 'flavor-chat-ia'),
-                'description' => __('Formulario profesional de contacto para empresas', 'flavor-chat-ia'),
+                'label' => __('Formulario de Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Formulario profesional de contacto para empresas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'empresarial',
                 'icon' => 'dashicons-email',
                 'fields' => [
                     'titulo_seccion' => [
                         'type' => 'text',
-                        'label' => __('Título de Sección', 'flavor-chat-ia'),
+                        'label' => __('Título de Sección', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 'Contacta con Nosotros'
                     ],
                     'descripcion_seccion' => [
                         'type' => 'textarea',
-                        'label' => __('Descripción de Sección', 'flavor-chat-ia'),
+                        'label' => __('Descripción de Sección', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 'Estamos aquí para ayudarte. Envíanos tu consulta y te responderemos pronto.'
                     ],
                     'layout' => [
                         'type' => 'select',
-                        'label' => __('Layout', 'flavor-chat-ia'),
+                        'label' => __('Layout', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['simple', 'con_mapa', 'dos_columnas'],
                         'default' => 'dos_columnas'
                     ],
                     'email_destino' => [
                         'type' => 'text',
-                        'label' => __('Email de Destino', 'flavor-chat-ia'),
+                        'label' => __('Email de Destino', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => get_option('admin_email')
                     ],
                     'mostrar_telefono' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar Teléfono', 'flavor-chat-ia'),
+                        'label' => __('Mostrar Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true
                     ],
                     'telefono' => [
                         'type' => 'text',
-                        'label' => __('Teléfono', 'flavor-chat-ia'),
+                        'label' => __('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => '+34 900 000 000'
                     ],
                     'mostrar_direccion' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar Dirección', 'flavor-chat-ia'),
+                        'label' => __('Mostrar Dirección', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true
                     ],
                     'direccion' => [
                         'type' => 'textarea',
-                        'label' => __('Dirección', 'flavor-chat-ia'),
+                        'label' => __('Dirección', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 'Calle Principal 123, 28001 Madrid, España'
                     ]
                 ],
                 'template' => 'empresarial/contacto'
             ],
             'empresarial_pricing' => [
-                'label' => __('Tabla de Precios', 'flavor-chat-ia'),
-                'description' => __('Muestra planes y precios de forma clara y atractiva', 'flavor-chat-ia'),
+                'label' => __('Tabla de Precios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Muestra planes y precios de forma clara y atractiva', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'empresarial',
                 'icon' => 'dashicons-money-alt',
                 'fields' => [
                     'titulo_seccion' => [
                         'type' => 'text',
-                        'label' => __('Título de Sección', 'flavor-chat-ia'),
+                        'label' => __('Título de Sección', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 'Planes y Precios'
                     ],
                     'descripcion_seccion' => [
                         'type' => 'textarea',
-                        'label' => __('Descripción de Sección', 'flavor-chat-ia'),
+                        'label' => __('Descripción de Sección', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 'Elige el plan perfecto para tu negocio'
                     ],
                     'periodo' => [
                         'type' => 'select',
-                        'label' => __('Periodo de Facturación', 'flavor-chat-ia'),
+                        'label' => __('Periodo de Facturación', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['mensual', 'anual', 'ambos'],
                         'default' => 'mensual'
                     ],
                     'items' => [
                         'type' => 'repeater',
-                        'label' => __('Planes', 'flavor-chat-ia'),
+                        'label' => __('Planes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'fields' => [
-                            'nombre' => ['type' => 'text', 'label' => __('Nombre del plan', 'flavor-chat-ia'), 'default' => ''],
-                            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia'), 'default' => ''],
-                            'precio_mensual' => ['type' => 'text', 'label' => __('Precio mensual', 'flavor-chat-ia'), 'default' => '0'],
-                            'precio_anual' => ['type' => 'text', 'label' => __('Precio anual', 'flavor-chat-ia'), 'default' => '0'],
-                            'caracteristicas' => ['type' => 'textarea', 'label' => __('Características (una por línea)', 'flavor-chat-ia'), 'default' => ''],
-                            'destacar' => ['type' => 'toggle', 'label' => __('Destacar este plan', 'flavor-chat-ia'), 'default' => false],
-                            'badge' => ['type' => 'text', 'label' => __('Badge (ej: Más Popular)', 'flavor-chat-ia'), 'default' => ''],
+                            'nombre' => ['type' => 'text', 'label' => __('Nombre del plan', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'precio_mensual' => ['type' => 'text', 'label' => __('Precio mensual', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => '0'],
+                            'precio_anual' => ['type' => 'text', 'label' => __('Precio anual', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => '0'],
+                            'caracteristicas' => ['type' => 'textarea', 'label' => __('Características (una por línea)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'destacar' => ['type' => 'toggle', 'label' => __('Destacar este plan', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => false],
+                            'badge' => ['type' => 'text', 'label' => __('Badge (ej: Más Popular)', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
                         ],
                         'default' => [],
                         'max_items' => 6,
@@ -388,55 +388,55 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
                 'template' => 'empresarial/pricing'
             ],
             'empresarial_portfolio' => [
-                'label' => __('Portfolio / Casos de Éxito', 'flavor-chat-ia'),
-                'description' => __('Muestra proyectos o casos de éxito de la empresa', 'flavor-chat-ia'),
+                'label' => __('Portfolio / Casos de Éxito', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Muestra proyectos o casos de éxito de la empresa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'empresarial',
                 'icon' => 'dashicons-portfolio',
                 'fields' => [
                     'titulo_seccion' => [
                         'type' => 'text',
-                        'label' => __('Título de Sección', 'flavor-chat-ia'),
+                        'label' => __('Título de Sección', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 'Nuestros Casos de Éxito'
                     ],
                     'descripcion_seccion' => [
                         'type' => 'textarea',
-                        'label' => __('Descripción de Sección', 'flavor-chat-ia'),
+                        'label' => __('Descripción de Sección', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => 'Proyectos que transformaron negocios'
                     ],
                     'layout' => [
                         'type' => 'select',
-                        'label' => __('Layout', 'flavor-chat-ia'),
+                        'label' => __('Layout', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['grid', 'masonry', 'carousel'],
                         'default' => 'masonry'
                     ],
                     'columnas' => [
                         'type' => 'select',
-                        'label' => __('Columnas', 'flavor-chat-ia'),
+                        'label' => __('Columnas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'options' => ['2', '3', '4'],
                         'default' => '3'
                     ],
                     'mostrar_filtros' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar Filtros por Categoría', 'flavor-chat-ia'),
+                        'label' => __('Mostrar Filtros por Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'default' => true
                     ],
                     'fuente_datos' => [
                         'type' => 'data_source',
-                        'label' => __('Fuente de datos', 'flavor-chat-ia'),
+                        'label' => __('Fuente de datos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'post_types' => ['post'],
                         'items_field' => 'items',
                         'default' => 'manual',
                     ],
                     'items' => [
                         'type' => 'repeater',
-                        'label' => __('Proyectos', 'flavor-chat-ia'),
+                        'label' => __('Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'fields' => [
-                            'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'default' => ''],
-                            'cliente' => ['type' => 'text', 'label' => __('Cliente', 'flavor-chat-ia'), 'default' => ''],
-                            'categoria' => ['type' => 'text', 'label' => __('Categoría', 'flavor-chat-ia'), 'default' => ''],
-                            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia'), 'default' => ''],
-                            'resultados' => ['type' => 'text', 'label' => __('Resultados destacados', 'flavor-chat-ia'), 'default' => ''],
-                            'imagen' => ['type' => 'image', 'label' => __('Imagen', 'flavor-chat-ia'), 'default' => ''],
+                            'titulo' => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'cliente' => ['type' => 'text', 'label' => __('Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'categoria' => ['type' => 'text', 'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'descripcion' => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'resultados' => ['type' => 'text', 'label' => __('Resultados destacados', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
+                            'imagen' => ['type' => 'image', 'label' => __('Imagen', FLAVOR_PLATFORM_TEXT_DOMAIN), 'default' => ''],
                         ],
                         'default' => [],
                         'max_items' => 12,
@@ -507,10 +507,10 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce'   => wp_create_nonce('empresarial_contacto_nonce'),
             'strings' => [
-                'enviando'    => __('Enviando...', 'flavor-chat-ia'),
-                'enviar'      => __('Enviar mensaje', 'flavor-chat-ia'),
-                'error'       => __('Error al enviar el mensaje', 'flavor-chat-ia'),
-                'camposRequeridos' => __('Por favor, completa todos los campos obligatorios', 'flavor-chat-ia'),
+                'enviando'    => __('Enviando...', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'enviar'      => __('Enviar mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'error'       => __('Error al enviar el mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'camposRequeridos' => __('Por favor, completa todos los campos obligatorios', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ],
         ]);
     }
@@ -551,8 +551,8 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_servicios($atts) {
         $atts = shortcode_atts([
-            'titulo'      => __('Nuestros Servicios', 'flavor-chat-ia'),
-            'descripcion' => __('Soluciones integrales diseñadas para hacer crecer tu negocio', 'flavor-chat-ia'),
+            'titulo'      => __('Nuestros Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'descripcion' => __('Soluciones integrales diseñadas para hacer crecer tu negocio', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'columnas'    => 3,
             'estilo'      => 'cards',
         ], $atts, 'empresarial_servicios');
@@ -570,8 +570,8 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_equipo($atts) {
         $atts = shortcode_atts([
-            'titulo'      => __('Nuestro Equipo', 'flavor-chat-ia'),
-            'descripcion' => __('Profesionales comprometidos con tu éxito', 'flavor-chat-ia'),
+            'titulo'      => __('Nuestro Equipo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'descripcion' => __('Profesionales comprometidos con tu éxito', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'layout'      => 'grid',
             'columnas'    => 4,
         ], $atts, 'empresarial_equipo');
@@ -589,7 +589,7 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_testimonios($atts) {
         $atts = shortcode_atts([
-            'titulo' => __('Lo Que Dicen Nuestros Clientes', 'flavor-chat-ia'),
+            'titulo' => __('Lo Que Dicen Nuestros Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'layout' => 'carousel',
         ], $atts, 'empresarial_testimonios');
 
@@ -606,8 +606,8 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_contacto($atts) {
         $atts = shortcode_atts([
-            'titulo'      => __('Contacta con Nosotros', 'flavor-chat-ia'),
-            'descripcion' => __('Estamos aquí para ayudarte. Envíanos tu consulta y te responderemos pronto.', 'flavor-chat-ia'),
+            'titulo'      => __('Contacta con Nosotros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'descripcion' => __('Estamos aquí para ayudarte. Envíanos tu consulta y te responderemos pronto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'layout'      => 'dos_columnas',
             'mostrar_info' => true,
         ], $atts, 'empresarial_contacto');
@@ -625,8 +625,8 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_portfolio($atts) {
         $atts = shortcode_atts([
-            'titulo'      => __('Nuestros Casos de Éxito', 'flavor-chat-ia'),
-            'descripcion' => __('Proyectos que transformaron negocios', 'flavor-chat-ia'),
+            'titulo'      => __('Nuestros Casos de Éxito', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'descripcion' => __('Proyectos que transformaron negocios', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'layout'      => 'masonry',
             'columnas'    => 3,
             'limite'      => 6,
@@ -872,7 +872,7 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
         if (!isset($lista_empresas[$indice_empresa])) {
             return new \WP_REST_Response([
                 'success' => false,
-                'message' => __('Empresa no encontrada.', 'flavor-chat-ia'),
+                'message' => __('Empresa no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ], 404);
         }
 
@@ -957,7 +957,7 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
         if (!isset($lista_empresas[$indice_empresa])) {
             return new \WP_REST_Response([
                 'success' => false,
-                'message' => __('Empresa no encontrada.', 'flavor-chat-ia'),
+                'message' => __('Empresa no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ], 404);
         }
 
@@ -1048,11 +1048,11 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
         // Formatear categorías
         $categorias_formateadas = [];
         $etiquetas_estado = [
-            'propuesta'  => __('En Propuesta', 'flavor-chat-ia'),
-            'aprobado'   => __('Aprobados', 'flavor-chat-ia'),
-            'en_curso'   => __('En Curso', 'flavor-chat-ia'),
-            'completado' => __('Completados', 'flavor-chat-ia'),
-            'cancelado'  => __('Cancelados', 'flavor-chat-ia'),
+            'propuesta'  => __('En Propuesta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'aprobado'   => __('Aprobados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'en_curso'   => __('En Curso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'completado' => __('Completados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cancelado'  => __('Cancelados', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         foreach ($categorias_estado ?: [] as $categoria) {
@@ -1160,18 +1160,18 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
             'paginas'    => [
                 [
                     'slug'     => 'flavor-empresarial-dashboard',
-                    'titulo'   => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo'   => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_dashboard'],
                     'badge'    => [$this, 'contar_contactos_nuevos'],
                 ],
                 [
                     'slug'     => 'flavor-empresarial-empresas',
-                    'titulo'   => __('Empresas', 'flavor-chat-ia'),
+                    'titulo'   => __('Empresas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_empresas'],
                 ],
                 [
                     'slug'     => 'flavor-empresarial-contratos',
-                    'titulo'   => __('Contratos', 'flavor-chat-ia'),
+                    'titulo'   => __('Contratos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_contratos'],
                 ],
             ],
@@ -1208,10 +1208,10 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
         $estadisticas = $this->action_estadisticas([]);
 
         $this->render_page_header(
-            __('Dashboard Empresarial', 'flavor-chat-ia'),
+            __('Dashboard Empresarial', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [
                 [
-                    'label' => __('Nuevo Proyecto', 'flavor-chat-ia'),
+                    'label' => __('Nuevo Proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url'   => $this->admin_page_url('flavor-empresarial-contratos') . '&action=nuevo',
                     'class' => 'button-primary',
                 ],
@@ -1226,10 +1226,10 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_empresas() {
         $this->render_page_header(
-            __('Gestión de Empresas', 'flavor-chat-ia'),
+            __('Gestión de Empresas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [
                 [
-                    'label' => __('Nueva Empresa', 'flavor-chat-ia'),
+                    'label' => __('Nueva Empresa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url'   => $this->admin_page_url('flavor-empresarial-empresas') . '&action=nueva',
                     'class' => 'button-primary',
                 ],
@@ -1244,10 +1244,10 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_contratos() {
         $this->render_page_header(
-            __('Gestión de Contratos', 'flavor-chat-ia'),
+            __('Gestión de Contratos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             [
                 [
-                    'label' => __('Nuevo Contrato', 'flavor-chat-ia'),
+                    'label' => __('Nuevo Contrato', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'url'   => $this->admin_page_url('flavor-empresarial-contratos') . '&action=nuevo',
                     'class' => 'button-primary',
                 ],
@@ -1264,7 +1264,7 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
         $estadisticas = $this->action_estadisticas([]);
 
         if (!$estadisticas['success']) {
-            echo '<p>' . esc_html__('No se pudieron cargar las estadísticas.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('No se pudieron cargar las estadísticas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             return;
         }
 
@@ -1274,20 +1274,20 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
             <div class="widget-stats-grid">
                 <div class="stat-item">
                     <span class="stat-number"><?php echo esc_html($datos_estadisticas['contactos']['nuevos']); ?></span>
-                    <span class="stat-label"><?php esc_html_e('Contactos Nuevos', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Contactos Nuevos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-number"><?php echo esc_html($datos_estadisticas['proyectos']['activos']); ?></span>
-                    <span class="stat-label"><?php esc_html_e('Proyectos Activos', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Proyectos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-number"><?php echo esc_html($datos_estadisticas['financiero']['presupuesto_activo_fmt']); ?></span>
-                    <span class="stat-label"><?php esc_html_e('Presupuesto Activo', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-label"><?php esc_html_e('Presupuesto Activo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
             <p class="widget-footer">
                 <a href="<?php echo esc_url($this->admin_page_url('flavor-empresarial-dashboard')); ?>">
-                    <?php esc_html_e('Ver Dashboard Completo', 'flavor-chat-ia'); ?> &rarr;
+                    <?php esc_html_e('Ver Dashboard Completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> &rarr;
                 </a>
             </p>
         </div>
@@ -1401,7 +1401,7 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
         // Verificar nonce de seguridad
         if (!check_ajax_referer('empresarial_contacto_nonce', 'nonce', false)) {
             wp_send_json_error([
-                'message' => __('Error de seguridad. Recarga la página e intenta de nuevo.', 'flavor-chat-ia'),
+                'message' => __('Error de seguridad. Recarga la página e intenta de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
 
@@ -1417,13 +1417,13 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
         // Validar campos obligatorios
         if (empty($nombre_contacto) || empty($email_contacto) || empty($mensaje_contacto)) {
             wp_send_json_error([
-                'message' => __('Por favor, completa los campos obligatorios: nombre, email y mensaje.', 'flavor-chat-ia'),
+                'message' => __('Por favor, completa los campos obligatorios: nombre, email y mensaje.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
 
         if (!is_email($email_contacto)) {
             wp_send_json_error([
-                'message' => __('El email proporcionado no es válido.', 'flavor-chat-ia'),
+                'message' => __('El email proporcionado no es válido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
 
@@ -1456,19 +1456,19 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
 
         if ($resultado_insercion === false) {
             wp_send_json_error([
-                'message' => __('Error al guardar el mensaje. Inténtalo de nuevo más tarde.', 'flavor-chat-ia'),
+                'message' => __('Error al guardar el mensaje. Inténtalo de nuevo más tarde.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
 
         // Notificar por email al administrador
         $email_admin = get_option('admin_email');
         $asunto_email = sprintf(
-            __('[%s] Nuevo contacto empresarial: %s', 'flavor-chat-ia'),
+            __('[%s] Nuevo contacto empresarial: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
             get_bloginfo('name'),
-            $asunto_contacto ?: __('Sin asunto', 'flavor-chat-ia')
+            $asunto_contacto ?: __('Sin asunto', FLAVOR_PLATFORM_TEXT_DOMAIN)
         );
         $cuerpo_email = sprintf(
-            __("Nuevo mensaje de contacto recibido:\n\nNombre: %s\nEmail: %s\nTeléfono: %s\nEmpresa: %s\nAsunto: %s\n\nMensaje:\n%s\n\nOrigen: %s", 'flavor-chat-ia'),
+            __("Nuevo mensaje de contacto recibido:\n\nNombre: %s\nEmail: %s\nTeléfono: %s\nEmpresa: %s\nAsunto: %s\n\nMensaje:\n%s\n\nOrigen: %s", FLAVOR_PLATFORM_TEXT_DOMAIN),
             $nombre_contacto,
             $email_contacto,
             $telefono_contacto ?: '-',
@@ -1480,7 +1480,7 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
         wp_mail($email_admin, $asunto_email, $cuerpo_email);
 
         wp_send_json_success([
-            'message'    => __('Mensaje enviado correctamente. Te responderemos lo antes posible.', 'flavor-chat-ia'),
+            'message'    => __('Mensaje enviado correctamente. Te responderemos lo antes posible.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'contacto_id' => $wpdb->insert_id,
         ]);
     }
@@ -1557,7 +1557,7 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error' => sprintf(__('Acción no implementada: %s', 'flavor-chat-ia'), $action),
+            'error' => sprintf(__('Acción no implementada: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $action),
         ];
     }
 
@@ -1612,7 +1612,7 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
             'pagina'     => $pagina_actual,
             'por_pagina' => $limite_resultados,
             'contactos'  => $lista_contactos ?: [],
-            'mensaje'    => sprintf(__('Se encontraron %d contactos.', 'flavor-chat-ia'), $total_contactos),
+            'mensaje'    => sprintf(__('Se encontraron %d contactos.', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_contactos),
         ];
     }
 
@@ -1627,7 +1627,7 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
         if (!$contacto_id) {
             return [
                 'success' => false,
-                'error'   => __('ID de contacto no válido.', 'flavor-chat-ia'),
+                'error'   => __('ID de contacto no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1639,7 +1639,7 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
         if (!$detalle_contacto) {
             return [
                 'success' => false,
-                'error'   => __('Contacto no encontrado.', 'flavor-chat-ia'),
+                'error'   => __('Contacto no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1684,7 +1684,7 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
         if (!$contacto_id) {
             return [
                 'success' => false,
-                'error'   => __('ID de contacto no válido.', 'flavor-chat-ia'),
+                'error'   => __('ID de contacto no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1696,7 +1696,7 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
         if (!$contacto_existente) {
             return [
                 'success' => false,
-                'error'   => __('Contacto no encontrado.', 'flavor-chat-ia'),
+                'error'   => __('Contacto no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1727,7 +1727,7 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => true,
-            'mensaje' => __('Contacto marcado como respondido.', 'flavor-chat-ia'),
+            'mensaje' => __('Contacto marcado como respondido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -1750,14 +1750,14 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
         if (empty($titulo_proyecto)) {
             return [
                 'success' => false,
-                'error'   => __('El título del proyecto es obligatorio.', 'flavor-chat-ia'),
+                'error'   => __('El título del proyecto es obligatorio.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
         if (empty($nombre_cliente)) {
             return [
                 'success' => false,
-                'error'   => __('El nombre del cliente es obligatorio.', 'flavor-chat-ia'),
+                'error'   => __('El nombre del cliente es obligatorio.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1803,14 +1803,14 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
         if ($resultado_insercion === false) {
             return [
                 'success' => false,
-                'error'   => __('Error al crear el proyecto. Inténtalo de nuevo.', 'flavor-chat-ia'),
+                'error'   => __('Error al crear el proyecto. Inténtalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
         return [
             'success'     => true,
             'proyecto_id' => $wpdb->insert_id,
-            'mensaje'     => sprintf(__('Proyecto "%s" creado correctamente.', 'flavor-chat-ia'), $titulo_proyecto),
+            'mensaje'     => sprintf(__('Proyecto "%s" creado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN), $titulo_proyecto),
         ];
     }
 
@@ -1861,7 +1861,7 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
             'pagina'     => $pagina_actual,
             'por_pagina' => $limite_resultados,
             'proyectos'  => $lista_proyectos ?: [],
-            'mensaje'    => sprintf(__('Se encontraron %d proyectos.', 'flavor-chat-ia'), $total_proyectos),
+            'mensaje'    => sprintf(__('Se encontraron %d proyectos.', FLAVOR_PLATFORM_TEXT_DOMAIN), $total_proyectos),
         ];
     }
 
@@ -1876,7 +1876,7 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
         if (!$proyecto_id) {
             return [
                 'success' => false,
-                'error'   => __('ID de proyecto no válido.', 'flavor-chat-ia'),
+                'error'   => __('ID de proyecto no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1888,7 +1888,7 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
         if (!$detalle_proyecto) {
             return [
                 'success' => false,
-                'error'   => __('Proyecto no encontrado.', 'flavor-chat-ia'),
+                'error'   => __('Proyecto no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1931,7 +1931,7 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
         if (!$proyecto_id) {
             return [
                 'success' => false,
-                'error'   => __('ID de proyecto no válido.', 'flavor-chat-ia'),
+                'error'   => __('ID de proyecto no válido.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1943,7 +1943,7 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
         if (!$proyecto_existente) {
             return [
                 'success' => false,
-                'error'   => __('Proyecto no encontrado.', 'flavor-chat-ia'),
+                'error'   => __('Proyecto no encontrado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -1992,7 +1992,7 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => true,
-            'mensaje' => __('Proyecto actualizado correctamente.', 'flavor-chat-ia'),
+            'mensaje' => __('Proyecto actualizado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -2081,7 +2081,7 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
                     'presupuesto_completado_fmt' => $this->format_price($presupuesto_completado),
                 ],
             ],
-            'mensaje' => __('Estadísticas del módulo empresarial.', 'flavor-chat-ia'),
+            'mensaje' => __('Estadísticas del módulo empresarial.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -2098,7 +2098,7 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
         if (empty($termino_busqueda)) {
             return [
                 'success' => false,
-                'error'   => __('Debes proporcionar un término de búsqueda.', 'flavor-chat-ia'),
+                'error'   => __('Debes proporcionar un término de búsqueda.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2149,7 +2149,7 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
             'contactos'  => $contactos_encontrados,
             'proyectos'  => $proyectos_encontrados,
             'mensaje'    => sprintf(
-                __('Se encontraron %d resultados para "%s".', 'flavor-chat-ia'),
+                __('Se encontraron %d resultados para "%s".', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $total_resultados,
                 $termino_busqueda
             ),
@@ -2399,7 +2399,7 @@ KNOWLEDGE;
         $estadisticas['proyectos_activos'] = [
             'icon' => 'dashicons-portfolio',
             'valor' => $proyectos_activos,
-            'label' => __('Proyectos activos', 'flavor-chat-ia'),
+            'label' => __('Proyectos activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => 'blue',
         ];
 
@@ -2416,7 +2416,7 @@ KNOWLEDGE;
                 $estadisticas['mis_proyectos'] = [
                     'icon' => 'dashicons-businessman',
                     'valor' => $mis_proyectos,
-                    'label' => __('Mis proyectos', 'flavor-chat-ia'),
+                    'label' => __('Mis proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'color' => 'green',
                 ];
             }
@@ -2431,37 +2431,37 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Empresarial', 'flavor-chat-ia'),
+                'title' => __('Empresarial', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'empresarial',
-                'content' => '<h1>' . __('Portal Empresarial', 'flavor-chat-ia') . '</h1>
-<p>' . __('Soluciones empresariales para tu negocio', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Portal Empresarial', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Soluciones empresariales para tu negocio', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="empresarial" action="dashboard" columnas="3" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Servicios', 'flavor-chat-ia'),
+                'title' => __('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'servicios-empresariales',
-                'content' => '<h1>' . __('Servicios', 'flavor-chat-ia') . '</h1>
-<p>' . __('Conoce nuestros servicios empresariales', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Conoce nuestros servicios empresariales', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="empresarial" action="servicios"]',
                 'parent' => 'empresarial',
             ],
             [
-                'title' => __('Contacto', 'flavor-chat-ia'),
+                'title' => __('Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'contacto-empresarial',
-                'content' => '<h1>' . __('Contacto Empresarial', 'flavor-chat-ia') . '</h1>
-<p>' . __('Ponte en contacto con nosotros', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Contacto Empresarial', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Ponte en contacto con nosotros', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_form module="empresarial" action="contacto"]',
                 'parent' => 'empresarial',
             ],
             [
-                'title' => __('Casos de Éxito', 'flavor-chat-ia'),
+                'title' => __('Casos de Éxito', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'casos-exito',
-                'content' => '<h1>' . __('Casos de Éxito', 'flavor-chat-ia') . '</h1>
-<p>' . __('Descubre nuestros casos de éxito', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Casos de Éxito', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Descubre nuestros casos de éxito', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="empresarial" action="casos_exito"]',
                 'parent' => 'empresarial',
@@ -2477,54 +2477,54 @@ KNOWLEDGE;
     public function get_shortcodes() {
         return [
             'empresarial_servicios' => [
-                'label'       => __('Servicios Empresariales', 'flavor-chat-ia'),
-                'description' => __('Muestra los servicios de la empresa en un grid', 'flavor-chat-ia'),
+                'label'       => __('Servicios Empresariales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Muestra los servicios de la empresa en un grid', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'callback'    => [$this, 'shortcode_servicios'],
                 'atts'        => [
-                    'titulo'      => __('Nuestros Servicios', 'flavor-chat-ia'),
-                    'descripcion' => __('Soluciones integrales diseñadas para hacer crecer tu negocio', 'flavor-chat-ia'),
+                    'titulo'      => __('Nuestros Servicios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'descripcion' => __('Soluciones integrales diseñadas para hacer crecer tu negocio', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'columnas'    => 3,
                     'estilo'      => 'cards',
                 ],
             ],
             'empresarial_equipo' => [
-                'label'       => __('Equipo', 'flavor-chat-ia'),
-                'description' => __('Muestra los miembros del equipo', 'flavor-chat-ia'),
+                'label'       => __('Equipo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Muestra los miembros del equipo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'callback'    => [$this, 'shortcode_equipo'],
                 'atts'        => [
-                    'titulo'      => __('Nuestro Equipo', 'flavor-chat-ia'),
-                    'descripcion' => __('Profesionales comprometidos con tu éxito', 'flavor-chat-ia'),
+                    'titulo'      => __('Nuestro Equipo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'descripcion' => __('Profesionales comprometidos con tu éxito', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'layout'      => 'grid',
                     'columnas'    => 4,
                 ],
             ],
             'empresarial_testimonios' => [
-                'label'       => __('Testimonios', 'flavor-chat-ia'),
-                'description' => __('Muestra testimonios de clientes', 'flavor-chat-ia'),
+                'label'       => __('Testimonios', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Muestra testimonios de clientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'callback'    => [$this, 'shortcode_testimonios'],
                 'atts'        => [
-                    'titulo' => __('Lo Que Dicen Nuestros Clientes', 'flavor-chat-ia'),
+                    'titulo' => __('Lo Que Dicen Nuestros Clientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'layout' => 'carousel',
                 ],
             ],
             'empresarial_contacto' => [
-                'label'       => __('Formulario de Contacto', 'flavor-chat-ia'),
-                'description' => __('Formulario profesional de contacto', 'flavor-chat-ia'),
+                'label'       => __('Formulario de Contacto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Formulario profesional de contacto', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'callback'    => [$this, 'shortcode_contacto'],
                 'atts'        => [
-                    'titulo'       => __('Contacta con Nosotros', 'flavor-chat-ia'),
-                    'descripcion'  => __('Estamos aquí para ayudarte', 'flavor-chat-ia'),
+                    'titulo'       => __('Contacta con Nosotros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'descripcion'  => __('Estamos aquí para ayudarte', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'layout'       => 'dos_columnas',
                     'mostrar_info' => true,
                 ],
             ],
             'empresarial_portfolio' => [
-                'label'       => __('Portfolio / Casos de Éxito', 'flavor-chat-ia'),
-                'description' => __('Muestra proyectos completados', 'flavor-chat-ia'),
+                'label'       => __('Portfolio / Casos de Éxito', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'description' => __('Muestra proyectos completados', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'callback'    => [$this, 'shortcode_portfolio'],
                 'atts'        => [
-                    'titulo'      => __('Nuestros Casos de Éxito', 'flavor-chat-ia'),
-                    'descripcion' => __('Proyectos que transformaron negocios', 'flavor-chat-ia'),
+                    'titulo'      => __('Nuestros Casos de Éxito', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    'descripcion' => __('Proyectos que transformaron negocios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'layout'      => 'masonry',
                     'columnas'    => 3,
                     'limite'      => 6,
@@ -2541,49 +2541,49 @@ KNOWLEDGE;
     public function get_form_config() {
         return [
             'contacto' => [
-                'titulo'      => __('Formulario de Contacto Empresarial', 'flavor-chat-ia'),
-                'descripcion' => __('Formulario para que los visitantes puedan contactar con la empresa', 'flavor-chat-ia'),
+                'titulo'      => __('Formulario de Contacto Empresarial', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'descripcion' => __('Formulario para que los visitantes puedan contactar con la empresa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'campos'      => [
                     'nombre' => [
                         'type'        => 'text',
-                        'label'       => __('Nombre', 'flavor-chat-ia'),
+                        'label'       => __('Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required'    => true,
-                        'placeholder' => __('Tu nombre', 'flavor-chat-ia'),
+                        'placeholder' => __('Tu nombre', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'email' => [
                         'type'        => 'email',
-                        'label'       => __('Email', 'flavor-chat-ia'),
+                        'label'       => __('Email', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required'    => true,
-                        'placeholder' => __('tu@email.com', 'flavor-chat-ia'),
+                        'placeholder' => __('tu@email.com', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'telefono' => [
                         'type'        => 'tel',
-                        'label'       => __('Teléfono', 'flavor-chat-ia'),
+                        'label'       => __('Teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required'    => false,
-                        'placeholder' => __('Tu teléfono', 'flavor-chat-ia'),
+                        'placeholder' => __('Tu teléfono', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'empresa' => [
                         'type'        => 'text',
-                        'label'       => __('Empresa', 'flavor-chat-ia'),
+                        'label'       => __('Empresa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required'    => false,
-                        'placeholder' => __('Nombre de tu empresa', 'flavor-chat-ia'),
+                        'placeholder' => __('Nombre de tu empresa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'asunto' => [
                         'type'        => 'text',
-                        'label'       => __('Asunto', 'flavor-chat-ia'),
+                        'label'       => __('Asunto', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required'    => false,
-                        'placeholder' => __('¿En qué podemos ayudarte?', 'flavor-chat-ia'),
+                        'placeholder' => __('¿En qué podemos ayudarte?', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ],
                     'mensaje' => [
                         'type'        => 'textarea',
-                        'label'       => __('Mensaje', 'flavor-chat-ia'),
+                        'label'       => __('Mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'required'    => true,
-                        'placeholder' => __('Cuéntanos más sobre tu consulta...', 'flavor-chat-ia'),
+                        'placeholder' => __('Cuéntanos más sobre tu consulta...', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         'rows'        => 5,
                     ],
                 ],
-                'submit_text' => __('Enviar mensaje', 'flavor-chat-ia'),
-                'success_msg' => __('Mensaje enviado correctamente. Te responderemos pronto.', 'flavor-chat-ia'),
+                'submit_text' => __('Enviar mensaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'success_msg' => __('Mensaje enviado correctamente. Te responderemos pronto.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'action'      => 'empresarial_contacto',
             ],
         ];

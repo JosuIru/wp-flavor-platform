@@ -13,16 +13,16 @@ if (!defined('ABSPATH')) {
 
 // Verificar permisos
 if (!current_user_can('manage_woocommerce')) {
-    wp_die(__('No tienes permisos suficientes para acceder a esta página.', 'flavor-chat-ia'));
+    wp_die(__('No tienes permisos suficientes para acceder a esta página.', FLAVOR_PLATFORM_TEXT_DOMAIN));
 }
 
 // Verificar que WooCommerce está activo
 if (!class_exists('WooCommerce')) {
     ?>
     <div class="wrap">
-        <h1><?php esc_html_e('Gestión de Pedidos', 'flavor-chat-ia'); ?></h1>
+        <h1><?php esc_html_e('Gestión de Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
         <div class="notice notice-error">
-            <p><?php esc_html_e('WooCommerce no está instalado o activado.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('WooCommerce no está instalado o activado.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     </div>
     <?php
@@ -76,14 +76,14 @@ $url_base = admin_url('admin.php?page=flavor-woocommerce-pedidos');
 <div class="wrap flavor-admin-page flavor-woocommerce-pedidos">
     <h1>
         <span class="dashicons dashicons-clipboard"></span>
-        <?php esc_html_e('Gestión de Pedidos', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Gestión de Pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
 
     <!-- Filtros por estado -->
     <div class="flavor-status-filters">
         <a href="<?php echo esc_url($url_base); ?>"
            class="status-filter <?php echo empty($estado_filtro) ? 'active' : ''; ?>">
-            <?php esc_html_e('Todos', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <span class="count">(<?php echo esc_html($total_pedidos); ?>)</span>
         </a>
         <?php foreach ($conteo_estados as $estado => $conteo): ?>
@@ -99,21 +99,21 @@ $url_base = admin_url('admin.php?page=flavor-woocommerce-pedidos');
     <!-- Barra de búsqueda -->
     <div class="flavor-search-bar">
         <form method="get" action="">
-            <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-woocommerce-pedidos', 'flavor-chat-ia'); ?>">
+            <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-woocommerce-pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <?php if (!empty($estado_filtro)): ?>
                 <input type="hidden" name="status" value="<?php echo esc_attr($estado_filtro); ?>">
             <?php endif; ?>
             <input type="search"
                    name="s"
                    value="<?php echo esc_attr($busqueda); ?>"
-                   placeholder="<?php esc_attr_e('Buscar por # pedido, email o cliente...', 'flavor-chat-ia'); ?>">
+                   placeholder="<?php esc_attr_e('Buscar por # pedido, email o cliente...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <button type="submit" class="button">
                 <span class="dashicons dashicons-search"></span>
-                <?php esc_html_e('Buscar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Buscar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
             <?php if (!empty($busqueda)): ?>
                 <a href="<?php echo esc_url($url_base); ?>" class="button">
-                    <?php esc_html_e('Limpiar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Limpiar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             <?php endif; ?>
         </form>
@@ -126,13 +126,13 @@ $url_base = admin_url('admin.php?page=flavor-woocommerce-pedidos');
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
-                            <th class="column-order"><?php esc_html_e('Pedido', 'flavor-chat-ia'); ?></th>
-                            <th class="column-date"><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                            <th class="column-customer"><?php esc_html_e('Cliente', 'flavor-chat-ia'); ?></th>
-                            <th class="column-status"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                            <th class="column-items"><?php esc_html_e('Items', 'flavor-chat-ia'); ?></th>
-                            <th class="column-total"><?php esc_html_e('Total', 'flavor-chat-ia'); ?></th>
-                            <th class="column-actions"><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                            <th class="column-order"><?php esc_html_e('Pedido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th class="column-date"><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th class="column-customer"><?php esc_html_e('Cliente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th class="column-status"><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th class="column-items"><?php esc_html_e('Items', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th class="column-total"><?php esc_html_e('Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                            <th class="column-actions"><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -169,7 +169,7 @@ $url_base = admin_url('admin.php?page=flavor-woocommerce-pedidos');
                                     </span>
                                 </td>
                                 <td class="column-items">
-                                    <?php printf(esc_html(_n('%d item', '%d items', $items_count, 'flavor-chat-ia')), $items_count); ?>
+                                    <?php printf(esc_html(_n('%d item', '%d items', $items_count, FLAVOR_PLATFORM_TEXT_DOMAIN)), $items_count); ?>
                                 </td>
                                 <td class="column-total">
                                     <?php echo wp_kses_post($order->get_formatted_order_total()); ?>
@@ -180,13 +180,13 @@ $url_base = admin_url('admin.php?page=flavor-woocommerce-pedidos');
                                     <div class="action-buttons">
                                         <a href="<?php echo esc_url($order->get_edit_order_url()); ?>"
                                            class="button button-small"
-                                           title="<?php esc_attr_e('Ver detalles', 'flavor-chat-ia'); ?>">
+                                           title="<?php esc_attr_e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                             <span class="dashicons dashicons-visibility"></span>
                                         </a>
                                         <?php if ($order_status === 'processing'): ?>
                                             <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin-ajax.php?action=woocommerce_mark_order_status&status=completed&order_id=' . $order_id), 'woocommerce-mark-order-status')); ?>"
                                                class="button button-small button-primary"
-                                               title="<?php esc_attr_e('Marcar como completado', 'flavor-chat-ia'); ?>">
+                                               title="<?php esc_attr_e('Marcar como completado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                                                 <span class="dashicons dashicons-yes"></span>
                                             </a>
                                         <?php endif; ?>
@@ -212,7 +212,7 @@ $url_base = admin_url('admin.php?page=flavor-woocommerce-pedidos');
 
                         <span class="pagination-info">
                             <?php printf(
-                                esc_html__('Mostrando %1$d-%2$d de %3$d pedidos', 'flavor-chat-ia'),
+                                esc_html__('Mostrando %1$d-%2$d de %3$d pedidos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 (($pagina_actual - 1) * $por_pagina) + 1,
                                 min($pagina_actual * $por_pagina, $total_pedidos),
                                 $total_pedidos
@@ -222,20 +222,20 @@ $url_base = admin_url('admin.php?page=flavor-woocommerce-pedidos');
                         <div class="pagination-links">
                             <?php if ($pagina_actual > 1): ?>
                                 <a href="<?php echo esc_url(add_query_arg(array_merge($args_paginacion, ['paged' => 1]), $url_base)); ?>"
-                                   class="button"><?php echo esc_html__('&laquo;', 'flavor-chat-ia'); ?></a>
+                                   class="button"><?php echo esc_html__('&laquo;', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                                 <a href="<?php echo esc_url(add_query_arg(array_merge($args_paginacion, ['paged' => $pagina_actual - 1]), $url_base)); ?>"
-                                   class="button"><?php echo esc_html__('&lsaquo;', 'flavor-chat-ia'); ?></a>
+                                   class="button"><?php echo esc_html__('&lsaquo;', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                             <?php endif; ?>
 
                             <span class="current-page">
-                                <?php printf(esc_html__('Página %1$d de %2$d', 'flavor-chat-ia'), $pagina_actual, $total_paginas); ?>
+                                <?php printf(esc_html__('Página %1$d de %2$d', FLAVOR_PLATFORM_TEXT_DOMAIN), $pagina_actual, $total_paginas); ?>
                             </span>
 
                             <?php if ($pagina_actual < $total_paginas): ?>
                                 <a href="<?php echo esc_url(add_query_arg(array_merge($args_paginacion, ['paged' => $pagina_actual + 1]), $url_base)); ?>"
-                                   class="button"><?php echo esc_html__('&rsaquo;', 'flavor-chat-ia'); ?></a>
+                                   class="button"><?php echo esc_html__('&rsaquo;', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                                 <a href="<?php echo esc_url(add_query_arg(array_merge($args_paginacion, ['paged' => $total_paginas]), $url_base)); ?>"
-                                   class="button"><?php echo esc_html__('&raquo;', 'flavor-chat-ia'); ?></a>
+                                   class="button"><?php echo esc_html__('&raquo;', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -246,11 +246,11 @@ $url_base = admin_url('admin.php?page=flavor-woocommerce-pedidos');
                     <span class="dashicons dashicons-clipboard"></span>
                     <p>
                         <?php if (!empty($busqueda)): ?>
-                            <?php printf(esc_html__('No se encontraron pedidos para "%s".', 'flavor-chat-ia'), esc_html($busqueda)); ?>
+                            <?php printf(esc_html__('No se encontraron pedidos para "%s".', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($busqueda)); ?>
                         <?php elseif (!empty($estado_filtro)): ?>
-                            <?php esc_html_e('No hay pedidos con este estado.', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('No hay pedidos con este estado.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <?php else: ?>
-                            <?php esc_html_e('No hay pedidos registrados.', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('No hay pedidos registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <?php endif; ?>
                     </p>
                 </div>

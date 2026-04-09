@@ -56,8 +56,8 @@ $total_paginas = ceil($total / $por_pagina);
 ?>
 
 <div class="wrap flavor-admin-galeria">
-    <h1 class="wp-heading-inline"><?php _e('Galeria Multimedia', 'flavor-chat-ia'); ?></h1>
-    <a href="<?php echo admin_url('admin.php?page=multimedia-subir'); ?>" class="page-title-action"><?php _e('Subir nuevo', 'flavor-chat-ia'); ?></a>
+    <h1 class="wp-heading-inline"><?php _e('Galeria Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
+    <a href="<?php echo admin_url('admin.php?page=multimedia-subir'); ?>" class="page-title-action"><?php _e('Subir nuevo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
     <hr class="wp-header-end">
 
     <div class="tablenav top">
@@ -65,33 +65,33 @@ $total_paginas = ceil($total / $por_pagina);
             <input type="hidden" name="page" value="multimedia-galeria">
 
             <select name="tipo">
-                <option value=""><?php _e('Todos los tipos', 'flavor-chat-ia'); ?></option>
-                <option value="imagen" <?php selected($filtro_tipo, 'imagen'); ?>><?php _e('Imagenes', 'flavor-chat-ia'); ?></option>
-                <option value="video" <?php selected($filtro_tipo, 'video'); ?>><?php _e('Videos', 'flavor-chat-ia'); ?></option>
-                <option value="audio" <?php selected($filtro_tipo, 'audio'); ?>><?php _e('Audio', 'flavor-chat-ia'); ?></option>
-                <option value="documento" <?php selected($filtro_tipo, 'documento'); ?>><?php _e('Documentos', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php _e('Todos los tipos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="imagen" <?php selected($filtro_tipo, 'imagen'); ?>><?php _e('Imagenes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="video" <?php selected($filtro_tipo, 'video'); ?>><?php _e('Videos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="audio" <?php selected($filtro_tipo, 'audio'); ?>><?php _e('Audio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="documento" <?php selected($filtro_tipo, 'documento'); ?>><?php _e('Documentos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             </select>
 
             <select name="estado">
-                <option value=""><?php _e('Todos los estados', 'flavor-chat-ia'); ?></option>
-                <option value="publicado" <?php selected($filtro_estado, 'publicado'); ?>><?php _e('Publicados', 'flavor-chat-ia'); ?></option>
-                <option value="pendiente" <?php selected($filtro_estado, 'pendiente'); ?>><?php _e('Pendientes', 'flavor-chat-ia'); ?></option>
-                <option value="rechazado" <?php selected($filtro_estado, 'rechazado'); ?>><?php _e('Rechazados', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php _e('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="publicado" <?php selected($filtro_estado, 'publicado'); ?>><?php _e('Publicados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="pendiente" <?php selected($filtro_estado, 'pendiente'); ?>><?php _e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="rechazado" <?php selected($filtro_estado, 'rechazado'); ?>><?php _e('Rechazados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             </select>
 
-            <input type="search" name="s" value="<?php echo esc_attr($busqueda); ?>" placeholder="<?php esc_attr_e('Buscar...', 'flavor-chat-ia'); ?>">
-            <input type="submit" class="button" value="<?php esc_attr_e('Filtrar', 'flavor-chat-ia'); ?>">
+            <input type="search" name="s" value="<?php echo esc_attr($busqueda); ?>" placeholder="<?php esc_attr_e('Buscar...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+            <input type="submit" class="button" value="<?php esc_attr_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
         </form>
 
         <div class="tablenav-pages">
             <span class="displaying-num">
-                <?php printf(_n('%s elemento', '%s elementos', $total, 'flavor-chat-ia'), number_format_i18n($total)); ?>
+                <?php printf(_n('%s elemento', '%s elementos', $total, FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($total)); ?>
             </span>
             <?php if ($total_paginas > 1): ?>
             <span class="pagination-links">
                 <?php if ($paginacion > 1): ?>
                 <a class="prev-page button" href="<?php echo esc_url(add_query_arg('paged', $paginacion - 1)); ?>">
-                    <span class="screen-reader-text"><?php _e('Pagina anterior', 'flavor-chat-ia'); ?></span>
+                    <span class="screen-reader-text"><?php _e('Pagina anterior', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span aria-hidden="true">&lsaquo;</span>
                 </a>
                 <?php endif; ?>
@@ -100,7 +100,7 @@ $total_paginas = ceil($total / $por_pagina);
                 </span>
                 <?php if ($paginacion < $total_paginas): ?>
                 <a class="next-page button" href="<?php echo esc_url(add_query_arg('paged', $paginacion + 1)); ?>">
-                    <span class="screen-reader-text"><?php _e('Pagina siguiente', 'flavor-chat-ia'); ?></span>
+                    <span class="screen-reader-text"><?php _e('Pagina siguiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span aria-hidden="true">&rsaquo;</span>
                 </a>
                 <?php endif; ?>
@@ -112,7 +112,7 @@ $total_paginas = ceil($total / $por_pagina);
     <?php if (empty($archivos)): ?>
     <div class="flavor-empty-state">
         <span class="dashicons dashicons-format-gallery"></span>
-        <p><?php _e('No se encontraron archivos.', 'flavor-chat-ia'); ?></p>
+        <p><?php _e('No se encontraron archivos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </div>
     <?php else: ?>
 
@@ -143,8 +143,8 @@ $total_paginas = ceil($total / $por_pagina);
             </div>
 
             <div class="flavor-galeria-acciones">
-                <a href="<?php echo esc_url($archivo->url ?? '#'); ?>" class="button button-small" target="_blank"><?php _e('Ver', 'flavor-chat-ia'); ?></a>
-                <a href="<?php echo admin_url('admin.php?page=multimedia-editar&id=' . $archivo->id); ?>" class="button button-small"><?php _e('Editar', 'flavor-chat-ia'); ?></a>
+                <a href="<?php echo esc_url($archivo->url ?? '#'); ?>" class="button button-small" target="_blank"><?php _e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
+                <a href="<?php echo admin_url('admin.php?page=multimedia-editar&id=' . $archivo->id); ?>" class="button button-small"><?php _e('Editar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
             </div>
         </div>
         <?php endforeach; ?>

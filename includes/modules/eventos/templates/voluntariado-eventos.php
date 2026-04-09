@@ -14,8 +14,8 @@ $usuario_logueado = is_user_logged_in();
             <span class="dashicons dashicons-heart"></span>
         </span>
         <div>
-            <h3><?php esc_html_e('Voluntariado en Eventos', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('Colabora en la organización de eventos comunitarios', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('Voluntariado en Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php esc_html_e('Colabora en la organización de eventos comunitarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     </div>
 
@@ -24,7 +24,7 @@ $usuario_logueado = is_user_logged_in();
         <div class="ev-voluntariado__mis-compromisos">
             <h4>
                 <span class="dashicons dashicons-yes-alt"></span>
-                <?php esc_html_e('Mis compromisos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Mis compromisos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h4>
             <div class="ev-voluntariado__compromisos-lista">
                 <?php foreach ($mis_inscripciones as $inscripcion): ?>
@@ -42,9 +42,9 @@ $usuario_logueado = is_user_logged_in();
                         <span class="ev-voluntariado__compromiso-estado ev-voluntariado__compromiso-estado--<?php echo esc_attr($inscripcion->estado); ?>">
                             <?php
                             $estados = [
-                                'confirmado' => __('Confirmado', 'flavor-chat-ia'),
-                                'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-                                'completado' => __('Completado', 'flavor-chat-ia'),
+                                'confirmado' => __('Confirmado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                                'completado' => __('Completado', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             ];
                             echo esc_html($estados[$inscripcion->estado] ?? $inscripcion->estado);
                             ?>
@@ -59,11 +59,11 @@ $usuario_logueado = is_user_logged_in();
     <?php if (empty($tareas)): ?>
         <div class="ev-voluntariado__vacio">
             <span class="dashicons dashicons-smiley"></span>
-            <p><?php esc_html_e('No hay tareas de voluntariado disponibles en este momento.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('No hay tareas de voluntariado disponibles en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php else: ?>
         <div class="ev-voluntariado__tareas">
-            <h4><?php esc_html_e('Tareas disponibles', 'flavor-chat-ia'); ?></h4>
+            <h4><?php esc_html_e('Tareas disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
             <?php foreach ($tareas as $tarea): ?>
                 <?php
                 $plazas_disponibles = $tarea->plazas_totales - $tarea->plazas_ocupadas;
@@ -114,13 +114,13 @@ $usuario_logueado = is_user_logged_in();
                         </span>
                         <span class="ev-voluntariado__detalle">
                             <span class="dashicons dashicons-location"></span>
-                            <?php echo esc_html($tarea->ubicacion ?: __('Por determinar', 'flavor-chat-ia')); ?>
+                            <?php echo esc_html($tarea->ubicacion ?: __('Por determinar', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>
                         </span>
                     </div>
 
                     <?php if (!empty($tarea->requisitos)): ?>
                         <div class="ev-voluntariado__requisitos">
-                            <strong><?php esc_html_e('Requisitos:', 'flavor-chat-ia'); ?></strong>
+                            <strong><?php esc_html_e('Requisitos:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                             <?php echo esc_html($tarea->requisitos); ?>
                         </div>
                     <?php endif; ?>
@@ -132,7 +132,7 @@ $usuario_logueado = is_user_logged_in();
                             </div>
                             <span class="ev-voluntariado__plazas-texto">
                                 <?php printf(
-                                    esc_html__('%d/%d plazas ocupadas', 'flavor-chat-ia'),
+                                    esc_html__('%d/%d plazas ocupadas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                                     $tarea->plazas_ocupadas,
                                     $tarea->plazas_totales
                                 ); ?>
@@ -141,12 +141,12 @@ $usuario_logueado = is_user_logged_in();
                         <?php if ($usuario_logueado && $plazas_disponibles > 0): ?>
                             <button type="button" class="ev-btn ev-btn--primary ev-inscribir-voluntariado" data-tarea="<?php echo esc_attr($tarea->id); ?>">
                                 <span class="dashicons dashicons-plus-alt"></span>
-                                <?php esc_html_e('Apuntarme', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Apuntarme', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         <?php elseif ($plazas_disponibles <= 0): ?>
                             <span class="ev-voluntariado__completo">
                                 <span class="dashicons dashicons-yes"></span>
-                                <?php esc_html_e('Completo', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </span>
                         <?php endif; ?>
                     </div>
@@ -157,23 +157,23 @@ $usuario_logueado = is_user_logged_in();
 
     <!-- Beneficios del voluntariado -->
     <div class="ev-voluntariado__beneficios">
-        <h4><?php esc_html_e('¿Por qué ser voluntario?', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('¿Por qué ser voluntario?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <div class="ev-voluntariado__beneficios-grid">
             <div class="ev-voluntariado__beneficio">
                 <span class="dashicons dashicons-star-filled"></span>
-                <span><?php esc_html_e('Gana puntos de participación', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Gana puntos de participación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="ev-voluntariado__beneficio">
                 <span class="dashicons dashicons-groups"></span>
-                <span><?php esc_html_e('Conoce a tu comunidad', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Conoce a tu comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="ev-voluntariado__beneficio">
                 <span class="dashicons dashicons-awards"></span>
-                <span><?php esc_html_e('Desbloquea logros especiales', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Desbloquea logros especiales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="ev-voluntariado__beneficio">
                 <span class="dashicons dashicons-heart"></span>
-                <span><?php esc_html_e('Contribuye al bien común', 'flavor-chat-ia'); ?></span>
+                <span><?php esc_html_e('Contribuye al bien común', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>

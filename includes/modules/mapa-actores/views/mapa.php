@@ -24,19 +24,19 @@ $municipios = $wpdb->get_results(
 ?>
 
 <section class="flavor-actores-mapa">
-    <h2><?php esc_html_e('Mapa territorial de actores', 'flavor-chat-ia'); ?></h2>
-    <p><?php esc_html_e('Distribucion por municipio y balance de posicion.', 'flavor-chat-ia'); ?></p>
+    <h2><?php esc_html_e('Mapa territorial de actores', 'flavor-platform'); ?></h2>
+    <p><?php esc_html_e('Distribucion por municipio y balance de posicion.', 'flavor-platform'); ?></p>
 
     <?php if (empty($municipios)): ?>
-        <p><?php esc_html_e('No hay municipios con datos disponibles.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('No hay municipios con datos disponibles.', 'flavor-platform'); ?></p>
     <?php else: ?>
         <table class="widefat striped">
             <thead>
                 <tr>
-                    <th><?php esc_html_e('Municipio', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Total actores', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Aliados', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Opositores', 'flavor-chat-ia'); ?></th>
+                    <th><?php esc_html_e('Municipio', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Total actores', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Aliados', 'flavor-platform'); ?></th>
+                    <th><?php esc_html_e('Opositores', 'flavor-platform'); ?></th>
                 </tr>
             </thead>
             <tbody>

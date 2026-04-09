@@ -18,7 +18,7 @@ $nombre = $huerto['nombre'] ?? $huerto['title'] ?? '';
 $descripcion = $huerto['descripcion'] ?? '';
 $url = $huerto['url'] ?? '#';
 $imagen = $huerto['imagen'] ?? 'https://picsum.photos/seed/huerto' . $id . '/600/400';
-$ubicacion = $huerto['ubicacion'] ?? __('Sin ubicación', 'flavor-chat-ia');
+$ubicacion = $huerto['ubicacion'] ?? __('Sin ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $parcelas_libres = $huerto['parcelas_libres'] ?? 0;
 $tamano_parcela = $huerto['tamano_parcela'] ?? '25';
 $precio = $huerto['precio'] ?? '20€';
@@ -35,11 +35,11 @@ $precio = $huerto['precio'] ?? '20€';
         <!-- Badge parcelas -->
         <?php if ($parcelas_libres > 0): ?>
             <span class="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-bold bg-green-500 text-white">
-                <?php echo esc_html($parcelas_libres); ?> <?php echo esc_html__('libres', 'flavor-chat-ia'); ?>
+                <?php echo esc_html($parcelas_libres); ?> <?php echo esc_html__('libres', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
         <?php else: ?>
             <span class="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-bold bg-red-500 text-white">
-                <?php echo esc_html__('Completo', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Completo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
         <?php endif; ?>
 
@@ -74,7 +74,7 @@ $precio = $huerto['precio'] ?? '20€';
 
         <a href="<?php echo esc_url($url); ?>"
            class="block w-full py-2.5 rounded-xl text-center font-semibold text-white transition-all hover:scale-105 bg-gradient-to-r from-green-500 to-emerald-600">
-            <?php echo esc_html__('Ver Huerto', 'flavor-chat-ia'); ?>
+            <?php echo esc_html__('Ver Huerto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 </article>

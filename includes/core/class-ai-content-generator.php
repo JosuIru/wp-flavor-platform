@@ -71,7 +71,7 @@ class Flavor_AI_Content_Generator {
         check_ajax_referer('flavor_ai_content', 'nonce');
 
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(['error' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['error' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $type = sanitize_text_field($_POST['type'] ?? '');
@@ -99,7 +99,7 @@ class Flavor_AI_Content_Generator {
         if (!$this->is_available()) {
             return [
                 'success' => false,
-                'error' => __('El motor de IA no está disponible', 'flavor-chat-ia'),
+                'error' => __('El motor de IA no está disponible', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -115,7 +115,7 @@ class Flavor_AI_Content_Generator {
         if (!$response['success']) {
             return [
                 'success' => false,
-                'error' => $response['error'] ?? __('Error al generar contenido', 'flavor-chat-ia'),
+                'error' => $response['error'] ?? __('Error al generar contenido', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 

@@ -123,7 +123,7 @@ class Flavor_Chat_Ayuda_Vecinal_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Ayuda Vecinal no están creadas. Se crearán automáticamente al activar.', 'flavor-chat-ia');
+            return __('Las tablas de Ayuda Vecinal no están creadas. Se crearán automáticamente al activar.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
         
     return '';
@@ -552,23 +552,23 @@ class Flavor_Chat_Ayuda_Vecinal_Module extends Flavor_Chat_Module_Base {
     public function get_web_components() {
         return [
             'hero_ayuda' => [
-                'label' => __('Hero Ayuda Vecinal', 'flavor-chat-ia'),
+                'label' => __('Hero Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'hero',
                 'icon' => 'dashicons-heart',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Red de Ayuda Vecinal', 'flavor-chat-ia')],
-                    'subtitulo' => ['type' => 'textarea', 'default' => __('Unidos somos más fuertes. Pide o presta ayuda en tu comunidad', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Red de Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'subtitulo' => ['type' => 'textarea', 'default' => __('Unidos somos más fuertes. Pide o presta ayuda en tu comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'imagen_fondo' => ['type' => 'image', 'default' => ''],
                     'mostrar_estadisticas' => ['type' => 'toggle', 'default' => true],
                 ],
                 'template' => 'ayuda-vecinal/hero',
             ],
             'solicitudes_grid' => [
-                'label' => __('Grid de Solicitudes', 'flavor-chat-ia'),
+                'label' => __('Grid de Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'listings',
                 'icon' => 'dashicons-grid-view',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Solicitudes Activas', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Solicitudes Activas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'columnas' => ['type' => 'select', 'options' => [2, 3], 'default' => 2],
                     'limite' => ['type' => 'number', 'default' => 6],
                     'categoria' => ['type' => 'text', 'default' => ''],
@@ -577,24 +577,24 @@ class Flavor_Chat_Ayuda_Vecinal_Module extends Flavor_Chat_Module_Base {
                 'template' => 'ayuda-vecinal/solicitudes-grid',
             ],
             'categorias_ayuda' => [
-                'label' => __('Categorías de Ayuda', 'flavor-chat-ia'),
+                'label' => __('Categorías de Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'features',
                 'icon' => 'dashicons-category',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('¿Cómo Puedes Ayudar?', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('¿Cómo Puedes Ayudar?', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'mostrar_iconos' => ['type' => 'toggle', 'default' => true],
                     'estilo' => ['type' => 'select', 'options' => ['grid', 'lista'], 'default' => 'grid'],
                 ],
                 'template' => 'ayuda-vecinal/categorias',
             ],
             'cta_voluntario' => [
-                'label' => __('CTA Ser Voluntario', 'flavor-chat-ia'),
+                'label' => __('CTA Ser Voluntario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'category' => 'cta',
                 'icon' => 'dashicons-megaphone',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'default' => __('Únete como Voluntario', 'flavor-chat-ia')],
-                    'descripcion' => ['type' => 'textarea', 'default' => __('Ayuda a tus vecinos y fortalece tu comunidad', 'flavor-chat-ia')],
-                    'boton_texto' => ['type' => 'text', 'default' => __('Quiero Ayudar', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'default' => __('Únete como Voluntario', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'descripcion' => ['type' => 'textarea', 'default' => __('Ayuda a tus vecinos y fortalece tu comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                    'boton_texto' => ['type' => 'text', 'default' => __('Quiero Ayudar', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                     'boton_url' => ['type' => 'url', 'default' => '#'],
                     'color_fondo' => ['type' => 'color', 'default' => '#ef4444'],
                 ],
@@ -710,25 +710,25 @@ KNOWLEDGE;
     protected function get_admin_config() {
         return [
             'id' => 'ayuda_vecinal',
-            'label' => __('Ayuda Vecinal', 'flavor-chat-ia'),
+            'label' => __('Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon' => 'dashicons-heart',
             'capability' => 'manage_options',
             'categoria' => 'comunidad',
             'paginas' => [
                 [
                     'slug' => 'ayuda-vecinal-dashboard',
-                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'titulo' => __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'ayuda-vecinal-solicitudes',
-                    'titulo' => __('Solicitudes', 'flavor-chat-ia'),
+                    'titulo' => __('Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_solicitudes'],
                     'badge' => [$this, 'contar_solicitudes_abiertas'],
                 ],
                 [
                     'slug' => 'ayuda-vecinal-voluntarios',
-                    'titulo' => __('Voluntarios', 'flavor-chat-ia'),
+                    'titulo' => __('Voluntarios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'callback' => [$this, 'render_admin_voluntarios'],
                 ],
             ],
@@ -782,7 +782,7 @@ KNOWLEDGE;
         $estadisticas[] = [
             'icon' => 'dashicons-sos',
             'valor' => $solicitudes_abiertas,
-            'label' => __('Solicitudes abiertas', 'flavor-chat-ia'),
+            'label' => __('Solicitudes abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'color' => $solicitudes_abiertas > 0 ? 'orange' : 'gray',
             'enlace' => $is_dashboard_viewer ? home_url('/mi-portal/ayuda-vecinal/') : admin_url('admin.php?page=ayuda-vecinal-solicitudes'),
         ];
@@ -795,7 +795,7 @@ KNOWLEDGE;
             $estadisticas[] = [
                 'icon' => 'dashicons-groups',
                 'valor' => $total_voluntarios,
-                'label' => __('Voluntarios activos', 'flavor-chat-ia'),
+                'label' => __('Voluntarios activos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'color' => $total_voluntarios > 0 ? 'green' : 'gray',
                 'enlace' => $is_dashboard_viewer ? home_url('/mi-portal/ayuda-vecinal/') : admin_url('admin.php?page=ayuda-vecinal-voluntarios'),
             ];
@@ -817,15 +817,15 @@ KNOWLEDGE;
         echo '<div class="wrap flavor-modulo-page">';
         $acciones = $is_dashboard_viewer
             ? [
-                ['label' => __('Ver en portal', 'flavor-chat-ia'), 'url' => home_url('/mi-portal/ayuda-vecinal/'), 'class' => ''],
+                ['label' => __('Ver en portal', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => home_url('/mi-portal/ayuda-vecinal/'), 'class' => ''],
             ]
             : [
-                ['label' => __('Nueva Solicitud', 'flavor-chat-ia'), 'url' => '#', 'class' => 'button-primary'],
+                ['label' => __('Nueva Solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => '#', 'class' => 'button-primary'],
             ];
-        $this->render_page_header(__('Dashboard de Ayuda Vecinal', 'flavor-chat-ia'), $acciones);
+        $this->render_page_header(__('Dashboard de Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN), $acciones);
 
         if ($is_dashboard_viewer) {
-            echo '<div class="notice notice-info"><p>' . esc_html__('Vista resumida para gestor de grupos. La gestión completa de solicitudes y voluntarios sigue reservada a administración.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-info"><p>' . esc_html__('Vista resumida para gestor de grupos. La gestión completa de solicitudes y voluntarios sigue reservada a administración.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         // Estadísticas generales
@@ -846,13 +846,13 @@ KNOWLEDGE;
             : 0;
 
         echo '<div class="flavor-stats-grid">';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($solicitudes_abiertas) . '</span><span class="stat-label">' . __('Solicitudes Abiertas', 'flavor-chat-ia') . '</span></div>';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($solicitudes_completadas) . '</span><span class="stat-label">' . __('Ayudas Completadas', 'flavor-chat-ia') . '</span></div>';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($total_voluntarios) . '</span><span class="stat-label">' . __('Voluntarios Activos', 'flavor-chat-ia') . '</span></div>';
-        echo '<div class="flavor-stat-card' . ($solicitudes_urgentes > 0 ? ' stat-urgent' : '') . '"><span class="stat-number">' . esc_html($solicitudes_urgentes) . '</span><span class="stat-label">' . __('Urgentes', 'flavor-chat-ia') . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($solicitudes_abiertas) . '</span><span class="stat-label">' . __('Solicitudes Abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($solicitudes_completadas) . '</span><span class="stat-label">' . __('Ayudas Completadas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
+        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($total_voluntarios) . '</span><span class="stat-label">' . __('Voluntarios Activos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
+        echo '<div class="flavor-stat-card' . ($solicitudes_urgentes > 0 ? ' stat-urgent' : '') . '"><span class="stat-number">' . esc_html($solicitudes_urgentes) . '</span><span class="stat-label">' . __('Urgentes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></div>';
         echo '</div>';
 
-        echo '<p>' . __('La Red de Ayuda Vecinal conecta a vecinos que necesitan ayuda con voluntarios dispuestos a colaborar. Unidos somos más fuertes.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('La Red de Ayuda Vecinal conecta a vecinos que necesitan ayuda con voluntarios dispuestos a colaborar. Unidos somos más fuertes.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         echo '</div>';
     }
 
@@ -866,20 +866,20 @@ KNOWLEDGE;
 
         echo '<div class="wrap flavor-modulo-page">';
         $this->render_page_header(
-            __('Gestión de Solicitudes', 'flavor-chat-ia'),
+            __('Gestión de Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $is_dashboard_viewer
                 ? [
-                    ['label' => __('Ver en portal', 'flavor-chat-ia'), 'url' => home_url('/mi-portal/ayuda-vecinal/'), 'class' => ''],
+                    ['label' => __('Ver en portal', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => home_url('/mi-portal/ayuda-vecinal/'), 'class' => ''],
                 ]
                 : []
         );
 
         if ($is_dashboard_viewer) {
-            echo '<div class="notice notice-info"><p>' . esc_html__('Vista de consulta para gestor de grupos. El detalle puede revisarse, pero la gestión operativa de solicitudes sigue reservada a administración.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-info"><p>' . esc_html__('Vista de consulta para gestor de grupos. El detalle puede revisarse, pero la gestión operativa de solicitudes sigue reservada a administración.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
-            echo '<p>' . __('Las tablas no están creadas.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('Las tablas no están creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
             return;
         }
@@ -900,13 +900,13 @@ KNOWLEDGE;
         if (!empty($solicitudes)) {
             echo '<table class="wp-list-table widefat fixed striped">';
             echo '<thead><tr>';
-            echo '<th>' . __('Título', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Solicitante', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Categoría', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Urgencia', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Estado', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Fecha', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Acciones', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Solicitante', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Urgencia', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
             echo '</tr></thead>';
             echo '<tbody>';
 
@@ -917,27 +917,27 @@ KNOWLEDGE;
 
                 echo '<tr>';
                 echo '<td><strong>' . esc_html($solicitud['titulo']) . '</strong></td>';
-                echo '<td>' . esc_html($solicitante ? $solicitante->display_name : __('Vecino', 'flavor-chat-ia')) . '</td>';
+                echo '<td>' . esc_html($solicitante ? $solicitante->display_name : __('Vecino', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '</td>';
                 echo '<td>' . esc_html(ucfirst(str_replace('_', ' ', $solicitud['categoria']))) . '</td>';
                 echo '<td><span class="' . esc_attr($clase_urgencia) . '">' . esc_html(ucfirst($solicitud['urgencia'])) . '</span></td>';
                 echo '<td><span class="' . esc_attr($clase_estado) . '">' . esc_html(ucfirst($solicitud['estado'])) . '</span></td>';
                 echo '<td>' . esc_html(date_i18n('d/m/Y H:i', strtotime($solicitud['fecha_solicitud']))) . '</td>';
-                echo '<td><a href="#" class="button button-small av-ver-solicitud" data-id="' . esc_attr($solicitud['id']) . '">' . __('Ver', 'flavor-chat-ia') . '</a></td>';
+                echo '<td><a href="#" class="button button-small av-ver-solicitud" data-id="' . esc_attr($solicitud['id']) . '">' . __('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></td>';
                 echo '</tr>';
             }
 
             echo '</tbody></table>';
         } else {
-            echo '<p>' . __('No hay solicitudes registradas.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('No hay solicitudes registradas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         // Modal ver solicitud
         echo '<div id="modal-ver-solicitud" style="display:none;">
             <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:100000;">
                 <div class="modal-content" style="position:relative;max-width:600px;margin:50px auto;background:#fff;padding:20px;border-radius:4px;">
-                    <h2>' . __('Detalle de Solicitud', 'flavor-chat-ia') . '</h2>
+                    <h2>' . __('Detalle de Solicitud', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h2>
                     <div id="contenido-solicitud"></div>
-                    <p><button type="button" class="button" id="cerrar-modal-solicitud">' . __('Cerrar', 'flavor-chat-ia') . '</button></p>
+                    <p><button type="button" class="button" id="cerrar-modal-solicitud">' . __('Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</button></p>
                 </div>
             </div>
         </div>';
@@ -986,20 +986,20 @@ KNOWLEDGE;
 
         echo '<div class="wrap flavor-modulo-page">';
         $this->render_page_header(
-            __('Voluntarios de la Red', 'flavor-chat-ia'),
+            __('Voluntarios de la Red', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $is_dashboard_viewer
                 ? [
-                    ['label' => __('Ver en portal', 'flavor-chat-ia'), 'url' => home_url('/mi-portal/ayuda-vecinal/'), 'class' => ''],
+                    ['label' => __('Ver en portal', FLAVOR_PLATFORM_TEXT_DOMAIN), 'url' => home_url('/mi-portal/ayuda-vecinal/'), 'class' => ''],
                 ]
                 : []
         );
 
         if ($is_dashboard_viewer) {
-            echo '<div class="notice notice-info"><p>' . esc_html__('Vista de consulta para gestor de grupos. Los perfiles de usuario y la gestión avanzada de voluntarios siguen reservados a administración.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="notice notice-info"><p>' . esc_html__('Vista de consulta para gestor de grupos. Los perfiles de usuario y la gestión avanzada de voluntarios siguen reservados a administración.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
         }
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_ofertas)) {
-            echo '<p>' . __('Las tablas no están creadas.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('Las tablas no están creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
             echo '</div>';
             return;
         }
@@ -1018,12 +1018,12 @@ KNOWLEDGE;
         if (!empty($voluntarios)) {
             echo '<table class="wp-list-table widefat fixed striped">';
             echo '<thead><tr>';
-            echo '<th>' . __('Voluntario', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Ofertas Activas', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Ayudas Realizadas', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Puntos Solidaridad', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Última Actividad', 'flavor-chat-ia') . '</th>';
-            echo '<th>' . __('Acciones', 'flavor-chat-ia') . '</th>';
+            echo '<th>' . __('Voluntario', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Ofertas Activas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Ayudas Realizadas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Puntos Solidaridad', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Última Actividad', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
+            echo '<th>' . __('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</th>';
             echo '</tr></thead>';
             echo '<tbody>';
 
@@ -1042,22 +1042,22 @@ KNOWLEDGE;
                 $puntos_solidaridad = $ayudas_realizadas * $puntos_por_ayuda;
 
                 echo '<tr>';
-                echo '<td><strong>' . esc_html($usuario ? $usuario->display_name : __('Voluntario', 'flavor-chat-ia')) . '</strong></td>';
+                echo '<td><strong>' . esc_html($usuario ? $usuario->display_name : __('Voluntario', FLAVOR_PLATFORM_TEXT_DOMAIN)) . '</strong></td>';
                 echo '<td>' . esc_html($voluntario['total_ofertas']) . '</td>';
                 echo '<td>' . esc_html($ayudas_realizadas) . '</td>';
                 echo '<td><span class="puntos-solidaridad">' . esc_html($puntos_solidaridad) . ' pts</span></td>';
                 echo '<td>' . esc_html(date_i18n('d/m/Y', strtotime($voluntario['ultima_oferta']))) . '</td>';
                 if ($is_dashboard_viewer) {
-                    echo '<td><span class="description">' . __('Solo lectura', 'flavor-chat-ia') . '</span></td>';
+                    echo '<td><span class="description">' . __('Solo lectura', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</span></td>';
                 } else {
-                    echo '<td><a href="' . esc_url(admin_url('user-edit.php?user_id=' . $voluntario['usuario_id'])) . '" class="button button-small">' . __('Ver Perfil', 'flavor-chat-ia') . '</a></td>';
+                    echo '<td><a href="' . esc_url(admin_url('user-edit.php?user_id=' . $voluntario['usuario_id'])) . '" class="button button-small">' . __('Ver Perfil', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a></td>';
                 }
                 echo '</tr>';
             }
 
             echo '</tbody></table>';
         } else {
-            echo '<p>' . __('No hay voluntarios registrados en la red de ayuda vecinal.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . __('No hay voluntarios registrados en la red de ayuda vecinal.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>';
         }
 
         echo '</div>';
@@ -1397,7 +1397,7 @@ KNOWLEDGE;
         if (!is_user_logged_in()) {
             return new \WP_Error(
                 'rest_not_logged_in',
-                __('Debes iniciar sesión para realizar esta acción.', 'flavor-chat-ia'),
+                __('Debes iniciar sesión para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 401]
             );
         }
@@ -1414,7 +1414,7 @@ KNOWLEDGE;
         if (!is_user_logged_in()) {
             return new \WP_Error(
                 'rest_not_logged_in',
-                __('Debes iniciar sesión para realizar esta acción.', 'flavor-chat-ia'),
+                __('Debes iniciar sesión para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 401]
             );
         }
@@ -1432,7 +1432,7 @@ KNOWLEDGE;
         if (!$solicitud) {
             return new \WP_Error(
                 'rest_solicitud_not_found',
-                __('Solicitud no encontrada.', 'flavor-chat-ia'),
+                __('Solicitud no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 404]
             );
         }
@@ -1440,7 +1440,7 @@ KNOWLEDGE;
         if ((int) $solicitud->solicitante_id !== $usuario_id && !current_user_can('manage_options')) {
             return new \WP_Error(
                 'rest_forbidden',
-                __('No tienes permiso para modificar esta solicitud.', 'flavor-chat-ia'),
+                __('No tienes permiso para modificar esta solicitud.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 403]
             );
         }
@@ -1461,7 +1461,7 @@ KNOWLEDGE;
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
             return new \WP_Error(
                 'rest_table_not_found',
-                __('Las tablas del módulo no están creadas.', 'flavor-chat-ia'),
+                __('Las tablas del módulo no están creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 500]
             );
         }
@@ -1553,7 +1553,7 @@ KNOWLEDGE;
         if (!$solicitud) {
             return new \WP_Error(
                 'rest_solicitud_not_found',
-                __('Solicitud no encontrada.', 'flavor-chat-ia'),
+                __('Solicitud no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 404]
             );
         }
@@ -1574,7 +1574,7 @@ KNOWLEDGE;
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
             return new \WP_Error(
                 'rest_table_not_found',
-                __('Las tablas del módulo no están creadas.', 'flavor-chat-ia'),
+                __('Las tablas del módulo no están creadas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 500]
             );
         }
@@ -1587,7 +1587,7 @@ KNOWLEDGE;
         if (!empty($categorias_permitidas) && !in_array($categoria, $categorias_permitidas, true)) {
             return new \WP_Error(
                 'rest_invalid_categoria',
-                __('La categoría seleccionada no es válida.', 'flavor-chat-ia'),
+                __('La categoría seleccionada no es válida.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 400]
             );
         }
@@ -1628,7 +1628,7 @@ KNOWLEDGE;
         if ($resultado_insercion === false) {
             return new \WP_Error(
                 'rest_db_error',
-                __('Error al crear la solicitud.', 'flavor-chat-ia'),
+                __('Error al crear la solicitud.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 500]
             );
         }
@@ -1641,7 +1641,7 @@ KNOWLEDGE;
 
         return new \WP_REST_Response([
             'success' => true,
-            'message' => __('Solicitud creada correctamente.', 'flavor-chat-ia'),
+            'message' => __('Solicitud creada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'solicitud' => $this->formatear_solicitud_api($solicitud),
         ], 201);
     }
@@ -1669,7 +1669,7 @@ KNOWLEDGE;
         if (!$solicitud) {
             return new \WP_Error(
                 'rest_solicitud_not_found',
-                __('Solicitud no encontrada.', 'flavor-chat-ia'),
+                __('Solicitud no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 404]
             );
         }
@@ -1677,7 +1677,7 @@ KNOWLEDGE;
         if ($solicitud->estado !== 'abierta') {
             return new \WP_Error(
                 'rest_solicitud_not_open',
-                __('Esta solicitud ya no está abierta para respuestas.', 'flavor-chat-ia'),
+                __('Esta solicitud ya no está abierta para respuestas.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 400]
             );
         }
@@ -1686,7 +1686,7 @@ KNOWLEDGE;
         if ((int) $solicitud->solicitante_id === $usuario_id) {
             return new \WP_Error(
                 'rest_cannot_respond_own',
-                __('No puedes responder a tu propia solicitud.', 'flavor-chat-ia'),
+                __('No puedes responder a tu propia solicitud.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 400]
             );
         }
@@ -1701,7 +1701,7 @@ KNOWLEDGE;
         if ($respuesta_existente) {
             return new \WP_Error(
                 'rest_already_responded',
-                __('Ya has ofrecido ayuda para esta solicitud.', 'flavor-chat-ia'),
+                __('Ya has ofrecido ayuda para esta solicitud.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 400]
             );
         }
@@ -1724,14 +1724,14 @@ KNOWLEDGE;
         if ($resultado_insercion === false) {
             return new \WP_Error(
                 'rest_db_error',
-                __('Error al registrar la respuesta.', 'flavor-chat-ia'),
+                __('Error al registrar la respuesta.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 500]
             );
         }
 
         return new \WP_REST_Response([
             'success' => true,
-            'message' => __('Tu oferta de ayuda ha sido registrada.', 'flavor-chat-ia'),
+            'message' => __('Tu oferta de ayuda ha sido registrada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'respuesta_id' => $wpdb->insert_id,
         ], 201);
     }
@@ -1826,7 +1826,7 @@ KNOWLEDGE;
         if (!$respuesta) {
             return new \WP_Error(
                 'rest_respuesta_not_found',
-                __('Oferta de ayuda no encontrada.', 'flavor-chat-ia'),
+                __('Oferta de ayuda no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 404]
             );
         }
@@ -1834,7 +1834,7 @@ KNOWLEDGE;
         if ((int) $respuesta->ayudante_id !== $usuario_id) {
             return new \WP_Error(
                 'rest_forbidden',
-                __('No tienes permiso para retirar esta oferta.', 'flavor-chat-ia'),
+                __('No tienes permiso para retirar esta oferta.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 403]
             );
         }
@@ -1842,7 +1842,7 @@ KNOWLEDGE;
         if ($respuesta->estado !== 'pendiente') {
             return new \WP_Error(
                 'rest_invalid_state',
-                __('Solo puedes retirar ofertas que aún estén pendientes.', 'flavor-chat-ia'),
+                __('Solo puedes retirar ofertas que aún estén pendientes.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 400]
             );
         }
@@ -1858,14 +1858,14 @@ KNOWLEDGE;
         if ($actualizado === false) {
             return new \WP_Error(
                 'rest_db_error',
-                __('No se pudo retirar la oferta en este momento.', 'flavor-chat-ia'),
+                __('No se pudo retirar la oferta en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 500]
             );
         }
 
         return new \WP_REST_Response([
             'success' => true,
-            'message' => __('Tu oferta de ayuda ha sido retirada.', 'flavor-chat-ia'),
+            'message' => __('Tu oferta de ayuda ha sido retirada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 200);
     }
 
@@ -1891,7 +1891,7 @@ KNOWLEDGE;
         if (!$oferta) {
             return new \WP_Error(
                 'rest_offer_not_found',
-                __('Oferta no encontrada.', 'flavor-chat-ia'),
+                __('Oferta no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 404]
             );
         }
@@ -1899,7 +1899,7 @@ KNOWLEDGE;
         if ((int) $oferta->usuario_id !== $usuario_id) {
             return new \WP_Error(
                 'rest_forbidden',
-                __('No tienes permiso para modificar esta oferta.', 'flavor-chat-ia'),
+                __('No tienes permiso para modificar esta oferta.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 403]
             );
         }
@@ -1918,7 +1918,7 @@ KNOWLEDGE;
         if ($actualizado === false) {
             return new \WP_Error(
                 'rest_db_error',
-                __('No se pudo actualizar la oferta en este momento.', 'flavor-chat-ia'),
+                __('No se pudo actualizar la oferta en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 500]
             );
         }
@@ -1926,8 +1926,8 @@ KNOWLEDGE;
         return new \WP_REST_Response([
             'success' => true,
             'message' => $estado_nuevo === 'activa'
-                ? __('Tu oferta ha sido reactivada.', 'flavor-chat-ia')
-                : __('Tu oferta ha sido desactivada.', 'flavor-chat-ia'),
+                ? __('Tu oferta ha sido reactivada.', FLAVOR_PLATFORM_TEXT_DOMAIN)
+                : __('Tu oferta ha sido desactivada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'activa' => ($estado_nuevo === 'activa'),
         ], 200);
     }
@@ -1969,7 +1969,7 @@ KNOWLEDGE;
         if (empty($datos_actualizar)) {
             return new \WP_Error(
                 'rest_no_data',
-                __('No se proporcionaron datos para actualizar.', 'flavor-chat-ia'),
+                __('No se proporcionaron datos para actualizar.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 400]
             );
         }
@@ -1983,7 +1983,7 @@ KNOWLEDGE;
         if ($resultado_actualizacion === false) {
             return new \WP_Error(
                 'rest_db_error',
-                __('Error al actualizar la solicitud.', 'flavor-chat-ia'),
+                __('Error al actualizar la solicitud.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 500]
             );
         }
@@ -1995,7 +1995,7 @@ KNOWLEDGE;
 
         return new \WP_REST_Response([
             'success' => true,
-            'message' => __('Solicitud actualizada correctamente.', 'flavor-chat-ia'),
+            'message' => __('Solicitud actualizada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'solicitud' => $this->formatear_solicitud_api($solicitud),
         ], 200);
     }
@@ -2021,14 +2021,14 @@ KNOWLEDGE;
         if ($resultado_actualizacion === false) {
             return new \WP_Error(
                 'rest_db_error',
-                __('Error al cancelar la solicitud.', 'flavor-chat-ia'),
+                __('Error al cancelar la solicitud.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 500]
             );
         }
 
         return new \WP_REST_Response([
             'success' => true,
-            'message' => __('Solicitud cancelada correctamente.', 'flavor-chat-ia'),
+            'message' => __('Solicitud cancelada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 200);
     }
 
@@ -2055,14 +2055,14 @@ KNOWLEDGE;
                 'id' => (int) $respuesta->id,
                 'ayudante' => [
                     'id' => (int) $respuesta->ayudante_id,
-                    'nombre' => $ayudante ? $ayudante->display_name : __('Vecino', 'flavor-chat-ia'),
+                    'nombre' => $ayudante ? $ayudante->display_name : __('Vecino', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'avatar' => $ayudante ? get_avatar_url($ayudante->ID, ['size' => 96]) : '',
                 ],
                 'mensaje' => $respuesta->mensaje,
                 'disponibilidad_propuesta' => $respuesta->disponibilidad_propuesta,
                 'estado' => $respuesta->estado,
                 'fecha_respuesta' => $respuesta->fecha_respuesta,
-                'fecha_formateada' => human_time_diff(strtotime($respuesta->fecha_respuesta), current_time('timestamp')) . ' ' . __('atrás', 'flavor-chat-ia'),
+                'fecha_formateada' => human_time_diff(strtotime($respuesta->fecha_respuesta), current_time('timestamp')) . ' ' . __('atrás', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }, $respuestas);
 
@@ -2092,7 +2092,7 @@ KNOWLEDGE;
         if (!$respuesta) {
             return new \WP_Error(
                 'rest_respuesta_not_found',
-                __('Respuesta no encontrada.', 'flavor-chat-ia'),
+                __('Respuesta no encontrada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 404]
             );
         }
@@ -2106,7 +2106,7 @@ KNOWLEDGE;
         if (!$solicitud || ((int) $solicitud->solicitante_id !== $usuario_id && !current_user_can('manage_options'))) {
             return new \WP_Error(
                 'rest_forbidden',
-                __('No tienes permiso para aceptar esta respuesta.', 'flavor-chat-ia'),
+                __('No tienes permiso para aceptar esta respuesta.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 403]
             );
         }
@@ -2141,7 +2141,7 @@ KNOWLEDGE;
 
         return new \WP_REST_Response([
             'success' => true,
-            'message' => __('Ayudante aceptado correctamente.', 'flavor-chat-ia'),
+            'message' => __('Ayudante aceptado correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 200);
     }
 
@@ -2198,11 +2198,11 @@ KNOWLEDGE;
             'estado' => $solicitud->estado,
             'solicitante' => [
                 'id' => (int) $solicitud->solicitante_id,
-                'nombre' => $solicitante ? $solicitante->display_name : __('Vecino', 'flavor-chat-ia'),
+                'nombre' => $solicitante ? $solicitante->display_name : __('Vecino', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'avatar' => $solicitante ? get_avatar_url($solicitante->ID, ['size' => 96]) : '',
             ],
             'fecha_solicitud' => $solicitud->fecha_solicitud,
-            'fecha_formateada' => human_time_diff(strtotime($solicitud->fecha_solicitud), current_time('timestamp')) . ' ' . __('atrás', 'flavor-chat-ia'),
+            'fecha_formateada' => human_time_diff(strtotime($solicitud->fecha_solicitud), current_time('timestamp')) . ' ' . __('atrás', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         if ($incluir_detalles || $solicitud->ubicacion) {
@@ -2224,7 +2224,7 @@ KNOWLEDGE;
                 $ayudante = get_userdata($solicitud->ayudante_id);
                 $datos_formateados['ayudante'] = [
                     'id' => (int) $solicitud->ayudante_id,
-                    'nombre' => $ayudante ? $ayudante->display_name : __('Vecino', 'flavor-chat-ia'),
+                    'nombre' => $ayudante ? $ayudante->display_name : __('Vecino', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'avatar' => $ayudante ? get_avatar_url($ayudante->ID, ['size' => 96]) : '',
                 ];
             }
@@ -2266,36 +2266,36 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Ayuda Vecinal', 'flavor-chat-ia'),
+                'title' => __('Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'ayuda-vecinal',
-                'content' => '<h1>' . __('Ayuda Vecinal', 'flavor-chat-ia') . '</h1>
-<p>' . __('Solicita o ofrece ayuda a tus vecinos', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Solicita o ofrece ayuda a tus vecinos', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_listing module="ayuda_vecinal" action="listar_solicitudes" columnas="2" limite="12"]',
                 'parent' => 0,
             ],
             [
-                'title' => __('Solicitar Ayuda', 'flavor-chat-ia'),
+                'title' => __('Solicitar Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'solicitar',
-                'content' => '<h1>' . __('Solicitar Ayuda', 'flavor-chat-ia') . '</h1>
-<p>' . __('Describe qué necesitas', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Solicitar Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Describe qué necesitas', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_form module="ayuda_vecinal" action="crear_solicitud"]',
                 'parent' => 'ayuda-vecinal',
             ],
             [
-                'title' => __('Ofrecer Ayuda', 'flavor-chat-ia'),
+                'title' => __('Ofrecer Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'ofrecer',
-                'content' => '<h1>' . __('Ofrecer Ayuda', 'flavor-chat-ia') . '</h1>
-<p>' . __('Indica en qué puedes ayudar', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Ofrecer Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
+<p>' . __('Indica en qué puedes ayudar', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p>
 
 [flavor_module_form module="ayuda_vecinal" action="ofrecer_ayuda"]',
                 'parent' => 'ayuda-vecinal',
             ],
             [
-                'title' => __('Mis Solicitudes', 'flavor-chat-ia'),
+                'title' => __('Mis Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'slug' => 'mis-solicitudes',
-                'content' => '<h1>' . __('Mis Solicitudes', 'flavor-chat-ia') . '</h1>
+                'content' => '<h1>' . __('Mis Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>
 
 [flavor_module_dashboard module="ayuda_vecinal"]',
                 'parent' => 'ayuda-vecinal',
@@ -2319,48 +2319,48 @@ KNOWLEDGE;
         $capability = 'manage_options';
 
         // Páginas ocultas (null como parent = no aparecen en menú)
-        add_submenu_page(null, __('Ayuda Vecinal - Dashboard', 'flavor-chat-ia'), __('Dashboard', 'flavor-chat-ia'), $capability, 'ayuda-vecinal', [$this, 'render_pagina_dashboard']);
-        add_submenu_page(null, __('Ayuda Vecinal - Solicitudes', 'flavor-chat-ia'), __('Solicitudes', 'flavor-chat-ia'), $capability, 'ayuda-solicitudes', [$this, 'render_pagina_solicitudes']);
-        add_submenu_page(null, __('Ayuda Vecinal - Solicitudes Vecinales', 'flavor-chat-ia'), __('Solicitudes Vecinales', 'flavor-chat-ia'), $capability, 'ayuda-vecinal-solicitudes', [$this, 'render_pagina_vecinal_solicitudes']);
-        add_submenu_page(null, __('Ayuda Vecinal - Voluntarios', 'flavor-chat-ia'), __('Voluntarios', 'flavor-chat-ia'), $capability, 'ayuda-voluntarios', [$this, 'render_pagina_voluntarios']);
-        add_submenu_page(null, __('Ayuda Vecinal - Matches', 'flavor-chat-ia'), __('Matches', 'flavor-chat-ia'), $capability, 'ayuda-matches', [$this, 'render_pagina_matches']);
-        add_submenu_page(null, __('Ayuda Vecinal - Estadísticas', 'flavor-chat-ia'), __('Estadísticas', 'flavor-chat-ia'), $capability, 'ayuda-estadisticas', [$this, 'render_pagina_estadisticas']);
+        add_submenu_page(null, __('Ayuda Vecinal - Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN), $capability, 'ayuda-vecinal', [$this, 'render_pagina_dashboard']);
+        add_submenu_page(null, __('Ayuda Vecinal - Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN), $capability, 'ayuda-solicitudes', [$this, 'render_pagina_solicitudes']);
+        add_submenu_page(null, __('Ayuda Vecinal - Solicitudes Vecinales', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Solicitudes Vecinales', FLAVOR_PLATFORM_TEXT_DOMAIN), $capability, 'ayuda-vecinal-solicitudes', [$this, 'render_pagina_vecinal_solicitudes']);
+        add_submenu_page(null, __('Ayuda Vecinal - Voluntarios', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Voluntarios', FLAVOR_PLATFORM_TEXT_DOMAIN), $capability, 'ayuda-voluntarios', [$this, 'render_pagina_voluntarios']);
+        add_submenu_page(null, __('Ayuda Vecinal - Matches', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Matches', FLAVOR_PLATFORM_TEXT_DOMAIN), $capability, 'ayuda-matches', [$this, 'render_pagina_matches']);
+        add_submenu_page(null, __('Ayuda Vecinal - Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN), $capability, 'ayuda-estadisticas', [$this, 'render_pagina_estadisticas']);
     }
 
     public function render_pagina_dashboard() {
         $views_path = dirname(__FILE__) . '/views/dashboard.php';
         if (file_exists($views_path)) { include $views_path; }
-        else { echo '<div class="wrap"><h1>' . esc_html__('Dashboard Ayuda Vecinal', 'flavor-chat-ia') . '</h1></div>'; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Dashboard Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>'; }
     }
 
     public function render_pagina_solicitudes() {
         $views_path = dirname(__FILE__) . '/views/solicitudes.php';
         if (file_exists($views_path)) { include $views_path; }
-        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Solicitudes', 'flavor-chat-ia') . '</h1></div>'; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>'; }
     }
 
     public function render_pagina_vecinal_solicitudes() {
         $views_path = dirname(__FILE__) . '/views/vecinal-solicitudes.php';
         if (file_exists($views_path)) { include $views_path; }
-        else { echo '<div class="wrap"><h1>' . esc_html__('Solicitudes Vecinales', 'flavor-chat-ia') . '</h1></div>'; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Solicitudes Vecinales', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>'; }
     }
 
     public function render_pagina_voluntarios() {
         $views_path = dirname(__FILE__) . '/views/voluntarios.php';
         if (file_exists($views_path)) { include $views_path; }
-        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Voluntarios', 'flavor-chat-ia') . '</h1></div>'; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Voluntarios', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>'; }
     }
 
     public function render_pagina_matches() {
         $views_path = dirname(__FILE__) . '/views/matches.php';
         if (file_exists($views_path)) { include $views_path; }
-        else { echo '<div class="wrap"><h1>' . esc_html__('Matches de Ayuda', 'flavor-chat-ia') . '</h1></div>'; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Matches de Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>'; }
     }
 
     public function render_pagina_estadisticas() {
         $views_path = dirname(__FILE__) . '/views/estadisticas.php';
         if (file_exists($views_path)) { include $views_path; }
-        else { echo '<div class="wrap"><h1>' . esc_html__('Estadísticas de Ayuda', 'flavor-chat-ia') . '</h1></div>'; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Estadísticas de Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>'; }
     }
 
     /**
@@ -2368,7 +2368,7 @@ KNOWLEDGE;
      */
     public function ajax_get_dashboard_data() {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -2391,13 +2391,13 @@ KNOWLEDGE;
         ];
         if ($categorias_raw) {
             foreach ($categorias_raw as $cat) {
-                $categorias['labels'][] = ucfirst($cat->categoria ?: __('Sin categoría', 'flavor-chat-ia'));
+                $categorias['labels'][] = ucfirst($cat->categoria ?: __('Sin categoría', FLAVOR_PLATFORM_TEXT_DOMAIN));
                 $categorias['values'][] = (int) $cat->total;
             }
         } else {
             // Datos de ejemplo
             $categorias = [
-                'labels' => [__('Compras', 'flavor-chat-ia'), __('Transporte', 'flavor-chat-ia'), __('Compañía', 'flavor-chat-ia'), __('Tecnología', 'flavor-chat-ia'), __('Trámites', 'flavor-chat-ia')],
+                'labels' => [__('Compras', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Transporte', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Compañía', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN)],
                 'values' => [15, 12, 10, 8, 5],
             ];
         }
@@ -2451,8 +2451,8 @@ KNOWLEDGE;
                 'id' => $u->id,
                 'titulo' => $u->titulo,
                 'categoria' => $u->categoria,
-                'solicitante' => $u->solicitante_nombre ?: __('Anónimo', 'flavor-chat-ia'),
-                'fecha' => human_time_diff(strtotime($u->fecha_solicitud), current_time('timestamp')) . ' ' . __('atrás', 'flavor-chat-ia'),
+                'solicitante' => $u->solicitante_nombre ?: __('Anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'fecha' => human_time_diff(strtotime($u->fecha_solicitud), current_time('timestamp')) . ' ' . __('atrás', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2472,7 +2472,7 @@ KNOWLEDGE;
         foreach ($destacados as $d) {
             $destacados_data[] = [
                 'id' => $d->id,
-                'nombre' => $d->nombre ?: __('Voluntario', 'flavor-chat-ia'),
+                'nombre' => $d->nombre ?: __('Voluntario', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'categoria' => $d->categoria,
                 'valoracion' => $d->valoracion ? round($d->valoracion, 1) : null,
                 'ayudas' => (int) $d->ayudas,
@@ -2493,8 +2493,8 @@ KNOWLEDGE;
             $actividad_data[] = [
                 'tipo' => $a->tipo,
                 'titulo' => $a->titulo,
-                'usuario' => $a->usuario ?: __('Usuario', 'flavor-chat-ia'),
-                'fecha' => human_time_diff(strtotime($a->fecha), current_time('timestamp')) . ' ' . __('atrás', 'flavor-chat-ia'),
+                'usuario' => $a->usuario ?: __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'fecha' => human_time_diff(strtotime($a->fecha), current_time('timestamp')) . ' ' . __('atrás', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2518,7 +2518,7 @@ KNOWLEDGE;
      */
     public function ajax_listar_voluntarios() {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -2570,7 +2570,7 @@ KNOWLEDGE;
         // Formatear datos
         $resultado = [];
         foreach ($voluntarios as $vol) {
-            $nombre = $vol->nombre ?: __('Usuario', 'flavor-chat-ia');
+            $nombre = $vol->nombre ?: __('Usuario', FLAVOR_PLATFORM_TEXT_DOMAIN);
             $iniciales = '';
             $palabras = explode(' ', $nombre);
             foreach (array_slice($palabras, 0, 2) as $palabra) {
@@ -2602,7 +2602,7 @@ KNOWLEDGE;
      */
     public function ajax_listar_usuarios() {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $usuarios = get_users([
@@ -2628,7 +2628,7 @@ KNOWLEDGE;
      */
     public function ajax_guardar_voluntario() {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -2643,7 +2643,7 @@ KNOWLEDGE;
         $estado = isset($_POST['estado']) ? sanitize_text_field($_POST['estado']) : 'disponible';
 
         if (empty($usuario_id)) {
-            wp_send_json_error(['message' => __('Usuario requerido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Usuario requerido', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $categoria = !empty($categorias) ? sanitize_text_field($categorias[0]) : '';
@@ -2655,7 +2655,7 @@ KNOWLEDGE;
         $datos = [
             'usuario_id' => $usuario_id,
             'categoria' => $categoria,
-            'titulo' => __('Oferta de ayuda', 'flavor-chat-ia'),
+            'titulo' => __('Oferta de ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'descripcion' => $habilidades,
             'habilidades' => $habilidades,
             'disponibilidad' => $disponibilidad,
@@ -2675,10 +2675,10 @@ KNOWLEDGE;
         if ($oferta_id) {
             wp_send_json_success([
                 'id' => $oferta_id,
-                'message' => __('Voluntario guardado correctamente', 'flavor-chat-ia'),
+                'message' => __('Voluntario guardado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         } else {
-            wp_send_json_error(['message' => __('Error al guardar', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al guardar', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -2687,7 +2687,7 @@ KNOWLEDGE;
      */
     public function ajax_listar_solicitudes() {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -2740,10 +2740,10 @@ KNOWLEDGE;
                 'estado' => $sol->estado,
                 'urgencia' => $sol->urgencia ?? 'normal',
                 'solicitante_id' => $sol->usuario_id,
-                'solicitante_nombre' => $sol->solicitante_nombre ?: __('Anónimo', 'flavor-chat-ia'),
+                'solicitante_nombre' => $sol->solicitante_nombre ?: __('Anónimo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'fecha_solicitud' => $sol->fecha_solicitud,
                 'fecha_necesaria' => $sol->fecha_necesaria ?? '',
-                'fecha_formateada' => human_time_diff(strtotime($sol->fecha_solicitud), current_time('timestamp')) . ' ' . __('atrás', 'flavor-chat-ia'),
+                'fecha_formateada' => human_time_diff(strtotime($sol->fecha_solicitud), current_time('timestamp')) . ' ' . __('atrás', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -2755,7 +2755,7 @@ KNOWLEDGE;
      */
     public function ajax_guardar_solicitud() {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Sin permisos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -2772,7 +2772,7 @@ KNOWLEDGE;
         $voluntario_id = isset($_POST['voluntario_id']) ? intval($_POST['voluntario_id']) : 0;
 
         if (empty($titulo) || empty($descripcion) || empty($categoria)) {
-            wp_send_json_error(['message' => __('Campos requeridos incompletos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Campos requeridos incompletos', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $datos = [
@@ -2799,10 +2799,10 @@ KNOWLEDGE;
         if ($solicitud_id) {
             wp_send_json_success([
                 'id' => $solicitud_id,
-                'message' => __('Solicitud guardada correctamente', 'flavor-chat-ia'),
+                'message' => __('Solicitud guardada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         } else {
-            wp_send_json_error(['message' => __('Error al guardar', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al guardar', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -2814,8 +2814,8 @@ KNOWLEDGE;
     public static function get_renderer_config(): array {
         return [
             'module'   => 'ayuda-vecinal',
-            'title'    => __('Ayuda Vecinal', 'flavor-chat-ia'),
-            'subtitle' => __('Red de ayuda mutua entre vecinos', 'flavor-chat-ia'),
+            'title'    => __('Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'subtitle' => __('Red de ayuda mutua entre vecinos', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => '🤝',
             'color'    => 'primary', // Usa variable CSS --flavor-primary del tema
 
@@ -2825,27 +2825,27 @@ KNOWLEDGE;
             ],
 
             'fields' => [
-                'titulo'       => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'required' => true],
-                'descripcion'  => ['type' => 'textarea', 'label' => __('Descripción', 'flavor-chat-ia'), 'required' => true],
-                'categoria'    => ['type' => 'select', 'label' => __('Categoría', 'flavor-chat-ia'), 'required' => true],
-                'urgencia'     => ['type' => 'select', 'label' => __('Urgencia', 'flavor-chat-ia'), 'options' => ['normal', 'alta', 'critica']],
-                'fecha_necesaria' => ['type' => 'date', 'label' => __('Fecha necesaria', 'flavor-chat-ia')],
-                'ubicacion'    => ['type' => 'text', 'label' => __('Ubicación', 'flavor-chat-ia')],
+                'titulo'       => ['type' => 'text', 'label' => __('Título', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'descripcion'  => ['type' => 'textarea', 'label' => __('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'categoria'    => ['type' => 'select', 'label' => __('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN), 'required' => true],
+                'urgencia'     => ['type' => 'select', 'label' => __('Urgencia', FLAVOR_PLATFORM_TEXT_DOMAIN), 'options' => ['normal', 'alta', 'critica']],
+                'fecha_necesaria' => ['type' => 'date', 'label' => __('Fecha necesaria', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+                'ubicacion'    => ['type' => 'text', 'label' => __('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN)],
             ],
 
             'estados' => [
-                'pendiente'    => ['label' => __('Pendiente', 'flavor-chat-ia'), 'color' => 'yellow', 'icon' => '⏳'],
-                'asignada'     => ['label' => __('Asignada', 'flavor-chat-ia'), 'color' => 'blue', 'icon' => '👤'],
-                'en_progreso'  => ['label' => __('En progreso', 'flavor-chat-ia'), 'color' => 'indigo', 'icon' => '🔄'],
-                'completada'   => ['label' => __('Completada', 'flavor-chat-ia'), 'color' => 'green', 'icon' => '✅'],
-                'cancelada'    => ['label' => __('Cancelada', 'flavor-chat-ia'), 'color' => 'red', 'icon' => '❌'],
+                'pendiente'    => ['label' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'yellow', 'icon' => '⏳'],
+                'asignada'     => ['label' => __('Asignada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'blue', 'icon' => '👤'],
+                'en_progreso'  => ['label' => __('En progreso', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'indigo', 'icon' => '🔄'],
+                'completada'   => ['label' => __('Completada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'green', 'icon' => '✅'],
+                'cancelada'    => ['label' => __('Cancelada', FLAVOR_PLATFORM_TEXT_DOMAIN), 'color' => 'red', 'icon' => '❌'],
             ],
 
             'stats' => [
-                'solicitudes_activas' => ['label' => __('Solicitudes activas', 'flavor-chat-ia'), 'icon' => '📋', 'color' => 'rose'],
-                'voluntarios'         => ['label' => __('Voluntarios', 'flavor-chat-ia'), 'icon' => '🙋', 'color' => 'green'],
-                'ayudas_completadas'  => ['label' => __('Ayudas completadas', 'flavor-chat-ia'), 'icon' => '✅', 'color' => 'blue'],
-                'horas_donadas'       => ['label' => __('Horas donadas', 'flavor-chat-ia'), 'icon' => '⏱️', 'color' => 'purple'],
+                'solicitudes_activas' => ['label' => __('Solicitudes activas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '📋', 'color' => 'rose'],
+                'voluntarios'         => ['label' => __('Voluntarios', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🙋', 'color' => 'green'],
+                'ayudas_completadas'  => ['label' => __('Ayudas completadas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '✅', 'color' => 'blue'],
+                'horas_donadas'       => ['label' => __('Horas donadas', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '⏱️', 'color' => 'purple'],
             ],
 
             'card' => [
@@ -2859,37 +2859,37 @@ KNOWLEDGE;
 
             'tabs' => [
                 'solicitudes' => [
-                    'label'   => __('Solicitudes', 'flavor-chat-ia'),
+                    'label'   => __('Solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-sos',
                     'content' => 'shortcode:ayuda_vecinal_solicitudes',
                     'public'  => true,
                 ],
                 'ofrecer' => [
-                    'label'   => __('Ofrecer Ayuda', 'flavor-chat-ia'),
+                    'label'   => __('Ofrecer Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-heart',
                     'content' => 'shortcode:ayuda_vecinal_ofrecer',
                     'public'  => true,
                 ],
                 'solicitar' => [
-                    'label'      => __('Pedir Ayuda', 'flavor-chat-ia'),
+                    'label'      => __('Pedir Ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-plus-alt',
                     'content'    => 'shortcode:ayuda_vecinal_solicitar',
                     'requires_login' => true,
                 ],
                 'mis-ayudas' => [
-                    'label'      => __('Mis Ayudas', 'flavor-chat-ia'),
+                    'label'      => __('Mis Ayudas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'       => 'dashicons-admin-users',
                     'content'    => 'shortcode:ayuda_vecinal_mis_ayudas',
                     'requires_login' => true,
                 ],
                 'mapa' => [
-                    'label'   => __('Mapa', 'flavor-chat-ia'),
+                    'label'   => __('Mapa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-location',
                     'content' => 'shortcode:ayuda_vecinal_mapa',
                     'public'  => true,
                 ],
                 'estadisticas' => [
-                    'label'   => __('Estadísticas', 'flavor-chat-ia'),
+                    'label'   => __('Estadísticas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'icon'    => 'dashicons-chart-bar',
                     'content' => 'shortcode:ayuda_vecinal_estadisticas',
                     'public'  => true,
@@ -2907,8 +2907,8 @@ KNOWLEDGE;
             'dashboard' => [
                 'widgets' => ['stats', 'solicitudes_urgentes', 'mis_ayudas', 'ranking_voluntarios'],
                 'actions' => [
-                    'pedir'     => ['label' => __('Pedir ayuda', 'flavor-chat-ia'), 'icon' => '🆘', 'color' => 'rose'],
-                    'ofrecer'   => ['label' => __('Ofrecer ayuda', 'flavor-chat-ia'), 'icon' => '🤝', 'color' => 'green'],
+                    'pedir'     => ['label' => __('Pedir ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🆘', 'color' => 'rose'],
+                    'ofrecer'   => ['label' => __('Ofrecer ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => '🤝', 'color' => 'green'],
                 ],
             ],
 
@@ -2992,16 +2992,16 @@ KNOWLEDGE;
             'user_id' => get_current_user_id(),
             'categorias' => $this->get_categorias_ayuda(),
             'strings' => [
-                'error_general' => __('Ha ocurrido un error. Inténtalo de nuevo.', 'flavor-chat-ia'),
-                'confirmar_envio' => __('¿Estás seguro de que deseas enviar esta solicitud?', 'flavor-chat-ia'),
-                'solicitud_enviada' => __('Tu solicitud ha sido enviada correctamente.', 'flavor-chat-ia'),
-                'oferta_enviada' => __('Tu oferta de ayuda ha sido registrada.', 'flavor-chat-ia'),
-                'login_requerido' => __('Debes iniciar sesión para realizar esta acción.', 'flavor-chat-ia'),
-                'sin_respuestas' => __('Todavía no hay respuestas para esta solicitud.', 'flavor-chat-ia'),
-                'solicitud_cancelada' => __('Solicitud cancelada correctamente.', 'flavor-chat-ia'),
-                'solicitud_completada' => __('Solicitud marcada como completada.', 'flavor-chat-ia'),
-                'respuesta_aceptada' => __('Respuesta aceptada correctamente.', 'flavor-chat-ia'),
-                'accion_no_disponible' => __('Esta acción aún no está disponible en el frontend moderno.', 'flavor-chat-ia'),
+                'error_general' => __('Ha ocurrido un error. Inténtalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'confirmar_envio' => __('¿Estás seguro de que deseas enviar esta solicitud?', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'solicitud_enviada' => __('Tu solicitud ha sido enviada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'oferta_enviada' => __('Tu oferta de ayuda ha sido registrada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'login_requerido' => __('Debes iniciar sesión para realizar esta acción.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'sin_respuestas' => __('Todavía no hay respuestas para esta solicitud.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'solicitud_cancelada' => __('Solicitud cancelada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'solicitud_completada' => __('Solicitud marcada como completada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'respuesta_aceptada' => __('Respuesta aceptada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'accion_no_disponible' => __('Esta acción aún no está disponible en el frontend moderno.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]
         ]);
 
@@ -3016,16 +3016,16 @@ KNOWLEDGE;
     private function get_categorias_ayuda() {
         $settings = $this->get_settings();
         $categorias = $settings['categorias_ayuda'] ?? [
-            'compras' => __('Compras', 'flavor-chat-ia'),
-            'cuidado_mayores' => __('Cuidado de mayores', 'flavor-chat-ia'),
-            'cuidado_ninos' => __('Cuidado de niños', 'flavor-chat-ia'),
-            'mascotas' => __('Mascotas', 'flavor-chat-ia'),
-            'transporte' => __('Transporte', 'flavor-chat-ia'),
-            'tecnologia' => __('Ayuda tecnológica', 'flavor-chat-ia'),
-            'tramites' => __('Trámites', 'flavor-chat-ia'),
-            'reparaciones' => __('Reparaciones', 'flavor-chat-ia'),
-            'compania' => __('Compañía', 'flavor-chat-ia'),
-            'otro' => __('Otro', 'flavor-chat-ia'),
+            'compras' => __('Compras', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cuidado_mayores' => __('Cuidado de mayores', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cuidado_ninos' => __('Cuidado de niños', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'mascotas' => __('Mascotas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'transporte' => __('Transporte', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'tecnologia' => __('Ayuda tecnológica', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'tramites' => __('Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'reparaciones' => __('Reparaciones', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'compania' => __('Compañía', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'otro' => __('Otro', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         // Convertir array simple a asociativo si es necesario
@@ -3104,9 +3104,9 @@ KNOWLEDGE;
             <div class="ayuda-vecinal-filtros">
                 <form class="filtros-form" method="get">
                     <div class="filtro-grupo">
-                        <label for="filtro-categoria"><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></label>
+                        <label for="filtro-categoria"><?php esc_html_e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select id="filtro-categoria" name="categoria" class="filtro-select">
-                            <option value=""><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php foreach ($categorias as $clave_categoria => $etiqueta_categoria): ?>
                                 <option value="<?php echo esc_attr($clave_categoria); ?>" <?php selected($atributos['categoria'], $clave_categoria); ?>>
                                     <?php echo esc_html($etiqueta_categoria); ?>
@@ -3115,16 +3115,16 @@ KNOWLEDGE;
                         </select>
                     </div>
                     <div class="filtro-grupo">
-                        <label for="filtro-urgencia"><?php esc_html_e('Urgencia', 'flavor-chat-ia'); ?></label>
+                        <label for="filtro-urgencia"><?php esc_html_e('Urgencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <select id="filtro-urgencia" name="urgencia" class="filtro-select">
-                            <option value=""><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></option>
-                            <option value="urgente" <?php selected($atributos['urgencia'], 'urgente'); ?>><?php esc_html_e('Urgente', 'flavor-chat-ia'); ?></option>
-                            <option value="alta" <?php selected($atributos['urgencia'], 'alta'); ?>><?php esc_html_e('Alta', 'flavor-chat-ia'); ?></option>
-                            <option value="media" <?php selected($atributos['urgencia'], 'media'); ?>><?php esc_html_e('Media', 'flavor-chat-ia'); ?></option>
-                            <option value="baja" <?php selected($atributos['urgencia'], 'baja'); ?>><?php esc_html_e('Baja', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="urgente" <?php selected($atributos['urgencia'], 'urgente'); ?>><?php esc_html_e('Urgente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="alta" <?php selected($atributos['urgencia'], 'alta'); ?>><?php esc_html_e('Alta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="media" <?php selected($atributos['urgencia'], 'media'); ?>><?php esc_html_e('Media', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="baja" <?php selected($atributos['urgencia'], 'baja'); ?>><?php esc_html_e('Baja', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
-                    <button type="submit" class="btn-filtrar"><?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?></button>
+                    <button type="submit" class="btn-filtrar"><?php esc_html_e('Filtrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                 </form>
             </div>
             <?php endif; ?>
@@ -3132,9 +3132,9 @@ KNOWLEDGE;
             <?php if (empty($solicitudes)): ?>
                 <div class="ayuda-vecinal-sin-resultados">
                     <span class="icono">🤝</span>
-                    <p><?php esc_html_e('No hay solicitudes de ayuda activas en este momento.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay solicitudes de ayuda activas en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php if (is_user_logged_in()): ?>
-                        <p><?php esc_html_e('¿Necesitas ayuda? ¡Crea una solicitud!', 'flavor-chat-ia'); ?></p>
+                        <p><?php esc_html_e('¿Necesitas ayuda? ¡Crea una solicitud!', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php endif; ?>
                 </div>
             <?php else: ?>
@@ -3187,7 +3187,7 @@ KNOWLEDGE;
                 </span>
                 <span class="tiempo">
                     <span class="dashicons dashicons-clock"></span>
-                    <?php printf(esc_html__('Hace %s', 'flavor-chat-ia'), $tiempo_transcurrido); ?>
+                    <?php printf(esc_html__('Hace %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $tiempo_transcurrido); ?>
                 </span>
                 <?php if (!empty($solicitud->ubicacion)): ?>
                 <span class="ubicacion">
@@ -3199,7 +3199,7 @@ KNOWLEDGE;
             <?php if (is_user_logged_in() && get_current_user_id() !== (int)$solicitud->solicitante_id): ?>
             <div class="tarjeta-acciones">
                 <button type="button" class="btn-ofrecer-ayuda" data-solicitud-id="<?php echo esc_attr($solicitud->id); ?>">
-                    🤝 <?php esc_html_e('Ofrecer ayuda', 'flavor-chat-ia'); ?>
+                    🤝 <?php esc_html_e('Ofrecer ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
             <?php endif; ?>
@@ -3217,7 +3217,7 @@ KNOWLEDGE;
      */
     public function render_shortcode_ofrecer($atts) {
         if (!is_user_logged_in()) {
-            return $this->render_mensaje_login(__('Inicia sesión para ofrecer tu ayuda a la comunidad.', 'flavor-chat-ia'));
+            return $this->render_mensaje_login(__('Inicia sesión para ofrecer tu ayuda a la comunidad.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $usuario_actual = wp_get_current_user();
@@ -3235,13 +3235,13 @@ KNOWLEDGE;
         ?>
         <div class="ayuda-vecinal-form-container ayuda-vecinal-ofrecer">
             <div class="form-header">
-                <h2>🤝 <?php esc_html_e('Ofrecer mi ayuda', 'flavor-chat-ia'); ?></h2>
-                <p><?php esc_html_e('Comparte tus habilidades y disponibilidad para ayudar a tus vecinos.', 'flavor-chat-ia'); ?></p>
+                <h2>🤝 <?php esc_html_e('Ofrecer mi ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <p><?php esc_html_e('Comparte tus habilidades y disponibilidad para ayudar a tus vecinos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <?php if ($oferta_existente): ?>
             <div class="aviso-oferta-existente">
-                <p><?php esc_html_e('Ya tienes una oferta de ayuda activa. Puedes actualizarla a continuación.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('Ya tienes una oferta de ayuda activa. Puedes actualizarla a continuación.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <?php endif; ?>
 
@@ -3249,16 +3249,16 @@ KNOWLEDGE;
                 <?php wp_nonce_field('ayuda_vecinal_frontend', 'ayuda_vecinal_nonce'); ?>
 
                 <div class="form-grupo">
-                    <label for="oferta-titulo"><?php esc_html_e('Título de tu oferta', 'flavor-chat-ia'); ?> <span class="requerido">*</span></label>
+                    <label for="oferta-titulo"><?php esc_html_e('Título de tu oferta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="requerido">*</span></label>
                     <input type="text" id="oferta-titulo" name="titulo" required maxlength="255"
                            value="<?php echo $oferta_existente ? esc_attr($oferta_existente->titulo) : ''; ?>"
-                           placeholder="<?php esc_attr_e('Ej: Ayudo con compras y recados en el barrio', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php esc_attr_e('Ej: Ayudo con compras y recados en el barrio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
 
                 <div class="form-grupo">
-                    <label for="oferta-categoria"><?php esc_html_e('Categoría principal', 'flavor-chat-ia'); ?> <span class="requerido">*</span></label>
+                    <label for="oferta-categoria"><?php esc_html_e('Categoría principal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="requerido">*</span></label>
                     <select id="oferta-categoria" name="categoria" required>
-                        <option value=""><?php esc_html_e('Selecciona una categoría', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Selecciona una categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($categorias as $clave_categoria => $etiqueta_categoria): ?>
                             <option value="<?php echo esc_attr($clave_categoria); ?>" <?php selected($oferta_existente->categoria ?? '', $clave_categoria); ?>>
                                 <?php echo esc_html($etiqueta_categoria); ?>
@@ -3268,45 +3268,45 @@ KNOWLEDGE;
                 </div>
 
                 <div class="form-grupo">
-                    <label for="oferta-descripcion"><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?> <span class="requerido">*</span></label>
+                    <label for="oferta-descripcion"><?php esc_html_e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="requerido">*</span></label>
                     <textarea id="oferta-descripcion" name="descripcion" required rows="4"
-                              placeholder="<?php esc_attr_e('Describe qué tipo de ayuda puedes ofrecer, tu experiencia, etc.', 'flavor-chat-ia'); ?>"><?php echo $oferta_existente ? esc_textarea($oferta_existente->descripcion) : ''; ?></textarea>
+                              placeholder="<?php esc_attr_e('Describe qué tipo de ayuda puedes ofrecer, tu experiencia, etc.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"><?php echo $oferta_existente ? esc_textarea($oferta_existente->descripcion) : ''; ?></textarea>
                 </div>
 
                 <div class="form-grupo">
-                    <label for="oferta-habilidades"><?php esc_html_e('Habilidades especiales', 'flavor-chat-ia'); ?></label>
+                    <label for="oferta-habilidades"><?php esc_html_e('Habilidades especiales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="text" id="oferta-habilidades" name="habilidades"
                            value="<?php echo $oferta_existente ? esc_attr($oferta_existente->habilidades) : ''; ?>"
-                           placeholder="<?php esc_attr_e('Ej: Primeros auxilios, idiomas, bricolaje...', 'flavor-chat-ia'); ?>">
-                    <span class="form-ayuda"><?php esc_html_e('Separa las habilidades con comas', 'flavor-chat-ia'); ?></span>
+                           placeholder="<?php esc_attr_e('Ej: Primeros auxilios, idiomas, bricolaje...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                    <span class="form-ayuda"><?php esc_html_e('Separa las habilidades con comas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
 
                 <div class="form-grupo-flex">
                     <div class="form-grupo">
-                        <label for="oferta-radio"><?php esc_html_e('Radio de acción (km)', 'flavor-chat-ia'); ?></label>
+                        <label for="oferta-radio"><?php esc_html_e('Radio de acción (km)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="number" id="oferta-radio" name="radio_km" min="1" max="50"
                                value="<?php echo $oferta_existente ? esc_attr($oferta_existente->radio_km) : '5'; ?>">
                     </div>
                     <div class="form-grupo">
                         <label class="checkbox-label">
                             <input type="checkbox" name="tiene_vehiculo" value="1" <?php checked($oferta_existente->tiene_vehiculo ?? false); ?>>
-                            <span><?php esc_html_e('Tengo vehículo disponible', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Tengo vehículo disponible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                     </div>
                 </div>
 
                 <div class="form-grupo">
-                    <label><?php esc_html_e('Disponibilidad semanal', 'flavor-chat-ia'); ?></label>
+                    <label><?php esc_html_e('Disponibilidad semanal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <div class="disponibilidad-grid">
                         <?php
                         $dias_semana = [
-                            'lunes' => __('Lunes', 'flavor-chat-ia'),
-                            'martes' => __('Martes', 'flavor-chat-ia'),
-                            'miercoles' => __('Miércoles', 'flavor-chat-ia'),
-                            'jueves' => __('Jueves', 'flavor-chat-ia'),
-                            'viernes' => __('Viernes', 'flavor-chat-ia'),
-                            'sabado' => __('Sábado', 'flavor-chat-ia'),
-                            'domingo' => __('Domingo', 'flavor-chat-ia'),
+                            'lunes' => __('Lunes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'martes' => __('Martes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'miercoles' => __('Miércoles', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'jueves' => __('Jueves', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'viernes' => __('Viernes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'sabado' => __('Sábado', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                            'domingo' => __('Domingo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                         ];
                         $disponibilidad_guardada = $oferta_existente ? json_decode($oferta_existente->disponibilidad, true) : [];
                         foreach ($dias_semana as $clave_dia => $nombre_dia):
@@ -3322,11 +3322,11 @@ KNOWLEDGE;
 
                 <div class="form-acciones">
                     <button type="submit" class="btn-principal">
-                        <?php echo $oferta_existente ? esc_html__('Actualizar oferta', 'flavor-chat-ia') : esc_html__('Publicar oferta de ayuda', 'flavor-chat-ia'); ?>
+                        <?php echo $oferta_existente ? esc_html__('Actualizar oferta', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Publicar oferta de ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <?php if ($oferta_existente): ?>
                     <button type="button" class="btn-secundario btn-desactivar-oferta" data-oferta-id="<?php echo esc_attr($oferta_existente->id); ?>">
-                        <?php esc_html_e('Desactivar oferta', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Desactivar oferta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <?php endif; ?>
                 </div>
@@ -3345,7 +3345,7 @@ KNOWLEDGE;
      */
     public function render_shortcode_solicitar($atts) {
         if (!is_user_logged_in()) {
-            return $this->render_mensaje_login(__('Inicia sesión para solicitar ayuda de tus vecinos.', 'flavor-chat-ia'));
+            return $this->render_mensaje_login(__('Inicia sesión para solicitar ayuda de tus vecinos.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $categorias = $this->get_categorias_ayuda();
@@ -3354,24 +3354,24 @@ KNOWLEDGE;
         ?>
         <div class="ayuda-vecinal-form-container ayuda-vecinal-solicitar">
             <div class="form-header">
-                <h2>🆘 <?php esc_html_e('Solicitar ayuda', 'flavor-chat-ia'); ?></h2>
-                <p><?php esc_html_e('Describe qué necesitas y la comunidad te ayudará.', 'flavor-chat-ia'); ?></p>
+                <h2>🆘 <?php esc_html_e('Solicitar ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <p><?php esc_html_e('Describe qué necesitas y la comunidad te ayudará.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
 
             <form id="form-solicitar-ayuda" class="ayuda-vecinal-form">
                 <?php wp_nonce_field('ayuda_vecinal_frontend', 'ayuda_vecinal_nonce'); ?>
 
                 <div class="form-grupo">
-                    <label for="solicitud-titulo"><?php esc_html_e('¿Qué necesitas?', 'flavor-chat-ia'); ?> <span class="requerido">*</span></label>
+                    <label for="solicitud-titulo"><?php esc_html_e('¿Qué necesitas?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="requerido">*</span></label>
                     <input type="text" id="solicitud-titulo" name="titulo" required maxlength="255"
-                           placeholder="<?php esc_attr_e('Ej: Necesito ayuda para hacer la compra semanal', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php esc_attr_e('Ej: Necesito ayuda para hacer la compra semanal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
 
                 <div class="form-grupo-flex">
                     <div class="form-grupo">
-                        <label for="solicitud-categoria"><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?> <span class="requerido">*</span></label>
+                        <label for="solicitud-categoria"><?php esc_html_e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="requerido">*</span></label>
                         <select id="solicitud-categoria" name="categoria" required>
-                            <option value=""><?php esc_html_e('Selecciona una categoría', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php esc_html_e('Selecciona una categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             <?php foreach ($categorias as $clave_categoria => $etiqueta_categoria): ?>
                                 <option value="<?php echo esc_attr($clave_categoria); ?>">
                                     <?php echo esc_html($etiqueta_categoria); ?>
@@ -3380,37 +3380,37 @@ KNOWLEDGE;
                         </select>
                     </div>
                     <div class="form-grupo">
-                        <label for="solicitud-urgencia"><?php esc_html_e('Urgencia', 'flavor-chat-ia'); ?> <span class="requerido">*</span></label>
+                        <label for="solicitud-urgencia"><?php esc_html_e('Urgencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="requerido">*</span></label>
                         <select id="solicitud-urgencia" name="urgencia" required>
-                            <option value="baja"><?php esc_html_e('Baja - Sin prisa', 'flavor-chat-ia'); ?></option>
-                            <option value="media" selected><?php esc_html_e('Media - Normal', 'flavor-chat-ia'); ?></option>
-                            <option value="alta"><?php esc_html_e('Alta - Pronto', 'flavor-chat-ia'); ?></option>
-                            <option value="urgente"><?php esc_html_e('Urgente - Lo antes posible', 'flavor-chat-ia'); ?></option>
+                            <option value="baja"><?php esc_html_e('Baja - Sin prisa', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="media" selected><?php esc_html_e('Media - Normal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="alta"><?php esc_html_e('Alta - Pronto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                            <option value="urgente"><?php esc_html_e('Urgente - Lo antes posible', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         </select>
                     </div>
                 </div>
 
                 <div class="form-grupo">
-                    <label for="solicitud-descripcion"><?php esc_html_e('Descripción detallada', 'flavor-chat-ia'); ?> <span class="requerido">*</span></label>
+                    <label for="solicitud-descripcion"><?php esc_html_e('Descripción detallada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?> <span class="requerido">*</span></label>
                     <textarea id="solicitud-descripcion" name="descripcion" required rows="4"
-                              placeholder="<?php esc_attr_e('Explica con detalle qué necesitas, cuándo, requisitos especiales...', 'flavor-chat-ia'); ?>"></textarea>
+                              placeholder="<?php esc_attr_e('Explica con detalle qué necesitas, cuándo, requisitos especiales...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>"></textarea>
                 </div>
 
                 <div class="form-grupo">
-                    <label for="solicitud-ubicacion"><?php esc_html_e('Ubicación', 'flavor-chat-ia'); ?></label>
+                    <label for="solicitud-ubicacion"><?php esc_html_e('Ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="text" id="solicitud-ubicacion" name="ubicacion"
-                           placeholder="<?php esc_attr_e('Barrio, zona o dirección aproximada', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php esc_attr_e('Barrio, zona o dirección aproximada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <input type="hidden" id="solicitud-lat" name="ubicacion_lat">
                     <input type="hidden" id="solicitud-lng" name="ubicacion_lng">
                 </div>
 
                 <div class="form-grupo-flex">
                     <div class="form-grupo">
-                        <label for="solicitud-fecha"><?php esc_html_e('Fecha necesaria', 'flavor-chat-ia'); ?></label>
+                        <label for="solicitud-fecha"><?php esc_html_e('Fecha necesaria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="datetime-local" id="solicitud-fecha" name="fecha_necesaria">
                     </div>
                     <div class="form-grupo">
-                        <label for="solicitud-duracion"><?php esc_html_e('Duración estimada (min)', 'flavor-chat-ia'); ?></label>
+                        <label for="solicitud-duracion"><?php esc_html_e('Duración estimada (min)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="number" id="solicitud-duracion" name="duracion_estimada_minutos" min="15" step="15"
                                placeholder="60">
                     </div>
@@ -3419,19 +3419,19 @@ KNOWLEDGE;
                 <div class="form-grupo">
                     <label class="checkbox-label">
                         <input type="checkbox" name="necesita_desplazamiento" value="1">
-                        <span><?php esc_html_e('Requiere desplazamiento', 'flavor-chat-ia'); ?></span>
+                        <span><?php esc_html_e('Requiere desplazamiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </label>
                 </div>
 
                 <div class="form-grupo">
-                    <label for="solicitud-compensacion"><?php esc_html_e('Compensación ofrecida', 'flavor-chat-ia'); ?></label>
+                    <label for="solicitud-compensacion"><?php esc_html_e('Compensación ofrecida', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <input type="text" id="solicitud-compensacion" name="compensacion"
-                           placeholder="<?php esc_attr_e('Ej: Invito a café, intercambio de favores, nada (voluntario)...', 'flavor-chat-ia'); ?>">
+                           placeholder="<?php esc_attr_e('Ej: Invito a café, intercambio de favores, nada (voluntario)...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 </div>
 
                 <div class="form-acciones">
                     <button type="submit" class="btn-principal">
-                        <?php esc_html_e('Publicar solicitud de ayuda', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Publicar solicitud de ayuda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 </div>
             </form>
@@ -3449,7 +3449,7 @@ KNOWLEDGE;
      */
     public function render_shortcode_mis_ayudas($atts) {
         if (!is_user_logged_in()) {
-            return $this->render_mensaje_login(__('Inicia sesión para ver tu historial de ayudas.', 'flavor-chat-ia'));
+            return $this->render_mensaje_login(__('Inicia sesión para ver tu historial de ayudas.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         global $wpdb;
@@ -3509,37 +3509,37 @@ KNOWLEDGE;
         ?>
         <div class="ayuda-vecinal-mis-ayudas">
             <div class="mis-ayudas-header">
-                <h2><?php esc_html_e('Mi actividad de ayuda vecinal', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Mi actividad de ayuda vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             </div>
 
             <!-- Resumen estadísticas -->
             <div class="mis-ayudas-stats">
                 <div class="stat-card">
                     <span class="stat-numero"><?php echo esc_html($total_solicitudes_creadas); ?></span>
-                    <span class="stat-etiqueta"><?php esc_html_e('Solicitudes creadas', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-etiqueta"><?php esc_html_e('Solicitudes creadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="stat-card">
                     <span class="stat-numero"><?php echo esc_html($total_ayudas_completadas); ?></span>
-                    <span class="stat-etiqueta"><?php esc_html_e('Ayudas realizadas', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-etiqueta"><?php esc_html_e('Ayudas realizadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="stat-card">
                     <span class="stat-numero"><?php echo $valoracion_media ? number_format($valoracion_media, 1) : '-'; ?></span>
-                    <span class="stat-etiqueta"><?php esc_html_e('Valoración media', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-etiqueta"><?php esc_html_e('Valoración media', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
                 <div class="stat-card destacado">
                     <span class="stat-numero"><?php echo esc_html($puntos_solidaridad); ?></span>
-                    <span class="stat-etiqueta"><?php esc_html_e('Puntos solidarios', 'flavor-chat-ia'); ?></span>
+                    <span class="stat-etiqueta"><?php esc_html_e('Puntos solidarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </div>
             </div>
 
             <!-- Tabs de navegación -->
             <div class="mis-ayudas-tabs">
                 <button class="tab-btn activo" data-tab="solicitudes">
-                    <?php esc_html_e('Mis solicitudes', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Mis solicitudes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="contador"><?php echo count($mis_solicitudes); ?></span>
                 </button>
                 <button class="tab-btn" data-tab="ofrecidas">
-                    <?php esc_html_e('Ayudas ofrecidas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ayudas ofrecidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     <span class="contador"><?php echo count($mis_ayudas_ofrecidas); ?></span>
                 </button>
             </div>
@@ -3548,7 +3548,7 @@ KNOWLEDGE;
             <div class="tab-content activo" id="tab-solicitudes">
                 <?php if (empty($mis_solicitudes)): ?>
                     <div class="sin-resultados">
-                        <p><?php esc_html_e('No has creado ninguna solicitud de ayuda todavía.', 'flavor-chat-ia'); ?></p>
+                        <p><?php esc_html_e('No has creado ninguna solicitud de ayuda todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 <?php else: ?>
                     <div class="lista-ayudas">
@@ -3563,7 +3563,7 @@ KNOWLEDGE;
             <div class="tab-content" id="tab-ofrecidas">
                 <?php if (empty($mis_ayudas_ofrecidas)): ?>
                     <div class="sin-resultados">
-                        <p><?php esc_html_e('No has ofrecido ayuda en ninguna solicitud todavía.', 'flavor-chat-ia'); ?></p>
+                        <p><?php esc_html_e('No has ofrecido ayuda en ninguna solicitud todavía.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 <?php else: ?>
                     <div class="lista-ayudas">
@@ -3605,30 +3605,30 @@ KNOWLEDGE;
                 </div>
                 <?php if ($solicitud->respuestas_pendientes > 0): ?>
                     <div class="aviso-respuestas">
-                        <?php printf(esc_html(_n('%d persona quiere ayudarte', '%d personas quieren ayudarte', $solicitud->respuestas_pendientes, 'flavor-chat-ia')), $solicitud->respuestas_pendientes); ?>
+                        <?php printf(esc_html(_n('%d persona quiere ayudarte', '%d personas quieren ayudarte', $solicitud->respuestas_pendientes, FLAVOR_PLATFORM_TEXT_DOMAIN)), $solicitud->respuestas_pendientes); ?>
                     </div>
                 <?php endif; ?>
                 <?php if ($solicitud->nombre_ayudante): ?>
                     <div class="ayudante-info">
-                        <?php printf(esc_html__('Ayudante: %s', 'flavor-chat-ia'), esc_html($solicitud->nombre_ayudante)); ?>
+                        <?php printf(esc_html__('Ayudante: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($solicitud->nombre_ayudante)); ?>
                     </div>
                 <?php endif; ?>
             </div>
             <div class="fila-acciones">
                 <?php if ($solicitud->estado === 'abierta'): ?>
                     <button class="btn-ver-respuestas" data-solicitud-id="<?php echo esc_attr($solicitud->id); ?>">
-                        <?php esc_html_e('Ver respuestas', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Ver respuestas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button class="btn-cancelar-solicitud" data-solicitud-id="<?php echo esc_attr($solicitud->id); ?>">
-                        <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 <?php elseif ($solicitud->estado === 'en_curso'): ?>
                     <button class="btn-completar-solicitud" data-solicitud-id="<?php echo esc_attr($solicitud->id); ?>">
-                        <?php esc_html_e('Marcar completada', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Marcar completada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 <?php elseif ($solicitud->estado === 'completada'): ?>
                     <button class="btn-valorar" data-solicitud-id="<?php echo esc_attr($solicitud->id); ?>">
-                        <?php esc_html_e('Valorar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Valorar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 <?php endif; ?>
             </div>
@@ -3643,10 +3643,10 @@ KNOWLEDGE;
     private function render_fila_ayuda_ofrecida($ayuda, $categorias) {
         $etiqueta_categoria = $categorias[$ayuda->categoria] ?? ucfirst($ayuda->categoria);
         $estados_respuesta = [
-            'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-            'aceptada' => __('Aceptada', 'flavor-chat-ia'),
-            'rechazada' => __('Rechazada', 'flavor-chat-ia'),
-            'retirada' => __('Retirada', 'flavor-chat-ia'),
+            'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'aceptada' => __('Aceptada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'rechazada' => __('Rechazada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'retirada' => __('Retirada', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
         $estado_texto = $estados_respuesta[$ayuda->estado_respuesta] ?? $ayuda->estado_respuesta;
 
@@ -3657,18 +3657,18 @@ KNOWLEDGE;
                 <h4><?php echo esc_html($ayuda->titulo); ?></h4>
                 <div class="fila-meta">
                     <span class="categoria"><?php echo esc_html($etiqueta_categoria); ?></span>
-                    <span class="solicitante"><?php printf(esc_html__('Para: %s', 'flavor-chat-ia'), esc_html($ayuda->nombre_solicitante)); ?></span>
+                    <span class="solicitante"><?php printf(esc_html__('Para: %s', FLAVOR_PLATFORM_TEXT_DOMAIN), esc_html($ayuda->nombre_solicitante)); ?></span>
                     <span class="estado-badge estado-<?php echo esc_attr($ayuda->estado_respuesta); ?>"><?php echo esc_html($estado_texto); ?></span>
                 </div>
             </div>
             <div class="fila-acciones">
                 <?php if ($ayuda->estado_respuesta === 'pendiente'): ?>
                     <button class="btn-retirar-oferta" data-respuesta-id="<?php echo esc_attr($ayuda->respuesta_id); ?>">
-                        <?php esc_html_e('Retirar oferta', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Retirar oferta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 <?php elseif ($ayuda->estado_respuesta === 'aceptada' && $ayuda->estado === 'completada'): ?>
                     <button class="btn-valorar" data-solicitud-id="<?php echo esc_attr($ayuda->id); ?>">
-                        <?php esc_html_e('Valorar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Valorar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 <?php endif; ?>
             </div>
@@ -3714,26 +3714,26 @@ KNOWLEDGE;
             <?php if ($mostrar_controles): ?>
             <div class="mapa-controles">
                 <div class="control-grupo">
-                    <label for="mapa-filtro-categoria"><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></label>
+                    <label for="mapa-filtro-categoria"><?php esc_html_e('Categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="mapa-filtro-categoria" class="mapa-filtro">
-                        <option value=""><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                         <?php foreach ($categorias as $clave_categoria => $etiqueta_categoria): ?>
                             <option value="<?php echo esc_attr($clave_categoria); ?>"><?php echo esc_html($etiqueta_categoria); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="control-grupo">
-                    <label for="mapa-filtro-urgencia"><?php esc_html_e('Urgencia', 'flavor-chat-ia'); ?></label>
+                    <label for="mapa-filtro-urgencia"><?php esc_html_e('Urgencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                     <select id="mapa-filtro-urgencia" class="mapa-filtro">
-                        <option value=""><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></option>
-                        <option value="urgente"><?php esc_html_e('Urgente', 'flavor-chat-ia'); ?></option>
-                        <option value="alta"><?php esc_html_e('Alta', 'flavor-chat-ia'); ?></option>
-                        <option value="media"><?php esc_html_e('Media', 'flavor-chat-ia'); ?></option>
-                        <option value="baja"><?php esc_html_e('Baja', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="urgente"><?php esc_html_e('Urgente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="alta"><?php esc_html_e('Alta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="media"><?php esc_html_e('Media', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                        <option value="baja"><?php esc_html_e('Baja', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                     </select>
                 </div>
                 <button type="button" id="mapa-btn-mi-ubicacion" class="btn-mi-ubicacion">
-                    📍 <?php esc_html_e('Mi ubicación', 'flavor-chat-ia'); ?>
+                    📍 <?php esc_html_e('Mi ubicación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
             <?php endif; ?>
@@ -3745,10 +3745,10 @@ KNOWLEDGE;
             </div>
 
             <div class="mapa-leyenda">
-                <span class="leyenda-item urgente">🚨 <?php esc_html_e('Urgente', 'flavor-chat-ia'); ?></span>
-                <span class="leyenda-item alta">⚠️ <?php esc_html_e('Alta', 'flavor-chat-ia'); ?></span>
-                <span class="leyenda-item media">📌 <?php esc_html_e('Media', 'flavor-chat-ia'); ?></span>
-                <span class="leyenda-item baja">📝 <?php esc_html_e('Baja', 'flavor-chat-ia'); ?></span>
+                <span class="leyenda-item urgente">🚨 <?php esc_html_e('Urgente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                <span class="leyenda-item alta">⚠️ <?php esc_html_e('Alta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                <span class="leyenda-item media">📌 <?php esc_html_e('Media', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                <span class="leyenda-item baja">📝 <?php esc_html_e('Baja', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
         <?php
@@ -3778,18 +3778,18 @@ KNOWLEDGE;
         switch ($atributos['periodo']) {
             case 'semana':
                 $fecha_inicio = date('Y-m-d', strtotime('-1 week'));
-                $titulo_periodo = __('Esta semana', 'flavor-chat-ia');
+                $titulo_periodo = __('Esta semana', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 break;
             case 'mes':
                 $fecha_inicio = date('Y-m-d', strtotime('-1 month'));
-                $titulo_periodo = __('Este mes', 'flavor-chat-ia');
+                $titulo_periodo = __('Este mes', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 break;
             case 'ano':
                 $fecha_inicio = date('Y-m-d', strtotime('-1 year'));
-                $titulo_periodo = __('Este año', 'flavor-chat-ia');
+                $titulo_periodo = __('Este año', FLAVOR_PLATFORM_TEXT_DOMAIN);
                 break;
             default:
-                $titulo_periodo = __('Total', 'flavor-chat-ia');
+                $titulo_periodo = __('Total', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         $condicion_fecha = $fecha_inicio ? $wpdb->prepare("AND fecha_solicitud >= %s", $fecha_inicio) : '';
@@ -3858,7 +3858,7 @@ KNOWLEDGE;
         ?>
         <div class="ayuda-vecinal-estadisticas">
             <div class="estadisticas-header">
-                <h2><?php esc_html_e('Estadísticas de ayuda comunitaria', 'flavor-chat-ia'); ?></h2>
+                <h2><?php esc_html_e('Estadísticas de ayuda comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
                 <span class="periodo-badge"><?php echo esc_html($titulo_periodo); ?></span>
             </div>
 
@@ -3867,39 +3867,39 @@ KNOWLEDGE;
                 <div class="kpi-card">
                     <div class="kpi-icono">📝</div>
                     <div class="kpi-valor"><?php echo esc_html($total_solicitudes); ?></div>
-                    <div class="kpi-etiqueta"><?php esc_html_e('Solicitudes totales', 'flavor-chat-ia'); ?></div>
+                    <div class="kpi-etiqueta"><?php esc_html_e('Solicitudes totales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="kpi-card destacado">
                     <div class="kpi-icono">✅</div>
                     <div class="kpi-valor"><?php echo esc_html($solicitudes_completadas); ?></div>
-                    <div class="kpi-etiqueta"><?php esc_html_e('Ayudas completadas', 'flavor-chat-ia'); ?></div>
+                    <div class="kpi-etiqueta"><?php esc_html_e('Ayudas completadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-icono">🔄</div>
                     <div class="kpi-valor"><?php echo esc_html($solicitudes_activas); ?></div>
-                    <div class="kpi-etiqueta"><?php esc_html_e('Solicitudes activas', 'flavor-chat-ia'); ?></div>
+                    <div class="kpi-etiqueta"><?php esc_html_e('Solicitudes activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-icono">🤝</div>
                     <div class="kpi-valor"><?php echo esc_html($voluntarios_activos); ?></div>
-                    <div class="kpi-etiqueta"><?php esc_html_e('Voluntarios activos', 'flavor-chat-ia'); ?></div>
+                    <div class="kpi-etiqueta"><?php esc_html_e('Voluntarios activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-icono">📊</div>
                     <div class="kpi-valor"><?php echo esc_html($tasa_exito); ?>%</div>
-                    <div class="kpi-etiqueta"><?php esc_html_e('Tasa de éxito', 'flavor-chat-ia'); ?></div>
+                    <div class="kpi-etiqueta"><?php esc_html_e('Tasa de éxito', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-icono">⭐</div>
                     <div class="kpi-valor"><?php echo $valoracion_media_global ? number_format($valoracion_media_global, 1) : '-'; ?></div>
-                    <div class="kpi-etiqueta"><?php esc_html_e('Valoración media', 'flavor-chat-ia'); ?></div>
+                    <div class="kpi-etiqueta"><?php esc_html_e('Valoración media', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                 </div>
             </div>
 
             <!-- Estadísticas por categoría -->
             <?php if (!empty($estadisticas_categorias)): ?>
             <div class="estadisticas-seccion">
-                <h3><?php esc_html_e('Por categoría', 'flavor-chat-ia'); ?></h3>
+                <h3><?php esc_html_e('Por categoría', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div class="categorias-stats">
                     <?php foreach ($estadisticas_categorias as $stats_categoria):
                         $nombre_categoria = $categorias[$stats_categoria->categoria] ?? ucfirst($stats_categoria->categoria);
@@ -3924,16 +3924,16 @@ KNOWLEDGE;
             <!-- Ranking de voluntarios -->
             <?php if ($mostrar_ranking && !empty($ranking_voluntarios)): ?>
             <div class="estadisticas-seccion">
-                <h3>🏆 <?php esc_html_e('Top voluntarios', 'flavor-chat-ia'); ?></h3>
+                <h3>🏆 <?php esc_html_e('Top voluntarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 <div class="ranking-voluntarios">
                     <table class="ranking-tabla">
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th><?php esc_html_e('Voluntario', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Ayudas', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Valoración', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Puntos', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Voluntario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Ayudas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Valoración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Puntos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -3983,11 +3983,11 @@ KNOWLEDGE;
             <p><?php echo esc_html($mensaje); ?></p>
             <div class="login-acciones">
                 <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="btn-principal">
-                    <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <?php if (get_option('users_can_register')): ?>
                 <a href="<?php echo esc_url(wp_registration_url()); ?>" class="btn-secundario">
-                    <?php esc_html_e('Registrarse', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Registrarse', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <?php endif; ?>
             </div>
@@ -4007,7 +4007,7 @@ KNOWLEDGE;
         check_ajax_referer('ayuda_vecinal_frontend', 'ayuda_vecinal_nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -4032,7 +4032,7 @@ KNOWLEDGE;
 
         // Validaciones
         if (empty($datos_solicitud['titulo']) || empty($datos_solicitud['categoria']) || empty($datos_solicitud['descripcion'])) {
-            wp_send_json_error(['message' => __('Por favor, completa todos los campos obligatorios.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Por favor, completa todos los campos obligatorios.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $resultado_insercion = $wpdb->insert($tabla_solicitudes, $datos_solicitud);
@@ -4040,11 +4040,11 @@ KNOWLEDGE;
         if ($resultado_insercion) {
             $id_solicitud = $wpdb->insert_id;
             wp_send_json_success([
-                'message' => __('Tu solicitud de ayuda ha sido publicada.', 'flavor-chat-ia'),
+                'message' => __('Tu solicitud de ayuda ha sido publicada.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'solicitud_id' => $id_solicitud,
             ]);
         } else {
-            wp_send_json_error(['message' => __('Error al crear la solicitud. Inténtalo de nuevo.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al crear la solicitud. Inténtalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -4055,7 +4055,7 @@ KNOWLEDGE;
         check_ajax_referer('ayuda_vecinal_frontend', 'ayuda_vecinal_nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -4085,7 +4085,7 @@ KNOWLEDGE;
 
         // Validaciones
         if (empty($datos_oferta['titulo']) || empty($datos_oferta['categoria']) || empty($datos_oferta['descripcion'])) {
-            wp_send_json_error(['message' => __('Por favor, completa todos los campos obligatorios.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Por favor, completa todos los campos obligatorios.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         if ($id_oferta_existente) {
@@ -4096,22 +4096,22 @@ KNOWLEDGE;
             ));
 
             if ((int)$oferta_usuario !== $id_usuario) {
-                wp_send_json_error(['message' => __('No tienes permisos para editar esta oferta.', 'flavor-chat-ia')]);
+                wp_send_json_error(['message' => __('No tienes permisos para editar esta oferta.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
             }
 
             $datos_oferta['fecha_actualizacion'] = current_time('mysql');
             $resultado = $wpdb->update($tabla_ofertas, $datos_oferta, ['id' => $id_oferta_existente]);
-            $mensaje_exito = __('Tu oferta ha sido actualizada.', 'flavor-chat-ia');
+            $mensaje_exito = __('Tu oferta ha sido actualizada.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         } else {
             $datos_oferta['fecha_creacion'] = current_time('mysql');
             $resultado = $wpdb->insert($tabla_ofertas, $datos_oferta);
-            $mensaje_exito = __('Tu oferta de ayuda ha sido publicada.', 'flavor-chat-ia');
+            $mensaje_exito = __('Tu oferta de ayuda ha sido publicada.', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         if ($resultado !== false) {
             wp_send_json_success(['message' => $mensaje_exito]);
         } else {
-            wp_send_json_error(['message' => __('Error al guardar la oferta. Inténtalo de nuevo.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al guardar la oferta. Inténtalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 
@@ -4122,7 +4122,7 @@ KNOWLEDGE;
         check_ajax_referer('ayuda_vecinal_frontend', 'ayuda_vecinal_nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         global $wpdb;
@@ -4132,7 +4132,7 @@ KNOWLEDGE;
         $id_solicitud = absint($_POST['solicitud_id'] ?? 0);
 
         if (!$id_solicitud) {
-            wp_send_json_error(['message' => __('Solicitud no válida.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Solicitud no válida.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar que la solicitud existe y está abierta
@@ -4142,12 +4142,12 @@ KNOWLEDGE;
         ));
 
         if (!$solicitud) {
-            wp_send_json_error(['message' => __('Esta solicitud ya no está disponible.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Esta solicitud ya no está disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // No puede responder a su propia solicitud
         if ((int)$solicitud->solicitante_id === $id_usuario) {
-            wp_send_json_error(['message' => __('No puedes responder a tu propia solicitud.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No puedes responder a tu propia solicitud.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         // Verificar si ya ha respondido
@@ -4158,7 +4158,7 @@ KNOWLEDGE;
         ));
 
         if ($respuesta_existente) {
-            wp_send_json_error(['message' => __('Ya has ofrecido ayuda para esta solicitud.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Ya has ofrecido ayuda para esta solicitud.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
 
         $datos_respuesta = [
@@ -4173,9 +4173,9 @@ KNOWLEDGE;
         $resultado = $wpdb->insert($tabla_respuestas, $datos_respuesta);
 
         if ($resultado) {
-            wp_send_json_success(['message' => __('Tu oferta de ayuda ha sido enviada al solicitante.', 'flavor-chat-ia')]);
+            wp_send_json_success(['message' => __('Tu oferta de ayuda ha sido enviada al solicitante.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         } else {
-            wp_send_json_error(['message' => __('Error al enviar la respuesta. Inténtalo de nuevo.', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al enviar la respuesta. Inténtalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN)]);
         }
     }
 

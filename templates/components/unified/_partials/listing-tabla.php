@@ -49,7 +49,7 @@ $identificador_unico = 'listing-tabla-' . wp_unique_id();
                     type="text"
                     class="w-full rounded-lg border border-gray-300 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 placeholder-gray-400 focus:border-transparent focus:outline-none focus:ring-2"
                     style="--tw-ring-color: <?php echo $color_primario_escapado; ?>;"
-                    placeholder="<?php esc_attr_e( 'Buscar en la tabla...', 'flavor-chat-ia' ); ?>"
+                    placeholder="<?php esc_attr_e( 'Buscar en la tabla...', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>"
                     data-buscador-tabla
                 />
                 <svg class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -65,17 +65,17 @@ $identificador_unico = 'listing-tabla-' . wp_unique_id();
             <thead>
                 <tr class="border-b border-gray-200" style="background-color: <?php echo $color_primario_escapado; ?>0d;">
                     <?php if ( $mostrar_imagen_flag ) : ?>
-                        <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500"><?php echo esc_html__('&nbsp;', 'flavor-chat-ia'); ?></th>
+                        <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500"><?php echo esc_html__('&nbsp;', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                     <?php endif; ?>
                     <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                        <?php esc_html_e( 'Nombre', 'flavor-chat-ia' ); ?>
+                        <?php esc_html_e( 'Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                     </th>
                     <?php if ( $mostrar_descripcion_flag ) : ?>
                         <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                            <?php esc_html_e( 'Descripción', 'flavor-chat-ia' ); ?>
+                            <?php esc_html_e( 'Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                         </th>
                     <?php endif; ?>
-                    <th class="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-gray-500"><?php echo esc_html__('&nbsp;', 'flavor-chat-ia'); ?></th>
+                    <th class="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-gray-500"><?php echo esc_html__('&nbsp;', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
@@ -111,7 +111,7 @@ $identificador_unico = 'listing-tabla-' . wp_unique_id();
                         <td class="px-6 py-4 text-right">
                             <?php if ( ! empty( $item_url ) ) : ?>
                                 <a href="<?php echo esc_url( $item_url ); ?>" class="inline-flex items-center text-sm font-medium transition-colors duration-200" style="color: <?php echo $color_primario_escapado; ?>;">
-                                    <?php esc_html_e( 'Ver', 'flavor-chat-ia' ); ?>
+                                    <?php esc_html_e( 'Ver', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                                     <svg class="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                     </svg>

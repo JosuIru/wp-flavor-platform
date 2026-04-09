@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 
 $configuracion = get_option('flavor_marketplace_settings', []);
 $configuracion_default = [
-    'nombre_tienda' => __('Marketplace Local', 'flavor-chat-ia'),
+    'nombre_tienda' => __('Marketplace Local', FLAVOR_PLATFORM_TEXT_DOMAIN),
     'descripcion' => '',
     'moneda' => 'EUR',
     'simbolo_moneda' => '€',
@@ -73,14 +73,14 @@ if (isset($_POST['guardar_config_marketplace']) && wp_verify_nonce($_POST['_wpno
 
     update_option('flavor_marketplace_settings', $nueva_config);
     $configuracion = $nueva_config;
-    $mensaje_guardado = __('Configuración guardada correctamente.', 'flavor-chat-ia');
+    $mensaje_guardado = __('Configuración guardada correctamente.', FLAVOR_PLATFORM_TEXT_DOMAIN);
 }
 ?>
 
 <div class="wrap flavor-marketplace-config">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-store"></span>
-        <?php esc_html_e('Configuración del Marketplace', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Configuración del Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </h1>
     <hr class="wp-header-end">
 
@@ -96,19 +96,19 @@ if (isset($_POST['guardar_config_marketplace']) && wp_verify_nonce($_POST['_wpno
         <div class="dm-config-grid">
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-store"></span> <?php esc_html_e('Información General', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-store"></span> <?php esc_html_e('Información General', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-form-group">
-                        <label for="nombre_tienda"><?php esc_html_e('Nombre del Marketplace', 'flavor-chat-ia'); ?></label>
+                        <label for="nombre_tienda"><?php esc_html_e('Nombre del Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="text" id="nombre_tienda" name="nombre_tienda" value="<?php echo esc_attr($configuracion['nombre_tienda']); ?>">
                     </div>
                     <div class="dm-form-group">
-                        <label for="descripcion"><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?></label>
+                        <label for="descripcion"><?php esc_html_e('Descripción', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <textarea id="descripcion" name="descripcion" rows="3"><?php echo esc_textarea($configuracion['descripcion']); ?></textarea>
                     </div>
                     <div class="dm-form-group">
-                        <label for="productos_por_pagina"><?php esc_html_e('Productos por página', 'flavor-chat-ia'); ?></label>
+                        <label for="productos_por_pagina"><?php esc_html_e('Productos por página', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="number" id="productos_por_pagina" name="productos_por_pagina" value="<?php echo esc_attr($configuracion['productos_por_pagina']); ?>" min="4" max="48">
                     </div>
                 </div>
@@ -116,12 +116,12 @@ if (isset($_POST['guardar_config_marketplace']) && wp_verify_nonce($_POST['_wpno
 
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-money-alt"></span> <?php esc_html_e('Moneda y Precios', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-money-alt"></span> <?php esc_html_e('Moneda y Precios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-form-row">
                         <div class="dm-form-group">
-                            <label for="moneda"><?php esc_html_e('Moneda', 'flavor-chat-ia'); ?></label>
+                            <label for="moneda"><?php esc_html_e('Moneda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <select id="moneda" name="moneda">
                                 <option value="EUR" <?php selected($configuracion['moneda'], 'EUR'); ?>>Euro (EUR)</option>
                                 <option value="USD" <?php selected($configuracion['moneda'], 'USD'); ?>>Dólar (USD)</option>
@@ -130,20 +130,20 @@ if (isset($_POST['guardar_config_marketplace']) && wp_verify_nonce($_POST['_wpno
                             </select>
                         </div>
                         <div class="dm-form-group">
-                            <label for="simbolo_moneda"><?php esc_html_e('Símbolo', 'flavor-chat-ia'); ?></label>
+                            <label for="simbolo_moneda"><?php esc_html_e('Símbolo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="text" id="simbolo_moneda" name="simbolo_moneda" value="<?php echo esc_attr($configuracion['simbolo_moneda']); ?>" maxlength="5">
                         </div>
                     </div>
                     <div class="dm-form-row">
                         <div class="dm-form-group">
-                            <label for="posicion_moneda"><?php esc_html_e('Posición del símbolo', 'flavor-chat-ia'); ?></label>
+                            <label for="posicion_moneda"><?php esc_html_e('Posición del símbolo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <select id="posicion_moneda" name="posicion_moneda">
-                                <option value="antes" <?php selected($configuracion['posicion_moneda'], 'antes'); ?>><?php esc_html_e('Antes (€10)', 'flavor-chat-ia'); ?></option>
-                                <option value="despues" <?php selected($configuracion['posicion_moneda'], 'despues'); ?>><?php esc_html_e('Después (10€)', 'flavor-chat-ia'); ?></option>
+                                <option value="antes" <?php selected($configuracion['posicion_moneda'], 'antes'); ?>><?php esc_html_e('Antes (€10)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                                <option value="despues" <?php selected($configuracion['posicion_moneda'], 'despues'); ?>><?php esc_html_e('Después (10€)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
                             </select>
                         </div>
                         <div class="dm-form-group">
-                            <label for="decimales"><?php esc_html_e('Decimales', 'flavor-chat-ia'); ?></label>
+                            <label for="decimales"><?php esc_html_e('Decimales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <select id="decimales" name="decimales">
                                 <option value="0" <?php selected($configuracion['decimales'], 0); ?>>0</option>
                                 <option value="2" <?php selected($configuracion['decimales'], 2); ?>>2</option>
@@ -155,34 +155,34 @@ if (isset($_POST['guardar_config_marketplace']) && wp_verify_nonce($_POST['_wpno
 
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-businessman"></span> <?php esc_html_e('Vendedores', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-businessman"></span> <?php esc_html_e('Vendedores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-checkbox-group">
                         <label class="dm-checkbox">
                             <input type="checkbox" name="permitir_registro_vendedores" value="1" <?php checked($configuracion['permitir_registro_vendedores']); ?>>
-                            <span><?php esc_html_e('Permitir registro de vendedores', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Permitir registro de vendedores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="requiere_aprobacion_vendedor" value="1" <?php checked($configuracion['requiere_aprobacion_vendedor']); ?>>
-                            <span><?php esc_html_e('Requerir aprobación de vendedor', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Requerir aprobación de vendedor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="requiere_aprobacion_producto" value="1" <?php checked($configuracion['requiere_aprobacion_producto']); ?>>
-                            <span><?php esc_html_e('Requerir aprobación de productos', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Requerir aprobación de productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="mostrar_vendedor" value="1" <?php checked($configuracion['mostrar_vendedor']); ?>>
-                            <span><?php esc_html_e('Mostrar información del vendedor', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Mostrar información del vendedor', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                     </div>
                     <div class="dm-form-row" style="margin-top: 15px;">
                         <div class="dm-form-group">
-                            <label for="comision_porcentaje"><?php esc_html_e('Comisión (%)', 'flavor-chat-ia'); ?></label>
+                            <label for="comision_porcentaje"><?php esc_html_e('Comisión (%)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="number" id="comision_porcentaje" name="comision_porcentaje" value="<?php echo esc_attr($configuracion['comision_porcentaje']); ?>" min="0" max="100" step="0.5">
                         </div>
                         <div class="dm-form-group">
-                            <label for="minimo_retiro"><?php esc_html_e('Mínimo para retiro', 'flavor-chat-ia'); ?></label>
+                            <label for="minimo_retiro"><?php esc_html_e('Mínimo para retiro', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                             <input type="number" id="minimo_retiro" name="minimo_retiro" value="<?php echo esc_attr($configuracion['minimo_retiro']); ?>" min="0" step="0.01">
                         </div>
                     </div>
@@ -191,25 +191,25 @@ if (isset($_POST['guardar_config_marketplace']) && wp_verify_nonce($_POST['_wpno
 
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-cart"></span> <?php esc_html_e('Opciones de Compra', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-cart"></span> <?php esc_html_e('Opciones de Compra', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-checkbox-group">
                         <label class="dm-checkbox">
                             <input type="checkbox" name="permitir_negociar" value="1" <?php checked($configuracion['permitir_negociar']); ?>>
-                            <span><?php esc_html_e('Permitir negociar precio', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Permitir negociar precio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="permitir_intercambio" value="1" <?php checked($configuracion['permitir_intercambio']); ?>>
-                            <span><?php esc_html_e('Permitir trueque/intercambio', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Permitir trueque/intercambio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="mostrar_ubicacion" value="1" <?php checked($configuracion['mostrar_ubicacion']); ?>>
-                            <span><?php esc_html_e('Mostrar ubicación del producto', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Mostrar ubicación del producto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                     </div>
                     <div class="dm-form-group" style="margin-top: 15px;">
-                        <label for="radio_busqueda_km"><?php esc_html_e('Radio de búsqueda (km)', 'flavor-chat-ia'); ?></label>
+                        <label for="radio_busqueda_km"><?php esc_html_e('Radio de búsqueda (km)', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></label>
                         <input type="number" id="radio_busqueda_km" name="radio_busqueda_km" value="<?php echo esc_attr($configuracion['radio_busqueda_km']); ?>" min="1" max="500">
                     </div>
                 </div>
@@ -217,21 +217,21 @@ if (isset($_POST['guardar_config_marketplace']) && wp_verify_nonce($_POST['_wpno
 
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-star-filled"></span> <?php esc_html_e('Funcionalidades', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-star-filled"></span> <?php esc_html_e('Funcionalidades', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-checkbox-group">
                         <label class="dm-checkbox">
                             <input type="checkbox" name="habilitar_favoritos" value="1" <?php checked($configuracion['habilitar_favoritos']); ?>>
-                            <span><?php esc_html_e('Habilitar lista de favoritos', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Habilitar lista de favoritos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="habilitar_valoraciones" value="1" <?php checked($configuracion['habilitar_valoraciones']); ?>>
-                            <span><?php esc_html_e('Habilitar valoraciones y reseñas', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Habilitar valoraciones y reseñas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="habilitar_mensajes" value="1" <?php checked($configuracion['habilitar_mensajes']); ?>>
-                            <span><?php esc_html_e('Habilitar mensajería entre usuarios', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Habilitar mensajería entre usuarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                     </div>
                 </div>
@@ -239,21 +239,21 @@ if (isset($_POST['guardar_config_marketplace']) && wp_verify_nonce($_POST['_wpno
 
             <div class="dm-card">
                 <div class="dm-card__header">
-                    <h3><span class="dashicons dashicons-email"></span> <?php esc_html_e('Notificaciones', 'flavor-chat-ia'); ?></h3>
+                    <h3><span class="dashicons dashicons-email"></span> <?php esc_html_e('Notificaciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
                 </div>
                 <div class="dm-card__body">
                     <div class="dm-checkbox-group">
                         <label class="dm-checkbox">
                             <input type="checkbox" name="notificar_nuevo_producto" value="1" <?php checked($configuracion['notificar_nuevo_producto']); ?>>
-                            <span><?php esc_html_e('Notificar nuevos productos', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Notificar nuevos productos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="notificar_venta" value="1" <?php checked($configuracion['notificar_venta']); ?>>
-                            <span><?php esc_html_e('Notificar ventas', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Notificar ventas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                         <label class="dm-checkbox">
                             <input type="checkbox" name="notificar_mensaje" value="1" <?php checked($configuracion['notificar_mensaje']); ?>>
-                            <span><?php esc_html_e('Notificar mensajes nuevos', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('Notificar mensajes nuevos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </label>
                     </div>
                 </div>
@@ -263,7 +263,7 @@ if (isset($_POST['guardar_config_marketplace']) && wp_verify_nonce($_POST['_wpno
         <div class="dm-form-actions">
             <button type="submit" name="guardar_config_marketplace" class="button button-primary button-hero">
                 <span class="dashicons dashicons-saved"></span>
-                <?php esc_html_e('Guardar Configuración', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Guardar Configuración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     </form>

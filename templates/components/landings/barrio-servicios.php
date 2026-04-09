@@ -9,50 +9,50 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$titulo = $titulo ?? __('Servicios del Barrio', 'flavor-chat-ia');
+$titulo = $titulo ?? __('Servicios del Barrio', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $color_primario = $color_primario ?? '#22c55e';
 $id_seccion = $id_seccion ?? '';
 
 $url_base_landing = trailingslashit(home_url());
 $servicios_default = [
     [
-        'nombre' => __('Ayuda Vecinal', 'flavor-chat-ia'),
-        'descripcion' => __('Pide o ofrece ayuda a tus vecinos: compras, pasear mascotas, acompañamiento...', 'flavor-chat-ia'),
+        'nombre' => __('Ayuda Vecinal', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Pide o ofrece ayuda a tus vecinos: compras, pasear mascotas, acompañamiento...', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'heart',
         'color' => '#ec4899',
         'url' => $url_base_landing . 'ayuda-vecinal/',
     ],
     [
-        'nombre' => __('Banco de Tiempo', 'flavor-chat-ia'),
-        'descripcion' => __('Intercambia horas de servicios: clases, reparaciones, cuidados, cocina...', 'flavor-chat-ia'),
+        'nombre' => __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Intercambia horas de servicios: clases, reparaciones, cuidados, cocina...', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'clock',
         'color' => '#8b5cf6',
         'url' => $url_base_landing . 'banco-tiempo/',
     ],
     [
-        'nombre' => __('Huertos Urbanos', 'flavor-chat-ia'),
-        'descripcion' => __('Gestiona tu parcela, comparte cosechas y aprende de agricultura urbana.', 'flavor-chat-ia'),
+        'nombre' => __('Huertos Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Gestiona tu parcela, comparte cosechas y aprende de agricultura urbana.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'carrot',
         'color' => '#22c55e',
         'url' => $url_base_landing . 'huertos-urbanos/',
     ],
     [
-        'nombre' => __('Bicis Compartidas', 'flavor-chat-ia'),
-        'descripcion' => __('Préstamo de bicicletas entre vecinos. Movilidad sostenible y gratuita.', 'flavor-chat-ia'),
+        'nombre' => __('Bicis Compartidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Préstamo de bicicletas entre vecinos. Movilidad sostenible y gratuita.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'bike',
         'color' => '#06b6d4',
         'url' => $url_base_landing . 'bicicletas-compartidas/',
     ],
     [
-        'nombre' => __('Espacios Comunes', 'flavor-chat-ia'),
-        'descripcion' => __('Reserva salas, patios y espacios para reuniones, fiestas o actividades.', 'flavor-chat-ia'),
+        'nombre' => __('Espacios Comunes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Reserva salas, patios y espacios para reuniones, fiestas o actividades.', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'building',
         'color' => '#f59e0b',
         'url' => $url_base_landing . 'espacios-comunes/',
     ],
     [
-        'nombre' => __('Incidencias', 'flavor-chat-ia'),
-        'descripcion' => __('Reporta problemas del barrio: baches, farolas, limpieza, ruidos...', 'flavor-chat-ia'),
+        'nombre' => __('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'descripcion' => __('Reporta problemas del barrio: baches, farolas, limpieza, ruidos...', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'icono' => 'warning',
         'color' => '#ef4444',
         'url' => $url_base_landing . 'incidencias/',
@@ -62,10 +62,10 @@ $servicios_default = [
 $servicios = $servicios ?? $servicios_default;
 
 $stats = [
-    ['numero' => '1.250', 'label' => __('Vecinos activos', 'flavor-chat-ia')],
-    ['numero' => '340', 'label' => __('Ayudas realizadas', 'flavor-chat-ia')],
-    ['numero' => '89', 'label' => __('Horas intercambiadas', 'flavor-chat-ia')],
-    ['numero' => '12', 'label' => __('Huertos gestionados', 'flavor-chat-ia')],
+    ['numero' => '1.250', 'label' => __('Vecinos activos', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['numero' => '340', 'label' => __('Ayudas realizadas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['numero' => '89', 'label' => __('Horas intercambiadas', FLAVOR_PLATFORM_TEXT_DOMAIN)],
+    ['numero' => '12', 'label' => __('Huertos gestionados', FLAVOR_PLATFORM_TEXT_DOMAIN)],
 ];
 ?>
 
@@ -74,10 +74,10 @@ $stats = [
         <div class="flavor-barrio-header">
             <span class="flavor-barrio-badge">
                 <span class="dashicons dashicons-location"></span>
-                <?php esc_html_e('Tu Barrio', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Tu Barrio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
             <h2 class="flavor-section-title"><?php echo esc_html($titulo); ?></h2>
-            <p class="flavor-barrio-subtitulo"><?php esc_html_e('Todo lo que necesitas, cerca de ti y entre vecinos', 'flavor-chat-ia'); ?></p>
+            <p class="flavor-barrio-subtitulo"><?php esc_html_e('Todo lo que necesitas, cerca de ti y entre vecinos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
 
         <div class="flavor-servicios-grid">
@@ -89,7 +89,7 @@ $stats = [
                     <h3 class="flavor-servicio-nombre"><?php echo esc_html($servicio['nombre']); ?></h3>
                     <p class="flavor-servicio-descripcion"><?php echo esc_html($servicio['descripcion']); ?></p>
                     <span class="flavor-servicio-enlace">
-                        <?php esc_html_e('Acceder', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Acceder', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         <span class="dashicons dashicons-arrow-right-alt2"></span>
                     </span>
                 </a>
@@ -107,11 +107,11 @@ $stats = [
 
         <div class="flavor-barrio-cta">
             <div class="flavor-cta-texto">
-                <h3><?php esc_html_e('¿Aún no eres parte del barrio digital?', 'flavor-chat-ia'); ?></h3>
-                <p><?php esc_html_e('Únete gratis y conecta con tus vecinos', 'flavor-chat-ia'); ?></p>
+                <h3><?php esc_html_e('¿Aún no eres parte del barrio digital?', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p><?php esc_html_e('Únete gratis y conecta con tus vecinos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <a href="<?php echo esc_url(wp_registration_url()); ?>" class="flavor-cta-boton">
-                <?php esc_html_e('Unirme al barrio', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Unirme al barrio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     </div>

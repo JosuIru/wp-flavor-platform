@@ -79,7 +79,7 @@ add_action('shutdown', function() {
     echo "   Total archivos: " . count($files) . "\n";
 
     $flavor_files = array_filter($files, function($file) {
-        return strpos($file, 'flavor-chat-ia') !== false;
+        return strpos($file, 'flavor-platform') !== false;
     });
     echo "   Archivos de Flavor: " . count($flavor_files) . "\n\n";
 

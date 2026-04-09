@@ -220,38 +220,38 @@ class Flavor_Module_Dashboards_Registrar {
      */
     private function get_module_title($module_id) {
         $titles = [
-            'socios' => __('Gestión de Miembros', 'flavor-chat-ia'),
-            'eventos' => __('Eventos', 'flavor-chat-ia'),
-            'reservas' => __('Reservas', 'flavor-chat-ia'),
-            'tramites' => __('Trámites', 'flavor-chat-ia'),
-            'incidencias' => __('Incidencias', 'flavor-chat-ia'),
-            'participacion' => __('Participación', 'flavor-chat-ia'),
-            'foros' => __('Foros', 'flavor-chat-ia'),
-            'comunidades' => __('Comunidades', 'flavor-chat-ia'),
-            'colectivos' => __('Colectivos', 'flavor-chat-ia'),
-            'marketplace' => __('Marketplace', 'flavor-chat-ia'),
-            'banco_tiempo' => __('Banco de Tiempo', 'flavor-chat-ia'),
-            'economia_don' => __('Economía del Don', 'flavor-chat-ia'),
-            'grupos_consumo' => __('Grupos de Consumo', 'flavor-chat-ia'),
-            'huertos_urbanos' => __('Huertos Urbanos', 'flavor-chat-ia'),
-            'espacios_comunes' => __('Espacios Comunes', 'flavor-chat-ia'),
-            'biblioteca' => __('Biblioteca', 'flavor-chat-ia'),
-            'carpooling' => __('Carpooling', 'flavor-chat-ia'),
-            'bicicletas_compartidas' => __('Bicicletas Compartidas', 'flavor-chat-ia'),
-            'reciclaje' => __('Reciclaje', 'flavor-chat-ia'),
-            'compostaje' => __('Compostaje', 'flavor-chat-ia'),
-            'energia_comunitaria' => __('Energía Comunitaria', 'flavor-chat-ia'),
-            'radio' => __('Radio', 'flavor-chat-ia'),
-            'podcast' => __('Podcast', 'flavor-chat-ia'),
-            'multimedia' => __('Multimedia', 'flavor-chat-ia'),
-            'chat_grupos' => __('Chat de Grupos', 'flavor-chat-ia'),
-            'chat_interno' => __('Chat Interno', 'flavor-chat-ia'),
-            'red_social' => __('Red Social', 'flavor-chat-ia'),
-            'cursos' => __('Cursos', 'flavor-chat-ia'),
-            'talleres' => __('Talleres', 'flavor-chat-ia'),
-            'avisos_municipales' => __('Avisos Municipales', 'flavor-chat-ia'),
-            'transparencia' => __('Transparencia', 'flavor-chat-ia'),
-            'presupuestos_participativos' => __('Presupuestos Participativos', 'flavor-chat-ia'),
+            'socios' => __('Gestión de Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'eventos' => __('Eventos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'reservas' => __('Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'tramites' => __('Trámites', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'incidencias' => __('Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'participacion' => __('Participación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'foros' => __('Foros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'comunidades' => __('Comunidades', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'colectivos' => __('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'marketplace' => __('Marketplace', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'banco_tiempo' => __('Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'economia_don' => __('Economía del Don', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'grupos_consumo' => __('Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'huertos_urbanos' => __('Huertos Urbanos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'espacios_comunes' => __('Espacios Comunes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'biblioteca' => __('Biblioteca', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'carpooling' => __('Carpooling', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'bicicletas_compartidas' => __('Bicicletas Compartidas', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'reciclaje' => __('Reciclaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'compostaje' => __('Compostaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'energia_comunitaria' => __('Energía Comunitaria', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'radio' => __('Radio', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'podcast' => __('Podcast', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'multimedia' => __('Multimedia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'chat_grupos' => __('Chat de Grupos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'chat_interno' => __('Chat Interno', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'red_social' => __('Red Social', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cursos' => __('Cursos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'talleres' => __('Talleres', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'avisos_municipales' => __('Avisos Municipales', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'transparencia' => __('Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'presupuestos_participativos' => __('Presupuestos Participativos', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         if (isset($titles[$module_id])) {
@@ -451,7 +451,7 @@ class Flavor_Module_Dashboards_Registrar {
         $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
 
         if (!isset($this->page_configs[$current_page])) {
-            echo '<div class="wrap"><h1>' . esc_html__('Página no encontrada', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Página no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1></div>';
             return;
         }
 
@@ -459,8 +459,8 @@ class Flavor_Module_Dashboards_Registrar {
 
         // Verificar que el archivo existe
         if (!file_exists($config['dashboard_path'])) {
-            echo '<div class="wrap"><h1>' . esc_html__('Vista no disponible', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('El archivo de vista no existe.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Vista no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h1>';
+            echo '<p>' . esc_html__('El archivo de vista no existe.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
             return;
         }
 
@@ -516,7 +516,7 @@ class Flavor_Module_Dashboards_Registrar {
      * @return array Lista de IDs de módulos activos
      */
     private function get_active_modules() {
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $modulos_activos = $settings['active_modules'] ?? [];
 
         // También buscar en opción legacy
@@ -575,17 +575,17 @@ class Flavor_Module_Dashboards_Registrar {
             return;
         }
         ?>
-        <section class="dm-card dm-relations-panel" aria-label="<?php esc_attr_e('Módulos relacionados', 'flavor-chat-ia'); ?>">
+        <section class="dm-card dm-relations-panel" aria-label="<?php esc_attr_e('Módulos relacionados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <?php if (!empty($related_modules)) : ?>
                 <div class="dm-relations-panel__section<?php echo !empty($related_transversals) ? ' dm-relations-panel__section--with-divider' : ''; ?>">
                     <div class="dm-section__header dm-relations-panel__header">
                         <h2 class="dm-section__title">
                             <span class="dashicons dashicons-networking" aria-hidden="true"></span>
-                            <?php esc_html_e('Módulos vinculados', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Módulos vinculados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h2>
                     </div>
                     <p class="dm-relations-panel__description">
-                        <?php esc_html_e('Accesos directos a dashboards que dependen de este módulo.', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Accesos directos a dashboards que dependen de este módulo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                     <div class="dm-action-grid dm-relations-panel__grid">
                     <?php foreach ($related_modules as $related_module) : ?>
@@ -603,11 +603,11 @@ class Flavor_Module_Dashboards_Registrar {
                     <div class="dm-section__header dm-relations-panel__header">
                         <h2 class="dm-section__title">
                             <span class="dashicons dashicons-randomize" aria-hidden="true"></span>
-                            <?php esc_html_e('Capas transversales relacionadas', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Capas transversales relacionadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h2>
                     </div>
                     <p class="dm-relations-panel__description">
-                        <?php esc_html_e('Dashboards transversales que miden, gobiernan, enseñan o dan soporte a este módulo.', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Dashboards transversales que miden, gobiernan, enseñan o dan soporte a este módulo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                     <div class="dm-action-grid dm-relations-panel__grid dm-relations-panel__grid--transversal">
                     <?php foreach ($related_transversals as $transversal_module) : ?>

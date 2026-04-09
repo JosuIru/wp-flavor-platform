@@ -25,20 +25,20 @@ $slots = $slots ?? [];
 $selected = $selected ?? '';
 $selectable = $selectable ?? true;
 $variant = $variant ?? 'grid';
-$empty_text = $empty_text ?? __('No hay horarios disponibles', 'flavor-chat-ia');
+$empty_text = $empty_text ?? __('No hay horarios disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN);
 $input_name = $input_name ?? 'selected_slot';
 
 $grid_id = 'flavor-availability-' . wp_rand(1000, 9999);
 
 // Días de la semana
 $day_names = [
-    0 => __('Dom', 'flavor-chat-ia'),
-    1 => __('Lun', 'flavor-chat-ia'),
-    2 => __('Mar', 'flavor-chat-ia'),
-    3 => __('Mié', 'flavor-chat-ia'),
-    4 => __('Jue', 'flavor-chat-ia'),
-    5 => __('Vie', 'flavor-chat-ia'),
-    6 => __('Sáb', 'flavor-chat-ia'),
+    0 => __('Dom', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    1 => __('Lun', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    2 => __('Mar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    3 => __('Mié', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    4 => __('Jue', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    5 => __('Vie', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    6 => __('Sáb', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 ?>
 
@@ -71,13 +71,13 @@ $day_names = [
                         </div>
                         <div class="flex-1">
                             <p class="text-sm text-gray-600">
-                                <?php printf(__('%d horarios disponibles', 'flavor-chat-ia'), count($available_slots)); ?>
+                                <?php printf(__('%d horarios disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN), count($available_slots)); ?>
                             </p>
                         </div>
                     </div>
 
                     <?php if (empty($available_slots)): ?>
-                        <p class="text-sm text-gray-400"><?php esc_html_e('Sin disponibilidad', 'flavor-chat-ia'); ?></p>
+                        <p class="text-sm text-gray-400"><?php esc_html_e('Sin disponibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <?php else: ?>
                         <div class="flex flex-wrap gap-2">
                             <?php foreach ($date_slots as $slot): ?>
@@ -119,7 +119,7 @@ $day_names = [
                             <p class="text-xs font-medium <?php echo $is_today ? 'text-blue-600' : 'text-gray-500'; ?> uppercase">
                                 <?php echo esc_html($day_name); ?>
                                 <?php if ($is_today): ?>
-                                    <span class="block text-[10px]"><?php esc_html_e('Hoy', 'flavor-chat-ia'); ?></span>
+                                    <span class="block text-[10px]"><?php esc_html_e('Hoy', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php endif; ?>
                             </p>
                             <p class="text-lg font-bold <?php echo $is_today ? 'text-blue-600' : 'text-gray-900'; ?>">
@@ -152,7 +152,7 @@ $day_names = [
                             <?php endforeach; ?>
 
                             <?php if (empty($date_slots)): ?>
-                                <p class="text-xs text-gray-400 text-center py-2"><?php esc_html_e('—', 'flavor-chat-ia'); ?></p>
+                                <p class="text-xs text-gray-400 text-center py-2"><?php esc_html_e('—', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             <?php endif; ?>
                         </div>
                     </div>

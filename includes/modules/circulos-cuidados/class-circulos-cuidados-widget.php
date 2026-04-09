@@ -30,7 +30,7 @@ class Flavor_Circulos_Cuidados_Widget extends Flavor_Dashboard_Widget_Base {
         $this->module = $module;
 
         $this->widget_id = 'circulos-cuidados';
-        $this->title = __('Círculos de Cuidados', 'flavor-chat-ia');
+        $this->title = __('Círculos de Cuidados', 'flavor-platform');
         $this->icon = 'dashicons-heart';
         $this->size = 'medium';
         $this->category = 'cuidados';
@@ -49,7 +49,7 @@ class Flavor_Circulos_Cuidados_Widget extends Flavor_Dashboard_Widget_Base {
             return [
                 'stats' => [],
                 'items' => [],
-                'empty_state' => __('Inicia sesión para ver tus círculos de cuidados', 'flavor-chat-ia'),
+                'empty_state' => __('Inicia sesión para ver tus círculos de cuidados', 'flavor-platform'),
             ];
         }
 
@@ -106,7 +106,7 @@ class Flavor_Circulos_Cuidados_Widget extends Flavor_Dashboard_Widget_Base {
                 'title' => $necesidad->post_title,
                 'meta' => ucfirst($necesidad->urgencia),
                 'url' => get_permalink($necesidad->ID),
-                'badge' => $necesidad->urgencia === 'urgente' ? __('Urgente', 'flavor-chat-ia') : null,
+                'badge' => $necesidad->urgencia === 'urgente' ? __('Urgente', 'flavor-platform') : null,
                 'badge_color' => $urgencia_colores[$necesidad->urgencia] ?? 'gray',
             ];
         }
@@ -116,27 +116,27 @@ class Flavor_Circulos_Cuidados_Widget extends Flavor_Dashboard_Widget_Base {
                 [
                     'icon' => 'dashicons-heart',
                     'valor' => $stats['circulos'],
-                    'label' => __('Círculos', 'flavor-chat-ia'),
+                    'label' => __('Círculos', 'flavor-platform'),
                     'color' => 'red',
                 ],
                 [
                     'icon' => 'dashicons-clock',
                     'valor' => number_format($stats['horas_cuidado'], 1) . 'h',
-                    'label' => __('Horas donadas', 'flavor-chat-ia'),
+                    'label' => __('Horas donadas', 'flavor-platform'),
                     'color' => 'green',
                 ],
                 [
                     'icon' => 'dashicons-groups',
                     'valor' => $stats['necesidades_ayudadas'],
-                    'label' => __('Ayudas', 'flavor-chat-ia'),
+                    'label' => __('Ayudas', 'flavor-platform'),
                     'color' => 'purple',
                 ],
             ],
             'items' => $items,
-            'empty_state' => __('No hay necesidades pendientes en tus círculos', 'flavor-chat-ia'),
+            'empty_state' => __('No hay necesidades pendientes en tus círculos', 'flavor-platform'),
             'footer' => [
                 [
-                    'label' => $this->is_admin_context() ? __('Ver panel', 'flavor-chat-ia') : __('Ver círculos', 'flavor-chat-ia'),
+                    'label' => $this->is_admin_context() ? __('Ver panel', 'flavor-platform') : __('Ver círculos', 'flavor-platform'),
                     'url' => $this->get_context_url('/mi-portal/circulos-cuidados/', 'flavor-circulos-cuidados'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
@@ -156,7 +156,7 @@ class Flavor_Circulos_Cuidados_Widget extends Flavor_Dashboard_Widget_Base {
 
         // Mostrar alerta si hay necesidades urgentes
         $urgentes = array_filter($data['items'], function($item) {
-            return ($item['badge'] ?? '') === __('Urgente', 'flavor-chat-ia');
+            return ($item['badge'] ?? '') === __('Urgente', 'flavor-platform');
         });
 
         if (!empty($urgentes)) {
@@ -168,7 +168,7 @@ class Flavor_Circulos_Cuidados_Widget extends Flavor_Dashboard_Widget_Base {
                         'Hay %d necesidad urgente en tus círculos',
                         'Hay %d necesidades urgentes en tus círculos',
                         count($urgentes),
-                        'flavor-chat-ia'
+                        'flavor-platform'
                     )),
                     count($urgentes)
                 ); ?>

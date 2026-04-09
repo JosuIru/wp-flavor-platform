@@ -416,7 +416,7 @@ class Flavor_Banco_Tiempo_API {
         return new WP_REST_Response([
             'success' => true,
             'servicio' => $this->formatear_servicio($servicio),
-            'mensaje' => __('Servicio publicado con éxito', 'flavor-chat-ia'),
+            'mensaje' => __('Servicio publicado con éxito', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 201);
     }
 
@@ -629,13 +629,13 @@ class Flavor_Banco_Tiempo_API {
 
         $receptor = get_user_by('id', $servicio->usuario_id);
         if ($receptor && !empty($receptor->user_email)) {
-            $asunto = sprintf(__('Nueva solicitud en Banco de Tiempo', 'flavor-chat-ia'));
+            $asunto = sprintf(__('Nueva solicitud en Banco de Tiempo', FLAVOR_PLATFORM_TEXT_DOMAIN));
             $contenido = sprintf(
-                __("Hola %s,\n\nHas recibido una nueva solicitud para tu servicio \"%s\".\n\nMensaje:\n%s\n\nFecha preferida: %s\n", 'flavor-chat-ia'),
+                __("Hola %s,\n\nHas recibido una nueva solicitud para tu servicio \"%s\".\n\nMensaje:\n%s\n\nFecha preferida: %s\n", FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $receptor->display_name,
                 $servicio->titulo,
                 $mensaje,
-                $fecha_preferida ?: __('No indicada', 'flavor-chat-ia')
+                $fecha_preferida ?: __('No indicada', FLAVOR_PLATFORM_TEXT_DOMAIN)
             );
             wp_mail($receptor->user_email, $asunto, $contenido);
         }
@@ -643,7 +643,7 @@ class Flavor_Banco_Tiempo_API {
         return new WP_REST_Response([
             'success' => true,
             'transaccion' => $this->formatear_transaccion($transaccion, $usuario_id),
-            'mensaje' => __('horas_reales', 'flavor-chat-ia'),
+            'mensaje' => __('horas_reales', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 201);
     }
 
@@ -712,7 +712,7 @@ class Flavor_Banco_Tiempo_API {
 
         return new WP_REST_Response([
             'success' => true,
-            'mensaje' => __('Servicio publicado con éxito', 'flavor-chat-ia'),
+            'mensaje' => __('Servicio publicado con éxito', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 200);
     }
 
@@ -753,7 +753,7 @@ class Flavor_Banco_Tiempo_API {
 
         return new WP_REST_Response([
             'success' => true,
-            'mensaje' => __('Educación', 'flavor-chat-ia'),
+            'mensaje' => __('Educación', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 200);
     }
 
@@ -763,12 +763,12 @@ class Flavor_Banco_Tiempo_API {
      */
     public function get_categorias($request) {
         $categorias = [
-            ['id' => 'cuidados', 'nombre' => __('Cuidados', 'flavor-chat-ia'), 'icon' => 'favorite'],
-            ['id' => 'educacion', 'nombre' => __('Educación', 'flavor-chat-ia'), 'icon' => 'school'],
-            ['id' => 'bricolaje', 'nombre' => __('Bricolaje', 'flavor-chat-ia'), 'icon' => 'build'],
-            ['id' => 'tecnologia', 'nombre' => __('Tecnología', 'flavor-chat-ia'), 'icon' => 'computer'],
-            ['id' => 'transporte', 'nombre' => __('Transporte', 'flavor-chat-ia'), 'icon' => 'directions_car'],
-            ['id' => 'otros', 'nombre' => __('Otros', 'flavor-chat-ia'), 'icon' => 'more_horiz'],
+            ['id' => 'cuidados', 'nombre' => __('Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'favorite'],
+            ['id' => 'educacion', 'nombre' => __('Educación', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'school'],
+            ['id' => 'bricolaje', 'nombre' => __('Bricolaje', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'build'],
+            ['id' => 'tecnologia', 'nombre' => __('Tecnología', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'computer'],
+            ['id' => 'transporte', 'nombre' => __('Transporte', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'directions_car'],
+            ['id' => 'otros', 'nombre' => __('Otros', FLAVOR_PLATFORM_TEXT_DOMAIN), 'icon' => 'more_horiz'],
         ];
 
         return new WP_REST_Response([
@@ -985,7 +985,7 @@ class Flavor_Banco_Tiempo_API {
         return new WP_REST_Response([
             'success' => true,
             'servicio' => $this->formatear_servicio($servicio_actualizado),
-            'mensaje' => __('Servicio actualizado con éxito', 'flavor-chat-ia'),
+            'mensaje' => __('Servicio actualizado con éxito', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ], 200);
     }
 

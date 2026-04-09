@@ -164,8 +164,8 @@ class Flavor_Widget_Renderer {
                 <?php if ($options['lazy_load']): ?>
                     <div class="fud-widget__loading fl-widget__loading" role="status">
                         <span class="fud-loading-spinner fl-loading-spinner" aria-hidden="true"></span>
-                        <span class="fud-loading-text fl-loading-text"><?php esc_html_e('Cargando...', 'flavor-chat-ia'); ?></span>
-                        <span class="fl-sr-only"><?php printf(esc_html__('Cargando contenido de %s', 'flavor-chat-ia'), $title); ?></span>
+                        <span class="fud-loading-text fl-loading-text"><?php esc_html_e('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                        <span class="fl-sr-only"><?php printf(esc_html__('Cargando contenido de %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $title); ?></span>
                     </div>
                 <?php else: ?>
                     <?php $widget->render_widget(); ?>
@@ -206,7 +206,7 @@ class Flavor_Widget_Renderer {
                 <?php if ($options['draggable']): ?>
                     <button type="button"
                             class="fud-widget__drag-handle fl-widget__drag-handle"
-                            aria-label="<?php printf(esc_attr__('Arrastrar %s para reordenar', 'flavor-chat-ia'), $title); ?>"
+                            aria-label="<?php printf(esc_attr__('Arrastrar %s para reordenar', FLAVOR_PLATFORM_TEXT_DOMAIN), $title); ?>"
                             aria-describedby="fl-drag-instructions"
                             tabindex="0">
                         <span class="dashicons dashicons-move" aria-hidden="true"></span>
@@ -240,7 +240,7 @@ class Flavor_Widget_Renderer {
                 </div>
             </div>
 
-            <nav class="fud-widget__actions fl-widget__actions" aria-label="<?php printf(esc_attr__('Acciones de %s', 'flavor-chat-ia'), $title); ?>">
+            <nav class="fud-widget__actions fl-widget__actions" aria-label="<?php printf(esc_attr__('Acciones de %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $title); ?>">
                 <?php $this->render_header_actions($actions, $widget_id, $options, $title); ?>
             </nav>
         </header>
@@ -272,33 +272,33 @@ class Flavor_Widget_Renderer {
         $display_role = (string) ($ecosystem['display_role'] ?? $role);
 
         $kind_map = [
-            'base' => __('Coordinar', 'flavor-chat-ia'),
-            'vertical' => __('Operar', 'flavor-chat-ia'),
-            'transversal' => __('Entender', 'flavor-chat-ia'),
-            'standalone' => __('Gestionar', 'flavor-chat-ia'),
-            'base-standalone' => __('Gestionar', 'flavor-chat-ia'),
+            'base' => __('Coordinar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'vertical' => __('Operar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'transversal' => __('Entender', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'standalone' => __('Gestionar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'base-standalone' => __('Gestionar', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $context_labels = [
-            'comunidad' => __('Comunidad', 'flavor-chat-ia'),
-            'gobernanza' => __('Gobernanza', 'flavor-chat-ia'),
-            'participacion' => __('Participación', 'flavor-chat-ia'),
-            'transparencia' => __('Transparencia', 'flavor-chat-ia'),
-            'energia' => __('Energía', 'flavor-chat-ia'),
-            'consumo' => __('Consumo local', 'flavor-chat-ia'),
-            'cuidados' => __('Cuidados', 'flavor-chat-ia'),
-            'sostenibilidad' => __('Sostenibilidad', 'flavor-chat-ia'),
-            'impacto' => __('Impacto', 'flavor-chat-ia'),
-            'aprendizaje' => __('Aprendizaje', 'flavor-chat-ia'),
-            'saberes' => __('Saberes', 'flavor-chat-ia'),
-            'agenda' => __('Agenda', 'flavor-chat-ia'),
-            'eventos' => __('Encuentros', 'flavor-chat-ia'),
-            'socios' => __('Miembros', 'flavor-chat-ia'),
-            'membresia' => __('Membresía', 'flavor-chat-ia'),
-            'cuenta' => __('Cuenta', 'flavor-chat-ia'),
-            'colectivos' => __('Colectivos', 'flavor-chat-ia'),
-            'asociacion' => __('Asociación', 'flavor-chat-ia'),
-            'coordinacion' => __('Coordinación', 'flavor-chat-ia'),
+            'comunidad' => __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'gobernanza' => __('Gobernanza', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'participacion' => __('Participación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'transparencia' => __('Transparencia', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'energia' => __('Energía', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'consumo' => __('Consumo local', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cuidados' => __('Cuidados', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'sostenibilidad' => __('Sostenibilidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'impacto' => __('Impacto', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'aprendizaje' => __('Aprendizaje', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'saberes' => __('Saberes', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'agenda' => __('Agenda', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'eventos' => __('Encuentros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'socios' => __('Miembros', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'membresia' => __('Membresía', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'cuenta' => __('Cuenta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'colectivos' => __('Colectivos', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'asociacion' => __('Asociación', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'coordinacion' => __('Coordinación', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         $contexts = (array) ($dashboard['admin_contexts'] ?? $dashboard['client_contexts'] ?? []);
@@ -306,7 +306,7 @@ class Flavor_Widget_Renderer {
         $kind_slug = $display_role !== '' ? $display_role : 'vertical';
 
         return [
-            'kind' => $kind_map[$kind_slug] ?? __('Operar', 'flavor-chat-ia'),
+            'kind' => $kind_map[$kind_slug] ?? __('Operar', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'kind_slug' => sanitize_html_class($kind_slug),
             'context' => $context_labels[$primary_context] ?? (
                 $primary_context !== ''
@@ -380,8 +380,8 @@ class Flavor_Widget_Renderer {
         // Accion de colapsar
         if ($options['collapsible']) {
             $collapse_label = !empty($widget_title)
-                ? sprintf(__('Colapsar o expandir %s', 'flavor-chat-ia'), $widget_title)
-                : __('Colapsar o expandir widget', 'flavor-chat-ia');
+                ? sprintf(__('Colapsar o expandir %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $widget_title)
+                : __('Colapsar o expandir widget', FLAVOR_PLATFORM_TEXT_DOMAIN);
             ?>
             <button type="button"
                     class="fud-widget__action fl-widget__action fud-widget__action--collapse fl-widget__action--collapse"
@@ -390,7 +390,7 @@ class Flavor_Widget_Renderer {
                     aria-label="<?php echo esc_attr($collapse_label); ?>"
                     aria-expanded="true"
                     aria-controls="fl-widget-body-<?php echo $widget_id; ?>"
-                    title="<?php esc_attr_e('Colapsar/Expandir', 'flavor-chat-ia'); ?>">
+                    title="<?php esc_attr_e('Colapsar/Expandir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <span class="dashicons dashicons-arrow-up-alt2" aria-hidden="true"></span>
             </button>
             <?php
@@ -399,15 +399,15 @@ class Flavor_Widget_Renderer {
         // Accion de cerrar
         if ($options['closable']) {
             $close_label = !empty($widget_title)
-                ? sprintf(__('Ocultar %s', 'flavor-chat-ia'), $widget_title)
-                : __('Ocultar widget', 'flavor-chat-ia');
+                ? sprintf(__('Ocultar %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $widget_title)
+                : __('Ocultar widget', FLAVOR_PLATFORM_TEXT_DOMAIN);
             ?>
             <button type="button"
                     class="fud-widget__action fl-widget__action fud-widget__action--close fl-widget__action--close"
                     data-action="close"
                     data-widget="<?php echo $widget_id; ?>"
                     aria-label="<?php echo esc_attr($close_label); ?>"
-                    title="<?php esc_attr_e('Ocultar widget', 'flavor-chat-ia'); ?>">
+                    title="<?php esc_attr_e('Ocultar widget', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <span class="dashicons dashicons-no-alt" aria-hidden="true"></span>
             </button>
             <?php
@@ -566,7 +566,7 @@ class Flavor_Widget_Renderer {
             <?php if ($retry): ?>
                 <button type="button" class="fud-error-state__retry button">
                     <span class="dashicons dashicons-update"></span>
-                    <?php esc_html_e('Reintentar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Reintentar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             <?php endif; ?>
         </div>
@@ -582,7 +582,7 @@ class Flavor_Widget_Renderer {
      */
     public function render_loading(string $message = ''): string {
         if (empty($message)) {
-            $message = __('Cargando...', 'flavor-chat-ia');
+            $message = __('Cargando...', FLAVOR_PLATFORM_TEXT_DOMAIN);
         }
 
         ob_start();
@@ -646,7 +646,7 @@ class Flavor_Widget_Renderer {
         $items = array_slice($items, 0, $limit);
 
         if (empty($items)) {
-            return $this->render_empty_state(__('No hay elementos', 'flavor-chat-ia'));
+            return $this->render_empty_state(__('No hay elementos', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         ob_start();

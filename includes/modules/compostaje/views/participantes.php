@@ -133,12 +133,12 @@ $total_paginas = ceil($total_registros / $por_pagina);
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-groups" style="color: #795548;"></span>
-        <?php echo esc_html__('Participantes - Compostaje', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Participantes - Compostaje', 'flavor-platform'); ?>
     </h1>
 
     <?php if ($usar_demo): ?>
         <div class="notice notice-info" style="margin: 15px 0;">
-            <p><span class="dashicons dashicons-info"></span> <?php echo esc_html__('Mostrando datos de demostración.', 'flavor-chat-ia'); ?></p>
+            <p><span class="dashicons dashicons-info"></span> <?php echo esc_html__('Mostrando datos de demostración.', 'flavor-platform'); ?></p>
         </div>
     <?php endif; ?>
 
@@ -150,7 +150,7 @@ $total_paginas = ceil($total_registros / $por_pagina);
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div style="font-size: 28px; font-weight: bold; color: #795548;"><?php echo number_format($total_participantes); ?></div>
-                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Total Participantes', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Total Participantes', 'flavor-platform'); ?></div>
                 </div>
                 <span class="dashicons dashicons-groups" style="font-size: 32px; color: #795548; opacity: 0.3;"></span>
             </div>
@@ -160,7 +160,7 @@ $total_paginas = ceil($total_registros / $por_pagina);
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div style="font-size: 28px; font-weight: bold; color: #28a745;"><?php echo number_format($participantes_activos); ?></div>
-                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Activos (30 días)', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Activos (30 días)', 'flavor-platform'); ?></div>
                 </div>
                 <span class="dashicons dashicons-yes-alt" style="font-size: 32px; color: #28a745; opacity: 0.3;"></span>
             </div>
@@ -170,7 +170,7 @@ $total_paginas = ceil($total_registros / $por_pagina);
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div style="font-size: 28px; font-weight: bold; color: #17a2b8;"><?php echo number_format($total_kg_depositados, 1); ?></div>
-                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Kg Totales', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Kg Totales', 'flavor-platform'); ?></div>
                 </div>
                 <span class="dashicons dashicons-chart-bar" style="font-size: 32px; color: #17a2b8; opacity: 0.3;"></span>
             </div>
@@ -180,7 +180,7 @@ $total_paginas = ceil($total_registros / $por_pagina);
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div style="font-size: 28px; font-weight: bold; color: #f39c12;"><?php echo number_format($promedio_por_participante, 1); ?></div>
-                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Kg/Participante', 'flavor-chat-ia'); ?></div>
+                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Kg/Participante', 'flavor-platform'); ?></div>
                 </div>
                 <span class="dashicons dashicons-performance" style="font-size: 32px; color: #f39c12; opacity: 0.3;"></span>
             </div>
@@ -194,25 +194,25 @@ $total_paginas = ceil($total_registros / $por_pagina);
                 <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page'] ?? 'compostaje-participantes'); ?>">
 
                 <div>
-                    <label style="display: block; font-weight: 500; margin-bottom: 4px; font-size: 12px;"><?php echo esc_html__('Buscar', 'flavor-chat-ia'); ?></label>
+                    <label style="display: block; font-weight: 500; margin-bottom: 4px; font-size: 12px;"><?php echo esc_html__('Buscar', 'flavor-platform'); ?></label>
                     <input type="text" name="busqueda" value="<?php echo esc_attr($filtro_busqueda); ?>"
-                           placeholder="<?php echo esc_attr__('Nombre o email...', 'flavor-chat-ia'); ?>" style="min-width: 200px;">
+                           placeholder="<?php echo esc_attr__('Nombre o email...', 'flavor-platform'); ?>" style="min-width: 200px;">
                 </div>
 
                 <div>
-                    <label style="display: block; font-weight: 500; margin-bottom: 4px; font-size: 12px;"><?php echo esc_html__('Actividad', 'flavor-chat-ia'); ?></label>
+                    <label style="display: block; font-weight: 500; margin-bottom: 4px; font-size: 12px;"><?php echo esc_html__('Actividad', 'flavor-platform'); ?></label>
                     <select name="actividad" style="min-width: 150px;">
-                        <option value=""><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></option>
-                        <option value="activos" <?php selected($filtro_actividad, 'activos'); ?>><?php echo esc_html__('Activos (30 días)', 'flavor-chat-ia'); ?></option>
-                        <option value="inactivos" <?php selected($filtro_actividad, 'inactivos'); ?>><?php echo esc_html__('Inactivos', 'flavor-chat-ia'); ?></option>
+                        <option value=""><?php echo esc_html__('Todos', 'flavor-platform'); ?></option>
+                        <option value="activos" <?php selected($filtro_actividad, 'activos'); ?>><?php echo esc_html__('Activos (30 días)', 'flavor-platform'); ?></option>
+                        <option value="inactivos" <?php selected($filtro_actividad, 'inactivos'); ?>><?php echo esc_html__('Inactivos', 'flavor-platform'); ?></option>
                     </select>
                 </div>
 
-                <button type="submit" class="button button-primary"><?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?></button>
+                <button type="submit" class="button button-primary"><?php echo esc_html__('Filtrar', 'flavor-platform'); ?></button>
 
                 <?php if (!empty($filtro_busqueda) || !empty($filtro_actividad)): ?>
                     <a href="<?php echo admin_url('admin.php?page=' . esc_attr($_GET['page'] ?? 'compostaje-participantes')); ?>" class="button">
-                        <?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Limpiar', 'flavor-platform'); ?>
                     </a>
                 <?php endif; ?>
             </form>
@@ -222,7 +222,7 @@ $total_paginas = ceil($total_registros / $por_pagina);
         <div style="background: #fff; padding: 15px 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <h4 style="margin: 0 0 15px 0; font-size: 14px; color: #666;">
                 <span class="dashicons dashicons-star-filled" style="font-size: 16px; color: #ffc107;"></span>
-                <?php echo esc_html__('Top Contribuyentes', 'flavor-chat-ia'); ?>
+                <?php echo esc_html__('Top Contribuyentes', 'flavor-platform'); ?>
             </h4>
             <?php foreach ($top_contribuyentes as $index => $top): ?>
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; <?php echo $index < count($top_contribuyentes) - 1 ? 'border-bottom: 1px solid #eee;' : ''; ?>">
@@ -243,14 +243,14 @@ $total_paginas = ceil($total_registros / $por_pagina);
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th style="width: 50px;"><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Usuario', 'flavor-chat-ia'); ?></th>
-                    <th><?php echo esc_html__('Email', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 100px; text-align: right;"><?php echo esc_html__('Total Kg', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 90px; text-align: center;"><?php echo esc_html__('Depósitos', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 110px;"><?php echo esc_html__('Último', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 110px;"><?php echo esc_html__('Desde', 'flavor-chat-ia'); ?></th>
-                    <th style="width: 100px;"><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
+                    <th style="width: 50px;"><?php echo esc_html__('ID', 'flavor-platform'); ?></th>
+                    <th><?php echo esc_html__('Usuario', 'flavor-platform'); ?></th>
+                    <th><?php echo esc_html__('Email', 'flavor-platform'); ?></th>
+                    <th style="width: 100px; text-align: right;"><?php echo esc_html__('Total Kg', 'flavor-platform'); ?></th>
+                    <th style="width: 90px; text-align: center;"><?php echo esc_html__('Depósitos', 'flavor-platform'); ?></th>
+                    <th style="width: 110px;"><?php echo esc_html__('Último', 'flavor-platform'); ?></th>
+                    <th style="width: 110px;"><?php echo esc_html__('Desde', 'flavor-platform'); ?></th>
+                    <th style="width: 100px;"><?php echo esc_html__('Estado', 'flavor-platform'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -258,7 +258,7 @@ $total_paginas = ceil($total_registros / $por_pagina);
                     <tr>
                         <td colspan="8" style="text-align: center; padding: 40px;">
                             <span class="dashicons dashicons-groups" style="font-size: 48px; color: #ddd;"></span>
-                            <p style="color: #666; margin-top: 10px;"><?php echo esc_html__('No hay participantes.', 'flavor-chat-ia'); ?></p>
+                            <p style="color: #666; margin-top: 10px;"><?php echo esc_html__('No hay participantes.', 'flavor-platform'); ?></p>
                         </td>
                     </tr>
                 <?php else: ?>
@@ -271,7 +271,7 @@ $total_paginas = ceil($total_registros / $por_pagina);
                             <td>
                                 <strong><?php echo esc_html($participante->display_name); ?></strong>
                                 <?php if ($participante->total_kg >= 100): ?>
-                                    <span class="dashicons dashicons-star-filled" style="color: #ffc107; font-size: 14px;" title="<?php echo esc_attr__('Contribuyente destacado', 'flavor-chat-ia'); ?>"></span>
+                                    <span class="dashicons dashicons-star-filled" style="color: #ffc107; font-size: 14px;" title="<?php echo esc_attr__('Contribuyente destacado', 'flavor-platform'); ?>"></span>
                                 <?php endif; ?>
                             </td>
                             <td>
@@ -292,11 +292,11 @@ $total_paginas = ceil($total_registros / $por_pagina);
                             <td>
                                 <?php if ($es_activo): ?>
                                     <span style="display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 500; background: #28a74520; color: #28a745;">
-                                        <?php echo esc_html__('Activo', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Activo', 'flavor-platform'); ?>
                                     </span>
                                 <?php else: ?>
                                     <span style="display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 500; background: #6c757d20; color: #6c757d;">
-                                        <?php echo esc_html__('Inactivo', 'flavor-chat-ia'); ?>
+                                        <?php echo esc_html__('Inactivo', 'flavor-platform'); ?>
                                     </span>
                                 <?php endif; ?>
                             </td>
@@ -311,7 +311,7 @@ $total_paginas = ceil($total_registros / $por_pagina);
     <?php if ($total_paginas > 1): ?>
         <div class="tablenav bottom" style="margin-top: 20px;">
             <div class="tablenav-pages">
-                <span class="displaying-num"><?php printf(esc_html__('%s participantes', 'flavor-chat-ia'), number_format($total_registros)); ?></span>
+                <span class="displaying-num"><?php printf(esc_html__('%s participantes', 'flavor-platform'), number_format($total_registros)); ?></span>
                 <span class="pagination-links">
                     <?php
                     $url_base = admin_url('admin.php?page=' . esc_attr($_GET['page'] ?? 'compostaje-participantes'));

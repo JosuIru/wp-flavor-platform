@@ -23,7 +23,7 @@
      */
 	function init() {
 		// Buscar el enlace de desactivar del plugin
-		const pluginRow = $('tr[data-slug="flavor-chat-ia"]');
+		const pluginRow = $('tr[data-slug="flavor-platform"]');
 		if (!pluginRow.length) {
 			return;
 		}

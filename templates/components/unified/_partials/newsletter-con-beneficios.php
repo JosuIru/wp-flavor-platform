@@ -57,7 +57,7 @@ $identificador_form = 'newsletter-beneficios-' . wp_unique_id();
                 <form id="<?php echo esc_attr( $identificador_form ); ?>" class="space-y-4" method="post">
                     <div>
                         <label for="<?php echo esc_attr( $identificador_form ); ?>-nombre" class="block text-sm font-medium text-gray-700 mb-1">
-                            <?php echo esc_html__( 'Nombre', 'flavor-chat-ia' ); ?>
+                            <?php echo esc_html__( 'Nombre', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                         </label>
                         <input
                             type="text"
@@ -71,7 +71,7 @@ $identificador_form = 'newsletter-beneficios-' . wp_unique_id();
                     </div>
                     <div>
                         <label for="<?php echo esc_attr( $identificador_form ); ?>-email" class="block text-sm font-medium text-gray-700 mb-1">
-                            <?php echo esc_html__( 'Email', 'flavor-chat-ia' ); ?>
+                            <?php echo esc_html__( 'Email', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                         </label>
                         <input
                             type="email"
@@ -93,7 +93,7 @@ $identificador_form = 'newsletter-beneficios-' . wp_unique_id();
                         <?php echo esc_html( $etiqueta_boton ); ?>
                     </button>
                     <p class="text-xs text-gray-400 text-center">
-                        <?php echo esc_html__( 'No spam. Puedes darte de baja en cualquier momento.', 'flavor-chat-ia' ); ?>
+                        <?php echo esc_html__( 'No spam. Puedes darte de baja en cualquier momento.', FLAVOR_PLATFORM_TEXT_DOMAIN ); ?>
                     </p>
                 </form>
             </div>

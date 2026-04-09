@@ -49,7 +49,7 @@ class Flavor_Chat_Escalation {
         if (!$conversation_id) {
             return [
                 'success' => false,
-                'error' => __('No hay conversación activa', 'flavor-chat-ia'),
+                'error' => __('No hay conversación activa', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -73,7 +73,7 @@ class Flavor_Chat_Escalation {
         if ($result === false) {
             return [
                 'success' => false,
-                'error' => __('Error al crear escalado', 'flavor-chat-ia'),
+                'error' => __('Error al crear escalado', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ];
         }
 
@@ -86,7 +86,7 @@ class Flavor_Chat_Escalation {
         $this->notify_admin($escalation_id, $reason, $summary, $contact_method);
 
         // Obtener información de contacto
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $contact_info = $this->get_contact_info($settings, $contact_method);
 
         return [
@@ -125,7 +125,7 @@ class Flavor_Chat_Escalation {
      * @param string $contact_method
      */
     private function notify_admin($escalation_id, $reason, $summary, $contact_method) {
-        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings = flavor_get_main_settings();
         $admin_email = $settings['escalation_email'] ?? get_option('admin_email');
 
         if (empty($admin_email)) {
@@ -151,7 +151,7 @@ class Flavor_Chat_Escalation {
             $reason,
             $contact_method ?: 'No especificado',
             $summary,
-            admin_url('admin.php?page=flavor-chat-ia-escalations')
+            admin_url('admin.php?page=flavor-platform-escalations')
         );
 
         wp_mail($admin_email, $subject, $body);

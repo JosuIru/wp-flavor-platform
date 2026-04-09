@@ -23,7 +23,7 @@ $categorias_iconos = [
     <!-- Navegación -->
     <div style="margin-bottom:20px;">
         <a href="<?php echo esc_url(remove_query_arg('vista')); ?>" class="flavor-btn flavor-btn-link">
-            ← <?php esc_html_e('Volver al dashboard', 'flavor-chat-ia'); ?>
+            ← <?php esc_html_e('Volver al dashboard', 'flavor-platform'); ?>
         </a>
     </div>
 
@@ -31,13 +31,13 @@ $categorias_iconos = [
     <div class="flavor-card" style="margin-bottom:24px;">
         <div style="display:flex;justify-content:space-between;align-items:center;">
             <div>
-                <h2 style="margin:0 0 4px;font-size:20px;"><?php esc_html_e('Documentos', 'flavor-chat-ia'); ?></h2>
-                <p style="margin:0;color:#666;"><?php printf(esc_html__('%d documentos en %s', 'flavor-chat-ia'), count($documentos), esc_html($empresa->nombre)); ?></p>
+                <h2 style="margin:0 0 4px;font-size:20px;"><?php esc_html_e('Documentos', 'flavor-platform'); ?></h2>
+                <p style="margin:0;color:#666;"><?php printf(esc_html__('%d documentos en %s', 'flavor-platform'), count($documentos), esc_html($empresa->nombre)); ?></p>
             </div>
             <?php if ($es_admin || $miembro->rol === 'contable'): ?>
             <button type="button" class="flavor-btn flavor-btn-primary" onclick="document.getElementById('modal-subir').style.display='flex';">
                 <span class="dashicons dashicons-upload"></span>
-                <?php esc_html_e('Subir documento', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Subir documento', 'flavor-platform'); ?>
             </button>
             <?php endif; ?>
         </div>
@@ -97,12 +97,12 @@ $categorias_iconos = [
     <?php else: ?>
     <div class="flavor-card" style="text-align:center;padding:60px;">
         <span class="dashicons dashicons-portfolio" style="font-size:48px;width:48px;height:48px;color:#94a3b8;"></span>
-        <h3><?php esc_html_e('Sin documentos', 'flavor-chat-ia'); ?></h3>
-        <p style="color:#666;"><?php esc_html_e('Esta empresa aún no tiene documentos subidos.', 'flavor-chat-ia'); ?></p>
+        <h3><?php esc_html_e('Sin documentos', 'flavor-platform'); ?></h3>
+        <p style="color:#666;"><?php esc_html_e('Esta empresa aún no tiene documentos subidos.', 'flavor-platform'); ?></p>
         <?php if ($es_admin || $miembro->rol === 'contable'): ?>
         <button type="button" class="flavor-btn flavor-btn-primary" onclick="document.getElementById('modal-subir').style.display='flex';" style="margin-top:16px;">
             <span class="dashicons dashicons-upload"></span>
-            <?php esc_html_e('Subir primer documento', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Subir primer documento', 'flavor-platform'); ?>
         </button>
         <?php endif; ?>
     </div>
@@ -114,7 +114,7 @@ $categorias_iconos = [
 <div id="modal-subir" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;z-index:100000;">
     <div style="background:#fff;padding:32px;border-radius:16px;max-width:450px;width:90%;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
-            <h3 style="margin:0;font-size:18px;"><?php esc_html_e('Subir documento', 'flavor-chat-ia'); ?></h3>
+            <h3 style="margin:0;font-size:18px;"><?php esc_html_e('Subir documento', 'flavor-platform'); ?></h3>
             <button type="button" onclick="document.getElementById('modal-subir').style.display='none';" style="background:none;border:none;cursor:pointer;">
                 <span class="dashicons dashicons-no-alt" style="font-size:24px;"></span>
             </button>
@@ -125,40 +125,40 @@ $categorias_iconos = [
             <input type="hidden" name="empresa_id" value="<?php echo esc_attr($empresa->id); ?>" />
 
             <div class="flavor-form-group">
-                <label><?php esc_html_e('Archivo', 'flavor-chat-ia'); ?> *</label>
+                <label><?php esc_html_e('Archivo', 'flavor-platform'); ?> *</label>
                 <input type="file" name="documento" required class="flavor-input" />
-                <p class="flavor-description"><?php esc_html_e('Máx. 10MB. Formatos: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG', 'flavor-chat-ia'); ?></p>
+                <p class="flavor-description"><?php esc_html_e('Máx. 10MB. Formatos: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG', 'flavor-platform'); ?></p>
             </div>
 
             <div class="flavor-form-group">
-                <label><?php esc_html_e('Título', 'flavor-chat-ia'); ?></label>
-                <input type="text" name="titulo" class="flavor-input" placeholder="<?php esc_attr_e('Nombre descriptivo del documento', 'flavor-chat-ia'); ?>" />
+                <label><?php esc_html_e('Título', 'flavor-platform'); ?></label>
+                <input type="text" name="titulo" class="flavor-input" placeholder="<?php esc_attr_e('Nombre descriptivo del documento', 'flavor-platform'); ?>" />
             </div>
 
             <div class="flavor-form-group">
-                <label><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></label>
+                <label><?php esc_html_e('Categoría', 'flavor-platform'); ?></label>
                 <select name="categoria" class="flavor-select">
-                    <option value="otro"><?php esc_html_e('Otro', 'flavor-chat-ia'); ?></option>
-                    <option value="legal"><?php esc_html_e('Legal', 'flavor-chat-ia'); ?></option>
-                    <option value="fiscal"><?php esc_html_e('Fiscal', 'flavor-chat-ia'); ?></option>
-                    <option value="contrato"><?php esc_html_e('Contrato', 'flavor-chat-ia'); ?></option>
-                    <option value="factura"><?php esc_html_e('Factura', 'flavor-chat-ia'); ?></option>
-                    <option value="presentacion"><?php esc_html_e('Presentación', 'flavor-chat-ia'); ?></option>
-                    <option value="imagen"><?php esc_html_e('Imagen', 'flavor-chat-ia'); ?></option>
+                    <option value="otro"><?php esc_html_e('Otro', 'flavor-platform'); ?></option>
+                    <option value="legal"><?php esc_html_e('Legal', 'flavor-platform'); ?></option>
+                    <option value="fiscal"><?php esc_html_e('Fiscal', 'flavor-platform'); ?></option>
+                    <option value="contrato"><?php esc_html_e('Contrato', 'flavor-platform'); ?></option>
+                    <option value="factura"><?php esc_html_e('Factura', 'flavor-platform'); ?></option>
+                    <option value="presentacion"><?php esc_html_e('Presentación', 'flavor-platform'); ?></option>
+                    <option value="imagen"><?php esc_html_e('Imagen', 'flavor-platform'); ?></option>
                 </select>
             </div>
 
             <div class="flavor-form-group">
-                <label><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?></label>
-                <textarea name="descripcion" rows="2" class="flavor-textarea" placeholder="<?php esc_attr_e('Notas adicionales...', 'flavor-chat-ia'); ?>"></textarea>
+                <label><?php esc_html_e('Descripción', 'flavor-platform'); ?></label>
+                <textarea name="descripcion" rows="2" class="flavor-textarea" placeholder="<?php esc_attr_e('Notas adicionales...', 'flavor-platform'); ?>"></textarea>
             </div>
 
             <div style="margin-top:24px;display:flex;gap:12px;justify-content:flex-end;">
                 <button type="button" class="flavor-btn flavor-btn-secondary" onclick="document.getElementById('modal-subir').style.display='none';">
-                    <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Cancelar', 'flavor-platform'); ?>
                 </button>
                 <button type="submit" name="subir_documento" class="flavor-btn flavor-btn-primary">
-                    <?php esc_html_e('Subir', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Subir', 'flavor-platform'); ?>
                 </button>
             </div>
         </form>
@@ -248,7 +248,7 @@ $categorias_iconos = [
 
 <script>
 function eliminarDocumento(id) {
-    if (confirm('<?php echo esc_js(__('¿Estás seguro de eliminar este documento?', 'flavor-chat-ia')); ?>')) {
+    if (confirm('<?php echo esc_js(__('¿Estás seguro de eliminar este documento?', 'flavor-platform')); ?>')) {
         var form = document.createElement('form');
         form.method = 'POST';
         form.innerHTML = '<?php echo wp_nonce_field('eliminar_documento', '_wpnonce', true, false); ?>' +

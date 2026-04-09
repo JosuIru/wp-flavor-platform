@@ -23,7 +23,7 @@ $user_id = get_current_user_id();
         <!-- Header con info del usuario y controles -->
         <div class="estados-fullscreen-header">
             <div class="estados-header-left">
-                <button type="button" class="btn-cerrar-fullscreen" aria-label="<?php esc_attr_e('Cerrar', 'flavor-chat-ia'); ?>">
+                <button type="button" class="btn-cerrar-fullscreen" aria-label="<?php esc_attr_e('Cerrar', 'flavor-platform'); ?>">
                     <span class="dashicons dashicons-arrow-left-alt2"></span>
                 </button>
                 <div class="estados-user-info">
@@ -35,13 +35,13 @@ $user_id = get_current_user_id();
                 </div>
             </div>
             <div class="estados-header-right">
-                <button type="button" class="btn-pausar-estado" aria-label="<?php esc_attr_e('Pausar', 'flavor-chat-ia'); ?>">
+                <button type="button" class="btn-pausar-estado" aria-label="<?php esc_attr_e('Pausar', 'flavor-platform'); ?>">
                     <span class="dashicons dashicons-controls-pause"></span>
                 </button>
-                <button type="button" class="btn-silenciar-estado" aria-label="<?php esc_attr_e('Silenciar', 'flavor-chat-ia'); ?>">
+                <button type="button" class="btn-silenciar-estado" aria-label="<?php esc_attr_e('Silenciar', 'flavor-platform'); ?>">
                     <span class="dashicons dashicons-controls-volumeon"></span>
                 </button>
-                <button type="button" class="btn-opciones-estado" aria-label="<?php esc_attr_e('Opciones', 'flavor-chat-ia'); ?>">
+                <button type="button" class="btn-opciones-estado" aria-label="<?php esc_attr_e('Opciones', 'flavor-platform'); ?>">
                     <span class="dashicons dashicons-ellipsis"></span>
                 </button>
             </div>
@@ -56,7 +56,7 @@ $user_id = get_current_user_id();
         <div class="estados-content-area">
             <!-- Navegación izquierda (estado anterior) -->
             <div class="estado-nav estado-nav-prev">
-                <button type="button" class="btn-estado-prev" aria-label="<?php esc_attr_e('Estado anterior', 'flavor-chat-ia'); ?>">
+                <button type="button" class="btn-estado-prev" aria-label="<?php esc_attr_e('Estado anterior', 'flavor-platform'); ?>">
                     <span class="dashicons dashicons-arrow-left-alt2"></span>
                 </button>
             </div>
@@ -73,7 +73,7 @@ $user_id = get_current_user_id();
 
             <!-- Navegación derecha (siguiente estado) -->
             <div class="estado-nav estado-nav-next">
-                <button type="button" class="btn-estado-next" aria-label="<?php esc_attr_e('Siguiente estado', 'flavor-chat-ia'); ?>">
+                <button type="button" class="btn-estado-next" aria-label="<?php esc_attr_e('Siguiente estado', 'flavor-platform'); ?>">
                     <span class="dashicons dashicons-arrow-right-alt2"></span>
                 </button>
             </div>
@@ -83,20 +83,20 @@ $user_id = get_current_user_id();
         <div class="estados-fullscreen-footer">
             <div class="estado-respuesta-wrapper">
                 <input type="text" class="estado-respuesta-input"
-                       placeholder="<?php esc_attr_e('Enviar mensaje...', 'flavor-chat-ia'); ?>"
+                       placeholder="<?php esc_attr_e('Enviar mensaje...', 'flavor-platform'); ?>"
                        maxlength="500">
-                <button type="button" class="btn-enviar-respuesta" aria-label="<?php esc_attr_e('Enviar', 'flavor-chat-ia'); ?>">
+                <button type="button" class="btn-enviar-respuesta" aria-label="<?php esc_attr_e('Enviar', 'flavor-platform'); ?>">
                     <span class="dashicons dashicons-arrow-right-alt"></span>
                 </button>
             </div>
 
             <!-- Reacciones rápidas -->
             <div class="estado-reacciones-rapidas">
-                <button type="button" class="btn-reaccion" data-emoji="❤️" aria-label="<?php esc_attr_e('Me encanta', 'flavor-chat-ia'); ?>">❤️</button>
-                <button type="button" class="btn-reaccion" data-emoji="😂" aria-label="<?php esc_attr_e('Me divierte', 'flavor-chat-ia'); ?>">😂</button>
-                <button type="button" class="btn-reaccion" data-emoji="😮" aria-label="<?php esc_attr_e('Me sorprende', 'flavor-chat-ia'); ?>">😮</button>
-                <button type="button" class="btn-reaccion" data-emoji="👏" aria-label="<?php esc_attr_e('Aplauso', 'flavor-chat-ia'); ?>">👏</button>
-                <button type="button" class="btn-reaccion" data-emoji="🔥" aria-label="<?php esc_attr_e('Fuego', 'flavor-chat-ia'); ?>">🔥</button>
+                <button type="button" class="btn-reaccion" data-emoji="❤️" aria-label="<?php esc_attr_e('Me encanta', 'flavor-platform'); ?>">❤️</button>
+                <button type="button" class="btn-reaccion" data-emoji="😂" aria-label="<?php esc_attr_e('Me divierte', 'flavor-platform'); ?>">😂</button>
+                <button type="button" class="btn-reaccion" data-emoji="😮" aria-label="<?php esc_attr_e('Me sorprende', 'flavor-platform'); ?>">😮</button>
+                <button type="button" class="btn-reaccion" data-emoji="👏" aria-label="<?php esc_attr_e('Aplauso', 'flavor-platform'); ?>">👏</button>
+                <button type="button" class="btn-reaccion" data-emoji="🔥" aria-label="<?php esc_attr_e('Fuego', 'flavor-platform'); ?>">🔥</button>
             </div>
         </div>
     </div>
@@ -107,14 +107,14 @@ $user_id = get_current_user_id();
         <div class="menu-opciones-contenido">
             <button type="button" class="opcion-silenciar">
                 <span class="dashicons dashicons-hidden"></span>
-                <?php esc_html_e('Silenciar estados de este usuario', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Silenciar estados de este usuario', 'flavor-platform'); ?>
             </button>
             <button type="button" class="opcion-reportar">
                 <span class="dashicons dashicons-flag"></span>
-                <?php esc_html_e('Reportar estado', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Reportar estado', 'flavor-platform'); ?>
             </button>
             <button type="button" class="opcion-cancelar">
-                <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Cancelar', 'flavor-platform'); ?>
             </button>
         </div>
     </div>
@@ -1090,14 +1090,14 @@ $user_id = get_current_user_id();
         reportarEstado: function() {
             var estado = this.estados[this.usuarioActualIndex].estados[this.estadoActualIndex];
 
-            if (confirm('<?php echo esc_js(__('¿Estás seguro de que quieres reportar este estado?', 'flavor-chat-ia')); ?>')) {
+            if (confirm('<?php echo esc_js(__('¿Estás seguro de que quieres reportar este estado?', 'flavor-platform')); ?>')) {
                 $.post(flavorEstados.ajaxUrl, {
                     action: 'flavor_estados_reportar',
                     nonce: flavorEstados.nonce,
                     estado_id: estado.id
                 }, function(response) {
                     if (response.success) {
-                        alert('<?php echo esc_js(__('Estado reportado. Gracias por tu colaboración.', 'flavor-chat-ia')); ?>');
+                        alert('<?php echo esc_js(__('Estado reportado. Gracias por tu colaboración.', 'flavor-platform')); ?>');
                         FlavorEstadosFullscreen.cerrarOpciones();
                     }
                 });
@@ -1121,7 +1121,7 @@ $user_id = get_current_user_id();
             }, function(response) {
                 if (response.success) {
                     input.val('');
-                    FlavorEstadosFullscreen.mostrarFeedback('<?php echo esc_js(__('Mensaje enviado', 'flavor-chat-ia')); ?>');
+                    FlavorEstadosFullscreen.mostrarFeedback('<?php echo esc_js(__('Mensaje enviado', 'flavor-platform')); ?>');
                 }
             });
         },
@@ -1136,7 +1136,7 @@ $user_id = get_current_user_id();
                 emoji: emoji
             }, function(response) {
                 if (response.success) {
-                    FlavorEstadosFullscreen.mostrarFeedback(emoji + ' <?php echo esc_js(__('enviado', 'flavor-chat-ia')); ?>');
+                    FlavorEstadosFullscreen.mostrarFeedback(emoji + ' <?php echo esc_js(__('enviado', 'flavor-platform')); ?>');
                 }
             });
         },

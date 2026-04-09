@@ -63,21 +63,21 @@ class Flavor_Reservas_Dashboard_Tab {
      */
     public function registrar_tabs($tabs) {
         $tabs['reservas-activas'] = [
-            'label'    => __('Reservas Activas', 'flavor-chat-ia'),
+            'label'    => __('Reservas Activas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => 'calendar-alt',
             'callback' => [$this, 'render_tab_reservas_activas'],
             'orden'    => 50,
         ];
 
         $tabs['reservas-proximas'] = [
-            'label'    => __('Proximas Reservas', 'flavor-chat-ia'),
+            'label'    => __('Proximas Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => 'clock',
             'callback' => [$this, 'render_tab_reservas_proximas'],
             'orden'    => 51,
         ];
 
         $tabs['reservas-historial'] = [
-            'label'    => __('Historial', 'flavor-chat-ia'),
+            'label'    => __('Historial', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'icon'     => 'backup',
             'callback' => [$this, 'render_tab_historial'],
             'orden'    => 52,
@@ -352,13 +352,13 @@ class Flavor_Reservas_Dashboard_Tab {
         }
 
         $dias_semana = [
-            __('L', 'flavor-chat-ia'),
-            __('M', 'flavor-chat-ia'),
-            __('X', 'flavor-chat-ia'),
-            __('J', 'flavor-chat-ia'),
-            __('V', 'flavor-chat-ia'),
-            __('S', 'flavor-chat-ia'),
-            __('D', 'flavor-chat-ia'),
+            __('L', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('M', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('X', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('J', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('V', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('S', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            __('D', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         ?>
@@ -410,7 +410,7 @@ class Flavor_Reservas_Dashboard_Tab {
                         $titulo_dia = '';
                         if ($tiene_reserva) {
                             $titulo_dia = sprintf(
-                                _n('%d reserva', '%d reservas', $dias_con_reservas[$dia]['cantidad'], 'flavor-chat-ia'),
+                                _n('%d reserva', '%d reservas', $dias_con_reservas[$dia]['cantidad'], FLAVOR_PLATFORM_TEXT_DOMAIN),
                                 $dias_con_reservas[$dia]['cantidad']
                             );
                         }
@@ -437,11 +437,11 @@ class Flavor_Reservas_Dashboard_Tab {
             <div class="flavor-calendario-leyenda">
                 <span class="flavor-leyenda-item">
                     <span class="flavor-leyenda-color flavor-leyenda-confirmada"></span>
-                    <?php esc_html_e('Confirmada', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
                 <span class="flavor-leyenda-item">
                     <span class="flavor-leyenda-color flavor-leyenda-pendiente"></span>
-                    <?php esc_html_e('Pendiente', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </span>
             </div>
         </div>
@@ -611,7 +611,7 @@ class Flavor_Reservas_Dashboard_Tab {
                             class="flavor-btn flavor-btn-sm flavor-btn-danger flavor-btn-outline"
                             data-cancelar-reserva="<?php echo esc_attr($reserva->id); ?>"
                             data-nonce="<?php echo esc_attr(wp_create_nonce('cancelar_reserva_' . $reserva->id)); ?>">
-                        <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                 <?php else: ?>
                     <span class="flavor-text-muted">-</span>
@@ -629,9 +629,9 @@ class Flavor_Reservas_Dashboard_Tab {
      */
     private function formatear_tipo_servicio($tipo_servicio) {
         $tipos = [
-            'mesa_restaurante'  => __('Mesa Restaurante', 'flavor-chat-ia'),
-            'espacio_coworking' => __('Espacio Coworking', 'flavor-chat-ia'),
-            'clase_deportiva'   => __('Clase Deportiva', 'flavor-chat-ia'),
+            'mesa_restaurante'  => __('Mesa Restaurante', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'espacio_coworking' => __('Espacio Coworking', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'clase_deportiva'   => __('Clase Deportiva', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
 
         return $tipos[$tipo_servicio] ?? ucfirst(str_replace('_', ' ', $tipo_servicio));
@@ -646,7 +646,7 @@ class Flavor_Reservas_Dashboard_Tab {
         if (!$identificador_usuario) {
             echo '<div class="flavor-alert flavor-alert-warning">';
             echo '<span class="dashicons dashicons-warning"></span> ';
-            esc_html_e('Debes iniciar sesion para ver tus reservas.', 'flavor-chat-ia');
+            esc_html_e('Debes iniciar sesion para ver tus reservas.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             echo '</div>';
             return;
         }
@@ -659,10 +659,10 @@ class Flavor_Reservas_Dashboard_Tab {
             <div class="flavor-panel-header">
                 <h2>
                     <span class="dashicons dashicons-calendar-alt"></span>
-                    <?php esc_html_e('Mis Reservas Activas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Mis Reservas Activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <p class="flavor-panel-subtitle">
-                    <?php esc_html_e('Gestiona tus reservas pendientes y confirmadas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Gestiona tus reservas pendientes y confirmadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
@@ -672,21 +672,21 @@ class Flavor_Reservas_Dashboard_Tab {
                     <span class="flavor-kpi-icon dashicons dashicons-calendar-alt"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas['reservas_activas']); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Activas', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Activas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-success">
                     <span class="flavor-kpi-icon dashicons dashicons-yes-alt"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas['reservas_completadas']); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Completadas', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Completadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-secondary">
                     <span class="flavor-kpi-icon dashicons dashicons-chart-bar"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas['total_reservas']); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Total', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -697,9 +697,9 @@ class Flavor_Reservas_Dashboard_Tab {
                     <?php if (empty($reservas_activas)): ?>
                         <div class="flavor-empty-state">
                             <span class="dashicons dashicons-calendar-alt"></span>
-                            <p><?php esc_html_e('No tienes reservas activas en este momento.', 'flavor-chat-ia'); ?></p>
+                            <p><?php esc_html_e('No tienes reservas activas en este momento.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             <a href="<?php echo esc_url(add_query_arg('tab', 'nueva-reserva', Flavor_Chat_Helpers::get_action_url('reservas', ''))); ?>" class="flavor-btn flavor-btn-primary">
-                                <?php esc_html_e('Hacer una reserva', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Hacer una reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </a>
                         </div>
                     <?php else: ?>
@@ -707,12 +707,12 @@ class Flavor_Reservas_Dashboard_Tab {
                             <table class="flavor-table">
                                 <thead>
                                     <tr>
-                                        <th><?php esc_html_e('Servicio', 'flavor-chat-ia'); ?></th>
-                                        <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                                        <th><?php esc_html_e('Horario', 'flavor-chat-ia'); ?></th>
-                                        <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                                        <th><?php esc_html_e('Personas', 'flavor-chat-ia'); ?></th>
-                                        <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                                        <th><?php esc_html_e('Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                        <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                        <th><?php esc_html_e('Horario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                        <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                        <th><?php esc_html_e('Personas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                        <th><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -733,10 +733,10 @@ class Flavor_Reservas_Dashboard_Tab {
             <div class="flavor-panel-actions">
                 <a href="<?php echo esc_url(add_query_arg('tab', 'nueva-reserva', Flavor_Chat_Helpers::get_action_url('reservas', ''))); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt2"></span>
-                    <?php esc_html_e('Nueva Reserva', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Nueva Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="<?php echo esc_url(add_query_arg('tab', 'mis-reservas', Flavor_Chat_Helpers::get_action_url('reservas', ''))); ?>" class="flavor-btn flavor-btn-secondary">
-                    <?php esc_html_e('Ver todas mis reservas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Ver todas mis reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -780,7 +780,7 @@ class Flavor_Reservas_Dashboard_Tab {
         if (!$identificador_usuario) {
             echo '<div class="flavor-alert flavor-alert-warning">';
             echo '<span class="dashicons dashicons-warning"></span> ';
-            esc_html_e('Debes iniciar sesion para ver tus reservas.', 'flavor-chat-ia');
+            esc_html_e('Debes iniciar sesion para ver tus reservas.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             echo '</div>';
             return;
         }
@@ -802,19 +802,19 @@ class Flavor_Reservas_Dashboard_Tab {
             <div class="flavor-panel-header">
                 <h2>
                     <span class="dashicons dashicons-clock"></span>
-                    <?php esc_html_e('Proximas Reservas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Proximas Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <p class="flavor-panel-subtitle">
-                    <?php esc_html_e('Tus reservas confirmadas para los proximos 30 dias', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Tus reservas confirmadas para los proximos 30 dias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
             <?php if (empty($reservas_proximas)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-clock"></span>
-                    <p><?php esc_html_e('No tienes reservas confirmadas para los proximos dias.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No tienes reservas confirmadas para los proximos dias.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     <a href="<?php echo esc_url(add_query_arg('tab', 'nueva-reserva', Flavor_Chat_Helpers::get_action_url('reservas', ''))); ?>" class="flavor-btn flavor-btn-primary">
-                        <?php esc_html_e('Hacer una reserva', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Hacer una reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -840,7 +840,7 @@ class Flavor_Reservas_Dashboard_Tab {
                                         <div class="flavor-timeline-detalle">
                                             <strong><?php echo esc_html($this->formatear_tipo_servicio($reserva->tipo_servicio)); ?></strong>
                                             <span class="flavor-text-muted">
-                                                <?php echo esc_html($reserva->num_personas); ?> <?php esc_html_e('personas', 'flavor-chat-ia'); ?>
+                                                <?php echo esc_html($reserva->num_personas); ?> <?php esc_html_e('personas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                             </span>
                                         </div>
                                         <div class="flavor-timeline-acciones">
@@ -849,7 +849,7 @@ class Flavor_Reservas_Dashboard_Tab {
                                                         class="flavor-btn flavor-btn-sm flavor-btn-danger flavor-btn-outline"
                                                         data-cancelar-reserva="<?php echo esc_attr($reserva->id); ?>"
                                                         data-nonce="<?php echo esc_attr(wp_create_nonce('cancelar_reserva_' . $reserva->id)); ?>">
-                                                    <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                                                    <?php esc_html_e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                                 </button>
                                             <?php endif; ?>
                                         </div>
@@ -864,7 +864,7 @@ class Flavor_Reservas_Dashboard_Tab {
             <div class="flavor-panel-actions">
                 <a href="<?php echo esc_url(add_query_arg('tab', 'nueva-reserva', Flavor_Chat_Helpers::get_action_url('reservas', ''))); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt2"></span>
-                    <?php esc_html_e('Nueva Reserva', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Nueva Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>
@@ -954,7 +954,7 @@ class Flavor_Reservas_Dashboard_Tab {
         if (!$identificador_usuario) {
             echo '<div class="flavor-alert flavor-alert-warning">';
             echo '<span class="dashicons dashicons-warning"></span> ';
-            esc_html_e('Debes iniciar sesion para ver tu historial.', 'flavor-chat-ia');
+            esc_html_e('Debes iniciar sesion para ver tu historial.', FLAVOR_PLATFORM_TEXT_DOMAIN);
             echo '</div>';
             return;
         }
@@ -967,10 +967,10 @@ class Flavor_Reservas_Dashboard_Tab {
             <div class="flavor-panel-header">
                 <h2>
                     <span class="dashicons dashicons-backup"></span>
-                    <?php esc_html_e('Historial de Reservas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Historial de Reservas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <p class="flavor-panel-subtitle">
-                    <?php esc_html_e('Consulta tu historial de reservas pasadas', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Consulta tu historial de reservas pasadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
 
@@ -980,21 +980,21 @@ class Flavor_Reservas_Dashboard_Tab {
                     <span class="flavor-kpi-icon dashicons dashicons-yes-alt"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas['reservas_completadas']); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Completadas', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Completadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card flavor-kpi-danger">
                     <span class="flavor-kpi-icon dashicons dashicons-dismiss"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas['reservas_canceladas']); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Canceladas', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Canceladas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
                 <div class="flavor-kpi-card">
                     <span class="flavor-kpi-icon dashicons dashicons-chart-bar"></span>
                     <div class="flavor-kpi-content">
                         <span class="flavor-kpi-value"><?php echo number_format_i18n($estadisticas['total_reservas']); ?></span>
-                        <span class="flavor-kpi-label"><?php esc_html_e('Total historico', 'flavor-chat-ia'); ?></span>
+                        <span class="flavor-kpi-label"><?php esc_html_e('Total historico', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     </div>
                 </div>
             </div>
@@ -1002,19 +1002,19 @@ class Flavor_Reservas_Dashboard_Tab {
             <?php if (empty($historial_reservas)): ?>
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-backup"></span>
-                    <p><?php esc_html_e('No tienes reservas en tu historial.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No tienes reservas en tu historial.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="flavor-table-responsive" style="margin: 20px 0;">
                     <table class="flavor-table">
                         <thead>
                             <tr>
-                                <th><?php esc_html_e('Servicio', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Horario', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Personas', 'flavor-chat-ia'); ?></th>
-                                <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Servicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Fecha', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Horario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Estado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Personas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
+                                <th><?php esc_html_e('Acciones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1029,7 +1029,7 @@ class Flavor_Reservas_Dashboard_Tab {
             <div class="flavor-panel-actions">
                 <a href="<?php echo esc_url(add_query_arg('tab', 'nueva-reserva', Flavor_Chat_Helpers::get_action_url('reservas', ''))); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt2"></span>
-                    <?php esc_html_e('Nueva Reserva', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Nueva Reserva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>

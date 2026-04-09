@@ -121,7 +121,7 @@ class Chat_IA_Mobile_API {
         // Verificar firma
         $expected_sig = substr(hash_hmac('sha256', $token, wp_salt('auth')), 0, 16);
         if (!hash_equals($expected_sig, $signature)) {
-            wp_die(__('Enlace inválido o expirado', 'flavor-chat-ia'), __('Error', 'flavor-chat-ia'), ['response' => 403]);
+            wp_die(__('Enlace inválido o expirado', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Error', FLAVOR_PLATFORM_TEXT_DOMAIN), ['response' => 403]);
         }
 
         // Decodificar datos (base64url: convertir -_ a +/ y añadir padding)
@@ -129,17 +129,17 @@ class Chat_IA_Mobile_API {
         $base64_padded = str_pad($base64, strlen($base64) + (4 - strlen($base64) % 4) % 4, '=');
         $cart_data = json_decode(base64_decode($base64_padded), true);
         if (!$cart_data || !isset($cart_data['date']) || !isset($cart_data['tickets'])) {
-            wp_die(__('Datos del carrito inválidos', 'flavor-chat-ia'), __('Error', 'flavor-chat-ia'), ['response' => 400]);
+            wp_die(__('Datos del carrito inválidos', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Error', FLAVOR_PLATFORM_TEXT_DOMAIN), ['response' => 400]);
         }
 
         // Verificar que no sea muy antiguo (máx 1 hora)
         if (isset($cart_data['timestamp']) && (time() - $cart_data['timestamp']) > 3600) {
-            wp_die(__('Este enlace ha expirado. Por favor, vuelve a la app y genera uno nuevo.', 'flavor-chat-ia'), __('Enlace Expirado', 'flavor-chat-ia'), ['response' => 410]);
+            wp_die(__('Este enlace ha expirado. Por favor, vuelve a la app y genera uno nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Enlace Expirado', FLAVOR_PLATFORM_TEXT_DOMAIN), ['response' => 410]);
         }
 
         // Asegurarse de que WooCommerce está cargado
         if (!class_exists('WooCommerce') || !function_exists('WC')) {
-            wp_die(__('WooCommerce no disponible', 'flavor-chat-ia'), __('Error', 'flavor-chat-ia'), ['response' => 500]);
+            wp_die(__('WooCommerce no disponible', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Error', FLAVOR_PLATFORM_TEXT_DOMAIN), ['response' => 500]);
         }
 
         // Inicializar sesión y carrito
@@ -214,7 +214,7 @@ class Chat_IA_Mobile_API {
             wp_redirect(wc_get_checkout_url());
             exit;
         } else {
-            wp_die(__('No se pudieron añadir productos al carrito. Por favor, inténtalo de nuevo.', 'flavor-chat-ia'), __('Error', 'flavor-chat-ia'), ['response' => 500]);
+            wp_die(__('No se pudieron añadir productos al carrito. Por favor, inténtalo de nuevo.', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Error', FLAVOR_PLATFORM_TEXT_DOMAIN), ['response' => 500]);
         }
     }
 
@@ -775,7 +775,7 @@ class Chat_IA_Mobile_API {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => __('Token válido', 'flavor-chat-ia'),
+            'message' => __('Token válido', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'site_name' => get_bloginfo('name'),
             'site_url' => home_url(),
         ]);
@@ -2696,7 +2696,7 @@ class Chat_IA_Mobile_API {
         return [
             'success' => true,
             'checkout_url' => $checkout_url,
-            'message' => __('Token válido', 'flavor-chat-ia'),
+            'message' => __('Token válido', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -3008,7 +3008,7 @@ class Chat_IA_Mobile_API {
         ), ARRAY_A);
 
         if (!$reserva) {
-            return new WP_Error('not_found', __('Reserva no encontrada', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Reserva no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         $ticket_types = get_option('calendario_experiencias_ticket_types', []);
@@ -3088,7 +3088,7 @@ class Chat_IA_Mobile_API {
         ), ARRAY_A);
 
         if (!$reserva) {
-            return new WP_Error('not_found', __('Reserva no encontrada', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Reserva no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         if ($reserva['estado'] === 'usado') {
@@ -3117,7 +3117,7 @@ class Chat_IA_Mobile_API {
 
         return [
             'success' => true,
-            'message' => __('Cancelada desde app admin', 'flavor-chat-ia'),
+            'message' => __('Cancelada desde app admin', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'checkin_time' => current_time('mysql'),
         ];
     }
@@ -3138,7 +3138,7 @@ class Chat_IA_Mobile_API {
         ), ARRAY_A);
 
         if (!$reserva) {
-            return new WP_Error('not_found', __('Reserva no encontrada', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Reserva no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         if ($reserva['estado'] === 'cancelado') {
@@ -3167,7 +3167,7 @@ class Chat_IA_Mobile_API {
 
         return [
             'success' => true,
-            'message' => __('Token válido', 'flavor-chat-ia'),
+            'message' => __('Token válido', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -3189,7 +3189,7 @@ class Chat_IA_Mobile_API {
         ), ARRAY_A);
 
         if (!$reserva) {
-            return new WP_Error('not_found', __('Reserva no encontrada', 'flavor-chat-ia'), ['status' => 404]);
+            return new WP_Error('not_found', __('Reserva no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 404]);
         }
 
         $ticket_types = get_option('calendario_experiencias_ticket_types', []);
@@ -3723,7 +3723,7 @@ class Chat_IA_Mobile_API {
             return rest_ensure_response([
                 'success' => true,
                 'customers' => [],
-                'message' => __('Tabla de clientes manuales no existe', 'flavor-chat-ia')
+                'message' => __('Tabla de clientes manuales no existe', FLAVOR_PLATFORM_TEXT_DOMAIN)
             ]);
         }
 
@@ -3848,7 +3848,7 @@ class Chat_IA_Mobile_API {
         return rest_ensure_response([
             'success' => true,
             'id' => $cliente_id,
-            'message' => __('clientes_manuales_tickets', 'flavor-chat-ia')
+            'message' => __('clientes_manuales_tickets', FLAVOR_PLATFORM_TEXT_DOMAIN)
         ]);
     }
 
@@ -3909,7 +3909,7 @@ class Chat_IA_Mobile_API {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => __('clientes_manuales_tickets', 'flavor-chat-ia')
+            'message' => __('clientes_manuales_tickets', FLAVOR_PLATFORM_TEXT_DOMAIN)
         ]);
     }
 
@@ -3935,7 +3935,7 @@ class Chat_IA_Mobile_API {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => __('Cliente creado correctamente', 'flavor-chat-ia')
+            'message' => __('Cliente creado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN)
         ]);
     }
 
@@ -3984,7 +3984,7 @@ class Chat_IA_Mobile_API {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => __('Cliente creado correctamente', 'flavor-chat-ia')
+            'message' => __('Cliente creado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN)
         ]);
     }
 
@@ -4166,7 +4166,7 @@ class Chat_IA_Mobile_API {
 
         return [
             'success' => true,
-            'message' => __('Token válido', 'flavor-chat-ia'),
+            'message' => __('Token válido', FLAVOR_PLATFORM_TEXT_DOMAIN),
         ];
     }
 
@@ -4256,7 +4256,7 @@ class Chat_IA_Mobile_API {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => __('Cliente creado correctamente', 'flavor-chat-ia') . $this->mask_email($email),
+            'message' => __('Cliente creado correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN) . $this->mask_email($email),
             'expires_in' => 15 * 60, // segundos
         ]);
     }
@@ -4315,7 +4315,7 @@ class Chat_IA_Mobile_API {
 
         return rest_ensure_response([
             'success' => true,
-            'message' => __('Token válido', 'flavor-chat-ia'),
+            'message' => __('Token válido', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'email' => $verification_data['email'],
             'verified_at' => date('c'),
         ]);
@@ -4406,7 +4406,7 @@ class Chat_IA_Mobile_API {
                 ));
                 $statistics[] = [
                     'id' => 'eventos_proximos',
-                    'title' => __('Eventos Próximos', 'flavor-chat-ia'),
+                    'title' => __('Eventos Próximos', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'value' => (string) intval($eventos_proximos),
                     'numeric_value' => floatval($eventos_proximos),
                     'icon_name' => 'event',
@@ -4425,7 +4425,7 @@ class Chat_IA_Mobile_API {
                 ));
                 $statistics[] = [
                     'id' => 'gc_pedidos',
-                    'title' => __('Mis Pedidos GC', 'flavor-chat-ia'),
+                    'title' => __('Mis Pedidos GC', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'value' => (string) intval($pedidos),
                     'numeric_value' => floatval($pedidos),
                     'icon_name' => 'shopping_basket',
@@ -4441,7 +4441,7 @@ class Chat_IA_Mobile_API {
                 $servicios = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_servicios WHERE estado = 'activo'");
                 $statistics[] = [
                     'id' => 'bt_servicios',
-                    'title' => __('Servicios Disponibles', 'flavor-chat-ia'),
+                    'title' => __('Servicios Disponibles', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'value' => (string) intval($servicios),
                     'numeric_value' => floatval($servicios),
                     'icon_name' => 'volunteer_activism',
@@ -4460,7 +4460,7 @@ class Chat_IA_Mobile_API {
                 ));
                 $statistics[] = [
                     'id' => 'marketplace_mis_anuncios',
-                    'title' => __('Mis Anuncios', 'flavor-chat-ia'),
+                    'title' => __('Mis Anuncios', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'value' => (string) intval($anuncios),
                     'numeric_value' => floatval($anuncios),
                     'icon_name' => 'storefront',
@@ -4513,7 +4513,7 @@ class Chat_IA_Mobile_API {
                     $activity[] = [
                         'id' => 'evento_' . $inscripcion->id,
                         'type' => 'event_registration',
-                        'title' => sprintf(__('Te inscribiste en %s', 'flavor-chat-ia'), $inscripcion->evento_titulo),
+                        'title' => sprintf(__('Te inscribiste en %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $inscripcion->evento_titulo),
                         'description' => '',
                         'timestamp' => $inscripcion->fecha_inscripcion,
                         'icon_name' => 'event',
@@ -4536,7 +4536,7 @@ class Chat_IA_Mobile_API {
                     $activity[] = [
                         'id' => 'gc_pedido_' . $pedido->id,
                         'type' => 'gc_order',
-                        'title' => sprintf(__('Pedido #%d en Grupos de Consumo', 'flavor-chat-ia'), $pedido->id),
+                        'title' => sprintf(__('Pedido #%d en Grupos de Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN), $pedido->id),
                         'description' => ucfirst($pedido->estado),
                         'timestamp' => $pedido->fecha_creacion,
                         'icon_name' => 'shopping_basket',
@@ -4592,7 +4592,7 @@ class Chat_IA_Mobile_API {
                 return rest_ensure_response([
                     'success' => true,
                     'requires_verification' => true,
-                    'message' => __('reservations', 'flavor-chat-ia'),
+                    'message' => __('reservations', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     'reservations' => [],
                 ]);
             }
@@ -4605,7 +4605,7 @@ class Chat_IA_Mobile_API {
             return rest_ensure_response([
                 'success' => true,
                 'reservations' => [],
-                'message' => __('Token válido', 'flavor-chat-ia'),
+                'message' => __('Token válido', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
 
@@ -4681,7 +4681,7 @@ class Chat_IA_Mobile_API {
         $code = sanitize_text_field($request->get_param('code'));
 
         if (empty($code)) {
-            return new WP_Error('missing_code', __('Código requerido', 'flavor-chat-ia'), ['status' => 400]);
+            return new WP_Error('missing_code', __('Código requerido', FLAVOR_PLATFORM_TEXT_DOMAIN), ['status' => 400]);
         }
 
         $tabla_tickets = $wpdb->prefix . 'reservas_tickets';
@@ -4694,7 +4694,7 @@ class Chat_IA_Mobile_API {
         if (!$reservation) {
             return rest_ensure_response([
                 'success' => false,
-                'message' => __('Reserva no encontrada', 'flavor-chat-ia'),
+                'message' => __('Reserva no encontrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ]);
         }
 
@@ -5989,7 +5989,7 @@ PROMPT;
         if (empty($email_proporcionado) && empty($device_id_proporcionado)) {
             return new WP_Error(
                 'missing_identifier',
-                __('Se requiere email o device_id para acceder a este recurso.', 'flavor-chat-ia'),
+                __('Se requiere email o device_id para acceder a este recurso.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 400]
             );
         }
@@ -6008,7 +6008,7 @@ PROMPT;
             if (!empty($email_proporcionado)) {
                 return new WP_Error(
                     'email_not_verified',
-                    __('Debes verificar tu email antes de acceder a este recurso.', 'flavor-chat-ia'),
+                    __('Debes verificar tu email antes de acceder a este recurso.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ['status' => 403, 'requires_verification' => true]
                 );
             }
@@ -6018,14 +6018,14 @@ PROMPT;
         if (!empty($email_proporcionado) && empty($device_id_proporcionado)) {
             return new WP_Error(
                 'device_id_required',
-                __('Se requiere device_id para verificar la identidad.', 'flavor-chat-ia'),
+                __('Se requiere device_id para verificar la identidad.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 ['status' => 400]
             );
         }
 
         return new WP_Error(
             'unauthorized_client',
-            __('No se pudo verificar tu identidad. Por favor, verifica tu email.', 'flavor-chat-ia'),
+            __('No se pudo verificar tu identidad. Por favor, verifica tu email.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ['status' => 403]
         );
     }
@@ -6046,7 +6046,7 @@ PROMPT;
         if (empty($files)) {
             return new WP_REST_Response([
                 'success' => false,
-                'error' => __('No se recibieron archivos para subir.', 'flavor-chat-ia'),
+                'error' => __('No se recibieron archivos para subir.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             ], 400);
         }
 
@@ -6096,7 +6096,7 @@ PROMPT;
         if (empty($uploaded_urls)) {
             return new WP_REST_Response([
                 'success' => false,
-                'error' => __('No se pudo subir ningún archivo.', 'flavor-chat-ia'),
+                'error' => __('No se pudo subir ningún archivo.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'details' => $errors,
             ], 500);
         }
@@ -6119,7 +6119,7 @@ PROMPT;
     private function process_single_upload($file_data, $context) {
         // Verificar errores de upload
         if ($file_data['error'] !== UPLOAD_ERR_OK) {
-            return new WP_Error('upload_error', __('Error al recibir el archivo.', 'flavor-chat-ia'));
+            return new WP_Error('upload_error', __('Error al recibir el archivo.', FLAVOR_PLATFORM_TEXT_DOMAIN));
         }
 
         $mime_type = sanitize_text_field($file_data['type'] ?? '');
@@ -6128,7 +6128,7 @@ PROMPT;
         if (empty($mime_type) || !in_array($mime_type, $allowed_types, true)) {
             return new WP_Error(
                 'invalid_type',
-                __('Tipo de archivo no permitido para la subida móvil.', 'flavor-chat-ia')
+                __('Tipo de archivo no permitido para la subida móvil.', FLAVOR_PLATFORM_TEXT_DOMAIN)
             );
         }
 
@@ -6136,7 +6136,7 @@ PROMPT;
         $max_size = $this->get_mobile_upload_max_size($context, $mime_type);
         if ($file_data['size'] > $max_size) {
             return new WP_Error('file_too_large', sprintf(
-                __('El archivo es demasiado grande. Máximo permitido: %s MB', 'flavor-chat-ia'),
+                __('El archivo es demasiado grande. Máximo permitido: %s MB', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 round($max_size / 1024 / 1024, 1)
             ));
         }

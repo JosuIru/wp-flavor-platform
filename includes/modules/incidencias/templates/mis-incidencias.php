@@ -10,8 +10,8 @@ if (!defined('ABSPATH')) {
 if (!is_user_logged_in()) {
     echo '<div class="incidencias-login-required">';
     echo '<span class="dashicons dashicons-lock"></span>';
-    echo '<h3>' . esc_html__('Inicia sesión para ver tus incidencias', 'flavor-chat-ia') . '</h3>';
-    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="btn btn-primary">' . esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a>';
+    echo '<h3>' . esc_html__('Inicia sesión para ver tus incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</h3>';
+    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="btn btn-primary">' . esc_html__('Iniciar sesión', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</a>';
     echo '</div>';
     return;
 }
@@ -22,7 +22,7 @@ $usuario_id = get_current_user_id();
 
 // Verificar si existe la tabla
 if (!Flavor_Chat_Helpers::tabla_existe($tabla_incidencias)) {
-    echo '<div class="incidencias-empty"><p>' . esc_html__('El módulo de incidencias no está configurado.', 'flavor-chat-ia') . '</p></div>';
+    echo '<div class="incidencias-empty"><p>' . esc_html__('El módulo de incidencias no está configurado.', FLAVOR_PLATFORM_TEXT_DOMAIN) . '</p></div>';
     return;
 }
 
@@ -56,15 +56,15 @@ foreach ($incidencias as $incidencia) {
 
 $estados_labels = [
     // Estados en español
-    'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-    'en_proceso' => __('En proceso', 'flavor-chat-ia'),
-    'resuelta' => __('Resuelta', 'flavor-chat-ia'),
-    'cerrada' => __('Cerrada', 'flavor-chat-ia'),
+    'pendiente' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'en_proceso' => __('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'resuelta' => __('Resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'cerrada' => __('Cerrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
     // Estados en inglés (para datos existentes)
-    'pending' => __('Pendiente', 'flavor-chat-ia'),
-    'in_progress' => __('En proceso', 'flavor-chat-ia'),
-    'resolved' => __('Resuelta', 'flavor-chat-ia'),
-    'closed' => __('Cerrada', 'flavor-chat-ia'),
+    'pending' => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'in_progress' => __('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'resolved' => __('Resuelta', FLAVOR_PLATFORM_TEXT_DOMAIN),
+    'closed' => __('Cerrada', FLAVOR_PLATFORM_TEXT_DOMAIN),
 ];
 
 $estados_colors = [
@@ -83,31 +83,31 @@ $estados_colors = [
 
 <div class="mis-incidencias-wrapper">
     <div class="incidencias-header">
-        <h2><?php esc_html_e('Mis Incidencias', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Mis Incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('incidencias', 'nueva')); ?>" class="btn btn-primary">
             <span class="dashicons dashicons-plus-alt2"></span>
-            <?php esc_html_e('Nueva incidencia', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Nueva incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </a>
     </div>
 
     <!-- Resumen -->
     <?php $base_url = Flavor_Chat_Helpers::get_action_url('incidencias', ''); ?>
     <div class="incidencias-stats">
-        <a href="<?php echo esc_url($base_url); ?>" class="stat-card" title="<?php esc_attr_e('Ver todas las incidencias', 'flavor-chat-ia'); ?>">
+        <a href="<?php echo esc_url($base_url); ?>" class="stat-card" title="<?php esc_attr_e('Ver todas las incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <span class="stat-value"><?php echo esc_html($stats['total']); ?></span>
-            <span class="stat-label"><?php esc_html_e('Total', 'flavor-chat-ia'); ?></span>
+            <span class="stat-label"><?php esc_html_e('Total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
-        <a href="<?php echo esc_url(add_query_arg('estado', 'pendiente', $base_url)); ?>" class="stat-card warning" title="<?php esc_attr_e('Ver incidencias pendientes', 'flavor-chat-ia'); ?>">
+        <a href="<?php echo esc_url(add_query_arg('estado', 'pendiente', $base_url)); ?>" class="stat-card warning" title="<?php esc_attr_e('Ver incidencias pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <span class="stat-value"><?php echo esc_html($stats['pendientes']); ?></span>
-            <span class="stat-label"><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></span>
+            <span class="stat-label"><?php esc_html_e('Pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
-        <a href="<?php echo esc_url(add_query_arg('estado', 'en_proceso', $base_url)); ?>" class="stat-card info" title="<?php esc_attr_e('Ver incidencias en proceso', 'flavor-chat-ia'); ?>">
+        <a href="<?php echo esc_url(add_query_arg('estado', 'en_proceso', $base_url)); ?>" class="stat-card info" title="<?php esc_attr_e('Ver incidencias en proceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <span class="stat-value"><?php echo esc_html($stats['en_proceso']); ?></span>
-            <span class="stat-label"><?php esc_html_e('En proceso', 'flavor-chat-ia'); ?></span>
+            <span class="stat-label"><?php esc_html_e('En proceso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
-        <a href="<?php echo esc_url(add_query_arg('estado', 'resuelta', $base_url)); ?>" class="stat-card success" title="<?php esc_attr_e('Ver incidencias resueltas', 'flavor-chat-ia'); ?>">
+        <a href="<?php echo esc_url(add_query_arg('estado', 'resuelta', $base_url)); ?>" class="stat-card success" title="<?php esc_attr_e('Ver incidencias resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
             <span class="stat-value"><?php echo esc_html($stats['resueltas']); ?></span>
-            <span class="stat-label"><?php esc_html_e('Resueltas', 'flavor-chat-ia'); ?></span>
+            <span class="stat-label"><?php esc_html_e('Resueltas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
         </a>
     </div>
 
@@ -142,7 +142,7 @@ $estados_colors = [
                     </div>
                     <div class="incidencia-actions">
                         <a href="<?php echo esc_url(add_query_arg('incidencia_id', $incidencia->id, Flavor_Chat_Helpers::get_action_url('incidencias', 'detalle'))); ?>" class="btn btn-sm btn-outline">
-                            <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Ver', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </a>
                     </div>
                 </div>
@@ -151,10 +151,10 @@ $estados_colors = [
     <?php else: ?>
         <div class="incidencias-empty">
             <span class="dashicons dashicons-flag"></span>
-            <h3><?php esc_html_e('No has reportado incidencias', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('Cuando reportes una incidencia, aparecerá aquí para que puedas seguir su estado.', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('No has reportado incidencias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php esc_html_e('Cuando reportes una incidencia, aparecerá aquí para que puedas seguir su estado.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('incidencias', 'nueva')); ?>" class="btn btn-primary">
-                <?php esc_html_e('Reportar incidencia', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Reportar incidencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
         </div>
     <?php endif; ?>

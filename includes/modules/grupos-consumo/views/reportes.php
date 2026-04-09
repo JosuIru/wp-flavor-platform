@@ -183,7 +183,7 @@ $suscripciones_frecuencia = $wpdb->get_results(
 ?>
 
 <div class="wrap gc-admin-reportes">
-    <h1><?php _e('Reportes y Estadísticas', 'flavor-chat-ia'); ?></h1>
+    <h1><?php _e('Reportes y Estadísticas', 'flavor-platform'); ?></h1>
 
     <!-- Filtro de período -->
     <div class="gc-filtro-periodo">
@@ -191,25 +191,25 @@ $suscripciones_frecuencia = $wpdb->get_results(
             <input type="hidden" name="page" value="gc-reportes">
             <div class="gc-filtro-grid">
                 <div class="gc-filtro-item">
-                    <label><?php _e('Período:', 'flavor-chat-ia'); ?></label>
+                    <label><?php _e('Período:', 'flavor-platform'); ?></label>
                     <select name="periodo" id="gc-periodo-select">
-                        <option value="semana" <?php selected($periodo, 'semana'); ?>><?php _e('Última semana', 'flavor-chat-ia'); ?></option>
-                        <option value="mes" <?php selected($periodo, 'mes'); ?>><?php _e('Este mes', 'flavor-chat-ia'); ?></option>
-                        <option value="trimestre" <?php selected($periodo, 'trimestre'); ?>><?php _e('Último trimestre', 'flavor-chat-ia'); ?></option>
-                        <option value="anio" <?php selected($periodo, 'anio'); ?>><?php _e('Este año', 'flavor-chat-ia'); ?></option>
-                        <option value="custom" <?php selected($periodo, 'custom'); ?>><?php _e('Personalizado', 'flavor-chat-ia'); ?></option>
+                        <option value="semana" <?php selected($periodo, 'semana'); ?>><?php _e('Última semana', 'flavor-platform'); ?></option>
+                        <option value="mes" <?php selected($periodo, 'mes'); ?>><?php _e('Este mes', 'flavor-platform'); ?></option>
+                        <option value="trimestre" <?php selected($periodo, 'trimestre'); ?>><?php _e('Último trimestre', 'flavor-platform'); ?></option>
+                        <option value="anio" <?php selected($periodo, 'anio'); ?>><?php _e('Este año', 'flavor-platform'); ?></option>
+                        <option value="custom" <?php selected($periodo, 'custom'); ?>><?php _e('Personalizado', 'flavor-platform'); ?></option>
                     </select>
                 </div>
                 <div class="gc-filtro-item gc-filtro-custom" style="<?php echo $periodo !== 'custom' ? 'display:none;' : ''; ?>">
-                    <label><?php _e('Desde:', 'flavor-chat-ia'); ?></label>
+                    <label><?php _e('Desde:', 'flavor-platform'); ?></label>
                     <input type="date" name="desde" value="<?php echo esc_attr($fecha_inicio); ?>">
                 </div>
                 <div class="gc-filtro-item gc-filtro-custom" style="<?php echo $periodo !== 'custom' ? 'display:none;' : ''; ?>">
-                    <label><?php _e('Hasta:', 'flavor-chat-ia'); ?></label>
+                    <label><?php _e('Hasta:', 'flavor-platform'); ?></label>
                     <input type="date" name="hasta" value="<?php echo esc_attr($fecha_fin); ?>">
                 </div>
                 <div class="gc-filtro-item">
-                    <button type="submit" class="button button-primary"><?php _e('Aplicar', 'flavor-chat-ia'); ?></button>
+                    <button type="submit" class="button button-primary"><?php _e('Aplicar', 'flavor-platform'); ?></button>
                 </div>
             </div>
         </form>
@@ -237,9 +237,9 @@ $suscripciones_frecuencia = $wpdb->get_results(
             <input type="hidden" name="page" value="gc-reportes">
             <div class="gc-filtro-grid">
                 <div class="gc-filtro-item">
-                    <label><?php _e('Ciclo:', 'flavor-chat-ia'); ?></label>
+                    <label><?php _e('Ciclo:', 'flavor-platform'); ?></label>
                     <select name="ciclo_id">
-                        <option value="0"><?php _e('Todos', 'flavor-chat-ia'); ?></option>
+                        <option value="0"><?php _e('Todos', 'flavor-platform'); ?></option>
                         <?php foreach ($ciclos_filtro as $c): ?>
                             <option value="<?php echo esc_attr($c->ID); ?>" <?php selected($filtro_ciclo, $c->ID); ?>>
                                 <?php echo esc_html($c->post_title); ?>
@@ -248,9 +248,9 @@ $suscripciones_frecuencia = $wpdb->get_results(
                     </select>
                 </div>
                 <div class="gc-filtro-item">
-                    <label><?php _e('Productor:', 'flavor-chat-ia'); ?></label>
+                    <label><?php _e('Productor:', 'flavor-platform'); ?></label>
                     <select name="productor_id">
-                        <option value="0"><?php _e('Todos', 'flavor-chat-ia'); ?></option>
+                        <option value="0"><?php _e('Todos', 'flavor-platform'); ?></option>
                         <?php foreach ($productores_filtro as $p): ?>
                             <option value="<?php echo esc_attr($p->ID); ?>" <?php selected($filtro_productor, $p->ID); ?>>
                                 <?php echo esc_html($p->post_title); ?>
@@ -259,11 +259,11 @@ $suscripciones_frecuencia = $wpdb->get_results(
                     </select>
                 </div>
                 <div class="gc-filtro-item">
-                    <button type="submit" class="button"><?php _e('Filtrar', 'flavor-chat-ia'); ?></button>
+                    <button type="submit" class="button"><?php _e('Filtrar', 'flavor-platform'); ?></button>
                 </div>
                 <div class="gc-filtro-item">
                     <a class="button button-secondary" href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=gc_exportar_pedidos_filtrado&ciclo_id=' . $filtro_ciclo . '&productor_id=' . $filtro_productor . '&desde=' . $fecha_inicio . '&hasta=' . $fecha_fin), 'gc_exportar_pedidos_filtrado')); ?>">
-                        <?php _e('Exportar CSV filtrado', 'flavor-chat-ia'); ?>
+                        <?php _e('Exportar CSV filtrado', 'flavor-platform'); ?>
                     </a>
                 </div>
             </div>
@@ -276,63 +276,63 @@ $suscripciones_frecuencia = $wpdb->get_results(
             <div class="gc-kpi-icon"><span class="dashicons dashicons-cart"></span></div>
             <div class="gc-kpi-content">
                 <span class="gc-kpi-value"><?php echo number_format($stats_pedidos->total); ?></span>
-                <span class="gc-kpi-label"><?php _e('Pedidos', 'flavor-chat-ia'); ?></span>
+                <span class="gc-kpi-label"><?php _e('Pedidos', 'flavor-platform'); ?></span>
             </div>
         </div>
         <div class="gc-kpi-card gc-kpi-highlight">
             <div class="gc-kpi-icon"><span class="dashicons dashicons-money-alt"></span></div>
             <div class="gc-kpi-content">
                 <span class="gc-kpi-value"><?php echo number_format($stats_pedidos->importe, 2, ',', '.'); ?>€</span>
-                <span class="gc-kpi-label"><?php _e('Facturación', 'flavor-chat-ia'); ?></span>
+                <span class="gc-kpi-label"><?php _e('Facturación', 'flavor-platform'); ?></span>
             </div>
         </div>
         <div class="gc-kpi-card">
             <div class="gc-kpi-icon"><span class="dashicons dashicons-chart-area"></span></div>
             <div class="gc-kpi-content">
                 <span class="gc-kpi-value"><?php echo number_format($ticket_medio, 2, ',', '.'); ?>€</span>
-                <span class="gc-kpi-label"><?php _e('Ticket medio', 'flavor-chat-ia'); ?></span>
+                <span class="gc-kpi-label"><?php _e('Ticket medio', 'flavor-platform'); ?></span>
             </div>
         </div>
         <div class="gc-kpi-card">
             <div class="gc-kpi-icon"><span class="dashicons dashicons-calendar-alt"></span></div>
             <div class="gc-kpi-content">
                 <span class="gc-kpi-value"><?php echo number_format($stats_mes->total ?? 0); ?></span>
-                <span class="gc-kpi-label"><?php _e('Pedidos este mes', 'flavor-chat-ia'); ?></span>
+                <span class="gc-kpi-label"><?php _e('Pedidos este mes', 'flavor-platform'); ?></span>
             </div>
         </div>
         <div class="gc-kpi-card">
             <div class="gc-kpi-icon"><span class="dashicons dashicons-analytics"></span></div>
             <div class="gc-kpi-content">
                 <span class="gc-kpi-value"><?php echo number_format($stats_mes->importe ?? 0, 2, ',', '.'); ?>€</span>
-                <span class="gc-kpi-label"><?php _e('Facturación este mes', 'flavor-chat-ia'); ?></span>
+                <span class="gc-kpi-label"><?php _e('Facturación este mes', 'flavor-platform'); ?></span>
             </div>
         </div>
         <div class="gc-kpi-card">
             <div class="gc-kpi-icon"><span class="dashicons dashicons-groups"></span></div>
             <div class="gc-kpi-content">
                 <span class="gc-kpi-value"><?php echo number_format($stats_consumidores->activos ?? 0); ?></span>
-                <span class="gc-kpi-label"><?php _e('Consumidores activos', 'flavor-chat-ia'); ?></span>
+                <span class="gc-kpi-label"><?php _e('Consumidores activos', 'flavor-platform'); ?></span>
             </div>
         </div>
         <div class="gc-kpi-card">
             <div class="gc-kpi-icon"><span class="dashicons dashicons-heart"></span></div>
             <div class="gc-kpi-content">
                 <span class="gc-kpi-value"><?php echo number_format($stats_suscripciones->activas ?? 0); ?></span>
-                <span class="gc-kpi-label"><?php _e('Suscripciones activas', 'flavor-chat-ia'); ?></span>
+                <span class="gc-kpi-label"><?php _e('Suscripciones activas', 'flavor-platform'); ?></span>
             </div>
         </div>
         <div class="gc-kpi-card">
             <div class="gc-kpi-icon"><span class="dashicons dashicons-update"></span></div>
             <div class="gc-kpi-content">
                 <span class="gc-kpi-value"><?php echo number_format($stats_suscripciones->mrr ?? 0, 2, ',', '.'); ?>€</span>
-                <span class="gc-kpi-label"><?php _e('MRR (Ingresos recurrentes)', 'flavor-chat-ia'); ?></span>
+                <span class="gc-kpi-label"><?php _e('MRR (Ingresos recurrentes)', 'flavor-platform'); ?></span>
             </div>
         </div>
         <div class="gc-kpi-card">
             <div class="gc-kpi-icon"><span class="dashicons dashicons-store"></span></div>
             <div class="gc-kpi-content">
                 <span class="gc-kpi-value"><?php echo number_format($num_productores); ?></span>
-                <span class="gc-kpi-label"><?php _e('Productores', 'flavor-chat-ia'); ?></span>
+                <span class="gc-kpi-label"><?php _e('Productores', 'flavor-platform'); ?></span>
             </div>
         </div>
     </div>
@@ -341,7 +341,7 @@ $suscripciones_frecuencia = $wpdb->get_results(
     <div class="gc-graficos-grid">
         <!-- Evolución temporal -->
         <div class="gc-grafico-card gc-grafico-wide">
-            <h2><?php _e('Evolución de Pedidos', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Evolución de Pedidos', 'flavor-platform'); ?></h2>
             <div class="gc-chart-container">
                 <canvas id="gc-chart-evolucion" height="250"></canvas>
             </div>
@@ -349,7 +349,7 @@ $suscripciones_frecuencia = $wpdb->get_results(
 
         <!-- Pedidos por estado -->
         <div class="gc-grafico-card">
-            <h2><?php _e('Pedidos por Estado', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Pedidos por Estado', 'flavor-platform'); ?></h2>
             <div class="gc-chart-container">
                 <canvas id="gc-chart-estados" height="200"></canvas>
             </div>
@@ -357,7 +357,7 @@ $suscripciones_frecuencia = $wpdb->get_results(
 
         <!-- Suscripciones por frecuencia -->
         <div class="gc-grafico-card">
-            <h2><?php _e('Suscripciones por Frecuencia', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Suscripciones por Frecuencia', 'flavor-platform'); ?></h2>
             <div class="gc-chart-container">
                 <canvas id="gc-chart-frecuencias" height="200"></canvas>
             </div>
@@ -368,18 +368,18 @@ $suscripciones_frecuencia = $wpdb->get_results(
     <div class="gc-tablas-grid">
         <!-- Resumen por ciclo -->
         <div class="gc-tabla-card">
-            <h2><?php _e('Resumen por ciclo', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Resumen por ciclo', 'flavor-platform'); ?></h2>
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th><?php _e('Ciclo', 'flavor-chat-ia'); ?></th>
-                        <th class="text-right"><?php _e('Pedidos', 'flavor-chat-ia'); ?></th>
-                        <th class="text-right"><?php _e('Importe', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Ciclo', 'flavor-platform'); ?></th>
+                        <th class="text-right"><?php _e('Pedidos', 'flavor-platform'); ?></th>
+                        <th class="text-right"><?php _e('Importe', 'flavor-platform'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($resumen_ciclos)): ?>
-                        <tr><td colspan="3" class="text-center"><?php _e('Sin datos', 'flavor-chat-ia'); ?></td></tr>
+                        <tr><td colspan="3" class="text-center"><?php _e('Sin datos', 'flavor-platform'); ?></td></tr>
                     <?php else: ?>
                         <?php foreach ($resumen_ciclos as $ciclo): ?>
                             <tr>
@@ -399,19 +399,19 @@ $suscripciones_frecuencia = $wpdb->get_results(
 
         <!-- Top Productos -->
         <div class="gc-tabla-card">
-            <h2><?php _e('Top 10 Productos', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Top 10 Productos', 'flavor-platform'); ?></h2>
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th><?php _e('Producto', 'flavor-chat-ia'); ?></th>
-                        <th class="text-right"><?php _e('Cantidad', 'flavor-chat-ia'); ?></th>
-                        <th class="text-right"><?php _e('Importe', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Producto', 'flavor-platform'); ?></th>
+                        <th class="text-right"><?php _e('Cantidad', 'flavor-platform'); ?></th>
+                        <th class="text-right"><?php _e('Importe', 'flavor-platform'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($top_productos)): ?>
-                        <tr><td colspan="4" class="text-center"><?php _e('Sin datos', 'flavor-chat-ia'); ?></td></tr>
+                        <tr><td colspan="4" class="text-center"><?php _e('Sin datos', 'flavor-platform'); ?></td></tr>
                     <?php else: ?>
                         <?php foreach ($top_productos as $i => $producto): ?>
                             <tr>
@@ -428,24 +428,24 @@ $suscripciones_frecuencia = $wpdb->get_results(
 
         <!-- Top Productores -->
         <div class="gc-tabla-card">
-            <h2><?php _e('Top 10 Productores', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Top 10 Productores', 'flavor-platform'); ?></h2>
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th><?php _e('Productor', 'flavor-chat-ia'); ?></th>
-                        <th class="text-right"><?php _e('Cantidad', 'flavor-chat-ia'); ?></th>
-                        <th class="text-right"><?php _e('Importe', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Productor', 'flavor-platform'); ?></th>
+                        <th class="text-right"><?php _e('Cantidad', 'flavor-platform'); ?></th>
+                        <th class="text-right"><?php _e('Importe', 'flavor-platform'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($top_productores)): ?>
-                        <tr><td colspan="4" class="text-center"><?php _e('Sin datos', 'flavor-chat-ia'); ?></td></tr>
+                        <tr><td colspan="4" class="text-center"><?php _e('Sin datos', 'flavor-platform'); ?></td></tr>
                     <?php else: ?>
                         <?php foreach ($top_productores as $i => $productor): ?>
                             <tr>
                                 <td><?php echo $i + 1; ?></td>
-                                <td><?php echo esc_html($productor->nombre ?: __('Sin nombre', 'flavor-chat-ia')); ?></td>
+                                <td><?php echo esc_html($productor->nombre ?: __('Sin nombre', 'flavor-platform')); ?></td>
                                 <td class="text-right"><?php echo number_format($productor->cantidad ?? 0, 2, ',', '.'); ?></td>
                                 <td class="text-right"><?php echo number_format($productor->importe ?? 0, 2, ',', '.'); ?>€</td>
                             </tr>
@@ -457,19 +457,19 @@ $suscripciones_frecuencia = $wpdb->get_results(
 
         <!-- Top Consumidores -->
         <div class="gc-tabla-card">
-            <h2><?php _e('Top 10 Consumidores', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Top 10 Consumidores', 'flavor-platform'); ?></h2>
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th><?php _e('Consumidor', 'flavor-chat-ia'); ?></th>
-                        <th class="text-right"><?php _e('Pedidos', 'flavor-chat-ia'); ?></th>
-                        <th class="text-right"><?php _e('Importe', 'flavor-chat-ia'); ?></th>
+                        <th><?php _e('Consumidor', 'flavor-platform'); ?></th>
+                        <th class="text-right"><?php _e('Pedidos', 'flavor-platform'); ?></th>
+                        <th class="text-right"><?php _e('Importe', 'flavor-platform'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($top_consumidores)): ?>
-                        <tr><td colspan="4" class="text-center"><?php _e('Sin datos', 'flavor-chat-ia'); ?></td></tr>
+                        <tr><td colspan="4" class="text-center"><?php _e('Sin datos', 'flavor-platform'); ?></td></tr>
                     <?php else: ?>
                         <?php foreach ($top_consumidores as $i => $consumidor): ?>
                             <tr>
@@ -490,22 +490,22 @@ $suscripciones_frecuencia = $wpdb->get_results(
 
     <!-- Acciones de exportación -->
     <div class="gc-acciones-exportar">
-        <h2><?php _e('Exportar Datos', 'flavor-chat-ia'); ?></h2>
+        <h2><?php _e('Exportar Datos', 'flavor-platform'); ?></h2>
         <div class="gc-export-buttons">
             <a href="<?php echo wp_nonce_url(admin_url('admin-post.php?action=gc_exportar_pedidos'), 'gc_exportar_pedidos'); ?>"
                class="button">
                 <span class="dashicons dashicons-download"></span>
-                <?php _e('Exportar Pedidos', 'flavor-chat-ia'); ?>
+                <?php _e('Exportar Pedidos', 'flavor-platform'); ?>
             </a>
             <a href="<?php echo wp_nonce_url(admin_url('admin-post.php?action=gc_exportar_consumidores'), 'gc_exportar_consumidores'); ?>"
                class="button">
                 <span class="dashicons dashicons-download"></span>
-                <?php _e('Exportar Consumidores', 'flavor-chat-ia'); ?>
+                <?php _e('Exportar Consumidores', 'flavor-platform'); ?>
             </a>
             <a href="<?php echo wp_nonce_url(admin_url('admin-post.php?action=gc_exportar_suscripciones'), 'gc_exportar_suscripciones'); ?>"
                class="button">
                 <span class="dashicons dashicons-download"></span>
-                <?php _e('Exportar Suscripciones', 'flavor-chat-ia'); ?>
+                <?php _e('Exportar Suscripciones', 'flavor-platform'); ?>
             </a>
         </div>
     </div>

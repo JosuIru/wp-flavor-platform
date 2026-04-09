@@ -78,15 +78,15 @@ if ($proximo_viaje) {
     $dias_restantes = floor($horas_restantes / 24);
 
     if ($dias_restantes > 1) {
-        $tiempo_restante = sprintf(__('En %d dias', 'flavor-chat-ia'), $dias_restantes);
+        $tiempo_restante = sprintf(__('En %d dias', FLAVOR_PLATFORM_TEXT_DOMAIN), $dias_restantes);
     } elseif ($dias_restantes === 1) {
-        $tiempo_restante = __('Manana', 'flavor-chat-ia');
+        $tiempo_restante = __('Manana', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $clase_urgencia = 'flavor-carpooling-proximo--pronto';
     } elseif ($horas_restantes > 1) {
-        $tiempo_restante = sprintf(__('En %d horas', 'flavor-chat-ia'), $horas_restantes);
+        $tiempo_restante = sprintf(__('En %d horas', FLAVOR_PLATFORM_TEXT_DOMAIN), $horas_restantes);
         $clase_urgencia = 'flavor-carpooling-proximo--muy-pronto';
     } else {
-        $tiempo_restante = __('Muy pronto', 'flavor-chat-ia');
+        $tiempo_restante = __('Muy pronto', FLAVOR_PLATFORM_TEXT_DOMAIN);
         $clase_urgencia = 'flavor-carpooling-proximo--inminente';
     }
 }
@@ -98,7 +98,7 @@ if ($proximo_viaje) {
         <div class="flavor-carpooling-proximo__header">
             <span class="flavor-carpooling-proximo__rol <?php echo $es_conductor ? 'rol--conductor' : 'rol--pasajero'; ?>">
                 <span class="dashicons <?php echo $es_conductor ? 'dashicons-steering-wheel' : 'dashicons-groups'; ?>"></span>
-                <?php echo $es_conductor ? esc_html__('Conductor', 'flavor-chat-ia') : esc_html__('Pasajero', 'flavor-chat-ia'); ?>
+                <?php echo $es_conductor ? esc_html__('Conductor', FLAVOR_PLATFORM_TEXT_DOMAIN) : esc_html__('Pasajero', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </span>
             <span class="flavor-carpooling-proximo__tiempo">
                 <span class="dashicons dashicons-clock"></span>
@@ -113,7 +113,7 @@ if ($proximo_viaje) {
                     <span class="dashicons dashicons-location"></span>
                 </span>
                 <div class="flavor-carpooling-proximo__punto-info">
-                    <span class="flavor-carpooling-proximo__punto-label"><?php esc_html_e('Origen', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-carpooling-proximo__punto-label"><?php esc_html_e('Origen', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="flavor-carpooling-proximo__punto-valor"><?php echo esc_html($proximo_viaje->origen); ?></span>
                 </div>
             </div>
@@ -127,7 +127,7 @@ if ($proximo_viaje) {
                     <span class="dashicons dashicons-flag"></span>
                 </span>
                 <div class="flavor-carpooling-proximo__punto-info">
-                    <span class="flavor-carpooling-proximo__punto-label"><?php esc_html_e('Destino', 'flavor-chat-ia'); ?></span>
+                    <span class="flavor-carpooling-proximo__punto-label"><?php esc_html_e('Destino', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="flavor-carpooling-proximo__punto-valor"><?php echo esc_html($proximo_viaje->destino); ?></span>
                 </div>
             </div>
@@ -150,7 +150,7 @@ if ($proximo_viaje) {
                     <span>
                         <?php
                         printf(
-                            esc_html__('%d de %d plazas', 'flavor-chat-ia'),
+                            esc_html__('%d de %d plazas', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             $proximo_viaje->plazas_ocupadas,
                             $proximo_viaje->plazas_disponibles + $proximo_viaje->plazas_ocupadas
                         );
@@ -163,7 +163,7 @@ if ($proximo_viaje) {
                         <span>
                             <?php
                             printf(
-                                esc_html(_n('%d reserva', '%d reservas', $proximo_viaje->total_reservas, 'flavor-chat-ia')),
+                                esc_html(_n('%d reserva', '%d reservas', $proximo_viaje->total_reservas, FLAVOR_PLATFORM_TEXT_DOMAIN)),
                                 $proximo_viaje->total_reservas
                             );
                             ?>
@@ -176,7 +176,7 @@ if ($proximo_viaje) {
                     <span>
                         <?php
                         printf(
-                            esc_html(_n('%d plaza reservada', '%d plazas reservadas', $proximo_viaje->numero_plazas, 'flavor-chat-ia')),
+                            esc_html(_n('%d plaza reservada', '%d plazas reservadas', $proximo_viaje->numero_plazas, FLAVOR_PLATFORM_TEXT_DOMAIN)),
                             $proximo_viaje->numero_plazas
                         );
                         ?>
@@ -190,8 +190,8 @@ if ($proximo_viaje) {
                     ];
                     $clase_estado = $clases_estado[$proximo_viaje->estado_reserva] ?? '';
                     $textos_estado = [
-                        'confirmada' => __('Confirmada', 'flavor-chat-ia'),
-                        'pendiente'  => __('Pendiente', 'flavor-chat-ia'),
+                        'confirmada' => __('Confirmada', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                        'pendiente'  => __('Pendiente', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     ];
                     ?>
                     <span class="flavor-carpooling-proximo__estado <?php echo esc_attr($clase_estado); ?>">
@@ -204,7 +204,7 @@ if ($proximo_viaje) {
         <!-- Precio -->
         <?php if (!$es_conductor && $proximo_viaje->precio_total) : ?>
             <div class="flavor-carpooling-proximo__precio">
-                <span class="flavor-carpooling-proximo__precio-label"><?php esc_html_e('Total a pagar:', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-carpooling-proximo__precio-label"><?php esc_html_e('Total a pagar:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <span class="flavor-carpooling-proximo__precio-valor"><?php echo esc_html(number_format($proximo_viaje->precio_total, 2)); ?>€</span>
             </div>
         <?php endif; ?>
@@ -213,18 +213,18 @@ if ($proximo_viaje) {
         <div class="flavor-carpooling-proximo__acciones">
             <a href="<?php echo esc_url(home_url('/carpooling/viaje/' . $proximo_viaje->id)); ?>" class="cp-btn cp-btn-primary">
                 <span class="dashicons dashicons-visibility"></span>
-                <?php esc_html_e('Ver detalles', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ver detalles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
 
             <?php if ($es_conductor) : ?>
                 <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('carpooling', 'mis-viajes')); ?>" class="cp-btn cp-btn-outline">
                     <span class="dashicons dashicons-list-view"></span>
-                    <?php esc_html_e('Gestionar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Gestionar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             <?php else : ?>
                 <button type="button" class="cp-btn cp-btn-outline" data-reserva-id="<?php echo esc_attr($proximo_viaje->reserva_id); ?>" data-action="contactar-conductor">
                     <span class="dashicons dashicons-email"></span>
-                    <?php esc_html_e('Contactar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Contactar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             <?php endif; ?>
         </div>
@@ -233,17 +233,17 @@ if ($proximo_viaje) {
         <!-- Estado vacio -->
         <div class="flavor-carpooling-proximo__vacio">
             <span class="dashicons dashicons-car"></span>
-            <h4><?php esc_html_e('Sin viajes proximos', 'flavor-chat-ia'); ?></h4>
-            <p><?php esc_html_e('No tienes viajes programados proximamente', 'flavor-chat-ia'); ?></p>
+            <h4><?php esc_html_e('Sin viajes proximos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
+            <p><?php esc_html_e('No tienes viajes programados proximamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
 
             <div class="flavor-carpooling-proximo__vacio-acciones">
                 <a href="<?php echo esc_url(home_url('/carpooling/buscar/')); ?>" class="cp-btn cp-btn-primary">
                     <span class="dashicons dashicons-search"></span>
-                    <?php esc_html_e('Buscar viaje', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Buscar viaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
                 <a href="<?php echo esc_url(home_url('/carpooling/publicar/')); ?>" class="cp-btn cp-btn-outline">
                     <span class="dashicons dashicons-plus-alt"></span>
-                    <?php esc_html_e('Publicar viaje', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Publicar viaje', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </a>
             </div>
         </div>

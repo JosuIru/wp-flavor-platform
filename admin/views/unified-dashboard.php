@@ -34,9 +34,9 @@ $get_severity_payload = static function ($severity_slug) {
     }
 
     $fallback_labels = [
-        'attention' => __('Atención', 'flavor-chat-ia'),
-        'followup' => __('Seguimiento', 'flavor-chat-ia'),
-        'stable' => __('Estable', 'flavor-chat-ia'),
+        'attention' => __('Atención', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'followup' => __('Seguimiento', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'stable' => __('Estable', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ];
 
     $severity_slug = sanitize_key((string) $severity_slug);
@@ -168,14 +168,14 @@ $admin_social_panel = [
 
 $get_admin_social_node_type_label = static function ($entity_type) {
     $labels = [
-        'comunidad' => __('Comunidad', 'flavor-chat-ia'),
-        'colectivo' => __('Colectivo', 'flavor-chat-ia'),
-        'energia_comunidad' => __('Energía', 'flavor-chat-ia'),
-        'grupo_consumo' => __('Consumo', 'flavor-chat-ia'),
-        'evento' => __('Evento', 'flavor-chat-ia'),
+        'comunidad' => __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'colectivo' => __('Colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'energia_comunidad' => __('Energía', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'grupo_consumo' => __('Consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'evento' => __('Evento', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ];
 
-    return $labels[sanitize_key((string) $entity_type)] ?? __('Nodo', 'flavor-chat-ia');
+    return $labels[sanitize_key((string) $entity_type)] ?? __('Nodo', FLAVOR_PLATFORM_TEXT_DOMAIN);
 };
 
 $get_admin_social_node_icon = static function ($entity_type) {
@@ -192,14 +192,14 @@ $get_admin_social_node_icon = static function ($entity_type) {
 
 $get_admin_social_node_cta = static function ($entity_type) {
     $labels = [
-        'comunidad' => __('Abrir comunidad', 'flavor-chat-ia'),
-        'colectivo' => __('Abrir colectivo', 'flavor-chat-ia'),
-        'energia_comunidad' => __('Abrir energía', 'flavor-chat-ia'),
-        'grupo_consumo' => __('Abrir consumo', 'flavor-chat-ia'),
-        'evento' => __('Abrir evento', 'flavor-chat-ia'),
+        'comunidad' => __('Abrir comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'colectivo' => __('Abrir colectivo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'energia_comunidad' => __('Abrir energía', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'grupo_consumo' => __('Abrir consumo', FLAVOR_PLATFORM_TEXT_DOMAIN),
+        'evento' => __('Abrir evento', FLAVOR_PLATFORM_TEXT_DOMAIN),
     ];
 
-    return $labels[sanitize_key((string) $entity_type)] ?? __('Abrir nodo', 'flavor-chat-ia');
+    return $labels[sanitize_key((string) $entity_type)] ?? __('Abrir nodo', FLAVOR_PLATFORM_TEXT_DOMAIN);
 };
 
 $get_admin_social_node_url = static function ($entity_type, $entity_id) {
@@ -245,8 +245,8 @@ if (class_exists('Flavor_Mi_Red_Social') && is_user_logged_in()) {
             }
 
             $admin_social_panel['feed'][] = [
-                'title' => $title !== '' ? $title : __('Publicación reciente', 'flavor-chat-ia'),
-                'meta' => trim((string) (($item['autor']['nombre'] ?? __('Comunidad', 'flavor-chat-ia')) . (!empty($item['fecha_humana']) ? ' · ' . $item['fecha_humana'] : ''))),
+                'title' => $title !== '' ? $title : __('Publicación reciente', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'meta' => trim((string) (($item['autor']['nombre'] ?? __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN)) . (!empty($item['fecha_humana']) ? ' · ' . $item['fecha_humana'] : ''))),
                 'url' => (string) ($item['url'] ?? '#'),
                 'icon' => (string) ($item['tipo_info']['icon'] ?? '📝'),
             ];
@@ -261,10 +261,10 @@ if (class_exists('Flavor_Mi_Red_Social') && is_user_logged_in()) {
 
             $social_nodes_map['comunidad:' . $community_id] = [
                 'entity_type' => 'comunidad',
-                'title' => (string) ($community['nombre'] ?? __('Comunidad', 'flavor-chat-ia')),
+                'title' => (string) ($community['nombre'] ?? __('Comunidad', FLAVOR_PLATFORM_TEXT_DOMAIN)),
                 'meta' => !empty($community['miembros_count'])
-                    ? sprintf(_n('%d miembro', '%d miembros', (int) $community['miembros_count'], 'flavor-chat-ia'), (int) $community['miembros_count'])
-                    : __('Nodo activo', 'flavor-chat-ia'),
+                    ? sprintf(_n('%d miembro', '%d miembros', (int) $community['miembros_count'], FLAVOR_PLATFORM_TEXT_DOMAIN), (int) $community['miembros_count'])
+                    : __('Nodo activo', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'summary' => '',
                 'url' => $get_admin_social_node_url('comunidad', $community_id),
                 'icon' => $get_admin_social_node_icon('comunidad'),
@@ -295,7 +295,7 @@ if (class_exists('Flavor_Mi_Red_Social') && is_user_logged_in()) {
             if (!isset($social_nodes_map[$node_key])) {
                 $social_nodes_map[$node_key] = [
                     'entity_type' => $entity_type,
-                    'title' => trim((string) preg_replace('/^\s*chat\s*:\s*/i', '', (string) ($group['nombre'] ?? __('Nodo', 'flavor-chat-ia')))),
+                    'title' => trim((string) preg_replace('/^\s*chat\s*:\s*/i', '', (string) ($group['nombre'] ?? __('Nodo', FLAVOR_PLATFORM_TEXT_DOMAIN)))),
                     'meta' => $get_admin_social_node_type_label($entity_type),
                     'summary' => '',
                     'url' => $get_admin_social_node_url($entity_type, $entity_id),
@@ -311,15 +311,15 @@ if (class_exists('Flavor_Mi_Red_Social') && is_user_logged_in()) {
             $social_nodes_map[$node_key]['unread_count'] += $unread;
 
             if ($members > 0) {
-                $meta_parts[] = sprintf(_n('%d miembro', '%d miembros', $members, 'flavor-chat-ia'), $members);
+                $meta_parts[] = sprintf(_n('%d miembro', '%d miembros', $members, FLAVOR_PLATFORM_TEXT_DOMAIN), $members);
             }
             if ($unread > 0) {
-                $meta_parts[] = sprintf(_n('%d no leído', '%d no leídos', $unread, 'flavor-chat-ia'), $unread);
+                $meta_parts[] = sprintf(_n('%d no leído', '%d no leídos', $unread, FLAVOR_PLATFORM_TEXT_DOMAIN), $unread);
             }
 
             $admin_social_panel['groups'][] = [
-                'title' => trim((string) preg_replace('/^\s*chat\s*:\s*/i', '', (string) ($group['nombre'] ?? __('Grupo', 'flavor-chat-ia')))),
-                'meta' => !empty($meta_parts) ? implode(' · ', $meta_parts) : __('Conversación activa', 'flavor-chat-ia'),
+                'title' => trim((string) preg_replace('/^\s*chat\s*:\s*/i', '', (string) ($group['nombre'] ?? __('Grupo', FLAVOR_PLATFORM_TEXT_DOMAIN)))),
+                'meta' => !empty($meta_parts) ? implode(' · ', $meta_parts) : __('Conversación activa', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => !empty($group['id']) ? home_url('/mi-portal/chat-grupos/mensajes/?grupo_id=' . absint($group['id'])) : home_url('/mi-portal/chat-grupos/'),
                 'badge' => $unread > 0 ? (string) $unread : '',
             ];
@@ -328,13 +328,13 @@ if (class_exists('Flavor_Mi_Red_Social') && is_user_logged_in()) {
         foreach ($social_nodes_map as $node) {
             $summary_parts = [];
             if (!empty($node['group_count'])) {
-                $summary_parts[] = sprintf(_n('%d grupo', '%d grupos', (int) $node['group_count'], 'flavor-chat-ia'), (int) $node['group_count']);
+                $summary_parts[] = sprintf(_n('%d grupo', '%d grupos', (int) $node['group_count'], FLAVOR_PLATFORM_TEXT_DOMAIN), (int) $node['group_count']);
             }
             if (!empty($node['unread_count'])) {
-                $summary_parts[] = sprintf(_n('%d no leído', '%d no leídos', (int) $node['unread_count'], 'flavor-chat-ia'), (int) $node['unread_count']);
+                $summary_parts[] = sprintf(_n('%d no leído', '%d no leídos', (int) $node['unread_count'], FLAVOR_PLATFORM_TEXT_DOMAIN), (int) $node['unread_count']);
             }
 
-            $node['summary'] = !empty($summary_parts) ? implode(' · ', $summary_parts) : __('Sin actividad reciente', 'flavor-chat-ia');
+            $node['summary'] = !empty($summary_parts) ? implode(' · ', $summary_parts) : __('Sin actividad reciente', FLAVOR_PLATFORM_TEXT_DOMAIN);
             $admin_social_panel['nodes'][] = $node;
         }
 
@@ -560,10 +560,10 @@ foreach ($ecosystem_nodes as $ecosystem_node) {
 
     if (!empty($ecosystem_node['satellites'])) {
         $executive_actions[] = [
-            'kind' => __('Coordinar', 'flavor-chat-ia'),
-            'title' => sprintf(__('Abrir %s', 'flavor-chat-ia'), $ecosystem_node['name']),
+            'kind' => __('Coordinar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+            'title' => sprintf(__('Abrir %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $ecosystem_node['name']),
             'description' => sprintf(
-                esc_html(_n('%d satelite operativo disponible', '%d satelites operativos disponibles', $ecosystem_node['satellite_count'], 'flavor-chat-ia')),
+                esc_html(_n('%d satelite operativo disponible', '%d satelites operativos disponibles', $ecosystem_node['satellite_count'], FLAVOR_PLATFORM_TEXT_DOMAIN)),
                 (int) $ecosystem_node['satellite_count']
             ),
             'url' => $ecosystem_node['dashboard_url'] ?? ('#fud-ecosystem-group-' . $ecosystem_node['id']),
@@ -574,9 +574,9 @@ foreach ($ecosystem_nodes as $ecosystem_node) {
     foreach ((array) ($ecosystem_node['transversals'] ?? []) as $transversal) {
         if (empty($transversal['is_active'])) {
             $executive_actions[] = [
-                'kind' => __('Completar', 'flavor-chat-ia'),
-                'title' => sprintf(__('Activar %s', 'flavor-chat-ia'), $transversal['name']),
-                'description' => __('Capa transversal sugerida para reforzar este ecosistema.', 'flavor-chat-ia'),
+                'kind' => __('Completar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                'title' => sprintf(__('Activar %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $transversal['name']),
+                'description' => __('Capa transversal sugerida para reforzar este ecosistema.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => $transversal['url'],
                 'priority' => 70 + (int) ($transversal['context_match_score'] ?? 0),
             ];
@@ -586,11 +586,11 @@ foreach ($ecosystem_nodes as $ecosystem_node) {
     if (!empty($ecosystem_node['context_match_score'])) {
         $severity = $get_admin_action_severity('focus');
         $next_actions[] = [
-            'kind' => __('Foco', 'flavor-chat-ia'),
+            'kind' => __('Foco', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'severity' => $severity['label'],
             'severity_slug' => $severity['slug'],
-            'title' => sprintf(__('Entrar en %s', 'flavor-chat-ia'), $ecosystem_node['name']),
-            'description' => __('Es el ecosistema más alineado con la vista actual del dashboard.', 'flavor-chat-ia'),
+            'title' => sprintf(__('Entrar en %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $ecosystem_node['name']),
+            'description' => __('Es el ecosistema más alineado con la vista actual del dashboard.', FLAVOR_PLATFORM_TEXT_DOMAIN),
             'url' => $ecosystem_node['dashboard_url'] ?? ('#fud-ecosystem-group-' . $ecosystem_node['id']),
             'priority' => 96 + (int) $ecosystem_node['context_match_score'],
         ];
@@ -604,11 +604,11 @@ foreach ($ecosystem_nodes as $ecosystem_node) {
 
             $severity = $get_admin_action_severity('review');
             $next_actions[] = [
-                'kind' => __('Revisar', 'flavor-chat-ia'),
+                'kind' => __('Revisar', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'severity' => $severity['label'],
                 'severity_slug' => $severity['slug'],
-                'title' => sprintf(__('Abrir %s', 'flavor-chat-ia'), $node_widget['title']),
-                'description' => __('Acceso directo a un widget con información o gestión ya disponible.', 'flavor-chat-ia'),
+                'title' => sprintf(__('Abrir %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $node_widget['title']),
+                'description' => __('Acceso directo a un widget con información o gestión ya disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 'url' => $widget_action['url'],
                 'priority' => 72 + (int) ($ecosystem_node['context_match_score'] ?? 0),
             ];
@@ -620,12 +620,12 @@ foreach ($ecosystem_nodes as $ecosystem_node) {
 if ($executive_totals['suggested_transversals'] > 0) {
     $severity = $get_admin_action_severity('complete');
     $next_actions[] = [
-        'kind' => __('Completar', 'flavor-chat-ia'),
+        'kind' => __('Completar', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'severity' => $severity['label'],
         'severity_slug' => $severity['slug'],
-        'title' => __('Atender capas pendientes', 'flavor-chat-ia'),
+        'title' => __('Atender capas pendientes', FLAVOR_PLATFORM_TEXT_DOMAIN),
         'description' => sprintf(
-            esc_html(_n('%d capa transversal sugerida sigue pendiente.', '%d capas transversales sugeridas siguen pendientes.', $executive_totals['suggested_transversals'], 'flavor-chat-ia')),
+            esc_html(_n('%d capa transversal sugerida sigue pendiente.', '%d capas transversales sugeridas siguen pendientes.', $executive_totals['suggested_transversals'], FLAVOR_PLATFORM_TEXT_DOMAIN)),
             (int) $executive_totals['suggested_transversals']
         ),
         'url' => '#fud-ecosystem-title',
@@ -648,23 +648,23 @@ $next_actions = array_slice(array_values(array_unique($next_actions, SORT_REGULA
      data-active-filter="<?php echo esc_attr($active_filter); ?>">
 
     <!-- Skip Links (Accesibilidad) -->
-    <a href="#fl-main-content" class="fl-skip-link"><?php esc_html_e('Saltar al contenido principal', 'flavor-chat-ia'); ?></a>
-    <a href="#fl-category-filters" class="fl-skip-link"><?php esc_html_e('Saltar a filtros', 'flavor-chat-ia'); ?></a>
+    <a href="#fl-main-content" class="fl-skip-link"><?php esc_html_e('Saltar al contenido principal', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
+    <a href="#fl-category-filters" class="fl-skip-link"><?php esc_html_e('Saltar a filtros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
 
     <!-- Instrucciones Drag & Drop (Screen Readers) -->
     <div id="fl-drag-instructions" class="fl-sr-only">
-        <?php esc_html_e('Para reordenar widgets: presione Enter o Espacio para activar el modo arrastre, use las flechas para mover, Enter para soltar o Escape para cancelar.', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Para reordenar widgets: presione Enter o Espacio para activar el modo arrastre, use las flechas para mover, Enter para soltar o Escape para cancelar.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
     </div>
 
     <!-- =========================================================
          BREADCRUMBS
     ========================================================= -->
-    <nav class="fl-breadcrumbs" aria-label="<?php esc_attr_e('Navegacion', 'flavor-chat-ia'); ?>">
+    <nav class="fl-breadcrumbs" aria-label="<?php esc_attr_e('Navegacion', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
         <ol class="fl-breadcrumbs__list" itemscope itemtype="https://schema.org/BreadcrumbList">
             <li class="fl-breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
                 <a href="<?php echo esc_url(admin_url()); ?>" class="fl-breadcrumbs__link" itemprop="item">
                     <span class="fl-breadcrumbs__icon dashicons dashicons-admin-home" aria-hidden="true"></span>
-                    <span itemprop="name"><?php esc_html_e('Inicio', 'flavor-chat-ia'); ?></span>
+                    <span itemprop="name"><?php esc_html_e('Inicio', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </a>
                 <meta itemprop="position" content="1">
             </li>
@@ -674,7 +674,7 @@ $next_actions = array_slice(array_values(array_unique($next_actions, SORT_REGULA
             <li class="fl-breadcrumbs__item fl-breadcrumbs__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
                 <span class="fl-breadcrumbs__current" itemprop="item">
                     <span class="fl-breadcrumbs__icon dashicons dashicons-dashboard" aria-hidden="true"></span>
-                    <span itemprop="name"><?php esc_html_e('Dashboard', 'flavor-chat-ia'); ?></span>
+                    <span itemprop="name"><?php esc_html_e('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </span>
                 <meta itemprop="position" content="2">
             </li>
@@ -688,11 +688,11 @@ $next_actions = array_slice(array_values(array_unique($next_actions, SORT_REGULA
         <div class="fl-dashboard-header__left fud-header-left">
             <h1 class="fl-dashboard-header__title fud-title">
                 <span class="dashicons dashicons-dashboard" aria-hidden="true"></span>
-                <?php esc_html_e('Dashboard', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h1>
             <span class="fl-dashboard-header__subtitle fud-subtitle">
                 <?php printf(
-                    esc_html(_n('%d widget activo', '%d widgets activos', $visible_count, 'flavor-chat-ia')),
+                    esc_html(_n('%d widget activo', '%d widgets activos', $visible_count, FLAVOR_PLATFORM_TEXT_DOMAIN)),
                     $visible_count
                 ); ?>
             </span>
@@ -700,40 +700,40 @@ $next_actions = array_slice(array_values(array_unique($next_actions, SORT_REGULA
 
         <div class="fl-dashboard-header__actions fud-header-actions">
             <!-- Toggle Vista -->
-            <div class="fl-view-toggle fud-view-toggle" role="group" aria-label="<?php esc_attr_e('Modo de vista', 'flavor-chat-ia'); ?>">
+            <div class="fl-view-toggle fud-view-toggle" role="group" aria-label="<?php esc_attr_e('Modo de vista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                 <button type="button"
                         class="fl-view-btn fud-view-btn <?php echo $view_mode === 'grid' ? 'active' : ''; ?>"
                         data-view="grid"
                         aria-pressed="<?php echo $view_mode === 'grid' ? 'true' : 'false'; ?>"
-                        title="<?php esc_attr_e('Vista cuadricula', 'flavor-chat-ia'); ?>">
+                        title="<?php esc_attr_e('Vista cuadricula', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-grid-view" aria-hidden="true"></span>
-                    <span class="fl-sr-only"><?php esc_html_e('Cuadricula', 'flavor-chat-ia'); ?></span>
+                    <span class="fl-sr-only"><?php esc_html_e('Cuadricula', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </button>
                 <button type="button"
                         class="fl-view-btn fud-view-btn <?php echo $view_mode === 'list' ? 'active' : ''; ?>"
                         data-view="list"
                         aria-pressed="<?php echo $view_mode === 'list' ? 'true' : 'false'; ?>"
-                        title="<?php esc_attr_e('Vista lista', 'flavor-chat-ia'); ?>">
+                        title="<?php esc_attr_e('Vista lista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-list-view" aria-hidden="true"></span>
-                    <span class="fl-sr-only"><?php esc_html_e('Lista', 'flavor-chat-ia'); ?></span>
+                    <span class="fl-sr-only"><?php esc_html_e('Lista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </button>
             </div>
 
             <!-- Boton Personalizar -->
             <button type="button" class="button fl-btn fl-btn--secondary fud-btn-secondary" id="fud-customize-btn">
                 <span class="dashicons dashicons-admin-generic" aria-hidden="true"></span>
-                <?php esc_html_e('Personalizar', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Personalizar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
 
             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-module-dashboards')); ?>" class="button fl-btn fl-btn--secondary fud-btn-secondary">
                 <span class="dashicons dashicons-chart-pie" aria-hidden="true"></span>
-                <?php esc_html_e('Índice de dashboards', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Índice de dashboards', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </a>
 
             <!-- Boton Actualizar -->
             <button type="button" class="button button-primary fl-btn fl-btn--primary fud-btn-primary" id="fud-refresh-all-btn">
                 <span class="dashicons dashicons-update" aria-hidden="true"></span>
-                <?php esc_html_e('Actualizar todo', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Actualizar todo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </button>
         </div>
     </header>
@@ -743,61 +743,61 @@ $next_actions = array_slice(array_values(array_unique($next_actions, SORT_REGULA
         <div class="fud-executive-summary__header">
             <div>
                 <h2 id="fud-executive-title" class="fud-executive-summary__title">
-                    <?php esc_html_e('Visión ejecutiva', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Visión ejecutiva', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
                 <p class="fud-executive-summary__description">
-                    <?php esc_html_e('Una lectura rápida del nodo, sus capas activas y los siguientes movimientos recomendados.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Una lectura rápida del nodo, sus capas activas y los siguientes movimientos recomendados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
             </div>
         </div>
         <div class="fud-executive-summary__grid">
             <article class="fud-summary-card">
-                <span class="fud-summary-card__label"><?php esc_html_e('Ecosistemas activos', 'flavor-chat-ia'); ?></span>
+                <span class="fud-summary-card__label"><?php esc_html_e('Ecosistemas activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <strong class="fud-summary-card__value"><?php echo esc_html($executive_totals['ecosystems']); ?></strong>
-                <p class="fud-summary-card__hint"><?php esc_html_e('Bases y satélites operativos con widget visible en este dashboard.', 'flavor-chat-ia'); ?></p>
+                <p class="fud-summary-card__hint"><?php esc_html_e('Bases y satélites operativos con widget visible en este dashboard.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </article>
             <article class="fud-summary-card">
-                <span class="fud-summary-card__label"><?php esc_html_e('Herramientas visibles', 'flavor-chat-ia'); ?></span>
+                <span class="fud-summary-card__label"><?php esc_html_e('Herramientas visibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <strong class="fud-summary-card__value"><?php echo esc_html($executive_totals['widgets']); ?></strong>
-                <p class="fud-summary-card__hint"><?php esc_html_e('Widgets activos listos para operación, seguimiento o revisión.', 'flavor-chat-ia'); ?></p>
+                <p class="fud-summary-card__hint"><?php esc_html_e('Widgets activos listos para operación, seguimiento o revisión.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </article>
             <article class="fud-summary-card">
-                <span class="fud-summary-card__label"><?php esc_html_e('Capas transversales', 'flavor-chat-ia'); ?></span>
+                <span class="fud-summary-card__label"><?php esc_html_e('Capas transversales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <strong class="fud-summary-card__value"><?php echo esc_html($executive_totals['active_transversals']); ?></strong>
                 <p class="fud-summary-card__hint">
                     <?php
                     printf(
-                        esc_html(_n('%d sugerencia pendiente', '%d sugerencias pendientes', $executive_totals['suggested_transversals'], 'flavor-chat-ia')),
+                        esc_html(_n('%d sugerencia pendiente', '%d sugerencias pendientes', $executive_totals['suggested_transversals'], FLAVOR_PLATFORM_TEXT_DOMAIN)),
                         (int) $executive_totals['suggested_transversals']
                     );
                     ?>
                 </p>
             </article>
             <article class="fud-summary-card">
-                <span class="fud-summary-card__label"><?php esc_html_e('Foco de esta vista', 'flavor-chat-ia'); ?></span>
+                <span class="fud-summary-card__label"><?php esc_html_e('Foco de esta vista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 <strong class="fud-summary-card__value"><?php echo esc_html($executive_totals['relevant_ecosystems']); ?></strong>
-                <p class="fud-summary-card__hint"><?php esc_html_e('Ecosistemas priorizados por el contexto actual del dashboard.', 'flavor-chat-ia'); ?></p>
+                <p class="fud-summary-card__hint"><?php esc_html_e('Ecosistemas priorizados por el contexto actual del dashboard.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </article>
         </div>
 
         <?php if (!empty($next_actions)) : ?>
         <div class="fud-next-actions">
             <div class="fud-next-actions__header">
-                <h3 class="fud-next-actions__title"><?php esc_html_e('Qué hacer ahora', 'flavor-chat-ia'); ?></h3>
-                <p class="fud-next-actions__subtitle"><?php esc_html_e('Una secuencia corta para destrabar gestión, abrir foco y completar capas del nodo.', 'flavor-chat-ia'); ?></p>
-                <div class="fud-severity-legend" aria-label="<?php esc_attr_e('Leyenda de prioridad', 'flavor-chat-ia'); ?>">
-                    <span class="fud-severity-legend__label"><?php esc_html_e('Prioridad', 'flavor-chat-ia'); ?></span>
+                <h3 class="fud-next-actions__title"><?php esc_html_e('Qué hacer ahora', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p class="fud-next-actions__subtitle"><?php esc_html_e('Una secuencia corta para destrabar gestión, abrir foco y completar capas del nodo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
+                <div class="fud-severity-legend" aria-label="<?php esc_attr_e('Leyenda de prioridad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                    <span class="fud-severity-legend__label"><?php esc_html_e('Prioridad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                     <span class="fud-severity-legend__item">
                         <span class="fud-severity-legend__dot fud-severity-legend__dot--attention" aria-hidden="true"></span>
-                        <?php esc_html_e('Atención', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Atención', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                     <span class="fud-severity-legend__item">
                         <span class="fud-severity-legend__dot fud-severity-legend__dot--followup" aria-hidden="true"></span>
-                        <?php esc_html_e('Seguimiento', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Seguimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                     <span class="fud-severity-legend__item">
                         <span class="fud-severity-legend__dot fud-severity-legend__dot--stable" aria-hidden="true"></span>
-                        <?php esc_html_e('Estable', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Estable', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                 </div>
             </div>
@@ -823,8 +823,8 @@ $next_actions = array_slice(array_values(array_unique($next_actions, SORT_REGULA
         <?php if (!empty($executive_actions)) : ?>
         <div class="fud-executive-tools">
             <div class="fud-executive-tools__header">
-                <h3 class="fud-executive-tools__title"><?php esc_html_e('Herramientas clave', 'flavor-chat-ia'); ?></h3>
-                <p class="fud-executive-tools__subtitle"><?php esc_html_e('Accesos cortos para coordinar, completar o abrir los puntos más útiles ahora mismo.', 'flavor-chat-ia'); ?></p>
+                <h3 class="fud-executive-tools__title"><?php esc_html_e('Herramientas clave', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                <p class="fud-executive-tools__subtitle"><?php esc_html_e('Accesos cortos para coordinar, completar o abrir los puntos más útiles ahora mismo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
             <div class="fud-executive-tools__grid">
                 <?php foreach ($executive_actions as $action) : ?>
@@ -843,20 +843,20 @@ $next_actions = array_slice(array_values(array_unique($next_actions, SORT_REGULA
     <?php if (!empty($admin_social_panel['feed']) || !empty($admin_social_panel['nodes']) || !empty($admin_social_panel['groups'])) : ?>
     <section class="fud-admin-social" aria-labelledby="fud-admin-social-title">
         <div class="fud-admin-social__header">
-            <h2 id="fud-admin-social-title" class="fud-admin-social__title"><?php esc_html_e('Pulso social', 'flavor-chat-ia'); ?></h2>
-            <p class="fud-admin-social__description"><?php esc_html_e('Una lectura rápida de publicaciones, nodos comunitarios y conversaciones activas ligadas a tu red.', 'flavor-chat-ia'); ?></p>
+            <h2 id="fud-admin-social-title" class="fud-admin-social__title"><?php esc_html_e('Pulso social', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+            <p class="fud-admin-social__description"><?php esc_html_e('Una lectura rápida de publicaciones, nodos comunitarios y conversaciones activas ligadas a tu red.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
-        <div class="fud-admin-social__filters" role="toolbar" aria-label="<?php esc_attr_e('Filtrar pulso social', 'flavor-chat-ia'); ?>">
-            <button type="button" class="fud-admin-social__filter is-active" data-social-filter="all" aria-pressed="true"><?php esc_html_e('Todo', 'flavor-chat-ia'); ?></button>
-            <button type="button" class="fud-admin-social__filter" data-social-filter="nodes" aria-pressed="false"><?php esc_html_e('Nodos', 'flavor-chat-ia'); ?></button>
-            <button type="button" class="fud-admin-social__filter" data-social-filter="groups" aria-pressed="false"><?php esc_html_e('Con no leídos', 'flavor-chat-ia'); ?></button>
-            <button type="button" class="fud-admin-social__filter" data-social-filter="feed" aria-pressed="false"><?php esc_html_e('Posts', 'flavor-chat-ia'); ?></button>
+        <div class="fud-admin-social__filters" role="toolbar" aria-label="<?php esc_attr_e('Filtrar pulso social', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+            <button type="button" class="fud-admin-social__filter is-active" data-social-filter="all" aria-pressed="true"><?php esc_html_e('Todo', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+            <button type="button" class="fud-admin-social__filter" data-social-filter="nodes" aria-pressed="false"><?php esc_html_e('Nodos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+            <button type="button" class="fud-admin-social__filter" data-social-filter="groups" aria-pressed="false"><?php esc_html_e('Con no leídos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+            <button type="button" class="fud-admin-social__filter" data-social-filter="feed" aria-pressed="false"><?php esc_html_e('Posts', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
         </div>
         <div class="fud-admin-social__grid">
             <article class="fud-admin-social__card" data-social-card="feed">
                 <div class="fud-admin-social__card-head">
-                    <h3 class="fud-admin-social__card-title"><?php esc_html_e('Últimos posts', 'flavor-chat-ia'); ?></h3>
-                    <a href="<?php echo esc_url(home_url('/mi-portal/mi-red/')); ?>" class="fud-admin-social__link"><?php esc_html_e('Abrir red', 'flavor-chat-ia'); ?></a>
+                    <h3 class="fud-admin-social__card-title"><?php esc_html_e('Últimos posts', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <a href="<?php echo esc_url(home_url('/mi-portal/mi-red/')); ?>" class="fud-admin-social__link"><?php esc_html_e('Abrir red', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 </div>
                 <?php if (!empty($admin_social_panel['feed'])) : ?>
                     <div class="fud-admin-social__list">
@@ -871,20 +871,20 @@ $next_actions = array_slice(array_values(array_unique($next_actions, SORT_REGULA
                         <?php endforeach; ?>
                     </div>
                 <?php else : ?>
-                    <p class="fud-admin-social__empty"><?php esc_html_e('Todavía no hay publicaciones recientes.', 'flavor-chat-ia'); ?></p>
+                    <p class="fud-admin-social__empty"><?php esc_html_e('Todavía no hay publicaciones recientes.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php endif; ?>
             </article>
 
             <article class="fud-admin-social__card" data-social-card="nodes">
                 <div class="fud-admin-social__card-head">
-                    <h3 class="fud-admin-social__card-title"><?php esc_html_e('Nodos activos', 'flavor-chat-ia'); ?></h3>
-                    <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/')); ?>" class="fud-admin-social__link"><?php esc_html_e('Ver espacios', 'flavor-chat-ia'); ?></a>
+                    <h3 class="fud-admin-social__card-title"><?php esc_html_e('Nodos activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/')); ?>" class="fud-admin-social__link"><?php esc_html_e('Ver espacios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 </div>
                 <?php if (!empty($admin_social_panel['nodes'])) : ?>
-                    <div class="fud-admin-social__sort" role="toolbar" aria-label="<?php esc_attr_e('Ordenar nodos activos', 'flavor-chat-ia'); ?>">
-                        <span class="fud-admin-social__sort-label"><?php esc_html_e('Ordenar por', 'flavor-chat-ia'); ?></span>
-                        <button type="button" class="fud-admin-social__sort-btn is-active" data-social-sort="unread" aria-pressed="true"><?php esc_html_e('Más no leídos', 'flavor-chat-ia'); ?></button>
-                        <button type="button" class="fud-admin-social__sort-btn" data-social-sort="active" aria-pressed="false"><?php esc_html_e('Más activos', 'flavor-chat-ia'); ?></button>
+                    <div class="fud-admin-social__sort" role="toolbar" aria-label="<?php esc_attr_e('Ordenar nodos activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+                        <span class="fud-admin-social__sort-label"><?php esc_html_e('Ordenar por', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+                        <button type="button" class="fud-admin-social__sort-btn is-active" data-social-sort="unread" aria-pressed="true"><?php esc_html_e('Más no leídos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+                        <button type="button" class="fud-admin-social__sort-btn" data-social-sort="active" aria-pressed="false"><?php esc_html_e('Más activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
                     </div>
                     <div class="fud-admin-social__list">
                         <?php foreach ($admin_social_panel['nodes'] as $item) : ?>
@@ -908,14 +908,14 @@ $next_actions = array_slice(array_values(array_unique($next_actions, SORT_REGULA
                         <?php endforeach; ?>
                     </div>
                 <?php else : ?>
-                    <p class="fud-admin-social__empty"><?php esc_html_e('Todavía no hay nodos activos visibles.', 'flavor-chat-ia'); ?></p>
+                    <p class="fud-admin-social__empty"><?php esc_html_e('Todavía no hay nodos activos visibles.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php endif; ?>
             </article>
 
             <article class="fud-admin-social__card" data-social-card="groups">
                 <div class="fud-admin-social__card-head">
-                    <h3 class="fud-admin-social__card-title"><?php esc_html_e('Conversaciones abiertas', 'flavor-chat-ia'); ?></h3>
-                    <a href="<?php echo esc_url(home_url('/mi-portal/chat-grupos/')); ?>" class="fud-admin-social__link"><?php esc_html_e('Abrir grupos', 'flavor-chat-ia'); ?></a>
+                    <h3 class="fud-admin-social__card-title"><?php esc_html_e('Conversaciones abiertas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+                    <a href="<?php echo esc_url(home_url('/mi-portal/chat-grupos/')); ?>" class="fud-admin-social__link"><?php esc_html_e('Abrir grupos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></a>
                 </div>
                 <?php if (!empty($admin_social_panel['groups'])) : ?>
                     <div class="fud-admin-social__list">
@@ -933,29 +933,29 @@ $next_actions = array_slice(array_values(array_unique($next_actions, SORT_REGULA
                         <?php endforeach; ?>
                     </div>
                 <?php else : ?>
-                    <p class="fud-admin-social__empty"><?php esc_html_e('Todavía no hay grupos activos.', 'flavor-chat-ia'); ?></p>
+                    <p class="fud-admin-social__empty"><?php esc_html_e('Todavía no hay grupos activos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <?php endif; ?>
             </article>
         </div>
     </section>
     <?php endif; ?>
 
-    <div class="fud-priority-filter" role="group" aria-label="<?php esc_attr_e('Filtrar por prioridad', 'flavor-chat-ia'); ?>">
-        <span class="fud-priority-filter__label"><?php esc_html_e('Prioridad', 'flavor-chat-ia'); ?></span>
-        <button type="button" class="fud-priority-filter__btn is-active" data-priority="all" aria-pressed="true"><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></button>
-        <button type="button" class="fud-priority-filter__btn" data-priority="attention" aria-pressed="false"><?php esc_html_e('Atención', 'flavor-chat-ia'); ?></button>
-        <button type="button" class="fud-priority-filter__btn" data-priority="followup" aria-pressed="false"><?php esc_html_e('Seguimiento', 'flavor-chat-ia'); ?></button>
-        <button type="button" class="fud-priority-filter__btn" data-priority="stable" aria-pressed="false"><?php esc_html_e('Estable', 'flavor-chat-ia'); ?></button>
+    <div class="fud-priority-filter" role="group" aria-label="<?php esc_attr_e('Filtrar por prioridad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+        <span class="fud-priority-filter__label"><?php esc_html_e('Prioridad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+        <button type="button" class="fud-priority-filter__btn is-active" data-priority="all" aria-pressed="true"><?php esc_html_e('Todas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+        <button type="button" class="fud-priority-filter__btn" data-priority="attention" aria-pressed="false"><?php esc_html_e('Atención', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+        <button type="button" class="fud-priority-filter__btn" data-priority="followup" aria-pressed="false"><?php esc_html_e('Seguimiento', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
+        <button type="button" class="fud-priority-filter__btn" data-priority="stable" aria-pressed="false"><?php esc_html_e('Estable', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></button>
     </div>
 
     <?php if (!empty($ecosystem_nodes)) : ?>
     <section class="fud-ecosystem-hierarchy" aria-labelledby="fud-ecosystem-title">
         <div class="fud-ecosystem-hierarchy__header">
             <h2 id="fud-ecosystem-title" class="fud-ecosystem-hierarchy__title">
-                <?php esc_html_e('Ecosistemas activos', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Ecosistemas activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h2>
             <p class="fud-ecosystem-hierarchy__description">
-                <?php esc_html_e('Agrupa los widgets por modulo base y sus satelites para entender mejor la operativa del nodo.', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Agrupa los widgets por modulo base y sus satelites para entender mejor la operativa del nodo.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </p>
         </div>
         <div class="fud-ecosystem-hierarchy__grid">
@@ -966,14 +966,14 @@ $next_actions = array_slice(array_values(array_unique($next_actions, SORT_REGULA
                         <h3 class="fud-ecosystem-card__name"><?php echo esc_html($ecosystem_node['name']); ?></h3>
                         <span class="fud-ecosystem-card__role"><?php echo esc_html(ucfirst($ecosystem_node['role'])); ?></span>
                         <?php if (!empty($ecosystem_node['context_match_score'])) : ?>
-                        <div class="fud-ecosystem-card__context"><?php esc_html_e('Relevante en esta vista', 'flavor-chat-ia'); ?></div>
+                        <div class="fud-ecosystem-card__context"><?php esc_html_e('Relevante en esta vista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                         <?php endif; ?>
                     </div>
                     <span class="fud-ecosystem-card__count"><?php echo esc_html($ecosystem_node['satellite_count']); ?></span>
                 </div>
                 <?php if (!empty($ecosystem_node['satellites'])) : ?>
                 <div class="fud-ecosystem-card__block">
-                    <div class="fud-ecosystem-card__label"><?php esc_html_e('Satelites', 'flavor-chat-ia'); ?></div>
+                    <div class="fud-ecosystem-card__label"><?php esc_html_e('Satelites', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     <div class="fud-ecosystem-card__tags">
                         <?php foreach ($ecosystem_node['satellites'] as $satellite) : ?>
                         <a href="<?php echo esc_url($satellite['url'] ?? '#'); ?>" class="fud-ecosystem-card__tag"><?php echo esc_html($satellite['name']); ?></a>
@@ -983,7 +983,7 @@ $next_actions = array_slice(array_values(array_unique($next_actions, SORT_REGULA
                 <?php endif; ?>
                 <?php if (!empty($ecosystem_node['widgets'])) : ?>
                 <div class="fud-ecosystem-card__block">
-                    <div class="fud-ecosystem-card__label"><?php esc_html_e('Widgets', 'flavor-chat-ia'); ?></div>
+                    <div class="fud-ecosystem-card__label"><?php esc_html_e('Widgets', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     <div class="fud-ecosystem-card__tags">
                         <?php foreach (array_slice($ecosystem_node['widgets'], 0, 4) as $node_widget) : ?>
                         <span class="fud-ecosystem-card__tag fud-ecosystem-card__tag--widget"><?php echo esc_html($node_widget['title']); ?></span>
@@ -993,7 +993,7 @@ $next_actions = array_slice(array_values(array_unique($next_actions, SORT_REGULA
                 <?php endif; ?>
                 <?php if (!empty($ecosystem_node['transversals'])) : ?>
                 <div class="fud-ecosystem-card__block">
-                    <div class="fud-ecosystem-card__label"><?php esc_html_e('Capas transversales', 'flavor-chat-ia'); ?></div>
+                    <div class="fud-ecosystem-card__label"><?php esc_html_e('Capas transversales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                     <div class="fud-ecosystem-card__tags">
                         <?php foreach ($ecosystem_node['transversals'] as $transversal) : ?>
                         <a href="<?php echo esc_url($transversal['url']); ?>" class="fud-ecosystem-card__tag <?php echo !empty($transversal['is_active']) ? 'is-active' : 'is-suggested'; ?>">
@@ -1013,14 +1013,14 @@ $next_actions = array_slice(array_values(array_unique($next_actions, SORT_REGULA
          FILTROS DE CATEGORIA
     ========================================================= -->
     <?php if (!empty($categories)): ?>
-    <nav class="fl-category-filters" id="fl-category-filters" role="navigation" aria-label="<?php esc_attr_e('Filtrar por categoria', 'flavor-chat-ia'); ?>">
+    <nav class="fl-category-filters" id="fl-category-filters" role="navigation" aria-label="<?php esc_attr_e('Filtrar por categoria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
         <button type="button"
                 class="fl-category-filter fl-category-filter--all <?php echo $active_filter === 'all' ? 'active' : ''; ?>"
                 data-category="all"
                 aria-pressed="<?php echo $active_filter === 'all' ? 'true' : 'false'; ?>">
             <span class="dashicons dashicons-menu" aria-hidden="true"></span>
-            <span class="fl-category-filter__label"><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></span>
-            <span class="fl-category-filter__badge" aria-label="<?php printf(esc_attr__('%d widgets', 'flavor-chat-ia'), $visible_count); ?>">
+            <span class="fl-category-filter__label"><?php esc_html_e('Todos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
+            <span class="fl-category-filter__badge" aria-label="<?php printf(esc_attr__('%d widgets', FLAVOR_PLATFORM_TEXT_DOMAIN), $visible_count); ?>">
                 <?php echo absint($visible_count); ?>
             </span>
         </button>
@@ -1040,7 +1040,7 @@ $next_actions = array_slice(array_values(array_unique($next_actions, SORT_REGULA
                     style="--fl-cat-color: <?php echo esc_attr($cat_color); ?>;">
                 <span class="dashicons <?php echo esc_attr($cat_icon); ?>" aria-hidden="true"></span>
                 <span class="fl-category-filter__label"><?php echo esc_html($cat_label); ?></span>
-                <span class="fl-category-filter__badge" aria-label="<?php printf(esc_attr__('%d widgets', 'flavor-chat-ia'), $cat_widgets_count); ?>">
+                <span class="fl-category-filter__badge" aria-label="<?php printf(esc_attr__('%d widgets', FLAVOR_PLATFORM_TEXT_DOMAIN), $cat_widgets_count); ?>">
                     <?php echo absint($cat_widgets_count); ?>
                 </span>
             </button>
@@ -1049,8 +1049,8 @@ $next_actions = array_slice(array_values(array_unique($next_actions, SORT_REGULA
 
     <!-- Dropdown para mobile -->
     <div class="fl-category-dropdown" style="display: none;">
-        <select id="fl-category-select" class="fl-category-select" aria-label="<?php esc_attr_e('Filtrar por categoria', 'flavor-chat-ia'); ?>">
-            <option value="all" <?php selected($active_filter, 'all'); ?>><?php esc_html_e('Todas las categorias', 'flavor-chat-ia'); ?></option>
+        <select id="fl-category-select" class="fl-category-select" aria-label="<?php esc_attr_e('Filtrar por categoria', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
+            <option value="all" <?php selected($active_filter, 'all'); ?>><?php esc_html_e('Todas las categorias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             <?php foreach ($categories as $cat_id => $cat_info):
                 $cat_widgets_count = isset($widgets_by_category[$cat_id]) ? count($widgets_by_category[$cat_id]) : 0;
                 if ($cat_widgets_count === 0) continue;
@@ -1071,18 +1071,18 @@ $next_actions = array_slice(array_values(array_unique($next_actions, SORT_REGULA
             <!-- Estado Vacio -->
             <div class="fl-empty-state fud-empty-state">
                 <span class="fl-empty-state__icon dashicons dashicons-layout" aria-hidden="true"></span>
-                <h2 class="fl-empty-state__title"><?php esc_html_e('No hay widgets visibles', 'flavor-chat-ia'); ?></h2>
-                <p class="fl-empty-state__message"><?php esc_html_e('Usa el boton "Personalizar" para elegir que widgets mostrar.', 'flavor-chat-ia'); ?></p>
+                <h2 class="fl-empty-state__title"><?php esc_html_e('No hay widgets visibles', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <p class="fl-empty-state__message"><?php esc_html_e('Usa el boton "Personalizar" para elegir que widgets mostrar.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 <button type="button" class="button button-primary fl-empty-state__action" id="fl-empty-customize">
                     <span class="dashicons dashicons-admin-generic" aria-hidden="true"></span>
-                    <?php esc_html_e('Personalizar Dashboard', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Personalizar Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </div>
 
         <?php elseif (!empty($ecosystem_nodes)): ?>
             <section class="fud-ecosystem-groups" aria-labelledby="fud-ecosystem-groups-title">
                 <h2 id="fud-ecosystem-groups-title" class="fl-sr-only">
-                    <?php esc_html_e('Widgets agrupados por ecosistema', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Widgets agrupados por ecosistema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </h2>
 
                 <?php foreach ($ecosystem_nodes as $ecosystem_node):
@@ -1097,7 +1097,7 @@ $next_actions = array_slice(array_values(array_unique($next_actions, SORT_REGULA
                                 <h2 class="fl-widget-group__title"><?php echo esc_html($ecosystem_node['name']); ?></h2>
                                 <span class="fud-ecosystem-card__role"><?php echo esc_html(ucfirst($ecosystem_node['role'])); ?></span>
                                 <?php if (!empty($ecosystem_node['context_match_score'])) : ?>
-                                <span class="fud-ecosystem-card__context"><?php esc_html_e('Relevante en esta vista', 'flavor-chat-ia'); ?></span>
+                                <span class="fud-ecosystem-card__context"><?php esc_html_e('Relevante en esta vista', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <?php endif; ?>
                             </div>
                             <?php if (!empty($ecosystem_node['satellites'])) : ?>
@@ -1138,8 +1138,8 @@ $next_actions = array_slice(array_values(array_unique($next_actions, SORT_REGULA
             <?php if (!empty($remaining_widgets_by_category)) : ?>
             <section class="fud-secondary-widget-groups" aria-labelledby="fud-secondary-widget-groups-title">
                 <div class="fud-secondary-widget-groups__header">
-                    <h2 id="fud-secondary-widget-groups-title" class="fud-secondary-widget-groups__title"><?php esc_html_e('Otros espacios activos', 'flavor-chat-ia'); ?></h2>
-                    <p class="fud-secondary-widget-groups__description"><?php esc_html_e('Widgets activos que no forman un ecosistema jerárquico completo en esta vista.', 'flavor-chat-ia'); ?></p>
+                    <h2 id="fud-secondary-widget-groups-title" class="fud-secondary-widget-groups__title"><?php esc_html_e('Otros espacios activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                    <p class="fud-secondary-widget-groups__description"><?php esc_html_e('Widgets activos que no forman un ecosistema jerárquico completo en esta vista.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
                 <div class="fl-widgets-grouped fud-widgets-grouped">
                     <?php foreach ($remaining_widgets_by_category as $cat_id => $cat_widgets):
@@ -1218,7 +1218,7 @@ $next_actions = array_slice(array_values(array_unique($next_actions, SORT_REGULA
                             <h2 class="fl-widget-group__title" id="<?php echo $group_id; ?>-title">
                                 <?php echo esc_html($cat_info['label'] ?? ucfirst($cat_id)); ?>
                             </h2>
-                            <span class="fl-widget-group__count" aria-label="<?php printf(esc_attr__('%d widgets en esta categoria', 'flavor-chat-ia'), count($cat_widgets)); ?>">
+                            <span class="fl-widget-group__count" aria-label="<?php printf(esc_attr__('%d widgets en esta categoria', FLAVOR_PLATFORM_TEXT_DOMAIN), count($cat_widgets)); ?>">
                                 <?php echo count($cat_widgets); ?>
                             </span>
                             <span class="fl-widget-group__arrow dashicons <?php echo $is_collapsed ? 'dashicons-arrow-down-alt2' : 'dashicons-arrow-up-alt2'; ?>" aria-hidden="true"></span>
@@ -1227,7 +1227,7 @@ $next_actions = array_slice(array_values(array_unique($next_actions, SORT_REGULA
                         <div class="fl-widget-group__actions">
                             <button type="button"
                                     class="fl-widget-group__action fl-widget-group__action--refresh"
-                                    aria-label="<?php printf(esc_attr__('Actualizar widgets de %s', 'flavor-chat-ia'), $cat_info['label'] ?? $cat_id); ?>"
+                                    aria-label="<?php printf(esc_attr__('Actualizar widgets de %s', FLAVOR_PLATFORM_TEXT_DOMAIN), $cat_info['label'] ?? $cat_id); ?>"
                                     data-category="<?php echo esc_attr($cat_id); ?>">
                                 <span class="dashicons dashicons-update" aria-hidden="true"></span>
                             </button>
@@ -1262,7 +1262,7 @@ $next_actions = array_slice(array_values(array_unique($next_actions, SORT_REGULA
     <footer class="fl-dashboard-footer fud-footer">
         <span class="fl-last-update fud-last-update">
             <span class="dashicons dashicons-clock" aria-hidden="true"></span>
-            <?php esc_html_e('Ultima actualizacion:', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Ultima actualizacion:', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             <time datetime="<?php echo esc_attr($last_refresh); ?>" id="fud-last-refresh">
                 <?php echo esc_html(date_i18n(get_option('time_format'), current_time('timestamp'))); ?>
             </time>
@@ -1276,18 +1276,18 @@ $next_actions = array_slice(array_values(array_unique($next_actions, SORT_REGULA
         <div class="fl-modal__overlay fud-modal-overlay"></div>
         <div class="fl-modal__content fud-modal-content">
             <header class="fl-modal__header fud-modal-header">
-                <h2 id="fud-modal-title"><?php esc_html_e('Personalizar Dashboard', 'flavor-chat-ia'); ?></h2>
-                <button type="button" class="fl-modal__close fud-modal-close" aria-label="<?php esc_attr_e('Cerrar', 'flavor-chat-ia'); ?>">
+                <h2 id="fud-modal-title"><?php esc_html_e('Personalizar Dashboard', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
+                <button type="button" class="fl-modal__close fud-modal-close" aria-label="<?php esc_attr_e('Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <span class="dashicons dashicons-no-alt" aria-hidden="true"></span>
                 </button>
             </header>
 
             <div class="fl-modal__body fud-modal-body">
                 <p class="fl-modal__help fud-modal-help">
-                    <?php esc_html_e('Arrastra para reordenar. Desmarca para ocultar widgets.', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Arrastra para reordenar. Desmarca para ocultar widgets.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </p>
 
-                <ul class="fl-widgets-list fud-widgets-list" id="fud-widgets-sortable" role="listbox" aria-label="<?php esc_attr_e('Lista de widgets', 'flavor-chat-ia'); ?>">
+                <ul class="fl-widgets-list fud-widgets-list" id="fud-widgets-sortable" role="listbox" aria-label="<?php esc_attr_e('Lista de widgets', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                     <?php foreach ($all_widgets as $widget):
                         $config = $widget->get_widget_config();
                         $widget_id = $widget->get_widget_id();
@@ -1328,11 +1328,11 @@ $next_actions = array_slice(array_values(array_unique($next_actions, SORT_REGULA
             <footer class="fl-modal__footer fud-modal-footer">
                 <button type="button" class="button fl-btn" id="fud-reset-layout">
                     <span class="dashicons dashicons-undo" aria-hidden="true"></span>
-                    <?php esc_html_e('Restablecer', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Restablecer', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
                 <button type="button" class="button button-primary fl-btn fl-btn--primary" id="fud-save-layout">
                     <span class="dashicons dashicons-saved" aria-hidden="true"></span>
-                    <?php esc_html_e('Guardar cambios', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Guardar cambios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </footer>
         </div>
@@ -1420,7 +1420,7 @@ jQuery(document).ready(function($) {
 
             // Reset layout
             $('#fud-reset-layout').on('click', function() {
-                if (confirm(<?php echo wp_json_encode(__('¿Restablecer configuracion por defecto?', 'flavor-chat-ia')); ?>)) {
+                if (confirm(<?php echo wp_json_encode(__('¿Restablecer configuracion por defecto?', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>)) {
                     self.resetLayout();
                 }
             });
@@ -1468,7 +1468,7 @@ jQuery(document).ready(function($) {
             $('.fl-dashboard-wrapper').attr('data-active-filter', category);
 
             // Anunciar cambio
-            this.announce(<?php echo wp_json_encode(__('Mostrando widgets de categoria: ', 'flavor-chat-ia')); ?> + category);
+            this.announce(<?php echo wp_json_encode(__('Mostrando widgets de categoria: ', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?> + category);
 
             // Guardar preferencia
             this.savePreference('activeFilter', category);
@@ -1554,7 +1554,7 @@ jQuery(document).ready(function($) {
          */
         refreshAll: function($btn) {
             $btn.prop('disabled', true).find('.dashicons').addClass('fl-spinning');
-            this.announce(<?php echo wp_json_encode(__('Actualizando todos los widgets...', 'flavor-chat-ia')); ?>);
+            this.announce(<?php echo wp_json_encode(__('Actualizando todos los widgets...', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?>);
 
             $.ajax({
                 url: this.config.ajaxUrl,

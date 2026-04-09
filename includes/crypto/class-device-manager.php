@@ -55,7 +55,7 @@ class Flavor_Device_Manager {
             return new WP_Error(
                 'limite_dispositivos',
                 sprintf(
-                    __('Has alcanzado el límite de %d dispositivos. Revoca alguno para añadir otro.', 'flavor-chat-ia'),
+                    __('Has alcanzado el límite de %d dispositivos. Revoca alguno para añadir otro.', 'flavor-platform'),
                     self::MAX_DISPOSITIVOS
                 )
             );
@@ -66,7 +66,7 @@ class Flavor_Device_Manager {
         if ($existe && !$existe['revoked']) {
             return new WP_Error(
                 'dispositivo_existente',
-                __('Este dispositivo ya está registrado.', 'flavor-chat-ia')
+                __('Este dispositivo ya está registrado.', 'flavor-platform')
             );
         }
 
@@ -178,14 +178,14 @@ class Flavor_Device_Manager {
         if (!$dispositivo) {
             return new WP_Error(
                 'dispositivo_no_encontrado',
-                __('Dispositivo no encontrado.', 'flavor-chat-ia')
+                __('Dispositivo no encontrado.', 'flavor-platform')
             );
         }
 
         if ($dispositivo['revoked']) {
             return new WP_Error(
                 'ya_revocado',
-                __('Este dispositivo ya está revocado.', 'flavor-chat-ia')
+                __('Este dispositivo ya está revocado.', 'flavor-platform')
             );
         }
 
@@ -212,7 +212,7 @@ class Flavor_Device_Manager {
         if ($resultado === false) {
             return new WP_Error(
                 'error_revocacion',
-                __('Error al revocar el dispositivo.', 'flavor-chat-ia')
+                __('Error al revocar el dispositivo.', 'flavor-platform')
             );
         }
 
@@ -396,7 +396,7 @@ class Flavor_Device_Manager {
         $tipo = $datos['tipo'] ?? 'web';
         $user_agent = $datos['user_agent'] ?? '';
 
-        $nombre_base = __('Dispositivo', 'flavor-chat-ia');
+        $nombre_base = __('Dispositivo', 'flavor-platform');
 
         // Detectar navegador/SO desde user agent
         if ($user_agent) {
@@ -420,11 +420,11 @@ class Flavor_Device_Manager {
         }
 
         if ($tipo === 'android') {
-            $nombre_base = __('Android', 'flavor-chat-ia');
+            $nombre_base = __('Android', 'flavor-platform');
         } elseif ($tipo === 'ios') {
-            $nombre_base = __('iPhone/iPad', 'flavor-chat-ia');
+            $nombre_base = __('iPhone/iPad', 'flavor-platform');
         } elseif ($tipo === 'desktop') {
-            $nombre_base = __('Aplicación de escritorio', 'flavor-chat-ia');
+            $nombre_base = __('Aplicación de escritorio', 'flavor-platform');
         }
 
         return $nombre_base;

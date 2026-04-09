@@ -33,20 +33,20 @@ $presupuesto_asignado = 0;
 
 <div class="flavor-pp-resultados-contenedor">
     <div class="flavor-pp-resultados-header">
-        <h2><?php printf(esc_html__('Resultados Presupuestos Participativos %d', 'flavor-chat-ia'), intval($edicion_anio)); ?></h2>
+        <h2><?php printf(esc_html__('Resultados Presupuestos Participativos %d', FLAVOR_PLATFORM_TEXT_DOMAIN), intval($edicion_anio)); ?></h2>
 
         <div class="flavor-pp-estadisticas-resumen">
             <div class="flavor-pp-stat">
                 <span class="flavor-pp-stat-valor"><?php echo esc_html(number_format($presupuesto_total, 0, ',', '.')); ?> EUR</span>
-                <span class="flavor-pp-stat-label"><?php esc_html_e('Presupuesto total', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-pp-stat-label"><?php esc_html_e('Presupuesto total', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="flavor-pp-stat">
                 <span class="flavor-pp-stat-valor"><?php echo esc_html($total_proyectos); ?></span>
-                <span class="flavor-pp-stat-label"><?php esc_html_e('Proyectos presentados', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-pp-stat-label"><?php esc_html_e('Proyectos presentados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
             <div class="flavor-pp-stat">
                 <span class="flavor-pp-stat-valor"><?php echo esc_html($total_votantes); ?></span>
-                <span class="flavor-pp-stat-label"><?php esc_html_e('Personas votaron', 'flavor-chat-ia'); ?></span>
+                <span class="flavor-pp-stat-label"><?php esc_html_e('Personas votaron', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
@@ -54,11 +54,11 @@ $presupuesto_asignado = 0;
     <?php if (empty($proyectos_ranking)): ?>
         <div class="flavor-pp-vacio">
             <span class="dashicons dashicons-chart-bar"></span>
-            <p><?php esc_html_e('Aun no hay resultados disponibles para esta edicion.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('Aun no hay resultados disponibles para esta edicion.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php else: ?>
         <div class="flavor-pp-ranking">
-            <h3><?php esc_html_e('Ranking de proyectos', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Ranking de proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
 
             <div class="flavor-pp-ranking-lista">
                 <?php
@@ -99,7 +99,7 @@ $presupuesto_asignado = 0;
                             <?php if ($es_seleccionado): ?>
                                 <span class="flavor-pp-badge-seleccionado">
                                     <span class="dashicons dashicons-yes-alt"></span>
-                                    <?php esc_html_e('Seleccionado', 'flavor-chat-ia'); ?>
+                                    <?php esc_html_e('Seleccionado', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                             <?php endif; ?>
                         </h4>
@@ -112,7 +112,7 @@ $presupuesto_asignado = 0;
                         <div class="flavor-pp-ranking-votos">
                             <span class="dashicons dashicons-heart"></span>
                             <strong><?php echo esc_html($proy_votos); ?></strong>
-                            <span><?php esc_html_e('votos', 'flavor-chat-ia'); ?></span>
+                            <span><?php esc_html_e('votos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                         </div>
                         <div class="flavor-pp-ranking-presupuesto">
                             <span class="dashicons dashicons-money-alt"></span>
@@ -136,7 +136,7 @@ $presupuesto_asignado = 0;
 
         <?php if ($presupuesto_asignado > 0): ?>
         <div class="flavor-pp-presupuesto-resumen">
-            <h3><?php esc_html_e('Distribucion del presupuesto', 'flavor-chat-ia'); ?></h3>
+            <h3><?php esc_html_e('Distribucion del presupuesto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
             <div class="flavor-pp-presupuesto-barra-contenedor">
                 <div class="flavor-pp-presupuesto-barra">
                     <div class="flavor-pp-presupuesto-asignado"
@@ -147,7 +147,7 @@ $presupuesto_asignado = 0;
                     <span class="flavor-pp-leyenda-item asignado">
                         <span class="flavor-pp-leyenda-color"></span>
                         <?php printf(
-                            esc_html__('Asignado: %s EUR (%d%%)', 'flavor-chat-ia'),
+                            esc_html__('Asignado: %s EUR (%d%%)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             number_format($presupuesto_asignado, 0, ',', '.'),
                             round(($presupuesto_asignado / $presupuesto_total) * 100)
                         ); ?>
@@ -155,7 +155,7 @@ $presupuesto_asignado = 0;
                     <span class="flavor-pp-leyenda-item disponible">
                         <span class="flavor-pp-leyenda-color"></span>
                         <?php printf(
-                            esc_html__('Disponible: %s EUR', 'flavor-chat-ia'),
+                            esc_html__('Disponible: %s EUR', FLAVOR_PLATFORM_TEXT_DOMAIN),
                             number_format($presupuesto_total - $presupuesto_asignado, 0, ',', '.')
                         ); ?>
                     </span>

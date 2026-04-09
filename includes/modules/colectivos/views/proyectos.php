@@ -20,20 +20,20 @@ $proyectos = is_array($proyectos ?? null) ? $proyectos : [];
 
 <div class="flavor-col-proyectos" data-colectivo="<?php echo esc_attr($colectivo_id); ?>">
     <div class="flavor-col-proyectos-header">
-        <h2><?php esc_html_e('Proyectos', 'flavor-chat-ia'); ?></h2>
+        <h2><?php esc_html_e('Proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
 
         <div class="flavor-col-filtros-inline">
             <select id="filtro-estado-proyecto" class="flavor-col-select-sm">
-                <option value=""><?php esc_html_e('Todos los estados', 'flavor-chat-ia'); ?></option>
-                <option value="planificado"><?php esc_html_e('Planificados', 'flavor-chat-ia'); ?></option>
-                <option value="en_curso"><?php esc_html_e('En curso', 'flavor-chat-ia'); ?></option>
-                <option value="completado"><?php esc_html_e('Completados', 'flavor-chat-ia'); ?></option>
+                <option value=""><?php esc_html_e('Todos los estados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="planificado"><?php esc_html_e('Planificados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="en_curso"><?php esc_html_e('En curso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
+                <option value="completado"><?php esc_html_e('Completados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></option>
             </select>
 
             <?php if ($es_miembro): ?>
                 <button type="button" class="flavor-col-btn flavor-col-btn-primary flavor-col-btn-sm" id="col-crear-proyecto">
                     <span class="dashicons dashicons-plus"></span>
-                    <?php esc_html_e('Nuevo proyecto', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Nuevo proyecto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             <?php endif; ?>
         </div>
@@ -42,8 +42,8 @@ $proyectos = is_array($proyectos ?? null) ? $proyectos : [];
     <?php if (empty($proyectos)): ?>
         <div class="flavor-col-vacio">
             <span class="dashicons dashicons-portfolio"></span>
-            <h3><?php esc_html_e('No hay proyectos', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('Este colectivo aún no tiene proyectos registrados.', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('No hay proyectos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h3>
+            <p><?php esc_html_e('Este colectivo aún no tiene proyectos registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
         </div>
     <?php else: ?>
         <div class="flavor-col-proyectos-grid">
@@ -90,7 +90,7 @@ $proyectos = is_array($proyectos ?? null) ? $proyectos : [];
                     <?php if ($proyecto['estado'] === 'en_curso'): ?>
                         <div class="flavor-col-proyecto-progreso">
                             <div class="flavor-col-progreso-header">
-                                <span><?php esc_html_e('Progreso', 'flavor-chat-ia'); ?></span>
+                                <span><?php esc_html_e('Progreso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                 <span class="valor"><?php echo intval($proyecto['progreso']); ?>%</span>
                             </div>
                             <div class="flavor-col-progreso-barra">
@@ -104,7 +104,7 @@ $proyectos = is_array($proyectos ?? null) ? $proyectos : [];
                             <button type="button" class="flavor-col-btn flavor-col-btn-sm flavor-col-btn-outline flavor-col-actualizar-progreso"
                                     data-proyecto="<?php echo esc_attr($proyecto['id']); ?>"
                                     data-progreso="<?php echo esc_attr($proyecto['progreso']); ?>">
-                                <?php esc_html_e('Actualizar progreso', 'flavor-chat-ia'); ?>
+                                <?php esc_html_e('Actualizar progreso', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </button>
                         </div>
                     <?php endif; ?>

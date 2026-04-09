@@ -19,13 +19,13 @@ $populares = $datos_vista['populares'] ?? [];
 <div class="mi-red-explorar">
     <!-- Header -->
     <header class="mi-red-explorar__header">
-        <h1 class="mi-red-explorar__title"><?php esc_html_e('Explorar', 'flavor-chat-ia'); ?></h1>
-        <p class="mi-red-explorar__subtitle"><?php esc_html_e('Descubre nuevo contenido y personas interesantes', 'flavor-chat-ia'); ?></p>
+        <h1 class="mi-red-explorar__title"><?php esc_html_e('Explorar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h1>
+        <p class="mi-red-explorar__subtitle"><?php esc_html_e('Descubre nuevo contenido y personas interesantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
     </header>
 
     <!-- Categorías -->
     <section class="mi-red-explorar__section">
-        <h2 class="mi-red-explorar__section-title"><?php esc_html_e('Categorías', 'flavor-chat-ia'); ?></h2>
+        <h2 class="mi-red-explorar__section-title"><?php esc_html_e('Categorías', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
         <div class="mi-red-categories-grid">
             <?php foreach ($categorias as $key => $categoria) : ?>
                 <a href="<?php echo esc_url($base_url . 'buscar/?tipo=' . $key); ?>" class="mi-red-category-card" style="--category-color: <?php echo esc_attr($categoria['color']); ?>">
@@ -39,7 +39,7 @@ $populares = $datos_vista['populares'] ?? [];
     <!-- Contenido Destacado -->
     <?php if (!empty($destacados)) : ?>
         <section class="mi-red-explorar__section">
-            <h2 class="mi-red-explorar__section-title"><?php esc_html_e('Destacados', 'flavor-chat-ia'); ?></h2>
+            <h2 class="mi-red-explorar__section-title"><?php esc_html_e('Destacados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <div class="mi-red-destacados-grid">
                 <?php
                 foreach ($destacados as $item) :
@@ -53,7 +53,7 @@ $populares = $datos_vista['populares'] ?? [];
     <!-- Usuarios Populares -->
     <?php if (!empty($populares)) : ?>
         <section class="mi-red-explorar__section">
-            <h2 class="mi-red-explorar__section-title"><?php esc_html_e('Usuarios Populares', 'flavor-chat-ia'); ?></h2>
+            <h2 class="mi-red-explorar__section-title"><?php esc_html_e('Usuarios Populares', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h2>
             <div class="mi-red-users-grid">
                 <?php foreach ($populares as $user) : ?>
                     <a href="<?php echo esc_url($base_url . 'perfil/' . $user['usuario_id'] . '/'); ?>" class="mi-red-user-card">
@@ -63,10 +63,10 @@ $populares = $datos_vista['populares'] ?? [];
                         <h3 class="mi-red-user-card__name"><?php echo esc_html($user['display_name']); ?></h3>
                         <p class="mi-red-user-card__followers">
                             <?php echo esc_html(number_format_i18n($user['seguidores'] ?? 0)); ?>
-                            <?php esc_html_e('seguidores', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('seguidores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </p>
                         <button class="mi-red-btn mi-red-btn--primary mi-red-btn--small" data-action="seguir" data-usuario="<?php echo esc_attr($user['usuario_id']); ?>">
-                            <?php esc_html_e('Seguir', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Seguir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </button>
                     </a>
                 <?php endforeach; ?>

@@ -24,8 +24,8 @@ $tipos_material = [
             <span class="dashicons dashicons-chart-area"></span>
         </span>
         <div>
-            <h3><?php esc_html_e('Dashboard de Impacto', 'flavor-chat-ia'); ?></h3>
-            <p><?php esc_html_e('Impacto ambiental colectivo de nuestra comunidad', 'flavor-chat-ia'); ?></p>
+            <h3><?php esc_html_e('Dashboard de Impacto', 'flavor-platform'); ?></h3>
+            <p><?php esc_html_e('Impacto ambiental colectivo de nuestra comunidad', 'flavor-platform'); ?></p>
         </div>
     </div>
 
@@ -37,7 +37,7 @@ $tipos_material = [
             </span>
             <div class="rec-dashboard__metrica-content">
                 <span class="rec-dashboard__metrica-valor"><?php echo esc_html(number_format($metricas_globales->co2_total_ahorrado ?? 0, 0)); ?></span>
-                <span class="rec-dashboard__metrica-label"><?php esc_html_e('kg CO₂ ahorrados', 'flavor-chat-ia'); ?></span>
+                <span class="rec-dashboard__metrica-label"><?php esc_html_e('kg CO₂ ahorrados', 'flavor-platform'); ?></span>
             </div>
         </div>
 
@@ -47,35 +47,35 @@ $tipos_material = [
                     <span class="dashicons dashicons-update"></span>
                 </span>
                 <span class="rec-dashboard__metrica-valor"><?php echo esc_html(number_format($metricas_globales->kg_reciclados ?? 0, 0)); ?></span>
-                <span class="rec-dashboard__metrica-label"><?php esc_html_e('kg reciclados', 'flavor-chat-ia'); ?></span>
+                <span class="rec-dashboard__metrica-label"><?php esc_html_e('kg reciclados', 'flavor-platform'); ?></span>
             </div>
             <div class="rec-dashboard__metrica">
                 <span class="rec-dashboard__metrica-icono rec-dashboard__metrica-icono--sm" style="background: #ff9800;">
                     <span class="dashicons dashicons-share-alt"></span>
                 </span>
                 <span class="rec-dashboard__metrica-valor"><?php echo esc_html($metricas_globales->items_reutilizados ?? 0); ?></span>
-                <span class="rec-dashboard__metrica-label"><?php esc_html_e('reutilizados', 'flavor-chat-ia'); ?></span>
+                <span class="rec-dashboard__metrica-label"><?php esc_html_e('reutilizados', 'flavor-platform'); ?></span>
             </div>
             <div class="rec-dashboard__metrica">
                 <span class="rec-dashboard__metrica-icono rec-dashboard__metrica-icono--sm" style="background: #9c27b0;">
                     <span class="dashicons dashicons-admin-tools"></span>
                 </span>
                 <span class="rec-dashboard__metrica-valor"><?php echo esc_html($metricas_globales->items_reparados ?? 0); ?></span>
-                <span class="rec-dashboard__metrica-label"><?php esc_html_e('reparados', 'flavor-chat-ia'); ?></span>
+                <span class="rec-dashboard__metrica-label"><?php esc_html_e('reparados', 'flavor-platform'); ?></span>
             </div>
             <div class="rec-dashboard__metrica">
                 <span class="rec-dashboard__metrica-icono rec-dashboard__metrica-icono--sm" style="background: #607d8b;">
                     <span class="dashicons dashicons-groups"></span>
                 </span>
                 <span class="rec-dashboard__metrica-valor"><?php echo esc_html($metricas_globales->participantes_activos ?? 0); ?></span>
-                <span class="rec-dashboard__metrica-label"><?php esc_html_e('participantes', 'flavor-chat-ia'); ?></span>
+                <span class="rec-dashboard__metrica-label"><?php esc_html_e('participantes', 'flavor-platform'); ?></span>
             </div>
         </div>
     </div>
 
     <!-- Equivalencias visuales -->
     <div class="rec-dashboard__equivalencias">
-        <h4><?php esc_html_e('Nuestro impacto equivale a...', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('Nuestro impacto equivale a...', 'flavor-platform'); ?></h4>
         <div class="rec-dashboard__equiv-grid">
             <?php
             $co2_total = $metricas_globales->co2_total_ahorrado ?? 0;
@@ -86,17 +86,17 @@ $tipos_material = [
             <div class="rec-dashboard__equiv-item">
                 <span class="rec-dashboard__equiv-icono">🌳</span>
                 <span class="rec-dashboard__equiv-valor"><?php echo esc_html(number_format($arboles, 0)); ?></span>
-                <span class="rec-dashboard__equiv-label"><?php esc_html_e('árboles plantados', 'flavor-chat-ia'); ?></span>
+                <span class="rec-dashboard__equiv-label"><?php esc_html_e('árboles plantados', 'flavor-platform'); ?></span>
             </div>
             <div class="rec-dashboard__equiv-item">
                 <span class="rec-dashboard__equiv-icono">🚗</span>
                 <span class="rec-dashboard__equiv-valor"><?php echo esc_html(number_format($km_coche, 0)); ?></span>
-                <span class="rec-dashboard__equiv-label"><?php esc_html_e('km no recorridos', 'flavor-chat-ia'); ?></span>
+                <span class="rec-dashboard__equiv-label"><?php esc_html_e('km no recorridos', 'flavor-platform'); ?></span>
             </div>
             <div class="rec-dashboard__equiv-item">
                 <span class="rec-dashboard__equiv-icono">💧</span>
                 <span class="rec-dashboard__equiv-valor"><?php echo esc_html(number_format($litros_agua, 0)); ?></span>
-                <span class="rec-dashboard__equiv-label"><?php esc_html_e('litros agua ahorrados', 'flavor-chat-ia'); ?></span>
+                <span class="rec-dashboard__equiv-label"><?php esc_html_e('litros agua ahorrados', 'flavor-platform'); ?></span>
             </div>
         </div>
     </div>
@@ -104,7 +104,7 @@ $tipos_material = [
     <!-- Desglose por tipo -->
     <?php if (!empty($por_tipo)): ?>
         <div class="rec-dashboard__tipos">
-            <h4><?php esc_html_e('Reciclaje por tipo de material', 'flavor-chat-ia'); ?></h4>
+            <h4><?php esc_html_e('Reciclaje por tipo de material', 'flavor-platform'); ?></h4>
             <div class="rec-dashboard__tipos-lista">
                 <?php
                 $max_kg = max(array_column($por_tipo, 'kg_total')) ?: 1;
@@ -136,7 +136,7 @@ $tipos_material = [
     <!-- Tendencias -->
     <?php if (!empty($tendencias)): ?>
         <div class="rec-dashboard__tendencias">
-            <h4><?php esc_html_e('Evolución mensual', 'flavor-chat-ia'); ?></h4>
+            <h4><?php esc_html_e('Evolución mensual', 'flavor-platform'); ?></h4>
             <div class="rec-dashboard__chart">
                 <?php
                 $max_co2 = max(array_column($tendencias, 'co2_ahorrado')) ?: 1;
@@ -158,7 +158,7 @@ $tipos_material = [
     <!-- Top recicladores -->
     <?php if (!empty($top_recicladores)): ?>
         <div class="rec-dashboard__ranking">
-            <h4><?php esc_html_e('Top Eco-ciudadanos', 'flavor-chat-ia'); ?></h4>
+            <h4><?php esc_html_e('Top Eco-ciudadanos', 'flavor-platform'); ?></h4>
 
             <!-- Podio -->
             <div class="rec-dashboard__podio">
@@ -207,12 +207,12 @@ $tipos_material = [
 
     <!-- Objetivos comunitarios -->
     <div class="rec-dashboard__objetivos">
-        <h4><?php esc_html_e('Objetivos comunitarios', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('Objetivos comunitarios', 'flavor-platform'); ?></h4>
         <?php
         $objetivos = [
-            ['meta' => 10000, 'actual' => $metricas_globales->co2_total_ahorrado ?? 0, 'label' => __('10.000 kg CO₂ ahorrados', 'flavor-chat-ia')],
-            ['meta' => 100, 'actual' => $metricas_globales->participantes_activos ?? 0, 'label' => __('100 participantes activos', 'flavor-chat-ia')],
-            ['meta' => 500, 'actual' => ($metricas_globales->items_reutilizados ?? 0) + ($metricas_globales->items_reparados ?? 0), 'label' => __('500 objetos salvados', 'flavor-chat-ia')],
+            ['meta' => 10000, 'actual' => $metricas_globales->co2_total_ahorrado ?? 0, 'label' => __('10.000 kg CO₂ ahorrados', 'flavor-platform')],
+            ['meta' => 100, 'actual' => $metricas_globales->participantes_activos ?? 0, 'label' => __('100 participantes activos', 'flavor-platform')],
+            ['meta' => 500, 'actual' => ($metricas_globales->items_reutilizados ?? 0) + ($metricas_globales->items_reparados ?? 0), 'label' => __('500 objetos salvados', 'flavor-platform')],
         ];
         foreach ($objetivos as $obj):
             $progreso = min(100, ($obj['actual'] / $obj['meta']) * 100);
@@ -239,7 +239,7 @@ $tipos_material = [
     <!-- Call to action -->
     <div class="rec-dashboard__cta">
         <span class="dashicons dashicons-heart"></span>
-        <p><?php esc_html_e('¡Cada pequeña acción cuenta! Únete a nuestra comunidad sostenible.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('¡Cada pequeña acción cuenta! Únete a nuestra comunidad sostenible.', 'flavor-platform'); ?></p>
     </div>
 </div>
 <style>

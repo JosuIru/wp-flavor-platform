@@ -143,7 +143,7 @@ $historias = [
                                             </svg>
                                         </div>
                                         <p class="text-xs font-bold text-gray-700 text-center px-2">
-                                            <?php echo esc_html__('Tu Historia', 'flavor-chat-ia'); ?>
+                                            <?php echo esc_html__('Tu Historia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </p>
                                     </div>
                                     <div class="absolute top-2 left-2 right-2 flex items-center gap-0.5">
@@ -218,7 +218,7 @@ $historias = [
                                     <div>
                                         <p id="story-author" class="text-sm font-bold text-white"></p>
                                         <p class="text-xs text-white/80">
-                                            <?php echo esc_html__('Hace 2h', 'flavor-chat-ia'); ?>
+                                            <?php echo esc_html__('Hace 2h', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                         </p>
                                     </div>
                                 </div>
@@ -268,7 +268,7 @@ $historias = [
                                     </button>
                                 </div>
                                 <button class="px-4 py-2 rounded-full bg-white text-black font-semibold hover:bg-gray-100 transition-colors text-sm">
-                                    <?php echo esc_html__('Seguir', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html__('Seguir', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </button>
                             </div>
                         </div>
@@ -283,10 +283,10 @@ $historias = [
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                     </svg>
                     <h3 class="font-bold text-gray-900 mb-2">
-                        <?php echo esc_html__('24 Horas', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('24 Horas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <p class="text-sm text-gray-600">
-                        <?php echo esc_html__('Las historias desaparecen después de 24 horas', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Las historias desaparecen después de 24 horas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
 
@@ -295,10 +295,10 @@ $historias = [
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                     <h3 class="font-bold text-gray-900 mb-2">
-                        <?php echo esc_html__('Actualizaciones Rápidas', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Actualizaciones Rápidas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <p class="text-sm text-gray-600">
-                        <?php echo esc_html__('Comparte momentos sin afectar tu feed', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Comparte momentos sin afectar tu feed', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
 
@@ -307,10 +307,10 @@ $historias = [
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                     </svg>
                     <h3 class="font-bold text-gray-900 mb-2">
-                        <?php echo esc_html__('Privacidad', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Privacidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </h3>
                     <p class="text-sm text-gray-600">
-                        <?php echo esc_html__('Solo tus conexiones ven tus historias', 'flavor-chat-ia'); ?>
+                        <?php echo esc_html__('Solo tus conexiones ven tus historias', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </p>
                 </div>
             </div>

@@ -1,4 +1,4 @@
-# 📱 Instalación y Testing - Apps Móviles Basabere
+# 📱 Instalación y Testing - Apps Móviles Flavor Platform
 
 ## ✅ Sistema Completado
 
@@ -46,7 +46,7 @@ build/app/outputs/flutter-apk/
 
 2. **Primera configuración:**
    - Abrir app
-   - Ingresar URL del servidor: `https://basaberenueva.local/wp-json/chat-ia-mobile/v1`
+   - Ingresar URL del servidor: `https://tudominio.local/wp-json/chat-ia-mobile/v1`
    - Login con credenciales de WordPress
 
 ---
@@ -59,13 +59,13 @@ build/app/outputs/flutter-apk/
 
 ```bash
 # 1. Listar campamentos
-curl -X GET "https://basaberenueva.local/wp-json/camps/v1/camps"
+curl -X GET "https://tudominio.local/wp-json/camps/v1/camps"
 
 # 2. Detalle de campamento
-curl -X GET "https://basaberenueva.local/wp-json/camps/v1/camps/1"
+curl -X GET "https://tudominio.local/wp-json/camps/v1/camps/1"
 
 # 3. Crear inscripción
-curl -X POST "https://basaberenueva.local/wp-json/camps/v1/camps/1/inscribe" \
+curl -X POST "https://tudominio.local/wp-json/camps/v1/camps/1/inscribe" \
   -H "Content-Type: application/json" \
   -d '{
     "participant": {"name": "Test User", "age": 10},
@@ -74,12 +74,12 @@ curl -X POST "https://basaberenueva.local/wp-json/camps/v1/camps/1/inscribe" \
   }'
 
 # 4. Admin: Subir imagen (requiere auth)
-curl -X POST "https://basaberenueva.local/wp-json/camps/v1/admin/upload-image" \
+curl -X POST "https://tudominio.local/wp-json/camps/v1/admin/upload-image" \
   -H "Authorization: Bearer TOKEN" \
   -F "image=@/path/to/image.jpg"
 
 # 5. Admin: Crear campamento (requiere auth)
-curl -X POST "https://basaberenueva.local/wp-json/camps/v1/admin/camps" \
+curl -X POST "https://tudominio.local/wp-json/camps/v1/admin/camps" \
   -H "Authorization: Bearer TOKEN" \
   -H "Content-Type: application/json" \
   -d '{

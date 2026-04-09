@@ -86,8 +86,8 @@ if (!defined('ABSPATH')) {
                 <div class="resultado-exito">
                     <span class="dashicons dashicons-yes-alt"></span>
                     <div>
-                        <strong><?php _e('Plantilla activada correctamente', 'flavor-chat-ia'); ?></strong>
-                        <p><?php _e('Todos los componentes han sido instalados y configurados.', 'flavor-chat-ia'); ?></p>
+                        <strong><?php _e('Plantilla activada correctamente', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                        <p><?php _e('Todos los componentes han sido instalados y configurados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                     </div>
                 </div>
             </template>
@@ -95,7 +95,7 @@ if (!defined('ABSPATH')) {
                 <div class="resultado-error">
                     <span class="dashicons dashicons-warning"></span>
                     <div>
-                        <strong><?php _e('Ha ocurrido un error', 'flavor-chat-ia'); ?></strong>
+                        <strong><?php _e('Ha ocurrido un error', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
                         <p x-text="mensajeError"></p>
                     </div>
                 </div>
@@ -109,7 +109,7 @@ if (!defined('ABSPATH')) {
                         class="button button-secondary"
                         @click="reiniciarInstalacion()">
                     <span class="dashicons dashicons-controls-repeat"></span>
-                    <?php _e('Reintentar', 'flavor-chat-ia'); ?>
+                    <?php _e('Reintentar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                 </button>
             </template>
             <button type="button"
@@ -118,11 +118,11 @@ if (!defined('ABSPATH')) {
                 <template x-if="instalacionCompletada && !hayError">
                     <span>
                         <span class="dashicons dashicons-yes"></span>
-                        <?php _e('Continuar', 'flavor-chat-ia'); ?>
+                        <?php _e('Continuar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </span>
                 </template>
                 <template x-if="hayError">
-                    <span><?php _e('Cerrar', 'flavor-chat-ia'); ?></span>
+                    <span><?php _e('Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                 </template>
             </button>
         </footer>

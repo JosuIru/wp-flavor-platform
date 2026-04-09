@@ -41,22 +41,22 @@ foreach ($acciones as $accion) {
 
 <section class="flavor-campanias-calendario">
     <header>
-        <h2><?php esc_html_e('Calendario de acciones', 'flavor-chat-ia'); ?></h2>
-        <form method="get" aria-label="<?php echo esc_attr__('Formulario de filtro del calendario de campanias', 'flavor-chat-ia'); ?>" style="display:flex;gap:0.5rem;align-items:flex-end;flex-wrap:wrap;">
+        <h2><?php esc_html_e('Calendario de acciones', 'flavor-platform'); ?></h2>
+        <form method="get" aria-label="<?php echo esc_attr__('Formulario de filtro del calendario de campanias', 'flavor-platform'); ?>" style="display:flex;gap:0.5rem;align-items:flex-end;flex-wrap:wrap;">
             <p>
-                <label for="cal_mes"><?php esc_html_e('Mes', 'flavor-chat-ia'); ?></label><br>
+                <label for="cal_mes"><?php esc_html_e('Mes', 'flavor-platform'); ?></label><br>
                 <input id="cal_mes" type="number" name="mes" min="1" max="12" value="<?php echo esc_attr($mes); ?>">
             </p>
             <p>
-                <label for="cal_anio"><?php esc_html_e('Anio', 'flavor-chat-ia'); ?></label><br>
+                <label for="cal_anio"><?php esc_html_e('Anio', 'flavor-platform'); ?></label><br>
                 <input id="cal_anio" type="number" name="anio" min="2000" max="2100" value="<?php echo esc_attr($anio); ?>">
             </p>
-            <p><button type="submit" class="button"><?php esc_html_e('Filtrar', 'flavor-chat-ia'); ?></button></p>
+            <p><button type="submit" class="button"><?php esc_html_e('Filtrar', 'flavor-platform'); ?></button></p>
         </form>
     </header>
 
     <?php if (empty($acciones_por_dia)): ?>
-        <p><?php esc_html_e('No hay acciones registradas para este periodo.', 'flavor-chat-ia'); ?></p>
+        <p><?php esc_html_e('No hay acciones registradas para este periodo.', 'flavor-platform'); ?></p>
     <?php else: ?>
         <?php foreach ($acciones_por_dia as $dia => $acciones_dia): ?>
             <article style="border:1px solid #dcdcde;border-radius:6px;padding:0.75rem;margin:0 0 0.75rem;">

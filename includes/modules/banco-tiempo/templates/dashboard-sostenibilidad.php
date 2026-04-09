@@ -17,17 +17,17 @@ if (!defined('ABSPATH')) {
 
 $puntuacion = intval($metricas['puntuacion_sostenibilidad'] ?? 0);
 $nivel_color = '#f44336';
-$nivel_texto = __('Necesita atención', 'flavor-chat-ia');
+$nivel_texto = __('Necesita atención', FLAVOR_PLATFORM_TEXT_DOMAIN);
 
 if ($puntuacion >= 80) {
     $nivel_color = '#2e7d32';
-    $nivel_texto = __('Excelente', 'flavor-chat-ia');
+    $nivel_texto = __('Excelente', FLAVOR_PLATFORM_TEXT_DOMAIN);
 } elseif ($puntuacion >= 60) {
     $nivel_color = '#43a047';
-    $nivel_texto = __('Bueno', 'flavor-chat-ia');
+    $nivel_texto = __('Bueno', FLAVOR_PLATFORM_TEXT_DOMAIN);
 } elseif ($puntuacion >= 40) {
     $nivel_color = '#ff9800';
-    $nivel_texto = __('Aceptable', 'flavor-chat-ia');
+    $nivel_texto = __('Aceptable', FLAVOR_PLATFORM_TEXT_DOMAIN);
 }
 
 $alertas = $metricas['alertas_generadas'] ?? [];
@@ -38,11 +38,11 @@ $ratio_categorias = $metricas['ratio_oferta_demanda'] ?? [];
     <div class="bt-sostenibilidad__header">
         <h3 class="bt-sostenibilidad__titulo">
             <span class="dashicons dashicons-chart-area"></span>
-            <?php esc_html_e('Sostenibilidad del Sistema', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Sostenibilidad del Sistema', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </h3>
         <span class="bt-sostenibilidad__periodo">
             <?php printf(
-                esc_html__('%s - %s', 'flavor-chat-ia'),
+                esc_html__('%s - %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 date_i18n('j M', strtotime($metricas['periodo_inicio'])),
                 date_i18n('j M Y', strtotime($metricas['periodo_fin']))
             ); ?>
@@ -75,7 +75,7 @@ $ratio_categorias = $metricas['ratio_oferta_demanda'] ?? [];
     <!-- Alertas -->
     <?php if (!empty($alertas)): ?>
         <div class="bt-sostenibilidad__alertas">
-            <h4><span class="dashicons dashicons-warning"></span> <?php esc_html_e('Alertas', 'flavor-chat-ia'); ?></h4>
+            <h4><span class="dashicons dashicons-warning"></span> <?php esc_html_e('Alertas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
             <ul>
                 <?php foreach ($alertas as $alerta): ?>
                     <li><?php echo esc_html($alerta); ?></li>
@@ -92,7 +92,7 @@ $ratio_categorias = $metricas['ratio_oferta_demanda'] ?? [];
             </span>
             <div class="bt-sostenibilidad__metrica-info">
                 <span class="bt-sostenibilidad__metrica-valor"><?php echo esc_html($metricas['total_usuarios_activos']); ?></span>
-                <span class="bt-sostenibilidad__metrica-label"><?php esc_html_e('Usuarios activos', 'flavor-chat-ia'); ?></span>
+                <span class="bt-sostenibilidad__metrica-label"><?php esc_html_e('Usuarios activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -102,7 +102,7 @@ $ratio_categorias = $metricas['ratio_oferta_demanda'] ?? [];
             </span>
             <div class="bt-sostenibilidad__metrica-info">
                 <span class="bt-sostenibilidad__metrica-valor"><?php echo esc_html($metricas['total_intercambios']); ?></span>
-                <span class="bt-sostenibilidad__metrica-label"><?php esc_html_e('Intercambios', 'flavor-chat-ia'); ?></span>
+                <span class="bt-sostenibilidad__metrica-label"><?php esc_html_e('Intercambios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -112,7 +112,7 @@ $ratio_categorias = $metricas['ratio_oferta_demanda'] ?? [];
             </span>
             <div class="bt-sostenibilidad__metrica-info">
                 <span class="bt-sostenibilidad__metrica-valor"><?php echo esc_html(number_format($metricas['total_horas_intercambiadas'], 1)); ?>h</span>
-                <span class="bt-sostenibilidad__metrica-label"><?php esc_html_e('Horas intercambiadas', 'flavor-chat-ia'); ?></span>
+                <span class="bt-sostenibilidad__metrica-label"><?php esc_html_e('Horas intercambiadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
 
@@ -122,27 +122,27 @@ $ratio_categorias = $metricas['ratio_oferta_demanda'] ?? [];
             </span>
             <div class="bt-sostenibilidad__metrica-info">
                 <span class="bt-sostenibilidad__metrica-valor"><?php echo esc_html(number_format($metricas['horas_donadas_periodo'], 1)); ?>h</span>
-                <span class="bt-sostenibilidad__metrica-label"><?php esc_html_e('Horas donadas', 'flavor-chat-ia'); ?></span>
+                <span class="bt-sostenibilidad__metrica-label"><?php esc_html_e('Horas donadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
             </div>
         </div>
     </div>
 
     <!-- Índice de equidad -->
     <div class="bt-sostenibilidad__equidad">
-        <h4><?php esc_html_e('Índice de Equidad', 'flavor-chat-ia'); ?></h4>
+        <h4><?php esc_html_e('Índice de Equidad', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
         <div class="bt-sostenibilidad__equidad-barra">
             <div class="bt-sostenibilidad__equidad-fill" style="width: <?php echo esc_attr($metricas['indice_equidad'] * 100); ?>%"></div>
         </div>
         <div class="bt-sostenibilidad__equidad-info">
             <span><?php echo esc_html(number_format($metricas['indice_equidad'] * 100, 1)); ?>%</span>
-            <small><?php esc_html_e('Distribución equitativa de horas', 'flavor-chat-ia'); ?></small>
+            <small><?php esc_html_e('Distribución equitativa de horas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></small>
         </div>
     </div>
 
     <!-- Ratio por categorías -->
     <?php if (!empty($ratio_categorias)): ?>
         <div class="bt-sostenibilidad__categorias">
-            <h4><?php esc_html_e('Oferta vs Demanda', 'flavor-chat-ia'); ?></h4>
+            <h4><?php esc_html_e('Oferta vs Demanda', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></h4>
             <div class="bt-sostenibilidad__categorias-lista">
                 <?php foreach ($ratio_categorias as $cat): ?>
                     <?php
@@ -167,18 +167,18 @@ $ratio_categorias = $metricas['ratio_oferta_demanda'] ?? [];
         <div class="bt-sostenibilidad__detalle">
             <span class="dashicons dashicons-plus-alt2"></span>
             <strong><?php echo esc_html($metricas['nuevos_usuarios']); ?></strong>
-            <?php esc_html_e('nuevos miembros', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('nuevos miembros', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </div>
         <div class="bt-sostenibilidad__detalle">
             <span class="dashicons dashicons-bank"></span>
             <strong><?php echo esc_html(number_format($metricas['fondo_comunitario_actual'], 1)); ?>h</strong>
-            <?php esc_html_e('en fondo solidario', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('en fondo solidario', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
         </div>
         <?php if ($metricas['usuarios_con_deuda_alta'] > 0): ?>
             <div class="bt-sostenibilidad__detalle bt-sostenibilidad__detalle--warning">
                 <span class="dashicons dashicons-warning"></span>
                 <strong><?php echo esc_html($metricas['usuarios_con_deuda_alta']); ?></strong>
-                <?php esc_html_e('con deuda alta', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('con deuda alta', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </div>
         <?php endif; ?>
     </div>
@@ -186,7 +186,7 @@ $ratio_categorias = $metricas['ratio_oferta_demanda'] ?? [];
     <div class="bt-sostenibilidad__footer">
         <small>
             <?php printf(
-                esc_html__('Calculado: %s', 'flavor-chat-ia'),
+                esc_html__('Calculado: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 date_i18n(get_option('date_format') . ' ' . get_option('time_format'), strtotime($metricas['fecha_calculo']))
             ); ?>
         </small>

@@ -109,14 +109,14 @@ class Flavor_Cursos_Frontend_Controller {
             'isLoggedIn' => is_user_logged_in(),
             'loginUrl' => wp_login_url(flavor_current_request_url()),
             'i18n' => [
-                'inscripcionExitosa' => __('Inscripción realizada correctamente', 'flavor-chat-ia'),
-                'inscripcionCancelada' => __('Inscripción cancelada', 'flavor-chat-ia'),
-                'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                'confirmarInscripcion' => __('¿Confirmar inscripción a este curso?', 'flavor-chat-ia'),
-                'confirmarCancelar' => __('¿Cancelar tu inscripción?', 'flavor-chat-ia'),
-                'cargando' => __('Cargando...', 'flavor-chat-ia'),
-                'sinResultados' => __('No se encontraron cursos', 'flavor-chat-ia'),
-                'plazasAgotadas' => __('Plazas agotadas', 'flavor-chat-ia'),
+                'inscripcionExitosa' => __('Inscripción realizada correctamente', 'flavor-platform'),
+                'inscripcionCancelada' => __('Inscripción cancelada', 'flavor-platform'),
+                'error' => __('Ha ocurrido un error', 'flavor-platform'),
+                'confirmarInscripcion' => __('¿Confirmar inscripción a este curso?', 'flavor-platform'),
+                'confirmarCancelar' => __('¿Cancelar tu inscripción?', 'flavor-platform'),
+                'cargando' => __('Cargando...', 'flavor-platform'),
+                'sinResultados' => __('No se encontraron cursos', 'flavor-platform'),
+                'plazasAgotadas' => __('Plazas agotadas', 'flavor-platform'),
             ],
         ];
 
@@ -139,7 +139,7 @@ class Flavor_Cursos_Frontend_Controller {
      */
     public function registrar_tabs_dashboard($tabs) {
         $tabs['cursos-inscripciones'] = [
-            'label' => __('Mis Cursos', 'flavor-chat-ia'),
+            'label' => __('Mis Cursos', 'flavor-platform'),
             'icon' => 'welcome-learn-more',
             'callback' => [$this, 'render_tab_mis_inscripciones'],
             'orden' => 45,
@@ -280,21 +280,21 @@ class Flavor_Cursos_Frontend_Controller {
         ]);
 
         $modalidades = [
-            'presencial' => __('Presencial', 'flavor-chat-ia'),
-            'online' => __('Online', 'flavor-chat-ia'),
-            'hibrido' => __('Híbrido', 'flavor-chat-ia'),
+            'presencial' => __('Presencial', 'flavor-platform'),
+            'online' => __('Online', 'flavor-platform'),
+            'hibrido' => __('Híbrido', 'flavor-platform'),
         ];
         ?>
         <div class="cursos-catalogo <?php echo esc_attr($visual_class_string); ?>" data-columnas="<?php echo esc_attr($atts['columnas']); ?>">
             <?php if ($atts['mostrar_filtros'] === 'si'): ?>
                 <div class="cursos-filtros">
                     <div class="filtro-buscar">
-                        <input type="text" id="cursos-buscar" placeholder="<?php _e('Buscar cursos...', 'flavor-chat-ia'); ?>">
+                        <input type="text" id="cursos-buscar" placeholder="<?php _e('Buscar cursos...', 'flavor-platform'); ?>">
                         <span class="filtro-icon dashicons dashicons-search"></span>
                     </div>
                     <div class="filtro-categoria">
                         <select id="cursos-filtrar-categoria">
-                            <option value=""><?php _e('Todas las categorías', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php _e('Todas las categorías', 'flavor-platform'); ?></option>
                             <?php if (!is_wp_error($categorias)): ?>
                                 <?php foreach ($categorias as $categoria): ?>
                                     <option value="<?php echo esc_attr($categoria->slug); ?>">
@@ -306,7 +306,7 @@ class Flavor_Cursos_Frontend_Controller {
                     </div>
                     <div class="filtro-modalidad">
                         <select id="cursos-filtrar-modalidad">
-                            <option value=""><?php _e('Todas las modalidades', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php _e('Todas las modalidades', 'flavor-platform'); ?></option>
                             <?php foreach ($modalidades as $key => $label): ?>
                                 <option value="<?php echo esc_attr($key); ?>"><?php echo esc_html($label); ?></option>
                             <?php endforeach; ?>
@@ -317,7 +317,7 @@ class Flavor_Cursos_Frontend_Controller {
 
             <div class="cursos-grid" id="cursos-lista">
                 <?php if (empty($cursos)): ?>
-                    <p class="cursos-sin-resultados"><?php _e('No hay cursos disponibles en este momento.', 'flavor-chat-ia'); ?></p>
+                    <p class="cursos-sin-resultados"><?php _e('No hay cursos disponibles en este momento.', 'flavor-platform'); ?></p>
                 <?php else: ?>
                     <?php foreach ($cursos as $curso): ?>
                         <?php $this->render_curso_card($curso); ?>
@@ -345,9 +345,9 @@ class Flavor_Cursos_Frontend_Controller {
         $hay_plazas = $plazas_disponibles > 0;
 
         $modalidades_label = [
-            'presencial' => __('Presencial', 'flavor-chat-ia'),
-            'online' => __('Online', 'flavor-chat-ia'),
-            'hibrido' => __('Híbrido', 'flavor-chat-ia'),
+            'presencial' => __('Presencial', 'flavor-platform'),
+            'online' => __('Online', 'flavor-platform'),
+            'hibrido' => __('Híbrido', 'flavor-platform'),
         ];
         ?>
         <div class="cursos-curso-card <?php echo $hay_plazas ? 'hay-plazas' : 'sin-plazas'; ?>"
@@ -367,7 +367,7 @@ class Flavor_Cursos_Frontend_Controller {
                     <?php echo esc_html($modalidades_label[$modalidad] ?? $modalidad); ?>
                 </span>
                 <?php if (!$hay_plazas): ?>
-                    <span class="curso-agotado-badge"><?php _e('Completo', 'flavor-chat-ia'); ?></span>
+                    <span class="curso-agotado-badge"><?php _e('Completo', 'flavor-platform'); ?></span>
                 <?php endif; ?>
             </div>
 
@@ -403,14 +403,14 @@ class Flavor_Cursos_Frontend_Controller {
                         <?php if ($precio && floatval($precio) > 0): ?>
                             <span class="precio-valor"><?php echo number_format($precio, 2, ',', '.'); ?>€</span>
                         <?php else: ?>
-                            <span class="precio-gratis"><?php _e('Gratuito', 'flavor-chat-ia'); ?></span>
+                            <span class="precio-gratis"><?php _e('Gratuito', 'flavor-platform'); ?></span>
                         <?php endif; ?>
                     </p>
                     <p class="curso-plazas <?php echo $plazas_disponibles <= 3 ? 'pocas-plazas' : ''; ?>">
                         <?php if ($hay_plazas): ?>
-                            <?php printf(__('%d plazas disponibles', 'flavor-chat-ia'), $plazas_disponibles); ?>
+                            <?php printf(__('%d plazas disponibles', 'flavor-platform'), $plazas_disponibles); ?>
                         <?php else: ?>
-                            <?php _e('Sin plazas', 'flavor-chat-ia'); ?>
+                            <?php _e('Sin plazas', 'flavor-platform'); ?>
                         <?php endif; ?>
                     </p>
                 </div>
@@ -418,15 +418,15 @@ class Flavor_Cursos_Frontend_Controller {
 
             <div class="curso-acciones">
                 <a href="<?php echo get_permalink($curso->ID); ?>" class="btn-ver-detalle">
-                    <?php _e('Ver detalles', 'flavor-chat-ia'); ?>
+                    <?php _e('Ver detalles', 'flavor-platform'); ?>
                 </a>
                 <?php if (is_user_logged_in() && $hay_plazas): ?>
                     <button type="button" class="btn-inscribirse" data-curso-id="<?php echo esc_attr($curso->ID); ?>">
-                        <?php _e('Inscribirse', 'flavor-chat-ia'); ?>
+                        <?php _e('Inscribirse', 'flavor-platform'); ?>
                     </button>
                 <?php elseif (!$hay_plazas): ?>
                     <button type="button" class="btn-lista-espera" data-curso-id="<?php echo esc_attr($curso->ID); ?>">
-                        <?php _e('Lista de espera', 'flavor-chat-ia'); ?>
+                        <?php _e('Lista de espera', 'flavor-platform'); ?>
                     </button>
                 <?php endif; ?>
             </div>
@@ -441,7 +441,7 @@ class Flavor_Cursos_Frontend_Controller {
         $this->encolar_assets();
 
         if (!is_user_logged_in()) {
-            return '<p class="cursos-login-requerido">' . __('Inicia sesión para ver tus inscripciones.', 'flavor-chat-ia') . '</p>';
+            return '<p class="cursos-login-requerido">' . __('Inicia sesión para ver tus inscripciones.', 'flavor-platform') . '</p>';
         }
 
         ob_start();
@@ -485,9 +485,9 @@ class Flavor_Cursos_Frontend_Controller {
         ob_start();
         ?>
         <div class="cursos-calendario">
-            <h3><?php _e('Próximos cursos', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Próximos cursos', 'flavor-platform'); ?></h3>
             <?php if (empty($cursos)): ?>
-                <p class="sin-cursos"><?php _e('No hay cursos programados próximamente.', 'flavor-chat-ia'); ?></p>
+                <p class="sin-cursos"><?php _e('No hay cursos programados próximamente.', 'flavor-platform'); ?></p>
             <?php else: ?>
                 <div class="calendario-lista">
                     <?php foreach ($cursos as $curso):
@@ -565,16 +565,16 @@ class Flavor_Cursos_Frontend_Controller {
             <?php if (empty($cursos_proximos)): ?>
                 <div class="cursos-vacio">
                     <span class="dashicons dashicons-calendar-alt"></span>
-                    <p><?php _e('No hay cursos próximos programados.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No hay cursos próximos programados.', 'flavor-platform'); ?></p>
                 </div>
             <?php else: ?>
                 <div class="cursos-proximos-grid" style="display: grid; grid-template-columns: repeat(<?php echo intval($atributos['columnas']); ?>, 1fr); gap: 1.5rem;">
                     <?php foreach ($cursos_proximos as $curso):
                         $dias_restantes = (strtotime($curso->fecha_inicio) - strtotime($fecha_actual)) / 86400;
                         $modalidades_label = [
-                            'presencial' => __('Presencial', 'flavor-chat-ia'),
-                            'online' => __('Online', 'flavor-chat-ia'),
-                            'hibrido' => __('Híbrido', 'flavor-chat-ia'),
+                            'presencial' => __('Presencial', 'flavor-platform'),
+                            'online' => __('Online', 'flavor-platform'),
+                            'hibrido' => __('Híbrido', 'flavor-platform'),
                         ];
                     ?>
                         <div class="curso-proximo-card" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
@@ -593,11 +593,11 @@ class Flavor_Cursos_Frontend_Controller {
                                             <span style="background: #fef3c7; color: #d97706; padding: 2px 8px; border-radius: 9999px; font-size: 0.75rem;">
                                                 <?php
                                                 if ($dias_restantes < 1) {
-                                                    _e('¡Hoy!', 'flavor-chat-ia');
+                                                    _e('¡Hoy!', 'flavor-platform');
                                                 } elseif ($dias_restantes < 2) {
-                                                    _e('¡Mañana!', 'flavor-chat-ia');
+                                                    _e('¡Mañana!', 'flavor-platform');
                                                 } else {
-                                                    printf(__('En %d días', 'flavor-chat-ia'), ceil($dias_restantes));
+                                                    printf(__('En %d días', 'flavor-platform'), ceil($dias_restantes));
                                                 }
                                                 ?>
                                             </span>
@@ -613,7 +613,7 @@ class Flavor_Cursos_Frontend_Controller {
 
                                 <?php if ($curso->instructor): ?>
                                     <p class="curso-proximo-instructor" style="margin: 0 0 0.75rem; font-size: 0.875rem; color: #6b7280;">
-                                        <?php printf(__('Por %s', 'flavor-chat-ia'), esc_html($curso->instructor)); ?>
+                                        <?php printf(__('Por %s', 'flavor-platform'), esc_html($curso->instructor)); ?>
                                     </p>
                                 <?php endif; ?>
 
@@ -626,7 +626,7 @@ class Flavor_Cursos_Frontend_Controller {
 
                                     <?php if ($curso->duracion_horas): ?>
                                         <span style="background: #f3f4f6; color: #4b5563; padding: 2px 8px; border-radius: 9999px;">
-                                            <?php printf(__('%dh', 'flavor-chat-ia'), $curso->duracion_horas); ?>
+                                            <?php printf(__('%dh', 'flavor-platform'), $curso->duracion_horas); ?>
                                         </span>
                                     <?php endif; ?>
 
@@ -634,7 +634,7 @@ class Flavor_Cursos_Frontend_Controller {
                                         $plazas_disponibles = $curso->max_alumnos - ($curso->alumnos_inscritos ?? 0);
                                     ?>
                                         <span style="background: <?php echo $plazas_disponibles <= 5 ? '#fef2f2' : '#f0fdf4'; ?>; color: <?php echo $plazas_disponibles <= 5 ? '#dc2626' : '#16a34a'; ?>; padding: 2px 8px; border-radius: 9999px;">
-                                            <?php printf(__('%d plazas', 'flavor-chat-ia'), $plazas_disponibles); ?>
+                                            <?php printf(__('%d plazas', 'flavor-platform'), $plazas_disponibles); ?>
                                         </span>
                                     <?php endif; ?>
                                 </div>
@@ -643,14 +643,14 @@ class Flavor_Cursos_Frontend_Controller {
                             <div class="curso-proximo-footer" style="padding: 0.75rem 1rem; border-top: 1px solid #f3f4f6; display: flex; justify-content: space-between; align-items: center;">
                                 <span class="curso-proximo-precio" style="font-weight: 600; color: #1f2937;">
                                     <?php if ($curso->es_gratuito || floatval($curso->precio ?? 0) == 0): ?>
-                                        <span style="color: #16a34a;"><?php _e('Gratis', 'flavor-chat-ia'); ?></span>
+                                        <span style="color: #16a34a;"><?php _e('Gratis', 'flavor-platform'); ?></span>
                                     <?php else: ?>
                                         <?php echo number_format($curso->precio, 2, ',', '.'); ?>€
                                     <?php endif; ?>
                                 </span>
                                 <a href="<?php echo esc_url(home_url('/mi-portal/cursos/?curso_id=' . $curso->id)); ?>"
                                    style="background: #6366f1; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.875rem; text-decoration: none;">
-                                    <?php _e('Ver curso', 'flavor-chat-ia'); ?>
+                                    <?php _e('Ver curso', 'flavor-platform'); ?>
                                 </a>
                             </div>
                         </div>
@@ -693,7 +693,7 @@ class Flavor_Cursos_Frontend_Controller {
         ob_start();
         ?>
         <div class="cursos-destacados">
-            <h3><?php _e('Cursos destacados', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Cursos destacados', 'flavor-platform'); ?></h3>
             <div class="cursos-grid columnas-4">
                 <?php foreach ($cursos as $curso): ?>
                     <?php $this->render_curso_card($curso); ?>
@@ -727,12 +727,12 @@ class Flavor_Cursos_Frontend_Controller {
                 <div class="busqueda-campos">
                     <div class="campo-grupo campo-principal">
                         <input type="text" id="busqueda-texto" name="texto"
-                               placeholder="<?php _e('Buscar cursos...', 'flavor-chat-ia'); ?>"
+                               placeholder="<?php _e('Buscar cursos...', 'flavor-platform'); ?>"
                                value="<?php echo esc_attr($termino_busqueda); ?>">
                     </div>
                     <div class="campo-grupo">
                         <select id="busqueda-categoria" name="categoria">
-                            <option value=""><?php _e('Categoría', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php _e('Categoría', 'flavor-platform'); ?></option>
                             <?php
                             $categorias = get_terms(['taxonomy' => 'curso_categoria', 'hide_empty' => true]);
                             if (!is_wp_error($categorias)) {
@@ -745,16 +745,16 @@ class Flavor_Cursos_Frontend_Controller {
                     </div>
                     <div class="campo-grupo">
                         <select id="busqueda-modalidad" name="modalidad">
-                            <option value=""><?php _e('Modalidad', 'flavor-chat-ia'); ?></option>
-                            <option value="presencial" <?php selected($modalidad_filtro, 'presencial'); ?>><?php _e('Presencial', 'flavor-chat-ia'); ?></option>
-                            <option value="online" <?php selected($modalidad_filtro, 'online'); ?>><?php _e('Online', 'flavor-chat-ia'); ?></option>
-                            <option value="hibrido" <?php selected($modalidad_filtro, 'hibrido'); ?>><?php _e('Híbrido', 'flavor-chat-ia'); ?></option>
+                            <option value=""><?php _e('Modalidad', 'flavor-platform'); ?></option>
+                            <option value="presencial" <?php selected($modalidad_filtro, 'presencial'); ?>><?php _e('Presencial', 'flavor-platform'); ?></option>
+                            <option value="online" <?php selected($modalidad_filtro, 'online'); ?>><?php _e('Online', 'flavor-platform'); ?></option>
+                            <option value="hibrido" <?php selected($modalidad_filtro, 'hibrido'); ?>><?php _e('Híbrido', 'flavor-platform'); ?></option>
                         </select>
                     </div>
                 </div>
                 <button type="submit" class="btn-buscar">
                     <span class="dashicons dashicons-search"></span>
-                    <?php _e('Buscar', 'flavor-chat-ia'); ?>
+                    <?php _e('Buscar', 'flavor-platform'); ?>
                 </button>
             </form>
 
@@ -762,7 +762,7 @@ class Flavor_Cursos_Frontend_Controller {
             <div class="busqueda-resultados" id="cursos-resultados">
                 <p class="resultados-count">
                     <?php printf(
-                        _n('%d curso encontrado', '%d cursos encontrados', count($cursos_encontrados), 'flavor-chat-ia'),
+                        _n('%d curso encontrado', '%d cursos encontrados', count($cursos_encontrados), 'flavor-platform'),
                         count($cursos_encontrados)
                     ); ?>
                 </p>
@@ -794,13 +794,13 @@ class Flavor_Cursos_Frontend_Controller {
                                 <?php endif; ?>
                                 <?php if ($precio_curso): ?>
                                 <span class="curso-precio">
-                                    <?php echo $precio_curso > 0 ? esc_html(number_format_i18n($precio_curso, 2) . '€') : __('Gratuito', 'flavor-chat-ia'); ?>
+                                    <?php echo $precio_curso > 0 ? esc_html(number_format_i18n($precio_curso, 2) . '€') : __('Gratuito', 'flavor-platform'); ?>
                                 </span>
                                 <?php endif; ?>
                                 <?php if ($plazas_disponibles): ?>
                                 <span class="curso-plazas">
                                     <span class="dashicons dashicons-groups"></span>
-                                    <?php printf(__('%d plazas', 'flavor-chat-ia'), intval($plazas_disponibles)); ?>
+                                    <?php printf(__('%d plazas', 'flavor-platform'), intval($plazas_disponibles)); ?>
                                 </span>
                                 <?php endif; ?>
                             </div>
@@ -811,7 +811,7 @@ class Flavor_Cursos_Frontend_Controller {
                 <?php else: ?>
                 <div class="sin-resultados">
                     <span class="dashicons dashicons-welcome-learn-more"></span>
-                    <p><?php _e('No se encontraron cursos con esos criterios.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No se encontraron cursos con esos criterios.', 'flavor-platform'); ?></p>
                 </div>
                 <?php endif; ?>
             </div>
@@ -883,15 +883,15 @@ class Flavor_Cursos_Frontend_Controller {
         ?>
         <div class="cursos-dashboard-tab cursos-inscripciones">
             <div class="tab-header">
-                <h2><?php _e('Mis Cursos', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Mis Cursos', 'flavor-platform'); ?></h2>
             </div>
 
             <?php if (empty($inscripciones)): ?>
                 <div class="empty-state">
                     <span class="empty-icon dashicons dashicons-welcome-learn-more"></span>
-                    <p><?php _e('No estás inscrito en ningún curso.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No estás inscrito en ningún curso.', 'flavor-platform'); ?></p>
                     <a href="<?php echo esc_url(home_url('/mi-portal/cursos/')); ?>" class="btn btn-primary">
-                        <?php _e('Explorar cursos', 'flavor-chat-ia'); ?>
+                        <?php _e('Explorar cursos', 'flavor-platform'); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -945,11 +945,11 @@ class Flavor_Cursos_Frontend_Controller {
                                 <span class="estado-badge estado-<?php echo esc_attr($estado_visual); ?>">
                                     <?php
                                     $estados_label = [
-                                        'pendiente' => __('Pendiente', 'flavor-chat-ia'),
-                                        'confirmada' => __('Confirmada', 'flavor-chat-ia'),
-                                        'en_curso' => __('En curso', 'flavor-chat-ia'),
-                                        'finalizado' => __('Finalizado', 'flavor-chat-ia'),
-                                        'cancelada' => __('Cancelada', 'flavor-chat-ia'),
+                                        'pendiente' => __('Pendiente', 'flavor-platform'),
+                                        'confirmada' => __('Confirmada', 'flavor-platform'),
+                                        'en_curso' => __('En curso', 'flavor-platform'),
+                                        'finalizado' => __('Finalizado', 'flavor-platform'),
+                                        'cancelada' => __('Cancelada', 'flavor-platform'),
                                     ];
                                     echo esc_html($estados_label[$estado_visual] ?? $estado_visual);
                                     ?>
@@ -959,7 +959,7 @@ class Flavor_Cursos_Frontend_Controller {
                                 <div class="inscripcion-acciones">
                                     <button type="button" class="btn-cancelar" data-inscripcion-id="<?php echo esc_attr($inscripcion->id); ?>">
                                         <span class="dashicons dashicons-no-alt"></span>
-                                        <?php _e('Cancelar', 'flavor-chat-ia'); ?>
+                                        <?php _e('Cancelar', 'flavor-platform'); ?>
                                     </button>
                                 </div>
                             <?php endif; ?>
@@ -978,12 +978,12 @@ class Flavor_Cursos_Frontend_Controller {
         check_ajax_referer('cursos_frontend_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
         }
 
         $curso_id = absint($_POST['curso_id'] ?? 0);
         if (!$curso_id) {
-            wp_send_json_error(['message' => __('Curso no válido', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Curso no válido', 'flavor-platform')]);
         }
 
         // Verificar plazas
@@ -991,7 +991,7 @@ class Flavor_Cursos_Frontend_Controller {
         $plazas_ocupadas = (int) get_post_meta($curso_id, '_curso_plazas_ocupadas', true);
 
         if ($plazas_total > 0 && $plazas_ocupadas >= $plazas_total) {
-            wp_send_json_error(['message' => __('No hay plazas disponibles', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('No hay plazas disponibles', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -1005,7 +1005,7 @@ class Flavor_Cursos_Frontend_Controller {
         ));
 
         if ($existente) {
-            wp_send_json_error(['message' => __('Ya estás inscrito en este curso', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Ya estás inscrito en este curso', 'flavor-platform')]);
         }
 
         // Crear inscripción
@@ -1017,13 +1017,13 @@ class Flavor_Cursos_Frontend_Controller {
         ]);
 
         if ($resultado === false) {
-            wp_send_json_error(['message' => __('Error al procesar la inscripción', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al procesar la inscripción', 'flavor-platform')]);
         }
 
         // Actualizar plazas ocupadas
         update_post_meta($curso_id, '_curso_plazas_ocupadas', $plazas_ocupadas + 1);
 
-        wp_send_json_success(['message' => __('Inscripción realizada correctamente', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Inscripción realizada correctamente', 'flavor-platform')]);
     }
 
     /**
@@ -1033,7 +1033,7 @@ class Flavor_Cursos_Frontend_Controller {
         check_ajax_referer('cursos_frontend_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
         }
 
         $inscripcion_id = absint($_POST['inscripcion_id'] ?? 0);
@@ -1049,7 +1049,7 @@ class Flavor_Cursos_Frontend_Controller {
         ));
 
         if (!$inscripcion) {
-            wp_send_json_error(['message' => __('Inscripción no encontrada', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Inscripción no encontrada', 'flavor-platform')]);
         }
 
         // Cancelar
@@ -1060,7 +1060,7 @@ class Flavor_Cursos_Frontend_Controller {
         );
 
         if ($resultado === false) {
-            wp_send_json_error(['message' => __('Error al cancelar la inscripción', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Error al cancelar la inscripción', 'flavor-platform')]);
         }
 
         // Liberar plaza
@@ -1069,7 +1069,7 @@ class Flavor_Cursos_Frontend_Controller {
             update_post_meta($inscripcion->curso_id, '_curso_plazas_ocupadas', $plazas_ocupadas - 1);
         }
 
-        wp_send_json_success(['message' => __('Inscripción cancelada', 'flavor-chat-ia')]);
+        wp_send_json_success(['message' => __('Inscripción cancelada', 'flavor-platform')]);
     }
 
     /**
@@ -1119,7 +1119,7 @@ class Flavor_Cursos_Frontend_Controller {
 
         ob_start();
         if (empty($cursos)) {
-            echo '<p class="cursos-sin-resultados">' . __('No se encontraron cursos.', 'flavor-chat-ia') . '</p>';
+            echo '<p class="cursos-sin-resultados">' . __('No se encontraron cursos.', 'flavor-platform') . '</p>';
         } else {
             echo '<div class="cursos-grid columnas-3">';
             foreach ($cursos as $curso) {
@@ -1139,14 +1139,14 @@ class Flavor_Cursos_Frontend_Controller {
         check_ajax_referer('cursos_frontend_nonce', 'nonce');
 
         if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-platform')]);
         }
 
         $leccion_id = absint($_POST['leccion_id'] ?? 0);
         $inscripcion_id = absint($_POST['inscripcion_id'] ?? 0);
 
         if (!$leccion_id || !$inscripcion_id) {
-            wp_send_json_error(['message' => __('Datos incompletos', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Datos incompletos', 'flavor-platform')]);
         }
 
         global $wpdb;
@@ -1163,7 +1163,7 @@ class Flavor_Cursos_Frontend_Controller {
         ));
 
         if (!$inscripcion) {
-            wp_send_json_error(['message' => __('Inscripcion no válida', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Inscripcion no válida', 'flavor-platform')]);
         }
 
         // Verificar que la leccion pertenece al curso
@@ -1174,7 +1174,7 @@ class Flavor_Cursos_Frontend_Controller {
         ));
 
         if (!$leccion) {
-            wp_send_json_error(['message' => __('Leccion no válida', 'flavor-chat-ia')]);
+            wp_send_json_error(['message' => __('Leccion no válida', 'flavor-platform')]);
         }
 
         // Verificar si ya existe progreso
@@ -1232,7 +1232,7 @@ class Flavor_Cursos_Frontend_Controller {
         );
 
         wp_send_json_success([
-            'message' => __('Leccion completada', 'flavor-chat-ia'),
+            'message' => __('Leccion completada', 'flavor-platform'),
             'progreso' => $porcentaje_progreso,
             'completadas' => $lecciones_completadas,
             'total' => $total_lecciones,
@@ -1247,7 +1247,7 @@ class Flavor_Cursos_Frontend_Controller {
         $this->encolar_assets();
 
         if (!is_user_logged_in()) {
-            return '<p class="cursos-login-requerido">' . __('Inicia sesión para acceder al aula virtual.', 'flavor-chat-ia') . '</p>';
+            return '<p class="cursos-login-requerido">' . __('Inicia sesión para acceder al aula virtual.', 'flavor-platform') . '</p>';
         }
 
         $atributos = shortcode_atts([
@@ -1283,8 +1283,8 @@ class Flavor_Cursos_Frontend_Controller {
         if (!$inscripcion) {
             return '<div class="cursos-no-inscrito">
                 <span class="dashicons dashicons-lock"></span>
-                <p>' . __('No estás inscrito en este curso.', 'flavor-chat-ia') . '</p>
-                <a href="' . esc_url(home_url('/mi-portal/cursos/catalogo/')) . '" class="btn btn-primary">' . __('Ver catálogo', 'flavor-chat-ia') . '</a>
+                <p>' . __('No estás inscrito en este curso.', 'flavor-platform') . '</p>
+                <a href="' . esc_url(home_url('/mi-portal/cursos/catalogo/')) . '" class="btn btn-primary">' . __('Ver catálogo', 'flavor-platform') . '</a>
             </div>';
         }
 
@@ -1298,7 +1298,7 @@ class Flavor_Cursos_Frontend_Controller {
         }
 
         if (!$curso) {
-            return '<p class="cursos-error">' . __('Curso no encontrado.', 'flavor-chat-ia') . '</p>';
+            return '<p class="cursos-error">' . __('Curso no encontrado.', 'flavor-platform') . '</p>';
         }
 
         // Obtener lecciones del curso
@@ -1369,13 +1369,13 @@ class Flavor_Cursos_Frontend_Controller {
         ob_start();
         ?>
         <div class="aula-seleccionar-curso">
-            <h3><?php _e('Selecciona un curso para continuar', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Selecciona un curso para continuar', 'flavor-platform'); ?></h3>
             <?php if (empty($cursos_inscritos)): ?>
                 <div class="empty-state">
                     <span class="dashicons dashicons-welcome-learn-more"></span>
-                    <p><?php _e('No tienes cursos activos.', 'flavor-chat-ia'); ?></p>
+                    <p><?php _e('No tienes cursos activos.', 'flavor-platform'); ?></p>
                     <a href="<?php echo esc_url(home_url('/mi-portal/cursos/catalogo/')); ?>" class="btn btn-primary">
-                        <?php _e('Explorar cursos', 'flavor-chat-ia'); ?>
+                        <?php _e('Explorar cursos', 'flavor-platform'); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -1428,20 +1428,20 @@ class Flavor_Cursos_Frontend_Controller {
                             <div class="progreso-fill" style="width: <?php echo esc_attr($porcentaje_progreso); ?>%"></div>
                         </div>
                         <span class="progreso-texto">
-                            <?php printf(__('%d de %d lecciones (%d%%)', 'flavor-chat-ia'), $lecciones_completadas, $total_lecciones, $porcentaje_progreso); ?>
+                            <?php printf(__('%d de %d lecciones (%d%%)', 'flavor-platform'), $lecciones_completadas, $total_lecciones, $porcentaje_progreso); ?>
                         </span>
                     </div>
                 </div>
                 <a href="<?php echo esc_url(home_url('/mi-portal/cursos/mis-cursos/')); ?>" class="btn-volver">
                     <span class="dashicons dashicons-arrow-left-alt"></span>
-                    <?php _e('Mis cursos', 'flavor-chat-ia'); ?>
+                    <?php _e('Mis cursos', 'flavor-platform'); ?>
                 </a>
             </div>
 
             <div class="aula-contenido">
                 <!-- Sidebar con lecciones -->
                 <div class="aula-sidebar">
-                    <h3><?php _e('Contenido del curso', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Contenido del curso', 'flavor-platform'); ?></h3>
                     <ul class="aula-lecciones-lista">
                         <?php foreach ($lecciones as $index => $leccion_item):
                             $es_actual = $leccion_actual && $leccion_item->id == $leccion_actual->id;
@@ -1479,12 +1479,12 @@ class Flavor_Cursos_Frontend_Controller {
                                     <span class="leccion-tipo tipo-<?php echo esc_attr($leccion_actual->tipo); ?>">
                                         <?php
                                         $tipos_label = [
-                                            'video' => __('Video', 'flavor-chat-ia'),
-                                            'texto' => __('Texto', 'flavor-chat-ia'),
-                                            'quiz' => __('Cuestionario', 'flavor-chat-ia'),
-                                            'archivo' => __('Archivo', 'flavor-chat-ia'),
-                                            'enlace' => __('Enlace', 'flavor-chat-ia'),
-                                            'live' => __('En vivo', 'flavor-chat-ia'),
+                                            'video' => __('Video', 'flavor-platform'),
+                                            'texto' => __('Texto', 'flavor-platform'),
+                                            'quiz' => __('Cuestionario', 'flavor-platform'),
+                                            'archivo' => __('Archivo', 'flavor-platform'),
+                                            'enlace' => __('Enlace', 'flavor-platform'),
+                                            'live' => __('En vivo', 'flavor-platform'),
                                         ];
                                         echo esc_html($tipos_label[$leccion_actual->tipo] ?? $leccion_actual->tipo);
                                         ?>
@@ -1502,7 +1502,7 @@ class Flavor_Cursos_Frontend_Controller {
                             <div class="leccion-contenido">
                                 <?php if ($leccion_actual->tipo === 'video' && $leccion_actual->video_url): ?>
                                     <div class="leccion-video">
-                                        <?php echo wp_oembed_get($leccion_actual->video_url) ?: '<a href="' . esc_url($leccion_actual->video_url) . '" target="_blank">' . __('Ver video', 'flavor-chat-ia') . '</a>'; ?>
+                                        <?php echo wp_oembed_get($leccion_actual->video_url) ?: '<a href="' . esc_url($leccion_actual->video_url) . '" target="_blank">' . __('Ver video', 'flavor-platform') . '</a>'; ?>
                                     </div>
                                 <?php endif; ?>
 
@@ -1516,7 +1516,7 @@ class Flavor_Cursos_Frontend_Controller {
                                     <div class="leccion-archivo">
                                         <a href="<?php echo esc_url($leccion_actual->archivo_url); ?>" class="btn btn-secondary" download>
                                             <span class="dashicons dashicons-download"></span>
-                                            <?php _e('Descargar material', 'flavor-chat-ia'); ?>
+                                            <?php _e('Descargar material', 'flavor-platform'); ?>
                                         </a>
                                     </div>
                                 <?php endif; ?>
@@ -1529,12 +1529,12 @@ class Flavor_Cursos_Frontend_Controller {
                                             data-leccion-id="<?php echo esc_attr($leccion_actual->id); ?>"
                                             data-inscripcion-id="<?php echo esc_attr($inscripcion->id); ?>">
                                         <span class="dashicons dashicons-yes"></span>
-                                        <?php _e('Marcar como completada', 'flavor-chat-ia'); ?>
+                                        <?php _e('Marcar como completada', 'flavor-platform'); ?>
                                     </button>
                                 <?php else: ?>
                                     <span class="leccion-completada-badge">
                                         <span class="dashicons dashicons-yes-alt"></span>
-                                        <?php _e('Leccion completada', 'flavor-chat-ia'); ?>
+                                        <?php _e('Leccion completada', 'flavor-platform'); ?>
                                     </span>
                                 <?php endif; ?>
 
@@ -1548,12 +1548,12 @@ class Flavor_Cursos_Frontend_Controller {
                                     <?php if ($leccion_anterior): ?>
                                         <a href="<?php echo esc_url(add_query_arg(['curso_id' => $curso->id, 'leccion_id' => $leccion_anterior->id])); ?>" class="btn btn-nav btn-anterior">
                                             <span class="dashicons dashicons-arrow-left-alt2"></span>
-                                            <?php _e('Anterior', 'flavor-chat-ia'); ?>
+                                            <?php _e('Anterior', 'flavor-platform'); ?>
                                         </a>
                                     <?php endif; ?>
                                     <?php if ($leccion_siguiente): ?>
                                         <a href="<?php echo esc_url(add_query_arg(['curso_id' => $curso->id, 'leccion_id' => $leccion_siguiente->id])); ?>" class="btn btn-nav btn-siguiente">
-                                            <?php _e('Siguiente', 'flavor-chat-ia'); ?>
+                                            <?php _e('Siguiente', 'flavor-platform'); ?>
                                             <span class="dashicons dashicons-arrow-right-alt2"></span>
                                         </a>
                                     <?php endif; ?>
@@ -1563,7 +1563,7 @@ class Flavor_Cursos_Frontend_Controller {
                     <?php else: ?>
                         <div class="sin-leccion">
                             <span class="dashicons dashicons-welcome-learn-more"></span>
-                            <p><?php _e('Este curso aún no tiene lecciones disponibles.', 'flavor-chat-ia'); ?></p>
+                            <p><?php _e('Este curso aún no tiene lecciones disponibles.', 'flavor-platform'); ?></p>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -1613,7 +1613,7 @@ class Flavor_Cursos_Frontend_Controller {
      */
     public function shortcode_mi_progreso($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="cursos-login-requerido">' . __('Inicia sesión para ver tu progreso.', 'flavor-chat-ia') . '</p>';
+            return '<p class="cursos-login-requerido">' . __('Inicia sesión para ver tu progreso.', 'flavor-platform') . '</p>';
         }
 
         $this->encolar_assets();
@@ -1644,8 +1644,8 @@ class Flavor_Cursos_Frontend_Controller {
         if (empty($cursos_progreso)) {
             return '<div class="cursos-sin-inscripciones">
                 <span class="dashicons dashicons-welcome-learn-more"></span>
-                <p>' . __('Aún no estás inscrito en ningún curso.', 'flavor-chat-ia') . '</p>
-                <a href="' . esc_url(home_url('/mi-portal/cursos/catalogo/')) . '" class="btn btn-primary">' . __('Explorar cursos', 'flavor-chat-ia') . '</a>
+                <p>' . __('Aún no estás inscrito en ningún curso.', 'flavor-platform') . '</p>
+                <a href="' . esc_url(home_url('/mi-portal/cursos/catalogo/')) . '" class="btn btn-primary">' . __('Explorar cursos', 'flavor-platform') . '</a>
             </div>';
         }
 
@@ -1670,10 +1670,10 @@ class Flavor_Cursos_Frontend_Controller {
                     <div class="progreso-barra">
                         <div class="progreso-relleno" style="width: <?php echo $porcentaje; ?>%"></div>
                     </div>
-                    <span class="progreso-texto"><?php printf(__('%d%% completado', 'flavor-chat-ia'), $porcentaje); ?></span>
+                    <span class="progreso-texto"><?php printf(__('%d%% completado', 'flavor-platform'), $porcentaje); ?></span>
                 </div>
                 <a href="<?php echo esc_url(home_url('/mi-portal/cursos/aula/?curso_id=' . $curso->id)); ?>" class="btn btn-sm">
-                    <?php echo $porcentaje >= 100 ? __('Repasar', 'flavor-chat-ia') : __('Continuar', 'flavor-chat-ia'); ?>
+                    <?php echo $porcentaje >= 100 ? __('Repasar', 'flavor-platform') : __('Continuar', 'flavor-platform'); ?>
                 </a>
             </div>
             <?php endforeach; ?>

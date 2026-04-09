@@ -103,7 +103,7 @@ class Flavor_Dependency_Checker {
         // Si hay errores, retornar WP_Error
         if (!empty(self::$errores)) {
             $mensaje_error = sprintf(
-                __('El componente "%s" no puede activarse debido a dependencias no satisfechas:', 'flavor-chat-ia'),
+                __('El componente "%s" no puede activarse debido a dependencias no satisfechas:', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $nombre_componente
             );
             $mensaje_error .= "\n• " . implode("\n• ", self::$errores);
@@ -154,7 +154,7 @@ class Flavor_Dependency_Checker {
 
         // Tipo de dependencia desconocido
         return new WP_Error('dependencia_desconocida', sprintf(
-            __('Tipo de dependencia desconocido: %s', 'flavor-chat-ia'),
+            __('Tipo de dependencia desconocido: %s', FLAVOR_PLATFORM_TEXT_DOMAIN),
             $clave
         ));
     }
@@ -198,7 +198,7 @@ class Flavor_Dependency_Checker {
 
             if (!$encontrado) {
                 return new WP_Error('plugin_no_activo', sprintf(
-                    __('El plugin "%s" debe estar instalado y activado.', 'flavor-chat-ia'),
+                    __('El plugin "%s" debe estar instalado y activado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $nombre_plugin
                 ));
             }
@@ -211,7 +211,7 @@ class Flavor_Dependency_Checker {
 
             if (version_compare($version_actual, $version_requerida, '<')) {
                 return new WP_Error('plugin_version_antigua', sprintf(
-                    __('El plugin "%s" requiere versión %s o superior (versión actual: %s).', 'flavor-chat-ia'),
+                    __('El plugin "%s" requiere versión %s o superior (versión actual: %s).', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $nombre_plugin,
                     $version_requerida,
                     $version_actual
@@ -234,7 +234,7 @@ class Flavor_Dependency_Checker {
 
         if (!class_exists('Flavor_Addon_Manager')) {
             return new WP_Error('addon_manager_no_disponible',
-                __('El sistema de addons no está disponible.', 'flavor-chat-ia')
+                __('El sistema de addons no está disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN)
             );
         }
 
@@ -242,7 +242,7 @@ class Flavor_Dependency_Checker {
             $nombre_addon = isset($configuracion['name']) ? $configuracion['name'] : $slug_addon;
 
             return new WP_Error('addon_no_activo', sprintf(
-                __('El addon "%s" debe estar instalado y activado.', 'flavor-chat-ia'),
+                __('El addon "%s" debe estar instalado y activado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $nombre_addon
             ));
         }
@@ -254,7 +254,7 @@ class Flavor_Dependency_Checker {
 
             if (version_compare($version_actual, $configuracion['version'], '<')) {
                 return new WP_Error('addon_version_antigua', sprintf(
-                    __('El addon "%s" requiere versión %s o superior (versión actual: %s).', 'flavor-chat-ia'),
+                    __('El addon "%s" requiere versión %s o superior (versión actual: %s).', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $slug_addon,
                     $configuracion['version'],
                     $version_actual
@@ -277,7 +277,7 @@ class Flavor_Dependency_Checker {
 
         if (!class_exists('Flavor_Chat_Module_Loader')) {
             return new WP_Error('module_loader_no_disponible',
-                __('El sistema de módulos no está disponible.', 'flavor-chat-ia')
+                __('El sistema de módulos no está disponible.', FLAVOR_PLATFORM_TEXT_DOMAIN)
             );
         }
 
@@ -287,7 +287,7 @@ class Flavor_Dependency_Checker {
                 : $id_modulo;
 
             return new WP_Error('modulo_no_activo', sprintf(
-                __('El módulo "%s" debe estar activado.', 'flavor-chat-ia'),
+                __('El módulo "%s" debe estar activado.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $nombre_modulo
             ));
         }
@@ -307,7 +307,7 @@ class Flavor_Dependency_Checker {
 
         if (!extension_loaded($nombre_extension)) {
             return new WP_Error('php_extension_no_disponible', sprintf(
-                __('La extensión PHP "%s" es requerida.', 'flavor-chat-ia'),
+                __('La extensión PHP "%s" es requerida.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $nombre_extension
             ));
         }
@@ -327,7 +327,7 @@ class Flavor_Dependency_Checker {
 
         if (!function_exists($nombre_funcion)) {
             return new WP_Error('funcion_no_disponible', sprintf(
-                __('La función "%s" es requerida.', 'flavor-chat-ia'),
+                __('La función "%s" es requerida.', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $nombre_funcion
             ));
         }
@@ -346,7 +346,7 @@ class Flavor_Dependency_Checker {
 
         if (version_compare($version_actual, $version_requerida, '<')) {
             return new WP_Error('php_version_antigua', sprintf(
-                __('Se requiere PHP versión %s o superior (versión actual: %s).', 'flavor-chat-ia'),
+                __('Se requiere PHP versión %s o superior (versión actual: %s).', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $version_requerida,
                 $version_actual
             ));
@@ -366,7 +366,7 @@ class Flavor_Dependency_Checker {
 
         if (version_compare($wp_version, $version_requerida, '<')) {
             return new WP_Error('wordpress_version_antigua', sprintf(
-                __('Se requiere WordPress versión %s o superior (versión actual: %s).', 'flavor-chat-ia'),
+                __('Se requiere WordPress versión %s o superior (versión actual: %s).', FLAVOR_PLATFORM_TEXT_DOMAIN),
                 $version_requerida,
                 $wp_version
             ));
@@ -412,13 +412,13 @@ class Flavor_Dependency_Checker {
             return '';
         }
 
-        $mensaje = __('Dependencias opcionales no disponibles:', 'flavor-chat-ia') . "\n";
+        $mensaje = __('Dependencias opcionales no disponibles:', FLAVOR_PLATFORM_TEXT_DOMAIN) . "\n";
 
         foreach (self::$advertencias as $advertencia) {
             $mensaje .= "• " . $advertencia['mensaje'];
             if (!empty($advertencia['caracteristica'])) {
                 $mensaje .= sprintf(
-                    __(' (Característica afectada: %s)', 'flavor-chat-ia'),
+                    __(' (Característica afectada: %s)', FLAVOR_PLATFORM_TEXT_DOMAIN),
                     $advertencia['caracteristica']
                 );
             }

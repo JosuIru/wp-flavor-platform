@@ -7,6 +7,6 @@ if (!defined('ABSPATH')) exit;
 ?>
 <div class="flavor-network-widget flavor-network-events-widget" data-limite="<?php echo esc_attr($atts['limite']); ?>">
     <div class="fn-events-results">
-        <div class="fn-loading"><?php _e('Cargando eventos...', 'flavor-chat-ia'); ?></div>
+        <div class="fn-loading"><?php _e('Cargando eventos...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 </div>

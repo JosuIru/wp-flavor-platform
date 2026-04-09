@@ -26,7 +26,7 @@ if (!defined('ABSPATH')) {
      @keydown.escape.window="cerrarPreviewModal()"
      role="dialog"
      aria-modal="true"
-     aria-labelledby="<?php echo esc_attr__('modal-titulo-plantilla', 'flavor-chat-ia'); ?>">
+     aria-labelledby="<?php echo esc_attr__('modal-titulo-plantilla', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
 
     <div class="flavor-template-modal-backdrop" @click="cerrarPreviewModal()"></div>
 
@@ -57,7 +57,7 @@ if (!defined('ABSPATH')) {
                     <button type="button"
                             class="flavor-template-modal-close"
                             @click="cerrarPreviewModal()"
-                            aria-label="<?php esc_attr_e('Cerrar', 'flavor-chat-ia'); ?>">
+                            aria-label="<?php esc_attr_e('Cerrar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>">
                         <span class="dashicons dashicons-no-alt"></span>
                     </button>
                 </header>
@@ -70,8 +70,8 @@ if (!defined('ABSPATH')) {
                             <div class="flavor-template-suggestion-note">
                                 <span class="dashicons dashicons-star-filled"></span>
                                 <div>
-                                    <strong><?php _e('Sugerencia automática', 'flavor-chat-ia'); ?></strong>
-                                    <p class="description"><?php _e('Esta plantilla encaja con los módulos, contextos y capacidades que ya tienes activos.', 'flavor-chat-ia'); ?></p>
+                                    <strong><?php _e('Sugerencia automática', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                                    <p class="description"><?php _e('Esta plantilla encaja con los módulos, contextos y capacidades que ya tienes activos.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                                 </div>
                             </div>
                         </section>
@@ -81,12 +81,12 @@ if (!defined('ABSPATH')) {
                         <section class="flavor-template-section">
                             <h3>
                                 <span class="dashicons dashicons-networking"></span>
-                                <?php _e('Lectura ecosistemica', 'flavor-chat-ia'); ?>
+                                <?php _e('Lectura ecosistemica', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </h3>
 
                             <template x-if="plantillaSeleccionadaData.ecosistema.roles && plantillaSeleccionadaData.ecosistema.roles.length > 0">
                                 <div class="flavor-template-ecosystem-block">
-                                    <div class="flavor-template-ecosystem-label"><?php _e('Capas del perfil', 'flavor-chat-ia'); ?></div>
+                                    <div class="flavor-template-ecosystem-label"><?php _e('Capas del perfil', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                                     <div class="flavor-template-ecosystem-tags">
                                         <template x-for="rol in plantillaSeleccionadaData.ecosistema.roles" :key="rol">
                                             <span class="flavor-template-ecosystem-tag" x-text="rol"></span>
@@ -97,7 +97,7 @@ if (!defined('ABSPATH')) {
 
                             <template x-if="plantillaSeleccionadaData.ecosistema.capacidades && plantillaSeleccionadaData.ecosistema.capacidades.length > 0">
                                 <div class="flavor-template-ecosystem-block">
-                                    <div class="flavor-template-ecosystem-label"><?php _e('Capacidades activadas', 'flavor-chat-ia'); ?></div>
+                                    <div class="flavor-template-ecosystem-label"><?php _e('Capacidades activadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                                     <div class="flavor-template-ecosystem-tags">
                                         <template x-for="capacidad in plantillaSeleccionadaData.ecosistema.capacidades" :key="capacidad">
                                             <span class="flavor-template-ecosystem-tag is-capability" x-text="capacidad"></span>
@@ -108,7 +108,7 @@ if (!defined('ABSPATH')) {
 
                             <template x-if="plantillaSeleccionadaData.ecosistema.contextos && plantillaSeleccionadaData.ecosistema.contextos.length > 0">
                                 <div class="flavor-template-ecosystem-block">
-                                    <div class="flavor-template-ecosystem-label"><?php _e('Contextos prioritarios', 'flavor-chat-ia'); ?></div>
+                                    <div class="flavor-template-ecosystem-label"><?php _e('Contextos prioritarios', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                                     <div class="flavor-template-ecosystem-tags">
                                         <template x-for="contexto in plantillaSeleccionadaData.ecosistema.contextos" :key="contexto">
                                             <span class="flavor-template-ecosystem-tag" x-text="contexto"></span>
@@ -119,7 +119,7 @@ if (!defined('ABSPATH')) {
 
                             <template x-if="plantillaSeleccionadaData.ecosistema.recomendados && plantillaSeleccionadaData.ecosistema.recomendados.length > 0">
                                 <div class="flavor-template-ecosystem-block">
-                                    <div class="flavor-template-ecosystem-label"><?php _e('Capas recomendadas', 'flavor-chat-ia'); ?></div>
+                                    <div class="flavor-template-ecosystem-label"><?php _e('Capas recomendadas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                                     <div class="flavor-template-ecosystem-tags">
                                         <template x-for="recomendado in plantillaSeleccionadaData.ecosistema.recomendados" :key="recomendado">
                                             <span class="flavor-template-ecosystem-tag is-recommended" x-text="recomendado"></span>
@@ -130,7 +130,7 @@ if (!defined('ABSPATH')) {
 
                             <template x-if="plantillaSeleccionadaData.ecosistema.recomendados_contexto && plantillaSeleccionadaData.ecosistema.recomendados_contexto.length > 0">
                                 <div class="flavor-template-ecosystem-block">
-                                    <div class="flavor-template-ecosystem-label"><?php _e('Siguientes capas por contexto', 'flavor-chat-ia'); ?></div>
+                                    <div class="flavor-template-ecosystem-label"><?php _e('Siguientes capas por contexto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
                                     <div class="flavor-template-ecosystem-tags">
                                         <template x-for="recomendadoContexto in plantillaSeleccionadaData.ecosistema.recomendados_contexto" :key="recomendadoContexto">
                                             <span class="flavor-template-ecosystem-tag is-recommended" x-text="recomendadoContexto"></span>
@@ -145,7 +145,7 @@ if (!defined('ABSPATH')) {
                     <section class="flavor-template-section">
                         <h3>
                             <span class="dashicons dashicons-admin-plugins"></span>
-                            <?php _e('Módulos', 'flavor-chat-ia'); ?>
+                            <?php _e('Módulos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </h3>
 
                         <ul class="flavor-template-modules">
@@ -156,7 +156,7 @@ if (!defined('ABSPATH')) {
                                         <label>
                                             <input type="checkbox" checked disabled>
                                             <span class="modulo-nombre" x-text="modulo.replace(/[_-]+/g, ' ').replace(/\b\w/g, l => l.toUpperCase())"></span>
-                                            <span class="modulo-badge requerido"><?php _e('Requerido', 'flavor-chat-ia'); ?></span>
+                                            <span class="modulo-badge requerido"><?php _e('Requerido', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         </label>
                                     </li>
                                 </template>
@@ -169,7 +169,7 @@ if (!defined('ABSPATH')) {
                                         <input type="checkbox"
                                                :checked="todosOpcionalesSeleccionados()"
                                                @change="toggleTodosOpcionales($event.target.checked)">
-                                        <span class="modulo-nombre"><?php _e('Seleccionar todos los módulos opcionales', 'flavor-chat-ia'); ?></span>
+                                        <span class="modulo-nombre"><?php _e('Seleccionar todos los módulos opcionales', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                     </label>
                                 </li>
                             </template>
@@ -181,7 +181,7 @@ if (!defined('ABSPATH')) {
                                                    :value="modulo"
                                                    x-model="modulosSeleccionados">
                                             <span class="modulo-nombre" x-text="modulo.replace(/[_-]+/g, ' ').replace(/\b\w/g, l => l.toUpperCase())"></span>
-                                            <span class="modulo-badge opcional"><?php _e('Opcional', 'flavor-chat-ia'); ?></span>
+                                            <span class="modulo-badge opcional"><?php _e('Opcional', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></span>
                                         </label>
                                     </li>
                                 </template>
@@ -194,7 +194,7 @@ if (!defined('ABSPATH')) {
                         <section class="flavor-template-section">
                             <h3>
                                 <span class="dashicons dashicons-admin-page"></span>
-                                <?php _e('Páginas', 'flavor-chat-ia'); ?>
+                                <?php _e('Páginas', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </h3>
                             <ul class="flavor-template-pages">
                                 <template x-for="pagina in plantillaSeleccionadaData.paginas" :key="pagina.slug">
@@ -212,7 +212,7 @@ if (!defined('ABSPATH')) {
                         <section class="flavor-template-section">
                             <h3>
                                 <span class="dashicons dashicons-welcome-view-site"></span>
-                                <?php _e('Landing Page', 'flavor-chat-ia'); ?>
+                                <?php _e('Landing Page', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                             </h3>
                             <div class="flavor-template-landing-preview">
                                 <p class="description" x-text="plantillaSeleccionadaData.landing.titulo"></p>
@@ -237,8 +237,8 @@ if (!defined('ABSPATH')) {
                             <input type="checkbox"
                                    x-model="cargarDatosDemo">
                             <div>
-                                <strong><?php _e('Cargar datos de demostración', 'flavor-chat-ia'); ?></strong>
-                                <p class="description"><?php _e('Incluir contenido de ejemplo para ver cómo funciona la plantilla', 'flavor-chat-ia'); ?></p>
+                                <strong><?php _e('Cargar datos de demostración', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                                <p class="description"><?php _e('Incluir contenido de ejemplo para ver cómo funciona la plantilla', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                             </div>
                         </label>
                     </section>
@@ -250,7 +250,7 @@ if (!defined('ABSPATH')) {
                     <button type="button"
                             class="button button-secondary"
                             @click="cerrarPreviewModal()">
-                        <?php _e('Cancelar', 'flavor-chat-ia'); ?>
+                        <?php _e('Cancelar', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                     </button>
                     <button type="button"
                             class="button button-primary button-hero"
@@ -258,15 +258,15 @@ if (!defined('ABSPATH')) {
                             :disabled="activandoPlantilla">
                         <span x-show="!activandoPlantilla && esPreviewSugerencia()">
                             <span class="dashicons dashicons-star-filled"></span>
-                            <?php _e('Activar sugerencia', 'flavor-chat-ia'); ?>
+                            <?php _e('Activar sugerencia', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
                         <span x-show="!activandoPlantilla && !esPreviewSugerencia()">
                             <span class="dashicons dashicons-yes-alt"></span>
-                            <?php _e('Activar Plantilla', 'flavor-chat-ia'); ?>
+                            <?php _e('Activar Plantilla', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
                         <span x-show="activandoPlantilla" class="spinner-inline">
                             <span class="spinner is-active"></span>
-                            <?php _e('Activando...', 'flavor-chat-ia'); ?>
+                            <?php _e('Activando...', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                         </span>
                     </button>
                 </footer>

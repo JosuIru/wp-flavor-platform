@@ -29,8 +29,8 @@ if (!$tabla_casos_existe) {
         <div class="dm-alert dm-alert--info">
             <span class="dashicons dashicons-info"></span>
             <div>
-                <strong><?php esc_html_e('Módulo en preparación', 'flavor-chat-ia'); ?></strong>
-                <p><?php esc_html_e('Las tablas del módulo Justicia Restaurativa aún no han sido creadas. Activa el módulo completamente para generar la estructura necesaria.', 'flavor-chat-ia'); ?></p>
+                <strong><?php esc_html_e('Módulo en preparación', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></strong>
+                <p><?php esc_html_e('Las tablas del módulo Justicia Restaurativa aún no han sido creadas. Activa el módulo completamente para generar la estructura necesaria.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
             </div>
         </div>
     </div>
@@ -113,7 +113,7 @@ $casos_recientes = $wpdb->get_results(
         <span class="dashicons dashicons-shield dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($casos_activos); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Casos Activos', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Casos Activos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -121,7 +121,7 @@ $casos_recientes = $wpdb->get_results(
         <span class="dashicons dashicons-yes-alt dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($casos_resueltos); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Casos Resueltos', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Casos Resueltos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -129,7 +129,7 @@ $casos_recientes = $wpdb->get_results(
         <span class="dashicons dashicons-groups dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($participantes_unicos); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Participantes', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Participantes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 
@@ -137,7 +137,7 @@ $casos_recientes = $wpdb->get_results(
         <span class="dashicons dashicons-businessman dm-stat-card__icon"></span>
         <div class="dm-stat-card__content">
             <div class="dm-stat-card__value"><?php echo esc_html($mediadores_activos); ?></div>
-            <div class="dm-stat-card__label"><?php esc_html_e('Mediadores', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Mediadores', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
         </div>
     </div>
 </div>
@@ -146,7 +146,7 @@ $casos_recientes = $wpdb->get_results(
 <div class="dm-alert dm-alert--info">
     <span class="dashicons dashicons-calendar-alt"></span>
     <div>
-        <strong><?php printf(esc_html__('%s sesiones programadas', 'flavor-chat-ia'), number_format_i18n($sesiones_programadas)); ?></strong>
+        <strong><?php printf(esc_html__('%s sesiones programadas', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($sesiones_programadas)); ?></strong>
     </div>
 </div>
 <?php endif; ?>
@@ -156,23 +156,23 @@ $casos_recientes = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-chart-bar"></span>
-                <?php esc_html_e('Casos Esta Semana', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Casos Esta Semana', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
-            <span class="dm-card__subtitle"><?php printf(esc_html__('%s este mes', 'flavor-chat-ia'), number_format_i18n($casos_mes)); ?></span>
+            <span class="dm-card__subtitle"><?php printf(esc_html__('%s este mes', FLAVOR_PLATFORM_TEXT_DOMAIN), number_format_i18n($casos_mes)); ?></span>
         </div>
         <div class="dm-card__body">
             <?php if (empty($actividad_semanal)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-chart-line"></span>
-                    <p><?php esc_html_e('No hay casos esta semana.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay casos esta semana.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <?php
                 $max_casos = max(array_column($actividad_semanal, 'total'));
                 $dias_semana = [
-                    __('Dom', 'flavor-chat-ia'), __('Lun', 'flavor-chat-ia'), __('Mar', 'flavor-chat-ia'),
-                    __('Mié', 'flavor-chat-ia'), __('Jue', 'flavor-chat-ia'), __('Vie', 'flavor-chat-ia'),
-                    __('Sáb', 'flavor-chat-ia')
+                    __('Dom', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Lun', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Mar', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Mié', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Jue', FLAVOR_PLATFORM_TEXT_DOMAIN), __('Vie', FLAVOR_PLATFORM_TEXT_DOMAIN),
+                    __('Sáb', FLAVOR_PLATFORM_TEXT_DOMAIN)
                 ];
                 ?>
                 <div class="dm-chart-bars">
@@ -197,14 +197,14 @@ $casos_recientes = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-category"></span>
-                <?php esc_html_e('Tipos de Conflicto', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Tipos de Conflicto', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <?php if (empty($por_tipo)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-list-view"></span>
-                    <p><?php esc_html_e('No hay casos registrados.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay casos registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <div class="dm-data-list">
@@ -225,14 +225,14 @@ $casos_recientes = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-awards"></span>
-                <?php esc_html_e('Mediadores Destacados', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Mediadores Destacados', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <?php if (empty($mediadores_top)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-businessman"></span>
-                    <p><?php esc_html_e('No hay mediadores registrados.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay mediadores registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <ul class="dm-ranking">
@@ -241,12 +241,12 @@ $casos_recientes = $wpdb->get_results(
                         <li class="dm-ranking__item">
                             <span class="dm-ranking__position"><?php echo ($index + 1); ?></span>
                             <div class="dm-ranking__avatar" style="background: #7c3aed;">
-                                <?php echo mb_substr($mediador->nombre ?: __('M', 'flavor-chat-ia'), 0, 1); ?>
+                                <?php echo mb_substr($mediador->nombre ?: __('M', FLAVOR_PLATFORM_TEXT_DOMAIN), 0, 1); ?>
                             </div>
                             <div class="dm-ranking__content">
-                                <strong class="dm-ranking__name"><?php echo esc_html($mediador->nombre ?: __('Mediador', 'flavor-chat-ia')); ?></strong>
+                                <strong class="dm-ranking__name"><?php echo esc_html($mediador->nombre ?: __('Mediador', FLAVOR_PLATFORM_TEXT_DOMAIN)); ?></strong>
                                 <span class="dm-ranking__meta">
-                                    <?php echo esc_html($tasa); ?>% <?php esc_html_e('resueltos', 'flavor-chat-ia'); ?>
+                                    <?php echo esc_html($tasa); ?>% <?php esc_html_e('resueltos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
                                 </span>
                             </div>
                             <span class="dm-badge dm-badge--purple">
@@ -263,21 +263,21 @@ $casos_recientes = $wpdb->get_results(
         <div class="dm-card__header">
             <h3 class="dm-card__title">
                 <span class="dashicons dashicons-clock"></span>
-                <?php esc_html_e('Casos Recientes', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Casos Recientes', FLAVOR_PLATFORM_TEXT_DOMAIN); ?>
             </h3>
         </div>
         <div class="dm-card__body">
             <?php if (empty($casos_recientes)): ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-shield"></span>
-                    <p><?php esc_html_e('No hay casos registrados.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay casos registrados.', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></p>
                 </div>
             <?php else: ?>
                 <ul class="dm-list">
                     <?php foreach ($casos_recientes as $caso): ?>
                         <li class="dm-list__item">
                             <div class="dm-list__content">
-                                <strong class="dm-list__title"><?php echo esc_html($caso->titulo ?: sprintf(__('Caso #%d', 'flavor-chat-ia'), $caso->id)); ?></strong>
+                                <strong class="dm-list__title"><?php echo esc_html($caso->titulo ?: sprintf(__('Caso #%d', FLAVOR_PLATFORM_TEXT_DOMAIN), $caso->id)); ?></strong>
                                 <span class="dm-list__meta">
                                     <?php echo esc_html(ucfirst($caso->tipo)); ?>
                                     &bull;
@@ -302,24 +302,24 @@ $casos_recientes = $wpdb->get_results(
     <div class="dm-stat-card dm-stat-card--secondary">
         <span class="dashicons dashicons-portfolio dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($total_casos); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Total Casos', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Total Casos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--info">
         <span class="dashicons dashicons-calendar-alt dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($total_sesiones); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Sesiones', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Sesiones', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--success">
         <span class="dashicons dashicons-yes dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($acuerdos_cumplidos); ?>/<?php echo esc_html($total_acuerdos); ?></div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Acuerdos', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Acuerdos', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 
     <div class="dm-stat-card dm-stat-card--primary">
         <span class="dashicons dashicons-chart-pie dm-stat-card__icon"></span>
         <div class="dm-stat-card__value"><?php echo esc_html($tasa_resolucion); ?>%</div>
-        <div class="dm-stat-card__label"><?php esc_html_e('Tasa Resolución', 'flavor-chat-ia'); ?></div>
+        <div class="dm-stat-card__label"><?php esc_html_e('Tasa Resolución', FLAVOR_PLATFORM_TEXT_DOMAIN); ?></div>
     </div>
 </div>

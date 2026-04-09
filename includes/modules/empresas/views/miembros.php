@@ -10,29 +10,29 @@ if (!defined('ABSPATH')) {
 }
 
 $roles_labels = [
-    'admin' => __('Administrador', 'flavor-chat-ia'),
-    'contable' => __('Contable', 'flavor-chat-ia'),
-    'empleado' => __('Empleado', 'flavor-chat-ia'),
-    'colaborador' => __('Colaborador', 'flavor-chat-ia'),
-    'observador' => __('Observador', 'flavor-chat-ia'),
+    'admin' => __('Administrador', 'flavor-platform'),
+    'contable' => __('Contable', 'flavor-platform'),
+    'empleado' => __('Empleado', 'flavor-platform'),
+    'colaborador' => __('Colaborador', 'flavor-platform'),
+    'observador' => __('Observador', 'flavor-platform'),
 ];
 ?>
 <div class="wrap flavor-modulo-page">
     <a href="<?php echo esc_url(admin_url('admin.php?page=empresas-listado&action=ver&id=' . $empresa->id)); ?>" class="button" style="margin-bottom:16px;">
-        ← <?php esc_html_e('Volver a la empresa', 'flavor-chat-ia'); ?>
+        ← <?php esc_html_e('Volver a la empresa', 'flavor-platform'); ?>
     </a>
 
     <div style="background:#fff;padding:24px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1);margin-bottom:20px;">
         <div style="display:flex;justify-content:space-between;align-items:center;">
             <div>
                 <h1 style="margin:0;font-size:20px;">
-                    <?php printf(esc_html__('Miembros de %s', 'flavor-chat-ia'), esc_html($empresa->nombre)); ?>
+                    <?php printf(esc_html__('Miembros de %s', 'flavor-platform'), esc_html($empresa->nombre)); ?>
                 </h1>
-                <p style="margin:8px 0 0;color:#666;"><?php printf(esc_html__('%d miembros en total', 'flavor-chat-ia'), count($miembros)); ?></p>
+                <p style="margin:8px 0 0;color:#666;"><?php printf(esc_html__('%d miembros en total', 'flavor-platform'), count($miembros)); ?></p>
             </div>
             <button type="button" class="button button-primary" onclick="document.getElementById('modal-agregar').style.display='flex';">
                 <span class="dashicons dashicons-plus-alt" style="vertical-align:middle;"></span>
-                <?php esc_html_e('Agregar miembro', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Agregar miembro', 'flavor-platform'); ?>
             </button>
         </div>
     </div>
@@ -41,13 +41,13 @@ $roles_labels = [
     <table class="widefat striped" style="background:#fff;border-radius:8px;overflow:hidden;">
         <thead>
             <tr>
-                <th style="padding:12px;"><?php esc_html_e('Miembro', 'flavor-chat-ia'); ?></th>
-                <th style="padding:12px;"><?php esc_html_e('Rol', 'flavor-chat-ia'); ?></th>
-                <th style="padding:12px;"><?php esc_html_e('Cargo', 'flavor-chat-ia'); ?></th>
-                <th style="padding:12px;"><?php esc_html_e('Contacto corporativo', 'flavor-chat-ia'); ?></th>
-                <th style="padding:12px;text-align:center;"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                <th style="padding:12px;"><?php esc_html_e('Fecha alta', 'flavor-chat-ia'); ?></th>
-                <th style="padding:12px;text-align:center;"><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                <th style="padding:12px;"><?php esc_html_e('Miembro', 'flavor-platform'); ?></th>
+                <th style="padding:12px;"><?php esc_html_e('Rol', 'flavor-platform'); ?></th>
+                <th style="padding:12px;"><?php esc_html_e('Cargo', 'flavor-platform'); ?></th>
+                <th style="padding:12px;"><?php esc_html_e('Contacto corporativo', 'flavor-platform'); ?></th>
+                <th style="padding:12px;text-align:center;"><?php esc_html_e('Estado', 'flavor-platform'); ?></th>
+                <th style="padding:12px;"><?php esc_html_e('Fecha alta', 'flavor-platform'); ?></th>
+                <th style="padding:12px;text-align:center;"><?php esc_html_e('Acciones', 'flavor-platform'); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -109,19 +109,19 @@ $roles_labels = [
                             <input type="hidden" name="miembro_id" value="<?php echo esc_attr($m->id); ?>" />
 
                             <?php if ($m->estado === 'pendiente'): ?>
-                            <button type="submit" name="accion_miembro" value="activar" class="button button-small" title="<?php esc_attr_e('Activar', 'flavor-chat-ia'); ?>">
+                            <button type="submit" name="accion_miembro" value="activar" class="button button-small" title="<?php esc_attr_e('Activar', 'flavor-platform'); ?>">
                                 <span class="dashicons dashicons-yes" style="color:#10b981;"></span>
                             </button>
                             <?php endif; ?>
 
                             <?php if ($m->estado === 'activo'): ?>
-                            <button type="submit" name="accion_miembro" value="suspender" class="button button-small" title="<?php esc_attr_e('Suspender', 'flavor-chat-ia'); ?>" onclick="return confirm('<?php esc_attr_e('¿Suspender este miembro?', 'flavor-chat-ia'); ?>');">
+                            <button type="submit" name="accion_miembro" value="suspender" class="button button-small" title="<?php esc_attr_e('Suspender', 'flavor-platform'); ?>" onclick="return confirm('<?php esc_attr_e('¿Suspender este miembro?', 'flavor-platform'); ?>');">
                                 <span class="dashicons dashicons-controls-pause" style="color:#f59e0b;"></span>
                             </button>
                             <?php endif; ?>
 
                             <?php if ($m->estado === 'suspendido'): ?>
-                            <button type="submit" name="accion_miembro" value="activar" class="button button-small" title="<?php esc_attr_e('Reactivar', 'flavor-chat-ia'); ?>">
+                            <button type="submit" name="accion_miembro" value="activar" class="button button-small" title="<?php esc_attr_e('Reactivar', 'flavor-platform'); ?>">
                                 <span class="dashicons dashicons-controls-play" style="color:#10b981;"></span>
                             </button>
                             <?php endif; ?>
@@ -132,11 +132,11 @@ $roles_labels = [
                                 <option value="<?php echo esc_attr($r); ?>" <?php selected($m->rol, $r); ?>><?php echo esc_html(ucfirst($r)); ?></option>
                                 <?php endforeach; ?>
                             </select>
-                            <button type="submit" name="accion_miembro" value="cambiar_rol" class="button button-small" title="<?php esc_attr_e('Cambiar rol', 'flavor-chat-ia'); ?>">
+                            <button type="submit" name="accion_miembro" value="cambiar_rol" class="button button-small" title="<?php esc_attr_e('Cambiar rol', 'flavor-platform'); ?>">
                                 <span class="dashicons dashicons-update"></span>
                             </button>
 
-                            <button type="submit" name="accion_miembro" value="dar_baja" class="button button-small" title="<?php esc_attr_e('Dar de baja', 'flavor-chat-ia'); ?>" onclick="return confirm('<?php esc_attr_e('¿Dar de baja definitiva?', 'flavor-chat-ia'); ?>');" style="margin-left:8px;">
+                            <button type="submit" name="accion_miembro" value="dar_baja" class="button button-small" title="<?php esc_attr_e('Dar de baja', 'flavor-platform'); ?>" onclick="return confirm('<?php esc_attr_e('¿Dar de baja definitiva?', 'flavor-platform'); ?>');" style="margin-left:8px;">
                                 <span class="dashicons dashicons-dismiss" style="color:#dc2626;"></span>
                             </button>
                             <?php endif; ?>
@@ -147,7 +147,7 @@ $roles_labels = [
             <?php else: ?>
                 <tr>
                     <td colspan="7" style="padding:40px;text-align:center;color:#666;">
-                        <?php esc_html_e('Esta empresa no tiene miembros.', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Esta empresa no tiene miembros.', 'flavor-platform'); ?>
                     </td>
                 </tr>
             <?php endif; ?>
@@ -158,14 +158,14 @@ $roles_labels = [
 <!-- Modal agregar miembro -->
 <div id="modal-agregar" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;z-index:100000;">
     <div style="background:#fff;padding:24px;border-radius:12px;max-width:500px;width:90%;">
-        <h3 style="margin:0 0 20px;"><?php esc_html_e('Agregar miembro', 'flavor-chat-ia'); ?></h3>
+        <h3 style="margin:0 0 20px;"><?php esc_html_e('Agregar miembro', 'flavor-platform'); ?></h3>
         <form method="post">
             <?php wp_nonce_field('agregar_miembro'); ?>
 
             <p>
-                <label><strong><?php esc_html_e('Usuario', 'flavor-chat-ia'); ?></strong></label><br>
+                <label><strong><?php esc_html_e('Usuario', 'flavor-platform'); ?></strong></label><br>
                 <select name="user_id" required style="width:100%;">
-                    <option value=""><?php esc_html_e('Seleccionar usuario...', 'flavor-chat-ia'); ?></option>
+                    <option value=""><?php esc_html_e('Seleccionar usuario...', 'flavor-platform'); ?></option>
                     <?php
                     $usuarios = get_users(['number' => 100, 'orderby' => 'display_name']);
                     foreach ($usuarios as $u):
@@ -176,7 +176,7 @@ $roles_labels = [
             </p>
 
             <p>
-                <label><strong><?php esc_html_e('Rol', 'flavor-chat-ia'); ?></strong></label><br>
+                <label><strong><?php esc_html_e('Rol', 'flavor-platform'); ?></strong></label><br>
                 <select name="rol" style="width:100%;">
                     <?php foreach ($roles_disponibles as $r): ?>
                     <option value="<?php echo esc_attr($r); ?>"><?php echo esc_html($roles_labels[$r] ?? ucfirst($r)); ?></option>
@@ -185,16 +185,16 @@ $roles_labels = [
             </p>
 
             <p>
-                <label><strong><?php esc_html_e('Cargo', 'flavor-chat-ia'); ?></strong></label><br>
+                <label><strong><?php esc_html_e('Cargo', 'flavor-platform'); ?></strong></label><br>
                 <input type="text" name="cargo" style="width:100%;" />
             </p>
 
             <div style="margin-top:20px;display:flex;gap:8px;justify-content:flex-end;">
                 <button type="button" class="button" onclick="document.getElementById('modal-agregar').style.display='none';">
-                    <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Cancelar', 'flavor-platform'); ?>
                 </button>
                 <button type="submit" name="agregar_miembro" class="button button-primary">
-                    <?php esc_html_e('Agregar', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Agregar', 'flavor-platform'); ?>
                 </button>
             </div>
         </form>
